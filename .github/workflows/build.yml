@@ -202,7 +202,7 @@ jobs:
           poetry run isort --check .
 
   api_build:
-    name: build api
+    name: build and test api
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -215,6 +215,6 @@ jobs:
           chmod +x $DOCKER_CONFIG/cli-plugins/docker-compose
           docker compose version
       - name: Build containers
-        run: cd api && docker compose build api
+        run: cd api && make build
       - name: Run tests
         run: cd api && make api-test
