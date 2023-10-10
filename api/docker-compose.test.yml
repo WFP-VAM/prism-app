@@ -38,6 +38,7 @@ services:
       - REACT_APP_COUNTRY=cambodia
     ports:
       - "3000:3000"
+    tty: true
     volumes:
       - ../common:/common
       - ../frontend:/frontend
