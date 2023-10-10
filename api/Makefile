@@ -24,6 +24,7 @@ test-services:
 api-test: test-services
 	sleep 10
 	docker ps -a
+	docker compose -f docker-compose.yml -f docker-compose.test.yml logs frontend
 	docker compose -f docker-compose.yml -f docker-compose.test.yml run api bash -c "pytest -s tests"
 
 api-add-users:
