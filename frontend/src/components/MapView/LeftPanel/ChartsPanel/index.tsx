@@ -4,6 +4,8 @@ import {
   Checkbox,
   createStyles,
   FormControl,
+  FormControlLabel,
+  FormGroup,
   Input,
   InputAdornment,
   InputLabel,
@@ -164,6 +166,16 @@ const useStyles = makeStyles(() =>
         backgroundColor: '#B1D6DB',
       },
     },
+    switchTitle: {
+      lineHeight: 1.8,
+      color: 'black',
+      fontWeight: 400,
+    },
+    switchTitleUnchecked: {
+      lineHeight: 1.8,
+      color: '#828282',
+      fontWeight: 400,
+    },
   }),
 );
 
@@ -264,6 +276,15 @@ const ChartsPanel = memo(
     const [adminLevel, setAdminLevel] = useState<0 | 1 | 2>(
       countryAdmin0Id ? 0 : 1,
     );
+    const [secondSelectedAdmin1Area, setSecondSelectedAdmin1Area] = useState(
+      '',
+    );
+    const [secondSelectedAdmin2Area, setSecondSelectedAdmin2Area] = useState(
+      '',
+    );
+    const [secondAdminLevel, setSecondAdminLevel] = useState<0 | 1 | 2>(
+      countryAdmin0Id ? 0 : 1,
+    );
 
     const [selectedLayerTitles, setSelectedLayerTitles] = useState<
       string[] | TFunctionKeys[]
@@ -272,6 +293,9 @@ const ChartsPanel = memo(
       new Date().getTime(),
     );
     const [adminProperties, setAdminProperties] = useState<GeoJsonProperties>();
+    const [SecondAdminProperties, setSecondAdminProperties] = useState<
+      GeoJsonProperties
+    >();
     const dataForCsv = useRef<{ [key: string]: any[] }>({});
 
     const { t } = useSafeTranslation();
@@ -284,11 +308,21 @@ const ChartsPanel = memo(
         selectedAdmin1Area ?? '',
         selectedAdmin2Area ?? '',
         ...selectedLayerTitles,
+        // FIXME: do something about these
+        secondSelectedAdmin1Area ?? '',
+        secondSelectedAdmin2Area ?? '',
       ]
         .filter(x => !!x)
         .map(snakeCase)
         .join('_');
-    }, [country, selectedAdmin1Area, selectedAdmin2Area, selectedLayerTitles]);
+    }, [
+      country,
+      secondSelectedAdmin1Area,
+      secondSelectedAdmin2Area,
+      selectedAdmin1Area,
+      selectedAdmin2Area,
+      selectedLayerTitles,
+    ]);
 
     const onChangeChartLayers = useCallback(
       (event: React.ChangeEvent<{ value: unknown }>) => {
@@ -296,6 +330,17 @@ const ChartsPanel = memo(
       },
       [],
     );
+
+    const locationString = (admProperties: any, admLevel: number) => {
+      const a = admProperties;
+      const l = admLevel;
+      if (a === null || a === undefined) {
+        return '';
+      }
+      return `${a.adm0_name}${l > 0 ? ` - ${a.adm1_name}` : ''}${
+        l > 1 ? ` - ${a.adm2_name}` : ''
+      }`;
+    };
 
     const showChartsPanel = useMemo(() => {
       return (
@@ -311,6 +356,12 @@ const ChartsPanel = memo(
         setAdminProperties(getProperties(data));
       }
     }, [adminProperties, countryAdmin0Id, data]);
+
+    useEffect(() => {
+      if (!SecondAdminProperties && countryAdmin0Id && data) {
+        setSecondAdminProperties(getProperties(data));
+      }
+    }, [SecondAdminProperties, countryAdmin0Id, data]);
 
     useEffect(() => {
       if (adminProperties && selectedDate && selectedLayerTitles.length >= 1) {
@@ -330,7 +381,12 @@ const ChartsPanel = memo(
       // chart size is not responsive once it is mounted
       // seems to be possible in the newer chart.js versions
       // here we mount a new component if one chart
-      if (adminProperties && selectedDate && selectedLayerTitles.length === 1) {
+      if (
+        adminProperties &&
+        selectedDate &&
+        selectedLayerTitles.length === 1 &&
+        !compareLocations
+      ) {
         const chartLayer = chartLayers.find(layer =>
           selectedLayerTitles.includes(layer.title),
         );
@@ -351,31 +407,85 @@ const ChartsPanel = memo(
           </Box>
         );
       }
-      return (
-        selectedLayerTitles.length > 1 &&
-        chartLayers
-          .filter(layer => selectedLayerTitles.includes(layer.title))
-          .map(layer => (
-            <Box
-              key={layer.title}
-              style={{
-                height: '240px',
-                minWidth: '40%',
-                flex: 1,
-                position: 'relative',
-              }}
-            >
-              <ChartSection
-                chartLayer={layer}
-                adminProperties={adminProperties as GeoJsonProperties}
-                adminLevel={adminLevel}
-                date={selectedDate as number}
-                dataForCsv={dataForCsv}
-              />
-            </Box>
-          ))
-      );
-    }, [adminLevel, adminProperties, selectedDate, selectedLayerTitles]);
+      const mainChartList =
+        selectedLayerTitles.length >= 1
+          ? chartLayers
+              .filter(layer => selectedLayerTitles.includes(layer.title))
+              .map(layer => (
+                <Box
+                  key={layer.title}
+                  style={{
+                    height: '240px',
+                    minWidth: '40%',
+                    flex: 1,
+                    position: 'relative',
+                  }}
+                >
+                  <ChartSection
+                    chartLayer={layer}
+                    adminProperties={adminProperties as GeoJsonProperties}
+                    adminLevel={adminLevel}
+                    date={selectedDate as number}
+                    dataForCsv={dataForCsv}
+                  />
+                </Box>
+              ))
+          : [];
+      // now add comparison charts
+      const comparisonChartList = compareLocations
+        ? chartLayers
+            .filter(layer => selectedLayerTitles.includes(layer.title))
+            .map(layer => (
+              <Box
+                key={`${layer.title} bleh`}
+                style={{
+                  height: '240px',
+                  minWidth: '40%',
+                  flex: 1,
+                  position: 'relative',
+                }}
+              >
+                <ChartSection
+                  chartLayer={layer}
+                  adminProperties={SecondAdminProperties as GeoJsonProperties}
+                  adminLevel={secondAdminLevel}
+                  date={selectedDate as number}
+                  dataForCsv={dataForCsv}
+                />
+              </Box>
+            ))
+        : [];
+      const zipped = mainChartList
+        .map((chart, idx) => [chart, comparisonChartList[idx]])
+        .flat();
+
+      const titles = [
+        locationString(adminProperties, adminLevel),
+        locationString(SecondAdminProperties, secondAdminLevel),
+      ].map(title => (
+        <Box
+          key={title}
+          style={{
+            height: '30px',
+            minWidth: '40%',
+            flex: 1,
+            position: 'relative',
+          }}
+        >
+          <Typography className={classes.textLabel}>{title}</Typography>
+        </Box>
+      ));
+      return [...titles, ...zipped];
+    }, [
+      SecondAdminProperties,
+      adminLevel,
+      adminProperties,
+      classes.textLabel,
+      compareLocations,
+      secondAdminLevel,
+      selectedDate,
+      selectedLayerTitles,
+    ]);
 
     useEffect(() => {
       if (showChartsPanel) {
@@ -401,7 +511,7 @@ const ChartsPanel = memo(
       // reset the admin level
       setAdminLevel(countryAdmin0Id ? 0 : 1);
       // reset admin 1 title
-      // FIXME
+      // FIXME: make clear button work
       // setAdmin1Key('');
       // reset the admin 2 title
       // setAdmin2Key('');
@@ -428,34 +538,64 @@ const ChartsPanel = memo(
 
     return (
       <Box className={classes.chartsPanelParams}>
-        <Switch
-          // label={t('Compare locations')}
-          size="small"
-          className={classes.switch}
-          classes={{
-            switchBase: classes.switchBase,
-            track: classes.switchTrack,
-          }}
-          checked={compareLocations}
-          onChange={handleOnChangeCompareLocationsSwitch}
-          inputProps={{
-            'aria-label': 'mylabel',
-          }}
-        />
+        <FormGroup>
+          <FormControlLabel
+            control={
+              <Switch
+                checked={compareLocations}
+                size="small"
+                className={classes.switch}
+                classes={{
+                  switchBase: classes.switchBase,
+                  track: classes.switchTrack,
+                }}
+                onChange={handleOnChangeCompareLocationsSwitch}
+                inputProps={{
+                  'aria-label': 'mylabel',
+                }}
+              />
+            }
+            label={
+              <Typography
+                className={
+                  compareLocations
+                    ? classes.switchTitle
+                    : classes.switchTitleUnchecked
+                }
+              >
+                {t('Compare Locations')}
+              </Typography>
+            }
+            checked={compareLocations}
+          />
 
-        <LocationSelector
-          boundaryLayer={boundaryLayer}
-          country={country}
-          countryAdmin0Id={countryAdmin0Id}
-          data={data}
-          getProperties={getProperties}
-          multiCountry={multiCountry}
-          // onChangeAdmin0Area
-          setAdminLevel={setAdminLevel}
-          setAdminProperties={setAdminProperties}
-          setSelectedAdmin1Area={setSelectedAdmin1Area}
-          setSelectedAdmin2Area={setSelectedAdmin2Area}
-        />
+          <LocationSelector
+            boundaryLayer={boundaryLayer}
+            country={country}
+            countryAdmin0Id={countryAdmin0Id}
+            data={data}
+            getProperties={getProperties}
+            multiCountry={multiCountry}
+            setAdminLevel={setAdminLevel}
+            setAdminProperties={setAdminProperties}
+            setSelectedAdmin1Area={setSelectedAdmin1Area}
+            setSelectedAdmin2Area={setSelectedAdmin2Area}
+          />
+          {compareLocations && (
+            <LocationSelector
+              boundaryLayer={boundaryLayer}
+              country={country}
+              countryAdmin0Id={countryAdmin0Id}
+              data={data}
+              getProperties={getProperties}
+              multiCountry={multiCountry}
+              setAdminLevel={setSecondAdminLevel}
+              setAdminProperties={setSecondAdminProperties}
+              setSelectedAdmin1Area={setSecondSelectedAdmin1Area}
+              setSelectedAdmin2Area={setSecondSelectedAdmin2Area}
+            />
+          )}
+        </FormGroup>
 
         <Box className={classes.datePickerContainer}>
           <Typography className={classes.textLabel} variant="body2">
