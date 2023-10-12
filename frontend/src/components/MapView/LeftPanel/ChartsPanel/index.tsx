@@ -12,7 +12,7 @@ import {
   MenuItem,
   MenuProps,
   Select,
-  TextField,
+  Switch,
   Typography,
 } from '@material-ui/core';
 import { DateRangeRounded } from '@material-ui/icons';
@@ -41,12 +41,13 @@ import { leftPanelTabValueSelector } from 'context/leftPanelStateSlice';
 import { layerDataSelector } from 'context/mapStateSlice/selectors';
 import { useSafeTranslation } from 'i18n';
 import { castObjectsArrayToCsv } from 'utils/csv-utils';
-import {
-  getOrderedAreas,
-  OrderedArea,
-} from 'components/MapView/Layers/BoundaryDropdown';
+// import {
+//   // getOrderedAreas,
+//   // OrderedArea,
+// } from 'components/MapView/Layers/BoundaryDropdown';
 import { downloadToFile } from 'components/MapView/utils';
 import ChartSection from './ChartSection';
+import LocationSelector from './LocationSelector';
 
 // Load boundary layer for Admin2
 // WARNING - Make sure the dataviz_ids are available in the boundary file for Admin2
@@ -77,25 +78,6 @@ const useStyles = makeStyles(() =>
       flexDirection: 'row',
       width: '100%',
       height: '100%',
-    },
-    selectRoot: {
-      marginTop: 30,
-      color: 'black',
-      minWidth: '300px',
-      maxWidth: '350px',
-      width: 'auto',
-      '& label': {
-        color: '#333333',
-      },
-      '& .MuiInputBase-root': {
-        color: 'black',
-        '&:hover fieldset': {
-          borderColor: '#333333',
-        },
-        '&.Mui-focused fieldset': {
-          borderColor: '#333333',
-        },
-      },
     },
     chartsPanelParams: {
       marginTop: 30,
@@ -144,9 +126,6 @@ const useStyles = makeStyles(() =>
       marginTop: 0,
       paddingBottom: '1em',
     },
-    removeAdmin: {
-      fontWeight: 'bold',
-    },
     downloadButton: {
       backgroundColor: '#62B2BD',
       '&:hover': {
@@ -169,6 +148,21 @@ const useStyles = makeStyles(() =>
       marginRight: '25%',
       width: '50%',
       '&.Mui-disabled': { opacity: 0.5 },
+    },
+    switch: {
+      marginRight: 2,
+    },
+    switchTrack: {
+      backgroundColor: '#E0E0E0',
+    },
+    switchBase: {
+      color: '#E0E0E0',
+      '&.Mui-checked': {
+        color: '#53888F',
+      },
+      '&.Mui-checked + .MuiSwitch-track': {
+        backgroundColor: '#B1D6DB',
+      },
     },
   }),
 );
@@ -264,9 +258,9 @@ const ChartsPanel = memo(
     ) as LayerData<BoundaryLayerProps> | undefined;
     const { data } = boundaryLayerData || {};
     const classes = useStyles();
-    const [admin0Key, setAdmin0Key] = useState('');
-    const [admin1Key, setAdmin1Key] = useState('');
-    const [admin2Key, setAdmin2Key] = useState('');
+    const [compareLocations, setCompareLocations] = useState(false);
+    const [selectedAdmin1Area, setSelectedAdmin1Area] = useState('');
+    const [selectedAdmin2Area, setSelectedAdmin2Area] = useState('');
     const [adminLevel, setAdminLevel] = useState<0 | 1 | 2>(
       countryAdmin0Id ? 0 : 1,
     );
@@ -280,125 +274,21 @@ const ChartsPanel = memo(
     const [adminProperties, setAdminProperties] = useState<GeoJsonProperties>();
     const dataForCsv = useRef<{ [key: string]: any[] }>({});
 
-    const { t, i18n: i18nLocale } = useSafeTranslation();
+    const { t } = useSafeTranslation();
 
     const tabValue = useSelector(leftPanelTabValueSelector);
-
-    const orderedAdmin0areas = useMemo(() => {
-      if (!multiCountry) {
-        return [];
-      }
-      return data ? getOrderedAreas(data, boundaryLayer, '', i18nLocale) : [];
-    }, [data, i18nLocale, multiCountry]);
-
-    const orderedAdmin1areas = useMemo(() => {
-      return data
-        ? getOrderedAreas(
-            data,
-            boundaryLayer,
-            '',
-            i18nLocale,
-            multiCountry ? 1 : 0,
-            admin0Key,
-          )
-        : [];
-    }, [admin0Key, data, i18nLocale, multiCountry]);
-
-    const selectedaAdmin0Area = useMemo(() => {
-      return orderedAdmin0areas.find(area => {
-        return admin0Key === area.key;
-      });
-    }, [admin0Key, orderedAdmin0areas]);
-
-    const selectedAdmin1Area = useMemo(() => {
-      return orderedAdmin1areas.find(area => {
-        return admin1Key === area.key;
-      });
-    }, [admin1Key, orderedAdmin1areas]);
-
-    const seletectdAdmin2Area = useMemo(() => {
-      return selectedAdmin1Area?.children.find(childArea => {
-        return admin2Key === childArea.key;
-      });
-    }, [selectedAdmin1Area, admin2Key]);
 
     const generateCSVFilename = useCallback(() => {
       return [
         country,
-        selectedAdmin1Area?.title ?? '',
-        seletectdAdmin2Area?.label ?? '',
+        selectedAdmin1Area ?? '',
+        selectedAdmin2Area ?? '',
         ...selectedLayerTitles,
       ]
         .filter(x => !!x)
         .map(snakeCase)
         .join('_');
-    }, [selectedAdmin1Area, seletectdAdmin2Area, selectedLayerTitles, country]);
-
-    const onChangeAdmin0Area = useCallback(
-      (event: React.ChangeEvent<HTMLInputElement>) => {
-        // The external chart key for admin 0 is stored in all its children regions
-        // here we get the first child properties
-        const admin0Id = orderedAdmin0areas.find(area => {
-          return area.key === event.target.value;
-        })?.children[0].value;
-
-        if (data) {
-          setAdminProperties(getProperties(data, admin0Id));
-        }
-        setAdmin0Key(event.target.value);
-        setAdmin1Key('');
-        setAdmin2Key('');
-        setAdminLevel(0);
-      },
-      [orderedAdmin0areas, data],
-    );
-
-    const onChangeAdmin1Area = useCallback(
-      (event: React.ChangeEvent<HTMLInputElement>) => {
-        if (!event.target.value) {
-          setAdmin1Key('');
-          if (countryAdmin0Id || multiCountry) {
-            setAdminLevel(0);
-          }
-          return;
-        }
-
-        // The external chart key for admin 1 is stored in all its children regions
-        // here we get the first child properties
-        const admin1Id = orderedAdmin1areas.find(area => {
-          return area.key === event.target.value;
-        })?.children[0].value;
-
-        if (data) {
-          setAdminProperties(getProperties(data, admin1Id));
-        }
-        setAdmin1Key(event.target.value);
-        setAdmin2Key('');
-        setAdminLevel(1);
-      },
-      [orderedAdmin1areas, countryAdmin0Id, multiCountry, data],
-    );
-
-    const onChangeAdmin2Area = useCallback(
-      (event: React.ChangeEvent<HTMLInputElement>) => {
-        if (!event.target.value) {
-          // Unset Admin 2
-          // We don't have to reset the adminProperties because any children contains the admin 1 external key
-          setAdmin2Key('');
-          setAdminLevel(1);
-          return;
-        }
-        const admin2Id = selectedAdmin1Area?.children.find(childArea => {
-          return childArea.key === event.target.value;
-        })?.value;
-        if (data) {
-          setAdminProperties(getProperties(data, admin2Id));
-        }
-        setAdmin2Key(event.target.value);
-        setAdminLevel(2);
-      },
-      [selectedAdmin1Area, data],
-    );
+    }, [country, selectedAdmin1Area, selectedAdmin2Area, selectedLayerTitles]);
 
     const onChangeChartLayers = useCallback(
       (event: React.ChangeEvent<{ value: unknown }>) => {
@@ -511,10 +401,15 @@ const ChartsPanel = memo(
       // reset the admin level
       setAdminLevel(countryAdmin0Id ? 0 : 1);
       // reset admin 1 title
-      setAdmin1Key('');
+      // FIXME
+      // setAdmin1Key('');
       // reset the admin 2 title
-      setAdmin2Key('');
+      // setAdmin2Key('');
     }, [countryAdmin0Id]);
+
+    const handleOnChangeCompareLocationsSwitch = useCallback(() => {
+      setCompareLocations(!compareLocations);
+    }, [compareLocations]);
 
     const chartsSelectRenderValue = useCallback(
       selected => {
@@ -527,112 +422,41 @@ const ChartsPanel = memo(
       [t],
     );
 
-    const findArea = (
-      orderedAdminAreas: OrderedArea[],
-      adminKeyValue: string,
-    ) =>
-      orderedAdminAreas.find(category => {
-        return category.key === adminKeyValue;
-      })?.title;
-
-    const renderAdmin0Value = useCallback(
-      admin0keyValue => {
-        if (!multiCountry) {
-          return country;
-        }
-        return findArea(orderedAdmin0areas, admin0keyValue);
-      },
-      [country, multiCountry, orderedAdmin0areas],
-    );
-
-    const renderAdmin1Value = useCallback(
-      admin1keyValue => {
-        return findArea(orderedAdmin1areas, admin1keyValue);
-      },
-      [orderedAdmin1areas],
-    );
-
-    const renderAdmin2Value = useCallback(
-      admin2KeyValue => {
-        return selectedAdmin1Area?.children.find(childCategory => {
-          return childCategory.key === admin2KeyValue;
-        })?.label;
-      },
-      [selectedAdmin1Area],
-    );
-
     if (tabIndex !== tabValue) {
       return null;
     }
 
-    const renderMenuItemList = (orderedAdminArea: OrderedArea[]) =>
-      orderedAdminArea.map(option => (
-        <MenuItem key={option.key} value={option.key}>
-          {option.title}
-        </MenuItem>
-      ));
-
     return (
       <Box className={classes.chartsPanelParams}>
-        <TextField
-          classes={{ root: classes.selectRoot }}
-          id="outlined-admin-1"
-          select
-          label={t('Country')}
-          value={selectedaAdmin0Area?.key ?? country}
-          SelectProps={{
-            renderValue: renderAdmin0Value,
+        <Switch
+          // label={t('Compare locations')}
+          size="small"
+          className={classes.switch}
+          classes={{
+            switchBase: classes.switchBase,
+            track: classes.switchTrack,
           }}
-          onChange={onChangeAdmin0Area}
-          variant="outlined"
-          disabled={!multiCountry}
-        >
-          <MenuItem key={country} value={country} disabled>
-            {country}
-          </MenuItem>
-          {renderMenuItemList(orderedAdmin0areas)}
-        </TextField>
+          checked={compareLocations}
+          onChange={handleOnChangeCompareLocationsSwitch}
+          inputProps={{
+            'aria-label': 'mylabel',
+          }}
+        />
 
-        <TextField
-          classes={{ root: classes.selectRoot }}
-          id="outlined-admin-1"
-          select
-          label={t('Admin 1')}
-          value={selectedAdmin1Area?.key ?? ''}
-          SelectProps={{
-            renderValue: renderAdmin1Value,
-          }}
-          onChange={onChangeAdmin1Area}
-          variant="outlined"
-        >
-          <MenuItem divider>
-            <Box className={classes.removeAdmin}> {t('Remove Admin 1')}</Box>
-          </MenuItem>
-          {renderMenuItemList(orderedAdmin1areas)}
-        </TextField>
-        {admin1Key && (
-          <TextField
-            classes={{ root: classes.selectRoot }}
-            id="outlined-admin-2"
-            select
-            label={t('Admin 2')}
-            value={seletectdAdmin2Area?.key ?? ''}
-            SelectProps={{
-              renderValue: renderAdmin2Value,
-            }}
-            onChange={onChangeAdmin2Area}
-            variant="outlined"
-          >
-            <MenuItem divider>
-              <Box className={classes.removeAdmin}> {t('Remove Admin 2')}</Box>
-            </MenuItem>
-            {selectedAdmin1Area?.children.map(option => (
-              <MenuItem key={option.key} value={option.key}>
-                {option.label}
-              </MenuItem>
-            ))}
-          </TextField>
-        )}
+        <LocationSelector
+          boundaryLayer={boundaryLayer}
+          country={country}
+          countryAdmin0Id={countryAdmin0Id}
+          data={data}
+          getProperties={getProperties}
+          multiCountry={multiCountry}
+          // onChangeAdmin0Area
+          setAdminLevel={setAdminLevel}
+          setAdminProperties={setAdminProperties}
+          setSelectedAdmin1Area={setSelectedAdmin1Area}
+          setSelectedAdmin2Area={setSelectedAdmin2Area}
+        />
+
         <Box className={classes.datePickerContainer}>
           <Typography className={classes.textLabel} variant="body2">
             {`${t('Date')}: `}
