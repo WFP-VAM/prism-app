@@ -6,7 +6,7 @@ import {
   TextField,
 } from '@material-ui/core';
 import React, { memo, useCallback, useMemo } from 'react';
-import { PanelSize } from 'config/types';
+import { PanelSize, BoundaryLayerProps } from 'config/types';
 import {
   getOrderedAreas,
   OrderedArea,
@@ -235,12 +235,8 @@ const LocationSelector = memo(
         if (data) {
           setAdminProperties(getProperties(data, admin2Id));
         }
-        // setSelectedAdmin2Area(selectedAdmin2Area);
         setAdmin2Key(event.target.value);
 
-        console.log(
-          findArea2(selectedAdmin1Area?.children, event.target.value)?.label,
-        );
         setSelectedAdmin2Area(
           findArea2(selectedAdmin1Area?.children, event.target.value)?.label,
         );
@@ -331,13 +327,12 @@ const LocationSelector = memo(
 );
 
 interface LocationSelectorProps {
-  // FIXME: proper types
   admin0Key: string;
   admin1Key: string;
   admin2Key: string;
-  boundaryLayer: any;
-  country: any;
-  countryAdmin0Id: any;
+  boundaryLayer: BoundaryLayerProps;
+  country: string;
+  countryAdmin0Id: number;
   data: BoundaryLayerData | undefined;
   getProperties: any;
   multiCountry: boolean;

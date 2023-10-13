@@ -273,18 +273,18 @@ const ChartsPanel = memo(
     const [compareLocations, setCompareLocations] = useState(false);
 
     // first location state
-    const [admin0Key, setAdmin0Key] = useState('');
-    const [admin1Key, setAdmin1Key] = useState('');
-    const [admin2Key, setAdmin2Key] = useState('');
+    const [admin0Key, setAdmin0Key] = useState<string>('');
+    const [admin1Key, setAdmin1Key] = useState<string>('');
+    const [admin2Key, setAdmin2Key] = useState<string>('');
     const [selectedAdmin1Area, setSelectedAdmin1Area] = useState('');
     const [selectedAdmin2Area, setSelectedAdmin2Area] = useState('');
     const [adminLevel, setAdminLevel] = useState<0 | 1 | 2>(
       countryAdmin0Id ? 0 : 1,
     );
     // second (compared) location state
-    const [secondAdmin0Key, setSecondAdmin0Key] = useState('');
-    const [secondAdmin1Key, setSecondAdmin1Key] = useState('');
-    const [secondAdmin2Key, setSecondAdmin2Key] = useState('');
+    const [secondAdmin0Key, setSecondAdmin0Key] = useState<string>('');
+    const [secondAdmin1Key, setSecondAdmin1Key] = useState<string>('');
+    const [secondAdmin2Key, setSecondAdmin2Key] = useState<string>('');
     const [secondSelectedAdmin1Area, setSecondSelectedAdmin1Area] = useState(
       '',
     );
