@@ -5,7 +5,7 @@ import {
   MenuItem,
   TextField,
 } from '@material-ui/core';
-import React, { memo, useCallback, useState, useMemo } from 'react';
+import React, { memo, useCallback, useMemo } from 'react';
 import { PanelSize } from 'config/types';
 import {
   getOrderedAreas,
@@ -51,12 +51,18 @@ const useStyles = makeStyles(() =>
 
 const LocationSelector = memo(
   ({
+    admin0Key,
+    admin1Key,
+    admin2Key,
     boundaryLayer,
     country,
     countryAdmin0Id,
     data,
     getProperties,
     multiCountry,
+    setAdmin0Key,
+    setAdmin1Key,
+    setAdmin2Key,
     setAdminLevel,
     setAdminProperties,
     setSelectedAdmin1Area,
@@ -64,10 +70,6 @@ const LocationSelector = memo(
   }: LocationSelectorProps) => {
     const styles = useStyles();
     const { t, i18n: i18nLocale } = useSafeTranslation();
-
-    const [admin0Key, setAdmin0Key] = useState('');
-    const [admin1Key, setAdmin1Key] = useState('');
-    const [admin2Key, setAdmin2Key] = useState('');
 
     const orderedAdmin0areas = useMemo(() => {
       if (!multiCountry) {
@@ -105,7 +107,7 @@ const LocationSelector = memo(
       return selectedAdmin1Area?.children.find(childArea => {
         return admin2Key === childArea.key;
       });
-    }, [selectedAdmin1Area, admin2Key]);
+    }, [admin2Key, selectedAdmin1Area]);
 
     const findArea = (
       orderedAdminAreas: OrderedArea[],
@@ -169,6 +171,9 @@ const LocationSelector = memo(
         data,
         getProperties,
         orderedAdmin0areas,
+        setAdmin0Key,
+        setAdmin1Key,
+        setAdmin2Key,
         setAdminLevel,
         setAdminProperties,
       ],
@@ -207,6 +212,8 @@ const LocationSelector = memo(
         getProperties,
         multiCountry,
         orderedAdmin1areas,
+        setAdmin1Key,
+        setAdmin2Key,
         setAdminLevel,
         setAdminProperties,
         setSelectedAdmin1Area,
@@ -242,6 +249,7 @@ const LocationSelector = memo(
       [
         selectedAdmin1Area,
         data,
+        setAdmin2Key,
         setSelectedAdmin2Area,
         setAdminLevel,
         setAdminProperties,
@@ -324,12 +332,18 @@ const LocationSelector = memo(
 
 interface LocationSelectorProps {
   // FIXME: proper types
+  admin0Key: string;
+  admin1Key: string;
+  admin2Key: string;
   boundaryLayer: any;
   country: any;
   countryAdmin0Id: any;
   data: BoundaryLayerData | undefined;
   getProperties: any;
   multiCountry: boolean;
+  setAdmin0Key: any;
+  setAdmin1Key: any;
+  setAdmin2Key: any;
   setAdminLevel: any;
   setAdminProperties: any;
   setSelectedAdmin1Area: any;

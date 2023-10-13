@@ -271,11 +271,20 @@ const ChartsPanel = memo(
     const { data } = boundaryLayerData || {};
     const classes = useStyles();
     const [compareLocations, setCompareLocations] = useState(false);
+
+    // first location state
+    const [admin0Key, setAdmin0Key] = useState('');
+    const [admin1Key, setAdmin1Key] = useState('');
+    const [admin2Key, setAdmin2Key] = useState('');
     const [selectedAdmin1Area, setSelectedAdmin1Area] = useState('');
     const [selectedAdmin2Area, setSelectedAdmin2Area] = useState('');
     const [adminLevel, setAdminLevel] = useState<0 | 1 | 2>(
       countryAdmin0Id ? 0 : 1,
     );
+    // second (compared) location state
+    const [secondAdmin0Key, setSecondAdmin0Key] = useState('');
+    const [secondAdmin1Key, setSecondAdmin1Key] = useState('');
+    const [secondAdmin2Key, setSecondAdmin2Key] = useState('');
     const [secondSelectedAdmin1Area, setSecondSelectedAdmin1Area] = useState(
       '',
     );
@@ -293,7 +302,7 @@ const ChartsPanel = memo(
       new Date().getTime(),
     );
     const [adminProperties, setAdminProperties] = useState<GeoJsonProperties>();
-    const [SecondAdminProperties, setSecondAdminProperties] = useState<
+    const [secondAdminProperties, setSecondAdminProperties] = useState<
       GeoJsonProperties
     >();
     const dataForCsv = useRef<{ [key: string]: any[] }>({});
@@ -358,10 +367,10 @@ const ChartsPanel = memo(
     }, [adminProperties, countryAdmin0Id, data]);
 
     useEffect(() => {
-      if (!SecondAdminProperties && countryAdmin0Id && data) {
+      if (!secondAdminProperties && countryAdmin0Id && data) {
         setSecondAdminProperties(getProperties(data));
       }
-    }, [SecondAdminProperties, countryAdmin0Id, data]);
+    }, [secondAdminProperties, countryAdmin0Id, data]);
 
     useEffect(() => {
       if (adminProperties && selectedDate && selectedLayerTitles.length >= 1) {
@@ -447,7 +456,7 @@ const ChartsPanel = memo(
               >
                 <ChartSection
                   chartLayer={layer}
-                  adminProperties={SecondAdminProperties as GeoJsonProperties}
+                  adminProperties={secondAdminProperties as GeoJsonProperties}
                   adminLevel={secondAdminLevel}
                   date={selectedDate as number}
                   dataForCsv={dataForCsv}
@@ -461,7 +470,7 @@ const ChartsPanel = memo(
 
       const titles = [
         locationString(adminProperties, adminLevel),
-        locationString(SecondAdminProperties, secondAdminLevel),
+        locationString(secondAdminProperties, secondAdminLevel),
       ].map(title => (
         <Box
           key={title}
@@ -477,7 +486,7 @@ const ChartsPanel = memo(
       ));
       return [...titles, ...zipped];
     }, [
-      SecondAdminProperties,
+      secondAdminProperties,
       adminLevel,
       adminProperties,
       classes.textLabel,
@@ -510,11 +519,13 @@ const ChartsPanel = memo(
       setSelectedDate(new Date().getTime());
       // reset the admin level
       setAdminLevel(countryAdmin0Id ? 0 : 1);
-      // reset admin 1 title
-      // FIXME: make clear button work
-      // setAdmin1Key('');
-      // reset the admin 2 title
-      // setAdmin2Key('');
+      setSecondAdminLevel(countryAdmin0Id ? 0 : 1);
+      // reset admin 1 titles
+      setAdmin1Key('');
+      setSecondAdmin1Key('');
+      // reset the admin 2 titles
+      setAdmin2Key('');
+      setSecondAdmin2Key('');
     }, [countryAdmin0Id]);
 
     const handleOnChangeCompareLocationsSwitch = useCallback(() => {
@@ -570,12 +581,18 @@ const ChartsPanel = memo(
           />
 
           <LocationSelector
+            admin0Key={admin0Key}
+            admin1Key={admin1Key}
+            admin2Key={admin2Key}
             boundaryLayer={boundaryLayer}
             country={country}
             countryAdmin0Id={countryAdmin0Id}
             data={data}
             getProperties={getProperties}
             multiCountry={multiCountry}
+            setAdmin0Key={setAdmin0Key}
+            setAdmin1Key={setAdmin1Key}
+            setAdmin2Key={setAdmin2Key}
             setAdminLevel={setAdminLevel}
             setAdminProperties={setAdminProperties}
             setSelectedAdmin1Area={setSelectedAdmin1Area}
@@ -583,12 +600,18 @@ const ChartsPanel = memo(
           />
           {compareLocations && (
             <LocationSelector
+              admin0Key={secondAdmin0Key}
+              admin1Key={secondAdmin1Key}
+              admin2Key={secondAdmin2Key}
               boundaryLayer={boundaryLayer}
               country={country}
               countryAdmin0Id={countryAdmin0Id}
               data={data}
               getProperties={getProperties}
               multiCountry={multiCountry}
+              setAdmin0Key={setSecondAdmin0Key}
+              setAdmin1Key={setSecondAdmin1Key}
+              setAdmin2Key={setSecondAdmin2Key}
               setAdminLevel={setSecondAdminLevel}
               setAdminProperties={setSecondAdminProperties}
               setSelectedAdmin1Area={setSecondSelectedAdmin1Area}
