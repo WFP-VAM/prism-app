@@ -33,14 +33,11 @@ services:
     build:
       context: ..
       dockerfile: ./frontend/Dockerfile
-    command: yarn start
+    entrypoint: yarn start
     environment:
       - REACT_APP_COUNTRY=cambodia
     ports:
       - "3000:3000"
-    # the next 2 options keep the container running
-    stdin_open: true
-    tty: true
     volumes:
       - ../common:/common
       - ../frontend:/frontend
