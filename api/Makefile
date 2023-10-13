@@ -22,7 +22,7 @@ test-services:
 	docker compose -f docker-compose.yml -f docker-compose.test.yml up -d
 
 api-test: test-services
-	docker compose -f docker-compose.yml -f docker-compose.test.yml run api bash -c "../wait-for-it.sh frontend:3000"
+	docker compose -f docker-compose.yml -f docker-compose.test.yml run api bash -c "../wait-for-it.sh frontend:3000 -t 60"
 	docker compose -f docker-compose.yml -f docker-compose.test.yml logs frontend
 	docker compose -f docker-compose.yml -f docker-compose.test.yml run api bash -c "pytest -s tests"
 
