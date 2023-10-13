@@ -14,6 +14,7 @@ COPY frontend/package.json ./
 COPY frontend/yarn.lock ./
 
 RUN yarn install --frozen-lockfile && yarn setup:common
+RUN yarn global add cross-env
 
 # copy the rest of the source code
 COPY ./frontend .
