@@ -42,6 +42,8 @@ services:
     volumes:
       - ../common:/common
       - ../frontend:/frontend
+      # do not override node_modules as libs are already installed in the image
+      - /frontend/node_modules
 
 networks:
   testnet:
