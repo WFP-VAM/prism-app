@@ -1,0 +1,57 @@
+# for comment on PR, follow instruction for: https://github.com/marketplace/actions/sticky-pull-request-comment
+name: PRISM CI - API
+on:
+  # Run on all pull requests and on pushes to master.
+  pull_request:
+  push:
+    branches:
+      - master
+
+jobs:
+  api_lint:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.10"]
+      # run the matrix jobs one after the other, so they can benefit from caching
+      max-parallel: 1
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Poetry
+        uses: snok/install-poetry@v1
+        with:
+          # Version of Poetry to use
+          version: 1.6.1
+          virtualenvs-create: true
+          virtualenvs-in-project: true
+      - name: Install dependencies
+        run: |
+          cd api
+          poetry install
+        if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
+      - name: Check formatting with black and isort
+        run: |
+          cd api
+          poetry run black --check .
+          poetry run isort --check .
+
+  api_build:
+    name: build and test api
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Install Docker Compose
+        run: |
+          DOCKER_CONFIG=${DOCKER_CONFIG:-$HOME/.docker}
+          mkdir -p $DOCKER_CONFIG/cli-plugins
+          curl -SL https://github.com/docker/compose/releases/download/v2.20.3/docker-compose-`uname -s`-`uname -m` -o $DOCKER_CONFIG/cli-plugins/docker-compose
+          chmod +x $DOCKER_CONFIG/cli-plugins/docker-compose
+          docker compose version
+      - name: Build containers
+        run: cd api && make build
+      - name: Run tests
+        run: cd api && make api-test
+      - name: DEBUG check containers are still running
+        run: docker ps -a
