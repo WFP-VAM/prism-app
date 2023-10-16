@@ -55,24 +55,25 @@ async def download_report(
         page.set_default_timeout(PAGE_TIMEOUT)
         await page.goto(url)
 
-        # Wait for page to be loaded
-        await page.wait_for_selector(LAYER_ACCORDION_SELECTOR, state="visible")
+        # make sure we're on the right tab
+        await page.get_by_role("tab", name="Layers").click()
 
-        # Toggle level one dropdowns
-        await toggle_every_visible_dropdown(page)
+        # expand the first main and first sub dropdowns
+        await page.get_by_role("button", name="Flood 2").click()
 
-        # Toggle level two dropdowns
-        await toggle_every_visible_dropdown(page)
+        await page.get_by_role("button", name="Flood Monitoring 1").click()
 
         # Enable flood extent buttons
         flood_extent_checkbox = page.get_by_role("checkbox", name="Flood extent")
-        await expect(flood_extent_checkbox).to_be_visible()
-        await expect(flood_extent_checkbox).not_to_be_checked()
-        await expect(
-            page.get_by_role("button", name="Exposure Analysis")
-        ).to_be_disabled()
+        await expect(flood_extent_checkbox).to_be_visible(timeout=20_000)
 
-        flood_extent_checkbox.click()
+        # the switch status is flaky (sometimes checked, sometimes not)
+        # so make sure we only check it if needed. This might mean there
+        # is a bug in the frontend code?
+        fec_checked = await flood_extent_checkbox.is_checked()
+        if not fec_checked:
+            flood_extent_checkbox.click()
+
         await expect(flood_extent_checkbox).to_be_checked(timeout=10_000)
         await expect(
             page.get_by_role("button", name="Exposure Analysis")
