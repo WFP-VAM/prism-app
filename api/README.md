@@ -122,6 +122,22 @@ To run linting and tests, run:
 make test
 ```
 
+#### Debugging playwright tests
+
+To run python tests outside of docker, run "make localtests". This will set them up to run outside docker, so that
+playwright can run in debug mode, with a visible browser.
+
+- start the frontend in docker with `make test-services`.
+- in a shell (tested in bash only):
+
+```bash
+cd api/app
+mv tests/conftest.py-template tests/conftest.py
+KOBO_USERNAME=ovio KOBO_PW=pwd PWDEBUG=1 poetry run pytest -s tests -k test_download_report
+```
+
+This should open playwright in debug mode, with a browser window and a debugging one. More info: https://playwright.dev/python/docs/debug
+
 ## Deployments
 
 We are using [docs.traefik.io](https://docs.traefik.io/)
