@@ -26,7 +26,7 @@ api-test: test-services
 	docker ps -a  # check that the frontend is still running
 	docker compose -f docker-compose.yml -f docker-compose.test.yml run api bash -c "pytest -s tests" || true
 	docker ps -a
-	docker logs frontend
+	docker logs api-frontend
 
 api-add-users:
 	docker compose -f docker-compose.yml -f docker-compose.develop.yml run api bash -c "python scripts/add_users.py"
