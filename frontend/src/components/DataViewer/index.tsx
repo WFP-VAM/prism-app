@@ -37,7 +37,7 @@ const isAdminBoundary = (
 function DataViewer({ classes }: DatasetProps) {
   const dispatch = useDispatch();
   const isDatasetLoading = useSelector(loadingDatasetSelector);
-  const { startDate: selectedDate } = useSelector(dateRangeSelector);
+  const { startDate, endDate } = useSelector(dateRangeSelector);
   const { t } = useSafeTranslation();
 
   const {
@@ -48,7 +48,7 @@ function DataViewer({ classes }: DatasetProps) {
   } = useSelector(datasetSelector);
 
   useEffect(() => {
-    if (!params || !selectedDate) {
+    if (!params || !startDate || !endDate) {
       return;
     }
 
@@ -62,19 +62,24 @@ function DataViewer({ classes }: DatasetProps) {
         url: params.url,
         serverLayerName: params.serverLayerName,
         datasetFields: params.datasetFields,
-        selectedDate,
+        // FIXME: replace selectedDate by correct var
+        startDate,
+        endDate,
       };
       dispatch(loadDataset(requestParams));
     } else {
       const requestParams: DatasetRequestParams = {
-        date: selectedDate,
+        startDate,
+        endDate,
+        // FIXME
+        date: startDate,
         externalId: params.externalId,
         triggerLevels: params.triggerLevels,
         baseUrl: params.baseUrl,
       };
       dispatch(loadDataset(requestParams));
     }
-  }, [params, dispatch, selectedDate]);
+  }, [params, dispatch, startDate, endDate]);
 
   if (!params) {
     return null;

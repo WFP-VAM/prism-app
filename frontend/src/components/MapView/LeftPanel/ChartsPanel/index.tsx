@@ -7,7 +7,6 @@ import {
   FormControlLabel,
   FormGroup,
   Input,
-  InputAdornment,
   InputLabel,
   ListItemText,
   makeStyles,
@@ -17,7 +16,6 @@ import {
   Switch,
   Typography,
 } from '@material-ui/core';
-import { DateRangeRounded } from '@material-ui/icons';
 import { GeoJsonProperties } from 'geojson';
 import { groupBy, mapKeys, snakeCase } from 'lodash';
 import React, {
@@ -29,7 +27,6 @@ import React, {
   useRef,
   useState,
 } from 'react';
-import DatePicker from 'react-datepicker';
 import { useSelector } from 'react-redux';
 import { TFunctionKeys } from 'i18next';
 import { appConfig } from 'config';
@@ -43,13 +40,10 @@ import { leftPanelTabValueSelector } from 'context/leftPanelStateSlice';
 import { layerDataSelector } from 'context/mapStateSlice/selectors';
 import { useSafeTranslation } from 'i18n';
 import { castObjectsArrayToCsv } from 'utils/csv-utils';
-// import {
-//   // getOrderedAreas,
-//   // OrderedArea,
-// } from 'components/MapView/Layers/BoundaryDropdown';
 import { downloadToFile } from 'components/MapView/utils';
 import ChartSection from './ChartSection';
 import LocationSelector from './LocationSelector';
+import TimePeriodSelector from './TimePeriodSelector';
 
 // Load boundary layer for Admin2
 // WARNING - Make sure the dataviz_ids are available in the boundary file for Admin2
@@ -102,19 +96,6 @@ const useStyles = makeStyles(() =>
     },
     textLabel: {
       color: 'black',
-    },
-    datePickerContainer: {
-      marginTop: 45,
-      width: 'auto',
-      color: 'black',
-      display: 'flex',
-      flexDirection: 'row',
-      alignItems: 'center',
-      borderBottom: ' 1px solid #858585',
-      minWidth: 300,
-    },
-    calendarPopper: {
-      zIndex: 3,
     },
     chartsPanelCharts: {
       overflowY: 'auto',
@@ -199,6 +180,7 @@ export const downloadCsv = (
   filename: string,
 ) => {
   return () => {
+    // FIXME: make this work for multi-location/periods
     const dateColumn = 'Date';
     const getKeyName = (key: string, chartName: string) =>
       key.endsWith('_avg')
@@ -298,7 +280,12 @@ const ChartsPanel = memo(
     const [selectedLayerTitles, setSelectedLayerTitles] = useState<
       string[] | TFunctionKeys[]
     >([]);
-    const [selectedDate, setSelectedDate] = useState<number | null>(
+
+    const oneYearInMs = 365 * 24 * 60 * 60 * 1000;
+    const [startDate1, setStartDate1] = useState<number | null>(
+      new Date().getTime() - oneYearInMs,
+    );
+    const [endDate1, setEndDate1] = useState<number | null>(
       new Date().getTime(),
     );
     const [adminProperties, setAdminProperties] = useState<GeoJsonProperties>();
@@ -354,11 +341,11 @@ const ChartsPanel = memo(
     const showChartsPanel = useMemo(() => {
       return (
         adminProperties &&
-        selectedDate &&
+        startDate1 &&
         tabIndex === tabValue &&
         selectedLayerTitles.length >= 1
       );
-    }, [adminProperties, selectedDate, selectedLayerTitles.length, tabValue]);
+    }, [adminProperties, startDate1, selectedLayerTitles.length, tabValue]);
 
     useEffect(() => {
       if (!adminProperties && countryAdmin0Id && data) {
@@ -373,7 +360,7 @@ const ChartsPanel = memo(
     }, [secondAdminProperties, countryAdmin0Id, data]);
 
     useEffect(() => {
-      if (adminProperties && selectedDate && selectedLayerTitles.length >= 1) {
+      if (adminProperties && startDate1 && selectedLayerTitles.length >= 1) {
         setPanelSize(PanelSize.xlarge);
       } else {
         setPanelSize(PanelSize.medium);
@@ -381,7 +368,7 @@ const ChartsPanel = memo(
     }, [
       setPanelSize,
       adminProperties,
-      selectedDate,
+      startDate1,
       selectedLayerTitles.length,
       countryAdmin0Id,
     ]);
@@ -392,7 +379,8 @@ const ChartsPanel = memo(
       // here we mount a new component if one chart
       if (
         adminProperties &&
-        selectedDate &&
+        startDate1 &&
+        endDate1 &&
         selectedLayerTitles.length === 1 &&
         !compareLocations
       ) {
@@ -410,7 +398,8 @@ const ChartsPanel = memo(
               chartLayer={chartLayer as WMSLayerProps}
               adminProperties={adminProperties || {}}
               adminLevel={adminLevel}
-              date={selectedDate}
+              startDate={startDate1}
+              endDate={endDate1}
               dataForCsv={dataForCsv}
             />
           </Box>
@@ -434,7 +423,8 @@ const ChartsPanel = memo(
                     chartLayer={layer}
                     adminProperties={adminProperties as GeoJsonProperties}
                     adminLevel={adminLevel}
-                    date={selectedDate as number}
+                    startDate={startDate1 as number}
+                    endDate={endDate1 as number}
                     dataForCsv={dataForCsv}
                   />
                 </Box>
@@ -458,7 +448,8 @@ const ChartsPanel = memo(
                   chartLayer={layer}
                   adminProperties={secondAdminProperties as GeoJsonProperties}
                   adminLevel={secondAdminLevel}
-                  date={selectedDate as number}
+                  startDate={startDate1 as number}
+                  endDate={endDate1 as number}
                   dataForCsv={dataForCsv}
                 />
               </Box>
@@ -486,14 +477,15 @@ const ChartsPanel = memo(
       ));
       return [...titles, ...zipped];
     }, [
-      secondAdminProperties,
-      adminLevel,
       adminProperties,
-      classes.textLabel,
-      compareLocations,
-      secondAdminLevel,
-      selectedDate,
+      startDate1,
       selectedLayerTitles,
+      compareLocations,
+      adminLevel,
+      secondAdminProperties,
+      secondAdminLevel,
+      endDate1,
+      classes.textLabel,
     ]);
 
     useEffect(() => {
@@ -516,7 +508,8 @@ const ChartsPanel = memo(
     const handleClearAllSelectedCharts = useCallback(() => {
       setSelectedLayerTitles([]);
       // Clear the date
-      setSelectedDate(new Date().getTime());
+      setStartDate1(new Date().getTime());
+      setEndDate1(new Date().getTime());
       // reset the admin level
       setAdminLevel(countryAdmin0Id ? 0 : 1);
       setSecondAdminLevel(countryAdmin0Id ? 0 : 1);
@@ -620,35 +613,13 @@ const ChartsPanel = memo(
           )}
         </FormGroup>
 
-        <Box className={classes.datePickerContainer}>
-          <Typography className={classes.textLabel} variant="body2">
-            {`${t('Date')}: `}
-          </Typography>
-          <DatePicker
-            locale={t('date_locale')}
-            dateFormat="PP"
-            selected={selectedDate ? new Date(selectedDate) : null}
-            onChange={date => setSelectedDate(date?.getTime() || selectedDate)}
-            maxDate={new Date()}
-            todayButton={t('Today')}
-            peekNextMonth
-            showMonthDropdown
-            showYearDropdown
-            dropdownMode="select"
-            customInput={
-              <Input
-                className={classes.textLabel}
-                disableUnderline
-                endAdornment={
-                  <InputAdornment position="end">
-                    <DateRangeRounded />
-                  </InputAdornment>
-                }
-              />
-            }
-            popperClassName={classes.calendarPopper}
-          />
-        </Box>
+        <TimePeriodSelector
+          startDate={startDate1}
+          setStartDate={setStartDate1}
+          endDate={endDate1}
+          setEndDate={setEndDate1}
+        />
+
         <FormControl className={classes.layerFormControl}>
           <InputLabel id="chart-layers-mutiple-checkbox-label">
             {t('Select Charts')}
@@ -683,7 +654,7 @@ const ChartsPanel = memo(
           disabled={
             !(
               adminProperties &&
-              selectedDate &&
+              startDate1 &&
               tabIndex === tabValue &&
               selectedLayerTitles.length >= 1
             )
@@ -697,7 +668,7 @@ const ChartsPanel = memo(
           disabled={
             !(
               adminProperties &&
-              selectedDate &&
+              startDate1 &&
               tabIndex === tabValue &&
               selectedLayerTitles.length >= 1
             )
