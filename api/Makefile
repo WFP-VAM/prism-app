@@ -23,10 +23,9 @@ test-services:
 
 api-test: test-services
 	docker compose -f docker-compose.yml -f docker-compose.test.yml run api bash -c "../wait-for-it.sh frontend:3000 -t 60"
-	docker ps -a  # check that the frontend is still running
 	docker compose -f docker-compose.yml -f docker-compose.test.yml run api bash -c "pytest -s tests" || true
-	docker ps -a
-	docker logs api-frontend
+	docker ps -a # check that the frontend is still running
+	docker compose -f docker-compose.yml -f docker-compose.test.yml logs frontend
 
 api-add-users:
 	docker compose -f docker-compose.yml -f docker-compose.develop.yml run api bash -c "python scripts/add_users.py"
