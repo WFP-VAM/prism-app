@@ -48,7 +48,7 @@ def migrate_test_db():
 
 
 @pytest.fixture(scope="session", autouse=True)
-def add_test_users(migrate_test_db): # noqa: F811
+def add_test_users(migrate_test_db):  # noqa: F811
     add_users()
 
 
