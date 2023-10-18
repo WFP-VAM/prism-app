@@ -106,13 +106,13 @@ Generate a geotiff for any wfp raster using the stac API and saves it in S3. It 
 To run the api locally, run:
 
 ```
-make api
+source set_envs.sh && make api
 ```
 
 To run flask api together with database within same network, run:
 
 ```
-docker-compose -f ./docker-compose.develop.yml -f ../alerting/docker-compose.yml up
+source set_envs.sh && docker-compose -f ./docker-compose.develop.yml -f ../alerting/docker-compose.yml up
 ```
 
 ### Tests
@@ -120,7 +120,7 @@ docker-compose -f ./docker-compose.develop.yml -f ../alerting/docker-compose.yml
 To run linting and tests, run:
 
 ```
-make test
+source set_envs.sh && make test
 ```
 
 ## Deployments
@@ -132,7 +132,7 @@ Specifically, update `info@ovio.org` with a domain admin email and `prism-api.ov
 To deploy, run:
 
 ```
-make deploy
+source set_envs.sh && make deploy
 ```
 
 There are a few known issues happening from time to time
