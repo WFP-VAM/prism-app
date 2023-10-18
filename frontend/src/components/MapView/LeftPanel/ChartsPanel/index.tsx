@@ -544,6 +544,7 @@ const ChartsPanel = memo(
       <Box className={classes.chartsPanelParams}>
         <FormGroup>
           <FormControlLabel
+            style={{ marginLeft: 20 }}
             control={
               <Switch
                 checked={compareLocations}

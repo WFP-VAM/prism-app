@@ -21,9 +21,6 @@ const useStyles = makeStyles(() =>
       width: 'auto',
       color: 'black',
       display: 'flex',
-      flexDirection: 'row',
-      alignItems: 'center',
-      borderBottom: ' 1px solid #858585',
       minWidth: 300,
     },
     textLabel: {
@@ -44,61 +41,65 @@ const TimePeriodSelector = memo(
 
     return (
       <Box className={styles.datePickerContainer}>
-        <Typography className={styles.textLabel} variant="body2">
-          {`${t('Start Date')}: `}
-        </Typography>
-        <DatePicker
-          locale={t('date_locale')}
-          dateFormat="PP"
-          selected={startDate ? new Date(startDate) : null}
-          onChange={date => setStartDate(date?.getTime() || startDate)}
-          maxDate={new Date()}
-          todayButton={t('Today')}
-          peekNextMonth
-          showMonthDropdown
-          showYearDropdown
-          dropdownMode="select"
-          customInput={
-            <Input
-              className={styles.textLabel}
-              disableUnderline
-              endAdornment={
-                <InputAdornment position="end">
-                  <DateRangeRounded />
-                </InputAdornment>
-              }
-            />
-          }
-          popperClassName={styles.calendarPopper}
-        />
+        <Box p={2} flexGrow={1} style={{ borderBottom: '1px solid #858585' }}>
+          <Typography className={styles.textLabel} variant="body2">
+            {`${t('Start Date')}: `}
+          </Typography>
+          <DatePicker
+            locale={t('date_locale')}
+            dateFormat="PP"
+            selected={startDate ? new Date(startDate) : null}
+            onChange={date => setStartDate(date?.getTime() || startDate)}
+            maxDate={new Date()}
+            todayButton={t('Today')}
+            peekNextMonth
+            showMonthDropdown
+            showYearDropdown
+            dropdownMode="select"
+            customInput={
+              <Input
+                className={styles.textLabel}
+                disableUnderline
+                endAdornment={
+                  <InputAdornment position="end">
+                    <DateRangeRounded />
+                  </InputAdornment>
+                }
+              />
+            }
+            popperClassName={styles.calendarPopper}
+          />
+        </Box>
 
-        <Typography className={styles.textLabel} variant="body2">
-          {`${t('End Date')}: `}
-        </Typography>
-        <DatePicker
-          locale={t('date_locale')}
-          dateFormat="PP"
-          selected={endDate ? new Date(endDate) : null}
-          onChange={date => setEndDate(date?.getTime() || endDate)}
-          maxDate={new Date()}
-          todayButton={t('Today')}
-          peekNextMonth
-          showMonthDropdown
-          showYearDropdown
-          dropdownMode="select"
-          customInput={
-            <Input
-              className={styles.textLabel}
-              disableUnderline
-              endAdornment={
-                <InputAdornment position="end">
-                  <DateRangeRounded />
-                </InputAdornment>
-              }
-            />
-          }
-          popperClassName={styles.calendarPopper}
-        />
+        <Box p={2} flexGrow={1} style={{ borderBottom: '1px solid #858585' }}>
+          <Typography className={styles.textLabel} variant="body2">
+            {`${t('End Date')}: `}
+          </Typography>
+          <DatePicker
+            locale={t('date_locale')}
+            dateFormat="PP"
+            selected={endDate ? new Date(endDate) : null}
+            onChange={date => setEndDate(date?.getTime() || endDate)}
+            maxDate={new Date()}
+            todayButton={t('Today')}
+            peekNextMonth
+            showMonthDropdown
+            showYearDropdown
+            dropdownMode="select"
+            customInput={
+              <Input
+                className={styles.textLabel}
+                disableUnderline
+                endAdornment={
+                  <InputAdornment position="end">
+                    <DateRangeRounded />
+                  </InputAdornment>
+                }
+              />
+            }
+            popperClassName={styles.calendarPopper}
+          />
+        </Box>
       </Box>
     );
   },
