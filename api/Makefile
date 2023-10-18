@@ -1,6 +1,6 @@
 build:
 	docker compose build api
-	docker compose -f docker-compose.yml -f docker-compose.test.yml build --no-cache frontend
+	docker compose -f docker-compose.yml -f docker-compose.test.yml build frontend
 
 api:
 	docker compose -f docker-compose.yml -f docker-compose.develop.yml up
