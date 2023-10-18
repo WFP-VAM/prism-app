@@ -53,5 +53,4 @@ jobs:
         run: cd api && make build
       - name: Run tests
         run: cd api && make api-test
-      - name: DEBUG check containers are still running
-        run: docker ps -a
+
