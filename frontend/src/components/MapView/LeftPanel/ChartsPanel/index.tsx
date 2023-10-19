@@ -75,6 +75,9 @@ const useStyles = makeStyles(() =>
       width: '100%',
       height: '100%',
     },
+    formGroup: {
+      marginBottom: 20,
+    },
     chartsPanelParams: {
       marginTop: 30,
       display: 'flex',
@@ -642,7 +645,7 @@ const ChartsPanel = memo(
 
     return (
       <Box className={classes.chartsPanelParams}>
-        <FormGroup>
+        <FormGroup className={classes.formGroup}>
           <FormControlLabel
             style={{ marginLeft: 20 }}
             control={
@@ -714,7 +717,7 @@ const ChartsPanel = memo(
           )}
         </FormGroup>
 
-        <FormGroup>
+        <FormGroup className={classes.formGroup}>
           <FormControlLabel
             style={{ marginLeft: 20 }}
             control={

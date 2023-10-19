@@ -18,6 +18,8 @@ const useStyles = makeStyles(() =>
     },
     datePickerContainer: {
       marginTop: 45,
+      paddingLeft: 20,
+      paddingRight: 20,
       width: 'auto',
       color: 'black',
       display: 'flex',
@@ -43,7 +45,7 @@ const TimePeriodSelector = memo(
       <Box className={styles.datePickerContainer}>
         <Box p={2} flexGrow={1} style={{ borderBottom: '1px solid #858585' }}>
           <Typography className={styles.textLabel} variant="body2">
-            {`${t('Start Date')}: `}
+            {`${t('Start')}: `}
           </Typography>
           <DatePicker
             locale={t('date_locale')}
@@ -73,7 +75,7 @@ const TimePeriodSelector = memo(
 
         <Box p={2} flexGrow={1} style={{ borderBottom: '1px solid #858585' }}>
           <Typography className={styles.textLabel} variant="body2">
-            {`${t('End Date')}: `}
+            {`${t('End')}: `}
           </Typography>
           <DatePicker
             locale={t('date_locale')}
