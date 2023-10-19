@@ -2,7 +2,7 @@ from unittest.mock import patch
 
 import pytest
 
-# import schemathesis
+import schemathesis
 from app.database.database import AlertsDataBase
 from app.main import app
 from app.scripts.add_users import add_users
@@ -52,17 +52,17 @@ def add_test_users(migrate_test_db):  # noqa: F811
     add_users()
 
 
-# schema = schemathesis.from_asgi("/openapi.json", app)
+schema = schemathesis.from_asgi("/openapi.json", app)
 
 # install all available compatibility fixups between schemathesis and fastapi
 # see https://schemathesis.readthedocs.io/en/stable/compatibility.html
-# schemathesis.fixups.install(["fast_api"])
+schemathesis.fixups.install(["fast_api"])
 
 client = TestClient(app)
 
 
 @pytest.mark.skip(reason="Slow: takes almost 10 minutes to complete")
-# @schema.parametrize(endpoint="^/stats")
+@schema.parametrize(endpoint="^/stats")
 @settings(max_examples=1)
 def test_stats_api(case):
     """
@@ -79,7 +79,7 @@ def test_stats_api(case):
 
 
 @pytest.mark.skip(reason="Slow: takes almost 10 minutes to complete")
-# @schema.parametrize(endpoint="^/alerts")
+@schema.parametrize(endpoint="^/alerts")
 @settings(max_examples=10)
 def test_alerts_api(case):
     """
