@@ -69,7 +69,7 @@ describe('downloadCsv', () => {
   });
 
   it('should call downloadToFile with the correct arguments when data is present', () => {
-    downloadCsv(dataForCsv, filename)();
+    downloadCsv([[dataForCsv, filename]])();
 
     expect(downloadToFile).toHaveBeenCalledWith(
       {
@@ -86,7 +86,7 @@ describe('downloadCsv', () => {
     const emptyData: MutableRefObject<{ [key: string]: any[] }> = {
       current: {},
     };
-    downloadCsv(emptyData, filename)();
+    downloadCsv([[emptyData, filename]])();
 
     expect(downloadToFile).not.toHaveBeenCalled();
   });
@@ -137,7 +137,7 @@ describe('downloadCsv', () => {
         ],
       },
     };
-    downloadCsv(missingDataForCsv, filename)();
+    downloadCsv([[missingDataForCsv, filename]])();
 
     expect(downloadToFile).toHaveBeenCalledWith(
       {
