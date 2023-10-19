@@ -314,7 +314,6 @@ const ChartsPanel = memo(
         selectedAdmin1Area ?? '',
         selectedAdmin2Area ?? '',
         ...selectedLayerTitles,
-        // FIXME: do something about these
         secondSelectedAdmin1Area ?? '',
         secondSelectedAdmin2Area ?? '',
       ]
@@ -337,15 +336,15 @@ const ChartsPanel = memo(
       [],
     );
 
-    const locationString = (admProperties: any, admLevel: number) => {
-      const a = admProperties;
+    const locationString = (
+      countryName: string,
+      adm1Name: string,
+      adm2Name: string,
+      admLevel: number,
+    ) => {
       const l = admLevel;
-      if (a === null || a === undefined) {
-        return '';
-      }
-      // FIXME: differs per country
-      return `${a.adm0_name}${l > 0 ? ` - ${a.adm1_name}` : ''}${
-        l > 1 ? ` - ${a.adm2_name}` : ''
+      return `${countryName}${l > 0 ? ` - ${adm1Name}` : ''}${
+        l > 1 ? ` - ${adm2Name}` : ''
       }`;
     };
 
@@ -474,6 +473,12 @@ const ChartsPanel = memo(
       const comparedAdminLevel = compareLocations
         ? secondAdminLevel
         : adminLevel;
+      const comparedAdmin1Area = compareLocations
+        ? secondSelectedAdmin1Area
+        : selectedAdmin1Area;
+      const comparedAdmin2Area = compareLocations
+        ? secondSelectedAdmin2Area
+        : selectedAdmin2Area;
       const comparedStartDate = comparePeriods ? startDate2 : startDate1;
       const comparedEndDate = comparePeriods ? endDate2 : endDate1;
 
@@ -509,9 +514,22 @@ const ChartsPanel = memo(
       if (compareLocations) {
         console.log('comparing locs', adminLevel);
         titleStrings = [
-          [locationString(adminProperties, adminLevel), 'main'],
           [
-            locationString(comparedAdminProperties, comparedAdminLevel),
+            locationString(
+              country,
+              selectedAdmin1Area,
+              selectedAdmin2Area,
+              adminLevel,
+            ),
+            'main',
+          ],
+          [
+            locationString(
+              country,
+              comparedAdmin1Area,
+              comparedAdmin2Area,
+              comparedAdminLevel,
+            ),
             'compared',
           ],
         ];
@@ -547,8 +565,13 @@ const ChartsPanel = memo(
       secondAdminProperties,
       secondAdminLevel,
       adminLevel,
+      secondSelectedAdmin1Area,
+      selectedAdmin1Area,
+      secondSelectedAdmin2Area,
+      selectedAdmin2Area,
       startDate2,
       endDate2,
+      country,
       timePeriodString,
       classes.textLabel,
     ]);
