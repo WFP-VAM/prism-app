@@ -1,6 +1,5 @@
 build:
-	docker compose build api
-	docker compose -f docker-compose.yml -f docker-compose.test.yml build frontend
+	docker compose -f docker-compose.yml -f docker-compose.test.yml build
 
 api:
 	docker compose -f docker-compose.yml -f docker-compose.develop.yml up
