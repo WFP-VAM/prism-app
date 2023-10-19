@@ -17,9 +17,7 @@ const useStyles = makeStyles(() =>
       zIndex: 3,
     },
     datePickerContainer: {
-      marginTop: 45,
-      paddingLeft: 20,
-      paddingRight: 20,
+      marginTop: 5,
       width: 'auto',
       color: 'black',
       display: 'flex',
@@ -27,6 +25,15 @@ const useStyles = makeStyles(() =>
     },
     textLabel: {
       color: 'black',
+    },
+    wrapper: {
+      marginTop: 20,
+      paddingLeft: 20,
+      paddingRight: 20,
+    },
+    wrapperLabel: {
+      color: 'black',
+      fontWeight: 'bold',
     },
   }),
 );
@@ -37,70 +44,78 @@ const TimePeriodSelector = memo(
     setStartDate,
     endDate,
     setEndDate,
+    title,
   }: TimePeriodSelectorProps) => {
     const styles = useStyles();
     const { t } = useSafeTranslation();
 
     return (
-      <Box className={styles.datePickerContainer}>
-        <Box p={2} flexGrow={1} style={{ borderBottom: '1px solid #858585' }}>
-          <Typography className={styles.textLabel} variant="body2">
-            {`${t('Start')}: `}
+      <Box className={styles.wrapper}>
+        {title && (
+          <Typography className={styles.wrapperLabel} variant="body2">
+            {title}
           </Typography>
-          <DatePicker
-            locale={t('date_locale')}
-            dateFormat="PP"
-            selected={startDate ? new Date(startDate) : null}
-            onChange={date => setStartDate(date?.getTime() || startDate)}
-            maxDate={new Date()}
-            todayButton={t('Today')}
-            peekNextMonth
-            showMonthDropdown
-            showYearDropdown
-            dropdownMode="select"
-            customInput={
-              <Input
-                className={styles.textLabel}
-                disableUnderline
-                endAdornment={
-                  <InputAdornment position="end">
-                    <DateRangeRounded />
-                  </InputAdornment>
-                }
-              />
-            }
-            popperClassName={styles.calendarPopper}
-          />
-        </Box>
+        )}
+        <Box className={styles.datePickerContainer}>
+          <Box p={2} flexGrow={1} style={{ borderBottom: '1px solid #858585' }}>
+            <Typography className={styles.textLabel} variant="body2">
+              {`${t('Start')}: `}
+            </Typography>
+            <DatePicker
+              locale={t('date_locale')}
+              dateFormat="PP"
+              selected={startDate ? new Date(startDate) : null}
+              onChange={date => setStartDate(date?.getTime() || startDate)}
+              maxDate={new Date()}
+              todayButton={t('Today')}
+              peekNextMonth
+              showMonthDropdown
+              showYearDropdown
+              dropdownMode="select"
+              customInput={
+                <Input
+                  className={styles.textLabel}
+                  disableUnderline
+                  endAdornment={
+                    <InputAdornment position="end">
+                      <DateRangeRounded />
+                    </InputAdornment>
+                  }
+                />
+              }
+              popperClassName={styles.calendarPopper}
+            />
+          </Box>
 
-        <Box p={2} flexGrow={1} style={{ borderBottom: '1px solid #858585' }}>
-          <Typography className={styles.textLabel} variant="body2">
-            {`${t('End')}: `}
-          </Typography>
-          <DatePicker
-            locale={t('date_locale')}
-            dateFormat="PP"
-            selected={endDate ? new Date(endDate) : null}
-            onChange={date => setEndDate(date?.getTime() || endDate)}
-            maxDate={new Date()}
-            todayButton={t('Today')}
-            peekNextMonth
-            showMonthDropdown
-            showYearDropdown
-            dropdownMode="select"
-            customInput={
-              <Input
-                className={styles.textLabel}
-                disableUnderline
-                endAdornment={
-                  <InputAdornment position="end">
-                    <DateRangeRounded />
-                  </InputAdornment>
-                }
-              />
-            }
-            popperClassName={styles.calendarPopper}
-          />
+          <Box p={2} flexGrow={1} style={{ borderBottom: '1px solid #858585' }}>
+            <Typography className={styles.textLabel} variant="body2">
+              {`${t('End')}: `}
+            </Typography>
+            <DatePicker
+              locale={t('date_locale')}
+              dateFormat="PP"
+              selected={endDate ? new Date(endDate) : null}
+              onChange={date => setEndDate(date?.getTime() || endDate)}
+              maxDate={new Date()}
+              todayButton={t('Today')}
+              peekNextMonth
+              showMonthDropdown
+              showYearDropdown
+              dropdownMode="select"
+              customInput={
+                <Input
+                  className={styles.textLabel}
+                  disableUnderline
+                  endAdornment={
+                    <InputAdornment position="end">
+                      <DateRangeRounded />
+                    </InputAdornment>
+                  }
+                />
+              }
+              popperClassName={styles.calendarPopper}
+            />
+          </Box>
         </Box>
       </Box>
     );
@@ -112,6 +127,7 @@ interface TimePeriodSelectorProps {
   setStartDate: any;
   endDate: number | null;
   setEndDate: any;
+  title: string | null;
 }
 
 export default TimePeriodSelector;

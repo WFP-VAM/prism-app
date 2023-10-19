@@ -4,9 +4,10 @@ import {
   makeStyles,
   MenuItem,
   TextField,
+  Typography,
 } from '@material-ui/core';
 import React, { memo, useCallback, useMemo } from 'react';
-import { PanelSize, BoundaryLayerProps } from 'config/types';
+import { BoundaryLayerProps, PanelSize } from 'config/types';
 import {
   getOrderedAreas,
   OrderedArea,
@@ -17,7 +18,7 @@ import { BoundaryLayerData } from 'context/layers/boundary';
 const useStyles = makeStyles(() =>
   createStyles({
     chartsPanelParams: {
-      marginTop: 30,
+      marginTop: 10,
       display: 'flex',
       flexDirection: 'column',
       alignItems: 'center',
@@ -28,7 +29,7 @@ const useStyles = makeStyles(() =>
       fontWeight: 'bold',
     },
     selectRoot: {
-      marginTop: 30,
+      marginBottom: 30,
       color: 'black',
       minWidth: '300px',
       maxWidth: '350px',
@@ -45,6 +46,14 @@ const useStyles = makeStyles(() =>
           borderColor: '#333333',
         },
       },
+    },
+    wrapper: {
+      marginLeft: 20,
+      marginTop: 20,
+    },
+    wrapperLabel: {
+      color: 'black',
+      fontWeight: 'bold',
     },
   }),
 );
@@ -67,6 +76,7 @@ const LocationSelector = memo(
     setAdminProperties,
     setSelectedAdmin1Area,
     setSelectedAdmin2Area,
+    title,
   }: LocationSelectorProps) => {
     const styles = useStyles();
     const { t, i18n: i18nLocale } = useSafeTranslation();
@@ -261,66 +271,73 @@ const LocationSelector = memo(
       ));
 
     return (
-      <Box className={styles.chartsPanelParams}>
-        <TextField
-          classes={{ root: styles.selectRoot }}
-          id="outlined-admin-1"
-          select
-          label={t('Country')}
-          value={selectedaAdmin0Area?.key ?? country}
-          SelectProps={{
-            renderValue: renderAdmin0Value,
-          }}
-          onChange={onChangeAdmin0Area}
-          variant="outlined"
-          disabled={!multiCountry}
-        >
-          <MenuItem key={country} value={country} disabled>
-            {country}
-          </MenuItem>
-          {renderMenuItemList(orderedAdmin0areas)}
-        </TextField>
-
-        <TextField
-          classes={{ root: styles.selectRoot }}
-          id="outlined-admin-1"
-          select
-          label={t('Admin 1')}
-          value={selectedAdmin1Area?.key ?? ''}
-          SelectProps={{
-            renderValue: renderAdmin1Value,
-          }}
-          onChange={onChangeAdmin1Area}
-          variant="outlined"
-        >
-          <MenuItem divider>
-            <Box className={styles.removeAdmin}> {t('Remove Admin 1')}</Box>
-          </MenuItem>
-          {renderMenuItemList(orderedAdmin1areas)}
-        </TextField>
-        {admin1Key && (
+      <Box className={styles.wrapper}>
+        {title && (
+          <Typography className={styles.wrapperLabel} variant="body2">
+            {title}
+          </Typography>
+        )}
+        <Box className={styles.chartsPanelParams}>
           <TextField
             classes={{ root: styles.selectRoot }}
-            id="outlined-admin-2"
+            id="outlined-admin-1"
             select
-            label={t('Admin 2')}
-            value={selectedAdmin2Area?.key ?? ''}
+            label={t('Country')}
+            value={selectedaAdmin0Area?.key ?? country}
             SelectProps={{
-              renderValue: renderAdmin2Value,
+              renderValue: renderAdmin0Value,
             }}
-            onChange={onChangeAdmin2Area}
+            onChange={onChangeAdmin0Area}
+            variant="outlined"
+            disabled={!multiCountry}
+          >
+            <MenuItem key={country} value={country} disabled>
+              {country}
+            </MenuItem>
+            {renderMenuItemList(orderedAdmin0areas)}
+          </TextField>
+
+          <TextField
+            classes={{ root: styles.selectRoot }}
+            id="outlined-admin-1"
+            select
+            label={t('Admin 1')}
+            value={selectedAdmin1Area?.key ?? ''}
+            SelectProps={{
+              renderValue: renderAdmin1Value,
+            }}
+            onChange={onChangeAdmin1Area}
             variant="outlined"
           >
             <MenuItem divider>
-              <Box className={styles.removeAdmin}> {t('Remove Admin 2')}</Box>
+              <Box className={styles.removeAdmin}> {t('Remove Admin 1')}</Box>
             </MenuItem>
-            {selectedAdmin1Area?.children.map(option => (
-              <MenuItem key={option.key} value={option.key}>
-                {option.label}
-              </MenuItem>
-            ))}
+            {renderMenuItemList(orderedAdmin1areas)}
           </TextField>
-        )}
+          {admin1Key && (
+            <TextField
+              classes={{ root: styles.selectRoot }}
+              id="outlined-admin-2"
+              select
+              label={t('Admin 2')}
+              value={selectedAdmin2Area?.key ?? ''}
+              SelectProps={{
+                renderValue: renderAdmin2Value,
+              }}
+              onChange={onChangeAdmin2Area}
+              variant="outlined"
+            >
+              <MenuItem divider>
+                <Box className={styles.removeAdmin}> {t('Remove Admin 2')}</Box>
+              </MenuItem>
+              {selectedAdmin1Area?.children.map(option => (
+                <MenuItem key={option.key} value={option.key}>
+                  {option.label}
+                </MenuItem>
+              ))}
+            </TextField>
+          )}
+        </Box>
       </Box>
     );
   },
@@ -343,6 +360,7 @@ interface LocationSelectorProps {
   setAdminProperties: any;
   setSelectedAdmin1Area: any;
   setSelectedAdmin2Area: any;
+  title: string | null;
 }
 
 export default LocationSelector;

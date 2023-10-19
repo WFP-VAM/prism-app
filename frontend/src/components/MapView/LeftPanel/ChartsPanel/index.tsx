@@ -77,6 +77,7 @@ const useStyles = makeStyles(() =>
     },
     formGroup: {
       marginBottom: 20,
+      marginLeft: 20,
     },
     chartsPanelParams: {
       marginTop: 30,
@@ -694,6 +695,7 @@ const ChartsPanel = memo(
             setAdminProperties={setAdminProperties}
             setSelectedAdmin1Area={setSelectedAdmin1Area}
             setSelectedAdmin2Area={setSelectedAdmin2Area}
+            title={compareLocations ? t('Location 1') : null}
           />
           {compareLocations && (
             <LocationSelector
@@ -713,13 +715,13 @@ const ChartsPanel = memo(
               setAdminProperties={setSecondAdminProperties}
               setSelectedAdmin1Area={setSecondSelectedAdmin1Area}
               setSelectedAdmin2Area={setSecondSelectedAdmin2Area}
+              title={compareLocations ? t('Location 2') : null}
             />
           )}
         </FormGroup>
 
         <FormGroup className={classes.formGroup}>
           <FormControlLabel
-            style={{ marginLeft: 20 }}
             control={
               <Switch
                 checked={comparePeriods}
@@ -753,6 +755,7 @@ const ChartsPanel = memo(
             setStartDate={setStartDate1}
             endDate={endDate1}
             setEndDate={setEndDate1}
+            title={comparePeriods ? t('Period 1') : null}
           />
           {comparePeriods && (
             <TimePeriodSelector
@@ -760,6 +763,7 @@ const ChartsPanel = memo(
               setStartDate={setStartDate2}
               endDate={endDate2}
               setEndDate={setEndDate2}
+              title={comparePeriods ? t('Period 2') : null}
             />
           )}
         </FormGroup>
