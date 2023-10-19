@@ -253,6 +253,7 @@ const ChartsPanel = memo(
     const { data } = boundaryLayerData || {};
     const classes = useStyles();
     const [compareLocations, setCompareLocations] = useState(false);
+    const [comparePeriods, setComparePeriods] = useState(false);
 
     // first location state
     const [admin0Key, setAdmin0Key] = useState<string>('');
@@ -281,12 +282,21 @@ const ChartsPanel = memo(
       string[] | TFunctionKeys[]
     >([]);
 
-    const oneYearInMs = 365 * 24 * 60 * 60 * 1000;
+    const oneDayInMs = 24 * 60 * 60 * 1000;
+    const oneYearInMs = 365 * oneDayInMs;
     const [startDate1, setStartDate1] = useState<number | null>(
       new Date().getTime() - oneYearInMs,
     );
     const [endDate1, setEndDate1] = useState<number | null>(
       new Date().getTime(),
+    );
+    // cheat here and shift compared dates by 1 day to avoid duplicate
+    // keys in title components
+    const [startDate2, setStartDate2] = useState<number | null>(
+      new Date().getTime() - oneYearInMs - oneDayInMs,
+    );
+    const [endDate2, setEndDate2] = useState<number | null>(
+      new Date().getTime() - oneDayInMs,
     );
     const [adminProperties, setAdminProperties] = useState<GeoJsonProperties>();
     const [secondAdminProperties, setSecondAdminProperties] = useState<
@@ -333,9 +343,31 @@ const ChartsPanel = memo(
       if (a === null || a === undefined) {
         return '';
       }
+      // FIXME: differs per country
       return `${a.adm0_name}${l > 0 ? ` - ${a.adm1_name}` : ''}${
         l > 1 ? ` - ${a.adm2_name}` : ''
       }`;
+    };
+
+    const timePeriodString = (
+      startDate: number | null,
+      endDate: number | null,
+    ) => {
+      if (startDate === null || endDate === null) {
+        return '';
+      }
+      const options = {
+        weekday: undefined,
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric',
+      };
+      const formatDate = (d: number) => {
+        const dd = new Date(d);
+        return dd.toLocaleDateString(t('date_locale'), options);
+      };
+
+      return `${formatDate(startDate)} - ${formatDate(endDate)}`;
     };
 
     const showChartsPanel = useMemo(() => {
@@ -369,6 +401,7 @@ const ChartsPanel = memo(
       setPanelSize,
       adminProperties,
       startDate1,
+      startDate2,
       selectedLayerTitles.length,
       countryAdmin0Id,
     ]);
@@ -382,8 +415,10 @@ const ChartsPanel = memo(
         startDate1 &&
         endDate1 &&
         selectedLayerTitles.length === 1 &&
-        !compareLocations
+        !compareLocations &&
+        !comparePeriods
       ) {
+        // show a single chart
         const chartLayer = chartLayers.find(layer =>
           selectedLayerTitles.includes(layer.title),
         );
@@ -405,6 +440,7 @@ const ChartsPanel = memo(
           </Box>
         );
       }
+      // show 2 or more charts (multi layer or comparisons)
       const mainChartList =
         selectedLayerTitles.length >= 1
           ? chartLayers
@@ -431,7 +467,17 @@ const ChartsPanel = memo(
               ))
           : [];
       // now add comparison charts
-      const comparisonChartList = compareLocations
+      const comparing = compareLocations || comparePeriods;
+      const comparedAdminProperties = compareLocations
+        ? secondAdminProperties
+        : adminProperties;
+      const comparedAdminLevel = compareLocations
+        ? secondAdminLevel
+        : adminLevel;
+      const comparedStartDate = comparePeriods ? startDate2 : startDate1;
+      const comparedEndDate = comparePeriods ? endDate2 : endDate1;
+
+      const comparisonChartList = comparing
         ? chartLayers
             .filter(layer => selectedLayerTitles.includes(layer.title))
             .map(layer => (
@@ -446,10 +492,10 @@ const ChartsPanel = memo(
               >
                 <ChartSection
                   chartLayer={layer}
-                  adminProperties={secondAdminProperties as GeoJsonProperties}
-                  adminLevel={secondAdminLevel}
-                  startDate={startDate1 as number}
-                  endDate={endDate1 as number}
+                  adminProperties={comparedAdminProperties as GeoJsonProperties}
+                  adminLevel={comparedAdminLevel}
+                  startDate={comparedStartDate as number}
+                  endDate={comparedEndDate as number}
                   dataForCsv={dataForCsv}
                 />
               </Box>
@@ -459,12 +505,27 @@ const ChartsPanel = memo(
         .map((chart, idx) => [chart, comparisonChartList[idx]])
         .flat();
 
-      const titles = [
-        locationString(adminProperties, adminLevel),
-        locationString(secondAdminProperties, secondAdminLevel),
-      ].map(title => (
+      let titleStrings: string[][] = [[]];
+      if (compareLocations) {
+        console.log('comparing locs', adminLevel);
+        titleStrings = [
+          [locationString(adminProperties, adminLevel), 'main'],
+          [
+            locationString(comparedAdminProperties, comparedAdminLevel),
+            'compared',
+          ],
+        ];
+      } else if (comparePeriods) {
+        titleStrings = [
+          [timePeriodString(startDate1, endDate1), 'main'],
+          [timePeriodString(startDate2, endDate2), 'compared'],
+        ];
+        console.log('comp time', startDate1, startDate2, titleStrings);
+      }
+
+      const titles = titleStrings.map(title => (
         <Box
-          key={title}
+          key={`${title[0]}${title[1]}`}
           style={{
             height: '30px',
             minWidth: '40%',
@@ -472,19 +533,23 @@ const ChartsPanel = memo(
             position: 'relative',
           }}
         >
-          <Typography className={classes.textLabel}>{title}</Typography>
+          <Typography className={classes.textLabel}>{title[0]}</Typography>
         </Box>
       ));
       return [...titles, ...zipped];
     }, [
       adminProperties,
       startDate1,
+      endDate1,
       selectedLayerTitles,
       compareLocations,
-      adminLevel,
+      comparePeriods,
       secondAdminProperties,
       secondAdminLevel,
-      endDate1,
+      adminLevel,
+      startDate2,
+      endDate2,
+      timePeriodString,
       classes.textLabel,
     ]);
 
@@ -508,8 +573,10 @@ const ChartsPanel = memo(
     const handleClearAllSelectedCharts = useCallback(() => {
       setSelectedLayerTitles([]);
       // Clear the date
-      setStartDate1(new Date().getTime());
+      setStartDate1(new Date().getTime() - oneYearInMs);
       setEndDate1(new Date().getTime());
+      setStartDate2(new Date().getTime() - oneYearInMs);
+      setEndDate2(new Date().getTime());
       // reset the admin level
       setAdminLevel(countryAdmin0Id ? 0 : 1);
       setSecondAdminLevel(countryAdmin0Id ? 0 : 1);
@@ -519,11 +586,21 @@ const ChartsPanel = memo(
       // reset the admin 2 titles
       setAdmin2Key('');
       setSecondAdmin2Key('');
-    }, [countryAdmin0Id]);
+    }, [countryAdmin0Id, oneYearInMs]);
 
     const handleOnChangeCompareLocationsSwitch = useCallback(() => {
+      if (comparePeriods) {
+        setComparePeriods(false);
+      }
       setCompareLocations(!compareLocations);
-    }, [compareLocations]);
+    }, [compareLocations, comparePeriods]);
+
+    const handleOnChangeComparePeriodsSwitch = useCallback(() => {
+      if (compareLocations) {
+        setCompareLocations(false);
+      }
+      setComparePeriods(!comparePeriods);
+    }, [compareLocations, comparePeriods]);
 
     const chartsSelectRenderValue = useCallback(
       selected => {
@@ -556,7 +633,7 @@ const ChartsPanel = memo(
                 }}
                 onChange={handleOnChangeCompareLocationsSwitch}
                 inputProps={{
-                  'aria-label': 'mylabel',
+                  'aria-label': 'Compare Locations',
                 }}
               />
             }
@@ -614,12 +691,52 @@ const ChartsPanel = memo(
           )}
         </FormGroup>
 
-        <TimePeriodSelector
-          startDate={startDate1}
-          setStartDate={setStartDate1}
-          endDate={endDate1}
-          setEndDate={setEndDate1}
-        />
+        <FormGroup>
+          <FormControlLabel
+            style={{ marginLeft: 20 }}
+            control={
+              <Switch
+                checked={comparePeriods}
+                size="small"
+                className={classes.switch}
+                classes={{
+                  switchBase: classes.switchBase,
+                  track: classes.switchTrack,
+                }}
+                onChange={handleOnChangeComparePeriodsSwitch}
+                inputProps={{
+                  'aria-label': 'Compare Periods',
+                }}
+              />
+            }
+            label={
+              <Typography
+                className={
+                  comparePeriods
+                    ? classes.switchTitle
+                    : classes.switchTitleUnchecked
+                }
+              >
+                {t('Compare Periods')}
+              </Typography>
+            }
+            checked={comparePeriods}
+          />
+          <TimePeriodSelector
+            startDate={startDate1}
+            setStartDate={setStartDate1}
+            endDate={endDate1}
+            setEndDate={setEndDate1}
+          />
+          {comparePeriods && (
+            <TimePeriodSelector
+              startDate={startDate2}
+              setStartDate={setStartDate2}
+              endDate={endDate2}
+              setEndDate={setEndDate2}
+            />
+          )}
+        </FormGroup>
 
         <FormControl className={classes.layerFormControl}>
           <InputLabel id="chart-layers-mutiple-checkbox-label">
