@@ -1,7 +1,6 @@
 from unittest.mock import patch
 
 import pytest
-
 import schemathesis
 from app.database.database import AlertsDataBase
 from app.main import app
