@@ -3,6 +3,7 @@ import base64
 import hashlib
 import logging
 import secrets
+from typing import Annotated
 
 from app.database.database import AuthDataBase
 from app.database.user_info_model import UserInfoModel
@@ -18,6 +19,11 @@ depends = Depends(security)
 auth_db = AuthDataBase()
 
 if not auth_db.active:
+    # in local development, this condition might be true
+    # in which case the openapi introspection can generate
+    # strange results in the openapi.json output.
+    # eg. /kobo/forms might require a body in a GET request
+    # which is invalid.
     depends = lambda *_: True
 
 
@@ -36,7 +42,9 @@ def verify_hash(password: str, saved_salt: str) -> bytes:
     return key
 
 
-def validate_user(credentials: HTTPBasicCredentials = depends) -> UserInfoModel:
+def validate_user(
+    credentials: Annotated[HTTPBasicCredentials, depends]
+) -> UserInfoModel:
     """Validate user info."""
     if not auth_db.active:
         return UserInfoModel(access={})

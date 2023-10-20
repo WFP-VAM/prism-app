@@ -1,9 +1,11 @@
+import json
 import os
 from typing import Final, Optional
 from urllib.parse import parse_qs, urlparse
 
+import pytest
 from app.caching import CACHE_DIRECTORY
-from playwright.async_api import async_playwright
+from playwright.async_api import async_playwright, expect
 
 # Html selectors
 LAYER_ACCORDION_SELECTOR: Final[
@@ -32,35 +34,64 @@ async def download_report(
     if os.path.exists(report_file_path):
         return report_file_path
 
+    async def mock_prism_api_stats_call(route):
+        with open("./tests/fixtures/prism_api_stats.json") as f:
+            j = json.load(f)
+        await route.fulfill(json=j)
+
     async with async_playwright() as p:
         browser = await p.chromium.launch()
         page = await browser.new_page()
 
+        # mock the api call to avoid network issues in CI
+        await page.route("https://prism-api.ovio.org/stats", mock_prism_api_stats_call)
+
         page.set_default_timeout(PAGE_TIMEOUT)
         await page.goto(url)
 
-        # Wait for page to be loaded
-        await page.wait_for_selector(LAYER_ACCORDION_SELECTOR, state="visible")
+        # make sure we're on the right tab
+        await page.get_by_role("tab", name="Layers").click()
 
-        # Toggle level one dropdowns
-        await toggle_every_visible_dropdown(page)
+        # expand the first main and first sub dropdowns
+        await page.get_by_role("button", name="Flood 2").click()
 
-        # Toggle level two dropdowns
-        await toggle_every_visible_dropdown(page)
+        await page.get_by_role("button", name="Flood Monitoring 1").click()
+
+        # Enable flood extent buttons
+        flood_extent_checkbox = page.get_by_role("checkbox", name="Flood extent")
+        await expect(flood_extent_checkbox).to_be_visible(timeout=20_000)
+
+        # the switch status is flaky (sometimes checked, sometimes not)
+        # so make sure we only check it if needed. This might mean there
+        # is a bug in the frontend code?
+        fec_checked = await flood_extent_checkbox.is_checked()
+        if not fec_checked:
+            flood_extent_checkbox.click()
+
+        await expect(flood_extent_checkbox).to_be_checked(timeout=10_000)
+        await expect(
+            page.get_by_role("button", name="Exposure Analysis")
+        ).not_to_be_disabled()
 
         # Click on exposure analysis toggle button
         await click_target_exposure_analysis(page, layerIdParam)
 
         # Wait for page to be loaded on exposure analysis
-        await page.wait_for_selector(CREATE_REPORT_BUTTON_SELECTOR, state="visible")
+        await page.wait_for_selector('div[id="full-width-tabpanel-2"]', state="visible")
 
-        # Change language if not english
+        await page.wait_for_selector(
+            'div[class="memo-analysisButtonContainer-140"]', state="visible"
+        )
+
+        await page.wait_for_selector(CREATE_REPORT_BUTTON_SELECTOR, state="attached")
+
+        # # Change language if not english
         await change_language_if_not_default(page, language)
-
-        # Click on the pdf-renderer preview report button
+        #
+        # # Click on the pdf-renderer preview report button
         await click_create_report_button(page)
-
-        # Wait for report to be created by pdf-renderer
+        #
+        # # Wait for report to be created by pdf-renderer
         await page.wait_for_selector(DOWNLOAD_BUTTON_SELECTOR)
 
         # Download file on disk
