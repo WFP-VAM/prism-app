@@ -22,7 +22,6 @@ from app.raster_utils import calculate_pixel_area, gdal_calc, reproj_match
 from app.timer import timed
 from app.validation import VALID_OPERATORS
 from fastapi import HTTPException
-from osgeo import gdal
 from rasterio.warp import Resampling
 from rasterstats import zonal_stats  # type: ignore
 from shapely.geometry import mapping, shape  # type: ignore
