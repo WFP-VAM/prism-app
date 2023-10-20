@@ -382,27 +382,6 @@ const ChartsPanel = memo(
       }`;
     };
 
-    const timePeriodString = (
-      startDate: number | null,
-      endDate: number | null,
-    ) => {
-      if (startDate === null || endDate === null) {
-        return '';
-      }
-      const options = {
-        weekday: undefined,
-        year: 'numeric',
-        month: 'short',
-        day: 'numeric',
-      };
-      const formatDate = (d: number) => {
-        const dd = new Date(d);
-        return dd.toLocaleDateString(t('date_locale'), options);
-      };
-
-      return `${formatDate(startDate)} - ${formatDate(endDate)}`;
-    };
-
     const showChartsPanel = useMemo(() => {
       return (
         adminProperties &&
@@ -544,36 +523,60 @@ const ChartsPanel = memo(
         .map((chart, idx) => [chart, comparisonChartList[idx]])
         .flat();
 
-      let titleStrings: string[][] = [[]];
-      if (compareLocations) {
-        titleStrings = [
-          [
-            locationString(
-              country,
-              selectedAdmin1Area,
-              selectedAdmin2Area,
-              adminLevel,
-            ),
-            'main',
-          ],
-          [
-            locationString(
-              country,
-              comparedAdmin1Area,
-              comparedAdmin2Area,
-              comparedAdminLevel,
-            ),
-            'compared',
-          ],
-        ];
-      } else if (comparePeriods) {
-        titleStrings = [
-          [timePeriodString(startDate1, endDate1), 'main'],
-          [timePeriodString(startDate2, endDate2), 'compared'],
-        ];
-      }
+      const timePeriodString = (
+        startDate: number | null,
+        endDate: number | null,
+      ) => {
+        if (startDate === null || endDate === null) {
+          return '';
+        }
+        const options = {
+          weekday: undefined,
+          year: 'numeric',
+          month: 'short',
+          day: 'numeric',
+        };
+        const formatDate = (d: number) => {
+          const dd = new Date(d);
+          return dd.toLocaleDateString(t('date_locale'), options);
+        };
 
-      const titles = titleStrings.map(title => (
+        return `${formatDate(startDate)} - ${formatDate(endDate)}`;
+      };
+
+      const titleStrings: () => string[][] = () => {
+        if (compareLocations) {
+          return [
+            [
+              locationString(
+                country,
+                selectedAdmin1Area,
+                selectedAdmin2Area,
+                adminLevel,
+              ),
+              'main',
+            ],
+            [
+              locationString(
+                country,
+                comparedAdmin1Area,
+                comparedAdmin2Area,
+                comparedAdminLevel,
+              ),
+              'compared',
+            ],
+          ];
+        }
+        if (comparePeriods) {
+          return [
+            [timePeriodString(startDate1, endDate1), 'main'],
+            [timePeriodString(startDate2, endDate2), 'compared'],
+          ];
+        }
+        return [];
+      };
+
+      const titles = titleStrings().map(title => (
         <Box
           key={`${title[0]}${title[1]}`}
           style={{
@@ -604,8 +607,8 @@ const ChartsPanel = memo(
       startDate2,
       endDate2,
       country,
-      timePeriodString,
       classes.textLabel,
+      t,
     ]);
 
     useEffect(() => {
