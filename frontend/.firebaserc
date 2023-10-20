@@ -10,6 +10,9 @@
         ],
         "prism-mng": [
           "prism-mng"
+        ],
+        "prism-khm": [
+          "prism-khm"
         ]
       }
     }
