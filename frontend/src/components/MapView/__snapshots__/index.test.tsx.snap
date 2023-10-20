@@ -23,7 +23,7 @@ exports[`renders as expected 1`] = `
             <mock-tabs
               aria-label="left panel tabs"
               classes="[object Object]"
-              value="1"
+              value="0"
             >
               <mock-tab
                 aria-controls="full-width-tabpanel-0"
@@ -55,7 +55,7 @@ exports[`renders as expected 1`] = `
             aria-labelledby="full-width-tab-0"
             id="full-width-tabpanel-0"
             role="tabpanel"
-            style="display: none; flex-grow: 1; overflow-x: auto;"
+            style="display: block; flex-grow: 1; order: -1; overflow-x: hidden;"
           >
             <div
               class="MuiBox-root MuiBox-root-17"
@@ -3483,413 +3483,8 @@ exports[`renders as expected 1`] = `
             aria-labelledby="full-width-tab-1"
             id="full-width-tabpanel-1"
             role="tabpanel"
-            style="display: block; flex-grow: 1; order: -1; overflow-x: hidden;"
-          >
-            <div
-              class="MuiBox-root MuiBox-root-98 makeStyles-chartsPanelParams-87"
-            >
-              <div
-                class="MuiFormGroup-root makeStyles-formGroup-86"
-              >
-                <label
-                  class="MuiFormControlLabel-root"
-                  style="margin-left: 20px;"
-                >
-                  <mock-switch
-                    checked="false"
-                    classes="[object Object]"
-                    classname="makeStyles-switch-93"
-                    inputprops="[object Object]"
-                    size="small"
-                  />
-                  <mock-typography
-                    classname="MuiFormControlLabel-label"
-                    component="span"
-                  >
-                    <mock-typography
-                      classname="makeStyles-switchTitleUnchecked-97"
-                    >
-                      Compare Locations
-                    </mock-typography>
-                  </mock-typography>
-                </label>
-                <div
-                  class="MuiBox-root MuiBox-root-104 makeStyles-wrapper-102"
-                >
-                  <div
-                    class="MuiBox-root MuiBox-root-105 makeStyles-chartsPanelParams-99"
-                  >
-                    <mock-textfield
-                      classes="[object Object]"
-                      disabled="true"
-                      id="outlined-admin-1"
-                      label="Country"
-                      select="true"
-                      selectprops="[object Object]"
-                      value="Mozambique"
-                      variant="outlined"
-                    >
-                      <mock-menuitem
-                        disabled="true"
-                        value="Mozambique"
-                      >
-                        Mozambique
-                      </mock-menuitem>
-                    </mock-textfield>
-                    <mock-textfield
-                      classes="[object Object]"
-                      id="outlined-admin-1"
-                      label="Admin 1"
-                      select="true"
-                      selectprops="[object Object]"
-                      value=""
-                      variant="outlined"
-                    >
-                      <mock-menuitem
-                        divider="true"
-                      >
-                        <div
-                          class="MuiBox-root MuiBox-root-106 makeStyles-removeAdmin-100"
-                        >
-                           
-                          Remove Admin 1
-                        </div>
-                      </mock-menuitem>
-                    </mock-textfield>
-                    
-                  </div>
-                </div>
-              </div>
-              <div
-                class="MuiFormGroup-root makeStyles-formGroup-86"
-              >
-                <label
-                  class="MuiFormControlLabel-root"
-                >
-                  <mock-switch
-                    checked="false"
-                    classes="[object Object]"
-                    classname="makeStyles-switch-93"
-                    inputprops="[object Object]"
-                    size="small"
-                  />
-                  <mock-typography
-                    classname="MuiFormControlLabel-label"
-                    component="span"
-                  >
-                    <mock-typography
-                      classname="makeStyles-switchTitleUnchecked-97"
-                    >
-                      Compare Periods
-                    </mock-typography>
-                  </mock-typography>
-                </label>
-                <div
-                  class="MuiBox-root MuiBox-root-112 makeStyles-wrapper-110"
-                >
-                  <div
-                    class="MuiBox-root MuiBox-root-113 makeStyles-datePickerContainer-108"
-                  >
-                    <div
-                      class="MuiBox-root MuiBox-root-114"
-                      style="border-bottom: 1px solid #858585;"
-                    >
-                      <mock-typography
-                        classname="makeStyles-textLabel-109"
-                        variant="body2"
-                      >
-                        Start: 
-                      </mock-typography>
-                      <div
-                        class="react-datepicker-wrapper"
-                      >
-                        <div
-                          class="react-datepicker__input-container"
-                        >
-                          <div
-                            class="MuiInputBase-root MuiInput-root makeStyles-textLabel-109 MuiInputBase-adornedEnd"
-                          >
-                            <input
-                              class="MuiInputBase-input MuiInput-input MuiInputBase-inputAdornedEnd"
-                              type="text"
-                              value="Oct 20, 2022"
-                            />
-                            <div
-                              class="MuiInputAdornment-root MuiInputAdornment-positionEnd"
-                            >
-                              <svg
-                                aria-hidden="true"
-                                class="MuiSvgIcon-root"
-                                focusable="false"
-                                viewBox="0 0 24 24"
-                              >
-                                <path
-                                  d="M19 4h-1V3c0-.55-.45-1-1-1s-1 .45-1 1v1H8V3c0-.55-.45-1-1-1s-1 .45-1 1v1H5c-1.11 0-1.99.9-1.99 2L3 20c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 15c0 .55-.45 1-1 1H6c-.55 0-1-.45-1-1V9h14v10zM7 11h2v2H7zm4 0h2v2h-2zm4 0h2v2h-2z"
-                                />
-                              </svg>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <div
-                      class="MuiBox-root MuiBox-root-115"
-                      style="border-bottom: 1px solid #858585;"
-                    >
-                      <mock-typography
-                        classname="makeStyles-textLabel-109"
-                        variant="body2"
-                      >
-                        End: 
-                      </mock-typography>
-                      <div
-                        class="react-datepicker-wrapper"
-                      >
-                        <div
-                          class="react-datepicker__input-container"
-                        >
-                          <div
-                            class="MuiInputBase-root MuiInput-root makeStyles-textLabel-109 MuiInputBase-adornedEnd"
-                          >
-                            <input
-                              class="MuiInputBase-input MuiInput-input MuiInputBase-inputAdornedEnd"
-                              type="text"
-                              value="Oct 20, 2023"
-                            />
-                            <div
-                              class="MuiInputAdornment-root MuiInputAdornment-positionEnd"
-                            >
-                              <svg
-                                aria-hidden="true"
-                                class="MuiSvgIcon-root"
-                                focusable="false"
-                                viewBox="0 0 24 24"
-                              >
-                                <path
-                                  d="M19 4h-1V3c0-.55-.45-1-1-1s-1 .45-1 1v1H8V3c0-.55-.45-1-1-1s-1 .45-1 1v1H5c-1.11 0-1.99.9-1.99 2L3 20c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 15c0 .55-.45 1-1 1H6c-.55 0-1-.45-1-1V9h14v10zM7 11h2v2H7zm4 0h2v2h-2zm4 0h2v2h-2z"
-                                />
-                              </svg>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div
-                class="MuiFormControl-root makeStyles-layerFormControl-88"
-              >
-                <label
-                  class="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated"
-                  data-shrink="false"
-                  id="chart-layers-mutiple-checkbox-label"
-                >
-                  Select Charts
-                </label>
-                <div
-                  class="MuiInputBase-root MuiInput-root MuiInput-underline MuiInputBase-formControl MuiInput-formControl"
-                >
-                  <div
-                    aria-haspopup="listbox"
-                    aria-labelledby="chart-layers-mutiple-checkbox-label chart-layers-mutiple-checkbox"
-                    class="MuiSelect-root MuiSelect-select MuiSelect-selectMenu MuiInputBase-input MuiInput-input"
-                    id="chart-layers-mutiple-checkbox"
-                    role="button"
-                    tabindex="0"
-                  >
-                    <span>
-                      ​
-                    </span>
-                  </div>
-                  <input
-                    aria-hidden="true"
-                    class="MuiSelect-nativeInput"
-                    tabindex="-1"
-                    value=""
-                  />
-                  <svg
-                    aria-hidden="true"
-                    class="MuiSvgIcon-root MuiSelect-icon"
-                    focusable="false"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      d="M7 10l5 5 5-5z"
-                    />
-                  </svg>
-                  <mock-menu
-                    anchorel="[object HTMLDivElement]"
-                    id="menu-"
-                    menulistprops="[object Object]"
-                    open="false"
-                    paperprops="[object Object]"
-                  >
-                    <mock-menuitem
-                      data-value="10-day rainfall estimate (mm)"
-                      role="option"
-                      selected="false"
-                    >
-                      <mock-checkbox
-                        checked="false"
-                        color="primary"
-                      />
-                      <mock-listitemtext
-                        classes="[object Object]"
-                        primary="10-day rainfall estimate (mm)"
-                      />
-                    </mock-menuitem>
-                    <mock-menuitem
-                      data-value="10-day rainfall anomaly"
-                      role="option"
-                      selected="false"
-                    >
-                      <mock-checkbox
-                        checked="false"
-                        color="primary"
-                      />
-                      <mock-listitemtext
-                        classes="[object Object]"
-                        primary="10-day rainfall anomaly"
-                      />
-                    </mock-menuitem>
-                    <mock-menuitem
-                      data-value="Blended rainfall aggregate (10-day)"
-                      role="option"
-                      selected="false"
-                    >
-                      <mock-checkbox
-                        checked="false"
-                        color="primary"
-                      />
-                      <mock-listitemtext
-                        classes="[object Object]"
-                        primary="Blended rainfall aggregate (10-day)"
-                      />
-                    </mock-menuitem>
-                    <mock-menuitem
-                      data-value="Blended rainfall anomaly (10-day)"
-                      role="option"
-                      selected="false"
-                    >
-                      <mock-checkbox
-                        checked="false"
-                        color="primary"
-                      />
-                      <mock-listitemtext
-                        classes="[object Object]"
-                        primary="Blended rainfall anomaly (10-day)"
-                      />
-                    </mock-menuitem>
-                    <mock-menuitem
-                      data-value="1-month rainfall aggregate"
-                      role="option"
-                      selected="false"
-                    >
-                      <mock-checkbox
-                        checked="false"
-                        color="primary"
-                      />
-                      <mock-listitemtext
-                        classes="[object Object]"
-                        primary="1-month rainfall aggregate"
-                      />
-                    </mock-menuitem>
-                    <mock-menuitem
-                      data-value="1-month rainfall anomaly"
-                      role="option"
-                      selected="false"
-                    >
-                      <mock-checkbox
-                        checked="false"
-                        color="primary"
-                      />
-                      <mock-listitemtext
-                        classes="[object Object]"
-                        primary="1-month rainfall anomaly"
-                      />
-                    </mock-menuitem>
-                    <mock-menuitem
-                      data-value="3-month rainfall aggregate (mm)"
-                      role="option"
-                      selected="false"
-                    >
-                      <mock-checkbox
-                        checked="false"
-                        color="primary"
-                      />
-                      <mock-listitemtext
-                        classes="[object Object]"
-                        primary="3-month rainfall aggregate (mm)"
-                      />
-                    </mock-menuitem>
-                    <mock-menuitem
-                      data-value="3-month rainfall anomaly"
-                      role="option"
-                      selected="false"
-                    >
-                      <mock-checkbox
-                        checked="false"
-                        color="primary"
-                      />
-                      <mock-listitemtext
-                        classes="[object Object]"
-                        primary="3-month rainfall anomaly"
-                      />
-                    </mock-menuitem>
-                    <mock-menuitem
-                      data-value="10-day NDVI (MODIS)"
-                      role="option"
-                      selected="false"
-                    >
-                      <mock-checkbox
-                        checked="false"
-                        color="primary"
-                      />
-                      <mock-listitemtext
-                        classes="[object Object]"
-                        primary="10-day NDVI (MODIS)"
-                      />
-                    </mock-menuitem>
-                    <mock-menuitem
-                      data-value="10-day NDVI anomaly (MODIS)"
-                      role="option"
-                      selected="false"
-                    >
-                      <mock-checkbox
-                        checked="false"
-                        color="primary"
-                      />
-                      <mock-listitemtext
-                        classes="[object Object]"
-                        primary="10-day NDVI anomaly (MODIS)"
-                      />
-                    </mock-menuitem>
-                  </mock-menu>
-                </div>
-              </div>
-              <mock-button
-                classname="makeStyles-downloadButton-91"
-                disabled="true"
-              >
-                <mock-typography
-                  variant="body2"
-                >
-                  Download CSV
-                </mock-typography>
-              </mock-button>
-              <mock-button
-                classname="makeStyles-clearAllSelectionsButton-92"
-                disabled="true"
-              >
-                <mock-typography
-                  variant="body2"
-                >
-                  Clear All
-                </mock-typography>
-              </mock-button>
-            </div>
-          </div>
+            style="display: none; flex-grow: 1; overflow-x: auto;"
+          />
           <div
             aria-labelledby="full-width-tab-2"
             id="full-width-tabpanel-2"
@@ -3900,10 +3495,10 @@ exports[`renders as expected 1`] = `
       </div>
     </mock-drawer>
     <div
-      class="MuiBox-root MuiBox-root-143 memo-container-2"
+      class="MuiBox-root MuiBox-root-125 memo-container-2"
     >
       <div
-        class="MuiBox-root MuiBox-root-144 memo-optionContainer-3"
+        class="MuiBox-root MuiBox-root-126 memo-optionContainer-3"
         style="margin-left: 500px;"
       >
         <mock-tooltip
@@ -3941,7 +3536,7 @@ exports[`renders as expected 1`] = `
                 class="MuiGrid-root MuiGrid-item"
               >
                 <div
-                  class="makeStyles-button-147"
+                  class="makeStyles-button-129"
                 >
                   <svg
                     aria-hidden="true"
@@ -3954,41 +3549,8 @@ exports[`renders as expected 1`] = `
                     />
                   </svg>
                   <div
-                    class="makeStyles-selectContainer-148"
+                    class="makeStyles-selectContainer-130"
                   />
-                </div>
-              </div>
-              <div
-                class="MuiGrid-root MuiGrid-item"
-              >
-                <div
-                  class="AlertForm-alertForm-156"
-                >
-                  <mock-button
-                    classname="AlertForm-alertTriggerButton-155"
-                    color="primary"
-                    variant="contained"
-                  >
-                    <svg
-                      aria-hidden="true"
-                      class="MuiSvgIcon-root MuiSvgIcon-fontSizeSmall"
-                      focusable="false"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.89 2 2 2zm6-6v-5c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"
-                      />
-                    </svg>
-                    <mock-typography
-                      classname="AlertForm-alertLabel-154"
-                      variant="body2"
-                    >
-                      Create Alert
-                    </mock-typography>
-                    <mock-arrowdropdown
-                      fontsize="small"
-                    />
-                  </mock-button>
                 </div>
               </div>
             </div>
