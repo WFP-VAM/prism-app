@@ -59,3 +59,5 @@ types-urllib3==1.26.25.13
 typing_extensions==4.7.1
 urllib3==1.26.16
 pytest-asyncio==0.21.1
+# pin anyio <4.0 to fix api tests
+anyio==3.7.1
