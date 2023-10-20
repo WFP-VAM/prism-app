@@ -365,9 +365,13 @@ const ChartsPanel = memo(
 
     const onChangeChartLayers = useCallback(
       (event: React.ChangeEvent<{ value: unknown }>) => {
-        setSelectedLayerTitles(event.target.value as string[]);
+        if (compareLocations || comparePeriods) {
+          setSelectedLayerTitles([event.target.value] as string[]);
+        } else {
+          setSelectedLayerTitles(event.target.value as string[]);
+        }
       },
-      [],
+      [compareLocations, comparePeriods],
     );
 
     const locationString = (
@@ -806,7 +810,7 @@ const ChartsPanel = memo(
           <Select
             labelId="chart-layers-mutiple-checkbox-label"
             id="chart-layers-mutiple-checkbox"
-            multiple
+            multiple={!(compareLocations || comparePeriods)}
             value={selectedLayerTitles}
             onChange={onChangeChartLayers}
             input={<Input />}
