@@ -73,7 +73,6 @@ Returns armed conflict incidents using ACLED api. Make sure to have the defined 
 - `?fields`, Comma separated string which specifies the fields to be returned per incident.
 - `?event_date`, Return incidents only matching the given value with format YYYY-MM-DD
 
-
 ### `/kobo/forms` (GET)
 
 Returns all form responses using Kobo API
@@ -112,7 +111,7 @@ source set_envs.sh && make api
 To run flask api together with database within same network, run:
 
 ```
-source set_envs.sh && docker-compose -f ./docker-compose.develop.yml -f ../alerting/docker-compose.yml up
+source set_envs.sh && docker compose -f ./docker-compose.develop.yml -f ../alerting/docker-compose.yml up
 ```
 
 ### Tests
@@ -122,6 +121,22 @@ To run linting and tests, run:
 ```
 source set_envs.sh && make test
 ```
+
+#### Debugging playwright tests
+
+To run python tests outside of docker, run "make localtests". This will set them up to run outside docker, so that
+playwright can run in debug mode, with a visible browser.
+
+- start the frontend in docker with `make test-services`.
+- in a shell (tested in bash only):
+
+```bash
+cd api/app
+mv tests/conftest.py-template tests/conftest.py
+KOBO_USERNAME=ovio KOBO_PW=pwd PWDEBUG=1 poetry run pytest -s tests -k test_download_report
+```
+
+This should open playwright in debug mode, with a browser window and a debugging one. More info: https://playwright.dev/python/docs/debug
 
 ## Deployments
 
