@@ -9,10 +9,10 @@ services:
     environment:
       - WORKERS_PER_CORE=1
       # External services credentials
-      - KOBO_PASSWORD=${KOBO_PASSWORD:?"Add a password to access KOBO data."}
-      - KOBO_USERNAME=${KOBO_USERNAME:?"Add a user to access KOBO data."}
-      - ACLED_API_KEY=${ACLED_API_KEY:?"Add an API Key to Access ACLED data."}
-      - ACLED_API_EMAIL=${ACLED_API_EMAIL:?"Add an API EMAIL to Access ACLED data."}
+      - KOBO_USERNAME=${KOBO_USERNAME:-kobo_user}
+      - KOBO_PASSWORD=${KOBO_PASSWORD:-test}
+      - ACLED_API_KEY=${ACLED_API_KEY:-changeme}
+      - ACLED_API_EMAIL=${ACLED_API_EMAIL:-changeme}
       - HDC_TOKEN
       # Alerts database
       - PRISM_ALERTS_DATABASE_URL

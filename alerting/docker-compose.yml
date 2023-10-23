@@ -25,6 +25,6 @@ services:
       - POSTGRES_USER=postgres
       - POSTGRES_DB=postgres
       - POSTGRES_PASSWORD=!ChangeMe!
-      - DATABASE_URL
+      - PRISM_ALERTS_DATABASE_URL
       - ALERTING_EMAIL_PASSWORD=${ALERTING_EMAIL_PASSWORD} # Set from secrets in api/set_envs.sh
       - ALERTING_EMAIL_USER=${ALERTING_EMAIL_USER}

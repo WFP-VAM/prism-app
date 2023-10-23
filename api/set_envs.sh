@@ -21,4 +21,3 @@ export ACLED_API_KEY=$(aws secretsmanager get-secret-value     --secret-id ACLED
 export ACLED_API_EMAIL=$(aws secretsmanager get-secret-value     --secret-id ACLED_CREDENTIALS | jq .SecretString | jq fromjson | jq -r .ACLED_API_EMAIL)
 
 export HOSTNAME=prism-api.ovio.org
-echo $HOSTNAME

@@ -105,13 +105,13 @@ Generate a geotiff for any wfp raster using the stac API and saves it in S3. It 
 To run the api locally, run:
 
 ```
-source set_envs.sh && make api
+make api
 ```
 
 To run flask api together with database within same network, run:
 
 ```
-source set_envs.sh && docker compose -f ./docker-compose.develop.yml -f ../alerting/docker-compose.yml up
+docker compose -f ./docker-compose.develop.yml -f ../alerting/docker-compose.yml up
 ```
 
 ### Tests
@@ -119,7 +119,7 @@ source set_envs.sh && docker compose -f ./docker-compose.develop.yml -f ../alert
 To run linting and tests, run:
 
 ```
-source set_envs.sh && make test
+make test
 ```
 
 #### Debugging playwright tests
