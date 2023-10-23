@@ -1,0 +1,8 @@
+import sys
+from pathlib import Path
+
+# This is only useful to run tests outside docker, mostly
+# for debugging of playwright tests.
+# See README under "Debugging playwright tests" for details.
+
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent.parent))
