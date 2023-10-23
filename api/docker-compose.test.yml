@@ -6,6 +6,7 @@ services:
   api:
     volumes:
       - ./app:/app
+      - ./utils/wait-for-it.sh:/wait-for-it.sh
     environment:
       - "RUN=uvicorn app.main:app --host 0.0.0.0 --port 80"
       - POSTGRES_HOST=testdb
@@ -26,3 +27,23 @@ services:
       - POSTGRES_DB=postgres
       - POSTGRES_PORT=5432
       - POSTGRES_PASSWORD=!ChangeMe!
+
+  frontend:
+    # small wrapper around the frontend code to make it easier to run
+    # python tests against it
+    build:
+      context: ..
+      dockerfile: ./frontend/Dockerfile
+    entrypoint: yarn start
+    environment:
+      - REACT_APP_COUNTRY=cambodia
+    ports:
+      - "3000:3000"
+    volumes:
+      - ../common:/common
+      - ../frontend:/frontend
+      # do not override node_modules as libs are already installed in the image
+      - /frontend/node_modules
+
+networks:
+  testnet:

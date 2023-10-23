@@ -17,5 +17,5 @@ export ALERTING_EMAIL_USER=$(aws secretsmanager get-secret-value     --secret-id
 export ALERTING_EMAIL_PASSWORD=$(aws secretsmanager get-secret-value     --secret-id ALERTING_EMAIL | jq .SecretString | jq fromjson | jq .ALERTING_EMAIL_PASSWORD)
 
 # Commenting out for now while I get Eric's advice on deploying 
-# HOSTNAME_SUFFIX=${1:?"Must set deployment env as first arg"}
-# export HOSTNAME=prism-api${HOSTNAME_SUFFIX}.ovio.org
+HOSTNAME_SUFFIX=${1:?"Must set deployment env as first arg"}
+export HOSTNAME=prism-api${HOSTNAME_SUFFIX}.ovio.org

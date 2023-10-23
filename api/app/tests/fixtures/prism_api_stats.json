@@ -1,0 +1,202 @@
+[
+  {
+    "type": "Feature",
+    "id": "0",
+    "properties": {
+      "id": "160801",
+      "Adm3_text": "160801",
+      "stats_min": null,
+      "stats_max": null,
+      "stats_mean": null,
+      "stats_median": null,
+      "stats_sum": null,
+      "stats_std": null,
+      "stats_nodata": 6360.0,
+      "stats_count": 0
+    },
+    "geometry": {
+      "type": "Polygon",
+      "coordinates": [ [ [ 107.392102942, 14.540395513 ], [ 107.392918554, 14.540771152 ], [ 107.445830159, 14.527720962 ], [ 107.446657439, 14.528049985 ], [ 107.448049334, 14.528067067 ] ] ]
+    }
+  },
+  {
+    "type": "Feature",
+    "id": "1",
+    "properties": {
+      "id": "190303",
+      "Adm3_text": "190303",
+      "stats_min": null,
+      "stats_max": null,
+      "stats_mean": null,
+      "stats_median": null,
+      "stats_sum": null,
+      "stats_std": null,
+      "stats_nodata": 7283.0,
+      "stats_count": 0
+    },
+    "geometry": {
+      "type": "Polygon",
+      "coordinates": [ [ [ 106.333380732, 14.426597277 ], [ 106.332806031, 14.427730464 ], [ 106.336104537, 14.442987424 ], [ 106.337422609, 14.443525708 ] ] ]
+    }
+  },
+  {
+    "type": "Feature",
+    "id": "2",
+    "properties": {
+      "id": "190305",
+      "Adm3_text": "190305",
+      "stats_min": 65.0,
+      "stats_max": 65.0,
+      "stats_mean": 65.0,
+      "stats_count": 1,
+      "stats_sum": 65.0,
+      "stats_std": 0.0,
+      "stats_median": 65.0,
+      "stats_nodata": 1392.0
+    },
+    "geometry": {
+      "type": "Polygon",
+      "coordinates": [ [ [ 106.328682013, 14.183118062 ], [ 106.262390329, 14.251716258 ], [ 106.245853034, 14.273684267 ], [ 106.183036473, 14.350649399 ] ] ]
+    }
+  },
+  {
+    "type": "Feature",
+    "id": "3",
+    "properties": {
+      "id": "160802",
+      "Adm3_text": "160802",
+      "stats_min": null,
+      "stats_max": null,
+      "stats_mean": null,
+      "stats_median": null,
+      "stats_sum": null,
+      "stats_std": null,
+      "stats_nodata": 2083.0,
+      "stats_count": 0
+    },
+    "geometry": {
+      "type": "Polygon",
+      "coordinates": [ [ [ 106.989686449, 14.353346399 ], [ 106.989683422, 14.35470874 ], [ 106.989483429, 14.358499142 ], [ 106.989641076, 14.359162033 ] ] ]
+    }
+  },
+  {
+    "type": "Feature",
+    "id": "4",
+    "properties": {
+      "id": "220405",
+      "Adm3_text": "220405",
+      "stats_min": 341.0,
+      "stats_max": 451.0,
+      "stats_mean": 380.6666666666667,
+      "stats_count": 6,
+      "stats_sum": 2284.0,
+      "stats_std": 38.74560907021881,
+      "stats_median": 364.0,
+      "stats_nodata": 247.0
+    },
+    "geometry": {
+      "type": "Polygon",
+      "coordinates": [ [ [ 103.68964497, 14.440109359 ], [ 103.69284045, 14.438428785 ], [ 103.694585461, 14.437732235 ], [ 103.696342526, 14.436904664 ] ] ]
+    }
+  },
+  {
+    "type": "Feature",
+    "id": "5",
+    "properties": {
+      "id": "220403",
+      "Adm3_text": "220403",
+      "stats_min": 492.0,
+      "stats_max": 509.0,
+      "stats_mean": 500.5,
+      "stats_count": 2,
+      "stats_sum": 1001.0,
+      "stats_std": 8.5,
+      "stats_median": 500.5,
+      "stats_nodata": 2390.0
+    },
+    "geometry": {
+      "type": "Polygon",
+      "coordinates": [ [ [ 103.595114273, 14.42582305 ], [ 103.596447419, 14.42413047 ], [ 103.602331062, 14.422472781 ], [ 103.604170597, 14.422064468 ] ] ]
+    }
+  },
+  {
+    "type": "Feature",
+    "id": "6",
+    "properties": {
+      "id": "130307",
+      "Adm3_text": "130307",
+      "stats_min": 132.0,
+      "stats_max": 334.0,
+      "stats_mean": 180.0,
+      "stats_count": 5,
+      "stats_sum": 900.0,
+      "stats_std": 77.19844558020583,
+      "stats_median": 144.0,
+      "stats_nodata": 2336.0
+    },
+    "geometry": {
+      "type": "Polygon",
+      "coordinates": [ [ [ 104.829015412, 14.267598732 ], [ 104.8009089, 14.237497259 ], [ 104.800044144, 14.235281303 ], [ 104.799912124, 14.234850954 ] ] ]
+    }
+  },
+  {
+    "type": "Feature",
+    "id": "7",
+    "properties": {
+      "id": "130301",
+      "Adm3_text": "130301",
+      "stats_min": 26.0,
+      "stats_max": 33.0,
+      "stats_mean": 29.2,
+      "stats_count": 5,
+      "stats_sum": 146.0,
+      "stats_std": 2.315167380558045,
+      "stats_median": 29.0,
+      "stats_nodata": 1298.0
+    },
+    "geometry": {
+      "type": "Polygon",
+      "coordinates": [ [ [ 104.83169268, 14.417083661 ], [ 104.82644992, 14.413468861 ], [ 104.829723067, 14.41554404 ], [ 104.83169268, 14.417083661 ] ] ]
+    }
+  },
+  {
+    "type": "Feature",
+    "id": "8",
+    "properties": {
+      "id": "220503",
+      "Adm3_text": "220503",
+      "stats_min": 3195.0,
+      "stats_max": 3195.0,
+      "stats_mean": 3195.0,
+      "stats_count": 1,
+      "stats_sum": 3195.0,
+      "stats_std": 0.0,
+      "stats_median": 3195.0,
+      "stats_nodata": 601.0
+    },
+    "geometry": {
+      "type": "Polygon",
+      "coordinates": [ [ [ 104.311731739, 14.269569893 ], [ 104.233316483, 14.365765667 ], [ 104.233480341, 14.368797194 ], [ 104.23360519, 14.371879447 ] ] ]
+    }
+  },
+  {
+    "type": "Feature",
+    "id": "9",
+    "properties": {
+      "id": "160910",
+      "Adm3_text": "160910",
+      "stats_min": 13.0,
+      "stats_max": 45.0,
+      "stats_mean": 29.0,
+      "stats_count": 3,
+      "stats_sum": 87.0,
+      "stats_std": 13.063945294843617,
+      "stats_median": 29.0,
+      "stats_nodata": 1323.0
+    },
+    "geometry": {
+      "type": "Polygon",
+      "coordinates": [ [ [ 106.74714638, 14.322060707 ], [ 106.752856432, 14.377797728 ], [ 106.755238242, 14.383758683 ], [ 106.7559727, 14.386534663 ] ] ]
+    }
+  }
+]
