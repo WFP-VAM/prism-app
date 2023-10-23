@@ -16,6 +16,5 @@ export HDC_TOKEN=$(aws secretsmanager get-secret-value     --secret-id HDC_TOKEN
 export ALERTING_EMAIL_USER=$(aws secretsmanager get-secret-value     --secret-id ALERTING_EMAIL | jq .SecretString | jq fromjson | jq .ALERTING_EMAIL_USER)
 export ALERTING_EMAIL_PASSWORD=$(aws secretsmanager get-secret-value     --secret-id ALERTING_EMAIL | jq .SecretString | jq fromjson | jq .ALERTING_EMAIL_PASSWORD)
 
-# Commenting out for now while I get Eric's advice on deploying 
 export HOSTNAME=prism-api.ovio.org
 echo $HOSTNAME
