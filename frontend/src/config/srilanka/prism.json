@@ -2,7 +2,7 @@
   "country": "Sri Lanka",
   "countryAdmin0Id": 231,
   "alertFormActive": false,
-  "defaultLayer": "rainfall_dekad",
+  "defaultLayer": "precip_blended_dekad",
   "icons": {
     "rainfall": "icon_rain.png",
     "vegetation": "icon_veg.png",
