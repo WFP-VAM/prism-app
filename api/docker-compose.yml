@@ -10,9 +10,9 @@ services:
       - WORKERS_PER_CORE=1
       # External services credentials
       - KOBO_USERNAME=${KOBO_USERNAME:-kobo_user}
-      - KOBO_PW
+      - KOBO_PASSWORD
       - ACLED_API_KEY=${ACLED_API_KEY:-changeme}
       - ACLED_API_EMAIL=${ACLED_API_EMAIL:-changeme}
       - HDC_TOKEN
       # Alerts database
-      - DATABASE_URL
+      - PRISM_ALERTS_DATABASE_URL
