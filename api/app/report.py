@@ -79,10 +79,8 @@ async def download_report(
         # Wait for page to be loaded on exposure analysis
         await page.wait_for_selector('div[id="full-width-tabpanel-2"]', state="visible")
 
-        # this is very fragile and will break each time the page layout
-        # is modified
         await page.wait_for_selector(
-            'div[class="memo-analysisButtonContainer-142"]', state="visible"
+            'div[class^="memo-analysisButtonContainer-"]', state="visible"
         )
 
         await page.wait_for_selector(CREATE_REPORT_BUTTON_SELECTOR, state="attached")
