@@ -14,6 +14,8 @@ services:
       - POSTGRES_DB=postgres
       - POSTGRES_PORT=54321
       - POSTGRES_PASSWORD=!ChangeMe!
+      - KOBO_PASSWORD=${KOBO_PASSWORD:?"Add a password to access KOBO data."}
+      - KOBO_USERNAME=${KOBO_USERNAME:?"Add a user to access KOBO data."}
       - STAC_AWS_ACCESS_KEY_ID=${STAC_AWS_ACCESS_KEY_ID}
       - STAC_AWS_SECRET_ACCESS_KEY=${STAC_AWS_SECRET_ACCESS_KEY}
     command: uvicorn app.main:app --host 0.0.0.0 --port 80 --reload

@@ -48,7 +48,7 @@ services:
       # make sure that the alert password is properly set
       - PRISM_ALERTS_DATABASE_URL=${PRISM_ALERTS_DATABASE_URL:?"Provide a URL for the alerts database."}
       - KOBO_PASSWORD=${KOBO_PASSWORD:?"Add a password to access KOBO data."}
-      - KOBO_USERNAME=${KOBO_USERNAME:-kobo_user}
+      - KOBO_USERNAME=${KOBO_USERNAME:?"Add a user to access KOBO data."}
       - HDC_TOKEN=${HDC_TOKEN:?"Provide a token to access HDC chart data."}
       - STAC_AWS_ACCESS_KEY_ID=${STAC_AWS_ACCESS_KEY_ID:?"Provide the AWS access key for the stac api."}
       - STAC_AWS_SECRET_ACCESS_KEY=${STAC_AWS_SECRET_ACCESS_KEY:?"Provide the AWS secret key for the stac api."}

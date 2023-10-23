@@ -62,7 +62,7 @@ curl --location --request POST 'localhost:80/alerts' \
 ```
 
 The following endpoints are related to data retrieval from KoboToolbox. Make sure
-you have set the environment variables KOBO_USERNAME, KOBO_PW
+you have set the environment variables KOBO_USERNAME, KOBO_PASSWORD
 
 ### `/acled` (GET)
 
