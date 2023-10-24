@@ -2,7 +2,7 @@
   "country": "Sri Lanka",
   "countryAdmin0Id": 231,
   "alertFormActive": false,
-  "defaultLayer": "rainfall_dekad",
+  "defaultLayer": "precip_blended_dekad",
   "icons": {
     "rainfall": "icon_rain.png",
     "vegetation": "icon_veg.png",
@@ -13,8 +13,7 @@
   },
   "serversUrls": {
     "wms": [
-      "https://api.earthobservation.vam.wfp.org/ows/wms",
-      "https://sparc.wfp.org/geoserver/prism/wms"
+      "https://api.earthobservation.vam.wfp.org/ows/wms"
     ]
   },
   "map": {
@@ -226,29 +225,6 @@
               "id": "streak_extreme_rain",
               "label": "Extreme (>95th percentile)",
               "main": true
-            }
-          ]
-        }
-      ]
-    },
-    "tropical_storms": {
-      "tropical_storms": [
-        {
-          "group_title": "Tropical Storms",
-          "activate_all": true,
-          "layers": [
-            {
-              "id": "adamts_buffers",
-              "label": "Wind buffers",
-              "main": true
-            },
-            {
-              "id": "adamts_nodes",
-              "label": "Nodes"
-            },
-            {
-              "id": "adamts_tracks",
-              "label": "Tracks"
             }
           ]
         }

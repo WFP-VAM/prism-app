@@ -1,11 +1,14 @@
-version: '3'
+version: "3"
 # Run a full battery of test on all endpoints using https://pypi.org/project/schemathesis/
 # This file sets up a db that allows testing alerts related endpoints.
 
 services:
   api:
+    volumes:
+      - ./app:/app
+      - ./utils/wait-for-it.sh:/wait-for-it.sh
     environment:
-      - 'RUN=uvicorn app.main:app --host 0.0.0.0 --port 80'
+      - "RUN=uvicorn app.main:app --host 0.0.0.0 --port 80"
       - POSTGRES_HOST=testdb
       - POSTGRES_USER=postgres
       - POSTGRES_DB=postgres
@@ -17,7 +20,6 @@ services:
     command: uvicorn app.main:app --host 0.0.0.0 --port 80 --reload
     # Infinite loop, to keep it alive, for debugging
     # command: bash -c "while true; do echo 'sleeping...' && sleep 10; done"
-    #
   testdb:
     image: kartoza/postgis:12.1
     environment:
@@ -25,3 +27,23 @@ services:
       - POSTGRES_DB=postgres
       - POSTGRES_PORT=5432
       - POSTGRES_PASSWORD=!ChangeMe!
+
+  frontend:
+    # small wrapper around the frontend code to make it easier to run
+    # python tests against it
+    build:
+      context: ..
+      dockerfile: ./frontend/Dockerfile
+    entrypoint: yarn start
+    environment:
+      - REACT_APP_COUNTRY=cambodia
+    ports:
+      - "3000:3000"
+    volumes:
+      - ../common:/common
+      - ../frontend:/frontend
+      # do not override node_modules as libs are already installed in the image
+      - /frontend/node_modules
+
+networks:
+  testnet:

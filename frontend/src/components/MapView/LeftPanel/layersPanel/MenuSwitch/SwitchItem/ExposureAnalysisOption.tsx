@@ -78,7 +78,11 @@ function ExposureAnalysisOption({
 
   return (
     <Tooltip title={t('Exposure Analysis') ?? ''}>
-      <IconButton disabled={!selected} onClick={handleExposureAnalysis}>
+      <IconButton
+        id={layer.id}
+        disabled={!selected}
+        onClick={handleExposureAnalysis}
+      >
         <ImageAspectRatioOutlined />
       </IconButton>
     </Tooltip>

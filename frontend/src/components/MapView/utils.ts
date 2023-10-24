@@ -187,6 +187,32 @@ export const filterActiveLayers = (
   );
 };
 
+export const formatIntersectPercentageAttribute = (
+  /* eslint-disable camelcase */
+  data: {
+    intersect_percentage?: string | number;
+    stats_intersect_area?: string | number;
+    [key: string]: any;
+  },
+) => {
+  /* eslint-disable fp/no-mutation */
+  let transformedData = data;
+  if (parseInt((data.intersect_percentage as unknown) as string, 10) >= 0) {
+    transformedData = {
+      ...transformedData,
+      intersect_percentage: 100 * ((data.intersect_percentage as number) || 0),
+    };
+  }
+  if (data.stats_intersect_area) {
+    transformedData = {
+      ...transformedData,
+      stats_intersect_area: data.stats_intersect_area,
+    };
+  }
+  /* eslint-enable fp/no-mutation */
+  return transformedData;
+};
+
 const getExposureAnalysisTableCellValue = (
   value: string | number,
   column: Column,

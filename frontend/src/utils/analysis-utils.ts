@@ -2,7 +2,6 @@ import {
   flatten,
   get,
   has,
-  invert,
   isNull,
   isNumber,
   isString,
@@ -24,6 +23,7 @@ import {
   AdminLevelDataLayerProps,
   AdminLevelType,
   AggregationOperations,
+  aggregationOperationsToDisplay,
   AsyncReturnType,
   BoundaryLayerProps,
   ImpactLayerProps,
@@ -110,6 +110,11 @@ const operations = {
     const floor = sortedValues.length / 2 - 1;
     const ceil = sortedValues.length / 2;
     return (sortedValues[floor] + sortedValues[ceil]) / 2;
+  },
+  intersect_percentage: () => {
+    throw new Error(
+      'intersect_percentage calculation is not available from client side',
+    );
   },
 };
 
@@ -556,13 +561,21 @@ export function createLegendFromFeatureArray(
 
     // Make sure you don't have a value greater than maxNum.
     const value = Math.min(breakpoint, maxNum);
+    /* eslint-disable fp/no-mutation */
+    let formattedValue;
+    if (statistic === AggregationOperations['Area exposed']) {
+      formattedValue = `${(value * 100).toFixed(2)} %`;
+    } else {
+      formattedValue = `(${Math.round(value).toLocaleString('en-US')})`;
+    }
+    /* eslint-enable fp/no-mutation */
 
     return {
       value,
       color,
       label: {
         text: labels[index],
-        value: `(${Math.round(value).toLocaleString('en-US')})`,
+        value: formattedValue,
       },
     };
   });
@@ -585,6 +598,10 @@ export class ExposedPopulationResult {
 
   getStatTitle = (t?: i18nTranslator): string => {
     return this.getTitle(t);
+  };
+
+  getHazardLayer = (): WMSLayerProps => {
+    return this.getHazardLayer();
   };
 
   constructor(
@@ -663,8 +680,12 @@ export class BaselineLayerResult {
 
   getStatTitle(t?: i18nTranslator): string {
     return t
-      ? `${t(this.getHazardLayer().title)} (${t(this.statistic)})`
-      : `${this.getHazardLayer().title} (${this.statistic})`;
+      ? `${t(this.getHazardLayer().title)} (${t(
+          aggregationOperationsToDisplay[this.statistic],
+        )})`
+      : `${this.getHazardLayer().title} (${
+          aggregationOperationsToDisplay[this.statistic]
+        })`;
   }
 
   getTitle(t?: i18nTranslator): string | undefined {
@@ -703,17 +724,28 @@ export function getAnalysisTableColumns(
   }
   const { statistic } = analysisResult;
 
-  const analysisTableColumns = [
+  const analysisTableColumns: Column[] = [
     {
       id: withLocalName ? 'localName' : 'name',
       label: 'Name',
     },
     {
       id: statistic,
-      label: invert(AggregationOperations)[statistic], // invert maps from computer name to display name.
-      format: (value: string | number) => getRoundedData(value as number),
+      label: aggregationOperationsToDisplay[statistic],
+      format: (value: string | number) =>
+        getRoundedData(value, undefined, 2, statistic),
     },
   ];
+
+  if (statistic === AggregationOperations['Area exposed']) {
+    /* eslint-disable-next-line fp/no-mutating-methods */
+    analysisTableColumns.push({
+      id: 'stats_intersect_area',
+      label: 'Area exposed in sq km',
+      format: (value: string | number) =>
+        getRoundedData(value as number, undefined, 2, 'stats_intersect_area'),
+    });
+  }
 
   if (analysisResult instanceof ExposedPopulationResult) {
     const extraCols = analysisResult?.tableColumns.map((col: string) => ({

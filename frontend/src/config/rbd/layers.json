@@ -1374,46 +1374,57 @@
     "legend_text": "1-month Standardized Precipitation Index calculated from dekadal CHIRPS data",
     "legend": [
       {
+        "value": -2.01,
         "label": "< -2",
         "color": "#730000"
       },
       {
+        "value": -2,
         "label": "-1.5 to -2",
         "color": "#e70001"
       },
       {
+        "value": -1.5,
         "label": "-1.2 to -1.5",
         "color": "#ffaa01"
       },
       {
+        "value": -1.2,
         "label": "-0.7 to -1.2",
         "color": "#ffd37b"
       },
       {
+        "value": -0.7,
         "label": "-0.5 to -0.7",
         "color": "#ffff02"
       },
       {
+        "value": -0.5,
         "label": "0.5 to -0.5 ",
         "color": "#f0f0f0"
       },
       {
+        "value": 0.5,
         "label": "0.5 to 0.7",
         "color": "#beebff"
       },
       {
+        "value": 0.7,
         "label": "0.7 to 1.2",
         "color": "#73b2ff"
       },
       {
+        "value": 1.2,
         "label": "1.2 to 1.5",
         "color": "#0271ff"
       },
       {
+        "value": 1.5,
         "label": "1.5 to 2.0",
         "color": "#004dad"
       },
       {
+        "value": 2,
         "label": "> 2.0",
         "color": "#ad03e6"
       }
@@ -1438,46 +1449,57 @@
     "legend_text": "3-month Standardized Precipitation Index calculated from dekadal CHIRPS data",
     "legend": [
       {
+        "value": -2.01,
         "label": "< -2",
         "color": "#730000"
       },
       {
+        "value": -2,
         "label": "-1.5 to -2",
         "color": "#e70001"
       },
       {
+        "value": -1.5,
         "label": "-1.2 to -1.5",
         "color": "#ffaa01"
       },
       {
+        "value": -1.2,
         "label": "-0.7 to -1.2",
         "color": "#ffd37b"
       },
       {
+        "value": -0.7,
         "label": "-0.5 to -0.7",
         "color": "#ffff02"
       },
       {
+        "value": -0.5,
         "label": "0.5 to -0.5 ",
         "color": "#f0f0f0"
       },
       {
+        "value": 0.5,
         "label": "0.5 to 0.7",
         "color": "#beebff"
       },
       {
+        "value": 0.7,
         "label": "0.7 to 1.2",
         "color": "#73b2ff"
       },
       {
+        "value": 1.2,
         "label": "1.2 to 1.5",
         "color": "#0271ff"
       },
       {
+        "value": 1.5,
         "label": "1.5 to 2.0",
         "color": "#004dad"
       },
       {
+        "value": 2,
         "label": "> 2.0",
         "color": "#ad03e6"
       }
@@ -1502,46 +1524,57 @@
     "legend_text": "6-month Standardized Precipitation Index calculated from dekadal CHIRPS data",
     "legend": [
       {
+        "value": -2.01,
         "label": "< -2",
         "color": "#730000"
       },
       {
+        "value": -2,
         "label": "-1.5 to -2",
         "color": "#e70001"
       },
       {
+        "value": -1.5,
         "label": "-1.2 to -1.5",
         "color": "#ffaa01"
       },
       {
+        "value": -1.2,
         "label": "-0.7 to -1.2",
         "color": "#ffd37b"
       },
       {
+        "value": -0.7,
         "label": "-0.5 to -0.7",
         "color": "#ffff02"
       },
       {
+        "value": -0.5,
         "label": "0.5 to -0.5 ",
         "color": "#f0f0f0"
       },
       {
+        "value": 0.5,
         "label": "0.5 to 0.7",
         "color": "#beebff"
       },
       {
+        "value": 0.7,
         "label": "0.7 to 1.2",
         "color": "#73b2ff"
       },
       {
+        "value": 1.2,
         "label": "1.2 to 1.5",
         "color": "#0271ff"
       },
       {
+        "value": 1.5,
         "label": "1.5 to 2.0",
         "color": "#004dad"
       },
       {
+        "value": 2,
         "label": "> 2.0",
         "color": "#ad03e6"
       }
@@ -1566,46 +1599,57 @@
     "legend_text": "9-month Standardized Precipitation Index calculated from dekadal CHIRPS data",
     "legend": [
       {
+        "value": -2.01,
         "label": "< -2",
         "color": "#730000"
       },
       {
+        "value": -2,
         "label": "-1.5 to -2",
         "color": "#e70001"
       },
       {
+        "value": -1.5,
         "label": "-1.2 to -1.5",
         "color": "#ffaa01"
       },
       {
+        "value": -1.2,
         "label": "-0.7 to -1.2",
         "color": "#ffd37b"
       },
       {
+        "value": -0.7,
         "label": "-0.5 to -0.7",
         "color": "#ffff02"
       },
       {
+        "value": -0.5,
         "label": "0.5 to -0.5 ",
         "color": "#f0f0f0"
       },
       {
+        "value": 0.5,
         "label": "0.5 to 0.7",
         "color": "#beebff"
       },
       {
+        "value": 0.7,
         "label": "0.7 to 1.2",
         "color": "#73b2ff"
       },
       {
+        "value": 1.2,
         "label": "1.2 to 1.5",
         "color": "#0271ff"
       },
       {
+        "value": 1.5,
         "label": "1.5 to 2.0",
         "color": "#004dad"
       },
       {
+        "value": 2,
         "label": "> 2.0",
         "color": "#ad03e6"
       }
@@ -1630,46 +1674,57 @@
     "legend_text": "1-year Standardized Precipitation Index calculated from dekadal CHIRPS data",
     "legend": [
       {
+        "value": -2.01,
         "label": "< -2",
         "color": "#730000"
       },
       {
+        "value": -2,
         "label": "-1.5 to -2",
         "color": "#e70001"
       },
       {
+        "value": -1.5,
         "label": "-1.2 to -1.5",
         "color": "#ffaa01"
       },
       {
+        "value": -1.2,
         "label": "-0.7 to -1.2",
         "color": "#ffd37b"
       },
       {
+        "value": -0.7,
         "label": "-0.5 to -0.7",
         "color": "#ffff02"
       },
       {
+        "value": -0.5,
         "label": "0.5 to -0.5 ",
         "color": "#f0f0f0"
       },
       {
+        "value": 0.5,
         "label": "0.5 to 0.7",
         "color": "#beebff"
       },
       {
+        "value": 0.7,
         "label": "0.7 to 1.2",
         "color": "#73b2ff"
       },
       {
+        "value": 1.2,
         "label": "1.2 to 1.5",
         "color": "#0271ff"
       },
       {
+        "value": 1.5,
         "label": "1.5 to 2.0",
         "color": "#004dad"
       },
       {
+        "value": 2,
         "label": "> 2.0",
         "color": "#ad03e6"
       }
@@ -3515,8 +3570,8 @@
       "2023-06-01"
     ],
     "validityPeriod": {
-      "start_date_field" : "start_date",
-      "end_date_field" : "end_date"
+      "start_date_field": "start_date",
+      "end_date_field": "end_date"
     },
     "fallbackLayerKeys": ["ch_phase_admin1"],
     "admin_level": 2,
@@ -3680,8 +3735,8 @@
       "2023-06-01"
     ],
     "validityPeriod": {
-      "start_date_field" : "start_date",
-      "end_date_field" : "end_date"
+      "start_date_field": "start_date",
+      "end_date_field": "end_date"
     },
     "data_field": "calc_pop_ph3_5_admin2",
     "admin_level": 2,
@@ -3857,8 +3912,8 @@
       "2023-06-01"
     ],
     "validityPeriod": {
-      "start_date_field" : "start_date",
-      "end_date_field" : "end_date"
+      "start_date_field": "start_date",
+      "end_date_field": "end_date"
     },
     "admin_level": 2,
     "data_field": "phase_class",
@@ -3965,8 +4020,8 @@
       "2023-06-01"
     ],
     "validityPeriod": {
-      "start_date_field" : "start_date",
-      "end_date_field" : "end_date"
+      "start_date_field": "start_date",
+      "end_date_field": "end_date"
     },
     "admin_level": 2,
     "data_field": "calc_pop_ph3_5_admin2",
@@ -4097,8 +4152,8 @@
       "2023-06-01"
     ],
     "validityPeriod": {
-      "start_date_field" : "start_date",
-      "end_date_field" : "end_date"
+      "start_date_field": "start_date",
+      "end_date_field": "end_date"
     },
     "admin_level": 2,
     "data_field": "phase_class",
@@ -4161,8 +4216,8 @@
       "2023-06-01"
     ],
     "validityPeriod": {
-      "start_date_field" : "start_date",
-      "end_date_field" : "end_date"
+      "start_date_field": "start_date",
+      "end_date_field": "end_date"
     },
     "admin_level": 2,
     "data_field": "calc_pop_ph3_5_admin2",
@@ -4224,8 +4279,8 @@
     "path": "data/rbd/ch/urb_admin2_{YYYY_MM_DD}.json",
     "dates": ["2022-02-01", "2022-06-01"],
     "validityPeriod": {
-      "start_date_field" : "start_date",
-      "end_date_field" : "end_date"
+      "start_date_field": "start_date",
+      "end_date_field": "end_date"
     },
     "admin_level": 2,
     "data_field": "phase_class",
@@ -4277,8 +4332,8 @@
     "path": "data/rbd/ch/urb_admin2_{YYYY_MM_DD}.json",
     "dates": ["2022-02-01", "2022-06-01"],
     "validityPeriod": {
-      "start_date_field" : "start_date",
-      "end_date_field" : "end_date"
+      "start_date_field": "start_date",
+      "end_date_field": "end_date"
     },
     "admin_level": 2,
     "data_field": "calc_pop_ph3_5_admin2",

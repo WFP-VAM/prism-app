@@ -9,7 +9,7 @@ import {
   isAnalysisLayerActiveSelector,
 } from 'context/analysisResultStateSlice';
 import { legendToStops } from 'components/MapView/Layers/layer-utils';
-import { LegendDefinition } from 'config/types';
+import { AggregationOperations, LegendDefinition, units } from 'config/types';
 import {
   BaselineLayerResult,
   ExposedPopulationResult,
@@ -18,6 +18,7 @@ import {
 import { getRoundedData } from 'utils/data-utils';
 import { useSafeTranslation } from 'i18n';
 import { LayerDefinitions } from 'config/utils';
+import { formatIntersectPercentageAttribute } from 'components/MapView/utils';
 
 function AnalysisLayer({ before }: { before?: string }) {
   // TODO maybe in the future we can try add this to LayerType so we don't need exclusive code in Legends and MapView to make this display correctly
@@ -102,18 +103,37 @@ function AnalysisLayer({ before }: { before?: string }) {
           const statisticKey = analysisData.statistic;
           const precision =
             analysisData instanceof ExposedPopulationResult ? 0 : undefined;
+          const formattedProperties = formatIntersectPercentageAttribute(
+            evt.features[0].properties,
+          );
           dispatch(
             addPopupData({
               [analysisData.getStatTitle(t)]: {
-                data: getRoundedData(
-                  get(evt.features[0], ['properties', statisticKey]),
+                data: `${getRoundedData(
+                  formattedProperties[statisticKey],
                   t,
                   precision,
-                ),
+                )} ${units[statisticKey] || ''}`,
                 coordinates,
               },
             }),
           );
+          if (statisticKey === AggregationOperations['Area exposed']) {
+            dispatch(
+              addPopupData({
+                [`${
+                  analysisData.getHazardLayer().title
+                } (Area exposed in km²)`]: {
+                  data: `${getRoundedData(
+                    formattedProperties.stats_intersect_area || null,
+                    t,
+                    precision,
+                  )} ${units.stats_intersect_area}`,
+                  coordinates,
+                },
+              }),
+            );
+          }
         }
 
         if (analysisData instanceof BaselineLayerResult) {

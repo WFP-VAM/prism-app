@@ -21,6 +21,7 @@ import {
   AsyncReturnType,
   BoundaryLayerProps,
   ExposedPopulationDefinition,
+  ExposureValue,
   LayerKey,
   PolygonalAggregationOperations,
   TableType,
@@ -95,7 +96,7 @@ export type TableRow = {
   baselineValue: DataRecord['value'];
   coordinates?: Position;
 } & {
-  [k in AggregationOperations]?: number;
+  [k in AggregationOperations]?: number | string;
 } & { [key: string]: number | string }; // extra columns like wind speed or earthquake magnitude
 
 const initialState: AnalysisResultState = {
@@ -329,6 +330,7 @@ export type AnalysisDispatchParams = {
   threshold: ThresholdDefinition;
   date: ReturnType<Date['getTime']>; // just a hint to developers that we give a date number here, not just any number
   statistic: AggregationOperations; // we might have to deviate from this if analysis accepts more than what this enum provides
+  exposureValue: ExposureValue;
 };
 
 export type PolygonAnalysisDispatchParams = {
@@ -358,6 +360,7 @@ const createAPIRequestParams = (
   params?: WfsRequestParams | AdminLevelDataLayerProps | BoundaryLayerProps,
   maskParams?: any,
   geojsonOut?: boolean,
+  exposureValue?: ExposureValue,
 ): ApiData => {
   // Get default values for groupBy and admin boundary file path at the proper adminLevel
   const {
@@ -396,6 +399,10 @@ const createAPIRequestParams = (
     ...maskParams,
     // TODO - remove the need for the geojson_out parameters. See TODO in zonal_stats.py.
     geojson_out: Boolean(geojsonOut),
+    intersect_comparison:
+      exposureValue?.operator && exposureValue.value
+        ? `${exposureValue?.operator}${exposureValue?.value}`
+        : undefined,
   };
 
   return apiRequest;
@@ -587,6 +594,7 @@ export const requestAndStoreAnalysis = createAsyncThunk<
     extent,
     statistic,
     threshold,
+    exposureValue,
   } = params;
   const baselineData = layerDataSelector(baselineLayer.id)(
     api.getState(),
@@ -607,6 +615,9 @@ export const requestAndStoreAnalysis = createAsyncThunk<
     extent,
     date,
     baselineLayer,
+    undefined,
+    undefined,
+    exposureValue,
   );
 
   const aggregateData = scaleAndFilterAggregateData(
@@ -652,8 +663,17 @@ export const requestAndStoreAnalysis = createAsyncThunk<
   // Create a legend based on statistic data to be used for admin level analsysis.
   const legend = createLegendFromFeatureArray(features, statistic);
 
+  const enrichedStatistics: (
+    | AggregationOperations
+    | 'stats_intersect_area'
+  )[] = [statistic];
+  if (statistic === AggregationOperations['Area exposed']) {
+    /* eslint-disable-next-line fp/no-mutating-methods */
+    enrichedStatistics.push('stats_intersect_area');
+  }
+
   const tableRows: TableRow[] = generateTableFromApiData(
-    [statistic],
+    enrichedStatistics,
     aggregateData,
     adminBoundariesData,
     apiRequest.group_by,
