@@ -1,5 +1,6 @@
 """Calulate zonal statistics and return a json or a geojson."""
 import logging
+import warnings
 from collections import defaultdict
 from datetime import datetime
 from json import dump, load
@@ -20,6 +21,7 @@ from app.models import (
 )
 from app.raster_utils import calculate_pixel_area, gdal_calc, reproj_match
 from app.timer import timed
+from app.utils import WarningsFilter
 from app.validation import VALID_OPERATORS
 from fastapi import HTTPException
 from rasterio.warp import Resampling
@@ -28,6 +30,9 @@ from shapely.geometry import mapping, shape  # type: ignore
 from shapely.ops import unary_union  # type: ignore
 
 logger = logging.getLogger(__name__)
+
+# Add custom filter to silence 'converting a masked element to nan' warnings
+logger.addFilter(WarningsFilter())
 
 
 DEFAULT_STATS = ["min", "max", "mean", "median", "sum", "std", "nodata", "count"]
