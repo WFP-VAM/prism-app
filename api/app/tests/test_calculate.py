@@ -24,6 +24,10 @@ def test_calculate_stats_geojson_output():
     geotiff = "/app/tests/raster_sample.tif"
     features = calculate_stats(zones, geotiff, geojson_out=True)
     assert len(features) == 26
+    # This breaks with Fiona >= 1.9 because it does not return
+    # dicts anymore, but immutable classes
+    # https://fiona.readthedocs.io/en/stable/manual.html#features
+    # and https://github.com/perrygeo/python-rasterstats/issues/274
     assert features[0]["type"] == "Feature"
 
 

@@ -30,7 +30,11 @@ from requests import get
 from .geotiff_from_stac_api import get_geotiff
 from .models import AlertsModel, StatsModel, UserInfoPydanticModel
 
-logging.basicConfig(level=logging.DEBUG)
+logging.basicConfig(
+    format="%(asctime)s %(levelname)-8s %(message)s",
+    level=logging.DEBUG,
+    datefmt="%Y-%m-%d %H:%M:%S",
+)
 logger = logging.getLogger(__name__)
 
 # silence boto3 logging to avoid spamming the logs
