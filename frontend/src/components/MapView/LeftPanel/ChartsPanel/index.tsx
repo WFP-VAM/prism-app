@@ -556,7 +556,7 @@ const ChartsPanel = memo(
           return [
             [
               locationString(
-                country,
+                multiCountry ? admin0Key : country,
                 selectedAdmin1Area,
                 selectedAdmin2Area,
                 adminLevel,
@@ -565,7 +565,7 @@ const ChartsPanel = memo(
             ],
             [
               locationString(
-                country,
+                multiCountry ? secondAdmin0Key : country,
                 comparedAdmin1Area,
                 comparedAdmin2Area,
                 comparedAdminLevel,
@@ -613,9 +613,12 @@ const ChartsPanel = memo(
       selectedAdmin2Area,
       startDate2,
       endDate2,
-      country,
-      classes.textLabel,
       t,
+      multiCountry,
+      admin0Key,
+      country,
+      secondAdmin0Key,
+      classes.textLabel,
     ]);
 
     useEffect(() => {
