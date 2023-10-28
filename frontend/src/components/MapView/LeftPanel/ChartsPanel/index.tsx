@@ -514,7 +514,10 @@ const ChartsPanel = memo(
               >
                 <ChartSection
                   chartLayer={layer}
-                  adminProperties={comparedAdminProperties as GeoJsonProperties}
+                  adminProperties={
+                    // default value prevents crash, but shows ugly warning
+                    (comparedAdminProperties as GeoJsonProperties) || {}
+                  }
                   adminLevel={comparedAdminLevel}
                   startDate={comparedStartDate as number}
                   endDate={comparedEndDate as number}
@@ -654,8 +657,23 @@ const ChartsPanel = memo(
       if (comparePeriods) {
         setComparePeriods(false);
       }
+      // default to first country when we first activate
+      // location comparison
+      if (secondAdminProperties === undefined) {
+        setSecondAdminProperties(adminProperties);
+      }
+      if (secondAdmin0Key === '') {
+        setSecondAdmin0Key(admin0Key);
+      }
       setCompareLocations(!compareLocations);
-    }, [compareLocations, comparePeriods]);
+    }, [
+      admin0Key,
+      adminProperties,
+      compareLocations,
+      comparePeriods,
+      secondAdmin0Key,
+      secondAdminProperties,
+    ]);
 
     const handleOnChangeComparePeriodsSwitch = useCallback(() => {
       if (compareLocations) {
