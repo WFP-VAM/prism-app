@@ -101,12 +101,6 @@ const LocationSelector = memo(
         : [];
     }, [admin0Key, boundaryLayer, data, i18nLocale, multiCountry]);
 
-    const selectedaAdmin0Area = useMemo(() => {
-      return orderedAdmin0areas.find(area => {
-        return admin0Key === area.key;
-      });
-    }, [admin0Key, orderedAdmin0areas]);
-
     const selectedAdmin1Area = useMemo(() => {
       return orderedAdmin1areas.find(area => {
         return admin1Key === area.key;
@@ -283,7 +277,7 @@ const LocationSelector = memo(
             id="outlined-admin-1"
             select
             label={t('Country')}
-            value={selectedaAdmin0Area?.key ?? country}
+            value={admin0Key ?? country}
             SelectProps={{
               renderValue: renderAdmin0Value,
             }}
