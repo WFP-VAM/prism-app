@@ -231,6 +231,7 @@ const LocationSelector = memo(
           // We don't have to reset the adminProperties because any children contains the admin 1 external key
           setAdmin2Key('');
           setAdminLevel(1);
+          setSelectedAdmin2Area('');
           return;
         }
         const admin2Id = selectedAdmin1Area?.children.find(childArea => {

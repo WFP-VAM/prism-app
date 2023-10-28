@@ -320,7 +320,7 @@ const ChartsPanel = memo(
 
     const generateCSVFilename = useCallback(() => {
       return [
-        country,
+        multiCountry ? admin0Key : country,
         selectedAdmin1Area ?? '',
         selectedAdmin2Area ?? '',
         ...selectedLayerTitles,
@@ -330,8 +330,10 @@ const ChartsPanel = memo(
         .map(snakeCase)
         .join('_');
     }, [
+      admin0Key,
       comparePeriods,
       country,
+      multiCountry,
       selectedAdmin1Area,
       selectedAdmin2Area,
       selectedLayerTitles,
@@ -339,7 +341,7 @@ const ChartsPanel = memo(
 
     const generateSecondCSVFilename = useCallback(() => {
       return [
-        country,
+        multiCountry ? secondAdmin0Key : country,
         compareLocations
           ? secondSelectedAdmin1Area ?? ''
           : selectedAdmin1Area ?? '',
@@ -355,8 +357,10 @@ const ChartsPanel = memo(
     }, [
       country,
       compareLocations,
+      multiCountry,
       secondSelectedAdmin1Area,
       selectedAdmin1Area,
+      secondAdmin0Key,
       secondSelectedAdmin2Area,
       selectedAdmin2Area,
       selectedLayerTitles,
@@ -598,27 +602,27 @@ const ChartsPanel = memo(
       ));
       return [...titles, ...zipped];
     }, [
+      admin0Key,
+      adminLevel,
       adminProperties,
-      startDate1,
-      endDate1,
-      selectedLayerTitles,
+      classes.textLabel,
       compareLocations,
       comparePeriods,
+      country,
+      endDate1,
+      endDate2,
+      multiCountry,
       secondAdminProperties,
       secondAdminLevel,
-      adminLevel,
-      secondSelectedAdmin1Area,
-      selectedAdmin1Area,
-      secondSelectedAdmin2Area,
-      selectedAdmin2Area,
-      startDate2,
-      endDate2,
-      t,
-      multiCountry,
-      admin0Key,
-      country,
       secondAdmin0Key,
-      classes.textLabel,
+      secondSelectedAdmin1Area,
+      secondSelectedAdmin2Area,
+      selectedAdmin1Area,
+      selectedLayerTitles,
+      selectedAdmin2Area,
+      startDate1,
+      startDate2,
+      t,
     ]);
 
     useEffect(() => {
