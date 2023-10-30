@@ -147,7 +147,7 @@ Specifically, update `info@ovio.org` with a domain admin email and `prism-api.ov
 To deploy, run:
 
 ```
-source set_envs.sh && make deploy
+make deploy
 ```
 
 There are a few known issues happening from time to time
