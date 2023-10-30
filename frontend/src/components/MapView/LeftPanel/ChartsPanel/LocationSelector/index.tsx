@@ -277,7 +277,7 @@ const LocationSelector = memo(
             classes={{ root: styles.selectRoot }}
             id="outlined-admin-1"
             select
-            label={t('Country')}
+            label={multiCountry ? t('Country') : country}
             value={admin0Key ?? country}
             SelectProps={{
               renderValue: renderAdmin0Value,
