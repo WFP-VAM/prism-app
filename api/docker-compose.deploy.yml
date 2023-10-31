@@ -18,7 +18,7 @@ services:
       - "--entrypoints.websecure.address=:443"
       - "--certificatesresolvers.myresolver.acme.tlschallenge=true"
       - "--certificatesresolvers.myresolver.acme.caserver=https://acme-staging-v02.api.letsencrypt.org/directory"
-      - "--certificatesresolvers.myresolver.acme.email=$INFO_EMAIL"
+      - "--certificatesresolvers.myresolver.acme.email=${INFO_EMAIL:?'Must provide info email'}"
       - "--certificatesresolvers.myresolver.acme.storage=/letsencrypt/acme.json"
       - traefik.docker.network=traefik_default
     networks:
@@ -26,8 +26,6 @@ services:
     ports:
       - "443:443"
       - "8080:8080"
-    environment:
-      - INFO_EMAIL=${INFO_EMAIL:?'Must provide info email'}
     volumes:
       - "./letsencrypt:/letsencrypt"
       - "/var/run/docker.sock:/var/run/docker.sock:ro"
