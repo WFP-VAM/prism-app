@@ -19,7 +19,7 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 DB_URI = getenv(
-    "DATABASE_URL"
+    "PRISM_ALERTS_DATABASE_URL"
 ) or "postgresql://{user}:{password}@{host}:{port}/{database}".format(
     host=getenv("POSTGRES_HOST", "host.docker.internal"),
     port=getenv("POSTGRES_PORT", "54321"),

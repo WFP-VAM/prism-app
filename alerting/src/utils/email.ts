@@ -21,8 +21,8 @@ export async function sendEmail({
   text: string;
   html?: string;
 }) {
-  const password = process.env.EMAIL_PASSWORD;
-  const user = process.env.EMAIL_USER || 'prism.alerts.wfp@gmail.com';
+  const password = process.env.PRISM_ALERTS_EMAIL_PASSWORD;
+  const user = process.env.PRISM_ALERTS_EMAIL_USER_USER || 'prism.alerts.wfp@gmail.com';
 
   if (!(password && user)) {
     // Generate test SMTP service account from ethereal.email
