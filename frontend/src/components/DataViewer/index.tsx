@@ -62,7 +62,6 @@ function DataViewer({ classes }: DatasetProps) {
         url: params.url,
         serverLayerName: params.serverLayerName,
         datasetFields: params.datasetFields,
-        selectedDate,
       };
       dispatch(loadDataset(requestParams));
     } else {

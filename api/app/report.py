@@ -80,7 +80,7 @@ async def download_report(
         await page.wait_for_selector('div[id="full-width-tabpanel-2"]', state="visible")
 
         await page.wait_for_selector(
-            'div[class="memo-analysisButtonContainer-140"]', state="visible"
+            'div[class^="memo-analysisButtonContainer-"]', state="visible"
         )
 
         await page.wait_for_selector(CREATE_REPORT_BUTTON_SELECTOR, state="attached")

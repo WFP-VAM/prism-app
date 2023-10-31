@@ -106,6 +106,7 @@ export const fetchEWSDataPointsByLocation = async (
   const endDate = moment(date)
     .clone()
     .set({ hour: 23, minute: 59, second: 59 });
+  // FIXME: pass start/end here? why the 24h delta?
   const startDate = endDate.clone().subtract(1, 'days');
   const format = 'YYYY-MM-DDTHH:mm:ss';
 
