@@ -1,4 +1,6 @@
 # Setup an EC2 server for Docker Swarm and Traefik.
+sudo apt update
+sudo apt install -y awscli make jq
 
 export USE_HOSTNAME=prism-api.ovio.org
 sudo hostnamectl set-hostname $USE_HOSTNAME

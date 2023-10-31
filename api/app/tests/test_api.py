@@ -180,9 +180,9 @@ def test_stats_endpoint_masked():
 def test_kobo_forms_endpoint(monkeypatch):
     """This test requires credentials for the kobo API."""
     # use with the following call
-    # KOBO_USERNAME=xxx KOBO_PW=xxx make api-test
+    # KOBO_USERNAME=xxx KOBO_PASSWORD=xxx make api-test
     monkeypatch.setenv("KOBO_USERNAME", "")
-    monkeypatch.setenv("KOBO_PW", "")
+    monkeypatch.setenv("KOBO_PASSWORD", "")
     # auth_token is username:password base64 encoded
     auth_token = ""
     response = client.get(
