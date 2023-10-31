@@ -4,18 +4,18 @@ import {
   Checkbox,
   createStyles,
   FormControl,
+  FormControlLabel,
+  FormGroup,
   Input,
-  InputAdornment,
   InputLabel,
   ListItemText,
   makeStyles,
   MenuItem,
   MenuProps,
   Select,
-  TextField,
+  Switch,
   Typography,
 } from '@material-ui/core';
-import { DateRangeRounded } from '@material-ui/icons';
 import { GeoJsonProperties } from 'geojson';
 import { groupBy, mapKeys, snakeCase } from 'lodash';
 import React, {
@@ -27,7 +27,6 @@ import React, {
   useRef,
   useState,
 } from 'react';
-import DatePicker from 'react-datepicker';
 import { useSelector } from 'react-redux';
 import { TFunctionKeys } from 'i18next';
 import { appConfig } from 'config';
@@ -41,12 +40,10 @@ import { leftPanelTabValueSelector } from 'context/leftPanelStateSlice';
 import { layerDataSelector } from 'context/mapStateSlice/selectors';
 import { useSafeTranslation } from 'i18n';
 import { castObjectsArrayToCsv } from 'utils/csv-utils';
-import {
-  getOrderedAreas,
-  OrderedArea,
-} from 'components/MapView/Layers/BoundaryDropdown';
 import { downloadToFile } from 'components/MapView/utils';
 import ChartSection from './ChartSection';
+import LocationSelector from './LocationSelector';
+import TimePeriodSelector from './TimePeriodSelector';
 
 // Load boundary layer for Admin2
 // WARNING - Make sure the dataviz_ids are available in the boundary file for Admin2
@@ -78,24 +75,9 @@ const useStyles = makeStyles(() =>
       width: '100%',
       height: '100%',
     },
-    selectRoot: {
-      marginTop: 30,
-      color: 'black',
-      minWidth: '300px',
-      maxWidth: '350px',
-      width: 'auto',
-      '& label': {
-        color: '#333333',
-      },
-      '& .MuiInputBase-root': {
-        color: 'black',
-        '&:hover fieldset': {
-          borderColor: '#333333',
-        },
-        '&.Mui-focused fieldset': {
-          borderColor: '#333333',
-        },
-      },
+    formGroup: {
+      marginBottom: 20,
+      marginLeft: 20,
     },
     chartsPanelParams: {
       marginTop: 30,
@@ -119,19 +101,6 @@ const useStyles = makeStyles(() =>
     textLabel: {
       color: 'black',
     },
-    datePickerContainer: {
-      marginTop: 45,
-      width: 'auto',
-      color: 'black',
-      display: 'flex',
-      flexDirection: 'row',
-      alignItems: 'center',
-      borderBottom: ' 1px solid #858585',
-      minWidth: 300,
-    },
-    calendarPopper: {
-      zIndex: 3,
-    },
     chartsPanelCharts: {
       overflowY: 'auto',
       overflowX: 'hidden',
@@ -143,9 +112,6 @@ const useStyles = makeStyles(() =>
       padding: '16px',
       marginTop: 0,
       paddingBottom: '1em',
-    },
-    removeAdmin: {
-      fontWeight: 'bold',
     },
     downloadButton: {
       backgroundColor: '#62B2BD',
@@ -170,6 +136,31 @@ const useStyles = makeStyles(() =>
       width: '50%',
       '&.Mui-disabled': { opacity: 0.5 },
     },
+    switch: {
+      marginRight: 2,
+    },
+    switchTrack: {
+      backgroundColor: '#E0E0E0',
+    },
+    switchBase: {
+      color: '#E0E0E0',
+      '&.Mui-checked': {
+        color: '#53888F',
+      },
+      '&.Mui-checked + .MuiSwitch-track': {
+        backgroundColor: '#B1D6DB',
+      },
+    },
+    switchTitle: {
+      lineHeight: 1.8,
+      color: 'black',
+      fontWeight: 400,
+    },
+    switchTitleUnchecked: {
+      lineHeight: 1.8,
+      color: '#828282',
+      fontWeight: 400,
+    },
   }),
 );
 
@@ -189,70 +180,76 @@ const menuProps: Partial<MenuProps> = {
 
 // We export the downloadCsv function to be tested independently
 export const downloadCsv = (
-  dataForCsv: MutableRefObject<{ [key: string]: any[] }>,
-  filename: string,
+  params: [MutableRefObject<{ [key: string]: any[] }>, string][],
+  // filename1: string,
+  // dataForSecondCsv: MutableRefObject<{ [key: string]: any[] }>,
+  // filename2: string,
 ) => {
   return () => {
-    const dateColumn = 'Date';
-    const getKeyName = (key: string, chartName: string) =>
-      key.endsWith('_avg')
-        ? `${snakeCase(chartName)}_avg`
-        : snakeCase(chartName);
+    params.forEach(filedata => {
+      const [dataForCsv, filename] = filedata;
 
-    const columnsNamesPerChart = Object.entries(dataForCsv.current).map(
-      ([key, value]) => {
-        const first = value[0];
-        const keys = Object.keys(first);
-        const filtered = keys.filter(x => x !== dateColumn);
-        const mapped = filtered.map(x => getKeyName(x, key));
-        return Object.fromEntries(mapped.map(x => [x, x]));
-      },
-    );
+      const dateColumn = 'Date';
+      const getKeyName = (key: string, chartName: string) =>
+        key.endsWith('_avg')
+          ? `${snakeCase(chartName)}_avg`
+          : snakeCase(chartName);
 
-    const columnsNames = columnsNamesPerChart.reduce(
-      (prev, curr) => ({ ...prev, ...curr }),
-      { [dateColumn]: dateColumn },
-    );
+      const columnsNamesPerChart = Object.entries(dataForCsv.current).map(
+        ([key, value]) => {
+          const first = value[0];
+          const keys = Object.keys(first);
+          const filtered = keys.filter(x => x !== dateColumn);
+          const mapped = filtered.map(x => getKeyName(x, key));
+          return Object.fromEntries(mapped.map(x => [x, x]));
+        },
+      );
 
-    const merged = Object.entries(dataForCsv.current)
-      .map(([key, value]) => {
-        return value.map(x => {
-          return mapKeys(x, (v, k) =>
-            k === dateColumn ? dateColumn : getKeyName(k, key),
-          );
-        });
-      })
-      .flat();
-    if (merged.length < 1) {
-      return;
-    }
-
-    const grouped = groupBy(merged, dateColumn);
-    // The blueprint of objects array data
-    const initialObjectsArrayBlueprintData = Object.keys(columnsNames).reduce(
-      (acc: { [key: string]: string }, key) => {
-        // eslint-disable-next-line fp/no-mutation
-        acc[key] = '';
-        return acc;
-      },
-      {},
-    );
-
-    const objectsArray = Object.entries(grouped).map(([, value]) => {
-      return value.reduce(
+      const columnsNames = columnsNamesPerChart.reduce(
         (prev, curr) => ({ ...prev, ...curr }),
-        initialObjectsArrayBlueprintData,
+        { [dateColumn]: dateColumn },
+      );
+
+      const merged = Object.entries(dataForCsv.current)
+        .map(([key, value]) => {
+          return value.map(x => {
+            return mapKeys(x, (v, k) =>
+              k === dateColumn ? dateColumn : getKeyName(k, key),
+            );
+          });
+        })
+        .flat();
+      if (merged.length < 1) {
+        return;
+      }
+
+      const grouped = groupBy(merged, dateColumn);
+      // The blueprint of objects array data
+      const initialObjectsArrayBlueprintData = Object.keys(columnsNames).reduce(
+        (acc: { [key: string]: string }, key) => {
+          // eslint-disable-next-line fp/no-mutation
+          acc[key] = '';
+          return acc;
+        },
+        {},
+      );
+
+      const objectsArray = Object.entries(grouped).map(([, value]) => {
+        return value.reduce(
+          (prev, curr) => ({ ...prev, ...curr }),
+          initialObjectsArrayBlueprintData,
+        );
+      });
+
+      downloadToFile(
+        {
+          content: castObjectsArrayToCsv(objectsArray, columnsNames, ','),
+          isUrl: false,
+        },
+        filename,
+        'text/csv',
       );
     });
-
-    downloadToFile(
-      {
-        content: castObjectsArrayToCsv(objectsArray, columnsNames, ','),
-        isUrl: false,
-      },
-      filename,
-      'text/csv',
-    );
   };
 };
 
@@ -264,157 +261,143 @@ const ChartsPanel = memo(
     ) as LayerData<BoundaryLayerProps> | undefined;
     const { data } = boundaryLayerData || {};
     const classes = useStyles();
-    const [admin0Key, setAdmin0Key] = useState('');
-    const [admin1Key, setAdmin1Key] = useState('');
-    const [admin2Key, setAdmin2Key] = useState('');
+    const [compareLocations, setCompareLocations] = useState(false);
+    const [comparePeriods, setComparePeriods] = useState(false);
+
+    // first location state
+    const [admin0Key, setAdmin0Key] = useState<string>('');
+    const [admin1Key, setAdmin1Key] = useState<string>('');
+    const [admin2Key, setAdmin2Key] = useState<string>('');
+    const [selectedAdmin1Area, setSelectedAdmin1Area] = useState('');
+    const [selectedAdmin2Area, setSelectedAdmin2Area] = useState('');
     const [adminLevel, setAdminLevel] = useState<0 | 1 | 2>(
+      countryAdmin0Id ? 0 : 1,
+    );
+    // second (compared) location state
+    const [secondAdmin0Key, setSecondAdmin0Key] = useState<string>('');
+    const [secondAdmin1Key, setSecondAdmin1Key] = useState<string>('');
+    const [secondAdmin2Key, setSecondAdmin2Key] = useState<string>('');
+    const [secondSelectedAdmin1Area, setSecondSelectedAdmin1Area] = useState(
+      '',
+    );
+    const [secondSelectedAdmin2Area, setSecondSelectedAdmin2Area] = useState(
+      '',
+    );
+    const [secondAdminLevel, setSecondAdminLevel] = useState<0 | 1 | 2>(
       countryAdmin0Id ? 0 : 1,
     );
 
     const [selectedLayerTitles, setSelectedLayerTitles] = useState<
       string[] | TFunctionKeys[]
     >([]);
-    const [selectedDate, setSelectedDate] = useState<number | null>(
+
+    const oneDayInMs = 24 * 60 * 60 * 1000;
+    const oneYearInMs = 365 * oneDayInMs;
+    const [startDate1, setStartDate1] = useState<number | null>(
+      new Date().getTime() - oneYearInMs,
+    );
+    const [endDate1, setEndDate1] = useState<number | null>(
       new Date().getTime(),
     );
+    // cheat here and shift compared dates by 1 day to avoid duplicate
+    // keys in title components
+    const [startDate2, setStartDate2] = useState<number | null>(
+      new Date().getTime() - oneYearInMs - oneDayInMs,
+    );
+    const [endDate2, setEndDate2] = useState<number | null>(
+      new Date().getTime() - oneDayInMs,
+    );
     const [adminProperties, setAdminProperties] = useState<GeoJsonProperties>();
+    const [secondAdminProperties, setSecondAdminProperties] = useState<
+      GeoJsonProperties
+    >();
     const dataForCsv = useRef<{ [key: string]: any[] }>({});
+    const dataForSecondCsv = useRef<{ [key: string]: any[] }>({});
 
-    const { t, i18n: i18nLocale } = useSafeTranslation();
+    const { t } = useSafeTranslation();
 
     const tabValue = useSelector(leftPanelTabValueSelector);
 
-    const orderedAdmin0areas = useMemo(() => {
-      if (!multiCountry) {
-        return [];
-      }
-      return data ? getOrderedAreas(data, boundaryLayer, '', i18nLocale) : [];
-    }, [data, i18nLocale, multiCountry]);
-
-    const orderedAdmin1areas = useMemo(() => {
-      return data
-        ? getOrderedAreas(
-            data,
-            boundaryLayer,
-            '',
-            i18nLocale,
-            multiCountry ? 1 : 0,
-            admin0Key,
-          )
-        : [];
-    }, [admin0Key, data, i18nLocale, multiCountry]);
-
-    const selectedaAdmin0Area = useMemo(() => {
-      return orderedAdmin0areas.find(area => {
-        return admin0Key === area.key;
-      });
-    }, [admin0Key, orderedAdmin0areas]);
-
-    const selectedAdmin1Area = useMemo(() => {
-      return orderedAdmin1areas.find(area => {
-        return admin1Key === area.key;
-      });
-    }, [admin1Key, orderedAdmin1areas]);
-
-    const seletectdAdmin2Area = useMemo(() => {
-      return selectedAdmin1Area?.children.find(childArea => {
-        return admin2Key === childArea.key;
-      });
-    }, [selectedAdmin1Area, admin2Key]);
-
     const generateCSVFilename = useCallback(() => {
       return [
-        country,
-        selectedAdmin1Area?.title ?? '',
-        seletectdAdmin2Area?.label ?? '',
+        multiCountry ? admin0Key : country,
+        selectedAdmin1Area ?? '',
+        selectedAdmin2Area ?? '',
         ...selectedLayerTitles,
+        comparePeriods ? 'first_period' : '',
       ]
         .filter(x => !!x)
         .map(snakeCase)
         .join('_');
-    }, [selectedAdmin1Area, seletectdAdmin2Area, selectedLayerTitles, country]);
+    }, [
+      admin0Key,
+      comparePeriods,
+      country,
+      multiCountry,
+      selectedAdmin1Area,
+      selectedAdmin2Area,
+      selectedLayerTitles,
+    ]);
 
-    const onChangeAdmin0Area = useCallback(
-      (event: React.ChangeEvent<HTMLInputElement>) => {
-        // The external chart key for admin 0 is stored in all its children regions
-        // here we get the first child properties
-        const admin0Id = orderedAdmin0areas.find(area => {
-          return area.key === event.target.value;
-        })?.children[0].value;
-
-        if (data) {
-          setAdminProperties(getProperties(data, admin0Id));
-        }
-        setAdmin0Key(event.target.value);
-        setAdmin1Key('');
-        setAdmin2Key('');
-        setAdminLevel(0);
-      },
-      [orderedAdmin0areas, data],
-    );
-
-    const onChangeAdmin1Area = useCallback(
-      (event: React.ChangeEvent<HTMLInputElement>) => {
-        if (!event.target.value) {
-          setAdmin1Key('');
-          if (countryAdmin0Id || multiCountry) {
-            setAdminLevel(0);
-          }
-          return;
-        }
-
-        // The external chart key for admin 1 is stored in all its children regions
-        // here we get the first child properties
-        const admin1Id = orderedAdmin1areas.find(area => {
-          return area.key === event.target.value;
-        })?.children[0].value;
-
-        if (data) {
-          setAdminProperties(getProperties(data, admin1Id));
-        }
-        setAdmin1Key(event.target.value);
-        setAdmin2Key('');
-        setAdminLevel(1);
-      },
-      [orderedAdmin1areas, countryAdmin0Id, multiCountry, data],
-    );
-
-    const onChangeAdmin2Area = useCallback(
-      (event: React.ChangeEvent<HTMLInputElement>) => {
-        if (!event.target.value) {
-          // Unset Admin 2
-          // We don't have to reset the adminProperties because any children contains the admin 1 external key
-          setAdmin2Key('');
-          setAdminLevel(1);
-          return;
-        }
-        const admin2Id = selectedAdmin1Area?.children.find(childArea => {
-          return childArea.key === event.target.value;
-        })?.value;
-        if (data) {
-          setAdminProperties(getProperties(data, admin2Id));
-        }
-        setAdmin2Key(event.target.value);
-        setAdminLevel(2);
-      },
-      [selectedAdmin1Area, data],
-    );
+    const generateSecondCSVFilename = useCallback(() => {
+      return [
+        multiCountry ? secondAdmin0Key : country,
+        compareLocations
+          ? secondSelectedAdmin1Area ?? ''
+          : selectedAdmin1Area ?? '',
+        compareLocations
+          ? secondSelectedAdmin2Area ?? ''
+          : selectedAdmin2Area ?? '',
+        ...selectedLayerTitles,
+        comparePeriods ? 'second_period' : '',
+      ]
+        .filter(x => !!x)
+        .map(snakeCase)
+        .join('_');
+    }, [
+      country,
+      compareLocations,
+      multiCountry,
+      secondSelectedAdmin1Area,
+      selectedAdmin1Area,
+      secondAdmin0Key,
+      secondSelectedAdmin2Area,
+      selectedAdmin2Area,
+      selectedLayerTitles,
+      comparePeriods,
+    ]);
 
     const onChangeChartLayers = useCallback(
       (event: React.ChangeEvent<{ value: unknown }>) => {
-        setSelectedLayerTitles(event.target.value as string[]);
+        if (compareLocations || comparePeriods) {
+          setSelectedLayerTitles([event.target.value] as string[]);
+        } else {
+          setSelectedLayerTitles(event.target.value as string[]);
+        }
       },
-      [],
+      [compareLocations, comparePeriods],
     );
+
+    const locationString = (
+      countryName: string,
+      adm1Name: string,
+      adm2Name: string,
+      admLevel: number,
+    ) => {
+      const l = admLevel;
+      return `${countryName}${l > 0 ? ` - ${adm1Name}` : ''}${
+        l > 1 ? ` - ${adm2Name}` : ''
+      }`;
+    };
 
     const showChartsPanel = useMemo(() => {
       return (
         adminProperties &&
-        selectedDate &&
+        startDate1 &&
         tabIndex === tabValue &&
         selectedLayerTitles.length >= 1
       );
-    }, [adminProperties, selectedDate, selectedLayerTitles.length, tabValue]);
+    }, [adminProperties, startDate1, selectedLayerTitles.length, tabValue]);
 
     useEffect(() => {
       if (!adminProperties && countryAdmin0Id && data) {
@@ -423,7 +406,13 @@ const ChartsPanel = memo(
     }, [adminProperties, countryAdmin0Id, data]);
 
     useEffect(() => {
-      if (adminProperties && selectedDate && selectedLayerTitles.length >= 1) {
+      if (!secondAdminProperties && countryAdmin0Id && data) {
+        setSecondAdminProperties(getProperties(data));
+      }
+    }, [secondAdminProperties, countryAdmin0Id, data]);
+
+    useEffect(() => {
+      if (adminProperties && startDate1 && selectedLayerTitles.length >= 1) {
         setPanelSize(PanelSize.xlarge);
       } else {
         setPanelSize(PanelSize.medium);
@@ -431,7 +420,8 @@ const ChartsPanel = memo(
     }, [
       setPanelSize,
       adminProperties,
-      selectedDate,
+      startDate1,
+      startDate2,
       selectedLayerTitles.length,
       countryAdmin0Id,
     ]);
@@ -440,7 +430,15 @@ const ChartsPanel = memo(
       // chart size is not responsive once it is mounted
       // seems to be possible in the newer chart.js versions
       // here we mount a new component if one chart
-      if (adminProperties && selectedDate && selectedLayerTitles.length === 1) {
+      if (
+        adminProperties &&
+        startDate1 &&
+        endDate1 &&
+        selectedLayerTitles.length === 1 &&
+        !compareLocations &&
+        !comparePeriods
+      ) {
+        // show a single chart
         const chartLayer = chartLayers.find(layer =>
           selectedLayerTitles.includes(layer.title),
         );
@@ -455,37 +453,177 @@ const ChartsPanel = memo(
               chartLayer={chartLayer as WMSLayerProps}
               adminProperties={adminProperties || {}}
               adminLevel={adminLevel}
-              date={selectedDate}
+              startDate={startDate1}
+              endDate={endDate1}
               dataForCsv={dataForCsv}
             />
           </Box>
         );
       }
-      return (
-        selectedLayerTitles.length > 1 &&
-        chartLayers
-          .filter(layer => selectedLayerTitles.includes(layer.title))
-          .map(layer => (
-            <Box
-              key={layer.title}
-              style={{
-                height: '240px',
-                minWidth: '40%',
-                flex: 1,
-                position: 'relative',
-              }}
-            >
-              <ChartSection
-                chartLayer={layer}
-                adminProperties={adminProperties as GeoJsonProperties}
-                adminLevel={adminLevel}
-                date={selectedDate as number}
-                dataForCsv={dataForCsv}
-              />
-            </Box>
-          ))
-      );
-    }, [adminLevel, adminProperties, selectedDate, selectedLayerTitles]);
+      // show 2 or more charts (multi layer or comparisons)
+      const mainChartList =
+        selectedLayerTitles.length >= 1
+          ? chartLayers
+              .filter(layer => selectedLayerTitles.includes(layer.title))
+              .map(layer => (
+                <Box
+                  key={layer.title}
+                  style={{
+                    height: '240px',
+                    minWidth: '40%',
+                    flex: 1,
+                    position: 'relative',
+                  }}
+                >
+                  <ChartSection
+                    chartLayer={layer}
+                    adminProperties={adminProperties as GeoJsonProperties}
+                    adminLevel={adminLevel}
+                    startDate={startDate1 as number}
+                    endDate={endDate1 as number}
+                    dataForCsv={dataForCsv}
+                  />
+                </Box>
+              ))
+          : [];
+      // now add comparison charts
+      const comparing = compareLocations || comparePeriods;
+      const comparedAdminProperties = compareLocations
+        ? secondAdminProperties
+        : adminProperties;
+      const comparedAdminLevel = compareLocations
+        ? secondAdminLevel
+        : adminLevel;
+      const comparedAdmin1Area = compareLocations
+        ? secondSelectedAdmin1Area
+        : selectedAdmin1Area;
+      const comparedAdmin2Area = compareLocations
+        ? secondSelectedAdmin2Area
+        : selectedAdmin2Area;
+      const comparedStartDate = comparePeriods ? startDate2 : startDate1;
+      const comparedEndDate = comparePeriods ? endDate2 : endDate1;
+
+      const comparisonChartList = comparing
+        ? chartLayers
+            .filter(layer => selectedLayerTitles.includes(layer.title))
+            .map(layer => (
+              <Box
+                key={`${layer.title} bleh`}
+                style={{
+                  height: '240px',
+                  minWidth: '40%',
+                  flex: 1,
+                  position: 'relative',
+                }}
+              >
+                <ChartSection
+                  chartLayer={layer}
+                  adminProperties={
+                    // default value prevents crash, but shows ugly warning
+                    (comparedAdminProperties as GeoJsonProperties) || {}
+                  }
+                  adminLevel={comparedAdminLevel}
+                  startDate={comparedStartDate as number}
+                  endDate={comparedEndDate as number}
+                  dataForCsv={dataForSecondCsv}
+                />
+              </Box>
+            ))
+        : [];
+      const zipped = mainChartList
+        .map((chart, idx) => [chart, comparisonChartList[idx]])
+        .flat();
+
+      const timePeriodString = (
+        startDate: number | null,
+        endDate: number | null,
+      ) => {
+        if (startDate === null || endDate === null) {
+          return '';
+        }
+        const options = {
+          weekday: undefined,
+          year: 'numeric',
+          month: 'short',
+          day: 'numeric',
+        };
+        const formatDate = (d: number) => {
+          const dd = new Date(d);
+          return dd.toLocaleDateString(t('date_locale'), options);
+        };
+
+        return `${formatDate(startDate)} - ${formatDate(endDate)}`;
+      };
+
+      const titleStrings: () => string[][] = () => {
+        if (compareLocations) {
+          return [
+            [
+              locationString(
+                multiCountry ? admin0Key : country,
+                selectedAdmin1Area,
+                selectedAdmin2Area,
+                adminLevel,
+              ),
+              'main',
+            ],
+            [
+              locationString(
+                multiCountry ? secondAdmin0Key : country,
+                comparedAdmin1Area,
+                comparedAdmin2Area,
+                comparedAdminLevel,
+              ),
+              'compared',
+            ],
+          ];
+        }
+        if (comparePeriods) {
+          return [
+            [timePeriodString(startDate1, endDate1), 'main'],
+            [timePeriodString(startDate2, endDate2), 'compared'],
+          ];
+        }
+        return [];
+      };
+
+      const titles = titleStrings().map(title => (
+        <Box
+          key={`${title[0]}${title[1]}`}
+          style={{
+            height: '30px',
+            minWidth: '40%',
+            flex: 1,
+            position: 'relative',
+          }}
+        >
+          <Typography className={classes.textLabel}>{title[0]}</Typography>
+        </Box>
+      ));
+      return [...titles, ...zipped];
+    }, [
+      admin0Key,
+      adminLevel,
+      adminProperties,
+      classes.textLabel,
+      compareLocations,
+      comparePeriods,
+      country,
+      endDate1,
+      endDate2,
+      multiCountry,
+      secondAdminProperties,
+      secondAdminLevel,
+      secondAdmin0Key,
+      secondSelectedAdmin1Area,
+      secondSelectedAdmin2Area,
+      selectedAdmin1Area,
+      selectedLayerTitles,
+      selectedAdmin2Area,
+      startDate1,
+      startDate2,
+      t,
+    ]);
 
     useEffect(() => {
       if (showChartsPanel) {
@@ -507,14 +645,49 @@ const ChartsPanel = memo(
     const handleClearAllSelectedCharts = useCallback(() => {
       setSelectedLayerTitles([]);
       // Clear the date
-      setSelectedDate(new Date().getTime());
+      setStartDate1(new Date().getTime() - oneYearInMs);
+      setEndDate1(new Date().getTime());
+      setStartDate2(new Date().getTime() - oneYearInMs);
+      setEndDate2(new Date().getTime());
       // reset the admin level
       setAdminLevel(countryAdmin0Id ? 0 : 1);
-      // reset admin 1 title
+      setSecondAdminLevel(countryAdmin0Id ? 0 : 1);
+      // reset admin 1 titles
       setAdmin1Key('');
-      // reset the admin 2 title
+      setSecondAdmin1Key('');
+      // reset the admin 2 titles
       setAdmin2Key('');
-    }, [countryAdmin0Id]);
+      setSecondAdmin2Key('');
+    }, [countryAdmin0Id, oneYearInMs]);
+
+    const handleOnChangeCompareLocationsSwitch = useCallback(() => {
+      if (comparePeriods) {
+        setComparePeriods(false);
+      }
+      // default to first country when we first activate
+      // location comparison
+      if (secondAdminProperties === undefined) {
+        setSecondAdminProperties(adminProperties);
+      }
+      if (secondAdmin0Key === '') {
+        setSecondAdmin0Key(admin0Key);
+      }
+      setCompareLocations(!compareLocations);
+    }, [
+      admin0Key,
+      adminProperties,
+      compareLocations,
+      comparePeriods,
+      secondAdmin0Key,
+      secondAdminProperties,
+    ]);
+
+    const handleOnChangeComparePeriodsSwitch = useCallback(() => {
+      if (compareLocations) {
+        setCompareLocations(false);
+      }
+      setComparePeriods(!comparePeriods);
+    }, [compareLocations, comparePeriods]);
 
     const chartsSelectRenderValue = useCallback(
       selected => {
@@ -527,141 +700,134 @@ const ChartsPanel = memo(
       [t],
     );
 
-    const findArea = (
-      orderedAdminAreas: OrderedArea[],
-      adminKeyValue: string,
-    ) =>
-      orderedAdminAreas.find(category => {
-        return category.key === adminKeyValue;
-      })?.title;
-
-    const renderAdmin0Value = useCallback(
-      admin0keyValue => {
-        if (!multiCountry) {
-          return country;
-        }
-        return findArea(orderedAdmin0areas, admin0keyValue);
-      },
-      [country, multiCountry, orderedAdmin0areas],
-    );
-
-    const renderAdmin1Value = useCallback(
-      admin1keyValue => {
-        return findArea(orderedAdmin1areas, admin1keyValue);
-      },
-      [orderedAdmin1areas],
-    );
-
-    const renderAdmin2Value = useCallback(
-      admin2KeyValue => {
-        return selectedAdmin1Area?.children.find(childCategory => {
-          return childCategory.key === admin2KeyValue;
-        })?.label;
-      },
-      [selectedAdmin1Area],
-    );
-
     if (tabIndex !== tabValue) {
       return null;
     }
 
-    const renderMenuItemList = (orderedAdminArea: OrderedArea[]) =>
-      orderedAdminArea.map(option => (
-        <MenuItem key={option.key} value={option.key}>
-          {option.title}
-        </MenuItem>
-      ));
-
     return (
       <Box className={classes.chartsPanelParams}>
-        <TextField
-          classes={{ root: classes.selectRoot }}
-          id="outlined-admin-1"
-          select
-          label={t('Country')}
-          value={selectedaAdmin0Area?.key ?? country}
-          SelectProps={{
-            renderValue: renderAdmin0Value,
-          }}
-          onChange={onChangeAdmin0Area}
-          variant="outlined"
-          disabled={!multiCountry}
-        >
-          <MenuItem key={country} value={country} disabled>
-            {country}
-          </MenuItem>
-          {renderMenuItemList(orderedAdmin0areas)}
-        </TextField>
-
-        <TextField
-          classes={{ root: classes.selectRoot }}
-          id="outlined-admin-1"
-          select
-          label={t('Admin 1')}
-          value={selectedAdmin1Area?.key ?? ''}
-          SelectProps={{
-            renderValue: renderAdmin1Value,
-          }}
-          onChange={onChangeAdmin1Area}
-          variant="outlined"
-        >
-          <MenuItem divider>
-            <Box className={classes.removeAdmin}> {t('Remove Admin 1')}</Box>
-          </MenuItem>
-          {renderMenuItemList(orderedAdmin1areas)}
-        </TextField>
-        {admin1Key && (
-          <TextField
-            classes={{ root: classes.selectRoot }}
-            id="outlined-admin-2"
-            select
-            label={t('Admin 2')}
-            value={seletectdAdmin2Area?.key ?? ''}
-            SelectProps={{
-              renderValue: renderAdmin2Value,
-            }}
-            onChange={onChangeAdmin2Area}
-            variant="outlined"
-          >
-            <MenuItem divider>
-              <Box className={classes.removeAdmin}> {t('Remove Admin 2')}</Box>
-            </MenuItem>
-            {selectedAdmin1Area?.children.map(option => (
-              <MenuItem key={option.key} value={option.key}>
-                {option.label}
-              </MenuItem>
-            ))}
-          </TextField>
-        )}
-        <Box className={classes.datePickerContainer}>
-          <Typography className={classes.textLabel} variant="body2">
-            {`${t('Date')}: `}
-          </Typography>
-          <DatePicker
-            locale={t('date_locale')}
-            dateFormat="PP"
-            selected={selectedDate ? new Date(selectedDate) : null}
-            onChange={date => setSelectedDate(date?.getTime() || selectedDate)}
-            maxDate={new Date()}
-            todayButton={t('Today')}
-            peekNextMonth
-            showMonthDropdown
-            showYearDropdown
-            dropdownMode="select"
-            customInput={
-              <Input
-                className={classes.textLabel}
-                disableUnderline
-                endAdornment={
-                  <InputAdornment position="end">
-                    <DateRangeRounded />
-                  </InputAdornment>
-                }
+        <FormGroup className={classes.formGroup}>
+          <FormControlLabel
+            style={{ marginLeft: 20 }}
+            control={
+              <Switch
+                checked={compareLocations}
+                size="small"
+                className={classes.switch}
+                classes={{
+                  switchBase: classes.switchBase,
+                  track: classes.switchTrack,
+                }}
+                onChange={handleOnChangeCompareLocationsSwitch}
+                inputProps={{
+                  'aria-label': 'Compare Locations',
+                }}
               />
             }
-            popperClassName={classes.calendarPopper}
+            label={
+              <Typography
+                className={
+                  compareLocations
+                    ? classes.switchTitle
+                    : classes.switchTitleUnchecked
+                }
+              >
+                {t('Compare Locations')}
+              </Typography>
+            }
+            checked={compareLocations}
           />
-        </Box>
+
+          <LocationSelector
+            admin0Key={admin0Key}
+            admin1Key={admin1Key}
+            admin2Key={admin2Key}
+            boundaryLayer={boundaryLayer}
+            country={country}
+            countryAdmin0Id={countryAdmin0Id}
+            data={data}
+            getProperties={getProperties}
+            multiCountry={multiCountry}
+            setAdmin0Key={setAdmin0Key}
+            setAdmin1Key={setAdmin1Key}
+            setAdmin2Key={setAdmin2Key}
+            setAdminLevel={setAdminLevel}
+            setAdminProperties={setAdminProperties}
+            setSelectedAdmin1Area={setSelectedAdmin1Area}
+            setSelectedAdmin2Area={setSelectedAdmin2Area}
+            title={compareLocations ? t('Location 1') : null}
+          />
+          {compareLocations && (
+            <LocationSelector
+              admin0Key={secondAdmin0Key}
+              admin1Key={secondAdmin1Key}
+              admin2Key={secondAdmin2Key}
+              boundaryLayer={boundaryLayer}
+              country={country}
+              countryAdmin0Id={countryAdmin0Id}
+              data={data}
+              getProperties={getProperties}
+              multiCountry={multiCountry}
+              setAdmin0Key={setSecondAdmin0Key}
+              setAdmin1Key={setSecondAdmin1Key}
+              setAdmin2Key={setSecondAdmin2Key}
+              setAdminLevel={setSecondAdminLevel}
+              setAdminProperties={setSecondAdminProperties}
+              setSelectedAdmin1Area={setSecondSelectedAdmin1Area}
+              setSelectedAdmin2Area={setSecondSelectedAdmin2Area}
+              title={compareLocations ? t('Location 2') : null}
+            />
+          )}
+        </FormGroup>
+
+        <FormGroup className={classes.formGroup}>
+          <FormControlLabel
+            control={
+              <Switch
+                checked={comparePeriods}
+                size="small"
+                className={classes.switch}
+                classes={{
+                  switchBase: classes.switchBase,
+                  track: classes.switchTrack,
+                }}
+                onChange={handleOnChangeComparePeriodsSwitch}
+                inputProps={{
+                  'aria-label': 'Compare Periods',
+                }}
+              />
+            }
+            label={
+              <Typography
+                className={
+                  comparePeriods
+                    ? classes.switchTitle
+                    : classes.switchTitleUnchecked
+                }
+              >
+                {t('Compare Periods')}
+              </Typography>
+            }
+            checked={comparePeriods}
+          />
+          <TimePeriodSelector
+            startDate={startDate1}
+            setStartDate={setStartDate1}
+            endDate={endDate1}
+            setEndDate={setEndDate1}
+            title={comparePeriods ? t('Period 1') : null}
+          />
+          {comparePeriods && (
+            <TimePeriodSelector
+              startDate={startDate2}
+              setStartDate={setStartDate2}
+              endDate={endDate2}
+              setEndDate={setEndDate2}
+              title={comparePeriods ? t('Period 2') : null}
+            />
+          )}
+        </FormGroup>
+
         <FormControl className={classes.layerFormControl}>
           <InputLabel id="chart-layers-mutiple-checkbox-label">
             {t('Select Charts')}
@@ -669,7 +835,7 @@ const ChartsPanel = memo(
           <Select
             labelId="chart-layers-mutiple-checkbox-label"
             id="chart-layers-mutiple-checkbox"
-            multiple
+            multiple={!(compareLocations || comparePeriods)}
             value={selectedLayerTitles}
             onChange={onChangeChartLayers}
             input={<Input />}
@@ -692,11 +858,14 @@ const ChartsPanel = memo(
         </FormControl>
         <Button
           className={classes.downloadButton}
-          onClick={downloadCsv(dataForCsv, generateCSVFilename())}
+          onClick={downloadCsv([
+            [dataForCsv, generateCSVFilename()],
+            [dataForSecondCsv, generateSecondCSVFilename()],
+          ])}
           disabled={
             !(
               adminProperties &&
-              selectedDate &&
+              startDate1 &&
               tabIndex === tabValue &&
               selectedLayerTitles.length >= 1
             )
@@ -710,7 +879,7 @@ const ChartsPanel = memo(
           disabled={
             !(
               adminProperties &&
-              selectedDate &&
+              startDate1 &&
               tabIndex === tabValue &&
               selectedLayerTitles.length >= 1
             )

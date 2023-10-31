@@ -27,7 +27,8 @@ const ChartSection = memo(
     chartLayer,
     adminProperties,
     adminLevel,
-    date,
+    startDate,
+    endDate,
     dataForCsv,
     classes,
   }: ChartSectionProps) => {
@@ -72,13 +73,15 @@ const ChartSection = memo(
         url: params.url,
         serverLayerName: params.serverLayerName,
         datasetFields: params.datasetFields,
-        selectedDate: date,
+        startDate,
+        endDate,
       };
     }, [
       adminCode,
       adminKey,
       adminLevel,
-      date,
+      startDate,
+      endDate,
       params.boundaryProps,
       params.datasetFields,
       params.serverLayerName,
@@ -280,7 +283,8 @@ export interface ChartSectionProps extends WithStyles<typeof styles> {
   chartLayer: WMSLayerProps;
   adminProperties: GeoJsonProperties;
   adminLevel: 0 | 1 | 2;
-  date: number;
+  startDate: number;
+  endDate: number;
   dataForCsv: React.MutableRefObject<any>;
 }
 
