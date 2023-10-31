@@ -8,7 +8,9 @@ api:
 	docker compose -f docker-compose.yml -f docker-compose.develop.yml up
 
 deploy:
-	source set_envs.sh && docker compose build && docker compose -f docker-compose.yml -f docker-compose.deploy.yml up -d
+	docker network create traefik_default || true
+	source set_envs.sh
+	docker compose build && docker compose -f docker-compose.yml -f docker-compose.deploy.yml up -d
 
 logs:
 	docker compose -f docker-compose.yml -f docker-compose.deploy.yml logs -f
