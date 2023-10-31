@@ -20,9 +20,9 @@ T = TypeVar("T")
 kobo_username = getenv("KOBO_USERNAME", "")
 if kobo_username == "":
     raise Exception("Missing backend parameter: KOBO_USERNAME")
-kobo_pw = getenv("KOBO_PW", "")
+kobo_pw = getenv("KOBO_PASSWORD", "")
 if kobo_pw == "":
-    raise Exception("Missing backend parameter: KOBO_PW")
+    raise Exception("Missing backend parameter: KOBO_PASSWORD")
 
 
 class KoboForm(TypedDict):
