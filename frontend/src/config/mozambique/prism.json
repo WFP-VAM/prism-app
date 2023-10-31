@@ -271,9 +271,13 @@
           "activate_all": false,
           "layers": [
             {
-              "id": "ipc_phase_current",
-              "label": "Current phase classification",
+              "id": "ipc_pop_ph3_5_2023_09",
+              "label": "IPC population in phase 3-5, Sept 2023",
               "main": true
+            },
+            {
+              "id": "ipc_phase_current",
+              "label": "Current phase classification"
             },
             {
               "id": "ipc_phase_projected",
