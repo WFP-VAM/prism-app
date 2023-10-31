@@ -6,6 +6,9 @@ services:
     volumes:
       - "./cache:/cache:rw"
       - ./app:/usr/local/lib/python3.9/site-packages/app:ro
+      # Use these to run the app in development mode and update depedencies
+      # - ./pyproject.toml:/pyproject.toml
+      # - ./poetry.lock:/poetry.lock
     environment:
       - WORKERS_PER_CORE=1
       # External services credentials
