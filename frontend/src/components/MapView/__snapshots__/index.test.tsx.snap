@@ -1368,7 +1368,7 @@ exports[`renders as expected 1`] = `
                                               <mock-typography
                                                 classname="memo-titleUnchecked-33"
                                               >
-                                                Rainfall categories:
+                                                Number of days of rainfall:
                                               </mock-typography>
                                               <div
                                                 class="MuiInputBase-root MuiInput-root MuiInput-underline memo-select-34"
