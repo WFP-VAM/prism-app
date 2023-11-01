@@ -12,6 +12,7 @@ deploy:
 	source set_envs.sh && docker compose build && docker compose -f docker-compose.yml -f docker-compose.deploy.yml up -d
 
 logs:
+	source set_envs.sh
 	docker compose -f docker-compose.yml -f docker-compose.deploy.yml logs -f
 
 api-lint:
