@@ -1,4 +1,3 @@
-import nodeFetch from 'node-fetch';
 import { parseName } from "../utils";
 
 export class Layer {
@@ -32,7 +31,7 @@ export class Layer {
       this.layer = Promise.resolve(layer);
     }
 
-    this.fetch = customFetch || nodeFetch;
+    this.fetch = customFetch || fetch;
 
     const { namespace, short } = parseName(id);
     this.namespace = namespace;

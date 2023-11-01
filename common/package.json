@@ -52,7 +52,6 @@
   "dependencies": {
     "lodash": "^4.17.21",
     "moment": "^2.29.4",
-    "node-fetch": "^3.3.2",
     "xml-utils": "^1.6.0-0"
   }
 }

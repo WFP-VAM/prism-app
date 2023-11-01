@@ -1,4 +1,3 @@
-import nodeFetch from 'node-fetch';
 import { getCapabilities } from "../ows/capabilities";
 
 import { hasLayerId, parseService } from "../utils";
@@ -29,7 +28,7 @@ export class Base {
     } = { fetch: undefined }
   ) {
     this.debug = debug;
-    this.fetch = customFetch || nodeFetch;
+    this.fetch = customFetch || fetch;
 
     if (service) {
       this.service = service;
