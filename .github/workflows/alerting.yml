@@ -33,5 +33,5 @@ jobs:
       # Run alert worker
       - run: |
          cd alerting
-         yarn
+         NODE_ENV=development yarn
          ts-node src/alert-worker.ts
