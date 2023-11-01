@@ -1,6 +1,10 @@
 name: PRISM Alerts
 
 on:
+  pull_request:
+  push:
+    branches:
+      - master
   schedule:
     # Run every day at 1am
     - cron: '0 1 * * *'
@@ -16,12 +20,8 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
-      POSTGRES_PORT: 54321
-      POSTGRES_USER: postgres
-      POSTGRES_DB: postgres
-      DATABASE_URL: ${{ secrets.DATABASE_URL }}
-      EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
+      PRISM_ALERTS_DATABASE_URL: ${{ secrets.PRISM_ALERTS_DATABASE_URL }}
+      EMAIL_PASSWORD: ${{ secrets.PRISM_ALERTS_EMAIL_PASSWORD }}
 
     # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
     steps:
