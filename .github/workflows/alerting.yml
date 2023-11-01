@@ -34,4 +34,5 @@ jobs:
       - run: |
          cd alerting
          yarn install
+         yarn setup:common
          yarn alert-worker
