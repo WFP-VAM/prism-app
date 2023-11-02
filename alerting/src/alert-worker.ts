@@ -1,11 +1,11 @@
 import { isNaN } from 'lodash';
+import nodeFetch from 'node-fetch';
 import { createConnection, Repository } from 'typeorm';
 import { ANALYSIS_API_URL } from './constants';
 import { Alert } from './entities/alerts.entity';
 import { calculateBoundsForAlert } from './utils/analysis-utils';
 import { sendEmail } from './utils/email';
 import { fetchCoverageLayerDays, formatUrl, WMS } from 'prism-common';
-
 
 async function processAlert(alert: Alert, alertRepository: Repository<Alert>) {
   const {
@@ -27,7 +27,7 @@ async function processAlert(alert: Alert, alertRepository: Repository<Alert>) {
   const availableDates =
     type === 'wms'
       ? await new WMS(`${baseUrl}/wms`).getLayerDays()
-      : await fetchCoverageLayerDays(baseUrl);
+      : await fetchCoverageLayerDays(baseUrl, { fetch: nodeFetch });
   const layerAvailableDates = availableDates[serverLayerName];
   const maxDate = new Date(Math.max(...(layerAvailableDates || [])));
 
