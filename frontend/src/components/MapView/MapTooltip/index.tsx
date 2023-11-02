@@ -7,12 +7,15 @@ import {
   WithStyles,
   LinearProgress,
   Typography,
+  Link,
 } from '@material-ui/core';
 import { isEmpty, isEqual, sum } from 'lodash';
 import { PopupData, tooltipSelector } from 'context/tooltipStateSlice';
 import { isEnglishLanguageSelected, useSafeTranslation } from 'i18n';
 import { TFunction } from 'utils/data-utils';
 import { ClassNameMap } from '@material-ui/styles';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faExternalLinkAlt } from '@fortawesome/free-solid-svg-icons';
 
 // This function prepares phasePopulationTable for rendering and is specific
 // to the data structure of the phase classification layer.
@@ -93,6 +96,32 @@ const MapTooltip = memo(({ classes }: TooltipProps) => {
     return popup.locationLocalName;
   }, [i18n, popup.locationLocalName, popup.locationName]);
 
+  const getDisasterType = (type: string) => {
+    if (['FLOOD', 'DROUGHT'].includes(type)) {
+      return type;
+    }
+    return 'INCIDENT';
+  };
+
+  const renderedRedirectToDMP = useMemo(() => {
+    if (!popupData?.dpmSubmissionId?.data) {
+      return null;
+    }
+    return (
+      <Link
+        href={`https://dmp.ovio.org/form/${getDisasterType(
+          popupData['Disaster type'].data as string,
+        )}/${popupData.dpmSubmissionId.data}`}
+        target="_blank"
+      >
+        <Typography className={classes.externalLinkContainer}>
+          <u>Report details</u>
+          <FontAwesomeIcon icon={faExternalLinkAlt} />
+        </Typography>
+      </Link>
+    );
+  }, [classes, popupData]);
+
   const renderedPopupContent = useMemo(() => {
     const phasePopulationTable = generatePhasePopulationTable(
       popupData,
@@ -166,6 +195,7 @@ const MapTooltip = memo(({ classes }: TooltipProps) => {
     }
     return (
       <Popup coordinates={popup.coordinates} className={classes.popup}>
+        {renderedRedirectToDMP}
         <Typography variant="h4" color="inherit" className={classes.title}>
           {popupTitle}
         </Typography>
@@ -181,6 +211,7 @@ const MapTooltip = memo(({ classes }: TooltipProps) => {
     popupTitle,
     renderedPopupContent,
     renderedPopupLoader,
+    renderedRedirectToDMP,
   ]);
 });
 
@@ -218,6 +249,13 @@ const styles = () =>
         'border-top-color': 'black',
         'border-bottom-color': 'black',
       },
+    },
+    externalLinkContainer: {
+      display: 'flex',
+      gap: '8px',
+      color: '#5b9bd5',
+      fontWeight: 'bold',
+      marginBottom: '8px',
     },
   });
 

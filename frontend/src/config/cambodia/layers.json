@@ -1713,6 +1713,17 @@
       "status": {
         "type": "text",
         "dataTitle": "Form status"
+      },
+      "submission_id": {
+        "type": "text",
+        "dataTitle": "dpmSubmissionId"
+      },
+      "DisTyp": {
+        "type": "labelMapping",
+        "dataTitle": "Disaster type",
+        "labelMap": {
+          "1": "FLOOD"
+        }
       }
     },
     "legend_text": "Number of people affected",
@@ -1773,6 +1784,17 @@
       "status": {
         "type": "text",
         "dataTitle": "Form status"
+      },
+      "submission_id": {
+        "type": "text",
+        "dataTitle": "dpmSubmissionId"
+      },
+      "DisTyp": {
+        "type": "labelMapping",
+        "dataTitle": "Disaster type",
+        "labelMap": {
+          "2": "DROUGHT"
+        }
       }
     },
     "legend_text": "Number of people affected",
@@ -1859,6 +1881,10 @@
       "status": {
         "type": "text",
         "dataTitle": "Form status"
+      },
+      "submission_id": {
+        "type": "text",
+        "dataTitle": "dpmSubmissionId"
       }
     },
     "legend_text": "Type of disaster",
