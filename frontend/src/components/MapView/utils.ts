@@ -89,17 +89,15 @@ export const downloadToFile = (
 };
 
 const sortKeys = (featureInfoProps: FeatureInfoObject): string[][] => {
-  const dataKeys: string[] = [];
-  const metaDataKeys: string[] = [];
-  Object.entries(featureInfoProps).forEach(([key, value]) => {
-    if (value.type === DataType.MetaData) {
-      // eslint-disable-next-line fp/no-mutating-methods
-      metaDataKeys.push(key);
-    } else {
-      // eslint-disable-next-line fp/no-mutating-methods
-      dataKeys.push(key);
-    }
-  });
+  const [dataKeys, metaDataKeys] = Object.entries(featureInfoProps).reduce(
+    ([data, meta], [key, value]) => {
+      if (value.type === DataType.MetaData) {
+        return [data, meta.concat(key)];
+      }
+      return [data.concat(key), meta];
+    },
+    [[], []] as [string[], string[]],
+  );
 
   return [dataKeys, metaDataKeys];
 };
