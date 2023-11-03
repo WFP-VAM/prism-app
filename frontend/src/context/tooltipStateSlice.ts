@@ -10,11 +10,16 @@ export interface PopupData {
   };
 }
 
+interface PopupMetaData {
+  dmpDisTyp?: string;
+  dmpSubmissionId?: string;
+}
+
 export interface MapTooltipState {
   coordinates?: GeoJSON.Position;
   locationName: string;
   locationLocalName: string;
-  data: PopupData;
+  data: PopupData & PopupMetaData;
   showing: boolean;
   wmsGetFeatureInfoLoading: boolean;
 }

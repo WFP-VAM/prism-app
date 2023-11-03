@@ -96,22 +96,28 @@ const MapTooltip = memo(({ classes }: TooltipProps) => {
     return popup.locationLocalName;
   }, [i18n, popup.locationLocalName, popup.locationName]);
 
-  const getDisasterType = (type: string) => {
-    if (['FLOOD', 'DROUGHT'].includes(type)) {
-      return type;
+  const computeDisasterTypeFromDistTyp = (distTyp: string) => {
+    if (!Number(distTyp)) {
+      throw Error('distTyp must be convertable to integer');
+    }
+    if (distTyp === '1') {
+      return 'FLOOD';
+    }
+    if (distTyp === '2') {
+      return 'DROUGHT';
     }
     return 'INCIDENT';
   };
 
   const renderedRedirectToDMP = useMemo(() => {
-    if (!popupData?.dpmSubmissionId?.data) {
+    if (!popupData.dmpDisTyp) {
       return null;
     }
     return (
       <Link
-        href={`https://dmp.ovio.org/form/${getDisasterType(
-          popupData['Disaster type'].data as string,
-        )}/${popupData.dpmSubmissionId.data}`}
+        href={`https://dmp.ovio.org/form/${computeDisasterTypeFromDistTyp(
+          popupData.dmpDisTyp,
+        )}/${popupData.dmpSubmissionId}`}
         target="_blank"
       >
         <Typography className={classes.externalLinkContainer}>

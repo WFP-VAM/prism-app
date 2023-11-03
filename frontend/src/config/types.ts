@@ -366,6 +366,7 @@ export enum DataType {
   Text = 'text',
   Number = 'number',
   LabelMapping = 'labelMapping',
+  MetaData = 'metadata',
 }
 
 interface FeatureInfoProps {

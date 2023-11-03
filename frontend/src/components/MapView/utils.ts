@@ -6,6 +6,7 @@ import { LayerDefinitions } from 'config/utils';
 import { formatFeatureInfo } from 'utils/server-utils';
 import {
   AvailableDates,
+  DataType,
   FeatureInfoObject,
   FeatureInfoType,
   LayerType,
@@ -87,29 +88,40 @@ export const downloadToFile = (
   link.click();
 };
 
+const getKeysWithouMetaData = (featureInfoProps: FeatureInfoObject) => {
+  return Object.entries(featureInfoProps)
+    .filter(([, value]) => value.type !== DataType.MetaData)
+    .map(([key]) => key);
+};
 export function getFeatureInfoPropsData(
   featureInfoProps: FeatureInfoObject,
   event: any,
 ) {
-  const keys = Object.keys(featureInfoProps);
+  const keys = getKeysWithouMetaData(featureInfoProps);
   const { properties } = event.features[0];
   const coordinates = event.lngLat;
 
   return Object.keys(properties)
     .filter(prop => keys.includes(prop))
-    .reduce((obj, item) => {
-      return {
-        ...obj,
-        [featureInfoProps[item].dataTitle]: {
-          data: formatFeatureInfo(
-            properties[item],
-            featureInfoProps[item].type,
-            featureInfoProps[item].labelMap,
-          ),
-          coordinates,
-        },
-      };
-    }, {});
+    .reduce(
+      (obj, item) => {
+        return {
+          ...obj,
+          [featureInfoProps[item].dataTitle]: {
+            data: formatFeatureInfo(
+              properties[item],
+              featureInfoProps[item].type,
+              featureInfoProps[item].labelMap,
+            ),
+            coordinates,
+          },
+        };
+      },
+      {
+        dmpDisTyp: properties.DisTyp,
+        dmpSubmissionId: properties.submission_id,
+      },
+    );
 }
 
 export const getLegendItemLabel = (
