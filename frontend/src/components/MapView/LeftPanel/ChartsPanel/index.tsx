@@ -102,6 +102,7 @@ const useStyles = makeStyles(() =>
       color: 'black',
     },
     chartsPanelCharts: {
+      alignContent: 'start',
       overflowY: 'auto',
       overflowX: 'hidden',
       display: 'flex',
@@ -445,7 +446,7 @@ const ChartsPanel = memo(
         return (
           <Box
             style={{
-              maxHeight: '50vh',
+              height: '240px',
               width: '100%',
             }}
           >
