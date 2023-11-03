@@ -88,40 +88,69 @@ export const downloadToFile = (
   link.click();
 };
 
-const getKeysWithouMetaData = (featureInfoProps: FeatureInfoObject) => {
-  return Object.entries(featureInfoProps)
-    .filter(([, value]) => value.type !== DataType.MetaData)
-    .map(([key]) => key);
+const sortKeys = (featureInfoProps: FeatureInfoObject): string[][] => {
+  const dataKeys: string[] = [];
+  const metaDataKeys: string[] = [];
+  Object.entries(featureInfoProps).forEach(([key, value]) => {
+    if (value.type === DataType.MetaData) {
+      // eslint-disable-next-line fp/no-mutating-methods
+      metaDataKeys.push(key);
+    } else {
+      // eslint-disable-next-line fp/no-mutating-methods
+      dataKeys.push(key);
+    }
+  });
+
+  return [dataKeys, metaDataKeys];
 };
+
+const getMetaData = (
+  featureInfoProps: FeatureInfoObject,
+  metaDataKeys: string[],
+  properties: any,
+) =>
+  metaDataKeys.reduce(
+    (obj, item) => ({
+      ...obj,
+      [featureInfoProps[item].dataTitle]: properties[item],
+    }),
+    {},
+  );
+
+const getData = (
+  featureInfoProps: FeatureInfoObject,
+  keys: string[],
+  properties: any,
+  coordinates: any,
+) =>
+  Object.keys(properties)
+    .filter(prop => keys.includes(prop))
+    .reduce((obj, item) => {
+      return {
+        ...obj,
+        [featureInfoProps[item].dataTitle]: {
+          data: formatFeatureInfo(
+            properties[item],
+            featureInfoProps[item].type,
+            featureInfoProps[item].labelMap,
+          ),
+          coordinates,
+        },
+      };
+    }, {});
+
 export function getFeatureInfoPropsData(
   featureInfoProps: FeatureInfoObject,
   event: any,
 ) {
-  const keys = getKeysWithouMetaData(featureInfoProps);
+  const [keys, metaDataKeys] = sortKeys(featureInfoProps);
   const { properties } = event.features[0];
   const coordinates = event.lngLat;
 
-  return Object.keys(properties)
-    .filter(prop => keys.includes(prop))
-    .reduce(
-      (obj, item) => {
-        return {
-          ...obj,
-          [featureInfoProps[item].dataTitle]: {
-            data: formatFeatureInfo(
-              properties[item],
-              featureInfoProps[item].type,
-              featureInfoProps[item].labelMap,
-            ),
-            coordinates,
-          },
-        };
-      },
-      {
-        dmpDisTyp: properties.DisTyp,
-        dmpSubmissionId: properties.submission_id,
-      },
-    );
+  return {
+    ...getMetaData(featureInfoProps, metaDataKeys, properties),
+    ...getData(featureInfoProps, keys, properties, coordinates),
+  };
 }
 
 export const getLegendItemLabel = (

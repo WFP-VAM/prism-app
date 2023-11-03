@@ -1715,10 +1715,12 @@
         "dataTitle": "Form status"
       },
       "submission_id": {
-        "type": "metadata"
+        "type": "metadata",
+        "dataTitle": "dmpSubmissionId"
       },
       "DisTyp": {
-        "type": "metadata"
+        "type": "metadata",
+        "dataTitle": "dmpDisTyp"
       }
     },
     "legend_text": "Number of people affected",
@@ -1781,10 +1783,12 @@
         "dataTitle": "Form status"
       },
       "submission_id": {
-        "type": "metadata"
+        "type": "metadata",
+        "dataTitle": "dmpSubmissionId"
       },
       "DisTyp": {
-        "type": "metadata"
+        "type": "metadata",
+        "dataTitle": "dmpDisTyp"
       }
     },
     "legend_text": "Number of people affected",
@@ -1873,7 +1877,8 @@
         "dataTitle": "Form status"
       },
       "submission_id": {
-        "type": "metadata"
+        "type": "metadata",
+        "dataTitle": "dmpSubmissionId"
       }
     },
     "legend_text": "Type of disaster",
