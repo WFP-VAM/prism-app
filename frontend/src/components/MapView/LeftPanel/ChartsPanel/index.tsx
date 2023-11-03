@@ -102,6 +102,7 @@ const useStyles = makeStyles(() =>
       color: 'black',
     },
     chartsPanelCharts: {
+      alignContent: 'start',
       overflowY: 'auto',
       overflowX: 'hidden',
       display: 'flex',
@@ -445,7 +446,7 @@ const ChartsPanel = memo(
         return (
           <Box
             style={{
-              maxHeight: '50vh',
+              height: '240px',
               width: '100%',
             }}
           >
@@ -600,7 +601,28 @@ const ChartsPanel = memo(
           <Typography className={classes.textLabel}>{title[0]}</Typography>
         </Box>
       ));
-      return [...titles, ...zipped];
+      // add a location string above everything if comparing periods
+      const locationBox = comparePeriods ? (
+        <Box
+          key="locationBox"
+          style={{
+            height: '30px',
+            minWidth: '80%',
+            flex: 1,
+            position: 'relative',
+          }}
+        >
+          <Typography className={classes.textLabel}>
+            {locationString(
+              multiCountry ? admin0Key : country,
+              selectedAdmin1Area,
+              selectedAdmin2Area,
+              adminLevel,
+            )}
+          </Typography>
+        </Box>
+      ) : null;
+      return [locationBox, ...titles, ...zipped];
     }, [
       admin0Key,
       adminLevel,
@@ -664,6 +686,10 @@ const ChartsPanel = memo(
       if (comparePeriods) {
         setComparePeriods(false);
       }
+      if (selectedLayerTitles.length > 1) {
+        // only allow a single layer to be charted when comparing locations
+        setSelectedLayerTitles([selectedLayerTitles[0]]);
+      }
       // default to first country when we first activate
       // location comparison
       if (secondAdminProperties === undefined) {
@@ -680,14 +706,19 @@ const ChartsPanel = memo(
       comparePeriods,
       secondAdmin0Key,
       secondAdminProperties,
+      selectedLayerTitles,
     ]);
 
     const handleOnChangeComparePeriodsSwitch = useCallback(() => {
       if (compareLocations) {
         setCompareLocations(false);
       }
+      if (selectedLayerTitles.length > 1) {
+        // only allow a single layer to be charted when comparing periods
+        setSelectedLayerTitles([selectedLayerTitles[0]]);
+      }
       setComparePeriods(!comparePeriods);
-    }, [compareLocations, comparePeriods]);
+    }, [compareLocations, comparePeriods, selectedLayerTitles]);
 
     const chartsSelectRenderValue = useCallback(
       selected => {
