@@ -601,7 +601,28 @@ const ChartsPanel = memo(
           <Typography className={classes.textLabel}>{title[0]}</Typography>
         </Box>
       ));
-      return [...titles, ...zipped];
+      // add a location string above everything if comparing periods
+      const locationBox = comparePeriods ? (
+        <Box
+          key="locationBox"
+          style={{
+            height: '30px',
+            minWidth: '80%',
+            flex: 1,
+            position: 'relative',
+          }}
+        >
+          <Typography className={classes.textLabel}>
+            {locationString(
+              multiCountry ? admin0Key : country,
+              selectedAdmin1Area,
+              selectedAdmin2Area,
+              adminLevel,
+            )}
+          </Typography>
+        </Box>
+      ) : null;
+      return [locationBox, ...titles, ...zipped];
     }, [
       admin0Key,
       adminLevel,
