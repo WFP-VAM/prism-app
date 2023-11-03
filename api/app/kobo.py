@@ -20,9 +20,9 @@ T = TypeVar("T")
 kobo_username = getenv("KOBO_USERNAME", "")
 if kobo_username == "":
     raise Exception("Missing backend parameter: KOBO_USERNAME")
-kobo_pw = getenv("KOBO_PW", "")
+kobo_pw = getenv("KOBO_PASSWORD", "")
 if kobo_pw == "":
-    raise Exception("Missing backend parameter: KOBO_PW")
+    raise Exception("Missing backend parameter: KOBO_PASSWORD")
 
 
 class KoboForm(TypedDict):
@@ -140,7 +140,8 @@ def parse_form_response(
     )
 
     status = form_dict.get("_validation_status").get("label", None)  # type: ignore
-    form_data = {**form_data, **latlon_dict, "date": datetime_value, "status": status}  # type: ignore
+    submission_id = form_dict.get("_id")
+    form_data = {**form_data, **latlon_dict, "date": datetime_value, "status": status, "submission_id": submission_id}  # type: ignore
 
     logger.debug("Kobo data parsed as: %s", form_data)
 
