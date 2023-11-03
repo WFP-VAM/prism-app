@@ -665,6 +665,10 @@ const ChartsPanel = memo(
       if (comparePeriods) {
         setComparePeriods(false);
       }
+      if (selectedLayerTitles.length > 1) {
+        // only allow a single layer to be charted when comparing locations
+        setSelectedLayerTitles([selectedLayerTitles[0]]);
+      }
       // default to first country when we first activate
       // location comparison
       if (secondAdminProperties === undefined) {
@@ -681,14 +685,19 @@ const ChartsPanel = memo(
       comparePeriods,
       secondAdmin0Key,
       secondAdminProperties,
+      selectedLayerTitles,
     ]);
 
     const handleOnChangeComparePeriodsSwitch = useCallback(() => {
       if (compareLocations) {
         setCompareLocations(false);
       }
+      if (selectedLayerTitles.length > 1) {
+        // only allow a single layer to be charted when comparing periods
+        setSelectedLayerTitles([selectedLayerTitles[0]]);
+      }
       setComparePeriods(!comparePeriods);
-    }, [compareLocations, comparePeriods]);
+    }, [compareLocations, comparePeriods, selectedLayerTitles]);
 
     const chartsSelectRenderValue = useCallback(
       selected => {
