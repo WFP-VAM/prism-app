@@ -140,7 +140,8 @@ def parse_form_response(
     )
 
     status = form_dict.get("_validation_status").get("label", None)  # type: ignore
-    form_data = {**form_data, **latlon_dict, "date": datetime_value, "status": status}  # type: ignore
+    submission_id = form_dict.get("_id")
+    form_data = {**form_data, **latlon_dict, "date": datetime_value, "status": status, "submission_id": submission_id}  # type: ignore
 
     logger.debug("Kobo data parsed as: %s", form_data)
 
