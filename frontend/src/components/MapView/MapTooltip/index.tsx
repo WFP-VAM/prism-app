@@ -262,6 +262,7 @@ const styles = () =>
       color: '#5b9bd5',
       fontWeight: 'bold',
       marginBottom: '8px',
+      alignItems: 'center',
     },
   });
 
