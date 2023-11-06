@@ -90,14 +90,16 @@ export const downloadToFile = (
 const sortKeys = (featureInfoProps: FeatureInfoObject): string[][] => {
   const [dataKeys, metaDataKeys] = Object.entries(featureInfoProps).reduce(
     ([data, meta], [key, value]) => {
-      let result: [string[], string[]] = [data, meta];
+      if (value.metadata && value.dataTitle) {
+        return [data.concat(key), meta.concat(key)];
+      }
       if (value.metadata) {
-        result = [result[0], meta.concat(key)];
+        return [data, meta.concat(key)];
       }
       if (value.dataTitle) {
-        result = [data.concat(key), result[1]];
+        return [data.concat(key), meta];
       }
-      return result;
+      return [data, meta];
     },
     [[], []] as [string[], string[]],
   );
