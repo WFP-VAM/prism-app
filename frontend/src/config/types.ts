@@ -366,13 +366,13 @@ export enum DataType {
   Text = 'text',
   Number = 'number',
   LabelMapping = 'labelMapping',
-  MetaData = 'metadata',
 }
 
 interface FeatureInfoProps {
   type: DataType;
   dataTitle: string;
   labelMap?: { [key: string]: string };
+  metadata?: { label: string };
 }
 
 export enum DatesPropagation {

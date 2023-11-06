@@ -6,7 +6,6 @@ import { LayerDefinitions } from 'config/utils';
 import { formatFeatureInfo } from 'utils/server-utils';
 import {
   AvailableDates,
-  DataType,
   FeatureInfoObject,
   FeatureInfoType,
   LayerType,
@@ -91,10 +90,14 @@ export const downloadToFile = (
 const sortKeys = (featureInfoProps: FeatureInfoObject): string[][] => {
   const [dataKeys, metaDataKeys] = Object.entries(featureInfoProps).reduce(
     ([data, meta], [key, value]) => {
-      if (value.type === DataType.MetaData) {
-        return [data, meta.concat(key)];
+      let result: [string[], string[]] = [data, meta];
+      if (value.metadata) {
+        result = [result[0], meta.concat(key)];
       }
-      return [data.concat(key), meta];
+      if (value.dataTitle) {
+        result = [data.concat(key), result[1]];
+      }
+      return result;
     },
     [[], []] as [string[], string[]],
   );
@@ -110,7 +113,8 @@ const getMetaData = (
   metaDataKeys.reduce(
     (obj, item) => ({
       ...obj,
-      [featureInfoProps[item].dataTitle]: properties[item],
+      // @ts-ignore value exist for each metaDataKeys
+      [featureInfoProps[item].metadata?.label]: properties[item],
     }),
     {},
   );
