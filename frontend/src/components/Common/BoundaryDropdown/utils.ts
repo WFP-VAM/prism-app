@@ -2,18 +2,26 @@ import type { Feature, MultiPolygon, BBox } from '@turf/helpers';
 import { sortBy } from 'lodash';
 import bbox from '@turf/bbox';
 import { BoundaryLayerData } from 'context/layers/boundary';
+import {
+  AdminLevelNameString,
+  AdminCodeString,
+  BoundaryLayerProps,
+  AdminLevelType,
+} from 'config/types';
 
 export type BoundaryRelationsDict = { [key: string]: BoundaryRelationData };
 
 export type BoundaryRelationData = {
+  // same as AdminLevelType??
   levels: number[];
   relations: BoundaryRelation[];
 };
 
 export type BoundaryRelation = {
   name: string;
+  adminCode: AdminCodeString;
   parent: string;
-  level: number;
+  level: number; // 0-indexed, so not compatible with AdminLevelType
   children: string[];
   bbox: BBox;
 };
@@ -25,6 +33,7 @@ export type BoundaryRelation = {
 const getFeatures = (
   relations: BoundaryRelation[],
   name: string,
+  // same as AdminLevelType??
   level: number,
 ): BoundaryRelation[] => {
   const relation = relations.find(i => i.level === level && i.name === name);
@@ -76,7 +85,8 @@ export const getParentRelation = (
  */
 const buildRelationTree = (
   boundaryLayerData: BoundaryLayerData,
-  adminLevelNames: string[],
+  adminLevelNames: AdminLevelNameString[],
+  layer: BoundaryLayerProps,
 ): BoundaryRelation[] => {
   const { features } = boundaryLayerData;
   const featuresMulti = features as Feature<MultiPolygon>[];
@@ -106,6 +116,7 @@ const buildRelationTree = (
           features: matches,
         });
 
+        const code = properties?.[layer.adminCode];
         const parent =
           level === 0 ? undefined : properties![adminLevelNames[level - 1]];
 
@@ -119,6 +130,7 @@ const buildRelationTree = (
         const childrenSetSorted = Array.prototype.sort.call(childrenSet);
 
         const relation: BoundaryRelation = {
+          adminCode: code as AdminCodeString,
           bbox: bboxUnion,
           level,
           name: searchName,
@@ -145,9 +157,14 @@ const buildRelationTree = (
  */
 export const loadBoundaryRelations = (
   boundaryLayerData: BoundaryLayerData,
-  adminLevelNames: string[],
+  adminLevelNames: AdminLevelNameString[],
+  layer: BoundaryLayerProps,
 ): BoundaryRelationData => {
-  const relations = buildRelationTree(boundaryLayerData, adminLevelNames);
+  const relations = buildRelationTree(
+    boundaryLayerData,
+    adminLevelNames,
+    layer,
+  );
 
   const adminLevelNumbers: number[] = adminLevelNames.map((_, index) => index);
 
@@ -219,7 +236,7 @@ export const createMatchesTree = (
       const getmatchedParents = getParentRelation(
         relations,
         match.parent,
-        match.level - 1,
+        (match.level - 1) as AdminLevelType,
       );
 
       const mergedRelations = [...getmatchedParents, ...matchParent];
