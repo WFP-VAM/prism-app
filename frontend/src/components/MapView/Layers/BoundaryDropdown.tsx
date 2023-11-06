@@ -19,7 +19,7 @@ import React, { forwardRef, ReactNode, useEffect, useState } from 'react';
 import i18n from 'i18next';
 import { useDispatch, useSelector } from 'react-redux';
 import { Search } from '@material-ui/icons';
-import { BoundaryLayerProps } from 'config/types';
+import { BoundaryLayerProps, AdminCodeString } from 'config/types';
 import {
   getSelectedBoundaries,
   setIsSelectionMode,
@@ -114,7 +114,7 @@ const SearchField = forwardRef(
 
 export interface OrderedArea {
   children: {
-    value: string;
+    value: AdminCodeString;
     label: string;
     key: string;
   }[];
@@ -343,8 +343,11 @@ function SimpleBoundaryDropdown({
 
 interface BoundaryDropdownProps {
   className: string;
-  selectedBoundaries: string[];
-  setSelectedBoundaries: (boundaries: string[], appendMany?: boolean) => void;
+  selectedBoundaries: AdminCodeString[];
+  setSelectedBoundaries: (
+    boundaries: AdminCodeString[],
+    appendMany?: boolean,
+  ) => void;
   labelMessage?: string;
   onlyNewCategory?: boolean;
   selectAll: boolean;
