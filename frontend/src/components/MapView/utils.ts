@@ -116,7 +116,7 @@ const getMetaData = (
     (obj, item) => ({
       ...obj,
       // @ts-ignore value exist for each metaDataKeys
-      [featureInfoProps[item].metadata?.label]: properties[item],
+      [featureInfoProps[item].metadata]: properties[item],
     }),
     {},
   );
