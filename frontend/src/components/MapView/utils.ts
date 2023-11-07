@@ -90,10 +90,10 @@ export const downloadToFile = (
 const sortKeys = (featureInfoProps: FeatureInfoObject): string[][] => {
   const [dataKeys, metaDataKeys] = Object.entries(featureInfoProps).reduce(
     ([data, meta], [key, value]) => {
-      if (value.PopupMetaData && value.dataTitle) {
+      if (value.metadata && value.dataTitle) {
         return [data.concat(key), meta.concat(key)];
       }
-      if (value.PopupMetaData) {
+      if (value.metadata) {
         return [data, meta.concat(key)];
       }
       if (value.dataTitle) {
@@ -116,7 +116,7 @@ const getMetaData = (
     (obj, item) => ({
       ...obj,
       // @ts-ignore value exist for each metaDataKeys
-      [featureInfoProps[item].PopupMetaData]: properties[item],
+      [featureInfoProps[item].metadata]: properties[item],
     }),
     {},
   );
