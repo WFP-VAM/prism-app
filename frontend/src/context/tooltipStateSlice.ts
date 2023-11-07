@@ -10,7 +10,7 @@ export interface PopupData {
   };
 }
 
-interface PopupMetaData {
+export interface PopupMetaData {
   dmpDisTyp?: string;
   dmpSubmissionId?: string;
 }
