@@ -1,4 +1,4 @@
-import React, { Fragment, memo, useMemo } from 'react';
+import React, { Fragment, memo, useMemo, useRef } from 'react';
 import { useSelector } from 'react-redux';
 import { Popup } from 'react-mapbox-gl';
 import {
@@ -13,6 +13,24 @@ import { PopupData, tooltipSelector } from 'context/tooltipStateSlice';
 import { isEnglishLanguageSelected, useSafeTranslation } from 'i18n';
 import { TFunction } from 'utils/data-utils';
 import { ClassNameMap } from '@material-ui/styles';
+import {
+  getBoundaryLayersByAdminLevel,
+  getWMSLayersWithChart,
+} from 'config/utils';
+import {
+  layerDataSelector,
+  layersSelector,
+} from 'context/mapStateSlice/selectors';
+import { appConfig } from 'config';
+import { LayerData } from 'context/layers/layer-data';
+import { BoundaryLayerProps, WMSLayerProps } from 'config/types';
+import { BoundaryLayerData } from 'context/layers/boundary';
+import { GeoJsonProperties } from 'geojson';
+import ChartSection from '../LeftPanel/ChartsPanel/ChartSection';
+
+const chartLayers = getWMSLayersWithChart();
+const MAX_ADMIN_LEVEL = appConfig.multiCountry ? 3 : 2;
+const boundaryLayer = getBoundaryLayersByAdminLevel(MAX_ADMIN_LEVEL);
 
 // This function prepares phasePopulationTable for rendering and is specific
 // to the data structure of the phase classification layer.
@@ -80,7 +98,30 @@ const generatePhasePopulationTable = (
   return phasePopulationTable;
 };
 
+// to refacto with ChartsPanel/index.ts
+function getProperties(
+  layerData: LayerData<BoundaryLayerProps>['data'],
+  id?: string,
+) {
+  // Return any properties, used for national level data.
+  if (!id) {
+    return layerData.features[0].properties;
+  }
+
+  return layerData.features.filter(
+    elem =>
+      (elem.properties && elem.properties.Adm1_Name === id) ||
+      (elem.properties && elem.properties.Adm2_Name === id),
+  )[0].properties;
+}
+
 const MapTooltip = memo(({ classes }: TooltipProps) => {
+  const boundaryLayerData = useSelector(layerDataSelector(boundaryLayer.id)) as
+    | LayerData<BoundaryLayerProps>
+    | undefined;
+  const dataForCsv = useRef<{ [key: string]: any[] }>({});
+  const mapState = useSelector(layersSelector);
+
   const popup = useSelector(tooltipSelector);
   const { t, i18n } = useSafeTranslation();
 
@@ -153,6 +194,54 @@ const MapTooltip = memo(({ classes }: TooltipProps) => {
       });
   }, [classes, popup.coordinates, popupData, t]);
 
+  const renderPopupChartsList = useMemo(() => {
+    if (mapState.length < 4) {
+      return null;
+    }
+
+    const { data } = boundaryLayerData || {};
+
+    const oneDayInMs = 24 * 60 * 60 * 1000;
+    const oneYearInMs = 365 * oneDayInMs;
+    const startDate1 = new Date().getTime() - oneYearInMs;
+    const endDate1 = new Date().getTime();
+    const layer = chartLayers.find(item => item.id === mapState[3].id);
+    console.log('mapState', mapState);
+
+    const [admin1, admin2] = popupTitle.split(', ');
+    // verify how to control it
+    // seems error for SPI 1 month
+    const adminLevel = [admin1, admin2].filter(item => item !== undefined)
+      .length as 0 | 1 | 2;
+    console.log('admin1, admin2', admin1, admin2);
+    const adminProperties =
+      data && (admin2 || admin1)
+        ? getProperties(data as BoundaryLayerData, admin2 || admin1)
+        : undefined;
+
+    console.log('chartLayers', chartLayers);
+    console.log('data', data);
+    console.log('adminProperties', adminProperties);
+    return (
+      <ul>
+        <li>List</li>
+        <ChartSection
+          chartLayer={layer as WMSLayerProps}
+          adminProperties={adminProperties as GeoJsonProperties}
+          adminLevel={adminLevel}
+          startDate={startDate1 as number}
+          endDate={endDate1 as number}
+          dataForCsv={dataForCsv}
+        />
+      </ul>
+    );
+  }, [boundaryLayerData, popupTitle, mapState]);
+
+  const renderPopupSelectedChart: JSX.Element = useMemo(() => {
+    console.log('todo');
+    return <p>Chart</p>;
+  }, []);
+
   const renderedPopupLoader = useMemo(() => {
     if (!popup.wmsGetFeatureInfoLoading) {
       return null;
@@ -170,6 +259,8 @@ const MapTooltip = memo(({ classes }: TooltipProps) => {
           {popupTitle}
         </Typography>
         {renderedPopupContent}
+        {renderPopupChartsList}
+        {renderPopupSelectedChart}
         {renderedPopupLoader}
       </Popup>
     );
@@ -181,6 +272,8 @@ const MapTooltip = memo(({ classes }: TooltipProps) => {
     popupTitle,
     renderedPopupContent,
     renderedPopupLoader,
+    renderPopupChartsList,
+    renderPopupSelectedChart,
   ]);
 });
 

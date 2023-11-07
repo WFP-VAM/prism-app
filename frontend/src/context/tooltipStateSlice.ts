@@ -77,6 +77,16 @@ export const tooltipStateSlice = createSlice({
       coordinates: payload,
     }),
 
+    setPopupChartList: (state, { payload }) => ({
+      ...state,
+      chartList: payload,
+    }),
+
+    setPopupChartData: (state, { payload }) => ({
+      ...state,
+      chartData: payload,
+    }),
+
     setWMSGetFeatureInfoLoading: (
       state,
       { payload }: PayloadAction<boolean>,
