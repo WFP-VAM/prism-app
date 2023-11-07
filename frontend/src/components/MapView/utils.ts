@@ -18,7 +18,6 @@ import { addNotification } from 'context/notificationStateSlice';
 import { LocalError } from 'utils/error-utils';
 import { Column, quoteAndEscapeCell } from 'utils/analysis-utils';
 import { TableRow } from 'context/analysisResultStateSlice';
-
 import { getExtent } from './Layers/raster-utils';
 
 export const getActiveFeatureInfoLayers = (map: Map): WMSLayerProps[] => {

@@ -35,11 +35,6 @@ const getProperties = (
   layerData: LayerData<BoundaryLayerProps>['data'],
   name?: string,
 ) => {
-  // Return any properties, used for national level data.
-  if (!name) {
-    return layerData.features[0].properties;
-  }
-
   const features = layerData.features.filter(
     elem =>
       (elem.properties && elem.properties.Adm1_Name === name) ||
@@ -49,7 +44,6 @@ const getProperties = (
   if (!features) {
     return null;
   }
-
   return features[0].properties;
 };
 
@@ -139,10 +133,10 @@ const PopupChart = ({ popupTitle, classes }: PopupChartProps) => {
   );
 
   return (
-    <div>
-      <div className={classes.selectChartContainer}>
-        {adminLevel === 0 &&
-          filteredChartLayers.map(layer =>
+    <>
+      {adminLevel === 0 && (
+        <div className={classes.selectChartContainer}>
+          {filteredChartLayers.map(layer =>
             adminLevelsNames.map((level, index) => (
               <Button
                 key={level}
@@ -160,7 +154,8 @@ const PopupChart = ({ popupTitle, classes }: PopupChartProps) => {
               </Button>
             )),
           )}
-      </div>
+        </div>
+      )}
       {adminLevel > 0 && adminProperties && (
         <>
           <Typography component="p" variant="h4" color="inherit">
@@ -190,7 +185,7 @@ const PopupChart = ({ popupTitle, classes }: PopupChartProps) => {
           </div>
         </>
       )}
-    </div>
+    </>
   );
 };
 
