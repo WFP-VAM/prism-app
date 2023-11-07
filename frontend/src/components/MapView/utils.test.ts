@@ -1,8 +1,8 @@
 import { MutableRefObject } from 'react';
-import { downloadToFile } from 'components/MapView/utils';
-import { downloadCsv } from '.';
+import { downloadCsv, downloadToFile } from 'components/MapView/utils';
 
-jest.mock('../../utils', () => ({
+jest.mock('./utils', () => ({
+  ...jest.requireActual('./utils'),
   downloadToFile: jest.fn(),
 }));
 
