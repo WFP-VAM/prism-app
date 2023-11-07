@@ -237,11 +237,7 @@ const LegendItem = memo(
               >
                 {renderedOpacitySlider}
               </Popover>
-              {isAnalysis ? (
-                <AnalysisDownloadButton />
-              ) : (
-                { layerDownloadOptions }
-              )}
+              {isAnalysis ? <AnalysisDownloadButton /> : layerDownloadOptions}
               <Tooltip title="Remove layer">
                 <IconButton size="small" onClick={remove}>
                   <Close fontSize="small" />

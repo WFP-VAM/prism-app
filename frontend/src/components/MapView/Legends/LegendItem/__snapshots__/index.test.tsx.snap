@@ -51,6 +51,9 @@ exports[`renders as expected 1`] = `
           </div>
         </mock-typography>
       </div>
+      <mock-divider
+        style="margin: 8px 0px;"
+      />
       <div
         class="MuiBox-root MuiBox-root-13"
       >
