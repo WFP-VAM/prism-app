@@ -10,19 +10,22 @@ import {
   layerDataSelector,
   layersSelector,
 } from 'context/mapStateSlice/selectors';
-import React, { memo, useRef, useState } from 'react';
+import React, { memo, useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faExternalLinkAlt, faTimes } from '@fortawesome/free-solid-svg-icons';
 import {
   Button,
   IconButton,
+  Typography,
   WithStyles,
   createStyles,
   withStyles,
 } from '@material-ui/core';
+import { GeoJsonProperties } from 'geojson';
 
 import ChartSection from '../LeftPanel/ChartsPanel/ChartSection';
+import { oneYearInMs } from '../LeftPanel/utils';
 
 const chartLayers = getWMSLayersWithChart();
 const MAX_ADMIN_LEVEL = appConfig.multiCountry ? 3 : 2;
@@ -55,6 +58,7 @@ const styles = () =>
     selectChartContainer: {
       display: 'flex',
       flexDirection: 'column',
+      alignItems: 'start',
     },
     selectLevelButton: {
       textTransform: 'none',
@@ -64,6 +68,12 @@ const styles = () =>
       gap: '8px',
       alignItems: 'center',
       justifyContent: 'start',
+    },
+    selectLevelButtonText: {
+      overflow: 'hidden',
+      whiteSpace: 'nowrap',
+      textOverflow: 'ellipsis',
+      maxWidth: '280px',
     },
     closeButton: {
       color: 'white',
@@ -93,18 +103,33 @@ const PopupChart = ({ popupTitle, classes }: PopupChartProps) => {
   const boundaryLayerData = useSelector(layerDataSelector(boundaryLayer.id)) as
     | LayerData<BoundaryLayerProps>
     | undefined;
+  const { data } = boundaryLayerData || {};
   const mapState = useSelector(layersSelector);
   const dataForCsv = useRef<{ [key: string]: any[] }>({});
   const [adminLevel, setAdminLevel] = useState<0 | 1 | 2>(0);
+  const [adminProperties, setAdminProperties] = useState<GeoJsonProperties>(
+    null,
+  );
+
+  // keep only level 1 and 2
+  // eslint-disable-next-line fp/no-mutating-methods
+  const adminLevelsNames = popupTitle.split(', ').splice(0, 2);
+
+  useEffect(() => {
+    if (adminLevel > 0 && data) {
+      setAdminProperties(
+        getProperties(
+          data as BoundaryLayerData,
+          adminLevelsNames[adminLevel - 1],
+        ),
+      );
+    }
+  }, [adminLevel, data, adminLevelsNames]);
 
   if (mapState.length < 4) {
     return null;
   }
 
-  const { data } = boundaryLayerData || {};
-
-  const oneDayInMs = 24 * 60 * 60 * 1000;
-  const oneYearInMs = 365 * oneDayInMs;
   const startDate1 = new Date().getTime() - oneYearInMs;
   const endDate1 = new Date().getTime();
 
@@ -113,26 +138,12 @@ const PopupChart = ({ popupTitle, classes }: PopupChartProps) => {
     filteredMapState.includes(item.id),
   );
 
-  if (filteredChartLayers.length === 0) {
-    return null;
-  }
-
-  const [admin1, admin2] = popupTitle.split(', ');
-  const adminLevelNames = [admin1, admin2].filter(item => item !== undefined);
-  const adminProperties =
-    data && (admin2 || admin1)
-      ? getProperties(data as BoundaryLayerData, admin2 || admin1)
-      : undefined;
-  if (!adminProperties) {
-    return null;
-  }
-
   return (
     <div>
       <div className={classes.selectChartContainer}>
         {adminLevel === 0 &&
           filteredChartLayers.map(layer =>
-            adminLevelNames.map((level, index) => (
+            adminLevelsNames.map((level, index) => (
               <Button
                 key={level}
                 variant="text"
@@ -141,7 +152,7 @@ const PopupChart = ({ popupTitle, classes }: PopupChartProps) => {
                 onClick={() => setAdminLevel((index + 1) as 0 | 1 | 2)}
               >
                 <div className={classes.selectLevelButtonValue}>
-                  <div>
+                  <div className={classes.selectLevelButtonText}>
                     View {level} {layer.title} chart
                   </div>
                   <FontAwesomeIcon icon={faExternalLinkAlt} />
@@ -150,29 +161,34 @@ const PopupChart = ({ popupTitle, classes }: PopupChartProps) => {
             )),
           )}
       </div>
-      {adminLevel > 0 && (
-        <div className={classes.chartsContainer}>
-          <IconButton
-            aria-label="close"
-            className={classes.closeButton}
-            onClick={() => setAdminLevel(0)}
-          >
-            <FontAwesomeIcon icon={faTimes} />
-          </IconButton>
-          <div className={classes.charts}>
-            {filteredChartLayers.map(item => (
-              <ChartSection
-                key={item.id}
-                chartLayer={item}
-                adminProperties={adminProperties}
-                adminLevel={adminLevel}
-                startDate={startDate1 as number}
-                endDate={endDate1 as number}
-                dataForCsv={dataForCsv}
-              />
-            ))}
+      {adminLevel > 0 && adminProperties && (
+        <>
+          <Typography component="p" variant="h4" color="inherit">
+            {adminLevelsNames[adminLevel - 1]}
+          </Typography>
+          <div className={classes.chartsContainer}>
+            <IconButton
+              aria-label="close"
+              className={classes.closeButton}
+              onClick={() => setAdminLevel(0)}
+            >
+              <FontAwesomeIcon icon={faTimes} />
+            </IconButton>
+            <div className={classes.charts}>
+              {filteredChartLayers.map(item => (
+                <ChartSection
+                  key={item.id}
+                  chartLayer={item}
+                  adminProperties={adminProperties}
+                  adminLevel={adminLevel}
+                  startDate={startDate1 as number}
+                  endDate={endDate1 as number}
+                  dataForCsv={dataForCsv}
+                />
+              ))}
+            </div>
           </div>
-        </div>
+        </>
       )}
     </div>
   );

@@ -42,6 +42,7 @@ import DownloadCsvButton from 'components/MapView/DownloadCsvButton';
 import ChartSection from './ChartSection';
 import LocationSelector from './LocationSelector';
 import TimePeriodSelector from './TimePeriodSelector';
+import { oneDayInMs, oneYearInMs } from '../utils';
 
 // Load boundary layer for Admin2
 // WARNING - Make sure the dataviz_ids are available in the boundary file for Admin2
@@ -204,8 +205,6 @@ const ChartsPanel = memo(
       string[] | TFunctionKeys[]
     >([]);
 
-    const oneDayInMs = 24 * 60 * 60 * 1000;
-    const oneYearInMs = 365 * oneDayInMs;
     const [startDate1, setStartDate1] = useState<number | null>(
       new Date().getTime() - oneYearInMs,
     );
@@ -543,7 +542,7 @@ const ChartsPanel = memo(
       // reset the admin 2 titles
       setAdmin2Key('');
       setSecondAdmin2Key('');
-    }, [countryAdmin0Id, oneYearInMs]);
+    }, [countryAdmin0Id]);
 
     const handleOnChangeCompareLocationsSwitch = useCallback(() => {
       if (comparePeriods) {
