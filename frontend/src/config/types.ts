@@ -372,7 +372,7 @@ interface FeatureInfoProps {
   type: DataType;
   dataTitle: string;
   labelMap?: { [key: string]: string };
-  metadata?: string;
+  PopupMetaData?: string;
 }
 
 export enum DatesPropagation {
