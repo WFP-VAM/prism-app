@@ -171,15 +171,47 @@ export const buildCsvFileName = (items: string[]) => {
     .join('_');
 };
 
-export function getFeatureInfoPropsData(
-  featureInfoProps: FeatureInfoObject,
-  event: any,
-) {
-  const keys = Object.keys(featureInfoProps);
-  const { properties } = event.features[0];
-  const coordinates = event.lngLat;
+const sortKeys = (featureInfoProps: FeatureInfoObject): string[][] => {
+  const [dataKeys, metaDataKeys] = Object.entries(featureInfoProps).reduce(
+    ([data, meta], [key, value]) => {
+      if (value.metadata && value.dataTitle) {
+        return [data.concat(key), meta.concat(key)];
+      }
+      if (value.metadata) {
+        return [data, meta.concat(key)];
+      }
+      if (value.dataTitle) {
+        return [data.concat(key), meta];
+      }
+      return [data, meta];
+    },
+    [[], []] as [string[], string[]],
+  );
 
-  return Object.keys(properties)
+  return [dataKeys, metaDataKeys];
+};
+
+const getMetaData = (
+  featureInfoProps: FeatureInfoObject,
+  metaDataKeys: string[],
+  properties: any,
+) =>
+  metaDataKeys.reduce(
+    (obj, item) => ({
+      ...obj,
+      // @ts-ignore value exist for each metaDataKeys
+      [featureInfoProps[item].metadata]: properties[item],
+    }),
+    {},
+  );
+
+const getData = (
+  featureInfoProps: FeatureInfoObject,
+  keys: string[],
+  properties: any,
+  coordinates: any,
+) =>
+  Object.keys(properties)
     .filter(prop => keys.includes(prop))
     .reduce((obj, item) => {
       return {
@@ -194,6 +226,19 @@ export function getFeatureInfoPropsData(
         },
       };
     }, {});
+
+export function getFeatureInfoPropsData(
+  featureInfoProps: FeatureInfoObject,
+  event: any,
+) {
+  const [keys, metaDataKeys] = sortKeys(featureInfoProps);
+  const { properties } = event.features[0];
+  const coordinates = event.lngLat;
+
+  return {
+    ...getMetaData(featureInfoProps, metaDataKeys, properties),
+    ...getData(featureInfoProps, keys, properties, coordinates),
+  };
 }
 
 export const getLegendItemLabel = (
