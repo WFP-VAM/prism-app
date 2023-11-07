@@ -18,14 +18,16 @@ exports[`renders as expected 1`] = `
           <div
             class="MuiBox-root MuiBox-root-10"
           >
-            <mock-typography
-              classname="NavBar-title-4"
-              component="[object Object]"
-              to="/"
-              variant="h6"
+            <a
+              href="/"
             >
-              PRISM
-            </mock-typography>
+              <mock-typography
+                classname="NavBar-title-4"
+                variant="h6"
+              >
+                PRISM
+              </mock-typography>
+            </a>
           </div>
         </div>
         <mock-hidden
