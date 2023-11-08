@@ -66,7 +66,7 @@ def parse_form_field(
         return float(value)
     if field_type == "integer":
         return int(value)
-    if field_type in ("datetime", "date"):
+    if field_type in ("datetime", "date", "start", "end"):
         return dtparser(value).astimezone(timezone.utc)
     if field_type == "geopoint":
         try:
@@ -119,6 +119,18 @@ def parse_form_response(
     datetime_value_string = get_first(
         [value for key, value in form_dict.items() if key.endswith(datetime_field)]
     )
+    if datetime_value_string is None:
+        # Use the start date if the datetime field is missing.
+        datetime_value_string = datetime_value_string = get_first(
+            [value for key, value in form_dict.items() if key.endswith("start")]
+        )
+        if datetime_value_string:
+            logger.warning(
+                "datetime_field %s is missing in form: %s, using start date instead",
+                datetime_field,
+                form_dict["_id"],
+            )
+
     if datetime_value_string is None:
         logger.warning(
             "datetime_field %s is missing in form: %s", datetime_field, form_dict
@@ -260,8 +272,12 @@ def get_form_responses(
         date_value: datetime = form["date"]
 
         conditions = [form.get(k) == v for k, v in form_fields["filters"].items()]
-        conditions.append(begin_datetime <= date_value)
-        conditions.append(date_value < end_datetime)
+
+        if date_value is not None:
+            conditions.append(begin_datetime <= date_value)
+            conditions.append(date_value < end_datetime)
+        else:
+            logger.warning("form %s has no date value", form["submission_id"])
 
         # Geospatial filter by admin area
         if province is not None:
