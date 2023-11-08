@@ -62,7 +62,7 @@ curl --location --request POST 'localhost:80/alerts' \
 ```
 
 The following endpoints are related to data retrieval from KoboToolbox. Make sure
-you have set the environment variables KOBO_USERNAME, KOBO_PW
+you have set the environment variables KOBO_USERNAME, KOBO_PASSWORD
 
 ### `/acled` (GET)
 
@@ -72,7 +72,6 @@ Returns armed conflict incidents using ACLED api. Make sure to have the defined 
 - `limit`, Maximum number of results. 0 corresponds to all incidents.
 - `?fields`, Comma separated string which specifies the fields to be returned per incident.
 - `?event_date`, Return incidents only matching the given value with format YYYY-MM-DD
-
 
 ### `/kobo/forms` (GET)
 
@@ -93,6 +92,7 @@ curl -X GET 'http://localhost/kobo/forms?nameField=Test%20MMR&datetimeField=_sub
 ### `/raster_geotiff` (POST)
 
 Generate a geotiff for any wfp raster using the stac API and saves it in S3. It returns the pre signed S3 geotiff URL.
+The instance will need to have read/write access to S3. Make sure it has the necessary IAM role or credentials.
 
 - `collection`, the name of the collection to get. For example `r3h_dekad`.
 - `date`, date of the data to get. For example : `2020-09-01`.
@@ -112,7 +112,7 @@ make api
 To run flask api together with database within same network, run:
 
 ```
-docker-compose -f ./docker-compose.develop.yml -f ../alerting/docker-compose.yml up
+docker compose -f ./docker-compose.develop.yml -f ../alerting/docker-compose.yml up
 ```
 
 ### Tests
@@ -123,13 +123,33 @@ To run linting and tests, run:
 make test
 ```
 
+#### Debugging playwright tests
+
+To run python tests outside of docker, run "make localtests". This will set them up to run outside docker, so that
+playwright can run in debug mode, with a visible browser.
+
+- start the frontend in docker with `make test-services`.
+- in a shell (tested in bash only):
+
+```bash
+cd api/app
+mv tests/conftest.py-template tests/conftest.py
+KOBO_USERNAME=ovio KOBO_PW=pwd PWDEBUG=1 poetry run pytest -s tests -k test_download_report
+```
+
+This should open playwright in debug mode, with a browser window and a debugging one. More info: https://playwright.dev/python/docs/debug
+
 ## Deployments
 
 We are using [docs.traefik.io](https://docs.traefik.io/)
 To deploy the application, update the file `docker-compose.deploy.yml`.
 Specifically, update `info@ovio.org` with a domain admin email and `prism-api.ovio.org` with the hostname you will be using.
 
-To deploy, run:
+Before deploying, make sure that:
+- The EC2 instance you are using is assigned an IAM role that has access to S3.
+- All the necessary secrets needed in `set_envs.sh` have been configured in the AWS secrets manager.
+
+Finally, to deploy, run:
 
 ```
 make deploy

@@ -10,16 +10,16 @@ from pystac_client import Client
 
 STAC_URL = "https://api.earthobservation.vam.wfp.org/stac"
 
-AWS_ACCESS_KEY_ID = os.getenv("AWS_ACCESS_KEY_ID")
-AWS_SECRET_ACCESS_KEY = os.getenv("AWS_SECRET_ACCESS_KEY")
+STAC_AWS_ACCESS_KEY_ID = os.getenv("STAC_AWS_ACCESS_KEY_ID")
+STAC_AWS_SECRET_ACCESS_KEY = os.getenv("STAC_AWS_SECRET_ACCESS_KEY")
 
 GEOTIFF_BUCKET_NAME = "prism-stac-geotiff"
 
 configure_rio(
     cloud_defaults=True,
     aws={
-        "aws_access_key_id": AWS_ACCESS_KEY_ID,
-        "aws_secret_access_key": AWS_SECRET_ACCESS_KEY,
+        "aws_access_key_id": STAC_AWS_ACCESS_KEY_ID,
+        "aws_secret_access_key": STAC_AWS_SECRET_ACCESS_KEY,
     },
 )
 

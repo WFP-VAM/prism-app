@@ -3,33 +3,42 @@
 import functools
 import json
 import logging
+import os
 from datetime import date
-from typing import Any, Optional
+from typing import Annotated, Any, Optional
 from urllib.parse import ParseResult, urlencode, urlunparse
 
 import rasterio  # type: ignore
 from app.auth import validate_user
 from app.caching import FilePath, cache_file, cache_geojson
-from app.database.alert_model import AlertModel
+from app.database.alert_model import AlchemyEncoder, AlertModel
 from app.database.database import AlertsDataBase
 from app.database.user_info_model import UserInfoModel
 from app.hdc import get_hdc_stats
 from app.kobo import get_form_dates, get_form_responses, parse_datetime_params
 from app.models import AcledRequest, RasterGeotiffModel
+from app.report import download_report
 from app.timer import timed
 from app.validation import validate_intersect_parameter
 from app.zonal_stats import DEFAULT_STATS, GroupBy, calculate_stats, get_wfs_response
 from fastapi import Depends, FastAPI, HTTPException, Path, Query, Response
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import JSONResponse
+from fastapi.responses import FileResponse, JSONResponse
 from pydantic import EmailStr, HttpUrl, ValidationError
 from requests import get
 
 from .geotiff_from_stac_api import get_geotiff
-from .models import AlertsModel, StatsModel
+from .models import AlertsModel, StatsModel, UserInfoPydanticModel
 
-logging.basicConfig(level=logging.DEBUG)
+logging.basicConfig(
+    format="%(asctime)s %(levelname)-8s %(message)s",
+    level=logging.DEBUG,
+    datefmt="%Y-%m-%d %H:%M:%S",
+)
 logger = logging.getLogger(__name__)
+
+# silence boto3 logging to avoid spamming the logs
+logging.getLogger("botocore").setLevel(logging.WARNING)
 
 app = FastAPI(
     title="PRISM Geospatial API by WFP",
@@ -162,6 +171,14 @@ def stats(stats_model: StatsModel) -> list[dict[str, Any]]:
     return features
 
 
+@app.get("/report")
+async def get_report(
+    url: str, language: str, exposureLayerId: str, country: str
+) -> FileResponse:
+    tmp_file_path: str = await download_report(url, exposureLayerId, country, language)
+    return FileResponse(path=tmp_file_path, filename=os.path.basename(tmp_file_path))
+
+
 @app.get("/acled")
 def get_acled_incidents(
     iso: int,
@@ -220,12 +237,12 @@ def get_kobo_forms(
     formId: str,
     datetimeField: str,
     koboUrl: HttpUrl,
+    user_info: Annotated[UserInfoPydanticModel, Depends(validate_user)],
     geomField: Optional[str] = None,
     filters: Optional[str] = None,
     beginDateTime=Query(default="2000-01-01"),
     endDateTime: Optional[str] = None,
-    user_info: UserInfoModel = Depends(validate_user),
-):
+) -> list[dict]:
     """Get all form responses."""
     begin_datetime, end_datetime = parse_datetime_params(beginDateTime, endDateTime)
 

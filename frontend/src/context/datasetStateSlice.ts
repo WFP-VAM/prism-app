@@ -60,7 +60,8 @@ export type AdminBoundaryParams = {
 };
 
 export type AdminBoundaryRequestParams = AdminBoundaryParams & {
-  selectedDate: number;
+  startDate?: number;
+  endDate?: number;
   level: string;
   adminCode: number;
 };
@@ -236,8 +237,8 @@ export const loadAdminBoundaryDataset = async (
   params: AdminBoundaryRequestParams,
   dispatch: Dispatch,
 ): Promise<TableData | undefined> => {
-  const endDate = moment(params.selectedDate);
-  const startDate = endDate.clone().subtract(1, 'year');
+  const endDate = moment(params.endDate);
+  const startDate = moment(params.startDate);
 
   const {
     url: hdcUrl,

@@ -22,7 +22,7 @@ export function getRoundedData(
     result = 100 * (Number(result) || 0);
   }
   if (isNumber(result)) {
-    result = parseFloat(result.toFixed(decimals)).toLocaleString();
+    result = parseFloat(result.toFixed(decimals)).toLocaleString('en-US');
   } else {
     // TODO - investigate why we received string 'null' values in data.
     result = result && result !== 'null' ? result : 'No Data';
