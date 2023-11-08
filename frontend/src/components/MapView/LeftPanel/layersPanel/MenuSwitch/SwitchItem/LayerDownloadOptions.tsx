@@ -100,7 +100,6 @@ function LayerDownloadOptions({
     if (!adminLevelLayerData) {
       console.warn(`No layer data available for ${layer.id}`);
     }
-    console.log({ adminLevelLayerData });
     const translatedColumnsNames = mapValues(
       adminLevelLayerData?.data.layerData[0],
       (v, k) => (k === 'value' ? t(adminLevelLayerData.layer.id) : t(k)),
