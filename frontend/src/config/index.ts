@@ -25,6 +25,7 @@ import sierraleone from './sierraleone';
 import southsudan from './southsudan';
 import srilanka from './srilanka';
 import tajikistan from './tajikistan';
+import tanzania from './tanzania';
 import ukraine from './ukraine';
 import zimbabwe from './zimbabwe';
 
@@ -59,6 +60,7 @@ const configMap = {
   southsudan,
   srilanka,
   tajikistan,
+  tanzania,
   ukraine,
   zimbabwe,
 } as const;
