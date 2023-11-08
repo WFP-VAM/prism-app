@@ -249,8 +249,8 @@ const styles = () =>
         background: 'black',
         color: 'white',
         padding: '5px 5px 5px 5px',
-        maxWidth: '30em',
-        maxHeight: '20em',
+        maxWidth: '40em',
+        maxHeight: '400px',
         overflow: 'auto',
       },
       '& div.mapboxgl-popup-tip': {

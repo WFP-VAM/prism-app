@@ -5,11 +5,11 @@ import {
   createStyles,
   withStyles,
 } from '@material-ui/core';
-import React, { MutableRefObject, useCallback } from 'react';
-import { TFunctionKeys, t } from 'i18next';
+import React, { MutableRefObject } from 'react';
+import { t } from 'i18next';
 import { groupBy, mapKeys, snakeCase } from 'lodash';
 import { castObjectsArrayToCsv } from 'utils/csv-utils';
-import { buildCsvFileName, downloadToFile } from '../utils';
+import { downloadToFile } from '../utils';
 
 export const downloadCsv = (
   params: [MutableRefObject<{ [key: string]: any[] }>, string][],
@@ -92,7 +92,6 @@ const styles = () =>
       '&:hover': {
         backgroundColor: '#62B2BD',
       },
-      marginTop: '2em',
       marginLeft: '25%',
       marginRight: '25%',
       width: '50%',
@@ -101,93 +100,32 @@ const styles = () =>
   });
 
 interface DownloadChartCSVButtonProps extends WithStyles<typeof styles> {
-  admin0Key: string;
-  secondAdmin0Key: string;
-  country: string;
-  selectedLayerTitles: string[] | TFunctionKeys[];
-  multiCountry: any;
-  selectedAdmin1Area: string;
-  secondSelectedAdmin1Area: string;
-  selectedAdmin2Area: string;
-  secondSelectedAdmin2Area: string;
-  comparePeriods: boolean;
-  compareLocations: boolean;
+  firstCsvFileName: string;
+  secondCsvFileName?: string;
   dataForCsv: React.MutableRefObject<{ [key: string]: any[] }>;
-  dataForSecondCsv: React.MutableRefObject<{ [key: string]: any[] }>;
+  dataForSecondCsv?: React.MutableRefObject<{ [key: string]: any[] }>;
   disabled?: boolean;
 }
 
 const DownloadChartCSVButton = ({
-  admin0Key,
-  secondAdmin0Key,
-  country,
-  selectedLayerTitles,
-  multiCountry,
-  selectedAdmin1Area,
-  secondSelectedAdmin1Area,
-  selectedAdmin2Area,
-  secondSelectedAdmin2Area,
-  comparePeriods,
-  compareLocations,
+  firstCsvFileName,
+  secondCsvFileName,
   disabled = false,
   dataForCsv,
   dataForSecondCsv,
   classes,
 }: DownloadChartCSVButtonProps) => {
-  const generateCSVFilename = useCallback(
-    () =>
-      buildCsvFileName([
-        multiCountry ? admin0Key : country,
-        selectedAdmin1Area ?? '',
-        selectedAdmin2Area ?? '',
-        ...(selectedLayerTitles as string[]),
-        comparePeriods ? 'first_period' : '',
-      ]),
-    [
-      admin0Key,
-      comparePeriods,
-      country,
-      multiCountry,
-      selectedAdmin1Area,
-      selectedAdmin2Area,
-      selectedLayerTitles,
-    ],
-  );
-
-  const generateSecondCSVFilename = useCallback(
-    () =>
-      buildCsvFileName([
-        multiCountry ? secondAdmin0Key : country,
-        compareLocations
-          ? secondSelectedAdmin1Area ?? ''
-          : selectedAdmin1Area ?? '',
-        compareLocations
-          ? secondSelectedAdmin2Area ?? ''
-          : selectedAdmin2Area ?? '',
-        ...(selectedLayerTitles as string[]),
-        comparePeriods ? 'second_period' : '',
-      ]),
-    [
-      country,
-      compareLocations,
-      multiCountry,
-      secondSelectedAdmin1Area,
-      selectedAdmin1Area,
-      secondAdmin0Key,
-      secondSelectedAdmin2Area,
-      selectedAdmin2Area,
-      selectedLayerTitles,
-      comparePeriods,
-    ],
-  );
-
+  const buildDataToDownload = () => {
+    const result = [[dataForCsv, firstCsvFileName]];
+    if (dataForSecondCsv && secondCsvFileName) {
+      result.push([dataForSecondCsv, secondCsvFileName]);
+    }
+    return result as [MutableRefObject<{ [key: string]: any[] }>, string][];
+  };
   return (
     <Button
       className={classes.downloadButton}
-      onClick={downloadCsv([
-        [dataForCsv, generateCSVFilename()],
-        [dataForSecondCsv, generateSecondCSVFilename()],
-      ])}
+      onClick={downloadCsv(buildDataToDownload())}
       disabled={disabled}
     >
       <Typography variant="body2">{t('Download CSV')}</Typography>

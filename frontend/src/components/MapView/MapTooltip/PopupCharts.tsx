@@ -26,8 +26,11 @@ import { GeoJsonProperties } from 'geojson';
 
 import ChartSection from '../LeftPanel/ChartsPanel/ChartSection';
 import { oneYearInMs } from '../LeftPanel/utils';
+import DownloadCsvButton from '../DownloadCsvButton';
+import { buildCsvFileName } from '../utils';
 
 const chartLayers = getWMSLayersWithChart();
+const { countryAdmin0Id, country, multiCountry } = appConfig;
 const MAX_ADMIN_LEVEL = appConfig.multiCountry ? 3 : 2;
 const boundaryLayer = getBoundaryLayersByAdminLevel(MAX_ADMIN_LEVEL);
 
@@ -83,9 +86,18 @@ const styles = () =>
     },
     charts: {
       display: 'flex',
-      height: '200px',
       flexDirection: 'column',
       gap: '8px',
+    },
+    chartContainer: {
+      display: 'flex',
+      flexDirection: 'column',
+      gap: '8px',
+    },
+    chartSection: {
+      height: '240px',
+      width: '400px',
+      flexGrow: 1,
     },
   });
 
@@ -166,20 +178,35 @@ const PopupChart = ({ popupTitle, classes }: PopupChartProps) => {
               aria-label="close"
               className={classes.closeButton}
               onClick={() => setAdminLevel(0)}
+              size="small"
             >
               <FontAwesomeIcon icon={faTimes} />
             </IconButton>
             <div className={classes.charts}>
               {filteredChartLayers.map(item => (
-                <ChartSection
-                  key={item.id}
-                  chartLayer={item}
-                  adminProperties={adminProperties}
-                  adminLevel={adminLevel}
-                  startDate={startDate1 as number}
-                  endDate={endDate1 as number}
-                  dataForCsv={dataForCsv}
-                />
+                <div className={classes.chartContainer}>
+                  <div className={classes.chartSection}>
+                    <ChartSection
+                      key={item.id}
+                      chartLayer={item}
+                      adminProperties={adminProperties}
+                      adminLevel={adminLevel}
+                      startDate={startDate1 as number}
+                      endDate={endDate1 as number}
+                      dataForCsv={dataForCsv}
+                    />
+                  </div>
+                  <div className="downloadButton">
+                    <DownloadCsvButton
+                      firstCsvFileName={buildCsvFileName([
+                        multiCountry ? countryAdmin0Id : country,
+                        ...adminLevelsNames,
+                        item.title,
+                      ])}
+                      dataForCsv={dataForCsv}
+                    />
+                  </div>
+                </div>
               ))}
             </div>
           </div>

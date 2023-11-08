@@ -38,6 +38,7 @@ import { leftPanelTabValueSelector } from 'context/leftPanelStateSlice';
 import { layerDataSelector } from 'context/mapStateSlice/selectors';
 import { useSafeTranslation } from 'i18n';
 import DownloadCsvButton from 'components/MapView/DownloadCsvButton';
+import { buildCsvFileName } from 'components/MapView/utils';
 
 import ChartSection from './ChartSection';
 import LocationSelector from './LocationSelector';
@@ -88,6 +89,7 @@ const useStyles = makeStyles(() =>
     },
     layerFormControl: {
       marginTop: 30,
+      marginBottom: '2em',
       minWidth: '300px',
       maxWidth: '350px',
       '& .MuiFormLabel-root': {
@@ -750,17 +752,24 @@ const ChartsPanel = memo(
           </Select>
         </FormControl>
         <DownloadCsvButton
-          admin0Key={admin0Key}
-          compareLocations={compareLocations}
-          comparePeriods={comparePeriods}
-          country={country}
-          multiCountry={multiCountry}
-          secondAdmin0Key={secondAdmin0Key}
-          secondSelectedAdmin1Area={secondSelectedAdmin1Area}
-          secondSelectedAdmin2Area={secondSelectedAdmin2Area}
-          selectedAdmin1Area={selectedAdmin1Area}
-          selectedAdmin2Area={selectedAdmin2Area}
-          selectedLayerTitles={selectedLayerTitles}
+          firstCsvFileName={buildCsvFileName([
+            multiCountry ? admin0Key : country,
+            selectedAdmin1Area ?? '',
+            selectedAdmin2Area ?? '',
+            ...(selectedLayerTitles as string[]),
+            comparePeriods ? 'first_period' : '',
+          ])}
+          secondCsvFileName={buildCsvFileName([
+            multiCountry ? secondAdmin0Key : country,
+            compareLocations
+              ? secondSelectedAdmin1Area ?? ''
+              : selectedAdmin1Area ?? '',
+            compareLocations
+              ? secondSelectedAdmin2Area ?? ''
+              : selectedAdmin2Area ?? '',
+            ...(selectedLayerTitles as string[]),
+            comparePeriods ? 'second_period' : '',
+          ])}
           disabled={
             !(
               adminProperties &&
