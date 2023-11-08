@@ -118,8 +118,6 @@ const DownloadChartCSVButton = ({
   const buildDataToDownload = () => {
     const result = [[dataForCsv, firstCsvFileName]];
     if (secondCsvFileName && dataForSecondCsv) {
-      const test = result.concat([[dataForSecondCsv, secondCsvFileName]]);
-      console.log('test', test);
       return result.concat([[dataForSecondCsv, secondCsvFileName]]);
     }
     return result;
