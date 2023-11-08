@@ -117,15 +117,23 @@ const DownloadChartCSVButton = ({
 }: DownloadChartCSVButtonProps) => {
   const buildDataToDownload = () => {
     const result = [[dataForCsv, firstCsvFileName]];
-    if (dataForSecondCsv && secondCsvFileName) {
-      result.push([dataForSecondCsv, secondCsvFileName]);
+    if (secondCsvFileName && dataForSecondCsv) {
+      const test = result.concat([[dataForSecondCsv, secondCsvFileName]]);
+      console.log('test', test);
+      return result.concat([[dataForSecondCsv, secondCsvFileName]]);
     }
-    return result as [MutableRefObject<{ [key: string]: any[] }>, string][];
+    return result;
   };
+
   return (
     <Button
       className={classes.downloadButton}
-      onClick={downloadCsv(buildDataToDownload())}
+      onClick={downloadCsv(
+        buildDataToDownload() as [
+          MutableRefObject<{ [key: string]: any[] }>,
+          string,
+        ][],
+      )}
       disabled={disabled}
     >
       <Typography variant="body2">{t('Download CSV')}</Typography>
