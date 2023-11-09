@@ -4,6 +4,9 @@ services:
   api:
     volumes:
       - ./app:/app
+      # Use these to run the app in development mode and update depedencies
+      - ./pyproject.toml:/pyproject.toml
+      - ./poetry.lock:/poetry.lock
     build:
       context: ./
       dockerfile: ./Dockerfile
