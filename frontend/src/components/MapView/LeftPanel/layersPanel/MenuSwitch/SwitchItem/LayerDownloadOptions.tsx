@@ -40,6 +40,7 @@ function LayerDownloadOptions({
   layer,
   extent,
   selected,
+  size,
 }: LayerDownloadOptionsProps) {
   const { t } = useSafeTranslation();
   const dispatch = useDispatch();
@@ -143,8 +144,9 @@ function LayerDownloadOptions({
           <IconButton
             disabled={!selected || isGeotiffLoading}
             onClick={handleDownloadMenuOpen}
+            size={size || 'medium'}
           >
-            <GetAppIcon />
+            <GetAppIcon fontSize={size || 'medium'} />
           </IconButton>
         </Tooltip>
       )}
@@ -184,6 +186,7 @@ interface LayerDownloadOptionsProps {
   layer: LayerType;
   extent: Extent | undefined;
   selected: boolean;
+  size?: 'small' | undefined;
 }
 
 export default LayerDownloadOptions;
