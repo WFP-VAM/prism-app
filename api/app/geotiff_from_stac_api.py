@@ -1,6 +1,6 @@
+import logging
 import os
 from uuid import uuid4
-import logging
 
 import boto3
 from cachetools import TTLCache, cached
