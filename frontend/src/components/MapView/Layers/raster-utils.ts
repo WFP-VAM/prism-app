@@ -212,10 +212,10 @@ export async function downloadGeotiff(
     }
     const body = {
       collection,
-      lat_min: boundingBox[1],
       long_min: boundingBox[0],
-      lat_max: boundingBox[3],
+      lat_min: boundingBox[1],
       long_max: boundingBox[2],
+      lat_max: boundingBox[3],
       date,
     };
     const response = await fetchWithTimeout(
