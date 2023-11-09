@@ -1,5 +1,6 @@
 import os
 from uuid import uuid4
+import logging
 
 import boto3
 from cachetools import TTLCache, cached
@@ -7,6 +8,8 @@ from fastapi import HTTPException
 from odc.geo.xr import write_cog
 from odc.stac import configure_rio, stac_load
 from pystac_client import Client
+
+logger = logging.getLogger(__name__)
 
 STAC_URL = "https://api.earthobservation.vam.wfp.org/stac"
 
@@ -37,12 +40,20 @@ def generate_geotiff_from_stac_api(
     if not items:
         raise HTTPException(status_code=500, detail="Collection not found in stac API")
 
-    collections_dataset = stac_load(
-        items,
-        bbox=bbox,
-    )
+    try:
+        collections_dataset = stac_load(
+            items,
+            bbox=bbox,
+        )
+    except Exception as e:
+        logger.warning("Failed to load dataset")
+        raise e
 
-    write_cog(collections_dataset[list(collections_dataset.keys())[0]], file_path)
+    try:
+        write_cog(collections_dataset[list(collections_dataset.keys())[0]], file_path)
+    except Exception as e:
+        logger.warning("An error occured writing file")
+        raise e
 
     return file_path
 
