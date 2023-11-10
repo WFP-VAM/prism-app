@@ -1294,13 +1294,13 @@ xr = ["xarray (>=0.19)"]
 
 [[package]]
 name = "odc-stac"
-version = "0.3.7"
+version = "0.3.6"
 description = "Tooling for converting STAC metadata to ODC data model"
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "odc-stac-0.3.7.tar.gz", hash = "sha256:84480ff22302a390fdf1541ba31991f959672b9784c430e757d5a098e61dbd86"},
-    {file = "odc_stac-0.3.7-py3-none-any.whl", hash = "sha256:be473f0947f29d9235af39b19812a55ad87cd50e4e6824e17942af58be98e824"},
+    {file = "odc-stac-0.3.6.tar.gz", hash = "sha256:af8bb740751c406b0e5038a384d31f6f440269d9e672484b8039d42e7d616cd9"},
+    {file = "odc_stac-0.3.6-py3-none-any.whl", hash = "sha256:9df72f212bd14ebc32ece802440831806ecfaabd6c3c1000c3264476abc5a09e"},
 ]
 
 [package.dependencies]
@@ -3031,4 +3031,4 @@ testing = ["big-O", "jaraco.functools", "jaraco.itertools", "more-itertools", "p
 [metadata]
 lock-version = "2.0"
 python-versions = "<3.11,>=3.8.0"
-content-hash = "7dc13be1ad10db91357e478c826922c4d120a845144581ccb289bea05ea172d9"
+content-hash = "901bb78af68c05ff3939064d4551d2d5470f9aed9cb35ecdd0bbaa8881c0469d"

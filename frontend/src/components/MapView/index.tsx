@@ -545,12 +545,13 @@ const MapView = memo(({ classes }: MapViewProps) => {
         </Grid>
         <Grid item>
           <Grid container spacing={1}>
-            <Legends layers={selectedLayers} />
+            <Legends layers={selectedLayers} extent={adminBoundariesExtent} />
           </Grid>
         </Grid>
       </Grid>
     );
   }, [
+    adminBoundariesExtent,
     classes.buttonContainer,
     isShowingExtraFeatures,
     renderedGridItemAlertForm,
