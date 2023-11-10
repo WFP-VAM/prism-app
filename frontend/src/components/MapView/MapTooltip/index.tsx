@@ -1,4 +1,4 @@
-import React, { Fragment, memo, useMemo } from 'react';
+import React, { Fragment, memo, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { Popup } from 'react-mapbox-gl';
 import {
@@ -90,7 +90,9 @@ const MapTooltip = memo(({ classes }: TooltipProps) => {
 
   const popupData = popup.data;
 
-  const popupTitle = useMemo(() => {
+  const [popupTitle, setPopupTitle] = useState<string>('');
+
+  const defaultPopupTitle = useMemo(() => {
     if (isEnglishLanguageSelected(i18n)) {
       return popup.locationName;
     }
@@ -204,22 +206,22 @@ const MapTooltip = memo(({ classes }: TooltipProps) => {
       <Popup coordinates={popup.coordinates} className={classes.popup}>
         {renderedRedirectToDMP}
         <Typography variant="h4" color="inherit" className={classes.title}>
-          {popupTitle}
+          {popupTitle || defaultPopupTitle}
         </Typography>
         {renderedPopupContent}
-        <PopupCharts popupTitle={popupTitle} />
+        <PopupCharts popup={popup} setPopupTitle={setPopupTitle} />
         {renderedPopupLoader}
       </Popup>
     );
   }, [
     classes.popup,
     classes.title,
-    popup.coordinates,
-    popup.showing,
-    popupTitle,
+    popup,
+    defaultPopupTitle,
     renderedPopupContent,
     renderedPopupLoader,
     renderedRedirectToDMP,
+    popupTitle,
   ]);
 });
 

@@ -10,19 +10,20 @@ import {
   layerDataSelector,
   layersSelector,
 } from 'context/mapStateSlice/selectors';
-import React, { memo, useEffect, useRef, useState } from 'react';
+import React, { memo, useCallback, useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faExternalLinkAlt, faTimes } from '@fortawesome/free-solid-svg-icons';
 import {
   Button,
   IconButton,
-  Typography,
   WithStyles,
   createStyles,
   withStyles,
 } from '@material-ui/core';
 import { GeoJsonProperties } from 'geojson';
+import i18n, { isEnglishLanguageSelected } from 'i18n';
+import { MapTooltipState } from 'context/tooltipStateSlice';
 
 import ChartSection from '../LeftPanel/ChartsPanel/ChartSection';
 import { oneYearInMs } from '../LeftPanel/utils';
@@ -102,35 +103,53 @@ const styles = () =>
   });
 
 interface PopupChartProps extends WithStyles<typeof styles> {
-  popupTitle: string;
+  popup: MapTooltipState;
+  setPopupTitle: React.Dispatch<React.SetStateAction<string>>;
 }
+type AdminLevel = 0 | 1 | 2;
 
-const PopupChart = ({ popupTitle, classes }: PopupChartProps) => {
+const PopupChart = ({ popup, setPopupTitle, classes }: PopupChartProps) => {
   const boundaryLayerData = useSelector(layerDataSelector(boundaryLayer.id)) as
     | LayerData<BoundaryLayerProps>
     | undefined;
   const { data } = boundaryLayerData || {};
   const mapState = useSelector(layersSelector);
   const dataForCsv = useRef<{ [key: string]: any[] }>({});
-  const [adminLevel, setAdminLevel] = useState<0 | 1 | 2>(0);
+  const [adminLevel, setAdminLevel] = useState<AdminLevel>(0);
   const [adminProperties, setAdminProperties] = useState<GeoJsonProperties>(
     null,
   );
 
-  // keep only level 1 and 2
-  // eslint-disable-next-line fp/no-mutating-methods
-  const adminLevelsNames = popupTitle.split(', ').splice(0, 2);
+  const adminLevelsNames = useCallback(() => {
+    // eslint-disable-next-line fp/no-mutating-methods
+    return popup.locationName.split(', ').splice(0, adminLevel || 2);
+  }, [adminLevel, popup.locationName]);
+  const translatedAdminLevelsNames = useCallback(() => {
+    // eslint-disable-next-line fp/no-mutating-methods
+    return popup.locationLocalName.split(', ').splice(0, adminLevel || 2);
+  }, [adminLevel, popup.locationLocalName]);
+
+  const translatePopupTitle = useCallback(() => {
+    if (isEnglishLanguageSelected(i18n)) {
+      return adminLevelsNames().join(', ');
+    }
+    return translatedAdminLevelsNames().join(', ');
+  }, [adminLevelsNames, translatedAdminLevelsNames]);
 
   useEffect(() => {
     if (adminLevel > 0 && data) {
       setAdminProperties(
         getProperties(
           data as BoundaryLayerData,
-          adminLevelsNames[adminLevel - 1],
+          adminLevelsNames()[adminLevel - 1],
         ),
       );
+      setPopupTitle(adminLevelsNames().join(', '));
     }
-  }, [adminLevel, data, adminLevelsNames]);
+    if (adminLevel === 0) {
+      setPopupTitle('');
+    }
+  }, [adminLevel, data, adminLevelsNames, setPopupTitle, translatePopupTitle]);
 
   if (mapState.length < 4) {
     return null;
@@ -149,7 +168,7 @@ const PopupChart = ({ popupTitle, classes }: PopupChartProps) => {
       {adminLevel === 0 && (
         <div className={classes.selectChartContainer}>
           {filteredChartLayers.map(layer =>
-            adminLevelsNames.map((level, index) => (
+            adminLevelsNames().map((level, index) => (
               <Button
                 key={level}
                 variant="text"
@@ -170,9 +189,6 @@ const PopupChart = ({ popupTitle, classes }: PopupChartProps) => {
       )}
       {adminLevel > 0 && adminProperties && (
         <>
-          <Typography component="p" variant="h4" color="inherit">
-            {adminLevelsNames[adminLevel - 1]}
-          </Typography>
           <div className={classes.chartsContainer}>
             <IconButton
               aria-label="close"
@@ -200,7 +216,7 @@ const PopupChart = ({ popupTitle, classes }: PopupChartProps) => {
                     <DownloadCsvButton
                       firstCsvFileName={buildCsvFileName([
                         multiCountry ? countryAdmin0Id : country,
-                        ...adminLevelsNames,
+                        ...adminLevelsNames(),
                         item.title,
                       ])}
                       dataForCsv={dataForCsv}
