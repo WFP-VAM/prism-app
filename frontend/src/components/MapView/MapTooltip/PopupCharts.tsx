@@ -21,9 +21,8 @@ import {
   createStyles,
   withStyles,
 } from '@material-ui/core';
-import { GeoJsonProperties } from 'geojson';
-import i18n, { isEnglishLanguageSelected } from 'i18n';
 import { MapTooltipState } from 'context/tooltipStateSlice';
+import i18n, { isEnglishLanguageSelected } from 'i18n';
 
 import ChartSection from '../LeftPanel/ChartsPanel/ChartSection';
 import { oneYearInMs } from '../LeftPanel/utils';
@@ -37,12 +36,10 @@ const boundaryLayer = getBoundaryLayersByAdminLevel(MAX_ADMIN_LEVEL);
 
 const getProperties = (
   layerData: LayerData<BoundaryLayerProps>['data'],
-  name?: string,
+  name: string,
 ) => {
   const features = layerData.features.filter(
-    elem =>
-      (elem.properties && elem.properties.Adm1_Name === name) ||
-      (elem.properties && elem.properties.Adm2_Name === name),
+    elem => elem.properties && elem.properties[name],
   );
 
   if (!features) {
@@ -116,52 +113,40 @@ const PopupChart = ({ popup, setPopupTitle, classes }: PopupChartProps) => {
   const mapState = useSelector(layersSelector);
   const dataForCsv = useRef<{ [key: string]: any[] }>({});
   const [adminLevel, setAdminLevel] = useState<AdminLevel>(0);
-  const [adminProperties, setAdminProperties] = useState<GeoJsonProperties>(
-    null,
-  );
 
   const adminLevelsNames = useCallback(() => {
-    // eslint-disable-next-line fp/no-mutating-methods
-    return popup.locationName.split(', ').splice(0, adminLevel || 2);
-  }, [adminLevel, popup.locationName]);
-  const translatedAdminLevelsNames = useCallback(() => {
-    // eslint-disable-next-line fp/no-mutating-methods
-    return popup.locationLocalName.split(', ').splice(0, adminLevel || 2);
-  }, [adminLevel, popup.locationLocalName]);
-
-  const translatePopupTitle = useCallback(() => {
     if (isEnglishLanguageSelected(i18n)) {
-      return adminLevelsNames().join(', ');
+      // eslint-disable-next-line fp/no-mutating-methods
+      return popup.locationName.split(', ').splice(0, adminLevel || 2);
     }
-    return translatedAdminLevelsNames().join(', ');
-  }, [adminLevelsNames, translatedAdminLevelsNames]);
+    return popup.locationLocalName.split(', ').splice(0, adminLevel || 2);
+  }, [adminLevel, popup.locationLocalName, popup.locationName]);
+
+  const startDate1 = new Date().getTime() - oneYearInMs;
+  const endDate1 = new Date().getTime();
+
+  const mapStateIds = mapState.map(item => item.id);
+  const filteredChartLayers = chartLayers.filter(item =>
+    mapStateIds.includes(item.id),
+  );
+
+  const levelsConfiguration = filteredChartLayers.map(item => ({
+    name: item.id,
+    levels: item.chartData?.levels,
+  }));
 
   useEffect(() => {
-    if (adminLevel > 0 && data) {
-      setAdminProperties(
-        getProperties(
-          data as BoundaryLayerData,
-          adminLevelsNames()[adminLevel - 1],
-        ),
-      );
+    if (adminLevel > 0) {
       setPopupTitle(adminLevelsNames().join(', '));
     }
     if (adminLevel === 0) {
       setPopupTitle('');
     }
-  }, [adminLevel, data, adminLevelsNames, setPopupTitle, translatePopupTitle]);
+  }, [adminLevel, adminLevelsNames, setPopupTitle]);
 
-  if (mapState.length < 4) {
-    return null;
+  if (filteredChartLayers.length === 0) {
+    return <>No chart available</>;
   }
-
-  const startDate1 = new Date().getTime() - oneYearInMs;
-  const endDate1 = new Date().getTime();
-
-  const filteredMapState = mapState.slice(3).map(item => item.id);
-  const filteredChartLayers = chartLayers.filter(item =>
-    filteredMapState.includes(item.id),
-  );
 
   return (
     <>
@@ -187,7 +172,7 @@ const PopupChart = ({ popup, setPopupTitle, classes }: PopupChartProps) => {
           )}
         </div>
       )}
-      {adminLevel > 0 && adminProperties && (
+      {adminLevel > 0 && (
         <>
           <div className={classes.chartsContainer}>
             <IconButton
@@ -199,13 +184,25 @@ const PopupChart = ({ popup, setPopupTitle, classes }: PopupChartProps) => {
               <FontAwesomeIcon icon={faTimes} />
             </IconButton>
             <div className={classes.charts}>
-              {filteredChartLayers.map(item => (
-                <div className={classes.chartContainer}>
+              {filteredChartLayers.map(filteredChartLayer => (
+                <div
+                  key={filteredChartLayer.id}
+                  className={classes.chartContainer}
+                >
                   <div className={classes.chartSection}>
                     <ChartSection
-                      key={item.id}
-                      chartLayer={item}
-                      adminProperties={adminProperties}
+                      chartLayer={filteredChartLayer}
+                      adminProperties={getProperties(
+                        data as BoundaryLayerData,
+                        levelsConfiguration
+                          .find(
+                            levelConfiguration =>
+                              levelConfiguration.name === filteredChartLayer.id,
+                          )
+                          ?.levels?.find(
+                            level => level.level === adminLevel.toString(),
+                          )?.name ?? '',
+                      )}
                       adminLevel={adminLevel}
                       startDate={startDate1 as number}
                       endDate={endDate1 as number}
@@ -217,7 +214,7 @@ const PopupChart = ({ popup, setPopupTitle, classes }: PopupChartProps) => {
                       firstCsvFileName={buildCsvFileName([
                         multiCountry ? countryAdmin0Id : country,
                         ...adminLevelsNames(),
-                        item.title,
+                        filteredChartLayer.title,
                       ])}
                       dataForCsv={dataForCsv}
                     />
