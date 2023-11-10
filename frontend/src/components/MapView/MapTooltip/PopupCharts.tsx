@@ -119,6 +119,7 @@ const PopupChart = ({ popup, setPopupTitle, classes }: PopupChartProps) => {
       // eslint-disable-next-line fp/no-mutating-methods
       return popup.locationName.split(', ').splice(0, adminLevel || 2);
     }
+    // eslint-disable-next-line fp/no-mutating-methods
     return popup.locationLocalName.split(', ').splice(0, adminLevel || 2);
   }, [adminLevel, popup.locationLocalName, popup.locationName]);
 
