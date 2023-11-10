@@ -35,24 +35,16 @@
               "label": "1-month"
             },
             {
-              "id": "rainfall_agg_2month",
-              "label": "2-month"
-            },
-            {
               "id": "rainfall_agg_3month",
               "label": "3-month"
             },
             {
-              "id": "rainfall_agg_4month",
-              "label": "4-month"
-            },
-            {
-              "id": "rainfall_agg_5month",
-              "label": "5-month"
-            },
-            {
               "id": "rainfall_agg_6month",
               "label": "6-month"
+            },
+            {
+              "id": "rainfall_agg_1year",
+              "label": "1-year"
             }
           ]
         },
@@ -70,24 +62,16 @@
               "label": "1-month"
             },
             {
-              "id": "rain_anomaly_2month",
-              "label": "2-month"
-            },
-            {
               "id": "rain_anomaly_3month",
               "label": "3-month"
             },
             {
-              "id": "rain_anomaly_4month",
-              "label": "4-month"
-            },
-            {
-              "id": "rain_anomaly_5month",
-              "label": "5-month"
-            },
-            {
               "id": "rain_anomaly_6month",
               "label": "6-month"
+            },
+            {
+              "id": "rain_anomaly_1year",
+              "label": "1-year"
             }
           ]
         },
