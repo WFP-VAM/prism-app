@@ -66,6 +66,13 @@ export function getAlertMessage(
 
   let alertMessage;
 
+  // test if aggregateData is an array
+  if (!Array.isArray(aggregateData)) {
+    console.warn('aggregateData is not an array');
+    console.warn('aggregateData', JSON.stringify(aggregateData));
+    return undefined
+  }
+
   aggregateData.forEach((data) => {
     const minValue = scaleValueIfDefined(
       get(data, 'stats_min') as number,
