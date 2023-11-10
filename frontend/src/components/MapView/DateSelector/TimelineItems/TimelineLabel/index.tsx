@@ -35,7 +35,7 @@ const styles = () =>
 
     dayItem: {
       height: 10,
-      background: '#ededed',
+      borderLeft: '1px solid #ededed',
     },
   });
 
