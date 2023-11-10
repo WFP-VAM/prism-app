@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "noEmit": true,
     "emitDecoratorMetadata": true,
     "module": "commonjs",
     "target": "es5",
@@ -14,7 +15,6 @@
     "moduleResolution": "node",
     "resolveJsonModule": true,
     "isolatedModules": true,
-    "noEmit": true,
     "jsx": "react",
     "strictPropertyInitialization": false,
     "experimentalDecorators": true,
