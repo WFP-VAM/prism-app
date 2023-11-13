@@ -361,7 +361,8 @@ export type FilePath = string & { 'a path to a file': {} };
 export class BoundaryLayerProps extends CommonLayerProps {
   type: 'boundary';
   path: FilePath; // path to admin_boundries.json file - web or local.
-  adminCode: AdminCodeString;
+  adminCode: AdminCodeString; // same value as last item in adminLevelCodes below
+  adminLevelCodes: AdminCodeString[]; // Ordered as below
   adminLevelNames: AdminLevelNameString[]; // Ordered (Admin1, Admin2, ...)
   adminLevelLocalNames: AdminLevelNameString[]; // Same as above, local to country
   styles: LayerStyleProps; // Mapbox line and fill properties.,
