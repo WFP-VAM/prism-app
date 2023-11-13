@@ -186,7 +186,6 @@ const styles = () =>
     },
     dateItem: {
       color: '#101010',
-      borderLeft: '1px solid white',
       position: 'relative',
       top: -5,
       cursor: 'pointer',

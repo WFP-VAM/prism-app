@@ -1,8 +1,10 @@
 import logging
 import os
+from time import time
 from uuid import uuid4
 
 import boto3
+from app.timer import timed
 from cachetools import TTLCache, cached
 from fastapi import HTTPException
 from odc.geo.xr import write_cog
@@ -27,6 +29,7 @@ configure_rio(
 )
 
 
+@timed
 def generate_geotiff_from_stac_api(
     collection: str, bbox: [float, float, float, float], date: str
 ) -> str:
@@ -41,10 +44,7 @@ def generate_geotiff_from_stac_api(
         raise HTTPException(status_code=500, detail="Collection not found in stac API")
 
     try:
-        collections_dataset = stac_load(
-            items,
-            bbox=bbox,
-        )
+        collections_dataset = stac_load(items, bbox=bbox, chunks={})
     except Exception as e:
         logger.warning("Failed to load dataset")
         raise e

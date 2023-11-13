@@ -22,11 +22,14 @@ export const mapSelector = (state: RootState): MapBoxMap | undefined =>
 
 export const layerDataSelector = (id: LayerKey, date?: number) => (
   state: RootState,
-): LayerDataTypes | undefined =>
-  state.mapState.layersData.find(
+): LayerDataTypes | undefined => {
+  // TODO - investigate if it is safe to return the first match by id
+  // if there are no match for the given date.
+  return state.mapState.layersData.find(
     ({ layer, date: dataDate }) =>
       layer.id === id && (!date || datesAreEqualWithoutTime(date, dataDate)),
   );
+};
 export const loadingLayerIdsSelector = (state: RootState): LayerKey[] =>
   state.mapState.loadingLayerIds;
 
