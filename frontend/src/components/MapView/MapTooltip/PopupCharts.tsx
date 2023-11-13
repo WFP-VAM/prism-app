@@ -212,12 +212,16 @@ const PopupChart = ({ popup, setPopupTitle, classes }: PopupChartProps) => {
                   </div>
                   <div className="downloadButton">
                     <DownloadCsvButton
-                      firstCsvFileName={buildCsvFileName([
-                        multiCountry ? countryAdmin0Id : country,
-                        ...adminLevelsNames(),
-                        filteredChartLayer.title,
-                      ])}
-                      dataForCsv={dataForCsv}
+                      filesData={[
+                        {
+                          fileName: buildCsvFileName([
+                            multiCountry ? countryAdmin0Id : country,
+                            ...adminLevelsNames(),
+                            filteredChartLayer.title,
+                          ]),
+                          data: dataForCsv,
+                        },
+                      ]}
                     />
                   </div>
                 </div>

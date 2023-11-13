@@ -13,9 +13,6 @@ import { downloadToFile } from '../utils';
 
 export const downloadCsv = (
   params: [MutableRefObject<{ [key: string]: any[] }>, string][],
-  // filename1: string,
-  // dataForSecondCsv: MutableRefObject<{ [key: string]: any[] }>,
-  // filename2: string,
 ) => {
   return () => {
     params.forEach(filedata => {
@@ -29,8 +26,7 @@ export const downloadCsv = (
 
       const columnsNamesPerChart = Object.entries(dataForCsv.current).map(
         ([key, value]) => {
-          const first = value[0];
-          const keys = Object.keys(first);
+          const keys = Object.keys(value[0]);
           const filtered = keys.filter(x => x !== dateColumn);
           const mapped = filtered.map(x => getKeyName(x, key));
           return Object.fromEntries(mapped.map(x => [x, x]));
@@ -100,27 +96,20 @@ const styles = () =>
   });
 
 interface DownloadChartCSVButtonProps extends WithStyles<typeof styles> {
-  firstCsvFileName: string;
-  secondCsvFileName?: string;
-  dataForCsv: React.MutableRefObject<{ [key: string]: any[] }>;
-  dataForSecondCsv?: React.MutableRefObject<{ [key: string]: any[] }>;
+  filesData: {
+    fileName: string;
+    data: React.MutableRefObject<{ [key: string]: any[] }>;
+  }[];
   disabled?: boolean;
 }
 
 const DownloadChartCSVButton = ({
-  firstCsvFileName,
-  secondCsvFileName,
+  filesData,
   disabled = false,
-  dataForCsv,
-  dataForSecondCsv,
   classes,
 }: DownloadChartCSVButtonProps) => {
   const buildDataToDownload = () => {
-    const result = [[dataForCsv, firstCsvFileName]];
-    if (secondCsvFileName && dataForSecondCsv) {
-      return result.concat([[dataForSecondCsv, secondCsvFileName]]);
-    }
-    return result;
+    return filesData.map(fileData => [fileData.data, fileData.fileName]);
   };
 
   return (

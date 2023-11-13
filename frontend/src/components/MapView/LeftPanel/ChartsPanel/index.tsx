@@ -752,24 +752,32 @@ const ChartsPanel = memo(
           </Select>
         </FormControl>
         <DownloadCsvButton
-          firstCsvFileName={buildCsvFileName([
-            multiCountry ? admin0Key : country,
-            selectedAdmin1Area ?? '',
-            selectedAdmin2Area ?? '',
-            ...(selectedLayerTitles as string[]),
-            comparePeriods ? 'first_period' : '',
-          ])}
-          secondCsvFileName={buildCsvFileName([
-            multiCountry ? secondAdmin0Key : country,
-            compareLocations
-              ? secondSelectedAdmin1Area ?? ''
-              : selectedAdmin1Area ?? '',
-            compareLocations
-              ? secondSelectedAdmin2Area ?? ''
-              : selectedAdmin2Area ?? '',
-            ...(selectedLayerTitles as string[]),
-            comparePeriods ? 'second_period' : '',
-          ])}
+          filesData={[
+            {
+              fileName: buildCsvFileName([
+                multiCountry ? admin0Key : country,
+                selectedAdmin1Area ?? '',
+                selectedAdmin2Area ?? '',
+                ...(selectedLayerTitles as string[]),
+                comparePeriods ? 'first_period' : '',
+              ]),
+              data: dataForCsv,
+            },
+            {
+              fileName: buildCsvFileName([
+                multiCountry ? secondAdmin0Key : country,
+                compareLocations
+                  ? secondSelectedAdmin1Area ?? ''
+                  : selectedAdmin1Area ?? '',
+                compareLocations
+                  ? secondSelectedAdmin2Area ?? ''
+                  : selectedAdmin2Area ?? '',
+                ...(selectedLayerTitles as string[]),
+                comparePeriods ? 'second_period' : '',
+              ]),
+              data: dataForSecondCsv,
+            },
+          ]}
           disabled={
             !(
               adminProperties &&
@@ -778,8 +786,6 @@ const ChartsPanel = memo(
               selectedLayerTitles.length >= 1
             )
           }
-          dataForCsv={dataForCsv}
-          dataForSecondCsv={dataForSecondCsv}
         />
         <Button
           className={classes.clearAllSelectionsButton}
