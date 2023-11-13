@@ -143,7 +143,11 @@ const Legends = memo(({ classes, extent, layers }: LegendsProps) => {
     if (!open) {
       return null;
     }
-    return <List className={classes.list}>{legendItems}</List>;
+    return (
+      <List id="legend-list" className={classes.list}>
+        {legendItems}
+      </List>
+    );
   }, [classes.list, legendItems, open]);
 
   const toggleLegendVisibility = useCallback(() => {
