@@ -254,7 +254,6 @@ export const fetchAdminLevelDataLayerData: LazyLoader<AdminLevelDataLayerProps> 
     }),
   );
 
-
   return getAdminLevelDataLayerData({
     data: layerData,
     fallbackLayersData,
