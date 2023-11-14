@@ -11,6 +11,10 @@ import type { MapState } from '.';
 
 export const layersSelector = (state: RootState): MapState['layers'] =>
   state.mapState.layers;
+
+export const layersDataSelector = (state: RootState): MapState['layersData'] =>
+  state.mapState.layersData;
+
 export const activeLayersSelector = (state: RootState): MapState['layers'] =>
   state.mapState.layers.filter((layer: LayerType) => {
     return layer.type !== 'boundary';

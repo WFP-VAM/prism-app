@@ -22,9 +22,11 @@ import {
   WithStyles,
 } from '@material-ui/core';
 import { Close, Opacity } from '@material-ui/icons';
-import { useDispatch, useSelector } from 'react-redux';
-import { LayerType, LegendDefinitionItem } from 'config/types';
-import { mapSelector, layersSelector } from 'context/mapStateSlice/selectors';
+import {
+  AdminLevelDataLayerProps,
+  LayerType,
+  LegendDefinitionItem,
+} from 'config/types';
 import { clearDataset } from 'context/datasetStateSlice';
 import { useSafeTranslation } from 'i18n';
 import {
@@ -36,10 +38,12 @@ import { handleChangeOpacity } from 'components/MapView/Legends/handleChangeOpac
 import ColorIndicator from 'components/MapView/Legends/ColorIndicator';
 import { getLegendItemLabel } from 'components/MapView/utils';
 import { Extent } from 'components/MapView/Layers/raster-utils';
-import { getUrlKey, useUrlHistory } from 'utils/url-utils';
+import { getUrlKey } from 'utils/url-utils';
 import LayerDownloadOptions from 'components/MapView/LeftPanel/layersPanel/MenuSwitch/SwitchItem/LayerDownloadOptions';
 import AnalysisDownloadButton from 'components/MapView/Legends//AnalysisDownloadButton';
 import { toggleRemoveLayer } from 'components/MapView/LeftPanel/layersPanel/MenuSwitch/SwitchItem/utils';
+import { Dispatch } from 'redux';
+import { LayerData } from 'context/layers/layer-data';
 import LoadingBar from '../LoadingBar';
 
 // Children here is legendText
@@ -56,10 +60,17 @@ const LegendItem = memo(
     isAnalysis,
     fillPattern,
     extent,
+    dispatch,
+    map,
+    selectedLayers,
+    tileLayerIds,
+    vectorLayerIds,
+    isAnalysisExposureLoading,
+    selectedDate,
+    adminLevelLayersData,
+    removeLayerFromUrl,
+    renderButtons = true,
   }: LegendItemProps) => {
-    const dispatch = useDispatch();
-    const { removeLayerFromUrl } = useUrlHistory();
-    const map = useSelector(mapSelector);
     const [opacityEl, setOpacityEl] = useState<HTMLButtonElement | null>(null);
     const [opacity, setOpacityValue] = useState<number | number[]>(
       initialOpacity || 0,
@@ -92,7 +103,6 @@ const LegendItem = memo(
       [dispatch, isAnalysis],
     );
 
-    const selectedLayers = useSelector(layersSelector);
     const layer = useMemo(() => {
       return selectedLayers.find(l => l.id === id);
     }, [id, selectedLayers]);
@@ -129,15 +139,34 @@ const LegendItem = memo(
     }, [classes, handleChangeOpacityValue, id, map, opacity, type]);
 
     const layerDownloadOptions = useMemo(() => {
-      return layer ? (
+      if (!layer) {
+        return null;
+      }
+      const layerData = adminLevelLayersData.find(x => x.layer.id === layer.id);
+      if (!layerData) {
+        return null;
+      }
+
+      return (
         <LayerDownloadOptions
           layer={layer}
           extent={extent}
           selected
           size="small"
+          dispatch={dispatch}
+          isAnalysisExposureLoading={isAnalysisExposureLoading}
+          selectedDate={selectedDate}
+          adminLevelLayerData={layerData}
         />
-      ) : null;
-    }, [layer, extent]);
+      );
+    }, [
+      layer,
+      extent,
+      dispatch,
+      isAnalysisExposureLoading,
+      selectedDate,
+      adminLevelLayersData,
+    ]);
 
     const remove = useCallback(() => {
       if (isAnalysis) {
@@ -211,40 +240,52 @@ const LegendItem = memo(
             <Typography style={{ flexGrow: 1 }} variant="h4">
               {title}
             </Typography>
-            <LayerContentPreview layerId={id} />
+            <LayerContentPreview layerId={id} dispatch={dispatch} />
           </Grid>
           <Divider />
           {renderedLegend}
-          <LoadingBar layerId={id} />
+          <LoadingBar
+            layerId={id}
+            tileLayerIds={tileLayerIds}
+            vectorLayerIds={vectorLayerIds}
+          />
           {renderedChildren}
-          <Divider style={{ margin: '8px 0px' }} />
-          <Box display="flex" justifyContent="space-between">
-            <Tooltip title="Opacity">
-              <IconButton size="small" onClick={openOpacity}>
-                <Opacity fontSize="small" />
-              </IconButton>
-            </Tooltip>
+          {renderButtons && (
             <>
-              <Popover
-                id={opacityId}
-                open={open}
-                anchorEl={opacityEl}
-                onClose={closeOpacity}
-                anchorOrigin={{
-                  vertical: 'bottom',
-                  horizontal: 'left',
-                }}
-              >
-                {renderedOpacitySlider}
-              </Popover>
-              {isAnalysis ? <AnalysisDownloadButton /> : layerDownloadOptions}
-              <Tooltip title="Remove layer">
-                <IconButton size="small" onClick={remove}>
-                  <Close fontSize="small" />
-                </IconButton>
-              </Tooltip>
+              <Divider style={{ margin: '8px 0px' }} />
+              <Box display="flex" justifyContent="space-between">
+                <Tooltip title="Opacity">
+                  <IconButton size="small" onClick={openOpacity}>
+                    <Opacity fontSize="small" />
+                  </IconButton>
+                </Tooltip>
+                <>
+                  <Popover
+                    id={opacityId}
+                    open={open}
+                    anchorEl={opacityEl}
+                    onClose={closeOpacity}
+                    anchorOrigin={{
+                      vertical: 'bottom',
+                      horizontal: 'left',
+                    }}
+                  >
+                    {renderedOpacitySlider}
+                  </Popover>
+                  {isAnalysis ? (
+                    <AnalysisDownloadButton />
+                  ) : (
+                    layerDownloadOptions
+                  )}
+                  <Tooltip title="Remove layer">
+                    <IconButton size="small" onClick={remove}>
+                      <Close fontSize="small" />
+                    </IconButton>
+                  </Tooltip>
+                </>
+              </Box>
             </>
-          </Box>
+          )}
         </Paper>
       </ListItem>
     );
@@ -293,6 +334,16 @@ interface LegendItemProps
   isAnalysis?: boolean;
   fillPattern?: 'left' | 'right';
   extent?: Extent;
+  dispatch: Dispatch<any>;
+  map: maplibregl.Map | undefined;
+  selectedLayers: LayerType[];
+  tileLayerIds: string[];
+  vectorLayerIds: string[];
+  isAnalysisExposureLoading: boolean;
+  selectedDate: number | undefined;
+  adminLevelLayersData: LayerData<AdminLevelDataLayerProps>[];
+  removeLayerFromUrl: Function;
+  renderButtons?: boolean;
 }
 
 export default withStyles(styles)(LegendItem);

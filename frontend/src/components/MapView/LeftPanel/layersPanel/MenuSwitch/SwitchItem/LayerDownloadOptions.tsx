@@ -7,7 +7,6 @@ import {
   Tooltip,
 } from '@material-ui/core';
 import React, { useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 import moment from 'moment';
 import { mapValues } from 'lodash';
 import GetAppIcon from '@material-ui/icons/GetApp';
@@ -16,10 +15,6 @@ import {
   LayerType,
   WMSLayerProps,
 } from 'config/types';
-import {
-  dateRangeSelector,
-  layerDataSelector,
-} from 'context/mapStateSlice/selectors';
 import { LayerData } from 'context/layers/layer-data';
 import { downloadToFile } from 'components/MapView/utils';
 import {
@@ -32,36 +27,25 @@ import {
   Extent,
 } from 'components/MapView/Layers/raster-utils';
 import { useSafeTranslation } from 'i18n';
-import { isExposureAnalysisLoadingSelector } from 'context/analysisResultStateSlice';
-import { availableDatesSelector } from 'context/serverStateSlice';
-import { getRequestDate } from 'utils/server-utils';
+import { Dispatch } from 'redux';
 
 function LayerDownloadOptions({
   layer,
   extent,
   selected,
   size,
+  dispatch,
+  isAnalysisExposureLoading,
+  selectedDate,
+  adminLevelLayerData,
 }: LayerDownloadOptionsProps) {
   const { t } = useSafeTranslation();
-  const dispatch = useDispatch();
 
   const [
     downloadMenuAnchorEl,
     setDownloadMenuAnchorEl,
   ] = useState<HTMLElement | null>(null);
   const [isGeotiffLoading, setIsGeotiffLoading] = useState(false);
-  const isAnalysisExposureLoading = useSelector(
-    isExposureAnalysisLoadingSelector,
-  );
-
-  const { startDate: selectedDate } = useSelector(dateRangeSelector);
-  const serverAvailableDates = useSelector(availableDatesSelector);
-  const layerAvailableDates = serverAvailableDates[layer.id];
-  const queryDate = getRequestDate(layerAvailableDates, selectedDate);
-
-  const adminLevelLayerData = useSelector(
-    layerDataSelector(layer.id, queryDate),
-  ) as LayerData<AdminLevelDataLayerProps>;
 
   const handleDownloadMenuClose = () => {
     setDownloadMenuAnchorEl(null);
@@ -187,6 +171,10 @@ interface LayerDownloadOptionsProps {
   extent: Extent | undefined;
   selected: boolean;
   size?: 'small' | undefined;
+  dispatch: Dispatch<any>;
+  isAnalysisExposureLoading: boolean;
+  selectedDate: number | undefined;
+  adminLevelLayerData: LayerData<AdminLevelDataLayerProps>;
 }
 
 export default LayerDownloadOptions;

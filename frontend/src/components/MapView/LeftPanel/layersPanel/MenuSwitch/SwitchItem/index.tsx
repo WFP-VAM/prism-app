@@ -24,7 +24,12 @@ import { useDispatch, useSelector } from 'react-redux';
 import { LayerKey, LayerType } from 'config/types';
 import { LayerDefinitions, ReportsDefinitions } from 'config/utils';
 import { clearDataset } from 'context/datasetStateSlice';
-import { layersSelector, mapSelector } from 'context/mapStateSlice/selectors';
+import {
+  dateRangeSelector,
+  layersDataSelector,
+  layersSelector,
+  mapSelector,
+} from 'context/mapStateSlice/selectors';
 import { useSafeTranslation } from 'i18n';
 import { refreshBoundaries } from 'utils/map-utils';
 import { getUrlKey, useUrlHistory } from 'utils/url-utils';
@@ -33,6 +38,7 @@ import { Extent } from 'components/MapView/Layers/raster-utils';
 import { availableDatesSelector } from 'context/serverStateSlice';
 import { checkLayerAvailableDatesAndContinueOrRemove } from 'components/MapView/utils';
 import { LocalError } from 'utils/error-utils';
+import { isExposureAnalysisLoadingSelector } from 'context/analysisResultStateSlice';
 import { toggleRemoveLayer } from './utils';
 import LayerDownloadOptions from './LayerDownloadOptions';
 import ExposureAnalysisOption from './ExposureAnalysisOption';
@@ -49,6 +55,14 @@ const SwitchItem = memo(({ classes, layer, extent }: SwitchItemProps) => {
   const selectedLayers = useSelector(layersSelector);
   const serverAvailableDates = useSelector(availableDatesSelector);
   const map = useSelector(mapSelector);
+
+  const isAnalysisExposureLoading = useSelector(
+    isExposureAnalysisLoadingSelector,
+  );
+  const { startDate: selectedDate } = useSelector(dateRangeSelector);
+  const layersData = useSelector(layersDataSelector);
+  const layerData = layersData.find(x => x.layer.id === layer.id);
+
   const [isOpacitySelected, setIsOpacitySelected] = useState(false);
   const [opacity, setOpacityValue] = useState<number>(initialOpacity || 0);
   const dispatch = useDispatch();
@@ -355,11 +369,17 @@ const SwitchItem = memo(({ classes, layer, extent }: SwitchItemProps) => {
           </IconButton>
         </Tooltip>
         {renderedExposureAnalysisOption}
-        <LayerDownloadOptions
-          layer={layer}
-          extent={extent}
-          selected={selected}
-        />
+        {layerData && (
+          <LayerDownloadOptions
+            layer={layer}
+            extent={extent}
+            selected={selected}
+            dispatch={dispatch}
+            isAnalysisExposureLoading={isAnalysisExposureLoading}
+            selectedDate={selectedDate}
+            adminLevelLayerData={layerData}
+          />
+        )}
       </Box>
       {renderedOpacitySlider}
     </Box>

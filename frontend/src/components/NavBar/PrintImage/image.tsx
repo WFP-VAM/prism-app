@@ -1,5 +1,6 @@
+/* eslint-disable fp/no-mutation */
 import React, { ChangeEvent, useRef } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import {
   Box,
   Button,
@@ -18,13 +19,114 @@ import {
 } from '@material-ui/core';
 import { jsPDF } from 'jspdf';
 import html2canvas from 'html2canvas';
-import { mapSelector } from '../../../context/mapStateSlice/selectors';
-import { useSafeTranslation } from '../../../i18n';
-import { downloadToFile } from '../../MapView/utils';
+import { renderToStaticMarkup } from 'react-dom/server';
+import LegendList from 'components/MapView/Legends/LegendList';
+import {
+  layerDataSelector,
+  layersSelector,
+  mapSelector,
+  loadingLayerIdsSelector,
+  dateRangeSelector,
+  layersDataSelector,
+} from 'context/mapStateSlice/selectors';
+import { useSafeTranslation } from 'i18n';
+import { downloadToFile } from 'components/MapView/utils';
+import { layerOrdering } from 'context/mapStateSlice';
+import { getBoundaryLayerSingleton } from 'config/utils';
+import { BoundaryLayerProps } from 'config/types';
+import { LayerData } from 'context/layers/layer-data';
+import { Extent } from 'components/MapView/Layers/raster-utils';
+import bbox from '@turf/bbox';
+import {
+  analysisResultOpacitySelector,
+  analysisResultSelector,
+  isAnalysisLayerActiveSelector,
+  isExposureAnalysisLoadingSelector,
+} from 'context/analysisResultStateSlice';
+import { loadingLayerIdsSelector as tileLoadingLayerIdsSelector } from 'context/mapTileLoadingStateSlice';
+import { useUrlHistory } from 'utils/url-utils';
+
+const Footer = () => (
+  <div
+    style={{
+      width: '100%',
+      height: '75px',
+      paddingTop: '15px',
+      fontSize: '12px',
+    }}
+  >
+    <strong>
+      Layers represent data on --date--. Sources WFP, UNGIWG, OCHA, GAUL, USGS,
+      NASA, UCSB
+    </strong>
+    <br />
+    The designations employed and the presentation of material in the map(s) do
+    not imply the expression of any opinion on the part of WFP concerning the
+    legal of constitutional status of any country, teritory, city, or sea, or
+    concerning the delimitation of its frontiersor boundaries.
+  </div>
+);
+
+function addReactElemToCanvas(
+  context: CanvasRenderingContext2D,
+  reactComponent: React.JSX.Element,
+  dx: number,
+  dy: number,
+) {
+  const elem = document.createElement('div');
+
+  const staticElem = renderToStaticMarkup(reactComponent);
+
+  elem.innerHTML = staticElem;
+
+  document.body.appendChild(elem);
+
+  elem.style.position = 'absolute';
+  elem.style.left = '0';
+  elem.style.top = '0';
+
+  html2canvas(elem)
+    .then(c => {
+      context.drawImage(c, dx, dy);
+    })
+    .catch(err => console.error('html2canvas error:', err));
+
+  document.body.removeChild(elem);
+}
 
 function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
   const { t } = useSafeTranslation();
+  const { removeLayerFromUrl } = useUrlHistory();
+
+  const dispatch = useDispatch();
+
+  const isAnalysisLayerActive = useSelector(isAnalysisLayerActiveSelector);
+  const analysisResult = useSelector(analysisResultSelector);
+  const analysisLayerOpacity = useSelector(analysisResultOpacitySelector);
+
+  const tileLayerIds = useSelector(tileLoadingLayerIdsSelector);
+  const vectorLayerIds = useSelector(loadingLayerIdsSelector);
+
+  const isAnalysisExposureLoading = useSelector(
+    isExposureAnalysisLoadingSelector,
+  );
+  const { startDate: selectedDate } = useSelector(dateRangeSelector);
+  const layersData = useSelector(layersDataSelector);
+
+  const boundaryLayer = React.useMemo(() => {
+    return getBoundaryLayerSingleton();
+  }, []);
+
+  const boundaryLayerId = React.useMemo(() => {
+    return boundaryLayer.id;
+  }, [boundaryLayer.id]);
+
+  const unsortedSelectedLayers = useSelector(layersSelector);
   const selectedMap = useSelector(mapSelector);
+  const boundaryLayerData = useSelector(layerDataSelector(boundaryLayerId)) as
+    | LayerData<BoundaryLayerProps>
+    | undefined;
+
   const previewRef = useRef<HTMLCanvasElement>(null);
   // list of toggles
   const [toggles, setToggles] = React.useState({
@@ -32,6 +134,19 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
     footer: true,
   });
   const [downloading, setDownloading] = React.useState<boolean>(false);
+
+  const adminBoundariesExtent = React.useMemo(() => {
+    if (!boundaryLayerData) {
+      return undefined;
+    }
+    return bbox(boundaryLayerData.data) as Extent; // we get extents of admin boundaries to give to the api.
+  }, [boundaryLayerData]);
+
+  // Prioritize boundary and point_data layers
+  const selectedLayers = React.useMemo(() => {
+    // eslint-disable-next-line fp/no-mutating-methods
+    return [...unsortedSelectedLayers].sort(layerOrdering);
+  }, [unsortedSelectedLayers]);
 
   if (selectedMap) {
     const activeLayers = selectedMap.getCanvas();
@@ -42,34 +157,41 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
       const context = canvas.getContext('2d');
       if (context) {
         context.drawImage(activeLayers, 0, 0);
-        // toggle legend
-        const div = document.getElementById('legend-list');
-        if (div?.firstChild && toggles.legend) {
-          html2canvas(div).then(c => {
-            context.drawImage(c, 24, 24);
-          });
+
+        if (toggles.legend) {
+          addReactElemToCanvas(
+            context as CanvasRenderingContext2D,
+            <div>
+              <LegendList
+                layers={selectedLayers}
+                extent={adminBoundariesExtent}
+                isAnalysisLayerActive={isAnalysisLayerActive}
+                analysisResult={analysisResult}
+                analysisLayerOpacity={analysisLayerOpacity}
+                dispatch={dispatch}
+                map={selectedMap}
+                selectedLayers={selectedLayers}
+                tileLayerIds={tileLayerIds}
+                vectorLayerIds={vectorLayerIds}
+                isAnalysisExposureLoading={isAnalysisExposureLoading}
+                selectedDate={selectedDate}
+                adminLevelLayersData={layersData}
+                removeLayerFromUrl={removeLayerFromUrl}
+                renderButtons={false}
+              />
+            </div>,
+            24,
+            24,
+          );
         }
-        // toggle footer
+
         if (toggles.footer) {
-          const footer = document.createElement('div');
-          // eslint-disable-next-line
-          footer.innerHTML = `
-            <div style='width:100%;height:75px;padding-top:15px;font-size:12px'>
-              <strong>
-                Layers represent data on --date--. Sources WFP, UNGIWG, OCHA, GAUL, USGS, NASA, UCSB
-              </strong>
-              <br>
-              The designations employed and the presentation of material in the map(s)
-              do not imply the expression of any opinion on the part of WFP concerning
-              the legal of constitutional status of any country, teritory, city, or sea,
-              or concerning the delimitation of its frontiersor boundaries.
-            </div>
-          `;
-          document.body.appendChild(footer);
-          html2canvas(footer).then(c => {
-            context.drawImage(c, 0, activeLayers.height - 200);
-          });
-          document.body.removeChild(footer);
+          addReactElemToCanvas(
+            context,
+            <Footer />,
+            0,
+            activeLayers.height - 90,
+          );
         }
       }
     }
