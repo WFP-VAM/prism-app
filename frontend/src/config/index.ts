@@ -1,51 +1,27 @@
 import { has, get } from 'lodash';
-
 import { PublicClientApplication } from '@azure/msal-browser';
-
 import afghanistan from './afghanistan';
-
 import cambodia from './cambodia';
-
+import cameroon from './cameroon';
 import colombia from './colombia';
-
 import cuba from './cuba';
-
 import ecuador from './ecuador';
-
 import global from './global';
-
-import {
-  indonesiaConfig,
-  indonesiaRawLayers,
-  indonesiaRawTables,
-} from './indonesia';
-
+import indonesia from './indonesia';
 import jordan from './jordan';
-
 import kyrgyzstan from './kyrgyzstan';
-
 import mongolia from './mongolia';
-
 import mozambique from './mozambique';
-
 import myanmar from './myanmar';
-
 import namibia from './namibia';
-
 import nigeria from './nigeria';
-
 import rbd from './rbd';
-
 import sierraleone from './sierraleone';
-
 import southsudan from './southsudan';
-
 import srilanka from './srilanka';
-
 import tajikistan from './tajikistan';
-
+import tanzania from './tanzania';
 import ukraine from './ukraine';
-
 import zimbabwe from './zimbabwe';
 
 // Upload the boundary URL to S3 to enable the use of the API in a local environment.
@@ -54,17 +30,13 @@ const DEFAULT_BOUNDARIES_FOLDER =
 
 const configMap = {
   afghanistan,
-  cuba,
   cambodia,
+  cameroon,
   colombia,
+  cuba,
   ecuador,
   global,
-  indonesia: {
-    appConfig: indonesiaConfig,
-    rawLayers: indonesiaRawLayers,
-    rawTables: indonesiaRawTables,
-    defaultBoundariesFile: 'idn_admin_boundaries.json',
-  },
+  indonesia,
   jordan,
   kyrgyzstan,
   mongolia,
@@ -77,6 +49,7 @@ const configMap = {
   southsudan,
   srilanka,
   tajikistan,
+  tanzania,
   ukraine,
   zimbabwe,
 } as const;
@@ -103,11 +76,13 @@ const {
   defaultBoundariesFile,
   rawLayers,
   rawTables,
+  rawReports,
 }: {
   appConfig: Record<string, any>;
   defaultBoundariesFile: string;
   rawLayers: Record<string, any>;
   rawTables: Record<string, any>;
+  rawReports: Record<string, any>;
 } = configMap[safeCountry];
 
 const translation = get(configMap[safeCountry], 'translation', {});
@@ -144,6 +119,7 @@ export {
   defaultBoundariesPath,
   rawLayers,
   rawTables,
+  rawReports,
   msalInstance,
   msalRequest,
   enableNavigationDropdown,

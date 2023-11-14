@@ -1,31 +1,55 @@
 import {
+  createStyles,
   FormControl,
   ListSubheader,
+  makeStyles,
   MenuItem,
-  Select,
+  TextField,
   Typography,
 } from '@material-ui/core';
 import React, { ReactElement } from 'react';
 import { startCase } from 'lodash';
-import { menuList } from '../../NavBar/utils';
-import { LayerKey, LayerType } from '../../../config/types';
-import {
-  getDisplayBoundaryLayers,
-  LayerDefinitions,
-} from '../../../config/utils';
-import { useSafeTranslation } from '../../../i18n';
+import { menuList } from 'components/MapView/LeftPanel/utils';
+import { LayerKey, LayerType } from 'config/types';
+import { getDisplayBoundaryLayers, LayerDefinitions } from 'config/utils';
+import { useSafeTranslation } from 'i18n';
 import { getLayerGeometryIcon } from './layer-utils';
+
+const useStyles = makeStyles(() =>
+  createStyles({
+    selectRoot: {
+      width: '100%',
+      '& .MuiInputBase-root': {
+        '&:hover fieldset': {
+          borderColor: '#333333',
+        },
+      },
+    },
+    input: {
+      color: '#333333',
+    },
+    focused: {
+      borderColor: '#333333',
+      color: '#333333',
+    },
+    label: {
+      color: '#333333',
+    },
+  }),
+);
 
 function LayerDropdown({
   type,
   value,
   setValue,
+  label,
   placeholder,
   ...rest
 }: LayerSelectorProps) {
   // this could be testable, needs to be constructed in a way that prevents it breaking whenever new layers are added. (don't put layer name in snapshot)
 
   const { t } = useSafeTranslation();
+  const classes = useStyles();
 
   // Only take first boundary for now
   const adminBoundaries = getDisplayBoundaryLayers().slice(0, 1);
@@ -38,6 +62,19 @@ function LayerDropdown({
       adminLevel: index + 1,
     })),
     tables: [],
+  };
+
+  // Filter out layers that are not supported by the analysis tool
+  const filterLayersForAnalysis = (layer: LayerType) => {
+    if (layer.disableAnalysis) {
+      return false;
+    }
+    if (layer.type === 'wms') {
+      // Only raster and polygon layers are supported at the moment.
+      // linestring and point geometries are not supported.
+      return [undefined, 'polygon'].includes(layer.geometry);
+    }
+    return true;
   };
 
   const categories = [
@@ -65,15 +102,12 @@ function LayerDropdown({
         }
         return layerCategory;
       })
-      // 3. get rid of layers within the categories which don't match the given type
+      // 3. filter layers based on layer properties
       .map(category => ({
         ...category,
-        layers: category.layers.filter(layer =>
-          layer.type === 'wms'
-            ? layer.type === type &&
-              [undefined, 'polygon'].includes(layer.geometry)
-            : layer.type === type,
-        ),
+        layers: category.layers
+          .filter(layer => layer.type === type)
+          .filter(filterLayersForAnalysis),
       }))
       // 4. filter categories which don't have any layers at the end of it all.
       .filter(category => category.layers.length > 0),
@@ -83,11 +117,26 @@ function LayerDropdown({
 
   return (
     <FormControl {...rest}>
-      <Select
-        defaultValue={defaultValue}
+      <TextField
+        classes={{ root: classes.selectRoot }}
+        variant="outlined"
         value={value}
         onChange={e => {
           setValue(e.target.value as LayerKey);
+        }}
+        defaultValue=""
+        select
+        label={label}
+        InputProps={{
+          classes: {
+            focused: classes.focused,
+            input: classes.input,
+          },
+        }}
+        InputLabelProps={{
+          classes: {
+            root: classes.label,
+          },
         }}
       >
         {categories.reduce(
@@ -114,7 +163,7 @@ function LayerDropdown({
               ]
             : []) as ReactElement[],
         )}
-      </Select>
+      </TextField>
     </FormControl>
   );
 }
@@ -122,6 +171,7 @@ function LayerDropdown({
 interface LayerSelectorProps {
   type: LayerType['type'];
   value?: LayerKey;
+  label?: string;
   setValue: (val: LayerKey) => void;
   className?: string;
   placeholder?: string;

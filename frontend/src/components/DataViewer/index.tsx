@@ -22,11 +22,12 @@ import {
   EWSParams,
   DatasetRequestParams,
   CHART_DATA_PREFIXES,
-} from '../../context/datasetStateSlice';
-import { dateRangeSelector } from '../../context/mapStateSlice/selectors';
-import Chart from '../DataDrawer/Chart';
-import { ChartConfig } from '../../config/types';
-import { useSafeTranslation } from '../../i18n';
+} from 'context/datasetStateSlice';
+import { dateRangeSelector } from 'context/mapStateSlice/selectors';
+import Chart from 'components/Common/Chart';
+import { ChartConfig } from 'config/types';
+import { useSafeTranslation } from 'i18n';
+import { appConfig } from 'config';
 
 const isAdminBoundary = (
   params: AdminBoundaryParams | EWSParams,
@@ -51,23 +52,27 @@ function DataViewer({ classes }: DatasetProps) {
       return;
     }
 
-    const requestParams: DatasetRequestParams = isAdminBoundary(params)
-      ? {
-          id: params.id,
-          boundaryProps: params.boundaryProps,
-          url: params.url,
-          serverLayerName: params.serverLayerName,
-          datasetFields: params.datasetFields,
-          selectedDate,
-        }
-      : {
-          date: selectedDate,
-          externalId: params.externalId,
-          triggerLevels: params.triggerLevels,
-          baseUrl: params.baseUrl,
-        };
-
-    dispatch(loadDataset(requestParams));
+    if (isAdminBoundary(params)) {
+      const { code: adminCode, level } = params.boundaryProps[params.id];
+      const requestParams: DatasetRequestParams = {
+        id: params.id,
+        level,
+        adminCode: adminCode || appConfig.countryAdmin0Id,
+        boundaryProps: params.boundaryProps,
+        url: params.url,
+        serverLayerName: params.serverLayerName,
+        datasetFields: params.datasetFields,
+      };
+      dispatch(loadDataset(requestParams));
+    } else {
+      const requestParams: DatasetRequestParams = {
+        date: selectedDate,
+        externalId: params.externalId,
+        triggerLevels: params.triggerLevels,
+        baseUrl: params.baseUrl,
+      };
+      dispatch(loadDataset(requestParams));
+    }
   }, [params, dispatch, selectedDate]);
 
   if (!params) {

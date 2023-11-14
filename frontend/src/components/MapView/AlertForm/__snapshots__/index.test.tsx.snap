@@ -3,9 +3,10 @@
 exports[`renders as expected 1`] = `
 <div>
   <div
-    class="AlertForm-alertForm-2"
+    class="AlertForm-alertForm-3"
   >
     <mock-button
+      classname="AlertForm-alertTriggerButton-2"
       color="primary"
       variant="contained"
     >
@@ -30,102 +31,107 @@ exports[`renders as expected 1`] = `
       />
     </mock-button>
     <div
-      class="MuiBox-root MuiBox-root-12 AlertForm-alertFormMenu-3"
+      class="MuiBox-root MuiBox-root-15 AlertForm-alertFormMenu-4"
     >
-      <div>
+      <div
+        class="AlertForm-newAlertFormContainer-8"
+      >
         <div
-          class="AlertForm-newAlertFormContainer-6"
+          class="AlertForm-alertFormOptions-7"
         >
-          <div
-            class="AlertForm-alertFormOptions-5"
+          <mock-typography
+            variant="body2"
           >
-            <mock-typography
-              variant="body2"
-            >
-              Hazard Layer
-            </mock-typography>
-            <mock-layer-dropdown
-              classname="AlertForm-selector-8"
-              placeholder="Choose hazard layer"
-              type="wms"
-            />
-          </div>
-          <div
-            class="AlertForm-alertFormOptions-5"
+            Hazard Layer
+          </mock-typography>
+          <mock-layer-dropdown
+            classname="AlertForm-selector-10"
+            placeholder="Choose hazard layer"
+            type="wms"
+          />
+        </div>
+        <div
+          class="AlertForm-alertFormOptions-7"
+        >
+          <mock-typography
+            variant="body2"
           >
-            <mock-typography
-              variant="body2"
-            >
-              Threshold
-            </mock-typography>
+            Threshold
+          </mock-typography>
+          <div
+            class="AlertForm-thresholdInputsContainer-6"
+          >
             <mock-textfield
-              classname="AlertForm-numberField-10"
+              classname="AlertForm-numberField-12"
               error="false"
               helpertext=""
               id="filled-number"
+              inputlabelprops="[object Object]"
               label="Below"
               type="number"
               value=""
               variant="filled"
             />
             <mock-textfield
-              classname="AlertForm-numberField-10"
+              classname="AlertForm-numberField-12"
               id="filled-number"
+              inputlabelprops="[object Object]"
               label="Above"
-              style="padding-left: 10px;"
               type="number"
               value=""
               variant="filled"
             />
           </div>
-          <div
-            class="AlertForm-alertFormOptions-5"
-          >
-            <mock-typography
-              variant="body2"
-            >
-              Regions
-            </mock-typography>
-            <mock-circularprogress
-              color="secondary"
-              size="24"
-            />
-          </div>
-          <div
-            class="AlertForm-alertFormOptions-5"
-          >
-            <mock-textfield
-              fullwidth="true"
-              id="alert-name"
-              label="Alert Name"
-              type="text"
-              value=""
-              variant="filled"
-            />
-          </div>
-          <div
-            class="AlertForm-alertFormOptions-5"
-          >
-            <mock-textfield
-              fullwidth="true"
-              id="email-address"
-              label="Email Address"
-              type="text"
-              variant="filled"
-            />
-          </div>
         </div>
-        <mock-button
-          classname="AlertForm-innerCreateAlertButton-7"
-          disabled="true"
+        <div
+          class="AlertForm-alertFormOptions-7"
         >
           <mock-typography
             variant="body2"
           >
-            Create Alert
+            Regions
           </mock-typography>
-        </mock-button>
+          <mock-circularprogress
+            color="secondary"
+            size="24"
+          />
+        </div>
+        <div
+          class="AlertForm-alertFormOptions-7"
+        >
+          <mock-textfield
+            fullwidth="true"
+            id="alert-name"
+            inputlabelprops="[object Object]"
+            label="Alert Name"
+            type="text"
+            value=""
+            variant="filled"
+          />
+        </div>
+        <div
+          class="AlertForm-alertFormOptions-7"
+        >
+          <mock-textfield
+            fullwidth="true"
+            id="email-address"
+            inputlabelprops="[object Object]"
+            label="Email Address"
+            type="text"
+            variant="filled"
+          />
+        </div>
       </div>
+      <mock-button
+        classname="AlertForm-innerCreateAlertButton-9"
+        disabled="true"
+      >
+        <mock-typography
+          variant="body2"
+        >
+          Create Alert
+        </mock-typography>
+      </mock-button>
     </div>
   </div>
 </div>

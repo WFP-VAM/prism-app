@@ -1,5 +1,6 @@
 {
   "country": "Regional Bureau Dakar",
+  "multiCountry": true,
   "enableNavigationDropdown": true,
   "aboutPath": "data/rbd/about.md",
   "icons": {
@@ -19,9 +20,12 @@
     ]
   },
   "map": {
-    "latitude": 14.61,
-    "longitude": 5.46,
-    "zoom": 3.99
+    "boundingBox": [
+      0,
+      -2.5,
+      7,
+      29
+    ]
   },
   "defaultDisplayBoundaries": [
     "admin_boundaries",

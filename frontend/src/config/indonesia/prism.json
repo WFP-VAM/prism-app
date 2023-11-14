@@ -14,9 +14,7 @@
     "wms": ["https://vampire.idn.wfp.org:8081/geoserver/vampire/wms"]
   },
   "map": {
-    "latitude": -4.0682689,
-    "longitude": 118.7372352,
-    "zoom": 4.7
+    "boundingBox": [94, -10.36, 141.03, 5.48]
   },
   "categories": {
     "hazards": {

@@ -1,0 +1,83 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`renders as expected 1`] = `
+<div>
+  <div
+    class="MuiPaper-root MuiAccordion-root makeStyles-root-1 MuiAccordion-rounded MuiPaper-elevation0 MuiPaper-rounded"
+  >
+    <div
+      aria-controls="title"
+      aria-disabled="false"
+      aria-expanded="false"
+      class="MuiButtonBase-root MuiAccordionSummary-root makeStyles-rootSummary-2"
+      id="title"
+      role="button"
+      tabindex="0"
+    >
+      <div
+        class="MuiAccordionSummary-content makeStyles-summaryContent-5"
+      >
+        <mock-typography
+          classes="[object Object]"
+        >
+          title
+        </mock-typography>
+      </div>
+      <div
+        aria-disabled="false"
+        aria-hidden="true"
+        class="MuiButtonBase-root MuiIconButton-root MuiAccordionSummary-expandIcon makeStyles-expandIcon-4 MuiIconButton-edgeEnd"
+      >
+        <span
+          class="MuiIconButton-label"
+        >
+          <svg
+            aria-hidden="true"
+            class="MuiSvgIcon-root"
+            focusable="false"
+            viewBox="0 0 24 24"
+          >
+            <path
+              d="M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z"
+            />
+          </svg>
+        </span>
+        <span
+          class="MuiTouchRipple-root"
+        />
+      </div>
+    </div>
+    <div
+      class="MuiCollapse-root MuiCollapse-hidden"
+      style="min-height: 0px;"
+    >
+      <div
+        class="MuiCollapse-wrapper"
+      >
+        <div
+          class="MuiCollapse-wrapperInner"
+        >
+          <div
+            aria-labelledby="title"
+            id="title"
+            role="region"
+          >
+            <div
+              class="MuiAccordionDetails-root makeStyles-rootDetails-3"
+            >
+              <div
+                class="MuiGrid-root MuiGrid-container MuiGrid-direction-xs-column"
+              >
+                <mock-menuswitch
+                  layers="[object Object]"
+                  title="Category 1"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;

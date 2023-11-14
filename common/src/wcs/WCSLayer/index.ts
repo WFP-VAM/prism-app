@@ -1,3 +1,4 @@
+/* eslint-disable fp/no-mutation */
 import type { MakeOptional } from "../../types";
 import { Layer } from "../../layer";
 import {

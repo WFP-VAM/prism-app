@@ -9,7 +9,7 @@ import {
 } from '@material-ui/core';
 import { Link } from 'react-router-dom';
 
-import { colors } from '../../muiTheme';
+import { colors } from 'muiTheme';
 
 function NotFound({ classes }: NotFoundProps) {
   return (
@@ -32,9 +32,9 @@ function NotFound({ classes }: NotFoundProps) {
         </Grid>
 
         <Grid item>
-          <Button variant="contained" component={Link} to="/">
-            Back To Home
-          </Button>
+          <Link to="/">
+            <Button variant="contained">Back To Home</Button>
+          </Link>
         </Grid>
 
         <Grid item>

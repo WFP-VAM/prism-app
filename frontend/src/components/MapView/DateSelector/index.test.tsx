@@ -1,9 +1,8 @@
 import React from 'react';
 import { Provider } from 'react-redux';
 import { render } from '@testing-library/react';
+import { store } from 'context/store';
 import DateSelector from '.';
-
-import { store } from '../../../context/store';
 
 jest.mock('react-router-dom', () => ({
   useHistory: () => ({
@@ -13,7 +12,7 @@ jest.mock('react-router-dom', () => ({
     },
   }),
 }));
-jest.mock('../../Notifier', () => 'mock-Notifier');
+jest.mock('components/Notifier', () => 'mock-Notifier');
 jest.mock('./TimelineItems', () => 'mock-TimelineItems');
 
 test('renders as expected', () => {
@@ -24,7 +23,7 @@ test('renders as expected', () => {
 
   const { container } = render(
     <Provider store={store}>
-      <DateSelector availableDates={[]} />
+      <DateSelector availableDates={[]} selectedLayers={[]} />
     </Provider>,
   );
   expect(container).toMatchSnapshot();

@@ -56,6 +56,7 @@ export function findVersion(xml: string): string | undefined {
     // other
     "ServiceExceptionReport",
   ];
+  // eslint-disable-next-line fp/no-mutation
   for (let i = 0; i < tagNames.length; i += 1) {
     const tagName = tagNames[i];
     const tag = findTagByName(xml, tagName);
@@ -68,6 +69,7 @@ export function findVersion(xml: string): string | undefined {
   }
 
   // if haven't found version yet, try to grab it from the wcs:xmlns attribute
+  // eslint-disable-next-line fp/no-mutation
   for (let i = 0; i < tagNames.length; i += 1) {
     const tagName = tagNames[i];
     const tag = findTagByName(xml, tagName);
@@ -84,7 +86,11 @@ export function findVersion(xml: string): string | undefined {
 
 export function parseName(
   name: string
-): { full: string; namespace: string | undefined; short: string } {
+): {
+  full: string;
+  namespace: string | undefined;
+  short: string;
+} {
   if (name.includes("__") || name.includes(":")) {
     const [namespace, , short] = name.split(/(__|:)/);
     return { full: name, namespace, short };

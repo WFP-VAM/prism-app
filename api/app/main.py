@@ -3,31 +3,42 @@
 import functools
 import json
 import logging
-from typing import Any, Optional
+import os
+from datetime import date
+from typing import Annotated, Any, Optional
 from urllib.parse import ParseResult, urlencode, urlunparse
 
 import rasterio  # type: ignore
 from app.auth import validate_user
 from app.caching import FilePath, cache_file, cache_geojson
-from app.database.alert_model import AlertModel
+from app.database.alert_model import AlchemyEncoder, AlertModel
 from app.database.database import AlertsDataBase
 from app.database.user_info_model import UserInfoModel
+from app.hdc import get_hdc_stats
 from app.kobo import get_form_dates, get_form_responses, parse_datetime_params
-from app.models import AcledRequest, FilterProperty, RasterGeotiffModel
+from app.models import AcledRequest, RasterGeotiffModel
+from app.report import download_report
 from app.timer import timed
 from app.validation import validate_intersect_parameter
-from app.zonal_stats import GroupBy, calculate_stats, get_wfs_response
-from fastapi import Depends, FastAPI, HTTPException, Path, Query, Request, Response
+from app.zonal_stats import DEFAULT_STATS, GroupBy, calculate_stats, get_wfs_response
+from fastapi import Depends, FastAPI, HTTPException, Path, Query, Response
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import JSONResponse
+from fastapi.responses import FileResponse, JSONResponse
 from pydantic import EmailStr, HttpUrl, ValidationError
 from requests import get
 
 from .geotiff_from_stac_api import get_geotiff
-from .models import AlertsModel, StatsModel
+from .models import AlertsModel, StatsModel, UserInfoPydanticModel
 
-logging.basicConfig(level=logging.DEBUG)
+logging.basicConfig(
+    format="%(asctime)s %(levelname)-8s %(message)s",
+    level=logging.DEBUG,
+    datefmt="%Y-%m-%d %H:%M:%S",
+)
 logger = logging.getLogger(__name__)
+
+# silence boto3 logging to avoid spamming the logs
+logging.getLogger("botocore").setLevel(logging.WARNING)
 
 app = FastAPI(
     title="PRISM Geospatial API by WFP",
@@ -144,7 +155,7 @@ def stats(stats_model: StatsModel) -> list[dict[str, Any]]:
     features = _calculate_stats(
         zones,
         geotiff,
-        stats=" ".join(["min", "max", "mean", "median", "sum", "std"]),
+        stats=" ".join(DEFAULT_STATS),
         prefix="stats_",
         group_by=group_by,
         geojson_out=geojson_out,
@@ -160,20 +171,54 @@ def stats(stats_model: StatsModel) -> list[dict[str, Any]]:
     return features
 
 
+@app.get("/report")
+async def get_report(
+    url: str, language: str, exposureLayerId: str, country: str
+) -> FileResponse:
+    tmp_file_path: str = await download_report(url, exposureLayerId, country, language)
+    return FileResponse(path=tmp_file_path, filename=os.path.basename(tmp_file_path))
+
+
 @app.get("/acled")
-def get_acled_incidents(request: Request):
+def get_acled_incidents(
+    iso: int,
+    limit: int,
+    fields: Optional[str] = None,
+    event_date: Optional[date] = None,
+):
     acled_url = "https://api.acleddata.com/acled/read"
 
     try:
-        params = AcledRequest(**request.query_params)
-    except ValidationError as e:
-        raise HTTPException(status_code=422, detail=str(e))
+        params = AcledRequest(
+            iso=iso,
+            limit=limit,
+            fields=fields,
+            event_date=event_date,
+        )
+    except ValidationError as error:
+        raise HTTPException(status_code=422, detail=str(error))
 
     # Make a new request to acled api including the credentials.
     response = get(acled_url, params=params.dict())
     response.raise_for_status()
 
-    return Response(content=response.content, media_type="application/json")
+    return Response(content=response.content)
+
+
+@app.get("/hdc")
+def wrap_get_hdc_stats(
+    level: str, admin_id: str, coverage: str, vam: str, start: str, end: str
+):
+    return JSONResponse(
+        content=get_hdc_stats(
+            level=level,
+            admin_id=admin_id,
+            coverage=coverage,
+            vam=vam,
+            start=start,
+            end=end,
+        )
+    )
 
 
 @app.get("/kobo/dates")
@@ -192,12 +237,12 @@ def get_kobo_forms(
     formId: str,
     datetimeField: str,
     koboUrl: HttpUrl,
+    user_info: Annotated[UserInfoPydanticModel, Depends(validate_user)],
     geomField: Optional[str] = None,
     filters: Optional[str] = None,
     beginDateTime=Query(default="2000-01-01"),
     endDateTime: Optional[str] = None,
-    user_info: UserInfoModel = Depends(validate_user),
-):
+) -> list[dict]:
     """Get all form responses."""
     begin_datetime, end_datetime = parse_datetime_params(beginDateTime, endDateTime)
 
@@ -233,7 +278,7 @@ def get_kobo_forms(
 def alert_by_id(
     email: EmailStr,
     deactivate: Optional[bool] = None,
-    id: int = Path(1, description="The ID of the alert (an integer)"),
+    id: int = Path(description="The ID of the alert (an integer)"),
 ) -> Response:
     """Get alert with an ID."""
 
@@ -328,7 +373,7 @@ def stats_demo(
     features = _calculate_stats(
         zones_filepath,
         geotiff,
-        stats=" ".join(["min", "max", "mean", "median", "sum", "std"]),
+        stats=" ".join(DEFAULT_STATS),
         prefix="stats_",
         group_by=group_by,
         geojson_out=geojson_out,
@@ -346,10 +391,10 @@ def post_raster_geotiff(raster_geotiff: RasterGeotiffModel):
     """Get the geotiff of a raster"""
     collection = raster_geotiff.collection
     bbox = (
-        raster_geotiff.lat_min,
         raster_geotiff.long_min,
-        raster_geotiff.lat_max,
+        raster_geotiff.lat_min,
         raster_geotiff.long_max,
+        raster_geotiff.lat_max,
     )
     date = raster_geotiff.date
     presigned_download_url = get_geotiff(collection, bbox, date)

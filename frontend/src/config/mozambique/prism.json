@@ -1,6 +1,9 @@
 {
   "country": "Mozambique",
+  "defaultLanguage": "en",
+  "countryAdmin0Id": 170,
   "alertFormActive": false,
+  "hidePanel": false,
   "enableNavigationDropdown": true,
   "icons": {
     "rainfall": "icon_rain.png",
@@ -15,13 +18,11 @@
   "serversUrls": {
     "wms": [
       "https://api.earthobservation.vam.wfp.org/ows/wms",
-      "https://geonode.wfp.org/geoserver/prism/wms"
+      "https://sparc.wfp.org/geoserver/prism/wms"
     ]
   },
   "map": {
-    "latitude": -18.6703535,
-    "longitude": 35.526067,
-    "zoom": 4.7
+    "boundingBox": [30.18, -24.74, 40.78, -10.32]
   },
   "categories": {
     "rainfall": {

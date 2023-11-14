@@ -43,7 +43,6 @@
       "styles": "rfh_16_0_300"
     },
     "chart_data": {
-      "url": "https://api.earthobservation.vam.wfp.org/stats/admin/fetch",
       "fields": [
         { "key": "rfh", "label": "Rainfall", "color": "#233f5f" },
         { "key": "rfh_avg", "label": "Average", "color": "#bdf2e6" }
@@ -273,7 +272,6 @@
       "styles": "rfq_14_20_400"
     },
     "chart_data": {
-      "url": "https://api.earthobservation.vam.wfp.org/stats/admin/fetch",
       "fields": [
         { "key": "rfq", "label": "Rainfall anomaly", "color": "#375692" },
         {
@@ -473,46 +471,57 @@
     "legend_text": "1-month Standardized Precipitation Index calculated from dekadal CHIRPS data",
     "legend": [
       {
+        "value": -2.01,
         "label": "< -2",
         "color": "#730000"
       },
       {
+        "value": -2,
         "label": "-1.5 to -2",
         "color": "#e70001"
       },
       {
+        "value": -1.5,
         "label": "-1.2 to -1.5",
         "color": "#ffaa01"
       },
       {
+        "value": -1.2,
         "label": "-0.7 to -1.2",
         "color": "#ffd37b"
       },
       {
+        "value": -0.7,
         "label": "-0.5 to -0.7",
         "color": "#ffff02"
       },
       {
+        "value": -0.5,
         "label": "0.5 to -0.5 ",
         "color": "#f0f0f0"
       },
       {
+        "value": 0.5,
         "label": "0.5 to 0.7",
         "color": "#beebff"
       },
       {
+        "value": 0.7,
         "label": "0.7 to 1.2",
         "color": "#73b2ff"
       },
       {
+        "value": 1.2,
         "label": "1.2 to 1.5",
         "color": "#0271ff"
       },
       {
+        "value": 1.5,
         "label": "1.5 to 2.0",
         "color": "#004dad"
       },
       {
+        "value": 2,
         "label": "> 2.0",
         "color": "#ad03e6"
       }
@@ -533,46 +542,57 @@
     "legend_text": "3-month Standardized Precipitation Index calculated from dekadal CHIRPS data",
     "legend": [
       {
+        "value": -2.01,
         "label": "< -2",
         "color": "#730000"
       },
       {
+        "value": -2,
         "label": "-1.5 to -2",
         "color": "#e70001"
       },
       {
+        "value": -1.5,
         "label": "-1.2 to -1.5",
         "color": "#ffaa01"
       },
       {
+        "value": -1.2,
         "label": "-0.7 to -1.2",
         "color": "#ffd37b"
       },
       {
+        "value": -0.7,
         "label": "-0.5 to -0.7",
         "color": "#ffff02"
       },
       {
+        "value": -0.5,
         "label": "0.5 to -0.5 ",
         "color": "#f0f0f0"
       },
       {
+        "value": 0.5,
         "label": "0.5 to 0.7",
         "color": "#beebff"
       },
       {
+        "value": 0.7,
         "label": "0.7 to 1.2",
         "color": "#73b2ff"
       },
       {
+        "value": 1.2,
         "label": "1.2 to 1.5",
         "color": "#0271ff"
       },
       {
+        "value": 1.5,
         "label": "1.5 to 2.0",
         "color": "#004dad"
       },
       {
+        "value": 2,
         "label": "> 2.0",
         "color": "#ad03e6"
       }
@@ -593,46 +613,57 @@
     "legend_text": "6-month Standardized Precipitation Index calculated from dekadal CHIRPS data",
     "legend": [
       {
+        "value": -2.01,
         "label": "< -2",
         "color": "#730000"
       },
       {
+        "value": -2,
         "label": "-1.5 to -2",
         "color": "#e70001"
       },
       {
+        "value": -1.5,
         "label": "-1.2 to -1.5",
         "color": "#ffaa01"
       },
       {
+        "value": -1.2,
         "label": "-0.7 to -1.2",
         "color": "#ffd37b"
       },
       {
+        "value": -0.7,
         "label": "-0.5 to -0.7",
         "color": "#ffff02"
       },
       {
+        "value": -0.5,
         "label": "0.5 to -0.5 ",
         "color": "#f0f0f0"
       },
       {
+        "value": 0.5,
         "label": "0.5 to 0.7",
         "color": "#beebff"
       },
       {
+        "value": 0.7,
         "label": "0.7 to 1.2",
         "color": "#73b2ff"
       },
       {
+        "value": 1.2,
         "label": "1.2 to 1.5",
         "color": "#0271ff"
       },
       {
+        "value": 1.5,
         "label": "1.5 to 2.0",
         "color": "#004dad"
       },
       {
+        "value": 2,
         "label": "> 2.0",
         "color": "#ad03e6"
       }
@@ -653,46 +684,57 @@
     "legend_text": "9-month Standardized Precipitation Index calculated from dekadal CHIRPS data",
     "legend": [
       {
+        "value": -2.01,
         "label": "< -2",
         "color": "#730000"
       },
       {
+        "value": -2,
         "label": "-1.5 to -2",
         "color": "#e70001"
       },
       {
+        "value": -1.5,
         "label": "-1.2 to -1.5",
         "color": "#ffaa01"
       },
       {
+        "value": -1.2,
         "label": "-0.7 to -1.2",
         "color": "#ffd37b"
       },
       {
+        "value": -0.7,
         "label": "-0.5 to -0.7",
         "color": "#ffff02"
       },
       {
+        "value": -0.5,
         "label": "0.5 to -0.5 ",
         "color": "#f0f0f0"
       },
       {
+        "value": 0.5,
         "label": "0.5 to 0.7",
         "color": "#beebff"
       },
       {
+        "value": 0.7,
         "label": "0.7 to 1.2",
         "color": "#73b2ff"
       },
       {
+        "value": 1.2,
         "label": "1.2 to 1.5",
         "color": "#0271ff"
       },
       {
+        "value": 1.5,
         "label": "1.5 to 2.0",
         "color": "#004dad"
       },
       {
+        "value": 2,
         "label": "> 2.0",
         "color": "#ad03e6"
       }
@@ -713,46 +755,57 @@
     "legend_text": "1-year Standardized Precipitation Index calculated from dekadal CHIRPS data",
     "legend": [
       {
+        "value": -2.01,
         "label": "< -2",
         "color": "#730000"
       },
       {
+        "value": -2,
         "label": "-1.5 to -2",
         "color": "#e70001"
       },
       {
+        "value": -1.5,
         "label": "-1.2 to -1.5",
         "color": "#ffaa01"
       },
       {
+        "value": -1.2,
         "label": "-0.7 to -1.2",
         "color": "#ffd37b"
       },
       {
+        "value": -0.7,
         "label": "-0.5 to -0.7",
         "color": "#ffff02"
       },
       {
+        "value": -0.5,
         "label": "0.5 to -0.5 ",
         "color": "#f0f0f0"
       },
       {
+        "value": 0.5,
         "label": "0.5 to 0.7",
         "color": "#beebff"
       },
       {
+        "value": 0.7,
         "label": "0.7 to 1.2",
         "color": "#73b2ff"
       },
       {
+        "value": 1.2,
         "label": "1.2 to 1.5",
         "color": "#0271ff"
       },
       {
+        "value": 1.5,
         "label": "1.5 to 2.0",
         "color": "#004dad"
       },
       {
+        "value": 2,
         "label": "> 2.0",
         "color": "#ad03e6"
       }
@@ -1186,7 +1239,7 @@
     "opacity": 0.9,
     "legend": [],
     "legend_text": "Nodes visualize estimated maximum wind speed along a storm's path at various points in time. Source: GDACS",
-    "base_url": "https://geonode.wfp.org/geoserver",
+    "base_url": "https://sparc.wfp.org/geoserver",
     "geometry": "point"
   },
   "adamts_buffers": {
@@ -1196,7 +1249,7 @@
     "opacity": 0.9,
     "legend": [],
     "legend_text": "Wind buffers (radii) estimate potential wind speeds along the path of a storm with a buffer estimating the area exposed to each wind speed category. Source: GDACS",
-    "base_url": "https://geonode.wfp.org/geoserver",
+    "base_url": "https://sparc.wfp.org/geoserver",
     "feature_info_props": {
       "event_name": {
         "type": "text",
@@ -1215,7 +1268,7 @@
     "wcsConfig": {
       "disableDateParam": true,
       "version": "2.0.0",
-      "scale": 0.1,
+      "scale": 1,
       "offset": 0
     },
     "server_layer_name": "wp_pop_cicunadj",
@@ -1231,7 +1284,7 @@
     "opacity": 0.9,
     "legend": [],
     "legend_text": "Tracks visualize the projected path of a storm based on the forecasted position of it's center at various points in time. Source: GDACS",
-    "base_url": "https://geonode.wfp.org/geoserver",
+    "base_url": "https://sparc.wfp.org/geoserver",
     "geometry": "linestring"
   },
   "avg_pop_flood": {

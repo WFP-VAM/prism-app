@@ -1,4 +1,4 @@
-import React, { useRef, useState, useLayoutEffect } from 'react';
+import React, { useState, memo, useMemo, useCallback } from 'react';
 import {
   IconButton,
   createStyles,
@@ -8,40 +8,77 @@ import {
   withStyles,
 } from '@material-ui/core';
 import InfoIcon from '@material-ui/icons/Info';
-import { LayerType } from '../../../config/types';
-import { LayerDefinitions } from '../../../config/utils';
-import ContentDialog, { loadLayerContent } from '../../NavBar/ContentDialog';
+import { useDispatch } from 'react-redux';
+import { LayerType } from 'config/types';
+import { LayerDefinitions } from 'config/utils';
+import ContentDialog from 'components/NavBar/ContentDialog';
+import { loadLayerContent } from 'utils/load-layer-utils';
 
-const LayerContentPreview = ({ layerId, classes }: PreviewProps) => {
+const LayerContentPreview = memo(({ layerId, classes }: PreviewProps) => {
   const [content, setContent] = useState<string | undefined>(undefined);
-  const contentRef = useRef<HTMLHeadingElement>(null);
-  const layer = LayerDefinitions[layerId || 'admin_boundaries'];
 
-  useLayoutEffect(() => {
-    if (contentRef.current !== null) {
-      contentRef.current.scrollIntoView({
-        behavior: 'smooth',
-        block: 'start',
-      });
+  const dispatch = useDispatch();
+
+  const layer = useMemo(() => {
+    return LayerDefinitions[layerId || 'admin_boundaries'];
+  }, [layerId]);
+
+  const handleIconButtonClick = useCallback(async () => {
+    if (!layer.contentPath) {
+      return;
     }
-  });
+    const layerContent = await loadLayerContent(layer.contentPath, dispatch);
+    setContent(layerContent);
+  }, [dispatch, layer.contentPath]);
 
-  if (!layer.contentPath) {
-    return null;
-  }
+  const handleDialogClose = useCallback(() => {
+    setContent(undefined);
+  }, []);
 
-  return (
-    <Grid item>
-      <IconButton size="small" className={classes.icon}>
-        <InfoIcon
-          fontSize="inherit"
-          onClick={() => loadLayerContent(layer.contentPath!, setContent)}
-        />
-      </IconButton>
-      <ContentDialog content={content} setContent={setContent} />
-    </Grid>
-  );
-};
+  const elementIdToScroll = useMemo(() => {
+    if (!layer.contentPath) {
+      return undefined;
+    }
+    // We take the second item of the array which will be the id of the element to scroll
+    return layer.contentPath.split('#')[1];
+  }, [layer.contentPath]);
+
+  const renderedContentDialog = useMemo(() => {
+    if (!content) {
+      return null;
+    }
+    return (
+      <ContentDialog
+        content={content}
+        elementId={elementIdToScroll}
+        handleClose={handleDialogClose}
+      />
+    );
+  }, [content, elementIdToScroll, handleDialogClose]);
+
+  return useMemo(() => {
+    if (!layer.contentPath) {
+      return null;
+    }
+    return (
+      <Grid item>
+        <IconButton
+          onClick={handleIconButtonClick}
+          size="small"
+          className={classes.icon}
+        >
+          <InfoIcon fontSize="inherit" />
+        </IconButton>
+        {renderedContentDialog}
+      </Grid>
+    );
+  }, [
+    classes.icon,
+    handleIconButtonClick,
+    layer.contentPath,
+    renderedContentDialog,
+  ]);
+});
 
 const styles = (theme: Theme) =>
   createStyles({

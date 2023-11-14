@@ -10,11 +10,16 @@ export interface PopupData {
   };
 }
 
+export interface PopupMetaData {
+  dmpDisTyp?: string;
+  dmpSubmissionId?: string;
+}
+
 export interface MapTooltipState {
   coordinates?: GeoJSON.Position;
   locationName: string;
   locationLocalName: string;
-  data: PopupData;
+  data: PopupData & PopupMetaData;
   showing: boolean;
   wmsGetFeatureInfoLoading: boolean;
 }
@@ -90,9 +95,6 @@ export const tooltipStateSlice = createSlice({
 // Getters
 export const tooltipSelector = (state: RootState): MapTooltipState =>
   state.tooltipState;
-export const tooltipShowingSelector = (
-  state: RootState,
-): MapTooltipState['showing'] => state.tooltipState.showing;
 
 // Setters
 export const {

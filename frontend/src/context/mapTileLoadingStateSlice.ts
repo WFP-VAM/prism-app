@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { LayerKey } from '../config/types';
+import { LayerKey } from 'config/types';
 import type { RootState } from './store';
 
 type MapTileLoadingState = {

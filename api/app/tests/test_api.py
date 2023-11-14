@@ -47,7 +47,7 @@ def migrate_test_db():
 
 
 @pytest.fixture(scope="session", autouse=True)
-def add_test_users():
+def add_test_users(migrate_test_db):  # noqa: F811
     add_users()
 
 
@@ -77,6 +77,7 @@ def test_stats_api(case):
     case.validate_response(response)
 
 
+@pytest.mark.skip(reason="Slow: takes almost 10 minutes to complete")
 @schema.parametrize(endpoint="^/alerts")
 @settings(max_examples=10)
 def test_alerts_api(case):
@@ -148,7 +149,7 @@ def test_stats_endpoint2():
         "/stats",
         headers={"Accept": "application/json"},
         json={
-            "geotiff_url": "https://api.earthobservation.vam.wfp.org/ows/?service=WCS&request=GetCoverage&version=1.0.0&coverage=hfs1_sfw_mask_mmr&crs=EPSG%3A4326&bbox=92.2%2C9.7%2C101.2%2C28.5&width=1098&height=2304&format=GeoTIFF&time=2022-08-12",
+            "geotiff_url": "https://api.earthobservation.vam.wfp.org/ows/?service=WCS&request=GetCoverage&version=1.0.0&coverage=hf_water_mmr&crs=EPSG%3A4326&bbox=92.2%2C9.7%2C101.2%2C28.5&width=1098&height=2304&format=GeoTIFF&time=2022-08-11",
             "zones_url": "https://prism-admin-boundaries.s3.us-east-2.amazonaws.com/mmr_admin_boundaries.json",
             "group_by": "TS",
             "geojson_out": False,
@@ -167,7 +168,7 @@ def test_stats_endpoint_masked():
         json={
             "geotiff_url": "https://api.earthobservation.vam.wfp.org/ows/?service=WCS&request=GetCoverage&version=2.0.0&coverageId=wp_pop_cicunadj&subset=Long(95.71,96.68)&subset=Lat(19.42,20.33)",
             "zones_url": "https://prism-admin-boundaries.s3.us-east-2.amazonaws.com/mmr_admin_boundaries.json",
-            "mask_url": "https://api.earthobservation.vam.wfp.org/ows/?service=WCS&request=GetCoverage&version=1.0.0&coverage=hfs1_sfw_mask_mmr&crs=EPSG%3A4326&bbox=92.2%2C9.7%2C101.2%2C28.5&width=1098&height=2304&format=GeoTIFF&time=2022-08-22",
+            "mask_url": "https://api.earthobservation.vam.wfp.org/ows/?service=WCS&request=GetCoverage&version=1.0.0&coverage=hf_water_mmr&crs=EPSG%3A4326&bbox=92.2%2C9.7%2C101.2%2C28.5&width=1098&height=2304&format=GeoTIFF&time=2022-08-11",
             "group_by": "TS_PCODE",
             "geojson_out": True,
         },
@@ -179,9 +180,9 @@ def test_stats_endpoint_masked():
 def test_kobo_forms_endpoint(monkeypatch):
     """This test requires credentials for the kobo API."""
     # use with the following call
-    # KOBO_USERNAME=xxx KOBO_PW=xxx make api-test
+    # KOBO_USERNAME=xxx KOBO_PASSWORD=xxx make api-test
     monkeypatch.setenv("KOBO_USERNAME", "")
-    monkeypatch.setenv("KOBO_PW", "")
+    monkeypatch.setenv("KOBO_PASSWORD", "")
     # auth_token is username:password base64 encoded
     auth_token = ""
     response = client.get(

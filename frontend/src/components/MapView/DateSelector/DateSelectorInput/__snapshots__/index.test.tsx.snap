@@ -1,0 +1,12 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`renders as expected 1`] = `
+<div>
+  <mock-button
+    classname="ForwardRef-buttonStyle-1"
+    variant="outlined"
+  >
+    Some Value
+  </mock-button>
+</div>
+`;

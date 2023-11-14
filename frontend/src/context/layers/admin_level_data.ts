@@ -5,14 +5,12 @@ import {
   BoundaryLayerProps,
   AdminLevelDataLayerProps,
   LayerKey,
-} from '../../config/types';
-import type { RootState, ThunkApi } from '../store';
-import {
-  getBoundaryLayerSingleton,
-  LayerDefinitions,
-} from '../../config/utils';
+} from 'config/types';
+import type { RootState, ThunkApi } from 'context/store';
+import { getBoundaryLayerSingleton, LayerDefinitions } from 'config/utils';
+import { layerDataSelector } from 'context/mapStateSlice/selectors';
+import { fetchWithTimeout } from 'utils/fetch-with-timeout';
 import type { LayerData, LayerDataParams, LazyLoader } from './layer-data';
-import { layerDataSelector } from '../mapStateSlice/selectors';
 
 export type DataRecord = {
   adminKey: string; // refers to a specific admin boundary feature (cell on map). Could be several based off admin level
@@ -57,7 +55,7 @@ export async function getAdminLevelDataLayerData({
       ? (LayerDefinitions[boundary as LayerKey] as BoundaryLayerProps)
       : getBoundaryLayerSingleton();
 
-  const adminBoundariesLayer = layerDataSelector(adminBoundaryLayer.id)(
+  let adminBoundariesLayer = layerDataSelector(adminBoundaryLayer.id)(
     getState(),
   ) as LayerData<BoundaryLayerProps> | undefined;
   // TEMP - add a 15s wait time to load admin boundaries which are very large
@@ -65,6 +63,10 @@ export async function getAdminLevelDataLayerData({
   // TODO - make sure we only run this once.
   if (!adminBoundariesLayer || !adminBoundariesLayer.data) {
     await new Promise(resolve => setTimeout(resolve, 15000));
+    // eslint-disable-next-line fp/no-mutation
+    adminBoundariesLayer = layerDataSelector(adminBoundaryLayer.id)(
+      getState(),
+    ) as LayerData<BoundaryLayerProps> | undefined;
   }
   if (!adminBoundariesLayer || !adminBoundariesLayer.data) {
     // TODO we are assuming here it's already loaded. In the future if layers can be preloaded like boundary this will break.
@@ -126,11 +128,11 @@ export async function getAdminLevelDataLayerData({
 
       const featureInfoPropsValues = matchedData
         ? Object.keys(featureInfoProps || {}).reduce((obj, item) => {
-            return {
-              ...obj,
-              [item]: matchedData[item],
-            };
-          }, {})
+          return {
+            ...obj,
+            [item]: matchedData[item],
+          };
+        }, {})
         : {};
 
       return {
@@ -223,27 +225,35 @@ export const fetchAdminLevelDataLayerData: LazyLoader<AdminLevelDataLayerProps> 
 
       const options = requestBody
         ? {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(requestBody),
-          }
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(requestBody),
+        }
         : {};
 
-      // TODO avoid any use, the json should be typed. See issue #307
-      const data: { [key: string]: any }[] = (
-        await (
-          await fetch(datedPath, {
+      try {
+        // TODO avoid any use, the json should be typed. See issue #307
+        const response = await fetchWithTimeout(
+          datedPath,
+          api.dispatch,
+          {
             mode: adminLevelDataLayer.path.includes('http')
               ? 'cors'
               : 'same-origin',
-            ...options,
-          })
-        ).json()
-      ).DataList;
+            ...options
+          },
+          `Request failed for fetching admin level data at ${adminLevelDataLayer.path}`,
+        );
 
-      return data;
+        const data: { [key: string]: any }[] = (await response.json())
+          ?.DataList;
+        return data;
+      } catch {
+        return [{}];
+      }
     }),
   );
+
 
   return getAdminLevelDataLayerData({
     data: layerData,

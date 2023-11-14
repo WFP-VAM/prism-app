@@ -12,14 +12,10 @@
   },
   "defaultDisplayBoundaries": ["admin_boundaries", "admin1_boundaries"],
   "serversUrls": {
-    "wms": [
-      "https://api.earthobservation.vam.wfp.org/ows/wms"
-    ]
+    "wms": ["https://api.earthobservation.vam.wfp.org/ows/wms"]
   },
   "map": {
-    "latitude": 21.562,
-    "longitude": -79.542,
-    "zoom": 6.26
+    "boundingBox": [-85.5, 19.86, -74.18, 23.19]
   },
   "categories": {
     "rainfall": {

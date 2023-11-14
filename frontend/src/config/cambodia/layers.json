@@ -54,17 +54,12 @@
     }
   },
   "idpoor": {
-    "title": "IDPoor - dates",
+    "title": "IDPoor 1 & 2",
     "type": "admin_level_data",
-    "path": "data/cambodia/idpoor/{YYYY_MM_DD}.json",
-    "dates": ["2022-01-01", "2022-07-01"],
+    "path": "data/cambodia/idpoor1_2.json",
     "data_field": "Total_Poor_12_HHs",
     "admin_level": 3,
     "admin_code": "Adm3_text",
-    "validity": {
-      "days": 150,
-      "mode": "forward"
-    },
     "opacity": 0.9,
     "feature_info_props": {
       "Total_Poor_12_HHs": {
@@ -99,10 +94,10 @@
         "color": "#a63603"
       }
     ],
-    "legend_text": "This layer shows number of households of IDPoor level 1 and 2 at commune level. The identification of poor households (IDPoor) is established to collect and share poor household information nationwide in order to enhance targeting services and assistance for poverty reduction."
+    "legend_text": "This layer shows number of households of IDPoor level 1 and 2 at commune level"
   },
   "idpoor_1": {
-    "title": "IDPoor - Level 1",
+    "title": "IDPoor Level 1",
     "type": "admin_level_data",
     "path": "data/cambodia/idpoor1_2.json",
     "data_field": "Total_Poor_1_HHs",
@@ -142,10 +137,10 @@
         "color": "#a63603"
       }
     ],
-    "legend_text": "This layer shows number of households of IDPoor level 1 at commune level. The identification of poor households (IDPoor) is established to collect and share poor household information nationwide in order to enhance targeting services and assistance for poverty reduction."
+    "legend_text": "This layer shows number of households of IDPoor level 1 at commune level"
   },
   "idpoor_2": {
-    "title": "IDPoor - Level 2",
+    "title": "IDPoor Level 2",
     "type": "admin_level_data",
     "path": "data/cambodia/idpoor1_2.json",
     "data_field": "Total_Poor_2_HHs",
@@ -185,7 +180,7 @@
         "color": "#a63603"
       }
     ],
-    "legend_text": "This layer shows number of households of IDPoor level 2 at commune level. The identification of poor households (IDPoor) is established to collect and share poor household information nationwide in order to enhance targeting services and assistance for poverty reduction."
+    "legend_text": "This layer shows number of households of IDPoor level 2 at commune level"
   },
   "flood_hazard": {
     "title": "Flood hazard index",
@@ -194,12 +189,12 @@
     "data_field": "flood_hazard_index",
     "admin_level": 3,
     "admin_code": "commune",
-    "opacity": 0.9,
+    "opacity": 0.8,
     "legend": [
       {
         "value": 0,
         "label": "0 - 3",
-        "color": "#ffffff"
+        "color": "rgba(255,255,255,0)"
       },
       {
         "value": 3,
@@ -231,12 +226,7 @@
     "additional_query_params": {
       "styles": "rfh_16_0_300"
     },
-    "validity": {
-      "days": 10,
-      "mode": "forward"
-    },
     "chart_data": {
-      "url": "https://api.earthobservation.vam.wfp.org/stats/admin/fetch",
       "fields": [
         { "key": "rfh", "label": "Rainfall", "color": "#233f5f" },
         { "key": "rfh_avg", "label": "Average", "color": "#bdf2e6" }
@@ -286,13 +276,16 @@
       "styles": "ryq_14_50_200"
     },
     "chart_data": {
-      "url": "https://api.earthobservation.vam.wfp.org/stats/admin/fetch",
       "fields": [
-        { "key": "rfq", "label": "Rainfall anomaly", "color": "#375692" },
+        { "key": "rfq", "label": "Rainfall anomaly", "color": "#375692",
+          "minValue": 0,
+          "maxValue": 300
+        },
         {
           "key": "rfq_avg",
           "label": "Normal",
           "fallback": 100,
+          "pointRadius": 0,
           "color": "#eb3223"
         }
       ],
@@ -339,7 +332,6 @@
       "styles": "rfq_14_20_400"
     },
     "chart_data": {
-      "url": "https://api.earthobservation.vam.wfp.org/stats/admin/fetch",
       "fields": [
         { "key": "r1q", "label": "Rainfall anomaly", "color": "#375692" },
         {
@@ -393,7 +385,6 @@
       "styles": "rfq_14_20_400"
     },
     "chart_data": {
-      "url": "https://api.earthobservation.vam.wfp.org/stats/admin/fetch",
       "fields": [
         { "key": "r3q", "label": "Rainfall anomaly", "color": "#375692" },
         {
@@ -530,7 +521,6 @@
       "styles": "rfh_16_0_400"
     },
     "chart_data": {
-      "url": "https://api.earthobservation.vam.wfp.org/stats/admin/fetch",
       "fields": [
         { "key": "r1h", "label": "Rainfall", "color": "#233f5f" },
         { "key": "r1h_avg", "label": "Average", "color": "#bdf2e6" }
@@ -579,7 +569,6 @@
       "styles": "rfh_16_0_1000"
     },
     "chart_data": {
-      "url": "https://api.earthobservation.vam.wfp.org/stats/admin/fetch",
       "fields": [
         { "key": "r3h", "label": "Rainfall", "color": "#233f5f" },
         { "key": "r3h_avg", "label": "Average", "color": "#bdf2e6" }
@@ -726,46 +715,57 @@
     "legend_text": "1-month Standardized Precipitation Index calculated from dekadal CHIRPS data",
     "legend": [
       {
+        "value": -2.01,
         "label": "< -2",
         "color": "#730000"
       },
       {
+        "value": -2,
         "label": "-1.5 to -2",
         "color": "#e70001"
       },
       {
+        "value": -1.5,
         "label": "-1.2 to -1.5",
         "color": "#ffaa01"
       },
       {
+        "value": -1.2,
         "label": "-0.7 to -1.2",
         "color": "#ffd37b"
       },
       {
+        "value": -0.7,
         "label": "-0.5 to -0.7",
         "color": "#ffff02"
       },
       {
+        "value": -0.5,
         "label": "0.5 to -0.5 ",
         "color": "#f0f0f0"
       },
       {
+        "value": 0.5,
         "label": "0.5 to 0.7",
         "color": "#beebff"
       },
       {
+        "value": 0.7,
         "label": "0.7 to 1.2",
         "color": "#73b2ff"
       },
       {
+        "value": 1.2,
         "label": "1.2 to 1.5",
         "color": "#0271ff"
       },
       {
+        "value": 1.5,
         "label": "1.5 to 2.0",
         "color": "#004dad"
       },
       {
+        "value": 2,
         "label": "> 2.0",
         "color": "#ad03e6"
       }
@@ -786,46 +786,57 @@
     "legend_text": "3-month Standardized Precipitation Index calculated from dekadal CHIRPS data",
     "legend": [
       {
+        "value": -2.01,
         "label": "< -2",
         "color": "#730000"
       },
       {
+        "value": -2,
         "label": "-1.5 to -2",
         "color": "#e70001"
       },
       {
+        "value": -1.5,
         "label": "-1.2 to -1.5",
         "color": "#ffaa01"
       },
       {
+        "value": -1.2,
         "label": "-0.7 to -1.2",
         "color": "#ffd37b"
       },
       {
+        "value": -0.7,
         "label": "-0.5 to -0.7",
         "color": "#ffff02"
       },
       {
+        "value": -0.5,
         "label": "0.5 to -0.5 ",
         "color": "#f0f0f0"
       },
       {
+        "value": 0.5,
         "label": "0.5 to 0.7",
         "color": "#beebff"
       },
       {
+        "value": 0.7,
         "label": "0.7 to 1.2",
         "color": "#73b2ff"
       },
       {
+        "value": 1.2,
         "label": "1.2 to 1.5",
         "color": "#0271ff"
       },
       {
+        "value": 1.5,
         "label": "1.5 to 2.0",
         "color": "#004dad"
       },
       {
+        "value": 2,
         "label": "> 2.0",
         "color": "#ad03e6"
       }
@@ -846,46 +857,57 @@
     "legend_text": "6-month Standardized Precipitation Index calculated from dekadal CHIRPS data",
     "legend": [
       {
+        "value": -2.01,
         "label": "< -2",
         "color": "#730000"
       },
       {
+        "value": -2,
         "label": "-1.5 to -2",
         "color": "#e70001"
       },
       {
+        "value": -1.5,
         "label": "-1.2 to -1.5",
         "color": "#ffaa01"
       },
       {
+        "value": -1.2,
         "label": "-0.7 to -1.2",
         "color": "#ffd37b"
       },
       {
+        "value": -0.7,
         "label": "-0.5 to -0.7",
         "color": "#ffff02"
       },
       {
+        "value": -0.5,
         "label": "0.5 to -0.5 ",
         "color": "#f0f0f0"
       },
       {
+        "value": 0.5,
         "label": "0.5 to 0.7",
         "color": "#beebff"
       },
       {
+        "value": 0.7,
         "label": "0.7 to 1.2",
         "color": "#73b2ff"
       },
       {
+        "value": 1.2,
         "label": "1.2 to 1.5",
         "color": "#0271ff"
       },
       {
+        "value": 1.5,
         "label": "1.5 to 2.0",
         "color": "#004dad"
       },
       {
+        "value": 2,
         "label": "> 2.0",
         "color": "#ad03e6"
       }
@@ -906,46 +928,57 @@
     "legend_text": "9-month Standardized Precipitation Index calculated from dekadal CHIRPS data",
     "legend": [
       {
+        "value": -2.01,
         "label": "< -2",
         "color": "#730000"
       },
       {
+        "value": -2,
         "label": "-1.5 to -2",
         "color": "#e70001"
       },
       {
+        "value": -1.5,
         "label": "-1.2 to -1.5",
         "color": "#ffaa01"
       },
       {
+        "value": -1.2,
         "label": "-0.7 to -1.2",
         "color": "#ffd37b"
       },
       {
+        "value": -0.7,
         "label": "-0.5 to -0.7",
         "color": "#ffff02"
       },
       {
+        "value": -0.5,
         "label": "0.5 to -0.5 ",
         "color": "#f0f0f0"
       },
       {
+        "value": 0.5,
         "label": "0.5 to 0.7",
         "color": "#beebff"
       },
       {
+        "value": 0.7,
         "label": "0.7 to 1.2",
         "color": "#73b2ff"
       },
       {
+        "value": 1.2,
         "label": "1.2 to 1.5",
         "color": "#0271ff"
       },
       {
+        "value": 1.5,
         "label": "1.5 to 2.0",
         "color": "#004dad"
       },
       {
+        "value": 2,
         "label": "> 2.0",
         "color": "#ad03e6"
       }
@@ -966,46 +999,57 @@
     "legend_text": "1-year Standardized Precipitation Index calculated from dekadal CHIRPS data",
     "legend": [
       {
+        "value": -2.01,
         "label": "< -2",
         "color": "#730000"
       },
       {
+        "value": -2,
         "label": "-1.5 to -2",
         "color": "#e70001"
       },
       {
+        "value": -1.5,
         "label": "-1.2 to -1.5",
         "color": "#ffaa01"
       },
       {
+        "value": -1.2,
         "label": "-0.7 to -1.2",
         "color": "#ffd37b"
       },
       {
+        "value": -0.7,
         "label": "-0.5 to -0.7",
         "color": "#ffff02"
       },
       {
+        "value": -0.5,
         "label": "0.5 to -0.5 ",
         "color": "#f0f0f0"
       },
       {
+        "value": 0.5,
         "label": "0.5 to 0.7",
         "color": "#beebff"
       },
       {
+        "value": 0.7,
         "label": "0.7 to 1.2",
         "color": "#73b2ff"
       },
       {
+        "value": 1.2,
         "label": "1.2 to 1.5",
         "color": "#0271ff"
       },
       {
+        "value": 1.5,
         "label": "1.5 to 2.0",
         "color": "#004dad"
       },
       {
+        "value": 2,
         "label": "> 2.0",
         "color": "#ad03e6"
       }
@@ -1101,7 +1145,7 @@
     },
     "date_interval": "days",
     "opacity": 0.7,
-    "legend_text": "Total number of heavy rain days (rainfall > 90th percentile) within last 30 days of dekad",
+    "legend_text": "Total number of intense rain days (rainfall > 90th percentile) within last 30 days of dekad",
     "legend": [
       { "value": 0, "label": "None", "color": "#fafafa" },
       { "value": 1, "label": "1 Day", "color": "#d3f9d0" },
@@ -1127,7 +1171,7 @@
     },
     "date_interval": "days",
     "opacity": 0.7,
-    "legend_text": "Total number of heavy rain days (rainfall > 95th percentile) within last 30 days of dekad",
+    "legend_text": "Total number of extreme rain days (rainfall > 95th percentile) within last 30 days of dekad",
     "legend": [
       { "value": 0, "label": "None", "color": "#fafafa" },
       { "value": 1, "label": "1 Day", "color": "#d3f9d0" },
@@ -1230,7 +1274,6 @@
       "styles": "vim_14_01_09"
     },
     "chart_data": {
-      "url": "https://api.earthobservation.vam.wfp.org/stats/admin/fetch",
       "fields": [
         { "key": "vim", "label": "NDVI", "color": "#4eac5b" },
         { "key": "vim_avg", "label": "Average", "color": "#99ff99" }
@@ -1284,7 +1327,6 @@
       "styles": "viq_13_50_150"
     },
     "chart_data": {
-      "url": "https://api.earthobservation.vam.wfp.org/stats/admin/fetch",
       "fields": [
         { "key": "viq", "label": "NDVI anomaly", "color": "#5e803f" },
         {
@@ -1444,7 +1486,7 @@
     "wcsConfig": {
       "disableDateParam": true,
       "version": "2.0.0",
-      "scale": "0.1"
+      "scale": "1"
     },
     "server_layer_name": "wp_pop_cicunadj",
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
@@ -1457,9 +1499,12 @@
     "type": "wms",
     "server_layer_name": "hf_water_khm",
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
+    "additional_query_params": {
+      "styles": "hf_water_class_single"
+    },
     "date_interval": "days",
     "opacity": 1.0,
-    "legend_text": "Near real time water mapping is implemented using satellite imagery from Sentinel-1 (SAR), Sentinel-2 (optical), and Landsat8 (optical). Daily water layers are created by compositing the most recent water layers detected from these three satellite sensors. Source: SERVIR Mekong HYDRAFloods. Contains modified Copernicus Sentinel data [2022]",
+    "legend_text": "Daily flood layers are created by compositing the most recent water detected from Sentinel-1 (SAR), Sentinel-2 (optical), and Landsat8 (optical) satellite sensors. Source: SERVIR Mekong HYDRAFloods. Contains modified Copernicus Sentinel data [2022]",
     "legend": [
       {
         "value": 1,
@@ -1473,17 +1518,7 @@
       },
       {
         "value": 3,
-        "label": "SAR Flood",
-        "color": "#ffffbf"
-      },
-      {
-        "value": 4,
-        "label": "Optical Flood",
-        "color": "#fdae61"
-      },
-      {
-        "value": 5,
-        "label": "SAR + Optical Flood",
+        "label": "Flooded",
         "color": "#d7191c"
       }
     ],
@@ -1638,10 +1673,10 @@
     "opacity": 1,
     "legend_text": "This layer shows river water level in millimeters (mm). It is reported from People in Need (PIN) automated river water gauge.",
     "legend": [
-      { "label": "0 - Normal", "value": 0, "color": "#1a9641" },
-      { "label": "1 - Watch", "value": 1, "color": "#f9d84e" },
-      { "label": "2 - Warning", "value": 2, "color": "#fdae61" },
-      { "label": "3 - Severe Warning", "value": 3, "color": "#d7191c" }
+      { "label": "Normal", "value": 0, "color": "#1a9641" },
+      { "label": "Watch", "value": 1, "color": "#f9d84e" },
+      { "label": "Warning", "value": 2, "color": "#fdae61" },
+      { "label": "Severe Warning", "value": 3, "color": "#d7191c" }
     ]
   },
   "flood_report": {
@@ -1653,12 +1688,13 @@
     },
     "data": "https://prism-api.ovio.org/kobo/forms",
     "date_url": "https://prism-api.ovio.org/kobo/dates",
-    "data_field": "flood_n",
+    "data_field": "NumPeoAff",
     "additional_query_params": {
       "form_id": "aMLBShjyyhYeS5ERuRy8s3",
       "datetime_field": "Date_report",
-      "measure_field": "flood_n",
-      "kobo_url": "https://kobo.humanitarianresponse.info/api/v2/assets/"
+      "measure_field": "NumPeoAff",
+      "kobo_url": "https://kobo.humanitarianresponse.info/api/v2/assets/",
+      "filters": { "status": "Approved" }
     },
     "opacity": 0.9,
     "feature_info_props": {
@@ -1670,9 +1706,19 @@
         "type": "text",
         "dataTitle": "Number of villages affected"
       },
-      "flood_n": {
+      "NumPeoAff": {
         "type": "text",
         "dataTitle": "Number of people affected"
+      },
+      "status": {
+        "type": "text",
+        "dataTitle": "Form status"
+      },
+      "submission_id": {
+        "metadata": "dmpSubmissionId"
+      },
+      "DisTyp": {
+        "metadata": "dmpDisTyp"
       }
     },
     "legend_text": "Number of people affected",
@@ -1684,28 +1730,18 @@
       },
       {
         "value": 1,
-        "label": "< 10",
-        "color": "#ffffb2"
+        "label": "< 5",
+        "color": "#9e9ac8"
+      },
+      {
+        "value": 5,
+        "label": "5 - 10",
+        "color": "#756bb1"
       },
       {
         "value": 11,
-        "label": "11 - 25",
-        "color": "#fecc5c"
-      },
-      {
-        "value": 26,
-        "label": "26 - 50",
-        "color": "#fd8d3c"
-      },
-      {
-        "value": 51,
-        "label": "51 - 100",
-        "color": "#f03b20"
-      },
-      {
-        "value": 101,
-        "label": "> 100",
-        "color": "#bd0026"
+        "label": "> 10",
+        "color": "#54278f"
       }
     ]
   },
@@ -1723,7 +1759,8 @@
       "form_id": "a9McqLCW7H4Vfpb2Tsij29",
       "datetime_field": "Date_Dis",
       "measure_field": "NumPeoAff",
-      "kobo_url": "https://kobo.humanitarianresponse.info/api/v2/assets/"
+      "kobo_url": "https://kobo.humanitarianresponse.info/api/v2/assets/",
+      "filters": { "status": "Approved" }
     },
     "opacity": 0.9,
     "feature_info_props": {
@@ -1731,9 +1768,23 @@
         "type": "text",
         "dataTitle": "Event date"
       },
+      "NumVillAff": {
+        "type": "text",
+        "dataTitle": "Number of villages affected"
+      },
       "NumPeoAff": {
         "type": "text",
         "dataTitle": "Number of people affected"
+      },
+      "status": {
+        "type": "text",
+        "dataTitle": "Form status"
+      },
+      "submission_id": {
+        "metadata": "dmpSubmissionId"
+      },
+      "DisTyp": {
+        "metadata": "dmpDisTyp"
       }
     },
     "legend_text": "Number of people affected",
@@ -1784,12 +1835,14 @@
       "form_id": "amkeQ3jwDf9YpifKBh3sez",
       "datetime_field": "Date_Dis",
       "measure_field": "DisTyp",
-      "kobo_url": "https://kobo.humanitarianresponse.info/api/v2/assets/"
+      "kobo_url": "https://kobo.humanitarianresponse.info/api/v2/assets/",
+      "filters": { "status": "Approved" }
     },
     "opacity": 0.9,
     "feature_info_props": {
       "DisTyp": {
         "type": "labelMapping",
+        "metadata": "dmpDisTyp",
         "dataTitle": "Disaster type",
         "labelMap": {
           "3": "Storm",
@@ -1811,6 +1864,17 @@
       "NumPeoAff": {
         "type": "text",
         "dataTitle": "Number of people affected"
+      },
+      "NumVillAff": {
+        "type": "text",
+        "dataTitle": "Number of villages affected"
+      },
+      "status": {
+        "type": "text",
+        "dataTitle": "Form status"
+      },
+      "submission_id": {
+        "metadata": "dmpSubmissionId"
       }
     },
     "legend_text": "Type of disaster",

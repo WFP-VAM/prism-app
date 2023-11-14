@@ -2,9 +2,9 @@ import * as MapboxGL from 'mapbox-gl';
 import {
   CommonLayerProps,
   DataFieldType,
-  PointDataLayerProps,
   LegendDefinitionItem,
-} from '../../../config/types';
+  PointDataLayerProps,
+} from 'config/types';
 import { legendToStops } from './layer-utils';
 
 export const circleLayout: MapboxGL.CircleLayout = { visibility: 'visible' };
@@ -44,13 +44,37 @@ export const circlePaint = ({
 
 // We use the legend values from the config to define "intervals".
 export const fillPaintData = (
-  { opacity, legend }: CommonLayerProps,
+  { opacity, legend, id }: CommonLayerProps,
   property: string = 'data',
-): MapboxGL.FillPaint => ({
-  'fill-opacity': opacity || 0.3,
-  'fill-color': {
-    property,
-    stops: legendToStops(legend),
-    type: 'interval',
-  },
-});
+  fillPattern?: 'right' | 'left',
+): MapboxGL.FillPaint => {
+  let fillPaint: MapboxGL.FillPaint = {
+    'fill-opacity': opacity || 0.3,
+    'fill-color': {
+      property,
+      stops: legendToStops(legend),
+      type: 'interval',
+    },
+  };
+  if (fillPattern) {
+    // eslint-disable-next-line fp/no-mutation
+    fillPaint = {
+      ...fillPaint,
+      'fill-pattern': [
+        'step',
+        ['get', property],
+        // start with step 0.
+        ...[`fill-pattern-${id}-legend-0`],
+        ...legend!.reduce(
+          (acc: string[], legendItem: LegendDefinitionItem, index) => [
+            ...acc,
+            legendItem.value as string,
+            `fill-pattern-${id}-legend-${index}` as string,
+          ],
+          [],
+        ),
+      ] as MapboxGL.Expression,
+    };
+  }
+  return fillPaint;
+};

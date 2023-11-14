@@ -1,0 +1,7 @@
+# this file is only used to build the frontend image
+# NOT for the python api (see api/.dockerignore for that)
+common/node_modules/**
+frontend/node_modules/**
+alerting/*
+api/*
+docs/*

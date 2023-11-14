@@ -1,7 +1,8 @@
 import { camelCase } from 'lodash';
 import { useHistory } from 'react-router-dom';
+import { LayerType } from 'config/types';
 import { AnalysisParams } from './types';
-import { LayerType } from '../config/types';
+import { keepLayer } from './keep-layer-utils';
 
 /*
   This custom hook tracks the browser url string, which is defined by the useHistory hook.
@@ -48,14 +49,12 @@ export const useUrlHistory = () => {
 
     const selectedLayersUrl = urlLayers !== null ? urlLayers.split(',') : [];
 
-    const filteredSelectedLayers = selectedLayers
-      .filter(l => selectedLayersUrl.includes(l.id) && l.type !== layer.type)
-      .map(l => l.id);
+    const filteredSelectedLayers =
+      selectedLayers
+        .filter(l => selectedLayersUrl.includes(l.id) && keepLayer(l, layer))
+        .map(l => l.id) || [];
 
-    const updatedUrl =
-      filteredSelectedLayers.length !== 0
-        ? [...filteredSelectedLayers, layer.id]
-        : [layer.id];
+    const updatedUrl = [...filteredSelectedLayers, layer.id];
 
     return updatedUrl.join(',');
   };
@@ -135,21 +134,6 @@ export const useUrlHistory = () => {
     removeLayerFromUrl,
   };
 };
-
-export function copyTextToClipboard(text: string): Promise<void> {
-  if (navigator?.clipboard) {
-    return navigator?.clipboard.writeText(text);
-  }
-  // If navigator.clipboard is not supported, fallback to execCommand
-  const tmpElement = document.createElement('input');
-  document.body.appendChild(tmpElement);
-  // eslint-disable-next-line fp/no-mutation
-  tmpElement.value = text;
-  tmpElement.select();
-  document.execCommand('copy');
-  document.body.removeChild(tmpElement);
-  return Promise.resolve();
-}
 
 export const queryParamsToString = (
   queryParams?: {

@@ -1,16 +1,13 @@
 import GeoJSON from 'geojson';
 import moment from 'moment';
-import type { LazyLoader } from './layer-data';
-import {
-  PointDataLayerProps,
-  PointDataLoader,
-  PointData,
-} from '../../config/types';
-import { DEFAULT_DATE_FORMAT } from '../../utils/name-utils';
-import { fetchEWSData } from '../../utils/ews-utils';
+import { PointDataLayerProps, PointDataLoader, PointData } from 'config/types';
+import { DEFAULT_DATE_FORMAT } from 'utils/name-utils';
+import { fetchEWSData } from 'utils/ews-utils';
+import { fetchACLEDIncidents } from 'utils/acled-utils';
+import { queryParamsToString } from 'utils/url-utils';
+import { fetchWithTimeout } from 'utils/fetch-with-timeout';
 import { getAdminLevelDataLayerData } from './admin_level_data';
-import { fetchACLEDIncidents } from '../../utils/acled-utils';
-import { queryParamsToString } from '../../utils/url-utils';
+import type { LazyLoader } from './layer-data';
 
 declare module 'geojson' {
   export const version: string;
@@ -39,18 +36,22 @@ export const fetchPointLayerData: LazyLoader<PointDataLayerProps> = () => async 
       authRequired,
     },
   },
-  { getState },
+  { getState, dispatch },
 ) => {
   // This function fetches point data from the API.
   // If this endpoint is not available or we run into an error,
   // we should get the data from the local public file in layer.fallbackData
-
   if (date) {
     switch (loader) {
       case PointDataLoader.EWS:
-        return fetchEWSData(dataUrl, date);
+        return fetchEWSData(dataUrl, date, dispatch);
       case PointDataLoader.ACLED:
-        return fetchACLEDIncidents(dataUrl, date, additionalQueryParams);
+        return fetchACLEDIncidents(
+          dataUrl,
+          date,
+          dispatch,
+          additionalQueryParams,
+        );
       default:
         break;
     }
@@ -80,16 +81,26 @@ export const fetchPointLayerData: LazyLoader<PointDataLayerProps> = () => async 
   // TODO - Better error handling, esp. for unauthorized requests.
   try {
     // eslint-disable-next-line fp/no-mutation
-    response = await fetch(requestUrl, {
-      mode: 'cors',
-      headers,
-    });
+    response = await fetchWithTimeout(
+      requestUrl,
+      dispatch,
+      {
+        mode: 'cors',
+        headers,
+      },
+      `Request failed for fetching point layer data at ${requestUrl}`,
+    );
     // eslint-disable-next-line fp/no-mutation
     data = (await response.json()) as PointData[];
-  } catch (ignored) {
+  } catch (error) {
     // fallback data isn't filtered, therefore we must filter it.
     // eslint-disable-next-line fp/no-mutation
-    response = await fetch(fallbackData || '');
+    response = await fetchWithTimeout(
+      fallbackData || '',
+      dispatch,
+      {},
+      `Request failed for fetching point layer data at fallback url ${fallbackData}`,
+    );
     // eslint-disable-next-line fp/no-mutation
     data = ((await response.json()) as PointData[]).filter(
       // we cant do a string comparison here because sometimes the date in json is stored as YYYY-M-D instead of YYYY-MM-DD
@@ -98,10 +109,6 @@ export const fetchPointLayerData: LazyLoader<PointDataLayerProps> = () => async 
         moment(obj.date).format(DEFAULT_DATE_FORMAT) ===
         moment(formattedDate).format(DEFAULT_DATE_FORMAT),
     );
-  }
-
-  if (response.status > 299) {
-    throw new Error((data as any)?.detail);
   }
 
   if (adminLevelDisplay && !Object.keys(data).includes('message')) {

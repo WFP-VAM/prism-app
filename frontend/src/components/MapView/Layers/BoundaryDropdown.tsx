@@ -13,23 +13,22 @@ import {
   Theme,
   Typography,
   useMediaQuery,
-  withStyles,
 } from '@material-ui/core';
-import { last, sortBy } from 'lodash';
+import { sortBy } from 'lodash';
 import React, { forwardRef, ReactNode, useEffect, useState } from 'react';
 import i18n from 'i18next';
 import { useDispatch, useSelector } from 'react-redux';
 import { Search } from '@material-ui/icons';
-import { BoundaryLayerProps } from '../../../config/types';
+import { BoundaryLayerProps } from 'config/types';
 import {
   getSelectedBoundaries,
   setIsSelectionMode,
   setSelectedBoundaries as setSelectedBoundariesRedux,
-} from '../../../context/mapSelectionLayerStateSlice';
-import { getBoundaryLayerSingleton } from '../../../config/utils';
-import { layerDataSelector } from '../../../context/mapStateSlice/selectors';
-import { LayerData } from '../../../context/layers/layer-data';
-import { isEnglishLanguageSelected, useSafeTranslation } from '../../../i18n';
+} from 'context/mapSelectionLayerStateSlice';
+import { getBoundaryLayerSingleton } from 'config/utils';
+import { layerDataSelector } from 'context/mapStateSlice/selectors';
+import { LayerData } from 'context/layers/layer-data';
+import { isEnglishLanguageSelected, useSafeTranslation } from 'i18n';
 
 const boundaryLayer = getBoundaryLayerSingleton();
 const ClickableListSubheader = styled(ListSubheader)(({ theme }) => ({
@@ -50,8 +49,9 @@ const useStyles = makeStyles((theme: Theme) => ({
     backgroundColor: theme.palette.primary.main,
     color: 'white',
     display: 'inline-flex',
-    marginTop: '1em',
-    padding: theme.spacing(1, 2.66),
+    // temporary will be removed when the go to button will be revamped
+    marginTop: '-10px',
+    padding: theme.spacing(0.8, 2.66),
     borderRadius: '4px',
     alignItems: 'center',
     boxShadow: theme.shadows[2],
@@ -112,38 +112,68 @@ const SearchField = forwardRef(
   },
 );
 
+export interface OrderedArea {
+  children: {
+    value: string;
+    label: string;
+    key: string;
+  }[];
+  title: string;
+  key: string;
+}
 /**
  * Converts the boundary layer data into a list of options for the dropdown
  * grouped by admin level 2, with individual sections under admin level 3.
  */
-function getCategories(
+export function getOrderedAreas(
   data: LayerData<BoundaryLayerProps>['data'],
+  layer: BoundaryLayerProps,
   search: string,
   i18nLocale: typeof i18n,
-) {
+  layerLevel: number = 0,
+  parentCategoryValue?: string,
+): OrderedArea[] {
   const locationLevelNames = isEnglishLanguageSelected(i18nLocale)
-    ? boundaryLayer.adminLevelNames
-    : boundaryLayer.adminLevelLocalNames;
-  if (!boundaryLayer.adminLevelNames.length) {
+    ? layer.adminLevelNames
+    : layer.adminLevelLocalNames;
+  if (!layer.adminLevelNames.length) {
     console.error(
       'Boundary layer has no admin level names. Cannot generate categories.',
     );
     return [];
   }
 
+  const layerLevel1 = layerLevel || 0;
+  const layerLevel2 = layerLevel1 + 1;
+
+  let { features } = data;
+  // filter to get only layers having prentCategoryValue as parent layer
+  // when layerLevel is 0, there is only one layer loaded
+  // then parent category can't exist
+  if (parentCategoryValue && layerLevel > 0) {
+    // eslint-disable-next-line fp/no-mutation
+    features = data.features.filter(
+      feature =>
+        feature.properties?.[layer.adminLevelNames[layerLevel - 1]] ===
+        parentCategoryValue,
+    );
+  }
+
   // Make categories based off the level of all boundaries
   return sortBy(
-    data.features
-      .reduce<
-        Array<{
-          title: string;
-          children: { value: string; label: string }[];
-        }>
-      >((ret, feature) => {
-        const parentCategory = feature.properties?.[locationLevelNames[0]];
-        const label = feature.properties?.[last(locationLevelNames)!];
-        const code = feature.properties?.[boundaryLayer.adminCode];
-        if (!label || !code || !parentCategory) {
+    features
+      .reduce<OrderedArea[]>((ret, feature) => {
+        // unique parent key to filter when changing the language
+        const parentKey =
+          feature.properties?.[layer.adminLevelNames[layerLevel1]];
+        const parentCategory =
+          feature.properties?.[locationLevelNames[layerLevel1]];
+        // unique child key to filter when changing the language
+        const childkey =
+          feature.properties?.[layer.adminLevelNames[layerLevel2]!];
+        const label = feature.properties?.[locationLevelNames[layerLevel2]!];
+        const code = feature.properties?.[layer.adminCode];
+        if (!label || !code || !parentCategory || !parentKey) {
           return ret;
         }
         // filter via search
@@ -153,21 +183,23 @@ function getCategories(
           search &&
           !searchIncludes(label) &&
           !searchIncludes(code) &&
-          !searchIncludes(parentCategory)
+          !searchIncludes(parentCategory) &&
+          !searchIncludes(parentKey)
         ) {
           return ret;
         }
         // add to categories if exists
-        const category = ret.find(c => c.title === parentCategory);
+        const category = ret.find(c => c.key === parentKey);
         if (category) {
           // eslint-disable-next-line fp/no-mutating-methods
-          category.children.push({ value: code, label });
+          category.children.push({ value: code, label, key: childkey });
         } else {
           return [
             ...ret,
             {
+              key: parentKey,
               title: parentCategory,
-              children: [{ value: code, label }],
+              children: [{ value: code, label, key: childkey }],
             },
           ];
         }
@@ -175,11 +207,9 @@ function getCategories(
       }, [])
       .map(category => ({
         ...category,
-        // sort children by label
-        children: sortBy(category.children, 'label'),
+        children: sortBy(category.children, 'key'),
       })),
-    // then finally sort categories.
-    'title',
+    'key',
   );
 }
 
@@ -207,14 +237,14 @@ function SimpleBoundaryDropdown({
   if (!data) {
     return <CircularProgress size={24} color="secondary" />;
   }
-  const categories = getCategories(data, search, i18nLocale);
-  const allChildren = categories.flatMap(c => c.children);
+  const areas = getOrderedAreas(data, boundaryLayer, search, i18nLocale);
+  const allChildrenAreas = areas.flatMap(c => c.children);
   const selectOrDeselectAll = (e: React.MouseEvent) => {
     e.preventDefault();
     if (selectedBoundaries.length > 0) {
       setSelectedBoundaries([]);
     } else {
-      setSelectedBoundaries(allChildren.map(({ value }) => value));
+      setSelectedBoundaries(allChildrenAreas.map(({ value }) => value));
     }
   };
   // It's important for this to be another component, since the Select component
@@ -255,10 +285,10 @@ function SimpleBoundaryDropdown({
               : t('Deselect All')}
           </MenuItem>
         )}
-        {search && allChildren.length === 0 && (
+        {search && allChildrenAreas.length === 0 && (
           <MenuItem disabled>{t('No Results')}</MenuItem>
         )}
-        {categories.reduce<ReactNode[]>(
+        {areas.reduce<ReactNode[]>(
           // map wouldn't work here because <Select> doesn't support <Fragment> with keys, so we need one array
           (components, category) => [
             ...components,
@@ -357,20 +387,5 @@ function BoundaryDropdown({
     />
   );
 }
-
-export const ButtonStyleBoundaryDropdown = withStyles(() => ({
-  root: {
-    '& label': {
-      textTransform: 'uppercase',
-      letterSpacing: '3px',
-      fontSize: '11px',
-      position: 'absolute',
-      top: '-13px',
-    },
-    '& svg': { color: 'white', fontSize: '1.25rem' },
-    '& .MuiInput-root': { margin: 0 },
-    '& .MuiInputLabel-shrink': { display: 'none' },
-  },
-}))(SimpleBoundaryDropdown);
 
 export default BoundaryDropdown;

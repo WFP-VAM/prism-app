@@ -3,9 +3,7 @@
   "alertFormActive": false,
   "enableNavigationDropdown": true,
   "serversUrls": {
-    "wms": [
-      "https://api.earthobservation.vam.wfp.org/ows/wms"
-    ]
+    "wms": ["https://api.earthobservation.vam.wfp.org/ows/wms"]
   },
   "icons": {
     "rainfall": "icon_rain.png",
@@ -17,14 +15,9 @@
     "Cadre Harmonisé": "icon_cadreharmoise2.png"
   },
   "map": {
-    "latitude": 9.065,
-    "longitude": 8.676,
-    "zoom": 5.7
+    "boundingBox": [2.69, 4.24, 14.58, 13.87]
   },
-  "defaultDisplayBoundaries": [
-    "admin_boundaries",
-    "admin1_boundaries"
-  ],
+  "defaultDisplayBoundaries": ["admin_boundaries", "admin1_boundaries"],
   "categories": {
     "rainfall": {
       "global_rainfall_products": [
@@ -118,10 +111,7 @@
           ]
         }
       ],
-      "dry_periods": [
-        "days_dry",
-        "streak_dry_days"
-      ],
+      "dry_periods": ["days_dry", "streak_dry_days"],
       "extreme_rain_events": [
         {
           "group_title": "Rainfall categories:",
@@ -168,10 +158,7 @@
       ]
     },
     "vegetation": {
-      "vegetation_conditions": [
-        "ndvi_dekad",
-        "ndvi_dekad_anomaly"
-      ]
+      "vegetation_conditions": ["ndvi_dekad", "ndvi_dekad_anomaly"]
     },
     "temperature": {
       "land_surface_temperature": [
@@ -183,11 +170,15 @@
     "Cadre Harmonisé": {
       "Phase_Classification": [
         "ch_phase",
-        "ch_inaccessible_phase"
+        "ch_idps_phase",
+        "ch_inaccessible_phase",
+        "ch_urban_phase"
       ],
       "Population": [
         "ch_pop3_5",
-        "ch_inaccessible_pop3_5"
+        "ch_idps_pop3_5",
+        "ch_inaccessible_pop3_5",
+        "ch_urban_pop3_5"
       ]
     }
   }

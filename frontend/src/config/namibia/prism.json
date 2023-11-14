@@ -10,18 +10,11 @@
     "vulnerability": "icon_vulnerable.png"
   },
   "serversUrls": {
-    "wms": [
-      "https://api.earthobservation.vam.wfp.org/ows/wms"
-    ]
+    "wms": ["https://api.earthobservation.vam.wfp.org/ows/wms"]
   },
-  "defaultDisplayBoundaries": [
-    "admin_boundaries",
-    "admin1_boundaries"
-  ],
+  "defaultDisplayBoundaries": ["admin_boundaries", "admin1_boundaries"],
   "map": {
-    "latitude": -23.02,
-    "longitude": 17.05,
-    "zoom": 5.12
+    "boundingBox": [11.73, -29.05, 25.08, -16.94]
   },
   "categories": {
     "rainfall": {
@@ -180,10 +173,7 @@
           ]
         }
       ],
-      "dry_periods": [
-        "days_dry",
-        "streak_dry_days"
-      ],
+      "dry_periods": ["days_dry", "streak_dry_days"],
       "extreme_rain_events": [
         {
           "group_title": "Rainfall categories:",
@@ -230,10 +220,7 @@
       ]
     },
     "vegetation": {
-      "vegetation_conditions": [
-        "ndvi_dekad",
-        "ndvi_dekad_anomaly"
-      ]
+      "vegetation_conditions": ["ndvi_dekad", "ndvi_dekad_anomaly"]
     },
     "temperature": {
       "land_surface_temperature": [

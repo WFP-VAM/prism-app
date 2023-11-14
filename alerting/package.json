@@ -22,10 +22,11 @@
     "migration:revert": "yarn typeorm migration:revert",
     "typeorm-seeding": "ts-node $(yarn bin typeorm-seeding)",
     "alert-worker": "yarn ts-node src/alert-worker.ts",
-    "docker-alert": "docker-compose run --entrypoint 'yarn alert-worker' alerting-node"
+    "docker-alert": "docker compose run --entrypoint 'yarn alert-worker' alerting-node"
   },
   "dependencies": {
     "@turf/bbox": "^6.3.0",
+    "bluebird": "^3.7.2",
     "geojson": "^0.5.0",
     "lodash": "^4.17.21",
     "moment": "^2.29.4",

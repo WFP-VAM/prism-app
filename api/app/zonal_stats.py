@@ -1,10 +1,11 @@
 """Calulate zonal statistics and return a json or a geojson."""
 import logging
+import warnings
 from collections import defaultdict
 from datetime import datetime
 from json import dump, load
 from pathlib import Path
-from typing import Any, Optional
+from typing import Any, NewType, Optional
 from urllib.parse import urlencode
 
 import numpy as np
@@ -12,16 +13,15 @@ import rasterio  # type: ignore
 from app.caching import CACHE_DIRECTORY, cache_file, get_json_file, is_file_valid
 from app.models import (
     FilePath,
-    FilterProperty,
     GeoJSON,
     GeoJSONFeature,
-    Geometry,
     GroupBy,
     WfsParamsModel,
     WfsResponse,
 )
-from app.raster_utils import gdal_calc, reproj_match
+from app.raster_utils import calculate_pixel_area, gdal_calc, reproj_match
 from app.timer import timed
+from app.utils import WarningsFilter
 from app.validation import VALID_OPERATORS
 from fastapi import HTTPException
 from rasterio.warp import Resampling
@@ -31,8 +31,14 @@ from shapely.ops import unary_union  # type: ignore
 
 logger = logging.getLogger(__name__)
 
+# Add custom filter to silence 'converting a masked element to nan' warnings
+logger.addFilter(WarningsFilter())
 
-DEFAULT_STATS = ["min", "max", "mean", "median"]
+
+DEFAULT_STATS = ["min", "max", "mean", "median", "sum", "std", "nodata", "count"]
+
+AreaInSqKm = NewType("AreaInSqKm", float)
+Percentage = NewType("Percentage", float)
 
 
 def get_wfs_response(wfs_params: WfsParamsModel) -> WfsResponse:
@@ -144,6 +150,10 @@ def _create_shapely_geoms(
             continue
 
         obj_key = f["properties"][filter_property_key]
+
+        # Excluding 'Uncertainty Cones' from storm analysis.
+        if obj_key == "Uncertainty Cones":
+            continue
 
         shapely_dicts.append((obj_key, shape(f.get("geometry"))))
 
@@ -265,6 +275,8 @@ def calculate_stats(
     prefix: Optional[str] = "stats_",
     geojson_out: bool = False,
     wfs_response: Optional[WfsResponse] = None,
+    # WARNING - currently, when intersect_comparison is used,
+    # regions with 0 overlap are excluded from the results.
     intersect_comparison: Optional[tuple] = None,
     mask_geotiff: Optional[str] = None,
     mask_calc_expr: Optional[str] = None,
@@ -331,19 +343,24 @@ def calculate_stats(
     # Add function to calculate overlap percentage.
     add_stats = None
     if intersect_comparison is not None:
+        pixel_area = calculate_pixel_area(geotiff)
 
-        def intersect_percentage(masked) -> float:
-            # Get total number of elements in the boundary.
+        def intersect_pixels(masked) -> float:
+            # Get total number of elements matching our operator in the boundary.
             intersect_operator, intersect_baseline = intersect_comparison  # type: ignore
+            # If total is 0, no need to count. This avoids returning NaN.
             total = masked.count()
-            # Avoid dividing by 0
             if total == 0:
-                return 0
-            percentage = (intersect_operator(masked, intersect_baseline)).sum()
-            return percentage / total
+                return 0.0
+            return float((intersect_operator(masked, intersect_baseline)).sum())
+
+        def intersect_area(masked) -> AreaInSqKm:
+            # Area in sq km per pixel value
+            return AreaInSqKm(intersect_pixels(masked) * pixel_area)
 
         add_stats = {
-            "intersect_percentage": intersect_percentage,
+            "intersect_pixels": intersect_pixels,
+            "intersect_area": intersect_area,
         }
 
     try:
@@ -355,14 +372,57 @@ def calculate_stats(
             geojson_out=geojson_out,
             add_stats=add_stats,
         )
+
     except rasterio.errors.RasterioError as error:
         logger.error(error)
         raise HTTPException(
             status_code=500, detail="An error occured calculating statistics."
         ) from error
     # This Exception is raised by rasterstats library when feature collection as 0 elements within the feature array.
-    except ValueError as error:
+    except ValueError:
         stats_results = []
+
+    # cleanup data and remove nan values
+    # add intersect stats if requested
+    clean_results = []
+    for result in stats_results:
+        stats_properties: dict = result if not geojson_out else result["properties"]
+
+        # clean results
+        clean_stats_properties = {
+            k: 0 if str(v).lower() == "nan" else v for k, v in stats_properties.items()
+        }
+
+        # calculate intersect_percentage
+        if intersect_comparison is not None:
+            safe_prefix = prefix or ""
+            total = (
+                float(clean_stats_properties[f"{safe_prefix}count"])
+                + clean_stats_properties[f"{safe_prefix}nodata"]
+            )
+            if total == 0:
+                intersect_percentage = Percentage(0.0)
+            else:
+                intersect_percentage = Percentage(
+                    clean_stats_properties[f"{safe_prefix}intersect_pixels"] / total
+                )
+
+            clean_stats_properties = {
+                **clean_stats_properties,
+                f"{safe_prefix}intersect_percentage": intersect_percentage,
+            }
+
+        # merge properties back at the proper level
+        # and filter out properties that have "no" intersection
+        # by setting a limit at 0.005 (0.5%).
+        if intersect_comparison is not None and intersect_percentage < 0.005:
+            continue
+        if not geojson_out:
+            clean_results.append(clean_stats_properties)
+        else:
+            clean_results.append({**result, "properties": clean_stats_properties})
+
+    stats_results = clean_results
 
     if not geojson_out:
         feature_properties = _extract_features_properties(zones_filepath)

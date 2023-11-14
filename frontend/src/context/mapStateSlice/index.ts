@@ -1,9 +1,14 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { Map as MapBoxMap } from 'mapbox-gl';
-import { LayerKey, LayerType } from '../../config/types';
-import { LayerDefinitions } from '../../config/utils';
-import { LayerData, LayerDataTypes, loadLayerData } from '../layers/layer-data';
-import { BoundaryRelationsDict } from '../../components/Common/BoundaryDropdown/utils';
+import { LayerKey, LayerType } from 'config/types';
+import { LayerDefinitions } from 'config/utils';
+import {
+  LayerData,
+  LayerDataTypes,
+  loadLayerData,
+} from 'context/layers/layer-data';
+import { BoundaryRelationsDict } from 'components/Common/BoundaryDropdown/utils';
+import { keepLayer } from 'utils/keep-layer-utils';
 
 interface DateRange {
   startDate?: number;
@@ -40,13 +45,46 @@ const initialState: MapState = {
   boundaryRelationData: {},
 };
 
-function keepLayer(layer: LayerType, payload: LayerType) {
-  // Simple function to control which layers can overlap.
-  return (
-    payload.id !== layer.id &&
-    (payload.type !== layer.type || payload.type === 'boundary')
-  );
-}
+const getTypeOrder = (layer: LayerType) => {
+  if (layer.type === 'admin_level_data' && layer.fillPattern) {
+    return 'pattern_admin_level_data';
+  }
+  if (layer.type === 'wms' && layer.geometry) {
+    return 'polygon';
+  }
+  return layer.type;
+};
+
+// Order layers to keep boundaries and point_data on top. boundaries first.
+export const layerOrdering = (a: LayerType, b: LayerType) => {
+  // Dictionary with all the available layerTypes
+  // Note: polygon is layer.type === 'wms' && layer.geometry
+  const order: {
+    [key in
+      | 'boundary'
+      | 'wms'
+      | 'admin_level_data'
+      | 'pattern_admin_level_data'
+      | 'impact'
+      | 'point_data'
+      | 'polygon'
+      | 'static_raster']: number;
+  } = {
+    point_data: 0,
+    polygon: 1,
+    boundary: 2,
+    pattern_admin_level_data: 3,
+    admin_level_data: 4,
+    impact: 5,
+    wms: 6,
+    static_raster: 7,
+  };
+
+  const typeA = getTypeOrder(a);
+  const typeB = getTypeOrder(b);
+
+  return order[typeA] - order[typeB];
+};
 
 export const mapStateSlice = createSlice({
   name: 'mapState',
@@ -61,11 +99,13 @@ export const mapStateSlice = createSlice({
 
       const filteredLayers = layers.filter(layer => keepLayer(layer, payload));
 
-      // Keep boundary layers at the top of our stack
-      const newLayers =
-        payload.type === 'boundary'
-          ? [...layersToAdd, ...filteredLayers]
-          : [...filteredLayers, ...layersToAdd];
+      // Keep boundary layers at the top of our stack and remove duplicates
+      const newLayers = (payload.type === 'boundary'
+        ? [...layersToAdd, ...filteredLayers]
+        : [...filteredLayers, ...layersToAdd]
+      ).filter(
+        (layer, i, a) => a.findIndex(layer2 => layer2.id === layer.id) === i,
+      );
 
       return {
         ...rest,
@@ -118,17 +158,6 @@ export const mapStateSlice = createSlice({
       ...rest,
       errors: errors.filter(msg => msg !== payload),
     }),
-
-    updateLayerOpacity: (
-      { layers, ...rest },
-      { payload }: PayloadAction<Pick<LayerType, 'id' | 'opacity'>>,
-    ) => ({
-      ...rest,
-      layers: layers.map(layer => ({
-        ...layer,
-        opacity: layer.id === payload.id ? payload.opacity : layer.opacity,
-      })),
-    }),
   },
   extraReducers: builder => {
     builder.addCase(
@@ -139,7 +168,12 @@ export const mapStateSlice = createSlice({
       ) => ({
         ...rest,
         loadingLayerIds: loadingLayerIds.filter(id => id !== payload.layer.id),
-        layersData: layersData.concat(payload),
+        layersData: layersData
+          .concat(payload)
+          .filter(
+            (layer, i, a) =>
+              a.findIndex(layer2 => layer2.layer.id === layer.layer.id) === i,
+          ),
       }),
     );
 
@@ -172,8 +206,6 @@ export const {
   removeLayer,
   updateDateRange,
   setMap,
-  // TODO unused
-  updateLayerOpacity,
   removeLayerData,
   setBoundaryRelationData,
 } = mapStateSlice.actions;

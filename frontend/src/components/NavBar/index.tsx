@@ -1,27 +1,28 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { faGithub } from '@fortawesome/free-brands-svg-icons';
+import { faBars } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   AppBar,
-  Toolbar,
-  Typography,
+  Button,
+  Box,
+  createStyles,
+  Drawer,
   Grid,
   Hidden,
   Theme,
+  Toolbar,
+  Typography,
   withStyles,
   WithStyles,
-  createStyles,
-  Button,
-  Drawer,
 } from '@material-ui/core';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faBars } from '@fortawesome/free-solid-svg-icons';
-import { faGithub } from '@fortawesome/free-brands-svg-icons';
-import MenuItem from './MenuItem';
-import MenuItemMobile from './MenuItemMobile';
-import { menuList } from './utils';
-import LanguageSelector from './LanguageSelector';
+import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
+import { get } from 'lodash';
+import { useSafeTranslation } from 'i18n';
+import { appConfig } from 'config';
 import About from './About';
-import { useSafeTranslation } from '../../i18n';
+import LanguageSelector from './LanguageSelector';
+import PrintImage from './PrintImage';
 
 function NavBar({ classes }: NavBarProps) {
   const { t } = useSafeTranslation();
@@ -30,29 +31,11 @@ function NavBar({ classes }: NavBarProps) {
     {
       title: 'GitHub',
       icon: faGithub,
-      href: 'https://github.com/oviohub/prism-app',
+      href: 'https://github.com/wfp-VAM/prism-app',
     },
   ];
 
   const [openMobileMenu, setOpenMobileMenu] = useState(false);
-  const menu = menuList.map(({ title, ...category }) => (
-    <MenuItem key={title} title={title} {...category} />
-  ));
-
-  // menu for mobile, 1 active accordion at a time so I put the state in here
-  const [expanded, setExpanded] = useState('');
-  const selectAccordion = (title: string) => {
-    setExpanded(title);
-  };
-  const menuMobile = menuList.map(({ title, ...category }) => (
-    <MenuItemMobile
-      expanded={expanded}
-      selectAccordion={selectAccordion}
-      key={title}
-      title={title}
-      {...category}
-    />
-  ));
 
   const buttons = rightSideLinks.map(({ title, icon, href }) => (
     <Grid item key={title}>
@@ -68,34 +51,43 @@ function NavBar({ classes }: NavBarProps) {
     </Grid>
   ));
 
+  const { title, subtitle, logo } = get(appConfig, 'header', {
+    title: 'PRISM',
+  });
+
   return (
     <AppBar position="static" className={classes.appBar}>
       <Toolbar variant="dense">
         <Grid container>
-          <Grid item xs={3} className={classes.logoContainer}>
-            <Typography
-              variant="h6"
-              className={classes.logo}
-              component={Link}
-              to="/"
-            >
-              {t('Prism')}
-            </Typography>
+          <Grid item xs={6} md={3} className={classes.logoContainer}>
+            {logo && <img className={classes.logo} src={logo} alt="logo" />}
+            <Box display="flex" flexDirection="column">
+              {title && (
+                <Link to="/">
+                  <Typography variant="h6" className={classes.title}>
+                    {t(title)}
+                  </Typography>
+                </Link>
+              )}
+              {subtitle && (
+                <Typography variant="subtitle2" className={classes.subtitle}>
+                  {t(subtitle)}
+                </Typography>
+              )}
+            </Box>
           </Grid>
 
           <Hidden smDown>
-            <Grid className={classes.menuContainer} item xs={6}>
-              {menu}
-            </Grid>
-
             <Grid
               spacing={3}
               container
-              justify="flex-end"
+              justifyContent="flex-end"
               alignItems="center"
               item
-              xs={3}
+              xs={6}
+              md={9}
             >
+              <PrintImage />
               {buttons}
               <About />
               <LanguageSelector />
@@ -103,7 +95,7 @@ function NavBar({ classes }: NavBarProps) {
           </Hidden>
 
           <Hidden mdUp>
-            <Grid item xs={9} className={classes.mobileMenuContainer}>
+            <Grid item xs={6} className={classes.mobileMenuContainer}>
               <Button
                 onClick={() => setOpenMobileMenu(prevOpen => !prevOpen)}
                 aria-controls={openMobileMenu ? 'mobile-menu-list' : undefined}
@@ -118,16 +110,16 @@ function NavBar({ classes }: NavBarProps) {
                 open={openMobileMenu}
                 onClose={() => setOpenMobileMenu(false)}
               >
-                <div className={classes.mobileDrawerContent}>
-                  <Grid container spacing={3}>
-                    <Grid container justify="space-around" item>
-                      {buttons}
-                    </Grid>
-                    <Grid container direction="column" item>
-                      {menuMobile}
-                    </Grid>
-                  </Grid>
-                </div>
+                <Grid
+                  container
+                  spacing={3}
+                  className={classes.mobileDrawerContent}
+                >
+                  <PrintImage />
+                  {buttons}
+                  <About />
+                  <LanguageSelector />
+                </Grid>
               </Drawer>
             </Grid>
           </Hidden>
@@ -139,8 +131,16 @@ function NavBar({ classes }: NavBarProps) {
 
 const styles = (theme: Theme) =>
   createStyles({
+    logo: {
+      height: 32,
+      marginRight: 15,
+    },
+
     appBar: {
       backgroundImage: `linear-gradient(180deg, ${theme.palette.primary.main} 0%, ${theme.palette.primary.dark} 100%)`,
+      height: '7vh',
+      display: 'flex',
+      justifyContent: 'center',
     },
 
     logoContainer: {
@@ -149,10 +149,19 @@ const styles = (theme: Theme) =>
       alignItems: 'center',
     },
 
-    logo: {
+    title: {
       letterSpacing: '.3rem',
       fontSize: '1.25rem',
+      lineHeight: '1.5rem',
       textTransform: 'uppercase',
+      padding: 0,
+    },
+
+    subtitle: {
+      fontSize: '.8rem',
+      fontWeight: 300,
+      letterSpacing: '.1rem',
+      lineHeight: '.8rem',
       padding: 0,
     },
 
@@ -166,6 +175,9 @@ const styles = (theme: Theme) =>
       width: '80vw',
       height: '100vh',
       overflowX: 'hidden',
+      display: 'flex',
+      flexDirection: 'column',
+      paddingLeft: '1em',
     },
 
     menuBars: {

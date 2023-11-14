@@ -8,7 +8,9 @@ import {
   withStyles,
   WithStyles,
 } from '@material-ui/core';
-import { languages, useSafeTranslation } from '../../../i18n';
+import { languages, useSafeTranslation } from 'i18n';
+import { appConfig } from 'config';
+import { get } from 'lodash';
 
 function LanguageSelector({ classes }: LanguageSelectorProps) {
   const { i18n } = useSafeTranslation();
@@ -16,6 +18,14 @@ function LanguageSelector({ classes }: LanguageSelectorProps) {
   const handleChangeLanguage = (lng: string): void => {
     i18n.changeLanguage(lng);
   };
+
+  React.useEffect(() => {
+    const locale = get(appConfig, 'defaultLanguage', 'en');
+    if (languages.includes(locale)) {
+      i18n.changeLanguage(locale);
+    }
+  }, [i18n]);
+
   // If there is only one language, hide the selector
   if (languages.length <= 1) {
     return null;

@@ -1,7 +1,7 @@
 import json
-from datetime import date
+from datetime import date, datetime
 from os import getenv
-from typing import NewType, Optional, TypedDict
+from typing import Any, NewType, Optional, TypedDict
 
 from pydantic import BaseModel, EmailStr, Field, HttpUrl, root_validator, validator
 
@@ -34,7 +34,8 @@ class AcledRequest(BaseModel):
         api_key = getenv("ACLED_API_KEY", None)
         api_email = getenv("ACLED_API_EMAIL", None)
 
-        new_values = {**values, "email": api_email, "key": api_key}
+        filtered_values = {k: v for k, v in values.items() if v is not None}
+        new_values = {**filtered_values, "email": api_email, "key": api_key}
         return new_values
 
 
@@ -127,3 +128,18 @@ class AlertsModel(BaseModel):
     _val_alert_config = validator("alert_config", allow_reuse=True)(
         dict_must_not_contain_null_char
     )
+
+
+class UserInfoPydanticModel(BaseModel):
+    id: int
+    username: str
+    salt: str | None
+    access: Any
+    deployment: str | None
+    organization: str | None
+    email: str | None
+    details: str
+    created_at: datetime
+
+    class Config:
+        orm_mode = True
