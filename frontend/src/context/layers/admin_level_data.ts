@@ -223,12 +223,17 @@ export const fetchAdminLevelDataLayerData: LazyLoader<AdminLevelDataLayerProps> 
         return moment(date).format(format);
       });
 
-      const requestMode: "cors" | "same-origin" =
-        adminLevelDataLayer.path.includes('http') ? 'cors' : 'same-origin';
+      const requestMode:
+        | 'cors'
+        | 'same-origin' = adminLevelDataLayer.path.includes('http')
+        ? 'cors'
+        : 'same-origin';
 
       const options = {
         method: requestBody ? 'POST' : 'GET',
-        headers: requestBody ? { 'Content-Type': 'application/json' } : undefined,
+        headers: requestBody
+          ? { 'Content-Type': 'application/json' }
+          : undefined,
         body: requestBody ? JSON.stringify(requestBody) : undefined,
         mode: requestMode,
       };
