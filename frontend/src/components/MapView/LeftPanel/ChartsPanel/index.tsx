@@ -216,10 +216,10 @@ const ChartsPanel = memo(
     // cheat here and shift compared dates by 1 day to avoid duplicate
     // keys in title components
     const [startDate2, setStartDate2] = useState<number | null>(
-      new Date().getTime() - oneYearInMs - oneDayInMs,
+      new Date().getTime() - oneYearInMs * 2 - oneDayInMs,
     );
     const [endDate2, setEndDate2] = useState<number | null>(
-      new Date().getTime() - oneDayInMs,
+      new Date().getTime() - oneYearInMs - oneDayInMs,
     );
     const [adminProperties, setAdminProperties] = useState<GeoJsonProperties>();
     const [secondAdminProperties, setSecondAdminProperties] = useState<
