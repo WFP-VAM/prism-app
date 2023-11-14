@@ -223,25 +223,22 @@ export const fetchAdminLevelDataLayerData: LazyLoader<AdminLevelDataLayerProps> 
         return moment(date).format(format);
       });
 
-      const options = requestBody
-        ? {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(requestBody),
-        }
-        : {};
+      const requestMode: "cors" | "same-origin" =
+        adminLevelDataLayer.path.includes('http') ? 'cors' : 'same-origin';
+
+      const options = {
+        method: requestBody ? 'POST' : 'GET',
+        headers: requestBody ? { 'Content-Type': 'application/json' } : undefined,
+        body: requestBody ? JSON.stringify(requestBody) : undefined,
+        mode: requestMode,
+      };
 
       try {
         // TODO avoid any use, the json should be typed. See issue #307
         const response = await fetchWithTimeout(
           datedPath,
           api.dispatch,
-          {
-            mode: adminLevelDataLayer.path.includes('http')
-              ? 'cors'
-              : 'same-origin',
-            ...options
-          },
+          options,
           `Request failed for fetching admin level data at ${adminLevelDataLayer.path}`,
         );
 
