@@ -128,11 +128,11 @@ export async function getAdminLevelDataLayerData({
 
       const featureInfoPropsValues = matchedData
         ? Object.keys(featureInfoProps || {}).reduce((obj, item) => {
-          return {
-            ...obj,
-            [item]: matchedData[item],
-          };
-        }, {})
+            return {
+              ...obj,
+              [item]: matchedData[item],
+            };
+          }, {})
         : {};
 
       return {
