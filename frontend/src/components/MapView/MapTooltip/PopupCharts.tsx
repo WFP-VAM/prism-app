@@ -146,7 +146,7 @@ const PopupChart = ({ popup, setPopupTitle, classes }: PopupChartProps) => {
   }, [adminLevel, adminLevelsNames, setPopupTitle]);
 
   if (filteredChartLayers.length === 0) {
-    return <>No chart available</>;
+    return null;
   }
 
   return (
