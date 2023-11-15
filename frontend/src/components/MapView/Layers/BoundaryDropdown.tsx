@@ -19,6 +19,8 @@ import React, { forwardRef, useEffect, useState } from 'react';
 import i18n from 'i18next';
 import { useDispatch, useSelector } from 'react-redux';
 import { Search } from '@material-ui/icons';
+import { Map as MapBoxMap } from 'mapbox-gl';
+import bbox from '@turf/bbox';
 import {
   BoundaryLayerProps,
   AdminCodeString,
@@ -33,6 +35,7 @@ import { getBoundaryLayerSingleton } from 'config/utils';
 import { layerDataSelector } from 'context/mapStateSlice/selectors';
 import { LayerData } from 'context/layers/layer-data';
 import { isEnglishLanguageSelected, useSafeTranslation } from 'i18n';
+import { BBox } from '@turf/helpers';
 
 const boundaryLayer = getBoundaryLayerSingleton();
 
@@ -356,7 +359,7 @@ function flattenAreaTree(
     }
     return childrenToShow.flat();
   }
-  return flattenSubTree(tree); // .slice(1);
+  return flattenSubTree(tree);
 }
 
 /**
@@ -364,10 +367,11 @@ function flattenAreaTree(
  * This component also syncs with the map automatically, allowing users to select cells by clicking the map.
  * Selection mode is automatically toggled based off this component's lifecycle.
  */
-function SimpleBoundaryDropdown({
+export function SimpleBoundaryDropdown({
   selectedBoundaries,
   setSelectedBoundaries,
   labelMessage,
+  map,
   selectAll,
   onlyNewCategory,
   ...rest
@@ -380,13 +384,14 @@ function SimpleBoundaryDropdown({
     | LayerData<BoundaryLayerProps>
     | undefined;
   const { data } = boundaryLayerData || {};
+
   if (!data) {
     return <CircularProgress size={24} color="secondary" />;
   }
 
   // building the tree and flattening it takes about 8-10ms
   // and the subsequent react component construction ~15ms
-  // but the menu still takes ~2000ms to display, why?
+  // but the menu still takes ~2000ms (on rbd) to display, why?
   const areaTree = getAdminBoundaryTree(data, boundaryLayer, i18nLocale);
   // debugger; // eslint-disable-line no-debugger
   const flattenedAreaList = flattenAreaTree(areaTree, search).slice(1);
@@ -394,6 +399,12 @@ function SimpleBoundaryDropdown({
 
   const selectOrDeselectAll = (e: React.MouseEvent) => {
     e.preventDefault();
+    if (
+      selectedBoundaries === undefined ||
+      setSelectedBoundaries === undefined
+    ) {
+      return;
+    }
     if (selectedBoundaries.length > 0) {
       setSelectedBoundaries([]);
     } else {
@@ -429,6 +440,7 @@ function SimpleBoundaryDropdown({
         }}
         value={selectedBoundaries}
         // Current mui version does not have SelectChangeEvent<T>. Using any instead.
+        // TODO: move the code here into a onChange prop
         onChange={(e: any) => {
           // do nothing if value is invalid
           if (
@@ -438,17 +450,40 @@ function SimpleBoundaryDropdown({
             return;
           }
 
-          const boundariesToSelect = flattenedAreaList
-            .filter(b =>
-              e.target.value.some((v: string) => b.adminCode.startsWith(v)),
-            )
-            .map(b => b.adminCode);
+          if (setSelectedBoundaries !== undefined) {
+            const boundariesToSelect = flattenedAreaList
+              .filter(b =>
+                e.target.value.some((v: string) => b.adminCode.startsWith(v)),
+              )
+              .map(b => b.adminCode);
 
-          setSelectedBoundaries(boundariesToSelect, e.shiftKey);
+            setSelectedBoundaries(boundariesToSelect, e.shiftKey);
+          } else {
+            // component used in GoTo mode, we only receive a single value
+            if (map === undefined) {
+              return;
+            }
+            // get selected areas
+            const features = data.features.filter(
+              f =>
+                f &&
+                f.properties?.[boundaryLayer.adminCode].startsWith(
+                  e.target.value[0],
+                ),
+            );
+            // calculate bounding box of everything selected
+            const bboxUnion: BBox = bbox({
+              type: 'FeatureCollection',
+              features,
+            });
+            if (bboxUnion.length === 4) {
+              map.fitBounds(bboxUnion, { padding: 30 });
+            }
+          }
         }}
       >
         <SearchField search={search} setSearch={setSearch} />
-        {!search && selectAll && (
+        {!search && selectAll && selectedBoundaries && (
           <MenuItem onClick={selectOrDeselectAll}>
             {selectedBoundaries.length === 0
               ? t('Select All')
@@ -478,14 +513,15 @@ function SimpleBoundaryDropdown({
 
 interface BoundaryDropdownProps {
   className: string;
-  selectedBoundaries: AdminCodeString[];
-  setSelectedBoundaries: (
+  labelMessage: string;
+  map?: MapBoxMap | undefined;
+  onlyNewCategory?: boolean;
+  selectAll?: boolean;
+  selectedBoundaries?: AdminCodeString[];
+  setSelectedBoundaries?: (
     boundaries: AdminCodeString[],
     appendMany?: boolean,
   ) => void;
-  labelMessage?: string;
-  onlyNewCategory?: boolean;
-  selectAll: boolean;
 }
 
 /**
