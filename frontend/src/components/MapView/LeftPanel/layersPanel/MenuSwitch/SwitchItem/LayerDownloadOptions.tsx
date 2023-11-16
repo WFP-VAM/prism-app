@@ -33,11 +33,14 @@ import {
 } from 'components/MapView/Layers/raster-utils';
 import { useSafeTranslation } from 'i18n';
 import { isExposureAnalysisLoadingSelector } from 'context/analysisResultStateSlice';
+import { availableDatesSelector } from 'context/serverStateSlice';
+import { getRequestDate } from 'utils/server-utils';
 
 function LayerDownloadOptions({
   layer,
   extent,
   selected,
+  size,
 }: LayerDownloadOptionsProps) {
   const { t } = useSafeTranslation();
   const dispatch = useDispatch();
@@ -52,8 +55,12 @@ function LayerDownloadOptions({
   );
 
   const { startDate: selectedDate } = useSelector(dateRangeSelector);
+  const serverAvailableDates = useSelector(availableDatesSelector);
+  const layerAvailableDates = serverAvailableDates[layer.id];
+  const queryDate = getRequestDate(layerAvailableDates, selectedDate);
+
   const adminLevelLayerData = useSelector(
-    layerDataSelector(layer.id, selectedDate),
+    layerDataSelector(layer.id, queryDate),
   ) as LayerData<AdminLevelDataLayerProps>;
 
   const handleDownloadMenuClose = () => {
@@ -76,9 +83,12 @@ function LayerDownloadOptions({
   };
 
   const handleDownloadGeoJson = (): void => {
+    if (!adminLevelLayerData) {
+      console.warn(`No layer data available for ${layer.id}`);
+    }
     downloadToFile(
       {
-        content: JSON.stringify(adminLevelLayerData.data.features),
+        content: JSON.stringify(adminLevelLayerData?.data.features),
         isUrl: false,
       },
       getFilename(),
@@ -88,14 +98,17 @@ function LayerDownloadOptions({
   };
 
   const handleDownloadCsv = (): void => {
+    if (!adminLevelLayerData) {
+      console.warn(`No layer data available for ${layer.id}`);
+    }
     const translatedColumnsNames = mapValues(
-      adminLevelLayerData.data.layerData[0],
+      adminLevelLayerData?.data.layerData[0],
       (v, k) => (k === 'value' ? t(adminLevelLayerData.layer.id) : t(k)),
     );
     downloadToFile(
       {
         content: castObjectsArrayToCsv(
-          adminLevelLayerData.data.layerData,
+          adminLevelLayerData?.data.layerData,
           translatedColumnsNames,
           ';',
         ),
@@ -131,8 +144,9 @@ function LayerDownloadOptions({
           <IconButton
             disabled={!selected || isGeotiffLoading}
             onClick={handleDownloadMenuOpen}
+            size={size || 'medium'}
           >
-            <GetAppIcon />
+            <GetAppIcon fontSize={size || 'medium'} />
           </IconButton>
         </Tooltip>
       )}
@@ -172,6 +186,7 @@ interface LayerDownloadOptionsProps {
   layer: LayerType;
   extent: Extent | undefined;
   selected: boolean;
+  size?: 'small' | undefined;
 }
 
 export default LayerDownloadOptions;

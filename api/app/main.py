@@ -391,10 +391,10 @@ def post_raster_geotiff(raster_geotiff: RasterGeotiffModel):
     """Get the geotiff of a raster"""
     collection = raster_geotiff.collection
     bbox = (
-        raster_geotiff.lat_min,
         raster_geotiff.long_min,
-        raster_geotiff.lat_max,
+        raster_geotiff.lat_min,
         raster_geotiff.long_max,
+        raster_geotiff.lat_max,
     )
     date = raster_geotiff.date
     presigned_download_url = get_geotiff(collection, bbox, date)

@@ -35,13 +35,15 @@ exports[`renders as expected 1`] = `
       <div
         class="MuiGrid-root MuiGrid-item"
       >
-        <mock-button
-          component="[object Object]"
-          to="/"
-          variant="contained"
+        <a
+          href="/"
         >
-          Back To Home
-        </mock-button>
+          <mock-button
+            variant="contained"
+          >
+            Back To Home
+          </mock-button>
+        </a>
       </div>
       <div
         class="MuiGrid-root MuiGrid-item"

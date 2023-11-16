@@ -1,7 +1,6 @@
 import {
   Button,
   createStyles,
-  Divider,
   Grid,
   Hidden,
   List,
@@ -22,12 +21,12 @@ import {
 import { LayerType } from 'config/types';
 import { BaselineLayerResult } from 'utils/analysis-utils';
 import { useSafeTranslation } from 'i18n';
+import { Extent } from 'components/MapView/Layers/raster-utils';
 
-import AnalysisDownloadButton from './AnalysisDownloadButton';
 import LegendItem from './LegendItem';
 import LegendImpactResult from './LegendImpactResult';
 
-const Legends = memo(({ classes, layers }: LegendsProps) => {
+const Legends = memo(({ classes, extent, layers }: LegendsProps) => {
   // Selectors
   const isAnalysisLayerActive = useSelector(isAnalysisLayerActiveSelector);
   const analysisResult = useSelector(analysisResultSelector);
@@ -75,12 +74,13 @@ const Legends = memo(({ classes, layers }: LegendsProps) => {
           type={layer.type}
           opacity={layer.opacity}
           fillPattern={layer.fillPattern}
+          extent={extent}
         >
           {t(layer.legendText)}
         </LegendItem>
       );
     });
-  }, [getLayerLegendUrl, layers, t]);
+  }, [getLayerLegendUrl, layers, t, extent]);
 
   const renderedLegendImpactResult = useMemo(() => {
     if (!(analysisResult instanceof BaselineLayerResult)) {
@@ -114,13 +114,9 @@ const Legends = memo(({ classes, layers }: LegendsProps) => {
         opacity={analysisLayerOpacity} // TODO: initial opacity value
         // Control opacity only for analysis
         // for the other layers it is controlled from the left panel
-        displayOpacitySlider={isAnalysisLayerActive && hasData}
+        isAnalysis={isAnalysisLayerActive && hasData}
       >
         {renderedLegendImpactResult}
-        <Divider />
-        <Grid item>
-          <AnalysisDownloadButton />
-        </Grid>
       </LegendItem>,
     ];
   }, [
@@ -195,6 +191,7 @@ const styles = () =>
   });
 
 export interface LegendsProps extends WithStyles<typeof styles> {
+  extent?: Extent;
   layers: LayerType[];
 }
 
