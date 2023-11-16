@@ -100,12 +100,10 @@ export const mapStateSlice = createSlice({
       const filteredLayers = layers.filter(layer => keepLayer(layer, payload));
 
       // Keep boundary layers at the top of our stack and remove duplicates
-      const newLayers = (payload.type === 'boundary'
-        ? [...layersToAdd, ...filteredLayers]
-        : [...filteredLayers, ...layersToAdd]
-      ).filter(
-        (layer, i, a) => a.findIndex(layer2 => layer2.id === layer.id) === i,
-      );
+      const newLayers =
+        payload.type === 'boundary'
+          ? [...layersToAdd, ...filteredLayers]
+          : [...filteredLayers, ...layersToAdd];
 
       return {
         ...rest,
@@ -168,12 +166,7 @@ export const mapStateSlice = createSlice({
       ) => ({
         ...rest,
         loadingLayerIds: loadingLayerIds.filter(id => id !== payload.layer.id),
-        layersData: layersData
-          .concat(payload)
-          .filter(
-            (layer, i, a) =>
-              a.findIndex(layer2 => layer2.layer.id === layer.layer.id) === i,
-          ),
+        layersData: layersData.concat(payload),
       }),
     );
 
