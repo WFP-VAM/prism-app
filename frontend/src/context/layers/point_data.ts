@@ -6,6 +6,8 @@ import { fetchEWSData } from 'utils/ews-utils';
 import { fetchACLEDIncidents } from 'utils/acled-utils';
 import { queryParamsToString } from 'utils/url-utils';
 import { fetchWithTimeout } from 'utils/fetch-with-timeout';
+import { HTTPError } from 'utils/error-utils';
+import { setUserAuthGlobal } from 'context/serverStateSlice';
 import { getAdminLevelDataLayerData } from './admin_level_data';
 import type { LazyLoader } from './layer-data';
 
@@ -93,22 +95,29 @@ export const fetchPointLayerData: LazyLoader<PointDataLayerProps> = () => async 
     // eslint-disable-next-line fp/no-mutation
     data = (await response.json()) as PointData[];
   } catch (error) {
-    // fallback data isn't filtered, therefore we must filter it.
-    // eslint-disable-next-line fp/no-mutation
-    response = await fetchWithTimeout(
-      fallbackData || '',
-      dispatch,
-      {},
-      `Request failed for fetching point layer data at fallback url ${fallbackData}`,
-    );
-    // eslint-disable-next-line fp/no-mutation
-    data = ((await response.json()) as PointData[]).filter(
-      // we cant do a string comparison here because sometimes the date in json is stored as YYYY-M-D instead of YYYY-MM-DD
-      // using moment here helps compensate for these discrepancies
-      obj =>
-        moment(obj.date).format(DEFAULT_DATE_FORMAT) ===
-        moment(formattedDate).format(DEFAULT_DATE_FORMAT),
-    );
+    if (fallbackData) {
+      // fallback data isn't filtered, therefore we must filter it.
+      // eslint-disable-next-line fp/no-mutation
+      response = await fetchWithTimeout(
+        fallbackData || '',
+        dispatch,
+        {},
+        `Request failed for fetching point layer data at fallback url ${fallbackData}`,
+      );
+      // eslint-disable-next-line fp/no-mutation
+      data = ((await response.json()) as PointData[]).filter(
+        // we cant do a string comparison here because sometimes the date in json is stored as YYYY-M-D instead of YYYY-MM-DD
+        // using moment here helps compensate for these discrepancies
+        obj =>
+          moment(obj.date).format(DEFAULT_DATE_FORMAT) ===
+          moment(formattedDate).format(DEFAULT_DATE_FORMAT),
+      );
+    } else {
+      if ((error as HTTPError)?.statusCode === 401) {
+        dispatch(setUserAuthGlobal(undefined));
+      }
+      throw error;
+    }
   }
 
   if (adminLevelDisplay && !Object.keys(data).includes('message')) {
