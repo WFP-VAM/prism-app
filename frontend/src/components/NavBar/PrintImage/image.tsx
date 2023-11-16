@@ -1,4 +1,5 @@
 import React, { ChangeEvent, useRef } from 'react';
+import mapboxgl from 'mapbox-gl';
 import { useSelector } from 'react-redux';
 import {
   Box,
@@ -30,11 +31,14 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
   const [toggles, setToggles] = React.useState({
     legend: true,
     footer: true,
+    fullLayerDescription: true,
+    scaleBar: true,
   });
   const [downloading, setDownloading] = React.useState<boolean>(false);
 
-  if (selectedMap) {
+  if (open && selectedMap) {
     const activeLayers = selectedMap.getCanvas();
+    selectedMap.addControl(new mapboxgl.ScaleControl(), 'top-right');
     const canvas = previewRef.current;
     if (canvas) {
       canvas.setAttribute('width', activeLayers.width.toString());
@@ -45,10 +49,76 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
         // toggle legend
         const div = document.getElementById('legend-list');
         if (div?.firstChild && toggles.legend) {
-          html2canvas(div).then(c => {
-            context.drawImage(c, 24, 24);
+          const childElements = Array.prototype.filter.call(
+            div.childNodes,
+            // eslint-disable-next-line func-names
+            function (node) {
+              return node.nodeType === 1; // Node type 1 represents an HTMLElement
+            },
+          );
+
+          const target = document.createElement('div');
+          // eslint-disable-next-line fp/no-mutation
+          target.style.width = '180px';
+
+          childElements.forEach((li: HTMLElement) => {
+            const children = Array.prototype.filter.call(
+              li.childNodes,
+              // eslint-disable-next-line func-names
+              function (node) {
+                return node.nodeType === 1; // Node type 1 represents an HTMLElement
+              },
+            ) as HTMLElement[];
+            const divContainer = children[0] as HTMLElement;
+
+            const contents = Array.prototype.filter.call(
+              divContainer.childNodes,
+              // eslint-disable-next-line func-names
+              function (node) {
+                return node.nodeType === 1; // Node type 1 represents an HTMLElement
+              },
+            ) as HTMLElement[];
+
+            const container = document.createElement('div');
+            // eslint-disable-next-line fp/no-mutation
+            container.style.padding = '8px';
+            // eslint-disable-next-line fp/no-mutation
+            container.style.paddingBottom = '16px';
+            target.appendChild(container);
+            contents
+              .slice(0, toggles.fullLayerDescription ? 6 : 4)
+              .forEach(x => container.appendChild(x.cloneNode(true)));
           });
+
+          document.body.appendChild(target);
+
+          html2canvas(target)
+            .then(c => {
+              context.drawImage(c, 24, 24);
+            })
+            .finally(() => document.body.removeChild(target));
         }
+
+        if (toggles.scaleBar) {
+          const elem = document.querySelector('.maplibregl-ctrl-scale');
+
+          if (elem) {
+            const html = document.createElement('div');
+            html.appendChild(elem);
+
+            document.body.appendChild(html);
+            html2canvas(html)
+              .then(c => {
+                context.drawImage(
+                  c,
+                  activeLayers.width - 85,
+                  activeLayers.height - 105,
+                );
+              })
+              .finally(() => document.body.removeChild(html));
+          }
+        }
+
         // toggle footer
         if (toggles.footer) {
           const footer = document.createElement('div');
@@ -66,10 +136,11 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
             </div>
           `;
           document.body.appendChild(footer);
-          html2canvas(footer).then(c => {
-            context.drawImage(c, 0, activeLayers.height - 200);
-          });
-          document.body.removeChild(footer);
+          html2canvas(footer)
+            .then(c => {
+              context.drawImage(c, 0, activeLayers.height - 90);
+            })
+            .finally(() => document.body.removeChild(footer));
         }
       }
     }
@@ -120,6 +191,17 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
     handleClose();
   };
 
+  const options = [
+    { checked: toggles.legend, name: 'legend', label: 'Legend' },
+    { checked: toggles.footer, name: 'footer', label: 'Footer Text' },
+    {
+      checked: toggles.fullLayerDescription,
+      name: 'fullLayerDescription',
+      label: 'Full Layer Description',
+    },
+    { checked: toggles.scaleBar, name: 'scaleBar', label: 'Scale Bar' },
+  ];
+
   return (
     <Dialog
       maxWidth="xl"
@@ -146,29 +228,22 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
               >
                 {t('Map Options')}
               </Box>
-              <FormControlLabel
-                control={
-                  <Switch
-                    checked={toggles.legend}
-                    onChange={toggle}
-                    name="legend"
-                    color="primary"
-                  />
-                }
-                label={<Typography variant="h4">{t('Legend')}</Typography>}
-              />
-              <FormControlLabel
-                control={
-                  <Switch
-                    checked={toggles.footer}
-                    onChange={toggle}
-                    name="footer"
-                    color="primary"
-                  />
-                }
-                label={<Typography variant="h4">{t('Footer text')}</Typography>}
-                className={classes.gutter}
-              />
+              {options.map(option => (
+                <FormControlLabel
+                  key={option.name}
+                  control={
+                    <Switch
+                      checked={option.checked}
+                      onChange={toggle}
+                      name={option.name}
+                      color="primary"
+                    />
+                  }
+                  label={
+                    <Typography variant="h4">{t(option.label)}</Typography>
+                  }
+                />
+              ))}
               <Button
                 variant="contained"
                 onClick={() => download('png')}

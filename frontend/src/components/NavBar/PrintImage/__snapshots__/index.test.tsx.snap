@@ -40,33 +40,133 @@ exports[`renders as expected 1`] = `
       Map Preview
     </mock-dialogtitle>
     <mock-dialogcontent>
-      <canvas />
+      <div
+        class="MuiGrid-root MuiGrid-container"
+      >
+        <div
+          class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-10"
+        >
+          <canvas
+            class="DownloadImage-canvas-3"
+          />
+        </div>
+        <div
+          class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-true"
+        >
+          <div
+            class="MuiBox-root MuiBox-root-5"
+          >
+            <div
+              class="MuiBox-root MuiBox-root-6 DownloadImage-title-2"
+            >
+              Map Options
+            </div>
+            <label
+              class="MuiFormControlLabel-root"
+            >
+              <mock-switch
+                checked="true"
+                color="primary"
+                name="legend"
+              />
+              <mock-typography
+                classname="MuiFormControlLabel-label"
+                component="span"
+              >
+                <mock-typography
+                  variant="h4"
+                >
+                  Legend
+                </mock-typography>
+              </mock-typography>
+            </label>
+            <label
+              class="MuiFormControlLabel-root"
+            >
+              <mock-switch
+                checked="true"
+                color="primary"
+                name="footer"
+              />
+              <mock-typography
+                classname="MuiFormControlLabel-label"
+                component="span"
+              >
+                <mock-typography
+                  variant="h4"
+                >
+                  Footer Text
+                </mock-typography>
+              </mock-typography>
+            </label>
+            <label
+              class="MuiFormControlLabel-root"
+            >
+              <mock-switch
+                checked="true"
+                color="primary"
+                name="fullLayerDescription"
+              />
+              <mock-typography
+                classname="MuiFormControlLabel-label"
+                component="span"
+              >
+                <mock-typography
+                  variant="h4"
+                >
+                  Full Layer Description
+                </mock-typography>
+              </mock-typography>
+            </label>
+            <label
+              class="MuiFormControlLabel-root"
+            >
+              <mock-switch
+                checked="true"
+                color="primary"
+                name="scaleBar"
+              />
+              <mock-typography
+                classname="MuiFormControlLabel-label"
+                component="span"
+              >
+                <mock-typography
+                  variant="h4"
+                >
+                  Scale Bar
+                </mock-typography>
+              </mock-typography>
+            </label>
+            <mock-button
+              classname="DownloadImage-gutter-4"
+              color="primary"
+              variant="contained"
+            >
+              Download PNG
+            </mock-button>
+            <mock-button
+              classname="DownloadImage-gutter-4"
+              color="primary"
+              variant="contained"
+            >
+              Download JPEG
+            </mock-button>
+            <mock-button
+              classname="DownloadImage-gutter-4"
+              color="primary"
+              variant="contained"
+            >
+              Download PDF
+            </mock-button>
+            <mock-button
+              color="primary"
+            >
+              Cancel
+            </mock-button>
+          </div>
+        </div>
+      </div>
     </mock-dialogcontent>
-    <mock-dialogactions>
-      <mock-button
-        color="primary"
-      >
-        Cancel
-      </mock-button>
-      <mock-button
-        color="primary"
-        variant="contained"
-      >
-        Download PNG
-      </mock-button>
-      <mock-button
-        color="primary"
-        variant="contained"
-      >
-        Download JPEG
-      </mock-button>
-      <mock-button
-        color="primary"
-        variant="contained"
-      >
-        Download PDF
-      </mock-button>
-    </mock-dialogactions>
   </mock-dialog>
 </div>
 `;
