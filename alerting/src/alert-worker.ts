@@ -2,7 +2,7 @@ import { isNaN } from 'lodash';
 import Bluebird from 'bluebird';
 import nodeFetch from 'node-fetch';
 import { createConnection, Repository } from 'typeorm';
-import { ANALYSIS_API_URL } from './constants';
+import { API_URL } from './constants';
 import { Alert } from './entities/alerts.entity';
 import { calculateBoundsForAlert } from './utils/analysis-utils';
 import { sendEmail } from './utils/email';
@@ -19,6 +19,7 @@ async function processAlert(alert: Alert, alertRepository: Repository<Alert>) {
     title,
     id: hazardLayerId,
   } = alert.alertConfig;
+
   const {
     id,
     alertName,
@@ -58,7 +59,7 @@ async function processAlert(alert: Alert, alertRepository: Repository<Alert>) {
   const alertMessage = await calculateBoundsForAlert(maxDate, alert);
 
   // Use the URL API to create the url and perform url encoding on all character
-  const url = new URL(`/alerts/${id}`, ANALYSIS_API_URL);
+  const url = new URL(`/alerts/${id}`, API_URL);
   url.searchParams.append('deactivate', 'true');
   url.searchParams.append('email', email);
 

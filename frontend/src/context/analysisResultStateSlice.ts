@@ -58,13 +58,12 @@ import {
 import { Extent } from 'components/MapView/Layers/raster-utils';
 import { fetchWMSLayerAsGeoJSON } from 'utils/server-utils';
 import { isLocalhost } from 'serviceWorker';
+import { ANALYSIS_API_URL } from 'utils/constants';
 import { layerDataSelector } from './mapStateSlice/selectors';
 import { LayerData, LayerDataParams, loadLayerData } from './layers/layer-data';
 import { DataRecord } from './layers/admin_level_data';
 import { BoundaryLayerData } from './layers/boundary';
 import type { CreateAsyncThunkTypes, RootState } from './store';
-
-const ANALYSIS_API_URL = 'https://prism-api.ovio.org/stats'; // TODO both needs to be stored somewhere
 
 export type TableRowType = { [key: string]: string | number };
 export type TableData = {
