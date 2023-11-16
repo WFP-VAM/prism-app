@@ -31,7 +31,7 @@ function NavBar({ classes }: NavBarProps) {
     {
       title: 'GitHub',
       icon: faGithub,
-      href: 'https://github.com/oviohub/prism-app',
+      href: 'https://github.com/wfp-VAM/prism-app',
     },
   ];
 
@@ -63,14 +63,11 @@ function NavBar({ classes }: NavBarProps) {
             {logo && <img className={classes.logo} src={logo} alt="logo" />}
             <Box display="flex" flexDirection="column">
               {title && (
-                <Typography
-                  variant="h6"
-                  className={classes.title}
-                  component={Link}
-                  to="/"
-                >
-                  {t(title)}
-                </Typography>
+                <Link to="/">
+                  <Typography variant="h6" className={classes.title}>
+                    {t(title)}
+                  </Typography>
+                </Link>
               )}
               {subtitle && (
                 <Typography variant="subtitle2" className={classes.subtitle}>

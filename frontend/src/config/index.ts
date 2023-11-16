@@ -7,12 +7,7 @@ import colombia from './colombia';
 import cuba from './cuba';
 import ecuador from './ecuador';
 import global from './global';
-import {
-  indonesiaConfig,
-  indonesiaRawLayers,
-  indonesiaRawTables,
-  indonesiaRawReports,
-} from './indonesia';
+import indonesia from './indonesia';
 import jordan from './jordan';
 import kyrgyzstan from './kyrgyzstan';
 import mongolia from './mongolia';
@@ -25,6 +20,7 @@ import sierraleone from './sierraleone';
 import southsudan from './southsudan';
 import srilanka from './srilanka';
 import tajikistan from './tajikistan';
+import tanzania from './tanzania';
 import ukraine from './ukraine';
 import zimbabwe from './zimbabwe';
 
@@ -40,13 +36,7 @@ const configMap = {
   cuba,
   ecuador,
   global,
-  indonesia: {
-    appConfig: indonesiaConfig,
-    rawLayers: indonesiaRawLayers,
-    rawTables: indonesiaRawTables,
-    rawReports: indonesiaRawReports,
-    defaultBoundariesFile: 'idn_admin_boundaries.json',
-  },
+  indonesia,
   jordan,
   kyrgyzstan,
   mongolia,
@@ -59,6 +49,7 @@ const configMap = {
   southsudan,
   srilanka,
   tajikistan,
+  tanzania,
   ukraine,
   zimbabwe,
 } as const;

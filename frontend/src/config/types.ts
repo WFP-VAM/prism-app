@@ -4,6 +4,7 @@ import { FillPaint, LinePaint } from 'mapbox-gl';
 import 'reflect-metadata';
 import { rawLayers } from '.';
 import type { ReportKey, TableKey } from './utils';
+import type { PopupMetaData } from '../context/tooltipStateSlice';
 
 // TODO currently unused. Could be harnessed within admin levels key typing
 export type BoundaryKey = 'CODE' | 'CODE1' | 'CODE2';
@@ -378,10 +379,13 @@ export enum DataType {
   LabelMapping = 'labelMapping',
 }
 
+type PopupMetaDataKeys = keyof PopupMetaData;
+
 interface FeatureInfoProps {
   type: DataType;
   dataTitle: string;
   labelMap?: { [key: string]: string };
+  metadata?: PopupMetaDataKeys;
 }
 
 export enum DatesPropagation {

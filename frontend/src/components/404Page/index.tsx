@@ -32,9 +32,9 @@ function NotFound({ classes }: NotFoundProps) {
         </Grid>
 
         <Grid item>
-          <Button variant="contained" component={Link} to="/">
-            Back To Home
-          </Button>
+          <Link to="/">
+            <Button variant="contained">Back To Home</Button>
+          </Link>
         </Grid>
 
         <Grid item>

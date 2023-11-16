@@ -1716,6 +1716,12 @@
       "status": {
         "type": "text",
         "dataTitle": "Form status"
+      },
+      "submission_id": {
+        "metadata": "dmpSubmissionId"
+      },
+      "DisTyp": {
+        "metadata": "dmpDisTyp"
       }
     },
     "legend_text": "Number of people affected",
@@ -1776,6 +1782,12 @@
       "status": {
         "type": "text",
         "dataTitle": "Form status"
+      },
+      "submission_id": {
+        "metadata": "dmpSubmissionId"
+      },
+      "DisTyp": {
+        "metadata": "dmpDisTyp"
       }
     },
     "legend_text": "Number of people affected",
@@ -1833,6 +1845,7 @@
     "feature_info_props": {
       "DisTyp": {
         "type": "labelMapping",
+        "metadata": "dmpDisTyp",
         "dataTitle": "Disaster type",
         "labelMap": {
           "3": "Storm",
@@ -1862,6 +1875,9 @@
       "status": {
         "type": "text",
         "dataTitle": "Form status"
+      },
+      "submission_id": {
+        "metadata": "dmpSubmissionId"
       }
     },
     "legend_text": "Type of disaster",
