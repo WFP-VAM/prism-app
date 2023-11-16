@@ -32,6 +32,7 @@ import { buildCsvFileName } from '../utils';
 const chartLayers = getWMSLayersWithChart();
 const { countryAdmin0Id, country, multiCountry } = appConfig;
 const MAX_ADMIN_LEVEL = appConfig.multiCountry ? 3 : 2;
+const admin0Offset = multiCountry ? 0 : 1;
 const boundaryLayer = getBoundaryLayersByAdminLevel(MAX_ADMIN_LEVEL);
 
 const getProperties = (
@@ -112,15 +113,23 @@ const PopupChart = ({ popup, setPopupTitle, classes }: PopupChartProps) => {
   const { data } = boundaryLayerData || {};
   const mapState = useSelector(layersSelector);
   const dataForCsv = useRef<{ [key: string]: any[] }>({});
-  const [adminLevel, setAdminLevel] = useState<AdminLevel>(0);
+  const [adminLevel, setAdminLevel] = useState<AdminLevel | undefined>(
+    undefined,
+  );
 
   const adminLevelsNames = useCallback(() => {
-    if (isEnglishLanguageSelected(i18n)) {
-      // eslint-disable-next-line fp/no-mutating-methods
-      return popup.locationName.split(', ').splice(0, adminLevel || 2);
-    }
+    const locationName = isEnglishLanguageSelected(i18n)
+      ? popup.locationName
+      : popup.locationLocalName;
+    const splitNames = locationName.split(', ');
+
+    const adminLevelLimit =
+      adminLevel === undefined
+        ? MAX_ADMIN_LEVEL
+        : adminLevel + (multiCountry ? 1 : 0);
+    // If adminLevel is undefined, return the whole array
     // eslint-disable-next-line fp/no-mutating-methods
-    return popup.locationLocalName.split(', ').splice(0, adminLevel || 2);
+    return splitNames.splice(0, adminLevelLimit);
   }, [adminLevel, popup.locationLocalName, popup.locationName]);
 
   const startDate1 = new Date().getTime() - oneYearInMs;
@@ -137,10 +146,9 @@ const PopupChart = ({ popup, setPopupTitle, classes }: PopupChartProps) => {
   }));
 
   useEffect(() => {
-    if (adminLevel > 0) {
+    if (adminLevel !== undefined) {
       setPopupTitle(adminLevelsNames().join(', '));
-    }
-    if (adminLevel === 0) {
+    } else {
       setPopupTitle('');
     }
   }, [adminLevel, adminLevelsNames, setPopupTitle]);
@@ -151,7 +159,7 @@ const PopupChart = ({ popup, setPopupTitle, classes }: PopupChartProps) => {
 
   return (
     <>
-      {adminLevel === 0 && (
+      {adminLevel === undefined ? (
         <div className={classes.selectChartContainer}>
           {filteredChartLayers.map(layer =>
             adminLevelsNames().map((level, index) => (
@@ -160,7 +168,9 @@ const PopupChart = ({ popup, setPopupTitle, classes }: PopupChartProps) => {
                 variant="text"
                 size="small"
                 className={classes.selectLevelButton}
-                onClick={() => setAdminLevel((index + 1) as 0 | 1 | 2)}
+                onClick={() =>
+                  setAdminLevel((index + admin0Offset) as 0 | 1 | 2)
+                }
               >
                 <div className={classes.selectLevelButtonValue}>
                   <div className={classes.selectLevelButtonText}>
@@ -172,14 +182,13 @@ const PopupChart = ({ popup, setPopupTitle, classes }: PopupChartProps) => {
             )),
           )}
         </div>
-      )}
-      {adminLevel > 0 && (
+      ) : (
         <>
           <div className={classes.chartsContainer}>
             <IconButton
               aria-label="close"
               className={classes.closeButton}
-              onClick={() => setAdminLevel(0)}
+              onClick={() => setAdminLevel(undefined)}
               size="small"
             >
               <FontAwesomeIcon icon={faTimes} />
