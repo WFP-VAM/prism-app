@@ -21,9 +21,12 @@ import {
 import { jsPDF } from 'jspdf';
 import html2canvas from 'html2canvas';
 import GetAppIcon from '@material-ui/icons/GetApp';
+import { legendListId } from 'components/MapView/Legends';
 import { mapSelector } from '../../../context/mapStateSlice/selectors';
 import { useSafeTranslation } from '../../../i18n';
 import { downloadToFile } from '../../MapView/utils';
+
+const canvasPreviewContainerId = 'canvas-preview-container';
 
 function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
   const { t } = useSafeTranslation();
@@ -35,6 +38,7 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
     footer: true,
     fullLayerDescription: true,
     scaleBar: true,
+    northArrow: true,
   });
   const [
     downloadMenuAnchorEl,
@@ -48,7 +52,7 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
 
         const canvas = document.createElement('canvas');
         const canvasContainer = document.getElementById(
-          'canvas-preview-container',
+          canvasPreviewContainerId,
         );
 
         if (!canvasContainer) {
@@ -88,7 +92,7 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
           offScreenContext.drawImage(activeLayers, 0, 0);
 
           // toggle legend
-          const div = document.getElementById('legend-list');
+          const div = document.getElementById(legendListId);
           if (div?.firstChild && toggles.legend) {
             const childElements = Array.from(div.childNodes).filter(
               node => node.nodeType === 1,
@@ -179,6 +183,23 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
             document.body.removeChild(footer);
           }
 
+          if (toggles.northArrow) {
+            const image = new Image();
+            // eslint-disable-next-line fp/no-mutation
+            image.onload = () => {
+              offScreenContext.drawImage(
+                image,
+                activeLayers.width - 65,
+                activeLayers.height - 180,
+                40,
+                60,
+              );
+              context.drawImage(offScreenCanvas, 0, 0);
+            };
+            // eslint-disable-next-line fp/no-mutation
+            image.src = './images/icon_north_arrow.png';
+          }
+
           context.drawImage(offScreenCanvas, 0, 0);
         }
       }
@@ -189,6 +210,7 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
     toggles.footer,
     toggles.fullLayerDescription,
     toggles.legend,
+    toggles.northArrow,
     toggles.scaleBar,
   ]);
 
@@ -249,6 +271,7 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
       label: 'Full Layer Description',
     },
     { checked: toggles.scaleBar, name: 'scaleBar', label: 'Scale Bar' },
+    { checked: toggles.northArrow, name: 'northArrow', label: 'North Arrow' },
   ];
 
   return (
