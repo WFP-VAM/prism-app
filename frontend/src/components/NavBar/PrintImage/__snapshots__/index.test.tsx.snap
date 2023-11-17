@@ -45,11 +45,8 @@ exports[`renders as expected 1`] = `
       >
         <div
           class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-10"
-        >
-          <canvas
-            class="DownloadImage-canvas-3"
-          />
-        </div>
+          id="canvas-preview-container"
+        />
         <div
           class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-true"
         >
@@ -137,27 +134,47 @@ exports[`renders as expected 1`] = `
                 </mock-typography>
               </mock-typography>
             </label>
+            <label
+              class="MuiFormControlLabel-root"
+            >
+              <mock-switch
+                checked="true"
+                color="primary"
+                name="northArrow"
+              />
+              <mock-typography
+                classname="MuiFormControlLabel-label"
+                component="span"
+              >
+                <mock-typography
+                  variant="h4"
+                >
+                  North Arrow
+                </mock-typography>
+              </mock-typography>
+            </label>
             <mock-button
               classname="DownloadImage-gutter-4"
               color="primary"
+              endicon="[object Object]"
               variant="contained"
             >
-              Download PNG
+              Download
             </mock-button>
-            <mock-button
-              classname="DownloadImage-gutter-4"
-              color="primary"
-              variant="contained"
+            <mock-menu
+              keepmounted="true"
+              open="false"
             >
-              Download JPEG
-            </mock-button>
-            <mock-button
-              classname="DownloadImage-gutter-4"
-              color="primary"
-              variant="contained"
-            >
-              Download PDF
-            </mock-button>
+              <mock-menuitem>
+                Download PNG
+              </mock-menuitem>
+              <mock-menuitem>
+                Download JPEG
+              </mock-menuitem>
+              <mock-menuitem>
+                Download PDF
+              </mock-menuitem>
+            </mock-menu>
             <mock-button
               color="primary"
             >
