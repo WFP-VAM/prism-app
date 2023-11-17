@@ -54,11 +54,11 @@ const AuthModal = ({ classes }: AuthModalProps) => {
   }, [selectedLayers]);
 
   useEffect(() => {
-    if (!layersWithAuthRequired.length) {
+    if (!layersWithAuthRequired.length || isUserAuthenticated) {
       return;
     }
     setOpen(true);
-  }, [layersWithAuthRequired]);
+  }, [isUserAuthenticated, layersWithAuthRequired]);
 
   const validateToken = useCallback(
     (event: FormEvent<HTMLFormElement>) => {

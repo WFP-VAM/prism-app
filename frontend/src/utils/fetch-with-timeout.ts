@@ -1,5 +1,6 @@
 import { Dispatch } from 'redux';
 import { addNotification } from 'context/notificationStateSlice';
+import { HTTPError } from './error-utils';
 
 interface FetchWithTimeoutOptions extends RequestInit {
   timeout?: number;
@@ -28,8 +29,9 @@ export const fetchWithTimeout = async (
       signal: controller.signal,
     });
     if (!res.ok) {
-      throw new Error(
+      throw new HTTPError(
         fetchErrorMessage ?? `Something went wrong requesting at ${resource}`,
+        res.status,
       );
     }
     return res;
@@ -38,20 +40,28 @@ export const fetchWithTimeout = async (
     if (!dispatch) {
       throw error;
     }
-    if (error.name === 'AbortError') {
+    if ((error as any).name === 'AbortError') {
       dispatch(
         addNotification({
           message: `Request at ${resource} timeout`,
           type: 'warning',
         }),
       );
+    } else if ((error as HTTPError)?.statusCode === 401) {
+      dispatch(
+        addNotification({
+          message: 'Authentication failed',
+          type: 'warning',
+        }),
+      );
+    } else {
+      dispatch(
+        addNotification({
+          message: (error as HTTPError).message,
+          type: 'warning',
+        }),
+      );
     }
-    dispatch(
-      addNotification({
-        message: error.message,
-        type: 'warning',
-      }),
-    );
     throw error;
   } finally {
     clearTimeout(id);

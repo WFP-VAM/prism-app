@@ -155,3 +155,10 @@ export const queryParamsToString = (
         })
         .join('&')
     : '';
+
+// utility function to combine a baseURL and relativeURL and remove any double slashes
+export function combineURLs(baseURL: string, relativeURL: string) {
+  return relativeURL
+    ? `${baseURL.replace(/\/+$/, '')}/${relativeURL.replace(/^\/+/, '')}`
+    : baseURL;
+}
