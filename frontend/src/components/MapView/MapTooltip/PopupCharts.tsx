@@ -13,7 +13,7 @@ import {
 import React, { memo, useCallback, useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faExternalLinkAlt, faTimes } from '@fortawesome/free-solid-svg-icons';
+import { faChartBar, faTimes } from '@fortawesome/free-solid-svg-icons';
 import {
   Button,
   IconButton,
@@ -22,8 +22,7 @@ import {
   withStyles,
 } from '@material-ui/core';
 import { MapTooltipState } from 'context/tooltipStateSlice';
-import i18n, { isEnglishLanguageSelected } from 'i18n';
-
+import i18n, { isEnglishLanguageSelected, useSafeTranslation } from 'i18n';
 import ChartSection from '../LeftPanel/ChartsPanel/ChartSection';
 import { oneYearInMs } from '../LeftPanel/utils';
 import DownloadCsvButton from '../DownloadCsvButton';
@@ -107,6 +106,7 @@ interface PopupChartProps extends WithStyles<typeof styles> {
 type AdminLevel = 0 | 1 | 2;
 
 const PopupChart = ({ popup, setPopupTitle, classes }: PopupChartProps) => {
+  const { t } = useSafeTranslation();
   const boundaryLayerData = useSelector(layerDataSelector(boundaryLayer.id)) as
     | LayerData<BoundaryLayerProps>
     | undefined;
@@ -173,10 +173,10 @@ const PopupChart = ({ popup, setPopupTitle, classes }: PopupChartProps) => {
                 }
               >
                 <div className={classes.selectLevelButtonValue}>
+                  <FontAwesomeIcon icon={faChartBar} />
                   <div className={classes.selectLevelButtonText}>
-                    View {level} {layer.title} chart
+                    {level} - {t(layer.title)}
                   </div>
-                  <FontAwesomeIcon icon={faExternalLinkAlt} />
                 </div>
               </Button>
             )),
