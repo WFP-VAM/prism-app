@@ -4,13 +4,14 @@ import { useSelector } from 'react-redux';
 import {
   Box,
   Button,
-  CircularProgress,
   createStyles,
   Dialog,
   DialogContent,
   DialogTitle,
   FormControlLabel,
   Grid,
+  Menu,
+  MenuItem,
   Switch,
   Theme,
   Typography,
@@ -19,6 +20,7 @@ import {
 } from '@material-ui/core';
 import { jsPDF } from 'jspdf';
 import html2canvas from 'html2canvas';
+import GetAppIcon from '@material-ui/icons/GetApp';
 import { mapSelector } from '../../../context/mapStateSlice/selectors';
 import { useSafeTranslation } from '../../../i18n';
 import { downloadToFile } from '../../MapView/utils';
@@ -34,7 +36,10 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
     fullLayerDescription: true,
     scaleBar: true,
   });
-  const [downloading, setDownloading] = React.useState<boolean>(false);
+  const [
+    downloadMenuAnchorEl,
+    setDownloadMenuAnchorEl,
+  ] = React.useState<HTMLElement | null>(null);
 
   React.useEffect(() => {
     (async () => {
@@ -193,15 +198,21 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
     });
   };
 
-  const download = async (format: 'pdf' | 'jpeg' | 'png') => {
-    const docGeneration = new Promise<void>((resolve, reject) => {
+  const handleDownloadMenuClose = () => {
+    setDownloadMenuAnchorEl(null);
+  };
+
+  const handleDownloadMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
+    setDownloadMenuAnchorEl(event.currentTarget);
+  };
+
+  const download = (format: 'pdf' | 'jpeg' | 'png') => {
+    const docGeneration = () => {
       // png is generally preferred for images containing lines and text.
       const ext = format === 'pdf' ? 'png' : format;
       const canvas = previewRef.current;
       if (!canvas) {
-        reject(new Error('canvas is undefined'));
-        // return statement to make compiler happy about canvas possibly being undefined
-        return;
+        throw new Error('canvas is undefined');
       }
       const file = canvas.toDataURL(`image/${ext}`);
       if (format === 'pdf') {
@@ -217,19 +228,16 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
       } else {
         downloadToFile({ content: file, isUrl: true }, 'map', `image/${ext}`);
       }
-      resolve();
-    });
+    };
 
-    setDownloading(true);
     try {
-      await docGeneration;
+      docGeneration();
     } catch (error) {
       console.error(error);
-    } finally {
-      setDownloading(false);
     }
 
     handleClose();
+    handleDownloadMenuClose();
   };
 
   const options = [
@@ -285,32 +293,29 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
               ))}
               <Button
                 variant="contained"
-                onClick={() => download('png')}
                 color="primary"
                 className={classes.gutter}
+                endIcon={<GetAppIcon />}
+                onClick={e => handleDownloadMenuOpen(e)}
               >
-                {t('Download PNG')}
+                Download
               </Button>
-              <Button
-                variant="contained"
-                onClick={() => download('jpeg')}
-                color="primary"
-                className={classes.gutter}
+              <Menu
+                anchorEl={downloadMenuAnchorEl}
+                keepMounted
+                open={Boolean(downloadMenuAnchorEl)}
+                onClose={handleDownloadMenuClose}
               >
-                {t('Download JPEG')}
-              </Button>
-              <Button
-                variant="contained"
-                onClick={() => download('pdf')}
-                color="primary"
-                className={classes.gutter}
-              >
-                {downloading ? (
-                  <CircularProgress color="secondary" />
-                ) : (
-                  t('Download PDF')
-                )}
-              </Button>
+                <MenuItem onClick={() => download('png')}>
+                  {t('Download PNG')}
+                </MenuItem>
+                <MenuItem onClick={() => download('jpeg')}>
+                  {t('Download JPEG')}
+                </MenuItem>
+                <MenuItem onClick={() => download('pdf')}>
+                  {t('Download PDF')}
+                </MenuItem>
+              </Menu>
               <Button onClick={() => handleClose()} color="primary">
                 {t('Cancel')}
               </Button>
