@@ -10,3 +10,12 @@ export class LocalError extends Error {
     return this.message;
   }
 }
+
+export class HTTPError extends Error {
+  constructor(
+    public readonly message: string,
+    public readonly statusCode: number,
+  ) {
+    super(message);
+  }
+}
