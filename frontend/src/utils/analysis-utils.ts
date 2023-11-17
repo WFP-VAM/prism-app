@@ -58,6 +58,7 @@ import {
   isEnglishLanguageSelected,
   useSafeTranslation,
 } from 'i18n';
+import { ANALYSIS_API_URL } from 'utils/constants';
 import { getRoundedData } from './data-utils';
 import { DEFAULT_DATE_FORMAT_SNAKE_CASE } from './name-utils';
 import {
@@ -347,7 +348,7 @@ export async function loadFeaturesFromApi(
   });
 
   const statsApi = layer.api as StatsApi;
-  const apiUrl = statsApi.url;
+  const apiUrl = statsApi.url || ANALYSIS_API_URL;
 
   const apiData = {
     geotiff_url: wcsUrl,

@@ -7,7 +7,7 @@
   "license": "MIT",
   "scripts": {
     "prebuild": "rimraf dist",
-    "build": "tsc -p tsconfig.build.json",
+    "build": "tsc -p tsconfig.json",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "lint": "eslint \"{src,apps,libs,test,scripts}/**/*.{ts,js}\" --max-warnings 0 --fix",
     "setup:common": "sh -c \"rimraf ./node_modules/prism-common && cd ../common && yarn install && yarn build\" && sh -c \"yarn install --check-files\"",
