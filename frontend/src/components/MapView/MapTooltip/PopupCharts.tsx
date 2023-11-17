@@ -132,8 +132,8 @@ const PopupChart = ({ popup, setPopupTitle, classes }: PopupChartProps) => {
     return splitNames.splice(0, adminLevelLimit);
   }, [adminLevel, popup.locationLocalName, popup.locationName]);
 
-  const startDate1 = new Date().getTime() - oneYearInMs;
-  const endDate1 = new Date().getTime();
+  const startDate = new Date().getTime() - oneYearInMs;
+  const endDate = new Date().getTime();
 
   const mapStateIds = mapState.map(item => item.id);
   const filteredChartLayers = chartLayers.filter(item =>
@@ -214,8 +214,8 @@ const PopupChart = ({ popup, setPopupTitle, classes }: PopupChartProps) => {
                           )?.name ?? '',
                       )}
                       adminLevel={adminLevel}
-                      startDate={startDate1 as number}
-                      endDate={endDate1 as number}
+                      startDate={startDate as number}
+                      endDate={endDate as number}
                       dataForCsv={dataForCsv}
                     />
                   </div>
