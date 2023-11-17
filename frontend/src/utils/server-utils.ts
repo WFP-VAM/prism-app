@@ -462,9 +462,6 @@ export async function getLayersAvailableDates(
   // Merge all layer types results into a single dictionary of date arrays.
   const mergedLayers: { [key: string]: number[] } = merge({}, ...layerDates);
 
-  // TODO - make this configurable
-  const dateLimit = moment('2019-01-01').valueOf();
-
   // Retrieve layer that have a validity object
   const layersWithValidity: ValidityLayer[] = Object.values(LayerDefinitions)
     .filter(layer => layer.validity !== undefined)
@@ -473,7 +470,7 @@ export async function getLayersAvailableDates(
 
       return {
         name: layerId,
-        dates: mergedLayers[layerId].filter(date => date > dateLimit),
+        dates: mergedLayers[layerId],
         validity: layer.validity!,
       };
     });
