@@ -3,7 +3,7 @@ import { get, isNil } from 'lodash';
 import bbox from '@turf/bbox';
 import { createGetCoverageUrl } from 'prism-common';
 import { Extent } from './raster-utils';
-import { ANALYSIS_API_URL } from '../constants';
+import { API_URL } from '../constants';
 import { Alert } from '../entities/alerts.entity';
 
 // eslint-disable-next-line fp/no-mutation
@@ -110,13 +110,13 @@ export async function calculateBoundsForAlert(date: Date, alert: Alert) {
       date,
       layerId: layer.serverLayerName,
       resolution: layer?.wcsConfig?.pixelResolution,
-      url: layer.baseUrl
+      url: layer.baseUrl,
     }),
     zones: alert.zones,
   };
 
   try {
-    const apiData = await fetchApiData(`${ANALYSIS_API_URL}/stats`, apiRequest);
+    const apiData = await fetchApiData(`${API_URL}/stats`, apiRequest);
     return apiData && getAlertMessage(apiData, alert);
   } catch (error) {
     console.error(error);
