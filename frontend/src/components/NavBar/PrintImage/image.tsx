@@ -26,7 +26,7 @@ import { downloadToFile } from '../../MapView/utils';
 function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
   const { t } = useSafeTranslation();
   const selectedMap = useSelector(mapSelector);
-  const previewRef = useRef<HTMLCanvasElement>(null);
+  const previewRef = useRef<HTMLCanvasElement | null>(null);
   // list of toggles
   const [toggles, setToggles] = React.useState({
     legend: true,
@@ -36,115 +36,156 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
   });
   const [downloading, setDownloading] = React.useState<boolean>(false);
 
-  if (open && selectedMap) {
-    const activeLayers = selectedMap.getCanvas();
-    selectedMap.addControl(new mapboxgl.ScaleControl(), 'top-right');
-    const canvas = previewRef.current;
-    if (canvas) {
-      canvas.setAttribute('width', activeLayers.width.toString());
-      canvas.setAttribute('height', activeLayers.height.toString());
-      const context = canvas.getContext('2d');
-      if (context) {
-        context.drawImage(activeLayers, 0, 0);
-        // toggle legend
-        const div = document.getElementById('legend-list');
-        if (div?.firstChild && toggles.legend) {
-          const childElements = Array.prototype.filter.call(
-            div.childNodes,
-            // eslint-disable-next-line func-names
-            function (node) {
-              return node.nodeType === 1; // Node type 1 represents an HTMLElement
-            },
-          );
+  React.useEffect(() => {
+    (async () => {
+      if (open && selectedMap) {
+        const activeLayers = selectedMap.getCanvas();
 
-          const target = document.createElement('div');
+        const canvas = document.createElement('canvas');
+        const canvasContainer = document.getElementById(
+          'canvas-preview-container',
+        );
+
+        if (!canvasContainer) {
+          return;
+        }
+
+        while (canvasContainer.firstChild) {
+          canvasContainer.removeChild(canvasContainer.firstChild);
+        }
+        // eslint-disable-next-line fp/no-mutation
+        canvas.style.width = '100%';
+
+        // we add this here so the modal is not shrinking and expanding it's width, each time we update the settings
+        canvasContainer.appendChild(canvas);
+        previewRef.current = canvas;
+
+        if (canvas) {
+          canvas.setAttribute('width', activeLayers.width.toString());
+          canvas.setAttribute('height', activeLayers.height.toString());
+          const context = canvas.getContext('2d');
+
+          // in chrome canvas does not draw as expected if it is already in dom
+          const offScreenCanvas = document.createElement('canvas');
+          const offScreenContext = offScreenCanvas.getContext('2d');
+
           // eslint-disable-next-line fp/no-mutation
-          target.style.width = '180px';
+          offScreenCanvas.width = activeLayers.width;
+          // eslint-disable-next-line fp/no-mutation
+          offScreenCanvas.height = activeLayers.height;
 
-          childElements.forEach((li: HTMLElement) => {
-            const children = Array.prototype.filter.call(
-              li.childNodes,
-              // eslint-disable-next-line func-names
-              function (node) {
-                return node.nodeType === 1; // Node type 1 represents an HTMLElement
-              },
-            ) as HTMLElement[];
-            const divContainer = children[0] as HTMLElement;
-
-            const contents = Array.prototype.filter.call(
-              divContainer.childNodes,
-              // eslint-disable-next-line func-names
-              function (node) {
-                return node.nodeType === 1; // Node type 1 represents an HTMLElement
-              },
-            ) as HTMLElement[];
-
-            const container = document.createElement('div');
-            // eslint-disable-next-line fp/no-mutation
-            container.style.padding = '8px';
-            // eslint-disable-next-line fp/no-mutation
-            container.style.paddingBottom = '16px';
-            target.appendChild(container);
-            contents
-              .slice(0, toggles.fullLayerDescription ? 6 : 4)
-              .forEach(x => container.appendChild(x.cloneNode(true)));
-          });
-
-          document.body.appendChild(target);
-
-          html2canvas(target)
-            .then(c => {
-              context.drawImage(c, 24, 24);
-            })
-            .finally(() => document.body.removeChild(target));
-        }
-
-        if (toggles.scaleBar) {
-          const elem = document.querySelector('.maplibregl-ctrl-scale');
-
-          if (elem) {
-            const html = document.createElement('div');
-            html.appendChild(elem);
-
-            document.body.appendChild(html);
-            html2canvas(html)
-              .then(c => {
-                context.drawImage(
-                  c,
-                  activeLayers.width - 85,
-                  activeLayers.height - 105,
-                );
-              })
-              .finally(() => document.body.removeChild(html));
+          if (!offScreenContext || !context) {
+            return;
           }
-        }
 
-        // toggle footer
-        if (toggles.footer) {
-          const footer = document.createElement('div');
-          // eslint-disable-next-line
-          footer.innerHTML = `
-            <div style='width:100%;height:75px;padding-top:15px;font-size:12px'>
-              <strong>
-                Layers represent data on --date--. Sources WFP, UNGIWG, OCHA, GAUL, USGS, NASA, UCSB
-              </strong>
-              <br>
-              The designations employed and the presentation of material in the map(s)
-              do not imply the expression of any opinion on the part of WFP concerning
-              the legal of constitutional status of any country, teritory, city, or sea,
-              or concerning the delimitation of its frontiersor boundaries.
-            </div>
-          `;
-          document.body.appendChild(footer);
-          html2canvas(footer)
-            .then(c => {
-              context.drawImage(c, 0, activeLayers.height - 90);
-            })
-            .finally(() => document.body.removeChild(footer));
+          context.clearRect(0, 0, canvas.width, canvas.height);
+
+          offScreenContext.drawImage(activeLayers, 0, 0);
+
+          // toggle legend
+          const div = document.getElementById('legend-list');
+          if (div?.firstChild && toggles.legend) {
+            const childElements = Array.from(div.childNodes).filter(
+              node => node.nodeType === 1,
+            ) as HTMLElement[];
+
+            const target = document.createElement('div');
+            // eslint-disable-next-line fp/no-mutation
+            target.style.width = '180px';
+
+            childElements.forEach((li: HTMLElement, i) => {
+              const isLast = childElements.length - 1 === i;
+
+              const children = Array.from(li.childNodes).filter(
+                // node type 1 represents an HTMLElement
+                node => node.nodeType === 1,
+              ) as HTMLElement[];
+              const divContainer = children[0] as HTMLElement;
+
+              const contents = Array.from(divContainer.childNodes).filter(
+                node => node.nodeType === 1,
+              ) as HTMLElement[];
+
+              const container = document.createElement('div');
+              // eslint-disable-next-line fp/no-mutation
+              container.style.padding = '8px';
+              // eslint-disable-next-line fp/no-mutation
+              container.style.paddingBottom = isLast ? '8px' : '16px';
+              target.appendChild(container);
+
+              const keepDivider = isLast ? 1 : 0;
+
+              contents
+                .slice(
+                  0,
+                  toggles.fullLayerDescription
+                    ? 6 - keepDivider
+                    : 4 - keepDivider,
+                )
+                .forEach(x => container.appendChild(x.cloneNode(true)));
+            });
+
+            document.body.appendChild(target);
+
+            const c = await html2canvas(target);
+            offScreenContext.drawImage(c, 24, 24);
+            document.body.removeChild(target);
+          }
+
+          if (toggles.scaleBar) {
+            selectedMap.addControl(new mapboxgl.ScaleControl(), 'top-right');
+            const elem = document.querySelector('.maplibregl-ctrl-scale');
+
+            if (elem) {
+              const html = document.createElement('div');
+              html.appendChild(elem);
+
+              document.body.appendChild(html);
+
+              const c = await html2canvas(html);
+              offScreenContext.drawImage(
+                c,
+                activeLayers.width - 85,
+                activeLayers.height - 105,
+              );
+              document.body.removeChild(html);
+            }
+          }
+
+          // toggle footer
+          if (toggles.footer) {
+            const footer = document.createElement('div');
+            // eslint-disable-next-line
+              footer.innerHTML = `
+                <div style='width:100%;height:75px;padding:8px;font-size:12px'>
+                  <strong>
+                    Layers represent data on --date--. Sources WFP, UNGIWG, OCHA, GAUL, USGS, NASA, UCSB
+                  </strong>
+                  <br>
+                  The designations employed and the presentation of material in the map(s)
+                  do not imply the expression of any opinion on the part of WFP concerning
+                  the legal of constitutional status of any country, territory, city, or sea,
+                  or concerning the delimitation of its frontiers or boundaries.
+                </div>
+              `;
+            document.body.appendChild(footer);
+            const c = await html2canvas(footer);
+            offScreenContext.drawImage(c, 0, activeLayers.height - 90);
+            document.body.removeChild(footer);
+          }
+
+          context.drawImage(offScreenCanvas, 0, 0);
         }
       }
-    }
-  }
+    })();
+  }, [
+    open,
+    selectedMap,
+    toggles.footer,
+    toggles.fullLayerDescription,
+    toggles.legend,
+    toggles.scaleBar,
+  ]);
 
   const toggle = (event: ChangeEvent<HTMLInputElement>) => {
     setToggles(prevValues => {
@@ -215,9 +256,7 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
       </DialogTitle>
       <DialogContent>
         <Grid container>
-          <Grid item xs={10}>
-            <canvas ref={previewRef} className={classes.canvas} />
-          </Grid>
+          <Grid item xs={10} id="canvas-preview-container" />
           <Grid item xs>
             <Box display="flex" flexDirection="column" pl={5}>
               <Box
