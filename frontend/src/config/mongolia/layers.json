@@ -4,8 +4,14 @@
     "path": "data/mongolia/admin_boundaries.json",
     "opacity": 0.8,
     "admin_code": "NSO_CODE",
-    "admin_level_names": ["ADM1_EN", "ADM2_EN"],
-    "admin_level_local_names": ["ADM1_MN", "ADM2_MN"],
+    "admin_level_names": [
+      "ADM1_EN",
+      "ADM2_EN"
+    ],
+    "admin_level_local_names": [
+      "ADM1_MN",
+      "ADM2_MN"
+    ],
     "styles:": {
       "fill": {
         "fill-opacity": 0
@@ -22,8 +28,12 @@
     "path": "data/mongolia/mng_adm1_nso_match_1212_mn.json",
     "opacity": 0.8,
     "admin_code": "NSO_CODE",
-    "admin_level_names": ["ADM1_EN"],
-    "admin_level_local_names": ["ADM1_MN"],
+    "admin_level_names": [
+      "ADM1_EN"
+    ],
+    "admin_level_local_names": [
+      "ADM1_MN"
+    ],
     "styles:": {
       "fill": {
         "fill-opacity": 0
@@ -71,8 +81,7 @@
   "disabled": {
     "title": "Number of disabled people (aimag)",
     "type": "admin_level_data",
-    "path": "https://map.nema.gov.mn/nsodata/DT_NSO_3300_014V1",
-    "requestBody": "title: 'tumee test new server'",
+    "path": "data/mongolia/nso/NSO_Disabled_Admin1_Total.json",
     "boundary": "admin1_boundaries",
     "data_field": "DTVAL_CO",
     "admin_level": 1,
@@ -110,8 +119,7 @@
   "hay_harvest": {
     "title": "Hay harvest (soum)",
     "type": "admin_level_data",
-    "path": "https://map.nema.gov.mn/nsodata/DT_NSO_1001_038V3",
-    "requestBody": "title: 'tumee test new server'",    
+    "path": "data/mongolia/nso/NSO_Hay_Harvest_Admin2.json",
     "data_field": "DTVAL_CO",
     "admin_level": 2,
     "admin_code": "CODE",
