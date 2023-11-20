@@ -80,6 +80,7 @@ const useStyles = makeStyles(() =>
     formGroup: {
       marginBottom: 20,
       marginLeft: 20,
+      width: '100%',
     },
     chartsPanelParams: {
       marginTop: 30,
@@ -305,7 +306,7 @@ const ChartsPanel = memo(
     // cheat here and shift compared dates by 1 day to avoid duplicate
     // keys in title components
     const [startDate2, setStartDate2] = useState<number | null>(
-      new Date().getTime() - oneYearInMs * 5 - oneDayInMs,
+      new Date().getTime() - oneYearInMs - oneDayInMs,
     );
     const [endDate2, setEndDate2] = useState<number | null>(
       new Date().getTime() - oneDayInMs,
@@ -321,11 +322,22 @@ const ChartsPanel = memo(
     const [chartSelectedDateRange, setChartSelectedDateRange] = useState<
       [string, string]
     >(['', '']);
+    const [showSlider, setShowSlider] = useState(true);
 
     useEffect(() => {
       const start = maxDataTicks - oneYearInTicks;
       setChartRange([start > 0 ? start : 0, maxDataTicks]);
     }, [maxDataTicks]);
+
+    useEffect(() => {
+      if (comparePeriods) {
+        setShowSlider(false);
+        setStartDate1(new Date().getTime() - oneYearInMs);
+      } else {
+        setShowSlider(true);
+        setStartDate1(new Date().getTime() - oneYearInMs * 5);
+      }
+    }, [comparePeriods, oneYearInMs]);
 
     const dataForCsv = useRef<{ [key: string]: any[] }>({});
     const dataForSecondCsv = useRef<{ [key: string]: any[] }>({});
@@ -468,7 +480,7 @@ const ChartsPanel = memo(
             <ChartSection
               setChartSelectedDateRange={setChartSelectedDateRange}
               setMaxDataTicks={setMaxDataTicks}
-              chartRange={chartRange}
+              chartRange={comparePeriods ? undefined : chartRange}
               chartLayer={chartLayer as WMSLayerProps}
               adminProperties={adminProperties || {}}
               adminLevel={adminLevel}
@@ -497,7 +509,7 @@ const ChartsPanel = memo(
                   <ChartSection
                     setChartSelectedDateRange={setChartSelectedDateRange}
                     setMaxDataTicks={setMaxDataTicks}
-                    chartRange={chartRange}
+                    chartRange={comparePeriods ? undefined : chartRange}
                     chartLayer={layer}
                     adminProperties={adminProperties as GeoJsonProperties}
                     adminLevel={adminLevel}
@@ -541,7 +553,7 @@ const ChartsPanel = memo(
                 <ChartSection
                   setChartSelectedDateRange={setChartSelectedDateRange}
                   setMaxDataTicks={setMaxDataTicks}
-                  chartRange={chartRange}
+                  chartRange={comparePeriods ? undefined : chartRange}
                   chartLayer={layer}
                   adminProperties={
                     // default value prevents crash, but shows ugly warning
@@ -838,6 +850,7 @@ const ChartsPanel = memo(
 
         <FormGroup className={classes.formGroup}>
           <FormControlLabel
+            style={{ marginLeft: 20 }}
             control={
               <Switch
                 checked={comparePeriods}
@@ -866,21 +879,69 @@ const ChartsPanel = memo(
             }
             checked={comparePeriods}
           />
-          <TimePeriodSelector
-            startDate={startDate1}
-            setStartDate={setStartDate1}
-            endDate={endDate1}
-            setEndDate={setEndDate1}
-            title={comparePeriods ? t('Period 1') : null}
-          />
-          {comparePeriods && (
-            <TimePeriodSelector
-              startDate={startDate2}
-              setStartDate={setStartDate2}
-              endDate={endDate2}
-              setEndDate={setEndDate2}
-              title={comparePeriods ? t('Period 2') : null}
-            />
+          {showSlider && (
+            <Box
+              style={{
+                width: 'calc(100% - 4rem)',
+                marginLeft: 'auto',
+                marginRight: 'auto',
+                paddingTop: '2rem',
+              }}
+            >
+              <Box
+                display="flex"
+                flexDirection="row"
+                justifyContent="space-between"
+              >
+                <Box display="flex" flexDirection="row">
+                  <Typography className={classes.textLabel} variant="body2">
+                    start:
+                  </Typography>{' '}
+                  <Typography className={classes.textLabel}>
+                    {chartSelectedDateRange[0]}
+                  </Typography>
+                </Box>
+
+                <Box display="flex" flexDirection="row">
+                  <Typography className={classes.textLabel} variant="body2">
+                    end:
+                  </Typography>{' '}
+                  <Typography className={classes.textLabel}>
+                    {chartSelectedDateRange[1]}
+                  </Typography>
+                </Box>
+              </Box>
+
+              <RangeSlider
+                value={chartRange}
+                onInput={setChartRange}
+                min={0}
+                max={178}
+                step={1}
+                disabled={selectedLayerTitles.length < 1}
+              />
+            </Box>
+          )}
+
+          {!showSlider && (
+            <>
+              <TimePeriodSelector
+                startDate={startDate1}
+                setStartDate={setStartDate1}
+                endDate={endDate1}
+                setEndDate={setEndDate1}
+                title={comparePeriods ? t('Period 1') : null}
+              />
+              {comparePeriods && (
+                <TimePeriodSelector
+                  startDate={startDate2}
+                  setStartDate={setStartDate2}
+                  endDate={endDate2}
+                  setEndDate={setEndDate2}
+                  title={comparePeriods ? t('Period 2') : null}
+                />
+              )}
+            </>
           )}
         </FormGroup>
 
@@ -943,46 +1004,6 @@ const ChartsPanel = memo(
         >
           <Typography variant="body2">{t('Clear All')}</Typography>
         </Button>
-        <Box
-          style={{
-            width: 'calc(100% - 4rem)',
-            marginLeft: 'auto',
-            marginRight: 'auto',
-            paddingTop: '2rem',
-          }}
-        >
-          <Box
-            display="flex"
-            flexDirection="row"
-            justifyContent="space-between"
-          >
-            <Box display="flex" flexDirection="row">
-              <Typography className={classes.textLabel} variant="body2">
-                start:
-              </Typography>{' '}
-              <Typography className={classes.textLabel}>
-                {chartSelectedDateRange[0]}
-              </Typography>
-            </Box>
-
-            <Box display="flex" flexDirection="row">
-              <Typography className={classes.textLabel} variant="body2">
-                end:
-              </Typography>{' '}
-              <Typography className={classes.textLabel}>
-                {chartSelectedDateRange[1]}
-              </Typography>
-            </Box>
-          </Box>
-
-          <RangeSlider
-            value={chartRange}
-            onInput={setChartRange}
-            min={0}
-            max={178}
-            step={1}
-          />
-        </Box>
       </Box>
     );
   },
