@@ -16,6 +16,7 @@ type ChartProps = {
   xAxisLabel?: string;
   notMaintainAspectRatio?: boolean;
   legendAtBottom?: boolean;
+  chartRange?: [number, number];
 };
 
 const Chart = memo(
@@ -27,6 +28,7 @@ const Chart = memo(
     datasetFields,
     notMaintainAspectRatio,
     legendAtBottom,
+    chartRange = [Number.NEGATIVE_INFINITY, Number.POSITIVE_INFINITY],
   }: ChartProps) => {
     const { t } = useSafeTranslation();
 
@@ -79,7 +81,7 @@ const Chart = memo(
       if (!transpose) {
         return indices.map(index => header[index]);
       }
-      return tableRows.map(row => {
+      return tableRows.slice(chartRange[0], chartRange[1]).map(row => {
         if (data.EWSConfig) {
           return moment(row[config.category], 'HH:mm')
             .locale(t('date_locale') as LocaleSpecifier)
@@ -90,6 +92,7 @@ const Chart = memo(
           .format('YYYY-MM-DD');
       });
     }, [
+      chartRange,
       config.category,
       data.EWSConfig,
       header,
@@ -207,11 +210,23 @@ const Chart = memo(
       const datasets = !transpose ? tableRowsDataSet : indicesDataSet;
       const datasetsWithThresholds = [...datasets, ...EWSthresholds];
 
+      const datasetsTrimmed = datasetsWithThresholds.map(set => ({
+        ...set,
+        data: set.data.slice(chartRange[0], chartRange[1]),
+      }));
+
       return {
         labels,
-        datasets: datasetsWithThresholds,
+        datasets: datasetsTrimmed,
       };
-    }, [EWSthresholds, indicesDataSet, labels, tableRowsDataSet, transpose]);
+    }, [
+      EWSthresholds,
+      chartRange,
+      indicesDataSet,
+      labels,
+      tableRowsDataSet,
+      transpose,
+    ]);
 
     const chartConfig = useMemo(() => {
       return {

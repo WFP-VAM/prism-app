@@ -28,3 +28,5 @@ declare module 'zonal';
 declare module 'redux-async-initial-state';
 
 declare module '*.ttf';
+
+declare module 'react-range-slider-input';

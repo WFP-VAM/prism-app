@@ -30,6 +30,9 @@ const ChartSection = memo(
     startDate,
     endDate,
     dataForCsv,
+    chartRange,
+    setMaxDataTicks,
+    setChartSelectedDateRange,
     classes,
   }: ChartSectionProps) => {
     const dispatch = useDispatch();
@@ -140,6 +143,8 @@ const ChartSection = memo(
           ...dataForCsv.current,
           [chartLayer.title]: csvData,
         };
+
+        setMaxDataTicks(results.rows.length);
         setChartDataset(results);
       } catch (error) {
         console.warn(error);
@@ -156,8 +161,25 @@ const ChartSection = memo(
       dataForCsv,
       dispatch,
       requestParams,
+      setMaxDataTicks,
       t,
     ]);
+
+    useEffect(() => {
+      if (!chartDataset) {
+        return;
+      }
+      const selectedSlice = chartDataset.rows.slice(
+        chartRange?.[0],
+        chartRange?.[1],
+      );
+      setChartSelectedDateRange([
+        selectedSlice[0]?.[CHART_DATA_PREFIXES.date] as string,
+        selectedSlice[selectedSlice.length - 1]?.[
+          CHART_DATA_PREFIXES.date
+        ] as string,
+      ]);
+    }, [chartDataset, chartRange, setChartSelectedDateRange]);
 
     useEffect(() => {
       getData();
@@ -232,6 +254,7 @@ const ChartSection = memo(
             config={config}
             data={chartDataset as TableData}
             datasetFields={params.datasetFields}
+            chartRange={chartRange}
             notMaintainAspectRatio
             legendAtBottom
           />
@@ -251,6 +274,7 @@ const ChartSection = memo(
       chartDataSetError,
       chartDataSetIsLoading,
       chartDataset,
+      chartRange,
       classes.errorContainer,
       classes.loading,
       config,
@@ -286,6 +310,11 @@ export interface ChartSectionProps extends WithStyles<typeof styles> {
   startDate: number;
   endDate: number;
   dataForCsv: React.MutableRefObject<any>;
+  chartRange?: [number, number];
+  setMaxDataTicks: React.Dispatch<React.SetStateAction<number>>;
+  setChartSelectedDateRange: React.Dispatch<
+    React.SetStateAction<[string, string]>
+  >;
 }
 
 export default withStyles(styles)(ChartSection);

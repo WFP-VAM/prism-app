@@ -41,9 +41,11 @@ import { layerDataSelector } from 'context/mapStateSlice/selectors';
 import { useSafeTranslation } from 'i18n';
 import { castObjectsArrayToCsv } from 'utils/csv-utils';
 import { downloadToFile } from 'components/MapView/utils';
+import RangeSlider from 'react-range-slider-input';
 import ChartSection from './ChartSection';
 import LocationSelector from './LocationSelector';
 import TimePeriodSelector from './TimePeriodSelector';
+import 'react-range-slider-input/dist/style.css';
 
 // Load boundary layer for Admin2
 // WARNING - Make sure the dataviz_ids are available in the boundary file for Admin2
@@ -295,7 +297,7 @@ const ChartsPanel = memo(
     const oneDayInMs = 24 * 60 * 60 * 1000;
     const oneYearInMs = 365 * oneDayInMs;
     const [startDate1, setStartDate1] = useState<number | null>(
-      new Date().getTime() - oneYearInMs,
+      new Date().getTime() - oneYearInMs * 5,
     );
     const [endDate1, setEndDate1] = useState<number | null>(
       new Date().getTime(),
@@ -303,7 +305,7 @@ const ChartsPanel = memo(
     // cheat here and shift compared dates by 1 day to avoid duplicate
     // keys in title components
     const [startDate2, setStartDate2] = useState<number | null>(
-      new Date().getTime() - oneYearInMs - oneDayInMs,
+      new Date().getTime() - oneYearInMs * 5 - oneDayInMs,
     );
     const [endDate2, setEndDate2] = useState<number | null>(
       new Date().getTime() - oneDayInMs,
@@ -312,6 +314,19 @@ const ChartsPanel = memo(
     const [secondAdminProperties, setSecondAdminProperties] = useState<
       GeoJsonProperties
     >();
+    const oneYearInTicks = 34;
+    const [maxDataTicks, setMaxDataTicks] = useState(0);
+    const [chartRange, setChartRange] = useState<[number, number]>([0, 0]);
+    // eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
+    const [chartSelectedDateRange, setChartSelectedDateRange] = useState<
+      [string, string]
+    >(['', '']);
+
+    useEffect(() => {
+      const start = maxDataTicks - oneYearInTicks;
+      setChartRange([start > 0 ? start : 0, maxDataTicks]);
+    }, [maxDataTicks]);
+
     const dataForCsv = useRef<{ [key: string]: any[] }>({});
     const dataForSecondCsv = useRef<{ [key: string]: any[] }>({});
 
@@ -451,6 +466,9 @@ const ChartsPanel = memo(
             }}
           >
             <ChartSection
+              setChartSelectedDateRange={setChartSelectedDateRange}
+              setMaxDataTicks={setMaxDataTicks}
+              chartRange={chartRange}
               chartLayer={chartLayer as WMSLayerProps}
               adminProperties={adminProperties || {}}
               adminLevel={adminLevel}
@@ -477,6 +495,9 @@ const ChartsPanel = memo(
                   }}
                 >
                   <ChartSection
+                    setChartSelectedDateRange={setChartSelectedDateRange}
+                    setMaxDataTicks={setMaxDataTicks}
+                    chartRange={chartRange}
                     chartLayer={layer}
                     adminProperties={adminProperties as GeoJsonProperties}
                     adminLevel={adminLevel}
@@ -518,6 +539,9 @@ const ChartsPanel = memo(
                 }}
               >
                 <ChartSection
+                  setChartSelectedDateRange={setChartSelectedDateRange}
+                  setMaxDataTicks={setMaxDataTicks}
+                  chartRange={chartRange}
                   chartLayer={layer}
                   adminProperties={
                     // default value prevents crash, but shows ugly warning
@@ -624,27 +648,28 @@ const ChartsPanel = memo(
       ) : null;
       return [locationBox, ...titles, ...zipped];
     }, [
-      admin0Key,
-      adminLevel,
       adminProperties,
-      classes.textLabel,
+      startDate1,
+      endDate1,
+      selectedLayerTitles,
       compareLocations,
       comparePeriods,
-      country,
-      endDate1,
-      endDate2,
-      multiCountry,
       secondAdminProperties,
       secondAdminLevel,
-      secondAdmin0Key,
+      adminLevel,
       secondSelectedAdmin1Area,
-      secondSelectedAdmin2Area,
       selectedAdmin1Area,
-      selectedLayerTitles,
+      secondSelectedAdmin2Area,
       selectedAdmin2Area,
-      startDate1,
       startDate2,
+      endDate2,
+      classes.textLabel,
+      multiCountry,
+      admin0Key,
+      country,
+      chartRange,
       t,
+      secondAdmin0Key,
     ]);
 
     useEffect(() => {
@@ -918,6 +943,46 @@ const ChartsPanel = memo(
         >
           <Typography variant="body2">{t('Clear All')}</Typography>
         </Button>
+        <Box
+          style={{
+            width: 'calc(100% - 4rem)',
+            marginLeft: 'auto',
+            marginRight: 'auto',
+            paddingTop: '2rem',
+          }}
+        >
+          <Box
+            display="flex"
+            flexDirection="row"
+            justifyContent="space-between"
+          >
+            <Box display="flex" flexDirection="row">
+              <Typography className={classes.textLabel} variant="body2">
+                start:
+              </Typography>{' '}
+              <Typography className={classes.textLabel}>
+                {chartSelectedDateRange[0]}
+              </Typography>
+            </Box>
+
+            <Box display="flex" flexDirection="row">
+              <Typography className={classes.textLabel} variant="body2">
+                end:
+              </Typography>{' '}
+              <Typography className={classes.textLabel}>
+                {chartSelectedDateRange[1]}
+              </Typography>
+            </Box>
+          </Box>
+
+          <RangeSlider
+            value={chartRange}
+            onInput={setChartRange}
+            min={0}
+            max={178}
+            step={1}
+          />
+        </Box>
       </Box>
     );
   },
