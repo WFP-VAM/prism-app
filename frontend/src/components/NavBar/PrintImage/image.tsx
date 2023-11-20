@@ -22,7 +22,11 @@ import { jsPDF } from 'jspdf';
 import html2canvas from 'html2canvas';
 import GetAppIcon from '@material-ui/icons/GetApp';
 import { legendListId } from 'components/MapView/Legends';
-import { mapSelector } from '../../../context/mapStateSlice/selectors';
+import moment from 'moment';
+import {
+  dateRangeSelector,
+  mapSelector,
+} from '../../../context/mapStateSlice/selectors';
 import { useSafeTranslation } from '../../../i18n';
 import { downloadToFile } from '../../MapView/utils';
 
@@ -31,6 +35,8 @@ const canvasPreviewContainerId = 'canvas-preview-container';
 function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
   const { t } = useSafeTranslation();
   const selectedMap = useSelector(mapSelector);
+  const dateRange = useSelector(dateRangeSelector);
+
   const previewRef = useRef<HTMLCanvasElement | null>(null);
   // list of toggles
   const [toggles, setToggles] = React.useState({
@@ -143,10 +149,16 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
 
           if (toggles.scaleBar) {
             selectedMap.addControl(new mapboxgl.ScaleControl(), 'top-right');
-            const elem = document.querySelector('.maplibregl-ctrl-scale');
+            const elem = document.querySelector(
+              '.maplibregl-ctrl-scale',
+            ) as HTMLElement;
 
             if (elem) {
               const html = document.createElement('div');
+
+              // eslint-disable-next-line fp/no-mutation
+              html.style.width = `${elem.offsetWidth + 2}px`;
+
               html.appendChild(elem);
 
               document.body.appendChild(html);
@@ -154,8 +166,8 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
               const c = await html2canvas(html);
               offScreenContext.drawImage(
                 c,
-                activeLayers.width - 85,
-                activeLayers.height - 105,
+                activeLayers.width - (10 + elem.offsetWidth),
+                activeLayers.height - 120,
               );
               document.body.removeChild(html);
             }
@@ -164,19 +176,28 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
           // toggle footer
           if (toggles.footer) {
             const footer = document.createElement('div');
+            const dateText = dateRange
+              ? `Layers represent data ${
+                  dateRange.startDate && dateRange.endDate
+                    ? `from ${moment(dateRange.startDate).format(
+                        'YYYY-MM-DD',
+                      )} to ${moment(dateRange.endDate).format('YYYY-MM-DD')}`
+                    : `on ${moment(dateRange.startDate).format('YYYY-MM-DD')}`
+                }. `
+              : '';
             // eslint-disable-next-line
-              footer.innerHTML = `
-                <div style='width:100%;height:75px;padding:8px;font-size:12px'>
-                  <strong>
-                    Layers represent data on --date--. Sources WFP, UNGIWG, OCHA, GAUL, USGS, NASA, UCSB
-                  </strong>
-                  <br>
-                  The designations employed and the presentation of material in the map(s)
-                  do not imply the expression of any opinion on the part of WFP concerning
-                  the legal of constitutional status of any country, territory, city, or sea,
-                  or concerning the delimitation of its frontiers or boundaries.
-                </div>
-              `;
+            footer.innerHTML = `
+              <div style='width:100%;height:75px;padding:8px;font-size:12px'>
+                <strong>
+                  ${dateText}Sources WFP, UNGIWG, OCHA, GAUL, USGS, NASA, UCSB
+                </strong>
+                <br>
+                The designations employed and the presentation of material in the map(s)
+                do not imply the expression of any opinion on the part of WFP concerning
+                the legal of constitutional status of any country, territory, city, or sea,
+                or concerning the delimitation of its frontiers or boundaries.
+              </div>
+            `;
             document.body.appendChild(footer);
             const c = await html2canvas(footer);
             offScreenContext.drawImage(c, 0, activeLayers.height - 90);
@@ -190,7 +211,7 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
               offScreenContext.drawImage(
                 image,
                 activeLayers.width - 65,
-                activeLayers.height - 180,
+                activeLayers.height - 200,
                 40,
                 60,
               );
@@ -205,6 +226,7 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
       }
     })();
   }, [
+    dateRange,
     open,
     selectedMap,
     toggles.footer,
