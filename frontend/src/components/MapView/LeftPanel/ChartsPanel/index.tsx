@@ -28,7 +28,12 @@ import React, {
 import { useSelector } from 'react-redux';
 import { TFunctionKeys } from 'i18next';
 import { appConfig } from 'config';
-import { BoundaryLayerProps, PanelSize, WMSLayerProps } from 'config/types';
+import {
+  AdminLevel,
+  BoundaryLayerProps,
+  PanelSize,
+  WMSLayerProps,
+} from 'config/types';
 import {
   getBoundaryLayersByAdminLevel,
   getWMSLayersWithChart,
@@ -186,7 +191,7 @@ const ChartsPanel = memo(
     const [admin2Key, setAdmin2Key] = useState<string>('');
     const [selectedAdmin1Area, setSelectedAdmin1Area] = useState('');
     const [selectedAdmin2Area, setSelectedAdmin2Area] = useState('');
-    const [adminLevel, setAdminLevel] = useState<0 | 1 | 2>(
+    const [adminLevel, setAdminLevel] = useState<AdminLevel>(
       countryAdmin0Id ? 0 : 1,
     );
     // second (compared) location state
@@ -199,7 +204,7 @@ const ChartsPanel = memo(
     const [secondSelectedAdmin2Area, setSecondSelectedAdmin2Area] = useState(
       '',
     );
-    const [secondAdminLevel, setSecondAdminLevel] = useState<0 | 1 | 2>(
+    const [secondAdminLevel, setSecondAdminLevel] = useState<AdminLevel>(
       countryAdmin0Id ? 0 : 1,
     );
 
@@ -595,6 +600,22 @@ const ChartsPanel = memo(
       [t],
     );
 
+    const firstCSVFilename = buildCsvFileName([
+      multiCountry ? admin0Key : country,
+      selectedAdmin1Area,
+      selectedAdmin2Area,
+      ...(selectedLayerTitles as string[]),
+      comparePeriods ? 'first_period' : '',
+    ]);
+
+    const secondCSVFilename = buildCsvFileName([
+      multiCountry ? secondAdmin0Key : country,
+      compareLocations ? secondSelectedAdmin1Area : selectedAdmin1Area,
+      compareLocations ? secondSelectedAdmin2Area : selectedAdmin2Area,
+      ...(selectedLayerTitles as string[]),
+      comparePeriods ? 'second_period' : '',
+    ]);
+
     if (tabIndex !== tabValue) {
       return null;
     }
@@ -754,27 +775,11 @@ const ChartsPanel = memo(
         <DownloadCsvButton
           filesData={[
             {
-              fileName: buildCsvFileName([
-                multiCountry ? admin0Key : country,
-                selectedAdmin1Area ?? '',
-                selectedAdmin2Area ?? '',
-                ...(selectedLayerTitles as string[]),
-                comparePeriods ? 'first_period' : '',
-              ]),
+              fileName: firstCSVFilename,
               data: dataForCsv,
             },
             {
-              fileName: buildCsvFileName([
-                multiCountry ? secondAdmin0Key : country,
-                compareLocations
-                  ? secondSelectedAdmin1Area ?? ''
-                  : selectedAdmin1Area ?? '',
-                compareLocations
-                  ? secondSelectedAdmin2Area ?? ''
-                  : selectedAdmin2Area ?? '',
-                ...(selectedLayerTitles as string[]),
-                comparePeriods ? 'second_period' : '',
-              ]),
+              fileName: secondCSVFilename,
               data: dataForSecondCsv,
             },
           ]}

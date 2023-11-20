@@ -1,5 +1,5 @@
 import { appConfig } from 'config';
-import { BoundaryLayerProps } from 'config/types';
+import { AdminLevel, BoundaryLayerProps } from 'config/types';
 import {
   getBoundaryLayersByAdminLevel,
   getWMSLayersWithChart,
@@ -10,7 +10,7 @@ import {
   layerDataSelector,
   layersSelector,
 } from 'context/mapStateSlice/selectors';
-import React, { memo, useCallback, useEffect, useRef, useState } from 'react';
+import React, { memo, useCallback, useEffect, useRef } from 'react';
 import { useSelector } from 'react-redux';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChartBar, faTimes } from '@fortawesome/free-solid-svg-icons';
@@ -30,9 +30,8 @@ import { buildCsvFileName } from '../utils';
 
 const chartLayers = getWMSLayersWithChart();
 const { countryAdmin0Id, country, multiCountry } = appConfig;
-const MAX_ADMIN_LEVEL = appConfig.multiCountry ? 3 : 2;
-const admin0Offset = multiCountry ? 0 : 1;
-const boundaryLayer = getBoundaryLayersByAdminLevel(MAX_ADMIN_LEVEL);
+const availableAdminLevels = multiCountry ? [0, 1, 2] : [1, 2];
+const boundaryLayer = getBoundaryLayersByAdminLevel();
 
 const getProperties = (
   layerData: LayerData<BoundaryLayerProps>['data'],
@@ -99,13 +98,20 @@ const styles = () =>
     },
   });
 
-interface PopupChartProps extends WithStyles<typeof styles> {
+interface PopupChartsProps extends WithStyles<typeof styles> {
   popup: MapTooltipState;
   setPopupTitle: React.Dispatch<React.SetStateAction<string>>;
+  adminLevel: AdminLevel | undefined;
+  setAdminLevel: React.Dispatch<React.SetStateAction<AdminLevel | undefined>>;
 }
-type AdminLevel = 0 | 1 | 2;
 
-const PopupChart = ({ popup, setPopupTitle, classes }: PopupChartProps) => {
+const PopupCharts = ({
+  popup,
+  setPopupTitle,
+  adminLevel,
+  setAdminLevel,
+  classes,
+}: PopupChartsProps) => {
   const { t } = useSafeTranslation();
   const boundaryLayerData = useSelector(layerDataSelector(boundaryLayer.id)) as
     | LayerData<BoundaryLayerProps>
@@ -113,9 +119,6 @@ const PopupChart = ({ popup, setPopupTitle, classes }: PopupChartProps) => {
   const { data } = boundaryLayerData || {};
   const mapState = useSelector(layersSelector);
   const dataForCsv = useRef<{ [key: string]: any[] }>({});
-  const [adminLevel, setAdminLevel] = useState<AdminLevel | undefined>(
-    undefined,
-  );
 
   const adminLevelsNames = useCallback(() => {
     const locationName = isEnglishLanguageSelected(i18n)
@@ -125,7 +128,7 @@ const PopupChart = ({ popup, setPopupTitle, classes }: PopupChartProps) => {
 
     const adminLevelLimit =
       adminLevel === undefined
-        ? MAX_ADMIN_LEVEL
+        ? availableAdminLevels.length
         : adminLevel + (multiCountry ? 1 : 0);
     // If adminLevel is undefined, return the whole array
     // eslint-disable-next-line fp/no-mutating-methods
@@ -169,7 +172,9 @@ const PopupChart = ({ popup, setPopupTitle, classes }: PopupChartProps) => {
                 size="small"
                 className={classes.selectLevelButton}
                 onClick={() =>
-                  setAdminLevel((index + admin0Offset) as 0 | 1 | 2)
+                  setAdminLevel(
+                    (index + Math.min(...availableAdminLevels)) as AdminLevel,
+                  )
                 }
               >
                 <div className={classes.selectLevelButtonValue}>
@@ -183,64 +188,62 @@ const PopupChart = ({ popup, setPopupTitle, classes }: PopupChartProps) => {
           )}
         </div>
       ) : (
-        <>
-          <div className={classes.chartsContainer}>
-            <IconButton
-              aria-label="close"
-              className={classes.closeButton}
-              onClick={() => setAdminLevel(undefined)}
-              size="small"
-            >
-              <FontAwesomeIcon icon={faTimes} />
-            </IconButton>
-            <div className={classes.charts}>
-              {filteredChartLayers.map(filteredChartLayer => (
-                <div
-                  key={filteredChartLayer.id}
-                  className={classes.chartContainer}
-                >
-                  <div className={classes.chartSection}>
-                    <ChartSection
-                      chartLayer={filteredChartLayer}
-                      adminProperties={getProperties(
-                        data as BoundaryLayerData,
-                        levelsConfiguration
-                          .find(
-                            levelConfiguration =>
-                              levelConfiguration.name === filteredChartLayer.id,
-                          )
-                          ?.levels?.find(
-                            level => level.level === adminLevel.toString(),
-                          )?.name ?? '',
-                      )}
-                      adminLevel={adminLevel}
-                      startDate={startDate as number}
-                      endDate={endDate as number}
-                      dataForCsv={dataForCsv}
-                    />
-                  </div>
-                  <div className="downloadButton">
-                    <DownloadCsvButton
-                      filesData={[
-                        {
-                          fileName: buildCsvFileName([
-                            multiCountry ? countryAdmin0Id : country,
-                            ...adminLevelsNames(),
-                            filteredChartLayer.title,
-                          ]),
-                          data: dataForCsv,
-                        },
-                      ]}
-                    />
-                  </div>
+        <div className={classes.chartsContainer}>
+          <IconButton
+            aria-label="close"
+            className={classes.closeButton}
+            onClick={() => setAdminLevel(undefined)}
+            size="small"
+          >
+            <FontAwesomeIcon icon={faTimes} />
+          </IconButton>
+          <div className={classes.charts}>
+            {filteredChartLayers.map(filteredChartLayer => (
+              <div
+                key={filteredChartLayer.id}
+                className={classes.chartContainer}
+              >
+                <div className={classes.chartSection}>
+                  <ChartSection
+                    chartLayer={filteredChartLayer}
+                    adminProperties={getProperties(
+                      data as BoundaryLayerData,
+                      levelsConfiguration
+                        .find(
+                          levelConfiguration =>
+                            levelConfiguration.name === filteredChartLayer.id,
+                        )
+                        ?.levels?.find(
+                          level => level.level === adminLevel.toString(),
+                        )?.name ?? '',
+                    )}
+                    adminLevel={adminLevel}
+                    startDate={startDate as number}
+                    endDate={endDate as number}
+                    dataForCsv={dataForCsv}
+                  />
                 </div>
-              ))}
-            </div>
+                <div className="downloadButton">
+                  <DownloadCsvButton
+                    filesData={[
+                      {
+                        fileName: buildCsvFileName([
+                          multiCountry ? countryAdmin0Id : country,
+                          ...adminLevelsNames(),
+                          filteredChartLayer.title,
+                        ]),
+                        data: dataForCsv,
+                      },
+                    ]}
+                  />
+                </div>
+              </div>
+            ))}
           </div>
-        </>
+        </div>
       )}
     </>
   );
 };
 
-export default memo(withStyles(styles)(PopupChart));
+export default memo(withStyles(styles)(PopupCharts));

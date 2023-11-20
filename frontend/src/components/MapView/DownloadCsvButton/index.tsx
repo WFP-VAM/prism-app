@@ -15,9 +15,7 @@ export const downloadCsv = (
   params: [MutableRefObject<{ [key: string]: any[] }>, string][],
 ) => {
   return () => {
-    params.forEach(filedata => {
-      const [dataForCsv, filename] = filedata;
-
+    params.forEach(([dataForCsv, filename]) => {
       const dateColumn = 'Date';
       const getKeyName = (key: string, chartName: string) =>
         key.endsWith('_avg')

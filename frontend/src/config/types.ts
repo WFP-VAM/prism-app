@@ -801,3 +801,5 @@ export enum PanelSize {
   large = '1000px',
   xlarge = '1400px',
 }
+
+export type AdminLevel = 0 | 1 | 2;
