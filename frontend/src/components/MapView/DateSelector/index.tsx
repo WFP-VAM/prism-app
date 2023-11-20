@@ -148,6 +148,8 @@ const DateSelector = memo(
       });
     }, [dateStrToUpperCase, locale, stateStartDate]);
 
+
+    console.log(`range ${range.length}`)
     const dateIndex = useMemo(() => {
       return findIndex(
         range,
@@ -235,6 +237,8 @@ const DateSelector = memo(
 
     const checkIntersectingDateAndShowPopup = useCallback(
       (selectedDate: Date, positionY: number) => {
+        console.log("checkIntersectingDateAndShowPopup");
+        console.time("checkIntersectingDateAndShowPopup");
         const findDateInIntersectingDates = includedDates.find(date => {
           return datesAreEqualWithoutTime(date, selectedDate);
         });
@@ -254,6 +258,7 @@ const DateSelector = memo(
             type: 'warning',
           }),
         );
+        console.timeEnd("checkIntersectingDateAndShowPopup");
       },
       [dateIndex, dispatch, includedDates, t],
     );

@@ -28,7 +28,7 @@ import { addNotification } from '../context/notificationStateSlice';
 import { fetchACLEDDates } from './acled-utils';
 import {
   StartEndDate,
-  datesAreEqualWithoutTime,
+  // datesAreEqualWithoutTime,
   generateDateItemsRange,
   generateDatesRange,
 } from './date-utils';
@@ -44,7 +44,7 @@ import { LayerDefinitions } from '../config/utils';
  * @return unix timestamp
  */
 export const getRequestDate = (
-  layerAvailableDates: DateItem[] | undefined,
+  layerAvailableDates: { [dateString: string]: DateItem } | undefined,
   selectedDate?: number,
 ): number | undefined => {
   if (!selectedDate) {
@@ -55,11 +55,12 @@ export const getRequestDate = (
     return selectedDate;
   }
 
-  const dateItem = layerAvailableDates.find(date => {
-    return datesAreEqualWithoutTime(date.displayDate, selectedDate);
-  });
+  const dateItem = layerAvailableDates[new Date(selectedDate).toDateString()]
+  // TODO - return a "latest" date in the map during creating of layerAvailableDates?
   if (!dateItem) {
-    return layerAvailableDates[layerAvailableDates.length - 1].queryDate;
+    const datesArray = Object.values(layerAvailableDates);
+    const sortedDatesArray = datesArray.sort((a, b) => b.queryDate - a.queryDate);
+    return sortedDatesArray[0]?.queryDate;
   }
 
   return dateItem.queryDate;
@@ -79,7 +80,7 @@ export const getPossibleDatesForLayer = (
   layer: DateCompatibleLayer,
   serverAvailableDates: AvailableDates,
   // eslint-disable-next-line consistent-return
-): DateItem[] => {
+): { [dateString: string]: DateItem } => {
   switch (layer.type) {
     case 'wms':
       return serverAvailableDates[layer.serverLayerName];
@@ -93,7 +94,7 @@ export const getPossibleDatesForLayer = (
     case 'static_raster':
       return serverAvailableDates[layer.id];
     default:
-      return [];
+      return {};
   }
 };
 
@@ -163,9 +164,8 @@ const getPointDataCoverage = async (
   } = layer;
 
   // TODO - merge formatUrl and queryParamsToString
-  const fetchUrlWithParams = `${url}${
-    url.includes('?') ? '&' : '?'
-  }${queryParamsToString(additionalQueryParams)}`;
+  const fetchUrlWithParams = `${url}${url.includes('?') ? '&' : '?'
+    }${queryParamsToString(additionalQueryParams)}`;
 
   switch (loader) {
     case PointDataLoader.EWS:
@@ -298,8 +298,19 @@ function generateIntermediateDateItemFromValidity(layer: ValidityLayer) {
     generateDefaultDateItem(momentDate.valueOf(), layer.validity),
   );
 
+<<<<<<< Updated upstream
   const dateItemsWithValidity = momentDates.reduce(
     (acc: DateItem[], momentDate) => {
+=======
+  // only calculate validity for dates that are less than 5 years old
+  const dateItemsWithValidity = momentDates
+    .map(date => {
+      console.log(`Date: ${date}, Diff: ${Math.abs(moment().diff(date, 'years'))}`);
+      return date;
+    })
+    .filter(date => Math.abs(moment().diff(date, 'years')) < 0.5)
+    .reduce((acc: DateItem[], momentDate) => {
+>>>>>>> Stashed changes
       // We create the start and the end date for every moment date
       let startDate = momentDate.clone();
       let endDate = momentDate.clone();
@@ -332,6 +343,8 @@ function generateIntermediateDateItemFromValidity(layer: ValidityLayer) {
       const filteredDateItems = acc.filter(
         dateItem => !daysToAdd.includes(dateItem.displayDate),
       );
+
+      console.log(`Dates: ${momentDates.length} vs ${dateItemsToAdd.length}`)
 
       return [...filteredDateItems, ...dateItemsToAdd];
     },
@@ -502,10 +515,14 @@ export async function getLayersAvailableDates(
         );
 
         if (matchingValidityLayer) {
+          const dateItems = generateIntermediateDateItemFromValidity(
+            matchingValidityLayer,
+          );
           return {
-            [layerDatesEntry[0]]: generateIntermediateDateItemFromValidity(
-              matchingValidityLayer,
-            ),
+            [layerDatesEntry[0]]: dateItems.reduce((acc, item) => {
+              acc[moment(item.displayDate).format('YYYY-MM-DD')] = item;
+              return acc;
+            }, {} as { [dateString: string]: DateItem }),
           };
         }
 
@@ -515,20 +532,28 @@ export async function getLayersAvailableDates(
         );
 
         if (matchingPathLayer) {
+          const dateItems = await generateIntermediateDateItemFromDataFile(
+            matchingPathLayer.dates,
+            matchingPathLayer.path,
+            matchingPathLayer.validityPeriod,
+          );
           return {
-            [layerDatesEntry[0]]: await generateIntermediateDateItemFromDataFile(
-              matchingPathLayer.dates,
-              matchingPathLayer.path,
-              matchingPathLayer.validityPeriod,
-            ),
+            [layerDatesEntry[0]]: dateItems.reduce((acc, item) => {
+              acc[moment(item.displayDate).format('YYYY-MM-DD')] = item;
+              return acc;
+            }, {} as { [dateString: string]: DateItem }),
           };
         }
 
-        // Genererate dates for layers with validity but not an admin_level_data type
+        // Generate dates for layers with validity but not an admin_level_data type
+        const dateItems = layerDatesEntry[1].map((d: number) =>
+          generateDefaultDateItem(d),
+        );
         return {
-          [layerDatesEntry[0]]: layerDatesEntry[1].map((d: number) =>
-            generateDefaultDateItem(d),
-          ),
+          [layerDatesEntry[0]]: dateItems.reduce((acc, item) => {
+            acc[moment(item.displayDate).format('YYYY-MM-DD')] = item;
+            return acc;
+          }, {} as { [dateString: string]: DateItem }),
         };
       },
     ),

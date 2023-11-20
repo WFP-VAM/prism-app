@@ -232,7 +232,7 @@ const AnalysisPanel = memo(
       ? selectedHazardLayer.geometry || RasterType.Raster
       : null;
     const availableHazardDates = selectedHazardLayer
-      ? getPossibleDatesForLayer(selectedHazardLayer, availableDates)?.map(
+      ? Object.values(getPossibleDatesForLayer(selectedHazardLayer, availableDates))?.map(
           d => new Date(d.displayDate),
         ) || []
       : undefined;

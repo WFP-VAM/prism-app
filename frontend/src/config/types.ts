@@ -93,16 +93,16 @@ export function makeRequired(target: any, propertyKey: string) {
 }
 
 // Generic that verifies that type `T` is a class (basically that it has a constructor)
-export type ClassType<T> = { new (...args: any): T };
+export type ClassType<T> = { new(...args: any): T };
 // create a generic type https://jpwilliams.dev/how-to-unpack-the-return-type-of-a-promise-in-typescript
 export type AsyncReturnType<T extends (...args: any) => any> =
   // if T matches this signature and returns a Promise, extract
   // U (the type of the resolved promise) and use that, or...
   T extends (...args: any) => Promise<infer U>
-    ? U // if T matches this signature and returns anything else, // extract the return value U and use that, or...
-    : T extends (...args: any) => infer U
-    ? U // if everything goes to hell, return an `any`
-    : any;
+  ? U // if T matches this signature and returns anything else, // extract the return value U and use that, or...
+  : T extends (...args: any) => infer U
+  ? U // if everything goes to hell, return an `any`
+  : any;
 
 /*
  * Get an array of required keys for a class.
@@ -657,8 +657,8 @@ export type DateItem = {
 
 export type AvailableDates = {
   [key in
-    | WMSLayerProps['serverLayerName']
-    | PointDataLayerProps['id']]: DateItem[];
+  | WMSLayerProps['serverLayerName']
+  | PointDataLayerProps['id']]: { [dateString: string]: DateItem };
 };
 
 /* eslint-disable camelcase */

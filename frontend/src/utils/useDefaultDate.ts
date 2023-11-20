@@ -32,8 +32,10 @@ export function useDefaultDate(
     availableDatesLookupKey
   ];
 
+  const sortedDates = Object.values(possibleDates).sort()
+
   const defaultDate: number | undefined =
-    possibleDates?.[possibleDates?.length - 1]?.displayDate;
+    sortedDates?.[sortedDates?.length - 1]?.displayDate;
 
   // React doesn't allow updating other components within another component
   // useEffect removes this error and updates DateSelector correctly in the lifecycle.

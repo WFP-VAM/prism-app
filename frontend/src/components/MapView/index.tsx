@@ -129,7 +129,7 @@ const MapView = memo(({ classes }: MapViewProps) => {
       .map(layer => {
         return {
           ...layer,
-          dateItems: getPossibleDatesForLayer(layer, serverAvailableDates)
+          dateItems: Object.values(getPossibleDatesForLayer(layer, serverAvailableDates))
             .filter(value => value) // null check
             .flat(),
         };
@@ -239,7 +239,7 @@ const MapView = memo(({ classes }: MapViewProps) => {
   const selectedLayerDatesDupCount = useMemo(() => {
     return countBy(
       selectedLayersWithDateSupport
-        .map(layer => getPossibleDatesForLayer(layer, serverAvailableDates))
+        .map(layer => Object.values(getPossibleDatesForLayer(layer, serverAvailableDates)))
         .filter(value => value) // null check
         .flat()
         .map(value => moment(value.displayDate).format(DEFAULT_DATE_FORMAT)),
@@ -297,10 +297,10 @@ const MapView = memo(({ classes }: MapViewProps) => {
       removeLayerFromUrl(urlLayerKey, layerToRemove.id);
       dispatch(removeLayer(layerToRemove));
 
-      const layerToKeepDates = getPossibleDatesForLayer(
+      const layerToKeepDates = Object.values(getPossibleDatesForLayer(
         layerToKeep as DateCompatibleLayer,
         serverAvailableDates,
-      ).map(dateItem => dateItem.displayDate);
+      )).map(dateItem => dateItem.displayDate);
 
       const closestDate = findClosestDate(selectedDate, layerToKeepDates);
 
@@ -318,7 +318,7 @@ const MapView = memo(({ classes }: MapViewProps) => {
   const possibleDatesForLayerIncludeMomentSelectedDate = useCallback(
     (layer: DateCompatibleLayer, momentSelectedDate: moment.Moment) => {
       // we convert to date strings, so hh:ss is irrelevant
-      return getPossibleDatesForLayer(layer, serverAvailableDates)
+      return Object.values(getPossibleDatesForLayer(layer, serverAvailableDates))
         .map(dateItem =>
           moment(dateItem.displayDate).format(DEFAULT_DATE_FORMAT),
         )
