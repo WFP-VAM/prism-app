@@ -206,7 +206,7 @@ const ChartsPanel = memo(
     const [selectedAdmin1Area, setSelectedAdmin1Area] = useState('');
     const [selectedAdmin2Area, setSelectedAdmin2Area] = useState('');
     const [adminLevel, setAdminLevel] = useState<AdminLevelType>(
-      countryAdmin0Id ? 0 : 1,
+      (countryAdmin0Id ? 0 : 1) as AdminLevelType,
     );
     // second (compared) location state
     const [secondAdmin0Key, setSecondAdmin0Key] = useState<AdminCodeString>(
@@ -225,7 +225,7 @@ const ChartsPanel = memo(
       '',
     );
     const [secondAdminLevel, setSecondAdminLevel] = useState<AdminLevelType>(
-      countryAdmin0Id ? 0 : 1,
+      (countryAdmin0Id ? 0 : 1) as AdminLevelType,
     );
 
     const [selectedLayerTitles, setSelectedLayerTitles] = useState<
