@@ -49,6 +49,9 @@ async def download_report(
         page.set_default_timeout(PAGE_TIMEOUT)
         await page.goto(url)
 
+        # switch to English
+        await page.get_by_role("button", name="en").click()
+
         # make sure we're on the right tab
         await page.get_by_role("tab", name="Layers").click()
 

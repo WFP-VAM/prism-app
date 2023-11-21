@@ -11,7 +11,12 @@ import { omit } from 'lodash';
 import React, { memo, useCallback, useEffect, useMemo, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { appConfig } from 'config';
-import { ChartConfig, DatasetField, WMSLayerProps } from 'config/types';
+import {
+  AdminLevelType,
+  ChartConfig,
+  DatasetField,
+  WMSLayerProps,
+} from 'config/types';
 import {
   CHART_DATA_PREFIXES,
   DatasetRequestParams,
@@ -282,7 +287,7 @@ const styles = () =>
 export interface ChartSectionProps extends WithStyles<typeof styles> {
   chartLayer: WMSLayerProps;
   adminProperties: GeoJsonProperties;
-  adminLevel: 0 | 1 | 2;
+  adminLevel: AdminLevelType;
   startDate: number;
   endDate: number;
   dataForCsv: React.MutableRefObject<any>;
