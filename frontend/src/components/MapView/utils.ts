@@ -1,4 +1,4 @@
-import { orderBy, values } from 'lodash';
+import { orderBy, snakeCase, values } from 'lodash';
 import { Map } from 'mapbox-gl';
 import { TFunction } from 'i18next';
 import { Dispatch } from 'redux';
@@ -85,6 +85,13 @@ export const downloadToFile = (
   );
   link.setAttribute('download', `${filename}.${fileType}`);
   link.click();
+};
+
+export const buildCsvFileName = (items: string[]) => {
+  return items
+    .filter(x => !!x)
+    .map(snakeCase)
+    .join('_');
 };
 
 const sortKeys = (featureInfoProps: FeatureInfoObject): string[][] => {

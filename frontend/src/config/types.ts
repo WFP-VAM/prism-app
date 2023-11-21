@@ -237,7 +237,7 @@ export type ZonalPolygonRow = {
   [key: string]: number | string | null;
 };
 
-export type AdminLevelType = 1 | 2 | 3 | 4 | 5;
+export type AdminLevelType = 0 | 1 | 2 | 3 | 4 | 5;
 
 export interface ExposedPopulationDefinition {
   id: LayerKey;
