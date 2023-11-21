@@ -135,16 +135,6 @@ const SearchField = forwardRef(
   },
 );
 
-export interface OrderedArea {
-  children: {
-    value: AdminCodeString;
-    label: string;
-    key: string;
-  }[];
-  title: string;
-  key: string;
-}
-
 /**
  * A tree of admin boundary areas, starting from
  * a single "root" element.
@@ -234,112 +224,6 @@ export function getAdminBoundaryTree(
       0 as AdminLevelType,
     );
   }, rootNode);
-}
-
-/**
- * Converts the boundary layer data into a list of options for the dropdown
- * grouped by admin level 2, with individual sections under admin level 3.
- * args:
- * - data: the layer data from the redux state tree
- * - layer: metadata about the layer (from redux as well)
- * - search: the search string that the user has input in the search box
- * - i18nLocale: the locale (language) used
- * - layerLevel: ??
- * - parentCategoryValue: ??
- */
-export function getOrderedAreas(
-  data: LayerData<BoundaryLayerProps>['data'],
-  layer: BoundaryLayerProps,
-  search: string,
-  i18nLocale: typeof i18n,
-  layerLevel: number = 0,
-  parentCategoryValue?: string,
-): OrderedArea[] {
-  const locationLevelNames = isEnglishLanguageSelected(i18nLocale)
-    ? layer.adminLevelNames
-    : layer.adminLevelLocalNames;
-
-  if (!layer.adminLevelNames.length) {
-    console.error(
-      'Boundary layer has no admin level names. Cannot generate categories.',
-    );
-    return [];
-  }
-
-  const layerLevel1 = layerLevel || 0;
-  const layerLevel2 = layerLevel1 + 1;
-
-  // return a tree of admin boundaries on N levels, one per
-  // admin level.
-
-  let { features } = data;
-  // filter to get only layers having parentCategoryValue as parent layer
-  // when layerLevel is 0, there is only one layer loaded
-  // then parent category can't exist
-  if (parentCategoryValue && layerLevel > 0) {
-    // eslint-disable-next-line fp/no-mutation
-    features = data.features.filter(
-      feature =>
-        feature.properties?.[layer.adminLevelNames[layerLevel - 1]] ===
-        parentCategoryValue,
-    );
-  }
-
-  // Make categories based off the level of all boundaries
-  return sortBy(
-    features
-      .reduce<OrderedArea[]>((ret, feature) => {
-        // unique parent key to filter when changing the language
-        const parentKey =
-          feature.properties?.[layer.adminLevelNames[layerLevel1]];
-        const parentCategory =
-          feature.properties?.[locationLevelNames[layerLevel1]];
-
-        // unique child key to filter when changing the language
-        const childkey =
-          feature.properties?.[layer.adminLevelNames[layerLevel2]!];
-        const label =
-          feature.properties?.[locationLevelNames[layerLevel2 + 1]!];
-        const code = feature.properties?.[layer.adminCode];
-
-        if (!label || !code || !parentCategory || !parentKey) {
-          return ret;
-        }
-        // filter via search
-        const searchIncludes = (field: string) =>
-          field.toLowerCase().includes(search.toLowerCase());
-        if (
-          search &&
-          !searchIncludes(label) &&
-          !searchIncludes(code) &&
-          !searchIncludes(parentCategory) &&
-          !searchIncludes(parentKey)
-        ) {
-          return ret;
-        }
-        // add to categories if exists
-        const category = ret.find(c => c.key === parentKey);
-        if (category) {
-          // eslint-disable-next-line fp/no-mutating-methods
-          category.children.push({ value: code, label, key: childkey });
-        } else {
-          return [
-            ...ret,
-            {
-              key: parentKey,
-              title: parentCategory,
-              children: [{ value: code, label, key: childkey }],
-            },
-          ];
-        }
-        return ret;
-      }, [])
-      .map(category => ({
-        ...category,
-        children: sortBy(category.children, 'key'),
-      })),
-    'key',
-  );
 }
 
 function flattenAreaTree(

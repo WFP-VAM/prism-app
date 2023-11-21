@@ -10,7 +10,6 @@ import { sortBy } from 'lodash';
 import React, { memo, ReactNode } from 'react';
 import { BoundaryLayerProps, PanelSize, AdminCodeString } from 'config/types';
 import {
-  // OrderedArea,
   getAdminBoundaryTree,
   AdminBoundaryTree,
 } from 'components/MapView/Layers/BoundaryDropdown';
