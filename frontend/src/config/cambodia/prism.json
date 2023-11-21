@@ -1,5 +1,6 @@
 {
   "country": "Cambodia",
+  "defaultLanguage": "kh",
   "countryAdmin0Id": 44,
   "alertFormActive": false,
   "aboutPath": "data/cambodia/about.md",
