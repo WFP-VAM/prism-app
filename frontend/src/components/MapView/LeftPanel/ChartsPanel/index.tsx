@@ -67,13 +67,17 @@ function getProperties(
 ): GeoJsonProperties {
   // Return any properties, used for national level data.
   if (id === undefined || adminLevel === undefined) {
+    // TODO: this does not work in multicountry, the first feature might not
+    // be part of the country we expect, but probably not a problem as this data
+    // does not go anywhere anyway
     return layerData.features[0].properties;
   }
-  return layerData.features.filter(
+  const item = layerData.features.find(
     elem =>
       elem.properties &&
       elem.properties[boundaryLayer.adminLevelCodes[adminLevel]] === id,
-  )[0].properties;
+  );
+  return item?.properties ?? {};
 }
 
 const useStyles = makeStyles(() =>
