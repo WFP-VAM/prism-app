@@ -217,9 +217,7 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
             footer.innerHTML = `
               <div style='width:100%;height:75px;padding:8px;font-size:12px'>
                 <strong>
-                  ${dateText}${t(
-            'Sources',
-          )} WFP, UNGIWG, OCHA, GAUL, USGS, NASA, UCSB
+                  ${dateText}
                 </strong>
                 <br>
                 ${footerText}
@@ -319,12 +317,12 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
 
   const options = [
     { checked: toggles.legend, name: 'legend', label: 'Legend' },
-    { checked: toggles.footer, name: 'footer', label: 'Footer Text' },
     {
       checked: toggles.fullLayerDescription,
       name: 'fullLayerDescription',
       label: 'Full Layer Description',
     },
+    { checked: toggles.footer, name: 'footer', label: 'Footer Text' },
     // Hide options for toggling scale bar and north arrow
     // { checked: toggles.scaleBar, name: 'scaleBar', label: 'Scale Bar' },
     // { checked: toggles.northArrow, name: 'northArrow', label: 'North Arrow' },

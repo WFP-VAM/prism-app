@@ -106,25 +106,6 @@ exports[`renders as expected 1`] = `
               <mock-switch
                 checked="true"
                 color="primary"
-                name="footer"
-              />
-              <mock-typography
-                classname="MuiFormControlLabel-label"
-                component="span"
-              >
-                <mock-typography
-                  variant="h4"
-                >
-                  Footer Text
-                </mock-typography>
-              </mock-typography>
-            </label>
-            <label
-              class="MuiFormControlLabel-root"
-            >
-              <mock-switch
-                checked="true"
-                color="primary"
                 name="fullLayerDescription"
               />
               <mock-typography
@@ -135,6 +116,25 @@ exports[`renders as expected 1`] = `
                   variant="h4"
                 >
                   Full Layer Description
+                </mock-typography>
+              </mock-typography>
+            </label>
+            <label
+              class="MuiFormControlLabel-root"
+            >
+              <mock-switch
+                checked="true"
+                color="primary"
+                name="footer"
+              />
+              <mock-typography
+                classname="MuiFormControlLabel-label"
+                component="span"
+              >
+                <mock-typography
+                  variant="h4"
+                >
+                  Footer Text
                 </mock-typography>
               </mock-typography>
             </label>
