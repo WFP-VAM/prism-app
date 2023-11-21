@@ -51,10 +51,10 @@ exports[`renders as expected 1`] = `
           class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-true"
         >
           <div
-            class="MuiBox-root MuiBox-root-5"
+            class="MuiBox-root MuiBox-root-6"
           >
             <div
-              class="MuiBox-root MuiBox-root-6 DownloadImage-title-2"
+              class="MuiBox-root MuiBox-root-7 DownloadImage-title-2"
             >
               Map Options
             </div>
@@ -115,44 +115,14 @@ exports[`renders as expected 1`] = `
                 </mock-typography>
               </mock-typography>
             </label>
-            <label
-              class="MuiFormControlLabel-root"
+            <mock-button
+              classname="DownloadImage-refreshButton-5"
+              color="primary"
+              endicon="[object Object]"
+              variant="contained"
             >
-              <mock-switch
-                checked="true"
-                color="primary"
-                name="scaleBar"
-              />
-              <mock-typography
-                classname="MuiFormControlLabel-label"
-                component="span"
-              >
-                <mock-typography
-                  variant="h4"
-                >
-                  Scale Bar
-                </mock-typography>
-              </mock-typography>
-            </label>
-            <label
-              class="MuiFormControlLabel-root"
-            >
-              <mock-switch
-                checked="true"
-                color="primary"
-                name="northArrow"
-              />
-              <mock-typography
-                classname="MuiFormControlLabel-label"
-                component="span"
-              >
-                <mock-typography
-                  variant="h4"
-                >
-                  North Arrow
-                </mock-typography>
-              </mock-typography>
-            </label>
+              Refresh Image
+            </mock-button>
             <mock-button
               classname="DownloadImage-gutter-4"
               color="primary"
