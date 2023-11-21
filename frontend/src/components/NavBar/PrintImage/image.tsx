@@ -6,13 +6,16 @@ import {
   Button,
   createStyles,
   Dialog,
+  DialogActions,
   DialogContent,
   DialogTitle,
   FormControlLabel,
   Grid,
+  IconButton,
   Menu,
   MenuItem,
   Switch,
+  TextField,
   Theme,
   Typography,
   WithStyles,
@@ -24,6 +27,8 @@ import GetAppIcon from '@material-ui/icons/GetApp';
 import { legendListId } from 'components/MapView/Legends';
 import moment from 'moment';
 import RefreshIcon from '@material-ui/icons/Refresh';
+import EditIcon from '@material-ui/icons/Edit';
+import CloseIcon from '@material-ui/icons/Close';
 import {
   dateRangeSelector,
   mapSelector,
@@ -31,10 +36,13 @@ import {
 import { useSafeTranslation } from '../../../i18n';
 import { downloadToFile } from '../../MapView/utils';
 
+const DEFAULT_FOOTER_TEXT =
+  'The designations employed and the presentation of material in the map(s) do not imply the expression of any opinion on the part of WFP concerning the legal of constitutional status of any country, territory, city, or sea, or concerning the delimitation of its frontiers or boundaries.';
+
 const canvasPreviewContainerId = 'canvas-preview-container';
 
 function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
-  const { t } = useSafeTranslation();
+  const { t, i18n } = useSafeTranslation();
   const selectedMap = useSelector(mapSelector);
   const dateRange = useSelector(dateRangeSelector);
 
@@ -51,6 +59,15 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
     downloadMenuAnchorEl,
     setDownloadMenuAnchorEl,
   ] = React.useState<HTMLElement | null>(null);
+  const [openFooterEdit, setOpenFooterEdit] = React.useState(false);
+  const [footerText, setFooterText] = React.useState(() =>
+    t(DEFAULT_FOOTER_TEXT),
+  );
+  const [canRefresh, setCanRefresh] = React.useState(false);
+
+  React.useEffect(() => {
+    setFooterText(t(DEFAULT_FOOTER_TEXT));
+  }, [i18n.language, t]);
 
   const refreshImage = async () => {
     if (open && selectedMap) {
@@ -74,6 +91,10 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
       previewRef.current = canvas;
 
       if (canvas) {
+        const footerTextHeight = 90;
+        let scalerBarLength = 0;
+        const scaleBarGap = 10;
+
         canvas.setAttribute('width', activeLayers.width.toString());
         canvas.setAttribute('height', activeLayers.height.toString());
         const context = canvas.getContext('2d');
@@ -155,6 +176,9 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
             const html = document.createElement('div');
 
             // eslint-disable-next-line fp/no-mutation
+            scalerBarLength = elem.offsetWidth;
+
+            // eslint-disable-next-line fp/no-mutation
             html.style.width = `${elem.offsetWidth + 2}px`;
 
             html.appendChild(elem);
@@ -164,8 +188,10 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
             const c = await html2canvas(html);
             offScreenContext.drawImage(
               c,
-              activeLayers.width - (10 + elem.offsetWidth),
-              activeLayers.height - 120,
+              activeLayers.width - (scaleBarGap + elem.offsetWidth),
+              activeLayers.height -
+                30 -
+                (toggles.footer ? footerTextHeight : 0),
             );
             document.body.removeChild(html);
           }
@@ -175,12 +201,16 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
         if (toggles.footer) {
           const footer = document.createElement('div');
           const dateText = dateRange
-            ? `Layers represent data ${
+            ? `${t('Layers represent data')} ${
                 dateRange.startDate && dateRange.endDate
-                  ? `from ${moment(dateRange.startDate).format(
+                  ? `${t('from')} ${moment(dateRange.startDate).format(
                       'YYYY-MM-DD',
-                    )} to ${moment(dateRange.endDate).format('YYYY-MM-DD')}`
-                  : `on ${moment(dateRange.startDate).format('YYYY-MM-DD')}`
+                    )} ${t('to')} ${moment(dateRange.endDate).format(
+                      'YYYY-MM-DD',
+                    )}`
+                  : `${t('on')} ${moment(dateRange.startDate).format(
+                      'YYYY-MM-DD',
+                    )}`
               }. `
             : '';
           // eslint-disable-next-line
@@ -190,28 +220,36 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
                   ${dateText}Sources WFP, UNGIWG, OCHA, GAUL, USGS, NASA, UCSB
                 </strong>
                 <br>
-                The designations employed and the presentation of material in the map(s)
-                do not imply the expression of any opinion on the part of WFP concerning
-                the legal of constitutional status of any country, territory, city, or sea,
-                or concerning the delimitation of its frontiers or boundaries.
+                ${footerText}
               </div>
             `;
           document.body.appendChild(footer);
           const c = await html2canvas(footer);
-          offScreenContext.drawImage(c, 0, activeLayers.height - 90);
+          offScreenContext.drawImage(
+            c,
+            0,
+            activeLayers.height - footerTextHeight,
+          );
           document.body.removeChild(footer);
         }
 
         if (toggles.northArrow) {
           const image = new Image();
+          const imageWidth = 40;
+          const imageHeight = 60;
           // eslint-disable-next-line fp/no-mutation
           image.onload = () => {
             offScreenContext.drawImage(
               image,
-              activeLayers.width - 65,
-              activeLayers.height - 200,
-              40,
-              60,
+              activeLayers.width -
+                scaleBarGap -
+                imageWidth / 2 -
+                scalerBarLength / 2,
+              activeLayers.height -
+                110 -
+                (toggles.footer ? footerTextHeight : 0),
+              imageWidth,
+              imageHeight,
             );
             context.drawImage(offScreenCanvas, 0, 0);
           };
@@ -291,87 +329,133 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
   ];
 
   return (
-    <Dialog
-      maxWidth="xl"
-      open={open}
-      keepMounted
-      onClose={() => handleClose()}
-      aria-labelledby="dialog-preview"
-    >
-      <DialogTitle className={classes.title} id="dialog-preview">
-        {t('Map Preview')}
-      </DialogTitle>
-      <DialogContent>
-        <Grid container>
-          <Grid item xs={10} id="canvas-preview-container" />
-          <Grid item xs>
-            <Box display="flex" flexDirection="column" pl={5}>
-              <Box
-                fontSize={14}
-                fontWeight={500}
-                mb={1}
-                className={classes.title}
-              >
-                {t('Map Options')}
+    <>
+      <Dialog
+        maxWidth="xl"
+        open={open}
+        keepMounted
+        onClose={() => handleClose()}
+        aria-labelledby="dialog-preview"
+      >
+        <DialogTitle className={classes.title} id="dialog-preview">
+          {t('Map Preview')}
+          <IconButton
+            className={classes.closeButton}
+            onClick={() => handleClose()}
+          >
+            <CloseIcon />
+          </IconButton>
+        </DialogTitle>
+        <DialogContent>
+          <Grid container>
+            <Grid item xs={10} id="canvas-preview-container" />
+            <Grid item xs>
+              <Box display="flex" flexDirection="column" pl={5}>
+                <Box
+                  fontSize={14}
+                  fontWeight={500}
+                  mb={1}
+                  className={classes.title}
+                >
+                  {t('Map Options')}
+                </Box>
+                {options.map(option => (
+                  <FormControlLabel
+                    key={option.name}
+                    control={
+                      <Switch
+                        checked={option.checked}
+                        onChange={e => {
+                          toggle(e);
+                          setCanRefresh(true);
+                        }}
+                        name={option.name}
+                        color="primary"
+                      />
+                    }
+                    label={
+                      <Typography variant="h4">{t(option.label)}</Typography>
+                    }
+                  />
+                ))}
+                <Button
+                  variant="contained"
+                  color="primary"
+                  className={classes.editFooterButton}
+                  endIcon={<EditIcon />}
+                  onClick={() => setOpenFooterEdit(true)}
+                >
+                  {t('Edit Footer Text')}
+                </Button>
+                <Button
+                  disabled={!canRefresh}
+                  variant="contained"
+                  color="primary"
+                  className={classes.gutter}
+                  endIcon={<RefreshIcon />}
+                  onClick={() => {
+                    setCanRefresh(false);
+                    refreshImage();
+                  }}
+                >
+                  {t('Refresh Image')}
+                </Button>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  className={classes.gutter}
+                  endIcon={<GetAppIcon />}
+                  onClick={e => handleDownloadMenuOpen(e)}
+                >
+                  {t('Download')}
+                </Button>
+                <Menu
+                  anchorEl={downloadMenuAnchorEl}
+                  keepMounted
+                  open={Boolean(downloadMenuAnchorEl)}
+                  onClose={handleDownloadMenuClose}
+                >
+                  <MenuItem onClick={() => download('png')}>
+                    {t('Download PNG')}
+                  </MenuItem>
+                  <MenuItem onClick={() => download('jpeg')}>
+                    {t('Download JPEG')}
+                  </MenuItem>
+                  <MenuItem onClick={() => download('pdf')}>
+                    {t('Download PDF')}
+                  </MenuItem>
+                </Menu>
               </Box>
-              {options.map(option => (
-                <FormControlLabel
-                  key={option.name}
-                  control={
-                    <Switch
-                      checked={option.checked}
-                      onChange={toggle}
-                      name={option.name}
-                      color="primary"
-                    />
-                  }
-                  label={
-                    <Typography variant="h4">{t(option.label)}</Typography>
-                  }
-                />
-              ))}
-              <Button
-                variant="contained"
-                color="primary"
-                className={classes.refreshButton}
-                endIcon={<RefreshIcon />}
-                onClick={() => refreshImage()}
-              >
-                Refresh Image
-              </Button>
-              <Button
-                variant="contained"
-                color="primary"
-                className={classes.gutter}
-                endIcon={<GetAppIcon />}
-                onClick={e => handleDownloadMenuOpen(e)}
-              >
-                Download
-              </Button>
-              <Menu
-                anchorEl={downloadMenuAnchorEl}
-                keepMounted
-                open={Boolean(downloadMenuAnchorEl)}
-                onClose={handleDownloadMenuClose}
-              >
-                <MenuItem onClick={() => download('png')}>
-                  {t('Download PNG')}
-                </MenuItem>
-                <MenuItem onClick={() => download('jpeg')}>
-                  {t('Download JPEG')}
-                </MenuItem>
-                <MenuItem onClick={() => download('pdf')}>
-                  {t('Download PDF')}
-                </MenuItem>
-              </Menu>
-              <Button onClick={() => handleClose()} color="primary">
-                {t('Cancel')}
-              </Button>
-            </Box>
+            </Grid>
           </Grid>
-        </Grid>
-      </DialogContent>
-    </Dialog>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog maxWidth="xl" open={openFooterEdit}>
+        <DialogTitle className={classes.title}>
+          {t('Edit Footer Text')}
+        </DialogTitle>
+        <DialogContent style={{ width: '40rem' }}>
+          <TextField
+            fullWidth
+            inputProps={{ style: { color: 'black' } }}
+            multiline
+            maxRows={4}
+            value={footerText}
+            onChange={e => {
+              setCanRefresh(true);
+              setFooterText(e.target.value);
+            }}
+            variant="outlined"
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setOpenFooterEdit(false)} color="primary">
+            {t('Ok')}
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </>
   );
 }
 
@@ -386,9 +470,15 @@ const styles = (theme: Theme) =>
     gutter: {
       marginBottom: 10,
     },
-    refreshButton: {
+    editFooterButton: {
       marginTop: 20,
       marginBottom: 10,
+    },
+    closeButton: {
+      position: 'absolute',
+      right: theme.spacing(1),
+      top: theme.spacing(1),
+      color: theme.palette.grey[500],
     },
   });
 

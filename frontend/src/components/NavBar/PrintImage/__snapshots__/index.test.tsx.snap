@@ -38,6 +38,29 @@ exports[`renders as expected 1`] = `
       id="dialog-preview"
     >
       Map Preview
+      <button
+        class="MuiButtonBase-root MuiIconButton-root DownloadImage-closeButton-6"
+        tabindex="0"
+        type="button"
+      >
+        <span
+          class="MuiIconButton-label"
+        >
+          <svg
+            aria-hidden="true"
+            class="MuiSvgIcon-root"
+            focusable="false"
+            viewBox="0 0 24 24"
+          >
+            <path
+              d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"
+            />
+          </svg>
+        </span>
+        <span
+          class="MuiTouchRipple-root"
+        />
+      </button>
     </mock-dialogtitle>
     <mock-dialogcontent>
       <div
@@ -51,10 +74,10 @@ exports[`renders as expected 1`] = `
           class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-true"
         >
           <div
-            class="MuiBox-root MuiBox-root-6"
+            class="MuiBox-root MuiBox-root-7"
           >
             <div
-              class="MuiBox-root MuiBox-root-7 DownloadImage-title-2"
+              class="MuiBox-root MuiBox-root-8 DownloadImage-title-2"
             >
               Map Options
             </div>
@@ -116,8 +139,17 @@ exports[`renders as expected 1`] = `
               </mock-typography>
             </label>
             <mock-button
-              classname="DownloadImage-refreshButton-5"
+              classname="DownloadImage-editFooterButton-5"
               color="primary"
+              endicon="[object Object]"
+              variant="contained"
+            >
+              Edit Footer Text
+            </mock-button>
+            <mock-button
+              classname="DownloadImage-gutter-4"
+              color="primary"
+              disabled="true"
               endicon="[object Object]"
               variant="contained"
             >
@@ -145,15 +177,39 @@ exports[`renders as expected 1`] = `
                 Download PDF
               </mock-menuitem>
             </mock-menu>
-            <mock-button
-              color="primary"
-            >
-              Cancel
-            </mock-button>
           </div>
         </div>
       </div>
     </mock-dialogcontent>
+  </mock-dialog>
+  <mock-dialog
+    maxwidth="xl"
+    open="false"
+  >
+    <mock-dialogtitle
+      classname="DownloadImage-title-2"
+    >
+      Edit Footer Text
+    </mock-dialogtitle>
+    <mock-dialogcontent
+      style="width: 40rem;"
+    >
+      <mock-textfield
+        fullwidth="true"
+        inputprops="[object Object]"
+        maxrows="4"
+        multiline="true"
+        value="The designations employed and the presentation of material in the map(s) do not imply the expression of any opinion on the part of WFP concerning the legal of constitutional status of any country, territory, city, or sea, or concerning the delimitation of its frontiers or boundaries."
+        variant="outlined"
+      />
+    </mock-dialogcontent>
+    <mock-dialogactions>
+      <mock-button
+        color="primary"
+      >
+        Ok
+      </mock-button>
+    </mock-dialogactions>
   </mock-dialog>
 </div>
 `;
