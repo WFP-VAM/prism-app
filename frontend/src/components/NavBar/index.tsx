@@ -16,7 +16,6 @@ import {
   WithStyles,
 } from '@material-ui/core';
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
 import { get } from 'lodash';
 import { useSafeTranslation } from 'i18n';
 import { appConfig } from 'config';
@@ -63,11 +62,9 @@ function NavBar({ classes }: NavBarProps) {
             {logo && <img className={classes.logo} src={logo} alt="logo" />}
             <Box display="flex" flexDirection="column">
               {title && (
-                <Link to="/">
-                  <Typography variant="h6" className={classes.title}>
-                    {t(title)}
-                  </Typography>
-                </Link>
+                <Typography variant="h6" className={classes.title}>
+                  {t(title)}
+                </Typography>
               )}
               {subtitle && (
                 <Typography variant="subtitle2" className={classes.subtitle}>
