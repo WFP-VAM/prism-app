@@ -151,7 +151,7 @@ export interface OrderedArea {
  */
 export interface AdminBoundaryTree {
   label: string;
-  key: AdminCodeString;
+  key: AdminCodeString; // FIXME: duplicate of adminCode below?
   adminCode: AdminCodeString;
   level: AdminLevelType;
   // children are indexed by AdminCodeStrings, not strings
@@ -175,7 +175,7 @@ interface FlattenedAdminBoundary {
  * boundaries for the given data layer.
  */
 export function getAdminBoundaryTree(
-  data: LayerData<BoundaryLayerProps>['data'],
+  data: LayerData<BoundaryLayerProps>['data'] | undefined,
   layer: BoundaryLayerProps,
   i18nLocale: typeof i18n,
 ): AdminBoundaryTree {
@@ -183,7 +183,18 @@ export function getAdminBoundaryTree(
     ? layer.adminLevelNames
     : layer.adminLevelLocalNames;
   const { adminLevelCodes } = layer;
-  const { features } = data;
+  const { features } = data || {};
+
+  const rootNode = {
+    adminCode: 'top' as AdminCodeString,
+    level: 0 as AdminLevelType,
+    key: 'root' as AdminCodeString,
+    label: 'Placeholder tree element',
+    children: {},
+  };
+  if (features === undefined) {
+    return rootNode;
+  }
 
   const addBranchToTree = (
     partialTree: AdminBoundaryTree,
@@ -215,23 +226,14 @@ export function getAdminBoundaryTree(
     return { ...partialTree, children: newChildren };
   };
 
-  return features.reduce<AdminBoundaryTree>(
-    (outputTree, feature) => {
-      return addBranchToTree(
-        outputTree,
-        adminLevelCodes,
-        feature,
-        0 as AdminLevelType,
-      );
-    },
-    {
-      adminCode: 'top' as AdminCodeString,
-      level: 0 as AdminLevelType,
-      key: 'root' as AdminCodeString,
-      label: 'Placeholder tree element',
-      children: {},
-    },
-  );
+  return features.reduce<AdminBoundaryTree>((outputTree, feature) => {
+    return addBranchToTree(
+      outputTree,
+      adminLevelCodes,
+      feature,
+      0 as AdminLevelType,
+    );
+  }, rootNode);
 }
 
 /**
@@ -393,7 +395,6 @@ export function SimpleBoundaryDropdown({
   // and the subsequent react component construction ~15ms
   // but the menu still takes ~2000ms (on rbd) to display, why?
   const areaTree = getAdminBoundaryTree(data, boundaryLayer, i18nLocale);
-  // debugger; // eslint-disable-line no-debugger
   const flattenedAreaList = flattenAreaTree(areaTree, search).slice(1);
   const rootLevel = flattenedAreaList[0]?.level;
 
