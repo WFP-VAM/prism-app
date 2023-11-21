@@ -88,7 +88,6 @@ const LocationSelector = memo(
       boundaryLayer,
       i18nLocale,
     );
-    console.log(admin0Key, adminBoundaryTree);
     const orderedAdmin0areas: () => AdminBoundaryTree[] = () => {
       if (!multiCountry) {
         return [];
@@ -98,7 +97,7 @@ const LocationSelector = memo(
         : [];
     };
 
-    const orderedAdmin1areas = () => {
+    const orderedAdmin1areas: () => AdminBoundaryTree[] = () => {
       return data && admin0Key
         ? sortBy(
             Object.values(adminBoundaryTree?.children[admin0Key]?.children),
@@ -110,7 +109,7 @@ const LocationSelector = memo(
     const selectedAdmin1Area = () =>
       adminBoundaryTree.children[admin0Key]?.children[admin1Key];
 
-    const orderedAdmin2areas = () => {
+    const orderedAdmin2areas: () => AdminBoundaryTree[] = () => {
       return data && admin0Key && admin1Key
         ? sortBy(Object.values(selectedAdmin1Area()?.children), 'label')
         : [];
@@ -138,8 +137,6 @@ const LocationSelector = memo(
     };
 
     const onChangeAdmin0Area = (event: React.ChangeEvent<HTMLInputElement>) => {
-      // The external chart key for admin 0 is stored in all its children regions
-      // here we get the first child properties
       const admin0Id = event.target.value;
 
       if (data) {
@@ -160,7 +157,6 @@ const LocationSelector = memo(
         return;
       }
 
-      console.log('changeadmin 1 area', event.target, data);
       const admin1Id = event.target.value;
       if (data) {
         setAdminProperties(getProperties(data, admin1Id, 1));
