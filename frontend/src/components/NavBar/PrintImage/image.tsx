@@ -217,7 +217,9 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
             footer.innerHTML = `
               <div style='width:100%;height:75px;padding:8px;font-size:12px'>
                 <strong>
-                  ${dateText}Sources WFP, UNGIWG, OCHA, GAUL, USGS, NASA, UCSB
+                  ${dateText}${t(
+            'Sources',
+          )} WFP, UNGIWG, OCHA, GAUL, USGS, NASA, UCSB
                 </strong>
                 <br>
                 ${footerText}
