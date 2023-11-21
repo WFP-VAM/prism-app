@@ -1,5 +1,5 @@
 import { appConfig } from 'config';
-import { AdminLevel, BoundaryLayerProps } from 'config/types';
+import { AdminLevelType, BoundaryLayerProps } from 'config/types';
 import {
   getBoundaryLayersByAdminLevel,
   getWMSLayersWithChart,
@@ -30,7 +30,9 @@ import { buildCsvFileName } from '../utils';
 
 const chartLayers = getWMSLayersWithChart();
 const { countryAdmin0Id, country, multiCountry } = appConfig;
-const availableAdminLevels = multiCountry ? [0, 1, 2] : [1, 2];
+const availableAdminLevels: AdminLevelType[] = multiCountry
+  ? [0, 1, 2]
+  : [1, 2];
 const boundaryLayer = getBoundaryLayersByAdminLevel();
 
 const getProperties = (
@@ -101,8 +103,10 @@ const styles = () =>
 interface PopupChartsProps extends WithStyles<typeof styles> {
   popup: MapTooltipState;
   setPopupTitle: React.Dispatch<React.SetStateAction<string>>;
-  adminLevel: AdminLevel | undefined;
-  setAdminLevel: React.Dispatch<React.SetStateAction<AdminLevel | undefined>>;
+  adminLevel: AdminLevelType | undefined;
+  setAdminLevel: React.Dispatch<
+    React.SetStateAction<AdminLevelType | undefined>
+  >;
 }
 
 const PopupCharts = ({
@@ -120,6 +124,7 @@ const PopupCharts = ({
   const mapState = useSelector(layersSelector);
   const dataForCsv = useRef<{ [key: string]: any[] }>({});
 
+  // TODO - simplify logic once we revamp admin levels ojbect
   const adminLevelsNames = useCallback(() => {
     const locationName = isEnglishLanguageSelected(i18n)
       ? popup.locationName
@@ -173,7 +178,8 @@ const PopupCharts = ({
                 className={classes.selectLevelButton}
                 onClick={() =>
                   setAdminLevel(
-                    (index + Math.min(...availableAdminLevels)) as AdminLevel,
+                    (index +
+                      Math.min(...availableAdminLevels)) as AdminLevelType,
                   )
                 }
               >

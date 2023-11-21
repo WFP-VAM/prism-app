@@ -12,7 +12,7 @@ import React, { memo, useCallback, useEffect, useMemo, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { appConfig } from 'config';
 import {
-  AdminLevel,
+  AdminLevelType,
   ChartConfig,
   DatasetField,
   WMSLayerProps,
@@ -287,7 +287,7 @@ const styles = () =>
 export interface ChartSectionProps extends WithStyles<typeof styles> {
   chartLayer: WMSLayerProps;
   adminProperties: GeoJsonProperties;
-  adminLevel: AdminLevel;
+  adminLevel: AdminLevelType;
   startDate: number;
   endDate: number;
   dataForCsv: React.MutableRefObject<any>;

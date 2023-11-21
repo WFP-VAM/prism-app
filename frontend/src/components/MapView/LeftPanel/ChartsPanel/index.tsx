@@ -29,7 +29,7 @@ import { useSelector } from 'react-redux';
 import { TFunctionKeys } from 'i18next';
 import { appConfig } from 'config';
 import {
-  AdminLevel,
+  AdminLevelType,
   BoundaryLayerProps,
   PanelSize,
   WMSLayerProps,
@@ -191,7 +191,7 @@ const ChartsPanel = memo(
     const [admin2Key, setAdmin2Key] = useState<string>('');
     const [selectedAdmin1Area, setSelectedAdmin1Area] = useState('');
     const [selectedAdmin2Area, setSelectedAdmin2Area] = useState('');
-    const [adminLevel, setAdminLevel] = useState<AdminLevel>(
+    const [adminLevel, setAdminLevel] = useState<AdminLevelType>(
       countryAdmin0Id ? 0 : 1,
     );
     // second (compared) location state
@@ -204,7 +204,7 @@ const ChartsPanel = memo(
     const [secondSelectedAdmin2Area, setSecondSelectedAdmin2Area] = useState(
       '',
     );
-    const [secondAdminLevel, setSecondAdminLevel] = useState<AdminLevel>(
+    const [secondAdminLevel, setSecondAdminLevel] = useState<AdminLevelType>(
       countryAdmin0Id ? 0 : 1,
     );
 

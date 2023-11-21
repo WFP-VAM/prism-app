@@ -10,7 +10,7 @@ import {
 } from '@material-ui/core';
 import { tooltipSelector } from 'context/tooltipStateSlice';
 import { isEnglishLanguageSelected, useSafeTranslation } from 'i18n';
-import { AdminLevel } from 'config/types';
+import { AdminLevelType } from 'config/types';
 import PopupCharts from './PopupCharts';
 import RedirectToDMP from './RedirectToDMP';
 import PopupContent from './PopupContent';
@@ -22,7 +22,7 @@ const MapTooltip = memo(({ classes }: TooltipProps) => {
   const popupData = popup.data;
 
   const [popupTitle, setPopupTitle] = useState<string>('');
-  const [adminLevel, setAdminLevel] = useState<AdminLevel | undefined>(
+  const [adminLevel, setAdminLevel] = useState<AdminLevelType | undefined>(
     undefined,
   );
 
