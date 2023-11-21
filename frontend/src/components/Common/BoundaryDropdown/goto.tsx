@@ -3,7 +3,6 @@ import { useSelector } from 'react-redux';
 import { makeStyles, Theme } from '@material-ui/core';
 import { CenterFocusWeak } from '@material-ui/icons';
 import { useSafeTranslation } from 'i18n';
-// import BoundaryDropdown, { MapInteraction } from '.';
 import { SimpleBoundaryDropdown } from 'components/MapView/Layers/BoundaryDropdown';
 import { mapSelector } from 'context/mapStateSlice/selectors';
 
@@ -43,19 +42,17 @@ const GoToBoundaryDropdown = () => {
   const map = useSelector(mapSelector);
 
   return (
-    <>
-      <div className={styles.button}>
-        <CenterFocusWeak fontSize="small" />
-        <div className={styles.selectContainer}>
-          <SimpleBoundaryDropdown
-            className={styles.formControl}
-            labelMessage={t('Go To')}
-            map={map}
-            selectedBoundaries={[]}
-          />
-        </div>
+    <div className={styles.button}>
+      <CenterFocusWeak fontSize="small" />
+      <div className={styles.selectContainer}>
+        <SimpleBoundaryDropdown
+          className={styles.formControl}
+          labelMessage={t('Go To')}
+          map={map}
+          selectedBoundaries={[]}
+        />
       </div>
-    </>
+    </div>
   );
 };
 
