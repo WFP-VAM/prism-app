@@ -1,6 +1,6 @@
 ### Description
 
-This fixes issue [enter issue number].
+This fixes #issueNumber.
 
 <!-- what this does -->
 
