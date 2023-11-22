@@ -27,6 +27,7 @@ import BoundaryDropdown from 'components/MapView/Layers/BoundaryDropdown';
 import { getSelectedBoundaries } from 'context/mapSelectionLayerStateSlice';
 import { addNotification } from 'context/notificationStateSlice';
 import { useSafeTranslation } from 'i18n';
+import { ALERT_API_URL } from 'utils/constants';
 
 // Not fully RFC-compliant, but should filter out obviously-invalid emails.
 // Source: https://stackoverflow.com/questions/46155/how-to-validate-an-email-address-in-javascript
@@ -36,10 +37,6 @@ const EMAIL_REGEX: RegExp = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)
 // depending on if the downstream API has the capability.
 // For now it can be permanently enabled.
 const ALERT_FORM_ENABLED = true;
-
-// TODO: Dynamic switch between local/production URLs, and consolidate this into util class
-const ALERT_API_URL = 'https://prism-api.ovio.org/alerts';
-// const ALERT_API_URL = 'http://localhost:80/alerts';
 
 const boundaryLayer = getBoundaryLayerSingleton();
 

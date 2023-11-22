@@ -823,7 +823,6 @@
       "below": -25
     },
     "api": {
-      "url": "https://prism-api.ovio.org/stats",
       "zones_url": "https://prism-admin-boundaries.s3.us-east-2.amazonaws.com/mng_admin_boundaries.json",
       "group_by": "ADM2_PCODE"
     },
@@ -862,7 +861,6 @@
       "above": 3
     },
     "api": {
-      "url": "https://prism-api.ovio.org/stats",
       "zones_url": "https://prism-admin-boundaries.s3.us-east-2.amazonaws.com/mng_admin_boundaries.json",
       "group_by": "ADM1_PCODE"
     },
@@ -887,7 +885,6 @@
     "title": "Livestock exposed to very high dzud risk (soum)",
     "type": "impact",
     "api": {
-      "url": "https://prism-api.ovio.org/stats",
       "zones_url": "https://prism-admin-boundaries.s3.us-east-2.amazonaws.com/mng_admin_boundaries.json",
       "group_by": "ADM2_PCODE"
     },
@@ -917,7 +914,6 @@
     "title": "Livestock exposed to drought in thousands (soum)",
     "type": "impact",
     "api": {
-      "url": "https://prism-api.ovio.org/stats",
       "zones_url": "https://prism-admin-boundaries.s3.us-east-2.amazonaws.com/mng_admin_boundaries.json",
       "group_by": "ADM2_PCODE"
     },
@@ -960,7 +956,6 @@
       "below": -25
     },
     "api": {
-      "url": "https://prism-api.ovio.org/stats",
       "zones_url": "https://prism-admin-boundaries.s3.us-east-2.amazonaws.com/mng_admin_boundaries.json",
       "group_by": "ADM2_PCODE"
     },

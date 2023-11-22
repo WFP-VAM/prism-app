@@ -298,8 +298,10 @@ function generateIntermediateDateItemFromValidity(layer: ValidityLayer) {
     generateDefaultDateItem(momentDate.valueOf(), layer.validity),
   );
 
-  const dateItemsWithValidity = momentDates.reduce(
-    (acc: DateItem[], momentDate) => {
+  // only calculate validity for dates that are less than 5 years old
+  const dateItemsWithValidity = momentDates
+    .filter(date => moment().diff(date, 'years') < 5)
+    .reduce((acc: DateItem[], momentDate) => {
       // We create the start and the end date for every moment date
       let startDate = momentDate.clone();
       let endDate = momentDate.clone();
@@ -334,9 +336,7 @@ function generateIntermediateDateItemFromValidity(layer: ValidityLayer) {
       );
 
       return [...filteredDateItems, ...dateItemsToAdd];
-    },
-    [],
-  );
+    }, []);
 
   // We sort the defaultDateItems and the dateItemsWithValidity and we order by displayDate to filter the duplicates
   // or the overlapping dates

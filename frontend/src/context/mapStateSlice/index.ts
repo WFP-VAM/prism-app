@@ -99,7 +99,7 @@ export const mapStateSlice = createSlice({
 
       const filteredLayers = layers.filter(layer => keepLayer(layer, payload));
 
-      // Keep boundary layers at the top of our stack
+      // Keep boundary layers at the top of our stack and remove duplicates
       const newLayers =
         payload.type === 'boundary'
           ? [...layersToAdd, ...filteredLayers]
@@ -156,17 +156,6 @@ export const mapStateSlice = createSlice({
       ...rest,
       errors: errors.filter(msg => msg !== payload),
     }),
-
-    updateLayerOpacity: (
-      { layers, ...rest },
-      { payload }: PayloadAction<Pick<LayerType, 'id' | 'opacity'>>,
-    ) => ({
-      ...rest,
-      layers: layers.map(layer => ({
-        ...layer,
-        opacity: layer.id === payload.id ? payload.opacity : layer.opacity,
-      })),
-    }),
   },
   extraReducers: builder => {
     builder.addCase(
@@ -210,8 +199,6 @@ export const {
   removeLayer,
   updateDateRange,
   setMap,
-  // TODO unused
-  updateLayerOpacity,
   removeLayerData,
   setBoundaryRelationData,
 } = mapStateSlice.actions;

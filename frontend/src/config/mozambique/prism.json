@@ -1,5 +1,6 @@
 {
   "country": "Mozambique",
+  "defaultLanguage": "en",
   "countryAdmin0Id": 170,
   "alertFormActive": false,
   "hidePanel": false,

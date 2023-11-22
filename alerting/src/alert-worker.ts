@@ -1,11 +1,15 @@
 import { isNaN } from 'lodash';
+import Bluebird from 'bluebird';
+import nodeFetch from 'node-fetch';
 import { createConnection, Repository } from 'typeorm';
-import { ANALYSIS_API_URL } from './constants';
+import { API_URL } from './constants';
 import { Alert } from './entities/alerts.entity';
 import { calculateBoundsForAlert } from './utils/analysis-utils';
 import { sendEmail } from './utils/email';
 import { fetchCoverageLayerDays, formatUrl, WMS } from 'prism-common';
 
+// @ts-ignore
+global.fetch = nodeFetch;
 
 async function processAlert(alert: Alert, alertRepository: Repository<Alert>) {
   const {
@@ -15,6 +19,7 @@ async function processAlert(alert: Alert, alertRepository: Repository<Alert>) {
     title,
     id: hazardLayerId,
   } = alert.alertConfig;
+
   const {
     id,
     alertName,
@@ -24,15 +29,26 @@ async function processAlert(alert: Alert, alertRepository: Repository<Alert>) {
     prismUrl,
     active,
   } = alert;
-  const availableDates =
-    type === 'wms'
-      ? await new WMS(`${baseUrl}/wms`).getLayerDays()
+
+  let availableDates;
+  let layerAvailableDates = [];
+  try {
+    availableDates = type === 'wms'
+      ? await new WMS(`${baseUrl}/wms`.replace(/([^:]\/)\/+/g, "$1")).getLayerDays()
       : await fetchCoverageLayerDays(baseUrl);
-  const layerAvailableDates = availableDates[serverLayerName];
+    layerAvailableDates = availableDates[serverLayerName];
+  } catch (error) {
+    console.warn(`Failed to fetch available dates for ${baseUrl} ${serverLayerName}: ${(error as Error).message}`);
+  }
+
+  if (!layerAvailableDates) {
+    console.warn(`No dates available for ${baseUrl} ${serverLayerName}.`);
+    return;
+  }
+
   const maxDate = new Date(Math.max(...(layerAvailableDates || [])));
 
   if (
-    !active ||
     isNaN(maxDate.getTime()) ||
     (lastTriggered && lastTriggered >= maxDate) ||
     createdAt >= maxDate
@@ -43,7 +59,7 @@ async function processAlert(alert: Alert, alertRepository: Repository<Alert>) {
   const alertMessage = await calculateBoundsForAlert(maxDate, alert);
 
   // Use the URL API to create the url and perform url encoding on all character
-  const url = new URL(`/alerts/${id}`, ANALYSIS_API_URL);
+  const url = new URL(`/alerts/${id}`, API_URL);
   url.searchParams.append('deactivate', 'true');
   url.searchParams.append('email', email);
 
@@ -91,11 +107,19 @@ async function run() {
   const connection = await createConnection();
   const alertRepository = connection.getRepository(Alert);
 
-  const alerts = await alertRepository.find();
-  console.info(`Processing ${alerts.length} alerts.`);
+  const alerts = await alertRepository.find({ where: { active: true } });
+  console.info(`Processing ${alerts.length} active alerts.`);
 
-  await Promise.all(
-    alerts.map(async (alert) => processAlert(alert, alertRepository)),
+  await Bluebird.map(
+    alerts,
+    async (alert) => {
+      try {
+        await processAlert(alert, alertRepository);
+      } catch (error) {
+        console.error(`Error processing alert ${alert.id}:`, error);
+      }
+    },
+    { concurrency: 5 },
   );
 }
 

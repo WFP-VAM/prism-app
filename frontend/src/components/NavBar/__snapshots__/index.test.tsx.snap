@@ -20,8 +20,6 @@ exports[`renders as expected 1`] = `
           >
             <mock-typography
               classname="NavBar-title-4"
-              component="[object Object]"
-              to="/"
               variant="h6"
             >
               PRISM
