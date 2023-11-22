@@ -3552,7 +3552,7 @@ exports[`renders as expected 1`] = `
                     class="makeStyles-selectContainer-130"
                   >
                     <mock-circularprogress
-                      color="secondary"
+                      color="inherit"
                       size="24"
                     />
                   </div>

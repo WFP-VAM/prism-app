@@ -269,7 +269,7 @@ export function SimpleBoundaryDropdown({
   const { data } = boundaryLayerData || {};
 
   if (!data) {
-    return <CircularProgress size={24} color="secondary" />;
+    return <CircularProgress size={24} color="inherit" />;
   }
 
   // building the tree and flattening it takes about 8-10ms
