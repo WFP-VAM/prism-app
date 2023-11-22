@@ -60,14 +60,37 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
     setDownloadMenuAnchorEl,
   ] = React.useState<HTMLElement | null>(null);
   const [openFooterEdit, setOpenFooterEdit] = React.useState(false);
-  const [footerText, setFooterText] = React.useState(() =>
-    t(DEFAULT_FOOTER_TEXT),
-  );
+  const [footerText, setFooterText] = React.useState('');
   const [canRefresh, setCanRefresh] = React.useState(false);
 
   React.useEffect(() => {
-    setFooterText(t(DEFAULT_FOOTER_TEXT));
-  }, [i18n.language, t]);
+    const getDateText = (): string => {
+      if (!dateRange) {
+        return '';
+      }
+      return `${t('Layers represent data')} ${
+        dateRange.startDate && dateRange.endDate
+          ? `${t('from')} ${moment(dateRange.startDate).format(
+              'YYYY-MM-DD',
+            )} ${t('to')} ${moment(dateRange.endDate).format('YYYY-MM-DD')}`
+          : `${t('on')} ${moment(dateRange.startDate).format('YYYY-MM-DD')}`
+      }. `;
+    };
+    setFooterText(`${getDateText()} ${t(DEFAULT_FOOTER_TEXT)}`);
+  }, [i18n.language, t, dateRange]);
+
+  const createFooterElement = (
+    inputFooterText: string = t(DEFAULT_FOOTER_TEXT),
+  ): HTMLDivElement => {
+    const footer = document.createElement('div');
+    // eslint-disable-next-line fp/no-mutation
+    footer.innerHTML = `
+      <div style='width:100%;height:75px;padding:8px;font-size:12px'>
+        ${inputFooterText}
+      </div>
+    `;
+    return footer;
+  };
 
   const refreshImage = async () => {
     if (open && selectedMap) {
@@ -199,30 +222,7 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
 
         // toggle footer
         if (toggles.footer) {
-          const footer = document.createElement('div');
-          const dateText = dateRange
-            ? `${t('Layers represent data')} ${
-                dateRange.startDate && dateRange.endDate
-                  ? `${t('from')} ${moment(dateRange.startDate).format(
-                      'YYYY-MM-DD',
-                    )} ${t('to')} ${moment(dateRange.endDate).format(
-                      'YYYY-MM-DD',
-                    )}`
-                  : `${t('on')} ${moment(dateRange.startDate).format(
-                      'YYYY-MM-DD',
-                    )}`
-              }. `
-            : '';
-          // eslint-disable-next-line
-            footer.innerHTML = `
-              <div style='width:100%;height:75px;padding:8px;font-size:12px'>
-                <strong>
-                  ${dateText}
-                </strong>
-                <br>
-                ${footerText}
-              </div>
-            `;
+          const footer = createFooterElement(footerText);
           document.body.appendChild(footer);
           const c = await html2canvas(footer);
           offScreenContext.drawImage(
@@ -384,6 +384,7 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
                   className={classes.editFooterButton}
                   endIcon={<EditIcon />}
                   onClick={() => setOpenFooterEdit(true)}
+                  disabled={!toggles.footer}
                 >
                   {t('Edit Footer Text')}
                 </Button>
