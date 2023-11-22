@@ -57,7 +57,7 @@ function LayerDownloadOptions({
   const { startDate: selectedDate } = useSelector(dateRangeSelector);
   const serverAvailableDates = useSelector(availableDatesSelector);
   const layerAvailableDates = serverAvailableDates[layer.id];
-  const queryDate = selected ? getRequestDate(layerAvailableDates, selectedDate, "Download options") : undefined ;
+  const queryDate = selected ? getRequestDate(layerAvailableDates, selectedDate) : undefined;
 
   const adminLevelLayerData = useSelector(
     layerDataSelector(layer.id, queryDate),
