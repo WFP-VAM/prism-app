@@ -15,70 +15,6 @@ import PopupCharts from './PopupCharts';
 import RedirectToDMP from './RedirectToDMP';
 import PopupContent from './PopupContent';
 
-const MapTooltip = memo(({ classes }: TooltipProps) => {
-  const popup = useSelector(tooltipSelector);
-  const { i18n } = useSafeTranslation();
-
-  const popupData = popup.data;
-
-  const [popupTitle, setPopupTitle] = useState<string>('');
-  const [adminLevel, setAdminLevel] = useState<AdminLevelType | undefined>(
-    undefined,
-  );
-
-  const defaultPopupTitle = useMemo(() => {
-    if (isEnglishLanguageSelected(i18n)) {
-      return popup.locationName;
-    }
-    return popup.locationLocalName;
-  }, [i18n, popup.locationLocalName, popup.locationName]);
-
-  const renderedPopupLoader = useMemo(() => {
-    if (!popup.wmsGetFeatureInfoLoading) {
-      return null;
-    }
-    return <LinearProgress />;
-  }, [popup.wmsGetFeatureInfoLoading]);
-
-  return useMemo(() => {
-    if (!popup.showing || !popup.coordinates) {
-      return null;
-    }
-    return (
-      <Popup coordinates={popup.coordinates} className={classes.popup}>
-        {adminLevel === undefined && (
-          <RedirectToDMP
-            dmpDisTyp={popupData.dmpDisTyp}
-            dmpSubmissionId={popupData.dmpSubmissionId}
-          />
-        )}
-        <Typography variant="h4" color="inherit" className={classes.title}>
-          {popupTitle || defaultPopupTitle}
-        </Typography>
-        {adminLevel === undefined && (
-          <PopupContent popupData={popupData} coordinates={popup.coordinates} />
-        )}
-        <PopupCharts
-          popup={popup}
-          setPopupTitle={setPopupTitle}
-          adminLevel={adminLevel}
-          setAdminLevel={setAdminLevel}
-        />
-        {renderedPopupLoader}
-      </Popup>
-    );
-  }, [
-    classes.popup,
-    classes.title,
-    popup,
-    defaultPopupTitle,
-    renderedPopupLoader,
-    popupTitle,
-    adminLevel,
-    popupData,
-  ]);
-});
-
 const styles = () =>
   createStyles({
     phasePopulationTable: {
@@ -117,6 +53,65 @@ const styles = () =>
     },
   });
 
-export interface TooltipProps extends WithStyles<typeof styles> {}
+interface TooltipProps extends WithStyles<typeof styles> {}
 
-export default withStyles(styles)(MapTooltip);
+const MapTooltip = ({ classes }: TooltipProps) => {
+  const popup = useSelector(tooltipSelector);
+  const { i18n } = useSafeTranslation();
+
+  const popupData = popup.data;
+
+  const [popupTitle, setPopupTitle] = useState<string>('');
+  const [adminLevel, setAdminLevel] = useState<AdminLevelType | undefined>(
+    undefined,
+  );
+  const [showDataset, setShowDataset] = useState<boolean>(false);
+
+  const showDetails = adminLevel === undefined && !showDataset;
+
+  const defaultPopupTitle = useMemo(() => {
+    if (isEnglishLanguageSelected(i18n)) {
+      return popup.locationName;
+    }
+    return popup.locationLocalName;
+  }, [i18n, popup.locationLocalName, popup.locationName]);
+
+  const renderedPopupLoader = useMemo(() => {
+    if (!popup.wmsGetFeatureInfoLoading) {
+      return null;
+    }
+    return <LinearProgress />;
+  }, [popup.wmsGetFeatureInfoLoading]);
+
+  if (!popup.showing || !popup.coordinates) {
+    return null;
+  }
+
+  return (
+    <Popup coordinates={popup.coordinates} className={classes.popup}>
+      {showDetails && (
+        <RedirectToDMP
+          dmpDisTyp={popupData.dmpDisTyp}
+          dmpSubmissionId={popupData.dmpSubmissionId}
+        />
+      )}
+      <Typography variant="h4" color="inherit" className={classes.title}>
+        {popupTitle || defaultPopupTitle}
+      </Typography>
+      {showDetails && (
+        <PopupContent popupData={popupData} coordinates={popup.coordinates} />
+      )}
+      <PopupCharts
+        popup={popup}
+        setPopupTitle={setPopupTitle}
+        adminLevel={adminLevel}
+        setAdminLevel={setAdminLevel}
+        showDataset={showDataset}
+        setShowDataset={setShowDataset}
+      />
+      {renderedPopupLoader}
+    </Popup>
+  );
+};
+
+export default memo(withStyles(styles)(MapTooltip));
