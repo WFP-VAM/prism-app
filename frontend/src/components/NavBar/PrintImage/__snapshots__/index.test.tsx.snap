@@ -141,6 +141,7 @@ exports[`renders as expected 1`] = `
             <mock-button
               classname="DownloadImage-editFooterButton-5"
               color="primary"
+              disabled="false"
               endicon="[object Object]"
               variant="contained"
             >
@@ -199,7 +200,7 @@ exports[`renders as expected 1`] = `
         inputprops="[object Object]"
         maxrows="4"
         multiline="true"
-        value="The designations employed and the presentation of material in the map(s) do not imply the expression of any opinion on the part of WFP concerning the legal of constitutional status of any country, territory, city, or sea, or concerning the delimitation of its frontiers or boundaries."
+        value="Layers represent data on 2023-11-22.  The designations employed and the presentation of material in the map(s) do not imply the expression of any opinion on the part of WFP concerning the legal of constitutional status of any country, territory, city, or sea, or concerning the delimitation of its frontiers or boundaries."
         variant="outlined"
       />
     </mock-dialogcontent>
