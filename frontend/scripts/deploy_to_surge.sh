@@ -4,6 +4,16 @@
 echo "Enter a space-separated list of countries:"
 read -a countries
 
+# Read the optional prefix
+echo "Enter an optional prefix for the domain (leave empty for no prefix):"
+read prefix
+
+# Add a dash to the prefix if it's not empty
+if [[ ! -z "$prefix" ]]; then
+  prefix="${prefix}-"
+fi
+
+
 # Loop over the countries
 for country in "${countries[@]}"
 do
@@ -13,5 +23,5 @@ do
 
   # Deploy the app using surge
   echo "Deploying app for $country..."
-  yarn surge --project ./build --domain prism-test-$country.surge.sh
+  yarn surge --project ./build --domain ${prefix}prism-test-$country.surge.sh
 done
