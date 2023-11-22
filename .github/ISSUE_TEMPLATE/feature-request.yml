@@ -10,12 +10,6 @@ body:
       value: |
         Thanks for taking the time to fill out this feature request!
   - type: textarea
-    id: problem
-    attributes:
-      label: Provide a clear and concise description of what the problem is.
-    validations:
-      required: true
-  - type: textarea
     id: target
     attributes:
       label: Provide a clear and concise description of what you want to happen.

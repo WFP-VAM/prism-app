@@ -1,4 +1,5 @@
-import React, { useCallback, useMemo } from 'react';
+import { IconButton, Menu, MenuItem, Tooltip } from '@material-ui/core';
+import React, { useCallback, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import {
   analysisResultSelector,
@@ -18,7 +19,6 @@ import {
   PolygonAnalysisResult,
   useAnalysisTableColumns,
 } from 'utils/analysis-utils';
-import MultiOptionsButton from 'components/Common/MultiOptionsButton';
 import {
   downloadToFile,
   getExposureAnalysisColumnsToRender,
@@ -27,6 +27,7 @@ import {
 } from 'components/MapView/utils';
 import { snakeCase } from 'lodash';
 import { getExposureAnalysisCsvData } from 'utils/csv-utils';
+import GetAppIcon from '@material-ui/icons/GetApp';
 
 function AnalysisDownloadButton() {
   const analysisResult = useSelector(analysisResultSelector);
@@ -41,6 +42,19 @@ function AnalysisDownloadButton() {
     exposureAnalysisResultSortOrderSelector,
   );
   const analysisDefinition = useSelector(getCurrentDefinition);
+
+  const [
+    downloadMenuAnchorEl,
+    setDownloadMenuAnchorEl,
+  ] = useState<HTMLElement | null>(null);
+
+  const handleDownloadMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
+    setDownloadMenuAnchorEl(event.currentTarget);
+  };
+
+  const handleDownloadMenuClose = () => {
+    setDownloadMenuAnchorEl(null);
+  };
 
   const exposureAnalysisTableData = getExposureAnalysisTableData(
     (analysisResult?.tableData || []) as TableRow[],
@@ -91,9 +105,11 @@ function AnalysisDownloadButton() {
       fileName ?? 'prism_extract',
       'application/json',
     );
+    handleDownloadMenuClose();
   }, [featureCollection, fileName]);
 
   const handleAnalysisDownloadCsv = useCallback((): void => {
+    handleDownloadMenuClose();
     if (!analysisResult) {
       return;
     }
@@ -132,19 +148,30 @@ function AnalysisDownloadButton() {
   ]);
 
   return (
-    <MultiOptionsButton
-      mainLabel={t('Download')}
-      options={[
-        {
-          label: 'GEOJSON',
-          onClick: handleAnalysisDownloadGeoJson,
-        },
-        {
-          label: 'CSV',
-          onClick: handleAnalysisDownloadCsv,
-        },
-      ]}
-    />
+    <>
+      <Tooltip title="Download">
+        <IconButton onClick={handleDownloadMenuOpen} size="small">
+          <GetAppIcon fontSize="small" />
+        </IconButton>
+      </Tooltip>
+      <Menu
+        id="download-menu"
+        anchorEl={downloadMenuAnchorEl}
+        keepMounted
+        open={Boolean(downloadMenuAnchorEl)}
+        onClose={handleDownloadMenuClose}
+      >
+        <MenuItem key="download-as-csv" onClick={handleAnalysisDownloadCsv}>
+          {t('Download as CSV')}
+        </MenuItem>
+        <MenuItem
+          key="download-as-geojson"
+          onClick={handleAnalysisDownloadGeoJson}
+        >
+          {t('Download as GeoJSON')}
+        </MenuItem>
+      </Menu>
+    </>
   );
 }
 

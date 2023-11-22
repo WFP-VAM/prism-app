@@ -4,6 +4,7 @@ import { FillPaint, LinePaint } from 'mapbox-gl';
 import 'reflect-metadata';
 import { rawLayers } from '.';
 import type { ReportKey, TableKey } from './utils';
+import type { PopupMetaData } from '../context/tooltipStateSlice';
 
 // TODO currently unused. Could be harnessed within admin levels key typing
 export type BoundaryKey = 'CODE' | 'CODE1' | 'CODE2';
@@ -236,7 +237,7 @@ export type ZonalPolygonRow = {
   [key: string]: number | string | null;
 };
 
-export type AdminLevelType = 1 | 2 | 3 | 4 | 5;
+export type AdminLevelType = 0 | 1 | 2 | 3 | 4 | 5;
 
 export interface ExposedPopulationDefinition {
   id: LayerKey;
@@ -368,10 +369,13 @@ export enum DataType {
   LabelMapping = 'labelMapping',
 }
 
+type PopupMetaDataKeys = keyof PopupMetaData;
+
 interface FeatureInfoProps {
   type: DataType;
   dataTitle: string;
   labelMap?: { [key: string]: string };
+  metadata?: PopupMetaDataKeys;
 }
 
 export enum DatesPropagation {
@@ -487,6 +491,9 @@ export class AdminLevelDataLayerProps extends CommonLayerProps {
 
   @optional
   fallbackLayerKeys?: string[];
+
+  @optional
+  requestBody?: { [key: string]: string }; // JSON body request params
 }
 
 export class StatsApi {

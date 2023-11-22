@@ -17,14 +17,14 @@ services:
       dockerfile: ./alerting/Dockerfile
     restart: always
     volumes:
-      - ./alerting:/app
-      - ./common:/common
+      - ../alerting:/app
+      - ../common:/common
     working_dir: /app
     environment:
       - POSTGRES_HOST=alerting-db
       - POSTGRES_USER=postgres
       - POSTGRES_DB=postgres
       - POSTGRES_PASSWORD=!ChangeMe!
-      - DATABASE_URL
-      - EMAIL_PASSWORD
-      - EMAIL_USER
+      - PRISM_ALERTS_DATABASE_URL
+      - PRISM_ALERTS_EMAIL_PASSWORD=${PRISM_ALERTS_EMAIL_USER} # Set from secrets in api/set_envs.sh
+      - PRISM_ALERTS_EMAIL_USER=${PRISM_ALERTS_EMAIL_USER}

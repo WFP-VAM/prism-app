@@ -1,29 +1,35 @@
+import logging
 import os
+from time import time
 from uuid import uuid4
 
 import boto3
+from app.timer import timed
 from cachetools import TTLCache, cached
 from fastapi import HTTPException
 from odc.geo.xr import write_cog
 from odc.stac import configure_rio, stac_load
 from pystac_client import Client
 
+logger = logging.getLogger(__name__)
+
 STAC_URL = "https://api.earthobservation.vam.wfp.org/stac"
 
-AWS_ACCESS_KEY_ID = os.getenv("AWS_ACCESS_KEY_ID")
-AWS_SECRET_ACCESS_KEY = os.getenv("AWS_SECRET_ACCESS_KEY")
+STAC_AWS_ACCESS_KEY_ID = os.getenv("STAC_AWS_ACCESS_KEY_ID")
+STAC_AWS_SECRET_ACCESS_KEY = os.getenv("STAC_AWS_SECRET_ACCESS_KEY")
 
 GEOTIFF_BUCKET_NAME = "prism-stac-geotiff"
 
 configure_rio(
     cloud_defaults=True,
     aws={
-        "aws_access_key_id": AWS_ACCESS_KEY_ID,
-        "aws_secret_access_key": AWS_SECRET_ACCESS_KEY,
+        "aws_access_key_id": STAC_AWS_ACCESS_KEY_ID,
+        "aws_secret_access_key": STAC_AWS_SECRET_ACCESS_KEY,
     },
 )
 
 
+@timed
 def generate_geotiff_from_stac_api(
     collection: str, bbox: [float, float, float, float], date: str
 ) -> str:
@@ -37,12 +43,17 @@ def generate_geotiff_from_stac_api(
     if not items:
         raise HTTPException(status_code=500, detail="Collection not found in stac API")
 
-    collections_dataset = stac_load(
-        items,
-        bbox=bbox,
-    )
+    try:
+        collections_dataset = stac_load(items, bbox=bbox, chunks={})
+    except Exception as e:
+        logger.warning("Failed to load dataset")
+        raise e
 
-    write_cog(collections_dataset[list(collections_dataset.keys())[0]], file_path)
+    try:
+        write_cog(collections_dataset[list(collections_dataset.keys())[0]], file_path)
+    except Exception as e:
+        logger.warning("An error occured writing file")
+        raise e
 
     return file_path
 

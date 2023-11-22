@@ -1713,6 +1713,12 @@
       "status": {
         "type": "text",
         "dataTitle": "Form status"
+      },
+      "submission_id": {
+        "metadata": "dmpSubmissionId"
+      },
+      "DisTyp": {
+        "metadata": "dmpDisTyp"
       }
     },
     "legend_text": "Number of people affected",
@@ -1720,21 +1726,31 @@
       {
         "value": 0,
         "label": "0",
-        "color": "#909090"
+        "color": "#f2f0f7"
       },
       {
         "value": 1,
-        "label": "< 5",
+        "label": "< 50",
+        "color": "#dadaeb"
+      },
+      {
+        "value": 50,
+        "label": "50 - 100",
+        "color": "#bcbddc"
+      },
+      {
+        "value": 101,
+        "label": "100 - 200",
         "color": "#9e9ac8"
       },
       {
-        "value": 5,
-        "label": "5 - 10",
+        "value": 201,
+        "label": "200 - 300",
         "color": "#756bb1"
       },
       {
-        "value": 11,
-        "label": "> 10",
+        "value": 301,
+        "label": "> 300",
         "color": "#54278f"
       }
     ]
@@ -1773,6 +1789,12 @@
       "status": {
         "type": "text",
         "dataTitle": "Form status"
+      },
+      "submission_id": {
+        "metadata": "dmpSubmissionId"
+      },
+      "DisTyp": {
+        "metadata": "dmpDisTyp"
       }
     },
     "legend_text": "Number of people affected",
@@ -1830,6 +1852,7 @@
     "feature_info_props": {
       "DisTyp": {
         "type": "labelMapping",
+        "metadata": "dmpDisTyp",
         "dataTitle": "Disaster type",
         "labelMap": {
           "3": "Storm",
@@ -1859,6 +1882,9 @@
       "status": {
         "type": "text",
         "dataTitle": "Form status"
+      },
+      "submission_id": {
+        "metadata": "dmpSubmissionId"
       }
     },
     "legend_text": "Type of disaster",

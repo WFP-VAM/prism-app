@@ -20,9 +20,9 @@ T = TypeVar("T")
 kobo_username = getenv("KOBO_USERNAME", "")
 if kobo_username == "":
     raise Exception("Missing backend parameter: KOBO_USERNAME")
-kobo_pw = getenv("KOBO_PW", "")
+kobo_pw = getenv("KOBO_PASSWORD", "")
 if kobo_pw == "":
-    raise Exception("Missing backend parameter: KOBO_PW")
+    raise Exception("Missing backend parameter: KOBO_PASSWORD")
 
 
 class KoboForm(TypedDict):
@@ -66,7 +66,7 @@ def parse_form_field(
         return float(value)
     if field_type == "integer":
         return int(value)
-    if field_type in ("datetime", "date"):
+    if field_type in ("datetime", "date", "start", "end"):
         return dtparser(value).astimezone(timezone.utc)
     if field_type == "geopoint":
         try:
@@ -120,6 +120,18 @@ def parse_form_response(
         [value for key, value in form_dict.items() if key.endswith(datetime_field)]
     )
     if datetime_value_string is None:
+        # Use the start date if the datetime field is missing.
+        datetime_value_string = datetime_value_string = get_first(
+            [value for key, value in form_dict.items() if key.endswith("start")]
+        )
+        if datetime_value_string:
+            logger.warning(
+                "datetime_field %s is missing in form: %s, using start date instead",
+                datetime_field,
+                form_dict["_id"],
+            )
+
+    if datetime_value_string is None:
         logger.warning(
             "datetime_field %s is missing in form: %s", datetime_field, form_dict
         )
@@ -140,7 +152,8 @@ def parse_form_response(
     )
 
     status = form_dict.get("_validation_status").get("label", None)  # type: ignore
-    form_data = {**form_data, **latlon_dict, "date": datetime_value, "status": status}  # type: ignore
+    submission_id = form_dict.get("_id")
+    form_data = {**form_data, **latlon_dict, "date": datetime_value, "status": status, "submission_id": submission_id}  # type: ignore
 
     logger.debug("Kobo data parsed as: %s", form_data)
 
@@ -259,8 +272,12 @@ def get_form_responses(
         date_value: datetime = form["date"]
 
         conditions = [form.get(k) == v for k, v in form_fields["filters"].items()]
-        conditions.append(begin_datetime <= date_value)
-        conditions.append(date_value < end_datetime)
+
+        if date_value is not None:
+            conditions.append(begin_datetime <= date_value)
+            conditions.append(date_value < end_datetime)
+        else:
+            logger.warning("form %s has no date value", form["submission_id"])
 
         # Geospatial filter by admin area
         if province is not None:

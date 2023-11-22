@@ -7,7 +7,7 @@
   "license": "MIT",
   "scripts": {
     "prebuild": "rimraf dist",
-    "build": "tsc -p tsconfig.build.json",
+    "build": "tsc -p tsconfig.json",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "lint": "eslint \"{src,apps,libs,test,scripts}/**/*.{ts,js}\" --max-warnings 0 --fix",
     "setup:common": "sh -c \"rimraf ./node_modules/prism-common && cd ../common && yarn install && yarn build\" && sh -c \"yarn install --check-files\"",
@@ -26,6 +26,7 @@
   },
   "dependencies": {
     "@turf/bbox": "^6.3.0",
+    "bluebird": "^3.7.2",
     "geojson": "^0.5.0",
     "lodash": "^4.17.21",
     "moment": "^2.29.4",

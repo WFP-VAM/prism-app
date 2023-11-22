@@ -1,3 +1,5 @@
+SHELL := /bin/bash
+
 build:
 	docker compose -f docker-compose.yml -f docker-compose.test.yml build
 	docker compose -f docker-compose.yml -f docker-compose.test.yml pull
@@ -6,9 +8,11 @@ api:
 	docker compose -f docker-compose.yml -f docker-compose.develop.yml up
 
 deploy:
-	docker compose build && docker-compose -f docker-compose.yml -f docker-compose.deploy.yml up -d
+	docker network create traefik_default || true
+	source set_envs.sh && docker compose build && docker compose -f docker-compose.yml -f docker-compose.deploy.yml up -d
 
 logs:
+	source set_envs.sh
 	docker compose -f docker-compose.yml -f docker-compose.deploy.yml logs -f
 
 api-lint:
@@ -29,7 +33,7 @@ api-test: test-services
 api-add-users:
 	docker compose -f docker-compose.yml -f docker-compose.develop.yml run api bash -c "python scripts/add_users.py"
 
-BACKEND_COVERAGE=pytest --cov=app --cov-config .coveragerc --cov-fail-under=30 --cov-report term-missing
+BACKEND_COVERAGE=poetry run pytest --cov=. --cov-fail-under=50 --cov-report term-missing
 api-coverage:
 	docker compose run --no-deps api ${BACKEND_COVERAGE}
 

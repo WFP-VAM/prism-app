@@ -4,9 +4,14 @@ services:
   api:
     volumes:
       - ./app:/app
+      # Use these to run the app in development mode and update depedencies
+      - ./pyproject.toml:/pyproject.toml
+      - ./poetry.lock:/poetry.lock
     build:
       context: ./
       dockerfile: ./Dockerfile
+    ports:
+      - "80:80"
     environment:
       - "RUN=uvicorn app.main:app --host 0.0.0.0 --port 80"
       - POSTGRES_HOST=host.docker.internal
@@ -14,9 +19,10 @@ services:
       - POSTGRES_DB=postgres
       - POSTGRES_PORT=54321
       - POSTGRES_PASSWORD=!ChangeMe!
-      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
-      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
+      - KOBO_PASSWORD=${KOBO_PASSWORD:?"Add a password to access KOBO data."}
+      - KOBO_USERNAME=${KOBO_USERNAME:?"Add a user to access KOBO data."}
+      - STAC_AWS_ACCESS_KEY_ID=${STAC_AWS_ACCESS_KEY_ID}
+      - STAC_AWS_SECRET_ACCESS_KEY=${STAC_AWS_SECRET_ACCESS_KEY}
     command: uvicorn app.main:app --host 0.0.0.0 --port 80 --reload
-    network_mode: "host"
     # Infinite loop, to keep it alive, for debugging
     # command: bash -c "while true; do echo 'sleeping...' && sleep 10; done"

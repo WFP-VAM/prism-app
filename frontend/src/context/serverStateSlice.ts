@@ -34,7 +34,10 @@ export const serverStateSlice = createSlice({
       ...state,
       availableDates: payload,
     }),
-    setUserAuthGlobal: (state, { payload }: PayloadAction<UserAuth>) => ({
+    setUserAuthGlobal: (
+      state,
+      { payload }: PayloadAction<ServerState['userAuth']>,
+    ) => ({
       ...state,
       userAuth: payload,
     }),
