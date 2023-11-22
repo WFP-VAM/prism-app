@@ -1,23 +1,14 @@
 import { appConfig } from 'config';
 import { AdminLevelType } from 'config/types';
 import { getWMSLayersWithChart } from 'config/utils';
-import {
-  dateRangeSelector,
-  layersSelector,
-} from 'context/mapStateSlice/selectors';
+import { layersSelector } from 'context/mapStateSlice/selectors';
 import React, { memo, useCallback, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { MapTooltipState } from 'context/tooltipStateSlice';
 import i18n, { isEnglishLanguageSelected } from 'i18n';
-import {
-  DatasetRequestParams,
-  datasetSelector,
-  loadDataset,
-} from 'context/datasetStateSlice';
-import { isAdminBoundary } from 'components/MapView/utils';
 import PopupAnalysisCharts from './PopupAnalysisCharts';
-import DatasetChart from './PopupDatasetChart';
-import ChartsList from './PopupChartsList';
+import PopupChartsList from './PopupChartsList';
+import PopupDatasetChart from './PopupDatasetChart';
 
 const chartLayers = getWMSLayersWithChart();
 const { multiCountry } = appConfig;
@@ -44,8 +35,6 @@ const PopupCharts = ({
   showDataset,
   setShowDataset,
 }: PopupChartsProps) => {
-  const dispatch = useDispatch();
-
   const mapState = useSelector(layersSelector);
 
   // TODO - simplify logic once we revamp admin levels ojbect
@@ -69,9 +58,6 @@ const PopupCharts = ({
     mapStateIds.includes(item.id),
   );
 
-  const { data: dataset, datasetParams } = useSelector(datasetSelector);
-  const { startDate: selectedDate } = useSelector(dateRangeSelector);
-
   useEffect(() => {
     if (adminLevel !== undefined) {
       setPopupTitle(adminLevelsNames().join(', '));
@@ -80,47 +66,12 @@ const PopupCharts = ({
     }
   }, [adminLevel, adminLevelsNames, setPopupTitle]);
 
-  useEffect(() => {
-    if (!datasetParams || !selectedDate) {
-      return;
-    }
-
-    if (isAdminBoundary(datasetParams)) {
-      const { code: adminCode, level } = datasetParams.boundaryProps[
-        datasetParams.id
-      ];
-      const requestParams: DatasetRequestParams = {
-        id: datasetParams.id,
-        level,
-        adminCode: adminCode || appConfig.countryAdmin0Id,
-        boundaryProps: datasetParams.boundaryProps,
-        url: datasetParams.url,
-        serverLayerName: datasetParams.serverLayerName,
-        datasetFields: datasetParams.datasetFields,
-      };
-      dispatch(loadDataset(requestParams));
-    } else {
-      const requestParams: DatasetRequestParams = {
-        date: selectedDate,
-        externalId: datasetParams.externalId,
-        triggerLevels: datasetParams.triggerLevels,
-        baseUrl: datasetParams.baseUrl,
-      };
-      dispatch(loadDataset(requestParams));
-    }
-  }, [datasetParams, dispatch, selectedDate]);
-
-  if (filteredChartLayers.length === 0 && !dataset) {
-    return null;
-  }
-
   return (
     <>
       {adminLevel === undefined && !showDataset && (
-        <ChartsList
+        <PopupChartsList
           adminLevelsNames={adminLevelsNames}
           availableAdminLevels={availableAdminLevels}
-          dataset={dataset}
           filteredChartLayers={filteredChartLayers}
           setAdminLevel={setAdminLevel}
           setShowDataset={setShowDataset}
@@ -135,7 +86,7 @@ const PopupCharts = ({
         />
       )}
       {showDataset && (
-        <DatasetChart
+        <PopupDatasetChart
           onClose={setShowDataset}
           adminLevelsNames={adminLevelsNames}
         />

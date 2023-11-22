@@ -6,12 +6,18 @@ import {
   createStyles,
   withStyles,
 } from '@material-ui/core';
+import { isAdminBoundary } from 'components/MapView/utils';
+import { appConfig } from 'config';
 import { AdminLevelType, WMSLayerProps } from 'config/types';
-import { datasetSelector } from 'context/datasetStateSlice';
-import { TableData } from 'context/tableStateSlice';
+import {
+  DatasetRequestParams,
+  datasetSelector,
+  loadDataset,
+} from 'context/datasetStateSlice';
+import { dateRangeSelector } from 'context/mapStateSlice/selectors';
 import { t } from 'i18next';
-import React, { memo } from 'react';
-import { useSelector } from 'react-redux';
+import React, { memo, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 
 const styles = () =>
   createStyles({
@@ -45,7 +51,6 @@ interface PopupChartsListProps extends WithStyles<typeof styles> {
   >;
   setShowDataset: React.Dispatch<React.SetStateAction<boolean>>;
   availableAdminLevels: AdminLevelType[];
-  dataset: TableData | undefined;
 }
 
 const PopupChartsList = ({
@@ -54,10 +59,41 @@ const PopupChartsList = ({
   setAdminLevel,
   availableAdminLevels,
   setShowDataset,
-  dataset,
   classes,
 }: PopupChartsListProps) => {
-  const { title } = useSelector(datasetSelector);
+  const dispatch = useDispatch();
+  const { title, data: dataset, datasetParams } = useSelector(datasetSelector);
+  const { startDate: selectedDate } = useSelector(dateRangeSelector);
+
+  useEffect(() => {
+    if (!datasetParams || !selectedDate) {
+      return;
+    }
+
+    if (isAdminBoundary(datasetParams)) {
+      const { code: adminCode, level } = datasetParams.boundaryProps[
+        datasetParams.id
+      ];
+      const requestParams: DatasetRequestParams = {
+        id: datasetParams.id,
+        level,
+        adminCode: adminCode || appConfig.countryAdmin0Id,
+        boundaryProps: datasetParams.boundaryProps,
+        url: datasetParams.url,
+        serverLayerName: datasetParams.serverLayerName,
+        datasetFields: datasetParams.datasetFields,
+      };
+      dispatch(loadDataset(requestParams));
+    } else {
+      const requestParams: DatasetRequestParams = {
+        date: selectedDate,
+        externalId: datasetParams.externalId,
+        triggerLevels: datasetParams.triggerLevels,
+        baseUrl: datasetParams.baseUrl,
+      };
+      dispatch(loadDataset(requestParams));
+    }
+  }, [datasetParams, dispatch, selectedDate]);
 
   return (
     <div className={classes.selectChartContainer}>
