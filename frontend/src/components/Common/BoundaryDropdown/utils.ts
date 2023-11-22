@@ -21,7 +21,7 @@ export type BoundaryRelation = {
   name: string;
   adminCode: AdminCodeString;
   parent: string;
-  level: number; // 0-indexed, so not compatible with AdminLevelType
+  level: AdminLevelType;
   children: string[];
   bbox: BBox;
 };
@@ -33,8 +33,7 @@ export type BoundaryRelation = {
 const getFeatures = (
   relations: BoundaryRelation[],
   name: string,
-  // same as AdminLevelType??
-  level: number,
+  level: AdminLevelType,
 ): BoundaryRelation[] => {
   const relation = relations.find(i => i.level === level && i.name === name);
 
@@ -44,7 +43,9 @@ const getFeatures = (
 
   // Apply function to the children of the relation.
   const relChildren: BoundaryRelation[] = relation.children
-    .map(childName => getFeatures(relations, childName, relation.level + 1))
+    .map(childName =>
+      getFeatures(relations, childName, (relation.level + 1) as AdminLevelType),
+    )
     .reduce((acc, child) => [...acc, ...child], []);
 
   return [relation, ...relChildren];
@@ -132,7 +133,7 @@ const buildRelationTree = (
         const relation: BoundaryRelation = {
           adminCode: code as AdminCodeString,
           bbox: bboxUnion,
-          level,
+          level: level as AdminLevelType,
           name: searchName,
           parent,
           children: childrenSetSorted,
@@ -166,7 +167,9 @@ export const loadBoundaryRelations = (
     layer,
   );
 
-  const adminLevelNumbers: number[] = adminLevelNames.map((_, index) => index);
+  const adminLevelNumbers = adminLevelNames.map(
+    (_, index) => index as AdminLevelType,
+  );
 
   const firstLevelRelations = relations.filter(
     rel => rel.level === adminLevelNumbers[0],

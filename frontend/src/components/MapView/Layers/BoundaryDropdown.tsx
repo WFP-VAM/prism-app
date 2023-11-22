@@ -3,15 +3,12 @@ import {
   FormControl,
   InputAdornment,
   InputLabel,
-  // ListSubheader,
   makeStyles,
   MenuItem,
   Select,
-  // styled,
   TextField,
   TextFieldProps,
   Theme,
-  // Typography,
   useMediaQuery,
 } from '@material-ui/core';
 import { sortBy } from 'lodash';
