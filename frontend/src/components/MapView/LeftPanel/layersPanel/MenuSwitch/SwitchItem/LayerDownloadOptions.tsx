@@ -36,6 +36,7 @@ import { isExposureAnalysisLoadingSelector } from 'context/analysisResultStateSl
 import { availableDatesSelector } from 'context/serverStateSlice';
 import { getRequestDate } from 'utils/server-utils';
 
+// TODO - return early when the layer is not selected.
 function LayerDownloadOptions({
   layer,
   extent,
