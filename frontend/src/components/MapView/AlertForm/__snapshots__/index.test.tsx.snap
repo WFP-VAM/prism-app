@@ -92,7 +92,7 @@ exports[`renders as expected 1`] = `
             Regions
           </mock-typography>
           <mock-circularprogress
-            color="secondary"
+            color="inherit"
             size="24"
           />
         </div>
