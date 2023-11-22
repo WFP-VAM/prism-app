@@ -298,19 +298,8 @@ function generateIntermediateDateItemFromValidity(layer: ValidityLayer) {
     generateDefaultDateItem(momentDate.valueOf(), layer.validity),
   );
 
-<<<<<<< Updated upstream
   const dateItemsWithValidity = momentDates.reduce(
     (acc: DateItem[], momentDate) => {
-=======
-  // only calculate validity for dates that are less than 5 years old
-  const dateItemsWithValidity = momentDates
-    .map(date => {
-      console.log(`Date: ${date}, Diff: ${Math.abs(moment().diff(date, 'years'))}`);
-      return date;
-    })
-    .filter(date => Math.abs(moment().diff(date, 'years')) < 0.5)
-    .reduce((acc: DateItem[], momentDate) => {
->>>>>>> Stashed changes
       // We create the start and the end date for every moment date
       let startDate = momentDate.clone();
       let endDate = momentDate.clone();
