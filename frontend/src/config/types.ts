@@ -350,12 +350,22 @@ type DatasetProps = {
   fields: DatasetField[]; // Dataset fields from json response.
 };
 
+// define some "branded" nominal types so that the TS compiler will
+// complain if we try to mix different types of strings.
+// See https://github.com/microsoft/TypeScript/wiki/FAQ#can-i-make-a-type-alias-nominal
+export type AdminCodeString = string & { 'an adminCode string': {} };
+export type AdminLevelNameString = string & {
+  'an adminLevelName string': {};
+};
+export type FilePath = string & { 'a path to a file': {} };
+
 export class BoundaryLayerProps extends CommonLayerProps {
   type: 'boundary';
-  path: string; // path to admin_boundries.json file - web or local.
-  adminCode: string;
-  adminLevelNames: string[]; // Ordered (Admin1, Admin2, ...)
-  adminLevelLocalNames: string[]; // Same as above, local to country
+  path: FilePath; // path to admin_boundries.json file - web or local.
+  adminCode: AdminCodeString; // same value as last item in adminLevelCodes below
+  adminLevelCodes: AdminCodeString[]; // Ordered as below
+  adminLevelNames: AdminLevelNameString[]; // Ordered (Admin1, Admin2, ...)
+  adminLevelLocalNames: AdminLevelNameString[]; // Same as above, local to country
   styles: LayerStyleProps; // Mapbox line and fill properties.,
 
   @optional

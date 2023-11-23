@@ -4,6 +4,7 @@
     "path": "data/cambodia/khm_bnd_admin3_gov_ed2022_w_dataviz.json",
     "opacity": 0.8,
     "admin_code": "Adm3_text",
+    "admin_level_codes": ["Adm1_text", "Adm2_text", "Adm3_text"],
     "admin_level_names": ["Adm1_Name", "Adm2_Name", "Adm3_Name"],
     "admin_level_local_names": ["Adm1_Name_", "Adm2_Name_", "Adm3_Name_"],
     "styles:": {
@@ -22,6 +23,7 @@
     "path": "data/cambodia/khm_bnd_admin1_gov_ed2022.json",
     "opacity": 0.8,
     "admin_code": "Adm1_text",
+    "admin_level_codes": ["Adm1_text"],
     "admin_level_names": ["Adm1_Name"],
     "admin_level_local_names": ["Adm1_Name_"],
     "styles:": {
@@ -40,6 +42,7 @@
     "path": "data/cambodia/khm_bnd_admin2_gov_ed2022.json",
     "opacity": 0.8,
     "admin_code": "Adm2_text",
+    "admin_level_codes": ["Adm1_text", "Adm2_text"],
     "admin_level_names": ["Adm1_Name", "Adm2_Name"],
     "admin_level_local_names": ["Adm1_Name_", "Adm2_Name_"],
     "styles:": {
