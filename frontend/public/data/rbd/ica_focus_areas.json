@@ -611,7 +611,7 @@
             "ica_area_reg": 1
         },
         {
-            "admin2Pcod": "CI1301",
+            "admin2Pcod": "CI0301",
             "ica_area_nat": 3,
             "ica_area_reg": 3
         },
@@ -656,12 +656,12 @@
             "ica_area_reg": 3
         },
         {
-            "admin2Pcod": "CI1301",
+            "admin2Pcod": "CI0301",
             "ica_area_nat": 7,
             "ica_area_reg": 7
         },
         {
-            "admin2Pcod": "CI1302",
+            "admin2Pcod": "CI0302",
             "ica_area_nat": 7,
             "ica_area_reg": 7
         },
@@ -716,7 +716,7 @@
             "ica_area_reg": 3
         },
         {
-            "admin2Pcod": "CI1302",
+            "admin2Pcod": "CI0302",
             "ica_area_nat": 3,
             "ica_area_reg": 3
         },
@@ -1031,12 +1031,12 @@
             "ica_area_reg": null
         },
         {
-            "admin2Pcod": "CI1304",
+            "admin2Pcod": "CI0304",
             "ica_area_nat": 3,
             "ica_area_reg": 3
         },
         {
-            "admin2Pcod": "CI1303",
+            "admin2Pcod": "CI0303",
             "ica_area_nat": 3,
             "ica_area_reg": 3
         },
