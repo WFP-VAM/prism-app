@@ -12,6 +12,7 @@ import {
   FormControlLabel,
   Grid,
   IconButton,
+  makeStyles,
   Menu,
   MenuItem,
   Switch,
@@ -40,6 +41,64 @@ const DEFAULT_FOOTER_TEXT =
   'The designations employed and the presentation of material in the map(s) do not imply the expression of any opinion on the part of WFP concerning the legal of constitutional status of any country, territory, city, or sea, or concerning the delimitation of its frontiers or boundaries.';
 
 const canvasPreviewContainerId = 'canvas-preview-container';
+
+const useEditTextDialogPropsStyles = makeStyles((theme: Theme) => ({
+  title: {
+    color: theme.palette.text.secondary,
+  },
+}));
+
+interface EditTextDialogProps {
+  open: boolean;
+  footerText: string;
+  onCancel: () => void;
+  onOk: (value: string) => void;
+}
+
+function EditTextDialog({
+  open,
+  footerText,
+  onCancel,
+  onOk,
+}: EditTextDialogProps) {
+  const classes = useEditTextDialogPropsStyles();
+  const { t } = useSafeTranslation();
+
+  const [value, setValue] = React.useState('');
+
+  React.useEffect(() => {
+    setValue(footerText);
+  }, [open, footerText]);
+
+  return (
+    <Dialog maxWidth="xl" open={open} onClose={() => onCancel()}>
+      <DialogTitle className={classes.title}>
+        {t('Edit Footer Text')}
+      </DialogTitle>
+      <DialogContent style={{ width: '40rem' }}>
+        <TextField
+          fullWidth
+          inputProps={{ style: { color: 'black' } }}
+          multiline
+          maxRows={4}
+          value={value}
+          onChange={e => {
+            setValue(e.target.value);
+          }}
+          variant="outlined"
+        />
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={() => onCancel()} color="secondary">
+          {t('Cancel')}
+        </Button>
+        <Button onClick={() => onOk(value)} color="primary">
+          {t('Ok')}
+        </Button>
+      </DialogActions>
+    </Dialog>
+  );
+}
 
 function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
   const { t, i18n } = useSafeTranslation();
@@ -265,7 +324,7 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
   React.useEffect(() => {
     refreshImage();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [open]);
+  }, [open, footerText]);
 
   const toggle = (event: ChangeEvent<HTMLInputElement>) => {
     setToggles(prevValues => {
@@ -432,30 +491,15 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
         </DialogContent>
       </Dialog>
 
-      <Dialog maxWidth="xl" open={openFooterEdit}>
-        <DialogTitle className={classes.title}>
-          {t('Edit Footer Text')}
-        </DialogTitle>
-        <DialogContent style={{ width: '40rem' }}>
-          <TextField
-            fullWidth
-            inputProps={{ style: { color: 'black' } }}
-            multiline
-            maxRows={4}
-            value={footerText}
-            onChange={e => {
-              setCanRefresh(true);
-              setFooterText(e.target.value);
-            }}
-            variant="outlined"
-          />
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setOpenFooterEdit(false)} color="primary">
-            {t('Ok')}
-          </Button>
-        </DialogActions>
-      </Dialog>
+      <EditTextDialog
+        open={openFooterEdit}
+        footerText={footerText}
+        onCancel={() => setOpenFooterEdit(false)}
+        onOk={(val: string) => {
+          setOpenFooterEdit(false);
+          setFooterText(val);
+        }}
+      />
     </>
   );
 }
