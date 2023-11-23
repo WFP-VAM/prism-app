@@ -1587,7 +1587,7 @@
             "ica_area_reg": 1
         },
         {
-            "admin2Pcod": "CI0301",
+            "admin2Pcod": "CI1301",
             "fs_recurrence_nat": 2,
             "fs_recurrence_reg": 1,
             "npgs_classnat": 2,
@@ -1704,7 +1704,7 @@
             "ica_area_reg": 3
         },
         {
-            "admin2Pcod": "CI0301",
+            "admin2Pcod": "CI1301",
             "fs_recurrence_nat": 1,
             "fs_recurrence_reg": 1,
             "npgs_classnat": 2,
@@ -1717,7 +1717,7 @@
             "ica_area_reg": 7
         },
         {
-            "admin2Pcod": "CI0302",
+            "admin2Pcod": "CI1302",
             "fs_recurrence_nat": 1,
             "fs_recurrence_reg": 1,
             "npgs_classnat": 2,
@@ -1860,7 +1860,7 @@
             "ica_area_reg": 3
         },
         {
-            "admin2Pcod": "CI0302",
+            "admin2Pcod": "CI1302",
             "fs_recurrence_nat": 2,
             "fs_recurrence_reg": 1,
             "npgs_classnat": 2,
@@ -2679,7 +2679,7 @@
             "ica_area_reg": "n/a"
         },
         {
-            "admin2Pcod": "CI0304",
+            "admin2Pcod": "CI1304",
             "fs_recurrence_nat": 2,
             "fs_recurrence_reg": 1,
             "npgs_classnat": 3,
@@ -2692,7 +2692,7 @@
             "ica_area_reg": 3
         },
         {
-            "admin2Pcod": "CI0303",
+            "admin2Pcod": "CI1303",
             "fs_recurrence_nat": 2,
             "fs_recurrence_reg": 1,
             "npgs_classnat": 3,
