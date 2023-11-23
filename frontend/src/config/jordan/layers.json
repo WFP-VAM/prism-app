@@ -4,6 +4,7 @@
     "path": "data/jordan/jor_admbnda_adm3_jdos_merged.json",
     "opacity": 0.8,
     "admin_code": "admin3Pcod",
+    "admin_level_codes": ["admin1Pcod", "admin2Pcod", "admin3Pcod"],
     "admin_level_names": ["admin1Name", "admin2Name", "admin3Name"],
     "admin_level_local_names": ["admin1Na_1", "admin2Na_1", "admin3Na_1"],
     "styles:": {
@@ -22,6 +23,7 @@
     "path": "data/jordan/jor_admbnda_adm2_jdos.json",
     "opacity": 0.8,
     "admin_code": "admin2Pcod",
+    "admin_level_codes": ["admin1Pcod", "admin2Pcod"],
     "admin_level_names": ["admin1Name", "admin2Name"],
     "admin_level_local_names": ["admin1Na_1", "admin2Na_1"],
     "styles:": {
@@ -40,6 +42,7 @@
     "path": "data/jordan/jor_admbnda_adm1_jdos.json",
     "opacity": 0.8,
     "admin_code": "admin1Pcod",
+    "admin_level_codes": ["admin1Pcod"],
     "admin_level_names": ["admin1Name"],
     "admin_level_local_names": ["admin1Na_1"],
     "styles:": {

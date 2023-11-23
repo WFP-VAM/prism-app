@@ -36,6 +36,7 @@ import { isExposureAnalysisLoadingSelector } from 'context/analysisResultStateSl
 import { availableDatesSelector } from 'context/serverStateSlice';
 import { getRequestDate } from 'utils/server-utils';
 
+// TODO - return early when the layer is not selected.
 function LayerDownloadOptions({
   layer,
   extent,
@@ -57,7 +58,9 @@ function LayerDownloadOptions({
   const { startDate: selectedDate } = useSelector(dateRangeSelector);
   const serverAvailableDates = useSelector(availableDatesSelector);
   const layerAvailableDates = serverAvailableDates[layer.id];
-  const queryDate = getRequestDate(layerAvailableDates, selectedDate);
+  const queryDate = selected
+    ? getRequestDate(layerAvailableDates, selectedDate)
+    : undefined;
 
   const adminLevelLayerData = useSelector(
     layerDataSelector(layer.id, queryDate),

@@ -6,10 +6,18 @@ import { store } from 'context/store';
 import Download from '.';
 
 test('renders as expected', () => {
+  const realDateNow = Date.now.bind(global.Date);
+  const dateNowStub = jest.fn(() => 1530518207007);
+  // eslint-disable-next-line fp/no-mutation
+  global.Date.now = dateNowStub;
+
   const { container } = render(
     <Provider store={store}>
       <Download />
     </Provider>,
   );
   expect(container).toMatchSnapshot();
+
+  // eslint-disable-next-line fp/no-mutation
+  global.Date.now = realDateNow;
 });

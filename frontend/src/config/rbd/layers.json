@@ -14,6 +14,7 @@
       }
     },
     "admin_code": "admin2Pcod",
+    "admin_level_codes": ["admin0Pcod", "admin1Pcod", "admin2Pcod"],
     "admin_level_names": ["admin0Name", "admin1Name", "admin2Name"],
     "admin_level_local_names": ["admin0Name", "admin1Name", "admin2Name"]
   },
@@ -32,6 +33,7 @@
       }
     },
     "admin_code": "admin1Pcod",
+    "admin_level_codes": ["admin0Pcod", "admin1Pcod"],
     "admin_level_names": ["admin0Name", "admin1Name"],
     "admin_level_local_names": ["admin0Name", "admin1Name"]
   },
@@ -50,6 +52,7 @@
       }
     },
     "admin_code": "admin0Pcod",
+    "admin_level_codes": ["admin0Pcod"],
     "admin_level_names": ["admin0Name"],
     "admin_level_local_names": ["admin0Name"]
   },

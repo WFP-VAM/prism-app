@@ -26,6 +26,7 @@ exports[`renders as expected 1`] = `
     </mock-button>
     <mock-list
       classname="memo-list-4"
+      id="legend-list"
     />
   </div>
 </div>

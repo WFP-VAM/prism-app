@@ -50,11 +50,7 @@ function PrintImage({ classes }: PrintImageProps) {
           </Typography>
         </Button>
       </div>
-      <DownloadImage
-        open={openImage}
-        previewRef={previewRef}
-        handleClose={handleClose}
-      />
+      <DownloadImage open={openImage} handleClose={handleClose} />
     </>
   );
 }
