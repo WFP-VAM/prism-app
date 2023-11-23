@@ -17,10 +17,8 @@ import {
   Typography,
 } from '@material-ui/core';
 import { GeoJsonProperties } from 'geojson';
-import { groupBy, mapKeys, snakeCase } from 'lodash';
 import React, {
   memo,
-  MutableRefObject,
   useCallback,
   useEffect,
   useMemo,
@@ -30,7 +28,12 @@ import React, {
 import { useSelector } from 'react-redux';
 import { TFunctionKeys } from 'i18next';
 import { appConfig } from 'config';
-import { BoundaryLayerProps, PanelSize, WMSLayerProps } from 'config/types';
+import {
+  AdminLevelType,
+  BoundaryLayerProps,
+  PanelSize,
+  WMSLayerProps,
+} from 'config/types';
 import {
   getBoundaryLayersByAdminLevel,
   getWMSLayersWithChart,
@@ -39,13 +42,15 @@ import { LayerData } from 'context/layers/layer-data';
 import { leftPanelTabValueSelector } from 'context/leftPanelStateSlice';
 import { layerDataSelector } from 'context/mapStateSlice/selectors';
 import { useSafeTranslation } from 'i18n';
-import { castObjectsArrayToCsv } from 'utils/csv-utils';
-import { downloadToFile } from 'components/MapView/utils';
+import { buildCsvFileName } from 'components/MapView/utils';
 import RangeSlider from 'react-range-slider-input';
+import DownloadCsvButton from 'components/MapView/DownloadCsvButton';
 import ChartSection from './ChartSection';
 import LocationSelector from './LocationSelector';
 import TimePeriodSelector from './TimePeriodSelector';
 import 'react-range-slider-input/dist/style.css';
+
+import { oneDayInMs, oneYearInMs } from '../utils';
 
 // Load boundary layer for Admin2
 // WARNING - Make sure the dataviz_ids are available in the boundary file for Admin2
@@ -92,6 +97,7 @@ const useStyles = makeStyles(() =>
     },
     layerFormControl: {
       marginTop: 30,
+      marginBottom: '2em',
       minWidth: '300px',
       maxWidth: '350px',
       '& .MuiFormLabel-root': {
@@ -116,17 +122,6 @@ const useStyles = makeStyles(() =>
       padding: '16px',
       marginTop: 0,
       paddingBottom: '1em',
-    },
-    downloadButton: {
-      backgroundColor: '#62B2BD',
-      '&:hover': {
-        backgroundColor: '#62B2BD',
-      },
-      marginTop: '2em',
-      marginLeft: '25%',
-      marginRight: '25%',
-      width: '50%',
-      '&.Mui-disabled': { opacity: 0.5 },
     },
     clearAllSelectionsButton: {
       backgroundColor: '#788489',
@@ -182,81 +177,6 @@ const menuProps: Partial<MenuProps> = {
   },
 };
 
-// We export the downloadCsv function to be tested independently
-export const downloadCsv = (
-  params: [MutableRefObject<{ [key: string]: any[] }>, string][],
-  // filename1: string,
-  // dataForSecondCsv: MutableRefObject<{ [key: string]: any[] }>,
-  // filename2: string,
-) => {
-  return () => {
-    params.forEach(filedata => {
-      const [dataForCsv, filename] = filedata;
-
-      const dateColumn = 'Date';
-      const getKeyName = (key: string, chartName: string) =>
-        key.endsWith('_avg')
-          ? `${snakeCase(chartName)}_avg`
-          : snakeCase(chartName);
-
-      const columnsNamesPerChart = Object.entries(dataForCsv.current).map(
-        ([key, value]) => {
-          const first = value[0];
-          const keys = Object.keys(first);
-          const filtered = keys.filter(x => x !== dateColumn);
-          const mapped = filtered.map(x => getKeyName(x, key));
-          return Object.fromEntries(mapped.map(x => [x, x]));
-        },
-      );
-
-      const columnsNames = columnsNamesPerChart.reduce(
-        (prev, curr) => ({ ...prev, ...curr }),
-        { [dateColumn]: dateColumn },
-      );
-
-      const merged = Object.entries(dataForCsv.current)
-        .map(([key, value]) => {
-          return value.map(x => {
-            return mapKeys(x, (v, k) =>
-              k === dateColumn ? dateColumn : getKeyName(k, key),
-            );
-          });
-        })
-        .flat();
-      if (merged.length < 1) {
-        return;
-      }
-
-      const grouped = groupBy(merged, dateColumn);
-      // The blueprint of objects array data
-      const initialObjectsArrayBlueprintData = Object.keys(columnsNames).reduce(
-        (acc: { [key: string]: string }, key) => {
-          // eslint-disable-next-line fp/no-mutation
-          acc[key] = '';
-          return acc;
-        },
-        {},
-      );
-
-      const objectsArray = Object.entries(grouped).map(([, value]) => {
-        return value.reduce(
-          (prev, curr) => ({ ...prev, ...curr }),
-          initialObjectsArrayBlueprintData,
-        );
-      });
-
-      downloadToFile(
-        {
-          content: castObjectsArrayToCsv(objectsArray, columnsNames, ','),
-          isUrl: false,
-        },
-        filename,
-        'text/csv',
-      );
-    });
-  };
-};
-
 const ChartsPanel = memo(
   ({ setPanelSize, setResultsPage }: ChartsPanelProps) => {
     const { countryAdmin0Id, country, multiCountry } = appConfig;
@@ -274,7 +194,7 @@ const ChartsPanel = memo(
     const [admin2Key, setAdmin2Key] = useState<string>('');
     const [selectedAdmin1Area, setSelectedAdmin1Area] = useState('');
     const [selectedAdmin2Area, setSelectedAdmin2Area] = useState('');
-    const [adminLevel, setAdminLevel] = useState<0 | 1 | 2>(
+    const [adminLevel, setAdminLevel] = useState<AdminLevelType>(
       countryAdmin0Id ? 0 : 1,
     );
     // second (compared) location state
@@ -287,7 +207,7 @@ const ChartsPanel = memo(
     const [secondSelectedAdmin2Area, setSecondSelectedAdmin2Area] = useState(
       '',
     );
-    const [secondAdminLevel, setSecondAdminLevel] = useState<0 | 1 | 2>(
+    const [secondAdminLevel, setSecondAdminLevel] = useState<AdminLevelType>(
       countryAdmin0Id ? 0 : 1,
     );
 
@@ -295,8 +215,6 @@ const ChartsPanel = memo(
       string[] | TFunctionKeys[]
     >([]);
 
-    const oneDayInMs = 24 * 60 * 60 * 1000;
-    const oneYearInMs = 365 * oneDayInMs;
     const [startDate1, setStartDate1] = useState<number | null>(
       new Date().getTime() - oneYearInMs * 5,
     );
@@ -306,10 +224,10 @@ const ChartsPanel = memo(
     // cheat here and shift compared dates by 1 day to avoid duplicate
     // keys in title components
     const [startDate2, setStartDate2] = useState<number | null>(
-      new Date().getTime() - oneYearInMs - oneDayInMs,
+      new Date().getTime() - oneYearInMs * 2 - oneDayInMs,
     );
     const [endDate2, setEndDate2] = useState<number | null>(
-      new Date().getTime() - oneDayInMs,
+      new Date().getTime() - oneYearInMs - oneDayInMs,
     );
     const [adminProperties, setAdminProperties] = useState<GeoJsonProperties>();
     const [secondAdminProperties, setSecondAdminProperties] = useState<
@@ -337,7 +255,7 @@ const ChartsPanel = memo(
         setShowSlider(true);
         setStartDate1(new Date().getTime() - oneYearInMs * 5);
       }
-    }, [comparePeriods, oneYearInMs]);
+    }, [comparePeriods]);
 
     const dataForCsv = useRef<{ [key: string]: any[] }>({});
     const dataForSecondCsv = useRef<{ [key: string]: any[] }>({});
@@ -345,55 +263,6 @@ const ChartsPanel = memo(
     const { t } = useSafeTranslation();
 
     const tabValue = useSelector(leftPanelTabValueSelector);
-
-    const generateCSVFilename = useCallback(() => {
-      return [
-        multiCountry ? admin0Key : country,
-        selectedAdmin1Area ?? '',
-        selectedAdmin2Area ?? '',
-        ...selectedLayerTitles,
-        comparePeriods ? 'first_period' : '',
-      ]
-        .filter(x => !!x)
-        .map(snakeCase)
-        .join('_');
-    }, [
-      admin0Key,
-      comparePeriods,
-      country,
-      multiCountry,
-      selectedAdmin1Area,
-      selectedAdmin2Area,
-      selectedLayerTitles,
-    ]);
-
-    const generateSecondCSVFilename = useCallback(() => {
-      return [
-        multiCountry ? secondAdmin0Key : country,
-        compareLocations
-          ? secondSelectedAdmin1Area ?? ''
-          : selectedAdmin1Area ?? '',
-        compareLocations
-          ? secondSelectedAdmin2Area ?? ''
-          : selectedAdmin2Area ?? '',
-        ...selectedLayerTitles,
-        comparePeriods ? 'second_period' : '',
-      ]
-        .filter(x => !!x)
-        .map(snakeCase)
-        .join('_');
-    }, [
-      country,
-      compareLocations,
-      multiCountry,
-      secondSelectedAdmin1Area,
-      selectedAdmin1Area,
-      secondAdmin0Key,
-      secondSelectedAdmin2Area,
-      selectedAdmin2Area,
-      selectedLayerTitles,
-      comparePeriods,
-    ]);
 
     const onChangeChartLayers = useCallback(
       (event: React.ChangeEvent<{ value: unknown }>) => {
@@ -717,7 +586,7 @@ const ChartsPanel = memo(
       // reset the admin 2 titles
       setAdmin2Key('');
       setSecondAdmin2Key('');
-    }, [countryAdmin0Id, oneYearInMs]);
+    }, [countryAdmin0Id]);
 
     const handleOnChangeCompareLocationsSwitch = useCallback(() => {
       if (comparePeriods) {
@@ -767,6 +636,22 @@ const ChartsPanel = memo(
       },
       [t],
     );
+
+    const firstCSVFilename = buildCsvFileName([
+      multiCountry ? admin0Key : country,
+      selectedAdmin1Area,
+      selectedAdmin2Area,
+      ...(selectedLayerTitles as string[]),
+      comparePeriods ? 'first_period' : '',
+    ]);
+
+    const secondCSVFilename = buildCsvFileName([
+      multiCountry ? secondAdmin0Key : country,
+      compareLocations ? secondSelectedAdmin1Area : selectedAdmin1Area,
+      compareLocations ? secondSelectedAdmin2Area : selectedAdmin2Area,
+      ...(selectedLayerTitles as string[]),
+      comparePeriods ? 'second_period' : '',
+    ]);
 
     if (tabIndex !== tabValue) {
       return null;
@@ -973,12 +858,17 @@ const ChartsPanel = memo(
             ))}
           </Select>
         </FormControl>
-        <Button
-          className={classes.downloadButton}
-          onClick={downloadCsv([
-            [dataForCsv, generateCSVFilename()],
-            [dataForSecondCsv, generateSecondCSVFilename()],
-          ])}
+        <DownloadCsvButton
+          filesData={[
+            {
+              fileName: firstCSVFilename,
+              data: dataForCsv,
+            },
+            {
+              fileName: secondCSVFilename,
+              data: dataForSecondCsv,
+            },
+          ]}
           disabled={
             !(
               adminProperties &&
@@ -987,9 +877,7 @@ const ChartsPanel = memo(
               selectedLayerTitles.length >= 1
             )
           }
-        >
-          <Typography variant="body2">{t('Download CSV')}</Typography>
-        </Button>
+        />
         <Button
           className={classes.clearAllSelectionsButton}
           onClick={handleClearAllSelectedCharts}

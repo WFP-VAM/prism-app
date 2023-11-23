@@ -11,7 +11,12 @@ import { omit } from 'lodash';
 import React, { memo, useCallback, useEffect, useMemo, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { appConfig } from 'config';
-import { ChartConfig, DatasetField, WMSLayerProps } from 'config/types';
+import {
+  AdminLevelType,
+  ChartConfig,
+  DatasetField,
+  WMSLayerProps,
+} from 'config/types';
 import {
   CHART_DATA_PREFIXES,
   DatasetRequestParams,
@@ -144,7 +149,9 @@ const ChartSection = memo(
           [chartLayer.title]: csvData,
         };
 
-        setMaxDataTicks(results.rows.length);
+        if (setMaxDataTicks) {
+          setMaxDataTicks(results.rows.length);
+        }
         setChartDataset(results);
       } catch (error) {
         console.warn(error);
@@ -173,12 +180,14 @@ const ChartSection = memo(
         chartRange?.[0],
         chartRange?.[1],
       );
-      setChartSelectedDateRange([
-        selectedSlice[0]?.[CHART_DATA_PREFIXES.date] as string,
-        selectedSlice[selectedSlice.length - 1]?.[
-          CHART_DATA_PREFIXES.date
-        ] as string,
-      ]);
+      if (setChartSelectedDateRange) {
+        setChartSelectedDateRange([
+          selectedSlice[0]?.[CHART_DATA_PREFIXES.date] as string,
+          selectedSlice[selectedSlice.length - 1]?.[
+            CHART_DATA_PREFIXES.date
+          ] as string,
+        ]);
+      }
     }, [chartDataset, chartRange, setChartSelectedDateRange]);
 
     useEffect(() => {
@@ -306,13 +315,13 @@ const styles = () =>
 export interface ChartSectionProps extends WithStyles<typeof styles> {
   chartLayer: WMSLayerProps;
   adminProperties: GeoJsonProperties;
-  adminLevel: 0 | 1 | 2;
+  adminLevel: AdminLevelType;
   startDate: number;
   endDate: number;
   dataForCsv: React.MutableRefObject<any>;
   chartRange?: [number, number];
-  setMaxDataTicks: React.Dispatch<React.SetStateAction<number>>;
-  setChartSelectedDateRange: React.Dispatch<
+  setMaxDataTicks?: React.Dispatch<React.SetStateAction<number>>;
+  setChartSelectedDateRange?: React.Dispatch<
     React.SetStateAction<[string, string]>
   >;
 }

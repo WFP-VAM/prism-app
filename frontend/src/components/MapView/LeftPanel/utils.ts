@@ -77,3 +77,6 @@ export const menuList: MenuItemsType = map(
     };
   },
 );
+
+export const oneDayInMs = 24 * 60 * 60 * 1000;
+export const oneYearInMs = 365 * oneDayInMs;

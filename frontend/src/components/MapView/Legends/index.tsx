@@ -26,6 +26,8 @@ import { Extent } from 'components/MapView/Layers/raster-utils';
 import LegendItem from './LegendItem';
 import LegendImpactResult from './LegendImpactResult';
 
+export const legendListId = 'legend-list';
+
 const Legends = memo(({ classes, extent, layers }: LegendsProps) => {
   // Selectors
   const isAnalysisLayerActive = useSelector(isAnalysisLayerActiveSelector);
@@ -143,7 +145,11 @@ const Legends = memo(({ classes, extent, layers }: LegendsProps) => {
     if (!open) {
       return null;
     }
-    return <List className={classes.list}>{legendItems}</List>;
+    return (
+      <List id={legendListId} className={classes.list}>
+        {legendItems}
+      </List>
+    );
   }, [classes.list, legendItems, open]);
 
   const toggleLegendVisibility = useCallback(() => {
