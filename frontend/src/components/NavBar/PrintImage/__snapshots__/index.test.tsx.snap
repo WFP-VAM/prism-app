@@ -38,33 +38,182 @@ exports[`renders as expected 1`] = `
       id="dialog-preview"
     >
       Map Preview
+      <button
+        class="MuiButtonBase-root MuiIconButton-root DownloadImage-closeButton-6"
+        tabindex="0"
+        type="button"
+      >
+        <span
+          class="MuiIconButton-label"
+        >
+          <svg
+            aria-hidden="true"
+            class="MuiSvgIcon-root"
+            focusable="false"
+            viewBox="0 0 24 24"
+          >
+            <path
+              d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"
+            />
+          </svg>
+        </span>
+        <span
+          class="MuiTouchRipple-root"
+        />
+      </button>
     </mock-dialogtitle>
     <mock-dialogcontent>
-      <canvas />
+      <div
+        class="MuiGrid-root MuiGrid-container"
+      >
+        <div
+          class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-10"
+          id="canvas-preview-container"
+        />
+        <div
+          class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-true"
+        >
+          <div
+            class="MuiBox-root MuiBox-root-7"
+          >
+            <div
+              class="MuiBox-root MuiBox-root-8 DownloadImage-title-2"
+            >
+              Map Options
+            </div>
+            <label
+              class="MuiFormControlLabel-root"
+            >
+              <mock-switch
+                checked="true"
+                color="primary"
+                name="legend"
+              />
+              <mock-typography
+                classname="MuiFormControlLabel-label"
+                component="span"
+              >
+                <mock-typography
+                  variant="h4"
+                >
+                  Legend
+                </mock-typography>
+              </mock-typography>
+            </label>
+            <label
+              class="MuiFormControlLabel-root"
+            >
+              <mock-switch
+                checked="true"
+                color="primary"
+                name="fullLayerDescription"
+              />
+              <mock-typography
+                classname="MuiFormControlLabel-label"
+                component="span"
+              >
+                <mock-typography
+                  variant="h4"
+                >
+                  Full Layer Description
+                </mock-typography>
+              </mock-typography>
+            </label>
+            <label
+              class="MuiFormControlLabel-root"
+            >
+              <mock-switch
+                checked="true"
+                color="primary"
+                name="footer"
+              />
+              <mock-typography
+                classname="MuiFormControlLabel-label"
+                component="span"
+              >
+                <mock-typography
+                  variant="h4"
+                >
+                  Footer Text
+                </mock-typography>
+              </mock-typography>
+            </label>
+            <mock-button
+              classname="DownloadImage-editFooterButton-5"
+              color="primary"
+              disabled="false"
+              endicon="[object Object]"
+              variant="contained"
+            >
+              Edit Footer Text
+            </mock-button>
+            <mock-button
+              classname="DownloadImage-gutter-4"
+              color="primary"
+              disabled="true"
+              endicon="[object Object]"
+              variant="contained"
+            >
+              Refresh Image
+            </mock-button>
+            <mock-button
+              classname="DownloadImage-gutter-4"
+              color="primary"
+              endicon="[object Object]"
+              variant="contained"
+            >
+              Download
+            </mock-button>
+            <mock-menu
+              keepmounted="true"
+              open="false"
+            >
+              <mock-menuitem>
+                Download PNG
+              </mock-menuitem>
+              <mock-menuitem>
+                Download JPEG
+              </mock-menuitem>
+              <mock-menuitem>
+                Download PDF
+              </mock-menuitem>
+            </mock-menu>
+          </div>
+        </div>
+      </div>
+    </mock-dialogcontent>
+  </mock-dialog>
+  <mock-dialog
+    maxwidth="xl"
+    open="false"
+  >
+    <mock-dialogtitle
+      classname="makeStyles-title-9"
+    >
+      Edit Footer Text
+    </mock-dialogtitle>
+    <mock-dialogcontent
+      style="width: 40rem;"
+    >
+      <mock-textfield
+        fullwidth="true"
+        inputprops="[object Object]"
+        maxrows="4"
+        multiline="true"
+        value="Layers represent data on 2018-07-02.  The designations employed and the presentation of material in the map(s) do not imply the expression of any opinion on the part of WFP concerning the legal of constitutional status of any country, territory, city, or sea, or concerning the delimitation of its frontiers or boundaries."
+        variant="outlined"
+      />
     </mock-dialogcontent>
     <mock-dialogactions>
       <mock-button
-        color="primary"
+        color="secondary"
       >
         Cancel
       </mock-button>
       <mock-button
         color="primary"
-        variant="contained"
       >
-        Download PNG
-      </mock-button>
-      <mock-button
-        color="primary"
-        variant="contained"
-      >
-        Download JPEG
-      </mock-button>
-      <mock-button
-        color="primary"
-        variant="contained"
-      >
-        Download PDF
+        Ok
       </mock-button>
     </mock-dialogactions>
   </mock-dialog>
