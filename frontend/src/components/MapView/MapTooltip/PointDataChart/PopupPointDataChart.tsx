@@ -11,7 +11,6 @@ import { useSelector } from 'react-redux';
 import { WithStyles, createStyles, withStyles } from '@material-ui/core';
 import DownloadCsvButton from 'components/MapView/DownloadCsvButton';
 import { appConfig } from 'config';
-import PopupChartWrapper from './PopupChartWrapper';
 
 const styles = () =>
   createStyles({
@@ -24,11 +23,9 @@ const styles = () =>
 const { countryAdmin0Id, country, multiCountry } = appConfig;
 
 interface PopupDatasetChartProps extends WithStyles<typeof styles> {
-  onClose: React.Dispatch<React.SetStateAction<boolean>>;
   adminLevelsNames: () => string[];
 }
-const PopupDatasetChart = ({
-  onClose,
+const PopupPointDataChart = ({
   adminLevelsNames,
   classes,
 }: PopupDatasetChartProps) => {
@@ -55,7 +52,7 @@ const PopupDatasetChart = ({
   };
 
   return (
-    <PopupChartWrapper onClose={onClose}>
+    <>
       <div className={classes.chartSection}>
         <Chart
           title={t(title)}
@@ -80,8 +77,8 @@ const PopupDatasetChart = ({
           },
         ]}
       />
-    </PopupChartWrapper>
+    </>
   );
 };
 
-export default memo(withStyles(styles)(PopupDatasetChart));
+export default memo(withStyles(styles)(PopupPointDataChart));

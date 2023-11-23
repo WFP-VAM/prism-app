@@ -6,18 +6,9 @@ import {
   createStyles,
   withStyles,
 } from '@material-ui/core';
-import { isAdminBoundary } from 'components/MapView/utils';
-import { appConfig } from 'config';
 import { AdminLevelType, WMSLayerProps } from 'config/types';
-import {
-  DatasetRequestParams,
-  datasetSelector,
-  loadDataset,
-} from 'context/datasetStateSlice';
-import { dateRangeSelector } from 'context/mapStateSlice/selectors';
 import { t } from 'i18next';
-import React, { memo, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import React, { memo } from 'react';
 
 const styles = () =>
   createStyles({
@@ -49,7 +40,6 @@ interface PopupChartsListProps extends WithStyles<typeof styles> {
   setAdminLevel: React.Dispatch<
     React.SetStateAction<AdminLevelType | undefined>
   >;
-  setShowDataset: React.Dispatch<React.SetStateAction<boolean>>;
   availableAdminLevels: AdminLevelType[];
 }
 
@@ -58,43 +48,8 @@ const PopupChartsList = ({
   adminLevelsNames,
   setAdminLevel,
   availableAdminLevels,
-  setShowDataset,
   classes,
 }: PopupChartsListProps) => {
-  const dispatch = useDispatch();
-  const { title, data: dataset, datasetParams } = useSelector(datasetSelector);
-  const { startDate: selectedDate } = useSelector(dateRangeSelector);
-
-  useEffect(() => {
-    if (!datasetParams || !selectedDate) {
-      return;
-    }
-
-    if (isAdminBoundary(datasetParams)) {
-      const { code: adminCode, level } = datasetParams.boundaryProps[
-        datasetParams.id
-      ];
-      const requestParams: DatasetRequestParams = {
-        id: datasetParams.id,
-        level,
-        adminCode: adminCode || appConfig.countryAdmin0Id,
-        boundaryProps: datasetParams.boundaryProps,
-        url: datasetParams.url,
-        serverLayerName: datasetParams.serverLayerName,
-        datasetFields: datasetParams.datasetFields,
-      };
-      dispatch(loadDataset(requestParams));
-    } else {
-      const requestParams: DatasetRequestParams = {
-        date: selectedDate,
-        externalId: datasetParams.externalId,
-        triggerLevels: datasetParams.triggerLevels,
-        baseUrl: datasetParams.baseUrl,
-      };
-      dispatch(loadDataset(requestParams));
-    }
-  }, [datasetParams, dispatch, selectedDate]);
-
   return (
     <div className={classes.selectChartContainer}>
       {filteredChartLayers.map(layer =>
@@ -118,19 +73,6 @@ const PopupChartsList = ({
             </div>
           </Button>
         )),
-      )}
-      {dataset && (
-        <Button
-          variant="text"
-          size="small"
-          className={classes.selectLevelButton}
-          onClick={() => setShowDataset(true)}
-        >
-          <div className={classes.selectLevelButtonValue}>
-            <FontAwesomeIcon icon={faChartBar} />
-            <div className={classes.selectLevelButtonText}>{t(title)}</div>
-          </div>
-        </Button>
       )}
     </div>
   );

@@ -1,4 +1,4 @@
-import React, { memo, useMemo, useState } from 'react';
+import React, { memo, useCallback, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { Popup } from 'react-mapbox-gl';
 import {
@@ -11,9 +11,12 @@ import {
 import { tooltipSelector } from 'context/tooltipStateSlice';
 import { isEnglishLanguageSelected, useSafeTranslation } from 'i18n';
 import { AdminLevelType } from 'config/types';
+import { appConfig } from 'config';
 import PopupCharts from './PopupCharts';
 import RedirectToDMP from './RedirectToDMP';
 import PopupContent from './PopupContent';
+import PopupPointDataChart from './PointDataChart/PopupPointDataChart';
+import usePointDataChart from './PointDataChart/usePointDataChart';
 
 const styles = () =>
   createStyles({
@@ -53,21 +56,22 @@ const styles = () =>
     },
   });
 
+const { multiCountry } = appConfig;
+const availableAdminLevels: AdminLevelType[] = multiCountry
+  ? [0, 1, 2]
+  : [1, 2];
+
 interface TooltipProps extends WithStyles<typeof styles> {}
 
 const MapTooltip = ({ classes }: TooltipProps) => {
   const popup = useSelector(tooltipSelector);
   const { i18n } = useSafeTranslation();
-
-  const popupData = popup.data;
-
   const [popupTitle, setPopupTitle] = useState<string>('');
   const [adminLevel, setAdminLevel] = useState<AdminLevelType | undefined>(
     undefined,
   );
-  const [showDataset, setShowDataset] = useState<boolean>(false);
 
-  const showDetails = adminLevel === undefined && !showDataset;
+  const { dataset, isLoading } = usePointDataChart();
 
   const defaultPopupTitle = useMemo(() => {
     if (isEnglishLanguageSelected(i18n)) {
@@ -83,13 +87,39 @@ const MapTooltip = ({ classes }: TooltipProps) => {
     return <LinearProgress />;
   }, [popup.wmsGetFeatureInfoLoading]);
 
-  if (!popup.showing || !popup.coordinates) {
+  const popupData = popup.data;
+
+  // TODO - simplify logic once we revamp admin levels ojbect
+  const adminLevelsNames = useCallback(() => {
+    const locationName = isEnglishLanguageSelected(i18n)
+      ? popup.locationName
+      : popup.locationLocalName;
+    const splitNames = locationName.split(', ');
+
+    const adminLevelLimit =
+      adminLevel === undefined
+        ? availableAdminLevels.length
+        : adminLevel + (multiCountry ? 1 : 0);
+    // If adminLevel is undefined, return the whole array
+    // eslint-disable-next-line fp/no-mutating-methods
+    return splitNames.splice(0, adminLevelLimit);
+  }, [adminLevel, i18n, popup.locationLocalName, popup.locationName]);
+
+  if (isLoading || !popup.showing || !popup.coordinates) {
     return null;
+  }
+
+  if (dataset) {
+    return (
+      <Popup coordinates={popup.coordinates} className={classes.popup}>
+        <PopupPointDataChart adminLevelsNames={() => ['test']} />
+      </Popup>
+    );
   }
 
   return (
     <Popup coordinates={popup.coordinates} className={classes.popup}>
-      {showDetails && (
+      {adminLevel === undefined && (
         <RedirectToDMP
           dmpDisTyp={popupData.dmpDisTyp}
           dmpSubmissionId={popupData.dmpSubmissionId}
@@ -98,16 +128,15 @@ const MapTooltip = ({ classes }: TooltipProps) => {
       <Typography variant="h4" color="inherit" className={classes.title}>
         {popupTitle || defaultPopupTitle}
       </Typography>
-      {showDetails && (
+      {adminLevel === undefined && (
         <PopupContent popupData={popupData} coordinates={popup.coordinates} />
       )}
       <PopupCharts
-        popup={popup}
         setPopupTitle={setPopupTitle}
         adminLevel={adminLevel}
         setAdminLevel={setAdminLevel}
-        showDataset={showDataset}
-        setShowDataset={setShowDataset}
+        adminLevelsNames={adminLevelsNames}
+        availableAdminLevels={availableAdminLevels}
       />
       {renderedPopupLoader}
     </Popup>
