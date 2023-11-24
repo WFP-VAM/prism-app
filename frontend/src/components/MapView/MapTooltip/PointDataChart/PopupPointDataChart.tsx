@@ -14,6 +14,11 @@ import { appConfig } from 'config';
 
 const styles = () =>
   createStyles({
+    chartContainer: {
+      display: 'flex',
+      flexDirection: 'column',
+      gap: '8px',
+    },
     chartSection: {
       height: '240px',
       width: '400px',
@@ -52,7 +57,7 @@ const PopupPointDataChart = ({
   };
 
   return (
-    <>
+    <div className={classes.chartContainer}>
       <div className={classes.chartSection}>
         <Chart
           title={t(title)}
@@ -77,7 +82,7 @@ const PopupPointDataChart = ({
           },
         ]}
       />
-    </>
+    </div>
   );
 };
 
