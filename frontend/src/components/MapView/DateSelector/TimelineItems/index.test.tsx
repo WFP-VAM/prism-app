@@ -4,7 +4,6 @@ import React from 'react';
 import TimelineItems from '.';
 
 const props = {
-  intersectionDates: [],
   selectedLayers: [],
   selectedLayerTitles: [],
   dateRange: [
