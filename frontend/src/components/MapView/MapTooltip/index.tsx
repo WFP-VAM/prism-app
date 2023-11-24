@@ -110,14 +110,22 @@ const MapTooltip = ({ classes }: TooltipProps) => {
 
   if (dataset) {
     return (
-      <Popup coordinates={popup.coordinates} className={classes.popup}>
+      <Popup
+        coordinates={popup.coordinates}
+        className={classes.popup}
+        style={{ zIndex: 5 }}
+      >
         <PopupPointDataChart adminLevelsNames={() => [...adminLevelsNames()]} />
       </Popup>
     );
   }
 
   return (
-    <Popup coordinates={popup.coordinates} className={classes.popup}>
+    <Popup
+      coordinates={popup.coordinates}
+      className={classes.popup}
+      style={{ zIndex: 5 }}
+    >
       {adminLevel === undefined && (
         <RedirectToDMP
           dmpDisTyp={popupData.dmpDisTyp}
