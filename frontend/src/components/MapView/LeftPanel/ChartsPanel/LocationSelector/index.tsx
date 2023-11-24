@@ -96,21 +96,18 @@ const LocationSelector = memo(
         : [];
     };
 
-    const admin0BoundaryTree = admin0Key
+    const admin0BoundaryTree = multiCountry
       ? adminBoundaryTree.children[admin0Key]?.children
       : adminBoundaryTree.children;
 
     const orderedAdmin1areas: () => AdminBoundaryTree[] = () => {
-      if (!data) {
-        return [];
-      }
-      if (multiCountry && !admin0Key) {
+      if (!data || !admin0BoundaryTree) {
         return [];
       }
       return sortBy(Object.values(admin0BoundaryTree), 'label');
     };
 
-    const selectedAdmin1Area = () => admin0BoundaryTree[admin1Key];
+    const selectedAdmin1Area = () => admin0BoundaryTree?.[admin1Key];
 
     const orderedAdmin2areas: () => AdminBoundaryTree[] = () => {
       return data && admin1Key
