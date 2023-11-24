@@ -97,12 +97,16 @@ const LocationSelector = memo(
     };
 
     const orderedAdmin1areas: () => AdminBoundaryTree[] = () => {
-      return data && admin0Key
-        ? sortBy(
-            Object.values(adminBoundaryTree?.children[admin0Key]?.children),
-            'label',
-          )
-        : [];
+      if (data && admin0Key) {
+        return sortBy(
+          Object.values(adminBoundaryTree?.children[admin0Key]?.children),
+          'label',
+        );
+      }
+      if (data && !multiCountry) {
+        return sortBy(Object.values(adminBoundaryTree.children), 'label');
+      }
+      return [];
     };
 
     const selectedAdmin1Area = () =>
