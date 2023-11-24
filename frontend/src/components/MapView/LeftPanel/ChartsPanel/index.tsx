@@ -53,7 +53,8 @@ import { oneDayInMs, oneYearInMs } from '../utils';
 
 // Load boundary layer for Admin2
 // WARNING - Make sure the dataviz_ids are available in the boundary file for Admin2
-const MAX_ADMIN_LEVEL = appConfig.multiCountry ? 3 : 2;
+const { multiCountry } = appConfig;
+const MAX_ADMIN_LEVEL = multiCountry ? 3 : 2;
 const boundaryLayer = getBoundaryLayersByAdminLevel(MAX_ADMIN_LEVEL);
 
 const chartLayers = getWMSLayersWithChart();
@@ -72,10 +73,10 @@ function getProperties(
     // does not go anywhere anyway
     return layerData.features[0].properties;
   }
+  const indexLevel = multiCountry ? adminLevel : adminLevel - 1;
+  const adminCode = boundaryLayer.adminLevelCodes[indexLevel];
   const item = layerData.features.find(
-    elem =>
-      elem.properties &&
-      elem.properties[boundaryLayer.adminLevelCodes[adminLevel]] === id,
+    elem => elem.properties && elem.properties[adminCode] === id,
   );
   return item?.properties ?? {};
 }
@@ -184,7 +185,7 @@ const menuProps: Partial<MenuProps> = {
 
 const ChartsPanel = memo(
   ({ setPanelSize, setResultsPage }: ChartsPanelProps) => {
-    const { countryAdmin0Id, country, multiCountry } = appConfig;
+    const { countryAdmin0Id, country } = appConfig;
     const boundaryLayerData = useSelector(
       layerDataSelector(boundaryLayer.id),
     ) as LayerData<BoundaryLayerProps> | undefined;
@@ -522,7 +523,6 @@ const ChartsPanel = memo(
       country,
       endDate1,
       endDate2,
-      multiCountry,
       secondAdminProperties,
       secondAdminLevel,
       secondAdmin0Key,
