@@ -110,6 +110,12 @@ const useStyles = makeStyles(() =>
     textLabel: {
       color: 'black',
     },
+    chartsContainer: {
+      display: 'flex',
+      flexDirection: 'column',
+      justifyContent: 'space-between',
+      width: '100%',
+    },
     chartsPanelCharts: {
       alignContent: 'start',
       overflowY: 'auto',
@@ -122,6 +128,13 @@ const useStyles = makeStyles(() =>
       padding: '16px',
       marginTop: 0,
       paddingBottom: '1em',
+    },
+    sliderContainer: {
+      width: 'calc(100% - 4rem)',
+      marginLeft: 'auto',
+      marginRight: 'auto',
+      paddingTop: '1rem',
+      paddingBottom: '2rem',
     },
     clearAllSelectionsButton: {
       backgroundColor: '#788489',
@@ -353,7 +366,7 @@ const ChartsPanel = memo(
         return (
           <Box
             style={{
-              height: '240px',
+              height: '50vh',
               width: '100%',
             }}
           >
@@ -575,17 +588,63 @@ const ChartsPanel = memo(
       if (showChartsPanel) {
         setPanelSize(PanelSize.xlarge);
         setResultsPage(
-          <Box className={classes.chartsPanelCharts}>{renderResultsPage}</Box>,
+          <Box className={classes.chartsContainer}>
+            <Box className={classes.chartsPanelCharts}>{renderResultsPage}</Box>
+            {showSlider && (
+              <Box className={classes.sliderContainer}>
+                <Box
+                  display="flex"
+                  flexDirection="row"
+                  justifyContent="space-between"
+                >
+                  <Box display="flex" flexDirection="row">
+                    <Typography className={classes.textLabel} variant="body2">
+                      start:
+                    </Typography>{' '}
+                    <Typography className={classes.textLabel}>
+                      {chartSelectedDateRange[0]}
+                    </Typography>
+                  </Box>
+
+                  <Box display="flex" flexDirection="row">
+                    <Typography className={classes.textLabel} variant="body2">
+                      end:
+                    </Typography>{' '}
+                    <Typography className={classes.textLabel}>
+                      {chartSelectedDateRange[1]}
+                    </Typography>
+                  </Box>
+                </Box>
+
+                <RangeSlider
+                  value={chartRange}
+                  onInput={setChartRange}
+                  min={1}
+                  max={maxDataTicks}
+                  step={1}
+                  disabled={selectedLayerTitles.length < 1}
+                />
+              </Box>
+            )}
+          </Box>,
         );
       }
 
       return () => setResultsPage(null);
     }, [
+      chartRange,
+      chartSelectedDateRange,
+      classes.chartsContainer,
       classes.chartsPanelCharts,
+      classes.sliderContainer,
+      classes.textLabel,
+      maxDataTicks,
       renderResultsPage,
+      selectedLayerTitles.length,
       setPanelSize,
       setResultsPage,
       showChartsPanel,
+      showSlider,
     ]);
 
     const handleClearAllSelectedCharts = useCallback(() => {
@@ -782,50 +841,6 @@ const ChartsPanel = memo(
             }
             checked={comparePeriods}
           />
-          {showSlider && (
-            <Box
-              style={{
-                width: 'calc(100% - 4rem)',
-                marginLeft: 'auto',
-                marginRight: 'auto',
-                paddingTop: '2rem',
-              }}
-            >
-              <Box
-                display="flex"
-                flexDirection="row"
-                justifyContent="space-between"
-              >
-                <Box display="flex" flexDirection="row">
-                  <Typography className={classes.textLabel} variant="body2">
-                    start:
-                  </Typography>{' '}
-                  <Typography className={classes.textLabel}>
-                    {chartSelectedDateRange[0]}
-                  </Typography>
-                </Box>
-
-                <Box display="flex" flexDirection="row">
-                  <Typography className={classes.textLabel} variant="body2">
-                    end:
-                  </Typography>{' '}
-                  <Typography className={classes.textLabel}>
-                    {chartSelectedDateRange[1]}
-                  </Typography>
-                </Box>
-              </Box>
-
-              <RangeSlider
-                value={chartRange}
-                onInput={setChartRange}
-                min={1}
-                max={maxDataTicks}
-                step={1}
-                disabled={selectedLayerTitles.length < 1}
-              />
-            </Box>
-          )}
-
           {!showSlider && (
             <>
               <TimePeriodSelector
