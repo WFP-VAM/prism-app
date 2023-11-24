@@ -423,7 +423,7 @@ const ChartsPanel = memo(
                   }}
                 >
                   <ChartSection
-                    chartDateRange={chartDateRange}
+                    chartDateRange={comparePeriods ? undefined : chartDateRange}
                     setChartDateRange={setChartDateRange}
                     setChartSelectedDateRange={setChartSelectedDateRange}
                     setMaxDataTicks={setMaxDataTicks}
@@ -469,7 +469,7 @@ const ChartsPanel = memo(
                 }}
               >
                 <ChartSection
-                  chartDateRange={chartDateRange}
+                  chartDateRange={comparePeriods ? undefined : chartDateRange}
                   setChartDateRange={setChartDateRange}
                   setChartSelectedDateRange={setChartSelectedDateRange}
                   setMaxDataTicks={setMaxDataTicks}
