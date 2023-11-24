@@ -3549,8 +3549,13 @@ exports[`renders as expected 1`] = `
                     />
                   </svg>
                   <div
-                    class="makeStyles-selectContainer-131"
-                  />
+                    class="makeStyles-selectContainer-132"
+                  >
+                    <mock-circularprogress
+                      color="inherit"
+                      size="24"
+                    />
+                  </div>
                 </div>
               </div>
             </div>
