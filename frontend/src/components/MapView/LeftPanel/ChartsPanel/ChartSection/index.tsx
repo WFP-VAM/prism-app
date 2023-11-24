@@ -27,6 +27,75 @@ import { useSafeTranslation } from 'i18n';
 import { getChartAdminBoundaryParams } from 'utils/admin-utils';
 import Chart from 'components/Common/Chart';
 
+// returns startDate and endDate as part of result
+function generateDateStrings(startDate: Date, endDate: Date) {
+  const result = [];
+  const interval = [1, 11, 21];
+  const currentDate = new Date(startDate);
+  currentDate.setHours(10);
+  endDate.setHours(12);
+
+  while (currentDate <= endDate) {
+    // eslint-disable-next-line fp/no-mutation, no-plusplus
+    for (let i = 0; i < 3; i++) {
+      currentDate.setDate(interval[i]);
+      const formattedDate = currentDate.toISOString().split('T')[0];
+
+      if (currentDate > startDate && currentDate <= endDate) {
+        // eslint-disable-next-line fp/no-mutating-methods
+        result.push(formattedDate);
+      }
+    }
+
+    currentDate.setDate(1);
+    currentDate.setMonth(currentDate.getMonth() + 1);
+  }
+
+  return result;
+}
+
+function extendDatasetRows(
+  chartDataset: TableData,
+  minDate?: string,
+  maxDate?: string,
+): TableData {
+  const [head, ...data] = chartDataset.rows;
+  let lowerDates: string[] = [];
+  let upperDates: string[] = [];
+
+  const datasetMin = data[0]?.[CHART_DATA_PREFIXES.date];
+  const datasetMax = data[data.length - 1]?.[CHART_DATA_PREFIXES.date];
+
+  if (minDate && minDate < datasetMin) {
+    const result = generateDateStrings(new Date(minDate), new Date(datasetMin));
+    // eslint-disable-next-line fp/no-mutation
+    lowerDates = result.slice(0, result.length - 1);
+  }
+
+  if (maxDate && maxDate > datasetMax) {
+    const [, ...result] = generateDateStrings(
+      new Date(datasetMax),
+      new Date(maxDate),
+    );
+    // eslint-disable-next-line fp/no-mutation
+    upperDates = result;
+  }
+
+  return {
+    ...chartDataset,
+    rows: [
+      head,
+      ...lowerDates.map(x => ({
+        [CHART_DATA_PREFIXES.date]: x,
+      })),
+      ...data,
+      ...upperDates.map(x => ({
+        [CHART_DATA_PREFIXES.date]: x,
+      })),
+    ],
+  };
+}
+
 const ChartSection = memo(
   ({
     chartLayer,
@@ -36,13 +105,76 @@ const ChartSection = memo(
     endDate,
     dataForCsv,
     chartRange,
+    chartDateRange,
     setMaxDataTicks,
     setChartSelectedDateRange,
+    setChartDateRange,
     classes,
   }: ChartSectionProps) => {
     const dispatch = useDispatch();
     const { t } = useSafeTranslation();
     const [chartDataset, setChartDataset] = useState<undefined | TableData>();
+    const [extendedChartDataset, setExtendedChartDataset] = useState<
+      undefined | TableData
+    >();
+
+    React.useEffect(() => {
+      if (!chartDataset) {
+        return;
+      }
+      const extended = extendDatasetRows(
+        chartDataset,
+        chartDateRange?.[0],
+        chartDateRange?.[1],
+      );
+
+      setExtendedChartDataset(extended);
+    }, [chartDataset, chartDateRange]);
+
+    React.useEffect(() => {
+      if (!extendedChartDataset) {
+        return;
+      }
+
+      // first is the head, contains no data
+      if (extendedChartDataset.rows.length > 1 && setChartDateRange) {
+        const min = extendedChartDataset.rows[1][
+          CHART_DATA_PREFIXES.date
+        ] as string;
+        const max = extendedChartDataset.rows[
+          extendedChartDataset.rows.length - 1
+        ][CHART_DATA_PREFIXES.date] as string;
+
+        const newMin =
+          !chartDateRange?.[0] || min < chartDateRange?.[0]
+            ? min
+            : chartDateRange?.[0];
+
+        const newMax =
+          !chartDateRange?.[1] || max > chartDateRange?.[1]
+            ? max
+            : chartDateRange?.[1];
+
+        // dangerous territory here, we have to check if the values are same as before, se we don't enter a loop
+        if (chartDateRange?.[0] !== newMin || chartDateRange?.[1] !== newMax) {
+          setChartDateRange([newMin, newMax]);
+        }
+      }
+
+      if (setMaxDataTicks) {
+        setMaxDataTicks(prev =>
+          prev > extendedChartDataset.rows.length
+            ? prev
+            : extendedChartDataset.rows.length,
+        );
+      }
+    }, [
+      extendedChartDataset,
+      chartDateRange,
+      setChartDateRange,
+      setMaxDataTicks,
+    ]);
+
     const [chartDataSetIsLoading, setChartDataSetIsLoading] = useState<boolean>(
       false,
     );
@@ -149,9 +281,6 @@ const ChartSection = memo(
           [chartLayer.title]: csvData,
         };
 
-        if (setMaxDataTicks) {
-          setMaxDataTicks(results.rows.length);
-        }
         setChartDataset(results);
       } catch (error) {
         console.warn(error);
@@ -168,15 +297,14 @@ const ChartSection = memo(
       dataForCsv,
       dispatch,
       requestParams,
-      setMaxDataTicks,
       t,
     ]);
 
     useEffect(() => {
-      if (!chartDataset) {
+      if (!extendedChartDataset) {
         return;
       }
-      const selectedSlice = chartDataset.rows.slice(
+      const selectedSlice = extendedChartDataset.rows.slice(
         chartRange?.[0],
         chartRange?.[1],
       );
@@ -188,7 +316,7 @@ const ChartSection = memo(
           ] as string,
         ]);
       }
-    }, [chartDataset, chartRange, setChartSelectedDateRange]);
+    }, [extendedChartDataset, chartRange, setChartSelectedDateRange]);
 
     useEffect(() => {
       getData();
@@ -256,12 +384,12 @@ const ChartSection = memo(
           </div>
         );
       }
-      if (chartDataset && !chartDataSetIsLoading) {
+      if (extendedChartDataset && !chartDataSetIsLoading) {
         return (
           <Chart
             title={t(title)}
             config={config}
-            data={chartDataset as TableData}
+            data={extendedChartDataset}
             datasetFields={params.datasetFields}
             chartRange={chartRange}
             notMaintainAspectRatio
@@ -282,7 +410,7 @@ const ChartSection = memo(
     }, [
       chartDataSetError,
       chartDataSetIsLoading,
-      chartDataset,
+      extendedChartDataset,
       chartRange,
       classes.errorContainer,
       classes.loading,
@@ -320,10 +448,12 @@ export interface ChartSectionProps extends WithStyles<typeof styles> {
   endDate: number;
   dataForCsv: React.MutableRefObject<any>;
   chartRange?: [number, number];
+  chartDateRange?: [string, string];
   setMaxDataTicks?: React.Dispatch<React.SetStateAction<number>>;
   setChartSelectedDateRange?: React.Dispatch<
     React.SetStateAction<[string, string]>
   >;
+  setChartDateRange?: React.Dispatch<React.SetStateAction<[string, string]>>;
 }
 
 export default withStyles(styles)(ChartSection);

@@ -236,11 +236,22 @@ const ChartsPanel = memo(
     const oneYearInTicks = 34;
     const [maxDataTicks, setMaxDataTicks] = useState(0);
     const [chartRange, setChartRange] = useState<[number, number]>([0, 0]);
-    // eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
     const [chartSelectedDateRange, setChartSelectedDateRange] = useState<
       [string, string]
     >(['', '']);
+    const [chartDateRange, setChartDateRange] = useState<[string, string]>([
+      '',
+      '',
+    ]);
     const [showSlider, setShowSlider] = useState(true);
+
+    // Reset slider when new charts selection is changed
+    useEffect(() => {
+      setMaxDataTicks(0);
+      setChartRange([0, 0]);
+      setChartSelectedDateRange(['', '']);
+      setChartDateRange(['', '']);
+    }, [selectedLayerTitles]);
 
     useEffect(() => {
       const start = maxDataTicks - oneYearInTicks;
@@ -349,6 +360,8 @@ const ChartsPanel = memo(
             <ChartSection
               setChartSelectedDateRange={setChartSelectedDateRange}
               setMaxDataTicks={setMaxDataTicks}
+              chartDateRange={chartDateRange}
+              setChartDateRange={setChartDateRange}
               chartRange={comparePeriods ? undefined : chartRange}
               chartLayer={chartLayer as WMSLayerProps}
               adminProperties={adminProperties || {}}
@@ -376,6 +389,8 @@ const ChartsPanel = memo(
                   }}
                 >
                   <ChartSection
+                    chartDateRange={chartDateRange}
+                    setChartDateRange={setChartDateRange}
                     setChartSelectedDateRange={setChartSelectedDateRange}
                     setMaxDataTicks={setMaxDataTicks}
                     chartRange={comparePeriods ? undefined : chartRange}
@@ -420,6 +435,8 @@ const ChartsPanel = memo(
                 }}
               >
                 <ChartSection
+                  chartDateRange={chartDateRange}
+                  setChartDateRange={setChartDateRange}
                   setChartSelectedDateRange={setChartSelectedDateRange}
                   setMaxDataTicks={setMaxDataTicks}
                   chartRange={comparePeriods ? undefined : chartRange}
@@ -548,6 +565,7 @@ const ChartsPanel = memo(
       multiCountry,
       admin0Key,
       country,
+      chartDateRange,
       chartRange,
       t,
       secondAdmin0Key,
@@ -800,8 +818,8 @@ const ChartsPanel = memo(
               <RangeSlider
                 value={chartRange}
                 onInput={setChartRange}
-                min={0}
-                max={178}
+                min={1}
+                max={maxDataTicks}
                 step={1}
                 disabled={selectedLayerTitles.length < 1}
               />
