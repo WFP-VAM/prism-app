@@ -40,7 +40,6 @@ const styles = () =>
       marginBottom: '4px',
     },
     popup: {
-      position: 'relative',
       '& div.mapboxgl-popup-content': {
         background: 'black',
         color: 'white',
@@ -112,7 +111,7 @@ const MapTooltip = ({ classes }: TooltipProps) => {
   if (dataset) {
     return (
       <Popup coordinates={popup.coordinates} className={classes.popup}>
-        <PopupPointDataChart adminLevelsNames={() => ['test']} />
+        <PopupPointDataChart adminLevelsNames={() => [...adminLevelsNames()]} />
       </Popup>
     );
   }
