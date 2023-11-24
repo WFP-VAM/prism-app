@@ -96,21 +96,22 @@ const LocationSelector = memo(
         : [];
     };
 
+    const admin0BoundaryTree = multiCountry
+      ? adminBoundaryTree.children[admin0Key]?.children
+      : adminBoundaryTree.children;
+
     const orderedAdmin1areas: () => AdminBoundaryTree[] = () => {
-      return data && admin0Key
-        ? sortBy(
-            Object.values(adminBoundaryTree?.children[admin0Key]?.children),
-            'label',
-          )
-        : [];
+      if (!data || !admin0BoundaryTree) {
+        return [];
+      }
+      return sortBy(Object.values(admin0BoundaryTree), 'label');
     };
 
-    const selectedAdmin1Area = () =>
-      adminBoundaryTree.children[admin0Key]?.children[admin1Key];
+    const selectedAdmin1Area = () => admin0BoundaryTree?.[admin1Key];
 
     const orderedAdmin2areas: () => AdminBoundaryTree[] = () => {
-      return data && admin0Key && admin1Key
-        ? sortBy(Object.values(selectedAdmin1Area()?.children), 'label')
+      return data && admin1Key
+        ? sortBy(Object.values(selectedAdmin1Area().children), 'label')
         : [];
     };
 
@@ -124,11 +125,7 @@ const LocationSelector = memo(
     };
 
     const renderAdmin1Value = (admin1keyValue: any) => {
-      if (admin0Key === '') {
-        return '';
-      }
-      return adminBoundaryTree.children[admin0Key]?.children[admin1keyValue]
-        ?.label;
+      return admin0BoundaryTree[admin1keyValue]?.label;
     };
 
     const renderAdmin2Value = (admin2KeyValue: any) => {
@@ -162,10 +159,7 @@ const LocationSelector = memo(
       }
       setAdmin1Key(event.target.value);
       // update the parent component state
-      setSelectedAdmin1Area(
-        adminBoundaryTree.children[admin0Key].children[event.target.value]
-          .label,
-      );
+      setSelectedAdmin1Area(admin0BoundaryTree[event.target.value]?.label);
       setAdmin2Key('');
       setAdminLevel(1);
     };
@@ -234,6 +228,7 @@ const LocationSelector = memo(
             }}
             onChange={onChangeAdmin1Area}
             variant="outlined"
+            disabled={orderedAdmin1areas().length === 0}
           >
             <MenuItem divider>
               <Box className={styles.removeAdmin}> {t('Remove Admin 1')}</Box>
