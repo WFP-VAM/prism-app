@@ -1,8 +1,14 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import type { RootState } from './store';
 
+export enum Panel {
+  Layers = 0,
+  Charts = 1,
+  Analysis = 2,
+}
+
 type LeftPanelState = {
-  tabValue: number;
+  tabValue: Panel;
 };
 
 const initialState: LeftPanelState = {
@@ -13,7 +19,7 @@ export const leftPanelSlice = createSlice({
   name: 'leftPanelState',
   initialState,
   reducers: {
-    setTabValue: (state, { payload }: PayloadAction<number>) => ({
+    setTabValue: (state, { payload }: PayloadAction<Panel>) => ({
       ...state,
       tabValue: payload,
     }),
@@ -21,7 +27,7 @@ export const leftPanelSlice = createSlice({
 });
 
 // Getters
-export const leftPanelTabValueSelector = (state: RootState): number =>
+export const leftPanelTabValueSelector = (state: RootState): Panel =>
   state.leftPanelState.tabValue;
 
 // Setters

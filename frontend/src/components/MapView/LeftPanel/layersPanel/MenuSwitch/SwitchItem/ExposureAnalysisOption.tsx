@@ -17,7 +17,7 @@ import {
   setCurrentDataDefinition,
   setExposureLayerId,
 } from 'context/analysisResultStateSlice';
-import { setTabValue } from 'context/leftPanelStateSlice';
+import { Panel, setTabValue } from 'context/leftPanelStateSlice';
 import { dateRangeSelector } from 'context/mapStateSlice/selectors';
 import { useSafeTranslation } from 'i18n';
 import { Extent } from 'components/MapView/Layers/raster-utils';
@@ -72,8 +72,7 @@ function ExposureAnalysisOption({
         legendText: t(analysisResult?.legendText || ''),
       }),
     );
-    // TODO: maybe we could use an enum here instead of 2
-    dispatch(setTabValue(2));
+    dispatch(setTabValue(Panel.Analysis));
   };
 
   return (

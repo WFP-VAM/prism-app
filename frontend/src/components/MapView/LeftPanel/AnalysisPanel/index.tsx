@@ -104,6 +104,7 @@ import SimpleDropdown from 'components/Common/SimpleDropdown';
 import { Extent } from 'components/MapView/Layers/raster-utils';
 import {
   leftPanelTabValueSelector,
+  Panel,
   setTabValue,
 } from 'context/leftPanelStateSlice';
 import LoadingBlinkingDots from 'components/Common/LoadingBlinkingDots';
@@ -508,7 +509,7 @@ const AnalysisPanel = memo(
       dispatch(clearAnalysisResult());
       setPanelSize(PanelSize.medium);
       if (isClearingExposureAnalysis) {
-        dispatch(setTabValue(0));
+        dispatch(setTabValue(Panel.Layers));
       }
       setHazardLayerId(hazardLayerIdFromUrl);
       setStatistic(
