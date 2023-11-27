@@ -210,11 +210,11 @@ export function getBoundaryLayerSingleton(): BoundaryLayerProps {
 export function getBoundaryLayersByAdminLevel(adminLevel?: number) {
   if (adminLevel) {
     const boundaryLayers = getBoundaryLayers();
-    const adminLevelBondary = boundaryLayers.find(
+    const adminLevelBoundary = boundaryLayers.find(
       boundaryLayer => boundaryLayer.adminLevelNames.length === adminLevel,
     );
-    if (adminLevelBondary) {
-      return adminLevelBondary;
+    if (adminLevelBoundary) {
+      return adminLevelBoundary;
     }
   }
   return getBoundaryLayerSingleton();

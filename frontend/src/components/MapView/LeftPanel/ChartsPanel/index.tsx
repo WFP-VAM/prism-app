@@ -29,6 +29,7 @@ import { useSelector } from 'react-redux';
 import { TFunctionKeys } from 'i18next';
 import { appConfig } from 'config';
 import {
+  AdminCodeString,
   AdminLevelType,
   BoundaryLayerProps,
   PanelSize,
@@ -52,7 +53,8 @@ import { oneDayInMs, oneYearInMs } from '../utils';
 
 // Load boundary layer for Admin2
 // WARNING - Make sure the dataviz_ids are available in the boundary file for Admin2
-const MAX_ADMIN_LEVEL = appConfig.multiCountry ? 3 : 2;
+const { multiCountry } = appConfig;
+const MAX_ADMIN_LEVEL = multiCountry ? 3 : 2;
 const boundaryLayer = getBoundaryLayersByAdminLevel(MAX_ADMIN_LEVEL);
 
 const chartLayers = getWMSLayersWithChart();
@@ -61,15 +63,22 @@ const tabIndex = 1;
 
 function getProperties(
   layerData: LayerData<BoundaryLayerProps>['data'],
-  id?: string,
-) {
+  id?: AdminCodeString,
+  adminLevel?: AdminLevelType,
+): GeoJsonProperties {
   // Return any properties, used for national level data.
-  if (id === undefined) {
+  if (id === undefined || adminLevel === undefined) {
+    // TODO: this does not work in multicountry, the first feature might not
+    // be part of the country we expect, but probably not a problem as this data
+    // does not go anywhere anyway
     return layerData.features[0].properties;
   }
-  return layerData.features.filter(
-    elem => elem.properties && elem.properties[boundaryLayer.adminCode] === id,
-  )[0].properties;
+  const indexLevel = multiCountry ? adminLevel : adminLevel - 1;
+  const adminCode = boundaryLayer.adminLevelCodes[indexLevel];
+  const item = layerData.features.find(
+    elem => elem.properties && elem.properties[adminCode] === id,
+  );
+  return item?.properties ?? {};
 }
 
 const useStyles = makeStyles(() =>
@@ -176,7 +185,7 @@ const menuProps: Partial<MenuProps> = {
 
 const ChartsPanel = memo(
   ({ setPanelSize, setResultsPage }: ChartsPanelProps) => {
-    const { countryAdmin0Id, country, multiCountry } = appConfig;
+    const { countryAdmin0Id, country } = appConfig;
     const boundaryLayerData = useSelector(
       layerDataSelector(boundaryLayer.id),
     ) as LayerData<BoundaryLayerProps> | undefined;
@@ -186,18 +195,30 @@ const ChartsPanel = memo(
     const [comparePeriods, setComparePeriods] = useState(false);
 
     // first location state
-    const [admin0Key, setAdmin0Key] = useState<string>('');
-    const [admin1Key, setAdmin1Key] = useState<string>('');
-    const [admin2Key, setAdmin2Key] = useState<string>('');
+    const [admin0Key, setAdmin0Key] = useState<AdminCodeString>(
+      '' as AdminCodeString,
+    );
+    const [admin1Key, setAdmin1Key] = useState<AdminCodeString>(
+      '' as AdminCodeString,
+    );
+    const [admin2Key, setAdmin2Key] = useState<AdminCodeString>(
+      '' as AdminCodeString,
+    );
     const [selectedAdmin1Area, setSelectedAdmin1Area] = useState('');
     const [selectedAdmin2Area, setSelectedAdmin2Area] = useState('');
     const [adminLevel, setAdminLevel] = useState<AdminLevelType>(
-      countryAdmin0Id ? 0 : 1,
+      (countryAdmin0Id ? 0 : 1) as AdminLevelType,
     );
     // second (compared) location state
-    const [secondAdmin0Key, setSecondAdmin0Key] = useState<string>('');
-    const [secondAdmin1Key, setSecondAdmin1Key] = useState<string>('');
-    const [secondAdmin2Key, setSecondAdmin2Key] = useState<string>('');
+    const [secondAdmin0Key, setSecondAdmin0Key] = useState<AdminCodeString>(
+      '' as AdminCodeString,
+    );
+    const [secondAdmin1Key, setSecondAdmin1Key] = useState<AdminCodeString>(
+      '' as AdminCodeString,
+    );
+    const [secondAdmin2Key, setSecondAdmin2Key] = useState<AdminCodeString>(
+      '' as AdminCodeString,
+    );
     const [secondSelectedAdmin1Area, setSecondSelectedAdmin1Area] = useState(
       '',
     );
@@ -205,7 +226,7 @@ const ChartsPanel = memo(
       '',
     );
     const [secondAdminLevel, setSecondAdminLevel] = useState<AdminLevelType>(
-      countryAdmin0Id ? 0 : 1,
+      (countryAdmin0Id ? 0 : 1) as AdminLevelType,
     );
 
     const [selectedLayerTitles, setSelectedLayerTitles] = useState<
@@ -502,7 +523,6 @@ const ChartsPanel = memo(
       country,
       endDate1,
       endDate2,
-      multiCountry,
       secondAdminProperties,
       secondAdminLevel,
       secondAdmin0Key,
@@ -541,14 +561,14 @@ const ChartsPanel = memo(
       setStartDate2(new Date().getTime() - oneYearInMs);
       setEndDate2(new Date().getTime());
       // reset the admin level
-      setAdminLevel(countryAdmin0Id ? 0 : 1);
-      setSecondAdminLevel(countryAdmin0Id ? 0 : 1);
+      setAdminLevel((countryAdmin0Id ? 0 : 1) as AdminLevelType);
+      setSecondAdminLevel((countryAdmin0Id ? 0 : 1) as AdminLevelType);
       // reset admin 1 titles
-      setAdmin1Key('');
-      setSecondAdmin1Key('');
+      setAdmin1Key('' as AdminCodeString);
+      setSecondAdmin1Key('' as AdminCodeString);
       // reset the admin 2 titles
-      setAdmin2Key('');
-      setSecondAdmin2Key('');
+      setAdmin2Key('' as AdminCodeString);
+      setSecondAdmin2Key('' as AdminCodeString);
     }, [countryAdmin0Id]);
 
     const handleOnChangeCompareLocationsSwitch = useCallback(() => {
