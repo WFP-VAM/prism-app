@@ -113,7 +113,7 @@ import ExposureAnalysisTable from './AnalysisTable/ExposureAnalysisTable';
 import ExposureAnalysisActions from './ExposureAnalysisActions';
 import { getExposureAnalysisTableData } from '../../utils';
 
-const tabIndex = 2;
+const tabIndex = Panel.Analysis;
 
 const AnalysisPanel = memo(
   ({

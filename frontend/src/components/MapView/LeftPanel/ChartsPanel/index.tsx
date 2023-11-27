@@ -40,7 +40,7 @@ import {
   getWMSLayersWithChart,
 } from 'config/utils';
 import { LayerData } from 'context/layers/layer-data';
-import { leftPanelTabValueSelector } from 'context/leftPanelStateSlice';
+import { leftPanelTabValueSelector, Panel } from 'context/leftPanelStateSlice';
 import { layerDataSelector } from 'context/mapStateSlice/selectors';
 import { useSafeTranslation } from 'i18n';
 import { buildCsvFileName } from 'components/MapView/utils';
@@ -60,7 +60,7 @@ const boundaryLayer = getBoundaryLayersByAdminLevel(MAX_ADMIN_LEVEL);
 
 const chartLayers = getWMSLayersWithChart();
 
-const tabIndex = 1;
+const tabIndex = Panel.Charts;
 
 function getProperties(
   layerData: LayerData<BoundaryLayerProps>['data'],

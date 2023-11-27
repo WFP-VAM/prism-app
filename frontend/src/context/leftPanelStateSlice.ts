@@ -2,9 +2,10 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import type { RootState } from './store';
 
 export enum Panel {
-  Layers = 0,
-  Charts = 1,
-  Analysis = 2,
+  Layers = 'layers',
+  Charts = 'charts',
+  Analysis = 'analysis',
+  Tables = 'tables',
 }
 
 type LeftPanelState = {
@@ -12,7 +13,7 @@ type LeftPanelState = {
 };
 
 const initialState: LeftPanelState = {
-  tabValue: 0,
+  tabValue: Panel.Layers,
 };
 
 export const leftPanelSlice = createSlice({

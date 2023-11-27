@@ -29,11 +29,11 @@ import {
   isLoading as tableLoading,
   loadTable,
 } from 'context/tableStateSlice';
-import { leftPanelTabValueSelector } from 'context/leftPanelStateSlice';
+import { Panel, leftPanelTabValueSelector } from 'context/leftPanelStateSlice';
 import TablesActions from './TablesActions';
 import DataTable from './DataTable';
 
-const tabIndex = 3;
+const tabIndex = Panel.Tables;
 
 const TablesPanel = memo(
   ({
