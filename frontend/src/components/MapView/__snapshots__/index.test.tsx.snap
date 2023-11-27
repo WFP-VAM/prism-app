@@ -3495,10 +3495,10 @@ exports[`renders as expected 1`] = `
       </div>
     </mock-drawer>
     <div
-      class="MuiBox-root MuiBox-root-126 memo-container-2"
+      class="MuiBox-root MuiBox-root-125 memo-container-2"
     >
       <div
-        class="MuiBox-root MuiBox-root-127 memo-optionContainer-3"
+        class="MuiBox-root MuiBox-root-126 memo-optionContainer-3"
         style="margin-left: 500px;"
       >
         <mock-tooltip
@@ -3536,7 +3536,7 @@ exports[`renders as expected 1`] = `
                 class="MuiGrid-root MuiGrid-item"
               >
                 <div
-                  class="makeStyles-button-130"
+                  class="makeStyles-button-129"
                 >
                   <svg
                     aria-hidden="true"
@@ -3549,7 +3549,7 @@ exports[`renders as expected 1`] = `
                     />
                   </svg>
                   <div
-                    class="makeStyles-selectContainer-132"
+                    class="makeStyles-selectContainer-131"
                   >
                     <mock-circularprogress
                       color="inherit"

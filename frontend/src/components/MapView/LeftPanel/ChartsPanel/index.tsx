@@ -44,14 +44,13 @@ import { leftPanelTabValueSelector } from 'context/leftPanelStateSlice';
 import { layerDataSelector } from 'context/mapStateSlice/selectors';
 import { useSafeTranslation } from 'i18n';
 import { buildCsvFileName } from 'components/MapView/utils';
-import RangeSlider from 'react-range-slider-input';
 import DownloadCsvButton from 'components/MapView/DownloadCsvButton';
 import ChartSection from './ChartSection';
 import LocationSelector from './LocationSelector';
 import TimePeriodSelector from './TimePeriodSelector';
-import 'react-range-slider-input/dist/style.css';
 
 import { oneDayInMs, oneYearInMs } from '../utils';
+import DateSlider from './DateSlider';
 
 // Load boundary layer for Admin2
 // WARNING - Make sure the dataviz_ids are available in the boundary file for Admin2
@@ -137,13 +136,6 @@ const useStyles = makeStyles(() =>
       padding: '16px',
       marginTop: 0,
       paddingBottom: '1em',
-    },
-    sliderContainer: {
-      width: 'calc(100% - 4rem)',
-      marginLeft: 'auto',
-      marginRight: 'auto',
-      paddingTop: '1rem',
-      paddingBottom: '2rem',
     },
     clearAllSelectionsButton: {
       backgroundColor: '#788489',
@@ -273,10 +265,9 @@ const ChartsPanel = memo(
     const [chartSelectedDateRange, setChartSelectedDateRange] = useState<
       [string, string]
     >(['', '']);
-    const [chartDateRange, setChartDateRange] = useState<[string, string]>([
-      '',
-      '',
-    ]);
+    const [chartMaxDateRange, setChartMaxDateRange] = useState<
+      [string, string]
+    >(['', '']);
     const [showSlider, setShowSlider] = useState(true);
 
     // Reset slider when new charts selection is changed
@@ -284,7 +275,7 @@ const ChartsPanel = memo(
       setMaxDataTicks(0);
       setChartRange([0, 0]);
       setChartSelectedDateRange(['', '']);
-      setChartDateRange(['', '']);
+      setChartMaxDateRange(['', '']);
     }, [selectedLayerTitles]);
 
     useEffect(() => {
@@ -394,8 +385,8 @@ const ChartsPanel = memo(
             <ChartSection
               setChartSelectedDateRange={setChartSelectedDateRange}
               setMaxDataTicks={setMaxDataTicks}
-              chartDateRange={chartDateRange}
-              setChartDateRange={setChartDateRange}
+              chartMaxDateRange={chartMaxDateRange}
+              setChartMaxDateRange={setChartMaxDateRange}
               chartRange={comparePeriods ? undefined : chartRange}
               chartLayer={chartLayer as WMSLayerProps}
               adminProperties={adminProperties || {}}
@@ -423,8 +414,10 @@ const ChartsPanel = memo(
                   }}
                 >
                   <ChartSection
-                    chartDateRange={comparePeriods ? undefined : chartDateRange}
-                    setChartDateRange={setChartDateRange}
+                    chartMaxDateRange={
+                      comparePeriods ? undefined : chartMaxDateRange
+                    }
+                    setChartMaxDateRange={setChartMaxDateRange}
                     setChartSelectedDateRange={setChartSelectedDateRange}
                     setMaxDataTicks={setMaxDataTicks}
                     chartRange={comparePeriods ? undefined : chartRange}
@@ -469,8 +462,10 @@ const ChartsPanel = memo(
                 }}
               >
                 <ChartSection
-                  chartDateRange={comparePeriods ? undefined : chartDateRange}
-                  setChartDateRange={setChartDateRange}
+                  chartMaxDateRange={
+                    comparePeriods ? undefined : chartMaxDateRange
+                  }
+                  setChartMaxDateRange={setChartMaxDateRange}
                   setChartSelectedDateRange={setChartSelectedDateRange}
                   setMaxDataTicks={setMaxDataTicks}
                   chartRange={comparePeriods ? undefined : chartRange}
@@ -580,28 +575,28 @@ const ChartsPanel = memo(
       ) : null;
       return [locationBox, ...titles, ...zipped];
     }, [
+      admin0Key,
+      adminLevel,
       adminProperties,
-      startDate1,
-      endDate1,
-      selectedLayerTitles,
+      chartMaxDateRange,
+      chartRange,
+      classes.textLabel,
       compareLocations,
       comparePeriods,
       country,
+      endDate1,
       endDate2,
-      secondAdminProperties,
-      secondAdminLevel,
-      adminLevel,
-      secondSelectedAdmin1Area,
-      selectedAdmin1Area,
-      secondSelectedAdmin2Area,
-      selectedAdmin2Area,
-      startDate2,
-      classes.textLabel,
-      admin0Key,
-      chartDateRange,
-      chartRange,
-      t,
       secondAdmin0Key,
+      secondAdminLevel,
+      secondAdminProperties,
+      secondSelectedAdmin1Area,
+      secondSelectedAdmin2Area,
+      selectedAdmin1Area,
+      selectedAdmin2Area,
+      selectedLayerTitles,
+      startDate1,
+      startDate2,
+      t,
     ]);
 
     useEffect(() => {
@@ -611,40 +606,13 @@ const ChartsPanel = memo(
           <Box className={classes.chartsContainer}>
             <Box className={classes.chartsPanelCharts}>{renderResultsPage}</Box>
             {showSlider && (
-              <Box className={classes.sliderContainer}>
-                <Box
-                  display="flex"
-                  flexDirection="row"
-                  justifyContent="space-between"
-                >
-                  <Box display="flex" flexDirection="row">
-                    <Typography className={classes.textLabel} variant="body2">
-                      start:
-                    </Typography>{' '}
-                    <Typography className={classes.textLabel}>
-                      {chartSelectedDateRange[0]}
-                    </Typography>
-                  </Box>
-
-                  <Box display="flex" flexDirection="row">
-                    <Typography className={classes.textLabel} variant="body2">
-                      end:
-                    </Typography>{' '}
-                    <Typography className={classes.textLabel}>
-                      {chartSelectedDateRange[1]}
-                    </Typography>
-                  </Box>
-                </Box>
-
-                <RangeSlider
-                  value={chartRange}
-                  onInput={setChartRange}
-                  min={1}
-                  max={maxDataTicks}
-                  step={1}
-                  disabled={selectedLayerTitles.length < 1}
-                />
-              </Box>
+              <DateSlider
+                chartSelectedDateRange={chartSelectedDateRange}
+                chartRange={chartRange}
+                setChartRange={setChartRange}
+                maxDataTicks={maxDataTicks}
+                disabled={selectedLayerTitles.length < 1}
+              />
             )}
           </Box>,
         );
@@ -656,7 +624,6 @@ const ChartsPanel = memo(
       chartSelectedDateRange,
       classes.chartsContainer,
       classes.chartsPanelCharts,
-      classes.sliderContainer,
       classes.textLabel,
       maxDataTicks,
       renderResultsPage,

@@ -105,10 +105,10 @@ const ChartSection = memo(
     endDate,
     dataForCsv,
     chartRange,
-    chartDateRange,
+    chartMaxDateRange,
     setMaxDataTicks,
     setChartSelectedDateRange,
-    setChartDateRange,
+    setChartMaxDateRange,
     classes,
   }: ChartSectionProps) => {
     const dispatch = useDispatch();
@@ -124,12 +124,12 @@ const ChartSection = memo(
       }
       const extended = extendDatasetRows(
         chartDataset,
-        chartDateRange?.[0],
-        chartDateRange?.[1],
+        chartMaxDateRange?.[0],
+        chartMaxDateRange?.[1],
       );
 
       setExtendedChartDataset(extended);
-    }, [chartDataset, chartDateRange]);
+    }, [chartDataset, chartMaxDateRange]);
 
     React.useEffect(() => {
       if (!extendedChartDataset) {
@@ -137,7 +137,7 @@ const ChartSection = memo(
       }
 
       // first is the head, contains no data
-      if (extendedChartDataset.rows.length > 1 && setChartDateRange) {
+      if (extendedChartDataset.rows.length > 1 && setChartMaxDateRange) {
         const min = extendedChartDataset.rows[1][
           CHART_DATA_PREFIXES.date
         ] as string;
@@ -146,18 +146,21 @@ const ChartSection = memo(
         ][CHART_DATA_PREFIXES.date] as string;
 
         const newMin =
-          !chartDateRange?.[0] || min < chartDateRange?.[0]
+          !chartMaxDateRange?.[0] || min < chartMaxDateRange?.[0]
             ? min
-            : chartDateRange?.[0];
+            : chartMaxDateRange?.[0];
 
         const newMax =
-          !chartDateRange?.[1] || max > chartDateRange?.[1]
+          !chartMaxDateRange?.[1] || max > chartMaxDateRange?.[1]
             ? max
-            : chartDateRange?.[1];
+            : chartMaxDateRange?.[1];
 
         // dangerous territory here, we have to check if the values are same as before, se we don't enter a loop
-        if (chartDateRange?.[0] !== newMin || chartDateRange?.[1] !== newMax) {
-          setChartDateRange([newMin, newMax]);
+        if (
+          chartMaxDateRange?.[0] !== newMin ||
+          chartMaxDateRange?.[1] !== newMax
+        ) {
+          setChartMaxDateRange([newMin, newMax]);
         }
       }
 
@@ -170,8 +173,8 @@ const ChartSection = memo(
       }
     }, [
       extendedChartDataset,
-      chartDateRange,
-      setChartDateRange,
+      chartMaxDateRange,
+      setChartMaxDateRange,
       setMaxDataTicks,
     ]);
 
@@ -448,12 +451,12 @@ export interface ChartSectionProps extends WithStyles<typeof styles> {
   endDate: number;
   dataForCsv: React.MutableRefObject<any>;
   chartRange?: [number, number];
-  chartDateRange?: [string, string];
+  chartMaxDateRange?: [string, string];
   setMaxDataTicks?: React.Dispatch<React.SetStateAction<number>>;
   setChartSelectedDateRange?: React.Dispatch<
     React.SetStateAction<[string, string]>
   >;
-  setChartDateRange?: React.Dispatch<React.SetStateAction<[string, string]>>;
+  setChartMaxDateRange?: React.Dispatch<React.SetStateAction<[string, string]>>;
 }
 
 export default withStyles(styles)(ChartSection);
