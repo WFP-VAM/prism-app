@@ -4,6 +4,7 @@
     "path": "data/srilanka/lka_bnd_adm3.json",
     "opacity": 0.8,
     "admin_code": "dsd_c_1",
+    "admin_level_codes": ["province_c", "district_code", "dsd_c_1"],
     "admin_level_names": ["province_n", "district_n", "dsd_n_1"],
     "admin_level_local_names": ["province_n", "district_n", "dsd_n_1"],
     "styles:": {
@@ -22,6 +23,7 @@
     "path": "data/srilanka/lka_bnd_adm1.json",
     "opacity": 0.8,
     "admin_code": "province_c",
+    "admin_level_codes": ["province_c"],
     "admin_level_names": ["province_n"],
     "admin_level_local_names": ["province_n"],
     "styles:": {
@@ -40,6 +42,7 @@
     "path": "data/srilanka/lka_bnd_adm2.json",
     "opacity": 0.8,
     "admin_code": "district_code",
+    "admin_level_codes": ["province_c", "district_code"],
     "admin_level_names": ["province_n", "district_n"],
     "admin_level_local_names": ["province_n", "district_n"],
     "styles:": {

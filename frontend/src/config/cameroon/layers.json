@@ -4,6 +4,7 @@
     "path": "data/cameroon/cmr_admbnda_adm2_wfp_ocha.json",
     "opacity": 0.8,
     "admin_code": "admin2Pcod",
+    "admin_level_codes": ["admin1Pcode", "admin2Pcod"],
     "admin_level_names": ["ocha_ADM1_FR", "ocha_ADM2_FR"],
     "admin_level_local_names": ["ocha_ADM1_FR", "ocha_ADM2_FR"],
     "styles:": {
@@ -22,6 +23,7 @@
     "path": "data/cameroon/cmr_admbnda_adm1_wfp_ocha.json",
     "opacity": 0.8,
     "admin_code": "admin1Pcod",
+    "admin_level_codes": ["admin1Pcode"],
     "admin_level_names": ["ADM1_FR"],
     "admin_level_local_names": ["ADM1_FR"],
     "styles:": {
