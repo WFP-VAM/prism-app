@@ -87,7 +87,7 @@ const createTableData = (
   format: TableDataFormat,
 ): TableData => {
   const momentFormat =
-    format === TableDataFormat.DATE ? DEFAULT_DATE_FORMAT : 'HH:mm';
+    format === TableDataFormat.DATE ? DEFAULT_DATE_FORMAT : 'YYYY-MM-DD HH:mm';
 
   const sortedRows = orderBy(results, item => item.date).map(row => {
     const valuesObj = Object.values(row.values).reduce(
