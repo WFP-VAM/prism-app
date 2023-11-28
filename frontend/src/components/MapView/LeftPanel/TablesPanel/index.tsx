@@ -33,7 +33,7 @@ import { Panel, leftPanelTabValueSelector } from 'context/leftPanelStateSlice';
 import TablesActions from './TablesActions';
 import DataTable from './DataTable';
 
-const tabIndex = Panel.Tables;
+const tabPanelType = Panel.Tables;
 
 const TablesPanel = memo(
   ({
@@ -54,7 +54,7 @@ const TablesPanel = memo(
     const { t } = useSafeTranslation();
 
     useEffect(() => {
-      if (tabValue !== tabIndex) {
+      if (tabValue !== tabPanelType) {
         return;
       }
 
@@ -66,7 +66,7 @@ const TablesPanel = memo(
     }, [tabValue, tableData, tableDefinition, tableShowing]);
 
     useEffect(() => {
-      if (tabValue !== tabIndex) {
+      if (tabValue !== tabPanelType) {
         return;
       }
 

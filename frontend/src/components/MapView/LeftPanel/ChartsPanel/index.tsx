@@ -60,7 +60,7 @@ const boundaryLayer = getBoundaryLayersByAdminLevel(MAX_ADMIN_LEVEL);
 
 const chartLayers = getWMSLayersWithChart();
 
-const tabIndex = Panel.Charts;
+const tabPanelType = Panel.Charts;
 
 function getProperties(
   layerData: LayerData<BoundaryLayerProps>['data'],
@@ -331,7 +331,7 @@ const ChartsPanel = memo(
       return (
         adminProperties &&
         startDate1 &&
-        tabIndex === tabValue &&
+        tabPanelType === tabValue &&
         selectedLayerTitles.length >= 1
       );
     }, [adminProperties, startDate1, selectedLayerTitles.length, tabValue]);
@@ -721,7 +721,7 @@ const ChartsPanel = memo(
       comparePeriods ? 'second_period' : '',
     ]);
 
-    if (tabIndex !== tabValue) {
+    if (tabPanelType !== tabValue) {
       return null;
     }
 
@@ -897,7 +897,7 @@ const ChartsPanel = memo(
             !(
               adminProperties &&
               startDate1 &&
-              tabIndex === tabValue &&
+              tabPanelType === tabValue &&
               selectedLayerTitles.length >= 1
             )
           }
@@ -909,7 +909,7 @@ const ChartsPanel = memo(
             !(
               adminProperties &&
               startDate1 &&
-              tabIndex === tabValue &&
+              tabPanelType === tabValue &&
               selectedLayerTitles.length >= 1
             )
           }

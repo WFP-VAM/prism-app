@@ -113,7 +113,7 @@ import ExposureAnalysisTable from './AnalysisTable/ExposureAnalysisTable';
 import ExposureAnalysisActions from './ExposureAnalysisActions';
 import { getExposureAnalysisTableData } from '../../utils';
 
-const tabIndex = Panel.Analysis;
+const tabPanelType = Panel.Analysis;
 
 const AnalysisPanel = memo(
   ({
@@ -327,7 +327,7 @@ const AnalysisPanel = memo(
     );
 
     useEffect(() => {
-      if (tabValue !== tabIndex) {
+      if (tabValue !== tabPanelType) {
         return;
       }
 
@@ -1198,7 +1198,7 @@ const AnalysisPanel = memo(
     ]);
 
     return useMemo(() => {
-      if (tabIndex !== tabValue) {
+      if (tabPanelType !== tabValue) {
         return null;
       }
 
