@@ -4,6 +4,7 @@
     "path": "data/nigeria/nga_admin2_w_dataviz.json",
     "opacity": 0.8,
     "admin_code": "admin2Pcod",
+    "admin_level_codes": ["admin1Pcod", "admin2Pcod"],
     "admin_level_names": ["admin1Name", "admin2Name"],
     "admin_level_local_names": ["admin1Name", "admin2Name"],
     "styles:": {
@@ -22,6 +23,7 @@
     "path": "data/nigeria/nga_admbnda_adm1_wca_ocha_derived.json",
     "opacity": 0.8,
     "admin_code": "admin1Pcod",
+    "admin_level_codes": ["admin1Pcod"],
     "admin_level_names": ["admin1Name"],
     "admin_level_local_names": ["admin1Name"],
     "styles:": {

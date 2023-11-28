@@ -4,6 +4,7 @@
     "path": "data/sierraleone/sle_admin2new_boundary_20200309.json",
     "opacity": 0.8,
     "admin_code": "adm2_id",
+    "admin_level_codes": ["adm1_id", "adm2_id"],
     "admin_level_names": ["adm1_name", "adm2_name"],
     "admin_level_local_names": ["adm1_name", "adm2_name"],
     "styles:": {
@@ -22,6 +23,7 @@
     "path": "data/sierraleone/sle_admin1new_boundary_20200309.json",
     "opacity": 0.8,
     "admin_code": "adm1_id",
+    "admin_level_codes": ["adm1_id"],
     "admin_level_names": ["adm1_name"],
     "admin_level_local_names": ["adm1_name"],
     "styles:": {
