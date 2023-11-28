@@ -181,7 +181,7 @@ const Chart = memo(
     }, [data.EWSConfig]);
 
     /**
-     * The following memo value Assumes that the data is formatted as follows:
+     * The following value Assumes that the data is formatted as follows:
      * First Row -> "keys"
      * Second Row -> "column names / headers"
      *
@@ -206,27 +206,17 @@ const Chart = memo(
      *               using config.transpose = true.
      *  - fill
      */
-    const chartData = useMemo(() => {
-      const datasets = !transpose ? tableRowsDataSet : indicesDataSet;
-      const datasetsWithThresholds = [...datasets, ...EWSthresholds];
+    const datasets = !transpose ? tableRowsDataSet : indicesDataSet;
+    const datasetsWithThresholds = [...datasets, ...EWSthresholds];
 
-      const datasetsTrimmed = datasetsWithThresholds.map(set => ({
-        ...set,
-        data: set.data.slice(chartRange[0], chartRange[1]),
-      }));
-
-      return {
-        labels,
-        datasets: datasetsTrimmed,
-      };
-    }, [
-      EWSthresholds,
-      chartRange,
-      indicesDataSet,
+    const datasetsTrimmed = datasetsWithThresholds.map(set => ({
+      ...set,
+      data: set.data.slice(chartRange[0], chartRange[1]),
+    }));
+    const chartData = {
       labels,
-      tableRowsDataSet,
-      transpose,
-    ]);
+      datasets: datasetsTrimmed,
+    };
 
     const chartConfig = useMemo(() => {
       return {
