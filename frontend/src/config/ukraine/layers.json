@@ -4,6 +4,7 @@
     "path": "data/ukraine/ukr_admbnda_adm1_sspe_20220114.json",
     "opacity": 0.8,
     "admin_code": "adm1_id",
+    "admin_level_codes": ["adm1_id"],
     "admin_level_names": ["ADM1_EN"],
     "admin_level_local_names": ["ADM1_UA"],
     "styles:": {
@@ -22,6 +23,7 @@
     "path": "data/ukraine/ukr_admbnda_adm2_sspe_20220114.json",
     "opacity": 0.8,
     "admin_code": "adm2_id",
+    "admin_level_codes": ["adm1_id", "adm2_id"],
     "admin_level_names": ["ADM1_EN", "ADM2_EN"],
     "admin_level_local_names": ["ADM1_UA", "ADM2_UA"],
     "styles:": {
