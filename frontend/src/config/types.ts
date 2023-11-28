@@ -18,6 +18,7 @@ export type LayerType =
   | AdminLevelDataLayerProps
   | ImpactLayerProps
   | PointDataLayerProps
+  | CompositeLayerProps
   | StaticRasterLayerProps;
 
 type UnionToIntersection<U> = (U extends any ? (k: U) => void : never) extends (
@@ -126,7 +127,7 @@ export function requiredKeysForClassType(constructor: ClassType<any>) {
  * @param logErrors Flag to print out a verbose error message to the console if the object fails
  * @param id
  */
-export function checkRequiredKeys<T>(
+export function checkRequiredKeys<T extends Record<string, any>>(
   classType: ClassType<T>,
   maybeType: Record<string, any>,
   logErrors = false,
@@ -440,6 +441,33 @@ export class WMSLayerProps extends CommonLayerProps {
 
   @optional
   'thresholdValues'?: { label: string; value: string | number }[];
+}
+
+enum AggregationOptions {
+  PIXEL = 'pixel',
+}
+enum DateTypeOptions {
+  CONTINUOUS = 'continuous',
+}
+export class CompositeLayerProps extends CommonLayerProps {
+  type: 'composite';
+
+  @makeRequired
+  title: string;
+
+  inputLayers: {
+    id: LayerType['type'];
+    weight: number;
+    interval: LayerType['dateInterval'];
+  };
+
+  aggregation: AggregationOptions;
+  interval: LayerType['dateInterval'];
+  dateType: DateTypeOptions;
+  startDate: string;
+
+  @optional
+  endDate?: string;
 }
 
 export class StaticRasterLayerProps extends CommonLayerProps {

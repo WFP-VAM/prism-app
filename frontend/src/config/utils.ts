@@ -4,6 +4,7 @@ import {
   AdminLevelDataLayerProps,
   BoundaryLayerProps,
   checkRequiredKeys,
+  CompositeLayerProps,
   ImpactLayerProps,
   LayerKey,
   LayersMap,
@@ -96,11 +97,16 @@ const getLayerByKey = (layerKey: LayerKey): LayerType => {
       return throwInvalidLayer();
     case 'boundary':
       if (checkRequiredKeys(BoundaryLayerProps, definition, true)) {
-        return definition as BoundaryLayerProps;
+        return definition;
       }
       return throwInvalidLayer();
     case 'static_raster':
       if (checkRequiredKeys(StaticRasterLayerProps, definition, true)) {
+        return definition;
+      }
+      return throwInvalidLayer();
+    case 'composite':
+      if (checkRequiredKeys(CompositeLayerProps, definition, true)) {
         return definition;
       }
       return throwInvalidLayer();
