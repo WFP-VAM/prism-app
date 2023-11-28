@@ -1947,6 +1947,7 @@
   "cdi": {
     "title": "Combined Drought Index",
     "type": "composite",
+    "base_url": "https://to-fill-later",
     "input_layers": [
       { "id": "spi_1m", "weight": 0.4, "interval": "1-month" },
       { "id": "lst_anomaly", "weight": 0.3, "interval": "10-days" },
@@ -1956,6 +1957,7 @@
     "interval": "1-month",
     "date_type": "continuous",
     "start_date": "2020-01-01",
-    "end_date": ""
+    "end_date": "",
+    "opacity": 0.8
   }
 }

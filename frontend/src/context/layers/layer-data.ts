@@ -16,6 +16,7 @@ import { fetchWCSLayerData, WMSLayerData } from './wms';
 import { fetchPointLayerData } from './point_data';
 import { BoundaryLayerData, fetchBoundaryLayerData } from './boundary';
 import { fetchImpactLayerData, ImpactLayerData } from './impact';
+import { CompositeLayerData, fetchCompositeLayerData } from './composite_data';
 
 export type LayerAcceptingDataType = Exclude<LayerType, StaticRasterLayerProps>;
 
@@ -27,6 +28,7 @@ type LayerSpecificDataTypes = {
   admin_level_data: AdminLevelDataLayerData;
   // eslint-disable-next-line camelcase
   point_data: PointLayerData | AdminLevelDataLayerData;
+  composite: CompositeLayerData;
 };
 
 export interface LayerData<L extends LayerAcceptingDataType> {
@@ -87,6 +89,7 @@ export const loadLayerData: LoadLayerDataFuncType = createAsyncThunk<
     wms: fetchWCSLayerData,
     admin_level_data: fetchAdminLevelDataLayerData,
     point_data: fetchPointLayerData,
+    composite: fetchCompositeLayerData,
   };
   const lazyLoad: LazyLoader<any> = layerLoaders[layer.type];
   try {

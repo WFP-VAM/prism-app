@@ -68,7 +68,8 @@ export const layerOrdering = (a: LayerType, b: LayerType) => {
       | 'impact'
       | 'point_data'
       | 'polygon'
-      | 'static_raster']: number;
+      | 'static_raster'
+      | 'composite']: number;
   } = {
     point_data: 0,
     polygon: 1,
@@ -78,6 +79,7 @@ export const layerOrdering = (a: LayerType, b: LayerType) => {
     impact: 5,
     wms: 6,
     static_raster: 7,
+    composite: 8,
   };
 
   const typeA = getTypeOrder(a);

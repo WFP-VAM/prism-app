@@ -251,6 +251,13 @@ export interface ExposedPopulationDefinition {
   calc?: string;
 }
 
+export enum Interval {
+  ONE_DAY = 'days',
+  TEN_DAYS = '10-days',
+  ONE_MONTH = '1-month',
+  ONE_YEAR = '1-year',
+}
+
 export type FeatureInfoObject = { [key: string]: FeatureInfoProps };
 
 export class CommonLayerProps {
@@ -263,7 +270,7 @@ export class CommonLayerProps {
   opacity: number;
 
   @optional
-  dateInterval?: string;
+  dateInterval?: Interval;
 
   @optional
   fillPattern?: 'left' | 'right';
@@ -451,6 +458,7 @@ enum DateTypeOptions {
 }
 export class CompositeLayerProps extends CommonLayerProps {
   type: 'composite';
+  baseUrl: string;
 
   @makeRequired
   title: string;
@@ -458,11 +466,11 @@ export class CompositeLayerProps extends CommonLayerProps {
   inputLayers: {
     id: LayerType['type'];
     weight: number;
-    interval: LayerType['dateInterval'];
-  };
+    interval: Interval;
+  }[];
 
   aggregation: AggregationOptions;
-  interval: LayerType['dateInterval'];
+  interval: Interval;
   dateType: DateTypeOptions;
   startDate: string;
 

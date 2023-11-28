@@ -149,7 +149,7 @@
             {
               "id": "cdi",
               "label": "Combined Drought Index",
-              "main": false
+              "main": true
             }
           ]
         }
