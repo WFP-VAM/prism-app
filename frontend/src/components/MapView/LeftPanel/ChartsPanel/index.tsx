@@ -260,11 +260,15 @@ const ChartsPanel = memo(
       GeoJsonProperties
     >();
     const oneYearInTicks = 34;
+    // maxDataTicks used for setting slider max tics
     const [maxDataTicks, setMaxDataTicks] = useState(0);
+    // chartRange is the output of the slider used to select data shown in charts
     const [chartRange, setChartRange] = useState<[number, number]>([0, 0]);
+    // chartSelectedDateRange is the selected min and max date selected by the slider used to set the labels.
     const [chartSelectedDateRange, setChartSelectedDateRange] = useState<
       [string, string]
     >(['', '']);
+    // chartMaxDateRange keeps the max and min dates from all datasets, so smaller datasets can be extended
     const [chartMaxDateRange, setChartMaxDateRange] = useState<
       [string, string]
     >(['', '']);
