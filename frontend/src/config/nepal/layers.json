@@ -4,6 +4,7 @@
     "path": "data/nepal/npl_admbnda_adm2_nd_20190430_dv.json",
     "opacity": 0.8,
     "admin_code": "ADM2_PCODE",
+    "admin_level_codes": ["ADM1_PCODE", "ADM2_PCODE"],
     "admin_level_names": ["fix_ADM1_EN", "ADM2_EN"],
     "admin_level_local_names": ["fix_ADM1_EN", "ADM2_EN"],
     "styles:": {
@@ -23,6 +24,7 @@
     "opacity": 0.8,
     "admin_code": "ADM1_PCODE",
     "admin_level_names": ["ADM1_EN"],
+    "admin_level_codes": ["ADM1_PCODE"],
     "admin_level_local_names": ["ADM1_EN"],
     "styles:": {
       "fill": {
