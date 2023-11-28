@@ -202,8 +202,6 @@ const Chart = memo(
     const chartData = useMemo(() => {
       const datasets = !transpose ? tableRowsDataSet : indicesDataSet;
       const datasetsWithThresholds = [...datasets, ...EWSthresholds];
-
-      console.log({ labels, datasetsWithThresholds });
       return {
         labels,
         datasets: datasetsWithThresholds,
