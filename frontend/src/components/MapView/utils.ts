@@ -18,6 +18,7 @@ import { addNotification } from 'context/notificationStateSlice';
 import { LocalError } from 'utils/error-utils';
 import { Column, quoteAndEscapeCell } from 'utils/analysis-utils';
 import { TableRow } from 'context/analysisResultStateSlice';
+import { AdminBoundaryParams, EWSParams } from 'context/datasetStateSlice';
 import { getExtent } from './Layers/raster-utils';
 
 export const getActiveFeatureInfoLayers = (map: Map): WMSLayerProps[] => {
@@ -312,3 +313,8 @@ export const getExposureAnalysisTableData = (
 ) => {
   return orderBy(tableData, sortColumn, sortOrder);
 };
+
+export const isAdminBoundary = (
+  params: AdminBoundaryParams | EWSParams,
+): params is AdminBoundaryParams =>
+  (params as AdminBoundaryParams).id !== undefined;

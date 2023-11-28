@@ -14,6 +14,7 @@ import mongolia from './mongolia';
 import mozambique from './mozambique';
 import myanmar from './myanmar';
 import namibia from './namibia';
+import nepal from './nepal';
 import nigeria from './nigeria';
 import rbd from './rbd';
 import sierraleone from './sierraleone';
@@ -43,6 +44,7 @@ const configMap = {
   mozambique,
   myanmar,
   namibia,
+  nepal,
   nigeria,
   rbd,
   sierraleone,
