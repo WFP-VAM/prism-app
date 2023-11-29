@@ -4,6 +4,7 @@
     "path": "data/myanmar/mmr_polbnda_adm1_250k_mimu.json",
     "opacity": 0.8,
     "admin_code": "ST_PCODE",
+    "admin_level_codes": ["ST_PCODE"],
     "admin_level_names": ["ST"],
     "admin_level_local_names": ["ST_MMR4"],
     "styles:": {
@@ -22,6 +23,7 @@
     "path": "data/myanmar/mmr_polbnda_adm2_250k_mimu.json",
     "opacity": 0.8,
     "admin_code": "DT_PCODE",
+    "admin_level_codes": ["ST_PCODE", "DT_PCODE"],
     "admin_level_names": ["ST", "DT"],
     "admin_level_local_names": ["ST_MMR4", "DT_MMR4"],
     "styles:": {
@@ -40,6 +42,7 @@
     "path": "data/myanmar/mmr_polbnda_adm3_250k_mimu.json",
     "opacity": 0.8,
     "admin_code": "TS_PCODE",
+    "admin_level_codes": ["ST_PCODE", "DT_PCODE", "TS_PCODE"],
     "admin_level_names": ["ST", "DT", "TS"],
     "admin_level_local_names": ["ST_MMR4", "DT_MMR4", "TS_MMR4"],
     "styles:": {

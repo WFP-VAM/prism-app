@@ -80,14 +80,10 @@ const Chart = memo(
         return indices.map(index => header[index]);
       }
       return tableRows.map(row => {
-        if (data.EWSConfig) {
-          return moment(row[config.category], 'HH:mm')
-            .locale(t('date_locale') as LocaleSpecifier)
-            .format('HH:mm');
-        }
+        const dateFormat = data.EWSConfig ? 'HH:mm' : 'YYYY-MM-DD';
         return moment(row[config.category])
           .locale(t('date_locale') as LocaleSpecifier)
-          .format('YYYY-MM-DD');
+          .format(dateFormat);
       });
     }, [
       config.category,
@@ -206,7 +202,6 @@ const Chart = memo(
     const chartData = useMemo(() => {
       const datasets = !transpose ? tableRowsDataSet : indicesDataSet;
       const datasetsWithThresholds = [...datasets, ...EWSthresholds];
-
       return {
         labels,
         datasets: datasetsWithThresholds,

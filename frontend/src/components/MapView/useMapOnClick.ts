@@ -17,6 +17,7 @@ import {
 } from 'context/tooltipStateSlice';
 import { DEFAULT_DATE_FORMAT } from 'utils/name-utils';
 import { makeFeatureInfoRequest } from 'utils/server-utils';
+import { clearDataset } from 'context/datasetStateSlice';
 import { getActiveFeatureInfoLayers, getFeatureInfoParams } from './utils';
 
 const useMapOnClick = (
@@ -87,6 +88,7 @@ const useMapOnClick = (
     boundaryLayerData &&
     ((map: Map, evt: any) => {
       dispatch(hidePopup());
+      dispatch(clearDataset());
       // Hide the alert popup if we click outside the target country (outside boundary bbox)
       onClickOutsideTargetCountry(evt);
       const featureInfoLayers = getFeatureInfoLayers(map);

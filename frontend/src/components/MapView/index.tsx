@@ -53,7 +53,6 @@ import {
 import { addNotification } from 'context/notificationStateSlice';
 import GoToBoundaryDropdown from 'components/Common/BoundaryDropdown/goto';
 import { DEFAULT_DATE_FORMAT } from 'utils/name-utils';
-import DataViewer from 'components/DataViewer';
 import { LocalError } from 'utils/error-utils';
 import AlertForm from './AlertForm';
 import BoundaryInfoBox from './BoundaryInfoBox';
@@ -541,7 +540,6 @@ const MapView = memo(({ classes }: MapViewProps) => {
             </Grid>
             {renderedGridItemAlertForm}
           </Grid>
-          <DataViewer />
         </Grid>
         <Grid item>
           <Grid container spacing={1}>
