@@ -26,8 +26,6 @@ const CompositeLayer = ({ layer }: Props) => {
     }
   }, [dispatch, layer, data, date]);
 
-  console.log('data', data);
-
   return <>test</>;
 };
 

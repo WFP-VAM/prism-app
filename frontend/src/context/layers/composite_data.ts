@@ -26,8 +26,9 @@ export const fetchCompositeLayerData: LazyLoader<CompositeLayerProps> = () => as
     endDate,
   } = layer;
 
+  // eslint-disable-line no-console
   console.log(
-    'layers data to use when endPoint is available:',
+    'layers data to use when endPoint will be available:',
     id,
     aggregation,
     inputLayers,

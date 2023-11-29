@@ -80,6 +80,7 @@ const getLayerByKey = (layerKey: LayerKey): LayerType => {
   };
 
   const throwInvalidInterval = () => {
+    // eslint-disable-line no-console
     console.log('Please verify intervals in layer definition', definition);
     throw new Error(
       `Found invalid Interval definition for layer '${layerKey}'. InputLayers intervals should be lower than global interval.`,
