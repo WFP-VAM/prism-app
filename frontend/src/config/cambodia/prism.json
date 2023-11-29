@@ -141,17 +141,6 @@
               "main": false
             }
           ]
-        },
-        {
-          "group_title": "cdi",
-          "activate_all": false,
-          "layers": [
-            {
-              "id": "cdi",
-              "label": "Combined Drought Index",
-              "main": true
-            }
-          ]
         }
       ],
       "dry_periods": ["days_dry", "streak_dry_days"],
@@ -209,6 +198,9 @@
         "lst_anomaly",
         "lst_amplitude"
       ]
+    },
+    "drought": {
+        "combined_drought_index": ["cdi"]
     },
     "vulnerability": {
       "poverty": ["idpoor", "idpoor_1", "idpoor_2"]
