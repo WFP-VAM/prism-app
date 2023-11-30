@@ -109,6 +109,7 @@ const Chart = memo(
           borderWidth: 2,
           pointRadius: data.EWSConfig ? 0 : 1, // Disable point rendering for EWS only.
           data: indices.map(index => (row[index] as number) || null),
+          pointHitRadius: 10,
         };
       });
     }, [
@@ -148,6 +149,7 @@ const Chart = memo(
           borderWidth: 2,
           data: tableRows.map(row => (row[indiceKey] as number) || null),
           pointRadius: configureIndicePointRadius(indiceKey),
+          pointHitRadius: 10,
         };
       });
     }, [
@@ -168,6 +170,7 @@ const Chart = memo(
           borderColor: obj.color,
           borderWidth: 2,
           pointRadius: 0,
+          pointHitRadius: 10,
           // Deep copy is needed: https://github.com/reactchartjs/react-chartjs-2/issues/524#issuecomment-722814079
           data: [...obj.values],
           fill: false,
@@ -256,6 +259,10 @@ const Chart = memo(
               },
             },
           ],
+        },
+        // display values for all datasets in the tooltip
+        tooltips: {
+          mode: 'index',
         },
         legend: {
           display: config.displayLegend,

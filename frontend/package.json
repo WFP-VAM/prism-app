@@ -27,6 +27,7 @@
     "deploy:prod": "firebase deploy --only hosting:prod-target",
     "deploy:staging": "firebase deploy --only hosting:staging-target",
     "deploy:surge": "surge --project ./build",
+    "deploy:tests": "./scripts/deploy_to_surge.sh",
     "eject": "react-scripts eject",
     "lint": "eslint --ext .js,.jsx,.ts,.tsx -c .eslintrc ./src ../common/src",
     "postinstall": "yarn run setup:maplibre",
@@ -166,6 +167,7 @@
     "eslint-plugin-prettier": "^3.1.4",
     "eslint-plugin-react": "^7.19.0",
     "eslint-plugin-react-hooks": "^1.7",
+    "surge": "^0.23.1",
     "typescript": "^3.9.7"
   },
   "engines": {
