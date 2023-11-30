@@ -3477,6 +3477,11 @@ exports[`renders as expected 1`] = `
                   </div>
                 </div>
               </div>
+              <p
+                style="position: absolute; bottom: 0px; left: 1rem;"
+              >
+                web hash: 
+              </p>
             </div>
           </div>
           <div

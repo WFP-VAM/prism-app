@@ -107,6 +107,7 @@ import {
   setTabValue,
 } from 'context/leftPanelStateSlice';
 import LoadingBlinkingDots from 'components/Common/LoadingBlinkingDots';
+import HashText from 'components/Common/HashText';
 import AnalysisTable from './AnalysisTable';
 import ExposureAnalysisTable from './AnalysisTable/ExposureAnalysisTable';
 import ExposureAnalysisActions from './ExposureAnalysisActions';
@@ -1036,6 +1037,7 @@ const AnalysisPanel = memo(
           </div>
           {renderedPolygonHazardType}
           {renderedRasterType}
+          <HashText />
         </div>
       );
     }, [
