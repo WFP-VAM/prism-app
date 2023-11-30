@@ -241,8 +241,10 @@ const ChartsPanel = memo(
       string[] | TFunctionKeys[]
     >([]);
 
+    const yearsToFetchDataFrom = 20;
+
     const [startDate1, setStartDate1] = useState<number | null>(
-      new Date().getTime() - oneYearInMs * 5,
+      new Date().getTime() - oneYearInMs * yearsToFetchDataFrom,
     );
     const [endDate1, setEndDate1] = useState<number | null>(
       new Date().getTime(),
@@ -293,7 +295,9 @@ const ChartsPanel = memo(
         setStartDate1(new Date().getTime() - oneYearInMs);
       } else {
         setShowSlider(true);
-        setStartDate1(new Date().getTime() - oneYearInMs * 5);
+        setStartDate1(
+          new Date().getTime() - oneYearInMs * yearsToFetchDataFrom,
+        );
       }
     }, [comparePeriods]);
 
@@ -832,25 +836,24 @@ const ChartsPanel = memo(
             }
             checked={comparePeriods}
           />
-          {!showSlider && (
-            <>
-              <TimePeriodSelector
-                startDate={startDate1}
-                setStartDate={setStartDate1}
-                endDate={endDate1}
-                setEndDate={setEndDate1}
-                title={comparePeriods ? t('Period 1') : null}
-              />
-              {comparePeriods && (
-                <TimePeriodSelector
-                  startDate={startDate2}
-                  setStartDate={setStartDate2}
-                  endDate={endDate2}
-                  setEndDate={setEndDate2}
-                  title={comparePeriods ? t('Period 2') : null}
-                />
-              )}
-            </>
+
+          <TimePeriodSelector
+            startDate={startDate1}
+            setStartDate={setStartDate1}
+            endDate={endDate1}
+            setEndDate={setEndDate1}
+            title={comparePeriods ? t('Period 1') : null}
+            startLabel={showSlider ? 'Min Date' : undefined}
+            endLabel={showSlider ? 'Max Date' : undefined}
+          />
+          {comparePeriods && (
+            <TimePeriodSelector
+              startDate={startDate2}
+              setStartDate={setStartDate2}
+              endDate={endDate2}
+              setEndDate={setEndDate2}
+              title={comparePeriods ? t('Period 2') : null}
+            />
           )}
         </FormGroup>
 
