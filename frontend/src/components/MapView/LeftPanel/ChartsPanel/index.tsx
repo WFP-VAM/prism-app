@@ -276,13 +276,13 @@ const ChartsPanel = memo(
     >(['', '']);
     const [showSlider, setShowSlider] = useState(true);
 
-    // Reset slider when new charts selection is changed
+    // Reset slider when charts' date changes
     useEffect(() => {
       setMaxDataTicks(0);
       setChartRange([0, 0]);
       setChartSelectedDateRange(['', '']);
       setChartMaxDateRange(['', '']);
-    }, [selectedLayerTitles]);
+    }, [startDate1, endDate1]);
 
     useEffect(() => {
       const start = maxDataTicks - oneYearInTicks;
@@ -391,6 +391,7 @@ const ChartsPanel = memo(
             }}
           >
             <ChartSection
+              key={`${startDate1}-${endDate1}`}
               setChartSelectedDateRange={setChartSelectedDateRange}
               setMaxDataTicks={setMaxDataTicks}
               chartMaxDateRange={chartMaxDateRange}
@@ -422,6 +423,7 @@ const ChartsPanel = memo(
                   }}
                 >
                   <ChartSection
+                    key={`${startDate1}-${endDate1}`}
                     chartMaxDateRange={
                       comparePeriods ? undefined : chartMaxDateRange
                     }
@@ -470,6 +472,7 @@ const ChartsPanel = memo(
                 }}
               >
                 <ChartSection
+                  key={`${startDate1}-${endDate1}`}
                   chartMaxDateRange={
                     comparePeriods ? undefined : chartMaxDateRange
                   }
