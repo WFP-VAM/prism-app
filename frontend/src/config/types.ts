@@ -452,9 +452,11 @@ export class WMSLayerProps extends CommonLayerProps {
 
 enum AggregationOptions {
   PIXEL = 'pixel',
+  GEOJSON = 'geojson',
 }
 enum DateTypeOptions {
   CONTINUOUS = 'continuous',
+  SINGLE = 'single',
 }
 export class CompositeLayerProps extends CommonLayerProps {
   type: 'composite';

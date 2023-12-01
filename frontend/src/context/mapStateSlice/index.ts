@@ -62,14 +62,14 @@ export const layerOrdering = (a: LayerType, b: LayerType) => {
   const order: {
     [key in
       | 'boundary'
+      | 'composite'
       | 'wms'
       | 'admin_level_data'
       | 'pattern_admin_level_data'
       | 'impact'
       | 'point_data'
       | 'polygon'
-      | 'static_raster'
-      | 'composite']: number;
+      | 'static_raster']: number;
   } = {
     point_data: 0,
     polygon: 1,
