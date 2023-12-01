@@ -241,7 +241,7 @@ const ChartsPanel = memo(
       string[] | TFunctionKeys[]
     >([]);
 
-    const yearsToFetchDataFrom = 20;
+    const yearsToFetchDataFrom = 5;
 
     const [startDate1, setStartDate1] = useState<number | null>(
       new Date().getTime() - oneYearInMs * yearsToFetchDataFrom,
@@ -846,8 +846,8 @@ const ChartsPanel = memo(
             endDate={endDate1}
             setEndDate={setEndDate1}
             title={comparePeriods ? t('Period 1') : null}
-            startLabel={showSlider ? 'Min Date' : undefined}
-            endLabel={showSlider ? 'Max Date' : undefined}
+            startLabel={showSlider ? 'Min Date' : 'Start'}
+            endLabel={showSlider ? 'Max Date' : 'End'}
           />
           {comparePeriods && (
             <TimePeriodSelector
@@ -856,6 +856,8 @@ const ChartsPanel = memo(
               endDate={endDate2}
               setEndDate={setEndDate2}
               title={comparePeriods ? t('Period 2') : null}
+              startLabel="Start"
+              endLabel="End"
             />
           )}
         </FormGroup>

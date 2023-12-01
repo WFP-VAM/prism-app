@@ -61,7 +61,7 @@ const TimePeriodSelector = memo(
         <Box className={styles.datePickerContainer}>
           <Box p={2} flexGrow={1} style={{ borderBottom: '1px solid #858585' }}>
             <Typography className={styles.textLabel} variant="body2">
-              {`${t(startLabel || 'Start')}: `}
+              {`${t(startLabel)}: `}
             </Typography>
             <DatePicker
               locale={t('date_locale')}
@@ -91,7 +91,7 @@ const TimePeriodSelector = memo(
 
           <Box p={2} flexGrow={1} style={{ borderBottom: '1px solid #858585' }}>
             <Typography className={styles.textLabel} variant="body2">
-              {`${t(endLabel || 'End')}: `}
+              {`${t(endLabel)}: `}
             </Typography>
             <DatePicker
               locale={t('date_locale')}
@@ -130,8 +130,8 @@ interface TimePeriodSelectorProps {
   endDate: number | null;
   setEndDate: any;
   title: string | null;
-  startLabel?: string;
-  endLabel?: string;
+  startLabel: string;
+  endLabel: string;
 }
 
 export default TimePeriodSelector;
