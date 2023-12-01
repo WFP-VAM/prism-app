@@ -616,7 +616,7 @@ const ChartsPanel = memo(
         setResultsPage(
           <Box className={classes.chartsContainer}>
             <Box className={classes.chartsPanelCharts}>{renderResultsPage}</Box>
-            {showSlider && (
+            {showSlider && maxDataTicks > 1 && (
               <DateSlider
                 chartSelectedDateRange={chartSelectedDateRange}
                 chartRange={chartRange}
