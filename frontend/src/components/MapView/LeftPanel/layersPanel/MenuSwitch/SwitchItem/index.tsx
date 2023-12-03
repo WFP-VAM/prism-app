@@ -84,19 +84,19 @@ const SwitchItem = memo(({ classes, layer, extent }: SwitchItemProps) => {
       : [];
   }, [group, selected, selectedLayers]);
 
-  const initialActiveLayer = useMemo(() => {
+  const initialActiveLayerId = useMemo(() => {
     return selectedActiveLayer.length > 0 ? selectedActiveLayer[0].id : null;
   }, [selectedActiveLayer]);
 
-  const [activeLayer, setActiveLayer] = useState(
-    initialActiveLayer || (group?.layers?.find(l => l.main)?.id as string),
+  const [activeLayerId, setActiveLayerId] = useState(
+    initialActiveLayerId || (group?.layers?.find(l => l.main)?.id as string),
   );
 
   useEffect(() => {
-    setActiveLayer(
-      initialActiveLayer || (group?.layers?.find(l => l.main)?.id as string),
+    setActiveLayerId(
+      initialActiveLayerId || (group?.layers?.find(l => l.main)?.id as string),
     );
-  }, [group, initialActiveLayer]);
+  }, [group, initialActiveLayerId]);
 
   const exposure = useMemo(() => {
     return (layer.type === 'wms' && layer.exposure) || undefined;
@@ -174,7 +174,7 @@ const SwitchItem = memo(({ classes, layer, extent }: SwitchItemProps) => {
   const handleSelect = useCallback(
     (event: React.ChangeEvent<{ value: string | unknown }>) => {
       const selectedId = event.target.value;
-      setActiveLayer(selectedId as string);
+      setActiveLayerId(selectedId as string);
       toggleLayerValue(selectedId as string, true);
     },
     [toggleLayerValue],
@@ -200,14 +200,14 @@ const SwitchItem = memo(({ classes, layer, extent }: SwitchItemProps) => {
         classes={{
           root: selected ? classes.selectItem : classes.selectItemUnchecked,
         }}
-        value={activeLayer}
+        value={activeLayerId}
         onChange={e => handleSelect(e)}
       >
         {renderedGroupLayersMenuItems}
       </Select>
     );
   }, [
-    activeLayer,
+    activeLayerId,
     classes.select,
     classes.selectItem,
     classes.selectItemUnchecked,
@@ -270,12 +270,12 @@ const SwitchItem = memo(({ classes, layer, extent }: SwitchItemProps) => {
         event,
         newValue as number,
         map,
-        activeLayer || layerId,
+        activeLayerId || layerId,
         layerType,
         val => setOpacityValue(val),
       );
     },
-    [activeLayer, layerId, layerType, map],
+    [activeLayerId, layerId, layerType, map],
   );
 
   const renderedOpacitySlider = useMemo(() => {
@@ -317,9 +317,9 @@ const SwitchItem = memo(({ classes, layer, extent }: SwitchItemProps) => {
 
   const handleOnChangeSwitch = useCallback(
     (event: ChangeEvent<HTMLInputElement>) => {
-      toggleLayerValue(activeLayer, event.target.checked);
+      toggleLayerValue(activeLayerId, event.target.checked);
     },
-    [activeLayer, toggleLayerValue],
+    [activeLayerId, toggleLayerValue],
   );
 
   return (
@@ -356,7 +356,7 @@ const SwitchItem = memo(({ classes, layer, extent }: SwitchItemProps) => {
         </Tooltip>
         {renderedExposureAnalysisOption}
         <LayerDownloadOptions
-          layer={layer}
+          layerId={activeLayerId || layerId}
           extent={extent}
           selected={selected}
         />

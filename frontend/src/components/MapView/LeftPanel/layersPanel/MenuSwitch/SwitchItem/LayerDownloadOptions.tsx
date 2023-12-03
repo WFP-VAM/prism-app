@@ -6,14 +6,14 @@ import {
   MenuItem,
   Tooltip,
 } from '@material-ui/core';
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import moment from 'moment';
 import { mapValues } from 'lodash';
 import GetAppIcon from '@material-ui/icons/GetApp';
 import {
   AdminLevelDataLayerProps,
-  LayerType,
+  LayerKey,
   WMSLayerProps,
 } from 'config/types';
 import {
@@ -35,16 +35,22 @@ import { useSafeTranslation } from 'i18n';
 import { isExposureAnalysisLoadingSelector } from 'context/analysisResultStateSlice';
 import { availableDatesSelector } from 'context/serverStateSlice';
 import { getRequestDate } from 'utils/server-utils';
+import { LayerDefinitions } from 'config/utils';
 
 // TODO - return early when the layer is not selected.
 function LayerDownloadOptions({
-  layer,
+  layerId,
   extent,
   selected,
   size,
 }: LayerDownloadOptionsProps) {
   const { t } = useSafeTranslation();
   const dispatch = useDispatch();
+  const layer = useMemo(() => {
+    return LayerDefinitions[layerId];
+  }, [layerId]);
+
+  console.log({ layer });
 
   const [
     downloadMenuAnchorEl,
@@ -186,7 +192,7 @@ function LayerDownloadOptions({
 }
 
 interface LayerDownloadOptionsProps {
-  layer: LayerType;
+  layerId: LayerKey;
   extent: Extent | undefined;
   selected: boolean;
   size?: 'small' | undefined;
