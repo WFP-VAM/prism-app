@@ -47,7 +47,8 @@ function LayerDownloadOptions({
   const { t } = useSafeTranslation();
   const dispatch = useDispatch();
   const layer = useMemo(() => {
-    return LayerDefinitions[layerId];
+    // default to first layer if layerId is not found
+    return LayerDefinitions[layerId] || Object.values(LayerDefinitions)[0];
   }, [layerId]);
 
   const [
