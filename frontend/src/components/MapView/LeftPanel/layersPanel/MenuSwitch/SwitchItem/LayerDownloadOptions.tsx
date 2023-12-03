@@ -50,8 +50,6 @@ function LayerDownloadOptions({
     return LayerDefinitions[layerId];
   }, [layerId]);
 
-  console.log({ layer });
-
   const [
     downloadMenuAnchorEl,
     setDownloadMenuAnchorEl,
