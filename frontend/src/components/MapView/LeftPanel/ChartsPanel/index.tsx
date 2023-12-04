@@ -276,13 +276,23 @@ const ChartsPanel = memo(
     >(['', '']);
     const [showSlider, setShowSlider] = useState(true);
 
-    // Reset slider when charts' date changes
-    useEffect(() => {
+    function resetSlider() {
       setMaxDataTicks(0);
       setChartRange([0, 0]);
       setChartSelectedDateRange(['', '']);
       setChartMaxDateRange(['', '']);
+    }
+
+    // Reset slider when charts' date changes
+    useEffect(() => {
+      resetSlider();
     }, [startDate1, endDate1]);
+
+    useEffect(() => {
+      if (selectedLayerTitles.length === 0) {
+        resetSlider();
+      }
+    }, [selectedLayerTitles.length]);
 
     useEffect(() => {
       const start = maxDataTicks - oneYearInTicks;
