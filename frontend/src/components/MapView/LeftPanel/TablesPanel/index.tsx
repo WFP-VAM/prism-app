@@ -30,7 +30,6 @@ import {
   loadTable,
 } from 'context/tableStateSlice';
 import { leftPanelTabValueSelector } from 'context/leftPanelStateSlice';
-import HashText from 'components/Common/HashText';
 import TablesActions from './TablesActions';
 import DataTable from './DataTable';
 
@@ -213,7 +212,6 @@ const TablesPanel = memo(
           >
             {renderedTextFieldBody}
           </TextField>
-          <HashText />
         </div>
         {renderedTablesActions}
       </div>

@@ -16,7 +16,7 @@
   },
   "scripts": {
     "clean": "rimraf ./node_modules && pushd ../common && rimraf ./node_modules && popd",
-    "start": "export GIT_HASH=$(git rev-parse --short HEAD) && cross-env EXTEND_ESLINT=true react-app-rewired start",
+    "start": "cross-env EXTEND_ESLINT=true react-scripts start",
     "analyze": "yarn build && npx source-map-explorer 'build/static/js/*.js'",
     "build": "export GIT_HASH=$(git rev-parse --short HEAD) && cross-env EXTEND_ESLINT=true react-app-rewired build",
     "test": "cross-env REACT_APP_TESTING=true && react-scripts test",

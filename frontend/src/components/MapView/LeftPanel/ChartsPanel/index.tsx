@@ -46,7 +46,6 @@ import { useSafeTranslation } from 'i18n';
 import DownloadCsvButton from 'components/MapView/DownloadCsvButton';
 import { buildCsvFileName } from 'components/MapView/utils';
 
-import HashText from 'components/Common/HashText';
 import ChartSection from './ChartSection';
 import LocationSelector from './LocationSelector';
 import TimePeriodSelector from './TimePeriodSelector';
@@ -101,7 +100,6 @@ const useStyles = makeStyles(() =>
       alignItems: 'center',
       width: PanelSize.medium,
       flexShrink: 0,
-      height: 'calc(100% - 30px)',
     },
     layerFormControl: {
       marginTop: 30,
@@ -828,7 +826,6 @@ const ChartsPanel = memo(
         >
           <Typography variant="body2">{t('Clear All')}</Typography>
         </Button>
-        <HashText />
       </Box>
     );
   },
