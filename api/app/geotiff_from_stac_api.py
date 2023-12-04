@@ -43,7 +43,9 @@ def generate_geotiff_from_stac_api(
     if not items:
         raise HTTPException(status_code=500, detail="Collection not found in stac API")
 
-    print(items[0].assets)
+    # TODO - confirm that input band exists
+    available_bands = items[0].assets.keys()
+    print(available_bands)
 
     bands = [band] if band else None
     try:
