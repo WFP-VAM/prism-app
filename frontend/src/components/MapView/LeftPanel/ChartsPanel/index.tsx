@@ -627,13 +627,25 @@ const ChartsPanel = memo(
           <Box className={classes.chartsContainer}>
             <Box className={classes.chartsPanelCharts}>{renderResultsPage}</Box>
             {showSlider && maxDataTicks > 1 && (
-              <DateSlider
-                chartSelectedDateRange={chartSelectedDateRange}
-                chartRange={chartRange}
-                setChartRange={setChartRange}
-                maxDataTicks={maxDataTicks}
-                disabled={selectedLayerTitles.length < 1}
-              />
+              <>
+                <TimePeriodSelector
+                  wrapperStyle={{ padding: '0 2rem 0 2rem' }}
+                  startDate={startDate1}
+                  setStartDate={setStartDate1}
+                  endDate={endDate1}
+                  setEndDate={setEndDate1}
+                  title={comparePeriods ? t('Period 1') : null}
+                  startLabel="Min Date"
+                  endLabel="Max Date"
+                />
+                <DateSlider
+                  chartSelectedDateRange={chartSelectedDateRange}
+                  chartRange={chartRange}
+                  setChartRange={setChartRange}
+                  maxDataTicks={maxDataTicks}
+                  disabled={selectedLayerTitles.length < 1}
+                />
+              </>
             )}
           </Box>,
         );
@@ -646,6 +658,8 @@ const ChartsPanel = memo(
       classes.chartsContainer,
       classes.chartsPanelCharts,
       classes.textLabel,
+      comparePeriods,
+      endDate1,
       maxDataTicks,
       renderResultsPage,
       selectedLayerTitles.length,
@@ -653,6 +667,8 @@ const ChartsPanel = memo(
       setResultsPage,
       showChartsPanel,
       showSlider,
+      startDate1,
+      t,
     ]);
 
     const handleClearAllSelectedCharts = useCallback(() => {
@@ -850,25 +866,27 @@ const ChartsPanel = memo(
             checked={comparePeriods}
           />
 
-          <TimePeriodSelector
-            startDate={startDate1}
-            setStartDate={setStartDate1}
-            endDate={endDate1}
-            setEndDate={setEndDate1}
-            title={comparePeriods ? t('Period 1') : null}
-            startLabel={showSlider ? 'Min Date' : 'Start'}
-            endLabel={showSlider ? 'Max Date' : 'End'}
-          />
           {comparePeriods && (
-            <TimePeriodSelector
-              startDate={startDate2}
-              setStartDate={setStartDate2}
-              endDate={endDate2}
-              setEndDate={setEndDate2}
-              title={comparePeriods ? t('Period 2') : null}
-              startLabel="Start"
-              endLabel="End"
-            />
+            <>
+              <TimePeriodSelector
+                startDate={startDate1}
+                setStartDate={setStartDate1}
+                endDate={endDate1}
+                setEndDate={setEndDate1}
+                title={comparePeriods ? t('Period 1') : null}
+                startLabel="Start"
+                endLabel="End"
+              />
+              <TimePeriodSelector
+                startDate={startDate2}
+                setStartDate={setStartDate2}
+                endDate={endDate2}
+                setEndDate={setEndDate2}
+                title={comparePeriods ? t('Period 2') : null}
+                startLabel="Start"
+                endLabel="End"
+              />
+            </>
           )}
         </FormGroup>
 

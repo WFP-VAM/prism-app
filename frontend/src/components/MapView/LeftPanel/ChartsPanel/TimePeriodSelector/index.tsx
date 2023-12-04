@@ -22,6 +22,7 @@ const useStyles = makeStyles(() =>
       color: 'black',
       display: 'flex',
       minWidth: 300,
+      justifyContent: 'space-between',
     },
     textLabel: {
       color: 'black',
@@ -47,19 +48,20 @@ const TimePeriodSelector = memo(
     title,
     startLabel,
     endLabel,
+    wrapperStyle,
   }: TimePeriodSelectorProps) => {
     const styles = useStyles();
     const { t } = useSafeTranslation();
 
     return (
-      <Box className={styles.wrapper}>
+      <Box className={styles.wrapper} style={wrapperStyle}>
         {title && (
           <Typography className={styles.wrapperLabel} variant="body2">
             {title}
           </Typography>
         )}
         <Box className={styles.datePickerContainer}>
-          <Box p={2} flexGrow={1} style={{ borderBottom: '1px solid #858585' }}>
+          <Box p={2} style={{ borderBottom: '1px solid #858585' }}>
             <Typography className={styles.textLabel} variant="body2">
               {`${t(startLabel)}: `}
             </Typography>
@@ -89,7 +91,7 @@ const TimePeriodSelector = memo(
             />
           </Box>
 
-          <Box p={2} flexGrow={1} style={{ borderBottom: '1px solid #858585' }}>
+          <Box p={2} style={{ borderBottom: '1px solid #858585' }}>
             <Typography className={styles.textLabel} variant="body2">
               {`${t(endLabel)}: `}
             </Typography>
@@ -132,6 +134,7 @@ interface TimePeriodSelectorProps {
   title: string | null;
   startLabel: string;
   endLabel: string;
+  wrapperStyle?: React.CSSProperties;
 }
 
 export default TimePeriodSelector;
