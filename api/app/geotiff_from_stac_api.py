@@ -40,10 +40,10 @@ def generate_geotiff_from_stac_api(
     query_answer = catalog.search(bbox=bbox, collections=[collection], datetime=[date])
     items = list(query_answer.items())
 
-    print(items)
-
     if not items:
         raise HTTPException(status_code=500, detail="Collection not found in stac API")
+    
+    print(items[0].assets)
 
     bands = [band] if band else None
     try:
