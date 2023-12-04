@@ -11,9 +11,8 @@ const RemovePlugin = require('remove-files-webpack-plugin');
 const country = process.env.REACT_APP_COUNTRY;
 
 // In case GIT_HASH is not set we are in github actions environment
-process.env.REACT_APP_GIT_HASH = (process.env.GITHUB_SHA
-  ? process.env.GITHUB_SHA
-  : process.env.GIT_HASH
+process.env.REACT_APP_GIT_HASH = (
+  process.env.GITHUB_SHA || process.env.GIT_HASH
 )?.slice(0, 8);
 
 module.exports = override(
