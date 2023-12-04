@@ -42,7 +42,7 @@ def generate_geotiff_from_stac_api(
 
     if not items:
         raise HTTPException(status_code=500, detail="Collection not found in stac API")
-    
+
     print(items[0].assets)
 
     bands = [band] if band else None
@@ -66,7 +66,7 @@ def upload_to_s3(file_path: str) -> str:
     """Upload to s3"""
     s3_client = boto3.client("s3")
     s3_filename = os.path.basename(file_path)
-    
+
     print(s3_filename)
 
     try:
@@ -91,7 +91,9 @@ def generate_geotiff_and_upload_to_s3(
     return s3_filename
 
 
-def get_geotiff(collection: str, bbox: [float, float, float, float], date: str, band: str):
+def get_geotiff(
+    collection: str, bbox: [float, float, float, float], date: str, band: str
+):
     """Generate a geotiff and return presigned download url"""
     s3_filename = generate_geotiff_and_upload_to_s3(collection, bbox, date, band)
 
