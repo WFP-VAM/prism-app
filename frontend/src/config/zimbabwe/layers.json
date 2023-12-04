@@ -668,7 +668,8 @@
     "type": "wms",
     "server_layer_name": "r1q_dekad",
     "additional_query_params": {
-      "styles": "rfq_14_20_400"
+      "styles": "rfq_14_20_400",
+      "band": "r1q"
     },
     "chart_data": {
       "fields": [
@@ -1564,7 +1565,8 @@
     "type": "wms",
     "server_layer_name": "rfq_blended_zwe_dekad",
     "additional_query_params": {
-      "styles": "r1q_blended"
+      "styles": "r1q_blended",
+      "band": "r1q"
     },
     "disableAnalysis": true,
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",

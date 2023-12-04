@@ -126,9 +126,11 @@ function LayerDownloadOptions({
   };
 
   const handleDownloadGeoTiff = (): void => {
+    const band = (layer as WMSLayerProps).additionalQueryParams?.band;
     setIsGeotiffLoading(true);
     downloadGeotiff(
       (layer as WMSLayerProps).serverLayerName,
+      band,
       extent,
       moment(selectedDate).format(DEFAULT_DATE_FORMAT),
       dispatch,

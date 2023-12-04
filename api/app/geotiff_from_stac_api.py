@@ -31,7 +31,7 @@ configure_rio(
 
 @timed
 def generate_geotiff_from_stac_api(
-    collection: str, bbox: [float, float, float, float], date: str
+    collection: str, bbox: [float, float, float, float], date: str, band: str
 ) -> str:
     """Query the stac API with the params and generate a geotiff"""
     file_path = f"{collection}_{date}_{str(uuid4())[:8]}.tif"
@@ -40,15 +40,19 @@ def generate_geotiff_from_stac_api(
     query_answer = catalog.search(bbox=bbox, collections=[collection], datetime=[date])
     items = list(query_answer.items())
 
+    print(items)
+
     if not items:
         raise HTTPException(status_code=500, detail="Collection not found in stac API")
 
+    bands = [band] if band else None
     try:
-        collections_dataset = stac_load(items, bbox=bbox, chunks={})
+        collections_dataset = stac_load(items, bbox=bbox, bands=bands, chunks={})
     except Exception as e:
         logger.warning("Failed to load dataset")
         raise e
 
+    print(collections_dataset)
     try:
         write_cog(collections_dataset[list(collections_dataset.keys())[0]], file_path)
     except Exception as e:
@@ -62,29 +66,34 @@ def upload_to_s3(file_path: str) -> str:
     """Upload to s3"""
     s3_client = boto3.client("s3")
     s3_filename = os.path.basename(file_path)
+    
+    print(s3_filename)
 
-    s3_client.upload_file(file_path, GEOTIFF_BUCKET_NAME, s3_filename)
+    try:
+        s3_client.upload_file(file_path, GEOTIFF_BUCKET_NAME, s3_filename)
+    except:
+        pass
     return s3_filename
 
 
 @cached(cache=TTLCache(maxsize=128, ttl=60 * 60 * 24 * 6))
 def generate_geotiff_and_upload_to_s3(
-    collection: str, bbox: [float, float, float, float], date: str
+    collection: str, bbox: [float, float, float, float], date: str, band: str = None
 ) -> str:
     """
     Query the stac API with the params, generate a geotiff, save it in an S3 bucket
 
     """
-    file_path = generate_geotiff_from_stac_api(collection, bbox, date)
+    file_path = generate_geotiff_from_stac_api(collection, bbox, date, band)
     s3_filename = upload_to_s3(file_path)
     os.remove(file_path)
 
     return s3_filename
 
 
-def get_geotiff(collection: str, bbox: [float, float, float, float], date: str):
+def get_geotiff(collection: str, bbox: [float, float, float, float], date: str, band: str):
     """Generate a geotiff and return presigned download url"""
-    s3_filename = generate_geotiff_and_upload_to_s3(collection, bbox, date)
+    s3_filename = generate_geotiff_and_upload_to_s3(collection, bbox, date, band)
 
     s3_client = boto3.client("s3")
     presigned_download_url = s3_client.generate_presigned_url(
