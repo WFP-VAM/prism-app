@@ -241,10 +241,10 @@ const ChartsPanel = memo(
       string[] | TFunctionKeys[]
     >([]);
 
-    const yearsToFetchDataFrom = 5;
+    const yearsToFetchDataFor = 5;
 
     const [startDate1, setStartDate1] = useState<number | null>(
-      new Date().getTime() - oneYearInMs * yearsToFetchDataFrom,
+      new Date().getTime() - oneYearInMs * yearsToFetchDataFor,
     );
     const [endDate1, setEndDate1] = useState<number | null>(
       new Date().getTime(),
@@ -305,9 +305,7 @@ const ChartsPanel = memo(
         setStartDate1(new Date().getTime() - oneYearInMs);
       } else {
         setShowSlider(true);
-        setStartDate1(
-          new Date().getTime() - oneYearInMs * yearsToFetchDataFrom,
-        );
+        setStartDate1(new Date().getTime() - oneYearInMs * yearsToFetchDataFor);
       }
     }, [comparePeriods]);
 

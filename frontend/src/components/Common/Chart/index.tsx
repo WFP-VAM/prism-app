@@ -180,7 +180,7 @@ const Chart = memo(
     }, [data.EWSConfig]);
 
     /**
-     * The following value Assumes that the data is formatted as follows:
+     * The following value assumes that the data is formatted as follows:
      * First Row -> "keys"
      * Second Row -> "column names / headers"
      *
