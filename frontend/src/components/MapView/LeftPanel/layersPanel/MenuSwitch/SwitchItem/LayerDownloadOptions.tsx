@@ -6,7 +6,7 @@ import {
   MenuItem,
   Tooltip,
 } from '@material-ui/core';
-import React, { useMemo, useState } from 'react';
+import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import moment from 'moment';
 import { mapValues } from 'lodash';
@@ -46,10 +46,7 @@ function LayerDownloadOptions({
 }: LayerDownloadOptionsProps) {
   const { t } = useSafeTranslation();
   const dispatch = useDispatch();
-  const layer = useMemo(() => {
-    // default to first layer if layerId is not found
-    return LayerDefinitions[layerId] || Object.values(LayerDefinitions)[0];
-  }, [layerId]);
+  const layer = LayerDefinitions[layerId] || Object.values(LayerDefinitions)[0];
 
   const [
     downloadMenuAnchorEl,
