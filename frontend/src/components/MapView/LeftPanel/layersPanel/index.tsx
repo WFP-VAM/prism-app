@@ -10,6 +10,7 @@ import {
   analysisResultSortOrderSelector,
 } from 'context/analysisResultStateSlice';
 import { useSafeTranslation } from 'i18n';
+import HashText from 'components/Common/HashText';
 import AnalysisLayerMenuItem from './AnalysisLayerMenuItem';
 import MenuItem from './MenuItem';
 
@@ -59,6 +60,7 @@ const LayersPanel = memo(({ extent, layersMenuItems }: LayersPanelProps) => {
     <Box>
       {renderedRootAccordionItems}
       {renderedRootAnalysisAccordionItems}
+      <HashText />
     </Box>
   );
 });
