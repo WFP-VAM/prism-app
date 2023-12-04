@@ -12,13 +12,13 @@ html, body { height: 100% }
 .range-slider {
   margin: auto;
   height: 40px;
-  overflow: hidden;
+  background: #dddddd;
 }
 .range-slider .range-slider__thumb {
   width: 41px;
-  height: 38px;
+  height: 50px;
   border-radius: 4px;
-  background: #313131;;
+  background: #2d3436;
   background-repeat: no-repeat;
   background-position: center;
   cursor: grab;
@@ -45,7 +45,5 @@ html, body { height: 100% }
 }
 
 .range-slider .range-slider__range {
-  background: transparent;
-  box-sizing: border-box;
-  box-shadow: 0 0 0 9999px #59676b;
+  background: #5a686c;
 }
