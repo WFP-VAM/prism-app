@@ -262,7 +262,7 @@ const ChartsPanel = memo(
       GeoJsonProperties
     >();
     const oneYearInTicks = 34;
-    // maxDataTicks used for setting slider max tics
+    // maxDataTicks used for setting slider max ticks
     const [maxDataTicks, setMaxDataTicks] = useState(0);
     // chartRange is the output of the slider used to select data shown in charts
     const [chartRange, setChartRange] = useState<[number, number]>([0, 0]);
