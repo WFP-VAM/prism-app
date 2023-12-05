@@ -1,9 +1,10 @@
+import { Panel } from 'context/leftPanelStateSlice';
 import React, { memo } from 'react';
 
 interface TabPanelProps {
   children?: React.ReactNode;
-  index: number;
-  value: number;
+  index: Panel;
+  value: Panel;
 }
 
 const TabPanel = memo(({ children, value, index, ...other }: TabPanelProps) => {

@@ -31,7 +31,10 @@ configure_rio(
 
 @timed
 def generate_geotiff_from_stac_api(
-    collection: str, bbox: [float, float, float, float], date: str, band: str
+    collection: str,
+    bbox: [float, float, float, float],
+    date: str,
+    band: str | None = None,
 ) -> str:
     """Query the stac API with the params and generate a geotiff"""
     catalog = Client.open(STAC_URL)
@@ -83,7 +86,10 @@ def upload_to_s3(file_path: str) -> str:
 
 @cached(cache=TTLCache(maxsize=128, ttl=60 * 60 * 24 * 6))
 def generate_geotiff_and_upload_to_s3(
-    collection: str, bbox: [float, float, float, float], date: str, band: str = None
+    collection: str,
+    bbox: [float, float, float, float],
+    date: str,
+    band: str | None = None,
 ) -> str:
     """
     Query the stac API with the params, generate a geotiff, save it in an S3 bucket
@@ -97,7 +103,10 @@ def generate_geotiff_and_upload_to_s3(
 
 
 def get_geotiff(
-    collection: str, bbox: [float, float, float, float], date: str, band: str
+    collection: str,
+    bbox: [float, float, float, float],
+    date: str,
+    band: str | None = None,
 ):
     """Generate a geotiff and return presigned download url"""
     s3_filename = generate_geotiff_and_upload_to_s3(collection, bbox, date, band)

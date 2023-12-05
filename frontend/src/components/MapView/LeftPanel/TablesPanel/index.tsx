@@ -29,11 +29,11 @@ import {
   isLoading as tableLoading,
   loadTable,
 } from 'context/tableStateSlice';
-import { leftPanelTabValueSelector } from 'context/leftPanelStateSlice';
+import { Panel, leftPanelTabValueSelector } from 'context/leftPanelStateSlice';
 import TablesActions from './TablesActions';
 import DataTable from './DataTable';
 
-const tabIndex = 3;
+const tabPanelType = Panel.Tables;
 
 const TablesPanel = memo(
   ({
@@ -54,7 +54,7 @@ const TablesPanel = memo(
     const { t } = useSafeTranslation();
 
     useEffect(() => {
-      if (tabValue !== tabIndex) {
+      if (tabValue !== tabPanelType) {
         return;
       }
 
@@ -66,7 +66,7 @@ const TablesPanel = memo(
     }, [tabValue, tableData, tableDefinition, tableShowing]);
 
     useEffect(() => {
-      if (tabValue !== tabIndex) {
+      if (tabValue !== tabPanelType) {
         return;
       }
 
