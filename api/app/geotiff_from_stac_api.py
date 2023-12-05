@@ -45,22 +45,25 @@ def generate_geotiff_from_stac_api(
     # TODO - what should happen if the STAC API returns multiple dataset
     # or if the selected band is not available?
 
-    # Filter data to the correct band if it is set.
+    # Filter data to the correct band if requested.
     available_bands = items[0].assets.keys()
     logger.debug("available bands: %s", available_bands)
     bands = [band] if band and band in available_bands else None
-    band_suffix = "_" + band if band else ""
-    file_path = f"{collection}{band_suffix}_{date}_{str(uuid4())[:8]}.tif"
 
     try:
         collections_dataset = stac_load(items, bbox=bbox, bands=bands, chunks={})
+        logger.debug("collections dataset: %s", collections_dataset)
     except Exception as e:
         logger.warning("Failed to load dataset")
         raise e
 
-    logger.debug("collections dataset: %s", collections_dataset)
+    # Add the actual outputed band info to the filename
+    final_band = list(collections_dataset.keys())[0]
+    band_suffix = "_" + final_band if (final_band != "band") else ""
+    file_path = f"{collection}{band_suffix}_{date}_{str(uuid4())[:8]}.tif"
+
     try:
-        write_cog(collections_dataset[list(collections_dataset.keys())[0]], file_path)
+        write_cog(collections_dataset[final_band], file_path)
     except Exception as e:
         logger.warning("An error occured writing file")
         raise e
