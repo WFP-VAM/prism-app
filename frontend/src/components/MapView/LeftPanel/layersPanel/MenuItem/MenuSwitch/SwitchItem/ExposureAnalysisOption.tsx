@@ -1,6 +1,6 @@
 import { IconButton, Tooltip } from '@material-ui/core';
 import { ImageAspectRatioOutlined } from '@material-ui/icons';
-import React from 'react';
+import React, { memo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   AggregationOperations,
@@ -8,7 +8,7 @@ import {
   GeometryType,
   LayerType,
 } from 'config/types';
-import { TableKey } from 'config/utils';
+import { ReportsDefinitions, TableKey } from 'config/utils';
 import {
   analysisResultSelector,
   clearAnalysisResult,
@@ -33,6 +33,15 @@ function ExposureAnalysisOption({
   const { t } = useSafeTranslation();
   const analysisResult = useSelector(analysisResultSelector);
   const { startDate: selectedDate } = useSelector(dateRangeSelector);
+
+  const foundReports = Object.keys(ReportsDefinitions).filter(
+    reportDefinitionKey => {
+      return ReportsDefinitions[reportDefinitionKey].layerId === layer.id;
+    },
+  );
+  if (!exposure || !foundReports.length) {
+    return null;
+  }
 
   const handleExposureAnalysis = () => {
     if (analysisResult) {
@@ -78,13 +87,15 @@ function ExposureAnalysisOption({
 
   return (
     <Tooltip title={t('Exposure Analysis') ?? ''}>
-      <IconButton
-        id={layer.id}
-        disabled={!selected}
-        onClick={handleExposureAnalysis}
-      >
-        <ImageAspectRatioOutlined />
-      </IconButton>
+      <>
+        <IconButton
+          id={layer.id}
+          disabled={!selected}
+          onClick={handleExposureAnalysis}
+        >
+          <ImageAspectRatioOutlined />
+        </IconButton>
+      </>
     </Tooltip>
   );
 }
@@ -96,4 +107,4 @@ interface ExposureAnalysisOptionProps {
   exposure: ExposedPopulationDefinition | undefined;
 }
 
-export default ExposureAnalysisOption;
+export default memo(ExposureAnalysisOption);

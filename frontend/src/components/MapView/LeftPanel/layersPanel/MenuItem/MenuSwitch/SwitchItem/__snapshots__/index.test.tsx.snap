@@ -3,26 +3,26 @@
 exports[`renders as expected 1`] = `
 <div>
   <div
-    class="MuiBox-root MuiBox-root-14"
+    class="MuiBox-root MuiBox-root-6"
   >
     <div
-      class="MuiBox-root MuiBox-root-15"
+      class="MuiBox-root MuiBox-root-7"
     >
       <mock-switch
         checked="false"
         classes="[object Object]"
-        classname="memo-switch-6"
+        classname="SwitchAction-switch-8"
         inputprops="[object Object]"
         size="small"
       />
       <mock-typography
-        classname="memo-titleUnchecked-2"
+        classname="SwitchItemTitle-titleUnchecked-12"
       />
       <mock-tooltip
         title="Opacity"
       >
         <button
-          class="MuiButtonBase-root MuiIconButton-root memo-opacityRoot-9 Mui-disabled Mui-disabled"
+          class="MuiButtonBase-root MuiIconButton-root memo-opacityRoot-4 Mui-disabled Mui-disabled"
           disabled=""
           tabindex="-1"
           type="button"

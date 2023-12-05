@@ -16,7 +16,8 @@ import { fetchWCSLayerData, WMSLayerData } from './wms';
 import { fetchPointLayerData } from './point_data';
 import { BoundaryLayerData, fetchBoundaryLayerData } from './boundary';
 import { fetchImpactLayerData, ImpactLayerData } from './impact';
-import { CompositeLayerData, fetchCompositeLayerData } from './composite_data';
+import type { CompositeLayerData } from './composite_data';
+import { fetchCompositeLayerData } from './composite_data';
 
 export type LayerAcceptingDataType = Exclude<LayerType, StaticRasterLayerProps>;
 

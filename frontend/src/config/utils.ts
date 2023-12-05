@@ -1,4 +1,4 @@
-import { camelCase, get, mapKeys } from 'lodash';
+import { camelCase, get, map, mapKeys } from 'lodash';
 import { appConfig, rawLayers, rawReports, rawTables } from '.';
 import {
   AdminLevelDataLayerProps,
@@ -321,3 +321,19 @@ export const ReportsDefinitions = Object.keys(rawReports).reduce(
   }),
   {},
 ) as { [key in ReportKey]: ReportType };
+
+export const getCompositeLayers = (layer: LayerType): LayerType[] => {
+  const inputLayers =
+    layer.type === 'composite'
+      ? (layer as CompositeLayerProps).inputLayers
+      : undefined;
+  const compositeLayersIds = inputLayers?.map(inputLayer => inputLayer.id);
+
+  if (compositeLayersIds?.length) {
+    const compositeLayers = map(LayerDefinitions, (value, key) => {
+      return compositeLayersIds.includes(key as LayerType['type']) && value;
+    }).filter(x => x);
+    return compositeLayers as LayerType[];
+  }
+  return [];
+};

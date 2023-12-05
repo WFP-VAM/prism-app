@@ -24,7 +24,7 @@ import { useSafeTranslation } from 'i18n';
 import { Extent } from 'components/MapView/Layers/raster-utils';
 import { layersSelector } from 'context/mapStateSlice/selectors';
 import { filterActiveLayers } from 'components/MapView/utils';
-import SwitchItem from './SwitchItem';
+import SwitchItems from './SwitchItems';
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -73,18 +73,6 @@ const MenuSwitch = memo(({ title, layers, extent }: MenuSwitchProps) => {
     },
     [],
   );
-
-  const renderedItems = useMemo(() => {
-    return layers.map((layer: LayerType) => {
-      const foundNotRenderedLayer = layer.group?.layers.find(layerItem => {
-        return layerItem.id === layer.id && !layerItem.main;
-      });
-      if (layer.group && foundNotRenderedLayer) {
-        return null;
-      }
-      return <SwitchItem key={layer.id} layer={layer} extent={extent} />;
-    });
-  }, [extent, layers]);
 
   const selectedInternalLayers = useMemo(() => {
     return selectedLayers.filter(layer => {
@@ -157,7 +145,7 @@ const MenuSwitch = memo(({ title, layers, extent }: MenuSwitchProps) => {
       </AccordionSummary>
       <AccordionDetails classes={{ root: classes.rootDetails }}>
         <Grid container direction="column">
-          {renderedItems}
+          <SwitchItems layers={layers} extent={extent} />
         </Grid>
       </AccordionDetails>
     </Accordion>
