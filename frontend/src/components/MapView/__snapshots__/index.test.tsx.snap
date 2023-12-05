@@ -2838,6 +2838,7 @@ exports[`renders as expected 1`] = `
                                               >
                                                 <span>
                                                   <button
+                                                    aria-label="Exposure Analysis"
                                                     class="MuiButtonBase-root MuiIconButton-root Mui-disabled Mui-disabled"
                                                     disabled=""
                                                     id="adamts_buffers"
