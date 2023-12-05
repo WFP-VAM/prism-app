@@ -71,6 +71,7 @@ class RasterGeotiffModel(BaseModel):
 
     collection: str
     date: str
+    band: Optional[str] = None
     lat_min: float
     long_min: float
     lat_max: float
