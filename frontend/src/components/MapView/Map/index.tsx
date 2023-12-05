@@ -239,21 +239,23 @@ const MapComponent = memo(
         center={mapTempCenter}
         maxBounds={maxBounds}
       >
-        {/* We cannot memoize the above behavior because tooltip becomes sluggish and does not render at all, when we enable a layer */}
-        {selectedLayers.map((layer, index) => {
-          const component: ComponentType<{
-            layer: any;
-            before?: string;
-          }> = componentTypes[layer.type];
-          return createElement(component, {
-            key: layer.id,
-            layer,
-            before: getBeforeId(layer, index),
-          });
-        })}
-        {/* These are custom layers which provide functionality and are not really controllable via JSON */}
-        <AnalysisLayer before={firstBoundaryId} />
-        <SelectionLayer before={firstSymbolId} />
+        <>
+          {/* We cannot memoize the above behavior because tooltip becomes sluggish and does not render at all, when we enable a layer */}
+          {selectedLayers.map((layer, index) => {
+            const component: ComponentType<{
+              layer: any;
+              before?: string;
+            }> = componentTypes[layer.type];
+            return createElement(component, {
+              key: layer.id,
+              layer,
+              before: getBeforeId(layer, index),
+            });
+          })}
+          {/* These are custom layers which provide functionality and are not really controllable via JSON */}
+          <AnalysisLayer before={firstBoundaryId} />
+          <SelectionLayer before={firstSymbolId} />
+        </>
         <MapTooltip />
       </MapboxMap>
     );
