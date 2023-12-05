@@ -89,6 +89,7 @@ function ExposureAnalysisOption({
       <span>
         <IconButton
           id={layer.id}
+          aria-label="Exposure Analysis"
           disabled={!selected}
           onClick={handleExposureAnalysis}
         >
