@@ -34,7 +34,6 @@ def generate_geotiff_from_stac_api(
     collection: str, bbox: [float, float, float, float], date: str, band: str
 ) -> str:
     """Query the stac API with the params and generate a geotiff"""
-    file_path = f"{collection}_{date}_{str(uuid4())[:8]}.tif"
     catalog = Client.open(STAC_URL)
 
     query_answer = catalog.search(bbox=bbox, collections=[collection], datetime=[date])
@@ -43,24 +42,26 @@ def generate_geotiff_from_stac_api(
     if not items:
         raise HTTPException(status_code=500, detail="Collection not found in stac API")
 
-    # TODO - confirm that input band exists
     available_bands = items[0].assets.keys()
-    print(available_bands)
+    logger.debug("available bands: %s", available_bands)
+    bands = [band] if band and band in available_bands else None
+    band_suffix = "_" + band if band else ""
+    file_path = f"{collection}{band_suffix}_{date}_{str(uuid4())[:8]}.tif"
 
-    bands = [band] if band else None
     try:
         collections_dataset = stac_load(items, bbox=bbox, bands=bands, chunks={})
     except Exception as e:
         logger.warning("Failed to load dataset")
         raise e
 
-    print(collections_dataset)
+    logger.debug("collections dataset: %s", collections_dataset)
     try:
         write_cog(collections_dataset[list(collections_dataset.keys())[0]], file_path)
     except Exception as e:
         logger.warning("An error occured writing file")
         raise e
 
+    logger.debug("returning file: %s", file_path)
     return file_path
 
 
