@@ -199,6 +199,7 @@ export function getExtent(map?: MapBoxMap): Extent {
 
 export async function downloadGeotiff(
   collection: string,
+  band: string | undefined,
   boundingBox: Extent | undefined,
   date: string,
   dispatch: Dispatch,
@@ -217,6 +218,7 @@ export async function downloadGeotiff(
       long_max: boundingBox[2],
       lat_max: boundingBox[3],
       date,
+      band,
     };
     const response = await fetchWithTimeout(
       RASTER_API_URL,
