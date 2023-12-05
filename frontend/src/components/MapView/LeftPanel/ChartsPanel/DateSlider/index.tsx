@@ -2,6 +2,7 @@ import { Box, Typography, createStyles, makeStyles } from '@material-ui/core';
 import React from 'react';
 import RangeSlider from 'react-range-slider-input';
 import 'react-range-slider-input/dist/style.css';
+import './slider.css';
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -37,8 +38,13 @@ function DateSlider({
 
   return (
     <Box className={classes.sliderContainer}>
-      <Box display="flex" flexDirection="row" justifyContent="space-between">
-        <Box display="flex" flexDirection="row">
+      <Box
+        display="flex"
+        flexDirection="row"
+        justifyContent="space-between"
+        style={{ paddingBottom: '0.5em' }}
+      >
+        <Box display="flex" flexDirection="row" alignItems="center">
           <Typography className={classes.textLabel} variant="body2">
             start:
           </Typography>{' '}
@@ -47,7 +53,7 @@ function DateSlider({
           </Typography>
         </Box>
 
-        <Box display="flex" flexDirection="row">
+        <Box display="flex" flexDirection="row" alignItems="center">
           <Typography className={classes.textLabel} variant="body2">
             end:
           </Typography>{' '}
