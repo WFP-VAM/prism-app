@@ -292,52 +292,58 @@ exports[`renders as expected 1`] = `
                                               <mock-tooltip
                                                 title="Opacity"
                                               >
-                                                <button
-                                                  class="MuiButtonBase-root MuiIconButton-root memo-opacityRoot-36 Mui-disabled Mui-disabled"
-                                                  disabled=""
-                                                  tabindex="-1"
-                                                  type="button"
+                                                <span
+                                                  style="margin-left: auto;"
                                                 >
-                                                  <span
-                                                    class="MuiIconButton-label"
+                                                  <button
+                                                    class="MuiButtonBase-root MuiIconButton-root memo-opacityRoot-36 Mui-disabled Mui-disabled"
+                                                    disabled=""
+                                                    tabindex="-1"
+                                                    type="button"
                                                   >
-                                                    <svg
-                                                      aria-hidden="true"
-                                                      class="MuiSvgIcon-root"
-                                                      focusable="false"
-                                                      viewBox="0 0 24 24"
+                                                    <span
+                                                      class="MuiIconButton-label"
                                                     >
-                                                      <path
-                                                        d="M17.66 8L12 2.35 6.34 8C4.78 9.56 4 11.64 4 13.64s.78 4.11 2.34 5.67 3.61 2.35 5.66 2.35 4.1-.79 5.66-2.35S20 15.64 20 13.64 19.22 9.56 17.66 8zM6 14c.01-2 .62-3.27 1.76-4.4L12 5.27l4.24 4.38C17.38 10.77 17.99 12 18 14H6z"
-                                                      />
-                                                    </svg>
-                                                  </span>
-                                                </button>
+                                                      <svg
+                                                        aria-hidden="true"
+                                                        class="MuiSvgIcon-root"
+                                                        focusable="false"
+                                                        viewBox="0 0 24 24"
+                                                      >
+                                                        <path
+                                                          d="M17.66 8L12 2.35 6.34 8C4.78 9.56 4 11.64 4 13.64s.78 4.11 2.34 5.67 3.61 2.35 5.66 2.35 4.1-.79 5.66-2.35S20 15.64 20 13.64 19.22 9.56 17.66 8zM6 14c.01-2 .62-3.27 1.76-4.4L12 5.27l4.24 4.38C17.38 10.77 17.99 12 18 14H6z"
+                                                        />
+                                                      </svg>
+                                                    </span>
+                                                  </button>
+                                                </span>
                                               </mock-tooltip>
                                               <mock-tooltip
                                                 title="Download"
                                               >
-                                                <button
-                                                  class="MuiButtonBase-root MuiIconButton-root Mui-disabled Mui-disabled"
-                                                  disabled=""
-                                                  tabindex="-1"
-                                                  type="button"
-                                                >
-                                                  <span
-                                                    class="MuiIconButton-label"
+                                                <span>
+                                                  <button
+                                                    class="MuiButtonBase-root MuiIconButton-root Mui-disabled Mui-disabled"
+                                                    disabled=""
+                                                    tabindex="-1"
+                                                    type="button"
                                                   >
-                                                    <svg
-                                                      aria-hidden="true"
-                                                      class="MuiSvgIcon-root"
-                                                      focusable="false"
-                                                      viewBox="0 0 24 24"
+                                                    <span
+                                                      class="MuiIconButton-label"
                                                     >
-                                                      <path
-                                                        d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"
-                                                      />
-                                                    </svg>
-                                                  </span>
-                                                </button>
+                                                      <svg
+                                                        aria-hidden="true"
+                                                        class="MuiSvgIcon-root"
+                                                        focusable="false"
+                                                        viewBox="0 0 24 24"
+                                                      >
+                                                        <path
+                                                          d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"
+                                                        />
+                                                      </svg>
+                                                    </span>
+                                                  </button>
+                                                </span>
                                               </mock-tooltip>
                                               <mock-menu
                                                 id="download-menu"
@@ -450,52 +456,58 @@ exports[`renders as expected 1`] = `
                                               <mock-tooltip
                                                 title="Opacity"
                                               >
-                                                <button
-                                                  class="MuiButtonBase-root MuiIconButton-root memo-opacityRoot-36 Mui-disabled Mui-disabled"
-                                                  disabled=""
-                                                  tabindex="-1"
-                                                  type="button"
+                                                <span
+                                                  style="margin-left: auto;"
                                                 >
-                                                  <span
-                                                    class="MuiIconButton-label"
+                                                  <button
+                                                    class="MuiButtonBase-root MuiIconButton-root memo-opacityRoot-36 Mui-disabled Mui-disabled"
+                                                    disabled=""
+                                                    tabindex="-1"
+                                                    type="button"
                                                   >
-                                                    <svg
-                                                      aria-hidden="true"
-                                                      class="MuiSvgIcon-root"
-                                                      focusable="false"
-                                                      viewBox="0 0 24 24"
+                                                    <span
+                                                      class="MuiIconButton-label"
                                                     >
-                                                      <path
-                                                        d="M17.66 8L12 2.35 6.34 8C4.78 9.56 4 11.64 4 13.64s.78 4.11 2.34 5.67 3.61 2.35 5.66 2.35 4.1-.79 5.66-2.35S20 15.64 20 13.64 19.22 9.56 17.66 8zM6 14c.01-2 .62-3.27 1.76-4.4L12 5.27l4.24 4.38C17.38 10.77 17.99 12 18 14H6z"
-                                                      />
-                                                    </svg>
-                                                  </span>
-                                                </button>
+                                                      <svg
+                                                        aria-hidden="true"
+                                                        class="MuiSvgIcon-root"
+                                                        focusable="false"
+                                                        viewBox="0 0 24 24"
+                                                      >
+                                                        <path
+                                                          d="M17.66 8L12 2.35 6.34 8C4.78 9.56 4 11.64 4 13.64s.78 4.11 2.34 5.67 3.61 2.35 5.66 2.35 4.1-.79 5.66-2.35S20 15.64 20 13.64 19.22 9.56 17.66 8zM6 14c.01-2 .62-3.27 1.76-4.4L12 5.27l4.24 4.38C17.38 10.77 17.99 12 18 14H6z"
+                                                        />
+                                                      </svg>
+                                                    </span>
+                                                  </button>
+                                                </span>
                                               </mock-tooltip>
                                               <mock-tooltip
                                                 title="Download"
                                               >
-                                                <button
-                                                  class="MuiButtonBase-root MuiIconButton-root Mui-disabled Mui-disabled"
-                                                  disabled=""
-                                                  tabindex="-1"
-                                                  type="button"
-                                                >
-                                                  <span
-                                                    class="MuiIconButton-label"
+                                                <span>
+                                                  <button
+                                                    class="MuiButtonBase-root MuiIconButton-root Mui-disabled Mui-disabled"
+                                                    disabled=""
+                                                    tabindex="-1"
+                                                    type="button"
                                                   >
-                                                    <svg
-                                                      aria-hidden="true"
-                                                      class="MuiSvgIcon-root"
-                                                      focusable="false"
-                                                      viewBox="0 0 24 24"
+                                                    <span
+                                                      class="MuiIconButton-label"
                                                     >
-                                                      <path
-                                                        d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"
-                                                      />
-                                                    </svg>
-                                                  </span>
-                                                </button>
+                                                      <svg
+                                                        aria-hidden="true"
+                                                        class="MuiSvgIcon-root"
+                                                        focusable="false"
+                                                        viewBox="0 0 24 24"
+                                                      >
+                                                        <path
+                                                          d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"
+                                                        />
+                                                      </svg>
+                                                    </span>
+                                                  </button>
+                                                </span>
                                               </mock-tooltip>
                                               <mock-menu
                                                 id="download-menu"
@@ -681,52 +693,58 @@ exports[`renders as expected 1`] = `
                                               <mock-tooltip
                                                 title="Opacity"
                                               >
-                                                <button
-                                                  class="MuiButtonBase-root MuiIconButton-root memo-opacityRoot-36 Mui-disabled Mui-disabled"
-                                                  disabled=""
-                                                  tabindex="-1"
-                                                  type="button"
+                                                <span
+                                                  style="margin-left: auto;"
                                                 >
-                                                  <span
-                                                    class="MuiIconButton-label"
+                                                  <button
+                                                    class="MuiButtonBase-root MuiIconButton-root memo-opacityRoot-36 Mui-disabled Mui-disabled"
+                                                    disabled=""
+                                                    tabindex="-1"
+                                                    type="button"
                                                   >
-                                                    <svg
-                                                      aria-hidden="true"
-                                                      class="MuiSvgIcon-root"
-                                                      focusable="false"
-                                                      viewBox="0 0 24 24"
+                                                    <span
+                                                      class="MuiIconButton-label"
                                                     >
-                                                      <path
-                                                        d="M17.66 8L12 2.35 6.34 8C4.78 9.56 4 11.64 4 13.64s.78 4.11 2.34 5.67 3.61 2.35 5.66 2.35 4.1-.79 5.66-2.35S20 15.64 20 13.64 19.22 9.56 17.66 8zM6 14c.01-2 .62-3.27 1.76-4.4L12 5.27l4.24 4.38C17.38 10.77 17.99 12 18 14H6z"
-                                                      />
-                                                    </svg>
-                                                  </span>
-                                                </button>
+                                                      <svg
+                                                        aria-hidden="true"
+                                                        class="MuiSvgIcon-root"
+                                                        focusable="false"
+                                                        viewBox="0 0 24 24"
+                                                      >
+                                                        <path
+                                                          d="M17.66 8L12 2.35 6.34 8C4.78 9.56 4 11.64 4 13.64s.78 4.11 2.34 5.67 3.61 2.35 5.66 2.35 4.1-.79 5.66-2.35S20 15.64 20 13.64 19.22 9.56 17.66 8zM6 14c.01-2 .62-3.27 1.76-4.4L12 5.27l4.24 4.38C17.38 10.77 17.99 12 18 14H6z"
+                                                        />
+                                                      </svg>
+                                                    </span>
+                                                  </button>
+                                                </span>
                                               </mock-tooltip>
                                               <mock-tooltip
                                                 title="Download"
                                               >
-                                                <button
-                                                  class="MuiButtonBase-root MuiIconButton-root Mui-disabled Mui-disabled"
-                                                  disabled=""
-                                                  tabindex="-1"
-                                                  type="button"
-                                                >
-                                                  <span
-                                                    class="MuiIconButton-label"
+                                                <span>
+                                                  <button
+                                                    class="MuiButtonBase-root MuiIconButton-root Mui-disabled Mui-disabled"
+                                                    disabled=""
+                                                    tabindex="-1"
+                                                    type="button"
                                                   >
-                                                    <svg
-                                                      aria-hidden="true"
-                                                      class="MuiSvgIcon-root"
-                                                      focusable="false"
-                                                      viewBox="0 0 24 24"
+                                                    <span
+                                                      class="MuiIconButton-label"
                                                     >
-                                                      <path
-                                                        d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"
-                                                      />
-                                                    </svg>
-                                                  </span>
-                                                </button>
+                                                      <svg
+                                                        aria-hidden="true"
+                                                        class="MuiSvgIcon-root"
+                                                        focusable="false"
+                                                        viewBox="0 0 24 24"
+                                                      >
+                                                        <path
+                                                          d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"
+                                                        />
+                                                      </svg>
+                                                    </span>
+                                                  </button>
+                                                </span>
                                               </mock-tooltip>
                                               <mock-menu
                                                 id="download-menu"
@@ -839,52 +857,58 @@ exports[`renders as expected 1`] = `
                                               <mock-tooltip
                                                 title="Opacity"
                                               >
-                                                <button
-                                                  class="MuiButtonBase-root MuiIconButton-root memo-opacityRoot-36 Mui-disabled Mui-disabled"
-                                                  disabled=""
-                                                  tabindex="-1"
-                                                  type="button"
+                                                <span
+                                                  style="margin-left: auto;"
                                                 >
-                                                  <span
-                                                    class="MuiIconButton-label"
+                                                  <button
+                                                    class="MuiButtonBase-root MuiIconButton-root memo-opacityRoot-36 Mui-disabled Mui-disabled"
+                                                    disabled=""
+                                                    tabindex="-1"
+                                                    type="button"
                                                   >
-                                                    <svg
-                                                      aria-hidden="true"
-                                                      class="MuiSvgIcon-root"
-                                                      focusable="false"
-                                                      viewBox="0 0 24 24"
+                                                    <span
+                                                      class="MuiIconButton-label"
                                                     >
-                                                      <path
-                                                        d="M17.66 8L12 2.35 6.34 8C4.78 9.56 4 11.64 4 13.64s.78 4.11 2.34 5.67 3.61 2.35 5.66 2.35 4.1-.79 5.66-2.35S20 15.64 20 13.64 19.22 9.56 17.66 8zM6 14c.01-2 .62-3.27 1.76-4.4L12 5.27l4.24 4.38C17.38 10.77 17.99 12 18 14H6z"
-                                                      />
-                                                    </svg>
-                                                  </span>
-                                                </button>
+                                                      <svg
+                                                        aria-hidden="true"
+                                                        class="MuiSvgIcon-root"
+                                                        focusable="false"
+                                                        viewBox="0 0 24 24"
+                                                      >
+                                                        <path
+                                                          d="M17.66 8L12 2.35 6.34 8C4.78 9.56 4 11.64 4 13.64s.78 4.11 2.34 5.67 3.61 2.35 5.66 2.35 4.1-.79 5.66-2.35S20 15.64 20 13.64 19.22 9.56 17.66 8zM6 14c.01-2 .62-3.27 1.76-4.4L12 5.27l4.24 4.38C17.38 10.77 17.99 12 18 14H6z"
+                                                        />
+                                                      </svg>
+                                                    </span>
+                                                  </button>
+                                                </span>
                                               </mock-tooltip>
                                               <mock-tooltip
                                                 title="Download"
                                               >
-                                                <button
-                                                  class="MuiButtonBase-root MuiIconButton-root Mui-disabled Mui-disabled"
-                                                  disabled=""
-                                                  tabindex="-1"
-                                                  type="button"
-                                                >
-                                                  <span
-                                                    class="MuiIconButton-label"
+                                                <span>
+                                                  <button
+                                                    class="MuiButtonBase-root MuiIconButton-root Mui-disabled Mui-disabled"
+                                                    disabled=""
+                                                    tabindex="-1"
+                                                    type="button"
                                                   >
-                                                    <svg
-                                                      aria-hidden="true"
-                                                      class="MuiSvgIcon-root"
-                                                      focusable="false"
-                                                      viewBox="0 0 24 24"
+                                                    <span
+                                                      class="MuiIconButton-label"
                                                     >
-                                                      <path
-                                                        d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"
-                                                      />
-                                                    </svg>
-                                                  </span>
-                                                </button>
+                                                      <svg
+                                                        aria-hidden="true"
+                                                        class="MuiSvgIcon-root"
+                                                        focusable="false"
+                                                        viewBox="0 0 24 24"
+                                                      >
+                                                        <path
+                                                          d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"
+                                                        />
+                                                      </svg>
+                                                    </span>
+                                                  </button>
+                                                </span>
                                               </mock-tooltip>
                                               <mock-menu
                                                 id="download-menu"
@@ -990,52 +1014,58 @@ exports[`renders as expected 1`] = `
                                               <mock-tooltip
                                                 title="Opacity"
                                               >
-                                                <button
-                                                  class="MuiButtonBase-root MuiIconButton-root memo-opacityRoot-36 Mui-disabled Mui-disabled"
-                                                  disabled=""
-                                                  tabindex="-1"
-                                                  type="button"
+                                                <span
+                                                  style="margin-left: auto;"
                                                 >
-                                                  <span
-                                                    class="MuiIconButton-label"
+                                                  <button
+                                                    class="MuiButtonBase-root MuiIconButton-root memo-opacityRoot-36 Mui-disabled Mui-disabled"
+                                                    disabled=""
+                                                    tabindex="-1"
+                                                    type="button"
                                                   >
-                                                    <svg
-                                                      aria-hidden="true"
-                                                      class="MuiSvgIcon-root"
-                                                      focusable="false"
-                                                      viewBox="0 0 24 24"
+                                                    <span
+                                                      class="MuiIconButton-label"
                                                     >
-                                                      <path
-                                                        d="M17.66 8L12 2.35 6.34 8C4.78 9.56 4 11.64 4 13.64s.78 4.11 2.34 5.67 3.61 2.35 5.66 2.35 4.1-.79 5.66-2.35S20 15.64 20 13.64 19.22 9.56 17.66 8zM6 14c.01-2 .62-3.27 1.76-4.4L12 5.27l4.24 4.38C17.38 10.77 17.99 12 18 14H6z"
-                                                      />
-                                                    </svg>
-                                                  </span>
-                                                </button>
+                                                      <svg
+                                                        aria-hidden="true"
+                                                        class="MuiSvgIcon-root"
+                                                        focusable="false"
+                                                        viewBox="0 0 24 24"
+                                                      >
+                                                        <path
+                                                          d="M17.66 8L12 2.35 6.34 8C4.78 9.56 4 11.64 4 13.64s.78 4.11 2.34 5.67 3.61 2.35 5.66 2.35 4.1-.79 5.66-2.35S20 15.64 20 13.64 19.22 9.56 17.66 8zM6 14c.01-2 .62-3.27 1.76-4.4L12 5.27l4.24 4.38C17.38 10.77 17.99 12 18 14H6z"
+                                                        />
+                                                      </svg>
+                                                    </span>
+                                                  </button>
+                                                </span>
                                               </mock-tooltip>
                                               <mock-tooltip
                                                 title="Download"
                                               >
-                                                <button
-                                                  class="MuiButtonBase-root MuiIconButton-root Mui-disabled Mui-disabled"
-                                                  disabled=""
-                                                  tabindex="-1"
-                                                  type="button"
-                                                >
-                                                  <span
-                                                    class="MuiIconButton-label"
+                                                <span>
+                                                  <button
+                                                    class="MuiButtonBase-root MuiIconButton-root Mui-disabled Mui-disabled"
+                                                    disabled=""
+                                                    tabindex="-1"
+                                                    type="button"
                                                   >
-                                                    <svg
-                                                      aria-hidden="true"
-                                                      class="MuiSvgIcon-root"
-                                                      focusable="false"
-                                                      viewBox="0 0 24 24"
+                                                    <span
+                                                      class="MuiIconButton-label"
                                                     >
-                                                      <path
-                                                        d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"
-                                                      />
-                                                    </svg>
-                                                  </span>
-                                                </button>
+                                                      <svg
+                                                        aria-hidden="true"
+                                                        class="MuiSvgIcon-root"
+                                                        focusable="false"
+                                                        viewBox="0 0 24 24"
+                                                      >
+                                                        <path
+                                                          d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"
+                                                        />
+                                                      </svg>
+                                                    </span>
+                                                  </button>
+                                                </span>
                                               </mock-tooltip>
                                               <mock-menu
                                                 id="download-menu"
@@ -1142,52 +1172,58 @@ exports[`renders as expected 1`] = `
                                               <mock-tooltip
                                                 title="Opacity"
                                               >
-                                                <button
-                                                  class="MuiButtonBase-root MuiIconButton-root memo-opacityRoot-36 Mui-disabled Mui-disabled"
-                                                  disabled=""
-                                                  tabindex="-1"
-                                                  type="button"
+                                                <span
+                                                  style="margin-left: auto;"
                                                 >
-                                                  <span
-                                                    class="MuiIconButton-label"
+                                                  <button
+                                                    class="MuiButtonBase-root MuiIconButton-root memo-opacityRoot-36 Mui-disabled Mui-disabled"
+                                                    disabled=""
+                                                    tabindex="-1"
+                                                    type="button"
                                                   >
-                                                    <svg
-                                                      aria-hidden="true"
-                                                      class="MuiSvgIcon-root"
-                                                      focusable="false"
-                                                      viewBox="0 0 24 24"
+                                                    <span
+                                                      class="MuiIconButton-label"
                                                     >
-                                                      <path
-                                                        d="M17.66 8L12 2.35 6.34 8C4.78 9.56 4 11.64 4 13.64s.78 4.11 2.34 5.67 3.61 2.35 5.66 2.35 4.1-.79 5.66-2.35S20 15.64 20 13.64 19.22 9.56 17.66 8zM6 14c.01-2 .62-3.27 1.76-4.4L12 5.27l4.24 4.38C17.38 10.77 17.99 12 18 14H6z"
-                                                      />
-                                                    </svg>
-                                                  </span>
-                                                </button>
+                                                      <svg
+                                                        aria-hidden="true"
+                                                        class="MuiSvgIcon-root"
+                                                        focusable="false"
+                                                        viewBox="0 0 24 24"
+                                                      >
+                                                        <path
+                                                          d="M17.66 8L12 2.35 6.34 8C4.78 9.56 4 11.64 4 13.64s.78 4.11 2.34 5.67 3.61 2.35 5.66 2.35 4.1-.79 5.66-2.35S20 15.64 20 13.64 19.22 9.56 17.66 8zM6 14c.01-2 .62-3.27 1.76-4.4L12 5.27l4.24 4.38C17.38 10.77 17.99 12 18 14H6z"
+                                                        />
+                                                      </svg>
+                                                    </span>
+                                                  </button>
+                                                </span>
                                               </mock-tooltip>
                                               <mock-tooltip
                                                 title="Download"
                                               >
-                                                <button
-                                                  class="MuiButtonBase-root MuiIconButton-root Mui-disabled Mui-disabled"
-                                                  disabled=""
-                                                  tabindex="-1"
-                                                  type="button"
-                                                >
-                                                  <span
-                                                    class="MuiIconButton-label"
+                                                <span>
+                                                  <button
+                                                    class="MuiButtonBase-root MuiIconButton-root Mui-disabled Mui-disabled"
+                                                    disabled=""
+                                                    tabindex="-1"
+                                                    type="button"
                                                   >
-                                                    <svg
-                                                      aria-hidden="true"
-                                                      class="MuiSvgIcon-root"
-                                                      focusable="false"
-                                                      viewBox="0 0 24 24"
+                                                    <span
+                                                      class="MuiIconButton-label"
                                                     >
-                                                      <path
-                                                        d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"
-                                                      />
-                                                    </svg>
-                                                  </span>
-                                                </button>
+                                                      <svg
+                                                        aria-hidden="true"
+                                                        class="MuiSvgIcon-root"
+                                                        focusable="false"
+                                                        viewBox="0 0 24 24"
+                                                      >
+                                                        <path
+                                                          d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"
+                                                        />
+                                                      </svg>
+                                                    </span>
+                                                  </button>
+                                                </span>
                                               </mock-tooltip>
                                               <mock-menu
                                                 id="download-menu"
@@ -1221,52 +1257,58 @@ exports[`renders as expected 1`] = `
                                               <mock-tooltip
                                                 title="Opacity"
                                               >
-                                                <button
-                                                  class="MuiButtonBase-root MuiIconButton-root memo-opacityRoot-36 Mui-disabled Mui-disabled"
-                                                  disabled=""
-                                                  tabindex="-1"
-                                                  type="button"
+                                                <span
+                                                  style="margin-left: auto;"
                                                 >
-                                                  <span
-                                                    class="MuiIconButton-label"
+                                                  <button
+                                                    class="MuiButtonBase-root MuiIconButton-root memo-opacityRoot-36 Mui-disabled Mui-disabled"
+                                                    disabled=""
+                                                    tabindex="-1"
+                                                    type="button"
                                                   >
-                                                    <svg
-                                                      aria-hidden="true"
-                                                      class="MuiSvgIcon-root"
-                                                      focusable="false"
-                                                      viewBox="0 0 24 24"
+                                                    <span
+                                                      class="MuiIconButton-label"
                                                     >
-                                                      <path
-                                                        d="M17.66 8L12 2.35 6.34 8C4.78 9.56 4 11.64 4 13.64s.78 4.11 2.34 5.67 3.61 2.35 5.66 2.35 4.1-.79 5.66-2.35S20 15.64 20 13.64 19.22 9.56 17.66 8zM6 14c.01-2 .62-3.27 1.76-4.4L12 5.27l4.24 4.38C17.38 10.77 17.99 12 18 14H6z"
-                                                      />
-                                                    </svg>
-                                                  </span>
-                                                </button>
+                                                      <svg
+                                                        aria-hidden="true"
+                                                        class="MuiSvgIcon-root"
+                                                        focusable="false"
+                                                        viewBox="0 0 24 24"
+                                                      >
+                                                        <path
+                                                          d="M17.66 8L12 2.35 6.34 8C4.78 9.56 4 11.64 4 13.64s.78 4.11 2.34 5.67 3.61 2.35 5.66 2.35 4.1-.79 5.66-2.35S20 15.64 20 13.64 19.22 9.56 17.66 8zM6 14c.01-2 .62-3.27 1.76-4.4L12 5.27l4.24 4.38C17.38 10.77 17.99 12 18 14H6z"
+                                                        />
+                                                      </svg>
+                                                    </span>
+                                                  </button>
+                                                </span>
                                               </mock-tooltip>
                                               <mock-tooltip
                                                 title="Download"
                                               >
-                                                <button
-                                                  class="MuiButtonBase-root MuiIconButton-root Mui-disabled Mui-disabled"
-                                                  disabled=""
-                                                  tabindex="-1"
-                                                  type="button"
-                                                >
-                                                  <span
-                                                    class="MuiIconButton-label"
+                                                <span>
+                                                  <button
+                                                    class="MuiButtonBase-root MuiIconButton-root Mui-disabled Mui-disabled"
+                                                    disabled=""
+                                                    tabindex="-1"
+                                                    type="button"
                                                   >
-                                                    <svg
-                                                      aria-hidden="true"
-                                                      class="MuiSvgIcon-root"
-                                                      focusable="false"
-                                                      viewBox="0 0 24 24"
+                                                    <span
+                                                      class="MuiIconButton-label"
                                                     >
-                                                      <path
-                                                        d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"
-                                                      />
-                                                    </svg>
-                                                  </span>
-                                                </button>
+                                                      <svg
+                                                        aria-hidden="true"
+                                                        class="MuiSvgIcon-root"
+                                                        focusable="false"
+                                                        viewBox="0 0 24 24"
+                                                      >
+                                                        <path
+                                                          d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"
+                                                        />
+                                                      </svg>
+                                                    </span>
+                                                  </button>
+                                                </span>
                                               </mock-tooltip>
                                               <mock-menu
                                                 id="download-menu"
@@ -1431,52 +1473,58 @@ exports[`renders as expected 1`] = `
                                               <mock-tooltip
                                                 title="Opacity"
                                               >
-                                                <button
-                                                  class="MuiButtonBase-root MuiIconButton-root memo-opacityRoot-36 Mui-disabled Mui-disabled"
-                                                  disabled=""
-                                                  tabindex="-1"
-                                                  type="button"
+                                                <span
+                                                  style="margin-left: auto;"
                                                 >
-                                                  <span
-                                                    class="MuiIconButton-label"
+                                                  <button
+                                                    class="MuiButtonBase-root MuiIconButton-root memo-opacityRoot-36 Mui-disabled Mui-disabled"
+                                                    disabled=""
+                                                    tabindex="-1"
+                                                    type="button"
                                                   >
-                                                    <svg
-                                                      aria-hidden="true"
-                                                      class="MuiSvgIcon-root"
-                                                      focusable="false"
-                                                      viewBox="0 0 24 24"
+                                                    <span
+                                                      class="MuiIconButton-label"
                                                     >
-                                                      <path
-                                                        d="M17.66 8L12 2.35 6.34 8C4.78 9.56 4 11.64 4 13.64s.78 4.11 2.34 5.67 3.61 2.35 5.66 2.35 4.1-.79 5.66-2.35S20 15.64 20 13.64 19.22 9.56 17.66 8zM6 14c.01-2 .62-3.27 1.76-4.4L12 5.27l4.24 4.38C17.38 10.77 17.99 12 18 14H6z"
-                                                      />
-                                                    </svg>
-                                                  </span>
-                                                </button>
+                                                      <svg
+                                                        aria-hidden="true"
+                                                        class="MuiSvgIcon-root"
+                                                        focusable="false"
+                                                        viewBox="0 0 24 24"
+                                                      >
+                                                        <path
+                                                          d="M17.66 8L12 2.35 6.34 8C4.78 9.56 4 11.64 4 13.64s.78 4.11 2.34 5.67 3.61 2.35 5.66 2.35 4.1-.79 5.66-2.35S20 15.64 20 13.64 19.22 9.56 17.66 8zM6 14c.01-2 .62-3.27 1.76-4.4L12 5.27l4.24 4.38C17.38 10.77 17.99 12 18 14H6z"
+                                                        />
+                                                      </svg>
+                                                    </span>
+                                                  </button>
+                                                </span>
                                               </mock-tooltip>
                                               <mock-tooltip
                                                 title="Download"
                                               >
-                                                <button
-                                                  class="MuiButtonBase-root MuiIconButton-root Mui-disabled Mui-disabled"
-                                                  disabled=""
-                                                  tabindex="-1"
-                                                  type="button"
-                                                >
-                                                  <span
-                                                    class="MuiIconButton-label"
+                                                <span>
+                                                  <button
+                                                    class="MuiButtonBase-root MuiIconButton-root Mui-disabled Mui-disabled"
+                                                    disabled=""
+                                                    tabindex="-1"
+                                                    type="button"
                                                   >
-                                                    <svg
-                                                      aria-hidden="true"
-                                                      class="MuiSvgIcon-root"
-                                                      focusable="false"
-                                                      viewBox="0 0 24 24"
+                                                    <span
+                                                      class="MuiIconButton-label"
                                                     >
-                                                      <path
-                                                        d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"
-                                                      />
-                                                    </svg>
-                                                  </span>
-                                                </button>
+                                                      <svg
+                                                        aria-hidden="true"
+                                                        class="MuiSvgIcon-root"
+                                                        focusable="false"
+                                                        viewBox="0 0 24 24"
+                                                      >
+                                                        <path
+                                                          d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"
+                                                        />
+                                                      </svg>
+                                                    </span>
+                                                  </button>
+                                                </span>
                                               </mock-tooltip>
                                               <mock-menu
                                                 id="download-menu"
@@ -1568,52 +1616,58 @@ exports[`renders as expected 1`] = `
                                               <mock-tooltip
                                                 title="Opacity"
                                               >
-                                                <button
-                                                  class="MuiButtonBase-root MuiIconButton-root memo-opacityRoot-36 Mui-disabled Mui-disabled"
-                                                  disabled=""
-                                                  tabindex="-1"
-                                                  type="button"
+                                                <span
+                                                  style="margin-left: auto;"
                                                 >
-                                                  <span
-                                                    class="MuiIconButton-label"
+                                                  <button
+                                                    class="MuiButtonBase-root MuiIconButton-root memo-opacityRoot-36 Mui-disabled Mui-disabled"
+                                                    disabled=""
+                                                    tabindex="-1"
+                                                    type="button"
                                                   >
-                                                    <svg
-                                                      aria-hidden="true"
-                                                      class="MuiSvgIcon-root"
-                                                      focusable="false"
-                                                      viewBox="0 0 24 24"
+                                                    <span
+                                                      class="MuiIconButton-label"
                                                     >
-                                                      <path
-                                                        d="M17.66 8L12 2.35 6.34 8C4.78 9.56 4 11.64 4 13.64s.78 4.11 2.34 5.67 3.61 2.35 5.66 2.35 4.1-.79 5.66-2.35S20 15.64 20 13.64 19.22 9.56 17.66 8zM6 14c.01-2 .62-3.27 1.76-4.4L12 5.27l4.24 4.38C17.38 10.77 17.99 12 18 14H6z"
-                                                      />
-                                                    </svg>
-                                                  </span>
-                                                </button>
+                                                      <svg
+                                                        aria-hidden="true"
+                                                        class="MuiSvgIcon-root"
+                                                        focusable="false"
+                                                        viewBox="0 0 24 24"
+                                                      >
+                                                        <path
+                                                          d="M17.66 8L12 2.35 6.34 8C4.78 9.56 4 11.64 4 13.64s.78 4.11 2.34 5.67 3.61 2.35 5.66 2.35 4.1-.79 5.66-2.35S20 15.64 20 13.64 19.22 9.56 17.66 8zM6 14c.01-2 .62-3.27 1.76-4.4L12 5.27l4.24 4.38C17.38 10.77 17.99 12 18 14H6z"
+                                                        />
+                                                      </svg>
+                                                    </span>
+                                                  </button>
+                                                </span>
                                               </mock-tooltip>
                                               <mock-tooltip
                                                 title="Download"
                                               >
-                                                <button
-                                                  class="MuiButtonBase-root MuiIconButton-root Mui-disabled Mui-disabled"
-                                                  disabled=""
-                                                  tabindex="-1"
-                                                  type="button"
-                                                >
-                                                  <span
-                                                    class="MuiIconButton-label"
+                                                <span>
+                                                  <button
+                                                    class="MuiButtonBase-root MuiIconButton-root Mui-disabled Mui-disabled"
+                                                    disabled=""
+                                                    tabindex="-1"
+                                                    type="button"
                                                   >
-                                                    <svg
-                                                      aria-hidden="true"
-                                                      class="MuiSvgIcon-root"
-                                                      focusable="false"
-                                                      viewBox="0 0 24 24"
+                                                    <span
+                                                      class="MuiIconButton-label"
                                                     >
-                                                      <path
-                                                        d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"
-                                                      />
-                                                    </svg>
-                                                  </span>
-                                                </button>
+                                                      <svg
+                                                        aria-hidden="true"
+                                                        class="MuiSvgIcon-root"
+                                                        focusable="false"
+                                                        viewBox="0 0 24 24"
+                                                      >
+                                                        <path
+                                                          d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"
+                                                        />
+                                                      </svg>
+                                                    </span>
+                                                  </button>
+                                                </span>
                                               </mock-tooltip>
                                               <mock-menu
                                                 id="download-menu"
@@ -1793,52 +1847,58 @@ exports[`renders as expected 1`] = `
                                               <mock-tooltip
                                                 title="Opacity"
                                               >
-                                                <button
-                                                  class="MuiButtonBase-root MuiIconButton-root memo-opacityRoot-36 Mui-disabled Mui-disabled"
-                                                  disabled=""
-                                                  tabindex="-1"
-                                                  type="button"
+                                                <span
+                                                  style="margin-left: auto;"
                                                 >
-                                                  <span
-                                                    class="MuiIconButton-label"
+                                                  <button
+                                                    class="MuiButtonBase-root MuiIconButton-root memo-opacityRoot-36 Mui-disabled Mui-disabled"
+                                                    disabled=""
+                                                    tabindex="-1"
+                                                    type="button"
                                                   >
-                                                    <svg
-                                                      aria-hidden="true"
-                                                      class="MuiSvgIcon-root"
-                                                      focusable="false"
-                                                      viewBox="0 0 24 24"
+                                                    <span
+                                                      class="MuiIconButton-label"
                                                     >
-                                                      <path
-                                                        d="M17.66 8L12 2.35 6.34 8C4.78 9.56 4 11.64 4 13.64s.78 4.11 2.34 5.67 3.61 2.35 5.66 2.35 4.1-.79 5.66-2.35S20 15.64 20 13.64 19.22 9.56 17.66 8zM6 14c.01-2 .62-3.27 1.76-4.4L12 5.27l4.24 4.38C17.38 10.77 17.99 12 18 14H6z"
-                                                      />
-                                                    </svg>
-                                                  </span>
-                                                </button>
+                                                      <svg
+                                                        aria-hidden="true"
+                                                        class="MuiSvgIcon-root"
+                                                        focusable="false"
+                                                        viewBox="0 0 24 24"
+                                                      >
+                                                        <path
+                                                          d="M17.66 8L12 2.35 6.34 8C4.78 9.56 4 11.64 4 13.64s.78 4.11 2.34 5.67 3.61 2.35 5.66 2.35 4.1-.79 5.66-2.35S20 15.64 20 13.64 19.22 9.56 17.66 8zM6 14c.01-2 .62-3.27 1.76-4.4L12 5.27l4.24 4.38C17.38 10.77 17.99 12 18 14H6z"
+                                                        />
+                                                      </svg>
+                                                    </span>
+                                                  </button>
+                                                </span>
                                               </mock-tooltip>
                                               <mock-tooltip
                                                 title="Download"
                                               >
-                                                <button
-                                                  class="MuiButtonBase-root MuiIconButton-root Mui-disabled Mui-disabled"
-                                                  disabled=""
-                                                  tabindex="-1"
-                                                  type="button"
-                                                >
-                                                  <span
-                                                    class="MuiIconButton-label"
+                                                <span>
+                                                  <button
+                                                    class="MuiButtonBase-root MuiIconButton-root Mui-disabled Mui-disabled"
+                                                    disabled=""
+                                                    tabindex="-1"
+                                                    type="button"
                                                   >
-                                                    <svg
-                                                      aria-hidden="true"
-                                                      class="MuiSvgIcon-root"
-                                                      focusable="false"
-                                                      viewBox="0 0 24 24"
+                                                    <span
+                                                      class="MuiIconButton-label"
                                                     >
-                                                      <path
-                                                        d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"
-                                                      />
-                                                    </svg>
-                                                  </span>
-                                                </button>
+                                                      <svg
+                                                        aria-hidden="true"
+                                                        class="MuiSvgIcon-root"
+                                                        focusable="false"
+                                                        viewBox="0 0 24 24"
+                                                      >
+                                                        <path
+                                                          d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"
+                                                        />
+                                                      </svg>
+                                                    </span>
+                                                  </button>
+                                                </span>
                                               </mock-tooltip>
                                               <mock-menu
                                                 id="download-menu"
@@ -1872,52 +1932,58 @@ exports[`renders as expected 1`] = `
                                               <mock-tooltip
                                                 title="Opacity"
                                               >
-                                                <button
-                                                  class="MuiButtonBase-root MuiIconButton-root memo-opacityRoot-36 Mui-disabled Mui-disabled"
-                                                  disabled=""
-                                                  tabindex="-1"
-                                                  type="button"
+                                                <span
+                                                  style="margin-left: auto;"
                                                 >
-                                                  <span
-                                                    class="MuiIconButton-label"
+                                                  <button
+                                                    class="MuiButtonBase-root MuiIconButton-root memo-opacityRoot-36 Mui-disabled Mui-disabled"
+                                                    disabled=""
+                                                    tabindex="-1"
+                                                    type="button"
                                                   >
-                                                    <svg
-                                                      aria-hidden="true"
-                                                      class="MuiSvgIcon-root"
-                                                      focusable="false"
-                                                      viewBox="0 0 24 24"
+                                                    <span
+                                                      class="MuiIconButton-label"
                                                     >
-                                                      <path
-                                                        d="M17.66 8L12 2.35 6.34 8C4.78 9.56 4 11.64 4 13.64s.78 4.11 2.34 5.67 3.61 2.35 5.66 2.35 4.1-.79 5.66-2.35S20 15.64 20 13.64 19.22 9.56 17.66 8zM6 14c.01-2 .62-3.27 1.76-4.4L12 5.27l4.24 4.38C17.38 10.77 17.99 12 18 14H6z"
-                                                      />
-                                                    </svg>
-                                                  </span>
-                                                </button>
+                                                      <svg
+                                                        aria-hidden="true"
+                                                        class="MuiSvgIcon-root"
+                                                        focusable="false"
+                                                        viewBox="0 0 24 24"
+                                                      >
+                                                        <path
+                                                          d="M17.66 8L12 2.35 6.34 8C4.78 9.56 4 11.64 4 13.64s.78 4.11 2.34 5.67 3.61 2.35 5.66 2.35 4.1-.79 5.66-2.35S20 15.64 20 13.64 19.22 9.56 17.66 8zM6 14c.01-2 .62-3.27 1.76-4.4L12 5.27l4.24 4.38C17.38 10.77 17.99 12 18 14H6z"
+                                                        />
+                                                      </svg>
+                                                    </span>
+                                                  </button>
+                                                </span>
                                               </mock-tooltip>
                                               <mock-tooltip
                                                 title="Download"
                                               >
-                                                <button
-                                                  class="MuiButtonBase-root MuiIconButton-root Mui-disabled Mui-disabled"
-                                                  disabled=""
-                                                  tabindex="-1"
-                                                  type="button"
-                                                >
-                                                  <span
-                                                    class="MuiIconButton-label"
+                                                <span>
+                                                  <button
+                                                    class="MuiButtonBase-root MuiIconButton-root Mui-disabled Mui-disabled"
+                                                    disabled=""
+                                                    tabindex="-1"
+                                                    type="button"
                                                   >
-                                                    <svg
-                                                      aria-hidden="true"
-                                                      class="MuiSvgIcon-root"
-                                                      focusable="false"
-                                                      viewBox="0 0 24 24"
+                                                    <span
+                                                      class="MuiIconButton-label"
                                                     >
-                                                      <path
-                                                        d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"
-                                                      />
-                                                    </svg>
-                                                  </span>
-                                                </button>
+                                                      <svg
+                                                        aria-hidden="true"
+                                                        class="MuiSvgIcon-root"
+                                                        focusable="false"
+                                                        viewBox="0 0 24 24"
+                                                      >
+                                                        <path
+                                                          d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"
+                                                        />
+                                                      </svg>
+                                                    </span>
+                                                  </button>
+                                                </span>
                                               </mock-tooltip>
                                               <mock-menu
                                                 id="download-menu"
@@ -2097,52 +2163,58 @@ exports[`renders as expected 1`] = `
                                               <mock-tooltip
                                                 title="Opacity"
                                               >
-                                                <button
-                                                  class="MuiButtonBase-root MuiIconButton-root memo-opacityRoot-36 Mui-disabled Mui-disabled"
-                                                  disabled=""
-                                                  tabindex="-1"
-                                                  type="button"
+                                                <span
+                                                  style="margin-left: auto;"
                                                 >
-                                                  <span
-                                                    class="MuiIconButton-label"
+                                                  <button
+                                                    class="MuiButtonBase-root MuiIconButton-root memo-opacityRoot-36 Mui-disabled Mui-disabled"
+                                                    disabled=""
+                                                    tabindex="-1"
+                                                    type="button"
                                                   >
-                                                    <svg
-                                                      aria-hidden="true"
-                                                      class="MuiSvgIcon-root"
-                                                      focusable="false"
-                                                      viewBox="0 0 24 24"
+                                                    <span
+                                                      class="MuiIconButton-label"
                                                     >
-                                                      <path
-                                                        d="M17.66 8L12 2.35 6.34 8C4.78 9.56 4 11.64 4 13.64s.78 4.11 2.34 5.67 3.61 2.35 5.66 2.35 4.1-.79 5.66-2.35S20 15.64 20 13.64 19.22 9.56 17.66 8zM6 14c.01-2 .62-3.27 1.76-4.4L12 5.27l4.24 4.38C17.38 10.77 17.99 12 18 14H6z"
-                                                      />
-                                                    </svg>
-                                                  </span>
-                                                </button>
+                                                      <svg
+                                                        aria-hidden="true"
+                                                        class="MuiSvgIcon-root"
+                                                        focusable="false"
+                                                        viewBox="0 0 24 24"
+                                                      >
+                                                        <path
+                                                          d="M17.66 8L12 2.35 6.34 8C4.78 9.56 4 11.64 4 13.64s.78 4.11 2.34 5.67 3.61 2.35 5.66 2.35 4.1-.79 5.66-2.35S20 15.64 20 13.64 19.22 9.56 17.66 8zM6 14c.01-2 .62-3.27 1.76-4.4L12 5.27l4.24 4.38C17.38 10.77 17.99 12 18 14H6z"
+                                                        />
+                                                      </svg>
+                                                    </span>
+                                                  </button>
+                                                </span>
                                               </mock-tooltip>
                                               <mock-tooltip
                                                 title="Download"
                                               >
-                                                <button
-                                                  class="MuiButtonBase-root MuiIconButton-root Mui-disabled Mui-disabled"
-                                                  disabled=""
-                                                  tabindex="-1"
-                                                  type="button"
-                                                >
-                                                  <span
-                                                    class="MuiIconButton-label"
+                                                <span>
+                                                  <button
+                                                    class="MuiButtonBase-root MuiIconButton-root Mui-disabled Mui-disabled"
+                                                    disabled=""
+                                                    tabindex="-1"
+                                                    type="button"
                                                   >
-                                                    <svg
-                                                      aria-hidden="true"
-                                                      class="MuiSvgIcon-root"
-                                                      focusable="false"
-                                                      viewBox="0 0 24 24"
+                                                    <span
+                                                      class="MuiIconButton-label"
                                                     >
-                                                      <path
-                                                        d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"
-                                                      />
-                                                    </svg>
-                                                  </span>
-                                                </button>
+                                                      <svg
+                                                        aria-hidden="true"
+                                                        class="MuiSvgIcon-root"
+                                                        focusable="false"
+                                                        viewBox="0 0 24 24"
+                                                      >
+                                                        <path
+                                                          d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"
+                                                        />
+                                                      </svg>
+                                                    </span>
+                                                  </button>
+                                                </span>
                                               </mock-tooltip>
                                               <mock-menu
                                                 id="download-menu"
@@ -2176,52 +2248,58 @@ exports[`renders as expected 1`] = `
                                               <mock-tooltip
                                                 title="Opacity"
                                               >
-                                                <button
-                                                  class="MuiButtonBase-root MuiIconButton-root memo-opacityRoot-36 Mui-disabled Mui-disabled"
-                                                  disabled=""
-                                                  tabindex="-1"
-                                                  type="button"
+                                                <span
+                                                  style="margin-left: auto;"
                                                 >
-                                                  <span
-                                                    class="MuiIconButton-label"
+                                                  <button
+                                                    class="MuiButtonBase-root MuiIconButton-root memo-opacityRoot-36 Mui-disabled Mui-disabled"
+                                                    disabled=""
+                                                    tabindex="-1"
+                                                    type="button"
                                                   >
-                                                    <svg
-                                                      aria-hidden="true"
-                                                      class="MuiSvgIcon-root"
-                                                      focusable="false"
-                                                      viewBox="0 0 24 24"
+                                                    <span
+                                                      class="MuiIconButton-label"
                                                     >
-                                                      <path
-                                                        d="M17.66 8L12 2.35 6.34 8C4.78 9.56 4 11.64 4 13.64s.78 4.11 2.34 5.67 3.61 2.35 5.66 2.35 4.1-.79 5.66-2.35S20 15.64 20 13.64 19.22 9.56 17.66 8zM6 14c.01-2 .62-3.27 1.76-4.4L12 5.27l4.24 4.38C17.38 10.77 17.99 12 18 14H6z"
-                                                      />
-                                                    </svg>
-                                                  </span>
-                                                </button>
+                                                      <svg
+                                                        aria-hidden="true"
+                                                        class="MuiSvgIcon-root"
+                                                        focusable="false"
+                                                        viewBox="0 0 24 24"
+                                                      >
+                                                        <path
+                                                          d="M17.66 8L12 2.35 6.34 8C4.78 9.56 4 11.64 4 13.64s.78 4.11 2.34 5.67 3.61 2.35 5.66 2.35 4.1-.79 5.66-2.35S20 15.64 20 13.64 19.22 9.56 17.66 8zM6 14c.01-2 .62-3.27 1.76-4.4L12 5.27l4.24 4.38C17.38 10.77 17.99 12 18 14H6z"
+                                                        />
+                                                      </svg>
+                                                    </span>
+                                                  </button>
+                                                </span>
                                               </mock-tooltip>
                                               <mock-tooltip
                                                 title="Download"
                                               >
-                                                <button
-                                                  class="MuiButtonBase-root MuiIconButton-root Mui-disabled Mui-disabled"
-                                                  disabled=""
-                                                  tabindex="-1"
-                                                  type="button"
-                                                >
-                                                  <span
-                                                    class="MuiIconButton-label"
+                                                <span>
+                                                  <button
+                                                    class="MuiButtonBase-root MuiIconButton-root Mui-disabled Mui-disabled"
+                                                    disabled=""
+                                                    tabindex="-1"
+                                                    type="button"
                                                   >
-                                                    <svg
-                                                      aria-hidden="true"
-                                                      class="MuiSvgIcon-root"
-                                                      focusable="false"
-                                                      viewBox="0 0 24 24"
+                                                    <span
+                                                      class="MuiIconButton-label"
                                                     >
-                                                      <path
-                                                        d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"
-                                                      />
-                                                    </svg>
-                                                  </span>
-                                                </button>
+                                                      <svg
+                                                        aria-hidden="true"
+                                                        class="MuiSvgIcon-root"
+                                                        focusable="false"
+                                                        viewBox="0 0 24 24"
+                                                      >
+                                                        <path
+                                                          d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"
+                                                        />
+                                                      </svg>
+                                                    </span>
+                                                  </button>
+                                                </span>
                                               </mock-tooltip>
                                               <mock-menu
                                                 id="download-menu"
@@ -2328,52 +2406,58 @@ exports[`renders as expected 1`] = `
                                               <mock-tooltip
                                                 title="Opacity"
                                               >
-                                                <button
-                                                  class="MuiButtonBase-root MuiIconButton-root memo-opacityRoot-36 Mui-disabled Mui-disabled"
-                                                  disabled=""
-                                                  tabindex="-1"
-                                                  type="button"
+                                                <span
+                                                  style="margin-left: auto;"
                                                 >
-                                                  <span
-                                                    class="MuiIconButton-label"
+                                                  <button
+                                                    class="MuiButtonBase-root MuiIconButton-root memo-opacityRoot-36 Mui-disabled Mui-disabled"
+                                                    disabled=""
+                                                    tabindex="-1"
+                                                    type="button"
                                                   >
-                                                    <svg
-                                                      aria-hidden="true"
-                                                      class="MuiSvgIcon-root"
-                                                      focusable="false"
-                                                      viewBox="0 0 24 24"
+                                                    <span
+                                                      class="MuiIconButton-label"
                                                     >
-                                                      <path
-                                                        d="M17.66 8L12 2.35 6.34 8C4.78 9.56 4 11.64 4 13.64s.78 4.11 2.34 5.67 3.61 2.35 5.66 2.35 4.1-.79 5.66-2.35S20 15.64 20 13.64 19.22 9.56 17.66 8zM6 14c.01-2 .62-3.27 1.76-4.4L12 5.27l4.24 4.38C17.38 10.77 17.99 12 18 14H6z"
-                                                      />
-                                                    </svg>
-                                                  </span>
-                                                </button>
+                                                      <svg
+                                                        aria-hidden="true"
+                                                        class="MuiSvgIcon-root"
+                                                        focusable="false"
+                                                        viewBox="0 0 24 24"
+                                                      >
+                                                        <path
+                                                          d="M17.66 8L12 2.35 6.34 8C4.78 9.56 4 11.64 4 13.64s.78 4.11 2.34 5.67 3.61 2.35 5.66 2.35 4.1-.79 5.66-2.35S20 15.64 20 13.64 19.22 9.56 17.66 8zM6 14c.01-2 .62-3.27 1.76-4.4L12 5.27l4.24 4.38C17.38 10.77 17.99 12 18 14H6z"
+                                                        />
+                                                      </svg>
+                                                    </span>
+                                                  </button>
+                                                </span>
                                               </mock-tooltip>
                                               <mock-tooltip
                                                 title="Download"
                                               >
-                                                <button
-                                                  class="MuiButtonBase-root MuiIconButton-root Mui-disabled Mui-disabled"
-                                                  disabled=""
-                                                  tabindex="-1"
-                                                  type="button"
-                                                >
-                                                  <span
-                                                    class="MuiIconButton-label"
+                                                <span>
+                                                  <button
+                                                    class="MuiButtonBase-root MuiIconButton-root Mui-disabled Mui-disabled"
+                                                    disabled=""
+                                                    tabindex="-1"
+                                                    type="button"
                                                   >
-                                                    <svg
-                                                      aria-hidden="true"
-                                                      class="MuiSvgIcon-root"
-                                                      focusable="false"
-                                                      viewBox="0 0 24 24"
+                                                    <span
+                                                      class="MuiIconButton-label"
                                                     >
-                                                      <path
-                                                        d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"
-                                                      />
-                                                    </svg>
-                                                  </span>
-                                                </button>
+                                                      <svg
+                                                        aria-hidden="true"
+                                                        class="MuiSvgIcon-root"
+                                                        focusable="false"
+                                                        viewBox="0 0 24 24"
+                                                      >
+                                                        <path
+                                                          d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"
+                                                        />
+                                                      </svg>
+                                                    </span>
+                                                  </button>
+                                                </span>
                                               </mock-tooltip>
                                               <mock-menu
                                                 id="download-menu"
@@ -2407,52 +2491,58 @@ exports[`renders as expected 1`] = `
                                               <mock-tooltip
                                                 title="Opacity"
                                               >
-                                                <button
-                                                  class="MuiButtonBase-root MuiIconButton-root memo-opacityRoot-36 Mui-disabled Mui-disabled"
-                                                  disabled=""
-                                                  tabindex="-1"
-                                                  type="button"
+                                                <span
+                                                  style="margin-left: auto;"
                                                 >
-                                                  <span
-                                                    class="MuiIconButton-label"
+                                                  <button
+                                                    class="MuiButtonBase-root MuiIconButton-root memo-opacityRoot-36 Mui-disabled Mui-disabled"
+                                                    disabled=""
+                                                    tabindex="-1"
+                                                    type="button"
                                                   >
-                                                    <svg
-                                                      aria-hidden="true"
-                                                      class="MuiSvgIcon-root"
-                                                      focusable="false"
-                                                      viewBox="0 0 24 24"
+                                                    <span
+                                                      class="MuiIconButton-label"
                                                     >
-                                                      <path
-                                                        d="M17.66 8L12 2.35 6.34 8C4.78 9.56 4 11.64 4 13.64s.78 4.11 2.34 5.67 3.61 2.35 5.66 2.35 4.1-.79 5.66-2.35S20 15.64 20 13.64 19.22 9.56 17.66 8zM6 14c.01-2 .62-3.27 1.76-4.4L12 5.27l4.24 4.38C17.38 10.77 17.99 12 18 14H6z"
-                                                      />
-                                                    </svg>
-                                                  </span>
-                                                </button>
+                                                      <svg
+                                                        aria-hidden="true"
+                                                        class="MuiSvgIcon-root"
+                                                        focusable="false"
+                                                        viewBox="0 0 24 24"
+                                                      >
+                                                        <path
+                                                          d="M17.66 8L12 2.35 6.34 8C4.78 9.56 4 11.64 4 13.64s.78 4.11 2.34 5.67 3.61 2.35 5.66 2.35 4.1-.79 5.66-2.35S20 15.64 20 13.64 19.22 9.56 17.66 8zM6 14c.01-2 .62-3.27 1.76-4.4L12 5.27l4.24 4.38C17.38 10.77 17.99 12 18 14H6z"
+                                                        />
+                                                      </svg>
+                                                    </span>
+                                                  </button>
+                                                </span>
                                               </mock-tooltip>
                                               <mock-tooltip
                                                 title="Download"
                                               >
-                                                <button
-                                                  class="MuiButtonBase-root MuiIconButton-root Mui-disabled Mui-disabled"
-                                                  disabled=""
-                                                  tabindex="-1"
-                                                  type="button"
-                                                >
-                                                  <span
-                                                    class="MuiIconButton-label"
+                                                <span>
+                                                  <button
+                                                    class="MuiButtonBase-root MuiIconButton-root Mui-disabled Mui-disabled"
+                                                    disabled=""
+                                                    tabindex="-1"
+                                                    type="button"
                                                   >
-                                                    <svg
-                                                      aria-hidden="true"
-                                                      class="MuiSvgIcon-root"
-                                                      focusable="false"
-                                                      viewBox="0 0 24 24"
+                                                    <span
+                                                      class="MuiIconButton-label"
                                                     >
-                                                      <path
-                                                        d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"
-                                                      />
-                                                    </svg>
-                                                  </span>
-                                                </button>
+                                                      <svg
+                                                        aria-hidden="true"
+                                                        class="MuiSvgIcon-root"
+                                                        focusable="false"
+                                                        viewBox="0 0 24 24"
+                                                      >
+                                                        <path
+                                                          d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"
+                                                        />
+                                                      </svg>
+                                                    </span>
+                                                  </button>
+                                                </span>
                                               </mock-tooltip>
                                               <mock-menu
                                                 id="download-menu"
@@ -2486,52 +2576,58 @@ exports[`renders as expected 1`] = `
                                               <mock-tooltip
                                                 title="Opacity"
                                               >
-                                                <button
-                                                  class="MuiButtonBase-root MuiIconButton-root memo-opacityRoot-36 Mui-disabled Mui-disabled"
-                                                  disabled=""
-                                                  tabindex="-1"
-                                                  type="button"
+                                                <span
+                                                  style="margin-left: auto;"
                                                 >
-                                                  <span
-                                                    class="MuiIconButton-label"
+                                                  <button
+                                                    class="MuiButtonBase-root MuiIconButton-root memo-opacityRoot-36 Mui-disabled Mui-disabled"
+                                                    disabled=""
+                                                    tabindex="-1"
+                                                    type="button"
                                                   >
-                                                    <svg
-                                                      aria-hidden="true"
-                                                      class="MuiSvgIcon-root"
-                                                      focusable="false"
-                                                      viewBox="0 0 24 24"
+                                                    <span
+                                                      class="MuiIconButton-label"
                                                     >
-                                                      <path
-                                                        d="M17.66 8L12 2.35 6.34 8C4.78 9.56 4 11.64 4 13.64s.78 4.11 2.34 5.67 3.61 2.35 5.66 2.35 4.1-.79 5.66-2.35S20 15.64 20 13.64 19.22 9.56 17.66 8zM6 14c.01-2 .62-3.27 1.76-4.4L12 5.27l4.24 4.38C17.38 10.77 17.99 12 18 14H6z"
-                                                      />
-                                                    </svg>
-                                                  </span>
-                                                </button>
+                                                      <svg
+                                                        aria-hidden="true"
+                                                        class="MuiSvgIcon-root"
+                                                        focusable="false"
+                                                        viewBox="0 0 24 24"
+                                                      >
+                                                        <path
+                                                          d="M17.66 8L12 2.35 6.34 8C4.78 9.56 4 11.64 4 13.64s.78 4.11 2.34 5.67 3.61 2.35 5.66 2.35 4.1-.79 5.66-2.35S20 15.64 20 13.64 19.22 9.56 17.66 8zM6 14c.01-2 .62-3.27 1.76-4.4L12 5.27l4.24 4.38C17.38 10.77 17.99 12 18 14H6z"
+                                                        />
+                                                      </svg>
+                                                    </span>
+                                                  </button>
+                                                </span>
                                               </mock-tooltip>
                                               <mock-tooltip
                                                 title="Download"
                                               >
-                                                <button
-                                                  class="MuiButtonBase-root MuiIconButton-root Mui-disabled Mui-disabled"
-                                                  disabled=""
-                                                  tabindex="-1"
-                                                  type="button"
-                                                >
-                                                  <span
-                                                    class="MuiIconButton-label"
+                                                <span>
+                                                  <button
+                                                    class="MuiButtonBase-root MuiIconButton-root Mui-disabled Mui-disabled"
+                                                    disabled=""
+                                                    tabindex="-1"
+                                                    type="button"
                                                   >
-                                                    <svg
-                                                      aria-hidden="true"
-                                                      class="MuiSvgIcon-root"
-                                                      focusable="false"
-                                                      viewBox="0 0 24 24"
+                                                    <span
+                                                      class="MuiIconButton-label"
                                                     >
-                                                      <path
-                                                        d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"
-                                                      />
-                                                    </svg>
-                                                  </span>
-                                                </button>
+                                                      <svg
+                                                        aria-hidden="true"
+                                                        class="MuiSvgIcon-root"
+                                                        focusable="false"
+                                                        viewBox="0 0 24 24"
+                                                      >
+                                                        <path
+                                                          d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"
+                                                        />
+                                                      </svg>
+                                                    </span>
+                                                  </button>
+                                                </span>
                                               </mock-tooltip>
                                               <mock-menu
                                                 id="download-menu"
@@ -2711,53 +2807,59 @@ exports[`renders as expected 1`] = `
                                               <mock-tooltip
                                                 title="Opacity"
                                               >
-                                                <button
-                                                  class="MuiButtonBase-root MuiIconButton-root memo-opacityRoot-36 Mui-disabled Mui-disabled"
-                                                  disabled=""
-                                                  tabindex="-1"
-                                                  type="button"
+                                                <span
+                                                  style="margin-left: auto;"
                                                 >
-                                                  <span
-                                                    class="MuiIconButton-label"
+                                                  <button
+                                                    class="MuiButtonBase-root MuiIconButton-root memo-opacityRoot-36 Mui-disabled Mui-disabled"
+                                                    disabled=""
+                                                    tabindex="-1"
+                                                    type="button"
                                                   >
-                                                    <svg
-                                                      aria-hidden="true"
-                                                      class="MuiSvgIcon-root"
-                                                      focusable="false"
-                                                      viewBox="0 0 24 24"
+                                                    <span
+                                                      class="MuiIconButton-label"
                                                     >
-                                                      <path
-                                                        d="M17.66 8L12 2.35 6.34 8C4.78 9.56 4 11.64 4 13.64s.78 4.11 2.34 5.67 3.61 2.35 5.66 2.35 4.1-.79 5.66-2.35S20 15.64 20 13.64 19.22 9.56 17.66 8zM6 14c.01-2 .62-3.27 1.76-4.4L12 5.27l4.24 4.38C17.38 10.77 17.99 12 18 14H6z"
-                                                      />
-                                                    </svg>
-                                                  </span>
-                                                </button>
+                                                      <svg
+                                                        aria-hidden="true"
+                                                        class="MuiSvgIcon-root"
+                                                        focusable="false"
+                                                        viewBox="0 0 24 24"
+                                                      >
+                                                        <path
+                                                          d="M17.66 8L12 2.35 6.34 8C4.78 9.56 4 11.64 4 13.64s.78 4.11 2.34 5.67 3.61 2.35 5.66 2.35 4.1-.79 5.66-2.35S20 15.64 20 13.64 19.22 9.56 17.66 8zM6 14c.01-2 .62-3.27 1.76-4.4L12 5.27l4.24 4.38C17.38 10.77 17.99 12 18 14H6z"
+                                                        />
+                                                      </svg>
+                                                    </span>
+                                                  </button>
+                                                </span>
                                               </mock-tooltip>
                                               <mock-tooltip
                                                 title="Exposure Analysis"
                                               >
-                                                <button
-                                                  class="MuiButtonBase-root MuiIconButton-root Mui-disabled Mui-disabled"
-                                                  disabled=""
-                                                  id="adamts_buffers"
-                                                  tabindex="-1"
-                                                  type="button"
-                                                >
-                                                  <span
-                                                    class="MuiIconButton-label"
+                                                <span>
+                                                  <button
+                                                    class="MuiButtonBase-root MuiIconButton-root Mui-disabled Mui-disabled"
+                                                    disabled=""
+                                                    id="adamts_buffers"
+                                                    tabindex="-1"
+                                                    type="button"
                                                   >
-                                                    <svg
-                                                      aria-hidden="true"
-                                                      class="MuiSvgIcon-root"
-                                                      focusable="false"
-                                                      viewBox="0 0 24 24"
+                                                    <span
+                                                      class="MuiIconButton-label"
                                                     >
-                                                      <path
-                                                        d="M16 10h-2v2h2v-2zm0 4h-2v2h2v-2zm-8-4H6v2h2v-2zm4 0h-2v2h2v-2zm8-6H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 14H4V6h16v12z"
-                                                      />
-                                                    </svg>
-                                                  </span>
-                                                </button>
+                                                      <svg
+                                                        aria-hidden="true"
+                                                        class="MuiSvgIcon-root"
+                                                        focusable="false"
+                                                        viewBox="0 0 24 24"
+                                                      >
+                                                        <path
+                                                          d="M16 10h-2v2h2v-2zm0 4h-2v2h2v-2zm-8-4H6v2h2v-2zm4 0h-2v2h2v-2zm8-6H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 14H4V6h16v12z"
+                                                        />
+                                                      </svg>
+                                                    </span>
+                                                  </button>
+                                                </span>
                                               </mock-tooltip>
                                               <mock-menu
                                                 id="download-menu"
@@ -2933,52 +3035,58 @@ exports[`renders as expected 1`] = `
                                               <mock-tooltip
                                                 title="Opacity"
                                               >
-                                                <button
-                                                  class="MuiButtonBase-root MuiIconButton-root memo-opacityRoot-36 Mui-disabled Mui-disabled"
-                                                  disabled=""
-                                                  tabindex="-1"
-                                                  type="button"
+                                                <span
+                                                  style="margin-left: auto;"
                                                 >
-                                                  <span
-                                                    class="MuiIconButton-label"
+                                                  <button
+                                                    class="MuiButtonBase-root MuiIconButton-root memo-opacityRoot-36 Mui-disabled Mui-disabled"
+                                                    disabled=""
+                                                    tabindex="-1"
+                                                    type="button"
                                                   >
-                                                    <svg
-                                                      aria-hidden="true"
-                                                      class="MuiSvgIcon-root"
-                                                      focusable="false"
-                                                      viewBox="0 0 24 24"
+                                                    <span
+                                                      class="MuiIconButton-label"
                                                     >
-                                                      <path
-                                                        d="M17.66 8L12 2.35 6.34 8C4.78 9.56 4 11.64 4 13.64s.78 4.11 2.34 5.67 3.61 2.35 5.66 2.35 4.1-.79 5.66-2.35S20 15.64 20 13.64 19.22 9.56 17.66 8zM6 14c.01-2 .62-3.27 1.76-4.4L12 5.27l4.24 4.38C17.38 10.77 17.99 12 18 14H6z"
-                                                      />
-                                                    </svg>
-                                                  </span>
-                                                </button>
+                                                      <svg
+                                                        aria-hidden="true"
+                                                        class="MuiSvgIcon-root"
+                                                        focusable="false"
+                                                        viewBox="0 0 24 24"
+                                                      >
+                                                        <path
+                                                          d="M17.66 8L12 2.35 6.34 8C4.78 9.56 4 11.64 4 13.64s.78 4.11 2.34 5.67 3.61 2.35 5.66 2.35 4.1-.79 5.66-2.35S20 15.64 20 13.64 19.22 9.56 17.66 8zM6 14c.01-2 .62-3.27 1.76-4.4L12 5.27l4.24 4.38C17.38 10.77 17.99 12 18 14H6z"
+                                                        />
+                                                      </svg>
+                                                    </span>
+                                                  </button>
+                                                </span>
                                               </mock-tooltip>
                                               <mock-tooltip
                                                 title="Download"
                                               >
-                                                <button
-                                                  class="MuiButtonBase-root MuiIconButton-root Mui-disabled Mui-disabled"
-                                                  disabled=""
-                                                  tabindex="-1"
-                                                  type="button"
-                                                >
-                                                  <span
-                                                    class="MuiIconButton-label"
+                                                <span>
+                                                  <button
+                                                    class="MuiButtonBase-root MuiIconButton-root Mui-disabled Mui-disabled"
+                                                    disabled=""
+                                                    tabindex="-1"
+                                                    type="button"
                                                   >
-                                                    <svg
-                                                      aria-hidden="true"
-                                                      class="MuiSvgIcon-root"
-                                                      focusable="false"
-                                                      viewBox="0 0 24 24"
+                                                    <span
+                                                      class="MuiIconButton-label"
                                                     >
-                                                      <path
-                                                        d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"
-                                                      />
-                                                    </svg>
-                                                  </span>
-                                                </button>
+                                                      <svg
+                                                        aria-hidden="true"
+                                                        class="MuiSvgIcon-root"
+                                                        focusable="false"
+                                                        viewBox="0 0 24 24"
+                                                      >
+                                                        <path
+                                                          d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"
+                                                        />
+                                                      </svg>
+                                                    </span>
+                                                  </button>
+                                                </span>
                                               </mock-tooltip>
                                               <mock-menu
                                                 id="download-menu"
@@ -3174,52 +3282,58 @@ exports[`renders as expected 1`] = `
                                               <mock-tooltip
                                                 title="Opacity"
                                               >
-                                                <button
-                                                  class="MuiButtonBase-root MuiIconButton-root memo-opacityRoot-36 Mui-disabled Mui-disabled"
-                                                  disabled=""
-                                                  tabindex="-1"
-                                                  type="button"
+                                                <span
+                                                  style="margin-left: auto;"
                                                 >
-                                                  <span
-                                                    class="MuiIconButton-label"
+                                                  <button
+                                                    class="MuiButtonBase-root MuiIconButton-root memo-opacityRoot-36 Mui-disabled Mui-disabled"
+                                                    disabled=""
+                                                    tabindex="-1"
+                                                    type="button"
                                                   >
-                                                    <svg
-                                                      aria-hidden="true"
-                                                      class="MuiSvgIcon-root"
-                                                      focusable="false"
-                                                      viewBox="0 0 24 24"
+                                                    <span
+                                                      class="MuiIconButton-label"
                                                     >
-                                                      <path
-                                                        d="M17.66 8L12 2.35 6.34 8C4.78 9.56 4 11.64 4 13.64s.78 4.11 2.34 5.67 3.61 2.35 5.66 2.35 4.1-.79 5.66-2.35S20 15.64 20 13.64 19.22 9.56 17.66 8zM6 14c.01-2 .62-3.27 1.76-4.4L12 5.27l4.24 4.38C17.38 10.77 17.99 12 18 14H6z"
-                                                      />
-                                                    </svg>
-                                                  </span>
-                                                </button>
+                                                      <svg
+                                                        aria-hidden="true"
+                                                        class="MuiSvgIcon-root"
+                                                        focusable="false"
+                                                        viewBox="0 0 24 24"
+                                                      >
+                                                        <path
+                                                          d="M17.66 8L12 2.35 6.34 8C4.78 9.56 4 11.64 4 13.64s.78 4.11 2.34 5.67 3.61 2.35 5.66 2.35 4.1-.79 5.66-2.35S20 15.64 20 13.64 19.22 9.56 17.66 8zM6 14c.01-2 .62-3.27 1.76-4.4L12 5.27l4.24 4.38C17.38 10.77 17.99 12 18 14H6z"
+                                                        />
+                                                      </svg>
+                                                    </span>
+                                                  </button>
+                                                </span>
                                               </mock-tooltip>
                                               <mock-tooltip
                                                 title="Download"
                                               >
-                                                <button
-                                                  class="MuiButtonBase-root MuiIconButton-root Mui-disabled Mui-disabled"
-                                                  disabled=""
-                                                  tabindex="-1"
-                                                  type="button"
-                                                >
-                                                  <span
-                                                    class="MuiIconButton-label"
+                                                <span>
+                                                  <button
+                                                    class="MuiButtonBase-root MuiIconButton-root Mui-disabled Mui-disabled"
+                                                    disabled=""
+                                                    tabindex="-1"
+                                                    type="button"
                                                   >
-                                                    <svg
-                                                      aria-hidden="true"
-                                                      class="MuiSvgIcon-root"
-                                                      focusable="false"
-                                                      viewBox="0 0 24 24"
+                                                    <span
+                                                      class="MuiIconButton-label"
                                                     >
-                                                      <path
-                                                        d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"
-                                                      />
-                                                    </svg>
-                                                  </span>
-                                                </button>
+                                                      <svg
+                                                        aria-hidden="true"
+                                                        class="MuiSvgIcon-root"
+                                                        focusable="false"
+                                                        viewBox="0 0 24 24"
+                                                      >
+                                                        <path
+                                                          d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"
+                                                        />
+                                                      </svg>
+                                                    </span>
+                                                  </button>
+                                                </span>
                                               </mock-tooltip>
                                               <mock-menu
                                                 id="download-menu"
@@ -3402,52 +3516,58 @@ exports[`renders as expected 1`] = `
                                               <mock-tooltip
                                                 title="Opacity"
                                               >
-                                                <button
-                                                  class="MuiButtonBase-root MuiIconButton-root memo-opacityRoot-36 Mui-disabled Mui-disabled"
-                                                  disabled=""
-                                                  tabindex="-1"
-                                                  type="button"
+                                                <span
+                                                  style="margin-left: auto;"
                                                 >
-                                                  <span
-                                                    class="MuiIconButton-label"
+                                                  <button
+                                                    class="MuiButtonBase-root MuiIconButton-root memo-opacityRoot-36 Mui-disabled Mui-disabled"
+                                                    disabled=""
+                                                    tabindex="-1"
+                                                    type="button"
                                                   >
-                                                    <svg
-                                                      aria-hidden="true"
-                                                      class="MuiSvgIcon-root"
-                                                      focusable="false"
-                                                      viewBox="0 0 24 24"
+                                                    <span
+                                                      class="MuiIconButton-label"
                                                     >
-                                                      <path
-                                                        d="M17.66 8L12 2.35 6.34 8C4.78 9.56 4 11.64 4 13.64s.78 4.11 2.34 5.67 3.61 2.35 5.66 2.35 4.1-.79 5.66-2.35S20 15.64 20 13.64 19.22 9.56 17.66 8zM6 14c.01-2 .62-3.27 1.76-4.4L12 5.27l4.24 4.38C17.38 10.77 17.99 12 18 14H6z"
-                                                      />
-                                                    </svg>
-                                                  </span>
-                                                </button>
+                                                      <svg
+                                                        aria-hidden="true"
+                                                        class="MuiSvgIcon-root"
+                                                        focusable="false"
+                                                        viewBox="0 0 24 24"
+                                                      >
+                                                        <path
+                                                          d="M17.66 8L12 2.35 6.34 8C4.78 9.56 4 11.64 4 13.64s.78 4.11 2.34 5.67 3.61 2.35 5.66 2.35 4.1-.79 5.66-2.35S20 15.64 20 13.64 19.22 9.56 17.66 8zM6 14c.01-2 .62-3.27 1.76-4.4L12 5.27l4.24 4.38C17.38 10.77 17.99 12 18 14H6z"
+                                                        />
+                                                      </svg>
+                                                    </span>
+                                                  </button>
+                                                </span>
                                               </mock-tooltip>
                                               <mock-tooltip
                                                 title="Download"
                                               >
-                                                <button
-                                                  class="MuiButtonBase-root MuiIconButton-root Mui-disabled Mui-disabled"
-                                                  disabled=""
-                                                  tabindex="-1"
-                                                  type="button"
-                                                >
-                                                  <span
-                                                    class="MuiIconButton-label"
+                                                <span>
+                                                  <button
+                                                    class="MuiButtonBase-root MuiIconButton-root Mui-disabled Mui-disabled"
+                                                    disabled=""
+                                                    tabindex="-1"
+                                                    type="button"
                                                   >
-                                                    <svg
-                                                      aria-hidden="true"
-                                                      class="MuiSvgIcon-root"
-                                                      focusable="false"
-                                                      viewBox="0 0 24 24"
+                                                    <span
+                                                      class="MuiIconButton-label"
                                                     >
-                                                      <path
-                                                        d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"
-                                                      />
-                                                    </svg>
-                                                  </span>
-                                                </button>
+                                                      <svg
+                                                        aria-hidden="true"
+                                                        class="MuiSvgIcon-root"
+                                                        focusable="false"
+                                                        viewBox="0 0 24 24"
+                                                      >
+                                                        <path
+                                                          d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"
+                                                        />
+                                                      </svg>
+                                                    </span>
+                                                  </button>
+                                                </span>
                                               </mock-tooltip>
                                               <mock-menu
                                                 id="download-menu"
