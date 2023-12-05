@@ -3477,14 +3477,6 @@ exports[`renders as expected 1`] = `
                   </div>
                 </div>
               </div>
-              <a
-                href="https://github.com/WFP-VAM/prism-app"
-                rel="noopener noreferrer"
-                style="color: rgb(245, 247, 248); position: absolute; bottom: 1rem; font-size: 0.7rem; left: 1rem;"
-                target="_blank"
-              >
-                version hash: 
-              </a>
             </div>
           </div>
           <div
