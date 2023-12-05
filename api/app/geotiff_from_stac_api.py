@@ -74,10 +74,7 @@ def upload_to_s3(file_path: str) -> str:
     s3_client = boto3.client("s3")
     s3_filename = os.path.basename(file_path)
 
-    try:
-        s3_client.upload_file(file_path, GEOTIFF_BUCKET_NAME, s3_filename)
-    except:
-        pass
+    s3_client.upload_file(file_path, GEOTIFF_BUCKET_NAME, s3_filename)
     return s3_filename
 
 
