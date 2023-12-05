@@ -128,10 +128,11 @@ function LayerDownloadOptions({
   const handleDownloadGeoTiff = (): void => {
     const { serverLayerName, additionalQueryParams } = layer as WMSLayerProps;
     // TODO - figure out a way to leverage style to guess band?
-    const { band } = additionalQueryParams as {
-      styles?: string;
-      band?: string;
-    };
+    const { band } =
+      (additionalQueryParams as {
+        styles?: string;
+        band?: string;
+      }) || {};
 
     setIsGeotiffLoading(true);
     downloadGeotiff(
