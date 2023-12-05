@@ -505,7 +505,8 @@
     "type": "wms",
     "server_layer_name": "rfb_blended_zwe_dekad",
     "additional_query_params": {
-      "styles": "rfb_blended"
+      "styles": "rfb_blended",
+      "band": "rfb"
     },
     "chart_data": {
       "url": "https://api.earthobservation.vam.wfp.org/stats/admin/fetch",
@@ -559,7 +560,8 @@
     "type": "wms",
     "server_layer_name": "rfq_blended_zwe_dekad",
     "additional_query_params": {
-      "styles": "rfq_blended"
+      "styles": "rfq_blended",
+      "band": "rfq"
     },
     "chart_data": {
       "url": "https://api.earthobservation.vam.wfp.org/stats/admin/fetch",
@@ -1316,7 +1318,8 @@
     "type": "wms",
     "server_layer_name": "rfb_blended_zwe_dekad",
     "additional_query_params": {
-      "styles": "r1b_blended"
+      "styles": "r1b_blended",
+      "band": "r1b"
     },
     "disableAnalysis": true,
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
@@ -1347,7 +1350,8 @@
     "type": "wms",
     "server_layer_name": "rfb_blended_zwe_dekad",
     "additional_query_params": {
-      "styles": "r2b_blended"
+      "styles": "r2b_blended",
+      "band": "r2b"
     },
     "disableAnalysis": true,
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
@@ -1378,7 +1382,8 @@
     "type": "wms",
     "server_layer_name": "rfb_blended_zwe_dekad",
     "additional_query_params": {
-      "styles": "r3b_blended"
+      "styles": "r3b_blended",
+      "band": "r3b"
     },
     "disableAnalysis": true,
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
@@ -1409,7 +1414,8 @@
     "type": "wms",
     "server_layer_name": "rfb_blended_zwe_dekad",
     "additional_query_params": {
-      "styles": "r4b_blended"
+      "styles": "r4b_blended",
+      "band": "r4b"
     },
     "disableAnalysis": true,
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
@@ -1440,7 +1446,8 @@
     "type": "wms",
     "server_layer_name": "rfb_blended_zwe_dekad",
     "additional_query_params": {
-      "styles": "r5b_blended"
+      "styles": "r5b_blended",
+      "band": "r5b"
     },
     "disableAnalysis": true,
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
@@ -1471,7 +1478,8 @@
     "type": "wms",
     "server_layer_name": "rfb_blended_zwe_dekad",
     "additional_query_params": {
-      "styles": "r6b_blended"
+      "styles": "r6b_blended",
+      "band": "r6b"
     },
     "disableAnalysis": true,
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
@@ -1502,7 +1510,8 @@
     "type": "wms",
     "server_layer_name": "rfb_blended_zwe_dekad",
     "additional_query_params": {
-      "styles": "r9b_blended"
+      "styles": "r9b_blended",
+      "band": "r9b"
     },
     "disableAnalysis": true,
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
@@ -1533,7 +1542,8 @@
     "type": "wms",
     "server_layer_name": "rfb_blended_zwe_dekad",
     "additional_query_params": {
-      "styles": "ryb_blended"
+      "styles": "ryb_blended",
+      "band": "ryb"
     },
     "disableAnalysis": true,
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
@@ -1564,7 +1574,8 @@
     "type": "wms",
     "server_layer_name": "rfq_blended_zwe_dekad",
     "additional_query_params": {
-      "styles": "r1q_blended"
+      "styles": "r1q_blended",
+      "band": "r1q"
     },
     "disableAnalysis": true,
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
@@ -1593,7 +1604,9 @@
     "type": "wms",
     "server_layer_name": "rfq_blended_zwe_dekad",
     "additional_query_params": {
-      "styles": "r2q_blended"
+      "styles": "r2q_blended",
+      "band": "r2q"
+
     },
     "disableAnalysis": true,
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
@@ -1622,7 +1635,8 @@
     "type": "wms",
     "server_layer_name": "rfq_blended_zwe_dekad",
     "additional_query_params": {
-      "styles": "r3q_blended"
+      "styles": "r3q_blended",
+      "band": "r3q"
     },
     "disableAnalysis": true,
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
@@ -1651,7 +1665,8 @@
     "type": "wms",
     "server_layer_name": "rfq_blended_zwe_dekad",
     "additional_query_params": {
-      "styles": "r4q_blended"
+      "styles": "r4q_blended",
+      "band": "r4q"
     },
     "disableAnalysis": true,
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
@@ -1680,7 +1695,8 @@
     "type": "wms",
     "server_layer_name": "rfq_blended_zwe_dekad",
     "additional_query_params": {
-      "styles": "r5q_blended"
+      "styles": "r5q_blended",
+      "band": "r5q"
     },
     "disableAnalysis": true,
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
@@ -1709,7 +1725,8 @@
     "type": "wms",
     "server_layer_name": "rfq_blended_zwe_dekad",
     "additional_query_params": {
-      "styles": "r6q_blended"
+      "styles": "r6q_blended",
+      "band": "r6q"
     },
     "disableAnalysis": true,
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
@@ -1738,7 +1755,8 @@
     "type": "wms",
     "server_layer_name": "rfq_blended_zwe_dekad",
     "additional_query_params": {
-      "styles": "r9q_blended"
+      "styles": "r9q_blended",
+      "band": "r9q"
     },
     "disableAnalysis": true,
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
@@ -1767,7 +1785,8 @@
     "type": "wms",
     "server_layer_name": "rfq_blended_zwe_dekad",
     "additional_query_params": {
-      "styles": "ryq_blended"
+      "styles": "ryq_blended",
+      "band": "ryq"
     },
     "disableAnalysis": true,
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
