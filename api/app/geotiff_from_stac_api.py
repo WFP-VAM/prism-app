@@ -42,6 +42,10 @@ def generate_geotiff_from_stac_api(
     if not items:
         raise HTTPException(status_code=500, detail="Collection not found in stac API")
 
+    # TODO - what should happen if the STAC API returns multiple dataset
+    # or if the selected band is not available?
+
+    # Filter data to the correct band if it is set.
     available_bands = items[0].assets.keys()
     logger.debug("available bands: %s", available_bands)
     bands = [band] if band and band in available_bands else None
@@ -69,8 +73,6 @@ def upload_to_s3(file_path: str) -> str:
     """Upload to s3"""
     s3_client = boto3.client("s3")
     s3_filename = os.path.basename(file_path)
-
-    print(s3_filename)
 
     try:
         s3_client.upload_file(file_path, GEOTIFF_BUCKET_NAME, s3_filename)
