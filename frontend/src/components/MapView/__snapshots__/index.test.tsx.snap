@@ -23,37 +23,37 @@ exports[`renders as expected 1`] = `
             <mock-tabs
               aria-label="left panel tabs"
               classes="[object Object]"
-              value="0"
+              value="layers"
             >
               <mock-tab
-                aria-controls="full-width-tabpanel-0"
+                aria-controls="full-width-tabpanel-layers"
                 classes="[object Object]"
                 disableripple="true"
-                id="full-width-tab-0"
+                id="full-width-tab-layers"
                 label="[object Object]"
-                value="0"
+                value="layers"
               />
               <mock-tab
-                aria-controls="full-width-tabpanel-1"
+                aria-controls="full-width-tabpanel-charts"
                 classes="[object Object]"
                 disableripple="true"
-                id="full-width-tab-1"
+                id="full-width-tab-charts"
                 label="[object Object]"
-                value="1"
+                value="charts"
               />
               <mock-tab
-                aria-controls="full-width-tabpanel-2"
+                aria-controls="full-width-tabpanel-analysis"
                 classes="[object Object]"
                 disableripple="true"
-                id="full-width-tab-2"
+                id="full-width-tab-analysis"
                 label="[object Object]"
-                value="2"
+                value="analysis"
               />
             </mock-tabs>
           </div>
           <div
-            aria-labelledby="full-width-tab-0"
-            id="full-width-tabpanel-0"
+            aria-labelledby="full-width-tab-layers"
+            id="full-width-tabpanel-layers"
             role="tabpanel"
             style="display: block; flex-grow: 1; order: -1; overflow-x: hidden;"
           >
@@ -3480,14 +3480,14 @@ exports[`renders as expected 1`] = `
             </div>
           </div>
           <div
-            aria-labelledby="full-width-tab-1"
-            id="full-width-tabpanel-1"
+            aria-labelledby="full-width-tab-charts"
+            id="full-width-tabpanel-charts"
             role="tabpanel"
             style="display: none; flex-grow: 1; overflow-x: auto;"
           />
           <div
-            aria-labelledby="full-width-tab-2"
-            id="full-width-tabpanel-2"
+            aria-labelledby="full-width-tab-analysis"
+            id="full-width-tabpanel-analysis"
             role="tabpanel"
             style="display: none; flex-grow: 1; overflow-x: auto;"
           />

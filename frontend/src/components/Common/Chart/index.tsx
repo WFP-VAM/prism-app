@@ -16,6 +16,7 @@ type ChartProps = {
   xAxisLabel?: string;
   notMaintainAspectRatio?: boolean;
   legendAtBottom?: boolean;
+  chartRange?: [number, number];
 };
 
 const Chart = memo(
@@ -27,6 +28,7 @@ const Chart = memo(
     datasetFields,
     notMaintainAspectRatio,
     legendAtBottom,
+    chartRange = [Number.NEGATIVE_INFINITY, Number.POSITIVE_INFINITY],
   }: ChartProps) => {
     const { t } = useSafeTranslation();
 
@@ -79,13 +81,14 @@ const Chart = memo(
       if (!transpose) {
         return indices.map(index => header[index]);
       }
-      return tableRows.map(row => {
+      return tableRows.slice(chartRange[0], chartRange[1]).map(row => {
         const dateFormat = data.EWSConfig ? 'HH:mm' : 'YYYY-MM-DD';
         return moment(row[config.category])
           .locale(t('date_locale') as LocaleSpecifier)
           .format(dateFormat);
       });
     }, [
+      chartRange,
       config.category,
       data.EWSConfig,
       header,
@@ -177,7 +180,7 @@ const Chart = memo(
     }, [data.EWSConfig]);
 
     /**
-     * The following memo value Assumes that the data is formatted as follows:
+     * The following value assumes that the data is formatted as follows:
      * First Row -> "keys"
      * Second Row -> "column names / headers"
      *
@@ -202,14 +205,17 @@ const Chart = memo(
      *               using config.transpose = true.
      *  - fill
      */
-    const chartData = useMemo(() => {
-      const datasets = !transpose ? tableRowsDataSet : indicesDataSet;
-      const datasetsWithThresholds = [...datasets, ...EWSthresholds];
-      return {
-        labels,
-        datasets: datasetsWithThresholds,
-      };
-    }, [EWSthresholds, indicesDataSet, labels, tableRowsDataSet, transpose]);
+    const datasets = !transpose ? tableRowsDataSet : indicesDataSet;
+    const datasetsWithThresholds = [...datasets, ...EWSthresholds];
+
+    const datasetsTrimmed = datasetsWithThresholds.map(set => ({
+      ...set,
+      data: set.data.slice(chartRange[0], chartRange[1]),
+    }));
+    const chartData = {
+      labels,
+      datasets: datasetsTrimmed,
+    };
 
     const chartConfig = useMemo(() => {
       return {

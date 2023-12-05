@@ -40,16 +40,17 @@ import {
   getWMSLayersWithChart,
 } from 'config/utils';
 import { LayerData } from 'context/layers/layer-data';
-import { leftPanelTabValueSelector } from 'context/leftPanelStateSlice';
+import { leftPanelTabValueSelector, Panel } from 'context/leftPanelStateSlice';
 import { layerDataSelector } from 'context/mapStateSlice/selectors';
 import { useSafeTranslation } from 'i18n';
-import DownloadCsvButton from 'components/MapView/DownloadCsvButton';
 import { buildCsvFileName } from 'components/MapView/utils';
-
+import DownloadCsvButton from 'components/MapView/DownloadCsvButton';
 import ChartSection from './ChartSection';
 import LocationSelector from './LocationSelector';
 import TimePeriodSelector from './TimePeriodSelector';
+
 import { oneDayInMs, oneYearInMs } from '../utils';
+import DateSlider from './DateSlider';
 
 // Load boundary layer for Admin2
 // WARNING - Make sure the dataviz_ids are available in the boundary file for Admin2
@@ -59,7 +60,7 @@ const boundaryLayer = getBoundaryLayersByAdminLevel(MAX_ADMIN_LEVEL);
 
 const chartLayers = getWMSLayersWithChart();
 
-const tabIndex = 1;
+const tabPanelType = Panel.Charts;
 
 function getProperties(
   layerData: LayerData<BoundaryLayerProps>['data'],
@@ -92,6 +93,7 @@ const useStyles = makeStyles(() =>
     formGroup: {
       marginBottom: 20,
       marginLeft: 20,
+      width: '100%',
     },
     chartsPanelParams: {
       marginTop: 30,
@@ -115,6 +117,12 @@ const useStyles = makeStyles(() =>
     },
     textLabel: {
       color: 'black',
+    },
+    chartsContainer: {
+      display: 'flex',
+      flexDirection: 'column',
+      justifyContent: 'space-between',
+      width: '100%',
     },
     chartsPanelCharts: {
       alignContent: 'start',
@@ -233,8 +241,10 @@ const ChartsPanel = memo(
       string[] | TFunctionKeys[]
     >([]);
 
+    const yearsToFetchDataFor = 5;
+
     const [startDate1, setStartDate1] = useState<number | null>(
-      new Date().getTime() - oneYearInMs,
+      new Date().getTime() - oneYearInMs * yearsToFetchDataFor,
     );
     const [endDate1, setEndDate1] = useState<number | null>(
       new Date().getTime(),
@@ -251,6 +261,54 @@ const ChartsPanel = memo(
     const [secondAdminProperties, setSecondAdminProperties] = useState<
       GeoJsonProperties
     >();
+    const oneYearInTicks = 34;
+    // maxDataTicks used for setting slider max ticks
+    const [maxDataTicks, setMaxDataTicks] = useState(0);
+    // chartRange is the output of the slider used to select data shown in charts
+    const [chartRange, setChartRange] = useState<[number, number]>([0, 0]);
+    // chartSelectedDateRange is the selected min and max date selected by the slider used to set the labels.
+    const [chartSelectedDateRange, setChartSelectedDateRange] = useState<
+      [string, string]
+    >(['', '']);
+    // chartMaxDateRange keeps the max and min dates from all datasets, so smaller datasets can be extended
+    const [chartMaxDateRange, setChartMaxDateRange] = useState<
+      [string, string]
+    >(['', '']);
+    const [showSlider, setShowSlider] = useState(true);
+
+    function resetSlider() {
+      setMaxDataTicks(0);
+      setChartRange([0, 0]);
+      setChartSelectedDateRange(['', '']);
+      setChartMaxDateRange(['', '']);
+    }
+
+    // Reset slider when charts' date changes
+    useEffect(() => {
+      resetSlider();
+    }, [startDate1, endDate1]);
+
+    useEffect(() => {
+      if (selectedLayerTitles.length === 0) {
+        resetSlider();
+      }
+    }, [selectedLayerTitles.length]);
+
+    useEffect(() => {
+      const start = maxDataTicks - oneYearInTicks;
+      setChartRange([start > 0 ? start : 0, maxDataTicks]);
+    }, [maxDataTicks]);
+
+    useEffect(() => {
+      if (comparePeriods) {
+        setShowSlider(false);
+        setStartDate1(new Date().getTime() - oneYearInMs);
+      } else {
+        setShowSlider(true);
+        setStartDate1(new Date().getTime() - oneYearInMs * yearsToFetchDataFor);
+      }
+    }, [comparePeriods]);
+
     const dataForCsv = useRef<{ [key: string]: any[] }>({});
     const dataForSecondCsv = useRef<{ [key: string]: any[] }>({});
 
@@ -285,7 +343,7 @@ const ChartsPanel = memo(
       return (
         adminProperties &&
         startDate1 &&
-        tabIndex === tabValue &&
+        tabPanelType === tabValue &&
         selectedLayerTitles.length >= 1
       );
     }, [adminProperties, startDate1, selectedLayerTitles.length, tabValue]);
@@ -336,11 +394,17 @@ const ChartsPanel = memo(
         return (
           <Box
             style={{
-              height: '240px',
+              height: '50vh',
               width: '100%',
             }}
           >
             <ChartSection
+              key={`${startDate1}-${endDate1}`}
+              setChartSelectedDateRange={setChartSelectedDateRange}
+              setMaxDataTicks={setMaxDataTicks}
+              chartMaxDateRange={chartMaxDateRange}
+              setChartMaxDateRange={setChartMaxDateRange}
+              chartRange={comparePeriods ? undefined : chartRange}
               chartLayer={chartLayer as WMSLayerProps}
               adminProperties={adminProperties || {}}
               adminLevel={adminLevel}
@@ -367,6 +431,14 @@ const ChartsPanel = memo(
                   }}
                 >
                   <ChartSection
+                    key={`${startDate1}-${endDate1}`}
+                    chartMaxDateRange={
+                      comparePeriods ? undefined : chartMaxDateRange
+                    }
+                    setChartMaxDateRange={setChartMaxDateRange}
+                    setChartSelectedDateRange={setChartSelectedDateRange}
+                    setMaxDataTicks={setMaxDataTicks}
+                    chartRange={comparePeriods ? undefined : chartRange}
                     chartLayer={layer}
                     adminProperties={adminProperties as GeoJsonProperties}
                     adminLevel={adminLevel}
@@ -408,6 +480,14 @@ const ChartsPanel = memo(
                 }}
               >
                 <ChartSection
+                  key={`${startDate1}-${endDate1}`}
+                  chartMaxDateRange={
+                    comparePeriods ? undefined : chartMaxDateRange
+                  }
+                  setChartMaxDateRange={setChartMaxDateRange}
+                  setChartSelectedDateRange={setChartSelectedDateRange}
+                  setMaxDataTicks={setMaxDataTicks}
+                  chartRange={comparePeriods ? undefined : chartRange}
                   chartLayer={layer}
                   adminProperties={
                     // default value prevents crash, but shows ugly warning
@@ -517,20 +597,22 @@ const ChartsPanel = memo(
       admin0Key,
       adminLevel,
       adminProperties,
+      chartMaxDateRange,
+      chartRange,
       classes.textLabel,
       compareLocations,
       comparePeriods,
       country,
       endDate1,
       endDate2,
-      secondAdminProperties,
-      secondAdminLevel,
       secondAdmin0Key,
+      secondAdminLevel,
+      secondAdminProperties,
       secondSelectedAdmin1Area,
       secondSelectedAdmin2Area,
       selectedAdmin1Area,
-      selectedLayerTitles,
       selectedAdmin2Area,
+      selectedLayerTitles,
       startDate1,
       startDate2,
       t,
@@ -540,17 +622,51 @@ const ChartsPanel = memo(
       if (showChartsPanel) {
         setPanelSize(PanelSize.xlarge);
         setResultsPage(
-          <Box className={classes.chartsPanelCharts}>{renderResultsPage}</Box>,
+          <Box className={classes.chartsContainer}>
+            <Box className={classes.chartsPanelCharts}>{renderResultsPage}</Box>
+            {showSlider && maxDataTicks > 1 && (
+              <>
+                <TimePeriodSelector
+                  wrapperStyle={{ padding: '0 2rem 0 2rem' }}
+                  startDate={startDate1}
+                  setStartDate={setStartDate1}
+                  endDate={endDate1}
+                  setEndDate={setEndDate1}
+                  title={comparePeriods ? t('Period 1') : null}
+                  startLabel="Min Date"
+                  endLabel="Max Date"
+                />
+                <DateSlider
+                  chartSelectedDateRange={chartSelectedDateRange}
+                  chartRange={chartRange}
+                  setChartRange={setChartRange}
+                  maxDataTicks={maxDataTicks}
+                  disabled={selectedLayerTitles.length < 1}
+                />
+              </>
+            )}
+          </Box>,
         );
       }
 
       return () => setResultsPage(null);
     }, [
+      chartRange,
+      chartSelectedDateRange,
+      classes.chartsContainer,
       classes.chartsPanelCharts,
+      classes.textLabel,
+      comparePeriods,
+      endDate1,
+      maxDataTicks,
       renderResultsPage,
+      selectedLayerTitles.length,
       setPanelSize,
       setResultsPage,
       showChartsPanel,
+      showSlider,
+      startDate1,
+      t,
     ]);
 
     const handleClearAllSelectedCharts = useCallback(() => {
@@ -636,7 +752,7 @@ const ChartsPanel = memo(
       comparePeriods ? 'second_period' : '',
     ]);
 
-    if (tabIndex !== tabValue) {
+    if (tabPanelType !== tabValue) {
       return null;
     }
 
@@ -718,6 +834,7 @@ const ChartsPanel = memo(
 
         <FormGroup className={classes.formGroup}>
           <FormControlLabel
+            style={{ marginLeft: 20 }}
             control={
               <Switch
                 checked={comparePeriods}
@@ -746,21 +863,28 @@ const ChartsPanel = memo(
             }
             checked={comparePeriods}
           />
-          <TimePeriodSelector
-            startDate={startDate1}
-            setStartDate={setStartDate1}
-            endDate={endDate1}
-            setEndDate={setEndDate1}
-            title={comparePeriods ? t('Period 1') : null}
-          />
+
           {comparePeriods && (
-            <TimePeriodSelector
-              startDate={startDate2}
-              setStartDate={setStartDate2}
-              endDate={endDate2}
-              setEndDate={setEndDate2}
-              title={comparePeriods ? t('Period 2') : null}
-            />
+            <>
+              <TimePeriodSelector
+                startDate={startDate1}
+                setStartDate={setStartDate1}
+                endDate={endDate1}
+                setEndDate={setEndDate1}
+                title={comparePeriods ? t('Period 1') : null}
+                startLabel="Start"
+                endLabel="End"
+              />
+              <TimePeriodSelector
+                startDate={startDate2}
+                setStartDate={setStartDate2}
+                endDate={endDate2}
+                setEndDate={setEndDate2}
+                title={comparePeriods ? t('Period 2') : null}
+                startLabel="Start"
+                endLabel="End"
+              />
+            </>
           )}
         </FormGroup>
 
@@ -807,7 +931,7 @@ const ChartsPanel = memo(
             !(
               adminProperties &&
               startDate1 &&
-              tabIndex === tabValue &&
+              tabPanelType === tabValue &&
               selectedLayerTitles.length >= 1
             )
           }
@@ -819,7 +943,7 @@ const ChartsPanel = memo(
             !(
               adminProperties &&
               startDate1 &&
-              tabIndex === tabValue &&
+              tabPanelType === tabValue &&
               selectedLayerTitles.length >= 1
             )
           }

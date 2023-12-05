@@ -20,6 +20,7 @@ import { PanelSize } from 'config/types';
 import { getWMSLayersWithChart } from 'config/utils';
 import {
   leftPanelTabValueSelector,
+  Panel,
   setTabValue,
 } from 'context/leftPanelStateSlice';
 import { useSafeTranslation } from 'i18n';
@@ -27,7 +28,7 @@ import { analysisResultSelector } from 'context/analysisResultStateSlice';
 import TabPanel from './TabPanel';
 
 interface StyleProps {
-  tabValue: number;
+  tabValue: Panel;
   panelSize: PanelSize;
 }
 
@@ -39,7 +40,9 @@ const useStyles = makeStyles<Theme, StyleProps>(() =>
       height: '100%',
       overflowX: 'hidden',
       overflowY: ({ tabValue }) =>
-        tabValue === 1 || tabValue === 3 ? 'hidden' : 'auto',
+        tabValue === Panel.Charts || tabValue === Panel.Tables
+          ? 'hidden'
+          : 'auto',
     },
     tabsWrapper: {
       display: 'flex',
@@ -103,7 +106,7 @@ const LeftPanelTabs = memo(
     }, []);
 
     const handleChange = useCallback(
-      (_: any, newValue: number) => {
+      (_: any, newValue: Panel) => {
         setPanelSize(PanelSize.medium);
         dispatch(setTabValue(newValue));
       },
@@ -119,7 +122,7 @@ const LeftPanelTabs = memo(
 
     const renderedLayersTabLabel = useMemo(() => {
       if (
-        tabValue !== 0 &&
+        tabValue !== Panel.Layers &&
         panelSize !== PanelSize.folded &&
         layersBadgeContent >= 1
       ) {
@@ -146,7 +149,7 @@ const LeftPanelTabs = memo(
       );
     }, [layersBadgeContent, panelSize, t, tabValue]);
 
-    const a11yProps = useCallback((index: any) => {
+    const a11yProps = useCallback((index: Panel) => {
       return {
         id: `full-width-tab-${index}`,
         'aria-controls': `full-width-tabpanel-${index}`,
@@ -163,7 +166,7 @@ const LeftPanelTabs = memo(
         return null;
       }
       return (
-        <TabPanel value={tabValue} index={1}>
+        <TabPanel value={tabValue} index={Panel.Charts}>
           {chartsPanel}
         </TabPanel>
       );
@@ -174,7 +177,7 @@ const LeftPanelTabs = memo(
         return null;
       }
       return (
-        <TabPanel value={tabValue} index={3}>
+        <TabPanel value={tabValue} index={Panel.Tables}>
           {tablesPanel}
         </TabPanel>
       );
@@ -193,7 +196,7 @@ const LeftPanelTabs = memo(
           style={{
             width: renderedTabWidth,
           }}
-          value={1}
+          value={Panel.Charts}
           disableRipple
           label={
             <Box display="flex">
@@ -201,7 +204,7 @@ const LeftPanelTabs = memo(
               <Box ml={1}>{t('Charts')}</Box>
             </Box>
           }
-          {...a11yProps(1)}
+          {...a11yProps(Panel.Charts)}
         />
       );
     }, [
@@ -226,7 +229,7 @@ const LeftPanelTabs = memo(
           style={{
             width: renderedTabWidth,
           }}
-          value={3}
+          value={Panel.Tables}
           disableRipple
           label={
             <Box display="flex">
@@ -234,7 +237,7 @@ const LeftPanelTabs = memo(
               <Box ml={1}>{t('Tables')}</Box>
             </Box>
           }
-          {...a11yProps(3)}
+          {...a11yProps(Panel.Tables)}
         />
       );
     }, [
@@ -264,10 +267,10 @@ const LeftPanelTabs = memo(
                 style={{
                   width: renderedTabWidth,
                 }}
-                value={0}
+                value={Panel.Layers}
                 disableRipple
                 label={<Box display="flex">{renderedLayersTabLabel}</Box>}
-                {...a11yProps(0)}
+                {...a11yProps(Panel.Layers)}
               />
               {renderedChartsTab}
               <Tab
@@ -278,7 +281,7 @@ const LeftPanelTabs = memo(
                 style={{
                   width: renderedTabWidth,
                 }}
-                value={2}
+                value={Panel.Analysis}
                 disableRipple
                 label={
                   <Box display="flex">
@@ -288,16 +291,16 @@ const LeftPanelTabs = memo(
                     <Box ml={1}>{t('Analysis')}</Box>
                   </Box>
                 }
-                {...a11yProps(2)}
+                {...a11yProps(Panel.Analysis)}
               />
               {renderedTablesTab}
             </Tabs>
           </div>
-          <TabPanel value={tabValue} index={0}>
+          <TabPanel value={tabValue} index={Panel.Layers}>
             {layersPanel}
           </TabPanel>
           {renderedChartsPanel}
-          <TabPanel value={tabValue} index={2}>
+          <TabPanel value={tabValue} index={Panel.Analysis}>
             {analysisPanel}
           </TabPanel>
           {renderedTablesPanel}
