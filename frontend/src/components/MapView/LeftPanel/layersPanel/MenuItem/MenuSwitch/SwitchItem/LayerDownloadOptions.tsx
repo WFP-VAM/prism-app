@@ -155,7 +155,7 @@ function LayerDownloadOptions({
     <>
       {shouldShowDownloadButton && (
         <Tooltip title="Download">
-          <>
+          <span>
             <IconButton
               disabled={!selected || isGeotiffLoading}
               onClick={handleDownloadMenuOpen}
@@ -163,7 +163,7 @@ function LayerDownloadOptions({
             >
               <GetAppIcon fontSize={size || 'medium'} />
             </IconButton>
-          </>
+          </span>
         </Tooltip>
       )}
       {isGeotiffLoading ||

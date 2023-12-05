@@ -136,7 +136,7 @@ const AnalysisLayerSwitchItem = memo(
       }
       return (
         <Tooltip title="Opacity">
-          <>
+          <span>
             <IconButton
               disabled={!selected}
               classes={{
@@ -148,7 +148,7 @@ const AnalysisLayerSwitchItem = memo(
             >
               <OpacityIcon />
             </IconButton>
-          </>
+          </span>
         </Tooltip>
       );
     }, [

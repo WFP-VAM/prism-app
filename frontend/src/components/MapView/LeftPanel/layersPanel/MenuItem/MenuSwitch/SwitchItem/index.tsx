@@ -179,7 +179,7 @@ const SwitchItem = memo(({ classes, layer, extent }: SwitchItemProps) => {
           validatedTitle={validatedTitle}
         />
         <Tooltip title="Opacity">
-          <>
+          <span style={{ marginLeft: 'auto' }}>
             <IconButton
               disabled={!someLayerAreSelected}
               classes={{
@@ -193,7 +193,7 @@ const SwitchItem = memo(({ classes, layer, extent }: SwitchItemProps) => {
             >
               <OpacityIcon />
             </IconButton>
-          </>
+          </span>
         </Tooltip>
         <ExposureAnalysisOption
           exposure={exposure}
