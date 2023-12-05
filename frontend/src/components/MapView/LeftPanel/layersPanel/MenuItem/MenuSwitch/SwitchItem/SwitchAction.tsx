@@ -28,21 +28,21 @@ const styles = () =>
 interface SwitchActionProps extends WithStyles<typeof styles> {
   someLayerAreSelected: boolean;
   toggleLayerValue: (selectedLayerId: string, checked: boolean) => void;
-  activeLayer: string;
+  activeLayerId: string;
   validatedTitle: string;
 }
 const SwitchAction = ({
   classes,
   someLayerAreSelected,
   toggleLayerValue,
-  activeLayer,
+  activeLayerId,
   validatedTitle,
 }: SwitchActionProps) => {
   const handleOnChangeSwitch = useCallback(
     (event: ChangeEvent<HTMLInputElement>) => {
-      toggleLayerValue(activeLayer, event.target.checked);
+      toggleLayerValue(activeLayerId, event.target.checked);
     },
-    [activeLayer, toggleLayerValue],
+    [activeLayerId, toggleLayerValue],
   );
   return (
     <Switch

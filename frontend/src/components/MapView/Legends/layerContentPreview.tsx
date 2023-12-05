@@ -19,9 +19,7 @@ const LayerContentPreview = memo(({ layerId, classes }: PreviewProps) => {
 
   const dispatch = useDispatch();
 
-  const layer = useMemo(() => {
-    return LayerDefinitions[layerId || 'admin_boundaries'];
-  }, [layerId]);
+  const layer = LayerDefinitions[layerId || 'admin_boundaries'];
 
   const handleIconButtonClick = useCallback(async () => {
     if (!layer.contentPath) {

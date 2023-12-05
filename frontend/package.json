@@ -18,7 +18,7 @@
     "clean": "rimraf ./node_modules && pushd ../common && rimraf ./node_modules && popd",
     "start": "cross-env EXTEND_ESLINT=true react-scripts start",
     "analyze": "yarn build && npx source-map-explorer 'build/static/js/*.js'",
-    "build": "cross-env EXTEND_ESLINT=true react-app-rewired build",
+    "build": "export GIT_HASH=$(git rev-parse --short HEAD) && cross-env EXTEND_ESLINT=true react-app-rewired build",
     "test": "cross-env REACT_APP_TESTING=true && react-scripts test",
     "prettier:json-fix": "prettier --write */**.json",
     "prettier:json-check": "prettier --check */**.json",
@@ -27,6 +27,7 @@
     "deploy:prod": "firebase deploy --only hosting:prod-target",
     "deploy:staging": "firebase deploy --only hosting:staging-target",
     "deploy:surge": "surge --project ./build",
+    "deploy:tests": "./scripts/deploy_to_surge.sh",
     "eject": "react-scripts eject",
     "lint": "eslint --ext .js,.jsx,.ts,.tsx -c .eslintrc ./src ../common/src",
     "postinstall": "yarn run setup:maplibre",
@@ -165,6 +166,7 @@
     "eslint-plugin-prettier": "^3.1.4",
     "eslint-plugin-react": "^7.19.0",
     "eslint-plugin-react-hooks": "^1.7",
+    "surge": "^0.23.1",
     "typescript": "^3.9.7"
   },
   "engines": {

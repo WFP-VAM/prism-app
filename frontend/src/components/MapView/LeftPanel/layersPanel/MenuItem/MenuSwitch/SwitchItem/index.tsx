@@ -75,19 +75,19 @@ const SwitchItem = memo(({ classes, layer, extent }: SwitchItemProps) => {
     [group, someLayerAreSelected, selectedLayers],
   );
 
-  const initialActiveLayer = useMemo(() => {
+  const initialActiveLayerId = useMemo(() => {
     return selectedActiveLayer.length > 0 ? selectedActiveLayer[0].id : null;
   }, [selectedActiveLayer]);
 
-  const [activeLayer, setActiveLayer] = useState(
-    initialActiveLayer || (group?.layers?.find(l => l.main)?.id as string),
+  const [activeLayerId, setActiveLayerId] = useState(
+    initialActiveLayerId || (group?.layers?.find(l => l.main)?.id as string),
   );
 
   useEffect(() => {
-    setActiveLayer(
-      initialActiveLayer || (group?.layers?.find(l => l.main)?.id as string),
+    setActiveLayerId(
+      initialActiveLayerId || (group?.layers?.find(l => l.main)?.id as string),
     );
-  }, [group, initialActiveLayer]);
+  }, [group, initialActiveLayerId]);
 
   const exposure = useMemo(() => {
     return (layer.type === 'wms' && layer.exposure) || undefined;
@@ -166,7 +166,7 @@ const SwitchItem = memo(({ classes, layer, extent }: SwitchItemProps) => {
     <Box display="flex" flexDirection="column" maxWidth="100%">
       <Box key={layerId} display="flex" alignItems="center" m={2}>
         <SwitchAction
-          activeLayer={activeLayer}
+          activeLayerId={activeLayerId}
           someLayerAreSelected={someLayerAreSelected}
           toggleLayerValue={toggleLayerValue}
           validatedTitle={validatedTitle}
@@ -175,7 +175,7 @@ const SwitchItem = memo(({ classes, layer, extent }: SwitchItemProps) => {
           layer={layer}
           someLayerAreSelected={someLayerAreSelected}
           toggleLayerValue={toggleLayerValue}
-          initialActiveLayer={initialActiveLayer}
+          initialActiveLayerId={initialActiveLayerId}
           validatedTitle={validatedTitle}
         />
         <Tooltip title="Opacity">
@@ -202,14 +202,14 @@ const SwitchItem = memo(({ classes, layer, extent }: SwitchItemProps) => {
           selected={someLayerAreSelected}
         />
         <LayerDownloadOptions
-          layer={layer}
+          layerId={layer.id}
           extent={extent}
           selected={someLayerAreSelected}
         />
       </Box>
       {someLayerAreSelected && isOpacitySelected && (
         <OpacitySlider
-          activeLayer={activeLayer}
+          activeLayerId={activeLayerId}
           layerId={layerId}
           layerType={layerType}
           opacity={opacity}

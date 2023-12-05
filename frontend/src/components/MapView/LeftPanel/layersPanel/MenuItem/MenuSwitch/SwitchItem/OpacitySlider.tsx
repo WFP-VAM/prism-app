@@ -28,7 +28,7 @@ const styles = createStyles({
 
 interface OpacitySliderProps extends WithStyles<typeof styles> {
   opacity: number;
-  activeLayer: string;
+  activeLayerId: string;
   layerId: string;
   layerType: LayerType['type'];
   setOpacityValue: React.Dispatch<React.SetStateAction<number>>;
@@ -36,7 +36,7 @@ interface OpacitySliderProps extends WithStyles<typeof styles> {
 const OpacitySlider = ({
   classes,
   opacity,
-  activeLayer,
+  activeLayerId,
   layerId,
   layerType,
   setOpacityValue,
@@ -49,12 +49,12 @@ const OpacitySlider = ({
         event,
         newValue as number,
         map,
-        activeLayer || layerId,
+        activeLayerId || layerId,
         layerType,
         val => setOpacityValue(val),
       );
     },
-    [activeLayer, layerId, layerType, map, setOpacityValue],
+    [activeLayerId, layerId, layerType, map, setOpacityValue],
   );
 
   return (

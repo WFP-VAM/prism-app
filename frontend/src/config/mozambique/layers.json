@@ -1949,7 +1949,7 @@
     "opacity": 0.9,
     "legend": [],
     "legend_text": "Wind buffers (radii) estimate potential wind speeds along the path of a storm with a buffer estimating the area exposed to each wind speed category. Source: GDACS",
-    "base_url": "https://sparc.wfp.org/geoserver",
+    "base_url": "https://ogcserver.gis.wfp.org/geoserver",
     "feature_info_props": {
       "event_name": {
         "type": "text",
@@ -1988,7 +1988,7 @@
     "opacity": 0.9,
     "legend": [],
     "legend_text": "Nodes visualize estimated maximum wind speed along a storm's path at various points in time. Source: GDACS",
-    "base_url": "https://sparc.wfp.org/geoserver",
+    "base_url": "https://ogcserver.gis.wfp.org/geoserver",
     "geometry": "point"
   },
   "adamts_tracks": {
@@ -1998,7 +1998,7 @@
     "opacity": 0.9,
     "legend": [],
     "legend_text": "Tracks visualize the projected path of a storm based on the forecasted position of it's center at various points in time. Source: GDACS",
-    "base_url": "https://sparc.wfp.org/geoserver",
+    "base_url": "https://ogcserver.gis.wfp.org/geoserver",
     "geometry": "linestring"
   },
   "ipc_pop_ph3_current": {

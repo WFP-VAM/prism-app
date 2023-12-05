@@ -50,27 +50,27 @@ interface SwitchTitleProps extends WithStyles<typeof styles> {
   someLayerAreSelected: boolean;
   toggleLayerValue: (selectedLayerId: string, checked: boolean) => void;
   validatedTitle: string;
-  initialActiveLayer: string | null;
+  initialActiveLayerId: string | null;
 }
 const SwitchItemTitle = ({
   layer,
   someLayerAreSelected,
   toggleLayerValue,
   validatedTitle,
-  initialActiveLayer,
+  initialActiveLayerId,
   classes,
 }: SwitchTitleProps) => {
   const { t } = useTranslation();
   const { group } = layer;
 
-  const [activeLayer, setActiveLayer] = useState(
-    initialActiveLayer || (group?.layers?.find(l => l.main)?.id as string),
+  const [activeLayerId, setActiveLayerId] = useState(
+    initialActiveLayerId || (group?.layers?.find(l => l.main)?.id as string),
   );
 
   const handleSelect = useCallback(
     (event: React.ChangeEvent<{ value: string | unknown }>) => {
       const selectedId = event.target.value;
-      setActiveLayer(selectedId as string);
+      setActiveLayerId(selectedId as string);
       toggleLayerValue(selectedId as string, true);
     },
     [toggleLayerValue],
@@ -93,7 +93,7 @@ const SwitchItemTitle = ({
               ? classes.selectItem
               : classes.selectItemUnchecked,
           }}
-          value={activeLayer}
+          value={activeLayerId}
           onChange={e => handleSelect(e)}
         >
           {group.layers.map(menu => {

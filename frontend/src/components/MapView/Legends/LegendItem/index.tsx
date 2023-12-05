@@ -131,7 +131,7 @@ const LegendItem = memo(
     const layerDownloadOptions = useMemo(() => {
       return layer ? (
         <LayerDownloadOptions
-          layer={layer}
+          layerId={layer.id}
           extent={extent}
           selected
           size="small"
