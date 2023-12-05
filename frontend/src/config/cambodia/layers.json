@@ -1951,7 +1951,7 @@
     "input_layers": [
       { "id": "spi_1m", "weight": 0.4, "interval": "1-month" },
       { "id": "lst_anomaly", "weight": 0.3, "interval": "10-days" },
-      { "id": "ndvi_anomaly", "weight": 0.3, "interval": "10-days" }
+      { "id": "ndvi_dekad_anomaly", "weight": 0.3, "interval": "10-days" }
     ],
     "aggregation": "pixel",
     "interval": "1-month",
