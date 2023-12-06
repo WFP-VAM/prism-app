@@ -99,6 +99,7 @@
           ]
         }
       ],
+      "forecasts": ["daily_rainfall_forecast", "dekad_rainfall_forecast"],
       "global_rainfall_products": [
         {
           "group_title": "Rainfall aggregate",
@@ -198,11 +199,10 @@
           ]
         }
       ],
-      "forecasts": ["rfh_daily_forecast"],
       "dry_periods": ["days_dry", "streak_dry_days"],
       "extreme_rain_events": [
         {
-          "group_title": "Rainfall categories:",
+          "group_title": "Number of days of rainfall:",
           "activate_all": false,
           "layers": [
             {
