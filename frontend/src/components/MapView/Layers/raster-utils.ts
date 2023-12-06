@@ -201,7 +201,7 @@ export async function getDownloadGeotiffURL(
   collection: string,
   band: string | undefined,
   boundingBox: Extent | undefined,
-  date: string,
+  date: string | undefined,
   dispatch: Dispatch,
 ) {
   if (!boundingBox) {
