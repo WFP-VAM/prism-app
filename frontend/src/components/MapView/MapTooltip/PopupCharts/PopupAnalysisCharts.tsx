@@ -73,6 +73,7 @@ const PopupAnalysisCharts = ({
     levels: item.chartData?.levels,
   }));
 
+  // TODO - end date should be selected date
   const startDate = new Date().getTime() - oneYearInMs;
   const endDate = new Date().getTime();
 

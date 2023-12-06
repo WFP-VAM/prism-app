@@ -2,19 +2,12 @@ import {
   flatten,
   get,
   has,
-  isNull,
   isNumber,
-  isString,
   isUndefined,
-  max,
-  mean,
-  min,
   omit,
   orderBy,
-  sum,
 } from 'lodash';
 import { Feature, FeatureCollection } from 'geojson';
-import bbox from '@turf/bbox';
 import moment from 'moment';
 import { createGetCoverageUrl } from 'prism-common';
 import { TFunctionKeys } from 'i18next';
@@ -33,23 +26,12 @@ import {
   WfsRequestParams,
   WMSLayerProps,
 } from 'config/types';
-import type { ThunkApi } from 'context/store';
-import { layerDataSelector } from 'context/mapStateSlice/selectors';
 import {
   Extent,
-  featureIntersectsImage,
   GeoJsonBoundary,
-  pixelsInFeature,
+  // getDownloadGeotiffURL,
 } from 'components/MapView/Layers/raster-utils';
-import { BoundaryLayerData } from 'context/layers/boundary';
 import { AdminLevelDataLayerData } from 'context/layers/admin_level_data';
-import { WMSLayerData } from 'context/layers/wms';
-import type {
-  LayerAcceptingDataType,
-  LayerData,
-  LayerDataParams,
-  LoadLayerDataFuncType,
-} from 'context/layers/layer-data';
 import { LayerDefinitions } from 'config/utils';
 import type { TableRow } from 'context/analysisResultStateSlice';
 import { isLocalhost } from 'serviceWorker';
@@ -68,7 +50,6 @@ import {
 
 export type BaselineLayerData = AdminLevelDataLayerData;
 type BaselineRecord = BaselineLayerData['layerData'][0];
-type RasterLayer = LayerData<WMSLayerProps>;
 
 export type Column = {
   id: keyof TableRow;
@@ -78,46 +59,6 @@ export type Column = {
 
 const hasKeys = (obj: any, keys: string[]): boolean =>
   !keys.find(key => !has(obj, key));
-
-const checkRasterLayerData = (
-  layerData: LayerData<LayerAcceptingDataType>,
-): RasterLayer => {
-  const isRasterLayerData = (maybeData: any): maybeData is WMSLayerData =>
-    hasKeys(maybeData, ['rasters', 'image', 'transform']);
-
-  const { layer, data } = layerData;
-
-  if (layer.type === 'wms' && isRasterLayerData(data)) {
-    return layerData as RasterLayer;
-  }
-  throw new Error(
-    `Data for layer '${layer.id}' does not appear to be valid raster data.`,
-  );
-};
-
-const operations = {
-  min: (data: number[]) => min(data),
-  max: (data: number[]) => max(data),
-  sum, // sum method directly from lodash
-  mean, // mean method directly from lodash
-  median: (data: number[]) => {
-    // eslint-disable-next-line fp/no-mutating-methods
-    const sortedValues = [...data].sort();
-    // Odd cases we use the middle value
-    if (sortedValues.length % 2 !== 0) {
-      return sortedValues[Math.floor(sortedValues.length / 2)];
-    }
-    // Even cases we average the two middles
-    const floor = sortedValues.length / 2 - 1;
-    const ceil = sortedValues.length / 2;
-    return (sortedValues[floor] + sortedValues[ceil]) / 2;
-  },
-  intersect_percentage: () => {
-    throw new Error(
-      'intersect_percentage calculation is not available from client side',
-    );
-  },
-};
 
 const scaleValueIfDefined = (
   value: number,
@@ -145,16 +86,6 @@ function thresholdOrNaN(value: number, threshold?: ThresholdDefinition) {
   const isBelow =
     threshold.below === undefined ? true : value <= threshold.below;
   return isAbove && isBelow ? value : NaN;
-}
-
-function getBaselineDataForFeature(
-  feature: GeoJsonBoundary,
-  baselineData: BaselineLayerData,
-): BaselineRecord | undefined {
-  const { NSO_CODE: nsoCode } = feature.properties!;
-  return baselineData.layerData.find(
-    ({ adminKey }) => nsoCode.indexOf(adminKey) === 0,
-  );
 }
 
 function mergeFeaturesByProperty(
@@ -211,6 +142,17 @@ export const checkBaselineDataLayer = (
     `Data for layer '${layerId}' does not appear to be valid baseline data.`,
   );
 };
+
+/* eslint-disable camelcase */
+// type StacParameters = {
+//   collection: string;
+//   band?: string;
+//   long_min: number;
+//   lat_min: number;
+//   long_max: number;
+//   lat_max: number;
+//   date: string;
+// }
 
 /* eslint-disable camelcase */
 export type ApiData = {
@@ -329,6 +271,7 @@ export function generateFeaturesFromApiData(
   }) as GeoJsonBoundary[];
 }
 
+// Is this function still needed?
 export async function loadFeaturesFromApi(
   layer: ImpactLayerProps,
   baselineData: BaselineLayerData,
@@ -346,6 +289,18 @@ export async function loadFeaturesFromApi(
     url: hazardLayerDef.baseUrl,
     version: hazardLayerDef.wcsConfig?.version,
   });
+
+  console.log(hazardLayerDef);
+  console.log(date);
+
+  // const { serverLayerName, additionalQueryParams } = hazardLayerDef;
+  // // TODO - figure out a way to leverage style to guess band?
+  // const { band } =
+  //   (additionalQueryParams as {
+  //     styles?: string;
+  //     band?: string;
+  //   }) || {};
+  // const wcsUrl = await getDownloadGeotiffURL(serverLayerName, band, extent, date, dispatch)
 
   const statsApi = layer.api as StatsApi;
   const apiUrl = statsApi.url || ANALYSIS_API_URL;
@@ -370,114 +325,6 @@ export async function loadFeaturesFromApi(
     statsApi.groupBy,
     operation,
   );
-}
-
-export async function loadFeaturesClientSide(
-  api: ThunkApi,
-  layer: ImpactLayerProps,
-  adminBoundaries: BoundaryLayerData,
-  baselineData: BaselineLayerData,
-  hazardLayerDef: WMSLayerProps,
-  operation: AggregationOperations,
-  loadLayerData: LoadLayerDataFuncType,
-  extent?: Extent,
-  date?: number,
-): Promise<GeoJsonBoundary[]> {
-  const { getState, dispatch } = api;
-
-  const { wcsConfig } = hazardLayerDef;
-  const { noData, scale, offset } = wcsConfig || {};
-
-  const existingHazardLayer = layerDataSelector(
-    layer.hazardLayer,
-    date,
-  )(getState());
-
-  if (!existingHazardLayer) {
-    dispatch(
-      loadLayerData({
-        layer: hazardLayerDef,
-        extent,
-        date,
-      } as LayerDataParams<WMSLayerProps>),
-    );
-  }
-
-  const hazardLayer = checkRasterLayerData(
-    layerDataSelector(layer.hazardLayer, date)(getState())!,
-  );
-  const {
-    data: { rasters, transform, image },
-  } = hazardLayer;
-
-  // Calculate a bounding box for each feature that we have baseline data for
-  const matchingFeatures = adminBoundaries.features.reduce(
-    (acc, f) => {
-      const feature = f as GeoJsonBoundary;
-      const baseline =
-        featureIntersectsImage(feature, image) &&
-        getBaselineDataForFeature(feature, baselineData);
-      return baseline
-        ? acc.concat({
-            id: baseline.adminKey,
-            baseline,
-            feature,
-            bounds: bbox(feature),
-          })
-        : acc;
-    },
-    [] as {
-      id: string;
-      baseline: BaselineRecord;
-      feature: GeoJsonBoundary;
-      bounds: ReturnType<typeof bbox>;
-    }[],
-  );
-
-  // Loop over the features and grab pixels that are contained by the feature.
-  const buckets = matchingFeatures.reduce((acc, { id, feature }) => {
-    const contained = pixelsInFeature(
-      feature,
-      rasters[0],
-      rasters.width,
-      transform,
-    );
-    return contained.length > 0 ? { ...acc, [id]: contained } : acc;
-  }, {} as { [key: string]: number[] });
-
-  return matchingFeatures.reduce((acc, { id, feature, baseline }) => {
-    const values = buckets[id];
-
-    if (values) {
-      const raw = operations[operation](
-        noData ? values.filter(value => value !== noData) : values,
-      );
-      // If the aggregate is not valid, return early
-      if (raw === undefined) {
-        return acc;
-      }
-      const scaled = scaleValueIfDefined(raw, scale, offset);
-      const aggregateValue = thresholdOrNaN(scaled, layer.threshold);
-      if (!Number.isNaN(aggregateValue)) {
-        const { properties } = feature;
-
-        const baselineValue = isString(baseline.value)
-          ? parseFloat(baseline.value)
-          : baseline.value;
-        return isNull(baselineValue)
-          ? acc
-          : acc.concat({
-              ...feature,
-              properties: {
-                ...properties,
-                [operation]: aggregateValue,
-                impactValue: baselineValue,
-              },
-            });
-      }
-    }
-    return acc;
-  }, [] as GeoJsonBoundary[]);
 }
 
 export function quoteAndEscapeCell(value: number | string) {

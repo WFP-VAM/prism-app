@@ -381,6 +381,9 @@ const createAPIRequestParams = (
   const { wcsConfig } = geotiffLayer;
   const dateValue = !wcsConfig?.disableDateParam ? date : undefined;
 
+  // TODO - get geotiff_url using STAC.
+  // what happens if there is no date? are some layers not STAC?
+
   // we force group_by to be defined with &
   // eslint-disable-next-line camelcase
   const apiRequest: ApiData = {
@@ -403,6 +406,8 @@ const createAPIRequestParams = (
         ? `${exposureValue?.operator}${exposureValue?.value}`
         : undefined,
   };
+
+  console.log(apiRequest);
 
   return apiRequest;
 };
@@ -490,7 +495,7 @@ export const requestAndStoreExposedPopulation = createAsyncThunk<
       maskLayerId && (LayerDefinitions[maskLayerId] as WMSLayerProps);
     const maskParams = maskLayer
       ? {
-          make_url: createGetCoverageUrl({
+          mask_url: createGetCoverageUrl({
             bbox: extent,
             date,
             layerId: maskLayer.serverLayerName,

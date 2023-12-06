@@ -1321,7 +1321,7 @@
       "styles": "r1b_blended",
       "band": "r1b"
     },
-    "disableAnalysis": true,
+    "disableAnalysis": false,
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
     "opacity": 0.7,
