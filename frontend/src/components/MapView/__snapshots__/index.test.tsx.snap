@@ -23,37 +23,37 @@ exports[`renders as expected 1`] = `
             <mock-tabs
               aria-label="left panel tabs"
               classes="[object Object]"
-              value="0"
+              value="layers"
             >
               <mock-tab
-                aria-controls="full-width-tabpanel-0"
+                aria-controls="full-width-tabpanel-layers"
                 classes="[object Object]"
                 disableripple="true"
-                id="full-width-tab-0"
+                id="full-width-tab-layers"
                 label="[object Object]"
-                value="0"
+                value="layers"
               />
               <mock-tab
-                aria-controls="full-width-tabpanel-1"
+                aria-controls="full-width-tabpanel-charts"
                 classes="[object Object]"
                 disableripple="true"
-                id="full-width-tab-1"
+                id="full-width-tab-charts"
                 label="[object Object]"
-                value="1"
+                value="charts"
               />
               <mock-tab
-                aria-controls="full-width-tabpanel-2"
+                aria-controls="full-width-tabpanel-analysis"
                 classes="[object Object]"
                 disableripple="true"
-                id="full-width-tab-2"
+                id="full-width-tab-analysis"
                 label="[object Object]"
-                value="2"
+                value="analysis"
               />
             </mock-tabs>
           </div>
           <div
-            aria-labelledby="full-width-tab-0"
-            id="full-width-tabpanel-0"
+            aria-labelledby="full-width-tab-layers"
+            id="full-width-tabpanel-layers"
             role="tabpanel"
             style="display: block; flex-grow: 1; order: -1; overflow-x: hidden;"
           >
@@ -3477,17 +3477,25 @@ exports[`renders as expected 1`] = `
                   </div>
                 </div>
               </div>
+              <a
+                href="https://github.com/WFP-VAM/prism-app"
+                rel="noopener noreferrer"
+                style="color: rgb(245, 247, 248); position: absolute; bottom: 1rem; font-size: 0.7rem; left: 1rem;"
+                target="_blank"
+              >
+                version hash: 
+              </a>
             </div>
           </div>
           <div
-            aria-labelledby="full-width-tab-1"
-            id="full-width-tabpanel-1"
+            aria-labelledby="full-width-tab-charts"
+            id="full-width-tabpanel-charts"
             role="tabpanel"
             style="display: none; flex-grow: 1; overflow-x: auto;"
           />
           <div
-            aria-labelledby="full-width-tab-2"
-            id="full-width-tabpanel-2"
+            aria-labelledby="full-width-tab-analysis"
+            id="full-width-tabpanel-analysis"
             role="tabpanel"
             style="display: none; flex-grow: 1; overflow-x: auto;"
           />
@@ -3495,10 +3503,10 @@ exports[`renders as expected 1`] = `
       </div>
     </mock-drawer>
     <div
-      class="MuiBox-root MuiBox-root-124 memo-container-2"
+      class="MuiBox-root MuiBox-root-125 memo-container-2"
     >
       <div
-        class="MuiBox-root MuiBox-root-125 memo-optionContainer-3"
+        class="MuiBox-root MuiBox-root-126 memo-optionContainer-3"
         style="margin-left: 500px;"
       >
         <mock-tooltip
@@ -3536,7 +3544,7 @@ exports[`renders as expected 1`] = `
                 class="MuiGrid-root MuiGrid-item"
               >
                 <div
-                  class="makeStyles-button-128"
+                  class="makeStyles-button-129"
                 >
                   <svg
                     aria-hidden="true"
@@ -3549,8 +3557,13 @@ exports[`renders as expected 1`] = `
                     />
                   </svg>
                   <div
-                    class="makeStyles-selectContainer-129"
-                  />
+                    class="makeStyles-selectContainer-131"
+                  >
+                    <mock-circularprogress
+                      color="inherit"
+                      size="24"
+                    />
+                  </div>
                 </div>
               </div>
             </div>

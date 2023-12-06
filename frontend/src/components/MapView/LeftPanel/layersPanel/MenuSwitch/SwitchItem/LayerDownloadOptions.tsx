@@ -13,7 +13,7 @@ import { mapValues } from 'lodash';
 import GetAppIcon from '@material-ui/icons/GetApp';
 import {
   AdminLevelDataLayerProps,
-  LayerType,
+  LayerKey,
   WMSLayerProps,
 } from 'config/types';
 import {
@@ -35,15 +35,18 @@ import { useSafeTranslation } from 'i18n';
 import { isExposureAnalysisLoadingSelector } from 'context/analysisResultStateSlice';
 import { availableDatesSelector } from 'context/serverStateSlice';
 import { getRequestDate } from 'utils/server-utils';
+import { LayerDefinitions } from 'config/utils';
 
+// TODO - return early when the layer is not selected.
 function LayerDownloadOptions({
-  layer,
+  layerId,
   extent,
   selected,
   size,
 }: LayerDownloadOptionsProps) {
   const { t } = useSafeTranslation();
   const dispatch = useDispatch();
+  const layer = LayerDefinitions[layerId] || Object.values(LayerDefinitions)[0];
 
   const [
     downloadMenuAnchorEl,
@@ -57,7 +60,9 @@ function LayerDownloadOptions({
   const { startDate: selectedDate } = useSelector(dateRangeSelector);
   const serverAvailableDates = useSelector(availableDatesSelector);
   const layerAvailableDates = serverAvailableDates[layer.id];
-  const queryDate = getRequestDate(layerAvailableDates, selectedDate);
+  const queryDate = selected
+    ? getRequestDate(layerAvailableDates, selectedDate)
+    : undefined;
 
   const adminLevelLayerData = useSelector(
     layerDataSelector(layer.id, queryDate),
@@ -121,9 +126,18 @@ function LayerDownloadOptions({
   };
 
   const handleDownloadGeoTiff = (): void => {
+    const { serverLayerName, additionalQueryParams } = layer as WMSLayerProps;
+    // TODO - figure out a way to leverage style to guess band?
+    const { band } =
+      (additionalQueryParams as {
+        styles?: string;
+        band?: string;
+      }) || {};
+
     setIsGeotiffLoading(true);
     downloadGeotiff(
-      (layer as WMSLayerProps).serverLayerName,
+      serverLayerName,
+      band,
       extent,
       moment(selectedDate).format(DEFAULT_DATE_FORMAT),
       dispatch,
@@ -183,7 +197,7 @@ function LayerDownloadOptions({
 }
 
 interface LayerDownloadOptionsProps {
-  layer: LayerType;
+  layerId: LayerKey;
   extent: Extent | undefined;
   selected: boolean;
   size?: 'small' | undefined;

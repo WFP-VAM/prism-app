@@ -50,6 +50,7 @@ function BoundaryLayer({ layer, before }: ComponentProps) {
       const relations: BoundaryRelationData = loadBoundaryRelations(
         data,
         locationLevelNames,
+        layer,
       );
 
       return { ...relationsDict, [lang]: relations };

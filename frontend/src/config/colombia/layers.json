@@ -4,6 +4,7 @@
     "path": "data/colombia/col_municipios.json",
     "opacity": 0.8,
     "admin_code": "MPIO_CDPMP",
+    "admin_level_codes": ["DPTO_CCDGO", "MPIO_CDPMP"],
     "admin_level_names": ["DPTO_CNMBR", "MPIO_CNMBR"],
     "admin_level_local_names": ["DPTO_CNMBR", "MPIO_CNMBR"],
     "styles:": {
@@ -22,6 +23,7 @@
     "path": "data/colombia/col_departamentos.json",
     "opacity": 0.8,
     "admin_code": "DPTO_CCDGO",
+    "admin_level_codes": ["DPTO_CCDGO"],
     "admin_level_names": ["DPTO_CNMBR"],
     "admin_level_local_names": ["DPTO_CNMBR"],
     "styles:": {

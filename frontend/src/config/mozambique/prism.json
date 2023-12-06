@@ -18,7 +18,7 @@
   "serversUrls": {
     "wms": [
       "https://api.earthobservation.vam.wfp.org/ows/wms",
-      "https://sparc.wfp.org/geoserver/prism/wms"
+      "https://ogcserver.gis.wfp.org/geoserver/prism/wms"
     ]
   },
   "map": {

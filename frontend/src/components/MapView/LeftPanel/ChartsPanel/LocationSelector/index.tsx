@@ -6,11 +6,12 @@ import {
   TextField,
   Typography,
 } from '@material-ui/core';
-import React, { memo, useCallback, useMemo } from 'react';
-import { BoundaryLayerProps, PanelSize } from 'config/types';
+import { sortBy } from 'lodash';
+import React, { memo, ReactNode } from 'react';
+import { BoundaryLayerProps, PanelSize, AdminCodeString } from 'config/types';
 import {
-  getOrderedAreas,
-  OrderedArea,
+  getAdminBoundaryTree,
+  AdminBoundaryTree,
 } from 'components/MapView/Layers/BoundaryDropdown';
 import { useSafeTranslation } from 'i18n';
 import { BoundaryLayerData } from 'context/layers/boundary';
@@ -81,187 +82,111 @@ const LocationSelector = memo(
     const styles = useStyles();
     const { t, i18n: i18nLocale } = useSafeTranslation();
 
-    const orderedAdmin0areas = useMemo(() => {
+    const adminBoundaryTree = getAdminBoundaryTree(
+      data,
+      boundaryLayer,
+      i18nLocale,
+    );
+    const orderedAdmin0areas: () => AdminBoundaryTree[] = () => {
       if (!multiCountry) {
         return [];
       }
-      return data ? getOrderedAreas(data, boundaryLayer, '', i18nLocale) : [];
-    }, [boundaryLayer, data, i18nLocale, multiCountry]);
-
-    const orderedAdmin1areas = useMemo(() => {
       return data
-        ? getOrderedAreas(
-            data,
-            boundaryLayer,
-            '',
-            i18nLocale,
-            multiCountry ? 1 : 0,
-            admin0Key,
-          )
+        ? sortBy(Object.values(adminBoundaryTree.children), 'label')
         : [];
-    }, [admin0Key, boundaryLayer, data, i18nLocale, multiCountry]);
+    };
 
-    const selectedAdmin1Area = useMemo(() => {
-      return orderedAdmin1areas.find(area => {
-        return admin1Key === area.key;
-      });
-    }, [admin1Key, orderedAdmin1areas]);
+    const admin0BoundaryTree = multiCountry
+      ? adminBoundaryTree.children[admin0Key]?.children
+      : adminBoundaryTree.children;
 
-    const selectedAdmin2Area = useMemo(() => {
-      return selectedAdmin1Area?.children.find(childArea => {
-        return admin2Key === childArea.key;
-      });
-    }, [admin2Key, selectedAdmin1Area]);
+    const orderedAdmin1areas: () => AdminBoundaryTree[] = () => {
+      if (!data || !admin0BoundaryTree) {
+        return [];
+      }
+      return sortBy(Object.values(admin0BoundaryTree), 'label');
+    };
 
-    const findArea = (
-      orderedAdminAreas: OrderedArea[],
-      adminKeyValue: string,
-    ) =>
-      orderedAdminAreas.find(category => {
-        return category.key === adminKeyValue;
-      });
+    const selectedAdmin1Area = () => admin0BoundaryTree?.[admin1Key];
 
-    const findArea2 = (
-      orderedAdminAreas: { key: string; label: string }[] | undefined,
-      adminKeyValue: string,
-    ) =>
-      orderedAdminAreas?.find(category => {
-        return category.key === adminKeyValue;
-      });
+    const orderedAdmin2areas: () => AdminBoundaryTree[] = () => {
+      return data && admin1Key
+        ? sortBy(Object.values(selectedAdmin1Area().children), 'label')
+        : [];
+    };
 
-    const renderAdmin0Value = useCallback(
-      admin0keyValue => {
-        if (!multiCountry) {
-          return country;
-        }
-        return findArea(orderedAdmin0areas, admin0keyValue)?.title;
-      },
-      [country, multiCountry, orderedAdmin0areas],
-    );
+    const selectedAdmin2Area = () => selectedAdmin1Area().children[admin2Key];
 
-    const renderAdmin1Value = useCallback(
-      admin1keyValue => {
-        return findArea(orderedAdmin1areas, admin1keyValue)?.title;
-      },
-      [orderedAdmin1areas],
-    );
+    const renderAdmin0Value = (admin0keyValue: any) => {
+      if (!multiCountry) {
+        return country;
+      }
+      return adminBoundaryTree.children[admin0keyValue].label as ReactNode;
+    };
 
-    const renderAdmin2Value = useCallback(
-      admin2KeyValue => {
-        return selectedAdmin1Area?.children.find(childCategory => {
-          return childCategory.key === admin2KeyValue;
-        })?.label;
-      },
-      [selectedAdmin1Area],
-    );
+    const renderAdmin1Value = (admin1keyValue: any) => {
+      return admin0BoundaryTree[admin1keyValue]?.label;
+    };
 
-    const onChangeAdmin0Area = useCallback(
-      (event: React.ChangeEvent<HTMLInputElement>) => {
-        // The external chart key for admin 0 is stored in all its children regions
-        // here we get the first child properties
-        const admin0Id = orderedAdmin0areas.find(area => {
-          return area.key === event.target.value;
-        })?.children[0].value;
+    const renderAdmin2Value = (admin2KeyValue: any) => {
+      return selectedAdmin1Area().children[admin2KeyValue].label;
+    };
 
-        if (data) {
-          setAdminProperties(getProperties(data, admin0Id));
-        }
-        setAdmin0Key(event.target.value);
+    const onChangeAdmin0Area = (event: React.ChangeEvent<HTMLInputElement>) => {
+      const admin0Id = event.target.value;
+
+      if (data) {
+        setAdminProperties(getProperties(data, admin0Id, 0));
+      }
+      setAdmin0Key(event.target.value);
+      setAdmin1Key('');
+      setAdmin2Key('');
+      setAdminLevel(0);
+    };
+
+    const onChangeAdmin1Area = (event: React.ChangeEvent<HTMLInputElement>) => {
+      if (!event.target.value) {
         setAdmin1Key('');
-        setAdmin2Key('');
-        setAdminLevel(0);
-      },
-      [
-        data,
-        getProperties,
-        orderedAdmin0areas,
-        setAdmin0Key,
-        setAdmin1Key,
-        setAdmin2Key,
-        setAdminLevel,
-        setAdminProperties,
-      ],
-    );
-
-    const onChangeAdmin1Area = useCallback(
-      (event: React.ChangeEvent<HTMLInputElement>) => {
-        if (!event.target.value) {
-          setAdmin1Key('');
-          if (countryAdmin0Id || multiCountry) {
-            setAdminLevel(0);
-          }
-          return;
+        if (countryAdmin0Id || multiCountry) {
+          setAdminLevel(0);
         }
+        return;
+      }
 
-        // The external chart key for admin 1 is stored in all its children regions
-        // here we get the first child properties
-        const admin1Id = orderedAdmin1areas.find(area => {
-          return area.key === event.target.value;
-        })?.children[0].value;
+      const admin1Id = event.target.value;
+      if (data) {
+        setAdminProperties(getProperties(data, admin1Id, 1));
+      }
+      setAdmin1Key(event.target.value);
+      // update the parent component state
+      setSelectedAdmin1Area(admin0BoundaryTree[event.target.value]?.label);
+      setAdmin2Key('');
+      setAdminLevel(1);
+    };
 
-        if (data) {
-          setAdminProperties(getProperties(data, admin1Id));
-        }
-        setAdmin1Key(event.target.value);
-        // update the parent component state
-        setSelectedAdmin1Area(
-          findArea(orderedAdmin1areas, event.target.value)?.title,
-        );
+    const onChangeAdmin2Area = (event: React.ChangeEvent<HTMLInputElement>) => {
+      if (!event.target.value) {
         setAdmin2Key('');
         setAdminLevel(1);
-      },
-      [
-        countryAdmin0Id,
-        data,
-        getProperties,
-        multiCountry,
-        orderedAdmin1areas,
-        setAdmin1Key,
-        setAdmin2Key,
-        setAdminLevel,
-        setAdminProperties,
-        setSelectedAdmin1Area,
-      ],
-    );
+        setSelectedAdmin2Area('');
+        return;
+      }
+      const admin2Id = event.target.value;
+      if (data) {
+        setAdminProperties(getProperties(data, admin2Id, 2));
+      }
+      setAdmin2Key(event.target.value);
 
-    const onChangeAdmin2Area = useCallback(
-      (event: React.ChangeEvent<HTMLInputElement>) => {
-        if (!event.target.value) {
-          // Unset Admin 2
-          // We don't have to reset the adminProperties because any children contains the admin 1 external key
-          setAdmin2Key('');
-          setAdminLevel(1);
-          setSelectedAdmin2Area('');
-          return;
-        }
-        const admin2Id = selectedAdmin1Area?.children.find(childArea => {
-          return childArea.key === event.target.value;
-        })?.value;
-        if (data) {
-          setAdminProperties(getProperties(data, admin2Id));
-        }
-        setAdmin2Key(event.target.value);
+      setSelectedAdmin2Area(
+        selectedAdmin1Area().children[event.target.value].label,
+      );
+      setAdminLevel(2);
+    };
 
-        setSelectedAdmin2Area(
-          findArea2(selectedAdmin1Area?.children, event.target.value)?.label,
-        );
-        setAdminLevel(2);
-      },
-      [
-        selectedAdmin1Area,
-        data,
-        setAdmin2Key,
-        setSelectedAdmin2Area,
-        setAdminLevel,
-        setAdminProperties,
-        getProperties,
-      ],
-    );
-
-    const renderMenuItemList = (orderedAdminArea: OrderedArea[]) =>
-      orderedAdminArea.map(option => (
-        <MenuItem key={option.key} value={option.key}>
-          {option.title}
+    const renderMenuItemList = (trees: AdminBoundaryTree[]) =>
+      trees.map(option => (
+        <MenuItem key={option.adminCode} value={option.adminCode}>
+          {option.label}
         </MenuItem>
       ));
 
@@ -289,7 +214,7 @@ const LocationSelector = memo(
             <MenuItem key={country} value={country} disabled>
               {country}
             </MenuItem>
-            {renderMenuItemList(orderedAdmin0areas)}
+            {renderMenuItemList(orderedAdmin0areas())}
           </TextField>
 
           <TextField
@@ -297,17 +222,18 @@ const LocationSelector = memo(
             id="outlined-admin-1"
             select
             label={t('Admin 1')}
-            value={selectedAdmin1Area?.key ?? ''}
+            value={selectedAdmin1Area()?.adminCode ?? ''}
             SelectProps={{
               renderValue: renderAdmin1Value,
             }}
             onChange={onChangeAdmin1Area}
             variant="outlined"
+            disabled={orderedAdmin1areas().length === 0}
           >
             <MenuItem divider>
               <Box className={styles.removeAdmin}> {t('Remove Admin 1')}</Box>
             </MenuItem>
-            {renderMenuItemList(orderedAdmin1areas)}
+            {renderMenuItemList(orderedAdmin1areas())}
           </TextField>
           {admin1Key && (
             <TextField
@@ -315,7 +241,7 @@ const LocationSelector = memo(
               id="outlined-admin-2"
               select
               label={t('Admin 2')}
-              value={selectedAdmin2Area?.key ?? ''}
+              value={selectedAdmin2Area()?.adminCode ?? ''}
               SelectProps={{
                 renderValue: renderAdmin2Value,
               }}
@@ -325,11 +251,7 @@ const LocationSelector = memo(
               <MenuItem divider>
                 <Box className={styles.removeAdmin}> {t('Remove Admin 2')}</Box>
               </MenuItem>
-              {selectedAdmin1Area?.children.map(option => (
-                <MenuItem key={option.key} value={option.key}>
-                  {option.label}
-                </MenuItem>
-              ))}
+              {renderMenuItemList(orderedAdmin2areas())}
             </TextField>
           )}
         </Box>
@@ -339,9 +261,9 @@ const LocationSelector = memo(
 );
 
 interface LocationSelectorProps {
-  admin0Key: string;
-  admin1Key: string;
-  admin2Key: string;
+  admin0Key: AdminCodeString;
+  admin1Key: AdminCodeString;
+  admin2Key: AdminCodeString;
   boundaryLayer: BoundaryLayerProps;
   country: string;
   countryAdmin0Id: number;

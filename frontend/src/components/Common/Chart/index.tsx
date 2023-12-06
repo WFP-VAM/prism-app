@@ -16,6 +16,7 @@ type ChartProps = {
   xAxisLabel?: string;
   notMaintainAspectRatio?: boolean;
   legendAtBottom?: boolean;
+  chartRange?: [number, number];
 };
 
 const Chart = memo(
@@ -27,6 +28,7 @@ const Chart = memo(
     datasetFields,
     notMaintainAspectRatio,
     legendAtBottom,
+    chartRange = [Number.NEGATIVE_INFINITY, Number.POSITIVE_INFINITY],
   }: ChartProps) => {
     const { t } = useSafeTranslation();
 
@@ -79,17 +81,14 @@ const Chart = memo(
       if (!transpose) {
         return indices.map(index => header[index]);
       }
-      return tableRows.map(row => {
-        if (data.EWSConfig) {
-          return moment(row[config.category], 'HH:mm')
-            .locale(t('date_locale') as LocaleSpecifier)
-            .format('HH:mm');
-        }
+      return tableRows.slice(chartRange[0], chartRange[1]).map(row => {
+        const dateFormat = data.EWSConfig ? 'HH:mm' : 'YYYY-MM-DD';
         return moment(row[config.category])
           .locale(t('date_locale') as LocaleSpecifier)
-          .format('YYYY-MM-DD');
+          .format(dateFormat);
       });
     }, [
+      chartRange,
       config.category,
       data.EWSConfig,
       header,
@@ -110,6 +109,7 @@ const Chart = memo(
           borderWidth: 2,
           pointRadius: data.EWSConfig ? 0 : 1, // Disable point rendering for EWS only.
           data: indices.map(index => (row[index] as number) || null),
+          pointHitRadius: 10,
         };
       });
     }, [
@@ -149,6 +149,7 @@ const Chart = memo(
           borderWidth: 2,
           data: tableRows.map(row => (row[indiceKey] as number) || null),
           pointRadius: configureIndicePointRadius(indiceKey),
+          pointHitRadius: 10,
         };
       });
     }, [
@@ -169,6 +170,7 @@ const Chart = memo(
           borderColor: obj.color,
           borderWidth: 2,
           pointRadius: 0,
+          pointHitRadius: 10,
           // Deep copy is needed: https://github.com/reactchartjs/react-chartjs-2/issues/524#issuecomment-722814079
           data: [...obj.values],
           fill: false,
@@ -178,7 +180,7 @@ const Chart = memo(
     }, [data.EWSConfig]);
 
     /**
-     * The following memo value Assumes that the data is formatted as follows:
+     * The following value assumes that the data is formatted as follows:
      * First Row -> "keys"
      * Second Row -> "column names / headers"
      *
@@ -203,15 +205,17 @@ const Chart = memo(
      *               using config.transpose = true.
      *  - fill
      */
-    const chartData = useMemo(() => {
-      const datasets = !transpose ? tableRowsDataSet : indicesDataSet;
-      const datasetsWithThresholds = [...datasets, ...EWSthresholds];
+    const datasets = !transpose ? tableRowsDataSet : indicesDataSet;
+    const datasetsWithThresholds = [...datasets, ...EWSthresholds];
 
-      return {
-        labels,
-        datasets: datasetsWithThresholds,
-      };
-    }, [EWSthresholds, indicesDataSet, labels, tableRowsDataSet, transpose]);
+    const datasetsTrimmed = datasetsWithThresholds.map(set => ({
+      ...set,
+      data: set.data.slice(chartRange[0], chartRange[1]),
+    }));
+    const chartData = {
+      labels,
+      datasets: datasetsTrimmed,
+    };
 
     const chartConfig = useMemo(() => {
       return {
@@ -255,6 +259,10 @@ const Chart = memo(
               },
             },
           ],
+        },
+        // display values for all datasets in the tooltip
+        tooltips: {
+          mode: 'index',
         },
         legend: {
           display: config.displayLegend,
