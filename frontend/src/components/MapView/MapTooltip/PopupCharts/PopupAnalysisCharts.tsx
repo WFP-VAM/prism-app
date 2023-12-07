@@ -12,7 +12,10 @@ import {
 import { getBoundaryLayersByAdminLevel } from 'config/utils';
 import { BoundaryLayerData } from 'context/layers/boundary';
 import { LayerData } from 'context/layers/layer-data';
-import { layerDataSelector } from 'context/mapStateSlice/selectors';
+import {
+  dateRangeSelector,
+  layerDataSelector,
+} from 'context/mapStateSlice/selectors';
 import React, { useRef } from 'react';
 import { useSelector } from 'react-redux';
 import PopupChartWrapper from './PopupChartWrapper';
@@ -73,9 +76,8 @@ const PopupAnalysisCharts = ({
     levels: item.chartData?.levels,
   }));
 
-  // TODO - end date should be selected date
-  const startDate = new Date().getTime() - oneYearInMs;
-  const endDate = new Date().getTime();
+  const { startDate: endDate } = useSelector(dateRangeSelector);
+  const startDate = (endDate || new Date().getTime()) - oneYearInMs;
 
   return (
     <PopupChartWrapper onClose={onClose}>
