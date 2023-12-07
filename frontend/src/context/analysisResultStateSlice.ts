@@ -1,4 +1,9 @@
-import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
+import {
+  createAsyncThunk,
+  createSlice,
+  Dispatch,
+  PayloadAction,
+} from '@reduxjs/toolkit';
 import { convertArea } from '@turf/helpers';
 import {
   Feature,
@@ -55,7 +60,10 @@ import {
   getBoundaryLayerSingleton,
   LayerDefinitions,
 } from 'config/utils';
-import { Extent } from 'components/MapView/Layers/raster-utils';
+import {
+  Extent,
+  getDownloadGeotiffURL,
+} from 'components/MapView/Layers/raster-utils';
 import { fetchWMSLayerAsGeoJSON } from 'utils/server-utils';
 import { isLocalhost } from 'serviceWorker';
 import { ANALYSIS_API_URL } from 'utils/constants';
@@ -352,15 +360,16 @@ export type ExposedPopulationDispatchParams = {
   maskLayerId?: LayerKey;
 };
 
-const createAPIRequestParams = (
+async function createAPIRequestParams(
   geotiffLayer: WMSLayerProps,
   extent: Extent,
   date: ReturnType<Date['getTime']>,
+  dispatch: Dispatch,
   params?: WfsRequestParams | AdminLevelDataLayerProps | BoundaryLayerProps,
   maskParams?: any,
   geojsonOut?: boolean,
   exposureValue?: ExposureValue,
-): ApiData => {
+): Promise<ApiData> {
   // Get default values for groupBy and admin boundary file path at the proper adminLevel
   const {
     path: adminBoundariesPath,
@@ -378,20 +387,42 @@ const createAPIRequestParams = (
     ? { wfs_params: params as WfsRequestParams }
     : undefined;
 
-  const { wcsConfig } = geotiffLayer;
+  const { wcsConfig, serverLayerName, additionalQueryParams } = geotiffLayer;
   const dateValue = !wcsConfig?.disableDateParam ? date : undefined;
+  const dateString = dateValue
+    ? moment(dateValue).format(DEFAULT_DATE_FORMAT)
+    : undefined;
+
+  // get geotiff url using band
+  const { band } =
+    (additionalQueryParams as {
+      styles?: string;
+      band?: string;
+    }) || {};
+
+  const geotiffUrl = await getDownloadGeotiffURL(
+    serverLayerName,
+    band,
+    extent,
+    dateString,
+    dispatch,
+  );
+
+  // TODO - get geotiff_url using STAC.
+  // what happens if there is no date? are some layers not STAC?
 
   // we force group_by to be defined with &
   // eslint-disable-next-line camelcase
   const apiRequest: ApiData = {
-    geotiff_url: createGetCoverageUrl({
-      bbox: extent,
-      bboxDigits: 1,
-      date: dateValue,
-      layerId: geotiffLayer.serverLayerName,
-      resolution: wcsConfig?.pixelResolution,
-      url: geotiffLayer.baseUrl,
-    }),
+    geotiff_url: geotiffUrl,
+    // geotiff_url: createGetCoverageUrl({
+    //   bbox: extent,
+    //   bboxDigits: 1,
+    //   date: dateValue,
+    //   layerId: geotiffLayer.serverLayerName,
+    //   resolution: wcsConfig?.pixelResolution,
+    //   url: geotiffLayer.baseUrl,
+    // }),
     zones_url: zonesUrl,
     group_by: groupBy,
     ...wfsParams,
@@ -405,7 +436,7 @@ const createAPIRequestParams = (
   };
 
   return apiRequest;
-};
+}
 
 const mergeTableRows = (tableRows: TableRow[]): TableRow => {
   /* eslint-disable no-param-reassign, fp/no-mutation */
@@ -490,7 +521,7 @@ export const requestAndStoreExposedPopulation = createAsyncThunk<
       maskLayerId && (LayerDefinitions[maskLayerId] as WMSLayerProps);
     const maskParams = maskLayer
       ? {
-          make_url: createGetCoverageUrl({
+          mask_url: createGetCoverageUrl({
             bbox: extent,
             date,
             layerId: maskLayer.serverLayerName,
@@ -500,10 +531,11 @@ export const requestAndStoreExposedPopulation = createAsyncThunk<
         }
       : undefined;
 
-    const apiRequest = createAPIRequestParams(
+    const apiRequest = await createAPIRequestParams(
       populationLayer,
       extent,
       date,
+      api.dispatch,
       wfsParams,
       maskParams,
       // Set geojsonOut to true.
@@ -609,10 +641,11 @@ export const requestAndStoreAnalysis = createAsyncThunk<
     throw new Error('Boundary Layer not loaded!');
   }
 
-  const apiRequest = createAPIRequestParams(
+  const apiRequest = await createAPIRequestParams(
     hazardLayer,
     extent,
     date,
+    api.dispatch,
     baselineLayer,
     undefined,
     undefined,
