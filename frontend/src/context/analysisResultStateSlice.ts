@@ -387,7 +387,12 @@ async function createAPIRequestParams(
     ? { wfs_params: params as WfsRequestParams }
     : undefined;
 
-  const { wcsConfig, serverLayerName, additionalQueryParams } = geotiffLayer;
+  const {
+    additionalQueryParams,
+    baseUrl,
+    serverLayerName,
+    wcsConfig,
+  } = geotiffLayer;
   const dateValue = !wcsConfig?.disableDateParam ? date : undefined;
   const dateString = dateValue
     ? moment(dateValue).format(DEFAULT_DATE_FORMAT)
@@ -400,29 +405,29 @@ async function createAPIRequestParams(
       band?: string;
     }) || {};
 
-  const geotiffUrl = await getDownloadGeotiffURL(
-    serverLayerName,
-    band,
-    extent,
-    dateString,
-    dispatch,
-  );
-
-  // TODO - get geotiff_url using STAC.
-  // what happens if there is no date? are some layers not STAC?
+  // Get geotiff_url using STAC for layers in earthobservation.vam.
+  // TODO - What happens if there is no date? are some layers not STAC?
+  const geotiffUrl = baseUrl.includes('api.earthobservation.vam.wfp.org/ows')
+    ? await getDownloadGeotiffURL(
+        serverLayerName,
+        band,
+        extent,
+        dateString,
+        dispatch,
+      )
+    : createGetCoverageUrl({
+        bbox: extent,
+        bboxDigits: 1,
+        date: dateValue,
+        layerId: serverLayerName,
+        resolution: wcsConfig?.pixelResolution,
+        url: baseUrl,
+      });
 
   // we force group_by to be defined with &
   // eslint-disable-next-line camelcase
   const apiRequest: ApiData = {
     geotiff_url: geotiffUrl,
-    // geotiff_url: createGetCoverageUrl({
-    //   bbox: extent,
-    //   bboxDigits: 1,
-    //   date: dateValue,
-    //   layerId: geotiffLayer.serverLayerName,
-    //   resolution: wcsConfig?.pixelResolution,
-    //   url: geotiffLayer.baseUrl,
-    // }),
     zones_url: zonesUrl,
     group_by: groupBy,
     ...wfsParams,
