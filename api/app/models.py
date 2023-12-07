@@ -70,7 +70,7 @@ class RasterGeotiffModel(BaseModel):
     """Schema for raster_geotiff data to be passed to /raster_geotiff endpoint."""
 
     collection: str
-    date: str
+    date: Optional[str] = None
     band: Optional[str] = None
     lat_min: float
     long_min: float
