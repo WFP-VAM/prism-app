@@ -522,16 +522,40 @@ export const requestAndStoreExposedPopulation = createAsyncThunk<
         }
       : undefined;
 
-    const maskLayer =
-      maskLayerId && (LayerDefinitions[maskLayerId] as WMSLayerProps);
-    const maskParams = maskLayer
-      ? {
-          mask_url: createGetCoverageUrl({
+    let maskUrl: string | undefined;
+    const maskLayer = maskLayerId
+      ? (LayerDefinitions[maskLayerId] as WMSLayerProps)
+      : undefined;
+
+    if (maskLayer) {
+      const { additionalQueryParams, baseUrl, serverLayerName } = maskLayer;
+
+      const { band } =
+        (additionalQueryParams as {
+          styles?: string;
+          band?: string;
+        }) || {};
+
+      // Get geotiff_url using STAC for layers in earthobservation.vam.
+      // eslint-disable-next-line
+      maskUrl = baseUrl.includes('api.earthobservation.vam.wfp.org/ows')
+        ? await getDownloadGeotiffURL(
+            serverLayerName,
+            band,
+            extent,
+            undefined,
+            api.dispatch,
+          )
+        : createGetCoverageUrl({
             bbox: extent,
             date,
             layerId: maskLayer.serverLayerName,
             url: maskLayer.baseUrl,
-          }),
+          });
+    }
+    const maskParams = maskUrl
+      ? {
+          mask_url: maskUrl,
           mask_calc_expr: calc || 'A*(B==1)',
         }
       : undefined;
