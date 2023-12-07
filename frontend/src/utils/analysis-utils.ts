@@ -290,8 +290,8 @@ export async function loadFeaturesFromApi(
     version: hazardLayerDef.wcsConfig?.version,
   });
 
-  console.log(hazardLayerDef);
-  console.log(date);
+  // console.log(hazardLayerDef);
+  // console.log(date);
 
   // const { serverLayerName, additionalQueryParams } = hazardLayerDef;
   // // TODO - figure out a way to leverage style to guess band?

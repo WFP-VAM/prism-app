@@ -919,7 +919,7 @@
       ],
       "type": "bar"
     },
-    "disableAnalysis": true,
+    "disableAnalysis": false,
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
     "opacity": 0.7,
@@ -1047,7 +1047,7 @@
       ],
       "type": "line"
     },
-    "disableAnalysis": true,
+    "disableAnalysis": false,
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
     "opacity": 0.7,
@@ -1397,7 +1397,7 @@
       ],
       "type": "bar"
     },
-    "disableAnalysis": true,
+    "disableAnalysis": false,
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
     "opacity": 0.7,
@@ -1525,7 +1525,7 @@
       ],
       "type": "line"
     },
-    "disableAnalysis": true,
+    "disableAnalysis": false,
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
     "opacity": 0.7,
@@ -2656,7 +2656,7 @@
       "styles": "r2b_blended",
       "band": "r2b"
     },
-    "disableAnalysis": true,
+    "disableAnalysis": false,
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
     "opacity": 0.7,
@@ -2752,7 +2752,7 @@
       "styles": "r4b_blended",
       "band": "r4b"
     },
-    "disableAnalysis": true,
+    "disableAnalysis": false,
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
     "opacity": 0.7,
@@ -2848,7 +2848,7 @@
       "styles": "r5b_blended",
       "band": "r5b"
     },
-    "disableAnalysis": true,
+    "disableAnalysis": false,
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
     "opacity": 0.7,
@@ -2944,7 +2944,7 @@
       "styles": "r6b_blended",
       "band": "r6b"
     },
-    "disableAnalysis": true,
+    "disableAnalysis": false,
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
     "opacity": 0.7,
@@ -3040,7 +3040,7 @@
       "styles": "r7b_blended",
       "band": "r7b"
     },
-    "disableAnalysis": true,
+    "disableAnalysis": false,
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
     "opacity": 0.7,
@@ -3136,7 +3136,7 @@
       "styles": "r9b_blended",
       "band": "r9b"
     },
-    "disableAnalysis": true,
+    "disableAnalysis": false,
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
     "opacity": 0.7,
@@ -3232,7 +3232,7 @@
       "styles": "ryb_blended",
       "band": "ryb"
     },
-    "disableAnalysis": true,
+    "disableAnalysis": false,
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
     "opacity": 0.7,
@@ -3328,7 +3328,7 @@
       "styles": "r2q_blended",
       "band": "r2q"
     },
-    "disableAnalysis": true,
+    "disableAnalysis": false,
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
     "opacity": 0.7,
@@ -3414,7 +3414,7 @@
       "styles": "r4q_blended",
       "band": "r4q"
     },
-    "disableAnalysis": true,
+    "disableAnalysis": false,
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
     "opacity": 0.7,
@@ -3500,7 +3500,7 @@
       "styles": "r5q_blended",
       "band": "r5q"
     },
-    "disableAnalysis": true,
+    "disableAnalysis": false,
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
     "opacity": 0.7,
@@ -3586,7 +3586,7 @@
       "styles": "r6q_blended",
       "band": "r6q"
     },
-    "disableAnalysis": true,
+    "disableAnalysis": false,
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
     "opacity": 0.7,
@@ -3671,7 +3671,7 @@
     "additional_query_params": {
       "styles": "r7q_blended"
     },
-    "disableAnalysis": true,
+    "disableAnalysis": false,
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
     "opacity": 0.7,
@@ -3757,7 +3757,7 @@
       "styles": "r9q_blended",
       "band": "r9q"
     },
-    "disableAnalysis": true,
+    "disableAnalysis": false,
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
     "opacity": 0.7,
@@ -3843,7 +3843,7 @@
       "styles": "ryq_blended",
       "band": "ryq"
     },
-    "disableAnalysis": true,
+    "disableAnalysis": false,
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
     "opacity": 0.7,
