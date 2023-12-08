@@ -340,7 +340,7 @@ const AnalysisPanel = memo(
             analysisResult instanceof PolygonAnalysisResult)
         ) {
           setResultsPage(
-            <div className={classes.analysisTableContainer}>
+            <Box className={classes.analysisTableContainer}>
               <div
                 style={{
                   display: 'flex',
@@ -369,7 +369,7 @@ const AnalysisPanel = memo(
                   isAscending={analysisIsAscending}
                 />
               </div>
-            </div>,
+            </Box>,
           );
         }
       } else {
@@ -1284,7 +1284,8 @@ const styles = (theme: Theme) =>
     },
     analysisPanelParams: {
       padding: '30px 10px 10px 10px',
-      height: '100%',
+      height: 'calc(100% - 90px)',
+      overflow: 'auto',
     },
     colorBlack: {
       color: 'black',
@@ -1324,7 +1325,7 @@ const styles = (theme: Theme) =>
       opacity: 1,
     },
     analysisButtonContainer: {
-      position: 'sticky',
+      position: 'absolute',
       backgroundColor: '#566064',
       width: '100%',
       bottom: 0,
