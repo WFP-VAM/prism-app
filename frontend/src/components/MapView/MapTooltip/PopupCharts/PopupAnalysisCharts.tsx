@@ -76,8 +76,9 @@ const PopupAnalysisCharts = ({
     levels: item.chartData?.levels,
   }));
 
-  const { startDate: endDate } = useSelector(dateRangeSelector);
-  const startDate = (endDate || new Date().getTime()) - oneYearInMs;
+  const { startDate: selectedDate } = useSelector(dateRangeSelector);
+  const chartEndDate = selectedDate || new Date().getTime();
+  const chartStartDate = chartEndDate - oneYearInMs;
 
   return (
     <PopupChartWrapper onClose={onClose}>
@@ -97,8 +98,8 @@ const PopupAnalysisCharts = ({
                   ?.name ?? '',
               )}
               adminLevel={adminLevel}
-              startDate={startDate as number}
-              endDate={endDate as number}
+              startDate={chartStartDate}
+              endDate={chartEndDate}
               dataForCsv={dataForCsv}
             />
           </div>
