@@ -12,7 +12,10 @@ import {
 import { getBoundaryLayersByAdminLevel } from 'config/utils';
 import { BoundaryLayerData } from 'context/layers/boundary';
 import { LayerData } from 'context/layers/layer-data';
-import { layerDataSelector } from 'context/mapStateSlice/selectors';
+import {
+  dateRangeSelector,
+  layerDataSelector,
+} from 'context/mapStateSlice/selectors';
 import React, { useRef } from 'react';
 import { useSelector } from 'react-redux';
 import PopupChartWrapper from './PopupChartWrapper';
@@ -73,8 +76,9 @@ const PopupAnalysisCharts = ({
     levels: item.chartData?.levels,
   }));
 
-  const startDate = new Date().getTime() - oneYearInMs;
-  const endDate = new Date().getTime();
+  const { startDate: selectedDate } = useSelector(dateRangeSelector);
+  const chartEndDate = selectedDate || new Date().getTime();
+  const chartStartDate = chartEndDate - oneYearInMs;
 
   return (
     <PopupChartWrapper onClose={onClose}>
@@ -94,8 +98,8 @@ const PopupAnalysisCharts = ({
                   ?.name ?? '',
               )}
               adminLevel={adminLevel}
-              startDate={startDate as number}
-              endDate={endDate as number}
+              startDate={chartStartDate}
+              endDate={chartEndDate}
               dataForCsv={dataForCsv}
             />
           </div>
