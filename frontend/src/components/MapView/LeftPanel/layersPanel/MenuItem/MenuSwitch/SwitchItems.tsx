@@ -1,4 +1,4 @@
-import { LayerType } from 'config/types';
+import { CompositeLayerProps, LayerType } from 'config/types';
 import { getCompositeLayers } from 'config/utils';
 import React, { Fragment, memo } from 'react';
 import { Extent } from 'components/MapView/Layers/raster-utils';
@@ -42,6 +42,12 @@ const SwitchItems = ({ layers, extent, classes }: SwitchItemsProps) => {
                     key={compositeLayer.id}
                     layer={compositeLayer}
                     extent={extent}
+                    groupMenuFilter={
+                      (layer as CompositeLayerProps).inputLayers.find(
+                        inputLayer => inputLayer.id === compositeLayer.id,
+                      )?.id
+                    }
+                    disabledMenuSelection
                   />
                 ))}
               </div>

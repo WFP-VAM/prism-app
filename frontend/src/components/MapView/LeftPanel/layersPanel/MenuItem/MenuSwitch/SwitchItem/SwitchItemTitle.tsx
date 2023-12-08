@@ -6,7 +6,7 @@ import {
   withStyles,
 } from '@material-ui/core';
 import { WithStyles } from '@material-ui/styles';
-import { LayerType } from 'config/types';
+import { LayerType, MenuGroupItem } from 'config/types';
 import React, { memo, useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -45,12 +45,17 @@ const styles = () =>
     },
   });
 
+const getFilteredMenuGroupItems = (menus: MenuGroupItem[], filter?: string) =>
+  menus.filter(menu => (filter ? menu.id === filter : true));
+
 interface SwitchTitleProps extends WithStyles<typeof styles> {
   layer: LayerType;
   someLayerAreSelected: boolean;
   toggleLayerValue: (selectedLayerId: string, checked: boolean) => void;
   validatedTitle: string;
   initialActiveLayerId: string | null;
+  groupMenuFilter?: string;
+  disabledMenuSelection?: boolean;
 }
 const SwitchItemTitle = ({
   layer,
@@ -58,6 +63,8 @@ const SwitchItemTitle = ({
   toggleLayerValue,
   validatedTitle,
   initialActiveLayerId,
+  groupMenuFilter,
+  disabledMenuSelection = false,
   classes,
 }: SwitchTitleProps) => {
   const { t } = useTranslation();
@@ -95,14 +102,17 @@ const SwitchItemTitle = ({
           }}
           value={activeLayerId}
           onChange={e => handleSelect(e)}
+          disabled={disabledMenuSelection}
         >
-          {group.layers.map(menu => {
-            return (
-              <MenuItem key={menu.id} value={menu.id}>
-                {t(menu.label)}
-              </MenuItem>
-            );
-          })}
+          {getFilteredMenuGroupItems(group.layers, groupMenuFilter).map(
+            menu => {
+              return (
+                <MenuItem key={menu.id} value={menu.id}>
+                  {t(menu.label)}
+                </MenuItem>
+              );
+            },
+          )}
         </Select>
       )}
     </>

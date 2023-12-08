@@ -29,7 +29,7 @@ type UnionToIntersection<U> = (U extends any ? (k: U) => void : never) extends (
 
 export type LayerKey = keyof UnionToIntersection<typeof rawLayers>;
 
-type MenuGroupItem = {
+export type MenuGroupItem = {
   id: string;
   label: string;
   main?: boolean;

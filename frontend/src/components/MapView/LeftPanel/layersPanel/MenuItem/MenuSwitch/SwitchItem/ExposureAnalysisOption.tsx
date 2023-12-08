@@ -1,6 +1,6 @@
 import { IconButton, Tooltip } from '@material-ui/core';
 import { ImageAspectRatioOutlined } from '@material-ui/icons';
-import React, { memo } from 'react';
+import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   AggregationOperations,
@@ -107,4 +107,4 @@ interface ExposureAnalysisOptionProps {
   exposure: ExposedPopulationDefinition | undefined;
 }
 
-export default memo(ExposureAnalysisOption);
+export default ExposureAnalysisOption;
