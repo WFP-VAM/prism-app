@@ -199,9 +199,6 @@
         "lst_amplitude"
       ]
     },
-    "drought": {
-        "combined_drought_index": ["cdi"]
-    },
     "vulnerability": {
       "poverty": ["idpoor", "idpoor_1", "idpoor_2"]
     },
