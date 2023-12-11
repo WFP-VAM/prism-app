@@ -536,6 +536,13 @@ export const requestAndStoreExposedPopulation = createAsyncThunk<
           band?: string;
         }) || {};
 
+      const dateValue = !maskLayer.wcsConfig?.disableDateParam
+        ? date
+        : undefined;
+      const dateString = dateValue
+        ? moment(dateValue).format(DEFAULT_DATE_FORMAT)
+        : undefined;
+
       // Get geotiff_url using STAC for layers in earthobservation.vam.
       // eslint-disable-next-line
       maskUrl = baseUrl.includes('api.earthobservation.vam.wfp.org/ows')
@@ -543,7 +550,7 @@ export const requestAndStoreExposedPopulation = createAsyncThunk<
             serverLayerName,
             band,
             extent,
-            undefined,
+            dateString,
             api.dispatch,
           )
         : createGetCoverageUrl({
