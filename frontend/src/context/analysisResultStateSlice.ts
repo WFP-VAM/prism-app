@@ -407,22 +407,24 @@ async function createAPIRequestParams(
 
   // Get geotiff_url using STAC for layers in earthobservation.vam.
   // TODO - What happens if there is no date? are some layers not STAC?
-  const geotiffUrl = baseUrl.includes('api.earthobservation.vam.wfp.org/ows')
-    ? await getDownloadGeotiffURL(
-        serverLayerName,
-        band,
-        extent,
-        dateString,
-        dispatch,
-      )
-    : createGetCoverageUrl({
-        bbox: extent,
-        bboxDigits: 1,
-        date: dateValue,
-        layerId: serverLayerName,
-        resolution: wcsConfig?.pixelResolution,
-        url: baseUrl,
-      });
+  const geotiffUrl =
+    baseUrl.includes('api.earthobservation.vam.wfp.org/ows') &&
+    !serverLayerName.includes('wp_pop_cicunadj')
+      ? await getDownloadGeotiffURL(
+          serverLayerName,
+          band,
+          extent,
+          dateString,
+          dispatch,
+        )
+      : createGetCoverageUrl({
+          bbox: extent,
+          bboxDigits: 1,
+          date: dateValue,
+          layerId: serverLayerName,
+          resolution: wcsConfig?.pixelResolution,
+          url: baseUrl,
+        });
 
   // we force group_by to be defined with &
   // eslint-disable-next-line camelcase
@@ -545,20 +547,20 @@ export const requestAndStoreExposedPopulation = createAsyncThunk<
 
       // Get geotiff_url using STAC for layers in earthobservation.vam.
       // eslint-disable-next-line
-      maskUrl = baseUrl.includes('api.earthobservation.vam.wfp.org/ows')
-        ? await getDownloadGeotiffURL(
-            serverLayerName,
-            band,
-            extent,
-            dateString,
-            api.dispatch,
-          )
-        : createGetCoverageUrl({
-            bbox: extent,
-            date,
-            layerId: maskLayer.serverLayerName,
-            url: maskLayer.baseUrl,
-          });
+      maskUrl = baseUrl.includes('api.earthobservation.vam.wfp.org/ows') && !serverLayerName.includes("hf_water")
+          ? await getDownloadGeotiffURL(
+              serverLayerName,
+              band,
+              extent,
+              dateString,
+              api.dispatch,
+            )
+          : createGetCoverageUrl({
+              bbox: extent,
+              date,
+              layerId: maskLayer.serverLayerName,
+              url: maskLayer.baseUrl,
+            });
     }
     const maskParams = maskUrl
       ? {
