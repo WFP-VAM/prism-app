@@ -1,15 +1,15 @@
 import { Map as MapBoxMap } from 'mapbox-gl';
-import { UrlLayerKey } from '../../../../../../utils/url-utils';
-import { LayerKey, LayerType } from '../../../../../../config/types';
-import { removeLayer } from '../../../../../../context/mapStateSlice';
+import { UrlLayerKey } from '../../../../../../../utils/url-utils';
+import { LayerKey, LayerType } from '../../../../../../../config/types';
+import { removeLayer } from '../../../../../../../context/mapStateSlice';
 import {
   getDisplayBoundaryLayers,
   LayerDefinitions,
-} from '../../../../../../config/utils';
+} from '../../../../../../../config/utils';
 import {
   safeDispatchAddLayer,
   safeDispatchRemoveLayer,
-} from '../../../../../../utils/map-utils';
+} from '../../../../../../../utils/map-utils';
 
 export function toggleRemoveLayer(
   layer: LayerType,

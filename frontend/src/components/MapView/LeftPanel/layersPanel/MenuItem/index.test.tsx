@@ -7,7 +7,7 @@ import { LayerKey, MenuItemType } from 'config/types';
 import MenuItem from '.';
 
 jest.mock(
-  'components/MapView/LeftPanel/layersPanel/MenuSwitch',
+  'components/MapView/LeftPanel/layersPanel/MenuItem/MenuSwitch',
   () => 'mock-MenuSwitch',
 );
 
@@ -32,8 +32,6 @@ const props: MenuItemType = {
       tables: [],
     },
   ],
-  expanded: 'title',
-  selectAccordion: () => {},
 };
 
 test('renders as expected', () => {
