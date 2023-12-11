@@ -66,7 +66,7 @@ def generate_geotiff_from_stac_api(
     # Add the actual outputed band info to the filename
     final_band = list(collections_dataset.keys())[0]
     band_suffix = "_" + final_band if (final_band != "band") else ""
-    file_path = f"{collection}{band_suffix}_{date}_{str(uuid4())[:8]}.tif"
+    file_path = f"{collection}{band_suffix}_{date or 'no_date'}.tif"
 
     try:
         write_cog(collections_dataset[final_band], file_path)
