@@ -315,9 +315,9 @@ def calculate_stats(
                     calc_expr=mask_calc_expr,
                 )
             # catch errors in gdal_calc, try a reproj
-            except subprocess.CalledProcessError:
-                logger.warn(
-                    "gdal_calc failed, trying to reproject geotiff and retrying..."
+            except Exception:
+                logger.warning(
+                    "gdal_calc failed, trying to reproject geotiff and retry..."
                 )
                 reproj_pop_geotiff: FilePath = (
                     f"{CACHE_DIRECTORY}raster_reproj_{geotiff_hash}_on_{mask_hash}.tif"
