@@ -1,5 +1,6 @@
 """Calulate zonal statistics and return a json or a geojson."""
 import logging
+import subprocess
 import warnings
 from collections import defaultdict
 from datetime import datetime
@@ -290,10 +291,6 @@ def calculate_stats(
         geotiff_hash = Path(geotiff).name.replace("raster_", "").replace(".tif", "")
         mask_hash = Path(mask_geotiff).name.replace("raster_", "").replace(".tif", "")
 
-        # reproj_pop_geotiff: FilePath = (
-        #     f"{CACHE_DIRECTORY}raster_reproj_{geotiff_hash}_on_{mask_hash}.tif"
-        # )
-
         # Slugify the calc expression into a reasonable filename
         slugified_calc = "default"
         if mask_calc_expr is not None:
@@ -307,23 +304,37 @@ def calculate_stats(
 
         masked_pop_geotiff: FilePath = f"{CACHE_DIRECTORY}raster_reproj_{geotiff_hash}_masked_by_{mask_hash}_{slugified_calc}.tif"
 
-        # tentatively remove the reprojection step now that we are consolidating our requests
-        # through STAC and receive actual image files.
-        # if not is_file_valid(reproj_pop_geotiff):
-        #     reproj_match(
-        #         geotiff,
-        #         mask_geotiff,
-        #         reproj_pop_geotiff,
-        #         resampling_mode=Resampling.sum,
-        #     )
-
         if not is_file_valid(masked_pop_geotiff):
-            gdal_calc(
-                input_file_path=geotiff,
-                mask_file_path=mask_geotiff,
-                output_file_path=masked_pop_geotiff,
-                calc_expr=mask_calc_expr,
-            )
+            # tentatively remove the reprojection step now that we are consolidating our requests
+            # through STAC and receive actual image files.
+            try:
+                gdal_calc(
+                    input_file_path=geotiff,
+                    mask_file_path=mask_geotiff,
+                    output_file_path=masked_pop_geotiff,
+                    calc_expr=mask_calc_expr,
+                )
+            # catch errors in gdal_calc, try a reproj
+            except subprocess.CalledProcessError:
+                logger.warn(
+                    "gdal_calc failed, trying to reproject geotiff and retrying..."
+                )
+                reproj_pop_geotiff: FilePath = (
+                    f"{CACHE_DIRECTORY}raster_reproj_{geotiff_hash}_on_{mask_hash}.tif"
+                )
+                if not is_file_valid(reproj_pop_geotiff):
+                    reproj_match(
+                        geotiff,
+                        mask_geotiff,
+                        reproj_pop_geotiff,
+                        resampling_mode=Resampling.sum,
+                    )
+                gdal_calc(
+                    input_file_path=reproj_pop_geotiff,
+                    mask_file_path=mask_geotiff,
+                    output_file_path=masked_pop_geotiff,
+                    calc_expr=mask_calc_expr,
+                )
 
         geotiff = masked_pop_geotiff
 
