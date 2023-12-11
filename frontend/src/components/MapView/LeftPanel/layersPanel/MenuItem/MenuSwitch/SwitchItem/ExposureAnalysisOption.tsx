@@ -8,7 +8,7 @@ import {
   GeometryType,
   LayerType,
 } from 'config/types';
-import { TableKey } from 'config/utils';
+import { ReportsDefinitions, TableKey } from 'config/utils';
 import {
   analysisResultSelector,
   clearAnalysisResult,
@@ -33,6 +33,15 @@ function ExposureAnalysisOption({
   const { t } = useSafeTranslation();
   const analysisResult = useSelector(analysisResultSelector);
   const { startDate: selectedDate } = useSelector(dateRangeSelector);
+
+  const foundReports = Object.keys(ReportsDefinitions).filter(
+    reportDefinitionKey => {
+      return ReportsDefinitions[reportDefinitionKey].layerId === layer.id;
+    },
+  );
+  if (!exposure || !foundReports.length) {
+    return null;
+  }
 
   const handleExposureAnalysis = () => {
     if (analysisResult) {
@@ -77,13 +86,16 @@ function ExposureAnalysisOption({
 
   return (
     <Tooltip title={t('Exposure Analysis') ?? ''}>
-      <IconButton
-        id={layer.id}
-        disabled={!selected}
-        onClick={handleExposureAnalysis}
-      >
-        <ImageAspectRatioOutlined />
-      </IconButton>
+      <span>
+        <IconButton
+          id={layer.id}
+          aria-label="Exposure Analysis"
+          disabled={!selected}
+          onClick={handleExposureAnalysis}
+        >
+          <ImageAspectRatioOutlined />
+        </IconButton>
+      </span>
     </Tooltip>
   );
 }

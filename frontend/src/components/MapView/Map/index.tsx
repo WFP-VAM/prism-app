@@ -25,6 +25,7 @@ import { mapSelector } from 'context/mapStateSlice/selectors';
 import {
   AdminLevelDataLayer,
   BoundaryLayer,
+  CompositeLayer,
   ImpactLayer,
   PointDataLayer,
   StaticRasterLayer,
@@ -204,6 +205,7 @@ const MapComponent = memo(
         impact: ImpactLayer,
         point_data: PointDataLayer,
         static_raster: StaticRasterLayer,
+        composite: CompositeLayer,
       };
     }, []);
 
@@ -255,8 +257,8 @@ const MapComponent = memo(
           {/* These are custom layers which provide functionality and are not really controllable via JSON */}
           <AnalysisLayer before={firstBoundaryId} />
           <SelectionLayer before={firstSymbolId} />
+          <MapTooltip />
         </>
-        <MapTooltip />
       </MapboxMap>
     );
   },
