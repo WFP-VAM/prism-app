@@ -1,7 +1,5 @@
 """Calulate zonal statistics and return a json or a geojson."""
 import logging
-import subprocess
-import warnings
 from collections import defaultdict
 from datetime import datetime
 from json import dump, load
