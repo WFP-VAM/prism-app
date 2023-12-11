@@ -409,6 +409,7 @@ async function createAPIRequestParams(
   // TODO - What happens if there is no date? are some layers not STAC?
   const geotiffUrl =
     baseUrl.includes('api.earthobservation.vam.wfp.org/ows') &&
+    // use WCS for flood exposure analysis because of a bug with gdal_calc
     !serverLayerName.includes('wp_pop_cicunadj')
       ? await getDownloadGeotiffURL(
           serverLayerName,
