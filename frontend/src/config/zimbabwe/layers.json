@@ -3676,7 +3676,7 @@
     "date_interval": "days",
     "opacity": 0.7,
     "legend_text": "Rainfall anomaly based on long term averaged from local station data from ZMSD blended with CHIRP rainfall estimates",
-    "legend": [s
+    "legend": [
       {
         "value": 0,
         "label": "< 50%",
