@@ -53,10 +53,11 @@
             {
               "id": "precip_blended_6m",
               "label": "6-month"
-            }, {
+            },
+            {
             "id": "precip_blended_7m",
             "label": "7-month"
-          }
+            }
           ]
         },
         {
