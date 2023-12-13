@@ -4,6 +4,7 @@ import PointDataLayer from './PointDataLayer';
 import BoundaryLayer from './BoundaryLayer';
 import ImpactLayer from './ImpactLayer';
 import StaticRasterLayer from './StaticRasterLayer';
+import CompositeLayer from './CompositeLayer';
 
 export {
   ImpactLayer,
@@ -12,4 +13,5 @@ export {
   AdminLevelDataLayer,
   PointDataLayer,
   BoundaryLayer,
+  CompositeLayer,
 };

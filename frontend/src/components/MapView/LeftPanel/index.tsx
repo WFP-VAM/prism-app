@@ -38,16 +38,6 @@ const LeftPanel = memo(
       null,
     );
 
-    const layersMenuItems = useMemo(() => {
-      return menuList.filter((menuItem: MenuItemType) => {
-        return menuItem.layersCategories.some(
-          (layerCategory: LayersCategoryType) => {
-            return layerCategory.layers.length > 0;
-          },
-        );
-      });
-    }, []);
-
     const tablesMenuItems = useMemo(() => {
       return menuList.filter((menuItem: MenuItemType) => {
         return menuItem.layersCategories.some(
@@ -75,9 +65,7 @@ const LeftPanel = memo(
           areTablesAvailable={areTablesAvailable}
           resultsPage={resultsPage}
           activeLayers={activeLayers}
-          layersPanel={
-            <LayersPanel layersMenuItems={layersMenuItems} extent={extent} />
-          }
+          layersPanel={<LayersPanel extent={extent} />}
           chartsPanel={
             <ChartsPanel
               setPanelSize={setPanelSize}

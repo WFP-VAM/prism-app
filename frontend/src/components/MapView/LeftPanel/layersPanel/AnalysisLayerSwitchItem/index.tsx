@@ -136,17 +136,19 @@ const AnalysisLayerSwitchItem = memo(
       }
       return (
         <Tooltip title="Opacity">
-          <IconButton
-            disabled={!selected}
-            classes={{
-              root: isOpacitySelected
-                ? classes.opacityRootSelected
-                : classes.opacityRoot,
-            }}
-            onClick={handleOpacityClick}
-          >
-            <OpacityIcon />
-          </IconButton>
+          <span>
+            <IconButton
+              disabled={!selected}
+              classes={{
+                root: isOpacitySelected
+                  ? classes.opacityRootSelected
+                  : classes.opacityRoot,
+              }}
+              onClick={handleOpacityClick}
+            >
+              <OpacityIcon />
+            </IconButton>
+          </span>
         </Tooltip>
       );
     }, [
