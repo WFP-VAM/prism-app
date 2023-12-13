@@ -210,10 +210,7 @@ const MapComponent = memo(
     }, []);
 
     const getBeforeId = useCallback(
-      (layer: LayerType, index: number) => {
-        if (layer.type === 'boundary') {
-          return firstSymbolId;
-        }
+      (index: number) => {
         if (index === 0) {
           return firstSymbolId;
         }
@@ -251,7 +248,7 @@ const MapComponent = memo(
             return createElement(component, {
               key: layer.id,
               layer,
-              before: getBeforeId(layer, index),
+              before: getBeforeId(index),
             });
           })}
           {/* These are custom layers which provide functionality and are not really controllable via JSON */}

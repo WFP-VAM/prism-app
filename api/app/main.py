@@ -396,9 +396,9 @@ def post_raster_geotiff(raster_geotiff: RasterGeotiffModel):
         raster_geotiff.long_max,
         raster_geotiff.lat_max,
     )
-    date = raster_geotiff.date
+    date_value = raster_geotiff.date
     band = raster_geotiff.band
-    presigned_download_url = get_geotiff(collection, bbox, date, band)
+    presigned_download_url = get_geotiff(collection, bbox, date_value, band)
 
     return JSONResponse(
         content={"download_url": presigned_download_url}, status_code=200
