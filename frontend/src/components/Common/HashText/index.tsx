@@ -3,12 +3,16 @@ import React from 'react';
 
 const HashText = () => {
   const hash = process.env.REACT_APP_GIT_HASH;
+  if (hash) {
+    // eslint-disable-next-line no-console
+    console.info(`The application is running version #${hash}`);
+    // eslint-disable-next-line no-console
+    console.info(`https://github.com/WFP-VAM/prism-app/tree/${hash}`);
+  }
   return (
     <a
       style={{
         color: '#f5f7f8',
-        position: 'absolute',
-        bottom: '1rem',
         fontSize: '0.7rem',
         left: '1rem',
       }}
