@@ -278,15 +278,6 @@ export async function loadFeaturesFromApi(
     version: hazardLayerDef.wcsConfig?.version,
   });
 
-  // const { serverLayerName, additionalQueryParams } = hazardLayerDef;
-  // // TODO - figure out a way to leverage style to guess band?
-  // const { band } =
-  //   (additionalQueryParams as {
-  //     styles?: string;
-  //     band?: string;
-  //   }) || {};
-  // const wcsUrl = await getDownloadGeotiffURL(serverLayerName, band, extent, date, dispatch)
-
   const statsApi = layer.api as StatsApi;
   const apiUrl = statsApi.url || ANALYSIS_API_URL;
 
