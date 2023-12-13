@@ -29,7 +29,6 @@ import {
 import {
   Extent,
   GeoJsonBoundary,
-  // getDownloadGeotiffURL,
 } from 'components/MapView/Layers/raster-utils';
 import { AdminLevelDataLayerData } from 'context/layers/admin_level_data';
 import { LayerDefinitions } from 'config/utils';
@@ -142,17 +141,6 @@ export const checkBaselineDataLayer = (
     `Data for layer '${layerId}' does not appear to be valid baseline data.`,
   );
 };
-
-/* eslint-disable camelcase */
-// type StacParameters = {
-//   collection: string;
-//   band?: string;
-//   long_min: number;
-//   lat_min: number;
-//   long_max: number;
-//   lat_max: number;
-//   date: string;
-// }
 
 /* eslint-disable camelcase */
 export type ApiData = {
