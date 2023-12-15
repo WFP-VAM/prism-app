@@ -531,7 +531,7 @@ const ChartsPanel = memo(
           return [
             [
               locationString(
-                multiCountry ? admin0Key : country,
+                multiCountry ? adminProperties?.admin0Name : country,
                 selectedAdmin1Area,
                 selectedAdmin2Area,
                 adminLevel,
@@ -540,7 +540,7 @@ const ChartsPanel = memo(
             ],
             [
               locationString(
-                multiCountry ? secondAdmin0Key : country,
+                multiCountry ? secondAdminProperties?.admin0Name : country,
                 comparedAdmin1Area,
                 comparedAdmin2Area,
                 comparedAdminLevel,
@@ -584,7 +584,7 @@ const ChartsPanel = memo(
         >
           <Typography className={classes.textLabel}>
             {locationString(
-              multiCountry ? admin0Key : country,
+              multiCountry ? adminProperties?.admin0Name : country,
               selectedAdmin1Area,
               selectedAdmin2Area,
               adminLevel,
@@ -594,7 +594,6 @@ const ChartsPanel = memo(
       ) : null;
       return [locationBox, ...titles, ...zipped];
     }, [
-      admin0Key,
       adminLevel,
       adminProperties,
       chartMaxDateRange,
@@ -605,7 +604,6 @@ const ChartsPanel = memo(
       country,
       endDate1,
       endDate2,
-      secondAdmin0Key,
       secondAdminLevel,
       secondAdminProperties,
       secondSelectedAdmin1Area,
