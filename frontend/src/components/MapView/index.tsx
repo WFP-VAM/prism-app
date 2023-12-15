@@ -4,7 +4,6 @@ import {
   Box,
   CircularProgress,
   createStyles,
-  Grid,
   WithStyles,
   withStyles,
 } from '@material-ui/core';
@@ -37,7 +36,6 @@ import {
   removeLayer,
   updateDateRange,
 } from 'context/mapStateSlice';
-import { hidePopup } from 'context/tooltipStateSlice';
 import {
   availableDatesSelector,
   isLoading as areDatesLoading,
@@ -51,10 +49,8 @@ import {
   getPossibleDatesForLayer,
 } from 'utils/server-utils';
 import { addNotification } from 'context/notificationStateSlice';
-import GoToBoundaryDropdown from 'components/Common/BoundaryDropdown/goto';
 import { DEFAULT_DATE_FORMAT } from 'utils/name-utils';
 import { LocalError } from 'utils/error-utils';
-import AlertForm from './AlertForm';
 import BoundaryInfoBox from './BoundaryInfoBox';
 import LeftPanel from './LeftPanel';
 import FoldButton from './FoldButton';
@@ -63,7 +59,7 @@ import { checkLayerAvailableDatesAndContinueOrRemove } from './utils';
 import DateSelector from './DateSelector';
 import { findClosestDate } from './DateSelector/utils';
 import { Extent } from './Layers/raster-utils';
-import Legends from './Legends';
+import ExtraFeature from './ExtraFeature';
 
 const dateSupportLayerTypes: Array<LayerType['type']> = [
   'impact',
@@ -74,15 +70,9 @@ const dateSupportLayerTypes: Array<LayerType['type']> = [
 
 const MapView = memo(({ classes }: MapViewProps) => {
   // App config attributes
-  const { alertFormActive, hidePanel } = appConfig;
+  const { hidePanel } = appConfig;
 
-  const boundaryLayer = useMemo(() => {
-    return getBoundaryLayerSingleton();
-  }, []);
-
-  const boundaryLayerId = useMemo(() => {
-    return boundaryLayer.id;
-  }, [boundaryLayer.id]);
+  const boundaryLayerId = getBoundaryLayerSingleton().id;
 
   // Selectors
   const unsortedSelectedLayers = useSelector(layersSelector);
@@ -147,89 +137,24 @@ const MapView = memo(({ classes }: MapViewProps) => {
   const { urlParams, updateHistory, removeLayerFromUrl } = useUrlHistory();
 
   // let users know if their current date doesn't exist in possible dates
-  const urlDate = useMemo(() => {
-    return urlParams.get('date');
-  }, [urlParams]);
+  const urlDate = urlParams.get('date');
+  const hazardLayerIds = urlParams.get(UrlLayerKey.HAZARD);
+  const baselineLayerIds = urlParams.get(UrlLayerKey.ADMINLEVEL);
+  const defaultLayer = get(appConfig, 'defaultLayer');
 
-  const hazardLayerIds = useMemo(() => {
-    return urlParams.get(UrlLayerKey.HAZARD);
-  }, [urlParams]);
-
-  const baselineLayerIds = useMemo(() => {
-    return urlParams.get(UrlLayerKey.ADMINLEVEL);
-  }, [urlParams]);
-
-  const defaultLayer = useMemo(() => {
-    return get(appConfig, 'defaultLayer');
-  }, []);
-
-  const layerDefinitionsIncludeDefaultLayer = useMemo(() => {
-    return Object.keys(LayerDefinitions).includes(defaultLayer);
-  }, [defaultLayer]);
-
-  const defaultLayerInLayerDefinitions = useMemo(() => {
-    return LayerDefinitions[defaultLayer as LayerKey];
-  }, [defaultLayer]);
-
-  const serverAvailableDatesAreEmpty = useMemo(() => {
-    return Object.keys(serverAvailableDates).length === 0;
-  }, [serverAvailableDates]);
-
-  const selectedLayersIds = useMemo(() => {
-    return selectedLayers.map(layer => layer.id);
-  }, [selectedLayers]);
-
-  const hazardLayersArray = useMemo(() => {
-    return hazardLayerIds !== null ? hazardLayerIds.split(',') : [];
-  }, [hazardLayerIds]);
-
-  const baselineLayersArray = useMemo(() => {
-    return baselineLayerIds !== null ? baselineLayerIds.split(',') : [];
-  }, [baselineLayerIds]);
-
-  const urlLayerIds = useMemo(() => {
-    return [...hazardLayersArray, ...baselineLayersArray];
-  }, [baselineLayersArray, hazardLayersArray]);
-
-  const layerDefinitionIds = useMemo(() => {
-    return Object.keys(LayerDefinitions);
-  }, []);
-
-  // Check for invalid layer ids.
-  const invalidLayersIds = useMemo(() => {
-    return urlLayerIds.filter(layerId => !layerDefinitionIds.includes(layerId));
-  }, [layerDefinitionIds, urlLayerIds]);
-
-  // Check for layers that have not been included.
-  const missingLayers = useMemo(() => {
-    return urlLayerIds.filter(
-      layerId => !selectedLayersIds.includes(layerId as LayerKey),
-    );
-  }, [selectedLayersIds, urlLayerIds]);
-
-  // Adds missing layers to existing map instance
-  const addMissingLayers = useCallback(() => {
-    missingLayers.forEach(layerId => {
-      const layer = LayerDefinitions[layerId as LayerKey];
-      try {
-        checkLayerAvailableDatesAndContinueOrRemove(
-          layer,
-          serverAvailableDates,
-          removeLayerFromUrl,
-          dispatch,
-        );
-      } catch (error) {
-        console.error((error as LocalError).getErrorMessage());
-        return;
-      }
-      dispatch(addLayer(layer));
-    });
-  }, [dispatch, missingLayers, removeLayerFromUrl, serverAvailableDates]);
-
-  // The date integer from url
-  const dateInt = useMemo(() => {
-    return moment(urlDate).set({ hour: 12, minute: 0 }).valueOf();
-  }, [urlDate]);
+  const layerDefinitionsIncludeDefaultLayer = Object.keys(
+    LayerDefinitions,
+  ).includes(defaultLayer);
+  const defaultLayerInLayerDefinitions =
+    LayerDefinitions[defaultLayer as LayerKey];
+  const layerDefinitionIds = Object.keys(LayerDefinitions);
+  const hazardLayersArray =
+    hazardLayerIds !== null ? hazardLayerIds.split(',') : [];
+  const baselineLayersArray =
+    baselineLayerIds !== null ? baselineLayerIds.split(',') : [];
+  const urlLayerIds = [...hazardLayersArray, ...baselineLayersArray];
+  const numberOfActiveLayers =
+    hazardLayersArray.length + baselineLayersArray.length;
 
   /*
     takes all the dates possible for every layer and counts the amount of times each one is duplicated.
@@ -263,20 +188,6 @@ const MapView = memo(({ classes }: MapViewProps) => {
       moment.utc(dateString).set({ hour: 12, minute: 0 }).valueOf(),
     );
   }, [selectedLayerDatesDupCount, selectedLayersWithDateSupport.length]);
-
-  /*
-    reverse the order off adding layers so that the first boundary layer will be placed at the very bottom,
-    to prevent other boundary layers being covered by any layers
-  */
-  const displayedBoundaryLayers = useMemo(() => {
-    // eslint-disable-next-line fp/no-mutating-methods
-    return getDisplayBoundaryLayers().reverse();
-  }, []);
-
-  const loadBoundaryLayerData = useCallback(() => {
-    displayedBoundaryLayers.forEach(l => dispatch(addLayer(l)));
-    displayedBoundaryLayers.forEach(l => dispatch(loadLayerData({ layer: l })));
-  }, [dispatch, displayedBoundaryLayers]);
 
   const showBoundaryInfo = useMemo(() => {
     return JSON.parse(process.env.REACT_APP_SHOW_MAP_INFO || 'false');
@@ -371,6 +282,42 @@ const MapView = memo(({ classes }: MapViewProps) => {
     updateHistory,
   ]);
 
+  // The date integer from url
+  const serverAvailableDatesAreEmpty = useMemo(
+    () => Object.keys(serverAvailableDates).length === 0,
+    [serverAvailableDates],
+  );
+
+  // Adds missing layers to existing map instance
+  const addMissingLayers = useCallback((): void => {
+    // Check for layers that have not been included.
+    const missingLayers = urlLayerIds.filter(
+      layerId =>
+        !selectedLayers.map(layer => layer.id).includes(layerId as LayerKey),
+    );
+    missingLayers.forEach(layerId => {
+      const layer = LayerDefinitions[layerId as LayerKey];
+      try {
+        checkLayerAvailableDatesAndContinueOrRemove(
+          layer,
+          serverAvailableDates,
+          removeLayerFromUrl,
+          dispatch,
+        );
+      } catch (error) {
+        console.error((error as LocalError).getErrorMessage());
+        return;
+      }
+      dispatch(addLayer(layer));
+    });
+  }, [
+    urlLayerIds,
+    selectedLayers,
+    serverAvailableDates,
+    removeLayerFromUrl,
+    dispatch,
+  ]);
+
   useEffect(() => {
     if (
       (!hazardLayerIds && !baselineLayerIds) ||
@@ -379,6 +326,10 @@ const MapView = memo(({ classes }: MapViewProps) => {
       return;
     }
 
+    // Check for invalid layer ids.
+    const invalidLayersIds = urlLayerIds.filter(
+      layerId => !layerDefinitionIds.includes(layerId),
+    );
     // TODO - remove layers after dispatching the error message.
     if (invalidLayersIds.length > 0) {
       dispatch(
@@ -392,6 +343,8 @@ const MapView = memo(({ classes }: MapViewProps) => {
 
     // Add the missing layers
     addMissingLayers();
+
+    const dateInt = moment(urlDate).set({ hour: 12, minute: 0 }).valueOf();
 
     if (!urlDate || dateInt === selectedDate) {
       return;
@@ -410,12 +363,12 @@ const MapView = memo(({ classes }: MapViewProps) => {
       }),
     );
   }, [
+    urlLayerIds,
+    layerDefinitionIds,
     addMissingLayers,
     baselineLayerIds,
-    dateInt,
     dispatch,
     hazardLayerIds,
-    invalidLayersIds,
     selectedDate,
     serverAvailableDatesAreEmpty,
     updateHistory,
@@ -424,14 +377,19 @@ const MapView = memo(({ classes }: MapViewProps) => {
 
   useEffect(() => {
     dispatch(loadAvailableDates());
-    // when we switch layers, or change dates, close any active pop-ups
-    dispatch(hidePopup());
 
     // we must load boundary layer here for two reasons
     // 1. Stop showing two loading screens on startup - Mapbox renders its children very late, so we can't rely on BoundaryLayer to load internally
     // 2. Prevent situations where a user can toggle a layer like NSO (depends on Boundaries) before Boundaries finish loading.
-    loadBoundaryLayerData();
-  }, [dispatch, loadBoundaryLayerData]);
+
+    // reverse the order off adding layers so that the first boundary layer will be placed at the very bottom,
+    // to prevent other boundary layers being covered by any layers
+
+    // eslint-disable-next-line fp/no-mutating-methods
+    const displayedBoundaryLayers = getDisplayBoundaryLayers().reverse();
+    displayedBoundaryLayers.forEach(l => dispatch(addLayer(l)));
+    displayedBoundaryLayers.forEach(l => dispatch(loadLayerData({ layer: l })));
+  }, [dispatch]);
 
   // let users know if the layers selected are not possible to view together.
   useEffect(() => {
@@ -512,88 +470,6 @@ const MapView = memo(({ classes }: MapViewProps) => {
     urlDate,
   ]);
 
-  const renderedGridItemAlertForm = useMemo(() => {
-    if (!alertFormActive) {
-      return null;
-    }
-    return (
-      <Grid item>
-        <AlertForm isOpen={isAlertFormOpen} setOpen={setIsAlertFormOpen} />
-      </Grid>
-    );
-  }, [alertFormActive, isAlertFormOpen]);
-
-  const renderedExtraFeatures = useMemo(() => {
-    if (!isShowingExtraFeatures) {
-      return null;
-    }
-    return (
-      <Grid
-        container
-        justifyContent="space-between"
-        className={classes.buttonContainer}
-      >
-        <Grid item>
-          <Grid container spacing={1}>
-            <Grid item>
-              <GoToBoundaryDropdown />
-            </Grid>
-            {renderedGridItemAlertForm}
-          </Grid>
-        </Grid>
-        <Grid item>
-          <Grid container spacing={1}>
-            <Legends layers={selectedLayers} extent={adminBoundariesExtent} />
-          </Grid>
-        </Grid>
-      </Grid>
-    );
-  }, [
-    adminBoundariesExtent,
-    classes.buttonContainer,
-    isShowingExtraFeatures,
-    renderedGridItemAlertForm,
-    selectedLayers,
-  ]);
-
-  const renderedDateSelector = useMemo(() => {
-    if (!isShowingExtraFeatures || selectedLayerDates.length <= 0) {
-      return null;
-    }
-    return (
-      <DateSelector
-        availableDates={selectedLayerDates}
-        selectedLayers={selectedLayersWithDateSupport}
-      />
-    );
-  }, [
-    isShowingExtraFeatures,
-    selectedLayerDates,
-    selectedLayersWithDateSupport,
-  ]);
-
-  const renderedBoundaryInfoBox = useMemo(() => {
-    if (!showBoundaryInfo) {
-      return null;
-    }
-    return <BoundaryInfoBox />;
-  }, [showBoundaryInfo]);
-
-  const renderedDatesLoader = useMemo(() => {
-    if (!datesLoading) {
-      return null;
-    }
-    return (
-      <div className={classes.loading}>
-        <CircularProgress size={100} />
-      </div>
-    );
-  }, [classes.loading, datesLoading]);
-
-  const activeLayers = useMemo(() => {
-    return hazardLayersArray.length + baselineLayersArray.length;
-  }, [baselineLayersArray.length, hazardLayersArray.length]);
-
   return (
     <Box className={classes.root}>
       <LeftPanel
@@ -601,7 +477,7 @@ const MapView = memo(({ classes }: MapViewProps) => {
         panelSize={panelSize}
         setPanelSize={setPanelSize}
         isPanelHidden={isPanelHidden}
-        activeLayers={activeLayers}
+        activeLayers={numberOfActiveLayers}
       />
       <Box className={classes.container}>
         <Box
@@ -609,16 +485,32 @@ const MapView = memo(({ classes }: MapViewProps) => {
           style={{ marginLeft: isPanelHidden ? PanelSize.folded : panelSize }}
         >
           <FoldButton
-            activeLayers={activeLayers}
+            activeLayers={numberOfActiveLayers}
             isPanelHidden={isPanelHidden}
             setIsPanelHidden={setIsPanelHidden}
           />
-          {renderedExtraFeatures}
-          {renderedDateSelector}
-          {renderedBoundaryInfoBox}
+          {isShowingExtraFeatures && (
+            <ExtraFeature
+              selectedLayers={selectedLayers}
+              adminBoundariesExtent={adminBoundariesExtent}
+              isAlertFormOpen={isAlertFormOpen}
+              setIsAlertFormOpen={setIsAlertFormOpen}
+            />
+          )}
+          {isShowingExtraFeatures && selectedLayerDates.length > 0 && (
+            <DateSelector
+              availableDates={selectedLayerDates}
+              selectedLayers={selectedLayersWithDateSupport}
+            />
+          )}
+          {showBoundaryInfo && <BoundaryInfoBox />}
         </Box>
       </Box>
-      {renderedDatesLoader}
+      {datesLoading && (
+        <div className={classes.loading}>
+          <CircularProgress size={100} />
+        </div>
+      )}
       <MapComponent
         panelHidden={isPanelHidden}
         selectedLayers={selectedLayers}
@@ -647,19 +539,6 @@ const styles = () =>
       position: 'relative',
       height: '100%',
       display: 'flex',
-    },
-    buttonContainer: {
-      zIndex: 5,
-      // Allow users to click on the map through this div
-      pointerEvents: 'none',
-      // Give children the ability to be clicked however
-      // (go down 2 levels to target raw elements, instead of individual grid cells)
-      '& > * > *': {
-        pointerEvents: 'auto',
-      },
-      width: '100%',
-      maxHeight: '100px',
-      padding: '3px 8px 0 16px',
     },
     loading: {
       position: 'absolute',

@@ -2,6 +2,7 @@ import { AnyLayer, AnySourceData, Map as MapBoxMap } from 'mapbox-gl';
 import { LayerKey, BoundaryLayerProps, LayerType } from 'config/types';
 import { getDisplayBoundaryLayers } from 'config/utils';
 import { addLayer, removeLayer } from 'context/mapStateSlice';
+import { Dispatch } from 'react';
 
 // fixes the issue that property 'source' is not guaranteed to exist on type 'AnyLayer'
 // because 'CustomLayerInterface' does not specify a 'source' property
@@ -33,10 +34,14 @@ export function safeDispatchAddLayer(
 export function safeDispatchRemoveLayer(
   _map: MapBoxMap | undefined,
   layer: LayerType,
-  dispatcher: Function,
+  dispatcher: Dispatch<any>,
 ) {
   if (isLayerOnView(_map, layer.id)) {
+    // to remove after check on surge
+    const timeStamp = Date.now();
     dispatcher(removeLayer(layer));
+    // eslint-disable-next-line no-console
+    console.log(Date.now() - timeStamp);
   }
 }
 
@@ -76,7 +81,7 @@ export function firstBoundaryOnView(map: MapBoxMap | undefined): LayerKey {
  */
 export function refreshBoundaries(
   map: MapBoxMap | undefined,
-  dispatcher: Function,
+  dispatcher: Dispatch<any>,
 ) {
   const activeBoundaryLayers = boundariesOnView(map);
   // remove active boundary layers

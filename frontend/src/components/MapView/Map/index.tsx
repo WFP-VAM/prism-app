@@ -171,7 +171,6 @@ const MapComponent = memo(
       (map: Map) => {
         // Track with local state to minimize expensive dispatch call
         const layerIds = new Set<LayerKey>();
-        map.on('sourcedataloading', mapSourceListener(layerIds));
         map.on('sourcedata', mapSourceListener(layerIds));
         map.on('idle', idleMapListener(layerIds));
       },
