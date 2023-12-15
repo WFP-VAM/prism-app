@@ -1,5 +1,6 @@
 import { Box } from '@material-ui/core';
 import React, { memo } from 'react';
+import HashText from 'components/Common/HashText';
 import { Extent } from 'components/MapView/Layers/raster-utils';
 import RootAccordionItems from './RootAccordionItems';
 import RootAnalysisAccordionItems from './RootAnalysisAccordionItems';
@@ -9,9 +10,11 @@ interface LayersPanelProps {
 }
 
 const LayersPanel = ({ extent }: LayersPanelProps) => (
-  <Box>
+  <Box display="flex" flexDirection="column" height="100%">
     <RootAccordionItems extent={extent} />
     <RootAnalysisAccordionItems />
+    <Box flexGrow={1} />
+    <HashText />
   </Box>
 );
 

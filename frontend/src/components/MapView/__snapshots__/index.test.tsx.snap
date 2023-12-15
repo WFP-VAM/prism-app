@@ -336,6 +336,17 @@ exports[`renders as expected 1`] = `
                   </div>
                 </div>
               </div>
+              <div
+                class="MuiBox-root MuiBox-root-24"
+              />
+              <a
+                href="https://github.com/WFP-VAM/prism-app"
+                rel="noopener noreferrer"
+                style="color: rgb(245, 247, 248); font-size: 0.7rem; left: 1rem;"
+                target="_blank"
+              >
+                version hash: 
+              </a>
             </div>
           </div>
           <div
@@ -354,10 +365,10 @@ exports[`renders as expected 1`] = `
       </div>
     </mock-drawer>
     <div
-      class="MuiBox-root MuiBox-root-24 memo-container-2"
+      class="MuiBox-root MuiBox-root-25 memo-container-2"
     >
       <div
-        class="MuiBox-root MuiBox-root-25 memo-optionContainer-3"
+        class="MuiBox-root MuiBox-root-26 memo-optionContainer-3"
         style="margin-left: 500px;"
       >
         <mock-tooltip
@@ -383,7 +394,7 @@ exports[`renders as expected 1`] = `
           </mock-button>
         </mock-tooltip>
         <div
-          class="MuiGrid-root ExtraFeature-buttonContainer-28 MuiGrid-container MuiGrid-justify-content-xs-space-between"
+          class="MuiGrid-root ExtraFeature-buttonContainer-29 MuiGrid-container MuiGrid-justify-content-xs-space-between"
         >
           <div
             class="MuiGrid-root MuiGrid-item"
@@ -395,7 +406,7 @@ exports[`renders as expected 1`] = `
                 class="MuiGrid-root MuiGrid-item"
               >
                 <div
-                  class="makeStyles-button-29"
+                  class="makeStyles-button-30"
                 >
                   <svg
                     aria-hidden="true"
@@ -408,7 +419,7 @@ exports[`renders as expected 1`] = `
                     />
                   </svg>
                   <div
-                    class="makeStyles-selectContainer-31"
+                    class="makeStyles-selectContainer-32"
                   >
                     <mock-circularprogress
                       color="inherit"
