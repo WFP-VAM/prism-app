@@ -223,12 +223,15 @@ def wrap_get_hdc_stats(
 
 @app.get("/kobo/dates")
 def get_kobo_form_dates(
+    response: Response,
     koboUrl: HttpUrl,
     formId: str,
     datetimeField: str,
     filters: Optional[str] = None,
 ):
     """Get all form response dates."""
+    # cache responses for 24h as they're unlikely to change
+    response.headers["Cache-Control"] = "max-age=86400"
     return get_form_dates(koboUrl, formId, datetimeField, filters)
 
 
