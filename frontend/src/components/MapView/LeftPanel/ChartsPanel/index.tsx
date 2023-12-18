@@ -327,6 +327,13 @@ const ChartsPanel = memo(
       [compareLocations, comparePeriods],
     );
 
+    const getCountryName: (admProps: GeoJsonProperties) => string = useCallback(
+      admProps => {
+        return multiCountry ? admProps?.admin0Name : country;
+      },
+      [country],
+    );
+
     const locationString = (
       countryName: string,
       adm1Name: string,
@@ -527,11 +534,11 @@ const ChartsPanel = memo(
       };
 
       const titleStrings: () => string[][] = () => {
-        if (compareLocations) {
+        if (compareLocations && adminProperties && secondAdminProperties) {
           return [
             [
               locationString(
-                multiCountry ? admin0Key : country,
+                getCountryName(adminProperties),
                 selectedAdmin1Area,
                 selectedAdmin2Area,
                 adminLevel,
@@ -540,7 +547,7 @@ const ChartsPanel = memo(
             ],
             [
               locationString(
-                multiCountry ? secondAdmin0Key : country,
+                getCountryName(secondAdminProperties),
                 comparedAdmin1Area,
                 comparedAdmin2Area,
                 comparedAdminLevel,
@@ -572,29 +579,29 @@ const ChartsPanel = memo(
         </Box>
       ));
       // add a location string above everything if comparing periods
-      const locationBox = comparePeriods ? (
-        <Box
-          key="locationBox"
-          style={{
-            height: '30px',
-            minWidth: '80%',
-            flex: 1,
-            position: 'relative',
-          }}
-        >
-          <Typography className={classes.textLabel}>
-            {locationString(
-              multiCountry ? admin0Key : country,
-              selectedAdmin1Area,
-              selectedAdmin2Area,
-              adminLevel,
-            )}
-          </Typography>
-        </Box>
-      ) : null;
+      const locationBox =
+        comparePeriods && adminProperties ? (
+          <Box
+            key="locationBox"
+            style={{
+              height: '30px',
+              minWidth: '80%',
+              flex: 1,
+              position: 'relative',
+            }}
+          >
+            <Typography className={classes.textLabel}>
+              {locationString(
+                getCountryName(adminProperties),
+                selectedAdmin1Area,
+                selectedAdmin2Area,
+                adminLevel,
+              )}
+            </Typography>
+          </Box>
+        ) : null;
       return [locationBox, ...titles, ...zipped];
     }, [
-      admin0Key,
       adminLevel,
       adminProperties,
       chartMaxDateRange,
@@ -602,10 +609,9 @@ const ChartsPanel = memo(
       classes.textLabel,
       compareLocations,
       comparePeriods,
-      country,
       endDate1,
       endDate2,
-      secondAdmin0Key,
+      getCountryName,
       secondAdminLevel,
       secondAdminProperties,
       secondSelectedAdmin1Area,
@@ -736,21 +742,25 @@ const ChartsPanel = memo(
       [t],
     );
 
-    const firstCSVFilename = buildCsvFileName([
-      multiCountry ? admin0Key : country,
-      selectedAdmin1Area,
-      selectedAdmin2Area,
-      ...(selectedLayerTitles as string[]),
-      comparePeriods ? 'first_period' : '',
-    ]);
+    const firstCSVFilename = adminProperties
+      ? buildCsvFileName([
+          getCountryName(adminProperties),
+          selectedAdmin1Area,
+          selectedAdmin2Area,
+          ...(selectedLayerTitles as string[]),
+          comparePeriods ? 'first_period' : '',
+        ])
+      : '';
 
-    const secondCSVFilename = buildCsvFileName([
-      multiCountry ? secondAdmin0Key : country,
-      compareLocations ? secondSelectedAdmin1Area : selectedAdmin1Area,
-      compareLocations ? secondSelectedAdmin2Area : selectedAdmin2Area,
-      ...(selectedLayerTitles as string[]),
-      comparePeriods ? 'second_period' : '',
-    ]);
+    const secondCSVFilename = secondAdminProperties
+      ? buildCsvFileName([
+          getCountryName(secondAdminProperties),
+          compareLocations ? secondSelectedAdmin1Area : selectedAdmin1Area,
+          compareLocations ? secondSelectedAdmin2Area : selectedAdmin2Area,
+          ...(selectedLayerTitles as string[]),
+          comparePeriods ? 'second_period' : '',
+        ])
+      : '';
 
     if (tabPanelType !== tabValue) {
       return null;
