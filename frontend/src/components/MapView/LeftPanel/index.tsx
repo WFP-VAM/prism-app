@@ -1,10 +1,8 @@
 import { createStyles, Drawer, makeStyles, Theme } from '@material-ui/core';
 import React, { memo, useMemo } from 'react';
 import { LayersCategoryType, MenuItemType, PanelSize } from 'config/types';
-import { Extent } from 'components/MapView/Layers/raster-utils';
 import AnalysisPanel from './AnalysisPanel';
 import ChartsPanel from './ChartsPanel';
-import LayersPanel from './layersPanel';
 import LeftPanelTabs from './LeftPanelTabs';
 import TablesPanel from './TablesPanel';
 import { menuList } from './utils';
@@ -26,14 +24,9 @@ const useStyles = makeStyles<Theme, StyleProps>(() =>
 );
 
 const LeftPanel = memo(
-  ({
-    extent,
-    panelSize,
-    setPanelSize,
-    isPanelHidden,
-    activeLayers,
-  }: LeftPanelProps) => {
+  ({ panelSize, setPanelSize, isPanelHidden }: LeftPanelProps) => {
     const classes = useStyles({ panelSize });
+
     const [resultsPage, setResultsPage] = React.useState<JSX.Element | null>(
       null,
     );
@@ -64,8 +57,6 @@ const LeftPanel = memo(
           setPanelSize={setPanelSize}
           areTablesAvailable={areTablesAvailable}
           resultsPage={resultsPage}
-          activeLayers={activeLayers}
-          layersPanel={<LayersPanel extent={extent} />}
           chartsPanel={
             <ChartsPanel
               setPanelSize={setPanelSize}
@@ -74,7 +65,6 @@ const LeftPanel = memo(
           }
           analysisPanel={
             <AnalysisPanel
-              extent={extent}
               panelSize={panelSize}
               setPanelSize={setPanelSize}
               setResultsPage={setResultsPage}
@@ -94,11 +84,9 @@ const LeftPanel = memo(
 );
 
 interface LeftPanelProps {
-  extent?: Extent;
   panelSize: PanelSize;
   setPanelSize: React.Dispatch<React.SetStateAction<PanelSize>>;
   isPanelHidden: boolean;
-  activeLayers: number;
 }
 
 export default LeftPanel;

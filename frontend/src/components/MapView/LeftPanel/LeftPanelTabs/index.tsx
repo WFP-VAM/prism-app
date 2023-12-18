@@ -25,7 +25,9 @@ import {
 } from 'context/leftPanelStateSlice';
 import { useSafeTranslation } from 'i18n';
 import { analysisResultSelector } from 'context/analysisResultStateSlice';
+import useLayersHook from 'hook/useLayersHook';
 import TabPanel from './TabPanel';
+import LayersPanel from '../layersPanel';
 
 interface StyleProps {
   tabValue: Panel;
@@ -72,7 +74,6 @@ const useStyles = makeStyles<Theme, StyleProps>(() =>
 );
 
 interface TabsProps {
-  layersPanel: React.ReactNode;
   chartsPanel: React.ReactNode;
   analysisPanel: React.ReactNode;
   tablesPanel: React.ReactNode;
@@ -80,12 +81,10 @@ interface TabsProps {
   panelSize: PanelSize;
   resultsPage: JSX.Element | null;
   setPanelSize: React.Dispatch<React.SetStateAction<PanelSize>>;
-  activeLayers: number;
 }
 
 const LeftPanelTabs = memo(
   ({
-    layersPanel,
     chartsPanel,
     analysisPanel,
     tablesPanel,
@@ -93,13 +92,16 @@ const LeftPanelTabs = memo(
     panelSize,
     resultsPage,
     setPanelSize,
-    activeLayers,
   }: TabsProps) => {
     const { t } = useSafeTranslation();
     const dispatch = useDispatch();
     const tabValue = useSelector(leftPanelTabValueSelector);
     const analysisData = useSelector(analysisResultSelector);
     const classes = useStyles({ panelSize, tabValue });
+
+    const { adminBoundariesExtent: extent } = useLayersHook();
+
+    const { numberOfActiveLayers } = useLayersHook();
 
     const areChartLayersAvailable = useMemo(() => {
       return getWMSLayersWithChart().length > 0;
@@ -115,10 +117,10 @@ const LeftPanelTabs = memo(
 
     const layersBadgeContent = useMemo(() => {
       if (!analysisData) {
-        return activeLayers;
+        return numberOfActiveLayers;
       }
-      return activeLayers + 1;
-    }, [activeLayers, analysisData]);
+      return numberOfActiveLayers + 1;
+    }, [numberOfActiveLayers, analysisData]);
 
     const renderedLayersTabLabel = useMemo(() => {
       if (
@@ -297,7 +299,7 @@ const LeftPanelTabs = memo(
             </Tabs>
           </div>
           <TabPanel value={tabValue} index={Panel.Layers}>
-            {layersPanel}
+            <LayersPanel extent={extent} />
           </TabPanel>
           {renderedChartsPanel}
           <TabPanel value={tabValue} index={Panel.Analysis}>

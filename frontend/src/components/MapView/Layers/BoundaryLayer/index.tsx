@@ -1,5 +1,5 @@
 import * as MapboxGL from 'mapbox-gl';
-import React, { useEffect } from 'react';
+import React, { memo, useEffect } from 'react';
 import { GeoJSONLayer } from 'react-mapbox-gl';
 import { useDispatch, useSelector } from 'react-redux';
 import { BoundaryLayerProps } from 'config/types';
@@ -28,7 +28,7 @@ interface ComponentProps {
   before?: string;
 }
 
-function BoundaryLayer({ layer, before }: ComponentProps) {
+const BoundaryLayer = ({ layer, before }: ComponentProps) => {
   const dispatch = useDispatch();
 
   const boundaryLayer = useSelector(layerDataSelector(layer.id)) as
@@ -112,6 +112,6 @@ function BoundaryLayer({ layer, before }: ComponentProps) {
       before={before}
     />
   );
-}
+};
 
-export default BoundaryLayer;
+export default memo(BoundaryLayer);
