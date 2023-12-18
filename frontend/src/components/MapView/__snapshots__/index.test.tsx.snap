@@ -3,7 +3,7 @@
 exports[`renders as expected 1`] = `
 <div>
   <div
-    class="MuiBox-root MuiBox-root-5 memo-root-1"
+    class="MuiBox-root MuiBox-root-3 memo-root-1"
   >
     <mock-drawer
       anchor="left"
@@ -12,13 +12,13 @@ exports[`renders as expected 1`] = `
       variant="persistent"
     >
       <div
-        class="makeStyles-root-8 makeStyles-root-14"
+        class="makeStyles-root-6 makeStyles-root-12"
       >
         <div
-          class="makeStyles-tabsWrapper-9"
+          class="makeStyles-tabsWrapper-7"
         >
           <div
-            class="makeStyles-tabsContainer-10 makeStyles-tabsContainer-15"
+            class="makeStyles-tabsContainer-8 makeStyles-tabsContainer-13"
           >
             <mock-tabs
               aria-label="left panel tabs"
@@ -58,22 +58,22 @@ exports[`renders as expected 1`] = `
             style="display: block; flex-grow: 1; order: -1; overflow-x: hidden;"
           >
             <div
-              class="MuiBox-root MuiBox-root-16"
+              class="MuiBox-root MuiBox-root-14"
             >
               <div
-                class="MuiPaper-root MuiAccordion-root makeStyles-root-17 MuiAccordion-rounded MuiPaper-elevation0 MuiPaper-rounded"
+                class="MuiPaper-root MuiAccordion-root makeStyles-root-15 MuiAccordion-rounded MuiPaper-elevation0 MuiPaper-rounded"
               >
                 <div
                   aria-controls="Rainfall"
                   aria-disabled="false"
                   aria-expanded="false"
-                  class="MuiButtonBase-root MuiAccordionSummary-root makeStyles-rootSummary-18"
+                  class="MuiButtonBase-root MuiAccordionSummary-root makeStyles-rootSummary-16"
                   id="Rainfall"
                   role="button"
                   tabindex="0"
                 >
                   <div
-                    class="MuiAccordionSummary-content makeStyles-summaryContent-21"
+                    class="MuiAccordionSummary-content makeStyles-summaryContent-19"
                   >
                     <mock-typography
                       classes="[object Object]"
@@ -84,7 +84,7 @@ exports[`renders as expected 1`] = `
                   <div
                     aria-disabled="false"
                     aria-hidden="true"
-                    class="MuiButtonBase-root MuiIconButton-root MuiAccordionSummary-expandIcon makeStyles-expandIcon-20 MuiIconButton-edgeEnd"
+                    class="MuiButtonBase-root MuiIconButton-root MuiAccordionSummary-expandIcon makeStyles-expandIcon-18 MuiIconButton-edgeEnd"
                   >
                     <span
                       class="MuiIconButton-label"
@@ -107,19 +107,19 @@ exports[`renders as expected 1`] = `
                 </div>
               </div>
               <div
-                class="MuiPaper-root MuiAccordion-root makeStyles-root-17 MuiAccordion-rounded MuiPaper-elevation0 MuiPaper-rounded"
+                class="MuiPaper-root MuiAccordion-root makeStyles-root-15 MuiAccordion-rounded MuiPaper-elevation0 MuiPaper-rounded"
               >
                 <div
                   aria-controls="Vegetation"
                   aria-disabled="false"
                   aria-expanded="false"
-                  class="MuiButtonBase-root MuiAccordionSummary-root makeStyles-rootSummary-18"
+                  class="MuiButtonBase-root MuiAccordionSummary-root makeStyles-rootSummary-16"
                   id="Vegetation"
                   role="button"
                   tabindex="0"
                 >
                   <div
-                    class="MuiAccordionSummary-content makeStyles-summaryContent-21"
+                    class="MuiAccordionSummary-content makeStyles-summaryContent-19"
                   >
                     <mock-typography
                       classes="[object Object]"
@@ -130,7 +130,7 @@ exports[`renders as expected 1`] = `
                   <div
                     aria-disabled="false"
                     aria-hidden="true"
-                    class="MuiButtonBase-root MuiIconButton-root MuiAccordionSummary-expandIcon makeStyles-expandIcon-20 MuiIconButton-edgeEnd"
+                    class="MuiButtonBase-root MuiIconButton-root MuiAccordionSummary-expandIcon makeStyles-expandIcon-18 MuiIconButton-edgeEnd"
                   >
                     <span
                       class="MuiIconButton-label"
@@ -153,19 +153,19 @@ exports[`renders as expected 1`] = `
                 </div>
               </div>
               <div
-                class="MuiPaper-root MuiAccordion-root makeStyles-root-17 MuiAccordion-rounded MuiPaper-elevation0 MuiPaper-rounded"
+                class="MuiPaper-root MuiAccordion-root makeStyles-root-15 MuiAccordion-rounded MuiPaper-elevation0 MuiPaper-rounded"
               >
                 <div
                   aria-controls="Temperature"
                   aria-disabled="false"
                   aria-expanded="false"
-                  class="MuiButtonBase-root MuiAccordionSummary-root makeStyles-rootSummary-18"
+                  class="MuiButtonBase-root MuiAccordionSummary-root makeStyles-rootSummary-16"
                   id="Temperature"
                   role="button"
                   tabindex="0"
                 >
                   <div
-                    class="MuiAccordionSummary-content makeStyles-summaryContent-21"
+                    class="MuiAccordionSummary-content makeStyles-summaryContent-19"
                   >
                     <mock-typography
                       classes="[object Object]"
@@ -176,7 +176,7 @@ exports[`renders as expected 1`] = `
                   <div
                     aria-disabled="false"
                     aria-hidden="true"
-                    class="MuiButtonBase-root MuiIconButton-root MuiAccordionSummary-expandIcon makeStyles-expandIcon-20 MuiIconButton-edgeEnd"
+                    class="MuiButtonBase-root MuiIconButton-root MuiAccordionSummary-expandIcon makeStyles-expandIcon-18 MuiIconButton-edgeEnd"
                   >
                     <span
                       class="MuiIconButton-label"
@@ -199,19 +199,19 @@ exports[`renders as expected 1`] = `
                 </div>
               </div>
               <div
-                class="MuiPaper-root MuiAccordion-root makeStyles-root-17 MuiAccordion-rounded MuiPaper-elevation0 MuiPaper-rounded"
+                class="MuiPaper-root MuiAccordion-root makeStyles-root-15 MuiAccordion-rounded MuiPaper-elevation0 MuiPaper-rounded"
               >
                 <div
                   aria-controls="Tropical Storms"
                   aria-disabled="false"
                   aria-expanded="false"
-                  class="MuiButtonBase-root MuiAccordionSummary-root makeStyles-rootSummary-18"
+                  class="MuiButtonBase-root MuiAccordionSummary-root makeStyles-rootSummary-16"
                   id="Tropical Storms"
                   role="button"
                   tabindex="0"
                 >
                   <div
-                    class="MuiAccordionSummary-content makeStyles-summaryContent-21"
+                    class="MuiAccordionSummary-content makeStyles-summaryContent-19"
                   >
                     <mock-typography
                       classes="[object Object]"
@@ -222,7 +222,7 @@ exports[`renders as expected 1`] = `
                   <div
                     aria-disabled="false"
                     aria-hidden="true"
-                    class="MuiButtonBase-root MuiIconButton-root MuiAccordionSummary-expandIcon makeStyles-expandIcon-20 MuiIconButton-edgeEnd"
+                    class="MuiButtonBase-root MuiIconButton-root MuiAccordionSummary-expandIcon makeStyles-expandIcon-18 MuiIconButton-edgeEnd"
                   >
                     <span
                       class="MuiIconButton-label"
@@ -245,19 +245,19 @@ exports[`renders as expected 1`] = `
                 </div>
               </div>
               <div
-                class="MuiPaper-root MuiAccordion-root makeStyles-root-17 MuiAccordion-rounded MuiPaper-elevation0 MuiPaper-rounded"
+                class="MuiPaper-root MuiAccordion-root makeStyles-root-15 MuiAccordion-rounded MuiPaper-elevation0 MuiPaper-rounded"
               >
                 <div
                   aria-controls="Vulnerability"
                   aria-disabled="false"
                   aria-expanded="false"
-                  class="MuiButtonBase-root MuiAccordionSummary-root makeStyles-rootSummary-18"
+                  class="MuiButtonBase-root MuiAccordionSummary-root makeStyles-rootSummary-16"
                   id="Vulnerability"
                   role="button"
                   tabindex="0"
                 >
                   <div
-                    class="MuiAccordionSummary-content makeStyles-summaryContent-21"
+                    class="MuiAccordionSummary-content makeStyles-summaryContent-19"
                   >
                     <mock-typography
                       classes="[object Object]"
@@ -268,7 +268,7 @@ exports[`renders as expected 1`] = `
                   <div
                     aria-disabled="false"
                     aria-hidden="true"
-                    class="MuiButtonBase-root MuiIconButton-root MuiAccordionSummary-expandIcon makeStyles-expandIcon-20 MuiIconButton-edgeEnd"
+                    class="MuiButtonBase-root MuiIconButton-root MuiAccordionSummary-expandIcon makeStyles-expandIcon-18 MuiIconButton-edgeEnd"
                   >
                     <span
                       class="MuiIconButton-label"
@@ -291,19 +291,19 @@ exports[`renders as expected 1`] = `
                 </div>
               </div>
               <div
-                class="MuiPaper-root MuiAccordion-root makeStyles-root-17 MuiAccordion-rounded MuiPaper-elevation0 MuiPaper-rounded"
+                class="MuiPaper-root MuiAccordion-root makeStyles-root-15 MuiAccordion-rounded MuiPaper-elevation0 MuiPaper-rounded"
               >
                 <div
                   aria-controls="Exposure"
                   aria-disabled="false"
                   aria-expanded="false"
-                  class="MuiButtonBase-root MuiAccordionSummary-root makeStyles-rootSummary-18"
+                  class="MuiButtonBase-root MuiAccordionSummary-root makeStyles-rootSummary-16"
                   id="Exposure"
                   role="button"
                   tabindex="0"
                 >
                   <div
-                    class="MuiAccordionSummary-content makeStyles-summaryContent-21"
+                    class="MuiAccordionSummary-content makeStyles-summaryContent-19"
                   >
                     <mock-typography
                       classes="[object Object]"
@@ -314,7 +314,7 @@ exports[`renders as expected 1`] = `
                   <div
                     aria-disabled="false"
                     aria-hidden="true"
-                    class="MuiButtonBase-root MuiIconButton-root MuiAccordionSummary-expandIcon makeStyles-expandIcon-20 MuiIconButton-edgeEnd"
+                    class="MuiButtonBase-root MuiIconButton-root MuiAccordionSummary-expandIcon makeStyles-expandIcon-18 MuiIconButton-edgeEnd"
                   >
                     <span
                       class="MuiIconButton-label"
@@ -337,7 +337,7 @@ exports[`renders as expected 1`] = `
                 </div>
               </div>
               <div
-                class="MuiBox-root MuiBox-root-24"
+                class="MuiBox-root MuiBox-root-22"
               />
               <a
                 href="https://github.com/WFP-VAM/prism-app"
@@ -365,10 +365,10 @@ exports[`renders as expected 1`] = `
       </div>
     </mock-drawer>
     <div
-      class="MuiBox-root MuiBox-root-25 memo-container-2"
+      class="MuiBox-root MuiBox-root-25 OtherFeatures-container-23"
     >
       <div
-        class="MuiBox-root MuiBox-root-26 memo-optionContainer-3"
+        class="MuiBox-root MuiBox-root-26 OtherFeatures-optionContainer-24"
         style="margin-left: 500px;"
       >
         <mock-tooltip
@@ -445,7 +445,7 @@ exports[`renders as expected 1`] = `
       </div>
     </div>
     <div
-      class="memo-loading-4"
+      class="memo-loading-2"
     >
       <mock-circularprogress
         size="100"
