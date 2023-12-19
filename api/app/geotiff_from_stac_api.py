@@ -1,6 +1,6 @@
+import hashlib
 import logging
 import os
-import hashlib
 
 import boto3
 from app.timer import timed
