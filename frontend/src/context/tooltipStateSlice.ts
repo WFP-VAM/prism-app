@@ -1,5 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { merge } from 'lodash';
+import { AdminCodeString } from 'config/types';
 import type { RootState } from './store';
 
 export interface PopupData {
@@ -17,6 +18,9 @@ export interface PopupMetaData {
 
 export interface MapTooltipState {
   coordinates?: GeoJSON.Position;
+  locationAdminCode: AdminCodeString;
+  // the key under which we find locationAdminCode
+  locationSelectorKey: string;
   locationName: string;
   locationLocalName: string;
   data: PopupData & PopupMetaData;
@@ -26,11 +30,16 @@ export interface MapTooltipState {
 
 type ShowPopupType = {
   coordinates: GeoJSON.Position;
+  // the key of the dict under which locationAdminCode is to be found
+  locationSelectorKey: string;
+  locationAdminCode: AdminCodeString;
   locationName: string;
   locationLocalName: string;
 };
 
 const initialState: MapTooltipState = {
+  locationAdminCode: '' as AdminCodeString,
+  locationSelectorKey: '',
   locationName: '',
   locationLocalName: '',
   data: {},
@@ -69,6 +78,8 @@ export const tooltipStateSlice = createSlice({
     showPopup: (state, { payload }: PayloadAction<ShowPopupType>) => ({
       ...state,
       showing: true,
+      locationSelectorKey: payload.locationSelectorKey,
+      locationAdminCode: payload.locationAdminCode,
       locationName: payload.locationName,
       locationLocalName: payload.locationLocalName,
       coordinates: payload.coordinates,

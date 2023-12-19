@@ -22,6 +22,7 @@ import { useSafeTranslation } from 'i18n';
 
 import { Column } from 'utils/analysis-utils';
 import { showPopup } from 'context/tooltipStateSlice';
+import { AdminCodeString } from 'config/types';
 
 const ExposureAnalysisTable = memo(
   ({
@@ -140,6 +141,8 @@ const ExposureAnalysisTable = memo(
           dispatch(
             showPopup({
               coordinates: row.coordinates,
+              locationSelectorKey: '',
+              locationAdminCode: row.key as AdminCodeString,
               locationName: row.name,
               locationLocalName: row.localName,
             }),

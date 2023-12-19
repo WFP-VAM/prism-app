@@ -8,6 +8,7 @@ import {
   AdminLevelType,
   BoundaryLayerProps,
   WMSLayerProps,
+  AdminCodeString,
 } from 'config/types';
 import { getBoundaryLayersByAdminLevel } from 'config/utils';
 import { BoundaryLayerData } from 'context/layers/boundary';
@@ -40,10 +41,15 @@ const boundaryLayer = getBoundaryLayersByAdminLevel();
 
 const getProperties = (
   layerData: LayerData<BoundaryLayerProps>['data'],
+  adminCode: AdminCodeString,
+  adminSelectorKey: string,
   name: string,
 ) => {
   const features = layerData.features.filter(
-    elem => elem.properties && elem.properties[name],
+    elem =>
+      elem.properties &&
+      elem.properties[adminSelectorKey] &&
+      elem.properties[adminSelectorKey] === adminCode,
   );
 
   if (!features) {
@@ -54,12 +60,16 @@ const getProperties = (
 
 interface PopupChartProps extends WithStyles<typeof styles> {
   filteredChartLayers: WMSLayerProps[];
+  adminCode: AdminCodeString;
+  adminSelectorKey: string;
   adminLevel: AdminLevelType;
   onClose: React.Dispatch<React.SetStateAction<AdminLevelType | undefined>>;
   adminLevelsNames: () => string[];
 }
 const PopupAnalysisCharts = ({
   filteredChartLayers,
+  adminCode,
+  adminSelectorKey,
   adminLevel,
   onClose,
   adminLevelsNames,
@@ -89,6 +99,8 @@ const PopupAnalysisCharts = ({
               chartLayer={filteredChartLayer}
               adminProperties={getProperties(
                 data as BoundaryLayerData,
+                adminCode,
+                adminSelectorKey,
                 levelsConfiguration
                   .find(
                     levelConfiguration =>

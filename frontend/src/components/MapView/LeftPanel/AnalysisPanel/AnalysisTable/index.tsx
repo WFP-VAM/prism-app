@@ -19,6 +19,7 @@ import { TableRow as AnalysisTableRow } from 'context/analysisResultStateSlice';
 import { showPopup } from 'context/tooltipStateSlice';
 import { Column } from 'utils/analysis-utils';
 import { useSafeTranslation } from 'i18n';
+import { AdminCodeString } from 'config/types';
 
 const AnalysisTable = memo(
   ({
@@ -109,6 +110,8 @@ const AnalysisTable = memo(
           dispatch(
             showPopup({
               coordinates: row.coordinates,
+              locationSelectorKey: '',
+              locationAdminCode: row.key as AdminCodeString,
               locationName: row.name,
               locationLocalName: row.localName,
             }),
