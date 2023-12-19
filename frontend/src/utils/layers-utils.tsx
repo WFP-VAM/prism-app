@@ -43,7 +43,7 @@ const dateSupportLayerTypes: Array<LayerType['type']> = [
   'static_raster',
 ];
 
-const useLayersHook = () => {
+const useLayers = () => {
   const dispatch = useDispatch();
   const [defaultLayerAttempted, setDefaultLayerAttempted] = useState(false);
 
@@ -444,4 +444,4 @@ const useLayersHook = () => {
   };
 };
 
-export default useLayersHook;
+export default useLayers;

@@ -1,7 +1,7 @@
 import { Box, WithStyles, createStyles, withStyles } from '@material-ui/core';
 import React, { memo, useMemo } from 'react';
 import { PanelSize } from 'config/types';
-import useLayersHook from 'hook/useLayersHook';
+import useLayers from 'utils/layers-utils';
 import FoldButton from '../FoldButton';
 import ExtraFeature from '../ExtraFeature';
 import DateSelector from '../DateSelector';
@@ -38,13 +38,7 @@ const OtherFeatures = ({
   setIsPanelHidden,
   setIsAlertFormOpen,
 }: OtherFeaturesProps) => {
-  const {
-    numberOfActiveLayers,
-    selectedLayers,
-    adminBoundariesExtent,
-    selectedLayerDates,
-    selectedLayersWithDateSupport,
-  } = useLayersHook();
+  const { selectedLayerDates } = useLayers();
 
   const showBoundaryInfo = useMemo(() => {
     return JSON.parse(process.env.REACT_APP_SHOW_MAP_INFO || 'false');
@@ -60,23 +54,17 @@ const OtherFeatures = ({
         style={{ marginLeft: isPanelHidden ? PanelSize.folded : panelSize }}
       >
         <FoldButton
-          activeLayers={numberOfActiveLayers}
           isPanelHidden={isPanelHidden}
           setIsPanelHidden={setIsPanelHidden}
         />
         {isShowingExtraFeatures && (
           <ExtraFeature
-            selectedLayers={selectedLayers}
-            adminBoundariesExtent={adminBoundariesExtent}
             isAlertFormOpen={isAlertFormOpen}
             setIsAlertFormOpen={setIsAlertFormOpen}
           />
         )}
         {isShowingExtraFeatures && selectedLayerDates.length > 0 && (
-          <DateSelector
-            availableDates={selectedLayerDates}
-            selectedLayers={selectedLayersWithDateSupport}
-          />
+          <DateSelector />
         )}
         {showBoundaryInfo && <BoundaryInfoBox />}
       </Box>

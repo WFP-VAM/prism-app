@@ -31,7 +31,7 @@ import {
   StaticRasterLayer,
   WMSLayer,
 } from 'components/MapView/Layers';
-import useLayersHook from 'hook/useLayersHook';
+import useLayers from 'utils/layers-utils';
 
 interface MapComponentProps {
   setIsAlertFormOpen: Dispatch<SetStateAction<boolean>>;
@@ -44,16 +44,13 @@ type LayerComponentsMap<U extends LayerType> = {
 
 const MapComponent = memo(
   ({ setIsAlertFormOpen, panelHidden }: MapComponentProps) => {
-    // To remove before merging
-    // eslint-disable-next-line no-console
-    console.log('MapComponent');
     const {
       map: { boundingBox, minZoom, maxZoom, maxBounds },
     } = appConfig;
 
     const dispatch = useDispatch();
 
-    const { selectedLayers, boundaryLayerId } = useLayersHook();
+    const { selectedLayers, boundaryLayerId } = useLayers();
 
     const selectedMap = useSelector(mapSelector);
 

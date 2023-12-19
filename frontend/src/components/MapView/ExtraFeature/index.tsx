@@ -2,9 +2,8 @@ import { Grid, WithStyles, createStyles, withStyles } from '@material-ui/core';
 import GoToBoundaryDropdown from 'components/Common/BoundaryDropdown/goto';
 import React from 'react';
 import { appConfig } from 'config';
-import { LayerType } from 'config/types';
+import useLayers from 'utils/layers-utils';
 import Legends from '../Legends';
-import { Extent } from '../Layers/raster-utils';
 import AlertForm from '../AlertForm';
 
 const styles = createStyles({
@@ -24,20 +23,17 @@ const styles = createStyles({
 });
 
 interface ExtraFeatureProps extends WithStyles<typeof styles> {
-  selectedLayers: LayerType[];
-  adminBoundariesExtent?: Extent;
   isAlertFormOpen: boolean;
   setIsAlertFormOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const ExtraFeature = ({
   classes,
-  selectedLayers,
-  adminBoundariesExtent,
   isAlertFormOpen,
   setIsAlertFormOpen,
 }: ExtraFeatureProps) => {
   const { alertFormActive } = appConfig;
+  const { selectedLayers, adminBoundariesExtent } = useLayers();
 
   return (
     <Grid

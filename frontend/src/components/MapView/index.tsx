@@ -24,9 +24,6 @@ import MapComponent from './Map';
 import OtherFeatures from './OtherFeatures';
 
 const MapView = memo(({ classes }: MapViewProps) => {
-  // To remove before merging
-  // eslint-disable-next-line no-console
-  console.log('MapView');
   // App config attributes
   const { hidePanel } = appConfig;
 
@@ -34,7 +31,6 @@ const MapView = memo(({ classes }: MapViewProps) => {
   const datesLoading = useSelector(areDatesLoading);
 
   // State attributes
-  // const [defaultLayerAttempted, setDefaultLayerAttempted] = useState(false);
   const [isAlertFormOpen, setIsAlertFormOpen] = useState(false);
   const [panelSize, setPanelSize] = useState<PanelSize>(PanelSize.medium);
   const [isPanelHidden, setIsPanelHidden] = useState<boolean>(

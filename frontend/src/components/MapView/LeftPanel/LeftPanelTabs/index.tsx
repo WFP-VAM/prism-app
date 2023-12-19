@@ -1,5 +1,4 @@
 import {
-  Badge,
   Box,
   createStyles,
   makeStyles,
@@ -10,7 +9,6 @@ import {
 import {
   BarChartOutlined,
   ImageAspectRatioOutlined,
-  LayersOutlined,
   TableChart,
 } from '@material-ui/icons';
 import React, { memo, useCallback, useMemo } from 'react';
@@ -24,10 +22,9 @@ import {
   setTabValue,
 } from 'context/leftPanelStateSlice';
 import { useSafeTranslation } from 'i18n';
-import { analysisResultSelector } from 'context/analysisResultStateSlice';
-import useLayersHook from 'hook/useLayersHook';
 import TabPanel from './TabPanel';
 import LayersPanel from '../layersPanel';
+import TabLabel from './TabLabel';
 
 interface StyleProps {
   tabValue: Panel;
@@ -96,12 +93,7 @@ const LeftPanelTabs = memo(
     const { t } = useSafeTranslation();
     const dispatch = useDispatch();
     const tabValue = useSelector(leftPanelTabValueSelector);
-    const analysisData = useSelector(analysisResultSelector);
     const classes = useStyles({ panelSize, tabValue });
-
-    const { adminBoundariesExtent: extent } = useLayersHook();
-
-    const { numberOfActiveLayers } = useLayersHook();
 
     const areChartLayersAvailable = useMemo(() => {
       return getWMSLayersWithChart().length > 0;
@@ -114,42 +106,6 @@ const LeftPanelTabs = memo(
       },
       [dispatch, setPanelSize],
     );
-
-    const layersBadgeContent = useMemo(() => {
-      if (!analysisData) {
-        return numberOfActiveLayers;
-      }
-      return numberOfActiveLayers + 1;
-    }, [numberOfActiveLayers, analysisData]);
-
-    const renderedLayersTabLabel = useMemo(() => {
-      if (
-        tabValue !== Panel.Layers &&
-        panelSize !== PanelSize.folded &&
-        layersBadgeContent >= 1
-      ) {
-        return (
-          <Badge
-            anchorOrigin={{
-              horizontal: 'left',
-              vertical: 'top',
-            }}
-            overlap="rectangular"
-            badgeContent={layersBadgeContent}
-            color="secondary"
-          >
-            <LayersOutlined style={{ verticalAlign: 'middle' }} />
-            <Box ml={1}>{t('Layers')}</Box>
-          </Badge>
-        );
-      }
-      return (
-        <>
-          <LayersOutlined style={{ verticalAlign: 'middle' }} />
-          <Box ml={1}>{t('Layers')}</Box>
-        </>
-      );
-    }, [layersBadgeContent, panelSize, t, tabValue]);
 
     const a11yProps = useCallback((index: Panel) => {
       return {
@@ -271,7 +227,7 @@ const LeftPanelTabs = memo(
                 }}
                 value={Panel.Layers}
                 disableRipple
-                label={<Box display="flex">{renderedLayersTabLabel}</Box>}
+                label={<TabLabel panelSize={panelSize} tabValue={tabValue} />}
                 {...a11yProps(Panel.Layers)}
               />
               {renderedChartsTab}
@@ -299,7 +255,7 @@ const LeftPanelTabs = memo(
             </Tabs>
           </div>
           <TabPanel value={tabValue} index={Panel.Layers}>
-            <LayersPanel extent={extent} />
+            <LayersPanel />
           </TabPanel>
           {renderedChartsPanel}
           <TabPanel value={tabValue} index={Panel.Analysis}>

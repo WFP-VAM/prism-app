@@ -107,7 +107,7 @@ import {
   setTabValue,
 } from 'context/leftPanelStateSlice';
 import LoadingBlinkingDots from 'components/Common/LoadingBlinkingDots';
-import useLayersHook from 'hook/useLayersHook';
+import useLayers from 'utils/layers-utils';
 import AnalysisTable from './AnalysisTable';
 import ExposureAnalysisTable from './AnalysisTable/ExposureAnalysisTable';
 import ExposureAnalysisActions from './ExposureAnalysisActions';
@@ -153,7 +153,7 @@ const AnalysisPanel = memo(
     );
     const tabValue = useSelector(leftPanelTabValueSelector);
 
-    const { adminBoundariesExtent: extent } = useLayersHook();
+    const { adminBoundariesExtent: extent } = useLayers();
 
     const [showTable, setShowTable] = useState(false);
     // defaults the sort column of exposure analysis to 'name'

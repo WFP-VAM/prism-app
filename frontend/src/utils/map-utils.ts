@@ -37,11 +37,7 @@ export function safeDispatchRemoveLayer(
   dispatcher: Dispatch<any>,
 ) {
   if (isLayerOnView(_map, layer.id)) {
-    // to remove after check on surge
-    const timeStamp = Date.now();
     dispatcher(removeLayer(layer));
-    // eslint-disable-next-line no-console
-    console.log(Date.now() - timeStamp);
   }
 }
 
