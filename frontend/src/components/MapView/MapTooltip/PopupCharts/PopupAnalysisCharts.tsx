@@ -43,9 +43,8 @@ const getProperties = (
   layerData: LayerData<BoundaryLayerProps>['data'],
   adminCode: AdminCodeString,
   adminSelectorKey: string,
-  name: string,
 ) => {
-  const features = layerData.features.filter(
+  const features = layerData.features.find(
     elem =>
       elem.properties &&
       elem.properties[adminSelectorKey] &&
@@ -55,7 +54,7 @@ const getProperties = (
   if (!features) {
     return null;
   }
-  return features[0].properties;
+  return features.properties;
 };
 
 interface PopupChartProps extends WithStyles<typeof styles> {
@@ -81,11 +80,6 @@ const PopupAnalysisCharts = ({
     | undefined;
   const { data } = boundaryLayerData || {};
 
-  const levelsConfiguration = filteredChartLayers.map(item => ({
-    name: item.id,
-    levels: item.chartData?.levels,
-  }));
-
   const { startDate: selectedDate } = useSelector(dateRangeSelector);
   const chartEndDate = selectedDate || new Date().getTime();
   const chartStartDate = chartEndDate - oneYearInMs;
@@ -101,13 +95,6 @@ const PopupAnalysisCharts = ({
                 data as BoundaryLayerData,
                 adminCode,
                 adminSelectorKey,
-                levelsConfiguration
-                  .find(
-                    levelConfiguration =>
-                      levelConfiguration.name === filteredChartLayer.id,
-                  )
-                  ?.levels?.find(level => level.level === adminLevel.toString())
-                  ?.name ?? '',
               )}
               adminLevel={adminLevel}
               startDate={chartStartDate}
