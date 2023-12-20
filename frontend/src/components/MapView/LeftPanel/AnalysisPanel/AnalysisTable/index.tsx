@@ -19,6 +19,7 @@ import { TableRow as AnalysisTableRow } from 'context/analysisResultStateSlice';
 import { Column } from 'utils/analysis-utils';
 import { useSafeTranslation } from 'i18n';
 import { mapSelector } from 'context/mapStateSlice/selectors';
+import { setPopupCoordinates } from 'context/tooltipStateSlice';
 
 const AnalysisTable = memo(
   ({
@@ -114,6 +115,7 @@ const AnalysisTable = memo(
           dispatch(() =>
             map.fire('click', { lngLat: coords, point: map.project(coords) }),
           );
+          dispatch(setPopupCoordinates(row.coordinates));
         };
       },
       [map, dispatch],
