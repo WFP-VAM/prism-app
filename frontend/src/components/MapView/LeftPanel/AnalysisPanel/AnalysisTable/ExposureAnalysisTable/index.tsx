@@ -15,14 +15,14 @@ import {
   WithStyles,
 } from '@material-ui/core';
 
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { TableRow as AnalysisTableRow } from 'context/analysisResultStateSlice';
 
 import { useSafeTranslation } from 'i18n';
 
 import { Column } from 'utils/analysis-utils';
-import { showPopup } from 'context/tooltipStateSlice';
-import { AdminCodeString } from 'config/types';
+import { mapSelector } from 'context/mapStateSlice/selectors';
+import { hidePopup } from 'context/tooltipStateSlice';
 
 const ExposureAnalysisTable = memo(
   ({
@@ -38,6 +38,7 @@ const ExposureAnalysisTable = memo(
 
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(10);
+    const map = useSelector(mapSelector);
 
     const dispatch = useDispatch();
 
@@ -135,21 +136,20 @@ const ExposureAnalysisTable = memo(
     const handleClickTableBodyRow = useCallback(
       row => {
         return () => {
-          if (!row.coordinates) {
+          if (!row.coordinates || !map) {
             return;
           }
-          dispatch(
-            showPopup({
-              coordinates: row.coordinates,
-              locationSelectorKey: '',
-              locationAdminCode: row.key as AdminCodeString,
-              locationName: row.name,
-              locationLocalName: row.localName,
-            }),
+          const coords = {
+            lng: row.coordinates[0],
+            lat: row.coordinates[1],
+          };
+          dispatch(hidePopup());
+          dispatch(() =>
+            map.fire('click', { lngLat: coords, point: map.project(coords) }),
           );
         };
       },
-      [dispatch],
+      [map, dispatch],
     );
 
     // The rendered table body rows
