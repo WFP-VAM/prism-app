@@ -19,7 +19,6 @@ import { TableRow as AnalysisTableRow } from 'context/analysisResultStateSlice';
 import { Column } from 'utils/analysis-utils';
 import { useSafeTranslation } from 'i18n';
 import { mapSelector } from 'context/mapStateSlice/selectors';
-import { hidePopup } from 'context/tooltipStateSlice';
 
 const AnalysisTable = memo(
   ({
@@ -35,6 +34,7 @@ const AnalysisTable = memo(
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(10);
     const map = useSelector(mapSelector);
+
     const dispatch = useDispatch();
 
     const handleChangePage = useCallback((event: unknown, newPage: number) => {
@@ -111,7 +111,6 @@ const AnalysisTable = memo(
             lng: row.coordinates[0],
             lat: row.coordinates[1],
           };
-          dispatch(hidePopup());
           dispatch(() =>
             map.fire('click', { lngLat: coords, point: map.project(coords) }),
           );

@@ -22,7 +22,6 @@ import { useSafeTranslation } from 'i18n';
 
 import { Column } from 'utils/analysis-utils';
 import { mapSelector } from 'context/mapStateSlice/selectors';
-import { hidePopup } from 'context/tooltipStateSlice';
 
 const ExposureAnalysisTable = memo(
   ({
@@ -143,7 +142,6 @@ const ExposureAnalysisTable = memo(
             lng: row.coordinates[0],
             lat: row.coordinates[1],
           };
-          dispatch(hidePopup());
           dispatch(() =>
             map.fire('click', { lngLat: coords, point: map.project(coords) }),
           );
