@@ -95,7 +95,7 @@ const MapTooltip = ({ classes }: TooltipProps) => {
     // If adminLevel is undefined, return the whole array
     // eslint-disable-next-line fp/no-mutating-methods
     return splitNames.splice(0, adminLevelLimit);
-  }, [adminLevel, i18n, popup.locationLocalName, popup.locationName]);
+  }, [adminLevel, i18n, popup]);
 
   if (isLoading || !popup.showing || !popup.coordinates) {
     return null;
@@ -133,6 +133,8 @@ const MapTooltip = ({ classes }: TooltipProps) => {
       )}
       <PopupCharts
         setPopupTitle={setPopupTitle}
+        adminCode={popup.locationAdminCode}
+        adminSelectorKey={popup.locationSelectorKey}
         adminLevel={adminLevel}
         setAdminLevel={setAdminLevel}
         adminLevelsNames={adminLevelsNames}

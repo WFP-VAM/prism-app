@@ -4,6 +4,7 @@ import {
   Dispatch,
   PayloadAction,
 } from '@reduxjs/toolkit';
+import centroid from '@turf/centroid';
 import { convertArea } from '@turf/helpers';
 import {
   Feature,
@@ -309,6 +310,14 @@ const generateTableFromApiData = (
       key,
     );
 
+    // Get the centroid coordinates of the feature. NOTE - this might be slow for large features.
+    const centroidCoordinates = featureBoundary?.geometry
+      ? (centroid(featureBoundary.geometry as any).geometry.coordinates as [
+          number,
+          number,
+        ])
+      : undefined;
+
     const tableRow: TableRow = {
       key: i.toString(), // primary key, identifying a unique row in the table
       name,
@@ -321,7 +330,7 @@ const generateTableFromApiData = (
         rawBaselineValue === 'No Data'
           ? 'No Data'
           : parseFloat(`${rawBaselineValue}`),
-      coordinates: (featureBoundary?.geometry as any)?.coordinates[0][0][0], // TODO likely will not keep
+      coordinates: centroidCoordinates as any,
       ...Object.fromEntries(
         extraColumns.map(extraColumn => [extraColumn, get(row, extraColumn)]),
       ),

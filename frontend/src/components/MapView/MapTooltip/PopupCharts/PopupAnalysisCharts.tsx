@@ -8,6 +8,7 @@ import {
   AdminLevelType,
   BoundaryLayerProps,
   WMSLayerProps,
+  AdminCodeString,
 } from 'config/types';
 import { getBoundaryLayersByAdminLevel } from 'config/utils';
 import { BoundaryLayerData } from 'context/layers/boundary';
@@ -40,26 +41,34 @@ const boundaryLayer = getBoundaryLayersByAdminLevel();
 
 const getProperties = (
   layerData: LayerData<BoundaryLayerProps>['data'],
-  name: string,
+  adminCode: AdminCodeString,
+  adminSelectorKey: string,
 ) => {
-  const features = layerData.features.filter(
-    elem => elem.properties && elem.properties[name],
+  const features = layerData.features.find(
+    elem =>
+      elem.properties &&
+      elem.properties[adminSelectorKey] &&
+      elem.properties[adminSelectorKey] === adminCode,
   );
 
   if (!features) {
     return null;
   }
-  return features[0].properties;
+  return features.properties;
 };
 
 interface PopupChartProps extends WithStyles<typeof styles> {
   filteredChartLayers: WMSLayerProps[];
+  adminCode: AdminCodeString;
+  adminSelectorKey: string;
   adminLevel: AdminLevelType;
   onClose: React.Dispatch<React.SetStateAction<AdminLevelType | undefined>>;
   adminLevelsNames: () => string[];
 }
 const PopupAnalysisCharts = ({
   filteredChartLayers,
+  adminCode,
+  adminSelectorKey,
   adminLevel,
   onClose,
   adminLevelsNames,
@@ -70,11 +79,6 @@ const PopupAnalysisCharts = ({
     | LayerData<BoundaryLayerProps>
     | undefined;
   const { data } = boundaryLayerData || {};
-
-  const levelsConfiguration = filteredChartLayers.map(item => ({
-    name: item.id,
-    levels: item.chartData?.levels,
-  }));
 
   const { startDate: selectedDate } = useSelector(dateRangeSelector);
   const chartEndDate = selectedDate || new Date().getTime();
@@ -89,13 +93,8 @@ const PopupAnalysisCharts = ({
               chartLayer={filteredChartLayer}
               adminProperties={getProperties(
                 data as BoundaryLayerData,
-                levelsConfiguration
-                  .find(
-                    levelConfiguration =>
-                      levelConfiguration.name === filteredChartLayer.id,
-                  )
-                  ?.levels?.find(level => level.level === adminLevel.toString())
-                  ?.name ?? '',
+                adminCode,
+                adminSelectorKey,
               )}
               adminLevel={adminLevel}
               startDate={chartStartDate}
