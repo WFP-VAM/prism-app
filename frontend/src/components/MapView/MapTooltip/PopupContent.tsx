@@ -135,6 +135,10 @@ const PopupContent = ({
       {Object.entries(popupDataWithoutPhasePopulations)
         .filter(([, value]) => {
           // TODO - this seems like a hacky way to filter data and likely to break
+          // Temporarily add logging to determine if this is actually filtering out any data
+          console.warn('Coordinates are not equal ans some data is omitted.');
+          console.warn('Data Coordinates:', value.coordinates);
+          console.warn('Popup coordinates:', coordinates);
           return isEqual(value.coordinates, coordinates);
         })
         .map(([key, value]) => {
