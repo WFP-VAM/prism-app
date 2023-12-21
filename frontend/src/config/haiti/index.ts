@@ -1,9 +1,10 @@
 import appConfig from './prism.json';
 import rawLayers from './layers.json';
+import frTranslation from './translation.json';
 
 const rawTables = {};
 const rawReports = {};
-const translation = {};
+const translation = { fr: frTranslation };
 
 export default {
   appConfig,
