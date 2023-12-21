@@ -137,9 +137,13 @@ const PopupContent = ({
           // TODO - this seems like a hacky way to filter data and likely to break
           // Temporarily add logging to determine if this is actually filtering out any data
           // Note - introduced  by Harry in https://github.com/WFP-VAM/prism-app/pull/834/
-          console.warn('Coordinates are not equal ans some data is omitted.');
-          console.warn('Data Coordinates:', value.coordinates);
-          console.warn('Popup coordinates:', coordinates);
+          if (!isEqual(value.coordinates, coordinates)) {
+            /* eslint-disable no-console */
+            console.log('Coordinates are not equal and some data is omitted.');
+            console.log('Data Coordinates:', value.coordinates);
+            console.log('Popup coordinates:', coordinates);
+            /* eslint-enable no-console */
+          }
           return isEqual(value.coordinates, coordinates);
         })
         .map(([key, value]) => {
