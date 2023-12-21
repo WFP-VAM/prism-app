@@ -107,12 +107,11 @@ const AnalysisTable = memo(
           if (!row.coordinates || !map) {
             return;
           }
-          const coords = {
-            lng: row.coordinates[0],
-            lat: row.coordinates[1],
-          };
           dispatch(() =>
-            map.fire('click', { lngLat: coords, point: map.project(coords) }),
+            map.fire('click', {
+              lngLat: row.coordinates,
+              point: map.project(row.coordinates),
+            }),
           );
         };
       },
