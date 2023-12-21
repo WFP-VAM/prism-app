@@ -1,36 +1,43 @@
 {
-  "country": "Jordan",
+  "country": "Haiti",
+  "countryAdmin0Id": 108,
   "alertFormActive": false,
-  "countryAdmin0Id": 130,
+  "enableNavigationDropdown": true,
+  "serversUrls": {
+    "wms": [
+      "https://api.earthobservation.vam.wfp.org/ows/wms",
+      "https://ogcserver.gis.wfp.org/geoserver/prism/wms"
+    ]
+  },
   "icons": {
     "rainfall": "icon_rain.png",
     "vegetation": "icon_veg.png",
     "temperature": "icon_climate.png",
     "risk": "icon_impact.png",
     "tropical_storms": "icon_tropical_storm.png",
-    "sensitivity": "icon_vulnerable.png",
-    "exposure": "icon_basemap.png",
-    "capacity": "icon_capacity.png"
-  },
-  "serversUrls": {
-    "wms": ["https://api.earthobservation.vam.wfp.org/ows/wms"]
+    "vulnerability": "icon_vulnerable.png"
   },
   "map": {
-    "boundingBox": [35.42, 29.36, 38.82, 33.16]
+    "boundingBox": [
+      -74.4580336168,
+      18.0309927434,
+      -71.6248732164,
+      19.9156839055
+    ]
   },
   "defaultDisplayBoundaries": [
     "admin_boundaries",
-    "admin1_boundaries",
-    "admin2_boundaries"
+    "admin1_boundaries"
   ],
   "categories": {
-    "drought": {
-      "drought_monitoring": ["cdi"]
-    },
     "rainfall": {
-      "rainfall_amount": [
+      "forecasts": [
+        "daily_rainfall_forecast",
+        "dekad_rainfall_forecast"
+      ],
+      "global_rainfall_products": [
         {
-          "group_title": "Rainfall Aggregate",
+          "group_title": "Rainfall aggregate",
           "activate_all": false,
           "layers": [
             {
@@ -43,27 +50,29 @@
               "label": "1-month"
             },
             {
+              "id": "rainfall_agg_2month",
+              "label": "2-month"
+            },
+            {
               "id": "rainfall_agg_3month",
               "label": "3-month"
             },
             {
+              "id": "rainfall_agg_4month",
+              "label": "4-month"
+            },
+            {
+              "id": "rainfall_agg_5month",
+              "label": "5-month"
+            },
+            {
               "id": "rainfall_agg_6month",
               "label": "6-month"
-            },
-            {
-              "id": "rainfall_agg_9month",
-              "label": "9-month"
-            },
-            {
-              "id": "rainfall_agg_1year",
-              "label": "1-year"
             }
           ]
-        }
-      ],
-      "rainfall_anomalies": [
+        },
         {
-          "group_title": "Rainfall Anomaly",
+          "group_title": "Rainfall anomaly",
           "activate_all": false,
           "layers": [
             {
@@ -76,20 +85,24 @@
               "label": "1-month"
             },
             {
+              "id": "rain_anomaly_2month",
+              "label": "2-month"
+            },
+            {
               "id": "rain_anomaly_3month",
               "label": "3-month"
             },
             {
+              "id": "rain_anomaly_4month",
+              "label": "4-month"
+            },
+            {
+              "id": "rain_anomaly_5month",
+              "label": "5-month"
+            },
+            {
               "id": "rain_anomaly_6month",
               "label": "6-month"
-            },
-            {
-              "id": "rain_anomaly_9month",
-              "label": "9-month"
-            },
-            {
-              "id": "rain_anomaly_1year",
-              "label": "1-year"
             }
           ]
         },
@@ -121,10 +134,13 @@
           ]
         }
       ],
-      "dry_periods": ["days_dry", "streak_dry_days"],
+      "dry_periods": [
+        "days_dry",
+        "streak_dry_days"
+      ],
       "extreme_rain_events": [
         {
-          "group_title": "Rainfall categories:",
+          "group_title": "Number of days of rainfall:",
           "activate_all": false,
           "layers": [
             {
@@ -168,49 +184,18 @@
       ]
     },
     "vegetation": {
-      "vegetation_conditions": ["ndvi_dekad", "ndvi_dekad_anomaly"]
+      "vegetation_conditions": [
+        "ndvi_dekad",
+        "ndvi_dekad_anomaly"
+      ]
     },
     "temperature": {
       "land_surface_temperature": [
         "lst_daytime",
-        "lst_nighttime",
         "lst_anomaly",
         "lst_amplitude"
       ]
     },
-    "exposure": {
-      "demographics": [
-        "population",
-        "percent_refugees_2022"
-      ],
-      "agriculture": [
-        "rainfed",
-        "irrigated",
-        "livestock_per_ha"
-      ]
-    },
-    "sensitivity": {
-      "socioeconomic": [
-        "poverty"
-      ],
-      "natural_resources": [
-        "natural_habitats",
-        "groundwater_abstraction",
-        "groundwater_sens"
-      ]
-    },
-    "capacity": {
-      "water": [
-        "municipal_water",
-        "gw_irrigation",
-        "mobile_tanks_per_10k"
-      ]
-    },
-    "risk": {
-      "exposure": ["exposure_scaled"],
-      "sensitivity": ["sensitivity_scaled"],
-      "adaptation": ["adaptation_scaled"],
-      "vulnerability": ["vulnerability_scaled"]
-    }
+    "vulnerability": {}
   }
 }
