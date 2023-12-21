@@ -1,4 +1,4 @@
-import { AdminLevelType } from 'config/types';
+import { AdminLevelType, AdminCodeString } from 'config/types';
 import { getWMSLayersWithChart } from 'config/utils';
 import { layersSelector } from 'context/mapStateSlice/selectors';
 import React, { memo, useEffect } from 'react';
@@ -10,6 +10,8 @@ const chartLayers = getWMSLayersWithChart();
 
 interface PopupChartsProps {
   setPopupTitle: React.Dispatch<React.SetStateAction<string>>;
+  adminCode: AdminCodeString;
+  adminSelectorKey: string;
   adminLevel: AdminLevelType | undefined;
   setAdminLevel: React.Dispatch<
     React.SetStateAction<AdminLevelType | undefined>
@@ -20,6 +22,8 @@ interface PopupChartsProps {
 
 const PopupCharts = ({
   setPopupTitle,
+  adminCode,
+  adminSelectorKey,
   adminLevel,
   setAdminLevel,
   adminLevelsNames,
@@ -52,6 +56,8 @@ const PopupCharts = ({
       )}
       {adminLevel !== undefined && (
         <PopupAnalysisCharts
+          adminCode={adminCode}
+          adminSelectorKey={adminSelectorKey}
           adminLevel={adminLevel}
           onClose={setAdminLevel}
           adminLevelsNames={adminLevelsNames}
