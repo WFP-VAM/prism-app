@@ -232,7 +232,6 @@ const AnalysisPanel = memo(
     const hazardDataType: HazardDataType | null = selectedHazardLayer
       ? selectedHazardLayer.geometry || RasterType.Raster
       : null;
-
     const availableHazardDates = selectedHazardLayer
       ? Array.from(
           new Set(
