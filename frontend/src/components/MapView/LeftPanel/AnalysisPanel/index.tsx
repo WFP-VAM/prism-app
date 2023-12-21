@@ -233,10 +233,14 @@ const AnalysisPanel = memo(
       ? selectedHazardLayer.geometry || RasterType.Raster
       : null;
     const availableHazardDates = selectedHazardLayer
-      ? getPossibleDatesForLayer(selectedHazardLayer, availableDates)?.map(
-          d => new Date(d.displayDate),
-        ) || []
-      : undefined;
+      ? Array.from(
+          new Set(
+            getPossibleDatesForLayer(selectedHazardLayer, availableDates)?.map(
+              d => d.queryDate,
+            ),
+          ),
+        ).map(d => new Date(d)) || []
+      : [];
 
     const BASELINE_URL_LAYER_KEY = 'baselineLayerId';
     const preSelectedBaselineLayer = selectedLayers.find(
