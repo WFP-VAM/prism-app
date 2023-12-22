@@ -29,7 +29,7 @@
   },
   "admin1_boundaries": {
     "type": "boundary",
-    "path": "data/zimbabwe/hti_admbnda_adm1_cnigs_20181129_dv.json",
+    "path": "data/haiti/hti_admbnda_adm1_cnigs_20181129_dv.json",
     "opacity": 0.8,
     "admin_code": "PROV_CODE",
     "admin_level_codes": [
