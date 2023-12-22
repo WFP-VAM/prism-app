@@ -275,6 +275,8 @@ const ChartsPanel = memo(
       [string, string]
     >(['', '']);
     const [showSlider, setShowSlider] = useState(true);
+    const [maxChartValue, setMaxChartValue] = useState<number[]>([]);
+    const [minChartValue, setMinChartValue] = useState<number[]>([]);
 
     function resetSlider() {
       setMaxDataTicks(0);
@@ -452,6 +454,10 @@ const ChartsPanel = memo(
                     startDate={startDate1 as number}
                     endDate={endDate1 as number}
                     dataForCsv={dataForCsv}
+                    setMaxChartValue={setMaxChartValue}
+                    setMinChartValue={setMinChartValue}
+                    maxChartValue={Math.max(...maxChartValue)}
+                    minChartValue={Math.min(...minChartValue)}
                   />
                 </Box>
               ))
@@ -504,6 +510,10 @@ const ChartsPanel = memo(
                   startDate={comparedStartDate as number}
                   endDate={comparedEndDate as number}
                   dataForCsv={dataForSecondCsv}
+                  setMaxChartValue={setMaxChartValue}
+                  setMinChartValue={setMinChartValue}
+                  maxChartValue={Math.max(...maxChartValue)}
+                  minChartValue={Math.min(...minChartValue)}
                 />
               </Box>
             ))
@@ -612,6 +622,8 @@ const ChartsPanel = memo(
       endDate1,
       endDate2,
       getCountryName,
+      maxChartValue,
+      minChartValue,
       secondAdminLevel,
       secondAdminProperties,
       secondSelectedAdmin1Area,
