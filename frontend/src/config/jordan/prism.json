@@ -24,9 +24,6 @@
     "admin2_boundaries"
   ],
   "categories": {
-    "drought": {
-      "drought_monitoring": ["cdi"]
-    },
     "rainfall": {
       "rainfall_amount": [
         {
