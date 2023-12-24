@@ -27,6 +27,14 @@ import { useSafeTranslation } from 'i18n';
 import { getChartAdminBoundaryParams } from 'utils/admin-utils';
 import Chart from 'components/Common/Chart';
 
+/**
+ * This function removes the first occurrence of a specific number from an array.
+ * If the number is not found in the array, it returns the original array.
+ *
+ * @param arr - The array from which the number should be removed.
+ * @param numberToRemove - The number to remove from the array.
+ * @returns A new array with the first occurrence of the specified number removed.
+ */
 function removeFirstOccurrence(arr: number[], numberToRemove: number) {
   const indexToRemove = arr.indexOf(numberToRemove);
   if (indexToRemove !== -1) {
@@ -143,6 +151,8 @@ const ChartSection = memo(
       setExtendedChartDataset(extended);
     }, [chartDataset, chartMaxDateRange]);
 
+    // This effect is used to calculate the max and min values of the chart
+    // so that we can put charts on the same scale for comparison.
     React.useEffect(() => {
       if (!(extendedChartDataset && setMaxChartValue && setMinChartValue)) {
         return () => {};

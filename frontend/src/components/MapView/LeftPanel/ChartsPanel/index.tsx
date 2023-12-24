@@ -425,6 +425,7 @@ const ChartsPanel = memo(
         );
       }
       // show 2 or more charts (multi layer or comparisons)
+      const comparing = compareLocations || comparePeriods;
       const mainChartList =
         selectedLayerTitles.length >= 1
           ? chartLayers
@@ -456,14 +457,17 @@ const ChartsPanel = memo(
                     dataForCsv={dataForCsv}
                     setMaxChartValue={setMaxChartValue}
                     setMinChartValue={setMinChartValue}
-                    maxChartValue={Math.max(...maxChartValue)}
-                    minChartValue={Math.min(...minChartValue)}
+                    maxChartValue={
+                      comparing ? Math.max(...maxChartValue) : undefined
+                    }
+                    minChartValue={
+                      comparing ? Math.min(...minChartValue) : undefined
+                    }
                   />
                 </Box>
               ))
           : [];
       // now add comparison charts
-      const comparing = compareLocations || comparePeriods;
       const comparedAdminProperties = compareLocations
         ? secondAdminProperties
         : adminProperties;
