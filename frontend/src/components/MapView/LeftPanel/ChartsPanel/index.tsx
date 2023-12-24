@@ -275,6 +275,8 @@ const ChartsPanel = memo(
       [string, string]
     >(['', '']);
     const [showSlider, setShowSlider] = useState(true);
+    const [maxChartValues, setMaxChartValues] = useState<number[]>([]);
+    const [minChartValues, setMinChartValues] = useState<number[]>([]);
 
     function resetSlider() {
       setMaxDataTicks(0);
@@ -423,6 +425,7 @@ const ChartsPanel = memo(
         );
       }
       // show 2 or more charts (multi layer or comparisons)
+      const comparing = compareLocations || comparePeriods;
       const mainChartList =
         selectedLayerTitles.length >= 1
           ? chartLayers
@@ -452,12 +455,19 @@ const ChartsPanel = memo(
                     startDate={startDate1 as number}
                     endDate={endDate1 as number}
                     dataForCsv={dataForCsv}
+                    setMaxChartValues={setMaxChartValues}
+                    setMinChartValues={setMinChartValues}
+                    maxChartValue={
+                      comparing ? Math.max(...maxChartValues) : undefined
+                    }
+                    minChartValue={
+                      comparing ? Math.min(...minChartValues) : undefined
+                    }
                   />
                 </Box>
               ))
           : [];
       // now add comparison charts
-      const comparing = compareLocations || comparePeriods;
       const comparedAdminProperties = compareLocations
         ? secondAdminProperties
         : adminProperties;
@@ -504,6 +514,10 @@ const ChartsPanel = memo(
                   startDate={comparedStartDate as number}
                   endDate={comparedEndDate as number}
                   dataForCsv={dataForSecondCsv}
+                  setMaxChartValues={setMaxChartValues}
+                  setMinChartValues={setMinChartValues}
+                  maxChartValue={Math.max(...maxChartValues)}
+                  minChartValue={Math.min(...minChartValues)}
                 />
               </Box>
             ))
@@ -612,6 +626,8 @@ const ChartsPanel = memo(
       endDate1,
       endDate2,
       getCountryName,
+      maxChartValues,
+      minChartValues,
       secondAdminLevel,
       secondAdminProperties,
       secondSelectedAdmin1Area,
