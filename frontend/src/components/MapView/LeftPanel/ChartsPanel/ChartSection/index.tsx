@@ -125,8 +125,8 @@ const ChartSection = memo(
     setMaxDataTicks,
     setChartSelectedDateRange,
     setChartMaxDateRange,
-    setMaxChartValue,
-    setMinChartValue,
+    setMaxChartValues,
+    setMinChartValues,
     maxChartValue,
     minChartValue,
     classes,
@@ -154,7 +154,7 @@ const ChartSection = memo(
     // This effect is used to calculate the max and min values of the chart
     // so that we can put charts on the same scale for comparison.
     React.useEffect(() => {
-      if (!(extendedChartDataset && setMaxChartValue && setMinChartValue)) {
+      if (!(extendedChartDataset && setMaxChartValues && setMinChartValues)) {
         return () => {};
       }
       const keys = Object.keys(extendedChartDataset.rows[0]).filter(
@@ -180,13 +180,13 @@ const ChartSection = memo(
           ),
         Number.POSITIVE_INFINITY,
       );
-      setMaxChartValue(prev => [...prev, max]);
-      setMinChartValue(prev => [...prev, min]);
+      setMaxChartValues(prev => [...prev, max]);
+      setMinChartValues(prev => [...prev, min]);
       return () => {
-        setMaxChartValue(prev => removeFirstOccurrence(prev, max));
-        setMinChartValue(prev => removeFirstOccurrence(prev, min));
+        setMaxChartValues(prev => removeFirstOccurrence(prev, max));
+        setMinChartValues(prev => removeFirstOccurrence(prev, min));
       };
-    }, [extendedChartDataset, setMaxChartValue, setMinChartValue]);
+    }, [extendedChartDataset, setMaxChartValues, setMinChartValues]);
 
     React.useEffect(() => {
       if (!extendedChartDataset) {
@@ -514,8 +514,8 @@ export interface ChartSectionProps extends WithStyles<typeof styles> {
     React.SetStateAction<[string, string]>
   >;
   setChartMaxDateRange?: React.Dispatch<React.SetStateAction<[string, string]>>;
-  setMaxChartValue?: React.Dispatch<React.SetStateAction<number[]>>;
-  setMinChartValue?: React.Dispatch<React.SetStateAction<number[]>>;
+  setMaxChartValues?: React.Dispatch<React.SetStateAction<number[]>>;
+  setMinChartValues?: React.Dispatch<React.SetStateAction<number[]>>;
   maxChartValue?: number;
   minChartValue?: number;
 }
