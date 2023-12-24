@@ -7,6 +7,7 @@ import colombia from './colombia';
 import cuba from './cuba';
 import ecuador from './ecuador';
 import global from './global';
+import haiti from './haiti';
 import indonesia from './indonesia';
 import jordan from './jordan';
 import kyrgyzstan from './kyrgyzstan';
@@ -37,6 +38,7 @@ const configMap = {
   cuba,
   ecuador,
   global,
+  haiti,
   indonesia,
   jordan,
   kyrgyzstan,
