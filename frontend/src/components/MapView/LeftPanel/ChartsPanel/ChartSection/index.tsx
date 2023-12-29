@@ -27,6 +27,22 @@ import { useSafeTranslation } from 'i18n';
 import { getChartAdminBoundaryParams } from 'utils/admin-utils';
 import Chart from 'components/Common/Chart';
 
+/**
+ * This function removes the first occurrence of a specific number from an array.
+ * If the number is not found in the array, it returns the original array.
+ *
+ * @param arr - The array from which the number should be removed.
+ * @param numberToRemove - The number to remove from the array.
+ * @returns A new array with the first occurrence of the specified number removed.
+ */
+function removeFirstOccurrence(arr: number[], numberToRemove: number) {
+  const indexToRemove = arr.indexOf(numberToRemove);
+  if (indexToRemove !== -1) {
+    return [...arr.slice(0, indexToRemove), ...arr.slice(indexToRemove + 1)];
+  }
+  return arr;
+}
+
 // returns startDate and endDate as part of result
 function generateDateStrings(startDate: Date, endDate: Date) {
   const result = [];
@@ -109,6 +125,10 @@ const ChartSection = memo(
     setMaxDataTicks,
     setChartSelectedDateRange,
     setChartMaxDateRange,
+    setMaxChartValues,
+    setMinChartValues,
+    maxChartValue,
+    minChartValue,
     classes,
   }: ChartSectionProps) => {
     const dispatch = useDispatch();
@@ -130,6 +150,43 @@ const ChartSection = memo(
 
       setExtendedChartDataset(extended);
     }, [chartDataset, chartMaxDateRange]);
+
+    // This effect is used to calculate the max and min values of the chart
+    // so that we can put charts on the same scale for comparison.
+    React.useEffect(() => {
+      if (!(extendedChartDataset && setMaxChartValues && setMinChartValues)) {
+        return () => {};
+      }
+      const keys = Object.keys(extendedChartDataset.rows[0]).filter(
+        x => x !== CHART_DATA_PREFIXES.date,
+      );
+      const max = extendedChartDataset.rows.reduce(
+        (m, curr) =>
+          Math.max(
+            ...keys
+              .map(i => curr[i])
+              .filter((x): x is number => typeof x === 'number'),
+            m,
+          ),
+        Number.NEGATIVE_INFINITY,
+      );
+      const min = extendedChartDataset.rows.reduce(
+        (m, curr) =>
+          Math.min(
+            ...keys
+              .map(i => curr[i])
+              .filter((x): x is number => typeof x === 'number'),
+            m,
+          ),
+        Number.POSITIVE_INFINITY,
+      );
+      setMaxChartValues(prev => [...prev, max]);
+      setMinChartValues(prev => [...prev, min]);
+      return () => {
+        setMaxChartValues(prev => removeFirstOccurrence(prev, max));
+        setMinChartValues(prev => removeFirstOccurrence(prev, min));
+      };
+    }, [extendedChartDataset, setMaxChartValues, setMinChartValues]);
 
     React.useEffect(() => {
       if (!extendedChartDataset) {
@@ -369,11 +426,11 @@ const ChartSection = memo(
         data: CHART_DATA_PREFIXES.col,
         transpose: true,
         displayLegend: true,
-        minValue,
-        maxValue,
+        minValue: minChartValue || minValue,
+        maxValue: maxChartValue || maxValue,
         colors,
       };
-    }, [chartType, colors, maxValue, minValue]);
+    }, [chartType, colors, maxChartValue, maxValue, minChartValue, minValue]);
 
     const title = useMemo(() => {
       return chartLayer.title;
@@ -457,6 +514,10 @@ export interface ChartSectionProps extends WithStyles<typeof styles> {
     React.SetStateAction<[string, string]>
   >;
   setChartMaxDateRange?: React.Dispatch<React.SetStateAction<[string, string]>>;
+  setMaxChartValues?: React.Dispatch<React.SetStateAction<number[]>>;
+  setMinChartValues?: React.Dispatch<React.SetStateAction<number[]>>;
+  maxChartValue?: number;
+  minChartValue?: number;
 }
 
 export default withStyles(styles)(ChartSection);

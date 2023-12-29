@@ -223,12 +223,15 @@ def wrap_get_hdc_stats(
 
 @app.get("/kobo/dates")
 def get_kobo_form_dates(
+    response: Response,
     koboUrl: HttpUrl,
     formId: str,
     datetimeField: str,
     filters: Optional[str] = None,
 ):
     """Get all form response dates."""
+    # cache responses for 24h as they're unlikely to change
+    response.headers["Cache-Control"] = "max-age=86400"
     return get_form_dates(koboUrl, formId, datetimeField, filters)
 
 
@@ -396,9 +399,9 @@ def post_raster_geotiff(raster_geotiff: RasterGeotiffModel):
         raster_geotiff.long_max,
         raster_geotiff.lat_max,
     )
-    date = raster_geotiff.date
+    date_value = raster_geotiff.date
     band = raster_geotiff.band
-    presigned_download_url = get_geotiff(collection, bbox, date, band)
+    presigned_download_url = get_geotiff(collection, bbox, date_value, band)
 
     return JSONResponse(
         content={"download_url": presigned_download_url}, status_code=200

@@ -8,11 +8,15 @@ import {
   AdminLevelType,
   BoundaryLayerProps,
   WMSLayerProps,
+  AdminCodeString,
 } from 'config/types';
 import { getBoundaryLayersByAdminLevel } from 'config/utils';
 import { BoundaryLayerData } from 'context/layers/boundary';
 import { LayerData } from 'context/layers/layer-data';
-import { layerDataSelector } from 'context/mapStateSlice/selectors';
+import {
+  dateRangeSelector,
+  layerDataSelector,
+} from 'context/mapStateSlice/selectors';
 import React, { useRef } from 'react';
 import { useSelector } from 'react-redux';
 import PopupChartWrapper from './PopupChartWrapper';
@@ -37,26 +41,34 @@ const boundaryLayer = getBoundaryLayersByAdminLevel();
 
 const getProperties = (
   layerData: LayerData<BoundaryLayerProps>['data'],
-  name: string,
+  adminCode: AdminCodeString,
+  adminSelectorKey: string,
 ) => {
-  const features = layerData.features.filter(
-    elem => elem.properties && elem.properties[name],
+  const features = layerData.features.find(
+    elem =>
+      elem.properties &&
+      elem.properties[adminSelectorKey] &&
+      elem.properties[adminSelectorKey] === adminCode,
   );
 
   if (!features) {
     return null;
   }
-  return features[0].properties;
+  return features.properties;
 };
 
 interface PopupChartProps extends WithStyles<typeof styles> {
   filteredChartLayers: WMSLayerProps[];
+  adminCode: AdminCodeString;
+  adminSelectorKey: string;
   adminLevel: AdminLevelType;
   onClose: React.Dispatch<React.SetStateAction<AdminLevelType | undefined>>;
   adminLevelsNames: () => string[];
 }
 const PopupAnalysisCharts = ({
   filteredChartLayers,
+  adminCode,
+  adminSelectorKey,
   adminLevel,
   onClose,
   adminLevelsNames,
@@ -68,13 +80,9 @@ const PopupAnalysisCharts = ({
     | undefined;
   const { data } = boundaryLayerData || {};
 
-  const levelsConfiguration = filteredChartLayers.map(item => ({
-    name: item.id,
-    levels: item.chartData?.levels,
-  }));
-
-  const startDate = new Date().getTime() - oneYearInMs;
-  const endDate = new Date().getTime();
+  const { startDate: selectedDate } = useSelector(dateRangeSelector);
+  const chartEndDate = selectedDate || new Date().getTime();
+  const chartStartDate = chartEndDate - oneYearInMs;
 
   return (
     <PopupChartWrapper onClose={onClose}>
@@ -85,17 +93,12 @@ const PopupAnalysisCharts = ({
               chartLayer={filteredChartLayer}
               adminProperties={getProperties(
                 data as BoundaryLayerData,
-                levelsConfiguration
-                  .find(
-                    levelConfiguration =>
-                      levelConfiguration.name === filteredChartLayer.id,
-                  )
-                  ?.levels?.find(level => level.level === adminLevel.toString())
-                  ?.name ?? '',
+                adminCode,
+                adminSelectorKey,
               )}
               adminLevel={adminLevel}
-              startDate={startDate as number}
-              endDate={endDate as number}
+              startDate={chartStartDate}
+              endDate={chartEndDate}
               dataForCsv={dataForCsv}
             />
           </div>

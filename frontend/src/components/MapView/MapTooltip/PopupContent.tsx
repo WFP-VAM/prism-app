@@ -134,7 +134,20 @@ const PopupContent = ({
     <>
       {Object.entries(popupDataWithoutPhasePopulations)
         .filter(([, value]) => {
-          return isEqual(value.coordinates, coordinates);
+          // TODO - this seems like a hacky way to filter data and likely to break
+          // Temporarily add logging to determine if this is actually filtering out any data
+          // Note - introduced  by Harry in https://github.com/WFP-VAM/prism-app/pull/834/
+          if (!isEqual(value.coordinates, coordinates)) {
+            /* eslint-disable no-console */
+            console.log(
+              'Coordinates are not equal and some data should be omitted!',
+            );
+            console.log('Data Coordinates:', value.coordinates);
+            console.log('Popup coordinates:', coordinates);
+            /* eslint-enable no-console */
+          }
+          // return isEqual(value.coordinates, coordinates);
+          return true;
         })
         .map(([key, value]) => {
           return (

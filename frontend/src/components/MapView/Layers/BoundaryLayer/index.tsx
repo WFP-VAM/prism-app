@@ -4,7 +4,7 @@ import { GeoJSONLayer } from 'react-mapbox-gl';
 import { useDispatch, useSelector } from 'react-redux';
 import { BoundaryLayerProps } from 'config/types';
 import { LayerData } from 'context/layers/layer-data';
-import { hidePopup, showPopup } from 'context/tooltipStateSlice';
+import { showPopup } from 'context/tooltipStateSlice';
 
 import { setBoundaryRelationData } from 'context/mapStateSlice';
 import {
@@ -64,8 +64,9 @@ function BoundaryLayer({ layer, before }: ComponentProps) {
   }
 
   const onClickShowPopup = (evt: any) => {
-    dispatch(hidePopup());
     const coordinates = evt.lngLat;
+    const locationSelectorKey = layer.adminCode;
+    const locationAdminCode = evt.features[0].properties[layer.adminCode];
     const locationName = getFullLocationName(
       layer.adminLevelNames,
       evt.features[0],
@@ -76,7 +77,15 @@ function BoundaryLayer({ layer, before }: ComponentProps) {
       evt.features[0],
     );
 
-    dispatch(showPopup({ coordinates, locationName, locationLocalName }));
+    dispatch(
+      showPopup({
+        coordinates,
+        locationSelectorKey,
+        locationAdminCode,
+        locationName,
+        locationLocalName,
+      }),
+    );
   };
 
   const onClickFunc = (evt: any) => {

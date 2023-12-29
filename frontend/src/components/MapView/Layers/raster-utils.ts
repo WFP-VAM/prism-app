@@ -197,6 +197,47 @@ export function getExtent(map?: MapBoxMap): Extent {
   return [minX, minY, maxX, maxY].map(val => val || 0) as Extent;
 }
 
+export async function getDownloadGeotiffURL(
+  collection: string,
+  band: string | undefined,
+  boundingBox: Extent | undefined,
+  date: string | undefined,
+  dispatch: Dispatch,
+) {
+  if (!boundingBox) {
+    throw new LocalError(
+      `Missing bounding box: ${collection} Geotiff couldn't be downloaded`,
+    );
+  }
+  const body = {
+    collection,
+    long_min: boundingBox[0],
+    lat_min: boundingBox[1],
+    long_max: boundingBox[2],
+    lat_max: boundingBox[3],
+    date,
+    band,
+  };
+  const response = await fetchWithTimeout(
+    RASTER_API_URL,
+    dispatch,
+    {
+      method: 'POST',
+      cache: 'no-cache',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      // body data type must match "Content-Type" header
+      body: JSON.stringify(body),
+    },
+    `Request failed for creating Geotiff at ${RASTER_API_URL}`,
+  );
+  const responseJson = await response.json();
+
+  return responseJson.download_url;
+}
+
 export async function downloadGeotiff(
   collection: string,
   band: string | undefined,
@@ -206,39 +247,15 @@ export async function downloadGeotiff(
   callback: () => void,
 ) {
   try {
-    if (!boundingBox) {
-      throw new LocalError(
-        `Missing bounding box: ${collection} Geotiff couldn't be downloaded`,
-      );
-    }
-    const body = {
+    const downloadUrl = await getDownloadGeotiffURL(
       collection,
-      long_min: boundingBox[0],
-      lat_min: boundingBox[1],
-      long_max: boundingBox[2],
-      lat_max: boundingBox[3],
-      date,
       band,
-    };
-    const response = await fetchWithTimeout(
-      RASTER_API_URL,
+      boundingBox,
+      date,
       dispatch,
-      {
-        method: 'POST',
-        cache: 'no-cache',
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-        },
-        // body data type must match "Content-Type" header
-        body: JSON.stringify(body),
-      },
-      `Request failed for downloading Geotiff at ${RASTER_API_URL}`,
     );
-    const responseJson = await response.json();
-
     const link = document.createElement('a');
-    link.setAttribute('href', responseJson.download_url);
+    link.setAttribute('href', downloadUrl);
     link.click();
   } catch (error) {
     if (error instanceof LocalError) {

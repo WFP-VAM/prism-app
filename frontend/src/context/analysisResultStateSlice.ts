@@ -1,4 +1,10 @@
-import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
+import {
+  createAsyncThunk,
+  createSlice,
+  Dispatch,
+  PayloadAction,
+} from '@reduxjs/toolkit';
+import centroid from '@turf/centroid';
 import { convertArea } from '@turf/helpers';
 import {
   Feature,
@@ -55,7 +61,10 @@ import {
   getBoundaryLayerSingleton,
   LayerDefinitions,
 } from 'config/utils';
-import { Extent } from 'components/MapView/Layers/raster-utils';
+import {
+  Extent,
+  getDownloadGeotiffURL,
+} from 'components/MapView/Layers/raster-utils';
 import { fetchWMSLayerAsGeoJSON } from 'utils/server-utils';
 import { isLocalhost } from 'serviceWorker';
 import { ANALYSIS_API_URL } from 'utils/constants';
@@ -301,6 +310,14 @@ const generateTableFromApiData = (
       key,
     );
 
+    // Get the centroid coordinates of the feature. NOTE - this might be slow for large features.
+    const centroidCoordinates = featureBoundary?.geometry
+      ? (centroid(featureBoundary.geometry as any).geometry.coordinates as [
+          number,
+          number,
+        ])
+      : undefined;
+
     const tableRow: TableRow = {
       key: i.toString(), // primary key, identifying a unique row in the table
       name,
@@ -313,7 +330,7 @@ const generateTableFromApiData = (
         rawBaselineValue === 'No Data'
           ? 'No Data'
           : parseFloat(`${rawBaselineValue}`),
-      coordinates: (featureBoundary?.geometry as any)?.coordinates[0][0][0], // TODO likely will not keep
+      coordinates: centroidCoordinates as any,
       ...Object.fromEntries(
         extraColumns.map(extraColumn => [extraColumn, get(row, extraColumn)]),
       ),
@@ -352,15 +369,16 @@ export type ExposedPopulationDispatchParams = {
   maskLayerId?: LayerKey;
 };
 
-const createAPIRequestParams = (
+async function createAPIRequestParams(
   geotiffLayer: WMSLayerProps,
   extent: Extent,
   date: ReturnType<Date['getTime']>,
+  dispatch: Dispatch,
   params?: WfsRequestParams | AdminLevelDataLayerProps | BoundaryLayerProps,
   maskParams?: any,
   geojsonOut?: boolean,
   exposureValue?: ExposureValue,
-): ApiData => {
+): Promise<ApiData> {
   // Get default values for groupBy and admin boundary file path at the proper adminLevel
   const {
     path: adminBoundariesPath,
@@ -378,20 +396,50 @@ const createAPIRequestParams = (
     ? { wfs_params: params as WfsRequestParams }
     : undefined;
 
-  const { wcsConfig } = geotiffLayer;
+  const {
+    additionalQueryParams,
+    baseUrl,
+    serverLayerName,
+    wcsConfig,
+  } = geotiffLayer;
   const dateValue = !wcsConfig?.disableDateParam ? date : undefined;
+  const dateString = dateValue
+    ? moment(dateValue).format(DEFAULT_DATE_FORMAT)
+    : undefined;
+
+  // get geotiff url using band
+  const { band } =
+    (additionalQueryParams as {
+      styles?: string;
+      band?: string;
+    }) || {};
+
+  // Get geotiff_url using STAC for layers in earthobservation.vam.
+  // TODO - What happens if there is no date? are some layers not STAC?
+  const geotiffUrl =
+    baseUrl.includes('api.earthobservation.vam.wfp.org/ows') &&
+    // use WCS for flood exposure analysis because of a bug with gdal_calc
+    !serverLayerName.includes('wp_pop_cicunadj')
+      ? await getDownloadGeotiffURL(
+          serverLayerName,
+          band,
+          extent,
+          dateString,
+          dispatch,
+        )
+      : createGetCoverageUrl({
+          bbox: extent,
+          bboxDigits: 1,
+          date: dateValue,
+          layerId: serverLayerName,
+          resolution: wcsConfig?.pixelResolution,
+          url: baseUrl,
+        });
 
   // we force group_by to be defined with &
   // eslint-disable-next-line camelcase
   const apiRequest: ApiData = {
-    geotiff_url: createGetCoverageUrl({
-      bbox: extent,
-      bboxDigits: 1,
-      date: dateValue,
-      layerId: geotiffLayer.serverLayerName,
-      resolution: wcsConfig?.pixelResolution,
-      url: geotiffLayer.baseUrl,
-    }),
+    geotiff_url: geotiffUrl,
     zones_url: zonesUrl,
     group_by: groupBy,
     ...wfsParams,
@@ -405,7 +453,7 @@ const createAPIRequestParams = (
   };
 
   return apiRequest;
-};
+}
 
 const mergeTableRows = (tableRows: TableRow[]): TableRow => {
   /* eslint-disable no-param-reassign, fp/no-mutation */
@@ -486,24 +534,56 @@ export const requestAndStoreExposedPopulation = createAsyncThunk<
         }
       : undefined;
 
-    const maskLayer =
-      maskLayerId && (LayerDefinitions[maskLayerId] as WMSLayerProps);
-    const maskParams = maskLayer
+    let maskUrl: string | undefined;
+    const maskLayer = maskLayerId
+      ? (LayerDefinitions[maskLayerId] as WMSLayerProps)
+      : undefined;
+
+    if (maskLayer) {
+      const { additionalQueryParams, baseUrl, serverLayerName } = maskLayer;
+
+      const { band } =
+        (additionalQueryParams as {
+          styles?: string;
+          band?: string;
+        }) || {};
+
+      const dateValue = !maskLayer.wcsConfig?.disableDateParam
+        ? date
+        : undefined;
+      const dateString = dateValue
+        ? moment(dateValue).format(DEFAULT_DATE_FORMAT)
+        : undefined;
+
+      // Get geotiff_url using STAC for layers in earthobservation.vam.
+      // eslint-disable-next-line
+      maskUrl = baseUrl.includes('api.earthobservation.vam.wfp.org/ows') && !serverLayerName.includes("hf_water")
+          ? await getDownloadGeotiffURL(
+              serverLayerName,
+              band,
+              extent,
+              dateString,
+              api.dispatch,
+            )
+          : createGetCoverageUrl({
+              bbox: extent,
+              date,
+              layerId: maskLayer.serverLayerName,
+              url: maskLayer.baseUrl,
+            });
+    }
+    const maskParams = maskUrl
       ? {
-          make_url: createGetCoverageUrl({
-            bbox: extent,
-            date,
-            layerId: maskLayer.serverLayerName,
-            url: maskLayer.baseUrl,
-          }),
+          mask_url: maskUrl,
           mask_calc_expr: calc || 'A*(B==1)',
         }
       : undefined;
 
-    const apiRequest = createAPIRequestParams(
+    const apiRequest = await createAPIRequestParams(
       populationLayer,
       extent,
       date,
+      api.dispatch,
       wfsParams,
       maskParams,
       // Set geojsonOut to true.
@@ -609,10 +689,11 @@ export const requestAndStoreAnalysis = createAsyncThunk<
     throw new Error('Boundary Layer not loaded!');
   }
 
-  const apiRequest = createAPIRequestParams(
+  const apiRequest = await createAPIRequestParams(
     hazardLayer,
     extent,
     date,
+    api.dispatch,
     baselineLayer,
     undefined,
     undefined,

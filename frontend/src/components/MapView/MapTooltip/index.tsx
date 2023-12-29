@@ -5,13 +5,13 @@ import {
   createStyles,
   withStyles,
   WithStyles,
-  LinearProgress,
   Typography,
 } from '@material-ui/core';
 import { tooltipSelector } from 'context/tooltipStateSlice';
 import { isEnglishLanguageSelected, useSafeTranslation } from 'i18n';
 import { AdminLevelType } from 'config/types';
 import { appConfig } from 'config';
+import Loader from 'components/Common/Loader';
 import PopupCharts from './PopupCharts';
 import RedirectToDMP from './RedirectToDMP';
 import PopupContent from './PopupContent';
@@ -79,13 +79,6 @@ const MapTooltip = ({ classes }: TooltipProps) => {
     return popup.locationLocalName;
   }, [i18n, popup.locationLocalName, popup.locationName]);
 
-  const renderedPopupLoader = useMemo(() => {
-    if (!popup.wmsGetFeatureInfoLoading) {
-      return null;
-    }
-    return <LinearProgress />;
-  }, [popup.wmsGetFeatureInfoLoading]);
-
   const popupData = popup.data;
 
   // TODO - simplify logic once we revamp admin levels ojbect
@@ -102,7 +95,7 @@ const MapTooltip = ({ classes }: TooltipProps) => {
     // If adminLevel is undefined, return the whole array
     // eslint-disable-next-line fp/no-mutating-methods
     return splitNames.splice(0, adminLevelLimit);
-  }, [adminLevel, i18n, popup.locationLocalName, popup.locationName]);
+  }, [adminLevel, i18n, popup]);
 
   if (isLoading || !popup.showing || !popup.coordinates) {
     return null;
@@ -140,12 +133,14 @@ const MapTooltip = ({ classes }: TooltipProps) => {
       )}
       <PopupCharts
         setPopupTitle={setPopupTitle}
+        adminCode={popup.locationAdminCode}
+        adminSelectorKey={popup.locationSelectorKey}
         adminLevel={adminLevel}
         setAdminLevel={setAdminLevel}
         adminLevelsNames={adminLevelsNames}
         availableAdminLevels={availableAdminLevels}
       />
-      {renderedPopupLoader}
+      <Loader showLoader={popup.wmsGetFeatureInfoLoading} />
     </Popup>
   );
 };

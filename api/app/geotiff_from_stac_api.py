@@ -1,7 +1,6 @@
+import hashlib
 import logging
 import os
-from time import time
-from uuid import uuid4
 
 import boto3
 from app.timer import timed
@@ -33,13 +32,16 @@ configure_rio(
 def generate_geotiff_from_stac_api(
     collection: str,
     bbox: [float, float, float, float],
-    date: str,
+    date: str | None = None,
     band: str | None = None,
 ) -> str:
     """Query the stac API with the params and generate a geotiff"""
     catalog = Client.open(STAC_URL)
 
-    query_answer = catalog.search(bbox=bbox, collections=[collection], datetime=[date])
+    datetime_params = [date] if date != None else None
+    query_answer = catalog.search(
+        bbox=bbox, collections=[collection], datetime=datetime_params
+    )
     items = list(query_answer.items())
 
     if not items:
@@ -63,10 +65,11 @@ def generate_geotiff_from_stac_api(
     # Add the actual outputed band info to the filename
     final_band = list(collections_dataset.keys())[0]
     band_suffix = "_" + final_band if (final_band != "band") else ""
-    file_path = f"{collection}{band_suffix}_{date}_{str(uuid4())[:8]}.tif"
+    bbox_hash = hashlib.sha256(str(bbox).encode()).hexdigest()[:8]
+    file_path = f"{collection}{band_suffix}_{bbox_hash}_{date or 'no_date'}.tif"
 
     try:
-        write_cog(collections_dataset[final_band], file_path)
+        write_cog(collections_dataset[final_band], file_path, overwrite=True)
     except Exception as e:
         logger.warning("An error occured writing file")
         raise e
@@ -88,12 +91,11 @@ def upload_to_s3(file_path: str) -> str:
 def generate_geotiff_and_upload_to_s3(
     collection: str,
     bbox: [float, float, float, float],
-    date: str,
+    date: str | None = None,
     band: str | None = None,
 ) -> str:
     """
     Query the stac API with the params, generate a geotiff, save it in an S3 bucket
-
     """
     file_path = generate_geotiff_from_stac_api(collection, bbox, date, band)
     s3_filename = upload_to_s3(file_path)
@@ -105,7 +107,7 @@ def generate_geotiff_and_upload_to_s3(
 def get_geotiff(
     collection: str,
     bbox: [float, float, float, float],
-    date: str,
+    date: str | None = None,
     band: str | None = None,
 ):
     """Generate a geotiff and return presigned download url"""

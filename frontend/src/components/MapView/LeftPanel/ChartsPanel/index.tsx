@@ -275,6 +275,8 @@ const ChartsPanel = memo(
       [string, string]
     >(['', '']);
     const [showSlider, setShowSlider] = useState(true);
+    const [maxChartValues, setMaxChartValues] = useState<number[]>([]);
+    const [minChartValues, setMinChartValues] = useState<number[]>([]);
 
     function resetSlider() {
       setMaxDataTicks(0);
@@ -325,6 +327,13 @@ const ChartsPanel = memo(
         }
       },
       [compareLocations, comparePeriods],
+    );
+
+    const getCountryName: (admProps: GeoJsonProperties) => string = useCallback(
+      admProps => {
+        return multiCountry ? admProps?.admin0Name : country;
+      },
+      [country],
     );
 
     const locationString = (
@@ -416,6 +425,7 @@ const ChartsPanel = memo(
         );
       }
       // show 2 or more charts (multi layer or comparisons)
+      const comparing = compareLocations || comparePeriods;
       const mainChartList =
         selectedLayerTitles.length >= 1
           ? chartLayers
@@ -445,12 +455,19 @@ const ChartsPanel = memo(
                     startDate={startDate1 as number}
                     endDate={endDate1 as number}
                     dataForCsv={dataForCsv}
+                    setMaxChartValues={setMaxChartValues}
+                    setMinChartValues={setMinChartValues}
+                    maxChartValue={
+                      comparing ? Math.max(...maxChartValues) : undefined
+                    }
+                    minChartValue={
+                      comparing ? Math.min(...minChartValues) : undefined
+                    }
                   />
                 </Box>
               ))
           : [];
       // now add comparison charts
-      const comparing = compareLocations || comparePeriods;
       const comparedAdminProperties = compareLocations
         ? secondAdminProperties
         : adminProperties;
@@ -497,6 +514,10 @@ const ChartsPanel = memo(
                   startDate={comparedStartDate as number}
                   endDate={comparedEndDate as number}
                   dataForCsv={dataForSecondCsv}
+                  setMaxChartValues={setMaxChartValues}
+                  setMinChartValues={setMinChartValues}
+                  maxChartValue={Math.max(...maxChartValues)}
+                  minChartValue={Math.min(...minChartValues)}
                 />
               </Box>
             ))
@@ -527,11 +548,11 @@ const ChartsPanel = memo(
       };
 
       const titleStrings: () => string[][] = () => {
-        if (compareLocations) {
+        if (compareLocations && adminProperties && secondAdminProperties) {
           return [
             [
               locationString(
-                multiCountry ? admin0Key : country,
+                getCountryName(adminProperties),
                 selectedAdmin1Area,
                 selectedAdmin2Area,
                 adminLevel,
@@ -540,7 +561,7 @@ const ChartsPanel = memo(
             ],
             [
               locationString(
-                multiCountry ? secondAdmin0Key : country,
+                getCountryName(secondAdminProperties),
                 comparedAdmin1Area,
                 comparedAdmin2Area,
                 comparedAdminLevel,
@@ -572,29 +593,29 @@ const ChartsPanel = memo(
         </Box>
       ));
       // add a location string above everything if comparing periods
-      const locationBox = comparePeriods ? (
-        <Box
-          key="locationBox"
-          style={{
-            height: '30px',
-            minWidth: '80%',
-            flex: 1,
-            position: 'relative',
-          }}
-        >
-          <Typography className={classes.textLabel}>
-            {locationString(
-              multiCountry ? admin0Key : country,
-              selectedAdmin1Area,
-              selectedAdmin2Area,
-              adminLevel,
-            )}
-          </Typography>
-        </Box>
-      ) : null;
+      const locationBox =
+        comparePeriods && adminProperties ? (
+          <Box
+            key="locationBox"
+            style={{
+              height: '30px',
+              minWidth: '80%',
+              flex: 1,
+              position: 'relative',
+            }}
+          >
+            <Typography className={classes.textLabel}>
+              {locationString(
+                getCountryName(adminProperties),
+                selectedAdmin1Area,
+                selectedAdmin2Area,
+                adminLevel,
+              )}
+            </Typography>
+          </Box>
+        ) : null;
       return [locationBox, ...titles, ...zipped];
     }, [
-      admin0Key,
       adminLevel,
       adminProperties,
       chartMaxDateRange,
@@ -602,10 +623,11 @@ const ChartsPanel = memo(
       classes.textLabel,
       compareLocations,
       comparePeriods,
-      country,
       endDate1,
       endDate2,
-      secondAdmin0Key,
+      getCountryName,
+      maxChartValues,
+      minChartValues,
       secondAdminLevel,
       secondAdminProperties,
       secondSelectedAdmin1Area,
@@ -736,21 +758,25 @@ const ChartsPanel = memo(
       [t],
     );
 
-    const firstCSVFilename = buildCsvFileName([
-      multiCountry ? admin0Key : country,
-      selectedAdmin1Area,
-      selectedAdmin2Area,
-      ...(selectedLayerTitles as string[]),
-      comparePeriods ? 'first_period' : '',
-    ]);
+    const firstCSVFilename = adminProperties
+      ? buildCsvFileName([
+          getCountryName(adminProperties),
+          selectedAdmin1Area,
+          selectedAdmin2Area,
+          ...(selectedLayerTitles as string[]),
+          comparePeriods ? 'first_period' : '',
+        ])
+      : '';
 
-    const secondCSVFilename = buildCsvFileName([
-      multiCountry ? secondAdmin0Key : country,
-      compareLocations ? secondSelectedAdmin1Area : selectedAdmin1Area,
-      compareLocations ? secondSelectedAdmin2Area : selectedAdmin2Area,
-      ...(selectedLayerTitles as string[]),
-      comparePeriods ? 'second_period' : '',
-    ]);
+    const secondCSVFilename = secondAdminProperties
+      ? buildCsvFileName([
+          getCountryName(secondAdminProperties),
+          compareLocations ? secondSelectedAdmin1Area : selectedAdmin1Area,
+          compareLocations ? secondSelectedAdmin2Area : selectedAdmin2Area,
+          ...(selectedLayerTitles as string[]),
+          comparePeriods ? 'second_period' : '',
+        ])
+      : '';
 
     if (tabPanelType !== tabValue) {
       return null;

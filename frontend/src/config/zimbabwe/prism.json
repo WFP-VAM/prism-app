@@ -53,6 +53,10 @@
             {
               "id": "precip_blended_6m",
               "label": "6-month"
+            },
+            {
+            "id": "precip_blended_7m",
+            "label": "7-month"
             }
           ]
         },
@@ -88,10 +92,15 @@
             {
               "id": "precip_blended_anomaly_6m",
               "label": "6-month"
+            },
+            {
+              "id": "precip_blended_anomaly_7m",
+              "label": "7-month"
             }
           ]
         }
       ],
+      "forecasts": ["daily_rainfall_forecast", "dekad_rainfall_forecast"],
       "global_rainfall_products": [
         {
           "group_title": "Rainfall aggregate",

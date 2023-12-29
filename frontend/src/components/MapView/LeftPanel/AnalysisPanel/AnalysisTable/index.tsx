@@ -14,11 +14,11 @@ import {
   withStyles,
   WithStyles,
 } from '@material-ui/core';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { TableRow as AnalysisTableRow } from 'context/analysisResultStateSlice';
-import { showPopup } from 'context/tooltipStateSlice';
 import { Column } from 'utils/analysis-utils';
 import { useSafeTranslation } from 'i18n';
+import { mapSelector } from 'context/mapStateSlice/selectors';
 
 const AnalysisTable = memo(
   ({
@@ -33,6 +33,7 @@ const AnalysisTable = memo(
     const { t } = useSafeTranslation();
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(10);
+    const map = useSelector(mapSelector);
 
     const dispatch = useDispatch();
 
@@ -103,19 +104,18 @@ const AnalysisTable = memo(
     const handleClickTableBodyRow = useCallback(
       row => {
         return () => {
-          if (!row.coordinates) {
+          if (!row.coordinates || !map) {
             return;
           }
-          dispatch(
-            showPopup({
-              coordinates: row.coordinates,
-              locationName: row.name,
-              locationLocalName: row.localName,
+          dispatch(() =>
+            map.fire('click', {
+              lngLat: row.coordinates,
+              point: map.project(row.coordinates),
             }),
           );
         };
       },
-      [dispatch],
+      [dispatch, map],
     );
 
     const renderedTableRowStyles = useCallback(
