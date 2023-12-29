@@ -18,6 +18,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Search } from '@material-ui/icons';
 import { Map as MapBoxMap } from 'mapbox-gl';
 import bbox from '@turf/bbox';
+import { FixedSizeList as List } from 'react-window';
 import {
   BoundaryLayerProps,
   AdminCodeString,
@@ -272,9 +273,6 @@ export function SimpleBoundaryDropdown({
     return <CircularProgress size={24} color="inherit" />;
   }
 
-  // building the tree and flattening it takes about 8-10ms
-  // and the subsequent react component construction ~15ms
-  // but the menu still takes ~2000ms (on rbd) to display, why?
   const areaTree = getAdminBoundaryTree(data, boundaryLayer, i18nLocale);
   const flattenedAreaList = flattenAreaTree(areaTree, search).slice(1);
   const rootLevel = flattenedAreaList[0]?.level;
@@ -296,10 +294,6 @@ export function SimpleBoundaryDropdown({
     }
   };
 
-  // map adminLevels to a CSS class for each level
-  // note that level actually used is different from the
-  // official admin level, as we subtract the root level
-  // from each item's level, when displaying
   const clsName: { [key: number]: any } = {
     0: styles.menuItem0,
     1: styles.menuItem1,
@@ -308,23 +302,36 @@ export function SimpleBoundaryDropdown({
     4: styles.menuItem3,
   };
 
-  // It's important for this to be another component, since the Select component
-  // acts on the `value` prop, which we need to hide from <Select /> since this isn't a menu item.
-  const out = (
+  const MenuItemRenderer = ({
+    index,
+    style,
+  }: {
+    index: number;
+    style: any;
+  }) => {
+    const area = flattenedAreaList[index];
+    return (
+      <MenuItem
+        classes={{ root: clsName[(area.level - rootLevel) as number] }}
+        key={area.adminCode}
+        value={area.adminCode}
+        style={style}
+      >
+        {area.label}
+      </MenuItem>
+    );
+  };
+
+  return (
     <FormControl {...rest}>
       <InputLabel>{labelMessage}</InputLabel>
       <Select
         multiple
         onClose={() => {
-          // empty search so that component shows correct options
-          // otherwise, we would only show selected options which satisfy the search
           setTimeout(() => setSearch(''), TIMEOUT_ANIMATION_DELAY);
         }}
         value={selectedBoundaries}
-        // Current mui version does not have SelectChangeEvent<T>. Using any instead.
-        // TODO: move the code here into a onChange prop
         onChange={(e: any) => {
-          // do nothing if value is invalid
           if (
             !Array.isArray(e.target.value) ||
             e.target.value.includes(undefined)
@@ -341,11 +348,9 @@ export function SimpleBoundaryDropdown({
 
             setSelectedBoundaries(boundariesToSelect, e.shiftKey);
           } else {
-            // component used in GoTo mode, we only receive a single value
             if (map === undefined) {
               return;
             }
-            // get selected areas
             const features = data.features.filter(
               f =>
                 f &&
@@ -353,7 +358,6 @@ export function SimpleBoundaryDropdown({
                   e.target.value[0],
                 ),
             );
-            // calculate bounding box of everything selected
             const bboxUnion: BBox = bbox({
               type: 'FeatureCollection',
               features,
@@ -375,22 +379,17 @@ export function SimpleBoundaryDropdown({
         {search && flattenedAreaList.length === 0 && (
           <MenuItem disabled>{t('No Results')}</MenuItem>
         )}
-        {flattenedAreaList.map((area: FlattenedAdminBoundary) => {
-          return (
-            <MenuItem
-              classes={{ root: clsName[(area.level - rootLevel) as number] }}
-              key={area.adminCode}
-              value={area.adminCode}
-            >
-              {area.label}
-            </MenuItem>
-          );
-        })}
+        <List
+          height={350} // Adjust based on your needs
+          itemCount={flattenedAreaList.length}
+          itemSize={35} // Adjust based on your needs
+          width="100%"
+        >
+          {MenuItemRenderer}
+        </List>
       </Select>
     </FormControl>
   );
-
-  return out;
 }
 
 interface BoundaryDropdownProps {
