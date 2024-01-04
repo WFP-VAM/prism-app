@@ -1,7 +1,6 @@
+import hashlib
 import logging
 import os
-from time import time
-from uuid import uuid4
 
 import boto3
 from app.timer import timed
@@ -31,30 +30,51 @@ configure_rio(
 
 @timed
 def generate_geotiff_from_stac_api(
-    collection: str, bbox: [float, float, float, float], date: str
+    collection: str,
+    bbox: [float, float, float, float],
+    date: str | None = None,
+    band: str | None = None,
 ) -> str:
     """Query the stac API with the params and generate a geotiff"""
-    file_path = f"{collection}_{date}_{str(uuid4())[:8]}.tif"
     catalog = Client.open(STAC_URL)
 
-    query_answer = catalog.search(bbox=bbox, collections=[collection], datetime=[date])
+    datetime_params = [date] if date != None else None
+    query_answer = catalog.search(
+        bbox=bbox, collections=[collection], datetime=datetime_params
+    )
     items = list(query_answer.items())
 
     if not items:
         raise HTTPException(status_code=500, detail="Collection not found in stac API")
 
+    # TODO - what should happen if the STAC API returns multiple dataset
+    # or if the selected band is not available?
+
+    # Filter data to the correct band if requested.
+    available_bands = items[0].assets.keys()
+    logger.debug("available bands: %s", available_bands)
+    bands = [band] if band and band in available_bands else None
+
     try:
-        collections_dataset = stac_load(items, bbox=bbox, chunks={})
+        collections_dataset = stac_load(items, bbox=bbox, bands=bands, chunks={})
+        logger.debug("collections dataset: %s", collections_dataset)
     except Exception as e:
         logger.warning("Failed to load dataset")
         raise e
 
+    # Add the actual outputed band info to the filename
+    final_band = list(collections_dataset.keys())[0]
+    band_suffix = "_" + final_band if (final_band != "band") else ""
+    bbox_hash = hashlib.sha256(str(bbox).encode()).hexdigest()[:8]
+    file_path = f"{collection}{band_suffix}_{bbox_hash}_{date or 'no_date'}.tif"
+
     try:
-        write_cog(collections_dataset[list(collections_dataset.keys())[0]], file_path)
+        write_cog(collections_dataset[final_band], file_path, overwrite=True)
     except Exception as e:
         logger.warning("An error occured writing file")
         raise e
 
+    logger.debug("returning file: %s", file_path)
     return file_path
 
 
@@ -69,22 +89,29 @@ def upload_to_s3(file_path: str) -> str:
 
 @cached(cache=TTLCache(maxsize=128, ttl=60 * 60 * 24 * 6))
 def generate_geotiff_and_upload_to_s3(
-    collection: str, bbox: [float, float, float, float], date: str
+    collection: str,
+    bbox: [float, float, float, float],
+    date: str | None = None,
+    band: str | None = None,
 ) -> str:
     """
     Query the stac API with the params, generate a geotiff, save it in an S3 bucket
-
     """
-    file_path = generate_geotiff_from_stac_api(collection, bbox, date)
+    file_path = generate_geotiff_from_stac_api(collection, bbox, date, band)
     s3_filename = upload_to_s3(file_path)
     os.remove(file_path)
 
     return s3_filename
 
 
-def get_geotiff(collection: str, bbox: [float, float, float, float], date: str):
+def get_geotiff(
+    collection: str,
+    bbox: [float, float, float, float],
+    date: str | None = None,
+    band: str | None = None,
+):
     """Generate a geotiff and return presigned download url"""
-    s3_filename = generate_geotiff_and_upload_to_s3(collection, bbox, date)
+    s3_filename = generate_geotiff_and_upload_to_s3(collection, bbox, date, band)
 
     s3_client = boto3.client("s3")
     presigned_download_url = s3_client.generate_presigned_url(

@@ -80,7 +80,9 @@ async def download_report(
         await click_target_exposure_analysis(page, layerIdParam)
 
         # Wait for page to be loaded on exposure analysis
-        await page.wait_for_selector('div[id="full-width-tabpanel-2"]', state="visible")
+        await page.wait_for_selector(
+            'div[id="full-width-tabpanel-analysis"]', state="visible"
+        )
 
         await page.wait_for_selector(
             'div[class^="memo-analysisButtonContainer-"]', state="visible"

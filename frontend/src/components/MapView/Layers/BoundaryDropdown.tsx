@@ -3,23 +3,26 @@ import {
   FormControl,
   InputAdornment,
   InputLabel,
-  ListSubheader,
   makeStyles,
   MenuItem,
   Select,
-  styled,
   TextField,
   TextFieldProps,
   Theme,
-  Typography,
   useMediaQuery,
 } from '@material-ui/core';
 import { sortBy } from 'lodash';
-import React, { forwardRef, ReactNode, useEffect, useState } from 'react';
+import React, { forwardRef, useEffect, useState } from 'react';
 import i18n from 'i18next';
 import { useDispatch, useSelector } from 'react-redux';
 import { Search } from '@material-ui/icons';
-import { BoundaryLayerProps } from 'config/types';
+import { Map as MapBoxMap } from 'mapbox-gl';
+import bbox from '@turf/bbox';
+import {
+  BoundaryLayerProps,
+  AdminCodeString,
+  AdminLevelType,
+} from 'config/types';
 import {
   getSelectedBoundaries,
   setIsSelectionMode,
@@ -29,16 +32,10 @@ import { getBoundaryLayerSingleton } from 'config/utils';
 import { layerDataSelector } from 'context/mapStateSlice/selectors';
 import { LayerData } from 'context/layers/layer-data';
 import { isEnglishLanguageSelected, useSafeTranslation } from 'i18n';
+import { BBox } from '@turf/helpers';
 
 const boundaryLayer = getBoundaryLayerSingleton();
-const ClickableListSubheader = styled(ListSubheader)(({ theme }) => ({
-  // Override the default list subheader style to make it clickable
-  pointerEvents: 'inherit',
-  cursor: 'pointer',
-  '&:hover': {
-    backgroundColor: theme.palette.grey[100],
-  },
-}));
+
 const useStyles = makeStyles((theme: Theme) => ({
   searchField: {
     '&>div': {
@@ -64,7 +61,30 @@ const useStyles = makeStyles((theme: Theme) => ({
     alignSelf: 'end',
     marginBottom: '0.4em',
   },
-  root: {
+  menuItem0: {
+    textTransform: 'uppercase',
+    letterSpacing: '3px',
+    fontSize: '0.7em',
+    '&$selected': {
+      backgroundColor: '#ADD8E6',
+    },
+  },
+  menuItem1: {
+    paddingLeft: '2em',
+    '&$selected': {
+      backgroundColor: '#ADD8E6',
+    },
+  },
+  menuItem2: {
+    paddingLeft: '3em',
+    fontSize: '0.9em',
+    '&$selected': {
+      backgroundColor: '#ADD8E6',
+    },
+  },
+  menuItem3: {
+    paddingLeft: '4em',
+    fontSize: '0.9em',
     '&$selected': {
       backgroundColor: '#ADD8E6',
     },
@@ -112,105 +132,117 @@ const SearchField = forwardRef(
   },
 );
 
-export interface OrderedArea {
-  children: {
-    value: string;
-    label: string;
-    key: string;
-  }[];
-  title: string;
-  key: string;
-}
 /**
- * Converts the boundary layer data into a list of options for the dropdown
- * grouped by admin level 2, with individual sections under admin level 3.
+ * A tree of admin boundary areas, starting from
+ * a single "root" element.
  */
-export function getOrderedAreas(
-  data: LayerData<BoundaryLayerProps>['data'],
+export interface AdminBoundaryTree {
+  label: string;
+  key: AdminCodeString; // FIXME: duplicate of adminCode below?
+  adminCode: AdminCodeString;
+  level: AdminLevelType;
+  // children are indexed by AdminCodeStrings, not strings
+  // but typescript won't allow being more specific
+  children: { [code: string]: AdminBoundaryTree };
+}
+
+/**
+ * Flattened version of the tree above, used to build
+ * dropdowns.
+ */
+interface FlattenedAdminBoundary {
+  label: string;
+  key: AdminCodeString;
+  adminCode: AdminCodeString;
+  level: AdminLevelType;
+}
+
+/**
+ * Build a tree representing the hierarchy of admin
+ * boundaries for the given data layer.
+ */
+export function getAdminBoundaryTree(
+  data: LayerData<BoundaryLayerProps>['data'] | undefined,
   layer: BoundaryLayerProps,
-  search: string,
   i18nLocale: typeof i18n,
-  layerLevel: number = 0,
-  parentCategoryValue?: string,
-): OrderedArea[] {
+): AdminBoundaryTree {
   const locationLevelNames = isEnglishLanguageSelected(i18nLocale)
     ? layer.adminLevelNames
     : layer.adminLevelLocalNames;
-  if (!layer.adminLevelNames.length) {
-    console.error(
-      'Boundary layer has no admin level names. Cannot generate categories.',
-    );
-    return [];
+  const { adminLevelCodes } = layer;
+  const { features } = data || {};
+
+  const rootNode = {
+    adminCode: 'top' as AdminCodeString,
+    level: 0 as AdminLevelType,
+    key: 'root' as AdminCodeString,
+    label: 'Placeholder tree element',
+    children: {},
+  };
+  if (features === undefined) {
+    return rootNode;
   }
 
-  const layerLevel1 = layerLevel || 0;
-  const layerLevel2 = layerLevel1 + 1;
-
-  let { features } = data;
-  // filter to get only layers having prentCategoryValue as parent layer
-  // when layerLevel is 0, there is only one layer loaded
-  // then parent category can't exist
-  if (parentCategoryValue && layerLevel > 0) {
-    // eslint-disable-next-line fp/no-mutation
-    features = data.features.filter(
-      feature =>
-        feature.properties?.[layer.adminLevelNames[layerLevel - 1]] ===
-        parentCategoryValue,
+  const addBranchToTree = (
+    partialTree: AdminBoundaryTree,
+    levelsLeft: AdminCodeString[],
+    feature: any, // TODO: type?
+    level: AdminLevelType,
+  ): AdminBoundaryTree => {
+    const fp = feature.properties;
+    if (levelsLeft.length === 0) {
+      return partialTree;
+    }
+    const [currentLevelCode, ...otherLevelsCodes] = levelsLeft;
+    const newBranch = addBranchToTree(
+      partialTree.children[fp[currentLevelCode]] ?? {
+        adminCode: fp[currentLevelCode],
+        key: fp[layer.adminLevelNames[level]],
+        label: fp[locationLevelNames[level]],
+        level: (level + 1) as AdminLevelType,
+        children: {},
+      },
+      otherLevelsCodes,
+      feature,
+      (level + 1) as AdminLevelType,
     );
-  }
+    const newChildren = {
+      ...partialTree.children,
+      [fp[currentLevelCode]]: newBranch,
+    };
+    return { ...partialTree, children: newChildren };
+  };
 
-  // Make categories based off the level of all boundaries
-  return sortBy(
-    features
-      .reduce<OrderedArea[]>((ret, feature) => {
-        // unique parent key to filter when changing the language
-        const parentKey =
-          feature.properties?.[layer.adminLevelNames[layerLevel1]];
-        const parentCategory =
-          feature.properties?.[locationLevelNames[layerLevel1]];
-        // unique child key to filter when changing the language
-        const childkey =
-          feature.properties?.[layer.adminLevelNames[layerLevel2]!];
-        const label = feature.properties?.[locationLevelNames[layerLevel2]!];
-        const code = feature.properties?.[layer.adminCode];
-        if (!label || !code || !parentCategory || !parentKey) {
-          return ret;
-        }
-        // filter via search
-        const searchIncludes = (field: string) =>
-          field.toLowerCase().includes(search.toLowerCase());
-        if (
-          search &&
-          !searchIncludes(label) &&
-          !searchIncludes(code) &&
-          !searchIncludes(parentCategory) &&
-          !searchIncludes(parentKey)
-        ) {
-          return ret;
-        }
-        // add to categories if exists
-        const category = ret.find(c => c.key === parentKey);
-        if (category) {
-          // eslint-disable-next-line fp/no-mutating-methods
-          category.children.push({ value: code, label, key: childkey });
-        } else {
-          return [
-            ...ret,
-            {
-              key: parentKey,
-              title: parentCategory,
-              children: [{ value: code, label, key: childkey }],
-            },
-          ];
-        }
-        return ret;
-      }, [])
-      .map(category => ({
-        ...category,
-        children: sortBy(category.children, 'key'),
-      })),
-    'key',
-  );
+  return features.reduce<AdminBoundaryTree>((outputTree, feature) => {
+    return addBranchToTree(
+      outputTree,
+      adminLevelCodes,
+      feature,
+      0 as AdminLevelType,
+    );
+  }, rootNode);
+}
+
+function flattenAreaTree(
+  tree: AdminBoundaryTree,
+  search: string = '',
+): FlattenedAdminBoundary[] {
+  function flattenSubTree(
+    subTree: AdminBoundaryTree,
+  ): FlattenedAdminBoundary[] {
+    const { children, ...rest } = subTree;
+    const childrenToShow = sortBy(Object.values(children), 'label').flatMap(
+      flattenSubTree,
+    );
+    if (
+      childrenToShow.length > 0 ||
+      rest.label.toLowerCase().includes(search.toLowerCase())
+    ) {
+      return [rest, childrenToShow].flat();
+    }
+    return childrenToShow.flat();
+  }
+  return flattenSubTree(tree);
 }
 
 /**
@@ -218,10 +250,11 @@ export function getOrderedAreas(
  * This component also syncs with the map automatically, allowing users to select cells by clicking the map.
  * Selection mode is automatically toggled based off this component's lifecycle.
  */
-function SimpleBoundaryDropdown({
+export function SimpleBoundaryDropdown({
   selectedBoundaries,
   setSelectedBoundaries,
   labelMessage,
+  map,
   selectAll,
   onlyNewCategory,
   ...rest
@@ -234,22 +267,50 @@ function SimpleBoundaryDropdown({
     | LayerData<BoundaryLayerProps>
     | undefined;
   const { data } = boundaryLayerData || {};
+
   if (!data) {
-    return <CircularProgress size={24} color="secondary" />;
+    return <CircularProgress size={24} color="inherit" />;
   }
-  const areas = getOrderedAreas(data, boundaryLayer, search, i18nLocale);
-  const allChildrenAreas = areas.flatMap(c => c.children);
+
+  // building the tree and flattening it takes about 8-10ms
+  // and the subsequent react component construction ~15ms
+  // but the menu still takes ~2000ms (on rbd) to display, why?
+  const areaTree = getAdminBoundaryTree(data, boundaryLayer, i18nLocale);
+  const flattenedAreaList = flattenAreaTree(areaTree, search).slice(1);
+  const rootLevel = flattenedAreaList[0]?.level;
+
   const selectOrDeselectAll = (e: React.MouseEvent) => {
     e.preventDefault();
+    if (
+      selectedBoundaries === undefined ||
+      setSelectedBoundaries === undefined
+    ) {
+      return;
+    }
     if (selectedBoundaries.length > 0) {
       setSelectedBoundaries([]);
     } else {
-      setSelectedBoundaries(allChildrenAreas.map(({ value }) => value));
+      setSelectedBoundaries(
+        flattenedAreaList.map(({ adminCode }) => adminCode),
+      );
     }
   };
+
+  // map adminLevels to a CSS class for each level
+  // note that level actually used is different from the
+  // official admin level, as we subtract the root level
+  // from each item's level, when displaying
+  const clsName: { [key: number]: any } = {
+    0: styles.menuItem0,
+    1: styles.menuItem1,
+    2: styles.menuItem2,
+    3: styles.menuItem3,
+    4: styles.menuItem3,
+  };
+
   // It's important for this to be another component, since the Select component
-  // acts on the `value` prop, which we need to hide from <Select/> since this isn't a menu item.
-  return (
+  // acts on the `value` prop, which we need to hide from <Select /> since this isn't a menu item.
+  const out = (
     <FormControl {...rest}>
       <InputLabel>{labelMessage}</InputLabel>
       <Select
@@ -261,9 +322,9 @@ function SimpleBoundaryDropdown({
         }}
         value={selectedBoundaries}
         // Current mui version does not have SelectChangeEvent<T>. Using any instead.
+        // TODO: move the code here into a onChange prop
         onChange={(e: any) => {
           // do nothing if value is invalid
-          // This happens when you click list subheadings.
           if (
             !Array.isArray(e.target.value) ||
             e.target.value.includes(undefined)
@@ -271,83 +332,78 @@ function SimpleBoundaryDropdown({
             return;
           }
 
-          setSelectedBoundaries(
-            Array.isArray(e.target.value) ? e.target.value : [],
-            e.shiftKey,
-          );
+          if (setSelectedBoundaries !== undefined) {
+            const boundariesToSelect = flattenedAreaList
+              .filter(b =>
+                e.target.value.some((v: string) => b.adminCode.startsWith(v)),
+              )
+              .map(b => b.adminCode);
+
+            setSelectedBoundaries(boundariesToSelect, e.shiftKey);
+          } else {
+            // component used in GoTo mode, we only receive a single value
+            if (map === undefined) {
+              return;
+            }
+            // get selected areas
+            const features = data.features.filter(
+              f =>
+                f &&
+                f.properties?.[boundaryLayer.adminCode].startsWith(
+                  e.target.value[0],
+                ),
+            );
+            // calculate bounding box of everything selected
+            const bboxUnion: BBox = bbox({
+              type: 'FeatureCollection',
+              features,
+            });
+            if (bboxUnion.length === 4) {
+              map.fitBounds(bboxUnion, { padding: 30 });
+            }
+          }
         }}
       >
         <SearchField search={search} setSearch={setSearch} />
-        {!search && selectAll && (
+        {!search && selectAll && selectedBoundaries && (
           <MenuItem onClick={selectOrDeselectAll}>
             {selectedBoundaries.length === 0
               ? t('Select All')
               : t('Deselect All')}
           </MenuItem>
         )}
-        {search && allChildrenAreas.length === 0 && (
+        {search && flattenedAreaList.length === 0 && (
           <MenuItem disabled>{t('No Results')}</MenuItem>
         )}
-        {areas.reduce<ReactNode[]>(
-          // map wouldn't work here because <Select> doesn't support <Fragment> with keys, so we need one array
-          (components, category) => [
-            ...components,
-            // don't add list subheader if there are no categories.
-            boundaryLayer.adminLevelNames.length > 1 ? (
-              <ClickableListSubheader
-                key={category.title}
-                onClick={e => {
-                  e.preventDefault();
-                  // if all children are selected, deselect all. Otherwise select all
-                  const categoryValues = category.children.map(c => c.value);
-                  const areAllChildrenSelected =
-                    selectedBoundaries.filter(val =>
-                      categoryValues.includes(val),
-                    ).length === categoryValues.length;
-
-                  const newBoundariesValue = onlyNewCategory
-                    ? categoryValues
-                    : [...selectedBoundaries, ...categoryValues];
-
-                  setSelectedBoundaries(
-                    areAllChildrenSelected
-                      ? selectedBoundaries.filter(
-                          val => !categoryValues.includes(val),
-                        )
-                      : newBoundariesValue,
-                    true,
-                  );
-                }}
-              >
-                <Typography variant="body2" color="primary">
-                  {category.title}
-                </Typography>
-              </ClickableListSubheader>
-            ) : null,
-            ...category.children.map(({ label, value }) => (
-              <MenuItem
-                classes={{ root: styles.root }}
-                key={value}
-                value={value}
-              >
-                {label}
-              </MenuItem>
-            )),
-          ],
-          [],
-        )}
+        {flattenedAreaList.map((area: FlattenedAdminBoundary) => {
+          return (
+            <MenuItem
+              classes={{ root: clsName[(area.level - rootLevel) as number] }}
+              key={area.adminCode}
+              value={area.adminCode}
+            >
+              {area.label}
+            </MenuItem>
+          );
+        })}
       </Select>
     </FormControl>
   );
+
+  return out;
 }
 
 interface BoundaryDropdownProps {
   className: string;
-  selectedBoundaries: string[];
-  setSelectedBoundaries: (boundaries: string[], appendMany?: boolean) => void;
-  labelMessage?: string;
+  labelMessage: string;
+  map?: MapBoxMap | undefined;
   onlyNewCategory?: boolean;
-  selectAll: boolean;
+  selectAll?: boolean;
+  selectedBoundaries?: AdminCodeString[];
+  setSelectedBoundaries?: (
+    boundaries: AdminCodeString[],
+    appendMany?: boolean,
+  ) => void;
 }
 
 /**

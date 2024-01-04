@@ -4,6 +4,7 @@
       "path": "data/ecuador/ecu_admbnda_adm2.json",
       "opacity": 0.8,
       "admin_code": "ADM2_PCODE",
+      "admin_level_codes": ["ADM1_PCODE", "ADM2_PCODE"],
       "admin_level_names": ["ADM1_ES", "ADM2_ES"],
       "admin_level_local_names": ["ADM1_ES", "ADM2_ES"],
       "styles:": {
@@ -22,6 +23,7 @@
       "path": "data/ecuador/ecu_admbnda_adm1.json",
       "opacity": 0.8,
       "admin_code": "ADM1_PCODE",
+      "admin_level_codes": ["ADM1_PCODE"],
       "admin_level_names": ["ADM1_ES"],
       "admin_level_local_names": ["ADM1_ES"],
       "styles:": {

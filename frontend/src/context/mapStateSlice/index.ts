@@ -62,6 +62,7 @@ export const layerOrdering = (a: LayerType, b: LayerType) => {
   const order: {
     [key in
       | 'boundary'
+      | 'composite'
       | 'wms'
       | 'admin_level_data'
       | 'pattern_admin_level_data'
@@ -78,6 +79,7 @@ export const layerOrdering = (a: LayerType, b: LayerType) => {
     impact: 5,
     wms: 6,
     static_raster: 7,
+    composite: 8,
   };
 
   const typeA = getTypeOrder(a);

@@ -7,6 +7,7 @@ import colombia from './colombia';
 import cuba from './cuba';
 import ecuador from './ecuador';
 import global from './global';
+import haiti from './haiti';
 import indonesia from './indonesia';
 import jordan from './jordan';
 import kyrgyzstan from './kyrgyzstan';
@@ -14,6 +15,7 @@ import mongolia from './mongolia';
 import mozambique from './mozambique';
 import myanmar from './myanmar';
 import namibia from './namibia';
+import nepal from './nepal';
 import nigeria from './nigeria';
 import rbd from './rbd';
 import sierraleone from './sierraleone';
@@ -36,6 +38,7 @@ const configMap = {
   cuba,
   ecuador,
   global,
+  haiti,
   indonesia,
   jordan,
   kyrgyzstan,
@@ -43,6 +46,7 @@ const configMap = {
   mozambique,
   myanmar,
   namibia,
+  nepal,
   nigeria,
   rbd,
   sierraleone,

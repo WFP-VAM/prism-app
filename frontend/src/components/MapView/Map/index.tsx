@@ -25,6 +25,7 @@ import { mapSelector } from 'context/mapStateSlice/selectors';
 import {
   AdminLevelDataLayer,
   BoundaryLayer,
+  CompositeLayer,
   ImpactLayer,
   PointDataLayer,
   StaticRasterLayer,
@@ -204,14 +205,12 @@ const MapComponent = memo(
         impact: ImpactLayer,
         point_data: PointDataLayer,
         static_raster: StaticRasterLayer,
+        composite: CompositeLayer,
       };
     }, []);
 
     const getBeforeId = useCallback(
-      (layer: LayerType, index: number) => {
-        if (layer.type === 'boundary') {
-          return firstSymbolId;
-        }
+      (index: number) => {
         if (index === 0) {
           return firstSymbolId;
         }
@@ -239,22 +238,24 @@ const MapComponent = memo(
         center={mapTempCenter}
         maxBounds={maxBounds}
       >
-        {/* We cannot memoize the above behavior because tooltip becomes sluggish and does not render at all, when we enable a layer */}
-        {selectedLayers.map((layer, index) => {
-          const component: ComponentType<{
-            layer: any;
-            before?: string;
-          }> = componentTypes[layer.type];
-          return createElement(component, {
-            key: layer.id,
-            layer,
-            before: getBeforeId(layer, index),
-          });
-        })}
-        {/* These are custom layers which provide functionality and are not really controllable via JSON */}
-        <AnalysisLayer before={firstBoundaryId} />
-        <SelectionLayer before={firstSymbolId} />
-        <MapTooltip />
+        <>
+          {/* We cannot memoize the above behavior because tooltip becomes sluggish and does not render at all, when we enable a layer */}
+          {selectedLayers.map((layer, index) => {
+            const component: ComponentType<{
+              layer: any;
+              before?: string;
+            }> = componentTypes[layer.type];
+            return createElement(component, {
+              key: layer.id,
+              layer,
+              before: getBeforeId(index),
+            });
+          })}
+          {/* These are custom layers which provide functionality and are not really controllable via JSON */}
+          <AnalysisLayer before={firstBoundaryId} />
+          <SelectionLayer before={firstSymbolId} />
+          <MapTooltip />
+        </>
       </MapboxMap>
     );
   },

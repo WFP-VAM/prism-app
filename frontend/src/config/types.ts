@@ -18,6 +18,7 @@ export type LayerType =
   | AdminLevelDataLayerProps
   | ImpactLayerProps
   | PointDataLayerProps
+  | CompositeLayerProps
   | StaticRasterLayerProps;
 
 type UnionToIntersection<U> = (U extends any ? (k: U) => void : never) extends (
@@ -28,7 +29,7 @@ type UnionToIntersection<U> = (U extends any ? (k: U) => void : never) extends (
 
 export type LayerKey = keyof UnionToIntersection<typeof rawLayers>;
 
-type MenuGroupItem = {
+export type MenuGroupItem = {
   id: string;
   label: string;
   main?: boolean;
@@ -126,7 +127,7 @@ export function requiredKeysForClassType(constructor: ClassType<any>) {
  * @param logErrors Flag to print out a verbose error message to the console if the object fails
  * @param id
  */
-export function checkRequiredKeys<T>(
+export function checkRequiredKeys<T extends Record<string, any>>(
   classType: ClassType<T>,
   maybeType: Record<string, any>,
   logErrors = false,
@@ -250,6 +251,13 @@ export interface ExposedPopulationDefinition {
   calc?: string;
 }
 
+export enum Interval {
+  ONE_DAY = 'days',
+  TEN_DAYS = '10-days',
+  ONE_MONTH = '1-month',
+  ONE_YEAR = '1-year',
+}
+
 export type FeatureInfoObject = { [key: string]: FeatureInfoProps };
 
 export class CommonLayerProps {
@@ -262,7 +270,7 @@ export class CommonLayerProps {
   opacity: number;
 
   @optional
-  dateInterval?: string;
+  dateInterval?: Interval;
 
   @optional
   fillPattern?: 'left' | 'right';
@@ -350,12 +358,22 @@ type DatasetProps = {
   fields: DatasetField[]; // Dataset fields from json response.
 };
 
+// define some "branded" nominal types so that the TS compiler will
+// complain if we try to mix different types of strings.
+// See https://github.com/microsoft/TypeScript/wiki/FAQ#can-i-make-a-type-alias-nominal
+export type AdminCodeString = string & { 'an adminCode string': {} };
+export type AdminLevelNameString = string & {
+  'an adminLevelName string': {};
+};
+export type FilePath = string & { 'a path to a file': {} };
+
 export class BoundaryLayerProps extends CommonLayerProps {
   type: 'boundary';
-  path: string; // path to admin_boundries.json file - web or local.
-  adminCode: string;
-  adminLevelNames: string[]; // Ordered (Admin1, Admin2, ...)
-  adminLevelLocalNames: string[]; // Same as above, local to country
+  path: FilePath; // path to admin_boundries.json file - web or local.
+  adminCode: AdminCodeString; // same value as last item in adminLevelCodes below
+  adminLevelCodes: AdminCodeString[]; // Ordered as below
+  adminLevelNames: AdminLevelNameString[]; // Ordered (Admin1, Admin2, ...)
+  adminLevelLocalNames: AdminLevelNameString[]; // Same as above, local to country
   styles: LayerStyleProps; // Mapbox line and fill properties.,
 
   @optional
@@ -430,6 +448,36 @@ export class WMSLayerProps extends CommonLayerProps {
 
   @optional
   'thresholdValues'?: { label: string; value: string | number }[];
+}
+
+enum AggregationOptions {
+  PIXEL = 'pixel',
+  GEOJSON = 'geojson',
+}
+enum DateTypeOptions {
+  CONTINUOUS = 'continuous',
+  SINGLE = 'single',
+}
+export class CompositeLayerProps extends CommonLayerProps {
+  type: 'composite';
+  baseUrl: string;
+
+  @makeRequired
+  title: string;
+
+  inputLayers: {
+    id: LayerType['type'];
+    weight: number;
+    interval: Interval;
+  }[];
+
+  aggregation: AggregationOptions;
+  interval: Interval;
+  dateType: DateTypeOptions;
+  startDate: string;
+
+  @optional
+  endDate?: string;
 }
 
 export class StaticRasterLayerProps extends CommonLayerProps {

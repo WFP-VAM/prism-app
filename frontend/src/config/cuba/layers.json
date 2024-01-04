@@ -4,6 +4,7 @@
     "path": "data/cuba/cub_admbnda_adm1_2019.json",
     "opacity": 0.8,
     "admin_code": "ADM1_PCODE",
+    "admin_level_codes": ["ADM1_PCODE"],
     "admin_level_names": ["ADM1_REF"],
     "admin_level_local_names": ["ADM1_ES"],
     "styles:": {
@@ -22,6 +23,7 @@
     "path": "data/cuba/cub_admbnda_adm2_2019.json",
     "opacity": 0.8,
     "admin_code": "ADM2_PCODE",
+    "admin_level_codes": ["ADM1_PCODE", "ADM2_PCODE"],
     "admin_level_names": ["ADM1_REF", "ADM2_REF"],
     "admin_level_local_names": ["ADM1_ES", "ADM2_ES"],
     "styles:": {

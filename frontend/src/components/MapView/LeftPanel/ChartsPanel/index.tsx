@@ -29,6 +29,7 @@ import { useSelector } from 'react-redux';
 import { TFunctionKeys } from 'i18next';
 import { appConfig } from 'config';
 import {
+  AdminCodeString,
   AdminLevelType,
   BoundaryLayerProps,
   PanelSize,
@@ -39,37 +40,46 @@ import {
   getWMSLayersWithChart,
 } from 'config/utils';
 import { LayerData } from 'context/layers/layer-data';
-import { leftPanelTabValueSelector } from 'context/leftPanelStateSlice';
+import { leftPanelTabValueSelector, Panel } from 'context/leftPanelStateSlice';
 import { layerDataSelector } from 'context/mapStateSlice/selectors';
 import { useSafeTranslation } from 'i18n';
-import DownloadCsvButton from 'components/MapView/DownloadCsvButton';
 import { buildCsvFileName } from 'components/MapView/utils';
-
+import DownloadCsvButton from 'components/MapView/DownloadCsvButton';
 import ChartSection from './ChartSection';
 import LocationSelector from './LocationSelector';
 import TimePeriodSelector from './TimePeriodSelector';
+
 import { oneDayInMs, oneYearInMs } from '../utils';
+import DateSlider from './DateSlider';
 
 // Load boundary layer for Admin2
 // WARNING - Make sure the dataviz_ids are available in the boundary file for Admin2
-const MAX_ADMIN_LEVEL = appConfig.multiCountry ? 3 : 2;
+const { multiCountry } = appConfig;
+const MAX_ADMIN_LEVEL = multiCountry ? 3 : 2;
 const boundaryLayer = getBoundaryLayersByAdminLevel(MAX_ADMIN_LEVEL);
 
 const chartLayers = getWMSLayersWithChart();
 
-const tabIndex = 1;
+const tabPanelType = Panel.Charts;
 
 function getProperties(
   layerData: LayerData<BoundaryLayerProps>['data'],
-  id?: string,
-) {
+  id?: AdminCodeString,
+  adminLevel?: AdminLevelType,
+): GeoJsonProperties {
   // Return any properties, used for national level data.
-  if (id === undefined) {
+  if (id === undefined || adminLevel === undefined) {
+    // TODO: this does not work in multicountry, the first feature might not
+    // be part of the country we expect, but probably not a problem as this data
+    // does not go anywhere anyway
     return layerData.features[0].properties;
   }
-  return layerData.features.filter(
-    elem => elem.properties && elem.properties[boundaryLayer.adminCode] === id,
-  )[0].properties;
+  const indexLevel = multiCountry ? adminLevel : adminLevel - 1;
+  const adminCode = boundaryLayer.adminLevelCodes[indexLevel];
+  const item = layerData.features.find(
+    elem => elem.properties && elem.properties[adminCode] === id,
+  );
+  return item?.properties ?? {};
 }
 
 const useStyles = makeStyles(() =>
@@ -83,6 +93,7 @@ const useStyles = makeStyles(() =>
     formGroup: {
       marginBottom: 20,
       marginLeft: 20,
+      width: '100%',
     },
     chartsPanelParams: {
       marginTop: 30,
@@ -106,6 +117,12 @@ const useStyles = makeStyles(() =>
     },
     textLabel: {
       color: 'black',
+    },
+    chartsContainer: {
+      display: 'flex',
+      flexDirection: 'column',
+      justifyContent: 'space-between',
+      width: '100%',
     },
     chartsPanelCharts: {
       alignContent: 'start',
@@ -176,7 +193,7 @@ const menuProps: Partial<MenuProps> = {
 
 const ChartsPanel = memo(
   ({ setPanelSize, setResultsPage }: ChartsPanelProps) => {
-    const { countryAdmin0Id, country, multiCountry } = appConfig;
+    const { countryAdmin0Id, country } = appConfig;
     const boundaryLayerData = useSelector(
       layerDataSelector(boundaryLayer.id),
     ) as LayerData<BoundaryLayerProps> | undefined;
@@ -186,18 +203,30 @@ const ChartsPanel = memo(
     const [comparePeriods, setComparePeriods] = useState(false);
 
     // first location state
-    const [admin0Key, setAdmin0Key] = useState<string>('');
-    const [admin1Key, setAdmin1Key] = useState<string>('');
-    const [admin2Key, setAdmin2Key] = useState<string>('');
+    const [admin0Key, setAdmin0Key] = useState<AdminCodeString>(
+      '' as AdminCodeString,
+    );
+    const [admin1Key, setAdmin1Key] = useState<AdminCodeString>(
+      '' as AdminCodeString,
+    );
+    const [admin2Key, setAdmin2Key] = useState<AdminCodeString>(
+      '' as AdminCodeString,
+    );
     const [selectedAdmin1Area, setSelectedAdmin1Area] = useState('');
     const [selectedAdmin2Area, setSelectedAdmin2Area] = useState('');
     const [adminLevel, setAdminLevel] = useState<AdminLevelType>(
-      countryAdmin0Id ? 0 : 1,
+      (countryAdmin0Id ? 0 : 1) as AdminLevelType,
     );
     // second (compared) location state
-    const [secondAdmin0Key, setSecondAdmin0Key] = useState<string>('');
-    const [secondAdmin1Key, setSecondAdmin1Key] = useState<string>('');
-    const [secondAdmin2Key, setSecondAdmin2Key] = useState<string>('');
+    const [secondAdmin0Key, setSecondAdmin0Key] = useState<AdminCodeString>(
+      '' as AdminCodeString,
+    );
+    const [secondAdmin1Key, setSecondAdmin1Key] = useState<AdminCodeString>(
+      '' as AdminCodeString,
+    );
+    const [secondAdmin2Key, setSecondAdmin2Key] = useState<AdminCodeString>(
+      '' as AdminCodeString,
+    );
     const [secondSelectedAdmin1Area, setSecondSelectedAdmin1Area] = useState(
       '',
     );
@@ -205,15 +234,17 @@ const ChartsPanel = memo(
       '',
     );
     const [secondAdminLevel, setSecondAdminLevel] = useState<AdminLevelType>(
-      countryAdmin0Id ? 0 : 1,
+      (countryAdmin0Id ? 0 : 1) as AdminLevelType,
     );
 
     const [selectedLayerTitles, setSelectedLayerTitles] = useState<
       string[] | TFunctionKeys[]
     >([]);
 
+    const yearsToFetchDataFor = 5;
+
     const [startDate1, setStartDate1] = useState<number | null>(
-      new Date().getTime() - oneYearInMs,
+      new Date().getTime() - oneYearInMs * yearsToFetchDataFor,
     );
     const [endDate1, setEndDate1] = useState<number | null>(
       new Date().getTime(),
@@ -230,6 +261,56 @@ const ChartsPanel = memo(
     const [secondAdminProperties, setSecondAdminProperties] = useState<
       GeoJsonProperties
     >();
+    const oneYearInTicks = 34;
+    // maxDataTicks used for setting slider max ticks
+    const [maxDataTicks, setMaxDataTicks] = useState(0);
+    // chartRange is the output of the slider used to select data shown in charts
+    const [chartRange, setChartRange] = useState<[number, number]>([0, 0]);
+    // chartSelectedDateRange is the selected min and max date selected by the slider used to set the labels.
+    const [chartSelectedDateRange, setChartSelectedDateRange] = useState<
+      [string, string]
+    >(['', '']);
+    // chartMaxDateRange keeps the max and min dates from all datasets, so smaller datasets can be extended
+    const [chartMaxDateRange, setChartMaxDateRange] = useState<
+      [string, string]
+    >(['', '']);
+    const [showSlider, setShowSlider] = useState(true);
+    const [maxChartValues, setMaxChartValues] = useState<number[]>([]);
+    const [minChartValues, setMinChartValues] = useState<number[]>([]);
+
+    function resetSlider() {
+      setMaxDataTicks(0);
+      setChartRange([0, 0]);
+      setChartSelectedDateRange(['', '']);
+      setChartMaxDateRange(['', '']);
+    }
+
+    // Reset slider when charts' date changes
+    useEffect(() => {
+      resetSlider();
+    }, [startDate1, endDate1]);
+
+    useEffect(() => {
+      if (selectedLayerTitles.length === 0) {
+        resetSlider();
+      }
+    }, [selectedLayerTitles.length]);
+
+    useEffect(() => {
+      const start = maxDataTicks - oneYearInTicks;
+      setChartRange([start > 0 ? start : 0, maxDataTicks]);
+    }, [maxDataTicks]);
+
+    useEffect(() => {
+      if (comparePeriods) {
+        setShowSlider(false);
+        setStartDate1(new Date().getTime() - oneYearInMs);
+      } else {
+        setShowSlider(true);
+        setStartDate1(new Date().getTime() - oneYearInMs * yearsToFetchDataFor);
+      }
+    }, [comparePeriods]);
+
     const dataForCsv = useRef<{ [key: string]: any[] }>({});
     const dataForSecondCsv = useRef<{ [key: string]: any[] }>({});
 
@@ -248,6 +329,13 @@ const ChartsPanel = memo(
       [compareLocations, comparePeriods],
     );
 
+    const getCountryName: (admProps: GeoJsonProperties) => string = useCallback(
+      admProps => {
+        return multiCountry ? admProps?.admin0Name : country;
+      },
+      [country],
+    );
+
     const locationString = (
       countryName: string,
       adm1Name: string,
@@ -264,7 +352,7 @@ const ChartsPanel = memo(
       return (
         adminProperties &&
         startDate1 &&
-        tabIndex === tabValue &&
+        tabPanelType === tabValue &&
         selectedLayerTitles.length >= 1
       );
     }, [adminProperties, startDate1, selectedLayerTitles.length, tabValue]);
@@ -315,11 +403,17 @@ const ChartsPanel = memo(
         return (
           <Box
             style={{
-              height: '240px',
+              height: '50vh',
               width: '100%',
             }}
           >
             <ChartSection
+              key={`${startDate1}-${endDate1}`}
+              setChartSelectedDateRange={setChartSelectedDateRange}
+              setMaxDataTicks={setMaxDataTicks}
+              chartMaxDateRange={chartMaxDateRange}
+              setChartMaxDateRange={setChartMaxDateRange}
+              chartRange={comparePeriods ? undefined : chartRange}
               chartLayer={chartLayer as WMSLayerProps}
               adminProperties={adminProperties || {}}
               adminLevel={adminLevel}
@@ -331,6 +425,7 @@ const ChartsPanel = memo(
         );
       }
       // show 2 or more charts (multi layer or comparisons)
+      const comparing = compareLocations || comparePeriods;
       const mainChartList =
         selectedLayerTitles.length >= 1
           ? chartLayers
@@ -346,18 +441,33 @@ const ChartsPanel = memo(
                   }}
                 >
                   <ChartSection
+                    key={`${startDate1}-${endDate1}`}
+                    chartMaxDateRange={
+                      comparePeriods ? undefined : chartMaxDateRange
+                    }
+                    setChartMaxDateRange={setChartMaxDateRange}
+                    setChartSelectedDateRange={setChartSelectedDateRange}
+                    setMaxDataTicks={setMaxDataTicks}
+                    chartRange={comparePeriods ? undefined : chartRange}
                     chartLayer={layer}
                     adminProperties={adminProperties as GeoJsonProperties}
                     adminLevel={adminLevel}
                     startDate={startDate1 as number}
                     endDate={endDate1 as number}
                     dataForCsv={dataForCsv}
+                    setMaxChartValues={setMaxChartValues}
+                    setMinChartValues={setMinChartValues}
+                    maxChartValue={
+                      comparing ? Math.max(...maxChartValues) : undefined
+                    }
+                    minChartValue={
+                      comparing ? Math.min(...minChartValues) : undefined
+                    }
                   />
                 </Box>
               ))
           : [];
       // now add comparison charts
-      const comparing = compareLocations || comparePeriods;
       const comparedAdminProperties = compareLocations
         ? secondAdminProperties
         : adminProperties;
@@ -387,6 +497,14 @@ const ChartsPanel = memo(
                 }}
               >
                 <ChartSection
+                  key={`${startDate1}-${endDate1}`}
+                  chartMaxDateRange={
+                    comparePeriods ? undefined : chartMaxDateRange
+                  }
+                  setChartMaxDateRange={setChartMaxDateRange}
+                  setChartSelectedDateRange={setChartSelectedDateRange}
+                  setMaxDataTicks={setMaxDataTicks}
+                  chartRange={comparePeriods ? undefined : chartRange}
                   chartLayer={layer}
                   adminProperties={
                     // default value prevents crash, but shows ugly warning
@@ -396,6 +514,10 @@ const ChartsPanel = memo(
                   startDate={comparedStartDate as number}
                   endDate={comparedEndDate as number}
                   dataForCsv={dataForSecondCsv}
+                  setMaxChartValues={setMaxChartValues}
+                  setMinChartValues={setMinChartValues}
+                  maxChartValue={Math.max(...maxChartValues)}
+                  minChartValue={Math.min(...minChartValues)}
                 />
               </Box>
             ))
@@ -426,11 +548,11 @@ const ChartsPanel = memo(
       };
 
       const titleStrings: () => string[][] = () => {
-        if (compareLocations) {
+        if (compareLocations && adminProperties && secondAdminProperties) {
           return [
             [
               locationString(
-                multiCountry ? admin0Key : country,
+                getCountryName(adminProperties),
                 selectedAdmin1Area,
                 selectedAdmin2Area,
                 adminLevel,
@@ -439,7 +561,7 @@ const ChartsPanel = memo(
             ],
             [
               locationString(
-                multiCountry ? secondAdmin0Key : country,
+                getCountryName(secondAdminProperties),
                 comparedAdmin1Area,
                 comparedAdmin2Area,
                 comparedAdminLevel,
@@ -471,46 +593,48 @@ const ChartsPanel = memo(
         </Box>
       ));
       // add a location string above everything if comparing periods
-      const locationBox = comparePeriods ? (
-        <Box
-          key="locationBox"
-          style={{
-            height: '30px',
-            minWidth: '80%',
-            flex: 1,
-            position: 'relative',
-          }}
-        >
-          <Typography className={classes.textLabel}>
-            {locationString(
-              multiCountry ? admin0Key : country,
-              selectedAdmin1Area,
-              selectedAdmin2Area,
-              adminLevel,
-            )}
-          </Typography>
-        </Box>
-      ) : null;
+      const locationBox =
+        comparePeriods && adminProperties ? (
+          <Box
+            key="locationBox"
+            style={{
+              height: '30px',
+              minWidth: '80%',
+              flex: 1,
+              position: 'relative',
+            }}
+          >
+            <Typography className={classes.textLabel}>
+              {locationString(
+                getCountryName(adminProperties),
+                selectedAdmin1Area,
+                selectedAdmin2Area,
+                adminLevel,
+              )}
+            </Typography>
+          </Box>
+        ) : null;
       return [locationBox, ...titles, ...zipped];
     }, [
-      admin0Key,
       adminLevel,
       adminProperties,
+      chartMaxDateRange,
+      chartRange,
       classes.textLabel,
       compareLocations,
       comparePeriods,
-      country,
       endDate1,
       endDate2,
-      multiCountry,
-      secondAdminProperties,
+      getCountryName,
+      maxChartValues,
+      minChartValues,
       secondAdminLevel,
-      secondAdmin0Key,
+      secondAdminProperties,
       secondSelectedAdmin1Area,
       secondSelectedAdmin2Area,
       selectedAdmin1Area,
-      selectedLayerTitles,
       selectedAdmin2Area,
+      selectedLayerTitles,
       startDate1,
       startDate2,
       t,
@@ -520,17 +644,51 @@ const ChartsPanel = memo(
       if (showChartsPanel) {
         setPanelSize(PanelSize.xlarge);
         setResultsPage(
-          <Box className={classes.chartsPanelCharts}>{renderResultsPage}</Box>,
+          <Box className={classes.chartsContainer}>
+            <Box className={classes.chartsPanelCharts}>{renderResultsPage}</Box>
+            {showSlider && maxDataTicks > 1 && (
+              <>
+                <TimePeriodSelector
+                  wrapperStyle={{ padding: '0 2rem 0 2rem' }}
+                  startDate={startDate1}
+                  setStartDate={setStartDate1}
+                  endDate={endDate1}
+                  setEndDate={setEndDate1}
+                  title={comparePeriods ? t('Period 1') : null}
+                  startLabel="Min Date"
+                  endLabel="Max Date"
+                />
+                <DateSlider
+                  chartSelectedDateRange={chartSelectedDateRange}
+                  chartRange={chartRange}
+                  setChartRange={setChartRange}
+                  maxDataTicks={maxDataTicks}
+                  disabled={selectedLayerTitles.length < 1}
+                />
+              </>
+            )}
+          </Box>,
         );
       }
 
       return () => setResultsPage(null);
     }, [
+      chartRange,
+      chartSelectedDateRange,
+      classes.chartsContainer,
       classes.chartsPanelCharts,
+      classes.textLabel,
+      comparePeriods,
+      endDate1,
+      maxDataTicks,
       renderResultsPage,
+      selectedLayerTitles.length,
       setPanelSize,
       setResultsPage,
       showChartsPanel,
+      showSlider,
+      startDate1,
+      t,
     ]);
 
     const handleClearAllSelectedCharts = useCallback(() => {
@@ -541,14 +699,14 @@ const ChartsPanel = memo(
       setStartDate2(new Date().getTime() - oneYearInMs);
       setEndDate2(new Date().getTime());
       // reset the admin level
-      setAdminLevel(countryAdmin0Id ? 0 : 1);
-      setSecondAdminLevel(countryAdmin0Id ? 0 : 1);
+      setAdminLevel((countryAdmin0Id ? 0 : 1) as AdminLevelType);
+      setSecondAdminLevel((countryAdmin0Id ? 0 : 1) as AdminLevelType);
       // reset admin 1 titles
-      setAdmin1Key('');
-      setSecondAdmin1Key('');
+      setAdmin1Key('' as AdminCodeString);
+      setSecondAdmin1Key('' as AdminCodeString);
       // reset the admin 2 titles
-      setAdmin2Key('');
-      setSecondAdmin2Key('');
+      setAdmin2Key('' as AdminCodeString);
+      setSecondAdmin2Key('' as AdminCodeString);
     }, [countryAdmin0Id]);
 
     const handleOnChangeCompareLocationsSwitch = useCallback(() => {
@@ -600,23 +758,27 @@ const ChartsPanel = memo(
       [t],
     );
 
-    const firstCSVFilename = buildCsvFileName([
-      multiCountry ? admin0Key : country,
-      selectedAdmin1Area,
-      selectedAdmin2Area,
-      ...(selectedLayerTitles as string[]),
-      comparePeriods ? 'first_period' : '',
-    ]);
+    const firstCSVFilename = adminProperties
+      ? buildCsvFileName([
+          getCountryName(adminProperties),
+          selectedAdmin1Area,
+          selectedAdmin2Area,
+          ...(selectedLayerTitles as string[]),
+          comparePeriods ? 'first_period' : '',
+        ])
+      : '';
 
-    const secondCSVFilename = buildCsvFileName([
-      multiCountry ? secondAdmin0Key : country,
-      compareLocations ? secondSelectedAdmin1Area : selectedAdmin1Area,
-      compareLocations ? secondSelectedAdmin2Area : selectedAdmin2Area,
-      ...(selectedLayerTitles as string[]),
-      comparePeriods ? 'second_period' : '',
-    ]);
+    const secondCSVFilename = secondAdminProperties
+      ? buildCsvFileName([
+          getCountryName(secondAdminProperties),
+          compareLocations ? secondSelectedAdmin1Area : selectedAdmin1Area,
+          compareLocations ? secondSelectedAdmin2Area : selectedAdmin2Area,
+          ...(selectedLayerTitles as string[]),
+          comparePeriods ? 'second_period' : '',
+        ])
+      : '';
 
-    if (tabIndex !== tabValue) {
+    if (tabPanelType !== tabValue) {
       return null;
     }
 
@@ -698,6 +860,7 @@ const ChartsPanel = memo(
 
         <FormGroup className={classes.formGroup}>
           <FormControlLabel
+            style={{ marginLeft: 20 }}
             control={
               <Switch
                 checked={comparePeriods}
@@ -726,21 +889,28 @@ const ChartsPanel = memo(
             }
             checked={comparePeriods}
           />
-          <TimePeriodSelector
-            startDate={startDate1}
-            setStartDate={setStartDate1}
-            endDate={endDate1}
-            setEndDate={setEndDate1}
-            title={comparePeriods ? t('Period 1') : null}
-          />
+
           {comparePeriods && (
-            <TimePeriodSelector
-              startDate={startDate2}
-              setStartDate={setStartDate2}
-              endDate={endDate2}
-              setEndDate={setEndDate2}
-              title={comparePeriods ? t('Period 2') : null}
-            />
+            <>
+              <TimePeriodSelector
+                startDate={startDate1}
+                setStartDate={setStartDate1}
+                endDate={endDate1}
+                setEndDate={setEndDate1}
+                title={comparePeriods ? t('Period 1') : null}
+                startLabel="Start"
+                endLabel="End"
+              />
+              <TimePeriodSelector
+                startDate={startDate2}
+                setStartDate={setStartDate2}
+                endDate={endDate2}
+                setEndDate={setEndDate2}
+                title={comparePeriods ? t('Period 2') : null}
+                startLabel="Start"
+                endLabel="End"
+              />
+            </>
           )}
         </FormGroup>
 
@@ -787,7 +957,7 @@ const ChartsPanel = memo(
             !(
               adminProperties &&
               startDate1 &&
-              tabIndex === tabValue &&
+              tabPanelType === tabValue &&
               selectedLayerTitles.length >= 1
             )
           }
@@ -799,7 +969,7 @@ const ChartsPanel = memo(
             !(
               adminProperties &&
               startDate1 &&
-              tabIndex === tabValue &&
+              tabPanelType === tabValue &&
               selectedLayerTitles.length >= 1
             )
           }

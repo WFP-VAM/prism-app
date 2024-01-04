@@ -104,6 +104,7 @@ import SimpleDropdown from 'components/Common/SimpleDropdown';
 import { Extent } from 'components/MapView/Layers/raster-utils';
 import {
   leftPanelTabValueSelector,
+  Panel,
   setTabValue,
 } from 'context/leftPanelStateSlice';
 import LoadingBlinkingDots from 'components/Common/LoadingBlinkingDots';
@@ -112,7 +113,7 @@ import ExposureAnalysisTable from './AnalysisTable/ExposureAnalysisTable';
 import ExposureAnalysisActions from './ExposureAnalysisActions';
 import { getExposureAnalysisTableData } from '../../utils';
 
-const tabIndex = 2;
+const tabPanelType = Panel.Analysis;
 
 const AnalysisPanel = memo(
   ({
@@ -232,10 +233,14 @@ const AnalysisPanel = memo(
       ? selectedHazardLayer.geometry || RasterType.Raster
       : null;
     const availableHazardDates = selectedHazardLayer
-      ? getPossibleDatesForLayer(selectedHazardLayer, availableDates)?.map(
-          d => new Date(d.displayDate),
-        ) || []
-      : undefined;
+      ? Array.from(
+          new Set(
+            getPossibleDatesForLayer(selectedHazardLayer, availableDates)?.map(
+              d => d.queryDate,
+            ),
+          ),
+        ).map(d => new Date(d)) || []
+      : [];
 
     const BASELINE_URL_LAYER_KEY = 'baselineLayerId';
     const preSelectedBaselineLayer = selectedLayers.find(
@@ -326,7 +331,7 @@ const AnalysisPanel = memo(
     );
 
     useEffect(() => {
-      if (tabValue !== tabIndex) {
+      if (tabValue !== tabPanelType) {
         return;
       }
 
@@ -339,7 +344,7 @@ const AnalysisPanel = memo(
             analysisResult instanceof PolygonAnalysisResult)
         ) {
           setResultsPage(
-            <div className={classes.analysisTableContainer}>
+            <Box className={classes.analysisTableContainer}>
               <div
                 style={{
                   display: 'flex',
@@ -368,7 +373,7 @@ const AnalysisPanel = memo(
                   isAscending={analysisIsAscending}
                 />
               </div>
-            </div>,
+            </Box>,
           );
         }
       } else {
@@ -508,7 +513,7 @@ const AnalysisPanel = memo(
       dispatch(clearAnalysisResult());
       setPanelSize(PanelSize.medium);
       if (isClearingExposureAnalysis) {
-        dispatch(setTabValue(0));
+        dispatch(setTabValue(Panel.Layers));
       }
       setHazardLayerId(hazardLayerIdFromUrl);
       setStatistic(
@@ -1197,7 +1202,7 @@ const AnalysisPanel = memo(
     ]);
 
     return useMemo(() => {
-      if (tabIndex !== tabValue) {
+      if (tabPanelType !== tabValue) {
         return null;
       }
 
@@ -1283,7 +1288,8 @@ const styles = (theme: Theme) =>
     },
     analysisPanelParams: {
       padding: '30px 10px 10px 10px',
-      height: '100%',
+      height: 'calc(100% - 90px)',
+      overflow: 'auto',
     },
     colorBlack: {
       color: 'black',
@@ -1323,7 +1329,7 @@ const styles = (theme: Theme) =>
       opacity: 1,
     },
     analysisButtonContainer: {
-      position: 'sticky',
+      position: 'absolute',
       backgroundColor: '#566064',
       width: '100%',
       bottom: 0,

@@ -13,7 +13,6 @@ import { layerDataSelector } from 'context/mapStateSlice/selectors';
 import type { BaselineLayerData } from 'utils/analysis-utils';
 import {
   checkBaselineDataLayer,
-  loadFeaturesClientSide,
   loadFeaturesFromApi,
 } from 'utils/analysis-utils';
 import type { LayerData, LayerDataParams, LazyLoader } from './layer-data';
@@ -66,27 +65,15 @@ export const fetchImpactLayerData: LazyLoader<ImpactLayerProps> = loadLayerData 
     );
   }
 
-  const activeFeatures = layer.api
-    ? await loadFeaturesFromApi(
-        layer,
-        baselineData,
-        hazardLayerDef,
-        operation,
-        dispatch,
-        extent,
-        date,
-      )
-    : await loadFeaturesClientSide(
-        api,
-        layer,
-        adminBoundaries,
-        baselineData,
-        hazardLayerDef,
-        operation,
-        loadLayerData,
-        extent,
-        date,
-      );
+  const activeFeatures = await loadFeaturesFromApi(
+    layer,
+    baselineData,
+    hazardLayerDef,
+    operation,
+    dispatch,
+    extent,
+    date,
+  );
 
   return {
     boundaries: adminBoundaries,

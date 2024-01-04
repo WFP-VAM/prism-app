@@ -4,6 +4,7 @@
     "path": "data/tajikistan/tjk_admin2_wgs84_clean.json",
     "opacity": 0.8,
     "admin_code": "text",
+    "admin_level_codes": ["ProvinceE", "text"],
     "admin_level_names": ["ProvinceE", "DistrictE"],
     "admin_level_local_names": ["ProvinceR ", "DistrictR"],
     "styles:": {
