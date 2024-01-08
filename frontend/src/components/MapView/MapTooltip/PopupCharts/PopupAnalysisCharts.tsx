@@ -84,6 +84,10 @@ const PopupAnalysisCharts = ({
   const chartEndDate = selectedDate || new Date().getTime();
   const chartStartDate = chartEndDate - oneYearInMs;
 
+  if (filteredChartLayers.length < 1) {
+    return null;
+  }
+
   return (
     <PopupChartWrapper onClose={onClose}>
       {filteredChartLayers.map(filteredChartLayer => (
