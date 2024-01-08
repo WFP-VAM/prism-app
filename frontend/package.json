@@ -18,7 +18,7 @@
     "clean": "rimraf ./node_modules && pushd ../common && rimraf ./node_modules && popd",
     "start": "cross-env EXTEND_ESLINT=true react-scripts start",
     "analyze": "yarn build && npx source-map-explorer 'build/static/js/*.js'",
-    "build": "cross-env-shell GIT_HASH=`git rev-parse --short HEAD` EXTEND_ESLINT=true react-app-rewired build",
+    "build": "export GIT_HASH=$(git rev-parse --short HEAD) || true && cross-env EXTEND_ESLINT=true react-app-rewired build",
     "build:win": "for /f %i in ('git rev-parse --short HEAD') do set GIT_HASH=%i && set EXTEND_ESLINT=true && react-app-rewired build",
     "test": "cross-env REACT_APP_TESTING=true && react-scripts test",
     "prettier:json-fix": "prettier --write */**.json",
