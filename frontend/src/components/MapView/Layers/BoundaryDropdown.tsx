@@ -294,6 +294,10 @@ export function SimpleBoundaryDropdown({
     }
   };
 
+  // map adminLevels to a CSS class for each level
+  // note that level actually used is different from the
+  // official admin level, as we subtract the root level
+  // from each item's level, when displaying
   const clsName: { [key: number]: any } = {
     0: styles.menuItem0,
     1: styles.menuItem1,
@@ -302,51 +306,19 @@ export function SimpleBoundaryDropdown({
     4: styles.menuItem3,
   };
 
-  return (
+  // It's important for this to be another component, since the Select component
+  // acts on the `value` prop, which we need to hide from <Select /> since this isn't a menu item.
+  const out = (
     <FormControl {...rest}>
       <InputLabel>{labelMessage}</InputLabel>
       <Select
         multiple
         onClose={() => {
+          // empty search so that component shows correct options
+          // otherwise, we would only show selected options which satisfy the search
           setTimeout(() => setSearch(''), TIMEOUT_ANIMATION_DELAY);
         }}
         value={selectedBoundaries}
-        onChange={(e: any) => {
-          if (
-            !Array.isArray(e.target.value) ||
-            e.target.value.includes(undefined)
-          ) {
-            return;
-          }
-
-          if (setSelectedBoundaries !== undefined) {
-            const boundariesToSelect = flattenedAreaList
-              .filter(b =>
-                e.target.value.some((v: string) => b.adminCode.startsWith(v)),
-              )
-              .map(b => b.adminCode);
-
-            setSelectedBoundaries(boundariesToSelect, e.shiftKey);
-          } else {
-            if (map === undefined) {
-              return;
-            }
-            const features = data.features.filter(
-              f =>
-                f &&
-                f.properties?.[boundaryLayer.adminCode].startsWith(
-                  e.target.value[0],
-                ),
-            );
-            const bboxUnion: BBox = bbox({
-              type: 'FeatureCollection',
-              features,
-            });
-            if (bboxUnion.length === 4) {
-              map.fitBounds(bboxUnion, { padding: 30 });
-            }
-          }
-        }}
       >
         <SearchField search={search} setSearch={setSearch} />
         {!search && selectAll && selectedBoundaries && (
@@ -373,6 +345,40 @@ export function SimpleBoundaryDropdown({
                 key={area.adminCode}
                 value={area.adminCode}
                 style={style as any}
+                onClick={event => {
+                  event.stopPropagation();
+                  const newSelectedBoundaries = [...(selectedBoundaries || [])];
+                  const itemIndex = newSelectedBoundaries.indexOf(
+                    area.adminCode,
+                  );
+                  if (itemIndex === -1) {
+                    newSelectedBoundaries.push(area.adminCode);
+                  } else {
+                    newSelectedBoundaries.splice(itemIndex, 1);
+                  }
+
+                  if (setSelectedBoundaries !== undefined) {
+                    setSelectedBoundaries(newSelectedBoundaries);
+                  } else {
+                    if (map === undefined) {
+                      return;
+                    }
+                    const features = data.features.filter(
+                      f =>
+                        f &&
+                        f.properties?.[boundaryLayer.adminCode].startsWith(
+                          area.adminCode,
+                        ),
+                    );
+                    const bboxUnion: BBox = bbox({
+                      type: 'FeatureCollection',
+                      features,
+                    });
+                    if (bboxUnion.length === 4) {
+                      map.fitBounds(bboxUnion, { padding: 30 });
+                    }
+                  }
+                }}
               >
                 {area.label}
               </MenuItem>
@@ -382,6 +388,8 @@ export function SimpleBoundaryDropdown({
       </Select>
     </FormControl>
   );
+
+  return out;
 }
 
 interface BoundaryDropdownProps {
