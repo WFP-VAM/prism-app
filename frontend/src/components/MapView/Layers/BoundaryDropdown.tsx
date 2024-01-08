@@ -348,6 +348,15 @@ export function SimpleBoundaryDropdown({
                 selected={selectedBoundaries?.includes(area.adminCode)}
                 onClick={event => {
                   event.stopPropagation();
+                  if (setSelectedBoundaries !== undefined) {
+                    const boundariesToSelect = flattenedAreaList
+                      .filter(b => b.adminCode.startsWith(area.adminCode))
+                      .map(b => b.adminCode);
+
+                    setSelectedBoundaries(boundariesToSelect, event.shiftKey);
+                    return;
+                  }
+
                   const newSelectedBoundaries = [...(selectedBoundaries || [])];
                   const itemIndex = newSelectedBoundaries.indexOf(
                     area.adminCode,
@@ -359,27 +368,22 @@ export function SimpleBoundaryDropdown({
                     // eslint-disable-next-line fp/no-mutating-methods
                     newSelectedBoundaries.splice(itemIndex, 1);
                   }
-
-                  if (setSelectedBoundaries !== undefined) {
-                    setSelectedBoundaries(newSelectedBoundaries);
-                  } else {
-                    if (map === undefined) {
-                      return;
-                    }
-                    const features = data.features.filter(
-                      f =>
-                        f &&
-                        f.properties?.[boundaryLayer.adminCode].startsWith(
-                          area.adminCode,
-                        ),
-                    );
-                    const bboxUnion: BBox = bbox({
-                      type: 'FeatureCollection',
-                      features,
-                    });
-                    if (bboxUnion.length === 4) {
-                      map.fitBounds(bboxUnion, { padding: 30 });
-                    }
+                  if (map === undefined) {
+                    return;
+                  }
+                  const features = data.features.filter(
+                    f =>
+                      f &&
+                      f.properties?.[boundaryLayer.adminCode].startsWith(
+                        area.adminCode,
+                      ),
+                  );
+                  const bboxUnion: BBox = bbox({
+                    type: 'FeatureCollection',
+                    features,
+                  });
+                  if (bboxUnion.length === 4) {
+                    map.fitBounds(bboxUnion, { padding: 30 });
                   }
                 }}
               >
