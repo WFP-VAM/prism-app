@@ -302,26 +302,6 @@ export function SimpleBoundaryDropdown({
     4: styles.menuItem3,
   };
 
-  const MenuItemRenderer = ({
-    index,
-    style,
-  }: {
-    index: number;
-    style: any;
-  }) => {
-    const area = flattenedAreaList[index];
-    return (
-      <MenuItem
-        classes={{ root: clsName[(area.level - rootLevel) as number] }}
-        key={area.adminCode}
-        value={area.adminCode}
-        style={style}
-      >
-        {area.label}
-      </MenuItem>
-    );
-  };
-
   return (
     <FormControl {...rest}>
       <InputLabel>{labelMessage}</InputLabel>
@@ -380,12 +360,24 @@ export function SimpleBoundaryDropdown({
           <MenuItem disabled>{t('No Results')}</MenuItem>
         )}
         <List
-          height={350} // Adjust based on your needs
+          height={700}
           itemCount={flattenedAreaList.length}
-          itemSize={35} // Adjust based on your needs
-          width="100%"
+          itemSize={35}
+          width="350px"
         >
-          {MenuItemRenderer}
+          {({ index, style }) => {
+            const area = flattenedAreaList[index];
+            return (
+              <MenuItem
+                classes={{ root: clsName[(area.level - rootLevel) as number] }}
+                key={area.adminCode}
+                value={area.adminCode}
+                style={style as any}
+              >
+                {area.label}
+              </MenuItem>
+            );
+          }}
         </List>
       </Select>
     </FormControl>
