@@ -345,6 +345,7 @@ export function SimpleBoundaryDropdown({
                 key={area.adminCode}
                 value={area.adminCode}
                 style={style as any}
+                selected={selectedBoundaries?.includes(area.adminCode)}
                 onClick={event => {
                   event.stopPropagation();
                   const newSelectedBoundaries = [...(selectedBoundaries || [])];
@@ -352,8 +353,10 @@ export function SimpleBoundaryDropdown({
                     area.adminCode,
                   );
                   if (itemIndex === -1) {
+                    // eslint-disable-next-line fp/no-mutating-methods
                     newSelectedBoundaries.push(area.adminCode);
                   } else {
+                    // eslint-disable-next-line fp/no-mutating-methods
                     newSelectedBoundaries.splice(itemIndex, 1);
                   }
 
