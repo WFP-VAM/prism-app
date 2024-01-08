@@ -50,11 +50,11 @@ jobs:
       - name: Test
         run: cd frontend && yarn test
 
-      - name: Build
-        run: cd frontend && yarn build
-
       - name: JSON check
         run: cd frontend && yarn prettier:json-check
+
+      - name: Build
+        run: cd frontend && yarn build
 
   frontend_build_and_deploy:
     needs: frontend_tests
