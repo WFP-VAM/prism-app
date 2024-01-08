@@ -44,13 +44,16 @@ jobs:
           yarn install --frozen-lockfile --network-timeout 100000
           yarn setup:common
 
-      - name: yarn lint
+      - name: Lint
         run: cd frontend && yarn lint
 
-      - name: yarn test
+      - name: Test
         run: cd frontend && yarn test
 
-      - name: json check
+      - name: Build
+        run: cd frontend && yarn build
+
+      - name: JSON check
         run: cd frontend && yarn prettier:json-check
 
   frontend_build_and_deploy:
