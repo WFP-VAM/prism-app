@@ -348,15 +348,6 @@ export function SimpleBoundaryDropdown({
                 selected={selectedBoundaries?.includes(area.adminCode)}
                 onClick={event => {
                   event.stopPropagation();
-                  if (setSelectedBoundaries !== undefined) {
-                    const boundariesToSelect = flattenedAreaList
-                      .filter(b => b.adminCode.startsWith(area.adminCode))
-                      .map(b => b.adminCode);
-
-                    setSelectedBoundaries(boundariesToSelect, event.shiftKey);
-                    return;
-                  }
-
                   const newSelectedBoundaries = [...(selectedBoundaries || [])];
                   const itemIndex = newSelectedBoundaries.indexOf(
                     area.adminCode,
@@ -367,6 +358,18 @@ export function SimpleBoundaryDropdown({
                   } else {
                     // eslint-disable-next-line fp/no-mutating-methods
                     newSelectedBoundaries.splice(itemIndex, 1);
+                  }
+                  if (setSelectedBoundaries !== undefined) {
+                    const boundariesToSelect = flattenedAreaList
+                      .filter(b =>
+                        newSelectedBoundaries.some((v: string) =>
+                          b.adminCode.startsWith(v),
+                        ),
+                      )
+                      .map(b => b.adminCode);
+
+                    setSelectedBoundaries(boundariesToSelect, event.shiftKey);
+                    return;
                   }
                   if (map === undefined) {
                     return;
