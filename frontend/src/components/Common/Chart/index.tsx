@@ -78,7 +78,7 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-type ChartProps = {
+export type ChartProps = {
   title: string;
   data: TableData;
   config: ChartConfig;
@@ -87,6 +87,8 @@ type ChartProps = {
   notMaintainAspectRatio?: boolean;
   legendAtBottom?: boolean;
   chartRange?: [number, number];
+  showDownloadIcons?: boolean;
+  iconStyles?: React.CSSProperties;
 };
 
 const Chart = memo(
@@ -99,6 +101,8 @@ const Chart = memo(
     notMaintainAspectRatio,
     legendAtBottom,
     chartRange = [Number.NEGATIVE_INFINITY, Number.POSITIVE_INFINITY],
+    showDownloadIcons = false,
+    iconStyles,
   }: ChartProps) => {
     const { t } = useSafeTranslation();
     const classes = useStyles();
@@ -347,22 +351,32 @@ const Chart = memo(
     return useMemo(
       () => (
         <>
-          <Tooltip title={t('Download PNG') as string}>
-            <IconButton
-              onClick={() => downloadPng(chartRef, title.split(' ').join('_'))}
-              className={classes.firstIcon}
-            >
-              <ImageIcon />
-            </IconButton>
-          </Tooltip>
-          <Tooltip title={t('Download CSV') as string}>
-            <IconButton
-              onClick={() => downloadCsv(chartData, title.split(' ').join('_'))}
-              className={classes.secondIcon}
-            >
-              <GetAppIcon />
-            </IconButton>
-          </Tooltip>
+          {showDownloadIcons && (
+            <>
+              <Tooltip title={t('Download PNG') as string}>
+                <IconButton
+                  onClick={() =>
+                    downloadPng(chartRef, title.split(' ').join('_'))
+                  }
+                  className={classes.firstIcon}
+                  style={iconStyles}
+                >
+                  <ImageIcon />
+                </IconButton>
+              </Tooltip>
+              <Tooltip title={t('Download CSV') as string}>
+                <IconButton
+                  onClick={() =>
+                    downloadCsv(chartData, title.split(' ').join('_'))
+                  }
+                  className={classes.secondIcon}
+                  style={iconStyles}
+                >
+                  <GetAppIcon />
+                </IconButton>
+              </Tooltip>
+            </>
+          )}
           {(() => {
             switch (config.type) {
               case 'bar':
@@ -388,6 +402,8 @@ const Chart = memo(
         classes.firstIcon,
         classes.secondIcon,
         config.type,
+        iconStyles,
+        showDownloadIcons,
         t,
         title,
       ],

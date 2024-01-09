@@ -6,12 +6,15 @@ import {
   withStyles,
   WithStyles,
   Typography,
+  IconButton,
 } from '@material-ui/core';
 import { tooltipSelector } from 'context/tooltipStateSlice';
 import { isEnglishLanguageSelected, useSafeTranslation } from 'i18n';
 import { AdminLevelType } from 'config/types';
 import { appConfig } from 'config';
 import Loader from 'components/Common/Loader';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faTimes } from '@fortawesome/free-solid-svg-icons';
 import PopupCharts from './PopupCharts';
 import RedirectToDMP from './RedirectToDMP';
 import PopupContent from './PopupContent';
@@ -52,6 +55,12 @@ const styles = () =>
         'border-top-color': 'black',
         'border-bottom-color': 'black',
       },
+    },
+    closeButton: {
+      color: 'white',
+      position: 'absolute',
+      right: 0,
+      top: 0,
     },
   });
 
@@ -130,6 +139,16 @@ const MapTooltip = ({ classes }: TooltipProps) => {
       </Typography>
       {adminLevel === undefined && (
         <PopupContent popupData={popupData} coordinates={popup.coordinates} />
+      )}
+      {availableAdminLevels.length > 0 && adminLevel && (
+        <IconButton
+          aria-label="close"
+          className={classes.closeButton}
+          onClick={() => setAdminLevel(undefined)}
+          size="small"
+        >
+          <FontAwesomeIcon icon={faTimes} />
+        </IconButton>
       )}
       <PopupCharts
         setPopupTitle={setPopupTitle}
