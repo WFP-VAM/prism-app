@@ -347,7 +347,7 @@ const Chart = memo(
     return useMemo(
       () => (
         <>
-          <Tooltip title="Download png">
+          <Tooltip title={t('Download PNG') as string}>
             <IconButton
               onClick={() => downloadPng(chartRef, title.split(' ').join('_'))}
               className={classes.firstIcon}
@@ -355,7 +355,7 @@ const Chart = memo(
               <ImageIcon />
             </IconButton>
           </Tooltip>
-          <Tooltip title="Download csv">
+          <Tooltip title={t('Download CSV') as string}>
             <IconButton
               onClick={() => downloadCsv(chartData, title.split(' ').join('_'))}
               className={classes.secondIcon}
@@ -388,6 +388,7 @@ const Chart = memo(
         classes.firstIcon,
         classes.secondIcon,
         config.type,
+        t,
         title,
       ],
     );
