@@ -22,7 +22,7 @@ const TabPanel = memo(({ children, value, index, ...other }: TabPanelProps) => {
       }}
       {...other}
     >
-      {children}
+      {index === value && children}
     </div>
   );
 });

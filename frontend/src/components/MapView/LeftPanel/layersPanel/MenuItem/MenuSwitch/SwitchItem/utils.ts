@@ -1,4 +1,5 @@
 import { Map as MapBoxMap } from 'mapbox-gl';
+import { Dispatch } from 'react';
 import { UrlLayerKey } from '../../../../../../../utils/url-utils';
 import { LayerKey, LayerType } from '../../../../../../../config/types';
 import { removeLayer } from '../../../../../../../context/mapStateSlice';
@@ -15,7 +16,7 @@ export function toggleRemoveLayer(
   layer: LayerType,
   _map: MapBoxMap | undefined,
   urlLayerKey: UrlLayerKey,
-  dispatcher: Function,
+  dispatcher: Dispatch<any>,
   removeLayerFromUrl: Function,
 ) {
   removeLayerFromUrl(urlLayerKey, layer.id);

@@ -31,11 +31,10 @@ import {
   StaticRasterLayer,
   WMSLayer,
 } from 'components/MapView/Layers';
+import useLayers from 'utils/layers-utils';
 
 interface MapComponentProps {
   setIsAlertFormOpen: Dispatch<SetStateAction<boolean>>;
-  boundaryLayerId: string;
-  selectedLayers: LayerType[];
   panelHidden: boolean;
 }
 
@@ -44,17 +43,14 @@ type LayerComponentsMap<U extends LayerType> = {
 };
 
 const MapComponent = memo(
-  ({
-    setIsAlertFormOpen,
-    boundaryLayerId,
-    selectedLayers,
-    panelHidden,
-  }: MapComponentProps) => {
+  ({ setIsAlertFormOpen, panelHidden }: MapComponentProps) => {
     const {
       map: { boundingBox, minZoom, maxZoom, maxBounds },
     } = appConfig;
 
     const dispatch = useDispatch();
+
+    const { selectedLayers, boundaryLayerId } = useLayers();
 
     const selectedMap = useSelector(mapSelector);
 
@@ -171,7 +167,6 @@ const MapComponent = memo(
       (map: Map) => {
         // Track with local state to minimize expensive dispatch call
         const layerIds = new Set<LayerKey>();
-        map.on('sourcedataloading', mapSourceListener(layerIds));
         map.on('sourcedata', mapSourceListener(layerIds));
         map.on('idle', idleMapListener(layerIds));
       },

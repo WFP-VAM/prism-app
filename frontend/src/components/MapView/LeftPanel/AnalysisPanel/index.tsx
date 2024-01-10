@@ -101,13 +101,13 @@ import { removeLayer } from 'context/mapStateSlice';
 import { DEFAULT_DATE_FORMAT } from 'utils/name-utils';
 import LayerDropdown from 'components/MapView/Layers/LayerDropdown';
 import SimpleDropdown from 'components/Common/SimpleDropdown';
-import { Extent } from 'components/MapView/Layers/raster-utils';
 import {
   leftPanelTabValueSelector,
   Panel,
   setTabValue,
 } from 'context/leftPanelStateSlice';
 import LoadingBlinkingDots from 'components/Common/LoadingBlinkingDots';
+import useLayers from 'utils/layers-utils';
 import AnalysisTable from './AnalysisTable';
 import ExposureAnalysisTable from './AnalysisTable/ExposureAnalysisTable';
 import ExposureAnalysisActions from './ExposureAnalysisActions';
@@ -117,7 +117,6 @@ const tabPanelType = Panel.Analysis;
 
 const AnalysisPanel = memo(
   ({
-    extent,
     panelSize,
     setPanelSize,
     setResultsPage,
@@ -153,6 +152,9 @@ const AnalysisPanel = memo(
       isExposureAnalysisLoadingSelector,
     );
     const tabValue = useSelector(leftPanelTabValueSelector);
+
+    const { adminBoundariesExtent: extent } = useLayers();
+
     const [showTable, setShowTable] = useState(false);
     // defaults the sort column of exposure analysis to 'name'
     const [
@@ -1407,7 +1409,6 @@ const styles = (theme: Theme) =>
   });
 
 interface AnalysisPanelProps extends WithStyles<typeof styles> {
-  extent?: Extent;
   panelSize: PanelSize;
   setPanelSize: React.Dispatch<React.SetStateAction<PanelSize>>;
   setResultsPage: React.Dispatch<React.SetStateAction<JSX.Element | null>>;

@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from 'react';
+import React, { memo, useCallback, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { GeoJSONLayer } from 'react-mapbox-gl';
 import {
@@ -26,13 +26,13 @@ import {
 } from 'components/MapView/Layers/layer-utils';
 import { convertSvgToPngBase64Image, getSVGShape } from 'utils/image-utils';
 
-function AdminLevelDataLayers({
+const AdminLevelDataLayers = ({
   layer,
   before,
 }: {
   layer: AdminLevelDataLayerProps;
   before?: string;
-}) {
+}) => {
   const dispatch = useDispatch();
   const map = useSelector(mapSelector);
   const serverAvailableDates = useSelector(availableDatesSelector);
@@ -156,6 +156,6 @@ function AdminLevelDataLayers({
       }}
     />
   );
-}
+};
 
-export default AdminLevelDataLayers;
+export default memo(AdminLevelDataLayers);

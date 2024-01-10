@@ -1,13 +1,12 @@
 import { LayersCategoryType, MenuItemType } from 'config/types';
 import React, { memo } from 'react';
-import { Extent } from 'components/MapView/Layers/raster-utils';
+import useLayers from 'utils/layers-utils';
 import MenuItem from '../MenuItem';
 import { menuList } from '../../utils';
 
-interface RootAccordionItemsProps {
-  extent: Extent | undefined;
-}
-const RootAccordionItems = ({ extent }: RootAccordionItemsProps) => {
+const RootAccordionItems = () => {
+  const { adminBoundariesExtent: extent } = useLayers();
+
   const layersMenuItems = menuList.filter((menuItem: MenuItemType) => {
     return menuItem.layersCategories.some(
       (layerCategory: LayersCategoryType) => {
