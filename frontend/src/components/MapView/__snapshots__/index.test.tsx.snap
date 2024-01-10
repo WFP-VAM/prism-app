@@ -424,6 +424,7 @@ exports[`renders as expected 1`] = `
                     <mock-circularprogress
                       color="inherit"
                       size="24"
+                      style="padding: 2px;"
                     />
                   </div>
                 </div>
