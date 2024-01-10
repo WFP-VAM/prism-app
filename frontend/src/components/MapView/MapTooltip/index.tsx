@@ -117,7 +117,7 @@ const MapTooltip = ({ classes }: TooltipProps) => {
         className={classes.popup}
         style={{ zIndex: 5 }}
       >
-        <PopupPointDataChart adminLevelsNames={() => [...adminLevelsNames()]} />
+        <PopupPointDataChart />
       </Popup>
     );
   }

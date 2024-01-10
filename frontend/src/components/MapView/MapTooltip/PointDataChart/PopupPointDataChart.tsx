@@ -1,16 +1,14 @@
 import Chart from 'components/Common/Chart';
-import { buildCsvFileName, isAdminBoundary } from 'components/MapView/utils';
+import { isAdminBoundary } from 'components/MapView/utils';
 import { ChartConfig } from 'config/types';
 import {
   CHART_DATA_PREFIXES,
   datasetSelector,
 } from 'context/datasetStateSlice';
 import { t } from 'i18next';
-import React, { memo, useRef } from 'react';
+import React, { memo } from 'react';
 import { useSelector } from 'react-redux';
 import { WithStyles, createStyles, withStyles } from '@material-ui/core';
-import DownloadCsvButton from 'components/MapView/DownloadCsvButton';
-import { appConfig } from 'config';
 
 const styles = () =>
   createStyles({
@@ -20,21 +18,15 @@ const styles = () =>
       gap: '8px',
     },
     chartSection: {
-      height: '240px',
+      paddingTop: '16px', // leave room for the download icons
+      height: '200px',
       width: '400px',
     },
   });
 
-const { countryAdmin0Id, country, multiCountry } = appConfig;
+interface PopupDatasetChartProps extends WithStyles<typeof styles> {}
 
-interface PopupDatasetChartProps extends WithStyles<typeof styles> {
-  adminLevelsNames: () => string[];
-}
-const PopupPointDataChart = ({
-  adminLevelsNames,
-  classes,
-}: PopupDatasetChartProps) => {
-  const dataForCsv = useRef<{ [key: string]: any[] }>({});
+const PopupPointDataChart = ({ classes }: PopupDatasetChartProps) => {
   const { data: dataset, datasetParams, title, chartType } = useSelector(
     datasetSelector,
   );
@@ -51,11 +43,6 @@ const PopupPointDataChart = ({
     return null;
   }
 
-  dataForCsv.current = {
-    ...dataForCsv.current,
-    [title]: dataset.rows,
-  };
-
   return (
     <div className={classes.chartContainer}>
       <div className={classes.chartSection}>
@@ -68,20 +55,10 @@ const PopupPointDataChart = ({
               ? undefined
               : t('Timestamps reflect local time in Cambodia')
           }
+          showDownloadIcons
+          iconStyles={{ color: 'white' }}
         />
       </div>
-      <DownloadCsvButton
-        filesData={[
-          {
-            fileName: buildCsvFileName([
-              multiCountry ? countryAdmin0Id : country,
-              ...adminLevelsNames(),
-              title,
-            ]),
-            data: dataForCsv,
-          },
-        ]}
-      />
     </div>
   );
 };
