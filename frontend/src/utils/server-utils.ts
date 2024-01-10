@@ -248,6 +248,7 @@ async function generateIntermediateDateItemFromDataFile(
   layerPathTemplate: string,
   validityPeriod: ValidityPeriod,
 ) {
+  console.log(layerPathTemplate);
   const ranges: StartEndDate[] = await Promise.all(
     layerDates.map(async r => {
       const path = layerPathTemplate.replace(/{.*?}/g, match => {
@@ -501,9 +502,12 @@ export async function getLayersAvailableDates(
           validityLayer => validityLayer.name === layerDatesEntry[0],
         );
 
+        const layerName = layerDatesEntry[0];
+        console.log(layerName);
+
         if (matchingValidityLayer) {
           return {
-            [layerDatesEntry[0]]: generateIntermediateDateItemFromValidity(
+            [layerName]: generateIntermediateDateItemFromValidity(
               matchingValidityLayer,
             ),
           };
@@ -511,12 +515,12 @@ export async function getLayersAvailableDates(
 
         // Generate dates for layers with path
         const matchingPathLayer = layersWithValidityStartEndDate.find(
-          validityLayer => validityLayer.name === layerDatesEntry[0],
+          validityLayer => validityLayer.name === layerName,
         );
 
         if (matchingPathLayer) {
           return {
-            [layerDatesEntry[0]]: await generateIntermediateDateItemFromDataFile(
+            [layerName]: await generateIntermediateDateItemFromDataFile(
               matchingPathLayer.dates,
               matchingPathLayer.path,
               matchingPathLayer.validityPeriod,
@@ -526,7 +530,7 @@ export async function getLayersAvailableDates(
 
         // Genererate dates for layers with validity but not an admin_level_data type
         return {
-          [layerDatesEntry[0]]: layerDatesEntry[1].map((d: number) =>
+          [layerName]: layerDatesEntry[1].map((d: number) =>
             generateDefaultDateItem(d),
           ),
         };

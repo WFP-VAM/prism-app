@@ -32,6 +32,7 @@
     "lint": "eslint --ext .js,.jsx,.ts,.tsx -c .eslintrc ./src ../common/src",
     "postinstall": "yarn run setup:maplibre",
     "precommit": "lint-staged",
+    "preprocess-dates": "node ./scripts/preprocess-layer-availaibility.js",
     "setup:common": "rimraf ./node_modules/prism-common && cd ../common && yarn install --network-timeout 600000 && yarn build && cd ../frontend && yarn install --check-files",
     "setup:maplibre": "node -e \"const fs = require('fs'); fs.copyFileSync('./node_modules/mapbox-gl/dist/maplibre-gl.css', './node_modules/mapbox-gl/dist/mapbox-gl.css'); fs.copyFileSync('./node_modules/mapbox-gl/dist/maplibre-gl.js', './node_modules/mapbox-gl/dist/mapbox-gl.js');\""
   },
@@ -168,6 +169,7 @@
     "eslint-plugin-prettier": "^3.1.4",
     "eslint-plugin-react": "^7.19.0",
     "eslint-plugin-react-hooks": "^1.7",
+    "fs": "^0.0.1-security",
     "surge": "^0.23.1",
     "typescript": "^3.9.7"
   },
