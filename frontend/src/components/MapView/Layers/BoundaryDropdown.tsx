@@ -43,17 +43,6 @@ const useStyles = makeStyles((theme: Theme) => ({
       color: 'black',
     },
   },
-  dropdownMenu: {
-    backgroundColor: theme.palette.primary.main,
-    color: 'white',
-    display: 'inline-flex',
-    // temporary will be removed when the go to button will be revamped
-    marginTop: '-10px',
-    padding: theme.spacing(0.8, 2.66),
-    borderRadius: '4px',
-    alignItems: 'center',
-    boxShadow: theme.shadows[2],
-  },
   formControl: {
     width: '140px',
     marginLeft: '10px',
@@ -270,7 +259,10 @@ export function SimpleBoundaryDropdown({
   const { data } = boundaryLayerData || {};
 
   if (!data) {
-    return <CircularProgress size={24} color="inherit" />;
+    // padding is used to make sure the loading spinner doesn't shift the menu size
+    return (
+      <CircularProgress size={24} color="inherit" style={{ padding: '2px' }} />
+    );
   }
 
   const areaTree = getAdminBoundaryTree(data, boundaryLayer, i18nLocale);
