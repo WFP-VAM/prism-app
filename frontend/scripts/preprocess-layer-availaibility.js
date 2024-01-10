@@ -11,11 +11,11 @@ const layersData = JSON.parse(
 );
 
 // Filter layers with "path" and "dates" fields
-const layersToProcess = Object.values(layersData).filter(
-  layer => layer.path && layer.dates,
+const layersToProcess = Object.entries(layersData).filter(
+  ([key, layer]) => layer.path && layer.dates,
 );
 
-// console.log(layersToProcess);
+console.log(layersToProcess);
 
 // Pre-process layers
 const preprocessedData = {};
@@ -53,11 +53,9 @@ async function generateIntermediateDateItemFromDataFile(
   return ranges.filter(ra => ra.startDate && ra.endDate);
 }
 
-(async function () {
-  for (const layer of layersToProcess) {
-    preprocessedData[
-      layer.title
-    ] = await generateIntermediateDateItemFromDataFile(
+async function preprocessValidityPeriods() {
+  for (const [key, layer] of layersToProcess) {
+    preprocessedData[key] = await generateIntermediateDateItemFromDataFile(
       layer.dates,
       layer.path,
       layer.validityPeriod,
@@ -68,4 +66,6 @@ async function generateIntermediateDateItemFromDataFile(
     path.join(__dirname, '../public/data/rbd/preprocessed-layers.json'),
     JSON.stringify(preprocessedData),
   );
-})();
+}
+
+preprocessValidityPeriods();
