@@ -16,10 +16,11 @@ const styles = () =>
       display: 'flex',
       flexDirection: 'column',
       gap: '8px',
+      paddingTop: '20px', // leave room for the close icon
     },
     chartSection: {
       paddingTop: '16px', // leave room for the download icons
-      height: '200px',
+      height: '220px',
       width: '400px',
     },
   });
@@ -56,7 +57,7 @@ const PopupPointDataChart = ({ classes }: PopupDatasetChartProps) => {
               : t('Timestamps reflect local time in Cambodia')
           }
           showDownloadIcons
-          iconStyles={{ color: 'white' }}
+          iconStyles={{ color: 'white', marginTop: '20px' }}
         />
       </div>
     </div>

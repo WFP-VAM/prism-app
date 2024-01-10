@@ -1,5 +1,5 @@
 import React, { memo, useCallback, useMemo, useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Popup } from 'react-mapbox-gl';
 import {
   createStyles,
@@ -8,7 +8,7 @@ import {
   Typography,
   IconButton,
 } from '@material-ui/core';
-import { tooltipSelector } from 'context/tooltipStateSlice';
+import { hidePopup, tooltipSelector } from 'context/tooltipStateSlice';
 import { isEnglishLanguageSelected, useSafeTranslation } from 'i18n';
 import { AdminLevelType } from 'config/types';
 import { appConfig } from 'config';
@@ -72,6 +72,7 @@ const availableAdminLevels: AdminLevelType[] = multiCountry
 interface TooltipProps extends WithStyles<typeof styles> {}
 
 const MapTooltip = ({ classes }: TooltipProps) => {
+  const dispatch = useDispatch();
   const popup = useSelector(tooltipSelector);
   const { i18n } = useSafeTranslation();
   const [popupTitle, setPopupTitle] = useState<string>('');
@@ -117,6 +118,14 @@ const MapTooltip = ({ classes }: TooltipProps) => {
         className={classes.popup}
         style={{ zIndex: 5 }}
       >
+        <IconButton
+          aria-label="close"
+          className={classes.closeButton}
+          onClick={() => dispatch(hidePopup())}
+          size="small"
+        >
+          <FontAwesomeIcon icon={faTimes} />
+        </IconButton>
         <PopupPointDataChart />
       </Popup>
     );
