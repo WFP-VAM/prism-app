@@ -2,21 +2,6 @@ const moment = require('moment');
 const fs = require('fs');
 const path = require('path');
 
-// Load layers.json
-const layersData = JSON.parse(
-  fs.readFileSync(
-    path.join(__dirname, '../src/config/rbd/layers.json'),
-    'utf-8',
-  ),
-);
-
-// Filter layers with "path" and "dates" fields
-const layersToProcess = Object.entries(layersData).filter(
-  ([key, layer]) => layer.path && layer.dates,
-);
-
-console.log(layersToProcess);
-
 // Pre-process layers
 const preprocessedData = {};
 
@@ -31,6 +16,13 @@ async function generateIntermediateDateItemFromDataFile(
         const format = match.slice(1, -1);
         return moment(r).format(format);
       });
+
+      const completeFilePath = path.join(__dirname, '../public/', filePath);
+
+      if (!fs.existsSync(completeFilePath)) {
+        console.log(`Warning: File ${filePath} does not exist.`);
+        return {};
+      }
 
       const fileContent = fs.readFileSync(
         path.join(__dirname, '../public/', filePath),
@@ -48,12 +40,10 @@ async function generateIntermediateDateItemFromDataFile(
     }),
   );
 
-  console.log(ranges);
-
   return ranges.filter(ra => ra.startDate && ra.endDate);
 }
 
-async function preprocessValidityPeriods() {
+async function preprocessValidityPeriods(country, layersToProcess) {
   for (const [key, layer] of layersToProcess) {
     preprocessedData[key] = await generateIntermediateDateItemFromDataFile(
       layer.dates,
@@ -61,11 +51,39 @@ async function preprocessValidityPeriods() {
       layer.validityPeriod,
     );
   }
+  if (Object.keys(preprocessedData).length === 0) {
+    return;
+  }
   // Write pre-processed data to a new JSON file
   fs.writeFileSync(
-    path.join(__dirname, '../public/data/rbd/preprocessed-layers.json'),
+    path.join(__dirname, `../public/data/${country}/preprocessed-layers.json`),
     JSON.stringify(preprocessedData),
   );
 }
 
-preprocessValidityPeriods();
+// Get all country directories
+const countryDirs = fs
+  .readdirSync(path.join(__dirname, '../src/config'))
+  .filter(file => {
+    return fs
+      .statSync(path.join(__dirname, '../src/config', file))
+      .isDirectory();
+  });
+
+// Process each country
+countryDirs.forEach(country => {
+  // Load layers.json
+  const layersData = JSON.parse(
+    fs.readFileSync(
+      path.join(__dirname, `../src/config/${country}/layers.json`),
+      'utf-8',
+    ),
+  );
+
+  // Filter layers with "path" and "dates" fields
+  const layersToProcess = Object.entries(layersData).filter(
+    ([key, layer]) => layer.path && layer.dates && layer.validityPeriod,
+  );
+
+  preprocessValidityPeriods(country, layersToProcess);
+});
