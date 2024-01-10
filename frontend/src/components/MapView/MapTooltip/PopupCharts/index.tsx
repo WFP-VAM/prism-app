@@ -59,8 +59,6 @@ const PopupCharts = ({
           adminCode={adminCode}
           adminSelectorKey={adminSelectorKey}
           adminLevel={adminLevel}
-          onClose={setAdminLevel}
-          adminLevelsNames={adminLevelsNames}
           filteredChartLayers={filteredChartLayers}
         />
       )}

@@ -25,7 +25,7 @@ import {
 import { TableData } from 'context/tableStateSlice';
 import { useSafeTranslation } from 'i18n';
 import { getChartAdminBoundaryParams } from 'utils/admin-utils';
-import Chart from 'components/Common/Chart';
+import Chart, { ChartProps } from 'components/Common/Chart';
 
 /**
  * This function removes the first occurrence of a specific number from an array.
@@ -129,6 +129,7 @@ const ChartSection = memo(
     setMinChartValues,
     maxChartValue,
     minChartValue,
+    chartProps,
     classes,
   }: ChartSectionProps) => {
     const dispatch = useDispatch();
@@ -454,6 +455,7 @@ const ChartSection = memo(
             chartRange={chartRange}
             notMaintainAspectRatio
             legendAtBottom
+            {...chartProps}
           />
         );
       }
@@ -468,16 +470,17 @@ const ChartSection = memo(
       }
       return null;
     }, [
-      chartDataSetError,
       chartDataSetIsLoading,
       extendedChartDataset,
-      chartRange,
-      classes.errorContainer,
+      chartDataSetError,
       classes.loading,
-      config,
-      params.datasetFields,
+      classes.errorContainer,
       t,
       title,
+      config,
+      params.datasetFields,
+      chartRange,
+      chartProps,
     ]);
   },
 );
@@ -518,6 +521,7 @@ export interface ChartSectionProps extends WithStyles<typeof styles> {
   setMinChartValues?: React.Dispatch<React.SetStateAction<number[]>>;
   maxChartValue?: number;
   minChartValue?: number;
+  chartProps?: Partial<ChartProps>;
 }
 
 export default withStyles(styles)(ChartSection);

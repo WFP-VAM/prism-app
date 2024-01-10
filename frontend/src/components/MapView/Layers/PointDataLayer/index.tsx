@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { memo, useEffect } from 'react';
 import moment from 'moment';
 import { GeoJSONLayer } from 'react-mapbox-gl';
 import { FeatureCollection } from 'geojson';
@@ -27,7 +27,7 @@ import { createEWSDatasetParams } from 'utils/ews-utils';
 import { addPopupParams } from 'components/MapView/Layers/layer-utils';
 
 // Point Data, takes any GeoJSON of points and shows it.
-function PointDataLayer({ layer, before }: LayersProps) {
+const PointDataLayer = ({ layer, before }: LayersProps) => {
   const selectedDate = useDefaultDate(layer.id);
   const serverAvailableDates = useSelector(availableDatesSelector);
   const layerAvailableDates = serverAvailableDates[layer.id];
@@ -141,11 +141,11 @@ function PointDataLayer({ layer, before }: LayersProps) {
       circleOnClick={onClickFunc}
     />
   );
-}
+};
 
 export interface LayersProps {
   layer: PointDataLayerProps;
   before?: string;
 }
 
-export default PointDataLayer;
+export default memo(PointDataLayer);

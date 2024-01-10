@@ -1,14 +1,14 @@
-import React from 'react';
+import React, { memo } from 'react';
 import moment from 'moment';
 import { Layer, Source } from 'react-mapbox-gl';
 import { StaticRasterLayerProps } from 'config/types';
 import { useDefaultDate } from 'utils/useDefaultDate';
 import { DEFAULT_DATE_FORMAT_SNAKE_CASE } from 'utils/name-utils';
 
-function StaticRasterLayer({
+const StaticRasterLayer = ({
   layer: { id, baseUrl, opacity, minZoom, maxZoom, dates },
   before,
-}: LayersProps) {
+}: LayersProps) => {
   const selectedDate = useDefaultDate(id);
   const url = dates
     ? baseUrl.replace(
@@ -37,11 +37,11 @@ function StaticRasterLayer({
       />
     </>
   );
-}
+};
 
 export interface LayersProps {
   layer: StaticRasterLayerProps;
   before?: string;
 }
 
-export default StaticRasterLayer;
+export default memo(StaticRasterLayer);

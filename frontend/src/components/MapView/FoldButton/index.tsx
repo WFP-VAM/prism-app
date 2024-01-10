@@ -7,15 +7,15 @@ import {
   Typography,
 } from '@material-ui/core';
 import DragIndicatorIcon from '@material-ui/icons/DragIndicator';
-import React, { useCallback, useMemo } from 'react';
+import React from 'react';
 import { useSelector } from 'react-redux';
 import { useSafeTranslation } from 'i18n';
 import { analysisResultSelector } from 'context/analysisResultStateSlice';
+import useLayers from 'utils/layers-utils';
 
 interface IProps {
   isPanelHidden: boolean;
   setIsPanelHidden: React.Dispatch<React.SetStateAction<boolean>>;
-  activeLayers: number;
 }
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -41,44 +41,20 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
 }));
 
-const FoldButton = ({
-  isPanelHidden,
-  setIsPanelHidden,
-  activeLayers,
-}: IProps) => {
+const FoldButton = ({ isPanelHidden, setIsPanelHidden }: IProps) => {
   const classes = useStyles();
   const { t } = useSafeTranslation();
   const analysisData = useSelector(analysisResultSelector);
 
-  const onClick = useCallback(() => {
+  const { numberOfActiveLayers } = useLayers();
+
+  const onClick = () => {
     setIsPanelHidden(value => !value);
-  }, [setIsPanelHidden]);
+  };
 
-  const badgeContent = useMemo(() => {
-    if (!analysisData) {
-      return activeLayers;
-    }
-    return activeLayers + 1;
-  }, [activeLayers, analysisData]);
-
-  const renderedIcon = useMemo(() => {
-    if (isPanelHidden && badgeContent >= 1) {
-      return (
-        <Badge
-          anchorOrigin={{
-            horizontal: 'right',
-            vertical: 'top',
-          }}
-          overlap="rectangular"
-          badgeContent={badgeContent}
-          color="secondary"
-        >
-          <DragIndicatorIcon />
-        </Badge>
-      );
-    }
-    return <DragIndicatorIcon />;
-  }, [badgeContent, isPanelHidden]);
+  const badgeContent = !analysisData
+    ? numberOfActiveLayers
+    : numberOfActiveLayers + 1;
 
   return (
     <Tooltip title={<Typography>{t('Menu')}</Typography>} arrow>
@@ -91,7 +67,21 @@ const FoldButton = ({
         size="medium"
         onClick={onClick}
       >
-        {renderedIcon}
+        {isPanelHidden && badgeContent >= 1 ? (
+          <Badge
+            anchorOrigin={{
+              horizontal: 'right',
+              vertical: 'top',
+            }}
+            overlap="rectangular"
+            badgeContent={badgeContent}
+            color="secondary"
+          >
+            <DragIndicatorIcon />
+          </Badge>
+        ) : (
+          <DragIndicatorIcon />
+        )}
       </Button>
     </Tooltip>
   );

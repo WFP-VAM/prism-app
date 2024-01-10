@@ -129,6 +129,7 @@ const MenuSwitch = memo(({ title, layers, extent }: MenuSwitchProps) => {
       elevation={0}
       classes={{ root: classes.root }}
       onChange={handleAccordionExpand}
+      TransitionProps={{ unmountOnExit: true }}
     >
       <AccordionSummary
         expandIcon={isExpanded ? <RemoveIcon /> : <AddIcon />}

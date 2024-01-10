@@ -420,6 +420,7 @@ const ChartsPanel = memo(
               startDate={startDate1}
               endDate={endDate1}
               dataForCsv={dataForCsv}
+              chartProps={{ showDownloadIcons: true }}
             />
           </Box>
         );
@@ -463,6 +464,7 @@ const ChartsPanel = memo(
                     minChartValue={
                       comparing ? Math.min(...minChartValues) : undefined
                     }
+                    chartProps={{ showDownloadIcons: true }}
                   />
                 </Box>
               ))
@@ -518,6 +520,7 @@ const ChartsPanel = memo(
                   setMinChartValues={setMinChartValues}
                   maxChartValue={Math.max(...maxChartValues)}
                   minChartValue={Math.min(...minChartValues)}
+                  chartProps={{ showDownloadIcons: true }}
                 />
               </Box>
             ))

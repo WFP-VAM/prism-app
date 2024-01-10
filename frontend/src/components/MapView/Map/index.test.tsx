@@ -12,14 +12,19 @@ jest.mock('react-mapbox-gl', () => ({
   Cluster: () => <span>Mock cluster</span>,
 }));
 
+jest.mock('react-router-dom', () => ({
+  useHistory: () => ({
+    replace: jest.fn(),
+    location: {
+      search: '',
+    },
+  }),
+}));
+
 test('renders as expected', () => {
   const { container } = render(
     <Provider store={store}>
-      <MapComponent
-        boundaryLayerId="Some Boundary Layer Id"
-        setIsAlertFormOpen={() => {}}
-        selectedLayers={[]}
-      />
+      <MapComponent setIsAlertFormOpen={() => {}} panelHidden={false} />
     </Provider>,
   );
   expect(container).toMatchSnapshot();
