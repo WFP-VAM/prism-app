@@ -37,7 +37,7 @@ import { BBox } from '@turf/helpers';
 
 const boundaryLayer = getBoundaryLayerSingleton();
 
-const useStyles = makeStyles((theme: Theme) => ({
+const useStyles = makeStyles({
   searchField: {
     '&>div': {
       color: 'black',
@@ -79,7 +79,7 @@ const useStyles = makeStyles((theme: Theme) => ({
       backgroundColor: '#ADD8E6',
     },
   },
-}));
+});
 const TIMEOUT_ANIMATION_DELAY = 10;
 const SearchField = forwardRef(
   (
