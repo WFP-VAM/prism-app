@@ -2,7 +2,7 @@ import { get, merge, snakeCase, sortBy, sortedUniqBy } from 'lodash';
 import moment from 'moment';
 import { WFS, WMS, fetchCoverageLayerDays, formatUrl } from 'prism-common';
 import { Dispatch } from 'redux';
-import { appConfig } from '../config';
+import { appConfig, safeCountry } from '../config';
 import type {
   AvailableDates,
   PathLayer,
@@ -422,6 +422,25 @@ const layerDefinitionsBluePrint: AvailableDates = Object.keys(
 }, {});
 
 /**
+ * Load preprocessed date ranges if available
+ * */
+async function fetchPreprocessedDates(): Promise<any> {
+  try {
+    const response = await fetch(
+      `data/${safeCountry}/preprocessed-layers.json`,
+    );
+    if (!response.ok) {
+      console.error(`HTTP error! status: ${response.status}`);
+      return {};
+    }
+    return await response.json();
+  } catch (error) {
+    console.error(`Failed to fetch preprocessed dates: ${error}`);
+    return {};
+  }
+}
+
+/**
  * Load available dates for WMS and WCS using a serverUri defined in prism.json and for GeoJSONs (point data) using their API endpoint.
  *
  * @return a Promise of Map<LayerID (not always id from LayerProps but can be), availableDates[]>
@@ -493,17 +512,19 @@ export async function getLayersAvailableDates(
       };
     });
 
+  // Use preprocessed dates for layers with dates path
+  const preprocessedDates = await fetchPreprocessedDates();
+  console.log(preprocessedDates);
+
   // Generate and replace date items for layers with all intermediates dates
   const layerDateItemsMap = await Promise.all(
     Object.entries(mergedLayers).map(
       async (layerDatesEntry: [string, number[]]) => {
+        const layerName = layerDatesEntry[0];
         // Generate dates for layers with validity and no path
         const matchingValidityLayer = layersWithValidity.find(
-          validityLayer => validityLayer.name === layerDatesEntry[0],
+          validityLayer => validityLayer.name === layerName,
         );
-
-        const layerName = layerDatesEntry[0];
-        console.log(layerName);
 
         if (matchingValidityLayer) {
           return {
@@ -519,6 +540,11 @@ export async function getLayersAvailableDates(
         );
 
         if (matchingPathLayer) {
+          if (layerName in preprocessedDates) {
+            return {
+              [layerName]: generateDateItemsRange(preprocessedDates[layerName]),
+            };
+          }
           return {
             [layerName]: await generateIntermediateDateItemFromDataFile(
               matchingPathLayer.dates,
