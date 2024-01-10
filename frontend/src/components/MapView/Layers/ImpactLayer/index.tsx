@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { memo, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { GeoJSONLayer } from 'react-mapbox-gl';
 import { FillPaint, LinePaint } from 'mapbox-gl';
@@ -144,4 +144,4 @@ interface ComponentProps extends WithStyles<typeof styles> {
   before?: string;
 }
 
-export default withStyles(styles)(ImpactLayer);
+export default memo(withStyles(styles)(ImpactLayer));

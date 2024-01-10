@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo } from 'react';
 import moment from 'moment';
 import { useSelector } from 'react-redux';
 import { Layer, Source } from 'react-mapbox-gl';
@@ -9,10 +9,10 @@ import { DEFAULT_DATE_FORMAT } from 'utils/name-utils';
 import { getRequestDate } from 'utils/server-utils';
 import { availableDatesSelector } from 'context/serverStateSlice';
 
-function WMSLayers({
+const WMSLayers = ({
   layer: { id, baseUrl, serverLayerName, additionalQueryParams, opacity },
   before,
-}: LayersProps) {
+}: LayersProps) => {
   const selectedDate = useDefaultDate(serverLayerName, id);
   const serverAvailableDates = useSelector(availableDatesSelector);
 
@@ -49,11 +49,11 @@ function WMSLayers({
       />
     </>
   );
-}
+};
 
 export interface LayersProps {
   layer: WMSLayerProps;
   before?: string;
 }
 
-export default WMSLayers;
+export default memo(WMSLayers);

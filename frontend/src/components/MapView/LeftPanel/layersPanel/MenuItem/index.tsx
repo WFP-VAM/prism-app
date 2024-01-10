@@ -71,7 +71,11 @@ const MenuItem = memo(({ title, layersCategories, extent }: MenuItemProps) => {
   );
 
   return (
-    <Accordion elevation={0} classes={{ root: classes.root }}>
+    <Accordion
+      elevation={0}
+      classes={{ root: classes.root }}
+      TransitionProps={{ unmountOnExit: true }}
+    >
       <AccordionSummary
         expandIcon={<ExpandMoreIcon />}
         classes={{
@@ -88,7 +92,7 @@ const MenuItem = memo(({ title, layersCategories, extent }: MenuItemProps) => {
         />
       </AccordionSummary>
       <AccordionDetails classes={{ root: classes.rootDetails }}>
-        <Grid container direction="column">
+        <Grid container direction="column" wrap="nowrap">
           {layersCategories.map((layerCategory: LayersCategoryType) => (
             <MenuSwitch
               key={layerCategory.title}

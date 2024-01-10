@@ -2,7 +2,7 @@ import { WithStyles, createStyles, withStyles } from '@material-ui/core';
 import { CompositeLayerProps } from 'config/types';
 import { LayerData, loadLayerData } from 'context/layers/layer-data';
 import { layerDataSelector } from 'context/mapStateSlice/selectors';
-import React, { useEffect } from 'react';
+import React, { memo, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 // to complete later
@@ -29,4 +29,4 @@ const CompositeLayer = ({ layer }: Props) => {
   return <>test</>;
 };
 
-export default withStyles(styles)(CompositeLayer);
+export default memo(withStyles(styles)(CompositeLayer));
