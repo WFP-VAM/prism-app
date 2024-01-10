@@ -20,7 +20,7 @@ const styles = () =>
     },
     chartSection: {
       paddingTop: '16px', // leave room for the download icons
-      height: '220px',
+      height: '200px',
       width: '400px',
     },
   });
