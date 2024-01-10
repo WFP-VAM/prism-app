@@ -248,7 +248,6 @@ async function generateIntermediateDateItemFromDataFile(
   layerPathTemplate: string,
   validityPeriod: ValidityPeriod,
 ) {
-  console.log(layerPathTemplate);
   const ranges: StartEndDate[] = await Promise.all(
     layerDates.map(async r => {
       const path = layerPathTemplate.replace(/{.*?}/g, match => {
@@ -514,6 +513,7 @@ export async function getLayersAvailableDates(
 
   // Use preprocessed dates for layers with dates path
   const preprocessedDates = await fetchPreprocessedDates();
+  // eslint-disable-next-line no-console
   console.log(preprocessedDates);
 
   // Generate and replace date items for layers with all intermediates dates
