@@ -10,13 +10,9 @@ export const datesAreEqualWithoutTime = (
   date1: number | Date,
   date2: number | Date,
 ): boolean => {
-  const d1 = new Date(date1);
-  const d2 = new Date(date2);
-  return (
-    d1.getDate() === d2.getDate() &&
-    d1.getMonth() === d2.getMonth() &&
-    d1.getFullYear() === d2.getFullYear()
-  );
+  const d1 = new Date(date1).setHours(0, 0, 0, 0);
+  const d2 = new Date(date2).setHours(0, 0, 0, 0);
+  return d1 === d2;
 };
 
 export const generateDatesRange = (
