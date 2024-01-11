@@ -112,7 +112,8 @@
   },
   "resolutions": {
     "**/mapbox-gl": "npm:maplibre-gl@1.15.2",
-    "@react-pdf/font": "2.2.0"
+    "@react-pdf/font": "2.2.0",
+    "node-notifier": "^10.0.1"
   },
   "jest": {
     "snapshotSerializers": [
