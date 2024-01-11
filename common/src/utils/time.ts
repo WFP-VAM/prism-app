@@ -1,7 +1,5 @@
-import * as moment from "moment";
-
 export function setNoon(date: string): string {
-  return moment.utc(date.split("T")[0]).set({ hour: 12, minute: 0 }).format();
+  return date.split("T")[0] + "T12:00:00Z";
 }
 
 export const DEFAULT_DATE_FORMAT = "YYYY-MM-DD";
