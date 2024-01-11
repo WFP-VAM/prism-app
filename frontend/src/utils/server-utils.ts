@@ -274,15 +274,10 @@ async function generateIntermediateDateItemFromDataFile(
 }
 
 function generateIntermediateDateItemFromValidity(layer: ValidityLayer) {
-  console.log('generateIntermediateDateItemFromValidity', layer);
-
-  const { dates } = layer; // number[] about 700-1550 items long, epoch
+  const { dates } = layer;
   const { days, mode } = layer.validity;
 
-  // Convert the dates to moment dates
-  const momentDates = Array.prototype.sort
-    .call(dates)
-    .map(d => moment(d).set({ hour: 12, minute: 0 }));
+  const sortedDates = Array.prototype.sort.call(dates);
 
   // Generate first DateItem[] from dates array.
   const baseItem = layer.validity
@@ -293,16 +288,17 @@ function generateIntermediateDateItemFromValidity(layer: ValidityLayer) {
           mode === DatesPropagation.BACKWARD || mode === DatesPropagation.BOTH,
       }
     : {};
-  const dateItemsDefault = momentDates.map(momentDate =>
-    generateDefaultDateItem(momentDate.valueOf(), baseItem),
+  const dateItemsDefault = sortedDates.map(sortedDate =>
+    generateDefaultDateItem(sortedDate, baseItem),
   );
 
   // only calculate validity for dates that are less than 5 years old
   const fiveYearsInMs = 5 * 365 * 24 * 60 * 60 * 1000;
   const earliestDate = Date.now() - fiveYearsInMs;
 
-  const dateItemsWithValidity = momentDates
-    .filter(date => date.valueOf() > earliestDate)
+  const dateItemsWithValidity = sortedDates
+    .filter(date => date > earliestDate)
+    .map(d => moment(d).set({ hour: 12, minute: 0 }))
     .reduce((acc: DateItem[], momentDate) => {
       // We create the start and the end date for every moment date
       let startDate = momentDate.clone();
