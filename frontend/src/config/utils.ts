@@ -219,6 +219,7 @@ export function getDisplayBoundaryLayers(): BoundaryLayerProps[] {
     // disrupting the order of which they are defined
     // since the first is considered as default
     const defaultDisplayBoundaries = defaultBoundaries.map(
+      // TODO - use a find?
       id => boundaryLayers.filter(l => l.id === id)[0],
     );
 
