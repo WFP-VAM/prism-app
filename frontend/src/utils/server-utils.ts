@@ -298,8 +298,11 @@ function generateIntermediateDateItemFromValidity(layer: ValidityLayer) {
   );
 
   // only calculate validity for dates that are less than 5 years old
+  const fiveYearsInMs = 5 * 365 * 24 * 60 * 60 * 1000;
+  const earliestDate = Date.now() - fiveYearsInMs;
+
   const dateItemsWithValidity = momentDates
-    .filter(date => moment().diff(date, 'years') < 5)
+    .filter(date => date.valueOf() > earliestDate)
     .reduce((acc: DateItem[], momentDate) => {
       // We create the start and the end date for every moment date
       let startDate = momentDate.clone();
