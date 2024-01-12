@@ -116,7 +116,8 @@
     "**/mapbox-gl": "npm:maplibre-gl@1.15.2",
     "@react-pdf/font": "2.2.0",
     "**/@typescript-eslint/eslint-plugin": "^4.1.1",
-    "**/@typescript-eslint/parser": "^4.1.1"
+    "**/@typescript-eslint/parser": "^4.1.1",
+    "node-notifier": "^10.0.1"
   },
   "jest": {
     "snapshotSerializers": [
