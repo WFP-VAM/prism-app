@@ -1,3 +1,4 @@
+import React, { CSSProperties, memo, useCallback, useMemo } from 'react';
 import {
   Fade,
   Grid,
@@ -7,7 +8,6 @@ import {
   withStyles,
 } from '@material-ui/core';
 import { compact } from 'lodash';
-import React, { CSSProperties, memo, useCallback, useMemo } from 'react';
 import { DateItem, DateRangeType } from 'config/types';
 import { useSafeTranslation } from 'i18n';
 import {
@@ -58,8 +58,8 @@ const TimelineItems = memo(
     ];
 
     const getTooltipTitle = useCallback(
-      (date: DateRangeType): JSX.Element[] => {
-        const tooltipTitleArray: JSX.Element[] = compact(
+      (date: DateRangeType): React.JSX.Element[] => {
+        const tooltipTitleArray: React.JSX.Element[] = compact(
           selectedLayers.map((selectedLayer, layerIndex) => {
             return (
               <TooltipItem

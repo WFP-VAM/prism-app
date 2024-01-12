@@ -1,6 +1,6 @@
 import React, { memo, useCallback, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Popup } from 'react-mapbox-gl';
+import { Popup } from 'react-map-gl/maplibre';
 import {
   createStyles,
   withStyles,
@@ -114,7 +114,8 @@ const MapTooltip = ({ classes }: TooltipProps) => {
   if (dataset) {
     return (
       <Popup
-        coordinates={popup.coordinates}
+        latitude={popup.coordinates?.[1]}
+        longitude={popup.coordinates?.[0]}
         className={classes.popup}
         style={{ zIndex: 5 }}
       >
@@ -133,7 +134,8 @@ const MapTooltip = ({ classes }: TooltipProps) => {
 
   return (
     <Popup
-      coordinates={popup.coordinates}
+      latitude={popup.coordinates?.[1]}
+      longitude={popup.coordinates?.[0]}
       className={classes.popup}
       style={{ zIndex: 5 }}
     >

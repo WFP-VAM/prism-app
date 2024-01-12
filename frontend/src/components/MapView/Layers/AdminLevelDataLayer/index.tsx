@@ -1,6 +1,7 @@
 import React, { memo, useCallback, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { GeoJSONLayer } from 'react-mapbox-gl';
+import { Source, Layer, MapRef } from 'react-map-gl/maplibre';
 import {
   AdminLevelDataLayerProps,
   BoundaryLayerProps,
@@ -35,6 +36,7 @@ const AdminLevelDataLayers = ({
 }) => {
   const dispatch = useDispatch();
   const map = useSelector(mapSelector);
+  const mapRef = React.useRef<MapRef>(null);
   const serverAvailableDates = useSelector(availableDatesSelector);
 
   const boundaryId = layer.boundary || firstBoundaryOnView(map);
@@ -145,16 +147,45 @@ const AdminLevelDataLayers = ({
     return null;
   }
 
+  if (0) {
+    return (
+      <GeoJSONLayer
+        before={before || `layer-${boundaryId}-line`}
+        id={`layer-${layer.id}`}
+        data={features}
+        fillPaint={fillPaintData(layer, 'data', layer?.fillPattern)}
+        fillOnClick={async (evt: any) => {
+          addPopupParams(layer, dispatch, evt, t, true);
+        }}
+      />
+    );
+  }
+  const layerId = `layer-${layer.id}`;
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const handleClick = (event: { point: any }) => {
+    if (!mapRef.current) {
+      return;
+    }
+    const featureAtClick = mapRef.current.queryRenderedFeatures(event.point, {
+      layers: [layerId],
+    });
+
+    if (featureAtClick.length > 0) {
+      // Call your function to add popup or handle the click event
+      addPopupParams(layer, dispatch, event, t, true);
+    }
+  };
+
   return (
-    <GeoJSONLayer
-      before={before || `layer-${boundaryId}-line`}
-      id={`layer-${layer.id}`}
-      data={features}
-      fillPaint={fillPaintData(layer, 'data', layer?.fillPattern)}
-      fillOnClick={async (evt: any) => {
-        addPopupParams(layer, dispatch, evt, t, true);
-      }}
-    />
+    <Source id={layerId} type="geojson" data={features}>
+      <Layer
+        id={layerId}
+        type="fill"
+        // paint={fillPaintData(layer, 'data', layer?.fillPattern)}
+        beforeId={before || `layer-${boundaryId}-line`}
+      />
+    </Source>
   );
 };
 

@@ -39,7 +39,7 @@ const generatePhasePopulationTable = (
   popupData: PopupData,
   t: TFunction,
   classes: ClassNameMap,
-): JSX.Element | null => {
+): React.JSX.Element | null => {
   const phasePopulations: Record<string, number> = Object.entries(
     popupData,
   ).reduce((acc: any, cur: any) => {

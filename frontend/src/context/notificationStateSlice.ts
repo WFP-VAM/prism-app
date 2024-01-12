@@ -96,7 +96,7 @@ export const errorToNotificationMiddleware: Middleware<{}, RootState> = () => (
     dispatch(
       addNotification({
         type: 'error',
-        message: err.message || err,
+        message: (err as any).message || err,
       }),
     );
     throw err;

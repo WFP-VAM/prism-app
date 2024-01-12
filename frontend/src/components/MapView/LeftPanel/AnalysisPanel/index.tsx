@@ -1411,7 +1411,9 @@ const styles = (theme: Theme) =>
 interface AnalysisPanelProps extends WithStyles<typeof styles> {
   panelSize: PanelSize;
   setPanelSize: React.Dispatch<React.SetStateAction<PanelSize>>;
-  setResultsPage: React.Dispatch<React.SetStateAction<JSX.Element | null>>;
+  setResultsPage: React.Dispatch<
+    React.SetStateAction<React.JSX.Element | null>
+  >;
 }
 
 export default withStyles(styles)(AnalysisPanel);

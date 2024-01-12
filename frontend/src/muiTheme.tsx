@@ -1,4 +1,5 @@
 import { createTheme } from '@material-ui/core/styles';
+import React from 'react';
 
 const skyBlue: string = '#009EE0';
 const greyBlue: string = '#5A686C';

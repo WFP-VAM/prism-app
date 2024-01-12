@@ -1,5 +1,6 @@
 import { Map as MapBoxMap } from 'mapbox-gl';
 import { LayerType } from 'config/types';
+import React from 'react';
 
 export const handleChangeOpacity = (
   event: React.ChangeEvent<{}>,

@@ -174,9 +174,9 @@ const getFeatureBoundary = (
     return adminLayerData.features.find(
       ({ properties }) =>
         properties?.[groupBy] ===
-          row?.['properties']?.[groupBy as keyof typeof properties] ||
+          row?.properties?.[groupBy as keyof typeof properties] ||
         properties?.[adminLevelName] ===
-          row?.['properties'][adminLevelName as keyof typeof properties],
+          row?.properties[adminLevelName as keyof typeof properties],
     );
   }
   return adminLayerData.features.find(

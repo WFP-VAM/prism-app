@@ -10,6 +10,7 @@ import { RASTER_API_URL } from 'utils/constants';
 import { fetchWithTimeout } from 'utils/fetch-with-timeout';
 import { LocalError } from 'utils/error-utils';
 import { addNotification } from 'context/notificationStateSlice';
+import { MapRef } from 'react-map-gl/maplibre';
 
 export type TransformMatrix = [number, number, number, number, number, number];
 export type TypedArray =
@@ -185,7 +186,8 @@ export function pixelsInFeature(
   }, [] as number[]);
 }
 
-export function getExtent(map?: MapBoxMap): Extent {
+// TODO: Remove MapBoxMap
+export function getExtent(map?: MapRef | MapBoxMap): Extent {
   // TODO - Use bbox on the admin boundaries instead.
   const bounds = map?.getBounds();
 

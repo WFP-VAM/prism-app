@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { BoundaryLayerProps } from 'config/types';
 import { LayerData } from 'context/layers/layer-data';
 import { showPopup } from 'context/tooltipStateSlice';
-
+import { Source, Layer } from 'react-map-gl';
 import { setBoundaryRelationData } from 'context/mapStateSlice';
 import {
   loadBoundaryRelations,
@@ -110,17 +110,31 @@ const BoundaryLayer = ({ layer, before }: ComponentProps) => {
         fillOnClick: undefined,
       };
 
+  if (0) {
+    return (
+      <GeoJSONLayer
+        id={`layer-${layer.id}`}
+        data={data}
+        fillPaint={layer.styles.fill}
+        linePaint={layer.styles.line}
+        fillOnMouseEnter={fillOnMouseEnter}
+        fillOnMouseLeave={fillOnMouseLeave}
+        fillOnClick={fillOnClick}
+        before={before}
+      />
+    );
+  }
+
+  // We need 2 layers here since react-map-gl does not support styling "line" for "fill" typed layers
   return (
-    <GeoJSONLayer
-      id={`layer-${layer.id}`}
-      data={data}
-      fillPaint={layer.styles.fill}
-      linePaint={layer.styles.line}
-      fillOnMouseEnter={fillOnMouseEnter}
-      fillOnMouseLeave={fillOnMouseLeave}
-      fillOnClick={fillOnClick}
-      before={before}
-    />
+    <Source id={`layer-${layer.id}`} type="geojson" data={data}>
+      <Layer
+        id={`layer-${layer.id}-line`}
+        type="line"
+        paint={layer.styles.line}
+      />
+      <Layer id={`layer-${layer.id}`} type="fill" paint={layer.styles.fill} />
+    </Source>
   );
 };
 

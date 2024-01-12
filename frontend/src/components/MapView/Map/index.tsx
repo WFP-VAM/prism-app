@@ -32,6 +32,7 @@ import {
   WMSLayer,
 } from 'components/MapView/Layers';
 import useLayers from 'utils/layers-utils';
+import MapGL, { MapRef } from 'react-map-gl/maplibre';
 
 interface MapComponentProps {
   setIsAlertFormOpen: Dispatch<SetStateAction<boolean>>;
@@ -48,6 +49,8 @@ const MapComponent = memo(
       map: { boundingBox, minZoom, maxZoom, maxBounds },
     } = appConfig;
 
+    const mapRef = React.useRef<MapRef>(null);
+
     const dispatch = useDispatch();
 
     const { selectedLayers, boundaryLayerId } = useLayers();
@@ -58,7 +61,11 @@ const MapComponent = memo(
       undefined,
     );
 
-    const mapOnClick = useMapOnClick(setIsAlertFormOpen, boundaryLayerId);
+    const mapOnClick = useMapOnClick(
+      setIsAlertFormOpen,
+      boundaryLayerId,
+      mapRef.current,
+    );
 
     const style = useMemo(() => {
       return new URL(
@@ -219,39 +226,75 @@ const MapComponent = memo(
       [firstBoundaryId, firstSymbolId, selectedLayers, selectedMap],
     );
 
+    if (0) {
+      return (
+        <MapboxMap
+          // eslint-disable-next-line react/style-prop-object
+          style={style.toString()}
+          onStyleLoad={saveAndJumpMap}
+          containerStyle={{
+            height: '100%',
+          }}
+          fitBounds={boundingBox}
+          fitBoundsOptions={fitBoundsOptions}
+          // onClick={mapOnClick}
+          center={mapTempCenter}
+          maxBounds={maxBounds}
+        >
+          <>
+            {/* We cannot memoize the above behavior because tooltip becomes sluggish and does not render at all, when we enable a layer */}
+            {selectedLayers.map((layer, index) => {
+              const component: ComponentType<{
+                layer: any;
+                before?: string;
+              }> = componentTypes[layer.type];
+              return createElement(component, {
+                key: layer.id,
+                layer,
+                before: getBeforeId(index),
+              });
+            })}
+            {/* These are custom layers which provide functionality and are not really controllable via JSON */}
+            <AnalysisLayer before={firstBoundaryId} />
+            <SelectionLayer before={firstSymbolId} />
+            <MapTooltip />
+          </>
+        </MapboxMap>
+      );
+    }
+
     return (
-      <MapboxMap
-        // eslint-disable-next-line react/style-prop-object
-        style={style.toString()}
-        onStyleLoad={saveAndJumpMap}
-        containerStyle={{
-          height: '100%',
+      <MapGL
+        ref={mapRef}
+        initialViewState={{
+          bounds: boundingBox,
+          // lat and long are unnecessary if bounds exist
+          latitude: mapTempCenter[1],
+          longitude: mapTempCenter[0],
+          fitBoundsOptions: { padding: fitBoundsOptions.padding },
         }}
-        fitBounds={boundingBox}
-        fitBoundsOptions={fitBoundsOptions}
+        mapStyle={style.toString()}
         onClick={mapOnClick}
-        center={mapTempCenter}
         maxBounds={maxBounds}
+        // TODO: this should be dynamic
+        interactiveLayerIds={[
+          'layer-admin_boundaries',
+          'layer-admin1_boundaries',
+        ]}
       >
-        <>
-          {/* We cannot memoize the above behavior because tooltip becomes sluggish and does not render at all, when we enable a layer */}
-          {selectedLayers.map((layer, index) => {
-            const component: ComponentType<{
-              layer: any;
-              before?: string;
-            }> = componentTypes[layer.type];
-            return createElement(component, {
-              key: layer.id,
-              layer,
-              before: getBeforeId(index),
-            });
-          })}
-          {/* These are custom layers which provide functionality and are not really controllable via JSON */}
-          <AnalysisLayer before={firstBoundaryId} />
-          <SelectionLayer before={firstSymbolId} />
-          <MapTooltip />
-        </>
-      </MapboxMap>
+        {selectedLayers.map((layer, index) => {
+          const component: ComponentType<{
+            layer: any;
+            before?: string;
+          }> = componentTypes[layer.type];
+          return createElement(component, {
+            key: layer.id,
+            layer,
+            before: getBeforeId(index),
+          });
+        })}
+        <MapTooltip />
+      </MapGL>
     );
   },
 );

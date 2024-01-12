@@ -536,15 +536,16 @@ const ChartsPanel = memo(
         if (startDate === null || endDate === null) {
           return '';
         }
-        const options = {
-          weekday: undefined,
-          year: 'numeric',
-          month: 'short',
-          day: 'numeric',
-        };
+        // TODO: Fix this
+        // const options = {
+        //   weekday: undefined,
+        //   year: 'numeric',
+        //   month: 'short',
+        //   day: 'numeric',
+        // };
         const formatDate = (d: number) => {
           const dd = new Date(d);
-          return dd.toLocaleDateString(t('date_locale'), options);
+          return dd.toLocaleDateString(t('date_locale'));
         };
 
         return `${formatDate(startDate)} - ${formatDate(endDate)}`;
@@ -986,7 +987,9 @@ const ChartsPanel = memo(
 
 interface ChartsPanelProps {
   setPanelSize: React.Dispatch<React.SetStateAction<PanelSize>>;
-  setResultsPage: React.Dispatch<React.SetStateAction<JSX.Element | null>>;
+  setResultsPage: React.Dispatch<
+    React.SetStateAction<React.JSX.Element | null>
+  >;
 }
 
 export default ChartsPanel;

@@ -27,9 +27,10 @@ const LeftPanel = memo(
   ({ panelSize, setPanelSize, isPanelHidden }: LeftPanelProps) => {
     const classes = useStyles({ panelSize });
 
-    const [resultsPage, setResultsPage] = React.useState<JSX.Element | null>(
-      null,
-    );
+    const [
+      resultsPage,
+      setResultsPage,
+    ] = React.useState<React.JSX.Element | null>(null);
 
     const tablesMenuItems = useMemo(() => {
       return menuList.filter((menuItem: MenuItemType) => {
