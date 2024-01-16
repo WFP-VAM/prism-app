@@ -215,9 +215,10 @@ const getStaticRasterDataCoverage = (layer: StaticRasterLayerProps) => {
  * @return DateItem
  */
 const generateDefaultDateItem = (date: number, baseItem?: Object): DateItem => {
+  const newDate = moment(date).set({ hour: 12, minute: 0 }).valueOf()
   const r = {
-    displayDate: date,
-    queryDate: date,
+    displayDate: newDate,
+    queryDate: newDate,
   };
   if (baseItem) {
     return {
