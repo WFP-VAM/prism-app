@@ -35,6 +35,7 @@ import {
   getPossibleDatesForLayer,
 } from 'utils/server-utils';
 import { UrlLayerKey, getUrlKey, useUrlHistory } from 'utils/url-utils';
+import { datesAreEqualWithoutTime } from './date-utils';
 
 const dateSupportLayerTypes: Array<LayerType['type']> = [
   'impact',
@@ -408,7 +409,20 @@ const useLayers = () => {
 
       const closestDate = findClosestDate(selectedDate, selectedLayerDates);
 
-      updateHistory('date', closestDate.format(DEFAULT_DATE_FORMAT));
+      if (
+        datesAreEqualWithoutTime(
+          momentSelectedDate.valueOf(),
+          closestDate.valueOf(),
+        )
+      ) {
+        console.warn({ closestDate });
+        console.warn(
+          'closest dates is the same as selected date, not updating url',
+        );
+        // updateHistory('date', closestDate.format(DEFAULT_DATE_FORMAT));
+      } else {
+        updateHistory('date', closestDate.format(DEFAULT_DATE_FORMAT));
+      }
 
       dispatch(
         addNotification({
