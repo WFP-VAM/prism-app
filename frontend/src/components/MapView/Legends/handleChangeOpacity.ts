@@ -1,11 +1,11 @@
-import { Map as MapBoxMap } from 'mapbox-gl';
+import { Map as MaplibreMap } from 'maplibre-gl';
 import { LayerType } from 'config/types';
 import React from 'react';
 
 export const handleChangeOpacity = (
   event: React.ChangeEvent<{}>,
   newValue: number,
-  map: MapBoxMap | undefined,
+  map: MaplibreMap | undefined,
   id: LayerType['id'] | undefined,
   type: LayerType['type'] | undefined,
   callback: (newVal: number) => void,

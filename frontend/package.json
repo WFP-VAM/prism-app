@@ -30,10 +30,8 @@
     "deploy:tests": "./scripts/deploy_to_surge.sh",
     "eject": "react-scripts eject",
     "lint": "eslint --ext .js,.jsx,.ts,.tsx -c .eslintrc ./src ../common/src",
-    "postinstall": "yarn run setup:maplibre",
     "precommit": "lint-staged",
-    "setup:common": "rimraf ./node_modules/prism-common && cd ../common && yarn install --network-timeout 600000 && yarn build && cd ../frontend && yarn install --check-files",
-    "setup:maplibre": "node -e \"const fs = require('fs'); fs.copyFileSync('./node_modules/mapbox-gl/dist/maplibre-gl.css', './node_modules/mapbox-gl/dist/mapbox-gl.css'); fs.copyFileSync('./node_modules/mapbox-gl/dist/maplibre-gl.js', './node_modules/mapbox-gl/dist/mapbox-gl.js');\""
+    "setup:common": "rimraf ./node_modules/prism-common && cd ../common && yarn install --network-timeout 600000 && yarn build && cd ../frontend && yarn install --check-files"
   },
   "dependencies": {
     "@azure/msal-browser": "^2.19.0",
@@ -81,7 +79,6 @@
     "jspdf": "^2.3.0",
     "lint-staged": "^10.0.8",
     "lodash": "^4.17.21",
-    "mapbox-gl": "npm:maplibre-gl@1.15.2",
     "maplibre-gl": "^2.0.0",
     "marked": "^4.0.10",
     "moment": "^2.29.4",
@@ -98,7 +95,6 @@
     "react-draggable": "^4.4.3",
     "react-i18next": "^11.15.4",
     "react-map-gl": "^7.1.0",
-    "react-mapbox-gl": "^4.8.2",
     "react-pdf": "^5.7.2",
     "react-range-slider-input": "^3.0.7",
     "react-redux": "^7.2.0",
@@ -113,7 +109,6 @@
     "xml-js": "^1.6.11"
   },
   "resolutions": {
-    "**/mapbox-gl": "npm:maplibre-gl@1.15.2",
     "@react-pdf/font": "2.2.0",
     "**/@typescript-eslint/eslint-plugin": "^4.1.1",
     "**/@typescript-eslint/parser": "^4.1.1",
@@ -150,7 +145,6 @@
     "@types/geojson": "^7946.0.7",
     "@types/jest": "^24.0.0",
     "@types/lodash": "^4.14.149",
-    "@types/mapbox-gl": "^1.8.0",
     "@types/marked": "^4.0.2",
     "@types/node": "^16.0.0",
     "@types/papaparse": "^5.0.3",

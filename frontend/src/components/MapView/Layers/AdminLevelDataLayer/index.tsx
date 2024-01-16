@@ -81,29 +81,17 @@ const AdminLevelDataLayers = ({
       if (!map || !layer.fillPattern || !convertedImage) {
         return;
       }
-      map.loadImage(
-        convertedImage,
-        (
-          err: any,
-          image:
-            | HTMLImageElement
-            | ArrayBufferView
-            | {
-                width: number;
-                height: number;
-                data: Uint8Array | Uint8ClampedArray;
-              }
-            | ImageData
-            | ImageBitmap,
-        ) => {
-          // Throw an error if something goes wrong.
-          if (err) {
-            throw err;
-          }
-          // Add the image to the map style.
-          map.addImage(`fill-pattern-${layer.id}-legend-${index}`, image);
-        },
-      );
+      map.loadImage(convertedImage, (err: any, image) => {
+        // Throw an error if something goes wrong.
+        if (err) {
+          throw err;
+        }
+        if (!image) {
+          return;
+        }
+        // Add the image to the map style.
+        map.addImage(`fill-pattern-${layer.id}-legend-${index}`, image);
+      });
     },
     [layer.fillPattern, layer.id, map],
   );

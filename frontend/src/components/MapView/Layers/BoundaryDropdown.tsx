@@ -16,7 +16,6 @@ import React, { forwardRef, useEffect, useState } from 'react';
 import i18n from 'i18next';
 import { useDispatch, useSelector } from 'react-redux';
 import { Search } from '@material-ui/icons';
-import { Map as MapBoxMap } from 'mapbox-gl';
 import bbox from '@turf/bbox';
 import { FixedSizeList as List } from 'react-window';
 import {
@@ -34,6 +33,7 @@ import { layerDataSelector } from 'context/mapStateSlice/selectors';
 import { LayerData } from 'context/layers/layer-data';
 import { isEnglishLanguageSelected, useSafeTranslation } from 'i18n';
 import { BBox } from '@turf/helpers';
+import { Map as MaplibreMap } from 'maplibre-gl';
 
 const boundaryLayer = getBoundaryLayerSingleton();
 
@@ -397,7 +397,7 @@ export function SimpleBoundaryDropdown({
 interface BoundaryDropdownProps {
   className: string;
   labelMessage: string;
-  map?: MapBoxMap | undefined;
+  map?: MaplibreMap | undefined;
   onlyNewCategory?: boolean;
   selectAll?: boolean;
   selectedBoundaries?: AdminCodeString[];

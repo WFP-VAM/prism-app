@@ -3,14 +3,13 @@ import booleanPointInPolygon from '@turf/boolean-point-in-polygon';
 import { Feature, MultiPolygon, point } from '@turf/helpers';
 import { buffer } from 'd3-fetch';
 import * as GeoTIFF from 'geotiff';
-import { Map as MapBoxMap } from 'mapbox-gl';
 import { createGetMapUrl } from 'prism-common';
 import { Dispatch } from 'redux';
 import { RASTER_API_URL } from 'utils/constants';
 import { fetchWithTimeout } from 'utils/fetch-with-timeout';
 import { LocalError } from 'utils/error-utils';
 import { addNotification } from 'context/notificationStateSlice';
-import { MapRef } from 'react-map-gl/maplibre';
+import { Map as MaplibreMap } from 'maplibre-gl';
 
 export type TransformMatrix = [number, number, number, number, number, number];
 export type TypedArray =
@@ -186,8 +185,7 @@ export function pixelsInFeature(
   }, [] as number[]);
 }
 
-// TODO: Remove MapBoxMap
-export function getExtent(map?: MapRef | MapBoxMap): Extent {
+export function getExtent(map?: MaplibreMap): Extent {
   // TODO - Use bbox on the admin boundaries instead.
   const bounds = map?.getBounds();
 

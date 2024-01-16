@@ -1,20 +1,22 @@
-import { AnyLayer, AnySourceData, Map as MapBoxMap } from 'mapbox-gl';
+import { LayerSpecification, Map as MaplibreMap } from 'maplibre-gl';
 import { LayerKey, BoundaryLayerProps, LayerType } from 'config/types';
 import { getDisplayBoundaryLayers } from 'config/utils';
 import { addLayer, removeLayer } from 'context/mapStateSlice';
 import { Dispatch } from 'react';
 
+// TODO: Update comment
 // fixes the issue that property 'source' is not guaranteed to exist on type 'AnyLayer'
 // because 'CustomLayerInterface' does not specify a 'source' property
 // see maplibre-gl/src/index.d.ts
-type CustomAnyLayer = AnyLayer & { source?: string | AnySourceData };
+type CustomAnyLayer = LayerSpecification & { source?: string };
 
+// TODO: test this
 /**
  * Checks weither given layer is on view
  * @param map the MapBox Map object
  * @param layerId the LayerKey
  */
-export function isLayerOnView(map: MapBoxMap | undefined, layerId: LayerKey) {
+export function isLayerOnView(map: MaplibreMap | undefined, layerId: LayerKey) {
   return map
     ?.getStyle()
     .layers?.map((l: CustomAnyLayer) => l.source)
@@ -22,7 +24,7 @@ export function isLayerOnView(map: MapBoxMap | undefined, layerId: LayerKey) {
 }
 
 export function safeDispatchAddLayer(
-  _map: MapBoxMap | undefined,
+  _map: MaplibreMap | undefined,
   layer: LayerType,
   dispatcher: Function,
 ) {
@@ -32,7 +34,7 @@ export function safeDispatchAddLayer(
 }
 
 export function safeDispatchRemoveLayer(
-  _map: MapBoxMap | undefined,
+  _map: MaplibreMap | undefined,
   layer: LayerType,
   dispatcher: Dispatch<any>,
 ) {
@@ -41,12 +43,13 @@ export function safeDispatchRemoveLayer(
   }
 }
 
+// TODO: test this
 /**
  * Get all boundaries already on the map
  * @param map the MapBox Map object
  */
 export function boundariesOnView(
-  map: MapBoxMap | undefined,
+  map: MaplibreMap | undefined,
 ): BoundaryLayerProps[] {
   const boundaries = getDisplayBoundaryLayers();
   const onViewLayerKeys = map
@@ -63,7 +66,7 @@ export function boundariesOnView(
  * Get first boundary id already on the map
  * @param map the MapBox Map object
  */
-export function firstBoundaryOnView(map: MapBoxMap | undefined): LayerKey {
+export function firstBoundaryOnView(map: MaplibreMap | undefined): LayerKey {
   return map
     ?.getStyle()
     .layers?.find(l => l.id.endsWith('boundaries-line'))
@@ -76,7 +79,7 @@ export function firstBoundaryOnView(map: MapBoxMap | undefined): LayerKey {
  * @param dispatcher dispatch function
  */
 export function refreshBoundaries(
-  map: MapBoxMap | undefined,
+  map: MaplibreMap | undefined,
   dispatcher: Dispatch<any>,
 ) {
   const activeBoundaryLayers = boundariesOnView(map);

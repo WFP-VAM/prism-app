@@ -54,7 +54,7 @@ const useMapOnClick = (
     [boundaryLayerDataAreOutsideOfBoundaryBBox, setIsAlertFormOpen],
   );
 
-  // TODO: Fix any
+  // TODO: fix feature
   const getFeatureInfoLayers = useCallback((features?: any) => {
     return getActiveFeatureInfoLayers(features);
   }, []);

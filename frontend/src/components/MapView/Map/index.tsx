@@ -8,7 +8,6 @@ import React, {
   useMemo,
   useState,
 } from 'react';
-import { Map, MapSourceDataEvent } from 'mapbox-gl';
 import { useDispatch, useSelector } from 'react-redux';
 import AnalysisLayer, {
   layerId as analysisLayerId,
@@ -57,6 +56,7 @@ import MapGL, {
   MapRef,
   MapLayerMouseEvent,
 } from 'react-map-gl/maplibre';
+import { MapSourceDataEvent, Map as MaplibreMap } from 'maplibre-gl';
 import { useSafeTranslation } from 'i18n';
 import { analysisResultSelector } from 'context/analysisResultStateSlice';
 
@@ -157,7 +157,7 @@ const MapComponent = memo(
     }, []);
 
     const onDragEnd = useCallback(
-      (map: Map) => {
+      (map: MaplibreMap) => {
         return () => {
           const bounds = map.getBounds();
           dispatch(setBounds(bounds));
@@ -167,7 +167,7 @@ const MapComponent = memo(
     );
 
     const onZoomEnd = useCallback(
-      (map: Map) => {
+      (map: MaplibreMap) => {
         return () => {
           const bounds = map.getBounds();
           const newZoom = map.getZoom();
@@ -178,7 +178,7 @@ const MapComponent = memo(
     );
 
     const watchBoundaryChange = useCallback(
-      (map: Map) => {
+      (map: MaplibreMap) => {
         map.on('dragend', onDragEnd(map));
         map.on('zoomend', onZoomEnd(map));
         // Show initial value
@@ -222,7 +222,7 @@ const MapComponent = memo(
 
     // Listen for MapSourceData events to track WMS Layers that are currently loading its tile images.
     const trackLoadingLayers = useCallback(
-      (map: Map) => {
+      (map: MaplibreMap) => {
         // Track with local state to minimize expensive dispatch call
         const layerIds = new Set<LayerKey>();
         map.on('sourcedata', mapSourceListener(layerIds));
@@ -231,8 +231,8 @@ const MapComponent = memo(
       [idleMapListener, mapSourceListener],
     );
 
-    // TODO: fix any
-    // Saves a reference to base MapboxGL Map object in case child layers need access beyond the React wrappers.
+    // TODO: Maybe replace this with the map provider
+    // Saves a reference to base MaplibreGl Map object in case child layers need access beyond the React wrappers.
     const onMapLoad = (e: MapEvent) => {
       const map = mapRef.current?.getMap();
       if (!map) {
@@ -241,11 +241,11 @@ const MapComponent = memo(
       const { layers } = map.getStyle();
       // Find the first symbol on the map to make sure we add boundary layers below them.
       setFirstSymbolId(layers?.find(layer => layer.type === 'symbol')?.id);
-      dispatch(setMap(() => map as any));
+      dispatch(setMap(() => map));
       if (showBoundaryInfo) {
-        watchBoundaryChange(map as any);
+        watchBoundaryChange(map);
       }
-      trackLoadingLayers(map as any);
+      trackLoadingLayers(map);
     };
 
     const boundaryId = firstBoundaryOnView(selectedMap);

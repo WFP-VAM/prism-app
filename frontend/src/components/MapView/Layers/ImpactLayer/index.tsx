@@ -53,7 +53,7 @@ export const onClick = ({
     hazardLayerDef.title ? t(hazardLayerDef.title) : ''
   } (${t(operation)})`;
 
-  // TODO: fix any
+  // TODO: fix feature
   const feature = evt.features?.find(
     (x: any) => x.layer.id === getLayerId(layer),
   ) as any;
@@ -61,21 +61,29 @@ export const onClick = ({
     return;
   }
 
+  const coordinates = [evt.lngLat.lng, evt.lngLat.lat];
+
   const popupData = {
     [layer.title]: {
       data: getRoundedData(get(feature, 'properties.impactValue'), t),
-      coordinates: [evt.lngLat.lng, evt.lngLat.lat],
+      coordinates,
     },
     [hazardTitle]: {
       data: getHazardData(evt, operation, t),
-      coordinates: [evt.lngLat.lng, evt.lngLat.lat],
+      coordinates,
     },
   };
   // by default add `impactValue` to the tooltip
   dispatch(addPopupData(popupData));
   // then add feature_info_props as extra fields to the tooltip
   dispatch(
-    addPopupData(getFeatureInfoPropsData(layer.featureInfoProps || {}, evt)),
+    addPopupData(
+      getFeatureInfoPropsData(
+        layer.featureInfoProps || {},
+        coordinates,
+        feature,
+      ),
+    ),
   );
 };
 

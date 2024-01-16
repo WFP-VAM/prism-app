@@ -1,4 +1,3 @@
-import * as MapboxGL from 'mapbox-gl';
 import React, { memo, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { BoundaryLayerProps } from 'config/types';
@@ -18,8 +17,9 @@ import { getFullLocationName } from 'utils/name-utils';
 import { languages } from 'i18n';
 import { Dispatch } from 'redux';
 import { TFunction } from 'i18next';
+import { Map as MaplibreMap } from 'maplibre-gl';
 
-function onToggleHover(cursor: string, targetMap: MapboxGL.Map) {
+function onToggleHover(cursor: string, targetMap: MaplibreMap) {
   // eslint-disable-next-line no-param-reassign, fp/no-mutation
   targetMap.getCanvas().style.cursor = cursor;
 }
@@ -47,7 +47,7 @@ export const onClick = ({
 
   const layerId = `layer-${layer.id}`;
 
-  // TODO: fix any
+  // TODO: fix feature
   const feature = evt.features?.find((x: any) => x.layer.id === layerId) as any;
   if (!feature) {
     return;

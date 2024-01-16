@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { Map as MapBoxMap } from 'mapbox-gl';
+import { Map as MaplibreMap } from 'maplibre-gl';
 import { LayerKey, LayerType } from 'config/types';
 import { LayerDefinitions } from 'config/utils';
 import {
@@ -19,7 +19,7 @@ interface DateRange {
 export type MapState = {
   layers: LayerType[];
   dateRange: DateRange;
-  mapboxMap: MapGetter;
+  maplibreMap: MapGetter;
   errors: string[];
   // TODO this shouldn't be any
   layersData: LayerData<any>[];
@@ -33,12 +33,12 @@ export type MapState = {
 // MapboxGL's map type contains some kind of cyclic dependency that causes an infinite loop in immers's change
 // tracking. To save it off, we wrap it in a JS closure so that Redux just checks the function for changes, rather
 // than recursively walking the whole object.
-type MapGetter = () => MapBoxMap | undefined;
+type MapGetter = () => MaplibreMap | undefined;
 
 const initialState: MapState = {
   layers: [],
   dateRange: {} as DateRange,
-  mapboxMap: (() => {}) as MapGetter,
+  maplibreMap: (() => {}) as MapGetter,
   errors: [],
   layersData: [],
   loadingLayerIds: [],
