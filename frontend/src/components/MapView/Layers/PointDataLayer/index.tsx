@@ -1,6 +1,6 @@
 import React, { memo, useEffect } from 'react';
 import moment from 'moment';
-import { GeoJSONLayer } from 'react-mapbox-gl';
+import { Layer, Source } from 'react-map-gl/maplibre';
 import { FeatureCollection } from 'geojson';
 import { useDispatch, useSelector } from 'react-redux';
 import { PointDataLayerProps, PointDataLoader } from 'config/types';
@@ -16,7 +16,6 @@ import { addNotification } from 'context/notificationStateSlice';
 import { useDefaultDate } from 'utils/useDefaultDate';
 import { getRequestDate } from 'utils/server-utils';
 import { useUrlHistory } from 'utils/url-utils';
-import { useSafeTranslation } from 'i18n';
 import {
   circleLayout,
   circlePaint,
@@ -25,6 +24,41 @@ import {
 import { setEWSParams, clearDataset } from 'context/datasetStateSlice';
 import { createEWSDatasetParams } from 'utils/ews-utils';
 import { addPopupParams } from 'components/MapView/Layers/layer-utils';
+import { Dispatch } from 'redux';
+import { TFunction } from 'i18next';
+import {
+  CircleLayerSpecification,
+  FillLayerSpecification,
+  MapLayerMouseEvent,
+} from 'maplibre-gl';
+
+export const getLayerId = (layer: PointDataLayerProps) => `layer-${layer.id}`;
+
+export const onClick = async ({
+  layer,
+  dispatch,
+  t,
+}: {
+  dispatch: Dispatch;
+  layer: PointDataLayerProps;
+  t: TFunction;
+}) => (evt: MapLayerMouseEvent) => {
+  addPopupParams(layer, dispatch, evt, t, false);
+
+  // TODO: fix any
+  const feature = evt.features?.find(
+    (x: any) => x.layer.id === getLayerId(layer),
+  ) as any;
+  if (layer.loader === PointDataLoader.EWS) {
+    dispatch(clearDataset());
+
+    const ewsDatasetParams = createEWSDatasetParams(
+      feature?.properties,
+      layer.data,
+    );
+    dispatch(setEWSParams(ewsDatasetParams));
+  }
+};
 
 // Point Data, takes any GeoJSON of points and shows it.
 const PointDataLayer = ({ layer, before }: LayersProps) => {
@@ -47,7 +81,6 @@ const PointDataLayer = ({ layer, before }: LayersProps) => {
 
   const { data } = layerData || {};
   const { features } = data || {};
-  const { t } = useSafeTranslation();
 
   useEffect(() => {
     if (layer.authRequired && !userAuth) {
@@ -106,40 +139,32 @@ const PointDataLayer = ({ layer, before }: LayersProps) => {
     return null;
   }
 
-  const onClickFunc = async (evt: any) => {
-    addPopupParams(layer, dispatch, evt, t, false);
-
-    const feature = evt.features[0];
-    if (layer.loader === PointDataLoader.EWS) {
-      dispatch(clearDataset());
-
-      const ewsDatasetParams = createEWSDatasetParams(
-        feature?.properties,
-        layer.data,
-      );
-      dispatch(setEWSParams(ewsDatasetParams));
-    }
-  };
-
   if (layer.adminLevelDisplay) {
     return (
-      <GeoJSONLayer
-        before={before}
-        id={`layer-${layer.id}`}
-        data={features}
-        fillPaint={fillPaintData(layer, layer.dataField)}
-        fillOnClick={onClickFunc}
-      />
+      <Source data={features} type="geojson">
+        <Layer
+          id={getLayerId(layer)}
+          type="fill"
+          paint={
+            fillPaintData(
+              layer,
+              layer.dataField,
+            ) as FillLayerSpecification['paint']
+          }
+        />
+      </Source>
     );
   }
+
   return (
-    <GeoJSONLayer
-      id={`layer-${layer.id}`}
-      data={features}
-      circleLayout={circleLayout}
-      circlePaint={circlePaint(layer)}
-      circleOnClick={onClickFunc}
-    />
+    <Source data={features} type="geojson">
+      <Layer
+        id={getLayerId(layer)}
+        type="circle"
+        layout={circleLayout}
+        paint={circlePaint(layer) as CircleLayerSpecification['paint']}
+      />
+    </Source>
   );
 };
 

@@ -1,7 +1,6 @@
 import React, { memo, useCallback, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { GeoJSONLayer } from 'react-mapbox-gl';
-import { Source, Layer, MapRef } from 'react-map-gl/maplibre';
+import { Source, Layer, MapLayerMouseEvent } from 'react-map-gl/maplibre';
 import {
   AdminLevelDataLayerProps,
   BoundaryLayerProps,
@@ -17,7 +16,6 @@ import { useDefaultDate } from 'utils/useDefaultDate';
 import { getBoundaryLayers, LayerDefinitions } from 'config/utils';
 import { addNotification } from 'context/notificationStateSlice';
 import { firstBoundaryOnView, isLayerOnView } from 'utils/map-utils';
-import { useSafeTranslation } from 'i18n';
 import { fillPaintData } from 'components/MapView/Layers/styles';
 import { availableDatesSelector } from 'context/serverStateSlice';
 import { getRequestDate } from 'utils/server-utils';
@@ -26,6 +24,24 @@ import {
   legendToStops,
 } from 'components/MapView/Layers/layer-utils';
 import { convertSvgToPngBase64Image, getSVGShape } from 'utils/image-utils';
+import { Dispatch } from 'redux';
+import { TFunction } from 'i18next';
+import { FillLayerSpecification } from 'maplibre-gl';
+
+export const getLayerId = (layer: AdminLevelDataLayerProps) =>
+  `layer-${layer.id}`;
+
+export const onClick = ({
+  layer,
+  dispatch,
+  t,
+}: {
+  layer: AdminLevelDataLayerProps;
+  dispatch: Dispatch;
+  t: TFunction;
+}) => (evt: MapLayerMouseEvent) => {
+  addPopupParams(layer, dispatch, evt, t, true);
+};
 
 const AdminLevelDataLayers = ({
   layer,
@@ -36,7 +52,6 @@ const AdminLevelDataLayers = ({
 }) => {
   const dispatch = useDispatch();
   const map = useSelector(mapSelector);
-  const mapRef = React.useRef<MapRef>(null);
   const serverAvailableDates = useSelector(availableDatesSelector);
 
   const boundaryId = layer.boundary || firstBoundaryOnView(map);
@@ -50,7 +65,6 @@ const AdminLevelDataLayers = ({
     | undefined;
   const { data } = layerData || {};
   const { features } = data || {};
-  const { t } = useSafeTranslation();
 
   const createFillPatternsForLayerLegends = useCallback(async () => {
     return Promise.all(
@@ -147,42 +161,20 @@ const AdminLevelDataLayers = ({
     return null;
   }
 
-  if (0) {
-    return (
-      <GeoJSONLayer
-        before={before || `layer-${boundaryId}-line`}
-        id={`layer-${layer.id}`}
-        data={features}
-        fillPaint={fillPaintData(layer, 'data', layer?.fillPattern)}
-        fillOnClick={async (evt: any) => {
-          addPopupParams(layer, dispatch, evt, t, true);
-        }}
-      />
-    );
-  }
-  const layerId = `layer-${layer.id}`;
-
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const handleClick = (event: { point: any }) => {
-    if (!mapRef.current) {
-      return;
-    }
-    const featureAtClick = mapRef.current.queryRenderedFeatures(event.point, {
-      layers: [layerId],
-    });
-
-    if (featureAtClick.length > 0) {
-      // Call your function to add popup or handle the click event
-      addPopupParams(layer, dispatch, event, t, true);
-    }
-  };
+  const layerId = getLayerId(layer);
 
   return (
     <Source id={layerId} type="geojson" data={features}>
       <Layer
         id={layerId}
         type="fill"
-        // paint={fillPaintData(layer, 'data', layer?.fillPattern)}
+        paint={
+          fillPaintData(
+            layer,
+            'data',
+            layer?.fillPattern,
+          ) as FillLayerSpecification['paint']
+        }
         beforeId={before || `layer-${boundaryId}-line`}
       />
     </Source>

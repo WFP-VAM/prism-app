@@ -13,7 +13,6 @@ import {
   addPopupData,
   hidePopup,
   setWMSGetFeatureInfoLoading,
-  showPopup,
 } from 'context/tooltipStateSlice';
 import { DEFAULT_DATE_FORMAT } from 'utils/name-utils';
 import { makeFeatureInfoRequest } from 'utils/server-utils';
@@ -26,6 +25,7 @@ const useMapOnClick = (
   setIsAlertFormOpen: (value: boolean) => void,
   boundaryLayerId: string,
   mapRef: MapRef | null,
+  ...callBacks: ((e: MapLayerMouseEvent) => void)[]
 ) => {
   const dispatch = useDispatch();
   const { startDate: selectedDate } = useSelector(dateRangeSelector);
@@ -111,25 +111,15 @@ const useMapOnClick = (
       );
     };
 
-    const onClickShowPopup = (evt: MapLayerMouseEvent) => {
-      dispatch(
-        showPopup({
-          coordinates: [evt.lngLat.lng, evt.lngLat.lat],
-          locationSelectorKey: 'adm1_source_id',
-          locationAdminCode: 'adm1_source_id' as any,
-          locationName: 'locationName',
-          locationLocalName: 'locationLocalName',
-        }),
-      );
-    };
-
     // this function will only work when boundary data loads.
     // due to how the library works, we can only set this function once,
     // so we should set it when boundary data is present
     if (boundaryLayerData) {
       defaultFunction(e);
     }
-    onClickShowPopup(e);
+
+    // Call each registered callback
+    callBacks.forEach(c => c(e));
   };
 };
 

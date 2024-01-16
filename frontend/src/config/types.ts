@@ -1,7 +1,7 @@
 import { GeoJSON } from 'geojson';
 import { every, map } from 'lodash';
-import { FillPaint, LinePaint } from 'mapbox-gl';
 import 'reflect-metadata';
+import { FillLayerSpecification, LineLayerSpecification } from 'maplibre-gl';
 import { rawLayers } from '.';
 import type { ReportKey, TableKey } from './utils';
 import type { PopupMetaData } from '../context/tooltipStateSlice';
@@ -326,8 +326,8 @@ export class CommonLayerProps {
   https://docs.mapbox.com/mapbox-gl-js/style-spec/layers/#fill
 */
 type LayerStyleProps = {
-  fill: FillPaint;
-  line: LinePaint;
+  fill: FillLayerSpecification['paint'];
+  line: LineLayerSpecification['paint'];
 };
 
 export type DatasetLevel = {

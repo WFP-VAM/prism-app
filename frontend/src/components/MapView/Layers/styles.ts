@@ -5,9 +5,12 @@ import {
   LegendDefinitionItem,
   PointDataLayerProps,
 } from 'config/types';
+import { CircleLayerSpecification } from 'maplibre-gl';
 import { legendToStops } from './layer-utils';
 
-export const circleLayout: MapboxGL.CircleLayout = { visibility: 'visible' };
+export const circleLayout: CircleLayerSpecification['layout'] = {
+  visibility: 'visible',
+};
 
 export const circlePaint = ({
   opacity,
@@ -42,6 +45,7 @@ export const circlePaint = ({
   };
 };
 
+// TODO: change return type to FillLayerSpecification['paint'];
 // We use the legend values from the config to define "intervals".
 export const fillPaintData = (
   { opacity, legend, id }: CommonLayerProps,

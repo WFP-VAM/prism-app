@@ -13,7 +13,9 @@ import { getRoundedData } from 'utils/data-utils';
 import { i18nTranslator } from 'i18n';
 import { getFeatureInfoPropsData } from 'components/MapView/utils';
 
-export function legendToStops(legend: LegendDefinition = []) {
+export function legendToStops(
+  legend: LegendDefinition = [],
+): [number, string][] {
   // TODO - Make this function easier to use for point data and explicit its behavior.
   return legend.map(({ value, color }) => [
     typeof value === 'string' ? parseFloat(value.replace('< ', '')) : value,
@@ -66,6 +68,7 @@ export function getLayerGeometryIcon(layer: LayerType) {
   );
 }
 
+// TODO: update evt to MapLayerMouseEvent
 export const addPopupParams = (
   layer: AdminLevelDataLayerProps | PointDataLayerProps,
   dispatch: Dispatch,

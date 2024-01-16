@@ -99,6 +99,8 @@ export const mapStateSlice = createSlice({
           )
         : [payload];
 
+      // TODO: something is wrong with the types imported by 'maplibre-gl' in config/types.ts
+      //  @ts-ignore
       const filteredLayers = layers.filter(layer => keepLayer(layer, payload));
 
       // Keep boundary layers at the top of our stack and remove duplicates

@@ -151,6 +151,7 @@ const getData = (
       };
     }, {});
 
+// TODO: fix event type
 export function getFeatureInfoPropsData(
   featureInfoProps: FeatureInfoObject,
   event: any,
