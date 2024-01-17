@@ -53,6 +53,16 @@ jobs:
       - name: JSON check
         run: cd frontend && yarn prettier:json-check
 
+      - name: Layer availability check
+        run: |
+          cd frontend && yarn preprocess-dates
+          DIFF=$(git diff --name-only ${{ github.sha }}..HEAD)
+          if [ "$DIFF" != "" ]; then
+            echo "Files have changed. Make sure to run yarn preprocess-dates and commit changes."
+            echo "$DIFF"
+            exit 1
+          fi
+
       - name: Build
         run: cd frontend && yarn build
 
