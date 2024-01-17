@@ -53,6 +53,9 @@ jobs:
       - name: JSON check
         run: cd frontend && yarn prettier:json-check
 
+      - name: Check boundary keys
+        run: cd frontend && yarn check-boundary-keys
+
       - name: Build
         run: cd frontend && yarn build
 
