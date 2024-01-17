@@ -38,7 +38,15 @@ export const store = configureStore({
     // serialize the state
     serializableCheck: false,
     immutableCheck: {
-      ignoredPaths: ['mapState.layersData', 'analysisResultState.result'],
+      // do not check the following state branches for accidental
+      // mutations. This saves a lot of time in dev mode (but has no
+      // impact on production builds).
+      ignoredPaths: [
+        'mapState.boundaryRelations',
+        'mapState.layersData',
+        'analysisResultState.result',
+        'serverState.availableDates',
+      ],
     },
   }).concat(errorToNotificationMiddleware),
 });
