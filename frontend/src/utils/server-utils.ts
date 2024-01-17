@@ -30,6 +30,7 @@ import {
   datesAreEqualWithoutTime,
   generateDateItemsRange,
   generateDatesRange,
+  binaryIncludes,
 } from './date-utils';
 import { LocalError } from './error-utils';
 import { createEWSDatesArray } from './ews-utils';
@@ -331,7 +332,7 @@ export function generateIntermediateDateItemFromValidity(layer: ValidityLayer) {
 
       // We filter the dates that don't include the displayDate of the previous item array
       const filteredDateItems = acc.filter(
-        dateItem => !daysToAdd.includes(dateItem.displayDate),
+        dateItem => !binaryIncludes(daysToAdd, dateItem.displayDate, x => x),
       );
 
       return [...filteredDateItems, ...dateItemsToAdd];

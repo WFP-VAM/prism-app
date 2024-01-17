@@ -1,4 +1,4 @@
-import { generateDateItemsRange, StartEndDate } from './date-utils';
+import { binaryFind, generateDateItemsRange, StartEndDate } from './date-utils';
 
 describe('Test buildDateItemsFromStartEndDates', () => {
   test('should return empty', () => {
@@ -42,5 +42,28 @@ describe('Test buildDateItemsFromStartEndDates', () => {
         isEndDate: true,
       },
     ]);
+  });
+});
+
+describe('Binary search in ordered arrays of timestamps', () => {
+  test('should return the index of found element', () => {
+    const arr = [
+      1701160000000,
+      1702160000000,
+      1703160000000,
+      1703460000000,
+      1705160000000,
+      1705395000000,
+      1706160000000,
+      1715160000000,
+      1725160000000,
+      1735160000000,
+    ];
+    arr.forEach((elem, i) => {
+      const idx = binaryFind<number>(arr, elem, x => x);
+      expect(idx).toEqual(i);
+    });
+    // look for missing value
+    expect(binaryFind<number>(arr, 42, x => x)).toEqual(-1);
   });
 });

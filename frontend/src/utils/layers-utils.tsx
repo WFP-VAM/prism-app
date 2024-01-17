@@ -8,6 +8,7 @@ import {
   LayerKey,
   LayerType,
   isMainLayer,
+  DateItem,
 } from 'config/types';
 import { LayerDefinitions, getBoundaryLayerSingleton } from 'config/utils';
 import { LayerData } from 'context/layers/layer-data';
@@ -35,7 +36,7 @@ import {
   getPossibleDatesForLayer,
 } from 'utils/server-utils';
 import { UrlLayerKey, getUrlKey, useUrlHistory } from 'utils/url-utils';
-import { datesAreEqualWithoutTime } from './date-utils';
+import { datesAreEqualWithoutTime, binaryIncludes } from './date-utils';
 
 const dateSupportLayerTypes: Array<LayerType['type']> = [
   'impact',
@@ -376,12 +377,11 @@ const useLayers = () => {
 
   const possibleDatesForLayerIncludeMomentSelectedDate = useCallback(
     (layer: DateCompatibleLayer, momentSelectedDate: moment.Moment) => {
-      // we convert to date strings, so hh:ss is irrelevant
-      return getPossibleDatesForLayer(layer, serverAvailableDates)
-        .map(dateItem =>
-          new Date(dateItem.displayDate).toISOString().slice(0, 10),
-        )
-        .includes(momentSelectedDate.format(DEFAULT_DATE_FORMAT));
+      return binaryIncludes<DateItem>(
+        getPossibleDatesForLayer(layer, serverAvailableDates),
+        momentSelectedDate.set({ hour: 12, minute: 0 }).valueOf(),
+        x => new Date(x.displayDate).setHours(12, 0, 0, 0),
+      );
     },
     [serverAvailableDates],
   );

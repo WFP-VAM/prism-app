@@ -51,3 +51,42 @@ export const generateDateItemsRange = (
     return dateItems;
   });
 };
+
+// search array of timestamps for a given timestamp, using
+// the binary search algorithm.
+// The array MUST be sorted in ascending order.
+// Use callback to extract timestamp values from array items.
+export function binaryFind<T extends any>(
+  arr: T[],
+  ts: number,
+  cb: (x: T) => number,
+): number {
+  let left = 0;
+  let right = arr.length - 1;
+  while (left <= right) {
+    const testIdx = Math.floor((left + right) / 2);
+    const val = cb(arr[testIdx]);
+    if (val < ts) {
+      // eslint-disable-next-line fp/no-mutation
+      left = testIdx + 1;
+    } else if (val > ts) {
+      // eslint-disable-next-line fp/no-mutation
+      right = testIdx - 1;
+    } else {
+      return testIdx;
+    }
+  }
+  return -1;
+}
+
+// check if an array includes the given value using
+// the binary search algorithm.
+// The array MUST be sorted in ascending order.
+// Use callback to extract timestamp values from array items.
+export function binaryIncludes<T extends any>(
+  arry: T[],
+  timestamp: number,
+  callback: (x: T) => number,
+): boolean {
+  return binaryFind(arry, timestamp, callback) > -1;
+}
