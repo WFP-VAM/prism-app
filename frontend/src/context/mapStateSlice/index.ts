@@ -30,6 +30,7 @@ export type MapState = {
   boundaryRelationData: BoundaryRelationsDict;
 };
 
+// TODO: maplibre: verify this
 // MapboxGL's map type contains some kind of cyclic dependency that causes an infinite loop in immers's change
 // tracking. To save it off, we wrap it in a JS closure so that Redux just checks the function for changes, rather
 // than recursively walking the whole object.

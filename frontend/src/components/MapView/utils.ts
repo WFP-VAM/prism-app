@@ -21,7 +21,7 @@ import { AdminBoundaryParams, EWSParams } from 'context/datasetStateSlice';
 import { MapRef, Point } from 'react-map-gl/maplibre';
 import { getExtent } from './Layers/raster-utils';
 
-// TODO: fix feature
+// TODO: maplibre: fix feature
 export const getActiveFeatureInfoLayers = (features?: any): WMSLayerProps[] => {
   const matchStr = 'layer-';
   const layerIds =
@@ -151,7 +151,7 @@ const getData = (
       };
     }, {});
 
-// TODO: fix feature
+// TODO: maplibre: fix feature
 export function getFeatureInfoPropsData(
   featureInfoProps: FeatureInfoObject,
   coordinates: number[],

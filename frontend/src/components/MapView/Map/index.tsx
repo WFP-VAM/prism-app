@@ -67,7 +67,7 @@ interface MapComponentProps {
   panelHidden: boolean;
 }
 
-// TODO: fix any
+// TODO: maplibre: fix any
 type LayerComponentsMap<U extends LayerType> = {
   [T in U['type']]: {
     component: ComponentType<{ layer: DiscriminateUnion<U, 'type', T> }>;
@@ -233,7 +233,7 @@ const MapComponent = memo(
       [idleMapListener, mapSourceListener],
     );
 
-    // TODO: Maybe replace this with the map provider
+    // TODO: maplibre: Maybe replace this with the map provider
     // Saves a reference to base MaplibreGl Map object in case child layers need access beyond the React wrappers.
     const onMapLoad = (e: MapEvent) => {
       if (!mapRef.current) {
@@ -298,7 +298,7 @@ const MapComponent = memo(
         initialViewState={{
           bounds: boundingBox,
           // lat and long are unnecessary if bounds exist
-          // TODO: consider removing them and/or make bounds required
+          // TODO: maplibre: consider removing them and/or make bounds required
           latitude: mapTempCenter[1],
           longitude: mapTempCenter[0],
           fitBoundsOptions: { padding: fitBoundsOptions.padding },

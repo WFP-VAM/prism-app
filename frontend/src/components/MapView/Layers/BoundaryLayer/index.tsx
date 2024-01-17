@@ -47,7 +47,7 @@ export const onClick = ({
 
   const layerId = `layer-${layer.id}`;
 
-  // TODO: fix feature
+  // TODO: maplibre: fix feature
   const feature = evt.features?.find((x: any) => x.layer.id === layerId) as any;
   if (!feature) {
     return;
@@ -77,7 +77,7 @@ export const onClick = ({
   );
 };
 
-// TODO: fix any (no target on evt)
+// TODO: maplibre: fix any (no target on evt)
 export const onMouseEnter = (layer: BoundaryLayerProps) => (evt: any) =>
   isPrimaryBoundaryLayer(layer) && onToggleHover('pointer', evt.target);
 export const onMouseLeave = (layer: BoundaryLayerProps) => (evt: any) =>

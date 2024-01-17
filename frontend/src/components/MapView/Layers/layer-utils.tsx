@@ -76,7 +76,7 @@ export const addPopupParams = (
   t: i18nTranslator,
   adminLevel: boolean,
 ): void => {
-  // TODO: fix feature
+  // TODO: maplibre: fix feature
   const feature = evt.features?.find(
     (x: any) => x.layer.id === `layer-${layer.id}`,
   ) as any;

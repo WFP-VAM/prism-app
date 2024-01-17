@@ -53,7 +53,7 @@ export const onClick = ({
     hazardLayerDef.title ? t(hazardLayerDef.title) : ''
   } (${t(operation)})`;
 
-  // TODO: fix feature
+  // TODO: maplibre: fix feature
   const feature = evt.features?.find(
     (x: any) => x.layer.id === getLayerId(layer),
   ) as any;
@@ -126,7 +126,7 @@ const ImpactLayer = ({ classes, layer, before }: ComponentProps) => {
   const { impactFeatures, boundaries } = data;
   const noMatchingDistricts = impactFeatures.features.length === 0;
 
-  // TODO: fix any
+  // TODO: maplibre: fix any
   const fillPaint: FillLayerSpecification['paint'] = {
     'fill-opacity': layer.opacity || 0.1,
     'fill-color': noMatchingDistricts

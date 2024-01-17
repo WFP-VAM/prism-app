@@ -45,7 +45,7 @@ export const onClick = async ({
 }) => (evt: MapLayerMouseEvent) => {
   addPopupParams(layer, dispatch, evt, t, false);
 
-  // TODO: fix feature
+  // TODO: maplibre: fix feature
   const feature = evt.features?.find(
     (x: any) => x.layer.id === getLayerId(layer),
   ) as any;

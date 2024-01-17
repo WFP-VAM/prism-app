@@ -54,7 +54,7 @@ const useMapOnClick = (
     [boundaryLayerDataAreOutsideOfBoundaryBBox, setIsAlertFormOpen],
   );
 
-  // TODO: fix feature
+  // TODO: maplibre: fix feature
   const getFeatureInfoLayers = useCallback((features?: any) => {
     return getActiveFeatureInfoLayers(features);
   }, []);
@@ -118,7 +118,7 @@ const useMapOnClick = (
       defaultFunction(e);
     }
 
-    // TODO: fix features
+    // TODO: maplibre: fix features
     // Call each registered callback
     callBacks.forEach(c => {
       if (!e.features?.find((x: any) => x.source !== c.layerId)) {

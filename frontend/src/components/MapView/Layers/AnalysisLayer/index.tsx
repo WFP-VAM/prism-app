@@ -39,7 +39,7 @@ export const onClick = ({
     return;
   }
 
-  // TODO: fix feature
+  // TODO: maplibre: fix feature
   const feature = evt.features?.find((x: any) => x.layer.id === layerId) as any;
   if (!feature) {
     return;

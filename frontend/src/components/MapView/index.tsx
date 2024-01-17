@@ -56,6 +56,7 @@ const MapView = memo(({ classes }: MapViewProps) => {
   useEffect(() => {
     dispatch(loadAvailableDates());
 
+    // TODO: maplibre: verify this
     // we must load boundary layer here for two reasons
     // 1. Stop showing two loading screens on startup - Mapbox renders its children very late, so we can't rely on BoundaryLayer to load internally
     // 2. Prevent situations where a user can toggle a layer like NSO (depends on Boundaries) before Boundaries finish loading.

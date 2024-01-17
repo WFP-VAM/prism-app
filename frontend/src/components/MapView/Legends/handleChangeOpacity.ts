@@ -10,6 +10,7 @@ export const handleChangeOpacity = (
   type: LayerType['type'] | undefined,
   callback: (newVal: number) => void,
 ) => {
+  // TODO: maplibre: verify this
   // TODO: temporary solution for opacity adjustment, we hope to edit react-mapbox in the future to support changing props
   // because the whole map will be re-rendered if using state directly
   if (map) {

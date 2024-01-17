@@ -43,7 +43,7 @@ const styles = () =>
       marginBottom: '4px',
     },
     popup: {
-      '& div.mapboxgl-popup-content': {
+      '& div.maplibregl-popup-content': {
         background: 'black',
         color: 'white',
         padding: '5px 5px 5px 5px',
@@ -51,7 +51,7 @@ const styles = () =>
         maxHeight: '400px',
         overflow: 'auto',
       },
-      '& div.mapboxgl-popup-tip': {
+      '& div.maplibregl-popup-tip': {
         'border-top-color': 'black',
         'border-bottom-color': 'black',
       },

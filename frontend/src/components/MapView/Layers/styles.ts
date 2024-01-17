@@ -40,12 +40,11 @@ export const circlePaint = ({
   return {
     'circle-radius': 8,
     'circle-opacity': opacity || 0.3,
-    // TODO: fix any
+    // TODO: maplibre: fix any
     'circle-color': circleColor as any,
   };
 };
 
-// TODO: change return type to FillLayerSpecification['paint'];
 // We use the legend values from the config to define "intervals".
 export const fillPaintData = (
   { opacity, legend, id }: CommonLayerProps,
@@ -77,7 +76,7 @@ export const fillPaintData = (
           ],
           [],
         ),
-        // TODO: fix any
+        // TODO: maplibre: fix any
       ] as any,
     };
   }

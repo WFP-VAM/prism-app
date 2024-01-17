@@ -4,16 +4,15 @@ import { getDisplayBoundaryLayers } from 'config/utils';
 import { addLayer, removeLayer } from 'context/mapStateSlice';
 import { Dispatch } from 'react';
 
-// TODO: Update comment
+// TODO: maplibre: Update comment
 // fixes the issue that property 'source' is not guaranteed to exist on type 'AnyLayer'
 // because 'CustomLayerInterface' does not specify a 'source' property
 // see maplibre-gl/src/index.d.ts
 type CustomAnyLayer = LayerSpecification & { source?: string };
 
-// TODO: test this
 /**
  * Checks weither given layer is on view
- * @param map the MapBox Map object
+ * @param map the Maplibre Map object
  * @param layerId the LayerKey
  */
 export function isLayerOnView(map: MaplibreMap | undefined, layerId: LayerKey) {
@@ -43,10 +42,9 @@ export function safeDispatchRemoveLayer(
   }
 }
 
-// TODO: test this
 /**
  * Get all boundaries already on the map
- * @param map the MapBox Map object
+ * @param map the Maplibre Map object
  */
 export function boundariesOnView(
   map: MaplibreMap | undefined,
@@ -64,7 +62,7 @@ export function boundariesOnView(
 
 /**
  * Get first boundary id already on the map
- * @param map the MapBox Map object
+ * @param map the Maplibre Map object
  */
 export function firstBoundaryOnView(map: MaplibreMap | undefined): LayerKey {
   return map
@@ -75,7 +73,7 @@ export function firstBoundaryOnView(map: MaplibreMap | undefined): LayerKey {
 
 /**
  * Refresh boundary layers
- * @param map the MapBox Map object
+ * @param map the Maplibre Map object
  * @param dispatcher dispatch function
  */
 export function refreshBoundaries(
