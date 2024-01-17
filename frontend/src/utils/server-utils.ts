@@ -425,7 +425,7 @@ const layerDefinitionsBluePrint: AvailableDates = Object.keys(
  * */
 async function fetchPreprocessedDates(): Promise<any> {
   try {
-    // preprocessed-layers.json is generated using "yarn preprocess-date"
+    // preprocessed-layer-dates.json is generated using "yarn preprocess-date"
     // which runs ./scripts/preprocess-layer-availability-dates.js
     const response = await fetch(
       `data/${safeCountry}/preprocessed-layer-dates.json`,
