@@ -2,6 +2,8 @@ const moment = require('moment');
 const fs = require('fs');
 const path = require('path');
 
+process.env.TZ = 'UTC';
+
 // Pre-process layers
 const preprocessedData = {};
 
