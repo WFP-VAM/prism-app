@@ -2,7 +2,7 @@ import { WithStyles, createStyles, withStyles } from '@material-ui/core';
 import React, { memo } from 'react';
 import 'react-datepicker/dist/react-datepicker.css';
 import { DateItem, DateRangeType } from 'config/types';
-import { datesAreEqualWithoutTime } from 'utils/date-utils';
+import { binaryFind } from 'utils/date-utils';
 
 const TimelineItem = memo(
   ({
@@ -39,12 +39,13 @@ const TimelineItem = memo(
       <>
         {concatenatedLayers.map(
           (layerDates: DateItem[], layerIndex: number) => {
-            // TODO: fix not really efficient algorithm
-            const matchingDateItemInLayer:
-              | DateItem
-              | undefined = layerDates.find(f =>
-              datesAreEqualWithoutTime(f.displayDate, currentDate.value),
+            const idx = binaryFind<DateItem>(
+              layerDates,
+              new Date(currentDate.value).setHours(0, 0, 0, 0),
+              (i: DateItem) => new Date(i.displayDate).setHours(0, 0, 0, 0),
             );
+            const matchingDateItemInLayer: DateItem | undefined =
+              idx > -1 ? layerDates[idx] : undefined;
 
             if (!matchingDateItemInLayer) {
               return null;

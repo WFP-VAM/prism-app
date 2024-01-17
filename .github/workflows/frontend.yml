@@ -64,6 +64,9 @@ jobs:
             exit 1
           fi
 
+      - name: Check boundary keys
+        run: cd frontend && yarn check-boundary-keys
+
       - name: Build
         run: cd frontend && yarn build
 
