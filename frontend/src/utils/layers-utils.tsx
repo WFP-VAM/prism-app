@@ -419,7 +419,6 @@ const useLayers = () => {
         console.warn(
           'closest dates is the same as selected date, not updating url',
         );
-        // updateHistory('date', closestDate.format(DEFAULT_DATE_FORMAT));
       } else {
         updateHistory('date', closestDate.format(DEFAULT_DATE_FORMAT));
       }
