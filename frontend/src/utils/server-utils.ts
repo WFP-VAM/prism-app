@@ -8,7 +8,6 @@ import type {
   PathLayer,
   PointDataLayerProps,
   RequestFeatureInfo,
-  Validity,
   ValidityLayer,
   ValidityPeriod,
 } from '../config/types';
@@ -31,6 +30,7 @@ import {
   datesAreEqualWithoutTime,
   generateDateItemsRange,
   generateDatesRange,
+  binaryIncludes,
 } from './date-utils';
 import { LocalError } from './error-utils';
 import { createEWSDatesArray } from './ews-utils';
@@ -215,28 +215,19 @@ const getStaticRasterDataCoverage = (layer: StaticRasterLayerProps) => {
  *
  * @return DateItem
  */
-const generateDefaultDateItem = (
-  date: number,
-  validity?: Validity,
-): DateItem => {
-  const dateWithTz = moment(date).set({ hour: 12, minute: 0 }).valueOf();
-  const dateItemToReturn = {
-    displayDate: dateWithTz,
-    queryDate: dateWithTz,
+const generateDefaultDateItem = (date: number, baseItem?: Object): DateItem => {
+  const newDate = new Date(date).setHours(12, 0, 0);
+  const r = {
+    displayDate: newDate,
+    queryDate: newDate,
   };
-  if (validity) {
-    const { mode } = validity;
+  if (baseItem) {
     return {
-      ...dateItemToReturn,
-      isStartDate:
-        mode === DatesPropagation.FORWARD || mode === DatesPropagation.BOTH,
-      isEndDate:
-        mode === DatesPropagation.BACKWARD || mode === DatesPropagation.BOTH,
+      ...r,
+      ...baseItem,
     };
   }
-  return {
-    ...dateItemToReturn,
-  };
+  return r;
 };
 
 /**
@@ -284,23 +275,32 @@ async function generateIntermediateDateItemFromDataFile(
   return generateDateItemsRange(rangesWithoutMissing);
 }
 
-function generateIntermediateDateItemFromValidity(layer: ValidityLayer) {
+export function generateIntermediateDateItemFromValidity(layer: ValidityLayer) {
   const { dates } = layer;
   const { days, mode } = layer.validity;
 
-  // Convert the dates to moment dates
-  const momentDates = Array.prototype.sort
-    .call(dates)
-    .map(d => moment(d).set({ hour: 12, minute: 0 }));
+  const sortedDates = Array.prototype.sort.call(dates);
 
   // Generate first DateItem[] from dates array.
-  const dateItemsDefault: DateItem[] = momentDates.map(momentDate =>
-    generateDefaultDateItem(momentDate.valueOf(), layer.validity),
+  const baseItem = layer.validity
+    ? {
+        isStartDate:
+          mode === DatesPropagation.FORWARD || mode === DatesPropagation.BOTH,
+        isEndDate:
+          mode === DatesPropagation.BACKWARD || mode === DatesPropagation.BOTH,
+      }
+    : {};
+  const dateItemsDefault = sortedDates.map(sortedDate =>
+    generateDefaultDateItem(sortedDate, baseItem),
   );
 
   // only calculate validity for dates that are less than 5 years old
-  const dateItemsWithValidity = momentDates
-    .filter(date => moment().diff(date, 'years') < 5)
+  const fiveYearsInMs = 5 * 365 * 24 * 60 * 60 * 1000;
+  const earliestDate = Date.now() - fiveYearsInMs;
+
+  const dateItemsWithValidity = sortedDates
+    .filter(date => date > earliestDate)
+    .map(d => moment(d).set({ hour: 12, minute: 0 }))
     .reduce((acc: DateItem[], momentDate) => {
       // We create the start and the end date for every moment date
       let startDate = momentDate.clone();
@@ -332,7 +332,7 @@ function generateIntermediateDateItemFromValidity(layer: ValidityLayer) {
 
       // We filter the dates that don't include the displayDate of the previous item array
       const filteredDateItems = acc.filter(
-        dateItem => !daysToAdd.includes(dateItem.displayDate),
+        dateItem => !binaryIncludes(daysToAdd, dateItem.displayDate, x => x),
       );
 
       return [...filteredDateItems, ...dateItemsToAdd];
@@ -527,7 +527,7 @@ export async function getLayersAvailableDates(
         // Genererate dates for layers with validity but not an admin_level_data type
         return {
           [layerDatesEntry[0]]: layerDatesEntry[1].map((d: number) =>
-            generateDefaultDateItem(d),
+            generateDefaultDateItem(new Date(d).setHours(12, 0, 0)),
           ),
         };
       },

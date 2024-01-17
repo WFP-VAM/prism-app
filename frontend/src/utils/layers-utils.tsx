@@ -8,6 +8,7 @@ import {
   LayerKey,
   LayerType,
   isMainLayer,
+  DateItem,
 } from 'config/types';
 import { LayerDefinitions, getBoundaryLayerSingleton } from 'config/utils';
 import { LayerData } from 'context/layers/layer-data';
@@ -35,6 +36,7 @@ import {
   getPossibleDatesForLayer,
 } from 'utils/server-utils';
 import { UrlLayerKey, getUrlKey, useUrlHistory } from 'utils/url-utils';
+import { datesAreEqualWithoutTime, binaryIncludes } from './date-utils';
 
 const dateSupportLayerTypes: Array<LayerType['type']> = [
   'impact',
@@ -130,7 +132,7 @@ const useLayers = () => {
         .map(layer => getPossibleDatesForLayer(layer, serverAvailableDates))
         .filter(value => value) // null check
         .flat()
-        .map(value => moment(value.displayDate).format(DEFAULT_DATE_FORMAT)),
+        .map(value => new Date(value.displayDate).toISOString().slice(0, 10)),
     );
   }, [selectedLayersWithDateSupport, serverAvailableDates]);
 
@@ -377,12 +379,11 @@ const useLayers = () => {
 
   const possibleDatesForLayerIncludeMomentSelectedDate = useCallback(
     (layer: DateCompatibleLayer, momentSelectedDate: moment.Moment) => {
-      // we convert to date strings, so hh:ss is irrelevant
-      return getPossibleDatesForLayer(layer, serverAvailableDates)
-        .map(dateItem =>
-          moment(dateItem.displayDate).format(DEFAULT_DATE_FORMAT),
-        )
-        .includes(momentSelectedDate.format(DEFAULT_DATE_FORMAT));
+      return binaryIncludes<DateItem>(
+        getPossibleDatesForLayer(layer, serverAvailableDates),
+        momentSelectedDate.set({ hour: 12, minute: 0 }).valueOf(),
+        x => new Date(x.displayDate).setHours(12, 0, 0, 0),
+      );
     },
     [serverAvailableDates],
   );
@@ -410,7 +411,19 @@ const useLayers = () => {
 
       const closestDate = findClosestDate(selectedDate, selectedLayerDates);
 
-      updateHistory('date', closestDate.format(DEFAULT_DATE_FORMAT));
+      if (
+        datesAreEqualWithoutTime(
+          momentSelectedDate.valueOf(),
+          closestDate.valueOf(),
+        )
+      ) {
+        console.warn({ closestDate });
+        console.warn(
+          'closest dates is the same as selected date, not updating url',
+        );
+      } else {
+        updateHistory('date', closestDate.format(DEFAULT_DATE_FORMAT));
+      }
 
       dispatch(
         addNotification({
