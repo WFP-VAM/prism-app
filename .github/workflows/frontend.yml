@@ -54,6 +54,7 @@ jobs:
         run: cd frontend && yarn prettier:json-check
 
       - name: Layer availability check
+        if: matrix.os == 'ubuntu-latest'
         run: |
           cd frontend && yarn preprocess-dates
           DIFF=$(git diff --name-only ${{ github.sha }}..HEAD)
