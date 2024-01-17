@@ -24,7 +24,7 @@ export const handleChangeOpacity = (
           return [`layer-${id}`, 'raster-opacity'];
         case 'impact':
         case 'admin_level_data':
-          return [`layer-${id}-fill`, 'fill-opacity'];
+          return [`layer-${id}`, 'fill-opacity'];
         case 'point_data':
           // This is a hacky way to support opacity change for Kobo data.
           // TODO - Handle Kobo data as admin_level_data instead of point_data. See issue #760.
