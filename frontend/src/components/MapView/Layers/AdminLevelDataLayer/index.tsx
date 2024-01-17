@@ -54,7 +54,7 @@ const AdminLevelDataLayers = ({
   const map = useSelector(mapSelector);
   const serverAvailableDates = useSelector(availableDatesSelector);
 
-  const boundaryId = layer.boundary || firstBoundaryOnView(map);
+  const boundaryId = layer.boundary || firstBoundaryOnView(map?.getMap());
 
   const selectedDate = useDefaultDate(layer.id);
   const layerAvailableDates = serverAvailableDates[layer.id];
@@ -104,7 +104,7 @@ const AdminLevelDataLayers = ({
   }, [addFillPatternImageInMap, createFillPatternsForLayerLegends]);
 
   useEffect(() => {
-    if (isLayerOnView(map, layer.id)) {
+    if (isLayerOnView(map?.getMap(), layer.id)) {
       return;
     }
     addFillPatternImagesInMap();
@@ -124,7 +124,7 @@ const AdminLevelDataLayers = ({
 
         // load unique boundary only once
         // to avoid double loading which proven to be performance issue
-        if (!isLayerOnView(map, boundaryId)) {
+        if (!isLayerOnView(map?.getMap(), boundaryId)) {
           dispatch(loadLayerData({ layer: boundaryLayer }));
         }
       } else {
@@ -145,7 +145,7 @@ const AdminLevelDataLayers = ({
     return null;
   }
 
-  if (!isLayerOnView(map, boundaryId)) {
+  if (!isLayerOnView(map?.getMap(), boundaryId)) {
     return null;
   }
 

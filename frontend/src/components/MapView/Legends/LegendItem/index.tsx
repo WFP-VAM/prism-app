@@ -117,7 +117,7 @@ const LegendItem = memo(
               handleChangeOpacity(
                 e,
                 newValue as number,
-                map,
+                map?.getMap(),
                 id,
                 type,
                 handleChangeOpacityValue,
@@ -152,7 +152,7 @@ const LegendItem = memo(
         const urlLayerKey = getUrlKey(layer);
         toggleRemoveLayer(
           layer,
-          map,
+          map?.getMap(),
           urlLayerKey,
           dispatch,
           removeLayerFromUrl,

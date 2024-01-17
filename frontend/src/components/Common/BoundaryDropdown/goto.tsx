@@ -48,7 +48,7 @@ const GoToBoundaryDropdown = () => {
         <SimpleBoundaryDropdown
           className={styles.formControl}
           labelMessage={t('Go To')}
-          map={map}
+          map={map?.getMap()}
           selectedBoundaries={[]}
         />
       </div>

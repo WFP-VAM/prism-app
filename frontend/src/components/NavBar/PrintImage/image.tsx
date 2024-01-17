@@ -248,7 +248,6 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
           document.body.removeChild(target);
         }
 
-        // TODO: test it works
         if (toggles.scaleBar) {
           selectedMap.addControl(new maplibregl.ScaleControl({}), 'top-right');
           const elem = document.querySelector(

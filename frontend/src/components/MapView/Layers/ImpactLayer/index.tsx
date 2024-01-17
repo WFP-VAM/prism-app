@@ -97,7 +97,7 @@ const ImpactLayer = ({ classes, layer, before }: ComponentProps) => {
   const dispatch = useDispatch();
   const { t } = useSafeTranslation();
 
-  const extent: Extent = getExtent(map);
+  const extent: Extent = getExtent(map?.getMap());
   useEffect(() => {
     // For now, assume that if we have layer data, we don't need to refetch. This could change down the line if we
     // want to dynamically re-fetch data based on changing map bounds.

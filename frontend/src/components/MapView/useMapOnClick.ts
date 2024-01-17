@@ -25,7 +25,7 @@ const useMapOnClick = (
   setIsAlertFormOpen: (value: boolean) => void,
   boundaryLayerId: string,
   mapRef: MapRef | null,
-  ...callBacks: ((e: MapLayerMouseEvent) => void)[]
+  ...callBacks: { layerId: string; fn: (e: MapLayerMouseEvent) => void }[]
 ) => {
   const dispatch = useDispatch();
   const { startDate: selectedDate } = useSelector(dateRangeSelector);
@@ -118,8 +118,14 @@ const useMapOnClick = (
       defaultFunction(e);
     }
 
+    // TODO: fix features
     // Call each registered callback
-    callBacks.forEach(c => c(e));
+    callBacks.forEach(c => {
+      if (!e.features?.find((x: any) => x.source !== c.layerId)) {
+        return;
+      }
+      c.fn(e);
+    });
   };
 };
 

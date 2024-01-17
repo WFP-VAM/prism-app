@@ -6,7 +6,7 @@ import type { LayerDataTypes } from 'context/layers/layer-data';
 import type { LayerKey, LayerType } from 'config/types';
 import { BoundaryRelationsDict } from 'components/Common/BoundaryDropdown/utils';
 import { datesAreEqualWithoutTime } from 'utils/date-utils';
-import { Map as MaplibreMap } from 'maplibre-gl';
+import { MapRef } from 'react-map-gl/maplibre';
 import type { MapState } from '.';
 
 export const layersSelector = (state: RootState): MapState['layers'] =>
@@ -17,7 +17,7 @@ export const activeLayersSelector = (state: RootState): MapState['layers'] =>
   });
 export const dateRangeSelector = (state: RootState): MapState['dateRange'] =>
   state.mapState.dateRange;
-export const mapSelector = (state: RootState): MaplibreMap | undefined =>
+export const mapSelector = (state: RootState): MapRef | undefined =>
   state.mapState.maplibreMap();
 
 export const layerDataSelector = (id: LayerKey, date?: number) => (

@@ -72,7 +72,7 @@ const AnalysisLayerSwitchItem = memo(
         handleChangeOpacity(
           event,
           newValue as number,
-          map,
+          map?.getMap(),
           undefined, // We have to pass undefined here so that the function know that we are in an analysis custom layer
           undefined, // We have also to pass undefined here to show that we have analysis custom layer,
           handleChangeOpacityValue,

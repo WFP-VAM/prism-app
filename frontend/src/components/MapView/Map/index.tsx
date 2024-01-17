@@ -60,6 +60,8 @@ import { MapSourceDataEvent, Map as MaplibreMap } from 'maplibre-gl';
 import { useSafeTranslation } from 'i18n';
 import { analysisResultSelector } from 'context/analysisResultStateSlice';
 
+import 'maplibre-gl/dist/maplibre-gl.css';
+
 interface MapComponentProps {
   setIsAlertFormOpen: Dispatch<SetStateAction<boolean>>;
   panelHidden: boolean;
@@ -234,31 +236,34 @@ const MapComponent = memo(
     // TODO: Maybe replace this with the map provider
     // Saves a reference to base MaplibreGl Map object in case child layers need access beyond the React wrappers.
     const onMapLoad = (e: MapEvent) => {
-      const map = mapRef.current?.getMap();
-      if (!map) {
+      if (!mapRef.current) {
         return;
       }
+      const map = mapRef.current.getMap();
+
       const { layers } = map.getStyle();
       // Find the first symbol on the map to make sure we add boundary layers below them.
       setFirstSymbolId(layers?.find(layer => layer.type === 'symbol')?.id);
-      dispatch(setMap(() => map));
+      dispatch(setMap(() => mapRef.current || undefined));
       if (showBoundaryInfo) {
         watchBoundaryChange(map);
       }
       trackLoadingLayers(map);
     };
 
-    const boundaryId = firstBoundaryOnView(selectedMap);
+    const boundaryId = firstBoundaryOnView(selectedMap?.getMap());
 
     const firstBoundaryId = boundaryId && `layer-${boundaryId}-line`;
 
     const mapOnClick = useCallback(
-      (...fns: ((e: MapLayerMouseEvent) => void)[]) => {
+      (
+        ...callbacks: { layerId: string; fn: (e: MapLayerMouseEvent) => void }[]
+      ) => {
         return useMapOnClick(
           setIsAlertFormOpen,
           boundaryLayerId,
           mapRef.current,
-          ...fns,
+          ...callbacks,
         );
       },
       [boundaryLayerId, setIsAlertFormOpen],
@@ -271,7 +276,7 @@ const MapComponent = memo(
         }
         const previousLayerId = selectedLayers[index - 1].id;
 
-        if (isLayerOnView(selectedMap, previousLayerId)) {
+        if (isLayerOnView(selectedMap?.getMap(), previousLayerId)) {
           return `layer-${previousLayerId}-line`;
         }
         return firstBoundaryId;
@@ -302,14 +307,26 @@ const MapComponent = memo(
         onLoad={onMapLoad}
         onClick={mapOnClick(
           ...selectedLayers
-            .map(layer =>
-              componentTypes[layer.type]?.onClick?.({ dispatch, layer, t }),
-            )
+            .map(layer => ({
+              layerId: componentTypes[layer.type].getLayerId?.(layer),
+              fn: componentTypes[layer.type]?.onClick?.({
+                dispatch,
+                layer,
+                t,
+              }),
+            }))
             .filter(
-              (x): x is (e: MapLayerMouseEvent) => void =>
-                typeof x !== 'undefined',
+              (
+                x,
+              ): x is {
+                layerId: string;
+                fn: (e: MapLayerMouseEvent) => void;
+              } => typeof x.fn !== 'undefined' && typeof x.layerId === 'string',
             ),
-          analysisOnClick({ analysisData, dispatch, t }),
+          {
+            layerId: analysisLayerId,
+            fn: analysisOnClick({ analysisData, dispatch, t }),
+          },
         )}
         maxBounds={maxBounds}
         onMouseEnter={wrapCallbacks(
