@@ -1,10 +1,12 @@
+// Pre-process layers availability dates to avoid doing it on each page load.
 const moment = require('moment');
 const fs = require('fs');
 const path = require('path');
 
+// We fix the timezone to UTC to ensure that
+// the same dates are generated on all machines
 process.env.TZ = 'UTC';
 
-// Pre-process layers
 const preprocessedData = {};
 
 async function generateIntermediateDateItemFromDataFile(
@@ -58,7 +60,10 @@ async function preprocessValidityPeriods(country, layersToProcess) {
   }
   // Write pre-processed data to a new JSON file
   fs.writeFileSync(
-    path.join(__dirname, `../public/data/${country}/preprocessed-layers.json`),
+    path.join(
+      __dirname,
+      `../public/data/${country}/preprocessed-layer-dates.json`,
+    ),
     JSON.stringify(preprocessedData),
   );
 }

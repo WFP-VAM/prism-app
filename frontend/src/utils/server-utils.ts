@@ -425,8 +425,10 @@ const layerDefinitionsBluePrint: AvailableDates = Object.keys(
  * */
 async function fetchPreprocessedDates(): Promise<any> {
   try {
+    // preprocessed-layers.json is generated using "yarn preprocess-date"
+    // which runs ./scripts/preprocess-layer-availability-dates.js
     const response = await fetch(
-      `data/${safeCountry}/preprocessed-layers.json`,
+      `data/${safeCountry}/preprocessed-layer-dates.json`,
     );
     if (!response.ok) {
       console.error(`HTTP error! status: ${response.status}`);
@@ -513,8 +515,6 @@ export async function getLayersAvailableDates(
 
   // Use preprocessed dates for layers with dates path
   const preprocessedDates = await fetchPreprocessedDates();
-  // eslint-disable-next-line no-console
-  console.log(preprocessedDates);
 
   // Generate and replace date items for layers with all intermediates dates
   const layerDateItemsMap = await Promise.all(
