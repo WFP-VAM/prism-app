@@ -274,7 +274,7 @@ async function generateIntermediateDateItemFromDataFile(
   return generateDateItemsRange(rangesWithoutMissing);
 }
 
-function generateIntermediateDateItemFromValidity(layer: ValidityLayer) {
+export function generateIntermediateDateItemFromValidity(layer: ValidityLayer) {
   const { dates } = layer;
   const { days, mode } = layer.validity;
 
