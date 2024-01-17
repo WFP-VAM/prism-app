@@ -86,7 +86,8 @@ const useLayers = () => {
   // TODO - could we simply use the country boundary extent here instead of the calculation?
   // Or can we foresee any edge cases?
   const adminBoundariesExtent = useMemo(() => {
-    if (!boundaryLayerData) {
+    if (!boundaryLayerData?.data) {
+      console.log(boundaryLayerData)
       return undefined;
     }
     return bbox(boundaryLayerData.data) as Extent; // we get extents of admin boundaries to give to the api.
