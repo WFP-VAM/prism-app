@@ -57,7 +57,7 @@ jobs:
         if: matrix.os == 'ubuntu-latest'
         run: |
           cd frontend && yarn preprocess-dates
-          DIFF=$(git diff --unified=0)
+          DIFF=$(git diff --name-only)
           if [ "$DIFF" != "" ]; then
             echo "Files have changed. Make sure to run yarn preprocess-dates and commit changes."
             echo "$DIFF"
