@@ -129,7 +129,7 @@ const useLayers = () => {
         .map(layer => getPossibleDatesForLayer(layer, serverAvailableDates))
         .filter(value => value) // null check
         .flat()
-        .map(value => moment(value.displayDate).format(DEFAULT_DATE_FORMAT)),
+        .map(value => new Date(value.displayDate).toISOString().slice(0, 10)),
     );
   }, [selectedLayersWithDateSupport, serverAvailableDates]);
 
@@ -379,7 +379,7 @@ const useLayers = () => {
       // we convert to date strings, so hh:ss is irrelevant
       return getPossibleDatesForLayer(layer, serverAvailableDates)
         .map(dateItem =>
-          moment(dateItem.displayDate).format(DEFAULT_DATE_FORMAT),
+          new Date(dateItem.displayDate).toISOString().slice(0, 10),
         )
         .includes(momentSelectedDate.format(DEFAULT_DATE_FORMAT));
     },
