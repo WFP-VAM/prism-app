@@ -29,12 +29,12 @@ export const handleChangeOpacity = (
           // This is a hacky way to support opacity change for Kobo data.
           // TODO - Handle Kobo data as admin_level_data instead of point_data. See issue #760.
           if (id?.includes('_report')) {
-            return [`layer-${id}-fill`, 'fill-opacity'];
+            return [`layer-${id}`, 'fill-opacity'];
           }
-          return [`layer-${id}-circle`, 'circle-opacity'];
+          return [`layer-${id}`, 'circle-opacity'];
         // analysis layer type is undefined TODO we should try make analysis a layer to remove edge cases like this
         case undefined:
-          return ['layer-analysis-fill', 'fill-opacity'];
+          return ['layer-analysis', 'fill-opacity'];
         default:
           throw new Error('Unknown map layer type');
       }
