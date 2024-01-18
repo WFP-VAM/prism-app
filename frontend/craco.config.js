@@ -10,9 +10,7 @@ process.env.REACT_APP_GIT_HASH = (
 
 module.exports = {
   eslint: {
-    configure: {
-      useEslintRc: path.resolve(__dirname, '.eslintrc'),
-    },
+    enable: true,
   },
   webpack: {
     configure: (webpackConfig, { env, paths }) => {

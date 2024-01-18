@@ -286,7 +286,6 @@ const styles = (theme: Theme) =>
   });
 
 interface ExposureAnalysisTableProps extends WithStyles<typeof styles> {
-  maxResults: number;
   tableData: AnalysisTableRow[];
   columns: Column[];
   sortColumn: string | number | undefined;

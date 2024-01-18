@@ -259,6 +259,7 @@ const MapComponent = memo(
       (
         ...callbacks: { layerId: string; fn: (e: MapLayerMouseEvent) => void }[]
       ) => {
+        // eslint-disable-next-line react-hooks/rules-of-hooks
         return useMapOnClick(
           setIsAlertFormOpen,
           boundaryLayerId,

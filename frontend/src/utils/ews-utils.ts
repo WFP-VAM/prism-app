@@ -216,11 +216,11 @@ export const createEWSDatasetParams = (
     warning: parsedLevels.warning,
     severeWarning: parsedLevels.severe_warning,
   };
-  /* eslint-enable camelcase */
   return {
     externalId: external_id,
     triggerLevels,
     chartTitle,
     baseUrl,
   };
+  /* eslint-enable camelcase */
 };

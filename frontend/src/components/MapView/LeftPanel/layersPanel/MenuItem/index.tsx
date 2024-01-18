@@ -44,7 +44,6 @@ const useStyles = makeStyles(() =>
 
 interface MenuItemProps {
   title: string;
-  icon: string;
   layersCategories: LayersCategoryType[];
   extent?: Extent;
 }

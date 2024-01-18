@@ -2,7 +2,7 @@ import React, { memo, useCallback, useMemo } from 'react';
 import { Theme } from '@material-ui/core';
 import { StyleSheet, Text, View } from '@react-pdf/renderer';
 import { chunk } from 'lodash';
-import { TFunction, getRoundedData } from 'utils/data-utils';
+import { getRoundedData } from 'utils/data-utils';
 import { TableRow as AnalysisTableRow } from 'context/analysisResultStateSlice';
 import { Column } from 'utils/analysis-utils';
 import { FIRST_PAGE_TABLE_ROWS, MAX_TABLE_ROWS_PER_PAGE } from './types';
@@ -34,7 +34,6 @@ interface TableProps {
   cellWidth: string;
   showTotal: boolean;
   showRowTotal: boolean;
-  t: TFunction;
 }
 
 const ReportDocTable = memo(
