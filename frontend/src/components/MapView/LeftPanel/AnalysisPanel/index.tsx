@@ -464,12 +464,12 @@ const AnalysisPanel = memo(
           // remove displayed boundaries
           getDisplayBoundaryLayers().forEach(l => {
             if (l.id !== forceAdminLevel.id) {
-              safeDispatchRemoveLayer(map?.getMap(), l, dispatch);
+              safeDispatchRemoveLayer(map, l, dispatch);
             }
           });
 
           safeDispatchAddLayer(
-            map?.getMap(),
+            map,
             { ...forceAdminLevel, isPrimary: true },
             dispatch,
           );
@@ -491,18 +491,18 @@ const AnalysisPanel = memo(
           // remove displayed boundaries
           getDisplayBoundaryLayers().forEach(l => {
             if (l.id !== boundaryLayer.id) {
-              safeDispatchRemoveLayer(map?.getMap(), l, dispatch);
+              safeDispatchRemoveLayer(map, l, dispatch);
             }
           });
 
           safeDispatchAddLayer(
-            map?.getMap(),
+            map,
             { ...boundaryLayer, isPrimary: true },
             dispatch,
           );
         } else {
           getDisplayBoundaryLayers().forEach(l => {
-            safeDispatchAddLayer(map?.getMap(), l, dispatch);
+            safeDispatchAddLayer(map, l, dispatch);
           });
         }
       },
@@ -528,14 +528,14 @@ const AnalysisPanel = memo(
       setThresholdError(null);
 
       resetAnalysisParams();
-      refreshBoundaries(map?.getMap(), dispatch);
+      refreshBoundaries(map, dispatch);
 
       if (previousBaselineId) {
         const previousBaseline = LayerDefinitions[
           previousBaselineId
         ] as AdminLevelDataLayerProps;
         updateHistory(BASELINE_URL_LAYER_KEY, previousBaselineId);
-        safeDispatchAddLayer(map?.getMap(), previousBaseline, dispatch);
+        safeDispatchAddLayer(map, previousBaseline, dispatch);
         // check isMapLayerActive on analysis clear
         // to avoid miss behaviour on boundary layers
         dispatch(setIsMapLayerActive(true));

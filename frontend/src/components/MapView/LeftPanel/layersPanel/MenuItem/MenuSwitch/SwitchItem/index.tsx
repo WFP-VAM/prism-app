@@ -124,7 +124,7 @@ const SwitchItem = memo(
         if (!checked) {
           toggleRemoveLayer(
             selectedLayer,
-            map?.getMap(),
+            map,
             urlLayerKey,
             dispatch,
             removeLayerFromUrl,
@@ -154,7 +154,7 @@ const SwitchItem = memo(
         ) {
           return;
         }
-        refreshBoundaries(map?.getMap(), dispatch);
+        refreshBoundaries(map, dispatch);
       },
       [
         appendLayerToUrl,

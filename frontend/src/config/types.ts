@@ -1,7 +1,13 @@
 import { GeoJSON } from 'geojson';
 import { every, map } from 'lodash';
 import 'reflect-metadata';
-import { FillLayerSpecification, LineLayerSpecification } from 'maplibre-gl';
+import {
+  FillLayerSpecification,
+  LineLayerSpecification,
+  MapLayerMouseEvent,
+} from 'maplibre-gl';
+import { Dispatch } from 'redux';
+import { TFunction } from 'i18next';
 import { rawLayers } from '.';
 import type { ReportKey, TableKey } from './utils';
 import type { PopupMetaData } from '../context/tooltipStateSlice';
@@ -847,3 +853,13 @@ export enum PanelSize {
   large = '1000px',
   xlarge = '1400px',
 }
+
+export type MapEventWrapFunctionProps<T> = {
+  dispatch: Dispatch;
+  layer: T;
+  t: TFunction;
+};
+
+export type MapEventWrapFunction<T> = (
+  props: MapEventWrapFunctionProps<T>,
+) => (evt: MapLayerMouseEvent) => void;

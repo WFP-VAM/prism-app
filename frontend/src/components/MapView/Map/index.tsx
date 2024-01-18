@@ -19,7 +19,12 @@ import { setMap } from 'context/mapStateSlice';
 import { appConfig } from 'config';
 import useMapOnClick from 'components/MapView/useMapOnClick';
 import { setBounds, setLocation } from 'context/mapBoundaryInfoStateSlice';
-import { DiscriminateUnion, LayerKey, LayerType } from 'config/types';
+import {
+  DiscriminateUnion,
+  LayerKey,
+  LayerType,
+  MapEventWrapFunction,
+} from 'config/types';
 import { setLoadingLayerIds } from 'context/mapTileLoadingStateSlice';
 import { firstBoundaryOnView, isLayerOnView } from 'utils/map-utils';
 import { mapSelector } from 'context/mapStateSlice/selectors';
@@ -60,6 +65,7 @@ import { MapSourceDataEvent, Map as MaplibreMap } from 'maplibre-gl';
 import { useSafeTranslation } from 'i18n';
 import { analysisResultSelector } from 'context/analysisResultStateSlice';
 
+// maplibre@^2.0.0 is required for the build to work successfully.
 import 'maplibre-gl/dist/maplibre-gl.css';
 
 interface MapComponentProps {
@@ -67,15 +73,13 @@ interface MapComponentProps {
   panelHidden: boolean;
 }
 
-// TODO: maplibre: fix any
 type LayerComponentsMap<U extends LayerType> = {
   [T in U['type']]: {
     component: ComponentType<{ layer: DiscriminateUnion<U, 'type', T> }>;
-    onClick?: any;
-    onMouseEnter?: any;
-    onMouseLeave?: any;
-    // this should not be optional
-    getLayerId?: (layer: any) => string;
+    onClick?: MapEventWrapFunction<DiscriminateUnion<U, 'type', T>>;
+    onMouseEnter?: MapEventWrapFunction<DiscriminateUnion<U, 'type', T>>;
+    onMouseLeave?: MapEventWrapFunction<DiscriminateUnion<U, 'type', T>>;
+    getLayerId?: (layer: DiscriminateUnion<U, 'type', T>) => string;
   };
 };
 
@@ -251,7 +255,7 @@ const MapComponent = memo(
       trackLoadingLayers(map);
     };
 
-    const boundaryId = firstBoundaryOnView(selectedMap?.getMap());
+    const boundaryId = firstBoundaryOnView(selectedMap);
 
     const firstBoundaryId = boundaryId && `layer-${boundaryId}-line`;
 
@@ -276,7 +280,7 @@ const MapComponent = memo(
         }
         const previousLayerId = selectedLayers[index - 1].id;
 
-        if (isLayerOnView(selectedMap?.getMap(), previousLayerId)) {
+        if (isLayerOnView(selectedMap, previousLayerId)) {
           return `layer-${previousLayerId}-line`;
         }
         return firstBoundaryId;
@@ -310,12 +314,12 @@ const MapComponent = memo(
         onClick={mapOnClick(
           ...selectedLayers
             .map(layer => ({
-              layerId: componentTypes[layer.type].getLayerId?.(layer),
+              layerId: componentTypes[layer.type].getLayerId?.(layer as any),
               fn: componentTypes[layer.type]?.onClick?.({
                 dispatch,
                 layer,
                 t,
-              }),
+              } as any),
             }))
             .filter(
               (
@@ -333,7 +337,9 @@ const MapComponent = memo(
         maxBounds={maxBounds}
         onMouseEnter={wrapCallbacks(
           ...selectedLayers
-            .map(layer => componentTypes[layer.type].onMouseEnter?.(layer))
+            .map(layer =>
+              componentTypes[layer.type].onMouseEnter?.({ layer } as any),
+            )
             .filter(
               (x): x is (e: MapLayerMouseEvent) => void =>
                 typeof x !== 'undefined',
@@ -341,7 +347,9 @@ const MapComponent = memo(
         )}
         onMouseLeave={wrapCallbacks(
           ...selectedLayers
-            .map(layer => componentTypes[layer.type].onMouseLeave?.(layer))
+            .map(layer =>
+              componentTypes[layer.type].onMouseLeave?.({ layer } as any),
+            )
             .filter(
               (x): x is (e: MapLayerMouseEvent) => void =>
                 typeof x !== 'undefined',
@@ -349,7 +357,7 @@ const MapComponent = memo(
         )}
         interactiveLayerIds={[
           ...selectedLayers
-            .map(layer => componentTypes[layer.type].getLayerId?.(layer))
+            .map(layer => componentTypes[layer.type].getLayerId?.(layer as any))
             .filter((x): x is string => typeof x !== 'undefined'),
           analysisLayerId,
         ]}

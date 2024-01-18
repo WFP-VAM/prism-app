@@ -5,6 +5,7 @@ import {
   AdminLevelDataLayerProps,
   BoundaryLayerProps,
   LayerKey,
+  MapEventWrapFunctionProps,
 } from 'config/types';
 import { LayerData, loadLayerData } from 'context/layers/layer-data';
 import {
@@ -24,8 +25,6 @@ import {
   legendToStops,
 } from 'components/MapView/Layers/layer-utils';
 import { convertSvgToPngBase64Image, getSVGShape } from 'utils/image-utils';
-import { Dispatch } from 'redux';
-import { TFunction } from 'i18next';
 import { FillLayerSpecification } from 'maplibre-gl';
 
 export const getLayerId = (layer: AdminLevelDataLayerProps) =>
@@ -35,11 +34,9 @@ export const onClick = ({
   layer,
   dispatch,
   t,
-}: {
-  layer: AdminLevelDataLayerProps;
-  dispatch: Dispatch;
-  t: TFunction;
-}) => (evt: MapLayerMouseEvent) => {
+}: MapEventWrapFunctionProps<AdminLevelDataLayerProps>) => (
+  evt: MapLayerMouseEvent,
+) => {
   addPopupParams(layer, dispatch, evt, t, true);
 };
 
@@ -54,7 +51,7 @@ const AdminLevelDataLayers = ({
   const map = useSelector(mapSelector);
   const serverAvailableDates = useSelector(availableDatesSelector);
 
-  const boundaryId = layer.boundary || firstBoundaryOnView(map?.getMap());
+  const boundaryId = layer.boundary || firstBoundaryOnView(map);
 
   const selectedDate = useDefaultDate(layer.id);
   const layerAvailableDates = serverAvailableDates[layer.id];
@@ -104,7 +101,7 @@ const AdminLevelDataLayers = ({
   }, [addFillPatternImageInMap, createFillPatternsForLayerLegends]);
 
   useEffect(() => {
-    if (isLayerOnView(map?.getMap(), layer.id)) {
+    if (isLayerOnView(map, layer.id)) {
       return;
     }
     addFillPatternImagesInMap();
@@ -124,7 +121,7 @@ const AdminLevelDataLayers = ({
 
         // load unique boundary only once
         // to avoid double loading which proven to be performance issue
-        if (!isLayerOnView(map?.getMap(), boundaryId)) {
+        if (!isLayerOnView(map, boundaryId)) {
           dispatch(loadLayerData({ layer: boundaryLayer }));
         }
       } else {
@@ -145,7 +142,7 @@ const AdminLevelDataLayers = ({
     return null;
   }
 
-  if (!isLayerOnView(map?.getMap(), boundaryId)) {
+  if (!isLayerOnView(map, boundaryId)) {
     return null;
   }
 

@@ -3,7 +3,11 @@ import moment from 'moment';
 import { Layer, Source } from 'react-map-gl/maplibre';
 import { FeatureCollection } from 'geojson';
 import { useDispatch, useSelector } from 'react-redux';
-import { PointDataLayerProps, PointDataLoader } from 'config/types';
+import {
+  MapEventWrapFunctionProps,
+  PointDataLayerProps,
+  PointDataLoader,
+} from 'config/types';
 import {
   clearUserAuthGlobal,
   userAuthSelector,
@@ -24,8 +28,6 @@ import {
 import { setEWSParams, clearDataset } from 'context/datasetStateSlice';
 import { createEWSDatasetParams } from 'utils/ews-utils';
 import { addPopupParams } from 'components/MapView/Layers/layer-utils';
-import { Dispatch } from 'redux';
-import { TFunction } from 'i18next';
 import {
   CircleLayerSpecification,
   FillLayerSpecification,
@@ -34,15 +36,13 @@ import {
 
 export const getLayerId = (layer: PointDataLayerProps) => `layer-${layer.id}`;
 
-export const onClick = async ({
+export const onClick = ({
   layer,
   dispatch,
   t,
-}: {
-  dispatch: Dispatch;
-  layer: PointDataLayerProps;
-  t: TFunction;
-}) => (evt: MapLayerMouseEvent) => {
+}: MapEventWrapFunctionProps<PointDataLayerProps>) => (
+  evt: MapLayerMouseEvent,
+) => {
   addPopupParams(layer, dispatch, evt, t, false);
 
   // TODO: maplibre: fix feature

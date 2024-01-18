@@ -4,7 +4,7 @@ import { get } from 'lodash';
 import { createStyles, withStyles, WithStyles, Theme } from '@material-ui/core';
 import { getExtent, Extent } from 'components/MapView/Layers/raster-utils';
 import { legendToStops } from 'components/MapView/Layers/layer-utils';
-import { ImpactLayerProps } from 'config/types';
+import { ImpactLayerProps, MapEventWrapFunctionProps } from 'config/types';
 import { LayerDefinitions } from 'config/utils';
 import { LayerData, loadLayerData } from 'context/layers/layer-data';
 import { Layer, Source } from 'react-map-gl/maplibre';
@@ -22,8 +22,6 @@ import {
   LineLayerSpecification,
   MapLayerMouseEvent,
 } from 'maplibre-gl';
-import { TFunction } from 'i18next';
-import { Dispatch } from 'redux';
 
 const linePaint: LineLayerSpecification['paint'] = {
   'line-color': 'grey',
@@ -42,11 +40,9 @@ export const onClick = ({
   layer,
   t,
   dispatch,
-}: {
-  layer: ImpactLayerProps;
-  t: TFunction;
-  dispatch: Dispatch;
-}) => (evt: MapLayerMouseEvent) => {
+}: MapEventWrapFunctionProps<ImpactLayerProps>) => (
+  evt: MapLayerMouseEvent,
+) => {
   const hazardLayerDef = LayerDefinitions[layer.hazardLayer];
   const operation = layer.operation || 'median';
   const hazardTitle = `${
@@ -97,7 +93,7 @@ const ImpactLayer = ({ classes, layer, before }: ComponentProps) => {
   const dispatch = useDispatch();
   const { t } = useSafeTranslation();
 
-  const extent: Extent = getExtent(map?.getMap());
+  const extent: Extent = getExtent(map);
   useEffect(() => {
     // For now, assume that if we have layer data, we don't need to refetch. This could change down the line if we
     // want to dynamically re-fetch data based on changing map bounds.

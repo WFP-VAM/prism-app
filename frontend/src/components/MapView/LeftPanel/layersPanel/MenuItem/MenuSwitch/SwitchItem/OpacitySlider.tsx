@@ -48,7 +48,7 @@ const OpacitySlider = ({
       handleChangeOpacity(
         event,
         newValue as number,
-        map?.getMap(),
+        map,
         activeLayerId || layerId,
         layerType,
         val => setOpacityValue(val),

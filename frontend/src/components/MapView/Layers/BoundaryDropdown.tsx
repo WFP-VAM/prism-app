@@ -176,7 +176,7 @@ export function getAdminBoundaryTree(
   const addBranchToTree = (
     partialTree: AdminBoundaryTree,
     levelsLeft: AdminCodeString[],
-    feature: any, // TODO: maplibre: type?
+    feature: any, // TODO: maplibre: feature
     level: AdminLevelType,
   ): AdminBoundaryTree => {
     const fp = feature.properties;

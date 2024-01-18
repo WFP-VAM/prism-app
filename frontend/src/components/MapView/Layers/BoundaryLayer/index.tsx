@@ -1,6 +1,6 @@
 import React, { memo, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { BoundaryLayerProps } from 'config/types';
+import { BoundaryLayerProps, MapEventWrapFunctionProps } from 'config/types';
 import { LayerData } from 'context/layers/layer-data';
 import { showPopup } from 'context/tooltipStateSlice';
 import { Source, Layer, MapLayerMouseEvent } from 'react-map-gl/maplibre';
@@ -15,8 +15,6 @@ import { layerDataSelector } from 'context/mapStateSlice/selectors';
 import { getFullLocationName } from 'utils/name-utils';
 
 import { languages } from 'i18n';
-import { Dispatch } from 'redux';
-import { TFunction } from 'i18next';
 import { Map as MaplibreMap } from 'maplibre-gl';
 
 function onToggleHover(cursor: string, targetMap: MaplibreMap) {
@@ -35,11 +33,9 @@ export const onClick = ({
   dispatch,
   layer,
   t,
-}: {
-  dispatch: Dispatch;
-  layer: BoundaryLayerProps;
-  t: TFunction;
-}) => (evt: MapLayerMouseEvent) => {
+}: MapEventWrapFunctionProps<BoundaryLayerProps>) => (
+  evt: MapLayerMouseEvent,
+) => {
   const isPrimaryLayer = isPrimaryBoundaryLayer(layer);
   if (!isPrimaryLayer) {
     return;
@@ -77,11 +73,16 @@ export const onClick = ({
   );
 };
 
-// TODO: maplibre: fix any (no target on evt)
-export const onMouseEnter = (layer: BoundaryLayerProps) => (evt: any) =>
-  isPrimaryBoundaryLayer(layer) && onToggleHover('pointer', evt.target);
-export const onMouseLeave = (layer: BoundaryLayerProps) => (evt: any) =>
-  isPrimaryBoundaryLayer(layer) && onToggleHover('', evt.target);
+export const onMouseEnter = ({
+  layer,
+}: MapEventWrapFunctionProps<BoundaryLayerProps>) => (
+  evt: MapLayerMouseEvent,
+) => isPrimaryBoundaryLayer(layer) && onToggleHover('pointer', evt.target);
+export const onMouseLeave = ({
+  layer,
+}: MapEventWrapFunctionProps<BoundaryLayerProps>) => (
+  evt: MapLayerMouseEvent,
+) => isPrimaryBoundaryLayer(layer) && onToggleHover('', evt.target);
 
 const BoundaryLayer = ({ layer, before }: ComponentProps) => {
   const dispatch = useDispatch();
