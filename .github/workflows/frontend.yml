@@ -53,6 +53,17 @@ jobs:
       - name: JSON check
         run: cd frontend && yarn prettier:json-check
 
+      - name: Layer availability check
+        if: matrix.os == 'ubuntu-latest'
+        run: |
+          cd frontend && yarn preprocess-dates
+          DIFF=$(git diff --name-only)
+          if [ "$DIFF" != "" ]; then
+            echo "Files have changed. Make sure to run yarn preprocess-dates and commit changes."
+            echo "$DIFF"
+            exit 1
+          fi
+
       - name: Check boundary keys
         run: cd frontend && yarn check-boundary-keys
 
