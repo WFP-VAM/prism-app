@@ -9,6 +9,11 @@ const path = require('path');
 const RemovePlugin = require('remove-files-webpack-plugin');
 
 const country = process.env.REACT_APP_COUNTRY || 'mozambique';
+if (!!country) {
+  console.log(
+    `Building for country ${country}. Removing data for other countries.`,
+  );
+}
 
 // In case GIT_HASH is not set we are in github actions environment
 process.env.REACT_APP_GIT_HASH = (
