@@ -28,7 +28,7 @@ module.exports = {
       webpackConfig.resolve.fallback = {
         ...webpackConfig.resolve.fallback,
         util: false,
-        buffer: false,
+        buffer: 'buffer',
       };
 
       // Add webpack plugin

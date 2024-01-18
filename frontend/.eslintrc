@@ -3,8 +3,7 @@
     "react-app",
     "airbnb",
     "plugin:jsx-a11y/recommended",
-    "prettier",
-    "prettier/react"
+    "prettier"
   ],
   "parser": "@typescript-eslint/parser",
   "plugins": [
@@ -39,13 +38,6 @@
         "objectsInObjects": true
       }
     ],
-    // More verbose prettier suggestions
-    "prettier/prettier": [
-      "warn",
-      {
-        "endOfLine": "auto"
-      }
-    ],
     "react/require-default-props": [
       "off"
     ],
@@ -62,7 +54,9 @@
         "tsx": "never"
       }
     ],
+    "arrow-body-style": "off",
     "react/prop-types": "off",
+    "react/function-component-definition": "off",
     // Warnings to enforce functional programming styles - e.g. no unintended mutations
     "fp/no-delete": "warn",
     "fp/no-mutating-assign": "warn",

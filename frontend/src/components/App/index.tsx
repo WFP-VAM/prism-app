@@ -51,7 +51,7 @@ const Wrapper = memo(() => {
     <div id="app">
       <NavBar />
       <Switch>
-        <Route default>
+        <Route>
           <MapView />
           <AuthModal />
         </Route>
