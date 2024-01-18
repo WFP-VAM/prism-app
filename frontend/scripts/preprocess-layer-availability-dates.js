@@ -48,13 +48,15 @@ async function generateIntermediateDateItemFromDataFile(
 }
 
 async function preprocessValidityPeriods(country, layersToProcess) {
-  for (const [key, layer] of layersToProcess) {
-    preprocessedData[key] = await generateIntermediateDateItemFromDataFile(
-      layer.dates,
-      layer.path,
-      layer.validityPeriod,
-    );
-  }
+  await Promise.all(
+    layersToProcess.map(async ([key, layer]) => {
+      preprocessedData[key] = await generateIntermediateDateItemFromDataFile(
+        layer.dates,
+        layer.path,
+        layer.validityPeriod,
+      );
+    }),
+  );
   if (Object.keys(preprocessedData).length === 0) {
     return;
   }
@@ -78,19 +80,23 @@ const countryDirs = fs
   });
 
 // Process each country
-countryDirs.forEach(country => {
-  // Load layers.json
-  const layersData = JSON.parse(
-    fs.readFileSync(
-      path.join(__dirname, `../src/config/${country}/layers.json`),
-      'utf-8',
-    ),
-  );
+(async () => {
+  await Promise.all(
+    countryDirs.map(async country => {
+      // Load layers.json
+      const layersData = JSON.parse(
+        fs.readFileSync(
+          path.join(__dirname, `../src/config/${country}/layers.json`),
+          'utf-8',
+        ),
+      );
 
-  // Filter layers with "path" and "dates" fields
-  const layersToProcess = Object.entries(layersData).filter(
-    ([key, layer]) => layer.path && layer.dates && layer.validityPeriod,
-  );
+      // Filter layers with "path" and "dates" fields
+      const layersToProcess = Object.entries(layersData).filter(
+        ([key, layer]) => layer.path && layer.dates && layer.validityPeriod,
+      );
 
-  preprocessValidityPeriods(country, layersToProcess);
-});
+      await preprocessValidityPeriods(country, layersToProcess);
+    }),
+  );
+})();
