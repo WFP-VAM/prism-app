@@ -536,16 +536,16 @@ const ChartsPanel = memo(
         if (startDate === null || endDate === null) {
           return '';
         }
-        // TODO: maplibre: maplibre: Fix this
-        // const options = {
-        //   weekday: undefined,
-        //   year: 'numeric',
-        //   month: 'short',
-        //   day: 'numeric',
-        // };
+
+        const options = {
+          weekday: undefined,
+          year: 'numeric',
+          month: 'short',
+          dayPeriod: 'short',
+        };
         const formatDate = (d: number) => {
           const dd = new Date(d);
-          return dd.toLocaleDateString(t('date_locale'));
+          return dd.toLocaleDateString(t('date_locale'), options as any);
         };
 
         return `${formatDate(startDate)} - ${formatDate(endDate)}`;
