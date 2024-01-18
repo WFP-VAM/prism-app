@@ -2,7 +2,7 @@ import { get, merge, snakeCase, sortBy, sortedUniqBy } from 'lodash';
 import moment from 'moment';
 import { WFS, WMS, fetchCoverageLayerDays, formatUrl } from 'prism-common';
 import { Dispatch } from 'redux';
-import { appConfig } from '../config';
+import { appConfig, safeCountry } from '../config';
 import type {
   AvailableDates,
   PathLayer,
@@ -421,6 +421,27 @@ const layerDefinitionsBluePrint: AvailableDates = Object.keys(
 }, {});
 
 /**
+ * Load preprocessed date ranges if available
+ * */
+async function fetchPreprocessedDates(): Promise<any> {
+  try {
+    // preprocessed-layer-dates.json is generated using "yarn preprocess-date"
+    // which runs ./scripts/preprocess-layer-availability-dates.js
+    const response = await fetch(
+      `data/${safeCountry}/preprocessed-layer-dates.json`,
+    );
+    if (!response.ok) {
+      console.error(`HTTP error! status: ${response.status}`);
+      return {};
+    }
+    return await response.json();
+  } catch (error) {
+    console.error(`Failed to fetch preprocessed dates: ${error}`);
+    return {};
+  }
+}
+
+/**
  * Load available dates for WMS and WCS using a serverUri defined in prism.json and for GeoJSONs (point data) using their API endpoint.
  *
  * @return a Promise of Map<LayerID (not always id from LayerProps but can be), availableDates[]>
@@ -492,18 +513,22 @@ export async function getLayersAvailableDates(
       };
     });
 
+  // Use preprocessed dates for layers with dates path
+  const preprocessedDates = await fetchPreprocessedDates();
+
   // Generate and replace date items for layers with all intermediates dates
   const layerDateItemsMap = await Promise.all(
     Object.entries(mergedLayers).map(
       async (layerDatesEntry: [string, number[]]) => {
+        const layerName = layerDatesEntry[0];
         // Generate dates for layers with validity and no path
         const matchingValidityLayer = layersWithValidity.find(
-          validityLayer => validityLayer.name === layerDatesEntry[0],
+          validityLayer => validityLayer.name === layerName,
         );
 
         if (matchingValidityLayer) {
           return {
-            [layerDatesEntry[0]]: generateIntermediateDateItemFromValidity(
+            [layerName]: generateIntermediateDateItemFromValidity(
               matchingValidityLayer,
             ),
           };
@@ -511,12 +536,17 @@ export async function getLayersAvailableDates(
 
         // Generate dates for layers with path
         const matchingPathLayer = layersWithValidityStartEndDate.find(
-          validityLayer => validityLayer.name === layerDatesEntry[0],
+          validityLayer => validityLayer.name === layerName,
         );
 
         if (matchingPathLayer) {
+          if (layerName in preprocessedDates) {
+            return {
+              [layerName]: generateDateItemsRange(preprocessedDates[layerName]),
+            };
+          }
           return {
-            [layerDatesEntry[0]]: await generateIntermediateDateItemFromDataFile(
+            [layerName]: await generateIntermediateDateItemFromDataFile(
               matchingPathLayer.dates,
               matchingPathLayer.path,
               matchingPathLayer.validityPeriod,
@@ -526,7 +556,7 @@ export async function getLayersAvailableDates(
 
         // Genererate dates for layers with validity but not an admin_level_data type
         return {
-          [layerDatesEntry[0]]: layerDatesEntry[1].map((d: number) =>
+          [layerName]: layerDatesEntry[1].map((d: number) =>
             generateDefaultDateItem(new Date(d).setHours(12, 0, 0)),
           ),
         };

@@ -13,7 +13,7 @@
     "vegetation": "icon_veg.png",
     "temperature": "icon_climate.png"
   },
-  "alertFormActive": true,
+  "alertFormActive": false,
   "serversUrls": {
     "wms": [
       "https://api.earthobservation.vam.wfp.org/ows/wms"
