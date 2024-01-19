@@ -257,7 +257,7 @@ const MapComponent = memo(
 
     const boundaryId = firstBoundaryOnView(selectedMap);
 
-    const firstBoundaryId = boundaryId && `layer-${boundaryId}-line`;
+    const firstBoundaryId = boundaryId && `layer-${boundaryId}`;
 
     const mapOnClick = useCallback(
       (
@@ -281,7 +281,7 @@ const MapComponent = memo(
         const previousLayerId = selectedLayers[index - 1].id;
 
         if (isLayerOnView(selectedMap, previousLayerId)) {
-          return `layer-${previousLayerId}-line`;
+          return `layer-${previousLayerId}`;
         }
         return firstBoundaryId;
       },

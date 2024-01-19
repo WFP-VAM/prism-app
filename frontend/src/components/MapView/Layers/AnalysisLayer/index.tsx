@@ -171,7 +171,7 @@ function AnalysisLayer({ before }: { before?: string }) {
 
   const boundary =
     'boundaryId' in analysisData && analysisData.boundaryId
-      ? `layer-${analysisData.boundaryId}-line`
+      ? `layer-${analysisData.boundaryId}`
       : before;
 
   return (

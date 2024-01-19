@@ -123,13 +123,13 @@ const BoundaryLayer = ({ layer, before }: ComponentProps) => {
   return (
     <Source id={`layer-${layer.id}`} type="geojson" data={data}>
       <Layer
-        id={`layer-${layer.id}-line`}
+        id={`layer-${layer.id}`}
         type="line"
         paint={layer.styles.line}
         beforeId={before}
       />
       <Layer
-        id={`layer-${layer.id}`}
+        id={`layer-${layer.id}-fill`}
         type="fill"
         paint={layer.styles.fill}
         beforeId={before}
