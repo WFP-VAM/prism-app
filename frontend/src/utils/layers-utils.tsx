@@ -80,7 +80,7 @@ const useLayers = () => {
   }, [baselineLayersArray.length, hazardLayersArray.length]);
 
   // Prioritize boundary and point_data layers
-  const selectedLayers = useMemo(() => {
+  const selectedLayers: LayerType[] = useMemo(() => {
     // eslint-disable-next-line fp/no-mutating-methods
     return [...unsortedSelectedLayers].sort(layerOrdering);
   }, [unsortedSelectedLayers]);
