@@ -29,7 +29,7 @@ interface ComponentProps {
 }
 
 export const getLayers = (layer: BoundaryLayerProps) => [
-  getLayerMapId(layer.id),
+  getLayerMapId(layer.id, 'fill'),
 ];
 
 export const onClick = ({
@@ -44,7 +44,7 @@ export const onClick = ({
     return;
   }
 
-  const layerId = getLayerMapId(layer.id);
+  const layerId = getLayerMapId(layer.id, 'fill');
 
   // TODO: maplibre: fix feature
   const feature = evt.features?.find((x: any) => x.layer.id === layerId) as any;
@@ -126,13 +126,13 @@ const BoundaryLayer = ({ layer, before }: ComponentProps) => {
   return (
     <Source type="geojson" data={data}>
       <Layer
-        id={getLayerMapId(layer.id, 'line')}
+        id={getLayerMapId(layer.id)}
         type="line"
         paint={layer.styles.line}
         beforeId={before}
       />
       <Layer
-        id={getLayerMapId(layer.id)}
+        id={getLayerMapId(layer.id, 'fill')}
         type="fill"
         paint={layer.styles.fill}
         beforeId={before}

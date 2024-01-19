@@ -261,7 +261,7 @@ const MapComponent = memo(
 
     const boundaryId = firstBoundaryOnView(selectedMap);
 
-    const firstBoundaryId = boundaryId && getLayerMapId(boundaryId, 'line');
+    const firstBoundaryId = boundaryId && getLayerMapId(boundaryId);
 
     const mapOnClick = useCallback(
       (

@@ -172,7 +172,7 @@ function AnalysisLayer({ before }: { before?: string }) {
 
   const boundary =
     'boundaryId' in analysisData && analysisData.boundaryId
-      ? getLayerMapId(analysisData.boundaryId, 'line')
+      ? getLayerMapId(analysisData.boundaryId)
       : before;
 
   return (

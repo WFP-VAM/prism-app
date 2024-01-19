@@ -163,7 +163,7 @@ const AdminLevelDataLayers = ({
             layer?.fillPattern,
           ) as FillLayerSpecification['paint']
         }
-        beforeId={before || getLayerMapId(boundaryId, 'line')}
+        beforeId={before || getLayerMapId(boundaryId)}
       />
     </Source>
   );
