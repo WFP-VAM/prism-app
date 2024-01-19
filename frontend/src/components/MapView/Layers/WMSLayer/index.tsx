@@ -26,6 +26,8 @@ const WMSLayers = ({
     <Source
       id={`source-${id}`}
       type="raster"
+      // refresh tiles every time date changes
+      key={moment(queryDate).format(DEFAULT_DATE_FORMAT)}
       tiles={[
         `${getWMSUrl(baseUrl, serverLayerName, {
           ...additionalQueryParams,
@@ -40,6 +42,7 @@ const WMSLayers = ({
         beforeId={before}
         type="raster"
         id={`layer-${id}`}
+        source={`source-${id}`}
         paint={{ 'raster-opacity': opacity }}
       />
     </Source>
