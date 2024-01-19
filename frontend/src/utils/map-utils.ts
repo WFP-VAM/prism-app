@@ -1,14 +1,8 @@
-import { LayerSpecification, Map as MaplibreMap } from 'maplibre-gl';
+import { Map as MaplibreMap } from 'maplibre-gl';
 import { LayerKey, BoundaryLayerProps, LayerType } from 'config/types';
 import { getDisplayBoundaryLayers } from 'config/utils';
 import { addLayer, removeLayer } from 'context/mapStateSlice';
 import { Dispatch } from 'react';
-
-// TODO: maplibre: Update comment
-// fixes the issue that property 'source' is not guaranteed to exist on type 'AnyLayer'
-// because 'CustomLayerInterface' does not specify a 'source' property
-// see maplibre-gl/src/index.d.ts
-type CustomAnyLayer = LayerSpecification & { source?: string };
 
 /**
  * Checks weither given layer is on view
@@ -18,7 +12,7 @@ type CustomAnyLayer = LayerSpecification & { source?: string };
 export function isLayerOnView(map: MaplibreMap | undefined, layerId: LayerKey) {
   return map
     ?.getStyle()
-    .layers?.map((l: CustomAnyLayer) => l.id)
+    .layers?.map(l => l.id)
     .includes(getLayerMapId(layerId));
 }
 
@@ -52,7 +46,7 @@ export function boundariesOnView(
   const boundaries = getDisplayBoundaryLayers();
   const onViewLayerKeys = map
     ?.getStyle()
-    .layers?.map((l: CustomAnyLayer) => l.source)
+    .layers?.map(l => l.id)
     .filter(s => s && s.toString().includes('layer-'))
     .map(k => k && k.toString().split('layer-')[1]);
   return boundaries.filter(
