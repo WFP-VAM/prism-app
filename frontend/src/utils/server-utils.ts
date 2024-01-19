@@ -436,7 +436,6 @@ async function fetchPreprocessedDates(): Promise<any> {
     }
     return await response.json();
   } catch (error) {
-    console.error(`Failed to fetch preprocessed dates: ${error}`);
     return {};
   }
 }

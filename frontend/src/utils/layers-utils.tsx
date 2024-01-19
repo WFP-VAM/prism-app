@@ -89,8 +89,6 @@ const useLayers = () => {
   // Or can we foresee any edge cases?
   const adminBoundariesExtent = useMemo(() => {
     if (!boundaryLayerData?.data) {
-      // eslint-disable-next-line no-console
-      console.log(boundaryLayerData);
       return undefined;
     }
     return bbox(boundaryLayerData.data) as Extent; // we get extents of admin boundaries to give to the api.
