@@ -122,6 +122,7 @@
       "enzyme-to-json/serializer"
     ]
   },
+  "_comment": "The 'defaults' and 'not ie 11' are needed to avoid build issues with maplibre-gl.",
   "browserslist": {
     "production": [
       ">0.2%",
