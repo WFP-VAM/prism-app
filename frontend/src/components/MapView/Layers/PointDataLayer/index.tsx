@@ -51,8 +51,8 @@ export const onClick = ({
   ) as any;
   if (layer.loader === PointDataLoader.EWS) {
     dispatch(clearDataset());
-    if (!feature?.properties){
-      return
+    if (!feature?.properties) {
+      return;
     }
     const ewsDatasetParams = createEWSDatasetParams(
       feature?.properties,
