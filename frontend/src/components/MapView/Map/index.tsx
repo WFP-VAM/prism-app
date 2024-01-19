@@ -69,7 +69,6 @@ import { MapSourceDataEvent, Map as MaplibreMap } from 'maplibre-gl';
 import { useSafeTranslation } from 'i18n';
 import { analysisResultSelector } from 'context/analysisResultStateSlice';
 
-// maplibre@^2.0.0 is required for the build to work successfully.
 import 'maplibre-gl/dist/maplibre-gl.css';
 
 interface MapComponentProps {
