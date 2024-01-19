@@ -16,6 +16,7 @@ import { getFullLocationName } from 'utils/name-utils';
 
 import { languages } from 'i18n';
 import { Map as MaplibreMap } from 'maplibre-gl';
+import { getLayerMapId } from 'utils/map-utils';
 
 function onToggleHover(cursor: string, targetMap: MaplibreMap) {
   // eslint-disable-next-line no-param-reassign, fp/no-mutation
@@ -27,7 +28,9 @@ interface ComponentProps {
   before?: string;
 }
 
-export const getLayerId = (layer: BoundaryLayerProps) => `layer-${layer.id}`;
+export const getLayers = (layer: BoundaryLayerProps) => [
+  getLayerMapId(layer.id),
+];
 
 export const onClick = ({
   dispatch,
@@ -41,7 +44,7 @@ export const onClick = ({
     return;
   }
 
-  const layerId = `layer-${layer.id}`;
+  const layerId = getLayerMapId(layer.id);
 
   // TODO: maplibre: fix feature
   const feature = evt.features?.find((x: any) => x.layer.id === layerId) as any;
@@ -121,15 +124,15 @@ const BoundaryLayer = ({ layer, before }: ComponentProps) => {
 
   // We need 2 layers here since react-map-gl does not support styling "line" for "fill" typed layers
   return (
-    <Source id={`layer-${layer.id}`} type="geojson" data={data}>
+    <Source type="geojson" data={data}>
       <Layer
-        id={`layer-${layer.id}-line`}
+        id={getLayerMapId(layer.id, 'line')}
         type="line"
         paint={layer.styles.line}
         beforeId={before}
       />
       <Layer
-        id={`layer-${layer.id}`}
+        id={getLayerMapId(layer.id)}
         type="fill"
         paint={layer.styles.fill}
         beforeId={before}

@@ -16,7 +16,11 @@ import { addLayer, removeLayer } from 'context/mapStateSlice';
 import { useDefaultDate } from 'utils/useDefaultDate';
 import { getBoundaryLayers, LayerDefinitions } from 'config/utils';
 import { addNotification } from 'context/notificationStateSlice';
-import { firstBoundaryOnView, isLayerOnView } from 'utils/map-utils';
+import {
+  firstBoundaryOnView,
+  getLayerMapId,
+  isLayerOnView,
+} from 'utils/map-utils';
 import { fillPaintData } from 'components/MapView/Layers/styles';
 import { availableDatesSelector } from 'context/serverStateSlice';
 import { getRequestDate } from 'utils/server-utils';
@@ -27,8 +31,9 @@ import {
 import { convertSvgToPngBase64Image, getSVGShape } from 'utils/image-utils';
 import { FillLayerSpecification } from 'maplibre-gl';
 
-export const getLayerId = (layer: AdminLevelDataLayerProps) =>
-  `layer-${layer.id}`;
+export const getLayers = (layer: AdminLevelDataLayerProps) => [
+  getLayerMapId(layer.id),
+];
 
 export const onClick = ({
   layer,
@@ -146,12 +151,10 @@ const AdminLevelDataLayers = ({
     return null;
   }
 
-  const layerId = getLayerId(layer);
-
   return (
-    <Source id={layerId} type="geojson" data={features}>
+    <Source type="geojson" data={features}>
       <Layer
-        id={layerId}
+        id={getLayerMapId(layer.id)}
         type="fill"
         paint={
           fillPaintData(
@@ -160,7 +163,7 @@ const AdminLevelDataLayers = ({
             layer?.fillPattern,
           ) as FillLayerSpecification['paint']
         }
-        beforeId={before || `layer-${boundaryId}-line`}
+        beforeId={before || getLayerMapId(boundaryId, 'line')}
       />
     </Source>
   );

@@ -8,6 +8,7 @@ import { useDefaultDate } from 'utils/useDefaultDate';
 import { DEFAULT_DATE_FORMAT } from 'utils/name-utils';
 import { getRequestDate } from 'utils/server-utils';
 import { availableDatesSelector } from 'context/serverStateSlice';
+import { getLayerMapId } from 'utils/map-utils';
 
 const WMSLayers = ({
   layer: { id, baseUrl, serverLayerName, additionalQueryParams, opacity },
@@ -41,7 +42,7 @@ const WMSLayers = ({
       <Layer
         beforeId={before}
         type="raster"
-        id={`layer-${id}`}
+        id={getLayerMapId(id)}
         source={`source-${id}`}
         paint={{ 'raster-opacity': opacity }}
       />

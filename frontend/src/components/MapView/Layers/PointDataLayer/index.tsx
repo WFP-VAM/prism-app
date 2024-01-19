@@ -33,8 +33,11 @@ import {
   FillLayerSpecification,
   MapLayerMouseEvent,
 } from 'maplibre-gl';
+import { getLayerMapId } from 'utils/map-utils';
 
-export const getLayerId = (layer: PointDataLayerProps) => `layer-${layer.id}`;
+export const getLayers = (layer: PointDataLayerProps) => [
+  getLayerMapId(layer.id),
+];
 
 export const onClick = ({
   layer,
@@ -47,7 +50,7 @@ export const onClick = ({
 
   // TODO: maplibre: fix feature
   const feature = evt.features?.find(
-    (x: any) => x.layer.id === getLayerId(layer),
+    (x: any) => x.layer.id === getLayerMapId(layer.id),
   ) as any;
   if (layer.loader === PointDataLoader.EWS) {
     dispatch(clearDataset());
@@ -145,7 +148,7 @@ const PointDataLayer = ({ layer, before }: LayersProps) => {
     return (
       <Source data={features} type="geojson">
         <Layer
-          id={getLayerId(layer)}
+          id={getLayerMapId(layer.id)}
           type="fill"
           paint={
             fillPaintData(
@@ -161,7 +164,7 @@ const PointDataLayer = ({ layer, before }: LayersProps) => {
   return (
     <Source data={features} type="geojson">
       <Layer
-        id={getLayerId(layer)}
+        id={getLayerMapId(layer.id)}
         type="circle"
         layout={circleLayout}
         paint={circlePaint(layer) as CircleLayerSpecification['paint']}

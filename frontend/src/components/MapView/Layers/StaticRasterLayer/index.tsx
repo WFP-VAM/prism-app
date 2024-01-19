@@ -4,6 +4,7 @@ import { StaticRasterLayerProps } from 'config/types';
 import { useDefaultDate } from 'utils/useDefaultDate';
 import { DEFAULT_DATE_FORMAT_SNAKE_CASE } from 'utils/name-utils';
 import { Layer, Source } from 'react-map-gl/maplibre';
+import { getLayerMapId } from 'utils/map-utils';
 
 const StaticRasterLayer = ({
   layer: { id, baseUrl, opacity, minZoom, maxZoom, dates },
@@ -22,7 +23,7 @@ const StaticRasterLayer = ({
       <Layer
         beforeId={before}
         type="raster"
-        id={`layer-${id}`}
+        id={getLayerMapId(id)}
         paint={{ 'raster-opacity': opacity }}
         minzoom={minZoom}
         maxzoom={maxZoom}

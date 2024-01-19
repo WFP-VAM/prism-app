@@ -22,6 +22,7 @@ import {
   LineLayerSpecification,
   MapLayerMouseEvent,
 } from 'maplibre-gl';
+import { getLayerMapId } from 'utils/map-utils';
 
 const linePaint: LineLayerSpecification['paint'] = {
   'line-color': 'grey',
@@ -34,7 +35,7 @@ function getHazardData(evt: any, operation: string, t?: i18nTranslator) {
   return getRoundedData(data, t);
 }
 
-export const getLayerId = (layer: ImpactLayerProps) => `layer-${layer.id}`;
+export const getLayers = (layer: ImpactLayerProps) => [getLayerMapId(layer.id)];
 
 export const onClick = ({
   layer,
@@ -51,7 +52,7 @@ export const onClick = ({
 
   // TODO: maplibre: fix feature
   const feature = evt.features?.find(
-    (x: any) => x.layer.id === getLayerId(layer),
+    (x: any) => x.layer.id === getLayerMapId(layer.id),
   ) as any;
   if (!feature) {
     return;
@@ -139,13 +140,13 @@ const ImpactLayer = ({ classes, layer, before }: ComponentProps) => {
       data={noMatchingDistricts ? boundaries : impactFeatures}
     >
       <Layer
-        id={`${getLayerId(layer)}-line`}
+        id={getLayerMapId(layer.id, 'line')}
         type="line"
         paint={linePaint}
         beforeId={before}
       />
       <Layer
-        id={getLayerId(layer)}
+        id={getLayerMapId(layer.id)}
         type="fill"
         paint={fillPaint}
         beforeId={before}

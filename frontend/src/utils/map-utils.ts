@@ -18,8 +18,8 @@ type CustomAnyLayer = LayerSpecification & { source?: string };
 export function isLayerOnView(map: MaplibreMap | undefined, layerId: LayerKey) {
   return map
     ?.getStyle()
-    .layers?.map((l: CustomAnyLayer) => l.source)
-    .includes(`layer-${layerId}`);
+    .layers?.map((l: CustomAnyLayer) => l.id)
+    .includes(getLayerMapId(layerId));
 }
 
 export function safeDispatchAddLayer(
@@ -88,3 +88,6 @@ export function refreshBoundaries(
   // re-add boundary layers
   boundaryLayers.map(l => safeDispatchAddLayer(map, l, dispatcher));
 }
+
+export const getLayerMapId = (layerId: string, type?: 'fill' | 'line') =>
+  `layer-${layerId}${type ? `-${type}` : ''}`;

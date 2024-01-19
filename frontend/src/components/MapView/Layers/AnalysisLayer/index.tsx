@@ -21,8 +21,9 @@ import { formatIntersectPercentageAttribute } from 'components/MapView/utils';
 import { Dispatch } from 'redux';
 import { FillLayerSpecification, MapLayerMouseEvent } from 'maplibre-gl';
 import { TFunction } from 'i18next';
+import { getLayerMapId } from 'utils/map-utils';
 
-export const layerId = 'layer-analysis';
+export const layerId = getLayerMapId('analysis');
 
 export const onClick = ({
   analysisData,
@@ -171,7 +172,7 @@ function AnalysisLayer({ before }: { before?: string }) {
 
   const boundary =
     'boundaryId' in analysisData && analysisData.boundaryId
-      ? `layer-${analysisData.boundaryId}-line`
+      ? getLayerMapId(analysisData.boundaryId, 'line')
       : before;
 
   return (

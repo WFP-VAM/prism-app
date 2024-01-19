@@ -26,7 +26,11 @@ import {
   MapEventWrapFunction,
 } from 'config/types';
 import { setLoadingLayerIds } from 'context/mapTileLoadingStateSlice';
-import { firstBoundaryOnView, isLayerOnView } from 'utils/map-utils';
+import {
+  firstBoundaryOnView,
+  getLayerMapId,
+  isLayerOnView,
+} from 'utils/map-utils';
 import { mapSelector } from 'context/mapStateSlice/selectors';
 import {
   AdminLevelDataLayer,
@@ -41,19 +45,19 @@ import {
   onClick as boundaryOnclick,
   onMouseEnter as boundaryOnMouseEnter,
   onMouseLeave as boundaryOnMouseLeave,
-  getLayerId as boundaryGetLayerId,
+  getLayers as boundaryGetLayers,
 } from 'components/MapView/Layers/BoundaryLayer';
 import {
   onClick as adminLevelLayerOnClick,
-  getLayerId as adminLevelGetLayerId,
+  getLayers as adminLevelGetLayers,
 } from 'components/MapView/Layers/AdminLevelDataLayer';
 import {
   onClick as impactOnClick,
-  getLayerId as impactGetLayerId,
+  getLayers as impactGetLayers,
 } from 'components/MapView/Layers/ImpactLayer';
 import {
   onClick as pointDataOnClick,
-  getLayerId as pointDataGetLayerId,
+  getLayers as pointDataGetLayers,
 } from 'components/MapView/Layers/PointDataLayer';
 import useLayers from 'utils/layers-utils';
 import MapGL, {
@@ -79,7 +83,7 @@ type LayerComponentsMap<U extends LayerType> = {
     onClick?: MapEventWrapFunction<DiscriminateUnion<U, 'type', T>>;
     onMouseEnter?: MapEventWrapFunction<DiscriminateUnion<U, 'type', T>>;
     onMouseLeave?: MapEventWrapFunction<DiscriminateUnion<U, 'type', T>>;
-    getLayerId?: (layer: DiscriminateUnion<U, 'type', T>) => string;
+    getLayers?: (layer: DiscriminateUnion<U, 'type', T>) => string[];
   };
 };
 
@@ -89,23 +93,23 @@ const componentTypes: LayerComponentsMap<LayerType> = {
     onClick: boundaryOnclick,
     onMouseEnter: boundaryOnMouseEnter,
     onMouseLeave: boundaryOnMouseLeave,
-    getLayerId: boundaryGetLayerId,
+    getLayers: boundaryGetLayers,
   },
   wms: { component: WMSLayer },
   admin_level_data: {
     component: AdminLevelDataLayer,
     onClick: adminLevelLayerOnClick,
-    getLayerId: adminLevelGetLayerId,
+    getLayers: adminLevelGetLayers,
   },
   impact: {
     component: ImpactLayer,
     onClick: impactOnClick,
-    getLayerId: impactGetLayerId,
+    getLayers: impactGetLayers,
   },
   point_data: {
     component: PointDataLayer,
     onClick: pointDataOnClick,
-    getLayerId: pointDataGetLayerId,
+    getLayers: pointDataGetLayers,
   },
   static_raster: { component: StaticRasterLayer },
   composite: { component: CompositeLayer },
@@ -257,7 +261,7 @@ const MapComponent = memo(
 
     const boundaryId = firstBoundaryOnView(selectedMap);
 
-    const firstBoundaryId = boundaryId && `layer-${boundaryId}-line`;
+    const firstBoundaryId = boundaryId && getLayerMapId(boundaryId, 'line');
 
     const mapOnClick = useCallback(
       (
@@ -281,7 +285,7 @@ const MapComponent = memo(
         const previousLayerId = selectedLayers[index - 1].id;
 
         if (isLayerOnView(selectedMap, previousLayerId)) {
-          return `layer-${previousLayerId}-line`;
+          return getLayerMapId(previousLayerId);
         }
         return firstBoundaryId;
       },
@@ -314,7 +318,7 @@ const MapComponent = memo(
         onClick={mapOnClick(
           ...selectedLayers
             .map(layer => ({
-              layerId: componentTypes[layer.type].getLayerId?.(layer as any),
+              layerId: getLayerMapId(layer.id),
               fn: componentTypes[layer.type]?.onClick?.({
                 dispatch,
                 layer,
@@ -357,7 +361,8 @@ const MapComponent = memo(
         )}
         interactiveLayerIds={[
           ...selectedLayers
-            .map(layer => componentTypes[layer.type].getLayerId?.(layer as any))
+            .map(layer => componentTypes[layer.type].getLayers?.(layer as any))
+            .flat()
             .filter((x): x is string => typeof x !== 'undefined'),
           analysisLayerId,
         ]}

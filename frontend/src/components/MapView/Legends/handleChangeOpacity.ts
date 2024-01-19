@@ -1,6 +1,7 @@
 import { Map as MaplibreMap } from 'maplibre-gl';
 import { LayerType } from 'config/types';
 import React from 'react';
+import { getLayerMapId } from 'utils/map-utils';
 
 export const handleChangeOpacity = (
   event: React.ChangeEvent<{}>,
@@ -10,28 +11,27 @@ export const handleChangeOpacity = (
   type: LayerType['type'] | undefined,
   callback: (newVal: number) => void,
 ) => {
-  // TODO: maplibre: verify this
   // TODO: temporary solution for opacity adjustment, we hope to edit react-mapbox in the future to support changing props
   // because the whole map will be re-rendered if using state directly
-  if (map) {
+  if (map && id) {
     const [layerId, opacityType] = ((
       layerType?: LayerType['type'],
     ): [string, string] => {
       switch (layerType) {
         case 'wms':
-          return [`layer-${id}`, 'raster-opacity'];
+          return [getLayerMapId(id), 'raster-opacity'];
         case 'static_raster':
-          return [`layer-${id}`, 'raster-opacity'];
+          return [getLayerMapId(id), 'raster-opacity'];
         case 'impact':
         case 'admin_level_data':
-          return [`layer-${id}`, 'fill-opacity'];
+          return [getLayerMapId(id), 'fill-opacity'];
         case 'point_data':
           // This is a hacky way to support opacity change for Kobo data.
           // TODO - Handle Kobo data as admin_level_data instead of point_data. See issue #760.
           if (id?.includes('_report')) {
-            return [`layer-${id}`, 'fill-opacity'];
+            return [getLayerMapId(id), 'fill-opacity'];
           }
-          return [`layer-${id}`, 'circle-opacity'];
+          return [getLayerMapId(id), 'circle-opacity'];
         // analysis layer type is undefined TODO we should try make analysis a layer to remove edge cases like this
         case undefined:
           return ['layer-analysis', 'fill-opacity'];
