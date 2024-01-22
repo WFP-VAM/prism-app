@@ -2,7 +2,7 @@ import bbox from '@turf/bbox';
 import { findClosestDate } from 'components/MapView/DateSelector/utils';
 import { Extent } from 'components/MapView/Layers/raster-utils';
 import { checkLayerAvailableDatesAndContinueOrRemove } from 'components/MapView/utils';
-import { appConfig } from 'config';
+import { appConfig, safeCountry } from 'config';
 import {
   BoundaryLayerProps,
   LayerKey,
@@ -97,6 +97,9 @@ const useLayers = () => {
 
   // TODO - investigate if this is not too time consuming for larger countries.
   const adminBoundaryLimitPolygon = useMemo(() => {
+    if (safeCountry !== 'jordan') {
+      return undefined;
+    }
     if (!boundaryLayerData?.data) {
       return undefined;
     }
