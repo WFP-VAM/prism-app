@@ -26,6 +26,7 @@ export const handleChangeOpacity = (
         case 'admin_level_data':
           return [getLayerMapId(id), 'fill-opacity'];
         case 'point_data':
+        case 'composite':
           // This is a hacky way to support opacity change for Kobo data.
           // TODO - Handle Kobo data as admin_level_data instead of point_data. See issue #760.
           if (id?.includes('_report')) {

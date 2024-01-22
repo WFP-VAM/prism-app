@@ -18,32 +18,29 @@ interface Props extends WithStyles<typeof styles> {
 
 const scale = 5;
 
-const paintProps: CircleLayerSpecification['paint'] = {
+const paintProps: (
+  opacity: number | undefined,
+) => CircleLayerSpecification['paint'] = (opacity?: number) => ({
+  'circle-opacity': opacity || 0.5,
   'circle-color': [
     'interpolate',
-    // Set the exponential rate of change to 0.5
     ['linear'],
     ['get', 'value'],
-    // When zoom is 15, buildings will be beige.
     -2,
     '#FFFF33',
-    // When zoom is 18 or higher, buildings will be yellow.
     2,
     '#FF8433',
   ],
   'circle-radius': [
     'interpolate',
-    // Set the exponential rate of change to 0.5
     ['exponential', 2],
     ['zoom'],
-    // When zoom is 0, radius will be 1px.
     0,
     1 * scale,
-    // When zoom is 15 or higher, radius will be 15px.
     15,
     16 * scale,
   ],
-};
+});
 
 const CompositeLayer = ({ layer, before }: Props) => {
   // look to refacto with impactLayer and maybe other layers
@@ -65,7 +62,7 @@ const CompositeLayer = ({ layer, before }: Props) => {
         <Layer
           id={getLayerMapId(layer.id)}
           type="circle"
-          paint={paintProps}
+          paint={paintProps(layer.opacity)}
           beforeId={before}
         />
       </Source>

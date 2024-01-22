@@ -4036,11 +4036,24 @@
         "interval": "10-days"
       }
     ],
+    "legend": [
+      {
+        "value": -2,
+        "label": "Low",
+        "color": "#FFFF33"
+      },
+      {
+        "value": 2,
+        "label": "High",
+        "color": "#FF8433"
+      }
+    ],
+    "legend_text": "Composite Drought Index",
     "aggregation": "pixel",
     "interval": "1-month",
     "date_layer": "spi_1m",
     "date_type": "continuous",
     "start_date": "2023-12-01",
-    "opacity": 0.8
+    "opacity": 0.5
   }
 }

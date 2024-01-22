@@ -77,9 +77,9 @@ export const layerOrdering = (a: LayerType, b: LayerType) => {
     pattern_admin_level_data: 3,
     admin_level_data: 4,
     impact: 5,
+    composite: 5,
     wms: 6,
     static_raster: 7,
-    composite: 8,
   };
 
   const typeA = getTypeOrder(a);
