@@ -1956,6 +1956,7 @@
     "aggregation": "pixel",
     "interval": "1-month",
     "date_type": "continuous",
+    "date_layer": "spi_1m",
     "start_date": "2020-01-01",
     "end_date": "",
     "opacity": 0.8
