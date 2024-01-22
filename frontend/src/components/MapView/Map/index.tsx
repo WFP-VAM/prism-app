@@ -186,6 +186,7 @@ const MapComponent = memo(
       // Find the first symbol on the map to make sure we add boundary layers below them.
       setFirstSymbolId(layers?.find(layer => layer.type === 'symbol')?.id);
       dispatch(setMap(() => mapRef.current?.getMap() || undefined));
+
       if (showBoundaryInfo) {
         watchBoundaryChange(map);
       }
