@@ -1,7 +1,7 @@
 {
     "DataList": [
         {
-            "district_pcode": 1601,
+            "district_pcode": "1601",
             "District": "Beitbridge",
             "cereal_insecurity_2021": 32,
             "10_year_avg_cereal_insecurity": 22,
@@ -12,7 +12,7 @@
             "poor_borderline_fc": 81
         },
         {
-            "district_pcode": 1801,
+            "district_pcode": "1801",
             "District": "Bikita",
             "cereal_insecurity_2021": 35,
             "10_year_avg_cereal_insecurity": 31,
@@ -23,7 +23,7 @@
             "poor_borderline_fc": 90
         },
         {
-            "district_pcode": 1201,
+            "district_pcode": "1201",
             "District": "Bindura",
             "cereal_insecurity_2021": 13,
             "10_year_avg_cereal_insecurity": 22,
@@ -34,7 +34,7 @@
             "poor_borderline_fc": 75
         },
         {
-            "district_pcode": 1501,
+            "district_pcode": "1501",
             "District": "Binga",
             "cereal_insecurity_2021": 48,
             "10_year_avg_cereal_insecurity": 48,
@@ -45,7 +45,7 @@
             "poor_borderline_fc": 82
         },
         {
-            "district_pcode": 1502,
+            "district_pcode": "1502",
             "District": "Bubi",
             "cereal_insecurity_2021": 30,
             "10_year_avg_cereal_insecurity": 28,
@@ -56,7 +56,7 @@
             "poor_borderline_fc": 71
         },
         {
-            "district_pcode": 1101,
+            "district_pcode": "1101",
             "District": "Buhera",
             "cereal_insecurity_2021": 22,
             "10_year_avg_cereal_insecurity": 42,
@@ -67,7 +67,7 @@
             "poor_borderline_fc": 80
         },
         {
-            "district_pcode": 1602,
+            "district_pcode": "1602",
             "District": "Bulilima",
             "cereal_insecurity_2021": 53,
             "10_year_avg_cereal_insecurity": 38,
@@ -78,7 +78,7 @@
             "poor_borderline_fc": 74
         },
         {
-            "district_pcode": 1202,
+            "district_pcode": "1202",
             "District": "Muzarabani",
             "cereal_insecurity_2021": 18,
             "10_year_avg_cereal_insecurity": 23,
@@ -89,7 +89,7 @@
             "poor_borderline_fc": 75
         },
         {
-            "district_pcode": 1401,
+            "district_pcode": "1401",
             "District": "Chegutu",
             "cereal_insecurity_2021": 12,
             "10_year_avg_cereal_insecurity": 21,
@@ -100,7 +100,7 @@
             "poor_borderline_fc": 66
         },
         {
-            "district_pcode": 1301,
+            "district_pcode": "1301",
             "District": "Chikomba",
             "cereal_insecurity_2021": 25,
             "10_year_avg_cereal_insecurity": 22,
@@ -111,7 +111,7 @@
             "poor_borderline_fc": 63
         },
         {
-            "district_pcode": 1102,
+            "district_pcode": "1102",
             "District": "Chimanimani",
             "cereal_insecurity_2021": 11,
             "10_year_avg_cereal_insecurity": 22,
@@ -122,7 +122,7 @@
             "poor_borderline_fc": 73
         },
         {
-            "district_pcode": 1103,
+            "district_pcode": "1103",
             "District": "Chipinge",
             "cereal_insecurity_2021": 24,
             "10_year_avg_cereal_insecurity": 28,
@@ -133,7 +133,7 @@
             "poor_borderline_fc": 72
         },
         {
-            "district_pcode": 1802,
+            "district_pcode": "1802",
             "District": "Chiredzi",
             "cereal_insecurity_2021": 43,
             "10_year_avg_cereal_insecurity": 35,
@@ -144,7 +144,7 @@
             "poor_borderline_fc": 68
         },
         {
-            "district_pcode": 1701,
+            "district_pcode": "1701",
             "District": "Chirumanzu",
             "cereal_insecurity_2021": 30,
             "10_year_avg_cereal_insecurity": 31,
@@ -155,7 +155,7 @@
             "poor_borderline_fc": 71
         },
         {
-            "district_pcode": 1803,
+            "district_pcode": "1803",
             "District": "Chivi",
             "cereal_insecurity_2021": 34,
             "10_year_avg_cereal_insecurity": 37,
@@ -166,7 +166,7 @@
             "poor_borderline_fc": 76
         },
         {
-            "district_pcode": 1702,
+            "district_pcode": "1702",
             "District": "Gokwe North",
             "cereal_insecurity_2021": 24,
             "10_year_avg_cereal_insecurity": 36,
@@ -177,7 +177,7 @@
             "poor_borderline_fc": 69
         },
         {
-            "district_pcode": 1703,
+            "district_pcode": "1703",
             "District": "Gokwe South",
             "cereal_insecurity_2021": 19,
             "10_year_avg_cereal_insecurity": 27,
@@ -188,7 +188,7 @@
             "poor_borderline_fc": 70
         },
         {
-            "district_pcode": 1302,
+            "district_pcode": "1302",
             "District": "Goromonzi",
             "cereal_insecurity_2021": 8,
             "10_year_avg_cereal_insecurity": 21,
@@ -199,7 +199,7 @@
             "poor_borderline_fc": 58
         },
         {
-            "district_pcode": 1203,
+            "district_pcode": "1203",
             "District": "Guruve",
             "cereal_insecurity_2021": 17,
             "10_year_avg_cereal_insecurity": 21,
@@ -210,7 +210,7 @@
             "poor_borderline_fc": 73
         },
         {
-            "district_pcode": 1804,
+            "district_pcode": "1804",
             "District": "Gutu",
             "cereal_insecurity_2021": 24,
             "10_year_avg_cereal_insecurity": 24,
@@ -221,7 +221,7 @@
             "poor_borderline_fc": 70
         },
         {
-            "district_pcode": 1604,
+            "district_pcode": "1604",
             "District": "Gwanda",
             "cereal_insecurity_2021": 40,
             "10_year_avg_cereal_insecurity": 31,
@@ -232,7 +232,7 @@
             "poor_borderline_fc": 45
         },
         {
-            "district_pcode": 1704,
+            "district_pcode": "1704",
             "District": "Gweru",
             "cereal_insecurity_2021": 44,
             "10_year_avg_cereal_insecurity": 30,
@@ -243,7 +243,7 @@
             "poor_borderline_fc": 56
         },
         {
-            "district_pcode": 1402,
+            "district_pcode": "1402",
             "District": "Hurungwe",
             "cereal_insecurity_2021": 35,
             "10_year_avg_cereal_insecurity": 20,
@@ -254,7 +254,7 @@
             "poor_borderline_fc": 82
         },
         {
-            "district_pcode": 1503,
+            "district_pcode": "1503",
             "District": "Hwange",
             "cereal_insecurity_2021": 44,
             "10_year_avg_cereal_insecurity": 35,
@@ -265,7 +265,7 @@
             "poor_borderline_fc": 83
         },
         {
-            "district_pcode": 1303,
+            "district_pcode": "1303",
             "District": "Hwedza",
             "cereal_insecurity_2021": 33,
             "10_year_avg_cereal_insecurity": 22,
@@ -276,7 +276,7 @@
             "poor_borderline_fc": 62
         },
         {
-            "district_pcode": 1605,
+            "district_pcode": "1605",
             "District": "Insiza",
             "cereal_insecurity_2021": 18,
             "10_year_avg_cereal_insecurity": 26,
@@ -287,7 +287,7 @@
             "poor_borderline_fc": 57
         },
         {
-            "district_pcode": 1404,
+            "district_pcode": "1404",
             "District": "Kariba",
             "cereal_insecurity_2021": 42,
             "10_year_avg_cereal_insecurity": 45,
@@ -298,7 +298,7 @@
             "poor_borderline_fc": 88
         },
         {
-            "district_pcode": 1705,
+            "district_pcode": "1705",
             "District": "Kwekwe",
             "cereal_insecurity_2021": 11,
             "10_year_avg_cereal_insecurity": 23,
@@ -309,7 +309,7 @@
             "poor_borderline_fc": 72
         },
         {
-            "district_pcode": 1504,
+            "district_pcode": "1504",
             "District": "Lupane",
             "cereal_insecurity_2021": 44,
             "10_year_avg_cereal_insecurity": 35,
@@ -320,7 +320,7 @@
             "poor_borderline_fc": 75
         },
         {
-            "district_pcode": 1405,
+            "district_pcode": "1405",
             "District": "Makonde",
             "cereal_insecurity_2021": 13,
             "10_year_avg_cereal_insecurity": 15,
@@ -331,7 +331,7 @@
             "poor_borderline_fc": 74
         },
         {
-            "district_pcode": 1104,
+            "district_pcode": "1104",
             "District": "Makoni",
             "cereal_insecurity_2021": 38,
             "10_year_avg_cereal_insecurity": 26,
@@ -342,7 +342,7 @@
             "poor_borderline_fc": 72
         },
         {
-            "district_pcode": 1603,
+            "district_pcode": "1603",
             "District": "Mangwe",
             "cereal_insecurity_2021": 38,
             "10_year_avg_cereal_insecurity": 39,
@@ -353,7 +353,7 @@
             "poor_borderline_fc": 75
         },
         {
-            "district_pcode": 1304,
+            "district_pcode": "1304",
             "District": "Marondera",
             "cereal_insecurity_2021": 12,
             "10_year_avg_cereal_insecurity": 17,
@@ -364,7 +364,7 @@
             "poor_borderline_fc": 56
         },
         {
-            "district_pcode": 1805,
+            "district_pcode": "1805",
             "District": "Masvingo",
             "cereal_insecurity_2021": 27,
             "10_year_avg_cereal_insecurity": 29,
@@ -375,7 +375,7 @@
             "poor_borderline_fc": 65
         },
         {
-            "district_pcode": 1606,
+            "district_pcode": "1606",
             "District": "Matobo",
             "cereal_insecurity_2021": 24,
             "10_year_avg_cereal_insecurity": 26,
@@ -386,7 +386,7 @@
             "poor_borderline_fc": 84
         },
         {
-            "district_pcode": 1204,
+            "district_pcode": "1204",
             "District": "Mazowe",
             "cereal_insecurity_2021": 24,
             "10_year_avg_cereal_insecurity": 18,
@@ -397,7 +397,7 @@
             "poor_borderline_fc": 80
         },
         {
-            "district_pcode": 1706,
+            "district_pcode": "1706",
             "District": "Mberengwa",
             "cereal_insecurity_2021": 36,
             "10_year_avg_cereal_insecurity": 34,
@@ -408,7 +408,7 @@
             "poor_borderline_fc": 70
         },
         {
-            "district_pcode": 1208,
+            "district_pcode": "1208",
             "District": "Mbire",
             "cereal_insecurity_2021": 22,
             "10_year_avg_cereal_insecurity": 34,
@@ -419,7 +419,7 @@
             "poor_borderline_fc": 80
         },
         {
-            "district_pcode": 1427,
+            "district_pcode": "1427",
             "District": "Mhondoro_Ngezi",
             "cereal_insecurity_2021": 11,
             "10_year_avg_cereal_insecurity": 20,
@@ -430,7 +430,7 @@
             "poor_borderline_fc": 52
         },
         {
-            "district_pcode": 1205,
+            "district_pcode": "1205",
             "District": "Mt Darwin",
             "cereal_insecurity_2021": 16,
             "10_year_avg_cereal_insecurity": 30,
@@ -441,7 +441,7 @@
             "poor_borderline_fc": 81
         },
         {
-            "district_pcode": 1305,
+            "district_pcode": "1305",
             "District": "Mudzi",
             "cereal_insecurity_2021": 49,
             "10_year_avg_cereal_insecurity": 43,
@@ -452,7 +452,7 @@
             "poor_borderline_fc": 81
         },
         {
-            "district_pcode": 1306,
+            "district_pcode": "1306",
             "District": "Murehwa",
             "cereal_insecurity_2021": 5,
             "10_year_avg_cereal_insecurity": 21,
@@ -463,7 +463,7 @@
             "poor_borderline_fc": 67
         },
         {
-            "district_pcode": 1105,
+            "district_pcode": "1105",
             "District": "Mutare",
             "cereal_insecurity_2021": 40,
             "10_year_avg_cereal_insecurity": 31,
@@ -474,7 +474,7 @@
             "poor_borderline_fc": 91
         },
         {
-            "district_pcode": 1106,
+            "district_pcode": "1106",
             "District": "Mutasa",
             "cereal_insecurity_2021": 7,
             "10_year_avg_cereal_insecurity": 21,
@@ -485,7 +485,7 @@
             "poor_borderline_fc": 69
         },
         {
-            "district_pcode": 1307,
+            "district_pcode": "1307",
             "District": "Mutoko",
             "cereal_insecurity_2021": 9,
             "10_year_avg_cereal_insecurity": 28,
@@ -496,7 +496,7 @@
             "poor_borderline_fc": 79
         },
         {
-            "district_pcode": 1806,
+            "district_pcode": "1806",
             "District": "Mwenezi",
             "cereal_insecurity_2021": 51,
             "10_year_avg_cereal_insecurity": 40,
@@ -507,7 +507,7 @@
             "poor_borderline_fc": 90
         },
         {
-            "district_pcode": 1505,
+            "district_pcode": "1505",
             "District": "Nkayi",
             "cereal_insecurity_2021": 51,
             "10_year_avg_cereal_insecurity": 38,
@@ -518,7 +518,7 @@
             "poor_borderline_fc": 92
         },
         {
-            "district_pcode": 1107,
+            "district_pcode": "1107",
             "District": "Nyanga",
             "cereal_insecurity_2021": 15,
             "10_year_avg_cereal_insecurity": 24,
@@ -529,7 +529,7 @@
             "poor_borderline_fc": 70
         },
         {
-            "district_pcode": 1206,
+            "district_pcode": "1206",
             "District": "Rushinga",
             "cereal_insecurity_2021": 20,
             "10_year_avg_cereal_insecurity": 33,
@@ -540,7 +540,7 @@
             "poor_borderline_fc": 52
         },
         {
-            "district_pcode": 1428,
+            "district_pcode": "1428",
             "District": "Sanyati",
             "cereal_insecurity_2021": 4,
             "10_year_avg_cereal_insecurity": 22,
@@ -551,7 +551,7 @@
             "poor_borderline_fc": 82
         },
         {
-            "district_pcode": 1308,
+            "district_pcode": "1308",
             "District": "Seke",
             "cereal_insecurity_2021": 5,
             "10_year_avg_cereal_insecurity": 17,
@@ -562,7 +562,7 @@
             "poor_borderline_fc": 66
         },
         {
-            "district_pcode": 1207,
+            "district_pcode": "1207",
             "District": "Shamva",
             "cereal_insecurity_2021": 19,
             "10_year_avg_cereal_insecurity": 23,
@@ -573,7 +573,7 @@
             "poor_borderline_fc": 61
         },
         {
-            "district_pcode": 1707,
+            "district_pcode": "1707",
             "District": "Shurugwi",
             "cereal_insecurity_2021": 9,
             "10_year_avg_cereal_insecurity": 24,
@@ -584,7 +584,7 @@
             "poor_borderline_fc": 44
         },
         {
-            "district_pcode": 1506,
+            "district_pcode": "1506",
             "District": "Tsholotsho",
             "cereal_insecurity_2021": 51,
             "10_year_avg_cereal_insecurity": 42,
@@ -595,7 +595,7 @@
             "poor_borderline_fc": 71
         },
         {
-            "district_pcode": 1507,
+            "district_pcode": "1507",
             "District": "Umguza",
             "cereal_insecurity_2021": 33,
             "10_year_avg_cereal_insecurity": 42,
@@ -606,7 +606,7 @@
             "poor_borderline_fc": 71
         },
         {
-            "district_pcode": 1607,
+            "district_pcode": "1607",
             "District": "Umzingwane",
             "cereal_insecurity_2021": 40,
             "10_year_avg_cereal_insecurity": 37,
@@ -617,7 +617,7 @@
             "poor_borderline_fc": 62
         },
         {
-            "district_pcode": 1309,
+            "district_pcode": "1309",
             "District": "UMP",
             "cereal_insecurity_2021": 34,
             "10_year_avg_cereal_insecurity": 34,
@@ -628,7 +628,7 @@
             "poor_borderline_fc": 72
         },
         {
-            "district_pcode": 1807,
+            "district_pcode": "1807",
             "District": "Zaka",
             "cereal_insecurity_2021": 36,
             "10_year_avg_cereal_insecurity": 37,
@@ -639,7 +639,7 @@
             "poor_borderline_fc": 64
         },
         {
-            "district_pcode": 1406,
+            "district_pcode": "1406",
             "District": "Zvimba",
             "cereal_insecurity_2021": 15,
             "10_year_avg_cereal_insecurity": 25,
@@ -650,7 +650,7 @@
             "poor_borderline_fc": 82
         },
         {
-            "district_pcode": 1708,
+            "district_pcode": "1708",
             "District": "Zvishavane",
             "cereal_insecurity_2021": 18,
             "10_year_avg_cereal_insecurity": 38,
