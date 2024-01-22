@@ -1,11 +1,9 @@
 import React, { memo } from 'react';
-import moment from 'moment';
 import { useSelector } from 'react-redux';
 import { Layer, Source } from 'react-map-gl/maplibre';
 import { WMSLayerProps } from 'config/types';
 import { getWMSUrl } from 'components/MapView/Layers/raster-utils';
 import { useDefaultDate } from 'utils/useDefaultDate';
-import { DEFAULT_DATE_FORMAT } from 'utils/name-utils';
 import { getRequestDate } from 'utils/server-utils';
 import { availableDatesSelector } from 'context/serverStateSlice';
 import { getLayerMapId } from 'utils/map-utils';
@@ -22,18 +20,21 @@ const WMSLayers = ({
   }
   const layerAvailableDates = serverAvailableDates[serverLayerName];
   const queryDate = getRequestDate(layerAvailableDates, selectedDate);
+  const queryDateString = (queryDate ? new Date(queryDate) : new Date())
+    .toISOString()
+    .slice(0, 10);
 
   return (
     <Source
       id={`source-${id}`}
       type="raster"
       // refresh tiles every time date changes
-      key={moment(queryDate).format(DEFAULT_DATE_FORMAT)}
+      key={queryDateString}
       tiles={[
         `${getWMSUrl(baseUrl, serverLayerName, {
           ...additionalQueryParams,
           ...(selectedDate && {
-            time: moment(queryDate).format(DEFAULT_DATE_FORMAT),
+            time: queryDateString,
           }),
         })}&bbox={bbox-epsg-3857}`,
       ]}
