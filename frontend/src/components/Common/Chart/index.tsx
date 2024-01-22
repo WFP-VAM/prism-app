@@ -27,7 +27,11 @@ interface ChartData {
   }[];
 }
 
-function downloadCsv(chartData: ChartData, filename: string) {
+function downloadCsv(
+  chartData: ChartData,
+  filename: string,
+  dates: (string | number)[],
+) {
   const columnsNames = Object.fromEntries([
     ['date', 'Date'],
     ...chartData.datasets.map(x => [x.label, x.label.split(' ').join('_')]),
@@ -35,7 +39,7 @@ function downloadCsv(chartData: ChartData, filename: string) {
   const objectsArray = chartData.labels.map((date, index) => {
     const entries = chartData.datasets.map(set => [set.label, set.data[index]]);
     return {
-      date,
+      date: dates[index],
       ...Object.fromEntries(entries),
     };
   });
@@ -153,16 +157,27 @@ const Chart = memo(
       );
     }, [colorShuffle, config.colors, nshades]);
 
-    const labels = useMemo(() => {
+    const [labels, fullDatesForCsv] = useMemo<
+      [(string | number)[], (string | number)[]]
+    >(() => {
       if (!transpose) {
-        return indices.map(index => header[index]);
+        const ret = indices.map(index => header[index]);
+        return [ret, ret];
       }
-      return tableRows.slice(chartRange[0], chartRange[1]).map(row => {
-        const dateFormat = data.EWSConfig ? 'HH:mm' : 'YYYY-MM-DD';
-        return moment(row[config.category])
-          .locale(t('date_locale') as LocaleSpecifier)
-          .format(dateFormat);
-      });
+      const fullLabels = tableRows
+        .slice(chartRange[0], chartRange[1])
+        .map(row => {
+          return moment(row[config.category])
+            .locale(t('date_locale') as LocaleSpecifier)
+            .format('YYYY-MM-DD HH:mm');
+        });
+
+      return data.EWSConfig
+        ? [fullLabels.map(x => x.split(' ')[1]), fullLabels]
+        : [
+            fullLabels.map(x => x.split(' ')[0]),
+            fullLabels.map(x => x.split(' ')[0]),
+          ];
     }, [
       chartRange,
       config.category,
@@ -367,7 +382,11 @@ const Chart = memo(
               <Tooltip title={t('Download CSV') as string}>
                 <IconButton
                   onClick={() =>
-                    downloadCsv(chartData, title.split(' ').join('_'))
+                    downloadCsv(
+                      chartData,
+                      title.split(' ').join('_'),
+                      fullDatesForCsv,
+                    )
                   }
                   className={classes.secondIcon}
                   style={iconStyles}
@@ -402,6 +421,7 @@ const Chart = memo(
         classes.firstIcon,
         classes.secondIcon,
         config.type,
+        fullDatesForCsv,
         iconStyles,
         showDownloadIcons,
         t,
