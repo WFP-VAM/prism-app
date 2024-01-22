@@ -36,6 +36,7 @@ import {
   getPossibleDatesForLayer,
 } from 'utils/server-utils';
 import { UrlLayerKey, getUrlKey, useUrlHistory } from 'utils/url-utils';
+import { mergeBoundaryData } from 'components/MapView/Layers/layer-utils';
 import { datesAreEqualWithoutTime, binaryIncludes } from './date-utils';
 
 const dateSupportLayerTypes: Array<LayerType['type']> = [
@@ -92,6 +93,14 @@ const useLayers = () => {
       return undefined;
     }
     return bbox(boundaryLayerData.data) as Extent; // we get extents of admin boundaries to give to the api.
+  }, [boundaryLayerData]);
+
+  // TODO - investigate if this is not too time consuming for larger countries.
+  const adminBoundaryLimitPolygon = useMemo(() => {
+    if (!boundaryLayerData?.data) {
+      return undefined;
+    }
+    return mergeBoundaryData(boundaryLayerData?.data); // we get extents of admin boundaries to give to the api.
   }, [boundaryLayerData]);
 
   const selectedLayersWithDateSupport = useMemo(() => {
@@ -452,11 +461,12 @@ const useLayers = () => {
   ]);
 
   return {
+    adminBoundariesExtent,
+    adminBoundaryLimitPolygon,
     boundaryLayerId,
     numberOfActiveLayers,
-    selectedLayers,
-    adminBoundariesExtent,
     selectedLayerDates,
+    selectedLayers,
     selectedLayersWithDateSupport,
   };
 };

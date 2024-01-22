@@ -5,8 +5,11 @@ import { layerDataSelector } from 'context/mapStateSlice/selectors';
 import React, { memo, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Source, Layer } from 'react-map-gl/maplibre';
+import useLayers from 'utils/layers-utils';
 import { getLayerMapId } from 'utils/map-utils';
 import { CircleLayerSpecification } from 'maplibre-gl';
+import { Point } from 'geojson';
+import booleanPointInPolygon from '@turf/boolean-point-in-polygon';
 
 // to complete later
 const styles = () => createStyles({});
@@ -56,9 +59,23 @@ const CompositeLayer = ({ layer, before }: Props) => {
     }
   }, [dispatch, layer, data, date]);
 
-  if (data) {
+  const { adminBoundaryLimitPolygon } = useLayers();
+
+  if (data && adminBoundaryLimitPolygon) {
+    const filteredData = {
+      ...data,
+      features: data.features.filter(feature => {
+        return (
+          !adminBoundaryLimitPolygon ||
+          booleanPointInPolygon(
+            (feature.geometry as Point).coordinates,
+            adminBoundaryLimitPolygon as any,
+          )
+        );
+      }),
+    };
     return (
-      <Source type="geojson" data={data}>
+      <Source type="geojson" data={filteredData}>
         <Layer
           id={getLayerMapId(layer.id)}
           type="circle"
