@@ -105,7 +105,13 @@ const useLayers = () => {
         }
         if (layer.type === 'wms') {
           // some WMS layer might not have date dimension (i.e. static data)
-          return layer.serverLayerName in serverAvailableDates;
+          return layer.id in serverAvailableDates;
+        }
+        if (layer.type === 'composite') {
+          // some WMS layer might not have date dimension (i.e. static data)
+          console.log(serverAvailableDates);
+          console.log(layer.dateLayer);
+          return layer.dateLayer in serverAvailableDates;
         }
         return dateSupportLayerTypes.includes(layer.type);
       })

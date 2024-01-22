@@ -4,9 +4,21 @@
     "path": "data/jordan/jor_admbnda_adm3_jdos_merged.json",
     "opacity": 0.8,
     "admin_code": "admin3Pcod",
-    "admin_level_codes": ["admin1Pcod", "admin2Pcod", "admin3Pcod"],
-    "admin_level_names": ["admin1Name", "admin2Name", "admin3Name"],
-    "admin_level_local_names": ["admin1Na_1", "admin2Na_1", "admin3Na_1"],
+    "admin_level_codes": [
+      "admin1Pcod",
+      "admin2Pcod",
+      "admin3Pcod"
+    ],
+    "admin_level_names": [
+      "admin1Name",
+      "admin2Name",
+      "admin3Name"
+    ],
+    "admin_level_local_names": [
+      "admin1Na_1",
+      "admin2Na_1",
+      "admin3Na_1"
+    ],
     "styles:": {
       "fill": {
         "fill-opacity": 0
@@ -23,9 +35,18 @@
     "path": "data/jordan/jor_admbnda_adm2_jdos.json",
     "opacity": 0.8,
     "admin_code": "admin2Pcod",
-    "admin_level_codes": ["admin1Pcod", "admin2Pcod"],
-    "admin_level_names": ["admin1Name", "admin2Name"],
-    "admin_level_local_names": ["admin1Na_1", "admin2Na_1"],
+    "admin_level_codes": [
+      "admin1Pcod",
+      "admin2Pcod"
+    ],
+    "admin_level_names": [
+      "admin1Name",
+      "admin2Name"
+    ],
+    "admin_level_local_names": [
+      "admin1Na_1",
+      "admin2Na_1"
+    ],
     "styles:": {
       "fill": {
         "fill-opacity": 0
@@ -42,9 +63,15 @@
     "path": "data/jordan/jor_admbnda_adm1_jdos.json",
     "opacity": 0.8,
     "admin_code": "admin1Pcod",
-    "admin_level_codes": ["admin1Pcod"],
-    "admin_level_names": ["admin1Name"],
-    "admin_level_local_names": ["admin1Na_1"],
+    "admin_level_codes": [
+      "admin1Pcod"
+    ],
+    "admin_level_names": [
+      "admin1Name"
+    ],
+    "admin_level_local_names": [
+      "admin1Na_1"
+    ],
     "styles:": {
       "fill": {
         "fill-opacity": 0
@@ -420,8 +447,16 @@
     },
     "chart_data": {
       "fields": [
-        { "key": "rfh", "label": "Rainfall", "color": "#233f5f" },
-        { "key": "rfh_avg", "label": "Average", "color": "#bdf2e6" }
+        {
+          "key": "rfh",
+          "label": "Rainfall",
+          "color": "#233f5f"
+        },
+        {
+          "key": "rfh_avg",
+          "label": "Average",
+          "color": "#bdf2e6"
+        }
       ],
       "levels": [
         {
@@ -533,7 +568,11 @@
     },
     "chart_data": {
       "fields": [
-        { "key": "rfq", "label": "Rainfall anomaly", "color": "#375692" },
+        {
+          "key": "rfq",
+          "label": "Rainfall anomaly",
+          "color": "#375692"
+        },
         {
           "key": "rfq_avg",
           "label": "Normal",
@@ -642,8 +681,16 @@
     },
     "chart_data": {
       "fields": [
-        { "key": "r1h", "label": "Rainfall", "color": "#233f5f" },
-        { "key": "r1h_avg", "label": "Average", "color": "#bdf2e6" }
+        {
+          "key": "r1h",
+          "label": "Rainfall",
+          "color": "#233f5f"
+        },
+        {
+          "key": "r1h_avg",
+          "label": "Average",
+          "color": "#bdf2e6"
+        }
       ],
       "levels": [
         {
@@ -754,7 +801,11 @@
     },
     "chart_data": {
       "fields": [
-        { "key": "r1q", "label": "Rainfall anomaly", "color": "#375692" },
+        {
+          "key": "r1q",
+          "label": "Rainfall anomaly",
+          "color": "#375692"
+        },
         {
           "key": "rfq_avg",
           "label": "Normal",
@@ -862,8 +913,16 @@
     },
     "chart_data": {
       "fields": [
-        { "key": "r3h", "label": "Rainfall", "color": "#233f5f" },
-        { "key": "r3h_avg", "label": "Average", "color": "#bdf2e6" }
+        {
+          "key": "r3h",
+          "label": "Rainfall",
+          "color": "#233f5f"
+        },
+        {
+          "key": "r3h_avg",
+          "label": "Average",
+          "color": "#bdf2e6"
+        }
       ],
       "levels": [
         {
@@ -975,7 +1034,11 @@
     },
     "chart_data": {
       "fields": [
-        { "key": "r3q", "label": "Rainfall anomaly", "color": "#375692" },
+        {
+          "key": "r3q",
+          "label": "Rainfall anomaly",
+          "color": "#375692"
+        },
         {
           "key": "rfq_avg",
           "label": "Normal",
@@ -2219,8 +2282,16 @@
     },
     "chart_data": {
       "fields": [
-        { "key": "vim", "label": "NDVI", "color": "#4eac5b" },
-        { "key": "vim_avg", "label": "Average", "color": "#99ff99" }
+        {
+          "key": "vim",
+          "label": "NDVI",
+          "color": "#4eac5b"
+        },
+        {
+          "key": "vim_avg",
+          "label": "Average",
+          "color": "#99ff99"
+        }
       ],
       "levels": [
         {
@@ -2329,7 +2400,11 @@
     },
     "chart_data": {
       "fields": [
-        { "key": "viq", "label": "NDVI anomaly", "color": "#5e803f" },
+        {
+          "key": "viq",
+          "label": "NDVI anomaly",
+          "color": "#5e803f"
+        },
         {
           "key": "viq_avg",
           "label": "Normal",
@@ -3945,15 +4020,27 @@
     "type": "composite",
     "base_url": "data/jordan/jor_cdi-response.geojson",
     "input_layers": [
-      { "id": "spi_1m", "weight": 0.4, "interval": "1-month" },
-      { "id": "lst_anomaly", "weight": 0.3, "interval": "10-days" },
-      { "id": "ndvi_dekad_anomaly", "weight": 0.3, "interval": "10-days" }
+      {
+        "id": "spi_1m",
+        "weight": 0.4,
+        "interval": "1-month"
+      },
+      {
+        "id": "lst_anomaly",
+        "weight": 0.3,
+        "interval": "10-days"
+      },
+      {
+        "id": "ndvi_dekad_anomaly",
+        "weight": 0.3,
+        "interval": "10-days"
+      }
     ],
     "aggregation": "pixel",
     "interval": "1-month",
+    "date_layer": "spi_1m",
     "date_type": "continuous",
-    "start_date": "2020-01-01",
-    "end_date": "",
+    "start_date": "2023-12-01",
     "opacity": 0.8
   }
 }

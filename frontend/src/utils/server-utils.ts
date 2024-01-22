@@ -5,6 +5,7 @@ import { Dispatch } from 'redux';
 import { appConfig, safeCountry } from '../config';
 import type {
   AvailableDates,
+  CompositeLayerProps,
   PathLayer,
   PointDataLayerProps,
   RequestFeatureInfo,
@@ -73,7 +74,8 @@ export type DateCompatibleLayer =
   | WMSLayerProps
   | ImpactLayerProps
   | PointDataLayerProps
-  | StaticRasterLayerProps;
+  | StaticRasterLayerProps
+  | CompositeLayerProps;
 
 export const getPossibleDatesForLayer = (
   layer: DateCompatibleLayer,
@@ -92,6 +94,9 @@ export const getPossibleDatesForLayer = (
       return serverAvailableDates[layer.id];
     case 'static_raster':
       return serverAvailableDates[layer.id];
+    case 'composite':
+      console.log(serverAvailableDates[layer.dateLayer])
+      return serverAvailableDates[layer.dateLayer] || [];
     default:
       return [];
   }
