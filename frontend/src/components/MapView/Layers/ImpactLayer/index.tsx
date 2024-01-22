@@ -35,7 +35,9 @@ function getHazardData(evt: any, operation: string, t?: i18nTranslator) {
   return getRoundedData(data, t);
 }
 
-export const getLayers = (layer: ImpactLayerProps) => [getLayerMapId(layer.id)];
+export const getLayersIds = (layer: ImpactLayerProps) => [
+  getLayerMapId(layer.id),
+];
 
 export const onClick = ({
   layer,

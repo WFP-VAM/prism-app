@@ -45,19 +45,19 @@ import {
   onClick as boundaryOnclick,
   onMouseEnter as boundaryOnMouseEnter,
   onMouseLeave as boundaryOnMouseLeave,
-  getLayers as boundaryGetLayers,
+  getLayersIds as boundaryGetLayers,
 } from 'components/MapView/Layers/BoundaryLayer';
 import {
   onClick as adminLevelLayerOnClick,
-  getLayers as adminLevelGetLayers,
+  getLayersIds as adminLevelGetLayers,
 } from 'components/MapView/Layers/AdminLevelDataLayer';
 import {
   onClick as impactOnClick,
-  getLayers as impactGetLayers,
+  getLayersIds as impactGetLayers,
 } from 'components/MapView/Layers/ImpactLayer';
 import {
   onClick as pointDataOnClick,
-  getLayers as pointDataGetLayers,
+  getLayersIds as pointDataGetLayers,
 } from 'components/MapView/Layers/PointDataLayer';
 import useLayers from 'utils/layers-utils';
 import MapGL, {
@@ -82,7 +82,7 @@ type LayerComponentsMap<U extends LayerType> = {
     onClick?: MapEventWrapFunction<DiscriminateUnion<U, 'type', T>>;
     onMouseEnter?: MapEventWrapFunction<DiscriminateUnion<U, 'type', T>>;
     onMouseLeave?: MapEventWrapFunction<DiscriminateUnion<U, 'type', T>>;
-    getLayers?: (layer: DiscriminateUnion<U, 'type', T>) => string[];
+    getLayersIds?: (layer: DiscriminateUnion<U, 'type', T>) => string[];
   };
 };
 
@@ -92,23 +92,23 @@ const componentTypes: LayerComponentsMap<LayerType> = {
     onClick: boundaryOnclick,
     onMouseEnter: boundaryOnMouseEnter,
     onMouseLeave: boundaryOnMouseLeave,
-    getLayers: boundaryGetLayers,
+    getLayersIds: boundaryGetLayers,
   },
   wms: { component: WMSLayer },
   admin_level_data: {
     component: AdminLevelDataLayer,
     onClick: adminLevelLayerOnClick,
-    getLayers: adminLevelGetLayers,
+    getLayersIds: adminLevelGetLayers,
   },
   impact: {
     component: ImpactLayer,
     onClick: impactOnClick,
-    getLayers: impactGetLayers,
+    getLayersIds: impactGetLayers,
   },
   point_data: {
     component: PointDataLayer,
     onClick: pointDataOnClick,
-    getLayers: pointDataGetLayers,
+    getLayersIds: pointDataGetLayers,
   },
   static_raster: { component: StaticRasterLayer },
   composite: { component: CompositeLayer },
@@ -360,7 +360,9 @@ const MapComponent = memo(
         )}
         interactiveLayerIds={[
           ...selectedLayers
-            .map(layer => componentTypes[layer.type].getLayers?.(layer as any))
+            .map(layer =>
+              componentTypes[layer.type].getLayersIds?.(layer as any),
+            )
             .flat()
             .filter((x): x is string => typeof x !== 'undefined'),
           analysisLayerId,

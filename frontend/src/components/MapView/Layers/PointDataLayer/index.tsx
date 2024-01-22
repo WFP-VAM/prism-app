@@ -35,7 +35,7 @@ import {
 } from 'maplibre-gl';
 import { getLayerMapId } from 'utils/map-utils';
 
-export const getLayers = (layer: PointDataLayerProps) => [
+export const getLayersIds = (layer: PointDataLayerProps) => [
   getLayerMapId(layer.id),
 ];
 

@@ -28,7 +28,7 @@ interface ComponentProps {
   before?: string;
 }
 
-export const getLayers = (layer: BoundaryLayerProps) => [
+export const getLayersIds = (layer: BoundaryLayerProps) => [
   getLayerMapId(layer.id, 'fill'),
 ];
 

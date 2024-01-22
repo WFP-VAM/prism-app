@@ -31,7 +31,7 @@ import {
 import { convertSvgToPngBase64Image, getSVGShape } from 'utils/image-utils';
 import { FillLayerSpecification } from 'maplibre-gl';
 
-export const getLayers = (layer: AdminLevelDataLayerProps) => [
+export const getLayersIds = (layer: AdminLevelDataLayerProps) => [
   getLayerMapId(layer.id),
 ];
 
