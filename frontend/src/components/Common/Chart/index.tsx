@@ -27,11 +27,7 @@ interface ChartData {
   }[];
 }
 
-function downloadCsv(
-  chartData: ChartData,
-  filename: string,
-  dates: (string | number)[],
-) {
+function downloadCsv(chartData: ChartData, filename: string) {
   const columnsNames = Object.fromEntries([
     ['date', 'Date'],
     ...chartData.datasets.map(x => [x.label, x.label.split(' ').join('_')]),
@@ -39,7 +35,7 @@ function downloadCsv(
   const objectsArray = chartData.labels.map((date, index) => {
     const entries = chartData.datasets.map(set => [set.label, set.data[index]]);
     return {
-      date: dates[index],
+      date,
       ...Object.fromEntries(entries),
     };
   });
@@ -157,37 +153,16 @@ const Chart = memo(
       );
     }, [colorShuffle, config.colors, nshades]);
 
-    const [labels, fullDatesForCsv] = useMemo<
-      [(string | number)[], (string | number)[]]
-    >(() => {
+    const labels = useMemo(() => {
       if (!transpose) {
-        const ret = indices.map(index => header[index]);
-        return [ret, ret];
+        return indices.map(index => header[index]);
       }
-      const fullLabels = tableRows
-        .slice(chartRange[0], chartRange[1])
-        .map(row => {
-          return moment(row[config.category])
-            .locale(t('date_locale') as LocaleSpecifier)
-            .format('YYYY-MM-DD HH:mm');
-        });
-
-      return data.EWSConfig
-        ? [fullLabels.map(x => x.split(' ')[1]), fullLabels]
-        : [
-            fullLabels.map(x => x.split(' ')[0]),
-            fullLabels.map(x => x.split(' ')[0]),
-          ];
-    }, [
-      chartRange,
-      config.category,
-      data.EWSConfig,
-      header,
-      indices,
-      t,
-      tableRows,
-      transpose,
-    ]);
+      return tableRows.slice(chartRange[0], chartRange[1]).map(row => {
+        return moment(row[config.category])
+          .locale(t('date_locale') as LocaleSpecifier)
+          .format('YYYY-MM-DD HH:mm');
+      });
+    }, [chartRange, config.category, header, indices, t, tableRows, transpose]);
 
     // The table rows data sets
     const tableRowsDataSet = useMemo(() => {
@@ -303,10 +278,8 @@ const Chart = memo(
       ...set,
       data: set.data.slice(chartRange[0], chartRange[1]),
     }));
-    const chartData = {
-      labels,
-      datasets: datasetsTrimmed,
-    };
+
+    const shouldDisplayTime = !!data.EWSConfig;
 
     const chartConfig = useMemo(() => {
       return {
@@ -381,13 +354,15 @@ const Chart = memo(
               </Tooltip>
               <Tooltip title={t('Download CSV') as string}>
                 <IconButton
-                  onClick={() =>
-                    downloadCsv(
-                      chartData,
-                      title.split(' ').join('_'),
-                      fullDatesForCsv,
-                    )
-                  }
+                  onClick={() => {
+                    const chartData = {
+                      labels: labels.map(x =>
+                        shouldDisplayTime ? x : String(x).split(' ')[0],
+                      ),
+                      datasets: datasetsTrimmed,
+                    };
+                    downloadCsv(chartData, title.split(' ').join('_'));
+                  }}
                   className={classes.secondIcon}
                   style={iconStyles}
                 >
@@ -397,6 +372,14 @@ const Chart = memo(
             </>
           )}
           {(() => {
+            const chartData = {
+              labels: labels.map(x =>
+                shouldDisplayTime
+                  ? String(x).split(' ')[1]
+                  : String(x).split(' ')[0],
+              ),
+              datasets: datasetsTrimmed,
+            };
             switch (config.type) {
               case 'bar':
                 return (
@@ -417,12 +400,13 @@ const Chart = memo(
       ),
       [
         chartConfig,
-        chartData,
         classes.firstIcon,
         classes.secondIcon,
         config.type,
-        fullDatesForCsv,
+        datasetsTrimmed,
         iconStyles,
+        labels,
+        shouldDisplayTime,
         showDownloadIcons,
         t,
         title,
