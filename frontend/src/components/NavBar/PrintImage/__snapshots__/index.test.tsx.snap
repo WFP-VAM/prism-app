@@ -68,8 +68,20 @@ exports[`renders as expected 1`] = `
       >
         <div
           class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-10"
-          id="canvas-preview-container"
-        />
+          style="width: 75rem; height: 46.875rem; position: relative;"
+        >
+          <div
+            id="canvas-preview-container"
+            style="position: absolute; top: 0px; left: 0px;"
+          />
+          <div
+            style="position: absolute; top: 0px; left: 0px; height: 100%; width: 100%; z-index: -1;"
+          >
+            <div
+              style="position: relative; width: 100%; height: 100%;"
+            />
+          </div>
+        </div>
         <div
           class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-true"
         >
@@ -139,7 +151,15 @@ exports[`renders as expected 1`] = `
               </mock-typography>
             </label>
             <mock-button
-              classname="DownloadImage-editFooterButton-5"
+              classname="DownloadImage-firstButton-5"
+              color="primary"
+              endicon="[object Object]"
+              variant="contained"
+            >
+              Edit Map
+            </mock-button>
+            <mock-button
+              classname="DownloadImage-gutter-4"
               color="primary"
               disabled="false"
               endicon="[object Object]"
