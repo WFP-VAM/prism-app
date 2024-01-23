@@ -31,17 +31,9 @@ import moment from 'moment';
 import RefreshIcon from '@material-ui/icons/Refresh';
 import EditIcon from '@material-ui/icons/Edit';
 import CloseIcon from '@material-ui/icons/Close';
-import { componentTypes, mapStyle } from 'components/MapView/Map';
-import MapGL, { MapRef } from 'react-map-gl/maplibre';
+import { mapStyle } from 'components/MapView/Map';
+import MapGL, { Layer, MapRef } from 'react-map-gl/maplibre';
 import { appConfig } from 'config';
-import useLayers from 'utils/layers-utils';
-import {
-  firstBoundaryOnView,
-  getLayerMapId,
-  isLayerOnView,
-} from 'utils/map-utils';
-import AnalysisLayer from 'components/MapView/Layers/AnalysisLayer';
-import SelectionLayer from 'components/MapView/Layers/SelectionLayer';
 import ControlCameraIcon from '@material-ui/icons/ControlCamera';
 import DoneIcon from '@material-ui/icons/Done';
 import {
@@ -132,7 +124,6 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
   const { t, i18n } = useSafeTranslation();
   const selectedMap = useSelector(mapSelector);
   const dateRange = useSelector(dateRangeSelector);
-  const { selectedLayers } = useLayers();
 
   const previewRef = useRef<HTMLCanvasElement | null>(null);
   const mapRef = React.useRef<MapRef>(null);
@@ -158,7 +149,9 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
     width: number;
   }>({ width: 100, height: 100 });
 
-  React.useEffect(() => {}, []);
+  // Get the style and layers of the old map
+  const selectedMapStyle = selectedMap?.getStyle();
+  const selectedMapLayers = selectedMap?.getStyle()?.layers;
 
   React.useEffect(() => {
     const getDateText = (): string => {
@@ -428,29 +421,6 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
     handleDownloadMenuClose();
   };
 
-  const firstSymbolId = mapRef.current
-    ?.getStyle()
-    ?.layers.find(layer => layer.type === 'symbol')?.id;
-
-  const boundaryId = firstBoundaryOnView(mapRef.current?.getMap());
-
-  const firstBoundaryId = boundaryId && getLayerMapId(boundaryId);
-
-  const getBeforeId = React.useCallback(
-    (index: number) => {
-      if (index === 0) {
-        return firstSymbolId;
-      }
-      const previousLayerId = selectedLayers[index - 1].id;
-
-      if (isLayerOnView(selectedMap, previousLayerId)) {
-        return getLayerMapId(previousLayerId);
-      }
-      return firstBoundaryId;
-    },
-    [firstBoundaryId, firstSymbolId, selectedLayers, selectedMap],
-  );
-
   const options = [
     { checked: toggles.legend, name: 'legend', label: 'Legend' },
     {
@@ -529,19 +499,12 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
                       },
                     },
                   }}
-                  mapStyle={mapStyle.toString()}
+                  mapStyle={(selectedMapStyle as any) || mapStyle.toString()}
                   maxBounds={maxBounds}
                 >
-                  {selectedLayers.map((layer, index) => {
-                    const { component } = componentTypes[layer.type];
-                    return React.createElement(component as any, {
-                      key: layer.id,
-                      layer,
-                      before: getBeforeId(index),
-                    });
-                  })}
-                  <AnalysisLayer before={firstBoundaryId} />
-                  <SelectionLayer before={firstSymbolId} />
+                  {selectedMapLayers?.map(layer => (
+                    <Layer {...layer} />
+                  ))}
                 </MapGL>
               </div>
             </Grid>
