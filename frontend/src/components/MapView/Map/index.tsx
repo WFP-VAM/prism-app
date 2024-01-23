@@ -35,8 +35,12 @@ import {
 } from 'components/MapView/Layers';
 import useLayers from 'utils/layers-utils';
 import MapGL, { MapEvent, MapRef } from 'react-map-gl/maplibre';
-import { MapSourceDataEvent, Map as MaplibreMap } from 'maplibre-gl';
-
+import {
+  MapSourceDataEvent,
+  Map as MaplibreMap,
+  StyleSpecification,
+} from 'maplibre-gl';
+import mapStyle from './mapStyle.json';
 import 'maplibre-gl/dist/maplibre-gl.css';
 
 interface MapComponentProps {
@@ -50,9 +54,9 @@ type LayerComponentsMap<U extends LayerType> = {
   };
 };
 
-export const mapStyle = new URL(
+export const style = new URL(
   process.env.REACT_APP_DEFAULT_STYLE ||
-    'https://api.maptiler.com/maps/0ad52f6b-ccf2-4a36-a9b8-7ebd8365e56f/style.json?key=y2DTSu9yWiu755WByJr3',
+    'https://api.maptiler.com/maps/4a82947d-5c14-46b6-b8a1-80cc1e10abfe/style.json?key=y2DTSu9yWiu755WByJr3',
 );
 
 const componentTypes: LayerComponentsMap<LayerType> = {
@@ -225,7 +229,7 @@ const MapComponent = memo(
           bounds: boundingBox,
           fitBoundsOptions: { padding: fitBoundsOptions.padding },
         }}
-        mapStyle={mapStyle.toString()}
+        mapStyle={(mapStyle as StyleSpecification) || style.toString()}
         onLoad={onMapLoad}
         onClick={mapOnClick()}
         maxBounds={maxBounds}

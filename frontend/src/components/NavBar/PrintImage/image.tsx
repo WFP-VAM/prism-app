@@ -27,7 +27,7 @@ import React, { useRef, useState } from 'react';
 import MapGL, { Layer, MapRef, Source } from 'react-map-gl/maplibre';
 import { useSelector } from 'react-redux';
 import CancelIcon from '@material-ui/icons/Cancel';
-import { mapStyle } from 'components/MapView/Map';
+import { style as mapStyle } from 'components/MapView/Map';
 import { addFillPatternImagesInMap } from 'components/MapView/Layers/AdminLevelDataLayer';
 import { getDateFormat } from 'utils/date-utils';
 import useLayers from 'utils/layers-utils';
