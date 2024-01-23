@@ -15,6 +15,7 @@ import {
   makeStyles,
   Menu,
   MenuItem,
+  Slider,
   Switch,
   TextField,
   Theme,
@@ -30,12 +31,27 @@ import moment from 'moment';
 import RefreshIcon from '@material-ui/icons/Refresh';
 import EditIcon from '@material-ui/icons/Edit';
 import CloseIcon from '@material-ui/icons/Close';
+import { componentTypes, mapStyle } from 'components/MapView/Map';
+import MapGL, { MapRef } from 'react-map-gl/maplibre';
+import { appConfig } from 'config';
+import useLayers from 'utils/layers-utils';
+import {
+  firstBoundaryOnView,
+  getLayerMapId,
+  isLayerOnView,
+} from 'utils/map-utils';
+import AnalysisLayer from 'components/MapView/Layers/AnalysisLayer';
+import SelectionLayer from 'components/MapView/Layers/SelectionLayer';
+import ControlCameraIcon from '@material-ui/icons/ControlCamera';
+import DoneIcon from '@material-ui/icons/Done';
 import {
   dateRangeSelector,
   mapSelector,
 } from '../../../context/mapStateSlice/selectors';
 import { useSafeTranslation } from '../../../i18n';
 import { downloadToFile } from '../../MapView/utils';
+
+const defaultMapWidth = 75;
 
 const DEFAULT_FOOTER_TEXT =
   'The designations employed and the presentation of material in the map(s) do not imply the expression of any opinion on the part of WFP concerning the legal of constitutional status of any country, territory, city, or sea, or concerning the delimitation of its frontiers or boundaries.';
@@ -47,6 +63,18 @@ const useEditTextDialogPropsStyles = makeStyles((theme: Theme) => ({
     color: theme.palette.text.secondary,
   },
 }));
+
+function clearPreviewCanvas() {
+  const canvasContainer = document.getElementById(canvasPreviewContainerId);
+
+  if (!canvasContainer) {
+    return;
+  }
+
+  while (canvasContainer.firstChild) {
+    canvasContainer.removeChild(canvasContainer.firstChild);
+  }
+}
 
 interface EditTextDialogProps {
   open: boolean;
@@ -104,8 +132,10 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
   const { t, i18n } = useSafeTranslation();
   const selectedMap = useSelector(mapSelector);
   const dateRange = useSelector(dateRangeSelector);
+  const { selectedLayers } = useLayers();
 
   const previewRef = useRef<HTMLCanvasElement | null>(null);
+  const mapRef = React.useRef<MapRef>(null);
   // list of toggles
   const [toggles, setToggles] = React.useState({
     legend: true,
@@ -121,6 +151,14 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
   const [openFooterEdit, setOpenFooterEdit] = React.useState(false);
   const [footerText, setFooterText] = React.useState('');
   const [canRefresh, setCanRefresh] = React.useState(false);
+  const [mapInteract, setMapInteract] = React.useState(false);
+  // the % value of the original dimensions
+  const [mapDimensions, setMapDimensions] = React.useState<{
+    height: number;
+    width: number;
+  }>({ width: 100, height: 100 });
+
+  React.useEffect(() => {}, []);
 
   React.useEffect(() => {
     const getDateText = (): string => {
@@ -138,13 +176,18 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
     setFooterText(`${getDateText()} ${t(DEFAULT_FOOTER_TEXT)}`);
   }, [i18n.language, t, dateRange]);
 
+  const {
+    map: { boundingBox, minZoom, maxZoom, maxBounds },
+  } = appConfig;
+
   const createFooterElement = (
     inputFooterText: string = t(DEFAULT_FOOTER_TEXT),
+    width: string,
   ): HTMLDivElement => {
     const footer = document.createElement('div');
     // eslint-disable-next-line fp/no-mutation
     footer.innerHTML = `
-      <div style='width:100%;height:75px;padding:8px;font-size:12px'>
+      <div style='width:${width}px;height:75px;padding:8px;font-size:12px'>
         ${inputFooterText}
       </div>
     `;
@@ -152,19 +195,18 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
   };
 
   const refreshImage = async () => {
-    if (open && selectedMap) {
-      const activeLayers = selectedMap.getCanvas();
+    if (open && mapRef.current) {
+      const map = mapRef.current.getMap();
+      const activeLayers = map.getCanvas();
 
       const canvas = document.createElement('canvas');
       const canvasContainer = document.getElementById(canvasPreviewContainerId);
-
       if (!canvasContainer) {
         return;
       }
 
-      while (canvasContainer.firstChild) {
-        canvasContainer.removeChild(canvasContainer.firstChild);
-      }
+      clearPreviewCanvas();
+
       // eslint-disable-next-line fp/no-mutation
       canvas.style.width = '100%';
 
@@ -249,7 +291,7 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
         }
 
         if (toggles.scaleBar) {
-          selectedMap.addControl(new maplibregl.ScaleControl({}), 'top-right');
+          map.addControl(new maplibregl.ScaleControl({}), 'top-right');
           const elem = document.querySelector(
             '.maplibregl-ctrl-scale',
           ) as HTMLElement;
@@ -281,7 +323,10 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
 
         // toggle footer
         if (toggles.footer) {
-          const footer = createFooterElement(footerText);
+          const footer = createFooterElement(
+            footerText,
+            activeLayers.width.toString(),
+          );
           document.body.appendChild(footer);
           const c = await html2canvas(footer);
           offScreenContext.drawImage(
@@ -325,6 +370,15 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
     refreshImage();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open, footerText]);
+
+  React.useEffect(() => {
+    if (!mapInteract) {
+      refreshImage();
+    } else {
+      clearPreviewCanvas();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [mapInteract]);
 
   const toggle = (event: ChangeEvent<HTMLInputElement>) => {
     setToggles(prevValues => {
@@ -374,6 +428,29 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
     handleDownloadMenuClose();
   };
 
+  const firstSymbolId = mapRef.current
+    ?.getStyle()
+    ?.layers.find(layer => layer.type === 'symbol')?.id;
+
+  const boundaryId = firstBoundaryOnView(mapRef.current?.getMap());
+
+  const firstBoundaryId = boundaryId && getLayerMapId(boundaryId);
+
+  const getBeforeId = React.useCallback(
+    (index: number) => {
+      if (index === 0) {
+        return firstSymbolId;
+      }
+      const previousLayerId = selectedLayers[index - 1].id;
+
+      if (isLayerOnView(selectedMap, previousLayerId)) {
+        return getLayerMapId(previousLayerId);
+      }
+      return firstBoundaryId;
+    },
+    [firstBoundaryId, firstSymbolId, selectedLayers, selectedMap],
+  );
+
   const options = [
     { checked: toggles.legend, name: 'legend', label: 'Legend' },
     {
@@ -407,7 +484,68 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
         </DialogTitle>
         <DialogContent>
           <Grid container>
-            <Grid item xs={10} id="canvas-preview-container" />
+            <Grid
+              item
+              xs={10}
+              style={{
+                width: `${defaultMapWidth}rem`,
+                height: `${defaultMapWidth / 1.6}rem`,
+                position: 'relative',
+              }}
+            >
+              <div
+                id={canvasPreviewContainerId}
+                style={{
+                  position: 'absolute',
+                  top: 0,
+                  left: 0,
+                  zIndex: mapInteract ? -1 : undefined,
+                }}
+              />
+              <div
+                style={{
+                  position: 'absolute',
+                  top: 0,
+                  left: 0,
+                  height: `${mapDimensions.height}%`,
+                  width: `${mapDimensions.width}%`,
+                  zIndex: mapInteract ? undefined : -1,
+                }}
+              >
+                <MapGL
+                  ref={mapRef}
+                  // preserveDrawingBuffer is required for the map to be exported as an image
+                  preserveDrawingBuffer
+                  minZoom={minZoom}
+                  maxZoom={maxZoom}
+                  initialViewState={{
+                    bounds: boundingBox,
+                    fitBoundsOptions: {
+                      padding: {
+                        bottom: 150,
+                        left: 500,
+                        right: 60,
+                        top: 70,
+                      },
+                    },
+                  }}
+                  mapStyle={mapStyle.toString()}
+                  maxBounds={maxBounds}
+                >
+                  {selectedLayers.map((layer, index) => {
+                    const { component } = componentTypes[layer.type];
+                    return React.createElement(component as any, {
+                      key: layer.id,
+                      layer,
+                      before: getBeforeId(index),
+                    });
+                  })}
+                  <AnalysisLayer before={firstBoundaryId} />
+                  <SelectionLayer before={firstSymbolId} />
+                </MapGL>
+              </div>
+            </Grid>
+
             <Grid item xs>
               <Box display="flex" flexDirection="column" pl={5}>
                 <Box
@@ -440,7 +578,53 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
                 <Button
                   variant="contained"
                   color="primary"
-                  className={classes.editFooterButton}
+                  className={classes.firstButton}
+                  endIcon={mapInteract ? <DoneIcon /> : <ControlCameraIcon />}
+                  onClick={() => setMapInteract(prev => !prev)}
+                  // disabled={!toggles.footer}
+                >
+                  {mapInteract ? t('Preview') : t('Edit Map')}
+                </Button>
+                {mapInteract && (
+                  <>
+                    <Typography color="textSecondary" variant="h4" gutterBottom>
+                      {t('width')}
+                    </Typography>
+                    <Slider
+                      defaultValue={100}
+                      min={50}
+                      max={100}
+                      value={mapDimensions.width}
+                      onChange={(e, val) =>
+                        setMapDimensions(prev => ({
+                          ...(prev || {}),
+                          width: val as number,
+                        }))
+                      }
+                    />
+                    <Typography color="textSecondary" variant="h4" gutterBottom>
+                      {t('height')}
+                    </Typography>
+                    <Slider
+                      className={classes.gutter}
+                      defaultValue={100}
+                      min={50}
+                      max={100}
+                      value={mapDimensions.height}
+                      onChange={(e, val) =>
+                        setMapDimensions(prev => ({
+                          ...(prev || {}),
+                          height: val as number,
+                        }))
+                      }
+                    />
+                  </>
+                )}
+
+                <Button
+                  variant="contained"
+                  color="primary"
+                  className={classes.gutter}
                   endIcon={<EditIcon />}
                   onClick={() => setOpenFooterEdit(true)}
                   disabled={!toggles.footer}
@@ -515,7 +699,7 @@ const styles = (theme: Theme) =>
     gutter: {
       marginBottom: 10,
     },
-    editFooterButton: {
+    firstButton: {
       marginTop: 20,
       marginBottom: 10,
     },
