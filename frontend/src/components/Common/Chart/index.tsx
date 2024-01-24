@@ -159,9 +159,11 @@ const Chart = memo(
         return indices.map(index => header[index]);
       }
       return tableRows.slice(chartRange[0], chartRange[1]).map(row => {
+        // Time information is only needed for EWS charts
+        const dateFormat = isEWSChart ? 'YYYY-MM-DD HH:mm' : 'YYYY-MM-DD';
         return moment(row[config.category])
           .locale(t('date_locale') as LocaleSpecifier)
-          .format(isEWSChart ? 'YYYY-MM-DD HH:mm' : 'YYYY-MM-DD');
+          .format(dateFormat);
       });
     }, [
       chartRange,
