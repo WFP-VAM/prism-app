@@ -179,9 +179,7 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
     const footer = document.createElement('div');
     // eslint-disable-next-line fp/no-mutation
     footer.innerHTML = `
-      <div style='width:${
-        width - 16
-      }px;height:75px;margin:8px;font-size:12px;background:green;'>
+      <div style='width:${width - 16}px;height:75px;margin:8px;font-size:12px'>
         ${inputFooterText}
       </div>
     `;
