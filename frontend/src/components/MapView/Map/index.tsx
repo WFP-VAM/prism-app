@@ -298,6 +298,7 @@ const MapComponent = memo(
     return (
       <MapGL
         ref={mapRef}
+        dragRotate={false}
         // preserveDrawingBuffer is required for the map to be exported as an image
         preserveDrawingBuffer
         minZoom={minZoom}

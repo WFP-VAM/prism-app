@@ -2,8 +2,10 @@ import React, { ChangeEvent, useRef } from 'react';
 import maplibregl from 'maplibre-gl';
 import { useSelector } from 'react-redux';
 import {
+  Backdrop,
   Box,
   Button,
+  CircularProgress,
   createStyles,
   Dialog,
   DialogActions,
@@ -19,6 +21,7 @@ import {
   Switch,
   TextField,
   Theme,
+  Tooltip,
   Typography,
   WithStyles,
   withStyles,
@@ -33,7 +36,6 @@ import EditIcon from '@material-ui/icons/Edit';
 import CloseIcon from '@material-ui/icons/Close';
 import { mapStyle } from 'components/MapView/Map';
 import MapGL, { Layer, MapRef } from 'react-map-gl/maplibre';
-import { appConfig } from 'config';
 import ControlCameraIcon from '@material-ui/icons/ControlCamera';
 import DoneIcon from '@material-ui/icons/Done';
 import {
@@ -142,7 +144,8 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
   const [openFooterEdit, setOpenFooterEdit] = React.useState(false);
   const [footerText, setFooterText] = React.useState('');
   const [canRefresh, setCanRefresh] = React.useState(false);
-  const [mapInteract, setMapInteract] = React.useState(false);
+  const [mapInteract, setMapInteract] = React.useState(true);
+  const [mapLoading, setMapLoading] = React.useState(true);
   // the % value of the original dimensions
   const [mapDimensions, setMapDimensions] = React.useState<{
     height: number;
@@ -168,10 +171,6 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
     };
     setFooterText(`${getDateText()} ${t(DEFAULT_FOOTER_TEXT)}`);
   }, [i18n.language, t, dateRange]);
-
-  const {
-    map: { boundingBox, minZoom, maxZoom, maxBounds },
-  } = appConfig;
 
   const createFooterElement = (
     inputFooterText: string = t(DEFAULT_FOOTER_TEXT),
@@ -360,6 +359,12 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
   };
 
   React.useEffect(() => {
+    if (open) {
+      setMapLoading(true);
+    }
+  }, [open]);
+
+  React.useEffect(() => {
     refreshImage();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open, footerText]);
@@ -472,6 +477,13 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
                   zIndex: mapInteract ? -1 : undefined,
                 }}
               />
+              {mapLoading && (
+                <div className={classes.backdropWrapper}>
+                  <Backdrop className={classes.backdrop} open={mapLoading}>
+                    <CircularProgress />
+                  </Backdrop>
+                </div>
+              )}
               <div
                 style={{
                   position: 'absolute',
@@ -482,30 +494,29 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
                   zIndex: mapInteract ? undefined : -1,
                 }}
               >
-                <MapGL
-                  ref={mapRef}
-                  // preserveDrawingBuffer is required for the map to be exported as an image
-                  preserveDrawingBuffer
-                  minZoom={minZoom}
-                  maxZoom={maxZoom}
-                  initialViewState={{
-                    bounds: boundingBox,
-                    fitBoundsOptions: {
-                      padding: {
-                        bottom: 150,
-                        left: 500,
-                        right: 60,
-                        top: 70,
-                      },
-                    },
-                  }}
-                  mapStyle={(selectedMapStyle as any) || mapStyle.toString()}
-                  maxBounds={maxBounds}
-                >
-                  {selectedMapLayers?.map(layer => (
-                    <Layer {...layer} />
-                  ))}
-                </MapGL>
+                {selectedMap && open && (
+                  <MapGL
+                    ref={mapRef}
+                    dragRotate={false}
+                    // preserveDrawingBuffer is required for the map to be exported as an image
+                    preserveDrawingBuffer
+                    onLoad={e => {
+                      e.target.setCenter(selectedMap.getCenter());
+                      e.target.setZoom(selectedMap.getZoom());
+                    }}
+                    onIdle={() => {
+                      setMapLoading(false);
+                    }}
+                    minZoom={selectedMap.getMinZoom()}
+                    maxZoom={selectedMap.getMaxZoom()}
+                    mapStyle={(selectedMapStyle as any) || mapStyle.toString()}
+                    maxBounds={selectedMap.getMaxBounds() ?? undefined}
+                  >
+                    {selectedMapLayers?.map(layer => (
+                      <Layer {...layer} />
+                    ))}
+                  </MapGL>
+                )}
               </div>
             </Grid>
 
@@ -607,15 +618,18 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
                 >
                   {t('Refresh Image')}
                 </Button>
-                <Button
-                  variant="contained"
-                  color="primary"
-                  className={classes.gutter}
-                  endIcon={<GetAppIcon />}
-                  onClick={e => handleDownloadMenuOpen(e)}
-                >
-                  {t('Download')}
-                </Button>
+                <Tooltip title={mapInteract ? 'Preview first' : ''}>
+                  <Button
+                    disabled={mapInteract}
+                    variant="contained"
+                    color="primary"
+                    className={classes.gutter}
+                    endIcon={<GetAppIcon />}
+                    onClick={e => handleDownloadMenuOpen(e)}
+                  >
+                    {t('Download')}
+                  </Button>
+                </Tooltip>
                 <Menu
                   anchorEl={downloadMenuAnchorEl}
                   keepMounted
@@ -671,6 +685,19 @@ const styles = (theme: Theme) =>
       right: theme.spacing(1),
       top: theme.spacing(1),
       color: theme.palette.grey[500],
+    },
+    backdrop: {
+      position: 'absolute',
+    },
+    backdropWrapper: {
+      position: 'absolute',
+      top: 0,
+      left: 0,
+      zIndex: 2,
+      width: '100%',
+      height: '100%',
+      display: 'flex',
+      justifyContent: 'center',
     },
   });
 
