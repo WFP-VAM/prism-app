@@ -11,15 +11,12 @@ import { CircleLayerSpecification } from 'maplibre-gl';
 import { Point } from 'geojson';
 import booleanPointInPolygon from '@turf/boolean-point-in-polygon';
 
-// to complete later
 const styles = () => createStyles({});
 
 interface Props extends WithStyles<typeof styles> {
   layer: CompositeLayerProps;
   before?: string;
 }
-
-const scale = 5;
 
 const paintProps: (
   opacity: number | undefined,
@@ -38,10 +35,15 @@ const paintProps: (
     'interpolate',
     ['exponential', 2],
     ['zoom'],
-    0,
-    1 * scale,
-    15,
-    16 * scale,
+    // this is actually a list of pairs "zoom,size"
+    7,
+    8,
+    10,
+    20,
+    13,
+    200,
+    16,
+    300,
   ],
 });
 

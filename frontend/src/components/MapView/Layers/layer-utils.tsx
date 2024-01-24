@@ -128,7 +128,7 @@ export const addPopupParams = (
 // Define the type for boundary data
 type BoundaryData = GeoJSON.FeatureCollection;
 
-// Define the function
+// Function to merge boundary data and return a single polygon
 export const mergeBoundaryData = (boundaryData: BoundaryData | undefined) => {
   let mergedBoundaryData: Feature<Geometry> | null = null;
   if ((boundaryData?.features.length || 0) > 0) {
