@@ -174,12 +174,14 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
 
   const createFooterElement = (
     inputFooterText: string = t(DEFAULT_FOOTER_TEXT),
-    width: string,
+    width: number,
   ): HTMLDivElement => {
     const footer = document.createElement('div');
     // eslint-disable-next-line fp/no-mutation
     footer.innerHTML = `
-      <div style='width:${width}px;height:75px;padding:8px;font-size:12px'>
+      <div style='width:${
+        width - 16
+      }px;height:75px;margin:8px;font-size:12px;background:green;'>
         ${inputFooterText}
       </div>
     `;
@@ -315,10 +317,7 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
 
         // toggle footer
         if (toggles.footer) {
-          const footer = createFooterElement(
-            footerText,
-            activeLayers.width.toString(),
-          );
+          const footer = createFooterElement(footerText, activeLayers.width);
           document.body.appendChild(footer);
           const c = await html2canvas(footer);
           offScreenContext.drawImage(
