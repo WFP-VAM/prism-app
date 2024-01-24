@@ -378,9 +378,9 @@ const Chart = memo(
               </Tooltip>
               <Tooltip title={t('Download CSV') as string}>
                 <IconButton
-                  onClick={() => {
-                    downloadCsv(chartData, title.split(' ').join('_'));
-                  }}
+                  onClick={() =>
+                    downloadCsv(chartData, title.split(' ').join('_'))
+                  }
                   className={classes.secondIcon}
                   style={iconStyles}
                 >
