@@ -72,24 +72,31 @@ exports[`renders as expected 1`] = `
         >
           <div
             id="canvas-preview-container"
-            style="position: absolute; top: 0px; left: 0px;"
+            style="position: absolute; top: 0px; left: 0px; z-index: -1;"
           />
           <div
-            style="position: absolute; top: 0px; left: 0px; height: 100%; width: 100%; z-index: -1;"
+            class="DownloadImage-backdropWrapper-8"
           >
             <div
-              style="position: relative; width: 100%; height: 100%;"
-            />
+              aria-hidden="true"
+              class="MuiBackdrop-root DownloadImage-backdrop-7"
+              style="opacity: 1; webkit-transition: opacity 225ms cubic-bezier(0.4, 0, 0.2, 1) 0ms; transition: opacity 225ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;"
+            >
+              <mock-circularprogress />
+            </div>
           </div>
+          <div
+            style="position: absolute; top: 0px; left: 0px; height: 100%; width: 100%;"
+          />
         </div>
         <div
           class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-true"
         >
           <div
-            class="MuiBox-root MuiBox-root-7"
+            class="MuiBox-root MuiBox-root-9"
           >
             <div
-              class="MuiBox-root MuiBox-root-8 DownloadImage-title-2"
+              class="MuiBox-root MuiBox-root-10 DownloadImage-title-2"
             >
               Map Options
             </div>
@@ -156,8 +163,74 @@ exports[`renders as expected 1`] = `
               endicon="[object Object]"
               variant="contained"
             >
-              Edit Map
+              Preview
             </mock-button>
+            <mock-typography
+              color="textSecondary"
+              gutterbottom="true"
+              variant="h4"
+            >
+              width
+            </mock-typography>
+            <span
+              class="MuiSlider-root MuiSlider-colorPrimary"
+            >
+              <span
+                class="MuiSlider-rail"
+              />
+              <span
+                class="MuiSlider-track"
+                style="left: 0%; width: 100%;"
+              />
+              <input
+                type="hidden"
+                value="100"
+              />
+              <span
+                aria-orientation="horizontal"
+                aria-valuemax="100"
+                aria-valuemin="50"
+                aria-valuenow="100"
+                class="MuiSlider-thumb MuiSlider-thumbColorPrimary"
+                data-index="0"
+                role="slider"
+                style="left: 100%;"
+                tabindex="0"
+              />
+            </span>
+            <mock-typography
+              color="textSecondary"
+              gutterbottom="true"
+              variant="h4"
+            >
+              height
+            </mock-typography>
+            <span
+              class="MuiSlider-root MuiSlider-colorPrimary DownloadImage-gutter-4"
+            >
+              <span
+                class="MuiSlider-rail"
+              />
+              <span
+                class="MuiSlider-track"
+                style="left: 0%; width: 100%;"
+              />
+              <input
+                type="hidden"
+                value="100"
+              />
+              <span
+                aria-orientation="horizontal"
+                aria-valuemax="100"
+                aria-valuemin="50"
+                aria-valuenow="100"
+                class="MuiSlider-thumb MuiSlider-thumbColorPrimary"
+                data-index="0"
+                role="slider"
+                style="left: 100%;"
+                tabindex="0"
+              />
+            </span>
             <mock-button
               classname="DownloadImage-gutter-4"
               color="primary"
@@ -176,14 +249,19 @@ exports[`renders as expected 1`] = `
             >
               Refresh Image
             </mock-button>
-            <mock-button
-              classname="DownloadImage-gutter-4"
-              color="primary"
-              endicon="[object Object]"
-              variant="contained"
+            <mock-tooltip
+              title="Preview first"
             >
-              Download
-            </mock-button>
+              <mock-button
+                classname="DownloadImage-gutter-4"
+                color="primary"
+                disabled="true"
+                endicon="[object Object]"
+                variant="contained"
+              >
+                Download
+              </mock-button>
+            </mock-tooltip>
             <mock-menu
               keepmounted="true"
               open="false"
@@ -208,7 +286,7 @@ exports[`renders as expected 1`] = `
     open="false"
   >
     <mock-dialogtitle
-      classname="makeStyles-title-9"
+      classname="makeStyles-title-16"
     >
       Edit Footer Text
     </mock-dialogtitle>
