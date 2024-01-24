@@ -124,7 +124,7 @@ const MapTooltip = ({ classes }: TooltipProps) => {
           onClick={() => dispatch(hidePopup())}
           size="small"
         >
-          <FontAwesomeIcon icon={faTimes} />
+          <FontAwesomeIcon icon={faTimes} style={{ paddingRight: '3px' }} />
         </IconButton>
         <PopupPointDataChart />
       </Popup>
@@ -156,7 +156,7 @@ const MapTooltip = ({ classes }: TooltipProps) => {
           onClick={() => setAdminLevel(undefined)}
           size="small"
         >
-          <FontAwesomeIcon icon={faTimes} />
+          <FontAwesomeIcon icon={faTimes} style={{ paddingRight: '3px' }} />
         </IconButton>
       )}
       <PopupCharts
