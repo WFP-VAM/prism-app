@@ -239,8 +239,8 @@ const Chart = memo(
     ]);
 
     const EWSthresholds = useMemo(() => {
-      if (isEWSChart) {
-        return Object.values(isEWSChart).map(obj => ({
+      if (data.EWSConfig) {
+        return Object.values(data.EWSConfig).map(obj => ({
           label: obj.label,
           backgroundColor: obj.color,
           borderColor: obj.color,
@@ -253,7 +253,7 @@ const Chart = memo(
         }));
       }
       return [];
-    }, [isEWSChart]);
+    }, [data.EWSConfig]);
 
     /**
      * The following value assumes that the data is formatted as follows:
