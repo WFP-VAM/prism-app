@@ -31,7 +31,6 @@ import html2canvas from 'html2canvas';
 import GetAppIcon from '@material-ui/icons/GetApp';
 import { legendListId } from 'components/MapView/Legends';
 import moment from 'moment';
-import RefreshIcon from '@material-ui/icons/Refresh';
 import EditIcon from '@material-ui/icons/Edit';
 import CloseIcon from '@material-ui/icons/Close';
 import { mapStyle } from 'components/MapView/Map';
@@ -57,18 +56,6 @@ const useEditTextDialogPropsStyles = makeStyles((theme: Theme) => ({
     color: theme.palette.text.secondary,
   },
 }));
-
-function clearPreviewCanvas() {
-  const canvasContainer = document.getElementById(canvasPreviewContainerId);
-
-  if (!canvasContainer) {
-    return;
-  }
-
-  while (canvasContainer.firstChild) {
-    canvasContainer.removeChild(canvasContainer.firstChild);
-  }
-}
 
 interface EditTextDialogProps {
   open: boolean;
@@ -143,7 +130,6 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
   ] = React.useState<HTMLElement | null>(null);
   const [openFooterEdit, setOpenFooterEdit] = React.useState(false);
   const [footerText, setFooterText] = React.useState('');
-  const [canRefresh, setCanRefresh] = React.useState(false);
   const [mapInteract, setMapInteract] = React.useState(true);
   const [mapLoading, setMapLoading] = React.useState(true);
   // the % value of the original dimensions
@@ -197,7 +183,10 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
         return;
       }
 
-      clearPreviewCanvas();
+      // clear canvas
+      while (canvasContainer.firstChild) {
+        canvasContainer.removeChild(canvasContainer.firstChild);
+      }
 
       // eslint-disable-next-line fp/no-mutation
       canvas.style.width = '100%';
@@ -211,8 +200,9 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
         let scalerBarLength = 0;
         const scaleBarGap = 10;
 
-        canvas.setAttribute('width', activeLayers.width.toString());
-        canvas.setAttribute('height', activeLayers.height.toString());
+        canvas.setAttribute('width', `${activeLayers.width}px`);
+        canvas.setAttribute('height', `${activeLayers.height}px`);
+        canvas.setAttribute('style', '');
         const context = canvas.getContext('2d');
 
         // in chrome canvas does not draw as expected if it is already in dom
@@ -230,7 +220,10 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
 
         context.clearRect(0, 0, canvas.width, canvas.height);
 
-        offScreenContext.drawImage(activeLayers, 0, 0);
+        // Draw the map
+        if (!mapInteract) {
+          offScreenContext.drawImage(activeLayers, 0, 0);
+        }
 
         // toggle legend
         const div = document.getElementById(legendListId);
@@ -362,18 +355,11 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
   }, [open]);
 
   React.useEffect(() => {
-    refreshImage();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [open, footerText]);
-
-  React.useEffect(() => {
-    if (!mapInteract) {
+    if (open) {
       refreshImage();
-    } else {
-      clearPreviewCanvas();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [mapInteract]);
+  }, [open, footerText, toggles, mapInteract]);
 
   const toggle = (event: ChangeEvent<HTMLInputElement>) => {
     setToggles(prevValues => {
@@ -430,7 +416,12 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
       name: 'fullLayerDescription',
       label: 'Full Layer Description',
     },
-    { checked: toggles.footer, name: 'footer', label: 'Footer Text' },
+    {
+      checked: toggles.footer,
+      name: 'footer',
+      label: 'Footer Text',
+      button: { Icon: EditIcon, onClick: () => setOpenFooterEdit(true) },
+    },
     // Hide options for toggling scale bar and north arrow
     // { checked: toggles.scaleBar, name: 'scaleBar', label: 'Scale Bar' },
     // { checked: toggles.northArrow, name: 'northArrow', label: 'North Arrow' },
@@ -446,7 +437,15 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
         aria-labelledby="dialog-preview"
       >
         <DialogTitle className={classes.title} id="dialog-preview">
-          {t('Map Preview')}
+          <div style={{ display: 'flex', flexDirection: 'column' }}>
+            {t('Map Preview')}
+            <Typography color="textSecondary" variant="body1">
+              {t(
+                'Align the map using the mouse. Press confirm and verify everything looks correct before downloading.',
+              )}
+            </Typography>
+          </div>
+
           <IconButton
             className={classes.closeButton}
             onClick={() => handleClose()}
@@ -462,6 +461,9 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
               style={{
                 width: `${defaultMapWidth}rem`,
                 height: `${defaultMapWidth / 1.6}rem`,
+                // match the border bellow
+                border: '8px solid transparent',
+                marginBottom: '16px',
                 position: 'relative',
               }}
             >
@@ -471,11 +473,20 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
                   position: 'absolute',
                   top: 0,
                   left: 0,
-                  zIndex: mapInteract ? -1 : undefined,
+                  zIndex: 2,
+                  pointerEvents: mapInteract ? 'none' : 'inherit',
+                  // match the border bellow
+                  border: '8px solid transparent',
                 }}
               />
               {mapLoading && (
-                <div className={classes.backdropWrapper}>
+                <div
+                  className={classes.backdropWrapper}
+                  style={{
+                    height: `${mapDimensions.height}%`,
+                    width: `${mapDimensions.width}%`,
+                  }}
+                >
                   <Backdrop className={classes.backdrop} open={mapLoading}>
                     <CircularProgress />
                   </Backdrop>
@@ -488,7 +499,8 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
                   left: 0,
                   height: `${mapDimensions.height}%`,
                   width: `${mapDimensions.width}%`,
-                  zIndex: mapInteract ? undefined : -1,
+                  zIndex: 1,
+                  border: '8px solid red',
                 }}
               >
                 {selectedMap && open && (
@@ -503,6 +515,7 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
                     }}
                     onIdle={() => {
                       setMapLoading(false);
+                      refreshImage();
                     }}
                     minZoom={selectedMap.getMinZoom()}
                     maxZoom={selectedMap.getMaxZoom()}
@@ -510,7 +523,7 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
                     maxBounds={selectedMap.getMaxBounds() ?? undefined}
                   >
                     {selectedMapLayers?.map(layer => (
-                      <Layer {...layer} />
+                      <Layer key={layer.id} {...layer} />
                     ))}
                   </MapGL>
                 )}
@@ -528,23 +541,29 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
                   {t('Map Options')}
                 </Box>
                 {options.map(option => (
-                  <FormControlLabel
-                    key={option.name}
-                    control={
-                      <Switch
-                        checked={option.checked}
-                        onChange={e => {
-                          toggle(e);
-                          setCanRefresh(true);
-                        }}
-                        name={option.name}
-                        color="primary"
-                      />
-                    }
-                    label={
-                      <Typography variant="h4">{t(option.label)}</Typography>
-                    }
-                  />
+                  <div className={classes.toggleWrapper}>
+                    <FormControlLabel
+                      key={option.name}
+                      control={
+                        <Switch
+                          checked={option.checked}
+                          onChange={e => {
+                            toggle(e);
+                          }}
+                          name={option.name}
+                          color="primary"
+                        />
+                      }
+                      label={
+                        <Typography variant="h4">{t(option.label)}</Typography>
+                      }
+                    />
+                    {option.button && (
+                      <IconButton onClick={option.button.onClick}>
+                        <option.button.Icon />
+                      </IconButton>
+                    )}
+                  </div>
                 ))}
                 <Button
                   variant="contained"
@@ -552,9 +571,8 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
                   className={classes.firstButton}
                   endIcon={mapInteract ? <DoneIcon /> : <ControlCameraIcon />}
                   onClick={() => setMapInteract(prev => !prev)}
-                  // disabled={!toggles.footer}
                 >
-                  {mapInteract ? t('Preview') : t('Edit Map')}
+                  {mapInteract ? t('Confirm') : t('Edit Map')}
                 </Button>
                 {mapInteract && (
                   <>
@@ -573,49 +591,15 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
                         }))
                       }
                     />
-                    <Typography color="textSecondary" variant="h4" gutterBottom>
-                      {t('height')}
-                    </Typography>
-                    <Slider
-                      className={classes.gutter}
-                      defaultValue={100}
-                      min={50}
-                      max={100}
-                      value={mapDimensions.height}
-                      onChange={(e, val) =>
-                        setMapDimensions(prev => ({
-                          ...(prev || {}),
-                          height: val as number,
-                        }))
-                      }
-                    />
                   </>
                 )}
-
-                <Button
-                  variant="contained"
-                  color="primary"
-                  className={classes.gutter}
-                  endIcon={<EditIcon />}
-                  onClick={() => setOpenFooterEdit(true)}
-                  disabled={!toggles.footer}
+                <Tooltip
+                  title={
+                    mapInteract
+                      ? (t('Confirm before downloading') as string)
+                      : ''
+                  }
                 >
-                  {t('Edit Footer Text')}
-                </Button>
-                <Button
-                  disabled={!canRefresh}
-                  variant="contained"
-                  color="primary"
-                  className={classes.gutter}
-                  endIcon={<RefreshIcon />}
-                  onClick={() => {
-                    setCanRefresh(false);
-                    refreshImage();
-                  }}
-                >
-                  {t('Refresh Image')}
-                </Button>
-                <Tooltip title={mapInteract ? 'Preview first' : ''}>
                   <Button
                     disabled={mapInteract}
                     variant="contained"
@@ -695,7 +679,9 @@ const styles = (theme: Theme) =>
       height: '100%',
       display: 'flex',
       justifyContent: 'center',
+      margin: '8px',
     },
+    toggleWrapper: { display: 'flex', justifyContent: 'space-between' },
   });
 
 export interface DownloadImageProps extends WithStyles<typeof styles> {

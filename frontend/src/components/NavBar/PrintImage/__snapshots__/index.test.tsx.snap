@@ -37,7 +37,17 @@ exports[`renders as expected 1`] = `
       classname="DownloadImage-title-2"
       id="dialog-preview"
     >
-      Map Preview
+      <div
+        style="display: flex; flex-direction: column;"
+      >
+        Map Preview
+        <mock-typography
+          color="textSecondary"
+          variant="body1"
+        >
+          Align the map using the mouse. Press confirm and verify everything looks correct before downloading.
+        </mock-typography>
+      </div>
       <button
         class="MuiButtonBase-root MuiIconButton-root DownloadImage-closeButton-6"
         tabindex="0"
@@ -68,14 +78,15 @@ exports[`renders as expected 1`] = `
       >
         <div
           class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-10"
-          style="width: 75rem; height: 46.875rem; position: relative;"
+          style="width: 75rem; height: 46.875rem; border: 8px solid transparent; margin-bottom: 16px; position: relative;"
         >
           <div
             id="canvas-preview-container"
-            style="position: absolute; top: 0px; left: 0px; z-index: -1;"
+            style="position: absolute; top: 0px; left: 0px; z-index: 2; pointer-events: none; border: 8px solid transparent;"
           />
           <div
             class="DownloadImage-backdropWrapper-8"
+            style="height: 100%; width: 100%;"
           >
             <div
               aria-hidden="true"
@@ -86,84 +97,119 @@ exports[`renders as expected 1`] = `
             </div>
           </div>
           <div
-            style="position: absolute; top: 0px; left: 0px; height: 100%; width: 100%;"
+            style="position: absolute; top: 0px; left: 0px; height: 100%; width: 100%; z-index: 1; border: 8px solid red;"
           />
         </div>
         <div
           class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-true"
         >
           <div
-            class="MuiBox-root MuiBox-root-9"
+            class="MuiBox-root MuiBox-root-10"
           >
             <div
-              class="MuiBox-root MuiBox-root-10 DownloadImage-title-2"
+              class="MuiBox-root MuiBox-root-11 DownloadImage-title-2"
             >
               Map Options
             </div>
-            <label
-              class="MuiFormControlLabel-root"
+            <div
+              class="DownloadImage-toggleWrapper-9"
             >
-              <mock-switch
-                checked="true"
-                color="primary"
-                name="legend"
-              />
-              <mock-typography
-                classname="MuiFormControlLabel-label"
-                component="span"
+              <label
+                class="MuiFormControlLabel-root"
               >
+                <mock-switch
+                  checked="true"
+                  color="primary"
+                  name="legend"
+                />
                 <mock-typography
-                  variant="h4"
+                  classname="MuiFormControlLabel-label"
+                  component="span"
                 >
-                  Legend
+                  <mock-typography
+                    variant="h4"
+                  >
+                    Legend
+                  </mock-typography>
                 </mock-typography>
-              </mock-typography>
-            </label>
-            <label
-              class="MuiFormControlLabel-root"
+              </label>
+            </div>
+            <div
+              class="DownloadImage-toggleWrapper-9"
             >
-              <mock-switch
-                checked="true"
-                color="primary"
-                name="fullLayerDescription"
-              />
-              <mock-typography
-                classname="MuiFormControlLabel-label"
-                component="span"
+              <label
+                class="MuiFormControlLabel-root"
               >
+                <mock-switch
+                  checked="true"
+                  color="primary"
+                  name="fullLayerDescription"
+                />
                 <mock-typography
-                  variant="h4"
+                  classname="MuiFormControlLabel-label"
+                  component="span"
                 >
-                  Full Layer Description
+                  <mock-typography
+                    variant="h4"
+                  >
+                    Full Layer Description
+                  </mock-typography>
                 </mock-typography>
-              </mock-typography>
-            </label>
-            <label
-              class="MuiFormControlLabel-root"
+              </label>
+            </div>
+            <div
+              class="DownloadImage-toggleWrapper-9"
             >
-              <mock-switch
-                checked="true"
-                color="primary"
-                name="footer"
-              />
-              <mock-typography
-                classname="MuiFormControlLabel-label"
-                component="span"
+              <label
+                class="MuiFormControlLabel-root"
               >
+                <mock-switch
+                  checked="true"
+                  color="primary"
+                  name="footer"
+                />
                 <mock-typography
-                  variant="h4"
+                  classname="MuiFormControlLabel-label"
+                  component="span"
                 >
-                  Footer Text
+                  <mock-typography
+                    variant="h4"
+                  >
+                    Footer Text
+                  </mock-typography>
                 </mock-typography>
-              </mock-typography>
-            </label>
+              </label>
+              <button
+                class="MuiButtonBase-root MuiIconButton-root"
+                tabindex="0"
+                type="button"
+              >
+                <span
+                  class="MuiIconButton-label"
+                >
+                  <svg
+                    aria-hidden="true"
+                    class="MuiSvgIcon-root"
+                    focusable="false"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34a.9959.9959 0 00-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"
+                    />
+                  </svg>
+                </span>
+                <span
+                  class="MuiTouchRipple-root"
+                />
+              </button>
+            </div>
             <mock-button
               classname="DownloadImage-firstButton-5"
               color="primary"
               endicon="[object Object]"
               variant="contained"
             >
-              Preview
+              Confirm
             </mock-button>
             <mock-typography
               color="textSecondary"
@@ -198,59 +244,8 @@ exports[`renders as expected 1`] = `
                 tabindex="0"
               />
             </span>
-            <mock-typography
-              color="textSecondary"
-              gutterbottom="true"
-              variant="h4"
-            >
-              height
-            </mock-typography>
-            <span
-              class="MuiSlider-root MuiSlider-colorPrimary DownloadImage-gutter-4"
-            >
-              <span
-                class="MuiSlider-rail"
-              />
-              <span
-                class="MuiSlider-track"
-                style="left: 0%; width: 100%;"
-              />
-              <input
-                type="hidden"
-                value="100"
-              />
-              <span
-                aria-orientation="horizontal"
-                aria-valuemax="100"
-                aria-valuemin="50"
-                aria-valuenow="100"
-                class="MuiSlider-thumb MuiSlider-thumbColorPrimary"
-                data-index="0"
-                role="slider"
-                style="left: 100%;"
-                tabindex="0"
-              />
-            </span>
-            <mock-button
-              classname="DownloadImage-gutter-4"
-              color="primary"
-              disabled="false"
-              endicon="[object Object]"
-              variant="contained"
-            >
-              Edit Footer Text
-            </mock-button>
-            <mock-button
-              classname="DownloadImage-gutter-4"
-              color="primary"
-              disabled="true"
-              endicon="[object Object]"
-              variant="contained"
-            >
-              Refresh Image
-            </mock-button>
             <mock-tooltip
-              title="Preview first"
+              title="Confirm before downloading"
             >
               <mock-button
                 classname="DownloadImage-gutter-4"
@@ -286,7 +281,7 @@ exports[`renders as expected 1`] = `
     open="false"
   >
     <mock-dialogtitle
-      classname="makeStyles-title-16"
+      classname="makeStyles-title-17"
     >
       Edit Footer Text
     </mock-dialogtitle>
