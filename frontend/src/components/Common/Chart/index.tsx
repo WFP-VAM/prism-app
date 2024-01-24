@@ -107,6 +107,7 @@ const Chart = memo(
     const { t } = useSafeTranslation();
     const classes = useStyles();
     const chartRef = React.useRef<Bar | Line>(null);
+    const isEWSChart = !!data.EWSConfig;
 
     const transpose = useMemo(() => {
       return config.transpose || false;
@@ -160,9 +161,18 @@ const Chart = memo(
       return tableRows.slice(chartRange[0], chartRange[1]).map(row => {
         return moment(row[config.category])
           .locale(t('date_locale') as LocaleSpecifier)
-          .format('YYYY-MM-DD HH:mm');
+          .format(isEWSChart ? 'YYYY-MM-DD HH:mm' : 'YYYY-MM-DD');
       });
-    }, [chartRange, config.category, header, indices, t, tableRows, transpose]);
+    }, [
+      chartRange,
+      config.category,
+      header,
+      indices,
+      isEWSChart,
+      t,
+      tableRows,
+      transpose,
+    ]);
 
     // The table rows data sets
     const tableRowsDataSet = useMemo(() => {
@@ -173,7 +183,7 @@ const Chart = memo(
           backgroundColor: colors[i],
           borderColor: colors[i],
           borderWidth: 2,
-          pointRadius: data.EWSConfig ? 0 : 1, // Disable point rendering for EWS only.
+          pointRadius: isEWSChart ? 0 : 1, // Disable point rendering for EWS only.
           data: indices.map(index => (row[index] as number) || null),
           pointHitRadius: 10,
         };
@@ -182,8 +192,8 @@ const Chart = memo(
       colors,
       config.category,
       config.fill,
-      data.EWSConfig,
       indices,
+      isEWSChart,
       t,
       tableRows,
     ]);
@@ -199,9 +209,9 @@ const Chart = memo(
         if (foundDataSetFieldPointRadius !== undefined) {
           return foundDataSetFieldPointRadius;
         }
-        return data.EWSConfig ? 0 : 1; // Disable point rendering for EWS only.
+        return isEWSChart ? 0 : 1; // Disable point rendering for EWS only.
       },
-      [data.EWSConfig, datasetFields, header],
+      [isEWSChart, datasetFields, header],
     );
 
     // The indicesDataSet
@@ -229,8 +239,8 @@ const Chart = memo(
     ]);
 
     const EWSthresholds = useMemo(() => {
-      if (data.EWSConfig) {
-        return Object.values(data.EWSConfig).map(obj => ({
+      if (isEWSChart) {
+        return Object.values(isEWSChart).map(obj => ({
           label: obj.label,
           backgroundColor: obj.color,
           borderColor: obj.color,
@@ -243,7 +253,7 @@ const Chart = memo(
         }));
       }
       return [];
-    }, [data.EWSConfig]);
+    }, [isEWSChart]);
 
     /**
      * The following value assumes that the data is formatted as follows:
@@ -279,7 +289,10 @@ const Chart = memo(
       data: set.data.slice(chartRange[0], chartRange[1]),
     }));
 
-    const shouldDisplayTime = !!data.EWSConfig;
+    const chartData = {
+      labels,
+      datasets: datasetsTrimmed,
+    };
 
     const chartConfig = useMemo(() => {
       return {
@@ -298,6 +311,10 @@ const Chart = memo(
                 display: false,
               },
               ticks: {
+                callback: value => {
+                  // for EWS charts, we only want to display the time
+                  return isEWSChart ? String(value).split(' ')[1] : value;
+                },
                 fontColor: '#CCC',
               },
               ...(xAxisLabel
@@ -334,7 +351,14 @@ const Chart = memo(
           labels: { boxWidth: 12, boxHeight: 12 },
         },
       } as ChartOptions;
-    }, [config, legendAtBottom, notMaintainAspectRatio, title, xAxisLabel]);
+    }, [
+      config,
+      isEWSChart,
+      legendAtBottom,
+      notMaintainAspectRatio,
+      title,
+      xAxisLabel,
+    ]);
 
     return useMemo(
       () => (
@@ -355,12 +379,6 @@ const Chart = memo(
               <Tooltip title={t('Download CSV') as string}>
                 <IconButton
                   onClick={() => {
-                    const chartData = {
-                      labels: labels.map(x =>
-                        shouldDisplayTime ? x : String(x).split(' ')[0],
-                      ),
-                      datasets: datasetsTrimmed,
-                    };
                     downloadCsv(chartData, title.split(' ').join('_'));
                   }}
                   className={classes.secondIcon}
@@ -372,14 +390,6 @@ const Chart = memo(
             </>
           )}
           {(() => {
-            const chartData = {
-              labels: labels.map(x =>
-                shouldDisplayTime
-                  ? String(x).split(' ')[1]
-                  : String(x).split(' ')[0],
-              ),
-              datasets: datasetsTrimmed,
-            };
             switch (config.type) {
               case 'bar':
                 return (
@@ -400,13 +410,11 @@ const Chart = memo(
       ),
       [
         chartConfig,
+        chartData,
         classes.firstIcon,
         classes.secondIcon,
         config.type,
-        datasetsTrimmed,
         iconStyles,
-        labels,
-        shouldDisplayTime,
         showDownloadIcons,
         t,
         title,
