@@ -14,7 +14,7 @@ export const fetchCompositeLayerData: LazyLoader<CompositeLayerProps> = () => as
 ) => {
   // to complete later with new endpoint for composite chart
 
-  const { layer } = params;
+  const { layer, date } = params;
   const {
     baseUrl,
     id,
@@ -36,6 +36,7 @@ export const fetchCompositeLayerData: LazyLoader<CompositeLayerProps> = () => as
     dateType,
     startDate,
     endDate,
+    date,
   );
   try {
     const response = await fetchWithTimeout(

@@ -10,6 +10,9 @@ import { getLayerMapId } from 'utils/map-utils';
 import { CircleLayerSpecification } from 'maplibre-gl';
 import { Point } from 'geojson';
 import booleanPointInPolygon from '@turf/boolean-point-in-polygon';
+import { availableDatesSelector } from 'context/serverStateSlice';
+import { useDefaultDate } from 'utils/useDefaultDate';
+import { getRequestDate } from 'utils/server-utils';
 
 const styles = () => createStyles({});
 
@@ -49,21 +52,24 @@ const paintProps: (
 
 const CompositeLayer = ({ layer, before }: Props) => {
   // look to refacto with impactLayer and maybe other layers
-  const { data, date } =
+  const { adminBoundaryLimitPolygon } = useLayers();
+  const selectedDate = useDefaultDate(layer.dateLayer);
+  const serverAvailableDates = useSelector(availableDatesSelector);
+  const dispatch = useDispatch();
+
+  const { data } =
     (useSelector(layerDataSelector(layer.id)) as LayerData<
       CompositeLayerProps
     >) || {};
-  const dispatch = useDispatch();
+
+  const layerAvailableDates = serverAvailableDates[layer.dateLayer];
+  const queryDate = getRequestDate(layerAvailableDates, selectedDate);
 
   useEffect(() => {
-    if (!data) {
-      dispatch(loadLayerData({ layer }));
-    }
-  }, [dispatch, layer, data, date]);
+    dispatch(loadLayerData({ layer, date: queryDate }));
+  }, [dispatch, layer, data, queryDate]);
 
-  const { adminBoundaryLimitPolygon } = useLayers();
-
-  if (data && adminBoundaryLimitPolygon) {
+  if (selectedDate && data && adminBoundaryLimitPolygon) {
     const filteredData = {
       ...data,
       features: data.features.filter(feature => {
