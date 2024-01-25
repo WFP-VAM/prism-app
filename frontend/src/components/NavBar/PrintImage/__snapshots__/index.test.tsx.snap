@@ -209,14 +209,6 @@ exports[`renders as expected 1`] = `
                 />
               </button>
             </div>
-            <mock-button
-              classname="DownloadImage-firstButton-5"
-              color="primary"
-              endicon="[object Object]"
-              variant="contained"
-            >
-              Confirm
-            </mock-button>
             <mock-typography
               color="textSecondary"
               gutterbottom="true"
@@ -343,6 +335,14 @@ exports[`renders as expected 1`] = `
                 tabindex="0"
               />
             </span>
+            <mock-button
+              classname="DownloadImage-firstButton-5"
+              color="primary"
+              endicon="[object Object]"
+              variant="contained"
+            >
+              Confirm
+            </mock-button>
             <mock-tooltip
               title="Confirm before downloading"
             >

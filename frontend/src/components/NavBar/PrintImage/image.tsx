@@ -563,16 +563,6 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
                     )}
                   </div>
                 ))}
-                <Button
-                  variant="contained"
-                  color="primary"
-                  className={classes.firstButton}
-                  endIcon={mapInteract ? <DoneIcon /> : <ControlCameraIcon />}
-                  onClick={() => setMapInteract(prev => !prev)}
-                >
-                  {mapInteract ? t('Confirm') : t('Edit Map')}
-                </Button>
-
                 <Typography color="textSecondary" variant="h4" gutterBottom>
                   {t('Total width')}
                 </Typography>
@@ -605,6 +595,16 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
                   value={legendScale}
                   onChange={(e, val) => setLegendScale(val as number)}
                 />
+
+                <Button
+                  variant="contained"
+                  color="primary"
+                  className={classes.firstButton}
+                  endIcon={mapInteract ? <DoneIcon /> : <ControlCameraIcon />}
+                  onClick={() => setMapInteract(prev => !prev)}
+                >
+                  {mapInteract ? t('Confirm') : t('Edit Map')}
+                </Button>
 
                 <Tooltip
                   title={
