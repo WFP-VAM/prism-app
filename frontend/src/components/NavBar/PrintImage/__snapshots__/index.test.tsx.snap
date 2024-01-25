@@ -81,7 +81,7 @@ exports[`renders as expected 1`] = `
           style="width: 75rem; height: 46.875rem; margin-bottom: 16px;"
         >
           <div
-            style="position: relative; border: 8px solid red; height: 100%; width: 100%;"
+            style="position: relative; z-index: 3; border: 8px solid red; height: 100%; width: 100%;"
           >
             <div
               class="DownloadImage-printContainer-10"
@@ -222,7 +222,40 @@ exports[`renders as expected 1`] = `
               gutterbottom="true"
               variant="h4"
             >
-              width
+              Total width
+            </mock-typography>
+            <span
+              class="MuiSlider-root MuiSlider-colorPrimary"
+            >
+              <span
+                class="MuiSlider-rail"
+              />
+              <span
+                class="MuiSlider-track"
+                style="left: 0%; width: 100%;"
+              />
+              <input
+                type="hidden"
+                value="100"
+              />
+              <span
+                aria-orientation="horizontal"
+                aria-valuemax="100"
+                aria-valuemin="50"
+                aria-valuenow="100"
+                class="MuiSlider-thumb MuiSlider-thumbColorPrimary"
+                data-index="0"
+                role="slider"
+                style="left: 100%;"
+                tabindex="0"
+              />
+            </span>
+            <mock-typography
+              color="textSecondary"
+              gutterbottom="true"
+              variant="h4"
+            >
+              Legend scale
             </mock-typography>
             <span
               class="MuiSlider-root MuiSlider-colorPrimary"

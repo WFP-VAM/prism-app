@@ -131,6 +131,7 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
   const [footerText, setFooterText] = React.useState('');
   const [mapInteract, setMapInteract] = React.useState(true);
   const [mapLoading, setMapLoading] = React.useState(true);
+  const [legendScale, setLegendScale] = React.useState(100);
   // the % value of the original dimensions
   const [mapDimensions, setMapDimensions] = React.useState<{
     height: number;
@@ -269,7 +270,13 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
           document.body.appendChild(target);
 
           const c = await html2canvas(target);
-          context.drawImage(c, 24, 24);
+          context.drawImage(
+            c,
+            24,
+            24,
+            (target.offsetWidth * legendScale) / 100,
+            (target.offsetHeight * legendScale) / 100,
+          );
           document.body.removeChild(target);
         }
 
@@ -356,7 +363,7 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
       refreshImage();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [open, footerText, toggles, mapInteract]);
+  }, [open, footerText, toggles, mapInteract, legendScale]);
 
   const toggle = (event: ChangeEvent<HTMLInputElement>) => {
     setToggles(prevValues => {
@@ -465,6 +472,7 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
               <div
                 style={{
                   position: 'relative',
+                  zIndex: 3,
                   border: '8px solid red',
                   height: `${mapDimensions.height}%`,
                   width: `${mapDimensions.width}%`,
@@ -564,25 +572,36 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
                 >
                   {mapInteract ? t('Confirm') : t('Edit Map')}
                 </Button>
-                {mapInteract && (
-                  <>
-                    <Typography color="textSecondary" variant="h4" gutterBottom>
-                      {t('width')}
-                    </Typography>
-                    <Slider
-                      defaultValue={100}
-                      min={50}
-                      max={100}
-                      value={mapDimensions.width}
-                      onChange={(e, val) =>
-                        setMapDimensions(prev => ({
-                          ...(prev || {}),
-                          width: val as number,
-                        }))
-                      }
-                    />
-                  </>
-                )}
+
+                <Typography color="textSecondary" variant="h4" gutterBottom>
+                  {t('Total width')}
+                </Typography>
+                <Slider
+                  disabled={!mapInteract}
+                  defaultValue={100}
+                  min={50}
+                  max={100}
+                  value={mapDimensions.width}
+                  onChangeCommitted={(e, val) =>
+                    setMapDimensions(prev => ({
+                      ...(prev || {}),
+                      width: val as number,
+                    }))
+                  }
+                />
+
+                <Typography color="textSecondary" variant="h4" gutterBottom>
+                  {t('Legend scale')}
+                </Typography>
+                <Slider
+                  disabled={!mapInteract}
+                  defaultValue={100}
+                  min={50}
+                  max={100}
+                  value={legendScale}
+                  onChangeCommitted={(e, val) => setLegendScale(val as number)}
+                />
+
                 <Tooltip
                   title={
                     mapInteract
