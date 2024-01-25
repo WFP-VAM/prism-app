@@ -91,7 +91,6 @@ exports[`renders as expected 1`] = `
               />
               <div
                 class="DownloadImage-backdropWrapper-8"
-                style="height: 100%; width: 100%;"
               >
                 <div
                   aria-hidden="true"
