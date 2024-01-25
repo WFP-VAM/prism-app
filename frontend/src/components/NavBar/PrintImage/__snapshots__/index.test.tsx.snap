@@ -78,36 +78,43 @@ exports[`renders as expected 1`] = `
       >
         <div
           class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-10"
-          style="width: 75rem; height: 46.875rem; border: 8px solid transparent; margin-bottom: 16px; position: relative;"
+          style="width: 75rem; height: 46.875rem; margin-bottom: 16px;"
         >
           <div
-            id="canvas-preview-container"
-            style="position: absolute; top: 0px; left: 0px; z-index: 2; pointer-events: none; border: 8px solid transparent;"
-          />
-          <div
-            class="DownloadImage-backdropWrapper-8"
-            style="height: 100%; width: 100%;"
+            style="position: relative; border: 8px solid red; height: 100%; width: 100%;"
           >
             <div
-              aria-hidden="true"
-              class="MuiBackdrop-root DownloadImage-backdrop-7"
-              style="opacity: 1; webkit-transition: opacity 225ms cubic-bezier(0.4, 0, 0.2, 1) 0ms; transition: opacity 225ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;"
+              class="DownloadImage-printContainer-10"
             >
-              <mock-circularprogress />
+              <div
+                style="position: absolute; top: 0px; left: 0px; z-index: 2; pointer-events: none;"
+              />
+              <div
+                class="DownloadImage-backdropWrapper-8"
+                style="height: 100%; width: 100%;"
+              >
+                <div
+                  aria-hidden="true"
+                  class="MuiBackdrop-root DownloadImage-backdrop-7"
+                  style="opacity: 1; webkit-transition: opacity 225ms cubic-bezier(0.4, 0, 0.2, 1) 0ms; transition: opacity 225ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;"
+                >
+                  <mock-circularprogress />
+                </div>
+              </div>
+              <div
+                class="DownloadImage-mapContainer-11"
+              />
             </div>
           </div>
-          <div
-            style="position: absolute; top: 0px; left: 0px; height: 100%; width: 100%; z-index: 1; border: 8px solid red;"
-          />
         </div>
         <div
           class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-true"
         >
           <div
-            class="MuiBox-root MuiBox-root-10"
+            class="MuiBox-root MuiBox-root-12"
           >
             <div
-              class="MuiBox-root MuiBox-root-11 DownloadImage-title-2"
+              class="MuiBox-root MuiBox-root-13 DownloadImage-title-2"
             >
               Map Options
             </div>
@@ -281,7 +288,7 @@ exports[`renders as expected 1`] = `
     open="false"
   >
     <mock-dialogtitle
-      classname="makeStyles-title-17"
+      classname="makeStyles-title-19"
     >
       Edit Footer Text
     </mock-dialogtitle>
