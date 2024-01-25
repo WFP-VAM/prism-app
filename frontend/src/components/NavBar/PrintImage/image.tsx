@@ -162,13 +162,14 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
     inputFooterText: string = t(DEFAULT_FOOTER_TEXT),
     width: number,
     height: number,
+    ratio: number,
   ): HTMLDivElement => {
     const footer = document.createElement('div');
     // eslint-disable-next-line fp/no-mutation
     footer.innerHTML = `
       <div style='width:${
-        width - 16
-      }px;height:${height}px;margin:8px;font-size:12px'>
+        (width - 16) / ratio
+      }px;height:${height}px;margin:8px;font-size:12px;'>
         ${inputFooterText}
       </div>
     `;
@@ -202,13 +203,13 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
         const ratio = window.devicePixelRatio || 1;
 
         // eslint-disable-next-line fp/no-mutation
-        canvas.width = width * ratio;
+        canvas.width = width;
         // eslint-disable-next-line fp/no-mutation
-        canvas.height = height * ratio;
+        canvas.height = height;
         // eslint-disable-next-line fp/no-mutation
-        canvas.style.width = `${width}px`;
+        canvas.style.width = `${width / ratio}px`;
         // eslint-disable-next-line fp/no-mutation
-        canvas.style.height = `${height}px`;
+        canvas.style.height = `${height / ratio}px`;
 
         const context = canvas.getContext('2d');
 
@@ -216,7 +217,7 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
           return;
         }
 
-        context.scale(ratio, ratio);
+        context.scale(1, 1);
         context.clearRect(0, 0, canvas.width, canvas.height);
 
         // Draw the map
@@ -317,6 +318,7 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
             footerText,
             activeLayers.width,
             footerTextHeight,
+            ratio,
           );
           document.body.appendChild(footer);
           const c = await html2canvas(footer);
