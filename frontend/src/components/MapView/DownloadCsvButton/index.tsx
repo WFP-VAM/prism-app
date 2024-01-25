@@ -11,7 +11,7 @@ import { groupBy, mapKeys, snakeCase } from 'lodash';
 import { castObjectsArrayToCsv } from 'utils/csv-utils';
 import { downloadToFile } from '../utils';
 
-export const downloadCsv = (
+export const downloadMultiChartsToCsv = (
   params: [MutableRefObject<{ [key: string]: any[] }>, string][],
 ) => {
   return () => {
@@ -113,7 +113,7 @@ const DownloadChartCSVButton = ({
   return (
     <Button
       className={classes.downloadButton}
-      onClick={downloadCsv(
+      onClick={downloadMultiChartsToCsv(
         buildDataToDownload() as [
           MutableRefObject<{ [key: string]: any[] }>,
           string,

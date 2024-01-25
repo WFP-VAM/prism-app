@@ -27,10 +27,7 @@ import { LayerType, LegendDefinitionItem } from 'config/types';
 import { mapSelector, layersSelector } from 'context/mapStateSlice/selectors';
 import { clearDataset } from 'context/datasetStateSlice';
 import { useSafeTranslation } from 'i18n';
-import {
-  clearAnalysisResult,
-  setAnalysisLayerOpacity,
-} from 'context/analysisResultStateSlice';
+import { clearAnalysisResult } from 'context/analysisResultStateSlice';
 import LayerContentPreview from 'components/MapView/Legends/layerContentPreview';
 import { handleChangeOpacity } from 'components/MapView/Legends/handleChangeOpacity';
 import ColorIndicator from 'components/MapView/Legends/ColorIndicator';
@@ -82,15 +79,9 @@ const LegendItem = memo(
     const open = Boolean(opacityEl);
     const opacityId = open ? 'opacity-popover' : undefined;
 
-    const handleChangeOpacityValue = useCallback(
-      val => {
-        setOpacityValue(val);
-        if (isAnalysis) {
-          dispatch(setAnalysisLayerOpacity(val));
-        }
-      },
-      [dispatch, isAnalysis],
-    );
+    const handleChangeOpacityValue = useCallback(val => {
+      setOpacityValue(val);
+    }, []);
 
     const selectedLayers = useSelector(layersSelector);
     const layer = useMemo(() => {
@@ -118,7 +109,7 @@ const LegendItem = memo(
                 e,
                 newValue as number,
                 map,
-                id,
+                isAnalysis ? 'analysis' : id,
                 type,
                 handleChangeOpacityValue,
               )
@@ -126,7 +117,7 @@ const LegendItem = memo(
           />
         </Box>
       );
-    }, [classes, handleChangeOpacityValue, id, map, opacity, type]);
+    }, [classes, handleChangeOpacityValue, id, isAnalysis, map, opacity, type]);
 
     const layerDownloadOptions = useMemo(() => {
       return layer ? (
