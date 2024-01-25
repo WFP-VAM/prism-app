@@ -179,7 +179,6 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
       const map = mapRef.current.getMap();
       const activeLayers = map.getCanvas();
 
-      const canvas = document.createElement('canvas');
       const canvasContainer = overlayContainerRef.current;
       if (!canvasContainer) {
         return;
@@ -190,9 +189,7 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
         canvasContainer.removeChild(canvasContainer.firstChild);
       }
 
-      // we add this here so the modal is not shrinking and expanding it's width, each time we update the settings
-      canvasContainer.appendChild(canvas);
-
+      const canvas = document.createElement('canvas');
       if (canvas) {
         const footerTextHeight = 75;
         let scalerBarLength = 0;
@@ -214,31 +211,16 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
 
         const context = canvas.getContext('2d');
 
-        // in chrome canvas does not draw as expected if it is already in dom
-        const offScreenCanvas = document.createElement('canvas');
-        const offScreenContext = offScreenCanvas.getContext('2d');
-
-        // eslint-disable-next-line fp/no-mutation
-        offScreenCanvas.width = width;
-        // eslint-disable-next-line fp/no-mutation
-        offScreenCanvas.height = height;
-        // eslint-disable-next-line fp/no-mutation
-        offScreenCanvas.style.width = `${width}px`;
-        // eslint-disable-next-line fp/no-mutation
-        offScreenCanvas.style.height = `${height}px`;
-
-        if (!offScreenContext || !context) {
+        if (!context) {
           return;
         }
 
         context.scale(ratio, ratio);
-        offScreenContext.scale(ratio, ratio);
-
         context.clearRect(0, 0, canvas.width, canvas.height);
 
         // Draw the map
         if (!mapInteract && 0) {
-          offScreenContext.drawImage(activeLayers, 0, 0);
+          context.drawImage(activeLayers, 0, 0);
         }
 
         // toggle legend
@@ -287,7 +269,7 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
           document.body.appendChild(target);
 
           const c = await html2canvas(target);
-          offScreenContext.drawImage(c, 24, 24);
+          context.drawImage(c, 24, 24);
           document.body.removeChild(target);
         }
 
@@ -311,7 +293,7 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
             document.body.appendChild(html);
 
             const c = await html2canvas(html);
-            offScreenContext.drawImage(
+            context.drawImage(
               c,
               activeLayers.width - (scaleBarGap + elem.offsetWidth),
               activeLayers.height -
@@ -331,11 +313,7 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
           );
           document.body.appendChild(footer);
           const c = await html2canvas(footer);
-          offScreenContext.drawImage(
-            c,
-            0,
-            activeLayers.height - footerTextHeight,
-          );
+          context.drawImage(c, 0, activeLayers.height - footerTextHeight);
           document.body.removeChild(footer);
         }
 
@@ -345,7 +323,7 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
           const imageHeight = 60;
           // eslint-disable-next-line fp/no-mutation
           image.onload = () => {
-            offScreenContext.drawImage(
+            context.drawImage(
               image,
               activeLayers.width -
                 scaleBarGap -
@@ -357,13 +335,12 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
               imageWidth,
               imageHeight,
             );
-            context.drawImage(offScreenCanvas, 0, 0);
           };
           // eslint-disable-next-line fp/no-mutation
           image.src = './images/icon_north_arrow.png';
         }
 
-        context.drawImage(offScreenCanvas, 0, 0);
+        canvasContainer.appendChild(canvas);
       }
     }
   };
@@ -505,13 +482,7 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
                     }}
                   />
                   {mapLoading && (
-                    <div
-                      className={classes.backdropWrapper}
-                      style={{
-                        height: `${mapDimensions.height}%`,
-                        width: `${mapDimensions.width}%`,
-                      }}
-                    >
+                    <div className={classes.backdropWrapper}>
                       <Backdrop className={classes.backdrop} open>
                         <CircularProgress />
                       </Backdrop>
