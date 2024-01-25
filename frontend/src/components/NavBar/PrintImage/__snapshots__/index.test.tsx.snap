@@ -239,6 +239,36 @@ exports[`renders as expected 1`] = `
                 value="100"
               />
               <span
+                class="MuiSlider-mark MuiSlider-markActive"
+                data-index="0"
+                style="left: 0%;"
+              />
+              <span
+                class="MuiSlider-mark MuiSlider-markActive"
+                data-index="1"
+                style="left: 20%;"
+              />
+              <span
+                class="MuiSlider-mark MuiSlider-markActive"
+                data-index="2"
+                style="left: 40%;"
+              />
+              <span
+                class="MuiSlider-mark MuiSlider-markActive"
+                data-index="3"
+                style="left: 60%;"
+              />
+              <span
+                class="MuiSlider-mark MuiSlider-markActive"
+                data-index="4"
+                style="left: 80%;"
+              />
+              <span
+                class="MuiSlider-mark MuiSlider-markActive"
+                data-index="5"
+                style="left: 100%;"
+              />
+              <span
                 aria-orientation="horizontal"
                 aria-valuemax="100"
                 aria-valuemin="50"
@@ -270,6 +300,36 @@ exports[`renders as expected 1`] = `
               <input
                 type="hidden"
                 value="100"
+              />
+              <span
+                class="MuiSlider-mark MuiSlider-markActive"
+                data-index="0"
+                style="left: 0%;"
+              />
+              <span
+                class="MuiSlider-mark MuiSlider-markActive"
+                data-index="1"
+                style="left: 20%;"
+              />
+              <span
+                class="MuiSlider-mark MuiSlider-markActive"
+                data-index="2"
+                style="left: 40%;"
+              />
+              <span
+                class="MuiSlider-mark MuiSlider-markActive"
+                data-index="3"
+                style="left: 60%;"
+              />
+              <span
+                class="MuiSlider-mark MuiSlider-markActive"
+                data-index="4"
+                style="left: 80%;"
+              />
+              <span
+                class="MuiSlider-mark MuiSlider-markActive"
+                data-index="5"
+                style="left: 100%;"
               />
               <span
                 aria-orientation="horizontal"

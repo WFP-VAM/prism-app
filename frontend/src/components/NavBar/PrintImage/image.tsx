@@ -579,10 +579,12 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
                 <Slider
                   disabled={!mapInteract}
                   defaultValue={100}
+                  step={10}
+                  marks
                   min={50}
                   max={100}
                   value={mapDimensions.width}
-                  onChangeCommitted={(e, val) =>
+                  onChange={(e, val) =>
                     setMapDimensions(prev => ({
                       ...(prev || {}),
                       width: val as number,
@@ -596,10 +598,12 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
                 <Slider
                   disabled={!mapInteract}
                   defaultValue={100}
+                  marks
+                  step={10}
                   min={50}
                   max={100}
                   value={legendScale}
-                  onChangeCommitted={(e, val) => setLegendScale(val as number)}
+                  onChange={(e, val) => setLegendScale(val as number)}
                 />
 
                 <Tooltip
