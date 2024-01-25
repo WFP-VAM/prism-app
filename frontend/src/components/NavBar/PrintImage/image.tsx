@@ -113,6 +113,7 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
   const { t, i18n } = useSafeTranslation();
   const selectedMap = useSelector(mapSelector);
   const dateRange = useSelector(dateRangeSelector);
+  const componentRef = useRef<HTMLDivElement>(null);
 
   const previewRef = useRef<HTMLCanvasElement | null>(null);
   const mapRef = React.useRef<MapRef>(null);
@@ -202,7 +203,6 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
 
         canvas.setAttribute('width', `${activeLayers.width}px`);
         canvas.setAttribute('height', `${activeLayers.height}px`);
-        canvas.setAttribute('style', '');
         const context = canvas.getContext('2d');
 
         // in chrome canvas does not draw as expected if it is already in dom
@@ -221,7 +221,7 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
         context.clearRect(0, 0, canvas.width, canvas.height);
 
         // Draw the map
-        if (!mapInteract) {
+        if (!mapInteract && 0) {
           offScreenContext.drawImage(activeLayers, 0, 0);
         }
 
@@ -376,13 +376,14 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
   };
 
   const download = (format: 'pdf' | 'jpeg' | 'png') => {
-    const docGeneration = () => {
+    const docGeneration = async () => {
       // png is generally preferred for images containing lines and text.
       const ext = format === 'pdf' ? 'png' : format;
-      const canvas = previewRef.current;
-      if (!canvas) {
+      const elem = componentRef.current;
+      if (!elem) {
         throw new Error('canvas is undefined');
       }
+      const canvas = await html2canvas(elem);
       const file = canvas.toDataURL(`image/${ext}`);
       if (format === 'pdf') {
         // eslint-disable-next-line new-cap
@@ -461,72 +462,72 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
               style={{
                 width: `${defaultMapWidth}rem`,
                 height: `${defaultMapWidth / 1.6}rem`,
-                // match the border bellow
-                border: '8px solid transparent',
+                border: '8px solid red',
                 marginBottom: '16px',
                 position: 'relative',
               }}
             >
-              <div
-                id={canvasPreviewContainerId}
-                style={{
-                  position: 'absolute',
-                  top: 0,
-                  left: 0,
-                  zIndex: 2,
-                  pointerEvents: mapInteract ? 'none' : 'inherit',
-                  // match the border bellow
-                  border: '8px solid transparent',
-                }}
-              />
-              {mapLoading && (
+              <div ref={componentRef} style={{ width: '100%', height: '100%' }}>
                 <div
-                  className={classes.backdropWrapper}
+                  id={canvasPreviewContainerId}
                   style={{
+                    position: 'absolute',
+                    top: 0,
+                    left: 0,
+                    zIndex: 2,
+                    pointerEvents: mapInteract ? 'none' : 'inherit',
+                  }}
+                />
+                {mapLoading && (
+                  <div
+                    className={classes.backdropWrapper}
+                    style={{
+                      height: `${mapDimensions.height}%`,
+                      width: `${mapDimensions.width}%`,
+                    }}
+                  >
+                    <Backdrop className={classes.backdrop} open>
+                      <CircularProgress />
+                    </Backdrop>
+                  </div>
+                )}
+                <div
+                  style={{
+                    position: 'absolute',
+                    top: 0,
+                    left: 0,
                     height: `${mapDimensions.height}%`,
                     width: `${mapDimensions.width}%`,
+                    zIndex: 1,
                   }}
                 >
-                  <Backdrop className={classes.backdrop} open={mapLoading}>
-                    <CircularProgress />
-                  </Backdrop>
+                  {selectedMap && open && (
+                    <MapGL
+                      ref={mapRef}
+                      dragRotate={false}
+                      // preserveDrawingBuffer is required for the map to be exported as an image
+                      preserveDrawingBuffer
+                      onLoad={e => {
+                        e.target.setCenter(selectedMap.getCenter());
+                        e.target.setZoom(selectedMap.getZoom());
+                      }}
+                      onIdle={() => {
+                        setMapLoading(false);
+                        refreshImage();
+                      }}
+                      minZoom={selectedMap.getMinZoom()}
+                      maxZoom={selectedMap.getMaxZoom()}
+                      mapStyle={
+                        (selectedMapStyle as any) || mapStyle.toString()
+                      }
+                      maxBounds={selectedMap.getMaxBounds() ?? undefined}
+                    >
+                      {selectedMapLayers?.map(layer => (
+                        <Layer key={layer.id} {...layer} />
+                      ))}
+                    </MapGL>
+                  )}
                 </div>
-              )}
-              <div
-                style={{
-                  position: 'absolute',
-                  top: 0,
-                  left: 0,
-                  height: `${mapDimensions.height}%`,
-                  width: `${mapDimensions.width}%`,
-                  zIndex: 1,
-                  border: '8px solid red',
-                }}
-              >
-                {selectedMap && open && (
-                  <MapGL
-                    ref={mapRef}
-                    dragRotate={false}
-                    // preserveDrawingBuffer is required for the map to be exported as an image
-                    preserveDrawingBuffer
-                    onLoad={e => {
-                      e.target.setCenter(selectedMap.getCenter());
-                      e.target.setZoom(selectedMap.getZoom());
-                    }}
-                    onIdle={() => {
-                      setMapLoading(false);
-                      refreshImage();
-                    }}
-                    minZoom={selectedMap.getMinZoom()}
-                    maxZoom={selectedMap.getMaxZoom()}
-                    mapStyle={(selectedMapStyle as any) || mapStyle.toString()}
-                    maxBounds={selectedMap.getMaxBounds() ?? undefined}
-                  >
-                    {selectedMapLayers?.map(layer => (
-                      <Layer key={layer.id} {...layer} />
-                    ))}
-                  </MapGL>
-                )}
               </div>
             </Grid>
 
@@ -679,7 +680,6 @@ const styles = (theme: Theme) =>
       height: '100%',
       display: 'flex',
       justifyContent: 'center',
-      margin: '8px',
     },
     toggleWrapper: { display: 'flex', justifyContent: 'space-between' },
   });
