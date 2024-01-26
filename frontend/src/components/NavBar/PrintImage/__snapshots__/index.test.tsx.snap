@@ -45,7 +45,7 @@ exports[`renders as expected 1`] = `
           color="textSecondary"
           variant="body1"
         >
-          Align the map using the mouse. Press confirm and verify everything looks correct before downloading.
+          Align the map using the mouse.
         </mock-typography>
       </div>
       <button
@@ -87,7 +87,7 @@ exports[`renders as expected 1`] = `
               class="DownloadImage-printContainer-10"
             >
               <div
-                style="position: absolute; top: 0px; left: 0px; z-index: 2; pointer-events: none;"
+                class="DownloadImage-mapOverlay-12"
               />
               <div
                 class="DownloadImage-backdropWrapper-8"
@@ -110,10 +110,10 @@ exports[`renders as expected 1`] = `
           class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-true"
         >
           <div
-            class="MuiBox-root MuiBox-root-12"
+            class="MuiBox-root MuiBox-root-13"
           >
             <div
-              class="MuiBox-root MuiBox-root-13 DownloadImage-title-2"
+              class="MuiBox-root MuiBox-root-14 DownloadImage-title-2"
             >
               Map Options
             </div>
@@ -336,26 +336,13 @@ exports[`renders as expected 1`] = `
               />
             </span>
             <mock-button
-              classname="DownloadImage-firstButton-5"
+              classname="DownloadImage-gutter-4"
               color="primary"
               endicon="[object Object]"
               variant="contained"
             >
-              Confirm
+              Download
             </mock-button>
-            <mock-tooltip
-              title="Confirm before downloading"
-            >
-              <mock-button
-                classname="DownloadImage-gutter-4"
-                color="primary"
-                disabled="true"
-                endicon="[object Object]"
-                variant="contained"
-              >
-                Download
-              </mock-button>
-            </mock-tooltip>
             <mock-menu
               keepmounted="true"
               open="false"
@@ -380,7 +367,7 @@ exports[`renders as expected 1`] = `
     open="false"
   >
     <mock-dialogtitle
-      classname="makeStyles-title-19"
+      classname="makeStyles-title-20"
     >
       Edit Footer Text
     </mock-dialogtitle>

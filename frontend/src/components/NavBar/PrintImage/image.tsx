@@ -21,7 +21,6 @@ import {
   Switch,
   TextField,
   Theme,
-  Tooltip,
   Typography,
   WithStyles,
   withStyles,
@@ -35,8 +34,6 @@ import EditIcon from '@material-ui/icons/Edit';
 import CloseIcon from '@material-ui/icons/Close';
 import { mapStyle } from 'components/MapView/Map';
 import MapGL, { Layer, MapRef } from 'react-map-gl/maplibre';
-import ControlCameraIcon from '@material-ui/icons/ControlCamera';
-import DoneIcon from '@material-ui/icons/Done';
 import {
   dateRangeSelector,
   mapSelector,
@@ -127,7 +124,6 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
   ] = React.useState<HTMLElement | null>(null);
   const [openFooterEdit, setOpenFooterEdit] = React.useState(false);
   const [footerText, setFooterText] = React.useState('');
-  const [mapInteract, setMapInteract] = React.useState(true);
   const [mapLoading, setMapLoading] = React.useState(true);
   const [legendScale, setLegendScale] = React.useState(100);
   // the % value of the original dimensions
@@ -216,11 +212,6 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
 
         context.scale(ratio, ratio);
         context.clearRect(0, 0, canvas.width, canvas.height);
-
-        // Draw the map
-        if (!mapInteract && 0) {
-          context.drawImage(activeLayers, 0, 0);
-        }
 
         // toggle legend
         const div = document.getElementById(legendListId);
@@ -368,7 +359,7 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
       refreshImage();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [open, footerText, toggles, mapInteract, legendScale]);
+  }, [open, footerText, toggles, legendScale]);
 
   const toggle = (event: ChangeEvent<HTMLInputElement>) => {
     setToggles(prevValues => {
@@ -450,9 +441,7 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
           <div style={{ display: 'flex', flexDirection: 'column' }}>
             {t('Map Preview')}
             <Typography color="textSecondary" variant="body1">
-              {t(
-                'Align the map using the mouse. Press confirm and verify everything looks correct before downloading.',
-              )}
+              {t('Align the map using the mouse.')}
             </Typography>
           </div>
 
@@ -486,13 +475,7 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
                 <div ref={printRef} className={classes.printContainer}>
                   <div
                     ref={overlayContainerRef}
-                    style={{
-                      position: 'absolute',
-                      top: 0,
-                      left: 0,
-                      zIndex: 2,
-                      pointerEvents: mapInteract ? 'none' : 'inherit',
-                    }}
+                    className={classes.mapOverlay}
                   />
                   {mapLoading && (
                     <div className={classes.backdropWrapper}>
@@ -572,7 +555,6 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
                   {t('Total width')}
                 </Typography>
                 <Slider
-                  disabled={!mapInteract}
                   defaultValue={100}
                   step={10}
                   marks
@@ -591,7 +573,6 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
                   {t('Legend scale')}
                 </Typography>
                 <Slider
-                  disabled={!mapInteract}
                   defaultValue={100}
                   marks
                   step={10}
@@ -604,31 +585,12 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
                 <Button
                   variant="contained"
                   color="primary"
-                  className={classes.firstButton}
-                  endIcon={mapInteract ? <DoneIcon /> : <ControlCameraIcon />}
-                  onClick={() => setMapInteract(prev => !prev)}
+                  className={classes.gutter}
+                  endIcon={<GetAppIcon />}
+                  onClick={e => handleDownloadMenuOpen(e)}
                 >
-                  {mapInteract ? t('Confirm') : t('Edit Map')}
+                  {t('Download')}
                 </Button>
-
-                <Tooltip
-                  title={
-                    mapInteract
-                      ? (t('Confirm before downloading') as string)
-                      : ''
-                  }
-                >
-                  <Button
-                    disabled={mapInteract}
-                    variant="contained"
-                    color="primary"
-                    className={classes.gutter}
-                    endIcon={<GetAppIcon />}
-                    onClick={e => handleDownloadMenuOpen(e)}
-                  >
-                    {t('Download')}
-                  </Button>
-                </Tooltip>
                 <Menu
                   anchorEl={downloadMenuAnchorEl}
                   keepMounted
@@ -710,6 +672,13 @@ const styles = (theme: Theme) =>
       height: '100%',
       width: '100%',
       zIndex: 1,
+    },
+    mapOverlay: {
+      position: 'absolute',
+      top: 0,
+      left: 0,
+      zIndex: 2,
+      pointerEvents: 'none',
     },
   });
 
