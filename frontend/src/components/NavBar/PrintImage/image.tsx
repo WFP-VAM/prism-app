@@ -527,7 +527,7 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
                   {t('Map Options')}
                 </Box>
                 {options.map(option => (
-                  <div className={classes.toggleWrapper}>
+                  <div key={option.label} className={classes.toggleWrapper}>
                     <FormControlLabel
                       key={option.name}
                       control={
