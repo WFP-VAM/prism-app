@@ -44,8 +44,6 @@ import {
 import { useSafeTranslation } from '../../../i18n';
 import { downloadToFile } from '../../MapView/utils';
 
-const defaultMapWidth = 75;
-
 const DEFAULT_FOOTER_TEXT =
   'The designations employed and the presentation of material in the map(s) do not imply the expression of any opinion on the part of WFP concerning the legal of constitutional status of any country, territory, city, or sea, or concerning the delimitation of its frontiers or boundaries.';
 
@@ -161,7 +159,6 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
   const createFooterElement = (
     inputFooterText: string = t(DEFAULT_FOOTER_TEXT),
     width: number,
-    height: number,
     ratio: number,
   ): HTMLDivElement => {
     const footer = document.createElement('div');
@@ -169,7 +166,7 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
     footer.innerHTML = `
       <div style='width:${
         (width - 16) / ratio
-      }px;height:${height}px;margin:8px;font-size:12px;'>
+      }px;margin:8px;font-size:12px;padding-bottom:8px;'>
         ${inputFooterText}
       </div>
     `;
@@ -193,7 +190,7 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
 
       const canvas = document.createElement('canvas');
       if (canvas) {
-        const footerTextHeight = 75;
+        let footerTextHeight = 0;
         let scalerBarLength = 0;
         const scaleBarGap = 10;
 
@@ -203,9 +200,9 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
         const ratio = window.devicePixelRatio || 1;
 
         // eslint-disable-next-line fp/no-mutation
-        canvas.width = width;
+        canvas.width = width * ratio;
         // eslint-disable-next-line fp/no-mutation
-        canvas.height = height;
+        canvas.height = height * ratio;
         // eslint-disable-next-line fp/no-mutation
         canvas.style.width = `${width / ratio}px`;
         // eslint-disable-next-line fp/no-mutation
@@ -217,7 +214,7 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
           return;
         }
 
-        context.scale(1, 1);
+        context.scale(ratio, ratio);
         context.clearRect(0, 0, canvas.width, canvas.height);
 
         // Draw the map
@@ -275,10 +272,31 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
             c,
             24,
             24,
-            (target.offsetWidth * legendScale) / 100,
-            (target.offsetHeight * legendScale) / 100,
+            (target.offsetWidth * legendScale * ratio) / 100,
+            (target.offsetHeight * legendScale * ratio) / 100,
           );
           document.body.removeChild(target);
+        }
+
+        // toggle footer
+        if (toggles.footer) {
+          const footer = createFooterElement(
+            footerText,
+            activeLayers.width,
+            ratio,
+          );
+          document.body.appendChild(footer);
+          const c = await html2canvas(footer);
+          // eslint-disable-next-line fp/no-mutation
+          footerTextHeight = footer.offsetHeight;
+          context.drawImage(
+            c,
+            0 * ratio,
+            activeLayers.height - footer.offsetHeight * ratio,
+            footer.offsetWidth * ratio,
+            footer.offsetHeight * ratio,
+          );
+          document.body.removeChild(footer);
         }
 
         if (toggles.scaleBar) {
@@ -303,44 +321,29 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
             const c = await html2canvas(html);
             context.drawImage(
               c,
-              activeLayers.width - (scaleBarGap + elem.offsetWidth),
+              activeLayers.width - (scaleBarGap + elem.offsetWidth) * ratio,
               activeLayers.height -
-                30 -
-                (toggles.footer ? footerTextHeight : 0),
+                (30 + (toggles.footer ? footerTextHeight : 0)) * ratio,
+              html.offsetWidth * ratio,
+              html.offsetHeight * ratio,
             );
             document.body.removeChild(html);
           }
         }
 
-        // toggle footer
-        if (toggles.footer) {
-          const footer = createFooterElement(
-            footerText,
-            activeLayers.width,
-            footerTextHeight,
-            ratio,
-          );
-          document.body.appendChild(footer);
-          const c = await html2canvas(footer);
-          context.drawImage(c, 0, activeLayers.height - footerTextHeight);
-          document.body.removeChild(footer);
-        }
-
         if (toggles.northArrow) {
           const image = new Image();
-          const imageWidth = 40;
-          const imageHeight = 60;
+          const imageWidth = 40 * ratio;
+          const imageHeight = 60 * ratio;
+
           // eslint-disable-next-line fp/no-mutation
           image.onload = () => {
             context.drawImage(
               image,
               activeLayers.width -
-                scaleBarGap -
-                imageWidth / 2 -
-                scalerBarLength / 2,
+                (scaleBarGap + imageWidth / 2 + scalerBarLength / 2) * ratio,
               activeLayers.height -
-                110 -
-                (toggles.footer ? footerTextHeight : 0),
+                (110 + (toggles.footer ? footerTextHeight : 0)) * ratio,
               imageWidth,
               imageHeight,
             );
@@ -466,8 +469,8 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
               item
               xs={10}
               style={{
-                width: `${defaultMapWidth}rem`,
-                height: `${defaultMapWidth / 1.6}rem`,
+                width: '70vw',
+                height: '80vh',
                 marginBottom: '16px',
               }}
             >

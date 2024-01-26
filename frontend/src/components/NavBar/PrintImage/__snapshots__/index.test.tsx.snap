@@ -78,7 +78,7 @@ exports[`renders as expected 1`] = `
       >
         <div
           class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-10"
-          style="width: 75rem; height: 46.875rem; margin-bottom: 16px;"
+          style="width: 70vw; height: 80vh; margin-bottom: 16px;"
         >
           <div
             style="position: relative; z-index: 3; border: 8px solid red; height: 100%; width: 100%;"
