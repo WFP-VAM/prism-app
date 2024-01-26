@@ -6,13 +6,14 @@ import React, { memo, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Source, Layer } from 'react-map-gl/maplibre';
 import { getLayerMapId } from 'utils/map-utils';
-import { CircleLayerSpecification } from 'maplibre-gl';
+import { FillLayerSpecification } from 'maplibre-gl';
 import { Point } from 'geojson';
 import booleanPointInPolygon from '@turf/boolean-point-in-polygon';
 import { availableDatesSelector } from 'context/serverStateSlice';
 import { useDefaultDate } from 'utils/useDefaultDate';
 import { getRequestDate } from 'utils/server-utils';
 import { safeCountry } from 'config';
+import { geoToH3, h3ToGeoBoundary } from 'h3-js'; // ts-ignore
 
 const styles = () => createStyles({});
 
@@ -23,9 +24,9 @@ interface Props extends WithStyles<typeof styles> {
 
 const paintProps: (
   opacity: number | undefined,
-) => CircleLayerSpecification['paint'] = (opacity?: number) => ({
-  'circle-opacity': opacity || 0.5,
-  'circle-color': [
+) => FillLayerSpecification['paint'] = (opacity?: number) => ({
+  'fill-opacity': opacity || 0.5,
+  'fill-color': [
     'interpolate',
     ['linear'],
     ['get', 'value'],
@@ -33,20 +34,6 @@ const paintProps: (
     '#FFFF33',
     2,
     '#FF8433',
-  ],
-  'circle-radius': [
-    'interpolate',
-    ['exponential', 2],
-    ['zoom'],
-    // this is actually a list of pairs "zoom,size"
-    7,
-    8,
-    10,
-    20,
-    13,
-    200,
-    16,
-    300,
   ],
 });
 
@@ -78,24 +65,47 @@ const CompositeLayer = ({ layer, before }: Props) => {
     dispatch(loadLayerData({ layer, date: queryDate }));
   }, [dispatch, layer, data, queryDate]);
 
+  // Investigate performance impact of hexagons for large countries
+  const finalFeatures =
+    data &&
+    data.features
+      .map(feature => {
+        const point = feature.geometry as Point;
+        if (
+          !adminBoundaryLimitPolygon ||
+          booleanPointInPolygon(
+            point.coordinates,
+            adminBoundaryLimitPolygon as any,
+          )
+        ) {
+          // Convert the point to a hexagon
+          const hexagon = geoToH3(
+            point.coordinates[1],
+            point.coordinates[0],
+            6, // resolution, adjust as needed
+          );
+          return {
+            ...feature,
+            geometry: {
+              type: 'Polygon',
+              coordinates: [h3ToGeoBoundary(hexagon, true)], // Convert the hexagon to a GeoJSON polygon
+            },
+          };
+        }
+        return null;
+      })
+      .filter(Boolean);
+
   if (selectedDate && data && adminBoundaryLimitPolygon) {
     const filteredData = {
       ...data,
-      features: data.features.filter(feature => {
-        return (
-          !adminBoundaryLimitPolygon ||
-          booleanPointInPolygon(
-            (feature.geometry as Point).coordinates,
-            adminBoundaryLimitPolygon as any,
-          )
-        );
-      }),
+      features: finalFeatures,
     };
     return (
       <Source type="geojson" data={filteredData}>
         <Layer
           id={getLayerMapId(layer.id)}
-          type="circle"
+          type="fill"
           paint={paintProps(layer.opacity)}
           beforeId={before}
         />
