@@ -33,7 +33,7 @@
     "eject": "react-scripts eject",
     "lint": "eslint --ext .js,.jsx,.ts,.tsx -c .eslintrc ./src ../common/src",
     "precommit": "lint-staged",
-    "preprocess-dates": "node ./scripts/preprocess-layer-availability-dates.js",
+    "preprocess-layers": "node ./scripts/preprocess-layers.js",
     "setup:common": "rimraf ./node_modules/prism-common && cd ../common && yarn install --network-timeout 600000 && yarn build && cd ../frontend && yarn install --check-files"
   },
   "dependencies": {

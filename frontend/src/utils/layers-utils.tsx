@@ -1,17 +1,9 @@
-import bbox from '@turf/bbox';
 import { findClosestDate } from 'components/MapView/DateSelector/utils';
-import { Extent } from 'components/MapView/Layers/raster-utils';
 import { checkLayerAvailableDatesAndContinueOrRemove } from 'components/MapView/utils';
-import { appConfig, safeCountry } from 'config';
-import {
-  BoundaryLayerProps,
-  LayerKey,
-  LayerType,
-  isMainLayer,
-  DateItem,
-} from 'config/types';
+import { appConfig } from 'config';
+import { Extent } from 'components/MapView/Layers/raster-utils';
+import { LayerKey, LayerType, isMainLayer, DateItem } from 'config/types';
 import { LayerDefinitions, getBoundaryLayerSingleton } from 'config/utils';
-import { LayerData } from 'context/layers/layer-data';
 import {
   addLayer,
   layerOrdering,
@@ -20,7 +12,6 @@ import {
 } from 'context/mapStateSlice';
 import {
   dateRangeSelector,
-  layerDataSelector,
   layersSelector,
 } from 'context/mapStateSlice/selectors';
 import { addNotification } from 'context/notificationStateSlice';
@@ -36,7 +27,6 @@ import {
   getPossibleDatesForLayer,
 } from 'utils/server-utils';
 import { UrlLayerKey, getUrlKey, useUrlHistory } from 'utils/url-utils';
-import { mergeBoundaryData } from 'components/MapView/Layers/layer-utils';
 import { datesAreEqualWithoutTime, binaryIncludes } from './date-utils';
 
 const dateSupportLayerTypes: Array<LayerType['type']> = [
@@ -54,9 +44,6 @@ const useLayers = () => {
   const boundaryLayerId = getBoundaryLayerSingleton().id;
 
   const unsortedSelectedLayers = useSelector(layersSelector);
-  const boundaryLayerData = useSelector(layerDataSelector(boundaryLayerId)) as
-    | LayerData<BoundaryLayerProps>
-    | undefined;
   const serverAvailableDates = useSelector(availableDatesSelector);
   const { startDate: selectedDate } = useSelector(dateRangeSelector);
 
@@ -86,25 +73,7 @@ const useLayers = () => {
     return [...unsortedSelectedLayers].sort(layerOrdering);
   }, [unsortedSelectedLayers]);
 
-  // TODO - could we simply use the country boundary extent here instead of the calculation?
-  // Or can we foresee any edge cases?
-  const adminBoundariesExtent = useMemo(() => {
-    if (!boundaryLayerData?.data) {
-      return undefined;
-    }
-    return bbox(boundaryLayerData.data) as Extent; // we get extents of admin boundaries to give to the api.
-  }, [boundaryLayerData]);
-
-  // TODO - investigate if this is not too time consuming for larger countries.
-  const adminBoundaryLimitPolygon = useMemo(() => {
-    if (safeCountry !== 'jordan') {
-      return undefined;
-    }
-    if (!boundaryLayerData?.data) {
-      return undefined;
-    }
-    return mergeBoundaryData(boundaryLayerData?.data); // we get extents of admin boundaries to give to the api.
-  }, [boundaryLayerData]);
+  const adminBoundariesExtent = appConfig.map.boundingBox as Extent;
 
   const selectedLayersWithDateSupport = useMemo(() => {
     return selectedLayers
@@ -465,7 +434,6 @@ const useLayers = () => {
 
   return {
     adminBoundariesExtent,
-    adminBoundaryLimitPolygon,
     boundaryLayerId,
     numberOfActiveLayers,
     selectedLayerDates,

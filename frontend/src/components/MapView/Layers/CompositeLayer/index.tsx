@@ -2,10 +2,9 @@ import { WithStyles, createStyles, withStyles } from '@material-ui/core';
 import { CompositeLayerProps } from 'config/types';
 import { LayerData, loadLayerData } from 'context/layers/layer-data';
 import { layerDataSelector } from 'context/mapStateSlice/selectors';
-import React, { memo, useEffect } from 'react';
+import React, { memo, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Source, Layer } from 'react-map-gl/maplibre';
-import useLayers from 'utils/layers-utils';
 import { getLayerMapId } from 'utils/map-utils';
 import { CircleLayerSpecification } from 'maplibre-gl';
 import { Point } from 'geojson';
@@ -13,6 +12,7 @@ import booleanPointInPolygon from '@turf/boolean-point-in-polygon';
 import { availableDatesSelector } from 'context/serverStateSlice';
 import { useDefaultDate } from 'utils/useDefaultDate';
 import { getRequestDate } from 'utils/server-utils';
+import { safeCountry } from 'config';
 
 const styles = () => createStyles({});
 
@@ -52,7 +52,7 @@ const paintProps: (
 
 const CompositeLayer = ({ layer, before }: Props) => {
   // look to refacto with impactLayer and maybe other layers
-  const { adminBoundaryLimitPolygon } = useLayers();
+  const [adminBoundaryLimitPolygon, setAdminBoundaryPolygon] = useState(null);
   const selectedDate = useDefaultDate(layer.dateLayer);
   const serverAvailableDates = useSelector(availableDatesSelector);
   const dispatch = useDispatch();
@@ -64,6 +64,15 @@ const CompositeLayer = ({ layer, before }: Props) => {
 
   const layerAvailableDates = serverAvailableDates[layer.dateLayer];
   const queryDate = getRequestDate(layerAvailableDates, selectedDate);
+
+  useEffect(() => {
+    // admin-boundary-unified-polygon.json is generated using "yarn preprocess-layers"
+    // which runs ./scripts/preprocess-layers.js
+    fetch(`data/${safeCountry}/admin-boundary-unified-polygon.json`)
+      .then(response => response.json())
+      .then(polygonData => setAdminBoundaryPolygon(polygonData))
+      .catch(error => console.error('Error:', error));
+  }, []);
 
   useEffect(() => {
     dispatch(loadLayerData({ layer, date: queryDate }));
