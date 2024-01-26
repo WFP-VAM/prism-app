@@ -130,20 +130,15 @@ const countryDirs = fs
 
       // Filter layers with "path" and "dates" fields
       const dateLayersToProcess = Object.entries(layersData).filter(
-        ([key, layer]) => layer.path && layer.dates && layer.validityPeriod,
+        ([, layer]) => layer.path && layer.dates && layer.validityPeriod,
       );
-      // console.log(dateLayersToProcess);
       await preprocessValidityPeriods(country, dateLayersToProcess);
-
-      // console.log(layersData);
 
       const boundaryLayerToProcess = Object.values(layersData)
         .filter(layer => layer.type === 'boundary' && layer.admin_level_names)
         .sort(
           (a, b) => a.admin_level_names.length - b.admin_level_names.length,
         )[0];
-
-      console.log(country, boundaryLayerToProcess.admin_level_names);
 
       await preprocessBoundaryLayer(country, boundaryLayerToProcess);
     }),
