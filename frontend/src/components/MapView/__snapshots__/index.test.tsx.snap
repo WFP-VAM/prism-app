@@ -438,6 +438,7 @@ exports[`renders as expected 1`] = `
               class="MuiGrid-root MuiGrid-container MuiGrid-spacing-xs-1"
             >
               <mock-legends
+                extent="30.18,-24.74,40.78,-10.32"
                 layers="[object Object],[object Object]"
               />
             </div>
