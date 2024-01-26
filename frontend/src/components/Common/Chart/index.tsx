@@ -107,6 +107,7 @@ const Chart = memo(
     const { t } = useSafeTranslation();
     const classes = useStyles();
     const chartRef = React.useRef<Bar | Line>(null);
+    const isEWSChart = !!data.EWSConfig;
 
     const transpose = useMemo(() => {
       return config.transpose || false;
@@ -158,7 +159,8 @@ const Chart = memo(
         return indices.map(index => header[index]);
       }
       return tableRows.slice(chartRange[0], chartRange[1]).map(row => {
-        const dateFormat = data.EWSConfig ? 'HH:mm' : 'YYYY-MM-DD';
+        // Time information is only needed for EWS charts
+        const dateFormat = isEWSChart ? 'YYYY-MM-DD HH:mm' : 'YYYY-MM-DD';
         return moment(row[config.category])
           .locale(t('date_locale') as LocaleSpecifier)
           .format(dateFormat);
@@ -166,9 +168,9 @@ const Chart = memo(
     }, [
       chartRange,
       config.category,
-      data.EWSConfig,
       header,
       indices,
+      isEWSChart,
       t,
       tableRows,
       transpose,
@@ -183,7 +185,7 @@ const Chart = memo(
           backgroundColor: colors[i],
           borderColor: colors[i],
           borderWidth: 2,
-          pointRadius: data.EWSConfig ? 0 : 1, // Disable point rendering for EWS only.
+          pointRadius: isEWSChart ? 0 : 1, // Disable point rendering for EWS only.
           data: indices.map(index => (row[index] as number) || null),
           pointHitRadius: 10,
         };
@@ -192,8 +194,8 @@ const Chart = memo(
       colors,
       config.category,
       config.fill,
-      data.EWSConfig,
       indices,
+      isEWSChart,
       t,
       tableRows,
     ]);
@@ -209,9 +211,9 @@ const Chart = memo(
         if (foundDataSetFieldPointRadius !== undefined) {
           return foundDataSetFieldPointRadius;
         }
-        return data.EWSConfig ? 0 : 1; // Disable point rendering for EWS only.
+        return isEWSChart ? 0 : 1; // Disable point rendering for EWS only.
       },
-      [data.EWSConfig, datasetFields, header],
+      [isEWSChart, datasetFields, header],
     );
 
     // The indicesDataSet
@@ -288,6 +290,7 @@ const Chart = memo(
       ...set,
       data: set.data.slice(chartRange[0], chartRange[1]),
     }));
+
     const chartData = {
       labels,
       datasets: datasetsTrimmed,
@@ -310,6 +313,10 @@ const Chart = memo(
                 display: false,
               },
               ticks: {
+                callback: value => {
+                  // for EWS charts, we only want to display the time
+                  return isEWSChart ? String(value).split(' ')[1] : value;
+                },
                 fontColor: '#CCC',
               },
               ...(xAxisLabel
@@ -346,7 +353,14 @@ const Chart = memo(
           labels: { boxWidth: 12, boxHeight: 12 },
         },
       } as ChartOptions;
-    }, [config, legendAtBottom, notMaintainAspectRatio, title, xAxisLabel]);
+    }, [
+      config,
+      isEWSChart,
+      legendAtBottom,
+      notMaintainAspectRatio,
+      title,
+      xAxisLabel,
+    ]);
 
     return useMemo(
       () => (
