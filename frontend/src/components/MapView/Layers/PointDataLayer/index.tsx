@@ -14,7 +14,10 @@ import {
   availableDatesSelector,
 } from 'context/serverStateSlice';
 import { LayerData, loadLayerData } from 'context/layers/layer-data';
-import { layerDataSelector } from 'context/mapStateSlice/selectors';
+import {
+  layerDataSelector,
+  mapSelector,
+} from 'context/mapStateSlice/selectors';
 import { removeLayerData } from 'context/mapStateSlice';
 import { addNotification } from 'context/notificationStateSlice';
 import { useDefaultDate } from 'utils/useDefaultDate';
@@ -34,12 +37,9 @@ import {
   MapLayerMouseEvent,
 } from 'maplibre-gl';
 import { getLayerMapId } from 'utils/map-utils';
+import { useSafeTranslation } from 'i18n';
 
-export const getLayersIds = (layer: PointDataLayerProps) => [
-  getLayerMapId(layer.id),
-];
-
-export const onClick = ({
+const onClick = ({
   layer,
   dispatch,
   t,
@@ -71,6 +71,8 @@ const PointDataLayer = ({ layer, before }: LayersProps) => {
   const serverAvailableDates = useSelector(availableDatesSelector);
   const layerAvailableDates = serverAvailableDates[layer.id];
   const userAuth = useSelector(userAuthSelector);
+  const map = useSelector(mapSelector);
+  const { t } = useSafeTranslation();
 
   const queryDate = getRequestDate(layerAvailableDates, selectedDate);
 
@@ -86,6 +88,19 @@ const PointDataLayer = ({ layer, before }: LayersProps) => {
 
   const { data } = layerData || {};
   const { features } = data || {};
+
+  const layerId = getLayerMapId(layer.id);
+
+  useEffect(() => {
+    if (!map) {
+      return () => {};
+    }
+
+    map.on('click', layerId, onClick({ dispatch, layer, t }));
+    return () => {
+      map.off('click', layerId, onClick({ dispatch, layer, t }));
+    };
+  }, [dispatch, layer, layer.id, layerId, map, t]);
 
   useEffect(() => {
     if (layer.authRequired && !userAuth) {
@@ -148,7 +163,7 @@ const PointDataLayer = ({ layer, before }: LayersProps) => {
     return (
       <Source data={features} type="geojson">
         <Layer
-          id={getLayerMapId(layer.id)}
+          id={layerId}
           type="fill"
           paint={
             fillPaintData(
@@ -164,7 +179,7 @@ const PointDataLayer = ({ layer, before }: LayersProps) => {
   return (
     <Source data={features} type="geojson">
       <Layer
-        id={getLayerMapId(layer.id)}
+        id={layerId}
         type="circle"
         layout={circleLayout}
         paint={circlePaint(layer) as CircleLayerSpecification['paint']}

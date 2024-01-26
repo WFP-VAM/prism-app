@@ -1,4 +1,4 @@
-import { Map as MaplibreMap } from 'maplibre-gl';
+import { MapLayerMouseEvent, Map as MaplibreMap } from 'maplibre-gl';
 import { LayerKey, BoundaryLayerProps, LayerType } from 'config/types';
 import { getDisplayBoundaryLayers } from 'config/utils';
 import { addLayer, removeLayer } from 'context/mapStateSlice';
@@ -85,3 +85,7 @@ export function refreshBoundaries(
 
 export const getLayerMapId = (layerId: string, type?: 'fill' | 'line') =>
   `layer-${layerId}${type ? `-${type}` : ''}`;
+
+// evt emitted by map.fire has array of coordinates, but other events have an object
+export const getEvtCoords = (evt: MapLayerMouseEvent) =>
+  Array.isArray(evt.lngLat) ? evt.lngLat : [evt.lngLat.lng, evt.lngLat.lat];

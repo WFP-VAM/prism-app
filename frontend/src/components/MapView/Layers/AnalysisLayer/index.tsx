@@ -1,7 +1,7 @@
 import React from 'react';
 import { get } from 'lodash';
 import { Layer, Source } from 'react-map-gl/maplibre';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { addPopupData } from 'context/tooltipStateSlice';
 import {
   analysisResultSelector,
@@ -21,11 +21,13 @@ import { formatIntersectPercentageAttribute } from 'components/MapView/utils';
 import { Dispatch } from 'redux';
 import { FillLayerSpecification, MapLayerMouseEvent } from 'maplibre-gl';
 import { TFunction } from 'i18next';
-import { getLayerMapId } from 'utils/map-utils';
+import { getEvtCoords, getLayerMapId } from 'utils/map-utils';
+import { mapSelector } from 'context/mapStateSlice/selectors';
+import { useSafeTranslation } from 'i18n';
 
 export const layerId = getLayerMapId('analysis');
 
-export const onClick = ({
+const onClick = ({
   analysisData,
   dispatch,
   t,
@@ -34,7 +36,7 @@ export const onClick = ({
   dispatch: Dispatch;
   t: TFunction;
 }) => (evt: MapLayerMouseEvent) => {
-  const coordinates = [evt.lngLat.lng, evt.lngLat.lat];
+  const coordinates = getEvtCoords(evt);
 
   if (!analysisData) {
     return;
@@ -147,7 +149,22 @@ function AnalysisLayer({ before }: { before?: string }) {
   // TODO maybe in the future we can try add this to LayerType so we don't need exclusive code in Legends and MapView to make this display correctly
   // Currently it is quite difficult due to how JSON focused the typing is. We would have to refactor it to also accept layers generated on-the-spot
   const analysisData = useSelector(analysisResultSelector);
+  const dispatch = useDispatch();
+  const map = useSelector(mapSelector);
+  const { t } = useSafeTranslation();
   const isAnalysisLayerActive = useSelector(isAnalysisLayerActiveSelector);
+
+  React.useEffect(() => {
+    if (!map) {
+      return () => {};
+    }
+
+    map.on('click', layerId, onClick({ dispatch, analysisData, t }));
+
+    return () => {
+      map.off('click', layerId, onClick({ dispatch, analysisData, t }));
+    };
+  }, [analysisData, dispatch, map, t]);
 
   if (!analysisData || !isAnalysisLayerActive) {
     return null;

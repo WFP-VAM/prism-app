@@ -9,22 +9,14 @@ import React, {
   useState,
 } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import AnalysisLayer, {
-  layerId as analysisLayerId,
-  onClick as analysisOnClick,
-} from 'components/MapView/Layers/AnalysisLayer';
+import AnalysisLayer from 'components/MapView/Layers/AnalysisLayer';
 import SelectionLayer from 'components/MapView/Layers/SelectionLayer';
 import MapTooltip from 'components/MapView/MapTooltip';
 import { setMap } from 'context/mapStateSlice';
 import { appConfig } from 'config';
 import useMapOnClick from 'components/MapView/useMapOnClick';
 import { setBounds, setLocation } from 'context/mapBoundaryInfoStateSlice';
-import {
-  DiscriminateUnion,
-  LayerKey,
-  LayerType,
-  MapEventWrapFunction,
-} from 'config/types';
+import { DiscriminateUnion, LayerKey, LayerType } from 'config/types';
 import { setLoadingLayerIds } from 'context/mapTileLoadingStateSlice';
 import {
   firstBoundaryOnView,
@@ -41,33 +33,9 @@ import {
   StaticRasterLayer,
   WMSLayer,
 } from 'components/MapView/Layers';
-import {
-  onClick as boundaryOnclick,
-  onMouseEnter as boundaryOnMouseEnter,
-  onMouseLeave as boundaryOnMouseLeave,
-  getLayersIds as boundaryGetLayers,
-} from 'components/MapView/Layers/BoundaryLayer';
-import {
-  onClick as adminLevelLayerOnClick,
-  getLayersIds as adminLevelGetLayers,
-} from 'components/MapView/Layers/AdminLevelDataLayer';
-import {
-  onClick as impactOnClick,
-  getLayersIds as impactGetLayers,
-} from 'components/MapView/Layers/ImpactLayer';
-import {
-  onClick as pointDataOnClick,
-  getLayersIds as pointDataGetLayers,
-} from 'components/MapView/Layers/PointDataLayer';
 import useLayers from 'utils/layers-utils';
-import MapGL, {
-  MapEvent,
-  MapRef,
-  MapLayerMouseEvent,
-} from 'react-map-gl/maplibre';
+import MapGL, { MapEvent, MapRef } from 'react-map-gl/maplibre';
 import { MapSourceDataEvent, Map as MaplibreMap } from 'maplibre-gl';
-import { useSafeTranslation } from 'i18n';
-import { analysisResultSelector } from 'context/analysisResultStateSlice';
 
 import 'maplibre-gl/dist/maplibre-gl.css';
 
@@ -79,37 +47,15 @@ interface MapComponentProps {
 type LayerComponentsMap<U extends LayerType> = {
   [T in U['type']]: {
     component: ComponentType<{ layer: DiscriminateUnion<U, 'type', T> }>;
-    onClick?: MapEventWrapFunction<DiscriminateUnion<U, 'type', T>>;
-    onMouseEnter?: MapEventWrapFunction<DiscriminateUnion<U, 'type', T>>;
-    onMouseLeave?: MapEventWrapFunction<DiscriminateUnion<U, 'type', T>>;
-    getLayersIds?: (layer: DiscriminateUnion<U, 'type', T>) => string[];
   };
 };
 
 const componentTypes: LayerComponentsMap<LayerType> = {
-  boundary: {
-    component: BoundaryLayer,
-    onClick: boundaryOnclick,
-    onMouseEnter: boundaryOnMouseEnter,
-    onMouseLeave: boundaryOnMouseLeave,
-    getLayersIds: boundaryGetLayers,
-  },
+  boundary: { component: BoundaryLayer },
   wms: { component: WMSLayer },
-  admin_level_data: {
-    component: AdminLevelDataLayer,
-    onClick: adminLevelLayerOnClick,
-    getLayersIds: adminLevelGetLayers,
-  },
-  impact: {
-    component: ImpactLayer,
-    onClick: impactOnClick,
-    getLayersIds: impactGetLayers,
-  },
-  point_data: {
-    component: PointDataLayer,
-    onClick: pointDataOnClick,
-    getLayersIds: pointDataGetLayers,
-  },
+  admin_level_data: { component: AdminLevelDataLayer },
+  impact: { component: ImpactLayer },
+  point_data: { component: PointDataLayer },
   static_raster: { component: StaticRasterLayer },
   composite: { component: CompositeLayer },
 };
@@ -122,15 +68,11 @@ const MapComponent = memo(
 
     const mapRef = React.useRef<MapRef>(null);
 
-    const { t } = useSafeTranslation();
-
     const dispatch = useDispatch();
 
     const { selectedLayers, boundaryLayerId } = useLayers();
 
     const selectedMap = useSelector(mapSelector);
-
-    const analysisData = useSelector(analysisResultSelector);
 
     const [firstSymbolId, setFirstSymbolId] = useState<string | undefined>(
       undefined,
@@ -262,19 +204,9 @@ const MapComponent = memo(
 
     const firstBoundaryId = boundaryId && getLayerMapId(boundaryId);
 
-    const mapOnClick = useCallback(
-      (
-        ...callbacks: { layerId: string; fn: (e: MapLayerMouseEvent) => void }[]
-      ) => {
-        return useMapOnClick(
-          setIsAlertFormOpen,
-          boundaryLayerId,
-          mapRef.current,
-          ...callbacks,
-        );
-      },
-      [boundaryLayerId, setIsAlertFormOpen],
-    );
+    const mapOnClick = useCallback(() => {
+      return useMapOnClick(setIsAlertFormOpen, boundaryLayerId, mapRef.current);
+    }, [boundaryLayerId, setIsAlertFormOpen]);
 
     const getBeforeId = useCallback(
       (index: number) => {
@@ -290,12 +222,6 @@ const MapComponent = memo(
       },
       [firstBoundaryId, firstSymbolId, selectedLayers, selectedMap],
     );
-
-    const wrapCallbacks = (...fns: ((e: MapLayerMouseEvent) => void)[]) => (
-      e: MapLayerMouseEvent,
-    ) => {
-      fns.forEach(fn => fn(e));
-    };
 
     return (
       <MapGL
@@ -314,59 +240,8 @@ const MapComponent = memo(
         }}
         mapStyle={style.toString()}
         onLoad={onMapLoad}
-        onClick={mapOnClick(
-          ...selectedLayers
-            .map(layer => ({
-              layerId: getLayerMapId(layer.id),
-              fn: componentTypes[layer.type]?.onClick?.({
-                dispatch,
-                layer,
-                t,
-              } as any),
-            }))
-            .filter(
-              (
-                x,
-              ): x is {
-                layerId: string;
-                fn: (e: MapLayerMouseEvent) => void;
-              } => typeof x.fn !== 'undefined' && typeof x.layerId === 'string',
-            ),
-          {
-            layerId: analysisLayerId,
-            fn: analysisOnClick({ analysisData, dispatch, t }),
-          },
-        )}
+        onClick={mapOnClick()}
         maxBounds={maxBounds}
-        onMouseEnter={wrapCallbacks(
-          ...selectedLayers
-            .map(layer =>
-              componentTypes[layer.type].onMouseEnter?.({ layer } as any),
-            )
-            .filter(
-              (x): x is (e: MapLayerMouseEvent) => void =>
-                typeof x !== 'undefined',
-            ),
-        )}
-        onMouseLeave={wrapCallbacks(
-          ...selectedLayers
-            .map(layer =>
-              componentTypes[layer.type].onMouseLeave?.({ layer } as any),
-            )
-            .filter(
-              (x): x is (e: MapLayerMouseEvent) => void =>
-                typeof x !== 'undefined',
-            ),
-        )}
-        interactiveLayerIds={[
-          ...selectedLayers
-            .map(layer =>
-              componentTypes[layer.type].getLayersIds?.(layer as any),
-            )
-            .flat()
-            .filter((x): x is string => typeof x !== 'undefined'),
-          analysisLayerId,
-        ]}
       >
         {selectedLayers.map((layer, index) => {
           const { component } = componentTypes[layer.type];

@@ -30,12 +30,9 @@ import {
 } from 'components/MapView/Layers/layer-utils';
 import { convertSvgToPngBase64Image, getSVGShape } from 'utils/image-utils';
 import { FillLayerSpecification } from 'maplibre-gl';
+import { useSafeTranslation } from 'i18n';
 
-export const getLayersIds = (layer: AdminLevelDataLayerProps) => [
-  getLayerMapId(layer.id),
-];
-
-export const onClick = ({
+const onClick = ({
   layer,
   dispatch,
   t,
@@ -55,6 +52,7 @@ const AdminLevelDataLayers = ({
   const dispatch = useDispatch();
   const map = useSelector(mapSelector);
   const serverAvailableDates = useSelector(availableDatesSelector);
+  const { t } = useSafeTranslation();
 
   const boundaryId = layer.boundary || firstBoundaryOnView(map);
 
@@ -111,6 +109,21 @@ const AdminLevelDataLayers = ({
     }
     addFillPatternImagesInMap();
   }, [addFillPatternImagesInMap, layer.id, map]);
+
+  useEffect(() => {
+    if (!map) {
+      return () => {};
+    }
+
+    map.on('click', getLayerMapId(layer.id), onClick({ dispatch, layer, t }));
+    return () => {
+      map.off(
+        'click',
+        getLayerMapId(layer.id),
+        onClick({ dispatch, layer, t }),
+      );
+    };
+  }, [dispatch, layer, layer.id, map, t]);
 
   useEffect(() => {
     // before loading layer check if it has unique boundary?

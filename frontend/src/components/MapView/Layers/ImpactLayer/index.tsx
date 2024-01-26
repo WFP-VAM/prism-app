@@ -22,7 +22,7 @@ import {
   LineLayerSpecification,
   MapLayerMouseEvent,
 } from 'maplibre-gl';
-import { getLayerMapId } from 'utils/map-utils';
+import { getEvtCoords, getLayerMapId } from 'utils/map-utils';
 
 const linePaint: LineLayerSpecification['paint'] = {
   'line-color': 'grey',
@@ -35,11 +35,7 @@ function getHazardData(evt: any, operation: string, t?: i18nTranslator) {
   return getRoundedData(data, t);
 }
 
-export const getLayersIds = (layer: ImpactLayerProps) => [
-  getLayerMapId(layer.id),
-];
-
-export const onClick = ({
+const onClick = ({
   layer,
   t,
   dispatch,
@@ -60,7 +56,7 @@ export const onClick = ({
     return;
   }
 
-  const coordinates = [evt.lngLat.lng, evt.lngLat.lat];
+  const coordinates = getEvtCoords(evt);
 
   const popupData = {
     [layer.title]: {
@@ -95,6 +91,21 @@ const ImpactLayer = ({ classes, layer, before }: ComponentProps) => {
     >) || {};
   const dispatch = useDispatch();
   const { t } = useSafeTranslation();
+
+  useEffect(() => {
+    if (!map) {
+      return () => {};
+    }
+
+    map.on('click', getLayerMapId(layer.id), onClick({ dispatch, layer, t }));
+    return () => {
+      map.off(
+        'click',
+        getLayerMapId(layer.id),
+        onClick({ dispatch, layer, t }),
+      );
+    };
+  }, [dispatch, layer, layer.id, map, t]);
 
   const extent: Extent = getExtent(map);
   useEffect(() => {
