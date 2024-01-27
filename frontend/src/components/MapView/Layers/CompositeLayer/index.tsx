@@ -31,9 +31,15 @@ const paintProps: (
     ['linear'],
     ['get', 'value'],
     -2,
-    '#FFFF33',
+    '#ffffd4',
+    -1,
+    '#fed98e',
+    0,
+    '#fe9929',
+    1,
+    '#d95f0e',
     2,
-    '#FF8433',
+    '#993404',
   ],
 });
 
