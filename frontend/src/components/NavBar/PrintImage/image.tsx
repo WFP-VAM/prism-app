@@ -33,7 +33,9 @@ import moment from 'moment';
 import EditIcon from '@material-ui/icons/Edit';
 import CloseIcon from '@material-ui/icons/Close';
 import { mapStyle } from 'components/MapView/Map';
-import MapGL, { Layer, MapRef } from 'react-map-gl/maplibre';
+import { isDataLayer } from 'components/MapView/Layers/layer-utils';
+
+import MapGL, { MapRef } from 'react-map-gl/maplibre';
 import {
   dateRangeSelector,
   mapSelector,
@@ -135,6 +137,24 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
   // Get the style and layers of the old map
   const selectedMapStyle = selectedMap?.getStyle();
   const selectedMapLayers = selectedMap?.getStyle()?.layers;
+  // The map style already contains all the info we need to re-render the map
+  // however, there is a small bug with opacity and we need to ovrerride the paint
+  // properties of the data layers
+  const cleanSelectedMapStyle = {
+    ...selectedMapStyle,
+    layers: selectedMapLayers?.map(layer => {
+      if (isDataLayer(layer.id)) {
+        // eslint-disable-next-line
+        const paintProps = (selectedMap?.style?._layers as any)[layer.id].paint
+          ._values;
+        return {
+          ...layer,
+          paint: { ...layer.paint, ...paintProps },
+        };
+      }
+      return layer;
+    }),
+  };
 
   React.useEffect(() => {
     const getDateText = (): string => {
@@ -502,14 +522,10 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
                         minZoom={selectedMap.getMinZoom()}
                         maxZoom={selectedMap.getMaxZoom()}
                         mapStyle={
-                          (selectedMapStyle as any) || mapStyle.toString()
+                          (cleanSelectedMapStyle as any) || mapStyle.toString()
                         }
                         maxBounds={selectedMap.getMaxBounds() ?? undefined}
-                      >
-                        {selectedMapLayers?.map(layer => (
-                          <Layer key={layer.id} {...layer} />
-                        ))}
-                      </MapGL>
+                      />
                     )}
                   </div>
                 </div>
