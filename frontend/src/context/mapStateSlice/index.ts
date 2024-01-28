@@ -8,7 +8,7 @@ import {
 } from 'context/layers/layer-data';
 import { BoundaryRelationsDict } from 'components/Common/BoundaryDropdown/utils';
 import { keepLayer } from 'utils/keep-layer-utils';
-import { MapRef } from 'react-map-gl/maplibre';
+import { Map as MaplibreMap } from 'maplibre-gl';
 
 interface DateRange {
   startDate?: number;
@@ -33,7 +33,7 @@ export type MapState = {
 // Maplibre's map type contains some kind of cyclic dependency that causes an infinite loop in immers's change
 // tracking. To save it off, we wrap it in a JS closure so that Redux just checks the function for changes, rather
 // than recursively walking the whole object.
-type MapGetter = () => MapRef | undefined;
+type MapGetter = () => MaplibreMap | undefined;
 
 const initialState: MapState = {
   layers: [],
