@@ -488,7 +488,7 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
                 style={{
                   position: 'relative',
                   zIndex: 3,
-                  border: '8px solid red',
+                  border: '1px solid black',
                   height: `${mapDimensions.height}%`,
                   width: `${mapDimensions.width}%`,
                 }}
