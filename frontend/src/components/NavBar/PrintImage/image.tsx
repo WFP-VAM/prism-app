@@ -190,6 +190,7 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
   };
 
   const refreshImage = async () => {
+    /* eslint-disable fp/no-mutation */
     if (open && mapRef.current) {
       const map = mapRef.current.getMap();
       const activeLayers = map.getCanvas();
@@ -215,13 +216,9 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
 
         const ratio = window.devicePixelRatio || 1;
 
-        // eslint-disable-next-line fp/no-mutation
         canvas.width = width * ratio;
-        // eslint-disable-next-line fp/no-mutation
         canvas.height = height * ratio;
-        // eslint-disable-next-line fp/no-mutation
         canvas.style.width = `${width / ratio}px`;
-        // eslint-disable-next-line fp/no-mutation
         canvas.style.height = `${height / ratio}px`;
 
         const context = canvas.getContext('2d');
@@ -241,7 +238,6 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
           ) as HTMLElement[];
 
           const target = document.createElement('div');
-          // eslint-disable-next-line fp/no-mutation
           target.style.width = '180px';
 
           childElements.forEach((li: HTMLElement, i) => {
@@ -258,9 +254,7 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
             ) as HTMLElement[];
 
             const container = document.createElement('div');
-            // eslint-disable-next-line fp/no-mutation
             container.style.padding = '8px';
-            // eslint-disable-next-line fp/no-mutation
             container.style.paddingBottom = isLast ? '8px' : '16px';
             target.appendChild(container);
 
@@ -298,7 +292,6 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
           );
           document.body.appendChild(footer);
           const c = await html2canvas(footer);
-          // eslint-disable-next-line fp/no-mutation
           footerTextHeight = footer.offsetHeight;
           context.drawImage(
             c,
@@ -319,12 +312,8 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
           if (elem) {
             const html = document.createElement('div');
 
-            // eslint-disable-next-line fp/no-mutation
             scalerBarLength = elem.offsetWidth;
-
-            // eslint-disable-next-line fp/no-mutation
             html.style.width = `${elem.offsetWidth + 2}px`;
-
             html.appendChild(elem);
 
             document.body.appendChild(html);
@@ -347,7 +336,6 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
           const imageWidth = 40 * ratio;
           const imageHeight = 60 * ratio;
 
-          // eslint-disable-next-line fp/no-mutation
           image.onload = () => {
             context.drawImage(
               image,
@@ -359,13 +347,13 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
               imageHeight,
             );
           };
-          // eslint-disable-next-line fp/no-mutation
           image.src = './images/icon_north_arrow.png';
         }
 
         canvasContainer.appendChild(canvas);
       }
     }
+    /* eslint-enable fp/no-mutation */
   };
 
   React.useEffect(() => {
