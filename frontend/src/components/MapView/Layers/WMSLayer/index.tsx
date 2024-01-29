@@ -11,15 +11,14 @@ import { appConfig } from 'config';
 
 function expandBoundingBox(
   bbox: [number, number, number, number],
-  factor: number,
+  extraDegrees: number,
 ): [number, number, number, number] {
   const currentXDistance = bbox[2] - bbox[0];
   const currentYDistance = bbox[3] - bbox[1];
-  const newXDistance = currentXDistance * factor;
-  const newYDistance = currentYDistance * factor;
+  const newXDistance = currentXDistance + 2 * extraDegrees;
+  const newYDistance = currentYDistance + 2 * extraDegrees;
   const xChange = newXDistance - currentXDistance;
   const yChange = newYDistance - currentYDistance;
-
   const lowX = bbox[0] - xChange / 2;
   const lowY = bbox[1] - yChange / 2;
   const highX = xChange / 2 + bbox[2];
@@ -44,7 +43,7 @@ const WMSLayers = ({
     .toISOString()
     .slice(0, 10);
 
-  const expansionFactor = 1.4;
+  const expansionFactor = 2;
   const expandedBoundingBox = expandBoundingBox(
     appConfig.map.boundingBox,
     expansionFactor,
