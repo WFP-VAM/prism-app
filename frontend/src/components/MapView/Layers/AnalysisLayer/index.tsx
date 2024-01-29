@@ -8,7 +8,12 @@ import {
   isAnalysisLayerActiveSelector,
 } from 'context/analysisResultStateSlice';
 import { legendToStops } from 'components/MapView/Layers/layer-utils';
-import { AggregationOperations, LegendDefinition, units } from 'config/types';
+import {
+  AggregationOperations,
+  LegendDefinition,
+  MapEventWrapFunctionProps,
+  units,
+} from 'config/types';
 import {
   AnalysisResult,
   BaselineLayerResult,
@@ -18,23 +23,16 @@ import {
 import { getRoundedData } from 'utils/data-utils';
 import { LayerDefinitions } from 'config/utils';
 import { formatIntersectPercentageAttribute } from 'components/MapView/utils';
-import { Dispatch } from 'redux';
 import { FillLayerSpecification, MapLayerMouseEvent } from 'maplibre-gl';
-import { TFunction } from 'i18next';
-import { getLayerMapId } from 'utils/map-utils';
+import { getEvtCoords, getLayerMapId, useMapCallback } from 'utils/map-utils';
 
 export const layerId = getLayerMapId('analysis');
 
-export const onClick = ({
-  analysisData,
+const onClick = (analysisData: AnalysisResult | undefined) => ({
   dispatch,
   t,
-}: {
-  analysisData: AnalysisResult | undefined;
-  dispatch: Dispatch;
-  t: TFunction;
-}) => (evt: MapLayerMouseEvent) => {
-  const coordinates = [evt.lngLat.lng, evt.lngLat.lat];
+}: MapEventWrapFunctionProps<undefined>) => (evt: MapLayerMouseEvent) => {
+  const coordinates = getEvtCoords(evt);
 
   if (!analysisData) {
     return;
@@ -148,6 +146,8 @@ function AnalysisLayer({ before }: { before?: string }) {
   // Currently it is quite difficult due to how JSON focused the typing is. We would have to refactor it to also accept layers generated on-the-spot
   const analysisData = useSelector(analysisResultSelector);
   const isAnalysisLayerActive = useSelector(isAnalysisLayerActiveSelector);
+
+  useMapCallback('click', layerId, undefined, onClick(analysisData));
 
   if (!analysisData || !isAnalysisLayerActive) {
     return null;

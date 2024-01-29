@@ -1,8 +1,21 @@
-import { Map as MaplibreMap } from 'maplibre-gl';
-import { LayerKey, BoundaryLayerProps, LayerType } from 'config/types';
+import {
+  MapLayerEventType,
+  MapLayerMouseEvent,
+  Map as MaplibreMap,
+} from 'maplibre-gl';
+import {
+  LayerKey,
+  BoundaryLayerProps,
+  LayerType,
+  MapEventWrapFunctionProps,
+} from 'config/types';
 import { getDisplayBoundaryLayers } from 'config/utils';
 import { addLayer, removeLayer } from 'context/mapStateSlice';
-import { Dispatch } from 'react';
+import React, { Dispatch } from 'react';
+
+import { useDispatch, useSelector } from 'react-redux';
+import { mapSelector } from 'context/mapStateSlice/selectors';
+import { useSafeTranslation } from 'i18n';
 
 /**
  * Checks weither given layer is on view
@@ -85,3 +98,31 @@ export function refreshBoundaries(
 
 export const getLayerMapId = (layerId: string, type?: 'fill' | 'line') =>
   `layer-${layerId}${type ? `-${type}` : ''}`;
+
+// evt emitted by map.fire has array of coordinates, but other events have an object
+export const getEvtCoords = (evt: MapLayerMouseEvent) =>
+  Array.isArray(evt.lngLat) ? evt.lngLat : [evt.lngLat.lng, evt.lngLat.lat];
+
+export function useMapCallback<T extends keyof MapLayerEventType, U>(
+  type: T,
+  layerId: string,
+  layer: U,
+  listener: (
+    props: MapEventWrapFunctionProps<U>,
+  ) => (ev: MapLayerEventType[T] & Object) => void,
+) {
+  const dispatch = useDispatch();
+  const map = useSelector(mapSelector);
+  const { t } = useSafeTranslation();
+
+  React.useEffect(() => {
+    if (!map) {
+      return () => {};
+    }
+
+    map.on(type, layerId, listener({ dispatch, layer, t }));
+    return () => {
+      map.off(type, layerId, listener({ dispatch, layer, t }));
+    };
+  }, [dispatch, layer, layerId, listener, map, t, type]);
+}
