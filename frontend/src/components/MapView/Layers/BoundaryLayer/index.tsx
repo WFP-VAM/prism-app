@@ -11,15 +11,12 @@ import {
 } from 'components/Common/BoundaryDropdown/utils';
 import { isPrimaryBoundaryLayer } from 'config/utils';
 import { toggleSelectedBoundary } from 'context/mapSelectionLayerStateSlice';
-import {
-  layerDataSelector,
-  mapSelector,
-} from 'context/mapStateSlice/selectors';
+import { layerDataSelector } from 'context/mapStateSlice/selectors';
 import { getFullLocationName } from 'utils/name-utils';
 
-import { languages, useSafeTranslation } from 'i18n';
+import { languages } from 'i18n';
 import { Map as MaplibreMap } from 'maplibre-gl';
-import { getEvtCoords, getLayerMapId } from 'utils/map-utils';
+import { getEvtCoords, getLayerMapId, useMapCallback } from 'utils/map-utils';
 
 function onToggleHover(cursor: string, targetMap: MaplibreMap) {
   // eslint-disable-next-line no-param-reassign, fp/no-mutation
@@ -75,21 +72,13 @@ const onClick = ({
   );
 };
 
-const onMouseEnter = ({
-  layer,
-}: MapEventWrapFunctionProps<BoundaryLayerProps>) => (
-  evt: MapLayerMouseEvent,
-) => isPrimaryBoundaryLayer(layer) && onToggleHover('pointer', evt.target);
-const onMouseLeave = ({
-  layer,
-}: MapEventWrapFunctionProps<BoundaryLayerProps>) => (
-  evt: MapLayerMouseEvent,
-) => isPrimaryBoundaryLayer(layer) && onToggleHover('', evt.target);
+const onMouseEnter = () => (evt: MapLayerMouseEvent) =>
+  onToggleHover('pointer', evt.target);
+const onMouseLeave = () => (evt: MapLayerMouseEvent) =>
+  onToggleHover('', evt.target);
 
 const BoundaryLayer = ({ layer, before }: ComponentProps) => {
   const dispatch = useDispatch();
-  const { t } = useSafeTranslation();
-  const map = useSelector(mapSelector);
 
   const boundaryLayer = useSelector(layerDataSelector(layer.id)) as
     | LayerData<BoundaryLayerProps>
@@ -99,20 +88,9 @@ const BoundaryLayer = ({ layer, before }: ComponentProps) => {
   const isPrimaryLayer = isPrimaryBoundaryLayer(layer);
   const layerId = getLayerMapId(layer.id, 'fill');
 
-  useEffect(() => {
-    if (!map) {
-      return () => {};
-    }
-
-    map.on('click', layerId, onClick({ dispatch, layer, t }));
-    map.on('mouseenter', layerId, onMouseEnter({ dispatch, layer, t }));
-    map.on('mouseleave', layerId, onMouseLeave({ dispatch, layer, t }));
-    return () => {
-      map.off('click', layerId, onClick({ dispatch, layer, t }));
-      map.off('mouseenter', layerId, onMouseEnter({ dispatch, layer, t }));
-      map.off('mouseleave', layerId, onMouseLeave({ dispatch, layer, t }));
-    };
-  }, [dispatch, layer, layer.id, layerId, map, t]);
+  useMapCallback('click', layerId, layer, onClick);
+  useMapCallback('mouseenter', layerId, layer, onMouseEnter);
+  useMapCallback('mouseleave', layerId, layer, onMouseLeave);
 
   useEffect(() => {
     if (!data || !isPrimaryLayer) {

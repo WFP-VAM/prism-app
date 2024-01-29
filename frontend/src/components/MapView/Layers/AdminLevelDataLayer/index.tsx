@@ -20,6 +20,7 @@ import {
   firstBoundaryOnView,
   getLayerMapId,
   isLayerOnView,
+  useMapCallback,
 } from 'utils/map-utils';
 import { fillPaintData } from 'components/MapView/Layers/styles';
 import { availableDatesSelector } from 'context/serverStateSlice';
@@ -30,7 +31,6 @@ import {
 } from 'components/MapView/Layers/layer-utils';
 import { convertSvgToPngBase64Image, getSVGShape } from 'utils/image-utils';
 import { FillLayerSpecification } from 'maplibre-gl';
-import { useSafeTranslation } from 'i18n';
 
 const onClick = ({
   layer,
@@ -52,11 +52,11 @@ const AdminLevelDataLayers = ({
   const dispatch = useDispatch();
   const map = useSelector(mapSelector);
   const serverAvailableDates = useSelector(availableDatesSelector);
-  const { t } = useSafeTranslation();
 
   const boundaryId = layer.boundary || firstBoundaryOnView(map);
 
   const selectedDate = useDefaultDate(layer.id);
+  useMapCallback('click', getLayerMapId(layer.id), layer, onClick);
   const layerAvailableDates = serverAvailableDates[layer.id];
   const queryDate = getRequestDate(layerAvailableDates, selectedDate);
 
@@ -109,21 +109,6 @@ const AdminLevelDataLayers = ({
     }
     addFillPatternImagesInMap();
   }, [addFillPatternImagesInMap, layer.id, map]);
-
-  useEffect(() => {
-    if (!map) {
-      return () => {};
-    }
-
-    map.on('click', getLayerMapId(layer.id), onClick({ dispatch, layer, t }));
-    return () => {
-      map.off(
-        'click',
-        getLayerMapId(layer.id),
-        onClick({ dispatch, layer, t }),
-      );
-    };
-  }, [dispatch, layer, layer.id, map, t]);
 
   useEffect(() => {
     // before loading layer check if it has unique boundary?

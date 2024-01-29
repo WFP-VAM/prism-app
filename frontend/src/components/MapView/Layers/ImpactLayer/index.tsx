@@ -22,7 +22,7 @@ import {
   LineLayerSpecification,
   MapLayerMouseEvent,
 } from 'maplibre-gl';
-import { getEvtCoords, getLayerMapId } from 'utils/map-utils';
+import { getEvtCoords, getLayerMapId, useMapCallback } from 'utils/map-utils';
 
 const linePaint: LineLayerSpecification['paint'] = {
   'line-color': 'grey',
@@ -92,20 +92,7 @@ const ImpactLayer = ({ classes, layer, before }: ComponentProps) => {
   const dispatch = useDispatch();
   const { t } = useSafeTranslation();
 
-  useEffect(() => {
-    if (!map) {
-      return () => {};
-    }
-
-    map.on('click', getLayerMapId(layer.id), onClick({ dispatch, layer, t }));
-    return () => {
-      map.off(
-        'click',
-        getLayerMapId(layer.id),
-        onClick({ dispatch, layer, t }),
-      );
-    };
-  }, [dispatch, layer, layer.id, map, t]);
+  useMapCallback('click', getLayerMapId(layer.id), layer, onClick);
 
   const extent: Extent = getExtent(map);
   useEffect(() => {

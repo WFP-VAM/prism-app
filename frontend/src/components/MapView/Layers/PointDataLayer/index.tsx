@@ -14,10 +14,7 @@ import {
   availableDatesSelector,
 } from 'context/serverStateSlice';
 import { LayerData, loadLayerData } from 'context/layers/layer-data';
-import {
-  layerDataSelector,
-  mapSelector,
-} from 'context/mapStateSlice/selectors';
+import { layerDataSelector } from 'context/mapStateSlice/selectors';
 import { removeLayerData } from 'context/mapStateSlice';
 import { addNotification } from 'context/notificationStateSlice';
 import { useDefaultDate } from 'utils/useDefaultDate';
@@ -36,8 +33,7 @@ import {
   FillLayerSpecification,
   MapLayerMouseEvent,
 } from 'maplibre-gl';
-import { getLayerMapId } from 'utils/map-utils';
-import { useSafeTranslation } from 'i18n';
+import { getLayerMapId, useMapCallback } from 'utils/map-utils';
 
 const onClick = ({
   layer,
@@ -67,12 +63,14 @@ const onClick = ({
 
 // Point Data, takes any GeoJSON of points and shows it.
 const PointDataLayer = ({ layer, before }: LayersProps) => {
+  const layerId = getLayerMapId(layer.id);
+
   const selectedDate = useDefaultDate(layer.id);
   const serverAvailableDates = useSelector(availableDatesSelector);
   const layerAvailableDates = serverAvailableDates[layer.id];
   const userAuth = useSelector(userAuthSelector);
-  const map = useSelector(mapSelector);
-  const { t } = useSafeTranslation();
+
+  useMapCallback('click', layerId, layer, onClick);
 
   const queryDate = getRequestDate(layerAvailableDates, selectedDate);
 
@@ -88,19 +86,6 @@ const PointDataLayer = ({ layer, before }: LayersProps) => {
 
   const { data } = layerData || {};
   const { features } = data || {};
-
-  const layerId = getLayerMapId(layer.id);
-
-  useEffect(() => {
-    if (!map) {
-      return () => {};
-    }
-
-    map.on('click', layerId, onClick({ dispatch, layer, t }));
-    return () => {
-      map.off('click', layerId, onClick({ dispatch, layer, t }));
-    };
-  }, [dispatch, layer, layer.id, layerId, map, t]);
 
   useEffect(() => {
     if (layer.authRequired && !userAuth) {
