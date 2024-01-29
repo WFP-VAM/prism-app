@@ -18,7 +18,7 @@ export const activeLayersSelector = (state: RootState): MapState['layers'] =>
 export const dateRangeSelector = (state: RootState): MapState['dateRange'] =>
   state.mapState.dateRange;
 export const mapSelector = (state: RootState): MaplibreMap | undefined =>
-  state.mapState.maplibreMap()?.getMap();
+  state.mapState.maplibreMap();
 
 export const layerDataSelector = (id: LayerKey, date?: number) => (
   state: RootState,

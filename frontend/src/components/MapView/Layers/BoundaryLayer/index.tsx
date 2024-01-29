@@ -16,7 +16,7 @@ import { getFullLocationName } from 'utils/name-utils';
 
 import { languages } from 'i18n';
 import { Map as MaplibreMap } from 'maplibre-gl';
-import { getLayerMapId } from 'utils/map-utils';
+import { getEvtCoords, getLayerMapId, useMapCallback } from 'utils/map-utils';
 
 function onToggleHover(cursor: string, targetMap: MaplibreMap) {
   // eslint-disable-next-line no-param-reassign, fp/no-mutation
@@ -28,11 +28,7 @@ interface ComponentProps {
   before?: string;
 }
 
-export const getLayersIds = (layer: BoundaryLayerProps) => [
-  getLayerMapId(layer.id, 'fill'),
-];
-
-export const onClick = ({
+const onClick = ({
   dispatch,
   layer,
   t,
@@ -55,7 +51,7 @@ export const onClick = ({
   // send the selection to the map selection layer. No-op if selection mode isn't on.
   dispatch(toggleSelectedBoundary(feature.properties[layer.adminCode]));
 
-  const coordinates = [evt.lngLat.lng, evt.lngLat.lat];
+  const coordinates = getEvtCoords(evt);
   const locationSelectorKey = layer.adminCode;
   const locationAdminCode = feature.properties[layer.adminCode];
   const locationName = getFullLocationName(layer.adminLevelNames, feature);
@@ -76,16 +72,10 @@ export const onClick = ({
   );
 };
 
-export const onMouseEnter = ({
-  layer,
-}: MapEventWrapFunctionProps<BoundaryLayerProps>) => (
-  evt: MapLayerMouseEvent,
-) => isPrimaryBoundaryLayer(layer) && onToggleHover('pointer', evt.target);
-export const onMouseLeave = ({
-  layer,
-}: MapEventWrapFunctionProps<BoundaryLayerProps>) => (
-  evt: MapLayerMouseEvent,
-) => isPrimaryBoundaryLayer(layer) && onToggleHover('', evt.target);
+const onMouseEnter = () => (evt: MapLayerMouseEvent) =>
+  onToggleHover('pointer', evt.target);
+const onMouseLeave = () => (evt: MapLayerMouseEvent) =>
+  onToggleHover('', evt.target);
 
 const BoundaryLayer = ({ layer, before }: ComponentProps) => {
   const dispatch = useDispatch();
@@ -96,6 +86,11 @@ const BoundaryLayer = ({ layer, before }: ComponentProps) => {
   const { data } = boundaryLayer || {};
 
   const isPrimaryLayer = isPrimaryBoundaryLayer(layer);
+  const layerId = getLayerMapId(layer.id, 'fill');
+
+  useMapCallback('click', layerId, layer, onClick);
+  useMapCallback('mouseenter', layerId, layer, onMouseEnter);
+  useMapCallback('mouseleave', layerId, layer, onMouseLeave);
 
   useEffect(() => {
     if (!data || !isPrimaryLayer) {
@@ -132,7 +127,7 @@ const BoundaryLayer = ({ layer, before }: ComponentProps) => {
         beforeId={before}
       />
       <Layer
-        id={getLayerMapId(layer.id, 'fill')}
+        id={layerId}
         type="fill"
         paint={layer.styles.fill}
         beforeId={before}

@@ -25,7 +25,6 @@ const useMapOnClick = (
   setIsAlertFormOpen: (value: boolean) => void,
   boundaryLayerId: string,
   mapRef: MapRef | null,
-  ...callBacks: { layerId: string; fn: (e: MapLayerMouseEvent) => void }[]
 ) => {
   const dispatch = useDispatch();
   const { startDate: selectedDate } = useSelector(dateRangeSelector);
@@ -117,15 +116,6 @@ const useMapOnClick = (
     if (boundaryLayerData) {
       defaultFunction(e);
     }
-
-    // TODO: maplibre: fix features
-    // Call each registered callback
-    callBacks.forEach(c => {
-      if (!e.features?.find((x: any) => x.source !== c.layerId)) {
-        return;
-      }
-      c.fn(e);
-    });
   };
 };
 

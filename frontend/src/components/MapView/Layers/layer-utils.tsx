@@ -16,6 +16,7 @@ import { getFeatureInfoPropsData } from 'components/MapView/utils';
 import { MapLayerMouseEvent } from 'maplibre-gl';
 import { Feature, GeoJsonProperties, Geometry } from 'geojson';
 import union from '@turf/union';
+import { getEvtCoords, getLayerMapId } from 'utils/map-utils';
 
 export function legendToStops(
   legend: LegendDefinition = [],
@@ -87,7 +88,7 @@ export const addPopupParams = (
     return;
   }
 
-  const coordinates = [evt.lngLat.lng, evt.lngLat.lat];
+  const coordinates = getEvtCoords(evt);
 
   const { dataField, featureInfoProps, title } = layer;
 
