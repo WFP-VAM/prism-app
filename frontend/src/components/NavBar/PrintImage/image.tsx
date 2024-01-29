@@ -412,8 +412,8 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
           orientation: 'landscape',
         });
         const imgProps = pdf.getImageProperties(file);
-        const pdfWidth = pdf.internal.pageSize.getWidth();
-        const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+        const pdfHeight = pdf.internal.pageSize.getHeight();
+        const pdfWidth = (imgProps.width * pdfHeight) / imgProps.height;
         pdf.addImage(file, 'PNG', 0, 0, pdfWidth, pdfHeight);
         pdf.save('map.pdf');
       } else {
