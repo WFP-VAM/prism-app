@@ -20,6 +20,7 @@ import {
   firstBoundaryOnView,
   getLayerMapId,
   isLayerOnView,
+  useMapCallback,
 } from 'utils/map-utils';
 import { fillPaintData } from 'components/MapView/Layers/styles';
 import { availableDatesSelector } from 'context/serverStateSlice';
@@ -31,11 +32,7 @@ import {
 import { convertSvgToPngBase64Image, getSVGShape } from 'utils/image-utils';
 import { FillLayerSpecification } from 'maplibre-gl';
 
-export const getLayersIds = (layer: AdminLevelDataLayerProps) => [
-  getLayerMapId(layer.id),
-];
-
-export const onClick = ({
+const onClick = ({
   layer,
   dispatch,
   t,
@@ -59,6 +56,7 @@ const AdminLevelDataLayers = ({
   const boundaryId = layer.boundary || firstBoundaryOnView(map);
 
   const selectedDate = useDefaultDate(layer.id);
+  useMapCallback('click', getLayerMapId(layer.id), layer, onClick);
   const layerAvailableDates = serverAvailableDates[layer.id];
   const queryDate = getRequestDate(layerAvailableDates, selectedDate);
 

@@ -33,13 +33,9 @@ import {
   FillLayerSpecification,
   MapLayerMouseEvent,
 } from 'maplibre-gl';
-import { getLayerMapId } from 'utils/map-utils';
+import { getLayerMapId, useMapCallback } from 'utils/map-utils';
 
-export const getLayersIds = (layer: PointDataLayerProps) => [
-  getLayerMapId(layer.id),
-];
-
-export const onClick = ({
+const onClick = ({
   layer,
   dispatch,
   t,
@@ -67,10 +63,14 @@ export const onClick = ({
 
 // Point Data, takes any GeoJSON of points and shows it.
 const PointDataLayer = ({ layer, before }: LayersProps) => {
+  const layerId = getLayerMapId(layer.id);
+
   const selectedDate = useDefaultDate(layer.id);
   const serverAvailableDates = useSelector(availableDatesSelector);
   const layerAvailableDates = serverAvailableDates[layer.id];
   const userAuth = useSelector(userAuthSelector);
+
+  useMapCallback('click', layerId, layer, onClick);
 
   const queryDate = getRequestDate(layerAvailableDates, selectedDate);
 
@@ -148,7 +148,7 @@ const PointDataLayer = ({ layer, before }: LayersProps) => {
     return (
       <Source data={features} type="geojson">
         <Layer
-          id={getLayerMapId(layer.id)}
+          id={layerId}
           type="fill"
           paint={
             fillPaintData(
@@ -164,7 +164,7 @@ const PointDataLayer = ({ layer, before }: LayersProps) => {
   return (
     <Source data={features} type="geojson">
       <Layer
-        id={getLayerMapId(layer.id)}
+        id={layerId}
         type="circle"
         layout={circleLayout}
         paint={circlePaint(layer) as CircleLayerSpecification['paint']}
