@@ -14,8 +14,6 @@ import { getRoundedData } from 'utils/data-utils';
 import { i18nTranslator } from 'i18n';
 import { getFeatureInfoPropsData } from 'components/MapView/utils';
 import { MapLayerMouseEvent } from 'maplibre-gl';
-import { Feature, GeoJsonProperties, Geometry } from 'geojson';
-import union from '@turf/union';
 
 export function legendToStops(
   legend: LegendDefinition = [],
@@ -123,29 +121,4 @@ export const addPopupParams = (
       ),
     ),
   );
-};
-
-// Define the type for boundary data
-type BoundaryData = GeoJSON.FeatureCollection;
-
-// Function to merge boundary data and return a single polygon
-export const mergeBoundaryData = (boundaryData: BoundaryData | undefined) => {
-  let mergedBoundaryData: Feature<Geometry> | null = null;
-  if ((boundaryData?.features.length || 0) > 0) {
-    // eslint-disable-next-line fp/no-mutation
-    mergedBoundaryData =
-      boundaryData?.features.reduce(
-        (
-          acc: Feature<Geometry, GeoJsonProperties> | null,
-          feature: Feature<Geometry, GeoJsonProperties>,
-        ) => {
-          if (acc === null) {
-            return feature;
-          }
-          return union(acc as any, feature as any);
-        },
-        null,
-      ) || null;
-  }
-  return mergedBoundaryData;
 };
