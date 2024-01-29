@@ -7,6 +7,7 @@ import { useDefaultDate } from 'utils/useDefaultDate';
 import { getRequestDate } from 'utils/server-utils';
 import { availableDatesSelector } from 'context/serverStateSlice';
 import { getLayerMapId } from 'utils/map-utils';
+import { appConfig } from 'config';
 
 const WMSLayers = ({
   layer: { id, baseUrl, serverLayerName, additionalQueryParams, opacity },
@@ -24,6 +25,8 @@ const WMSLayers = ({
     .toISOString()
     .slice(0, 10);
 
+  console.log(appConfig);
+  console.log(appConfig.map.boundingBox);
   return (
     <Source
       id={`source-${id}`}
@@ -39,6 +42,7 @@ const WMSLayers = ({
         })}&bbox={bbox-epsg-3857}`,
       ]}
       tileSize={256}
+      bounds={appConfig.map.boundingBox}
     >
       <Layer
         beforeId={before}
