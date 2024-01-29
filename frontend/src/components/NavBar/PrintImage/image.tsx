@@ -285,7 +285,7 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
 
           document.body.appendChild(target);
 
-          const c = await html2canvas(target);
+          const c = await html2canvas(target, { useCORS: true });
           context.drawImage(
             c,
             24,
