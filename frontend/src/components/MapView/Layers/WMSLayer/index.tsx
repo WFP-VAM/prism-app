@@ -7,6 +7,8 @@ import { useDefaultDate } from 'utils/useDefaultDate';
 import { getRequestDate } from 'utils/server-utils';
 import { availableDatesSelector } from 'context/serverStateSlice';
 import { getLayerMapId } from 'utils/map-utils';
+import { mapSelector } from 'context/mapStateSlice/selectors';
+import { RasterLayerSpecification } from 'maplibre-gl';
 
 const WMSLayers = ({
   layer: { id, baseUrl, serverLayerName, additionalQueryParams, opacity },
@@ -14,15 +16,35 @@ const WMSLayers = ({
 }: LayersProps) => {
   const selectedDate = useDefaultDate(serverLayerName, id);
   const serverAvailableDates = useSelector(availableDatesSelector);
+  const map = useSelector(mapSelector);
+  const opacityRef = React.useRef<RasterLayerSpecification['paint']>();
 
-  if (!selectedDate) {
-    return null;
-  }
   const layerAvailableDates = serverAvailableDates[serverLayerName];
   const queryDate = getRequestDate(layerAvailableDates, selectedDate);
   const queryDateString = (queryDate ? new Date(queryDate) : new Date())
     .toISOString()
     .slice(0, 10);
+
+  React.useEffect(() => {
+    if (!map) {
+      return;
+    }
+    map.on('styledata', e => {
+      setTimeout(() => {
+        // eslint-disable-next-line no-underscore-dangle
+        const renderedLayer = e.target.style._layers[getLayerMapId(id)];
+        // eslint-disable-next-line no-underscore-dangle
+        const val = (renderedLayer?.paint as any)?._values;
+        if (val) {
+          opacityRef.current = val;
+        }
+      }, 250);
+    });
+  }, [id, map]);
+
+  if (!selectedDate) {
+    return null;
+  }
 
   return (
     <Source
@@ -45,7 +67,7 @@ const WMSLayers = ({
         type="raster"
         id={getLayerMapId(id)}
         source={`source-${id}`}
-        paint={{ 'raster-opacity': opacity }}
+        paint={opacityRef.current || { 'raster-opacity': opacity }}
       />
     </Source>
   );
