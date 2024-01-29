@@ -30,6 +30,7 @@ const WMSLayers = ({
       return;
     }
     map.on('styledata', e => {
+      // we are using timeout here, because the paint value will slowly transition to it's designated value
       setTimeout(() => {
         // eslint-disable-next-line no-underscore-dangle
         const renderedLayer = e.target.style._layers[getLayerMapId(id)];
