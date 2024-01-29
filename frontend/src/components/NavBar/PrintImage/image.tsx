@@ -140,6 +140,7 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
   // The map style already contains all the info we need to re-render the map
   // however, there is a small bug with opacity and we need to ovrerride the paint
   // properties of the data layers
+  // TODO - use opacity state when it has been revamped
   const cleanSelectedMapStyle = {
     ...selectedMapStyle,
     layers: selectedMapLayers?.map(layer => {
@@ -147,9 +148,21 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
         // eslint-disable-next-line
         const paintProps = (selectedMap?.style?._layers as any)[layer.id].paint
           ._values;
+        // only keep opacity info and handle weird behaviors
+        const opacityProps = Object.keys(paintProps)
+          .filter(key => key.includes('opacity'))
+          .reduce((obj, key) => {
+            return {
+              ...obj,
+              [key]:
+                typeof paintProps[key] === 'number'
+                  ? paintProps[key]
+                  : paintProps[key].value.value,
+            };
+          }, {});
         return {
           ...layer,
-          paint: { ...layer.paint, ...paintProps },
+          paint: { ...layer.paint, ...opacityProps },
         };
       }
       return layer;
