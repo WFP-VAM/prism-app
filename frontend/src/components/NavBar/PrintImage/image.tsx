@@ -410,11 +410,12 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
         // eslint-disable-next-line new-cap
         const pdf = new jsPDF({
           orientation: 'landscape',
+          unit: 'px',
+          format: [canvas.width, canvas.height],
         });
-        const imgProps = pdf.getImageProperties(file);
         const pdfHeight = pdf.internal.pageSize.getHeight();
-        const pdfWidth = (imgProps.width * pdfHeight) / imgProps.height;
-        pdf.addImage(file, 'PNG', 0, 0, pdfWidth, pdfHeight);
+        const pdfWidth = pdf.internal.pageSize.getWidth();
+        pdf.addImage(file, 'PNG', 0, 0, pdfWidth, pdfHeight, undefined, 'FAST');
         pdf.save('map.pdf');
       } else {
         downloadToFile({ content: file, isUrl: true }, 'map', `image/${ext}`);
