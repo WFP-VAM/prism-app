@@ -48,10 +48,10 @@ const onClick = ({
     hazardLayerDef.title ? t(hazardLayerDef.title) : ''
   } (${t(operation)})`;
 
+  const layerId = getLayerMapId(layer.id);
+
   // TODO: maplibre: fix feature
-  const feature = evt.features?.find(
-    (x: any) => x.layer.id === getLayerMapId(layer.id),
-  ) as any;
+  const feature = evt.features?.find((x: any) => x.layer.id === layerId) as any;
   if (!feature) {
     return;
   }
