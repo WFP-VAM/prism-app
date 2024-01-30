@@ -146,6 +146,9 @@ const PopupContent = ({
             console.log('Popup coordinates:', coordinates);
             /* eslint-enable no-console */
           }
+          if (value.data === undefined) {
+            return false;
+          }
           // return isEqual(value.coordinates, coordinates);
           return true;
         })
