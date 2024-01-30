@@ -1,20 +1,22 @@
-import * as MapboxGL from 'mapbox-gl';
 import {
   CommonLayerProps,
   DataFieldType,
   LegendDefinitionItem,
   PointDataLayerProps,
 } from 'config/types';
+import { CircleLayerSpecification, FillLayerSpecification } from 'maplibre-gl';
 import { legendToStops } from './layer-utils';
 
-export const circleLayout: MapboxGL.CircleLayout = { visibility: 'visible' };
+export const circleLayout: CircleLayerSpecification['layout'] = {
+  visibility: 'visible',
+};
 
 export const circlePaint = ({
   opacity,
   legend,
   dataField,
   dataFieldType,
-}: PointDataLayerProps): MapboxGL.CirclePaint => {
+}: PointDataLayerProps): CircleLayerSpecification['paint'] => {
   const circleColor =
     dataFieldType === DataFieldType.TEXT
       ? [
@@ -38,7 +40,8 @@ export const circlePaint = ({
   return {
     'circle-radius': 8,
     'circle-opacity': opacity || 0.3,
-    'circle-color': circleColor as MapboxGL.Expression,
+    // TODO: maplibre: fix any
+    'circle-color': circleColor as any,
   };
 };
 
@@ -47,8 +50,8 @@ export const fillPaintData = (
   { opacity, legend, id }: CommonLayerProps,
   property: string = 'data',
   fillPattern?: 'right' | 'left',
-): MapboxGL.FillPaint => {
-  let fillPaint: MapboxGL.FillPaint = {
+): FillLayerSpecification['paint'] => {
+  let fillPaint: FillLayerSpecification['paint'] = {
     'fill-opacity': opacity || 0.3,
     'fill-color': {
       property,
@@ -73,7 +76,8 @@ export const fillPaintData = (
           ],
           [],
         ),
-      ] as MapboxGL.Expression,
+        // TODO: maplibre: fix any
+      ] as any,
     };
   }
   return fillPaint;

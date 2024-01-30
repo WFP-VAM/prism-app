@@ -76,7 +76,7 @@ interface TabsProps {
   tablesPanel: React.ReactNode;
   areTablesAvailable: boolean;
   panelSize: PanelSize;
-  resultsPage: JSX.Element | null;
+  resultsPage: React.JSX.Element | null;
   setPanelSize: React.Dispatch<React.SetStateAction<PanelSize>>;
 }
 

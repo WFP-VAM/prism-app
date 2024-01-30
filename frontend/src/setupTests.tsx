@@ -21,16 +21,6 @@ class Worker {
 // eslint-disable-next-line fp/no-mutation
 window.Worker = Worker;
 
-jest.mock('mapbox-gl/dist/maplibre-gl', () => ({
-  GeolocateControl: jest.fn(),
-  Map: jest.fn(() => ({
-    addControl: jest.fn(),
-    on: jest.fn(),
-    remove: jest.fn(),
-  })),
-  NavigationControl: jest.fn(),
-}));
-
 // eslint-disable-next-line fp/no-mutating-methods
 Object.defineProperty(global.self, 'crypto', {
   value: {
@@ -43,17 +33,6 @@ Object.defineProperty(global.self, 'crypto', {
     },
   },
 });
-
-// Based on https://github.com/mapbox/mapbox-gl-js/issues/3436#issuecomment-485535598
-jest.mock('mapbox-gl/dist/mapbox-gl', () => ({
-  GeolocateControl: jest.fn(),
-  Map: jest.fn(() => ({
-    addControl: jest.fn(),
-    on: jest.fn(),
-    remove: jest.fn(),
-  })),
-  NavigationControl: jest.fn(),
-}));
 
 // https://github.com/diegomura/react-pdf/issues/710
 jest.mock('@react-pdf/renderer', () => ({

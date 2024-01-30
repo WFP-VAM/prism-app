@@ -12,8 +12,12 @@ import { addPopupData } from 'context/tooltipStateSlice';
 import { getRoundedData } from 'utils/data-utils';
 import { i18nTranslator } from 'i18n';
 import { getFeatureInfoPropsData } from 'components/MapView/utils';
+import { MapLayerMouseEvent } from 'maplibre-gl';
+import { findFeature, getEvtCoords, getLayerMapId } from 'utils/map-utils';
 
-export function legendToStops(legend: LegendDefinition = []) {
+export function legendToStops(
+  legend: LegendDefinition = [],
+): [number, string][] {
   // TODO - Make this function easier to use for point data and explicit its behavior.
   return legend.map(({ value, color }) => [
     typeof value === 'string' ? parseFloat(value.replace('< ', '')) : value,
@@ -69,11 +73,18 @@ export function getLayerGeometryIcon(layer: LayerType) {
 export const addPopupParams = (
   layer: AdminLevelDataLayerProps | PointDataLayerProps,
   dispatch: Dispatch,
-  evt: any,
+  evt: MapLayerMouseEvent,
   t: i18nTranslator,
   adminLevel: boolean,
 ): void => {
-  const feature = evt.features[0];
+  const layerId = getLayerMapId(layer.id);
+
+  const feature = findFeature(layerId, evt);
+  if (!feature) {
+    return;
+  }
+
+  const coordinates = getEvtCoords(evt);
 
   const { dataField, featureInfoProps, title } = layer;
 
@@ -93,7 +104,7 @@ export const addPopupParams = (
         [title]: {
           ...adminLevelObj,
           data: getRoundedData(get(feature, propertyField), t),
-          coordinates: evt.lngLat,
+          coordinates,
         },
       }),
     );
@@ -101,6 +112,12 @@ export const addPopupParams = (
 
   // Add feature_info_props as extra fields to the tooltip
   dispatch(
-    addPopupData(getFeatureInfoPropsData(layer.featureInfoProps || {}, evt)),
+    addPopupData(
+      getFeatureInfoPropsData(
+        layer.featureInfoProps || {},
+        coordinates,
+        feature,
+      ),
+    ),
   );
 };

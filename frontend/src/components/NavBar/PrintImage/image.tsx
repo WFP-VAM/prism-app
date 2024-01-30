@@ -1,5 +1,5 @@
 import React, { ChangeEvent, useRef } from 'react';
-import mapboxgl from 'mapbox-gl';
+import maplibregl from 'maplibre-gl';
 import { useSelector } from 'react-redux';
 import {
   Box,
@@ -249,7 +249,7 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
         }
 
         if (toggles.scaleBar) {
-          selectedMap.addControl(new mapboxgl.ScaleControl(), 'top-right');
+          selectedMap.addControl(new maplibregl.ScaleControl({}), 'top-right');
           const elem = document.querySelector(
             '.maplibregl-ctrl-scale',
           ) as HTMLElement;

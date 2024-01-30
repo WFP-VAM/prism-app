@@ -1,7 +1,13 @@
 import { GeoJSON } from 'geojson';
 import { every, map } from 'lodash';
-import { FillPaint, LinePaint } from 'mapbox-gl';
 import 'reflect-metadata';
+import {
+  FillLayerSpecification,
+  LineLayerSpecification,
+  MapLayerMouseEvent,
+} from 'maplibre-gl';
+import { Dispatch } from 'redux';
+import { TFunction } from 'i18next';
 import { rawLayers } from '.';
 import type { ReportKey, TableKey } from './utils';
 import type { PopupMetaData } from '../context/tooltipStateSlice';
@@ -320,14 +326,9 @@ export class CommonLayerProps {
   disableAnalysis?: boolean; // Hide layer in Analysis feature
 }
 
-/*
-  To get possible values for fill and lines, go to:
-  https://docs.mapbox.com/mapbox-gl-js/style-spec/layers/#line
-  https://docs.mapbox.com/mapbox-gl-js/style-spec/layers/#fill
-*/
 type LayerStyleProps = {
-  fill: FillPaint;
-  line: LinePaint;
+  fill: FillLayerSpecification['paint'];
+  line: LineLayerSpecification['paint'];
 };
 
 export type DatasetLevel = {
@@ -374,7 +375,7 @@ export class BoundaryLayerProps extends CommonLayerProps {
   adminLevelCodes: AdminCodeString[]; // Ordered as below
   adminLevelNames: AdminLevelNameString[]; // Ordered (Admin1, Admin2, ...)
   adminLevelLocalNames: AdminLevelNameString[]; // Same as above, local to country
-  styles: LayerStyleProps; // Mapbox line and fill properties.,
+  styles: LayerStyleProps; // Maplibre line and fill properties.,
 
   @optional
   isPrimary?: boolean | undefined;
@@ -852,3 +853,13 @@ export enum PanelSize {
   large = '1000px',
   xlarge = '1400px',
 }
+
+export type MapEventWrapFunctionProps<T> = {
+  dispatch: Dispatch;
+  layer: T;
+  t: TFunction;
+};
+
+export type MapEventWrapFunction<T> = (
+  props: MapEventWrapFunctionProps<T>,
+) => (evt: MapLayerMouseEvent) => void;

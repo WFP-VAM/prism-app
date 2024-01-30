@@ -17,10 +17,7 @@ import {
 import { createStyles, WithStyles, withStyles } from '@material-ui/styles';
 import { useDispatch, useSelector } from 'react-redux';
 import OpacityIcon from '@material-ui/icons/Opacity';
-import {
-  clearAnalysisResult,
-  setAnalysisLayerOpacity,
-} from 'context/analysisResultStateSlice';
+import { clearAnalysisResult } from 'context/analysisResultStateSlice';
 import { handleChangeOpacity } from 'components/MapView/Legends/handleChangeOpacity';
 import { mapSelector } from 'context/mapStateSlice/selectors';
 import {
@@ -59,13 +56,9 @@ const AnalysisLayerSwitchItem = memo(
       setIsOpacitySelected(!isOpacitySelected);
     }, [isOpacitySelected]);
 
-    const handleChangeOpacityValue = useCallback(
-      val => {
-        setOpacityValue(val);
-        dispatch(setAnalysisLayerOpacity(val));
-      },
-      [dispatch],
-    );
+    const handleChangeOpacityValue = useCallback(val => {
+      setOpacityValue(val);
+    }, []);
 
     const handleOnChangeSliderValue = useCallback(
       (event: ChangeEvent<{}>, newValue: number | number[]) => {
@@ -73,7 +66,7 @@ const AnalysisLayerSwitchItem = memo(
           event,
           newValue as number,
           map,
-          undefined, // We have to pass undefined here so that the function know that we are in an analysis custom layer
+          'analysis', // We have to pass undefined here so that the function know that we are in an analysis custom layer
           undefined, // We have also to pass undefined here to show that we have analysis custom layer,
           handleChangeOpacityValue,
         );

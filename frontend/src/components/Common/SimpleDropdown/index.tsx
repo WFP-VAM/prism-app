@@ -13,7 +13,7 @@ export default function SimpleDropdown<OptionValue extends number | string>({
 }: {
   options: [OptionValue, OptionLabel][];
   value: OptionValue;
-  onChange: (value: OptionValue) => void;
+  onChange: (v: OptionValue) => void;
   textClass: string;
 }) {
   const { t } = useSafeTranslation();

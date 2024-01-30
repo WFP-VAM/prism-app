@@ -1,6 +1,6 @@
 import React, { memo, useCallback, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Popup } from 'react-mapbox-gl';
+import { Popup } from 'react-map-gl/maplibre';
 import {
   createStyles,
   withStyles,
@@ -43,7 +43,7 @@ const styles = () =>
       marginBottom: '4px',
     },
     popup: {
-      '& div.mapboxgl-popup-content': {
+      '& div.maplibregl-popup-content': {
         background: 'black',
         color: 'white',
         padding: '5px 5px 5px 5px',
@@ -51,7 +51,7 @@ const styles = () =>
         maxHeight: '400px',
         overflow: 'auto',
       },
-      '& div.mapboxgl-popup-tip': {
+      '& div.maplibregl-popup-tip': {
         'border-top-color': 'black',
         'border-bottom-color': 'black',
       },
@@ -114,9 +114,11 @@ const MapTooltip = ({ classes }: TooltipProps) => {
   if (dataset) {
     return (
       <Popup
-        coordinates={popup.coordinates}
+        latitude={popup.coordinates?.[1]}
+        longitude={popup.coordinates?.[0]}
         className={classes.popup}
-        style={{ zIndex: 5 }}
+        style={{ zIndex: 5, maxWidth: 'none' }}
+        closeButton={false}
       >
         <IconButton
           aria-label="close"
@@ -133,9 +135,11 @@ const MapTooltip = ({ classes }: TooltipProps) => {
 
   return (
     <Popup
-      coordinates={popup.coordinates}
+      latitude={popup.coordinates?.[1]}
+      longitude={popup.coordinates?.[0]}
       className={classes.popup}
-      style={{ zIndex: 5 }}
+      style={{ zIndex: 5, maxWidth: 'none' }}
+      closeButton={false}
     >
       {adminLevel === undefined && (
         <RedirectToDMP
@@ -149,7 +153,7 @@ const MapTooltip = ({ classes }: TooltipProps) => {
       {adminLevel === undefined && (
         <PopupContent popupData={popupData} coordinates={popup.coordinates} />
       )}
-      {availableAdminLevels.length > 0 && adminLevel && (
+      {availableAdminLevels.length > 0 && adminLevel !== undefined && (
         <IconButton
           aria-label="close"
           className={classes.closeButton}

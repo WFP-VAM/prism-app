@@ -33,12 +33,6 @@ export const EWSTriggersConfig: EWSChartConfigObject = {
   },
 };
 
-type statsEWS = {
-  max: number;
-  mean: number;
-  min: number;
-};
-
 enum EWSLevelStatus {
   NORMAL = 0,
   WATCH = 1,

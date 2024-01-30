@@ -2,8 +2,8 @@
 
 exports[`renders as expected 1`] = `
 <div>
-  <span>
-    Mock map
-  </span>
+  <div
+    style="position: relative; width: 100%; height: 100%;"
+  />
 </div>
 `;

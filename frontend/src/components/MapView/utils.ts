@@ -1,5 +1,4 @@
 import { orderBy, snakeCase, values } from 'lodash';
-import { Map } from 'mapbox-gl';
 import { TFunction } from 'i18next';
 import { Dispatch } from 'redux';
 import { LayerDefinitions } from 'config/utils';
@@ -19,15 +18,16 @@ import { LocalError } from 'utils/error-utils';
 import { Column, quoteAndEscapeCell } from 'utils/analysis-utils';
 import { TableRow } from 'context/analysisResultStateSlice';
 import { AdminBoundaryParams, EWSParams } from 'context/datasetStateSlice';
+import { MapRef, Point } from 'react-map-gl/maplibre';
 import { getExtent } from './Layers/raster-utils';
 
-export const getActiveFeatureInfoLayers = (map: Map): WMSLayerProps[] => {
+// TODO: maplibre: fix feature
+export const getActiveFeatureInfoLayers = (features?: any): WMSLayerProps[] => {
   const matchStr = 'layer-';
   const layerIds =
-    map
-      .getStyle()
-      .layers?.filter(l => l.id.startsWith(matchStr))
-      .map(l => l.id.split(matchStr)[1]) ?? [];
+    features
+      ?.filter((feat: any) => feat?.layer?.id.startsWith(matchStr))
+      .map((feat: any) => feat.layer.id.split(matchStr)[1]) ?? [];
 
   if (layerIds.length === 0) {
     return [];
@@ -45,12 +45,12 @@ export const getActiveFeatureInfoLayers = (map: Map): WMSLayerProps[] => {
 };
 
 export const getFeatureInfoParams = (
-  map: Map,
-  evt: any,
+  map: MapRef,
+  point: Point,
   date: string,
 ): FeatureInfoType => {
-  const { x, y } = evt.point;
-  const bbox = getExtent(map);
+  const { x, y } = point;
+  const bbox = getExtent(map.getMap());
   const { clientWidth, clientHeight } = map.getContainer();
 
   const params = {
@@ -151,13 +151,14 @@ const getData = (
       };
     }, {});
 
+// TODO: maplibre: fix feature
 export function getFeatureInfoPropsData(
   featureInfoProps: FeatureInfoObject,
-  event: any,
+  coordinates: number[],
+  feature: any,
 ) {
   const [keys, metaDataKeys] = sortKeys(featureInfoProps);
-  const { properties } = event.features[0];
-  const coordinates = event.lngLat;
+  const { properties } = feature;
 
   return {
     ...getMetaData(featureInfoProps, metaDataKeys, properties),

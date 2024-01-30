@@ -1,10 +1,11 @@
 import React, { memo, useCallback, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { GeoJSONLayer } from 'react-mapbox-gl';
+import { Source, Layer, MapLayerMouseEvent } from 'react-map-gl/maplibre';
 import {
   AdminLevelDataLayerProps,
   BoundaryLayerProps,
   LayerKey,
+  MapEventWrapFunctionProps,
 } from 'config/types';
 import { LayerData, loadLayerData } from 'context/layers/layer-data';
 import {
@@ -15,8 +16,12 @@ import { addLayer, removeLayer } from 'context/mapStateSlice';
 import { useDefaultDate } from 'utils/useDefaultDate';
 import { getBoundaryLayers, LayerDefinitions } from 'config/utils';
 import { addNotification } from 'context/notificationStateSlice';
-import { firstBoundaryOnView, isLayerOnView } from 'utils/map-utils';
-import { useSafeTranslation } from 'i18n';
+import {
+  firstBoundaryOnView,
+  getLayerMapId,
+  isLayerOnView,
+  useMapCallback,
+} from 'utils/map-utils';
 import { fillPaintData } from 'components/MapView/Layers/styles';
 import { availableDatesSelector } from 'context/serverStateSlice';
 import { getRequestDate } from 'utils/server-utils';
@@ -25,6 +30,17 @@ import {
   legendToStops,
 } from 'components/MapView/Layers/layer-utils';
 import { convertSvgToPngBase64Image, getSVGShape } from 'utils/image-utils';
+import { FillLayerSpecification } from 'maplibre-gl';
+
+const onClick = ({
+  layer,
+  dispatch,
+  t,
+}: MapEventWrapFunctionProps<AdminLevelDataLayerProps>) => (
+  evt: MapLayerMouseEvent,
+) => {
+  addPopupParams(layer, dispatch, evt, t, true);
+};
 
 const AdminLevelDataLayers = ({
   layer,
@@ -40,6 +56,7 @@ const AdminLevelDataLayers = ({
   const boundaryId = layer.boundary || firstBoundaryOnView(map);
 
   const selectedDate = useDefaultDate(layer.id);
+  useMapCallback('click', getLayerMapId(layer.id), layer, onClick);
   const layerAvailableDates = serverAvailableDates[layer.id];
   const queryDate = getRequestDate(layerAvailableDates, selectedDate);
 
@@ -48,7 +65,6 @@ const AdminLevelDataLayers = ({
     | undefined;
   const { data } = layerData || {};
   const { features } = data || {};
-  const { t } = useSafeTranslation();
 
   const createFillPatternsForLayerLegends = useCallback(async () => {
     return Promise.all(
@@ -65,29 +81,17 @@ const AdminLevelDataLayers = ({
       if (!map || !layer.fillPattern || !convertedImage) {
         return;
       }
-      map.loadImage(
-        convertedImage,
-        (
-          err: any,
-          image:
-            | HTMLImageElement
-            | ArrayBufferView
-            | {
-                width: number;
-                height: number;
-                data: Uint8Array | Uint8ClampedArray;
-              }
-            | ImageData
-            | ImageBitmap,
-        ) => {
-          // Throw an error if something goes wrong.
-          if (err) {
-            throw err;
-          }
-          // Add the image to the map style.
-          map.addImage(`fill-pattern-${layer.id}-legend-${index}`, image);
-        },
-      );
+      map.loadImage(convertedImage, (err: any, image) => {
+        // Throw an error if something goes wrong.
+        if (err) {
+          throw err;
+        }
+        if (!image) {
+          return;
+        }
+        // Add the image to the map style.
+        map.addImage(`fill-pattern-${layer.id}-legend-${index}`, image);
+      });
     },
     [layer.fillPattern, layer.id, map],
   );
@@ -146,15 +150,20 @@ const AdminLevelDataLayers = ({
   }
 
   return (
-    <GeoJSONLayer
-      before={before || `layer-${boundaryId}-line`}
-      id={`layer-${layer.id}`}
-      data={features}
-      fillPaint={fillPaintData(layer, 'data', layer?.fillPattern)}
-      fillOnClick={async (evt: any) => {
-        addPopupParams(layer, dispatch, evt, t, true);
-      }}
-    />
+    <Source type="geojson" data={features}>
+      <Layer
+        id={getLayerMapId(layer.id)}
+        type="fill"
+        paint={
+          fillPaintData(
+            layer,
+            'data',
+            layer?.fillPattern,
+          ) as FillLayerSpecification['paint']
+        }
+        beforeId={before || getLayerMapId(boundaryId)}
+      />
+    </Source>
   );
 };
 

@@ -1,12 +1,12 @@
 // cannot exist within mapStateSlice due to import cycles with
 // layerDataSelector(used to be mapStateSlice) -> nso/impact -> layer-data -> mapStateSlice
 // x -> y .. x is used by y
-import { Map as MapBoxMap } from 'mapbox-gl';
 import type { RootState } from 'context/store';
 import type { LayerDataTypes } from 'context/layers/layer-data';
 import type { LayerKey, LayerType } from 'config/types';
 import { BoundaryRelationsDict } from 'components/Common/BoundaryDropdown/utils';
 import { datesAreEqualWithoutTime } from 'utils/date-utils';
+import { Map as MaplibreMap } from 'maplibre-gl';
 import type { MapState } from '.';
 
 export const layersSelector = (state: RootState): MapState['layers'] =>
@@ -17,8 +17,8 @@ export const activeLayersSelector = (state: RootState): MapState['layers'] =>
   });
 export const dateRangeSelector = (state: RootState): MapState['dateRange'] =>
   state.mapState.dateRange;
-export const mapSelector = (state: RootState): MapBoxMap | undefined =>
-  state.mapState.mapboxMap();
+export const mapSelector = (state: RootState): MaplibreMap | undefined =>
+  state.mapState.maplibreMap();
 
 export const layerDataSelector = (id: LayerKey, date?: number) => (
   state: RootState,

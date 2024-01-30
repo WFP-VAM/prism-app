@@ -8,8 +8,6 @@ import React, {
   useMemo,
   useState,
 } from 'react';
-import { Map, MapSourceDataEvent } from 'mapbox-gl';
-import ReactMapboxGl from 'react-mapbox-gl';
 import { useDispatch, useSelector } from 'react-redux';
 import AnalysisLayer from 'components/MapView/Layers/AnalysisLayer';
 import SelectionLayer from 'components/MapView/Layers/SelectionLayer';
@@ -20,7 +18,11 @@ import useMapOnClick from 'components/MapView/useMapOnClick';
 import { setBounds, setLocation } from 'context/mapBoundaryInfoStateSlice';
 import { DiscriminateUnion, LayerKey, LayerType } from 'config/types';
 import { setLoadingLayerIds } from 'context/mapTileLoadingStateSlice';
-import { firstBoundaryOnView, isLayerOnView } from 'utils/map-utils';
+import {
+  firstBoundaryOnView,
+  getLayerMapId,
+  isLayerOnView,
+} from 'utils/map-utils';
 import { mapSelector } from 'context/mapStateSlice/selectors';
 import {
   AdminLevelDataLayer,
@@ -32,6 +34,10 @@ import {
   WMSLayer,
 } from 'components/MapView/Layers';
 import useLayers from 'utils/layers-utils';
+import MapGL, { MapEvent, MapRef } from 'react-map-gl/maplibre';
+import { MapSourceDataEvent, Map as MaplibreMap } from 'maplibre-gl';
+
+import 'maplibre-gl/dist/maplibre-gl.css';
 
 interface MapComponentProps {
   setIsAlertFormOpen: Dispatch<SetStateAction<boolean>>;
@@ -39,7 +45,19 @@ interface MapComponentProps {
 }
 
 type LayerComponentsMap<U extends LayerType> = {
-  [T in U['type']]: ComponentType<{ layer: DiscriminateUnion<U, 'type', T> }>;
+  [T in U['type']]: {
+    component: ComponentType<{ layer: DiscriminateUnion<U, 'type', T> }>;
+  };
+};
+
+const componentTypes: LayerComponentsMap<LayerType> = {
+  boundary: { component: BoundaryLayer },
+  wms: { component: WMSLayer },
+  admin_level_data: { component: AdminLevelDataLayer },
+  impact: { component: ImpactLayer },
+  point_data: { component: PointDataLayer },
+  static_raster: { component: StaticRasterLayer },
+  composite: { component: CompositeLayer },
 };
 
 const MapComponent = memo(
@@ -47,6 +65,8 @@ const MapComponent = memo(
     const {
       map: { boundingBox, minZoom, maxZoom, maxBounds },
     } = appConfig;
+
+    const mapRef = React.useRef<MapRef>(null);
 
     const dispatch = useDispatch();
 
@@ -57,8 +77,6 @@ const MapComponent = memo(
     const [firstSymbolId, setFirstSymbolId] = useState<string | undefined>(
       undefined,
     );
-
-    const mapOnClick = useMapOnClick(setIsAlertFormOpen, boundaryLayerId);
 
     const style = useMemo(() => {
       return new URL(
@@ -85,21 +103,12 @@ const MapComponent = memo(
       };
     }, [panelHidden]);
 
-    const MapboxMap = useMemo(() => {
-      return ReactMapboxGl({
-        accessToken: (process.env.REACT_APP_MAPBOX_TOKEN as string) || '',
-        preserveDrawingBuffer: true,
-        minZoom,
-        maxZoom,
-      });
-    }, [maxZoom, minZoom]);
-
     const showBoundaryInfo = useMemo(() => {
       return JSON.parse(process.env.REACT_APP_SHOW_MAP_INFO || 'false');
     }, []);
 
     const onDragEnd = useCallback(
-      (map: Map) => {
+      (map: MaplibreMap) => {
         return () => {
           const bounds = map.getBounds();
           dispatch(setBounds(bounds));
@@ -109,7 +118,7 @@ const MapComponent = memo(
     );
 
     const onZoomEnd = useCallback(
-      (map: Map) => {
+      (map: MaplibreMap) => {
         return () => {
           const bounds = map.getBounds();
           const newZoom = map.getZoom();
@@ -120,7 +129,7 @@ const MapComponent = memo(
     );
 
     const watchBoundaryChange = useCallback(
-      (map: Map) => {
+      (map: MaplibreMap) => {
         map.on('dragend', onDragEnd(map));
         map.on('zoomend', onZoomEnd(map));
         // Show initial value
@@ -164,7 +173,7 @@ const MapComponent = memo(
 
     // Listen for MapSourceData events to track WMS Layers that are currently loading its tile images.
     const trackLoadingLayers = useCallback(
-      (map: Map) => {
+      (map: MaplibreMap) => {
         // Track with local state to minimize expensive dispatch call
         const layerIds = new Set<LayerKey>();
         map.on('sourcedata', mapSourceListener(layerIds));
@@ -173,36 +182,31 @@ const MapComponent = memo(
       [idleMapListener, mapSourceListener],
     );
 
-    // Saves a reference to base MapboxGL Map object in case child layers need access beyond the React wrappers.
-    const saveAndJumpMap = useCallback(
-      (map: Map) => {
-        const { layers } = map.getStyle();
-        // Find the first symbol on the map to make sure we add boundary layers below them.
-        setFirstSymbolId(layers?.find(layer => layer.type === 'symbol')?.id);
-        dispatch(setMap(() => map));
-        if (showBoundaryInfo) {
-          watchBoundaryChange(map);
-        }
-        trackLoadingLayers(map);
-      },
-      [dispatch, showBoundaryInfo, trackLoadingLayers, watchBoundaryChange],
-    );
+    // TODO: maplibre: Maybe replace this with the map provider
+    // Saves a reference to base MaplibreGl Map object in case child layers need access beyond the React wrappers.
+    const onMapLoad = (e: MapEvent) => {
+      if (!mapRef.current) {
+        return;
+      }
+      const map = mapRef.current.getMap();
+
+      const { layers } = map.getStyle();
+      // Find the first symbol on the map to make sure we add boundary layers below them.
+      setFirstSymbolId(layers?.find(layer => layer.type === 'symbol')?.id);
+      dispatch(setMap(() => mapRef.current?.getMap() || undefined));
+      if (showBoundaryInfo) {
+        watchBoundaryChange(map);
+      }
+      trackLoadingLayers(map);
+    };
 
     const boundaryId = firstBoundaryOnView(selectedMap);
 
-    const firstBoundaryId = boundaryId && `layer-${boundaryId}-line`;
+    const firstBoundaryId = boundaryId && getLayerMapId(boundaryId);
 
-    const componentTypes: LayerComponentsMap<LayerType> = useMemo(() => {
-      return {
-        boundary: BoundaryLayer,
-        wms: WMSLayer,
-        admin_level_data: AdminLevelDataLayer,
-        impact: ImpactLayer,
-        point_data: PointDataLayer,
-        static_raster: StaticRasterLayer,
-        composite: CompositeLayer,
-      };
-    }, []);
+    const mapOnClick = useCallback(() => {
+      return useMapOnClick(setIsAlertFormOpen, boundaryLayerId, mapRef.current);
+    }, [boundaryLayerId, setIsAlertFormOpen]);
 
     const getBeforeId = useCallback(
       (index: number) => {
@@ -212,7 +216,7 @@ const MapComponent = memo(
         const previousLayerId = selectedLayers[index - 1].id;
 
         if (isLayerOnView(selectedMap, previousLayerId)) {
-          return `layer-${previousLayerId}-line`;
+          return getLayerMapId(previousLayerId);
         }
         return firstBoundaryId;
       },
@@ -220,38 +224,37 @@ const MapComponent = memo(
     );
 
     return (
-      <MapboxMap
-        // eslint-disable-next-line react/style-prop-object
-        style={style.toString()}
-        onStyleLoad={saveAndJumpMap}
-        containerStyle={{
-          height: '100%',
+      <MapGL
+        ref={mapRef}
+        // preserveDrawingBuffer is required for the map to be exported as an image
+        preserveDrawingBuffer
+        minZoom={minZoom}
+        maxZoom={maxZoom}
+        initialViewState={{
+          bounds: boundingBox,
+          // lat and long are unnecessary if bounds exist
+          // TODO: maplibre: consider removing them and/or make bounds required
+          latitude: mapTempCenter[1],
+          longitude: mapTempCenter[0],
+          fitBoundsOptions: { padding: fitBoundsOptions.padding },
         }}
-        fitBounds={boundingBox}
-        fitBoundsOptions={fitBoundsOptions}
-        onClick={mapOnClick}
-        center={mapTempCenter}
+        mapStyle={style.toString()}
+        onLoad={onMapLoad}
+        onClick={mapOnClick()}
         maxBounds={maxBounds}
       >
-        <>
-          {/* We cannot memoize the above behavior because tooltip becomes sluggish and does not render at all, when we enable a layer */}
-          {selectedLayers.map((layer, index) => {
-            const component: ComponentType<{
-              layer: any;
-              before?: string;
-            }> = componentTypes[layer.type];
-            return createElement(component, {
-              key: layer.id,
-              layer,
-              before: getBeforeId(index),
-            });
-          })}
-          {/* These are custom layers which provide functionality and are not really controllable via JSON */}
-          <AnalysisLayer before={firstBoundaryId} />
-          <SelectionLayer before={firstSymbolId} />
-          <MapTooltip />
-        </>
-      </MapboxMap>
+        {selectedLayers.map((layer, index) => {
+          const { component } = componentTypes[layer.type];
+          return createElement(component as any, {
+            key: layer.id,
+            layer,
+            before: getBeforeId(index),
+          });
+        })}
+        <AnalysisLayer before={firstBoundaryId} />
+        <SelectionLayer before={firstSymbolId} />
+        <MapTooltip />
+      </MapGL>
     );
   },
 );

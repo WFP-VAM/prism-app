@@ -80,7 +80,7 @@ const useLayers = () => {
   }, [baselineLayersArray.length, hazardLayersArray.length]);
 
   // Prioritize boundary and point_data layers
-  const selectedLayers = useMemo(() => {
+  const selectedLayers: LayerType[] = useMemo(() => {
     // eslint-disable-next-line fp/no-mutating-methods
     return [...unsortedSelectedLayers].sort(layerOrdering);
   }, [unsortedSelectedLayers]);
@@ -88,7 +88,7 @@ const useLayers = () => {
   // TODO - could we simply use the country boundary extent here instead of the calculation?
   // Or can we foresee any edge cases?
   const adminBoundariesExtent = useMemo(() => {
-    if (!boundaryLayerData) {
+    if (!boundaryLayerData?.data) {
       return undefined;
     }
     return bbox(boundaryLayerData.data) as Extent; // we get extents of admin boundaries to give to the api.
