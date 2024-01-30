@@ -162,7 +162,7 @@ const ExposureAnalysisTable = memo(
               key={row.key}
               onClick={handleClickTableBodyRow(row)}
               style={{
-                cursor: row.coordinates ? 'pointer' : 'none',
+                cursor: row.coordinates ? 'pointer' : 'default',
                 backgroundColor: index % 2 === 0 ? 'white' : '#EBEBEB',
               }}
             >
