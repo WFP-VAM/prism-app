@@ -16,7 +16,12 @@ import { getFullLocationName } from 'utils/name-utils';
 
 import { languages } from 'i18n';
 import { Map as MaplibreMap } from 'maplibre-gl';
-import { getEvtCoords, getLayerMapId, useMapCallback } from 'utils/map-utils';
+import {
+  findFeature,
+  getEvtCoords,
+  getLayerMapId,
+  useMapCallback,
+} from 'utils/map-utils';
 
 function onToggleHover(cursor: string, targetMap: MaplibreMap) {
   // eslint-disable-next-line no-param-reassign, fp/no-mutation
@@ -42,8 +47,7 @@ const onClick = ({
 
   const layerId = getLayerMapId(layer.id, 'fill');
 
-  // TODO: maplibre: fix feature
-  const feature = evt.features?.find((x: any) => x.layer.id === layerId) as any;
+  const feature = findFeature(layerId, evt);
   if (!feature) {
     return;
   }

@@ -126,3 +126,7 @@ export function useMapCallback<T extends keyof MapLayerEventType, U>(
     };
   }, [dispatch, layer, layerId, listener, map, t, type]);
 }
+
+// TODO: maplibre: fix feature
+export const findFeature = (layerId: string, evt: MapLayerMouseEvent) =>
+  evt.features?.find((x: any) => x.layer.id === layerId) as any;
