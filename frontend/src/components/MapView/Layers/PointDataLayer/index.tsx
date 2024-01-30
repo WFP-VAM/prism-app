@@ -33,7 +33,7 @@ import {
   FillLayerSpecification,
   MapLayerMouseEvent,
 } from 'maplibre-gl';
-import { getLayerMapId, useMapCallback } from 'utils/map-utils';
+import { findFeature, getLayerMapId, useMapCallback } from 'utils/map-utils';
 
 const onClick = ({
   layer,
@@ -44,10 +44,8 @@ const onClick = ({
 ) => {
   addPopupParams(layer, dispatch, evt, t, false);
 
-  // TODO: maplibre: fix feature
-  const feature = evt.features?.find(
-    (x: any) => x.layer.id === getLayerMapId(layer.id),
-  ) as any;
+  const layerId = getLayerMapId(layer.id);
+  const feature = findFeature(layerId, evt);
   if (layer.loader === PointDataLoader.EWS) {
     dispatch(clearDataset());
     if (!feature?.properties) {

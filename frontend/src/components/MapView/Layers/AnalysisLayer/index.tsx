@@ -24,7 +24,12 @@ import { getRoundedData } from 'utils/data-utils';
 import { LayerDefinitions } from 'config/utils';
 import { formatIntersectPercentageAttribute } from 'components/MapView/utils';
 import { FillLayerSpecification, MapLayerMouseEvent } from 'maplibre-gl';
-import { getEvtCoords, getLayerMapId, useMapCallback } from 'utils/map-utils';
+import {
+  findFeature,
+  getEvtCoords,
+  getLayerMapId,
+  useMapCallback,
+} from 'utils/map-utils';
 
 export const layerId = getLayerMapId('analysis');
 
@@ -38,8 +43,7 @@ const onClick = (analysisData: AnalysisResult | undefined) => ({
     return;
   }
 
-  // TODO: maplibre: fix feature
-  const feature = evt.features?.find((x: any) => x.layer.id === layerId) as any;
+  const feature = findFeature(layerId, evt);
   if (!feature) {
     return;
   }
