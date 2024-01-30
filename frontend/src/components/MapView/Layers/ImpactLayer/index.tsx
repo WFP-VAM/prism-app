@@ -22,7 +22,12 @@ import {
   LineLayerSpecification,
   MapLayerMouseEvent,
 } from 'maplibre-gl';
-import { getEvtCoords, getLayerMapId, useMapCallback } from 'utils/map-utils';
+import {
+  findFeature,
+  getEvtCoords,
+  getLayerMapId,
+  useMapCallback,
+} from 'utils/map-utils';
 
 const linePaint: LineLayerSpecification['paint'] = {
   'line-color': 'grey',
@@ -50,8 +55,7 @@ const onClick = ({
 
   const layerId = getLayerMapId(layer.id);
 
-  // TODO: maplibre: fix feature
-  const feature = evt.features?.find((x: any) => x.layer.id === layerId) as any;
+  const feature = findFeature(layerId, evt);
   if (!feature) {
     return;
   }

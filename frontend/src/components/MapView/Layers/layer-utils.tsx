@@ -13,7 +13,7 @@ import { getRoundedData } from 'utils/data-utils';
 import { i18nTranslator } from 'i18n';
 import { getFeatureInfoPropsData } from 'components/MapView/utils';
 import { MapLayerMouseEvent } from 'maplibre-gl';
-import { getEvtCoords, getLayerMapId } from 'utils/map-utils';
+import { findFeature, getEvtCoords, getLayerMapId } from 'utils/map-utils';
 
 export function legendToStops(
   legend: LegendDefinition = [],
@@ -79,8 +79,7 @@ export const addPopupParams = (
 ): void => {
   const layerId = getLayerMapId(layer.id);
 
-  // TODO: maplibre: fix feature
-  const feature = evt.features?.find((x: any) => x.layer.id === layerId) as any;
+  const feature = findFeature(layerId, evt);
   if (!feature) {
     return;
   }
