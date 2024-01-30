@@ -153,7 +153,7 @@ const MapTooltip = ({ classes }: TooltipProps) => {
       {adminLevel === undefined && (
         <PopupContent popupData={popupData} coordinates={popup.coordinates} />
       )}
-      {availableAdminLevels.length > 0 && adminLevel && (
+      {availableAdminLevels.length > 0 && adminLevel !== undefined && (
         <IconButton
           aria-label="close"
           className={classes.closeButton}
