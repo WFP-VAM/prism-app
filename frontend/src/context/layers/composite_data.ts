@@ -26,6 +26,20 @@ export const fetchCompositeLayerData: LazyLoader<CompositeLayerProps> = () => as
     endDate,
   } = layer;
 
+  // docs: https://hip-service.ovio.org/docs#/default/run_q_multi_geojson_q_multi_geojson_post
+  const body = {
+    begin: '2020-08-01',
+    end: '2021-07-31',
+    area: {
+      min_lon: 34.98,
+      min_lat: 29.18,
+      max_lon: 39.3,
+      max_lat: 33.37,
+      start_date: '2020-01-01',
+      end_date: '2021-03-31',
+    },
+  };
+
   // eslint-disable-next-line no-console
   console.log(
     'layers data to use when endPoint will be available:',
@@ -42,7 +56,15 @@ export const fetchCompositeLayerData: LazyLoader<CompositeLayerProps> = () => as
     const response = await fetchWithTimeout(
       baseUrl,
       dispatch,
-      {},
+      {
+        body: JSON.stringify(body),
+        method: 'POST',
+        timeout: 80000,
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+      },
       `Request failed for fetching boundary layer data at ${baseUrl}`,
     );
     const geojson = await response.json();

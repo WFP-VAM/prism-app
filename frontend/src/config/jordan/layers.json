@@ -4018,7 +4018,7 @@
   "cdi": {
     "title": "Combined Drought Index",
     "type": "composite",
-    "base_url": "data/jordan/jor_cdi-response.geojson",
+    "base_url": "https://hip-service.ovio.org/q_multi_geojson",
     "input_layers": [
       {
         "id": "spi_1m",
