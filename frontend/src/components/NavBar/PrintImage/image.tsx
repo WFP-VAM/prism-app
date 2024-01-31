@@ -36,6 +36,10 @@ import { useSelector } from 'react-redux';
 
 import { isDataLayer } from 'components/MapView/Layers/layer-utils';
 import { mapStyle } from 'components/MapView/Map';
+import { addFillPatternImagesInMap } from 'components/MapView/Layers/AdminLevelDataLayer';
+
+import useLayers from 'utils/layers-utils';
+import { AdminLevelDataLayerProps } from 'config/types';
 import {
   dateRangeSelector,
   mapSelector,
@@ -169,6 +173,11 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
     }),
   };
 
+  const { selectedLayers } = useLayers();
+  const adminLevelLayersWithFillPattern = selectedLayers.filter(
+    layer => layer.type === 'admin_level_data' && layer.fillPattern,
+  ) as AdminLevelDataLayerProps[];
+
   React.useEffect(() => {
     const getDateText = (): string => {
       if (!dateRange) {
@@ -207,6 +216,12 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
     if (open && mapRef.current) {
       const map = mapRef.current.getMap();
       const activeLayers = map.getCanvas();
+      // Load fill pattern images to this new map instance if needed.
+      Promise.all(
+        adminLevelLayersWithFillPattern.map(layer =>
+          addFillPatternImagesInMap(layer as AdminLevelDataLayerProps, map),
+        ),
+      );
 
       const canvasContainer = overlayContainerRef.current;
       if (!canvasContainer) {
