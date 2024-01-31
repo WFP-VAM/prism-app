@@ -478,7 +478,7 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
           <div style={{ display: 'flex', flexDirection: 'column' }}>
             {t('Map Preview')}
             <Typography color="textSecondary" variant="body1">
-              {t('Align the map using the mouse.')}
+              {t('Use your mouse to pan and zoom the map')}
             </Typography>
           </div>
 
