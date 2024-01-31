@@ -69,7 +69,7 @@ const CompositeLayer = ({ layer, before }: Props) => {
 
   useEffect(() => {
     dispatch(loadLayerData({ layer, date: queryDate }));
-  }, [dispatch, layer, data, queryDate]);
+  }, [dispatch, layer, queryDate]);
 
   // Investigate performance impact of hexagons for large countries
   const finalFeatures =
