@@ -1,12 +1,8 @@
-import React, { ChangeEvent, useRef } from 'react';
-import maplibregl from 'maplibre-gl';
-import { useSelector } from 'react-redux';
 import {
   Backdrop,
   Box,
   Button,
   CircularProgress,
-  createStyles,
   Dialog,
   DialogActions,
   DialogContent,
@@ -14,7 +10,6 @@ import {
   FormControlLabel,
   Grid,
   IconButton,
-  makeStyles,
   Menu,
   MenuItem,
   Slider,
@@ -23,19 +18,24 @@ import {
   Theme,
   Typography,
   WithStyles,
+  createStyles,
+  makeStyles,
   withStyles,
 } from '@material-ui/core';
-import { jsPDF } from 'jspdf';
-import html2canvas from 'html2canvas';
+import CloseIcon from '@material-ui/icons/Close';
+import EditIcon from '@material-ui/icons/Edit';
 import GetAppIcon from '@material-ui/icons/GetApp';
 import { legendListId } from 'components/MapView/Legends';
+import html2canvas from 'html2canvas';
+import { jsPDF } from 'jspdf';
+import maplibregl from 'maplibre-gl';
 import moment from 'moment';
-import EditIcon from '@material-ui/icons/Edit';
-import CloseIcon from '@material-ui/icons/Close';
-import { mapStyle } from 'components/MapView/Map';
-import { isDataLayer } from 'components/MapView/Layers/layer-utils';
-
+import React, { ChangeEvent, useRef } from 'react';
 import MapGL, { MapRef } from 'react-map-gl/maplibre';
+import { useSelector } from 'react-redux';
+
+import { isDataLayer } from 'components/MapView/Layers/layer-utils';
+import { mapStyle } from 'components/MapView/Map';
 import {
   dateRangeSelector,
   mapSelector,
