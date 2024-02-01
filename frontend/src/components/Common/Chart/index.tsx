@@ -11,46 +11,13 @@ import { IconButton, Tooltip, makeStyles } from '@material-ui/core';
 import ImageIcon from '@material-ui/icons/Image';
 import GetAppIcon from '@material-ui/icons/GetApp';
 import { downloadToFile } from 'components/MapView/utils';
-import { castObjectsArrayToCsv } from 'utils/csv-utils';
+import {
+  createCsvDataFromDataKeyMap,
+  createDataKeyMap,
+  downloadChartsToCsv,
+} from 'utils/csv-utils';
 
-interface ChartData {
-  labels: (string | number)[];
-  datasets: {
-    data: (number | null)[];
-    label: string;
-    fill: boolean;
-    backgroundColor: string;
-    borderColor: string;
-    borderWidth: number;
-    pointRadius: number;
-    pointHitRadius: number;
-  }[];
-}
-
-function downloadCsv(chartData: ChartData, filename: string) {
-  const columnsNames = Object.fromEntries([
-    ['date', 'Date'],
-    ...chartData.datasets.map(x => [x.label, x.label.split(' ').join('_')]),
-  ]);
-  const objectsArray = chartData.labels.map((date, index) => {
-    const entries = chartData.datasets.map(set => [set.label, set.data[index]]);
-    return {
-      date,
-      ...Object.fromEntries(entries),
-    };
-  });
-
-  downloadToFile(
-    {
-      content: castObjectsArrayToCsv(objectsArray, columnsNames, ','),
-      isUrl: false,
-    },
-    filename,
-    'text/csv',
-  );
-}
-
-function downloadPng(ref: React.RefObject<Bar | Line>, filename: string) {
+function downloadChartPng(ref: React.RefObject<Bar | Line>, filename: string) {
   const chart = ref.current;
   if (!chart) {
     throw new Error('chart is undefined');
@@ -370,7 +337,7 @@ const Chart = memo(
               <Tooltip title={t('Download PNG') as string}>
                 <IconButton
                   onClick={() =>
-                    downloadPng(chartRef, title.split(' ').join('_'))
+                    downloadChartPng(chartRef, title.split(' ').join('_'))
                   }
                   className={classes.firstIcon}
                   style={iconStyles}
@@ -380,9 +347,20 @@ const Chart = memo(
               </Tooltip>
               <Tooltip title={t('Download CSV') as string}>
                 <IconButton
-                  onClick={() =>
-                    downloadCsv(chartData, title.split(' ').join('_'))
-                  }
+                  onClick={() => {
+                    const keyMap = datasetFields
+                      ? createDataKeyMap(data, datasetFields)
+                      : {};
+
+                    downloadChartsToCsv([
+                      [
+                        {
+                          [title]: createCsvDataFromDataKeyMap(data, keyMap),
+                        },
+                        title.split(' ').join('_'),
+                      ],
+                    ])();
+                  }}
                   className={classes.secondIcon}
                   style={iconStyles}
                 >
@@ -416,6 +394,8 @@ const Chart = memo(
         classes.firstIcon,
         classes.secondIcon,
         config.type,
+        data,
+        datasetFields,
         iconStyles,
         showDownloadIcons,
         t,

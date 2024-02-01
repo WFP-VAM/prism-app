@@ -950,11 +950,11 @@ const ChartsPanel = memo(
           filesData={[
             {
               fileName: firstCSVFilename,
-              data: dataForCsv,
+              data: dataForCsv.current,
             },
             {
               fileName: secondCSVFilename,
-              data: dataForSecondCsv,
+              data: dataForSecondCsv.current,
             },
           ]}
           disabled={
