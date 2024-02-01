@@ -124,6 +124,8 @@ export function useMapCallback<T extends keyof MapLayerEventType, U>(
     return () => {
       map.off(type, layerId, listener({ dispatch, layer, t }));
     };
+    // We remove "t" from the callback dependencies because
+    // to avoid errors with map.off breaking clicks on boundaries for alerts
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dispatch, layer, layerId, listener, map, type]);
 }
