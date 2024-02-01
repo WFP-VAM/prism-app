@@ -124,7 +124,8 @@ export function useMapCallback<T extends keyof MapLayerEventType, U>(
     return () => {
       map.off(type, layerId, listener({ dispatch, layer, t }));
     };
-  }, [dispatch, layer, layerId, listener, map, t, type]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [dispatch, layer, layerId, listener, map, type]);
 }
 
 // TODO: maplibre: fix feature
