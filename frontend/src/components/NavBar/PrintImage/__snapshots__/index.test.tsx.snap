@@ -45,7 +45,7 @@ exports[`renders as expected 1`] = `
           color="textSecondary"
           variant="body1"
         >
-          Align the map using the mouse.
+          Use your mouse to pan and zoom the map
         </mock-typography>
       </div>
       <button

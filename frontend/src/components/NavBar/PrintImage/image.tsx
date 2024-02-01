@@ -489,7 +489,7 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
             <CloseIcon />
           </IconButton>
         </DialogTitle>
-        <DialogContent>
+        <DialogContent style={{ scrollbarGutter: 'stable' }}>
           <Grid container>
             <Grid
               item
