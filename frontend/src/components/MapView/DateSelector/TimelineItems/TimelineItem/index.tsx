@@ -101,6 +101,7 @@ const styles = () =>
       height: '0px',
       zIndex: 1,
       left: 0,
+      pointerEvents: 'none',
     },
 
     layerDirectionBackwardBase: {
