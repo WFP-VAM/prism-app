@@ -39,7 +39,7 @@ import { UrlLayerKey, getUrlKey, useUrlHistory } from 'utils/url-utils';
 import {
   datesAreEqualWithoutTime,
   binaryIncludes,
-  getDefaultDateFormat,
+  getDateFormat,
 } from './date-utils';
 
 const dateSupportLayerTypes: Array<LayerType['type']> = [
@@ -298,7 +298,7 @@ const useLayers = () => {
 
     if (!Number.isNaN(dateInt)) {
       dispatch(updateDateRange({ startDate: dateInt }));
-      updateHistory('date', getDefaultDateFormat(dateInt) as string);
+      updateHistory('date', getDateFormat(dateInt, 'default') as string);
       return;
     }
 

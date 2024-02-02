@@ -33,7 +33,7 @@ import { isExposureAnalysisLoadingSelector } from 'context/analysisResultStateSl
 import { availableDatesSelector } from 'context/serverStateSlice';
 import { getRequestDate } from 'utils/server-utils';
 import { LayerDefinitions } from 'config/utils';
-import { getDefaultDateFormat } from 'utils/date-utils';
+import { getDateFormat } from 'utils/date-utils';
 
 // TODO - return early when the layer is not selected.
 function LayerDownloadOptions({
@@ -137,7 +137,7 @@ function LayerDownloadOptions({
       serverLayerName,
       band,
       extent,
-      getDefaultDateFormat(selectedDate) as string,
+      getDateFormat(selectedDate, 'default') as string,
       dispatch,
       () => setIsGeotiffLoading(false),
     );

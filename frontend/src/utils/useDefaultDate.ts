@@ -8,7 +8,7 @@ import {
 } from 'context/mapStateSlice/selectors';
 
 import { useUrlHistory } from './url-utils';
-import { getDefaultDateFormat } from './date-utils';
+import { getDateFormat } from './date-utils';
 
 /**
  * A hook designed to automatically load the default date of a layer if the user doesn't select one.
@@ -38,7 +38,7 @@ export function useDefaultDate(
   // useEffect removes this error and updates DateSelector correctly in the lifecycle.
   useEffect(() => {
     if (!selectedDate && defaultDate && mainLayer) {
-      updateHistory('date', getDefaultDateFormat(defaultDate) as string);
+      updateHistory('date', getDateFormat(defaultDate, 'default') as string);
     }
   }, [defaultDate, dispatch, selectedDate, updateHistory, mainLayer]);
 

@@ -6,7 +6,7 @@ import { queryParamsToString } from 'utils/url-utils';
 import { fetchWithTimeout } from 'utils/fetch-with-timeout';
 import { HTTPError } from 'utils/error-utils';
 import { setUserAuthGlobal } from 'context/serverStateSlice';
-import { getDefaultDateFormat } from 'utils/date-utils';
+import { getDateFormat } from 'utils/date-utils';
 import { getAdminLevelDataLayerData } from './admin_level_data';
 import type { LazyLoader } from './layer-data';
 
@@ -58,7 +58,7 @@ export const fetchPointLayerData: LazyLoader<PointDataLayerProps> = () => async 
     }
   }
 
-  const formattedDate = date && getDefaultDateFormat(date);
+  const formattedDate = date && getDateFormat(date, 'default');
 
   // TODO exclusive to this api...
   const dateQuery = `beginDateTime=${
@@ -108,8 +108,8 @@ export const fetchPointLayerData: LazyLoader<PointDataLayerProps> = () => async 
         // we cant do a string comparison here because sometimes the date in json is stored as YYYY-M-D instead of YYYY-MM-DD
         // using moment here helps compensate for these discrepancies
         obj =>
-          getDefaultDateFormat(obj.date) ===
-          getDefaultDateFormat(formattedDate),
+          getDateFormat(obj.dat, 'default') ===
+          getDateFormat(formattedDate, 'default'),
       );
     } else {
       if ((error as HTTPError)?.statusCode === 401) {

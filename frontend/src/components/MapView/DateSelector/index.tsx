@@ -28,7 +28,7 @@ import { moment, useSafeTranslation } from 'i18n';
 import {
   dateStrToUpperCase,
   datesAreEqualWithoutTime,
-  getDefaultDateFormat,
+  getDateFormat,
 } from 'utils/date-utils';
 import {
   MONTH_FIRST_DATE_FORMAT,
@@ -174,7 +174,7 @@ const DateSelector = memo(({ classes }: DateSelectorProps) => {
       }
       // This updates state because a useEffect in MapView updates the redux state
       // TODO this is convoluted coupling, we should update state here if feasible.
-      updateHistory('date', getDefaultDateFormat(time) as string);
+      updateHistory('date', getDateFormat(time, 'default') as string);
     },
     [stateStartDate, updateHistory],
   );

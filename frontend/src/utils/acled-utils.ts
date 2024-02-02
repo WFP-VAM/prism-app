@@ -7,7 +7,7 @@ import { addNotification } from 'context/notificationStateSlice';
 import { queryParamsToString } from './url-utils';
 import { fetchWithTimeout } from './fetch-with-timeout';
 import { LocalError } from './error-utils';
-import { getDefaultDateFormat } from './date-utils';
+import { getDateFormat } from './date-utils';
 
 export const fetchACLEDDates = async (
   url: string,
@@ -64,7 +64,7 @@ export const fetchACLEDIncidents = async (
   dispatch: Dispatch,
   additionalQueryParams?: PointDataLayerProps['additionalQueryParams'],
 ): Promise<PointLayerData> => {
-  const dateStr = getDefaultDateFormat(date);
+  const dateStr = getDateFormat(date, 'default');
   if (!dateStr) {
     throw new Error(`Invalid value for date: ${date}`);
   }

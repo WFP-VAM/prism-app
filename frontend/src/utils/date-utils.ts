@@ -96,5 +96,19 @@ export const dateStrToUpperCase = (dateStr: string): string => {
   return `${dateStr.slice(0, 1).toUpperCase()}${dateStr.slice(1)}`;
 };
 
-export const getDefaultDateFormat = (val: number | string | undefined) =>
-  val ? moment(val).format(DEFAULT_DATE_FORMAT) : undefined;
+export const getDateFormat = (
+  date: number | string | undefined,
+  format: 'default',
+) => {
+  if (date === undefined) {
+    return undefined;
+  }
+
+  switch (format) {
+    case 'default':
+      return moment(date).format(DEFAULT_DATE_FORMAT);
+
+    default:
+      throw new Error(`Invalid format: ${format}`);
+  }
+};

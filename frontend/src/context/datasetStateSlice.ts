@@ -10,7 +10,7 @@ import {
   fetchEWSDataPointsByLocation,
 } from 'utils/ews-utils';
 import { fetchWithTimeout } from 'utils/fetch-with-timeout';
-import { getDefaultDateFormat } from 'utils/date-utils';
+import { getDateFormat } from 'utils/date-utils';
 import type { CreateAsyncThunkTypes, RootState } from './store';
 import { TableData } from './tableStateSlice';
 
@@ -238,8 +238,8 @@ export const loadAdminBoundaryDataset = async (
   params: AdminBoundaryRequestParams,
   dispatch: Dispatch,
 ): Promise<TableData | undefined> => {
-  const endDateStr = getDefaultDateFormat(params.endDate);
-  const startDateStr = getDefaultDateFormat(params.startDate);
+  const endDateStr = getDateFormat(params.endDate, 'default');
+  const startDateStr = getDateFormat(params.startDate, 'default');
 
   const {
     url: hdcUrl,
