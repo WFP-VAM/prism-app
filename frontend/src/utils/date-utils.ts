@@ -1,6 +1,9 @@
 import moment, { Moment } from 'moment';
 import { DateItem } from '../config/types';
-import { DEFAULT_DATE_FORMAT } from './name-utils';
+import {
+  DEFAULT_DATE_FORMAT,
+  DEFAULT_DATE_FORMAT_SNAKE_CASE,
+} from './name-utils';
 
 export interface StartEndDate {
   startDate?: number;
@@ -98,7 +101,7 @@ export const dateStrToUpperCase = (dateStr: string): string => {
 
 export const getDateFormat = (
   date: number | string | undefined,
-  format: 'default',
+  format: 'default' | 'snake',
 ) => {
   if (date === undefined) {
     return undefined;
@@ -107,6 +110,8 @@ export const getDateFormat = (
   switch (format) {
     case 'default':
       return moment(date).format(DEFAULT_DATE_FORMAT);
+    case 'snake':
+      return moment(date).format(DEFAULT_DATE_FORMAT_SNAKE_CASE);
 
     default:
       throw new Error(`Invalid format: ${format}`);

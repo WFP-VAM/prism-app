@@ -8,7 +8,6 @@ import {
 } from '@material-ui/core';
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import moment from 'moment';
 import { mapValues } from 'lodash';
 import GetAppIcon from '@material-ui/icons/GetApp';
 import {
@@ -22,7 +21,6 @@ import {
 } from 'context/mapStateSlice/selectors';
 import { LayerData } from 'context/layers/layer-data';
 import { downloadToFile } from 'components/MapView/utils';
-import { DEFAULT_DATE_FORMAT_SNAKE_CASE } from 'utils/name-utils';
 import { castObjectsArrayToCsv } from 'utils/csv-utils';
 import {
   downloadGeotiff,
@@ -77,9 +75,7 @@ function LayerDownloadOptions({
   const getFilename = (): string => {
     const safeTitle = layer.title ?? layer.id;
     if (selectedDate && (layer as AdminLevelDataLayerProps).dates) {
-      const dateString = moment(selectedDate).format(
-        DEFAULT_DATE_FORMAT_SNAKE_CASE,
-      );
+      const dateString = getDateFormat(selectedDate, 'snake');
       return `${safeTitle}_${dateString}`;
     }
     return safeTitle;
