@@ -25,7 +25,7 @@ import { DateRangeType } from 'config/types';
 import { dateRangeSelector } from 'context/mapStateSlice/selectors';
 import { addNotification } from 'context/notificationStateSlice';
 import { moment, useSafeTranslation } from 'i18n';
-import { datesAreEqualWithoutTime } from 'utils/date-utils';
+import { dateStrToUpperCase, datesAreEqualWithoutTime } from 'utils/date-utils';
 import {
   DEFAULT_DATE_FORMAT,
   MONTH_FIRST_DATE_FORMAT,
@@ -115,10 +115,6 @@ const DateSelector = memo(({ classes }: DateSelectorProps) => {
     handleTimeLinePosition(x);
   }, [handleTimeLinePosition, setPointerXPosition]);
 
-  const dateStrToUpperCase = useCallback((dateStr: string): string => {
-    return `${dateStr.slice(0, 1).toUpperCase()}${dateStr.slice(1)}`;
-  }, []);
-
   const locale = useMemo(() => {
     return t('date_locale') ? t('date_locale') : 'en';
   }, [t]);
@@ -142,7 +138,7 @@ const DateSelector = memo(({ classes }: DateSelectorProps) => {
         isFirstDay: date.date() === date.startOf('month').date(),
       };
     });
-  }, [dateStrToUpperCase, locale, stateStartDate]);
+  }, [locale, stateStartDate]);
 
   const dateIndex = useMemo(() => {
     return findIndex(

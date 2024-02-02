@@ -90,3 +90,7 @@ export function binaryIncludes<T extends any>(
 ): boolean {
   return binaryFind(arry, timestamp, callback) > -1;
 }
+
+export const dateStrToUpperCase = (dateStr: string): string => {
+  return `${dateStr.slice(0, 1).toUpperCase()}${dateStr.slice(1)}`;
+};
