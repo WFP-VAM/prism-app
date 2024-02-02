@@ -117,3 +117,5 @@ export const getDateFormat = (
       throw new Error(`Invalid format: ${format}`);
   }
 };
+
+export const getMillisecondsFromISO = (date: string) => moment(date).valueOf();

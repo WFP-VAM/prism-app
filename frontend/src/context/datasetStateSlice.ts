@@ -10,7 +10,7 @@ import {
   fetchEWSDataPointsByLocation,
 } from 'utils/ews-utils';
 import { fetchWithTimeout } from 'utils/fetch-with-timeout';
-import { getDateFormat } from 'utils/date-utils';
+import { getDateFormat, getMillisecondsFromISO } from 'utils/date-utils';
 import type { CreateAsyncThunkTypes, RootState } from './store';
 import { TableData } from './tableStateSlice';
 
@@ -83,7 +83,7 @@ export enum TableDataFormat {
 
 export const CHART_DATA_PREFIXES = { col: 'd', date: 'Date' };
 
-const createTableData = (
+export const createTableData = (
   results: DataItem[],
   format: TableDataFormat,
 ): TableData => {
@@ -137,7 +137,7 @@ export const loadEWSDataset = async (
     const [measureDate, value] = item.value;
 
     return {
-      date: moment(measureDate).valueOf(),
+      date: getMillisecondsFromISO(measureDate),
       values: { measure: value.toString() },
     };
   });
@@ -175,7 +175,7 @@ type HDCResponse = {
  *
  * @return Promise with parsed object from request as DataItem array.
  */
-const fetchHDC = async (
+export const fetchHDC = async (
   url: string,
   datasetFields: DatasetField[],
   params: { [key: string]: any },
@@ -204,7 +204,7 @@ const fetchHDC = async (
   responseJson = await response.json();
 
   const dates: number[] = responseJson?.date?.map((date: string) =>
-    moment(date).valueOf(),
+    getMillisecondsFromISO(date),
   );
 
   return dates?.map((date, index) => {

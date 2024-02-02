@@ -1,13 +1,12 @@
 import { sortBy } from 'lodash';
 import GeoJSON from 'geojson';
-import moment from 'moment';
 import { Dispatch } from 'redux';
 import { PointLayerData, PointDataLayerProps } from 'config/types';
 import { addNotification } from 'context/notificationStateSlice';
 import { queryParamsToString } from './url-utils';
 import { fetchWithTimeout } from './fetch-with-timeout';
 import { LocalError } from './error-utils';
-import { getDateFormat } from './date-utils';
+import { getDateFormat, getMillisecondsFromISO } from './date-utils';
 
 export const fetchACLEDDates = async (
   url: string,
@@ -37,7 +36,7 @@ export const fetchACLEDDates = async (
 
     /* eslint-disable camelcase */
     const dates: number[] = respJson.data.map((item: { event_date: string }) =>
-      moment(item.event_date).valueOf(),
+      getMillisecondsFromISO(item.event_date),
     );
     /* eslint-enable camelcase */
 
