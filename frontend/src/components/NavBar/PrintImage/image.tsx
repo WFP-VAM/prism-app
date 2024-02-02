@@ -26,10 +26,10 @@ import { jsPDF } from 'jspdf';
 import html2canvas from 'html2canvas';
 import GetAppIcon from '@material-ui/icons/GetApp';
 import { legendListId } from 'components/MapView/Legends';
-import moment from 'moment';
 import RefreshIcon from '@material-ui/icons/Refresh';
 import EditIcon from '@material-ui/icons/Edit';
 import CloseIcon from '@material-ui/icons/Close';
+import { getDateFormat } from 'utils/date-utils';
 import {
   dateRangeSelector,
   mapSelector,
@@ -129,10 +129,10 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
       }
       return `${t('Layers represent data')} ${
         dateRange.startDate && dateRange.endDate
-          ? `${t('from')} ${moment(dateRange.startDate).format(
-              'YYYY-MM-DD',
-            )} ${t('to')} ${moment(dateRange.endDate).format('YYYY-MM-DD')}`
-          : `${t('on')} ${moment(dateRange.startDate).format('YYYY-MM-DD')}`
+          ? `${t('from')} ${getDateFormat(dateRange.startDate, 'default')} ${t(
+              'to',
+            )} ${getDateFormat(dateRange.endDate, 'default')}`
+          : `${t('on')} ${getDateFormat(dateRange.startDate, 'default')}`
       }. `;
     };
     setFooterText(`${getDateText()} ${t(DEFAULT_FOOTER_TEXT)}`);

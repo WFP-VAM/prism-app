@@ -1,5 +1,8 @@
 import { DatesPropagation } from 'config/types';
-import { generateIntermediateDateItemFromValidity } from './server-utils';
+import {
+  generateIntermediateDateItemFromValidity,
+  getStaticRasterDataCoverage,
+} from './server-utils';
 
 // NOTE: all timestamps are created in the LOCAL timezone (as per js docs), so that
 // these tests should pass for any TZ.
@@ -259,3 +262,113 @@ describe('Test generateIntermediateDateItemFromValidity', () => {
     ]);
   });
 });
+
+test('getStaticRasterDataCoverage', () => {
+  const layer = {
+    id: 'flood_events',
+    type: 'static_raster',
+    title: 'Flood events over time',
+    baseUrl:
+      'https://prism-raster-tiles.s3.amazonaws.com/ssd-flood-events/test/{YYYY_MM_DD}/{z}/{x}/{y}.png',
+    dates: ['2022-12-01', '2022-12-11'],
+    opacity: 1,
+    legendText: 'Flood events',
+    minZoom: 0,
+    maxZoom: 12,
+    legend: [
+      {
+        value: 0,
+        label: '0',
+        color: '#000000',
+      },
+      {
+        value: 1,
+        label: '1',
+        color: '#0f02a7',
+      },
+      {
+        value: 3,
+        label: '3',
+        color: '#2429f4',
+      },
+      {
+        value: 7,
+        label: '7',
+        color: '#2d6bfd',
+      },
+      {
+        value: 15,
+        label: '15',
+        color: '#36a3fd',
+      },
+      {
+        value: 31,
+        label: '31',
+        color: '#2cd8fa',
+      },
+      {
+        value: 32,
+        label: '32',
+        color: '#580100',
+      },
+      {
+        value: 48,
+        label: '48',
+        color: '#9d0400',
+      },
+      {
+        value: 56,
+        label: '56',
+        color: '#e60f00',
+      },
+      {
+        value: 60,
+        label: '60',
+        color: '#fc7600',
+      },
+      {
+        value: 62,
+        label: '62',
+        color: '#ffbe00',
+      },
+      {
+        value: 63,
+        label: '63',
+        color: '#ffffff',
+      },
+      {
+        value: 101,
+        label: '101',
+        color: '#393939',
+      },
+      {
+        value: 102,
+        label: '102',
+        color: '#5a5a5a',
+      },
+      {
+        value: 103,
+        label: '103',
+        color: '#7d7d7d',
+      },
+      {
+        value: 104,
+        label: '104',
+        color: '#a2a2a2',
+      },
+      {
+        value: 105,
+        label: '105',
+        color: '#c8c8c8',
+      },
+    ],
+  };
+  const ret = getStaticRasterDataCoverage(layer as any);
+
+  expect(ret).toEqual([1669845600000, 1670709600000]);
+});
+
+// getAdminLevelDataCoverage
+// generateIntermediateDateItemFromDataFile
+
+// formatFeatureInfo

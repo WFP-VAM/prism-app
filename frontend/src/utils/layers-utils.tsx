@@ -40,6 +40,7 @@ import {
   datesAreEqualWithoutTime,
   binaryIncludes,
   getDateFormat,
+  getMillisecondsFromISO,
 } from './date-utils';
 
 const dateSupportLayerTypes: Array<LayerType['type']> = [
@@ -394,7 +395,7 @@ const useLayers = () => {
     if (
       !selectedDate ||
       !urlDate ||
-      moment(urlDate).valueOf() === selectedDate
+      getMillisecondsFromISO(urlDate) === selectedDate
     ) {
       return;
     }

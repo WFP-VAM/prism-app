@@ -1,6 +1,8 @@
+import moment from 'moment';
 import {
   binaryFind,
   generateDateItemsRange,
+  generateDatesRange,
   getDateFormat,
   getMillisecondsFromISO,
   StartEndDate,
@@ -156,4 +158,22 @@ const isoDates = [
 
 test.each(isoDates)('Test getMillisecondsFromISO', (input, expected) => {
   expect(expected).toEqual(getMillisecondsFromISO(input as string));
+});
+
+test('Test generateDatesRange', () => {
+  const ret = generateDatesRange(moment('2023-02-02'), moment('2023-02-13'));
+  expect(ret).toEqual([
+    1675288800000,
+    1675375200000,
+    1675461600000,
+    1675548000000,
+    1675634400000,
+    1675720800000,
+    1675807200000,
+    1675893600000,
+    1675980000000,
+    1676066400000,
+    1676152800000,
+    1676239200000,
+  ]);
 });

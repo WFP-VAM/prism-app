@@ -201,7 +201,7 @@ const getAdminLevelDataCoverage = (layer: AdminLevelDataLayerProps) => {
   return dates.map(v => moment(v, 'YYYY-MM-DD').valueOf());
 };
 
-const getStaticRasterDataCoverage = (layer: StaticRasterLayerProps) => {
+export const getStaticRasterDataCoverage = (layer: StaticRasterLayerProps) => {
   const { dates } = layer;
   if (!dates) {
     return [];
