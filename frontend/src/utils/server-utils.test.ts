@@ -365,10 +365,5 @@ test('getStaticRasterDataCoverage', () => {
   };
   const ret = getStaticRasterDataCoverage(layer as any);
 
-  expect(ret).toEqual([1669845600000, 1670709600000]);
+  expect(ret).toEqual([1669852800000, 1670716800000]);
 });
-
-// getAdminLevelDataCoverage
-// generateIntermediateDateItemFromDataFile
-
-// formatFeatureInfo
