@@ -35,7 +35,6 @@ import {
 import { useDispatch, useSelector } from 'react-redux';
 import DatePicker from 'react-datepicker';
 import { isNil, orderBy, range } from 'lodash';
-import moment from 'moment';
 import { TFunctionKeys } from 'i18next';
 import {
   mapSelector,
@@ -98,7 +97,6 @@ import {
   safeDispatchAddLayer,
 } from 'utils/map-utils';
 import { removeLayer } from 'context/mapStateSlice';
-import { DEFAULT_DATE_FORMAT } from 'utils/name-utils';
 import LayerDropdown from 'components/MapView/Layers/LayerDropdown';
 import SimpleDropdown from 'components/Common/SimpleDropdown';
 import {
@@ -108,6 +106,7 @@ import {
 } from 'context/leftPanelStateSlice';
 import LoadingBlinkingDots from 'components/Common/LoadingBlinkingDots';
 import useLayers from 'utils/layers-utils';
+import { getDefaultDateFormat } from 'utils/date-utils';
 import AnalysisTable from './AnalysisTable';
 import ExposureAnalysisTable from './AnalysisTable/ExposureAnalysisTable';
 import ExposureAnalysisActions from './ExposureAnalysisActions';
@@ -613,8 +612,8 @@ const AnalysisPanel = memo(
         updateAnalysisParams({
           analysisHazardLayerId: hazardLayerId,
           analysisAdminLevel: adminLevel.toString(),
-          analysisStartDate: moment(startDate).format(DEFAULT_DATE_FORMAT),
-          analysisEndDate: moment(endDate).format(DEFAULT_DATE_FORMAT),
+          analysisStartDate: getDefaultDateFormat(startDate),
+          analysisEndDate: getDefaultDateFormat(endDate),
           analysisStatistic: statistic,
         });
         dispatch(requestAndStorePolygonAnalysis(params));
@@ -650,7 +649,7 @@ const AnalysisPanel = memo(
         updateAnalysisParams({
           analysisHazardLayerId: hazardLayerId,
           analysisBaselineLayerId: baselineLayerId,
-          analysisDate: moment(selectedDate).format(DEFAULT_DATE_FORMAT),
+          analysisDate: getDefaultDateFormat(selectedDate),
           analysisStatistic: statistic,
           analysisThresholdAbove: aboveThreshold || undefined,
           analysisThresholdBelow: belowThreshold || undefined,

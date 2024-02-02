@@ -22,10 +22,7 @@ import {
 } from 'context/mapStateSlice/selectors';
 import { LayerData } from 'context/layers/layer-data';
 import { downloadToFile } from 'components/MapView/utils';
-import {
-  DEFAULT_DATE_FORMAT,
-  DEFAULT_DATE_FORMAT_SNAKE_CASE,
-} from 'utils/name-utils';
+import { DEFAULT_DATE_FORMAT_SNAKE_CASE } from 'utils/name-utils';
 import { castObjectsArrayToCsv } from 'utils/csv-utils';
 import {
   downloadGeotiff,
@@ -36,6 +33,7 @@ import { isExposureAnalysisLoadingSelector } from 'context/analysisResultStateSl
 import { availableDatesSelector } from 'context/serverStateSlice';
 import { getRequestDate } from 'utils/server-utils';
 import { LayerDefinitions } from 'config/utils';
+import { getDefaultDateFormat } from 'utils/date-utils';
 
 // TODO - return early when the layer is not selected.
 function LayerDownloadOptions({
@@ -139,7 +137,7 @@ function LayerDownloadOptions({
       serverLayerName,
       band,
       extent,
-      moment(selectedDate).format(DEFAULT_DATE_FORMAT),
+      getDefaultDateFormat(selectedDate) as string,
       dispatch,
       () => setIsGeotiffLoading(false),
     );

@@ -1,6 +1,5 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { useEffect } from 'react';
-import moment from 'moment';
 import { AvailableDates, isMainLayer, LayerKey } from 'config/types';
 import { availableDatesSelector } from 'context/serverStateSlice';
 import {
@@ -9,7 +8,7 @@ import {
 } from 'context/mapStateSlice/selectors';
 
 import { useUrlHistory } from './url-utils';
-import { DEFAULT_DATE_FORMAT } from './name-utils';
+import { getDefaultDateFormat } from './date-utils';
 
 /**
  * A hook designed to automatically load the default date of a layer if the user doesn't select one.
@@ -39,7 +38,7 @@ export function useDefaultDate(
   // useEffect removes this error and updates DateSelector correctly in the lifecycle.
   useEffect(() => {
     if (!selectedDate && defaultDate && mainLayer) {
-      updateHistory('date', moment(defaultDate).format(DEFAULT_DATE_FORMAT));
+      updateHistory('date', getDefaultDateFormat(defaultDate) as string);
     }
   }, [defaultDate, dispatch, selectedDate, updateHistory, mainLayer]);
 

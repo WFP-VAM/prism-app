@@ -4,10 +4,10 @@ import moment from 'moment';
 import { Dispatch } from 'redux';
 import { PointLayerData, PointDataLayerProps } from 'config/types';
 import { addNotification } from 'context/notificationStateSlice';
-import { DEFAULT_DATE_FORMAT } from './name-utils';
 import { queryParamsToString } from './url-utils';
 import { fetchWithTimeout } from './fetch-with-timeout';
 import { LocalError } from './error-utils';
+import { getDefaultDateFormat } from './date-utils';
 
 export const fetchACLEDDates = async (
   url: string,
@@ -64,7 +64,10 @@ export const fetchACLEDIncidents = async (
   dispatch: Dispatch,
   additionalQueryParams?: PointDataLayerProps['additionalQueryParams'],
 ): Promise<PointLayerData> => {
-  const dateStr = moment(date).format(DEFAULT_DATE_FORMAT);
+  const dateStr = getDefaultDateFormat(date);
+  if (!dateStr) {
+    throw new Error(`Invalid value for date: ${date}`);
+  }
 
   const queryParams = { ...additionalQueryParams, event_date: dateStr };
 

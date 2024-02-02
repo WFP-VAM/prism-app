@@ -25,9 +25,12 @@ import { DateRangeType } from 'config/types';
 import { dateRangeSelector } from 'context/mapStateSlice/selectors';
 import { addNotification } from 'context/notificationStateSlice';
 import { moment, useSafeTranslation } from 'i18n';
-import { dateStrToUpperCase, datesAreEqualWithoutTime } from 'utils/date-utils';
 import {
-  DEFAULT_DATE_FORMAT,
+  dateStrToUpperCase,
+  datesAreEqualWithoutTime,
+  getDefaultDateFormat,
+} from 'utils/date-utils';
+import {
   MONTH_FIRST_DATE_FORMAT,
   MONTH_ONLY_DATE_FORMAT,
 } from 'utils/name-utils';
@@ -171,7 +174,7 @@ const DateSelector = memo(({ classes }: DateSelectorProps) => {
       }
       // This updates state because a useEffect in MapView updates the redux state
       // TODO this is convoluted coupling, we should update state here if feasible.
-      updateHistory('date', moment(time).format(DEFAULT_DATE_FORMAT));
+      updateHistory('date', getDefaultDateFormat(time) as string);
     },
     [stateStartDate, updateHistory],
   );

@@ -1,5 +1,6 @@
 import moment, { Moment } from 'moment';
 import { DateItem } from '../config/types';
+import { DEFAULT_DATE_FORMAT } from './name-utils';
 
 export interface StartEndDate {
   startDate?: number;
@@ -94,3 +95,6 @@ export function binaryIncludes<T extends any>(
 export const dateStrToUpperCase = (dateStr: string): string => {
   return `${dateStr.slice(0, 1).toUpperCase()}${dateStr.slice(1)}`;
 };
+
+export const getDefaultDateFormat = (val: number | string | undefined) =>
+  val ? moment(val).format(DEFAULT_DATE_FORMAT) : undefined;

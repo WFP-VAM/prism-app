@@ -25,10 +25,6 @@ const StaticRasterLayer = ({
   const selectedDate = useDefaultDate(id);
   const url = createStaticRasterLayerUrl(baseUrl, dates, selectedDate);
 
-  console.log(
-    JSON.stringify({ baseUrl, dates, selectedDate, result: url }, null, 2),
-  );
-
   return (
     <Source id={`source-${id}`} type="raster" tiles={[url]}>
       <Layer

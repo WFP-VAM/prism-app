@@ -13,7 +13,6 @@ import {
   Geometry,
   Position,
 } from 'geojson';
-import moment from 'moment';
 import { get, groupBy as _groupBy, uniq } from 'lodash';
 import { createGetCoverageUrl } from 'prism-common';
 import { calculate } from 'utils/zonal-utils';
@@ -55,7 +54,7 @@ import {
   scaleFeatureStat,
 } from 'utils/analysis-utils';
 import { getRoundedData } from 'utils/data-utils';
-import { DEFAULT_DATE_FORMAT, getFullLocationName } from 'utils/name-utils';
+import { getFullLocationName } from 'utils/name-utils';
 import {
   getBoundaryLayersByAdminLevel,
   getBoundaryLayerSingleton,
@@ -68,6 +67,7 @@ import {
 import { fetchWMSLayerAsGeoJSON } from 'utils/server-utils';
 import { isLocalhost } from 'serviceWorker';
 import { ANALYSIS_API_URL } from 'utils/constants';
+import { getDefaultDateFormat } from 'utils/date-utils';
 import { layerDataSelector } from './mapStateSlice/selectors';
 import { LayerData, LayerDataParams, loadLayerData } from './layers/layer-data';
 import { DataRecord } from './layers/admin_level_data';
@@ -403,9 +403,7 @@ async function createAPIRequestParams(
     wcsConfig,
   } = geotiffLayer;
   const dateValue = !wcsConfig?.disableDateParam ? date : undefined;
-  const dateString = dateValue
-    ? moment(dateValue).format(DEFAULT_DATE_FORMAT)
-    : undefined;
+  const dateString = getDefaultDateFormat(dateValue);
 
   // get geotiff url using band
   const { band } =
@@ -529,7 +527,7 @@ export const requestAndStoreExposedPopulation = createAsyncThunk<
       ? {
           url: `${wfsLayer.baseUrl}/ows`,
           layer_name: wfsLayer.serverLayerName,
-          time: moment(date).format(DEFAULT_DATE_FORMAT),
+          time: getDefaultDateFormat(date),
           key,
         }
       : undefined;
@@ -551,9 +549,7 @@ export const requestAndStoreExposedPopulation = createAsyncThunk<
       const dateValue = !maskLayer.wcsConfig?.disableDateParam
         ? date
         : undefined;
-      const dateString = dateValue
-        ? moment(dateValue).format(DEFAULT_DATE_FORMAT)
-        : undefined;
+      const dateString = getDefaultDateFormat(dateValue);
 
       // Get geotiff_url using STAC for layers in earthobservation.vam.
       // eslint-disable-next-line
