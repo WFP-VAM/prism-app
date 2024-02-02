@@ -74,7 +74,7 @@ export function boundariesOnView(
 export function firstBoundaryOnView(map: MaplibreMap | undefined): LayerKey {
   return map
     ?.getStyle()
-    .layers?.find(l => l.id.endsWith('boundaries'))
+    ?.layers?.find(l => l.id.endsWith('boundaries'))
     ?.id?.split('-')[1] as LayerKey;
 }
 

@@ -121,3 +121,11 @@ export const addPopupParams = (
     ),
   );
 };
+
+/**
+ * A simple function to check if a layer is a data layer.
+ */
+export const isDataLayer = (layerId: string) =>
+  layerId.includes('layer-') &&
+  !layerId.includes('boundaries') &&
+  !layerId.includes('boundary');
