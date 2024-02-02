@@ -213,6 +213,7 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
 
   const refreshImage = async () => {
     /* eslint-disable fp/no-mutation */
+    setElementsLoading(true);
     if (open && mapRef.current) {
       const map = mapRef.current.getMap();
       const activeLayers = map.getCanvas();
@@ -382,6 +383,7 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
       }
     }
     /* eslint-enable fp/no-mutation */
+    setElementsLoading(false);
   };
 
   React.useEffect(() => {
@@ -532,10 +534,8 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
                           e.target.setCenter(selectedMap.getCenter());
                           e.target.setZoom(selectedMap.getZoom());
                         }}
-                        onIdle={async () => {
-                          setElementsLoading(true);
-                          await refreshImage();
-                          setElementsLoading(false);
+                        onIdle={() => {
+                          refreshImage();
                         }}
                         minZoom={selectedMap.getMinZoom()}
                         maxZoom={selectedMap.getMaxZoom()}
