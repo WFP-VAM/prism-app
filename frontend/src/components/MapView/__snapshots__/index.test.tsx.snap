@@ -436,6 +436,7 @@ exports[`renders as expected 1`] = `
           >
             <div
               class="MuiGrid-root MuiGrid-container MuiGrid-spacing-xs-1"
+              style="pointer-events: auto;"
             >
               <mock-legends
                 extent="30.18,-24.74,40.78,-10.32"
