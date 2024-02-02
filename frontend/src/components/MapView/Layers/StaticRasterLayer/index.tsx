@@ -6,17 +6,28 @@ import { DEFAULT_DATE_FORMAT_SNAKE_CASE } from 'utils/name-utils';
 import { Layer, Source } from 'react-map-gl/maplibre';
 import { getLayerMapId } from 'utils/map-utils';
 
-const StaticRasterLayer = ({
-  layer: { id, baseUrl, opacity, minZoom, maxZoom, dates },
-  before,
-}: LayersProps) => {
-  const selectedDate = useDefaultDate(id);
-  const url = dates
+export const createStaticRasterLayerUrl = (
+  baseUrl: string,
+  dates: string[] | undefined,
+  selectedDate: number | undefined,
+) =>
+  dates
     ? baseUrl.replace(
         `{${DEFAULT_DATE_FORMAT_SNAKE_CASE}}`,
         moment(selectedDate).format(DEFAULT_DATE_FORMAT_SNAKE_CASE),
       )
     : baseUrl;
+
+const StaticRasterLayer = ({
+  layer: { id, baseUrl, opacity, minZoom, maxZoom, dates },
+  before,
+}: LayersProps) => {
+  const selectedDate = useDefaultDate(id);
+  const url = createStaticRasterLayerUrl(baseUrl, dates, selectedDate);
+
+  console.log(
+    JSON.stringify({ baseUrl, dates, selectedDate, result: url }, null, 2),
+  );
 
   return (
     <Source id={`source-${id}`} type="raster" tiles={[url]}>
