@@ -1,6 +1,6 @@
 {
   "country": "Jordan",
-  "alertFormActive": true,
+  "alertFormActive": false,
   "countryAdmin0Id": 130,
   "icons": {
     "rainfall": "icon_rain.png",
