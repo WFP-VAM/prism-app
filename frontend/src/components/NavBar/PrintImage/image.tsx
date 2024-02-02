@@ -130,7 +130,7 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
   ] = React.useState<HTMLElement | null>(null);
   const [openFooterEdit, setOpenFooterEdit] = React.useState(false);
   const [footerText, setFooterText] = React.useState('');
-  const [mapLoading, setMapLoading] = React.useState(true);
+  const [elementsLoading, setElementsLoading] = React.useState(true);
   const [legendScale, setLegendScale] = React.useState(100);
   // the % value of the original dimensions
   const [mapDimensions, setMapDimensions] = React.useState<{
@@ -266,7 +266,7 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
           ) as HTMLElement[];
 
           const target = document.createElement('div');
-          target.style.width = '180px';
+          target.style.width = '196px'; // 180px + 2*8px padding
 
           childElements.forEach((li: HTMLElement, i) => {
             const isLast = childElements.length - 1 === i;
@@ -305,8 +305,8 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
             c,
             24,
             24,
-            (target.offsetWidth * legendScale * ratio) / 100,
-            (target.offsetHeight * legendScale * ratio) / 100,
+            (target.offsetWidth * legendScale * ratio) / 100.0,
+            (target.offsetHeight * legendScale * ratio) / 100.0,
           );
           document.body.removeChild(target);
         }
@@ -386,7 +386,7 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
 
   React.useEffect(() => {
     if (open) {
-      setMapLoading(true);
+      setElementsLoading(true);
     }
   }, [open]);
 
@@ -514,7 +514,7 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
                     ref={overlayContainerRef}
                     className={classes.mapOverlay}
                   />
-                  {mapLoading && (
+                  {elementsLoading && (
                     <div className={classes.backdropWrapper}>
                       <Backdrop className={classes.backdrop} open>
                         <CircularProgress />
@@ -532,9 +532,10 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
                           e.target.setCenter(selectedMap.getCenter());
                           e.target.setZoom(selectedMap.getZoom());
                         }}
-                        onIdle={() => {
-                          setMapLoading(false);
-                          refreshImage();
+                        onIdle={async () => {
+                          setElementsLoading(true);
+                          await refreshImage();
+                          setElementsLoading(false);
                         }}
                         minZoom={selectedMap.getMinZoom()}
                         maxZoom={selectedMap.getMaxZoom()}
