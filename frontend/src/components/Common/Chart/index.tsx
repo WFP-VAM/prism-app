@@ -5,7 +5,7 @@ import { Bar, Line } from 'react-chartjs-2';
 import { TFunctionKeys } from 'i18next';
 import moment, { LocaleSpecifier } from 'moment';
 import { ChartConfig, DatasetField } from 'config/types';
-import { TableData } from 'context/tableStateSlice';
+import { TableData, TableRowType } from 'context/tableStateSlice';
 import { useSafeTranslation } from 'i18n';
 import { IconButton, Tooltip, makeStyles } from '@material-ui/core';
 import ImageIcon from '@material-ui/icons/Image';
@@ -91,6 +91,37 @@ export type ChartProps = {
   iconStyles?: React.CSSProperties;
 };
 
+interface GetLabelsProps {
+  chartRange: [number, number];
+  category: string;
+  header: TableRowType;
+  indices: string[];
+  isEWSChart: boolean;
+  locale: LocaleSpecifier;
+  tableRows: TableRowType[];
+  transpose: boolean;
+}
+
+export const getLabels = ({
+  chartRange,
+  category,
+  header,
+  indices,
+  isEWSChart,
+  locale,
+  tableRows,
+  transpose,
+}: GetLabelsProps) => {
+  if (!transpose) {
+    return indices.map(index => header[index]);
+  }
+  return tableRows.slice(chartRange[0], chartRange[1]).map(row => {
+    // Time information is only needed for EWS charts
+    const dateFormat = isEWSChart ? 'YYYY-MM-DD HH:mm' : 'YYYY-MM-DD';
+    return moment(row[category]).locale(locale).format(dateFormat);
+  });
+};
+
 const Chart = memo(
   ({
     title,
@@ -154,27 +185,16 @@ const Chart = memo(
       );
     }, [colorShuffle, config.colors, nshades]);
 
-    const labels = useMemo(() => {
-      if (!transpose) {
-        return indices.map(index => header[index]);
-      }
-      return tableRows.slice(chartRange[0], chartRange[1]).map(row => {
-        // Time information is only needed for EWS charts
-        const dateFormat = isEWSChart ? 'YYYY-MM-DD HH:mm' : 'YYYY-MM-DD';
-        return moment(row[config.category])
-          .locale(t('date_locale') as LocaleSpecifier)
-          .format(dateFormat);
-      });
-    }, [
+    const labels = getLabels({
       chartRange,
-      config.category,
+      category: config.category,
       header,
       indices,
       isEWSChart,
-      t,
+      locale: t('date_locale') as LocaleSpecifier,
       tableRows,
       transpose,
-    ]);
+    });
 
     // The table rows data sets
     const tableRowsDataSet = useMemo(() => {
