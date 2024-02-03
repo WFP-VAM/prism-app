@@ -41,6 +41,10 @@ export const handleChangeOpacity = (
     })(type);
 
     map.setPaintProperty(layerId, opacityType, newValue);
+    // force a update of the map style to ensure the change is reflected
+    // see https://github.com/maplibre/maplibre-gl-js/issues/3373
+    // eslint-disable-next-line no-underscore-dangle
+    map.style._updateLayer(layerId as any);
     callback(newValue);
   }
 };
