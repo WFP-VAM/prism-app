@@ -36,6 +36,7 @@ import { isExposureAnalysisLoadingSelector } from 'context/analysisResultStateSl
 import { availableDatesSelector } from 'context/serverStateSlice';
 import { getRequestDate } from 'utils/server-utils';
 import { LayerDefinitions } from 'config/utils';
+import { safeCountry } from 'config';
 
 // TODO - return early when the layer is not selected.
 function LayerDownloadOptions({
@@ -135,11 +136,13 @@ function LayerDownloadOptions({
       }) || {};
 
     setIsGeotiffLoading(true);
+    const dateString = moment(selectedDate).format(DEFAULT_DATE_FORMAT);
     downloadGeotiff(
       serverLayerName,
       band,
       extent,
-      moment(selectedDate).format(DEFAULT_DATE_FORMAT),
+      dateString,
+      `${safeCountry}_${layerId}_${dateString}.tif`,
       dispatch,
       () => setIsGeotiffLoading(false),
     );

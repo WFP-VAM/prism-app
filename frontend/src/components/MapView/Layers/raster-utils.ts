@@ -202,6 +202,7 @@ export async function getDownloadGeotiffURL(
   band: string | undefined,
   boundingBox: Extent | undefined,
   date: string | undefined,
+  filenameOverride: string | undefined,
   dispatch: Dispatch,
 ) {
   if (!boundingBox) {
@@ -217,6 +218,7 @@ export async function getDownloadGeotiffURL(
     lat_max: boundingBox[3],
     date,
     band,
+    filename_override: filenameOverride,
   };
   const response = await fetchWithTimeout(
     RASTER_API_URL,
@@ -243,6 +245,7 @@ export async function downloadGeotiff(
   band: string | undefined,
   boundingBox: Extent | undefined,
   date: string,
+  filenameOverride: string | undefined,
   dispatch: Dispatch,
   callback: () => void,
 ) {
@@ -252,6 +255,7 @@ export async function downloadGeotiff(
       band,
       boundingBox,
       date,
+      filenameOverride,
       dispatch,
     );
     const link = document.createElement('a');
