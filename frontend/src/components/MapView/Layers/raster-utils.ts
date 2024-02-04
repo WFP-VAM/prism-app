@@ -202,8 +202,8 @@ export async function getDownloadGeotiffURL(
   band: string | undefined,
   boundingBox: Extent | undefined,
   date: string | undefined,
-  filenameOverride: string | undefined,
   dispatch: Dispatch,
+  filenameOverride?: string | undefined,
 ) {
   if (!boundingBox) {
     throw new LocalError(
@@ -255,8 +255,8 @@ export async function downloadGeotiff(
       band,
       boundingBox,
       date,
-      filenameOverride,
       dispatch,
+      filenameOverride,
     );
     const link = document.createElement('a');
     link.setAttribute('href', downloadUrl);
