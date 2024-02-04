@@ -406,7 +406,8 @@ def post_raster_geotiff(raster_geotiff: RasterGeotiffModel):
         bbox,
         date_value,
         band,
-        filename_override=raster_geotiff.filename_override)
+        filename_override=raster_geotiff.filename_override,
+    )
 
     return JSONResponse(
         content={"download_url": presigned_download_url}, status_code=200
