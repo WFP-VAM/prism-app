@@ -401,7 +401,12 @@ def post_raster_geotiff(raster_geotiff: RasterGeotiffModel):
     )
     date_value = raster_geotiff.date
     band = raster_geotiff.band
-    presigned_download_url = get_geotiff(collection, bbox, date_value, band)
+    presigned_download_url = get_geotiff(
+        collection,
+        bbox,
+        date_value,
+        band,
+        filename_override=raster_geotiff.filename_override)
 
     return JSONResponse(
         content={"download_url": presigned_download_url}, status_code=200
