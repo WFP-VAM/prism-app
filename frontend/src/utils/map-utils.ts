@@ -11,7 +11,7 @@ import {
 } from 'config/types';
 import { getDisplayBoundaryLayers } from 'config/utils';
 import { addLayer, removeLayer } from 'context/mapStateSlice';
-import React, { Dispatch } from 'react';
+import React, { Dispatch, useRef } from 'react';
 
 import { useDispatch, useSelector } from 'react-redux';
 import { mapSelector } from 'context/mapStateSlice/selectors';
@@ -74,7 +74,7 @@ export function boundariesOnView(
 export function firstBoundaryOnView(map: MaplibreMap | undefined): LayerKey {
   return map
     ?.getStyle()
-    .layers?.find(l => l.id.endsWith('boundaries'))
+    ?.layers?.find(l => l.id.endsWith('boundaries'))
     ?.id?.split('-')[1] as LayerKey;
 }
 
@@ -114,15 +114,23 @@ export function useMapCallback<T extends keyof MapLayerEventType, U>(
   const dispatch = useDispatch();
   const map = useSelector(mapSelector);
   const { t } = useSafeTranslation();
+  const savedListener = useRef<(ev: MapLayerEventType[T] & Object) => void>();
 
   React.useEffect(() => {
     if (!map) {
       return () => {};
     }
 
-    map.on(type, layerId, listener({ dispatch, layer, t }));
+    // Save the current listener to make sure
+    // the map.off call uses the same listener
+    const eventListener = listener({ dispatch, layer, t });
+    savedListener.current = eventListener; // Save the current listener
+
+    map.on(type, layerId, eventListener);
     return () => {
-      map.off(type, layerId, listener({ dispatch, layer, t }));
+      if (savedListener.current) {
+        map.off(type, layerId, savedListener.current);
+      }
     };
   }, [dispatch, layer, layerId, listener, map, t, type]);
 }

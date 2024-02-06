@@ -28,7 +28,16 @@ const useStyles = makeStyles(() =>
     fillPatternIndicator: {
       ...indicatorsCommonStyles,
       background: ({ color, fillPattern }: StylesProps) =>
-        `repeating-linear-gradient(to ${fillPattern} bottom, ${color}, ${color} 2px, white 2px, white 4px)`,
+        `linear-gradient(
+          to ${fillPattern} bottom, 
+          ${color} calc(100% / 7),  
+          white calc(100% / 7) calc(100% / 7 * 2), 
+          ${color} calc(100% / 7 * 2) calc(100% / 7 * 3), 
+          white calc(100% / 7 * 3) calc(100% / 7 * 4), 
+          ${color} calc(100% / 7 * 4) calc(100% / 7 * 5),
+          white calc(100% / 7 * 5) calc(100% / 7 * 6), 
+          ${color} calc(100% / 7 * 6)
+        )`,
     },
   }),
 );
