@@ -48,8 +48,6 @@ const WMSLayers = ({
       .catch(error => console.error('Error:', error));
   }, []);
 
-  console.log(invertedAdminBoundaryLimitPolygon);
-
   if (!selectedDate) {
     return null;
   }
