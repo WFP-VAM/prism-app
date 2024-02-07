@@ -1,4 +1,4 @@
-import React, { memo } from 'react';
+import React, { memo, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { Layer, Source } from 'react-map-gl/maplibre';
 import { WMSLayerProps } from 'config/types';
@@ -7,7 +7,8 @@ import { useDefaultDate } from 'utils/useDefaultDate';
 import { getRequestDate } from 'utils/server-utils';
 import { availableDatesSelector } from 'context/serverStateSlice';
 import { getLayerMapId } from 'utils/map-utils';
-import { appConfig } from 'config';
+import { appConfig, safeCountry } from 'config';
+import mask from '@turf/mask';
 
 function expandBoundingBox(
   bbox: [number, number, number, number],
@@ -34,6 +35,21 @@ const WMSLayers = ({
   const selectedDate = useDefaultDate(serverLayerName, id);
   const serverAvailableDates = useSelector(availableDatesSelector);
 
+  const [invertedAdminBoundaryLimitPolygon, setAdminBoundaryPolygon] = useState(
+    null,
+  );
+
+  useEffect(() => {
+    // admin-boundary-unified-polygon.json is generated using "yarn preprocess-layers"
+    // which runs ./scripts/preprocess-layers.js
+    fetch(`data/${safeCountry}/admin-boundary-unified-polygon.json`)
+      .then(response => response.json())
+      .then(polygonData => setAdminBoundaryPolygon(mask(polygonData) as any))
+      .catch(error => console.error('Error:', error));
+  }, []);
+
+  console.log(invertedAdminBoundaryLimitPolygon);
+
   if (!selectedDate) {
     return null;
   }
@@ -50,30 +66,49 @@ const WMSLayers = ({
   );
 
   return (
-    <Source
-      id={`source-${id}`}
-      type="raster"
-      // refresh tiles every time date changes
-      key={queryDateString}
-      tiles={[
-        `${getWMSUrl(baseUrl, serverLayerName, {
-          ...additionalQueryParams,
-          ...(selectedDate && {
-            time: queryDateString,
-          }),
-        })}&bbox={bbox-epsg-3857}`,
-      ]}
-      tileSize={256}
-      bounds={expandedBoundingBox}
-    >
-      <Layer
-        beforeId={before}
+    <>
+      <Source
+        id={`mask-source-${id}`}
+        type="geojson"
+        data={invertedAdminBoundaryLimitPolygon}
+      >
+        <Layer
+          id={`mask-layer-${id}`}
+          type="fill"
+          source={`mask-source-${id}`}
+          layout={{}}
+          paint={{
+            'fill-color': '#000',
+            'fill-opacity': 0.7,
+          }}
+          beforeId={before}
+        />
+      </Source>
+      <Source
+        id={`source-${id}`}
         type="raster"
-        id={getLayerMapId(id)}
-        source={`source-${id}`}
-        paint={{ 'raster-opacity': opacity }}
-      />
-    </Source>
+        // refresh tiles every time date changes
+        key={queryDateString}
+        tiles={[
+          `${getWMSUrl(baseUrl, serverLayerName, {
+            ...additionalQueryParams,
+            ...(selectedDate && {
+              time: queryDateString,
+            }),
+          })}&bbox={bbox-epsg-3857}`,
+        ]}
+        tileSize={256}
+        bounds={expandedBoundingBox}
+      >
+        <Layer
+          beforeId={`mask-layer-${id}`}
+          type="raster"
+          id={getLayerMapId(id)}
+          source={`source-${id}`}
+          paint={{ 'raster-opacity': opacity }}
+        />
+      </Source>
+    </>
   );
 };
 

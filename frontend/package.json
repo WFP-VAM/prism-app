@@ -56,6 +56,7 @@
     "@turf/boolean-point-in-polygon": "^6.5.0",
     "@turf/centroid": "^6.5.0",
     "@turf/clone": "^6.5.0",
+    "@turf/mask": "^6.5.0",
     "@turf/meta": "^6.5.0",
     "@turf/union": "^6.5.0",
     "@types/react-window": "^1.8.8",
