@@ -97,7 +97,7 @@
         "color": "#a63603"
       }
     ],
-    "legend_text": "This layer shows number of households of IDPoor level 1 and 2 at commune level"
+    "legend_text": "Number of households of IDPoor level 1 and 2 at commune level"
   },
   "idpoor_1": {
     "title": "IDPoor Level 1",
@@ -140,7 +140,7 @@
         "color": "#a63603"
       }
     ],
-    "legend_text": "This layer shows number of households of IDPoor level 1 at commune level"
+    "legend_text": "Number of households of IDPoor level 1 at commune level"
   },
   "idpoor_2": {
     "title": "IDPoor Level 2",
@@ -183,7 +183,7 @@
         "color": "#a63603"
       }
     ],
-    "legend_text": "This layer shows number of households of IDPoor level 2 at commune level"
+    "legend_text": "Number of households of IDPoor level 2 at commune level"
   },
   "flood_hazard": {
     "title": "Flood hazard index",
@@ -1956,6 +1956,7 @@
     "aggregation": "pixel",
     "interval": "1-month",
     "date_type": "continuous",
+    "date_layer": "spi_1m",
     "start_date": "2020-01-01",
     "end_date": "",
     "opacity": 0.8

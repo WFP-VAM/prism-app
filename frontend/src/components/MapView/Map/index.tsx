@@ -7,6 +7,7 @@ import React, {
   Dispatch,
   useMemo,
   useState,
+  useEffect,
 } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import AnalysisLayer from 'components/MapView/Layers/AnalysisLayer';
@@ -50,6 +51,11 @@ type LayerComponentsMap<U extends LayerType> = {
   };
 };
 
+export const mapStyle = new URL(
+  process.env.REACT_APP_DEFAULT_STYLE ||
+    'https://api.maptiler.com/maps/0ad52f6b-ccf2-4a36-a9b8-7ebd8365e56f/style.json?key=y2DTSu9yWiu755WByJr3',
+);
+
 const componentTypes: LayerComponentsMap<LayerType> = {
   boundary: { component: BoundaryLayer },
   wms: { component: WMSLayer },
@@ -77,13 +83,6 @@ const MapComponent = memo(
     const [firstSymbolId, setFirstSymbolId] = useState<string | undefined>(
       undefined,
     );
-
-    const style = useMemo(() => {
-      return new URL(
-        process.env.REACT_APP_DEFAULT_STYLE ||
-          'https://api.maptiler.com/maps/0ad52f6b-ccf2-4a36-a9b8-7ebd8365e56f/style.json?key=y2DTSu9yWiu755WByJr3',
-      );
-    }, []);
 
     // The map initialization requires a center so we provide a te,porary one.
     // But we actually rely on the boundingBox to fit the country in the available screen space.
@@ -223,9 +222,17 @@ const MapComponent = memo(
       [firstBoundaryId, firstSymbolId, selectedLayers, selectedMap],
     );
 
+    useEffect(() => {
+      if (mapRef.current) {
+        const map = mapRef.current.getMap();
+        map.triggerRepaint(); // Forces the map to redraw
+      }
+    }, [firstSymbolId]);
+
     return (
       <MapGL
         ref={mapRef}
+        dragRotate={false}
         // preserveDrawingBuffer is required for the map to be exported as an image
         preserveDrawingBuffer
         minZoom={minZoom}
@@ -238,7 +245,7 @@ const MapComponent = memo(
           longitude: mapTempCenter[0],
           fitBoundsOptions: { padding: fitBoundsOptions.padding },
         }}
-        mapStyle={style.toString()}
+        mapStyle={mapStyle.toString()}
         onLoad={onMapLoad}
         onClick={mapOnClick()}
         maxBounds={maxBounds}

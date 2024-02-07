@@ -32,7 +32,7 @@ const WMSLayers = ({
   layer: { id, baseUrl, serverLayerName, additionalQueryParams, opacity },
   before,
 }: LayersProps) => {
-  const selectedDate = useDefaultDate(serverLayerName, id);
+  const selectedDate = useDefaultDate(id);
   const serverAvailableDates = useSelector(availableDatesSelector);
 
   const [invertedAdminBoundaryLimitPolygon, setAdminBoundaryPolygon] = useState(
@@ -53,7 +53,7 @@ const WMSLayers = ({
   if (!selectedDate) {
     return null;
   }
-  const layerAvailableDates = serverAvailableDates[serverLayerName];
+  const layerAvailableDates = serverAvailableDates[id];
   const queryDate = getRequestDate(layerAvailableDates, selectedDate);
   const queryDateString = (queryDate ? new Date(queryDate) : new Date())
     .toISOString()

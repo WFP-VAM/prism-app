@@ -210,6 +210,13 @@ const theme: any = createTheme({
         },
       },
     },
+    MuiButton: {
+      root: {
+        '&.Mui-disabled': {
+          pointerEvents: 'auto',
+        },
+      },
+    },
   },
 });
 

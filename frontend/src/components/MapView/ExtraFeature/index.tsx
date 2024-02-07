@@ -9,13 +9,10 @@ import AlertForm from '../AlertForm';
 const styles = createStyles({
   buttonContainer: {
     zIndex: 5,
-    // Allow users to click on the map through this div
+    // Allow users to click on the map through this div.
+    // Make sure to activate the pointers on elements that should
+    // remain clickable.
     pointerEvents: 'none',
-    // Give children the ability to be clicked however
-    // (go down 2 levels to target raw elements, instead of individual grid cells)
-    '& > * > *': {
-      pointerEvents: 'auto',
-    },
     width: '100%',
     maxHeight: '100px',
     padding: '3px 8px 0 16px',
@@ -47,7 +44,7 @@ const ExtraFeature = ({
             <GoToBoundaryDropdown />
           </Grid>
           {alertFormActive && (
-            <Grid item>
+            <Grid item style={{ pointerEvents: 'auto' }}>
               <AlertForm
                 isOpen={isAlertFormOpen}
                 setOpen={setIsAlertFormOpen}
@@ -57,7 +54,7 @@ const ExtraFeature = ({
         </Grid>
       </Grid>
       <Grid item>
-        <Grid container spacing={1}>
+        <Grid container spacing={1} style={{ pointerEvents: 'auto' }}>
           <Legends layers={selectedLayers} extent={adminBoundariesExtent} />
         </Grid>
       </Grid>

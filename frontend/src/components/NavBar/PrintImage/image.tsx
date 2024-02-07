@@ -1,10 +1,8 @@
-import React, { ChangeEvent, useRef } from 'react';
-import maplibregl from 'maplibre-gl';
-import { useSelector } from 'react-redux';
 import {
+  Backdrop,
   Box,
   Button,
-  createStyles,
+  CircularProgress,
   Dialog,
   DialogActions,
   DialogContent,
@@ -12,24 +10,36 @@ import {
   FormControlLabel,
   Grid,
   IconButton,
-  makeStyles,
   Menu,
   MenuItem,
+  Slider,
   Switch,
   TextField,
   Theme,
   Typography,
   WithStyles,
+  createStyles,
+  makeStyles,
   withStyles,
 } from '@material-ui/core';
-import { jsPDF } from 'jspdf';
-import html2canvas from 'html2canvas';
+import CloseIcon from '@material-ui/icons/Close';
+import EditIcon from '@material-ui/icons/Edit';
 import GetAppIcon from '@material-ui/icons/GetApp';
 import { legendListId } from 'components/MapView/Legends';
+import html2canvas from 'html2canvas';
+import { jsPDF } from 'jspdf';
+import maplibregl from 'maplibre-gl';
 import moment from 'moment';
-import RefreshIcon from '@material-ui/icons/Refresh';
-import EditIcon from '@material-ui/icons/Edit';
-import CloseIcon from '@material-ui/icons/Close';
+import React, { ChangeEvent, useRef } from 'react';
+import MapGL, { MapRef } from 'react-map-gl/maplibre';
+import { useSelector } from 'react-redux';
+
+import { isDataLayer } from 'components/MapView/Layers/layer-utils';
+import { mapStyle } from 'components/MapView/Map';
+import { addFillPatternImagesInMap } from 'components/MapView/Layers/AdminLevelDataLayer';
+
+import useLayers from 'utils/layers-utils';
+import { AdminLevelDataLayerProps } from 'config/types';
 import {
   dateRangeSelector,
   mapSelector,
@@ -39,8 +49,6 @@ import { downloadToFile } from '../../MapView/utils';
 
 const DEFAULT_FOOTER_TEXT =
   'The designations employed and the presentation of material in the map(s) do not imply the expression of any opinion on the part of WFP concerning the legal of constitutional status of any country, territory, city, or sea, or concerning the delimitation of its frontiers or boundaries.';
-
-const canvasPreviewContainerId = 'canvas-preview-container';
 
 const useEditTextDialogPropsStyles = makeStyles((theme: Theme) => ({
   title: {
@@ -104,8 +112,10 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
   const { t, i18n } = useSafeTranslation();
   const selectedMap = useSelector(mapSelector);
   const dateRange = useSelector(dateRangeSelector);
+  const printRef = useRef<HTMLDivElement>(null);
+  const overlayContainerRef = useRef<HTMLDivElement>(null);
 
-  const previewRef = useRef<HTMLCanvasElement | null>(null);
+  const mapRef = React.useRef<MapRef>(null);
   // list of toggles
   const [toggles, setToggles] = React.useState({
     legend: true,
@@ -120,7 +130,53 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
   ] = React.useState<HTMLElement | null>(null);
   const [openFooterEdit, setOpenFooterEdit] = React.useState(false);
   const [footerText, setFooterText] = React.useState('');
-  const [canRefresh, setCanRefresh] = React.useState(false);
+  const [elementsLoading, setElementsLoading] = React.useState(true);
+  const [legendScale, setLegendScale] = React.useState(100);
+  // the % value of the original dimensions
+  const [mapDimensions, setMapDimensions] = React.useState<{
+    height: number;
+    width: number;
+  }>({ width: 100, height: 100 });
+
+  // Get the style and layers of the old map
+  const selectedMapStyle = selectedMap?.getStyle();
+  const selectedMapLayers = selectedMap?.getStyle()?.layers;
+  // The map style already contains all the info we need to re-render the map
+  // however, there is a small bug with opacity and we need to ovrerride the paint
+  // properties of the data layers
+  // TODO - use opacity state when it has been revamped
+  const cleanSelectedMapStyle = {
+    ...selectedMapStyle,
+    layers: selectedMapLayers?.map(layer => {
+      if (isDataLayer(layer.id)) {
+        // eslint-disable-next-line
+        const paintProps = (selectedMap?.style?._layers as any)[layer.id].paint
+          ._values;
+        // only keep opacity info and handle weird behaviors
+        const opacityProps = Object.keys(paintProps)
+          .filter(key => key.includes('opacity'))
+          .reduce((obj, key) => {
+            return {
+              ...obj,
+              [key]:
+                typeof paintProps[key] === 'number'
+                  ? paintProps[key]
+                  : paintProps[key].value.value,
+            };
+          }, {});
+        return {
+          ...layer,
+          paint: { ...layer.paint, ...opacityProps },
+        };
+      }
+      return layer;
+    }),
+  };
+
+  const { selectedLayers } = useLayers();
+  const adminLevelLayersWithFillPattern = selectedLayers.filter(
+    layer => layer.type === 'admin_level_data' && layer.fillPattern,
+  ) as AdminLevelDataLayerProps[];
 
   React.useEffect(() => {
     const getDateText = (): string => {
@@ -140,11 +196,15 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
 
   const createFooterElement = (
     inputFooterText: string = t(DEFAULT_FOOTER_TEXT),
+    width: number,
+    ratio: number,
   ): HTMLDivElement => {
     const footer = document.createElement('div');
     // eslint-disable-next-line fp/no-mutation
     footer.innerHTML = `
-      <div style='width:100%;height:75px;padding:8px;font-size:12px'>
+      <div style='width:${
+        (width - 16) / ratio
+      }px;margin:8px;font-size:12px;padding-bottom:8px;'>
         ${inputFooterText}
       </div>
     `;
@@ -152,51 +212,52 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
   };
 
   const refreshImage = async () => {
-    if (open && selectedMap) {
-      const activeLayers = selectedMap.getCanvas();
+    /* eslint-disable fp/no-mutation */
+    setElementsLoading(true);
+    if (open && mapRef.current) {
+      const map = mapRef.current.getMap();
+      const activeLayers = map.getCanvas();
+      // Load fill pattern images to this new map instance if needed.
+      Promise.all(
+        adminLevelLayersWithFillPattern.map(layer =>
+          addFillPatternImagesInMap(layer as AdminLevelDataLayerProps, map),
+        ),
+      );
 
-      const canvas = document.createElement('canvas');
-      const canvasContainer = document.getElementById(canvasPreviewContainerId);
-
+      const canvasContainer = overlayContainerRef.current;
       if (!canvasContainer) {
         return;
       }
 
+      // clear canvas
       while (canvasContainer.firstChild) {
         canvasContainer.removeChild(canvasContainer.firstChild);
       }
-      // eslint-disable-next-line fp/no-mutation
-      canvas.style.width = '100%';
 
-      // we add this here so the modal is not shrinking and expanding it's width, each time we update the settings
-      canvasContainer.appendChild(canvas);
-      previewRef.current = canvas;
-
+      const canvas = document.createElement('canvas');
       if (canvas) {
-        const footerTextHeight = 90;
+        let footerTextHeight = 0;
         let scalerBarLength = 0;
         const scaleBarGap = 10;
 
-        canvas.setAttribute('width', activeLayers.width.toString());
-        canvas.setAttribute('height', activeLayers.height.toString());
+        const { width } = activeLayers;
+        const { height } = activeLayers;
+
+        const ratio = window.devicePixelRatio || 1;
+
+        canvas.width = width * ratio;
+        canvas.height = height * ratio;
+        canvas.style.width = `${width / ratio}px`;
+        canvas.style.height = `${height / ratio}px`;
+
         const context = canvas.getContext('2d');
 
-        // in chrome canvas does not draw as expected if it is already in dom
-        const offScreenCanvas = document.createElement('canvas');
-        const offScreenContext = offScreenCanvas.getContext('2d');
-
-        // eslint-disable-next-line fp/no-mutation
-        offScreenCanvas.width = activeLayers.width;
-        // eslint-disable-next-line fp/no-mutation
-        offScreenCanvas.height = activeLayers.height;
-
-        if (!offScreenContext || !context) {
+        if (!context) {
           return;
         }
 
+        context.scale(ratio, ratio);
         context.clearRect(0, 0, canvas.width, canvas.height);
-
-        offScreenContext.drawImage(activeLayers, 0, 0);
 
         // toggle legend
         const div = document.getElementById(legendListId);
@@ -206,8 +267,7 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
           ) as HTMLElement[];
 
           const target = document.createElement('div');
-          // eslint-disable-next-line fp/no-mutation
-          target.style.width = '180px';
+          target.style.width = '196px'; // 180px + 2*8px padding
 
           childElements.forEach((li: HTMLElement, i) => {
             const isLast = childElements.length - 1 === i;
@@ -223,9 +283,7 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
             ) as HTMLElement[];
 
             const container = document.createElement('div');
-            // eslint-disable-next-line fp/no-mutation
             container.style.padding = '8px';
-            // eslint-disable-next-line fp/no-mutation
             container.style.paddingBottom = isLast ? '8px' : '16px';
             target.appendChild(container);
 
@@ -243,13 +301,39 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
 
           document.body.appendChild(target);
 
-          const c = await html2canvas(target);
-          offScreenContext.drawImage(c, 24, 24);
+          const c = await html2canvas(target, { useCORS: true });
+          context.drawImage(
+            c,
+            24,
+            24,
+            (target.offsetWidth * legendScale * ratio) / 100.0,
+            (target.offsetHeight * legendScale * ratio) / 100.0,
+          );
           document.body.removeChild(target);
         }
 
+        // toggle footer
+        if (toggles.footer) {
+          const footer = createFooterElement(
+            footerText,
+            activeLayers.width,
+            ratio,
+          );
+          document.body.appendChild(footer);
+          const c = await html2canvas(footer);
+          footerTextHeight = footer.offsetHeight;
+          context.drawImage(
+            c,
+            0 * ratio,
+            activeLayers.height - footer.offsetHeight * ratio,
+            footer.offsetWidth * ratio,
+            footer.offsetHeight * ratio,
+          );
+          document.body.removeChild(footer);
+        }
+
         if (toggles.scaleBar) {
-          selectedMap.addControl(new maplibregl.ScaleControl({}), 'top-right');
+          map.addControl(new maplibregl.ScaleControl({}), 'top-right');
           const elem = document.querySelector(
             '.maplibregl-ctrl-scale',
           ) as HTMLElement;
@@ -257,74 +341,63 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
           if (elem) {
             const html = document.createElement('div');
 
-            // eslint-disable-next-line fp/no-mutation
             scalerBarLength = elem.offsetWidth;
-
-            // eslint-disable-next-line fp/no-mutation
             html.style.width = `${elem.offsetWidth + 2}px`;
-
             html.appendChild(elem);
 
             document.body.appendChild(html);
 
             const c = await html2canvas(html);
-            offScreenContext.drawImage(
+            context.drawImage(
               c,
-              activeLayers.width - (scaleBarGap + elem.offsetWidth),
+              activeLayers.width - (scaleBarGap + elem.offsetWidth) * ratio,
               activeLayers.height -
-                30 -
-                (toggles.footer ? footerTextHeight : 0),
+                (30 + (toggles.footer ? footerTextHeight : 0)) * ratio,
+              html.offsetWidth * ratio,
+              html.offsetHeight * ratio,
             );
             document.body.removeChild(html);
           }
         }
 
-        // toggle footer
-        if (toggles.footer) {
-          const footer = createFooterElement(footerText);
-          document.body.appendChild(footer);
-          const c = await html2canvas(footer);
-          offScreenContext.drawImage(
-            c,
-            0,
-            activeLayers.height - footerTextHeight,
-          );
-          document.body.removeChild(footer);
-        }
-
         if (toggles.northArrow) {
           const image = new Image();
-          const imageWidth = 40;
-          const imageHeight = 60;
-          // eslint-disable-next-line fp/no-mutation
+          const imageWidth = 40 * ratio;
+          const imageHeight = 60 * ratio;
+
           image.onload = () => {
-            offScreenContext.drawImage(
+            context.drawImage(
               image,
               activeLayers.width -
-                scaleBarGap -
-                imageWidth / 2 -
-                scalerBarLength / 2,
+                (scaleBarGap + imageWidth / 2 + scalerBarLength / 2) * ratio,
               activeLayers.height -
-                110 -
-                (toggles.footer ? footerTextHeight : 0),
+                (110 + (toggles.footer ? footerTextHeight : 0)) * ratio,
               imageWidth,
               imageHeight,
             );
-            context.drawImage(offScreenCanvas, 0, 0);
           };
-          // eslint-disable-next-line fp/no-mutation
           image.src = './images/icon_north_arrow.png';
         }
 
-        context.drawImage(offScreenCanvas, 0, 0);
+        canvasContainer.appendChild(canvas);
       }
     }
+    /* eslint-enable fp/no-mutation */
+    setElementsLoading(false);
   };
 
   React.useEffect(() => {
-    refreshImage();
+    if (open) {
+      setElementsLoading(true);
+    }
+  }, [open]);
+
+  React.useEffect(() => {
+    if (open) {
+      refreshImage();
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [open, footerText]);
+  }, [open, footerText, toggles, legendScale]);
 
   const toggle = (event: ChangeEvent<HTMLInputElement>) => {
     setToggles(prevValues => {
@@ -341,23 +414,25 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
   };
 
   const download = (format: 'pdf' | 'jpeg' | 'png') => {
-    const docGeneration = () => {
+    const docGeneration = async () => {
       // png is generally preferred for images containing lines and text.
       const ext = format === 'pdf' ? 'png' : format;
-      const canvas = previewRef.current;
-      if (!canvas) {
+      const elem = printRef.current;
+      if (!elem) {
         throw new Error('canvas is undefined');
       }
+      const canvas = await html2canvas(elem);
       const file = canvas.toDataURL(`image/${ext}`);
       if (format === 'pdf') {
         // eslint-disable-next-line new-cap
         const pdf = new jsPDF({
           orientation: 'landscape',
+          unit: 'px',
+          format: [canvas.width, canvas.height],
         });
-        const imgProps = pdf.getImageProperties(file);
+        const pdfHeight = pdf.internal.pageSize.getHeight();
         const pdfWidth = pdf.internal.pageSize.getWidth();
-        const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
-        pdf.addImage(file, 'PNG', 0, 0, pdfWidth, pdfHeight);
+        pdf.addImage(file, 'PNG', 0, 0, pdfWidth, pdfHeight, undefined, 'FAST');
         pdf.save('map.pdf');
       } else {
         downloadToFile({ content: file, isUrl: true }, 'map', `image/${ext}`);
@@ -381,7 +456,12 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
       name: 'fullLayerDescription',
       label: 'Full Layer Description',
     },
-    { checked: toggles.footer, name: 'footer', label: 'Footer Text' },
+    {
+      checked: toggles.footer,
+      name: 'footer',
+      label: 'Footer Text',
+      button: { Icon: EditIcon, onClick: () => setOpenFooterEdit(true) },
+    },
     // Hide options for toggling scale bar and north arrow
     // { checked: toggles.scaleBar, name: 'scaleBar', label: 'Scale Bar' },
     // { checked: toggles.northArrow, name: 'northArrow', label: 'North Arrow' },
@@ -397,7 +477,13 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
         aria-labelledby="dialog-preview"
       >
         <DialogTitle className={classes.title} id="dialog-preview">
-          {t('Map Preview')}
+          <div style={{ display: 'flex', flexDirection: 'column' }}>
+            {t('Map Preview')}
+            <Typography color="textSecondary" variant="body1">
+              {t('Use your mouse to pan and zoom the map')}
+            </Typography>
+          </div>
+
           <IconButton
             className={classes.closeButton}
             onClick={() => handleClose()}
@@ -405,9 +491,65 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
             <CloseIcon />
           </IconButton>
         </DialogTitle>
-        <DialogContent>
+        <DialogContent style={{ scrollbarGutter: 'stable' }}>
           <Grid container>
-            <Grid item xs={10} id="canvas-preview-container" />
+            <Grid
+              item
+              xs={10}
+              style={{
+                width: '70vw',
+                height: '80vh',
+                marginBottom: '16px',
+              }}
+            >
+              <div
+                style={{
+                  position: 'relative',
+                  zIndex: 3,
+                  border: '1px solid black',
+                  height: `${mapDimensions.height}%`,
+                  width: `${mapDimensions.width}%`,
+                }}
+              >
+                <div ref={printRef} className={classes.printContainer}>
+                  <div
+                    ref={overlayContainerRef}
+                    className={classes.mapOverlay}
+                  />
+                  {elementsLoading && (
+                    <div className={classes.backdropWrapper}>
+                      <Backdrop className={classes.backdrop} open>
+                        <CircularProgress />
+                      </Backdrop>
+                    </div>
+                  )}
+                  <div className={classes.mapContainer}>
+                    {selectedMap && open && (
+                      <MapGL
+                        ref={mapRef}
+                        dragRotate={false}
+                        // preserveDrawingBuffer is required for the map to be exported as an image
+                        preserveDrawingBuffer
+                        onLoad={e => {
+                          e.target.setCenter(selectedMap.getCenter());
+                          e.target.setZoom(selectedMap.getZoom());
+                        }}
+                        onIdle={() => {
+                          refreshImage();
+                        }}
+                        minZoom={selectedMap.getMinZoom()}
+                        maxZoom={selectedMap.getMaxZoom()}
+                        mapStyle={
+                          (cleanSelectedMapStyle as any) || mapStyle.toString()
+                        }
+                        maxBounds={selectedMap.getMaxBounds() ?? undefined}
+                      />
+                    )}
+                  </div>
+                </div>
+              </div>
+            </Grid>
+
             <Grid item xs>
               <Box display="flex" flexDirection="column" pl={5}>
                 <Box
@@ -419,47 +561,61 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
                   {t('Map Options')}
                 </Box>
                 {options.map(option => (
-                  <FormControlLabel
-                    key={option.name}
-                    control={
-                      <Switch
-                        checked={option.checked}
-                        onChange={e => {
-                          toggle(e);
-                          setCanRefresh(true);
-                        }}
-                        name={option.name}
-                        color="primary"
-                      />
-                    }
-                    label={
-                      <Typography variant="h4">{t(option.label)}</Typography>
-                    }
-                  />
+                  <div key={option.label} className={classes.toggleWrapper}>
+                    <FormControlLabel
+                      key={option.name}
+                      control={
+                        <Switch
+                          checked={option.checked}
+                          onChange={e => {
+                            toggle(e);
+                          }}
+                          name={option.name}
+                          color="primary"
+                        />
+                      }
+                      label={
+                        <Typography variant="h4">{t(option.label)}</Typography>
+                      }
+                    />
+                    {option.button && (
+                      <IconButton onClick={option.button.onClick}>
+                        <option.button.Icon />
+                      </IconButton>
+                    )}
+                  </div>
                 ))}
-                <Button
-                  variant="contained"
-                  color="primary"
-                  className={classes.editFooterButton}
-                  endIcon={<EditIcon />}
-                  onClick={() => setOpenFooterEdit(true)}
-                  disabled={!toggles.footer}
-                >
-                  {t('Edit Footer Text')}
-                </Button>
-                <Button
-                  disabled={!canRefresh}
-                  variant="contained"
-                  color="primary"
-                  className={classes.gutter}
-                  endIcon={<RefreshIcon />}
-                  onClick={() => {
-                    setCanRefresh(false);
-                    refreshImage();
-                  }}
-                >
-                  {t('Refresh Image')}
-                </Button>
+                <Typography color="textSecondary" variant="h4" gutterBottom>
+                  {t('Total width')}
+                </Typography>
+                <Slider
+                  defaultValue={100}
+                  step={10}
+                  marks
+                  min={50}
+                  max={100}
+                  value={mapDimensions.width}
+                  onChange={(e, val) =>
+                    setMapDimensions(prev => ({
+                      ...(prev || {}),
+                      width: val as number,
+                    }))
+                  }
+                />
+
+                <Typography color="textSecondary" variant="h4" gutterBottom>
+                  {t('Legend scale')}
+                </Typography>
+                <Slider
+                  defaultValue={100}
+                  marks
+                  step={10}
+                  min={50}
+                  max={100}
+                  value={legendScale}
+                  onChange={(e, val) => setLegendScale(val as number)}
+                />
+
                 <Button
                   variant="contained"
                   color="primary"
@@ -515,7 +671,7 @@ const styles = (theme: Theme) =>
     gutter: {
       marginBottom: 10,
     },
-    editFooterButton: {
+    firstButton: {
       marginTop: 20,
       marginBottom: 10,
     },
@@ -524,6 +680,39 @@ const styles = (theme: Theme) =>
       right: theme.spacing(1),
       top: theme.spacing(1),
       color: theme.palette.grey[500],
+    },
+    backdrop: {
+      position: 'absolute',
+    },
+    backdropWrapper: {
+      position: 'absolute',
+      top: 0,
+      left: 0,
+      zIndex: 2,
+      width: '100%',
+      height: '100%',
+      display: 'flex',
+      justifyContent: 'center',
+    },
+    toggleWrapper: { display: 'flex', justifyContent: 'space-between' },
+    printContainer: {
+      width: '100%',
+      height: '100%',
+    },
+    mapContainer: {
+      position: 'absolute',
+      top: 0,
+      left: 0,
+      height: '100%',
+      width: '100%',
+      zIndex: 1,
+    },
+    mapOverlay: {
+      position: 'absolute',
+      top: 0,
+      left: 0,
+      zIndex: 2,
+      pointerEvents: 'none',
     },
   });
 

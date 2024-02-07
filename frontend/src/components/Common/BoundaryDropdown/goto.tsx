@@ -9,6 +9,7 @@ import { mapSelector } from 'context/mapStateSlice/selectors';
 // TODO - Dedup files and styling in BoundaryDropdown.tsx
 const useStyles = makeStyles((theme: Theme) => ({
   button: {
+    pointerEvents: 'auto',
     backgroundColor: theme.palette.primary.main,
     color: theme.palette.text.primary,
     display: 'inline-flex',

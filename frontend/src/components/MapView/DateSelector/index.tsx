@@ -133,6 +133,7 @@ const DateSelector = memo(({ classes }: DateSelectorProps) => {
         .by('days'),
     ).map(date => {
       date.locale(locale);
+      date.set({ hour: 12, minute: 0, second: 0 });
       return {
         value: date.valueOf(),
         label: dateStrToUpperCase(date.format(MONTH_FIRST_DATE_FORMAT)),
@@ -185,13 +186,16 @@ const DateSelector = memo(({ classes }: DateSelectorProps) => {
     });
   }, []);
 
+  const dates = useMemo(() => {
+    return addUserOffset(availableDates);
+  }, [addUserOffset, availableDates]);
+
   const setDatePosition = useCallback(
     (
       date: number | undefined,
       increment: number,
       isUpdatingHistory: boolean,
     ) => {
-      const dates = addUserOffset(availableDates);
       const selectedIndex = findDateIndex(dates, date);
       if (dates[selectedIndex + increment]) {
         updateStartDate(
@@ -200,7 +204,7 @@ const DateSelector = memo(({ classes }: DateSelectorProps) => {
         );
       }
     },
-    [addUserOffset, availableDates, updateStartDate],
+    [dates, updateStartDate],
   );
 
   // move pointer to closest date when change map layer
@@ -220,13 +224,9 @@ const DateSelector = memo(({ classes }: DateSelectorProps) => {
     setDatePosition(stateStartDate, -1, true);
   }, [setDatePosition, stateStartDate]);
 
-  const dates = useMemo(() => {
-    return addUserOffset(availableDates);
-  }, [addUserOffset, availableDates]);
-
   const includedDates = useMemo(() => {
-    return availableDates?.map(d => new Date(d + USER_DATE_OFFSET)) ?? [];
-  }, [availableDates]);
+    return dates?.map(d => new Date(d)) ?? [];
+  }, [dates]);
 
   const checkIntersectingDateAndShowPopup = useCallback(
     (selectedDate: Date, positionY: number) => {
@@ -256,7 +256,11 @@ const DateSelector = memo(({ classes }: DateSelectorProps) => {
   // Click on available date to move the pointer
   const clickDate = (index: number) => {
     const selectedIndex = findDateIndex(dates, dateRange[index].value);
-    if (selectedIndex < 0 || dates[selectedIndex] === stateStartDate) {
+    if (
+      selectedIndex < 0 ||
+      (stateStartDate &&
+        datesAreEqualWithoutTime(dates[selectedIndex], stateStartDate))
+    ) {
       return;
     }
     setPointerPosition({ x: index * TIMELINE_ITEM_WIDTH, y: 0 });
@@ -496,6 +500,7 @@ const styles = (theme: Theme) =>
       top: -20,
       left: -9,
       height: '16px',
+      pointerEvents: 'none',
     },
   });
 

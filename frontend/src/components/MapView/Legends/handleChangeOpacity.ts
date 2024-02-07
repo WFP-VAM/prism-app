@@ -22,8 +22,9 @@ export const handleChangeOpacity = (
           return [getLayerMapId(id), 'raster-opacity'];
         case 'static_raster':
           return [getLayerMapId(id), 'raster-opacity'];
-        case 'impact':
         case 'admin_level_data':
+        case 'composite':
+        case 'impact':
           return [getLayerMapId(id), 'fill-opacity'];
         case 'point_data':
           // This is a hacky way to support opacity change for Kobo data.
