@@ -25,20 +25,21 @@ import {
 import CloseIcon from '@material-ui/icons/Close';
 import EditIcon from '@material-ui/icons/Edit';
 import GetAppIcon from '@material-ui/icons/GetApp';
+import mask from '@turf/mask';
 import { legendListId } from 'components/MapView/Legends';
 import html2canvas from 'html2canvas';
 import { jsPDF } from 'jspdf';
 import maplibregl from 'maplibre-gl';
 import moment from 'moment';
-import React, { ChangeEvent, useRef } from 'react';
-import MapGL, { MapRef } from 'react-map-gl/maplibre';
+import React, { ChangeEvent, useRef, useState } from 'react';
+import MapGL, { Layer, MapRef, Source } from 'react-map-gl/maplibre';
 import { useSelector } from 'react-redux';
 
-import { isDataLayer } from 'components/MapView/Layers/layer-utils';
 import { mapStyle } from 'components/MapView/Map';
 import { addFillPatternImagesInMap } from 'components/MapView/Layers/AdminLevelDataLayer';
 
 import useLayers from 'utils/layers-utils';
+import { safeCountry } from 'config';
 import { AdminLevelDataLayerProps } from 'config/types';
 import {
   dateRangeSelector,
@@ -130,7 +131,7 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
   ] = React.useState<HTMLElement | null>(null);
   const [openFooterEdit, setOpenFooterEdit] = React.useState(false);
   const [footerText, setFooterText] = React.useState('');
-  const [elementsLoading, setElementsLoading] = React.useState(true);
+  const [elementsLoading, setElementsLoading] = React.useState(false);
   const [legendScale, setLegendScale] = React.useState(100);
   // the % value of the original dimensions
   const [mapDimensions, setMapDimensions] = React.useState<{
@@ -140,38 +141,6 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
 
   // Get the style and layers of the old map
   const selectedMapStyle = selectedMap?.getStyle();
-  const selectedMapLayers = selectedMap?.getStyle()?.layers;
-  // The map style already contains all the info we need to re-render the map
-  // however, there is a small bug with opacity and we need to ovrerride the paint
-  // properties of the data layers
-  // TODO - use opacity state when it has been revamped
-  const cleanSelectedMapStyle = {
-    ...selectedMapStyle,
-    layers: selectedMapLayers?.map(layer => {
-      if (isDataLayer(layer.id)) {
-        // eslint-disable-next-line
-        const paintProps = (selectedMap?.style?._layers as any)[layer.id].paint
-          ._values;
-        // only keep opacity info and handle weird behaviors
-        const opacityProps = Object.keys(paintProps)
-          .filter(key => key.includes('opacity'))
-          .reduce((obj, key) => {
-            return {
-              ...obj,
-              [key]:
-                typeof paintProps[key] === 'number'
-                  ? paintProps[key]
-                  : paintProps[key].value.value,
-            };
-          }, {});
-        return {
-          ...layer,
-          paint: { ...layer.paint, ...opacityProps },
-        };
-      }
-      return layer;
-    }),
-  };
 
   const { selectedLayers } = useLayers();
   const adminLevelLayersWithFillPattern = selectedLayers.filter(
@@ -193,6 +162,22 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
     };
     setFooterText(`${getDateText()} ${t(DEFAULT_FOOTER_TEXT)}`);
   }, [i18n.language, t, dateRange]);
+
+  const [invertedAdminBoundaryLimitPolygon, setAdminBoundaryPolygon] = useState(
+    null,
+  );
+
+  React.useEffect(() => {
+    // admin-boundary-unified-polygon.json is generated using "yarn preprocess-layers"
+    // which runs ./scripts/preprocess-layers.js
+    fetch(`data/${safeCountry}/admin-boundary-unified-polygon.json`)
+      .then(response => response.json())
+      .then(polygonData => {
+        const maskedPolygon = mask(polygonData as any);
+        setAdminBoundaryPolygon(maskedPolygon as any);
+      })
+      .catch(error => console.error('Error:', error));
+  }, []);
 
   const createFooterElement = (
     inputFooterText: string = t(DEFAULT_FOOTER_TEXT),
@@ -388,12 +373,6 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
 
   React.useEffect(() => {
     if (open) {
-      setElementsLoading(true);
-    }
-  }, [open]);
-
-  React.useEffect(() => {
-    if (open) {
       refreshImage();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -534,16 +513,29 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
                           e.target.setCenter(selectedMap.getCenter());
                           e.target.setZoom(selectedMap.getZoom());
                         }}
-                        onIdle={() => {
-                          refreshImage();
-                        }}
+                        onMoveEnd={() => refreshImage()}
                         minZoom={selectedMap.getMinZoom()}
                         maxZoom={selectedMap.getMaxZoom()}
-                        mapStyle={
-                          (cleanSelectedMapStyle as any) || mapStyle.toString()
-                        }
+                        mapStyle={selectedMapStyle || mapStyle.toString()}
                         maxBounds={selectedMap.getMaxBounds() ?? undefined}
-                      />
+                      >
+                        <Source
+                          id="mask-overlay"
+                          type="geojson"
+                          data={invertedAdminBoundaryLimitPolygon}
+                        >
+                          <Layer
+                            id="mask-layer-overlay"
+                            type="fill"
+                            source="mask-overlay"
+                            layout={{}}
+                            paint={{
+                              'fill-color': '#000',
+                              'fill-opacity': 0.7,
+                            }}
+                          />
+                        </Source>
+                      </MapGL>
                     )}
                   </div>
                 </div>
