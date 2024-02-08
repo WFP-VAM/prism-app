@@ -5151,5 +5151,197 @@
       }
     ],
     "legend_text": "Projected 2022 population data. Source: INE"
+  },
+  "daily_rainfall_forecast": {
+    "title": "Rolling daily rainfall forecast",
+    "type": "wms",
+    "server_layer_name": "rfh_daily_forecast",
+    "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
+    "date_interval": "days",
+    "additional_query_params": {
+      "styles": "rfh_16_0_300"
+    },
+    "opacity": 0.7,
+    "legend_text": "CHIRPS-GEFS daily forecasts (16-day rolling)",
+    "legend": [
+      {
+        "value": 0,
+        "label": "0 mm",
+        "color": "#fafafa"
+      },
+      {
+        "value": 0.01,
+        "label": "1-2 mm",
+        "color": "#fffadf"
+      },
+      {
+        "value": 2,
+        "label": "2-5 mm",
+        "color": "#d3f9d0"
+      },
+      {
+        "value": 5,
+        "label": "5-10 mm",
+        "color": "#a9e4a3"
+      },
+      {
+        "value": 10,
+        "label": "10-20 mm",
+        "color": "#7cc594"
+      },
+      {
+        "value": 20,
+        "label": "20-30 mm",
+        "color": "#5eab91"
+      },
+      {
+        "value": 30,
+        "label": "30-40 mm",
+        "color": "#9fffe8"
+      },
+      {
+        "value": 40,
+        "label": "40-50 mm",
+        "color": "#90e0ef"
+      },
+      {
+        "value": 50,
+        "label": "50-60 mm",
+        "color": "#00b1de"
+      },
+      {
+        "value": 60,
+        "label": "60-80 mm",
+        "color": "#0083f3"
+      },
+      {
+        "value": 80,
+        "label": "80-100 mm",
+        "color": "#0052cd"
+      },
+      {
+        "value": 100,
+        "label": "100-120 mm",
+        "color": "#0000c8"
+      },
+      {
+        "value": 120,
+        "label": "120-150 mm",
+        "color": "#6003b8"
+      },
+      {
+        "value": 150,
+        "label": "150-200 mm",
+        "color": "#a002fa"
+      },
+      {
+        "value": 200,
+        "label": "200-300 mm",
+        "color": "#fa78fa"
+      },
+      {
+        "value": 300,
+        "label": ">= 300 mm",
+        "color": "#ffc4ee"
+      }
+    ]
+  },
+  "dekad_rainfall_forecast": {
+    "title": "10-day rainfall forecast",
+    "type": "wms",
+    "server_layer_name": "rfh_dekad_forecast",
+    "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
+    "date_interval": "days",
+    "additional_query_params": {
+      "styles": "rfh_16_0_300"
+    },
+    "validity": {
+      "days": 10,
+      "mode": "forward"
+    },
+    "opacity": 0.7,
+    "legend_text": "CHIRPS-GEFS global dekadal rainfall forecasts",
+    "legend": [
+      {
+        "value": 0,
+        "label": "0 mm",
+        "color": "#fafafa"
+      },
+      {
+        "value": 0.01,
+        "label": "1-2 mm",
+        "color": "#fffadf"
+      },
+      {
+        "value": 2,
+        "label": "2-5 mm",
+        "color": "#d3f9d0"
+      },
+      {
+        "value": 5,
+        "label": "5-10 mm",
+        "color": "#a9e4a3"
+      },
+      {
+        "value": 10,
+        "label": "10-20 mm",
+        "color": "#7cc594"
+      },
+      {
+        "value": 20,
+        "label": "20-30 mm",
+        "color": "#5eab91"
+      },
+      {
+        "value": 30,
+        "label": "30-40 mm",
+        "color": "#9fffe8"
+      },
+      {
+        "value": 40,
+        "label": "40-50 mm",
+        "color": "#90e0ef"
+      },
+      {
+        "value": 50,
+        "label": "50-60 mm",
+        "color": "#00b1de"
+      },
+      {
+        "value": 60,
+        "label": "60-80 mm",
+        "color": "#0083f3"
+      },
+      {
+        "value": 80,
+        "label": "80-100 mm",
+        "color": "#0052cd"
+      },
+      {
+        "value": 100,
+        "label": "100-120 mm",
+        "color": "#0000c8"
+      },
+      {
+        "value": 120,
+        "label": "120-150 mm",
+        "color": "#6003b8"
+      },
+      {
+        "value": 150,
+        "label": "150-200 mm",
+        "color": "#a002fa"
+      },
+      {
+        "value": 200,
+        "label": "200-300 mm",
+        "color": "#fa78fa"
+      },
+      {
+        "value": 300,
+        "label": ">= 300 mm",
+        "color": "#ffc4ee"
+      }
+    ]
   }
 }
