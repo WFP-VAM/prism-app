@@ -515,13 +515,12 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
                         dragRotate={false}
                         // preserveDrawingBuffer is required for the map to be exported as an image
                         preserveDrawingBuffer
-                        onLoad={e => {
-                          e.target.setCenter(selectedMap.getCenter());
-                          e.target.setZoom(selectedMap.getZoom());
+                        initialViewState={{
+                          longitude: selectedMap.getCenter().lng,
+                          latitude: selectedMap.getCenter().lat,
+                          zoom: selectedMap.getZoom(),
                         }}
                         onMoveEnd={() => refreshImage()}
-                        minZoom={selectedMap.getMinZoom()}
-                        maxZoom={selectedMap.getMaxZoom()}
                         mapStyle={selectedMapStyle || mapStyle.toString()}
                         maxBounds={selectedMap.getMaxBounds() ?? undefined}
                       >
