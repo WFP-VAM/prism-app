@@ -212,7 +212,7 @@ const SwitchItem = memo(
             selected={someLayerAreSelected}
           />
           <LayerDownloadOptions
-            layerId={layer.id}
+            layerId={activeLayerId}
             extent={extent}
             selected={someLayerAreSelected}
           />
