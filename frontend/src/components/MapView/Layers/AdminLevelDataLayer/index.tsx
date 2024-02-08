@@ -61,8 +61,12 @@ export const addFillPatternImageInMap = (
     if (!image) {
       return;
     }
-    // Add the image to the map style.
-    map.addImage(`fill-pattern-${layer.id}-legend-${index}`, image);
+    // Add the image to the map style if it doesn't already exist
+    const imageId = `fill-pattern-${layer.id}-legend-${index}`;
+    if (!map.hasImage(imageId)) {
+      // Add the image since it doesn't exist
+      map.addImage(imageId, image);
+    }
   });
 };
 
@@ -111,9 +115,6 @@ const AdminLevelDataLayers = ({
   const { features } = data || {};
 
   useEffect(() => {
-    if (isLayerOnView(map, layer.id)) {
-      return;
-    }
     addFillPatternImagesInMap(layer, map);
   }, [layer, map]);
 
