@@ -1,4 +1,4 @@
-import { createStyles, Drawer, makeStyles, Theme } from '@material-ui/core';
+import { Drawer } from '@material-ui/core';
 import React, { memo, useMemo } from 'react';
 import { LayersCategoryType, MenuItemType, PanelSize } from 'config/types';
 import AnalysisPanel from './AnalysisPanel';
@@ -7,26 +7,8 @@ import LeftPanelTabs from './LeftPanelTabs';
 import TablesPanel from './TablesPanel';
 import { menuList } from './utils';
 
-interface StyleProps {
-  panelSize: PanelSize;
-}
-
-const useStyles = makeStyles<Theme, StyleProps>(() =>
-  createStyles({
-    paper: {
-      marginTop: '7vh',
-      height: '93%',
-      width: ({ panelSize }) => panelSize,
-      backgroundColor: '#F5F7F8',
-      maxWidth: '100%',
-    },
-  }),
-);
-
 const LeftPanel = memo(
   ({ panelSize, setPanelSize, isPanelHidden }: LeftPanelProps) => {
-    const classes = useStyles({ panelSize });
-
     const [
       resultsPage,
       setResultsPage,
@@ -48,10 +30,18 @@ const LeftPanel = memo(
 
     return (
       <Drawer
+        PaperProps={{
+          style: {
+            width: panelSize,
+            marginTop: '7vh',
+            height: '93%',
+            backgroundColor: '#F5F7F8',
+            maxWidth: '100%',
+          },
+        }}
         variant="persistent"
         anchor="left"
         open={!isPanelHidden}
-        classes={{ paper: classes.paper }}
       >
         <LeftPanelTabs
           panelSize={panelSize}
