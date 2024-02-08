@@ -9,6 +9,7 @@ import { availableDatesSelector } from 'context/serverStateSlice';
 import { getLayerMapId } from 'utils/map-utils';
 import { appConfig, safeCountry } from 'config';
 import mask from '@turf/mask';
+import polygonSmooth from '@turf/polygon-smooth';
 
 function expandBoundingBox(
   bbox: [number, number, number, number],
@@ -38,13 +39,19 @@ const WMSLayers = ({
   const [invertedAdminBoundaryLimitPolygon, setAdminBoundaryPolygon] = useState(
     null,
   );
+  // eslint-disable-next-line no-console
+  console.log(invertedAdminBoundaryLimitPolygon);
 
   useEffect(() => {
     // admin-boundary-unified-polygon.json is generated using "yarn preprocess-layers"
     // which runs ./scripts/preprocess-layers.js
     fetch(`data/${safeCountry}/admin-boundary-unified-polygon.json`)
       .then(response => response.json())
-      .then(polygonData => setAdminBoundaryPolygon(mask(polygonData) as any))
+      .then(polygonData =>
+        setAdminBoundaryPolygon(
+          mask(polygonSmooth(polygonData, { iterations: 2 })) as any,
+        ),
+      )
       .catch(error => console.error('Error:', error));
   }, []);
 
@@ -79,7 +86,7 @@ const WMSLayers = ({
             'fill-color': '#000',
             'fill-opacity': 0.7,
           }}
-          beforeId={before}
+          // beforeId={before}
         />
       </Source>
       <Source
@@ -99,7 +106,7 @@ const WMSLayers = ({
         bounds={expandedBoundingBox}
       >
         <Layer
-          beforeId={`mask-layer-${id}`}
+          beforeId={before}
           type="raster"
           id={getLayerMapId(id)}
           source={`source-${id}`}

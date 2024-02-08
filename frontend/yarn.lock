@@ -2209,6 +2209,14 @@
   dependencies:
     "@turf/helpers" "^6.5.0"
 
+"@turf/polygon-smooth@^6.5.0":
+  version "6.5.0"
+  resolved "https://registry.yarnpkg.com/@turf/polygon-smooth/-/polygon-smooth-6.5.0.tgz#00ca366871cb6ea3bee44ff3ea870aaf75711733"
+  integrity sha512-LO/X/5hfh/Rk4EfkDBpLlVwt3i6IXdtQccDT9rMjXEP32tRgy0VMFmdkNaXoGlSSKf/1mGqLl4y4wHd86DqKbg==
+  dependencies:
+    "@turf/helpers" "^6.5.0"
+    "@turf/meta" "^6.5.0"
+
 "@turf/union@^6.5.0":
   version "6.5.0"
   resolved "https://registry.yarnpkg.com/@turf/union/-/union-6.5.0.tgz#82d28f55190608f9c7d39559b7f543393b03b82d"
