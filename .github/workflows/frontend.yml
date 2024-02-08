@@ -33,9 +33,9 @@ jobs:
             **/node_modules
             **/.eslintcache
             ${{ steps.yarn-cache-dir-path.outputs.dir }}
-          key: ${{ runner.os }}-yarn-${{ hashFiles('**/frontend/yarn.lock') }}-${{ hashFiles('**/common/yarn.lock') }}
+          key: ${{ runner.os }}-yarn-2024-${{ hashFiles('**/frontend/yarn.lock') }}-${{ hashFiles('**/common/yarn.lock') }}
           restore-keys: |
-            ${{ runner.os }}-yarn-
+            ${{ runner.os }}-yarn-2024
 
       - name: Install dependencies if needed.
         if: steps.yarn-cache.outputs.cache-hit != 'true'
@@ -44,14 +44,31 @@ jobs:
           yarn install --frozen-lockfile --network-timeout 100000
           yarn setup:common
 
-      - name: yarn lint
+      - name: Lint
         run: cd frontend && yarn lint
 
-      - name: yarn test
+      - name: Test
         run: cd frontend && yarn test
 
-      - name: json check
+      - name: JSON check
         run: cd frontend && yarn prettier:json-check
+
+      - name: Layer availability check
+        if: matrix.os == 'ubuntu-latest'
+        run: |
+          cd frontend && yarn preprocess-dates
+          DIFF=$(git diff --name-only)
+          if [ "$DIFF" != "" ]; then
+            echo "Files have changed. Make sure to run yarn preprocess-dates and commit changes."
+            echo "$DIFF"
+            exit 1
+          fi
+
+      - name: Check boundary keys
+        run: cd frontend && yarn check-boundary-keys
+
+      - name: Build
+        run: cd frontend && yarn build
 
   frontend_build_and_deploy:
     needs: frontend_tests
@@ -76,9 +93,9 @@ jobs:
             **/node_modules
             **/.eslintcache
             ${{ steps.yarn-cache-dir-path.outputs.dir }}
-          key: ${{ runner.os }}-yarn-${{ hashFiles('**/frontend/yarn.lock') }}-${{ hashFiles('**/common/yarn.lock') }}
+          key: ${{ runner.os }}-yarn-2024-${{ hashFiles('**/frontend/yarn.lock') }}-${{ hashFiles('**/common/yarn.lock') }}
           restore-keys: |
-            ${{ runner.os }}-yarn-
+            ${{ runner.os }}-yarn-2024
 
       - name: Install dependencies if needed.
         if: steps.yarn-cache.outputs.cache-hit != 'true'

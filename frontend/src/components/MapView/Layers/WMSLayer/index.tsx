@@ -1,18 +1,17 @@
-import React from 'react';
-import moment from 'moment';
+import React, { memo } from 'react';
 import { useSelector } from 'react-redux';
-import { Layer, Source } from 'react-mapbox-gl';
+import { Layer, Source } from 'react-map-gl/maplibre';
 import { WMSLayerProps } from 'config/types';
 import { getWMSUrl } from 'components/MapView/Layers/raster-utils';
 import { useDefaultDate } from 'utils/useDefaultDate';
-import { DEFAULT_DATE_FORMAT } from 'utils/name-utils';
 import { getRequestDate } from 'utils/server-utils';
 import { availableDatesSelector } from 'context/serverStateSlice';
+import { getLayerMapId } from 'utils/map-utils';
 
-function WMSLayers({
+const WMSLayers = ({
   layer: { id, baseUrl, serverLayerName, additionalQueryParams, opacity },
   before,
-}: LayersProps) {
+}: LayersProps) => {
   const selectedDate = useDefaultDate(serverLayerName, id);
   const serverAvailableDates = useSelector(availableDatesSelector);
 
@@ -21,39 +20,40 @@ function WMSLayers({
   }
   const layerAvailableDates = serverAvailableDates[serverLayerName];
   const queryDate = getRequestDate(layerAvailableDates, selectedDate);
+  const queryDateString = (queryDate ? new Date(queryDate) : new Date())
+    .toISOString()
+    .slice(0, 10);
 
   return (
-    <>
-      <Source
-        id={`source-${id}`}
-        tileJsonSource={{
-          type: 'raster',
-          tiles: [
-            `${getWMSUrl(baseUrl, serverLayerName, {
-              ...additionalQueryParams,
-              ...(selectedDate && {
-                time: moment(queryDate).format(DEFAULT_DATE_FORMAT),
-              }),
-            })}&bbox={bbox-epsg-3857}`,
-          ],
-          tileSize: 256,
-        }}
-      />
-
+    <Source
+      id={`source-${id}`}
+      type="raster"
+      // refresh tiles every time date changes
+      key={queryDateString}
+      tiles={[
+        `${getWMSUrl(baseUrl, serverLayerName, {
+          ...additionalQueryParams,
+          ...(selectedDate && {
+            time: queryDateString,
+          }),
+        })}&bbox={bbox-epsg-3857}`,
+      ]}
+      tileSize={256}
+    >
       <Layer
-        before={before}
+        beforeId={before}
         type="raster"
-        id={`layer-${id}`}
-        sourceId={`source-${id}`}
+        id={getLayerMapId(id)}
+        source={`source-${id}`}
         paint={{ 'raster-opacity': opacity }}
       />
-    </>
+    </Source>
   );
-}
+};
 
 export interface LayersProps {
   layer: WMSLayerProps;
   before?: string;
 }
 
-export default WMSLayers;
+export default memo(WMSLayers);

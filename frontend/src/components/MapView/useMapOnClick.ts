@@ -1,5 +1,4 @@
 import { useDispatch, useSelector } from 'react-redux';
-import { Map } from 'mapbox-gl';
 import inside from '@turf/boolean-point-in-polygon';
 import { Feature, MultiPolygon } from '@turf/helpers';
 import moment from 'moment';
@@ -18,11 +17,14 @@ import {
 import { DEFAULT_DATE_FORMAT } from 'utils/name-utils';
 import { makeFeatureInfoRequest } from 'utils/server-utils';
 import { clearDataset } from 'context/datasetStateSlice';
+import { LngLat, MapLayerMouseEvent } from 'maplibre-gl';
+import { MapRef } from 'react-map-gl/maplibre';
 import { getActiveFeatureInfoLayers, getFeatureInfoParams } from './utils';
 
 const useMapOnClick = (
   setIsAlertFormOpen: (value: boolean) => void,
   boundaryLayerId: string,
+  mapRef: MapRef | null,
 ) => {
   const dispatch = useDispatch();
   const { startDate: selectedDate } = useSelector(dateRangeSelector);
@@ -42,13 +44,8 @@ const useMapOnClick = (
 
   // Hide the alert popup if we click outside the target country (outside boundary bbox)
   const onClickOutsideTargetCountry = useCallback(
-    (evt: any) => {
-      if (
-        !boundaryLayerDataAreOutsideOfBoundaryBBox(
-          evt.lngLat.lng,
-          evt.lngLat.lat,
-        )
-      ) {
+    (lngLat: LngLat) => {
+      if (!boundaryLayerDataAreOutsideOfBoundaryBBox(lngLat.lng, lngLat.lat)) {
         return;
       }
       setIsAlertFormOpen(false);
@@ -56,8 +53,9 @@ const useMapOnClick = (
     [boundaryLayerDataAreOutsideOfBoundaryBBox, setIsAlertFormOpen],
   );
 
-  const getFeatureInfoLayers = useCallback((map: Map) => {
-    return getActiveFeatureInfoLayers(map);
+  // TODO: maplibre: fix feature
+  const getFeatureInfoLayers = useCallback((features?: any) => {
+    return getActiveFeatureInfoLayers(features);
   }, []);
 
   const dateFromRef = useMemo(() => {
@@ -81,23 +79,23 @@ const useMapOnClick = (
     [dispatch],
   );
 
-  return (
-    // this function will only work when boundary data loads.
-    // due to how the library works, we can only set this function once,
-    // so we should set it when boundary data is present
-    boundaryLayerData &&
-    ((map: Map, evt: any) => {
+  if (!mapRef) {
+    return () => {};
+  }
+
+  return (e: MapLayerMouseEvent) => {
+    const defaultFunction = (mapEvent: MapLayerMouseEvent) => {
       dispatch(hidePopup());
       dispatch(clearDataset());
       // Hide the alert popup if we click outside the target country (outside boundary bbox)
-      onClickOutsideTargetCountry(evt);
-      const featureInfoLayers = getFeatureInfoLayers(map);
+      onClickOutsideTargetCountry(mapEvent.lngLat);
+      const featureInfoLayers = getFeatureInfoLayers(mapEvent.features);
       // Get layers that have getFeatureInfo option.
       if (featureInfoLayers.length !== 0) {
         return;
       }
 
-      const params = getFeatureInfoParams(map, evt, dateFromRef);
+      const params = getFeatureInfoParams(mapRef, mapEvent.point, dateFromRef);
 
       dispatch(setWMSGetFeatureInfoLoading(true));
 
@@ -107,11 +105,18 @@ const useMapOnClick = (
             dispatch(setWMSGetFeatureInfoLoading(false));
             return;
           }
-          handleAdditionPopupDataForInfoRequest(result, evt.lngLat);
+          handleAdditionPopupDataForInfoRequest(result, mapEvent.lngLat);
         },
       );
-    })
-  );
+    };
+
+    // this function will only work when boundary data loads.
+    // due to how the library works, we can only set this function once,
+    // so we should set it when boundary data is present
+    if (boundaryLayerData) {
+      defaultFunction(e);
+    }
+  };
 };
 
 export default useMapOnClick;

@@ -420,6 +420,7 @@ const ChartsPanel = memo(
               startDate={startDate1}
               endDate={endDate1}
               dataForCsv={dataForCsv}
+              chartProps={{ showDownloadIcons: true }}
             />
           </Box>
         );
@@ -463,6 +464,7 @@ const ChartsPanel = memo(
                     minChartValue={
                       comparing ? Math.min(...minChartValues) : undefined
                     }
+                    chartProps={{ showDownloadIcons: true }}
                   />
                 </Box>
               ))
@@ -518,6 +520,7 @@ const ChartsPanel = memo(
                   setMinChartValues={setMinChartValues}
                   maxChartValue={Math.max(...maxChartValues)}
                   minChartValue={Math.min(...minChartValues)}
+                  chartProps={{ showDownloadIcons: true }}
                 />
               </Box>
             ))
@@ -533,6 +536,7 @@ const ChartsPanel = memo(
         if (startDate === null || endDate === null) {
           return '';
         }
+
         const options = {
           weekday: undefined,
           year: 'numeric',
@@ -541,7 +545,7 @@ const ChartsPanel = memo(
         };
         const formatDate = (d: number) => {
           const dd = new Date(d);
-          return dd.toLocaleDateString(t('date_locale'), options);
+          return dd.toLocaleDateString(t('date_locale'), options as any);
         };
 
         return `${formatDate(startDate)} - ${formatDate(endDate)}`;
@@ -983,7 +987,9 @@ const ChartsPanel = memo(
 
 interface ChartsPanelProps {
   setPanelSize: React.Dispatch<React.SetStateAction<PanelSize>>;
-  setResultsPage: React.Dispatch<React.SetStateAction<JSX.Element | null>>;
+  setResultsPage: React.Dispatch<
+    React.SetStateAction<React.JSX.Element | null>
+  >;
 }
 
 export default ChartsPanel;

@@ -19,6 +19,7 @@ import { TableRow as AnalysisTableRow } from 'context/analysisResultStateSlice';
 import { Column } from 'utils/analysis-utils';
 import { useSafeTranslation } from 'i18n';
 import { mapSelector } from 'context/mapStateSlice/selectors';
+import { hidePopup } from 'context/tooltipStateSlice';
 
 const AnalysisTable = memo(
   ({
@@ -103,16 +104,15 @@ const AnalysisTable = memo(
 
     const handleClickTableBodyRow = useCallback(
       row => {
-        return () => {
+        return async () => {
           if (!row.coordinates || !map) {
             return;
           }
-          dispatch(() =>
-            map.fire('click', {
-              lngLat: row.coordinates,
-              point: map.project(row.coordinates),
-            }),
-          );
+          await dispatch(hidePopup());
+          map.fire('click', {
+            lngLat: row.coordinates,
+            point: map.project(row.coordinates),
+          });
         };
       },
       [dispatch, map],
@@ -121,7 +121,7 @@ const AnalysisTable = memo(
     const renderedTableRowStyles = useCallback(
       (row: AnalysisTableRow, index: number) => {
         return {
-          cursor: row.coordinates ? 'pointer' : 'none',
+          cursor: row.coordinates ? 'pointer' : 'default',
           backgroundColor: index % 2 === 0 ? 'white' : '#EBEBEB',
         };
       },

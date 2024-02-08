@@ -1,15 +1,13 @@
-import React, { useEffect } from 'react';
+import React, { memo, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { GeoJSONLayer } from 'react-mapbox-gl';
-import { FillPaint, LinePaint } from 'mapbox-gl';
 import { get } from 'lodash';
 import { createStyles, withStyles, WithStyles, Theme } from '@material-ui/core';
 import { getExtent, Extent } from 'components/MapView/Layers/raster-utils';
 import { legendToStops } from 'components/MapView/Layers/layer-utils';
-import { ImpactLayerProps } from 'config/types';
+import { ImpactLayerProps, MapEventWrapFunctionProps } from 'config/types';
 import { LayerDefinitions } from 'config/utils';
 import { LayerData, loadLayerData } from 'context/layers/layer-data';
-
+import { Layer, Source } from 'react-map-gl/maplibre';
 import { addPopupData } from 'context/tooltipStateSlice';
 import {
   dateRangeSelector,
@@ -19,8 +17,19 @@ import {
 import { getFeatureInfoPropsData } from 'components/MapView/utils';
 import { i18nTranslator, useSafeTranslation } from 'i18n';
 import { getRoundedData } from 'utils/data-utils';
+import {
+  FillLayerSpecification,
+  LineLayerSpecification,
+  MapLayerMouseEvent,
+} from 'maplibre-gl';
+import {
+  findFeature,
+  getEvtCoords,
+  getLayerMapId,
+  useMapCallback,
+} from 'utils/map-utils';
 
-const linePaint: LinePaint = {
+const linePaint: LineLayerSpecification['paint'] = {
   'line-color': 'grey',
   'line-width': 1,
   'line-opacity': 0.3,
@@ -31,6 +40,52 @@ function getHazardData(evt: any, operation: string, t?: i18nTranslator) {
   return getRoundedData(data, t);
 }
 
+const onClick = ({
+  layer,
+  t,
+  dispatch,
+}: MapEventWrapFunctionProps<ImpactLayerProps>) => (
+  evt: MapLayerMouseEvent,
+) => {
+  const hazardLayerDef = LayerDefinitions[layer.hazardLayer];
+  const operation = layer.operation || 'median';
+  const hazardTitle = `${
+    hazardLayerDef.title ? t(hazardLayerDef.title) : ''
+  } (${t(operation)})`;
+
+  const layerId = getLayerMapId(layer.id);
+
+  const feature = findFeature(layerId, evt);
+  if (!feature) {
+    return;
+  }
+
+  const coordinates = getEvtCoords(evt);
+
+  const popupData = {
+    [layer.title]: {
+      data: getRoundedData(get(feature, 'properties.impactValue'), t),
+      coordinates,
+    },
+    [hazardTitle]: {
+      data: getHazardData(evt, operation, t),
+      coordinates,
+    },
+  };
+  // by default add `impactValue` to the tooltip
+  dispatch(addPopupData(popupData));
+  // then add feature_info_props as extra fields to the tooltip
+  dispatch(
+    addPopupData(
+      getFeatureInfoPropsData(
+        layer.featureInfoProps || {},
+        coordinates,
+        feature,
+      ),
+    ),
+  );
+};
+
 const ImpactLayer = ({ classes, layer, before }: ComponentProps) => {
   const map = useSelector(mapSelector);
   const { startDate: selectedDate } = useSelector(dateRangeSelector);
@@ -40,6 +95,8 @@ const ImpactLayer = ({ classes, layer, before }: ComponentProps) => {
     >) || {};
   const dispatch = useDispatch();
   const { t } = useSafeTranslation();
+
+  useMapCallback('click', getLayerMapId(layer.id), layer, onClick);
 
   const extent: Extent = getExtent(map);
   useEffect(() => {
@@ -70,53 +127,35 @@ const ImpactLayer = ({ classes, layer, before }: ComponentProps) => {
   const { impactFeatures, boundaries } = data;
   const noMatchingDistricts = impactFeatures.features.length === 0;
 
-  const fillPaint: FillPaint = {
+  // TODO: maplibre: fix any
+  const fillPaint: FillLayerSpecification['paint'] = {
     'fill-opacity': layer.opacity || 0.1,
     'fill-color': noMatchingDistricts
       ? 'gray'
-      : {
+      : ({
           property: 'impactValue',
           stops: legendToStops(layer.legend),
-        },
+        } as any),
   };
 
-  const hazardLayerDef = LayerDefinitions[layer.hazardLayer];
-  const operation = layer.operation || 'median';
-  const hazardTitle = `${
-    hazardLayerDef.title ? t(hazardLayerDef.title) : ''
-  } (${t(operation)})`;
-
   return (
-    <GeoJSONLayer
-      before={before}
-      id={`layer-${layer.id}`}
+    <Source
+      type="geojson"
       data={noMatchingDistricts ? boundaries : impactFeatures}
-      linePaint={linePaint}
-      fillPaint={fillPaint}
-      fillOnClick={(evt: any) => {
-        const popupData = {
-          [layer.title]: {
-            data: getRoundedData(
-              get(evt.features[0], 'properties.impactValue'),
-              t,
-            ),
-            coordinates: evt.lngLat,
-          },
-          [hazardTitle]: {
-            data: getHazardData(evt, operation, t),
-            coordinates: evt.lngLat,
-          },
-        };
-        // by default add `impactValue` to the tooltip
-        dispatch(addPopupData(popupData));
-        // then add feature_info_props as extra fields to the tooltip
-        dispatch(
-          addPopupData(
-            getFeatureInfoPropsData(layer.featureInfoProps || {}, evt),
-          ),
-        );
-      }}
-    />
+    >
+      <Layer
+        id={getLayerMapId(layer.id, 'line')}
+        type="line"
+        paint={linePaint}
+        beforeId={before}
+      />
+      <Layer
+        id={getLayerMapId(layer.id)}
+        type="fill"
+        paint={fillPaint}
+        beforeId={before}
+      />
+    </Source>
   );
 };
 
@@ -144,4 +183,4 @@ interface ComponentProps extends WithStyles<typeof styles> {
   before?: string;
 }
 
-export default withStyles(styles)(ImpactLayer);
+export default memo(withStyles(styles)(ImpactLayer));

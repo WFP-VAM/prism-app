@@ -4163,7 +4163,7 @@
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
     "opacity": 0.7,
-    "legend_text": "Total number of heavy rain days (rainfall > 90th percentile) within last 30 days of dekad",
+    "legend_text": "Total number of intense rain days (rainfall > 90th percentile) within last 30 days of dekad",
     "legend": [
       {
         "value": 0,
@@ -4237,7 +4237,7 @@
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
     "opacity": 0.7,
-    "legend_text": "Total number of heavy rain days (rainfall > 95th percentile) within last 30 days of dekad",
+    "legend_text": "Total number of extreme rain days (rainfall > 95th percentile) within last 30 days of dekad",
     "legend": [
       {
         "value": 0,
@@ -5147,7 +5147,7 @@
         "color": "#a50f15"
       }
     ],
-    "legend_text": "Source: Zimbabwe VAC 2020"
+    "legend_text": "Food insecurity prevalence. Source: Zimbabwe VAC 2020"
   },
   "pop_2020": {
     "title": "Population (UNFPA - 2020)",
@@ -5185,7 +5185,7 @@
         "color": "#08519c"
       }
     ],
-    "legend_text": "Source: UNFPA 2020"
+    "legend_text": "Population. Source: UNFPA 2020"
   },
   "ipc_phase_10_2020": {
     "title": "IPC Phase Classification (Oct 2020)",
@@ -5223,7 +5223,7 @@
         "color": "#640000"
       }
     ],
-    "legend_text": "Source: National IPC Technical Working Group"
+    "legend_text": "IPC Phase Classification. Source: National IPC Technical Working Group"
   },
   "cereal_insecurity_2021": {
     "title": "Cereal insecurity 2021",

@@ -1,17 +1,20 @@
 import React, { memo, useCallback, useMemo, useState } from 'react';
-import { useSelector } from 'react-redux';
-import { Popup } from 'react-mapbox-gl';
+import { useDispatch, useSelector } from 'react-redux';
+import { Popup } from 'react-map-gl/maplibre';
 import {
   createStyles,
   withStyles,
   WithStyles,
   Typography,
+  IconButton,
 } from '@material-ui/core';
-import { tooltipSelector } from 'context/tooltipStateSlice';
+import { hidePopup, tooltipSelector } from 'context/tooltipStateSlice';
 import { isEnglishLanguageSelected, useSafeTranslation } from 'i18n';
 import { AdminLevelType } from 'config/types';
 import { appConfig } from 'config';
 import Loader from 'components/Common/Loader';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faTimes } from '@fortawesome/free-solid-svg-icons';
 import PopupCharts from './PopupCharts';
 import RedirectToDMP from './RedirectToDMP';
 import PopupContent from './PopupContent';
@@ -40,7 +43,7 @@ const styles = () =>
       marginBottom: '4px',
     },
     popup: {
-      '& div.mapboxgl-popup-content': {
+      '& div.maplibregl-popup-content': {
         background: 'black',
         color: 'white',
         padding: '5px 5px 5px 5px',
@@ -48,10 +51,16 @@ const styles = () =>
         maxHeight: '400px',
         overflow: 'auto',
       },
-      '& div.mapboxgl-popup-tip': {
+      '& div.maplibregl-popup-tip': {
         'border-top-color': 'black',
         'border-bottom-color': 'black',
       },
+    },
+    closeButton: {
+      color: 'white',
+      position: 'absolute',
+      right: 0,
+      top: 0,
     },
   });
 
@@ -63,6 +72,7 @@ const availableAdminLevels: AdminLevelType[] = multiCountry
 interface TooltipProps extends WithStyles<typeof styles> {}
 
 const MapTooltip = ({ classes }: TooltipProps) => {
+  const dispatch = useDispatch();
   const popup = useSelector(tooltipSelector);
   const { i18n } = useSafeTranslation();
   const [popupTitle, setPopupTitle] = useState<string>('');
@@ -104,20 +114,32 @@ const MapTooltip = ({ classes }: TooltipProps) => {
   if (dataset) {
     return (
       <Popup
-        coordinates={popup.coordinates}
+        latitude={popup.coordinates?.[1]}
+        longitude={popup.coordinates?.[0]}
         className={classes.popup}
-        style={{ zIndex: 5 }}
+        style={{ zIndex: 5, maxWidth: 'none' }}
+        closeButton={false}
       >
-        <PopupPointDataChart adminLevelsNames={() => [...adminLevelsNames()]} />
+        <IconButton
+          aria-label="close"
+          className={classes.closeButton}
+          onClick={() => dispatch(hidePopup())}
+          size="small"
+        >
+          <FontAwesomeIcon icon={faTimes} style={{ paddingRight: '3px' }} />
+        </IconButton>
+        <PopupPointDataChart />
       </Popup>
     );
   }
 
   return (
     <Popup
-      coordinates={popup.coordinates}
+      latitude={popup.coordinates?.[1]}
+      longitude={popup.coordinates?.[0]}
       className={classes.popup}
-      style={{ zIndex: 5 }}
+      style={{ zIndex: 5, maxWidth: 'none' }}
+      closeButton={false}
     >
       {adminLevel === undefined && (
         <RedirectToDMP
@@ -130,6 +152,16 @@ const MapTooltip = ({ classes }: TooltipProps) => {
       </Typography>
       {adminLevel === undefined && (
         <PopupContent popupData={popupData} coordinates={popup.coordinates} />
+      )}
+      {availableAdminLevels.length > 0 && adminLevel !== undefined && (
+        <IconButton
+          aria-label="close"
+          className={classes.closeButton}
+          onClick={() => setAdminLevel(undefined)}
+          size="small"
+        >
+          <FontAwesomeIcon icon={faTimes} style={{ paddingRight: '3px' }} />
+        </IconButton>
       )}
       <PopupCharts
         setPopupTitle={setPopupTitle}

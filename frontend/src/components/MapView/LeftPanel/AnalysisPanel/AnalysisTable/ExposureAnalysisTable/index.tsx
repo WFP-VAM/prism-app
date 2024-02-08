@@ -22,6 +22,7 @@ import { useSafeTranslation } from 'i18n';
 
 import { Column } from 'utils/analysis-utils';
 import { mapSelector } from 'context/mapStateSlice/selectors';
+import { hidePopup } from 'context/tooltipStateSlice';
 
 const ExposureAnalysisTable = memo(
   ({
@@ -134,16 +135,15 @@ const ExposureAnalysisTable = memo(
 
     const handleClickTableBodyRow = useCallback(
       row => {
-        return () => {
+        return async () => {
           if (!row.coordinates || !map) {
             return;
           }
-          dispatch(() =>
-            map.fire('click', {
-              lngLat: row.coordinates,
-              point: map.project(row.coordinates),
-            }),
-          );
+          await dispatch(hidePopup());
+          map.fire('click', {
+            lngLat: row.coordinates,
+            point: map.project(row.coordinates),
+          });
         };
       },
       [dispatch, map],
@@ -162,7 +162,7 @@ const ExposureAnalysisTable = memo(
               key={row.key}
               onClick={handleClickTableBodyRow(row)}
               style={{
-                cursor: row.coordinates ? 'pointer' : 'none',
+                cursor: row.coordinates ? 'pointer' : 'default',
                 backgroundColor: index % 2 === 0 ? 'white' : '#EBEBEB',
               }}
             >

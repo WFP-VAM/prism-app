@@ -47,37 +47,6 @@ exports[`renders as expected 1`] = `
         />
       </div>
     </div>
-    <div
-      class="MuiCollapse-root MuiCollapse-hidden"
-      style="min-height: 0px;"
-    >
-      <div
-        class="MuiCollapse-wrapper"
-      >
-        <div
-          class="MuiCollapse-wrapperInner"
-        >
-          <div
-            aria-labelledby="title"
-            id="title"
-            role="region"
-          >
-            <div
-              class="MuiAccordionDetails-root makeStyles-rootDetails-3"
-            >
-              <div
-                class="MuiGrid-root MuiGrid-container MuiGrid-direction-xs-column"
-              >
-                <mock-menuswitch
-                  layers="[object Object]"
-                  title="Category 1"
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
   </div>
 </div>
 `;

@@ -39,7 +39,7 @@ const generatePhasePopulationTable = (
   popupData: PopupData,
   t: TFunction,
   classes: ClassNameMap,
-): JSX.Element | null => {
+): React.JSX.Element | null => {
   const phasePopulations: Record<string, number> = Object.entries(
     popupData,
   ).reduce((acc: any, cur: any) => {
@@ -145,6 +145,9 @@ const PopupContent = ({
             console.log('Data Coordinates:', value.coordinates);
             console.log('Popup coordinates:', coordinates);
             /* eslint-enable no-console */
+          }
+          if (value.data === undefined) {
+            return false;
           }
           // return isEqual(value.coordinates, coordinates);
           return true;

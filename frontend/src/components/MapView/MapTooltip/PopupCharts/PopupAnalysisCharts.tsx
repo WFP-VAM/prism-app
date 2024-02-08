@@ -1,9 +1,6 @@
 import { WithStyles, createStyles, withStyles } from '@material-ui/core';
-import DownloadCsvButton from 'components/MapView/DownloadCsvButton';
 import ChartSection from 'components/MapView/LeftPanel/ChartsPanel/ChartSection';
 import { oneYearInMs } from 'components/MapView/LeftPanel/utils';
-import { buildCsvFileName } from 'components/MapView/utils';
-import { appConfig } from 'config';
 import {
   AdminLevelType,
   BoundaryLayerProps,
@@ -35,8 +32,6 @@ const styles = () =>
     },
   });
 
-const { countryAdmin0Id, country, multiCountry } = appConfig;
-
 const boundaryLayer = getBoundaryLayersByAdminLevel();
 
 const getProperties = (
@@ -62,16 +57,12 @@ interface PopupChartProps extends WithStyles<typeof styles> {
   adminCode: AdminCodeString;
   adminSelectorKey: string;
   adminLevel: AdminLevelType;
-  onClose: React.Dispatch<React.SetStateAction<AdminLevelType | undefined>>;
-  adminLevelsNames: () => string[];
 }
 const PopupAnalysisCharts = ({
   filteredChartLayers,
   adminCode,
   adminSelectorKey,
   adminLevel,
-  onClose,
-  adminLevelsNames,
   classes,
 }: PopupChartProps) => {
   const dataForCsv = useRef<{ [key: string]: any[] }>({});
@@ -84,8 +75,12 @@ const PopupAnalysisCharts = ({
   const chartEndDate = selectedDate || new Date().getTime();
   const chartStartDate = chartEndDate - oneYearInMs;
 
+  if (filteredChartLayers.length < 1) {
+    return null;
+  }
+
   return (
-    <PopupChartWrapper onClose={onClose}>
+    <PopupChartWrapper>
       {filteredChartLayers.map(filteredChartLayer => (
         <div key={filteredChartLayer.id} className={classes.chartContainer}>
           <div className={classes.chartSection}>
@@ -100,20 +95,12 @@ const PopupAnalysisCharts = ({
               startDate={chartStartDate}
               endDate={chartEndDate}
               dataForCsv={dataForCsv}
+              chartProps={{
+                showDownloadIcons: true,
+                iconStyles: { color: 'white' },
+              }}
             />
           </div>
-          <DownloadCsvButton
-            filesData={[
-              {
-                fileName: buildCsvFileName([
-                  multiCountry ? countryAdmin0Id : country,
-                  ...adminLevelsNames(),
-                  filteredChartLayer.title,
-                ]),
-                data: dataForCsv,
-              },
-            ]}
-          />
         </div>
       ))}
     </PopupChartWrapper>

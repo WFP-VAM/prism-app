@@ -271,7 +271,9 @@ const styles = () =>
 
 interface TablePanelProps extends WithStyles<typeof styles> {
   setPanelSize: React.Dispatch<React.SetStateAction<PanelSize>>;
-  setResultsPage: React.Dispatch<React.SetStateAction<JSX.Element | null>>;
+  setResultsPage: React.Dispatch<
+    React.SetStateAction<React.JSX.Element | null>
+  >;
   tablesMenuItems: MenuItemType[];
 }
 

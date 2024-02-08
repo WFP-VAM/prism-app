@@ -59,13 +59,7 @@
       }
     ],
     "no-console": ["warn", { "allow": ["warn", "error"] }],
-    "no-unused-vars": [
-      "warn",
-      {
-        "argsIgnorePattern": "^props$",
-        "ignoreRestSiblings": true
-      }
-    ],
+    
     "lines-between-class-members": "off",
     "max-classes-per-file": "off",
     "spaced-comment": "warn",
@@ -77,7 +71,12 @@
         "devDependencies": true
       }
     ],
-    "@typescript-eslint/no-unused-vars": ["error"]
+    "no-unused-vars": "off",
+    "@typescript-eslint/no-unused-vars": ["error"],
+    "no-use-before-define": "off",
+    "@typescript-eslint/no-use-before-define": ["error"],
+    "no-shadow": "off",
+    "@typescript-eslint/no-shadow": "warn"    
   },
   "settings": {
     "import/resolver": {
@@ -93,5 +92,11 @@
       // always try to resolve types under `<roo/>@types` directory even it doesn't contain any source code, like `@types/unist`
       "alwaysTryTypes": true
     }
+  },
+  "globals": {
+    "NodeJS": true,
+    "RequestInit": true,
+    "RequestInfo": true,
+    "GeoJSON": true
   }
 }

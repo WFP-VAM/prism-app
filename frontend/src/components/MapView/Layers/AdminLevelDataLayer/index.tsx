@@ -1,10 +1,11 @@
-import React, { useCallback, useEffect } from 'react';
+import React, { memo, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { GeoJSONLayer } from 'react-mapbox-gl';
+import { Source, Layer, MapLayerMouseEvent } from 'react-map-gl/maplibre';
 import {
   AdminLevelDataLayerProps,
   BoundaryLayerProps,
   LayerKey,
+  MapEventWrapFunctionProps,
 } from 'config/types';
 import { LayerData, loadLayerData } from 'context/layers/layer-data';
 import {
@@ -15,8 +16,12 @@ import { addLayer, removeLayer } from 'context/mapStateSlice';
 import { useDefaultDate } from 'utils/useDefaultDate';
 import { getBoundaryLayers, LayerDefinitions } from 'config/utils';
 import { addNotification } from 'context/notificationStateSlice';
-import { firstBoundaryOnView, isLayerOnView } from 'utils/map-utils';
-import { useSafeTranslation } from 'i18n';
+import {
+  firstBoundaryOnView,
+  getLayerMapId,
+  isLayerOnView,
+  useMapCallback,
+} from 'utils/map-utils';
 import { fillPaintData } from 'components/MapView/Layers/styles';
 import { availableDatesSelector } from 'context/serverStateSlice';
 import { getRequestDate } from 'utils/server-utils';
@@ -25,14 +30,73 @@ import {
   legendToStops,
 } from 'components/MapView/Layers/layer-utils';
 import { convertSvgToPngBase64Image, getSVGShape } from 'utils/image-utils';
+import { Map, FillLayerSpecification } from 'maplibre-gl';
 
-function AdminLevelDataLayers({
+export const createFillPatternsForLayerLegends = async (
+  layer: AdminLevelDataLayerProps,
+) => {
+  return Promise.all(
+    legendToStops(layer.legend).map(async legendToStop => {
+      return convertSvgToPngBase64Image(
+        getSVGShape(legendToStop[1] as string, layer.fillPattern),
+      );
+    }),
+  );
+};
+
+export const addFillPatternImageInMap = (
+  layer: AdminLevelDataLayerProps,
+  map: Map | undefined,
+  index: number,
+  convertedImage?: string,
+) => {
+  if (!map || !layer.fillPattern || !convertedImage) {
+    return;
+  }
+  map.loadImage(convertedImage, (err: any, image) => {
+    // Throw an error if something goes wrong.
+    if (err) {
+      throw err;
+    }
+    if (!image) {
+      return;
+    }
+    // Add the image to the map style if it doesn't already exist
+    const imageId = `fill-pattern-${layer.id}-legend-${index}`;
+    if (!map.hasImage(imageId)) {
+      // Add the image since it doesn't exist
+      map.addImage(imageId, image);
+    }
+  });
+};
+
+export const addFillPatternImagesInMap = async (
+  layer: AdminLevelDataLayerProps,
+  map: any,
+) => {
+  const fillPatternsForLayer = await createFillPatternsForLayerLegends(layer);
+  fillPatternsForLayer.forEach((base64Image, index) => {
+    addFillPatternImageInMap(layer, map, index, base64Image);
+  });
+};
+
+const onClick = ({
+  layer,
+  dispatch,
+  t,
+}: MapEventWrapFunctionProps<AdminLevelDataLayerProps>) => (
+  evt: MapLayerMouseEvent,
+) => {
+  addPopupParams(layer, dispatch, evt, t, true);
+};
+
+const AdminLevelDataLayers = ({
   layer,
   before,
 }: {
   layer: AdminLevelDataLayerProps;
   before?: string;
-}) {
+}) => {
   const dispatch = useDispatch();
   const map = useSelector(mapSelector);
   const serverAvailableDates = useSelector(availableDatesSelector);
@@ -40,6 +104,7 @@ function AdminLevelDataLayers({
   const boundaryId = layer.boundary || firstBoundaryOnView(map);
 
   const selectedDate = useDefaultDate(layer.id);
+  useMapCallback('click', getLayerMapId(layer.id), layer, onClick);
   const layerAvailableDates = serverAvailableDates[layer.id];
   const queryDate = getRequestDate(layerAvailableDates, selectedDate);
 
@@ -48,63 +113,10 @@ function AdminLevelDataLayers({
     | undefined;
   const { data } = layerData || {};
   const { features } = data || {};
-  const { t } = useSafeTranslation();
-
-  const createFillPatternsForLayerLegends = useCallback(async () => {
-    return Promise.all(
-      legendToStops(layer.legend).map(async legendToStop => {
-        return convertSvgToPngBase64Image(
-          getSVGShape(legendToStop[1] as string, layer.fillPattern),
-        );
-      }),
-    );
-  }, [layer.fillPattern, layer.legend]);
-
-  const addFillPatternImageInMap = useCallback(
-    (index: number, convertedImage?: string) => {
-      if (!map || !layer.fillPattern || !convertedImage) {
-        return;
-      }
-      map.loadImage(
-        convertedImage,
-        (
-          err: any,
-          image:
-            | HTMLImageElement
-            | ArrayBufferView
-            | {
-                width: number;
-                height: number;
-                data: Uint8Array | Uint8ClampedArray;
-              }
-            | ImageData
-            | ImageBitmap,
-        ) => {
-          // Throw an error if something goes wrong.
-          if (err) {
-            throw err;
-          }
-          // Add the image to the map style.
-          map.addImage(`fill-pattern-${layer.id}-legend-${index}`, image);
-        },
-      );
-    },
-    [layer.fillPattern, layer.id, map],
-  );
-
-  const addFillPatternImagesInMap = useCallback(async () => {
-    const fillPatternsForLayer = await createFillPatternsForLayerLegends();
-    fillPatternsForLayer.forEach((base64Image, index) => {
-      addFillPatternImageInMap(index, base64Image);
-    });
-  }, [addFillPatternImageInMap, createFillPatternsForLayerLegends]);
 
   useEffect(() => {
-    if (isLayerOnView(map, layer.id)) {
-      return;
-    }
-    addFillPatternImagesInMap();
-  }, [addFillPatternImagesInMap, layer.id, map]);
+    addFillPatternImagesInMap(layer, map);
+  }, [layer, map]);
 
   useEffect(() => {
     // before loading layer check if it has unique boundary?
@@ -146,16 +158,21 @@ function AdminLevelDataLayers({
   }
 
   return (
-    <GeoJSONLayer
-      before={before || `layer-${boundaryId}-line`}
-      id={`layer-${layer.id}`}
-      data={features}
-      fillPaint={fillPaintData(layer, 'data', layer?.fillPattern)}
-      fillOnClick={async (evt: any) => {
-        addPopupParams(layer, dispatch, evt, t, true);
-      }}
-    />
+    <Source type="geojson" data={features}>
+      <Layer
+        id={getLayerMapId(layer.id)}
+        type="fill"
+        paint={
+          fillPaintData(
+            layer,
+            'data',
+            layer?.fillPattern,
+          ) as FillLayerSpecification['paint']
+        }
+        beforeId={before || getLayerMapId(boundaryId)}
+      />
+    </Source>
   );
-}
+};
 
-export default AdminLevelDataLayers;
+export default memo(AdminLevelDataLayers);

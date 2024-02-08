@@ -48,7 +48,6 @@ import {
 } from './fetch-with-timeout';
 
 export type BaselineLayerData = AdminLevelDataLayerData;
-type BaselineRecord = BaselineLayerData['layerData'][0];
 
 export type Column = {
   id: keyof TableRow;

@@ -7,8 +7,78 @@ import moment, { LocaleSpecifier } from 'moment';
 import { ChartConfig, DatasetField } from 'config/types';
 import { TableData } from 'context/tableStateSlice';
 import { useSafeTranslation } from 'i18n';
+import { IconButton, Tooltip, makeStyles } from '@material-ui/core';
+import ImageIcon from '@material-ui/icons/Image';
+import GetAppIcon from '@material-ui/icons/GetApp';
+import { downloadToFile } from 'components/MapView/utils';
+import { castObjectsArrayToCsv } from 'utils/csv-utils';
 
-type ChartProps = {
+interface ChartData {
+  labels: (string | number)[];
+  datasets: {
+    data: (number | null)[];
+    label: string;
+    fill: boolean;
+    backgroundColor: string;
+    borderColor: string;
+    borderWidth: number;
+    pointRadius: number;
+    pointHitRadius: number;
+  }[];
+}
+
+function downloadCsv(chartData: ChartData, filename: string) {
+  const columnsNames = Object.fromEntries([
+    ['date', 'Date'],
+    ...chartData.datasets.map(x => [x.label, x.label.split(' ').join('_')]),
+  ]);
+  const objectsArray = chartData.labels.map((date, index) => {
+    const entries = chartData.datasets.map(set => [set.label, set.data[index]]);
+    return {
+      date,
+      ...Object.fromEntries(entries),
+    };
+  });
+
+  downloadToFile(
+    {
+      content: castObjectsArrayToCsv(objectsArray, columnsNames, ','),
+      isUrl: false,
+    },
+    filename,
+    'text/csv',
+  );
+}
+
+function downloadPng(ref: React.RefObject<Bar | Line>, filename: string) {
+  const chart = ref.current;
+  if (!chart) {
+    throw new Error('chart is undefined');
+  }
+  const { canvas } = chart.chartInstance;
+  if (!canvas) {
+    throw new Error('canvas is undefined');
+  }
+  const file = canvas.toDataURL('image/png');
+  downloadToFile({ content: file, isUrl: true }, filename, 'image/png');
+}
+
+const useStyles = makeStyles(() => ({
+  firstIcon: {
+    position: 'absolute',
+    top: 0,
+    right: 0,
+    padding: '0.25rem',
+  },
+  secondIcon: {
+    position: 'absolute',
+    top: 0,
+    right: '2rem',
+    padding: '0.25rem',
+  },
+}));
+
+export type ChartProps = {
   title: string;
   data: TableData;
   config: ChartConfig;
@@ -17,6 +87,8 @@ type ChartProps = {
   notMaintainAspectRatio?: boolean;
   legendAtBottom?: boolean;
   chartRange?: [number, number];
+  showDownloadIcons?: boolean;
+  iconStyles?: React.CSSProperties;
 };
 
 const Chart = memo(
@@ -29,8 +101,13 @@ const Chart = memo(
     notMaintainAspectRatio,
     legendAtBottom,
     chartRange = [Number.NEGATIVE_INFINITY, Number.POSITIVE_INFINITY],
+    showDownloadIcons = false,
+    iconStyles,
   }: ChartProps) => {
     const { t } = useSafeTranslation();
+    const classes = useStyles();
+    const chartRef = React.useRef<Bar | Line>(null);
+    const isEWSChart = !!data.EWSConfig;
 
     const transpose = useMemo(() => {
       return config.transpose || false;
@@ -82,7 +159,8 @@ const Chart = memo(
         return indices.map(index => header[index]);
       }
       return tableRows.slice(chartRange[0], chartRange[1]).map(row => {
-        const dateFormat = data.EWSConfig ? 'HH:mm' : 'YYYY-MM-DD';
+        // Time information is only needed for EWS charts
+        const dateFormat = isEWSChart ? 'YYYY-MM-DD HH:mm' : 'YYYY-MM-DD';
         return moment(row[config.category])
           .locale(t('date_locale') as LocaleSpecifier)
           .format(dateFormat);
@@ -90,9 +168,9 @@ const Chart = memo(
     }, [
       chartRange,
       config.category,
-      data.EWSConfig,
       header,
       indices,
+      isEWSChart,
       t,
       tableRows,
       transpose,
@@ -107,7 +185,7 @@ const Chart = memo(
           backgroundColor: colors[i],
           borderColor: colors[i],
           borderWidth: 2,
-          pointRadius: data.EWSConfig ? 0 : 1, // Disable point rendering for EWS only.
+          pointRadius: isEWSChart ? 0 : 1, // Disable point rendering for EWS only.
           data: indices.map(index => (row[index] as number) || null),
           pointHitRadius: 10,
         };
@@ -116,8 +194,8 @@ const Chart = memo(
       colors,
       config.category,
       config.fill,
-      data.EWSConfig,
       indices,
+      isEWSChart,
       t,
       tableRows,
     ]);
@@ -133,9 +211,9 @@ const Chart = memo(
         if (foundDataSetFieldPointRadius !== undefined) {
           return foundDataSetFieldPointRadius;
         }
-        return data.EWSConfig ? 0 : 1; // Disable point rendering for EWS only.
+        return isEWSChart ? 0 : 1; // Disable point rendering for EWS only.
       },
-      [data.EWSConfig, datasetFields, header],
+      [isEWSChart, datasetFields, header],
     );
 
     // The indicesDataSet
@@ -212,6 +290,7 @@ const Chart = memo(
       ...set,
       data: set.data.slice(chartRange[0], chartRange[1]),
     }));
+
     const chartData = {
       labels,
       datasets: datasetsTrimmed,
@@ -234,6 +313,10 @@ const Chart = memo(
                 display: false,
               },
               ticks: {
+                callback: value => {
+                  // for EWS charts, we only want to display the time
+                  return isEWSChart ? String(value).split(' ')[1] : value;
+                },
                 fontColor: '#CCC',
               },
               ...(xAxisLabel
@@ -270,21 +353,75 @@ const Chart = memo(
           labels: { boxWidth: 12, boxHeight: 12 },
         },
       } as ChartOptions;
-    }, [config, legendAtBottom, notMaintainAspectRatio, title, xAxisLabel]);
+    }, [
+      config,
+      isEWSChart,
+      legendAtBottom,
+      notMaintainAspectRatio,
+      title,
+      xAxisLabel,
+    ]);
 
-    return useMemo(() => {
-      switch (config.type) {
-        case 'bar':
-          return <Bar data={chartData} options={chartConfig} />;
-        case 'line':
-          return <Line data={chartData} options={chartConfig} />;
-        default:
-          console.error(
-            `Charts of type ${config.type} have not been implemented yet.`,
-          );
-          return null;
-      }
-    }, [chartConfig, chartData, config.type]);
+    return useMemo(
+      () => (
+        <>
+          {showDownloadIcons && (
+            <>
+              <Tooltip title={t('Download PNG') as string}>
+                <IconButton
+                  onClick={() =>
+                    downloadPng(chartRef, title.split(' ').join('_'))
+                  }
+                  className={classes.firstIcon}
+                  style={iconStyles}
+                >
+                  <ImageIcon />
+                </IconButton>
+              </Tooltip>
+              <Tooltip title={t('Download CSV') as string}>
+                <IconButton
+                  onClick={() =>
+                    downloadCsv(chartData, title.split(' ').join('_'))
+                  }
+                  className={classes.secondIcon}
+                  style={iconStyles}
+                >
+                  <GetAppIcon />
+                </IconButton>
+              </Tooltip>
+            </>
+          )}
+          {(() => {
+            switch (config.type) {
+              case 'bar':
+                return (
+                  <Bar ref={chartRef} data={chartData} options={chartConfig} />
+                );
+              case 'line':
+                return (
+                  <Line ref={chartRef} data={chartData} options={chartConfig} />
+                );
+              default:
+                console.error(
+                  `Charts of type ${config.type} have not been implemented yet.`,
+                );
+                return null;
+            }
+          })()}
+        </>
+      ),
+      [
+        chartConfig,
+        chartData,
+        classes.firstIcon,
+        classes.secondIcon,
+        config.type,
+        iconStyles,
+        showDownloadIcons,
+        t,
+        title,
+      ],
+    );
   },
 );
 

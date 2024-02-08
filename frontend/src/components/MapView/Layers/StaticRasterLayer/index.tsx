@@ -1,14 +1,15 @@
-import React from 'react';
+import React, { memo } from 'react';
 import moment from 'moment';
-import { Layer, Source } from 'react-mapbox-gl';
 import { StaticRasterLayerProps } from 'config/types';
 import { useDefaultDate } from 'utils/useDefaultDate';
 import { DEFAULT_DATE_FORMAT_SNAKE_CASE } from 'utils/name-utils';
+import { Layer, Source } from 'react-map-gl/maplibre';
+import { getLayerMapId } from 'utils/map-utils';
 
-function StaticRasterLayer({
+const StaticRasterLayer = ({
   layer: { id, baseUrl, opacity, minZoom, maxZoom, dates },
   before,
-}: LayersProps) {
+}: LayersProps) => {
   const selectedDate = useDefaultDate(id);
   const url = dates
     ? baseUrl.replace(
@@ -16,32 +17,24 @@ function StaticRasterLayer({
         moment(selectedDate).format(DEFAULT_DATE_FORMAT_SNAKE_CASE),
       )
     : baseUrl;
-  return (
-    <>
-      <Source
-        id={`source-${id}`}
-        tileJsonSource={{
-          type: 'raster',
-          tiles: [url],
-        }}
-      />
 
+  return (
+    <Source id={`source-${id}`} type="raster" tiles={[url]}>
       <Layer
-        before={before}
+        beforeId={before}
         type="raster"
-        id={`layer-${id}`}
-        sourceId={`source-${id}`}
+        id={getLayerMapId(id)}
         paint={{ 'raster-opacity': opacity }}
-        minZoom={minZoom}
-        maxZoom={maxZoom}
+        minzoom={minZoom}
+        maxzoom={maxZoom}
       />
-    </>
+    </Source>
   );
-}
+};
 
 export interface LayersProps {
   layer: StaticRasterLayerProps;
   before?: string;
 }
 
-export default StaticRasterLayer;
+export default memo(StaticRasterLayer);

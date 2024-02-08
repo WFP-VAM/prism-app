@@ -16,8 +16,8 @@ import React, { forwardRef, useEffect, useState } from 'react';
 import i18n from 'i18next';
 import { useDispatch, useSelector } from 'react-redux';
 import { Search } from '@material-ui/icons';
-import { Map as MapBoxMap } from 'mapbox-gl';
 import bbox from '@turf/bbox';
+import { FixedSizeList as List } from 'react-window';
 import {
   BoundaryLayerProps,
   AdminCodeString,
@@ -33,25 +33,15 @@ import { layerDataSelector } from 'context/mapStateSlice/selectors';
 import { LayerData } from 'context/layers/layer-data';
 import { isEnglishLanguageSelected, useSafeTranslation } from 'i18n';
 import { BBox } from '@turf/helpers';
+import { Map as MaplibreMap } from 'maplibre-gl';
 
 const boundaryLayer = getBoundaryLayerSingleton();
 
-const useStyles = makeStyles((theme: Theme) => ({
+const useStyles = makeStyles({
   searchField: {
     '&>div': {
       color: 'black',
     },
-  },
-  dropdownMenu: {
-    backgroundColor: theme.palette.primary.main,
-    color: 'white',
-    display: 'inline-flex',
-    // temporary will be removed when the go to button will be revamped
-    marginTop: '-10px',
-    padding: theme.spacing(0.8, 2.66),
-    borderRadius: '4px',
-    alignItems: 'center',
-    boxShadow: theme.shadows[2],
   },
   formControl: {
     width: '140px',
@@ -89,7 +79,7 @@ const useStyles = makeStyles((theme: Theme) => ({
       backgroundColor: '#ADD8E6',
     },
   },
-}));
+});
 const TIMEOUT_ANIMATION_DELAY = 10;
 const SearchField = forwardRef(
   (
@@ -186,7 +176,7 @@ export function getAdminBoundaryTree(
   const addBranchToTree = (
     partialTree: AdminBoundaryTree,
     levelsLeft: AdminCodeString[],
-    feature: any, // TODO: type?
+    feature: any, // TODO: maplibre: feature
     level: AdminLevelType,
   ): AdminBoundaryTree => {
     const fp = feature.properties;
@@ -269,12 +259,12 @@ export function SimpleBoundaryDropdown({
   const { data } = boundaryLayerData || {};
 
   if (!data) {
-    return <CircularProgress size={24} color="inherit" />;
+    // padding is used to make sure the loading spinner doesn't shift the menu size
+    return (
+      <CircularProgress size={24} color="inherit" style={{ padding: '2px' }} />
+    );
   }
 
-  // building the tree and flattening it takes about 8-10ms
-  // and the subsequent react component construction ~15ms
-  // but the menu still takes ~2000ms (on rbd) to display, why?
   const areaTree = getAdminBoundaryTree(data, boundaryLayer, i18nLocale);
   const flattenedAreaList = flattenAreaTree(areaTree, search).slice(1);
   const rootLevel = flattenedAreaList[0]?.level;
@@ -321,48 +311,6 @@ export function SimpleBoundaryDropdown({
           setTimeout(() => setSearch(''), TIMEOUT_ANIMATION_DELAY);
         }}
         value={selectedBoundaries}
-        // Current mui version does not have SelectChangeEvent<T>. Using any instead.
-        // TODO: move the code here into a onChange prop
-        onChange={(e: any) => {
-          // do nothing if value is invalid
-          if (
-            !Array.isArray(e.target.value) ||
-            e.target.value.includes(undefined)
-          ) {
-            return;
-          }
-
-          if (setSelectedBoundaries !== undefined) {
-            const boundariesToSelect = flattenedAreaList
-              .filter(b =>
-                e.target.value.some((v: string) => b.adminCode.startsWith(v)),
-              )
-              .map(b => b.adminCode);
-
-            setSelectedBoundaries(boundariesToSelect, e.shiftKey);
-          } else {
-            // component used in GoTo mode, we only receive a single value
-            if (map === undefined) {
-              return;
-            }
-            // get selected areas
-            const features = data.features.filter(
-              f =>
-                f &&
-                f.properties?.[boundaryLayer.adminCode].startsWith(
-                  e.target.value[0],
-                ),
-            );
-            // calculate bounding box of everything selected
-            const bboxUnion: BBox = bbox({
-              type: 'FeatureCollection',
-              features,
-            });
-            if (bboxUnion.length === 4) {
-              map.fitBounds(bboxUnion, { padding: 30 });
-            }
-          }
-        }}
       >
         <SearchField search={search} setSearch={setSearch} />
         {!search && selectAll && selectedBoundaries && (
@@ -375,17 +323,70 @@ export function SimpleBoundaryDropdown({
         {search && flattenedAreaList.length === 0 && (
           <MenuItem disabled>{t('No Results')}</MenuItem>
         )}
-        {flattenedAreaList.map((area: FlattenedAdminBoundary) => {
-          return (
-            <MenuItem
-              classes={{ root: clsName[(area.level - rootLevel) as number] }}
-              key={area.adminCode}
-              value={area.adminCode}
-            >
-              {area.label}
-            </MenuItem>
-          );
-        })}
+        <List
+          height={700}
+          itemCount={flattenedAreaList.length}
+          itemSize={35}
+          width="350px"
+        >
+          {({ index, style }) => {
+            const area = flattenedAreaList[index];
+            return (
+              <MenuItem
+                classes={{ root: clsName[(area.level - rootLevel) as number] }}
+                key={area.adminCode}
+                value={area.adminCode}
+                style={style as any}
+                selected={selectedBoundaries?.includes(area.adminCode)}
+                onClick={event => {
+                  event.stopPropagation();
+                  const newSelectedBoundaries = [...(selectedBoundaries || [])];
+                  const itemIndex = newSelectedBoundaries.indexOf(
+                    area.adminCode,
+                  );
+                  if (itemIndex === -1) {
+                    // eslint-disable-next-line fp/no-mutating-methods
+                    newSelectedBoundaries.push(area.adminCode);
+                  } else {
+                    // eslint-disable-next-line fp/no-mutating-methods
+                    newSelectedBoundaries.splice(itemIndex, 1);
+                  }
+                  if (setSelectedBoundaries !== undefined) {
+                    const boundariesToSelect = flattenedAreaList
+                      .filter(b =>
+                        newSelectedBoundaries.some((v: string) =>
+                          b.adminCode.startsWith(v),
+                        ),
+                      )
+                      .map(b => b.adminCode);
+
+                    setSelectedBoundaries(boundariesToSelect, event.shiftKey);
+                    return;
+                  }
+                  if (map === undefined) {
+                    return;
+                  }
+                  const features = data.features.filter(
+                    f =>
+                      f &&
+                      f.properties?.[boundaryLayer.adminCode].startsWith(
+                        area.adminCode,
+                      ),
+                  );
+                  const bboxUnion: BBox = bbox({
+                    type: 'FeatureCollection',
+                    features,
+                  });
+                  if (bboxUnion.length === 4) {
+                    map.fitBounds(bboxUnion, { padding: 30 });
+                  }
+                }}
+              >
+                {area.label}
+              </MenuItem>
+            );
+          }}
+        </List>
       </Select>
     </FormControl>
   );
@@ -396,7 +397,7 @@ export function SimpleBoundaryDropdown({
 interface BoundaryDropdownProps {
   className: string;
   labelMessage: string;
-  map?: MapBoxMap | undefined;
+  map?: MaplibreMap | undefined;
   onlyNewCategory?: boolean;
   selectAll?: boolean;
   selectedBoundaries?: AdminCodeString[];
