@@ -122,6 +122,7 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
     legend: true,
     footer: true,
     fullLayerDescription: true,
+    countryMask: true,
     scaleBar: true,
     northArrow: true,
   });
@@ -441,6 +442,11 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
       label: 'Footer Text',
       button: { Icon: EditIcon, onClick: () => setOpenFooterEdit(true) },
     },
+    {
+      checked: toggles.countryMask,
+      name: 'countryMask',
+      label: 'Country Mask',
+    },
     // Hide options for toggling scale bar and north arrow
     // { checked: toggles.scaleBar, name: 'scaleBar', label: 'Scale Bar' },
     // { checked: toggles.northArrow, name: 'northArrow', label: 'North Arrow' },
@@ -519,22 +525,24 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
                         mapStyle={selectedMapStyle || mapStyle.toString()}
                         maxBounds={selectedMap.getMaxBounds() ?? undefined}
                       >
-                        <Source
-                          id="mask-overlay"
-                          type="geojson"
-                          data={invertedAdminBoundaryLimitPolygon}
-                        >
-                          <Layer
-                            id="mask-layer-overlay"
-                            type="fill"
-                            source="mask-overlay"
-                            layout={{}}
-                            paint={{
-                              'fill-color': '#000',
-                              'fill-opacity': 0.7,
-                            }}
-                          />
-                        </Source>
+                        {toggles.countryMask && (
+                          <Source
+                            id="mask-overlay"
+                            type="geojson"
+                            data={invertedAdminBoundaryLimitPolygon}
+                          >
+                            <Layer
+                              id="mask-layer-overlay"
+                              type="fill"
+                              source="mask-overlay"
+                              layout={{}}
+                              paint={{
+                                'fill-color': '#000',
+                                'fill-opacity': 0.7,
+                              }}
+                            />
+                          </Source>
+                        )}
                       </MapGL>
                     )}
                   </div>
