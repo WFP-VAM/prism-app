@@ -379,6 +379,8 @@ export class BoundaryLayerProps extends CommonLayerProps {
 
   @optional
   isPrimary?: boolean | undefined;
+  @optional
+  minZoom?: number;
 }
 
 export enum DataType {

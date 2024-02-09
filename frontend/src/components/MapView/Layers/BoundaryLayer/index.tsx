@@ -1,4 +1,4 @@
-import React, { memo, useEffect } from 'react';
+import React, { memo, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { BoundaryLayerProps, MapEventWrapFunctionProps } from 'config/types';
 import { LayerData } from 'context/layers/layer-data';
@@ -11,7 +11,10 @@ import {
 } from 'components/Common/BoundaryDropdown/utils';
 import { isPrimaryBoundaryLayer } from 'config/utils';
 import { toggleSelectedBoundary } from 'context/mapSelectionLayerStateSlice';
-import { layerDataSelector } from 'context/mapStateSlice/selectors';
+import {
+  layerDataSelector,
+  mapSelector,
+} from 'context/mapStateSlice/selectors';
 import { getFullLocationName } from 'utils/name-utils';
 
 import { languages } from 'i18n';
@@ -83,6 +86,10 @@ const onMouseLeave = () => (evt: MapLayerMouseEvent) =>
 
 const BoundaryLayer = ({ layer, before }: ComponentProps) => {
   const dispatch = useDispatch();
+  const selectedMap = useSelector(mapSelector);
+  const [isZoomLevelSufficient, setIsZoomLevelSufficient] = useState(
+    !layer.minZoom,
+  );
 
   const boundaryLayer = useSelector(layerDataSelector(layer.id)) as
     | LayerData<BoundaryLayerProps>
@@ -95,6 +102,24 @@ const BoundaryLayer = ({ layer, before }: ComponentProps) => {
   useMapCallback('click', layerId, layer, onClick);
   useMapCallback('mouseenter', layerId, layer, onMouseEnter);
   useMapCallback('mouseleave', layerId, layer, onMouseLeave);
+
+  useEffect(() => {
+    if (!selectedMap || !layer.minZoom) {
+      return undefined;
+    }
+    const checkZoom = () => {
+      const zoom = selectedMap.getZoom();
+      // Set the zoom level threshold below which the layer will not be added
+      setIsZoomLevelSufficient(zoom > layer.minZoom!); // Example: Only show layer if zoom level is greater than 10
+    };
+
+    selectedMap.on('zoomend', checkZoom);
+    checkZoom(); // Initial check
+
+    return () => {
+      selectedMap.off('zoomend', checkZoom);
+    };
+  }, [selectedMap, layer.minZoom]);
 
   useEffect(() => {
     if (!data || !isPrimaryLayer) {
@@ -127,7 +152,12 @@ const BoundaryLayer = ({ layer, before }: ComponentProps) => {
       <Layer
         id={getLayerMapId(layer.id)}
         type="line"
-        paint={layer.styles.line}
+        paint={{
+          ...layer.styles.line,
+          'line-opacity': isZoomLevelSufficient
+            ? layer.styles.line?.['line-opacity']
+            : 0, // Adjust opacity based on zoom level
+        }}
         beforeId={before}
       />
       <Layer
