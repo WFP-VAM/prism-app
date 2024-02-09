@@ -25,9 +25,9 @@ from app.validation import VALID_OPERATORS
 from fastapi import HTTPException
 from rasterio.warp import Resampling
 from rasterstats import zonal_stats  # type: ignore
+from shapely.errors import GEOSException  # type: ignore
 from shapely.geometry import mapping, shape  # type: ignore
 from shapely.ops import unary_union  # type: ignore
-from shapely.errors import GEOSException # type: ignore
 
 logger = logging.getLogger(__name__)
 
