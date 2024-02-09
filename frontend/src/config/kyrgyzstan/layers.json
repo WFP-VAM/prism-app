@@ -2036,6 +2036,7 @@
         "color": "#FFFF00"
       }
     ]
+<<<<<<< Updated upstream
   },
     "daily_rainfall_forecast": {
     "title": "Rolling daily rainfall forecast",
@@ -2228,5 +2229,7 @@
         "color": "#ffc4ee"
       }
     ]
+=======
+>>>>>>> Stashed changes
   }
 }

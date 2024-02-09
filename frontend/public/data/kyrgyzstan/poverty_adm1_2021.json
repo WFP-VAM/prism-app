@@ -1,0 +1,32 @@
+{
+    "DataList": [
+        {
+            "Adm1_Code": "41707",
+            "poverty_2021": 23.5
+        },
+        {
+            "Adm1_Code": "41708",
+            "poverty_2021": 27
+        },
+        {
+            "Adm1_Code": "41706",
+            "poverty_2021": 23.8
+        },
+        {
+            "Adm1_Code": "41705",
+            "poverty_2021": 40.7
+        },
+        {
+            "Adm1_Code": "41704",
+            "poverty_2021": 39.2
+        },
+        {
+            "Adm1_Code": "41702",
+            "poverty_2021": 38.1
+        },
+        {
+            "Adm1_Code": "41703",
+            "poverty_2021": 43.2
+        }
+    ]
+}
