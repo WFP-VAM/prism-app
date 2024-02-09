@@ -83,8 +83,10 @@ const SwitchItem = memo(
     );
 
     const initialActiveLayerId = useMemo(() => {
-      return selectedActiveLayer.length > 0 ? selectedActiveLayer[0].id : null;
-    }, [selectedActiveLayer]);
+      return selectedActiveLayer.length > 0
+        ? selectedActiveLayer[0].id
+        : layer.id;
+    }, [layer.id, selectedActiveLayer]);
 
     const [activeLayerId, setActiveLayerId] = useState(
       initialActiveLayerId || (group?.layers?.find(l => l.main)?.id as string),
