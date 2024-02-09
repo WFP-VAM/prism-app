@@ -348,14 +348,14 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
 
         if (toggles.northArrow) {
           const image = new Image();
-          const imageWidth = 40 * ratio;
+          const imageWidth = 50 * ratio;
           const imageHeight = 60 * ratio;
 
           image.onload = () => {
             context.drawImage(
               image,
               activeLayers.width -
-                (scaleBarGap + imageWidth / 2 + scalerBarLength / 2) * ratio,
+                (scaleBarGap + imageWidth / 4 + scalerBarLength / 2) * ratio,
               activeLayers.height -
                 (110 + (toggles.footer ? footerTextHeight : 0)) * ratio,
               imageWidth,
