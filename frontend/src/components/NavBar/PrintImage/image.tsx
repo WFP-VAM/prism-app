@@ -372,12 +372,13 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
     setElementsLoading(false);
   };
 
+  // reload the canvas when the settings are changed
   React.useEffect(() => {
     if (open) {
       refreshImage();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [open, footerText, toggles, legendScale]);
+  }, [footerText, toggles, legendScale, mapRef]);
 
   const toggle = (event: ChangeEvent<HTMLInputElement>) => {
     setToggles(prevValues => {
@@ -520,6 +521,7 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
                           latitude: selectedMap.getCenter().lat,
                           zoom: selectedMap.getZoom(),
                         }}
+                        onLoad={() => refreshImage()}
                         onMoveEnd={() => refreshImage()}
                         mapStyle={selectedMapStyle || mapStyle.toString()}
                         maxBounds={selectedMap.getMaxBounds() ?? undefined}
