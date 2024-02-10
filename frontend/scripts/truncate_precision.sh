@@ -10,7 +10,7 @@ rootdir=$(pwd | sed 's/\/scripts//g')
 
 for file in $rootdir/public/data/*/*.json; do
   echo "updating $file"
-  sed -i.bak -E 's/([0-9]+\.[0-9]{$decimal_places})([0-9]+)/\1/g' $file
+  sed -i.bak -E "s/([0-9]+\\.[0-9]{$decimal_places})([0-9]+)/\\1/g" $file
 done
 
 # delete all backup files
