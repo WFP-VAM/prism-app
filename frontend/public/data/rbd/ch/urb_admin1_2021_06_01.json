@@ -33,21 +33,20 @@
             "start_date": "2021-06-01",
             "end_date": "2021-09-30",
             "adm1_round_ID": "2021-06-01_LR11",
-            "adm2_round_ID": "2021-06-01_",
             "calc_ph_admin1": 3,
-            "calc_pop_ph1_admin1": 1513280,
-            "calc_pop_ph2_admin1": 537224,
-            "calc_pop_ph3_admin1": 597736,
-            "calc_pop_ph4_admin1": 302656,
-            "calc_pop_ph5_admin1": 75664,
-            "calc_pop_ph3_5_admin1": 976056,
-            "calc_ph_admin2": 1,
-            "calc_pop_ph1_admin2": 40355518,
-            "calc_pop_ph2_admin2": 6761516,
-            "calc_pop_ph3_admin2": 1885931,
-            "calc_pop_ph4_admin2": 225280,
+            "calc_pop_ph1_admin1": 537224,
+            "calc_pop_ph2_admin1": 597736,
+            "calc_pop_ph3_admin1": 302656,
+            "calc_pop_ph4_admin1": 75664,
+            "calc_pop_ph5_admin1": 0,
+            "calc_pop_ph3_5_admin1": 378320,
+            "calc_ph_admin2": 0,
+            "calc_pop_ph1_admin2": 0,
+            "calc_pop_ph2_admin2": 0,
+            "calc_pop_ph3_admin2": 0,
+            "calc_pop_ph4_admin2": 0,
             "calc_pop_ph5_admin2": 0,
-            "calc_pop_ph3_5_admin2": 2111211
+            "calc_pop_ph3_5_admin2": 0
         }
     ]
 }

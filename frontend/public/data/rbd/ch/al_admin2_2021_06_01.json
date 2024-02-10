@@ -355,7 +355,7 @@
             "calc_pop_ph3_admin2": 100364,
             "calc_pop_ph4_admin2": 18501,
             "calc_pop_ph5_admin2": 0,
-            "calc_pop_ph3_5_admin2": 118865
+            "calc_pop_ph3_5_admin2": 118864
         },
         {
             "adm0_name": "Niger",
@@ -508,7 +508,7 @@
             "calc_pop_ph3_admin2": 35043,
             "calc_pop_ph4_admin2": 807,
             "calc_pop_ph5_admin2": 0,
-            "calc_pop_ph3_5_admin2": 35850
+            "calc_pop_ph3_5_admin2": 35849
         }
     ]
 }
