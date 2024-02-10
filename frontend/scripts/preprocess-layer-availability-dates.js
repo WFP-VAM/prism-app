@@ -7,8 +7,6 @@ const path = require('path');
 // the same dates are generated on all machines
 process.env.TZ = 'UTC';
 
-const preprocessedData = {};
-
 async function generateIntermediateDateItemFromDataFile(
   layerDates,
   layerPathTemplate,
@@ -48,6 +46,8 @@ async function generateIntermediateDateItemFromDataFile(
 }
 
 async function preprocessValidityPeriods(country, layersToProcess) {
+  const preprocessedData = {};
+
   await Promise.all(
     layersToProcess.map(async ([key, layer]) => {
       preprocessedData[key] = await generateIntermediateDateItemFromDataFile(
