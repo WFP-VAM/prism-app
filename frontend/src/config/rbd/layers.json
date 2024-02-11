@@ -3745,10 +3745,11 @@
       "start_date_field": "start_date",
       "end_date_field": "end_date"
     },
-    "data_field": "calc_pop_ph3_5_admin2",
-    "admin_level": 2,
-    "admin_code": "adm2_pcod2",
     "fallbackLayerKeys": ["ch_pop3_5_admin1"],
+    "admin_level": 2,
+    "data_field": "calc_pop_ph3_5_admin2",
+    "admin_code": "adm2_pcod2",
+    "opacity": 0.7,
     "feature_info_props": {
       "calc_pop_ph1_admin2": {
         "type": "number",
@@ -3783,7 +3784,6 @@
         "dataTitle": "Reference period end"
       }
     },
-    "opacity": 0.7,
     "legend": [
       {
         "value": 1,
@@ -3827,9 +3827,10 @@
     "title": "Population in phase 3 to 5",
     "type": "admin_level_data",
     "path": "data/rbd/ch/admin1_{YYYY_MM_DD}.json",
-    "data_field": "calc_pop_ph3_5_admin1",
     "admin_level": 1,
+    "data_field": "calc_pop_ph3_5_admin1",
     "admin_code": "adm1_pcod2",
+    "opacity": 0.7,
     "feature_info_props": {
       "calc_pop_ph1_admin1": {
         "type": "number",
@@ -3864,7 +3865,6 @@
         "dataTitle": "Reference period end"
       }
     },
-    "opacity": 0.7,
     "legend": [
       {
         "value": 1,
