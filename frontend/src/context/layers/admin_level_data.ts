@@ -47,7 +47,6 @@ export async function getAdminLevelDataLayerData({
     featureInfoProps,
     adminLevel,
   } = adminLevelDataLayerProps;
-  // console.log(adminLevel);
   // check unique boundary layer presence into this layer
   // use the boundary once available or
   // use the default boundary singleton instead
