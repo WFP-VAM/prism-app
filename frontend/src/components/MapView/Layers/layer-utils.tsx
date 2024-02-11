@@ -95,14 +95,14 @@ export const addPopupParams = (
 
   // by default add `dataField` to the tooltip if it is not within the feature_info_props dictionary.
   if (!Object.keys(featureInfoProps || {}).includes(dataField)) {
-    const adminLevelObj = adminLevel
-      ? { adminLevel: feature.properties.adminLevel }
-      : {};
+    // const adminLevelObj = adminLevel
+    //   ? { adminLevel: feature.properties.adminLevel }
+    //   : {};
 
     dispatch(
       addPopupData({
         [title]: {
-          ...adminLevelObj,
+          // ...adminLevelObj,
           data: getRoundedData(get(feature, propertyField), t),
           coordinates,
         },
@@ -112,13 +112,22 @@ export const addPopupParams = (
 
   // Add feature_info_props as extra fields to the tooltip
   dispatch(
-    addPopupData(
-      getFeatureInfoPropsData(
+    addPopupData({
+      // temporary fix for the admin level
+      ...(adminLevel
+        ? {
+            'Admin Level': {
+              data: feature.properties.adminLevel,
+              coordinates: [0, 0],
+            },
+          }
+        : {}),
+      ...getFeatureInfoPropsData(
         layer.featureInfoProps || {},
         coordinates,
         feature,
       ),
-    ),
+    }),
   );
 };
 
