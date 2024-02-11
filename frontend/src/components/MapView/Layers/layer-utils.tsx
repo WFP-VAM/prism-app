@@ -14,6 +14,7 @@ import { i18nTranslator } from 'i18n';
 import { getFeatureInfoPropsData } from 'components/MapView/utils';
 import { MapLayerMouseEvent } from 'maplibre-gl';
 import { findFeature, getEvtCoords, getLayerMapId } from 'utils/map-utils';
+import { LayerDefinitions } from 'config/utils';
 
 export function legendToStops(
   legend: LegendDefinition = [],
@@ -93,16 +94,15 @@ export const addPopupParams = (
     ? `properties.${dataField}`
     : 'properties.data';
 
+  // const adminLevelObj = adminLevel
+  //   ? { adminLevel: feature.properties.adminLevel }
+  //   : {};
+
   // by default add `dataField` to the tooltip if it is not within the feature_info_props dictionary.
   if (!Object.keys(featureInfoProps || {}).includes(dataField)) {
-    const adminLevelObj = adminLevel
-      ? { adminLevel: feature.properties.adminLevel }
-      : {};
-
     dispatch(
       addPopupData({
         [title]: {
-          ...adminLevelObj,
           data: getRoundedData(get(feature, propertyField), t),
           coordinates,
         },
@@ -111,14 +111,46 @@ export const addPopupParams = (
   }
 
   // Add feature_info_props as extra fields to the tooltip
+  let featureInfoPropsWithFallback = featureInfoProps || {};
+  if ('fallbackLayerKeys' in layer) {
+    const initialDataTitles = Object.values(
+      (layer as AdminLevelDataLayerProps).featureInfoProps || {},
+    )?.map((f: { dataTitle: string }) => f.dataTitle);
+    // eslint-disable-next-line
+    layer.fallbackLayerKeys?.forEach(backupLayerKey => {
+      const layerDef = LayerDefinitions[
+        backupLayerKey
+      ] as AdminLevelDataLayerProps;
+      const filteredFeatureInfoProps = Object.fromEntries(
+        Object.entries(layerDef.featureInfoProps || {}).filter(([key, value]) =>
+          initialDataTitles.includes(value.dataTitle),
+        ),
+      );
+      // eslint-disable-next-line fp/no-mutation
+      featureInfoPropsWithFallback = {
+        ...filteredFeatureInfoProps,
+        ...featureInfoPropsWithFallback,
+      };
+    });
+  }
+
   dispatch(
-    addPopupData(
-      getFeatureInfoPropsData(
-        layer.featureInfoProps || {},
+    addPopupData({
+      // temporary fix for the admin level
+      ...(adminLevel
+        ? {
+            'Admin Level': {
+              data: feature.properties.adminLevel,
+              coordinates: [0, 0],
+            },
+          }
+        : {}),
+      ...getFeatureInfoPropsData(
+        featureInfoPropsWithFallback || {},
         coordinates,
         feature,
       ),
-    ),
+    }),
   );
 };
 
