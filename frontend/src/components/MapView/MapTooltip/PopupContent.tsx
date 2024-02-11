@@ -63,6 +63,10 @@ const generatePhasePopulationTable = (
   phasePopulations.Total =
     sum(Object.values(phasePopulations)) - phasePopulations['3 to 5'];
 
+  if (phasePopulations.Total === 0) {
+    return null;
+  }
+
   const phasePopulationTable = (
     <div>
       <Typography display="inline" variant="h4" color="inherit">
@@ -114,21 +118,21 @@ const PopupContent = ({
     t,
     classes,
   );
-  // filter out popupData where key value contains "Population in phase "
-  const popupDataWithoutPhasePopulations: PopupData = Object.entries(
-    popupData,
-  ).reduce((acc: any, cur: any) => {
-    const [key, value] = cur;
-    if (
-      // keep "Population in phase 1" as a placeholder for the phase population table
-      key === 'Population in phase 1' ||
-      (!key.includes('Population in phase ') &&
-        !key.includes('Reference period '))
-    ) {
-      return { ...acc, [key]: value };
-    }
-    return acc;
-  }, {});
+  // If a table is displayed, filter out popupData where key value contains "Population in phase"
+  const popupDataWithoutPhasePopulations: PopupData = !phasePopulationTable
+    ? popupData
+    : Object.entries(popupData).reduce((acc: any, cur: any) => {
+        const [key, value] = cur;
+        if (
+          // keep "Population in phase 1" as a placeholder for the phase population table
+          key === 'Population in phase 1' ||
+          (!key.includes('Population in phase ') &&
+            !key.includes('Reference period '))
+        ) {
+          return { ...acc, [key]: value };
+        }
+        return acc;
+      }, {});
 
   return (
     <>
