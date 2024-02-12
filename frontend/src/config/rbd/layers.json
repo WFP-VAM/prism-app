@@ -4017,6 +4017,7 @@
     "title": "IDPs in phase 3 to 5",
     "type": "admin_level_data",
     "path": "data/rbd/ch/idps_admin2_{YYYY_MM_DD}.json",
+    "fill_pattern": "left",
     "dates": [
       "2019-10-01",
       "2021-02-01",
@@ -4156,7 +4157,9 @@
       "2022-02-01",
       "2022-06-01",
       "2022-10-01",
-      "2023-06-01"
+      "2023-06-01",
+      "2023-10-01",
+      "2024-06-01"
     ],
     "validityPeriod": {
       "start_date_field": "start_date",
@@ -4220,7 +4223,9 @@
       "2022-02-01",
       "2022-06-01",
       "2022-10-01",
-      "2023-06-01"
+      "2023-06-01",
+      "2023-10-01",
+      "2024-06-01"
     ],
     "validityPeriod": {
       "start_date_field": "start_date",
@@ -4284,7 +4289,10 @@
     "type": "admin_level_data",
     "fill_pattern": "left",
     "path": "data/rbd/ch/urb_admin2_{YYYY_MM_DD}.json",
-    "dates": ["2022-02-01", "2022-06-01"],
+    "dates": [
+      "2022-02-01", 
+      "2022-06-01"
+    ],
     "validityPeriod": {
       "start_date_field": "start_date",
       "end_date_field": "end_date"
@@ -4337,7 +4345,10 @@
     "type": "admin_level_data",
     "fill_pattern": "left",
     "path": "data/rbd/ch/urb_admin2_{YYYY_MM_DD}.json",
-    "dates": ["2022-02-01", "2022-06-01"],
+    "dates": [
+      "2022-02-01", 
+      "2022-06-01"
+    ],
     "validityPeriod": {
       "start_date_field": "start_date",
       "end_date_field": "end_date"

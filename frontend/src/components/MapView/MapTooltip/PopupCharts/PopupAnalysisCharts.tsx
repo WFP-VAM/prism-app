@@ -16,7 +16,11 @@ import {
 } from 'context/mapStateSlice/selectors';
 import React, { useRef } from 'react';
 import { useSelector } from 'react-redux';
+import { appConfig } from 'config';
+import { useSafeTranslation } from 'i18n';
 import PopupChartWrapper from './PopupChartWrapper';
+
+const { country } = appConfig;
 
 const styles = () =>
   createStyles({
@@ -57,14 +61,17 @@ interface PopupChartProps extends WithStyles<typeof styles> {
   adminCode: AdminCodeString;
   adminSelectorKey: string;
   adminLevel: AdminLevelType;
+  adminLevelsNames: () => string[];
 }
 const PopupAnalysisCharts = ({
   filteredChartLayers,
   adminCode,
   adminSelectorKey,
   adminLevel,
+  adminLevelsNames,
   classes,
 }: PopupChartProps) => {
+  const { t } = useSafeTranslation();
   const dataForCsv = useRef<{ [key: string]: any[] }>({});
   const boundaryLayerData = useSelector(layerDataSelector(boundaryLayer.id)) as
     | LayerData<BoundaryLayerProps>
@@ -98,6 +105,7 @@ const PopupAnalysisCharts = ({
               chartProps={{
                 showDownloadIcons: true,
                 iconStyles: { color: 'white' },
+                downloadFilenamePrefix: [t(country), ...adminLevelsNames()],
               }}
             />
           </div>

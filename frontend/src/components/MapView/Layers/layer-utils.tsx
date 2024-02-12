@@ -9,6 +9,7 @@ import {
   PointDataLayerProps,
 } from 'config/types';
 import { addPopupData } from 'context/tooltipStateSlice';
+import { findFeature, getEvtCoords, getLayerMapId } from 'utils/map-utils';
 import { getRoundedData } from 'utils/data-utils';
 import { i18nTranslator } from 'i18n';
 import { getFeatureInfoPropsData } from 'components/MapView/utils';
@@ -79,7 +80,6 @@ export const addPopupParams = (
   adminLevel: boolean,
 ): void => {
   const layerId = getLayerMapId(layer.id);
-
   const feature = findFeature(layerId, evt);
   if (!feature) {
     return;
@@ -103,6 +103,7 @@ export const addPopupParams = (
     dispatch(
       addPopupData({
         [title]: {
+          // ...adminLevelObj,
           data: getRoundedData(get(feature, propertyField), t),
           coordinates,
         },
