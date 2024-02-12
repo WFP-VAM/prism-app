@@ -76,6 +76,7 @@ class RasterGeotiffModel(BaseModel):
     long_min: float
     lat_max: float
     long_max: float
+    filename_override: Optional[str] = None
 
 
 def must_not_contain_null_char(v: str) -> str:
