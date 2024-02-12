@@ -109,8 +109,8 @@ const BoundaryLayer = ({ layer, before }: ComponentProps) => {
     }
     const checkZoom = () => {
       const zoom = selectedMap.getZoom();
-      // Set the zoom level threshold below which the layer will not be added
-      setIsZoomLevelSufficient(zoom > layer.minZoom!); // Example: Only show layer if zoom level is greater than 10
+      // Set the zoom level threshold above which the layer will not be displayed
+      setIsZoomLevelSufficient(zoom > layer.minZoom!);
     };
 
     selectedMap.on('zoomend', checkZoom);
