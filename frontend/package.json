@@ -58,7 +58,6 @@
     "@turf/clone": "^6.5.0",
     "@turf/mask": "^6.5.0",
     "@turf/meta": "^6.5.0",
-    "@turf/polygon-smooth": "^6.5.0",
     "@turf/simplify": "^6.5.0",
     "@turf/union": "^6.5.0",
     "@types/react-window": "^1.8.8",

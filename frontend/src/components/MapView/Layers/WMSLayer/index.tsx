@@ -35,6 +35,7 @@ const WMSLayers = ({
   const serverAvailableDates = useSelector(availableDatesSelector);
 
   const expansionFactor = 2;
+  // eslint-disable-next-line
   const expandedBoundingBox = expandBoundingBox(
     appConfig.map.boundingBox,
     expansionFactor,
@@ -64,7 +65,8 @@ const WMSLayers = ({
         })}&bbox={bbox-epsg-3857}`,
       ]}
       tileSize={256}
-      bounds={expandedBoundingBox}
+      // TODO - activate after reviewing bbox for all countries
+      // bounds={expandedBoundingBox}
     >
       <Layer
         beforeId={before}
