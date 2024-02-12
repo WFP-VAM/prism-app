@@ -26,6 +26,7 @@ import { TableData } from 'context/tableStateSlice';
 import { useSafeTranslation } from 'i18n';
 import { getChartAdminBoundaryParams } from 'utils/admin-utils';
 import Chart, { ChartProps } from 'components/Common/Chart';
+import { createCsvDataFromDataKeyMap, createDataKeyMap } from 'utils/csv-utils';
 
 /**
  * This function removes the first occurrence of a specific number from an array.
@@ -289,41 +290,6 @@ const ChartSection = memo(
       params.url,
     ]);
 
-    const createDataKeyMap = useCallback(
-      (results: TableData) => {
-        return Object.fromEntries(
-          Object.entries(results.rows[0]).map(([key, value]) => {
-            const newKey = requestParams.datasetFields.find(
-              x => x.label === value,
-            )?.key;
-            return [key, newKey];
-          }),
-        );
-      },
-      [requestParams.datasetFields],
-    );
-
-    const createCsvDataFromDataKeyMap = useCallback(
-      (results: TableData, keyMap: { [p: string]: string | undefined }) => {
-        // The column names of the csv based on the rows first item
-        const columnNamesObject = results.rows.slice(0, 1)[0];
-        return results.rows.slice(1).map(row => {
-          return Object.fromEntries(
-            // Filters the Normal column or `fallback` data from every data set
-            Object.entries(row)
-              .filter(([key]) => {
-                return columnNamesObject[key] !== 'Normal';
-              })
-              .map(([key, value]) => {
-                const newKey = keyMap[key] ? keyMap[key] : key;
-                return [newKey, value];
-              }),
-          );
-        });
-      },
-      [],
-    );
-
     const getData = useCallback(async () => {
       setChartDataSetIsLoading(true);
       setChartDataset(undefined);
@@ -333,7 +299,7 @@ const ChartSection = memo(
         if (!results) {
           return;
         }
-        const keyMap = createDataKeyMap(results);
+        const keyMap = createDataKeyMap(results, requestParams.datasetFields);
 
         const csvData = createCsvDataFromDataKeyMap(results, keyMap);
         // eslint-disable-next-line no-param-reassign
@@ -351,15 +317,7 @@ const ChartSection = memo(
       } finally {
         setChartDataSetIsLoading(false);
       }
-    }, [
-      chartLayer.title,
-      createCsvDataFromDataKeyMap,
-      createDataKeyMap,
-      dataForCsv,
-      dispatch,
-      requestParams,
-      t,
-    ]);
+    }, [chartLayer.title, dataForCsv, dispatch, requestParams, t]);
 
     useEffect(() => {
       if (!extendedChartDataset) {

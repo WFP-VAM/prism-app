@@ -208,6 +208,9 @@
       "sensitivity": ["sensitivity_scaled"],
       "adaptation": ["adaptation_scaled"],
       "vulnerability": ["vulnerability_scaled"]
+    },
+    "drought": {
+      "combined_drought_index": ["cdi"]
     }
   }
 }
