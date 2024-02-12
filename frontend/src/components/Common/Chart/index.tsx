@@ -10,7 +10,7 @@ import { useSafeTranslation } from 'i18n';
 import { IconButton, Tooltip, makeStyles } from '@material-ui/core';
 import ImageIcon from '@material-ui/icons/Image';
 import GetAppIcon from '@material-ui/icons/GetApp';
-import { downloadToFile } from 'components/MapView/utils';
+import { buildCsvFileName, downloadToFile } from 'components/MapView/utils';
 import {
   createCsvDataFromDataKeyMap,
   createDataKeyMap,
@@ -56,6 +56,7 @@ export type ChartProps = {
   chartRange?: [number, number];
   showDownloadIcons?: boolean;
   iconStyles?: React.CSSProperties;
+  downloadFilenamePrefix?: string[];
 };
 
 const Chart = memo(
@@ -70,11 +71,17 @@ const Chart = memo(
     chartRange = [Number.NEGATIVE_INFINITY, Number.POSITIVE_INFINITY],
     showDownloadIcons = false,
     iconStyles,
+    downloadFilenamePrefix = [],
   }: ChartProps) => {
     const { t } = useSafeTranslation();
     const classes = useStyles();
     const chartRef = React.useRef<Bar | Line>(null);
     const isEWSChart = !!data.EWSConfig;
+
+    const downloadFilename = buildCsvFileName([
+      ...downloadFilenamePrefix,
+      ...title.split(' '),
+    ]);
 
     const transpose = useMemo(() => {
       return config.transpose || false;
@@ -336,9 +343,7 @@ const Chart = memo(
             <>
               <Tooltip title={t('Download PNG') as string}>
                 <IconButton
-                  onClick={() =>
-                    downloadChartPng(chartRef, title.split(' ').join('_'))
-                  }
+                  onClick={() => downloadChartPng(chartRef, downloadFilename)}
                   className={classes.firstIcon}
                   style={iconStyles}
                 >
@@ -357,7 +362,7 @@ const Chart = memo(
                         {
                           [title]: createCsvDataFromDataKeyMap(data, keyMap),
                         },
-                        title.split(' ').join('_'),
+                        downloadFilename,
                       ],
                     ])();
                   }}
@@ -396,6 +401,7 @@ const Chart = memo(
         config.type,
         data,
         datasetFields,
+        downloadFilename,
         iconStyles,
         showDownloadIcons,
         t,

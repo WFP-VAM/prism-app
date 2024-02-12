@@ -384,6 +384,32 @@ const ChartsPanel = memo(
       countryAdmin0Id,
     ]);
 
+    const singleDownloadChartPrefix = adminProperties
+      ? [
+          getCountryName(adminProperties),
+          selectedAdmin1Area,
+          selectedAdmin2Area,
+        ].map(x => t(x))
+      : [];
+
+    const firstCSVFilename = adminProperties
+      ? buildCsvFileName([
+          ...singleDownloadChartPrefix,
+          ...(selectedLayerTitles as string[]),
+          comparePeriods ? 'first_period' : '',
+        ])
+      : '';
+
+    const secondCSVFilename = secondAdminProperties
+      ? buildCsvFileName([
+          getCountryName(secondAdminProperties),
+          compareLocations ? secondSelectedAdmin1Area : selectedAdmin1Area,
+          compareLocations ? secondSelectedAdmin2Area : selectedAdmin2Area,
+          ...(selectedLayerTitles as string[]),
+          comparePeriods ? 'second_period' : '',
+        ])
+      : '';
+
     const renderResultsPage = useMemo(() => {
       // chart size is not responsive once it is mounted
       // seems to be possible in the newer chart.js versions
@@ -420,7 +446,10 @@ const ChartsPanel = memo(
               startDate={startDate1}
               endDate={endDate1}
               dataForCsv={dataForCsv}
-              chartProps={{ showDownloadIcons: true }}
+              chartProps={{
+                showDownloadIcons: true,
+                downloadFilenamePrefix: singleDownloadChartPrefix,
+              }}
             />
           </Box>
         );
@@ -464,7 +493,10 @@ const ChartsPanel = memo(
                     minChartValue={
                       comparing ? Math.min(...minChartValues) : undefined
                     }
-                    chartProps={{ showDownloadIcons: true }}
+                    chartProps={{
+                      showDownloadIcons: true,
+                      downloadFilenamePrefix: singleDownloadChartPrefix,
+                    }}
                   />
                 </Box>
               ))
@@ -520,7 +552,10 @@ const ChartsPanel = memo(
                   setMinChartValues={setMinChartValues}
                   maxChartValue={Math.max(...maxChartValues)}
                   minChartValue={Math.min(...minChartValues)}
-                  chartProps={{ showDownloadIcons: true }}
+                  chartProps={{
+                    showDownloadIcons: true,
+                    downloadFilenamePrefix: singleDownloadChartPrefix,
+                  }}
                 />
               </Box>
             ))
@@ -639,6 +674,7 @@ const ChartsPanel = memo(
       selectedAdmin1Area,
       selectedAdmin2Area,
       selectedLayerTitles,
+      singleDownloadChartPrefix,
       startDate1,
       startDate2,
       t,
@@ -761,26 +797,6 @@ const ChartsPanel = memo(
       },
       [t],
     );
-
-    const firstCSVFilename = adminProperties
-      ? buildCsvFileName([
-          getCountryName(adminProperties),
-          selectedAdmin1Area,
-          selectedAdmin2Area,
-          ...(selectedLayerTitles as string[]),
-          comparePeriods ? 'first_period' : '',
-        ])
-      : '';
-
-    const secondCSVFilename = secondAdminProperties
-      ? buildCsvFileName([
-          getCountryName(secondAdminProperties),
-          compareLocations ? secondSelectedAdmin1Area : selectedAdmin1Area,
-          compareLocations ? secondSelectedAdmin2Area : selectedAdmin2Area,
-          ...(selectedLayerTitles as string[]),
-          comparePeriods ? 'second_period' : '',
-        ])
-      : '';
 
     if (tabPanelType !== tabValue) {
       return null;
