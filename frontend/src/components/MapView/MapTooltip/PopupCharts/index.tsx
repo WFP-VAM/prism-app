@@ -56,6 +56,7 @@ const PopupCharts = ({
       )}
       {adminLevel !== undefined && (
         <PopupAnalysisCharts
+          adminLevelsNames={adminLevelsNames}
           adminCode={adminCode}
           adminSelectorKey={adminSelectorKey}
           adminLevel={adminLevel}
