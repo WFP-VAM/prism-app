@@ -14,7 +14,7 @@ jest.mock('react-router-dom', () => ({
   }),
 }));
 jest.mock('components/Notifier', () => 'mock-Notifier');
-jest.mock('./TimelineItems', () => 'mock-TimelineItems');
+jest.mock('./TimelineItems', () => () => 'mock-timelineitems');
 
 const mockStore = configureStore([]);
 
