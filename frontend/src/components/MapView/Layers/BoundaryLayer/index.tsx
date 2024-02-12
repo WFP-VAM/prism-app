@@ -103,19 +103,17 @@ const BoundaryLayer = ({ layer, before }: ComponentProps) => {
   useMapCallback('mouseenter', layerId, layer, onMouseEnter);
   useMapCallback('mouseleave', layerId, layer, onMouseLeave);
 
+  // Control the zoom level threshold above which the layer will not be displayed
   useEffect(() => {
     if (!selectedMap || !layer.minZoom) {
       return undefined;
     }
     const checkZoom = () => {
       const zoom = selectedMap.getZoom();
-      // Set the zoom level threshold above which the layer will not be displayed
       setIsZoomLevelSufficient(zoom > layer.minZoom!);
     };
-
-    selectedMap.on('zoomend', checkZoom);
     checkZoom(); // Initial check
-
+    selectedMap.on('zoomend', checkZoom);
     return () => {
       selectedMap.off('zoomend', checkZoom);
     };
