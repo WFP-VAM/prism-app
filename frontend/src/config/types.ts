@@ -475,6 +475,7 @@ export class CompositeLayerProps extends CommonLayerProps {
   aggregation: AggregationOptions;
   interval: Interval;
   dateType: DateTypeOptions;
+  dateLayer: LayerKey; // layer to use to get dates from
   startDate: string;
 
   @optional

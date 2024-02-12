@@ -7,6 +7,7 @@ import React, {
   Dispatch,
   useMemo,
   useState,
+  useEffect,
 } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import AnalysisLayer from 'components/MapView/Layers/AnalysisLayer';
@@ -65,12 +66,12 @@ const componentTypes: LayerComponentsMap<LayerType> = {
   composite: { component: CompositeLayer },
 };
 
+const {
+  map: { boundingBox, minZoom, maxZoom, maxBounds },
+} = appConfig;
+
 const MapComponent = memo(
   ({ setIsAlertFormOpen, panelHidden }: MapComponentProps) => {
-    const {
-      map: { boundingBox, minZoom, maxZoom, maxBounds },
-    } = appConfig;
-
     const mapRef = React.useRef<MapRef>(null);
 
     const dispatch = useDispatch();
@@ -82,12 +83,6 @@ const MapComponent = memo(
     const [firstSymbolId, setFirstSymbolId] = useState<string | undefined>(
       undefined,
     );
-
-    // The map initialization requires a center so we provide a te,porary one.
-    // But we actually rely on the boundingBox to fit the country in the available screen space.
-    const mapTempCenter = useMemo(() => {
-      return boundingBox.slice(0, 2) as [number, number];
-    }, [boundingBox]);
 
     const fitBoundsOptions = useMemo(() => {
       return {
@@ -221,6 +216,13 @@ const MapComponent = memo(
       [firstBoundaryId, firstSymbolId, selectedLayers, selectedMap],
     );
 
+    useEffect(() => {
+      if (mapRef.current) {
+        const map = mapRef.current.getMap();
+        map.triggerRepaint(); // Forces the map to redraw
+      }
+    }, [firstSymbolId]);
+
     return (
       <MapGL
         ref={mapRef}
@@ -231,10 +233,6 @@ const MapComponent = memo(
         maxZoom={maxZoom}
         initialViewState={{
           bounds: boundingBox,
-          // lat and long are unnecessary if bounds exist
-          // TODO: maplibre: consider removing them and/or make bounds required
-          latitude: mapTempCenter[1],
-          longitude: mapTempCenter[0],
           fitBoundsOptions: { padding: fitBoundsOptions.padding },
         }}
         mapStyle={mapStyle.toString()}

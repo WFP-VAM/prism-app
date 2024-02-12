@@ -54,7 +54,6 @@ const onClick = ({
   } (${t(operation)})`;
 
   const layerId = getLayerMapId(layer.id);
-
   const feature = findFeature(layerId, evt);
   if (!feature) {
     return;

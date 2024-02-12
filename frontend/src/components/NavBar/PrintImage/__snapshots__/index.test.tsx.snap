@@ -209,6 +209,29 @@ exports[`renders as expected 1`] = `
                 />
               </button>
             </div>
+            <div
+              class="DownloadImage-toggleWrapper-9"
+            >
+              <label
+                class="MuiFormControlLabel-root"
+              >
+                <mock-switch
+                  checked="true"
+                  color="primary"
+                  name="countryMask"
+                />
+                <mock-typography
+                  classname="MuiFormControlLabel-label"
+                  component="span"
+                >
+                  <mock-typography
+                    variant="h4"
+                  >
+                    Country Mask
+                  </mock-typography>
+                </mock-typography>
+              </label>
+            </div>
             <mock-typography
               color="textSecondary"
               gutterbottom="true"
