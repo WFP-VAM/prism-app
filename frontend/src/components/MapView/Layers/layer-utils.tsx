@@ -14,7 +14,6 @@ import { getRoundedData } from 'utils/data-utils';
 import { i18nTranslator } from 'i18n';
 import { getFeatureInfoPropsData } from 'components/MapView/utils';
 import { MapLayerMouseEvent } from 'maplibre-gl';
-import { findFeature, getEvtCoords, getLayerMapId } from 'utils/map-utils';
 import { LayerDefinitions } from 'config/utils';
 
 export function legendToStops(
