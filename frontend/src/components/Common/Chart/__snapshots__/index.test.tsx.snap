@@ -1,6 +1,24 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`renders as expected 1`] = `
+exports[`renders as expected Should work with Etc/GMT-1 1`] = `
+<div>
+  <canvas
+    height="150"
+    width="300"
+  />
+</div>
+`;
+
+exports[`renders as expected Should work with US/Pacific 1`] = `
+<div>
+  <canvas
+    height="150"
+    width="300"
+  />
+</div>
+`;
+
+exports[`renders as expected Should work with UTC 1`] = `
 <div>
   <canvas
     height="150"

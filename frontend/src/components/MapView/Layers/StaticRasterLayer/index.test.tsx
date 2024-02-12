@@ -1,6 +1,7 @@
+import timezoneMock from 'timezone-mock';
 import { createStaticRasterLayerUrl } from '.';
 
-test('StaticRasterLayer utils', () => {
+const f = () => {
   const result = createStaticRasterLayerUrl(
     createUrlTestData.baseUrl,
     createUrlTestData.dates,
@@ -8,6 +9,27 @@ test('StaticRasterLayer utils', () => {
   );
 
   expect(result).toBe(createUrlTestData.result);
+};
+
+describe('createStaticRasterLayerUrl', () => {
+  afterAll(() => {
+    timezoneMock.unregister();
+  });
+
+  test('Should work with UTC', () => {
+    timezoneMock.register('UTC');
+    f();
+  });
+
+  test('Should work with US/Pacific', () => {
+    timezoneMock.register('US/Pacific');
+    f();
+  });
+
+  test('Should work with Etc/GMT-1', () => {
+    timezoneMock.register('Etc/GMT-1');
+    f();
+  });
 });
 
 const createUrlTestData = {

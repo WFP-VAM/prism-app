@@ -1,4 +1,5 @@
 import { DatesPropagation } from 'config/types';
+import timezoneMock from 'timezone-mock';
 import {
   generateIntermediateDateItemFromValidity,
   getStaticRasterDataCoverage,
@@ -263,7 +264,7 @@ describe('Test generateIntermediateDateItemFromValidity', () => {
   });
 });
 
-test('getStaticRasterDataCoverage', () => {
+describe('getStaticRasterDataCoverage', () => {
   const layer = {
     id: 'flood_events',
     type: 'static_raster',
@@ -363,7 +364,29 @@ test('getStaticRasterDataCoverage', () => {
       },
     ],
   };
-  const ret = getStaticRasterDataCoverage(layer as any);
 
-  expect(ret).toEqual([1669852800000, 1670716800000]);
+  afterAll(() => {
+    timezoneMock.unregister();
+  });
+
+  test('Should work with UTC', () => {
+    timezoneMock.register('UTC');
+    const ret = getStaticRasterDataCoverage(layer as any);
+
+    expect(ret).toEqual([1669852800000, 1670716800000]);
+  });
+
+  test('Should work with US/Pacific', () => {
+    timezoneMock.register('US/Pacific');
+    const ret = getStaticRasterDataCoverage(layer as any);
+
+    expect(ret).toEqual([1669852800000, 1670716800000]);
+  });
+
+  test('Should work with Etc/GMT-1', () => {
+    timezoneMock.register('Etc/GMT-1');
+    const ret = getStaticRasterDataCoverage(layer as any);
+
+    expect(ret).toEqual([1669852800000, 1670716800000]);
+  });
 });

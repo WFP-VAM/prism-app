@@ -1,8 +1,9 @@
 import React from 'react';
+import timezoneMock from 'timezone-mock';
 import { render } from '@testing-library/react';
 import Chart, { getLabels } from '.';
 
-test('renders as expected', () => {
+const f = () => {
   const { container } = render(
     <Chart title="Chart Title" data={data} config={config} />,
   );
@@ -32,6 +33,27 @@ test('renders as expected', () => {
   expect(testLabels).toEqual(labels);
   expect(testEWSLabels).toEqual(EWSlabels);
   expect(container).toMatchSnapshot();
+};
+
+describe('renders as expected', () => {
+  afterAll(() => {
+    timezoneMock.unregister();
+  });
+
+  test('Should work with UTC', () => {
+    timezoneMock.register('UTC');
+    f();
+  });
+
+  test('Should work with US/Pacific', () => {
+    timezoneMock.register('US/Pacific');
+    f();
+  });
+
+  test('Should work with Etc/GMT-1', () => {
+    timezoneMock.register('Etc/GMT-1');
+    f();
+  });
 });
 
 const config = {

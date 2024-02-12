@@ -207,7 +207,7 @@ export const getStaticRasterDataCoverage = (layer: StaticRasterLayerProps) => {
     return [];
   }
   // raw data comes in as {"dates": ["YYYY-MM-DD"]}
-  return dates.map(v => moment(v, 'YYYY-MM-DD').valueOf());
+  return dates.map(v => moment.utc(v, 'YYYY-MM-DD').valueOf());
 };
 
 /**

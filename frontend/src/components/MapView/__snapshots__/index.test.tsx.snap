@@ -340,12 +340,13 @@ exports[`renders as expected 1`] = `
                 class="MuiBox-root MuiBox-root-20"
               />
               <a
-                href="https://github.com/WFP-VAM/prism-app"
+                href="https://github.com/WFP-VAM/prism-app/tree/sample_hash"
                 rel="noopener noreferrer"
                 style="color: rgb(245, 247, 248); font-size: 0.7rem; left: 1rem;"
                 target="_blank"
               >
                 version hash: 
+                sample_hash
               </a>
             </div>
           </div>

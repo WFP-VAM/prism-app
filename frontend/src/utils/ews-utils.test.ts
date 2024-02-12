@@ -1,8 +1,31 @@
+import timezoneMock from 'timezone-mock';
 import { createEWSDatesArray } from './ews-utils';
 
-test('ews-utils createEWSDatesArray', () => {
+const f = () => {
   expect(createEWSDatesArray(testEndDate)).toEqual(ret);
+};
+
+describe('createEWSDatesArray', () => {
+  afterAll(() => {
+    timezoneMock.unregister();
+  });
+
+  test('Should work with UTC', () => {
+    timezoneMock.register('UTC');
+    f();
+  });
+
+  test('Should work with US/Pacific', () => {
+    timezoneMock.register('US/Pacific');
+    f();
+  });
+
+  test('Should work with Etc/GMT-1', () => {
+    timezoneMock.register('Etc/GMT-1');
+    f();
+  });
 });
+
 const testEndDate = 1611741612345;
 const ret = [
   1609502400000,
