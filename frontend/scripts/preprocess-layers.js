@@ -3,6 +3,7 @@ const moment = require('moment');
 const fs = require('fs');
 const path = require('path');
 const union = require('@turf/union').default;
+const simplify = require('@turf/simplify').default;
 
 // We fix the timezone to UTC to ensure that
 // the same dates are generated on all machines
@@ -21,7 +22,7 @@ const mergeBoundaryData = boundaryData => {
         return union(acc, feature);
       }, null) || null;
   }
-  return mergedBoundaryData;
+  return simplify(mergedBoundaryData, { tolerance: 0.02 });
 };
 
 async function preprocessBoundaryLayer(country, boundaryLayer) {
