@@ -32,7 +32,7 @@ async function preprocessBoundaryLayer(country, boundaryLayer) {
   );
 
   // Check if the output file already exists
-  if (fs.existsSync(outputFilePath)) {
+  if (!fs.existsSync(outputFilePath)) {
     const filePath = boundaryLayer.path;
     const fileContent = fs.readFileSync(
       path.join(__dirname, '../public/', filePath),
