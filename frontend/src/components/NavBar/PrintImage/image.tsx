@@ -132,7 +132,7 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
   ] = React.useState<HTMLElement | null>(null);
   const [openFooterEdit, setOpenFooterEdit] = React.useState(false);
   const [footerText, setFooterText] = React.useState('');
-  const [elementsLoading, setElementsLoading] = React.useState(false);
+  const [elementsLoading, setElementsLoading] = React.useState(true);
   const [legendScale, setLegendScale] = React.useState(100);
   // the % value of the original dimensions
   const [mapDimensions, setMapDimensions] = React.useState<{
