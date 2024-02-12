@@ -58,6 +58,7 @@ import { getFullLocationName } from 'utils/name-utils';
 import {
   getBoundaryLayersByAdminLevel,
   getBoundaryLayerSingleton,
+  getStacBand,
   LayerDefinitions,
 } from 'config/utils';
 import {
@@ -406,12 +407,7 @@ async function createAPIRequestParams(
   const dateString = getDateFormat(dateValue, 'default');
 
   // get geotiff url using band
-  const { band } =
-    (additionalQueryParams as {
-      styles?: string;
-      band?: string;
-    }) || {};
-
+  const band = getStacBand(additionalQueryParams);
   // Get geotiff_url using STAC for layers in earthobservation.vam.
   // TODO - What happens if there is no date? are some layers not STAC?
   const geotiffUrl =
@@ -540,11 +536,7 @@ export const requestAndStoreExposedPopulation = createAsyncThunk<
     if (maskLayer) {
       const { additionalQueryParams, baseUrl, serverLayerName } = maskLayer;
 
-      const { band } =
-        (additionalQueryParams as {
-          styles?: string;
-          band?: string;
-        }) || {};
+      const band = getStacBand(additionalQueryParams);
 
       const dateValue = !maskLayer.wcsConfig?.disableDateParam
         ? date
@@ -553,7 +545,9 @@ export const requestAndStoreExposedPopulation = createAsyncThunk<
 
       // Get geotiff_url using STAC for layers in earthobservation.vam.
       // eslint-disable-next-line
-      maskUrl = baseUrl.includes('api.earthobservation.vam.wfp.org/ows') && !serverLayerName.includes("hf_water")
+      maskUrl =
+        baseUrl.includes('api.earthobservation.vam.wfp.org/ows') &&
+        !serverLayerName.includes('hf_water')
           ? await getDownloadGeotiffURL(
               serverLayerName,
               band,

@@ -2,6 +2,7 @@ import React from 'react';
 import { render } from '@testing-library/react';
 import configureStore from 'redux-mock-store';
 import { Provider } from 'react-redux';
+import { BrowserRouter } from 'react-router-dom';
 import Download from '.';
 
 const mockStore = configureStore([]);
@@ -26,9 +27,11 @@ test('renders as expected', () => {
   });
 
   const { container } = render(
-    <Provider store={store}>
-      <Download />
-    </Provider>,
+    <BrowserRouter>
+      <Provider store={store}>
+        <Download />
+      </Provider>
+    </BrowserRouter>,
   );
   expect(container).toMatchSnapshot();
 

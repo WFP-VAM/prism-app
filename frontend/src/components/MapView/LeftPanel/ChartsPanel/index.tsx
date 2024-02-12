@@ -541,7 +541,7 @@ const ChartsPanel = memo(
           weekday: undefined,
           year: 'numeric',
           month: 'short',
-          dayPeriod: 'short',
+          day: 'numeric',
         };
         const formatDate = (d: number) => {
           const dd = new Date(d);

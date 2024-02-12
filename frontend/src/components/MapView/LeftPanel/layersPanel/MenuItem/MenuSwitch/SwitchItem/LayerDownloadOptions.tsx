@@ -30,8 +30,9 @@ import { useSafeTranslation } from 'i18n';
 import { isExposureAnalysisLoadingSelector } from 'context/analysisResultStateSlice';
 import { availableDatesSelector } from 'context/serverStateSlice';
 import { getRequestDate } from 'utils/server-utils';
-import { LayerDefinitions } from 'config/utils';
+import { LayerDefinitions, getStacBand } from 'config/utils';
 import { getDateFormat } from 'utils/date-utils';
+import { safeCountry } from 'config';
 
 // TODO - return early when the layer is not selected.
 function LayerDownloadOptions({
@@ -121,19 +122,16 @@ function LayerDownloadOptions({
 
   const handleDownloadGeoTiff = (): void => {
     const { serverLayerName, additionalQueryParams } = layer as WMSLayerProps;
-    // TODO - figure out a way to leverage style to guess band?
-    const { band } =
-      (additionalQueryParams as {
-        styles?: string;
-        band?: string;
-      }) || {};
+    const band = getStacBand(additionalQueryParams);
+    const dateString = getDateFormat(selectedDate, 'default') as string;
 
     setIsGeotiffLoading(true);
     downloadGeotiff(
       serverLayerName,
       band,
       extent,
-      getDateFormat(selectedDate, 'default') as string,
+      dateString,
+      `${safeCountry}_${layerId}_${dateString}.tif`,
       dispatch,
       () => setIsGeotiffLoading(false),
     );
