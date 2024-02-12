@@ -7,6 +7,7 @@ import React, {
   Dispatch,
   useMemo,
   useState,
+  useEffect,
 } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import AnalysisLayer from 'components/MapView/Layers/AnalysisLayer';
@@ -220,6 +221,13 @@ const MapComponent = memo(
       },
       [firstBoundaryId, firstSymbolId, selectedLayers, selectedMap],
     );
+
+    useEffect(() => {
+      if (mapRef.current) {
+        const map = mapRef.current.getMap();
+        map.triggerRepaint(); // Forces the map to redraw
+      }
+    }, [firstSymbolId]);
 
     return (
       <MapGL

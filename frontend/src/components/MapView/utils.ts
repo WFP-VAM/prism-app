@@ -195,8 +195,8 @@ export const checkLayerAvailableDatesAndContinueOrRemove = (
   removeLayerFromUrl: (layerKey: UrlLayerKey, layerId: string) => void,
   dispatch: Dispatch,
 ) => {
-  const { serverLayerName } = layer as any;
-  if (serverAvailableDates[serverLayerName]?.length !== 0) {
+  const { id: layerId } = layer as any;
+  if (serverAvailableDates[layerId]?.length !== 0) {
     return;
   }
   const urlLayerKey = getUrlKey(layer);
