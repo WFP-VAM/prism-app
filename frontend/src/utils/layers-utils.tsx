@@ -17,7 +17,6 @@ import {
 import { addNotification } from 'context/notificationStateSlice';
 import { availableDatesSelector } from 'context/serverStateSlice';
 import { countBy, get, pickBy } from 'lodash';
-import moment from 'moment';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { LocalError } from 'utils/error-utils';
@@ -31,7 +30,7 @@ import {
   datesAreEqualWithoutTime,
   binaryIncludes,
   getDateFormat,
-  getMillisecondsFromISO,
+  getTimeInMilliseconds,
 } from './date-utils';
 
 const dateSupportLayerTypes: Array<LayerType['type']> = [
@@ -138,9 +137,7 @@ const useLayers = () => {
         dupTimes => dupTimes >= selectedLayersWithDateSupport.length,
       ),
       // convert back to number array after using YYYY-MM-DD strings in countBy
-    ).map(dateString =>
-      moment.utc(dateString).set({ hour: 12, minute: 0 }).valueOf(),
-    );
+    ).map(dateString => new Date(dateString).setUTCHours(12));
   }, [selectedLayerDatesDupCount, selectedLayersWithDateSupport.length]);
 
   const defaultLayer = useMemo(() => {
@@ -253,7 +250,7 @@ const useLayers = () => {
 
   // The date integer from url
   const dateInt = useMemo(() => {
-    return moment(urlDate).set({ hour: 12, minute: 0 }).valueOf();
+    return (urlDate ? new Date(urlDate) : new Date()).setHours(12);
   }, [urlDate]);
 
   useEffect(() => {
@@ -324,7 +321,10 @@ const useLayers = () => {
 
       const closestDate = findClosestDate(selectedDate, layerToKeepDates);
 
-      updateHistory('date', closestDate.format(DEFAULT_DATE_FORMAT));
+      updateHistory(
+        'date',
+        getDateFormat(closestDate, DEFAULT_DATE_FORMAT) as string,
+      );
     },
     [
       dispatch,
@@ -366,10 +366,10 @@ const useLayers = () => {
   ]);
 
   const possibleDatesForLayerIncludeMomentSelectedDate = useCallback(
-    (layer: DateCompatibleLayer, momentSelectedDate: moment.Moment) => {
+    (layer: DateCompatibleLayer, date: Date) => {
       return binaryIncludes<DateItem>(
         getPossibleDatesForLayer(layer, serverAvailableDates),
-        momentSelectedDate.set({ hour: 12, minute: 0 }).valueOf(),
+        date.setHours(12),
         x => new Date(x.displayDate).setHours(12, 0, 0, 0),
       );
     },
@@ -380,19 +380,16 @@ const useLayers = () => {
     if (
       !selectedDate ||
       !urlDate ||
-      getMillisecondsFromISO(urlDate) === selectedDate
+      getTimeInMilliseconds(urlDate) === selectedDate
     ) {
       return;
     }
     selectedLayersWithDateSupport.forEach(layer => {
-      const momentSelectedDate = moment(selectedDate);
+      const jsSelectedDate = new Date(selectedDate);
 
       if (
         serverAvailableDatesAreEmpty ||
-        possibleDatesForLayerIncludeMomentSelectedDate(
-          layer,
-          momentSelectedDate,
-        )
+        possibleDatesForLayerIncludeMomentSelectedDate(layer, jsSelectedDate)
       ) {
         return;
       }
@@ -401,7 +398,7 @@ const useLayers = () => {
 
       if (
         datesAreEqualWithoutTime(
-          momentSelectedDate.valueOf(),
+          jsSelectedDate.valueOf(),
           closestDate.valueOf(),
         )
       ) {
@@ -410,16 +407,21 @@ const useLayers = () => {
           'closest dates is the same as selected date, not updating url',
         );
       } else {
-        updateHistory('date', closestDate.format(DEFAULT_DATE_FORMAT));
+        updateHistory(
+          'date',
+          getDateFormat(closestDate, DEFAULT_DATE_FORMAT) as string,
+        );
       }
 
       dispatch(
         addNotification({
           message: `No data was found for layer '${
             layer.title
-          }' on ${momentSelectedDate.format(
+          }' on ${getDateFormat(
+            jsSelectedDate,
             DEFAULT_DATE_FORMAT,
-          )}. The closest date ${closestDate.format(
+          )}. The closest date ${getDateFormat(
+            closestDate,
             DEFAULT_DATE_FORMAT,
           )} has been loaded instead.`,
           type: 'warning',

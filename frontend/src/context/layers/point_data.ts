@@ -106,7 +106,6 @@ export const fetchPointLayerData: LazyLoader<PointDataLayerProps> = () => async 
       // eslint-disable-next-line fp/no-mutation
       data = ((await response.json()) as PointData[]).filter(
         // we cant do a string comparison here because sometimes the date in json is stored as YYYY-M-D instead of YYYY-MM-DD
-        // using moment here helps compensate for these discrepancies
         obj =>
           getDateFormat(obj.dat, 'default') ===
           getDateFormat(formattedDate, 'default'),

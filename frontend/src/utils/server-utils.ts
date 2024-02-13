@@ -1,5 +1,4 @@
 import { get, merge, snakeCase, sortBy, sortedUniqBy } from 'lodash';
-import moment from 'moment';
 import { WFS, WMS, fetchCoverageLayerDays, formatUrl } from 'prism-common';
 import { Dispatch } from 'redux';
 import { appConfig, safeCountry } from '../config';
@@ -32,6 +31,7 @@ import {
   generateDateItemsRange,
   generateDatesRange,
   binaryIncludes,
+  getDateFormat,
 } from './date-utils';
 import { LocalError } from './error-utils';
 import { createEWSDatesArray } from './ews-utils';
@@ -191,7 +191,7 @@ const getPointDataCoverage = async (
   return (
     data
       // adding 12 hours to avoid  errors due to daylight saving, and convert to number
-      .map(item => moment.utc(item.date).set({ hour: 12, minute: 0 }).valueOf())
+      .map(item => new Date(item.date).setUTCHours(12))
       // remove duplicate dates - indexOf returns first index of item
       .filter((date, index, arr) => {
         return arr.indexOf(date) === index;
@@ -205,7 +205,7 @@ const getAdminLevelDataCoverage = (layer: AdminLevelDataLayerProps) => {
     return [];
   }
   // raw data comes in as {"dates": ["YYYY-MM-DD"]}
-  return dates.map(v => moment(v, 'YYYY-MM-DD').valueOf());
+  return dates.map(v => new Date(v).getTime());
 };
 
 export const getStaticRasterDataCoverage = (layer: StaticRasterLayerProps) => {
@@ -214,7 +214,7 @@ export const getStaticRasterDataCoverage = (layer: StaticRasterLayerProps) => {
     return [];
   }
   // raw data comes in as {"dates": ["YYYY-MM-DD"]}
-  return dates.map(v => moment.utc(v, 'YYYY-MM-DD').valueOf());
+  return dates.map(v => new Date(v).getTime());
 };
 
 /**
@@ -250,7 +250,7 @@ async function generateIntermediateDateItemFromDataFile(
     layerDates.map(async r => {
       const path = layerPathTemplate.replace(/{.*?}/g, match => {
         const format = match.slice(1, -1);
-        return moment(r).format(format);
+        return getDateFormat(r, format as any) as string;
       });
 
       const res = await fetch(path);
@@ -272,8 +272,8 @@ async function generateIntermediateDateItemFromDataFile(
       const endDate = jsonBody.DataList[0][validityPeriod.end_date_field];
 
       return {
-        startDate: moment(startDate).set({ hour: 12, minute: 0 }).valueOf(),
-        endDate: moment(endDate).set({ hour: 12, minute: 0 }).valueOf(),
+        startDate: new Date(startDate).setHours(12),
+        endDate: new Date(endDate).setHours(12),
       };
     }),
   );
@@ -286,7 +286,7 @@ export function generateIntermediateDateItemFromValidity(layer: ValidityLayer) {
   const { dates } = layer;
   const { days, mode } = layer.validity;
 
-  const sortedDates = Array.prototype.sort.call(dates);
+  const sortedDates = Array.prototype.sort.call(dates) as typeof dates;
 
   // Generate first DateItem[] from dates array.
   const baseItem = layer.validity
@@ -307,16 +307,20 @@ export function generateIntermediateDateItemFromValidity(layer: ValidityLayer) {
 
   const dateItemsWithValidity = sortedDates
     .filter(date => date > earliestDate)
-    .map(d => moment(d).set({ hour: 12, minute: 0 }))
-    .reduce((acc: DateItem[], momentDate) => {
-      // We create the start and the end date for every moment date
-      let startDate = momentDate.clone();
-      let endDate = momentDate.clone();
+    .map(d => {
+      const date = new Date(d);
+      date.setHours(12);
+      return date;
+    })
+    .reduce((acc: DateItem[], date) => {
+      // We create the start and the end date for every date
+      let startDate = new Date(date.getTime());
+      let endDate = new Date(date.getTime());
 
       // if the mode is `both` or backward we add the days of the validity to the end date keeping the startDate as it is
       if (mode === DatesPropagation.BOTH || mode === DatesPropagation.FORWARD) {
         // eslint-disable-next-line fp/no-mutation
-        endDate = endDate.add(days, 'days');
+        endDate = new Date(endDate.getTime() + days * 24 * 60 * 60 * 1000);
       }
 
       // if the mode is `both` or `forward` we subtract the days of the validity to the start date keeping the endDate as it is
@@ -325,16 +329,16 @@ export function generateIntermediateDateItemFromValidity(layer: ValidityLayer) {
         mode === DatesPropagation.BACKWARD
       ) {
         // eslint-disable-next-line fp/no-mutation
-        startDate = startDate.subtract(days, 'days');
+        startDate = new Date(startDate.getTime() - days * 24 * 60 * 60 * 1000);
       }
 
       // We create an array with the diff between the endDate and startDate and we create an array with the addition of the days in the startDate
       const daysToAdd = generateDatesRange(startDate, endDate);
 
-      // convert the available days for a specific moment day to the DefaultDate format
+      // convert the available days for a specific day to the DefaultDate format
       const dateItemsToAdd = daysToAdd.map(dateToAdd => ({
         displayDate: dateToAdd,
-        queryDate: momentDate.valueOf(),
+        queryDate: date.getTime(),
       }));
 
       // We filter the dates that don't include the displayDate of the previous item array
@@ -616,7 +620,16 @@ export function formatFeatureInfo(
   labelMap?: { [key: string]: string },
 ): string {
   if (type === DataType.Date) {
-    return `${moment(value).utc().format('MMMM Do YYYY, h:mm:ss')} UTC`;
+    return new Date(value).toLocaleString('default', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+      timeZoneName: 'short',
+      hour12: false,
+    });
   }
 
   if (type === DataType.LabelMapping) {

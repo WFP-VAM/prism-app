@@ -1,4 +1,3 @@
-import moment, { Moment } from 'moment';
 import { DateItem } from '../config/types';
 import {
   DEFAULT_DATE_FORMAT,
@@ -19,13 +18,28 @@ export const datesAreEqualWithoutTime = (
   return d1 === d2;
 };
 
+function diffInDays(date1: Date, date2: Date) {
+  const date1InMs = date1.getTime();
+  const date2InMs = date2.getTime();
+
+  const differenceInMs = Math.abs(date1InMs - date2InMs);
+
+  const diff = Math.floor(differenceInMs / (1000 * 60 * 60 * 24));
+
+  return diff;
+}
+
 export const generateDatesRange = (
-  startDate: Moment,
-  endDate: Moment,
+  startDate: Date,
+  endDate: Date,
 ): number[] => {
   return Array.from(
-    { length: endDate.diff(startDate, 'days') + 1 },
-    (_, index) => startDate.clone().add(index, 'days').valueOf(),
+    { length: diffInDays(startDate, endDate) + 1 },
+    (_, index) => {
+      const clone = new Date(startDate.getTime());
+      clone.setDate(startDate.getDate() + index);
+      return clone.getTime();
+    },
   );
 };
 
@@ -38,8 +52,8 @@ export const generateDateItemsRange = (
 
   return startEndDateList.flatMap(range => {
     const datesInTime: number[] = generateDatesRange(
-      moment(range.startDate),
-      moment(range.endDate),
+      new Date(range.startDate || 0),
+      new Date(range.endDate || 0),
     );
 
     const dateItems: DateItem[] = datesInTime.map(dateInTime => ({
@@ -100,28 +114,46 @@ export const dateStrToUpperCase = (dateStr: string): string => {
 };
 
 export const getDateFormat = (
-  date: number | string | undefined,
+  date: number | string | undefined | Date,
   format:
     | 'default'
     | 'snake'
     | typeof DEFAULT_DATE_FORMAT_SNAKE_CASE
-    | typeof DEFAULT_DATE_FORMAT,
+    | typeof DEFAULT_DATE_FORMAT
+    | 'YYYY-MM-DD HH:mm'
+    | 'DD_MM_YYYY'
+    | 'YYYY-MM-DDTHH:mm:ss',
 ) => {
   if (date === undefined) {
     return undefined;
   }
 
+  const jsDate = new Date(date);
+  const year = jsDate.getUTCFullYear();
+  const month = String(jsDate.getUTCMonth() + 1).padStart(2, '0');
+  const day = String(jsDate.getUTCDate()).padStart(2, '0');
+  const hours = String(jsDate.getUTCHours()).padStart(2, '0');
+  const minutes = String(jsDate.getUTCMinutes()).padStart(2, '0');
+  const seconds = String(jsDate.getUTCSeconds()).padStart(2, '0');
+
   switch (format) {
     case 'default':
     case DEFAULT_DATE_FORMAT:
-      return moment(date).format(DEFAULT_DATE_FORMAT);
+      return `${year}-${month}-${day}`;
     case 'snake':
     case DEFAULT_DATE_FORMAT_SNAKE_CASE:
-      return moment(date).format(DEFAULT_DATE_FORMAT_SNAKE_CASE);
+      return `${year}_${month}_${day}`;
+    case 'YYYY-MM-DD HH:mm':
+      return `${year}-${month}_${day} ${hours}:${minutes}`;
+    case 'DD_MM_YYYY':
+      return `${day}_${month}_${year}`;
+    case 'YYYY-MM-DDTHH:mm:ss':
+      return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}`;
 
     default:
       throw new Error(`Invalid format: ${format}`);
   }
 };
 
-export const getMillisecondsFromISO = (date: string) => moment(date).valueOf();
+export const getTimeInMilliseconds = (date: string | number) =>
+  new Date(date).getTime();

@@ -1,8 +1,8 @@
 import GeoJSON, { FeatureCollection, Point } from 'geojson';
-import moment from 'moment';
 import { Dispatch } from 'redux';
 import { PointData, PointLayerData } from 'config/types';
 import { fetchWithTimeout } from './fetch-with-timeout';
+import { getDateFormat } from './date-utils';
 
 type EWSChartConfig = {
   label: string;
@@ -57,16 +57,19 @@ type EWSTriggerLevels = {
 export const createEWSDatesArray = (testEndDate?: number): number[] => {
   const datesArray = [];
 
-  const endDate =
-    testEndDate || moment(moment.utc().format('YYYY-MM-DD')).valueOf();
+  const now = new Date();
 
-  const tempDate = moment.utc('2021-01-01');
+  const endDate = testEndDate || now.setUTCHours(0, 0, 0, 0);
+
+  let tempDate = new Date('2021-01-01');
 
   while (tempDate.valueOf() <= endDate) {
+    const clone = new Date(tempDate.getTime());
     // eslint-disable-next-line fp/no-mutating-methods
-    datesArray.push(tempDate.clone().set({ hour: 12, minute: 0 }).valueOf());
+    datesArray.push(clone.setHours(12));
 
-    tempDate.add(1, 'days');
+    // eslint-disable-next-line fp/no-mutation
+    tempDate = new Date(tempDate.getTime() + 24 * 60 * 60 * 1000);
   }
 
   return datesArray;
@@ -99,16 +102,16 @@ export const fetchEWSDataPointsByLocation = async (
   dispatch: Dispatch,
   externalId?: string,
 ): Promise<EWSSensorData[]> => {
-  const endDate = moment(date)
-    .clone()
-    .set({ hour: 23, minute: 59, second: 59 });
+  const endDate = new Date(date);
+  endDate.setHours(23, 59, 59, 999);
   // FIXME: pass start/end here? why the 24h delta?
-  const startDate = endDate.clone().subtract(1, 'days');
+  const startDate = new Date(endDate.getTime() - 24 * 60 * 60 * 1000);
   const format = 'YYYY-MM-DDTHH:mm:ss';
 
-  const url = `${baseUrl}/sensors/sensor_event?start=${startDate.format(
+  const url = `${baseUrl}/sensors/sensor_event?start=${getDateFormat(
+    startDate,
     format,
-  )}&end=${endDate.format(format)}`;
+  )}&end=${getDateFormat(endDate, format)}`;
 
   const resource = externalId ? `${url}&external_id=${externalId}` : url;
 

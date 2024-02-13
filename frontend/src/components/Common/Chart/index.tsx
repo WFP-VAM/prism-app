@@ -3,7 +3,6 @@ import colormap from 'colormap';
 import { ChartOptions } from 'chart.js';
 import { Bar, Line } from 'react-chartjs-2';
 import { TFunctionKeys } from 'i18next';
-import moment, { LocaleSpecifier } from 'moment';
 import { ChartConfig, DatasetField } from 'config/types';
 import { TableData, TableRowType } from 'context/tableStateSlice';
 import { useSafeTranslation } from 'i18n';
@@ -16,6 +15,7 @@ import {
   createDataKeyMap,
   downloadChartsToCsv,
 } from 'utils/csv-utils';
+import { getDateFormat } from 'utils/date-utils';
 
 function downloadChartPng(ref: React.RefObject<Bar | Line>, filename: string) {
   const chart = ref.current;
@@ -65,7 +65,6 @@ interface GetLabelsProps {
   header: TableRowType;
   indices: string[];
   isEWSChart: boolean;
-  locale: LocaleSpecifier;
   tableRows: TableRowType[];
   transpose: boolean;
 }
@@ -76,7 +75,6 @@ export const getLabels = ({
   header,
   indices,
   isEWSChart,
-  locale,
   tableRows,
   transpose,
 }: GetLabelsProps) => {
@@ -86,7 +84,7 @@ export const getLabels = ({
   return tableRows.slice(chartRange[0], chartRange[1]).map(row => {
     // Time information is only needed for EWS charts
     const dateFormat = isEWSChart ? 'YYYY-MM-DD HH:mm' : 'YYYY-MM-DD';
-    return moment(row[category]).locale(locale).format(dateFormat);
+    return getDateFormat(row[category], dateFormat) as string;
   });
 };
 
@@ -165,7 +163,6 @@ const Chart = memo(
       header,
       indices,
       isEWSChart,
-      locale: t('date_locale') as LocaleSpecifier,
       tableRows,
       transpose,
     });

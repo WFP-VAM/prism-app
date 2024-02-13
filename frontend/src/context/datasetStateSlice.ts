@@ -1,4 +1,3 @@
-import moment from 'moment';
 import { orderBy } from 'lodash';
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { Dispatch } from 'redux';
@@ -10,7 +9,7 @@ import {
   fetchEWSDataPointsByLocation,
 } from 'utils/ews-utils';
 import { fetchWithTimeout } from 'utils/fetch-with-timeout';
-import { getDateFormat, getMillisecondsFromISO } from 'utils/date-utils';
+import { getDateFormat, getTimeInMilliseconds } from 'utils/date-utils';
 import type { CreateAsyncThunkTypes, RootState } from './store';
 import { TableData } from './tableStateSlice';
 
@@ -100,7 +99,7 @@ export const createTableData = (
     );
 
     return {
-      [CHART_DATA_PREFIXES.date]: moment(row.date).format(momentFormat),
+      [CHART_DATA_PREFIXES.date]: getDateFormat(row.date, momentFormat),
       ...valuesObj,
     };
   });
@@ -137,7 +136,7 @@ export const loadEWSDataset = async (
     const [measureDate, value] = item.value;
 
     return {
-      date: getMillisecondsFromISO(measureDate),
+      date: getTimeInMilliseconds(measureDate),
       values: { measure: value.toString() },
     };
   });
@@ -204,7 +203,7 @@ export const fetchHDC = async (
   responseJson = await response.json();
 
   const dates: number[] = responseJson?.date?.map((date: string) =>
-    getMillisecondsFromISO(date),
+    getTimeInMilliseconds(date),
   );
 
   return dates?.map((date, index) => {

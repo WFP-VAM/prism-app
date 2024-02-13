@@ -18,7 +18,6 @@ import { useSelector } from 'react-redux';
 import { ArrowBack } from '@material-ui/icons';
 import { PDFDownloadLink, PDFViewer } from '@react-pdf/renderer';
 import { snakeCase } from 'lodash';
-import moment from 'moment';
 import { useSafeTranslation } from 'i18n';
 import { mapSelector } from 'context/mapStateSlice/selectors';
 import {
@@ -60,7 +59,7 @@ const ReportDialog = memo(
     const getPDFName = useMemo(() => {
       const type = snakeCase(analysisResult?.legendText);
       const date = new Date();
-      const dateString = moment(date).format('DD_MM_YYYY');
+      const dateString = getDateFormat(date.toISOString(), 'DD_MM_YYYY');
       return `PRISM_report_${type}_${dateString}.pdf`;
     }, [analysisResult]);
 

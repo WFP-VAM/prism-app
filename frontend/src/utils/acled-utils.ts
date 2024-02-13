@@ -6,7 +6,7 @@ import { addNotification } from 'context/notificationStateSlice';
 import { queryParamsToString } from './url-utils';
 import { fetchWithTimeout } from './fetch-with-timeout';
 import { LocalError } from './error-utils';
-import { getDateFormat, getMillisecondsFromISO } from './date-utils';
+import { getDateFormat, getTimeInMilliseconds } from './date-utils';
 
 export const fetchACLEDDates = async (
   url: string,
@@ -36,7 +36,7 @@ export const fetchACLEDDates = async (
 
     /* eslint-disable camelcase */
     const dates: number[] = respJson.data.map((item: { event_date: string }) =>
-      getMillisecondsFromISO(item.event_date),
+      getTimeInMilliseconds(item.event_date),
     );
     /* eslint-enable camelcase */
 

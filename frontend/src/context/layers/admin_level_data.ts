@@ -1,6 +1,5 @@
 import { FeatureCollection } from 'geojson';
 import { compact, get, isNull, isString, pick } from 'lodash';
-import moment from 'moment';
 import {
   BoundaryLayerProps,
   AdminLevelDataLayerProps,
@@ -10,6 +9,7 @@ import type { RootState, ThunkApi } from 'context/store';
 import { getBoundaryLayerSingleton, LayerDefinitions } from 'config/utils';
 import { layerDataSelector } from 'context/mapStateSlice/selectors';
 import { fetchWithTimeout } from 'utils/fetch-with-timeout';
+import { getDateFormat } from 'utils/date-utils';
 import type { LayerData, LayerDataParams, LazyLoader } from './layer-data';
 
 export type DataRecord = {
@@ -220,7 +220,7 @@ export const fetchAdminLevelDataLayerData: LazyLoader<AdminLevelDataLayerProps> 
       // example: "&date={YYYY-MM-DD}" will turn into "&date=2021-04-27"
       const datedPath = adminLevelDataLayer.path.replace(/{.*?}/g, match => {
         const format = match.slice(1, -1);
-        return moment(date).format(format);
+        return getDateFormat(date, format as any) as string;
       });
 
       const requestMode:
