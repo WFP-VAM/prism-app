@@ -113,22 +113,22 @@ export const addPopupParams = (
   // Add feature_info_props as extra fields to the tooltip
   let featureInfoPropsWithFallback = featureInfoProps || {};
   if ('fallbackLayerKeys' in layer) {
-    const initialDataTitles = Object.values(
-      (layer as AdminLevelDataLayerProps).featureInfoProps || {},
-    )?.map((f: { dataTitle: string }) => f.dataTitle);
+    // const initialDataTitles = Object.values(
+    //   (layer as AdminLevelDataLayerProps).featureInfoProps || {},
+    // )?.map((f: { dataTitle: string }) => f.dataTitle);
     // eslint-disable-next-line
     layer.fallbackLayerKeys?.forEach(backupLayerKey => {
       const layerDef = LayerDefinitions[
         backupLayerKey
       ] as AdminLevelDataLayerProps;
-      const filteredFeatureInfoProps = Object.fromEntries(
-        Object.entries(layerDef.featureInfoProps || {}).filter(([key, value]) =>
-          initialDataTitles.includes(value.dataTitle),
-        ),
-      );
+      // const filteredFeatureInfoProps = Object.fromEntries(
+      //   Object.entries(layerDef.featureInfoProps || {}).filter(([key, value]) =>
+      //     initialDataTitles.includes(value.dataTitle),
+      //   ),
+      // );
       // eslint-disable-next-line fp/no-mutation
       featureInfoPropsWithFallback = {
-        ...filteredFeatureInfoProps,
+        ...layerDef.featureInfoProps,
         ...featureInfoPropsWithFallback,
       };
     });
