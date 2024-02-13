@@ -25,17 +25,19 @@ import {
 import CloseIcon from '@material-ui/icons/Close';
 import EditIcon from '@material-ui/icons/Edit';
 import GetAppIcon from '@material-ui/icons/GetApp';
+import mask from '@turf/mask';
 import { legendListId } from 'components/MapView/Legends';
 import html2canvas from 'html2canvas';
 import { jsPDF } from 'jspdf';
 import maplibregl from 'maplibre-gl';
-import React, { ChangeEvent, useRef } from 'react';
-import MapGL, { MapRef } from 'react-map-gl/maplibre';
+import React, { ChangeEvent, useRef, useState } from 'react';
+import MapGL, { Layer, MapRef, Source } from 'react-map-gl/maplibre';
 import { useSelector } from 'react-redux';
 import { mapStyle } from 'components/MapView/Map';
 import { addFillPatternImagesInMap } from 'components/MapView/Layers/AdminLevelDataLayer';
 import useLayers from 'utils/layers-utils';
 import { getDateFormat } from 'utils/date-utils';
+import { safeCountry } from 'config';
 import { AdminLevelDataLayerProps } from 'config/types';
 import {
   dateRangeSelector,
@@ -118,6 +120,7 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
     legend: true,
     footer: true,
     fullLayerDescription: true,
+    countryMask: true,
     scaleBar: true,
     northArrow: true,
   });
@@ -158,6 +161,22 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
     };
     setFooterText(`${getDateText()} ${t(DEFAULT_FOOTER_TEXT)}`);
   }, [i18n.language, t, dateRange]);
+
+  const [invertedAdminBoundaryLimitPolygon, setAdminBoundaryPolygon] = useState(
+    null,
+  );
+
+  React.useEffect(() => {
+    // admin-boundary-unified-polygon.json is generated using "yarn preprocess-layers"
+    // which runs ./scripts/preprocess-layers.js
+    fetch(`data/${safeCountry}/admin-boundary-unified-polygon.json`)
+      .then(response => response.json())
+      .then(polygonData => {
+        const maskedPolygon = mask(polygonData as any);
+        setAdminBoundaryPolygon(maskedPolygon as any);
+      })
+      .catch(error => console.error('Error:', error));
+  }, []);
 
   const createFooterElement = (
     inputFooterText: string = t(DEFAULT_FOOTER_TEXT),
@@ -327,14 +346,14 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
 
         if (toggles.northArrow) {
           const image = new Image();
-          const imageWidth = 40 * ratio;
+          const imageWidth = 50 * ratio;
           const imageHeight = 60 * ratio;
 
           image.onload = () => {
             context.drawImage(
               image,
               activeLayers.width -
-                (scaleBarGap + imageWidth / 2 + scalerBarLength / 2) * ratio,
+                (scaleBarGap + imageWidth / 4 + scalerBarLength / 2) * ratio,
               activeLayers.height -
                 (110 + (toggles.footer ? footerTextHeight : 0)) * ratio,
               imageWidth,
@@ -351,18 +370,13 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
     setElementsLoading(false);
   };
 
-  React.useEffect(() => {
-    if (open) {
-      setElementsLoading(true);
-    }
-  }, [open]);
-
+  // reload the canvas when the settings are changed
   React.useEffect(() => {
     if (open) {
       refreshImage();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [open, footerText, toggles, legendScale]);
+  }, [footerText, toggles, legendScale, mapRef]);
 
   const toggle = (event: ChangeEvent<HTMLInputElement>) => {
     setToggles(prevValues => {
@@ -426,6 +440,11 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
       name: 'footer',
       label: 'Footer Text',
       button: { Icon: EditIcon, onClick: () => setOpenFooterEdit(true) },
+    },
+    {
+      checked: toggles.countryMask,
+      name: 'countryMask',
+      label: 'Country Mask',
     },
     // Hide options for toggling scale bar and north arrow
     // { checked: toggles.scaleBar, name: 'scaleBar', label: 'Scale Bar' },
@@ -495,18 +514,35 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
                         dragRotate={false}
                         // preserveDrawingBuffer is required for the map to be exported as an image
                         preserveDrawingBuffer
-                        onLoad={e => {
-                          e.target.setCenter(selectedMap.getCenter());
-                          e.target.setZoom(selectedMap.getZoom());
+                        initialViewState={{
+                          longitude: selectedMap.getCenter().lng,
+                          latitude: selectedMap.getCenter().lat,
+                          zoom: selectedMap.getZoom(),
                         }}
-                        onIdle={() => {
-                          refreshImage();
-                        }}
-                        minZoom={selectedMap.getMinZoom()}
-                        maxZoom={selectedMap.getMaxZoom()}
+                        onLoad={() => refreshImage()}
+                        onMoveEnd={() => refreshImage()}
                         mapStyle={selectedMapStyle || mapStyle.toString()}
                         maxBounds={selectedMap.getMaxBounds() ?? undefined}
-                      />
+                      >
+                        {toggles.countryMask && (
+                          <Source
+                            id="mask-overlay"
+                            type="geojson"
+                            data={invertedAdminBoundaryLimitPolygon}
+                          >
+                            <Layer
+                              id="mask-layer-overlay"
+                              type="fill"
+                              source="mask-overlay"
+                              layout={{}}
+                              paint={{
+                                'fill-color': '#000',
+                                'fill-opacity': 0.7,
+                              }}
+                            />
+                          </Source>
+                        )}
+                      </MapGL>
                     )}
                   </div>
                 </div>

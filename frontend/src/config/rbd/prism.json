@@ -21,10 +21,10 @@
   },
   "map": {
     "boundingBox": [
-      0,
-      -2.5,
-      7,
-      29
+      -26,
+      -1,
+      32,
+      24
     ]
   },
   "defaultDisplayBoundaries": [

@@ -5,6 +5,7 @@ import { Dispatch } from 'redux';
 import { appConfig, safeCountry } from '../config';
 import type {
   AvailableDates,
+  CompositeLayerProps,
   PathLayer,
   PointDataLayerProps,
   RequestFeatureInfo,
@@ -73,7 +74,8 @@ export type DateCompatibleLayer =
   | WMSLayerProps
   | ImpactLayerProps
   | PointDataLayerProps
-  | StaticRasterLayerProps;
+  | StaticRasterLayerProps
+  | CompositeLayerProps;
 
 export const getPossibleDatesForLayer = (
   layer: DateCompatibleLayer,
@@ -81,17 +83,22 @@ export const getPossibleDatesForLayer = (
   // eslint-disable-next-line consistent-return
 ): DateItem[] => {
   switch (layer.type) {
+    case 'admin_level_data':
+    case 'point_data':
+    case 'static_raster':
     case 'wms':
-      return serverAvailableDates[layer.serverLayerName];
+      return serverAvailableDates[layer.id];
     case 'impact':
       return serverAvailableDates[
-        (LayerDefinitions[layer.hazardLayer] as WMSLayerProps).serverLayerName
+        (LayerDefinitions[layer.hazardLayer] as WMSLayerProps).id
       ];
-    case 'point_data':
-    case 'admin_level_data':
-      return serverAvailableDates[layer.id];
-    case 'static_raster':
-      return serverAvailableDates[layer.id];
+    case 'composite': {
+      // Filter dates that are after layer.startDate
+      const startDateTimestamp = Date.parse(layer.startDate);
+      return (serverAvailableDates[layer.dateLayer] || []).filter(
+        date => date.displayDate > startDateTimestamp,
+      );
+    }
     default:
       return [];
   }
@@ -425,8 +432,8 @@ const layerDefinitionsBluePrint: AvailableDates = Object.keys(
  * */
 async function fetchPreprocessedDates(): Promise<any> {
   try {
-    // preprocessed-layer-dates.json is generated using "yarn preprocess-date"
-    // which runs ./scripts/preprocess-layer-availability-dates.js
+    // preprocessed-layer-dates.json is generated using "yarn preprocess-layers"
+    // which runs ./scripts/preprocess-layers.js - preprocessValidityPeriods
     const response = await fetch(
       `data/${safeCountry}/preprocessed-layer-dates.json`,
     );
@@ -465,9 +472,40 @@ export async function getLayersAvailableDates(
       layer.type === 'static_raster' && Boolean(layer.dates),
   );
 
+  const WCSWMSLayers = Object.values(LayerDefinitions).filter(
+    (layer): layer is WMSLayerProps => layer.type === 'wms',
+  );
+
+  /**
+   * Function to map server dates to layer IDs
+   *
+   * @param serverDates - The dates fetched from the server
+   * @param layers - The layers to map the dates to
+   * @return A record of layer IDs to dates
+   */
+  const mapServerDatesToLayerIds = (
+    serverDates: Record<string, number[]>,
+    layers: WMSLayerProps[],
+  ): Record<string, number[]> => {
+    return layers.reduce((acc: Record<string, number[]>, layer) => {
+      const layerDates = serverDates[layer.serverLayerName];
+      if (layerDates) {
+        // eslint-disable-next-line fp/no-mutation
+        acc[layer.id] = layerDates;
+      }
+      return acc;
+    }, {});
+  };
+
   const layerDates = await Promise.all([
-    ...wmsServerUrls.map(url => localWMSGetLayerDates(url, dispatch)),
-    ...wcsServerUrls.map(url => localFetchCoverageLayerDays(url, dispatch)),
+    ...wmsServerUrls.map(async url => {
+      const serverDates = await localWMSGetLayerDates(url, dispatch);
+      return mapServerDatesToLayerIds(serverDates, WCSWMSLayers);
+    }),
+    ...wcsServerUrls.map(async url => {
+      const serverDates = await localFetchCoverageLayerDays(url, dispatch);
+      return mapServerDatesToLayerIds(serverDates, WCSWMSLayers);
+    }),
     ...pointDataLayers.map(async layer => ({
       [layer.id]: await getPointDataCoverage(layer, dispatch),
     })),

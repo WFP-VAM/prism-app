@@ -1,6 +1,6 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { useEffect } from 'react';
-import { AvailableDates, isMainLayer, LayerKey } from 'config/types';
+import { isMainLayer, LayerKey } from 'config/types';
 import { availableDatesSelector } from 'context/serverStateSlice';
 import {
   dateRangeSelector,
@@ -15,10 +15,7 @@ import { getDateFormat } from './date-utils';
  * Returns either the user selected date or the default date, dispatching it to the date picker beforehand. Can also return undefined if no default date is available.
  * @param availableDatesLookupKey key to lookup in AvailableDates
  */
-export function useDefaultDate(
-  availableDatesLookupKey: keyof AvailableDates,
-  layerId?: LayerKey,
-): number | undefined {
+export function useDefaultDate(layerId: LayerKey): number | undefined {
   const dispatch = useDispatch();
   const selectedLayers = useSelector(layersSelector);
   // check layer without group or main layer in group
@@ -27,9 +24,7 @@ export function useDefaultDate(
 
   const { updateHistory } = useUrlHistory();
 
-  const possibleDates = useSelector(availableDatesSelector)[
-    availableDatesLookupKey
-  ];
+  const possibleDates = useSelector(availableDatesSelector)[layerId];
 
   const defaultDate: number | undefined =
     possibleDates?.[possibleDates?.length - 1]?.displayDate;
