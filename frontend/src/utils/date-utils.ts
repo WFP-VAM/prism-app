@@ -101,7 +101,11 @@ export const dateStrToUpperCase = (dateStr: string): string => {
 
 export const getDateFormat = (
   date: number | string | undefined,
-  format: 'default' | 'snake',
+  format:
+    | 'default'
+    | 'snake'
+    | typeof DEFAULT_DATE_FORMAT_SNAKE_CASE
+    | typeof DEFAULT_DATE_FORMAT,
 ) => {
   if (date === undefined) {
     return undefined;
@@ -109,8 +113,10 @@ export const getDateFormat = (
 
   switch (format) {
     case 'default':
+    case DEFAULT_DATE_FORMAT:
       return moment(date).format(DEFAULT_DATE_FORMAT);
     case 'snake':
+    case DEFAULT_DATE_FORMAT_SNAKE_CASE:
       return moment(date).format(DEFAULT_DATE_FORMAT_SNAKE_CASE);
 
     default:
