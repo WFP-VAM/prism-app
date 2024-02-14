@@ -24,7 +24,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { DateRangeType } from 'config/types';
 import { dateRangeSelector } from 'context/mapStateSlice/selectors';
 import { addNotification } from 'context/notificationStateSlice';
-import { moment, useSafeTranslation } from 'i18n';
+import { locales, useSafeTranslation } from 'i18n';
 import {
   dateStrToUpperCase,
   datesAreEqualWithoutTime,
@@ -36,10 +36,12 @@ import {
 } from 'utils/name-utils';
 import { useUrlHistory } from 'utils/url-utils';
 import useLayers from 'utils/layers-utils';
+import { format } from 'date-fns';
 import { ReactComponent as TickSvg } from './tick.svg';
 import DateSelectorInput from './DateSelectorInput';
 import TimelineItems from './TimelineItems';
 import { TIMELINE_ITEM_WIDTH, USER_DATE_OFFSET, findDateIndex } from './utils';
+import { oneDayInMs } from '../LeftPanel/utils';
 
 type Point = {
   x: number;
@@ -61,7 +63,7 @@ const DateSelector = memo(({ classes }: DateSelectorProps) => {
       label: '',
       month: '',
       isFirstDay: false,
-      date: moment().toISOString(),
+      date: new Date().toISOString(),
     },
   ]);
   const [timelinePosition, setTimelinePosition] = useState<Point>({
@@ -123,22 +125,39 @@ const DateSelector = memo(({ classes }: DateSelectorProps) => {
   }, [t]);
 
   const range = useMemo(() => {
-    return Array.from(
-      moment()
-        .range(
-          moment(stateStartDate).startOf('year'),
-          moment(stateStartDate).endOf('year'),
-        )
-        .by('days'),
-    ).map(date => {
-      date.locale(locale);
-      date.set({ hour: 12, minute: 0, second: 0 });
+    const startDate = stateStartDate ? new Date(stateStartDate) : new Date();
+    const year = startDate.getFullYear();
+    const start = new Date(year, 0, 1);
+    const end = new Date(year, 11, 31); // December is 11th month
+    const daysArray: Date[] = [];
+
+    for (
+      let currentDate = start;
+      currentDate <= end;
+      // eslint-disable-next-line fp/no-mutation
+      currentDate = new Date(currentDate.getTime() + 1 * oneDayInMs)
+    ) {
+      // eslint-disable-next-line fp/no-mutating-methods
+      daysArray.push(new Date(currentDate));
+    }
+
+    return daysArray.map(date => {
+      // date.locale(locale);
+      date.setHours(12, 0, 0, 0);
       return {
-        value: date.valueOf(),
-        label: dateStrToUpperCase(date.format(MONTH_FIRST_DATE_FORMAT)),
-        month: dateStrToUpperCase(date.format(MONTH_ONLY_DATE_FORMAT)),
-        date: date.format('yyyy-MM-DD'),
-        isFirstDay: date.date() === date.startOf('month').date(),
+        value: date.getTime(),
+        label: dateStrToUpperCase(
+          format(date, MONTH_FIRST_DATE_FORMAT, {
+            locale: locales[locale as keyof typeof locales],
+          }),
+        ),
+        month: dateStrToUpperCase(
+          format(date, MONTH_ONLY_DATE_FORMAT, {
+            locale: locales[locale as keyof typeof locales],
+          }),
+        ),
+        date: getDateFormat(date, 'default') as string,
+        isFirstDay: date.getDate() === 1,
       };
     });
   }, [locale, stateStartDate]);
@@ -335,7 +354,7 @@ const DateSelector = memo(({ classes }: DateSelectorProps) => {
             locale={t('date_locale')}
             dateFormat="PP"
             className={classes.datePickerInput}
-            selected={moment(stateStartDate).toDate()}
+            selected={stateStartDate ? new Date(stateStartDate) : new Date()}
             onChange={handleOnDatePickerChange}
             maxDate={maxDate}
             todayButton={t('Today')}
