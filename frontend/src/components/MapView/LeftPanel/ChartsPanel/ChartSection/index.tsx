@@ -49,8 +49,8 @@ function generateDateStrings(startDate: Date, endDate: Date) {
   const result = [];
   const interval = [1, 11, 21];
   const currentDate = new Date(startDate);
-  currentDate.setHours(10);
-  endDate.setHours(12);
+  currentDate.setHours(10, 0, 0, 0);
+  endDate.setHours(12, 0, 0, 0);
 
   while (currentDate <= endDate) {
     // eslint-disable-next-line fp/no-mutation, no-plusplus

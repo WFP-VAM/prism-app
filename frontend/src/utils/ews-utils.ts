@@ -67,7 +67,7 @@ export const createEWSDatesArray = (testEndDate?: number): number[] => {
   while (tempDate.getTime() <= endDate) {
     const clone = new Date(tempDate.getTime());
     // eslint-disable-next-line fp/no-mutating-methods
-    datesArray.push(clone.setUTCHours(12));
+    datesArray.push(clone.setUTCHours(12, 0, 0, 0));
 
     // eslint-disable-next-line fp/no-mutation
     tempDate = new Date(tempDate.getTime() + oneDayInMs);

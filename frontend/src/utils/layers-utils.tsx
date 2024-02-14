@@ -137,7 +137,7 @@ const useLayers = () => {
         dupTimes => dupTimes >= selectedLayersWithDateSupport.length,
       ),
       // convert back to number array after using YYYY-MM-DD strings in countBy
-    ).map(dateString => new Date(dateString).setUTCHours(12));
+    ).map(dateString => new Date(dateString).setUTCHours(12, 0, 0, 0));
   }, [selectedLayerDatesDupCount, selectedLayersWithDateSupport.length]);
 
   const defaultLayer = useMemo(() => {
@@ -250,7 +250,7 @@ const useLayers = () => {
 
   // The date integer from url
   const dateInt = useMemo(() => {
-    return (urlDate ? new Date(urlDate) : new Date()).setHours(12);
+    return (urlDate ? new Date(urlDate) : new Date()).setHours(12, 0, 0, 0);
   }, [urlDate]);
 
   useEffect(() => {
@@ -369,7 +369,7 @@ const useLayers = () => {
     (layer: DateCompatibleLayer, date: Date) => {
       return binaryIncludes<DateItem>(
         getPossibleDatesForLayer(layer, serverAvailableDates),
-        date.setHours(12),
+        date.setHours(12, 0, 0, 0),
         x => new Date(x.displayDate).setHours(12, 0, 0, 0),
       );
     },

@@ -77,8 +77,8 @@ async function generateIntermediateDateItemFromDataFile(
       const startDate = new Date(start);
       const endDate = new Date(end);
 
-      startDate.setHours(12);
-      endDate.setHours(12);
+      startDate.setHours(12, 0, 0, 0);
+      endDate.setHours(12, 0, 0, 0);
 
       return {
         startDate: startDate.getTime(),
