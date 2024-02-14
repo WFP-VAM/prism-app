@@ -27,6 +27,7 @@ import { useSafeTranslation } from 'i18n';
 import { getChartAdminBoundaryParams } from 'utils/admin-utils';
 import Chart, { ChartProps } from 'components/Common/Chart';
 import { createCsvDataFromDataKeyMap, createDataKeyMap } from 'utils/csv-utils';
+import { getDateFormat } from 'utils/date-utils';
 
 /**
  * This function removes the first occurrence of a specific number from an array.
@@ -140,18 +141,32 @@ const ChartSection = memo(
       undefined | TableData
     >();
 
+    const comparingCharts = !chartMaxDateRange;
+
     React.useEffect(() => {
       if (!chartDataset) {
         return;
       }
-      const extended = extendDatasetRows(
-        chartDataset,
-        chartMaxDateRange?.[0],
-        chartMaxDateRange?.[1],
-      );
 
-      setExtendedChartDataset(extended);
-    }, [chartDataset, chartMaxDateRange]);
+      if (comparingCharts) {
+        setExtendedChartDataset(
+          extendDatasetRows(
+            chartDataset,
+            getDateFormat(startDate, 'default'),
+            getDateFormat(endDate, 'default'),
+          ),
+        );
+        return;
+      }
+
+      setExtendedChartDataset(
+        extendDatasetRows(
+          chartDataset,
+          chartMaxDateRange?.[0],
+          chartMaxDateRange?.[1],
+        ),
+      );
+    }, [chartDataset, chartMaxDateRange, comparingCharts, endDate, startDate]);
 
     // This effect is used to calculate the max and min values of the chart
     // so that we can put charts on the same scale for comparison.
