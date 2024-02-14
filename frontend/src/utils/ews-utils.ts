@@ -1,6 +1,7 @@
 import GeoJSON, { FeatureCollection, Point } from 'geojson';
 import { Dispatch } from 'redux';
 import { PointData, PointLayerData } from 'config/types';
+import { oneDayInMs } from 'components/MapView/LeftPanel/utils';
 import { fetchWithTimeout } from './fetch-with-timeout';
 import { getDateFormat } from './date-utils';
 
@@ -63,13 +64,13 @@ export const createEWSDatesArray = (testEndDate?: number): number[] => {
 
   let tempDate = new Date('2021-01-01');
 
-  while (tempDate.valueOf() <= endDate) {
+  while (tempDate.getTime() <= endDate) {
     const clone = new Date(tempDate.getTime());
     // eslint-disable-next-line fp/no-mutating-methods
-    datesArray.push(clone.setHours(12));
+    datesArray.push(clone.setUTCHours(12));
 
     // eslint-disable-next-line fp/no-mutation
-    tempDate = new Date(tempDate.getTime() + 24 * 60 * 60 * 1000);
+    tempDate = new Date(tempDate.getTime() + oneDayInMs);
   }
 
   return datesArray;
@@ -105,7 +106,7 @@ export const fetchEWSDataPointsByLocation = async (
   const endDate = new Date(date);
   endDate.setHours(23, 59, 59, 999);
   // FIXME: pass start/end here? why the 24h delta?
-  const startDate = new Date(endDate.getTime() - 24 * 60 * 60 * 1000);
+  const startDate = new Date(endDate.getTime() - oneDayInMs);
   const format = 'YYYY-MM-DDTHH:mm:ss';
 
   const url = `${baseUrl}/sensors/sensor_event?start=${getDateFormat(

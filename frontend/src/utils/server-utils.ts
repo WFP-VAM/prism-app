@@ -1,6 +1,7 @@
 import { get, merge, snakeCase, sortBy, sortedUniqBy } from 'lodash';
 import { WFS, WMS, fetchCoverageLayerDays, formatUrl } from 'prism-common';
 import { Dispatch } from 'redux';
+import { oneDayInMs } from 'components/MapView/LeftPanel/utils';
 import { appConfig, safeCountry } from '../config';
 import type {
   AvailableDates,
@@ -302,7 +303,7 @@ export function generateIntermediateDateItemFromValidity(layer: ValidityLayer) {
   );
 
   // only calculate validity for dates that are less than 5 years old
-  const fiveYearsInMs = 5 * 365 * 24 * 60 * 60 * 1000;
+  const fiveYearsInMs = 5 * 365 * oneDayInMs;
   const earliestDate = Date.now() - fiveYearsInMs;
 
   const dateItemsWithValidity = sortedDates
@@ -320,7 +321,7 @@ export function generateIntermediateDateItemFromValidity(layer: ValidityLayer) {
       // if the mode is `both` or backward we add the days of the validity to the end date keeping the startDate as it is
       if (mode === DatesPropagation.BOTH || mode === DatesPropagation.FORWARD) {
         // eslint-disable-next-line fp/no-mutation
-        endDate = new Date(endDate.getTime() + days * 24 * 60 * 60 * 1000);
+        endDate = new Date(endDate.getTime() + days * oneDayInMs);
       }
 
       // if the mode is `both` or `forward` we subtract the days of the validity to the start date keeping the endDate as it is
@@ -329,7 +330,7 @@ export function generateIntermediateDateItemFromValidity(layer: ValidityLayer) {
         mode === DatesPropagation.BACKWARD
       ) {
         // eslint-disable-next-line fp/no-mutation
-        startDate = new Date(startDate.getTime() - days * 24 * 60 * 60 * 1000);
+        startDate = new Date(startDate.getTime() - days * oneDayInMs);
       }
 
       // We create an array with the diff between the endDate and startDate and we create an array with the addition of the days in the startDate

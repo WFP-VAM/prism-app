@@ -144,7 +144,7 @@ export const getDateFormat = (
     case DEFAULT_DATE_FORMAT_SNAKE_CASE:
       return `${year}_${month}_${day}`;
     case 'YYYY-MM-DD HH:mm':
-      return `${year}-${month}_${day} ${hours}:${minutes}`;
+      return `${year}-${month}-${day} ${hours}:${minutes}`;
     case 'DD_MM_YYYY':
       return `${day}_${month}_${year}`;
     case 'YYYY-MM-DDTHH:mm:ss':
