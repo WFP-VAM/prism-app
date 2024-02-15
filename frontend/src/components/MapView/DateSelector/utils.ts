@@ -16,7 +16,7 @@ export type DateCompatibleLayerWithDateItems = DateCompatibleLayer & {
  * Return the closest date from a given list of available dates
  * @param date
  * @param availableDates
- * @return date as momentjs object
+ * @return date as milliseconds
  */
 export function findClosestDate(
   date: number,

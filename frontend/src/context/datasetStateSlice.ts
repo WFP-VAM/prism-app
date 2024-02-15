@@ -86,7 +86,7 @@ export const createTableData = (
   results: DataItem[],
   format: TableDataFormat,
 ): TableData => {
-  const momentFormat =
+  const dateFormat =
     format === TableDataFormat.DATE ? DEFAULT_DATE_FORMAT : 'YYYY-MM-DD HH:mm';
 
   const sortedRows = orderBy(results, item => item.date).map(row => {
@@ -99,7 +99,7 @@ export const createTableData = (
     );
 
     return {
-      [CHART_DATA_PREFIXES.date]: getDateFormat(row.date, momentFormat),
+      [CHART_DATA_PREFIXES.date]: getDateFormat(row.date, dateFormat),
       ...valuesObj,
     };
   });

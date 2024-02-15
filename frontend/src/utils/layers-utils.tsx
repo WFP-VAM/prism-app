@@ -365,7 +365,7 @@ const useLayers = () => {
     selectedLayersWithDateSupport.length,
   ]);
 
-  const possibleDatesForLayerIncludeMomentSelectedDate = useCallback(
+  const possibleDatesForLayerIncludeSelectedDate = useCallback(
     (layer: DateCompatibleLayer, date: Date) => {
       return binaryIncludes<DateItem>(
         getPossibleDatesForLayer(layer, serverAvailableDates),
@@ -389,7 +389,7 @@ const useLayers = () => {
 
       if (
         serverAvailableDatesAreEmpty ||
-        possibleDatesForLayerIncludeMomentSelectedDate(layer, jsSelectedDate)
+        possibleDatesForLayerIncludeSelectedDate(layer, jsSelectedDate)
       ) {
         return;
       }
@@ -430,7 +430,7 @@ const useLayers = () => {
     });
   }, [
     dispatch,
-    possibleDatesForLayerIncludeMomentSelectedDate,
+    possibleDatesForLayerIncludeSelectedDate,
     selectedDate,
     selectedLayerDates,
     selectedLayersWithDateSupport,
