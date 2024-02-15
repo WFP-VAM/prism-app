@@ -1,6 +1,5 @@
 import { DateCompatibleLayer } from 'utils/server-utils';
 import { DateItem } from 'config/types';
-import { getTimeInMilliseconds } from 'utils/date-utils';
 
 export const TIMELINE_ITEM_WIDTH = 10;
 
@@ -31,12 +30,8 @@ export function findClosestDate(
     closest: ReturnType<Date['getTime']>,
     current: ReturnType<Date['getTime']>,
   ) => {
-    const diff = Math.abs(
-      getTimeInMilliseconds(current) - getTimeInMilliseconds(date),
-    );
-    const closestDiff = Math.abs(
-      getTimeInMilliseconds(closest) - getTimeInMilliseconds(date),
-    );
+    const diff = Math.abs(current - date);
+    const closestDiff = Math.abs(closest - date);
 
     if (diff < closestDiff) {
       return current;
