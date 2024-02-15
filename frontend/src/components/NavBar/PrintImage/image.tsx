@@ -469,13 +469,13 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
       >
         <DialogTitle className={classes.title} id="dialog-preview">
           <Typography
-            variant="h3"
+            variant="inherit"
             style={{ display: 'flex', flexDirection: 'column' }}
           >
             {t('MAP PREVIEW')}
-            <Typography color="textSecondary" variant="body1">
-              {t('Use your mouse to pan and zoom the map')}
-            </Typography>
+          </Typography>
+          <Typography color="textSecondary" variant="body1">
+            {t('Use your mouse to pan and zoom the map')}
           </Typography>
 
           <IconButton
