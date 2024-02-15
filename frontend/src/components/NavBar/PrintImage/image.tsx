@@ -22,6 +22,7 @@ import GetAppIcon from '@material-ui/icons/GetApp';
 import mask from '@turf/mask';
 import { legendListId } from 'components/MapView/Legends';
 import html2canvas from 'html2canvas';
+import { debounce } from 'lodash';
 import { jsPDF } from 'jspdf';
 import maplibregl from 'maplibre-gl';
 import moment from 'moment';
@@ -48,6 +49,14 @@ import { downloadToFile } from '../../MapView/utils';
 
 const DEFAULT_FOOTER_TEXT =
   'The designations employed and the presentation of material in the map(s) do not imply the expression of any opinion on the part of WFP concerning the legal of constitutional status of any country, territory, city, or sea, or concerning the delimitation of its frontiers or boundaries.';
+
+// Debounce the footer text changes so that we don't redraw on every keystroke.
+const handleChangeFooterText = debounce(
+  (onTextChange: any, newSearchText: string) => {
+    onTextChange(newSearchText.length === 0 ? undefined : newSearchText);
+  },
+  750,
+);
 
 interface ToggleSelectorProps {
   title: string;
@@ -221,7 +230,7 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
     return footer;
   };
 
-  const refreshImage = async () => {
+  const refreshImage = async (currentFooterText = footerText) => {
     /* eslint-disable fp/no-mutation */
     setElementsLoading(true);
     if (open && mapRef.current) {
@@ -325,7 +334,7 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
         // toggle footer
         if (footerTextSize > 0) {
           const footer = createFooterElement(
-            footerText,
+            currentFooterText,
             activeLayers.width,
             ratio,
             footerTextSize,
@@ -403,7 +412,7 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
       refreshImage();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [footerText, toggles, legendScale, mapRef, footerTextSize]);
+  }, [toggles, legendScale, mapRef, footerTextSize]);
 
   const handleDownloadMenuClose = () => {
     setDownloadMenuAnchorEl(null);
@@ -616,8 +625,9 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
                   value={footerText}
                   inputProps={{ style: { color: 'black' } }}
                   minRows={4}
-                  onChange={e => {
-                    setFooterText(e.target.value);
+                  onChange={event => {
+                    setFooterText(event.target.value);
+                    handleChangeFooterText(refreshImage, event.target.value);
                   }}
                   variant="outlined"
                 />
