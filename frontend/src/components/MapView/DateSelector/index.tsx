@@ -142,7 +142,6 @@ const DateSelector = memo(({ classes }: DateSelectorProps) => {
     }
 
     return daysArray.map(date => {
-      // date.locale(locale);
       date.setHours(12, 0, 0, 0);
       return {
         value: date.getTime(),
