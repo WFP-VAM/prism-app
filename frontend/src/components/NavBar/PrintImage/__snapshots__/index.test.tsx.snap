@@ -39,15 +39,15 @@ exports[`renders as expected 1`] = `
     >
       <mock-typography
         style="display: flex; flex-direction: column;"
-        variant="h3"
+        variant="inherit"
       >
         MAP PREVIEW
-        <mock-typography
-          color="textSecondary"
-          variant="body1"
-        >
-          Use your mouse to pan and zoom the map
-        </mock-typography>
+      </mock-typography>
+      <mock-typography
+        color="textSecondary"
+        variant="body1"
+      >
+        Use your mouse to pan and zoom the map
       </mock-typography>
       <button
         class="MuiButtonBase-root MuiIconButton-root DownloadImage-closeButton-6"
@@ -171,7 +171,7 @@ exports[`renders as expected 1`] = `
               <mock-typography
                 variant="h4"
               >
-                Full Layer Description
+                Legend - Full Layer Description
               </mock-typography>
               <div
                 class="MuiToggleButtonGroup-root makeStyles-buttonGroup-16"
