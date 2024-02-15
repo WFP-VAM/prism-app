@@ -591,7 +591,7 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
                       fullLayerDescription: Boolean(val),
                     }))
                   }
-                  title="Full Layer Description"
+                  title="Legend - Full Layer Description"
                 />
 
                 <ToggleSelector
