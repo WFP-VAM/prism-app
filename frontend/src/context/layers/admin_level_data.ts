@@ -216,7 +216,7 @@ export const fetchAdminLevelDataLayerData: LazyLoader<AdminLevelDataLayerProps> 
 
   const [layerData, ...fallbackLayersData] = await Promise.all(
     [layer, ...(fallbackLayers ?? [])].map(async adminLevelDataLayer => {
-      // format brackets inside config URL with moment
+      // format brackets inside config URL
       // example: "&date={YYYY-MM-DD}" will turn into "&date=2021-04-27"
       const datedPath = adminLevelDataLayer.path.replace(/{.*?}/g, match => {
         const format = match.slice(1, -1);

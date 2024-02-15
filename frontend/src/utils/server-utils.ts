@@ -68,7 +68,8 @@ export const getRequestDate = (
 };
 
 // Note: PRISM's date picker is designed to work with dates in the UTC timezone
-// Therefore, ambiguous dates (dates passed as string e.g 2020-08-01) shouldn't be calculated from the user's timezone and instead be converted directly to UTC. Possibly with moment.utc(string)
+// Therefore, ambiguous dates (dates passed as string e.g 2020-08-01) shouldn't be calculated from the user's timezone and instead be converted directly to UTC.
+// plain JS Date `new Date('2020-08-01').toISOString()`, yields: '2020-08-01T00:00:00.000Z'.
 
 export type DateCompatibleLayer =
   | AdminLevelDataLayerProps
