@@ -113,7 +113,7 @@ export const dateStrToUpperCase = (dateStr: string): string => {
   return `${dateStr.slice(0, 1).toUpperCase()}${dateStr.slice(1)}`;
 };
 
-export const getDateFormat = (
+export const getFormattedDate = (
   date: number | string | undefined | Date,
   format:
     | 'default'

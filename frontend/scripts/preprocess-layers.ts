@@ -4,7 +4,7 @@ import fs from 'fs';
 import path from 'path';
 import union from '@turf/union';
 import simplify from '@turf/simplify';
-import { getDateFormat } from '../src/utils/date-utils';
+import { getFormattedDate } from '../src/utils/date-utils';
 
 // We fix the timezone to UTC to ensure that
 // the same dates are generated on all machines
@@ -55,7 +55,7 @@ async function generateIntermediateDateItemFromDataFile(
     layerDates.map(async r => {
       const filePath = layerPathTemplate.replace(/{.*?}/g, match => {
         const format = match.slice(1, -1);
-        return getDateFormat(r, format);
+        return getFormattedDate(r, format);
       });
 
       const completeFilePath = path.join(__dirname, '../public/', filePath);

@@ -17,7 +17,7 @@ import { makeFeatureInfoRequest } from 'utils/server-utils';
 import { clearDataset } from 'context/datasetStateSlice';
 import { LngLat, MapLayerMouseEvent } from 'maplibre-gl';
 import { MapRef } from 'react-map-gl/maplibre';
-import { getDateFormat } from 'utils/date-utils';
+import { getFormattedDate } from 'utils/date-utils';
 import { getActiveFeatureInfoLayers, getFeatureInfoParams } from './utils';
 
 const useMapOnClick = (
@@ -57,7 +57,7 @@ const useMapOnClick = (
     return getActiveFeatureInfoLayers(features);
   }, []);
 
-  const dateFromRef = getDateFormat(selectedDate, 'default');
+  const dateFromRef = getFormattedDate(selectedDate, 'default');
 
   const handleAdditionPopupDataForInfoRequest = useCallback(
     (result: { [name: string]: string } | null, lngLat: any) => {

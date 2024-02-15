@@ -2,7 +2,7 @@ import {
   binaryFind,
   generateDateItemsRange,
   generateDatesRange,
-  getDateFormat,
+  getFormattedDate,
   getTimeInMilliseconds,
   StartEndDate,
 } from './date-utils';
@@ -99,9 +99,9 @@ const defaultFormateTests = [
 ];
 
 test.each(defaultFormateTests)(
-  'Test getDateFormat default',
+  'Test getFormattedDate default',
   (input, expected) => {
-    expect(expected).toEqual(getDateFormat(input, 'default'));
+    expect(expected).toEqual(getFormattedDate(input, 'default'));
   },
 );
 
@@ -128,9 +128,12 @@ const snakeFormateTests = [
   [1644614400000, '2022_02_11'],
 ];
 
-test.each(snakeFormateTests)('Test getDateFormat snake', (input, expected) => {
-  expect(expected).toEqual(getDateFormat(input, 'snake'));
-});
+test.each(snakeFormateTests)(
+  'Test getFormattedDate snake',
+  (input, expected) => {
+    expect(expected).toEqual(getFormattedDate(input, 'snake'));
+  },
+);
 
 const isoDates = [
   ['2024-02-02T13:44:24.164Z', 1706881464164],

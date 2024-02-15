@@ -28,7 +28,7 @@ import { locales, useSafeTranslation } from 'i18n';
 import {
   dateStrToUpperCase,
   datesAreEqualWithoutTime,
-  getDateFormat,
+  getFormattedDate,
 } from 'utils/date-utils';
 import {
   MONTH_FIRST_DATE_FORMAT,
@@ -155,7 +155,7 @@ const DateSelector = memo(({ classes }: DateSelectorProps) => {
             locale: locales[locale as keyof typeof locales],
           }),
         ),
-        date: getDateFormat(date, 'default') as string,
+        date: getFormattedDate(date, 'default') as string,
         isFirstDay: date.getDate() === 1,
       };
     });
@@ -192,7 +192,7 @@ const DateSelector = memo(({ classes }: DateSelectorProps) => {
       }
       // This updates state because a useEffect in MapView updates the redux state
       // TODO this is convoluted coupling, we should update state here if feasible.
-      updateHistory('date', getDateFormat(time, 'default') as string);
+      updateHistory('date', getFormattedDate(time, 'default') as string);
     },
     [stateStartDate, updateHistory],
   );
