@@ -186,6 +186,11 @@
         "lst_anomaly",
         "lst_amplitude"
       ]
+    },
+    "vulnerability": {
+      "population_vulnerability": [
+        "vuln_2021"
+      ]
     }
   }
 }

@@ -1,0 +1,466 @@
+{
+  "DataList": [
+    {
+      "ADM2_PCODE": "NP0101",
+      "Popn2021_sum": 251990,
+      "HHs21_sum": 60373,
+      "Vulpop21_sum": 58039
+    },
+    {
+      "ADM2_PCODE": "NP0102",
+      "Popn2021_sum": 479415,
+      "HHs21_sum": 118695,
+      "Vulpop21_sum": 109578
+    },
+    {
+      "ADM2_PCODE": "NP0103",
+      "Popn2021_sum": 980948,
+      "HHs21_sum": 245869,
+      "Vulpop21_sum": 229976
+    },
+    {
+      "ADM2_PCODE": "NP0104",
+      "Popn2021_sum": 1283993,
+      "HHs21_sum": 317607,
+      "Vulpop21_sum": 301169
+    },
+    {
+      "ADM2_PCODE": "NP0105",
+      "Popn2021_sum": 1957837,
+      "HHs21_sum": 472637,
+      "Vulpop21_sum": 500519
+    },
+    {
+      "ADM2_PCODE": "NP0106",
+      "Popn2021_sum": 1551459,
+      "HHs21_sum": 359513,
+      "Vulpop21_sum": 398664
+    },
+    {
+      "ADM2_PCODE": "NP0107",
+      "Popn2021_sum": 683916,
+      "HHs21_sum": 170221,
+      "Vulpop21_sum": 181785
+    },
+    {
+      "ADM2_PCODE": "NP0108",
+      "Popn2021_sum": 314743,
+      "HHs21_sum": 77805,
+      "Vulpop21_sum": 78669
+    },
+    {
+      "ADM2_PCODE": "NP0109",
+      "Popn2021_sum": 336272,
+      "HHs21_sum": 83700,
+      "Vulpop21_sum": 84605
+    },
+    {
+      "ADM2_PCODE": "NP0110",
+      "Popn2021_sum": 517416,
+      "HHs21_sum": 127366,
+      "Vulpop21_sum": 146652
+    },
+    {
+      "ADM2_PCODE": "NP0111",
+      "Popn2021_sum": 254778,
+      "HHs21_sum": 65741,
+      "Vulpop21_sum": 68529
+    },
+    {
+      "ADM2_PCODE": "NP0112",
+      "Popn2021_sum": 597222,
+      "HHs21_sum": 145684,
+      "Vulpop21_sum": 170143
+    },
+    {
+      "ADM2_PCODE": "NP0113",
+      "Popn2021_sum": 368179,
+      "HHs21_sum": 90747,
+      "Vulpop21_sum": 107660
+    },
+    {
+      "ADM2_PCODE": "NP0114",
+      "Popn2021_sum": 1334797,
+      "HHs21_sum": 298234,
+      "Vulpop21_sum": 438338
+    },
+    {
+      "ADM2_PCODE": "NP0215",
+      "Popn2021_sum": 1135743,
+      "HHs21_sum": 242688,
+      "Vulpop21_sum": 400163
+    },
+    {
+      "ADM2_PCODE": "NP0216",
+      "Popn2021_sum": 1132667,
+      "HHs21_sum": 231879,
+      "Vulpop21_sum": 389757
+    },
+    {
+      "ADM2_PCODE": "NP0217",
+      "Popn2021_sum": 1510760,
+      "HHs21_sum": 316366,
+      "Vulpop21_sum": 480093
+    },
+    {
+      "ADM2_PCODE": "NP0218",
+      "Popn2021_sum": 1271124,
+      "HHs21_sum": 256534,
+      "Vulpop21_sum": 385246
+    },
+    {
+      "ADM2_PCODE": "NP0219",
+      "Popn2021_sum": 1456604,
+      "HHs21_sum": 283206,
+      "Vulpop21_sum": 410101
+    },
+    {
+      "ADM2_PCODE": "NP0232",
+      "Popn2021_sum": 1377155,
+      "HHs21_sum": 244842,
+      "Vulpop21_sum": 365285
+    },
+    {
+      "ADM2_PCODE": "NP0233",
+      "Popn2021_sum": 1436022,
+      "HHs21_sum": 262047,
+      "Vulpop21_sum": 334822
+    },
+    {
+      "ADM2_PCODE": "NP0234",
+      "Popn2021_sum": 1132872,
+      "HHs21_sum": 217899,
+      "Vulpop21_sum": 274739
+    },
+    {
+      "ADM2_PCODE": "NP0320",
+      "Popn2021_sum": 1074543,
+      "HHs21_sum": 246074,
+      "Vulpop21_sum": 291876
+    },
+    {
+      "ADM2_PCODE": "NP0321",
+      "Popn2021_sum": 429629,
+      "HHs21_sum": 116313,
+      "Vulpop21_sum": 135194
+    },
+    {
+      "ADM2_PCODE": "NP0322",
+      "Popn2021_sum": 352283,
+      "HHs21_sum": 99862,
+      "Vulpop21_sum": 106410
+    },
+    {
+      "ADM2_PCODE": "NP0323",
+      "Popn2021_sum": 653068,
+      "HHs21_sum": 178568,
+      "Vulpop21_sum": 158141
+    },
+    {
+      "ADM2_PCODE": "NP0324",
+      "Popn2021_sum": 1158511,
+      "HHs21_sum": 294260,
+      "Vulpop21_sum": 241936
+    },
+    {
+      "ADM2_PCODE": "NP0325",
+      "Popn2021_sum": 1958548,
+      "HHs21_sum": 520492,
+      "Vulpop21_sum": 305768
+    },
+    {
+      "ADM2_PCODE": "NP0326",
+      "Popn2021_sum": 1721902,
+      "HHs21_sum": 457810,
+      "Vulpop21_sum": 264825
+    },
+    {
+      "ADM2_PCODE": "NP0327",
+      "Popn2021_sum": 2894742,
+      "HHs21_sum": 775570,
+      "Vulpop21_sum": 447660
+    },
+    {
+      "ADM2_PCODE": "NP0328",
+      "Popn2021_sum": 1135848,
+      "HHs21_sum": 302478,
+      "Vulpop21_sum": 222985
+    },
+    {
+      "ADM2_PCODE": "NP0329",
+      "Popn2021_sum": 227654,
+      "HHs21_sum": 58613,
+      "Vulpop21_sum": 55171
+    },
+    {
+      "ADM2_PCODE": "NP0330",
+      "Popn2021_sum": 1173960,
+      "HHs21_sum": 304022,
+      "Vulpop21_sum": 267570
+    },
+    {
+      "ADM2_PCODE": "NP0331",
+      "Popn2021_sum": 1292735,
+      "HHs21_sum": 295708,
+      "Vulpop21_sum": 261125
+    },
+    {
+      "ADM2_PCODE": "NP0335",
+      "Popn2021_sum": 1034724,
+      "HHs21_sum": 258576,
+      "Vulpop21_sum": 258793
+    },
+    {
+      "ADM2_PCODE": "NP0436",
+      "Popn2021_sum": 549692,
+      "HHs21_sum": 152314,
+      "Vulpop21_sum": 209027
+    },
+    {
+      "ADM2_PCODE": "NP0437",
+      "Popn2021_sum": 384659,
+      "HHs21_sum": 110312,
+      "Vulpop21_sum": 158460
+    },
+    {
+      "ADM2_PCODE": "NP0438",
+      "Popn2021_sum": 108452,
+      "HHs21_sum": 30345,
+      "Vulpop21_sum": 52167
+    },
+    {
+      "ADM2_PCODE": "NP0439",
+      "Popn2021_sum": 910600,
+      "HHs21_sum": 251951,
+      "Vulpop21_sum": 321861
+    },
+    {
+      "ADM2_PCODE": "NP0440",
+      "Popn2021_sum": 1678705,
+      "HHs21_sum": 455246,
+      "Vulpop21_sum": 530643
+    },
+    {
+      "ADM2_PCODE": "NP0441",
+      "Popn2021_sum": 1133449,
+      "HHs21_sum": 310615,
+      "Vulpop21_sum": 393872
+    },
+    {
+      "ADM2_PCODE": "NP0442",
+      "Popn2021_sum": 951968,
+      "HHs21_sum": 261525,
+      "Vulpop21_sum": 348558
+    },
+    {
+      "ADM2_PCODE": "NP0443",
+      "Popn2021_sum": 612254,
+      "HHs21_sum": 156473,
+      "Vulpop21_sum": 288255
+    },
+    {
+      "ADM2_PCODE": "NP0444",
+      "Popn2021_sum": 311416,
+      "HHs21_sum": 84908,
+      "Vulpop21_sum": 155259
+    },
+    {
+      "ADM2_PCODE": "NP0445",
+      "Popn2021_sum": 54042,
+      "HHs21_sum": 15542,
+      "Vulpop21_sum": 26705
+    },
+    {
+      "ADM2_PCODE": "NP0447",
+      "Popn2021_sum": 1062282,
+      "HHs21_sum": 265572,
+      "Vulpop21_sum": 297421
+    },
+    {
+      "ADM2_PCODE": "NP0546",
+      "Popn2021_sum": 978831,
+      "HHs21_sum": 251571,
+      "Vulpop21_sum": 289217
+    },
+    {
+      "ADM2_PCODE": "NP0547",
+      "Popn2021_sum": 641468,
+      "HHs21_sum": 139592,
+      "Vulpop21_sum": 196927
+    },
+    {
+      "ADM2_PCODE": "NP0548",
+      "Popn2021_sum": 1539122,
+      "HHs21_sum": 333578,
+      "Vulpop21_sum": 401760
+    },
+    {
+      "ADM2_PCODE": "NP0549",
+      "Popn2021_sum": 1026727,
+      "HHs21_sum": 194728,
+      "Vulpop21_sum": 286804
+    },
+    {
+      "ADM2_PCODE": "NP0550",
+      "Popn2021_sum": 825048,
+      "HHs21_sum": 201406,
+      "Vulpop21_sum": 263752
+    },
+    {
+      "ADM2_PCODE": "NP0551",
+      "Popn2021_sum": 610480,
+      "HHs21_sum": 162525,
+      "Vulpop21_sum": 254806
+    },
+    {
+      "ADM2_PCODE": "NP0552",
+      "Popn2021_sum": 234599,
+      "HHs21_sum": 53428,
+      "Vulpop21_sum": 93683
+    },
+    {
+      "ADM2_PCODE": "NP0554",
+      "Popn2021_sum": 913382,
+      "HHs21_sum": 219168,
+      "Vulpop21_sum": 289765
+    },
+    {
+      "ADM2_PCODE": "NP0555",
+      "Popn2021_sum": 589737,
+      "HHs21_sum": 142329,
+      "Vulpop21_sum": 221333
+    },
+    {
+      "ADM2_PCODE": "NP0556",
+      "Popn2021_sum": 1054959,
+      "HHs21_sum": 245707,
+      "Vulpop21_sum": 280368
+    },
+    {
+      "ADM2_PCODE": "NP0557",
+      "Popn2021_sum": 940859,
+      "HHs21_sum": 209988,
+      "Vulpop21_sum": 260707
+    },
+    {
+      "ADM2_PCODE": "NP0558",
+      "Popn2021_sum": 1138731,
+      "HHs21_sum": 262947,
+      "Vulpop21_sum": 360342
+    },
+    {
+      "ADM2_PCODE": "NP0652",
+      "Popn2021_sum": 420727,
+      "HHs21_sum": 93173,
+      "Vulpop21_sum": 171041
+    },
+    {
+      "ADM2_PCODE": "NP0653",
+      "Popn2021_sum": 1026073,
+      "HHs21_sum": 241985,
+      "Vulpop21_sum": 366684
+    },
+    {
+      "ADM2_PCODE": "NP0659",
+      "Popn2021_sum": 704047,
+      "HHs21_sum": 160470,
+      "Vulpop21_sum": 316761
+    },
+    {
+      "ADM2_PCODE": "NP0660",
+      "Popn2021_sum": 453785,
+      "HHs21_sum": 95753,
+      "Vulpop21_sum": 221204
+    },
+    {
+      "ADM2_PCODE": "NP0661",
+      "Popn2021_sum": 661853,
+      "HHs21_sum": 144734,
+      "Vulpop21_sum": 317809
+    },
+    {
+      "ADM2_PCODE": "NP0662",
+      "Popn2021_sum": 197454,
+      "HHs21_sum": 42604,
+      "Vulpop21_sum": 84698
+    },
+    {
+      "ADM2_PCODE": "NP0663",
+      "Popn2021_sum": 285781,
+      "HHs21_sum": 56249,
+      "Vulpop21_sum": 125245
+    },
+    {
+      "ADM2_PCODE": "NP0664",
+      "Popn2021_sum": 452043,
+      "HHs21_sum": 88541,
+      "Vulpop21_sum": 218887
+    },
+    {
+      "ADM2_PCODE": "NP0665",
+      "Popn2021_sum": 172372,
+      "HHs21_sum": 33218,
+      "Vulpop21_sum": 71678
+    },
+    {
+      "ADM2_PCODE": "NP0666",
+      "Popn2021_sum": 130676,
+      "HHs21_sum": 26079,
+      "Vulpop21_sum": 54993
+    },
+    {
+      "ADM2_PCODE": "NP0767",
+      "Popn2021_sum": 365954,
+      "HHs21_sum": 72660,
+      "Vulpop21_sum": 111685
+    },
+    {
+      "ADM2_PCODE": "NP0768",
+      "Popn2021_sum": 415248,
+      "HHs21_sum": 84440,
+      "Vulpop21_sum": 177331
+    },
+    {
+      "ADM2_PCODE": "NP0769",
+      "Popn2021_sum": 605926,
+      "HHs21_sum": 131211,
+      "Vulpop21_sum": 290269
+    },
+    {
+      "ADM2_PCODE": "NP0770",
+      "Popn2021_sum": 468848,
+      "HHs21_sum": 100651,
+      "Vulpop21_sum": 188648
+    },
+    {
+      "ADM2_PCODE": "NP0771",
+      "Popn2021_sum": 1258282,
+      "HHs21_sum": 273266,
+      "Vulpop21_sum": 374668
+    },
+    {
+      "ADM2_PCODE": "NP0772",
+      "Popn2021_sum": 862266,
+      "HHs21_sum": 188340,
+      "Vulpop21_sum": 251370
+    },
+    {
+      "ADM2_PCODE": "NP0773",
+      "Popn2021_sum": 728601,
+      "HHs21_sum": 159174,
+      "Vulpop21_sum": 248792
+    },
+    {
+      "ADM2_PCODE": "NP0774",
+      "Popn2021_sum": 459788,
+      "HHs21_sum": 95722,
+      "Vulpop21_sum": 166553
+    },
+    {
+      "ADM2_PCODE": "NP0775",
+      "Popn2021_sum": 246300,
+      "HHs21_sum": 51579,
+      "Vulpop21_sum": 77969
+    }
+  ]
+}

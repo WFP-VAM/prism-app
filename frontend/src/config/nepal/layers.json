@@ -1,12 +1,12 @@
 {
   "admin_boundaries": {
     "type": "boundary",
-    "path": "data/nepal/npl_admbnda_adm2_nd_20190430_dv.json",
+    "path": "data/nepal/npl_admbnda_adm3_nd_20190430_dv_fixed.json",
     "opacity": 0.8,
-    "admin_code": "ADM2_PCODE",
-    "admin_level_codes": ["ADM1_PCODE", "ADM2_PCODE"],
-    "admin_level_names": ["fix_ADM1_EN", "ADM2_EN"],
-    "admin_level_local_names": ["fix_ADM1_EN", "ADM2_EN"],
+    "admin_code": "GEOCODE",
+    "admin_level_codes": ["ADM1_PCODE", "ADM2_PCODE", "GEOCODE"],
+    "admin_level_names": ["Province", "District_2", "Municipa_1"],
+    "admin_level_local_names": ["Province", "District_2", "Municipa_1"],
     "styles:": {
       "fill": {
         "fill-opacity": 0
@@ -26,6 +26,25 @@
     "admin_level_names": ["ADM1_EN"],
     "admin_level_codes": ["ADM1_PCODE"],
     "admin_level_local_names": ["ADM1_EN"],
+    "styles:": {
+      "fill": {
+        "fill-opacity": 0
+      },
+      "line": {
+        "line-color": "gray",
+        "line-width": 2,
+        "line-opacity": 0.8
+      }
+    }
+  },
+  "admin2_boundaries": {
+    "type": "boundary",
+    "path": "data/nepal/npl_admbnda_adm2_nd_20190430_dv.json",
+    "opacity": 0.8,
+    "admin_code": "ADM2_PCODE",
+    "admin_level_codes": ["ADM1_PCODE", "ADM2_PCODE"],
+    "admin_level_names": ["fix_ADM1_EN", "ADM2_EN"],
+    "admin_level_local_names": ["fix_ADM1_EN", "ADM2_EN"],
     "styles:": {
       "fill": {
         "fill-opacity": 0
@@ -2114,5 +2133,42 @@
     "legend_text": "Tracks visualize the projected path of a storm based on the forecasted position of it's center at various points in time. Source: GDACS",
     "base_url": "https://sparc.wfp.org/geoserver",
     "geometry": "linestring"
+  },
+  "vuln_2021": {
+    "title": "Number of vulnerable people",
+    "type": "admin_level_data",
+    "path": "data/nepal/vuln-2021.json",
+    "data_field": "Vulpop21_sum",
+    "admin_level": 2,
+    "admin_code": "ADM2_PCODE",
+    "opacity": 0.9,
+    "legend": [
+      {
+        "value": 0,
+        "label": "0 - 25,000",
+        "color": "#feedde"
+      },
+      {
+        "value": 25001,
+        "label": "25,000 - 50,000",
+        "color": "#fdbe85"
+      },
+      {
+        "value": 50001,
+        "label": "50,000 - 100,000",
+        "color": "#fd8d3c"
+      },
+      {
+        "value": 100001,
+        "label": "100,000 - 250,000",
+        "color": "#e6550d"
+      },
+      {
+        "value": 250000,
+        "label": "> 250,000",
+        "color": "#a63603"
+      }
+    ],
+    "legend_text": "Number of vulnerable people per district"
   }
 }
