@@ -53,7 +53,7 @@ const DEFAULT_FOOTER_TEXT =
 // Debounce the footer text changes so that we don't redraw on every keystroke.
 const handleChangeFooterText = debounce(
   (onTextChange: any, newSearchText: string) => {
-    onTextChange(newSearchText.length === 0 ? undefined : newSearchText);
+    onTextChange(newSearchText);
   },
   750,
 );
@@ -144,7 +144,7 @@ const countryMaskSelectorOptions = [
 ];
 
 function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
-  const { t, i18n } = useSafeTranslation();
+  const { t } = useSafeTranslation();
   const selectedMap = useSelector(mapSelector);
   const dateRange = useSelector(dateRangeSelector);
   const printRef = useRef<HTMLDivElement>(null);
@@ -180,7 +180,7 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
     layer => layer.type === 'admin_level_data' && layer.fillPattern,
   ) as AdminLevelDataLayerProps[];
 
-  React.useEffect(() => {
+  const defaultFooterText = React.useMemo(() => {
     const getDateText = (): string => {
       if (!dateRange) {
         return '';
@@ -193,8 +193,8 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
           : `${t('on')} ${moment(dateRange.startDate).format('YYYY-MM-DD')}`
       }. `;
     };
-    setFooterText(`${getDateText()} ${t(DEFAULT_FOOTER_TEXT)}`);
-  }, [i18n.language, t, dateRange]);
+    return `${getDateText()} ${t(DEFAULT_FOOTER_TEXT)}`;
+  }, [t, dateRange]);
 
   const [invertedAdminBoundaryLimitPolygon, setAdminBoundaryPolygon] = useState(
     null,
@@ -412,7 +412,7 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
       refreshImage();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [toggles, legendScale, mapRef, footerTextSize]);
+  }, [toggles, legendScale, mapRef, footerTextSize, footerText]);
 
   const handleDownloadMenuClose = () => {
     setDownloadMenuAnchorEl(null);
@@ -621,13 +621,13 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
                 />
 
                 <TextField
+                  key={defaultFooterText}
                   multiline
-                  value={footerText}
+                  defaultValue={defaultFooterText}
                   inputProps={{ style: { color: 'black' } }}
                   minRows={4}
                   onChange={event => {
-                    setFooterText(event.target.value);
-                    handleChangeFooterText(refreshImage, event.target.value);
+                    handleChangeFooterText(setFooterText, event.target.value);
                   }}
                   variant="outlined"
                 />
