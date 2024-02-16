@@ -33,7 +33,7 @@ import CancelIcon from '@material-ui/icons/Cancel';
 import { mapStyle } from 'components/MapView/Map';
 import { addFillPatternImagesInMap } from 'components/MapView/Layers/AdminLevelDataLayer';
 import useLayers from 'utils/layers-utils';
-import { safeCountry } from 'config';
+import { appConfig, safeCountry } from 'config';
 import { AdminLevelDataLayerProps } from 'config/types';
 import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
 import ToggleButton from '@material-ui/lab/ToggleButton';
@@ -145,10 +145,12 @@ const countryMaskSelectorOptions = [
 
 function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
   const { t } = useSafeTranslation();
+  const { country } = appConfig;
   const selectedMap = useSelector(mapSelector);
   const dateRange = useSelector(dateRangeSelector);
   const printRef = useRef<HTMLDivElement>(null);
   const overlayContainerRef = useRef<HTMLDivElement>(null);
+  const titleOverlayRef = useRef<HTMLDivElement>(null);
 
   const mapRef = React.useRef<MapRef>(null);
   // list of toggles
@@ -162,6 +164,7 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
     downloadMenuAnchorEl,
     setDownloadMenuAnchorEl,
   ] = React.useState<HTMLElement | null>(null);
+  const [titleText, setTitleText] = React.useState<string>(country);
   const [footerText, setFooterText] = React.useState('');
   const [elementsLoading, setElementsLoading] = React.useState(true);
   const [footerTextSize, setFooterTextSize] = React.useState(12);
@@ -195,6 +198,10 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
     };
     return `${getDateText()} ${t(DEFAULT_FOOTER_TEXT)}`;
   }, [t, dateRange]);
+
+  React.useEffect(() => {
+    setFooterText(defaultFooterText);
+  }, [defaultFooterText]);
 
   const [invertedAdminBoundaryLimitPolygon, setAdminBoundaryPolygon] = useState(
     null,
@@ -324,7 +331,7 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
           context.drawImage(
             c,
             24,
-            24,
+            24 + (titleOverlayRef.current?.offsetHeight || 0),
             (target.offsetWidth * legendScale * ratio) / 100.0,
             (target.offsetHeight * legendScale * ratio) / 100.0,
           );
@@ -412,7 +419,7 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
       refreshImage();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [toggles, legendScale, mapRef, footerTextSize, footerText]);
+  }, [toggles, legendScale, mapRef, footerTextSize, footerText, titleText]);
 
   const handleDownloadMenuClose = () => {
     setDownloadMenuAnchorEl(null);
@@ -517,6 +524,11 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
                       </Backdrop>
                     </div>
                   )}
+                  {titleText && (
+                    <div ref={titleOverlayRef} className={classes.titleOverlay}>
+                      {titleText}
+                    </div>
+                  )}
                   <div className={classes.mapContainer}>
                     {selectedMap && open && (
                       <MapGL
@@ -569,6 +581,21 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
                 >
                   {t('Map Options')}
                 </Box>
+
+                <div className={classes.optionWrap}>
+                  <Typography variant="h4">Title</Typography>
+                  <TextField
+                    key={titleText}
+                    defaultValue={titleText}
+                    fullWidth
+                    size="small"
+                    inputProps={{ style: { color: 'black' } }}
+                    onChange={event => {
+                      handleChangeFooterText(setTitleText, event.target.value);
+                    }}
+                    variant="outlined"
+                  />
+                </div>
 
                 <ToggleSelector
                   value={Number(toggles.countryMask)}
@@ -626,6 +653,7 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
                   defaultValue={defaultFooterText}
                   inputProps={{ style: { color: 'black' } }}
                   minRows={4}
+                  maxRows={4}
                   onChange={event => {
                     handleChangeFooterText(setFooterText, event.target.value);
                   }}
@@ -720,6 +748,23 @@ const styles = (theme: Theme) =>
       left: 0,
       zIndex: 2,
       pointerEvents: 'none',
+    },
+    optionWrap: {
+      display: 'flex',
+      flexDirection: 'column',
+      gap: '0.8rem',
+    },
+    titleOverlay: {
+      position: 'absolute',
+      top: 0,
+      left: 0,
+      zIndex: 2,
+      color: 'black',
+      backgroundColor: 'white',
+      width: '100%',
+      textAlign: 'center',
+      fontSize: '1.5rem',
+      padding: '8px 0 8px 0',
     },
   });
 
