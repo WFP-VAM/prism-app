@@ -6,6 +6,7 @@ import {
   makeStyles,
   MenuItem,
   Select,
+  SelectProps,
   TextField,
   TextFieldProps,
   Theme,
@@ -247,6 +248,7 @@ export function SimpleBoundaryDropdown({
   map,
   selectAll,
   onlyNewCategory,
+  selectProps,
   ...rest
 }: BoundaryDropdownProps) {
   const styles = useStyles();
@@ -311,6 +313,7 @@ export function SimpleBoundaryDropdown({
           setTimeout(() => setSearch(''), TIMEOUT_ANIMATION_DELAY);
         }}
         value={selectedBoundaries}
+        {...selectProps}
       >
         <SearchField search={search} setSearch={setSearch} />
         {!search && selectAll && selectedBoundaries && (
@@ -400,11 +403,13 @@ interface BoundaryDropdownProps {
   map?: MaplibreMap | undefined;
   onlyNewCategory?: boolean;
   selectAll?: boolean;
+  size?: 'small' | 'medium';
   selectedBoundaries?: AdminCodeString[];
   setSelectedBoundaries?: (
     boundaries: AdminCodeString[],
     appendMany?: boolean,
   ) => void;
+  selectProps?: SelectProps;
 }
 
 /**

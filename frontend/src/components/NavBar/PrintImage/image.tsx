@@ -40,6 +40,7 @@ import ToggleButton from '@material-ui/lab/ToggleButton';
 import VisibilityOffIcon from '@material-ui/icons/VisibilityOff';
 import VisibilityIcon from '@material-ui/icons/Visibility';
 import { cyanBlue } from 'muiTheme';
+import { SimpleBoundaryDropdown } from 'components/MapView/Layers/BoundaryDropdown';
 import {
   dateRangeSelector,
   mapSelector,
@@ -116,7 +117,7 @@ const legendSelectorOptions = [
 ];
 
 const mapWidthSelectorOptions = [
-  { value: 0, comp: <VisibilityOffIcon />, disabled: true },
+  { value: 50, comp: <div>50%</div> },
   { value: 60, comp: <div>60%</div> },
   { value: 70, comp: <div>70%</div> },
   { value: 80, comp: <div>80%</div> },
@@ -597,6 +598,21 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
                   />
                 </div>
 
+                <div className={classes.optionWrap}>
+                  <Typography variant="h4">Select admin area</Typography>
+                  <SimpleBoundaryDropdown
+                    className={classes.formControl}
+                    labelMessage={t('Go To')}
+                    map={mapRef.current?.getMap()}
+                    selectedBoundaries={[]}
+                    selectProps={{
+                      variant: 'outlined',
+                      fullWidth: true,
+                    }}
+                    size="small"
+                  />
+                </div>
+
                 <ToggleSelector
                   value={Number(toggles.countryMask)}
                   options={countryMaskSelectorOptions}
@@ -765,6 +781,18 @@ const styles = (theme: Theme) =>
       textAlign: 'center',
       fontSize: '1.5rem',
       padding: '8px 0 8px 0',
+    },
+    formControl: {
+      width: '100%',
+      '& > .MuiInputLabel-shrink': { display: 'none' },
+      '& > .MuiInput-root': { margin: 0 },
+      '& label': {
+        textTransform: 'uppercase',
+        letterSpacing: '3px',
+        fontSize: '11px',
+        position: 'absolute',
+        top: '-13px',
+      },
     },
   });
 
