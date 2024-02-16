@@ -6,7 +6,6 @@ import {
   Dialog,
   DialogContent,
   DialogTitle,
-  Grid,
   IconButton,
   Menu,
   MenuItem,
@@ -67,7 +66,7 @@ interface ToggleSelectorProps {
 }
 
 const toggleSelectorStyles = makeStyles(() => ({
-  wrapper: { display: 'flex', flexDirection: 'column', gap: '0.8rem' },
+  wrapper: { display: 'flex', flexDirection: 'column', gap: '0.6rem' },
   buttonGroup: { gap: '4px' },
   button: {
     height: '40px',
@@ -494,14 +493,11 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
           </IconButton>
         </DialogTitle>
         <DialogContent style={{ scrollbarGutter: 'stable' }}>
-          <Grid container style={{ width: '90vw', height: '80vh' }}>
-            <Grid
-              item
-              xs={9}
+          <div className={classes.contentContainer}>
+            <div
               style={{
                 width: '100%',
                 height: '100%',
-                marginBottom: '16px',
               }}
             >
               <div
@@ -570,141 +566,140 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
                   </div>
                 </div>
               </div>
-            </Grid>
+            </div>
 
-            <Grid item xs={3}>
-              <Box display="flex" flexDirection="column" pl={5} gridGap="1rem">
-                <Box
-                  fontSize={14}
-                  fontWeight={700}
-                  mb={1}
-                  className={classes.title}
-                >
-                  {t('Map Options')}
-                </Box>
+            <div className={classes.optionsContainer}>
+              <Box
+                fontSize={14}
+                fontWeight={700}
+                mb={1}
+                className={classes.title}
+              >
+                {t('Map Options')}
+              </Box>
 
-                <div className={classes.optionWrap}>
-                  <Typography variant="h4">Title</Typography>
-                  <TextField
-                    key={titleText}
-                    defaultValue={titleText}
-                    fullWidth
-                    size="small"
-                    inputProps={{ style: { color: 'black' } }}
-                    onChange={event => {
-                      handleChangeFooterText(setTitleText, event.target.value);
-                    }}
-                    variant="outlined"
-                  />
-                </div>
-
-                <div className={classes.optionWrap}>
-                  <Typography variant="h4">Select admin area</Typography>
-                  <SimpleBoundaryDropdown
-                    className={classes.formControl}
-                    labelMessage={t('Go To')}
-                    map={mapRef.current?.getMap()}
-                    selectedBoundaries={[]}
-                    selectProps={{
-                      variant: 'outlined',
-                      fullWidth: true,
-                    }}
-                    size="small"
-                  />
-                </div>
-
-                <ToggleSelector
-                  value={Number(toggles.countryMask)}
-                  options={countryMaskSelectorOptions}
-                  setValue={val =>
-                    setToggles(prev => ({
-                      ...prev,
-                      countryMask: Boolean(val),
-                    }))
-                  }
-                  title="Mask data outside of admin area"
-                />
-
-                <ToggleSelector
-                  value={Number(toggles.fullLayerDescription)}
-                  options={layerDescriptionSelectorOptions}
-                  setValue={val =>
-                    setToggles(prev => ({
-                      ...prev,
-                      fullLayerDescription: Boolean(val),
-                    }))
-                  }
-                  title="Legend - Full Layer Description"
-                />
-
-                <ToggleSelector
-                  value={legendScale}
-                  options={legendSelectorOptions}
-                  setValue={setLegendScale}
-                  title="Legend"
-                />
-
-                <ToggleSelector
-                  value={mapDimensions.width}
-                  options={mapWidthSelectorOptions}
-                  setValue={val =>
-                    setMapDimensions(prev => ({
-                      ...(prev || {}),
-                      width: val as number,
-                    }))
-                  }
-                  title="Map Width"
-                />
-
-                <ToggleSelector
-                  value={footerTextSize}
-                  options={footerTextSelectorOptions}
-                  setValue={setFooterTextSize}
-                  title="Footer Text"
-                />
-
+              <div className={classes.optionWrap}>
+                <Typography variant="h4">Title</Typography>
                 <TextField
-                  key={defaultFooterText}
-                  multiline
-                  defaultValue={defaultFooterText}
+                  key={titleText}
+                  defaultValue={titleText}
+                  fullWidth
+                  size="small"
                   inputProps={{ style: { color: 'black' } }}
-                  minRows={4}
-                  maxRows={4}
                   onChange={event => {
-                    handleChangeFooterText(setFooterText, event.target.value);
+                    handleChangeFooterText(setTitleText, event.target.value);
                   }}
                   variant="outlined"
                 />
+              </div>
 
-                <Button
-                  style={{ backgroundColor: cyanBlue, color: 'black' }}
-                  variant="contained"
-                  color="primary"
-                  className={classes.gutter}
-                  endIcon={<GetAppIcon />}
-                  onClick={e => handleDownloadMenuOpen(e)}
-                >
-                  {t('Download')}
-                </Button>
-                <Menu
-                  anchorEl={downloadMenuAnchorEl}
-                  keepMounted
-                  open={Boolean(downloadMenuAnchorEl)}
-                  onClose={handleDownloadMenuClose}
-                >
-                  <MenuItem onClick={() => download('png')}>
-                    {t('Download PNG')}
-                  </MenuItem>
-                  <MenuItem onClick={() => download('jpeg')}>
-                    {t('Download JPEG')}
-                  </MenuItem>
-                  <MenuItem onClick={() => download('pdf')}>
-                    {t('Download PDF')}
-                  </MenuItem>
-                </Menu>
-              </Box>
-            </Grid>
-          </Grid>
+              <div className={classes.optionWrap}>
+                <Typography variant="h4">Select admin area</Typography>
+                <SimpleBoundaryDropdown
+                  className={classes.formControl}
+                  labelMessage={t('Go To')}
+                  map={mapRef.current?.getMap()}
+                  selectedBoundaries={[]}
+                  selectProps={{
+                    variant: 'outlined',
+                    fullWidth: true,
+                  }}
+                  size="small"
+                />
+              </div>
+
+              <ToggleSelector
+                value={Number(toggles.countryMask)}
+                options={countryMaskSelectorOptions}
+                setValue={val =>
+                  setToggles(prev => ({
+                    ...prev,
+                    countryMask: Boolean(val),
+                  }))
+                }
+                title="Mask data outside of admin area"
+              />
+
+              <ToggleSelector
+                value={Number(toggles.fullLayerDescription)}
+                options={layerDescriptionSelectorOptions}
+                setValue={val =>
+                  setToggles(prev => ({
+                    ...prev,
+                    fullLayerDescription: Boolean(val),
+                  }))
+                }
+                title="Legend - Full Layer Description"
+              />
+
+              <ToggleSelector
+                value={legendScale}
+                options={legendSelectorOptions}
+                setValue={setLegendScale}
+                title="Legend"
+              />
+
+              <ToggleSelector
+                value={mapDimensions.width}
+                options={mapWidthSelectorOptions}
+                setValue={val =>
+                  setMapDimensions(prev => ({
+                    ...(prev || {}),
+                    width: val as number,
+                  }))
+                }
+                title="Map Width"
+              />
+
+              <ToggleSelector
+                value={footerTextSize}
+                options={footerTextSelectorOptions}
+                setValue={setFooterTextSize}
+                title="Footer Text"
+              />
+
+              <TextField
+                size="small"
+                key={defaultFooterText}
+                multiline
+                defaultValue={defaultFooterText}
+                inputProps={{ style: { color: 'black', fontSize: '0.9rem' } }}
+                minRows={4}
+                maxRows={4}
+                onChange={event => {
+                  handleChangeFooterText(setFooterText, event.target.value);
+                }}
+                variant="outlined"
+              />
+
+              <Button
+                style={{ backgroundColor: cyanBlue, color: 'black' }}
+                variant="contained"
+                color="primary"
+                className={classes.gutter}
+                endIcon={<GetAppIcon />}
+                onClick={e => handleDownloadMenuOpen(e)}
+              >
+                {t('Download')}
+              </Button>
+              <Menu
+                anchorEl={downloadMenuAnchorEl}
+                keepMounted
+                open={Boolean(downloadMenuAnchorEl)}
+                onClose={handleDownloadMenuClose}
+              >
+                <MenuItem onClick={() => download('png')}>
+                  {t('Download PNG')}
+                </MenuItem>
+                <MenuItem onClick={() => download('jpeg')}>
+                  {t('Download JPEG')}
+                </MenuItem>
+                <MenuItem onClick={() => download('pdf')}>
+                  {t('Download PDF')}
+                </MenuItem>
+              </Menu>
+            </div>
+          </div>
         </DialogContent>
       </Dialog>
     </>
@@ -716,14 +711,7 @@ const styles = (theme: Theme) =>
     title: {
       color: theme.palette.text.secondary,
     },
-    canvas: {
-      width: '100%',
-    },
     gutter: {
-      marginBottom: 10,
-    },
-    firstButton: {
-      marginTop: 20,
       marginBottom: 10,
     },
     closeButton: {
@@ -745,7 +733,6 @@ const styles = (theme: Theme) =>
       display: 'flex',
       justifyContent: 'center',
     },
-    toggleWrapper: { display: 'flex', justifyContent: 'space-between' },
     printContainer: {
       width: '100%',
       height: '100%',
@@ -768,7 +755,7 @@ const styles = (theme: Theme) =>
     optionWrap: {
       display: 'flex',
       flexDirection: 'column',
-      gap: '0.8rem',
+      gap: '0.6rem',
     },
     titleOverlay: {
       position: 'absolute',
@@ -793,6 +780,24 @@ const styles = (theme: Theme) =>
         position: 'absolute',
         top: '-13px',
       },
+    },
+    contentContainer: {
+      display: 'flex',
+      gap: '1rem',
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      width: '90vw',
+      height: '80vh',
+    },
+    optionsContainer: {
+      display: 'flex',
+      height: '100%',
+      flexDirection: 'column',
+      gap: '0.8rem',
+      minWidth: '20rem',
+      scrollbarGutter: 'stable',
+      overflow: 'auto',
+      paddingRight: '15px',
     },
   });
 
