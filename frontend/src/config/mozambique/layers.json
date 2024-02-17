@@ -5155,6 +5155,7 @@
   "daily_rainfall_forecast": {
     "title": "Rolling daily rainfall forecast",
     "type": "wms",
+    "start_date": "2024-02-20",
     "server_layer_name": "rfh_daily_forecast",
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
