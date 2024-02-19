@@ -33,91 +33,94 @@ exports[`renders as expected 1`] = `
     maxwidth="xl"
     open="false"
   >
-    <mock-dialogtitle
-      classname="DownloadImage-title-2"
-      id="dialog-preview"
-    >
-      <mock-typography
-        style="display: flex; flex-direction: column;"
-        variant="inherit"
-      >
-        MAP PREVIEW
-      </mock-typography>
-      <mock-typography
-        color="textSecondary"
-        variant="body1"
-      >
-        Use your mouse to pan and zoom the map
-      </mock-typography>
-      <button
-        class="MuiButtonBase-root MuiIconButton-root DownloadImage-closeButton-4"
-        tabindex="0"
-        type="button"
-      >
-        <span
-          class="MuiIconButton-label"
-        >
-          <svg
-            aria-hidden="true"
-            class="MuiSvgIcon-root"
-            focusable="false"
-            viewBox="0 0 24 24"
-          >
-            <path
-              d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm5 13.59L15.59 17 12 13.41 8.41 17 7 15.59 10.59 12 7 8.41 8.41 7 12 10.59 15.59 7 17 8.41 13.41 12 17 15.59z"
-            />
-          </svg>
-        </span>
-        <span
-          class="MuiTouchRipple-root"
-        />
-      </button>
-    </mock-dialogtitle>
     <mock-dialogcontent>
       <div
         class="DownloadImage-contentContainer-13"
       >
         <div
-          style="width: 100%; height: 100%;"
+          style="display: flex; flex-direction: column; width: 100%;"
         >
+          <div>
+            <mock-typography
+              classname="DownloadImage-title-2"
+              variant="h3"
+            >
+              MAP PREVIEW
+            </mock-typography>
+            <mock-typography
+              color="textSecondary"
+              variant="body1"
+            >
+              Use your mouse to pan and zoom the map
+            </mock-typography>
+          </div>
           <div
-            style="position: relative; z-index: 3; border: 1px solid black; height: 100%; width: 100%;"
+            style="width: 100%; height: 100%;"
           >
             <div
-              class="DownloadImage-printContainer-7"
+              style="position: relative; z-index: 3; border: 1px solid black; height: 100%; width: 100%;"
             >
               <div
-                class="DownloadImage-mapOverlay-9"
-              />
-              <div
-                class="DownloadImage-backdropWrapper-6"
+                class="DownloadImage-printContainer-7"
               >
                 <div
-                  aria-hidden="true"
-                  class="MuiBackdrop-root DownloadImage-backdrop-5"
-                  style="opacity: 1; webkit-transition: opacity 225ms cubic-bezier(0.4, 0, 0.2, 1) 0ms; transition: opacity 225ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;"
+                  class="DownloadImage-mapOverlay-9"
+                />
+                <div
+                  class="DownloadImage-backdropWrapper-6"
                 >
-                  <mock-circularprogress />
+                  <div
+                    aria-hidden="true"
+                    class="MuiBackdrop-root DownloadImage-backdrop-5"
+                    style="opacity: 1; webkit-transition: opacity 225ms cubic-bezier(0.4, 0, 0.2, 1) 0ms; transition: opacity 225ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;"
+                  >
+                    <mock-circularprogress />
+                  </div>
                 </div>
+                <div
+                  class="DownloadImage-titleOverlay-11"
+                >
+                  Mozambique
+                </div>
+                <div
+                  class="DownloadImage-mapContainer-8"
+                />
               </div>
-              <div
-                class="DownloadImage-titleOverlay-11"
-              >
-                Mozambique
-              </div>
-              <div
-                class="DownloadImage-mapContainer-8"
-              />
             </div>
           </div>
         </div>
         <div
           class="DownloadImage-optionsContainer-14"
         >
-          <div
-            class="MuiBox-root MuiBox-root-15 DownloadImage-title-2"
-          >
-            Map Options
+          <div>
+            <div
+              class="MuiBox-root MuiBox-root-15 DownloadImage-title-2"
+            >
+              Map Options
+            </div>
+            <button
+              class="MuiButtonBase-root MuiIconButton-root DownloadImage-closeButton-4"
+              tabindex="0"
+              type="button"
+            >
+              <span
+                class="MuiIconButton-label"
+              >
+                <svg
+                  aria-hidden="true"
+                  class="MuiSvgIcon-root"
+                  focusable="false"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm5 13.59L15.59 17 12 13.41 8.41 17 7 15.59 10.59 12 7 8.41 8.41 7 12 10.59 15.59 7 17 8.41 13.41 12 17 15.59z"
+                  />
+                </svg>
+              </span>
+              <span
+                class="MuiTouchRipple-root"
+              />
+            </button>
           </div>
           <div
             class="DownloadImage-optionWrap-10"

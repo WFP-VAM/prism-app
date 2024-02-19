@@ -5,7 +5,6 @@ import {
   CircularProgress,
   Dialog,
   DialogContent,
-  DialogTitle,
   IconButton,
   Menu,
   MenuItem,
@@ -502,109 +501,118 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
         onClose={() => handleClose()}
         aria-labelledby="dialog-preview"
       >
-        <DialogTitle className={classes.title} id="dialog-preview">
-          <Typography
-            variant="inherit"
-            style={{ display: 'flex', flexDirection: 'column' }}
-          >
-            {t('MAP PREVIEW')}
-          </Typography>
-          <Typography color="textSecondary" variant="body1">
-            {t('Use your mouse to pan and zoom the map')}
-          </Typography>
-
-          <IconButton
-            className={classes.closeButton}
-            onClick={() => handleClose()}
-          >
-            <CancelIcon />
-          </IconButton>
-        </DialogTitle>
         <DialogContent style={{ scrollbarGutter: 'stable' }}>
           <div className={classes.contentContainer}>
             <div
               style={{
+                display: 'flex',
+                flexDirection: 'column',
                 width: '100%',
-                height: '100%',
               }}
             >
+              <div>
+                <Typography variant="h3" className={classes.title}>
+                  {t('MAP PREVIEW')}
+                </Typography>
+                <Typography color="textSecondary" variant="body1">
+                  {t('Use your mouse to pan and zoom the map')}
+                </Typography>
+              </div>
               <div
                 style={{
-                  position: 'relative',
-                  zIndex: 3,
-                  border: '1px solid black',
-                  height: `${mapDimensions.height}%`,
-                  width: `${mapDimensions.width}%`,
+                  width: '100%',
+                  height: '100%',
                 }}
               >
-                <div ref={printRef} className={classes.printContainer}>
-                  <div
-                    ref={overlayContainerRef}
-                    className={classes.mapOverlay}
-                  />
-                  {elementsLoading && (
-                    <div className={classes.backdropWrapper}>
-                      <Backdrop className={classes.backdrop} open>
-                        <CircularProgress />
-                      </Backdrop>
-                    </div>
-                  )}
-                  {titleText && (
-                    <div ref={titleOverlayRef} className={classes.titleOverlay}>
-                      {titleText}
-                    </div>
-                  )}
-                  <div className={classes.mapContainer}>
-                    {selectedMap && open && (
-                      <MapGL
-                        ref={mapRef}
-                        dragRotate={false}
-                        // preserveDrawingBuffer is required for the map to be exported as an image
-                        preserveDrawingBuffer
-                        initialViewState={{
-                          longitude: selectedMap.getCenter().lng,
-                          latitude: selectedMap.getCenter().lat,
-                          zoom: selectedMap.getZoom(),
-                        }}
-                        onLoad={() => refreshImage()}
-                        onMoveEnd={() => refreshImage()}
-                        mapStyle={selectedMapStyle || mapStyle.toString()}
-                        maxBounds={selectedMap.getMaxBounds() ?? undefined}
-                      >
-                        {toggles.countryMask && (
-                          <Source
-                            id="mask-overlay"
-                            type="geojson"
-                            data={invertedAdminBoundaryLimitPolygon}
-                          >
-                            <Layer
-                              id="mask-layer-overlay"
-                              type="fill"
-                              source="mask-overlay"
-                              layout={{}}
-                              paint={{
-                                'fill-color': '#000',
-                                'fill-opacity': 0.7,
-                              }}
-                            />
-                          </Source>
-                        )}
-                      </MapGL>
+                <div
+                  style={{
+                    position: 'relative',
+                    zIndex: 3,
+                    border: '1px solid black',
+                    height: `${mapDimensions.height}%`,
+                    width: `${mapDimensions.width}%`,
+                  }}
+                >
+                  <div ref={printRef} className={classes.printContainer}>
+                    <div
+                      ref={overlayContainerRef}
+                      className={classes.mapOverlay}
+                    />
+                    {elementsLoading && (
+                      <div className={classes.backdropWrapper}>
+                        <Backdrop className={classes.backdrop} open>
+                          <CircularProgress />
+                        </Backdrop>
+                      </div>
                     )}
+                    {titleText && (
+                      <div
+                        ref={titleOverlayRef}
+                        className={classes.titleOverlay}
+                      >
+                        {titleText}
+                      </div>
+                    )}
+                    <div className={classes.mapContainer}>
+                      {selectedMap && open && (
+                        <MapGL
+                          ref={mapRef}
+                          dragRotate={false}
+                          // preserveDrawingBuffer is required for the map to be exported as an image
+                          preserveDrawingBuffer
+                          initialViewState={{
+                            longitude: selectedMap.getCenter().lng,
+                            latitude: selectedMap.getCenter().lat,
+                            zoom: selectedMap.getZoom(),
+                          }}
+                          onLoad={() => refreshImage()}
+                          onMoveEnd={() => refreshImage()}
+                          mapStyle={selectedMapStyle || mapStyle.toString()}
+                          maxBounds={selectedMap.getMaxBounds() ?? undefined}
+                        >
+                          {toggles.countryMask && (
+                            <Source
+                              id="mask-overlay"
+                              type="geojson"
+                              data={invertedAdminBoundaryLimitPolygon}
+                            >
+                              <Layer
+                                id="mask-layer-overlay"
+                                type="fill"
+                                source="mask-overlay"
+                                layout={{}}
+                                paint={{
+                                  'fill-color': '#000',
+                                  'fill-opacity': 0.7,
+                                }}
+                              />
+                            </Source>
+                          )}
+                        </MapGL>
+                      )}
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
 
             <div className={classes.optionsContainer}>
-              <Box
-                fontSize={14}
-                fontWeight={700}
-                mb={1}
-                className={classes.title}
-              >
-                {t('Map Options')}
-              </Box>
+              <div>
+                <Box
+                  fontSize={14}
+                  fontWeight={700}
+                  mb={1}
+                  className={classes.title}
+                >
+                  {t('Map Options')}
+                </Box>
+                <IconButton
+                  className={classes.closeButton}
+                  onClick={() => handleClose()}
+                >
+                  <CancelIcon />
+                </IconButton>
+              </div>
 
               <div className={classes.optionWrap}>
                 <Typography variant="h4">Title</Typography>
