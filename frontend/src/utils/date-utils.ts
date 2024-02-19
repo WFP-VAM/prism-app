@@ -132,9 +132,6 @@ export const getFormattedDate = (
   const year = jsDate.getUTCFullYear();
   const month = String(jsDate.getUTCMonth() + 1).padStart(2, '0');
   const day = String(jsDate.getUTCDate()).padStart(2, '0');
-  const hours = String(jsDate.getUTCHours()).padStart(2, '0');
-  const minutes = String(jsDate.getUTCMinutes()).padStart(2, '0');
-  const seconds = String(jsDate.getUTCSeconds()).padStart(2, '0');
 
   switch (format) {
     case 'default':
@@ -143,12 +140,23 @@ export const getFormattedDate = (
     case 'snake':
     case DEFAULT_DATE_FORMAT_SNAKE_CASE:
       return `${year}_${month}_${day}`;
-    case 'YYYY-MM-DD HH:mm':
-      return `${year}-${month}-${day} ${hours}:${minutes}`;
     case 'DD_MM_YYYY':
       return `${day}_${month}_${year}`;
-    case 'YYYY-MM-DDTHH:mm:ss':
-      return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}`;
+    case 'YYYY-MM-DD HH:mm':
+    case 'YYYY-MM-DDTHH:mm:ss': {
+      const hours = String(jsDate.getUTCHours()).padStart(2, '0');
+      const minutes = String(jsDate.getUTCMinutes()).padStart(2, '0');
+      switch (format) {
+        case 'YYYY-MM-DD HH:mm':
+          return `${year}-${month}-${day} ${hours}:${minutes}`;
+        case 'YYYY-MM-DDTHH:mm:ss': {
+          const seconds = String(jsDate.getUTCSeconds()).padStart(2, '0');
+          return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}`;
+        }
+        default:
+          throw new Error(`Invalid format: ${format}`);
+      }
+    }
 
     default:
       throw new Error(`Invalid format: ${format}`);
