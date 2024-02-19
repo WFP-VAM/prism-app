@@ -30,10 +30,7 @@ import {
   datesAreEqualWithoutTime,
   getFormattedDate,
 } from 'utils/date-utils';
-import {
-  MONTH_FIRST_DATE_FORMAT,
-  MONTH_ONLY_DATE_FORMAT,
-} from 'utils/name-utils';
+import { DateFormat } from 'utils/name-utils';
 import { useUrlHistory } from 'utils/url-utils';
 import useLayers from 'utils/layers-utils';
 import { format } from 'date-fns';
@@ -146,12 +143,12 @@ const DateSelector = memo(({ classes }: DateSelectorProps) => {
       return {
         value: date.getTime(),
         label: dateStrToUpperCase(
-          format(date, MONTH_FIRST_DATE_FORMAT, {
+          format(date, DateFormat.MonthFirst, {
             locale: locales[locale as keyof typeof locales],
           }),
         ),
         month: dateStrToUpperCase(
-          format(date, MONTH_ONLY_DATE_FORMAT, {
+          format(date, DateFormat.MonthOnly, {
             locale: locales[locale as keyof typeof locales],
           }),
         ),

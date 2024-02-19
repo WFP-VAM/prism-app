@@ -1,7 +1,7 @@
 import React, { memo } from 'react';
 import { StaticRasterLayerProps } from 'config/types';
 import { useDefaultDate } from 'utils/useDefaultDate';
-import { DEFAULT_DATE_FORMAT_SNAKE_CASE } from 'utils/name-utils';
+import { DateFormat } from 'utils/name-utils';
 import { Layer, Source } from 'react-map-gl/maplibre';
 import { getLayerMapId } from 'utils/map-utils';
 import { getFormattedDate } from 'utils/date-utils';
@@ -13,7 +13,7 @@ export const createStaticRasterLayerUrl = (
 ) =>
   dates
     ? baseUrl.replace(
-        `{${DEFAULT_DATE_FORMAT_SNAKE_CASE}}`,
+        `{${DateFormat.DefaultSnakeCase}}`,
         getFormattedDate(selectedDate, 'snake') as string,
       )
     : baseUrl;

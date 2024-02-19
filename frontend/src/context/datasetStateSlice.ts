@@ -2,7 +2,7 @@ import { orderBy } from 'lodash';
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { Dispatch } from 'redux';
 import { ChartType, DatasetField } from 'config/types';
-import { DEFAULT_DATE_FORMAT } from 'utils/name-utils';
+import { DateFormat } from 'utils/name-utils';
 import {
   EWSSensorData,
   EWSTriggersConfig,
@@ -87,7 +87,7 @@ export const createTableData = (
   format: TableDataFormat,
 ): TableData => {
   const dateFormat =
-    format === TableDataFormat.DATE ? DEFAULT_DATE_FORMAT : 'YYYY-MM-DD HH:mm';
+    format === TableDataFormat.DATE ? DateFormat.Default : DateFormat.DateTime;
 
   const sortedRows = orderBy(results, item => item.date).map(row => {
     const valuesObj = Object.values(row.values).reduce(

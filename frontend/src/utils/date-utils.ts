@@ -1,8 +1,5 @@
 import { DateItem } from '../config/types';
-import {
-  DEFAULT_DATE_FORMAT,
-  DEFAULT_DATE_FORMAT_SNAKE_CASE,
-} from './name-utils';
+import { DateFormat } from './name-utils';
 
 export interface StartEndDate {
   startDate?: number;
@@ -118,11 +115,11 @@ export const getFormattedDate = (
   format:
     | 'default'
     | 'snake'
-    | typeof DEFAULT_DATE_FORMAT_SNAKE_CASE
-    | typeof DEFAULT_DATE_FORMAT
-    | 'YYYY-MM-DD HH:mm'
-    | 'DD_MM_YYYY'
-    | 'YYYY-MM-DDTHH:mm:ss',
+    | DateFormat.DefaultSnakeCase
+    | DateFormat.Default
+    | DateFormat.DateTime
+    | DateFormat.DayFirstSnakeCase
+    | DateFormat.ISO,
 ) => {
   if (date === undefined) {
     return undefined;
@@ -135,21 +132,21 @@ export const getFormattedDate = (
 
   switch (format) {
     case 'default':
-    case DEFAULT_DATE_FORMAT:
+    case DateFormat.Default:
       return `${year}-${month}-${day}`;
     case 'snake':
-    case DEFAULT_DATE_FORMAT_SNAKE_CASE:
+    case DateFormat.DefaultSnakeCase:
       return `${year}_${month}_${day}`;
-    case 'DD_MM_YYYY':
+    case DateFormat.DayFirstSnakeCase:
       return `${day}_${month}_${year}`;
-    case 'YYYY-MM-DD HH:mm':
-    case 'YYYY-MM-DDTHH:mm:ss': {
+    case DateFormat.DateTime:
+    case DateFormat.ISO: {
       const hours = String(jsDate.getUTCHours()).padStart(2, '0');
       const minutes = String(jsDate.getUTCMinutes()).padStart(2, '0');
       switch (format) {
-        case 'YYYY-MM-DD HH:mm':
+        case DateFormat.DateTime:
           return `${year}-${month}-${day} ${hours}:${minutes}`;
-        case 'YYYY-MM-DDTHH:mm:ss': {
+        case DateFormat.ISO: {
           const seconds = String(jsDate.getUTCSeconds()).padStart(2, '0');
           return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}`;
         }

@@ -4,6 +4,7 @@ import { PointData, PointLayerData } from 'config/types';
 import { oneDayInMs } from 'components/MapView/LeftPanel/utils';
 import { fetchWithTimeout } from './fetch-with-timeout';
 import { getFormattedDate } from './date-utils';
+import { DateFormat } from './name-utils';
 
 type EWSChartConfig = {
   label: string;
@@ -60,13 +61,16 @@ export const createEWSDatesArray = (testEndDate?: number): number[] => {
 
   const now = new Date();
 
-  const endDate = testEndDate || now.setUTCHours(0, 0, 0, 0);
+  const endDate = testEndDate
+    ? new Date(testEndDate).setUTCHours(12, 0, 0, 0)
+    : now.setUTCHours(12, 0, 0, 0);
 
   const tempDate = new Date('2021-01-01');
+  tempDate.setUTCHours(12, 0, 0, 0);
 
   while (tempDate.getTime() <= endDate) {
     // eslint-disable-next-line fp/no-mutating-methods
-    datesArray.push(tempDate.setUTCHours(12, 0, 0, 0));
+    datesArray.push(tempDate.getTime());
 
     tempDate.setTime(tempDate.getTime() + oneDayInMs);
   }
@@ -105,7 +109,7 @@ export const fetchEWSDataPointsByLocation = async (
   endDate.setHours(23, 59, 59, 999);
   // FIXME: pass start/end here? why the 24h delta?
   const startDate = new Date(endDate.getTime() - oneDayInMs);
-  const format = 'YYYY-MM-DDTHH:mm:ss';
+  const format = DateFormat.ISO;
 
   const url = `${baseUrl}/sensors/sensor_event?start=${getFormattedDate(
     startDate,

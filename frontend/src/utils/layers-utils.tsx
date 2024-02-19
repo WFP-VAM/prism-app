@@ -20,7 +20,7 @@ import { countBy, get, pickBy } from 'lodash';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { LocalError } from 'utils/error-utils';
-import { DEFAULT_DATE_FORMAT } from 'utils/name-utils';
+import { DateFormat } from 'utils/name-utils';
 import {
   DateCompatibleLayer,
   getPossibleDatesForLayer,
@@ -323,7 +323,7 @@ const useLayers = () => {
 
       updateHistory(
         'date',
-        getFormattedDate(closestDate, DEFAULT_DATE_FORMAT) as string,
+        getFormattedDate(closestDate, DateFormat.Default) as string,
       );
     },
     [
@@ -409,7 +409,7 @@ const useLayers = () => {
       } else {
         updateHistory(
           'date',
-          getFormattedDate(closestDate, DEFAULT_DATE_FORMAT) as string,
+          getFormattedDate(closestDate, DateFormat.Default) as string,
         );
       }
 
@@ -419,10 +419,10 @@ const useLayers = () => {
             layer.title
           }' on ${getFormattedDate(
             jsSelectedDate,
-            DEFAULT_DATE_FORMAT,
+            DateFormat.Default,
           )}. The closest date ${getFormattedDate(
             closestDate,
-            DEFAULT_DATE_FORMAT,
+            DateFormat.Default,
           )} has been loaded instead.`,
           type: 'warning',
         }),

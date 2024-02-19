@@ -27,6 +27,7 @@ import {
 import { Column, ExposedPopulationResult } from 'utils/analysis-utils';
 import LoadingBlinkingDots from 'components/Common/LoadingBlinkingDots';
 import { ReportType } from 'config/types';
+import { DateFormat } from 'utils/name-utils';
 import { getFormattedDate } from 'utils/date-utils';
 import ReportDoc from './reportDoc';
 
@@ -62,7 +63,10 @@ const ReportDialog = memo(
     const getPDFName = useMemo(() => {
       const type = snakeCase(analysisResult?.legendText);
       const date = new Date();
-      const dateString = getFormattedDate(date.toISOString(), 'DD_MM_YYYY');
+      const dateString = getFormattedDate(
+        date.toISOString(),
+        DateFormat.DayFirstSnakeCase,
+      );
       return `PRISM_report_${type}_${dateString}.pdf`;
     }, [analysisResult]);
 
