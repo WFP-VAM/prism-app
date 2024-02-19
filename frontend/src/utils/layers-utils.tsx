@@ -29,7 +29,7 @@ import { UrlLayerKey, getUrlKey, useUrlHistory } from 'utils/url-utils';
 import {
   datesAreEqualWithoutTime,
   binaryIncludes,
-  getDateFormat,
+  getFormattedDate,
   getTimeInMilliseconds,
 } from './date-utils';
 
@@ -281,7 +281,7 @@ const useLayers = () => {
 
     if (!Number.isNaN(dateInt)) {
       dispatch(updateDateRange({ startDate: dateInt }));
-      updateHistory('date', getDateFormat(dateInt, 'default') as string);
+      updateHistory('date', getFormattedDate(dateInt, 'default') as string);
       return;
     }
 
@@ -323,7 +323,7 @@ const useLayers = () => {
 
       updateHistory(
         'date',
-        getDateFormat(closestDate, DEFAULT_DATE_FORMAT) as string,
+        getFormattedDate(closestDate, DEFAULT_DATE_FORMAT) as string,
       );
     },
     [
@@ -409,7 +409,7 @@ const useLayers = () => {
       } else {
         updateHistory(
           'date',
-          getDateFormat(closestDate, DEFAULT_DATE_FORMAT) as string,
+          getFormattedDate(closestDate, DEFAULT_DATE_FORMAT) as string,
         );
       }
 
@@ -417,10 +417,10 @@ const useLayers = () => {
         addNotification({
           message: `No data was found for layer '${
             layer.title
-          }' on ${getDateFormat(
+          }' on ${getFormattedDate(
             jsSelectedDate,
             DEFAULT_DATE_FORMAT,
-          )}. The closest date ${getDateFormat(
+          )}. The closest date ${getFormattedDate(
             closestDate,
             DEFAULT_DATE_FORMAT,
           )} has been loaded instead.`,

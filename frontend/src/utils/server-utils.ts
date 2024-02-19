@@ -32,7 +32,7 @@ import {
   generateDateItemsRange,
   generateDatesRange,
   binaryIncludes,
-  getDateFormat,
+  getFormattedDate,
 } from './date-utils';
 import { LocalError } from './error-utils';
 import { createEWSDatesArray } from './ews-utils';
@@ -252,7 +252,7 @@ async function generateIntermediateDateItemFromDataFile(
     layerDates.map(async r => {
       const path = layerPathTemplate.replace(/{.*?}/g, match => {
         const format = match.slice(1, -1);
-        return getDateFormat(r, format as any) as string;
+        return getFormattedDate(r, format as any) as string;
       });
 
       const res = await fetch(path);

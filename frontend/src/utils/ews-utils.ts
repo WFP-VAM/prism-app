@@ -3,7 +3,7 @@ import { Dispatch } from 'redux';
 import { PointData, PointLayerData } from 'config/types';
 import { oneDayInMs } from 'components/MapView/LeftPanel/utils';
 import { fetchWithTimeout } from './fetch-with-timeout';
-import { getDateFormat } from './date-utils';
+import { getFormattedDate } from './date-utils';
 
 type EWSChartConfig = {
   label: string;
@@ -109,10 +109,10 @@ export const fetchEWSDataPointsByLocation = async (
   const startDate = new Date(endDate.getTime() - oneDayInMs);
   const format = 'YYYY-MM-DDTHH:mm:ss';
 
-  const url = `${baseUrl}/sensors/sensor_event?start=${getDateFormat(
+  const url = `${baseUrl}/sensors/sensor_event?start=${getFormattedDate(
     startDate,
     format,
-  )}&end=${getDateFormat(endDate, format)}`;
+  )}&end=${getFormattedDate(endDate, format)}`;
 
   const resource = externalId ? `${url}&external_id=${externalId}` : url;
 
