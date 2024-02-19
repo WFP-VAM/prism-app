@@ -600,7 +600,7 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
               <div>
                 <Box
                   fontSize={14}
-                  fontWeight={700}
+                  fontWeight={900}
                   mb={1}
                   className={classes.title}
                 >
@@ -629,24 +629,6 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
                 />
               </div>
 
-              <div className={classes.optionWrap}>
-                <Typography variant="h4">Select admin area</Typography>
-                <SimpleBoundaryDropdown
-                  selectAll
-                  className={classes.formControl}
-                  labelMessage={t('Go To')}
-                  map={mapRef.current?.getMap()}
-                  selectedBoundaries={selectedBoundaries}
-                  setSelectedBoundaries={setSelectedBoundaries}
-                  selectProps={{
-                    variant: 'outlined',
-                    fullWidth: true,
-                  }}
-                  size="small"
-                  goto
-                />
-              </div>
-
               <ToggleSelector
                 value={Number(toggles.countryMask)}
                 options={countryMaskSelectorOptions}
@@ -658,6 +640,26 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
                 }
                 title="Mask data outside of admin area"
               />
+
+              {toggles.countryMask && (
+                <div className={classes.optionWrap}>
+                  <Typography variant="h4">Select admin area</Typography>
+                  <SimpleBoundaryDropdown
+                    selectAll
+                    className={classes.formControl}
+                    labelMessage={t('Go To')}
+                    map={mapRef.current?.getMap()}
+                    selectedBoundaries={selectedBoundaries}
+                    setSelectedBoundaries={setSelectedBoundaries}
+                    selectProps={{
+                      variant: 'outlined',
+                      fullWidth: true,
+                    }}
+                    size="small"
+                    goto
+                  />
+                </div>
+              )}
 
               <ToggleSelector
                 value={Number(toggles.fullLayerDescription)}
