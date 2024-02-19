@@ -199,6 +199,7 @@
         "ch_urban_phase"
       ],
       "Population": [
+        "ch_perc3_5",
         "ch_pop3_5",
         "ch_idps_pop3_5",
         "ch_inaccessible_pop3_5",
