@@ -201,7 +201,7 @@ const getPointDataCoverage = async (
   );
 };
 
-const getAdminLevelDataCoverage = (layer: AdminLevelDataLayerProps) => {
+export const getAdminLevelDataCoverage = (layer: AdminLevelDataLayerProps) => {
   const { dates } = layer;
   if (!dates) {
     return [];

@@ -1,5 +1,6 @@
 import timezoneMock from 'timezone-mock';
 import { generateDateStrings } from '.';
+import { timezones } from '../../../../../../test/helpers';
 
 const f = () => {
   const ret = generateDateStrings(
@@ -14,18 +15,8 @@ describe('generateDateStrings', () => {
     timezoneMock.unregister();
   });
 
-  test('Should work with UTC', () => {
-    timezoneMock.register('UTC');
-    f();
-  });
-
-  test('Should work with US/Pacific', () => {
-    timezoneMock.register('US/Pacific');
-    f();
-  });
-
-  test('Should work with Etc/GMT-1', () => {
-    timezoneMock.register('Etc/GMT-1');
+  test.each(timezones)('Should work with %s', timezone => {
+    timezoneMock.register(timezone);
     f();
   });
 });

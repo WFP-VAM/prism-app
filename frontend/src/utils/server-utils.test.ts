@@ -3,7 +3,9 @@ import timezoneMock from 'timezone-mock';
 import {
   generateIntermediateDateItemFromValidity,
   getStaticRasterDataCoverage,
+  getAdminLevelDataCoverage,
 } from './server-utils';
+import { timezones } from '../../test/helpers';
 
 // NOTE: all timestamps are created in the LOCAL timezone (as per js docs), so that
 // these tests should pass for any TZ.
@@ -365,28 +367,91 @@ describe('getStaticRasterDataCoverage', () => {
     ],
   };
 
+  const result = [1669852800000, 1670716800000];
+
   afterAll(() => {
     timezoneMock.unregister();
   });
 
-  test('Should work with UTC', () => {
-    timezoneMock.register('UTC');
+  test.each(timezones)('Should work with %s', timezone => {
+    timezoneMock.register(timezone);
     const ret = getStaticRasterDataCoverage(layer as any);
 
-    expect(ret).toEqual([1669852800000, 1670716800000]);
+    expect(ret).toEqual(result);
+  });
+});
+
+describe('getAdminLevelDataCoverage', () => {
+  const layer = {
+    id: 'ch_urban_pop3_5',
+    type: 'admin_level_data',
+    title: 'Urban areas - population in phase 3 to 5',
+    path: 'data/cameroon/ch/urb_admin2_{YYYY_MM_DD}.json',
+    dates: ['2022-02-01', '2022-06-01'],
+    adminLevel: 2,
+    dataField: 'calc_pop_ph3_5_admin2',
+    adminCode: 'adm2_pcod2',
+    opacity: 0.9,
+    featureInfoProps: {
+      start_date: {
+        type: 'text',
+        dataTitle: 'Reference period start',
+      },
+      end_date: {
+        type: 'text',
+        dataTitle: 'Reference period end',
+      },
+    },
+    legend: [
+      {
+        value: 1,
+        label: '< 10,000',
+        color: '#fee5d9',
+      },
+      {
+        value: 10000,
+        label: '10,000 - 20,000',
+        color: '#fcbba1',
+      },
+      {
+        value: 20000,
+        label: '20,000 - 30,000',
+        color: '#fc9272',
+      },
+      {
+        value: 30000,
+        label: '30,000 - 40,000',
+        color: '#fb6a4a',
+      },
+      {
+        value: 40000,
+        label: '40,000 - 50,000',
+        color: '#ef3b2c',
+      },
+      {
+        value: 50000,
+        label: '50,000 - 75,000',
+        color: '#cb181d',
+      },
+      {
+        value: 75000,
+        label: '> 75,000',
+        color: '#99000d',
+      },
+    ],
+    legendText: 'Urban areas - population in phase 3 to 5',
+  };
+
+  const result = [1643673600000, 1654041600000];
+
+  afterAll(() => {
+    timezoneMock.unregister();
   });
 
-  test('Should work with US/Pacific', () => {
-    timezoneMock.register('US/Pacific');
-    const ret = getStaticRasterDataCoverage(layer as any);
+  test.each(timezones)('Should work with %s', timezone => {
+    timezoneMock.register(timezone);
+    const ret = getAdminLevelDataCoverage(layer as any);
 
-    expect(ret).toEqual([1669852800000, 1670716800000]);
-  });
-
-  test('Should work with Etc/GMT-1', () => {
-    timezoneMock.register('Etc/GMT-1');
-    const ret = getStaticRasterDataCoverage(layer as any);
-
-    expect(ret).toEqual([1669852800000, 1670716800000]);
+    expect(ret).toEqual(result);
   });
 });
