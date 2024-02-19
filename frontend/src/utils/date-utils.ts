@@ -115,6 +115,7 @@ export const getFormattedDate = (
   format:
     | 'default'
     | 'snake'
+    | 'locale'
     | DateFormat.DefaultSnakeCase
     | DateFormat.Default
     | DateFormat.DateTime
@@ -123,6 +124,19 @@ export const getFormattedDate = (
 ) => {
   if (date === undefined) {
     return undefined;
+  }
+
+  if (format === 'locale') {
+    return new Date(date).toLocaleString('default', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+      timeZoneName: 'short',
+      hour12: false,
+    });
   }
 
   const jsDate = new Date(date);

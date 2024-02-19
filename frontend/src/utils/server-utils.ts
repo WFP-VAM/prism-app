@@ -622,16 +622,7 @@ export function formatFeatureInfo(
   labelMap?: { [key: string]: string },
 ): string {
   if (type === DataType.Date) {
-    return new Date(value).toLocaleString('default', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
-      second: '2-digit',
-      timeZoneName: 'short',
-      hour12: false,
-    });
+    return getFormattedDate(value, 'locale') as string;
   }
 
   if (type === DataType.LabelMapping) {
