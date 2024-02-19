@@ -62,15 +62,13 @@ export const createEWSDatesArray = (testEndDate?: number): number[] => {
 
   const endDate = testEndDate || now.setUTCHours(0, 0, 0, 0);
 
-  let tempDate = new Date('2021-01-01');
+  const tempDate = new Date('2021-01-01');
 
   while (tempDate.getTime() <= endDate) {
-    const clone = new Date(tempDate.getTime());
     // eslint-disable-next-line fp/no-mutating-methods
-    datesArray.push(clone.setUTCHours(12, 0, 0, 0));
+    datesArray.push(tempDate.setUTCHours(12, 0, 0, 0));
 
-    // eslint-disable-next-line fp/no-mutation
-    tempDate = new Date(tempDate.getTime() + oneDayInMs);
+    tempDate.setTime(tempDate.getTime() + oneDayInMs);
   }
 
   return datesArray;
