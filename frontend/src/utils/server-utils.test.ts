@@ -5,6 +5,7 @@ import {
   getStaticRasterDataCoverage,
   getAdminLevelDataCoverage,
 } from './server-utils';
+import { timezones } from '../../test/helpers';
 
 // NOTE: all timestamps are created in the LOCAL timezone (as per js docs), so that
 // these tests should pass for any TZ.
@@ -372,22 +373,8 @@ describe('getStaticRasterDataCoverage', () => {
     timezoneMock.unregister();
   });
 
-  test('Should work with UTC', () => {
-    timezoneMock.register('UTC');
-    const ret = getStaticRasterDataCoverage(layer as any);
-
-    expect(ret).toEqual(result);
-  });
-
-  test('Should work with US/Pacific', () => {
-    timezoneMock.register('US/Pacific');
-    const ret = getStaticRasterDataCoverage(layer as any);
-
-    expect(ret).toEqual(result);
-  });
-
-  test('Should work with Etc/GMT-1', () => {
-    timezoneMock.register('Etc/GMT-1');
+  test.each(timezones)('Should work with %s', timezone => {
+    timezoneMock.register(timezone);
     const ret = getStaticRasterDataCoverage(layer as any);
 
     expect(ret).toEqual(result);
@@ -461,22 +448,8 @@ describe('getAdminLevelDataCoverage', () => {
     timezoneMock.unregister();
   });
 
-  test('Should work with UTC', () => {
-    timezoneMock.register('UTC');
-    const ret = getAdminLevelDataCoverage(layer as any);
-
-    expect(ret).toEqual(result);
-  });
-
-  test('Should work with US/Pacific', () => {
-    timezoneMock.register('US/Pacific');
-    const ret = getAdminLevelDataCoverage(layer as any);
-
-    expect(ret).toEqual(result);
-  });
-
-  test('Should work with Etc/GMT-1', () => {
-    timezoneMock.register('Etc/GMT-1');
+  test.each(timezones)('Should work with %s', timezone => {
+    timezoneMock.register(timezone);
     const ret = getAdminLevelDataCoverage(layer as any);
 
     expect(ret).toEqual(result);
