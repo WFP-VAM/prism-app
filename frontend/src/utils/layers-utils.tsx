@@ -250,7 +250,7 @@ const useLayers = () => {
 
   // The date integer from url
   const dateInt = useMemo(() => {
-    return (urlDate ? new Date(urlDate) : new Date()).setHours(12, 0, 0, 0);
+    return (urlDate ? new Date(urlDate) : new Date()).setUTCHours(12, 0, 0, 0);
   }, [urlDate]);
 
   useEffect(() => {
@@ -369,8 +369,8 @@ const useLayers = () => {
     (layer: DateCompatibleLayer, date: Date) => {
       return binaryIncludes<DateItem>(
         getPossibleDatesForLayer(layer, serverAvailableDates),
-        date.setHours(12, 0, 0, 0),
-        x => new Date(x.displayDate).setHours(12, 0, 0, 0),
+        date.setUTCHours(12, 0, 0, 0),
+        x => new Date(x.displayDate).setUTCHours(12, 0, 0, 0),
       );
     },
     [serverAvailableDates],

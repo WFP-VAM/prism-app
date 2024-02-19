@@ -106,7 +106,7 @@ export const fetchEWSDataPointsByLocation = async (
   externalId?: string,
 ): Promise<EWSSensorData[]> => {
   const endDate = new Date(date);
-  endDate.setHours(23, 59, 59, 999);
+  endDate.setUTCHours(23, 59, 59, 999);
   // FIXME: pass start/end here? why the 24h delta?
   const startDate = new Date(endDate.getTime() - oneDayInMs);
   const format = DateFormat.ISO;

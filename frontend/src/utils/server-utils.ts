@@ -225,7 +225,7 @@ export const getStaticRasterDataCoverage = (layer: StaticRasterLayerProps) => {
  * @return DateItem
  */
 const generateDefaultDateItem = (date: number, baseItem?: Object): DateItem => {
-  const newDate = new Date(date).setHours(12, 0, 0, 0);
+  const newDate = new Date(date).setUTCHours(12, 0, 0, 0);
   const r = {
     displayDate: newDate,
     queryDate: newDate,
@@ -274,8 +274,8 @@ async function generateIntermediateDateItemFromDataFile(
       const endDate = jsonBody.DataList[0][validityPeriod.end_date_field];
 
       return {
-        startDate: new Date(startDate).setHours(12, 0, 0, 0),
-        endDate: new Date(endDate).setHours(12, 0, 0, 0),
+        startDate: new Date(startDate).setUTCHours(12, 0, 0, 0),
+        endDate: new Date(endDate).setUTCHours(12, 0, 0, 0),
       };
     }),
   );
@@ -311,7 +311,7 @@ export function generateIntermediateDateItemFromValidity(layer: ValidityLayer) {
     .filter(date => date > earliestDate)
     .map(d => {
       const date = new Date(d);
-      date.setHours(12, 0, 0, 0);
+      date.setUTCHours(12, 0, 0, 0);
       return date;
     })
     .reduce((acc: DateItem[], date) => {
@@ -600,7 +600,7 @@ export async function getLayersAvailableDates(
         // Genererate dates for layers with validity but not an admin_level_data type
         return {
           [layerName]: layerDatesEntry[1].map((d: number) =>
-            generateDefaultDateItem(new Date(d).setHours(12, 0, 0, 0)),
+            generateDefaultDateItem(new Date(d).setUTCHours(12, 0, 0, 0)),
           ),
         };
       },

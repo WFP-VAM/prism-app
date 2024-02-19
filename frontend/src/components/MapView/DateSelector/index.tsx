@@ -139,7 +139,7 @@ const DateSelector = memo(({ classes }: DateSelectorProps) => {
     }
 
     return daysArray.map(date => {
-      date.setHours(12, 0, 0, 0);
+      date.setUTCHours(12, 0, 0, 0);
       return {
         value: date.getTime(),
         label: dateStrToUpperCase(
