@@ -249,6 +249,7 @@ export function SimpleBoundaryDropdown({
   selectAll,
   onlyNewCategory,
   selectProps,
+  goto,
   ...rest
 }: BoundaryDropdownProps) {
   const styles = useStyles();
@@ -364,7 +365,9 @@ export function SimpleBoundaryDropdown({
                       .map(b => b.adminCode);
 
                     setSelectedBoundaries(boundariesToSelect, event.shiftKey);
-                    return;
+                    if (!goto) {
+                      return;
+                    }
                   }
                   if (map === undefined) {
                     return;
@@ -381,7 +384,7 @@ export function SimpleBoundaryDropdown({
                     features,
                   });
                   if (bboxUnion.length === 4) {
-                    map.fitBounds(bboxUnion, { padding: 30 });
+                    map.fitBounds(bboxUnion, { padding: 60 });
                   }
                 }}
               >
@@ -410,6 +413,7 @@ interface BoundaryDropdownProps {
     appendMany?: boolean,
   ) => void;
   selectProps?: SelectProps;
+  goto?: boolean;
 }
 
 /**

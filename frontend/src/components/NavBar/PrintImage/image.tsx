@@ -33,15 +33,22 @@ import { mapStyle } from 'components/MapView/Map';
 import { addFillPatternImagesInMap } from 'components/MapView/Layers/AdminLevelDataLayer';
 import useLayers from 'utils/layers-utils';
 import { appConfig, safeCountry } from 'config';
-import { AdminLevelDataLayerProps } from 'config/types';
+import {
+  AdminCodeString,
+  AdminLevelDataLayerProps,
+  BoundaryLayerProps,
+} from 'config/types';
 import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
 import ToggleButton from '@material-ui/lab/ToggleButton';
 import VisibilityOffIcon from '@material-ui/icons/VisibilityOff';
 import VisibilityIcon from '@material-ui/icons/Visibility';
 import { cyanBlue } from 'muiTheme';
 import { SimpleBoundaryDropdown } from 'components/MapView/Layers/BoundaryDropdown';
+import { getBoundaryLayerSingleton } from 'config/utils';
+import { LayerData } from 'context/layers/layer-data';
 import {
   dateRangeSelector,
+  layerDataSelector,
   mapSelector,
 } from '../../../context/mapStateSlice/selectors';
 import { useSafeTranslation } from '../../../i18n';
@@ -143,6 +150,8 @@ const countryMaskSelectorOptions = [
   { value: 1, comp: <VisibilityIcon /> },
 ];
 
+const boundaryLayer = getBoundaryLayerSingleton();
+
 function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
   const { t } = useSafeTranslation();
   const { country } = appConfig;
@@ -151,6 +160,10 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
   const printRef = useRef<HTMLDivElement>(null);
   const overlayContainerRef = useRef<HTMLDivElement>(null);
   const titleOverlayRef = useRef<HTMLDivElement>(null);
+  const boundaryLayerState = useSelector(
+    layerDataSelector(boundaryLayer.id),
+  ) as LayerData<BoundaryLayerProps> | undefined;
+  const { data } = boundaryLayerState || {};
 
   const mapRef = React.useRef<MapRef>(null);
   // list of toggles
@@ -164,6 +177,9 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
     downloadMenuAnchorEl,
     setDownloadMenuAnchorEl,
   ] = React.useState<HTMLElement | null>(null);
+  const [selectedBoundaries, setSelectedBoundaries] = React.useState<
+    AdminCodeString[]
+  >([]);
   const [titleText, setTitleText] = React.useState<string>(country);
   const [footerText, setFooterText] = React.useState('');
   const [elementsLoading, setElementsLoading] = React.useState(true);
@@ -210,14 +226,26 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
   React.useEffect(() => {
     // admin-boundary-unified-polygon.json is generated using "yarn preprocess-layers"
     // which runs ./scripts/preprocess-layers.js
-    fetch(`data/${safeCountry}/admin-boundary-unified-polygon.json`)
-      .then(response => response.json())
-      .then(polygonData => {
-        const maskedPolygon = mask(polygonData as any);
-        setAdminBoundaryPolygon(maskedPolygon as any);
-      })
-      .catch(error => console.error('Error:', error));
-  }, []);
+    if (selectedBoundaries.length === 0) {
+      fetch(`data/${safeCountry}/admin-boundary-unified-polygon.json`)
+        .then(response => response.json())
+        .then(polygonData => {
+          const maskedPolygon = mask(polygonData as any);
+          setAdminBoundaryPolygon(maskedPolygon as any);
+        })
+        .catch(error => console.error('Error:', error));
+      return;
+    }
+
+    const filteredData = data && {
+      ...data,
+      features: data.features.filter(cell =>
+        selectedBoundaries.includes(cell.properties?.[boundaryLayer.adminCode]),
+      ),
+    };
+    const masked = mask(filteredData as any);
+    setAdminBoundaryPolygon(masked as any);
+  }, [data, selectedBoundaries, selectedBoundaries.length]);
 
   const createFooterElement = (
     inputFooterText: string = t(DEFAULT_FOOTER_TEXT),
@@ -596,15 +624,18 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
               <div className={classes.optionWrap}>
                 <Typography variant="h4">Select admin area</Typography>
                 <SimpleBoundaryDropdown
+                  selectAll
                   className={classes.formControl}
                   labelMessage={t('Go To')}
                   map={mapRef.current?.getMap()}
-                  selectedBoundaries={[]}
+                  selectedBoundaries={selectedBoundaries}
+                  setSelectedBoundaries={setSelectedBoundaries}
                   selectProps={{
                     variant: 'outlined',
                     fullWidth: true,
                   }}
                   size="small"
+                  goto
                 />
               </div>
 
