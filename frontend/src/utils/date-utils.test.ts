@@ -76,7 +76,7 @@ describe('Binary search in ordered arrays of timestamps', () => {
   });
 });
 
-const defaultFormateTests = [
+const defaultFormatTests = [
   [1641158400000, '2022-01-02'],
   [1642387200000, '2022-01-17'],
   [1644556800000, '2022-02-11'],
@@ -99,7 +99,7 @@ const defaultFormateTests = [
   [1644614400000, '2022-02-11'],
 ];
 
-test.each(defaultFormateTests)(
+test.each(defaultFormatTests)(
   'Test getDateFormat default',
   (input, expected) => {
     expect(expected).toEqual(getDateFormat(input, 'default'));
