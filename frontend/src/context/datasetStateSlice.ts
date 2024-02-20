@@ -100,7 +100,7 @@ export const createTableData = (
     );
 
     return {
-      [CHART_DATA_PREFIXES.date]: moment(row.date).format(momentFormat),
+      [CHART_DATA_PREFIXES.date]: moment.utc(row.date).format(momentFormat),
       ...valuesObj,
     };
   });
