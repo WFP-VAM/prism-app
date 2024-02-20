@@ -241,17 +241,7 @@
             }
           ]
         },
-        {
-          "group_title": "Percent of people in phase 3 or above",
-          "activate_all": false,
-          "layers": [
-            {
-              "id": "ch_perc3_5",
-              "label": "Overall",
-              "main": true
-            }
-          ]
-        }
+        "ch_perc3_5"
       ]
     },
     "risk_analysis": {
