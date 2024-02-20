@@ -193,17 +193,65 @@
     },
     "Cadre Harmonisé": {
       "Phase_Classification": [
-        "ch_phase",
-        "ch_idps_phase",
-        "ch_inaccessible_phase",
-        "ch_urban_phase"
+        {
+          "group_title": "Phase Classification",
+          "activate_all": false,
+          "layers": [
+            {
+              "id": "ch_phase",
+              "label": "Overall",
+              "main": true
+            },
+            {
+              "id": "ch_idps_phase",
+              "label": "IDPs"
+            },
+            {
+              "id": "ch_inaccessible_phase",
+              "label": "Inaccessible areas"
+            },
+            {
+              "id": "ch_urban_phase",
+              "label": "Urban"
+            }
+          ]
+        }
       ],
       "Population": [
-        "ch_perc3_5",
-        "ch_pop3_5",
-        "ch_idps_pop3_5",
-        "ch_inaccessible_pop3_5",
-        "ch_urban_pop3_5"
+        {
+          "group_title": "Number of people in phase 3 or above",
+          "activate_all": false,
+          "layers": [
+            {
+              "id": "ch_pop3_5",
+              "label": "Overall",
+              "main": true
+            },
+            {
+              "id": "ch_idps_pop3_5",
+              "label": "IDPs"
+            },
+            {
+              "id": "ch_inaccessible_pop3_5",
+              "label": "Inaccessible areas"
+            },
+            {
+              "id": "ch_urban_pop3_5",
+              "label": "Urban"
+            }
+          ]
+        },
+        {
+          "group_title": "Percent of people in phase 3 or above",
+          "activate_all": false,
+          "layers": [
+            {
+              "id": "ch_perc3_5",
+              "label": "Overall",
+              "main": true
+            }
+          ]
+        }
       ]
     },
     "risk_analysis": {
