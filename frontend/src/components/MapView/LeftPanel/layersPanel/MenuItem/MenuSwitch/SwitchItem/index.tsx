@@ -183,9 +183,10 @@ const SwitchItem = memo(
           />
           <SwitchTitle
             layer={layer}
+            activeLayerId={activeLayerId}
             someLayerAreSelected={someLayerAreSelected}
             toggleLayerValue={toggleLayerValue}
-            initialActiveLayerId={initialActiveLayerId}
+            setActiveLayerId={setActiveLayerId}
             validatedTitle={validatedTitle}
             groupMenuFilter={groupMenuFilter}
             disabledMenuSelection={disabledMenuSelection}
