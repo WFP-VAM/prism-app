@@ -307,6 +307,7 @@ export function SimpleBoundaryDropdown({
     <FormControl {...rest}>
       <InputLabel>{labelMessage}</InputLabel>
       <Select
+        style={{ color: 'black' }}
         multiple
         onClose={() => {
           // empty search so that component shows correct options
