@@ -643,11 +643,10 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
 
               {toggles.countryMask && (
                 <div className={classes.optionWrap}>
-                  <Typography variant="h4">Select admin area</Typography>
                   <SimpleBoundaryDropdown
                     selectAll
                     className={classes.formControl}
-                    labelMessage={t('Go To')}
+                    labelMessage={t('Select admin area')}
                     map={mapRef.current?.getMap()}
                     selectedBoundaries={selectedBoundaries}
                     setSelectedBoundaries={setSelectedBoundaries}

@@ -186,11 +186,6 @@ exports[`renders as expected 1`] = `
           <div
             class="DownloadImage-optionWrap-10"
           >
-            <mock-typography
-              variant="h4"
-            >
-              Select admin area
-            </mock-typography>
             <mock-circularprogress
               color="inherit"
               size="24"
