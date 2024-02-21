@@ -18,13 +18,16 @@ import { createStyles, WithStyles, withStyles } from '@material-ui/styles';
 import { useDispatch, useSelector } from 'react-redux';
 import OpacityIcon from '@material-ui/icons/Opacity';
 import { clearAnalysisResult } from 'context/analysisResultStateSlice';
-import { handleChangeOpacity } from 'components/MapView/Legends/handleChangeOpacity';
-import { mapSelector } from 'context/mapStateSlice/selectors';
 import {
   BaselineLayerResult,
   ExposedPopulationResult,
   PolygonAnalysisResult,
 } from 'utils/analysis-utils';
+import {
+  opacitySelector,
+  setOpacity as setStateOpacity,
+} from 'context/opacityStateSlice';
+import { mapSelector } from 'context/mapStateSlice/selectors';
 import AnalysisLayerSwitchItemDownloadOptions from './AnalysisLayerSwitchItemDownloadOptions';
 
 const AnalysisLayerSwitchItem = memo(
@@ -40,11 +43,24 @@ const AnalysisLayerSwitchItem = memo(
     const map = useSelector(mapSelector);
     const [selected, setSelected] = useState<boolean>(true);
     const [isOpacitySelected, setIsOpacitySelected] = useState<boolean>(false);
-    const [opacity, setOpacityValue] = useState<number>(initialOpacity || 0);
+    const opacity = useSelector(opacitySelector('analysis'));
+
+    const setOpacity = useCallback(
+      (value: number) =>
+        dispatch(
+          setStateOpacity({
+            map,
+            value,
+            layerId: 'analysis', // We have to pass undefined here so that the function know that we are in an analysis custom layer
+            layerType: undefined, // We have also to pass undefined here to show that we have analysis custom layer,
+          }),
+        ),
+      [dispatch, map],
+    );
 
     useEffect(() => {
-      setOpacityValue(initialOpacity || 0);
-    }, [initialOpacity]);
+      setOpacity(initialOpacity || 0);
+    }, [initialOpacity, setOpacity]);
 
     const handleOnChangeSwitch = useCallback(() => {
       setSelected(!selected);
@@ -56,24 +72,6 @@ const AnalysisLayerSwitchItem = memo(
       setIsOpacitySelected(!isOpacitySelected);
     }, [isOpacitySelected]);
 
-    const handleChangeOpacityValue = useCallback(val => {
-      setOpacityValue(val);
-    }, []);
-
-    const handleOnChangeSliderValue = useCallback(
-      (event: ChangeEvent<{}>, newValue: number | number[]) => {
-        handleChangeOpacity(
-          event,
-          newValue as number,
-          map,
-          'analysis', // We have to pass undefined here so that the function know that we are in an analysis custom layer
-          undefined, // We have also to pass undefined here to show that we have analysis custom layer,
-          handleChangeOpacityValue,
-        );
-      },
-      [handleChangeOpacityValue, map],
-    );
-
     const renderedOpacitySlider = useMemo(() => {
       if (!selected || !isOpacitySelected) {
         return null;
@@ -83,7 +81,7 @@ const AnalysisLayerSwitchItem = memo(
           <Box pr={3}>
             <Typography
               classes={{ root: classes.opacityText }}
-            >{`Opacity ${Math.round(opacity * 100)}%`}</Typography>
+            >{`Opacity ${Math.round((opacity || 0) * 100)}%`}</Typography>
           </Box>
           <Box width="25%" pr={3}>
             <Slider
@@ -96,7 +94,9 @@ const AnalysisLayerSwitchItem = memo(
                 root: classes.opacitySliderRoot,
                 thumb: classes.opacitySliderThumb,
               }}
-              onChange={handleOnChangeSliderValue}
+              onChange={(event: ChangeEvent<{}>, value: number | number[]) => {
+                setOpacity(value as number);
+              }}
             />
           </Box>
         </Box>
@@ -105,10 +105,10 @@ const AnalysisLayerSwitchItem = memo(
       classes.opacitySliderRoot,
       classes.opacitySliderThumb,
       classes.opacityText,
-      handleOnChangeSliderValue,
       isOpacitySelected,
       opacity,
       selected,
+      setOpacity,
     ]);
 
     const renderedOpacityIconButton = useMemo(() => {
