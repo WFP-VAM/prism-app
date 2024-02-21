@@ -4022,18 +4022,31 @@
     "input_layers": [
       {
         "id": "spi_1m",
-        "weight": 0.4,
-        "interval": "1-month"
+        "importance": 0.4,
+        "key": [
+          "CHIRPS",
+          "R1S_DEKAD"
+        ],
+        "aggregation": "last_dekad"
       },
       {
         "id": "lst_anomaly",
-        "weight": 0.3,
-        "interval": "10-days"
+        "importance": 0.3,
+        "key": [
+          "MODIS",
+          "MYD11C2_TDD_DEKAD"
+        ],
+        "aggregation": "last_dekad"
       },
       {
         "id": "ndvi_dekad_anomaly",
-        "weight": 0.3,
-        "interval": "10-days"
+        "importance": 0.3,
+        "key": [
+          "MODIS",
+          "NDVI_smoothed_5KM"
+        ],
+        "aggregation": "average",
+        "invert": "True"
       }
     ],
     "legend": [
@@ -4050,9 +4063,7 @@
     ],
     "legend_text": "Composite Drought Index",
     "aggregation": "pixel",
-    "interval": "1-month",
     "date_layer": "spi_1m",
-    "date_type": "continuous",
     "start_date": "2023-12-01",
     "opacity": 0.5
   }
