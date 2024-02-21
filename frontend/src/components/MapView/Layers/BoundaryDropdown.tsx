@@ -314,6 +314,16 @@ export function SimpleBoundaryDropdown({
           setTimeout(() => setSearch(''), TIMEOUT_ANIMATION_DELAY);
         }}
         value={selectedBoundaries}
+        // This is a workaround to display the selected items as a comma separated list.
+        renderValue={selected =>
+          (selected as AdminCodeString[])
+            .map(
+              adminCode =>
+                flattenedAreaList.find(area => area.adminCode === adminCode)
+                  ?.label || adminCode,
+            )
+            .join(', ')
+        }
         {...selectProps}
       >
         <SearchField search={search} setSearch={setSearch} />
