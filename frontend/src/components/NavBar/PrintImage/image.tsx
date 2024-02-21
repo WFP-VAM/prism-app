@@ -242,12 +242,8 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
         selectedBoundaries.includes(cell.properties?.[boundaryLayer.adminCode]),
       ),
     };
-    try {
-      const masked = mask(filteredData as any);
-      setAdminBoundaryPolygon(masked as any);
-    } catch (error) {
-      console.error(error);
-    }
+    const masked = mask(filteredData as any);
+    setAdminBoundaryPolygon(masked as any);
   }, [data, selectedBoundaries, selectedBoundaries.length]);
 
   const createFooterElement = (
@@ -839,7 +835,7 @@ const styles = (theme: Theme) =>
       height: '100%',
       flexDirection: 'column',
       gap: '0.8rem',
-      width: '25rem',
+      minWidth: '20rem',
       scrollbarGutter: 'stable',
       overflow: 'auto',
       paddingRight: '15px',

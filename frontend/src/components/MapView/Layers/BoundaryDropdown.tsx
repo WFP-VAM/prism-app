@@ -18,6 +18,7 @@ import i18n from 'i18next';
 import { useDispatch, useSelector } from 'react-redux';
 import { Search } from '@material-ui/icons';
 import bbox from '@turf/bbox';
+import { FixedSizeList as List } from 'react-window';
 import {
   BoundaryLayerProps,
   AdminCodeString,
@@ -306,7 +307,6 @@ export function SimpleBoundaryDropdown({
     <FormControl {...rest}>
       <InputLabel>{labelMessage}</InputLabel>
       <Select
-        style={{ color: 'black' }}
         multiple
         onClose={() => {
           // empty search so that component shows correct options
@@ -316,10 +316,7 @@ export function SimpleBoundaryDropdown({
         value={selectedBoundaries}
         {...selectProps}
       >
-        <MenuItem>
-          <SearchField search={search} setSearch={setSearch} />
-        </MenuItem>
-
+        <SearchField search={search} setSearch={setSearch} />
         {!search && selectAll && selectedBoundaries && (
           <MenuItem onClick={selectOrDeselectAll}>
             {selectedBoundaries.length === 0
@@ -330,62 +327,72 @@ export function SimpleBoundaryDropdown({
         {search && flattenedAreaList.length === 0 && (
           <MenuItem disabled>{t('No Results')}</MenuItem>
         )}
-
-        {flattenedAreaList.map(area => (
-          <MenuItem
-            classes={{
-              root: clsName[(area.level - rootLevel) as number],
-            }}
-            key={area.adminCode}
-            value={area.adminCode}
-            selected={selectedBoundaries?.includes(area.adminCode)}
-            onClick={event => {
-              event.stopPropagation();
-              const newSelectedBoundaries = [...(selectedBoundaries || [])];
-              const itemIndex = newSelectedBoundaries.indexOf(area.adminCode);
-              if (itemIndex === -1) {
-                // eslint-disable-next-line fp/no-mutating-methods
-                newSelectedBoundaries.push(area.adminCode);
-              } else {
-                // eslint-disable-next-line fp/no-mutating-methods
-                newSelectedBoundaries.splice(itemIndex, 1);
-              }
-              if (setSelectedBoundaries !== undefined) {
-                const boundariesToSelect = flattenedAreaList
-                  .filter(b =>
-                    newSelectedBoundaries.some((v: string) =>
-                      b.adminCode.startsWith(v),
-                    ),
-                  )
-                  .map(b => b.adminCode);
-
-                setSelectedBoundaries(boundariesToSelect, event.shiftKey);
-                if (!goto) {
-                  return;
-                }
-              }
-              if (map === undefined) {
-                return;
-              }
-              const features = data.features.filter(
-                f =>
-                  f &&
-                  f.properties?.[boundaryLayer.adminCode].startsWith(
+        <List
+          height={700}
+          itemCount={flattenedAreaList.length}
+          itemSize={35}
+          width="350px"
+        >
+          {({ index, style }) => {
+            const area = flattenedAreaList[index];
+            return (
+              <MenuItem
+                classes={{ root: clsName[(area.level - rootLevel) as number] }}
+                key={area.adminCode}
+                value={area.adminCode}
+                style={style as any}
+                selected={selectedBoundaries?.includes(area.adminCode)}
+                onClick={event => {
+                  event.stopPropagation();
+                  const newSelectedBoundaries = [...(selectedBoundaries || [])];
+                  const itemIndex = newSelectedBoundaries.indexOf(
                     area.adminCode,
-                  ),
-              );
-              const bboxUnion: BBox = bbox({
-                type: 'FeatureCollection',
-                features,
-              });
-              if (bboxUnion.length === 4) {
-                map.fitBounds(bboxUnion, { padding: 60 });
-              }
-            }}
-          >
-            {area.label}
-          </MenuItem>
-        ))}
+                  );
+                  if (itemIndex === -1) {
+                    // eslint-disable-next-line fp/no-mutating-methods
+                    newSelectedBoundaries.push(area.adminCode);
+                  } else {
+                    // eslint-disable-next-line fp/no-mutating-methods
+                    newSelectedBoundaries.splice(itemIndex, 1);
+                  }
+                  if (setSelectedBoundaries !== undefined) {
+                    const boundariesToSelect = flattenedAreaList
+                      .filter(b =>
+                        newSelectedBoundaries.some((v: string) =>
+                          b.adminCode.startsWith(v),
+                        ),
+                      )
+                      .map(b => b.adminCode);
+
+                    setSelectedBoundaries(boundariesToSelect, event.shiftKey);
+                    if (!goto) {
+                      return;
+                    }
+                  }
+                  if (map === undefined) {
+                    return;
+                  }
+                  const features = data.features.filter(
+                    f =>
+                      f &&
+                      f.properties?.[boundaryLayer.adminCode].startsWith(
+                        area.adminCode,
+                      ),
+                  );
+                  const bboxUnion: BBox = bbox({
+                    type: 'FeatureCollection',
+                    features,
+                  });
+                  if (bboxUnion.length === 4) {
+                    map.fitBounds(bboxUnion, { padding: 60 });
+                  }
+                }}
+              >
+                {area.label}
+              </MenuItem>
+            );
+          }}
+        </List>
       </Select>
     </FormControl>
   );
