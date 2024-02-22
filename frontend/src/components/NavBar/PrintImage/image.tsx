@@ -648,7 +648,6 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
                     selectAll
                     className={classes.formControl}
                     labelMessage={t('Go To')}
-                    map={mapRef.current?.getMap()}
                     selectedBoundaries={selectedBoundaries}
                     setSelectedBoundaries={setSelectedBoundaries}
                     selectProps={{
@@ -656,7 +655,6 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
                       fullWidth: true,
                     }}
                     size="small"
-                    goto
                   />
                 </div>
               )}
