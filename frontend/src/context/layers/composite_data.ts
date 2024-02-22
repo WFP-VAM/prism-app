@@ -51,7 +51,7 @@ export const fetchCompositeLayerData: LazyLoader<CompositeLayerProps> = () => as
       {
         body: JSON.stringify(body),
         method: 'POST',
-        timeout: 80000,
+        timeout: 600000, // 10min
         headers: {
           Accept: 'application/json',
           'Content-Type': 'application/json',
