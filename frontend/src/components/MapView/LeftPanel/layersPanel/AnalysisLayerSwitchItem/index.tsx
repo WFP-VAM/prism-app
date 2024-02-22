@@ -59,8 +59,10 @@ const AnalysisLayerSwitchItem = memo(
     );
 
     useEffect(() => {
-      setOpacity(initialOpacity || 0);
-    }, [initialOpacity, setOpacity]);
+      if (opacity === undefined) {
+        setOpacity(initialOpacity || 0);
+      }
+    }, [initialOpacity, opacity, setOpacity]);
 
     const handleOnChangeSwitch = useCallback(() => {
       setSelected(!selected);

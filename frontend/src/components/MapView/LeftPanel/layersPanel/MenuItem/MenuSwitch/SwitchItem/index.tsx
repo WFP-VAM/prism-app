@@ -61,16 +61,17 @@ const SwitchItem = memo(
     }, [dispatch, initialOpacity, layerId, layerType, map]);
 
     useEffect(() => {
-      if (opacity === undefined) {
-        dispatch(
-          setOpacity({
-            map,
-            value: initialOpacity || 0,
-            layerId,
-            layerType,
-          }),
-        );
+      if (opacity !== undefined) {
+        return;
       }
+      dispatch(
+        setOpacity({
+          map,
+          value: initialOpacity || 0,
+          layerId,
+          layerType,
+        }),
+      );
     }, [dispatch, initialOpacity, layerId, layerType, map, opacity]);
 
     const someLayerAreSelected = useMemo(() => {
@@ -122,15 +123,6 @@ const SwitchItem = memo(
 
     const toggleLayerValue = useCallback(
       (selectedLayerId: string, checked: boolean) => {
-        // reset opacity value
-        dispatch(
-          setOpacity({
-            map,
-            value: initialOpacity || 0,
-            layerId: activeLayerId || layerId,
-            layerType,
-          }),
-        );
         // reset opacity selected
         setIsOpacitySelected(false);
         // clear previous table dataset loaded first
@@ -179,14 +171,10 @@ const SwitchItem = memo(
         refreshBoundaries(map, dispatch);
       },
       [
-        activeLayerId,
         appendLayerToUrl,
         dispatch,
         group,
-        initialOpacity,
         layer,
-        layerId,
-        layerType,
         map,
         removeLayerFromUrl,
         selectedLayers,

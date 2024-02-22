@@ -5,6 +5,8 @@ import { useDefaultDate } from 'utils/useDefaultDate';
 import { DEFAULT_DATE_FORMAT_SNAKE_CASE } from 'utils/name-utils';
 import { Layer, Source } from 'react-map-gl/maplibre';
 import { getLayerMapId } from 'utils/map-utils';
+import { useSelector } from 'react-redux';
+import { opacitySelector } from 'context/opacityStateSlice';
 
 const StaticRasterLayer = ({
   layer: { id, baseUrl, opacity, minZoom, maxZoom, dates },
@@ -17,6 +19,7 @@ const StaticRasterLayer = ({
         moment(selectedDate).format(DEFAULT_DATE_FORMAT_SNAKE_CASE),
       )
     : baseUrl;
+  const opacityState = useSelector(opacitySelector(id));
 
   return (
     <Source id={`source-${id}`} type="raster" tiles={[url]}>
@@ -24,7 +27,7 @@ const StaticRasterLayer = ({
         beforeId={before}
         type="raster"
         id={getLayerMapId(id)}
-        paint={{ 'raster-opacity': opacity }}
+        paint={{ 'raster-opacity': opacityState || opacity }}
         minzoom={minZoom}
         maxzoom={maxZoom}
       />

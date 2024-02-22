@@ -63,6 +63,9 @@ const LegendItem = memo(
     );
 
     useEffect(() => {
+      if (opacity !== undefined) {
+        return;
+      }
       dispatch(
         setOpacity({
           map,
@@ -71,7 +74,7 @@ const LegendItem = memo(
           layerType: type,
         }),
       );
-    }, [dispatch, id, initialOpacity, isAnalysis, map, type]);
+    }, [dispatch, id, initialOpacity, isAnalysis, map, opacity, type]);
 
     const { t } = useSafeTranslation();
 
@@ -149,15 +152,6 @@ const LegendItem = memo(
         dispatch(clearAnalysisResult());
       }
       if (layer) {
-        // reset opacity value
-        dispatch(
-          setOpacity({
-            map,
-            value: initialOpacity || 0,
-            layerId: isAnalysis ? 'analysis' : id,
-            layerType: type,
-          }),
-        );
         // clear previous table dataset loaded first
         // to close the dataseries and thus close chart
         dispatch(clearDataset());
@@ -170,16 +164,7 @@ const LegendItem = memo(
           removeLayerFromUrl,
         );
       }
-    }, [
-      isAnalysis,
-      layer,
-      dispatch,
-      initialOpacity,
-      id,
-      type,
-      map,
-      removeLayerFromUrl,
-    ]);
+    }, [isAnalysis, layer, dispatch, map, removeLayerFromUrl]);
 
     const getColorIndicatorKey = useCallback((item: LegendDefinitionItem) => {
       return (
