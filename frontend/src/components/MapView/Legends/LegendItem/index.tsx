@@ -95,7 +95,7 @@ const LegendItem = memo(
       return (
         <Box px={2} display="flex" className={classes.opacityBox}>
           <Typography classes={{ root: classes.opacityText }}>
-            {`${Math.round((opacity as number) * 100)}%`}
+            {`${Math.round((opacity || 0) * 100)}%`}
           </Typography>
           <Slider
             value={opacity}

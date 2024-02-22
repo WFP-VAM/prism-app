@@ -20,7 +20,7 @@ import { Extent } from 'components/MapView/Layers/raster-utils';
 import { availableDatesSelector } from 'context/serverStateSlice';
 import { checkLayerAvailableDatesAndContinueOrRemove } from 'components/MapView/utils';
 import { LocalError } from 'utils/error-utils';
-import { setOpacity } from 'context/opacityStateSlice';
+import { opacitySelector, setOpacity } from 'context/opacityStateSlice';
 import { toggleRemoveLayer } from './utils';
 import LayerDownloadOptions from './LayerDownloadOptions';
 import ExposureAnalysisOption from './ExposureAnalysisOption';
@@ -49,6 +49,7 @@ const SwitchItem = memo(
     const map = useSelector(mapSelector);
     const [isOpacitySelected, setIsOpacitySelected] = useState(false);
     const dispatch = useDispatch();
+    const opacity = useSelector(opacitySelector(layerId));
     const {
       updateHistory,
       appendLayerToUrl,
@@ -57,15 +58,20 @@ const SwitchItem = memo(
 
     useEffect(() => {
       setIsOpacitySelected(false);
-      dispatch(
-        setOpacity({
-          map,
-          value: initialOpacity || 0,
-          layerId,
-          layerType,
-        }),
-      );
     }, [dispatch, initialOpacity, layerId, layerType, map]);
+
+    useEffect(() => {
+      if (opacity === undefined) {
+        dispatch(
+          setOpacity({
+            map,
+            value: initialOpacity || 0,
+            layerId,
+            layerType,
+          }),
+        );
+      }
+    }, [dispatch, initialOpacity, layerId, layerType, map, opacity]);
 
     const someLayerAreSelected = useMemo(() => {
       return selectedLayers.some(

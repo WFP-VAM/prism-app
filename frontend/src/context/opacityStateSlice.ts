@@ -11,8 +11,8 @@ interface OpacityEntry {
 }
 
 export interface MapOpacityState {
-  // layerId, [opacityType, opacityValue]
-  opacityMap: Map<string, OpacityEntry>;
+  // layerId is the key
+  opacityMap: { [key: string]: OpacityEntry };
   error: string | null;
 }
 
@@ -25,7 +25,7 @@ interface SetOpacityParams {
 }
 
 const initialState: MapOpacityState = {
-  opacityMap: new Map<string, OpacityEntry>(),
+  opacityMap: {},
   error: null,
 };
 
@@ -66,23 +66,30 @@ export const opacityStateSlice = createSlice({
         }
       })();
 
-      map.setPaintProperty(mapLayerId, opacityType, value);
-      // force a update of the map style to ensure the change is reflected
-      // see https://github.com/maplibre/maplibre-gl-js/issues/3373
-      // TODO - check if the above issue got resolved from time to time.
-      // eslint-disable-next-line no-underscore-dangle
-      map.style._updateLayer(mapLayerId as any);
+      // update map
+      if (map.getLayer(mapLayerId) !== undefined) {
+        map.setPaintProperty(mapLayerId, opacityType, value);
+        // force a update of the map style to ensure the change is reflected
+        // see https://github.com/maplibre/maplibre-gl-js/issues/3373
+        // TODO - check if the above issue got resolved from time to time.
+        // eslint-disable-next-line no-underscore-dangle
+        map.style._updateLayer(mapLayerId as any);
+      }
+
       if (callback !== undefined) {
         callback(value);
       }
 
       return {
         ...state,
-        opacityMap: state.opacityMap.set(layerId, {
-          mapLayerId,
-          opacityType,
-          value,
-        }),
+        opacityMap: {
+          ...state.opacityMap,
+          [layerId]: {
+            mapLayerId,
+            opacityType,
+            value,
+          },
+        },
       };
     },
   },
@@ -91,7 +98,7 @@ export const opacityStateSlice = createSlice({
 // Getters
 export const opacitySelector = (layerId: string) => (
   state: RootState,
-): number | undefined => state.opacityState.opacityMap.get(layerId)?.value;
+): number | undefined => state.opacityState.opacityMap[layerId]?.value;
 
 // Setters
 export const { setOpacity } = opacityStateSlice.actions;
