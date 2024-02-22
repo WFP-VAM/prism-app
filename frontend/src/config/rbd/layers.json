@@ -4173,6 +4173,13 @@
     "admin_level": 1,
     "data_field": "phase_class",
     "admin_code": "adm1_pcod2",
+    "dates": [
+      "2021-02-01",
+      "2021-06-01",
+      "2022-10-01",
+      "2023-02-01",
+      "2023-06-01"
+    ],
     "opacity": 0.7,
     "feature_info_props": {
       "start_date": {
@@ -4307,6 +4314,13 @@
     "admin_level": 1,
     "data_field": "calc_idps_ph_3_5",
     "admin_code": "adm1_pcod2",
+    "dates": [
+      "2021-02-01",
+      "2021-06-01",
+      "2022-10-01",
+      "2023-02-01",
+      "2023-06-01"
+    ],
     "opacity": 0.7,
     "feature_info_props": {
       "start_date": {
@@ -4463,11 +4477,8 @@
     "type": "admin_level_data",
     "path": "data/rbd/ch/idps_admin1_{YYYY_MM_DD}.json",
     "dates": [
-      "2019-10-01",
       "2021-02-01",
       "2021-06-01",
-      "2022-02-01",
-      "2022-06-01",
       "2022-10-01",
       "2023-02-01",
       "2023-06-01"
@@ -4811,8 +4822,6 @@
     "path": "data/rbd/ch/urb_admin2_{YYYY_MM_DD}.json",
     "fallbackLayerKeys": ["ch_urban_phase_admin1"],
     "dates": [
-      "2021-02-01", 
-      "2021-06-01",
       "2022-02-01", 
       "2022-06-01"
     ],
@@ -4869,9 +4878,7 @@
     "path": "data/rbd/ch/urb_admin1_{YYYY_MM_DD}.json",
     "dates": [
       "2021-02-01", 
-      "2021-06-01",
-      "2022-02-01", 
-      "2022-06-01"
+      "2021-06-01"
     ],
     "validityPeriod": {
       "start_date_field": "start_date",
@@ -4926,8 +4933,6 @@
     "path": "data/rbd/ch/urb_admin2_{YYYY_MM_DD}.json",
     "fallbackLayerKeys": ["ch_urban_pop3_5_admin1"],
     "dates": [
-      "2021-02-01", 
-      "2021-06-01",
       "2022-02-01", 
       "2022-06-01"
     ],
@@ -4994,9 +4999,7 @@
     "path": "data/rbd/ch/urb_admin1_{YYYY_MM_DD}.json",
     "dates": [
       "2021-02-01", 
-      "2021-06-01",
-      "2022-02-01", 
-      "2022-06-01"
+      "2021-06-01"
     ],
     "validityPeriod": {
       "start_date_field": "start_date",
@@ -5061,8 +5064,6 @@
     "path": "data/rbd/ch/urb_admin2_{YYYY_MM_DD}.json",
     "fallbackLayerKeys": ["ch_urban_perc3_5_admin1"],
     "dates": [
-      "2021-02-01", 
-      "2021-06-01",
       "2022-02-01", 
       "2022-06-01"
     ],
@@ -5158,9 +5159,7 @@
     "path": "data/rbd/ch/urb_admin1_{YYYY_MM_DD}.json",
     "dates": [
       "2021-02-01", 
-      "2021-06-01",
-      "2022-02-01", 
-      "2022-06-01"
+      "2021-06-01"
     ],
     "validityPeriod": {
       "start_date_field": "start_date",
