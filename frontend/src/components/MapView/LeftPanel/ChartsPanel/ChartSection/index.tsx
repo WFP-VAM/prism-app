@@ -50,7 +50,7 @@ export function generateDateStrings(startDate: Date, endDate: Date) {
   const result = [];
   const interval = [1, 11, 21];
   const currentDate = new Date(startDate);
-  currentDate.setUTCHours(10, 0, 0, 0);
+  currentDate.setUTCHours(12, 0, 0, 0);
   endDate.setUTCHours(12, 0, 0, 0);
 
   while (currentDate <= endDate) {
