@@ -647,6 +647,7 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
                     variant: 'outlined',
                     fullWidth: true,
                   }}
+                  multiple={false}
                   size="small"
                 />
               </div>
