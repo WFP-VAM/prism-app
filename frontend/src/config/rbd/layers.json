@@ -4884,7 +4884,7 @@
       "start_date_field": "start_date",
       "end_date_field": "end_date"
     },
-    "admin_level": 2,
+    "admin_level": 1,
     "data_field": "phase_class",
     "admin_code": "adm1_pcod2",
     "opacity": 0.7,
