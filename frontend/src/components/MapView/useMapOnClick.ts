@@ -1,8 +1,7 @@
 import { useDispatch, useSelector } from 'react-redux';
 import inside from '@turf/boolean-point-in-polygon';
 import { Feature, MultiPolygon } from '@turf/helpers';
-import moment from 'moment';
-import { useCallback, useMemo } from 'react';
+import { useCallback } from 'react';
 import {
   dateRangeSelector,
   layerDataSelector,
@@ -14,11 +13,11 @@ import {
   hidePopup,
   setWMSGetFeatureInfoLoading,
 } from 'context/tooltipStateSlice';
-import { DEFAULT_DATE_FORMAT } from 'utils/name-utils';
 import { makeFeatureInfoRequest } from 'utils/server-utils';
 import { clearDataset } from 'context/datasetStateSlice';
 import { LngLat, MapLayerMouseEvent } from 'maplibre-gl';
 import { MapRef } from 'react-map-gl/maplibre';
+import { getDateFormat } from 'utils/date-utils';
 import { getActiveFeatureInfoLayers, getFeatureInfoParams } from './utils';
 
 const useMapOnClick = (
@@ -58,9 +57,7 @@ const useMapOnClick = (
     return getActiveFeatureInfoLayers(features);
   }, []);
 
-  const dateFromRef = useMemo(() => {
-    return moment(selectedDate).format(DEFAULT_DATE_FORMAT);
-  }, [selectedDate]);
+  const dateFromRef = getDateFormat(selectedDate, 'default');
 
   const handleAdditionPopupDataForInfoRequest = useCallback(
     (result: { [name: string]: string } | null, lngLat: any) => {
@@ -95,7 +92,11 @@ const useMapOnClick = (
         return;
       }
 
-      const params = getFeatureInfoParams(mapRef, mapEvent.point, dateFromRef);
+      const params = getFeatureInfoParams(
+        mapRef,
+        mapEvent.point,
+        dateFromRef as string,
+      );
 
       dispatch(setWMSGetFeatureInfoLoading(true));
 

@@ -10,6 +10,7 @@ import {
   fetchEWSDataPointsByLocation,
 } from 'utils/ews-utils';
 import { fetchWithTimeout } from 'utils/fetch-with-timeout';
+import { getDateFormat, getMillisecondsFromISO } from 'utils/date-utils';
 import type { CreateAsyncThunkTypes, RootState } from './store';
 import { TableData } from './tableStateSlice';
 
@@ -82,7 +83,7 @@ export enum TableDataFormat {
 
 export const CHART_DATA_PREFIXES = { col: 'd', date: 'Date' };
 
-const createTableData = (
+export const createTableData = (
   results: DataItem[],
   format: TableDataFormat,
 ): TableData => {
@@ -99,7 +100,7 @@ const createTableData = (
     );
 
     return {
-      [CHART_DATA_PREFIXES.date]: moment(row.date).format(momentFormat),
+      [CHART_DATA_PREFIXES.date]: moment.utc(row.date).format(momentFormat),
       ...valuesObj,
     };
   });
@@ -136,7 +137,7 @@ export const loadEWSDataset = async (
     const [measureDate, value] = item.value;
 
     return {
-      date: moment(measureDate).valueOf(),
+      date: getMillisecondsFromISO(measureDate),
       values: { measure: value.toString() },
     };
   });
@@ -174,7 +175,7 @@ type HDCResponse = {
  *
  * @return Promise with parsed object from request as DataItem array.
  */
-const fetchHDC = async (
+export const fetchHDC = async (
   url: string,
   datasetFields: DatasetField[],
   params: { [key: string]: any },
@@ -203,7 +204,7 @@ const fetchHDC = async (
   responseJson = await response.json();
 
   const dates: number[] = responseJson?.date?.map((date: string) =>
-    moment(date).valueOf(),
+    getMillisecondsFromISO(date),
   );
 
   return dates?.map((date, index) => {
@@ -237,8 +238,8 @@ export const loadAdminBoundaryDataset = async (
   params: AdminBoundaryRequestParams,
   dispatch: Dispatch,
 ): Promise<TableData | undefined> => {
-  const endDate = moment(params.endDate);
-  const startDate = moment(params.startDate);
+  const endDateStr = getDateFormat(params.endDate, 'default');
+  const startDateStr = getDateFormat(params.startDate, 'default');
 
   const {
     url: hdcUrl,
@@ -247,9 +248,6 @@ export const loadAdminBoundaryDataset = async (
     serverLayerName,
     datasetFields,
   } = params;
-
-  const endDateStr = endDate.format(DEFAULT_DATE_FORMAT);
-  const startDateStr = startDate.format(DEFAULT_DATE_FORMAT);
 
   const hdcRequestParams = {
     level,
