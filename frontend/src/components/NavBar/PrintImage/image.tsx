@@ -56,13 +56,10 @@ import { downloadToFile } from '../../MapView/utils';
 const DEFAULT_FOOTER_TEXT =
   'The designations employed and the presentation of material in the map(s) do not imply the expression of any opinion on the part of WFP concerning the legal of constitutional status of any country, territory, city, or sea, or concerning the delimitation of its frontiers or boundaries.';
 
-// Debounce the footer text changes so that we don't redraw on every keystroke.
-const handleChangeFooterText = debounce(
-  (onTextChange: any, newSearchText: string) => {
-    onTextChange(newSearchText);
-  },
-  750,
-);
+// Debounce changes so that we don't redraw on every keystroke.
+const debounceCallback = debounce((callback: any, ...args: any[]) => {
+  callback(...args);
+}, 750);
 
 interface ToggleSelectorProps {
   title: string;
@@ -562,7 +559,7 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
                           zoom: selectedMap.getZoom(),
                         }}
                         onLoad={() => refreshImage()}
-                        onMoveEnd={() => refreshImage()}
+                        onMove={() => debounceCallback(refreshImage)}
                         mapStyle={selectedMapStyle || mapStyle.toString()}
                         maxBounds={selectedMap.getMaxBounds() ?? undefined}
                       >
@@ -619,7 +616,7 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
                 size="small"
                 inputProps={{ style: { color: 'black' } }}
                 onChange={event => {
-                  handleChangeFooterText(setTitleText, event.target.value);
+                  debounceCallback(setTitleText, event.target.value);
                 }}
                 variant="outlined"
               />
@@ -651,91 +648,6 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
                     fullWidth: true,
                   }}
                   size="small"
-                />
-              </div>
-            )}
-
-            <ToggleSelector
-              value={Number(toggles.fullLayerDescription)}
-              options={layerDescriptionSelectorOptions}
-              setValue={val =>
-                setToggles(prev => ({
-                  ...prev,
-                  fullLayerDescription: Boolean(val),
-                }))
-              }
-              title="Legend - Full Layer Description"
-            />
-
-            <ToggleSelector
-              value={legendScale}
-              options={legendSelectorOptions}
-              setValue={setLegendScale}
-              title="Legend"
-            />
-
-            <ToggleSelector
-              value={mapDimensions.width}
-              options={mapWidthSelectorOptions}
-              setValue={val =>
-                setMapDimensions(prev => ({
-                  ...(prev || {}),
-                  width: val as number,
-                }))
-              }
-              title="Map Width"
-            />
-
-            <ToggleSelector
-              value={footerTextSize}
-              options={footerTextSelectorOptions}
-              setValue={setFooterTextSize}
-              title="Footer Text"
-            />
-
-            <div className={classes.optionWrap}>
-              <Typography variant="h4">Title</Typography>
-              <TextField
-                key={titleText}
-                defaultValue={titleText}
-                fullWidth
-                size="small"
-                inputProps={{ style: { color: 'black' } }}
-                onChange={event => {
-                  handleChangeFooterText(setTitleText, event.target.value);
-                }}
-                variant="outlined"
-              />
-            </div>
-
-            <ToggleSelector
-              value={Number(toggles.countryMask)}
-              options={countryMaskSelectorOptions}
-              setValue={val =>
-                setToggles(prev => ({
-                  ...prev,
-                  countryMask: Boolean(val),
-                }))
-              }
-              title="Mask data outside of admin area"
-            />
-
-            {toggles.countryMask && (
-              <div className={classes.optionWrap}>
-                <Typography variant="h4">Select admin area</Typography>
-                <SimpleBoundaryDropdown
-                  selectAll
-                  className={classes.formControl}
-                  labelMessage={t('Go To')}
-                  map={mapRef.current?.getMap()}
-                  selectedBoundaries={selectedBoundaries}
-                  setSelectedBoundaries={setSelectedBoundaries}
-                  selectProps={{
-                    variant: 'outlined',
-                    fullWidth: true,
-                  }}
-                  size="small"
-                  goto
                 />
               </div>
             )}
@@ -787,7 +699,7 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
               minRows={3}
               maxRows={3}
               onChange={event => {
-                handleChangeFooterText(setFooterText, event.target.value);
+                debounceCallback(setFooterText, event.target.value);
               }}
               variant="outlined"
             />
