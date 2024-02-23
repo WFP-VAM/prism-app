@@ -306,7 +306,7 @@ export function SimpleBoundaryDropdown({
   // acts on the `value` prop, which we need to hide from <Select /> since this isn't a menu item.
   const out = (
     <FormControl {...rest}>
-      <InputLabel style={{ color: 'black' }}>{labelMessage}</InputLabel>
+      <InputLabel>{labelMessage}</InputLabel>
       <Select
         style={{ color: 'black' }}
         multiple
