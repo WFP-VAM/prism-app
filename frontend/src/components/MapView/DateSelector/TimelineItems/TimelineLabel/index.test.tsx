@@ -10,7 +10,7 @@ test('TimelineLabel renders as expected', () => {
       value: 1640883600000,
       label: '31 Dec 2021',
       month: 'Dec 2021',
-      isFirstDay: false,
+      isFirstDay: true,
       date: '2021-12-31',
     },
   };

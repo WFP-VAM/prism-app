@@ -23,13 +23,13 @@ import html2canvas from 'html2canvas';
 import { debounce } from 'lodash';
 import { jsPDF } from 'jspdf';
 import maplibregl from 'maplibre-gl';
-import moment from 'moment';
 import React, { useRef, useState } from 'react';
 import MapGL, { Layer, MapRef, Source } from 'react-map-gl/maplibre';
 import { useSelector } from 'react-redux';
 import CancelIcon from '@material-ui/icons/Cancel';
 import { mapStyle } from 'components/MapView/Map';
 import { addFillPatternImagesInMap } from 'components/MapView/Layers/AdminLevelDataLayer';
+import { getDateFormat } from 'utils/date-utils';
 import useLayers from 'utils/layers-utils';
 import { appConfig, safeCountry } from 'config';
 import {
@@ -197,15 +197,15 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
 
   const defaultFooterText = React.useMemo(() => {
     const getDateText = (): string => {
-      if (!dateRange) {
+      if (!dateRange || !dateRange.startDate) {
         return '';
       }
       return `${t('Layers represent data')} ${
         dateRange.startDate && dateRange.endDate
-          ? `${t('from')} ${moment(dateRange.startDate).format(
-              'YYYY-MM-DD',
-            )} ${t('to')} ${moment(dateRange.endDate).format('YYYY-MM-DD')}`
-          : `${t('on')} ${moment(dateRange.startDate).format('YYYY-MM-DD')}`
+          ? `${t('from')} ${getDateFormat(dateRange.startDate, 'default')} ${t(
+              'to',
+            )} ${getDateFormat(dateRange.endDate, 'default')}`
+          : `${t('on')} ${getDateFormat(dateRange.startDate, 'default')}`
       }. `;
     };
     return `${getDateText()} ${t(DEFAULT_FOOTER_TEXT)}`;
@@ -454,6 +454,9 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
   };
 
   const download = (format: 'pdf' | 'jpeg' | 'png') => {
+    const filename: string = `${country}_${
+      getDateFormat(dateRange.startDate, 'snake') || 'no_date'
+    }`;
     const docGeneration = async () => {
       // png is generally preferred for images containing lines and text.
       const ext = format === 'pdf' ? 'png' : format;
@@ -475,9 +478,13 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
         const pdfHeight = pdf.internal.pageSize.getHeight();
         const pdfWidth = pdf.internal.pageSize.getWidth();
         pdf.addImage(file, 'PNG', 0, 0, pdfWidth, pdfHeight, undefined, 'FAST');
-        pdf.save('map.pdf');
+        pdf.save(`${filename}.pdf`);
       } else {
-        downloadToFile({ content: file, isUrl: true }, 'map', `image/${ext}`);
+        downloadToFile(
+          { content: file, isUrl: true },
+          filename,
+          `image/${ext}`,
+        );
       }
     };
 
