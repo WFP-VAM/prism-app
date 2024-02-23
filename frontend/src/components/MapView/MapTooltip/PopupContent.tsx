@@ -77,23 +77,34 @@ const generatePhasePopulationTable = (
         {t('Population and percentage by phase classification')}
       </Typography>
       <table className={classes.phasePopulationTable}>
-        <tr className={classes.phasePopulationTableRow}>
-          {Object.keys(phasePopulations).map((phaseName: string) => (
-            <th>{t(phaseName)}</th>
-          ))}
-        </tr>
-        <tr className={classes.phasePopulationTableRow}>
-          {Object.values(phasePopulations).map((populationInPhase: number) => (
-            <th>{populationInPhase.toLocaleString()}</th>
-          ))}
-        </tr>
-        <tr className={classes.phasePopulationTableRow}>
-          {Object.values(phasePopulations).map((populationInPhase: number) => (
-            <th>
-              {Math.round((populationInPhase / phasePopulations.Total) * 100)}%
-            </th>
-          ))}
-        </tr>
+        <tbody>
+          <tr className={classes.phasePopulationTableRow}>
+            {Object.keys(phasePopulations).map((phaseName: string) => (
+              <th key={phaseName}>{t(phaseName)}</th>
+            ))}
+          </tr>
+          <tr className={classes.phasePopulationTableRow}>
+            {Object.values(phasePopulations).map(
+              (populationInPhase: number) => (
+                <th key={populationInPhase}>
+                  {populationInPhase.toLocaleString()}
+                </th>
+              ),
+            )}
+          </tr>
+          <tr className={classes.phasePopulationTableRow}>
+            {Object.values(phasePopulations).map(
+              (populationInPhase: number) => (
+                <th key={`perc_${populationInPhase}`}>
+                  {Math.round(
+                    (populationInPhase / phasePopulations.Total) * 100,
+                  )}
+                  %
+                </th>
+              ),
+            )}
+          </tr>
+        </tbody>
       </table>
     </div>
   );
@@ -159,32 +170,31 @@ const PopupContent = ({
         .map(([key, value]) => {
           return (
             <Fragment key={key}>
-              {/* Allow users to show data without a key/title */}
-              {!key.includes('do_not_display') &&
-                key !== 'Population in phase 1' && (
+              <div>
+                {/* Allow users to show data without a key/title */}
+                {!key.includes('do_not_display') &&
+                  key !== 'Population in phase 1' && (
+                    <Typography
+                      display="inline"
+                      variant="h4"
+                      color="inherit"
+                      className={classes.text}
+                    >
+                      {`${t(key)}: `}
+                    </Typography>
+                  )}
+                {key !== 'Population in phase 1' && (
                   <Typography
                     display="inline"
                     variant="h4"
                     color="inherit"
                     className={classes.text}
                   >
-                    {`${t(key)}: `}
+                    {`${value.data}`}
                   </Typography>
                 )}
-              {key !== 'Population in phase 1' && (
-                <Typography
-                  display="inline"
-                  variant="h4"
-                  color="inherit"
-                  className={classes.text}
-                >
-                  {`${value.data}`}
-                </Typography>
-              )}
+              </div>
               {/* Phase classification data */}
-              <Typography variant="h4" color="inherit">
-                {value.adminLevel && `${t('Admin Level')}: ${value.adminLevel}`}
-              </Typography>
               {key === 'Population in phase 1' && phasePopulationTable}
             </Fragment>
           );

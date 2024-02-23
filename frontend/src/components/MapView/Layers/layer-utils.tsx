@@ -94,14 +94,9 @@ export const addPopupParams = (
 
   // by default add `dataField` to the tooltip if it is not within the feature_info_props dictionary.
   if (!Object.keys(featureInfoProps || {}).includes(dataField)) {
-    // const adminLevelObj = adminLevel
-    //   ? { adminLevel: feature.properties.adminLevel }
-    //   : {};
-
     dispatch(
       addPopupData({
         [title]: {
-          // ...adminLevelObj,
           data: getRoundedData(get(feature, propertyField), t),
           coordinates,
         },
