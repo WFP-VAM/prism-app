@@ -649,7 +649,6 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
                 <SimpleBoundaryDropdown
                   selectAll
                   className={classes.formControl}
-                  labelMessage={t('Go To')}
                   selectedBoundaries={selectedBoundaries}
                   setSelectedBoundaries={setSelectedBoundaries}
                   selectProps={{
@@ -836,7 +835,7 @@ const styles = (theme: Theme) =>
       height: '100%',
       flexDirection: 'column',
       gap: '0.8rem',
-      minWidth: '20rem',
+      width: '25rem',
       scrollbarGutter: 'stable',
       overflow: 'auto',
       paddingRight: '15px',

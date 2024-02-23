@@ -308,6 +308,7 @@ export function SimpleBoundaryDropdown({
     <FormControl {...rest}>
       <InputLabel>{labelMessage}</InputLabel>
       <Select
+        style={{ color: 'black' }}
         multiple
         onClose={() => {
           // empty search so that component shows correct options
@@ -315,6 +316,16 @@ export function SimpleBoundaryDropdown({
           setTimeout(() => setSearch(''), TIMEOUT_ANIMATION_DELAY);
         }}
         value={selectedBoundaries}
+        // This is a workaround to display the selected items as a comma separated list.
+        renderValue={selected =>
+          (selected as AdminCodeString[])
+            .map(
+              adminCode =>
+                flattenedAreaList.find(area => area.adminCode === adminCode)
+                  ?.label || adminCode,
+            )
+            .join(', ')
+        }
         {...selectProps}
       >
         <SearchField search={search} setSearch={setSearch} />
@@ -405,7 +416,7 @@ export function SimpleBoundaryDropdown({
 
 interface BoundaryDropdownProps {
   className: string;
-  labelMessage: string;
+  labelMessage?: string;
   map?: MaplibreMap | undefined;
   onlyNewCategory?: boolean;
   selectAll?: boolean;
