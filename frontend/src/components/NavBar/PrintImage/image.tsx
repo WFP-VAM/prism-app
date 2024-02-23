@@ -466,7 +466,7 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
       if (format === 'pdf') {
         // eslint-disable-next-line new-cap
         const pdf = new jsPDF({
-          orientation: 'landscape',
+          orientation: 'portrait',
           unit: 'px',
           format: [canvas.width, canvas.height],
         });
