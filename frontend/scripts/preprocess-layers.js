@@ -22,7 +22,7 @@ const mergeBoundaryData = boundaryData => {
         return union(acc, feature);
       }, null) || null;
   }
-  return simplify(mergedBoundaryData, { tolerance: 0.02 });
+  return simplify(mergedBoundaryData, { tolerance: 0.001, highQuality: true });
 };
 
 async function preprocessBoundaryLayer(country, boundaryLayer) {
@@ -135,12 +135,25 @@ const countryDirs = fs
       );
       await preprocessValidityPeriods(country, dateLayersToProcess);
 
+      // Some countries with complex boundaries are not processed and fetched independently
+      // eg. using the detailed version on https://cartographyvectors.com/
+      if (
+        [
+          'cambodia',
+          'ecuador',
+          'indonesia',
+          'mozambique',
+          'myanmar',
+          'sierraleone',
+        ].includes(country)
+      ) {
+        return;
+      }
       const boundaryLayerToProcess = Object.values(layersData)
         .filter(layer => layer.type === 'boundary' && layer.admin_level_names)
         .sort(
           (a, b) => a.admin_level_names.length - b.admin_level_names.length,
         )[0];
-
       await preprocessBoundaryLayer(country, boundaryLayerToProcess);
     }),
   );
