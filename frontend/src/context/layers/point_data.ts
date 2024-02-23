@@ -1,13 +1,12 @@
 import GeoJSON from 'geojson';
-import moment from 'moment';
 import { PointDataLayerProps, PointDataLoader, PointData } from 'config/types';
-import { DEFAULT_DATE_FORMAT } from 'utils/name-utils';
 import { fetchEWSData } from 'utils/ews-utils';
 import { fetchACLEDIncidents } from 'utils/acled-utils';
 import { queryParamsToString } from 'utils/url-utils';
 import { fetchWithTimeout } from 'utils/fetch-with-timeout';
 import { HTTPError } from 'utils/error-utils';
 import { setUserAuthGlobal } from 'context/serverStateSlice';
+import { getDateFormat } from 'utils/date-utils';
 import { getAdminLevelDataLayerData } from './admin_level_data';
 import type { LazyLoader } from './layer-data';
 
@@ -59,7 +58,7 @@ export const fetchPointLayerData: LazyLoader<PointDataLayerProps> = () => async 
     }
   }
 
-  const formattedDate = date && moment(date).format(DEFAULT_DATE_FORMAT);
+  const formattedDate = date && getDateFormat(date, 'default');
 
   // TODO exclusive to this api...
   const dateQuery = `beginDateTime=${
@@ -109,8 +108,8 @@ export const fetchPointLayerData: LazyLoader<PointDataLayerProps> = () => async 
         // we cant do a string comparison here because sometimes the date in json is stored as YYYY-M-D instead of YYYY-MM-DD
         // using moment here helps compensate for these discrepancies
         obj =>
-          moment(obj.date).format(DEFAULT_DATE_FORMAT) ===
-          moment(formattedDate).format(DEFAULT_DATE_FORMAT),
+          getDateFormat(obj.dat, 'default') ===
+          getDateFormat(formattedDate, 'default'),
       );
     } else {
       if ((error as HTTPError)?.statusCode === 401) {

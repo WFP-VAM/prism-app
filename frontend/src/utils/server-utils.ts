@@ -199,22 +199,22 @@ const getPointDataCoverage = async (
   );
 };
 
-const getAdminLevelDataCoverage = (layer: AdminLevelDataLayerProps) => {
+export const getAdminLevelDataCoverage = (layer: AdminLevelDataLayerProps) => {
   const { dates } = layer;
   if (!dates) {
     return [];
   }
   // raw data comes in as {"dates": ["YYYY-MM-DD"]}
-  return dates.map(v => moment(v, 'YYYY-MM-DD').valueOf());
+  return dates.map(v => moment.utc(v, 'YYYY-MM-DD').valueOf());
 };
 
-const getStaticRasterDataCoverage = (layer: StaticRasterLayerProps) => {
+export const getStaticRasterDataCoverage = (layer: StaticRasterLayerProps) => {
   const { dates } = layer;
   if (!dates) {
     return [];
   }
   // raw data comes in as {"dates": ["YYYY-MM-DD"]}
-  return dates.map(v => moment(v, 'YYYY-MM-DD').valueOf());
+  return dates.map(v => moment.utc(v, 'YYYY-MM-DD').valueOf());
 };
 
 /**

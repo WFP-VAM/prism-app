@@ -7,7 +7,6 @@ import React, {
   Dispatch,
   useMemo,
   useState,
-  useEffect,
 } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import AnalysisLayer from 'components/MapView/Layers/AnalysisLayer';
@@ -81,7 +80,7 @@ const MapComponent = memo(
     const selectedMap = useSelector(mapSelector);
 
     const [firstSymbolId, setFirstSymbolId] = useState<string | undefined>(
-      undefined,
+      'label_airport',
     );
 
     const fitBoundsOptions = useMemo(() => {
@@ -207,28 +206,18 @@ const MapComponent = memo(
           return firstSymbolId;
         }
         const previousLayerId = selectedLayers[index - 1].id;
-
         if (isLayerOnView(selectedMap, previousLayerId)) {
           return getLayerMapId(previousLayerId);
         }
-        return firstBoundaryId;
+        return firstBoundaryId || firstSymbolId;
       },
       [firstBoundaryId, firstSymbolId, selectedLayers, selectedMap],
     );
-
-    useEffect(() => {
-      if (mapRef.current) {
-        const map = mapRef.current.getMap();
-        map.triggerRepaint(); // Forces the map to redraw
-      }
-    }, [firstSymbolId]);
 
     return (
       <MapGL
         ref={mapRef}
         dragRotate={false}
-        // preserveDrawingBuffer is required for the map to be exported as an image
-        preserveDrawingBuffer
         minZoom={minZoom}
         maxZoom={maxZoom}
         initialViewState={{
