@@ -644,6 +644,89 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
                   selectAll
                   className={classes.formControl}
                   labelMessage={t('Go To')}
+                  selectedBoundaries={selectedBoundaries}
+                  setSelectedBoundaries={setSelectedBoundaries}
+                  selectProps={{
+                    variant: 'outlined',
+                    fullWidth: true,
+                  }}
+                  size="small"
+                />
+              </div>
+            )}
+
+            <ToggleSelector
+              value={Number(toggles.fullLayerDescription)}
+              options={layerDescriptionSelectorOptions}
+              setValue={val =>
+                setToggles(prev => ({
+                  ...prev,
+                  fullLayerDescription: Boolean(val),
+                }))
+              }
+              title="Legend - Full Layer Description"
+            />
+
+            <ToggleSelector
+              value={legendScale}
+              options={legendSelectorOptions}
+              setValue={setLegendScale}
+              title="Legend"
+            />
+
+            <ToggleSelector
+              value={mapDimensions.width}
+              options={mapWidthSelectorOptions}
+              setValue={val =>
+                setMapDimensions(prev => ({
+                  ...(prev || {}),
+                  width: val as number,
+                }))
+              }
+              title="Map Width"
+            />
+
+            <ToggleSelector
+              value={footerTextSize}
+              options={footerTextSelectorOptions}
+              setValue={setFooterTextSize}
+              title="Footer Text"
+            />
+
+            <div className={classes.optionWrap}>
+              <Typography variant="h4">Title</Typography>
+              <TextField
+                key={titleText}
+                defaultValue={titleText}
+                fullWidth
+                size="small"
+                inputProps={{ style: { color: 'black' } }}
+                onChange={event => {
+                  handleChangeFooterText(setTitleText, event.target.value);
+                }}
+                variant="outlined"
+              />
+            </div>
+
+            <ToggleSelector
+              value={Number(toggles.countryMask)}
+              options={countryMaskSelectorOptions}
+              setValue={val =>
+                setToggles(prev => ({
+                  ...prev,
+                  countryMask: Boolean(val),
+                }))
+              }
+              title="Mask data outside of admin area"
+            />
+
+            {toggles.countryMask && (
+              <div className={classes.optionWrap}>
+                <Typography variant="h4">Select admin area</Typography>
+                <SimpleBoundaryDropdown
+                  selectAll
+                  className={classes.formControl}
+                  labelMessage={t('Go To')}
                   map={mapRef.current?.getMap()}
                   selectedBoundaries={selectedBoundaries}
                   setSelectedBoundaries={setSelectedBoundaries}
