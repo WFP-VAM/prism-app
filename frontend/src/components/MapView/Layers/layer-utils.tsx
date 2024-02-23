@@ -112,7 +112,7 @@ export const addPopupParams = (
         ? {
             'Admin Level': {
               data: feature.properties.adminLevel,
-              coordinates: [0, 0],
+              coordinates,
             },
           }
         : {}),
