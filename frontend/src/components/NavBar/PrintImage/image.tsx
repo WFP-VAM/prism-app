@@ -30,15 +30,13 @@ import { legendListId } from 'components/MapView/Legends';
 import html2canvas from 'html2canvas';
 import { jsPDF } from 'jspdf';
 import maplibregl from 'maplibre-gl';
-import moment from 'moment';
 import React, { ChangeEvent, useRef, useState } from 'react';
 import MapGL, { Layer, MapRef, Source } from 'react-map-gl/maplibre';
 import { useSelector } from 'react-redux';
-
 import { mapStyle } from 'components/MapView/Map';
 import { addFillPatternImagesInMap } from 'components/MapView/Layers/AdminLevelDataLayer';
-
 import useLayers from 'utils/layers-utils';
+import { getDateFormat } from 'utils/date-utils';
 import { safeCountry } from 'config';
 import { AdminLevelDataLayerProps } from 'config/types';
 import {
@@ -155,10 +153,10 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
       }
       return `${t('Layers represent data')} ${
         dateRange.startDate && dateRange.endDate
-          ? `${t('from')} ${moment(dateRange.startDate).format(
-              'YYYY-MM-DD',
-            )} ${t('to')} ${moment(dateRange.endDate).format('YYYY-MM-DD')}`
-          : `${t('on')} ${moment(dateRange.startDate).format('YYYY-MM-DD')}`
+          ? `${t('from')} ${getDateFormat(dateRange.startDate, 'default')} ${t(
+              'to',
+            )} ${getDateFormat(dateRange.endDate, 'default')}`
+          : `${t('on')} ${getDateFormat(dateRange.startDate, 'default')}`
       }. `;
     };
     setFooterText(`${getDateText()} ${t(DEFAULT_FOOTER_TEXT)}`);

@@ -1,5 +1,4 @@
 import React, { memo, useEffect } from 'react';
-import moment from 'moment';
 import { Layer, Source } from 'react-map-gl/maplibre';
 import { FeatureCollection } from 'geojson';
 import { useDispatch, useSelector } from 'react-redux';
@@ -34,6 +33,7 @@ import {
   MapLayerMouseEvent,
 } from 'maplibre-gl';
 import { findFeature, getLayerMapId, useMapCallback } from 'utils/map-utils';
+import { getDateFormat } from 'utils/date-utils';
 
 const onClick = ({
   layer,
@@ -120,9 +120,10 @@ const PointDataLayer = ({ layer, before }: LayersProps) => {
     ) {
       dispatch(
         addNotification({
-          message: `Data not found for provided date: ${moment(
+          message: `Data not found for provided date: ${getDateFormat(
             selectedDate,
-          ).format('YYYY-MM-DD')}`,
+            'default',
+          )}`,
           type: 'warning',
         }),
       );

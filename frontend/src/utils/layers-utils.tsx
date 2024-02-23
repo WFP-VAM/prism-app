@@ -27,7 +27,12 @@ import {
   getPossibleDatesForLayer,
 } from 'utils/server-utils';
 import { UrlLayerKey, getUrlKey, useUrlHistory } from 'utils/url-utils';
-import { datesAreEqualWithoutTime, binaryIncludes } from './date-utils';
+import {
+  datesAreEqualWithoutTime,
+  binaryIncludes,
+  getDateFormat,
+  getMillisecondsFromISO,
+} from './date-utils';
 
 const dateSupportLayerTypes: Array<LayerType['type']> = [
   'impact',
@@ -279,7 +284,7 @@ const useLayers = () => {
 
     if (!Number.isNaN(dateInt)) {
       dispatch(updateDateRange({ startDate: dateInt }));
-      updateHistory('date', moment(dateInt).format(DEFAULT_DATE_FORMAT));
+      updateHistory('date', getDateFormat(dateInt, 'default') as string);
       return;
     }
 
@@ -375,7 +380,7 @@ const useLayers = () => {
     if (
       !selectedDate ||
       !urlDate ||
-      moment(urlDate).valueOf() === selectedDate
+      getMillisecondsFromISO(urlDate) === selectedDate
     ) {
       return;
     }
