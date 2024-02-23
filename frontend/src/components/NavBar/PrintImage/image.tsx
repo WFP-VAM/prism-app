@@ -56,13 +56,10 @@ import { downloadToFile } from '../../MapView/utils';
 const DEFAULT_FOOTER_TEXT =
   'The designations employed and the presentation of material in the map(s) do not imply the expression of any opinion on the part of WFP concerning the legal of constitutional status of any country, territory, city, or sea, or concerning the delimitation of its frontiers or boundaries.';
 
-// Debounce the footer text changes so that we don't redraw on every keystroke.
-const handleChangeFooterText = debounce(
-  (onTextChange: any, newSearchText: string) => {
-    onTextChange(newSearchText);
-  },
-  750,
-);
+// Debounce changes so that we don't redraw on every keystroke.
+const debounceCallback = debounce((callback: any, ...args: any[]) => {
+  callback(...args);
+}, 750);
 
 interface ToggleSelectorProps {
   title: string;
@@ -467,9 +464,11 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
       const canvas = await html2canvas(elem);
       const file = canvas.toDataURL(`image/${ext}`);
       if (format === 'pdf') {
+        const orientation =
+          canvas.width > canvas.height ? 'landscape' : 'portrait';
         // eslint-disable-next-line new-cap
         const pdf = new jsPDF({
-          orientation: 'landscape',
+          orientation,
           unit: 'px',
           format: [canvas.width, canvas.height],
         });
@@ -501,244 +500,239 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
         onClose={() => handleClose()}
         aria-labelledby="dialog-preview"
       >
-        <DialogContent style={{ scrollbarGutter: 'stable' }}>
-          <div className={classes.contentContainer}>
+        <DialogContent className={classes.contentContainer}>
+          <div
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              width: '100%',
+            }}
+          >
+            <div>
+              <Typography variant="h3" className={classes.title}>
+                {t('MAP PREVIEW')}
+              </Typography>
+              <Typography color="textSecondary" variant="body1">
+                {t('Use your mouse to pan and zoom the map')}
+              </Typography>
+            </div>
             <div
               style={{
-                display: 'flex',
-                flexDirection: 'column',
                 width: '100%',
+                height: '100%',
               }}
             >
-              <div>
-                <Typography variant="h3" className={classes.title}>
-                  {t('MAP PREVIEW')}
-                </Typography>
-                <Typography color="textSecondary" variant="body1">
-                  {t('Use your mouse to pan and zoom the map')}
-                </Typography>
-              </div>
               <div
                 style={{
-                  width: '100%',
-                  height: '100%',
+                  position: 'relative',
+                  zIndex: 3,
+                  border: '1px solid black',
+                  height: `${mapDimensions.height}%`,
+                  width: `${mapDimensions.width}%`,
                 }}
               >
-                <div
-                  style={{
-                    position: 'relative',
-                    zIndex: 3,
-                    border: '1px solid black',
-                    height: `${mapDimensions.height}%`,
-                    width: `${mapDimensions.width}%`,
-                  }}
-                >
-                  <div ref={printRef} className={classes.printContainer}>
-                    <div
-                      ref={overlayContainerRef}
-                      className={classes.mapOverlay}
-                    />
-                    {elementsLoading && (
-                      <div className={classes.backdropWrapper}>
-                        <Backdrop className={classes.backdrop} open>
-                          <CircularProgress />
-                        </Backdrop>
-                      </div>
-                    )}
-                    {titleText && (
-                      <div
-                        ref={titleOverlayRef}
-                        className={classes.titleOverlay}
-                      >
-                        {titleText}
-                      </div>
-                    )}
-                    <div className={classes.mapContainer}>
-                      {selectedMap && open && (
-                        <MapGL
-                          ref={mapRef}
-                          dragRotate={false}
-                          // preserveDrawingBuffer is required for the map to be exported as an image
-                          preserveDrawingBuffer
-                          initialViewState={{
-                            longitude: selectedMap.getCenter().lng,
-                            latitude: selectedMap.getCenter().lat,
-                            zoom: selectedMap.getZoom(),
-                          }}
-                          onLoad={() => refreshImage()}
-                          onMoveEnd={() => refreshImage()}
-                          mapStyle={selectedMapStyle || mapStyle.toString()}
-                          maxBounds={selectedMap.getMaxBounds() ?? undefined}
-                        >
-                          {toggles.countryMask && (
-                            <Source
-                              id="mask-overlay"
-                              type="geojson"
-                              data={invertedAdminBoundaryLimitPolygon}
-                            >
-                              <Layer
-                                id="mask-layer-overlay"
-                                type="fill"
-                                source="mask-overlay"
-                                layout={{}}
-                                paint={{
-                                  'fill-color': '#000',
-                                  'fill-opacity': 0.7,
-                                }}
-                              />
-                            </Source>
-                          )}
-                        </MapGL>
-                      )}
+                <div ref={printRef} className={classes.printContainer}>
+                  <div
+                    ref={overlayContainerRef}
+                    className={classes.mapOverlay}
+                  />
+                  {elementsLoading && (
+                    <div className={classes.backdropWrapper}>
+                      <Backdrop className={classes.backdrop} open>
+                        <CircularProgress />
+                      </Backdrop>
                     </div>
+                  )}
+                  {titleText && (
+                    <div ref={titleOverlayRef} className={classes.titleOverlay}>
+                      {titleText}
+                    </div>
+                  )}
+                  <div className={classes.mapContainer}>
+                    {selectedMap && open && (
+                      <MapGL
+                        ref={mapRef}
+                        dragRotate={false}
+                        // preserveDrawingBuffer is required for the map to be exported as an image
+                        preserveDrawingBuffer
+                        initialViewState={{
+                          longitude: selectedMap.getCenter().lng,
+                          latitude: selectedMap.getCenter().lat,
+                          zoom: selectedMap.getZoom(),
+                        }}
+                        onLoad={() => refreshImage()}
+                        onMove={() => debounceCallback(refreshImage)}
+                        mapStyle={selectedMapStyle || mapStyle.toString()}
+                        maxBounds={selectedMap.getMaxBounds() ?? undefined}
+                      >
+                        {toggles.countryMask && (
+                          <Source
+                            id="mask-overlay"
+                            type="geojson"
+                            data={invertedAdminBoundaryLimitPolygon}
+                          >
+                            <Layer
+                              id="mask-layer-overlay"
+                              type="fill"
+                              source="mask-overlay"
+                              layout={{}}
+                              paint={{
+                                'fill-color': '#000',
+                                'fill-opacity': 0.7,
+                              }}
+                            />
+                          </Source>
+                        )}
+                      </MapGL>
+                    )}
                   </div>
                 </div>
               </div>
             </div>
+          </div>
 
-            <div className={classes.optionsContainer}>
-              <div>
-                <Box
-                  fontSize={14}
-                  fontWeight={900}
-                  mb={1}
-                  className={classes.title}
-                >
-                  {t('Map Options')}
-                </Box>
-                <IconButton
-                  className={classes.closeButton}
-                  onClick={() => handleClose()}
-                >
-                  <CancelIcon />
-                </IconButton>
-              </div>
+          <div className={classes.optionsContainer}>
+            <div>
+              <Box
+                fontSize={14}
+                fontWeight={900}
+                mb={1}
+                className={classes.title}
+              >
+                {t('Map Options')}
+              </Box>
+              <IconButton
+                className={classes.closeButton}
+                onClick={() => handleClose()}
+              >
+                <CancelIcon />
+              </IconButton>
+            </div>
 
-              <div className={classes.optionWrap}>
-                <Typography variant="h4">Title</Typography>
-                <TextField
-                  key={titleText}
-                  defaultValue={titleText}
-                  fullWidth
-                  size="small"
-                  inputProps={{ style: { color: 'black' } }}
-                  onChange={event => {
-                    handleChangeFooterText(setTitleText, event.target.value);
-                  }}
-                  variant="outlined"
-                />
-              </div>
-
-              <ToggleSelector
-                value={Number(toggles.countryMask)}
-                options={countryMaskSelectorOptions}
-                setValue={val =>
-                  setToggles(prev => ({
-                    ...prev,
-                    countryMask: Boolean(val),
-                  }))
-                }
-                title="Mask data outside of admin area"
-              />
-
-              {toggles.countryMask && (
-                <div className={classes.optionWrap}>
-                  <SimpleBoundaryDropdown
-                    selectAll
-                    className={classes.formControl}
-                    labelMessage={t('Select admin area')}
-                    map={mapRef.current?.getMap()}
-                    selectedBoundaries={selectedBoundaries}
-                    setSelectedBoundaries={setSelectedBoundaries}
-                    selectProps={{
-                      variant: 'outlined',
-                      fullWidth: true,
-                    }}
-                    size="small"
-                    goto
-                  />
-                </div>
-              )}
-
-              <ToggleSelector
-                value={Number(toggles.fullLayerDescription)}
-                options={layerDescriptionSelectorOptions}
-                setValue={val =>
-                  setToggles(prev => ({
-                    ...prev,
-                    fullLayerDescription: Boolean(val),
-                  }))
-                }
-                title="Legend - Full Layer Description"
-              />
-
-              <ToggleSelector
-                value={legendScale}
-                options={legendSelectorOptions}
-                setValue={setLegendScale}
-                title="Legend"
-              />
-
-              <ToggleSelector
-                value={mapDimensions.width}
-                options={mapWidthSelectorOptions}
-                setValue={val =>
-                  setMapDimensions(prev => ({
-                    ...(prev || {}),
-                    width: val as number,
-                  }))
-                }
-                title="Map Width"
-              />
-
-              <ToggleSelector
-                value={footerTextSize}
-                options={footerTextSelectorOptions}
-                setValue={setFooterTextSize}
-                title="Footer Text"
-              />
-
+            <div className={classes.optionWrap}>
+              <Typography variant="h4">Title</Typography>
               <TextField
+                key={titleText}
+                defaultValue={titleText}
+                fullWidth
                 size="small"
-                key={defaultFooterText}
-                multiline
-                defaultValue={defaultFooterText}
-                inputProps={{ style: { color: 'black', fontSize: '0.9rem' } }}
-                minRows={4}
-                maxRows={4}
+                inputProps={{ style: { color: 'black' } }}
                 onChange={event => {
-                  handleChangeFooterText(setFooterText, event.target.value);
+                  debounceCallback(setTitleText, event.target.value);
                 }}
                 variant="outlined"
               />
-
-              <Button
-                style={{ backgroundColor: cyanBlue, color: 'black' }}
-                variant="contained"
-                color="primary"
-                className={classes.gutter}
-                endIcon={<GetAppIcon />}
-                onClick={e => handleDownloadMenuOpen(e)}
-              >
-                {t('Download')}
-              </Button>
-              <Menu
-                anchorEl={downloadMenuAnchorEl}
-                keepMounted
-                open={Boolean(downloadMenuAnchorEl)}
-                onClose={handleDownloadMenuClose}
-              >
-                <MenuItem onClick={() => download('png')}>
-                  {t('Download PNG')}
-                </MenuItem>
-                <MenuItem onClick={() => download('jpeg')}>
-                  {t('Download JPEG')}
-                </MenuItem>
-                <MenuItem onClick={() => download('pdf')}>
-                  {t('Download PDF')}
-                </MenuItem>
-              </Menu>
             </div>
+
+            <ToggleSelector
+              value={Number(toggles.countryMask)}
+              options={countryMaskSelectorOptions}
+              setValue={val =>
+                setToggles(prev => ({
+                  ...prev,
+                  countryMask: Boolean(val),
+                }))
+              }
+              title="Mask data outside of admin area"
+            />
+
+            {toggles.countryMask && (
+              <div className={classes.optionWrap}>
+                <Typography variant="h4">Select admin area</Typography>
+                <SimpleBoundaryDropdown
+                  selectAll
+                  className={classes.formControl}
+                  labelMessage={t('Go To')}
+                  selectedBoundaries={selectedBoundaries}
+                  setSelectedBoundaries={setSelectedBoundaries}
+                  selectProps={{
+                    variant: 'outlined',
+                    fullWidth: true,
+                  }}
+                  multiple={false}
+                  size="small"
+                />
+              </div>
+            )}
+
+            <ToggleSelector
+              value={Number(toggles.fullLayerDescription)}
+              options={layerDescriptionSelectorOptions}
+              setValue={val =>
+                setToggles(prev => ({
+                  ...prev,
+                  fullLayerDescription: Boolean(val),
+                }))
+              }
+              title="Legend - Full Layer Description"
+            />
+
+            <ToggleSelector
+              value={legendScale}
+              options={legendSelectorOptions}
+              setValue={setLegendScale}
+              title="Legend"
+            />
+
+            <ToggleSelector
+              value={mapDimensions.width}
+              options={mapWidthSelectorOptions}
+              setValue={val =>
+                setMapDimensions(prev => ({
+                  ...(prev || {}),
+                  width: val as number,
+                }))
+              }
+              title="Map Width"
+            />
+
+            <ToggleSelector
+              value={footerTextSize}
+              options={footerTextSelectorOptions}
+              setValue={setFooterTextSize}
+              title="Footer Text"
+            />
+
+            <TextField
+              size="small"
+              key={defaultFooterText}
+              multiline
+              defaultValue={defaultFooterText}
+              inputProps={{ style: { color: 'black', fontSize: '0.9rem' } }}
+              minRows={3}
+              maxRows={3}
+              onChange={event => {
+                debounceCallback(setFooterText, event.target.value);
+              }}
+              variant="outlined"
+            />
+
+            <Button
+              style={{ backgroundColor: cyanBlue, color: 'black' }}
+              variant="contained"
+              color="primary"
+              className={classes.gutter}
+              endIcon={<GetAppIcon />}
+              onClick={e => handleDownloadMenuOpen(e)}
+            >
+              {t('Download')}
+            </Button>
+            <Menu
+              anchorEl={downloadMenuAnchorEl}
+              keepMounted
+              open={Boolean(downloadMenuAnchorEl)}
+              onClose={handleDownloadMenuClose}
+            >
+              <MenuItem onClick={() => download('png')}>
+                {t('Download PNG')}
+              </MenuItem>
+              <MenuItem onClick={() => download('jpeg')}>
+                {t('Download JPEG')}
+              </MenuItem>
+              <MenuItem onClick={() => download('pdf')}>
+                {t('Download PDF')}
+              </MenuItem>
+            </Menu>
           </div>
         </DialogContent>
       </Dialog>
@@ -822,12 +816,13 @@ const styles = (theme: Theme) =>
       },
     },
     contentContainer: {
+      scrollbarGutter: 'stable',
       display: 'flex',
       gap: '1rem',
       flexDirection: 'row',
       justifyContent: 'space-between',
       width: '90vw',
-      height: '80vh',
+      height: '90vh',
     },
     optionsContainer: {
       display: 'flex',

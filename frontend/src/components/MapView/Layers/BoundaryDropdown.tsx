@@ -250,6 +250,7 @@ export function SimpleBoundaryDropdown({
   onlyNewCategory,
   selectProps,
   goto,
+  multiple = true,
   ...rest
 }: BoundaryDropdownProps) {
   const styles = useStyles();
@@ -355,7 +356,9 @@ export function SimpleBoundaryDropdown({
                 selected={selectedBoundaries?.includes(area.adminCode)}
                 onClick={event => {
                   event.stopPropagation();
-                  const newSelectedBoundaries = [...(selectedBoundaries || [])];
+                  const newSelectedBoundaries = multiple
+                    ? [...(selectedBoundaries || [])]
+                    : [];
                   const itemIndex = newSelectedBoundaries.indexOf(
                     area.adminCode,
                   );
@@ -425,6 +428,7 @@ interface BoundaryDropdownProps {
   ) => void;
   selectProps?: SelectProps;
   goto?: boolean;
+  multiple?: boolean;
 }
 
 /**
