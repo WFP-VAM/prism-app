@@ -217,6 +217,11 @@ const theme: any = createTheme({
         },
       },
     },
+    MuiIconButton: {
+      root: {
+        color: 'white',
+      },
+    },
   },
 });
 
