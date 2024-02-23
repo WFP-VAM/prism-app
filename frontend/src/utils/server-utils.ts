@@ -89,17 +89,20 @@ export const getPossibleDatesForLayer = (
     case 'wms':
       // get available dates for the layer and its fallback layers
       // TODO - improve performance
-      return [
-        layer.id,
-        ...((layer as AdminLevelDataLayerProps).fallbackLayerKeys || []),
-      ]
-        .reduce((acc: DateItem[], key) => {
-          if (serverAvailableDates[key]) {
-            return [...acc, ...serverAvailableDates[key]];
-          }
-          return acc;
-        }, [])
-        .sort((a, b) => a.displayDate - b.displayDate);
+      return (
+        [
+          layer.id,
+          ...((layer as AdminLevelDataLayerProps).fallbackLayerKeys || []),
+        ]
+          .reduce((acc: DateItem[], key) => {
+            if (serverAvailableDates[key]) {
+              return [...acc, ...serverAvailableDates[key]];
+            }
+            return acc;
+          }, [])
+          // eslint-disable-next-line fp/no-mutating-methods
+          .sort((a, b) => a.displayDate - b.displayDate)
+      );
     case 'impact':
       return serverAvailableDates[
         (LayerDefinitions[layer.hazardLayer] as WMSLayerProps).id
