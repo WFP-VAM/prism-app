@@ -5,27 +5,35 @@ exports[`renders as expected 1`] = `
   <div
     style="padding-top: 4px;"
   >
-    <mock-button
-      style="background-color: transparent;"
+    <button
+      class="MuiButtonBase-root MuiIconButton-root"
+      style="background-color: transparent; padding: 0px;"
+      tabindex="0"
+      type="button"
     >
-      <svg
-        aria-hidden="true"
-        class="MuiSvgIcon-root MuiSvgIcon-fontSizeSmall"
-        focusable="false"
-        style="padding-right: 0.2em;"
-        viewBox="0 0 24 24"
+      <span
+        class="MuiIconButton-label"
       >
-        <path
-          d="M19 8H5c-1.66 0-3 1.34-3 3v6h4v4h12v-4h4v-6c0-1.66-1.34-3-3-3zm-3 11H8v-5h8v5zm3-7c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1zm-1-9H6v4h12V3z"
-        />
-      </svg>
-      <mock-typography
-        classname="PrintImage-printText-1"
-        variant="body2"
-      >
-        Print
-      </mock-typography>
-    </mock-button>
+        <svg
+          aria-hidden="true"
+          class="MuiSvgIcon-root"
+          focusable="false"
+          viewBox="0 0 24 24"
+        >
+          <path
+            d="M19 8h-1V3H6v5H5c-1.66 0-3 1.34-3 3v6h4v4h12v-4h4v-6c0-1.66-1.34-3-3-3zM8 5h8v3H8V5zm8 12v2H8v-4h8v2zm2-2v-2H6v2H4v-4c0-.55.45-1 1-1h14c.55 0 1 .45 1 1v4h-2z"
+          />
+          <circle
+            cx="18"
+            cy="11.5"
+            r="1"
+          />
+        </svg>
+      </span>
+      <span
+        class="MuiTouchRipple-root"
+      />
+    </button>
   </div>
   <mock-dialog
     aria-labelledby="dialog-preview"
@@ -34,7 +42,7 @@ exports[`renders as expected 1`] = `
     open="false"
   >
     <mock-dialogtitle
-      classname="DownloadImage-title-2"
+      classname="DownloadImage-title-1"
       id="dialog-preview"
     >
       <div
@@ -49,7 +57,7 @@ exports[`renders as expected 1`] = `
         </mock-typography>
       </div>
       <button
-        class="MuiButtonBase-root MuiIconButton-root DownloadImage-closeButton-6"
+        class="MuiButtonBase-root MuiIconButton-root DownloadImage-closeButton-5"
         tabindex="0"
         type="button"
       >
@@ -84,24 +92,24 @@ exports[`renders as expected 1`] = `
             style="position: relative; z-index: 3; border: 1px solid black; height: 100%; width: 100%;"
           >
             <div
-              class="DownloadImage-printContainer-10"
+              class="DownloadImage-printContainer-9"
             >
               <div
-                class="DownloadImage-mapOverlay-12"
+                class="DownloadImage-mapOverlay-11"
               />
               <div
-                class="DownloadImage-backdropWrapper-8"
+                class="DownloadImage-backdropWrapper-7"
               >
                 <div
                   aria-hidden="true"
-                  class="MuiBackdrop-root DownloadImage-backdrop-7"
+                  class="MuiBackdrop-root DownloadImage-backdrop-6"
                   style="opacity: 1; webkit-transition: opacity 225ms cubic-bezier(0.4, 0, 0.2, 1) 0ms; transition: opacity 225ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;"
                 >
                   <mock-circularprogress />
                 </div>
               </div>
               <div
-                class="DownloadImage-mapContainer-11"
+                class="DownloadImage-mapContainer-10"
               />
             </div>
           </div>
@@ -110,15 +118,15 @@ exports[`renders as expected 1`] = `
           class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-true"
         >
           <div
-            class="MuiBox-root MuiBox-root-13"
+            class="MuiBox-root MuiBox-root-12"
           >
             <div
-              class="MuiBox-root MuiBox-root-14 DownloadImage-title-2"
+              class="MuiBox-root MuiBox-root-13 DownloadImage-title-1"
             >
               Map Options
             </div>
             <div
-              class="DownloadImage-toggleWrapper-9"
+              class="DownloadImage-toggleWrapper-8"
             >
               <label
                 class="MuiFormControlLabel-root"
@@ -141,7 +149,7 @@ exports[`renders as expected 1`] = `
               </label>
             </div>
             <div
-              class="DownloadImage-toggleWrapper-9"
+              class="DownloadImage-toggleWrapper-8"
             >
               <label
                 class="MuiFormControlLabel-root"
@@ -164,7 +172,7 @@ exports[`renders as expected 1`] = `
               </label>
             </div>
             <div
-              class="DownloadImage-toggleWrapper-9"
+              class="DownloadImage-toggleWrapper-8"
             >
               <label
                 class="MuiFormControlLabel-root"
@@ -210,7 +218,7 @@ exports[`renders as expected 1`] = `
               </button>
             </div>
             <div
-              class="DownloadImage-toggleWrapper-9"
+              class="DownloadImage-toggleWrapper-8"
             >
               <label
                 class="MuiFormControlLabel-root"
@@ -359,7 +367,7 @@ exports[`renders as expected 1`] = `
               />
             </span>
             <mock-button
-              classname="DownloadImage-gutter-4"
+              classname="DownloadImage-gutter-3"
               color="primary"
               endicon="[object Object]"
               variant="contained"
@@ -390,7 +398,7 @@ exports[`renders as expected 1`] = `
     open="false"
   >
     <mock-dialogtitle
-      classname="makeStyles-title-20"
+      classname="makeStyles-title-19"
     >
       Edit Footer Text
     </mock-dialogtitle>
