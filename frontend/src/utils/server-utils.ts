@@ -88,19 +88,20 @@ export const getPossibleDatesForLayer = (
     case 'static_raster':
     case 'wms':
       // get available dates for the layer and its fallback layers
-      // TODO - improve performance
+      // eslint-disable-next-line no-case-declarations
+      const { fallbackLayerKeys } = layer as AdminLevelDataLayerProps;
+      if (!fallbackLayerKeys?.length) {
+        return serverAvailableDates[layer.id];
+      }
       return (
-        [
-          layer.id,
-          ...((layer as AdminLevelDataLayerProps).fallbackLayerKeys || []),
-        ]
+        // eslint-disable-next-line fp/no-mutating-methods
+        [layer.id, ...(fallbackLayerKeys || [])]
           .reduce((acc: DateItem[], key) => {
             if (serverAvailableDates[key]) {
               return [...acc, ...serverAvailableDates[key]];
             }
             return acc;
           }, [])
-          // eslint-disable-next-line fp/no-mutating-methods
           .sort((a, b) => a.displayDate - b.displayDate)
       );
     case 'impact':
