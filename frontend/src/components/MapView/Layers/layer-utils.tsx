@@ -102,7 +102,6 @@ export const addPopupParams = (
     dispatch(
       addPopupData({
         [title]: {
-          // ...adminLevelObj,
           data: getRoundedData(get(feature, propertyField), t),
           coordinates,
         },
@@ -141,7 +140,7 @@ export const addPopupParams = (
         ? {
             'Admin Level': {
               data: feature.properties.adminLevel,
-              coordinates: [0, 0],
+              coordinates,
             },
           }
         : {}),

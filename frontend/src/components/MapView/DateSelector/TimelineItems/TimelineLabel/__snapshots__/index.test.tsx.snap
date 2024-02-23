@@ -2,8 +2,11 @@
 
 exports[`TimelineLabel renders as expected 1`] = `
 <div>
-  <div
-    class="TimelineLabel-dayItem-2"
-  />
+  <mock-typography
+    classname="TimelineLabel-dateItemLabel-1"
+    variant="body2"
+  >
+    décembre 2021
+  </mock-typography>
 </div>
 `;

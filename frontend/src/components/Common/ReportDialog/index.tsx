@@ -28,6 +28,7 @@ import {
 import { Column, ExposedPopulationResult } from 'utils/analysis-utils';
 import LoadingBlinkingDots from 'components/Common/LoadingBlinkingDots';
 import { ReportType } from 'config/types';
+import { getDateFormat } from 'utils/date-utils';
 import ReportDoc from './reportDoc';
 
 type Format = 'png' | 'jpeg';
@@ -52,7 +53,7 @@ const ReportDialog = memo(
 
     const reportDate = useMemo(() => {
       return analysisResult?.date
-        ? moment(new Date(analysisResult?.date)).format('YYYY-MM-DD')
+        ? getDateFormat(new Date(analysisResult?.date).toISOString(), 'default')
         : '';
     }, [analysisResult]);
 

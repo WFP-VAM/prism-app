@@ -1,5 +1,4 @@
 import moment from 'moment';
-import { MONTH_FIRST_DATE_FORMAT } from 'utils/name-utils';
 import { DateCompatibleLayer } from 'utils/server-utils';
 import { DateItem } from 'config/types';
 
@@ -93,8 +92,4 @@ export function findDateIndex(
     }
   }
   return -1;
-}
-
-export function formatDate(date: number): string {
-  return moment(date).format(MONTH_FIRST_DATE_FORMAT);
 }

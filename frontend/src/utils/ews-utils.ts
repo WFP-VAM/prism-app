@@ -53,12 +53,14 @@ type EWSTriggerLevels = {
 };
 /* eslint-enable camelcase */
 
-export const createEWSDatesArray = (): number[] => {
+// input parameter is used here only for testing
+export const createEWSDatesArray = (testEndDate?: number): number[] => {
   const datesArray = [];
 
-  const endDate = moment(moment.utc().format('YYYY-MM-DD')).valueOf();
+  const endDate =
+    testEndDate || moment(moment.utc().format('YYYY-MM-DD')).valueOf();
 
-  const tempDate = moment('2021-01-01');
+  const tempDate = moment.utc('2021-01-01');
 
   while (tempDate.valueOf() <= endDate) {
     // eslint-disable-next-line fp/no-mutating-methods
