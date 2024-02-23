@@ -416,7 +416,7 @@ export function SimpleBoundaryDropdown({
 
 interface BoundaryDropdownProps {
   className: string;
-  labelMessage: string;
+  labelMessage?: string;
   map?: MaplibreMap | undefined;
   onlyNewCategory?: boolean;
   selectAll?: boolean;

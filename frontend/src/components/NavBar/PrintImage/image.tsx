@@ -642,7 +642,6 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
                 <SimpleBoundaryDropdown
                   selectAll
                   className={classes.formControl}
-                  labelMessage={t('Select admin area')}
                   selectedBoundaries={selectedBoundaries}
                   setSelectedBoundaries={setSelectedBoundaries}
                   selectProps={{
