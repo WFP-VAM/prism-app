@@ -464,9 +464,11 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
       const canvas = await html2canvas(elem);
       const file = canvas.toDataURL(`image/${ext}`);
       if (format === 'pdf') {
+        const orientation =
+          canvas.width > canvas.height ? 'landscape' : 'portrait';
         // eslint-disable-next-line new-cap
         const pdf = new jsPDF({
-          orientation: 'portrait',
+          orientation,
           unit: 'px',
           format: [canvas.width, canvas.height],
         });
