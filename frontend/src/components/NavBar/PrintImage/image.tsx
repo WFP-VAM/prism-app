@@ -645,7 +645,7 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
                 <div className={classes.optionWrap}>
                   <Typography variant="h4">Select admin area</Typography>
                   <SimpleBoundaryDropdown
-                    selectAll
+                    multiple={false}
                     className={classes.formControl}
                     labelMessage={t('Go To')}
                     selectedBoundaries={selectedBoundaries}
