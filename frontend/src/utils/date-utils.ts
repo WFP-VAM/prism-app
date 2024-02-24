@@ -38,8 +38,8 @@ export const generateDateItemsRange = (
 
   return startEndDateList.flatMap(range => {
     const datesInTime: number[] = generateDatesRange(
-      moment(range.startDate),
-      moment(range.endDate),
+      moment.utc(range.startDate),
+      moment.utc(range.endDate),
     );
 
     const dateItems: DateItem[] = datesInTime.map(dateInTime => ({
