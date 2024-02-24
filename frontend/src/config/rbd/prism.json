@@ -34,6 +34,7 @@
   ],
   "categories": {
     "rainfall": {
+      "forecasts": ["daily_rainfall_forecast", "dekad_rainfall_forecast"],
       "rainfall_amount": [
         {
           "group_title": "Rainfall Aggregate",
@@ -193,15 +194,67 @@
     "Cadre Harmonisé": {
       "Phase_Classification": [
         "ch_phase",
-        "ch_idps_phase",
-        "ch_inaccessible_phase",
-        "ch_urban_phase"
+        {
+          "group_title": "Phase classification - special populations",
+          "activate_all": false,
+          "layers": [
+            {
+              "id": "ch_idps_phase",
+              "label": "IDPs",
+              "main": true
+            },
+            {
+              "id": "ch_inaccessible_phase",
+              "label": "Inaccessible areas"
+            },
+            {
+              "id": "ch_urban_phase",
+              "label": "Urban"
+            }
+          ]
+        }
       ],
       "Population": [
         "ch_pop3_5",
-        "ch_idps_pop3_5",
-        "ch_inaccessible_pop3_5",
-        "ch_urban_pop3_5"
+        {
+          "group_title": "Number of people in phase 3 or above - special populations",
+          "activate_all": false,
+          "layers": [
+            {
+              "id": "ch_idps_pop3_5",
+              "label": "IDPs",
+              "main": true
+            },
+            {
+              "id": "ch_inaccessible_pop3_5",
+              "label": "Inaccessible areas"
+            },
+            {
+              "id": "ch_urban_pop3_5",
+              "label": "Urban"
+            }
+          ]
+        },
+          "ch_perc3_5",
+          {
+            "group_title": "Percent of population in phase 3 or above - special populations",
+            "activate_all": false,
+            "layers": [
+              {
+                "id": "ch_idps_perc3_5",
+                "label": "IDPs",
+                "main": true
+              },
+              {
+                "id": "ch_inaccessible_perc3_5",
+                "label": "Inaccessible areas"
+              },
+              {
+                "id": "ch_urban_perc3_5",
+                "label": "Urban"
+              }
+            ]
+          }
       ]
     },
     "risk_analysis": {
