@@ -133,7 +133,7 @@ export async function getAdminLevelDataLayerData({
               tempFeatureInfoPropsValues,
             };
           })
-          .find(item => item.layerValue);
+          .find(item => !isNull(item.layerValue));
         // eslint-disable-next-line fp/no-mutation
         fallbackAdminLevel = matchedFallbackData?.fallbackAdminLevel;
         // eslint-disable-next-line fp/no-mutation
@@ -143,7 +143,7 @@ export async function getAdminLevelDataLayerData({
           matchedFallbackData?.tempFeatureInfoPropsValues;
       }
 
-      if (!matchedData && !fallbackValue) {
+      if (!matchedData && fallbackValue === undefined) {
         return undefined;
       }
 
