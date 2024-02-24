@@ -454,7 +454,7 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
   };
 
   const download = (format: 'pdf' | 'jpeg' | 'png') => {
-    const filename: string = `${country}_${
+    const filename: string = `${titleText || country}_${
       getDateFormat(dateRange.startDate, 'snake') || 'no_date'
     }`;
     const docGeneration = async () => {
