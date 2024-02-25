@@ -6,6 +6,7 @@ import {
   makeStyles,
   MenuItem,
   Select,
+  SelectProps,
   TextField,
   TextFieldProps,
   Theme,
@@ -247,6 +248,9 @@ export function SimpleBoundaryDropdown({
   map,
   selectAll,
   onlyNewCategory,
+  selectProps,
+  goto,
+  multiple = true,
   ...rest
 }: BoundaryDropdownProps) {
   const styles = useStyles();
@@ -304,6 +308,7 @@ export function SimpleBoundaryDropdown({
     <FormControl {...rest}>
       <InputLabel>{labelMessage}</InputLabel>
       <Select
+        style={{ color: 'black' }}
         multiple
         onClose={() => {
           // empty search so that component shows correct options
@@ -311,6 +316,17 @@ export function SimpleBoundaryDropdown({
           setTimeout(() => setSearch(''), TIMEOUT_ANIMATION_DELAY);
         }}
         value={selectedBoundaries}
+        // This is a workaround to display the selected items as a comma separated list.
+        renderValue={selected =>
+          (selected as AdminCodeString[])
+            .map(
+              adminCode =>
+                flattenedAreaList.find(area => area.adminCode === adminCode)
+                  ?.label || adminCode,
+            )
+            .join(', ')
+        }
+        {...selectProps}
       >
         <SearchField search={search} setSearch={setSearch} />
         {!search && selectAll && selectedBoundaries && (
@@ -340,7 +356,9 @@ export function SimpleBoundaryDropdown({
                 selected={selectedBoundaries?.includes(area.adminCode)}
                 onClick={event => {
                   event.stopPropagation();
-                  const newSelectedBoundaries = [...(selectedBoundaries || [])];
+                  const newSelectedBoundaries = multiple
+                    ? [...(selectedBoundaries || [])]
+                    : [];
                   const itemIndex = newSelectedBoundaries.indexOf(
                     area.adminCode,
                   );
@@ -361,7 +379,9 @@ export function SimpleBoundaryDropdown({
                       .map(b => b.adminCode);
 
                     setSelectedBoundaries(boundariesToSelect, event.shiftKey);
-                    return;
+                    if (!goto) {
+                      return;
+                    }
                   }
                   if (map === undefined) {
                     return;
@@ -378,7 +398,7 @@ export function SimpleBoundaryDropdown({
                     features,
                   });
                   if (bboxUnion.length === 4) {
-                    map.fitBounds(bboxUnion, { padding: 30 });
+                    map.fitBounds(bboxUnion, { padding: 60 });
                   }
                 }}
               >
@@ -396,15 +416,19 @@ export function SimpleBoundaryDropdown({
 
 interface BoundaryDropdownProps {
   className: string;
-  labelMessage: string;
+  labelMessage?: string;
   map?: MaplibreMap | undefined;
   onlyNewCategory?: boolean;
   selectAll?: boolean;
+  size?: 'small' | 'medium';
   selectedBoundaries?: AdminCodeString[];
   setSelectedBoundaries?: (
     boundaries: AdminCodeString[],
     appendMany?: boolean,
   ) => void;
+  selectProps?: SelectProps;
+  goto?: boolean;
+  multiple?: boolean;
 }
 
 /**
