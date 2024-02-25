@@ -115,14 +115,14 @@ export async function getAdminLevelDataLayerData({
               layerValue,
             };
           })
-          .find(item => item.layerValue);
+          .find(item => !isNull(item.layerValue));
         // eslint-disable-next-line fp/no-mutation
         fallbackAdminLevel = matchedFallbackData?.fallbackAdminLevel;
         // eslint-disable-next-line fp/no-mutation
         fallbackValue = matchedFallbackData?.layerValue;
       }
 
-      if (!matchedData && !fallbackValue) {
+      if (!matchedData && fallbackValue === undefined) {
         return undefined;
       }
 

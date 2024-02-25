@@ -91,7 +91,7 @@ const MapTooltip = ({ classes }: TooltipProps) => {
 
   const popupData = popup.data;
 
-  // TODO - simplify logic once we revamp admin levels ojbect
+  // TODO - simplify logic once we revamp admin levels object
   const adminLevelsNames = useCallback(() => {
     const locationName = isEnglishLanguageSelected(i18n)
       ? popup.locationName

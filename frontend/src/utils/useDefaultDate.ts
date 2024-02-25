@@ -24,6 +24,7 @@ export function useDefaultDate(layerId: LayerKey): number | undefined {
 
   const { updateHistory } = useUrlHistory();
 
+  // TODO - use getPossibleDatesForLayer
   const possibleDates = useSelector(availableDatesSelector)[layerId];
 
   const defaultDate: number | undefined =

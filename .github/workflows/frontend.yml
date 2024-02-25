@@ -59,7 +59,7 @@ jobs:
           cd frontend && yarn preprocess-layers
           DIFF=$(git diff --name-only)
           if [ "$DIFF" != "" ]; then
-            echo "Files have changed. Make sure to run yarn preprocess-dates and commit changes."
+            echo "Files have changed. Make sure to run yarn preprocess-layers and commit changes."
             echo "$DIFF"
             exit 1
           fi
