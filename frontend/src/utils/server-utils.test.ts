@@ -20,8 +20,8 @@ describe('Test generateIntermediateDateItemFromValidity', () => {
         new Date('2023-12-21').setHours(12, 0),
       ],
       validity: {
-        days: 10,
-        mode: DatesPropagation.FORWARD,
+        forward: 10,
+        mode: DatesPropagation.DAYS,
       },
     };
 
@@ -168,8 +168,8 @@ describe('Test generateIntermediateDateItemFromValidity', () => {
         new Date('2023-12-11').setHours(12, 0),
       ],
       validity: {
-        days: 10,
-        mode: DatesPropagation.BACKWARD,
+        backward: 10,
+        mode: DatesPropagation.DAYS,
       },
     };
     const output = generateIntermediateDateItemFromValidity(layer);

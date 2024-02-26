@@ -398,9 +398,8 @@ interface FeatureInfoProps {
 }
 
 export enum DatesPropagation {
-  FORWARD = 'forward',
-  BACKWARD = 'backward',
-  BOTH = 'both',
+  DAYS = 'days',
+  DEKAD = 'dekad',
 }
 
 export type ValidityPeriod = {
@@ -411,8 +410,9 @@ export type ValidityPeriod = {
 };
 
 export type Validity = {
-  days: number; // Number of days to include in the calendar.
   mode: DatesPropagation; // Propagation mode for dates.
+  backward: number; // Number of days/dekades backward.
+  forward: number; // Number of days/dekades forward.
 };
 
 export class WMSLayerProps extends CommonLayerProps {
