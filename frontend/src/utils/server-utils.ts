@@ -360,10 +360,10 @@ export function generateIntermediateDateItemFromValidity(layer: ValidityLayer) {
           endDate.setDate(endDate.getDate() - 1);
         }
         if (backward) {
-          const newDekadStartIndex = (dekadStartIndex - backward) % 3;
+          const newDekadStartIndex = (dekadStartIndex - backward + 3) % 3;
           const nMonthsBackward = Math.floor((dekadStartIndex - backward) / 3);
           startDate.setDate(DekadStartingDays[newDekadStartIndex]);
-          startDate.setMonth(startDate.getMonth() - nMonthsBackward);
+          startDate.setMonth(startDate.getMonth() + nMonthsBackward);
         }
       } else {
         return [];
