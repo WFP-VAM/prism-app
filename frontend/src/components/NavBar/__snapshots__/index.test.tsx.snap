@@ -55,6 +55,7 @@ exports[`renders as expected 1`] = `
                 Analysis
               </mock-button>
               <mock-button
+                disabled="true"
                 starticon="[object Object]"
               >
                 Go To
