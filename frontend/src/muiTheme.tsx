@@ -6,6 +6,7 @@ const greyBlue: string = '#5A686C';
 const darkGreyBlue: string = '#2D3436';
 const white: string = '#FFFFFF';
 const lightGray = '#CCCCCC';
+export const cyanBlue = '#63B2BD';
 
 export const colors = { skyBlue, greyBlue, darkGreyBlue };
 
@@ -108,6 +109,11 @@ const theme: any = createTheme({
       },
     },
     MuiTypography: {
+      h3: {
+        fontSize: 16,
+        color: darkGreyBlue,
+        fontWeight: 400,
+      },
       h4: {
         fontSize: 13,
         color: darkGreyBlue,
@@ -219,5 +225,17 @@ const theme: any = createTheme({
     },
   },
 });
+
+// eslint-disable-next-line fp/no-mutation
+theme.overrides.MuiToggleButton = {
+  root: {
+    textTransform: 'none',
+    color: 'black',
+    '&.Mui-selected, &.Mui-selected:hover': {
+      backgroundColor: `${cyanBlue} !important`,
+      color: 'initial',
+    },
+  },
+};
 
 export default theme;
