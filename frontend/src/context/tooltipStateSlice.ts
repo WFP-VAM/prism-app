@@ -7,7 +7,6 @@ export interface PopupData {
   [key: string]: {
     data: number | string;
     coordinates: GeoJSON.Position;
-    adminLevel?: number;
   };
 }
 
