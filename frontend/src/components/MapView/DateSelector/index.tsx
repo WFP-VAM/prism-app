@@ -425,7 +425,7 @@ const styles = (theme: Theme) =>
   createStyles({
     container: {
       position: 'absolute',
-      bottom: '40px',
+      bottom: '1.5rem',
       width: '100%',
       zIndex: 5,
     },
@@ -448,7 +448,7 @@ const styles = (theme: Theme) =>
       boxShadow: '0px 4px 4px rgba(0, 0, 0, 0.25)',
       backgroundColor: 'white',
       color: '#101010',
-      borderRadius: theme.shape.borderRadius,
+      borderRadius: '8px',
       width: '90%',
       margin: 'auto',
       textAlign: 'center',

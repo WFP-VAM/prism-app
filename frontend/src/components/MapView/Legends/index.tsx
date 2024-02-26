@@ -192,7 +192,7 @@ const styles = () =>
       maxHeight: '70vh',
       position: 'absolute',
       right: '1rem',
-      top: '7vh',
+      top: 'calc(7vh - 8px)',
     },
     icon: { color: 'white', fontSize: '1.5rem' },
   });

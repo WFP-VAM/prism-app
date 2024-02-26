@@ -13,19 +13,19 @@ exports[`renders as expected 1`] = `
         smdown="true"
       >
         <div
-          class="NavBar-navbarContainer-9"
+          class="NavBar-navbarContainer-10"
         >
           <div
-            class="NavBar-leftSideContainer-10"
+            class="NavBar-leftSideContainer-11"
           >
             <div
-              class="NavBar-titleContainer-11"
+              class="NavBar-titleContainer-12"
             >
               <div
-                class="MuiBox-root MuiBox-root-14"
+                class="MuiBox-root MuiBox-root-15"
               >
                 <mock-typography
-                  classname="NavBar-title-3"
+                  classname="NavBar-title-4"
                   variant="h6"
                 >
                   PRISM
@@ -33,19 +33,23 @@ exports[`renders as expected 1`] = `
               </div>
             </div>
             <div
-              class="NavBar-panelsContainer-12"
+              class="NavBar-panelsContainer-13"
             >
               <mock-button
+                classname="NavBar-panelButton-3"
                 starticon="[object Object]"
+                style="background-color: rgb(99, 178, 189); color: black;"
               >
                 Layers
               </mock-button>
               <mock-button
+                classname="NavBar-panelButton-3"
                 starticon="[object Object]"
               >
                 Charts
               </mock-button>
               <mock-button
+                classname="NavBar-panelButton-3"
                 starticon="[object Object]"
               >
                 Analysis
@@ -62,10 +66,10 @@ exports[`renders as expected 1`] = `
             </div>
           </div>
           <div
-            class="NavBar-rightSideContainer-13"
+            class="NavBar-rightSideContainer-14"
           >
             <mock-button
-              classname="memo-triggerButton-22"
+              classname="memo-triggerButton-23"
               color="primary"
               starticon="[object Object]"
               style="background-color: rgb(99, 178, 189);"
@@ -82,7 +86,7 @@ exports[`renders as expected 1`] = `
               </mock-hidden>
             </mock-button>
             <mock-list
-              classname="memo-list-23"
+              classname="memo-list-24"
               id="legend-list"
             />
             <mock-printimage />
@@ -141,7 +145,7 @@ exports[`renders as expected 1`] = `
               </mock-typography>
             </mock-button>
             <mock-menu
-              classname="LanguageSelector-block-25"
+              classname="LanguageSelector-block-26"
               open="false"
             >
               <mock-menuitem>
@@ -168,11 +172,11 @@ exports[`renders as expected 1`] = `
         mdup="true"
       >
         <div
-          class="MuiGrid-root NavBar-mobileMenuContainer-8 MuiGrid-item MuiGrid-grid-xs-6"
+          class="MuiGrid-root NavBar-mobileMenuContainer-9 MuiGrid-item MuiGrid-grid-xs-6"
         >
           <mock-button
             aria-haspopup="true"
-            classname="NavBar-menuBars-7"
+            classname="NavBar-menuBars-8"
           >
             <svg
               aria-hidden="true"
@@ -195,7 +199,7 @@ exports[`renders as expected 1`] = `
             open="false"
           >
             <div
-              class="MuiGrid-root NavBar-mobileDrawerContent-6 MuiGrid-container MuiGrid-spacing-xs-3"
+              class="MuiGrid-root NavBar-mobileDrawerContent-7 MuiGrid-container MuiGrid-spacing-xs-3"
             >
               <mock-printimage />
               <a
@@ -253,7 +257,7 @@ exports[`renders as expected 1`] = `
                 </mock-typography>
               </mock-button>
               <mock-menu
-                classname="LanguageSelector-block-25"
+                classname="LanguageSelector-block-26"
                 open="false"
               >
                 <mock-menuitem>

@@ -6,11 +6,7 @@ import {
   Tabs,
   Theme,
 } from '@material-ui/core';
-import {
-  BarChartOutlined,
-  ImageAspectRatioOutlined,
-  TableChart,
-} from '@material-ui/icons';
+import { BarChartOutlined, TableChart } from '@material-ui/icons';
 import React, { memo, useCallback, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { sum } from 'lodash';
@@ -24,7 +20,6 @@ import {
 import { useSafeTranslation } from 'i18n';
 import TabPanel from './TabPanel';
 import LayersPanel from '../layersPanel';
-import TabLabel from './TabLabel';
 
 interface StyleProps {
   tabValue: Panel;
@@ -49,14 +44,10 @@ const useStyles = makeStyles<Theme, StyleProps>(() =>
       height: '100%',
     },
     tabsContainer: {
-      backgroundColor: '#566064',
+      visibility: 'collapse',
       order: -2,
       width: ({ panelSize }) =>
         panelSize !== PanelSize.folded ? PanelSize.medium : PanelSize.folded,
-    },
-    indicator: {
-      backgroundColor: '#53888F',
-      height: '10%',
     },
     tabRoot: {
       textTransform: 'none',
@@ -215,7 +206,6 @@ const LeftPanelTabs = memo(
               value={tabValue}
               onChange={handleChange}
               aria-label="left panel tabs"
-              classes={{ indicator: classes.indicator }}
             >
               <Tab
                 classes={{
@@ -227,7 +217,6 @@ const LeftPanelTabs = memo(
                 }}
                 value={Panel.Layers}
                 disableRipple
-                label={<TabLabel panelSize={panelSize} tabValue={tabValue} />}
                 {...a11yProps(Panel.Layers)}
               />
               {renderedChartsTab}
@@ -241,14 +230,6 @@ const LeftPanelTabs = memo(
                 }}
                 value={Panel.Analysis}
                 disableRipple
-                label={
-                  <Box display="flex">
-                    <ImageAspectRatioOutlined
-                      style={{ verticalAlign: 'middle' }}
-                    />
-                    <Box ml={1}>{t('Analysis')}</Box>
-                  </Box>
-                }
                 {...a11yProps(Panel.Analysis)}
               />
               {renderedTablesTab}

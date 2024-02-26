@@ -10,15 +10,13 @@ import {
 // map
 import { PanelSize } from 'config/types';
 import { getDisplayBoundaryLayers } from 'config/utils';
-
 import { addLayer } from 'context/mapStateSlice';
 import {
   isLoading as areDatesLoading,
   loadAvailableDates,
 } from 'context/serverStateSlice';
-
-import { appConfig } from 'config';
 import { loadLayerData } from 'context/layers/layer-data';
+import { Panel, leftPanelTabValueSelector } from 'context/leftPanelStateSlice';
 import LeftPanel from './LeftPanel';
 import MapComponent from './Map';
 import OtherFeatures from './OtherFeatures';
@@ -31,17 +29,13 @@ import OtherFeatures from './OtherFeatures';
 const displayedBoundaryLayers = getDisplayBoundaryLayers().reverse();
 
 const MapView = memo(({ classes, setIsAlertFormOpen }: MapViewProps) => {
-  // App config attributes
-  const { hidePanel } = appConfig;
-
   // Selectors
   const datesLoading = useSelector(areDatesLoading);
+  const tabValue = useSelector(leftPanelTabValueSelector);
 
   // State attributes
   const [panelSize, setPanelSize] = useState<PanelSize>(PanelSize.medium);
-  const [isPanelHidden, setIsPanelHidden] = useState<boolean>(
-    Boolean(hidePanel),
-  );
+  const isPanelHidden = tabValue === Panel.None;
 
   const dispatch = useDispatch();
 
@@ -62,11 +56,7 @@ const MapView = memo(({ classes, setIsAlertFormOpen }: MapViewProps) => {
         setPanelSize={setPanelSize}
         isPanelHidden={isPanelHidden}
       />
-      <OtherFeatures
-        isPanelHidden={isPanelHidden}
-        panelSize={panelSize}
-        setIsPanelHidden={setIsPanelHidden}
-      />
+      <OtherFeatures />
       {datesLoading && (
         <div className={classes.loading}>
           <CircularProgress size={100} />

@@ -1123,6 +1123,7 @@ const AnalysisPanel = memo(
       }
       return (
         <div className={classes.analysisButtonContainer}>
+          {isAnalysisLoading ? <LinearProgress /> : null}
           <Button
             className={classes.bottomButton}
             onClick={runAnalyser}
@@ -1140,7 +1141,6 @@ const AnalysisPanel = memo(
           >
             <Typography variant="body2">{t('Run Analysis')}</Typography>
           </Button>
-          {isAnalysisLoading ? <LinearProgress /> : null}
         </div>
       );
     }, [

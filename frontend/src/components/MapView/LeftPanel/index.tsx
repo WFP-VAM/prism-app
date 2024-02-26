@@ -33,10 +33,12 @@ const LeftPanel = memo(
         PaperProps={{
           style: {
             width: panelSize,
-            marginTop: '7vh',
-            height: '93%',
+            marginTop: 'calc(7vh + 1rem)',
+            marginLeft: '1rem',
+            height: '80vh',
             backgroundColor: '#F5F7F8',
             maxWidth: '100%',
+            borderRadius: '8px',
           },
         }}
         variant="persistent"

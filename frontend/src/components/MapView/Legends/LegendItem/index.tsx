@@ -247,6 +247,7 @@ const styles = () =>
     paper: {
       padding: 8,
       width: 180,
+      borderRadius: '8px',
     },
     slider: {
       padding: '0 5px',

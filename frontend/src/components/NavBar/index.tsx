@@ -16,8 +16,9 @@ import {
   withStyles,
   WithStyles,
   IconButton,
+  Badge,
 } from '@material-ui/core';
-import React, { useState } from 'react';
+import React, { Children, useState } from 'react';
 import { useSafeTranslation } from 'i18n';
 import { appConfig } from 'config';
 import {
@@ -25,21 +26,45 @@ import {
   ImageAspectRatioOutlined,
   LayersOutlined,
 } from '@material-ui/icons';
-import { useDispatch } from 'react-redux';
-import { Panel, setTabValue } from 'context/leftPanelStateSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import {
+  Panel,
+  leftPanelTabValueSelector,
+  setTabValue,
+} from 'context/leftPanelStateSlice';
 import GoToBoundaryDropdown from 'components/Common/BoundaryDropdown/goto';
 import AlertForm from 'components/MapView/AlertForm';
 import useLayers from 'utils/layers-utils';
 import Legends from 'components/MapView/Legends';
+import { cyanBlue } from 'muiTheme';
+import { analysisResultSelector } from 'context/analysisResultStateSlice';
 import About from './About';
 import LanguageSelector from './LanguageSelector';
 import PrintImage from './PrintImage';
+
+const panels = [
+  { panel: Panel.Layers, label: 'Layers', icon: <LayersOutlined /> },
+  { panel: Panel.Charts, label: 'Charts', icon: <BarChartOutlined /> },
+  {
+    panel: Panel.Analysis,
+    label: 'Analysis',
+    icon: <ImageAspectRatioOutlined />,
+  },
+];
 
 function NavBar({ classes, isAlertFormOpen, setIsAlertFormOpen }: NavBarProps) {
   const { t } = useSafeTranslation();
   const dispatch = useDispatch();
   const { alertFormActive, header } = appConfig;
   const { selectedLayers, adminBoundariesExtent } = useLayers();
+  const tabValue = useSelector(leftPanelTabValueSelector);
+  const analysisData = useSelector(analysisResultSelector);
+
+  const { numberOfActiveLayers } = useLayers();
+
+  const badgeContent = !analysisData
+    ? numberOfActiveLayers
+    : numberOfActiveLayers + 1;
 
   const rightSideLinks = [
     {
@@ -92,24 +117,41 @@ function NavBar({ classes, isAlertFormOpen, setIsAlertFormOpen }: NavBarProps) {
                 </Box>
               </div>
               <div className={classes.panelsContainer}>
-                <Button
-                  startIcon={<LayersOutlined />}
-                  onClick={() => dispatch(setTabValue(Panel.Layers))}
-                >
-                  {t('Layers')}
-                </Button>
-                <Button
-                  startIcon={<BarChartOutlined />}
-                  onClick={() => dispatch(setTabValue(Panel.Charts))}
-                >
-                  {t('Charts')}
-                </Button>
-                <Button
-                  startIcon={<ImageAspectRatioOutlined />}
-                  onClick={() => dispatch(setTabValue(Panel.Analysis))}
-                >
-                  {t('Analysis')}
-                </Button>
+                {panels.map(panel => {
+                  const Wrap =
+                    badgeContent >= 1 && panel.panel === Panel.Layers
+                      ? ({ children }: { children: React.ReactNode }) => (
+                          <Badge
+                            anchorOrigin={{
+                              horizontal: 'left',
+                              vertical: 'top',
+                            }}
+                            overlap="rectangular"
+                            badgeContent={badgeContent}
+                            color="secondary"
+                          >
+                            {children}
+                          </Badge>
+                        )
+                      : ({ children }: { children: React.ReactNode }) => (
+                          <>{children}</>
+                        );
+
+                  return (
+                    <Button
+                      className={classes.panelButton}
+                      style={{
+                        backgroundColor:
+                          tabValue === panel.panel ? cyanBlue : undefined,
+                        color: tabValue === panel.panel ? 'black' : undefined,
+                      }}
+                      startIcon={<Wrap>{panel.icon}</Wrap>}
+                      onClick={() => dispatch(setTabValue(panel.panel))}
+                    >
+                      {t(panel.label)}
+                    </Button>
+                  );
+                })}
                 <GoToBoundaryDropdown />
                 {alertFormActive && (
                   <AlertForm
@@ -175,6 +217,9 @@ const styles = (theme: Theme) =>
       display: 'flex',
       justifyContent: 'center',
     },
+    panelButton: {
+      height: '3em',
+    },
     title: {
       letterSpacing: '.3rem',
       fontSize: '1.25rem',
@@ -234,6 +279,7 @@ const styles = (theme: Theme) =>
       flexDirection: 'row',
       justifyContent: 'start',
       gap: '1rem',
+      alignItems: 'center',
     },
     rightSideContainer: {
       display: 'flex',
