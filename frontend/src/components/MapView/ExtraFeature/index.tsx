@@ -1,10 +1,7 @@
 import { Grid, WithStyles, createStyles, withStyles } from '@material-ui/core';
-import GoToBoundaryDropdown from 'components/Common/BoundaryDropdown/goto';
 import React from 'react';
-import { appConfig } from 'config';
 import useLayers from 'utils/layers-utils';
 import Legends from '../Legends';
-import AlertForm from '../AlertForm';
 
 const styles = createStyles({
   buttonContainer: {
@@ -29,7 +26,6 @@ const ExtraFeature = ({
   isAlertFormOpen,
   setIsAlertFormOpen,
 }: ExtraFeatureProps) => {
-  const { alertFormActive } = appConfig;
   const { selectedLayers, adminBoundariesExtent } = useLayers();
 
   return (
@@ -38,21 +34,7 @@ const ExtraFeature = ({
       justifyContent="space-between"
       className={classes.buttonContainer}
     >
-      <Grid item>
-        <Grid container spacing={1}>
-          <Grid item>
-            <GoToBoundaryDropdown />
-          </Grid>
-          {alertFormActive && (
-            <Grid item style={{ pointerEvents: 'auto' }}>
-              <AlertForm
-                isOpen={isAlertFormOpen}
-                setOpen={setIsAlertFormOpen}
-              />
-            </Grid>
-          )}
-        </Grid>
-      </Grid>
+      <Grid item />
       <Grid item>
         <Grid container spacing={1} style={{ pointerEvents: 'auto' }}>
           <Legends layers={selectedLayers} extent={adminBoundariesExtent} />

@@ -50,6 +50,15 @@ exports[`renders as expected 1`] = `
               >
                 Analysis
               </mock-button>
+              <mock-button
+                starticon="[object Object]"
+              >
+                Go To
+              </mock-button>
+              <mock-menu
+                keepmounted="true"
+                open="false"
+              />
             </div>
           </div>
           <div
@@ -110,7 +119,7 @@ exports[`renders as expected 1`] = `
               </mock-typography>
             </mock-button>
             <mock-menu
-              classname="LanguageSelector-block-15"
+              classname="LanguageSelector-block-22"
               open="false"
             >
               <mock-menuitem>
@@ -221,7 +230,7 @@ exports[`renders as expected 1`] = `
                 </mock-typography>
               </mock-button>
               <mock-menu
-                classname="LanguageSelector-block-15"
+                classname="LanguageSelector-block-22"
                 open="false"
               >
                 <mock-menuitem>

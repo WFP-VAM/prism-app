@@ -236,37 +236,36 @@ function flattenAreaTree(
   return flattenSubTree(tree);
 }
 
-/**
- * This component allows you to give the user the ability to select several admin_boundary cells.
- * This component also syncs with the map automatically, allowing users to select cells by clicking the map.
- * Selection mode is automatically toggled based off this component's lifecycle.
- */
-export function SimpleBoundaryDropdown({
+interface BoundaryDropdownOptionsProps {
+  search: string;
+  setSearch: (v: string) => void;
+  selectedBoundaries: BoundaryDropdownProps['selectedBoundaries'];
+  setSelectedBoundaries?: BoundaryDropdownProps['setSelectedBoundaries'];
+  selectAll?: boolean | undefined;
+  goto?: boolean | undefined;
+  map: MaplibreMap | undefined;
+  multiple?: boolean;
+}
+
+export function BoundaryDropdownOptions({
+  search,
+  setSearch,
   selectedBoundaries,
   setSelectedBoundaries,
-  labelMessage,
-  map,
   selectAll,
-  onlyNewCategory,
-  selectProps,
   goto,
+  map,
   multiple = true,
-  ...rest
-}: BoundaryDropdownProps) {
+}: BoundaryDropdownOptionsProps) {
   const styles = useStyles();
   const { t, i18n: i18nLocale } = useSafeTranslation();
-  const [search, setSearch] = useState('');
-
   const boundaryLayerData = useSelector(layerDataSelector(boundaryLayer.id)) as
     | LayerData<BoundaryLayerProps>
     | undefined;
   const { data } = boundaryLayerData || {};
 
   if (!data) {
-    // padding is used to make sure the loading spinner doesn't shift the menu size
-    return (
-      <CircularProgress size={24} color="inherit" style={{ padding: '2px' }} />
-    );
+    return null;
   }
 
   const areaTree = getAdminBoundaryTree(data, boundaryLayer, i18nLocale);
@@ -301,6 +300,125 @@ export function SimpleBoundaryDropdown({
     3: styles.menuItem3,
     4: styles.menuItem3,
   };
+  return (
+    <>
+      <SearchField search={search} setSearch={setSearch} />
+      {!search && selectAll && selectedBoundaries && (
+        <MenuItem onClick={selectOrDeselectAll}>
+          {selectedBoundaries.length === 0
+            ? t('Select All')
+            : t('Deselect All')}
+        </MenuItem>
+      )}
+      {search && flattenedAreaList.length === 0 && (
+        <MenuItem disabled>{t('No Results')}</MenuItem>
+      )}
+      <List
+        height={700}
+        itemCount={flattenedAreaList.length}
+        itemSize={35}
+        width="350px"
+      >
+        {({ index, style }) => {
+          const area = flattenedAreaList[index];
+          return (
+            <MenuItem
+              classes={{
+                root: clsName[(area.level - rootLevel) as number],
+              }}
+              key={area.adminCode}
+              value={area.adminCode}
+              style={style as any}
+              selected={selectedBoundaries?.includes(area.adminCode)}
+              onClick={event => {
+                event.stopPropagation();
+                const newSelectedBoundaries = multiple
+                  ? [...(selectedBoundaries || [])]
+                  : [];
+                const itemIndex = newSelectedBoundaries.indexOf(area.adminCode);
+                if (itemIndex === -1) {
+                  // eslint-disable-next-line fp/no-mutating-methods
+                  newSelectedBoundaries.push(area.adminCode);
+                } else {
+                  // eslint-disable-next-line fp/no-mutating-methods
+                  newSelectedBoundaries.splice(itemIndex, 1);
+                }
+                if (setSelectedBoundaries !== undefined) {
+                  const boundariesToSelect = flattenedAreaList
+                    .filter(b =>
+                      newSelectedBoundaries.some((v: string) =>
+                        b.adminCode.startsWith(v),
+                      ),
+                    )
+                    .map(b => b.adminCode);
+
+                  setSelectedBoundaries(boundariesToSelect, event.shiftKey);
+                  if (!goto) {
+                    return;
+                  }
+                }
+                if (map === undefined) {
+                  return;
+                }
+                const features = data.features.filter(
+                  f =>
+                    f &&
+                    f.properties?.[boundaryLayer.adminCode].startsWith(
+                      area.adminCode,
+                    ),
+                );
+                const bboxUnion: BBox = bbox({
+                  type: 'FeatureCollection',
+                  features,
+                });
+                if (bboxUnion.length === 4) {
+                  map.fitBounds(bboxUnion, { padding: 60 });
+                }
+              }}
+            >
+              {area.label}
+            </MenuItem>
+          );
+        }}
+      </List>
+    </>
+  );
+}
+
+/**
+ * This component allows you to give the user the ability to select several admin_boundary cells.
+ * This component also syncs with the map automatically, allowing users to select cells by clicking the map.
+ * Selection mode is automatically toggled based off this component's lifecycle.
+ */
+export function SimpleBoundaryDropdown({
+  selectedBoundaries,
+  setSelectedBoundaries,
+  labelMessage,
+  map,
+  selectAll,
+  onlyNewCategory,
+  selectProps,
+  goto,
+  multiple = true,
+  ...rest
+}: BoundaryDropdownProps) {
+  const { i18n: i18nLocale } = useSafeTranslation();
+  const [search, setSearch] = useState('');
+
+  const boundaryLayerData = useSelector(layerDataSelector(boundaryLayer.id)) as
+    | LayerData<BoundaryLayerProps>
+    | undefined;
+  const { data } = boundaryLayerData || {};
+
+  if (!data) {
+    // padding is used to make sure the loading spinner doesn't shift the menu size
+    return (
+      <CircularProgress size={24} color="inherit" style={{ padding: '2px' }} />
+    );
+  }
+
+  const areaTree = getAdminBoundaryTree(data, boundaryLayer, i18nLocale);
+  const flattenedAreaList = flattenAreaTree(areaTree, search).slice(1);
 
   // It's important for this to be another component, since the Select component
   // acts on the `value` prop, which we need to hide from <Select /> since this isn't a menu item.
@@ -328,85 +446,16 @@ export function SimpleBoundaryDropdown({
         }
         {...selectProps}
       >
-        <SearchField search={search} setSearch={setSearch} />
-        {!search && selectAll && selectedBoundaries && (
-          <MenuItem onClick={selectOrDeselectAll}>
-            {selectedBoundaries.length === 0
-              ? t('Select All')
-              : t('Deselect All')}
-          </MenuItem>
-        )}
-        {search && flattenedAreaList.length === 0 && (
-          <MenuItem disabled>{t('No Results')}</MenuItem>
-        )}
-        <List
-          height={700}
-          itemCount={flattenedAreaList.length}
-          itemSize={35}
-          width="350px"
-        >
-          {({ index, style }) => {
-            const area = flattenedAreaList[index];
-            return (
-              <MenuItem
-                classes={{ root: clsName[(area.level - rootLevel) as number] }}
-                key={area.adminCode}
-                value={area.adminCode}
-                style={style as any}
-                selected={selectedBoundaries?.includes(area.adminCode)}
-                onClick={event => {
-                  event.stopPropagation();
-                  const newSelectedBoundaries = multiple
-                    ? [...(selectedBoundaries || [])]
-                    : [];
-                  const itemIndex = newSelectedBoundaries.indexOf(
-                    area.adminCode,
-                  );
-                  if (itemIndex === -1) {
-                    // eslint-disable-next-line fp/no-mutating-methods
-                    newSelectedBoundaries.push(area.adminCode);
-                  } else {
-                    // eslint-disable-next-line fp/no-mutating-methods
-                    newSelectedBoundaries.splice(itemIndex, 1);
-                  }
-                  if (setSelectedBoundaries !== undefined) {
-                    const boundariesToSelect = flattenedAreaList
-                      .filter(b =>
-                        newSelectedBoundaries.some((v: string) =>
-                          b.adminCode.startsWith(v),
-                        ),
-                      )
-                      .map(b => b.adminCode);
-
-                    setSelectedBoundaries(boundariesToSelect, event.shiftKey);
-                    if (!goto) {
-                      return;
-                    }
-                  }
-                  if (map === undefined) {
-                    return;
-                  }
-                  const features = data.features.filter(
-                    f =>
-                      f &&
-                      f.properties?.[boundaryLayer.adminCode].startsWith(
-                        area.adminCode,
-                      ),
-                  );
-                  const bboxUnion: BBox = bbox({
-                    type: 'FeatureCollection',
-                    features,
-                  });
-                  if (bboxUnion.length === 4) {
-                    map.fitBounds(bboxUnion, { padding: 60 });
-                  }
-                }}
-              >
-                {area.label}
-              </MenuItem>
-            );
-          }}
-        </List>
+        <BoundaryDropdownOptions
+          search={search}
+          setSearch={setSearch}
+          selectedBoundaries={selectedBoundaries}
+          setSelectedBoundaries={setSelectedBoundaries}
+          selectAll={selectAll}
+          goto={goto}
+          map={map}
+          multiple={multiple}
+        />
       </Select>
     </FormControl>
   );

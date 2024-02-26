@@ -18,7 +18,6 @@ import {
   IconButton,
 } from '@material-ui/core';
 import React, { useState } from 'react';
-import { get } from 'lodash';
 import { useSafeTranslation } from 'i18n';
 import { appConfig } from 'config';
 import {
@@ -28,13 +27,16 @@ import {
 } from '@material-ui/icons';
 import { useDispatch } from 'react-redux';
 import { Panel, setTabValue } from 'context/leftPanelStateSlice';
+import GoToBoundaryDropdown from 'components/Common/BoundaryDropdown/goto';
+import AlertForm from 'components/MapView/AlertForm';
 import About from './About';
 import LanguageSelector from './LanguageSelector';
 import PrintImage from './PrintImage';
 
-function NavBar({ classes }: NavBarProps) {
+function NavBar({ classes, isAlertFormOpen, setIsAlertFormOpen }: NavBarProps) {
   const { t } = useSafeTranslation();
   const dispatch = useDispatch();
+  const { alertFormActive, header } = appConfig;
 
   const rightSideLinks = [
     {
@@ -59,9 +61,9 @@ function NavBar({ classes }: NavBarProps) {
     </IconButton>
   ));
 
-  const { title, subtitle, logo } = get(appConfig, 'header', {
+  const { title, subtitle, logo } = header || {
     title: 'PRISM',
-  });
+  };
 
   return (
     <AppBar position="static" className={classes.appBar}>
@@ -106,6 +108,13 @@ function NavBar({ classes }: NavBarProps) {
                 >
                   {t('Analysis')}
                 </Button>
+                <GoToBoundaryDropdown />
+                {alertFormActive && (
+                  <AlertForm
+                    isOpen={isAlertFormOpen}
+                    setOpen={setIsAlertFormOpen}
+                  />
+                )}
               </div>
             </div>
             <div className={classes.rightSideContainer}>
@@ -208,7 +217,7 @@ const styles = (theme: Theme) =>
       display: 'flex',
       flexDirection: 'row',
       justifyContent: 'start',
-      gap: '10rem',
+      gap: '5rem',
     },
     titleContainer: {
       display: 'flex',
@@ -232,6 +241,9 @@ const styles = (theme: Theme) =>
     },
   });
 
-export interface NavBarProps extends WithStyles<typeof styles> {}
+export interface NavBarProps extends WithStyles<typeof styles> {
+  isAlertFormOpen: boolean;
+  setIsAlertFormOpen: (v: boolean) => void;
+}
 
 export default withStyles(styles)(NavBar);
