@@ -3,7 +3,6 @@ import React, { memo, useMemo } from 'react';
 import { PanelSize } from 'config/types';
 import useLayers from 'utils/layers-utils';
 import FoldButton from '../FoldButton';
-import ExtraFeature from '../ExtraFeature';
 import DateSelector from '../DateSelector';
 import BoundaryInfoBox from '../BoundaryInfoBox';
 
@@ -23,20 +22,16 @@ const styles = createStyles({
 });
 
 interface OtherFeaturesProps extends WithStyles<typeof styles> {
-  isAlertFormOpen: boolean;
   isPanelHidden: boolean;
   setIsPanelHidden: React.Dispatch<React.SetStateAction<boolean>>;
-  setIsAlertFormOpen: React.Dispatch<React.SetStateAction<boolean>>;
   panelSize: PanelSize;
 }
 
 const OtherFeatures = ({
   classes,
-  isAlertFormOpen,
   isPanelHidden,
   panelSize,
   setIsPanelHidden,
-  setIsAlertFormOpen,
 }: OtherFeaturesProps) => {
   const { selectedLayerDates } = useLayers();
 
@@ -47,6 +42,7 @@ const OtherFeatures = ({
   const isShowingExtraFeatures = useMemo(() => {
     return panelSize !== PanelSize.xlarge || isPanelHidden;
   }, [isPanelHidden, panelSize]);
+
   return (
     <Box className={classes.container}>
       <Box
@@ -57,12 +53,6 @@ const OtherFeatures = ({
           isPanelHidden={isPanelHidden}
           setIsPanelHidden={setIsPanelHidden}
         />
-        {isShowingExtraFeatures && (
-          <ExtraFeature
-            isAlertFormOpen={isAlertFormOpen}
-            setIsAlertFormOpen={setIsAlertFormOpen}
-          />
-        )}
         {isShowingExtraFeatures && selectedLayerDates.length > 0 && (
           <DateSelector />
         )}

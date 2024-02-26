@@ -30,61 +30,55 @@ import OtherFeatures from './OtherFeatures';
 // eslint-disable-next-line fp/no-mutating-methods
 const displayedBoundaryLayers = getDisplayBoundaryLayers().reverse();
 
-const MapView = memo(
-  ({ classes, isAlertFormOpen, setIsAlertFormOpen }: MapViewProps) => {
-    // App config attributes
-    const { hidePanel } = appConfig;
+const MapView = memo(({ classes, setIsAlertFormOpen }: MapViewProps) => {
+  // App config attributes
+  const { hidePanel } = appConfig;
 
-    // Selectors
-    const datesLoading = useSelector(areDatesLoading);
+  // Selectors
+  const datesLoading = useSelector(areDatesLoading);
 
-    // State attributes
-    const [panelSize, setPanelSize] = useState<PanelSize>(PanelSize.medium);
-    const [isPanelHidden, setIsPanelHidden] = useState<boolean>(
-      Boolean(hidePanel),
-    );
+  // State attributes
+  const [panelSize, setPanelSize] = useState<PanelSize>(PanelSize.medium);
+  const [isPanelHidden, setIsPanelHidden] = useState<boolean>(
+    Boolean(hidePanel),
+  );
 
-    const dispatch = useDispatch();
+  const dispatch = useDispatch();
 
-    useEffect(() => {
-      dispatch(loadAvailableDates());
+  useEffect(() => {
+    dispatch(loadAvailableDates());
 
-      // we must load boundary layer here for two reasons
-      // 1. Stop showing two loading screens on startup - maplibre renders its children very late, so we can't rely on BoundaryLayer to load internally
-      // 2. Prevent situations where a user can toggle a layer like NSO (depends on Boundaries) before Boundaries finish loading.
-      displayedBoundaryLayers.forEach(l => dispatch(addLayer(l)));
-      displayedBoundaryLayers.forEach(l =>
-        dispatch(loadLayerData({ layer: l })),
-      );
-    }, [dispatch]);
+    // we must load boundary layer here for two reasons
+    // 1. Stop showing two loading screens on startup - maplibre renders its children very late, so we can't rely on BoundaryLayer to load internally
+    // 2. Prevent situations where a user can toggle a layer like NSO (depends on Boundaries) before Boundaries finish loading.
+    displayedBoundaryLayers.forEach(l => dispatch(addLayer(l)));
+    displayedBoundaryLayers.forEach(l => dispatch(loadLayerData({ layer: l })));
+  }, [dispatch]);
 
-    return (
-      <Box className={classes.root}>
-        <LeftPanel
-          panelSize={panelSize}
-          setPanelSize={setPanelSize}
-          isPanelHidden={isPanelHidden}
-        />
-        <OtherFeatures
-          isAlertFormOpen={isAlertFormOpen}
-          isPanelHidden={isPanelHidden}
-          panelSize={panelSize}
-          setIsAlertFormOpen={setIsAlertFormOpen}
-          setIsPanelHidden={setIsPanelHidden}
-        />
-        {datesLoading && (
-          <div className={classes.loading}>
-            <CircularProgress size={100} />
-          </div>
-        )}
-        <MapComponent
-          panelHidden={isPanelHidden}
-          setIsAlertFormOpen={setIsAlertFormOpen}
-        />
-      </Box>
-    );
-  },
-);
+  return (
+    <Box className={classes.root}>
+      <LeftPanel
+        panelSize={panelSize}
+        setPanelSize={setPanelSize}
+        isPanelHidden={isPanelHidden}
+      />
+      <OtherFeatures
+        isPanelHidden={isPanelHidden}
+        panelSize={panelSize}
+        setIsPanelHidden={setIsPanelHidden}
+      />
+      {datesLoading && (
+        <div className={classes.loading}>
+          <CircularProgress size={100} />
+        </div>
+      )}
+      <MapComponent
+        panelHidden={isPanelHidden}
+        setIsAlertFormOpen={setIsAlertFormOpen}
+      />
+    </Box>
+  );
+});
 
 const styles = () =>
   createStyles({
@@ -107,7 +101,6 @@ const styles = () =>
   });
 
 interface MapViewIncomingProps {
-  isAlertFormOpen: boolean;
   setIsAlertFormOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
 

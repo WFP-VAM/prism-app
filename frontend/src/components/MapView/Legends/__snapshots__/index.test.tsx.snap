@@ -2,32 +2,26 @@
 
 exports[`renders as expected 1`] = `
 <div>
-  <div
-    class="MuiGrid-root memo-container-1 MuiGrid-item"
+  <mock-button
+    classname="memo-triggerButton-1"
+    color="primary"
+    starticon="[object Object]"
+    style="background-color: rgb(99, 178, 189);"
   >
-    <mock-button
-      classname="memo-triggerButton-2"
-      color="primary"
-      variant="contained"
+    <mock-hidden
+      smdown="true"
     >
-      <mock-visibilityoff
-        fontsize="small"
-      />
-      <mock-hidden
-        smdown="true"
+      <mock-typography
+        style="color: black;"
+        variant="body2"
       >
-        <mock-typography
-          classname="memo-label-3"
-          variant="body2"
-        >
-          Legend
-        </mock-typography>
-      </mock-hidden>
-    </mock-button>
-    <mock-list
-      classname="memo-list-4"
-      id="legend-list"
-    />
-  </div>
+        Legend
+      </mock-typography>
+    </mock-hidden>
+  </mock-button>
+  <mock-list
+    classname="memo-list-2"
+    id="legend-list"
+  />
 </div>
 `;

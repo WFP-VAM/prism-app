@@ -221,6 +221,13 @@ const theme: any = createTheme({
         '&.Mui-disabled': {
           pointerEvents: 'auto',
         },
+        borderRadius: '4px',
+      },
+      startIcon: {
+        marginLeft: 0,
+      },
+      text: {
+        padding: '6px 12px',
       },
     },
     MuiIconButton: {

@@ -56,10 +56,7 @@ const Wrapper = memo(() => {
       />
       <Switch>
         <Route default>
-          <MapView
-            isAlertFormOpen={isAlertFormOpen}
-            setIsAlertFormOpen={setIsAlertFormOpen}
-          />
+          <MapView setIsAlertFormOpen={setIsAlertFormOpen} />
           <AuthModal />
         </Route>
       </Switch>

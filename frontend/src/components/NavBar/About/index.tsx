@@ -1,7 +1,6 @@
 import React, { useCallback, useState, MouseEvent, memo, useMemo } from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import InfoOutlinedIcon from '@material-ui/icons/InfoOutlined';
 import { Button, Typography } from '@material-ui/core';
-import { faInfoCircle } from '@fortawesome/free-solid-svg-icons';
 import { useDispatch } from 'react-redux';
 import { appConfig } from 'config';
 import ContentDialog from 'components/NavBar/ContentDialog';
@@ -47,7 +46,7 @@ const About = memo(() => {
       target="_blank"
       href={href}
       onClick={handler}
-      startIcon={<FontAwesomeIcon icon={faInfoCircle} />}
+      startIcon={<InfoOutlinedIcon style={{ fontSize: '1.5rem' }} />}
     >
       <Typography variant="body2">{t('About')}</Typography>
       {renderedContentDialog}

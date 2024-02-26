@@ -7,7 +7,7 @@ exports[`renders as expected 1`] = `
   >
     <button
       class="MuiButtonBase-root MuiIconButton-root"
-      style="background-color: transparent; padding: 0px;"
+      style="background-color: transparent;"
       tabindex="0"
       type="button"
     >

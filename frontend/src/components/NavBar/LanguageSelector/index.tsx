@@ -46,6 +46,7 @@ function LanguageSelector({ classes }: LanguageSelectorProps) {
   return (
     <>
       <Button
+        style={{ paddingLeft: 0 }}
         onClick={handleClick}
         endIcon={<ArrowDownward fontSize="small" />}
       >

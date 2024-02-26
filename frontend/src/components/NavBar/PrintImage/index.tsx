@@ -36,7 +36,9 @@ function PrintImage() {
       <div style={{ paddingTop: '4px' }}>
         <IconButton
           onClick={openModal}
-          style={{ backgroundColor: 'transparent', padding: 0 }}
+          style={{
+            backgroundColor: 'transparent',
+          }}
         >
           <PrintOutlined />
         </IconButton>

@@ -29,6 +29,8 @@ import { useDispatch } from 'react-redux';
 import { Panel, setTabValue } from 'context/leftPanelStateSlice';
 import GoToBoundaryDropdown from 'components/Common/BoundaryDropdown/goto';
 import AlertForm from 'components/MapView/AlertForm';
+import useLayers from 'utils/layers-utils';
+import Legends from 'components/MapView/Legends';
 import About from './About';
 import LanguageSelector from './LanguageSelector';
 import PrintImage from './PrintImage';
@@ -37,6 +39,7 @@ function NavBar({ classes, isAlertFormOpen, setIsAlertFormOpen }: NavBarProps) {
   const { t } = useSafeTranslation();
   const dispatch = useDispatch();
   const { alertFormActive, header } = appConfig;
+  const { selectedLayers, adminBoundariesExtent } = useLayers();
 
   const rightSideLinks = [
     {
@@ -54,10 +57,9 @@ function NavBar({ classes, isAlertFormOpen, setIsAlertFormOpen }: NavBarProps) {
       component="a"
       target="_blank"
       href={href}
-      style={{ fontSize: '1.25rem' }}
       onClick={() => setOpenMobileMenu(false)}
     >
-      <FontAwesomeIcon icon={icon} />
+      <FontAwesomeIcon fontSize="20px" icon={icon} />
     </IconButton>
   ));
 
@@ -118,6 +120,7 @@ function NavBar({ classes, isAlertFormOpen, setIsAlertFormOpen }: NavBarProps) {
               </div>
             </div>
             <div className={classes.rightSideContainer}>
+              <Legends layers={selectedLayers} extent={adminBoundariesExtent} />
               <PrintImage />
               {buttons}
               <About />

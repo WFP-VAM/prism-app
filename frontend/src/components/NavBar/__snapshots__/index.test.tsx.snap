@@ -64,12 +64,32 @@ exports[`renders as expected 1`] = `
           <div
             class="NavBar-rightSideContainer-13"
           >
+            <mock-button
+              classname="memo-triggerButton-22"
+              color="primary"
+              starticon="[object Object]"
+              style="background-color: rgb(99, 178, 189);"
+            >
+              <mock-hidden
+                smdown="true"
+              >
+                <mock-typography
+                  style="color: black;"
+                  variant="body2"
+                >
+                  Legend
+                </mock-typography>
+              </mock-hidden>
+            </mock-button>
+            <mock-list
+              classname="memo-list-23"
+              id="legend-list"
+            />
             <mock-printimage />
             <a
               aria-disabled="false"
               class="MuiButtonBase-root MuiIconButton-root"
               href="https://github.com/wfp-VAM/prism-app"
-              style="font-size: 1.25rem;"
               tabindex="0"
               target="_blank"
             >
@@ -82,6 +102,7 @@ exports[`renders as expected 1`] = `
                   data-icon="github"
                   data-prefix="fab"
                   focusable="false"
+                  font-size="20px"
                   role="img"
                   viewBox="0 0 496 512"
                   xmlns="http://www.w3.org/2000/svg"
@@ -111,6 +132,7 @@ exports[`renders as expected 1`] = `
             </mock-button>
             <mock-button
               endicon="[object Object]"
+              style="padding-left: 0px;"
             >
               <mock-typography
                 variant="body2"
@@ -119,7 +141,7 @@ exports[`renders as expected 1`] = `
               </mock-typography>
             </mock-button>
             <mock-menu
-              classname="LanguageSelector-block-22"
+              classname="LanguageSelector-block-25"
               open="false"
             >
               <mock-menuitem>
@@ -180,7 +202,6 @@ exports[`renders as expected 1`] = `
                 aria-disabled="false"
                 class="MuiButtonBase-root MuiIconButton-root"
                 href="https://github.com/wfp-VAM/prism-app"
-                style="font-size: 1.25rem;"
                 tabindex="0"
                 target="_blank"
               >
@@ -193,6 +214,7 @@ exports[`renders as expected 1`] = `
                     data-icon="github"
                     data-prefix="fab"
                     focusable="false"
+                    font-size="20px"
                     role="img"
                     viewBox="0 0 496 512"
                     xmlns="http://www.w3.org/2000/svg"
@@ -222,6 +244,7 @@ exports[`renders as expected 1`] = `
               </mock-button>
               <mock-button
                 endicon="[object Object]"
+                style="padding-left: 0px;"
               >
                 <mock-typography
                   variant="body2"
@@ -230,7 +253,7 @@ exports[`renders as expected 1`] = `
                 </mock-typography>
               </mock-button>
               <mock-menu
-                classname="LanguageSelector-block-22"
+                classname="LanguageSelector-block-25"
                 open="false"
               >
                 <mock-menuitem>
