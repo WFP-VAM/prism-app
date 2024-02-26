@@ -335,8 +335,8 @@ export function generateIntermediateDateItemFromValidity(layer: ValidityLayer) {
 
       if (mode === DatesPropagation.DAYS) {
         // If mode is "days", adjust dates directly based on the duration
-        startDate.setDate(startDate.getDate() - backward);
-        endDate.setDate(endDate.getDate() + forward);
+        startDate.setDate(startDate.getDate() - (backward || 0));
+        endDate.setDate(endDate.getDate() + (forward || 0));
         // For "dekad" mode, calculate start and end dates based on backward and forward dekads
         // Dekads are 10-day periods, so we adjust dates accordingly
       } else if (mode === DatesPropagation.DEKAD) {
