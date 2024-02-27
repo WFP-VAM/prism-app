@@ -31,16 +31,18 @@ import { useDispatch, useSelector } from 'react-redux';
 import {
   Panel,
   leftPanelTabValueSelector,
+  setPanelSize,
   setTabValue,
 } from 'context/leftPanelStateSlice';
 import GoToBoundaryDropdown from 'components/Common/BoundaryDropdown/goto';
 import AlertForm from 'components/MapView/AlertForm';
 import useLayers from 'utils/layers-utils';
 import Legends from 'components/MapView/Legends';
-import { cyanBlue } from 'muiTheme';
+import { black, cyanBlue } from 'muiTheme';
 import { analysisResultSelector } from 'context/analysisResultStateSlice';
 import { areChartLayersAvailable } from 'config/utils';
 import { areTablesAvailable } from 'components/MapView/LeftPanel/utils';
+import { PanelSize } from 'config/types';
 import About from './About';
 import LanguageSelector from './LanguageSelector';
 import PrintImage from './PrintImage';
@@ -91,6 +93,7 @@ function NavBar({ classes, isAlertFormOpen, setIsAlertFormOpen }: NavBarProps) {
       target="_blank"
       href={href}
       onClick={() => setOpenMobileMenu(false)}
+      style={{ color: 'white' }}
     >
       <FontAwesomeIcon fontSize="20px" icon={icon} />
     </IconButton>
@@ -110,12 +113,17 @@ function NavBar({ classes, isAlertFormOpen, setIsAlertFormOpen }: NavBarProps) {
                 {logo && <img className={classes.logo} src={logo} alt="logo" />}
                 <Box display="flex" flexDirection="column">
                   {title && (
-                    <Typography variant="h6" className={classes.title}>
+                    <Typography
+                      color="secondary"
+                      variant="h6"
+                      className={classes.title}
+                    >
                       {t(title)}
                     </Typography>
                   )}
                   {subtitle && (
                     <Typography
+                      color="secondary"
                       variant="subtitle2"
                       className={classes.subtitle}
                     >
@@ -151,10 +159,13 @@ function NavBar({ classes, isAlertFormOpen, setIsAlertFormOpen }: NavBarProps) {
                       style={{
                         backgroundColor:
                           tabValue === panel.panel ? cyanBlue : undefined,
-                        color: tabValue === panel.panel ? 'black' : undefined,
+                        color: tabValue === panel.panel ? black : undefined,
                       }}
                       startIcon={<Wrap>{panel.icon}</Wrap>}
-                      onClick={() => dispatch(setTabValue(panel.panel))}
+                      onClick={() => {
+                        dispatch(setTabValue(panel.panel));
+                        dispatch(setPanelSize(PanelSize.medium));
+                      }}
                     >
                       {t(panel.label)}
                     </Button>

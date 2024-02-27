@@ -2,7 +2,11 @@ import { createStyles, makeStyles, Theme } from '@material-ui/core';
 import React, { memo, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { PanelSize } from 'config/types';
-import { leftPanelTabValueSelector, Panel } from 'context/leftPanelStateSlice';
+import {
+  leftPanelSizeSelector,
+  leftPanelTabValueSelector,
+  Panel,
+} from 'context/leftPanelStateSlice';
 import { areChartLayersAvailable } from 'config/utils';
 import TabPanel from './TabPanel';
 import LayersPanel from '../layersPanel';
@@ -40,21 +44,13 @@ interface TabsProps {
   chartsPanel: React.ReactNode;
   analysisPanel: React.ReactNode;
   tablesPanel: React.ReactNode;
-  panelSize: PanelSize;
   resultsPage: React.JSX.Element | null;
-  setPanelSize: React.Dispatch<React.SetStateAction<PanelSize>>;
 }
 
 const LeftPanelTabs = memo(
-  ({
-    chartsPanel,
-    analysisPanel,
-    tablesPanel,
-    panelSize,
-    resultsPage,
-    setPanelSize,
-  }: TabsProps) => {
+  ({ chartsPanel, analysisPanel, tablesPanel, resultsPage }: TabsProps) => {
     const tabValue = useSelector(leftPanelTabValueSelector);
+    const panelSize = useSelector(leftPanelSizeSelector);
     const classes = useStyles({ panelSize, tabValue });
 
     const renderedChartsPanel = useMemo(() => {

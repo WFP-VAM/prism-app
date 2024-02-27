@@ -1,4 +1,4 @@
-import React, { memo, useEffect, useState } from 'react';
+import React, { memo, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   Box,
@@ -7,8 +7,6 @@ import {
   WithStyles,
   withStyles,
 } from '@material-ui/core';
-// map
-import { PanelSize } from 'config/types';
 import { getDisplayBoundaryLayers } from 'config/utils';
 import { addLayer } from 'context/mapStateSlice';
 import {
@@ -16,7 +14,6 @@ import {
   loadAvailableDates,
 } from 'context/serverStateSlice';
 import { loadLayerData } from 'context/layers/layer-data';
-import { Panel, leftPanelTabValueSelector } from 'context/leftPanelStateSlice';
 import LeftPanel from './LeftPanel';
 import MapComponent from './Map';
 import OtherFeatures from './OtherFeatures';
@@ -31,11 +28,6 @@ const displayedBoundaryLayers = getDisplayBoundaryLayers().reverse();
 const MapView = memo(({ classes, setIsAlertFormOpen }: MapViewProps) => {
   // Selectors
   const datesLoading = useSelector(areDatesLoading);
-  const tabValue = useSelector(leftPanelTabValueSelector);
-
-  // State attributes
-  const [panelSize, setPanelSize] = useState<PanelSize>(PanelSize.medium);
-  const isPanelHidden = tabValue === Panel.None;
 
   const dispatch = useDispatch();
 
@@ -51,21 +43,14 @@ const MapView = memo(({ classes, setIsAlertFormOpen }: MapViewProps) => {
 
   return (
     <Box className={classes.root}>
-      <LeftPanel
-        panelSize={panelSize}
-        setPanelSize={setPanelSize}
-        isPanelHidden={isPanelHidden}
-      />
+      <LeftPanel />
       <OtherFeatures />
       {datesLoading && (
         <div className={classes.loading}>
           <CircularProgress size={100} />
         </div>
       )}
-      <MapComponent
-        panelHidden={isPanelHidden}
-        setIsAlertFormOpen={setIsAlertFormOpen}
-      />
+      <MapComponent setIsAlertFormOpen={setIsAlertFormOpen} />
     </Box>
   );
 });

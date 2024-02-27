@@ -204,7 +204,6 @@ const styles = () =>
     },
     titleUnchecked: {
       lineHeight: 1.8,
-      color: '#828282',
       fontWeight: 400,
     },
     select: {
@@ -224,7 +223,6 @@ const styles = () =>
       whiteSpace: 'normal',
       fontSize: 13,
       fontWeight: 300,
-      color: '#828282',
       padding: 0,
       marginLeft: 5,
     },
@@ -244,7 +242,6 @@ const styles = () =>
       },
     },
     opacityRoot: {
-      color: '#828282',
       marginLeft: 'auto',
     },
     opacityRootSelected: {

@@ -35,7 +35,7 @@ const useStyles = makeStyles(() =>
       position: 'inherit',
     },
     rootSummary: {
-      backgroundColor: '#D8E9EC',
+      backgroundColor: '#DE9EC',
     },
     rootDetails: {
       padding: 0,

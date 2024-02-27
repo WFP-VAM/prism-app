@@ -50,7 +50,9 @@ function LanguageSelector({ classes }: LanguageSelectorProps) {
         onClick={handleClick}
         endIcon={<ArrowDownward fontSize="small" />}
       >
-        <Typography variant="body2">{i18n.resolvedLanguage}</Typography>
+        <Typography color="secondary" variant="body2">
+          {i18n.resolvedLanguage}
+        </Typography>
       </Button>
       <Menu
         open={Boolean(anchorEl)}
@@ -60,14 +62,7 @@ function LanguageSelector({ classes }: LanguageSelectorProps) {
       >
         {languages.map(lng => (
           <MenuItem key={lng} onClick={() => handleChangeLanguage(lng)}>
-            <Typography
-              variant="body2"
-              style={{
-                color: 'black',
-              }}
-            >
-              {lng}
-            </Typography>
+            <Typography variant="body2">{lng}</Typography>
           </MenuItem>
         ))}
       </Menu>
@@ -80,9 +75,6 @@ const styles = (theme: Theme) =>
     block: {
       paddingLeft: '10px',
       paddingTop: '4px',
-    },
-    title: {
-      color: theme.palette.text.secondary,
     },
   });
 

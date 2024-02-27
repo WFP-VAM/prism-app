@@ -38,6 +38,7 @@ function PrintImage() {
           onClick={openModal}
           style={{
             backgroundColor: 'transparent',
+            color: 'white',
           }}
         >
           <PrintOutlined />

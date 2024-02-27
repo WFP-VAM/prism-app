@@ -48,7 +48,9 @@ const About = memo(() => {
       onClick={handler}
       startIcon={<InfoOutlinedIcon style={{ fontSize: '1.5rem' }} />}
     >
-      <Typography variant="body2">{t('About')}</Typography>
+      <Typography color="secondary" variant="body2">
+        {t('About')}
+      </Typography>
       {renderedContentDialog}
     </Button>
   );
