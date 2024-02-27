@@ -263,6 +263,8 @@ export function getWMSLayersWithChart(): WMSLayerProps[] {
   ) as WMSLayerProps[];
 }
 
+export const areChartLayersAvailable = getWMSLayersWithChart().length > 0;
+
 const isValidReportsDefinition = (
   maybeReport: object,
 ): maybeReport is ReportType => {

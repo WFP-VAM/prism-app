@@ -32,16 +32,18 @@ import {
 import { Panel, leftPanelTabValueSelector } from 'context/leftPanelStateSlice';
 import TablesActions from './TablesActions';
 import DataTable from './DataTable';
+import { tablesMenuItems } from '../utils';
+
+const tableCategories = tablesMenuItems
+  .map((menuItem: MenuItemType) => {
+    return menuItem.layersCategories;
+  })
+  .flat();
 
 const tabPanelType = Panel.Tables;
 
 const TablesPanel = memo(
-  ({
-    classes,
-    tablesMenuItems,
-    setPanelSize,
-    setResultsPage,
-  }: TablePanelProps) => {
+  ({ classes, setPanelSize, setResultsPage }: TablePanelProps) => {
     const dispatch = useDispatch();
     const dataTableIsLoading = useSelector(tableLoading);
     const tableDefinition = useSelector(getTableDefinition);
@@ -135,14 +137,6 @@ const TablesPanel = memo(
       tableShowing,
     ]);
 
-    const tableCategories = useMemo(() => {
-      return tablesMenuItems
-        .map((menuItem: MenuItemType) => {
-          return menuItem.layersCategories;
-        })
-        .flat();
-    }, [tablesMenuItems]);
-
     const renderTablesMenuItems = useCallback(
       (tables: TableType[]) => {
         return tables.map((individualTable: TableType) => {
@@ -167,7 +161,7 @@ const TablesPanel = memo(
           renderTablesMenuItems(tableCategory.tables),
         ];
       });
-    }, [renderTablesMenuItems, t, tableCategories]);
+    }, [renderTablesMenuItems, t]);
 
     const renderedTextFieldBody = useMemo(() => {
       return [
@@ -274,7 +268,6 @@ interface TablePanelProps extends WithStyles<typeof styles> {
   setResultsPage: React.Dispatch<
     React.SetStateAction<React.JSX.Element | null>
   >;
-  tablesMenuItems: MenuItemType[];
 }
 
 export default withStyles(styles)(TablesPanel);

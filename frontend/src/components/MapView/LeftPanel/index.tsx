@@ -1,11 +1,10 @@
 import { Drawer } from '@material-ui/core';
-import React, { memo, useMemo } from 'react';
-import { LayersCategoryType, MenuItemType, PanelSize } from 'config/types';
+import React, { memo } from 'react';
+import { PanelSize } from 'config/types';
 import AnalysisPanel from './AnalysisPanel';
 import ChartsPanel from './ChartsPanel';
 import LeftPanelTabs from './LeftPanelTabs';
 import TablesPanel from './TablesPanel';
-import { menuList } from './utils';
 
 const LeftPanel = memo(
   ({ panelSize, setPanelSize, isPanelHidden }: LeftPanelProps) => {
@@ -13,20 +12,6 @@ const LeftPanel = memo(
       resultsPage,
       setResultsPage,
     ] = React.useState<React.JSX.Element | null>(null);
-
-    const tablesMenuItems = useMemo(() => {
-      return menuList.filter((menuItem: MenuItemType) => {
-        return menuItem.layersCategories.some(
-          (layerCategory: LayersCategoryType) => {
-            return layerCategory.tables.length > 0;
-          },
-        );
-      });
-    }, []);
-
-    const areTablesAvailable = useMemo(() => {
-      return tablesMenuItems.length >= 1;
-    }, [tablesMenuItems.length]);
 
     return (
       <Drawer
@@ -48,7 +33,6 @@ const LeftPanel = memo(
         <LeftPanelTabs
           panelSize={panelSize}
           setPanelSize={setPanelSize}
-          areTablesAvailable={areTablesAvailable}
           resultsPage={resultsPage}
           chartsPanel={
             <ChartsPanel
@@ -65,7 +49,6 @@ const LeftPanel = memo(
           }
           tablesPanel={
             <TablesPanel
-              tablesMenuItems={tablesMenuItems}
               setPanelSize={setPanelSize}
               setResultsPage={setResultsPage}
             />

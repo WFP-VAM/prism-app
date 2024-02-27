@@ -25,6 +25,7 @@ import {
   BarChartOutlined,
   ImageAspectRatioOutlined,
   LayersOutlined,
+  TableChartOutlined,
 } from '@material-ui/icons';
 import { useDispatch, useSelector } from 'react-redux';
 import {
@@ -38,18 +39,25 @@ import useLayers from 'utils/layers-utils';
 import Legends from 'components/MapView/Legends';
 import { cyanBlue } from 'muiTheme';
 import { analysisResultSelector } from 'context/analysisResultStateSlice';
+import { areChartLayersAvailable } from 'config/utils';
+import { areTablesAvailable } from 'components/MapView/LeftPanel/utils';
 import About from './About';
 import LanguageSelector from './LanguageSelector';
 import PrintImage from './PrintImage';
 
 const panels = [
   { panel: Panel.Layers, label: 'Layers', icon: <LayersOutlined /> },
-  { panel: Panel.Charts, label: 'Charts', icon: <BarChartOutlined /> },
+  ...(areChartLayersAvailable
+    ? [{ panel: Panel.Charts, label: 'Charts', icon: <BarChartOutlined /> }]
+    : []),
   {
     panel: Panel.Analysis,
     label: 'Analysis',
     icon: <ImageAspectRatioOutlined />,
   },
+  ...(areTablesAvailable
+    ? [{ panel: Panel.Tables, label: 'Tables', icon: <TableChartOutlined /> }]
+    : []),
 ];
 
 function NavBar({ classes, isAlertFormOpen, setIsAlertFormOpen }: NavBarProps) {
