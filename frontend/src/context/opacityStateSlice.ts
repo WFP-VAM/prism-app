@@ -19,7 +19,7 @@ export interface MapOpacityState {
 interface SetOpacityParams {
   map: MaplibreMap | undefined;
   layerId: LayerType['id'] | undefined;
-  layerType: LayerType['type'] | undefined;
+  layerType: LayerType['type'] | 'analysis' | undefined;
   value: number;
   callback?: (v: number) => void;
 }
@@ -58,8 +58,7 @@ export const opacityStateSlice = createSlice({
               return [getLayerMapId(layerId), 'fill-opacity'];
             }
             return [getLayerMapId(layerId), 'circle-opacity'];
-          // analysis layer type is undefined TODO we should try make analysis a layer to remove edge cases like this
-          case undefined:
+          case 'analysis':
             return ['layer-analysis', 'fill-opacity'];
           default:
             throw new Error('Unknown map layer type');

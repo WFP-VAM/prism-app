@@ -51,8 +51,8 @@ const AnalysisLayerSwitchItem = memo(
           setStateOpacity({
             map,
             value,
-            layerId: 'analysis', // We have to pass undefined here so that the function know that we are in an analysis custom layer
-            layerType: undefined, // We have also to pass undefined here to show that we have analysis custom layer,
+            layerId: 'analysis',
+            layerType: 'analysis',
           }),
         ),
       [dispatch, map],
