@@ -137,6 +137,7 @@ exports[`renders as expected 1`] = `
               </mock-typography>
             </mock-button>
             <mock-button
+              aria-label="language-select-dropdown-button"
               endicon="[object Object]"
               style="padding-left: 0px;"
             >
@@ -250,6 +251,7 @@ exports[`renders as expected 1`] = `
                 </mock-typography>
               </mock-button>
               <mock-button
+                aria-label="language-select-dropdown-button"
                 endicon="[object Object]"
                 style="padding-left: 0px;"
               >

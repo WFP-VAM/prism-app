@@ -7,6 +7,7 @@ const darkGreyBlue: string = '#2D3436';
 const white: string = '#FFFFFF';
 const lightGray = '#CCCCCC';
 const midnightSlate = '#323638';
+export const paleSkyBlue = '#D8E9EC';
 export const black = '#101010';
 export const cyanBlue = '#63B2BD';
 

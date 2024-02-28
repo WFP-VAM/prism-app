@@ -17,6 +17,7 @@ import {
   ExposedPopulationResult,
   PolygonAnalysisResult,
 } from 'utils/analysis-utils';
+import { paleSkyBlue } from 'muiTheme';
 
 interface AnalysisLayerMenuItemProps {
   title: string;
@@ -35,7 +36,7 @@ const useStyles = makeStyles(() =>
       position: 'inherit',
     },
     rootSummary: {
-      backgroundColor: '#DE9EC',
+      backgroundColor: paleSkyBlue,
     },
     rootDetails: {
       padding: 0,

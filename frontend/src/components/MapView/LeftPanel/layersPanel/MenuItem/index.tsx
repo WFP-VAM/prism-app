@@ -16,6 +16,7 @@ import { useSafeTranslation } from 'i18n';
 import { Extent } from 'components/MapView/Layers/raster-utils';
 import { layersSelector } from 'context/mapStateSlice/selectors';
 import { filterActiveLayers } from 'components/MapView/utils';
+import { paleSkyBlue } from 'muiTheme';
 import SelectedLayersInformation from './SelectedLayersInformation';
 
 const useStyles = makeStyles(() =>
@@ -24,7 +25,7 @@ const useStyles = makeStyles(() =>
       position: 'inherit',
     },
     rootSummary: {
-      backgroundColor: '#D8E9EC',
+      backgroundColor: paleSkyBlue,
     },
     rootDetails: {
       padding: 0,
