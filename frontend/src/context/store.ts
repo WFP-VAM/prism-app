@@ -16,6 +16,7 @@ import mapBoundaryInfoStateReduce from './mapBoundaryInfoStateSlice';
 import datasetResultStateReduce from './datasetStateSlice';
 import mapTileLoadingStateReduce from './mapTileLoadingStateSlice';
 import leftPanelStateReduce from './leftPanelStateSlice';
+import opacityStateReduce from './opacityStateSlice';
 
 const reducer = combineReducers({
   mapState: mapStateReduce,
@@ -29,6 +30,7 @@ const reducer = combineReducers({
   datasetState: datasetResultStateReduce,
   mapTileLoadingState: mapTileLoadingStateReduce,
   leftPanelState: leftPanelStateReduce,
+  opacityState: opacityStateReduce,
 });
 
 export const store = configureStore({

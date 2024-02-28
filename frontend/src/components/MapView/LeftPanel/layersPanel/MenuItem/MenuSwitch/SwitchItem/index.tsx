@@ -20,6 +20,7 @@ import { Extent } from 'components/MapView/Layers/raster-utils';
 import { availableDatesSelector } from 'context/serverStateSlice';
 import { checkLayerAvailableDatesAndContinueOrRemove } from 'components/MapView/utils';
 import { LocalError } from 'utils/error-utils';
+import { opacitySelector, setOpacity } from 'context/opacityStateSlice';
 import { toggleRemoveLayer } from './utils';
 import LayerDownloadOptions from './LayerDownloadOptions';
 import ExposureAnalysisOption from './ExposureAnalysisOption';
@@ -47,8 +48,8 @@ const SwitchItem = memo(
     const serverAvailableDates = useSelector(availableDatesSelector);
     const map = useSelector(mapSelector);
     const [isOpacitySelected, setIsOpacitySelected] = useState(false);
-    const [opacity, setOpacityValue] = useState<number>(initialOpacity || 0);
     const dispatch = useDispatch();
+    const opacity = useSelector(opacitySelector(layerId));
     const {
       updateHistory,
       appendLayerToUrl,
@@ -57,8 +58,21 @@ const SwitchItem = memo(
 
     useEffect(() => {
       setIsOpacitySelected(false);
-      setOpacityValue(initialOpacity || 0);
-    }, [initialOpacity]);
+    }, [dispatch, initialOpacity, layerId, layerType, map]);
+
+    useEffect(() => {
+      if (opacity !== undefined) {
+        return;
+      }
+      dispatch(
+        setOpacity({
+          map,
+          value: initialOpacity || 0,
+          layerId,
+          layerType,
+        }),
+      );
+    }, [dispatch, initialOpacity, layerId, layerType, map, opacity]);
 
     const someLayerAreSelected = useMemo(() => {
       return selectedLayers.some(
@@ -110,8 +124,6 @@ const SwitchItem = memo(
 
     const toggleLayerValue = useCallback(
       (selectedLayerId: string, checked: boolean) => {
-        // reset opacity value
-        setOpacityValue(initialOpacity || 0);
         // reset opacity selected
         setIsOpacitySelected(false);
         // clear previous table dataset loaded first
@@ -163,7 +175,6 @@ const SwitchItem = memo(
         appendLayerToUrl,
         dispatch,
         group,
-        initialOpacity,
         layer,
         map,
         removeLayerFromUrl,
@@ -226,8 +237,6 @@ const SwitchItem = memo(
             activeLayerId={activeLayerId}
             layerId={layerId}
             layerType={layerType}
-            opacity={opacity}
-            setOpacityValue={setOpacityValue}
           />
         )}
       </Box>

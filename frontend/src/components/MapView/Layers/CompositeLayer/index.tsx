@@ -14,6 +14,7 @@ import { useDefaultDate } from 'utils/useDefaultDate';
 import { getRequestDate } from 'utils/server-utils';
 import { safeCountry } from 'config';
 import { geoToH3, h3ToGeoBoundary } from 'h3-js'; // ts-ignore
+import { opacitySelector } from 'context/opacityStateSlice';
 
 const styles = () => createStyles({});
 
@@ -48,6 +49,7 @@ const CompositeLayer = ({ layer, before }: Props) => {
   const [adminBoundaryLimitPolygon, setAdminBoundaryPolygon] = useState(null);
   const selectedDate = useDefaultDate(layer.dateLayer);
   const serverAvailableDates = useSelector(availableDatesSelector);
+  const opacityState = useSelector(opacitySelector(layer.id));
   const dispatch = useDispatch();
 
   const { data } =
@@ -112,7 +114,7 @@ const CompositeLayer = ({ layer, before }: Props) => {
         <Layer
           id={getLayerMapId(layer.id)}
           type="fill"
-          paint={paintProps(layer.opacity)}
+          paint={paintProps(opacityState || layer.opacity)}
           beforeId={before}
         />
       </Source>
