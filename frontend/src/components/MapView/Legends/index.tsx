@@ -110,13 +110,12 @@ const Legends = memo(({ classes, extent, layers }: LegendsProps) => {
     }
     return [
       <LegendItem
+        id="analysis"
+        type="analysis"
         key={analysisResult?.key ?? Date.now()}
         legend={analysisResult?.legend}
         title={analysisResult?.getTitle(t)}
         opacity={analysisLayerOpacity} // TODO: initial opacity value
-        // Control opacity only for analysis
-        // for the other layers it is controlled from the left panel
-        isAnalysis={isAnalysisLayerActive && hasData}
       >
         {renderedLegendImpactResult}
       </LegendItem>,

@@ -29,7 +29,6 @@ import { clearDataset } from 'context/datasetStateSlice';
 import { useSafeTranslation } from 'i18n';
 import { clearAnalysisResult } from 'context/analysisResultStateSlice';
 import LayerContentPreview from 'components/MapView/Legends/layerContentPreview';
-import { handleChangeOpacity } from 'components/MapView/Legends/handleChangeOpacity';
 import ColorIndicator from 'components/MapView/Legends/ColorIndicator';
 import { getLegendItemLabel } from 'components/MapView/utils';
 import { Extent } from 'components/MapView/Layers/raster-utils';
@@ -37,6 +36,7 @@ import { getUrlKey, useUrlHistory } from 'utils/url-utils';
 import LayerDownloadOptions from 'components/MapView/LeftPanel/layersPanel/MenuItem/MenuSwitch/SwitchItem/LayerDownloadOptions';
 import AnalysisDownloadButton from 'components/MapView/Legends//AnalysisDownloadButton';
 import { toggleRemoveLayer } from 'components/MapView/LeftPanel/layersPanel/MenuItem/MenuSwitch/SwitchItem/utils';
+import { opacitySelector, setOpacity } from 'context/opacityStateSlice';
 import LoadingBar from '../LoadingBar';
 
 // Children here is legendText
@@ -50,7 +50,6 @@ const LegendItem = memo(
     opacity: initialOpacity,
     children,
     legendUrl,
-    isAnalysis,
     fillPattern,
     extent,
   }: LegendItemProps) => {
@@ -58,13 +57,22 @@ const LegendItem = memo(
     const { removeLayerFromUrl } = useUrlHistory();
     const map = useSelector(mapSelector);
     const [opacityEl, setOpacityEl] = useState<HTMLButtonElement | null>(null);
-    const [opacity, setOpacityValue] = useState<number | number[]>(
-      initialOpacity || 0,
-    );
+    const opacity = useSelector(opacitySelector(id as string));
+    const isAnalysis = type === 'analysis';
 
     useEffect(() => {
-      setOpacityValue(initialOpacity || 0);
-    }, [initialOpacity]);
+      if (opacity !== undefined) {
+        return;
+      }
+      dispatch(
+        setOpacity({
+          map,
+          value: initialOpacity || 0,
+          layerId: id,
+          layerType: type,
+        }),
+      );
+    }, [dispatch, id, initialOpacity, map, opacity, type]);
 
     const { t } = useSafeTranslation();
 
@@ -79,10 +87,6 @@ const LegendItem = memo(
     const open = Boolean(opacityEl);
     const opacityId = open ? 'opacity-popover' : undefined;
 
-    const handleChangeOpacityValue = useCallback(val => {
-      setOpacityValue(val);
-    }, []);
-
     const selectedLayers = useSelector(layersSelector);
     const layer = useMemo(() => {
       return selectedLayers.find(l => l.id === id);
@@ -92,7 +96,7 @@ const LegendItem = memo(
       return (
         <Box px={2} display="flex" className={classes.opacityBox}>
           <Typography classes={{ root: classes.opacityText }}>
-            {`${Math.round((opacity as number) * 100)}%`}
+            {`${Math.round((opacity || 0) * 100)}%`}
           </Typography>
           <Slider
             value={opacity}
@@ -105,19 +109,29 @@ const LegendItem = memo(
               thumb: classes.opacitySliderThumb,
             }}
             onChange={(e, newValue) =>
-              handleChangeOpacity(
-                e,
-                newValue as number,
-                map,
-                isAnalysis ? 'analysis' : id,
-                type,
-                handleChangeOpacityValue,
+              dispatch(
+                setOpacity({
+                  map,
+                  value: newValue as number,
+                  layerId: id,
+                  layerType: type,
+                }),
               )
             }
           />
         </Box>
       );
-    }, [classes, handleChangeOpacityValue, id, isAnalysis, map, opacity, type]);
+    }, [
+      classes.opacityBox,
+      classes.opacitySliderRoot,
+      classes.opacitySliderThumb,
+      classes.opacityText,
+      dispatch,
+      id,
+      map,
+      opacity,
+      type,
+    ]);
 
     const layerDownloadOptions = useMemo(() => {
       return layer ? (
@@ -135,8 +149,6 @@ const LegendItem = memo(
         dispatch(clearAnalysisResult());
       }
       if (layer) {
-        // reset opacity value
-        setOpacityValue(initialOpacity || 0);
         // clear previous table dataset loaded first
         // to close the dataseries and thus close chart
         dispatch(clearDataset());
@@ -149,7 +161,7 @@ const LegendItem = memo(
           removeLayerFromUrl,
         );
       }
-    }, [layer, map, dispatch, removeLayerFromUrl, initialOpacity, isAnalysis]);
+    }, [isAnalysis, layer, dispatch, map, removeLayerFromUrl]);
 
     const getColorIndicatorKey = useCallback((item: LegendDefinitionItem) => {
       return (
@@ -276,13 +288,12 @@ const styles = () =>
 interface LegendItemProps
   extends WithStyles<typeof styles>,
     PropsWithChildren<{}> {
-  id?: LayerType['id'];
+  id: LayerType['id'];
   title: LayerType['title'];
   legend: LayerType['legend'];
   legendUrl?: string;
-  type?: LayerType['type'];
+  type: LayerType['type'] | 'analysis';
   opacity: LayerType['opacity'];
-  isAnalysis?: boolean;
   fillPattern?: 'left' | 'right';
   extent?: Extent;
 }

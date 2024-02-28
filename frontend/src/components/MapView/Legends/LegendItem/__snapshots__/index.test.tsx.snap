@@ -94,7 +94,7 @@ exports[`renders as expected 1`] = `
             <mock-typography
               classes="[object Object]"
             >
-              50%
+              0%
             </mock-typography>
             <span
               class="MuiSlider-root memo-opacitySliderRoot-4 MuiSlider-colorPrimary"
@@ -104,22 +104,21 @@ exports[`renders as expected 1`] = `
               />
               <span
                 class="MuiSlider-track"
-                style="left: 0%; width: 50%;"
+                style="left: 0%;"
               />
               <input
                 type="hidden"
-                value="0.5"
+                value="NaN"
               />
               <span
                 aria-labelledby="opacity-slider"
                 aria-orientation="horizontal"
                 aria-valuemax="1"
                 aria-valuemin="0"
-                aria-valuenow="0.5"
+                aria-valuenow="NaN"
                 class="MuiSlider-thumb memo-opacitySliderThumb-5 MuiSlider-thumbColorPrimary"
                 data-index="0"
                 role="slider"
-                style="left: 50%;"
                 tabindex="0"
               />
             </span>
