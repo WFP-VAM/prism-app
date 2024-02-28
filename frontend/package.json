@@ -21,7 +21,7 @@
     "analyze": "yarn build && npx source-map-explorer 'build/static/js/*.js'",
     "build": "export GIT_HASH=$(git rev-parse --short HEAD) || true && cross-env EXTEND_ESLINT=true react-app-rewired build",
     "profile:serve": "yarn build --profile && npx serve -s build",
-    "test": "cross-env REACT_APP_TESTING=true react-scripts test",
+    "test": "cross-env REACT_APP_TESTING=true && react-scripts test",
     "prettier:json-fix": "prettier --write */**.json",
     "prettier:json-check": "prettier --check */**.json",
     "predeploy:prod": "yarn build",
