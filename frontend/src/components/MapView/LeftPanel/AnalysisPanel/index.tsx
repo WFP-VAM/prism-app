@@ -109,7 +109,7 @@ import {
 import LoadingBlinkingDots from 'components/Common/LoadingBlinkingDots';
 import useLayers from 'utils/layers-utils';
 import { getDateFormat } from 'utils/date-utils';
-import { cyanBlue } from 'muiTheme';
+import { black, cyanBlue } from 'muiTheme';
 import AnalysisTable from './AnalysisTable';
 import ExposureAnalysisTable from './AnalysisTable/ExposureAnalysisTable';
 import ExposureAnalysisActions from './ExposureAnalysisActions';
@@ -1124,7 +1124,7 @@ const AnalysisPanel = memo(
           <Button
             className={classes.bottomButton}
             onClick={runAnalyser}
-            startIcon={<BarChartOutlined />}
+            startIcon={<BarChartOutlined style={{ color: black }} />}
             disabled={
               !!thresholdError || // if there is a threshold error
               isAnalysisLoading || // or analysis is currently loading
