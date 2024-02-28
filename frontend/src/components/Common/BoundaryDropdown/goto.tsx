@@ -5,25 +5,12 @@ import RoomOutlinedIcon from '@material-ui/icons/RoomOutlined';
 import { useSafeTranslation } from 'i18n';
 import { BoundaryDropdownOptions } from 'components/MapView/Layers/BoundaryDropdown';
 import { mapSelector } from 'context/mapStateSlice/selectors';
-import { firstBoundaryOnView } from 'utils/map-utils';
 
 const GoToBoundaryDropdown = () => {
   const { t } = useSafeTranslation();
   const map = useSelector(mapSelector);
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [search, setSearch] = React.useState('');
-  const [disabled, setDisabled] = React.useState(true);
-
-  React.useEffect(() => {
-    if (!disabled) {
-      return;
-    }
-
-    const boundary = firstBoundaryOnView(map);
-    if (boundary) {
-      setDisabled(false);
-    }
-  }, [disabled, map]);
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
@@ -35,11 +22,7 @@ const GoToBoundaryDropdown = () => {
 
   return (
     <>
-      <Button
-        startIcon={<RoomOutlinedIcon />}
-        onClick={handleClick}
-        disabled={disabled}
-      >
+      <Button startIcon={<RoomOutlinedIcon />} onClick={handleClick}>
         {t('Go To')}
       </Button>
       <Menu
