@@ -59,7 +59,7 @@ async def download_report(
         await page.get_by_role("button", name="Layers").click()
 
         # expand the first main and first sub dropdowns
-        await page.get_by_text("Flood").click()
+        await page.get_by_role("button", name="Flood").click()
 
         await page.get_by_text("Flood Monitoring").click()
 
