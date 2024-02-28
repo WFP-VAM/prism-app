@@ -28,6 +28,7 @@ import {
   getLayerMapId,
   useMapCallback,
 } from 'utils/map-utils';
+import { opacitySelector } from 'context/opacityStateSlice';
 
 const linePaint: LineLayerSpecification['paint'] = {
   'line-color': 'grey',
@@ -94,6 +95,7 @@ const ImpactLayer = ({ classes, layer, before }: ComponentProps) => {
     >) || {};
   const dispatch = useDispatch();
   const { t } = useSafeTranslation();
+  const opacityState = useSelector(opacitySelector(layer.id));
 
   useMapCallback('click', getLayerMapId(layer.id), layer, onClick);
 
@@ -128,7 +130,7 @@ const ImpactLayer = ({ classes, layer, before }: ComponentProps) => {
 
   // TODO: maplibre: fix any
   const fillPaint: FillLayerSpecification['paint'] = {
-    'fill-opacity': layer.opacity || 0.1,
+    'fill-opacity': opacityState || layer.opacity || 0.1,
     'fill-color': noMatchingDistricts
       ? 'gray'
       : ({

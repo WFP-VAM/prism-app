@@ -8,6 +8,7 @@ import { getRequestDate } from 'utils/server-utils';
 import { availableDatesSelector } from 'context/serverStateSlice';
 import { getLayerMapId } from 'utils/map-utils';
 import { appConfig } from 'config';
+import { opacitySelector } from 'context/opacityStateSlice';
 
 function expandBoundingBox(
   bbox: [number, number, number, number],
@@ -33,6 +34,7 @@ const WMSLayers = ({
 }: LayersProps) => {
   const selectedDate = useDefaultDate(id);
   const serverAvailableDates = useSelector(availableDatesSelector);
+  const opacityState = useSelector(opacitySelector(id));
 
   const expansionFactor = 2;
   // eslint-disable-next-line
@@ -73,7 +75,7 @@ const WMSLayers = ({
         type="raster"
         id={getLayerMapId(id)}
         source={`source-${id}`}
-        paint={{ 'raster-opacity': opacity }}
+        paint={{ 'raster-opacity': opacityState || opacity }}
       />
     </Source>
   );
