@@ -1,10 +1,12 @@
-import React, { memo } from 'react';
 import { StaticRasterLayerProps } from 'config/types';
-import { useDefaultDate } from 'utils/useDefaultDate';
-import { DEFAULT_DATE_FORMAT_SNAKE_CASE } from 'utils/name-utils';
+import { opacitySelector } from 'context/opacityStateSlice';
+import React, { memo } from 'react';
 import { Layer, Source } from 'react-map-gl/maplibre';
-import { getLayerMapId } from 'utils/map-utils';
+import { useSelector } from 'react-redux';
 import { getDateFormat } from 'utils/date-utils';
+import { getLayerMapId } from 'utils/map-utils';
+import { DEFAULT_DATE_FORMAT_SNAKE_CASE } from 'utils/name-utils';
+import { useDefaultDate } from 'utils/useDefaultDate';
 
 export const createStaticRasterLayerUrl = (
   baseUrl: string,
@@ -24,6 +26,7 @@ const StaticRasterLayer = ({
 }: LayersProps) => {
   const selectedDate = useDefaultDate(id);
   const url = createStaticRasterLayerUrl(baseUrl, dates, selectedDate);
+  const opacityState = useSelector(opacitySelector(id));
 
   return (
     <Source id={`source-${id}`} type="raster" tiles={[url]}>
@@ -31,7 +34,7 @@ const StaticRasterLayer = ({
         beforeId={before}
         type="raster"
         id={getLayerMapId(id)}
-        paint={{ 'raster-opacity': opacity }}
+        paint={{ 'raster-opacity': opacityState || opacity }}
         minzoom={minZoom}
         maxzoom={maxZoom}
       />
