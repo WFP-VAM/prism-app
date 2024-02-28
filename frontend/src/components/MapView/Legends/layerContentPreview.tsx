@@ -19,7 +19,10 @@ const LayerContentPreview = memo(({ layerId, classes }: PreviewProps) => {
 
   const dispatch = useDispatch();
 
-  const layer = LayerDefinitions[layerId || 'admin_boundaries'];
+  const layer =
+    layerId !== 'analysis'
+      ? LayerDefinitions[layerId]
+      : LayerDefinitions.admin_boundaries;
 
   const handleIconButtonClick = useCallback(async () => {
     if (!layer.contentPath) {
@@ -95,7 +98,7 @@ const styles = (theme: Theme) =>
   });
 
 export interface PreviewProps extends WithStyles<typeof styles> {
-  layerId?: LayerType['id'];
+  layerId: LayerType['id'] | 'analysis';
 }
 
 export default withStyles(styles)(LayerContentPreview);

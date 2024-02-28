@@ -50,7 +50,6 @@ const LegendItem = memo(
     opacity: initialOpacity,
     children,
     legendUrl,
-    isAnalysis,
     fillPattern,
     extent,
   }: LegendItemProps) => {
@@ -58,9 +57,8 @@ const LegendItem = memo(
     const { removeLayerFromUrl } = useUrlHistory();
     const map = useSelector(mapSelector);
     const [opacityEl, setOpacityEl] = useState<HTMLButtonElement | null>(null);
-    const opacity = useSelector(
-      opacitySelector(isAnalysis ? 'analysis' : (id as string)),
-    );
+    const opacity = useSelector(opacitySelector(id as string));
+    const isAnalysis = type === 'analysis';
 
     useEffect(() => {
       if (opacity !== undefined) {
@@ -70,11 +68,11 @@ const LegendItem = memo(
         setOpacity({
           map,
           value: initialOpacity || 0,
-          layerId: isAnalysis ? 'analysis' : id,
+          layerId: id,
           layerType: type,
         }),
       );
-    }, [dispatch, id, initialOpacity, isAnalysis, map, opacity, type]);
+    }, [dispatch, id, initialOpacity, map, opacity, type]);
 
     const { t } = useSafeTranslation();
 
@@ -115,7 +113,7 @@ const LegendItem = memo(
                 setOpacity({
                   map,
                   value: newValue as number,
-                  layerId: isAnalysis ? 'analysis' : id,
+                  layerId: id,
                   layerType: type,
                 }),
               )
@@ -130,7 +128,6 @@ const LegendItem = memo(
       classes.opacityText,
       dispatch,
       id,
-      isAnalysis,
       map,
       opacity,
       type,
@@ -290,13 +287,12 @@ const styles = () =>
 interface LegendItemProps
   extends WithStyles<typeof styles>,
     PropsWithChildren<{}> {
-  id?: LayerType['id'];
+  id: LayerType['id'];
   title: LayerType['title'];
   legend: LayerType['legend'];
   legendUrl?: string;
-  type?: LayerType['type'];
+  type: LayerType['type'] | 'analysis';
   opacity: LayerType['opacity'];
-  isAnalysis?: boolean;
   fillPattern?: 'left' | 'right';
   extent?: Extent;
 }
