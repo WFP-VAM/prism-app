@@ -4,7 +4,6 @@ exports[`renders as expected 1`] = `
 <div>
   <mock-button
     classname="memo-triggerButton-1"
-    color="primary"
     starticon="[object Object]"
     style="background-color: rgb(99, 178, 189);"
   >
@@ -12,7 +11,7 @@ exports[`renders as expected 1`] = `
       smdown="true"
     >
       <mock-typography
-        style="color: black;"
+        style="color: rgb(16, 16, 16);"
         variant="body2"
       >
         Legend

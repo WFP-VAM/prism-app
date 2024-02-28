@@ -22,7 +22,7 @@ import { BaselineLayerResult } from 'utils/analysis-utils';
 import { useSafeTranslation } from 'i18n';
 import { Extent } from 'components/MapView/Layers/raster-utils';
 
-import { cyanBlue } from 'muiTheme';
+import { black, cyanBlue } from 'muiTheme';
 import LegendItem from './LegendItem';
 import LegendImpactResult from './LegendImpactResult';
 
@@ -153,13 +153,12 @@ const Legends = memo(({ classes, extent, layers }: LegendsProps) => {
       <Button
         className={classes.triggerButton}
         style={{ backgroundColor: open ? cyanBlue : undefined }}
-        color="primary"
         onClick={toggleLegendVisibility}
         startIcon={
           open ? (
             <VisibilityOffOutlined
               className={classes.icon}
-              style={{ color: 'black' }}
+              style={{ color: black }}
             />
           ) : (
             <VisibilityOutlined className={classes.icon} />
@@ -167,10 +166,7 @@ const Legends = memo(({ classes, extent, layers }: LegendsProps) => {
         }
       >
         <Hidden smDown>
-          <Typography
-            variant="body2"
-            style={{ color: open ? 'black' : undefined }}
-          >
+          <Typography variant="body2" style={{ color: open ? black : 'white' }}>
             {t('Legend')}
           </Typography>
         </Hidden>
