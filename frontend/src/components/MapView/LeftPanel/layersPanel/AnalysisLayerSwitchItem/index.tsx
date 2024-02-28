@@ -161,32 +161,41 @@ const AnalysisLayerSwitchItem = memo(
         flexDirection="column"
         maxWidth="100%"
       >
-        <Box display="flex" alignItems="center" m={2}>
-          <Switch
-            size="small"
-            className={classes.switch}
-            classes={{
-              switchBase: classes.switchBase,
-              track: classes.switchTrack,
-            }}
-            checked={selected}
-            onChange={handleOnChangeSwitch}
-            inputProps={{
-              'aria-label': title,
-            }}
-          />
-          <Typography
-            className={selected ? classes.title : classes.titleUnchecked}
-          >
-            {title}
-          </Typography>
-          {renderedOpacityIconButton}
-          <AnalysisLayerSwitchItemDownloadOptions
-            analysisData={analysisData}
-            analysisResultSortByKey={analysisResultSortByKey}
-            analysisResultSortOrder={analysisResultSortOrder}
-            selected={selected}
-          />
+        <Box
+          display="flex"
+          alignItems="center"
+          m={2}
+          justifyContent="space-between"
+        >
+          <div style={{ display: 'flex' }}>
+            <Switch
+              size="small"
+              className={classes.switch}
+              classes={{
+                switchBase: classes.switchBase,
+                track: classes.switchTrack,
+              }}
+              checked={selected}
+              onChange={handleOnChangeSwitch}
+              inputProps={{
+                'aria-label': title,
+              }}
+            />
+            <Typography
+              className={selected ? classes.title : classes.titleUnchecked}
+            >
+              {title}
+            </Typography>
+          </div>
+          <div>
+            {renderedOpacityIconButton}
+            <AnalysisLayerSwitchItemDownloadOptions
+              analysisData={analysisData}
+              analysisResultSortByKey={analysisResultSortByKey}
+              analysisResultSortOrder={analysisResultSortOrder}
+              selected={selected}
+            />
+          </div>
         </Box>
         {renderedOpacitySlider}
       </Box>
