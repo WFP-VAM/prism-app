@@ -25,9 +25,12 @@ import { DateRangeType } from 'config/types';
 import { dateRangeSelector } from 'context/mapStateSlice/selectors';
 import { addNotification } from 'context/notificationStateSlice';
 import { moment, useSafeTranslation } from 'i18n';
-import { datesAreEqualWithoutTime } from 'utils/date-utils';
 import {
-  DEFAULT_DATE_FORMAT,
+  dateStrToUpperCase,
+  datesAreEqualWithoutTime,
+  getDateFormat,
+} from 'utils/date-utils';
+import {
   MONTH_FIRST_DATE_FORMAT,
   MONTH_ONLY_DATE_FORMAT,
 } from 'utils/name-utils';
@@ -115,10 +118,6 @@ const DateSelector = memo(({ classes }: DateSelectorProps) => {
     handleTimeLinePosition(x);
   }, [handleTimeLinePosition, setPointerXPosition]);
 
-  const dateStrToUpperCase = useCallback((dateStr: string): string => {
-    return `${dateStr.slice(0, 1).toUpperCase()}${dateStr.slice(1)}`;
-  }, []);
-
   const locale = useMemo(() => {
     return t('date_locale') ? t('date_locale') : 'en';
   }, [t]);
@@ -142,7 +141,7 @@ const DateSelector = memo(({ classes }: DateSelectorProps) => {
         isFirstDay: date.date() === date.startOf('month').date(),
       };
     });
-  }, [dateStrToUpperCase, locale, stateStartDate]);
+  }, [locale, stateStartDate]);
 
   const dateIndex = useMemo(() => {
     return findIndex(
@@ -175,7 +174,7 @@ const DateSelector = memo(({ classes }: DateSelectorProps) => {
       }
       // This updates state because a useEffect in MapView updates the redux state
       // TODO this is convoluted coupling, we should update state here if feasible.
-      updateHistory('date', moment(time).format(DEFAULT_DATE_FORMAT));
+      updateHistory('date', getDateFormat(time, 'default') as string);
     },
     [stateStartDate, updateHistory],
   );
