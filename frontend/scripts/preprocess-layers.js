@@ -4,25 +4,90 @@ const fs = require('fs');
 const path = require('path');
 const union = require('@turf/union').default;
 const simplify = require('@turf/simplify').default;
+const area = require('@turf/area').default;
 
 // We fix the timezone to UTC to ensure that
 // the same dates are generated on all machines
 process.env.TZ = 'UTC';
 
+// Define your minimum area threshold here
+const minArea = 10_000_000;
+
 // Function to merge boundary data and return a single polygon
 const mergeBoundaryData = boundaryData => {
+  let featuresWithoutHoles = boundaryData?.features.map(feature => {
+    if (feature.geometry.type === 'Polygon') {
+      const polygonFeature = {
+        type: 'Feature',
+        properties: {},
+        geometry: feature.geometry,
+      };
+      if (area(polygonFeature) < minArea) {
+        return {};
+      }
+      if (area(polygonFeature) >= minArea) {
+        // Create a new feature with only the outer boundary if it meets the minimum area
+        return {
+          ...feature,
+          geometry: {
+            type: 'Polygon',
+            coordinates: [feature.geometry.coordinates[0]], // Only keep the outer ring
+          },
+        };
+      }
+    } else if (feature.geometry.type === 'MultiPolygon') {
+      // For MultiPolygon, remove holes from each Polygon and filter by minimum area
+      // to avoid tiny islands. This is necessary to get a reasonable mask.
+      return {
+        ...feature,
+        geometry: {
+          type: 'MultiPolygon',
+          coordinates: feature.geometry.coordinates
+            .map(polygon => {
+              const nestedPolygonFeature = {
+                type: 'Feature',
+                properties: {},
+                geometry: {
+                  type: 'Polygon',
+                  coordinates: polygon, // Current nested polygon
+                },
+              };
+              const nestedArea = area(nestedPolygonFeature);
+              if (nestedArea < minArea) {
+                console.log('Nested MultiPolygon area too small:', nestedArea);
+                return null;
+              }
+              return polygon;
+            })
+            // Filter out any polygons that became empty after removing small, deeply nested polygons
+            .filter(newPol => newPol !== null),
+        },
+      };
+    }
+    console.log('Invalid geometry type:', feature.geometry.type);
+    return {};
+  });
+
+  // Now perform the union operation
   let mergedBoundaryData = null;
-  if ((boundaryData?.features.length || 0) > 0) {
-    // eslint-disable-next-line fp/no-mutation
-    mergedBoundaryData =
-      boundaryData?.features.reduce((acc, feature) => {
-        if (acc === null) {
-          return feature;
-        }
+  if (featuresWithoutHoles.length > 0) {
+    mergedBoundaryData = featuresWithoutHoles.reduce((acc, feature) => {
+      if (acc === null) {
+        return feature;
+      }
+      try {
         return union(acc, feature);
-      }, null) || null;
+      } catch (error) {
+        return acc;
+      }
+    }, null);
   }
-  return simplify(mergedBoundaryData, { tolerance: 0.001, highQuality: true });
+
+  // Simplify the merged feature
+  return simplify(mergedBoundaryData, {
+    tolerance: 0.0001,
+    highQuality: true,
+  });
 };
 
 async function preprocessBoundaryLayer(country, boundaryLayer) {
@@ -32,7 +97,7 @@ async function preprocessBoundaryLayer(country, boundaryLayer) {
   );
 
   // Check if the output file already exists
-  if (!fs.existsSync(outputFilePath)) {
+  if (country === 'mozambique' || fs.existsSync(outputFilePath)) {
     const filePath = boundaryLayer.path;
     const fileContent = fs.readFileSync(
       path.join(__dirname, '../public/', filePath),
@@ -137,18 +202,10 @@ const countryDirs = fs
 
       // Some countries with complex boundaries are not processed and fetched independently
       // eg. using the detailed version on https://cartographyvectors.com/
-      if (
-        [
-          'cambodia',
-          'ecuador',
-          'indonesia',
-          'mozambique',
-          'myanmar',
-          'sierraleone',
-        ].includes(country)
-      ) {
+      if (['indonesia'].includes(country)) {
         return;
       }
+
       const boundaryLayerToProcess = Object.values(layersData)
         .filter(layer => layer.type === 'boundary' && layer.admin_level_names)
         .sort(
