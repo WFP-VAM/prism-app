@@ -85,7 +85,7 @@ const mergeBoundaryData = boundaryData => {
 
   // Simplify the merged feature
   return simplify(mergedBoundaryData, {
-    tolerance: 0.0001,
+    tolerance: 0.001,
     highQuality: true,
   });
 };
@@ -96,8 +96,8 @@ async function preprocessBoundaryLayer(country, boundaryLayer) {
     `../public/data/${country}/admin-boundary-unified-polygon.json`,
   );
 
-  // Check if the output file already exists
-  if (country === 'mozambique' || fs.existsSync(outputFilePath)) {
+  // Check if the output file already exists, always reprocess for Mozambique
+  if (country === 'mozambique' || !fs.existsSync(outputFilePath)) {
     const filePath = boundaryLayer.path;
     const fileContent = fs.readFileSync(
       path.join(__dirname, '../public/', filePath),
