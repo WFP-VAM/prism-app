@@ -30,6 +30,7 @@ import {
   getLayerMapId,
   useMapCallback,
 } from 'utils/map-utils';
+import { opacitySelector } from 'context/opacityStateSlice';
 
 export const layerId = getLayerMapId('analysis');
 
@@ -134,9 +135,10 @@ const onClick = (analysisData: AnalysisResult | undefined) => ({
 function fillPaintData(
   legend: LegendDefinition,
   property: string,
+  opacity: number = 0.3,
 ): FillLayerSpecification['paint'] {
   return {
-    'fill-opacity': 0.3,
+    'fill-opacity': opacity,
     'fill-color': {
       property,
       stops: legendToStops(legend),
@@ -150,6 +152,7 @@ function AnalysisLayer({ before }: { before?: string }) {
   // Currently it is quite difficult due to how JSON focused the typing is. We would have to refactor it to also accept layers generated on-the-spot
   const analysisData = useSelector(analysisResultSelector);
   const isAnalysisLayerActive = useSelector(isAnalysisLayerActiveSelector);
+  const opacityState = useSelector(opacitySelector('analysis'));
 
   useMapCallback('click', layerId, undefined, onClick(analysisData));
 
@@ -185,7 +188,11 @@ function AnalysisLayer({ before }: { before?: string }) {
         id={layerId}
         type="fill"
         beforeId={boundary}
-        paint={fillPaintData(analysisData.legend, defaultProperty)}
+        paint={fillPaintData(
+          analysisData.legend,
+          defaultProperty,
+          opacityState,
+        )}
       />
     </Source>
   );
