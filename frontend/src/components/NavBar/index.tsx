@@ -163,7 +163,13 @@ function NavBar({ classes, isAlertFormOpen, setIsAlertFormOpen }: NavBarProps) {
                           dispatch(setPanelSize(PanelSize.medium));
                         }}
                       >
-                        {t(panel.label)}
+                        <Typography
+                          style={{
+                            color: tabValue === panel.panel ? black : '#FFFF',
+                          }}
+                        >
+                          {t(panel.label)}
+                        </Typography>
                       </Button>
                     </Hidden>
                     <Hidden mdUp>
@@ -221,7 +227,7 @@ const styles = (theme: Theme) =>
       justifyContent: 'center',
     },
     panelButton: {
-      height: '3em',
+      height: '2.5em',
     },
     title: {
       letterSpacing: '.3rem',

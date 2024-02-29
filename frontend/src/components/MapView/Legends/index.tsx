@@ -197,7 +197,7 @@ const Legends = memo(({ classes, extent, layers }: LegendsProps) => {
 const styles = () =>
   createStyles({
     triggerButton: {
-      height: '3em',
+      height: '2.5em',
     },
     list: {
       overflowX: 'hidden',

@@ -41,7 +41,11 @@ exports[`renders as expected 1`] = `
                 starticon="[object Object]"
                 style="background-color: rgb(99, 178, 189); color: rgb(16, 16, 16);"
               >
-                Layers
+                <mock-typography
+                  style="color: rgb(16, 16, 16);"
+                >
+                  Layers
+                </mock-typography>
               </mock-button>
             </mock-hidden>
             <mock-hidden
@@ -79,7 +83,9 @@ exports[`renders as expected 1`] = `
                 classname="NavBar-panelButton-3"
                 starticon="[object Object]"
               >
-                Charts
+                <mock-typography>
+                  Charts
+                </mock-typography>
               </mock-button>
             </mock-hidden>
             <mock-hidden
@@ -117,7 +123,9 @@ exports[`renders as expected 1`] = `
                 classname="NavBar-panelButton-3"
                 starticon="[object Object]"
               >
-                Analysis
+                <mock-typography>
+                  Analysis
+                </mock-typography>
               </mock-button>
             </mock-hidden>
             <mock-hidden
@@ -154,7 +162,11 @@ exports[`renders as expected 1`] = `
               <mock-button
                 starticon="[object Object]"
               >
-                Go To
+                <mock-typography
+                  style="color: rgb(255, 255, 255);"
+                >
+                  Go To
+                </mock-typography>
               </mock-button>
             </mock-hidden>
             <mock-hidden
