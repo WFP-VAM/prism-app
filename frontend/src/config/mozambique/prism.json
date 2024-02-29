@@ -90,7 +90,7 @@
           ]
         }
       ],
-      "forecasts": ["daily_rainfall_forecast", "dekad_rainfall_forecast"],
+      "forecasts": ["daily_rainfall_forecast", "dekad_rainfall_forecast", "dekad_rainfall_anomaly_forecast"],
       "global_rainfall_products": [
         {
           "group_title": "Rainfall aggregate",
