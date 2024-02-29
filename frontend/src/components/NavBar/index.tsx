@@ -1,15 +1,10 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { faGithub } from '@fortawesome/free-brands-svg-icons';
-import { faBars } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   AppBar,
   Button,
   Box,
   createStyles,
-  Drawer,
-  Grid,
-  Hidden,
   Theme,
   Toolbar,
   Typography,
@@ -17,8 +12,9 @@ import {
   WithStyles,
   IconButton,
   Badge,
+  Hidden,
 } from '@material-ui/core';
-import React, { Children, useState } from 'react';
+import React from 'react';
 import { useSafeTranslation } from 'i18n';
 import { appConfig } from 'config';
 import {
@@ -84,15 +80,12 @@ function NavBar({ classes, isAlertFormOpen, setIsAlertFormOpen }: NavBarProps) {
     },
   ];
 
-  const [openMobileMenu, setOpenMobileMenu] = useState(false);
-
   const buttons = rightSideLinks.map(({ title, icon, href }) => (
     <IconButton
       key={title}
       component="a"
       target="_blank"
       href={href}
-      onClick={() => setOpenMobileMenu(false)}
       style={{ color: 'white' }}
     >
       <FontAwesomeIcon fontSize="20px" icon={icon} />
@@ -106,22 +99,22 @@ function NavBar({ classes, isAlertFormOpen, setIsAlertFormOpen }: NavBarProps) {
   return (
     <AppBar position="static" className={classes.appBar}>
       <Toolbar variant="dense">
-        <Hidden smDown>
-          <div className={classes.navbarContainer}>
-            <div className={classes.leftSideContainer}>
-              <div className={classes.titleContainer}>
-                {logo && <img className={classes.logo} src={logo} alt="logo" />}
-                <Box display="flex" flexDirection="column">
-                  {title && (
-                    <Typography
-                      color="secondary"
-                      variant="h6"
-                      className={classes.title}
-                    >
-                      {t(title)}
-                    </Typography>
-                  )}
-                  {subtitle && (
+        <div className={classes.navbarContainer}>
+          <div className={classes.leftSideContainer}>
+            <div className={classes.titleContainer}>
+              {logo && <img className={classes.logo} src={logo} alt="logo" />}
+              <Box display="flex" flexDirection="column">
+                {title && (
+                  <Typography
+                    color="secondary"
+                    variant="h6"
+                    className={classes.title}
+                  >
+                    {t(title)}
+                  </Typography>
+                )}
+                {subtitle && (
+                  <Hidden smDown>
                     <Typography
                       color="secondary"
                       variant="subtitle2"
@@ -129,96 +122,87 @@ function NavBar({ classes, isAlertFormOpen, setIsAlertFormOpen }: NavBarProps) {
                     >
                       {t(subtitle)}
                     </Typography>
-                  )}
-                </Box>
-              </div>
-              <div className={classes.panelsContainer}>
-                {panels.map(panel => {
-                  const Wrap =
-                    badgeContent >= 1 && panel.panel === Panel.Layers
-                      ? ({ children }: { children: React.ReactNode }) => (
-                          <Badge
-                            anchorOrigin={{
-                              horizontal: 'left',
-                              vertical: 'top',
-                            }}
-                            overlap="rectangular"
-                            badgeContent={badgeContent}
-                            color="secondary"
-                          >
-                            {children}
-                          </Badge>
-                        )
-                      : ({ children }: { children: React.ReactNode }) => (
-                          <>{children}</>
-                        );
-
-                  return (
-                    <Button
-                      className={classes.panelButton}
-                      style={{
-                        backgroundColor:
-                          tabValue === panel.panel ? cyanBlue : undefined,
-                        color: tabValue === panel.panel ? black : undefined,
-                      }}
-                      startIcon={<Wrap>{panel.icon}</Wrap>}
-                      onClick={() => {
-                        dispatch(setTabValue(panel.panel));
-                        dispatch(setPanelSize(PanelSize.medium));
-                      }}
-                    >
-                      {t(panel.label)}
-                    </Button>
-                  );
-                })}
-                <GoToBoundaryDropdown />
-                {alertFormActive && (
-                  <AlertForm
-                    isOpen={isAlertFormOpen}
-                    setOpen={setIsAlertFormOpen}
-                  />
+                  </Hidden>
                 )}
-              </div>
+              </Box>
             </div>
-            <div className={classes.rightSideContainer}>
-              <Legends layers={selectedLayers} extent={adminBoundariesExtent} />
-              <PrintImage />
-              {buttons}
-              <About />
-              <LanguageSelector />
+            <div className={classes.panelsContainer}>
+              {panels.map(panel => {
+                const Wrap =
+                  badgeContent >= 1 && panel.panel === Panel.Layers
+                    ? ({ children }: { children: React.ReactNode }) => (
+                        <Badge
+                          anchorOrigin={{
+                            horizontal: 'left',
+                            vertical: 'top',
+                          }}
+                          overlap="rectangular"
+                          badgeContent={badgeContent}
+                          color="secondary"
+                        >
+                          {children}
+                        </Badge>
+                      )
+                    : ({ children }: { children: React.ReactNode }) => (
+                        <>{children}</>
+                      );
+
+                return (
+                  <>
+                    <Hidden smDown>
+                      <Button
+                        className={classes.panelButton}
+                        style={{
+                          backgroundColor:
+                            tabValue === panel.panel ? cyanBlue : undefined,
+                          color: tabValue === panel.panel ? black : undefined,
+                        }}
+                        startIcon={<Wrap>{panel.icon}</Wrap>}
+                        onClick={() => {
+                          dispatch(setTabValue(panel.panel));
+                          dispatch(setPanelSize(PanelSize.medium));
+                        }}
+                      >
+                        {t(panel.label)}
+                      </Button>
+                    </Hidden>
+                    <Hidden mdUp>
+                      <Wrap>
+                        <IconButton
+                          style={{
+                            backgroundColor:
+                              tabValue === panel.panel ? cyanBlue : undefined,
+                            color: tabValue === panel.panel ? black : 'white',
+                          }}
+                          onClick={() => {
+                            dispatch(setTabValue(panel.panel));
+                            dispatch(setPanelSize(PanelSize.medium));
+                          }}
+                        >
+                          {panel.icon}
+                        </IconButton>
+                      </Wrap>
+                    </Hidden>
+                  </>
+                );
+              })}
+              <GoToBoundaryDropdown />
+              {alertFormActive && (
+                <AlertForm
+                  isOpen={isAlertFormOpen}
+                  setOpen={setIsAlertFormOpen}
+                />
+              )}
             </div>
           </div>
-        </Hidden>
-
-        <Hidden mdUp>
-          <Grid item xs={6} className={classes.mobileMenuContainer}>
-            <Button
-              onClick={() => setOpenMobileMenu(prevOpen => !prevOpen)}
-              aria-controls={openMobileMenu ? 'mobile-menu-list' : undefined}
-              aria-haspopup="true"
-              className={classes.menuBars}
-            >
-              <FontAwesomeIcon icon={faBars} />
-            </Button>
-
-            <Drawer
-              anchor="right"
-              open={openMobileMenu}
-              onClose={() => setOpenMobileMenu(false)}
-            >
-              <Grid
-                container
-                spacing={3}
-                className={classes.mobileDrawerContent}
-              >
-                <PrintImage />
-                {buttons}
-                <About />
-                <LanguageSelector />
-              </Grid>
-            </Drawer>
-          </Grid>
-        </Hidden>
+          <div className={classes.rightSideContainer}>
+            <Legends layers={selectedLayers} extent={adminBoundariesExtent} />
+            <PrintImage />
+            {buttons}
+            <About />
+            <LanguageSelector />
+          </div>
+        </div>
       </Toolbar>
     </AppBar>
   );

@@ -1,6 +1,6 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { Button, Menu } from '@material-ui/core';
+import { Button, Hidden, IconButton, Menu } from '@material-ui/core';
 import RoomOutlinedIcon from '@material-ui/icons/RoomOutlined';
 import { useSafeTranslation } from 'i18n';
 import { BoundaryDropdownOptions } from 'components/MapView/Layers/BoundaryDropdown';
@@ -22,9 +22,17 @@ const GoToBoundaryDropdown = () => {
 
   return (
     <>
-      <Button startIcon={<RoomOutlinedIcon />} onClick={handleClick}>
-        {t('Go To')}
-      </Button>
+      <Hidden smDown>
+        <Button startIcon={<RoomOutlinedIcon />} onClick={handleClick}>
+          {t('Go To')}
+        </Button>
+      </Hidden>
+      <Hidden mdUp>
+        <IconButton style={{ color: 'white' }} onClick={handleClick}>
+          <RoomOutlinedIcon />
+        </IconButton>
+      </Hidden>
+
       <Menu
         anchorEl={anchorEl}
         keepMounted

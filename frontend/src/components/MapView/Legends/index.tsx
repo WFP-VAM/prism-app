@@ -2,6 +2,7 @@ import {
   Button,
   createStyles,
   Hidden,
+  IconButton,
   List,
   Typography,
   WithStyles,
@@ -150,27 +151,44 @@ const Legends = memo(({ classes, extent, layers }: LegendsProps) => {
 
   return (
     <>
-      <Button
-        className={classes.triggerButton}
-        style={{ backgroundColor: open ? cyanBlue : undefined }}
-        onClick={toggleLegendVisibility}
-        startIcon={
-          open ? (
+      <Hidden smDown>
+        <Button
+          className={classes.triggerButton}
+          style={{ backgroundColor: open ? cyanBlue : undefined }}
+          onClick={toggleLegendVisibility}
+          startIcon={
+            open ? (
+              <VisibilityOffOutlined
+                className={classes.icon}
+                style={{ color: black }}
+              />
+            ) : (
+              <VisibilityOutlined className={classes.icon} />
+            )
+          }
+        >
+          <Typography style={{ color: open ? black : 'white' }}>
+            {t('Legend')}
+          </Typography>
+        </Button>
+      </Hidden>
+
+      <Hidden mdUp>
+        <IconButton
+          style={{ backgroundColor: open ? cyanBlue : undefined }}
+          onClick={toggleLegendVisibility}
+        >
+          {open ? (
             <VisibilityOffOutlined
               className={classes.icon}
               style={{ color: black }}
             />
           ) : (
             <VisibilityOutlined className={classes.icon} />
-          )
-        }
-      >
-        <Hidden smDown>
-          <Typography variant="body2" style={{ color: open ? black : 'white' }}>
-            {t('Legend')}
-          </Typography>
-        </Hidden>
-      </Button>
+          )}
+        </IconButton>
+      </Hidden>
+
       {renderedLegendItemsList}
     </>
   );

@@ -51,9 +51,7 @@ function LanguageSelector({ classes }: LanguageSelectorProps) {
         onClick={handleClick}
         endIcon={<ArrowDownward fontSize="small" />}
       >
-        <Typography color="secondary" variant="body2">
-          {i18n.resolvedLanguage}
-        </Typography>
+        <Typography color="secondary">{i18n.resolvedLanguage}</Typography>
       </Button>
       <Menu
         open={Boolean(anchorEl)}
@@ -63,7 +61,7 @@ function LanguageSelector({ classes }: LanguageSelectorProps) {
       >
         {languages.map(lng => (
           <MenuItem key={lng} onClick={() => handleChangeLanguage(lng)}>
-            <Typography variant="body2">{lng}</Typography>
+            <Typography>{lng}</Typography>
           </MenuItem>
         ))}
       </Menu>
