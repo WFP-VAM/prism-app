@@ -38,10 +38,10 @@
                     [
                         "zoom"
                     ],
-                    5,
-                    "hsl(0, 28.6%, 99.6%)",
+                    4.2,
+                    "hsl(0, 33%, 100%)",
                     14,
-                    "hsl(0, 28.6%, 99.7%)"
+                    "hsl(0, 0%, 95%)"
                 ]
             }
         },
@@ -250,7 +250,7 @@
             "minzoom": 10,
             "maxzoom": 22,
             "layout": {
-                "visibility": "none"
+                "visibility": "visible"
             },
             "paint": {
                 "fill-color": "hsl(31, 54%, 92%)",
@@ -571,7 +571,20 @@
                 "line-color": "hsl(36, 45%, 50%)",
                 "line-width": 0.8,
                 "line-opacity": 0.3
-            }
+            },
+            "filter": [
+                "all",
+                [
+                    "!in",
+                    "nth_line",
+                    5,
+                    10
+                ],
+                [
+                    "!has",
+                    "glacier"
+                ]
+            ]
         },
         {
             "id": "Glacier contour",
@@ -668,15 +681,7 @@
                         ]
                     ]
                 },
-                "text-field": [
-                    "concat",
-                    [
-                        "get",
-                        "height"
-                    ],
-                    " ",
-                    "m"
-                ],
+                "text-field": "{height}",
                 "visibility": "none",
                 "text-padding": 1,
                 "symbol-placement": "line",
@@ -800,7 +805,7 @@
                         "zoom"
                     ],
                     6,
-                    "hsl(206, 78%, 80%)",
+                    "hsl(206, 77%, 90%)",
                     22,
                     "hsl(206, 78%, 75%)"
                 ],
@@ -3132,6 +3137,7 @@
                     18,
                     3
                 ],
+                "line-offset": 0,
                 "line-opacity": 1
             },
             "metadata": {},
@@ -3177,6 +3183,7 @@
                     18,
                     3
                 ],
+                "line-offset": 0,
                 "line-opacity": 1,
                 "line-dasharray": [
                     0.5,
@@ -3326,6 +3333,7 @@
                 "line-miter-limit": 3
             },
             "paint": {
+                "line-blur": 0,
                 "line-color": "hsl(306, 80%, 64%)",
                 "line-width": [
                     "interpolate",
@@ -3398,6 +3406,7 @@
                 "line-miter-limit": 3
             },
             "paint": {
+                "line-blur": 0,
                 "line-color": "hsl(307, 100%, 63%)",
                 "line-width": [
                     "interpolate",
@@ -6315,6 +6324,10 @@
                 "icon-color": "hsl(0, 0%, 100%)",
                 "text-color": "hsl(240, 6%, 13%)",
                 "icon-halo-blur": 0,
+                "text-translate": [
+                    0,
+                    2
+                ],
                 "icon-halo-color": "hsl(0, 0%, 35%)",
                 "icon-halo-width": 1,
                 "text-halo-color": "hsla(0, 100%, 100%, 0.8)",
@@ -7293,10 +7306,6 @@
             },
             "paint": {
                 "text-color": "hsl(240, 6%, 13%)",
-                "text-translate": [
-                    0,
-                    -2
-                ],
                 "icon-halo-color": "hsl(0, 0%, 100%)",
                 "icon-halo-width": 1,
                 "text-halo-color": "hsla(0, 100%, 100%, 0.8)",
@@ -7589,8 +7598,8 @@
             ]
         }
     ],
-    "glyphs": "https://api.maptiler.com/fonts/{fontstack}/{range}.pbf?key=y2DTSu9yWiu755WByJr3",
-    "sprite": "https://api.maptiler.com/maps/4a82947d-5c14-46b6-b8a1-80cc1e10abfe/sprite",
+    "glyphs": "https://api.maptiler.com/fonts/{fontstack}/{range}.pbf?key=u6J2V82niig88leDUIWC",
+    "sprite": "https://api.maptiler.com/maps/27742301-ccd3-449d-bab9-7ed1ee10de00/sprite",
     "bearing": 0,
     "pitch": 0,
     "center": [
