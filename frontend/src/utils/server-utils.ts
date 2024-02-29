@@ -512,8 +512,13 @@ export async function getLayersAvailableDates(
             layer.startDate === 'today'
               ? new Date().setUTCHours(0, 0).valueOf()
               : new Date(layer.startDate).setUTCHours(0, 0).valueOf();
+          const availableDates = layerDates.filter(
+            date => date >= limitStartDate,
+          );
           // eslint-disable-next-line fp/no-mutation
-          acc[layer.id] = layerDates.filter(date => date >= limitStartDate);
+          acc[layer.id] = availableDates.length
+            ? availableDates
+            : [layerDates[layerDates.length - 1]];
         } else {
           // eslint-disable-next-line fp/no-mutation
           acc[layer.id] = layerDates;
