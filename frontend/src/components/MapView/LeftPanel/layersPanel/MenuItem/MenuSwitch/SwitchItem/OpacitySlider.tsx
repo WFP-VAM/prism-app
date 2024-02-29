@@ -6,11 +6,11 @@ import {
   createStyles,
   withStyles,
 } from '@material-ui/core';
-import { handleChangeOpacity } from 'components/MapView/Legends/handleChangeOpacity';
 import { LayerType } from 'config/types';
 import { mapSelector } from 'context/mapStateSlice/selectors';
+import { opacitySelector, setOpacity } from 'context/opacityStateSlice';
 import React, { ChangeEvent, memo, useCallback } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 const styles = createStyles({
   opacityText: {
@@ -27,34 +27,32 @@ const styles = createStyles({
 });
 
 interface OpacitySliderProps extends WithStyles<typeof styles> {
-  opacity: number;
   activeLayerId: string;
   layerId: string;
   layerType: LayerType['type'];
-  setOpacityValue: React.Dispatch<React.SetStateAction<number>>;
 }
 const OpacitySlider = ({
   classes,
-  opacity,
   activeLayerId,
   layerId,
   layerType,
-  setOpacityValue,
 }: OpacitySliderProps) => {
+  const dispatch = useDispatch();
+  const opacity = useSelector(opacitySelector(activeLayerId || layerId));
   const map = useSelector(mapSelector);
 
   const handleOnChangeSliderValue = useCallback(
     (event: ChangeEvent<{}>, newValue: number | number[]) => {
-      handleChangeOpacity(
-        event,
-        newValue as number,
-        map,
-        activeLayerId || layerId,
-        layerType,
-        val => setOpacityValue(val),
+      dispatch(
+        setOpacity({
+          map,
+          value: newValue as number,
+          layerId: activeLayerId || layerId,
+          layerType,
+        }),
       );
     },
-    [activeLayerId, layerId, layerType, map, setOpacityValue],
+    [activeLayerId, dispatch, layerId, layerType, map],
   );
 
   return (
@@ -62,7 +60,7 @@ const OpacitySlider = ({
       <Box pr={3}>
         <Typography
           classes={{ root: classes.opacityText }}
-        >{`Opacity ${Math.round(opacity * 100)}%`}</Typography>
+        >{`Opacity ${Math.round((opacity || 0) * 100)}%`}</Typography>
       </Box>
       <Box width="25%" pr={3}>
         <Slider

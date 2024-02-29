@@ -1,17 +1,9 @@
-import bbox from '@turf/bbox';
 import { findClosestDate } from 'components/MapView/DateSelector/utils';
-import { Extent } from 'components/MapView/Layers/raster-utils';
 import { checkLayerAvailableDatesAndContinueOrRemove } from 'components/MapView/utils';
 import { appConfig } from 'config';
-import {
-  BoundaryLayerProps,
-  LayerKey,
-  LayerType,
-  isMainLayer,
-  DateItem,
-} from 'config/types';
+import { Extent } from 'components/MapView/Layers/raster-utils';
+import { LayerKey, LayerType, isMainLayer, DateItem } from 'config/types';
 import { LayerDefinitions, getBoundaryLayerSingleton } from 'config/utils';
-import { LayerData } from 'context/layers/layer-data';
 import {
   addLayer,
   layerOrdering,
@@ -20,7 +12,6 @@ import {
 } from 'context/mapStateSlice';
 import {
   dateRangeSelector,
-  layerDataSelector,
   layersSelector,
 } from 'context/mapStateSlice/selectors';
 import { addNotification } from 'context/notificationStateSlice';
@@ -36,7 +27,12 @@ import {
   getPossibleDatesForLayer,
 } from 'utils/server-utils';
 import { UrlLayerKey, getUrlKey, useUrlHistory } from 'utils/url-utils';
-import { datesAreEqualWithoutTime, binaryIncludes } from './date-utils';
+import {
+  datesAreEqualWithoutTime,
+  binaryIncludes,
+  getDateFormat,
+  getMillisecondsFromISO,
+} from './date-utils';
 
 const dateSupportLayerTypes: Array<LayerType['type']> = [
   'impact',
@@ -53,9 +49,6 @@ const useLayers = () => {
   const boundaryLayerId = getBoundaryLayerSingleton().id;
 
   const unsortedSelectedLayers = useSelector(layersSelector);
-  const boundaryLayerData = useSelector(layerDataSelector(boundaryLayerId)) as
-    | LayerData<BoundaryLayerProps>
-    | undefined;
   const serverAvailableDates = useSelector(availableDatesSelector);
   const { startDate: selectedDate } = useSelector(dateRangeSelector);
 
@@ -85,14 +78,7 @@ const useLayers = () => {
     return [...unsortedSelectedLayers].sort(layerOrdering);
   }, [unsortedSelectedLayers]);
 
-  // TODO - could we simply use the country boundary extent here instead of the calculation?
-  // Or can we foresee any edge cases?
-  const adminBoundariesExtent = useMemo(() => {
-    if (!boundaryLayerData?.data) {
-      return undefined;
-    }
-    return bbox(boundaryLayerData.data) as Extent; // we get extents of admin boundaries to give to the api.
-  }, [boundaryLayerData]);
+  const adminBoundariesExtent = appConfig.map.boundingBox as Extent;
 
   const selectedLayersWithDateSupport = useMemo(() => {
     return selectedLayers
@@ -105,7 +91,11 @@ const useLayers = () => {
         }
         if (layer.type === 'wms') {
           // some WMS layer might not have date dimension (i.e. static data)
-          return layer.serverLayerName in serverAvailableDates;
+          return layer.id in serverAvailableDates;
+        }
+        if (layer.type === 'composite') {
+          // some WMS layer might not have date dimension (i.e. static data)
+          return layer.dateLayer in serverAvailableDates;
         }
         return dateSupportLayerTypes.includes(layer.type);
       })
@@ -294,7 +284,7 @@ const useLayers = () => {
 
     if (!Number.isNaN(dateInt)) {
       dispatch(updateDateRange({ startDate: dateInt }));
-      updateHistory('date', moment(dateInt).format(DEFAULT_DATE_FORMAT));
+      updateHistory('date', getDateFormat(dateInt, 'default') as string);
       return;
     }
 
@@ -390,7 +380,7 @@ const useLayers = () => {
     if (
       !selectedDate ||
       !urlDate ||
-      moment(urlDate).valueOf() === selectedDate
+      getMillisecondsFromISO(urlDate) === selectedDate
     ) {
       return;
     }
@@ -448,11 +438,11 @@ const useLayers = () => {
   ]);
 
   return {
+    adminBoundariesExtent,
     boundaryLayerId,
     numberOfActiveLayers,
-    selectedLayers,
-    adminBoundariesExtent,
     selectedLayerDates,
+    selectedLayers,
     selectedLayersWithDateSupport,
   };
 };

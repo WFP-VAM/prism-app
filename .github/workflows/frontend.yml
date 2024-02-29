@@ -33,9 +33,9 @@ jobs:
             **/node_modules
             **/.eslintcache
             ${{ steps.yarn-cache-dir-path.outputs.dir }}
-          key: ${{ runner.os }}-yarn-2024-${{ hashFiles('**/frontend/yarn.lock') }}-${{ hashFiles('**/common/yarn.lock') }}
+          key: ${{ runner.os }}-yarn-2024-2-${{ hashFiles('**/frontend/yarn.lock') }}-${{ hashFiles('**/common/yarn.lock') }}
           restore-keys: |
-            ${{ runner.os }}-yarn-2024
+            ${{ runner.os }}-yarn-2024-2
 
       - name: Install dependencies if needed.
         if: steps.yarn-cache.outputs.cache-hit != 'true'
@@ -56,10 +56,10 @@ jobs:
       - name: Layer availability check
         if: matrix.os == 'ubuntu-latest'
         run: |
-          cd frontend && yarn preprocess-dates
+          cd frontend && yarn preprocess-layers
           DIFF=$(git diff --name-only)
           if [ "$DIFF" != "" ]; then
-            echo "Files have changed. Make sure to run yarn preprocess-dates and commit changes."
+            echo "Files have changed. Make sure to run yarn preprocess-layers and commit changes."
             echo "$DIFF"
             exit 1
           fi

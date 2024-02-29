@@ -24,13 +24,14 @@ import {
 } from 'utils/map-utils';
 import { fillPaintData } from 'components/MapView/Layers/styles';
 import { availableDatesSelector } from 'context/serverStateSlice';
-import { getRequestDate } from 'utils/server-utils';
+import { getPossibleDatesForLayer, getRequestDate } from 'utils/server-utils';
 import {
   addPopupParams,
   legendToStops,
 } from 'components/MapView/Layers/layer-utils';
 import { convertSvgToPngBase64Image, getSVGShape } from 'utils/image-utils';
 import { Map, FillLayerSpecification } from 'maplibre-gl';
+import { opacitySelector } from 'context/opacityStateSlice';
 
 export const createFillPatternsForLayerLegends = async (
   layer: AdminLevelDataLayerProps,
@@ -105,9 +106,12 @@ const AdminLevelDataLayers = ({
 
   const selectedDate = useDefaultDate(layer.id);
   useMapCallback('click', getLayerMapId(layer.id), layer, onClick);
-  const layerAvailableDates = serverAvailableDates[layer.id];
+  const layerAvailableDates = getPossibleDatesForLayer(
+    layer,
+    serverAvailableDates,
+  );
   const queryDate = getRequestDate(layerAvailableDates, selectedDate);
-
+  const opacityState = useSelector(opacitySelector(layer.id));
   const layerData = useSelector(layerDataSelector(layer.id, queryDate)) as
     | LayerData<AdminLevelDataLayerProps>
     | undefined;
@@ -164,7 +168,7 @@ const AdminLevelDataLayers = ({
         type="fill"
         paint={
           fillPaintData(
-            layer,
+            { ...layer, opacity: opacityState || layer.opacity },
             'data',
             layer?.fillPattern,
           ) as FillLayerSpecification['paint']

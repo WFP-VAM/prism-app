@@ -9,11 +9,11 @@ import {
   PointDataLayerProps,
 } from 'config/types';
 import { addPopupData } from 'context/tooltipStateSlice';
+import { findFeature, getEvtCoords, getLayerMapId } from 'utils/map-utils';
 import { getRoundedData } from 'utils/data-utils';
 import { i18nTranslator } from 'i18n';
 import { getFeatureInfoPropsData } from 'components/MapView/utils';
 import { MapLayerMouseEvent } from 'maplibre-gl';
-import { findFeature, getEvtCoords, getLayerMapId } from 'utils/map-utils';
 
 export function legendToStops(
   legend: LegendDefinition = [],
@@ -78,7 +78,6 @@ export const addPopupParams = (
   adminLevel: boolean,
 ): void => {
   const layerId = getLayerMapId(layer.id);
-
   const feature = findFeature(layerId, evt);
   if (!feature) {
     return;
@@ -95,14 +94,9 @@ export const addPopupParams = (
 
   // by default add `dataField` to the tooltip if it is not within the feature_info_props dictionary.
   if (!Object.keys(featureInfoProps || {}).includes(dataField)) {
-    const adminLevelObj = adminLevel
-      ? { adminLevel: feature.properties.adminLevel }
-      : {};
-
     dispatch(
       addPopupData({
         [title]: {
-          ...adminLevelObj,
           data: getRoundedData(get(feature, propertyField), t),
           coordinates,
         },
@@ -112,13 +106,22 @@ export const addPopupParams = (
 
   // Add feature_info_props as extra fields to the tooltip
   dispatch(
-    addPopupData(
-      getFeatureInfoPropsData(
+    addPopupData({
+      // temporary fix for the admin level
+      ...(adminLevel
+        ? {
+            'Admin Level': {
+              data: feature.properties.adminLevel,
+              coordinates,
+            },
+          }
+        : {}),
+      ...getFeatureInfoPropsData(
         layer.featureInfoProps || {},
         coordinates,
         feature,
       ),
-    ),
+    }),
   );
 };
 

@@ -8,7 +8,6 @@ import {
   orderBy,
 } from 'lodash';
 import { Feature, FeatureCollection } from 'geojson';
-import moment from 'moment';
 import { createGetCoverageUrl } from 'prism-common';
 import { TFunctionKeys } from 'i18next';
 import { Dispatch } from 'redux';
@@ -41,11 +40,11 @@ import {
 } from 'i18n';
 import { ANALYSIS_API_URL } from 'utils/constants';
 import { getRoundedData } from './data-utils';
-import { DEFAULT_DATE_FORMAT_SNAKE_CASE } from './name-utils';
 import {
   ANALYSIS_REQUEST_TIMEOUT,
   fetchWithTimeout,
 } from './fetch-with-timeout';
+import { getDateFormat } from './date-utils';
 
 export type BaselineLayerData = AdminLevelDataLayerData;
 
@@ -711,9 +710,7 @@ export function generateAnalysisFilename(
       ? analysisResult.adminLevel
       : undefined;
 
-  const dateString = moment(selectedDate || createdAt).format(
-    DEFAULT_DATE_FORMAT_SNAKE_CASE,
-  );
+  const dateString = getDateFormat(selectedDate || createdAt, 'snake');
 
   return `analysis_${hazardLayerId}${
     baselineLayerId ? `_${baselineLayerId}` : ''

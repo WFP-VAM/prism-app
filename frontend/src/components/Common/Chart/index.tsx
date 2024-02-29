@@ -5,52 +5,19 @@ import { Bar, Line } from 'react-chartjs-2';
 import { TFunctionKeys } from 'i18next';
 import moment, { LocaleSpecifier } from 'moment';
 import { ChartConfig, DatasetField } from 'config/types';
-import { TableData } from 'context/tableStateSlice';
+import { TableData, TableRowType } from 'context/tableStateSlice';
 import { useSafeTranslation } from 'i18n';
 import { IconButton, Tooltip, makeStyles } from '@material-ui/core';
 import ImageIcon from '@material-ui/icons/Image';
 import GetAppIcon from '@material-ui/icons/GetApp';
-import { downloadToFile } from 'components/MapView/utils';
-import { castObjectsArrayToCsv } from 'utils/csv-utils';
+import { buildCsvFileName, downloadToFile } from 'components/MapView/utils';
+import {
+  createCsvDataFromDataKeyMap,
+  createDataKeyMap,
+  downloadChartsToCsv,
+} from 'utils/csv-utils';
 
-interface ChartData {
-  labels: (string | number)[];
-  datasets: {
-    data: (number | null)[];
-    label: string;
-    fill: boolean;
-    backgroundColor: string;
-    borderColor: string;
-    borderWidth: number;
-    pointRadius: number;
-    pointHitRadius: number;
-  }[];
-}
-
-function downloadCsv(chartData: ChartData, filename: string) {
-  const columnsNames = Object.fromEntries([
-    ['date', 'Date'],
-    ...chartData.datasets.map(x => [x.label, x.label.split(' ').join('_')]),
-  ]);
-  const objectsArray = chartData.labels.map((date, index) => {
-    const entries = chartData.datasets.map(set => [set.label, set.data[index]]);
-    return {
-      date,
-      ...Object.fromEntries(entries),
-    };
-  });
-
-  downloadToFile(
-    {
-      content: castObjectsArrayToCsv(objectsArray, columnsNames, ','),
-      isUrl: false,
-    },
-    filename,
-    'text/csv',
-  );
-}
-
-function downloadPng(ref: React.RefObject<Bar | Line>, filename: string) {
+function downloadChartPng(ref: React.RefObject<Bar | Line>, filename: string) {
   const chart = ref.current;
   if (!chart) {
     throw new Error('chart is undefined');
@@ -89,6 +56,38 @@ export type ChartProps = {
   chartRange?: [number, number];
   showDownloadIcons?: boolean;
   iconStyles?: React.CSSProperties;
+  downloadFilenamePrefix?: string[];
+};
+
+interface GetLabelsProps {
+  chartRange: [number, number];
+  category: string;
+  header: TableRowType;
+  indices: string[];
+  isEWSChart: boolean;
+  locale: LocaleSpecifier;
+  tableRows: TableRowType[];
+  transpose: boolean;
+}
+
+export const getLabels = ({
+  chartRange,
+  category,
+  header,
+  indices,
+  isEWSChart,
+  locale,
+  tableRows,
+  transpose,
+}: GetLabelsProps) => {
+  if (!transpose) {
+    return indices.map(index => header[index]);
+  }
+  return tableRows.slice(chartRange[0], chartRange[1]).map(row => {
+    // Time information is only needed for EWS charts
+    const dateFormat = isEWSChart ? 'YYYY-MM-DD HH:mm' : 'YYYY-MM-DD';
+    return moment(row[category]).locale(locale).format(dateFormat);
+  });
 };
 
 const Chart = memo(
@@ -103,11 +102,17 @@ const Chart = memo(
     chartRange = [Number.NEGATIVE_INFINITY, Number.POSITIVE_INFINITY],
     showDownloadIcons = false,
     iconStyles,
+    downloadFilenamePrefix = [],
   }: ChartProps) => {
     const { t } = useSafeTranslation();
     const classes = useStyles();
     const chartRef = React.useRef<Bar | Line>(null);
     const isEWSChart = !!data.EWSConfig;
+
+    const downloadFilename = buildCsvFileName([
+      ...downloadFilenamePrefix,
+      ...title.split(' '),
+    ]);
 
     const transpose = useMemo(() => {
       return config.transpose || false;
@@ -154,27 +159,16 @@ const Chart = memo(
       );
     }, [colorShuffle, config.colors, nshades]);
 
-    const labels = useMemo(() => {
-      if (!transpose) {
-        return indices.map(index => header[index]);
-      }
-      return tableRows.slice(chartRange[0], chartRange[1]).map(row => {
-        // Time information is only needed for EWS charts
-        const dateFormat = isEWSChart ? 'YYYY-MM-DD HH:mm' : 'YYYY-MM-DD';
-        return moment(row[config.category])
-          .locale(t('date_locale') as LocaleSpecifier)
-          .format(dateFormat);
-      });
-    }, [
+    const labels = getLabels({
       chartRange,
-      config.category,
+      category: config.category,
       header,
       indices,
       isEWSChart,
-      t,
+      locale: t('date_locale') as LocaleSpecifier,
       tableRows,
       transpose,
-    ]);
+    });
 
     // The table rows data sets
     const tableRowsDataSet = useMemo(() => {
@@ -369,9 +363,7 @@ const Chart = memo(
             <>
               <Tooltip title={t('Download PNG') as string}>
                 <IconButton
-                  onClick={() =>
-                    downloadPng(chartRef, title.split(' ').join('_'))
-                  }
+                  onClick={() => downloadChartPng(chartRef, downloadFilename)}
                   className={classes.firstIcon}
                   style={iconStyles}
                 >
@@ -380,9 +372,20 @@ const Chart = memo(
               </Tooltip>
               <Tooltip title={t('Download CSV') as string}>
                 <IconButton
-                  onClick={() =>
-                    downloadCsv(chartData, title.split(' ').join('_'))
-                  }
+                  onClick={() => {
+                    const keyMap = datasetFields
+                      ? createDataKeyMap(data, datasetFields)
+                      : {};
+
+                    downloadChartsToCsv([
+                      [
+                        {
+                          [title]: createCsvDataFromDataKeyMap(data, keyMap),
+                        },
+                        downloadFilename,
+                      ],
+                    ])();
+                  }}
                   className={classes.secondIcon}
                   style={iconStyles}
                 >
@@ -416,6 +419,9 @@ const Chart = memo(
         classes.firstIcon,
         classes.secondIcon,
         config.type,
+        data,
+        datasetFields,
+        downloadFilename,
         iconStyles,
         showDownloadIcons,
         t,
