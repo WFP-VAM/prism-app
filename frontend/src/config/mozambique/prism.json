@@ -102,6 +102,10 @@
               "main": true
             },
             {
+              "id": "chirps_rainfall_daily",
+              "label": "Daily"
+            },
+            {
               "id": "rainfall_agg_1month",
               "label": "1-month"
             },
