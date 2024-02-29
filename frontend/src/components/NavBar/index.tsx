@@ -216,7 +216,7 @@ const styles = (theme: Theme) =>
     },
     appBar: {
       backgroundImage: `linear-gradient(180deg, ${theme.palette.primary.main} 0%, ${theme.palette.primary.dark} 100%)`,
-      height: '7vh',
+      height: '6vh',
       display: 'flex',
       justifyContent: 'center',
     },
