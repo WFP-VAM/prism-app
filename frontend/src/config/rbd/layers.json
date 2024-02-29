@@ -28,7 +28,7 @@
       },
       "line": {
         "line-color": "gray",
-        "line-width": 1.5,
+        "line-width": 1.0,
         "line-opacity": 0.8
       }
     },
@@ -47,7 +47,7 @@
       },
       "line": {
         "line-color": "gray",
-        "line-width": 2,
+        "line-width": 1.5,
         "line-opacity": 0.9
       }
     },
@@ -3551,7 +3551,7 @@
     "legend_text": "Multidimensional risk index"
   },
   "ch_phase": {
-    "title": "Phase classification",
+    "title": "Overall phase classification",
     "type": "admin_level_data",
     "path": "data/rbd/ch/admin2_{YYYY_MM_DD}.json",
     "dates": [
@@ -3570,7 +3570,10 @@
       "2022-02-01",
       "2022-06-01",
       "2022-10-01",
-      "2023-06-01"
+      "2023-02-01",
+      "2023-06-01",
+      "2023-10-01",
+      "2024-06-01"
     ],
     "validityPeriod": {
       "start_date_field": "start_date",
@@ -3716,7 +3719,7 @@
     "legend_text": "Update later"
   },
   "ch_pop3_5": {
-    "title": "Population in phase 3 to 5",
+    "title": "Number of people in phase 3 to 5",
     "type": "admin_level_data",
     "path": "data/rbd/ch/admin2_{YYYY_MM_DD}.json",
     "dates": [
@@ -3735,16 +3738,20 @@
       "2022-02-01",
       "2022-06-01",
       "2022-10-01",
-      "2023-06-01"
+      "2023-02-01",
+      "2023-06-01",
+      "2023-10-01",
+      "2024-06-01"
     ],
     "validityPeriod": {
       "start_date_field": "start_date",
       "end_date_field": "end_date"
     },
-    "data_field": "calc_pop_ph3_5_admin2",
-    "admin_level": 2,
-    "admin_code": "adm2_pcod2",
     "fallbackLayerKeys": ["ch_pop3_5_admin1"],
+    "admin_level": 2,
+    "data_field": "calc_pop_ph3_5_admin2",
+    "admin_code": "adm2_pcod2",
+    "opacity": 0.7,
     "feature_info_props": {
       "calc_pop_ph1_admin2": {
         "type": "number",
@@ -3779,10 +3786,9 @@
         "dataTitle": "Reference period end"
       }
     },
-    "opacity": 0.7,
     "legend": [
       {
-        "value": 1,
+        "value": 0,
         "label": "< 10,000",
         "color": "#fee5d9"
       },
@@ -3823,9 +3829,10 @@
     "title": "Population in phase 3 to 5",
     "type": "admin_level_data",
     "path": "data/rbd/ch/admin1_{YYYY_MM_DD}.json",
-    "data_field": "calc_pop_ph3_5_admin1",
     "admin_level": 1,
+    "data_field": "calc_pop_ph3_5_admin1",
     "admin_code": "adm1_pcod2",
+    "opacity": 0.7,
     "feature_info_props": {
       "calc_pop_ph1_admin1": {
         "type": "number",
@@ -3860,10 +3867,9 @@
         "dataTitle": "Reference period end"
       }
     },
-    "opacity": 0.7,
     "legend": [
       {
-        "value": 1,
+        "value": 0,
         "label": "< 10,000",
         "color": "#fee5d9"
       },
@@ -3900,10 +3906,207 @@
     ],
     "legend_text": "Population in phase 3 to 5"
   },
+  "ch_perc3_5": {
+    "title": "Percent of population in phase 3 to 5",
+    "type": "admin_level_data",
+    "path": "data/rbd/ch/admin2_{YYYY_MM_DD}.json",
+    "dates": [
+      "2018-02-01",
+      "2018-06-01",
+      "2018-10-01",
+      "2019-02-01",
+      "2019-06-01",
+      "2019-10-01",
+      "2020-02-01",
+      "2020-06-01",
+      "2020-10-01",
+      "2021-02-01",
+      "2021-06-01",
+      "2021-10-01",
+      "2022-02-01",
+      "2022-06-01",
+      "2022-10-01",
+      "2023-02-01",
+      "2023-06-01",
+      "2023-10-01",
+      "2024-06-01"
+    ],
+    "validityPeriod": {
+      "start_date_field": "start_date",
+      "end_date_field": "end_date"
+    },
+    "fallbackLayerKeys": ["ch_perc3_5_admin1"],
+    "admin_level": 2,
+    "data_field": "calc_perc_ph3_5_admin2",
+    "admin_code": "adm2_pcod2",
+    "opacity": 0.7,
+    "feature_info_props": {
+      "calc_pop_ph1_admin2": {
+        "type": "number",
+        "dataTitle": "Population in phase 1"
+      },
+      "calc_pop_ph2_admin2": {
+        "type": "number",
+        "dataTitle": "Population in phase 2"
+      },
+      "calc_pop_ph3_admin2": {
+        "type": "number",
+        "dataTitle": "Population in phase 3"
+      },
+      "calc_pop_ph4_admin2": {
+        "type": "number",
+        "dataTitle": "Population in phase 4"
+      },
+      "calc_pop_ph5_admin2": {
+        "type": "number",
+        "dataTitle": "Population in phase 5"
+      },
+      "calc_pop_ph3_5_admin2": {
+        "type": "number",
+        "dataTitle": "Population in phase 3 to 5"
+      },
+      "start_date": {
+        "type": "text",
+        "dataTitle": "Reference period start"
+      },
+      "end_date": {
+        "type": "text",
+        "dataTitle": "Reference period end"
+      }
+    },
+    "legend": [
+      {
+        "value": 0,
+        "label": "0%",
+        "color": "#d9f0d3"
+      },
+      {
+        "value": 1,
+        "label": "1 - 4%",
+        "color": "#fee5d9"
+      },
+      {
+        "value": 5,
+        "label": "5 - 9%",
+        "color": "#fcbba1"
+      },
+      {
+        "value": 10,
+        "label": "10 - 19%",
+        "color": "#fc9272"
+      },
+      {
+        "value": 20,
+        "label": "20 - 29%",
+        "color": "#fb6a4a"
+      },
+      {
+        "value": 30,
+        "label": "30 - 39%",
+        "color": "#ef3b2c"
+      },
+      {
+        "value": 40,
+        "label": "40 - 49%",
+        "color": "#cb181d"
+      },
+      {
+        "value": 50,
+        "label": ">= 50%",
+        "color": "#99000d"
+      }
+    ],
+    "legend_text": "Percent of population in phase 3 to 5"
+  },
+  "ch_perc3_5_admin1": {
+    "title": "Percent of population in phase 3 to 5",
+    "type": "admin_level_data",
+    "path": "data/rbd/ch/admin1_{YYYY_MM_DD}.json",
+    "admin_level": 1,
+    "data_field": "calc_perc_ph3_5_admin1",
+    "admin_code": "adm1_pcod2",
+    "opacity": 0.7,
+    "feature_info_props": {
+      "calc_pop_ph1_admin1": {
+        "type": "number",
+        "dataTitle": "Population in phase 1"
+      },
+      "calc_pop_ph2_admin1": {
+        "type": "number",
+        "dataTitle": "Population in phase 2"
+      },
+      "calc_pop_ph3_admin1": {
+        "type": "number",
+        "dataTitle": "Population in phase 3"
+      },
+      "calc_pop_ph4_admin1": {
+        "type": "number",
+        "dataTitle": "Population in phase 4"
+      },
+      "calc_pop_ph5_admin1": {
+        "type": "number",
+        "dataTitle": "Population in phase 5"
+      },
+      "calc_pop_ph3_5_admin1": {
+        "type": "number",
+        "dataTitle": "Population in phase 3 to 5"
+      },
+      "start_date": {
+        "type": "text",
+        "dataTitle": "Reference period start"
+      },
+      "end_date": {
+        "type": "text",
+        "dataTitle": "Reference period end"
+      }
+    },
+    "legend": [
+      {
+        "value": 0,
+        "label": "0%",
+        "color": "#d9d9d9"
+      },
+      {
+        "value": 1,
+        "label": "1 - 4%",
+        "color": "#fee5d9"
+      },
+      {
+        "value": 5,
+        "label": "5 - 9%",
+        "color": "#fcbba1"
+      },
+      {
+        "value": 10,
+        "label": "10 - 14%",
+        "color": "#fc9272"
+      },
+      {
+        "value": 15,
+        "label": "15 - 19%",
+        "color": "#fb6a4a"
+      },
+      {
+        "value": 20,
+        "label": "20 - 24%",
+        "color": "#ef3b2c"
+      },
+      {
+        "value": 25,
+        "label": "25 - 29%",
+        "color": "#cb181d"
+      },
+      {
+        "value": 30,
+        "label": ">= 30%",
+        "color": "#99000d"
+      }
+    ],
+    "legend_text": "Percent of population in phase 3 to 5"
+  },
   "ch_idps_phase": {
     "title": "IDPs - phase classification",
     "type": "admin_level_data",
-    "fill_pattern": "left",
     "path": "data/rbd/ch/idps_admin2_{YYYY_MM_DD}.json",
     "dates": [
       "2019-10-01",
@@ -3912,6 +4115,7 @@
       "2022-02-01",
       "2022-06-01",
       "2022-10-01",
+      "2023-02-01",
       "2023-06-01"
     ],
     "validityPeriod": {
@@ -3967,8 +4171,15 @@
     "type": "admin_level_data",
     "path": "data/rbd/ch/idps_admin1_{YYYY_MM_DD}.json",
     "admin_level": 1,
-    "data_field": "calc_ph_admin1",
+    "data_field": "phase_class",
     "admin_code": "adm1_pcod2",
+    "dates": [
+      "2021-02-01",
+      "2021-06-01",
+      "2022-10-01",
+      "2023-02-01",
+      "2023-06-01"
+    ],
     "opacity": 0.7,
     "feature_info_props": {
       "start_date": {
@@ -3982,29 +4193,44 @@
     },
     "legend": [
       {
+        "value": 0,
+        "label": "0%",
+        "color": "#d9d9d9"
+      },
+      {
         "value": 1,
-        "label": "Phase 1 - None / minimal",
-        "color": "#c6ffc7"
-      },
-      {
-        "value": 2,
-        "label": "Phase 2 - Stressed",
-        "color": "#ffe718"
-      },
-      {
-        "value": 3,
-        "label": "Phase 3 - Crisis",
-        "color": "#e88400"
-      },
-      {
-        "value": 4,
-        "label": "Phase 4 - Emergency",
-        "color": "#e02d00"
+        "label": "1 - 4%",
+        "color": "#fee5d9"
       },
       {
         "value": 5,
-        "label": "Phase 5 - Disaster / famine",
-        "color": "#5e0803"
+        "label": "5 - 9%",
+        "color": "#fcbba1"
+      },
+      {
+        "value": 10,
+        "label": "10 - 19%",
+        "color": "#fc9272"
+      },
+      {
+        "value": 20,
+        "label": "20 - 29%",
+        "color": "#fb6a4a"
+      },
+      {
+        "value": 30,
+        "label": "30 - 39%",
+        "color": "#ef3b2c"
+      },
+      {
+        "value": 40,
+        "label": "40 - 49%",
+        "color": "#cb181d"
+      },
+      {
+        "value": 50,
+        "label": ">= 50%",
+        "color": "#99000d"
       }
     ],
     "legend_text": "Internally displaced people (IDPs) overall phase classification"
@@ -4020,6 +4246,7 @@
       "2022-02-01",
       "2022-06-01",
       "2022-10-01",
+      "2023-02-01",
       "2023-06-01"
     ],
     "validityPeriod": {
@@ -4027,9 +4254,9 @@
       "end_date_field": "end_date"
     },
     "admin_level": 2,
-    "data_field": "calc_pop_ph3_5_admin2",
+    "data_field": "calc_idps_ph_3_5",
     "admin_code": "adm2_pcod2",
-    "fallbackLayerKeys": ["ch_idps_phase_admin1"],
+    "fallbackLayerKeys": ["ch_idps_pop3_5_admin1"],
     "opacity": 0.7,
     "feature_info_props": {
       "start_date": {
@@ -4043,7 +4270,7 @@
     },
     "legend": [
       {
-        "value": 1,
+        "value": 0,
         "label": "< 10,000",
         "color": "#fee5d9"
       },
@@ -4078,15 +4305,22 @@
         "color": "#99000d"
       }
     ],
-    "legend_text": "Population in phase 3 to 5"
+    "legend_text": "IDP population in phase 3 to 5"
   },
   "ch_idps_pop3_5_admin1": {
     "title": "IDPs in phase 3 to 5",
     "type": "admin_level_data",
     "path": "data/rbd/ch/idps_admin1_{YYYY_MM_DD}.json",
     "admin_level": 1,
-    "data_field": "calc_pop_ph3_5_admin1",
+    "data_field": "calc_idps_ph_3_5",
     "admin_code": "adm1_pcod2",
+    "dates": [
+      "2021-02-01",
+      "2021-06-01",
+      "2022-10-01",
+      "2023-02-01",
+      "2023-06-01"
+    ],
     "opacity": 0.7,
     "feature_info_props": {
       "start_date": {
@@ -4100,7 +4334,7 @@
     },
     "legend": [
       {
-        "value": 1,
+        "value": 0,
         "label": "< 10,000",
         "color": "#fee5d9"
       },
@@ -4135,12 +4369,209 @@
         "color": "#99000d"
       }
     ],
-    "legend_text": "Population in phase 3 to 5"
+    "legend_text": "IDP population in phase 3 to 5"
+  },
+  "ch_idps_perc3_5": {
+    "title": "Percent of IDPs in phase 3 to 5",
+    "type": "admin_level_data",
+    "path": "data/rbd/ch/idps_admin2_{YYYY_MM_DD}.json",
+    "dates": [
+      "2019-10-01",
+      "2021-02-01",
+      "2021-06-01",
+      "2022-02-01",
+      "2022-06-01",
+      "2022-10-01",
+      "2023-02-01",
+      "2023-06-01"
+    ],
+    "validityPeriod": {
+      "start_date_field": "start_date",
+      "end_date_field": "end_date"
+    },
+    "fallbackLayerKeys": ["ch_idps_perc3_5_admin1"],
+    "admin_level": 2,
+    "data_field": "calc_perc_idp_ph3_5",
+    "admin_code": "adm2_pcod2",
+    "opacity": 0.7,
+    "feature_info_props": {
+      "phase1": {
+        "type": "number",
+        "dataTitle": "Population in phase 1"
+      },
+      "phase2": {
+        "type": "number",
+        "dataTitle": "Population in phase 2"
+      },
+      "phase3": {
+        "type": "number",
+        "dataTitle": "Population in phase 3"
+      },
+      "phase4": {
+        "type": "number",
+        "dataTitle": "Population in phase 4"
+      },
+      "phase5": {
+        "type": "number",
+        "dataTitle": "Population in phase 5"
+      },
+      "phase35": {
+        "type": "number",
+        "dataTitle": "Population in phase 3 to 5"
+      },
+      "start_date": {
+        "type": "text",
+        "dataTitle": "Reference period start"
+      },
+      "end_date": {
+        "type": "text",
+        "dataTitle": "Reference period end"
+      }
+    },
+    "legend": [
+      {
+        "value": 0,
+        "label": "0%",
+        "color": "#d9f0d3"
+      },
+      {
+        "value": 1,
+        "label": "1 - 4%",
+        "color": "#fee5d9"
+      },
+      {
+        "value": 5,
+        "label": "5 - 9%",
+        "color": "#fcbba1"
+      },
+      {
+        "value": 10,
+        "label": "10 - 19%",
+        "color": "#fc9272"
+      },
+      {
+        "value": 20,
+        "label": "20 - 29%",
+        "color": "#fb6a4a"
+      },
+      {
+        "value": 30,
+        "label": "30 - 39%",
+        "color": "#ef3b2c"
+      },
+      {
+        "value": 40,
+        "label": "40 - 49%",
+        "color": "#cb181d"
+      },
+      {
+        "value": 50,
+        "label": ">= 50%",
+        "color": "#99000d"
+      }
+    ],
+    "legend_text": "Percent of IDP population in phase 3 to 5"
+  },
+  "ch_idps_perc3_5_admin1": {
+    "title": "Percent of IDPs in phase 3 to 5",
+    "type": "admin_level_data",
+    "path": "data/rbd/ch/idps_admin1_{YYYY_MM_DD}.json",
+    "dates": [
+      "2021-02-01",
+      "2021-06-01",
+      "2022-10-01",
+      "2023-02-01",
+      "2023-06-01"
+    ],
+    "validityPeriod": {
+      "start_date_field": "start_date",
+      "end_date_field": "end_date"
+    },
+    "admin_level": 1,
+    "data_field": "calc_perc_idp_ph3_5",
+    "admin_code": "adm1_pcod2",
+    "opacity": 0.7,
+    "feature_info_props": {
+      "phase1": {
+        "type": "number",
+        "dataTitle": "Population in phase 1"
+      },
+      "phase2": {
+        "type": "number",
+        "dataTitle": "Population in phase 2"
+      },
+      "phase3": {
+        "type": "number",
+        "dataTitle": "Population in phase 3"
+      },
+      "phase4": {
+        "type": "number",
+        "dataTitle": "Population in phase 4"
+      },
+      "phase5": {
+        "type": "number",
+        "dataTitle": "Population in phase 5"
+      },
+      "phase35": {
+        "type": "number",
+        "dataTitle": "Population in phase 3 to 5"
+      },
+      "start_date": {
+        "type": "text",
+        "dataTitle": "Reference period start"
+      },
+      "end_date": {
+        "type": "text",
+        "dataTitle": "Reference period end"
+      }
+    },
+    "legend": [
+      {
+        "value": 0,
+        "label": "0%",
+        "color": "#d9f0d3"
+      },
+      {
+        "value": 1,
+        "label": "1 - 4%",
+        "color": "#fee5d9"
+      },
+      {
+        "value": 5,
+        "label": "5 - 9%",
+        "color": "#fcbba1"
+      },
+      {
+        "value": 10,
+        "label": "10 - 19%",
+        "color": "#fc9272"
+      },
+      {
+        "value": 20,
+        "label": "20 - 29%",
+        "color": "#fb6a4a"
+      },
+      {
+        "value": 30,
+        "label": "30 - 39%",
+        "color": "#ef3b2c"
+      },
+      {
+        "value": 40,
+        "label": "40 - 49%",
+        "color": "#cb181d"
+      },
+      {
+        "value": 50,
+        "label": ">= 50%",
+        "color": "#99000d"
+      }
+    ],
+    "legend_text": "Percent of IDP population in phase 3 to 5"
   },
   "ch_inaccessible_phase": {
     "title": "Limited access areas - phase classification",
     "type": "admin_level_data",
-    "fill_pattern": "left",
     "path": "data/rbd/ch/al_admin2_{YYYY_MM_DD}.json",
     "dates": [
       "2020-02-01",
@@ -4152,7 +4583,10 @@
       "2022-02-01",
       "2022-06-01",
       "2022-10-01",
-      "2023-06-01"
+      "2023-02-01",
+      "2023-06-01",
+      "2023-10-01",
+      "2024-06-01"
     ],
     "validityPeriod": {
       "start_date_field": "start_date",
@@ -4204,7 +4638,6 @@
   "ch_inaccessible_pop3_5": {
     "title": "Limited access areas - population in phase 3 to 5",
     "type": "admin_level_data",
-    "fill_pattern": "left",
     "path": "data/rbd/ch/al_admin2_{YYYY_MM_DD}.json",
     "dates": [
       "2020-02-01",
@@ -4216,14 +4649,17 @@
       "2022-02-01",
       "2022-06-01",
       "2022-10-01",
-      "2023-06-01"
+      "2023-02-01",
+      "2023-06-01",
+      "2023-10-01",
+      "2024-06-01"
     ],
     "validityPeriod": {
       "start_date_field": "start_date",
       "end_date_field": "end_date"
     },
     "admin_level": 2,
-    "data_field": "calc_pop_ph3_5_admin2",
+    "data_field": "calc_inaccessible_ph_3_5",
     "admin_code": "adm2_pcod2",
     "opacity": 0.7,
     "feature_info_props": {
@@ -4238,7 +4674,7 @@
     },
     "legend": [
       {
-        "value": 1,
+        "value": 0,
         "label": "< 10,000",
         "color": "#fee5d9"
       },
@@ -4275,12 +4711,120 @@
     ],
     "legend_text": "Limited access areas - population in phase 3 to 5"
   },
+  "ch_inaccessible_perc3_5": {
+    "title": "Percent of population in phase 3 to 5 in inaccessible areas",
+    "type": "admin_level_data",
+    "path": "data/rbd/ch/al_admin2_{YYYY_MM_DD}.json",
+    "dates": [
+      "2020-02-01",
+      "2020-06-01",
+      "2020-10-01",
+      "2021-02-01",
+      "2021-06-01",
+      "2021-10-01",
+      "2022-02-01",
+      "2022-06-01",
+      "2022-10-01",
+      "2023-02-01",
+      "2023-06-01",
+      "2023-10-01",
+      "2024-06-01"
+    ],
+    "validityPeriod": {
+      "start_date_field": "start_date",
+      "end_date_field": "end_date"
+    },
+    "admin_level": 2,
+    "data_field": "calc_perc_inaccessible_ph3_5",
+    "admin_code": "adm2_pcod2",
+    "opacity": 0.7,
+    "feature_info_props": {
+      "phase1": {
+        "type": "number",
+        "dataTitle": "Population in phase 1"
+      },
+      "phase2": {
+        "type": "number",
+        "dataTitle": "Population in phase 2"
+      },
+      "phase3": {
+        "type": "number",
+        "dataTitle": "Population in phase 3"
+      },
+      "phase4": {
+        "type": "number",
+        "dataTitle": "Population in phase 4"
+      },
+      "phase5": {
+        "type": "number",
+        "dataTitle": "Population in phase 5"
+      },
+      "phase35": {
+        "type": "number",
+        "dataTitle": "Population in phase 3 to 5"
+      },
+      "start_date": {
+        "type": "text",
+        "dataTitle": "Reference period start"
+      },
+      "end_date": {
+        "type": "text",
+        "dataTitle": "Reference period end"
+      }
+    },
+    "legend": [
+      {
+        "value": 0,
+        "label": "0%",
+        "color": "#d9f0d3"
+      },
+      {
+        "value": 1,
+        "label": "1 - 4%",
+        "color": "#fee5d9"
+      },
+      {
+        "value": 5,
+        "label": "5 - 9%",
+        "color": "#fcbba1"
+      },
+      {
+        "value": 10,
+        "label": "10 - 19%",
+        "color": "#fc9272"
+      },
+      {
+        "value": 20,
+        "label": "20 - 29%",
+        "color": "#fb6a4a"
+      },
+      {
+        "value": 30,
+        "label": "30 - 39%",
+        "color": "#ef3b2c"
+      },
+      {
+        "value": 40,
+        "label": "40 - 49%",
+        "color": "#cb181d"
+      },
+      {
+        "value": 50,
+        "label": ">= 50%",
+        "color": "#99000d"
+      }
+    ],
+    "legend_text": "Percent of population in phase 3 to 5 in inaccessible areas"
+  },
   "ch_urban_phase": {
     "title": "Urban areas - phase classification",
     "type": "admin_level_data",
-    "fill_pattern": "left",
     "path": "data/rbd/ch/urb_admin2_{YYYY_MM_DD}.json",
-    "dates": ["2022-02-01", "2022-06-01"],
+    "fallbackLayerKeys": ["ch_urban_phase_admin1"],
+    "dates": [
+      "2022-02-01", 
+      "2022-06-01"
+    ],
     "validityPeriod": {
       "start_date_field": "start_date",
       "end_date_field": "end_date"
@@ -4328,19 +4872,21 @@
     ],
     "legend_text": "Urban areas - overall phase classification"
   },
-  "ch_urban_pop3_5": {
-    "title": "Urban areas - population in phase 3 to 5",
+  "ch_urban_phase_admin1": {
+    "title": "Urban areas - phase classification",
     "type": "admin_level_data",
-    "fill_pattern": "left",
-    "path": "data/rbd/ch/urb_admin2_{YYYY_MM_DD}.json",
-    "dates": ["2022-02-01", "2022-06-01"],
+    "path": "data/rbd/ch/urb_admin1_{YYYY_MM_DD}.json",
+    "dates": [
+      "2021-02-01", 
+      "2021-06-01"
+    ],
     "validityPeriod": {
       "start_date_field": "start_date",
       "end_date_field": "end_date"
     },
-    "admin_level": 2,
-    "data_field": "calc_pop_ph3_5_admin2",
-    "admin_code": "adm2_pcod2",
+    "admin_level": 1,
+    "data_field": "phase_class",
+    "admin_code": "adm1_pcod2",
     "opacity": 0.7,
     "feature_info_props": {
       "start_date": {
@@ -4355,6 +4901,62 @@
     "legend": [
       {
         "value": 1,
+        "label": "Phase 1 - None / minimal",
+        "color": "#c6ffc7"
+      },
+      {
+        "value": 2,
+        "label": "Phase 2 - Stressed",
+        "color": "#ffe718"
+      },
+      {
+        "value": 3,
+        "label": "Phase 3 - Crisis",
+        "color": "#e88400"
+      },
+      {
+        "value": 4,
+        "label": "Phase 4 - Emergency",
+        "color": "#e02d00"
+      },
+      {
+        "value": 5,
+        "label": "Phase 5 - Disaster / famine",
+        "color": "#5e0803"
+      }
+    ],
+    "legend_text": "Urban areas - overall phase classification"
+  },
+  "ch_urban_pop3_5": {
+    "title": "Urban areas - population in phase 3 to 5",
+    "type": "admin_level_data",
+    "path": "data/rbd/ch/urb_admin2_{YYYY_MM_DD}.json",
+    "fallbackLayerKeys": ["ch_urban_pop3_5_admin1"],
+    "dates": [
+      "2022-02-01", 
+      "2022-06-01"
+    ],
+    "validityPeriod": {
+      "start_date_field": "start_date",
+      "end_date_field": "end_date"
+    },
+    "admin_level": 2,
+    "data_field": "calc_urban_ph_3_5",
+    "admin_code": "adm2_pcod2",
+    "opacity": 0.7,
+    "feature_info_props": {
+      "start_date": {
+        "type": "text",
+        "dataTitle": "Reference period start"
+      },
+      "end_date": {
+        "type": "text",
+        "dataTitle": "Reference period end"
+      }
+    },
+    "legend": [
+      {
+        "value": 0,
         "label": "< 10,000",
         "color": "#fee5d9"
       },
@@ -4390,5 +4992,451 @@
       }
     ],
     "legend_text": "Urban areas - population in phase 3 to 5"
-  }
+  },
+  "ch_urban_pop3_5_admin1": {
+    "title": "Urban areas - population in phase 3 to 5",
+    "type": "admin_level_data",
+    "path": "data/rbd/ch/urb_admin1_{YYYY_MM_DD}.json",
+    "dates": [
+      "2021-02-01", 
+      "2021-06-01"
+    ],
+    "validityPeriod": {
+      "start_date_field": "start_date",
+      "end_date_field": "end_date"
+    },
+    "admin_level": 2,
+    "data_field": "calc_urban_ph_3_5",
+    "admin_code": "adm1_pcod2",
+    "opacity": 0.7,
+    "feature_info_props": {
+      "start_date": {
+        "type": "text",
+        "dataTitle": "Reference period start"
+      },
+      "end_date": {
+        "type": "text",
+        "dataTitle": "Reference period end"
+      }
+    },
+    "legend": [
+      {
+        "value": 0,
+        "label": "< 10,000",
+        "color": "#fee5d9"
+      },
+      {
+        "value": 10000,
+        "label": "10,000 - 20,000",
+        "color": "#fcbba1"
+      },
+      {
+        "value": 20000,
+        "label": "20,000 - 30,000",
+        "color": "#fc9272"
+      },
+      {
+        "value": 30000,
+        "label": "30,000 - 40,000",
+        "color": "#fb6a4a"
+      },
+      {
+        "value": 40000,
+        "label": "40,000 - 50,000",
+        "color": "#ef3b2c"
+      },
+      {
+        "value": 50000,
+        "label": "50,000 - 75,000",
+        "color": "#cb181d"
+      },
+      {
+        "value": 75000,
+        "label": "> 75,000",
+        "color": "#99000d"
+      }
+    ],
+    "legend_text": "Urban areas - population in phase 3 to 5"
+  },
+  "ch_urban_perc3_5": {
+    "title": "Percent of urban population in phase 3 to 5",
+    "type": "admin_level_data",
+    "path": "data/rbd/ch/urb_admin2_{YYYY_MM_DD}.json",
+    "fallbackLayerKeys": ["ch_urban_perc3_5_admin1"],
+    "dates": [
+      "2022-02-01", 
+      "2022-06-01"
+    ],
+    "validityPeriod": {
+      "start_date_field": "start_date",
+      "end_date_field": "end_date"
+    },
+    "admin_level": 2,
+    "data_field": "calc_perc_urb_ph3_5",
+    "admin_code": "adm2_pcod2",
+    "opacity": 0.7,
+    "feature_info_props": {
+      "phase1": {
+        "type": "number",
+        "dataTitle": "Population in phase 1"
+      },
+      "phase2": {
+        "type": "number",
+        "dataTitle": "Population in phase 2"
+      },
+      "phase3": {
+        "type": "number",
+        "dataTitle": "Population in phase 3"
+      },
+      "phase4": {
+        "type": "number",
+        "dataTitle": "Population in phase 4"
+      },
+      "phase5": {
+        "type": "number",
+        "dataTitle": "Population in phase 5"
+      },
+      "phase35": {
+        "type": "number",
+        "dataTitle": "Population in phase 3 to 5"
+      },
+      "start_date": {
+        "type": "text",
+        "dataTitle": "Reference period start"
+      },
+      "end_date": {
+        "type": "text",
+        "dataTitle": "Reference period end"
+      }
+    },
+    "legend": [
+      {
+        "value": 0,
+        "label": "0%",
+        "color": "#d9f0d3"
+      },
+      {
+        "value": 1,
+        "label": "1 - 4%",
+        "color": "#fee5d9"
+      },
+      {
+        "value": 5,
+        "label": "5 - 9%",
+        "color": "#fcbba1"
+      },
+      {
+        "value": 10,
+        "label": "10 - 19%",
+        "color": "#fc9272"
+      },
+      {
+        "value": 20,
+        "label": "20 - 29%",
+        "color": "#fb6a4a"
+      },
+      {
+        "value": 30,
+        "label": "30 - 39%",
+        "color": "#ef3b2c"
+      },
+      {
+        "value": 40,
+        "label": "40 - 49%",
+        "color": "#cb181d"
+      },
+      {
+        "value": 50,
+        "label": ">= 50%",
+        "color": "#99000d"
+      }
+    ],
+    "legend_text": "Percent of urban population in phase 3 to 5"
+  },
+  "ch_urban_perc3_5_admin1": {
+    "title": "Percent of urban population in phase 3 to 5",
+    "type": "admin_level_data",
+    "path": "data/rbd/ch/urb_admin1_{YYYY_MM_DD}.json",
+    "dates": [
+      "2021-02-01", 
+      "2021-06-01"
+    ],
+    "validityPeriod": {
+      "start_date_field": "start_date",
+      "end_date_field": "end_date"
+    },
+    "admin_level": 1,
+    "data_field": "calc_perc_urb_ph3_5",
+    "admin_code": "adm1_pcod2",
+    "opacity": 0.7,
+    "feature_info_props": {
+      "phase1": {
+        "type": "number",
+        "dataTitle": "Population in phase 1"
+      },
+      "phase2": {
+        "type": "number",
+        "dataTitle": "Population in phase 2"
+      },
+      "phase3": {
+        "type": "number",
+        "dataTitle": "Population in phase 3"
+      },
+      "phase4": {
+        "type": "number",
+        "dataTitle": "Population in phase 4"
+      },
+      "phase5": {
+        "type": "number",
+        "dataTitle": "Population in phase 5"
+      },
+      "phase35": {
+        "type": "number",
+        "dataTitle": "Population in phase 3 to 5"
+      },
+      "start_date": {
+        "type": "text",
+        "dataTitle": "Reference period start"
+      },
+      "end_date": {
+        "type": "text",
+        "dataTitle": "Reference period end"
+      }
+    },
+    "legend": [
+      {
+        "value": 0,
+        "label": "0%",
+        "color": "#d9f0d3"
+      },
+      {
+        "value": 1,
+        "label": "1 - 4%",
+        "color": "#fee5d9"
+      },
+      {
+        "value": 5,
+        "label": "5 - 9%",
+        "color": "#fcbba1"
+      },
+      {
+        "value": 10,
+        "label": "10 - 19%",
+        "color": "#fc9272"
+      },
+      {
+        "value": 20,
+        "label": "20 - 29%",
+        "color": "#fb6a4a"
+      },
+      {
+        "value": 30,
+        "label": "30 - 39%",
+        "color": "#ef3b2c"
+      },
+      {
+        "value": 40,
+        "label": "40 - 49%",
+        "color": "#cb181d"
+      },
+      {
+        "value": 50,
+        "label": ">= 50%",
+        "color": "#99000d"
+      }
+    ],
+    "legend_text": "Percent of urban population in phase 3 to 5"
+  },
+  "daily_rainfall_forecast": {
+    "title": "Rolling daily rainfall forecast",
+    "type": "wms",
+    "server_layer_name": "rfh_daily_forecast",
+    "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
+    "date_interval": "days",
+    "additional_query_params": {
+      "styles": "rfh_16_0_300"
+    },
+    "opacity": 0.7,
+    "legend_text": "CHIRPS-GEFS daily forecasts (16-day rolling)",
+    "legend": [
+      {
+        "value": 0,
+        "label": "0 mm",
+        "color": "#fafafa"
+      },
+      {
+        "value": 0.01,
+        "label": "1-2 mm",
+        "color": "#fffadf"
+      },
+      {
+        "value": 2,
+        "label": "2-5 mm",
+        "color": "#d3f9d0"
+      },
+      {
+        "value": 5,
+        "label": "5-10 mm",
+        "color": "#a9e4a3"
+      },
+      {
+        "value": 10,
+        "label": "10-20 mm",
+        "color": "#7cc594"
+      },
+      {
+        "value": 20,
+        "label": "20-30 mm",
+        "color": "#5eab91"
+      },
+      {
+        "value": 30,
+        "label": "30-40 mm",
+        "color": "#9fffe8"
+      },
+      {
+        "value": 40,
+        "label": "40-50 mm",
+        "color": "#90e0ef"
+      },
+      {
+        "value": 50,
+        "label": "50-60 mm",
+        "color": "#00b1de"
+      },
+      {
+        "value": 60,
+        "label": "60-80 mm",
+        "color": "#0083f3"
+      },
+      {
+        "value": 80,
+        "label": "80-100 mm",
+        "color": "#0052cd"
+      },
+      {
+        "value": 100,
+        "label": "100-120 mm",
+        "color": "#0000c8"
+      },
+      {
+        "value": 120,
+        "label": "120-150 mm",
+        "color": "#6003b8"
+      },
+      {
+        "value": 150,
+        "label": "150-200 mm",
+        "color": "#a002fa"
+      },
+      {
+        "value": 200,
+        "label": "200-300 mm",
+        "color": "#fa78fa"
+      },
+      {
+        "value": 300,
+        "label": ">= 300 mm",
+        "color": "#ffc4ee"
+      }
+    ]
+  },
+  "dekad_rainfall_forecast": {
+    "title": "10-day rainfall forecast",
+    "type": "wms",
+    "server_layer_name": "rfh_dekad_forecast",
+    "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
+    "date_interval": "days",
+    "additional_query_params": {
+      "styles": "rfh_16_0_300"
+    },
+    "validity": {
+      "days": 10,
+      "mode": "forward"
+    },
+    "opacity": 0.7,
+    "legend_text": "CHIRPS-GEFS global dekadal rainfall forecasts",
+    "legend": [
+      {
+        "value": 0,
+        "label": "0 mm",
+        "color": "#fafafa"
+      },
+      {
+        "value": 0.01,
+        "label": "1-2 mm",
+        "color": "#fffadf"
+      },
+      {
+        "value": 2,
+        "label": "2-5 mm",
+        "color": "#d3f9d0"
+      },
+      {
+        "value": 5,
+        "label": "5-10 mm",
+        "color": "#a9e4a3"
+      },
+      {
+        "value": 10,
+        "label": "10-20 mm",
+        "color": "#7cc594"
+      },
+      {
+        "value": 20,
+        "label": "20-30 mm",
+        "color": "#5eab91"
+      },
+      {
+        "value": 30,
+        "label": "30-40 mm",
+        "color": "#9fffe8"
+      },
+      {
+        "value": 40,
+        "label": "40-50 mm",
+        "color": "#90e0ef"
+      },
+      {
+        "value": 50,
+        "label": "50-60 mm",
+        "color": "#00b1de"
+      },
+      {
+        "value": 60,
+        "label": "60-80 mm",
+        "color": "#0083f3"
+      },
+      {
+        "value": 80,
+        "label": "80-100 mm",
+        "color": "#0052cd"
+      },
+      {
+        "value": 100,
+        "label": "100-120 mm",
+        "color": "#0000c8"
+      },
+      {
+        "value": 120,
+        "label": "120-150 mm",
+        "color": "#6003b8"
+      },
+      {
+        "value": 150,
+        "label": "150-200 mm",
+        "color": "#a002fa"
+      },
+      {
+        "value": 200,
+        "label": "200-300 mm",
+        "color": "#fa78fa"
+      },
+      {
+        "value": 300,
+        "label": ">= 300 mm",
+        "color": "#ffc4ee"
+      }
+    ]
+  }  
 }

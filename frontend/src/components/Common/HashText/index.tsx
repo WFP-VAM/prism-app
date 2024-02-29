@@ -9,6 +9,9 @@ const HashText = () => {
     // eslint-disable-next-line no-console
     console.info(`https://github.com/WFP-VAM/prism-app/tree/${hash}`);
   }
+  if (!hash) {
+    return null;
+  }
   return (
     <a
       style={{

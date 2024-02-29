@@ -45,12 +45,12 @@ function removeFirstOccurrence(arr: number[], numberToRemove: number) {
 }
 
 // returns startDate and endDate as part of result
-function generateDateStrings(startDate: Date, endDate: Date) {
+export function generateDateStrings(startDate: Date, endDate: Date) {
   const result = [];
   const interval = [1, 11, 21];
   const currentDate = new Date(startDate);
-  currentDate.setHours(10);
-  endDate.setHours(12);
+  currentDate.setUTCHours(12);
+  endDate.setUTCHours(12);
 
   while (currentDate <= endDate) {
     // eslint-disable-next-line fp/no-mutation, no-plusplus
