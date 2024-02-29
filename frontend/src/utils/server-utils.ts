@@ -515,6 +515,7 @@ export async function getLayersAvailableDates(
           const availableDates = layerDates.filter(
             date => date >= limitStartDate,
           );
+          // If there are no dates after filtering, get the last data available
           // eslint-disable-next-line fp/no-mutation
           acc[layer.id] = availableDates.length
             ? availableDates
