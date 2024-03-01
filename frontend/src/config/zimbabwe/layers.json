@@ -1,4 +1,36 @@
 {
+  "admin_boundaries": {
+    "type": "boundary",
+    "path": "data/zimbabwe/zwe_polbnda_adm3_250k_cso_dv_merged.json",
+    "min_zoom": 7,
+    "opacity": 0.8,
+    "admin_code": "new_field",
+    "admin_level_codes": [
+      "PROVINCEPC",
+      "distrpc",
+      "new_field"
+    ],
+    "admin_level_names": [
+      "PROVINCE",
+      "DISTRICT",
+      "wardnumber"
+    ],
+    "admin_level_local_names": [
+      "PROVINCE",
+      "DISTRICT",
+      "wardnumber"
+    ],
+    "styles:": {
+      "fill": {
+        "fill-opacity": 0
+      },
+      "line": {
+        "line-color": "gray",
+        "line-width": 0.5,
+        "line-opacity": 0.8
+      }
+    }
+  },
   "admin2_boundaries": {
     "type": "boundary",
     "path": "data/zimbabwe/zim_admin2_boundaries_v3_w_dataviz.json",
@@ -48,37 +80,6 @@
       "line": {
         "line-color": "gray",
         "line-width": 3,
-        "line-opacity": 0.8
-      }
-    }
-  },
-  "admin_boundaries": {
-    "type": "boundary",
-    "path": "data/zimbabwe/zwe_polbnda_adm3_250k_cso_dv_merged.json",
-    "opacity": 0.8,
-    "admin_code": "new_field",
-    "admin_level_codes": [
-      "PROVINCEPC",
-      "distrpc",
-      "new_field"
-    ],
-    "admin_level_names": [
-      "PROVINCE",
-      "DISTRICT",
-      "wardnumber"
-    ],
-    "admin_level_local_names": [
-      "PROVINCE",
-      "DISTRICT",
-      "wardnumber"
-    ],
-    "styles:": {
-      "fill": {
-        "fill-opacity": 0
-      },
-      "line": {
-        "line-color": "gray",
-        "line-width": 0.5,
         "line-opacity": 0.8
       }
     }
