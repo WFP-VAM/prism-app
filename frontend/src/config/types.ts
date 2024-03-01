@@ -450,10 +450,13 @@ export class WMSLayerProps extends CommonLayerProps {
   chartData?: DatasetProps; // If included, on a click event, prism will display data from the selected boundary.
 
   @optional
-  'areaExposedValues'?: { label: string; value: string | number }[];
+  areaExposedValues?: { label: string; value: string | number }[];
 
   @optional
-  'thresholdValues'?: { label: string; value: string | number }[];
+  thresholdValues?: { label: string; value: string | number }[];
+
+  @optional
+  startDate?: string; // limit the date range for the layer
 }
 
 enum AggregationOptions {
