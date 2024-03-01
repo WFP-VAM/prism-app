@@ -290,242 +290,6 @@
       }
     ]
   },
-  "rainfall_dekad": {
-    "title": "CHIRPS 10-day rainfall estimate (mm)",
-    "type": "wms",
-    "server_layer_name": "rfh_dekad",
-    "additional_query_params": {
-      "styles": "rfh_16_0_300"
-    },
-    "chart_data": {
-      "fields": [
-        {
-          "key": "rfh",
-          "label": "Rainfall",
-          "color": "#233f5f"
-        },
-        {
-          "key": "rfh_avg",
-          "label": "Average",
-          "color": "#bdf2e6"
-        }
-      ],
-      "levels": [
-        {
-          "level": "1",
-          "id": "dataviz_adm1_id",
-          "name": "adm1_name"
-        },
-        {
-          "level": "2",
-          "id": "dataviz_adm2_id",
-          "name": "adm2_name"
-        }
-      ],
-      "type": "bar"
-    },
-    "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
-    "date_interval": "days",
-    "opacity": 0.7,
-    "legend_text": "Estimate of precipitation over a 10-day period derived from CHIRPS (UCSB Climate Hazards Group). https://www.chc.ucsb.edu/data/chirps",
-    "legend": [
-      {
-        "value": 0,
-        "label": "0 mm",
-        "color": "#fafafa"
-      },
-      {
-        "value": 0.01,
-        "label": "1-2 mm",
-        "color": "#fffadf"
-      },
-      {
-        "value": 2,
-        "label": "2-5 mm",
-        "color": "#d3f9d0"
-      },
-      {
-        "value": 5,
-        "label": "5-10 mm",
-        "color": "#a9e4a3"
-      },
-      {
-        "value": 10,
-        "label": "10-20 mm",
-        "color": "#7cc594"
-      },
-      {
-        "value": 20,
-        "label": "20-30 mm",
-        "color": "#5eab91"
-      },
-      {
-        "value": 30,
-        "label": "30-40 mm",
-        "color": "#9fffe8"
-      },
-      {
-        "value": 40,
-        "label": "40-50 mm",
-        "color": "#90e0ef"
-      },
-      {
-        "value": 50,
-        "label": "50-60 mm",
-        "color": "#00b1de"
-      },
-      {
-        "value": 60,
-        "label": "60-80 mm",
-        "color": "#0083f3"
-      },
-      {
-        "value": 80,
-        "label": "80-100 mm",
-        "color": "#0052cd"
-      },
-      {
-        "value": 100,
-        "label": "100-120 mm",
-        "color": "#0000c8"
-      },
-      {
-        "value": 120,
-        "label": "120-150 mm",
-        "color": "#6003b8"
-      },
-      {
-        "value": 150,
-        "label": "150-200 mm",
-        "color": "#a002fa"
-      },
-      {
-        "value": 200,
-        "label": "200-300 mm",
-        "color": "#fa78fa"
-      },
-      {
-        "value": 300,
-        "label": ">= 300 mm",
-        "color": "#ffc4ee"
-      }
-    ]
-  },
-  "rain_anomaly_dekad": {
-    "title": "CHIRPS 10-day rainfall anomaly",
-    "type": "wms",
-    "server_layer_name": "rfq_dekad",
-    "additional_query_params": {
-      "styles": "rfq_14_20_400"
-    },
-    "chart_data": {
-      "fields": [
-        {
-          "key": "rfq",
-          "label": "Rainfall anomaly",
-          "color": "#375692",
-          "minValue": 0,
-          "maxValue": 300
-        },
-        {
-          "key": "rfq_avg",
-          "label": "Normal",
-          "fallback": 100,
-          "pointRadius": 0,
-          "color": "#eb3223"
-        }
-      ],
-      "levels": [
-        {
-          "level": "1",
-          "id": "dataviz_adm1_id",
-          "name": "adm1_name"
-        },
-        {
-          "level": "2",
-          "id": "dataviz_adm2_id",
-          "name": "adm2_name"
-        }
-      ],
-      "type": "line"
-    },
-    "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
-    "date_interval": "days",
-    "opacity": 0.7,
-    "legend_text": "10-day precipitation anomaly compared to the long term average. Derived from CHIRPS (UCSB Climate Hazards Group). https://www.chc.ucsb.edu/data/chirps",
-    "legend": [
-      {
-        "value": 0,
-        "label": "< 20%",
-        "color": "#8c4800"
-      },
-      {
-        "value": 20,
-        "label": "20-40%",
-        "color": "#af6b27"
-      },
-      {
-        "value": 40,
-        "label": "40-60%",
-        "color": "#d58c3e"
-      },
-      {
-        "value": 60,
-        "label": "60-70%",
-        "color": "#eaa83d"
-      },
-      {
-        "value": 70,
-        "label": "70-80%",
-        "color": "#f5c878"
-      },
-      {
-        "value": 80,
-        "label": "80-90%",
-        "color": "#fff0c4"
-      },
-      {
-        "value": 90,
-        "label": "90-110%",
-        "color": "#fafafa"
-      },
-      {
-        "value": 110,
-        "label": "110-120%",
-        "color": "#befafa"
-      },
-      {
-        "value": 120,
-        "label": "120-130%",
-        "color": "#78e2f0"
-      },
-      {
-        "value": 130,
-        "label": "130-150%",
-        "color": "#00b9de"
-      },
-      {
-        "value": 150,
-        "label": "150-200%",
-        "color": "#0083f3"
-      },
-      {
-        "value": 200,
-        "label": "200-300%",
-        "color": "#0052cd"
-      },
-      {
-        "value": 300,
-        "label": "300-400%",
-        "color": "#0000c8"
-      },
-      {
-        "value": 400,
-        "label": "> 400%",
-        "color": "#a002fa"
-      }
-    ]
-  },
   "precip_blended_1m": {
     "title": "Blended rainfall aggregate (1-month)",
     "type": "wms",
@@ -764,242 +528,6 @@
       }
     ]
   },
-  "rainfall_agg_1month": {
-    "title": "CHIRPS 1-month rainfall aggregate",
-    "type": "wms",
-    "server_layer_name": "r1h_dekad",
-    "additional_query_params": {
-      "styles": "rfh_16_0_400"
-    },
-    "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
-    "date_interval": "days",
-    "opacity": 0.7,
-    "chart_data": {
-      "fields": [
-        {
-          "key": "r1h",
-          "label": "Rainfall",
-          "color": "#233f5f"
-        },
-        {
-          "key": "r1h_avg",
-          "label": "Average",
-          "color": "#bdf2e6"
-        }
-      ],
-      "levels": [
-        {
-          "level": "1",
-          "id": "dataviz_adm1_id",
-          "name": "adm1_name"
-        },
-        {
-          "level": "2",
-          "id": "dataviz_adm2_id",
-          "name": "adm2_name"
-        }
-      ],
-      "type": "bar"
-    },
-    "legend_text": "Estimate of precipitation over a 1-month period derived from CHIRPS (UCSB Climate Hazards Group). https://www.chc.ucsb.edu/data/chirps",
-    "legend": [
-      {
-        "value": 0,
-        "label": "0 mm",
-        "color": "#fafafa"
-      },
-      {
-        "value": 0.01,
-        "label": "1-5 mm",
-        "color": "#fffadf"
-      },
-      {
-        "value": 5,
-        "label": "5-10 mm",
-        "color": "#d3f9d0"
-      },
-      {
-        "value": 10,
-        "label": "10-20 mm",
-        "color": "#a9e4a3"
-      },
-      {
-        "value": 20,
-        "label": "20-30 mm",
-        "color": "#7cc594"
-      },
-      {
-        "value": 30,
-        "label": "30-40 mm",
-        "color": "#5eab91"
-      },
-      {
-        "value": 40,
-        "label": "40-60 mm",
-        "color": "#9fffe8"
-      },
-      {
-        "value": 60,
-        "label": "60-90 mm",
-        "color": "#90e0ef"
-      },
-      {
-        "value": 90,
-        "label": "90-120 mm",
-        "color": "#00b1de"
-      },
-      {
-        "value": 120,
-        "label": "120-150 mm",
-        "color": "#0083f3"
-      },
-      {
-        "value": 150,
-        "label": "150-200 mm",
-        "color": "#0052cd"
-      },
-      {
-        "value": 200,
-        "label": "200-250 mm",
-        "color": "#0000c8"
-      },
-      {
-        "value": 250,
-        "label": "250-300 mm",
-        "color": "#6003b8"
-      },
-      {
-        "value": 300,
-        "label": "300-350 mm",
-        "color": "#a002fa"
-      },
-      {
-        "value": 350,
-        "label": "350-400 mm",
-        "color": "#fa78fa"
-      },
-      {
-        "value": 400,
-        "label": ">= 400 mm",
-        "color": "#ffc4ee"
-      }
-    ]
-  },
-  "rain_anomaly_1month": {
-    "title": "CHIRPS 1-month rainfall anomaly",
-    "type": "wms",
-    "server_layer_name": "r1q_dekad",
-    "additional_query_params": {
-      "styles": "rfq_14_20_400"
-    },
-    "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
-    "date_interval": "days",
-    "opacity": 0.7,
-    "chart_data": {
-      "fields": [
-        {
-          "key": "r1q",
-          "label": "Rainfall anomaly",
-          "minValue": 0,
-          "maxValue": 300,
-          "color": "#375692"
-        },
-        {
-          "key": "rfq_avg",
-          "label": "Normal",
-          "fallback": 100,
-          "pointRadius": 0,
-          "color": "#eb3223"
-        }
-      ],
-      "levels": [
-        {
-          "level": "1",
-          "id": "dataviz_adm1_id",
-          "name": "adm1_name"
-        },
-        {
-          "level": "2",
-          "id": "dataviz_adm2_id",
-          "name": "adm2_name"
-        }
-      ],
-      "type": "line"
-    },
-    "legend_text": "1-month precipitation anomaly compared to the long term average. Derived from CHIRPS (UCSB Climate Hazards Group). https://www.chc.ucsb.edu/data/chirps",
-    "legend": [
-      {
-        "value": 0,
-        "label": "< 20%",
-        "color": "#8c4800"
-      },
-      {
-        "value": 20,
-        "label": "20-40%",
-        "color": "#af6b27"
-      },
-      {
-        "value": 40,
-        "label": "40-60%",
-        "color": "#d58c3e"
-      },
-      {
-        "value": 60,
-        "label": "60-70%",
-        "color": "#eaa83d"
-      },
-      {
-        "value": 70,
-        "label": "70-80%",
-        "color": "#f5c878"
-      },
-      {
-        "value": 80,
-        "label": "80-90%",
-        "color": "#fff0c4"
-      },
-      {
-        "value": 90,
-        "label": "90-110%",
-        "color": "#fafafa"
-      },
-      {
-        "value": 110,
-        "label": "110-120%",
-        "color": "#befafa"
-      },
-      {
-        "value": 120,
-        "label": "120-130%",
-        "color": "#78e2f0"
-      },
-      {
-        "value": 130,
-        "label": "130-150%",
-        "color": "#00b9de"
-      },
-      {
-        "value": 150,
-        "label": "150-200%",
-        "color": "#0083f3"
-      },
-      {
-        "value": 200,
-        "label": "200-300%",
-        "color": "#0052cd"
-      },
-      {
-        "value": 300,
-        "label": "300-400%",
-        "color": "#0000c8"
-      },
-      {
-        "value": 400,
-        "label": "> 400%",
-        "color": "#a002fa"
-      }
-    ]
-  },
   "precip_blended_3m": {
     "title": "Blended rainfall aggregate (3-month)",
     "type": "wms",
@@ -1165,6 +693,478 @@
     "date_interval": "days",
     "opacity": 0.7,
     "legend_text": "Rainfall anomaly based on long term averaged from local station data from INAM blended with CHIRP rainfall estimates",
+    "legend": [
+      {
+        "value": 0,
+        "label": "< 20%",
+        "color": "#8c4800"
+      },
+      {
+        "value": 20,
+        "label": "20-40%",
+        "color": "#af6b27"
+      },
+      {
+        "value": 40,
+        "label": "40-60%",
+        "color": "#d58c3e"
+      },
+      {
+        "value": 60,
+        "label": "60-70%",
+        "color": "#eaa83d"
+      },
+      {
+        "value": 70,
+        "label": "70-80%",
+        "color": "#f5c878"
+      },
+      {
+        "value": 80,
+        "label": "80-90%",
+        "color": "#fff0c4"
+      },
+      {
+        "value": 90,
+        "label": "90-110%",
+        "color": "#fafafa"
+      },
+      {
+        "value": 110,
+        "label": "110-120%",
+        "color": "#befafa"
+      },
+      {
+        "value": 120,
+        "label": "120-130%",
+        "color": "#78e2f0"
+      },
+      {
+        "value": 130,
+        "label": "130-150%",
+        "color": "#00b9de"
+      },
+      {
+        "value": 150,
+        "label": "150-200%",
+        "color": "#0083f3"
+      },
+      {
+        "value": 200,
+        "label": "200-300%",
+        "color": "#0052cd"
+      },
+      {
+        "value": 300,
+        "label": "300-400%",
+        "color": "#0000c8"
+      },
+      {
+        "value": 400,
+        "label": "> 400%",
+        "color": "#a002fa"
+      }
+    ]
+  },
+  "rainfall_dekad": {
+    "title": "CHIRPS 10-day rainfall estimate (mm)",
+    "type": "wms",
+    "server_layer_name": "rfh_dekad",
+    "additional_query_params": {
+      "styles": "rfh_16_0_300"
+    },
+    "chart_data": {
+      "fields": [
+        {
+          "key": "rfh",
+          "label": "Rainfall",
+          "color": "#233f5f"
+        },
+        {
+          "key": "rfh_avg",
+          "label": "Average",
+          "color": "#bdf2e6"
+        }
+      ],
+      "levels": [
+        {
+          "level": "1",
+          "id": "dataviz_adm1_id",
+          "name": "adm1_name"
+        },
+        {
+          "level": "2",
+          "id": "dataviz_adm2_id",
+          "name": "adm2_name"
+        }
+      ],
+      "type": "bar"
+    },
+    "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
+    "date_interval": "days",
+    "opacity": 0.7,
+    "legend_text": "Estimate of precipitation over a 10-day period derived from CHIRPS (UCSB Climate Hazards Group). https://www.chc.ucsb.edu/data/chirps",
+    "legend": [
+      {
+        "value": 0,
+        "label": "0 mm",
+        "color": "#fafafa"
+      },
+      {
+        "value": 0.01,
+        "label": "1-2 mm",
+        "color": "#fffadf"
+      },
+      {
+        "value": 2,
+        "label": "2-5 mm",
+        "color": "#d3f9d0"
+      },
+      {
+        "value": 5,
+        "label": "5-10 mm",
+        "color": "#a9e4a3"
+      },
+      {
+        "value": 10,
+        "label": "10-20 mm",
+        "color": "#7cc594"
+      },
+      {
+        "value": 20,
+        "label": "20-30 mm",
+        "color": "#5eab91"
+      },
+      {
+        "value": 30,
+        "label": "30-40 mm",
+        "color": "#9fffe8"
+      },
+      {
+        "value": 40,
+        "label": "40-50 mm",
+        "color": "#90e0ef"
+      },
+      {
+        "value": 50,
+        "label": "50-60 mm",
+        "color": "#00b1de"
+      },
+      {
+        "value": 60,
+        "label": "60-80 mm",
+        "color": "#0083f3"
+      },
+      {
+        "value": 80,
+        "label": "80-100 mm",
+        "color": "#0052cd"
+      },
+      {
+        "value": 100,
+        "label": "100-120 mm",
+        "color": "#0000c8"
+      },
+      {
+        "value": 120,
+        "label": "120-150 mm",
+        "color": "#6003b8"
+      },
+      {
+        "value": 150,
+        "label": "150-200 mm",
+        "color": "#a002fa"
+      },
+      {
+        "value": 200,
+        "label": "200-300 mm",
+        "color": "#fa78fa"
+      },
+      {
+        "value": 300,
+        "label": ">= 300 mm",
+        "color": "#ffc4ee"
+      }
+    ]
+  },
+  "rain_anomaly_dekad": {
+    "title": "CHIRPS 10-day rainfall anomaly",
+    "type": "wms",
+    "server_layer_name": "rfq_dekad",
+    "additional_query_params": {
+      "styles": "rfq_14_20_400"
+    },
+    "chart_data": {
+      "fields": [
+        {
+          "key": "rfq",
+          "label": "Rainfall anomaly",
+          "color": "#375692",
+          "minValue": 0,
+          "maxValue": 300
+        },
+        {
+          "key": "rfq_avg",
+          "label": "Normal",
+          "fallback": 100,
+          "pointRadius": 0,
+          "color": "#eb3223"
+        }
+      ],
+      "levels": [
+        {
+          "level": "1",
+          "id": "dataviz_adm1_id",
+          "name": "adm1_name"
+        },
+        {
+          "level": "2",
+          "id": "dataviz_adm2_id",
+          "name": "adm2_name"
+        }
+      ],
+      "type": "line"
+    },
+    "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
+    "date_interval": "days",
+    "opacity": 0.7,
+    "legend_text": "10-day precipitation anomaly compared to the long term average. Derived from CHIRPS (UCSB Climate Hazards Group). https://www.chc.ucsb.edu/data/chirps",
+    "legend": [
+      {
+        "value": 0,
+        "label": "< 20%",
+        "color": "#8c4800"
+      },
+      {
+        "value": 20,
+        "label": "20-40%",
+        "color": "#af6b27"
+      },
+      {
+        "value": 40,
+        "label": "40-60%",
+        "color": "#d58c3e"
+      },
+      {
+        "value": 60,
+        "label": "60-70%",
+        "color": "#eaa83d"
+      },
+      {
+        "value": 70,
+        "label": "70-80%",
+        "color": "#f5c878"
+      },
+      {
+        "value": 80,
+        "label": "80-90%",
+        "color": "#fff0c4"
+      },
+      {
+        "value": 90,
+        "label": "90-110%",
+        "color": "#fafafa"
+      },
+      {
+        "value": 110,
+        "label": "110-120%",
+        "color": "#befafa"
+      },
+      {
+        "value": 120,
+        "label": "120-130%",
+        "color": "#78e2f0"
+      },
+      {
+        "value": 130,
+        "label": "130-150%",
+        "color": "#00b9de"
+      },
+      {
+        "value": 150,
+        "label": "150-200%",
+        "color": "#0083f3"
+      },
+      {
+        "value": 200,
+        "label": "200-300%",
+        "color": "#0052cd"
+      },
+      {
+        "value": 300,
+        "label": "300-400%",
+        "color": "#0000c8"
+      },
+      {
+        "value": 400,
+        "label": "> 400%",
+        "color": "#a002fa"
+      }
+    ]
+  },
+  "rainfall_agg_1month": {
+    "title": "CHIRPS 1-month rainfall aggregate",
+    "type": "wms",
+    "server_layer_name": "r1h_dekad",
+    "additional_query_params": {
+      "styles": "rfh_16_0_400"
+    },
+    "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
+    "date_interval": "days",
+    "opacity": 0.7,
+    "chart_data": {
+      "fields": [
+        {
+          "key": "r1h",
+          "label": "Rainfall",
+          "color": "#233f5f"
+        },
+        {
+          "key": "r1h_avg",
+          "label": "Average",
+          "color": "#bdf2e6"
+        }
+      ],
+      "levels": [
+        {
+          "level": "1",
+          "id": "dataviz_adm1_id",
+          "name": "adm1_name"
+        },
+        {
+          "level": "2",
+          "id": "dataviz_adm2_id",
+          "name": "adm2_name"
+        }
+      ],
+      "type": "bar"
+    },
+    "legend_text": "Estimate of precipitation over a 1-month period derived from CHIRPS (UCSB Climate Hazards Group). https://www.chc.ucsb.edu/data/chirps",
+    "legend": [
+      {
+        "value": 0,
+        "label": "0 mm",
+        "color": "#fafafa"
+      },
+      {
+        "value": 0.01,
+        "label": "1-5 mm",
+        "color": "#fffadf"
+      },
+      {
+        "value": 5,
+        "label": "5-10 mm",
+        "color": "#d3f9d0"
+      },
+      {
+        "value": 10,
+        "label": "10-20 mm",
+        "color": "#a9e4a3"
+      },
+      {
+        "value": 20,
+        "label": "20-30 mm",
+        "color": "#7cc594"
+      },
+      {
+        "value": 30,
+        "label": "30-40 mm",
+        "color": "#5eab91"
+      },
+      {
+        "value": 40,
+        "label": "40-60 mm",
+        "color": "#9fffe8"
+      },
+      {
+        "value": 60,
+        "label": "60-90 mm",
+        "color": "#90e0ef"
+      },
+      {
+        "value": 90,
+        "label": "90-120 mm",
+        "color": "#00b1de"
+      },
+      {
+        "value": 120,
+        "label": "120-150 mm",
+        "color": "#0083f3"
+      },
+      {
+        "value": 150,
+        "label": "150-200 mm",
+        "color": "#0052cd"
+      },
+      {
+        "value": 200,
+        "label": "200-250 mm",
+        "color": "#0000c8"
+      },
+      {
+        "value": 250,
+        "label": "250-300 mm",
+        "color": "#6003b8"
+      },
+      {
+        "value": 300,
+        "label": "300-350 mm",
+        "color": "#a002fa"
+      },
+      {
+        "value": 350,
+        "label": "350-400 mm",
+        "color": "#fa78fa"
+      },
+      {
+        "value": 400,
+        "label": ">= 400 mm",
+        "color": "#ffc4ee"
+      }
+    ]
+  },
+  "rain_anomaly_1month": {
+    "title": "CHIRPS 1-month rainfall anomaly",
+    "type": "wms",
+    "server_layer_name": "r1q_dekad",
+    "additional_query_params": {
+      "styles": "rfq_14_20_400"
+    },
+    "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
+    "date_interval": "days",
+    "opacity": 0.7,
+    "chart_data": {
+      "fields": [
+        {
+          "key": "r1q",
+          "label": "Rainfall anomaly",
+          "minValue": 0,
+          "maxValue": 300,
+          "color": "#375692"
+        },
+        {
+          "key": "rfq_avg",
+          "label": "Normal",
+          "fallback": 100,
+          "pointRadius": 0,
+          "color": "#eb3223"
+        }
+      ],
+      "levels": [
+        {
+          "level": "1",
+          "id": "dataviz_adm1_id",
+          "name": "adm1_name"
+        },
+        {
+          "level": "2",
+          "id": "dataviz_adm2_id",
+          "name": "adm2_name"
+        }
+      ],
+      "type": "line"
+    },
+    "legend_text": "1-month precipitation anomaly compared to the long term average. Derived from CHIRPS (UCSB Climate Hazards Group). https://www.chc.ucsb.edu/data/chirps",
     "legend": [
       {
         "value": 0,
