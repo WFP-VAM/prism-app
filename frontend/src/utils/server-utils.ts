@@ -506,8 +506,24 @@ export async function getLayersAvailableDates(
     return layers.reduce((acc: Record<string, number[]>, layer) => {
       const layerDates = serverDates[layer.serverLayerName];
       if (layerDates) {
-        // eslint-disable-next-line fp/no-mutation
-        acc[layer.id] = layerDates;
+        // Filter WMS layers by startDate, used for forecast layers in particular.
+        if (layer.startDate) {
+          const limitStartDate =
+            layer.startDate === 'today'
+              ? new Date().setUTCHours(0, 0).valueOf()
+              : new Date(layer.startDate).setUTCHours(0, 0).valueOf();
+          const availableDates = layerDates.filter(
+            date => date >= limitStartDate,
+          );
+          // If there are no dates after filtering, get the last data available
+          // eslint-disable-next-line fp/no-mutation
+          acc[layer.id] = availableDates.length
+            ? availableDates
+            : [layerDates[layerDates.length - 1]];
+        } else {
+          // eslint-disable-next-line fp/no-mutation
+          acc[layer.id] = layerDates;
+        }
       }
       return acc;
     }, {});
