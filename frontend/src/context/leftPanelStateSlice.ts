@@ -11,6 +11,7 @@ export enum Panel {
   Charts = 'charts',
   Analysis = 'analysis',
   Tables = 'tables',
+  AnticipatoryAction = 'anticipatory_action',
 }
 
 type LeftPanelState = {
@@ -19,7 +20,7 @@ type LeftPanelState = {
 };
 
 const initialState: LeftPanelState = {
-  tabValue: hidePanel ? Panel.None : Panel.Layers,
+  tabValue: hidePanel ? Panel.None : Panel.AnticipatoryAction,
   panelSize: PanelSize.medium,
 };
 

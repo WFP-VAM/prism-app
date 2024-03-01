@@ -10,6 +10,7 @@ import AnalysisPanel from './AnalysisPanel';
 import ChartsPanel from './ChartsPanel';
 import LeftPanelTabs from './LeftPanelTabs';
 import TablesPanel from './TablesPanel';
+import AnticipatoryActionPanel from './AnticipatoryActionPanel';
 
 const LeftPanel = memo(() => {
   const tabValue = useSelector(leftPanelTabValueSelector);
@@ -44,6 +45,7 @@ const LeftPanel = memo(() => {
         chartsPanel={<ChartsPanel setResultsPage={setResultsPage} />}
         analysisPanel={<AnalysisPanel setResultsPage={setResultsPage} />}
         tablesPanel={<TablesPanel setResultsPage={setResultsPage} />}
+        anticipatoryActionPanel={<AnticipatoryActionPanel />}
       />
     </Drawer>
   );

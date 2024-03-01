@@ -7,6 +7,8 @@ const darkGreyBlue: string = '#2D3436';
 const white: string = '#FFFFFF';
 const lightGray = '#CCCCCC';
 const midnightSlate = '#323638';
+export const gray = '#F1F1F1';
+export const borderGray = '#A4A4A4';
 export const paleSkyBlue = '#D8E9EC';
 export const black = '#101010';
 export const cyanBlue = '#63B2BD';
@@ -112,6 +114,10 @@ const theme: any = createTheme({
       },
     },
     MuiTypography: {
+      h2: {
+        fontSize: 20,
+        fontWeight: 'bold',
+      },
       h3: {
         fontSize: 16,
         fontWeight: 400,

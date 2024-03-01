@@ -22,6 +22,7 @@ import {
   ImageAspectRatioOutlined,
   LayersOutlined,
   TableChartOutlined,
+  TimerOutlined,
 } from '@material-ui/icons';
 import { useDispatch, useSelector } from 'react-redux';
 import {
@@ -55,6 +56,15 @@ const panels = [
   },
   ...(areTablesAvailable
     ? [{ panel: Panel.Tables, label: 'Tables', icon: <TableChartOutlined /> }]
+    : []),
+  ...(1
+    ? [
+        {
+          panel: Panel.AnticipatoryAction,
+          label: 'Anticipatory Action',
+          icon: <TimerOutlined />,
+        },
+      ]
     : []),
 ];
 

@@ -44,11 +44,18 @@ interface TabsProps {
   chartsPanel: React.ReactNode;
   analysisPanel: React.ReactNode;
   tablesPanel: React.ReactNode;
+  anticipatoryActionPanel: React.ReactNode;
   resultsPage: React.JSX.Element | null;
 }
 
 const LeftPanelTabs = memo(
-  ({ chartsPanel, analysisPanel, tablesPanel, resultsPage }: TabsProps) => {
+  ({
+    chartsPanel,
+    analysisPanel,
+    tablesPanel,
+    anticipatoryActionPanel,
+    resultsPage,
+  }: TabsProps) => {
     const tabValue = useSelector(leftPanelTabValueSelector);
     const panelSize = useSelector(leftPanelSizeSelector);
     const classes = useStyles({ panelSize, tabValue });
@@ -75,6 +82,18 @@ const LeftPanelTabs = memo(
       );
     }, [tabValue, tablesPanel]);
 
+    const renderedAnticipatoryActionPanel = useMemo(() => {
+      // TODO: update condition
+      if (0) {
+        return null;
+      }
+      return (
+        <TabPanel value={tabValue} index={Panel.AnticipatoryAction}>
+          {anticipatoryActionPanel}
+        </TabPanel>
+      );
+    }, [anticipatoryActionPanel, tabValue]);
+
     return (
       <div className={classes.root}>
         <div className={classes.tabsWrapper}>
@@ -86,6 +105,7 @@ const LeftPanelTabs = memo(
             {analysisPanel}
           </TabPanel>
           {renderedTablesPanel}
+          {renderedAnticipatoryActionPanel}
           {/* Empty panel to remove warnings */}
           <TabPanel value={tabValue} index={Panel.None} />
         </div>
