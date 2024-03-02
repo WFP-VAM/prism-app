@@ -62,6 +62,7 @@ import {
   setExposureAnalysisResultSortByKey,
   setExposureAnalysisResultSortOrder,
   TableRow,
+  invertedColorsSelector,
 } from 'context/analysisResultStateSlice';
 import {
   AdminLevelType,
@@ -124,6 +125,8 @@ const AnalysisPanel = memo(
     const dispatch = useDispatch();
     const map = useSelector(mapSelector);
     const selectedLayers = useSelector(layersSelector);
+    const invertedColorsForAnalysis = useSelector(invertedColorsSelector);
+    console.log(invertedColorsForAnalysis);
     const {
       updateHistory,
       removeKeyFromUrl,
@@ -643,6 +646,7 @@ const AnalysisPanel = memo(
             above: scaleThreshold(parseFloat(aboveThreshold)) || undefined,
             below: scaleThreshold(parseFloat(belowThreshold)) || undefined,
           },
+          invertedColors: invertedColorsForAnalysis,
         };
 
         // update history
@@ -681,6 +685,7 @@ const AnalysisPanel = memo(
       scaleThreshold,
       aboveThreshold,
       belowThreshold,
+      invertedColorsForAnalysis,
     ]);
 
     // handler of changing exposure analysis sort order

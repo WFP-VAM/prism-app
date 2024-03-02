@@ -96,6 +96,7 @@ type AnalysisResultState = {
   analysisResultDataSortOrder: 'asc' | 'desc';
   exposureAnalysisResultDataSortByKey: Column['id'];
   exposureAnalysisResultDataSortOrder: 'asc' | 'desc';
+  invertedColors?: boolean;
 };
 
 export type TableRow = {
@@ -119,6 +120,7 @@ const initialState: AnalysisResultState = {
   exposureAnalysisResultDataSortByKey: 'name',
   exposureAnalysisResultDataSortOrder: 'asc',
   opacity: 0.5,
+  invertedColors: false,
 };
 
 /* Gets a public URL for the admin boundaries used by this application.
@@ -348,6 +350,7 @@ export type AnalysisDispatchParams = {
   date: ReturnType<Date['getTime']>; // just a hint to developers that we give a date number here, not just any number
   statistic: AggregationOperations; // we might have to deviate from this if analysis accepts more than what this enum provides
   exposureValue: ExposureValue;
+  invertedColors?: boolean;
 };
 
 export type PolygonAnalysisDispatchParams = {
@@ -664,6 +667,7 @@ export const requestAndStoreAnalysis = createAsyncThunk<
     statistic,
     threshold,
     exposureValue,
+    invertedColors,
   } = params;
   const baselineData = layerDataSelector(baselineLayer.id)(
     api.getState(),
@@ -731,7 +735,11 @@ export const requestAndStoreAnalysis = createAsyncThunk<
   );
 
   // Create a legend based on statistic data to be used for admin level analsysis.
-  const legend = createLegendFromFeatureArray(features, statistic);
+  const legend = createLegendFromFeatureArray(
+    features,
+    statistic,
+    invertedColors,
+  );
 
   const enrichedStatistics: (
     | AggregationOperations
@@ -938,6 +946,19 @@ export const analysisResultSlice = createSlice({
       ...state,
       result: undefined,
     }),
+    analysisLayerInvertColors: state => {
+      console.log(
+        'analysisLayerInvertColors called, current invertedColors value:',
+        state.invertedColors,
+      );
+      console.log('new state:', {
+        invertedColors: !state.invertedColors,
+      });
+      return {
+        ...state,
+        invertedColors: !state.invertedColors,
+      };
+    },
   },
   extraReducers: builder => {
     builder.addCase(
@@ -1084,6 +1105,9 @@ export const isAnalysisLayerActiveSelector = (state: RootState): boolean =>
 export const isDataTableDrawerActiveSelector = (state: RootState): boolean =>
   state.analysisResultState.isDataTableDrawerActive;
 
+export const invertedColorsSelector = (state: RootState): boolean =>
+  state.analysisResultState.invertedColors!!;
+
 // Setters
 export const {
   setIsMapLayerActive,
@@ -1097,6 +1121,7 @@ export const {
   setAnalysisResultSortOrder,
   setExposureAnalysisResultSortByKey,
   setExposureAnalysisResultSortOrder,
+  analysisLayerInvertColors,
 } = analysisResultSlice.actions;
 
 export default analysisResultSlice.reducer;
