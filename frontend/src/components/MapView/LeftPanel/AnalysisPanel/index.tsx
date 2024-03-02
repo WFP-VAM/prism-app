@@ -126,7 +126,6 @@ const AnalysisPanel = memo(
     const map = useSelector(mapSelector);
     const selectedLayers = useSelector(layersSelector);
     const invertedColorsForAnalysis = useSelector(invertedColorsSelector);
-    console.log(invertedColorsForAnalysis);
     const {
       updateHistory,
       removeKeyFromUrl,
@@ -687,6 +686,39 @@ const AnalysisPanel = memo(
       belowThreshold,
       invertedColorsForAnalysis,
     ]);
+
+    // Hack to ensure that the analysis is re-run when the invertedColorsForAnalysis changes
+    useEffect(() => {
+      // Ensure all required parameters are available before dispatching
+      if (
+        selectedHazardLayer &&
+        selectedDate &&
+        baselineLayerId &&
+        !isAnalysisLoading
+      ) {
+        const selectedBaselineLayer = LayerDefinitions[
+          baselineLayerId
+        ] as AdminLevelDataLayerProps;
+
+        const params: AnalysisDispatchParams = {
+          hazardLayer: selectedHazardLayer,
+          baselineLayer: selectedBaselineLayer,
+          date: selectedDate,
+          statistic,
+          exposureValue,
+          extent,
+          threshold: {
+            above: scaleThreshold(parseFloat(aboveThreshold)) || undefined,
+            below: scaleThreshold(parseFloat(belowThreshold)) || undefined,
+          },
+          invertedColors: invertedColorsForAnalysis,
+        };
+
+        // Dispatch the action to store analysis with the updated params
+        dispatch(requestAndStoreAnalysis(params));
+      }
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [invertedColorsForAnalysis, dispatch]);
 
     // handler of changing exposure analysis sort order
     const handleExposureAnalysisTableOrderBy = useCallback(

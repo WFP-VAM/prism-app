@@ -946,19 +946,10 @@ export const analysisResultSlice = createSlice({
       ...state,
       result: undefined,
     }),
-    analysisLayerInvertColors: state => {
-      console.log(
-        'analysisLayerInvertColors called, current invertedColors value:',
-        state.invertedColors,
-      );
-      console.log('new state:', {
-        invertedColors: !state.invertedColors,
-      });
-      return {
-        ...state,
-        invertedColors: !state.invertedColors,
-      };
-    },
+    analysisLayerInvertColors: state => ({
+      ...state,
+      invertedColors: !state.invertedColors,
+    }),
   },
   extraReducers: builder => {
     builder.addCase(

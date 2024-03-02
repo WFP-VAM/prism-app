@@ -372,6 +372,7 @@ export function createLegendFromFeatureArray(
   const minNum = Math.min(...stats);
 
   const defaultColors = ['#fee5d9', '#fcae91', '#fb6a4a', '#de2d26', '#a50f15'];
+  // eslint-disable-next-line fp/no-mutating-methods
   const colors = invertColors ? defaultColors.reverse() : defaultColors;
   const labels = ['Very low', 'Low', 'Medium', 'High', 'Very high'];
 
