@@ -580,11 +580,9 @@ export async function getLayersAvailableDates(
   )
     .filter(layer => !!(layer as AdminLevelDataLayerProps).validityPeriod)
     .map(layer => {
-      const layerId = layer.type === 'wms' ? layer.serverLayerName : layer.id;
-
       return {
-        name: layerId,
-        dates: mergedLayers[layerId],
+        name: layer.id,
+        dates: mergedLayers[layer.id],
         path: (layer as AdminLevelDataLayerProps).path,
         validityPeriod: (layer as AdminLevelDataLayerProps)
           .validityPeriod as ValidityPeriod,
