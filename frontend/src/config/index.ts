@@ -81,12 +81,15 @@ const {
   rawLayers,
   rawTables,
   rawReports,
+  rawAnticipatoryAction,
 }: {
   appConfig: Record<string, any>;
   defaultBoundariesFile: string;
   rawLayers: Record<string, any>;
   rawTables: Record<string, any>;
   rawReports: Record<string, any>;
+  // TODO: for consistency remove  '?' or make other field optional too
+  rawAnticipatoryAction?: Record<string, any>;
 } = configMap[safeCountry];
 
 const translation = get(configMap[safeCountry], 'translation', {});
@@ -124,6 +127,7 @@ export {
   rawLayers,
   rawTables,
   rawReports,
+  rawAnticipatoryAction,
   msalInstance,
   msalRequest,
   enableNavigationDropdown,

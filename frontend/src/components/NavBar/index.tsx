@@ -38,7 +38,10 @@ import Legends from 'components/MapView/Legends';
 import { black, cyanBlue } from 'muiTheme';
 import { analysisResultSelector } from 'context/analysisResultStateSlice';
 import { areChartLayersAvailable } from 'config/utils';
-import { areTablesAvailable } from 'components/MapView/LeftPanel/utils';
+import {
+  areTablesAvailable,
+  isAnticipatoryActionAvailable,
+} from 'components/MapView/LeftPanel/utils';
 import { PanelSize } from 'config/types';
 import About from './About';
 import LanguageSelector from './LanguageSelector';
@@ -57,7 +60,7 @@ const panels = [
   ...(areTablesAvailable
     ? [{ panel: Panel.Tables, label: 'Tables', icon: <TableChartOutlined /> }]
     : []),
-  ...(1
+  ...(isAnticipatoryActionAvailable
     ? [
         {
           panel: Panel.AnticipatoryAction,

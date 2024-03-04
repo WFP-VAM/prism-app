@@ -11,6 +11,11 @@ import { black, cyanBlue } from 'muiTheme';
 import React from 'react';
 import { useSafeTranslation } from 'i18n';
 import { GetApp, EditOutlined, BarChartOutlined } from '@material-ui/icons';
+import { useDispatch, useSelector } from 'react-redux';
+import {
+  AnticipatoryActionDataSelector,
+  loadAAData,
+} from 'context/anticipatoryActionStateSlice';
 import HomeTable, { RowProps } from './HomeTable';
 import AAIcon from './HomeTable/AAIcon';
 import { StyledRadioLabel } from './utils';
@@ -42,6 +47,14 @@ const links = [
 function AnticipatoryActionPanel() {
   const classes = useStyles();
   const { t } = useSafeTranslation();
+  const dispatch = useDispatch();
+  const AAData = useSelector(AnticipatoryActionDataSelector);
+
+  console.log({ AAData });
+
+  React.useEffect(() => {
+    dispatch(loadAAData());
+  }, [dispatch]);
 
   const rows: RowProps[] = [
     {

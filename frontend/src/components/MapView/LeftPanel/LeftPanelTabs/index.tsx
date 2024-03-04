@@ -10,7 +10,7 @@ import {
 import { areChartLayersAvailable } from 'config/utils';
 import TabPanel from './TabPanel';
 import LayersPanel from '../layersPanel';
-import { areTablesAvailable } from '../utils';
+import { areTablesAvailable, isAnticipatoryActionAvailable } from '../utils';
 
 interface StyleProps {
   tabValue: Panel;
@@ -83,8 +83,7 @@ const LeftPanelTabs = memo(
     }, [tabValue, tablesPanel]);
 
     const renderedAnticipatoryActionPanel = useMemo(() => {
-      // TODO: update condition
-      if (0) {
+      if (!isAnticipatoryActionAvailable) {
         return null;
       }
       return (
