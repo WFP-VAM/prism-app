@@ -376,7 +376,7 @@ const AnalysisPanel = memo(
           );
         }
       } else {
-        setPanelSize(PanelSize.medium);
+        dispatch(setPanelSize(PanelSize.medium));
         setResultsPage(null);
       }
       // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -510,7 +510,7 @@ const AnalysisPanel = memo(
       const isClearingExposureAnalysis =
         analysisResult instanceof ExposedPopulationResult;
       dispatch(clearAnalysisResult());
-      setPanelSize(PanelSize.medium);
+      dispatch(setPanelSize(PanelSize.medium));
       if (isClearingExposureAnalysis) {
         dispatch(setTabValue(Panel.Layers));
       }
