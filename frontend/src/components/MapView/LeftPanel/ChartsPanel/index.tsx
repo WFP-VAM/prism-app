@@ -679,7 +679,7 @@ const ChartsPanel = memo(({ setResultsPage }: ChartsPanelProps) => {
 
   useEffect(() => {
     if (showChartsPanel) {
-      setPanelSize(PanelSize.xlarge);
+      dispatch(setPanelSize(PanelSize.xlarge));
       setResultsPage(
         <Box className={classes.chartsContainer}>
           <Box className={classes.chartsPanelCharts}>{renderResultsPage}</Box>
@@ -716,6 +716,7 @@ const ChartsPanel = memo(({ setResultsPage }: ChartsPanelProps) => {
     classes.chartsPanelCharts,
     classes.textLabel,
     comparePeriods,
+    dispatch,
     endDate1,
     maxDataTicks,
     renderResultsPage,
