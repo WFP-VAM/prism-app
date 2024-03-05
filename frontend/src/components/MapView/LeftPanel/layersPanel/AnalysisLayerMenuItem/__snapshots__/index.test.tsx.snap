@@ -24,8 +24,8 @@ exports[`renders as expected 1`] = `
         </mock-typography>
         <mock-chip
           classes="[object Object]"
-          color="secondary"
           label="1"
+          style="background-color: rgb(99, 178, 189);"
         />
       </div>
       <div
