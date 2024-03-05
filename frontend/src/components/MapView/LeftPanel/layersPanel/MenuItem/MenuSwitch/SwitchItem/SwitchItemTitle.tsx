@@ -7,7 +7,7 @@ import {
 } from '@material-ui/core';
 import { WithStyles } from '@material-ui/styles';
 import { LayerType, MenuGroupItem } from 'config/types';
-import React, { memo, useCallback, useState } from 'react';
+import React, { memo, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 
 const styles = () =>
@@ -53,7 +53,8 @@ interface SwitchTitleProps extends WithStyles<typeof styles> {
   someLayerAreSelected: boolean;
   toggleLayerValue: (selectedLayerId: string, checked: boolean) => void;
   validatedTitle: string;
-  initialActiveLayerId: string | null;
+  activeLayerId: string;
+  setActiveLayerId: (v: string) => void;
   groupMenuFilter?: string;
   disabledMenuSelection?: boolean;
 }
@@ -62,7 +63,8 @@ const SwitchItemTitle = ({
   someLayerAreSelected,
   toggleLayerValue,
   validatedTitle,
-  initialActiveLayerId,
+  activeLayerId,
+  setActiveLayerId,
   groupMenuFilter,
   disabledMenuSelection = false,
   classes,
@@ -70,17 +72,13 @@ const SwitchItemTitle = ({
   const { t } = useTranslation();
   const { group } = layer;
 
-  const [activeLayerId, setActiveLayerId] = useState(
-    initialActiveLayerId || (group?.layers?.find(l => l.main)?.id as string),
-  );
-
   const handleSelect = useCallback(
     (event: React.ChangeEvent<{ value: string | unknown }>) => {
       const selectedId = event.target.value;
       setActiveLayerId(selectedId as string);
       toggleLayerValue(selectedId as string, true);
     },
-    [toggleLayerValue],
+    [setActiveLayerId, toggleLayerValue],
   );
 
   return (

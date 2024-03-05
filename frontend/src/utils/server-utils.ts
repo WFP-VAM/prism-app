@@ -87,7 +87,23 @@ export const getPossibleDatesForLayer = (
     case 'point_data':
     case 'static_raster':
     case 'wms':
-      return serverAvailableDates[layer.id];
+      // get available dates for the layer and its fallback layers
+      // eslint-disable-next-line no-case-declarations
+      const { fallbackLayerKeys } = layer as AdminLevelDataLayerProps;
+      if (!fallbackLayerKeys?.length) {
+        return serverAvailableDates[layer.id];
+      }
+      return (
+        // eslint-disable-next-line fp/no-mutating-methods
+        [layer.id, ...(fallbackLayerKeys || [])]
+          .reduce((acc: DateItem[], key) => {
+            if (serverAvailableDates[key]) {
+              return [...acc, ...serverAvailableDates[key]];
+            }
+            return acc;
+          }, [])
+          .sort((a, b) => a.displayDate - b.displayDate)
+      );
     case 'impact':
       return serverAvailableDates[
         (LayerDefinitions[layer.hazardLayer] as WMSLayerProps).id
@@ -199,22 +215,22 @@ const getPointDataCoverage = async (
   );
 };
 
-const getAdminLevelDataCoverage = (layer: AdminLevelDataLayerProps) => {
+export const getAdminLevelDataCoverage = (layer: AdminLevelDataLayerProps) => {
   const { dates } = layer;
   if (!dates) {
     return [];
   }
   // raw data comes in as {"dates": ["YYYY-MM-DD"]}
-  return dates.map(v => moment(v, 'YYYY-MM-DD').valueOf());
+  return dates.map(v => moment.utc(v, 'YYYY-MM-DD').valueOf());
 };
 
-const getStaticRasterDataCoverage = (layer: StaticRasterLayerProps) => {
+export const getStaticRasterDataCoverage = (layer: StaticRasterLayerProps) => {
   const { dates } = layer;
   if (!dates) {
     return [];
   }
   // raw data comes in as {"dates": ["YYYY-MM-DD"]}
-  return dates.map(v => moment(v, 'YYYY-MM-DD').valueOf());
+  return dates.map(v => moment.utc(v, 'YYYY-MM-DD').valueOf());
 };
 
 /**
@@ -490,8 +506,24 @@ export async function getLayersAvailableDates(
     return layers.reduce((acc: Record<string, number[]>, layer) => {
       const layerDates = serverDates[layer.serverLayerName];
       if (layerDates) {
-        // eslint-disable-next-line fp/no-mutation
-        acc[layer.id] = layerDates;
+        // Filter WMS layers by startDate, used for forecast layers in particular.
+        if (layer.startDate) {
+          const limitStartDate =
+            layer.startDate === 'today'
+              ? new Date().setUTCHours(0, 0).valueOf()
+              : new Date(layer.startDate).setUTCHours(0, 0).valueOf();
+          const availableDates = layerDates.filter(
+            date => date >= limitStartDate,
+          );
+          // If there are no dates after filtering, get the last data available
+          // eslint-disable-next-line fp/no-mutation
+          acc[layer.id] = availableDates.length
+            ? availableDates
+            : [layerDates[layerDates.length - 1]];
+        } else {
+          // eslint-disable-next-line fp/no-mutation
+          acc[layer.id] = layerDates;
+        }
       }
       return acc;
     }, {});

@@ -1,5 +1,9 @@
 import moment, { Moment } from 'moment';
 import { DateItem } from '../config/types';
+import {
+  DEFAULT_DATE_FORMAT,
+  DEFAULT_DATE_FORMAT_SNAKE_CASE,
+} from './name-utils';
 
 export interface StartEndDate {
   startDate?: number;
@@ -34,8 +38,8 @@ export const generateDateItemsRange = (
 
   return startEndDateList.flatMap(range => {
     const datesInTime: number[] = generateDatesRange(
-      moment(range.startDate),
-      moment(range.endDate),
+      moment.utc(range.startDate),
+      moment.utc(range.endDate),
     );
 
     const dateItems: DateItem[] = datesInTime.map(dateInTime => ({
@@ -90,3 +94,28 @@ export function binaryIncludes<T extends any>(
 ): boolean {
   return binaryFind(arry, timestamp, callback) > -1;
 }
+
+export const dateStrToUpperCase = (dateStr: string): string => {
+  return `${dateStr.slice(0, 1).toUpperCase()}${dateStr.slice(1)}`;
+};
+
+export const getDateFormat = (
+  date: number | string | undefined,
+  format: 'default' | 'snake',
+) => {
+  if (date === undefined) {
+    return undefined;
+  }
+
+  switch (format) {
+    case 'default':
+      return moment(date).format(DEFAULT_DATE_FORMAT);
+    case 'snake':
+      return moment(date).format(DEFAULT_DATE_FORMAT_SNAKE_CASE);
+
+    default:
+      throw new Error(`Invalid format: ${format}`);
+  }
+};
+
+export const getMillisecondsFromISO = (date: string) => moment(date).valueOf();
