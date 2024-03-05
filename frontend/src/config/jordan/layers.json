@@ -4022,7 +4022,7 @@
     "input_layers": [
       {
         "id": "spi_1m",
-        "importance": 0.4,
+        "importance": 0.5,
         "key": [
           "CHIRPS",
           "R1S_DEKAD"
@@ -4031,7 +4031,7 @@
       },
       {
         "id": "lst_anomaly",
-        "importance": 0.3,
+        "importance": 0.25,
         "key": [
           "MODIS",
           "MYD11C2_TDD_DEKAD"
@@ -4039,8 +4039,8 @@
         "aggregation": "last_dekad"
       },
       {
-        "id": "ndvi_dekad_anomaly",
-        "importance": 0.3,
+        "id": "ndvi_dekad",
+        "importance": 0.25,
         "key": [
           "MODIS",
           "NDVI_smoothed_5KM"
