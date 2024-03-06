@@ -83,7 +83,7 @@ const LeftPanel = memo(() => {
           marginTop: 'calc(7vh + 1rem)',
           marginLeft: '1rem',
           height: '80vh',
-          backgroundColor: '#FFF',
+          backgroundColor: 'white',
           maxWidth: '100%',
           borderRadius: '8px',
         },
