@@ -33,7 +33,7 @@
     "eject": "react-scripts eject",
     "lint": "eslint --ext .js,.jsx,.ts,.tsx -c .eslintrc ./src ../common/src",
     "precommit": "lint-staged",
-    "preprocess-layers": "node ./scripts/preprocess-layers.js",
+    "preprocess-layers": "ts-node --compilerOptions \"{\\\"module\\\":\\\"commonjs\\\"}\" ./scripts/preprocess-layers.ts",
     "setup:common": "rimraf ./node_modules/prism-common && cd ../common && yarn install --network-timeout 600000 && yarn build && cd ../frontend && yarn install --check-files"
   },
   "dependencies": {
@@ -87,8 +87,6 @@
     "lodash": "^4.17.21",
     "maplibre-gl": "^3.6.2",
     "marked": "^4.0.10",
-    "moment": "^2.29.4",
-    "moment-range": "^4.0.2",
     "papaparse": "^5.2.0",
     "prettier": "2.0.5",
     "prism-common": "file:../common",
@@ -182,6 +180,7 @@
     "redux-mock-store": "^1.5.4",
     "surge": "^0.23.1",
     "timezone-mock": "^1.3.6",
+    "ts-node": "^10.9.2",
     "typescript": "4.4.4"
   },
   "engines": {

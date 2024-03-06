@@ -1,10 +1,9 @@
-import moment from 'moment';
 import {
   binaryFind,
   generateDateItemsRange,
   generateDatesRange,
-  getDateFormat,
-  getMillisecondsFromISO,
+  getFormattedDate,
+  getTimeInMilliseconds,
   StartEndDate,
 } from './date-utils';
 
@@ -101,9 +100,9 @@ const defaultFormatTests = [
 ];
 
 test.each(defaultFormatTests)(
-  'Test getDateFormat default',
+  'Test getFormattedDate default',
   (input, expected) => {
-    expect(expected).toEqual(getDateFormat(input, 'default'));
+    expect(expected).toEqual(getFormattedDate(input, 'default'));
   },
 );
 
@@ -130,9 +129,12 @@ const snakeFormateTests = [
   [1644614400000, '2022_02_11'],
 ];
 
-test.each(snakeFormateTests)('Test getDateFormat snake', (input, expected) => {
-  expect(expected).toEqual(getDateFormat(input, 'snake'));
-});
+test.each(snakeFormateTests)(
+  'Test getFormattedDate snake',
+  (input, expected) => {
+    expect(expected).toEqual(getFormattedDate(input, 'snake'));
+  },
+);
 
 const isoDates = [
   ['2024-02-02T13:44:24.164Z', 1706881464164],
@@ -157,12 +159,15 @@ const isoDates = [
   ['2025-10-06T14:23:59.400Z', 1759760639400],
 ];
 
-test.each(isoDates)('Test getMillisecondsFromISO', (input, expected) => {
-  expect(expected).toEqual(getMillisecondsFromISO(input as string));
+test.each(isoDates)('Test getTimeInMilliseconds', (input, expected) => {
+  expect(expected).toEqual(getTimeInMilliseconds(input as string));
 });
 
 test('Test generateDatesRange', () => {
-  const ret = generateDatesRange(moment('2023-02-02'), moment('2023-02-13'));
+  const ret = generateDatesRange(
+    new Date('2023-02-02'),
+    new Date('2023-02-13'),
+  );
   expect(ret).toEqual([
     1675296000000,
     1675382400000,

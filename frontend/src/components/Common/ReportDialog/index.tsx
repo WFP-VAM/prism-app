@@ -18,7 +18,6 @@ import { useSelector } from 'react-redux';
 import { ArrowBack } from '@material-ui/icons';
 import { PDFDownloadLink, PDFViewer } from '@react-pdf/renderer';
 import { snakeCase } from 'lodash';
-import moment from 'moment';
 import { useSafeTranslation } from 'i18n';
 import { mapSelector } from 'context/mapStateSlice/selectors';
 import {
@@ -28,7 +27,8 @@ import {
 import { Column, ExposedPopulationResult } from 'utils/analysis-utils';
 import LoadingBlinkingDots from 'components/Common/LoadingBlinkingDots';
 import { ReportType } from 'config/types';
-import { getDateFormat } from 'utils/date-utils';
+import { DateFormat } from 'utils/name-utils';
+import { getFormattedDate } from 'utils/date-utils';
 import ReportDoc from './reportDoc';
 
 type Format = 'png' | 'jpeg';
@@ -53,14 +53,20 @@ const ReportDialog = memo(
 
     const reportDate = useMemo(() => {
       return analysisResult?.date
-        ? getDateFormat(new Date(analysisResult?.date).toISOString(), 'default')
+        ? getFormattedDate(
+            new Date(analysisResult?.date).toISOString(),
+            'default',
+          )
         : '';
     }, [analysisResult]);
 
     const getPDFName = useMemo(() => {
       const type = snakeCase(analysisResult?.legendText);
       const date = new Date();
-      const dateString = moment(date).format('DD_MM_YYYY');
+      const dateString = getFormattedDate(
+        date.toISOString(),
+        DateFormat.DayFirstSnakeCase,
+      );
       return `PRISM_report_${type}_${dateString}.pdf`;
     }, [analysisResult]);
 
