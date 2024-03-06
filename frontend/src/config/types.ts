@@ -25,7 +25,8 @@ export type LayerType =
   | ImpactLayerProps
   | PointDataLayerProps
   | CompositeLayerProps
-  | StaticRasterLayerProps;
+  | StaticRasterLayerProps
+  | AnticipatoryActionLayerProps;
 
 type UnionToIntersection<U> = (U extends any ? (k: U) => void : never) extends (
   k: infer I,
@@ -867,3 +868,11 @@ export type MapEventWrapFunctionProps<T> = {
 export type MapEventWrapFunction<T> = (
   props: MapEventWrapFunctionProps<T>,
 ) => (evt: MapLayerMouseEvent) => void;
+
+export class AnticipatoryActionLayerProps extends CommonLayerProps {
+  type: 'anticipatory_action';
+  baseUrl: string;
+
+  @makeRequired
+  title: string;
+}

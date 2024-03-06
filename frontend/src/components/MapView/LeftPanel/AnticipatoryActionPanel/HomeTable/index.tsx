@@ -46,7 +46,7 @@ function AreaTag({ name, isNew }: AreaTagProps) {
 export interface RowProps {
   id: Phase | 'header';
   iconContent: React.ReactNode;
-  windows: [AreaTagProps[], AreaTagProps[]];
+  windows: AreaTagProps[][];
   header?: string[];
 }
 
@@ -59,7 +59,13 @@ function Row({ iconContent, windows, header }: RowProps) {
       <div className={classes.rowWrapper}>
         <div className={classes.iconCol}>{iconContent}</div>
         {header.map(name => (
-          <div key={name} className={classes.windowWrapper}>
+          <div
+            key={name}
+            style={{
+              width:
+                header.length > 1 ? 'calc(50% - 1.75rem)' : 'calc(100% - 3rem)',
+            }}
+          >
             <Typography variant="h3" className={classes.headerText}>
               {name}
             </Typography>
@@ -73,9 +79,15 @@ function Row({ iconContent, windows, header }: RowProps) {
     <div className={classes.rowWrapper}>
       <div className={classes.iconCol}>{iconContent}</div>
       {windows.map((col, index) => (
-        // we can actually use the index as key here, since we know each index is a window
-        // eslint-disable-next-line react/no-array-index-key
-        <div key={index} className={classes.windowWrapper}>
+        <div
+          // we can actually use the index as key here, since we know each index is a window
+          // eslint-disable-next-line react/no-array-index-key
+          key={index}
+          style={{
+            width:
+              windows.length > 1 ? 'calc(50% - 1.75rem)' : 'calc(100% - 3rem)',
+          }}
+        >
           <div className={classes.windowBackground}>
             <div className={classes.tagWrapper}>
               {col.map(x => (
@@ -99,11 +111,10 @@ const useRowStyles = makeStyles(() =>
     rowWrapper: {
       display: 'flex',
       flexDirection: 'row',
-      justifyContent: 'space-around',
+      justifyContent: 'space-between',
       padding: '0.125rem 0.5rem',
     },
     iconCol: { width: '3rem' },
-    windowWrapper: { width: 'calc(50% - 1.75rem)' },
     windowBackground: {
       background: 'white',
       height: '100%',

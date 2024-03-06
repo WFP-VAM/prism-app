@@ -427,7 +427,7 @@ const styles = (theme: Theme) =>
       position: 'absolute',
       bottom: '1.5rem',
       width: '100%',
-      zIndex: 5,
+      zIndex: 1300,
     },
 
     chevronDate: {

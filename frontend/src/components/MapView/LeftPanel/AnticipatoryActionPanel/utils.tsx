@@ -6,6 +6,7 @@ import {
   useRadioGroup,
   withStyles,
 } from '@material-ui/core';
+import { AnticipatoryActionData } from 'context/anticipatoryActionStateSlice';
 import { black, borderGray, gray } from 'muiTheme';
 import React from 'react';
 
@@ -47,3 +48,20 @@ export type Phase =
   | 'ready_mod'
   | 'na'
   | 'ny';
+
+export function getAAAvailableDates(data: AnticipatoryActionData[]) {
+  const datesAsMap = data.reduce((acc, curr, index) => {
+    const window = acc[curr.windows];
+    const newEntry = new Date(curr.date).getTime();
+    return {
+      ...acc,
+      [curr.windows]: window
+        ? window.set(newEntry, newEntry)
+        : new Map().set(newEntry, newEntry),
+    };
+  }, {} as { [key: string]: Map<number, number> });
+
+  return Object.fromEntries(
+    Object.entries(datesAsMap).map(x => [x[0], Array.from(x[1].keys())]),
+  );
+}

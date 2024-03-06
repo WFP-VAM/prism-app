@@ -13,7 +13,7 @@ import {
   MenuGroup,
   MenuItemType,
 } from 'config/types';
-import { appConfig, rawAnticipatoryAction } from 'config';
+import { appConfig } from 'config';
 
 type LayersCategoriesType = LayersCategoryType[];
 
@@ -85,8 +85,7 @@ export const tablesMenuItems = menuList.filter((menuItem: MenuItemType) => {
 });
 
 export const areTablesAvailable = tablesMenuItems.length >= 1;
-export const isAnticipatoryActionAvailable =
-  Object.keys(rawAnticipatoryAction || {}).length > 0;
+export const isAnticipatoryActionAvailable = isLayerKey('anticipatory_action');
 
 export const oneDayInMs = 24 * 60 * 60 * 1000;
 export const oneYearInMs = 365 * oneDayInMs;

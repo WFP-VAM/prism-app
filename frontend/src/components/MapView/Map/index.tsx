@@ -26,6 +26,7 @@ import {
 import { mapSelector } from 'context/mapStateSlice/selectors';
 import {
   AdminLevelDataLayer,
+  AnticipatoryActionLayer,
   BoundaryLayer,
   CompositeLayer,
   ImpactLayer,
@@ -63,6 +64,9 @@ const componentTypes: LayerComponentsMap<LayerType> = {
   point_data: { component: PointDataLayer },
   static_raster: { component: StaticRasterLayer },
   composite: { component: CompositeLayer },
+  anticipatory_action: {
+    component: AnticipatoryActionLayer,
+  },
 };
 
 const {

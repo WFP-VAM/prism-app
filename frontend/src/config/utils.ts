@@ -2,6 +2,7 @@ import { camelCase, get, map, mapKeys } from 'lodash';
 import { appConfig, rawLayers, rawReports, rawTables } from '.';
 import {
   AdminLevelDataLayerProps,
+  AnticipatoryActionLayerProps,
   BoundaryLayerProps,
   checkRequiredKeys,
   CompositeLayerProps,
@@ -134,6 +135,11 @@ const getLayerByKey = (layerKey: LayerKey): LayerType => {
       }
       if (!checkIntervals(definition)) {
         return throwInvalidInterval();
+      }
+      return definition;
+    case 'anticipatory_action':
+      if (!checkRequiredKeys(AnticipatoryActionLayerProps, definition, true)) {
+        return throwInvalidLayer();
       }
       return definition;
     default:

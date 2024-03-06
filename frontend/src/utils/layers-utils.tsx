@@ -39,6 +39,7 @@ const dateSupportLayerTypes: Array<LayerType['type']> = [
   'point_data',
   'wms',
   'static_raster',
+  'anticipatory_action',
 ];
 
 const useLayers = () => {
@@ -275,7 +276,6 @@ const useLayers = () => {
       return;
     }
 
-    // Add the missing layers
     addMissingLayers();
 
     if (!urlDate || dateInt === selectedDate) {
@@ -337,10 +337,12 @@ const useLayers = () => {
 
   // let users know if the layers selected are not possible to view together.
   useEffect(() => {
+    // TODo: Why is this the case here? maybe we should remove it;
     if (
       selectedLayerDates.length !== 0 ||
       selectedLayersWithDateSupport.length === 0 ||
-      !selectedDate
+      !selectedDate ||
+      1
     ) {
       return;
     }

@@ -4,6 +4,7 @@ import { WFS, WMS, fetchCoverageLayerDays, formatUrl } from 'prism-common';
 import { Dispatch } from 'redux';
 import { appConfig, safeCountry } from '../config';
 import type {
+  AnticipatoryActionLayerProps,
   AvailableDates,
   CompositeLayerProps,
   PathLayer,
@@ -75,7 +76,8 @@ export type DateCompatibleLayer =
   | ImpactLayerProps
   | PointDataLayerProps
   | StaticRasterLayerProps
-  | CompositeLayerProps;
+  | CompositeLayerProps
+  | AnticipatoryActionLayerProps;
 
 export const getPossibleDatesForLayer = (
   layer: DateCompatibleLayer,
@@ -115,6 +117,8 @@ export const getPossibleDatesForLayer = (
         date => date.displayDate > startDateTimestamp,
       );
     }
+    case 'anticipatory_action':
+      return serverAvailableDates[layer.id] || [];
     default:
       return [];
   }

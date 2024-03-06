@@ -1,19 +1,33 @@
 import { Drawer, Theme, createStyles, makeStyles } from '@material-ui/core';
 import React, { memo } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import {
   Panel,
   leftPanelSizeSelector,
   leftPanelTabValueSelector,
+  setTabValue,
 } from 'context/leftPanelStateSlice';
-import { areChartLayersAvailable } from 'config/utils';
-import { PanelSize } from 'config/types';
+import { LayerDefinitions, areChartLayersAvailable } from 'config/utils';
+import { LayerKey, PanelSize } from 'config/types';
+import {
+  availableDatesSelector,
+  updateLayersCapabilities,
+} from 'context/serverStateSlice';
+import {
+  AAlayerKey,
+  AnticipatoryActionDataSelector,
+  loadAAData,
+} from 'context/anticipatoryActionStateSlice';
+import { getUrlKey, useUrlHistory } from 'utils/url-utils';
+import { layersSelector, mapSelector } from 'context/mapStateSlice/selectors';
 import AnalysisPanel from './AnalysisPanel';
 import ChartsPanel from './ChartsPanel';
 import TablesPanel from './TablesPanel';
 import AnticipatoryActionPanel from './AnticipatoryActionPanel';
 import LayersPanel from './layersPanel';
 import { areTablesAvailable, isAnticipatoryActionAvailable } from './utils';
+import { getAAAvailableDates } from './AnticipatoryActionPanel/utils';
+import { toggleRemoveLayer } from './layersPanel/MenuItem/MenuSwitch/SwitchItem/utils';
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -42,8 +56,18 @@ const TabPanel = memo(({ children, value, index, ...other }: TabPanelProps) => {
 });
 
 const LeftPanel = memo(() => {
+  const dispatch = useDispatch();
   const tabValue = useSelector(leftPanelTabValueSelector);
   const panelSize = useSelector(leftPanelSizeSelector);
+  const serverAvailableDates = useSelector(availableDatesSelector);
+  const AAData = useSelector(AnticipatoryActionDataSelector);
+  const selectedLayers = useSelector(layersSelector);
+  const map = useSelector(mapSelector);
+  const {
+    updateHistory,
+    appendLayerToUrl,
+    removeLayerFromUrl,
+  } = useUrlHistory();
 
   const classes = useStyles({ panelSize, tabValue });
 
@@ -52,6 +76,81 @@ const LeftPanel = memo(() => {
     resultsPage,
     setResultsPage,
   ] = React.useState<React.JSX.Element | null>(null);
+
+  React.useEffect(() => {
+    if (tabValue !== Panel.AnticipatoryAction) {
+      return;
+    }
+    if (serverAvailableDates[AAlayerKey] !== undefined) {
+      return;
+    }
+    const AAAvailableDates = getAAAvailableDates(AAData);
+    // TODO: split 2 windows in future
+    const flatDates = Object.values(AAAvailableDates).flat();
+    const unique = [...new Map(flatDates.map(x => [x, x])).keys()];
+    // eslint-disable-next-line fp/no-mutating-methods
+    const sorted = unique.sort();
+    if (sorted.length === 0) {
+      return;
+    }
+    dispatch(
+      updateLayersCapabilities({
+        ...serverAvailableDates,
+        // TODO: queryDate here?
+        [AAlayerKey]: sorted.map(x => ({
+          displayDate: x,
+          queryDate: x,
+        })),
+      }),
+    );
+  }, [AAData, dispatch, serverAvailableDates, tabValue]);
+
+  React.useEffect(() => {
+    const selectedLayer = LayerDefinitions[AAlayerKey as LayerKey];
+    const urlLayerKey = getUrlKey(selectedLayer);
+    const AALayerInUrl = selectedLayers.find(x => x.id === selectedLayer.id);
+
+    // TODO: update AAData.length === 0 condition with something more solid
+    // Move to AA tab when directly linked there
+    if (
+      tabValue !== Panel.AnticipatoryAction &&
+      AALayerInUrl &&
+      AAData.length === 0
+    ) {
+      dispatch(setTabValue(Panel.AnticipatoryAction));
+      dispatch(loadAAData());
+      return;
+    }
+
+    // Remove from url when leaving from AA tab
+    if (tabValue !== Panel.AnticipatoryAction && tabValue !== Panel.None) {
+      if (AALayerInUrl) {
+        toggleRemoveLayer(
+          selectedLayer,
+          map,
+          urlLayerKey,
+          dispatch,
+          removeLayerFromUrl,
+        );
+      }
+      return;
+    }
+
+    dispatch(loadAAData());
+
+    // Add to url when getting to AA tab
+    if (AALayerInUrl) {
+      return;
+    }
+    const updatedUrl = appendLayerToUrl(
+      urlLayerKey,
+      selectedLayers,
+      selectedLayer,
+    );
+    updateHistory(urlLayerKey, updatedUrl);
+    // url does not instantly update. updateHistory and appendLayerToUrl functions re-trigger useEffect, before selected layers is set
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedLayers, tabValue, dispatch]);
 
   const renderedChartsPanel = React.useMemo(() => {
     if (!areChartLayersAvailable) {

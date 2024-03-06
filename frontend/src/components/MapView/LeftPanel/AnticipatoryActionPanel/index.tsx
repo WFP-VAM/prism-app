@@ -11,27 +11,15 @@ import { black, cyanBlue } from 'muiTheme';
 import React from 'react';
 import { useSafeTranslation } from 'i18n';
 import { GetApp, EditOutlined, BarChartOutlined } from '@material-ui/icons';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import {
+  AnticipatoryActionData,
   AnticipatoryActionDataSelector,
-  loadAAData,
 } from 'context/anticipatoryActionStateSlice';
+import { useUrlHistory } from 'utils/url-utils';
 import HomeTable, { RowProps } from './HomeTable';
 import AAIcon from './HomeTable/AAIcon';
 import { StyledRadioLabel } from './utils';
-
-const dummyAreas = [
-  { name: 'Mapai', isNew: true },
-  { name: 'Kolomna', isNew: false },
-  { name: 'Saraf', isNew: true },
-  { name: 'Glarus', isNew: false },
-  { name: 'Brampton', isNew: true },
-  { name: 'Xanadu', isNew: false },
-  { name: 'Zephyr', isNew: true },
-  { name: 'Quetzaltenango', isNew: false },
-  { name: 'Wakanda', isNew: true },
-  { name: 'Atlantis', isNew: false },
-];
 
 const buttons = [
   { icon: GetApp, text: 'Assets' },
@@ -47,22 +35,91 @@ const links = [
 function AnticipatoryActionPanel() {
   const classes = useStyles();
   const { t } = useSafeTranslation();
-  const dispatch = useDispatch();
   const AAData = useSelector(AnticipatoryActionDataSelector);
+  // TODO: move this to redux state
+  const [selectedWindow, setSelectedWindow] = React.useState<string>('all');
+  const { urlParams } = useUrlHistory();
 
-  console.log({ AAData });
+  const urlDate = React.useMemo(() => {
+    return urlParams.get('date');
+  }, [urlParams]);
 
-  React.useEffect(() => {
-    dispatch(loadAAData());
-  }, [dispatch]);
+  const AADateSameDate = React.useMemo(
+    () => AAData.filter(x => x.date === urlDate),
+    [AAData, urlDate],
+  );
+
+  const windows = React.useMemo(
+    () => [...new Map(AAData.map(x => [x.windows, x.windows])).keys()],
+    [AAData],
+  );
+
+  const setSev = React.useMemo(
+    () =>
+      AADateSameDate.filter(x => x.category === 'Severo' && x.phase === 'Set'),
+    [AADateSameDate],
+  );
+  const readySev = React.useMemo(
+    () =>
+      AADateSameDate.filter(
+        x => x.category === 'Severo' && x.phase === 'Ready',
+      ),
+    [AADateSameDate],
+  );
+  const setMod = React.useMemo(
+    () =>
+      AADateSameDate.filter(
+        x => x.category === 'Moderado' && x.phase === 'Set',
+      ),
+    [AADateSameDate],
+  );
+  const readyMod = React.useMemo(
+    () =>
+      AADateSameDate.filter(
+        x => x.category === 'Moderado' && x.phase === 'Ready',
+      ),
+    [AADateSameDate],
+  );
+
+  // TODO: is this the definition of na and ny?
+  const na = React.useMemo(
+    () =>
+      AADateSameDate.filter(x => x.category === 'Leve' && x.phase === 'Set'),
+    [AADateSameDate],
+  );
+  const ny = React.useMemo(
+    () =>
+      AADateSameDate.filter(x => x.category === 'Leve' && x.phase === 'Ready'),
+    [AADateSameDate],
+  );
+
+  // -1 means all
+  const selectedWindowIndex = windows.findIndex(x => x === selectedWindow);
+
+  const headerRow: RowProps = {
+    id: 'header',
+    iconContent: null,
+    windows: selectedWindowIndex === -1 ? windows.map(x => []) : [[]],
+    header:
+      selectedWindowIndex === -1
+        ? [...windows]
+        : [windows[selectedWindowIndex]],
+  };
+
+  function getWindowData(data: AnticipatoryActionData[], window: number) {
+    return data
+      .filter(x => x.windows === windows[window])
+      .map(x => ({ name: x.district, isNew: false }));
+  }
+
+  function windowData(data: AnticipatoryActionData[]) {
+    return selectedWindowIndex === -1
+      ? windows.map((x, index) => getWindowData(data, index))
+      : [getWindowData(data, selectedWindowIndex)];
+  }
 
   const rows: RowProps[] = [
-    {
-      id: 'header',
-      iconContent: null,
-      windows: [[], []],
-      header: ['window 1', 'window 2'],
-    },
+    headerRow,
     {
       id: 'set_sev',
       iconContent: (
@@ -73,7 +130,7 @@ function AnticipatoryActionPanel() {
           color="white"
         />
       ),
-      windows: [dummyAreas.slice(0, 2), dummyAreas.slice(0, 3)],
+      windows: windowData(setSev),
     },
     {
       id: 'ready_sev',
@@ -85,7 +142,7 @@ function AnticipatoryActionPanel() {
           color="white"
         />
       ),
-      windows: [dummyAreas.slice(3, 6), dummyAreas.slice(6, 7)],
+      windows: windowData(readySev),
     },
     {
       id: 'set_mod',
@@ -97,7 +154,7 @@ function AnticipatoryActionPanel() {
           color="black"
         />
       ),
-      windows: [[], dummyAreas.slice(0, 1)],
+      windows: windowData(setMod),
     },
     {
       id: 'ready_mod',
@@ -109,7 +166,7 @@ function AnticipatoryActionPanel() {
           color="black"
         />
       ),
-      windows: [dummyAreas.slice(0, 1), []],
+      windows: windowData(readyMod),
     },
     {
       id: 'na',
@@ -121,7 +178,7 @@ function AnticipatoryActionPanel() {
           color="black"
         />
       ),
-      windows: [[], []],
+      windows: windowData(na),
     },
     {
       id: 'ny',
@@ -139,7 +196,7 @@ function AnticipatoryActionPanel() {
           color="black"
         />
       ),
-      windows: [[], []],
+      windows: windowData(ny),
     },
   ];
 
@@ -154,10 +211,15 @@ function AnticipatoryActionPanel() {
         {/* window select */}
         <div>
           <FormControl component="fieldset">
-            <RadioGroup defaultValue="all" className={classes.radioButtonGroup}>
+            <RadioGroup
+              defaultValue="all"
+              className={classes.radioButtonGroup}
+              onChange={(e, val) => setSelectedWindow(val)}
+            >
               <StyledRadioLabel value="all" label="All" />
-              <StyledRadioLabel value="window1" label="Window 1" />
-              <StyledRadioLabel value="window2" label="Window 2" />
+              {windows.map(x => (
+                <StyledRadioLabel key={x} value={x} label={x} />
+              ))}
             </RadioGroup>
           </FormControl>
         </div>

@@ -20,7 +20,7 @@ type LeftPanelState = {
 };
 
 const initialState: LeftPanelState = {
-  tabValue: hidePanel ? Panel.None : Panel.AnticipatoryAction,
+  tabValue: hidePanel ? Panel.None : Panel.Layers,
   panelSize: PanelSize.medium,
 };
 
