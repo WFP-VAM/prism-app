@@ -1,7 +1,7 @@
+import { oneDayInMs } from 'components/MapView/LeftPanel/utils';
 import { get, merge, snakeCase, sortBy, sortedUniqBy } from 'lodash';
 import { WFS, WMS, fetchCoverageLayerDays, formatUrl } from 'prism-common';
 import { Dispatch } from 'redux';
-import { oneDayInMs } from 'components/MapView/LeftPanel/utils';
 import { appConfig, safeCountry } from '../config';
 import type {
   AvailableDates,
@@ -24,21 +24,21 @@ import {
   WMSLayerProps,
 } from '../config/types';
 
+import { LayerDefinitions } from '../config/utils';
 import { addNotification } from '../context/notificationStateSlice';
 import { fetchACLEDDates } from './acled-utils';
 import {
   StartEndDate,
+  binaryIncludes,
   datesAreEqualWithoutTime,
   generateDateItemsRange,
   generateDatesRange,
-  binaryIncludes,
   getFormattedDate,
 } from './date-utils';
 import { LocalError } from './error-utils';
 import { createEWSDatesArray } from './ews-utils';
 import { fetchWithTimeout } from './fetch-with-timeout';
 import { queryParamsToString } from './url-utils';
-import { LayerDefinitions } from '../config/utils';
 
 /**
  * Function that gets the correct date used to make the request. If available dates is undefined. Return selectedDate as default.
@@ -302,17 +302,15 @@ async function generateIntermediateDateItemFromDataFile(
 
 export function generateIntermediateDateItemFromValidity(layer: ValidityLayer) {
   const { dates } = layer;
-  const { days, mode } = layer.validity;
+  const { forward, backward, mode } = layer.validity;
 
   const sortedDates = Array.prototype.sort.call(dates) as typeof dates;
 
   // Generate first DateItem[] from dates array.
   const baseItem = layer.validity
     ? {
-        isStartDate:
-          mode === DatesPropagation.FORWARD || mode === DatesPropagation.BOTH,
-        isEndDate:
-          mode === DatesPropagation.BACKWARD || mode === DatesPropagation.BOTH,
+        isStartDate: !!forward,
+        isEndDate: !!backward,
       }
     : {};
   const dateItemsDefault = sortedDates.map(sortedDate =>
@@ -332,22 +330,43 @@ export function generateIntermediateDateItemFromValidity(layer: ValidityLayer) {
     })
     .reduce((acc: DateItem[], date) => {
       // We create the start and the end date for every date
-      let startDate = new Date(date.getTime());
-      let endDate = new Date(date.getTime());
+      const startDate = new Date(date.getTime());
+      const endDate = new Date(date.getTime());
 
-      // if the mode is `both` or backward we add the days of the validity to the end date keeping the startDate as it is
-      if (mode === DatesPropagation.BOTH || mode === DatesPropagation.FORWARD) {
-        // eslint-disable-next-line fp/no-mutation
-        endDate = new Date(endDate.getTime() + days * oneDayInMs);
-      }
+      if (mode === DatesPropagation.DAYS) {
+        // If mode is "days", adjust dates directly based on the duration
+        startDate.setDate(startDate.getDate() - (backward || 0));
+        endDate.setDate(endDate.getDate() + (forward || 0));
+        // For "dekad" mode, calculate start and end dates based on backward and forward dekads
+        // Dekads are 10-day periods, so we adjust dates accordingly
+      } else if (mode === DatesPropagation.DEKAD) {
+        const DekadStartingDays = [1, 11, 21];
+        const startDayOfTheMonth = startDate.getDate();
+        if (!DekadStartingDays.includes(startDayOfTheMonth)) {
+          throw Error(
+            'publishing day for dekad layers is expected to be 1, 11, 21.',
+          );
+        }
+        // find the index so that we can use a modulo to find the new dekad start and end date.
+        const dekadStartIndex = DekadStartingDays.findIndex(
+          x => x === startDayOfTheMonth,
+        );
 
-      // if the mode is `both` or `forward` we subtract the days of the validity to the start date keeping the endDate as it is
-      if (
-        mode === DatesPropagation.BOTH ||
-        mode === DatesPropagation.BACKWARD
-      ) {
-        // eslint-disable-next-line fp/no-mutation
-        startDate = new Date(startDate.getTime() - days * oneDayInMs);
+        if (forward) {
+          const newDekadEndIndex = (dekadStartIndex + forward) % 3;
+          const nMonthsForward = Math.floor((dekadStartIndex + forward) / 3);
+          endDate.setDate(DekadStartingDays[newDekadEndIndex]);
+          endDate.setMonth(endDate.getMonth() + nMonthsForward);
+          endDate.setDate(endDate.getDate() - 1);
+        }
+        if (backward) {
+          const newDekadStartIndex = (dekadStartIndex - backward + 3) % 3;
+          const nMonthsBackward = Math.floor((dekadStartIndex - backward) / 3);
+          startDate.setDate(DekadStartingDays[newDekadStartIndex]);
+          startDate.setMonth(startDate.getMonth() + nMonthsBackward);
+        }
+      } else {
+        return [];
       }
 
       // We create an array with the diff between the endDate and startDate and we create an array with the addition of the days in the startDate
@@ -562,7 +581,7 @@ export async function getLayersAvailableDates(
   const layersWithValidity: ValidityLayer[] = Object.values(LayerDefinitions)
     .filter(layer => layer.validity !== undefined)
     .map(layer => {
-      const layerId = layer.type === 'wms' ? layer.serverLayerName : layer.id;
+      const layerId = layer.id;
 
       return {
         name: layerId,
@@ -577,11 +596,9 @@ export async function getLayersAvailableDates(
   )
     .filter(layer => !!(layer as AdminLevelDataLayerProps).validityPeriod)
     .map(layer => {
-      const layerId = layer.type === 'wms' ? layer.serverLayerName : layer.id;
-
       return {
-        name: layerId,
-        dates: mergedLayers[layerId],
+        name: layer.id,
+        dates: mergedLayers[layer.id],
         path: (layer as AdminLevelDataLayerProps).path,
         validityPeriod: (layer as AdminLevelDataLayerProps)
           .validityPeriod as ValidityPeriod,
