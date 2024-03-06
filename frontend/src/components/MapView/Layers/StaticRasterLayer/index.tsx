@@ -3,9 +3,9 @@ import { opacitySelector } from 'context/opacityStateSlice';
 import React, { memo } from 'react';
 import { Layer, Source } from 'react-map-gl/maplibre';
 import { useSelector } from 'react-redux';
-import { getDateFormat } from 'utils/date-utils';
+import { getFormattedDate } from 'utils/date-utils';
 import { getLayerMapId } from 'utils/map-utils';
-import { DEFAULT_DATE_FORMAT_SNAKE_CASE } from 'utils/name-utils';
+import { DateFormat } from 'utils/name-utils';
 import { useDefaultDate } from 'utils/useDefaultDate';
 
 export const createStaticRasterLayerUrl = (
@@ -15,8 +15,8 @@ export const createStaticRasterLayerUrl = (
 ) =>
   dates
     ? baseUrl.replace(
-        `{${DEFAULT_DATE_FORMAT_SNAKE_CASE}}`,
-        getDateFormat(selectedDate, 'snake') as string,
+        `{${DateFormat.DefaultSnakeCase}}`,
+        getFormattedDate(selectedDate, 'snake') as string,
       )
     : baseUrl;
 

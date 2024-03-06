@@ -50,9 +50,11 @@ test('renders as expected', () => {
 });
 
 test('DateSelector utils', () => {
-  const findClosestDateResult = findClosestDate(
-    findClosestDateData.date,
-    findClosestDateData.availableDates,
+  const findClosestDateResult = new Date(
+    findClosestDate(
+      findClosestDateData.date,
+      findClosestDateData.availableDates,
+    ),
   ).toISOString();
 
   expect(findClosestDateResult).toBe(findClosestDateData.result);

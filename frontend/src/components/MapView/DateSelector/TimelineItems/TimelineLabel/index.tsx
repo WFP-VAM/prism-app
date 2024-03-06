@@ -6,14 +6,17 @@ import {
 } from '@material-ui/core';
 import React from 'react';
 import { DateRangeType } from 'config/types';
-import { moment } from 'i18n';
-import { MONTH_YEAR_DATE_FORMAT } from 'utils/name-utils';
+import { DateFormat } from 'utils/name-utils';
+import { format } from 'date-fns';
+import { locales } from 'i18n';
 
 const TimelineLabel = ({ classes, locale, date }: TimelineLabelProps) => {
   if (date.isFirstDay) {
     return (
       <Typography variant="body2" className={classes.dateItemLabel}>
-        {moment(date.value).locale(locale).format(MONTH_YEAR_DATE_FORMAT)}
+        {format(date.value, DateFormat.MonthYear, {
+          locale: locales[locale as keyof typeof locales],
+        })}
       </Typography>
     );
   }
