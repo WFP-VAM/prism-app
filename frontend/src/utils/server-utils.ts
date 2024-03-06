@@ -1,5 +1,5 @@
+import { oneDayInMs } from 'components/MapView/LeftPanel/utils';
 import { get, merge, snakeCase, sortBy, sortedUniqBy } from 'lodash';
-import moment from 'moment';
 import { WFS, WMS, fetchCoverageLayerDays, formatUrl } from 'prism-common';
 import { Dispatch } from 'redux';
 import { appConfig, safeCountry } from '../config';
@@ -25,20 +25,21 @@ import {
   WMSLayerProps,
 } from '../config/types';
 
+import { LayerDefinitions } from '../config/utils';
 import { addNotification } from '../context/notificationStateSlice';
 import { fetchACLEDDates } from './acled-utils';
 import {
   StartEndDate,
+  binaryIncludes,
   datesAreEqualWithoutTime,
   generateDateItemsRange,
   generateDatesRange,
-  binaryIncludes,
+  getFormattedDate,
 } from './date-utils';
 import { LocalError } from './error-utils';
 import { createEWSDatesArray } from './ews-utils';
 import { fetchWithTimeout } from './fetch-with-timeout';
 import { queryParamsToString } from './url-utils';
-import { LayerDefinitions } from '../config/utils';
 
 /**
  * Function that gets the correct date used to make the request. If available dates is undefined. Return selectedDate as default.
@@ -68,7 +69,8 @@ export const getRequestDate = (
 };
 
 // Note: PRISM's date picker is designed to work with dates in the UTC timezone
-// Therefore, ambiguous dates (dates passed as string e.g 2020-08-01) shouldn't be calculated from the user's timezone and instead be converted directly to UTC. Possibly with moment.utc(string)
+// Therefore, ambiguous dates (dates passed as string e.g 2020-08-01) shouldn't be calculated from the user's timezone and instead be converted directly to UTC.
+// plain JS Date `new Date('2020-08-01').toISOString()`, yields: '2020-08-01T00:00:00.000Z'.
 
 export type DateCompatibleLayer =
   | AdminLevelDataLayerProps
@@ -211,7 +213,7 @@ const getPointDataCoverage = async (
   return (
     data
       // adding 12 hours to avoid  errors due to daylight saving, and convert to number
-      .map(item => moment.utc(item.date).set({ hour: 12, minute: 0 }).valueOf())
+      .map(item => new Date(item.date).setUTCHours(12, 0, 0, 0))
       // remove duplicate dates - indexOf returns first index of item
       .filter((date, index, arr) => {
         return arr.indexOf(date) === index;
@@ -225,7 +227,7 @@ export const getAdminLevelDataCoverage = (layer: AdminLevelDataLayerProps) => {
     return [];
   }
   // raw data comes in as {"dates": ["YYYY-MM-DD"]}
-  return dates.map(v => moment.utc(v, 'YYYY-MM-DD').valueOf());
+  return dates.map(v => new Date(v).getTime());
 };
 
 export const getStaticRasterDataCoverage = (layer: StaticRasterLayerProps) => {
@@ -234,7 +236,7 @@ export const getStaticRasterDataCoverage = (layer: StaticRasterLayerProps) => {
     return [];
   }
   // raw data comes in as {"dates": ["YYYY-MM-DD"]}
-  return dates.map(v => moment.utc(v, 'YYYY-MM-DD').valueOf());
+  return dates.map(v => new Date(v).getTime());
 };
 
 /**
@@ -243,7 +245,7 @@ export const getStaticRasterDataCoverage = (layer: StaticRasterLayerProps) => {
  * @return DateItem
  */
 const generateDefaultDateItem = (date: number, baseItem?: Object): DateItem => {
-  const newDate = new Date(date).setHours(12, 0, 0);
+  const newDate = new Date(date).setUTCHours(12, 0, 0, 0);
   const r = {
     displayDate: newDate,
     queryDate: newDate,
@@ -270,7 +272,7 @@ async function generateIntermediateDateItemFromDataFile(
     layerDates.map(async r => {
       const path = layerPathTemplate.replace(/{.*?}/g, match => {
         const format = match.slice(1, -1);
-        return moment(r).format(format);
+        return getFormattedDate(r, format as any) as string;
       });
 
       const res = await fetch(path);
@@ -292,8 +294,8 @@ async function generateIntermediateDateItemFromDataFile(
       const endDate = jsonBody.DataList[0][validityPeriod.end_date_field];
 
       return {
-        startDate: moment(startDate).set({ hour: 12, minute: 0 }).valueOf(),
-        endDate: moment(endDate).set({ hour: 12, minute: 0 }).valueOf(),
+        startDate: new Date(startDate).setUTCHours(12, 0, 0, 0),
+        endDate: new Date(endDate).setUTCHours(12, 0, 0, 0),
       };
     }),
   );
@@ -304,17 +306,15 @@ async function generateIntermediateDateItemFromDataFile(
 
 export function generateIntermediateDateItemFromValidity(layer: ValidityLayer) {
   const { dates } = layer;
-  const { days, mode } = layer.validity;
+  const { forward, backward, mode } = layer.validity;
 
-  const sortedDates = Array.prototype.sort.call(dates);
+  const sortedDates = Array.prototype.sort.call(dates) as typeof dates;
 
   // Generate first DateItem[] from dates array.
   const baseItem = layer.validity
     ? {
-        isStartDate:
-          mode === DatesPropagation.FORWARD || mode === DatesPropagation.BOTH,
-        isEndDate:
-          mode === DatesPropagation.BACKWARD || mode === DatesPropagation.BOTH,
+        isStartDate: !!forward,
+        isEndDate: !!backward,
       }
     : {};
   const dateItemsDefault = sortedDates.map(sortedDate =>
@@ -322,39 +322,64 @@ export function generateIntermediateDateItemFromValidity(layer: ValidityLayer) {
   );
 
   // only calculate validity for dates that are less than 5 years old
-  const fiveYearsInMs = 5 * 365 * 24 * 60 * 60 * 1000;
+  const fiveYearsInMs = 5 * 365 * oneDayInMs;
   const earliestDate = Date.now() - fiveYearsInMs;
 
   const dateItemsWithValidity = sortedDates
     .filter(date => date > earliestDate)
-    .map(d => moment(d).set({ hour: 12, minute: 0 }))
-    .reduce((acc: DateItem[], momentDate) => {
-      // We create the start and the end date for every moment date
-      let startDate = momentDate.clone();
-      let endDate = momentDate.clone();
+    .map(d => {
+      const date = new Date(d);
+      date.setUTCHours(12, 0, 0, 0);
+      return date;
+    })
+    .reduce((acc: DateItem[], date) => {
+      // We create the start and the end date for every date
+      const startDate = new Date(date.getTime());
+      const endDate = new Date(date.getTime());
 
-      // if the mode is `both` or backward we add the days of the validity to the end date keeping the startDate as it is
-      if (mode === DatesPropagation.BOTH || mode === DatesPropagation.FORWARD) {
-        // eslint-disable-next-line fp/no-mutation
-        endDate = endDate.add(days, 'days');
-      }
+      if (mode === DatesPropagation.DAYS) {
+        // If mode is "days", adjust dates directly based on the duration
+        startDate.setDate(startDate.getDate() - (backward || 0));
+        endDate.setDate(endDate.getDate() + (forward || 0));
+        // For "dekad" mode, calculate start and end dates based on backward and forward dekads
+        // Dekads are 10-day periods, so we adjust dates accordingly
+      } else if (mode === DatesPropagation.DEKAD) {
+        const DekadStartingDays = [1, 11, 21];
+        const startDayOfTheMonth = startDate.getDate();
+        if (!DekadStartingDays.includes(startDayOfTheMonth)) {
+          throw Error(
+            'publishing day for dekad layers is expected to be 1, 11, 21.',
+          );
+        }
+        // find the index so that we can use a modulo to find the new dekad start and end date.
+        const dekadStartIndex = DekadStartingDays.findIndex(
+          x => x === startDayOfTheMonth,
+        );
 
-      // if the mode is `both` or `forward` we subtract the days of the validity to the start date keeping the endDate as it is
-      if (
-        mode === DatesPropagation.BOTH ||
-        mode === DatesPropagation.BACKWARD
-      ) {
-        // eslint-disable-next-line fp/no-mutation
-        startDate = startDate.subtract(days, 'days');
+        if (forward) {
+          const newDekadEndIndex = (dekadStartIndex + forward) % 3;
+          const nMonthsForward = Math.floor((dekadStartIndex + forward) / 3);
+          endDate.setDate(DekadStartingDays[newDekadEndIndex]);
+          endDate.setMonth(endDate.getMonth() + nMonthsForward);
+          endDate.setDate(endDate.getDate() - 1);
+        }
+        if (backward) {
+          const newDekadStartIndex = (dekadStartIndex - backward + 3) % 3;
+          const nMonthsBackward = Math.floor((dekadStartIndex - backward) / 3);
+          startDate.setDate(DekadStartingDays[newDekadStartIndex]);
+          startDate.setMonth(startDate.getMonth() + nMonthsBackward);
+        }
+      } else {
+        return [];
       }
 
       // We create an array with the diff between the endDate and startDate and we create an array with the addition of the days in the startDate
       const daysToAdd = generateDatesRange(startDate, endDate);
 
-      // convert the available days for a specific moment day to the DefaultDate format
+      // convert the available days for a specific day to the DefaultDate format
       const dateItemsToAdd = daysToAdd.map(dateToAdd => ({
         displayDate: dateToAdd,
-        queryDate: momentDate.valueOf(),
+        queryDate: date.getTime(),
       }));
 
       // We filter the dates that don't include the displayDate of the previous item array
@@ -560,7 +585,7 @@ export async function getLayersAvailableDates(
   const layersWithValidity: ValidityLayer[] = Object.values(LayerDefinitions)
     .filter(layer => layer.validity !== undefined)
     .map(layer => {
-      const layerId = layer.type === 'wms' ? layer.serverLayerName : layer.id;
+      const layerId = layer.id;
 
       return {
         name: layerId,
@@ -575,11 +600,9 @@ export async function getLayersAvailableDates(
   )
     .filter(layer => !!(layer as AdminLevelDataLayerProps).validityPeriod)
     .map(layer => {
-      const layerId = layer.type === 'wms' ? layer.serverLayerName : layer.id;
-
       return {
-        name: layerId,
-        dates: mergedLayers[layerId],
+        name: layer.id,
+        dates: mergedLayers[layer.id],
         path: (layer as AdminLevelDataLayerProps).path,
         validityPeriod: (layer as AdminLevelDataLayerProps)
           .validityPeriod as ValidityPeriod,
@@ -630,7 +653,7 @@ export async function getLayersAvailableDates(
         // Genererate dates for layers with validity but not an admin_level_data type
         return {
           [layerName]: layerDatesEntry[1].map((d: number) =>
-            generateDefaultDateItem(new Date(d).setHours(12, 0, 0)),
+            generateDefaultDateItem(new Date(d).setUTCHours(12, 0, 0, 0)),
           ),
         };
       },
@@ -652,7 +675,7 @@ export function formatFeatureInfo(
   labelMap?: { [key: string]: string },
 ): string {
   if (type === DataType.Date) {
-    return `${moment(value).utc().format('MMMM Do YYYY, h:mm:ss')} UTC`;
+    return getFormattedDate(value, 'locale') as string;
   }
 
   if (type === DataType.LabelMapping) {

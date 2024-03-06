@@ -31,7 +31,7 @@ import { isExposureAnalysisLoadingSelector } from 'context/analysisResultStateSl
 import { availableDatesSelector } from 'context/serverStateSlice';
 import { getRequestDate } from 'utils/server-utils';
 import { LayerDefinitions, getStacBand } from 'config/utils';
-import { getDateFormat } from 'utils/date-utils';
+import { getFormattedDate } from 'utils/date-utils';
 import { safeCountry } from 'config';
 
 // TODO - return early when the layer is not selected.
@@ -76,7 +76,7 @@ function LayerDownloadOptions({
   const getFilename = (): string => {
     const safeTitle = layer.title ?? layer.id;
     if (selectedDate && (layer as AdminLevelDataLayerProps).dates) {
-      const dateString = getDateFormat(selectedDate, 'snake');
+      const dateString = getFormattedDate(selectedDate, 'snake');
       return `${safeTitle}_${dateString}`;
     }
     return safeTitle;
@@ -123,7 +123,7 @@ function LayerDownloadOptions({
   const handleDownloadGeoTiff = (): void => {
     const { serverLayerName, additionalQueryParams } = layer as WMSLayerProps;
     const band = getStacBand(additionalQueryParams);
-    const dateString = getDateFormat(selectedDate, 'default') as string;
+    const dateString = getFormattedDate(selectedDate, 'default') as string;
 
     setIsGeotiffLoading(true);
     downloadGeotiff(

@@ -7,7 +7,6 @@ import {
   checkRequiredKeys,
   CompositeLayerProps,
   ImpactLayerProps,
-  Interval,
   LayerKey,
   LayersMap,
   LayerType,
@@ -50,20 +49,6 @@ function parseStatsApiConfig(maybeConfig: {
   return undefined;
 }
 
-const orderedInterval: Record<Interval, number> = {
-  [Interval.ONE_DAY]: 1,
-  [Interval.TEN_DAYS]: 10,
-  [Interval.ONE_MONTH]: 30,
-  [Interval.ONE_YEAR]: 365,
-};
-function checkIntervals(definition: CompositeLayerProps) {
-  const layerIntervalValue = orderedInterval[definition.interval];
-  const subLayersIntervalsValues = definition.inputLayers.map(
-    subLayer => orderedInterval[subLayer.interval],
-  );
-  return Math.max(...subLayersIntervalsValues) <= layerIntervalValue;
-}
-
 // CamelCase the keys inside the layer definition & validate config
 const getLayerByKey = (layerKey: LayerKey): LayerType => {
   const rawDefinition = rawLayers[layerKey];
@@ -77,14 +62,6 @@ const getLayerByKey = (layerKey: LayerKey): LayerType => {
   const throwInvalidLayer = () => {
     throw new Error(
       `Found invalid layer definition for layer '${layerKey}'. Check console for more details.`,
-    );
-  };
-
-  const throwInvalidInterval = () => {
-    // eslint-disable-next-line no-console
-    console.log('Please verify intervals in layer definition', definition);
-    throw new Error(
-      `Found invalid Interval definition for layer '${layerKey}'. InputLayers intervals should be lower than global interval.`,
     );
   };
 
@@ -132,9 +109,6 @@ const getLayerByKey = (layerKey: LayerKey): LayerType => {
     case 'composite':
       if (!checkRequiredKeys(CompositeLayerProps, definition, true)) {
         return throwInvalidLayer();
-      }
-      if (!checkIntervals(definition)) {
-        return throwInvalidInterval();
       }
       return definition;
     case 'anticipatory_action':
