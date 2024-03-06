@@ -1,4 +1,3 @@
-import moment from 'moment';
 import { DateCompatibleLayer } from 'utils/server-utils';
 import { DateItem } from 'config/types';
 
@@ -16,25 +15,23 @@ export type DateCompatibleLayerWithDateItems = DateCompatibleLayer & {
  * Return the closest date from a given list of available dates
  * @param date
  * @param availableDates
- * @return date as momentjs object
+ * @return date as milliseconds
  */
 export function findClosestDate(
   date: number,
   availableDates: ReturnType<Date['getTime']>[],
 ) {
-  const dateToCheck = moment(date);
-
   // TODO - better handle empty arrays.
   if (availableDates.length === 0) {
-    return dateToCheck;
+    return date;
   }
 
   const reducerFunc = (
     closest: ReturnType<Date['getTime']>,
     current: ReturnType<Date['getTime']>,
   ) => {
-    const diff = Math.abs(moment(current).diff(dateToCheck));
-    const closestDiff = Math.abs(moment(closest).diff(dateToCheck));
+    const diff = Math.abs(current - date);
+    const closestDiff = Math.abs(closest - date);
 
     if (diff < closestDiff) {
       return current;
@@ -43,7 +40,7 @@ export function findClosestDate(
     return closest;
   };
 
-  return moment(availableDates.reduce(reducerFunc));
+  return availableDates.reduce(reducerFunc);
 }
 
 /**
