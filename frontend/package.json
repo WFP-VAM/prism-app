@@ -51,6 +51,7 @@
     "@react-pdf/renderer": "2.1.0",
     "@reduxjs/toolkit": "^1.4.0",
     "@sentry/browser": "^5.15.5",
+    "@turf/area": "^6.5.0",
     "@turf/bbox": "^6.5.0",
     "@turf/bbox-polygon": "^6.5.0",
     "@turf/boolean-point-in-polygon": "^6.5.0",
