@@ -47,6 +47,16 @@ function AnticipatoryActionLayer({ layer, before }: LayersProps) {
           'fill-opacity': 0.9,
         }}
       />
+      <Layer
+        beforeId={before}
+        id="anticipatory-action-boundary"
+        type="line"
+        source="anticipatory-action"
+        paint={{
+          'line-color': 'black',
+          'line-width': 2,
+        }}
+      />
     </Source>
   );
 }

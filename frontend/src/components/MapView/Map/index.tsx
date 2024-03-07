@@ -207,8 +207,11 @@ const MapComponent = memo(({ setIsAlertFormOpen }: MapComponentProps) => {
   }, [boundaryLayerId, setIsAlertFormOpen]);
 
   const getBeforeId = useCallback(
-    (index: number) => {
+    (index: number, aboveBoundaries: boolean = false) => {
       if (index === 0) {
+        return firstSymbolId;
+      }
+      if (aboveBoundaries) {
         return firstSymbolId;
       }
       const previousLayerId = selectedLayers[index - 1].id;
@@ -240,7 +243,7 @@ const MapComponent = memo(({ setIsAlertFormOpen }: MapComponentProps) => {
         return createElement(component as any, {
           key: layer.id,
           layer,
-          before: getBeforeId(index),
+          before: getBeforeId(index, layer.type === 'anticipatory_action'),
         });
       })}
       <AnalysisLayer before={firstBoundaryId} />
