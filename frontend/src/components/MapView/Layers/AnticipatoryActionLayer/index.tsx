@@ -37,6 +37,7 @@ function AnticipatoryActionLayer({ layer, before }: LayersProps) {
   return (
     <Source id="anticipatory-action" type="geojson" data={filteredData}>
       <Layer
+        beforeId={before}
         id="anticipatory-action"
         type="fill"
         source="anticipatory-action"
