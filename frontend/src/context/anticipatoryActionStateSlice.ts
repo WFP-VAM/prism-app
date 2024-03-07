@@ -22,13 +22,15 @@ const AACSVKyes: [string, string][] = [
 ];
 
 function transform(data: any[], keys: [string, string][]) {
-  return data.map(obj => {
-    const entries = keys.map(k => [k[1], obj[k[0]]]);
-    const month = obj.Month.padStart(2, '0');
-    const year = obj.Year_of_issue.split('-')[0];
-    const date = `${year}-${month}-01`;
-    return Object.fromEntries([...entries, ['date', date]]);
-  });
+  return data
+    .filter(x => !!x[keys[0][0]]) // filter empty rows
+    .map(obj => {
+      const entries = keys.map(k => [k[1], obj[k[0]]]);
+      const month = obj.Month.padStart(2, '0');
+      const year = obj.Year_of_issue.split('-')[0];
+      const date = `${year}-${month}-01`;
+      return Object.fromEntries([...entries, ['date', date]]);
+    });
 }
 
 export interface AnticipatoryActionData {
