@@ -5520,5 +5520,48 @@
         "color": "#a002fa"
       }
     ]
+  },
+  "cdi": {
+    "title": "Combined Drought Index",
+    "type": "composite",
+    "base_url": "https://hip-service.ovio.org/q_multi_geojson",
+    "input_layers": [
+      {
+        "id": "spi_1m",
+        "importance": 0.5,
+        "key": [
+          "CHIRPS",
+          "R1S_DEKAD"
+        ],
+        "aggregation": "last_dekad"
+      },
+      {
+        "id": "ndvi_dekad",
+        "importance": 0.5,
+        "key": [
+          "MODIS",
+          "NDVI_smoothed_5KM"
+        ],
+        "aggregation": "average",
+        "invert": "True"
+      }
+    ],
+    "legend": [
+      {
+        "value": -2,
+        "label": "Low",
+        "color": "#FFFF33"
+      },
+      {
+        "value": 2,
+        "label": "High",
+        "color": "#FF8433"
+      }
+    ],
+    "legend_text": "Composite Drought Index",
+    "aggregation": "pixel",
+    "date_layer": "spi_1m",
+    "start_date": "2023-12-01",
+    "opacity": 0.5
   }
 }
