@@ -81,9 +81,7 @@ function NavBar({ classes, isAlertFormOpen, setIsAlertFormOpen }: NavBarProps) {
 
   const { numberOfActiveLayers } = useLayers();
 
-  const badgeContent = !analysisData
-    ? numberOfActiveLayers
-    : numberOfActiveLayers + 1;
+  const badgeContent = numberOfActiveLayers + Number(Boolean(analysisData));
 
   const rightSideLinks = [
     {

@@ -26,6 +26,7 @@ import {
   getPossibleDatesForLayer,
 } from 'utils/server-utils';
 import { UrlLayerKey, getUrlKey, useUrlHistory } from 'utils/url-utils';
+import { AAlayerKey } from 'context/anticipatoryActionStateSlice';
 import {
   datesAreEqualWithoutTime,
   binaryIncludes,
@@ -69,8 +70,11 @@ const useLayers = () => {
   }, [baselineLayerIds]);
 
   const numberOfActiveLayers = useMemo(() => {
-    return hazardLayersArray.length + baselineLayersArray.length;
-  }, [baselineLayersArray.length, hazardLayersArray.length]);
+    return (
+      hazardLayersArray.filter(x => x !== AAlayerKey).length +
+      baselineLayersArray.length
+    );
+  }, [baselineLayersArray.length, hazardLayersArray]);
 
   // Prioritize boundary and point_data layers
   const selectedLayers: LayerType[] = useMemo(() => {
