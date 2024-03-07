@@ -394,9 +394,13 @@ const useLayers = () => {
     selectedLayersWithDateSupport.forEach(layer => {
       const jsSelectedDate = new Date(selectedDate);
 
+      const AADatesLoaded =
+        layer.id !== AAlayerKey || layer.id in serverAvailableDates;
+
       if (
         serverAvailableDatesAreEmpty ||
-        possibleDatesForLayerIncludeSelectedDate(layer, jsSelectedDate)
+        possibleDatesForLayerIncludeSelectedDate(layer, jsSelectedDate) ||
+        !AADatesLoaded
       ) {
         return;
       }
@@ -441,6 +445,7 @@ const useLayers = () => {
     selectedDate,
     selectedLayerDates,
     selectedLayersWithDateSupport,
+    serverAvailableDates,
     serverAvailableDatesAreEmpty,
     updateHistory,
     urlDate,
