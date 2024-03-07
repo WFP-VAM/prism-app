@@ -36,7 +36,12 @@ const links = [
 function AnticipatoryActionPanel() {
   const classes = useStyles();
   const { t } = useSafeTranslation();
-  const AAData = useSelector(AnticipatoryActionDataSelector);
+  const RawAAData = useSelector(AnticipatoryActionDataSelector);
+  const MonitoredDistricts = [...new Set(RawAAData.map(x => x.district))];
+  console.log(MonitoredDistricts);
+  const AAData = RawAAData.filter(
+    x => x.probability !== 'NA' && Number(x.probability) > Number(x.trigger),
+  );
   // TODO: move this to redux state
   const [selectedWindow, setSelectedWindow] = React.useState<string>('all');
   const { startDate: selectedDate } = useSelector(dateRangeSelector);
