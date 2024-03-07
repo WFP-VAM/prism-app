@@ -148,7 +148,7 @@ function NavBar({ classes, isAlertFormOpen, setIsAlertFormOpen }: NavBarProps) {
                       );
 
                 return (
-                  <>
+                  <React.Fragment key={panel.panel}>
                     <Hidden smDown>
                       <Button
                         className={classes.panelButton}
@@ -189,7 +189,7 @@ function NavBar({ classes, isAlertFormOpen, setIsAlertFormOpen }: NavBarProps) {
                         </IconButton>
                       </Wrap>
                     </Hidden>
-                  </>
+                  </React.Fragment>
                 );
               })}
               <GoToBoundaryDropdown />
