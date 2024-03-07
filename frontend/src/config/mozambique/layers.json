@@ -5562,6 +5562,7 @@
     "aggregation": "pixel",
     "date_layer": "spi_1m",
     "start_date": "2023-12-01",
+    "areaStartDateOverride": "2012-01-01",
     "opacity": 0.5
   }
 }
