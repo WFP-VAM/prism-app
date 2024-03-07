@@ -38,7 +38,9 @@ function AnticipatoryActionPanel() {
   const { t } = useSafeTranslation();
   const RawAAData = useSelector(AnticipatoryActionDataSelector);
   const MonitoredDistricts = [...new Set(RawAAData.map(x => x.district))];
+  // eslint-disable-next-line no-console
   console.log(MonitoredDistricts);
+
   const AAData = RawAAData.filter(
     x => x.probability !== 'NA' && Number(x.probability) > Number(x.trigger),
   );
@@ -85,17 +87,26 @@ function AnticipatoryActionPanel() {
     [AADateSameDate],
   );
 
-  // TODO: is this the definition of na and ny?
-  const na = React.useMemo(
+  // TODO - LEVE is "MILD" and should be added as a new category, see Figma.
+  const setMild = React.useMemo(
     () =>
       AADateSameDate.filter(x => x.category === 'Leve' && x.phase === 'Set'),
     [AADateSameDate],
   );
-  const ny = React.useMemo(
+  const readyMild = React.useMemo(
     () =>
       AADateSameDate.filter(x => x.category === 'Leve' && x.phase === 'Ready'),
     [AADateSameDate],
   );
+
+  // eslint-disable-next-line no-console
+  console.log(setMild, readyMild);
+
+  // TODO: implement NA and NY
+  // NA means that no proba is above the trigger for that district
+  // NY means that the district is not monitored yet (no rows for the district)
+  const na = React.useMemo(() => [], []);
+  const ny = React.useMemo(() => [], []);
 
   // -1 means all
   const selectedWindowIndex = windows.findIndex(x => x === selectedWindow);
