@@ -9,6 +9,7 @@ import {
 import { AnticipatoryActionData } from 'context/anticipatoryActionStateSlice';
 import { black, borderGray, gray } from 'muiTheme';
 import React from 'react';
+import AAIcon from './HomeTable/AAIcon';
 
 const StyledRadio = withStyles({
   root: {
@@ -65,3 +66,33 @@ export function getAAAvailableDates(data: AnticipatoryActionData[]) {
     Object.entries(datesAsMap).map(x => [x[0], Array.from(x[1].keys())]),
   );
 }
+
+export const AAIcons: { [key in Phase]: React.ReactNode } = {
+  set_sev: (
+    <AAIcon background="#831F00" topText="S" bottomText="SEV" color="white" />
+  ),
+  ready_sev: (
+    <AAIcon background="#E63701" topText="R" bottomText="SEV" color="white" />
+  ),
+  set_mod: (
+    <AAIcon background="#FF8934" topText="S" bottomText="MOD" color="black" />
+  ),
+  ready_mod: (
+    <AAIcon background="#FFD52D" topText="R" bottomText="MOD" color="black" />
+  ),
+  na: <AAIcon background="#F1F1F1" topText="na" bottomText="-" color="black" />,
+  ny: (
+    <AAIcon
+      background={`repeating-linear-gradient(
+        -45deg,
+        #F1F1F1,
+        #F1F1F1 10px,
+        white 10px,
+        white 20px
+        )`}
+      topText="ny"
+      bottomText="-"
+      color="black"
+    />
+  ),
+};

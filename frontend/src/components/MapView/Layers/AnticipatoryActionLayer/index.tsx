@@ -6,8 +6,9 @@ import { getBoundaryLayerSingleton } from 'config/utils';
 import { layerDataSelector } from 'context/mapStateSlice/selectors';
 import { LayerData } from 'context/layers/layer-data';
 import { AnticipatoryActionDataSelector } from 'context/anticipatoryActionStateSlice';
-import { useUrlHistory } from 'utils/url-utils';
 import { Layer, Source } from 'react-map-gl/maplibre';
+import { getFormattedDate } from 'utils/date-utils';
+import { DateFormat } from 'utils/name-utils';
 
 const boundaryLayer = getBoundaryLayerSingleton();
 
@@ -20,15 +21,10 @@ function AnticipatoryActionLayer({ layer, before }: LayersProps) {
     layerDataSelector(boundaryLayer.id),
   ) as LayerData<BoundaryLayerProps> | undefined;
   const { data } = boundaryLayerState || {};
-  const { urlParams } = useUrlHistory();
 
-  const urlDate = React.useMemo(() => {
-    return urlParams.get('date');
-  }, [urlParams]);
+  const date = getFormattedDate(selectedDate, DateFormat.Default);
 
-  const adminToDraw = AAData.filter(x => x.date === urlDate).map(
-    x => x.district,
-  );
+  const adminToDraw = AAData.filter(x => x.date === date).map(x => x.district);
   const filteredData = data && {
     ...data,
     features: data.features.filter(cell =>

@@ -16,10 +16,11 @@ import {
   AnticipatoryActionData,
   AnticipatoryActionDataSelector,
 } from 'context/anticipatoryActionStateSlice';
-import { useUrlHistory } from 'utils/url-utils';
+import { dateRangeSelector } from 'context/mapStateSlice/selectors';
+import { getFormattedDate } from 'utils/date-utils';
+import { DateFormat } from 'utils/name-utils';
 import HomeTable, { RowProps } from './HomeTable';
-import AAIcon from './HomeTable/AAIcon';
-import { StyledRadioLabel } from './utils';
+import { AAIcons, StyledRadioLabel } from './utils';
 
 const buttons = [
   { icon: GetApp, text: 'Assets' },
@@ -38,15 +39,13 @@ function AnticipatoryActionPanel() {
   const AAData = useSelector(AnticipatoryActionDataSelector);
   // TODO: move this to redux state
   const [selectedWindow, setSelectedWindow] = React.useState<string>('all');
-  const { urlParams } = useUrlHistory();
+  const { startDate: selectedDate } = useSelector(dateRangeSelector);
 
-  const urlDate = React.useMemo(() => {
-    return urlParams.get('date');
-  }, [urlParams]);
+  const date = getFormattedDate(selectedDate, DateFormat.Default);
 
   const AADateSameDate = React.useMemo(
-    () => AAData.filter(x => x.date === urlDate),
-    [AAData, urlDate],
+    () => AAData.filter(x => x.date === date),
+    [AAData, date],
   );
 
   const windows = React.useMemo(
@@ -122,80 +121,32 @@ function AnticipatoryActionPanel() {
     headerRow,
     {
       id: 'set_sev',
-      iconContent: (
-        <AAIcon
-          background="#831F00"
-          topText="S"
-          bottomText="SEV"
-          color="white"
-        />
-      ),
+      iconContent: AAIcons.set_sev,
       windows: windowData(setSev),
     },
     {
       id: 'ready_sev',
-      iconContent: (
-        <AAIcon
-          background="#E63701"
-          topText="R"
-          bottomText="SEV"
-          color="white"
-        />
-      ),
+      iconContent: AAIcons.ready_sev,
       windows: windowData(readySev),
     },
     {
       id: 'set_mod',
-      iconContent: (
-        <AAIcon
-          background="#FF8934"
-          topText="S"
-          bottomText="MOD"
-          color="black"
-        />
-      ),
+      iconContent: AAIcons.set_mod,
       windows: windowData(setMod),
     },
     {
       id: 'ready_mod',
-      iconContent: (
-        <AAIcon
-          background="#FFD52D"
-          topText="R"
-          bottomText="MOD"
-          color="black"
-        />
-      ),
+      iconContent: AAIcons.ready_mod,
       windows: windowData(readyMod),
     },
     {
       id: 'na',
-      iconContent: (
-        <AAIcon
-          background="#F1F1F1"
-          topText="na"
-          bottomText="-"
-          color="black"
-        />
-      ),
+      iconContent: AAIcons.na,
       windows: windowData(na),
     },
     {
       id: 'ny',
-      iconContent: (
-        <AAIcon
-          background={`repeating-linear-gradient(
-        -45deg,
-        #F1F1F1,
-        #F1F1F1 10px,
-        white 10px,
-        white 20px
-      )`}
-          topText="ny"
-          bottomText="-"
-          color="black"
-        />
-      ),
+      iconContent: AAIcons.ny,
       windows: windowData(ny),
     },
   ];
