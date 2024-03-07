@@ -107,6 +107,9 @@ const LeftPanel = memo(() => {
 
   React.useEffect(() => {
     const selectedLayer = LayerDefinitions[AAlayerKey as LayerKey];
+    if (!selectedLayer) {
+      return;
+    }
     const urlLayerKey = getUrlKey(selectedLayer);
     const AALayerInUrl = selectedLayers.find(x => x.id === selectedLayer.id);
 
