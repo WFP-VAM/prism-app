@@ -231,7 +231,6 @@ const theme: any = createTheme({
       root: {
         '&.Mui-disabled': {
           pointerEvents: 'auto',
-          color: '#282b2d',
         },
         borderRadius: '4px',
       },

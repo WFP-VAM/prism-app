@@ -90,7 +90,4 @@ export const getCurrentData = (state: RootState): TableData =>
 export const tableErrorSelector = (state: RootState): string | undefined =>
   state.tableState.error;
 
-// export actions
-// export const {  } = tableStateSlice.actions;
-
 export default tableStateSlice.reducer;
