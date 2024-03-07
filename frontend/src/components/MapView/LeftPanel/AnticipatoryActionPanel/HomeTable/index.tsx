@@ -10,38 +10,38 @@ interface AreaTagProps {
 }
 
 function AreaTag({ name, isNew }: AreaTagProps) {
+  const classes = useAreaTagStyles();
   return (
-    <div
-      style={{
-        border: `1px solid ${borderGray}`,
-        height: '2rem',
-        borderRadius: '4px',
-        display: 'flex',
-        alignItems: 'center',
-        gap: '0.25em',
-        padding: '0 0.25em',
-      }}
-    >
+    <div className={classes.areaTagWrapper}>
       <Typography>{name}</Typography>
-      {isNew && (
-        <div
-          style={{
-            height: '2em',
-            padding: '0 0.5em',
-            color: 'white',
-            background: '#A4A4A4',
-            fontSize: '10px',
-            borderRadius: '32px',
-            display: 'flex',
-            alignItems: 'center',
-          }}
-        >
-          NEW
-        </div>
-      )}
+      {isNew && <div className={classes.newTag}>NEW</div>}
     </div>
   );
 }
+
+const useAreaTagStyles = makeStyles(() =>
+  createStyles({
+    areaTagWrapper: {
+      border: `1px solid ${borderGray}`,
+      height: 'calc(2rem - 2px)',
+      borderRadius: '4px',
+      display: 'flex',
+      alignItems: 'center',
+      gap: '0.25em',
+      padding: '0 0.25em',
+    },
+    newTag: {
+      height: '2em',
+      padding: '0 0.5em',
+      color: 'white',
+      background: '#A4A4A4',
+      fontSize: '10px',
+      borderRadius: '32px',
+      display: 'flex',
+      alignItems: 'center',
+    },
+  }),
+);
 
 export interface RowProps {
   id: Phase | 'header';
