@@ -24,7 +24,9 @@ function AnticipatoryActionLayer({ layer, before }: LayersProps) {
 
   const date = getFormattedDate(selectedDate, DateFormat.Default);
 
-  const adminToDraw = AAData.filter(x => x.date === date).map(x => x.district);
+  const adminToDraw = Object.entries(AAData)
+    .filter(x => x[1].find(y => y.date === date))
+    .map(x => x[0]);
   const filteredData = data && {
     ...data,
     features: data.features.filter(cell =>

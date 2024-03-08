@@ -4,9 +4,31 @@ import { LayerDefinitions } from 'config/utils';
 import { AnticipatoryActionLayerProps } from 'config/types';
 import type { CreateAsyncThunkTypes, RootState } from './store';
 
+export const AAcategory = ['Leve', 'Moderado', 'Severo'] as const;
+export type AACategoryType = typeof AAcategory[number];
+
+export const AAPhase = ['Ready', 'Set'] as const;
+export type AAPhaseType = typeof AAPhase[number];
+
+export interface AnticipatoryActionData {
+  category: AACategoryType;
+  district: string;
+  index: string;
+  month: string;
+  phase: AAPhaseType;
+  probability: string;
+  trigger: string;
+  triggerNB: string;
+  triggerType: string;
+  type: string;
+  windows: string;
+  yearOfIssue: string;
+  date: string;
+}
+
 export const AAlayerKey = 'anticipatory_action';
 
-const AACSVKyes: [string, string][] = [
+const AACSVKeys: [string, string][] = [
   ['Category', 'category'],
   ['District', 'district'],
   ['Index', 'index'],
@@ -22,7 +44,7 @@ const AACSVKyes: [string, string][] = [
 ];
 
 function transform(data: any[], keys: [string, string][]) {
-  return data
+  const parsed = data
     .filter(x => !!x[keys[0][0]]) // filter empty rows
     .map(obj => {
       const entries = keys.map(k => [k[1], obj[k[0]]]);
@@ -30,39 +52,76 @@ function transform(data: any[], keys: [string, string][]) {
       const year = obj.Year_of_issue.split('-')[0];
       const date = `${year}-${month}-01`;
       return Object.fromEntries([...entries, ['date', date]]);
-    });
-}
+    }) as AnticipatoryActionData[];
 
-export interface AnticipatoryActionData {
-  category: 'Leve' | 'Moderado' | 'Severo';
-  district: string;
-  index: string;
-  month: string;
-  phase: 'Ready' | 'Set';
-  probability: string;
-  trigger: string;
-  triggerNB: string;
-  triggerType: string;
-  type: string;
-  windows: string;
-  yearOfIssue: string;
-  date: string;
+  const windows = [...new Set(parsed.map(x => x.windows))];
+  // eslint-disable-next-line fp/no-mutating-methods
+  const availableDates = [
+    ...new Set(parsed.map(x => new Date(x.date).getTime())),
+  ].sort();
+
+  const groupedByDistrict = new Map<string, AnticipatoryActionData[]>();
+
+  parsed.forEach(x => {
+    const { district } = x;
+    const rows = groupedByDistrict.get(district);
+    groupedByDistrict.set(district, rows ? [...rows, x] : [x]);
+  });
+
+  const sortFn = (a: AnticipatoryActionData, b: AnticipatoryActionData) => {
+    const aDate = new Date(a.date).valueOf();
+    const bDate = new Date(b.date).valueOf();
+    if (aDate > bDate) {
+      return -1;
+    }
+    if (bDate > aDate) {
+      return 1;
+    }
+    const aCatIndex = AAcategory.findIndex(x => x === a.category);
+    const bCatIndex = AAcategory.findIndex(x => x === b.category);
+    if (aCatIndex > bCatIndex) {
+      return -1;
+    }
+    if (bCatIndex > aCatIndex) {
+      return 1;
+    }
+    return 0;
+  };
+
+  const result = Object.fromEntries(
+    // eslint-disable-next-line fp/no-mutating-methods
+    Array.from(groupedByDistrict.entries()).map(x => [x[0], x[1].sort(sortFn)]),
+  );
+
+  return { data: result, windows, availableDates };
 }
 
 type AnticipatoryActionState = {
-  data: AnticipatoryActionData[];
+  data: {
+    [k: string]: AnticipatoryActionData[];
+  };
+  availableDates?: number[];
+  windows: string[];
   loading: boolean;
   error: string | null;
 };
 
 const initialState: AnticipatoryActionState = {
-  data: [],
+  data: {},
+  windows: [],
+  availableDates: undefined,
   loading: false,
   error: null,
 };
 
 export const loadAAData = createAsyncThunk<
-  { rows: AnticipatoryActionData[]; columns: string[] },
+  {
+    data: {
+      [k: string]: AnticipatoryActionData[];
+    };
+    windows: string[];
+    availableDates: number[];
+  },
   undefined,
   CreateAsyncThunkTypes
 >('anticipatoryActionState/loadAAData', async () => {
@@ -73,11 +132,7 @@ export const loadAAData = createAsyncThunk<
     Papa.parse(url, {
       header: true,
       download: true,
-      complete: results =>
-        resolve({
-          rows: transform(results.data, AACSVKyes),
-          columns: Object.keys(results.data[0]),
-        }),
+      complete: results => resolve(transform(results.data, AACSVKeys)),
       error: error => reject(error),
     }),
   );
@@ -91,7 +146,9 @@ export const anticipatoryActionStateSlice = createSlice({
     builder.addCase(loadAAData.fulfilled, (state, { payload }) => ({
       ...state,
       loading: false,
-      data: payload.rows,
+      data: payload.data,
+      windows: payload.windows,
+      availableDates: payload.availableDates,
     }));
 
     builder.addCase(loadAAData.rejected, (state, action) => ({
@@ -113,6 +170,12 @@ export const anticipatoryActionStateSlice = createSlice({
 // export selectors
 export const AnticipatoryActionDataSelector = (state: RootState) =>
   state.anticipatoryActionState.data;
+
+export const AnticipatoryActionWindowsSelector = (state: RootState) =>
+  state.anticipatoryActionState.windows;
+
+export const AnticipatoryActionAvailableDatesSelector = (state: RootState) =>
+  state.anticipatoryActionState.availableDates;
 
 // export actions
 // export const {  } = tableStateSlice.actions;

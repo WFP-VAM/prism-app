@@ -2,7 +2,18 @@ import { Typography, createStyles, makeStyles } from '@material-ui/core';
 import { useSafeTranslation } from 'i18n';
 import { borderGray, gray } from 'muiTheme';
 import React from 'react';
-import { Phase } from '../utils';
+import {
+  AACategoryType,
+  AAPhaseType,
+  AnticipatoryActionData,
+  AnticipatoryActionDataSelector,
+  AnticipatoryActionWindowsSelector,
+} from 'context/anticipatoryActionStateSlice';
+import { useSelector } from 'react-redux';
+import { dateRangeSelector } from 'context/mapStateSlice/selectors';
+import { getFormattedDate } from 'utils/date-utils';
+import { DateFormat } from 'utils/name-utils';
+import { AADataSeverityOrder, getAAIcon } from '../utils';
 
 interface AreaTagProps {
   name: string;
@@ -44,7 +55,6 @@ const useAreaTagStyles = makeStyles(() =>
 );
 
 export interface RowProps {
-  id: Phase | 'header';
   iconContent: React.ReactNode;
   windows: AreaTagProps[][];
   header?: string[];
@@ -143,16 +153,134 @@ const useRowStyles = makeStyles(() =>
 );
 
 interface HomeTableProps {
-  rows: RowProps[];
+  selectedWindow: string;
 }
 
-function HomeTable({ rows }: HomeTableProps) {
+function getDistrictData(
+  data: {
+    [k: string]: AnticipatoryActionData[];
+  },
+  date: string,
+  window: string,
+  category: AnticipatoryActionData['category'],
+  phase: AnticipatoryActionData['phase'],
+) {
+  return Object.entries(data)
+    .map(([district, districtData]) => {
+      const validData = districtData.filter(
+        x =>
+          x.probability !== 'NA' &&
+          Number(x.probability) > Number(x.trigger) &&
+          window === x.windows,
+      );
+      const dates = [...new Set(validData.map(x => x.date))];
+      const dateIndex = dates.findIndex(x => x === date);
+      if (dateIndex < 0) {
+        return undefined;
+      }
+      const current = validData.find(
+        x => x.category === category && x.phase === phase && x.date === date,
+      );
+      if (!current) {
+        return undefined;
+      }
+      let isNew = false;
+      if (dateIndex - 1 >= 0) {
+        const prevDateData = validData.filter(
+          x => x.date === dates[dateIndex - 1],
+        );
+        const prevDateDataSev = Math.max(
+          ...prevDateData.map(x => AADataSeverityOrder(x.category, x.phase)),
+        );
+        const currentSev = AADataSeverityOrder(current.category, current.phase);
+        // TODO: is this accurate?
+        // eslint-disable-next-line fp/no-mutation
+        isNew = currentSev > prevDateDataSev;
+      }
+      return { name: district, isNew };
+    })
+    .filter((x): x is AreaTagProps => x !== undefined);
+}
+
+const rowCategories: { category: AACategoryType; phase: AAPhaseType }[] = [
+  { category: 'Severo', phase: 'Set' },
+  { category: 'Severo', phase: 'Ready' },
+  { category: 'Moderado', phase: 'Set' },
+  { category: 'Moderado', phase: 'Ready' },
+  // { category: 'Leve', phase: 'Set' },
+  // { category: 'Leve', phase: 'Ready' },
+];
+
+type ExtendedRowProps = RowProps & { id: number | 'na' | 'ny' };
+
+function HomeTable({ selectedWindow }: HomeTableProps) {
   const classes = useHomeTableStyles();
+  const RawAAData = useSelector(AnticipatoryActionDataSelector);
+  const windows = useSelector(AnticipatoryActionWindowsSelector);
+
+  const { startDate: selectedDate } = useSelector(dateRangeSelector);
+
+  const date = getFormattedDate(selectedDate, DateFormat.Default) as string;
+
+  // TODO - LEVE is "MILD" and should be added as a new category, see Figma.
+
+  // TODO: implement NA and NY
+  // NA means that no proba is above the trigger for that district
+  // NY means that the district is not monitored yet (no rows for the district)
+  // const na = React.useMemo(() => [], []);
+  // const ny = React.useMemo(() => [], []);
+
+  // -1 means all
+  const selectedWindowIndex = windows.findIndex(x => x === selectedWindow);
+
+  const headerRow: ExtendedRowProps = {
+    id: -1,
+    iconContent: null,
+    windows: selectedWindowIndex === -1 ? windows.map(x => []) : [[]],
+    header:
+      selectedWindowIndex === -1
+        ? [...windows]
+        : [windows[selectedWindowIndex]],
+  };
+
+  const districtRows: ExtendedRowProps[] = rowCategories.map(r => ({
+    id: AADataSeverityOrder(r.category, r.phase),
+    iconContent: getAAIcon(r.category, r.phase),
+    windows:
+      selectedWindowIndex === -1
+        ? windows.map(x =>
+            getDistrictData(RawAAData, date, x, r.category, r.phase),
+          )
+        : [
+            getDistrictData(
+              RawAAData,
+              date,
+              selectedWindow,
+              r.category,
+              r.phase,
+            ),
+          ],
+  }));
+
+  const rows: ExtendedRowProps[] = [
+    headerRow,
+    ...districtRows,
+    {
+      id: 'na',
+      iconContent: getAAIcon('na', 'Ready'),
+      windows: selectedWindowIndex ? (windows.map(x => []) as any) : [],
+    },
+    {
+      id: 'ny',
+      iconContent: getAAIcon('ny', 'Ready'),
+      windows: selectedWindowIndex ? (windows.map(x => []) as any) : [],
+    },
+  ];
 
   return (
     <div className={classes.tableWrapper}>
-      {rows.map(r => (
-        <Row key={r.id} {...r} />
+      {rows.map(({ id, ...r }) => (
+        <Row key={id} {...r} />
       ))}
     </div>
   );

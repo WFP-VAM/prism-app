@@ -15,7 +15,7 @@ import {
 } from 'context/serverStateSlice';
 import {
   AAlayerKey,
-  AnticipatoryActionDataSelector,
+  AnticipatoryActionAvailableDatesSelector,
   loadAAData,
 } from 'context/anticipatoryActionStateSlice';
 import { getUrlKey, useUrlHistory } from 'utils/url-utils';
@@ -26,7 +26,6 @@ import TablesPanel from './TablesPanel';
 import AnticipatoryActionPanel from './AnticipatoryActionPanel';
 import LayersPanel from './layersPanel';
 import { areTablesAvailable, isAnticipatoryActionAvailable } from './utils';
-import { getAAAvailableDates } from './AnticipatoryActionPanel/utils';
 import { toggleRemoveLayer } from './layersPanel/MenuItem/MenuSwitch/SwitchItem/utils';
 
 interface TabPanelProps {
@@ -60,7 +59,9 @@ const LeftPanel = memo(() => {
   const tabValue = useSelector(leftPanelTabValueSelector);
   const panelSize = useSelector(leftPanelSizeSelector);
   const serverAvailableDates = useSelector(availableDatesSelector);
-  const AAData = useSelector(AnticipatoryActionDataSelector);
+  const AAAvailableDates = useSelector(
+    AnticipatoryActionAvailableDatesSelector,
+  );
   const selectedLayers = useSelector(layersSelector);
   const map = useSelector(mapSelector);
   const {
@@ -78,32 +79,21 @@ const LeftPanel = memo(() => {
   ] = React.useState<React.JSX.Element | null>(null);
 
   React.useEffect(() => {
-    if (tabValue !== Panel.AnticipatoryAction) {
-      return;
+    if (AAAvailableDates) {
+      dispatch(
+        updateLayersCapabilities({
+          ...serverAvailableDates,
+          // TODO: queryDate here?
+          [AAlayerKey]: AAAvailableDates.map(x => ({
+            displayDate: x,
+            queryDate: x,
+          })),
+        }),
+      );
     }
-    if (serverAvailableDates[AAlayerKey] !== undefined) {
-      return;
-    }
-    const AAAvailableDates = getAAAvailableDates(AAData);
-    // TODO: split 2 windows in future
-    const flatDates = Object.values(AAAvailableDates).flat();
-    const unique = [...new Map(flatDates.map(x => [x, x])).keys()];
-    // eslint-disable-next-line fp/no-mutating-methods
-    const sorted = unique.sort();
-    if (sorted.length === 0) {
-      return;
-    }
-    dispatch(
-      updateLayersCapabilities({
-        ...serverAvailableDates,
-        // TODO: queryDate here?
-        [AAlayerKey]: sorted.map(x => ({
-          displayDate: x,
-          queryDate: x,
-        })),
-      }),
-    );
-  }, [AAData, dispatch, serverAvailableDates, tabValue]);
+    // we need serverAvailableDates to update them, but cannot have on the dependencies array
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [AAAvailableDates, dispatch]);
 
   React.useEffect(() => {
     const selectedLayer = LayerDefinitions[AAlayerKey as LayerKey];
@@ -117,8 +107,8 @@ const LeftPanel = memo(() => {
     // Move to AA tab when directly linked there
     if (
       tabValue !== Panel.AnticipatoryAction &&
-      AALayerInUrl &&
-      AAData.length === 0
+      AALayerInUrl
+      // AAData.length === 0
     ) {
       dispatch(setTabValue(Panel.AnticipatoryAction));
       dispatch(loadAAData());
