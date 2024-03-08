@@ -370,7 +370,7 @@ const ChartsPanel = memo(({ setResultsPage }: ChartsPanelProps) => {
 
   useEffect(() => {
     if (adminProperties && startDate1 && selectedLayerTitles.length >= 1) {
-      dispatch(setPanelSize(PanelSize.xlarge));
+      dispatch(setPanelSize(PanelSize.full));
     } else {
       dispatch(setPanelSize(PanelSize.medium));
     }
@@ -679,7 +679,7 @@ const ChartsPanel = memo(({ setResultsPage }: ChartsPanelProps) => {
 
   useEffect(() => {
     if (showChartsPanel) {
-      dispatch(setPanelSize(PanelSize.xlarge));
+      dispatch(setPanelSize(PanelSize.full));
       setResultsPage(
         <Box className={classes.chartsContainer}>
           <Box className={classes.chartsPanelCharts}>{renderResultsPage}</Box>

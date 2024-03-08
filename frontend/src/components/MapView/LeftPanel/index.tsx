@@ -29,7 +29,7 @@ const TabPanel = memo(({ children, value, index, ...other }: TabPanelProps) => {
       style={{
         display: index === value ? 'block' : 'none',
         flexGrow: 1,
-        height: 'calc(93vh - 48px)',
+        height: 'calc(94vh - 48px)',
         order: index === value ? -1 : undefined,
         overflowX: index === value ? 'hidden' : 'auto',
       }}
@@ -80,12 +80,11 @@ const LeftPanel = memo(() => {
         elevation: 1,
         style: {
           width: panelSize,
-          marginTop: 'calc(7vh + 1rem)',
-          marginLeft: '1rem',
-          height: '80vh',
+          marginTop: '6vh',
+          height: tabValue === Panel.Charts ? '94vh' : '80vh',
           backgroundColor: 'white',
           maxWidth: '100%',
-          borderRadius: '8px',
+          borderRadius: '0 8px 8px 8px',
         },
       }}
       variant="persistent"
