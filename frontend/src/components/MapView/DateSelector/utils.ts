@@ -3,10 +3,6 @@ import { DateItem } from 'config/types';
 
 export const TIMELINE_ITEM_WIDTH = 10;
 
-// The DatePicker is timezone aware, so we trick it into
-// displaying UTC dates.
-export const USER_DATE_OFFSET = new Date().getTimezoneOffset() * 60000;
-
 export type DateCompatibleLayerWithDateItems = DateCompatibleLayer & {
   dateItems: DateItem[];
 };

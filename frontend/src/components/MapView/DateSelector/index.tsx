@@ -37,7 +37,7 @@ import { format } from 'date-fns';
 import { ReactComponent as TickSvg } from './tick.svg';
 import DateSelectorInput from './DateSelectorInput';
 import TimelineItems from './TimelineItems';
-import { TIMELINE_ITEM_WIDTH, USER_DATE_OFFSET, findDateIndex } from './utils';
+import { TIMELINE_ITEM_WIDTH, findDateIndex } from './utils';
 import { oneDayInMs } from '../LeftPanel/utils';
 
 type Point = {
@@ -194,31 +194,21 @@ const DateSelector = memo(({ classes }: DateSelectorProps) => {
     [stateStartDate, updateHistory],
   );
 
-  const addUserOffset = useCallback((dates: number[]) => {
-    return dates.map(d => {
-      return d + USER_DATE_OFFSET;
-    });
-  }, []);
-
-  const dates = useMemo(() => {
-    return addUserOffset(availableDates);
-  }, [addUserOffset, availableDates]);
-
   const setDatePosition = useCallback(
     (
       date: number | undefined,
       increment: number,
       isUpdatingHistory: boolean,
     ) => {
-      const selectedIndex = findDateIndex(dates, date);
-      if (dates[selectedIndex + increment]) {
+      const selectedIndex = findDateIndex(availableDates, date);
+      if (availableDates[selectedIndex + increment]) {
         updateStartDate(
-          new Date(dates[selectedIndex + increment]),
+          new Date(availableDates[selectedIndex + increment]),
           isUpdatingHistory,
         );
       }
     },
-    [dates, updateStartDate],
+    [availableDates, updateStartDate],
   );
 
   // move pointer to closest date when change map layer
@@ -239,8 +229,8 @@ const DateSelector = memo(({ classes }: DateSelectorProps) => {
   }, [setDatePosition, stateStartDate]);
 
   const includedDates = useMemo(() => {
-    return dates?.map(d => new Date(d)) ?? [];
-  }, [dates]);
+    return availableDates?.map(d => new Date(d)) ?? [];
+  }, [availableDates]);
 
   const checkIntersectingDateAndShowPopup = useCallback(
     (selectedDate: Date, positionY: number) => {
@@ -269,16 +259,16 @@ const DateSelector = memo(({ classes }: DateSelectorProps) => {
 
   // Click on available date to move the pointer
   const clickDate = (index: number) => {
-    const selectedIndex = findDateIndex(dates, dateRange[index].value);
+    const selectedIndex = findDateIndex(availableDates, dateRange[index].value);
     if (
       selectedIndex < 0 ||
       (stateStartDate &&
-        datesAreEqualWithoutTime(dates[selectedIndex], stateStartDate))
+        datesAreEqualWithoutTime(availableDates[selectedIndex], stateStartDate))
     ) {
       return;
     }
     setPointerPosition({ x: index * TIMELINE_ITEM_WIDTH, y: 0 });
-    const updatedDate = new Date(dates[selectedIndex]);
+    const updatedDate = new Date(availableDates[selectedIndex]);
     checkIntersectingDateAndShowPopup(new Date(dateRange[index].value), 0);
     updateStartDate(updatedDate, true);
   };
@@ -299,15 +289,21 @@ const DateSelector = memo(({ classes }: DateSelectorProps) => {
       if (exactX >= dateRange.length) {
         return;
       }
-      const selectedIndex = findDateIndex(dates, dateRange[exactX].value);
-      if (selectedIndex < 0 || dates[selectedIndex] === stateStartDate) {
+      const selectedIndex = findDateIndex(
+        availableDates,
+        dateRange[exactX].value,
+      );
+      if (
+        selectedIndex < 0 ||
+        availableDates[selectedIndex] === stateStartDate
+      ) {
         return;
       }
       setPointerPosition({
         x: exactX * TIMELINE_ITEM_WIDTH,
         y: position.y,
       });
-      const updatedDate = new Date(dates[selectedIndex]);
+      const updatedDate = new Date(availableDates[selectedIndex]);
       checkIntersectingDateAndShowPopup(
         new Date(dateRange[exactX].value),
         position.y,
@@ -315,9 +311,9 @@ const DateSelector = memo(({ classes }: DateSelectorProps) => {
       updateStartDate(updatedDate, true);
     },
     [
+      availableDates,
       checkIntersectingDateAndShowPopup,
       dateRange,
-      dates,
       stateStartDate,
       updateStartDate,
     ],
