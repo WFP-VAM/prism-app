@@ -1,0 +1,266 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`renders as expected 1`] = `
+<div>
+  <div
+    class="makeStyles-tableWrapper-1"
+  >
+    <div
+      class="makeStyles-rowWrapper-2"
+    >
+      <div
+        class="makeStyles-iconCol-3"
+      />
+      <div>
+        <mock-typography
+          classname="makeStyles-headerText-6"
+          variant="h3"
+        >
+          Window 1
+        </mock-typography>
+      </div>
+    </div>
+    <div
+      class="makeStyles-rowWrapper-2"
+    >
+      <div
+        class="makeStyles-iconCol-3"
+      >
+        <div
+          class="makeStyles-iconWrapper-8"
+          style="background: rgb(131, 31, 0);"
+        >
+          <div
+            class="makeStyles-centerContainer-9"
+            style="border: 1px solid white; color: white;"
+          >
+            <div
+              class="makeStyles-topTextContainer-10"
+              style="border-bottom: 1px solid white;"
+            >
+              S
+            </div>
+            <div
+              class="makeStyles-bottomTextContainer-11"
+            >
+              SEV
+            </div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div
+          class="makeStyles-windowBackground-4"
+        >
+          <div
+            class="makeStyles-tagWrapper-5"
+          >
+            <mock-typography
+              classname="makeStyles-emptyText-7"
+            >
+              (
+              no district
+              )
+            </mock-typography>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div
+      class="makeStyles-rowWrapper-2"
+    >
+      <div
+        class="makeStyles-iconCol-3"
+      >
+        <div
+          class="makeStyles-iconWrapper-8"
+          style="background: rgb(230, 55, 1);"
+        >
+          <div
+            class="makeStyles-centerContainer-9"
+            style="border: 1px solid white; color: white;"
+          >
+            <div
+              class="makeStyles-topTextContainer-10"
+              style="border-bottom: 1px solid white;"
+            >
+              R
+            </div>
+            <div
+              class="makeStyles-bottomTextContainer-11"
+            >
+              SEV
+            </div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div
+          class="makeStyles-windowBackground-4"
+        >
+          <div
+            class="makeStyles-tagWrapper-5"
+          >
+            <mock-typography
+              classname="makeStyles-emptyText-7"
+            >
+              (
+              no district
+              )
+            </mock-typography>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div
+      class="makeStyles-rowWrapper-2"
+    >
+      <div
+        class="makeStyles-iconCol-3"
+      >
+        <div
+          class="makeStyles-iconWrapper-8"
+          style="background: rgb(255, 137, 52);"
+        >
+          <div
+            class="makeStyles-centerContainer-9"
+            style="border: 1px solid black; color: black;"
+          >
+            <div
+              class="makeStyles-topTextContainer-10"
+              style="border-bottom: 1px solid black;"
+            >
+              S
+            </div>
+            <div
+              class="makeStyles-bottomTextContainer-11"
+            >
+              MOD
+            </div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div
+          class="makeStyles-windowBackground-4"
+        >
+          <div
+            class="makeStyles-tagWrapper-5"
+          >
+            <mock-typography
+              classname="makeStyles-emptyText-7"
+            >
+              (
+              no district
+              )
+            </mock-typography>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div
+      class="makeStyles-rowWrapper-2"
+    >
+      <div
+        class="makeStyles-iconCol-3"
+      >
+        <div
+          class="makeStyles-iconWrapper-8"
+          style="background: rgb(255, 213, 45);"
+        >
+          <div
+            class="makeStyles-centerContainer-9"
+            style="border: 1px solid black; color: black;"
+          >
+            <div
+              class="makeStyles-topTextContainer-10"
+              style="border-bottom: 1px solid black;"
+            >
+              R
+            </div>
+            <div
+              class="makeStyles-bottomTextContainer-11"
+            >
+              MOD
+            </div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div
+          class="makeStyles-windowBackground-4"
+        >
+          <div
+            class="makeStyles-tagWrapper-5"
+          >
+            <mock-typography
+              classname="makeStyles-emptyText-7"
+            >
+              (
+              no district
+              )
+            </mock-typography>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div
+      class="makeStyles-rowWrapper-2"
+    >
+      <div
+        class="makeStyles-iconCol-3"
+      >
+        <div
+          class="makeStyles-iconWrapper-8"
+          style="background: rgb(241, 241, 241);"
+        >
+          <div
+            class="makeStyles-centerContainer-9"
+            style="border: 1px solid black; color: black;"
+          >
+            <div
+              class="makeStyles-topTextContainer-10"
+              style="border-bottom: 1px solid black;"
+            >
+              na
+            </div>
+            <div
+              class="makeStyles-bottomTextContainer-11"
+            >
+              -
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div
+      class="makeStyles-rowWrapper-2"
+    >
+      <div
+        class="makeStyles-iconCol-3"
+      >
+        <div
+          class="makeStyles-iconWrapper-8"
+        >
+          <div
+            class="makeStyles-centerContainer-9"
+            style="border: 1px solid black; color: black;"
+          >
+            <div
+              class="makeStyles-topTextContainer-10"
+              style="border-bottom: 1px solid black;"
+            >
+              ny
+            </div>
+            <div
+              class="makeStyles-bottomTextContainer-11"
+            >
+              -
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
