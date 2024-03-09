@@ -8,7 +8,6 @@ const white = '#FFFFFF';
 const midnightSlate = '#323638';
 export const gray = '#F1F1F1';
 export const borderGray = '#A4A4A4';
-export const lightGrey = '#F1F1F1';
 export const grey = '#CCCCCC';
 export const paleSkyBlue = '#D8E9EC';
 export const black = '#101010';
