@@ -265,7 +265,7 @@ const styles = () =>
       padding: '0 5px',
     },
     opacityBox: {
-      backgroundColor: '#fff',
+      backgroundColor: 'white',
       width: 172,
       overflow: 'hidden',
     },

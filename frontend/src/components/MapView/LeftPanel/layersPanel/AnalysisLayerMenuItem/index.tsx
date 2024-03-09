@@ -17,7 +17,7 @@ import {
   ExposedPopulationResult,
   PolygonAnalysisResult,
 } from 'utils/analysis-utils';
-import { paleSkyBlue } from 'muiTheme';
+import { cyanBlue, paleSkyBlue } from 'muiTheme';
 
 interface AnalysisLayerMenuItemProps {
   title: string;
@@ -98,7 +98,7 @@ const AnalysisLayerMenuItem = memo(
             onMouseEnter={handleChipOnMouseEnter}
             onMouseLeave={handleChipOnMouseLeave}
             classes={{ root: classes.chipRoot }}
-            color="secondary"
+            style={{ backgroundColor: cyanBlue }}
             label={informationChipLabel}
           />
         </AccordionSummary>

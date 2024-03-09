@@ -4,11 +4,12 @@ import React from 'react';
 const skyBlue: string = '#009EE0';
 const greyBlue: string = '#5A686C';
 const darkGreyBlue: string = '#2D3436';
-const white: string = '#FFFFFF';
-const lightGray = '#CCCCCC';
+const white = '#FFFFFF';
 const midnightSlate = '#323638';
 export const gray = '#F1F1F1';
 export const borderGray = '#A4A4A4';
+export const lightGrey = '#F1F1F1';
+export const grey = '#CCCCCC';
 export const paleSkyBlue = '#D8E9EC';
 export const black = '#101010';
 export const cyanBlue = '#63B2BD';
@@ -103,7 +104,7 @@ const theme: any = createTheme({
       secondary: black,
     },
     grey: {
-      500: lightGray,
+      500: grey,
     },
   },
   spacing: 6,
