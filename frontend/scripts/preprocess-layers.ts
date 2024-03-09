@@ -1,9 +1,10 @@
 // Pre-process layers availability dates to avoid doing it on each page load.
-const moment = require('moment');
-const fs = require('fs');
-const path = require('path');
-const union = require('@turf/union').default;
-const simplify = require('@turf/simplify').default;
+// @ts-nocheck
+import fs from 'fs';
+import path from 'path';
+import union from '@turf/union';
+import simplify from '@turf/simplify';
+import { getFormattedDate } from '../src/utils/date-utils';
 
 // We fix the timezone to UTC to ensure that
 // the same dates are generated on all machines
@@ -54,7 +55,7 @@ async function generateIntermediateDateItemFromDataFile(
     layerDates.map(async r => {
       const filePath = layerPathTemplate.replace(/{.*?}/g, match => {
         const format = match.slice(1, -1);
-        return moment(r).format(format);
+        return getFormattedDate(r, format);
       });
 
       const completeFilePath = path.join(__dirname, '../public/', filePath);
@@ -70,12 +71,18 @@ async function generateIntermediateDateItemFromDataFile(
       );
       const jsonBody = JSON.parse(fileContent);
 
-      const startDate = jsonBody.DataList[0][validityPeriod.start_date_field];
-      const endDate = jsonBody.DataList[0][validityPeriod.end_date_field];
+      const start = jsonBody.DataList[0][validityPeriod.start_date_field];
+      const end = jsonBody.DataList[0][validityPeriod.end_date_field];
+
+      const startDate = new Date(start);
+      const endDate = new Date(end);
+
+      startDate.setUTCHours(12, 0, 0, 0);
+      endDate.setUTCHours(12, 0, 0, 0);
 
       return {
-        startDate: moment(startDate).set({ hour: 12, minute: 0 }).valueOf(),
-        endDate: moment(endDate).set({ hour: 12, minute: 0 }).valueOf(),
+        startDate: startDate.getTime(),
+        endDate: endDate.getTime(),
       };
     }),
   );
