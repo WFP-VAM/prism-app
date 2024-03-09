@@ -147,15 +147,11 @@ export async function getAdminLevelDataLayerData({
         return undefined;
       }
 
-      // if (fallbackValue) {
-      //   console.log({ fallbackValue, fallbackAdminLevel });
-      // }
-
       const featureInfoPropsValues = matchedData
         ? Object.keys(featureInfoProps || {}).reduce((obj, item) => {
             return {
               ...obj,
-              [item]: matchedData![item],
+              [item]: matchedData[item],
             };
           }, {})
         : {};

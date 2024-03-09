@@ -93,10 +93,6 @@ export const addPopupParams = (
     ? `properties.${dataField}`
     : 'properties.data';
 
-  // const adminLevelObj = adminLevel
-  //   ? { adminLevel: feature.properties.adminLevel }
-  //   : {};
-
   // by default add `dataField` to the tooltip if it is not within the feature_info_props dictionary.
   if (!Object.keys(featureInfoProps || {}).includes(dataField)) {
     dispatch(
@@ -112,19 +108,11 @@ export const addPopupParams = (
   // Add feature_info_props as extra fields to the tooltip
   let featureInfoPropsWithFallback = featureInfoProps || {};
   if ('fallbackLayerKeys' in layer) {
-    // const initialDataTitles = Object.values(
-    //   (layer as AdminLevelDataLayerProps).featureInfoProps || {},
-    // )?.map((f: { dataTitle: string }) => f.dataTitle);
     // eslint-disable-next-line
     layer.fallbackLayerKeys?.forEach(backupLayerKey => {
       const layerDef = LayerDefinitions[
         backupLayerKey
       ] as AdminLevelDataLayerProps;
-      // const filteredFeatureInfoProps = Object.fromEntries(
-      //   Object.entries(layerDef.featureInfoProps || {}).filter(([key, value]) =>
-      //     initialDataTitles.includes(value.dataTitle),
-      //   ),
-      // );
       // eslint-disable-next-line fp/no-mutation
       featureInfoPropsWithFallback = {
         ...layerDef.featureInfoProps,

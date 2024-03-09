@@ -124,9 +124,6 @@ const PopupContent = ({
 }: PopupContentProps) => {
   const { t } = useSafeTranslation();
 
-  // eslint-disable-next-line no-console
-  console.log({ popupData });
-
   const phasePopulationTable = generatePhasePopulationTable(
     popupData,
     t,
