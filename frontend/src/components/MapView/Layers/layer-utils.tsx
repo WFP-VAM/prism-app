@@ -14,6 +14,7 @@ import { getRoundedData } from 'utils/data-utils';
 import { i18nTranslator } from 'i18n';
 import { getFeatureInfoPropsData } from 'components/MapView/utils';
 import { MapLayerMouseEvent } from 'maplibre-gl';
+import { LayerDefinitions } from 'config/utils';
 
 export function legendToStops(
   legend: LegendDefinition = [],
@@ -105,6 +106,21 @@ export const addPopupParams = (
   }
 
   // Add feature_info_props as extra fields to the tooltip
+  let featureInfoPropsWithFallback = featureInfoProps || {};
+  if ('fallbackLayerKeys' in layer) {
+    // eslint-disable-next-line
+    layer.fallbackLayerKeys?.forEach(backupLayerKey => {
+      const layerDef = LayerDefinitions[
+        backupLayerKey
+      ] as AdminLevelDataLayerProps;
+      // eslint-disable-next-line fp/no-mutation
+      featureInfoPropsWithFallback = {
+        ...layerDef.featureInfoProps,
+        ...featureInfoPropsWithFallback,
+      };
+    });
+  }
+
   dispatch(
     addPopupData({
       // temporary fix for the admin level
@@ -117,7 +133,7 @@ export const addPopupParams = (
           }
         : {}),
       ...getFeatureInfoPropsData(
-        layer.featureInfoProps || {},
+        featureInfoPropsWithFallback || {},
         coordinates,
         feature,
       ),
