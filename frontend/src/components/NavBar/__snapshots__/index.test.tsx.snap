@@ -15,14 +15,14 @@ exports[`renders as expected 1`] = `
         <div
           class="NavBar-leftSideContainer-11"
         >
-          <img
-            alt="logo"
-            class="NavBar-logo-1"
-            src="images/moz-flag-inam-logo.png"
-          />
           <div
             class="NavBar-titleContainer-12"
           >
+            <img
+              alt="logo"
+              class="NavBar-logo-1"
+              src="images/moz-flag-inam-logo.png"
+            />
             <div
               class="MuiBox-root MuiBox-root-15"
             >
