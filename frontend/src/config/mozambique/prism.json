@@ -1,6 +1,10 @@
 {
   "country": "Mozambique",
   "defaultLanguage": "en",
+  "header": {
+    "title": "PRISM",
+    "logo": "images/moz-flag-inam-logo.png"
+  },
   "countryAdmin0Id": 170,
   "alertFormActive": false,
   "hidePanel": false,

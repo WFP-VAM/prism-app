@@ -106,7 +106,7 @@ import {
 } from 'context/leftPanelStateSlice';
 import LoadingBlinkingDots from 'components/Common/LoadingBlinkingDots';
 import useLayers from 'utils/layers-utils';
-import { getDateFormat } from 'utils/date-utils';
+import { getFormattedDate } from 'utils/date-utils';
 import AnalysisTable from './AnalysisTable';
 import ExposureAnalysisTable from './AnalysisTable/ExposureAnalysisTable';
 import ExposureAnalysisActions from './ExposureAnalysisActions';
@@ -612,8 +612,8 @@ const AnalysisPanel = memo(
         updateAnalysisParams({
           analysisHazardLayerId: hazardLayerId,
           analysisAdminLevel: adminLevel.toString(),
-          analysisStartDate: getDateFormat(startDate, 'default'),
-          analysisEndDate: getDateFormat(endDate, 'default'),
+          analysisStartDate: getFormattedDate(startDate, 'default'),
+          analysisEndDate: getFormattedDate(endDate, 'default'),
           analysisStatistic: statistic,
         });
         dispatch(requestAndStorePolygonAnalysis(params));
@@ -649,7 +649,7 @@ const AnalysisPanel = memo(
         updateAnalysisParams({
           analysisHazardLayerId: hazardLayerId,
           analysisBaselineLayerId: baselineLayerId,
-          analysisDate: getDateFormat(selectedDate, 'default'),
+          analysisDate: getFormattedDate(selectedDate, 'default'),
           analysisStatistic: statistic,
           analysisThresholdAbove: aboveThreshold || undefined,
           analysisThresholdBelow: belowThreshold || undefined,
