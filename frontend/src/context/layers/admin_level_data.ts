@@ -89,6 +89,7 @@ export async function getAdminLevelDataLayerData({
 
       let fallbackValue: number | string | undefined;
       let fallbackAdminLevel: number | undefined;
+      let fallbackFeatureInfoPropsValues: { [key: string]: any } | undefined;
       if (!matchedData && fallbackLayersData && fallbackLayers) {
         // Layers can have multiple fallback layers
         // Need to get the first instance where there exists fallback data for the district
@@ -105,14 +106,31 @@ export async function getAdminLevelDataLayerData({
             const {
               adminLevel: fallbackLayerAdminLevel,
               id: layerId,
+              featureInfoProps: fallbackFeatureInfoProps,
             } = fallbackLayers[layerIndex];
             const layerValue = fallbackData
               ? fallbackData[fallbackValueKey]
               : undefined;
+
+            const tempFeatureInfoPropsValues:
+              | { [key: string]: any }
+              | undefined = fallbackData
+              ? Object.keys(fallbackFeatureInfoProps || {}).reduce(
+                  (obj, item) => {
+                    return {
+                      ...obj,
+                      [item]: fallbackData![item],
+                    };
+                  },
+                  {},
+                )
+              : {};
+
             return {
               fallbackAdminLevel: fallbackLayerAdminLevel,
               layerId,
               layerValue,
+              tempFeatureInfoPropsValues,
             };
           })
           .find(item => !isNull(item.layerValue));
@@ -120,6 +138,9 @@ export async function getAdminLevelDataLayerData({
         fallbackAdminLevel = matchedFallbackData?.fallbackAdminLevel;
         // eslint-disable-next-line fp/no-mutation
         fallbackValue = matchedFallbackData?.layerValue;
+        // eslint-disable-next-line fp/no-mutation
+        fallbackFeatureInfoPropsValues =
+          matchedFallbackData?.tempFeatureInfoPropsValues;
       }
 
       if (!matchedData && fallbackValue === undefined) {
@@ -143,6 +164,7 @@ export async function getAdminLevelDataLayerData({
         ]),
         value: matchedData ? matchedData[dataField!] : fallbackValue,
         adminLevel: fallbackAdminLevel ?? adminLevel,
+        ...fallbackFeatureInfoPropsValues,
         ...featureInfoPropsValues,
       } as DataRecord;
     }),
