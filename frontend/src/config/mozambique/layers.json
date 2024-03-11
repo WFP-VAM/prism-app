@@ -5157,7 +5157,12 @@
     "type": "wms",
     "server_layer_name": "rfh_daily",
     "additional_query_params": {
-      "styles": "rfh_16_0_300"
+      "styles": "rfh_13_0_120"
+    },
+    "wcsConfig": {
+      "scale": 0.1,
+      "offset": 0,
+      "pixelResolution": 64
     },
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
@@ -5226,23 +5231,8 @@
       },
       {
         "value": 120,
-        "label": "120-150 mm",
+        "label": ">= 120 mm",
         "color": "#6003b8"
-      },
-      {
-        "value": 150,
-        "label": "150-200 mm",
-        "color": "#a002fa"
-      },
-      {
-        "value": 200,
-        "label": "200-300 mm",
-        "color": "#fa78fa"
-      },
-      {
-        "value": 300,
-        "label": ">= 300 mm",
-        "color": "#ffc4ee"
       }
     ]
   },
