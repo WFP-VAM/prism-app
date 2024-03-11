@@ -20,6 +20,12 @@ const store = mockStore({
   serverState: { availableDates: {}, loading: false },
   anticipatoryActionState: {
     windows: ['Window 1', 'Window 2'],
+    selectedWindow: 'Window 1',
+    categoryFilters: {
+      Severo: true,
+      Moderado: true,
+      Leve: true,
+    },
     data: {
       Caia: [
         {
@@ -106,14 +112,7 @@ test('renders as expected', () => {
   const { container } = render(
     <BrowserRouter>
       <Provider store={store}>
-        <HomeTable
-          selectedWindow="Window 1"
-          categoryFilters={{
-            Severo: true,
-            Moderado: true,
-            Leve: true,
-          }}
-        />
+        <HomeTable />
       </Provider>
     </BrowserRouter>,
   );
