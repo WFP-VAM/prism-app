@@ -4,10 +4,11 @@ import { LayerDefinitions } from 'config/utils';
 import { AnticipatoryActionLayerProps } from 'config/types';
 import type { CreateAsyncThunkTypes, RootState } from './store';
 
-export const AAcategory = ['Leve', 'Moderado', 'Severo'] as const;
+// na/ny are not actually found in CSV, but defined not to cause confusion when calling the functions
+export const AAcategory = ['na', 'ny', 'Leve', 'Moderado', 'Severo'] as const;
 export type AACategoryType = typeof AAcategory[number];
 
-export const AAPhase = ['Ready', 'Set'] as const;
+export const AAPhase = ['na', 'ny', 'Ready', 'Set'] as const;
 export type AAPhaseType = typeof AAPhase[number];
 
 export interface AnticipatoryActionData {
@@ -50,7 +51,10 @@ function transform(data: any[], keys: [string, string][]) {
       const entries = keys.map(k => [k[1], obj[k[0]]]);
       const month = obj.Month.padStart(2, '0');
       const year = obj.Year_of_issue.split('-')[0];
-      const date = `${year}-${month}-01`;
+
+      // TODO: update this once CSV date format is revised
+      const actualYear = Number(month) < 5 ? String(Number(year) + 1) : year;
+      const date = `${actualYear}-${month}-01`;
       return Object.fromEntries([...entries, ['date', date]]);
     }) as AnticipatoryActionData[];
 
@@ -93,7 +97,9 @@ function transform(data: any[], keys: [string, string][]) {
     Array.from(groupedByDistrict.entries()).map(x => [x[0], x[1].sort(sortFn)]),
   );
 
-  return { data: result, windows, availableDates };
+  const monitoredDistricts = Object.keys(result);
+
+  return { data: result, windows, availableDates, monitoredDistricts };
 }
 
 type AnticipatoryActionState = {
@@ -101,6 +107,7 @@ type AnticipatoryActionState = {
     [k: string]: AnticipatoryActionData[];
   };
   availableDates?: number[];
+  monitoredDistricts: string[];
   windows: string[];
   loading: boolean;
   error: string | null;
@@ -110,6 +117,7 @@ const initialState: AnticipatoryActionState = {
   data: {},
   windows: [],
   availableDates: undefined,
+  monitoredDistricts: [],
   loading: false,
   error: null,
 };
@@ -121,6 +129,7 @@ export const loadAAData = createAsyncThunk<
     };
     windows: string[];
     availableDates: number[];
+    monitoredDistricts: string[];
   },
   undefined,
   CreateAsyncThunkTypes
@@ -149,6 +158,7 @@ export const anticipatoryActionStateSlice = createSlice({
       data: payload.data,
       windows: payload.windows,
       availableDates: payload.availableDates,
+      monitoredDistricts: payload.monitoredDistricts,
     }));
 
     builder.addCase(loadAAData.rejected, (state, action) => ({

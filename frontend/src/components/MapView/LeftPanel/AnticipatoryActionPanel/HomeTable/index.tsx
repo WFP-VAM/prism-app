@@ -161,7 +161,7 @@ function getDistrictData(
     [k: string]: AnticipatoryActionData[];
   },
   date: string,
-  window: string,
+  AAwindow: string,
   category: AnticipatoryActionData['category'],
   phase: AnticipatoryActionData['phase'],
 ) {
@@ -170,9 +170,36 @@ function getDistrictData(
       const validData = districtData.filter(
         x =>
           x.probability !== 'NA' &&
-          Number(x.probability) > Number(x.trigger) &&
-          window === x.windows,
+          Number(x.probability) >= Number(x.trigger) &&
+          AAwindow === x.windows,
       );
+
+      // NA: There is date for this district, but all probabilities are under the trigger
+      if (category === 'na') {
+        const validDataForDate = validData.filter(x => x.date === date);
+        if (validDataForDate.length > 0) {
+          return undefined;
+        }
+        const dataExistForDate = !!districtData.find(
+          x => AAwindow === x.windows && x.date === date,
+        );
+        if (!dataExistForDate) {
+          return undefined;
+        }
+        return { name: district, isNew: false };
+      }
+
+      // NY: is monitored, but no entry for this date
+      if (category === 'ny') {
+        const dataForDate = districtData.filter(
+          x => x.date === date && x.windows === AAwindow,
+        );
+        if (dataForDate.length > 0) {
+          return undefined;
+        }
+        return { name: district, isNew: false };
+      }
+
       const dates = [...new Set(validData.map(x => x.date))];
       const dateIndex = dates.findIndex(x => x === date);
       if (dateIndex < 0) {
@@ -202,13 +229,18 @@ function getDistrictData(
     .filter((x): x is AreaTagProps => x !== undefined);
 }
 
-const rowCategories: { category: AACategoryType; phase: AAPhaseType }[] = [
+const rowCategories: {
+  category: AACategoryType;
+  phase: AAPhaseType;
+}[] = [
   { category: 'Severo', phase: 'Set' },
   { category: 'Severo', phase: 'Ready' },
   { category: 'Moderado', phase: 'Set' },
   { category: 'Moderado', phase: 'Ready' },
-  // { category: 'Leve', phase: 'Set' },
-  // { category: 'Leve', phase: 'Ready' },
+  { category: 'Leve', phase: 'Set' },
+  { category: 'Leve', phase: 'Ready' },
+  { category: 'na', phase: 'na' },
+  { category: 'ny', phase: 'ny' },
 ];
 
 type ExtendedRowProps = RowProps & { id: number | 'na' | 'ny' };
@@ -262,20 +294,7 @@ function HomeTable({ selectedWindow }: HomeTableProps) {
           ],
   }));
 
-  const rows: ExtendedRowProps[] = [
-    headerRow,
-    ...districtRows,
-    {
-      id: 'na',
-      iconContent: getAAIcon('na', 'Ready'),
-      windows: selectedWindowIndex ? (windows.map(x => []) as any) : [],
-    },
-    {
-      id: 'ny',
-      iconContent: getAAIcon('ny', 'Ready'),
-      windows: selectedWindowIndex ? (windows.map(x => []) as any) : [],
-    },
-  ];
+  const rows: ExtendedRowProps[] = [headerRow, ...districtRows];
 
   return (
     <div className={classes.tableWrapper}>

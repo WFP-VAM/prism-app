@@ -12,10 +12,7 @@ import React from 'react';
 import { useSafeTranslation } from 'i18n';
 import { GetApp, EditOutlined, BarChartOutlined } from '@material-ui/icons';
 import { useSelector } from 'react-redux';
-import {
-  AnticipatoryActionDataSelector,
-  AnticipatoryActionWindowsSelector,
-} from 'context/anticipatoryActionStateSlice';
+import { AnticipatoryActionWindowsSelector } from 'context/anticipatoryActionStateSlice';
 import HomeTable from './HomeTable';
 import { StyledRadioLabel } from './utils';
 
@@ -33,14 +30,9 @@ const links = [
 function AnticipatoryActionPanel() {
   const classes = useStyles();
   const { t } = useSafeTranslation();
-  const RawAAData = useSelector(AnticipatoryActionDataSelector);
   const windows = useSelector(AnticipatoryActionWindowsSelector);
   // TODO: move this to redux state
   const [selectedWindow, setSelectedWindow] = React.useState<string>('all');
-
-  const MonitoredDistricts = Object.keys(RawAAData);
-  // eslint-disable-next-line no-console
-  console.log(MonitoredDistricts);
 
   return (
     <div className={classes.anticipatoryActionPanel}>

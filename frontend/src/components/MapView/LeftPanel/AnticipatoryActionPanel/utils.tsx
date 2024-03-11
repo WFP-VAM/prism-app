@@ -65,10 +65,7 @@ export function getAAAvailableDates(data: AnticipatoryActionData[]) {
   );
 }
 
-export function getAAIcon(
-  category: AACategoryType | 'na' | 'ny',
-  phase: AAPhaseType,
-) {
+export function getAAIcon(category: AACategoryType, phase: AAPhaseType) {
   switch (category) {
     case 'na':
       return (
@@ -140,6 +137,29 @@ export function getAAIcon(
       }
       throw new Error(`Icon not implemented: ${category}, ${phase}`);
 
+    case 'Leve':
+      if (phase === 'Set') {
+        return (
+          <AAIcon
+            background="#FFF503"
+            topText="S"
+            bottomText="MIL"
+            color="black"
+          />
+        );
+      }
+      if (phase === 'Ready') {
+        return (
+          <AAIcon
+            background="#FFFCB3"
+            topText="R"
+            bottomText="MIL"
+            color="black"
+          />
+        );
+      }
+      throw new Error(`Icon not implemented: ${category}, ${phase}`);
+
     default:
       throw new Error(`Icon not implemented: ${category}, ${phase}`);
   }
@@ -149,6 +169,12 @@ export function AADataSeverityOrder(
   category: AnticipatoryActionData['category'],
   phase: AnticipatoryActionData['phase'],
 ) {
+  if (category === 'na') {
+    return 1000;
+  }
+  if (category === 'ny') {
+    return 2000;
+  }
   const catIndex = AAcategory.findIndex(x => x === category);
   const phaseIndex = AAPhase.findIndex(x => x === phase);
 

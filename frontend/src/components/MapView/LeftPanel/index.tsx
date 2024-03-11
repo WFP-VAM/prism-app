@@ -16,6 +16,7 @@ import {
 import {
   AAlayerKey,
   AnticipatoryActionAvailableDatesSelector,
+  AnticipatoryActionDataSelector,
   loadAAData,
 } from 'context/anticipatoryActionStateSlice';
 import { getUrlKey, useUrlHistory } from 'utils/url-utils';
@@ -58,6 +59,7 @@ const LeftPanel = memo(() => {
   const dispatch = useDispatch();
   const tabValue = useSelector(leftPanelTabValueSelector);
   const panelSize = useSelector(leftPanelSizeSelector);
+  const AAData = useSelector(AnticipatoryActionDataSelector);
   const serverAvailableDates = useSelector(availableDatesSelector);
   const AAAvailableDates = useSelector(
     AnticipatoryActionAvailableDatesSelector,
@@ -103,12 +105,12 @@ const LeftPanel = memo(() => {
     const urlLayerKey = getUrlKey(selectedLayer);
     const AALayerInUrl = selectedLayers.find(x => x.id === selectedLayer.id);
 
-    // TODO: update AAData.length === 0 condition with something more solid
+    // TODO: update  Object.keys(AAData).length === 0 condition with something more solid
     // Move to AA tab when directly linked there
     if (
       tabValue !== Panel.AnticipatoryAction &&
-      AALayerInUrl
-      // AAData.length === 0
+      AALayerInUrl &&
+      Object.keys(AAData).length === 0
     ) {
       dispatch(setTabValue(Panel.AnticipatoryAction));
       dispatch(loadAAData());
