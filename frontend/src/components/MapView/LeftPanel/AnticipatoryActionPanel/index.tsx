@@ -12,9 +12,12 @@ import React from 'react';
 import { useSafeTranslation } from 'i18n';
 import { GetApp, EditOutlined, BarChartOutlined } from '@material-ui/icons';
 import { useSelector } from 'react-redux';
-import { AnticipatoryActionWindowsSelector } from 'context/anticipatoryActionStateSlice';
+import {
+  AACategoryType,
+  AnticipatoryActionWindowsSelector,
+} from 'context/anticipatoryActionStateSlice';
 import HomeTable from './HomeTable';
-import { StyledRadioLabel } from './utils';
+import { StyledCheckboxLabel, StyledRadioLabel } from './utils';
 
 const buttons = [
   { icon: GetApp, text: 'Assets' },
@@ -27,12 +30,28 @@ const links = [
   { text: 'How to read this screen', href: 'google.com' },
 ];
 
+const checkboxes: {
+  label: string;
+  id: Exclude<AACategoryType, 'na' | 'ny'>;
+}[] = [
+  { label: 'Severe', id: 'Severo' },
+  { label: 'Moderate', id: 'Moderado' },
+  { label: 'Mild', id: 'Leve' },
+];
+
 function AnticipatoryActionPanel() {
   const classes = useStyles();
   const { t } = useSafeTranslation();
   const windows = useSelector(AnticipatoryActionWindowsSelector);
   // TODO: move this to redux state
   const [selectedWindow, setSelectedWindow] = React.useState<string>('all');
+  const [categoryFilters, setCategoryFilters] = React.useState<
+    Record<Exclude<AACategoryType, 'na' | 'ny'>, boolean>
+  >({
+    Severo: true,
+    Moderado: true,
+    Leve: true,
+  });
 
   return (
     <div className={classes.anticipatoryActionPanel}>
@@ -54,8 +73,26 @@ function AnticipatoryActionPanel() {
             </RadioGroup>
           </FormControl>
         </div>
+        <div>
+          {checkboxes.map(x => (
+            <StyledCheckboxLabel
+              id={x.id}
+              checkBoxProps={{
+                checked: categoryFilters[x.id],
+                onChange: e => {
+                  const { checked } = e.target;
+                  setCategoryFilters(prev => ({ ...prev, [x.id]: checked }));
+                },
+              }}
+              label={x.label}
+            />
+          ))}
+        </div>
       </div>
-      <HomeTable selectedWindow={selectedWindow} />
+      <HomeTable
+        selectedWindow={selectedWindow}
+        categoryFilters={categoryFilters}
+      />
       <div className={classes.footerWrapper}>
         <div className={classes.footerActionsWrapper}>
           {buttons.map(x => (
@@ -100,7 +137,7 @@ const useStyles = makeStyles(() =>
       justifyContent: 'space-between',
     },
     headerWrapper: {
-      padding: '1rem',
+      padding: '1rem 1rem 0 1rem',
       display: 'flex',
       flexDirection: 'column',
       gap: '0.50rem',

@@ -1,4 +1,6 @@
 import {
+  Checkbox,
+  CheckboxProps,
   FormControlLabel,
   FormControlLabelProps,
   Radio,
@@ -23,7 +25,6 @@ const StyledRadio = withStyles({
       color: black,
     },
   },
-  checked: {},
 })((props: RadioProps) => <Radio color="default" {...props} />);
 
 export const StyledRadioLabel = withStyles({
@@ -33,7 +34,6 @@ export const StyledRadioLabel = withStyles({
     height: '1.75rem',
     marginLeft: 0,
   },
-  checked: {},
 })(({ label, ...props }: Omit<FormControlLabelProps, 'control'>) => {
   const radioGroup = useRadioGroup();
   const checked = radioGroup?.value === props.value;
@@ -47,6 +47,41 @@ export const StyledRadioLabel = withStyles({
     />
   );
 });
+
+const StyledCheckbox = withStyles({
+  root: {
+    '&$checked': {
+      color: black,
+    },
+    padding: '0.25rem',
+  },
+})((props: CheckboxProps) => <Checkbox color="default" {...props} />);
+
+export const StyledCheckboxLabel = withStyles({
+  root: {
+    border: `1px solid ${borderGray}`,
+    borderRadius: '2px',
+    height: '1.75rem',
+    marginLeft: 0,
+  },
+})(
+  ({
+    label,
+    checkBoxProps,
+    ...props
+  }: Omit<FormControlLabelProps, 'control'> & {
+    checkBoxProps: CheckboxProps;
+  }) => {
+    return (
+      <FormControlLabel
+        style={{ background: checkBoxProps.checked ? gray : undefined }}
+        label={<span style={{ marginRight: '0.5rem' }}>{label}</span>}
+        control={<StyledCheckbox {...checkBoxProps} />}
+        {...props}
+      />
+    );
+  },
+);
 
 export function getAAAvailableDates(data: AnticipatoryActionData[]) {
   const datesAsMap = data.reduce((acc, curr, index) => {

@@ -106,7 +106,14 @@ test('renders as expected', () => {
   const { container } = render(
     <BrowserRouter>
       <Provider store={store}>
-        <HomeTable selectedWindow="Window 1" />
+        <HomeTable
+          selectedWindow="Window 1"
+          categoryFilters={{
+            Severo: true,
+            Moderado: true,
+            Leve: true,
+          }}
+        />
       </Provider>
     </BrowserRouter>,
   );

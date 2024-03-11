@@ -154,6 +154,7 @@ const useRowStyles = makeStyles(() =>
 
 interface HomeTableProps {
   selectedWindow: string;
+  categoryFilters: Record<Exclude<AACategoryType, 'na' | 'ny'>, boolean>;
 }
 
 function getDistrictData(
@@ -245,7 +246,7 @@ const rowCategories: {
 
 type ExtendedRowProps = RowProps & { id: number | 'na' | 'ny' };
 
-function HomeTable({ selectedWindow }: HomeTableProps) {
+function HomeTable({ selectedWindow, categoryFilters }: HomeTableProps) {
   const classes = useHomeTableStyles();
   const RawAAData = useSelector(AnticipatoryActionDataSelector);
   const windows = useSelector(AnticipatoryActionWindowsSelector);
@@ -275,7 +276,23 @@ function HomeTable({ selectedWindow }: HomeTableProps) {
         : [windows[selectedWindowIndex]],
   };
 
-  const districtRows: ExtendedRowProps[] = rowCategories.map(r => ({
+  const shouldRenderRows = rowCategories.filter(x => {
+    switch (x.category) {
+      case 'na':
+      case 'ny':
+        return true;
+
+      case 'Leve':
+      case 'Moderado':
+      case 'Severo':
+        return categoryFilters[x.category];
+
+      default:
+        throw new Error(`Invalid category ${x.category}`);
+    }
+  });
+
+  const districtRows: ExtendedRowProps[] = shouldRenderRows.map(r => ({
     id: AADataSeverityOrder(r.category, r.phase),
     iconContent: getAAIcon(r.category, r.phase),
     windows:
