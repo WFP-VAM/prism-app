@@ -16,28 +16,28 @@ import { useSafeTranslation } from 'i18n';
 import { Extent } from 'components/MapView/Layers/raster-utils';
 import { layersSelector } from 'context/mapStateSlice/selectors';
 import { filterActiveLayers } from 'components/MapView/utils';
-import { paleSkyBlue } from 'muiTheme';
 import SelectedLayersInformation from './SelectedLayersInformation';
 
 const useStyles = makeStyles(() =>
   createStyles({
     root: {
       position: 'inherit',
+      backgroundColor: '#FFFF',
     },
     rootSummary: {
-      backgroundColor: paleSkyBlue,
+      backgroundColor: '#FFFF',
     },
     rootDetails: {
       padding: 0,
     },
     expandIcon: {
-      color: '#53888F',
+      color: 'black',
     },
     summaryContent: {
       alignItems: 'center',
     },
     title: {
-      color: '#53888F',
+      color: 'black',
       fontWeight: 600,
     },
   }),

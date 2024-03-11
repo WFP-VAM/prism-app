@@ -855,6 +855,7 @@ export enum PanelSize {
   medium = '500px',
   large = '1000px',
   xlarge = '1400px',
+  full = '100%',
 }
 
 export type MapEventWrapFunctionProps<T> = {
