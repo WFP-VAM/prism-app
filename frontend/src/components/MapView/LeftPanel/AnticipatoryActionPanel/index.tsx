@@ -96,6 +96,8 @@ const useStyles = makeStyles(() =>
       display: 'flex',
       flexDirection: 'column',
       gap: '1rem',
+      height: '100%',
+      justifyContent: 'space-between',
     },
     headerWrapper: {
       padding: '1rem',

@@ -313,6 +313,7 @@ const useHomeTableStyles = makeStyles(() =>
       width: '100%',
       background: gray,
       padding: '0.5rem 0',
+      overflow: 'scroll',
     },
   }),
 );
