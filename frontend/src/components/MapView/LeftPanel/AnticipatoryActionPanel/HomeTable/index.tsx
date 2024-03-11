@@ -3,8 +3,10 @@ import { useSafeTranslation } from 'i18n';
 import { borderGray, gray } from 'muiTheme';
 import React from 'react';
 import {
+  AACategoryFiltersSelector,
   AACategoryType,
   AAPhaseType,
+  AASelectedWindowSelector,
   AnticipatoryActionData,
   AnticipatoryActionDataSelector,
   AnticipatoryActionWindowsSelector,
@@ -152,11 +154,6 @@ const useRowStyles = makeStyles(() =>
   }),
 );
 
-interface HomeTableProps {
-  selectedWindow: string;
-  categoryFilters: Record<Exclude<AACategoryType, 'na' | 'ny'>, boolean>;
-}
-
 function getDistrictData(
   data: {
     [k: string]: AnticipatoryActionData[];
@@ -246,10 +243,12 @@ const rowCategories: {
 
 type ExtendedRowProps = RowProps & { id: number | 'na' | 'ny' };
 
-function HomeTable({ selectedWindow, categoryFilters }: HomeTableProps) {
+function HomeTable() {
   const classes = useHomeTableStyles();
   const RawAAData = useSelector(AnticipatoryActionDataSelector);
   const windows = useSelector(AnticipatoryActionWindowsSelector);
+  const selectedWindow = useSelector(AASelectedWindowSelector);
+  const categoryFilters = useSelector(AACategoryFiltersSelector);
 
   const { startDate: selectedDate } = useSelector(dateRangeSelector);
 

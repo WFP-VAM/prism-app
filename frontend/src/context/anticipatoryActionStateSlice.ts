@@ -1,8 +1,10 @@
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { PayloadAction, createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import Papa from 'papaparse';
 import { LayerDefinitions } from 'config/utils';
 import { AnticipatoryActionLayerProps } from 'config/types';
 import type { CreateAsyncThunkTypes, RootState } from './store';
+
+export const allWindowsKey = 'All';
 
 // na/ny are not actually found in CSV, but defined not to cause confusion when calling the functions
 export const AAcategory = ['na', 'ny', 'Leve', 'Moderado', 'Severo'] as const;
@@ -109,6 +111,8 @@ type AnticipatoryActionState = {
   availableDates?: number[];
   monitoredDistricts: string[];
   windows: string[];
+  selectedWindow: string;
+  categoryFilters: Record<'Leve' | 'Moderado' | 'Severo', boolean>;
   loading: boolean;
   error: string | null;
 };
@@ -118,6 +122,12 @@ const initialState: AnticipatoryActionState = {
   windows: [],
   availableDates: undefined,
   monitoredDistricts: [],
+  selectedWindow: allWindowsKey,
+  categoryFilters: {
+    Severo: true,
+    Moderado: true,
+    Leve: true,
+  },
   loading: false,
   error: null,
 };
@@ -150,7 +160,23 @@ export const loadAAData = createAsyncThunk<
 export const anticipatoryActionStateSlice = createSlice({
   name: 'anticipatoryActionState',
   initialState,
-  reducers: {},
+  reducers: {
+    setSelectedWindow: (state, { payload }: PayloadAction<string>) => ({
+      ...state,
+      selectedWindow: payload,
+    }),
+    setCategoryFilters: (
+      state,
+      {
+        payload,
+      }: PayloadAction<
+        Partial<Record<'Leve' | 'Moderado' | 'Severo', boolean>>
+      >,
+    ) => ({
+      ...state,
+      categoryFilters: { ...state.categoryFilters, ...payload },
+    }),
+  },
   extraReducers: builder => {
     builder.addCase(loadAAData.fulfilled, (state, { payload }) => ({
       ...state,
@@ -187,7 +213,16 @@ export const AnticipatoryActionWindowsSelector = (state: RootState) =>
 export const AnticipatoryActionAvailableDatesSelector = (state: RootState) =>
   state.anticipatoryActionState.availableDates;
 
+export const AASelectedWindowSelector = (state: RootState) =>
+  state.anticipatoryActionState.selectedWindow;
+
+export const AACategoryFiltersSelector = (state: RootState) =>
+  state.anticipatoryActionState.categoryFilters;
+
 // export actions
-// export const {  } = tableStateSlice.actions;
+export const {
+  setSelectedWindow,
+  setCategoryFilters,
+} = anticipatoryActionStateSlice.actions;
 
 export default anticipatoryActionStateSlice.reducer;

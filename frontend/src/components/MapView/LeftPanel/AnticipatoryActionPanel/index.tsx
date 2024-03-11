@@ -11,10 +11,14 @@ import { black, cyanBlue } from 'muiTheme';
 import React from 'react';
 import { useSafeTranslation } from 'i18n';
 import { GetApp, EditOutlined, BarChartOutlined } from '@material-ui/icons';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import {
+  AACategoryFiltersSelector,
   AACategoryType,
+  allWindowsKey,
   AnticipatoryActionWindowsSelector,
+  setCategoryFilters,
+  setSelectedWindow,
 } from 'context/anticipatoryActionStateSlice';
 import HomeTable from './HomeTable';
 import { StyledCheckboxLabel, StyledRadioLabel } from './utils';
@@ -41,17 +45,12 @@ const checkboxes: {
 
 function AnticipatoryActionPanel() {
   const classes = useStyles();
+  const dispatch = useDispatch();
   const { t } = useSafeTranslation();
   const windows = useSelector(AnticipatoryActionWindowsSelector);
-  // TODO: move this to redux state
-  const [selectedWindow, setSelectedWindow] = React.useState<string>('all');
-  const [categoryFilters, setCategoryFilters] = React.useState<
-    Record<Exclude<AACategoryType, 'na' | 'ny'>, boolean>
-  >({
-    Severo: true,
-    Moderado: true,
-    Leve: true,
-  });
+  const categoryFilters = useSelector(AACategoryFiltersSelector);
+
+  const windowOptions = [allWindowsKey, ...windows];
 
   return (
     <div className={classes.anticipatoryActionPanel}>
@@ -62,12 +61,11 @@ function AnticipatoryActionPanel() {
         <div>
           <FormControl component="fieldset">
             <RadioGroup
-              defaultValue="all"
+              defaultValue={allWindowsKey}
               className={classes.radioButtonGroup}
-              onChange={(e, val) => setSelectedWindow(val)}
+              onChange={(e, val) => dispatch(setSelectedWindow(val))}
             >
-              <StyledRadioLabel value="all" label="All" />
-              {windows.map(x => (
+              {windowOptions.map(x => (
                 <StyledRadioLabel key={x} value={x} label={x} />
               ))}
             </RadioGroup>
@@ -81,7 +79,7 @@ function AnticipatoryActionPanel() {
                 checked: categoryFilters[x.id],
                 onChange: e => {
                   const { checked } = e.target;
-                  setCategoryFilters(prev => ({ ...prev, [x.id]: checked }));
+                  dispatch(setCategoryFilters({ [x.id]: checked }));
                 },
               }}
               label={x.label}
@@ -89,10 +87,7 @@ function AnticipatoryActionPanel() {
           ))}
         </div>
       </div>
-      <HomeTable
-        selectedWindow={selectedWindow}
-        categoryFilters={categoryFilters}
-      />
+      <HomeTable />
       <div className={classes.footerWrapper}>
         <div className={classes.footerActionsWrapper}>
           {buttons.map(x => (
