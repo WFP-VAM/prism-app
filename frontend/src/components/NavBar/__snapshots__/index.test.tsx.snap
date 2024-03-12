@@ -169,7 +169,7 @@ exports[`renders as expected 1`] = `
                 starticon="[object Object]"
               >
                 <mock-typography>
-                  Anticipatory Action
+                  A. Action
                 </mock-typography>
               </mock-button>
             </mock-hidden>
