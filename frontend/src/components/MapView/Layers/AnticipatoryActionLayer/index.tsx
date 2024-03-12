@@ -65,17 +65,27 @@ function AnticipatoryActionLayer({ layer, before }: LayersProps) {
       return;
     }
     const updateScale = () => {
-      const zoom = map.getZoom();
-      // Define the zoom levels for the calculation
-      const baseZoom = 6;
+      if (!map) return;
 
-      // Calculate the scale using the exponential function
-      let scale;
-      if (zoom <= 2) {
-        scale = 0; // Minimum scale when zoom is less than or equal to baseZoom
-      } else {
-        scale = Math.pow(2, (zoom - baseZoom) / 2);
-      }
+      const zoom = map.getZoom();
+      // The desired width in meters (500km)
+      const desiredWidthInMeters = 500000;
+
+      // Get the center of the map to calculate the scale at this point
+      const center = map.getCenter();
+
+      // Convert the distance in meters to pixels for the current zoom level
+      // This calculation depends on the map projection and might need adjustments for different map libraries
+      const pixelsPerMeter =
+        map.project([center.lng + 0.1, center.lat]).x -
+        map.project([center.lng, center.lat]).x;
+      const desiredWidthInPixels =
+        (desiredWidthInMeters * pixelsPerMeter) / 100000; // Convert 100km to pixels
+
+      // Calculate the scale factor needed to adjust the marker to the desired width in pixels
+      // Assuming the original width of the marker image is known
+      const originalMarkerWidthInPixels = 100; // Adjust this value to the actual width of your marker image
+      const scale = desiredWidthInPixels / originalMarkerWidthInPixels;
 
       console.log({ zoom, scale });
       setScalePercent(scale);
