@@ -5510,11 +5510,5 @@
         "color": "#a002fa"
       }
     ]
-  },
-  "anticipatory_action": {
-    "title": "Anticipatory Action",
-    "type": "anticipatory_action",
-    "base_url": "data/mozambique/anticipatory-action/SPI_probabilities_season_triggers.csv",
-    "opacity": 0.9
   }
 }

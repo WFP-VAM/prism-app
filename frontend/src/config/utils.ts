@@ -144,12 +144,23 @@ function verifyValidImpactLayer(
 }
 
 export const LayerDefinitions: LayersMap = (() => {
+  const aaUrl = appConfig.anticipatory_action_url;
+  const anticipatoryActionLayer: AnticipatoryActionLayerProps = {
+    id: 'anticipatory_action',
+    title: 'Anticipatory Action',
+    type: 'anticipatory_action',
+    baseUrl: aaUrl,
+    opacity: 0.9,
+  };
+
   const layers = Object.keys(rawLayers).reduce(
     (acc, layerKey) => ({
       ...acc,
       [layerKey]: getLayerByKey(layerKey as LayerKey),
     }),
-    {} as LayersMap,
+    (aaUrl
+      ? { anticipatory_action: anticipatoryActionLayer }
+      : {}) as LayersMap,
   );
 
   // Verify that the layers referenced by impact layers actually exist
