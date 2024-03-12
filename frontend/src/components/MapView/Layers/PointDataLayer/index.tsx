@@ -33,7 +33,7 @@ import {
   MapLayerMouseEvent,
 } from 'maplibre-gl';
 import { findFeature, getLayerMapId, useMapCallback } from 'utils/map-utils';
-import { getDateFormat } from 'utils/date-utils';
+import { getFormattedDate } from 'utils/date-utils';
 
 const onClick = ({
   layer,
@@ -120,7 +120,7 @@ const PointDataLayer = ({ layer, before }: LayersProps) => {
     ) {
       dispatch(
         addNotification({
-          message: `Data not found for provided date: ${getDateFormat(
+          message: `Data not found for provided date: ${getFormattedDate(
             selectedDate,
             'default',
           )}`,

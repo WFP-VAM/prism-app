@@ -44,7 +44,7 @@ import {
   ANALYSIS_REQUEST_TIMEOUT,
   fetchWithTimeout,
 } from './fetch-with-timeout';
-import { getDateFormat } from './date-utils';
+import { getFormattedDate } from './date-utils';
 
 export type BaselineLayerData = AdminLevelDataLayerData;
 
@@ -713,7 +713,7 @@ export function generateAnalysisFilename(
       ? analysisResult.adminLevel
       : undefined;
 
-  const dateString = getDateFormat(selectedDate || createdAt, 'snake');
+  const dateString = getFormattedDate(selectedDate || createdAt, 'snake');
 
   return `analysis_${hazardLayerId}${
     baselineLayerId ? `_${baselineLayerId}` : ''

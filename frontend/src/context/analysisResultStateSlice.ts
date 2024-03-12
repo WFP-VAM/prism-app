@@ -68,7 +68,7 @@ import {
 import { fetchWMSLayerAsGeoJSON } from 'utils/server-utils';
 import { isLocalhost } from 'serviceWorker';
 import { ANALYSIS_API_URL } from 'utils/constants';
-import { getDateFormat } from 'utils/date-utils';
+import { getFormattedDate } from 'utils/date-utils';
 import { layerDataSelector } from './mapStateSlice/selectors';
 import { LayerData, LayerDataParams, loadLayerData } from './layers/layer-data';
 import { DataRecord } from './layers/admin_level_data';
@@ -407,7 +407,7 @@ async function createAPIRequestParams(
     wcsConfig,
   } = geotiffLayer;
   const dateValue = !wcsConfig?.disableDateParam ? date : undefined;
-  const dateString = getDateFormat(dateValue, 'default');
+  const dateString = getFormattedDate(dateValue, 'default');
 
   // get geotiff url using band
   const band = getStacBand(additionalQueryParams);
@@ -526,7 +526,7 @@ export const requestAndStoreExposedPopulation = createAsyncThunk<
       ? {
           url: `${wfsLayer.baseUrl}/ows`,
           layer_name: wfsLayer.serverLayerName,
-          time: getDateFormat(date, 'default'),
+          time: getFormattedDate(date, 'default'),
           key,
         }
       : undefined;
@@ -544,7 +544,7 @@ export const requestAndStoreExposedPopulation = createAsyncThunk<
       const dateValue = !maskLayer.wcsConfig?.disableDateParam
         ? date
         : undefined;
-      const dateString = getDateFormat(dateValue, 'default');
+      const dateString = getFormattedDate(dateValue, 'default');
 
       // Get geotiff_url using STAC for layers in earthobservation.vam.
       // eslint-disable-next-line
