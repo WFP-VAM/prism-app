@@ -86,10 +86,7 @@ const LeftPanel = memo(() => {
         updateLayersCapabilities({
           ...serverAvailableDates,
           // TODO: queryDate here?
-          [AAlayerKey]: AAAvailableDates.map(x => ({
-            displayDate: x,
-            queryDate: x,
-          })),
+          [AAlayerKey]: AAAvailableDates,
         }),
       );
     }

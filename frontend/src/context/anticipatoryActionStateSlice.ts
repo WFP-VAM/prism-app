@@ -1,7 +1,13 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import Papa from 'papaparse';
 import { LayerDefinitions } from 'config/utils';
-import { AnticipatoryActionLayerProps } from 'config/types';
+import {
+  AnticipatoryActionLayerProps,
+  DateItem,
+  DatesPropagation,
+  Validity,
+} from 'config/types';
+import { generateIntermediateDateItemFromValidity } from 'utils/server-utils';
 import type { CreateAsyncThunkTypes, RootState } from './store';
 
 // na/ny are not actually found in CSV, but defined not to cause confusion when calling the functions
@@ -60,9 +66,18 @@ function transform(data: any[], keys: [string, string][]) {
 
   const windows = [...new Set(parsed.map(x => x.windows))];
   // eslint-disable-next-line fp/no-mutating-methods
-  const availableDates = [
+  const dates = [
     ...new Set(parsed.map(x => new Date(x.date).getTime())),
   ].sort();
+  const validity: Validity = {
+    mode: DatesPropagation.DEKAD,
+    forward: 3,
+    backward: 0,
+  };
+  const availableDates = generateIntermediateDateItemFromValidity(
+    dates,
+    validity,
+  );
 
   const groupedByDistrict = new Map<string, AnticipatoryActionData[]>();
 
@@ -106,7 +121,7 @@ type AnticipatoryActionState = {
   data: {
     [k: string]: AnticipatoryActionData[];
   };
-  availableDates?: number[];
+  availableDates?: DateItem[];
   monitoredDistricts: string[];
   windows: string[];
   loading: boolean;
@@ -128,7 +143,7 @@ export const loadAAData = createAsyncThunk<
       [k: string]: AnticipatoryActionData[];
     };
     windows: string[];
-    availableDates: number[];
+    availableDates: DateItem[];
     monitoredDistricts: string[];
   },
   undefined,
