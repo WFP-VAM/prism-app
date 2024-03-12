@@ -24,6 +24,7 @@ import { DateFormat } from 'utils/name-utils';
 import {
   AADataSeverityOrder,
   getAAColor,
+  getAAIcon,
 } from 'components/MapView/LeftPanel/AnticipatoryActionPanel/utils';
 
 const boundaryLayer = getBoundaryLayerSingleton();
@@ -41,7 +42,7 @@ function AnticipatoryActionLayer({ layer, before }: LayersProps) {
 
   const date = getFormattedDate(selectedDate, DateFormat.Default);
 
-  const districtsWithColors = React.useMemo(
+  const districtsWithColorsAndIcons = React.useMemo(
     () =>
       Object.fromEntries(
         Object.entries(AAData).map(([district, districtData]) => {
@@ -52,7 +53,13 @@ function AnticipatoryActionLayer({ layer, before }: LayersProps) {
           );
 
           if (sameDateAndWindow.length === 0) {
-            return [district, getAAColor('ny', 'ny', true)];
+            return [
+              district,
+              {
+                color: getAAColor('ny', 'ny', true),
+                icon: getAAIcon('ny', 'ny', true),
+              },
+            ];
           }
 
           const active = sameDateAndWindow.filter(
@@ -61,7 +68,13 @@ function AnticipatoryActionLayer({ layer, before }: LayersProps) {
               Number(x.probability) >= Number(x.trigger),
           );
           if (active.length === 0) {
-            return [district, getAAColor('na', 'na', true)];
+            return [
+              district,
+              {
+                color: getAAColor('na', 'na', true),
+                icon: getAAIcon('na', 'na', true),
+              },
+            ];
           }
 
           const max = active.reduce(
@@ -73,20 +86,23 @@ function AnticipatoryActionLayer({ layer, before }: LayersProps) {
           );
 
           if (aaCategories[max.data.category] === false) {
-            return [district, null];
+            return [district, { color: null, icon: null }];
           }
 
           return [
             district,
-            getAAColor(max.data.category, max.data.phase, true),
+            {
+              color: getAAColor(max.data.category, max.data.phase, true),
+              icon: getAAIcon(max.data.category, max.data.phase, true),
+            },
           ];
         }),
       ),
     [AAData, aaCategories, aaWindow, date],
   );
 
-  const layers = Object.entries(districtsWithColors)
-    .map(([district, color]) => {
+  const layers = Object.entries(districtsWithColorsAndIcons)
+    .map(([district, colorAndIcons]: [string, any]) => {
       const features = [
         data?.features.find(
           cell =>
@@ -94,24 +110,32 @@ function AnticipatoryActionLayer({ layer, before }: LayersProps) {
             district,
         ),
       ];
+      const feat = features[0];
+      const centroid = feat
+        ? turfCentroid(feat as any)
+        : {
+            geometry: { coordinates: [0, 0] },
+          };
       return {
         id: `anticipatory-action-${district}`,
         data: { ...data, features },
-        color,
+        color: colorAndIcons.color,
+        icon: colorAndIcons.icon,
+        centroid,
       };
     })
     .filter(x => x.color !== null);
 
   const markers = useMemo(() => {
-    if (!districtsWithColors || !districtsWithColors.features) {
+    if (!layers || layers.length === 0) {
       return [];
     }
-
     return layers.map(layer => {
-      const centroid: Feature<Point> = turfCentroid(layer.data as any);
       return {
-        longitude: centroid.geometry.coordinates[0],
-        latitude: centroid.geometry.coordinates[1],
+        longitude: layer.centroid?.geometry.coordinates[0],
+        latitude: layer.centroid?.geometry.coordinates[1],
+        icon: layer.icon,
+        centroid: layer.centroid,
       };
     });
   }, [layers]);
@@ -142,7 +166,7 @@ function AnticipatoryActionLayer({ layer, before }: LayersProps) {
 
       // Calculate the scale factor needed to adjust the marker to the desired width in pixels
       // Assuming the original width of the marker image is known
-      const originalMarkerWidthInPixels = 100; // Adjust this value to the actual width of your marker image
+      const originalMarkerWidthInPixels = 40; // Adjust this value to the actual width of your marker image
       const scale = desiredWidthInPixels / originalMarkerWidthInPixels;
 
       console.log({ zoom, scale });
@@ -171,13 +195,16 @@ function AnticipatoryActionLayer({ layer, before }: LayersProps) {
           latitude={marker.latitude}
           anchor="center"
         >
-          <img
-            src={warningLogo}
-            alt="Warning"
-            style={{
-              transform: `translate(0%, 0%) scale(${scalePercent})`,
-            }}
-          />
+          <div style={{ transform: `scale(${scalePercent})` }}>
+            {marker.icon}
+            {/* <img
+              src={marker.icon as any}
+              alt="Warning"
+              style={{
+                transform: `translate(0%, 0%) scale(${scalePercent})`,
+              }}
+            /> */}
+          </div>
         </Marker>
       ))}
       {layers.map(l => (

@@ -2,9 +2,9 @@ import { makeStyles, createStyles } from '@material-ui/core';
 import React from 'react';
 
 export interface AAIconProps {
-  background: string;
+  background?: string;
   topText: string;
-  bottomText: string;
+  bottomText?: string;
   color: string;
 }
 
@@ -18,12 +18,16 @@ function AAIcon({ background, topText, bottomText, color }: AAIconProps) {
         className={classes.centerContainer}
       >
         <div
-          style={{ borderBottom: `1px solid ${color}` }}
+          style={{
+            borderBottom: bottomText ? `1px solid ${color}` : undefined,
+          }}
           className={classes.topTextContainer}
         >
           {topText}
         </div>
-        <div className={classes.bottomTextContainer}>{bottomText}</div>
+        {bottomText && (
+          <div className={classes.bottomTextContainer}>{bottomText}</div>
+        )}
       </div>
     </div>
   );

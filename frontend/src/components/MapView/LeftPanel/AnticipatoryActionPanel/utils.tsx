@@ -150,14 +150,26 @@ export function getAAColor(
   }
 }
 
-export function getAAIcon(category: AACategoryType, phase: AAPhaseType) {
-  const background = getAAColor(category, phase);
+export function getAAIcon(
+  category: AACategoryType,
+  phase: AAPhaseType,
+  light?: boolean,
+) {
+  const background = light ? undefined : getAAColor(category, phase);
   const otherProps = (() => {
     switch (category) {
       case 'na':
-        return { topText: 'na', bottomText: '-', color: 'black' };
+        return {
+          topText: 'na',
+          bottomText: light ? undefined : '-',
+          color: 'black',
+        };
       case 'ny':
-        return { topText: 'ny', bottomText: '-', color: 'black' };
+        return {
+          topText: 'ny',
+          bottomText: light ? undefined : '-',
+          color: 'black',
+        };
       case 'Severo':
         if (phase === 'Set') {
           return {
