@@ -72,7 +72,6 @@ function transform(data: any[], keys: [string, string][]) {
   const validity: Validity = {
     mode: DatesPropagation.DEKAD,
     forward: 3,
-    backward: 0,
   };
   const availableDates = generateIntermediateDateItemFromValidity(
     dates,
