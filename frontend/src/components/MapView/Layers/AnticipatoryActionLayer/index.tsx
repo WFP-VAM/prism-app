@@ -60,6 +60,14 @@ function AnticipatoryActionLayer({ layer, before }: LayersProps) {
 
   const [scalePercent, setScalePercent] = useState(1);
 
+  // Marara
+  const coordinates = [
+    [32.90424, -15.94131],
+    [33.43427, -15.94131],
+    [33.43427, -16.16422],
+    [32.90424, -16.16422],
+  ];
+
   useEffect(() => {
     if (!map) {
       return;
@@ -86,7 +94,7 @@ function AnticipatoryActionLayer({ layer, before }: LayersProps) {
             (endScale - startScale);
       }
 
-      console.log({ zoom, newScale });
+      // console.log({ zoom, newScale });
 
       setScalePercent(newScale);
     };
@@ -105,6 +113,19 @@ function AnticipatoryActionLayer({ layer, before }: LayersProps) {
 
   return (
     <>
+      <Source
+        id="anticipatory-action-image"
+        type="image"
+        url={warningLogo}
+        coordinates={coordinates as any}
+      >
+        <Layer
+          id="anticipatory-action-image-layer"
+          source="anticipatory-action-image"
+          type="raster"
+          paint={{ 'raster-opacity': 0.85 }} // Adjust as needed
+        />
+      </Source>
       <Source id="anticipatory-action" type="geojson" data={filteredData}>
         <Layer
           beforeId={before}
@@ -128,7 +149,7 @@ function AnticipatoryActionLayer({ layer, before }: LayersProps) {
           }}
         />
       </Source>
-      {markers.map((marker, index) => (
+      {/* {markers.map((marker, index) => (
         <Marker
           // eslint-disable-next-line react/no-array-index-key
           key={index}
@@ -144,7 +165,7 @@ function AnticipatoryActionLayer({ layer, before }: LayersProps) {
             }}
           />
         </Marker>
-      ))}
+      ))} */}
     </>
   );
 }
