@@ -97,7 +97,7 @@ function AnticipatoryActionLayer({ layer, before }: LayersProps) {
   return (
     <>
       {layers.map(l => (
-        <Source id={l.id} type="geojson" data={l.data}>
+        <Source key={l.id} id={l.id} type="geojson" data={l.data}>
           <Layer
             beforeId={before}
             type="fill"
