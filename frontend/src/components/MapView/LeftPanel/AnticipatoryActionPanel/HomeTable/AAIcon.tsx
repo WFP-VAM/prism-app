@@ -53,12 +53,12 @@ const useAAIconStyles = makeStyles(() =>
       textAlign: 'center',
       fontWeight: 'bold',
       fontSize: '13px',
-      lineHeight: '21px',
+      lineHeight: '17px',
     },
     bottomTextContainer: {
       textAlign: 'center',
       fontSize: '9px',
-      lineHeight: '21px',
+      lineHeight: '17px',
     },
   }),
 );
