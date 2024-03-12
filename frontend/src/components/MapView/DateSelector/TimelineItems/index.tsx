@@ -105,7 +105,7 @@ const TimelineItems = memo(
       );
     }, [selectedLayers, timelineStartDate]);
 
-    // Draw a column for each date of the Timeline that start at the begining of the year
+    // Draw a column for each date of the Timeline that start at the beginning of the year
     return (
       <>
         {dateRange.map((date, index) => {

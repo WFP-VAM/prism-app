@@ -100,98 +100,48 @@ export function getAAAvailableDates(data: AnticipatoryActionData[]) {
   );
 }
 
-export function getAAIcon(category: AACategoryType, phase: AAPhaseType) {
+export function getAAColor(
+  category: AACategoryType,
+  phase: AAPhaseType,
+  forLayer: boolean = false,
+) {
   switch (category) {
     case 'na':
-      return (
-        <AAIcon
-          background="#F1F1F1"
-          topText="na"
-          bottomText="-"
-          color="black"
-        />
-      );
+      return '#F1F1F1';
     case 'ny':
-      return (
-        <AAIcon
-          background={`repeating-linear-gradient(
-            -45deg,
-            #F1F1F1,
-            #F1F1F1 10px,
-            white 10px,
-            white 20px
-            )`}
-          topText="ny"
-          bottomText="-"
-          color="black"
-        />
-      );
+      return forLayer
+        ? '#F1F1F1'
+        : `repeating-linear-gradient(
+        -45deg,
+        #F1F1F1,
+        #F1F1F1 10px,
+        white 10px,
+        white 20px
+        )`;
     case 'Severo':
       if (phase === 'Set') {
-        return (
-          <AAIcon
-            background="#831F00"
-            topText="S"
-            bottomText="SEV"
-            color="white"
-          />
-        );
+        return '#831F00';
       }
       if (phase === 'Ready') {
-        return (
-          <AAIcon
-            background="#E63701"
-            topText="R"
-            bottomText="SEV"
-            color="white"
-          />
-        );
+        return '#E63701';
       }
       throw new Error(`Icon not implemented: ${category}, ${phase}`);
 
     case 'Moderado':
       if (phase === 'Set') {
-        return (
-          <AAIcon
-            background="#FF8934"
-            topText="S"
-            bottomText="MOD"
-            color="black"
-          />
-        );
+        return '#FF8934';
       }
       if (phase === 'Ready') {
-        return (
-          <AAIcon
-            background="#FFD52D"
-            topText="R"
-            bottomText="MOD"
-            color="black"
-          />
-        );
+        return '#FFD52D';
       }
       throw new Error(`Icon not implemented: ${category}, ${phase}`);
 
     case 'Leve':
       if (phase === 'Set') {
-        return (
-          <AAIcon
-            background="#FFF503"
-            topText="S"
-            bottomText="MIL"
-            color="black"
-          />
-        );
+        return '#FFF503';
       }
       if (phase === 'Ready') {
-        return (
-          <AAIcon
-            background="#FFFCB3"
-            topText="R"
-            bottomText="MIL"
-            color="black"
-          />
-        );
+        return '#FFFCB3';
       }
       throw new Error(`Icon not implemented: ${category}, ${phase}`);
 
@@ -200,18 +150,85 @@ export function getAAIcon(category: AACategoryType, phase: AAPhaseType) {
   }
 }
 
+export function getAAIcon(category: AACategoryType, phase: AAPhaseType) {
+  const background = getAAColor(category, phase);
+  const otherProps = (() => {
+    switch (category) {
+      case 'na':
+        return { topText: 'na', bottomText: '-', color: 'black' };
+      case 'ny':
+        return { topText: 'ny', bottomText: '-', color: 'black' };
+      case 'Severo':
+        if (phase === 'Set') {
+          return {
+            topText: 'S',
+            bottomText: 'SEV',
+            color: 'white',
+          };
+        }
+        if (phase === 'Ready') {
+          return {
+            topText: 'R',
+            bottomText: 'SEV',
+            color: 'white',
+          };
+        }
+        throw new Error(`Icon not implemented: ${category}, ${phase}`);
+
+      case 'Moderado':
+        if (phase === 'Set') {
+          return {
+            topText: 'S',
+            bottomText: 'MOD',
+            color: 'black',
+          };
+        }
+        if (phase === 'Ready') {
+          return {
+            topText: 'R',
+            bottomText: 'MOD',
+            color: 'black',
+          };
+        }
+        throw new Error(`Icon not implemented: ${category}, ${phase}`);
+
+      case 'Leve':
+        if (phase === 'Set') {
+          return {
+            topText: 'S',
+            bottomText: 'MIL',
+            color: 'black',
+          };
+        }
+        if (phase === 'Ready') {
+          return {
+            topText: 'R',
+            bottomText: 'MIL',
+            color: 'black',
+          };
+        }
+        throw new Error(`Icon not implemented: ${category}, ${phase}`);
+
+      default:
+        throw new Error(`Icon not implemented: ${category}, ${phase}`);
+    }
+  })();
+
+  return <AAIcon background={background} {...otherProps} />;
+}
+
 export function AADataSeverityOrder(
   category: AnticipatoryActionData['category'],
   phase: AnticipatoryActionData['phase'],
 ) {
   if (category === 'na') {
-    return 1000;
+    return 1;
   }
   if (category === 'ny') {
-    return 2000;
+    return 2;
   }
   const catIndex = AAcategory.findIndex(x => x === category);
   const phaseIndex = AAPhase.findIndex(x => x === phase);
 
-  return catIndex * 10 + phaseIndex;
+  return 1000 + catIndex * 10 + phaseIndex;
 }
