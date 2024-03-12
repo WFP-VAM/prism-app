@@ -66,29 +66,19 @@ function AnticipatoryActionLayer({ layer, before }: LayersProps) {
     }
     const updateScale = () => {
       const zoom = map.getZoom();
-      // Define the zoom levels and corresponding scales from the expression
-      const startZoom = 3;
-      const endZoom = 15;
-      const startScale = 0.1;
-      const endScale = 3;
+      // Define the zoom levels for the calculation
+      const baseZoom = 6;
 
-      // Calculate the interpolated scale based on the current zoom
-      let newScale;
-      if (zoom <= startZoom) {
-        newScale = startScale; // Use startScale if zoom is less than or equal to startZoom
-      } else if (zoom >= endZoom) {
-        newScale = endScale; // Use endScale if zoom is greater than or equal to endZoom
+      // Calculate the scale using the exponential function
+      let scale;
+      if (zoom <= 2) {
+        scale = 0; // Minimum scale when zoom is less than or equal to baseZoom
       } else {
-        // Interpolate the scale for zoom levels between startZoom and endZoom
-        newScale =
-          startScale +
-          ((zoom - startZoom) / (endZoom - startZoom)) *
-            (endScale - startScale);
+        scale = Math.pow(2, (zoom - baseZoom) / 2);
       }
 
-      console.log({ zoom, newScale });
-
-      setScalePercent(newScale);
+      console.log({ zoom, scale });
+      setScalePercent(scale);
     };
 
     // Listen for zoom changes
