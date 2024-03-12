@@ -74,6 +74,7 @@ function AnticipatoryActionPanel() {
         <div>
           {checkboxes.map(x => (
             <StyledCheckboxLabel
+              key={x.id}
               id={x.id}
               checkBoxProps={{
                 checked: categoryFilters[x.id],

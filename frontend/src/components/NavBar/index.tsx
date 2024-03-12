@@ -64,7 +64,7 @@ const panels = [
     ? [
         {
           panel: Panel.AnticipatoryAction,
-          label: 'Anticipatory Action',
+          label: 'A. Action',
           icon: <TimerOutlined />,
         },
       ]

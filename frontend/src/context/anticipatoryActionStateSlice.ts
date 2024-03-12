@@ -112,7 +112,7 @@ type AnticipatoryActionState = {
   monitoredDistricts: string[];
   windows: string[];
   selectedWindow: string;
-  categoryFilters: Record<'Leve' | 'Moderado' | 'Severo', boolean>;
+  categoryFilters: Record<AACategoryType, boolean>;
   loading: boolean;
   error: string | null;
 };
@@ -127,6 +127,8 @@ const initialState: AnticipatoryActionState = {
     Severo: true,
     Moderado: true,
     Leve: true,
+    na: false,
+    ny: false,
   },
   loading: false,
   error: null,

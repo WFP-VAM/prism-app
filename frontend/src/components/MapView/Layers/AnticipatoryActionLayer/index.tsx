@@ -9,21 +9,30 @@ import {
   mapSelector,
 } from 'context/mapStateSlice/selectors';
 import { LayerData } from 'context/layers/layer-data';
-import { AnticipatoryActionDataSelector } from 'context/anticipatoryActionStateSlice';
 import { Layer, Marker, Source } from 'react-map-gl/maplibre';
-import { getFormattedDate } from 'utils/date-utils';
-import { DateFormat } from 'utils/name-utils';
 import { Feature, Point } from 'geojson';
 import turfCentroid from '@turf/centroid';
 import warningLogo from './warning-logo.png';
+import {
+  AACategoryFiltersSelector,
+  AASelectedWindowSelector,
+  AnticipatoryActionDataSelector,
+  allWindowsKey,
+} from 'context/anticipatoryActionStateSlice';
+import { getFormattedDate } from 'utils/date-utils';
+import { DateFormat } from 'utils/name-utils';
+import {
+  AADataSeverityOrder,
+  getAAColor,
+} from 'components/MapView/LeftPanel/AnticipatoryActionPanel/utils';
 
 const boundaryLayer = getBoundaryLayerSingleton();
 
 function AnticipatoryActionLayer({ layer, before }: LayersProps) {
-  // TODO: selectedDate instead of URL
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const selectedDate = useDefaultDate(layer.id);
   const AAData = useSelector(AnticipatoryActionDataSelector);
+  const aaWindow = useSelector(AASelectedWindowSelector);
+  const aaCategories = useSelector(AACategoryFiltersSelector);
   const boundaryLayerState = useSelector(
     layerDataSelector(boundaryLayer.id),
   ) as LayerData<BoundaryLayerProps> | undefined;
@@ -32,31 +41,80 @@ function AnticipatoryActionLayer({ layer, before }: LayersProps) {
 
   const date = getFormattedDate(selectedDate, DateFormat.Default);
 
-  const adminToDraw = Object.entries(AAData)
-    .filter(x => x[1].find(y => y.date === date))
-    .map(x => x[0]);
-  const filteredData = data && {
-    ...data,
-    features: data.features.filter(cell =>
-      adminToDraw.includes(
-        cell.properties?.[boundaryLayer.adminLevelLocalNames[1] as string],
+  const districtsWithColors = React.useMemo(
+    () =>
+      Object.fromEntries(
+        Object.entries(AAData).map(([district, districtData]) => {
+          const sameDateAndWindow = districtData.filter(
+            x =>
+              x.date === date &&
+              (aaWindow === allWindowsKey || x.windows === aaWindow),
+          );
+
+          if (sameDateAndWindow.length === 0) {
+            return [district, getAAColor('ny', 'ny', true)];
+          }
+
+          const active = sameDateAndWindow.filter(
+            x =>
+              x.probability !== 'NA' &&
+              Number(x.probability) >= Number(x.trigger),
+          );
+          if (active.length === 0) {
+            return [district, getAAColor('na', 'na', true)];
+          }
+
+          const max = active.reduce(
+            (prev, curr) => {
+              const currVal = AADataSeverityOrder(curr.category, curr.phase);
+              return currVal > prev.val ? { val: currVal, data: curr } : prev;
+            },
+            { val: -1, data: active[0] },
+          );
+
+          if (aaCategories[max.data.category] === false) {
+            return [district, null];
+          }
+
+          return [
+            district,
+            getAAColor(max.data.category, max.data.phase, true),
+          ];
+        }),
       ),
-    ),
-  };
+    [AAData, aaCategories, aaWindow, date],
+  );
+
+  const layers = Object.entries(districtsWithColors)
+    .map(([district, color]) => {
+      const features = [
+        data?.features.find(
+          cell =>
+            cell.properties?.[boundaryLayer.adminLevelLocalNames[1]] ===
+            district,
+        ),
+      ];
+      return {
+        id: `anticipatory-action-${district}`,
+        data: { ...data, features },
+        color,
+      };
+    })
+    .filter(x => x.color !== null);
 
   const markers = useMemo(() => {
-    if (!filteredData || !filteredData.features) {
+    if (!districtsWithColors || !districtsWithColors.features) {
       return [];
     }
 
-    return filteredData.features.map(feature => {
-      const centroid: Feature<Point> = turfCentroid(feature as any);
+    return layers.map(layer => {
+      const centroid: Feature<Point> = turfCentroid(layer.data as any);
       return {
         longitude: centroid.geometry.coordinates[0],
         latitude: centroid.geometry.coordinates[1],
       };
     });
-  }, [filteredData]);
+  }, [layers]);
 
   const [scalePercent, setScalePercent] = useState(1);
 
@@ -105,29 +163,6 @@ function AnticipatoryActionLayer({ layer, before }: LayersProps) {
 
   return (
     <>
-      <Source id="anticipatory-action" type="geojson" data={filteredData}>
-        <Layer
-          beforeId={before}
-          id="anticipatory-action"
-          type="fill"
-          source="anticipatory-action"
-          layout={{}}
-          paint={{
-            'fill-color': '#f1f1f1',
-            'fill-opacity': 0.9,
-          }}
-        />
-        <Layer
-          beforeId={before}
-          id="anticipatory-action-boundary"
-          type="line"
-          source="anticipatory-action"
-          paint={{
-            'line-color': 'black',
-            'line-width': 2,
-          }}
-        />
-      </Source>
       {markers.map((marker, index) => (
         <Marker
           // eslint-disable-next-line react/no-array-index-key
@@ -144,6 +179,31 @@ function AnticipatoryActionLayer({ layer, before }: LayersProps) {
             }}
           />
         </Marker>
+      ))}
+      {layers.map(l => (
+        <Source key={l.id} id={l.id} type="geojson" data={l.data}>
+          <Layer
+            beforeId={before}
+            type="fill"
+            id={l.id}
+            source={l.id}
+            layout={{}}
+            paint={{
+              'fill-color': l.color as string,
+              'fill-opacity': 0.9,
+            }}
+          />
+          <Layer
+            beforeId={before}
+            id={`${l.id}-boundary`}
+            type="line"
+            source={l.id}
+            paint={{
+              'line-color': 'black',
+              'line-width': 2,
+            }}
+          />
+        </Source>
       ))}
     </>
   );
