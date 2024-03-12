@@ -10,9 +10,7 @@ import {
 } from 'context/mapStateSlice/selectors';
 import { LayerData } from 'context/layers/layer-data';
 import { Layer, Marker, Source } from 'react-map-gl/maplibre';
-import { Feature, Point } from 'geojson';
-import turfCentroid from '@turf/centroid';
-import warningLogo from './warning-logo.png';
+import turfCenterOfMass from '@turf/center-of-mass';
 import {
   AACategoryFiltersSelector,
   AASelectedWindowSelector,
@@ -112,7 +110,7 @@ function AnticipatoryActionLayer({ layer, before }: LayersProps) {
       ];
       const feat = features[0];
       const centroid = feat
-        ? turfCentroid(feat as any)
+        ? turfCenterOfMass(feat as any)
         : {
             geometry: { coordinates: [0, 0] },
           };
