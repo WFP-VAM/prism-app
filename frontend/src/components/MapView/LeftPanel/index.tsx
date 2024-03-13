@@ -83,7 +83,7 @@ const LeftPanel = memo(() => {
     setResultsPage,
   ] = React.useState<React.JSX.Element | null>(null);
 
-  // Update serverAvailableDates
+  // Sync serverAvailableDates with AAAvailableDates when the latter updates.
   React.useEffect(() => {
     if (AAAvailableDates) {
       dispatch(
@@ -93,7 +93,7 @@ const LeftPanel = memo(() => {
         }),
       );
     }
-    // we need serverAvailableDates to update them, but cannot have on the dependencies array
+    // To avoid an infinite loop, we only want to run this effect when AAAvailableDates changes.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [AAAvailableDates, dispatch]);
 
