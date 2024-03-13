@@ -85,7 +85,7 @@ export const tablesMenuItems = menuList.filter((menuItem: MenuItemType) => {
 });
 
 export const areTablesAvailable = tablesMenuItems.length >= 1;
-export const isAnticipatoryActionAvailable = isLayerKey('anticipatory_action');
+export const isAnticipatoryActionAvailable = !!appConfig.anticipatoryActionUrl;
 
 export const oneDayInMs = 24 * 60 * 60 * 1000;
 export const oneYearInMs = 365 * oneDayInMs;

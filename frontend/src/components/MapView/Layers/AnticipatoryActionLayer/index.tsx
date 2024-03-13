@@ -9,6 +9,8 @@ import { AnticipatoryActionDataSelector } from 'context/anticipatoryActionStateS
 import { Layer, Source } from 'react-map-gl/maplibre';
 import { getFormattedDate } from 'utils/date-utils';
 import { DateFormat } from 'utils/name-utils';
+import { getRequestDate } from 'utils/server-utils';
+import { availableDatesSelector } from 'context/serverStateSlice';
 
 const boundaryLayer = getBoundaryLayerSingleton();
 
@@ -17,14 +19,18 @@ function AnticipatoryActionLayer({ layer, before }: LayersProps) {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const selectedDate = useDefaultDate(layer.id);
   const AAData = useSelector(AnticipatoryActionDataSelector);
+  const serverAvailableDates = useSelector(availableDatesSelector);
   const boundaryLayerState = useSelector(
     layerDataSelector(boundaryLayer.id),
   ) as LayerData<BoundaryLayerProps> | undefined;
   const { data } = boundaryLayerState || {};
 
-  const date = getFormattedDate(selectedDate, DateFormat.Default);
+  const layerAvailableDates = serverAvailableDates[layer.id];
+  const queryDate = getRequestDate(layerAvailableDates, selectedDate);
 
-  const adminToDraw = Object.entries(AAData)
+  const date = getFormattedDate(queryDate, DateFormat.Default);
+
+  const adminToDraw = Object.entries(AAData[layer.csvWindowKey] || {})
     .filter(x => x[1].find(y => y.date === date))
     .map(x => x[0]);
   const filteredData = data && {

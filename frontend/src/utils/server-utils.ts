@@ -10,6 +10,7 @@ import type {
   PathLayer,
   PointDataLayerProps,
   RequestFeatureInfo,
+  Validity,
   ValidityLayer,
   ValidityPeriod,
 } from '../config/types';
@@ -304,14 +305,16 @@ async function generateIntermediateDateItemFromDataFile(
   return generateDateItemsRange(rangesWithoutMissing);
 }
 
-export function generateIntermediateDateItemFromValidity(layer: ValidityLayer) {
-  const { dates } = layer;
-  const { forward, backward, mode } = layer.validity;
+export function generateIntermediateDateItemFromValidity(
+  dates: number[],
+  validity: Validity,
+) {
+  const { forward, backward, mode } = validity;
 
   const sortedDates = Array.prototype.sort.call(dates) as typeof dates;
 
   // Generate first DateItem[] from dates array.
-  const baseItem = layer.validity
+  const baseItem = validity
     ? {
         isStartDate: !!forward,
         isEndDate: !!backward,
@@ -625,7 +628,8 @@ export async function getLayersAvailableDates(
         if (matchingValidityLayer) {
           return {
             [layerName]: generateIntermediateDateItemFromValidity(
-              matchingValidityLayer,
+              matchingValidityLayer.dates,
+              matchingValidityLayer.validity,
             ),
           };
         }

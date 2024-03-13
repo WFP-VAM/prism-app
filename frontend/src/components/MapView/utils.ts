@@ -19,7 +19,6 @@ import { Column, quoteAndEscapeCell } from 'utils/analysis-utils';
 import { TableRow } from 'context/analysisResultStateSlice';
 import { AdminBoundaryParams, EWSParams } from 'context/datasetStateSlice';
 import { MapRef, Point } from 'react-map-gl/maplibre';
-import { AAlayerKey } from 'context/anticipatoryActionStateSlice';
 import { getExtent } from './Layers/raster-utils';
 
 // TODO: maplibre: fix feature
@@ -197,8 +196,10 @@ export const checkLayerAvailableDatesAndContinueOrRemove = (
   dispatch: Dispatch,
 ) => {
   const { id: layerId } = layer as any;
-  // TODO: check at some point about the AA layer
-  if (serverAvailableDates[layerId]?.length !== 0 || layerId === AAlayerKey) {
+  if (
+    serverAvailableDates[layerId]?.length !== 0 ||
+    layer.type === 'anticipatory_action'
+  ) {
     return;
   }
   const urlLayerKey = getUrlKey(layer);

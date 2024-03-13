@@ -3,16 +3,21 @@ import { useSafeTranslation } from 'i18n';
 import { borderGray, gray } from 'muiTheme';
 import React from 'react';
 import {
-  AACategoryType,
-  AAPhaseType,
-  AnticipatoryActionData,
+  AnticipatoryActionAvailableDatesSelector,
   AnticipatoryActionDataSelector,
-  AnticipatoryActionWindowsSelector,
 } from 'context/anticipatoryActionStateSlice';
 import { useSelector } from 'react-redux';
 import { dateRangeSelector } from 'context/mapStateSlice/selectors';
 import { getFormattedDate } from 'utils/date-utils';
 import { DateFormat } from 'utils/name-utils';
+import {
+  AACategoryType,
+  AAPhaseType,
+  AnticipatoryActionData,
+  AnticipatoryActionDataRow,
+} from 'context/anticipatoryActionStateSlice/types';
+import { AAWindowKeys } from 'config/utils';
+import { getRequestDate } from 'utils/server-utils';
 import { AADataSeverityOrder, getAAIcon } from '../utils';
 
 interface AreaTagProps {
@@ -158,21 +163,16 @@ interface HomeTableProps {
 }
 
 function getDistrictData(
-  data: {
-    [k: string]: AnticipatoryActionData[];
-  },
+  data: AnticipatoryActionData,
   date: string,
-  AAwindow: string,
-  category: AnticipatoryActionData['category'],
-  phase: AnticipatoryActionData['phase'],
+  category: AnticipatoryActionDataRow['category'],
+  phase: AnticipatoryActionDataRow['phase'],
 ) {
   return Object.entries(data)
     .map(([district, districtData]) => {
       const validData = districtData.filter(
         x =>
-          x.probability !== 'NA' &&
-          Number(x.probability) >= Number(x.trigger) &&
-          AAwindow === x.windows,
+          x.probability !== 'NA' && Number(x.probability) >= Number(x.trigger),
       );
 
       // NA: There is date for this district, but all probabilities are under the trigger
@@ -181,9 +181,7 @@ function getDistrictData(
         if (validDataForDate.length > 0) {
           return undefined;
         }
-        const dataExistForDate = !!districtData.find(
-          x => AAwindow === x.windows && x.date === date,
-        );
+        const dataExistForDate = !!districtData.find(x => x.date === date);
         if (!dataExistForDate) {
           return undefined;
         }
@@ -192,9 +190,7 @@ function getDistrictData(
 
       // NY: is monitored, but no entry for this date
       if (category === 'ny') {
-        const dataForDate = districtData.filter(
-          x => x.date === date && x.windows === AAwindow,
-        );
+        const dataForDate = districtData.filter(x => x.date === date);
         if (dataForDate.length > 0) {
           return undefined;
         }
@@ -249,11 +245,17 @@ type ExtendedRowProps = RowProps & { id: number | 'na' | 'ny' };
 function HomeTable({ selectedWindow, categoryFilters }: HomeTableProps) {
   const classes = useHomeTableStyles();
   const RawAAData = useSelector(AnticipatoryActionDataSelector);
-  const windows = useSelector(AnticipatoryActionWindowsSelector);
+  const AAAvailableDates = useSelector(
+    AnticipatoryActionAvailableDatesSelector,
+  );
 
   const { startDate: selectedDate } = useSelector(dateRangeSelector);
 
-  const date = getFormattedDate(selectedDate, DateFormat.Default) as string;
+  const layerAvailableDates = AAAvailableDates && [
+    ...Object.values(AAAvailableDates).flat(),
+  ];
+  const queryDate = getRequestDate(layerAvailableDates, selectedDate);
+  const date = getFormattedDate(queryDate, DateFormat.Default) as string;
 
   // TODO - LEVE is "MILD" and should be added as a new category, see Figma.
 
@@ -264,16 +266,16 @@ function HomeTable({ selectedWindow, categoryFilters }: HomeTableProps) {
   // const ny = React.useMemo(() => [], []);
 
   // -1 means all
-  const selectedWindowIndex = windows.findIndex(x => x === selectedWindow);
+  const selectedWindowIndex = AAWindowKeys.findIndex(x => x === selectedWindow);
 
   const headerRow: ExtendedRowProps = {
     id: -1,
     iconContent: null,
-    windows: selectedWindowIndex === -1 ? windows.map(x => []) : [[]],
+    windows: selectedWindowIndex === -1 ? AAWindowKeys.map(x => []) : [[]],
     header:
       selectedWindowIndex === -1
-        ? [...windows]
-        : [windows[selectedWindowIndex]],
+        ? [...AAWindowKeys]
+        : [AAWindowKeys[selectedWindowIndex]],
   };
 
   const shouldRenderRows = rowCategories.filter(x => {
@@ -297,14 +299,13 @@ function HomeTable({ selectedWindow, categoryFilters }: HomeTableProps) {
     iconContent: getAAIcon(r.category, r.phase),
     windows:
       selectedWindowIndex === -1
-        ? windows.map(x =>
-            getDistrictData(RawAAData, date, x, r.category, r.phase),
+        ? AAWindowKeys.map(x =>
+            getDistrictData(RawAAData[x] || {}, date, r.category, r.phase),
           )
         : [
             getDistrictData(
-              RawAAData,
+              RawAAData[selectedWindow] || {},
               date,
-              selectedWindow,
               r.category,
               r.phase,
             ),
