@@ -203,7 +203,7 @@ function AnticipatoryActionLayer({ layer, before }: LayersProps) {
 
       const zoom = map.getZoom();
       // The desired width in meters (500km)
-      const desiredWidthInMeters = 500000;
+      const desiredWidthInMeters = 700000;
 
       // Get the center of the map to calculate the scale at this point
       const center = map.getCenter();
@@ -279,7 +279,6 @@ function AnticipatoryActionLayer({ layer, before }: LayersProps) {
             source={l.id}
             paint={{
               'line-color': 'black',
-              'line-width': 2,
             }}
           />
         </Source>

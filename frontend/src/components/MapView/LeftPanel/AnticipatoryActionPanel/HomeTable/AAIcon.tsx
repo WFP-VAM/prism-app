@@ -42,6 +42,7 @@ const useAAIconStyles = makeStyles(() =>
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
+      fontWeight: 'bolder',
     },
     centerContainer: {
       width: '2.1em',
@@ -51,13 +52,12 @@ const useAAIconStyles = makeStyles(() =>
     },
     topTextContainer: {
       textAlign: 'center',
-      fontWeight: 'bold',
-      fontSize: '13px',
+      fontSize: '14px',
       lineHeight: '17px',
     },
     bottomTextContainer: {
       textAlign: 'center',
-      fontSize: '9px',
+      fontSize: '10px',
       lineHeight: '17px',
     },
   }),
