@@ -53,9 +53,9 @@ const dateSupportLayerTypes: Array<LayerType['type']> = [
 ];
 
 function getAAAvailableDatesCombined(serverAvailableDates: AvailableDates) {
-  return Object.entries(serverAvailableDates)
-    .filter(x => Object.values(AAWindowKeyToLayerId).includes(x[0]))
-    .map(x => x[1])
+  return Object.values(AAWindowKeyToLayerId)
+    .map(id => serverAvailableDates[id])
+    .filter(Boolean) // Filter out undefined or null values
     .flat();
 }
 
