@@ -102,7 +102,7 @@ const LeftPanel = memo(() => {
     [selectedLayers],
   );
 
-  // navigate to AA tab when app originally load with AA layer in urt
+  // navigate to AA tab when app originally load with AA layer in url
   React.useEffect(() => {
     if (!AALayers) {
       return;
