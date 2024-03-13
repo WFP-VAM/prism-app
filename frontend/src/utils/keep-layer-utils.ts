@@ -14,6 +14,10 @@ export function keepLayer(layer: LayerType, newLayer: LayerType) {
     return false;
   }
 
+  if (newLayer.type === layer.type && layer.type === 'anticipatory_action') {
+    return true;
+  }
+
   // Different types of layers can overlap.
   if (newLayer.type !== layer.type) {
     return true;

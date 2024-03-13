@@ -376,13 +376,13 @@ exports[`renders as expected 1`] = `
           <div
             class="makeStyles-tagWrapper-5"
           >
-            <div
-              class="makeStyles-areaTagWrapper-12"
+            <mock-typography
+              classname="makeStyles-emptyText-7"
             >
-              <mock-typography>
-                Caia
-              </mock-typography>
-            </div>
+              (
+              no district
+              )
+            </mock-typography>
           </div>
         </div>
       </div>

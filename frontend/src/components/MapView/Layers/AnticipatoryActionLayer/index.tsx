@@ -24,7 +24,7 @@ function AnticipatoryActionLayer({ layer, before }: LayersProps) {
 
   const date = getFormattedDate(selectedDate, DateFormat.Default);
 
-  const adminToDraw = Object.entries(AAData)
+  const adminToDraw = Object.entries(AAData[layer.csvWindowKey] || {})
     .filter(x => x[1].find(y => y.date === date))
     .map(x => x[0]);
   const filteredData = data && {

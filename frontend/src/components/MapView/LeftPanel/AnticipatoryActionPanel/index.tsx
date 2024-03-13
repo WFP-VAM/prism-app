@@ -11,11 +11,8 @@ import { black, cyanBlue } from 'muiTheme';
 import React from 'react';
 import { useSafeTranslation } from 'i18n';
 import { GetApp, EditOutlined, BarChartOutlined } from '@material-ui/icons';
-import { useSelector } from 'react-redux';
-import {
-  AACategoryType,
-  AnticipatoryActionWindowsSelector,
-} from 'context/anticipatoryActionStateSlice';
+import { AACategoryType } from 'context/anticipatoryActionStateSlice/types';
+import { AAWindowKeys } from 'config/utils';
 import HomeTable from './HomeTable';
 import { StyledCheckboxLabel, StyledRadioLabel } from './utils';
 
@@ -42,7 +39,6 @@ const checkboxes: {
 function AnticipatoryActionPanel() {
   const classes = useStyles();
   const { t } = useSafeTranslation();
-  const windows = useSelector(AnticipatoryActionWindowsSelector);
   // TODO: move this to redux state
   const [selectedWindow, setSelectedWindow] = React.useState<string>('all');
   const [categoryFilters, setCategoryFilters] = React.useState<
@@ -67,7 +63,7 @@ function AnticipatoryActionPanel() {
               onChange={(e, val) => setSelectedWindow(val)}
             >
               <StyledRadioLabel value="all" label="All" />
-              {windows.map(x => (
+              {AAWindowKeys.map(x => (
                 <StyledRadioLabel key={x} value={x} label={x} />
               ))}
             </RadioGroup>

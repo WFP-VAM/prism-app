@@ -1,41 +1,14 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import Papa from 'papaparse';
-import { LayerDefinitions } from 'config/utils';
-import {
-  AnticipatoryActionLayerProps,
-  DateItem,
-  DatesPropagation,
-  Validity,
-} from 'config/types';
+import { DateItem, DatesPropagation, Validity } from 'config/types';
 import { generateIntermediateDateItemFromValidity } from 'utils/server-utils';
-import type { CreateAsyncThunkTypes, RootState } from './store';
+import { appConfig } from 'config';
+import { AAWindowKeyToLayerId, AAWindowKeys } from 'config/utils';
+import { AADataSeverityOrder } from 'components/MapView/LeftPanel/AnticipatoryActionPanel/utils';
+import type { CreateAsyncThunkTypes, RootState } from '../store';
+import { AnticipatoryActionData, AnticipatoryActionDataRow } from './types';
 
-// na/ny are not actually found in CSV, but defined not to cause confusion when calling the functions
-export const AAcategory = ['na', 'ny', 'Leve', 'Moderado', 'Severo'] as const;
-export type AACategoryType = typeof AAcategory[number];
-
-export const AAPhase = ['na', 'ny', 'Ready', 'Set'] as const;
-export type AAPhaseType = typeof AAPhase[number];
-
-export interface AnticipatoryActionData {
-  category: AACategoryType;
-  district: string;
-  index: string;
-  month: string;
-  phase: AAPhaseType;
-  probability: string;
-  trigger: string;
-  triggerNB: string;
-  triggerType: string;
-  type: string;
-  windows: string;
-  yearOfIssue: string;
-  date: string;
-}
-
-export const AAlayerKey = 'anticipatory_action';
-
-const AACSVKeys: [string, string][] = [
+const AACSVKeys: [string, keyof AnticipatoryActionDataRow][] = [
   ['Category', 'category'],
   ['District', 'district'],
   ['Index', 'index'],
@@ -50,6 +23,26 @@ const AACSVKeys: [string, string][] = [
   ['Year_of_issue', 'yearOfIssue'],
 ];
 
+const sortFn = (a: AnticipatoryActionDataRow, b: AnticipatoryActionDataRow) => {
+  const aDate = new Date(a.date).valueOf();
+  const bDate = new Date(b.date).valueOf();
+  if (aDate > bDate) {
+    return -1;
+  }
+  if (bDate > aDate) {
+    return 1;
+  }
+  const aSev = AADataSeverityOrder(a.category, a.phase);
+  const bSev = AADataSeverityOrder(b.category, b.phase);
+  if (aSev > bSev) {
+    return -1;
+  }
+  if (bSev > aSev) {
+    return 1;
+  }
+  return 0;
+};
+
 function transform(data: any[], keys: [string, string][]) {
   const parsed = data
     .filter(x => !!x[keys[0][0]]) // filter empty rows
@@ -62,74 +55,65 @@ function transform(data: any[], keys: [string, string][]) {
       const actualYear = Number(month) < 5 ? String(Number(year) + 1) : year;
       const date = `${actualYear}-${month}-01`;
       return Object.fromEntries([...entries, ['date', date]]);
-    }) as AnticipatoryActionData[];
+    }) as AnticipatoryActionDataRow[];
 
-  const windows = [...new Set(parsed.map(x => x.windows))];
-  // eslint-disable-next-line fp/no-mutating-methods
-  const dates = [
-    ...new Set(parsed.map(x => new Date(x.date).getTime())),
-  ].sort();
   const validity: Validity = {
     mode: DatesPropagation.DEKAD,
     forward: 3,
   };
-  const availableDates = generateIntermediateDateItemFromValidity(
-    dates,
-    validity,
+
+  const monitoredDistricts = [...new Set(parsed.map(x => x.district))];
+  const emptyDistricts = Object.fromEntries(
+    monitoredDistricts.map(x => [x, [] as AnticipatoryActionDataRow[]]),
   );
 
-  const groupedByDistrict = new Map<string, AnticipatoryActionData[]>();
+  const windowData = AAWindowKeys.map(windowKey => {
+    const filtered = parsed.filter(x => x.windows === windowKey);
 
-  parsed.forEach(x => {
-    const { district } = x;
-    const rows = groupedByDistrict.get(district);
-    groupedByDistrict.set(district, rows ? [...rows, x] : [x]);
+    // eslint-disable-next-line fp/no-mutating-methods
+    const dates = [
+      ...new Set(filtered.map(x => new Date(x.date).getTime())),
+    ].sort();
+    const availableDates = generateIntermediateDateItemFromValidity(
+      dates,
+      validity,
+    );
+
+    const groupedByDistrict = new Map<string, AnticipatoryActionDataRow[]>();
+    filtered.forEach(x => {
+      const { district } = x;
+      const rows = groupedByDistrict.get(district);
+      groupedByDistrict.set(district, rows ? [...rows, x] : [x]);
+    });
+
+    const result = Object.fromEntries(
+      Array.from(groupedByDistrict.entries()).map(x => [
+        x[0],
+        // eslint-disable-next-line fp/no-mutating-methods
+        x[1].sort(sortFn),
+      ]),
+    );
+
+    return {
+      data: { ...emptyDistricts, ...result },
+      availableDates,
+      windowKey,
+    };
   });
 
-  const sortFn = (a: AnticipatoryActionData, b: AnticipatoryActionData) => {
-    const aDate = new Date(a.date).valueOf();
-    const bDate = new Date(b.date).valueOf();
-    if (aDate > bDate) {
-      return -1;
-    }
-    if (bDate > aDate) {
-      return 1;
-    }
-    const aCatIndex = AAcategory.findIndex(x => x === a.category);
-    const bCatIndex = AAcategory.findIndex(x => x === b.category);
-    if (aCatIndex > bCatIndex) {
-      return -1;
-    }
-    if (bCatIndex > aCatIndex) {
-      return 1;
-    }
-    return 0;
-  };
-
-  const result = Object.fromEntries(
-    // eslint-disable-next-line fp/no-mutating-methods
-    Array.from(groupedByDistrict.entries()).map(x => [x[0], x[1].sort(sortFn)]),
-  );
-
-  const monitoredDistricts = Object.keys(result);
-
-  return { data: result, windows, availableDates, monitoredDistricts };
+  return { windowData, monitoredDistricts };
 }
 
 type AnticipatoryActionState = {
-  data: {
-    [k: string]: AnticipatoryActionData[];
-  };
-  availableDates?: DateItem[];
+  data: { [windowKey: string]: AnticipatoryActionData | undefined };
+  availableDates?: { [windowKey: string]: DateItem[] };
   monitoredDistricts: string[];
-  windows: string[];
   loading: boolean;
   error: string | null;
 };
 
 const initialState: AnticipatoryActionState = {
   data: {},
-  windows: [],
   availableDates: undefined,
   monitoredDistricts: [],
   loading: false,
@@ -138,19 +122,18 @@ const initialState: AnticipatoryActionState = {
 
 export const loadAAData = createAsyncThunk<
   {
-    data: {
-      [k: string]: AnticipatoryActionData[];
-    };
-    windows: string[];
-    availableDates: DateItem[];
+    windowData: {
+      data: AnticipatoryActionData;
+      availableDates: DateItem[];
+      windowKey: typeof AAWindowKeys[number];
+    }[];
     monitoredDistricts: string[];
   },
   undefined,
   CreateAsyncThunkTypes
 >('anticipatoryActionState/loadAAData', async () => {
-  const layer = LayerDefinitions[AAlayerKey] as AnticipatoryActionLayerProps;
+  const url = appConfig.anticipatoryActionUrl;
 
-  const url = layer.baseUrl;
   return new Promise<any>((resolve, reject) =>
     Papa.parse(url, {
       header: true,
@@ -169,9 +152,15 @@ export const anticipatoryActionStateSlice = createSlice({
     builder.addCase(loadAAData.fulfilled, (state, { payload }) => ({
       ...state,
       loading: false,
-      data: payload.data,
-      windows: payload.windows,
-      availableDates: payload.availableDates,
+      data: Object.fromEntries(
+        payload.windowData.map(x => [x.windowKey, x.data]),
+      ),
+      availableDates: Object.fromEntries(
+        payload.windowData.map(x => [
+          AAWindowKeyToLayerId[x.windowKey],
+          x.availableDates,
+        ]),
+      ),
       monitoredDistricts: payload.monitoredDistricts,
     }));
 
@@ -194,9 +183,6 @@ export const anticipatoryActionStateSlice = createSlice({
 // export selectors
 export const AnticipatoryActionDataSelector = (state: RootState) =>
   state.anticipatoryActionState.data;
-
-export const AnticipatoryActionWindowsSelector = (state: RootState) =>
-  state.anticipatoryActionState.windows;
 
 export const AnticipatoryActionAvailableDatesSelector = (state: RootState) =>
   state.anticipatoryActionState.availableDates;

@@ -870,7 +870,7 @@ export type MapEventWrapFunction<T> = (
 
 export class AnticipatoryActionLayerProps extends CommonLayerProps {
   type: 'anticipatory_action';
-  baseUrl: string;
+  csvWindowKey: string;
 
   @makeRequired
   title: string;

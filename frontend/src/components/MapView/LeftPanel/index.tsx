@@ -8,13 +8,12 @@ import {
   setTabValue,
 } from 'context/leftPanelStateSlice';
 import { LayerDefinitions, areChartLayersAvailable } from 'config/utils';
-import { LayerKey, PanelSize } from 'config/types';
+import { LayerType, PanelSize } from 'config/types';
 import {
   availableDatesSelector,
   updateLayersCapabilities,
 } from 'context/serverStateSlice';
 import {
-  AAlayerKey,
   AnticipatoryActionAvailableDatesSelector,
   AnticipatoryActionDataSelector,
   loadAAData,
@@ -55,6 +54,10 @@ const TabPanel = memo(({ children, value, index, ...other }: TabPanelProps) => {
   );
 });
 
+const AALayers: LayerType[] = Object.values(LayerDefinitions).filter(
+  layer => layer.type === 'anticipatory_action',
+);
+
 const LeftPanel = memo(() => {
   const dispatch = useDispatch();
   const tabValue = useSelector(leftPanelTabValueSelector);
@@ -80,13 +83,13 @@ const LeftPanel = memo(() => {
     setResultsPage,
   ] = React.useState<React.JSX.Element | null>(null);
 
+  // Update serverAvailableDates
   React.useEffect(() => {
     if (AAAvailableDates) {
       dispatch(
         updateLayersCapabilities({
           ...serverAvailableDates,
-          // TODO: queryDate here?
-          [AAlayerKey]: AAAvailableDates,
+          ...AAAvailableDates,
         }),
       );
     }
@@ -94,55 +97,73 @@ const LeftPanel = memo(() => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [AAAvailableDates, dispatch]);
 
+  const AALayersInUrl = React.useMemo(
+    () => selectedLayers.filter(x => AALayers.find(y => y.id === x.id)),
+    [selectedLayers],
+  );
+
+  // navigate to AA tab when app originally load with AA layer in urt
   React.useEffect(() => {
-    const selectedLayer = LayerDefinitions[AAlayerKey as LayerKey];
-    if (!selectedLayer) {
+    if (!AALayers) {
       return;
     }
-    const urlLayerKey = getUrlKey(selectedLayer);
-    const AALayerInUrl = selectedLayers.find(x => x.id === selectedLayer.id);
 
     // TODO: update  Object.keys(AAData).length === 0 condition with something more solid
     // Move to AA tab when directly linked there
     if (
       tabValue !== Panel.AnticipatoryAction &&
-      AALayerInUrl &&
+      AALayersInUrl.length > 0 &&
       Object.keys(AAData).length === 0
     ) {
       dispatch(setTabValue(Panel.AnticipatoryAction));
-      dispatch(loadAAData());
+    }
+  }, [AAData, AALayersInUrl, dispatch, tabValue]);
+
+  // Remove from url when leaving from AA tab
+  React.useEffect(() => {
+    if (
+      tabValue !== Panel.AnticipatoryAction &&
+      tabValue !== Panel.None &&
+      AALayersInUrl.length > 0 &&
+      Object.keys(AAData).length !== 0
+    ) {
+      AALayers.forEach(x =>
+        toggleRemoveLayer(x, map, getUrlKey(x), dispatch, removeLayerFromUrl),
+      );
+    }
+  }, [AAData, AALayersInUrl, dispatch, map, removeLayerFromUrl, tabValue]);
+
+  // fetch csv data when loading AA page
+  React.useEffect(() => {
+    if (tabValue !== Panel.AnticipatoryAction) {
       return;
     }
-
-    // Remove from url when leaving from AA tab
-    if (tabValue !== Panel.AnticipatoryAction && tabValue !== Panel.None) {
-      if (AALayerInUrl) {
-        toggleRemoveLayer(
-          selectedLayer,
-          map,
-          urlLayerKey,
-          dispatch,
-          removeLayerFromUrl,
-        );
-      }
-      return;
-    }
-
     dispatch(loadAAData());
+  }, [dispatch, tabValue]);
+
+  // Add layers to url
+  React.useEffect(() => {
+    if (!AALayers || tabValue !== Panel.AnticipatoryAction) {
+      return;
+    }
+
+    const layer = AALayers.find(x => !AALayersInUrl.find(y => y.id === x.id));
 
     // Add to url when getting to AA tab
-    if (AALayerInUrl) {
+    if (AALayersInUrl.length === AALayers.length || !layer) {
       return;
     }
+
     const updatedUrl = appendLayerToUrl(
-      urlLayerKey,
+      getUrlKey(layer),
       selectedLayers,
-      selectedLayer,
+      layer,
     );
-    updateHistory(urlLayerKey, updatedUrl);
+
+    updateHistory(getUrlKey(layer), updatedUrl);
     // url does not instantly update. updateHistory and appendLayerToUrl functions re-trigger useEffect, before selected layers is set
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedLayers, tabValue, dispatch]);
+  }, [selectedLayers, tabValue, dispatch, AALayersInUrl]);
 
   const renderedChartsPanel = React.useMemo(() => {
     if (!areChartLayersAvailable) {

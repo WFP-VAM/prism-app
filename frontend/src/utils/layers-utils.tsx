@@ -3,7 +3,12 @@ import { checkLayerAvailableDatesAndContinueOrRemove } from 'components/MapView/
 import { appConfig } from 'config';
 import { Extent } from 'components/MapView/Layers/raster-utils';
 import { LayerKey, LayerType, isMainLayer, DateItem } from 'config/types';
-import { LayerDefinitions, getBoundaryLayerSingleton } from 'config/utils';
+import {
+  AAWindowKeyToLayerId,
+  AAWindowKeys,
+  LayerDefinitions,
+  getBoundaryLayerSingleton,
+} from 'config/utils';
 import {
   addLayer,
   layerOrdering,
@@ -26,7 +31,6 @@ import {
   getPossibleDatesForLayer,
 } from 'utils/server-utils';
 import { UrlLayerKey, getUrlKey, useUrlHistory } from 'utils/url-utils';
-import { AAlayerKey } from 'context/anticipatoryActionStateSlice';
 import {
   datesAreEqualWithoutTime,
   binaryIncludes,
@@ -71,8 +75,9 @@ const useLayers = () => {
 
   const numberOfActiveLayers = useMemo(() => {
     return (
-      hazardLayersArray.filter(x => x !== AAlayerKey).length +
-      baselineLayersArray.length
+      hazardLayersArray.filter(
+        x => !AAWindowKeys.find(y => AAWindowKeyToLayerId[y] === x),
+      ).length + baselineLayersArray.length
     );
   }, [baselineLayersArray.length, hazardLayersArray]);
 
@@ -395,7 +400,8 @@ const useLayers = () => {
       const jsSelectedDate = new Date(selectedDate);
 
       const AADatesLoaded =
-        layer.id !== AAlayerKey || layer.id in serverAvailableDates;
+        layer.type !== 'anticipatory_action' ||
+        layer.id in serverAvailableDates;
 
       if (
         serverAvailableDatesAreEmpty ||

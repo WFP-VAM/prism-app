@@ -1,7 +1,7 @@
 {
   "country": "Mozambique",
   "defaultLanguage": "en",
-  "anticipatory_action_url": "data/mozambique/anticipatory-action/SPI_probabilities_season_triggers.csv",
+  "anticipatoryActionUrl": "data/mozambique/anticipatory-action/SPI_probabilities_season_triggers.csv",
   "header": {
     "title": "PRISM",
     "logo": "images/moz-flag-inam-logo.png"
