@@ -423,7 +423,6 @@ const useLayers = () => {
         layer.type !== 'anticipatory_action' ||
         layer.id in serverAvailableDates;
 
-      //
       if (
         serverAvailableDatesAreEmpty ||
         possibleDatesForLayerIncludeSelectedDate(layer, jsSelectedDate) ||
