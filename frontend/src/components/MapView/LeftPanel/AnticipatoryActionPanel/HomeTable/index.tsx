@@ -2,7 +2,10 @@ import { Typography, createStyles, makeStyles } from '@material-ui/core';
 import { useSafeTranslation } from 'i18n';
 import { borderGray, gray } from 'muiTheme';
 import React from 'react';
-import { AnticipatoryActionDataSelector } from 'context/anticipatoryActionStateSlice';
+import {
+  AnticipatoryActionAvailableDatesSelector,
+  AnticipatoryActionDataSelector,
+} from 'context/anticipatoryActionStateSlice';
 import { useSelector } from 'react-redux';
 import { dateRangeSelector } from 'context/mapStateSlice/selectors';
 import { getFormattedDate } from 'utils/date-utils';
@@ -14,6 +17,7 @@ import {
   AnticipatoryActionDataRow,
 } from 'context/anticipatoryActionStateSlice/types';
 import { AAWindowKeys } from 'config/utils';
+import { getRequestDate } from 'utils/server-utils';
 import { AADataSeverityOrder, getAAIcon } from '../utils';
 
 interface AreaTagProps {
@@ -241,10 +245,17 @@ type ExtendedRowProps = RowProps & { id: number | 'na' | 'ny' };
 function HomeTable({ selectedWindow, categoryFilters }: HomeTableProps) {
   const classes = useHomeTableStyles();
   const RawAAData = useSelector(AnticipatoryActionDataSelector);
+  const AAAvailableDates = useSelector(
+    AnticipatoryActionAvailableDatesSelector,
+  );
 
   const { startDate: selectedDate } = useSelector(dateRangeSelector);
 
-  const date = getFormattedDate(selectedDate, DateFormat.Default) as string;
+  const layerAvailableDates = AAAvailableDates && [
+    ...Object.values(AAAvailableDates).flat(),
+  ];
+  const queryDate = getRequestDate(layerAvailableDates, selectedDate);
+  const date = getFormattedDate(queryDate, DateFormat.Default) as string;
 
   // TODO - LEVE is "MILD" and should be added as a new category, see Figma.
 
