@@ -12,6 +12,7 @@ import { LayerData } from 'context/layers/layer-data';
 import { Layer, Marker, Source } from 'react-map-gl/maplibre';
 import turfCenterOfMass from '@turf/center-of-mass';
 import maxInscribedCircle from 'max-inscribed-circle'; // ts-ignore
+import simplify from '@turf/simplify';
 import {
   AACategoryFiltersSelector,
   AASelectedWindowSelector,
@@ -60,11 +61,33 @@ function AnticipatoryActionLayer({ layer, before }: LayersProps) {
             },
           };
         } else {
+          // maxInscribedCircle requires a Polygon
+          let mutableFeature: any = {
+            geometry: { type: undefined, coordinates: undefined },
+          };
+          if (
+            feature.geometry.type === 'MultiPolygon' &&
+            feature.geometry.coordinates[0].length === 1
+          ) {
+            mutableFeature.geometry.type = 'Polygon';
+            mutableFeature.geometry.coordinates =
+              feature.geometry.coordinates[0];
+            mutableFeature.properties = feature.properties;
+            mutableFeature.type = feature.type;
+          } else {
+            mutableFeature = feature;
+          }
+
           try {
-            const centroid = turfCenterOfMass(feature);
+            // const centroid = turfCenterOfMass(feature);
+            const simplifiedFeature = simplify(mutableFeature, {
+              tolerance: 0.01,
+            });
+            const centroid = maxInscribedCircle(simplifiedFeature);
             centroids[districtName] = centroid;
           } catch (e) {
             console.error(e);
+            console.error('Error calculating centroid for', districtName);
           }
         }
         console.log({ districtName, centroid: centroids[districtName] });
