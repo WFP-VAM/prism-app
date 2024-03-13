@@ -11,6 +11,7 @@ import {
 import { LayerData } from 'context/layers/layer-data';
 import { Layer, Marker, Source } from 'react-map-gl/maplibre';
 import turfCenterOfMass from '@turf/center-of-mass';
+import maxInscribedCircle from 'max-inscribed-circle'; // ts-ignore
 import {
   AACategoryFiltersSelector,
   AASelectedWindowSelector,
@@ -26,6 +27,11 @@ import {
 } from 'components/MapView/LeftPanel/AnticipatoryActionPanel/utils';
 
 const boundaryLayer = getBoundaryLayerSingleton();
+
+const districtCentroidOverride: { [key: string]: [number, number] } = {
+  Chicualacuala: [31.6516, -22.7564],
+  Changara: [33.1501, -16.66],
+};
 
 function AnticipatoryActionLayer({ layer, before }: LayersProps) {
   const selectedDate = useDefaultDate(layer.id);
@@ -55,7 +61,7 @@ function AnticipatoryActionLayer({ layer, before }: LayersProps) {
               district,
               {
                 color: getAAColor('ny', 'ny', true),
-                icon: getAAIcon('ny', 'ny', true),
+                icon: getAAIcon('Leve', 'Ready', true),
               },
             ];
           }
@@ -70,7 +76,7 @@ function AnticipatoryActionLayer({ layer, before }: LayersProps) {
               district,
               {
                 color: getAAColor('na', 'na', true),
-                icon: getAAIcon('na', 'na', true),
+                icon: getAAIcon('Leve', 'Ready', true),
               },
             ];
           }
@@ -109,11 +115,34 @@ function AnticipatoryActionLayer({ layer, before }: LayersProps) {
         ),
       ];
       const feat = features[0];
-      const centroid = feat
-        ? turfCenterOfMass(feat as any)
-        : {
-            geometry: { coordinates: [0, 0] },
-          };
+      let mutableFeat: any = { geometry: { type: null, coordinates: [0, 0] } };
+      if (feat?.geometry?.type === 'MultiPolygon') {
+        mutableFeat.geometry.type = 'Polygon';
+        mutableFeat.geometry.coordinates = feat.geometry.coordinates[0][0];
+      } else {
+        mutableFeat = feat;
+      }
+      let centroid = {
+        geometry: { coordinates: [0, 0] },
+      };
+      if (district in districtCentroidOverride) {
+        centroid = {
+          geometry: {
+            coordinates: districtCentroidOverride[district],
+          },
+        };
+      } else {
+        try {
+          centroid = turfCenterOfMass(feat);
+          // centroid = maxInscribedCircle(mutableFeat as any);
+        } catch (e) {
+          console.log({ mutableFeat });
+          console.error(e);
+        }
+      }
+
+      console.log({ district, coords: centroid.geometry.coordinates });
+
       return {
         id: `anticipatory-action-${district}`,
         data: { ...data, features },
@@ -167,7 +196,7 @@ function AnticipatoryActionLayer({ layer, before }: LayersProps) {
       const originalMarkerWidthInPixels = 40; // Adjust this value to the actual width of your marker image
       const scale = desiredWidthInPixels / originalMarkerWidthInPixels;
 
-      console.log({ zoom, scale });
+      // console.log({ zoom, scale });
       setScalePercent(scale);
     };
 

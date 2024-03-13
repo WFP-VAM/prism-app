@@ -88,6 +88,7 @@
     "lodash": "^4.17.21",
     "maplibre-gl": "^3.6.2",
     "marked": "^4.0.10",
+    "max-inscribed-circle": "^2.0.1",
     "papaparse": "^5.2.0",
     "prettier": "2.0.5",
     "prism-common": "file:../common",
