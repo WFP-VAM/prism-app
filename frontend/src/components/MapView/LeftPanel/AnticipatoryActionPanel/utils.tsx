@@ -233,12 +233,6 @@ export function AADataSeverityOrder(
   category: AnticipatoryActionData['category'],
   phase: AnticipatoryActionData['phase'],
 ) {
-  if (category === 'na') {
-    return 1;
-  }
-  if (category === 'ny') {
-    return 2;
-  }
   const catIndex = AAcategory.findIndex(x => x === category);
   const phaseIndex = AAPhase.findIndex(x => x === phase);
 

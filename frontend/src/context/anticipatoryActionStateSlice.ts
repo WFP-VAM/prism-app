@@ -7,6 +7,7 @@ import type { CreateAsyncThunkTypes, RootState } from './store';
 export const allWindowsKey = 'All';
 
 // na/ny are not actually found in CSV, but defined not to cause confusion when calling the functions
+// NOTE: order matters for AADataSeverityOrder
 export const AAcategory = ['na', 'ny', 'Leve', 'Moderado', 'Severo'] as const;
 export type AACategoryType = typeof AAcategory[number];
 
