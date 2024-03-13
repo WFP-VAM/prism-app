@@ -1,5 +1,5 @@
 import { WithStyles, createStyles, withStyles } from '@material-ui/core';
-import { CompositeLayerProps } from 'config/types';
+import { CompositeLayerProps, LegendDefinition } from 'config/types';
 import { LayerData, loadLayerData } from 'context/layers/layer-data';
 import { layerDataSelector } from 'context/mapStateSlice/selectors';
 import React, { memo, useEffect, useState } from 'react';
@@ -15,6 +15,7 @@ import { getRequestDate } from 'utils/server-utils';
 import { safeCountry } from 'config';
 import { geoToH3, h3ToGeoBoundary } from 'h3-js'; // ts-ignore
 import { opacitySelector } from 'context/opacityStateSlice';
+import { legendToStops } from '../layer-utils';
 
 const styles = () => createStyles({});
 
@@ -24,37 +25,21 @@ interface Props extends WithStyles<typeof styles> {
 }
 
 const paintProps: (
+  legend: LegendDefinition,
   opacity: number | undefined,
-) => FillLayerSpecification['paint'] = (opacity?: number) => ({
+) => FillLayerSpecification['paint'] = (
+  legend: LegendDefinition,
+  opacity?: number,
+) => ({
   'fill-opacity': opacity || 0.5,
   'fill-color': [
     'interpolate',
     ['linear'],
     ['get', 'value'],
-    0,
-    '#672200',
-    0.1,
-    '#a93800',
-    0.2,
-    '#e59800',
-    0.3,
-    '#ffe769',
-    0.4,
-    '#f0f0f0',
-    0.5,
-    '#f0f0f0',
-    0.6,
-    '#a9c6d6',
-    0.7,
-    '#019ac4',
-    0.8,
-    '#014c73',
-    0.9,
-    '#014c73',
-    1.0,
-    '#014c73',
+    ...legendToStops(legend).flat(),
   ],
 });
+
 const CompositeLayer = ({ layer, before }: Props) => {
   // look to refacto with impactLayer and maybe other layers
   const [adminBoundaryLimitPolygon, setAdminBoundaryPolygon] = useState(null);
@@ -125,7 +110,7 @@ const CompositeLayer = ({ layer, before }: Props) => {
         <Layer
           id={getLayerMapId(layer.id)}
           type="fill"
-          paint={paintProps(opacityState || layer.opacity)}
+          paint={paintProps(layer.legend || [], opacityState || layer.opacity)}
           beforeId={before}
         />
       </Source>
