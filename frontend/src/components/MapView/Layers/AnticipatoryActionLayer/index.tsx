@@ -111,7 +111,7 @@ function AnticipatoryActionLayer({ layer, before }: LayersProps) {
               district,
               {
                 color: getAAColor('ny', 'ny', true),
-                icon: getAAIcon('Leve', 'Ready', true),
+                icon: getAAIcon('ny', 'ny', true),
               },
             ];
           }
@@ -126,7 +126,7 @@ function AnticipatoryActionLayer({ layer, before }: LayersProps) {
               district,
               {
                 color: getAAColor('na', 'na', true),
-                icon: getAAIcon('Leve', 'Ready', true),
+                icon: getAAIcon('na', 'na', true),
               },
             ];
           }
