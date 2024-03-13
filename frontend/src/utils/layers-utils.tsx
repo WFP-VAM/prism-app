@@ -2,7 +2,13 @@ import { findClosestDate } from 'components/MapView/DateSelector/utils';
 import { checkLayerAvailableDatesAndContinueOrRemove } from 'components/MapView/utils';
 import { appConfig } from 'config';
 import { Extent } from 'components/MapView/Layers/raster-utils';
-import { LayerKey, LayerType, isMainLayer, DateItem } from 'config/types';
+import {
+  LayerKey,
+  LayerType,
+  isMainLayer,
+  DateItem,
+  AvailableDates,
+} from 'config/types';
 import {
   AAWindowKeyToLayerId,
   AAWindowKeys,
@@ -45,6 +51,13 @@ const dateSupportLayerTypes: Array<LayerType['type']> = [
   'static_raster',
   'anticipatory_action',
 ];
+
+function getAAAvailableDatesCombined(serverAvailableDates: AvailableDates) {
+  return Object.entries(serverAvailableDates)
+    .filter(x => Object.values(AAWindowKeyToLayerId).includes(x[0]))
+    .map(x => x[1])
+    .flat();
+}
 
 const useLayers = () => {
   const dispatch = useDispatch();
@@ -126,7 +139,12 @@ const useLayers = () => {
   const selectedLayerDatesDupCount = useMemo(() => {
     return countBy(
       selectedLayersWithDateSupport
-        .map(layer => getPossibleDatesForLayer(layer, serverAvailableDates))
+        .map(layer => {
+          if (layer.type === 'anticipatory_action') {
+            return getAAAvailableDatesCombined(serverAvailableDates);
+          }
+          return getPossibleDatesForLayer(layer, serverAvailableDates);
+        })
         .filter(value => value) // null check
         .flat()
         .map(value => new Date(value.displayDate).toISOString().slice(0, 10)),
@@ -380,7 +398,9 @@ const useLayers = () => {
   const possibleDatesForLayerIncludeSelectedDate = useCallback(
     (layer: DateCompatibleLayer, date: Date) => {
       return binaryIncludes<DateItem>(
-        getPossibleDatesForLayer(layer, serverAvailableDates),
+        layer.type === 'anticipatory_action'
+          ? getAAAvailableDatesCombined(serverAvailableDates)
+          : getPossibleDatesForLayer(layer, serverAvailableDates),
         date.setUTCHours(12, 0, 0, 0),
         x => new Date(x.displayDate).setUTCHours(12, 0, 0, 0),
       );
@@ -403,6 +423,7 @@ const useLayers = () => {
         layer.type !== 'anticipatory_action' ||
         layer.id in serverAvailableDates;
 
+      //
       if (
         serverAvailableDatesAreEmpty ||
         possibleDatesForLayerIncludeSelectedDate(layer, jsSelectedDate) ||
