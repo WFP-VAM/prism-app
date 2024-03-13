@@ -32,7 +32,7 @@ const paintProps: (
     ['linear'],
     ['get', 'value'],
     0,
-    '#a93800',
+    '#672200',
     0.1,
     '#a93800',
     0.2,
