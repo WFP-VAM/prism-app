@@ -46,6 +46,33 @@ function AnticipatoryActionLayer({ layer, before }: LayersProps) {
 
   const date = getFormattedDate(selectedDate, DateFormat.Default);
 
+  // Calculate centroids only once per data change
+  const districtCentroids = useMemo(() => {
+    let centroids: { [key: string]: any } = {};
+    data?.features.forEach(feature => {
+      const districtName =
+        feature.properties?.[boundaryLayer.adminLevelLocalNames[1]];
+      if (districtName) {
+        if (districtName in districtCentroidOverride) {
+          centroids[districtName] = {
+            geometry: {
+              coordinates: districtCentroidOverride[districtName],
+            },
+          };
+        } else {
+          try {
+            const centroid = turfCenterOfMass(feature);
+            centroids[districtName] = centroid;
+          } catch (e) {
+            console.error(e);
+          }
+        }
+        console.log({ districtName, centroid: centroids[districtName] });
+      }
+    });
+    return centroids;
+  }, [data]);
+
   const districtsWithColorsAndIcons = React.useMemo(
     () =>
       Object.fromEntries(
@@ -114,34 +141,9 @@ function AnticipatoryActionLayer({ layer, before }: LayersProps) {
             district,
         ),
       ];
-      const feat = features[0];
-      let mutableFeat: any = { geometry: { type: null, coordinates: [0, 0] } };
-      if (feat?.geometry?.type === 'MultiPolygon') {
-        mutableFeat.geometry.type = 'Polygon';
-        mutableFeat.geometry.coordinates = feat.geometry.coordinates[0][0];
-      } else {
-        mutableFeat = feat;
-      }
-      let centroid = {
+      const centroid = districtCentroids[district] || {
         geometry: { coordinates: [0, 0] },
       };
-      if (district in districtCentroidOverride) {
-        centroid = {
-          geometry: {
-            coordinates: districtCentroidOverride[district],
-          },
-        };
-      } else {
-        try {
-          centroid = turfCenterOfMass(feat);
-          // centroid = maxInscribedCircle(mutableFeat as any);
-        } catch (e) {
-          console.log({ mutableFeat });
-          console.error(e);
-        }
-      }
-
-      console.log({ district, coords: centroid.geometry.coordinates });
 
       return {
         id: `anticipatory-action-${district}`,
