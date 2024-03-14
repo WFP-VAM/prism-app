@@ -1,0 +1,410 @@
+{
+    "DataList": [
+    {
+        "text": "3590220000000",
+        "ICA_LS": 0,
+        "ICA_MF": 3,
+        "ICA_FL": 4,
+        "ICA_DR": 0
+    },
+    {
+        "text": "3507226000000",
+        "ICA_LS": 2,
+        "ICA_MF": 2,
+        "ICA_FL": 0,
+        "ICA_DR": 4
+    },
+    {
+        "text": "3505220000000",
+        "ICA_LS": 0,
+        "ICA_MF": 19,
+        "ICA_FL": 0,
+        "ICA_DR": 0
+    },
+    {
+        "text": "3590226000000",
+        "ICA_LS": 1,
+        "ICA_MF": 2,
+        "ICA_FL": 1,
+        "ICA_DR": 0
+    },
+    {
+        "text": "3507209000000",
+        "ICA_LS": 5,
+        "ICA_MF": 15,
+        "ICA_FL": 5,
+        "ICA_DR": 0
+    },
+    {
+        "text": "3507252000000",
+        "ICA_LS": 1,
+        "ICA_MF": 2,
+        "ICA_FL": 0,
+        "ICA_DR": 0
+    },
+    {
+        "text": "3507238000000",
+        "ICA_LS": 0,
+        "ICA_MF": 6,
+        "ICA_FL": 3,
+        "ICA_DR": 0
+    },
+    {
+        "text": "3505259000000",
+        "ICA_LS": 0,
+        "ICA_MF": 14,
+        "ICA_FL": 0,
+        "ICA_DR": 0
+    },
+    {
+        "text": "3509038000000",
+        "ICA_LS": 0,
+        "ICA_MF": 28,
+        "ICA_FL": 10,
+        "ICA_DR": 0
+    },
+    {
+        "text": "3590204000000",
+        "ICA_LS": 0,
+        "ICA_MF": 5,
+        "ICA_FL": 4,
+        "ICA_DR": 0
+    },
+    {
+        "text": "3509074000000",
+        "ICA_LS": 1,
+        "ICA_MF": 18,
+        "ICA_FL": 9,
+        "ICA_DR": 0
+    },
+    {
+        "text": "3507256000000",
+        "ICA_LS": 1,
+        "ICA_MF": 0,
+        "ICA_FL": 1,
+        "ICA_DR": 0
+    },
+    {
+        "text": "3507232000000",
+        "ICA_LS": 0,
+        "ICA_MF": 1,
+        "ICA_FL": 6,
+        "ICA_DR": 0
+    },
+    {
+        "text": "3590217000000",
+        "ICA_LS": 0,
+        "ICA_MF": 0,
+        "ICA_FL": 0,
+        "ICA_DR": 0
+    },
+    {
+        "text": "3509042000000",
+        "ICA_LS": 0,
+        "ICA_MF": 14,
+        "ICA_FL": 10,
+        "ICA_DR": 1
+    },
+    {
+        "text": "3590208000000",
+        "ICA_LS": 3,
+        "ICA_MF": 6,
+        "ICA_FL": 4,
+        "ICA_DR": 0
+    },
+    {
+        "text": "3509033000000",
+        "ICA_LS": 4,
+        "ICA_MF": 4,
+        "ICA_FL": 5,
+        "ICA_DR": 0
+    },
+    {
+        "text": "3507211000000",
+        "ICA_LS": 3,
+        "ICA_MF": 5,
+        "ICA_FL": 2,
+        "ICA_DR": 0
+    },
+    {
+        "text": "3507203000000",
+        "ICA_LS": 0,
+        "ICA_MF": 5,
+        "ICA_FL": 6,
+        "ICA_DR": 0
+    },
+    {
+        "text": "3505230000000",
+        "ICA_LS": 0,
+        "ICA_MF": 6,
+        "ICA_FL": 0,
+        "ICA_DR": 0
+    },
+    {
+        "text": "3507236000000",
+        "ICA_LS": 0,
+        "ICA_MF": 2,
+        "ICA_FL": 0,
+        "ICA_DR": 1
+    },
+    {
+        "text": "3505246000000",
+        "ICA_LS": 0,
+        "ICA_MF": 1,
+        "ICA_FL": 0,
+        "ICA_DR": 0
+    },
+    {
+        "text": "3505213000000",
+        "ICA_LS": 0,
+        "ICA_MF": 12,
+        "ICA_FL": 0,
+        "ICA_DR": 0
+    },
+    {
+        "text": "3507234000000",
+        "ICA_LS": 0,
+        "ICA_MF": 1,
+        "ICA_FL": 4,
+        "ICA_DR": 0
+    },
+    {
+        "text": "3509065000000",
+        "ICA_LS": 1,
+        "ICA_MF": 20,
+        "ICA_FL": 6,
+        "ICA_DR": 0
+    },
+    {
+        "text": "3507221000000",
+        "ICA_LS": 1,
+        "ICA_MF": 11,
+        "ICA_FL": 3,
+        "ICA_DR": 0
+    },
+    {
+        "text": "3507229000000",
+        "ICA_LS": 0,
+        "ICA_MF": 3,
+        "ICA_FL": 3,
+        "ICA_DR": 0
+    },
+    {
+        "text": "3590219000000",
+        "ICA_LS": 8,
+        "ICA_MF": 7,
+        "ICA_FL": 11,
+        "ICA_DR": 0
+    },
+    {
+        "text": "3507213000000",
+        "ICA_LS": 0,
+        "ICA_MF": 4,
+        "ICA_FL": 3,
+        "ICA_DR": 0
+    },
+    {
+        "text": "3507205000000",
+        "ICA_LS": 0,
+        "ICA_MF": 8,
+        "ICA_FL": 4,
+        "ICA_DR": 0
+    },
+    {
+        "text": "3505203000000",
+        "ICA_LS": 10,
+        "ICA_MF": 25,
+        "ICA_FL": 3,
+        "ICA_DR": 0
+    },
+    {
+        "text": "3590213000000",
+        "ICA_LS": 2,
+        "ICA_MF": 2,
+        "ICA_FL": 1,
+        "ICA_DR": 1
+    },
+    {
+        "text": "3509036000000",
+        "ICA_LS": 6,
+        "ICA_MF": 8,
+        "ICA_FL": 9,
+        "ICA_DR": 0
+    },
+    {
+        "text": "3505217000000",
+        "ICA_LS": 0,
+        "ICA_MF": 3,
+        "ICA_FL": 0,
+        "ICA_DR": 0
+    },
+    {
+        "text": "3509058000000",
+        "ICA_LS": 2,
+        "ICA_MF": 21,
+        "ICA_FL": 3,
+        "ICA_DR": 0
+    },
+    {
+        "text": "3507223000000",
+        "ICA_LS": 0,
+        "ICA_MF": 2,
+        "ICA_FL": 0,
+        "ICA_DR": 0
+    },
+    {
+        "text": "3507245000000",
+        "ICA_LS": 0,
+        "ICA_MF": 4,
+        "ICA_FL": 0,
+        "ICA_DR": 0
+    },
+    {
+        "text": "3509072000000",
+        "ICA_LS": 2,
+        "ICA_MF": 7,
+        "ICA_FL": 5,
+        "ICA_DR": 0
+    },
+    {
+        "text": "3505207000000",
+        "ICA_LS": 0,
+        "ICA_MF": 19,
+        "ICA_FL": 0,
+        "ICA_DR": 0
+    },
+    {
+        "text": "3505242000000",
+        "ICA_LS": 0,
+        "ICA_MF": 9,
+        "ICA_FL": 10,
+        "ICA_DR": 0
+    },
+    {
+        "text": "3507254000000",
+        "ICA_LS": 0,
+        "ICA_MF": 0,
+        "ICA_FL": 0,
+        "ICA_DR": 0
+    },
+    {
+        "text": "3505228000000",
+        "ICA_LS": 0,
+        "ICA_MF": 5,
+        "ICA_FL": 1,
+        "ICA_DR": 0
+    },
+    {
+        "text": "3505251000000",
+        "ICA_LS": 0,
+        "ICA_MF": 11,
+        "ICA_FL": 0,
+        "ICA_DR": 0
+    },
+    {
+        "text": "3507207000000",
+        "ICA_LS": 0,
+        "ICA_MF": 4,
+        "ICA_FL": 1,
+        "ICA_DR": 0
+    },
+    {
+        "text": "3505238000000",
+        "ICA_LS": 0,
+        "ICA_MF": 14,
+        "ICA_FL": 0,
+        "ICA_DR": 0
+    },
+    {
+        "text": "3505256000000",
+        "ICA_LS": 1,
+        "ICA_MF": 19,
+        "ICA_FL": 1,
+        "ICA_DR": 0
+    },
+    {
+        "text": "3509047000000",
+        "ICA_LS": 2,
+        "ICA_MF": 11,
+        "ICA_FL": 2,
+        "ICA_DR": 0
+    },
+    {
+        "text": "3507219000000",
+        "ICA_LS": 0,
+        "ICA_MF": 0,
+        "ICA_FL": 0,
+        "ICA_DR": 0
+    },
+    {
+        "text": "3509081000000",
+        "ICA_LS": 3,
+        "ICA_MF": 16,
+        "ICA_FL": 7,
+        "ICA_DR": 0
+    },
+    {
+        "text": "3507246000000",
+        "ICA_LS": 0,
+        "ICA_MF": 0,
+        "ICA_FL": 0,
+        "ICA_DR": 0
+    },
+    {
+        "text": "3509019000000",
+        "ICA_LS": 0,
+        "ICA_MF": 13,
+        "ICA_FL": 4,
+        "ICA_DR": 0
+    },
+    {
+        "text": "3509068000000",
+        "ICA_LS": 0,
+        "ICA_MF": 3,
+        "ICA_FL": 0,
+        "ICA_DR": 0
+    },
+    {
+        "text": "3507217000000",
+        "ICA_LS": 0,
+        "ICA_MF": 0,
+        "ICA_FL": 0,
+        "ICA_DR": 0
+    },
+    {
+        "text": "3509084000000",
+        "ICA_LS": 0,
+        "ICA_MF": 8,
+        "ICA_FL": 1,
+        "ICA_DR": 0
+    },
+    {
+        "text": "3505226000000",
+        "ICA_LS": 0,
+        "ICA_MF": 4,
+        "ICA_FL": 0,
+        "ICA_DR": 0
+    },
+    {
+        "text": "3507215000000",
+        "ICA_LS": 0,
+        "ICA_MF": 3,
+        "ICA_FL": 0,
+        "ICA_DR": 0
+    },
+    {
+        "text": "3507250000000",
+        "ICA_LS": 2,
+        "ICA_MF": 6,
+        "ICA_FL": 0,
+        "ICA_DR": 0
+    },
+    {
+        "text": "3507242000000",
+        "ICA_LS": 1,
+        "ICA_MF": 5,
+        "ICA_FL": 0,
+        "ICA_DR": 0
+    }
+    ]
+}

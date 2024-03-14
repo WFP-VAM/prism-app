@@ -1,0 +1,39 @@
+{
+  "country": "Indonesia",
+  "icons": {
+    "vulnerability": "icon_vulnerable.png",
+    "exposure": "icon_basemap.png",
+    "hazards": "icon_climate.png",
+    "risk": "icon_impact.png",
+    "capacity": "icon_capacity.png",
+    "tables": "icon_table.png"
+  },
+  "alertFormActive": false,
+  "serversUrls": {
+    "wcs": ["https://mongolia.sibelius-datacube.org:5000"],
+    "wms": ["https://vampire.idn.wfp.org:8081/geoserver/vampire/wms"]
+  },
+  "map": {
+    "boundingBox": [94, -10.36, 141.03, 5.48]
+  },
+  "categories": {
+    "hazards": {
+      "indikator_iklim": ["rainfall_anomaly", "spi"],
+      "drought_indicators": ["ModisVHI", "dslr"],
+      "floods_risk": ["floods_forecast"]
+    },
+    "exposure": {
+      "demographics": ["population_density", "HH_AGRI", "HH_FE65"]
+    },
+    "vulnerability": {
+      "vulnerable_groups": ["population_below_poverty", "pou", "OP_UNEMPLOY"]
+    },
+    "capacity": {
+      "livestock_and_crop_preparedness": ["CER_YIELD", "HH_FOODASS"]
+    },
+    "tables": {
+      "socioeconomic_data": ["poverty"],
+      "price_data": ["hay_prices"]
+    }
+  }
+}

@@ -1,13 +1,25 @@
 import { isNaN } from 'lodash';
+import Bluebird from 'bluebird';
+import nodeFetch from 'node-fetch';
 import { createConnection, Repository } from 'typeorm';
-import { ANALYSIS_API_URL } from './constants';
+import { API_URL } from './constants';
 import { Alert } from './entities/alerts.entity';
 import { calculateBoundsForAlert } from './utils/analysis-utils';
 import { sendEmail } from './utils/email';
-import { getWCSCoverage, getWMSCapabilities } from './utils/server-utils';
+import { fetchCoverageLayerDays, formatUrl, WMS } from 'prism-common';
+
+// @ts-ignore
+global.fetch = nodeFetch;
 
 async function processAlert(alert: Alert, alertRepository: Repository<Alert>) {
-  const { baseUrl, serverLayerName, type } = alert.alertConfig;
+  const {
+    baseUrl,
+    serverLayerName,
+    type,
+    title,
+    id: hazardLayerId,
+  } = alert.alertConfig;
+
   const {
     id,
     alertName,
@@ -17,15 +29,26 @@ async function processAlert(alert: Alert, alertRepository: Repository<Alert>) {
     prismUrl,
     active,
   } = alert;
-  const availableDates =
-    type === 'wms'
-      ? await getWMSCapabilities(`${baseUrl}/wms`)
-      : await getWCSCoverage(`${baseUrl}`);
-  const layerAvailableDates = availableDates[serverLayerName];
+
+  let availableDates;
+  let layerAvailableDates = [];
+  try {
+    availableDates = type === 'wms'
+      ? await new WMS(`${baseUrl}/wms`.replace(/([^:]\/)\/+/g, "$1")).getLayerDays()
+      : await fetchCoverageLayerDays(baseUrl);
+    layerAvailableDates = availableDates[serverLayerName];
+  } catch (error) {
+    console.warn(`Failed to fetch available dates for ${baseUrl} ${serverLayerName}: ${(error as Error).message}`);
+  }
+
+  if (!layerAvailableDates) {
+    console.warn(`No dates available for ${baseUrl} ${serverLayerName}.`);
+    return;
+  }
+
   const maxDate = new Date(Math.max(...(layerAvailableDates || [])));
 
   if (
-    !active ||
     isNaN(maxDate.getTime()) ||
     (lastTriggered && lastTriggered >= maxDate) ||
     createdAt >= maxDate
@@ -36,9 +59,14 @@ async function processAlert(alert: Alert, alertRepository: Repository<Alert>) {
   const alertMessage = await calculateBoundsForAlert(maxDate, alert);
 
   // Use the URL API to create the url and perform url encoding on all character
-  const url = new URL(`/alerts/${id}`, ANALYSIS_API_URL);
+  const url = new URL(`/alerts/${id}`, API_URL);
   url.searchParams.append('deactivate', 'true');
   url.searchParams.append('email', email);
+
+  const urlWithParams = formatUrl(prismUrl, {
+    hazardLayerIds: hazardLayerId,
+    date: maxDate.toISOString().slice(0, 10),
+  });
 
   if (alertMessage) {
     const emailMessage = `
@@ -47,14 +75,16 @@ async function processAlert(alert: Alert, alertRepository: Repository<Alert>) {
         Layer: ${serverLayerName}
         Date: ${maxDate}
 
-        Go to ${prismUrl} for more information.
+        Go to ${urlWithParams} for more information.
   
         Alert: ${alertMessage}`;
 
-    const emailHtml = `${emailMessage.replace(
-      /(\r\n|\r|\n)/g,
-      '<br>',
-    )} <br><br>To cancel this alert, click <a href='${url.href}'>here</a>.`;
+    const emailHtml = `${emailMessage
+      .replace(/(\r\n|\r|\n)/g, '<br>')
+      .replace(
+        urlWithParams,
+        `<a href="${urlWithParams}">${title}</a>`,
+      )} <br><br>To cancel this alert, click <a href='${url.href}'>here</a>.`;
 
     console.log(
       `Alert ${id} - '${alert.alertName}' was triggered on ${maxDate}.`,
@@ -77,11 +107,19 @@ async function run() {
   const connection = await createConnection();
   const alertRepository = connection.getRepository(Alert);
 
-  const alerts = await alertRepository.find();
-  console.info(`Processing ${alerts.length} alerts.`);
+  const alerts = await alertRepository.find({ where: { active: true } });
+  console.info(`Processing ${alerts.length} active alerts.`);
 
-  await Promise.all(
-    alerts.map(async (alert) => processAlert(alert, alertRepository)),
+  await Bluebird.map(
+    alerts,
+    async (alert) => {
+      try {
+        await processAlert(alert, alertRepository);
+      } catch (error) {
+        console.error(`Error processing alert ${alert.id}:`, error);
+      }
+    },
+    { concurrency: 5 },
   );
 }
 

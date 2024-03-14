@@ -1,0 +1,33 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`renders as expected 1`] = `
+<div>
+  <div
+    class="MuiGrid-root memo-container-1 MuiGrid-item"
+  >
+    <mock-button
+      classname="memo-triggerButton-2"
+      color="primary"
+      variant="contained"
+    >
+      <mock-visibilityoff
+        fontsize="small"
+      />
+      <mock-hidden
+        smdown="true"
+      >
+        <mock-typography
+          classname="memo-label-3"
+          variant="body2"
+        >
+          Legend
+        </mock-typography>
+      </mock-hidden>
+    </mock-button>
+    <mock-list
+      classname="memo-list-4"
+      id="legend-list"
+    />
+  </div>
+</div>
+`;

@@ -1,0 +1,17 @@
+# Python files
+*.pyc
+app/.coverage
+
+#Cached folder
+cache/
+
+# Cached files
+*.cache
+
+.venv
+
+# Test files
+**.json.*
+**/.hypothesis/**
+app/__pycache__/**
+

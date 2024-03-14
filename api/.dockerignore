@@ -1,0 +1,3 @@
+cache/*
+app/.hypothesis/*
+app/.mypy_cache/*

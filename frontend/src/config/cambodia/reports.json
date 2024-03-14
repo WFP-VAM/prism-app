@@ -1,0 +1,46 @@
+{
+  "flood_extent_report": {
+    "layer_id": "flood_extent",
+    "title": "Flood Report",
+    "publication_date_label": "Publication Date",
+    "sub_text": "This is an automated report. Information should be treated as preliminary",
+    "areas_legend_definition": {
+      "title": "Boundaries",
+      "items": [
+        {
+          "title": "Province",
+          "color": "#000000"
+        },
+        {
+          "title": "District",
+          "color": "#999797"
+        },
+        {
+          "title": "Commune",
+          "color": "#D8D6D6"
+        }
+      ]
+    },
+    "type_legend_definition": {
+      "title": "Potential Flooding",
+      "items": [
+        {
+          "title": "Flooded",
+          "color": "#a50f15"
+        },
+        {
+          "title": "Permanent Water",
+          "color": "#0571b0"
+        },
+        {
+          "title": "Seasonal Water",
+          "color": "#92c5de"
+        }
+      ]
+    },
+    "map_footer_text": "Sources: Flood extent from SERVIR Mekong HYDRAFloods. Population data from WorldPop",
+    "map_footer_sub_text": "Contains modified Copernicus Sentinel data. The designations employed and the presentation of material in the map(s) do not imply the expression of any opinion on the part of WFP concerning the legal or constitutional status of any country, territory, city or sea, or concerning the delimitation of its frontiers or boundaries.",
+    "table_name": "Population exposed to floods",
+    "signature_text": "PRISM automated report"
+  }
+}

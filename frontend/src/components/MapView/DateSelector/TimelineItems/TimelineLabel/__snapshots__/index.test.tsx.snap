@@ -1,0 +1,12 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`TimelineLabel renders as expected 1`] = `
+<div>
+  <mock-typography
+    classname="TimelineLabel-dateItemLabel-1"
+    variant="body2"
+  >
+    décembre 2021
+  </mock-typography>
+</div>
+`;

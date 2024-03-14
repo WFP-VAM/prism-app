@@ -1,0 +1,21 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`renders as expected 1`] = `
+<div>
+  <mock-tooltip
+    arrow="true"
+    placement="top"
+    title="[object Object]"
+    transitioncomponent="[object Object]"
+    transitionprops="[object Object]"
+  >
+    <div
+      class="MuiGrid-root memo-dateItem-2 MuiGrid-item MuiGrid-grid-xs-true"
+    >
+      <div
+        class="TimelineLabel-dayItem-14"
+      />
+    </div>
+  </mock-tooltip>
+</div>
+`;

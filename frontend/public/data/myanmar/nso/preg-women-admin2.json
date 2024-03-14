@@ -1,0 +1,324 @@
+{
+    "DataList": [
+        {
+            "DT_PCODE": "MMR001D001",
+            "preg-women": "2.31"
+        },
+        {
+            "DT_PCODE": "MMR001D002",
+            "preg-women": "1.77"
+        },
+        {
+            "DT_PCODE": "MMR001D003",
+            "preg-women": "2.21"
+        },
+        {
+            "DT_PCODE": "MMR001D004",
+            "preg-women": "2.90"
+        },
+        {
+            "DT_PCODE": "MMR002D001",
+            "preg-women": "2.88"
+        },
+        {
+            "DT_PCODE": "MMR002D002",
+            "preg-women": "2.74"
+        },
+        {
+            "DT_PCODE": "MMR003D001",
+            "preg-women": "2.59"
+        },
+        {
+            "DT_PCODE": "MMR003D004",
+            "preg-women": "2.77"
+        },
+        {
+            "DT_PCODE": "MMR003D002",
+            "preg-women": "2.70"
+        },
+        {
+            "DT_PCODE": "MMR003D003",
+            "preg-women": "2.67"
+        },
+        {
+            "DT_PCODE": "MMR004D001",
+            "preg-women": "3.27"
+        },
+        {
+            "DT_PCODE": "MMR004D003",
+            "preg-women": "2.87"
+        },
+        {
+            "DT_PCODE": "MMR004D002",
+            "preg-women": "3.78"
+        },
+        {
+            "DT_PCODE": "MMR004D004",
+            "preg-women": "3.78"
+        },
+        {
+            "DT_PCODE": "MMR005D001",
+            "preg-women": "1.64"
+        },
+        {
+            "DT_PCODE": "MMR005D002",
+            "preg-women": "1.97"
+        },
+        {
+            "DT_PCODE": "MMR005D010",
+            "preg-women": "1.97"
+        },
+        {
+            "DT_PCODE": "MMR005D003",
+            "preg-women": "1.77"
+        },
+        {
+            "DT_PCODE": "MMR005D009",
+            "preg-women": "1.95"
+        },
+        {
+            "DT_PCODE": "MMR005D004",
+            "preg-women": "2.43"
+        },
+        {
+            "DT_PCODE": "MMR005D011",
+            "preg-women": "2.43"
+        },
+        {
+            "DT_PCODE": "MMR005D005",
+            "preg-women": "2.26"
+        },
+        {
+            "DT_PCODE": "MMR005D006",
+            "preg-women": "2.71"
+        },
+        {
+            "DT_PCODE": "MMR005D007",
+            "preg-women": "2.93"
+        },
+        {
+            "DT_PCODE": "MMR005D008",
+            "preg-women": "2.80"
+        },
+        {
+            "DT_PCODE": "MMR005S001",
+            "preg-women": "2.80"
+        },
+        {
+            "DT_PCODE": "MMR006D001",
+            "preg-women": "2.07"
+        },
+        {
+            "DT_PCODE": "MMR006D002",
+            "preg-women": "2.59"
+        },
+        {
+            "DT_PCODE": "MMR006D003",
+            "preg-women": "2.62"
+        },
+        {
+            "DT_PCODE": "MMR007D001",
+            "preg-women": "2.10"
+        },
+        {
+            "DT_PCODE": "MMR007D002",
+            "preg-women": "2.25"
+        },
+        {
+            "DT_PCODE": "MMR008D001",
+            "preg-women": "1.50"
+        },
+        {
+            "DT_PCODE": "MMR008D002",
+            "preg-women": "1.87"
+        },
+        {
+            "DT_PCODE": "MMR009D001",
+            "preg-women": "1.96"
+        },
+        {
+            "DT_PCODE": "MMR009D002",
+            "preg-women": "1.95"
+        },
+        {
+            "DT_PCODE": "MMR009D003",
+            "preg-women": "1.84"
+        },
+        {
+            "DT_PCODE": "MMR009D004",
+            "preg-women": "2.15"
+        },
+        {
+            "DT_PCODE": "MMR009D005",
+            "preg-women": "1.78"
+        },
+        {
+            "DT_PCODE": "MMR010D001",
+            "preg-women": "1.77"
+        },
+        {
+            "DT_PCODE": "MMR010D002",
+            "preg-women": "2.10"
+        },
+        {
+            "DT_PCODE": "MMR010D003",
+            "preg-women": "1.99"
+        },
+        {
+            "DT_PCODE": "MMR010D004",
+            "preg-women": "1.79"
+        },
+        {
+            "DT_PCODE": "MMR010D005",
+            "preg-women": "1.83"
+        },
+        {
+            "DT_PCODE": "MMR010D006",
+            "preg-women": "1.61"
+        },
+        {
+            "DT_PCODE": "MMR010D007",
+            "preg-women": "1.79"
+        },
+        {
+            "DT_PCODE": "MMR011D001",
+            "preg-women": "1.87"
+        },
+        {
+            "DT_PCODE": "MMR011D002",
+            "preg-women": "2.09"
+        },
+        {
+            "DT_PCODE": "MMR012D001",
+            "preg-women": "1.89"
+        },
+        {
+            "DT_PCODE": "MMR012D005",
+            "preg-women": "2.17"
+        },
+        {
+            "DT_PCODE": "MMR012D002",
+            "preg-women": "2.64"
+        },
+        {
+            "DT_PCODE": "MMR012D003",
+            "preg-women": "2.03"
+        },
+        {
+            "DT_PCODE": "MMR012D004",
+            "preg-women": "1.87"
+        },
+        {
+            "DT_PCODE": "MMR013D001",
+            "preg-women": "1.89"
+        },
+        {
+            "DT_PCODE": "MMR013D002",
+            "preg-women": "1.49"
+        },
+        {
+            "DT_PCODE": "MMR013D003",
+            "preg-women": "2.01"
+        },
+        {
+            "DT_PCODE": "MMR013D004",
+            "preg-women": "1.07"
+        },
+        {
+            "DT_PCODE": "MMR014D001",
+            "preg-women": "2.35"
+        },
+        {
+            "DT_PCODE": "MMR014S002",
+            "preg-women": "2.35"
+        },
+        {
+            "DT_PCODE": "MMR014S001",
+            "preg-women": "2.35"
+        },
+        {
+            "DT_PCODE": "MMR014D002",
+            "preg-women": "2.24"
+        },
+        {
+            "DT_PCODE": "MMR014D003",
+            "preg-women": "2.40"
+        },
+        {
+            "DT_PCODE": "MMR015D001",
+            "preg-women": "2.27"
+        },
+        {
+            "DT_PCODE": "MMR015D007",
+            "preg-women": "2.30"
+        },
+        {
+            "DT_PCODE": "MMR015D006",
+            "preg-women": "1.71"
+        },
+        {
+            "DT_PCODE": "MMR015D002",
+            "preg-women": "2.43"
+        },
+        {
+            "DT_PCODE": "MMR015D003",
+            "preg-women": "2.41"
+        },
+        {
+            "DT_PCODE": "MMR015S001",
+            "preg-women": "2.41"
+        },
+        {
+            "DT_PCODE": "MMR015D008",
+            "preg-women": "2.41"
+        },
+        {
+            "DT_PCODE": "MMR015S002",
+            "preg-women": "2.08"
+        },
+        {
+            "DT_PCODE": "MMR016D001",
+            "preg-women": "2.04"
+        },
+        {
+            "DT_PCODE": "MMR016D002",
+            "preg-women": "2.85"
+        },
+        {
+            "DT_PCODE": "MMR016D003",
+            "preg-women": "2.19"
+        },
+        {
+            "DT_PCODE": "MMR017D001",
+            "preg-women": "2.21"
+        },
+        {
+            "DT_PCODE": "MMR017D002",
+            "preg-women": "2.06"
+        },
+        {
+            "DT_PCODE": "MMR017D003",
+            "preg-women": "2.34"
+        },
+        {
+            "DT_PCODE": "MMR017D004",
+            "preg-women": "2.77"
+        },
+        {
+            "DT_PCODE": "MMR017D005",
+            "preg-women": "2.31"
+        },
+        {
+            "DT_PCODE": "MMR017D006",
+            "preg-women": "2.42"
+        },
+        {
+            "DT_PCODE": "MMR018D001",
+            "preg-women": "1.99"
+        },
+        {
+            "DT_PCODE": "MMR018D002",
+            "preg-women": "1.98"
+        }
+    ]
+}

@@ -2,7 +2,7 @@
 
 This project is the front-end interface for the World Food Programme's [PRISM project](https://innovation.wfp.org/project/prism). It displays data and impact projections on a configurable map interface.
 
-![](/assets/prism_frontend.png)
+![](/docs/assets/prism_frontend.png)
 
 ## Functionalities
 
@@ -14,7 +14,7 @@ The new PRISM frontend is built as a static website to minimize cross dependenci
 - Display point layers by applying symbology to numeric values associated with a geographic coordinate
 - Display CSV tables in a left side panel
 
-To chose which country to run PRISM for, you can set the environment variable `REACT_APP_COUNTRY`. The current default country is `myanmar`
+To chose which country to run PRISM for, you can set the environment variable `REACT_APP_COUNTRY`. The current default country is `mozambique`
 
 ## Configuration
 
@@ -36,6 +36,7 @@ This is the primary configuration file. You can define:
 For each category, you can define sub categories as "subcategorie_name":
 [layers], a list of layers from `layers.json`.
 
+```
 {
   "country": "Cambodia",
     "map": {
@@ -50,6 +51,7 @@ For each category, you can define sub categories as "subcategorie_name":
     ]
   },
   "alertFormActive": false,
+  "hidePanel": false,
   "icons": {
     "vulnerability": "icon_vulnerable.png",
     "exposure": "icon_basemap.png",
@@ -61,12 +63,25 @@ For each category, you can define sub categories as "subcategorie_name":
     "categories": {
       "hazards": {
         "floods" ....
+```
+
+#### Map settings
+
+For each country, you will need to specify the starting point (lat, long) and zoom. In addition, you can also set
+
+- maxBounds
+- minZoom
+- maxZoom
+
+To find these attributes, we created a help mode that you can activate by setting the env `REACT_APP_SHOW_MAP_INFO=true`
 
 #### Boundary layers
+
 - Configuring multiple boundary layers
-  If multiple boundary layers are configured `layers.json` you can specify which should be displayed by default by defining `defaultDisplayBoundaries` as an array of boundaries.
-  
+  If multiple boundary layers are configured in `layers.json` you can specify which should be displayed by default by defining `defaultDisplayBoundaries` as an array of boundaries.
+
   e.g.
+
   ```json
   {
     ...
@@ -78,6 +93,10 @@ For each category, you can define sub categories as "subcategorie_name":
     ...
   }
   ```
+
+In some cases, a boundary file may load without any issues but fail to provide correct results in an exposure analysis, or correctly render the 'Go To' feature. Troubleshooting this is challenging. It is recommended to use a validation tool on your boundary file before utilizing it in PRISM. https://geojsonlint.com/ works well for this purpose.
+
+In addition, boundary files sometimes carry more precise coordinates than is neccessary which makes for a large data file. PRISM will alert you with a message in the browser if the precision is too high. You can run bash /frontend/scripts/truncate_precision.sh to fix this. The script will update any boundary file in the /frontend/public/data folder
 
 ### layers.json
 
@@ -121,7 +140,7 @@ These layers are referred to as `admin_level_data` in PRISM and represent a data
   "improved_drinking_water": {
     "title": "Improved drinking water",
     "type": "admin_level_data",
-    "path": "../data/myanmar/nso/vulnerability-layers.json",
+    "path": "data/myanmar/nso/vulnerability-layers.json",
     "data_field": "improved_drinking_water",
     "admin_level": 3,
     "admin_code": "TS_PCODE",
@@ -139,7 +158,7 @@ These layers are referred to as `admin_level_data` in PRISM and represent a data
 
 #### point
 
-These layers are referred to as `point_data` in PRISM and represent a data value for a given latitude and longitude coordinate. Point data layers visualize values specified as `measure_field` as points on a map based on the `geom_field` which expect a lat, long coordinate. 
+These layers are referred to as `point_data` in PRISM and represent a data value for a given latitude and longitude coordinate. Point data layers visualize values specified as `measure_field` as points on a map based on the `geom_field` which expect a lat, long coordinate.
 
 ```
   "disaster_report": {
@@ -161,16 +180,18 @@ These layers are referred to as `point_data` in PRISM and represent a data value
       {"value": "500 or more", "color": "#f03b20"}
     ]
 ```
-#### boundaries
-Boundary layers are loaded by defaul when the application starts and typically show administrative bounaries and are defined as type `boundary`. Multiple boundary files can be configured in layers.json. Multiple boundary files can be used to create different styles for each boundary, or to toggle between admin_level_data layers which correspond to a separate geographic specification; for example to use one boundary file for district level data, and another boundary file for ecological data. 
 
-When more than one boundary is specified, an array of boundaries needs to also be set in `prism.json` using with the `defaultDisplayBoundaries` attribute.  
+#### boundaries
+
+Boundary layers are loaded by defaul when the application starts and typically show administrative boundaries and are defined as type `boundary`. Multiple boundary files can be configured in layers.json. Multiple boundary files can be used to create different styles for each boundary, or to toggle between admin_level_data layers which correspond to a separate geographic specification; for example to use one boundary file for district level data, and another boundary file for ecological data.
+
+When more than one boundary is specified, an array of boundaries needs to also be set in `prism.json` using with the `defaultDisplayBoundaries` attribute.
 
 ```
 {
   "state_admin_boundaries": {
     "type": "boundary",
-    "path": "../data/myanmar/mmr_admin1_boundaries.json",
+    "path": "data/myanmar/mmr_admin1_boundaries.json",
     "opacity": 0.8,
     "admin_code": "ST_PCODE",
     "admin_level_names": ["ST"],
@@ -188,7 +209,7 @@ When more than one boundary is specified, an array of boundaries needs to also b
   },
   "district_admin_boundaries": {
     "type": "boundary",
-    "path": "../data/myanmar/mmr_admin2_boundaries.json",
+    "path": "data/myanmar/mmr_admin2_boundaries.json",
     "opacity": 0.8,
     "admin_code": "DT_PCODE",
     "admin_level_names": ["ST", "DT"],
@@ -206,7 +227,7 @@ When more than one boundary is specified, an array of boundaries needs to also b
   },
   "admin_boundaries": {
     "type": "boundary",
-    "path": "../data/myanmar/admin_boundaries.json",
+    "path": "data/myanmar/admin_boundaries.json",
     "opacity": 0.8,
     "admin_code": "TS_PCODE",
     "admin_level_names": ["ST", "DT", "TS"],
@@ -225,7 +246,8 @@ When more than one boundary is specified, an array of boundaries needs to also b
 ```
 
 #### impact
-Impact layers are computed by combining a raster layer with a vector layer based on raster values bound by the zones of the vector layer. The impact layer computes zonal statistics for the raster, and based on a configured threshold, will display zones where the threshold has been exceeded.  
+
+Impact layers are computed by combining a raster layer with a vector layer based on raster values bound by the zones of the vector layer. The impact layer computes zonal statistics for the raster, and based on a configured threshold, will display zones where the threshold has been exceeded.
 
 ```
 "herd_pasture_impact": {
@@ -246,8 +268,9 @@ Impact layers are computed by combining a raster layer with a vector layer based
 ### Additional layer content
 
 #### Add Layer Contents
+
 To display additional metadata about a layer, you can add a `content_path` attribute to any layer. The attribute expects a path to a `.md` or `.html` file that is stored in `public/data/${REACT_APP_COUNTRY}/filename.ext` directory. For example: `public/data/myanmar/contents.md`
-The application will show an icon next to the layer in the legend if this attribute is configured, and will display the content in a modal window if the icon is clicked. 
+The application will show an icon next to the layer in the legend if this attribute is configured, and will display the content in a modal window if the icon is clicked.
 
 ## Technical - Packages/Dependencies
 
@@ -260,6 +283,18 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 - **Testing** Uses [Jest](https://jestjs.io/) with [Enzyme](https://enzymejs.github.io/enzyme/)
 - **Mapping** Uses [MapLibre](https://maplibre.org/maplibre-gl-js-docs/api/). The app supports Maptiler and Mapbox styles. To use Mapbox styles, you will need to create a token and add it as `REACT_APP_MAPBOX_TOKEN` in a `.env` file at the root folder. Then specify your style url using `REACT_APP_DEFAULT_STYLE`.
 - **WFP authentication** Uses [msal](https://github.com/AzureAD/microsoft-authentication-library-for-js). You need to include within your .env file the variables `REACT_APP_OAUTH_CLIENT_ID`, `REACT_APP_OAUTH_AUTHORITY` and `REACT_APP_OAUTH_REDIRECT_URI`. Also, set the `WFPAuthRequired` flag within the country prism.json file
+
+### Developing the frontend
+
+The following commands should get you a local development instance of the frontend:
+
+```
+cd frontend
+yarn clean
+yarn install
+yarn setup:common
+REACT_APP_COUNTRY=cambodia yarn start
+```
 
 ### Available Scripts
 

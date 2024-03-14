@@ -1,0 +1,257 @@
+{
+  "admin_boundaries": {
+    "type": "boundary",
+    "path": "data/indonesia/admin_idn.json",
+    "opacity": 0.8,
+    "admin_code": "A2TEXT",
+    "admin_level_codes": ["A1CODE", "A2TEXT"],
+    "admin_level_names": ["A1NAME", "A2NAME"],
+    "admin_level_local_names": ["A1NAME", "A2NAME"],
+    "styles:": {
+      "fill": { "fill-opacity": 0 },
+      "line": { "line-color": "gray", "line-width": 1, "line-opacity": 0.8 }
+    }
+  },
+  "population_below_poverty": {
+    "title": "Poverty Rate",
+    "type": "admin_level_data",
+    "path": "data/indonesia/socio_economic.json",
+    "data_field": "HH_FE65",
+    "admin_level": 1,
+    "admin_code": "CODE",
+    "opacity": 0.5,
+    "legend": [
+      { "value": "6.37", "color": "#fef0d9" },
+      { "value": "11.20", "color": "#fdcc8a" },
+      { "value": "17.39", "color": "#fc8d59" },
+      { "value": "27.25", "color": "#e34a33" },
+      { "value": "45", "color": "#b30000" }
+    ],
+    "legend_text": "Proportion of people living under the district level poverty line (%) | Source: Susenas 2019, BPS"
+  },
+  "pou": {
+    "title": "Prevalence of Undernoursihment",
+    "type": "admin_level_data",
+    "path": "data/indonesia/socio_economic.json",
+    "data_field": "POU",
+    "admin_level": 1,
+    "admin_code": "CODE",
+    "opacity": 0.5,
+    "legend": [
+      { "value": "7.56", "color": "#feebe2" },
+      { "value": "14.48", "color": "#fbb4b9" },
+      { "value": "26.34", "color": "#f768a1" },
+      { "value": "44.77", "color": "#c51b8a" },
+      { "value": "65.78", "color": "#7a0177" }
+    ],
+    "legend_text": "Percentage of undernoursihment | Source: BPS 2018"
+  },
+  "CER_YIELD": {
+    "title": "Cereal Yield",
+    "type": "admin_level_data",
+    "path": "data/indonesia/socio_economic.json",
+    "data_field": "CER_YIELD",
+    "admin_level": 1,
+    "admin_code": "CODE",
+    "opacity": 0.5,
+    "legend": [
+      { "value": "2000", "color": "#fef0d9" },
+      { "value": "3000", "color": "#fdcc8a" },
+      { "value": "4000", "color": "#fc8d59" },
+      { "value": "5000", "color": "#e34a33" },
+      { "value": "6000", "color": "#b30000" }
+    ],
+    "legend_text": "Cereal Yield | Source : BPS 2019"
+  },
+  "HH_AGRI": {
+    "title": "Household with Income Derived from Agriculture",
+    "type": "admin_level_data",
+    "path": "data/indonesia/socio_economic.json",
+    "data_field": "HH_AGRI",
+    "admin_level": 1,
+    "admin_code": "CODE",
+    "opacity": 0.5,
+    "legend": [
+      { "value": "25", "color": "#fef0d9" },
+      { "value": "43", "color": "#fdcc8a" },
+      { "value": "57", "color": "#fc8d59" },
+      { "value": "75", "color": "#e34a33" },
+      { "value": "100", "color": "#b30000" }
+    ],
+    "legend_text": "Source: SUSENAS 2019"
+  },
+  "HH_FE65": {
+    "title": "Houshold with Food Expenditure >65%",
+    "type": "admin_level_data",
+    "path": "data/indonesia/socio_economic.json",
+    "data_field": "HH_FE65",
+    "admin_level": 1,
+    "admin_code": "CODE",
+    "opacity": 0.5,
+    "legend": [
+      { "value": "2.39", "color": "#edf8fb" },
+      { "value": "4.72", "color": "#b3cde3" },
+      { "value": "7", "color": "#8c96c6" },
+      { "value": "9.86", "color": "#8856a7" },
+      { "value": "14.57", "color": "#810f7c" }
+    ],
+    "legend_text": "Source: SUSENAS 2019"
+  },
+  "OP_UNEMPLOY": {
+    "title": "Open Unemployment",
+    "type": "admin_level_data",
+    "path": "data/indonesia/socio_economic.json",
+    "data_field": "OP_UNEMPLOY",
+    "admin_level": 1,
+    "admin_code": "CODE",
+    "opacity": 0.5,
+    "legend": [
+      { "value": "1.82", "color": "#edf8fb" },
+      { "value": "3.64", "color": "#b3cde3" },
+      { "value": "5.42", "color": "#8c96c6" },
+      { "value": "7.76", "color": "#8856a7" },
+      { "value": "12.37", "color": "#810f7c" }
+    ],
+    "legend_text": "Source: BPS 2019"
+  },
+  "HH_FOODASS": {
+    "title": "Poor Houshold With Access to Food Assistance",
+    "type": "admin_level_data",
+    "path": "data/indonesia/socio_economic.json",
+    "data_field": "HH_FOODASS",
+    "admin_level": 1,
+    "admin_code": "CODE",
+    "opacity": 0.5,
+    "legend": [
+      { "value": "28.93", "color": "#edf8fb" },
+      { "value": "44.90", "color": "#b3cde3" },
+      { "value": "53.85", "color": "#8c96c6" },
+      { "value": "69.92", "color": "#8856a7" },
+      { "value": "98.75", "color": "#810f7c" }
+    ],
+    "legend_text": "Source: BPS 2019"
+  },
+  "HH_ELEC_2019": {
+    "title": "Poor Houshold With Access to Food Assistance",
+    "type": "admin_level_data",
+    "path": "data/indonesia/socio_economic.json",
+    "data_field": "HH_FOODASS",
+    "admin_level": 1,
+    "admin_code": "CODE",
+    "opacity": 0.5,
+    "legend": [
+      { "value": "1.82", "color": "#edf8fb" },
+      { "value": "3.64", "color": "#b3cde3" },
+      { "value": "5.42", "color": "#8c96c6" },
+      { "value": "7.76", "color": "#8856a7" },
+      { "value": "12.37", "color": "#810f7c" }
+    ],
+    "legend_text": "Source: BPS 2019"
+  },
+  "population_density": {
+    "title": "Population Density",
+    "type": "wms",
+    "server_layer_name": "population_density",
+    "base_url": "https://vampire.idn.wfp.org:8081/geoserver/vampire",
+    "date_interval": "day",
+    "opacity": 0.5,
+    "legend": [
+      { "value": "0", "color": "#ffffff" },
+      { "value": "1 - 5", "color": "#ffffbe" },
+      { "value": "26 - 50", "color": "#ffff00" },
+      { "value": "51 - 100", "color": "#ffaa00" },
+      { "value": "101 - 500", "color": "#ff6600" },
+      { "value": "501 - 2500", "color": "#ff0000" },
+      { "value": "2501 - 5000", "color": "#ff6600" },
+      { "value": "> 5000", "color": "#730000" }
+    ],
+    "legend_text": "Population counts at 1km resolution | Source: LandScan, 2018"
+  },
+  "dslr": {
+    "title": "Days Since Last Rain",
+    "type": "wms",
+    "server_layer_name": "days_since_last_rain",
+    "base_url": "https://vampire.idn.wfp.org:8081/geoserver/vampire",
+    "date_interval": "day",
+    "opacity": 0.5,
+    "legend_text": "A number of days since the last rainfall above 1mm per day | Source: IMERG",
+    "legend": [
+      { "value": "0.10", "color": "#ef1000" },
+      { "value": "0.17", "color": "#bf4000" },
+      { "value": "0.26", "color": "#ba7500" },
+      { "value": "0.34", "color": "#ead500" },
+      { "value": "1.00", "color": "#5ea100" }
+    ]
+  },
+  "ModisVHI": {
+    "title": "Agricultural drought (VHI)",
+    "type": "wms",
+    "server_layer_name": "vhi",
+    "base_url": "https://vampire.idn.wfp.org:8081/geoserver/vampire",
+    "date_interval": "month",
+    "opacity": 0.5,
+    "legend_text": "Vegetation Health Index for a 10-day period. The VHI is a combination of vegetation conditions and temperature conditions.",
+    "legend": [
+      { "value": "> 40 | No Drought", "color": "#ffffff" },
+      { "value": "30 - 40 | Mild Drought", "color": "#fff1e8" },
+      { "value": "20 - 30 | Moderate Drought", "color": "#e18283" },
+      { "value": "10 - 20 | Severe Drought", "color": "#dc0b25" },
+      { "value": "< 10 | Extreme Drought", "color": "#740315" }
+    ]
+  },
+  "spi": {
+    "title": "Standardized Precipitation Index (SPI)",
+    "type": "wms",
+    "server_layer_name": "spi",
+    "base_url": "https://vampire.idn.wfp.org:8081/geoserver/vampire",
+    "date_interval": "month",
+    "opacity": 0.5,
+    "legend_text": "SPI is a normalized index that indicates the probability of occurrence of observed rainfall compared with the long-term average | Source: CHIRPS",
+    "legend": [
+      { "value": "Exceptionally Dry", "color": "#760005" },
+      { "value": "Extremely Dry", "color": "#ec0013" },
+      { "value": "Severely Dry", "color": "#ffa938" },
+      { "value": "Moderately Dry", "color": "#fdd28a" },
+      { "value": "Abnormally Dry", "color": "#fefe53" },
+      { "value": "Near Normal", "color": "#a2fd6e" },
+      { "value": "Abnormally Moist", "color": "#00b44a" },
+      { "value": "Moderately Moist", "color": "#008180" },
+      { "value": "Extremmely Moist", "color": "#2a23eb" },
+      { "value": "Exceptionally Moist", "color": "#a21fec" }
+    ]
+  },
+  "rainfall_anomaly": {
+    "title": "Rainfall Anomaly (Monthly)",
+    "type": "wms",
+    "server_layer_name": "rainfall_anomaly",
+    "base_url": "https://vampire.idn.wfp.org:8081/geoserver/vampire",
+    "date_interval": "month",
+    "opacity": 0.5,
+    "legend_text": "Percentage of monthly rainfall compared to a long-term average | Source: CHRIPS",
+    "legend": [
+      { "value": "0-30%", "color": "#4c1504" },
+      { "value": "30-50%", "color": "#ac591c" },
+      { "value": "50-85%", "color": "#ba7500" },
+      { "value": "85-115%", "color": "#fefe53" },
+      { "value": "115-150%", "color": "#86b638" },
+      { "value": "150-200%", "color": "#0a8137" },
+      { "value": ">200%", "color": "#004519" }
+    ]
+  },
+  "floods_forecast": {
+    "title": "Floods Forecast",
+    "type": "wms",
+    "server_layer_name": "flood_forecast",
+    "base_url": "https://vampire.idn.wfp.org:8081/geoserver/vampire",
+    "date_interval": "day",
+    "opacity": 0.5,
+    "legend_text": "Forecast of an indicative flood hazard for 3 days ahead , daily | Source: GFS, CHIRPS",
+    "legend": [
+      { "value": "Very Low", "color": "#fff5f0" },
+      { "value": "Low", "color": "#fcbba2" },
+      { "value": "Moderate", "color": "#fa6948" },
+      { "value": "High", "color": "#ead500" },
+      { "value": "Very High", "color": "#66000e" }
+    ]
+  }
+}

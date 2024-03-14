@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?><ServiceExceptionReport version="1.2.0" >   <ServiceException>
+      java.io.IOException: Failed to create reader from file:data/geonode/eyxao70woaa14nh_modificado/eyxao70woaa14nh_modificado.geotiff and hints Hints:
+  OVERVIEW_POLICY     = NEAREST                                                                                                                           
+  LENIENT_DATUM_SHIFT = true                                                                                                                              
+  EXECUTOR_SERVICE    = java.util.concurrent.ThreadPoolExecutor@4db4f83[Running, pool size = 0, active threads = 0, queued tasks = 0, completed tasks = 0]
+  REPOSITORY          = org.geoserver.catalog.CatalogRepository@5e2811e3                                                                                  
+  DECIMATION_POLICY   = ALLOW                                                                                                                             
+System defaults:
+  FEATURE_FACTORY                  = org.geotools.feature.LenientFeatureFactoryImpl@c3b050c
+  FORCE_LONGITUDE_FIRST_AXIS_ORDER = true                                                  
+  COMPARISON_TOLERANCE             = 1.0E-8                                                
+  FILTER_FACTORY                   = FilterFactoryImpl                                     
+  GRID_COVERAGE_FACTORY            = GridCoverageFactory                                   
+    TILE_ENCODING                  = null                                                  
+  FORCE_AXIS_ORDER_HONORING        = http                                                  
+  STYLE_FACTORY                    = StyleFactoryImpl                                      
+
+Failed to create reader from file:data/geonode/eyxao70woaa14nh_modificado/eyxao70woaa14nh_modificado.geotiff and hints Hints:
+  OVERVIEW_POLICY     = NEAREST                                                                                                                           
+  LENIENT_DATUM_SHIFT = true                                                                                                                              
+  EXECUTOR_SERVICE    = java.util.concurrent.ThreadPoolExecutor@4db4f83[Running, pool size = 0, active threads = 0, queued tasks = 0, completed tasks = 0]
+  REPOSITORY          = org.geoserver.catalog.CatalogRepository@5e2811e3                                                                                  
+  DECIMATION_POLICY   = ALLOW                                                                                                                             
+System defaults:
+  FEATURE_FACTORY                  = org.geotools.feature.LenientFeatureFactoryImpl@c3b050c
+  FORCE_LONGITUDE_FIRST_AXIS_ORDER = true                                                  
+  COMPARISON_TOLERANCE             = 1.0E-8                                                
+  FILTER_FACTORY                   = FilterFactoryImpl                                     
+  GRID_COVERAGE_FACTORY            = GridCoverageFactory                                   
+    TILE_ENCODING                  = null                                                  
+  FORCE_AXIS_ORDER_HONORING        = http                                                  
+  STYLE_FACTORY                    = StyleFactoryImpl                                      
+
+</ServiceException></ServiceExceptionReport>

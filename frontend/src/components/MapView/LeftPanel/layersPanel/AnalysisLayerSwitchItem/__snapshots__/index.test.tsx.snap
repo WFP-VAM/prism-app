@@ -1,0 +1,100 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`renders as expected 1`] = `
+<div>
+  <div
+    class="MuiBox-root MuiBox-root-15 memo-analysisLayerSwitchRootItem-1"
+  >
+    <div
+      class="MuiBox-root MuiBox-root-16"
+    >
+      <div
+        style="display: flex;"
+      >
+        <mock-switch
+          checked="true"
+          classes="[object Object]"
+          classname="memo-switch-7"
+          inputprops="[object Object]"
+          size="small"
+        />
+        <mock-typography
+          classname="memo-title-2"
+        >
+          Some Analysis Layer Title
+        </mock-typography>
+      </div>
+      <div>
+        <mock-tooltip
+          title="Opacity"
+        >
+          <span>
+            <button
+              class="MuiButtonBase-root MuiIconButton-root memo-opacityRoot-10"
+              tabindex="0"
+              type="button"
+            >
+              <span
+                class="MuiIconButton-label"
+              >
+                <svg
+                  aria-hidden="true"
+                  class="MuiSvgIcon-root"
+                  focusable="false"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    d="M17.66 8L12 2.35 6.34 8C4.78 9.56 4 11.64 4 13.64s.78 4.11 2.34 5.67 3.61 2.35 5.66 2.35 4.1-.79 5.66-2.35S20 15.64 20 13.64 19.22 9.56 17.66 8zM6 14c.01-2 .62-3.27 1.76-4.4L12 5.27l4.24 4.38C17.38 10.77 17.99 12 18 14H6z"
+                  />
+                </svg>
+              </span>
+              <span
+                class="MuiTouchRipple-root"
+              />
+            </button>
+          </span>
+        </mock-tooltip>
+        <mock-tooltip
+          title="Download"
+        >
+          <button
+            class="MuiButtonBase-root MuiIconButton-root"
+            tabindex="0"
+            type="button"
+          >
+            <span
+              class="MuiIconButton-label"
+            >
+              <svg
+                aria-hidden="true"
+                class="MuiSvgIcon-root"
+                focusable="false"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"
+                />
+              </svg>
+            </span>
+            <span
+              class="MuiTouchRipple-root"
+            />
+          </button>
+        </mock-tooltip>
+        <mock-menu
+          id="download-menu"
+          keepmounted="true"
+          open="false"
+        >
+          <mock-menuitem>
+            Download as CSV
+          </mock-menuitem>
+          <mock-menuitem>
+            Download as GeoJSON
+          </mock-menuitem>
+        </mock-menu>
+      </div>
+    </div>
+  </div>
+</div>
+`;

@@ -1,0 +1,33 @@
+{
+  "country": "Ukraine",
+  "alertFormActive": false,
+  "icons": {
+    "rainfall": "icon_rain.png",
+    "vegetation": "icon_veg.png",
+    "temperature": "icon_climate.png",
+    "risk": "icon_impact.png",
+    "tropical_storms": "icon_tropical_storm.png",
+    "vulnerability": "icon_vulnerable.png"
+  },
+  "defaultDisplayBoundaries": ["admin_boundaries", "admin1_boundaries"],
+  "serversUrls": {
+    "wms": ["https://api.earthobservation.vam.wfp.org/ows/wms"]
+  },
+  "map": {
+    "boundingBox": [22.09, 44.36, 40.08, 52.34],
+    "maxBounds": [16.64, 39.9, 45.81, 55.47]
+  },
+  "categories": {
+    "vegetation": {
+      "vegetation_conditions": ["ndvi_dekad", "ndvi_dekad_anomaly"]
+    },
+    "temperature": {
+      "land_surface_temperature": [
+        "lst_daytime",
+        "lst_nighttime",
+        "lst_anomaly",
+        "lst_amplitude"
+      ]
+    }
+  }
+}

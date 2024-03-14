@@ -1,0 +1,716 @@
+{
+    "DataList": [
+        {
+          "admin3Pcod": "JO11011",
+          "population": 991470,
+          "syrian_refugees": 114661,
+          "percent_refugees": 11.6,
+          "num_droughts": 4.2,
+          "num_heatwaves": 55
+        },
+        {
+          "admin3Pcod": "JO11021",
+          "population": 1107470,
+          "syrian_refugees": 117941,
+          "percent_refugees": 10.6,
+          "num_droughts": 5.1,
+          "num_heatwaves": 55
+        },
+        {
+          "admin3Pcod": "JO11031",
+          "population": 674910,
+          "syrian_refugees": 53653,
+          "percent_refugees": 7.9,
+          "num_droughts": 5.5,
+          "num_heatwaves": 55
+        },
+        {
+          "admin3Pcod": "JO11041",
+          "population": 861770,
+          "syrian_refugees": 109242,
+          "percent_refugees": 12.7,
+          "num_droughts": 3.9,
+          "num_heatwaves": 55
+        },
+        {
+          "admin3Pcod": "JO11051",
+          "population": 425530,
+          "syrian_refugees": 48347,
+          "percent_refugees": 11.4,
+          "num_droughts": 5,
+          "num_heatwaves": 55
+        },
+        {
+          "admin3Pcod": "JO11061",
+          "population": 196260,
+          "syrian_refugees": 32987,
+          "percent_refugees": 16.8,
+          "num_droughts": 5.1,
+          "num_heatwaves": 55
+        },
+        {
+          "admin3Pcod": "JO11071",
+          "population": 120660,
+          "syrian_refugees": 10313,
+          "percent_refugees": 8.5,
+          "num_droughts": 5.7,
+          "num_heatwaves": 55
+        },
+        {
+          "admin3Pcod": "JO11072",
+          "population": 16030,
+          "syrian_refugees": 149,
+          "percent_refugees": 0.9,
+          "num_droughts": 5.8,
+          "num_heatwaves": 55
+        },
+        {
+          "admin3Pcod": "JO11081",
+          "population": 55320,
+          "syrian_refugees": 6344,
+          "percent_refugees": 11.5,
+          "num_droughts": 5.6,
+          "num_heatwaves": 55
+        },
+        {
+          "admin3Pcod": "JO11082",
+          "population": 42410,
+          "syrian_refugees": 4996,
+          "percent_refugees": 11.8,
+          "num_droughts": 5.2,
+          "num_heatwaves": 55
+        },
+        {
+          "admin3Pcod": "JO11091",
+          "population": 91500,
+          "syrian_refugees": 6836,
+          "percent_refugees": 7.5,
+          "num_droughts": 5.5,
+          "num_heatwaves": 55
+        },
+        {
+          "admin3Pcod": "JO11092",
+          "population": 22600,
+          "syrian_refugees": 1173,
+          "percent_refugees": 5.2,
+          "num_droughts": 5.2,
+          "num_heatwaves": 55
+        },
+        {
+          "admin3Pcod": "JO11093",
+          "population": 36070,
+          "syrian_refugees": 1214,
+          "percent_refugees": 3.4,
+          "num_droughts": 4.3,
+          "num_heatwaves": 55
+        },
+        {
+          "admin3Pcod": "JO12011",
+          "population": 122640,
+          "syrian_refugees": 7795,
+          "percent_refugees": 6.4,
+          "num_droughts": 4.6,
+          "num_heatwaves": 55
+        },
+        {
+          "admin3Pcod": "JO12012",
+          "population": 18120,
+          "syrian_refugees": 589,
+          "percent_refugees": 3.2,
+          "num_droughts": 4.6,
+          "num_heatwaves": 55
+        },
+        {
+          "admin3Pcod": "JO12014",
+          "population": 22530,
+          "syrian_refugees": 994,
+          "percent_refugees": 4.4,
+          "num_droughts": 5.7,
+          "num_heatwaves": 45
+        },
+        {
+          "admin3Pcod": "JO12021",
+          "population": 12900,
+          "syrian_refugees": 346,
+          "percent_refugees": 2.7,
+          "num_droughts": 5.4,
+          "num_heatwaves": 36
+        },
+        {
+          "admin3Pcod": "JO12013",
+          "population": 61050,
+          "syrian_refugees": 2994,
+          "percent_refugees": 4.9,
+          "num_droughts": 4,
+          "num_heatwaves": 50
+        },
+        {
+          "admin3Pcod": "JO12031",
+          "population": 85100,
+          "syrian_refugees": 2340,
+          "percent_refugees": 2.7,
+          "num_droughts": 4.9,
+          "num_heatwaves": 30
+        },
+        {
+          "admin3Pcod": "JO12041",
+          "population": 204690,
+          "syrian_refugees": 15230,
+          "percent_refugees": 7.4,
+          "num_droughts": 3.9,
+          "num_heatwaves": 55
+        },
+        {
+          "admin3Pcod": "JO12051",
+          "population": 42470,
+          "syrian_refugees": 2852,
+          "percent_refugees": 6.7,
+          "num_droughts": 4.2,
+          "num_heatwaves": 55
+        },
+        {
+          "admin3Pcod": "JO13011",
+          "population": 751640,
+          "syrian_refugees": 84961,
+          "percent_refugees": 11.3,
+          "num_droughts": 4.6,
+          "num_heatwaves": 55
+        },
+        {
+          "admin3Pcod": "JO13012",
+          "population": 28580,
+          "syrian_refugees": 1997,
+          "percent_refugees": 7,
+          "num_droughts": 5,
+          "num_heatwaves": 55
+        },
+        {
+          "admin3Pcod": "JO13013",
+          "population": 88850,
+          "syrian_refugees": 30914,
+          "percent_refugees": 34.8,
+          "num_droughts": 4.5,
+          "num_heatwaves": 55
+        },
+        {
+          "admin3Pcod": "JO13014",
+          "population": 60230,
+          "syrian_refugees": 46683,
+          "percent_refugees": 77.5,
+          "num_droughts": 6.3,
+          "num_heatwaves": 48
+        },
+        {
+          "admin3Pcod": "JO13021",
+          "population": 558210,
+          "syrian_refugees": 30929,
+          "percent_refugees": 5.5,
+          "num_droughts": 6,
+          "num_heatwaves": 55
+        },
+        {
+          "admin3Pcod": "JO13031",
+          "population": 93490,
+          "syrian_refugees": 11002,
+          "percent_refugees": 11.8,
+          "num_droughts": 4.6,
+          "num_heatwaves": 55
+        },
+        {
+          "admin3Pcod": "JO14011",
+          "population": 147670,
+          "syrian_refugees": 15062,
+          "percent_refugees": 10.2,
+          "num_droughts": 4.9,
+          "num_heatwaves": 55
+        },
+        {
+          "admin3Pcod": "JO14012",
+          "population": 11140,
+          "syrian_refugees": 298,
+          "percent_refugees": 2.7,
+          "num_droughts": 4.1,
+          "num_heatwaves": 55
+        },
+        {
+          "admin3Pcod": "JO14013",
+          "population": 10500,
+          "syrian_refugees": 93,
+          "percent_refugees": 0.9,
+          "num_droughts": 5,
+          "num_heatwaves": 55
+        },
+        {
+          "admin3Pcod": "JO14014",
+          "population": 7610,
+          "syrian_refugees": 371,
+          "percent_refugees": 4.9,
+          "num_droughts": 4.7,
+          "num_heatwaves": 55
+        },
+        {
+          "admin3Pcod": "JO14021",
+          "population": 16840,
+          "syrian_refugees": 602,
+          "percent_refugees": 3.6,
+          "num_droughts": 6.4,
+          "num_heatwaves": 55
+        },
+        {
+          "admin3Pcod": "JO14022",
+          "population": 4210,
+          "syrian_refugees": 66,
+          "percent_refugees": 1.6,
+          "num_droughts": 6.4,
+          "num_heatwaves": 55
+        },
+        {
+          "admin3Pcod": "JO14023",
+          "population": 21130,
+          "syrian_refugees": 788,
+          "percent_refugees": 3.7,
+          "num_droughts": 5.8,
+          "num_heatwaves": 55
+        },
+        {
+          "admin3Pcod": "JO21011",
+          "population": 856200,
+          "syrian_refugees": 196522,
+          "percent_refugees": 23,
+          "num_droughts": 5.3,
+          "num_heatwaves": 44
+        },
+        {
+          "admin3Pcod": "JO21021",
+          "population": 276250,
+          "syrian_refugees": 80942,
+          "percent_refugees": 29.3,
+          "num_droughts": 5.4,
+          "num_heatwaves": 44
+        },
+        {
+          "admin3Pcod": "JO21031",
+          "population": 187060,
+          "syrian_refugees": 22896,
+          "percent_refugees": 12.2,
+          "num_droughts": 5.7,
+          "num_heatwaves": 40
+        },
+        {
+          "admin3Pcod": "JO21041",
+          "population": 152650,
+          "syrian_refugees": 19344,
+          "percent_refugees": 12.7,
+          "num_droughts": 5.6,
+          "num_heatwaves": 44
+        },
+        {
+          "admin3Pcod": "JO21051",
+          "population": 141690,
+          "syrian_refugees": 3685,
+          "percent_refugees": 2.6,
+          "num_droughts": 5.1,
+          "num_heatwaves": 40
+        },
+        {
+          "admin3Pcod": "JO21061",
+          "population": 236650,
+          "syrian_refugees": 57560,
+          "percent_refugees": 24.3,
+          "num_droughts": 4.5,
+          "num_heatwaves": 44
+        },
+        {
+          "admin3Pcod": "JO21071",
+          "population": 90840,
+          "syrian_refugees": 8601,
+          "percent_refugees": 9.5,
+          "num_droughts": 4.7,
+          "num_heatwaves": 40
+        },
+        {
+          "admin3Pcod": "JO21081",
+          "population": 59650,
+          "syrian_refugees": 8959,
+          "percent_refugees": 15,
+          "num_droughts": 6.3,
+          "num_heatwaves": 40
+        },
+        {
+          "admin3Pcod": "JO21091",
+          "population": 49310,
+          "syrian_refugees": 8511,
+          "percent_refugees": 17.3,
+          "num_droughts": 6.1,
+          "num_heatwaves": 40
+        },
+        {
+          "admin3Pcod": "JO22011",
+          "population": 144180,
+          "syrian_refugees": 46846,
+          "percent_refugees": 32.5,
+          "num_droughts": 5.7,
+          "num_heatwaves": 63
+        },
+        {
+          "admin3Pcod": "JO22012",
+          "population": 41240,
+          "syrian_refugees": 4278,
+          "percent_refugees": 10.4,
+          "num_droughts": 5.1,
+          "num_heatwaves": 63
+        },
+        {
+          "admin3Pcod": "JO22013",
+          "population": 27650,
+          "syrian_refugees": 3535,
+          "percent_refugees": 12.8,
+          "num_droughts": 5.3,
+          "num_heatwaves": 63
+        },
+        {
+          "admin3Pcod": "JO22014",
+          "population": 14180,
+          "syrian_refugees": 3366,
+          "percent_refugees": 23.7,
+          "num_droughts": 5.2,
+          "num_heatwaves": 63
+        },
+        {
+          "admin3Pcod": "JO22021",
+          "population": 34700,
+          "syrian_refugees": 4297,
+          "percent_refugees": 12.4,
+          "num_droughts": 5.3,
+          "num_heatwaves": 63
+        },
+        {
+          "admin3Pcod": "JO22022",
+          "population": 19670,
+          "syrian_refugees": 4328,
+          "percent_refugees": 22,
+          "num_droughts": 4.7,
+          "num_heatwaves": 63
+        },
+        {
+          "admin3Pcod": "JO22023",
+          "population": 32540,
+          "syrian_refugees": 6553,
+          "percent_refugees": 20.1,
+          "num_droughts": 4.9,
+          "num_heatwaves": 63
+        },
+        {
+          "admin3Pcod": "JO22024",
+          "population": 12650,
+          "syrian_refugees": 600,
+          "percent_refugees": 4.7,
+          "num_droughts": 5,
+          "num_heatwaves": 63
+        },
+        {
+          "admin3Pcod": "JO22025",
+          "population": 15380,
+          "syrian_refugees": 983,
+          "percent_refugees": 6.4,
+          "num_droughts": 4.2,
+          "num_heatwaves": 63
+        },
+        {
+          "admin3Pcod": "JO22031",
+          "population": 180460,
+          "syrian_refugees": 149555,
+          "percent_refugees": 82.9,
+          "num_droughts": 5.1,
+          "num_heatwaves": 63
+        },
+        {
+          "admin3Pcod": "JO22032",
+          "population": 30470,
+          "syrian_refugees": 7497,
+          "percent_refugees": 24.6,
+          "num_droughts": 4.7,
+          "num_heatwaves": 63
+        },
+        {
+          "admin3Pcod": "JO22033",
+          "population": 29570,
+          "syrian_refugees": 5931,
+          "percent_refugees": 20.1,
+          "num_droughts": 4.7,
+          "num_heatwaves": 63
+        },
+        {
+          "admin3Pcod": "JO22034",
+          "population": 45630,
+          "syrian_refugees": 7927,
+          "percent_refugees": 17.4,
+          "num_droughts": 4.2,
+          "num_heatwaves": 63
+        },
+        {
+          "admin3Pcod": "JO22041",
+          "population": 8680,
+          "syrian_refugees": 1756,
+          "percent_refugees": 20.2,
+          "num_droughts": 6.1,
+          "num_heatwaves": 29
+        },
+        {
+          "admin3Pcod": "JO23011",
+          "population": 240850,
+          "syrian_refugees": 12197,
+          "percent_refugees": 5.1,
+          "num_droughts": 5.4,
+          "num_heatwaves": 55
+        },
+        {
+          "admin3Pcod": "JO23012",
+          "population": 19570,
+          "syrian_refugees": 512,
+          "percent_refugees": 2.6,
+          "num_droughts": 4.7,
+          "num_heatwaves": 55
+        },
+        {
+          "admin3Pcod": "JO23013",
+          "population": 14080,
+          "syrian_refugees": 169,
+          "percent_refugees": 1.2,
+          "num_droughts": 5.1,
+          "num_heatwaves": 55
+        },
+        {
+          "admin3Pcod": "JO24011",
+          "population": 94090,
+          "syrian_refugees": 6079,
+          "percent_refugees": 6.5,
+          "num_droughts": 4.5,
+          "num_heatwaves": 57
+        },
+        {
+          "admin3Pcod": "JO24012",
+          "population": 40390,
+          "syrian_refugees": 6834,
+          "percent_refugees": 16.9,
+          "num_droughts": 4.3,
+          "num_heatwaves": 57
+        },
+        {
+          "admin3Pcod": "JO24013",
+          "population": 25190,
+          "syrian_refugees": 1477,
+          "percent_refugees": 5.9,
+          "num_droughts": 4.8,
+          "num_heatwaves": 44
+        },
+        {
+          "admin3Pcod": "JO24021",
+          "population": 44330,
+          "syrian_refugees": 2752,
+          "percent_refugees": 6.2,
+          "num_droughts": 5,
+          "num_heatwaves": 44
+        },
+        {
+          "admin3Pcod": "JO31011",
+          "population": 117410,
+          "syrian_refugees": 7310,
+          "percent_refugees": 6.2,
+          "num_droughts": 5.7,
+          "num_heatwaves": 60
+        },
+        {
+          "admin3Pcod": "JO31021",
+          "population": 93200,
+          "syrian_refugees": 7441,
+          "percent_refugees": 8,
+          "num_droughts": 4.4,
+          "num_heatwaves": 60
+        },
+        {
+          "admin3Pcod": "JO31022",
+          "population": 16960,
+          "syrian_refugees": 1397,
+          "percent_refugees": 8.2,
+          "num_droughts": 4.5,
+          "num_heatwaves": 60
+        },
+        {
+          "admin3Pcod": "JO31031",
+          "population": 24950,
+          "syrian_refugees": 846,
+          "percent_refugees": 3.4,
+          "num_droughts": 6.3,
+          "num_heatwaves": 60
+        },
+        {
+          "admin3Pcod": "JO31032",
+          "population": 9110,
+          "syrian_refugees": 198,
+          "percent_refugees": 2.2,
+          "num_droughts": 6.5,
+          "num_heatwaves": 35
+        },
+        {
+          "admin3Pcod": "JO31041",
+          "population": 38810,
+          "syrian_refugees": 659,
+          "percent_refugees": 1.7,
+          "num_droughts": 4.9,
+          "num_heatwaves": 11
+        },
+        {
+          "admin3Pcod": "JO31042",
+          "population": 24740,
+          "syrian_refugees": 204,
+          "percent_refugees": 0.8,
+          "num_droughts": 6.6,
+          "num_heatwaves": 11
+        },
+        {
+          "admin3Pcod": "JO31051",
+          "population": 9440,
+          "syrian_refugees": 92,
+          "percent_refugees": 1,
+          "num_droughts": 5.5,
+          "num_heatwaves": 57
+        },
+        {
+          "admin3Pcod": "JO31061",
+          "population": 19460,
+          "syrian_refugees": 1208,
+          "percent_refugees": 6.2,
+          "num_droughts": 7.1,
+          "num_heatwaves": 57
+        },
+        {
+          "admin3Pcod": "JO31071",
+          "population": 12620,
+          "syrian_refugees": 882,
+          "percent_refugees": 7,
+          "num_droughts": 5.8,
+          "num_heatwaves": 35
+        },
+        {
+          "admin3Pcod": "JO32011",
+          "population": 70400,
+          "syrian_refugees": 1500,
+          "percent_refugees": 2.1,
+          "num_droughts": 4.7,
+          "num_heatwaves": 54
+        },
+        {
+          "admin3Pcod": "JO32021",
+          "population": 29240,
+          "syrian_refugees": 450,
+          "percent_refugees": 1.5,
+          "num_droughts": 4.9,
+          "num_heatwaves": 54
+        },
+        {
+          "admin3Pcod": "JO32031",
+          "population": 11860,
+          "syrian_refugees": 340,
+          "percent_refugees": 2.9,
+          "num_droughts": 4.3,
+          "num_heatwaves": 30
+        },
+        {
+          "admin3Pcod": "JO33011",
+          "population": 48310,
+          "syrian_refugees": 3952,
+          "percent_refugees": 8.2,
+          "num_droughts": 5,
+          "num_heatwaves": 26
+        },
+        {
+          "admin3Pcod": "JO33012",
+          "population": 17540,
+          "syrian_refugees": 314,
+          "percent_refugees": 1.8,
+          "num_droughts": 5.6,
+          "num_heatwaves": 43
+        },
+        {
+          "admin3Pcod": "JO33013",
+          "population": 9050,
+          "syrian_refugees": 40,
+          "percent_refugees": 0.4,
+          "num_droughts": 5.4,
+          "num_heatwaves": 33
+        },
+        {
+          "admin3Pcod": "JO33014",
+          "population": 17050,
+          "syrian_refugees": 135,
+          "percent_refugees": 0.8,
+          "num_droughts": 6.7,
+          "num_heatwaves": 43
+        },
+        {
+          "admin3Pcod": "JO33015",
+          "population": 9700,
+          "syrian_refugees": 113,
+          "percent_refugees": 1.2,
+          "num_droughts": 5.4,
+          "num_heatwaves": 43
+        },
+        {
+          "admin3Pcod": "JO33021",
+          "population": 39400,
+          "syrian_refugees": 1576,
+          "percent_refugees": 4,
+          "num_droughts": 6.2,
+          "num_heatwaves": 60
+        },
+        {
+          "admin3Pcod": "JO33031",
+          "population": 22360,
+          "syrian_refugees": 1262,
+          "percent_refugees": 5.6,
+          "num_droughts": 5.2,
+          "num_heatwaves": 60
+        },
+        {
+          "admin3Pcod": "JO33041",
+          "population": 20090,
+          "syrian_refugees": 1987,
+          "percent_refugees": 9.9,
+          "num_droughts": 4.9,
+          "num_heatwaves": 26
+        },
+        {
+          "admin3Pcod": "JO34011",
+          "population": 173140,
+          "syrian_refugees": 5202,
+          "percent_refugees": 3,
+          "num_droughts": 6.1,
+          "num_heatwaves": 22
+        },
+        {
+          "admin3Pcod": "JO34012",
+          "population": 11010,
+          "syrian_refugees": 2037,
+          "percent_refugees": 18.5,
+          "num_droughts": 5.9,
+          "num_heatwaves": 22
+        },
+        {
+          "admin3Pcod": "JO34021",
+          "population": 26380,
+          "syrian_refugees": 1703,
+          "percent_refugees": 6.5,
+          "num_droughts": 6.8,
+          "num_heatwaves": 22
+        },
+        {
+          "admin3Pcod": "JO34022",
+          "population": 7370,
+          "syrian_refugees": 218,
+          "percent_refugees": 3,
+          "num_droughts": 4.1,
+          "num_heatwaves": 22
+        }
+      ]
+    }

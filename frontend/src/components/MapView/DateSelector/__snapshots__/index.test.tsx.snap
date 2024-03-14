@@ -1,0 +1,96 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`renders as expected 1`] = `
+<div>
+  <div
+    class="memo-container-1"
+  >
+    <div
+      class="MuiGrid-root memo-datePickerContainer-3 MuiGrid-container MuiGrid-align-items-xs-center MuiGrid-justify-content-xs-center"
+    >
+      <div
+        class="MuiGrid-root memo-datePickerGrid-5 MuiGrid-item MuiGrid-grid-xs-12 MuiGrid-grid-sm-1"
+      >
+        <mock-hidden
+          smup="true"
+        >
+          <mock-button>
+            <mock-chevronleft
+              style="color: rgb(16, 16, 16);"
+            />
+          </mock-button>
+        </mock-hidden>
+        <div
+          class="react-datepicker-wrapper"
+        >
+          <div
+            class="react-datepicker__input-container"
+          >
+            <mock-button
+              classname="ForwardRef-buttonStyle-11"
+              variant="outlined"
+            >
+              Mar 11, 2023
+            </mock-button>
+          </div>
+        </div>
+        <mock-hidden
+          smup="true"
+        >
+          <mock-button>
+            <mock-chevronright
+              style="color: rgb(16, 16, 16);"
+            />
+          </mock-button>
+        </mock-hidden>
+      </div>
+      <div
+        class="MuiGrid-root memo-slider-6 MuiGrid-item MuiGrid-grid-xs-12 MuiGrid-grid-sm-true"
+      >
+        <mock-hidden
+          xsdown="true"
+        >
+          <mock-button
+            classname="memo-chevronDate-2"
+          >
+            <mock-chevronleft />
+          </mock-button>
+        </mock-hidden>
+        <div
+          class="MuiGrid-root memo-dateContainer-7"
+        >
+          <div
+            class="memo-timeline-9 react-draggable"
+            id="dateTimelineSelector"
+            style="transform: translate(-690px,0px);"
+          >
+            <div
+              class="MuiGrid-root memo-dateLabelContainer-8 MuiGrid-container"
+            >
+              mock-timelineitems
+            </div>
+            <div
+              class="memo-pointer-10 react-draggable"
+              id="datePointerSelector"
+              style="transform: translate(690px,0px);"
+            >
+              <svg>
+                tick.svg
+              </svg>
+            </div>
+          </div>
+        </div>
+        <mock-hidden
+          xsdown="true"
+        >
+          <mock-button
+            classname="memo-chevronDate-2"
+          >
+            <mock-chevronright />
+          </mock-button>
+        </mock-hidden>
+      </div>
+    </div>
+  </div>
+</div>
+`;

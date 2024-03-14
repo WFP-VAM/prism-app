@@ -1,7 +1,11 @@
-FROM node:12
+FROM node:16
 
-COPY . /app
+COPY ./alerting /app
+
+COPY ./common /common
 
 WORKDIR /app
 
 RUN yarn
+
+RUN yarn setup:common

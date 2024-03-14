@@ -1,0 +1,176 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`renders as expected 1`] = `
+<div>
+  <div
+    class="MuiPaper-root MuiAccordion-root makeStyles-root-1 MuiAccordion-rounded MuiPaper-elevation0 MuiPaper-rounded"
+  >
+    <div
+      aria-controls="Some Analysis Layer Title"
+      aria-disabled="false"
+      aria-expanded="false"
+      class="MuiButtonBase-root MuiAccordionSummary-root makeStyles-rootSummary-2"
+      id="Some Analysis Layer Title"
+      role="button"
+      tabindex="0"
+    >
+      <div
+        class="MuiAccordionSummary-content makeStyles-summaryContent-5"
+      >
+        <mock-typography
+          classes="[object Object]"
+        >
+          Some Analysis Layer Title
+        </mock-typography>
+        <mock-chip
+          classes="[object Object]"
+          color="secondary"
+          label="1"
+        />
+      </div>
+      <div
+        aria-disabled="false"
+        aria-hidden="true"
+        class="MuiButtonBase-root MuiIconButton-root MuiAccordionSummary-expandIcon makeStyles-expandIcon-4 MuiIconButton-edgeEnd"
+      >
+        <span
+          class="MuiIconButton-label"
+        >
+          <svg
+            aria-hidden="true"
+            class="MuiSvgIcon-root"
+            focusable="false"
+            viewBox="0 0 24 24"
+          >
+            <path
+              d="M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z"
+            />
+          </svg>
+        </span>
+        <span
+          class="MuiTouchRipple-root"
+        />
+      </div>
+    </div>
+    <div
+      class="MuiCollapse-root MuiCollapse-hidden"
+      style="min-height: 0px;"
+    >
+      <div
+        class="MuiCollapse-wrapper"
+      >
+        <div
+          class="MuiCollapse-wrapperInner"
+        >
+          <div
+            aria-labelledby="Some Analysis Layer Title"
+            id="Some Analysis Layer Title"
+            role="region"
+          >
+            <div
+              class="MuiAccordionDetails-root makeStyles-rootDetails-3"
+            >
+              <div
+                class="MuiGrid-root MuiGrid-container MuiGrid-direction-xs-column"
+              >
+                <div
+                  class="MuiBox-root MuiBox-root-22 memo-analysisLayerSwitchRootItem-8"
+                >
+                  <div
+                    class="MuiBox-root MuiBox-root-23"
+                  >
+                    <div
+                      style="display: flex;"
+                    >
+                      <mock-switch
+                        checked="true"
+                        classes="[object Object]"
+                        classname="memo-switch-14"
+                        inputprops="[object Object]"
+                        size="small"
+                      />
+                      <mock-typography
+                        classname="memo-title-9"
+                      />
+                    </div>
+                    <div>
+                      <mock-tooltip
+                        title="Opacity"
+                      >
+                        <span>
+                          <button
+                            class="MuiButtonBase-root MuiIconButton-root memo-opacityRoot-17"
+                            tabindex="0"
+                            type="button"
+                          >
+                            <span
+                              class="MuiIconButton-label"
+                            >
+                              <svg
+                                aria-hidden="true"
+                                class="MuiSvgIcon-root"
+                                focusable="false"
+                                viewBox="0 0 24 24"
+                              >
+                                <path
+                                  d="M17.66 8L12 2.35 6.34 8C4.78 9.56 4 11.64 4 13.64s.78 4.11 2.34 5.67 3.61 2.35 5.66 2.35 4.1-.79 5.66-2.35S20 15.64 20 13.64 19.22 9.56 17.66 8zM6 14c.01-2 .62-3.27 1.76-4.4L12 5.27l4.24 4.38C17.38 10.77 17.99 12 18 14H6z"
+                                />
+                              </svg>
+                            </span>
+                            <span
+                              class="MuiTouchRipple-root"
+                            />
+                          </button>
+                        </span>
+                      </mock-tooltip>
+                      <mock-tooltip
+                        title="Download"
+                      >
+                        <button
+                          class="MuiButtonBase-root MuiIconButton-root"
+                          tabindex="0"
+                          type="button"
+                        >
+                          <span
+                            class="MuiIconButton-label"
+                          >
+                            <svg
+                              aria-hidden="true"
+                              class="MuiSvgIcon-root"
+                              focusable="false"
+                              viewBox="0 0 24 24"
+                            >
+                              <path
+                                d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"
+                              />
+                            </svg>
+                          </span>
+                          <span
+                            class="MuiTouchRipple-root"
+                          />
+                        </button>
+                      </mock-tooltip>
+                      <mock-menu
+                        id="download-menu"
+                        keepmounted="true"
+                        open="false"
+                      >
+                        <mock-menuitem>
+                          Download as CSV
+                        </mock-menuitem>
+                        <mock-menuitem>
+                          Download as GeoJSON
+                        </mock-menuitem>
+                      </mock-menu>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;

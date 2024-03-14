@@ -1,0 +1,158 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`renders as expected 1`] = `
+<div>
+  <mock-listitem
+    dense="true"
+    disablegutters="true"
+  >
+    <div
+      class="MuiPaper-root memo-paper-1 MuiPaper-elevation1 MuiPaper-rounded"
+    >
+      <div
+        class="MuiGrid-root MuiGrid-item"
+        style="display: flex;"
+      >
+        <mock-typography
+          style="flex-grow: 1;"
+          variant="h4"
+        >
+          Some Legend Title
+        </mock-typography>
+      </div>
+      <mock-divider />
+      <div
+        class="MuiGrid-root MuiGrid-item"
+      >
+        <img
+          alt="Some Legend Title"
+          src="Some Legend Url"
+        />
+      </div>
+      <div
+        class="MuiLinearProgress-root makeStyles-root-10 MuiLinearProgress-colorPrimary MuiLinearProgress-indeterminate"
+        role="progressbar"
+      >
+        <div
+          class="MuiLinearProgress-bar makeStyles-hide-12 MuiLinearProgress-barColorPrimary MuiLinearProgress-bar1Indeterminate"
+        />
+        <div
+          class="MuiLinearProgress-bar makeStyles-hide-12 MuiLinearProgress-bar2Indeterminate MuiLinearProgress-barColorPrimary"
+        />
+      </div>
+      <div
+        class="MuiGrid-root MuiGrid-item"
+      >
+        <mock-typography
+          variant="h5"
+        >
+          <div>
+            Test Children
+          </div>
+        </mock-typography>
+      </div>
+      <mock-divider
+        style="margin: 8px 0px;"
+      />
+      <div
+        class="MuiBox-root MuiBox-root-13"
+      >
+        <mock-tooltip
+          title="Opacity"
+        >
+          <button
+            class="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeSmall"
+            tabindex="0"
+            type="button"
+          >
+            <span
+              class="MuiIconButton-label"
+            >
+              <svg
+                aria-hidden="true"
+                class="MuiSvgIcon-root MuiSvgIcon-fontSizeSmall"
+                focusable="false"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  d="M17.66 8L12 2.35 6.34 8C4.78 9.56 4 11.64 4 13.64s.78 4.11 2.34 5.67 3.61 2.35 5.66 2.35 4.1-.79 5.66-2.35S20 15.64 20 13.64 19.22 9.56 17.66 8zM6 14c.01-2 .62-3.27 1.76-4.4L12 5.27l4.24 4.38C17.38 10.77 17.99 12 18 14H6z"
+                />
+              </svg>
+            </span>
+            <span
+              class="MuiTouchRipple-root"
+            />
+          </button>
+        </mock-tooltip>
+        <mock-popover
+          anchororigin="[object Object]"
+          open="false"
+        >
+          <div
+            class="MuiBox-root MuiBox-root-14 memo-opacityBox-3"
+          >
+            <mock-typography
+              classes="[object Object]"
+            >
+              0%
+            </mock-typography>
+            <span
+              class="MuiSlider-root memo-opacitySliderRoot-4 MuiSlider-colorPrimary"
+            >
+              <span
+                class="MuiSlider-rail"
+              />
+              <span
+                class="MuiSlider-track"
+                style="left: 0%;"
+              />
+              <input
+                type="hidden"
+                value="NaN"
+              />
+              <span
+                aria-labelledby="opacity-slider"
+                aria-orientation="horizontal"
+                aria-valuemax="1"
+                aria-valuemin="0"
+                aria-valuenow="NaN"
+                class="MuiSlider-thumb memo-opacitySliderThumb-5 MuiSlider-thumbColorPrimary"
+                data-index="0"
+                role="slider"
+                tabindex="0"
+              />
+            </span>
+          </div>
+        </mock-popover>
+        <mock-tooltip
+          title="Remove layer"
+        >
+          <button
+            class="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeSmall"
+            tabindex="0"
+            type="button"
+          >
+            <span
+              class="MuiIconButton-label"
+            >
+              <svg
+                aria-hidden="true"
+                class="MuiSvgIcon-root MuiSvgIcon-fontSizeSmall"
+                focusable="false"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"
+                />
+              </svg>
+            </span>
+            <span
+              class="MuiTouchRipple-root"
+            />
+          </button>
+        </mock-tooltip>
+      </div>
+    </div>
+  </mock-listitem>
+</div>
+`;

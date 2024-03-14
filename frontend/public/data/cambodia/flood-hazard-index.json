@@ -1,0 +1,6536 @@
+{
+    "DataList": [
+        {
+            "commune": "010201",
+            "flood_hazard_index": 2.9
+        },
+        {
+            "commune": "010202",
+            "flood_hazard_index": 9
+        },
+        {
+            "commune": "010203",
+            "flood_hazard_index": 4
+        },
+        {
+            "commune": "010204",
+            "flood_hazard_index": 9.5
+        },
+        {
+            "commune": "010205",
+            "flood_hazard_index": 14.8
+        },
+        {
+            "commune": "010206",
+            "flood_hazard_index": 2.4
+        },
+        {
+            "commune": "010207",
+            "flood_hazard_index": 2.2
+        },
+        {
+            "commune": "010208",
+            "flood_hazard_index": 3.7
+        },
+        {
+            "commune": "010209",
+            "flood_hazard_index": 15.3
+        },
+        {
+            "commune": "010210",
+            "flood_hazard_index": 7.9
+        },
+        {
+            "commune": "010211",
+            "flood_hazard_index": 0.6
+        },
+        {
+            "commune": "010212",
+            "flood_hazard_index": 13.6
+        },
+        {
+            "commune": "010213",
+            "flood_hazard_index": 12.9
+        },
+        {
+            "commune": "010301",
+            "flood_hazard_index": 2.5
+        },
+        {
+            "commune": "010302",
+            "flood_hazard_index": 10.2
+        },
+        {
+            "commune": "010303",
+            "flood_hazard_index": 2.8
+        },
+        {
+            "commune": "010304",
+            "flood_hazard_index": 9.4
+        },
+        {
+            "commune": "010305",
+            "flood_hazard_index": 3.9
+        },
+        {
+            "commune": "010306",
+            "flood_hazard_index": 1.5
+        },
+        {
+            "commune": "010401",
+            "flood_hazard_index": 8
+        },
+        {
+            "commune": "010402",
+            "flood_hazard_index": 0.1
+        },
+        {
+            "commune": "010403",
+            "flood_hazard_index": 22.5
+        },
+        {
+            "commune": "010404",
+            "flood_hazard_index": 36.3
+        },
+        {
+            "commune": "010405",
+            "flood_hazard_index": 15.5
+        },
+        {
+            "commune": "010406",
+            "flood_hazard_index": 14
+        },
+        {
+            "commune": "010407",
+            "flood_hazard_index": 1.4
+        },
+        {
+            "commune": "010408",
+            "flood_hazard_index": 6.3
+        },
+        {
+            "commune": "010409",
+            "flood_hazard_index": 0.2
+        },
+        {
+            "commune": "010501",
+            "flood_hazard_index": 2.1
+        },
+        {
+            "commune": "010502",
+            "flood_hazard_index": 0.6
+        },
+        {
+            "commune": "010503",
+            "flood_hazard_index": 0.9
+        },
+        {
+            "commune": "010505",
+            "flood_hazard_index": 0.8
+        },
+        {
+            "commune": "010506",
+            "flood_hazard_index": 0.2
+        },
+        {
+            "commune": "010507",
+            "flood_hazard_index": 0.1
+        },
+        {
+            "commune": "010509",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "010602",
+            "flood_hazard_index": 5.3
+        },
+        {
+            "commune": "010603",
+            "flood_hazard_index": 25.8
+        },
+        {
+            "commune": "010604",
+            "flood_hazard_index": 0.8
+        },
+        {
+            "commune": "010605",
+            "flood_hazard_index": 8
+        },
+        {
+            "commune": "010606",
+            "flood_hazard_index": 13.5
+        },
+        {
+            "commune": "010607",
+            "flood_hazard_index": 14.8
+        },
+        {
+            "commune": "010608",
+            "flood_hazard_index": 5.8
+        },
+        {
+            "commune": "010701",
+            "flood_hazard_index": 0.1
+        },
+        {
+            "commune": "010702",
+            "flood_hazard_index": 0.2
+        },
+        {
+            "commune": "010703",
+            "flood_hazard_index": 0.7
+        },
+        {
+            "commune": "010704",
+            "flood_hazard_index": 0.6
+        },
+        {
+            "commune": "010705",
+            "flood_hazard_index": 1
+        },
+        {
+            "commune": "010706",
+            "flood_hazard_index": 0.5
+        },
+        {
+            "commune": "010801",
+            "flood_hazard_index": 1.4
+        },
+        {
+            "commune": "010802",
+            "flood_hazard_index": 0.3
+        },
+        {
+            "commune": "010803",
+            "flood_hazard_index": 0.1
+        },
+        {
+            "commune": "010804",
+            "flood_hazard_index": 0.3
+        },
+        {
+            "commune": "010805",
+            "flood_hazard_index": 0.8
+        },
+        {
+            "commune": "010806",
+            "flood_hazard_index": 0.8
+        },
+        {
+            "commune": "010807",
+            "flood_hazard_index": 0.3
+        },
+        {
+            "commune": "010808",
+            "flood_hazard_index": 0.9
+        },
+        {
+            "commune": "010901",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "010902",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "010903",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "010904",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "010905",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "010906",
+            "flood_hazard_index": 0.1
+        },
+        {
+            "commune": "011001",
+            "flood_hazard_index": 0.6
+        },
+        {
+            "commune": "011002",
+            "flood_hazard_index": 0.5
+        },
+        {
+            "commune": "011003",
+            "flood_hazard_index": 0.9
+        },
+        {
+            "commune": "020101",
+            "flood_hazard_index": 0.3
+        },
+        {
+            "commune": "020102",
+            "flood_hazard_index": 0.3
+        },
+        {
+            "commune": "020103",
+            "flood_hazard_index": 0.4
+        },
+        {
+            "commune": "020104",
+            "flood_hazard_index": 0.5
+        },
+        {
+            "commune": "020105",
+            "flood_hazard_index": 0.7
+        },
+        {
+            "commune": "020106",
+            "flood_hazard_index": 0.4
+        },
+        {
+            "commune": "020107",
+            "flood_hazard_index": 0.1
+        },
+        {
+            "commune": "020108",
+            "flood_hazard_index": 3.9
+        },
+        {
+            "commune": "020201",
+            "flood_hazard_index": 7.6
+        },
+        {
+            "commune": "020202",
+            "flood_hazard_index": 9.5
+        },
+        {
+            "commune": "020203",
+            "flood_hazard_index": 1.6
+        },
+        {
+            "commune": "020204",
+            "flood_hazard_index": 0.7
+        },
+        {
+            "commune": "020205",
+            "flood_hazard_index": 0.1
+        },
+        {
+            "commune": "020206",
+            "flood_hazard_index": 10.2
+        },
+        {
+            "commune": "020207",
+            "flood_hazard_index": 6.9
+        },
+        {
+            "commune": "020208",
+            "flood_hazard_index": 0.7
+        },
+        {
+            "commune": "020209",
+            "flood_hazard_index": 0.6
+        },
+        {
+            "commune": "020210",
+            "flood_hazard_index": 0.5
+        },
+        {
+            "commune": "020301",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "020302",
+            "flood_hazard_index": 0.2
+        },
+        {
+            "commune": "020303",
+            "flood_hazard_index": 0.5
+        },
+        {
+            "commune": "020304",
+            "flood_hazard_index": 1
+        },
+        {
+            "commune": "020305",
+            "flood_hazard_index": 1.5
+        },
+        {
+            "commune": "020306",
+            "flood_hazard_index": 3.5
+        },
+        {
+            "commune": "020307",
+            "flood_hazard_index": 2.3
+        },
+        {
+            "commune": "020308",
+            "flood_hazard_index": 0.4
+        },
+        {
+            "commune": "020309",
+            "flood_hazard_index": 0.6
+        },
+        {
+            "commune": "020310",
+            "flood_hazard_index": 0.2
+        },
+        {
+            "commune": "020401",
+            "flood_hazard_index": 0.1
+        },
+        {
+            "commune": "020402",
+            "flood_hazard_index": 0.2
+        },
+        {
+            "commune": "020403",
+            "flood_hazard_index": 0.8
+        },
+        {
+            "commune": "020404",
+            "flood_hazard_index": 0.3
+        },
+        {
+            "commune": "020405",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "020406",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "020407",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "020408",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "020501",
+            "flood_hazard_index": 17.5
+        },
+        {
+            "commune": "020502",
+            "flood_hazard_index": 2
+        },
+        {
+            "commune": "020503",
+            "flood_hazard_index": 6.9
+        },
+        {
+            "commune": "020504",
+            "flood_hazard_index": 14
+        },
+        {
+            "commune": "020505",
+            "flood_hazard_index": 15
+        },
+        {
+            "commune": "020506",
+            "flood_hazard_index": 2.5
+        },
+        {
+            "commune": "020507",
+            "flood_hazard_index": 34.9
+        },
+        {
+            "commune": "020601",
+            "flood_hazard_index": 0.1
+        },
+        {
+            "commune": "020602",
+            "flood_hazard_index": 0.3
+        },
+        {
+            "commune": "020603",
+            "flood_hazard_index": 2.9
+        },
+        {
+            "commune": "020604",
+            "flood_hazard_index": 7.2
+        },
+        {
+            "commune": "020605",
+            "flood_hazard_index": 15.1
+        },
+        {
+            "commune": "020606",
+            "flood_hazard_index": 3.9
+        },
+        {
+            "commune": "020607",
+            "flood_hazard_index": 3.9
+        },
+        {
+            "commune": "020608",
+            "flood_hazard_index": 3
+        },
+        {
+            "commune": "020609",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "020701",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "020702",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "020703",
+            "flood_hazard_index": 1.1
+        },
+        {
+            "commune": "020704",
+            "flood_hazard_index": 0.2
+        },
+        {
+            "commune": "020705",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "020801",
+            "flood_hazard_index": 1.2
+        },
+        {
+            "commune": "020802",
+            "flood_hazard_index": 0.9
+        },
+        {
+            "commune": "020803",
+            "flood_hazard_index": 3.8
+        },
+        {
+            "commune": "020804",
+            "flood_hazard_index": 3.4
+        },
+        {
+            "commune": "020805",
+            "flood_hazard_index": 10.1
+        },
+        {
+            "commune": "020806",
+            "flood_hazard_index": 3.8
+        },
+        {
+            "commune": "020807",
+            "flood_hazard_index": 0.4
+        },
+        {
+            "commune": "020808",
+            "flood_hazard_index": 0.2
+        },
+        {
+            "commune": "020809",
+            "flood_hazard_index": 0.4
+        },
+        {
+            "commune": "020810",
+            "flood_hazard_index": 0.6
+        },
+        {
+            "commune": "020901",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "020902",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "020903",
+            "flood_hazard_index": 0.2
+        },
+        {
+            "commune": "020904",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "020905",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "020906",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "020907",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "021001",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "021002",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "021003",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "021004",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "021005",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "021006",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "021101",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "021102",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "021103",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "021104",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "021105",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "021201",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "021202",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "021203",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "021204",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "021205",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "021206",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "021301",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "021302",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "021303",
+            "flood_hazard_index": 0.1
+        },
+        {
+            "commune": "021304",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "021305",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "021306",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "021401",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "021402",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "021403",
+            "flood_hazard_index": 0.4
+        },
+        {
+            "commune": "021404",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "021405",
+            "flood_hazard_index": 0.1
+        },
+        {
+            "commune": "030101",
+            "flood_hazard_index": 57.4
+        },
+        {
+            "commune": "030102",
+            "flood_hazard_index": 59.7
+        },
+        {
+            "commune": "030103",
+            "flood_hazard_index": 53.1
+        },
+        {
+            "commune": "030104",
+            "flood_hazard_index": 2.2
+        },
+        {
+            "commune": "030105",
+            "flood_hazard_index": 56.9
+        },
+        {
+            "commune": "030106",
+            "flood_hazard_index": 14.5
+        },
+        {
+            "commune": "030107",
+            "flood_hazard_index": 73.1
+        },
+        {
+            "commune": "030108",
+            "flood_hazard_index": 24.4
+        },
+        {
+            "commune": "030109",
+            "flood_hazard_index": 65.3
+        },
+        {
+            "commune": "030110",
+            "flood_hazard_index": 38.8
+        },
+        {
+            "commune": "030111",
+            "flood_hazard_index": 53.5
+        },
+        {
+            "commune": "030112",
+            "flood_hazard_index": 6.9
+        },
+        {
+            "commune": "030201",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "030202",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "030203",
+            "flood_hazard_index": 0.3
+        },
+        {
+            "commune": "030204",
+            "flood_hazard_index": 3.1
+        },
+        {
+            "commune": "030205",
+            "flood_hazard_index": 8.3
+        },
+        {
+            "commune": "030206",
+            "flood_hazard_index": 0.3
+        },
+        {
+            "commune": "030207",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "030208",
+            "flood_hazard_index": 0.2
+        },
+        {
+            "commune": "030301",
+            "flood_hazard_index": 22
+        },
+        {
+            "commune": "030302",
+            "flood_hazard_index": 23.4
+        },
+        {
+            "commune": "030303",
+            "flood_hazard_index": 18.4
+        },
+        {
+            "commune": "030304",
+            "flood_hazard_index": 20.4
+        },
+        {
+            "commune": "030305",
+            "flood_hazard_index": 22.1
+        },
+        {
+            "commune": "030306",
+            "flood_hazard_index": 4.1
+        },
+        {
+            "commune": "030307",
+            "flood_hazard_index": 6.7
+        },
+        {
+            "commune": "030308",
+            "flood_hazard_index": 9.2
+        },
+        {
+            "commune": "030309",
+            "flood_hazard_index": 0.9
+        },
+        {
+            "commune": "030310",
+            "flood_hazard_index": 3
+        },
+        {
+            "commune": "030501",
+            "flood_hazard_index": 3.7
+        },
+        {
+            "commune": "030502",
+            "flood_hazard_index": 1.1
+        },
+        {
+            "commune": "030503",
+            "flood_hazard_index": 7.1
+        },
+        {
+            "commune": "030504",
+            "flood_hazard_index": 2.5
+        },
+        {
+            "commune": "030601",
+            "flood_hazard_index": 5.2
+        },
+        {
+            "commune": "030602",
+            "flood_hazard_index": 22.3
+        },
+        {
+            "commune": "030603",
+            "flood_hazard_index": 56.1
+        },
+        {
+            "commune": "030604",
+            "flood_hazard_index": 28.9
+        },
+        {
+            "commune": "030605",
+            "flood_hazard_index": 22.2
+        },
+        {
+            "commune": "030606",
+            "flood_hazard_index": 18.7
+        },
+        {
+            "commune": "030607",
+            "flood_hazard_index": 28.6
+        },
+        {
+            "commune": "030608",
+            "flood_hazard_index": 32.9
+        },
+        {
+            "commune": "030609",
+            "flood_hazard_index": 0.1
+        },
+        {
+            "commune": "030610",
+            "flood_hazard_index": 0.5
+        },
+        {
+            "commune": "030611",
+            "flood_hazard_index": 21.9
+        },
+        {
+            "commune": "030612",
+            "flood_hazard_index": 50.5
+        },
+        {
+            "commune": "030613",
+            "flood_hazard_index": 17.4
+        },
+        {
+            "commune": "030614",
+            "flood_hazard_index": 9.1
+        },
+        {
+            "commune": "030615",
+            "flood_hazard_index": 25.5
+        },
+        {
+            "commune": "030701",
+            "flood_hazard_index": 16.8
+        },
+        {
+            "commune": "030702",
+            "flood_hazard_index": 43.6
+        },
+        {
+            "commune": "030703",
+            "flood_hazard_index": 56.6
+        },
+        {
+            "commune": "030704",
+            "flood_hazard_index": 22.6
+        },
+        {
+            "commune": "030705",
+            "flood_hazard_index": 57.5
+        },
+        {
+            "commune": "030706",
+            "flood_hazard_index": 48.8
+        },
+        {
+            "commune": "030707",
+            "flood_hazard_index": 52.6
+        },
+        {
+            "commune": "030708",
+            "flood_hazard_index": 45.6
+        },
+        {
+            "commune": "030709",
+            "flood_hazard_index": 40.7
+        },
+        {
+            "commune": "030710",
+            "flood_hazard_index": 24.6
+        },
+        {
+            "commune": "030711",
+            "flood_hazard_index": 51.3
+        },
+        {
+            "commune": "030801",
+            "flood_hazard_index": 42.2
+        },
+        {
+            "commune": "030802",
+            "flood_hazard_index": 31.8
+        },
+        {
+            "commune": "030803",
+            "flood_hazard_index": 74.7
+        },
+        {
+            "commune": "030804",
+            "flood_hazard_index": 40.4
+        },
+        {
+            "commune": "030805",
+            "flood_hazard_index": 24.8
+        },
+        {
+            "commune": "030806",
+            "flood_hazard_index": 12.2
+        },
+        {
+            "commune": "030807",
+            "flood_hazard_index": 26.8
+        },
+        {
+            "commune": "030808",
+            "flood_hazard_index": 52.3
+        },
+        {
+            "commune": "031301",
+            "flood_hazard_index": 1.1
+        },
+        {
+            "commune": "031302",
+            "flood_hazard_index": 0.8
+        },
+        {
+            "commune": "031303",
+            "flood_hazard_index": 4.2
+        },
+        {
+            "commune": "031304",
+            "flood_hazard_index": 1
+        },
+        {
+            "commune": "031305",
+            "flood_hazard_index": 0.1
+        },
+        {
+            "commune": "031306",
+            "flood_hazard_index": 1.9
+        },
+        {
+            "commune": "031307",
+            "flood_hazard_index": 17.7
+        },
+        {
+            "commune": "031308",
+            "flood_hazard_index": 22.5
+        },
+        {
+            "commune": "031309",
+            "flood_hazard_index": 4.2
+        },
+        {
+            "commune": "031310",
+            "flood_hazard_index": 2.9
+        },
+        {
+            "commune": "031311",
+            "flood_hazard_index": 18.2
+        },
+        {
+            "commune": "031312",
+            "flood_hazard_index": 2.3
+        },
+        {
+            "commune": "031313",
+            "flood_hazard_index": 0.6
+        },
+        {
+            "commune": "031314",
+            "flood_hazard_index": 30.9
+        },
+        {
+            "commune": "031315",
+            "flood_hazard_index": 0.2
+        },
+        {
+            "commune": "031401",
+            "flood_hazard_index": 63.6
+        },
+        {
+            "commune": "031402",
+            "flood_hazard_index": 45.8
+        },
+        {
+            "commune": "031403",
+            "flood_hazard_index": 16.4
+        },
+        {
+            "commune": "031404",
+            "flood_hazard_index": 27
+        },
+        {
+            "commune": "031405",
+            "flood_hazard_index": 22.5
+        },
+        {
+            "commune": "031406",
+            "flood_hazard_index": 39.3
+        },
+        {
+            "commune": "031407",
+            "flood_hazard_index": 60.9
+        },
+        {
+            "commune": "031408",
+            "flood_hazard_index": 45.9
+        },
+        {
+            "commune": "031409",
+            "flood_hazard_index": 30.1
+        },
+        {
+            "commune": "031410",
+            "flood_hazard_index": 50
+        },
+        {
+            "commune": "031411",
+            "flood_hazard_index": 22.7
+        },
+        {
+            "commune": "031412",
+            "flood_hazard_index": 34.9
+        },
+        {
+            "commune": "031413",
+            "flood_hazard_index": 23.2
+        },
+        {
+            "commune": "031414",
+            "flood_hazard_index": 47.4
+        },
+        {
+            "commune": "031501",
+            "flood_hazard_index": 5.1
+        },
+        {
+            "commune": "031503",
+            "flood_hazard_index": 0.1
+        },
+        {
+            "commune": "031504",
+            "flood_hazard_index": 15.2
+        },
+        {
+            "commune": "031505",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "031506",
+            "flood_hazard_index": 0.1
+        },
+        {
+            "commune": "031507",
+            "flood_hazard_index": 38.8
+        },
+        {
+            "commune": "031508",
+            "flood_hazard_index": 50.4
+        },
+        {
+            "commune": "031509",
+            "flood_hazard_index": 24.7
+        },
+        {
+            "commune": "031510",
+            "flood_hazard_index": 3.6
+        },
+        {
+            "commune": "031512",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "031513",
+            "flood_hazard_index": 17.1
+        },
+        {
+            "commune": "031514",
+            "flood_hazard_index": 5.3
+        },
+        {
+            "commune": "040101",
+            "flood_hazard_index": 0.3
+        },
+        {
+            "commune": "040102",
+            "flood_hazard_index": 41.9
+        },
+        {
+            "commune": "040103",
+            "flood_hazard_index": 10.6
+        },
+        {
+            "commune": "040104",
+            "flood_hazard_index": 20.2
+        },
+        {
+            "commune": "040105",
+            "flood_hazard_index": 50.6
+        },
+        {
+            "commune": "040106",
+            "flood_hazard_index": 44.2
+        },
+        {
+            "commune": "040107",
+            "flood_hazard_index": 7.2
+        },
+        {
+            "commune": "040108",
+            "flood_hazard_index": 0.1
+        },
+        {
+            "commune": "040109",
+            "flood_hazard_index": 0.1
+        },
+        {
+            "commune": "040110",
+            "flood_hazard_index": 1
+        },
+        {
+            "commune": "040111",
+            "flood_hazard_index": 13.5
+        },
+        {
+            "commune": "040201",
+            "flood_hazard_index": 58.2
+        },
+        {
+            "commune": "040202",
+            "flood_hazard_index": 66
+        },
+        {
+            "commune": "040203",
+            "flood_hazard_index": 49.3
+        },
+        {
+            "commune": "040204",
+            "flood_hazard_index": 62.3
+        },
+        {
+            "commune": "040205",
+            "flood_hazard_index": 41.1
+        },
+        {
+            "commune": "040301",
+            "flood_hazard_index": 46.9
+        },
+        {
+            "commune": "040302",
+            "flood_hazard_index": 55.9
+        },
+        {
+            "commune": "040303",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "040304",
+            "flood_hazard_index": 52
+        },
+        {
+            "commune": "040401",
+            "flood_hazard_index": 41.4
+        },
+        {
+            "commune": "040402",
+            "flood_hazard_index": 27.9
+        },
+        {
+            "commune": "040403",
+            "flood_hazard_index": 49.1
+        },
+        {
+            "commune": "040404",
+            "flood_hazard_index": 32.1
+        },
+        {
+            "commune": "040405",
+            "flood_hazard_index": 38.4
+        },
+        {
+            "commune": "040406",
+            "flood_hazard_index": 51.9
+        },
+        {
+            "commune": "040407",
+            "flood_hazard_index": 50.3
+        },
+        {
+            "commune": "040408",
+            "flood_hazard_index": 40
+        },
+        {
+            "commune": "040409",
+            "flood_hazard_index": 13.2
+        },
+        {
+            "commune": "040501",
+            "flood_hazard_index": 53.8
+        },
+        {
+            "commune": "040502",
+            "flood_hazard_index": 0.5
+        },
+        {
+            "commune": "040503",
+            "flood_hazard_index": 20.5
+        },
+        {
+            "commune": "040504",
+            "flood_hazard_index": 49
+        },
+        {
+            "commune": "040505",
+            "flood_hazard_index": 21.4
+        },
+        {
+            "commune": "040506",
+            "flood_hazard_index": 5.6
+        },
+        {
+            "commune": "040507",
+            "flood_hazard_index": 1.7
+        },
+        {
+            "commune": "040508",
+            "flood_hazard_index": 26.2
+        },
+        {
+            "commune": "040509",
+            "flood_hazard_index": 20
+        },
+        {
+            "commune": "040510",
+            "flood_hazard_index": 0.3
+        },
+        {
+            "commune": "040601",
+            "flood_hazard_index": 15.4
+        },
+        {
+            "commune": "040602",
+            "flood_hazard_index": 1.1
+        },
+        {
+            "commune": "040603",
+            "flood_hazard_index": 0.2
+        },
+        {
+            "commune": "040604",
+            "flood_hazard_index": 10.1
+        },
+        {
+            "commune": "040605",
+            "flood_hazard_index": 43.2
+        },
+        {
+            "commune": "040606",
+            "flood_hazard_index": 0.1
+        },
+        {
+            "commune": "040607",
+            "flood_hazard_index": 0.1
+        },
+        {
+            "commune": "040608",
+            "flood_hazard_index": 0.3
+        },
+        {
+            "commune": "040609",
+            "flood_hazard_index": 0.2
+        },
+        {
+            "commune": "040610",
+            "flood_hazard_index": 0.5
+        },
+        {
+            "commune": "040611",
+            "flood_hazard_index": 0.2
+        },
+        {
+            "commune": "040612",
+            "flood_hazard_index": 43.5
+        },
+        {
+            "commune": "040613",
+            "flood_hazard_index": 8
+        },
+        {
+            "commune": "040701",
+            "flood_hazard_index": 2
+        },
+        {
+            "commune": "040702",
+            "flood_hazard_index": 1.4
+        },
+        {
+            "commune": "040703",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "040704",
+            "flood_hazard_index": 0.2
+        },
+        {
+            "commune": "040705",
+            "flood_hazard_index": 1.4
+        },
+        {
+            "commune": "040706",
+            "flood_hazard_index": 0.6
+        },
+        {
+            "commune": "040707",
+            "flood_hazard_index": 0.1
+        },
+        {
+            "commune": "040708",
+            "flood_hazard_index": 0.1
+        },
+        {
+            "commune": "040709",
+            "flood_hazard_index": 0.3
+        },
+        {
+            "commune": "040801",
+            "flood_hazard_index": 0.2
+        },
+        {
+            "commune": "040802",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "040803",
+            "flood_hazard_index": 0.2
+        },
+        {
+            "commune": "040804",
+            "flood_hazard_index": 0.4
+        },
+        {
+            "commune": "040805",
+            "flood_hazard_index": 0.1
+        },
+        {
+            "commune": "040806",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "040807",
+            "flood_hazard_index": 0.1
+        },
+        {
+            "commune": "040808",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "050101",
+            "flood_hazard_index": 0.1
+        },
+        {
+            "commune": "050102",
+            "flood_hazard_index": 0.3
+        },
+        {
+            "commune": "050103",
+            "flood_hazard_index": 0.3
+        },
+        {
+            "commune": "050104",
+            "flood_hazard_index": 0.1
+        },
+        {
+            "commune": "050105",
+            "flood_hazard_index": 0.5
+        },
+        {
+            "commune": "050106",
+            "flood_hazard_index": 0.1
+        },
+        {
+            "commune": "050107",
+            "flood_hazard_index": 0.3
+        },
+        {
+            "commune": "050108",
+            "flood_hazard_index": 0.4
+        },
+        {
+            "commune": "050109",
+            "flood_hazard_index": 1.1
+        },
+        {
+            "commune": "050110",
+            "flood_hazard_index": 0.4
+        },
+        {
+            "commune": "050111",
+            "flood_hazard_index": 0.2
+        },
+        {
+            "commune": "050112",
+            "flood_hazard_index": 0.1
+        },
+        {
+            "commune": "050113",
+            "flood_hazard_index": 0.1
+        },
+        {
+            "commune": "050114",
+            "flood_hazard_index": 0.6
+        },
+        {
+            "commune": "050115",
+            "flood_hazard_index": 0.9
+        },
+        {
+            "commune": "050201",
+            "flood_hazard_index": 0.5
+        },
+        {
+            "commune": "050202",
+            "flood_hazard_index": 0.9
+        },
+        {
+            "commune": "050203",
+            "flood_hazard_index": 0.8
+        },
+        {
+            "commune": "050204",
+            "flood_hazard_index": 1.9
+        },
+        {
+            "commune": "050205",
+            "flood_hazard_index": 1
+        },
+        {
+            "commune": "050301",
+            "flood_hazard_index": 0.4
+        },
+        {
+            "commune": "050302",
+            "flood_hazard_index": 0.1
+        },
+        {
+            "commune": "050303",
+            "flood_hazard_index": 0.2
+        },
+        {
+            "commune": "050304",
+            "flood_hazard_index": 0.4
+        },
+        {
+            "commune": "050305",
+            "flood_hazard_index": 1.9
+        },
+        {
+            "commune": "050306",
+            "flood_hazard_index": 1.5
+        },
+        {
+            "commune": "050307",
+            "flood_hazard_index": 0.4
+        },
+        {
+            "commune": "050308",
+            "flood_hazard_index": 0.4
+        },
+        {
+            "commune": "050309",
+            "flood_hazard_index": 0.2
+        },
+        {
+            "commune": "050310",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "050311",
+            "flood_hazard_index": 0.3
+        },
+        {
+            "commune": "050312",
+            "flood_hazard_index": 0.1
+        },
+        {
+            "commune": "050313",
+            "flood_hazard_index": 0.1
+        },
+        {
+            "commune": "050401",
+            "flood_hazard_index": 0.1
+        },
+        {
+            "commune": "050402",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "050403",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "050404",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "050405",
+            "flood_hazard_index": 0.3
+        },
+        {
+            "commune": "050501",
+            "flood_hazard_index": 0.1
+        },
+        {
+            "commune": "050502",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "050503",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "050504",
+            "flood_hazard_index": 0.2
+        },
+        {
+            "commune": "050505",
+            "flood_hazard_index": 1.5
+        },
+        {
+            "commune": "050506",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "050507",
+            "flood_hazard_index": 0.4
+        },
+        {
+            "commune": "050508",
+            "flood_hazard_index": 0.1
+        },
+        {
+            "commune": "050509",
+            "flood_hazard_index": 0.1
+        },
+        {
+            "commune": "050510",
+            "flood_hazard_index": 0.3
+        },
+        {
+            "commune": "050511",
+            "flood_hazard_index": 1.3
+        },
+        {
+            "commune": "050512",
+            "flood_hazard_index": 0.1
+        },
+        {
+            "commune": "050513",
+            "flood_hazard_index": 0.1
+        },
+        {
+            "commune": "050514",
+            "flood_hazard_index": 0.1
+        },
+        {
+            "commune": "050515",
+            "flood_hazard_index": 0.3
+        },
+        {
+            "commune": "050601",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "050602",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "050603",
+            "flood_hazard_index": 0.1
+        },
+        {
+            "commune": "050604",
+            "flood_hazard_index": 0.9
+        },
+        {
+            "commune": "050605",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "050606",
+            "flood_hazard_index": 1.3
+        },
+        {
+            "commune": "050607",
+            "flood_hazard_index": 0.2
+        },
+        {
+            "commune": "050608",
+            "flood_hazard_index": 0.1
+        },
+        {
+            "commune": "050609",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "050610",
+            "flood_hazard_index": 0.1
+        },
+        {
+            "commune": "050611",
+            "flood_hazard_index": 0.3
+        },
+        {
+            "commune": "050613",
+            "flood_hazard_index": 0.1
+        },
+        {
+            "commune": "050701",
+            "flood_hazard_index": 1.2
+        },
+        {
+            "commune": "050702",
+            "flood_hazard_index": 3.2
+        },
+        {
+            "commune": "050703",
+            "flood_hazard_index": 0.1
+        },
+        {
+            "commune": "050704",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "050705",
+            "flood_hazard_index": 0.1
+        },
+        {
+            "commune": "050706",
+            "flood_hazard_index": 0.6
+        },
+        {
+            "commune": "050707",
+            "flood_hazard_index": 0.2
+        },
+        {
+            "commune": "050708",
+            "flood_hazard_index": 0.6
+        },
+        {
+            "commune": "050709",
+            "flood_hazard_index": 0.3
+        },
+        {
+            "commune": "050710",
+            "flood_hazard_index": 0.8
+        },
+        {
+            "commune": "050711",
+            "flood_hazard_index": 0.4
+        },
+        {
+            "commune": "050712",
+            "flood_hazard_index": 0.4
+        },
+        {
+            "commune": "050713",
+            "flood_hazard_index": 2.1
+        },
+        {
+            "commune": "050714",
+            "flood_hazard_index": 0.1
+        },
+        {
+            "commune": "050715",
+            "flood_hazard_index": 1
+        },
+        {
+            "commune": "050801",
+            "flood_hazard_index": 0.1
+        },
+        {
+            "commune": "050802",
+            "flood_hazard_index": 0.1
+        },
+        {
+            "commune": "050804",
+            "flood_hazard_index": 0.4
+        },
+        {
+            "commune": "050805",
+            "flood_hazard_index": 0.1
+        },
+        {
+            "commune": "050806",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "050807",
+            "flood_hazard_index": 0.1
+        },
+        {
+            "commune": "050808",
+            "flood_hazard_index": 0.1
+        },
+        {
+            "commune": "060101",
+            "flood_hazard_index": 1.1
+        },
+        {
+            "commune": "060102",
+            "flood_hazard_index": 2.6
+        },
+        {
+            "commune": "060103",
+            "flood_hazard_index": 57.6
+        },
+        {
+            "commune": "060104",
+            "flood_hazard_index": 20.5
+        },
+        {
+            "commune": "060105",
+            "flood_hazard_index": 4.4
+        },
+        {
+            "commune": "060106",
+            "flood_hazard_index": 1
+        },
+        {
+            "commune": "060107",
+            "flood_hazard_index": 3.6
+        },
+        {
+            "commune": "060108",
+            "flood_hazard_index": 34.1
+        },
+        {
+            "commune": "060109",
+            "flood_hazard_index": 24
+        },
+        {
+            "commune": "060110",
+            "flood_hazard_index": 0.2
+        },
+        {
+            "commune": "060111",
+            "flood_hazard_index": 1
+        },
+        {
+            "commune": "060112",
+            "flood_hazard_index": 0.6
+        },
+        {
+            "commune": "060113",
+            "flood_hazard_index": 35.3
+        },
+        {
+            "commune": "060114",
+            "flood_hazard_index": 17.9
+        },
+        {
+            "commune": "060115",
+            "flood_hazard_index": 57.3
+        },
+        {
+            "commune": "060116",
+            "flood_hazard_index": 1.7
+        },
+        {
+            "commune": "060117",
+            "flood_hazard_index": 49.4
+        },
+        {
+            "commune": "060118",
+            "flood_hazard_index": 49.4
+        },
+        {
+            "commune": "060201",
+            "flood_hazard_index": 5.6
+        },
+        {
+            "commune": "060202",
+            "flood_hazard_index": 2.5
+        },
+        {
+            "commune": "060203",
+            "flood_hazard_index": 22.3
+        },
+        {
+            "commune": "060204",
+            "flood_hazard_index": 24.1
+        },
+        {
+            "commune": "060205",
+            "flood_hazard_index": 0.1
+        },
+        {
+            "commune": "060206",
+            "flood_hazard_index": 32.4
+        },
+        {
+            "commune": "060207",
+            "flood_hazard_index": 41.9
+        },
+        {
+            "commune": "060208",
+            "flood_hazard_index": 12
+        },
+        {
+            "commune": "060209",
+            "flood_hazard_index": 8
+        },
+        {
+            "commune": "060210",
+            "flood_hazard_index": 39.8
+        },
+        {
+            "commune": "060211",
+            "flood_hazard_index": 31.3
+        },
+        {
+            "commune": "060301",
+            "flood_hazard_index": 35
+        },
+        {
+            "commune": "060302",
+            "flood_hazard_index": 38.6
+        },
+        {
+            "commune": "060303",
+            "flood_hazard_index": 4.2
+        },
+        {
+            "commune": "060304",
+            "flood_hazard_index": 68.1
+        },
+        {
+            "commune": "060306",
+            "flood_hazard_index": 40.5
+        },
+        {
+            "commune": "060308",
+            "flood_hazard_index": 10.8
+        },
+        {
+            "commune": "060309",
+            "flood_hazard_index": 30.6
+        },
+        {
+            "commune": "060310",
+            "flood_hazard_index": 60.4
+        },
+        {
+            "commune": "060401",
+            "flood_hazard_index": 4.7
+        },
+        {
+            "commune": "060402",
+            "flood_hazard_index": 0.5
+        },
+        {
+            "commune": "060403",
+            "flood_hazard_index": 3.6
+        },
+        {
+            "commune": "060404",
+            "flood_hazard_index": 0.1
+        },
+        {
+            "commune": "060405",
+            "flood_hazard_index": 0.2
+        },
+        {
+            "commune": "060406",
+            "flood_hazard_index": 1.2
+        },
+        {
+            "commune": "060407",
+            "flood_hazard_index": 0.1
+        },
+        {
+            "commune": "060501",
+            "flood_hazard_index": 21.9
+        },
+        {
+            "commune": "060502",
+            "flood_hazard_index": 5.1
+        },
+        {
+            "commune": "060503",
+            "flood_hazard_index": 5.3
+        },
+        {
+            "commune": "060504",
+            "flood_hazard_index": 1.6
+        },
+        {
+            "commune": "060505",
+            "flood_hazard_index": 11.2
+        },
+        {
+            "commune": "060601",
+            "flood_hazard_index": 9.6
+        },
+        {
+            "commune": "060602",
+            "flood_hazard_index": 0.1
+        },
+        {
+            "commune": "060603",
+            "flood_hazard_index": 5
+        },
+        {
+            "commune": "060604",
+            "flood_hazard_index": 0.1
+        },
+        {
+            "commune": "060605",
+            "flood_hazard_index": 2.7
+        },
+        {
+            "commune": "060606",
+            "flood_hazard_index": 1.8
+        },
+        {
+            "commune": "060607",
+            "flood_hazard_index": 0.6
+        },
+        {
+            "commune": "060608",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "060609",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "060701",
+            "flood_hazard_index": 0.2
+        },
+        {
+            "commune": "060702",
+            "flood_hazard_index": 22.7
+        },
+        {
+            "commune": "060703",
+            "flood_hazard_index": 8.1
+        },
+        {
+            "commune": "060704",
+            "flood_hazard_index": 46.3
+        },
+        {
+            "commune": "060705",
+            "flood_hazard_index": 0.3
+        },
+        {
+            "commune": "060706",
+            "flood_hazard_index": 61.5
+        },
+        {
+            "commune": "060707",
+            "flood_hazard_index": 9.7
+        },
+        {
+            "commune": "060708",
+            "flood_hazard_index": 33.6
+        },
+        {
+            "commune": "060709",
+            "flood_hazard_index": 0.8
+        },
+        {
+            "commune": "060710",
+            "flood_hazard_index": 20.6
+        },
+        {
+            "commune": "060801",
+            "flood_hazard_index": 2.4
+        },
+        {
+            "commune": "060802",
+            "flood_hazard_index": 47
+        },
+        {
+            "commune": "060803",
+            "flood_hazard_index": 4.5
+        },
+        {
+            "commune": "060804",
+            "flood_hazard_index": 35.3
+        },
+        {
+            "commune": "060805",
+            "flood_hazard_index": 4.8
+        },
+        {
+            "commune": "060806",
+            "flood_hazard_index": 37
+        },
+        {
+            "commune": "060807",
+            "flood_hazard_index": 37.5
+        },
+        {
+            "commune": "060808",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "060809",
+            "flood_hazard_index": 30.2
+        },
+        {
+            "commune": "060810",
+            "flood_hazard_index": 11.1
+        },
+        {
+            "commune": "060811",
+            "flood_hazard_index": 3.9
+        },
+        {
+            "commune": "060812",
+            "flood_hazard_index": 42.6
+        },
+        {
+            "commune": "060813",
+            "flood_hazard_index": 0.8
+        },
+        {
+            "commune": "070101",
+            "flood_hazard_index": 5.3
+        },
+        {
+            "commune": "070102",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "070103",
+            "flood_hazard_index": 0.4
+        },
+        {
+            "commune": "070104",
+            "flood_hazard_index": 0.3
+        },
+        {
+            "commune": "070105",
+            "flood_hazard_index": 0.3
+        },
+        {
+            "commune": "070106",
+            "flood_hazard_index": 4.6
+        },
+        {
+            "commune": "070107",
+            "flood_hazard_index": 2.8
+        },
+        {
+            "commune": "070108",
+            "flood_hazard_index": 0.7
+        },
+        {
+            "commune": "070109",
+            "flood_hazard_index": 0.8
+        },
+        {
+            "commune": "070110",
+            "flood_hazard_index": 0.4
+        },
+        {
+            "commune": "070111",
+            "flood_hazard_index": 5.5
+        },
+        {
+            "commune": "070201",
+            "flood_hazard_index": 4.3
+        },
+        {
+            "commune": "070202",
+            "flood_hazard_index": 6.6
+        },
+        {
+            "commune": "070203",
+            "flood_hazard_index": 35.8
+        },
+        {
+            "commune": "070204",
+            "flood_hazard_index": 1.5
+        },
+        {
+            "commune": "070205",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "070206",
+            "flood_hazard_index": 11.7
+        },
+        {
+            "commune": "070207",
+            "flood_hazard_index": 0.7
+        },
+        {
+            "commune": "070208",
+            "flood_hazard_index": 14.7
+        },
+        {
+            "commune": "070209",
+            "flood_hazard_index": 17.3
+        },
+        {
+            "commune": "070210",
+            "flood_hazard_index": 1
+        },
+        {
+            "commune": "070211",
+            "flood_hazard_index": 0.4
+        },
+        {
+            "commune": "070212",
+            "flood_hazard_index": 3.7
+        },
+        {
+            "commune": "070213",
+            "flood_hazard_index": 1.6
+        },
+        {
+            "commune": "070214",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "070215",
+            "flood_hazard_index": 3.2
+        },
+        {
+            "commune": "070301",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "070302",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "070303",
+            "flood_hazard_index": 0.4
+        },
+        {
+            "commune": "070304",
+            "flood_hazard_index": 0.1
+        },
+        {
+            "commune": "070305",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "070306",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "070307",
+            "flood_hazard_index": 0.2
+        },
+        {
+            "commune": "070308",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "070309",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "070310",
+            "flood_hazard_index": 0.4
+        },
+        {
+            "commune": "070311",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "070312",
+            "flood_hazard_index": 0.6
+        },
+        {
+            "commune": "070313",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "070314",
+            "flood_hazard_index": 0.5
+        },
+        {
+            "commune": "070315",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "070401",
+            "flood_hazard_index": 0.6
+        },
+        {
+            "commune": "070402",
+            "flood_hazard_index": 0.1
+        },
+        {
+            "commune": "070403",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "070404",
+            "flood_hazard_index": 0.4
+        },
+        {
+            "commune": "070405",
+            "flood_hazard_index": 0.8
+        },
+        {
+            "commune": "070406",
+            "flood_hazard_index": 2.7
+        },
+        {
+            "commune": "070407",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "070501",
+            "flood_hazard_index": 0.5
+        },
+        {
+            "commune": "070502",
+            "flood_hazard_index": 1.8
+        },
+        {
+            "commune": "070503",
+            "flood_hazard_index": 0.7
+        },
+        {
+            "commune": "070504",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "070505",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "070506",
+            "flood_hazard_index": 0.1
+        },
+        {
+            "commune": "070507",
+            "flood_hazard_index": 0.2
+        },
+        {
+            "commune": "070508",
+            "flood_hazard_index": 1.3
+        },
+        {
+            "commune": "070509",
+            "flood_hazard_index": 0.3
+        },
+        {
+            "commune": "070510",
+            "flood_hazard_index": 0.1
+        },
+        {
+            "commune": "070601",
+            "flood_hazard_index": 3.3
+        },
+        {
+            "commune": "070602",
+            "flood_hazard_index": 23.9
+        },
+        {
+            "commune": "070603",
+            "flood_hazard_index": 2.3
+        },
+        {
+            "commune": "070604",
+            "flood_hazard_index": 0.6
+        },
+        {
+            "commune": "070605",
+            "flood_hazard_index": 2.3
+        },
+        {
+            "commune": "070606",
+            "flood_hazard_index": 2.1
+        },
+        {
+            "commune": "070607",
+            "flood_hazard_index": 0.7
+        },
+        {
+            "commune": "070608",
+            "flood_hazard_index": 4.4
+        },
+        {
+            "commune": "070609",
+            "flood_hazard_index": 2.2
+        },
+        {
+            "commune": "070612",
+            "flood_hazard_index": 11.6
+        },
+        {
+            "commune": "070613",
+            "flood_hazard_index": 21.7
+        },
+        {
+            "commune": "070614",
+            "flood_hazard_index": 8.5
+        },
+        {
+            "commune": "070615",
+            "flood_hazard_index": 5.6
+        },
+        {
+            "commune": "070616",
+            "flood_hazard_index": 7.1
+        },
+        {
+            "commune": "070701",
+            "flood_hazard_index": 2
+        },
+        {
+            "commune": "070702",
+            "flood_hazard_index": 11.1
+        },
+        {
+            "commune": "070703",
+            "flood_hazard_index": 1.4
+        },
+        {
+            "commune": "070704",
+            "flood_hazard_index": 2.6
+        },
+        {
+            "commune": "070705",
+            "flood_hazard_index": 0.2
+        },
+        {
+            "commune": "070707",
+            "flood_hazard_index": 0.6
+        },
+        {
+            "commune": "070708",
+            "flood_hazard_index": 1.8
+        },
+        {
+            "commune": "070709",
+            "flood_hazard_index": 2.4
+        },
+        {
+            "commune": "070711",
+            "flood_hazard_index": 1.6
+        },
+        {
+            "commune": "070712",
+            "flood_hazard_index": 0.2
+        },
+        {
+            "commune": "070713",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "070715",
+            "flood_hazard_index": 0.7
+        },
+        {
+            "commune": "070716",
+            "flood_hazard_index": 0.2
+        },
+        {
+            "commune": "070717",
+            "flood_hazard_index": 0.2
+        },
+        {
+            "commune": "070718",
+            "flood_hazard_index": 3.7
+        },
+        {
+            "commune": "070719",
+            "flood_hazard_index": 0.2
+        },
+        {
+            "commune": "070801",
+            "flood_hazard_index": 1.1
+        },
+        {
+            "commune": "070802",
+            "flood_hazard_index": 0.9
+        },
+        {
+            "commune": "070803",
+            "flood_hazard_index": 0.7
+        },
+        {
+            "commune": "070804",
+            "flood_hazard_index": 0.4
+        },
+        {
+            "commune": "070805",
+            "flood_hazard_index": 11.1
+        },
+        {
+            "commune": "080101",
+            "flood_hazard_index": 17.5
+        },
+        {
+            "commune": "080102",
+            "flood_hazard_index": 4.1
+        },
+        {
+            "commune": "080103",
+            "flood_hazard_index": 2.4
+        },
+        {
+            "commune": "080104",
+            "flood_hazard_index": 31.5
+        },
+        {
+            "commune": "080105",
+            "flood_hazard_index": 11.6
+        },
+        {
+            "commune": "080106",
+            "flood_hazard_index": 4.6
+        },
+        {
+            "commune": "080107",
+            "flood_hazard_index": 21.3
+        },
+        {
+            "commune": "080108",
+            "flood_hazard_index": 0.6
+        },
+        {
+            "commune": "080109",
+            "flood_hazard_index": 2.1
+        },
+        {
+            "commune": "080113",
+            "flood_hazard_index": 1.2
+        },
+        {
+            "commune": "080115",
+            "flood_hazard_index": 6.7
+        },
+        {
+            "commune": "080116",
+            "flood_hazard_index": 6.3
+        },
+        {
+            "commune": "080117",
+            "flood_hazard_index": 1.3
+        },
+        {
+            "commune": "080118",
+            "flood_hazard_index": 1.1
+        },
+        {
+            "commune": "080122",
+            "flood_hazard_index": 0.7
+        },
+        {
+            "commune": "080125",
+            "flood_hazard_index": 0.1
+        },
+        {
+            "commune": "080127",
+            "flood_hazard_index": 0.1
+        },
+        {
+            "commune": "080128",
+            "flood_hazard_index": 1.4
+        },
+        {
+            "commune": "080201",
+            "flood_hazard_index": 30.2
+        },
+        {
+            "commune": "080202",
+            "flood_hazard_index": 11
+        },
+        {
+            "commune": "080203",
+            "flood_hazard_index": 11.8
+        },
+        {
+            "commune": "080204",
+            "flood_hazard_index": 24.7
+        },
+        {
+            "commune": "080206",
+            "flood_hazard_index": 22.1
+        },
+        {
+            "commune": "080207",
+            "flood_hazard_index": 41.8
+        },
+        {
+            "commune": "080208",
+            "flood_hazard_index": 22.7
+        },
+        {
+            "commune": "080211",
+            "flood_hazard_index": 39.8
+        },
+        {
+            "commune": "080301",
+            "flood_hazard_index": 56.8
+        },
+        {
+            "commune": "080302",
+            "flood_hazard_index": 57
+        },
+        {
+            "commune": "080303",
+            "flood_hazard_index": 57.8
+        },
+        {
+            "commune": "080304",
+            "flood_hazard_index": 23.7
+        },
+        {
+            "commune": "080305",
+            "flood_hazard_index": 21.3
+        },
+        {
+            "commune": "080306",
+            "flood_hazard_index": 34.1
+        },
+        {
+            "commune": "080307",
+            "flood_hazard_index": 52
+        },
+        {
+            "commune": "080308",
+            "flood_hazard_index": 59.9
+        },
+        {
+            "commune": "080309",
+            "flood_hazard_index": 43.7
+        },
+        {
+            "commune": "080310",
+            "flood_hazard_index": 46.6
+        },
+        {
+            "commune": "080311",
+            "flood_hazard_index": 50.8
+        },
+        {
+            "commune": "080312",
+            "flood_hazard_index": 42.3
+        },
+        {
+            "commune": "080313",
+            "flood_hazard_index": 45.6
+        },
+        {
+            "commune": "080314",
+            "flood_hazard_index": 48.4
+        },
+        {
+            "commune": "080315",
+            "flood_hazard_index": 47.8
+        },
+        {
+            "commune": "080316",
+            "flood_hazard_index": 41.1
+        },
+        {
+            "commune": "080317",
+            "flood_hazard_index": 28.3
+        },
+        {
+            "commune": "080318",
+            "flood_hazard_index": 57.7
+        },
+        {
+            "commune": "080401",
+            "flood_hazard_index": 70.8
+        },
+        {
+            "commune": "080402",
+            "flood_hazard_index": 62.4
+        },
+        {
+            "commune": "080403",
+            "flood_hazard_index": 33.7
+        },
+        {
+            "commune": "080404",
+            "flood_hazard_index": 9.3
+        },
+        {
+            "commune": "080405",
+            "flood_hazard_index": 15.1
+        },
+        {
+            "commune": "080407",
+            "flood_hazard_index": 46.5
+        },
+        {
+            "commune": "080408",
+            "flood_hazard_index": 56.6
+        },
+        {
+            "commune": "080409",
+            "flood_hazard_index": 72
+        },
+        {
+            "commune": "080410",
+            "flood_hazard_index": 44.2
+        },
+        {
+            "commune": "080411",
+            "flood_hazard_index": 28.6
+        },
+        {
+            "commune": "080412",
+            "flood_hazard_index": 57.8
+        },
+        {
+            "commune": "080501",
+            "flood_hazard_index": 55.7
+        },
+        {
+            "commune": "080502",
+            "flood_hazard_index": 64.4
+        },
+        {
+            "commune": "080503",
+            "flood_hazard_index": 55.7
+        },
+        {
+            "commune": "080504",
+            "flood_hazard_index": 56.6
+        },
+        {
+            "commune": "080505",
+            "flood_hazard_index": 41
+        },
+        {
+            "commune": "080506",
+            "flood_hazard_index": 49.9
+        },
+        {
+            "commune": "080507",
+            "flood_hazard_index": 55.1
+        },
+        {
+            "commune": "080601",
+            "flood_hazard_index": 12.2
+        },
+        {
+            "commune": "080602",
+            "flood_hazard_index": 84.7
+        },
+        {
+            "commune": "080603",
+            "flood_hazard_index": 54.9
+        },
+        {
+            "commune": "080604",
+            "flood_hazard_index": 26.6
+        },
+        {
+            "commune": "080605",
+            "flood_hazard_index": 37.5
+        },
+        {
+            "commune": "080606",
+            "flood_hazard_index": 35.3
+        },
+        {
+            "commune": "080607",
+            "flood_hazard_index": 68.1
+        },
+        {
+            "commune": "080608",
+            "flood_hazard_index": 70.3
+        },
+        {
+            "commune": "080609",
+            "flood_hazard_index": 73.9
+        },
+        {
+            "commune": "080610",
+            "flood_hazard_index": 54.6
+        },
+        {
+            "commune": "080611",
+            "flood_hazard_index": 40.2
+        },
+        {
+            "commune": "080612",
+            "flood_hazard_index": 23.2
+        },
+        {
+            "commune": "080613",
+            "flood_hazard_index": 67.9
+        },
+        {
+            "commune": "080614",
+            "flood_hazard_index": 42.7
+        },
+        {
+            "commune": "080615",
+            "flood_hazard_index": 49.8
+        },
+        {
+            "commune": "080703",
+            "flood_hazard_index": 56.7
+        },
+        {
+            "commune": "080704",
+            "flood_hazard_index": 57.6
+        },
+        {
+            "commune": "080707",
+            "flood_hazard_index": 26
+        },
+        {
+            "commune": "080708",
+            "flood_hazard_index": 56
+        },
+        {
+            "commune": "080709",
+            "flood_hazard_index": 60.9
+        },
+        {
+            "commune": "080710",
+            "flood_hazard_index": 72.3
+        },
+        {
+            "commune": "080711",
+            "flood_hazard_index": 67.9
+        },
+        {
+            "commune": "080801",
+            "flood_hazard_index": 0.5
+        },
+        {
+            "commune": "080803",
+            "flood_hazard_index": 0.9
+        },
+        {
+            "commune": "080804",
+            "flood_hazard_index": 0.8
+        },
+        {
+            "commune": "080807",
+            "flood_hazard_index": 2.3
+        },
+        {
+            "commune": "080808",
+            "flood_hazard_index": 1.4
+        },
+        {
+            "commune": "080809",
+            "flood_hazard_index": 0.4
+        },
+        {
+            "commune": "080811",
+            "flood_hazard_index": 1.6
+        },
+        {
+            "commune": "080813",
+            "flood_hazard_index": 1
+        },
+        {
+            "commune": "080814",
+            "flood_hazard_index": 0.5
+        },
+        {
+            "commune": "080816",
+            "flood_hazard_index": 0.6
+        },
+        {
+            "commune": "080901",
+            "flood_hazard_index": 7.6
+        },
+        {
+            "commune": "080902",
+            "flood_hazard_index": 13.5
+        },
+        {
+            "commune": "080903",
+            "flood_hazard_index": 44.3
+        },
+        {
+            "commune": "080904",
+            "flood_hazard_index": 77
+        },
+        {
+            "commune": "080905",
+            "flood_hazard_index": 64.6
+        },
+        {
+            "commune": "080906",
+            "flood_hazard_index": 20.8
+        },
+        {
+            "commune": "080907",
+            "flood_hazard_index": 49
+        },
+        {
+            "commune": "080910",
+            "flood_hazard_index": 35.7
+        },
+        {
+            "commune": "080911",
+            "flood_hazard_index": 12.6
+        },
+        {
+            "commune": "080913",
+            "flood_hazard_index": 0.6
+        },
+        {
+            "commune": "080914",
+            "flood_hazard_index": 9.6
+        },
+        {
+            "commune": "081001",
+            "flood_hazard_index": 48.9
+        },
+        {
+            "commune": "081002",
+            "flood_hazard_index": 7
+        },
+        {
+            "commune": "081003",
+            "flood_hazard_index": 43.3
+        },
+        {
+            "commune": "081004",
+            "flood_hazard_index": 13.4
+        },
+        {
+            "commune": "081005",
+            "flood_hazard_index": 53.5
+        },
+        {
+            "commune": "081006",
+            "flood_hazard_index": 49.1
+        },
+        {
+            "commune": "081007",
+            "flood_hazard_index": 53.1
+        },
+        {
+            "commune": "081008",
+            "flood_hazard_index": 9.6
+        },
+        {
+            "commune": "081009",
+            "flood_hazard_index": 23.2
+        },
+        {
+            "commune": "081010",
+            "flood_hazard_index": 48.4
+        },
+        {
+            "commune": "081011",
+            "flood_hazard_index": 9.2
+        },
+        {
+            "commune": "081012",
+            "flood_hazard_index": 15.2
+        },
+        {
+            "commune": "081013",
+            "flood_hazard_index": 7.9
+        },
+        {
+            "commune": "081014",
+            "flood_hazard_index": 29.8
+        },
+        {
+            "commune": "081015",
+            "flood_hazard_index": 28
+        },
+        {
+            "commune": "081016",
+            "flood_hazard_index": 38
+        },
+        {
+            "commune": "081101",
+            "flood_hazard_index": 17.5
+        },
+        {
+            "commune": "081102",
+            "flood_hazard_index": 24.9
+        },
+        {
+            "commune": "081103",
+            "flood_hazard_index": 15.8
+        },
+        {
+            "commune": "081104",
+            "flood_hazard_index": 3.6
+        },
+        {
+            "commune": "081105",
+            "flood_hazard_index": 14.4
+        },
+        {
+            "commune": "081106",
+            "flood_hazard_index": 1.8
+        },
+        {
+            "commune": "090101",
+            "flood_hazard_index": 0.4
+        },
+        {
+            "commune": "090102",
+            "flood_hazard_index": 0.3
+        },
+        {
+            "commune": "090103",
+            "flood_hazard_index": 0.4
+        },
+        {
+            "commune": "090104",
+            "flood_hazard_index": 0.3
+        },
+        {
+            "commune": "090201",
+            "flood_hazard_index": 1.4
+        },
+        {
+            "commune": "090202",
+            "flood_hazard_index": 0.2
+        },
+        {
+            "commune": "090203",
+            "flood_hazard_index": 0.3
+        },
+        {
+            "commune": "090301",
+            "flood_hazard_index": 0.3
+        },
+        {
+            "commune": "090302",
+            "flood_hazard_index": 1.9
+        },
+        {
+            "commune": "090303",
+            "flood_hazard_index": 0.7
+        },
+        {
+            "commune": "090304",
+            "flood_hazard_index": 0.4
+        },
+        {
+            "commune": "090401",
+            "flood_hazard_index": 1
+        },
+        {
+            "commune": "090402",
+            "flood_hazard_index": 0.9
+        },
+        {
+            "commune": "090403",
+            "flood_hazard_index": 2.2
+        },
+        {
+            "commune": "090501",
+            "flood_hazard_index": 0.7
+        },
+        {
+            "commune": "090502",
+            "flood_hazard_index": 4.5
+        },
+        {
+            "commune": "090503",
+            "flood_hazard_index": 0.7
+        },
+        {
+            "commune": "090601",
+            "flood_hazard_index": 0.5
+        },
+        {
+            "commune": "090602",
+            "flood_hazard_index": 0.3
+        },
+        {
+            "commune": "090603",
+            "flood_hazard_index": 0.2
+        },
+        {
+            "commune": "090604",
+            "flood_hazard_index": 0.6
+        },
+        {
+            "commune": "090605",
+            "flood_hazard_index": 0.3
+        },
+        {
+            "commune": "090606",
+            "flood_hazard_index": 4.2
+        },
+        {
+            "commune": "090701",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "090702",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "090703",
+            "flood_hazard_index": 0.2
+        },
+        {
+            "commune": "090704",
+            "flood_hazard_index": 0.5
+        },
+        {
+            "commune": "090705",
+            "flood_hazard_index": 0.5
+        },
+        {
+            "commune": "090706",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "100101",
+            "flood_hazard_index": 18.1
+        },
+        {
+            "commune": "100102",
+            "flood_hazard_index": 1.7
+        },
+        {
+            "commune": "100103",
+            "flood_hazard_index": 35.7
+        },
+        {
+            "commune": "100104",
+            "flood_hazard_index": 0.1
+        },
+        {
+            "commune": "100105",
+            "flood_hazard_index": 5.5
+        },
+        {
+            "commune": "100106",
+            "flood_hazard_index": 39.3
+        },
+        {
+            "commune": "100107",
+            "flood_hazard_index": 33.2
+        },
+        {
+            "commune": "100108",
+            "flood_hazard_index": 5.6
+        },
+        {
+            "commune": "100207",
+            "flood_hazard_index": 4.3
+        },
+        {
+            "commune": "100208",
+            "flood_hazard_index": 16.8
+        },
+        {
+            "commune": "100209",
+            "flood_hazard_index": 17.3
+        },
+        {
+            "commune": "100210",
+            "flood_hazard_index": 6.8
+        },
+        {
+            "commune": "100211",
+            "flood_hazard_index": 27.5
+        },
+        {
+            "commune": "100301",
+            "flood_hazard_index": 5.9
+        },
+        {
+            "commune": "100302",
+            "flood_hazard_index": 1.1
+        },
+        {
+            "commune": "100303",
+            "flood_hazard_index": 9.6
+        },
+        {
+            "commune": "100304",
+            "flood_hazard_index": 18.1
+        },
+        {
+            "commune": "100305",
+            "flood_hazard_index": 4.9
+        },
+        {
+            "commune": "100306",
+            "flood_hazard_index": 14.4
+        },
+        {
+            "commune": "100307",
+            "flood_hazard_index": 3.4
+        },
+        {
+            "commune": "100308",
+            "flood_hazard_index": 14.5
+        },
+        {
+            "commune": "100401",
+            "flood_hazard_index": 0.3
+        },
+        {
+            "commune": "100402",
+            "flood_hazard_index": 0.1
+        },
+        {
+            "commune": "100403",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "100404",
+            "flood_hazard_index": 0.7
+        },
+        {
+            "commune": "100405",
+            "flood_hazard_index": 0.2
+        },
+        {
+            "commune": "100406",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "100407",
+            "flood_hazard_index": 0.6
+        },
+        {
+            "commune": "100408",
+            "flood_hazard_index": 0.3
+        },
+        {
+            "commune": "100409",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "100410",
+            "flood_hazard_index": 0.1
+        },
+        {
+            "commune": "100501",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "100502",
+            "flood_hazard_index": 0.1
+        },
+        {
+            "commune": "100503",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "100504",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "100505",
+            "flood_hazard_index": 0.1
+        },
+        {
+            "commune": "100601",
+            "flood_hazard_index": 20.9
+        },
+        {
+            "commune": "100602",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "100603",
+            "flood_hazard_index": 1.4
+        },
+        {
+            "commune": "100604",
+            "flood_hazard_index": 0.1
+        },
+        {
+            "commune": "100605",
+            "flood_hazard_index": 0.1
+        },
+        {
+            "commune": "100606",
+            "flood_hazard_index": 10.4
+        },
+        {
+            "commune": "100607",
+            "flood_hazard_index": 0.4
+        },
+        {
+            "commune": "100608",
+            "flood_hazard_index": 0.4
+        },
+        {
+            "commune": "100609",
+            "flood_hazard_index": 12.1
+        },
+        {
+            "commune": "100610",
+            "flood_hazard_index": 0.2
+        },
+        {
+            "commune": "110101",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "110102",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "110103",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "110104",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "110105",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "110201",
+            "flood_hazard_index": 0.1
+        },
+        {
+            "commune": "110202",
+            "flood_hazard_index": 0.3
+        },
+        {
+            "commune": "110203",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "110204",
+            "flood_hazard_index": 0.1
+        },
+        {
+            "commune": "110205",
+            "flood_hazard_index": 0.2
+        },
+        {
+            "commune": "110206",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "110301",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "110302",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "110401",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "110402",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "110403",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "110404",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "110501",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "110502",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "110503",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "110504",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "120101",
+            "flood_hazard_index": 9.5
+        },
+        {
+            "commune": "120102",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "120103",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "120104",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "120105",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "120106",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "120107",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "120108",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "120109",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "120110",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "120111",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "120112",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "120201",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "120202",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "120203",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "120204",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "120205",
+            "flood_hazard_index": 2.2
+        },
+        {
+            "commune": "120206",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "120207",
+            "flood_hazard_index": 1.8
+        },
+        {
+            "commune": "120208",
+            "flood_hazard_index": 0.8
+        },
+        {
+            "commune": "120209",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "120210",
+            "flood_hazard_index": 9.2
+        },
+        {
+            "commune": "120211",
+            "flood_hazard_index": 0.7
+        },
+        {
+            "commune": "120301",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "120302",
+            "flood_hazard_index": 0.3
+        },
+        {
+            "commune": "120303",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "120304",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "120305",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "120306",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "120307",
+            "flood_hazard_index": 0.1
+        },
+        {
+            "commune": "120308",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "120401",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "120402",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "120403",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "120404",
+            "flood_hazard_index": 0.2
+        },
+        {
+            "commune": "120405",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "120406",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "120407",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "120408",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "120409",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "120410",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "120501",
+            "flood_hazard_index": 13.7
+        },
+        {
+            "commune": "120507",
+            "flood_hazard_index": 0.3
+        },
+        {
+            "commune": "120508",
+            "flood_hazard_index": 1.6
+        },
+        {
+            "commune": "120510",
+            "flood_hazard_index": 7.5
+        },
+        {
+            "commune": "120512",
+            "flood_hazard_index": 5.3
+        },
+        {
+            "commune": "120513",
+            "flood_hazard_index": 2.8
+        },
+        {
+            "commune": "120514",
+            "flood_hazard_index": 3.4
+        },
+        {
+            "commune": "120515",
+            "flood_hazard_index": 18.7
+        },
+        {
+            "commune": "120516",
+            "flood_hazard_index": 3.8
+        },
+        {
+            "commune": "120517",
+            "flood_hazard_index": 5.2
+        },
+        {
+            "commune": "120518",
+            "flood_hazard_index": 0.5
+        },
+        {
+            "commune": "120519",
+            "flood_hazard_index": 4.7
+        },
+        {
+            "commune": "120520",
+            "flood_hazard_index": 1.6
+        },
+        {
+            "commune": "120601",
+            "flood_hazard_index": 1.2
+        },
+        {
+            "commune": "120602",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "120606",
+            "flood_hazard_index": 9.5
+        },
+        {
+            "commune": "120607",
+            "flood_hazard_index": 29.5
+        },
+        {
+            "commune": "120702",
+            "flood_hazard_index": 0.6
+        },
+        {
+            "commune": "120703",
+            "flood_hazard_index": 8.7
+        },
+        {
+            "commune": "120704",
+            "flood_hazard_index": 6.2
+        },
+        {
+            "commune": "120706",
+            "flood_hazard_index": 4.6
+        },
+        {
+            "commune": "120711",
+            "flood_hazard_index": 8.4
+        },
+        {
+            "commune": "120712",
+            "flood_hazard_index": 13.4
+        },
+        {
+            "commune": "120801",
+            "flood_hazard_index": 5.9
+        },
+        {
+            "commune": "120802",
+            "flood_hazard_index": 0.8
+        },
+        {
+            "commune": "120803",
+            "flood_hazard_index": 8.7
+        },
+        {
+            "commune": "120807",
+            "flood_hazard_index": 2.2
+        },
+        {
+            "commune": "120901",
+            "flood_hazard_index": 3.2
+        },
+        {
+            "commune": "120903",
+            "flood_hazard_index": 0.6
+        },
+        {
+            "commune": "120904",
+            "flood_hazard_index": 2.6
+        },
+        {
+            "commune": "120905",
+            "flood_hazard_index": 2.3
+        },
+        {
+            "commune": "120906",
+            "flood_hazard_index": 3
+        },
+        {
+            "commune": "120908",
+            "flood_hazard_index": 2
+        },
+        {
+            "commune": "120909",
+            "flood_hazard_index": 1.5
+        },
+        {
+            "commune": "120910",
+            "flood_hazard_index": 1
+        },
+        {
+            "commune": "120911",
+            "flood_hazard_index": 1.5
+        },
+        {
+            "commune": "120913",
+            "flood_hazard_index": 7.6
+        },
+        {
+            "commune": "121001",
+            "flood_hazard_index": 4.7
+        },
+        {
+            "commune": "121002",
+            "flood_hazard_index": 31
+        },
+        {
+            "commune": "121003",
+            "flood_hazard_index": 57.6
+        },
+        {
+            "commune": "121004",
+            "flood_hazard_index": 11.3
+        },
+        {
+            "commune": "121005",
+            "flood_hazard_index": 40.8
+        },
+        {
+            "commune": "121101",
+            "flood_hazard_index": 27.1
+        },
+        {
+            "commune": "121102",
+            "flood_hazard_index": 12.1
+        },
+        {
+            "commune": "121103",
+            "flood_hazard_index": 41.9
+        },
+        {
+            "commune": "121104",
+            "flood_hazard_index": 21.5
+        },
+        {
+            "commune": "121105",
+            "flood_hazard_index": 11.2
+        },
+        {
+            "commune": "121201",
+            "flood_hazard_index": 2.1
+        },
+        {
+            "commune": "121202",
+            "flood_hazard_index": 2.6
+        },
+        {
+            "commune": "121203",
+            "flood_hazard_index": 4.9
+        },
+        {
+            "commune": "121204",
+            "flood_hazard_index": 1.7
+        },
+        {
+            "commune": "121205",
+            "flood_hazard_index": 1.3
+        },
+        {
+            "commune": "121206",
+            "flood_hazard_index": 7.5
+        },
+        {
+            "commune": "121207",
+            "flood_hazard_index": 10.7
+        },
+        {
+            "commune": "121208",
+            "flood_hazard_index": 2
+        },
+        {
+            "commune": "130101",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "130102",
+            "flood_hazard_index": 1.1
+        },
+        {
+            "commune": "130103",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "130104",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "130105",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "130106",
+            "flood_hazard_index": 0.4
+        },
+        {
+            "commune": "130201",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "130202",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "130203",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "130204",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "130205",
+            "flood_hazard_index": 0.1
+        },
+        {
+            "commune": "130206",
+            "flood_hazard_index": 0.1
+        },
+        {
+            "commune": "130207",
+            "flood_hazard_index": 0.1
+        },
+        {
+            "commune": "130208",
+            "flood_hazard_index": 0.2
+        },
+        {
+            "commune": "130301",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "130302",
+            "flood_hazard_index": 0.1
+        },
+        {
+            "commune": "130303",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "130304",
+            "flood_hazard_index": 0.1
+        },
+        {
+            "commune": "130305",
+            "flood_hazard_index": 0.5
+        },
+        {
+            "commune": "130306",
+            "flood_hazard_index": 0.1
+        },
+        {
+            "commune": "130307",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "130308",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "130401",
+            "flood_hazard_index": 0.5
+        },
+        {
+            "commune": "130402",
+            "flood_hazard_index": 1.8
+        },
+        {
+            "commune": "130403",
+            "flood_hazard_index": 2.4
+        },
+        {
+            "commune": "130404",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "130405",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "130406",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "130501",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "130502",
+            "flood_hazard_index": 0.2
+        },
+        {
+            "commune": "130503",
+            "flood_hazard_index": 0.1
+        },
+        {
+            "commune": "130504",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "130505",
+            "flood_hazard_index": 0.1
+        },
+        {
+            "commune": "130506",
+            "flood_hazard_index": 0.7
+        },
+        {
+            "commune": "130507",
+            "flood_hazard_index": 0.5
+        },
+        {
+            "commune": "130508",
+            "flood_hazard_index": 0.2
+        },
+        {
+            "commune": "130509",
+            "flood_hazard_index": 0.4
+        },
+        {
+            "commune": "130510",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "130511",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "130512",
+            "flood_hazard_index": 0.1
+        },
+        {
+            "commune": "130601",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "130602",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "130603",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "130604",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "130605",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "130703",
+            "flood_hazard_index": 2.2
+        },
+        {
+            "commune": "130704",
+            "flood_hazard_index": 0.4
+        },
+        {
+            "commune": "130705",
+            "flood_hazard_index": 0.6
+        },
+        {
+            "commune": "130706",
+            "flood_hazard_index": 0.5
+        },
+        {
+            "commune": "130801",
+            "flood_hazard_index": 6.6
+        },
+        {
+            "commune": "130802",
+            "flood_hazard_index": 0.7
+        },
+        {
+            "commune": "140101",
+            "flood_hazard_index": 3.1
+        },
+        {
+            "commune": "140102",
+            "flood_hazard_index": 49.9
+        },
+        {
+            "commune": "140103",
+            "flood_hazard_index": 28
+        },
+        {
+            "commune": "140104",
+            "flood_hazard_index": 31.7
+        },
+        {
+            "commune": "140105",
+            "flood_hazard_index": 38.4
+        },
+        {
+            "commune": "140106",
+            "flood_hazard_index": 18.1
+        },
+        {
+            "commune": "140107",
+            "flood_hazard_index": 1
+        },
+        {
+            "commune": "140108",
+            "flood_hazard_index": 1
+        },
+        {
+            "commune": "140109",
+            "flood_hazard_index": 23.7
+        },
+        {
+            "commune": "140201",
+            "flood_hazard_index": 0.6
+        },
+        {
+            "commune": "140202",
+            "flood_hazard_index": 3.3
+        },
+        {
+            "commune": "140203",
+            "flood_hazard_index": 2.3
+        },
+        {
+            "commune": "140204",
+            "flood_hazard_index": 0.3
+        },
+        {
+            "commune": "140205",
+            "flood_hazard_index": 12.9
+        },
+        {
+            "commune": "140206",
+            "flood_hazard_index": 5.4
+        },
+        {
+            "commune": "140207",
+            "flood_hazard_index": 0.3
+        },
+        {
+            "commune": "140208",
+            "flood_hazard_index": 5.5
+        },
+        {
+            "commune": "140301",
+            "flood_hazard_index": 12.9
+        },
+        {
+            "commune": "140302",
+            "flood_hazard_index": 27.6
+        },
+        {
+            "commune": "140303",
+            "flood_hazard_index": 29.6
+        },
+        {
+            "commune": "140304",
+            "flood_hazard_index": 5
+        },
+        {
+            "commune": "140305",
+            "flood_hazard_index": 11.8
+        },
+        {
+            "commune": "140306",
+            "flood_hazard_index": 0.6
+        },
+        {
+            "commune": "140307",
+            "flood_hazard_index": 38.9
+        },
+        {
+            "commune": "140308",
+            "flood_hazard_index": 70
+        },
+        {
+            "commune": "140309",
+            "flood_hazard_index": 8.8
+        },
+        {
+            "commune": "140310",
+            "flood_hazard_index": 0.9
+        },
+        {
+            "commune": "140311",
+            "flood_hazard_index": 1.3
+        },
+        {
+            "commune": "140312",
+            "flood_hazard_index": 1.4
+        },
+        {
+            "commune": "140313",
+            "flood_hazard_index": 10.3
+        },
+        {
+            "commune": "140401",
+            "flood_hazard_index": 21.5
+        },
+        {
+            "commune": "140402",
+            "flood_hazard_index": 15.3
+        },
+        {
+            "commune": "140403",
+            "flood_hazard_index": 15.5
+        },
+        {
+            "commune": "140404",
+            "flood_hazard_index": 1.2
+        },
+        {
+            "commune": "140405",
+            "flood_hazard_index": 1
+        },
+        {
+            "commune": "140406",
+            "flood_hazard_index": 6
+        },
+        {
+            "commune": "140407",
+            "flood_hazard_index": 3.4
+        },
+        {
+            "commune": "140408",
+            "flood_hazard_index": 11.4
+        },
+        {
+            "commune": "140501",
+            "flood_hazard_index": 2.6
+        },
+        {
+            "commune": "140502",
+            "flood_hazard_index": 0.1
+        },
+        {
+            "commune": "140503",
+            "flood_hazard_index": 5.7
+        },
+        {
+            "commune": "140504",
+            "flood_hazard_index": 2.3
+        },
+        {
+            "commune": "140505",
+            "flood_hazard_index": 5.2
+        },
+        {
+            "commune": "140506",
+            "flood_hazard_index": 0.4
+        },
+        {
+            "commune": "140507",
+            "flood_hazard_index": 3.6
+        },
+        {
+            "commune": "140508",
+            "flood_hazard_index": 4.1
+        },
+        {
+            "commune": "140601",
+            "flood_hazard_index": 53.8
+        },
+        {
+            "commune": "140602",
+            "flood_hazard_index": 53.9
+        },
+        {
+            "commune": "140603",
+            "flood_hazard_index": 42.4
+        },
+        {
+            "commune": "140604",
+            "flood_hazard_index": 50.2
+        },
+        {
+            "commune": "140605",
+            "flood_hazard_index": 63.2
+        },
+        {
+            "commune": "140606",
+            "flood_hazard_index": 45
+        },
+        {
+            "commune": "140607",
+            "flood_hazard_index": 32.5
+        },
+        {
+            "commune": "140608",
+            "flood_hazard_index": 63
+        },
+        {
+            "commune": "140609",
+            "flood_hazard_index": 51.2
+        },
+        {
+            "commune": "140610",
+            "flood_hazard_index": 54.5
+        },
+        {
+            "commune": "140701",
+            "flood_hazard_index": 39.1
+        },
+        {
+            "commune": "140702",
+            "flood_hazard_index": 64.5
+        },
+        {
+            "commune": "140703",
+            "flood_hazard_index": 48.9
+        },
+        {
+            "commune": "140704",
+            "flood_hazard_index": 12.5
+        },
+        {
+            "commune": "140705",
+            "flood_hazard_index": 67.1
+        },
+        {
+            "commune": "140706",
+            "flood_hazard_index": 53.2
+        },
+        {
+            "commune": "140707",
+            "flood_hazard_index": 30.7
+        },
+        {
+            "commune": "140708",
+            "flood_hazard_index": 35.7
+        },
+        {
+            "commune": "140801",
+            "flood_hazard_index": 44.9
+        },
+        {
+            "commune": "140802",
+            "flood_hazard_index": 39.5
+        },
+        {
+            "commune": "140803",
+            "flood_hazard_index": 51.3
+        },
+        {
+            "commune": "140805",
+            "flood_hazard_index": 62.7
+        },
+        {
+            "commune": "140807",
+            "flood_hazard_index": 39.9
+        },
+        {
+            "commune": "140808",
+            "flood_hazard_index": 62.6
+        },
+        {
+            "commune": "140809",
+            "flood_hazard_index": 55.5
+        },
+        {
+            "commune": "140810",
+            "flood_hazard_index": 63.7
+        },
+        {
+            "commune": "140811",
+            "flood_hazard_index": 51.9
+        },
+        {
+            "commune": "140901",
+            "flood_hazard_index": 26.7
+        },
+        {
+            "commune": "140902",
+            "flood_hazard_index": 54.6
+        },
+        {
+            "commune": "140903",
+            "flood_hazard_index": 40.8
+        },
+        {
+            "commune": "140904",
+            "flood_hazard_index": 18.1
+        },
+        {
+            "commune": "140905",
+            "flood_hazard_index": 39.4
+        },
+        {
+            "commune": "140906",
+            "flood_hazard_index": 14.7
+        },
+        {
+            "commune": "140907",
+            "flood_hazard_index": 21.5
+        },
+        {
+            "commune": "140908",
+            "flood_hazard_index": 61.5
+        },
+        {
+            "commune": "140909",
+            "flood_hazard_index": 36.7
+        },
+        {
+            "commune": "140910",
+            "flood_hazard_index": 21.9
+        },
+        {
+            "commune": "140911",
+            "flood_hazard_index": 35.9
+        },
+        {
+            "commune": "141001",
+            "flood_hazard_index": 34.3
+        },
+        {
+            "commune": "141002",
+            "flood_hazard_index": 13.3
+        },
+        {
+            "commune": "141003",
+            "flood_hazard_index": 13.7
+        },
+        {
+            "commune": "141101",
+            "flood_hazard_index": 59.5
+        },
+        {
+            "commune": "141102",
+            "flood_hazard_index": 43.7
+        },
+        {
+            "commune": "141103",
+            "flood_hazard_index": 33.2
+        },
+        {
+            "commune": "141104",
+            "flood_hazard_index": 49.6
+        },
+        {
+            "commune": "141105",
+            "flood_hazard_index": 36.8
+        },
+        {
+            "commune": "141106",
+            "flood_hazard_index": 46.2
+        },
+        {
+            "commune": "141107",
+            "flood_hazard_index": 50.6
+        },
+        {
+            "commune": "141201",
+            "flood_hazard_index": 35.4
+        },
+        {
+            "commune": "141202",
+            "flood_hazard_index": 60.7
+        },
+        {
+            "commune": "141203",
+            "flood_hazard_index": 47.6
+        },
+        {
+            "commune": "141204",
+            "flood_hazard_index": 46.8
+        },
+        {
+            "commune": "141205",
+            "flood_hazard_index": 64.4
+        },
+        {
+            "commune": "141206",
+            "flood_hazard_index": 15.9
+        },
+        {
+            "commune": "141207",
+            "flood_hazard_index": 44.3
+        },
+        {
+            "commune": "141208",
+            "flood_hazard_index": 44
+        },
+        {
+            "commune": "141209",
+            "flood_hazard_index": 40.5
+        },
+        {
+            "commune": "141210",
+            "flood_hazard_index": 42.5
+        },
+        {
+            "commune": "141211",
+            "flood_hazard_index": 32.1
+        },
+        {
+            "commune": "141301",
+            "flood_hazard_index": 2.1
+        },
+        {
+            "commune": "141302",
+            "flood_hazard_index": 0.8
+        },
+        {
+            "commune": "141303",
+            "flood_hazard_index": 0.8
+        },
+        {
+            "commune": "141304",
+            "flood_hazard_index": 21.8
+        },
+        {
+            "commune": "141305",
+            "flood_hazard_index": 18.8
+        },
+        {
+            "commune": "141306",
+            "flood_hazard_index": 1.7
+        },
+        {
+            "commune": "141307",
+            "flood_hazard_index": 31
+        },
+        {
+            "commune": "141308",
+            "flood_hazard_index": 7.6
+        },
+        {
+            "commune": "141309",
+            "flood_hazard_index": 18.5
+        },
+        {
+            "commune": "141310",
+            "flood_hazard_index": 5.8
+        },
+        {
+            "commune": "141311",
+            "flood_hazard_index": 14.4
+        },
+        {
+            "commune": "150101",
+            "flood_hazard_index": 14.1
+        },
+        {
+            "commune": "150102",
+            "flood_hazard_index": 1.4
+        },
+        {
+            "commune": "150103",
+            "flood_hazard_index": 0.2
+        },
+        {
+            "commune": "150104",
+            "flood_hazard_index": 17.3
+        },
+        {
+            "commune": "150105",
+            "flood_hazard_index": 18.1
+        },
+        {
+            "commune": "150106",
+            "flood_hazard_index": 0.5
+        },
+        {
+            "commune": "150107",
+            "flood_hazard_index": 7
+        },
+        {
+            "commune": "150108",
+            "flood_hazard_index": 20.6
+        },
+        {
+            "commune": "150109",
+            "flood_hazard_index": 0.1
+        },
+        {
+            "commune": "150110",
+            "flood_hazard_index": 0.2
+        },
+        {
+            "commune": "150201",
+            "flood_hazard_index": 9.9
+        },
+        {
+            "commune": "150203",
+            "flood_hazard_index": 7
+        },
+        {
+            "commune": "150204",
+            "flood_hazard_index": 20.3
+        },
+        {
+            "commune": "150205",
+            "flood_hazard_index": 51.5
+        },
+        {
+            "commune": "150206",
+            "flood_hazard_index": 13.7
+        },
+        {
+            "commune": "150207",
+            "flood_hazard_index": 2.2
+        },
+        {
+            "commune": "150208",
+            "flood_hazard_index": 10.2
+        },
+        {
+            "commune": "150209",
+            "flood_hazard_index": 7.4
+        },
+        {
+            "commune": "150210",
+            "flood_hazard_index": 0.4
+        },
+        {
+            "commune": "150301",
+            "flood_hazard_index": 0.3
+        },
+        {
+            "commune": "150302",
+            "flood_hazard_index": 9.7
+        },
+        {
+            "commune": "150303",
+            "flood_hazard_index": 0.1
+        },
+        {
+            "commune": "150304",
+            "flood_hazard_index": 0.1
+        },
+        {
+            "commune": "150305",
+            "flood_hazard_index": 38.9
+        },
+        {
+            "commune": "150306",
+            "flood_hazard_index": 21.7
+        },
+        {
+            "commune": "150307",
+            "flood_hazard_index": 7.4
+        },
+        {
+            "commune": "150308",
+            "flood_hazard_index": 11.7
+        },
+        {
+            "commune": "150309",
+            "flood_hazard_index": 12.8
+        },
+        {
+            "commune": "150310",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "150311",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "150401",
+            "flood_hazard_index": 1.5
+        },
+        {
+            "commune": "150402",
+            "flood_hazard_index": 1.7
+        },
+        {
+            "commune": "150403",
+            "flood_hazard_index": 0.1
+        },
+        {
+            "commune": "150404",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "150405",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "150406",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "150407",
+            "flood_hazard_index": 0.1
+        },
+        {
+            "commune": "150501",
+            "flood_hazard_index": 0.8
+        },
+        {
+            "commune": "150503",
+            "flood_hazard_index": 1.6
+        },
+        {
+            "commune": "150504",
+            "flood_hazard_index": 0.3
+        },
+        {
+            "commune": "150505",
+            "flood_hazard_index": 0.8
+        },
+        {
+            "commune": "150506",
+            "flood_hazard_index": 0.4
+        },
+        {
+            "commune": "150507",
+            "flood_hazard_index": 0.1
+        },
+        {
+            "commune": "150508",
+            "flood_hazard_index": 6.5
+        },
+        {
+            "commune": "150601",
+            "flood_hazard_index": 0.5
+        },
+        {
+            "commune": "150602",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "150603",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "150604",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "150605",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "160101",
+            "flood_hazard_index": 0.2
+        },
+        {
+            "commune": "160103",
+            "flood_hazard_index": 0.1
+        },
+        {
+            "commune": "160104",
+            "flood_hazard_index": 0.2
+        },
+        {
+            "commune": "160201",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "160202",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "160203",
+            "flood_hazard_index": 0.1
+        },
+        {
+            "commune": "160204",
+            "flood_hazard_index": 0.6
+        },
+        {
+            "commune": "160301",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "160302",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "160303",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "160304",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "160305",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "160306",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "160401",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "160402",
+            "flood_hazard_index": 0.2
+        },
+        {
+            "commune": "160403",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "160404",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "160405",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "160406",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "160501",
+            "flood_hazard_index": 0.1
+        },
+        {
+            "commune": "160502",
+            "flood_hazard_index": 0.1
+        },
+        {
+            "commune": "160503",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "160504",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "160505",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "160506",
+            "flood_hazard_index": 0.1
+        },
+        {
+            "commune": "160601",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "160602",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "160603",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "160604",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "160605",
+            "flood_hazard_index": 0.8
+        },
+        {
+            "commune": "160606",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "160607",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "160701",
+            "flood_hazard_index": 0.1
+        },
+        {
+            "commune": "160702",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "160703",
+            "flood_hazard_index": 0.1
+        },
+        {
+            "commune": "160704",
+            "flood_hazard_index": 0.1
+        },
+        {
+            "commune": "160705",
+            "flood_hazard_index": 0.8
+        },
+        {
+            "commune": "160706",
+            "flood_hazard_index": 0.1
+        },
+        {
+            "commune": "160707",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "160801",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "160802",
+            "flood_hazard_index": 0.1
+        },
+        {
+            "commune": "160901",
+            "flood_hazard_index": 0.1
+        },
+        {
+            "commune": "160903",
+            "flood_hazard_index": 0.2
+        },
+        {
+            "commune": "160904",
+            "flood_hazard_index": 0.2
+        },
+        {
+            "commune": "160905",
+            "flood_hazard_index": 0.1
+        },
+        {
+            "commune": "160906",
+            "flood_hazard_index": 0.2
+        },
+        {
+            "commune": "160907",
+            "flood_hazard_index": 0.1
+        },
+        {
+            "commune": "160908",
+            "flood_hazard_index": 0.1
+        },
+        {
+            "commune": "160909",
+            "flood_hazard_index": 0.1
+        },
+        {
+            "commune": "160910",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "170101",
+            "flood_hazard_index": 0.9
+        },
+        {
+            "commune": "170102",
+            "flood_hazard_index": 1.1
+        },
+        {
+            "commune": "170103",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "170104",
+            "flood_hazard_index": 0.8
+        },
+        {
+            "commune": "170105",
+            "flood_hazard_index": 0.1
+        },
+        {
+            "commune": "170106",
+            "flood_hazard_index": 0.4
+        },
+        {
+            "commune": "170107",
+            "flood_hazard_index": 1.1
+        },
+        {
+            "commune": "170201",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "170202",
+            "flood_hazard_index": 0.3
+        },
+        {
+            "commune": "170203",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "170204",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "170301",
+            "flood_hazard_index": 0.2
+        },
+        {
+            "commune": "170302",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "170303",
+            "flood_hazard_index": 0.9
+        },
+        {
+            "commune": "170304",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "170305",
+            "flood_hazard_index": 0.7
+        },
+        {
+            "commune": "170306",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "170401",
+            "flood_hazard_index": 42.8
+        },
+        {
+            "commune": "170402",
+            "flood_hazard_index": 24.8
+        },
+        {
+            "commune": "170403",
+            "flood_hazard_index": 3.4
+        },
+        {
+            "commune": "170404",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "170405",
+            "flood_hazard_index": 17.5
+        },
+        {
+            "commune": "170406",
+            "flood_hazard_index": 0.6
+        },
+        {
+            "commune": "170407",
+            "flood_hazard_index": 41
+        },
+        {
+            "commune": "170408",
+            "flood_hazard_index": 2.5
+        },
+        {
+            "commune": "170409",
+            "flood_hazard_index": 0.2
+        },
+        {
+            "commune": "170410",
+            "flood_hazard_index": 2.6
+        },
+        {
+            "commune": "170411",
+            "flood_hazard_index": 14.6
+        },
+        {
+            "commune": "170412",
+            "flood_hazard_index": 45.3
+        },
+        {
+            "commune": "170601",
+            "flood_hazard_index": 5.8
+        },
+        {
+            "commune": "170602",
+            "flood_hazard_index": 5
+        },
+        {
+            "commune": "170603",
+            "flood_hazard_index": 6
+        },
+        {
+            "commune": "170604",
+            "flood_hazard_index": 1.4
+        },
+        {
+            "commune": "170605",
+            "flood_hazard_index": 0.3
+        },
+        {
+            "commune": "170606",
+            "flood_hazard_index": 21.8
+        },
+        {
+            "commune": "170607",
+            "flood_hazard_index": 4.5
+        },
+        {
+            "commune": "170608",
+            "flood_hazard_index": 1.5
+        },
+        {
+            "commune": "170609",
+            "flood_hazard_index": 15.4
+        },
+        {
+            "commune": "170610",
+            "flood_hazard_index": 11
+        },
+        {
+            "commune": "170701",
+            "flood_hazard_index": 0.8
+        },
+        {
+            "commune": "170702",
+            "flood_hazard_index": 0.3
+        },
+        {
+            "commune": "170703",
+            "flood_hazard_index": 0.3
+        },
+        {
+            "commune": "170704",
+            "flood_hazard_index": 62.4
+        },
+        {
+            "commune": "170705",
+            "flood_hazard_index": 0.6
+        },
+        {
+            "commune": "170707",
+            "flood_hazard_index": 27.7
+        },
+        {
+            "commune": "170708",
+            "flood_hazard_index": 37.5
+        },
+        {
+            "commune": "170709",
+            "flood_hazard_index": 9.3
+        },
+        {
+            "commune": "170710",
+            "flood_hazard_index": 34.9
+        },
+        {
+            "commune": "170711",
+            "flood_hazard_index": 20.4
+        },
+        {
+            "commune": "170712",
+            "flood_hazard_index": 0.2
+        },
+        {
+            "commune": "170713",
+            "flood_hazard_index": 53.2
+        },
+        {
+            "commune": "170715",
+            "flood_hazard_index": 0.4
+        },
+        {
+            "commune": "170716",
+            "flood_hazard_index": 0.1
+        },
+        {
+            "commune": "170902",
+            "flood_hazard_index": 0.5
+        },
+        {
+            "commune": "170903",
+            "flood_hazard_index": 0.7
+        },
+        {
+            "commune": "170904",
+            "flood_hazard_index": 61.7
+        },
+        {
+            "commune": "170905",
+            "flood_hazard_index": 0.2
+        },
+        {
+            "commune": "170906",
+            "flood_hazard_index": 30.7
+        },
+        {
+            "commune": "170907",
+            "flood_hazard_index": 17.8
+        },
+        {
+            "commune": "170908",
+            "flood_hazard_index": 22.5
+        },
+        {
+            "commune": "170909",
+            "flood_hazard_index": 0.6
+        },
+        {
+            "commune": "171001",
+            "flood_hazard_index": 0.3
+        },
+        {
+            "commune": "171002",
+            "flood_hazard_index": 36.3
+        },
+        {
+            "commune": "171003",
+            "flood_hazard_index": 0.4
+        },
+        {
+            "commune": "171004",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "171005",
+            "flood_hazard_index": 2.3
+        },
+        {
+            "commune": "171006",
+            "flood_hazard_index": 38.8
+        },
+        {
+            "commune": "171007",
+            "flood_hazard_index": 54.9
+        },
+        {
+            "commune": "171008",
+            "flood_hazard_index": 57.4
+        },
+        {
+            "commune": "171009",
+            "flood_hazard_index": 34.4
+        },
+        {
+            "commune": "171010",
+            "flood_hazard_index": 53.1
+        },
+        {
+            "commune": "171011",
+            "flood_hazard_index": 1.2
+        },
+        {
+            "commune": "171012",
+            "flood_hazard_index": 27.4
+        },
+        {
+            "commune": "171013",
+            "flood_hazard_index": 10.1
+        },
+        {
+            "commune": "171101",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "171102",
+            "flood_hazard_index": 0.3
+        },
+        {
+            "commune": "171103",
+            "flood_hazard_index": 56.8
+        },
+        {
+            "commune": "171104",
+            "flood_hazard_index": 46.5
+        },
+        {
+            "commune": "171105",
+            "flood_hazard_index": 20.9
+        },
+        {
+            "commune": "171106",
+            "flood_hazard_index": 26
+        },
+        {
+            "commune": "171107",
+            "flood_hazard_index": 0.1
+        },
+        {
+            "commune": "171108",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "171109",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "171110",
+            "flood_hazard_index": 0.1
+        },
+        {
+            "commune": "171201",
+            "flood_hazard_index": 1.1
+        },
+        {
+            "commune": "171202",
+            "flood_hazard_index": 1.2
+        },
+        {
+            "commune": "171203",
+            "flood_hazard_index": 13.7
+        },
+        {
+            "commune": "171204",
+            "flood_hazard_index": 0.2
+        },
+        {
+            "commune": "171205",
+            "flood_hazard_index": 9.3
+        },
+        {
+            "commune": "171206",
+            "flood_hazard_index": 1.5
+        },
+        {
+            "commune": "171301",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "171302",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "171303",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "171304",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "171305",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "171401",
+            "flood_hazard_index": 0.4
+        },
+        {
+            "commune": "171402",
+            "flood_hazard_index": 0.1
+        },
+        {
+            "commune": "171403",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "171404",
+            "flood_hazard_index": 0.6
+        },
+        {
+            "commune": "171405",
+            "flood_hazard_index": 0.2
+        },
+        {
+            "commune": "180101",
+            "flood_hazard_index": 1.5
+        },
+        {
+            "commune": "180102",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "180103",
+            "flood_hazard_index": 1.6
+        },
+        {
+            "commune": "180104",
+            "flood_hazard_index": 0.5
+        },
+        {
+            "commune": "180105",
+            "flood_hazard_index": 0.5
+        },
+        {
+            "commune": "180201",
+            "flood_hazard_index": 2.1
+        },
+        {
+            "commune": "180202",
+            "flood_hazard_index": 4.4
+        },
+        {
+            "commune": "180203",
+            "flood_hazard_index": 2.8
+        },
+        {
+            "commune": "180204",
+            "flood_hazard_index": 0.6
+        },
+        {
+            "commune": "180205",
+            "flood_hazard_index": 1.3
+        },
+        {
+            "commune": "180206",
+            "flood_hazard_index": 4.2
+        },
+        {
+            "commune": "180207",
+            "flood_hazard_index": 3.2
+        },
+        {
+            "commune": "180208",
+            "flood_hazard_index": 1.4
+        },
+        {
+            "commune": "180209",
+            "flood_hazard_index": 0.3
+        },
+        {
+            "commune": "180210",
+            "flood_hazard_index": 1.4
+        },
+        {
+            "commune": "180211",
+            "flood_hazard_index": 1.1
+        },
+        {
+            "commune": "180212",
+            "flood_hazard_index": 0.4
+        },
+        {
+            "commune": "180213",
+            "flood_hazard_index": 1.9
+        },
+        {
+            "commune": "180214",
+            "flood_hazard_index": 6.1
+        },
+        {
+            "commune": "180301",
+            "flood_hazard_index": 3.6
+        },
+        {
+            "commune": "180302",
+            "flood_hazard_index": 1.6
+        },
+        {
+            "commune": "180303",
+            "flood_hazard_index": 0.3
+        },
+        {
+            "commune": "180304",
+            "flood_hazard_index": 0.6
+        },
+        {
+            "commune": "180401",
+            "flood_hazard_index": 0.5
+        },
+        {
+            "commune": "180402",
+            "flood_hazard_index": 0.1
+        },
+        {
+            "commune": "180403",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "180404",
+            "flood_hazard_index": 0.2
+        },
+        {
+            "commune": "190101",
+            "flood_hazard_index": 0.7
+        },
+        {
+            "commune": "190102",
+            "flood_hazard_index": 2.8
+        },
+        {
+            "commune": "190103",
+            "flood_hazard_index": 1.8
+        },
+        {
+            "commune": "190104",
+            "flood_hazard_index": 0.2
+        },
+        {
+            "commune": "190105",
+            "flood_hazard_index": 0.4
+        },
+        {
+            "commune": "190106",
+            "flood_hazard_index": 2.1
+        },
+        {
+            "commune": "190107",
+            "flood_hazard_index": 0.2
+        },
+        {
+            "commune": "190201",
+            "flood_hazard_index": 0.8
+        },
+        {
+            "commune": "190202",
+            "flood_hazard_index": 0.3
+        },
+        {
+            "commune": "190203",
+            "flood_hazard_index": 0.8
+        },
+        {
+            "commune": "190204",
+            "flood_hazard_index": 0.6
+        },
+        {
+            "commune": "190205",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "190206",
+            "flood_hazard_index": 0.1
+        },
+        {
+            "commune": "190207",
+            "flood_hazard_index": 0.2
+        },
+        {
+            "commune": "190301",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "190302",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "190303",
+            "flood_hazard_index": 0.1
+        },
+        {
+            "commune": "190304",
+            "flood_hazard_index": 0.1
+        },
+        {
+            "commune": "190305",
+            "flood_hazard_index": 0.1
+        },
+        {
+            "commune": "190401",
+            "flood_hazard_index": 0.1
+        },
+        {
+            "commune": "190402",
+            "flood_hazard_index": 0.6
+        },
+        {
+            "commune": "190403",
+            "flood_hazard_index": 0.3
+        },
+        {
+            "commune": "190404",
+            "flood_hazard_index": 0.5
+        },
+        {
+            "commune": "190501",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "190502",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "190503",
+            "flood_hazard_index": 0.1
+        },
+        {
+            "commune": "190504",
+            "flood_hazard_index": 0.8
+        },
+        {
+            "commune": "190505",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "190506",
+            "flood_hazard_index": 0.1
+        },
+        {
+            "commune": "190507",
+            "flood_hazard_index": 1.9
+        },
+        {
+            "commune": "190508",
+            "flood_hazard_index": 0.6
+        },
+        {
+            "commune": "190509",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "190510",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "190511",
+            "flood_hazard_index": 0.5
+        },
+        {
+            "commune": "200103",
+            "flood_hazard_index": 28.5
+        },
+        {
+            "commune": "200104",
+            "flood_hazard_index": 13.1
+        },
+        {
+            "commune": "200105",
+            "flood_hazard_index": 1.5
+        },
+        {
+            "commune": "200108",
+            "flood_hazard_index": 4.4
+        },
+        {
+            "commune": "200109",
+            "flood_hazard_index": 7.6
+        },
+        {
+            "commune": "200110",
+            "flood_hazard_index": 28.3
+        },
+        {
+            "commune": "200201",
+            "flood_hazard_index": 23.9
+        },
+        {
+            "commune": "200202",
+            "flood_hazard_index": 1.9
+        },
+        {
+            "commune": "200203",
+            "flood_hazard_index": 2.6
+        },
+        {
+            "commune": "200204",
+            "flood_hazard_index": 13.1
+        },
+        {
+            "commune": "200205",
+            "flood_hazard_index": 7.2
+        },
+        {
+            "commune": "200206",
+            "flood_hazard_index": 11.7
+        },
+        {
+            "commune": "200207",
+            "flood_hazard_index": 6.2
+        },
+        {
+            "commune": "200208",
+            "flood_hazard_index": 32.3
+        },
+        {
+            "commune": "200209",
+            "flood_hazard_index": 3.7
+        },
+        {
+            "commune": "200211",
+            "flood_hazard_index": 37.8
+        },
+        {
+            "commune": "200212",
+            "flood_hazard_index": 22.3
+        },
+        {
+            "commune": "200301",
+            "flood_hazard_index": 0.1
+        },
+        {
+            "commune": "200302",
+            "flood_hazard_index": 0.2
+        },
+        {
+            "commune": "200303",
+            "flood_hazard_index": 1.5
+        },
+        {
+            "commune": "200304",
+            "flood_hazard_index": 0.1
+        },
+        {
+            "commune": "200305",
+            "flood_hazard_index": 0.3
+        },
+        {
+            "commune": "200306",
+            "flood_hazard_index": 2.6
+        },
+        {
+            "commune": "200307",
+            "flood_hazard_index": 0.2
+        },
+        {
+            "commune": "200308",
+            "flood_hazard_index": 0.1
+        },
+        {
+            "commune": "200309",
+            "flood_hazard_index": 6.8
+        },
+        {
+            "commune": "200310",
+            "flood_hazard_index": 0.1
+        },
+        {
+            "commune": "200401",
+            "flood_hazard_index": 4
+        },
+        {
+            "commune": "200402",
+            "flood_hazard_index": 0.2
+        },
+        {
+            "commune": "200403",
+            "flood_hazard_index": 0.5
+        },
+        {
+            "commune": "200404",
+            "flood_hazard_index": 0.4
+        },
+        {
+            "commune": "200405",
+            "flood_hazard_index": 0.4
+        },
+        {
+            "commune": "200406",
+            "flood_hazard_index": 0.7
+        },
+        {
+            "commune": "200407",
+            "flood_hazard_index": 0.2
+        },
+        {
+            "commune": "200408",
+            "flood_hazard_index": 5.4
+        },
+        {
+            "commune": "200409",
+            "flood_hazard_index": 2.9
+        },
+        {
+            "commune": "200410",
+            "flood_hazard_index": 0.9
+        },
+        {
+            "commune": "200411",
+            "flood_hazard_index": 1.2
+        },
+        {
+            "commune": "200412",
+            "flood_hazard_index": 1.5
+        },
+        {
+            "commune": "200413",
+            "flood_hazard_index": 1.7
+        },
+        {
+            "commune": "200414",
+            "flood_hazard_index": 0.1
+        },
+        {
+            "commune": "200415",
+            "flood_hazard_index": 0.6
+        },
+        {
+            "commune": "200416",
+            "flood_hazard_index": 0.1
+        },
+        {
+            "commune": "200501",
+            "flood_hazard_index": 1.5
+        },
+        {
+            "commune": "200502",
+            "flood_hazard_index": 31.3
+        },
+        {
+            "commune": "200503",
+            "flood_hazard_index": 4.3
+        },
+        {
+            "commune": "200504",
+            "flood_hazard_index": 15.5
+        },
+        {
+            "commune": "200505",
+            "flood_hazard_index": 2.3
+        },
+        {
+            "commune": "200507",
+            "flood_hazard_index": 1.9
+        },
+        {
+            "commune": "200508",
+            "flood_hazard_index": 4.1
+        },
+        {
+            "commune": "200509",
+            "flood_hazard_index": 2.3
+        },
+        {
+            "commune": "200510",
+            "flood_hazard_index": 1.1
+        },
+        {
+            "commune": "200511",
+            "flood_hazard_index": 13.7
+        },
+        {
+            "commune": "200512",
+            "flood_hazard_index": 2.8
+        },
+        {
+            "commune": "200513",
+            "flood_hazard_index": 0.3
+        },
+        {
+            "commune": "200514",
+            "flood_hazard_index": 2.8
+        },
+        {
+            "commune": "200515",
+            "flood_hazard_index": 10.5
+        },
+        {
+            "commune": "200516",
+            "flood_hazard_index": 3.7
+        },
+        {
+            "commune": "200517",
+            "flood_hazard_index": 5.2
+        },
+        {
+            "commune": "200601",
+            "flood_hazard_index": 18.4
+        },
+        {
+            "commune": "200602",
+            "flood_hazard_index": 12.6
+        },
+        {
+            "commune": "200603",
+            "flood_hazard_index": 57.9
+        },
+        {
+            "commune": "200604",
+            "flood_hazard_index": 28.4
+        },
+        {
+            "commune": "200605",
+            "flood_hazard_index": 8.5
+        },
+        {
+            "commune": "200606",
+            "flood_hazard_index": 22.6
+        },
+        {
+            "commune": "200607",
+            "flood_hazard_index": 6.2
+        },
+        {
+            "commune": "200702",
+            "flood_hazard_index": 4.4
+        },
+        {
+            "commune": "200703",
+            "flood_hazard_index": 4.2
+        },
+        {
+            "commune": "200704",
+            "flood_hazard_index": 0.2
+        },
+        {
+            "commune": "200705",
+            "flood_hazard_index": 5.8
+        },
+        {
+            "commune": "200706",
+            "flood_hazard_index": 4.2
+        },
+        {
+            "commune": "200707",
+            "flood_hazard_index": 1
+        },
+        {
+            "commune": "200708",
+            "flood_hazard_index": 3.5
+        },
+        {
+            "commune": "200709",
+            "flood_hazard_index": 10.1
+        },
+        {
+            "commune": "200711",
+            "flood_hazard_index": 5
+        },
+        {
+            "commune": "200801",
+            "flood_hazard_index": 0.9
+        },
+        {
+            "commune": "200802",
+            "flood_hazard_index": 2
+        },
+        {
+            "commune": "200803",
+            "flood_hazard_index": 4.4
+        },
+        {
+            "commune": "200804",
+            "flood_hazard_index": 0.5
+        },
+        {
+            "commune": "200805",
+            "flood_hazard_index": 6.1
+        },
+        {
+            "commune": "210101",
+            "flood_hazard_index": 26.7
+        },
+        {
+            "commune": "210102",
+            "flood_hazard_index": 22.3
+        },
+        {
+            "commune": "210103",
+            "flood_hazard_index": 66.6
+        },
+        {
+            "commune": "210104",
+            "flood_hazard_index": 14.5
+        },
+        {
+            "commune": "210105",
+            "flood_hazard_index": 55.7
+        },
+        {
+            "commune": "210106",
+            "flood_hazard_index": 26
+        },
+        {
+            "commune": "210201",
+            "flood_hazard_index": 0.2
+        },
+        {
+            "commune": "210202",
+            "flood_hazard_index": 20.1
+        },
+        {
+            "commune": "210203",
+            "flood_hazard_index": 22.2
+        },
+        {
+            "commune": "210204",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "210205",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "210206",
+            "flood_hazard_index": 0.9
+        },
+        {
+            "commune": "210207",
+            "flood_hazard_index": 2.3
+        },
+        {
+            "commune": "210208",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "210209",
+            "flood_hazard_index": 11
+        },
+        {
+            "commune": "210210",
+            "flood_hazard_index": 30.4
+        },
+        {
+            "commune": "210211",
+            "flood_hazard_index": 0.4
+        },
+        {
+            "commune": "210212",
+            "flood_hazard_index": 0.5
+        },
+        {
+            "commune": "210213",
+            "flood_hazard_index": 0.2
+        },
+        {
+            "commune": "210214",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "210215",
+            "flood_hazard_index": 0.1
+        },
+        {
+            "commune": "210301",
+            "flood_hazard_index": 66.3
+        },
+        {
+            "commune": "210302",
+            "flood_hazard_index": 94.3
+        },
+        {
+            "commune": "210303",
+            "flood_hazard_index": 23
+        },
+        {
+            "commune": "210304",
+            "flood_hazard_index": 75.4
+        },
+        {
+            "commune": "210305",
+            "flood_hazard_index": 49.3
+        },
+        {
+            "commune": "210401",
+            "flood_hazard_index": 18
+        },
+        {
+            "commune": "210402",
+            "flood_hazard_index": 51.9
+        },
+        {
+            "commune": "210403",
+            "flood_hazard_index": 100
+        },
+        {
+            "commune": "210404",
+            "flood_hazard_index": 2.2
+        },
+        {
+            "commune": "210405",
+            "flood_hazard_index": 27.1
+        },
+        {
+            "commune": "210406",
+            "flood_hazard_index": 5.4
+        },
+        {
+            "commune": "210407",
+            "flood_hazard_index": 74.3
+        },
+        {
+            "commune": "210408",
+            "flood_hazard_index": 3.2
+        },
+        {
+            "commune": "210409",
+            "flood_hazard_index": 21.6
+        },
+        {
+            "commune": "210410",
+            "flood_hazard_index": 12.7
+        },
+        {
+            "commune": "210411",
+            "flood_hazard_index": 39.7
+        },
+        {
+            "commune": "210412",
+            "flood_hazard_index": 24.6
+        },
+        {
+            "commune": "210501",
+            "flood_hazard_index": 68.1
+        },
+        {
+            "commune": "210502",
+            "flood_hazard_index": 35.2
+        },
+        {
+            "commune": "210503",
+            "flood_hazard_index": 61
+        },
+        {
+            "commune": "210504",
+            "flood_hazard_index": 98.8
+        },
+        {
+            "commune": "210505",
+            "flood_hazard_index": 71
+        },
+        {
+            "commune": "210506",
+            "flood_hazard_index": 26.6
+        },
+        {
+            "commune": "210601",
+            "flood_hazard_index": 6.6
+        },
+        {
+            "commune": "210602",
+            "flood_hazard_index": 27.7
+        },
+        {
+            "commune": "210603",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "210604",
+            "flood_hazard_index": 42.5
+        },
+        {
+            "commune": "210605",
+            "flood_hazard_index": 12.2
+        },
+        {
+            "commune": "210606",
+            "flood_hazard_index": 58
+        },
+        {
+            "commune": "210607",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "210608",
+            "flood_hazard_index": 18.9
+        },
+        {
+            "commune": "210609",
+            "flood_hazard_index": 18.9
+        },
+        {
+            "commune": "210610",
+            "flood_hazard_index": 34.6
+        },
+        {
+            "commune": "210611",
+            "flood_hazard_index": 19
+        },
+        {
+            "commune": "210612",
+            "flood_hazard_index": 50.3
+        },
+        {
+            "commune": "210613",
+            "flood_hazard_index": 1.4
+        },
+        {
+            "commune": "210701",
+            "flood_hazard_index": 0.1
+        },
+        {
+            "commune": "210702",
+            "flood_hazard_index": 0.5
+        },
+        {
+            "commune": "210703",
+            "flood_hazard_index": 18.7
+        },
+        {
+            "commune": "210704",
+            "flood_hazard_index": 0.5
+        },
+        {
+            "commune": "210705",
+            "flood_hazard_index": 0.1
+        },
+        {
+            "commune": "210706",
+            "flood_hazard_index": 24.9
+        },
+        {
+            "commune": "210707",
+            "flood_hazard_index": 1.1
+        },
+        {
+            "commune": "210708",
+            "flood_hazard_index": 5.1
+        },
+        {
+            "commune": "210709",
+            "flood_hazard_index": 11.3
+        },
+        {
+            "commune": "210710",
+            "flood_hazard_index": 12.9
+        },
+        {
+            "commune": "210711",
+            "flood_hazard_index": 29.8
+        },
+        {
+            "commune": "210801",
+            "flood_hazard_index": 19.5
+        },
+        {
+            "commune": "210802",
+            "flood_hazard_index": 9.2
+        },
+        {
+            "commune": "210803",
+            "flood_hazard_index": 7.4
+        },
+        {
+            "commune": "210901",
+            "flood_hazard_index": 0.2
+        },
+        {
+            "commune": "210902",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "210903",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "210904",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "210905",
+            "flood_hazard_index": 0.4
+        },
+        {
+            "commune": "210906",
+            "flood_hazard_index": 1.4
+        },
+        {
+            "commune": "210907",
+            "flood_hazard_index": 0.3
+        },
+        {
+            "commune": "210908",
+            "flood_hazard_index": 0.1
+        },
+        {
+            "commune": "210909",
+            "flood_hazard_index": 0.2
+        },
+        {
+            "commune": "210910",
+            "flood_hazard_index": 0.2
+        },
+        {
+            "commune": "210911",
+            "flood_hazard_index": 0.5
+        },
+        {
+            "commune": "210912",
+            "flood_hazard_index": 0.1
+        },
+        {
+            "commune": "210913",
+            "flood_hazard_index": 0.1
+        },
+        {
+            "commune": "210914",
+            "flood_hazard_index": 0.1
+        },
+        {
+            "commune": "210915",
+            "flood_hazard_index": 0.2
+        },
+        {
+            "commune": "211001",
+            "flood_hazard_index": 4.2
+        },
+        {
+            "commune": "211002",
+            "flood_hazard_index": 1.4
+        },
+        {
+            "commune": "211003",
+            "flood_hazard_index": 7.2
+        },
+        {
+            "commune": "211004",
+            "flood_hazard_index": 0.2
+        },
+        {
+            "commune": "211005",
+            "flood_hazard_index": 1.1
+        },
+        {
+            "commune": "211006",
+            "flood_hazard_index": 2.2
+        },
+        {
+            "commune": "211007",
+            "flood_hazard_index": 1.3
+        },
+        {
+            "commune": "211008",
+            "flood_hazard_index": 0.1
+        },
+        {
+            "commune": "211009",
+            "flood_hazard_index": 22.8
+        },
+        {
+            "commune": "211010",
+            "flood_hazard_index": 14.4
+        },
+        {
+            "commune": "211011",
+            "flood_hazard_index": 13.3
+        },
+        {
+            "commune": "211012",
+            "flood_hazard_index": 11.3
+        },
+        {
+            "commune": "211013",
+            "flood_hazard_index": 24.1
+        },
+        {
+            "commune": "211014",
+            "flood_hazard_index": 7.1
+        },
+        {
+            "commune": "220101",
+            "flood_hazard_index": 0.3
+        },
+        {
+            "commune": "220103",
+            "flood_hazard_index": 0.9
+        },
+        {
+            "commune": "220104",
+            "flood_hazard_index": 0.1
+        },
+        {
+            "commune": "220105",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "220106",
+            "flood_hazard_index": 0.4
+        },
+        {
+            "commune": "220201",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "220202",
+            "flood_hazard_index": 0.2
+        },
+        {
+            "commune": "220203",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "220204",
+            "flood_hazard_index": 0.3
+        },
+        {
+            "commune": "220301",
+            "flood_hazard_index": 3.2
+        },
+        {
+            "commune": "220302",
+            "flood_hazard_index": 3
+        },
+        {
+            "commune": "220303",
+            "flood_hazard_index": 0.8
+        },
+        {
+            "commune": "220304",
+            "flood_hazard_index": 0.7
+        },
+        {
+            "commune": "220401",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "220402",
+            "flood_hazard_index": 0.1
+        },
+        {
+            "commune": "220403",
+            "flood_hazard_index": 0.2
+        },
+        {
+            "commune": "220404",
+            "flood_hazard_index": 0.9
+        },
+        {
+            "commune": "220405",
+            "flood_hazard_index": 0.7
+        },
+        {
+            "commune": "220501",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "220502",
+            "flood_hazard_index": 0.1
+        },
+        {
+            "commune": "220503",
+            "flood_hazard_index": 0.1
+        },
+        {
+            "commune": "220504",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "220505",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "220506",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "230101",
+            "flood_hazard_index": 6.7
+        },
+        {
+            "commune": "230103",
+            "flood_hazard_index": 0.9
+        },
+        {
+            "commune": "230201",
+            "flood_hazard_index": 0.7
+        },
+        {
+            "commune": "230202",
+            "flood_hazard_index": 0.7
+        },
+        {
+            "commune": "230203",
+            "flood_hazard_index": 1.6
+        },
+        {
+            "commune": "240101",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "240102",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "240103",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "240104",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "240201",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "240202",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "240203",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "240204",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "250101",
+            "flood_hazard_index": 0.1
+        },
+        {
+            "commune": "250102",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "250103",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "250104",
+            "flood_hazard_index": 0.4
+        },
+        {
+            "commune": "250105",
+            "flood_hazard_index": 3.6
+        },
+        {
+            "commune": "250106",
+            "flood_hazard_index": 2
+        },
+        {
+            "commune": "250107",
+            "flood_hazard_index": 0.2
+        },
+        {
+            "commune": "250201",
+            "flood_hazard_index": 21.1
+        },
+        {
+            "commune": "250202",
+            "flood_hazard_index": 29.1
+        },
+        {
+            "commune": "250203",
+            "flood_hazard_index": 50.7
+        },
+        {
+            "commune": "250204",
+            "flood_hazard_index": 4.8
+        },
+        {
+            "commune": "250205",
+            "flood_hazard_index": 62.8
+        },
+        {
+            "commune": "250206",
+            "flood_hazard_index": 42.8
+        },
+        {
+            "commune": "250207",
+            "flood_hazard_index": 59.4
+        },
+        {
+            "commune": "250208",
+            "flood_hazard_index": 46.6
+        },
+        {
+            "commune": "250209",
+            "flood_hazard_index": 30.4
+        },
+        {
+            "commune": "250210",
+            "flood_hazard_index": 66.1
+        },
+        {
+            "commune": "250211",
+            "flood_hazard_index": 50.9
+        },
+        {
+            "commune": "250212",
+            "flood_hazard_index": 43.4
+        },
+        {
+            "commune": "250301",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "250302",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "250303",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "250304",
+            "flood_hazard_index": 0.1
+        },
+        {
+            "commune": "250305",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "250306",
+            "flood_hazard_index": 0.1
+        },
+        {
+            "commune": "250307",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "250308",
+            "flood_hazard_index": 0.3
+        },
+        {
+            "commune": "250309",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "250310",
+            "flood_hazard_index": 0.7
+        },
+        {
+            "commune": "250311",
+            "flood_hazard_index": 0.1
+        },
+        {
+            "commune": "250312",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "250313",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "250314",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "250401",
+            "flood_hazard_index": 2.4
+        },
+        {
+            "commune": "250402",
+            "flood_hazard_index": 1.3
+        },
+        {
+            "commune": "250403",
+            "flood_hazard_index": 2.5
+        },
+        {
+            "commune": "250404",
+            "flood_hazard_index": 0.4
+        },
+        {
+            "commune": "250405",
+            "flood_hazard_index": 22.4
+        },
+        {
+            "commune": "250406",
+            "flood_hazard_index": 9.8
+        },
+        {
+            "commune": "250407",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "250501",
+            "flood_hazard_index": 2.3
+        },
+        {
+            "commune": "250502",
+            "flood_hazard_index": 1
+        },
+        {
+            "commune": "250503",
+            "flood_hazard_index": 3.1
+        },
+        {
+            "commune": "250504",
+            "flood_hazard_index": 3.3
+        },
+        {
+            "commune": "250505",
+            "flood_hazard_index": 0.2
+        },
+        {
+            "commune": "250506",
+            "flood_hazard_index": 0.8
+        },
+        {
+            "commune": "250507",
+            "flood_hazard_index": 0.2
+        },
+        {
+            "commune": "250508",
+            "flood_hazard_index": 0.1
+        },
+        {
+            "commune": "250601",
+            "flood_hazard_index": 5
+        },
+        {
+            "commune": "250602",
+            "flood_hazard_index": 0.9
+        },
+        {
+            "commune": "250701",
+            "flood_hazard_index": 2.1
+        },
+        {
+            "commune": "250702",
+            "flood_hazard_index": 62.9
+        },
+        {
+            "commune": "250703",
+            "flood_hazard_index": 2.5
+        },
+        {
+            "commune": "250704",
+            "flood_hazard_index": 54
+        },
+        {
+            "commune": "250705",
+            "flood_hazard_index": 19.5
+        },
+        {
+            "commune": "250706",
+            "flood_hazard_index": 0
+        },
+        {
+            "commune": "250707",
+            "flood_hazard_index": 2
+        },
+        {
+            "commune": "250708",
+            "flood_hazard_index": 3.4
+        },
+        {
+            "commune": "250709",
+            "flood_hazard_index": 1.3
+        },
+        {
+            "commune": "250710",
+            "flood_hazard_index": 53.2
+        },
+        {
+            "commune": "250711",
+            "flood_hazard_index": 2.6
+        },
+        {
+            "commune": "250712",
+            "flood_hazard_index": 0.6
+        },
+        {
+            "commune": "250713",
+            "flood_hazard_index": 15.1
+        },
+        {
+            "commune": "250714",
+            "flood_hazard_index": 39.6
+        }
+    ]
+}
