@@ -114,7 +114,6 @@ function AnticipatoryActionLayer({ layer, before }: LayersProps) {
           // eslint-disable-next-line no-console
           console.log({ aaCategories });
 
-          // get max
           const max = sortedData[0];
           if (max.windows !== layer.csvWindowKey) {
             return [district, { color: null, icon: null }];
@@ -182,19 +181,17 @@ function AnticipatoryActionLayer({ layer, before }: LayersProps) {
         return undefined;
       }
 
-      // The desired width in meters (500km)
-      const desiredWidthInMeters = 600000;
-
       // Get the center of the map to calculate the scale at this point
       const center = map.getCenter();
 
       // Convert the distance in meters to pixels for the current zoom level
-      // This calculation depends on the map projection and might need adjustments for different map libraries
       const pixelsPerMeter =
         map.project([center.lng + 0.1, center.lat]).x -
         map.project([center.lng, center.lat]).x;
-      const desiredWidthInPixels =
-        (desiredWidthInMeters * pixelsPerMeter) / 100000; // Convert 100km to pixels
+
+      // Desired size ratio defining the final size of the object on the map.
+      const sizeRatio = 6.5;
+      const desiredWidthInPixels = sizeRatio * pixelsPerMeter;
 
       // Calculate the scale factor needed to adjust the marker to the desired width in pixels
       // Assuming the original width of the marker image is known
