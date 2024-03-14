@@ -4,11 +4,7 @@
   "version": "0.1.0",
   "private": true,
   "homepage": ".",
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged"
-    }
-  },
+  "husky": {},
   "lint-staged": {
     "src/**/*.{js,jsx,ts,tsx}": [
       "yarn run lint --fix"
