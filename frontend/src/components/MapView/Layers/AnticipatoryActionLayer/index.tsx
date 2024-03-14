@@ -253,13 +253,6 @@ function AnticipatoryActionLayer({ layer, before }: LayersProps) {
         >
           <div style={{ transform: `scale(${scalePercent})` }}>
             {marker.icon}
-            {/* <img
-              src={marker.icon as any}
-              alt="Warning"
-              style={{
-                transform: `translate(0%, 0%) scale(${scalePercent})`,
-              }}
-            /> */}
           </div>
         </Marker>
       ))}
