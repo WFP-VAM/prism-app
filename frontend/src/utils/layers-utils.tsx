@@ -3,7 +3,12 @@ import { checkLayerAvailableDatesAndContinueOrRemove } from 'components/MapView/
 import { appConfig } from 'config';
 import { Extent } from 'components/MapView/Layers/raster-utils';
 import { LayerKey, LayerType, isMainLayer, DateItem } from 'config/types';
-import { LayerDefinitions, getBoundaryLayerSingleton } from 'config/utils';
+import {
+  AAWindowKeyToLayerId,
+  AAWindowKeys,
+  LayerDefinitions,
+  getBoundaryLayerSingleton,
+} from 'config/utils';
 import {
   addLayer,
   layerOrdering,
@@ -23,10 +28,10 @@ import { LocalError } from 'utils/error-utils';
 import { DateFormat } from 'utils/name-utils';
 import {
   DateCompatibleLayer,
+  getAAAvailableDatesCombined,
   getPossibleDatesForLayer,
 } from 'utils/server-utils';
 import { UrlLayerKey, getUrlKey, useUrlHistory } from 'utils/url-utils';
-import { AAlayerKey } from 'context/anticipatoryActionStateSlice';
 import {
   datesAreEqualWithoutTime,
   binaryIncludes,
@@ -71,8 +76,9 @@ const useLayers = () => {
 
   const numberOfActiveLayers = useMemo(() => {
     return (
-      hazardLayersArray.filter(x => x !== AAlayerKey).length +
-      baselineLayersArray.length
+      hazardLayersArray.filter(
+        x => !AAWindowKeys.find(y => AAWindowKeyToLayerId[y] === x),
+      ).length + baselineLayersArray.length
     );
   }, [baselineLayersArray.length, hazardLayersArray]);
 
@@ -121,7 +127,13 @@ const useLayers = () => {
   const selectedLayerDatesDupCount = useMemo(() => {
     return countBy(
       selectedLayersWithDateSupport
-        .map(layer => getPossibleDatesForLayer(layer, serverAvailableDates))
+        .map(layer => {
+          if (layer.type === 'anticipatory_action') {
+            // Combine dates for all AA windows.
+            return getAAAvailableDatesCombined(serverAvailableDates);
+          }
+          return getPossibleDatesForLayer(layer, serverAvailableDates);
+        })
         .filter(value => value) // null check
         .flat()
         .map(value => new Date(value.displayDate).toISOString().slice(0, 10)),
@@ -375,7 +387,9 @@ const useLayers = () => {
   const possibleDatesForLayerIncludeSelectedDate = useCallback(
     (layer: DateCompatibleLayer, date: Date) => {
       return binaryIncludes<DateItem>(
-        getPossibleDatesForLayer(layer, serverAvailableDates),
+        layer.type === 'anticipatory_action'
+          ? getAAAvailableDatesCombined(serverAvailableDates)
+          : getPossibleDatesForLayer(layer, serverAvailableDates),
         date.setUTCHours(12, 0, 0, 0),
         x => new Date(x.displayDate).setUTCHours(12, 0, 0, 0),
       );
@@ -395,7 +409,8 @@ const useLayers = () => {
       const jsSelectedDate = new Date(selectedDate);
 
       const AADatesLoaded =
-        layer.id !== AAlayerKey || layer.id in serverAvailableDates;
+        layer.type !== 'anticipatory_action' ||
+        layer.id in serverAvailableDates;
 
       if (
         serverAvailableDatesAreEmpty ||

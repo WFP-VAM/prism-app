@@ -14,12 +14,14 @@ import { GetApp, EditOutlined, BarChartOutlined } from '@material-ui/icons';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   AACategoryFiltersSelector,
-  AACategoryType,
-  allWindowsKey,
-  AnticipatoryActionWindowsSelector,
   setCategoryFilters,
   setSelectedWindow,
 } from 'context/anticipatoryActionStateSlice';
+import {
+  AACategoryType,
+  allWindowsKey,
+} from 'context/anticipatoryActionStateSlice/types';
+import { AAWindowKeys } from 'config/utils';
 import HomeTable from './HomeTable';
 import { StyledCheckboxLabel, StyledRadioLabel } from './utils';
 
@@ -47,10 +49,7 @@ function AnticipatoryActionPanel() {
   const classes = useStyles();
   const dispatch = useDispatch();
   const { t } = useSafeTranslation();
-  const windows = useSelector(AnticipatoryActionWindowsSelector);
   const categoryFilters = useSelector(AACategoryFiltersSelector);
-
-  const windowOptions = [allWindowsKey, ...windows];
 
   return (
     <div className={classes.anticipatoryActionPanel}>
@@ -63,9 +62,10 @@ function AnticipatoryActionPanel() {
             <RadioGroup
               defaultValue={allWindowsKey}
               className={classes.radioButtonGroup}
-              onChange={(e, val) => dispatch(setSelectedWindow(val))}
+              onChange={(e, val) => dispatch(setSelectedWindow(val as any))}
             >
-              {windowOptions.map(x => (
+              <StyledRadioLabel value="all" label="All" />
+              {AAWindowKeys.map(x => (
                 <StyledRadioLabel key={x} value={x} label={x} />
               ))}
             </RadioGroup>

@@ -13,12 +13,8 @@ import maxInscribedCircle from 'max-inscribed-circle'; // ts-ignore
 import simplify from '@turf/simplify';
 import {
   AACategoryFiltersSelector,
-  AASelectedWindowSelector,
-  AnticipatoryActionDataSelector,
-  allWindowsKey,
+  AASelectedDateDateSelector,
 } from 'context/anticipatoryActionStateSlice';
-import { getFormattedDate } from 'utils/date-utils';
-import { DateFormat } from 'utils/name-utils';
 import {
   AADataSeverityOrder,
   getAAColor,
@@ -33,17 +29,15 @@ const districtCentroidOverride: { [key: string]: [number, number] } = {
 };
 
 function AnticipatoryActionLayer({ layer, before }: LayersProps) {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const selectedDate = useDefaultDate(layer.id);
-  const AAData = useSelector(AnticipatoryActionDataSelector);
-  const aaWindow = useSelector(AASelectedWindowSelector);
   const aaCategories = useSelector(AACategoryFiltersSelector);
   const boundaryLayerState = useSelector(
     layerDataSelector(boundaryLayer.id),
   ) as LayerData<BoundaryLayerProps> | undefined;
   const { data } = boundaryLayerState || {};
   const map = useSelector(mapSelector);
-
-  const date = getFormattedDate(selectedDate, DateFormat.Default);
+  const selectedDateData = useSelector(AASelectedDateDateSelector);
 
   // Calculate centroids only once per data change
   const districtCentroids = useMemo(() => {
@@ -99,60 +93,42 @@ function AnticipatoryActionLayer({ layer, before }: LayersProps) {
   const districtsWithColorsAndIcons = React.useMemo(
     () =>
       Object.fromEntries(
-        Object.entries(AAData).map(([district, districtData]) => {
-          const sameDateAndWindow = districtData.filter(
-            x =>
-              x.date === date &&
-              (aaWindow === allWindowsKey || x.windows === aaWindow),
-          );
+        Object.entries(selectedDateData).map(([district, districtData]) => {
+          // TODO: we may need different sorting
+          // eslint-disable-next-line fp/no-mutating-methods
+          const sortedData = [...districtData].sort((a, b) => {
+            const aOrder = AADataSeverityOrder(a.category, a.phase);
+            const bOrder = AADataSeverityOrder(b.category, b.phase);
 
-          if (sameDateAndWindow.length === 0) {
-            return [
-              district,
-              {
-                color: getAAColor('ny', 'ny', true),
-                icon: getAAIcon('ny', 'ny', true),
-              },
-            ];
-          }
+            if (aOrder > bOrder) {
+              return -1;
+            }
+            if (aOrder < bOrder) {
+              return 1;
+            }
+            return 0;
+          });
 
-          const active = sameDateAndWindow.filter(
-            x =>
-              x.probability !== 'NA' &&
-              Number(x.probability) >= Number(x.trigger),
-          );
-          if (active.length === 0) {
-            return [
-              district,
-              {
-                color: getAAColor('na', 'na', true),
-                icon: getAAIcon('na', 'na', true),
-              },
-            ];
-          }
+          // TODO:
+          // use aaCategories to pick next if this one if filltered out
+          // eslint-disable-next-line no-console
+          console.log({ aaCategories });
 
-          const max = active.reduce(
-            (prev, curr) => {
-              const currVal = AADataSeverityOrder(curr.category, curr.phase);
-              return currVal > prev.val ? { val: currVal, data: curr } : prev;
-            },
-            { val: -1, data: active[0] },
-          );
-
-          if (aaCategories[max.data.category] === false) {
+          // get max
+          const max = sortedData[0];
+          if (max.windows !== layer.csvWindowKey) {
             return [district, { color: null, icon: null }];
           }
-
           return [
             district,
             {
-              color: getAAColor(max.data.category, max.data.phase, true),
-              icon: getAAIcon(max.data.category, max.data.phase, true),
+              color: getAAColor(max.category, max.phase, true),
+              icon: getAAIcon(max.category, max.phase, true),
             },
           ];
         }),
       ),
-    [AAData, aaCategories, aaWindow, date],
+    [aaCategories, layer.csvWindowKey, selectedDateData],
   );
 
   const layers = Object.entries(districtsWithColorsAndIcons)

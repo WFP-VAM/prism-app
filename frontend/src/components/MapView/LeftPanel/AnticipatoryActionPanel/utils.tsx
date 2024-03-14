@@ -8,15 +8,15 @@ import {
   useRadioGroup,
   withStyles,
 } from '@material-ui/core';
+import { black, borderGray, gray } from 'muiTheme';
+import React from 'react';
 import {
   AACategoryType,
   AAPhase,
   AAPhaseType,
   AAcategory,
-  AnticipatoryActionData,
-} from 'context/anticipatoryActionStateSlice';
-import { black, borderGray, gray } from 'muiTheme';
-import React from 'react';
+  AnticipatoryActionDataRow,
+} from 'context/anticipatoryActionStateSlice/types';
 import AAIcon from './HomeTable/AAIcon';
 
 const StyledRadio = withStyles({
@@ -82,23 +82,6 @@ export const StyledCheckboxLabel = withStyles({
     );
   },
 );
-
-export function getAAAvailableDates(data: AnticipatoryActionData[]) {
-  const datesAsMap = data.reduce((acc, curr, index) => {
-    const window = acc[curr.windows];
-    const newEntry = new Date(curr.date).getTime();
-    return {
-      ...acc,
-      [curr.windows]: window
-        ? window.set(newEntry, newEntry)
-        : new Map().set(newEntry, newEntry),
-    };
-  }, {} as { [key: string]: Map<number, number> });
-
-  return Object.fromEntries(
-    Object.entries(datesAsMap).map(x => [x[0], Array.from(x[1].keys())]),
-  );
-}
 
 export function getAAColor(
   category: AACategoryType,
@@ -230,8 +213,8 @@ export function getAAIcon(
 }
 
 export function AADataSeverityOrder(
-  category: AnticipatoryActionData['category'],
-  phase: AnticipatoryActionData['phase'],
+  category: AnticipatoryActionDataRow['category'],
+  phase: AnticipatoryActionDataRow['phase'],
 ) {
   const catIndex = AAcategory.findIndex(x => x === category);
   const phaseIndex = AAPhase.findIndex(x => x === phase);
