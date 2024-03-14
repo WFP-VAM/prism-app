@@ -1,5 +1,6 @@
-import { has, get } from 'lodash';
+import { has, get, merge } from 'lodash';
 import { PublicClientApplication } from '@azure/msal-browser';
+import shared from './shared';
 import afghanistan from './afghanistan';
 import cambodia from './cambodia';
 import cameroon from './cameroon';
@@ -76,20 +77,36 @@ const safeCountry =
     : DEFAULT;
 
 const {
-  appConfig,
   defaultBoundariesFile,
-  rawLayers,
   rawTables,
   rawReports,
 }: {
-  appConfig: Record<string, any>;
   defaultBoundariesFile: string;
-  rawLayers: Record<string, any>;
   rawTables: Record<string, any>;
   rawReports: Record<string, any>;
 } = configMap[safeCountry];
 
-const translation = get(configMap[safeCountry], 'translation', {});
+const { defaultConfig, sharedLayers, translation: sharedTranslation } = shared;
+
+// Perform deep merges between shared and country-specific configurations
+const appConfig: Record<string, any> = merge(
+  {},
+  defaultConfig,
+  configMap[safeCountry].appConfig,
+);
+const rawLayers: Record<string, any> = merge(
+  {},
+  sharedLayers,
+  configMap[safeCountry].rawLayers,
+);
+
+// Merge translations
+const countryTranslation = get(configMap[safeCountry], 'translation', {});
+const translation = Object.fromEntries(
+  Object.entries(sharedTranslation)
+    .filter(([key]) => key in countryTranslation)
+    .map(([key, value]) => [key, merge({}, value, countryTranslation[key])]),
+);
 
 const msalConfig = {
   auth: {
