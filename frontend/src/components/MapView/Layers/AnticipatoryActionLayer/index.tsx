@@ -1,4 +1,3 @@
-/* eslint-disable */
 import React, { useEffect, useMemo, useState } from 'react';
 import { AnticipatoryActionLayerProps, BoundaryLayerProps } from 'config/types';
 import { useDefaultDate } from 'utils/useDefaultDate';
@@ -10,7 +9,6 @@ import {
 } from 'context/mapStateSlice/selectors';
 import { LayerData } from 'context/layers/layer-data';
 import { Layer, Marker, Source } from 'react-map-gl/maplibre';
-import turfCenterOfMass from '@turf/center-of-mass';
 import maxInscribedCircle from 'max-inscribed-circle'; // ts-ignore
 import simplify from '@turf/simplify';
 import {
@@ -49,7 +47,9 @@ function AnticipatoryActionLayer({ layer, before }: LayersProps) {
 
   // Calculate centroids only once per data change
   const districtCentroids = useMemo(() => {
-    let centroids: { [key: string]: any } = {};
+    const centroids: { [key: string]: any } = {};
+    /* eslint-disable fp/no-mutation */
+    // eslint-disable-next-line no-unused-expressions
     data?.features.forEach(feature => {
       const districtName =
         feature.properties?.[boundaryLayer.adminLevelLocalNames[1]];
@@ -70,6 +70,7 @@ function AnticipatoryActionLayer({ layer, before }: LayersProps) {
             feature.geometry.coordinates[0].length === 1
           ) {
             mutableFeature.geometry.type = 'Polygon';
+            // eslint-disable-next-line prefer-destructuring
             mutableFeature.geometry.coordinates =
               feature.geometry.coordinates[0];
             mutableFeature.properties = feature.properties;
@@ -79,7 +80,6 @@ function AnticipatoryActionLayer({ layer, before }: LayersProps) {
           }
 
           try {
-            // const centroid = turfCenterOfMass(feature);
             const simplifiedFeature = simplify(mutableFeature, {
               tolerance: 0.01,
             });
@@ -90,10 +90,10 @@ function AnticipatoryActionLayer({ layer, before }: LayersProps) {
             console.error('Error calculating centroid for', districtName);
           }
         }
-        console.log({ districtName, centroid: centroids[districtName] });
       }
     });
     return centroids;
+    /* eslint-enable */
   }, [data]);
 
   const districtsWithColorsAndIcons = React.useMemo(
@@ -170,6 +170,7 @@ function AnticipatoryActionLayer({ layer, before }: LayersProps) {
 
       return {
         id: `anticipatory-action-${district}`,
+        district,
         data: { ...data, features },
         color: colorAndIcons.color,
         icon: colorAndIcons.icon,
@@ -182,12 +183,13 @@ function AnticipatoryActionLayer({ layer, before }: LayersProps) {
     if (!layers || layers.length === 0) {
       return [];
     }
-    return layers.map(layer => {
+    return layers.map(tempLayer => {
       return {
-        longitude: layer.centroid?.geometry.coordinates[0],
-        latitude: layer.centroid?.geometry.coordinates[1],
-        icon: layer.icon,
-        centroid: layer.centroid,
+        district: tempLayer.district,
+        longitude: tempLayer.centroid?.geometry.coordinates[0],
+        latitude: tempLayer.centroid?.geometry.coordinates[1],
+        icon: tempLayer.icon,
+        centroid: tempLayer.centroid,
       };
     });
   }, [layers]);
@@ -196,14 +198,16 @@ function AnticipatoryActionLayer({ layer, before }: LayersProps) {
 
   useEffect(() => {
     if (!map) {
-      return;
+      return () => {};
     }
     const updateScale = () => {
-      if (!map) return;
+      if (!map) {
+        // Return an empty cleanup function to keep the return type consistent
+        return undefined;
+      }
 
-      const zoom = map.getZoom();
       // The desired width in meters (500km)
-      const desiredWidthInMeters = 700000;
+      const desiredWidthInMeters = 600000;
 
       // Get the center of the map to calculate the scale at this point
       const center = map.getCenter();
@@ -221,28 +225,28 @@ function AnticipatoryActionLayer({ layer, before }: LayersProps) {
       const originalMarkerWidthInPixels = 40; // Adjust this value to the actual width of your marker image
       const scale = desiredWidthInPixels / originalMarkerWidthInPixels;
 
-      // console.log({ zoom, scale });
       setScalePercent(scale);
+      // Explicitly return undefined to clarify that no value is intended to be returned
+      return undefined;
     };
 
     // Listen for zoom changes
-    map?.on('zoom', updateScale);
+    map.on('zoom', updateScale);
 
     // Initial scale update
     updateScale();
 
     // Cleanup
     return () => {
-      map?.off('zoom', updateScale);
+      map.off('zoom', updateScale);
     };
   }, [map]);
 
   return (
     <>
-      {markers.map((marker, index) => (
+      {markers.map(marker => (
         <Marker
-          // eslint-disable-next-line react/no-array-index-key
-          key={index}
+          key={`marker-${marker.district}`}
           longitude={marker.longitude}
           latitude={marker.latitude}
           anchor="center"
