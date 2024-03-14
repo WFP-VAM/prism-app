@@ -42,6 +42,8 @@ jest.mock('@react-pdf/renderer', () => ({
   Font: { register: () => {} },
 }));
 
+jest.mock('max-inscribed-circle', () => ({}));
+
 function stubMuiComponent(componentName: string) {
   jest.doMock(
     `@material-ui/core/${componentName}/${componentName}`,
