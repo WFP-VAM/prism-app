@@ -54,7 +54,6 @@
     "@turf/bbox": "^6.5.0",
     "@turf/bbox-polygon": "^6.5.0",
     "@turf/boolean-point-in-polygon": "^6.5.0",
-    "@turf/center-of-mass": "^6.5.0",
     "@turf/centroid": "^6.5.0",
     "@turf/clone": "^6.5.0",
     "@turf/mask": "^6.5.0",
