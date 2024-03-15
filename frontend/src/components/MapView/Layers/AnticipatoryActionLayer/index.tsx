@@ -63,6 +63,11 @@ function AnticipatoryActionLayer({ layer, before }: LayersProps) {
 
           const filtered = sortedData.filter(x => aaCategories[x.category]);
 
+          // let the first window layer to render empty district
+          if (filtered.length === 0 && layer.csvWindowKey === 'Window 1') {
+            return [district, { category: 'ny', phase: 'ny' }];
+          }
+
           const maxValid = filtered.find((x, i) => {
             if (aaWindow !== layer.csvWindowKey && aaWindow !== 'All') {
               return false;
