@@ -14,6 +14,7 @@ import simplify from '@turf/simplify';
 import {
   AACategoryFiltersSelector,
   AASelectedDateDateSelector,
+  AASelectedWindowSelector,
 } from 'context/anticipatoryActionStateSlice';
 import {
   AADataSeverityOrder,
@@ -29,8 +30,8 @@ const districtCentroidOverride: { [key: string]: [number, number] } = {
 };
 
 function AnticipatoryActionLayer({ layer, before }: LayersProps) {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const selectedDate = useDefaultDate(layer.id);
+  useDefaultDate(layer.id);
+  const aaWindow = useSelector(AASelectedWindowSelector);
   const aaCategories = useSelector(AACategoryFiltersSelector);
   const boundaryLayerState = useSelector(
     layerDataSelector(boundaryLayer.id),
@@ -109,25 +110,40 @@ function AnticipatoryActionLayer({ layer, before }: LayersProps) {
             return 0;
           });
 
-          // TODO:
-          // use aaCategories to pick next if this one if filltered out
-          // eslint-disable-next-line no-console
-          console.log({ aaCategories });
+          const filtered = sortedData.filter(x => aaCategories[x.category]);
 
-          const max = sortedData[0];
-          if (max.windows !== layer.csvWindowKey) {
+          const maxValid = filtered.find((x, i) => {
+            if (aaWindow !== layer.csvWindowKey && aaWindow !== 'All') {
+              return false;
+            }
+            if (aaWindow === layer.csvWindowKey) {
+              return x.windows === layer.csvWindowKey;
+            }
+            return x.windows === layer.csvWindowKey && i === 0;
+          });
+
+          if (!maxValid) {
+            if (aaWindow === layer.csvWindowKey) {
+              return [
+                district,
+                {
+                  color: getAAColor('ny', 'ny', true),
+                  icon: getAAIcon('ny', 'ny', true),
+                },
+              ];
+            }
             return [district, { color: null, icon: null }];
           }
           return [
             district,
             {
-              color: getAAColor(max.category, max.phase, true),
-              icon: getAAIcon(max.category, max.phase, true),
+              color: getAAColor(maxValid.category, maxValid.phase, true),
+              icon: getAAIcon(maxValid.category, maxValid.phase, true),
             },
           ];
         }),
       ),
-    [aaCategories, layer.csvWindowKey, selectedDateData],
+    [aaCategories, aaWindow, layer.csvWindowKey, selectedDateData],
   );
 
   const layers = Object.entries(districtsWithColorsAndIcons)

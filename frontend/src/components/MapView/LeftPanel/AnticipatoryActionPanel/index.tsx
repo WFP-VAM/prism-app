@@ -64,7 +64,7 @@ function AnticipatoryActionPanel() {
               className={classes.radioButtonGroup}
               onChange={(e, val) => dispatch(setSelectedWindow(val as any))}
             >
-              <StyledRadioLabel value="all" label="All" />
+              <StyledRadioLabel value={allWindowsKey} label="All" />
               {AAWindowKeys.map(x => (
                 <StyledRadioLabel key={x} value={x} label={x} />
               ))}
