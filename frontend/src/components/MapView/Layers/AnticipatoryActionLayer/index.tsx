@@ -127,7 +127,7 @@ function AnticipatoryActionLayer({ layer, before }: LayersProps) {
         centroid,
       };
     })
-    .filter(x => x.color !== null);
+    .filter(x => x.color !== null && x.data.features !== undefined);
 
   const markers = React.useMemo(() => {
     if (!layers || layers.length === 0) {
