@@ -103,46 +103,52 @@ function AnticipatoryActionLayer({ layer, before }: LayersProps) {
     );
   }, [aaCategories, aaWindow, dispatch, layer.csvWindowKey, selectedDateData]);
 
-  const layers = Object.entries(renderedDistricts[layer.csvWindowKey])
-    .map(([district, { category, phase }]: [string, any]) => {
-      const color = getAAColor(category, phase, true);
-      const icon = getAAIcon(category, phase, true);
-      const features = [
-        data?.features.find(
-          cell =>
-            cell.properties?.[boundaryLayer.adminLevelLocalNames[1]] ===
-            district,
-        ),
-      ];
-      const centroid = districtCentroids[district] || {
-        geometry: { coordinates: [0, 0] },
-      };
-
-      return {
-        id: `anticipatory-action-${district}`,
-        district,
-        data: { ...data, features },
-        color,
-        icon,
-        centroid,
-      };
-    })
-    .filter(x => x.color !== null && x.data.features !== undefined);
+  const coloredDistrictsLayer = data
+    ? {
+        ...data,
+        features: Object.entries(renderedDistricts[layer.csvWindowKey])
+          .map(([districtId, { category, phase }]: [string, any]) => {
+            const feature = data?.features.find(
+              f =>
+                f.properties?.[boundaryLayer.adminLevelLocalNames[1]] ===
+                districtId,
+            );
+            if (!feature) {
+              return null;
+            }
+            const color = getAAColor(category, phase, true);
+            return {
+              ...feature,
+              properties: { ...feature.properties, fillColor: color },
+            };
+          })
+          .filter(f => f !== null),
+      }
+    : null;
 
   const markers = React.useMemo(() => {
-    if (!layers || layers.length === 0) {
+    const districtEntries = Object.entries(
+      renderedDistricts[layer.csvWindowKey],
+    );
+    if (!districtEntries.length) {
       return [];
     }
-    return layers.map(tempLayer => {
-      return {
-        district: tempLayer.district,
-        longitude: tempLayer.centroid?.geometry.coordinates[0],
-        latitude: tempLayer.centroid?.geometry.coordinates[1],
-        icon: tempLayer.icon,
-        centroid: tempLayer.centroid,
-      };
-    });
-  }, [layers]);
+    return districtEntries.map(
+      ([district, { category, phase }]: [string, any]) => {
+        const icon = getAAIcon(category, phase, true);
+        const centroid = districtCentroids[district] || {
+          geometry: { coordinates: [0, 0] },
+        };
+        return {
+          district,
+          longitude: centroid.geometry.coordinates[0],
+          latitude: centroid.geometry.coordinates[1],
+          icon,
+          centroid,
+        };
+      },
+    );
+  }, [renderedDistricts, layer.csvWindowKey, districtCentroids]);
 
   const scalePercent = useAAMarkerScalePercent(map);
 
@@ -160,30 +166,35 @@ function AnticipatoryActionLayer({ layer, before }: LayersProps) {
           </div>
         </Marker>
       ))}
-      {layers.map(l => (
-        <Source key={l.id} id={l.id} type="geojson" data={l.data}>
+      {coloredDistrictsLayer && (
+        <Source
+          key="anticipatory-action"
+          id="anticipatory-action"
+          type="geojson"
+          data={coloredDistrictsLayer}
+        >
           <Layer
             beforeId={before}
             type="fill"
-            id={l.id}
-            source={l.id}
+            id="anticipatory-action-fill"
+            source="anticipatory-action"
             layout={{}}
             paint={{
-              'fill-color': l.color as string,
+              'fill-color': ['get', 'fillColor'],
               'fill-opacity': 0.9,
             }}
           />
           <Layer
             beforeId={before}
-            id={`${l.id}-boundary`}
+            id="anticipatory-action-boundary"
             type="line"
-            source={l.id}
+            source="anticipatory-action"
             paint={{
               'line-color': 'black',
             }}
           />
         </Source>
-      ))}
+      )}
     </>
   );
 }
