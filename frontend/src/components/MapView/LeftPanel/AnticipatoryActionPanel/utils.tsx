@@ -219,5 +219,5 @@ export function AADataSeverityOrder(
   const catIndex = AAcategory.findIndex(x => x === category);
   const phaseIndex = AAPhase.findIndex(x => x === phase);
 
-  return 1000 + catIndex * 10 + phaseIndex;
+  return 1000 + phaseIndex * 10 + catIndex;
 }

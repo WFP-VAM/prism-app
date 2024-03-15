@@ -8,6 +8,7 @@ import { AADataSeverityOrder } from 'components/MapView/LeftPanel/AnticipatoryAc
 import type { CreateAsyncThunkTypes, RootState } from '../store';
 import {
   AACategoryType,
+  AAPhaseType,
   AnticipatoryActionData,
   AnticipatoryActionDataRow,
   allWindowsKey,
@@ -121,6 +122,12 @@ type AnticipatoryActionState = {
   };
   selectedWindow: typeof AAWindowKeys[number] | typeof allWindowsKey;
   categoryFilters: Record<AACategoryType, boolean>;
+  renderedDistricts: Record<
+    typeof AAWindowKeys[number],
+    {
+      [district: string]: { category: AACategoryType; phase: AAPhaseType };
+    }
+  >;
   loading: boolean;
   error: string | null;
 };
@@ -138,6 +145,7 @@ const initialState: AnticipatoryActionState = {
     na: true,
     ny: true,
   },
+  renderedDistricts: { 'Window 1': {}, 'Window 2': {} },
   loading: false,
   error: null,
 };
@@ -195,6 +203,23 @@ export const anticipatoryActionStateSlice = createSlice({
       ...state,
       selectedDateData: payload,
     }),
+    setRenderedDistricts: (
+      state,
+      {
+        payload,
+      }: PayloadAction<{
+        data: {
+          [district: string]: { category: AACategoryType; phase: AAPhaseType };
+        };
+        windowKey: typeof AAWindowKeys[number];
+      }>,
+    ) => ({
+      ...state,
+      renderedDistricts: {
+        ...state.renderedDistricts,
+        [payload.windowKey]: payload.data,
+      },
+    }),
   },
   extraReducers: builder => {
     builder.addCase(loadAAData.fulfilled, (state, { payload }) => ({
@@ -244,11 +269,15 @@ export const AACategoryFiltersSelector = (state: RootState) =>
 export const AASelectedDateDateSelector = (state: RootState) =>
   state.anticipatoryActionState.selectedDateData;
 
+export const AARenderedDistrictsSelector = (state: RootState) =>
+  state.anticipatoryActionState.renderedDistricts;
+
 // export actions
 export const {
   setSelectedWindow,
   setCategoryFilters,
   setSelectedDateData,
+  setRenderedDistricts,
 } = anticipatoryActionStateSlice.actions;
 
 export default anticipatoryActionStateSlice.reducer;
