@@ -12,7 +12,6 @@ import { black, borderGray, gray } from 'muiTheme';
 import React from 'react';
 import {
   AACategoryType,
-  AAPhase,
   AAPhaseType,
   AAcategory,
   AnticipatoryActionDataRow,
@@ -188,7 +187,7 @@ export function AADataSeverityOrder(
   phase: AnticipatoryActionDataRow['phase'],
 ) {
   const catIndex = AAcategory.findIndex(x => x === category);
-  const phaseIndex = AAPhase.findIndex(x => x === phase);
+  const phaseBonus = phase === 'Set' ? 100 : 0;
 
-  return catIndex * 10 + phaseIndex;
+  return catIndex * 10 + phaseBonus;
 }
