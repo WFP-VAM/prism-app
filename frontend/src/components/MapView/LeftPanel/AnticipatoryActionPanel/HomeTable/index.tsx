@@ -173,56 +173,79 @@ function getDistrictData(
     .map(([district, districtData]) => {
       const validData = districtData.filter(
         x =>
-          x.probability !== 'NA' && Number(x.probability) >= Number(x.trigger),
+          x.probability !== 'NA' &&
+          Number(x.probability) >= Number(x.trigger) &&
+          x.date <= date,
       );
 
-      // NA: There is date for this district, but all probabilities are under the trigger
+      // NA: There is a date for this district, but all probabilities are under the trigger
       if (category === 'na') {
-        const validDataForDate = validData.filter(x => x.date === date);
-        if (validDataForDate.length > 0) {
-          return undefined;
-        }
-        const dataExistForDate = !!districtData.find(x => x.date === date);
+        const dataExistForDate = !!validData.find(x => x.date === date);
         if (!dataExistForDate) {
-          return undefined;
+          return { name: district, isNew: false };
         }
-        return { name: district, isNew: false };
-      }
-
-      // NY: is monitored, but no entry for this date
-      if (category === 'ny') {
-        const dataForDate = districtData.filter(x => x.date === date);
-        if (dataForDate.length > 0) {
-          return undefined;
-        }
-        return { name: district, isNew: false };
-      }
-
-      const dates = [...new Set(validData.map(x => x.date))];
-      const dateIndex = dates.findIndex(x => x === date);
-      if (dateIndex < 0) {
         return undefined;
       }
-      const current = validData.find(
+
+      // NY: is monitored, but there are no entry until this date
+      if (category === 'ny') {
+        if (districtData.filter(x => x.date <= date).length > 0) {
+          return undefined;
+        }
+        return { name: district, isNew: false };
+      }
+
+      const categoryData = validData.filter(x => x.category === category);
+
+      const current = categoryData.find(
         x => x.category === category && x.phase === phase && x.date === date,
       );
-      if (!current) {
+
+      if (phase === 'Ready') {
+        if (current) {
+          return { name: district, isNew: true };
+        }
         return undefined;
       }
-      let isNew = false;
-      if (dateIndex - 1 >= 0) {
-        const prevDateData = validData.filter(
-          x => x.date === dates[dateIndex - 1],
-        );
-        const prevDateDataSev = Math.max(
-          ...prevDateData.map(x => AADataSeverityOrder(x.category, x.phase)),
-        );
-        const currentSev = AADataSeverityOrder(current.category, current.phase);
-        // TODO: is this accurate?
-        // eslint-disable-next-line fp/no-mutation
-        isNew = currentSev > prevDateDataSev;
+
+      // eslint-disable-next-line fp/no-mutating-methods
+      const dates = [...new Set(districtData.map(x => x.date))].sort();
+      const dateIndex = dates.findIndex(x => x === date);
+
+      if (dates.length === 0 || dateIndex === 0) {
+        return undefined;
       }
-      return { name: district, isNew };
+
+      const previousDate =
+        dateIndex === -1 ? dates.slice(-1)[0] : dates[dateIndex - 1];
+
+      const previous = categoryData.find(
+        x =>
+          x.category === category &&
+          x.phase === 'Ready' &&
+          x.date === previousDate,
+      );
+
+      if (phase === 'Set') {
+        if (current && previous) {
+          return { name: district, isNew: true };
+        }
+
+        // Check if the district was in SET mode previously for this category
+        // If it is the case, we keep the SET status for this district until the end of the window
+        const previouslySet = getDistrictData(
+          { [district]: data[district] },
+          previousDate,
+          category,
+          'Set',
+        ).find(x => x.name === district);
+        if (previouslySet) {
+          return { name: district, isNew: false };
+        }
+        return undefined;
+      }
+
+      return undefined;
     })
     .filter((x): x is AreaTagProps => x !== undefined);
 }
@@ -257,14 +280,6 @@ function HomeTable() {
   const queryDate = getRequestDate(layerAvailableDates, selectedDate);
   const date = getFormattedDate(queryDate, DateFormat.Default) as string;
 
-  // TODO - LEVE is "MILD" and should be added as a new category, see Figma.
-
-  // TODO: implement NA and NY
-  // NA means that no proba is above the trigger for that district
-  // NY means that the district is not monitored yet (no rows for the district)
-  // const na = React.useMemo(() => [], []);
-  // const ny = React.useMemo(() => [], []);
-
   const headerRow: ExtendedRowProps = {
     id: -1,
     iconContent: null,
@@ -272,19 +287,51 @@ function HomeTable() {
     header: selectedWindow === 'All' ? [...AAWindowKeys] : [selectedWindow],
   };
 
-  const dataForRows = React.useMemo(
-    () =>
-      rowCategories.map(r => ({
+  const dataForRows: {
+    'Window 1': AreaTagProps[];
+    'Window 2': AreaTagProps[];
+    category: 'ny' | 'na' | 'Leve' | 'Moderado' | 'Severo';
+    phase: 'ny' | 'na' | 'Ready' | 'Set';
+  }[] = React.useMemo(() => {
+    // Calculate initial data for each category and phase without filtering 'na' category
+    const initialRows = rowCategories.map(r => {
+      const windowData = AAWindowKeys.map(x => [
+        x,
+        getDistrictData(RawAAData[x] || {}, date, r.category, r.phase),
+      ]);
+      return {
         ...r,
-        ...(Object.fromEntries(
-          AAWindowKeys.map(x => [
-            x,
-            getDistrictData(RawAAData[x] || {}, date, r.category, r.phase),
-          ]),
-        ) as Record<typeof AAWindowKeys[number], AreaTagProps[]>),
-      })),
-    [RawAAData, date],
-  );
+        ...Object.fromEntries(windowData),
+      };
+    });
+
+    // Find all district names that are not 'na' to prepare for filtering
+    const allDistrictsExceptNa = new Set(
+      initialRows
+        .filter(r => r.category !== 'na')
+        .flatMap(r =>
+          AAWindowKeys.flatMap(x =>
+            r[x].map((districtData: AreaTagProps) => districtData.name),
+          ),
+        ),
+    );
+
+    // Apply filtering for 'na' category
+    const finalRows = initialRows.map(row => {
+      if (row.category === 'na') {
+        AAWindowKeys.forEach(x => {
+          // eslint-disable-next-line fp/no-mutation, no-param-reassign
+          row[x] = row[x].filter(
+            (districtData: AreaTagProps) =>
+              !allDistrictsExceptNa.has(districtData.name),
+          );
+        });
+      }
+      return row;
+    });
+
+    return finalRows;
+  }, [RawAAData, date]);
 
   const shouldRenderRows = dataForRows.filter(x => {
     switch (x.category) {
