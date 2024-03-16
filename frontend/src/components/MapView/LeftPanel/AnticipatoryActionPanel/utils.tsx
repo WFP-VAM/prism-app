@@ -136,21 +136,21 @@ export function getAAColor(
 export function getAAIcon(
   category: AACategoryType,
   phase: AAPhaseType,
-  light?: boolean,
+  forLayer?: boolean,
 ) {
-  const background = light ? undefined : getAAColor(category, phase);
+  const background = forLayer ? undefined : getAAColor(category, phase);
   const otherProps = (() => {
     switch (category) {
       case 'na':
         return {
           topText: 'na',
-          bottomText: light ? undefined : '-',
+          bottomText: forLayer ? undefined : '-',
           color: 'black',
         };
       case 'ny':
         return {
           topText: 'ny',
-          bottomText: light ? undefined : '-',
+          bottomText: forLayer ? undefined : '-',
           color: 'black',
         };
       case 'Severo':
