@@ -26,7 +26,7 @@ import {
   WMSLayerProps,
 } from '../config/types';
 
-import { LayerDefinitions } from '../config/utils';
+import { AAWindowKeyToLayerId, LayerDefinitions } from '../config/utils';
 import { addNotification } from '../context/notificationStateSlice';
 import { fetchACLEDDates } from './acled-utils';
 import {
@@ -55,7 +55,7 @@ export const getRequestDate = (
     return undefined;
   }
 
-  if (!layerAvailableDates) {
+  if (!layerAvailableDates || layerAvailableDates.length === 0) {
     return selectedDate;
   }
 
@@ -838,4 +838,13 @@ export async function fetchWMSLayerAsGeoJSON(options: {
     console.error(error);
     return { type: 'FeatureCollection', features: [] };
   }
+}
+
+export function getAAAvailableDatesCombined(
+  serverAvailableDates: AvailableDates,
+) {
+  return Object.values(AAWindowKeyToLayerId)
+    .map(id => serverAvailableDates[id])
+    .filter(Boolean) // Filter out undefined or null values
+    .flat();
 }

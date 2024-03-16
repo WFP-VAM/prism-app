@@ -24,7 +24,7 @@ import { debounce } from 'lodash';
 import { jsPDF } from 'jspdf';
 import maplibregl from 'maplibre-gl';
 import React, { useRef, useState } from 'react';
-import MapGL, { Layer, MapRef, Source } from 'react-map-gl/maplibre';
+import MapGL, { Layer, MapRef, Marker, Source } from 'react-map-gl/maplibre';
 import { useSelector } from 'react-redux';
 import { Cancel } from '@material-ui/icons';
 import { mapStyle } from 'components/MapView/Map';
@@ -45,6 +45,9 @@ import { cyanBlue } from 'muiTheme';
 import { SimpleBoundaryDropdown } from 'components/MapView/Layers/BoundaryDropdown';
 import { getBoundaryLayerSingleton } from 'config/utils';
 import { LayerData } from 'context/layers/layer-data';
+import { AARenderedDistrictsSelector } from 'context/anticipatoryActionStateSlice';
+import { calculateCentroids, useAAMarkerScalePercent } from 'utils/map-utils';
+import { getAAIcon } from 'components/MapView/LeftPanel/AnticipatoryActionPanel/utils';
 import {
   dateRangeSelector,
   layerDataSelector,
@@ -153,6 +156,7 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
   const { country } = appConfig;
   const selectedMap = useSelector(mapSelector);
   const dateRange = useSelector(dateRangeSelector);
+  const AARenderedDistricts = useSelector(AARenderedDistrictsSelector);
   const printRef = useRef<HTMLDivElement>(null);
   const overlayContainerRef = useRef<HTMLDivElement>(null);
   const titleOverlayRef = useRef<HTMLDivElement>(null);
@@ -499,6 +503,33 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
     handleDownloadMenuClose();
   };
 
+  const districtCentroids = React.useMemo(() => calculateCentroids(data), [
+    data,
+  ]);
+
+  const AAMarkers = React.useMemo(() => {
+    const combined = Object.values(AARenderedDistricts).reduce(
+      (acc, curr) => ({ ...acc, ...curr }),
+      {},
+    );
+    return Object.entries(combined).map(([district, { category, phase }]) => {
+      const centroid = districtCentroids[district] || {
+        geometry: { coordinates: [0, 0] },
+      };
+      const icon = getAAIcon(category, phase, true);
+
+      return {
+        district,
+        longitude: centroid?.geometry.coordinates[0],
+        latitude: centroid?.geometry.coordinates[1],
+        icon,
+        centroid,
+      };
+    });
+  }, [AARenderedDistricts, districtCentroids]);
+
+  const scalePercent = useAAMarkerScalePercent(mapRef.current?.getMap());
+
   return (
     <>
       <Dialog
@@ -573,6 +604,20 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
                         mapStyle={selectedMapStyle || mapStyle.toString()}
                         maxBounds={selectedMap.getMaxBounds() ?? undefined}
                       >
+                        {AAMarkers.map(marker => (
+                          <Marker
+                            key={`marker-${marker.district}`}
+                            longitude={marker.longitude}
+                            latitude={marker.latitude}
+                            anchor="center"
+                          >
+                            <div
+                              style={{ transform: `scale(${scalePercent})` }}
+                            >
+                              {marker.icon}
+                            </div>
+                          </Marker>
+                        ))}
                         {toggles.countryMask && (
                           <Source
                             id="mask-overlay"

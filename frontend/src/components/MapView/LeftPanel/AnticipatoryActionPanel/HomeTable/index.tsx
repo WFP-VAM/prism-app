@@ -3,10 +3,12 @@ import { useSafeTranslation } from 'i18n';
 import { borderGray, gray } from 'muiTheme';
 import React from 'react';
 import {
-  AnticipatoryActionAvailableDatesSelector,
+  AACategoryFiltersSelector,
+  AASelectedWindowSelector,
   AnticipatoryActionDataSelector,
+  setSelectedDateData,
 } from 'context/anticipatoryActionStateSlice';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { dateRangeSelector } from 'context/mapStateSlice/selectors';
 import { getFormattedDate } from 'utils/date-utils';
 import { DateFormat } from 'utils/name-utils';
@@ -17,7 +19,11 @@ import {
   AnticipatoryActionDataRow,
 } from 'context/anticipatoryActionStateSlice/types';
 import { AAWindowKeys } from 'config/utils';
-import { getRequestDate } from 'utils/server-utils';
+import {
+  getAAAvailableDatesCombined,
+  getRequestDate,
+} from 'utils/server-utils';
+import { availableDatesSelector } from 'context/serverStateSlice';
 import { AADataSeverityOrder, getAAIcon } from '../utils';
 
 interface AreaTagProps {
@@ -157,11 +163,6 @@ const useRowStyles = makeStyles(() =>
   }),
 );
 
-interface HomeTableProps {
-  selectedWindow: string;
-  categoryFilters: Record<Exclude<AACategoryType, 'na' | 'ny'>, boolean>;
-}
-
 function getDistrictData(
   data: AnticipatoryActionData,
   date: string,
@@ -242,18 +243,17 @@ const rowCategories: {
 
 type ExtendedRowProps = RowProps & { id: number | 'na' | 'ny' };
 
-function HomeTable({ selectedWindow, categoryFilters }: HomeTableProps) {
+function HomeTable() {
   const classes = useHomeTableStyles();
+  const dispatch = useDispatch();
   const RawAAData = useSelector(AnticipatoryActionDataSelector);
-  const AAAvailableDates = useSelector(
-    AnticipatoryActionAvailableDatesSelector,
-  );
+  const selectedWindow = useSelector(AASelectedWindowSelector);
+  const categoryFilters = useSelector(AACategoryFiltersSelector);
+  const serverAvailableDates = useSelector(availableDatesSelector);
 
   const { startDate: selectedDate } = useSelector(dateRangeSelector);
 
-  const layerAvailableDates = AAAvailableDates && [
-    ...Object.values(AAAvailableDates).flat(),
-  ];
+  const layerAvailableDates = getAAAvailableDatesCombined(serverAvailableDates);
   const queryDate = getRequestDate(layerAvailableDates, selectedDate);
   const date = getFormattedDate(queryDate, DateFormat.Default) as string;
 
@@ -265,20 +265,28 @@ function HomeTable({ selectedWindow, categoryFilters }: HomeTableProps) {
   // const na = React.useMemo(() => [], []);
   // const ny = React.useMemo(() => [], []);
 
-  // -1 means all
-  const selectedWindowIndex = AAWindowKeys.findIndex(x => x === selectedWindow);
-
   const headerRow: ExtendedRowProps = {
     id: -1,
     iconContent: null,
-    windows: selectedWindowIndex === -1 ? AAWindowKeys.map(x => []) : [[]],
-    header:
-      selectedWindowIndex === -1
-        ? [...AAWindowKeys]
-        : [AAWindowKeys[selectedWindowIndex]],
+    windows: selectedWindow === 'All' ? AAWindowKeys.map(x => []) : [[]],
+    header: selectedWindow === 'All' ? [...AAWindowKeys] : [selectedWindow],
   };
 
-  const shouldRenderRows = rowCategories.filter(x => {
+  const dataForRows = React.useMemo(
+    () =>
+      rowCategories.map(r => ({
+        ...r,
+        ...(Object.fromEntries(
+          AAWindowKeys.map(x => [
+            x,
+            getDistrictData(RawAAData[x] || {}, date, r.category, r.phase),
+          ]),
+        ) as Record<typeof AAWindowKeys[number], AreaTagProps[]>),
+      })),
+    [RawAAData, date],
+  );
+
+  const shouldRenderRows = dataForRows.filter(x => {
     switch (x.category) {
       case 'na':
       case 'ny':
@@ -294,23 +302,40 @@ function HomeTable({ selectedWindow, categoryFilters }: HomeTableProps) {
     }
   });
 
-  const districtRows: ExtendedRowProps[] = shouldRenderRows.map(r => ({
-    id: AADataSeverityOrder(r.category, r.phase),
-    iconContent: getAAIcon(r.category, r.phase),
-    windows:
-      selectedWindowIndex === -1
-        ? AAWindowKeys.map(x =>
-            getDistrictData(RawAAData[x] || {}, date, r.category, r.phase),
-          )
-        : [
-            getDistrictData(
-              RawAAData[selectedWindow] || {},
-              date,
-              r.category,
-              r.phase,
-            ),
-          ],
-  }));
+  const districtRows: ExtendedRowProps[] = React.useMemo(
+    () =>
+      shouldRenderRows.map(r => ({
+        id: AADataSeverityOrder(r.category, r.phase),
+        iconContent: getAAIcon(r.category, r.phase),
+        windows:
+          selectedWindow === 'All'
+            ? AAWindowKeys.map(x => r[x])
+            : [r[selectedWindow]],
+      })),
+    [selectedWindow, shouldRenderRows],
+  );
+
+  React.useEffect(() => {
+    const selectedDateData = dataForRows.reduce((acc, curr) => {
+      AAWindowKeys.forEach(w => {
+        const districts = curr[w].map(x => x.name);
+        districts.forEach(dist => {
+          const prev = acc.get(dist);
+          const newItem = {
+            district: dist,
+            windows: w,
+            category: curr.category,
+            phase: curr.phase,
+          };
+          acc.set(dist, prev ? [...prev, newItem] : [newItem]);
+        });
+      });
+
+      return acc;
+    }, new Map<string, Pick<AnticipatoryActionDataRow, 'district' | 'windows' | 'category' | 'phase'>[]>());
+
+    dispatch(setSelectedDateData(Object.fromEntries(selectedDateData)));
+  }, [dataForRows, dispatch]);
 
   const rows: ExtendedRowProps[] = [headerRow, ...districtRows];
 

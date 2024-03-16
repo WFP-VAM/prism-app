@@ -2,13 +2,7 @@ import { findClosestDate } from 'components/MapView/DateSelector/utils';
 import { checkLayerAvailableDatesAndContinueOrRemove } from 'components/MapView/utils';
 import { appConfig } from 'config';
 import { Extent } from 'components/MapView/Layers/raster-utils';
-import {
-  LayerKey,
-  LayerType,
-  isMainLayer,
-  DateItem,
-  AvailableDates,
-} from 'config/types';
+import { LayerKey, LayerType, isMainLayer, DateItem } from 'config/types';
 import {
   AAWindowKeyToLayerId,
   AAWindowKeys,
@@ -34,6 +28,7 @@ import { LocalError } from 'utils/error-utils';
 import { DateFormat } from 'utils/name-utils';
 import {
   DateCompatibleLayer,
+  getAAAvailableDatesCombined,
   getPossibleDatesForLayer,
 } from 'utils/server-utils';
 import { UrlLayerKey, getUrlKey, useUrlHistory } from 'utils/url-utils';
@@ -51,13 +46,6 @@ const dateSupportLayerTypes: Array<LayerType['type']> = [
   'static_raster',
   'anticipatory_action',
 ];
-
-function getAAAvailableDatesCombined(serverAvailableDates: AvailableDates) {
-  return Object.values(AAWindowKeyToLayerId)
-    .map(id => serverAvailableDates[id])
-    .filter(Boolean) // Filter out undefined or null values
-    .flat();
-}
 
 const useLayers = () => {
   const dispatch = useDispatch();

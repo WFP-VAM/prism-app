@@ -24,6 +24,7 @@ test('renders as expected', () => {
       boundaryRelationData: {},
     },
     serverState: { availableDates: {}, loading: false },
+    anticipatoryActionState: { renderedDistricts: {} },
   });
 
   const { container } = render(
