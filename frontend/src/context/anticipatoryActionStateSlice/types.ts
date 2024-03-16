@@ -25,3 +25,5 @@ export interface AnticipatoryActionDataRow {
 export interface AnticipatoryActionData {
   [k: string]: AnticipatoryActionDataRow[];
 }
+
+export const allWindowsKey = 'All';

@@ -83,104 +83,93 @@ export const StyledCheckboxLabel = withStyles({
   },
 );
 
-export function getAAIcon(category: AACategoryType, phase: AAPhaseType) {
-  switch (category) {
-    case 'na':
-      return (
-        <AAIcon
-          background="#F1F1F1"
-          topText="na"
-          bottomText="-"
-          color="black"
-        />
-      );
-    case 'ny':
-      return (
-        <AAIcon
-          background={`repeating-linear-gradient(
-            -45deg,
-            #F1F1F1,
-            #F1F1F1 10px,
-            white 10px,
-            white 20px
-            )`}
-          topText="ny"
-          bottomText="-"
-          color="black"
-        />
-      );
-    case 'Severo':
-      if (phase === 'Set') {
-        return (
-          <AAIcon
-            background="#831F00"
-            topText="S"
-            bottomText="SEV"
-            color="white"
-          />
-        );
-      }
-      if (phase === 'Ready') {
-        return (
-          <AAIcon
-            background="#E63701"
-            topText="R"
-            bottomText="SEV"
-            color="white"
-          />
-        );
-      }
-      throw new Error(`Icon not implemented: ${category}, ${phase}`);
+const AACategoryPhaseMap: { [key: string]: any } = {
+  na: {
+    color: '#F1F1F1',
+    iconProps: { topText: 'na', bottomText: '-', color: 'black' },
+  },
+  ny: {
+    color: '#F1F1F1', // Note: Special handling required for 'ny' in getAAColor for non-layer usage
+    iconProps: { topText: 'ny', bottomText: '-', color: 'black' },
+  },
+  Severo: {
+    Set: {
+      color: '#831F00',
+      iconProps: { topText: 'S', bottomText: 'SEV', color: 'white' },
+    },
+    Ready: {
+      color: '#E63701',
+      iconProps: { topText: 'R', bottomText: 'SEV', color: 'white' },
+    },
+  },
+  Moderado: {
+    Set: {
+      color: '#FF8934',
+      iconProps: { topText: 'S', bottomText: 'MOD', color: 'black' },
+    },
+    Ready: {
+      color: '#FFD52D',
+      iconProps: { topText: 'R', bottomText: 'MOD', color: 'black' },
+    },
+  },
+  Leve: {
+    Set: {
+      color: '#FFF503',
+      iconProps: { topText: 'S', bottomText: 'MIL', color: 'black' },
+    },
+    Ready: {
+      color: '#FFFCB3',
+      iconProps: { topText: 'R', bottomText: 'MIL', color: 'black' },
+    },
+  },
+};
 
-    case 'Moderado':
-      if (phase === 'Set') {
-        return (
-          <AAIcon
-            background="#FF8934"
-            topText="S"
-            bottomText="MOD"
-            color="black"
-          />
-        );
-      }
-      if (phase === 'Ready') {
-        return (
-          <AAIcon
-            background="#FFD52D"
-            topText="R"
-            bottomText="MOD"
-            color="black"
-          />
-        );
-      }
-      throw new Error(`Icon not implemented: ${category}, ${phase}`);
-
-    case 'Leve':
-      if (phase === 'Set') {
-        return (
-          <AAIcon
-            background="#FFF503"
-            topText="S"
-            bottomText="MIL"
-            color="black"
-          />
-        );
-      }
-      if (phase === 'Ready') {
-        return (
-          <AAIcon
-            background="#FFFCB3"
-            topText="R"
-            bottomText="MIL"
-            color="black"
-          />
-        );
-      }
-      throw new Error(`Icon not implemented: ${category}, ${phase}`);
-
-    default:
-      throw new Error(`Icon not implemented: ${category}, ${phase}`);
+export function getAAColor(
+  category: AACategoryType,
+  phase: AAPhaseType,
+  forLayer: boolean = false,
+) {
+  const categoryData = AACategoryPhaseMap[category];
+  if (category === 'ny' && !forLayer) {
+    return `repeating-linear-gradient(
+      -45deg,
+      #F1F1F1,
+      #F1F1F1 10px,
+      white 10px,
+      white 20px
+    )`;
   }
+  if (categoryData.color) {
+    return categoryData.color;
+  }
+  const phaseData = categoryData[phase];
+  if (!phaseData) {
+    throw new Error(`Icon not implemented: ${category}, ${phase}`);
+  }
+  return phaseData.color;
+}
+
+export function getAAIcon(
+  category: AACategoryType,
+  phase: AAPhaseType,
+  forLayer?: boolean,
+) {
+  const background = forLayer
+    ? undefined
+    : getAAColor(category, phase, forLayer);
+
+  const categoryData = AACategoryPhaseMap[category];
+  if (categoryData.iconProps) {
+    const iconProps = forLayer
+      ? { ...categoryData.iconProps, bottomText: undefined }
+      : categoryData.iconProps;
+    return <AAIcon background={background} {...iconProps} />;
+  }
+  const phaseData = categoryData[phase];
+  if (!phaseData) {
+    throw new Error(`Icon not implemented: ${category}, ${phase}`);
+  }
+  return <AAIcon background={background} {...phaseData.iconProps} />;
 }
 
 export function AADataSeverityOrder(
@@ -190,5 +179,5 @@ export function AADataSeverityOrder(
   const catIndex = AAcategory.findIndex(x => x === category);
   const phaseIndex = AAPhase.findIndex(x => x === phase);
 
-  return catIndex * 10 + phaseIndex;
+  return 1000 + phaseIndex * 10 + catIndex;
 }

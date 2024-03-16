@@ -1,4 +1,4 @@
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { PayloadAction, createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import Papa from 'papaparse';
 import { DateItem, DatesPropagation, Validity } from 'config/types';
 import { generateIntermediateDateItemFromValidity } from 'utils/server-utils';
@@ -6,7 +6,13 @@ import { appConfig } from 'config';
 import { AAWindowKeyToLayerId, AAWindowKeys } from 'config/utils';
 import { AADataSeverityOrder } from 'components/MapView/LeftPanel/AnticipatoryActionPanel/utils';
 import type { CreateAsyncThunkTypes, RootState } from '../store';
-import { AnticipatoryActionData, AnticipatoryActionDataRow } from './types';
+import {
+  AACategoryType,
+  AAPhaseType,
+  AnticipatoryActionData,
+  AnticipatoryActionDataRow,
+  allWindowsKey,
+} from './types';
 
 const AACSVKeys: [string, keyof AnticipatoryActionDataRow][] = [
   ['Category', 'category'],
@@ -108,6 +114,20 @@ type AnticipatoryActionState = {
   data: { [windowKey: string]: AnticipatoryActionData | undefined };
   availableDates?: { [windowKey: string]: DateItem[] };
   monitoredDistricts: string[];
+  selectedDateData: {
+    [key: string]: Pick<
+      AnticipatoryActionDataRow,
+      'district' | 'windows' | 'category' | 'phase'
+    >[];
+  };
+  selectedWindow: typeof AAWindowKeys[number] | typeof allWindowsKey;
+  categoryFilters: Record<AACategoryType, boolean>;
+  renderedDistricts: Record<
+    typeof AAWindowKeys[number],
+    {
+      [district: string]: { category: AACategoryType; phase: AAPhaseType };
+    }
+  >;
   loading: boolean;
   error: string | null;
 };
@@ -116,6 +136,16 @@ const initialState: AnticipatoryActionState = {
   data: {},
   availableDates: undefined,
   monitoredDistricts: [],
+  selectedDateData: {},
+  selectedWindow: allWindowsKey,
+  categoryFilters: {
+    Severo: true,
+    Moderado: true,
+    Leve: true,
+    na: true,
+    ny: true,
+  },
+  renderedDistricts: { 'Window 1': {}, 'Window 2': {} },
   loading: false,
   error: null,
 };
@@ -147,7 +177,50 @@ export const loadAAData = createAsyncThunk<
 export const anticipatoryActionStateSlice = createSlice({
   name: 'anticipatoryActionState',
   initialState,
-  reducers: {},
+  reducers: {
+    setSelectedWindow: (
+      state,
+      { payload }: PayloadAction<AnticipatoryActionState['selectedWindow']>,
+    ) => ({
+      ...state,
+      selectedWindow: payload,
+    }),
+    setCategoryFilters: (
+      state,
+      {
+        payload,
+      }: PayloadAction<
+        Partial<Record<'Leve' | 'Moderado' | 'Severo', boolean>>
+      >,
+    ) => ({
+      ...state,
+      categoryFilters: { ...state.categoryFilters, ...payload },
+    }),
+    setSelectedDateData: (
+      state,
+      { payload }: PayloadAction<AnticipatoryActionState['selectedDateData']>,
+    ) => ({
+      ...state,
+      selectedDateData: payload,
+    }),
+    setRenderedDistricts: (
+      state,
+      {
+        payload,
+      }: PayloadAction<{
+        data: {
+          [district: string]: { category: AACategoryType; phase: AAPhaseType };
+        };
+        windowKey: typeof AAWindowKeys[number];
+      }>,
+    ) => ({
+      ...state,
+      renderedDistricts: {
+        ...state.renderedDistricts,
+        [payload.windowKey]: payload.data,
+      },
+    }),
+  },
   extraReducers: builder => {
     builder.addCase(loadAAData.fulfilled, (state, { payload }) => ({
       ...state,
@@ -187,7 +260,24 @@ export const AnticipatoryActionDataSelector = (state: RootState) =>
 export const AnticipatoryActionAvailableDatesSelector = (state: RootState) =>
   state.anticipatoryActionState.availableDates;
 
+export const AASelectedWindowSelector = (state: RootState) =>
+  state.anticipatoryActionState.selectedWindow;
+
+export const AACategoryFiltersSelector = (state: RootState) =>
+  state.anticipatoryActionState.categoryFilters;
+
+export const AASelectedDateDateSelector = (state: RootState) =>
+  state.anticipatoryActionState.selectedDateData;
+
+export const AARenderedDistrictsSelector = (state: RootState) =>
+  state.anticipatoryActionState.renderedDistricts;
+
 // export actions
-// export const {  } = tableStateSlice.actions;
+export const {
+  setSelectedWindow,
+  setCategoryFilters,
+  setSelectedDateData,
+  setRenderedDistricts,
+} = anticipatoryActionStateSlice.actions;
 
 export default anticipatoryActionStateSlice.reducer;
