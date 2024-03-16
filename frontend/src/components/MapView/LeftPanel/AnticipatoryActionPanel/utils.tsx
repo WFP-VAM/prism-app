@@ -83,54 +83,70 @@ export const StyledCheckboxLabel = withStyles({
   },
 );
 
+const AACategoryPhaseMap: { [key: string]: any } = {
+  na: {
+    color: '#F1F1F1',
+    iconProps: { topText: 'na', bottomText: '-', color: 'black' },
+  },
+  ny: {
+    color: '#F1F1F1', // Note: Special handling required for 'ny' in getAAColor for non-layer usage
+    iconProps: { topText: 'ny', bottomText: '-', color: 'black' },
+  },
+  Severo: {
+    Set: {
+      color: '#831F00',
+      iconProps: { topText: 'S', bottomText: 'SEV', color: 'white' },
+    },
+    Ready: {
+      color: '#E63701',
+      iconProps: { topText: 'R', bottomText: 'SEV', color: 'white' },
+    },
+  },
+  Moderado: {
+    Set: {
+      color: '#FF8934',
+      iconProps: { topText: 'S', bottomText: 'MOD', color: 'black' },
+    },
+    Ready: {
+      color: '#FFD52D',
+      iconProps: { topText: 'R', bottomText: 'MOD', color: 'black' },
+    },
+  },
+  Leve: {
+    Set: {
+      color: '#FFF503',
+      iconProps: { topText: 'S', bottomText: 'MIL', color: 'black' },
+    },
+    Ready: {
+      color: '#FFFCB3',
+      iconProps: { topText: 'R', bottomText: 'MIL', color: 'black' },
+    },
+  },
+};
+
 export function getAAColor(
   category: AACategoryType,
   phase: AAPhaseType,
   forLayer: boolean = false,
 ) {
-  switch (category) {
-    case 'na':
-      return '#F1F1F1';
-    case 'ny':
-      return forLayer
-        ? '#F1F1F1'
-        : `repeating-linear-gradient(
-        -45deg,
-        #F1F1F1,
-        #F1F1F1 10px,
-        white 10px,
-        white 20px
-        )`;
-    case 'Severo':
-      if (phase === 'Set') {
-        return '#831F00';
-      }
-      if (phase === 'Ready') {
-        return '#E63701';
-      }
-      throw new Error(`Icon not implemented: ${category}, ${phase}`);
-
-    case 'Moderado':
-      if (phase === 'Set') {
-        return '#FF8934';
-      }
-      if (phase === 'Ready') {
-        return '#FFD52D';
-      }
-      throw new Error(`Icon not implemented: ${category}, ${phase}`);
-
-    case 'Leve':
-      if (phase === 'Set') {
-        return '#FFF503';
-      }
-      if (phase === 'Ready') {
-        return '#FFFCB3';
-      }
-      throw new Error(`Icon not implemented: ${category}, ${phase}`);
-
-    default:
-      throw new Error(`Icon not implemented: ${category}, ${phase}`);
+  const categoryData = AACategoryPhaseMap[category];
+  if (category === 'ny' && !forLayer) {
+    return `repeating-linear-gradient(
+      -45deg,
+      #F1F1F1,
+      #F1F1F1 10px,
+      white 10px,
+      white 20px
+    )`;
   }
+  if (categoryData.color) {
+    return categoryData.color;
+  }
+  const phaseData = categoryData[phase];
+  if (!phaseData) {
+    throw new Error(`Icon not implemented: ${category}, ${phase}`);
+  }
+  return phaseData.color;
 }
 
 export function getAAIcon(
@@ -138,78 +154,22 @@ export function getAAIcon(
   phase: AAPhaseType,
   forLayer?: boolean,
 ) {
-  const background = forLayer ? undefined : getAAColor(category, phase);
-  const otherProps = (() => {
-    switch (category) {
-      case 'na':
-        return {
-          topText: 'na',
-          bottomText: forLayer ? undefined : '-',
-          color: 'black',
-        };
-      case 'ny':
-        return {
-          topText: 'ny',
-          bottomText: forLayer ? undefined : '-',
-          color: 'black',
-        };
-      case 'Severo':
-        if (phase === 'Set') {
-          return {
-            topText: 'S',
-            bottomText: 'SEV',
-            color: 'white',
-          };
-        }
-        if (phase === 'Ready') {
-          return {
-            topText: 'R',
-            bottomText: 'SEV',
-            color: 'white',
-          };
-        }
-        throw new Error(`Icon not implemented: ${category}, ${phase}`);
+  const background = forLayer
+    ? undefined
+    : getAAColor(category, phase, forLayer);
 
-      case 'Moderado':
-        if (phase === 'Set') {
-          return {
-            topText: 'S',
-            bottomText: 'MOD',
-            color: 'black',
-          };
-        }
-        if (phase === 'Ready') {
-          return {
-            topText: 'R',
-            bottomText: 'MOD',
-            color: 'black',
-          };
-        }
-        throw new Error(`Icon not implemented: ${category}, ${phase}`);
-
-      case 'Leve':
-        if (phase === 'Set') {
-          return {
-            topText: 'S',
-            bottomText: 'MIL',
-            color: 'black',
-          };
-        }
-        if (phase === 'Ready') {
-          return {
-            topText: 'R',
-            bottomText: 'MIL',
-            color: 'black',
-          };
-        }
-        throw new Error(`Icon not implemented: ${category}, ${phase}`);
-
-      default:
-        throw new Error(`Icon not implemented: ${category}, ${phase}`);
-    }
-  })();
-
-  return <AAIcon background={background} {...otherProps} />;
+  const categoryData = AACategoryPhaseMap[category];
+  if (categoryData.iconProps) {
+    const iconProps = forLayer
+      ? { ...categoryData.iconProps, bottomText: undefined }
+      : categoryData.iconProps;
+    return <AAIcon background={background} {...iconProps} />;
+  }
+  const phaseData = categoryData[phase];
+  if (!phaseData) {
+    throw new Error(`Icon not implemented: ${category}, ${phase}`);
+  }
+  return <AAIcon background={background} {...phaseData.iconProps} />;
 }
 
 export function AADataSeverityOrder(
