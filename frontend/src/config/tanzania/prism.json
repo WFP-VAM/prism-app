@@ -31,6 +31,10 @@
               "main": true
             },
             {
+              "id": "chirps_rainfall_daily",
+              "label": "Daily"
+            },
+            {
               "id": "rainfall_agg_1month",
               "label": "1-month"
             },
@@ -103,6 +107,7 @@
           ]
         }
       ],
+      "forecasts": ["daily_rainfall_forecast", "dekad_rainfall_forecast", "dekad_rainfall_anomaly_forecast"],
       "dry_periods": ["days_dry", "streak_dry_days"],
       "extreme_rain_events": [
         {
