@@ -13,6 +13,7 @@ import GetAppIcon from '@material-ui/icons/GetApp';
 import {
   AdminLevelDataLayerProps,
   LayerKey,
+  LegendDefinitionItem,
   WMSLayerProps,
 } from 'config/types';
 import {
@@ -138,6 +139,59 @@ function LayerDownloadOptions({
     handleDownloadMenuClose();
   };
 
+  // Helper function to generate QML content from legend
+  const generateQmlContent = (legend: LegendDefinitionItem[]): string => {
+    let qml = `<!DOCTYPE qgis PUBLIC 'http://mrcc.com/qgis.dtd' 'SYSTEM'>
+    <qgis version="3.10" styleCategories="Symbology" simplifyAlgorithm="0" minimumScale="0" maximumScale="1e+08" simplifyDrawingHints="1" minLabelScale="0" maxLabelScale="1e+08" simplifyDrawingTol="1" simplifyMaxScale="1" hasScaleBasedVisibilityFlag="0" simplifyLocal="1" scaleBasedLabelVisibilityFlag="0">
+      <renderer-v2 forceraster="0" symbollevels="0" type="singleSymbol" enableorderby="0">
+        <symbols>
+          <symbol alpha="1" clip_to_extent="1" type="fill" name="0">
+            <layer pass="0" class="SimpleFill" locked="0">`;
+
+    // Add color entries for each legend item
+    legend.forEach(item => {
+      const label = item.label || item.value.toString();
+      qml += `
+              <prop k="color" v="${item.color}" />
+              <prop k="style" v="solid" />
+              <prop k="joinstyle" v="bevel" />
+              <prop k="pattern_angle" v="0" />
+              <!-- Additional properties as needed -->
+              <prop k="label" v="${label}" />`;
+    });
+
+    // End of QML file content
+    qml += `
+            </layer>
+          </symbol>
+        </symbols>
+        <rotation/>
+        <sizescale scalemethod="diameter"/>
+      </renderer-v2>
+    </qgis>`;
+
+    return qml;
+  };
+
+  const handleDownloadQmlStyle = (): void => {
+    const { legend } = layer as WMSLayerProps;
+
+    // Generate QML content from the legend
+    const qmlContent = generateQmlContent(legend);
+
+    // Trigger download
+    downloadToFile(
+      {
+        content: qmlContent,
+        isUrl: false,
+      },
+      `${safeCountry}_${layerId}`,
+      'application/qml',
+    );
+
+    handleDownloadMenuClose();
+  };
+
   const shouldShowDownloadButton =
     layer.type === 'admin_level_data' ||
     (layer.type === 'wms' &&
@@ -181,9 +235,17 @@ function LayerDownloadOptions({
         ]}
         {layer.type === 'wms' &&
           layer.baseUrl.includes('api.earthobservation.vam.wfp.org/ows') && (
-            <MenuItem key="download-as-geotiff" onClick={handleDownloadGeoTiff}>
-              {t('Download as GeoTIFF')}
-            </MenuItem>
+            <>
+              <MenuItem
+                key="download-as-geotiff"
+                onClick={handleDownloadGeoTiff}
+              >
+                {t('Download as GeoTIFF')}
+              </MenuItem>
+              <MenuItem key="download-style" onClick={handleDownloadQmlStyle}>
+                {t('Download QML Style')}
+              </MenuItem>
+            </>
           )}
       </Menu>
     </>
