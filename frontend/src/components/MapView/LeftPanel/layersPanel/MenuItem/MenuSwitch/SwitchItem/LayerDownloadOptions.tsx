@@ -142,35 +142,29 @@ function LayerDownloadOptions({
   // Helper function to generate QML content from legend
   const generateQmlContent = (legend: LegendDefinitionItem[]): string => {
     let qml = `<!DOCTYPE qgis PUBLIC 'http://mrcc.com/qgis.dtd' 'SYSTEM'>
-    <qgis version="3.10" styleCategories="Symbology" simplifyAlgorithm="0" minimumScale="0" maximumScale="1e+08" simplifyDrawingHints="1" minLabelScale="0" maxLabelScale="1e+08" simplifyDrawingTol="1" simplifyMaxScale="1" hasScaleBasedVisibilityFlag="0" simplifyLocal="1" scaleBasedLabelVisibilityFlag="0">
-      <renderer-v2 forceraster="0" symbollevels="0" type="singleSymbol" enableorderby="0">
-        <symbols>
-          <symbol alpha="1" clip_to_extent="1" type="fill" name="0">
-            <layer pass="0" class="SimpleFill" locked="0">`;
+<qgis hasScaleBasedVisibilityFlag="0" version="3.8.3-Zanzibar" styleCategories="AllStyleCategories">
+    <pipe>
+        <rasterrenderer opacity="1" alphaBand="-1" band="1" classificationMin="-1" classificationMax="inf" type="singlebandpseudocolor">
+            <rasterTransparency />
+            <rastershader>
+                <colorrampshader colorRampType="DISCRETE" classificationMode="1" clip="0">`;
 
     // Add color entries for each legend item
     legend.forEach(item => {
       const label = item.label || item.value.toString();
       // eslint-disable-next-line fp/no-mutation
       qml += `
-              <prop k="color" v="${item.color}" />
-              <prop k="style" v="solid" />
-              <prop k="joinstyle" v="bevel" />
-              <prop k="pattern_angle" v="0" />
-              <!-- Additional properties as needed -->
-              <prop k="label" v="${label}" />`;
+                    <item color="${item.color}" value="${item.value}" alpha="255" label="${label}" />`;
     });
 
     // End of QML file content
     // eslint-disable-next-line fp/no-mutation
     qml += `
-            </layer>
-          </symbol>
-        </symbols>
-        <rotation/>
-        <sizescale scalemethod="diameter"/>
-      </renderer-v2>
-    </qgis>`;
+                </colorrampshader>
+            </rastershader>
+        </rasterrenderer>
+    </pipe>
+</qgis>`;
 
     return qml;
   };
