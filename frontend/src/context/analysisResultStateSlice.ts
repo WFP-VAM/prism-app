@@ -350,7 +350,6 @@ export type AnalysisDispatchParams = {
   date: ReturnType<Date['getTime']>; // just a hint to developers that we give a date number here, not just any number
   statistic: AggregationOperations; // we might have to deviate from this if analysis accepts more than what this enum provides
   exposureValue: ExposureValue;
-  invertedColors?: boolean;
 };
 
 export type PolygonAnalysisDispatchParams = {

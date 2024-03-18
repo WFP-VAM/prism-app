@@ -461,7 +461,6 @@ export class BaselineLayerResult {
   threshold: ThresholdDefinition;
 
   legend: LegendDefinition;
-  invertedLegend: LegendDefinition;
   legendText: string;
   hazardLayerId: WMSLayerProps['id'];
   baselineLayerId: AdminLevelDataLayerProps['id'] | BoundaryLayerProps['id'];
