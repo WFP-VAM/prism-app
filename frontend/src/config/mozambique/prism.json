@@ -1,6 +1,6 @@
 {
   "country": "Mozambique",
-  "defaultLanguage": "en",
+  "defaultLanguage": "pt",
   "header": {
     "title": "PRISM",
     "logo": "images/moz-flag-inam-logo.png"
@@ -45,12 +45,32 @@
               "label": "1-month"
             },
             {
+              "id": "precip_blended_2m",
+              "label": "2-month"
+            },
+            {
               "id": "precip_blended_3m",
               "label": "3-month"
             },
             {
+              "id": "precip_blended_4m",
+              "label": "4-month"
+            },
+            {
+              "id": "precip_blended_5m",
+              "label": "5-month"
+            },
+            {
               "id": "precip_blended_6m",
               "label": "6-month"
+            },
+            {
+              "id": "precip_blended_7m",
+              "label": "7-month"
+            },
+            {
+              "id": "precip_blended_8m",
+              "label": "8-month"
             },
             {
               "id": "precip_blended_9m",
@@ -76,12 +96,32 @@
               "label": "1-month"
             },
             {
+              "id": "precip_blended_anomaly_2m",
+              "label": "2-month"
+            },
+            {
               "id": "precip_blended_anomaly_3m",
               "label": "3-month"
             },
             {
+              "id": "precip_blended_anomaly_4m",
+              "label": "4-month"
+            },
+            {
+              "id": "precip_blended_anomaly_5m",
+              "label": "5-month"
+            },
+            {
               "id": "precip_blended_anomaly_6m",
               "label": "6-month"
+            },
+            {
+              "id": "precip_blended_anomaly_7m",
+              "label": "7-month"
+            },
+            {
+              "id": "precip_blended_anomaly_8m",
+              "label": "8-month"
             },
             {
               "id": "precip_blended_anomaly_9m",
@@ -315,6 +355,9 @@
     },
     "exposure": {
       "population": ["census"]
+    },
+    "test": {
+      "test": ["census"]
     }
   }
 }
