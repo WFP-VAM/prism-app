@@ -151,6 +151,7 @@ function LayerDownloadOptions({
     // Add color entries for each legend item
     legend.forEach(item => {
       const label = item.label || item.value.toString();
+      // eslint-disable-next-line fp/no-mutation
       qml += `
               <prop k="color" v="${item.color}" />
               <prop k="style" v="solid" />
@@ -161,6 +162,7 @@ function LayerDownloadOptions({
     });
 
     // End of QML file content
+    // eslint-disable-next-line fp/no-mutation
     qml += `
             </layer>
           </symbol>
