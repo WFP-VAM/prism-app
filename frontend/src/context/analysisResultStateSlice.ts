@@ -667,7 +667,6 @@ export const requestAndStoreAnalysis = createAsyncThunk<
     statistic,
     threshold,
     exposureValue,
-    invertedColors,
   } = params;
   const baselineData = layerDataSelector(baselineLayer.id)(
     api.getState(),
@@ -735,11 +734,7 @@ export const requestAndStoreAnalysis = createAsyncThunk<
   );
 
   // Create a legend based on statistic data to be used for admin level analsysis.
-  const legend = createLegendFromFeatureArray(
-    features,
-    statistic,
-    invertedColors,
-  );
+  const legend = createLegendFromFeatureArray(features, statistic);
 
   const enrichedStatistics: (
     | AggregationOperations
@@ -942,13 +937,13 @@ export const analysisResultSlice = createSlice({
       ...state,
       isDataTableDrawerActive: false,
     }),
-    clearAnalysisResult: state => ({
-      ...state,
-      result: undefined,
-    }),
     analysisLayerInvertColors: state => ({
       ...state,
       invertedColors: !state.invertedColors,
+    }),
+    clearAnalysisResult: state => ({
+      ...state,
+      result: undefined,
     }),
   },
   extraReducers: builder => {

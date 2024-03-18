@@ -361,7 +361,6 @@ export function scaleFeatureStat(
 export function createLegendFromFeatureArray(
   features: Feature[],
   statistic: AggregationOperations,
-  invertColors: Boolean = false,
 ): LegendDefinition {
   // Extract values based on aggregation operation.
   const stats: number[] = features.map(f =>
@@ -371,9 +370,7 @@ export function createLegendFromFeatureArray(
   const maxNum = Math.max(...stats);
   const minNum = Math.min(...stats);
 
-  const defaultColors = ['#fee5d9', '#fcae91', '#fb6a4a', '#de2d26', '#a50f15'];
-  // eslint-disable-next-line fp/no-mutating-methods
-  const colors = invertColors ? defaultColors.reverse() : defaultColors;
+  const colors = ['#fee5d9', '#fcae91', '#fb6a4a', '#de2d26', '#a50f15'];
   const labels = ['Very low', 'Low', 'Medium', 'High', 'Very high'];
 
   const delta = (maxNum - minNum) / colors.length;
@@ -464,6 +461,7 @@ export class BaselineLayerResult {
   threshold: ThresholdDefinition;
 
   legend: LegendDefinition;
+  invertedLegend: LegendDefinition;
   legendText: string;
   hazardLayerId: WMSLayerProps['id'];
   baselineLayerId: AdminLevelDataLayerProps['id'] | BoundaryLayerProps['id'];
