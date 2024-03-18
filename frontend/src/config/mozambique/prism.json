@@ -1,6 +1,6 @@
 {
   "country": "Mozambique",
-  "defaultLanguage": "pt",
+  "defaultLanguage": "en",
   "header": {
     "title": "PRISM",
     "logo": "images/moz-flag-inam-logo.png"
@@ -355,9 +355,6 @@
     },
     "exposure": {
       "population": ["census"]
-    },
-    "test": {
-      "test": ["census"]
     }
   }
 }
