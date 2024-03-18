@@ -1211,7 +1211,7 @@
       },
       {
         "value": 1600,
-        "label": ">= 1600 mm",
+        "label": "> 1600 mm",
         "color": "#ffc4ee"
       }
     ]
@@ -1502,72 +1502,72 @@
       },
       {
         "value": 10,
-        "label": "10-20 mm",
+        "label": "10-50 mm",
         "color": "#d3f9d0"
-      },
-      {
-        "value": 20,
-        "label": "20-50 mm",
-        "color": "#a9e4a3"
       },
       {
         "value": 50,
         "label": "50-100 mm",
-        "color": "#7cc594"
+        "color": "#a9e4a3"
       },
       {
         "value": 100,
         "label": "100-200 mm",
-        "color": "#5eab91"
+        "color": "#7cc594"
       },
       {
         "value": 200,
         "label": "200-300 mm",
-        "color": "#9fffe8"
+        "color": "#5eab91"
       },
       {
         "value": 300,
         "label": "300-400 mm",
-        "color": "#90e0ef"
+        "color": "#9fffe8"
       },
       {
         "value": 400,
         "label": "400-600 mm",
-        "color": "#00b1de"
+        "color": "#90e0ef"
       },
       {
         "value": 600,
         "label": "600-800 mm",
-        "color": "#0083f3"
+        "color": "#00b1de"
       },
       {
         "value": 800,
-        "label": "800-900 mm",
-        "color": "#0052cd"
-      },
-      {
-        "value": 900,
-        "label": "900-1000 mm",
-        "color": "#0000c8"
+        "label": "800-1000 mm",
+        "color": "#0083f3"
       },
       {
         "value": 1000,
         "label": "1000-1200 mm",
-        "color": "#6003b8"
+        "color": "#0052cd"
       },
       {
         "value": 1200,
         "label": "1200-1400 mm",
-        "color": "#a002fa"
+        "color": "#0000c8"
       },
       {
         "value": 1400,
         "label": "1400-1600 mm",
-        "color": "#fa78fa"
+        "color": "#6003b8"
       },
       {
         "value": 1600,
-        "label": "> 1600 mm",
+        "label": "1600-1800 mm",
+        "color": "#a002fa"
+      },
+      {
+        "value": 1800,
+        "label": "1800-2000 mm",
+        "color": "#fa78fa"
+      },
+      {
+        "value": 2000,
+        "label": "> 2000 mm",
         "color": "#ffc4ee"
       }
     ]
@@ -1680,72 +1680,72 @@
       },
       {
         "value": 10,
-        "label": "10-20 mm",
+        "label": "10-50 mm",
         "color": "#d3f9d0"
-      },
-      {
-        "value": 20,
-        "label": "20-50 mm",
-        "color": "#a9e4a3"
       },
       {
         "value": 50,
         "label": "50-100 mm",
-        "color": "#7cc594"
+        "color": "#a9e4a3"
       },
       {
         "value": 100,
         "label": "100-200 mm",
-        "color": "#5eab91"
+        "color": "#7cc594"
       },
       {
         "value": 200,
         "label": "200-300 mm",
-        "color": "#9fffe8"
+        "color": "#5eab91"
       },
       {
         "value": 300,
         "label": "300-400 mm",
-        "color": "#90e0ef"
+        "color": "#9fffe8"
       },
       {
         "value": 400,
         "label": "400-600 mm",
-        "color": "#00b1de"
+        "color": "#90e0ef"
       },
       {
         "value": 600,
         "label": "600-800 mm",
-        "color": "#0083f3"
+        "color": "#00b1de"
       },
       {
         "value": 800,
-        "label": "800-900 mm",
-        "color": "#0052cd"
-      },
-      {
-        "value": 900,
-        "label": "900-1000 mm",
-        "color": "#0000c8"
+        "label": "800-1000 mm",
+        "color": "#0083f3"
       },
       {
         "value": 1000,
         "label": "1000-1200 mm",
-        "color": "#6003b8"
+        "color": "#0052cd"
       },
       {
         "value": 1200,
         "label": "1200-1400 mm",
-        "color": "#a002fa"
+        "color": "#0000c8"
       },
       {
         "value": 1400,
         "label": "1400-1600 mm",
-        "color": "#fa78fa"
+        "color": "#6003b8"
       },
       {
         "value": 1600,
-        "label": "> 1600 mm",
+        "label": "1600-1800 mm",
+        "color": "#a002fa"
+      },
+      {
+        "value": 1800,
+        "label": "1800-2000 mm",
+        "color": "#fa78fa"
+      },
+      {
+        "value": 2000,
+        "label": "> 2000 mm",
         "color": "#ffc4ee"
       }
     ]
@@ -5243,6 +5243,672 @@
         "value": 12,
         "label": "> +12C",
         "color": "#67000d"
+      }
+    ]
+  },
+  "spi_blended_1m": {
+    "title": "INAM SPI - 1-month",
+    "type": "wms",
+    "server_layer_name": "rxs_blended_moz_dekad",
+    "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
+    "date_interval": "days",
+    "additional_query_params": {
+      "styles": "r1s_blended"
+    },
+    "wcsConfig": {
+      "scale": 0.001,
+      "offset": 0,
+      "pixelResolution": 64
+    },
+    "opacity": 0.7,
+    "legend_text": "1-month Standardized Precipitation Index calculated from INAM / CHIRP blended data",
+    "legend": [
+      {
+        "value": -2.01,
+        "label": "< -2",
+        "color": "#730000"
+      },
+      {
+        "value": -2,
+        "label": "-1.5 to -2",
+        "color": "#e70001"
+      },
+      {
+        "value": -1.5,
+        "label": "-1.2 to -1.5",
+        "color": "#ffaa01"
+      },
+      {
+        "value": -1.2,
+        "label": "-0.7 to -1.2",
+        "color": "#ffd37b"
+      },
+      {
+        "value": -0.7,
+        "label": "-0.5 to -0.7",
+        "color": "#ffff02"
+      },
+      {
+        "value": -0.5,
+        "label": "0.5 to -0.5 ",
+        "color": "#f0f0f0"
+      },
+      {
+        "value": 0.5,
+        "label": "0.5 to 0.7",
+        "color": "#beebff"
+      },
+      {
+        "value": 0.7,
+        "label": "0.7 to 1.2",
+        "color": "#73b2ff"
+      },
+      {
+        "value": 1.2,
+        "label": "1.2 to 1.5",
+        "color": "#0271ff"
+      },
+      {
+        "value": 1.5,
+        "label": "1.5 to 2.0",
+        "color": "#004dad"
+      },
+      {
+        "value": 2,
+        "label": "> 2.0",
+        "color": "#ad03e6"
+      }
+    ]
+  },
+  "spi_blended_2m": {
+    "title": "INAM SPI - 2-month",
+    "type": "wms",
+    "server_layer_name": "rxs_blended_moz_dekad",
+    "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
+    "date_interval": "days",
+    "additional_query_params": {
+      "styles": "r2s_blended"
+    },
+    "wcsConfig": {
+      "scale": 0.001,
+      "offset": 0,
+      "pixelResolution": 64
+    },
+    "opacity": 0.7,
+    "legend_text": "2-month Standardized Precipitation Index calculated from INAM / CHIRP blended data",
+    "legend": [
+      {
+        "value": -2.01,
+        "label": "< -2",
+        "color": "#730000"
+      },
+      {
+        "value": -2,
+        "label": "-1.5 to -2",
+        "color": "#e70001"
+      },
+      {
+        "value": -1.5,
+        "label": "-1.2 to -1.5",
+        "color": "#ffaa01"
+      },
+      {
+        "value": -1.2,
+        "label": "-0.7 to -1.2",
+        "color": "#ffd37b"
+      },
+      {
+        "value": -0.7,
+        "label": "-0.5 to -0.7",
+        "color": "#ffff02"
+      },
+      {
+        "value": -0.5,
+        "label": "0.5 to -0.5 ",
+        "color": "#f0f0f0"
+      },
+      {
+        "value": 0.5,
+        "label": "0.5 to 0.7",
+        "color": "#beebff"
+      },
+      {
+        "value": 0.7,
+        "label": "0.7 to 1.2",
+        "color": "#73b2ff"
+      },
+      {
+        "value": 1.2,
+        "label": "1.2 to 1.5",
+        "color": "#0271ff"
+      },
+      {
+        "value": 1.5,
+        "label": "1.5 to 2.0",
+        "color": "#004dad"
+      },
+      {
+        "value": 2,
+        "label": "> 2.0",
+        "color": "#ad03e6"
+      }
+    ]
+  },
+  "spi_blended_3m": {
+    "title": "INAM SPI - 3-month",
+    "type": "wms",
+    "server_layer_name": "rxs_blended_moz_dekad",
+    "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
+    "date_interval": "days",
+    "additional_query_params": {
+      "styles": "r3s_blended"
+    },
+    "wcsConfig": {
+      "scale": 0.001,
+      "offset": 0,
+      "pixelResolution": 64
+    },
+    "opacity": 0.7,
+    "legend_text": "3-month Standardized Precipitation Index calculated from INAM / CHIRP blended data",
+    "legend": [
+      {
+        "value": -2.01,
+        "label": "< -2",
+        "color": "#730000"
+      },
+      {
+        "value": -2,
+        "label": "-1.5 to -2",
+        "color": "#e70001"
+      },
+      {
+        "value": -1.5,
+        "label": "-1.2 to -1.5",
+        "color": "#ffaa01"
+      },
+      {
+        "value": -1.2,
+        "label": "-0.7 to -1.2",
+        "color": "#ffd37b"
+      },
+      {
+        "value": -0.7,
+        "label": "-0.5 to -0.7",
+        "color": "#ffff02"
+      },
+      {
+        "value": -0.5,
+        "label": "0.5 to -0.5 ",
+        "color": "#f0f0f0"
+      },
+      {
+        "value": 0.5,
+        "label": "0.5 to 0.7",
+        "color": "#beebff"
+      },
+      {
+        "value": 0.7,
+        "label": "0.7 to 1.2",
+        "color": "#73b2ff"
+      },
+      {
+        "value": 1.2,
+        "label": "1.2 to 1.5",
+        "color": "#0271ff"
+      },
+      {
+        "value": 1.5,
+        "label": "1.5 to 2.0",
+        "color": "#004dad"
+      },
+      {
+        "value": 2,
+        "label": "> 2.0",
+        "color": "#ad03e6"
+      }
+    ]
+  },
+  "spi_blended_6m": {
+    "title": "INAM SPI - 6-month",
+    "type": "wms",
+    "server_layer_name": "rxs_blended_moz_dekad",
+    "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
+    "date_interval": "days",
+    "additional_query_params": {
+      "styles": "r6s_blended"
+    },
+    "wcsConfig": {
+      "scale": 0.001,
+      "offset": 0,
+      "pixelResolution": 64
+    },
+    "opacity": 0.7,
+    "legend_text": "6-month Standardized Precipitation Index calculated from INAM / CHIRP blended data",
+    "legend": [
+      {
+        "value": -2.01,
+        "label": "< -2",
+        "color": "#730000"
+      },
+      {
+        "value": -2,
+        "label": "-1.5 to -2",
+        "color": "#e70001"
+      },
+      {
+        "value": -1.5,
+        "label": "-1.2 to -1.5",
+        "color": "#ffaa01"
+      },
+      {
+        "value": -1.2,
+        "label": "-0.7 to -1.2",
+        "color": "#ffd37b"
+      },
+      {
+        "value": -0.7,
+        "label": "-0.5 to -0.7",
+        "color": "#ffff02"
+      },
+      {
+        "value": -0.5,
+        "label": "0.5 to -0.5 ",
+        "color": "#f0f0f0"
+      },
+      {
+        "value": 0.5,
+        "label": "0.5 to 0.7",
+        "color": "#beebff"
+      },
+      {
+        "value": 0.7,
+        "label": "0.7 to 1.2",
+        "color": "#73b2ff"
+      },
+      {
+        "value": 1.2,
+        "label": "1.2 to 1.5",
+        "color": "#0271ff"
+      },
+      {
+        "value": 1.5,
+        "label": "1.5 to 2.0",
+        "color": "#004dad"
+      },
+      {
+        "value": 2,
+        "label": "> 2.0",
+        "color": "#ad03e6"
+      }
+    ]
+  },
+  "spi_blended_9m": {
+    "title": "INAM SPI - 9-month",
+    "type": "wms",
+    "server_layer_name": "rxs_blended_moz_dekad",
+    "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
+    "date_interval": "days",
+    "additional_query_params": {
+      "styles": "r9s_blended"
+    },
+    "wcsConfig": {
+      "scale": 0.001,
+      "offset": 0,
+      "pixelResolution": 64
+    },
+    "opacity": 0.7,
+    "legend_text": "9-month Standardized Precipitation Index calculated from INAM / CHIRP blended data",
+    "legend": [
+      {
+        "value": -2.01,
+        "label": "< -2",
+        "color": "#730000"
+      },
+      {
+        "value": -2,
+        "label": "-1.5 to -2",
+        "color": "#e70001"
+      },
+      {
+        "value": -1.5,
+        "label": "-1.2 to -1.5",
+        "color": "#ffaa01"
+      },
+      {
+        "value": -1.2,
+        "label": "-0.7 to -1.2",
+        "color": "#ffd37b"
+      },
+      {
+        "value": -0.7,
+        "label": "-0.5 to -0.7",
+        "color": "#ffff02"
+      },
+      {
+        "value": -0.5,
+        "label": "0.5 to -0.5 ",
+        "color": "#f0f0f0"
+      },
+      {
+        "value": 0.5,
+        "label": "0.5 to 0.7",
+        "color": "#beebff"
+      },
+      {
+        "value": 0.7,
+        "label": "0.7 to 1.2",
+        "color": "#73b2ff"
+      },
+      {
+        "value": 1.2,
+        "label": "1.2 to 1.5",
+        "color": "#0271ff"
+      },
+      {
+        "value": 1.5,
+        "label": "1.5 to 2.0",
+        "color": "#004dad"
+      },
+      {
+        "value": 2,
+        "label": "> 2.0",
+        "color": "#ad03e6"
+      }
+    ]
+  },
+  "spi_blended_1y": {
+    "title": "INAM SPI - 1-year",
+    "type": "wms",
+    "server_layer_name": "rxs_blended_moz_dekad",
+    "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
+    "date_interval": "days",
+    "additional_query_params": {
+      "styles": "rys_blended"
+    },
+    "wcsConfig": {
+      "scale": 0.001,
+      "offset": 0,
+      "pixelResolution": 64
+    },
+    "opacity": 0.7,
+    "legend_text": "1-year Standardized Precipitation Index calculated from INAM / CHIRP blended data",
+    "legend": [
+      {
+        "value": -2.01,
+        "label": "< -2",
+        "color": "#730000"
+      },
+      {
+        "value": -2,
+        "label": "-1.5 to -2",
+        "color": "#e70001"
+      },
+      {
+        "value": -1.5,
+        "label": "-1.2 to -1.5",
+        "color": "#ffaa01"
+      },
+      {
+        "value": -1.2,
+        "label": "-0.7 to -1.2",
+        "color": "#ffd37b"
+      },
+      {
+        "value": -0.7,
+        "label": "-0.5 to -0.7",
+        "color": "#ffff02"
+      },
+      {
+        "value": -0.5,
+        "label": "0.5 to -0.5 ",
+        "color": "#f0f0f0"
+      },
+      {
+        "value": 0.5,
+        "label": "0.5 to 0.7",
+        "color": "#beebff"
+      },
+      {
+        "value": 0.7,
+        "label": "0.7 to 1.2",
+        "color": "#73b2ff"
+      },
+      {
+        "value": 1.2,
+        "label": "1.2 to 1.5",
+        "color": "#0271ff"
+      },
+      {
+        "value": 1.5,
+        "label": "1.5 to 2.0",
+        "color": "#004dad"
+      },
+      {
+        "value": 2,
+        "label": "> 2.0",
+        "color": "#ad03e6"
+      }
+    ]
+  },
+  "spi_blended_2y": {
+    "title": "INAM SPI - 2-year",
+    "type": "wms",
+    "server_layer_name": "rxs_blended_moz_dekad",
+    "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
+    "date_interval": "days",
+    "additional_query_params": {
+      "styles": "rds_blended"
+    },
+    "wcsConfig": {
+      "scale": 0.001,
+      "offset": 0,
+      "pixelResolution": 64
+    },
+    "opacity": 0.7,
+    "legend_text": "2-year Standardized Precipitation Index calculated from INAM / CHIRP blended data",
+    "legend": [
+      {
+        "value": -2.01,
+        "label": "< -2",
+        "color": "#730000"
+      },
+      {
+        "value": -2,
+        "label": "-1.5 to -2",
+        "color": "#e70001"
+      },
+      {
+        "value": -1.5,
+        "label": "-1.2 to -1.5",
+        "color": "#ffaa01"
+      },
+      {
+        "value": -1.2,
+        "label": "-0.7 to -1.2",
+        "color": "#ffd37b"
+      },
+      {
+        "value": -0.7,
+        "label": "-0.5 to -0.7",
+        "color": "#ffff02"
+      },
+      {
+        "value": -0.5,
+        "label": "0.5 to -0.5 ",
+        "color": "#f0f0f0"
+      },
+      {
+        "value": 0.5,
+        "label": "0.5 to 0.7",
+        "color": "#beebff"
+      },
+      {
+        "value": 0.7,
+        "label": "0.7 to 1.2",
+        "color": "#73b2ff"
+      },
+      {
+        "value": 1.2,
+        "label": "1.2 to 1.5",
+        "color": "#0271ff"
+      },
+      {
+        "value": 1.5,
+        "label": "1.5 to 2.0",
+        "color": "#004dad"
+      },
+      {
+        "value": 2,
+        "label": "> 2.0",
+        "color": "#ad03e6"
+      }
+    ]
+  },
+  "spi_blended_3y": {
+    "title": "INAM SPI - 3-year",
+    "type": "wms",
+    "server_layer_name": "rxs_blended_moz_dekad",
+    "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
+    "date_interval": "days",
+    "additional_query_params": {
+      "styles": "rhs_blended"
+    },
+    "wcsConfig": {
+      "scale": 0.001,
+      "offset": 0,
+      "pixelResolution": 64
+    },
+    "opacity": 0.7,
+    "legend_text": "3-year Standardized Precipitation Index calculated from INAM / CHIRP blended data",
+    "legend": [
+      {
+        "value": -2.01,
+        "label": "< -2",
+        "color": "#730000"
+      },
+      {
+        "value": -2,
+        "label": "-1.5 to -2",
+        "color": "#e70001"
+      },
+      {
+        "value": -1.5,
+        "label": "-1.2 to -1.5",
+        "color": "#ffaa01"
+      },
+      {
+        "value": -1.2,
+        "label": "-0.7 to -1.2",
+        "color": "#ffd37b"
+      },
+      {
+        "value": -0.7,
+        "label": "-0.5 to -0.7",
+        "color": "#ffff02"
+      },
+      {
+        "value": -0.5,
+        "label": "0.5 to -0.5 ",
+        "color": "#f0f0f0"
+      },
+      {
+        "value": 0.5,
+        "label": "0.5 to 0.7",
+        "color": "#beebff"
+      },
+      {
+        "value": 0.7,
+        "label": "0.7 to 1.2",
+        "color": "#73b2ff"
+      },
+      {
+        "value": 1.2,
+        "label": "1.2 to 1.5",
+        "color": "#0271ff"
+      },
+      {
+        "value": 1.5,
+        "label": "1.5 to 2.0",
+        "color": "#004dad"
+      },
+      {
+        "value": 2,
+        "label": "> 2.0",
+        "color": "#ad03e6"
+      }
+    ]
+  },
+  "spi_blended_5y": {
+    "title": "INAM SPI - 5-year",
+    "type": "wms",
+    "server_layer_name": "rxs_blended_moz_dekad",
+    "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
+    "date_interval": "days",
+    "additional_query_params": {
+      "styles": "rps_blended"
+    },
+    "wcsConfig": {
+      "scale": 0.001,
+      "offset": 0,
+      "pixelResolution": 64
+    },
+    "opacity": 0.7,
+    "legend_text": "5-year Standardized Precipitation Index calculated from INAM / CHIRP blended data",
+    "legend": [
+      {
+        "value": -2.01,
+        "label": "< -2",
+        "color": "#730000"
+      },
+      {
+        "value": -2,
+        "label": "-1.5 to -2",
+        "color": "#e70001"
+      },
+      {
+        "value": -1.5,
+        "label": "-1.2 to -1.5",
+        "color": "#ffaa01"
+      },
+      {
+        "value": -1.2,
+        "label": "-0.7 to -1.2",
+        "color": "#ffd37b"
+      },
+      {
+        "value": -0.7,
+        "label": "-0.5 to -0.7",
+        "color": "#ffff02"
+      },
+      {
+        "value": -0.5,
+        "label": "0.5 to -0.5 ",
+        "color": "#f0f0f0"
+      },
+      {
+        "value": 0.5,
+        "label": "0.5 to 0.7",
+        "color": "#beebff"
+      },
+      {
+        "value": 0.7,
+        "label": "0.7 to 1.2",
+        "color": "#73b2ff"
+      },
+      {
+        "value": 1.2,
+        "label": "1.2 to 1.5",
+        "color": "#0271ff"
+      },
+      {
+        "value": 1.5,
+        "label": "1.5 to 2.0",
+        "color": "#004dad"
+      },
+      {
+        "value": 2,
+        "label": "> 2.0",
+        "color": "#ad03e6"
       }
     ]
   },
