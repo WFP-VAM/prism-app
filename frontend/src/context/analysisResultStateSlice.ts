@@ -395,7 +395,6 @@ async function createAPIRequestParams(
   // Note - This may not work when running locally as the function
   // will default to the boundary layer hosted in S3.
   const zonesUrl = getAdminBoundariesURL(adminBoundariesPath);
-  console.log(zonesUrl);
 
   // eslint-disable-next-line camelcase
   const wfsParams = (params as WfsRequestParams)?.layer_name
@@ -677,7 +676,6 @@ export const requestAndStoreAnalysis = createAsyncThunk<
   const adminLevel =
     (baselineLayer as AdminLevelDataLayerProps)?.adminLevel ||
     (baselineLayer as BoundaryLayerProps)?.adminLevelCodes.length;
-  console.log({ adminLevel });
   const adminBoundaries = getBoundaryLayersByAdminLevel(adminLevel);
   const adminBoundariesData = layerDataSelector(adminBoundaries.id)(
     api.getState(),
