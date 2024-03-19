@@ -7082,21 +7082,20 @@
         "aggregation": "last_dekad"
       },
       {
-        "id": "ndvi_dekad",
-        "importance": 0.3,
-        "key": [
-          "ECMWF",
-          "NDVI_smoothed_5KM"
-        ],
-        "aggregation": "average",
-        "invert": "True"
-      },
-      {
         "id": "et0",
         "importance": 0.3,
         "key": [
           "FAO",
           "WAPOR_ET0_DEKAD_LTA"
+        ],
+        "aggregation": "last_dekad"
+      },
+      {
+        "id": "rzsm",
+        "importance": 0.3,
+        "key": [
+          "AGERA5",
+          "SOIL_MOIST"
         ],
         "aggregation": "last_dekad"
       }

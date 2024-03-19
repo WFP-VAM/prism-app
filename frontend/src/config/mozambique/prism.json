@@ -329,9 +329,6 @@
         }
       ]
     },
-    "drought": {
-      "combined_drought_index": ["cdi"]
-    },
     "vegetation": {
       "vegetation_conditions": [
         "ndvi_dekad",
