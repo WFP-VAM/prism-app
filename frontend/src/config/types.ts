@@ -480,9 +480,6 @@ export class CompositeLayerProps extends CommonLayerProps {
   startDate: string;
 
   @optional
-  areaStartDateOverride?: string;
-
-  @optional
   endDate?: string;
 }
 
