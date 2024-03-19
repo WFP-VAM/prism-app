@@ -49,7 +49,7 @@ function parseStatsApiConfig(maybeConfig: {
 }
 
 // CamelCase the keys inside the layer definition & validate config
-const getLayerByKey = (layerKey: LayerKey): LayerType => {
+export const getLayerByKey = (layerKey: LayerKey): LayerType => {
   const rawDefinition = rawLayers[layerKey];
 
   const definition: { id: LayerKey; type: LayerType['type'] } = {
@@ -155,9 +155,9 @@ export const LayerDefinitions: LayersMap = (() => {
 })();
 
 export function getBoundaryLayers(): BoundaryLayerProps[] {
-  return Object.values(LayerDefinitions).filter(
-    (layer): layer is BoundaryLayerProps => layer.type === 'boundary',
-  );
+  return Object.values(LayerDefinitions)
+    .filter((layer): layer is BoundaryLayerProps => layer.type === 'boundary')
+    .sort((a, b) => a.adminLevelCodes.length - b.adminLevelCodes.length);
 }
 
 export function getDisplayBoundaryLayers(): BoundaryLayerProps[] {
@@ -192,10 +192,12 @@ export function getDisplayBoundaryLayers(): BoundaryLayerProps[] {
     // get override layers from override names without
     // disrupting the order of which they are defined
     // since the first is considered as default
-    const defaultDisplayBoundaries = defaultBoundaries.map(
-      // TODO - use a find?
-      id => boundaryLayers.filter(l => l.id === id)[0],
-    );
+    const defaultDisplayBoundaries = defaultBoundaries
+      .map(
+        // TODO - use a find?
+        id => boundaryLayers.filter(l => l.id === id)[0],
+      )
+      .sort((a, b) => a.adminLevelCodes.length - b.adminLevelCodes.length);
 
     if (defaultDisplayBoundaries.length === 0) {
       throw new Error(

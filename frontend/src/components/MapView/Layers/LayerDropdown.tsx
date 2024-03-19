@@ -54,7 +54,7 @@ function LayerDropdown({
   const classes = useStyles();
 
   // Only take first boundary for now
-  const adminBoundaries = getDisplayBoundaryLayers().slice(0, 2);
+  const adminBoundaries = getDisplayBoundaryLayers();
   const AdminBoundaryCategory = {
     title: 'Admin Levels',
     layers: adminBoundaries.map((aboundary, index) => ({
