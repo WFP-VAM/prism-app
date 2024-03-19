@@ -103,28 +103,38 @@ function AnticipatoryActionLayer({ layer, before }: LayersProps) {
     );
   }, [aaCategories, aaWindow, dispatch, layer.csvWindowKey, selectedDateData]);
 
-  const coloredDistrictsLayer = data
-    ? {
-        ...data,
-        features: Object.entries(renderedDistricts[layer.csvWindowKey])
-          .map(([districtId, { category, phase }]: [string, any]) => {
-            const feature = data?.features.find(
-              f =>
-                f.properties?.[boundaryLayer.adminLevelLocalNames[1]] ===
-                districtId,
-            );
-            if (!feature) {
-              return null;
-            }
-            const color = getAAColor(category, phase, true);
-            return {
-              ...feature,
-              properties: { ...feature.properties, fillColor: color },
-            };
-          })
-          .filter(f => f !== null),
-      }
-    : null;
+  const coloredDistrictsLayer = React.useMemo(() => {
+    const districtEntries = Object.entries(
+      renderedDistricts[layer.csvWindowKey],
+    );
+    if (!data || !districtEntries.length) {
+      return [];
+    }
+    return {
+      ...data,
+      features: Object.entries(renderedDistricts[layer.csvWindowKey])
+        .map(([districtId, { category, phase }]: [string, any]) => {
+          const feature = data?.features.find(
+            f =>
+              f.properties?.[boundaryLayer.adminLevelLocalNames[1]] ===
+              districtId,
+          );
+
+          if (!feature) {
+            return null;
+          }
+          const color = getAAColor(category, phase, true);
+          return {
+            ...feature,
+            properties: {
+              ...feature.properties,
+              fillColor: color || 'grey',
+            },
+          };
+        })
+        .filter(f => f !== null),
+    };
+  }, [data, renderedDistricts, layer.csvWindowKey]);
 
   const markers = React.useMemo(() => {
     const districtEntries = Object.entries(
