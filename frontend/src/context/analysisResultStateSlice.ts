@@ -383,16 +383,19 @@ async function createAPIRequestParams(
   exposureValue?: ExposureValue,
 ): Promise<ApiData> {
   // Get default values for groupBy and admin boundary file path at the proper adminLevel
+
+  const adminLevel =
+    (params as AdminLevelDataLayerProps)?.adminLevel ||
+    (params as BoundaryLayerProps)?.adminLevelCodes.length;
   const {
     path: adminBoundariesPath,
     adminCode: groupBy,
-  } = getBoundaryLayersByAdminLevel(
-    (params as AdminLevelDataLayerProps)?.adminLevel,
-  );
+  } = getBoundaryLayersByAdminLevel(adminLevel);
 
   // Note - This may not work when running locally as the function
   // will default to the boundary layer hosted in S3.
   const zonesUrl = getAdminBoundariesURL(adminBoundariesPath);
+  console.log(zonesUrl);
 
   // eslint-disable-next-line camelcase
   const wfsParams = (params as WfsRequestParams)?.layer_name
@@ -671,7 +674,10 @@ export const requestAndStoreAnalysis = createAsyncThunk<
     api.getState(),
   ) as LayerData<AdminLevelDataLayerProps>;
 
-  const { adminLevel } = baselineLayer as AdminLevelDataLayerProps;
+  const adminLevel =
+    (baselineLayer as AdminLevelDataLayerProps)?.adminLevel ||
+    (baselineLayer as BoundaryLayerProps)?.adminLevelCodes.length;
+  console.log({ adminLevel });
   const adminBoundaries = getBoundaryLayersByAdminLevel(adminLevel);
   const adminBoundariesData = layerDataSelector(adminBoundaries.id)(
     api.getState(),
