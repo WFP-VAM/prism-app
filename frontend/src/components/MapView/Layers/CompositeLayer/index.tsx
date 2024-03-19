@@ -1,5 +1,5 @@
 import { WithStyles, createStyles, withStyles } from '@material-ui/core';
-import { CompositeLayerProps } from 'config/types';
+import { CompositeLayerProps, LegendDefinition } from 'config/types';
 import { LayerData, loadLayerData } from 'context/layers/layer-data';
 import { layerDataSelector } from 'context/mapStateSlice/selectors';
 import React, { memo, useEffect, useState } from 'react';
@@ -15,6 +15,7 @@ import { getRequestDate } from 'utils/server-utils';
 import { safeCountry } from 'config';
 import { geoToH3, h3ToGeoBoundary } from 'h3-js'; // ts-ignore
 import { opacitySelector } from 'context/opacityStateSlice';
+import { legendToStops } from '../layer-utils';
 
 const styles = () => createStyles({});
 
@@ -24,23 +25,18 @@ interface Props extends WithStyles<typeof styles> {
 }
 
 const paintProps: (
+  legend: LegendDefinition,
   opacity: number | undefined,
-) => FillLayerSpecification['paint'] = (opacity?: number) => ({
+) => FillLayerSpecification['paint'] = (
+  legend: LegendDefinition,
+  opacity?: number,
+) => ({
   'fill-opacity': opacity || 0.5,
   'fill-color': [
     'interpolate',
     ['linear'],
     ['get', 'value'],
-    0,
-    '#ffffd4',
-    0.25,
-    '#fed98e',
-    0.5,
-    '#fe9929',
-    0.75,
-    '#d95f0e',
-    1,
-    '#993404',
+    ...legendToStops(legend).flat(),
   ],
 });
 
@@ -114,7 +110,7 @@ const CompositeLayer = ({ layer, before }: Props) => {
         <Layer
           id={getLayerMapId(layer.id)}
           type="fill"
-          paint={paintProps(opacityState || layer.opacity)}
+          paint={paintProps(layer.legend || [], opacityState || layer.opacity)}
           beforeId={before}
         />
       </Source>
