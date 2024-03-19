@@ -247,143 +247,151 @@ interface BoundaryDropdownOptionsProps {
   multiple?: boolean;
 }
 
-export function BoundaryDropdownOptions({
-  search,
-  setSearch,
-  selectedBoundaries,
-  setSelectedBoundaries,
-  selectAll,
-  goto,
-  map,
-  multiple = true,
-}: BoundaryDropdownOptionsProps) {
-  const styles = useStyles();
-  const { t, i18n: i18nLocale } = useSafeTranslation();
-  const boundaryLayerData = useSelector(layerDataSelector(boundaryLayer.id)) as
-    | LayerData<BoundaryLayerProps>
-    | undefined;
-  const { data } = boundaryLayerData || {};
+export const BoundaryDropdownOptions = React.forwardRef(
+  (
+    {
+      search,
+      setSearch,
+      selectedBoundaries,
+      setSelectedBoundaries,
+      selectAll,
+      goto,
+      map,
+      multiple = true,
+    }: BoundaryDropdownOptionsProps,
+    ref,
+  ) => {
+    const styles = useStyles();
+    const { t, i18n: i18nLocale } = useSafeTranslation();
+    const boundaryLayerData = useSelector(
+      layerDataSelector(boundaryLayer.id),
+    ) as LayerData<BoundaryLayerProps> | undefined;
+    const { data } = boundaryLayerData || {};
 
-  if (!data) {
-    return null;
-  }
-
-  const areaTree = getAdminBoundaryTree(data, boundaryLayer, i18nLocale);
-  const flattenedAreaList = flattenAreaTree(areaTree, search).slice(1);
-  const rootLevel = flattenedAreaList[0]?.level;
-
-  const selectOrDeselectAll = (e: React.MouseEvent) => {
-    e.preventDefault();
-    if (
-      selectedBoundaries === undefined ||
-      setSelectedBoundaries === undefined
-    ) {
-      return;
+    if (!data) {
+      return null;
     }
-    if (selectedBoundaries.length > 0) {
-      setSelectedBoundaries([]);
-    } else {
-      setSelectedBoundaries(
-        flattenedAreaList.map(({ adminCode }) => adminCode),
-      );
-    }
-  };
 
-  // map adminLevels to a CSS class for each level
-  // note that level actually used is different from the
-  // official admin level, as we subtract the root level
-  // from each item's level, when displaying
-  const clsName: { [key: number]: any } = {
-    0: styles.menuItem0,
-    1: styles.menuItem1,
-    2: styles.menuItem2,
-    3: styles.menuItem3,
-    4: styles.menuItem3,
-  };
-  return (
-    <>
-      <SearchField search={search} setSearch={setSearch} />
-      {!search && selectAll && selectedBoundaries && (
-        <MenuItem onClick={selectOrDeselectAll}>
-          {selectedBoundaries.length === 0
-            ? t('Select All')
-            : t('Deselect All')}
-        </MenuItem>
-      )}
-      {search && flattenedAreaList.length === 0 && (
-        <MenuItem disabled>{t('No Results')}</MenuItem>
-      )}
-      <List
-        height={700}
-        itemCount={flattenedAreaList.length}
-        itemSize={35}
-        width="350px"
-      >
-        {({ index, style }) => {
-          const area = flattenedAreaList[index];
-          return (
-            <MenuItem
-              classes={{
-                root: clsName[(area.level - rootLevel) as number],
-              }}
-              key={area.adminCode}
-              value={area.adminCode}
-              style={style as any}
-              selected={selectedBoundaries?.includes(area.adminCode)}
-              onClick={event => {
-                event.stopPropagation();
-                const newSelectedBoundaries = multiple
-                  ? [...(selectedBoundaries || [])]
-                  : [];
-                const itemIndex = newSelectedBoundaries.indexOf(area.adminCode);
-                if (itemIndex === -1) {
-                  // eslint-disable-next-line fp/no-mutating-methods
-                  newSelectedBoundaries.push(area.adminCode);
-                } else {
-                  // eslint-disable-next-line fp/no-mutating-methods
-                  newSelectedBoundaries.splice(itemIndex, 1);
-                }
-                if (setSelectedBoundaries !== undefined) {
-                  const boundariesToSelect = flattenedAreaList
-                    .filter(b =>
-                      newSelectedBoundaries.some((v: string) =>
-                        b.adminCode.startsWith(v),
-                      ),
-                    )
-                    .map(b => b.adminCode);
+    const areaTree = getAdminBoundaryTree(data, boundaryLayer, i18nLocale);
+    const flattenedAreaList = flattenAreaTree(areaTree, search).slice(1);
+    const rootLevel = flattenedAreaList[0]?.level;
 
-                  setSelectedBoundaries(boundariesToSelect, event.shiftKey);
-                  if (!goto) {
+    const selectOrDeselectAll = (e: React.MouseEvent) => {
+      e.preventDefault();
+      if (
+        selectedBoundaries === undefined ||
+        setSelectedBoundaries === undefined
+      ) {
+        return;
+      }
+      if (selectedBoundaries.length > 0) {
+        setSelectedBoundaries([]);
+      } else {
+        setSelectedBoundaries(
+          flattenedAreaList.map(({ adminCode }) => adminCode),
+        );
+      }
+    };
+
+    // map adminLevels to a CSS class for each level
+    // note that level actually used is different from the
+    // official admin level, as we subtract the root level
+    // from each item's level, when displaying
+    const clsName: { [key: number]: any } = {
+      0: styles.menuItem0,
+      1: styles.menuItem1,
+      2: styles.menuItem2,
+      3: styles.menuItem3,
+      4: styles.menuItem3,
+    };
+    return (
+      <>
+        <SearchField search={search} setSearch={setSearch} />
+        {!search && selectAll && selectedBoundaries && (
+          <MenuItem onClick={selectOrDeselectAll}>
+            {selectedBoundaries.length === 0
+              ? t('Select All')
+              : t('Deselect All')}
+          </MenuItem>
+        )}
+        {search && flattenedAreaList.length === 0 && (
+          <MenuItem disabled>{t('No Results')}</MenuItem>
+        )}
+        <List
+          height={700}
+          itemCount={flattenedAreaList.length}
+          itemSize={35}
+          width="350px"
+        >
+          {({ index, style }) => {
+            const area = flattenedAreaList[index];
+            return (
+              <MenuItem
+                ref={ref as any}
+                classes={{
+                  root: clsName[(area.level - rootLevel) as number],
+                }}
+                key={area.adminCode}
+                value={area.adminCode}
+                style={style as any}
+                selected={selectedBoundaries?.includes(area.adminCode)}
+                onClick={event => {
+                  event.stopPropagation();
+                  const newSelectedBoundaries = multiple
+                    ? [...(selectedBoundaries || [])]
+                    : [];
+                  const itemIndex = newSelectedBoundaries.indexOf(
+                    area.adminCode,
+                  );
+                  if (itemIndex === -1) {
+                    // eslint-disable-next-line fp/no-mutating-methods
+                    newSelectedBoundaries.push(area.adminCode);
+                  } else {
+                    // eslint-disable-next-line fp/no-mutating-methods
+                    newSelectedBoundaries.splice(itemIndex, 1);
+                  }
+                  if (setSelectedBoundaries !== undefined) {
+                    const boundariesToSelect = flattenedAreaList
+                      .filter(b =>
+                        newSelectedBoundaries.some((v: string) =>
+                          b.adminCode.startsWith(v),
+                        ),
+                      )
+                      .map(b => b.adminCode);
+
+                    setSelectedBoundaries(boundariesToSelect, event.shiftKey);
+                    if (!goto) {
+                      return;
+                    }
+                  }
+                  if (map === undefined) {
                     return;
                   }
-                }
-                if (map === undefined) {
-                  return;
-                }
-                const features = data.features.filter(
-                  f =>
-                    f &&
-                    f.properties?.[boundaryLayer.adminCode].startsWith(
-                      area.adminCode,
-                    ),
-                );
-                const bboxUnion: BBox = bbox({
-                  type: 'FeatureCollection',
-                  features,
-                });
-                if (bboxUnion.length === 4) {
-                  map.fitBounds(bboxUnion, { padding: 60 });
-                }
-              }}
-            >
-              {area.label}
-            </MenuItem>
-          );
-        }}
-      </List>
-    </>
-  );
-}
+                  const features = data.features.filter(
+                    f =>
+                      f &&
+                      f.properties?.[boundaryLayer.adminCode].startsWith(
+                        area.adminCode,
+                      ),
+                  );
+                  const bboxUnion: BBox = bbox({
+                    type: 'FeatureCollection',
+                    features,
+                  });
+                  if (bboxUnion.length === 4) {
+                    map.fitBounds(bboxUnion, { padding: 60 });
+                  }
+                }}
+              >
+                {area.label}
+              </MenuItem>
+            );
+          }}
+        </List>
+      </>
+    );
+  },
+);
 
 /**
  * This component allows you to give the user the ability to select several admin_boundary cells.
