@@ -28,7 +28,7 @@ exports[`renders as expected 1`] = `
             class="react-datepicker__input-container"
           >
             <mock-button
-              classname="ForwardRef-buttonStyle-11"
+              classname="ForwardRef-buttonStyle-12"
               variant="outlined"
             >
               Mar 11, 2023
@@ -63,7 +63,7 @@ exports[`renders as expected 1`] = `
           <div
             class="memo-timeline-9 react-draggable"
             id="dateTimelineSelector"
-            style="transform: translate(-690px,0px);"
+            style="transform: translate(-276px,0px);"
           >
             <div
               class="MuiGrid-root memo-dateLabelContainer-8 MuiGrid-container"
@@ -71,14 +71,10 @@ exports[`renders as expected 1`] = `
               mock-timelineitems
             </div>
             <div
-              class="memo-pointer-10 react-draggable"
+              class="memo-greyOverlay-10 react-draggable"
               id="datePointerSelector"
-              style="transform: translate(690px,0px);"
-            >
-              <svg>
-                tick.svg
-              </svg>
-            </div>
+              style="transform: translate(276px,0px);"
+            />
           </div>
         </div>
         <mock-hidden
