@@ -16,7 +16,7 @@ import {
   AAcategory,
   AnticipatoryActionDataRow,
 } from 'context/anticipatoryActionStateSlice/types';
-import AAIcon from './HomeTable/AAIcon';
+import AAIcon from './AAIcon';
 
 const StyledRadio = withStyles({
   root: {
@@ -174,9 +174,10 @@ export function getAAIcon(
 export function AADataSeverityOrder(
   category: AnticipatoryActionDataRow['category'],
   phase: AnticipatoryActionDataRow['phase'],
+  bonus: number = 100,
 ) {
   const catIndex = AAcategory.findIndex(x => x === category);
-  const phaseBonus = phase === 'Set' ? 100 : 0;
+  const phaseBonus = phase === 'Set' ? bonus : 0;
 
   return catIndex * 10 + phaseBonus;
 }

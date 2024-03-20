@@ -32,7 +32,12 @@ function LayersPanel({ setResultsPage }: LayersPanelProps) {
   }, [dispatch, setResultsPage, tabValue]);
 
   return (
-    <Box display="flex" flexDirection="column" height="100%">
+    <Box
+      display="flex"
+      flexDirection="column"
+      height="100%"
+      width={PanelSize.medium}
+    >
       <RootAccordionItems />
       <RootAnalysisAccordionItems />
       <Box flexGrow={1} />

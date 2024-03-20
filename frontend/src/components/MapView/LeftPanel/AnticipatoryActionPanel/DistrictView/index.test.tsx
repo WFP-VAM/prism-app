@@ -3,7 +3,7 @@ import { render } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import { BrowserRouter } from 'react-router-dom';
 import configureStore from 'redux-mock-store';
-import HomeTable from '.';
+import DistrictView from '.';
 import { mockAAData } from '../test.utils';
 
 const mockStore = configureStore([]);
@@ -20,7 +20,7 @@ const store = mockStore({
   },
   serverState: { availableDates: {}, loading: false },
   anticipatoryActionState: {
-    selectedWindow: 'Window 1',
+    selectedWindow: 'Window 2',
     categoryFilters: {
       Severo: true,
       Moderado: true,
@@ -35,7 +35,7 @@ test('renders as expected', () => {
   const { container } = render(
     <BrowserRouter>
       <Provider store={store}>
-        <HomeTable setSelectedDistrict={() => {}} />
+        <DistrictView selectedDistrict="Caia" />
       </Provider>
     </BrowserRouter>,
   );

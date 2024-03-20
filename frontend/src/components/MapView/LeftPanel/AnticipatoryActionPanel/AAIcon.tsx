@@ -36,7 +36,6 @@ function AAIcon({ background, topText, bottomText, color }: AAIconProps) {
 const useAAIconStyles = makeStyles(() =>
   createStyles({
     iconWrapper: {
-      minHeight: '4rem',
       height: '100%',
       borderRadius: '2px 0 0 2px',
       display: 'flex',

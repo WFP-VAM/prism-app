@@ -96,7 +96,7 @@ function transform(data: any[], keys: [string, string][]) {
       Array.from(groupedByDistrict.entries()).map(x => [
         x[0],
         // eslint-disable-next-line fp/no-mutating-methods
-        x[1].sort(sortFn),
+        x[1].sort((a, b) => -sortFn(a, b)),
       ]),
     );
 
@@ -110,8 +110,8 @@ function transform(data: any[], keys: [string, string][]) {
   return { windowData, monitoredDistricts };
 }
 
-type AnticipatoryActionState = {
-  data: { [windowKey: string]: AnticipatoryActionData | undefined };
+export type AnticipatoryActionState = {
+  data: Record<typeof AAWindowKeys[number], AnticipatoryActionData>;
   availableDates?: { [windowKey: string]: DateItem[] };
   monitoredDistricts: string[];
   selectedDateData: {
@@ -133,7 +133,7 @@ type AnticipatoryActionState = {
 };
 
 const initialState: AnticipatoryActionState = {
-  data: {},
+  data: { 'Window 1': {}, 'Window 2': {} },
   availableDates: undefined,
   monitoredDistricts: [],
   selectedDateData: {},
@@ -227,7 +227,7 @@ export const anticipatoryActionStateSlice = createSlice({
       loading: false,
       data: Object.fromEntries(
         payload.windowData.map(x => [x.windowKey, x.data]),
-      ),
+      ) as Record<typeof AAWindowKeys[number], AnticipatoryActionData>,
       availableDates: Object.fromEntries(
         payload.windowData.map(x => [
           AAWindowKeyToLayerId[x.windowKey],
@@ -259,6 +259,9 @@ export const AnticipatoryActionDataSelector = (state: RootState) =>
 
 export const AnticipatoryActionAvailableDatesSelector = (state: RootState) =>
   state.anticipatoryActionState.availableDates;
+
+export const AAMonitoredDistrictsSelector = (state: RootState) =>
+  state.anticipatoryActionState.monitoredDistricts;
 
 export const AASelectedWindowSelector = (state: RootState) =>
   state.anticipatoryActionState.selectedWindow;

@@ -10,6 +10,7 @@ exports[`renders as expected 1`] = `
     >
       <div
         class="makeStyles-iconCol-3"
+        style="min-height: 0;"
       />
       <div>
         <mock-typography

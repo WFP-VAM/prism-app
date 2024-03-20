@@ -1,19 +1,30 @@
 import {
   Button,
   FormControl,
+  IconButton,
+  Menu,
+  MenuItem,
   RadioGroup,
   Typography,
   createStyles,
   makeStyles,
 } from '@material-ui/core';
-import { PanelSize } from 'config/types';
 import { black, cyanBlue } from 'muiTheme';
 import React from 'react';
 import { useSafeTranslation } from 'i18n';
-import { GetApp, EditOutlined, BarChartOutlined } from '@material-ui/icons';
+import {
+  GetApp,
+  EditOutlined,
+  BarChartOutlined,
+  ExpandMore,
+  ArrowBackIos,
+  ClearAll,
+  Equalizer,
+} from '@material-ui/icons';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   AACategoryFiltersSelector,
+  AAMonitoredDistrictsSelector,
   setCategoryFilters,
   setSelectedWindow,
 } from 'context/anticipatoryActionStateSlice';
@@ -24,11 +35,17 @@ import {
 import { AAWindowKeys } from 'config/utils';
 import HomeTable from './HomeTable';
 import { StyledCheckboxLabel, StyledRadioLabel } from './utils';
+import DistrictView from './DistrictView/index';
 
-const buttons = [
+const homeButtons = [
   { icon: GetApp, text: 'Assets' },
   { icon: EditOutlined, text: 'Report' },
   { icon: BarChartOutlined, text: 'Forecast' },
+];
+
+const districtButtons = [
+  { icon: ClearAll, text: 'Timeline' },
+  { icon: Equalizer, text: 'Forecast' },
 ];
 
 const links = [
@@ -50,13 +67,69 @@ function AnticipatoryActionPanel() {
   const dispatch = useDispatch();
   const { t } = useSafeTranslation();
   const categoryFilters = useSelector(AACategoryFiltersSelector);
+  const monitoredDistricts = useSelector(AAMonitoredDistrictsSelector);
+  const [selectedDistrict, setSelectedDistrict] = React.useState<string>('');
+  const [
+    districtAnchorEl,
+    setDistrictAnchorEl,
+  ] = React.useState<null | HTMLElement>(null);
+
+  const handleDistrictClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    setDistrictAnchorEl(event.currentTarget);
+  };
+
+  const handleDistrictClose = () => {
+    setDistrictAnchorEl(null);
+  };
 
   return (
     <div className={classes.anticipatoryActionPanel}>
       <div className={classes.headerWrapper}>
-        <div>
-          <Typography variant="h2">Phases: global view</Typography>
+        <div className={classes.titleSelectWrapper}>
+          <div className={classes.titleSelectWrapper}>
+            {selectedDistrict && (
+              <IconButton onClick={() => setSelectedDistrict('')}>
+                <ArrowBackIos fontSize="small" />
+              </IconButton>
+            )}
+            <Typography variant="h2">
+              {selectedDistrict || 'Phases: global view'}
+            </Typography>
+          </div>
+
+          <IconButton onClick={handleDistrictClick}>
+            <ExpandMore />
+          </IconButton>
+          <Menu
+            anchorEl={districtAnchorEl}
+            keepMounted
+            open={Boolean(districtAnchorEl)}
+            onClose={handleDistrictClose}
+          >
+            <MenuItem
+              value=""
+              onClick={() => {
+                setSelectedDistrict('');
+                handleDistrictClose();
+              }}
+            >
+              Phases: global view
+            </MenuItem>
+            {monitoredDistricts.map(x => (
+              <MenuItem
+                key={x}
+                value={x}
+                onClick={() => {
+                  setSelectedDistrict(x);
+                  handleDistrictClose();
+                }}
+              >
+                {x}
+              </MenuItem>
+            ))}
+          </Menu>
         </div>
+
         <div>
           <FormControl component="fieldset">
             <RadioGroup
@@ -88,10 +161,16 @@ function AnticipatoryActionPanel() {
           ))}
         </div>
       </div>
-      <HomeTable />
+      {selectedDistrict === '' && (
+        <HomeTable setSelectedDistrict={setSelectedDistrict} />
+      )}
+      {selectedDistrict !== '' && (
+        <DistrictView selectedDistrict={selectedDistrict} />
+      )}
+      {/* TODO: consider moving this part to each sub-component */}
       <div className={classes.footerWrapper}>
         <div className={classes.footerActionsWrapper}>
-          {buttons.map(x => (
+          {(selectedDistrict !== '' ? districtButtons : homeButtons).map(x => (
             <Button
               key={x.text}
               className={classes.footerButton}
@@ -125,7 +204,6 @@ function AnticipatoryActionPanel() {
 const useStyles = makeStyles(() =>
   createStyles({
     anticipatoryActionPanel: {
-      width: PanelSize.medium,
       display: 'flex',
       flexDirection: 'column',
       gap: '1rem',
@@ -159,6 +237,11 @@ const useStyles = makeStyles(() =>
     },
     footerButton: { borderColor: cyanBlue, color: black },
     footerLink: { textDecoration: 'underline' },
+    titleSelectWrapper: {
+      display: 'flex',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+    },
   }),
 );
 

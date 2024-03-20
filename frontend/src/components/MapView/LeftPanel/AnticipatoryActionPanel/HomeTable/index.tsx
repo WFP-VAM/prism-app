@@ -24,20 +24,23 @@ import {
   getRequestDate,
 } from 'utils/server-utils';
 import { availableDatesSelector } from 'context/serverStateSlice';
+import { setPanelSize } from 'context/leftPanelStateSlice';
+import { PanelSize } from 'config/types';
 import { AADataSeverityOrder, getAAIcon } from '../utils';
 
 interface AreaTagProps {
   name: string;
   isNew: boolean;
+  onClick: (e?: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
 }
 
-function AreaTag({ name, isNew }: AreaTagProps) {
+function AreaTag({ name, isNew, onClick }: AreaTagProps) {
   const classes = useAreaTagStyles();
   return (
-    <div className={classes.areaTagWrapper}>
+    <button type="button" className={classes.areaTagWrapper} onClick={onClick}>
       <Typography>{name}</Typography>
       {isNew && <div className={classes.newTag}>NEW</div>}
-    </div>
+    </button>
   );
 }
 
@@ -51,6 +54,11 @@ const useAreaTagStyles = makeStyles(() =>
       alignItems: 'center',
       gap: '0.25em',
       padding: '0 0.25em',
+      background: 'none',
+      boxShadow: 'none',
+      '&:hover': {
+        cursor: 'pointer',
+      },
     },
     newTag: {
       height: '2em',
@@ -78,7 +86,9 @@ function Row({ iconContent, windows, header }: RowProps) {
   if (header) {
     return (
       <div className={classes.rowWrapper}>
-        <div className={classes.iconCol}>{iconContent}</div>
+        <div className={classes.iconCol} style={{ minHeight: 0 }}>
+          {iconContent}
+        </div>
         {header.map(name => (
           <div
             key={name}
@@ -135,7 +145,7 @@ const useRowStyles = makeStyles(() =>
       justifyContent: 'space-between',
       padding: '0.125rem 0.5rem',
     },
-    iconCol: { width: '3rem' },
+    iconCol: { width: '3rem', minHeight: '4rem' },
     windowBackground: {
       background: 'white',
       height: '100%',
@@ -168,9 +178,12 @@ function getDistrictData(
   date: string,
   category: AnticipatoryActionDataRow['category'],
   phase: AnticipatoryActionDataRow['phase'],
+  setSelectedDistrict: React.Dispatch<React.SetStateAction<string>>,
 ) {
   return Object.entries(data)
     .map(([district, districtData]) => {
+      const onClick = () => setSelectedDistrict(district);
+
       const validData = districtData.filter(
         x =>
           x.probability !== 'NA' &&
@@ -182,7 +195,7 @@ function getDistrictData(
       if (category === 'na') {
         const dataExistForDate = !!validData.find(x => x.date === date);
         if (!dataExistForDate) {
-          return { name: district, isNew: false };
+          return { name: district, isNew: false, onClick };
         }
         return undefined;
       }
@@ -192,7 +205,7 @@ function getDistrictData(
         if (districtData.filter(x => x.date <= date).length > 0) {
           return undefined;
         }
-        return { name: district, isNew: false };
+        return { name: district, isNew: false, onClick };
       }
 
       const categoryData = validData.filter(x => x.category === category);
@@ -203,7 +216,7 @@ function getDistrictData(
 
       if (phase === 'Ready') {
         if (current) {
-          return { name: district, isNew: true };
+          return { name: district, isNew: true, onClick };
         }
         return undefined;
       }
@@ -228,7 +241,7 @@ function getDistrictData(
 
       if (phase === 'Set') {
         if (current && previous) {
-          return { name: district, isNew: true };
+          return { name: district, isNew: true, onClick };
         }
 
         // Check if the district was in SET mode previously for this category
@@ -238,9 +251,10 @@ function getDistrictData(
           previousDate,
           category,
           'Set',
+          setSelectedDistrict,
         ).find(x => x.name === district);
         if (previouslySet) {
-          return { name: district, isNew: false };
+          return { name: district, isNew: false, onClick };
         }
         return undefined;
       }
@@ -266,19 +280,26 @@ const rowCategories: {
 
 type ExtendedRowProps = RowProps & { id: number | 'na' | 'ny' };
 
-function HomeTable() {
+interface HomeTableProps {
+  setSelectedDistrict: React.Dispatch<React.SetStateAction<string>>;
+}
+
+function HomeTable({ setSelectedDistrict }: HomeTableProps) {
   const classes = useHomeTableStyles();
   const dispatch = useDispatch();
   const RawAAData = useSelector(AnticipatoryActionDataSelector);
   const selectedWindow = useSelector(AASelectedWindowSelector);
   const categoryFilters = useSelector(AACategoryFiltersSelector);
   const serverAvailableDates = useSelector(availableDatesSelector);
-
   const { startDate: selectedDate } = useSelector(dateRangeSelector);
 
   const layerAvailableDates = getAAAvailableDatesCombined(serverAvailableDates);
   const queryDate = getRequestDate(layerAvailableDates, selectedDate);
   const date = getFormattedDate(queryDate, DateFormat.Default) as string;
+
+  React.useEffect(() => {
+    dispatch(setPanelSize(PanelSize.medium));
+  }, [dispatch]);
 
   const headerRow: ExtendedRowProps = {
     id: -1,
@@ -297,7 +318,13 @@ function HomeTable() {
     const initialRows = rowCategories.map(r => {
       const windowData = AAWindowKeys.map(x => [
         x,
-        getDistrictData(RawAAData[x] || {}, date, r.category, r.phase),
+        getDistrictData(
+          RawAAData[x] || {},
+          date,
+          r.category,
+          r.phase,
+          setSelectedDistrict,
+        ),
       ]);
       return {
         ...r,
@@ -331,7 +358,7 @@ function HomeTable() {
     });
 
     return finalRows;
-  }, [RawAAData, date]);
+  }, [RawAAData, date, setSelectedDistrict]);
 
   const shouldRenderRows = dataForRows.filter(x => {
     switch (x.category) {
@@ -400,7 +427,7 @@ const useHomeTableStyles = makeStyles(() =>
     tableWrapper: {
       display: 'flex',
       flexDirection: 'column',
-      width: '100%',
+      width: PanelSize.medium,
       background: gray,
       padding: '0.5rem 0',
       overflow: 'scroll',
