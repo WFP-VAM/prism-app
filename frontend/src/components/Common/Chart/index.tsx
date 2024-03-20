@@ -91,26 +91,19 @@ const Chart = memo(
     }, [data.rows]);
 
     const tableRows = useMemo(() => {
-      return data.rows.slice(1, data.rows.length);
+      return data.rows.slice(1);
     }, [data.rows]);
 
-    // Get the keys for the data of interest
     const indices = useMemo(() => {
       return Object.keys(header).filter(key => key.includes(config.data || ''));
     }, [config.data, header]);
 
-    // rainbow-soft map requires nshades to be at least size 11
     const nshades = useMemo(() => {
-      if (!transpose) {
-        return Math.max(11, tableRows.length);
-      }
-      return Math.max(11, indices.length);
-    }, [indices.length, tableRows.length, transpose]);
+      return Math.max(11, transpose ? indices.length : tableRows.length);
+    }, [transpose, indices.length, tableRows.length]);
 
     const colorShuffle = useCallback((colors: string[]) => {
-      return colors.map((_, i) =>
-        i % 2 ? colors[i] : colors[colors.length - i - 1],
-      );
+      return colors.map((_, i) => (i % 2 ? colors[i] : colors[colors.length - i - 1]));
     }, []);
 
     const colors = useMemo(() => {
@@ -125,80 +118,47 @@ const Chart = memo(
           }),
         )
       );
-    }, [colorShuffle, config.colors, nshades]);
+    }, [config.colors, colorShuffle, nshades]);
 
-    const labels = React.useMemo(() => {
-      if (!transpose) {
-        return indices.map(index => header[index]);
-      }
-      return tableRows
-        .slice(chartRange[0], chartRange[1])
-        .map(row => row[config.category]);
-    }, [chartRange, config.category, header, indices, tableRows, transpose]);
+    const labels = useMemo(() => {
+      return transpose
+        ? tableRows.slice(chartRange[0], chartRange[1]).map(row => row[config.category])
+        : indices.map(index => header[index]);
+    }, [transpose, chartRange, tableRows, config.category, header, indices]);
 
-    // The table rows data sets
     const tableRowsDataSet = useMemo(() => {
-      return tableRows.map((row, i) => {
-        return {
-          label: t(row[config.category] as TFunctionKeys) || '',
-          fill: config.fill || false,
-          backgroundColor: colors[i],
-          borderColor: colors[i],
-          borderWidth: 2,
-          pointRadius: isEWSChart ? 0 : 1, // Disable point rendering for EWS only.
-          data: indices.map(index => (row[index] as number) || null),
-          pointHitRadius: 10,
-        };
-      });
-    }, [
-      colors,
-      config.category,
-      config.fill,
-      indices,
-      isEWSChart,
-      t,
-      tableRows,
-    ]);
+      return tableRows.map((row, i) => ({
+        label: t(row[config.category] as TFunctionKeys) || '',
+        fill: config.fill || false,
+        backgroundColor: colors[i],
+        borderColor: colors[i],
+        borderWidth: 2,
+        pointRadius: isEWSChart ? 0 : 1,
+        data: indices.map(index => (row[index] as number) || null),
+        pointHitRadius: 10,
+      }));
+    }, [tableRows, t, config.category, config.fill, colors, indices, isEWSChart]);
 
     const configureIndicePointRadius = useCallback(
       (indiceKey: string) => {
-        const foundDataSetFieldPointRadius = datasetFields?.find(
-          datasetField => {
-            return header[indiceKey] === datasetField.label;
-          },
-        )?.pointRadius;
-
-        if (foundDataSetFieldPointRadius !== undefined) {
-          return foundDataSetFieldPointRadius;
-        }
-        return isEWSChart ? 0 : 1; // Disable point rendering for EWS only.
+        const foundDataSetFieldPointRadius = datasetFields?.find(datasetField => header[indiceKey] === datasetField.label)?.pointRadius;
+        return foundDataSetFieldPointRadius !== undefined ? foundDataSetFieldPointRadius : (isEWSChart ? 0 : 1);
       },
-      [isEWSChart, datasetFields, header],
+      [datasetFields, header, isEWSChart],
     );
 
-    // The indicesDataSet
     const indicesDataSet = useMemo(() => {
-      return indices.map((indiceKey, i) => {
-        return {
-          label: t(header[indiceKey] as TFunctionKeys),
-          fill: config.fill || false,
-          backgroundColor: colors[i],
-          borderColor: colors[i],
-          borderWidth: 2,
-          data: tableRows.map(row => (row[indiceKey] as number) || null),
-          pointRadius: configureIndicePointRadius(indiceKey),
-          pointHitRadius: 10,
-        };
-      });
-    }, [
-      colors,
-      config.fill,
-      configureIndicePointRadius,
-      header,
-      indices,
-      t,
-      tableRows,
-    ]);
+      return indices.map((indiceKey, i) => ({
+        label: t(header[indiceKey] as TFunctionKeys),
+        fill: config.fill || false,
+        backgroundColor: colors[i],
+        borderColor: colors[i],
+        borderWidth: 2,
+        data: tableRows.map(row => (row[indiceKey] as number) || null),
+        pointRadius: configureIndicePointRadius(indiceKey),
+        pointHitRadius: 10,
+      }));
+    }, [t, header, indices, config.fill, colors, tableRows, configureIndicePointRadius]);
 
     const EWSthresholds = useMemo(() => {
       if (data.EWSConfig) {
@@ -209,7 +169,6 @@ const Chart = memo(
           borderWidth: 2,
           pointRadius: 0,
           pointHitRadius: 10,
-          // Deep copy is needed: https://github.com/reactchartjs/react-chartjs-2/issues/524#issuecomment-722814079
           data: [...obj.values],
           fill: false,
         }));
@@ -217,47 +176,18 @@ const Chart = memo(
       return [];
     }, [data.EWSConfig]);
 
-    /**
-     * The following value assumes that the data is formatted as follows:
-     * First Row -> "keys"
-     * Second Row -> "column names / headers"
-     *
-     * Example:
-     *  Month,data1,data2,data3
-     *  Month,Average,High,Low
-     *  Dec-18,6750,12000,3200
-     *  Jan-19,6955,10600,3600
-     *  Feb-19,6881,10300,3600
-     *  Mar-19,6505,10000,2700
-     *  Apr-19,6319,10200,3000
-     *
-     * The function uses the config fields:
-     *  - data: the identifier fot keys. Eg. config.data = data for the above dataset
-     *          will select columns data1, data2, data3
-     *
-     * - category: the key to use to identify categories. Eg. "Month" in the example above.
-     *
-     * - transpose: specify if rows or columns should be used to form datasets.
-     *               By default, the function uses each row as a dataset.
-     *               In the example above, we will need to transpose the data
-     *               using config.transpose = true.
-     *  - fill
-     */
-    const datasets = !transpose ? tableRowsDataSet : indicesDataSet;
-    const datasetsWithThresholds = [...datasets, ...EWSthresholds];
+    const datasets = useMemo(() => {
+      const allDataSets = transpose ? indicesDataSet : tableRowsDataSet;
+      return [...allDataSets, ...EWSthresholds].map(set => ({
+        ...set,
+        data: set.data.slice(chartRange[0], chartRange[1]),
+      }));
+    }, [transpose, indicesDataSet, tableRowsDataSet, EWSthresholds, chartRange]);
 
-    const datasetsTrimmed = datasetsWithThresholds.map(set => ({
-      ...set,
-      data: set.data.slice(chartRange[0], chartRange[1]),
-    }));
+    const chartData = useMemo(() => ({ labels, datasets }), [labels, datasets]);
 
-    const chartData = {
-      labels,
-      datasets: datasetsTrimmed,
-    };
-
-    const chartConfig = useMemo(() => {
-      return {
+    const chartConfig = useMemo(
+      () => ({
         maintainAspectRatio: !(notMaintainAspectRatio ?? false),
         title: {
           fontColor: '#CCC',
@@ -274,7 +204,6 @@ const Chart = memo(
               },
               ticks: {
                 callback: value => {
-                  // for EWS charts, we only want to display the time
                   return isEWSChart ? String(value).split(' ')[1] : value;
                 },
                 fontColor: '#CCC',
@@ -303,7 +232,6 @@ const Chart = memo(
             },
           ],
         },
-        // display values for all datasets in the tooltip
         tooltips: {
           mode: 'index',
         },
@@ -312,87 +240,60 @@ const Chart = memo(
           position: legendAtBottom ? 'bottom' : 'right',
           labels: { boxWidth: 12, boxHeight: 12 },
         },
-      } as ChartOptions;
-    }, [
-      config,
-      isEWSChart,
-      legendAtBottom,
-      notMaintainAspectRatio,
-      title,
-      xAxisLabel,
-    ]);
-
-    return useMemo(
-      () => (
-        <>
-          {showDownloadIcons && (
-            <>
-              <Tooltip title={t('Download PNG') as string}>
-                <IconButton
-                  onClick={() => downloadChartPng(chartRef, downloadFilename)}
-                  className={classes.firstIcon}
-                  style={iconStyles}
-                >
-                  <ImageIcon />
-                </IconButton>
-              </Tooltip>
-              <Tooltip title={t('Download CSV') as string}>
-                <IconButton
-                  onClick={() => {
-                    const keyMap = datasetFields
-                      ? createDataKeyMap(data, datasetFields)
-                      : {};
-
-                    downloadChartsToCsv([
-                      [
-                        {
-                          [title]: createCsvDataFromDataKeyMap(data, keyMap),
-                        },
-                        downloadFilename,
-                      ],
-                    ])();
-                  }}
-                  className={classes.secondIcon}
-                  style={iconStyles}
-                >
-                  <GetAppIcon />
-                </IconButton>
-              </Tooltip>
-            </>
-          )}
-          {(() => {
-            switch (config.type) {
-              case 'bar':
-                return (
-                  <Bar ref={chartRef} data={chartData} options={chartConfig} />
-                );
-              case 'line':
-                return (
-                  <Line ref={chartRef} data={chartData} options={chartConfig} />
-                );
-              default:
-                console.error(
-                  `Charts of type ${config.type} have not been implemented yet.`,
-                );
-                return null;
-            }
-          })()}
-        </>
-      ),
+      } as ChartOptions),
       [
-        chartConfig,
-        chartData,
-        classes.firstIcon,
-        classes.secondIcon,
-        config.type,
-        data,
-        datasetFields,
-        downloadFilename,
-        iconStyles,
-        showDownloadIcons,
-        t,
+        config,
+        isEWSChart,
+        legendAtBottom,
+        notMaintainAspectRatio,
         title,
-      ],
+        xAxisLabel,
+      ]
+    );
+
+    const handleDownloadChartPng = useCallback(() => {
+      downloadChartPng(chartRef, downloadFilename);
+    }, [chartRef, downloadFilename]);
+
+    const handleDownloadCsv = useCallback(() => {
+      const keyMap = datasetFields
+        ? createDataKeyMap(data, datasetFields)
+        : {};
+      downloadChartsToCsv([[{ [title]: createCsvDataFromDataKeyMap(data, keyMap) }], downloadFilename])();
+    }, [data, datasetFields, downloadFilename, title]);
+
+    return (
+      <>
+        {showDownloadIcons && (
+          <>
+            <Tooltip title={t('Download PNG') as string}>
+              <IconButton
+                onClick={handleDownloadChartPng}
+                className={classes.firstIcon}
+                style={iconStyles}
+              >
+                <ImageIcon />
+              </IconButton>
+            </Tooltip>
+            <Tooltip title={t('Download CSV') as string}>
+              <IconButton
+                onClick={handleDownloadCsv}
+                className={classes.secondIcon}
+                style={iconStyles}
+              >
+                <GetAppIcon />
+              </IconButton>
+            </Tooltip>
+          </>
+        )}
+        {config.type === 'bar' ? (
+          <Bar ref={chartRef} data={chartData} options={chartConfig} />
+        ) : config.type === 'line' ? (
+          <Line ref={chartRef} data={chartData} options={chartConfig} />
+        ) : (
+          console.error(`Charts of type ${config.type} have not been implemented yet.`)
+        )}
+      </>
     );
   },
 );
