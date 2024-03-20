@@ -522,7 +522,7 @@ const styles = (theme: Theme) =>
     },
 
     timeline: {
-      position: 'relative',
+      position: 'absolute',
       top: 8,
     },
 
