@@ -7,6 +7,7 @@ exports[`renders as expected 1`] = `
   >
     <div
       class="makeStyles-rowWrapper-2"
+      style="height: 1.5rem;"
     >
       <div
         class="makeStyles-iconCol-3"
