@@ -19,7 +19,10 @@
     "vulnerability": "icon_vulnerable.png",
     "exposure": "icon_basemap.png"
   },
-  "defaultDisplayBoundaries": ["admin_boundaries", "admin1_boundaries"],
+  "defaultDisplayBoundaries": [
+    "admin_boundaries",
+    "admin1_boundaries"
+  ],
   "serversUrls": {
     "wms": [
       "https://api.earthobservation.vam.wfp.org/ows/wms",
@@ -27,7 +30,7 @@
     ]
   },
   "map": {
-    "boundingBox": [30.18, -24.74, 40.78, -10.32]
+    "boundingBox": [30.18, -26.8, 40.78, -10.32]
   },
   "categories": {
     "rainfall": {
@@ -46,12 +49,32 @@
               "label": "1-month"
             },
             {
+              "id": "precip_blended_2m",
+              "label": "2-month"
+            },
+            {
               "id": "precip_blended_3m",
               "label": "3-month"
             },
             {
+              "id": "precip_blended_4m",
+              "label": "4-month"
+            },
+            {
+              "id": "precip_blended_5m",
+              "label": "5-month"
+            },
+            {
               "id": "precip_blended_6m",
               "label": "6-month"
+            },
+            {
+              "id": "precip_blended_7m",
+              "label": "7-month"
+            },
+            {
+              "id": "precip_blended_8m",
+              "label": "8-month"
             },
             {
               "id": "precip_blended_9m",
@@ -77,12 +100,32 @@
               "label": "1-month"
             },
             {
+              "id": "precip_blended_anomaly_2m",
+              "label": "2-month"
+            },
+            {
               "id": "precip_blended_anomaly_3m",
               "label": "3-month"
             },
             {
+              "id": "precip_blended_anomaly_4m",
+              "label": "4-month"
+            },
+            {
+              "id": "precip_blended_anomaly_5m",
+              "label": "5-month"
+            },
+            {
               "id": "precip_blended_anomaly_6m",
               "label": "6-month"
+            },
+            {
+              "id": "precip_blended_anomaly_7m",
+              "label": "7-month"
+            },
+            {
+              "id": "precip_blended_anomaly_8m",
+              "label": "8-month"
             },
             {
               "id": "precip_blended_anomaly_9m",
@@ -93,22 +136,69 @@
               "label": "1-year"
             }
           ]
+        },
+        {
+          "group_title": "SPI",
+          "activate_all": false,
+          "layers": [
+            {
+              "id": "spi_blended_1m",
+              "label": "1-month",
+              "main": true
+            },
+            {
+              "id": "spi_blended_2m",
+              "label": "2-month"
+            },
+            {
+              "id": "spi_blended_3m",
+              "label": "3-month"
+            },
+            {
+              "id": "spi_blended_6m",
+              "label": "6-month"
+            },
+            {
+              "id": "spi_blended_9m",
+              "label": "9-month"
+            },
+            {
+              "id": "spi_blended_1y",
+              "label": "1-year"
+            },
+            {
+              "id": "spi_blended_2y",
+              "label": "2-year"
+            },
+            {
+              "id": "spi_blended_3y",
+              "label": "3-year"
+            },
+            {
+              "id": "spi_blended_5y",
+              "label": "5-year"
+            }
+          ]
         }
       ],
-      "forecasts": ["daily_rainfall_forecast", "dekad_rainfall_forecast", "dekad_rainfall_anomaly_forecast"],
+      "forecasts": [
+        "daily_rainfall_forecast",
+        "dekad_rainfall_forecast",
+        "dekad_rainfall_anomaly_forecast"
+      ],
       "global_rainfall_products": [
         {
           "group_title": "Rainfall aggregate",
           "activate_all": false,
           "layers": [
             {
+              "id": "chirps_rainfall_daily",
+              "label": "Daily"
+            },
+            {
               "id": "rainfall_dekad",
               "label": "10-day",
               "main": true
-            },
-            {
-              "id": "chirps_rainfall_daily",
-              "label": "Daily"
             },
             {
               "id": "rainfall_agg_1month",
@@ -191,7 +281,10 @@
           ]
         }
       ],
-      "dry_periods": ["days_dry", "streak_dry_days"],
+      "dry_periods": [
+        "days_dry",
+        "streak_dry_days"
+      ],
       "extreme_rain_events": [
         {
           "group_title": "Rainfall categories:",
@@ -238,7 +331,10 @@
       ]
     },
     "vegetation": {
-      "vegetation_conditions": ["ndvi_dekad", "ndvi_dekad_anomaly"]
+      "vegetation_conditions": [
+        "ndvi_dekad",
+        "ndvi_dekad_anomaly"
+      ]
     },
     "temperature": {
       "INAM_air_temperature": [
@@ -275,7 +371,9 @@
       ]
     },
     "vulnerability": {
-      "poverty": ["mpi"],
+      "poverty": [
+        "mpi"
+      ],
       "food_insecurity": [
         {
           "group_title": "IPC",
@@ -315,7 +413,9 @@
       ]
     },
     "exposure": {
-      "population": ["census"]
+      "population": [
+        "census"
+      ]
     }
   }
 }
