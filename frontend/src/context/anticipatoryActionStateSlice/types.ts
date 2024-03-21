@@ -1,4 +1,5 @@
 // na/ny are not actually found in CSV, but defined not to cause confusion when calling the functions
+import { AAWindowKeys } from 'config/utils';
 // NOTE: order matters for AADataSeverityOrder
 export const AAcategory = ['ny', 'na', 'Leve', 'Moderado', 'Severo'] as const;
 export type AACategoryType = typeof AAcategory[number];
@@ -17,7 +18,7 @@ export interface AnticipatoryActionDataRow {
   triggerNB: string;
   triggerType: string;
   type: string;
-  windows: string;
+  windows: typeof AAWindowKeys[number];
   yearOfIssue: string;
   date: string;
 }

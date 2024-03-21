@@ -174,6 +174,93 @@ export const loadAAData = createAsyncThunk<
   );
 });
 
+interface CalculateMapRenderedDistrictsParams {
+  selectedDateData: AnticipatoryActionState['selectedDateData'];
+  categoryFilters: AnticipatoryActionState['categoryFilters'];
+  selectedWindow: AnticipatoryActionState['selectedWindow'];
+}
+
+function calculateMapRenderedDistricts({
+  selectedDateData,
+  categoryFilters,
+  selectedWindow,
+}: CalculateMapRenderedDistrictsParams) {
+  if (Object.entries(selectedDateData).length === 0) {
+    return { 'Window 1': {}, 'Window 2': {} };
+  }
+  const mapped = Object.entries(selectedDateData).map<
+    Pick<
+      AnticipatoryActionDataRow,
+      'district' | 'windows' | 'category' | 'phase'
+    >
+  >(([district, districtData]) => {
+    // eslint-disable-next-line fp/no-mutating-methods
+    const sortedData = [...districtData].sort((a, b) => {
+      const aOrder = AADataSeverityOrder(a.category, a.phase);
+      const bOrder = AADataSeverityOrder(b.category, b.phase);
+
+      if (aOrder > bOrder) {
+        return -1;
+      }
+      if (aOrder < bOrder) {
+        return 1;
+      }
+      return 0;
+    });
+
+    const filtered = sortedData.filter(x => categoryFilters[x.category]);
+
+    // let the first window layer to render empty district
+    if (filtered.length === 0) {
+      return { district, category: 'ny', phase: 'ny', windows: 'Window 1' };
+    }
+
+    if (selectedWindow === 'All') {
+      const first = filtered[0];
+      return {
+        district,
+        category: first.category,
+        phase: first.phase,
+        windows: first.windows,
+      };
+    }
+
+    const windowFirst = filtered.find(x => x.windows === selectedWindow);
+    if (windowFirst) {
+      return {
+        district,
+        category: windowFirst.category,
+        phase: windowFirst.phase,
+        windows: selectedWindow,
+      };
+    }
+
+    return { district, category: 'ny', phase: 'ny', windows: selectedWindow };
+  });
+
+  const windowMap = new Map<
+    typeof AAWindowKeys[number],
+    Pick<AnticipatoryActionDataRow, 'district' | 'category' | 'phase'>[]
+  >();
+  windowMap.set('Window 1', []);
+  windowMap.set('Window 2', []);
+  mapped.forEach(({ windows, ...rest }) => {
+    const val = windowMap.get(windows);
+    windowMap.set(windows, val ? [...val, rest] : [rest]);
+  });
+
+  return Object.fromEntries(
+    Array.from(windowMap.entries()).map(([win, rows]) => {
+      return [
+        win,
+        Object.fromEntries(
+          rows.map(({ district, ...rest }) => [district, rest]),
+        ),
+      ];
+    }),
+  );
+}
+
 export const anticipatoryActionStateSlice = createSlice({
   name: 'anticipatoryActionState',
   initialState,
@@ -184,6 +271,11 @@ export const anticipatoryActionStateSlice = createSlice({
     ) => ({
       ...state,
       selectedWindow: payload,
+      renderedDistricts: calculateMapRenderedDistricts({
+        selectedDateData: state.selectedDateData,
+        categoryFilters: state.categoryFilters,
+        selectedWindow: payload,
+      }) as any,
     }),
     setCategoryFilters: (
       state,
@@ -195,6 +287,11 @@ export const anticipatoryActionStateSlice = createSlice({
     ) => ({
       ...state,
       categoryFilters: { ...state.categoryFilters, ...payload },
+      renderedDistricts: calculateMapRenderedDistricts({
+        selectedDateData: state.selectedDateData,
+        categoryFilters: { ...state.categoryFilters, ...payload },
+        selectedWindow: state.selectedWindow,
+      }) as any,
     }),
     setSelectedDateData: (
       state,
@@ -202,23 +299,11 @@ export const anticipatoryActionStateSlice = createSlice({
     ) => ({
       ...state,
       selectedDateData: payload,
-    }),
-    setRenderedDistricts: (
-      state,
-      {
-        payload,
-      }: PayloadAction<{
-        data: {
-          [district: string]: { category: AACategoryType; phase: AAPhaseType };
-        };
-        windowKey: typeof AAWindowKeys[number];
-      }>,
-    ) => ({
-      ...state,
-      renderedDistricts: {
-        ...state.renderedDistricts,
-        [payload.windowKey]: payload.data,
-      },
+      renderedDistricts: calculateMapRenderedDistricts({
+        selectedDateData: payload,
+        categoryFilters: state.categoryFilters,
+        selectedWindow: state.selectedWindow,
+      }) as any,
     }),
   },
   extraReducers: builder => {
@@ -277,7 +362,6 @@ export const {
   setSelectedWindow,
   setCategoryFilters,
   setSelectedDateData,
-  setRenderedDistricts,
 } = anticipatoryActionStateSlice.actions;
 
 export default anticipatoryActionStateSlice.reducer;
