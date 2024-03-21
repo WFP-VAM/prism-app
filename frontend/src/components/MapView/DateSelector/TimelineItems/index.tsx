@@ -25,10 +25,10 @@ type DateItemStyle = {
   emphasis?: string;
 };
 
-const LIGHT_BLUE_HEX = '#C0E8FF';
+export const LIGHT_BLUE_HEX = '#C0E8FF';
 const DARK_BLUE_HEX = '#00A3FF';
 
-const LIGHT_GREEN_HEX = '#B5F8BB';
+export const LIGHT_GREEN_HEX = '#B5F8BB';
 const DARK_GREEN_HEX = '#68CC71';
 
 const LIGHT_ORANGE_HEX = '#F9CEC1';
