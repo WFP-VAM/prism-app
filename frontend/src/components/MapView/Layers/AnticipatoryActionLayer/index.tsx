@@ -1,114 +1,46 @@
 import React from 'react';
 import { AnticipatoryActionLayerProps, BoundaryLayerProps } from 'config/types';
 import { useDefaultDate } from 'utils/useDefaultDate';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import {
   layerDataSelector,
   mapSelector,
 } from 'context/mapStateSlice/selectors';
 import { LayerData } from 'context/layers/layer-data';
 import { Layer, Marker, Source } from 'react-map-gl/maplibre';
+import { AARenderedDistrictsSelector } from 'context/anticipatoryActionStateSlice';
 import {
-  AACategoryFiltersSelector,
-  AARenderedDistrictsSelector,
-  AASelectedDateDateSelector,
-  AASelectedWindowSelector,
-  setRenderedDistricts,
-} from 'context/anticipatoryActionStateSlice';
-import {
-  AADataSeverityOrder,
   getAAColor,
   getAAIcon,
 } from 'components/MapView/LeftPanel/AnticipatoryActionPanel/utils';
 import { calculateCentroids, useAAMarkerScalePercent } from 'utils/map-utils';
-import { getBoundaryLayerSingleton } from 'config/utils';
+import { AAWindowKeys, getBoundaryLayerSingleton } from 'config/utils';
 
 const boundaryLayer = getBoundaryLayerSingleton();
 
 function AnticipatoryActionLayer({ layer, before }: LayersProps) {
   useDefaultDate(layer.id);
-  const dispatch = useDispatch();
-  const aaWindow = useSelector(AASelectedWindowSelector);
-  const aaCategories = useSelector(AACategoryFiltersSelector);
   const boundaryLayerState = useSelector(
     layerDataSelector(boundaryLayer.id),
   ) as LayerData<BoundaryLayerProps> | undefined;
   const { data } = boundaryLayerState || {};
   const map = useSelector(mapSelector);
-  const selectedDateData = useSelector(AASelectedDateDateSelector);
   const renderedDistricts = useSelector(AARenderedDistrictsSelector);
+  const layerWindowIndex = AAWindowKeys.findIndex(
+    x => x === layer.csvWindowKey,
+  );
 
   // Calculate centroids only once per data change
   const districtCentroids = React.useMemo(() => calculateCentroids(data), [
     data,
   ]);
 
-  React.useEffect(() => {
-    const newRendered = Object.fromEntries(
-      Object.entries(selectedDateData)
-        .map(([district, districtData]) => {
-          // eslint-disable-next-line fp/no-mutating-methods
-          const sortedData = [...districtData].sort((a, b) => {
-            const aOrder = AADataSeverityOrder(a.category, a.phase);
-            const bOrder = AADataSeverityOrder(b.category, b.phase);
-
-            if (aOrder > bOrder) {
-              return -1;
-            }
-            if (aOrder < bOrder) {
-              return 1;
-            }
-            return 0;
-          });
-
-          const filtered = sortedData.filter(x => aaCategories[x.category]);
-
-          // let the first window layer to render empty district
-          if (filtered.length === 0 && layer.csvWindowKey === 'Window 1') {
-            return [district, { category: 'ny', phase: 'ny' }];
-          }
-
-          const maxValid = filtered.find((x, i) => {
-            if (aaWindow !== layer.csvWindowKey && aaWindow !== 'All') {
-              return false;
-            }
-            if (aaWindow === layer.csvWindowKey) {
-              return x.windows === layer.csvWindowKey;
-            }
-            return x.windows === layer.csvWindowKey && i === 0;
-          });
-
-          if (!maxValid) {
-            if (aaWindow === layer.csvWindowKey) {
-              return [district, { category: 'ny', phase: 'ny' }];
-            }
-            return [district, undefined];
-          }
-          return [
-            district,
-            {
-              category: maxValid.category,
-              phase: maxValid.phase,
-            },
-          ];
-        })
-        .filter(x => x[1] !== undefined),
-    );
-
-    dispatch(
-      setRenderedDistricts({
-        data: newRendered,
-        windowKey: layer.csvWindowKey,
-      }),
-    );
-  }, [aaCategories, aaWindow, dispatch, layer.csvWindowKey, selectedDateData]);
-
   const coloredDistrictsLayer = React.useMemo(() => {
     const districtEntries = Object.entries(
       renderedDistricts[layer.csvWindowKey],
     );
     if (!data || !districtEntries.length) {
-      return [];
+      return null;
     }
     return {
       ...data,
@@ -178,16 +110,16 @@ function AnticipatoryActionLayer({ layer, before }: LayersProps) {
       ))}
       {coloredDistrictsLayer && (
         <Source
-          key="anticipatory-action"
-          id="anticipatory-action"
+          key={`anticipatory-action-${layerWindowIndex}`}
+          id={`anticipatory-action-${layerWindowIndex}`}
           type="geojson"
           data={coloredDistrictsLayer}
         >
           <Layer
             beforeId={before}
             type="fill"
-            id="anticipatory-action-fill"
-            source="anticipatory-action"
+            id={`anticipatory-action-${layerWindowIndex}-fill`}
+            source={`anticipatory-action-${layerWindowIndex}`}
             layout={{}}
             paint={{
               'fill-color': ['get', 'fillColor'],
@@ -196,9 +128,9 @@ function AnticipatoryActionLayer({ layer, before }: LayersProps) {
           />
           <Layer
             beforeId={before}
-            id="anticipatory-action-boundary"
+            id={`anticipatory-action-${layerWindowIndex}-boundary`}
             type="line"
-            source="anticipatory-action"
+            source={`anticipatory-action-${layerWindowIndex}`}
             paint={{
               'line-color': 'black',
             }}
