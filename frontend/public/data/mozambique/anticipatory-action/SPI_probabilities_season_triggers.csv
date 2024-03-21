@@ -1,542 +1,271 @@
-"District","Index","Category","Month","Windows","Trigger_nb","Trigger","Phase","Year_of_issue","Probability","Trigger_type","Type"
+district,index,category,window,season,type,date_ready,date_set,issue_ready,issue_set,prob_ready,prob_set,trigger_ready,trigger_set,state,new_tag
 
-"Caia","DRY DJ","Leve",9,"Window 1","trigger1",0.24,"Ready","2023-24",0.27,"Acionadores de Crise","DRY SPELL"
+Caia,DRY DJ,Mild,Window 1,2023-24,DRYSPELL,2023-09-01,2023-10-01,9.0,10.0,0.27,0.23,0.24,0.22,set,0
 
-"Caia","DRY DJ","Leve",10,"Window 1","trigger2",0.22,"Set","2023-24",0.23,"Acionadores de Crise","DRY SPELL"
+Caia,DRY DJ,Moderate,Window 1,2023-24,DRYSPELL,2023-08-01,2023-09-01,8.0,9.0,0.21,0.26,0.1,0.25,set,0
 
-"Caia","DRY DJ","Moderado",8,"Window 1","trigger1",0.1,"Ready","2023-24",0.21,"Acionadores de Crise","DRY SPELL"
+Caia,DRY DJ,Severe,Window 1,2023-24,DRYSPELL,2023-08-01,2023-09-01,8.0,9.0,0.14,0.21,0.1,0.22,na,0
 
-"Caia","DRY DJ","Moderado",9,"Window 1","trigger2",0.25,"Set","2023-24",0.26,"Acionadores de Crise","DRY SPELL"
+Caia,DRY DJ,Severe,Window 1,2023-24,DRYSPELL,2023-09-01,2023-10-01,9.0,10.0,0.21,0.12,0.24,0.19,na,0
 
-"Caia","DRY DJ","Severo",8,"Window 1","trigger1",0.1,"Ready","2023-24",0.14,"Acionadores de Crise","DRY SPELL"
+Caia,DRY FM,Mild,Window 2,2023-24,DRYSPELL,2023-10-01,2023-11-01,10.0,11.0,0.24,0.35,0.27,0.16,na,0
 
-"Caia","DRY DJ","Severo",9,"Window 1","trigger1",0.24,"Ready","2023-24",0.21,"Acionadores de Crise","DRY SPELL"
+Caia,SPI DJF,Mild,Window 1,2023-24,SPI,2023-08-01,2023-09-01,8.0,9.0,0.2,0.23,0.27,0.0,na,0
 
-"Caia","DRY DJ","Severo",9,"Window 1","trigger2",0.22,"Set","2023-24",0.21,"Acionadores de Crise","DRY SPELL"
+Caia,SPI DJF,Moderate,Window 1,2023-24,SPI,2023-08-01,2023-09-01,8.0,9.0,0.17,0.18,0.22,0.0,na,0
 
-"Caia","DRY DJ","Severo",10,"Window 1","trigger2",0.19,"Set","2023-24",0.12,"Acionadores de Crise","DRY SPELL"
+Caia,SPI MA,Moderate,Window 2,2023-24,SPI,2023-10-01,2023-11-01,10.0,11.0,0.11,0.16,0.0,0.25,na,0
 
-"Caia","DRY FM","Leve",10,"Window 2","trigger1",0.27,"Ready","2023-24",0.24,"Acionadores de Crise","DRY SPELL"
+Caia,SPI MA,Moderate,Window 2,2023-24,SPI,2023-11-01,2023-12-01,11.0,12.0,0.16,0.49,0.25,0.0,na,0
 
-"Caia","DRY FM","Leve",11,"Window 2","trigger2",0.16,"Set","2023-24",0.35,"Acionadores de Crise","DRY SPELL"
+Caia,SPI MA,Severe,Window 2,2023-24,SPI,2023-10-01,2023-11-01,10.0,11.0,0.09,0.12,0.0,0.24,na,0
 
-"Caia","SPI DJF","Leve",8,"Window 1","trigger1",0.27,"Ready","2023-24",0.2,"Acionadores de Crise","SPI"
+Caia,SPI MA,Severe,Window 2,2023-24,SPI,2023-11-01,2023-12-01,11.0,12.0,0.12,0.41,0.24,0.0,na,0
 
-"Caia","SPI DJF","Leve",9,"Window 1","trigger2",0,"Set","2023-24",0.23,"Acionadores de Crise","SPI"
+Caia,SPI MAM,Mild,Window 2,2023-24,SPI,2023-11-01,2023-12-01,11.0,12.0,0.2,0.5,0.3,0.0,na,0
 
-"Caia","SPI DJF","Moderado",8,"Window 1","trigger1",0.22,"Ready","2023-24",0.17,"Acionadores de Crise","SPI"
+Changara,DRY DJ,Mild,Window 1,2023-24,DRYSPELL,2023-08-01,2023-09-01,8.0,9.0,0.16,0.12,0.16,0.3,na,0
 
-"Caia","SPI DJF","Moderado",9,"Window 1","trigger2",0,"Set","2023-24",0.18,"Acionadores de Crise","SPI"
+Changara,DRY MA,Moderate,Window 2,2023-24,DRYSPELL,2023-12-01,2024-01-01,12.0,1.0,0.24,0.29,0.32,0.16,na,0
 
-"Caia","SPI MA","Moderado",10,"Window 2","trigger1",0,"Ready","2023-24",0.11,"Acionadores de Crise","SPI"
+Changara,DRY MA,Severe,Window 2,2023-24,DRYSPELL,2023-11-01,2023-12-01,11.0,12.0,0.06,0.21,0.0,0.28,na,0
 
-"Caia","SPI MA","Moderado",11,"Window 2","trigger1",0.25,"Ready","2023-24",0.16,"Acionadores de Crise","SPI"
+Changara,DRY MA,Severe,Window 2,2023-24,DRYSPELL,2023-12-01,2024-01-01,12.0,1.0,0.21,0.23,0.28,0.0,na,0
 
-"Caia","SPI MA","Moderado",11,"Window 2","trigger2",0.25,"Set","2023-24",0.16,"Acionadores de Crise","SPI"
+Changara,SPI DJF,Moderate,Window 1,2023-24,SPI,2023-08-01,2023-09-01,8.0,9.0,0.22,0.28,0.0,0.33,na,0
 
-"Caia","SPI MA","Moderado",12,"Window 2","trigger2",0,"Set","2023-24",0.49,"Acionadores de Crise","SPI"
+Changara,SPI DJF,Moderate,Window 1,2023-24,SPI,2023-09-01,2023-10-01,9.0,10.0,0.28,0.22,0.33,0.0,na,0
 
-"Caia","SPI MA","Severo",10,"Window 2","trigger1",0,"Ready","2023-24",0.09,"Acionadores de Crise","SPI"
+Changara,SPI DJF,Severe,Window 1,2023-24,SPI,2023-08-01,2023-09-01,8.0,9.0,0.19,0.25,0.0,0.26,na,0
 
-"Caia","SPI MA","Severo",11,"Window 2","trigger1",0.24,"Ready","2023-24",0.12,"Acionadores de Crise","SPI"
+Changara,SPI DJF,Severe,Window 1,2023-24,SPI,2023-09-01,2023-10-01,9.0,10.0,0.25,0.17,0.26,0.0,na,0
 
-"Caia","SPI MA","Severo",11,"Window 2","trigger2",0.24,"Set","2023-24",0.12,"Acionadores de Crise","SPI"
+Changara,SPI MAM,Mild,Window 2,2023-24,SPI,2023-11-01,2023-12-01,11.0,12.0,0.41,0.41,0.21,0.31,set,0
 
-"Caia","SPI MA","Severo",12,"Window 2","trigger2",0,"Set","2023-24",0.41,"Acionadores de Crise","SPI"
+Changara,SPI MAM,Mild,Window 2,2023-24,SPI,2023-12-01,2024-01-01,12.0,1.0,0.41,0.47,0.31,0.11,set,0
 
-"Caia","SPI MAM","Leve",11,"Window 2","trigger1",0.3,"Ready","2023-24",0.2,"Acionadores de Crise","SPI"
+Changara,SPI NDJ,Mild,Window 1,2023-24,SPI,2023-08-01,2023-09-01,8.0,9.0,0.31,0.28,0.0,0.38,na,0
 
-"Caia","SPI MAM","Leve",12,"Window 2","trigger2",0,"Set","2023-24",0.5,"Acionadores de Crise","SPI"
+Chemba,DRY DJ,Moderate,Window 1,2023-24,DRYSPELL,2023-07-01,2023-08-01,7.0,8.0,0.04,0.16,0.08,0.23,na,1
 
-"Changara","DRY DJ","Leve",8,"Window 1","trigger1",0.16,"Ready","2023-24",0.16,"Acionadores Gerais","DRY SPELL"
+Chemba,SPI DJ,Mild,Window 1,2023-24,SPI,2023-09-01,2023-10-01,9.0,10.0,0.15,0.14,0.27,0.0,na,1
 
-"Changara","DRY DJ","Leve",9,"Window 1","trigger2",0.3,"Set","2023-24",0.12,"Acionadores Gerais","DRY SPELL"
+Chemba,SPI DJF,Severe,Window 1,2023-24,SPI,2023-09-01,2023-10-01,9.0,10.0,0.1,0.08,0.3,0.0,na,1
 
-"Changara","DRY MA","Moderado",1,"Window 2","trigger2",0.16,"Set","2023-24",0.29,"Acionadores Gerais","DRY SPELL"
+Chemba,SPI JF,Mild,Window 1,2023-24,SPI,2023-08-01,2023-09-01,8.0,9.0,0.2,0.17,0.3,0.0,na,1
 
-"Changara","DRY MA","Moderado",12,"Window 2","trigger1",0.32,"Ready","2023-24",0.24,"Acionadores Gerais","DRY SPELL"
+Chemba,SPI JF,Moderate,Window 1,2023-24,SPI,2023-08-01,2023-09-01,8.0,9.0,0.13,0.12,0.25,0.0,na,1
 
-"Changara","DRY MA","Severo",1,"Window 2","trigger2",0,"Set","2023-24",0.23,"Acionadores Gerais","DRY SPELL"
+Chemba,SPI MA,Mild,Window 2,2023-24,SPI,2023-10-01,2023-11-01,10.0,11.0,0.14,0.17,0.25,0.32,na,1
 
-"Changara","DRY MA","Severo",11,"Window 2","trigger1",0,"Ready","2023-24",0.06,"Acionadores Gerais","DRY SPELL"
+Chemba,SPI MA,Moderate,Window 2,2023-24,SPI,2023-10-01,2023-11-01,10.0,11.0,0.08,0.13,0.0,0.29,na,1
 
-"Changara","DRY MA","Severo",12,"Window 2","trigger1",0.28,"Ready","2023-24",0.21,"Acionadores Gerais","DRY SPELL"
+Chemba,SPI MA,Moderate,Window 2,2023-24,SPI,2023-11-01,2023-12-01,11.0,12.0,0.13,0.45,0.29,0.0,na,1
 
-"Changara","DRY MA","Severo",12,"Window 2","trigger2",0.28,"Set","2023-24",0.21,"Acionadores Gerais","DRY SPELL"
+Chemba,SPI MA,Severe,Window 2,2023-24,SPI,2023-10-01,2023-11-01,10.0,11.0,0.15,0.1,0.0,0.26,na,1
 
-"Changara","SPI DJF","Moderado",8,"Window 1","trigger1",0,"Ready","2023-24",0.22,"Acionadores Gerais","SPI"
+Chemba,SPI MA,Severe,Window 2,2023-24,SPI,2023-11-01,2023-12-01,11.0,12.0,0.1,0.37,0.26,0.0,na,1
 
-"Changara","SPI DJF","Moderado",9,"Window 1","trigger1",0.33,"Ready","2023-24",0.28,"Acionadores Gerais","SPI"
+Chemba,SPI MAM,Mild,Window 2,2023-24,SPI,2023-12-01,2024-01-01,12.0,1.0,0.44,0.25,0.13,0.32,na,1
 
-"Changara","SPI DJF","Moderado",9,"Window 1","trigger2",0.33,"Set","2023-24",0.28,"Acionadores Gerais","SPI"
+Chemba,SPI NDJ,Severe,Window 1,2023-24,SPI,2023-08-01,2023-09-01,8.0,9.0,0.08,0.12,0.0,0.25,na,1
 
-"Changara","SPI DJF","Moderado",10,"Window 1","trigger2",0,"Set","2023-24",0.22,"Acionadores Gerais","SPI"
+Chibuto,DRY DJ,Mild,Window 2,2023-24,DRYSPELL,2023-09-01,2023-10-01,9.0,10.0,0.17,0.29,0.17,0.28,set,0
 
-"Changara","SPI DJF","Severo",8,"Window 1","trigger1",0,"Ready","2023-24",0.19,"Acionadores Gerais","SPI"
+Chibuto,DRY DJ,Moderate,Window 2,2023-24,DRYSPELL,2023-07-01,2023-08-01,7.0,8.0,0.23,0.21,0.14,0.29,na,0
 
-"Changara","SPI DJF","Severo",9,"Window 1","trigger1",0.26,"Ready","2023-24",0.25,"Acionadores Gerais","SPI"
+Chibuto,DRY DJ,Moderate,Window 2,2023-24,DRYSPELL,2023-08-01,2023-09-01,8.0,9.0,0.21,0.14,0.32,0.0,na,0
 
-"Changara","SPI DJF","Severo",9,"Window 1","trigger2",0.26,"Set","2023-24",0.25,"Acionadores Gerais","SPI"
+Chibuto,DRY MA,Mild,Window 2,2023-24,DRYSPELL,2023-11-01,2023-12-01,11.0,12.0,0.14,0.38,0.15,0.23,na,0
 
-"Changara","SPI DJF","Severo",10,"Window 1","trigger2",0,"Set","2023-24",0.17,"Acionadores Gerais","SPI"
+Chibuto,SPI DJ,Moderate,Window 1,2023-24,SPI,2023-07-01,2023-08-01,7.0,8.0,0.17,0.32,0.22,0.05,na,0
 
-"Changara","SPI MAM","Leve",1,"Window 2","trigger2",0.11,"Set","2023-24",0.47,"Acionadores Gerais","SPI"
+Chibuto,SPI DJF,Severe,Window 2,2023-24,SPI,2023-08-01,2023-09-01,8.0,9.0,0.24,0.38,0.0,0.3,set,0
 
-"Changara","SPI MAM","Leve",11,"Window 2","trigger1",0.21,"Ready","2023-24",0.41,"Acionadores Gerais","SPI"
+Chibuto,SPI DJF,Severe,Window 2,2023-24,SPI,2023-09-01,2023-10-01,9.0,10.0,0.38,0.29,0.3,0.0,set,0
 
-"Changara","SPI MAM","Leve",12,"Window 2","trigger1",0.31,"Ready","2023-24",0.41,"Acionadores Gerais","SPI"
+Chibuto,SPI ND,Moderate,Window 1,2023-24,SPI,2023-06-01,2023-07-01,6.0,7.0,0.19,0.18,0.15,0.21,na,0
 
-"Changara","SPI MAM","Leve",12,"Window 2","trigger2",0.31,"Set","2023-24",0.41,"Acionadores Gerais","SPI"
+Chibuto,SPI NDJ,Mild,Window 1,2023-24,SPI,2023-08-01,2023-09-01,8.0,9.0,0.42,0.46,0.01,0.26,set,0
 
-"Changara","SPI NDJ","Leve",8,"Window 1","trigger1",0,"Ready","2023-24",0.31,"Acionadores Gerais","SPI"
+Chibuto,SPI ON,Severe,Window 1,2023-24,SPI,2023-05-01,2023-06-01,5.0,6.0,0.1,0.32,0.18,0.14,na,0
 
-"Changara","SPI NDJ","Leve",9,"Window 1","trigger2",0.38,"Set","2023-24",0.28,"Acionadores Gerais","SPI"
+Chibuto,SPI OND,Mild,Window 1,2023-24,SPI,2023-07-01,2023-08-01,7.0,8.0,0.26,0.25,0.2,0.25,set,0
 
-"Chemba","DRY DJ","Moderado",7,"Window 1","trigger1",0.08,"Ready","2023-24",0.04,"Acionadores Gerais","DRY SPELL"
+Chicualacuala,SPI DJ,Mild,Window 1,2023-24,SPI,2023-09-01,2023-10-01,9.0,10.0,0.57,0.41,0.11,0.17,set,1
 
-"Chemba","DRY DJ","Moderado",8,"Window 1","trigger2",0.23,"Set","2023-24",0.16,"Acionadores Gerais","DRY SPELL"
+Chicualacuala,SPI DJ,Severe,Window 1,2023-24,SPI,2023-09-01,2023-10-01,9.0,10.0,0.21,0.16,0.23,0.24,na,1
 
-"Chemba","SPI DJ","Leve",9,"Window 1","trigger1",0.27,"Ready","2023-24",0.15,"Acionadores Gerais","SPI"
+Chicualacuala,SPI DJF,Mild,Window 2,2023-24,SPI,2023-09-01,2023-10-01,9.0,10.0,0.34,0.37,0.31,0.0,set,1
 
-"Chemba","SPI DJ","Leve",10,"Window 1","trigger2",0,"Set","2023-24",0.14,"Acionadores Gerais","SPI"
+Chicualacuala,SPI DJF,Moderate,Window 2,2023-24,SPI,2023-08-01,2023-09-01,8.0,9.0,0.25,0.49,0.18,0.11,set,1
 
-"Chemba","SPI DJF","Severo",9,"Window 1","trigger1",0.3,"Ready","2023-24",0.1,"Acionadores Gerais","SPI"
+Chicualacuala,SPI DJF,Severe,Window 2,2023-24,SPI,2023-08-01,2023-09-01,8.0,9.0,0.18,0.38,0.24,0.0,na,1
 
-"Chemba","SPI DJF","Severo",10,"Window 1","trigger2",0,"Set","2023-24",0.08,"Acionadores Gerais","SPI"
+Chicualacuala,SPI JF,Mild,Window 2,2023-24,SPI,2023-08-01,2023-09-01,8.0,9.0,0.26,0.3,0.3,0.0,na,1
 
-"Chemba","SPI JF","Leve",8,"Window 1","trigger1",0.3,"Ready","2023-24",0.2,"Acionadores Gerais","SPI"
+Chicualacuala,SPI MA,Moderate,Window 2,2023-24,SPI,2023-11-01,2023-12-01,11.0,12.0,0.33,0.39,0.15,0.24,set,1
 
-"Chemba","SPI JF","Leve",9,"Window 1","trigger2",0,"Set","2023-24",0.17,"Acionadores Gerais","SPI"
+Chicualacuala,SPI MA,Severe,Window 2,2023-24,SPI,2023-12-01,2024-01-01,12.0,1.0,0.29,0.37,0.17,0.19,set,1
 
-"Chemba","SPI JF","Moderado",8,"Window 1","trigger1",0.25,"Ready","2023-24",0.13,"Acionadores Gerais","SPI"
+Chicualacuala,SPI ND,Moderate,Window 1,2023-24,SPI,2023-06-01,2023-07-01,6.0,7.0,0.19,0.19,0.2,0.12,na,1
 
-"Chemba","SPI JF","Moderado",9,"Window 1","trigger2",0,"Set","2023-24",0.12,"Acionadores Gerais","SPI"
+Chicualacuala,SPI NDJ,Mild,Window 1,2023-24,SPI,2023-07-01,2023-08-01,7.0,8.0,0.45,0.48,0.19,0.11,set,1
 
-"Chemba","SPI MA","Leve",10,"Window 2","trigger1",0.25,"Ready","2023-24",0.14,"Acionadores Gerais","SPI"
+Chiure,DRY DJ,Moderate,Window 1,2023-24,DRYSPELL,2023-08-01,2023-09-01,8.0,9.0,0.13,0.21,0.22,0.17,na,0
 
-"Chemba","SPI MA","Leve",11,"Window 2","trigger2",0.32,"Set","2023-24",0.17,"Acionadores Gerais","SPI"
+Chiure,DRY DJ,Severe,Window 1,2023-24,DRYSPELL,2023-07-01,2023-08-01,7.0,8.0,0.16,0.12,0.24,0.1,na,0
 
-"Chemba","SPI MA","Moderado",10,"Window 2","trigger1",0,"Ready","2023-24",0.08,"Acionadores Gerais","SPI"
+Chiure,DRY MA,Mild,Window 2,2023-24,DRYSPELL,2023-10-01,2023-11-01,10.0,11.0,0.22,0.21,0.25,0.34,na,0
 
-"Chemba","SPI MA","Moderado",11,"Window 2","trigger1",0.29,"Ready","2023-24",0.13,"Acionadores Gerais","SPI"
+Chiure,DRY MA,Mild,Window 2,2023-24,DRYSPELL,2023-11-01,2023-12-01,11.0,12.0,0.21,0.34,0.35,0.27,na,0
 
-"Chemba","SPI MA","Moderado",11,"Window 2","trigger2",0.29,"Set","2023-24",0.13,"Acionadores Gerais","SPI"
+Chiure,SPI DJ,Mild,Window 1,2023-24,SPI,2023-07-01,2023-08-01,7.0,8.0,0.23,0.01,0.17,0.27,na,0
 
-"Chemba","SPI MA","Moderado",12,"Window 2","trigger2",0,"Set","2023-24",0.45,"Acionadores Gerais","SPI"
+Chiure,SPI DJ,Severe,Window 1,2023-24,SPI,2023-09-01,2023-10-01,9.0,10.0,0.0,0.0,0.0,0.43,na,0
 
-"Chemba","SPI MA","Severo",10,"Window 2","trigger1",0,"Ready","2023-24",0.15,"Acionadores Gerais","SPI"
+Chiure,SPI DJF,Mild,Window 1,2023-24,SPI,2023-08-01,2023-09-01,8.0,9.0,0.25,0.0,0.2,0.18,na,0
 
-"Chemba","SPI MA","Severo",11,"Window 2","trigger1",0.26,"Ready","2023-24",0.1,"Acionadores Gerais","SPI"
+Chiure,SPI DJF,Moderate,Window 1,2023-24,SPI,2023-08-01,2023-09-01,8.0,9.0,0.21,0.0,0.23,0.0,na,0
 
-"Chemba","SPI MA","Severo",11,"Window 2","trigger2",0.26,"Set","2023-24",0.1,"Acionadores Gerais","SPI"
+Chiure,SPI FMA,Severe,Window 2,2023-24,SPI,2023-10-01,2023-11-01,10.0,11.0,0.19,0.14,0.24,0.2,na,0
 
-"Chemba","SPI MA","Severo",12,"Window 2","trigger2",0,"Set","2023-24",0.37,"Acionadores Gerais","SPI"
+Chiure,SPI FMA,Severe,Window 2,2023-24,SPI,2023-11-01,2023-12-01,11.0,12.0,0.14,0.22,0.26,0.0,na,0
 
-"Chemba","SPI MAM","Leve",1,"Window 2","trigger2",0.32,"Set","2023-24",0.25,"Acionadores Gerais","SPI"
+Guija,DRY FM,Severe,Window 2,2023-24,DRYSPELL,2023-10-01,2023-11-01,10.0,11.0,0.29,0.21,0.21,0.07,set,0
 
-"Chemba","SPI MAM","Leve",12,"Window 2","trigger1",0.13,"Ready","2023-24",0.44,"Acionadores Gerais","SPI"
+Guija,DRY MA,Mild,Window 2,2023-24,DRYSPELL,2023-10-01,2023-11-01,10.0,11.0,0.31,0.1,0.24,0.19,na,0
 
-"Chemba","SPI NDJ","Severo",8,"Window 1","trigger1",0,"Ready","2023-24",0.08,"Acionadores Gerais","SPI"
+Guija,SPI JF,Severe,Window 2,2023-24,SPI,2023-08-01,2023-09-01,8.0,9.0,0.14,0.24,0.28,0.0,na,0
 
-"Chemba","SPI NDJ","Severo",9,"Window 1","trigger2",0.25,"Set","2023-24",0.12,"Acionadores Gerais","SPI"
+Guija,SPI JFM,Moderate,Window 2,2023-24,SPI,2023-09-01,2023-10-01,9.0,10.0,0.33,0.31,0.0,0.28,set,0
 
-"Chibuto","DRY DJ","Leve",9,"Window 2","trigger1",0.17,"Ready","2023-24",0.17,"Acionadores de Crise","DRY SPELL"
+Guija,SPI JFM,Moderate,Window 2,2023-24,SPI,2023-10-01,2023-11-01,10.0,11.0,0.31,0.27,0.28,0.12,set,0
 
-"Chibuto","DRY DJ","Leve",10,"Window 2","trigger2",0.28,"Set","2023-24",0.29,"Acionadores de Crise","DRY SPELL"
+Guija,SPI MA,Mild,Window 2,2023-24,SPI,2023-10-01,2023-11-01,10.0,11.0,0.46,0.09,0.1,0.28,na,0
 
-"Chibuto","DRY DJ","Moderado",7,"Window 2","trigger1",0.14,"Ready","2023-24",0.23,"Acionadores de Crise","DRY SPELL"
+Guija,SPI NDJ,Moderate,Window 1,2023-24,SPI,2023-07-01,2023-08-01,7.0,8.0,0.21,0.16,0.0,0.31,na,0
 
-"Chibuto","DRY DJ","Moderado",8,"Window 2","trigger1",0.32,"Ready","2023-24",0.21,"Acionadores de Crise","DRY SPELL"
+Guija,SPI ON,Mild,Window 1,2023-24,SPI,2023-05-01,2023-06-01,5.0,6.0,0.23,0.29,0.24,0.24,na,0
 
-"Chibuto","DRY DJ","Moderado",8,"Window 2","trigger2",0.29,"Set","2023-24",0.21,"Acionadores de Crise","DRY SPELL"
+Guija,SPI ON,Moderate,Window 1,2023-24,SPI,2023-05-01,2023-06-01,5.0,6.0,0.18,0.23,0.21,0.22,na,0
 
-"Chibuto","DRY DJ","Moderado",9,"Window 2","trigger2",0,"Set","2023-24",0.14,"Acionadores de Crise","DRY SPELL"
+Guija,SPI OND,Mild,Window 1,2023-24,SPI,2023-07-01,2023-08-01,7.0,8.0,0.26,0.25,0.27,0.25,na,0
 
-"Chibuto","DRY MA","Leve",11,"Window 2","trigger1",0.15,"Ready","2023-24",0.14,"Acionadores de Crise","DRY SPELL"
+Guija,SPI OND,Severe,Window 1,2023-24,SPI,2023-06-01,2023-07-01,6.0,7.0,0.22,0.1,0.0,0.22,na,0
 
-"Chibuto","DRY MA","Leve",12,"Window 2","trigger2",0.23,"Set","2023-24",0.38,"Acionadores de Crise","DRY SPELL"
+Guija,SPI OND,Severe,Window 1,2023-24,SPI,2023-07-01,2023-08-01,7.0,8.0,0.1,0.17,0.22,0.05,na,0
 
-"Chibuto","SPI DJ","Moderado",7,"Window 1","trigger1",0.22,"Ready","2023-24",0.17,"Acionadores de Crise","SPI"
+Mabalane,DRY DJ,Mild,Window 2,2023-24,DRYSPELL,2023-09-01,2023-10-01,9.0,10.0,0.18,0.28,0.0,0.31,na,0
 
-"Chibuto","SPI DJ","Moderado",8,"Window 1","trigger2",0.05,"Set","2023-24",0.32,"Acionadores de Crise","SPI"
+Mabalane,DRY DJ,Moderate,Window 2,2023-24,DRYSPELL,2023-09-01,2023-10-01,9.0,10.0,0.15,0.26,0.0,0.26,set,0
 
-"Chibuto","SPI DJF","Severo",8,"Window 2","trigger1",0,"Ready","2023-24",0.24,"Acionadores de Crise","SPI"
+Mabalane,DRY FM,Severe,Window 2,2023-24,DRYSPELL,2023-11-01,2023-12-01,11.0,12.0,0.14,0.2,0.0,0.24,na,0
 
-"Chibuto","SPI DJF","Severo",9,"Window 2","trigger1",0.3,"Ready","2023-24",0.38,"Acionadores de Crise","SPI"
+Mabalane,SPI DJF,Mild,Window 2,2023-24,SPI,2023-08-01,2023-09-01,8.0,9.0,0.28,0.34,0.01,0.31,set,0
 
-"Chibuto","SPI DJF","Severo",9,"Window 2","trigger2",0.3,"Set","2023-24",0.38,"Acionadores de Crise","SPI"
+Mabalane,SPI JF,Moderate,Window 2,2023-24,SPI,2023-10-01,2023-11-01,10.0,11.0,0.23,0.32,0.16,0.26,set,0
 
-"Chibuto","SPI DJF","Severo",10,"Window 2","trigger2",0,"Set","2023-24",0.29,"Acionadores de Crise","SPI"
+Mabalane,SPI JF,Severe,Window 2,2023-24,SPI,2023-08-01,2023-09-01,8.0,9.0,0.14,0.21,0.29,0.0,na,0
 
-"Chibuto","SPI ND","Moderado",6,"Window 1","trigger1",0.15,"Ready","2023-24",0.19,"Acionadores de Crise","SPI"
+Mabalane,SPI NDJ,Severe,Window 1,2023-24,SPI,2023-07-01,2023-08-01,7.0,8.0,0.16,0.1,0.16,0.24,na,0
 
-"Chibuto","SPI ND","Moderado",7,"Window 1","trigger2",0.21,"Set","2023-24",0.18,"Acionadores de Crise","SPI"
+Mabalane,SPI NDJ,Severe,Window 1,2023-24,SPI,2023-08-01,2023-09-01,8.0,9.0,0.1,0.22,0.26,0.21,na,0
 
-"Chibuto","SPI NDJ","Leve",8,"Window 1","trigger1",0.01,"Ready","2023-24",0.42,"Acionadores de Crise","SPI"
+Mabalane,SPI OND,Mild,Window 1,2023-24,SPI,2023-06-01,2023-07-01,6.0,7.0,0.26,0.22,0.22,0.23,na,0
 
-"Chibuto","SPI NDJ","Leve",9,"Window 1","trigger2",0.26,"Set","2023-24",0.46,"Acionadores de Crise","SPI"
+Mabalane,SPI OND,Mild,Window 1,2023-24,SPI,2023-07-01,2023-08-01,7.0,8.0,0.22,0.24,0.18,0.26,na,0
 
-"Chibuto","SPI ON","Severo",5,"Window 1","trigger1",0.18,"Ready","2023-24",0.1,"Acionadores de Crise","SPI"
+Mabalane,SPI OND,Moderate,Window 1,2023-24,SPI,2023-06-01,2023-07-01,6.0,7.0,0.2,0.13,0.16,0.2,na,0
 
-"Chibuto","SPI ON","Severo",6,"Window 1","trigger2",0.14,"Set","2023-24",0.32,"Acionadores de Crise","SPI"
+Mabalane,SPI OND,Moderate,Window 1,2023-24,SPI,2023-07-01,2023-08-01,7.0,8.0,0.13,0.22,0.15,0.21,na,0
 
-"Chibuto","SPI OND","Leve",7,"Window 1","trigger1",0.2,"Ready","2023-24",0.26,"Acionadores de Crise","SPI"
+Magude,DRY DJ,Moderate,Window 2,2023-24,DRYSPELL,2023-08-01,2023-09-01,8.0,9.0,0.14,0.14,0.25,0.0,na,0
 
-"Chibuto","SPI OND","Leve",8,"Window 1","trigger2",0.25,"Set","2023-24",0.25,"Acionadores de Crise","SPI"
+Magude,DRY FM,Moderate,Window 2,2023-24,DRYSPELL,2023-11-01,2023-12-01,11.0,12.0,0.18,0.21,0.0,0.37,na,0
 
-"Chicualacuala","SPI DJ","Leve",9,"Window 1","trigger1",0.11,"Ready","2023-24",0.57,"Acionadores de Crise","SPI"
+Magude,SPI DJ,Severe,Window 1,2023-24,SPI,2023-09-01,2023-10-01,9.0,10.0,0.23,0.13,0.0,0.31,na,0
 
-"Chicualacuala","SPI DJ","Leve",10,"Window 1","trigger2",0.17,"Set","2023-24",0.41,"Acionadores de Crise","SPI"
+Magude,SPI DJF,Severe,Window 2,2023-24,SPI,2023-09-01,2023-10-01,9.0,10.0,0.36,0.19,0.0,0.34,na,0
 
-"Chicualacuala","SPI DJ","Severo",9,"Window 1","trigger1",0.23,"Ready","2023-24",0.21,"Acionadores de Crise","SPI"
+Magude,SPI JF,Severe,Window 2,2023-24,SPI,2023-08-01,2023-09-01,8.0,9.0,0.1,0.24,0.24,0.16,na,0
 
-"Chicualacuala","SPI DJ","Severo",10,"Window 1","trigger2",0.24,"Set","2023-24",0.16,"Acionadores de Crise","SPI"
+Magude,SPI JFM,Mild,Window 2,2023-24,SPI,2023-09-01,2023-10-01,9.0,10.0,0.41,0.34,0.24,0.33,set,0
 
-"Chicualacuala","SPI DJF","Leve",9,"Window 2","trigger1",0.31,"Ready","2023-24",0.34,"Acionadores de Crise","SPI"
+Magude,SPI JFM,Mild,Window 2,2023-24,SPI,2023-10-01,2023-11-01,10.0,11.0,0.34,0.4,0.34,0.0,set,0
 
-"Chicualacuala","SPI DJF","Leve",10,"Window 2","trigger2",0,"Set","2023-24",0.37,"Acionadores de Crise","SPI"
+Magude,SPI ON,Mild,Window 1,2023-24,SPI,2023-05-01,2023-06-01,5.0,6.0,0.2,0.24,0.21,0.27,na,0
 
-"Chicualacuala","SPI DJF","Moderado",8,"Window 2","trigger1",0.18,"Ready","2023-24",0.25,"Acionadores de Crise","SPI"
+Magude,SPI ON,Mild,Window 1,2023-24,SPI,2023-06-01,2023-07-01,6.0,7.0,0.24,0.26,0.26,0.22,na,0
 
-"Chicualacuala","SPI DJF","Moderado",9,"Window 2","trigger2",0.11,"Set","2023-24",0.49,"Acionadores de Crise","SPI"
+Magude,SPI ON,Moderate,Window 1,2023-24,SPI,2023-05-01,2023-06-01,5.0,6.0,0.18,0.18,0.25,0.21,na,0
 
-"Chicualacuala","SPI DJF","Severo",8,"Window 2","trigger1",0.24,"Ready","2023-24",0.18,"Acionadores de Crise","SPI"
+Magude,SPI ON,Moderate,Window 1,2023-24,SPI,2023-06-01,2023-07-01,6.0,7.0,0.18,0.22,0.21,0.22,na,0
 
-"Chicualacuala","SPI DJF","Severo",9,"Window 2","trigger2",0,"Set","2023-24",0.38,"Acionadores de Crise","SPI"
+Magude,SPI ON,Severe,Window 1,2023-24,SPI,2023-06-01,2023-07-01,6.0,7.0,0.15,0.18,0.17,0.14,na,0
 
-"Chicualacuala","SPI JF","Leve",8,"Window 2","trigger1",0.3,"Ready","2023-24",0.26,"Acionadores de Crise","SPI"
+Mapai,DRY DJ,Moderate,Window 2,2023-24,DRYSPELL,2023-09-01,2023-10-01,9.0,10.0,0.15,0.29,0.17,0.28,na,0
 
-"Chicualacuala","SPI JF","Leve",9,"Window 2","trigger2",0,"Set","2023-24",0.3,"Acionadores de Crise","SPI"
+Mapai,DRY DJ,Severe,Window 2,2023-24,DRYSPELL,2023-09-01,2023-10-01,9.0,10.0,0.12,0.27,0.12,0.24,set,0
 
-"Chicualacuala","SPI MA","Moderado",11,"Window 2","trigger1",0.15,"Ready","2023-24",0.33,"Acionadores de Crise","SPI"
+Mapai,DRY FM,Mild,Window 2,2023-24,DRYSPELL,2023-11-01,2023-12-01,11.0,12.0,0.4,0.31,0.23,0.24,set,0
 
-"Chicualacuala","SPI MA","Moderado",12,"Window 2","trigger2",0.24,"Set","2023-24",0.39,"Acionadores de Crise","SPI"
+Mapai,SPI DJ,Mild,Window 1,2023-24,SPI,2023-09-01,2023-10-01,9.0,10.0,0.26,0.41,0.23,0.12,set,0
 
-"Chicualacuala","SPI MA","Severo",1,"Window 2","trigger2",0.19,"Set","2023-24",0.37,"Acionadores de Crise","SPI"
+Mapai,SPI DJ,Moderate,Window 1,2023-24,SPI,2023-08-01,2023-09-01,8.0,9.0,0.26,0.22,0.01,0.2,set,0
 
-"Chicualacuala","SPI MA","Severo",12,"Window 2","trigger1",0.17,"Ready","2023-24",0.29,"Acionadores de Crise","SPI"
+Mapai,SPI DJ,Moderate,Window 1,2023-24,SPI,2023-09-01,2023-10-01,9.0,10.0,0.22,0.19,0.18,0.26,na,0
 
-"Chicualacuala","SPI ND","Moderado",6,"Window 1","trigger1",0.2,"Ready","2023-24",0.19,"Acionadores de Crise","SPI"
+Mapai,SPI DJF,Mild,Window 2,2023-24,SPI,2023-09-01,2023-10-01,9.0,10.0,0.35,0.51,0.3,0.01,set,0
 
-"Chicualacuala","SPI ND","Moderado",7,"Window 1","trigger2",0.12,"Set","2023-24",0.19,"Acionadores de Crise","SPI"
+Mapai,SPI DJF,Moderate,Window 2,2023-24,SPI,2023-08-01,2023-09-01,8.0,9.0,0.25,0.52,0.25,0.05,set,0
 
-"Chicualacuala","SPI NDJ","Leve",7,"Window 1","trigger1",0.19,"Ready","2023-24",0.45,"Acionadores de Crise","SPI"
+Mapai,SPI DJF,Severe,Window 2,2023-24,SPI,2023-08-01,2023-09-01,8.0,9.0,0.19,0.44,0.21,0.03,na,0
 
-"Chicualacuala","SPI NDJ","Leve",8,"Window 1","trigger2",0.11,"Set","2023-24",0.48,"Acionadores de Crise","SPI"
+Mapai,SPI ND,Severe,Window 1,2023-24,SPI,2023-06-01,2023-07-01,6.0,7.0,0.13,0.18,0.19,0.13,na,0
 
-"Chiure","DRY DJ","Moderado",8,"Window 1","trigger1",0.22,"Ready","2023-24",0.13,"Acionadores Gerais","DRY SPELL"
+Mapai,SPI NDJ,Mild,Window 1,2023-24,SPI,2023-07-01,2023-08-01,7.0,8.0,0.37,0.48,0.24,0.0,set,0
 
-"Chiure","DRY DJ","Moderado",9,"Window 1","trigger2",0.17,"Set","2023-24",0.21,"Acionadores Gerais","DRY SPELL"
+Mapai,SPI OND,Severe,Window 1,2023-24,SPI,2023-07-01,2023-08-01,7.0,8.0,0.14,0.21,0.13,0.2,set,0
 
-"Chiure","DRY DJ","Severo",7,"Window 1","trigger1",0.24,"Ready","2023-24",0.16,"Acionadores Gerais","DRY SPELL"
+Marara,DRY DJ,Moderate,Window 1,2023-24,DRYSPELL,2023-08-01,2023-09-01,8.0,9.0,0.24,0.07,0.26,0.0,na,0
 
-"Chiure","DRY DJ","Severo",8,"Window 1","trigger2",0.1,"Set","2023-24",0.12,"Acionadores Gerais","DRY SPELL"
+Marara,DRY JF,Severe,Window 1,2023-24,DRYSPELL,2023-09-01,2023-10-01,9.0,10.0,0.11,0.13,0.26,0.11,na,0
 
-"Chiure","DRY MA","Leve",10,"Window 2","trigger1",0.25,"Ready","2023-24",0.22,"Acionadores Gerais","DRY SPELL"
+Marara,SPI AM,Mild,Window 2,2023-24,SPI,2024-01-01,2024-02-01,1.0,2.0,0.42,,0.0,0.59,ready,0
 
-"Chiure","DRY MA","Leve",11,"Window 2","trigger1",0.35,"Ready","2023-24",0.21,"Acionadores Gerais","DRY SPELL"
+Marara,SPI AM,Mild,Window 2,2023-24,SPI,2023-11-01,2023-12-01,11.0,12.0,0.31,0.4,0.41,0.35,na,0
 
-"Chiure","DRY MA","Leve",11,"Window 2","trigger2",0.34,"Set","2023-24",0.21,"Acionadores Gerais","DRY SPELL"
+Marara,SPI AM,Severe,Window 2,2023-24,SPI,2024-01-01,2024-02-01,1.0,2.0,0.28,,0.27,0.42,ready,0
 
-"Chiure","DRY MA","Leve",12,"Window 2","trigger2",0.27,"Set","2023-24",0.34,"Acionadores Gerais","DRY SPELL"
+Marara,SPI DJ,Mild,Window 1,2023-24,SPI,2023-09-01,2023-10-01,9.0,10.0,0.25,0.22,0.25,0.17,set,0
 
-"Chiure","SPI DJ","Leve",7,"Window 1","trigger1",0.17,"Ready","2023-24",0.23,"Acionadores Gerais","SPI"
+Marara,SPI DJ,Moderate,Window 1,2023-24,SPI,2023-09-01,2023-10-01,9.0,10.0,0.24,0.2,0.21,0.19,set,0
 
-"Chiure","SPI DJ","Leve",8,"Window 1","trigger2",0.27,"Set","2023-24",0.01,"Acionadores Gerais","SPI"
+Marara,SPI DJF,Mild,Window 1,2023-24,SPI,2023-08-01,2023-09-01,8.0,9.0,0.25,0.31,0.29,0.0,na,0
 
-"Chiure","SPI DJ","Severo",9,"Window 1","trigger1",0,"Ready","2023-24",0,"Acionadores Gerais","SPI"
+Marara,SPI NDJ,Severe,Window 1,2023-24,SPI,2023-07-01,2023-08-01,7.0,8.0,0.11,0.17,0.27,0.2,na,0
 
-"Chiure","SPI DJ","Severo",10,"Window 1","trigger2",0.43,"Set","2023-24",0,"Acionadores Gerais","SPI"
+Massingir,DRY MA,Mild,Window 2,2023-24,DRYSPELL,2023-10-01,2023-11-01,10.0,11.0,0.28,0.12,0.25,0.21,na,0
 
-"Chiure","SPI DJF","Leve",8,"Window 1","trigger1",0.2,"Ready","2023-24",0.25,"Acionadores Gerais","SPI"
+Massingir,SPI DJF,Mild,Window 2,2023-24,SPI,2023-09-01,2023-10-01,9.0,10.0,0.48,0.41,0.11,0.0,set,0
 
-"Chiure","SPI DJF","Leve",9,"Window 1","trigger2",0.18,"Set","2023-24",0,"Acionadores Gerais","SPI"
+Massingir,SPI JF,Severe,Window 2,2023-24,SPI,2023-08-01,2023-09-01,8.0,9.0,0.1,0.18,0.24,0.0,na,0
 
-"Chiure","SPI DJF","Moderado",8,"Window 1","trigger1",0.23,"Ready","2023-24",0.21,"Acionadores Gerais","SPI"
+Massingir,SPI MA,Moderate,Window 2,2023-24,SPI,2023-10-01,2023-11-01,10.0,11.0,0.36,0.2,0.23,0.13,set,0
 
-"Chiure","SPI DJF","Moderado",9,"Window 1","trigger2",0,"Set","2023-24",0,"Acionadores Gerais","SPI"
+Massingir,SPI MA,Moderate,Window 2,2023-24,SPI,2023-12-01,2024-01-01,12.0,1.0,0.26,0.34,0.23,0.22,set,0
 
-"Chiure","SPI FMA","Severo",10,"Window 2","trigger1",0.24,"Ready","2023-24",0.19,"Acionadores Gerais","SPI"
+Massingir,SPI MA,Severe,Window 2,2023-24,SPI,2023-12-01,2024-01-01,12.0,1.0,0.22,0.26,0.13,0.19,set,0
 
-"Chiure","SPI FMA","Severo",11,"Window 2","trigger1",0.26,"Ready","2023-24",0.14,"Acionadores Gerais","SPI"
+Massingir,SPI ND,Mild,Window 1,2023-24,SPI,2023-06-01,2023-07-01,6.0,7.0,0.19,0.22,0.25,0.14,na,0
 
-"Chiure","SPI FMA","Severo",11,"Window 2","trigger2",0.2,"Set","2023-24",0.14,"Acionadores Gerais","SPI"
+Massingir,SPI ND,Mild,Window 1,2023-24,SPI,2023-07-01,2023-08-01,7.0,8.0,0.22,0.22,0.14,0.26,na,0
 
-"Chiure","SPI FMA","Severo",12,"Window 2","trigger2",0,"Set","2023-24",0.22,"Acionadores Gerais","SPI"
+Massingir,SPI ON,Moderate,Window 1,2023-24,SPI,2023-05-01,2023-06-01,5.0,6.0,0.27,0.39,0.16,0.0,set,0
 
-"Guija","DRY FM","Severo",10,"Window 2","trigger1",0.21,"Ready","2023-24",0.29,"Acionadores de Crise","DRY SPELL"
+Massingir,SPI ON,Moderate,Window 1,2023-24,SPI,2023-06-01,2023-07-01,6.0,7.0,0.39,0.35,0.0,0.24,set,0
 
-"Guija","DRY FM","Severo",11,"Window 2","trigger2",0.07,"Set","2023-24",0.21,"Acionadores de Crise","DRY SPELL"
+Massingir,SPI ON,Severe,Window 1,2023-24,SPI,2023-07-01,2023-08-01,7.0,8.0,0.26,0.19,0.25,0.0,set,0
 
-"Guija","DRY MA","Leve",10,"Window 2","trigger1",0.24,"Ready","2023-24",0.31,"Acionadores de Crise","DRY SPELL"
-
-"Guija","DRY MA","Leve",11,"Window 2","trigger2",0.19,"Set","2023-24",0.1,"Acionadores de Crise","DRY SPELL"
-
-"Guija","SPI JF","Severo",8,"Window 2","trigger1",0.28,"Ready","2023-24",0.14,"Acionadores de Crise","SPI"
-
-"Guija","SPI JF","Severo",9,"Window 2","trigger2",0,"Set","2023-24",0.24,"Acionadores de Crise","SPI"
-
-"Guija","SPI JFM","Moderado",9,"Window 2","trigger1",0,"Ready","2023-24",0.33,"Acionadores de Crise","SPI"
-
-"Guija","SPI JFM","Moderado",10,"Window 2","trigger1",0.28,"Ready","2023-24",0.31,"Acionadores de Crise","SPI"
-
-"Guija","SPI JFM","Moderado",10,"Window 2","trigger2",0.28,"Set","2023-24",0.31,"Acionadores de Crise","SPI"
-
-"Guija","SPI JFM","Moderado",11,"Window 2","trigger2",0.12,"Set","2023-24",0.27,"Acionadores de Crise","SPI"
-
-"Guija","SPI MA","Leve",10,"Window 2","trigger1",0.1,"Ready","2023-24",0.46,"Acionadores de Crise","SPI"
-
-"Guija","SPI MA","Leve",11,"Window 2","trigger2",0.28,"Set","2023-24",0.09,"Acionadores de Crise","SPI"
-
-"Guija","SPI NDJ","Moderado",7,"Window 1","trigger1",0,"Ready","2023-24",0.21,"Acionadores de Crise","SPI"
-
-"Guija","SPI NDJ","Moderado",8,"Window 1","trigger2",0.31,"Set","2023-24",0.16,"Acionadores de Crise","SPI"
-
-"Guija","SPI ON","Leve",5,"Window 1","trigger1",0.24,"Ready","2023-24",0.23,"Acionadores de Crise","SPI"
-
-"Guija","SPI ON","Leve",6,"Window 1","trigger2",0.24,"Set","2023-24",0.29,"Acionadores de Crise","SPI"
-
-"Guija","SPI ON","Moderado",5,"Window 1","trigger1",0.21,"Ready","2023-24",0.18,"Acionadores de Crise","SPI"
-
-"Guija","SPI ON","Moderado",6,"Window 1","trigger2",0.22,"Set","2023-24",0.23,"Acionadores de Crise","SPI"
-
-"Guija","SPI OND","Leve",7,"Window 1","trigger1",0.27,"Ready","2023-24",0.26,"Acionadores de Crise","SPI"
-
-"Guija","SPI OND","Leve",8,"Window 1","trigger2",0.25,"Set","2023-24",0.25,"Acionadores de Crise","SPI"
-
-"Guija","SPI OND","Severo",6,"Window 1","trigger1",0,"Ready","2023-24",0.22,"Acionadores de Crise","SPI"
-
-"Guija","SPI OND","Severo",7,"Window 1","trigger1",0.22,"Ready","2023-24",0.1,"Acionadores de Crise","SPI"
-
-"Guija","SPI OND","Severo",7,"Window 1","trigger2",0.22,"Set","2023-24",0.1,"Acionadores de Crise","SPI"
-
-"Guija","SPI OND","Severo",8,"Window 1","trigger2",0.05,"Set","2023-24",0.17,"Acionadores de Crise","SPI"
-
-"Mabalane","DRY DJ","Leve",9,"Window 2","trigger1",0,"Ready","2023-24",0.18,"Acionadores de Crise","DRY SPELL"
-
-"Mabalane","DRY DJ","Leve",10,"Window 2","trigger2",0.31,"Set","2023-24",0.28,"Acionadores de Crise","DRY SPELL"
-
-"Mabalane","DRY DJ","Moderado",9,"Window 2","trigger1",0,"Ready","2023-24",0.15,"Acionadores de Crise","DRY SPELL"
-
-"Mabalane","DRY DJ","Moderado",10,"Window 2","trigger2",0.26,"Set","2023-24",0.26,"Acionadores de Crise","DRY SPELL"
-
-"Mabalane","DRY FM","Severo",11,"Window 2","trigger1",0,"Ready","2023-24",0.14,"Acionadores de Crise","DRY SPELL"
-
-"Mabalane","DRY FM","Severo",12,"Window 2","trigger2",0.24,"Set","2023-24",0.2,"Acionadores de Crise","DRY SPELL"
-
-"Mabalane","SPI DJF","Leve",8,"Window 2","trigger1",0.01,"Ready","2023-24",0.28,"Acionadores de Crise","SPI"
-
-"Mabalane","SPI DJF","Leve",9,"Window 2","trigger2",0.31,"Set","2023-24",0.34,"Acionadores de Crise","SPI"
-
-"Mabalane","SPI JF","Moderado",10,"Window 2","trigger1",0.16,"Ready","2023-24",0.23,"Acionadores de Crise","SPI"
-
-"Mabalane","SPI JF","Moderado",11,"Window 2","trigger2",0.26,"Set","2023-24",0.32,"Acionadores de Crise","SPI"
-
-"Mabalane","SPI JF","Severo",8,"Window 2","trigger1",0.29,"Ready","2023-24",0.14,"Acionadores de Crise","SPI"
-
-"Mabalane","SPI JF","Severo",9,"Window 2","trigger2",0,"Set","2023-24",0.21,"Acionadores de Crise","SPI"
-
-"Mabalane","SPI NDJ","Severo",7,"Window 1","trigger1",0.16,"Ready","2023-24",0.16,"Acionadores de Crise","SPI"
-
-"Mabalane","SPI NDJ","Severo",8,"Window 1","trigger1",0.26,"Ready","2023-24",0.1,"Acionadores de Crise","SPI"
-
-"Mabalane","SPI NDJ","Severo",8,"Window 1","trigger2",0.24,"Set","2023-24",0.1,"Acionadores de Crise","SPI"
-
-"Mabalane","SPI NDJ","Severo",9,"Window 1","trigger2",0.21,"Set","2023-24",0.22,"Acionadores de Crise","SPI"
-
-"Mabalane","SPI OND","Leve",6,"Window 1","trigger1",0.22,"Ready","2023-24",0.26,"Acionadores de Crise","SPI"
-
-"Mabalane","SPI OND","Leve",7,"Window 1","trigger1",0.18,"Ready","2023-24",0.22,"Acionadores de Crise","SPI"
-
-"Mabalane","SPI OND","Leve",7,"Window 1","trigger2",0.23,"Set","2023-24",0.22,"Acionadores de Crise","SPI"
-
-"Mabalane","SPI OND","Leve",8,"Window 1","trigger2",0.26,"Set","2023-24",0.24,"Acionadores de Crise","SPI"
-
-"Mabalane","SPI OND","Moderado",6,"Window 1","trigger1",0.16,"Ready","2023-24",0.2,"Acionadores de Crise","SPI"
-
-"Mabalane","SPI OND","Moderado",7,"Window 1","trigger1",0.15,"Ready","2023-24",0.13,"Acionadores de Crise","SPI"
-
-"Mabalane","SPI OND","Moderado",7,"Window 1","trigger2",0.2,"Set","2023-24",0.13,"Acionadores de Crise","SPI"
-
-"Mabalane","SPI OND","Moderado",8,"Window 1","trigger2",0.21,"Set","2023-24",0.22,"Acionadores de Crise","SPI"
-
-"Magude","DRY DJ","Moderado",8,"Window 2","trigger1",0.25,"Ready","2023-24",0.14,"Acionadores Gerais","DRY SPELL"
-
-"Magude","DRY DJ","Moderado",9,"Window 2","trigger2",0,"Set","2023-24",0.14,"Acionadores Gerais","DRY SPELL"
-
-"Magude","DRY FM","Moderado",11,"Window 2","trigger1",0,"Ready","2023-24",0.18,"Acionadores Gerais","DRY SPELL"
-
-"Magude","DRY FM","Moderado",12,"Window 2","trigger2",0.37,"Set","2023-24",0.21,"Acionadores Gerais","DRY SPELL"
-
-"Magude","SPI DJ","Severo",9,"Window 1","trigger1",0,"Ready","2023-24",0.23,"Acionadores Gerais","SPI"
-
-"Magude","SPI DJ","Severo",10,"Window 1","trigger2",0.31,"Set","2023-24",0.13,"Acionadores Gerais","SPI"
-
-"Magude","SPI DJF","Severo",9,"Window 2","trigger1",0,"Ready","2023-24",0.36,"Acionadores Gerais","SPI"
-
-"Magude","SPI DJF","Severo",10,"Window 2","trigger2",0.34,"Set","2023-24",0.19,"Acionadores Gerais","SPI"
-
-"Magude","SPI JF","Severo",8,"Window 2","trigger1",0.24,"Ready","2023-24",0.1,"Acionadores Gerais","SPI"
-
-"Magude","SPI JF","Severo",9,"Window 2","trigger2",0.16,"Set","2023-24",0.24,"Acionadores Gerais","SPI"
-
-"Magude","SPI JFM","Leve",9,"Window 2","trigger1",0.24,"Ready","2023-24",0.41,"Acionadores Gerais","SPI"
-
-"Magude","SPI JFM","Leve",10,"Window 2","trigger1",0.34,"Ready","2023-24",0.34,"Acionadores Gerais","SPI"
-
-"Magude","SPI JFM","Leve",10,"Window 2","trigger2",0.33,"Set","2023-24",0.34,"Acionadores Gerais","SPI"
-
-"Magude","SPI JFM","Leve",11,"Window 2","trigger2",0,"Set","2023-24",0.4,"Acionadores Gerais","SPI"
-
-"Magude","SPI ON","Leve",5,"Window 1","trigger1",0.21,"Ready","2023-24",0.2,"Acionadores Gerais","SPI"
-
-"Magude","SPI ON","Leve",6,"Window 1","trigger1",0.26,"Ready","2023-24",0.24,"Acionadores Gerais","SPI"
-
-"Magude","SPI ON","Leve",6,"Window 1","trigger2",0.27,"Set","2023-24",0.24,"Acionadores Gerais","SPI"
-
-"Magude","SPI ON","Leve",7,"Window 1","trigger2",0.22,"Set","2023-24",0.26,"Acionadores Gerais","SPI"
-
-"Magude","SPI ON","Moderado",5,"Window 1","trigger1",0.25,"Ready","2023-24",0.18,"Acionadores Gerais","SPI"
-
-"Magude","SPI ON","Moderado",6,"Window 1","trigger1",0.21,"Ready","2023-24",0.18,"Acionadores Gerais","SPI"
-
-"Magude","SPI ON","Moderado",6,"Window 1","trigger2",0.21,"Set","2023-24",0.18,"Acionadores Gerais","SPI"
-
-"Magude","SPI ON","Moderado",7,"Window 1","trigger2",0.22,"Set","2023-24",0.22,"Acionadores Gerais","SPI"
-
-"Magude","SPI ON","Severo",6,"Window 1","trigger1",0.17,"Ready","2023-24",0.15,"Acionadores Gerais","SPI"
-
-"Magude","SPI ON","Severo",7,"Window 1","trigger2",0.14,"Set","2023-24",0.18,"Acionadores Gerais","SPI"
-
-"Mapai","DRY DJ","Moderado",9,"Window 2","trigger1",0.17,"Ready","2023-24",0.15,"Acionadores de Crise","DRY SPELL"
-
-"Mapai","DRY DJ","Moderado",10,"Window 2","trigger2",0.28,"Set","2023-24",0.29,"Acionadores de Crise","DRY SPELL"
-
-"Mapai","DRY DJ","Severo",9,"Window 2","trigger1",0.12,"Ready","2023-24",0.12,"Acionadores de Crise","DRY SPELL"
-
-"Mapai","DRY DJ","Severo",10,"Window 2","trigger2",0.24,"Set","2023-24",0.27,"Acionadores de Crise","DRY SPELL"
-
-"Mapai","DRY FM","Leve",11,"Window 2","trigger1",0.23,"Ready","2023-24",0.4,"Acionadores de Crise","DRY SPELL"
-
-"Mapai","DRY FM","Leve",12,"Window 2","trigger2",0.24,"Set","2023-24",0.31,"Acionadores de Crise","DRY SPELL"
-
-"Mapai","SPI DJ","Leve",9,"Window 1","trigger1",0.23,"Ready","2023-24",0.26,"Acionadores de Crise","SPI"
-
-"Mapai","SPI DJ","Leve",10,"Window 1","trigger2",0.12,"Set","2023-24",0.41,"Acionadores de Crise","SPI"
-
-"Mapai","SPI DJ","Moderado",8,"Window 1","trigger1",0.01,"Ready","2023-24",0.26,"Acionadores de Crise","SPI"
-
-"Mapai","SPI DJ","Moderado",9,"Window 1","trigger1",0.18,"Ready","2023-24",0.22,"Acionadores de Crise","SPI"
-
-"Mapai","SPI DJ","Moderado",9,"Window 1","trigger2",0.2,"Set","2023-24",0.22,"Acionadores de Crise","SPI"
-
-"Mapai","SPI DJ","Moderado",10,"Window 1","trigger2",0.26,"Set","2023-24",0.19,"Acionadores de Crise","SPI"
-
-"Mapai","SPI DJF","Leve",9,"Window 2","trigger1",0.3,"Ready","2023-24",0.35,"Acionadores de Crise","SPI"
-
-"Mapai","SPI DJF","Leve",10,"Window 2","trigger2",0.01,"Set","2023-24",0.51,"Acionadores de Crise","SPI"
-
-"Mapai","SPI DJF","Moderado",8,"Window 2","trigger1",0.25,"Ready","2023-24",0.25,"Acionadores de Crise","SPI"
-
-"Mapai","SPI DJF","Moderado",9,"Window 2","trigger2",0.05,"Set","2023-24",0.52,"Acionadores de Crise","SPI"
-
-"Mapai","SPI DJF","Severo",8,"Window 2","trigger1",0.21,"Ready","2023-24",0.19,"Acionadores de Crise","SPI"
-
-"Mapai","SPI DJF","Severo",9,"Window 2","trigger2",0.03,"Set","2023-24",0.44,"Acionadores de Crise","SPI"
-
-"Mapai","SPI ND","Severo",6,"Window 1","trigger1",0.19,"Ready","2023-24",0.13,"Acionadores de Crise","SPI"
-
-"Mapai","SPI ND","Severo",7,"Window 1","trigger2",0.13,"Set","2023-24",0.18,"Acionadores de Crise","SPI"
-
-"Mapai","SPI NDJ","Leve",7,"Window 1","trigger1",0.24,"Ready","2023-24",0.37,"Acionadores de Crise","SPI"
-
-"Mapai","SPI NDJ","Leve",8,"Window 1","trigger2",0,"Set","2023-24",0.48,"Acionadores de Crise","SPI"
-
-"Mapai","SPI OND","Severo",7,"Window 1","trigger1",0.13,"Ready","2023-24",0.14,"Acionadores de Crise","SPI"
-
-"Mapai","SPI OND","Severo",8,"Window 1","trigger2",0.2,"Set","2023-24",0.21,"Acionadores de Crise","SPI"
-
-"Marara","DRY DJ","Moderado",8,"Window 1","trigger1",0.26,"Ready","2023-24",0.24,"Acionadores Gerais","DRY SPELL"
-
-"Marara","DRY DJ","Moderado",9,"Window 1","trigger2",0,"Set","2023-24",0.07,"Acionadores Gerais","DRY SPELL"
-
-"Marara","DRY JF","Severo",9,"Window 1","trigger1",0.26,"Ready","2023-24",0.11,"Acionadores Gerais","DRY SPELL"
-
-"Marara","DRY JF","Severo",10,"Window 1","trigger2",0.11,"Set","2023-24",0.13,"Acionadores Gerais","DRY SPELL"
-
-"Marara","SPI AM","Leve",1,"Window 2","trigger1",0,"Ready","2023-24",0.42,"Acionadores Gerais","SPI"
-
-"Marara","SPI AM","Leve",2,"Window 2","trigger2",0.59,"Set","2023-24",NA,"Acionadores Gerais","SPI"
-
-"Marara","SPI AM","Leve",11,"Window 2","trigger1",0.41,"Ready","2023-24",0.31,"Acionadores Gerais","SPI"
-
-"Marara","SPI AM","Leve",12,"Window 2","trigger2",0.35,"Set","2023-24",0.4,"Acionadores Gerais","SPI"
-
-"Marara","SPI AM","Severo",1,"Window 2","trigger1",0.27,"Ready","2023-24",0.28,"Acionadores Gerais","SPI"
-
-"Marara","SPI AM","Severo",2,"Window 2","trigger2",0.42,"Set","2023-24",NA,"Acionadores Gerais","SPI"
-
-"Marara","SPI DJ","Leve",9,"Window 1","trigger1",0.25,"Ready","2023-24",0.25,"Acionadores Gerais","SPI"
-
-"Marara","SPI DJ","Leve",10,"Window 1","trigger2",0.17,"Set","2023-24",0.22,"Acionadores Gerais","SPI"
-
-"Marara","SPI DJ","Moderado",9,"Window 1","trigger1",0.21,"Ready","2023-24",0.24,"Acionadores Gerais","SPI"
-
-"Marara","SPI DJ","Moderado",10,"Window 1","trigger2",0.19,"Set","2023-24",0.2,"Acionadores Gerais","SPI"
-
-"Marara","SPI DJF","Leve",8,"Window 1","trigger1",0.29,"Ready","2023-24",0.25,"Acionadores Gerais","SPI"
-
-"Marara","SPI DJF","Leve",9,"Window 1","trigger2",0,"Set","2023-24",0.31,"Acionadores Gerais","SPI"
-
-"Marara","SPI NDJ","Severo",7,"Window 1","trigger1",0.27,"Ready","2023-24",0.11,"Acionadores Gerais","SPI"
-
-"Marara","SPI NDJ","Severo",8,"Window 1","trigger2",0.2,"Set","2023-24",0.17,"Acionadores Gerais","SPI"
-
-"Massingir","DRY MA","Leve",10,"Window 2","trigger1",0.25,"Ready","2023-24",0.28,"Acionadores de Crise","DRY SPELL"
-
-"Massingir","DRY MA","Leve",11,"Window 2","trigger2",0.21,"Set","2023-24",0.12,"Acionadores de Crise","DRY SPELL"
-
-"Massingir","SPI DJF","Leve",9,"Window 2","trigger1",0.11,"Ready","2023-24",0.48,"Acionadores de Crise","SPI"
-
-"Massingir","SPI DJF","Leve",10,"Window 2","trigger2",0,"Set","2023-24",0.41,"Acionadores de Crise","SPI"
-
-"Massingir","SPI JF","Severo",8,"Window 2","trigger1",0.24,"Ready","2023-24",0.1,"Acionadores de Crise","SPI"
-
-"Massingir","SPI JF","Severo",9,"Window 2","trigger2",0,"Set","2023-24",0.18,"Acionadores de Crise","SPI"
-
-"Massingir","SPI MA","Moderado",1,"Window 2","trigger2",0.22,"Set","2023-24",0.34,"Acionadores de Crise","SPI"
-
-"Massingir","SPI MA","Moderado",10,"Window 2","trigger1",0.23,"Ready","2023-24",0.36,"Acionadores de Crise","SPI"
-
-"Massingir","SPI MA","Moderado",11,"Window 2","trigger2",0.13,"Set","2023-24",0.2,"Acionadores de Crise","SPI"
-
-"Massingir","SPI MA","Moderado",12,"Window 2","trigger1",0.23,"Ready","2023-24",0.26,"Acionadores de Crise","SPI"
-
-"Massingir","SPI MA","Severo",1,"Window 2","trigger2",0.19,"Set","2023-24",0.26,"Acionadores de Crise","SPI"
-
-"Massingir","SPI MA","Severo",12,"Window 2","trigger1",0.13,"Ready","2023-24",0.22,"Acionadores de Crise","SPI"
-
-"Massingir","SPI ND","Leve",6,"Window 1","trigger1",0.25,"Ready","2023-24",0.19,"Acionadores de Crise","SPI"
-
-"Massingir","SPI ND","Leve",7,"Window 1","trigger1",0.14,"Ready","2023-24",0.22,"Acionadores de Crise","SPI"
-
-"Massingir","SPI ND","Leve",7,"Window 1","trigger2",0.14,"Set","2023-24",0.22,"Acionadores de Crise","SPI"
-
-"Massingir","SPI ND","Leve",8,"Window 1","trigger2",0.26,"Set","2023-24",0.22,"Acionadores de Crise","SPI"
-
-"Massingir","SPI ON","Moderado",5,"Window 1","trigger1",0.16,"Ready","2023-24",0.27,"Acionadores de Crise","SPI"
-
-"Massingir","SPI ON","Moderado",6,"Window 1","trigger1",0,"Ready","2023-24",0.39,"Acionadores de Crise","SPI"
-
-"Massingir","SPI ON","Moderado",6,"Window 1","trigger2",0,"Set","2023-24",0.39,"Acionadores de Crise","SPI"
-
-"Massingir","SPI ON","Moderado",7,"Window 1","trigger2",0.24,"Set","2023-24",0.35,"Acionadores de Crise","SPI"
-
-"Massingir","SPI ON","Severo",7,"Window 1","trigger1",0.25,"Ready","2023-24",0.26,"Acionadores de Crise","SPI"
-
-"Massingir","SPI ON","Severo",8,"Window 1","trigger2",0,"Set","2023-24",0.19,"Acionadores de Crise","SPI"
-
-"Massingir","SPI OND","Severo",6,"Window 1","trigger1",0.22,"Ready","2023-24",0.13,"Acionadores de Crise","SPI"
-
-"Massingir","SPI OND","Severo",7,"Window 1","trigger2",0.06,"Set","2023-24",0.08,"Acionadores de Crise","SPI"
-
+Massingir,SPI OND,Severe,Window 1,2023-24,SPI,2023-06-01,2023-07-01,6.0,7.0,0.13,0.08,0.22,0.06,na,0

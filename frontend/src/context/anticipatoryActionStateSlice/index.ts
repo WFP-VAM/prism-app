@@ -14,19 +14,23 @@ import {
   allWindowsKey,
 } from './types';
 
-const AACSVKeys: [string, keyof AnticipatoryActionDataRow][] = [
-  ['Category', 'category'],
-  ['District', 'district'],
-  ['Index', 'index'],
-  ['Month', 'month'],
-  ['Phase', 'phase'],
-  ['Probability', 'probability'],
-  ['Trigger', 'trigger'],
-  ['Trigger_nb', 'triggerNB'],
-  ['Trigger_type', 'triggerType'],
-  ['Type', 'type'],
-  ['Windows', 'windows'],
-  ['Year_of_issue', 'yearOfIssue'],
+const AACSVKeys: string[] = [
+  'district',
+  'index',
+  'category',
+  'window',
+  'season',
+  'type',
+  'date_ready',
+  'date_set',
+  'issue_ready',
+  'issue_set',
+  'prob_ready',
+  'prob_set',
+  'trigger_ready',
+  'trigger_set',
+  'state',
+  'new_tag',
 ];
 
 const sortFn = (a: AnticipatoryActionDataRow, b: AnticipatoryActionDataRow) => {
@@ -49,19 +53,39 @@ const sortFn = (a: AnticipatoryActionDataRow, b: AnticipatoryActionDataRow) => {
   return 0;
 };
 
-function transform(data: any[], keys: [string, string][]) {
-  const parsed = data
-    .filter(x => !!x[keys[0][0]]) // filter empty rows
-    .map(obj => {
-      const entries = keys.map(k => [k[1], obj[k[0]]]);
-      const month = obj.Month.padStart(2, '0');
-      const year = obj.Year_of_issue.split('-')[0];
+function transform(data: any[]) {
+  const nonEmpty = data.filter(x => !!x[AACSVKeys[0]]); // filter empty rows
+  const parsed = nonEmpty
+    .map(x => {
+      const common = {
+        category: x.category,
+        district: x.district,
+        index: x.index,
+        type: x.type,
+        window: x.window,
+        new: Boolean(Number(x.new_tag)),
+      };
 
-      // TODO: update this once CSV date format is revised
-      const actualYear = Number(month) < 5 ? String(Number(year) + 1) : year;
-      const date = `${actualYear}-${month}-01`;
-      return Object.fromEntries([...entries, ['date', date]]);
-    }) as AnticipatoryActionDataRow[];
+      const ready = {
+        phase: 'Ready',
+        probability: Number(x.prob_ready),
+        trigger: Number(x.trigger_ready),
+        date: x.date_ready,
+      };
+
+      const set = {
+        phase: 'Set',
+        probability: Number(x.prob_set),
+        trigger: Number(x.trigger_set),
+        date: x.date_set,
+      };
+
+      return [
+        { ...common, ...ready },
+        { ...common, ...set },
+      ];
+    })
+    .flat() as AnticipatoryActionDataRow[];
 
   const validity: Validity = {
     mode: DatesPropagation.DEKAD,
@@ -74,7 +98,7 @@ function transform(data: any[], keys: [string, string][]) {
   );
 
   const windowData = AAWindowKeys.map(windowKey => {
-    const filtered = parsed.filter(x => x.windows === windowKey);
+    const filtered = parsed.filter(x => x.window === windowKey);
 
     // eslint-disable-next-line fp/no-mutating-methods
     const dates = [
@@ -117,7 +141,7 @@ type AnticipatoryActionState = {
   selectedDateData: {
     [key: string]: Pick<
       AnticipatoryActionDataRow,
-      'district' | 'windows' | 'category' | 'phase'
+      'district' | 'window' | 'category' | 'phase'
     >[];
   };
   selectedWindow: typeof AAWindowKeys[number] | typeof allWindowsKey;
@@ -139,9 +163,9 @@ const initialState: AnticipatoryActionState = {
   selectedDateData: {},
   selectedWindow: allWindowsKey,
   categoryFilters: {
-    Severo: true,
-    Moderado: true,
-    Leve: true,
+    Severe: true,
+    Moderate: true,
+    Mild: true,
     na: true,
     ny: true,
   },
@@ -168,7 +192,7 @@ export const loadAAData = createAsyncThunk<
     Papa.parse(url, {
       header: true,
       download: true,
-      complete: results => resolve(transform(results.data, AACSVKeys)),
+      complete: results => resolve(transform(results.data)),
       error: error => reject(error),
     }),
   );
@@ -191,7 +215,7 @@ function calculateMapRenderedDistricts({
   const mapped = Object.entries(selectedDateData).map<
     Pick<
       AnticipatoryActionDataRow,
-      'district' | 'windows' | 'category' | 'phase'
+      'district' | 'window' | 'category' | 'phase'
     >
   >(([district, districtData]) => {
     // eslint-disable-next-line fp/no-mutating-methods
@@ -212,7 +236,7 @@ function calculateMapRenderedDistricts({
 
     // let the first window layer to render empty district
     if (filtered.length === 0) {
-      return { district, category: 'ny', phase: 'ny', windows: 'Window 1' };
+      return { district, category: 'ny', phase: 'ny', window: 'Window 1' };
     }
 
     if (selectedWindow === 'All') {
@@ -221,21 +245,21 @@ function calculateMapRenderedDistricts({
         district,
         category: first.category,
         phase: first.phase,
-        windows: first.windows,
+        window: first.window,
       };
     }
 
-    const windowFirst = filtered.find(x => x.windows === selectedWindow);
+    const windowFirst = filtered.find(x => x.window === selectedWindow);
     if (windowFirst) {
       return {
         district,
         category: windowFirst.category,
         phase: windowFirst.phase,
-        windows: selectedWindow,
+        window: selectedWindow,
       };
     }
 
-    return { district, category: 'ny', phase: 'ny', windows: selectedWindow };
+    return { district, category: 'ny', phase: 'ny', window: selectedWindow };
   });
 
   const windowMap = new Map<
@@ -244,9 +268,9 @@ function calculateMapRenderedDistricts({
   >();
   windowMap.set('Window 1', []);
   windowMap.set('Window 2', []);
-  mapped.forEach(({ windows, ...rest }) => {
-    const val = windowMap.get(windows);
-    windowMap.set(windows, val ? [...val, rest] : [rest]);
+  mapped.forEach(({ window: win, ...rest }) => {
+    const val = windowMap.get(win);
+    windowMap.set(win, val ? [...val, rest] : [rest]);
   });
 
   return Object.fromEntries(
@@ -282,7 +306,7 @@ export const anticipatoryActionStateSlice = createSlice({
       {
         payload,
       }: PayloadAction<
-        Partial<Record<'Leve' | 'Moderado' | 'Severo', boolean>>
+        Partial<Record<'Mild' | 'Moderate' | 'Severe', boolean>>
       >,
     ) => ({
       ...state,

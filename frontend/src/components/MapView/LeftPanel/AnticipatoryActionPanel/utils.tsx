@@ -91,7 +91,7 @@ const AACategoryPhaseMap: { [key: string]: any } = {
     color: '#F1F1F1', // Note: Special handling required for 'ny' in getAAColor for non-layer usage
     iconProps: { topText: 'ny', bottomText: '-', color: 'black' },
   },
-  Severo: {
+  Severe: {
     Set: {
       color: '#831F00',
       iconProps: { topText: 'S', bottomText: 'SEV', color: 'white' },
@@ -101,7 +101,7 @@ const AACategoryPhaseMap: { [key: string]: any } = {
       iconProps: { topText: 'R', bottomText: 'SEV', color: 'white' },
     },
   },
-  Moderado: {
+  Moderate: {
     Set: {
       color: '#FF8934',
       iconProps: { topText: 'S', bottomText: 'MOD', color: 'black' },
@@ -111,7 +111,7 @@ const AACategoryPhaseMap: { [key: string]: any } = {
       iconProps: { topText: 'R', bottomText: 'MOD', color: 'black' },
     },
   },
-  Leve: {
+  Mild: {
     Set: {
       color: '#FFF503',
       iconProps: { topText: 'S', bottomText: 'MIL', color: 'black' },

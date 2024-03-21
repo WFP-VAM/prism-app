@@ -21,16 +21,16 @@ const store = mockStore({
   anticipatoryActionState: {
     selectedWindow: 'Window 1',
     categoryFilters: {
-      Severo: true,
-      Moderado: true,
-      Leve: true,
+      Severe: true,
+      Moderate: true,
+      Mild: true,
     },
     monitoredDistricts: ['Caia'],
     data: {
       'Window 2': {
         Caia: [
           {
-            category: 'Severo',
+            category: 'Severe',
             district: 'Caia',
             index: 'SPI MA',
             month: '12',
@@ -45,7 +45,7 @@ const store = mockStore({
             date: '2023-12-01',
           },
           {
-            category: 'Moderado',
+            category: 'Moderate',
             district: 'Caia',
             index: 'SPI MA',
             month: '12',
@@ -60,7 +60,7 @@ const store = mockStore({
             date: '2023-12-01',
           },
           {
-            category: 'Leve',
+            category: 'Mild',
             district: 'Caia',
             index: 'SPI MAM',
             month: '12',
@@ -75,7 +75,7 @@ const store = mockStore({
             date: '2023-12-01',
           },
           {
-            category: 'Severo',
+            category: 'Severe',
             district: 'Caia',
             index: 'SPI MA',
             month: '11',
@@ -90,7 +90,7 @@ const store = mockStore({
             date: '2023-11-01',
           },
           {
-            category: 'Severo',
+            category: 'Severe',
             district: 'Caia',
             index: 'SPI MA',
             month: '11',

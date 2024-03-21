@@ -40,9 +40,9 @@ const checkboxes: {
   label: string;
   id: Exclude<AACategoryType, 'na' | 'ny'>;
 }[] = [
-  { label: 'Severe', id: 'Severo' },
-  { label: 'Moderate', id: 'Moderado' },
-  { label: 'Mild', id: 'Leve' },
+  { label: 'Severe', id: 'Severe' },
+  { label: 'Moderate', id: 'Moderate' },
+  { label: 'Mild', id: 'Mild' },
 ];
 
 function AnticipatoryActionPanel() {

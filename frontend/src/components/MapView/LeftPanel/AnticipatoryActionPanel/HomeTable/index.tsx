@@ -173,8 +173,8 @@ function getDistrictData(
     .map(([district, districtData]) => {
       const validData = districtData.filter(
         x =>
-          x.probability !== 'NA' &&
-          Number(x.probability) >= Number(x.trigger) &&
+          !Number.isNaN(x.probability) &&
+          x.probability >= x.trigger &&
           x.date <= date,
       );
 
@@ -203,7 +203,7 @@ function getDistrictData(
 
       if (phase === 'Ready') {
         if (current) {
-          return { name: district, isNew: true };
+          return { name: district, isNew: current.new };
         }
         return undefined;
       }
@@ -228,7 +228,7 @@ function getDistrictData(
 
       if (phase === 'Set') {
         if (current && previous) {
-          return { name: district, isNew: true };
+          return { name: district, isNew: current.new };
         }
 
         // Check if the district was in SET mode previously for this category
@@ -254,12 +254,12 @@ const rowCategories: {
   category: AACategoryType;
   phase: AAPhaseType;
 }[] = [
-  { category: 'Severo', phase: 'Set' },
-  { category: 'Severo', phase: 'Ready' },
-  { category: 'Moderado', phase: 'Set' },
-  { category: 'Moderado', phase: 'Ready' },
-  { category: 'Leve', phase: 'Set' },
-  { category: 'Leve', phase: 'Ready' },
+  { category: 'Severe', phase: 'Set' },
+  { category: 'Severe', phase: 'Ready' },
+  { category: 'Moderate', phase: 'Set' },
+  { category: 'Moderate', phase: 'Ready' },
+  { category: 'Mild', phase: 'Set' },
+  { category: 'Mild', phase: 'Ready' },
   { category: 'na', phase: 'na' },
   { category: 'ny', phase: 'ny' },
 ];
@@ -290,7 +290,7 @@ function HomeTable() {
   const dataForRows: {
     'Window 1': AreaTagProps[];
     'Window 2': AreaTagProps[];
-    category: 'ny' | 'na' | 'Leve' | 'Moderado' | 'Severo';
+    category: 'ny' | 'na' | 'Mild' | 'Moderate' | 'Severe';
     phase: 'ny' | 'na' | 'Ready' | 'Set';
   }[] = React.useMemo(() => {
     // Calculate initial data for each category and phase without filtering 'na' category
@@ -339,9 +339,9 @@ function HomeTable() {
       case 'ny':
         return true;
 
-      case 'Leve':
-      case 'Moderado':
-      case 'Severo':
+      case 'Mild':
+      case 'Moderate':
+      case 'Severe':
         return categoryFilters[x.category];
 
       default:
@@ -370,7 +370,7 @@ function HomeTable() {
           const prev = acc.get(dist);
           const newItem = {
             district: dist,
-            windows: w,
+            window: w,
             category: curr.category,
             phase: curr.phase,
           };
@@ -379,7 +379,7 @@ function HomeTable() {
       });
 
       return acc;
-    }, new Map<string, Pick<AnticipatoryActionDataRow, 'district' | 'windows' | 'category' | 'phase'>[]>());
+    }, new Map<string, Pick<AnticipatoryActionDataRow, 'district' | 'window' | 'category' | 'phase'>[]>());
 
     dispatch(setSelectedDateData(Object.fromEntries(selectedDateData)));
   }, [dataForRows, dispatch]);
