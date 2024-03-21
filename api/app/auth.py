@@ -1,4 +1,5 @@
 """Utility function to authenticate users."""
+
 import base64
 import hashlib
 import logging
