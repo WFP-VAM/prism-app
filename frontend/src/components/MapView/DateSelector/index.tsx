@@ -142,7 +142,6 @@ const DateSelector = memo(({ classes }: DateSelectorProps) => {
   const range = useMemo(() => {
     const startDate = stateStartDate ? new Date(stateStartDate) : new Date();
     const { start, end } = calculateStartAndEndDates(startDate, panelTab);
-
     const daysArray: Date[] = [];
 
     for (
