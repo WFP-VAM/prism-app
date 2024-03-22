@@ -103,7 +103,9 @@ const Chart = memo(
     }, [transpose, indices.length, tableRows.length]);
 
     const colorShuffle = useCallback((colors: string[]) => {
-      return colors.map((_, i) => (i % 2 ? colors[i] : colors[colors.length - i - 1]));
+      return colors.map((_, i) =>
+        i % 2 ? colors[i] : colors[colors.length - i - 1],
+      );
     }, []);
 
     const colors = useMemo(() => {
@@ -122,7 +124,9 @@ const Chart = memo(
 
     const labels = useMemo(() => {
       return transpose
-        ? tableRows.slice(chartRange[0], chartRange[1]).map(row => row[config.category])
+        ? tableRows
+            .slice(chartRange[0], chartRange[1])
+            .map(row => row[config.category])
         : indices.map(index => header[index]);
     }, [transpose, chartRange, tableRows, config.category, header, indices]);
 
@@ -137,12 +141,29 @@ const Chart = memo(
         data: indices.map(index => (row[index] as number) || null),
         pointHitRadius: 10,
       }));
-    }, [tableRows, t, config.category, config.fill, colors, indices, isEWSChart]);
+    }, [
+      tableRows,
+      t,
+      config.category,
+      config.fill,
+      colors,
+      indices,
+      isEWSChart,
+    ]);
 
     const configureIndicePointRadius = useCallback(
       (indiceKey: string) => {
-        const foundDataSetFieldPointRadius = datasetFields?.find(datasetField => header[indiceKey] === datasetField.label)?.pointRadius;
-        return foundDataSetFieldPointRadius !== undefined ? foundDataSetFieldPointRadius : (isEWSChart ? 0 : 1);
+        const foundDataSetFieldPointRadius = datasetFields?.find(
+          datasetField => header[indiceKey] === datasetField.label,
+        )?.pointRadius;
+
+        if (foundDataSetFieldPointRadius !== undefined) {
+          return foundDataSetFieldPointRadius;
+        }
+        if (isEWSChart) {
+          return 0;
+        }
+        return 1;
       },
       [datasetFields, header, isEWSChart],
     );
@@ -158,7 +179,15 @@ const Chart = memo(
         pointRadius: configureIndicePointRadius(indiceKey),
         pointHitRadius: 10,
       }));
-    }, [t, header, indices, config.fill, colors, tableRows, configureIndicePointRadius]);
+    }, [
+      t,
+      header,
+      indices,
+      config.fill,
+      colors,
+      tableRows,
+      configureIndicePointRadius,
+    ]);
 
     const EWSthresholds = useMemo(() => {
       if (data.EWSConfig) {
@@ -182,65 +211,72 @@ const Chart = memo(
         ...set,
         data: set.data.slice(chartRange[0], chartRange[1]),
       }));
-    }, [transpose, indicesDataSet, tableRowsDataSet, EWSthresholds, chartRange]);
+    }, [
+      transpose,
+      indicesDataSet,
+      tableRowsDataSet,
+      EWSthresholds,
+      chartRange,
+    ]);
 
     const chartData = useMemo(() => ({ labels, datasets }), [labels, datasets]);
 
     const chartConfig = useMemo(
-      () => ({
-        maintainAspectRatio: !(notMaintainAspectRatio ?? false),
-        title: {
-          fontColor: '#CCC',
-          display: true,
-          text: title,
-          fontSize: 14,
-        },
-        scales: {
-          xAxes: [
-            {
-              stacked: config?.stacked ?? false,
-              gridLines: {
-                display: false,
-              },
-              ticks: {
-                callback: value => {
-                  return isEWSChart ? String(value).split(' ')[1] : value;
+      () =>
+        ({
+          maintainAspectRatio: !(notMaintainAspectRatio ?? false),
+          title: {
+            fontColor: '#CCC',
+            display: true,
+            text: title,
+            fontSize: 14,
+          },
+          scales: {
+            xAxes: [
+              {
+                stacked: config?.stacked ?? false,
+                gridLines: {
+                  display: false,
                 },
-                fontColor: '#CCC',
+                ticks: {
+                  callback: value => {
+                    return isEWSChart ? String(value).split(' ')[1] : value;
+                  },
+                  fontColor: '#CCC',
+                },
+                ...(xAxisLabel
+                  ? {
+                      scaleLabel: {
+                        labelString: xAxisLabel,
+                        display: true,
+                      },
+                    }
+                  : {}),
               },
-              ...(xAxisLabel
-                ? {
-                    scaleLabel: {
-                      labelString: xAxisLabel,
-                      display: true,
-                    },
-                  }
-                : {}),
-            },
-          ],
-          yAxes: [
-            {
-              ticks: {
-                fontColor: '#CCC',
-                ...(config?.minValue && { suggestedMin: config?.minValue }),
-                ...(config?.maxValue && { suggestedMax: config?.maxValue }),
+            ],
+            yAxes: [
+              {
+                ticks: {
+                  fontColor: '#CCC',
+                  ...(config?.minValue && { suggestedMin: config?.minValue }),
+                  ...(config?.maxValue && { suggestedMax: config?.maxValue }),
+                },
+                stacked: config?.stacked ?? false,
+                gridLines: {
+                  display: false,
+                },
               },
-              stacked: config?.stacked ?? false,
-              gridLines: {
-                display: false,
-              },
-            },
-          ],
-        },
-        tooltips: {
-          mode: 'index',
-        },
-        legend: {
-          display: config.displayLegend,
-          position: legendAtBottom ? 'bottom' : 'right',
-          labels: { boxWidth: 12, boxHeight: 12 },
-        },
-      } as ChartOptions),
+            ],
+          },
+          tooltips: {
+            mode: 'index',
+          },
+          legend: {
+            display: config.displayLegend,
+            position: legendAtBottom ? 'bottom' : 'right',
+            labels: { boxWidth: 12, boxHeight: 12 },
+          },
+        } as ChartOptions),
       [
         config,
         isEWSChart,
@@ -248,7 +284,7 @@ const Chart = memo(
         notMaintainAspectRatio,
         title,
         xAxisLabel,
-      ]
+      ],
     );
 
     const handleDownloadChartPng = useCallback(() => {
@@ -256,11 +292,21 @@ const Chart = memo(
     }, [chartRef, downloadFilename]);
 
     const handleDownloadCsv = useCallback(() => {
-      const keyMap = datasetFields
-        ? createDataKeyMap(data, datasetFields)
-        : {};
-      downloadChartsToCsv([[{ [title]: createCsvDataFromDataKeyMap(data, keyMap) }], downloadFilename])();
+      const keyMap = datasetFields ? createDataKeyMap(data, datasetFields) : {};
+      downloadChartsToCsv([
+        [
+          { [title]: createCsvDataFromDataKeyMap(data, keyMap) },
+          downloadFilename,
+        ],
+      ])();
     }, [data, datasetFields, downloadFilename, title]);
+
+    if (!['bar', 'line'].includes(config.type)) {
+      console.error(
+        `Charts of type ${config.type} have not been implemented yet.`,
+      );
+      return null;
+    }
 
     return (
       <>
@@ -288,10 +334,8 @@ const Chart = memo(
         )}
         {config.type === 'bar' ? (
           <Bar ref={chartRef} data={chartData} options={chartConfig} />
-        ) : config.type === 'line' ? (
-          <Line ref={chartRef} data={chartData} options={chartConfig} />
         ) : (
-          console.error(`Charts of type ${config.type} have not been implemented yet.`)
+          <Line ref={chartRef} data={chartData} options={chartConfig} />
         )}
       </>
     );
