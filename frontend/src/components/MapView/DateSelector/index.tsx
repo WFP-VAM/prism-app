@@ -434,13 +434,9 @@ const DateSelector = memo(({ classes }: DateSelectorProps) => {
                   onStart={onPointerStart}
                   onStop={onPointerStop}
                 >
-                  {TIMELINE_ITEM_WIDTH < 10 ? (
-                    <div className={classes.greyOverlay} id={POINTER_ID} />
-                  ) : (
-                    <div className={classes.pointer} id={POINTER_ID}>
-                      <TickSvg />
-                    </div>
-                  )}
+                  <div className={classes.pointer} id={POINTER_ID}>
+                    <TickSvg />
+                  </div>
                 </Draggable>
               </div>
             </Draggable>
@@ -526,24 +522,11 @@ const styles = (theme: Theme) =>
       top: 8,
     },
 
-    greyOverlay: {
-      position: 'absolute',
-      top: -5,
-      width: `${TIMELINE_ITEM_WIDTH}px`,
-      height: 36,
-      backgroundColor: 'grey',
-      opacity: 0.5,
-      zIndex: 5,
-      cursor: 'pointer',
-      pointerEvents: 'none',
-    },
-
     pointer: {
-      backgroundColor: '#101010',
       position: 'absolute',
       zIndex: 5,
       top: -20,
-      left: -9,
+      left: -3.5,
       height: '16px',
       cursor: 'pointer',
       pointerEvents: 'none',
