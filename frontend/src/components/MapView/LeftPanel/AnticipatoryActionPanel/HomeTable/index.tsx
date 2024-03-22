@@ -173,9 +173,9 @@ function getDistrictData(
     .map(([district, districtData]) => {
       const validData = districtData.filter(
         x =>
-          !Number.isNaN(x.probability) &&
-          x.probability >= x.trigger &&
-          x.date <= date,
+          (x.computedRow ||
+            (!Number.isNaN(x.probability) && x.probability >= x.trigger)) &&
+          x.date === date,
       );
 
       // NA: There is a date for this district, but all probabilities are under the trigger
@@ -195,54 +195,17 @@ function getDistrictData(
         return { name: district, isNew: false };
       }
 
-      const categoryData = validData.filter(x => x.category === category);
+      const max = Math.max(
+        ...validData.map(x => AADataSeverityOrder(x.category, x.phase)),
+      );
+      const currOrder = AADataSeverityOrder(category, phase);
 
-      const current = categoryData.find(
-        x => x.category === category && x.phase === phase && x.date === date,
+      const current = validData.find(
+        x => x.category === category && x.phase === phase,
       );
 
-      if (phase === 'Ready') {
-        if (current) {
-          return { name: district, isNew: current.new };
-        }
-        return undefined;
-      }
-
-      // eslint-disable-next-line fp/no-mutating-methods
-      const dates = [...new Set(districtData.map(x => x.date))].sort();
-      const dateIndex = dates.findIndex(x => x === date);
-
-      if (dates.length === 0 || dateIndex === 0) {
-        return undefined;
-      }
-
-      const previousDate =
-        dateIndex === -1 ? dates.slice(-1)[0] : dates[dateIndex - 1];
-
-      const previous = categoryData.find(
-        x =>
-          x.category === category &&
-          x.phase === 'Ready' &&
-          x.date === previousDate,
-      );
-
-      if (phase === 'Set') {
-        if (current && previous) {
-          return { name: district, isNew: current.new };
-        }
-
-        // Check if the district was in SET mode previously for this category
-        // If it is the case, we keep the SET status for this district until the end of the window
-        const previouslySet = getDistrictData(
-          { [district]: data[district] },
-          previousDate,
-          category,
-          'Set',
-        ).find(x => x.name === district);
-        if (previouslySet) {
-          return { name: district, isNew: false };
-        }
-        return undefined;
+      if (max === currOrder && current) {
+        return { name: district, isNew: current.new };
       }
 
       return undefined;

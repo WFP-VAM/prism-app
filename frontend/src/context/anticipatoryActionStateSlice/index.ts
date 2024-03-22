@@ -87,18 +87,88 @@ function transform(data: any[]) {
     })
     .flat() as AnticipatoryActionDataRow[];
 
+  const groupedByWinDistIndexMap = new Map<
+    string,
+    AnticipatoryActionDataRow[]
+  >();
+  parsed.forEach(x => {
+    const key = `${x.window}_${x.district}_${x.index}`;
+    const val = groupedByWinDistIndexMap.get(key);
+    groupedByWinDistIndexMap.set(key, val ? [...val, x] : [x]);
+  });
+  const extraRows = Array.from(groupedByWinDistIndexMap.values())
+    .map(x => {
+      // eslint-disable-next-line fp/no-mutating-methods
+      const sorted = x.sort((a, b) => -sortFn(a, b));
+      let isSetSev: boolean = false;
+      let isSetMod: boolean = false;
+      let isSetMil: boolean = false;
+      return sorted.reduce((acc, curr) => {
+        const prev = acc.length > 0 ? acc[acc.length - 1] : undefined;
+        if (curr.probability > curr.trigger && curr.phase === 'Set') {
+          if (curr.category === 'Severe') {
+            // eslint-disable-next-line fp/no-mutation
+            isSetSev = true;
+          } else if (curr.category === 'Moderate') {
+            // eslint-disable-next-line fp/no-mutation
+            isSetMod = true;
+          } else {
+            // eslint-disable-next-line fp/no-mutation
+            isSetMil = true;
+          }
+        }
+        if (
+          (isSetSev || isSetMod || isSetMil) &&
+          (!prev || prev.date !== curr.date)
+        ) {
+          let newElems: AnticipatoryActionDataRow[] = [];
+          if (isSetMil) {
+            // eslint-disable-next-line fp/no-mutation
+            newElems = [
+              ...newElems,
+              { ...curr, computedRow: true, category: 'Mild', phase: 'Set' },
+            ];
+          }
+          if (isSetMod) {
+            // eslint-disable-next-line fp/no-mutation
+            newElems = [
+              ...newElems,
+              {
+                ...curr,
+                computedRow: true,
+                category: 'Moderate',
+                phase: 'Set',
+              },
+            ];
+          }
+          if (isSetSev) {
+            // eslint-disable-next-line fp/no-mutation
+            newElems = [
+              ...newElems,
+              { ...curr, computedRow: true, category: 'Severe', phase: 'Set' },
+            ];
+          }
+          return [...acc, ...newElems];
+        }
+        return acc;
+      }, [] as AnticipatoryActionDataRow[]);
+    })
+    .flat();
+
+  const extended = [...parsed, ...extraRows];
+
   const validity: Validity = {
     mode: DatesPropagation.DEKAD,
     forward: 3,
   };
 
-  const monitoredDistricts = [...new Set(parsed.map(x => x.district))];
+  const monitoredDistricts = [...new Set(extended.map(x => x.district))];
   const emptyDistricts = Object.fromEntries(
     monitoredDistricts.map(x => [x, [] as AnticipatoryActionDataRow[]]),
   );
 
   const windowData = AAWindowKeys.map(windowKey => {
-    const filtered = parsed.filter(x => x.window === windowKey);
+    const filtered = extended.filter(x => x.window === windowKey);
 
     // eslint-disable-next-line fp/no-mutating-methods
     const dates = [
@@ -299,7 +369,7 @@ export const anticipatoryActionStateSlice = createSlice({
         selectedDateData: state.selectedDateData,
         categoryFilters: state.categoryFilters,
         selectedWindow: payload,
-      }) as any,
+      }) as AnticipatoryActionState['renderedDistricts'],
     }),
     setCategoryFilters: (
       state,
@@ -315,7 +385,7 @@ export const anticipatoryActionStateSlice = createSlice({
         selectedDateData: state.selectedDateData,
         categoryFilters: { ...state.categoryFilters, ...payload },
         selectedWindow: state.selectedWindow,
-      }) as any,
+      }) as AnticipatoryActionState['renderedDistricts'],
     }),
     setSelectedDateData: (
       state,
@@ -327,7 +397,7 @@ export const anticipatoryActionStateSlice = createSlice({
         selectedDateData: payload,
         categoryFilters: state.categoryFilters,
         selectedWindow: state.selectedWindow,
-      }) as any,
+      }) as AnticipatoryActionState['renderedDistricts'],
     }),
   },
   extraReducers: builder => {
