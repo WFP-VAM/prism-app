@@ -406,6 +406,10 @@
             {
               "id": "ipc_perc_ph3_projected",
               "label": "Projected percent of population in phase 3+"
+            },
+            {
+              "id": "ipc_phase_projected_2024_03",
+              "label": "Phase classification - Oct 2023 - Mar 2024"
             }
           ]
         }

@@ -6610,6 +6610,48 @@
     ],
     "legend_text": "Percent of population currently in IPC phase 3 or higher - November 2021 – March 2022. Source: National IPC Technical Working Group"
   },
+  "ipc_phase_projected_2024_03": {
+    "title": "Current IPC Phase classification",
+    "type": "admin_level_data",
+    "path": "data/mozambique/moz-ipc-2024-03.json",
+    "data_field": "ipcphase",
+    "admin_level": 2,
+    "admin_code": "adm2_source_id",
+    "opacity": 0.7,
+    "legend": [
+      {
+        "value": 0,
+        "label": "No data",
+        "color": "#f7f7f7"
+      },
+      {
+        "value": 1,
+        "label": "Phase 1 - Minimal",
+        "color": "#CDFACD"
+      },
+      {
+        "value": 2,
+        "label": "Phase 2 - Stressed",
+        "color": "#FAE61E"
+      },
+      {
+        "value": 3,
+        "label": "Phase 3 - Crisis",
+        "color": "#E67800"
+      },
+      {
+        "value": 4,
+        "label": "Phase 4 - Emergency",
+        "color": "#C80000"
+      },
+      {
+        "value": 5,
+        "label": "Phase 5 - Famine",
+        "color": "#640000"
+      }
+    ],
+    "legend_text": "IPC phase classification October 2023 – March 2024. Source: National IPC Technical Working Group"
+  },
   "mpi": {
     "title": "Multidimensional Poverty Index",
     "type": "admin_level_data",
