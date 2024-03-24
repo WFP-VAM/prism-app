@@ -1,4 +1,5 @@
 """Collect and parse kobo forms."""
+
 import logging
 from datetime import datetime, timedelta, timezone
 from os import getenv
