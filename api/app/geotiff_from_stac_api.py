@@ -118,9 +118,9 @@ def get_geotiff(
 
     params = {"Bucket": GEOTIFF_BUCKET_NAME, "Key": s3_filename}
     if filename_override is not None:
-        params[
-            "ResponseContentDisposition"
-        ] = f'attachment; filename="{filename_override or s3_filename}"'
+        params["ResponseContentDisposition"] = (
+            f'attachment; filename="{filename_override or s3_filename}"'
+        )
 
     presigned_download_url = s3_client.generate_presigned_url(
         "get_object",

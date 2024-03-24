@@ -1,4 +1,5 @@
 """Alert database model."""
+
 import datetime
 import json
 import logging
