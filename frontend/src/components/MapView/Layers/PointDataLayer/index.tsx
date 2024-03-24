@@ -169,11 +169,10 @@ const PointDataLayer = ({ layer, before }: LayersProps) => {
     );
   }
 
-  console.log(features);
-
   return (
     <Source data={data} type="geojson">
       <Layer
+        beforeId={before}
         id={layerId}
         type="circle"
         layout={circleLayout}
