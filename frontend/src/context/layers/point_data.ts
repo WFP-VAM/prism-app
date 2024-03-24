@@ -1,5 +1,10 @@
 import GeoJSON from 'geojson';
-import { PointDataLayerProps, PointDataLoader, PointData } from 'config/types';
+import {
+  PointDataLayerProps,
+  PointDataLoader,
+  PointData,
+  PointLayerData,
+} from 'config/types';
 import { fetchEWSData } from 'utils/ews-utils';
 import { fetchACLEDIncidents } from 'utils/acled-utils';
 import { queryParamsToString } from 'utils/url-utils';
@@ -131,6 +136,9 @@ export const fetchPointLayerData: LazyLoader<PointDataLayerProps> = () => async 
       },
       getState,
     });
+  }
+  if ((data as any)?.type === 'FeatureCollection') {
+    return (data as any) as PointLayerData;
   }
   return { features: GeoJSON.parse(data, { Point: ['lat', 'lon'] }) };
 };

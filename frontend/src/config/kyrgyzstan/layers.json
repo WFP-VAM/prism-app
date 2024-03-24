@@ -2228,5 +2228,68 @@
         "color": "#ffc4ee"
       }
     ]
+  },
+  "hotosm": {
+    "title": "HOTOSM",
+    "type": "point_data",
+    "data": "data/kyrgyzstan/hotosm_kgz_health_facilities_points_geojson.json",
+    "data_field": "amenity",
+    "data_field_type": "text",
+    "opacity": 1,
+    "legend_text": "Types of armed conflict incident. Provided by ACLED (Armed Conflict Location & Event Data Project): https://acleddata.com/",
+    "legend": [
+      {
+        "label": "Hospitals",
+        "value": "Battles ",
+        "color": "#ea5545"
+      },
+      {
+        "label": "Explosions/Remote violence",
+        "value": "Explosions/Remote violence",
+        "color": "#ef9b20"
+      },
+      {
+        "label": "Violence against civilians",
+        "value": "Violence against civilians",
+        "color": "#ede15b"
+      },
+      {
+        "label": "Pharmacies",
+        "value": "pharmacy",
+        "color": "#87bc45"
+      },
+      {
+        "label": "Riots",
+        "value": "Riots",
+        "color": "#27aeef"
+      },
+      {
+        "label": "Strategic developments",
+        "value": "Strategic developments",
+        "color": "#666666"
+      }
+    ],
+    "feature_info_props": {
+      "event_type": {
+        "type": "string",
+        "dataTitle": "Event type"
+      },
+      "sub_event_type": {
+        "type": "string",
+        "dataTitle": "Sub event type"
+      },
+      "source": {
+        "type": "string",
+        "dataTitle": "Source"
+      },
+      "event_date": {
+        "type": "string",
+        "dataTitle": "Date"
+      },
+      "notes": {
+        "type": "string",
+        "dataTitle": "Details"
+      }
+    }
   }
 }

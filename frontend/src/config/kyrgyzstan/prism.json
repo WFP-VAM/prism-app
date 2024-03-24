@@ -211,7 +211,8 @@
     "exposure": {
       "population": ["population"],
       "crops": ["wheat", "potato", "veg", "fruit"],
-      "livestock": ["livestock"]
+      "livestock": ["livestock"],
+      "hotosm": ["hotosm"]
     }
   }
 }
