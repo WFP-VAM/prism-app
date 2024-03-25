@@ -1,4 +1,5 @@
 """UserInfo database model."""
+
 import datetime
 import logging
 
