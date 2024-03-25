@@ -3874,27 +3874,27 @@
       {
         "label": "Hospitals",
         "value": "hospital",
-        "color": "#7fc97f"
+        "color": "#e41a1c"
       },
       {
         "label": "Clinic",
         "value": "clinic",
-        "color": "#beaed4"
+        "color": "#377eb8"
       },
       {
         "label": "Doctors",
         "value": "doctors",
-        "color": "#fdc086"
+        "color": "#4daf4a"
       },
       {
         "label": "Pharmacy",
         "value": "pharmacy",
-        "color": "#ffff99"
+        "color": "#984ea3"
       },
       {
         "label": "Dentist",
         "value": "dentist",
-        "color": "#386cb0"
+        "color": "#ff7f00"
       }
     ],
     "feature_info_props": {
