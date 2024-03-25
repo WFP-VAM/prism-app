@@ -14,7 +14,7 @@ export type TableData = {
 
 type TableState = {
   definition?: TableType;
-  data?: TableData;
+  data: TableData;
   loading: boolean;
   error?: string;
   isShowing: boolean;
@@ -23,6 +23,7 @@ type TableState = {
 const initialState: TableState = {
   loading: false,
   isShowing: false,
+  data: { columns: [], rows: [] },
 };
 
 export const loadTable = createAsyncThunk<
@@ -45,12 +46,7 @@ export const loadTable = createAsyncThunk<
 export const tableStateSlice = createSlice({
   name: 'tableState',
   initialState,
-  reducers: {
-    hideTable: ({ definition, data, error, ...rest }) => ({
-      ...rest,
-      isShowing: false,
-    }),
-  },
+  reducers: {},
   extraReducers: builder => {
     builder.addCase(
       loadTable.fulfilled,
@@ -89,12 +85,9 @@ export const isLoading = (state: RootState): boolean =>
   state.tableState.loading;
 
 export const getCurrentData = (state: RootState): TableData =>
-  state.tableState.data || { columns: [], rows: [] };
+  state.tableState.data;
 
 export const tableErrorSelector = (state: RootState): string | undefined =>
   state.tableState.error;
-
-// export actions
-export const { hideTable } = tableStateSlice.actions;
 
 export default tableStateSlice.reducer;

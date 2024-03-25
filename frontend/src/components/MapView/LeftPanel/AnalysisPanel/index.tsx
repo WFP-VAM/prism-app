@@ -100,12 +100,15 @@ import { removeLayer } from 'context/mapStateSlice';
 import LayerDropdown from 'components/MapView/Layers/LayerDropdown';
 import SimpleDropdown from 'components/Common/SimpleDropdown';
 import {
+  leftPanelSizeSelector,
   leftPanelTabValueSelector,
   Panel,
+  setPanelSize,
   setTabValue,
 } from 'context/leftPanelStateSlice';
 import LoadingBlinkingDots from 'components/Common/LoadingBlinkingDots';
 import useLayers from 'utils/layers-utils';
+import { black, cyanBlue } from 'muiTheme';
 import { getFormattedDate } from 'utils/date-utils';
 import AnalysisTable from './AnalysisTable';
 import ExposureAnalysisTable from './AnalysisTable/ExposureAnalysisTable';
@@ -115,12 +118,7 @@ import { getExposureAnalysisTableData } from '../../utils';
 const tabPanelType = Panel.Analysis;
 
 const AnalysisPanel = memo(
-  ({
-    panelSize,
-    setPanelSize,
-    setResultsPage,
-    classes,
-  }: AnalysisPanelProps) => {
+  ({ setResultsPage, classes }: AnalysisPanelProps) => {
     const dispatch = useDispatch();
     const map = useSelector(mapSelector);
     const selectedLayers = useSelector(layersSelector);
@@ -131,7 +129,7 @@ const AnalysisPanel = memo(
       updateAnalysisParams,
       getAnalysisParams,
     } = useUrlHistory();
-
+    const panelSize = useSelector(leftPanelSizeSelector);
     const availableDates = useSelector(availableDatesSelector);
     const analysisResult = useSelector(analysisResultSelector);
     const analysisResultSortByKey = useSelector(
@@ -337,7 +335,7 @@ const AnalysisPanel = memo(
       }
 
       if (showTable) {
-        setPanelSize(PanelSize.large);
+        dispatch(setPanelSize(PanelSize.large));
         if (
           !isAnalysisLoading &&
           analysisResult &&
@@ -378,7 +376,7 @@ const AnalysisPanel = memo(
           );
         }
       } else {
-        setPanelSize(PanelSize.medium);
+        dispatch(setPanelSize(PanelSize.medium));
         setResultsPage(null);
       }
       // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -512,7 +510,7 @@ const AnalysisPanel = memo(
       const isClearingExposureAnalysis =
         analysisResult instanceof ExposedPopulationResult;
       dispatch(clearAnalysisResult());
-      setPanelSize(PanelSize.medium);
+      dispatch(setPanelSize(PanelSize.medium));
       if (isClearingExposureAnalysis) {
         dispatch(setTabValue(Panel.Layers));
       }
@@ -550,7 +548,6 @@ const AnalysisPanel = memo(
       previousBaselineId,
       resetAnalysisParams,
       selectedStatisticFromUrl,
-      setPanelSize,
       updateHistory,
     ]);
 
@@ -1123,10 +1120,11 @@ const AnalysisPanel = memo(
       }
       return (
         <div className={classes.analysisButtonContainer}>
+          {isAnalysisLoading ? <LinearProgress /> : null}
           <Button
             className={classes.bottomButton}
             onClick={runAnalyser}
-            startIcon={<BarChartOutlined />}
+            startIcon={<BarChartOutlined style={{ color: black }} />}
             disabled={
               !!thresholdError || // if there is a threshold error
               isAnalysisLoading || // or analysis is currently loading
@@ -1140,7 +1138,6 @@ const AnalysisPanel = memo(
           >
             <Typography variant="body2">{t('Run Analysis')}</Typography>
           </Button>
-          {isAnalysisLoading ? <LinearProgress /> : null}
         </div>
       );
     }, [
@@ -1331,7 +1328,7 @@ const styles = (theme: Theme) =>
     },
     analysisButtonContainer: {
       position: 'absolute',
-      backgroundColor: '#566064',
+      backgroundColor: theme.palette.primary.main,
       width: '100%',
       bottom: 0,
     },
@@ -1348,9 +1345,9 @@ const styles = (theme: Theme) =>
       '&.Mui-disabled': { opacity: 0.5 },
     },
     bottomButton: {
-      backgroundColor: '#62B2BD',
+      backgroundColor: cyanBlue,
       '&:hover': {
-        backgroundColor: '#62B2BD',
+        backgroundColor: cyanBlue,
       },
       marginTop: 10,
       marginBottom: 10,
@@ -1408,8 +1405,6 @@ const styles = (theme: Theme) =>
   });
 
 interface AnalysisPanelProps extends WithStyles<typeof styles> {
-  panelSize: PanelSize;
-  setPanelSize: React.Dispatch<React.SetStateAction<PanelSize>>;
   setResultsPage: React.Dispatch<
     React.SetStateAction<React.JSX.Element | null>
   >;

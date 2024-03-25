@@ -22,21 +22,22 @@ const useStyles = makeStyles(() =>
   createStyles({
     root: {
       position: 'inherit',
+      backgroundColor: '#FFFF',
     },
     rootSummary: {
-      backgroundColor: '#D8E9EC',
+      backgroundColor: '#FFFF',
     },
     rootDetails: {
       padding: 0,
     },
     expandIcon: {
-      color: '#53888F',
+      color: 'black',
     },
     summaryContent: {
       alignItems: 'center',
     },
     title: {
-      color: '#53888F',
+      color: 'black',
       fontWeight: 600,
     },
   }),

@@ -17,6 +17,7 @@ import {
   ExposedPopulationResult,
   PolygonAnalysisResult,
 } from 'utils/analysis-utils';
+import { cyanBlue, paleSkyBlue } from 'muiTheme';
 
 interface AnalysisLayerMenuItemProps {
   title: string;
@@ -35,7 +36,7 @@ const useStyles = makeStyles(() =>
       position: 'inherit',
     },
     rootSummary: {
-      backgroundColor: '#D8E9EC',
+      backgroundColor: paleSkyBlue,
     },
     rootDetails: {
       padding: 0,
@@ -97,7 +98,7 @@ const AnalysisLayerMenuItem = memo(
             onMouseEnter={handleChipOnMouseEnter}
             onMouseLeave={handleChipOnMouseLeave}
             classes={{ root: classes.chipRoot }}
-            color="secondary"
+            style={{ backgroundColor: cyanBlue }}
             label={informationChipLabel}
           />
         </AccordionSummary>

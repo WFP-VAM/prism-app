@@ -1,4 +1,4 @@
-import React, { memo, useEffect, useState } from 'react';
+import React, { memo, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   Box,
@@ -7,17 +7,12 @@ import {
   WithStyles,
   withStyles,
 } from '@material-ui/core';
-// map
-import { PanelSize } from 'config/types';
 import { getDisplayBoundaryLayers } from 'config/utils';
-
 import { addLayer } from 'context/mapStateSlice';
 import {
   isLoading as areDatesLoading,
   loadAvailableDates,
 } from 'context/serverStateSlice';
-
-import { appConfig } from 'config';
 import { loadLayerData } from 'context/layers/layer-data';
 import LeftPanel from './LeftPanel';
 import MapComponent from './Map';
@@ -30,19 +25,9 @@ import OtherFeatures from './OtherFeatures';
 // eslint-disable-next-line fp/no-mutating-methods
 const displayedBoundaryLayers = getDisplayBoundaryLayers().reverse();
 
-const MapView = memo(({ classes }: MapViewProps) => {
-  // App config attributes
-  const { hidePanel } = appConfig;
-
+const MapView = memo(({ classes, setIsAlertFormOpen }: MapViewProps) => {
   // Selectors
   const datesLoading = useSelector(areDatesLoading);
-
-  // State attributes
-  const [isAlertFormOpen, setIsAlertFormOpen] = useState(false);
-  const [panelSize, setPanelSize] = useState<PanelSize>(PanelSize.medium);
-  const [isPanelHidden, setIsPanelHidden] = useState<boolean>(
-    Boolean(hidePanel),
-  );
 
   const dispatch = useDispatch();
 
@@ -58,27 +43,14 @@ const MapView = memo(({ classes }: MapViewProps) => {
 
   return (
     <Box className={classes.root}>
-      <LeftPanel
-        panelSize={panelSize}
-        setPanelSize={setPanelSize}
-        isPanelHidden={isPanelHidden}
-      />
-      <OtherFeatures
-        isAlertFormOpen={isAlertFormOpen}
-        isPanelHidden={isPanelHidden}
-        panelSize={panelSize}
-        setIsAlertFormOpen={setIsAlertFormOpen}
-        setIsPanelHidden={setIsPanelHidden}
-      />
+      <LeftPanel />
+      <OtherFeatures />
       {datesLoading && (
         <div className={classes.loading}>
           <CircularProgress size={100} />
         </div>
       )}
-      <MapComponent
-        panelHidden={isPanelHidden}
-        setIsAlertFormOpen={setIsAlertFormOpen}
-      />
+      <MapComponent setIsAlertFormOpen={setIsAlertFormOpen} />
     </Box>
   );
 });
@@ -103,6 +75,12 @@ const styles = () =>
     },
   });
 
-export interface MapViewProps extends WithStyles<typeof styles> {}
+interface MapViewIncomingProps {
+  setIsAlertFormOpen: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
+export interface MapViewProps
+  extends WithStyles<typeof styles>,
+    MapViewIncomingProps {}
 
 export default withStyles(styles)(MapView);

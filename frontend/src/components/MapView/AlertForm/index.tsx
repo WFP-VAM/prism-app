@@ -2,6 +2,7 @@ import {
   Box,
   Button,
   createStyles,
+  Menu,
   TextField,
   Theme,
   Typography,
@@ -55,6 +56,7 @@ function AlertForm({ classes, isOpen, setOpen }: AlertFormProps) {
   const [thresholdError, setThresholdError] = useState<string | null>(null);
   const [alertName, setAlertName] = useState('');
   const [alertWaiting, setAlertWaiting] = useState(false);
+  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
 
   const { t } = useSafeTranslation();
   const regionCodesToFeatureData: { [k: string]: object } = useMemo(() => {
@@ -302,8 +304,9 @@ function AlertForm({ classes, isOpen, setOpen }: AlertFormProps) {
         className={classes.alertTriggerButton}
         variant="contained"
         color="primary"
-        onClick={() => {
+        onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
           setOpen(!isOpen);
+          setAnchorEl(e.currentTarget);
         }}
       >
         <Notifications fontSize="small" />
@@ -312,7 +315,18 @@ function AlertForm({ classes, isOpen, setOpen }: AlertFormProps) {
         </Typography>
         <ArrowDropDown fontSize="small" />
       </Button>
-      {renderedAlertForm}
+      <Menu
+        anchorEl={anchorEl}
+        keepMounted
+        open={Boolean(anchorEl)}
+        onClose={() => {
+          setOpen(false);
+          setAnchorEl(null);
+        }}
+        PaperProps={{ style: { background: 'transparent', boxShadow: 'none' } }}
+      >
+        {renderedAlertForm}
+      </Menu>
     </div>
   );
 }

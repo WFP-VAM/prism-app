@@ -236,98 +236,76 @@ function flattenAreaTree(
   return flattenSubTree(tree);
 }
 
-/**
- * This component allows you to give the user the ability to select several admin_boundary cells.
- * This component also syncs with the map automatically, allowing users to select cells by clicking the map.
- * Selection mode is automatically toggled based off this component's lifecycle.
- */
-export function SimpleBoundaryDropdown({
-  selectedBoundaries,
-  setSelectedBoundaries,
-  labelMessage,
-  map,
-  selectAll,
-  onlyNewCategory,
-  selectProps,
-  goto,
-  multiple = true,
-  ...rest
-}: BoundaryDropdownProps) {
-  const styles = useStyles();
-  const { t, i18n: i18nLocale } = useSafeTranslation();
-  const [search, setSearch] = useState('');
+interface BoundaryDropdownOptionsProps {
+  search: string;
+  setSearch: (v: string) => void;
+  selectedBoundaries: BoundaryDropdownProps['selectedBoundaries'];
+  setSelectedBoundaries?: BoundaryDropdownProps['setSelectedBoundaries'];
+  selectAll?: boolean | undefined;
+  goto?: boolean | undefined;
+  map: MaplibreMap | undefined;
+  multiple?: boolean;
+}
 
-  const boundaryLayerData = useSelector(layerDataSelector(boundaryLayer.id)) as
-    | LayerData<BoundaryLayerProps>
-    | undefined;
-  const { data } = boundaryLayerData || {};
+export const BoundaryDropdownOptions = React.forwardRef(
+  (
+    {
+      search,
+      setSearch,
+      selectedBoundaries,
+      setSelectedBoundaries,
+      selectAll,
+      goto,
+      map,
+      multiple = true,
+    }: BoundaryDropdownOptionsProps,
+    ref,
+  ) => {
+    const styles = useStyles();
+    const { t, i18n: i18nLocale } = useSafeTranslation();
+    const boundaryLayerData = useSelector(
+      layerDataSelector(boundaryLayer.id),
+    ) as LayerData<BoundaryLayerProps> | undefined;
+    const { data } = boundaryLayerData || {};
 
-  if (!data) {
-    // padding is used to make sure the loading spinner doesn't shift the menu size
+    if (!data) {
+      return null;
+    }
+
+    const areaTree = getAdminBoundaryTree(data, boundaryLayer, i18nLocale);
+    const flattenedAreaList = flattenAreaTree(areaTree, search).slice(1);
+    const rootLevel = flattenedAreaList[0]?.level;
+
+    const selectOrDeselectAll = (e: React.MouseEvent) => {
+      e.preventDefault();
+      if (
+        selectedBoundaries === undefined ||
+        setSelectedBoundaries === undefined
+      ) {
+        return;
+      }
+      if (selectedBoundaries.length > 0) {
+        setSelectedBoundaries([]);
+      } else {
+        setSelectedBoundaries(
+          flattenedAreaList.map(({ adminCode }) => adminCode),
+        );
+      }
+    };
+
+    // map adminLevels to a CSS class for each level
+    // note that level actually used is different from the
+    // official admin level, as we subtract the root level
+    // from each item's level, when displaying
+    const clsName: { [key: number]: any } = {
+      0: styles.menuItem0,
+      1: styles.menuItem1,
+      2: styles.menuItem2,
+      3: styles.menuItem3,
+      4: styles.menuItem3,
+    };
     return (
-      <CircularProgress size={24} color="inherit" style={{ padding: '2px' }} />
-    );
-  }
-
-  const areaTree = getAdminBoundaryTree(data, boundaryLayer, i18nLocale);
-  const flattenedAreaList = flattenAreaTree(areaTree, search).slice(1);
-  const rootLevel = flattenedAreaList[0]?.level;
-
-  const selectOrDeselectAll = (e: React.MouseEvent) => {
-    e.preventDefault();
-    if (
-      selectedBoundaries === undefined ||
-      setSelectedBoundaries === undefined
-    ) {
-      return;
-    }
-    if (selectedBoundaries.length > 0) {
-      setSelectedBoundaries([]);
-    } else {
-      setSelectedBoundaries(
-        flattenedAreaList.map(({ adminCode }) => adminCode),
-      );
-    }
-  };
-
-  // map adminLevels to a CSS class for each level
-  // note that level actually used is different from the
-  // official admin level, as we subtract the root level
-  // from each item's level, when displaying
-  const clsName: { [key: number]: any } = {
-    0: styles.menuItem0,
-    1: styles.menuItem1,
-    2: styles.menuItem2,
-    3: styles.menuItem3,
-    4: styles.menuItem3,
-  };
-
-  // It's important for this to be another component, since the Select component
-  // acts on the `value` prop, which we need to hide from <Select /> since this isn't a menu item.
-  const out = (
-    <FormControl {...rest}>
-      <InputLabel>{labelMessage}</InputLabel>
-      <Select
-        style={{ color: 'black' }}
-        multiple
-        onClose={() => {
-          // empty search so that component shows correct options
-          // otherwise, we would only show selected options which satisfy the search
-          setTimeout(() => setSearch(''), TIMEOUT_ANIMATION_DELAY);
-        }}
-        value={selectedBoundaries}
-        // This is a workaround to display the selected items as a comma separated list.
-        renderValue={selected =>
-          (selected as AdminCodeString[])
-            .map(
-              adminCode =>
-                flattenedAreaList.find(area => area.adminCode === adminCode)
-                  ?.label || adminCode,
-            )
-            .join(', ')
-        }
-        {...selectProps}
-      >
+      <>
         <SearchField search={search} setSearch={setSearch} />
         {!search && selectAll && selectedBoundaries && (
           <MenuItem onClick={selectOrDeselectAll}>
@@ -349,7 +327,10 @@ export function SimpleBoundaryDropdown({
             const area = flattenedAreaList[index];
             return (
               <MenuItem
-                classes={{ root: clsName[(area.level - rootLevel) as number] }}
+                ref={ref as any}
+                classes={{
+                  root: clsName[(area.level - rootLevel) as number],
+                }}
                 key={area.adminCode}
                 value={area.adminCode}
                 style={style as any}
@@ -407,6 +388,82 @@ export function SimpleBoundaryDropdown({
             );
           }}
         </List>
+      </>
+    );
+  },
+);
+
+/**
+ * This component allows you to give the user the ability to select several admin_boundary cells.
+ * This component also syncs with the map automatically, allowing users to select cells by clicking the map.
+ * Selection mode is automatically toggled based off this component's lifecycle.
+ */
+export function SimpleBoundaryDropdown({
+  selectedBoundaries,
+  setSelectedBoundaries,
+  labelMessage,
+  map,
+  selectAll,
+  onlyNewCategory,
+  selectProps,
+  goto,
+  multiple = true,
+  ...rest
+}: BoundaryDropdownProps) {
+  const { i18n: i18nLocale } = useSafeTranslation();
+  const [search, setSearch] = useState('');
+
+  const boundaryLayerData = useSelector(layerDataSelector(boundaryLayer.id)) as
+    | LayerData<BoundaryLayerProps>
+    | undefined;
+  const { data } = boundaryLayerData || {};
+
+  if (!data) {
+    // padding is used to make sure the loading spinner doesn't shift the menu size
+    return (
+      <CircularProgress size={24} color="inherit" style={{ padding: '2px' }} />
+    );
+  }
+
+  const areaTree = getAdminBoundaryTree(data, boundaryLayer, i18nLocale);
+  const flattenedAreaList = flattenAreaTree(areaTree, search).slice(1);
+
+  // It's important for this to be another component, since the Select component
+  // acts on the `value` prop, which we need to hide from <Select /> since this isn't a menu item.
+  const out = (
+    <FormControl {...rest}>
+      <InputLabel>{labelMessage}</InputLabel>
+      <Select
+        style={{ color: 'black' }}
+        multiple
+        onClose={() => {
+          // empty search so that component shows correct options
+          // otherwise, we would only show selected options which satisfy the search
+          setTimeout(() => setSearch(''), TIMEOUT_ANIMATION_DELAY);
+        }}
+        value={selectedBoundaries}
+        // This is a workaround to display the selected items as a comma separated list.
+        renderValue={selected =>
+          (selected as AdminCodeString[])
+            .map(
+              adminCode =>
+                flattenedAreaList.find(area => area.adminCode === adminCode)
+                  ?.label || adminCode,
+            )
+            .join(', ')
+        }
+        {...selectProps}
+      >
+        <BoundaryDropdownOptions
+          search={search}
+          setSearch={setSearch}
+          selectedBoundaries={selectedBoundaries}
+          setSelectedBoundaries={setSelectedBoundaries}
+          selectAll={selectAll}
+          goto={goto}
+          map={map}
+          multiple={multiple}
+        />
       </Select>
     </FormControl>
   );

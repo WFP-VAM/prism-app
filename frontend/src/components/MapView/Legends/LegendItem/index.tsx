@@ -21,7 +21,7 @@ import {
   withStyles,
   WithStyles,
 } from '@material-ui/core';
-import { Close, Opacity, SwapVert } from '@material-ui/icons';
+import { Cancel, Opacity, SwapVert } from '@material-ui/icons';
 import { useDispatch, useSelector } from 'react-redux';
 import { LayerType, LegendDefinitionItem } from 'config/types';
 import { mapSelector, layersSelector } from 'context/mapStateSlice/selectors';
@@ -256,7 +256,7 @@ const LegendItem = memo(
               {isAnalysis ? <AnalysisDownloadButton /> : layerDownloadOptions}
               <Tooltip title="Remove layer">
                 <IconButton size="small" onClick={remove}>
-                  <Close fontSize="small" />
+                  <Cancel fontSize="small" />
                 </IconButton>
               </Tooltip>
             </>
@@ -272,12 +272,13 @@ const styles = () =>
     paper: {
       padding: 8,
       width: 180,
+      borderRadius: '8px',
     },
     slider: {
       padding: '0 5px',
     },
     opacityBox: {
-      backgroundColor: '#fff',
+      backgroundColor: 'white',
       width: 172,
       overflow: 'hidden',
     },

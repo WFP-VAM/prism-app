@@ -1,24 +1,15 @@
 import React, { useRef, useState } from 'react';
-import {
-  Button,
-  createStyles,
-  Typography,
-  WithStyles,
-  withStyles,
-} from '@material-ui/core';
+import { IconButton } from '@material-ui/core';
 import { useSelector } from 'react-redux';
-import Print from '@material-ui/icons/Print';
+import PrintOutlined from '@material-ui/icons/PrintOutlined';
 import { mapSelector } from 'context/mapStateSlice/selectors';
-import { useSafeTranslation } from 'i18n';
 import DownloadImage from './image';
 
-function PrintImage({ classes }: PrintImageProps) {
+function PrintImage() {
   const [openImage, setOpenImage] = useState(false);
   const selectedMap = useSelector(mapSelector);
 
   const previewRef = useRef<HTMLCanvasElement>(null);
-
-  const { t } = useSafeTranslation();
 
   const handleClose = () => {
     setOpenImage(false);
@@ -43,25 +34,19 @@ function PrintImage({ classes }: PrintImageProps) {
   return (
     <>
       <div style={{ paddingTop: '4px' }}>
-        <Button onClick={openModal} style={{ backgroundColor: 'transparent' }}>
-          <Print fontSize="small" style={{ paddingRight: '0.2em' }} />
-          <Typography className={classes.printText} variant="body2">
-            {t('Print')}
-          </Typography>
-        </Button>
+        <IconButton
+          onClick={openModal}
+          style={{
+            backgroundColor: 'transparent',
+            color: 'white',
+          }}
+        >
+          <PrintOutlined />
+        </IconButton>
       </div>
       <DownloadImage open={openImage} handleClose={handleClose} />
     </>
   );
 }
 
-const styles = () =>
-  createStyles({
-    printText: {
-      textTransform: 'uppercase',
-    },
-  });
-
-export interface PrintImageProps extends WithStyles<typeof styles> {}
-
-export default withStyles(styles)(PrintImage);
+export default PrintImage;

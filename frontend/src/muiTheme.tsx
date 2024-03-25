@@ -4,8 +4,12 @@ import React from 'react';
 const skyBlue: string = '#009EE0';
 const greyBlue: string = '#5A686C';
 const darkGreyBlue: string = '#2D3436';
-const white: string = '#FFFFFF';
-const lightGray = '#CCCCCC';
+const white = '#FFFFFF';
+const midnightSlate = '#323638';
+export const lightGrey = '#F1F1F1';
+export const grey = '#CCCCCC';
+export const paleSkyBlue = '#D8E9EC';
+export const black = '#101010';
 export const cyanBlue = '#63B2BD';
 
 export const colors = { skyBlue, greyBlue, darkGreyBlue };
@@ -90,15 +94,15 @@ const theme: any = createTheme({
   },
   palette: {
     primary: {
-      main: greyBlue,
+      main: midnightSlate,
       dark: darkGreyBlue,
     },
     text: {
       primary: white,
-      secondary: darkGreyBlue,
+      secondary: black,
     },
     grey: {
-      500: lightGray,
+      500: grey,
     },
   },
   spacing: 6,
@@ -111,12 +115,10 @@ const theme: any = createTheme({
     MuiTypography: {
       h3: {
         fontSize: 16,
-        color: darkGreyBlue,
         fontWeight: 400,
       },
       h4: {
         fontSize: 13,
-        color: darkGreyBlue,
         fontWeight: 400,
       },
       h5: {
@@ -124,26 +126,30 @@ const theme: any = createTheme({
         color: greyBlue,
       },
       body1: {
-        color: white,
         fontSize: 13,
         fontWeight: 300,
       },
       body2: {
         fontSize: 11,
         letterSpacing: 3.5,
-        color: white,
         textTransform: 'uppercase',
+      },
+      root: {
+        color: black,
+      },
+      colorSecondary: {
+        color: white,
       },
     },
     MuiListItem: {
       button: {
         // dropdowns in Analyser Table are white on white background without this rule.
-        color: 'black',
+        color: black,
       },
     },
     MuiMenuItem: {
       root: {
-        color: 'black',
+        color: black,
         paddingLeft: 25,
       },
     },
@@ -221,6 +227,18 @@ const theme: any = createTheme({
         '&.Mui-disabled': {
           pointerEvents: 'auto',
         },
+        borderRadius: '4px',
+      },
+      startIcon: {
+        marginLeft: 0,
+      },
+      text: {
+        padding: '6px 12px',
+      },
+    },
+    MuiIconButton: {
+      root: {
+        color: black,
       },
     },
   },
@@ -230,11 +248,18 @@ const theme: any = createTheme({
 theme.overrides.MuiToggleButton = {
   root: {
     textTransform: 'none',
-    color: 'black',
+    color: black,
     '&.Mui-selected, &.Mui-selected:hover': {
       backgroundColor: `${cyanBlue} !important`,
       color: 'initial',
     },
+  },
+};
+
+// eslint-disable-next-line fp/no-mutation
+theme.overrides.MuiTableSortLabel = {
+  icon: {
+    color: black,
   },
 };
 

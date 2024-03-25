@@ -8,3 +8,7 @@ html, body { height: 100% }
     flex-direction: column;
     height: 100%;
 }
+
+.svg-inline--fa {
+  font-size: revert-layer;
+}

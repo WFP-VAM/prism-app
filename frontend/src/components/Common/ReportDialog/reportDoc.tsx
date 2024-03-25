@@ -36,7 +36,7 @@ const makeStyles = (theme: Theme, selectedLanguage: string) =>
   StyleSheet.create({
     page: {
       flexDirection: 'column',
-      backgroundColor: '#FFF',
+      backgroundColor: 'white',
       paddingBottom: 25,
       paddingTop: '1vh',
       fontFamily: getReportFontFamily(selectedLanguage),

@@ -1,6 +1,7 @@
 import { Chip, createStyles, makeStyles } from '@material-ui/core';
 import { LayerType } from 'config/types';
 import { useSafeTranslation } from 'i18n';
+import { cyanBlue } from 'muiTheme';
 import React, { memo, useCallback, useEffect, useState } from 'react';
 
 const useStyles = makeStyles(() =>
@@ -48,7 +49,7 @@ const SelectedLayersInformation = ({
       onMouseEnter={handleChipOnMouseEnter}
       onMouseLeave={handleChipOnMouseLeave}
       classes={{ root: classes.chipRoot }}
-      color="secondary"
+      style={{ backgroundColor: cyanBlue }}
       label={informationChipLabel}
     />
   );

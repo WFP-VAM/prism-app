@@ -47,12 +47,16 @@ Font.register({
 });
 
 const Wrapper = memo(() => {
+  const [isAlertFormOpen, setIsAlertFormOpen] = React.useState(false);
   return (
     <div id="app">
-      <NavBar />
+      <NavBar
+        isAlertFormOpen={isAlertFormOpen}
+        setIsAlertFormOpen={setIsAlertFormOpen}
+      />
       <Switch>
         <Route default>
-          <MapView />
+          <MapView setIsAlertFormOpen={setIsAlertFormOpen} />
           <AuthModal />
         </Route>
       </Switch>

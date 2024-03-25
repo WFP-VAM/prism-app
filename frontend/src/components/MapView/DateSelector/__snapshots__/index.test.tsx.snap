@@ -4,6 +4,7 @@ exports[`renders as expected 1`] = `
 <div>
   <div
     class="memo-container-1"
+    style="z-index: 1300;"
   >
     <div
       class="MuiGrid-root memo-datePickerContainer-3 MuiGrid-container MuiGrid-align-items-xs-center MuiGrid-justify-content-xs-center"
