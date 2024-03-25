@@ -231,7 +231,7 @@ const LegendItem = memo(
               </IconButton>
             </Tooltip>
             {isAnalysis && (
-              <Tooltip title="Reverse colors">
+              <Tooltip title={t('Reverse colors') as string}>
                 <IconButton
                   size="small"
                   onClick={() => dispatch(analysisLayerInvertColors())}
