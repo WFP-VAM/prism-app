@@ -639,7 +639,8 @@ export class PointDataLayerProps extends CommonLayerProps {
   data: string;
   dataField: string;
   // URL to fetch all possible dates from
-  dateUrl: string;
+  @optional
+  dateUrl?: string;
 
   @makeRequired
   title: string;

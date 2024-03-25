@@ -71,6 +71,7 @@ const PointDataLayer = ({ layer, before }: LayersProps) => {
   useMapCallback('click', layerId, layer, onClick);
 
   const queryDate = getRequestDate(layerAvailableDates, selectedDate);
+  const validateLayerDate = !layer.dateUrl || queryDate;
 
   const layerData = useSelector(layerDataSelector(layer.id, queryDate)) as
     | LayerData<PointDataLayerProps>
@@ -90,10 +91,18 @@ const PointDataLayer = ({ layer, before }: LayersProps) => {
       return;
     }
 
-    if (!features && queryDate) {
+    if (!features && validateLayerDate) {
       dispatch(loadLayerData({ layer, date: queryDate, userAuth }));
     }
-  }, [features, dispatch, userAuth, layer, queryDate, layerAvailableDates]);
+  }, [
+    features,
+    dispatch,
+    userAuth,
+    layer,
+    queryDate,
+    layerAvailableDates,
+    validateLayerDate,
+  ]);
 
   useEffect(() => {
     if (
@@ -115,7 +124,7 @@ const PointDataLayer = ({ layer, before }: LayersProps) => {
 
     if (
       features &&
-      (features as FeatureCollection).features.length === 0 &&
+      (features as FeatureCollection).features?.length === 0 &&
       layer.authRequired
     ) {
       dispatch(
@@ -139,7 +148,7 @@ const PointDataLayer = ({ layer, before }: LayersProps) => {
     updateHistory,
   ]);
 
-  if (!features || !queryDate) {
+  if (!features || !validateLayerDate) {
     return null;
   }
 
@@ -161,8 +170,9 @@ const PointDataLayer = ({ layer, before }: LayersProps) => {
   }
 
   return (
-    <Source data={features} type="geojson">
+    <Source data={data} type="geojson">
       <Layer
+        beforeId={before}
         id={layerId}
         type="circle"
         layout={circleLayout}
