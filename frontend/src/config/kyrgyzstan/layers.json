@@ -2232,66 +2232,49 @@
       }
     ]
   },
-  "hotosm": {
-    "title": "HOTOSM",
+  "health_facilities": {
+    "title": "Health facilities",
     "type": "point_data",
     "data": "data/kyrgyzstan/hotosm_kgz_health_facilities_points_geojson.json",
     "data_field": "amenity",
     "data_field_type": "text",
     "opacity": 1,
-    "legend_text": "Types of armed conflict incident. Provided by ACLED (Armed Conflict Location & Event Data Project): https://acleddata.com/",
+    "legend_text": "Health facilities (https://data.humdata.org/dataset/hotosm_kgz_health_facilities)",
     "legend": [
       {
         "label": "Hospitals",
-        "value": "Battles ",
-        "color": "#ea5545"
+        "value": "hospital",
+        "color": "#7fc97f"
       },
       {
-        "label": "Explosions/Remote violence",
-        "value": "Explosions/Remote violence",
-        "color": "#ef9b20"
+        "label": "Clinic",
+        "value": "clinic",
+        "color": "#beaed4"
       },
       {
-        "label": "Violence against civilians",
-        "value": "Violence against civilians",
-        "color": "#ede15b"
+        "label": "Doctors",
+        "value": "doctors",
+        "color": "#fdc086"
       },
       {
-        "label": "Pharmacies",
+        "label": "Pharmacy",
         "value": "pharmacy",
-        "color": "#87bc45"
+        "color": "#ffff99"
       },
       {
-        "label": "Riots",
-        "value": "Riots",
-        "color": "#27aeef"
-      },
-      {
-        "label": "Strategic developments",
-        "value": "Strategic developments",
-        "color": "#666666"
+        "label": "Dentist",
+        "value": "dentist",
+        "color": "#386cb0"
       }
     ],
     "feature_info_props": {
-      "event_type": {
+      "name": {
         "type": "string",
-        "dataTitle": "Event type"
+        "dataTitle": "Name"
       },
-      "sub_event_type": {
+      "amenity": {
         "type": "string",
-        "dataTitle": "Sub event type"
-      },
-      "source": {
-        "type": "string",
-        "dataTitle": "Source"
-      },
-      "event_date": {
-        "type": "string",
-        "dataTitle": "Date"
-      },
-      "notes": {
-        "type": "string",
-        "dataTitle": "Details"
+        "dataTitle": "Type"
       }
     },
   "dekad_rainfall_anomaly_forecast": {
