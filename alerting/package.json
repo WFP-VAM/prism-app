@@ -34,7 +34,7 @@
     "nodemailer": "^6.9.9",
     "pg": "^8.5.1",
     "prism-common": "file:../common",
-    "typeorm": "^0.2.25",
+    "typeorm": "^0.3.0",
     "typeorm-naming-strategies": "^1.1.0",
     "xml-js": "^1.6.11"
   },
