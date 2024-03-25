@@ -23,6 +23,7 @@
   "serversUrls": {
     "wms": [
       "https://api.earthobservation.vam.wfp.org/ows/wms",
+      "https://kyrgyzstan.sibelius-datacube.org:5000/wms",
       "https://firms.modaps.eosdis.nasa.gov/mapserver/wms/fires/49278a84c3c473e387548ae0c6b31ced/"
     ]
   },
