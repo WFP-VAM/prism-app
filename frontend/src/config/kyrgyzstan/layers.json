@@ -2161,7 +2161,7 @@
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
     "opacity": 0.7,
-    "legend_text": "Total number of heavy rain days (rainfall > 75th percentile) within last 30 days of dekad. Derived from CHIRPS (UCSB Climate Hazards Group). https://www.chc.ucsb.edu/data/chirps",
+    "legend_text": "Total number of heavy rain days (rainfall > 75th percentile) within last 30 days of dekad. ). https://www.chc.ucsb.edu/data/chirps",
     "legend": [
       {
         "value": 0,
@@ -2754,7 +2754,7 @@
       "type": "line"
     },
     "opacity": 0.7,
-    "legend_text": "NDVI Anomaly compared to LTA",
+    "legend_text": "NDVI anomaly compared to long term average",
     "legend": [
       {
         "value": 0,
@@ -3858,93 +3858,6 @@
       }
     ]
   },
-  "health_facilities": {
-    "title": "Health facilities",
-    "type": "point_data",
-    "data": "data/kyrgyzstan/hotosm_kgz_health_facilities_points_geojson.json",
-    "data_field": "amenity",
-    "data_field_type": "text",
-    "opacity": 1,
-    "legend_text": "Health facilities (https://data.humdata.org/dataset/hotosm_kgz_health_facilities)",
-    "legend": [
-      {
-        "label": "Hospitals",
-        "value": "hospital",
-        "color": "#e41a1c"
-      },
-      {
-        "label": "Clinic",
-        "value": "clinic",
-        "color": "#377eb8"
-      },
-      {
-        "label": "Doctors",
-        "value": "doctors",
-        "color": "#4daf4a"
-      },
-      {
-        "label": "Pharmacy",
-        "value": "pharmacy",
-        "color": "#984ea3"
-      },
-      {
-        "label": "Dentist",
-        "value": "dentist",
-        "color": "#ff7f00"
-      }
-    ],
-    "feature_info_props": {
-      "name": {
-        "type": "string",
-        "dataTitle": "Name"
-      },
-      "amenity": {
-        "type": "string",
-        "dataTitle": "Type"
-      }
-    }
-  },
-  "viirs_fires_2023_06_09": {
-    "title": "Fires 2023 - June to September",
-    "type": "point_data",
-    "data": "data/kyrgyzstan/viirs_fires_2023-06-01_2023_09_30.json",
-    "data_field": "BRIGHTNESS",
-    "opacity": 1,
-    "legend_text": "Source NASA VIIRS https://firms.modaps.eosdis.nasa.gov/",
-    "legend": [
-      {
-        "value": "0",
-        "label": "Low",
-        "color": "#fee5d9"
-      },
-      {
-        "value": "300",
-        "label": "Low-Med",
-        "color": "#fcae91"
-      },
-      {
-        "value": "320",
-        "label": "Medium",
-        "color": "#fb6a4a"
-      },
-      {
-        "value": "340",
-        "label": "Med-High",
-        "color": "#de2d26"
-      },
-      {
-        "value": "360",
-        "label": "High",
-        "color": "#a50f15"
-      }
-    ],
-    "feature_info_props": {
-      "ACQ_DATE": {
-        "type": "string",
-        "dataTitle": "Date"
-      }
-    }
-  },
   "dekad_rainfall_anomaly_forecast": {
     "title": "10-day rainfall forecast anomaly",
     "type": "wms",
@@ -4029,5 +3942,92 @@
         "color": "#a002fa"
       }
     ]
+  },
+  "health_facilities": {
+    "title": "Health facilities",
+    "type": "point_data",
+    "data": "data/kyrgyzstan/hotosm_kgz_health_facilities_points_geojson.json",
+    "data_field": "amenity",
+    "data_field_type": "text",
+    "opacity": 1,
+    "legend_text": "Health facilities (https://data.humdata.org/dataset/hotosm_kgz_health_facilities)",
+    "legend": [
+      {
+        "label": "Hospitals",
+        "value": "hospital",
+        "color": "#e41a1c"
+      },
+      {
+        "label": "Clinic",
+        "value": "clinic",
+        "color": "#377eb8"
+      },
+      {
+        "label": "Doctors",
+        "value": "doctors",
+        "color": "#4daf4a"
+      },
+      {
+        "label": "Pharmacy",
+        "value": "pharmacy",
+        "color": "#984ea3"
+      },
+      {
+        "label": "Dentist",
+        "value": "dentist",
+        "color": "#ff7f00"
+      }
+    ],
+    "feature_info_props": {
+      "name": {
+        "type": "string",
+        "dataTitle": "Name"
+      },
+      "amenity": {
+        "type": "string",
+        "dataTitle": "Type"
+      }
+    }
+  },
+  "viirs_fires_2023_06_09": {
+    "title": "Fires - June 01 to September 30, 2023",
+    "type": "point_data",
+    "data": "data/kyrgyzstan/viirs_fires_2023-06-01_2023_09_30.json",
+    "data_field": "BRIGHTNESS",
+    "opacity": 1,
+    "legend_text": "Source NASA VIIRS https://firms.modaps.eosdis.nasa.gov/",
+    "legend": [
+      {
+        "value": "0",
+        "label": "Low",
+        "color": "#fee5d9"
+      },
+      {
+        "value": "300",
+        "label": "Low-Med",
+        "color": "#fcae91"
+      },
+      {
+        "value": "320",
+        "label": "Medium",
+        "color": "#fb6a4a"
+      },
+      {
+        "value": "340",
+        "label": "Med-High",
+        "color": "#de2d26"
+      },
+      {
+        "value": "360",
+        "label": "High",
+        "color": "#a50f15"
+      }
+    ],
+    "feature_info_props": {
+      "ACQ_DATE": {
+        "type": "string",
+        "dataTitle": "Date"
+      }
+    }
   }
 }

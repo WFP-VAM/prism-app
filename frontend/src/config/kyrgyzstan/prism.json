@@ -23,7 +23,6 @@
   "serversUrls": {
     "wms": [
       "https://api.earthobservation.vam.wfp.org/ows/wms",
-      "https://kyrgyzstan.sibelius-datacube.org:5000/wms",
       "https://firms.modaps.eosdis.nasa.gov/mapserver/wms/fires/49278a84c3c473e387548ae0c6b31ced/"
     ]
   },
@@ -140,7 +139,7 @@
       "dry_periods": ["days_dry", "streak_dry_days"],
       "extreme_rain_events": [
         {
-          "group_title": "Rainfall categories:",
+          "group_title": "Number of days of rainfall:",
           "activate_all": false,
           "layers": [
             {
