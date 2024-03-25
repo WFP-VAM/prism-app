@@ -1,4 +1,5 @@
 """A set of functions to validate and parse API request parameters."""
+
 import operator as op
 from typing import Any, Tuple
 

@@ -1,4 +1,5 @@
 """Get data from Humanitarian Data Cube (HDC) API"""
+
 import logging
 from os import getenv
 

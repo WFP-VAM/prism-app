@@ -16,9 +16,10 @@ import { useSelector } from 'react-redux';
 import {
   analysisResultOpacitySelector,
   analysisResultSelector,
+  invertedColorsSelector,
   isAnalysisLayerActiveSelector,
 } from 'context/analysisResultStateSlice';
-import { LayerType } from 'config/types';
+import { LayerType, LegendDefinitionItem } from 'config/types';
 import { BaselineLayerResult } from 'utils/analysis-utils';
 import { useSafeTranslation } from 'i18n';
 import { Extent } from 'components/MapView/Layers/raster-utils';
@@ -29,11 +30,24 @@ import LegendImpactResult from './LegendImpactResult';
 
 export const legendListId = 'legend-list';
 
+// Invert the colors of the legend, first color becomes last and vice versa
+export const invertLegendColors = (
+  legendItems: LegendDefinitionItem[],
+): LegendDefinitionItem[] => {
+  // eslint-disable-next-line
+  const reversedColors = legendItems.map(item => item.color).reverse();
+  return legendItems.map((item, index) => ({
+    ...item,
+    color: reversedColors[index],
+  }));
+};
+
 const Legends = memo(({ classes, extent, layers }: LegendsProps) => {
   // Selectors
   const isAnalysisLayerActive = useSelector(isAnalysisLayerActiveSelector);
   const analysisResult = useSelector(analysisResultSelector);
   const analysisLayerOpacity = useSelector(analysisResultOpacitySelector);
+  const invertedColorsForAnalysis = useSelector(invertedColorsSelector);
 
   // State
   const [open, setOpen] = useState(true);
@@ -114,7 +128,11 @@ const Legends = memo(({ classes, extent, layers }: LegendsProps) => {
         id="analysis"
         type="analysis"
         key={analysisResult?.key ?? Date.now()}
-        legend={analysisResult?.legend}
+        legend={
+          invertedColorsForAnalysis
+            ? invertLegendColors(analysisResult?.legend || [])
+            : analysisResult?.legend
+        }
         title={analysisResult?.getTitle(t)}
         opacity={analysisLayerOpacity} // TODO: initial opacity value
       >
@@ -124,6 +142,7 @@ const Legends = memo(({ classes, extent, layers }: LegendsProps) => {
   }, [
     analysisLayerOpacity,
     analysisResult,
+    invertedColorsForAnalysis,
     hasData,
     isAnalysisLayerActive,
     renderedLegendImpactResult,
