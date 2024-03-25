@@ -140,5 +140,7 @@ export const fetchPointLayerData: LazyLoader<PointDataLayerProps> = () => async 
   if ((data as any)?.type === 'FeatureCollection') {
     return (data as any) as PointLayerData;
   }
-  return GeoJSON.parse(data, { Point: ['lat', 'lon'] }) as any;
+  return (GeoJSON.parse(data, {
+    Point: ['lat', 'lon'],
+  }) as unknown) as PointLayerData;
 };
