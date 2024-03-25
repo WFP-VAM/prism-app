@@ -3631,25 +3631,21 @@
     "title": "Active fires in the past 24 hours",
     "type": "wms",
     "server_layer_name": "",
-    "base_url": "https://firms.modaps.eosdis.nasa.gov/mapserver/wms/fires/0ef35b7cd1e43a2ff674818814c24231/fires_viirs_24/",
+    "base_url": "https://firms.modaps.eosdis.nasa.gov/mapserver/wms/fires/49278a84c3c473e387548ae0c6b31ced/fires_viirs_24/",
     "date_interval": "day",
     "opacity": 0.8,
     "additional_query_params": {
-      "time": "2021-02-11/2021-02-20"
+      "TIME": "2024-03-21/2024-03-22"
     },
     "legend_text": "Provides VIIRS 375m Fires/Hotspots for the past 24 hours",
     "legend": [
-      {
-        "value": "Fire detected",
-        "color": "#FF0000"
-      }
     ]
   },
   "active_fires_7days": {
     "title": "Active fires in the past 7 days",
     "type": "wms",
     "server_layer_name": "",
-    "base_url": "    https://firms.modaps.eosdis.nasa.gov/mapserver/wms/time_since_detection_4/0ef35b7cd1e43a2ff674818814c24231/tsd_4_viirs_all/",
+    "base_url": "    https://firms.modaps.eosdis.nasa.gov/mapserver/wms/time_since_detection_4/49278a84c3c473e387548ae0c6b31ced/tsd_4_viirs_all/",
     "date_interval": "day",
     "opacity": 0.8,
     "legend_text": "Provides VIIRS 375m Fires/Hotspots for the past 7 days",
@@ -3905,6 +3901,47 @@
       "amenity": {
         "type": "string",
         "dataTitle": "Type"
+      }
+    }
+  },
+  "viirs_fires_2023_06_09": {
+    "title": "Fires 2023 - June to September",
+    "type": "point_data",
+    "data": "data/kyrgyzstan/viirs_fires_2023-06-01_2023_09_30.json",
+    "data_field": "BRIGHTNESS",
+    "opacity": 1,
+    "legend_text": "Source NASA VIIRS https://firms.modaps.eosdis.nasa.gov/",
+    "legend": [
+      {
+        "value": "0",
+        "label": "Low",
+        "color": "#fee5d9"
+      },
+      {
+        "value": "300",
+        "label": "Low-Med",
+        "color": "#fcae91"
+      },
+      {
+        "value": "320",
+        "label": "Medium",
+        "color": "#fb6a4a"
+      },
+      {
+        "value": "340",
+        "label": "Med-High",
+        "color": "#de2d26"
+      },
+      {
+        "value": "360",
+        "label": "High",
+        "color": "#a50f15"
+      }
+    ],
+    "feature_info_props": {
+      "ACQ_DATE": {
+        "type": "string",
+        "dataTitle": "Date"
       }
     }
   },
