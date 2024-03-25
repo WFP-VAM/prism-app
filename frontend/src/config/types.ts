@@ -1,4 +1,4 @@
-import { GeoJSON } from 'geojson';
+import { FeatureCollection, GeoJSON } from 'geojson';
 import { every, map } from 'lodash';
 import 'reflect-metadata';
 import {
@@ -827,9 +827,7 @@ export type PointData = {
   [key: string]: any;
 };
 
-export type PointLayerData = {
-  features: PointData[];
-};
+export type PointLayerData = FeatureCollection;
 
 export interface BaseLayer {
   name: string;

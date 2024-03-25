@@ -1,11 +1,11 @@
 import React, { memo, useEffect } from 'react';
 import { Layer, Source } from 'react-map-gl/maplibre';
-import { FeatureCollection } from 'geojson';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   MapEventWrapFunctionProps,
   PointDataLayerProps,
   PointDataLoader,
+  PointLayerData,
 } from 'config/types';
 import {
   clearUserAuthGlobal,
@@ -84,18 +84,17 @@ const PointDataLayer = ({ layer, before }: LayersProps) => {
   } = useUrlHistory();
 
   const { data } = layerData || {};
-  const { features } = data || {};
 
   useEffect(() => {
     if (layer.authRequired && !userAuth) {
       return;
     }
 
-    if (!features && validateLayerDate) {
+    if (!data && validateLayerDate) {
       dispatch(loadLayerData({ layer, date: queryDate, userAuth }));
     }
   }, [
-    features,
+    data,
     dispatch,
     userAuth,
     layer,
@@ -105,11 +104,7 @@ const PointDataLayer = ({ layer, before }: LayersProps) => {
   ]);
 
   useEffect(() => {
-    if (
-      features &&
-      !(features as FeatureCollection).features &&
-      layer.authRequired
-    ) {
+    if (data && !data.features && layer.authRequired) {
       dispatch(
         addNotification({
           message: 'Invalid credentials',
@@ -123,8 +118,8 @@ const PointDataLayer = ({ layer, before }: LayersProps) => {
     }
 
     if (
-      features &&
-      (features as FeatureCollection).features?.length === 0 &&
+      data &&
+      (data as PointLayerData).features?.length === 0 &&
       layer.authRequired
     ) {
       dispatch(
@@ -138,9 +133,9 @@ const PointDataLayer = ({ layer, before }: LayersProps) => {
       );
     }
   }, [
-    features,
     dispatch,
     layer,
+    data,
     selectedDate,
     userAuth,
     removeKeyFromUrl,
@@ -148,13 +143,13 @@ const PointDataLayer = ({ layer, before }: LayersProps) => {
     updateHistory,
   ]);
 
-  if (!features || !validateLayerDate) {
+  if (!data || !validateLayerDate) {
     return null;
   }
 
   if (layer.adminLevelDisplay) {
     return (
-      <Source data={features} type="geojson">
+      <Source data={data} type="geojson">
         <Layer
           id={layerId}
           type="fill"
