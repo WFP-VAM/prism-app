@@ -54,7 +54,7 @@ const sortFn = (a: AnticipatoryActionDataRow, b: AnticipatoryActionDataRow) => {
   return 0;
 };
 
-function transform(data: any[]) {
+export function transform(data: any[]) {
   const nonEmpty = data.filter(x => !!x[AACSVKeys[0]]); // filter empty rows
   const parsed = nonEmpty
     .map(x => {
@@ -258,7 +258,7 @@ interface CalculateMapRenderedDistrictsParams {
   data: AnticipatoryActionState['data'];
 }
 
-function calculateMapRenderedDistricts({
+export function calculateMapRenderedDistricts({
   filters,
   data,
 }: CalculateMapRenderedDistrictsParams) {
