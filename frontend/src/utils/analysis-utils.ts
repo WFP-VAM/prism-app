@@ -388,7 +388,11 @@ export function createLegendFromFeatureArray(
     if (statistic === AggregationOperations['Area exposed']) {
       formattedValue = `${(value * 100).toFixed(2)} %`;
     } else {
-      formattedValue = `(${Math.round(value).toLocaleString('en-US')})`;
+      // Keep decimal if delta is less than 10, otherwise round to nearest integer.
+      const keepDecimal = delta < 5;
+      formattedValue = keepDecimal
+        ? `(${value.toFixed(1)})`
+        : `(${Math.round(value).toLocaleString('en-US')})`;
     }
     /* eslint-enable fp/no-mutation */
 
