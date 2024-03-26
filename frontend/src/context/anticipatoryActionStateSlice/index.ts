@@ -88,88 +88,18 @@ export function transform(data: any[]) {
     })
     .flat() as AnticipatoryActionDataRow[];
 
-  const groupedByWinDistIndexMap = new Map<
-    string,
-    AnticipatoryActionDataRow[]
-  >();
-  parsed.forEach(x => {
-    const key = `${x.window}_${x.district}_${x.index}`;
-    const val = groupedByWinDistIndexMap.get(key);
-    groupedByWinDistIndexMap.set(key, val ? [...val, x] : [x]);
-  });
-  const extraRows = Array.from(groupedByWinDistIndexMap.values())
-    .map(x => {
-      // eslint-disable-next-line fp/no-mutating-methods
-      const sorted = x.sort((a, b) => -sortFn(a, b));
-      let isSetSev: boolean = false;
-      let isSetMod: boolean = false;
-      let isSetMil: boolean = false;
-      return sorted.reduce((acc, curr) => {
-        const prev = acc.length > 0 ? acc[acc.length - 1] : undefined;
-        if (curr.probability > curr.trigger && curr.phase === 'Set') {
-          if (curr.category === 'Severe') {
-            // eslint-disable-next-line fp/no-mutation
-            isSetSev = true;
-          } else if (curr.category === 'Moderate') {
-            // eslint-disable-next-line fp/no-mutation
-            isSetMod = true;
-          } else {
-            // eslint-disable-next-line fp/no-mutation
-            isSetMil = true;
-          }
-        }
-        if (
-          (isSetSev || isSetMod || isSetMil) &&
-          (!prev || prev.date !== curr.date)
-        ) {
-          let newElems: AnticipatoryActionDataRow[] = [];
-          if (isSetMil) {
-            // eslint-disable-next-line fp/no-mutation
-            newElems = [
-              ...newElems,
-              { ...curr, computedRow: true, category: 'Mild', phase: 'Set' },
-            ];
-          }
-          if (isSetMod) {
-            // eslint-disable-next-line fp/no-mutation
-            newElems = [
-              ...newElems,
-              {
-                ...curr,
-                computedRow: true,
-                category: 'Moderate',
-                phase: 'Set',
-              },
-            ];
-          }
-          if (isSetSev) {
-            // eslint-disable-next-line fp/no-mutation
-            newElems = [
-              ...newElems,
-              { ...curr, computedRow: true, category: 'Severe', phase: 'Set' },
-            ];
-          }
-          return [...acc, ...newElems];
-        }
-        return acc;
-      }, [] as AnticipatoryActionDataRow[]);
-    })
-    .flat();
-
-  const extended = [...parsed, ...extraRows];
-
   const validity: Validity = {
     mode: DatesPropagation.DEKAD,
     forward: 3,
   };
 
-  const monitoredDistricts = [...new Set(extended.map(x => x.district))];
+  const monitoredDistricts = [...new Set(parsed.map(x => x.district))];
   const emptyDistricts = Object.fromEntries(
     monitoredDistricts.map(x => [x, [] as AnticipatoryActionDataRow[]]),
   );
 
   const windowData = AAWindowKeys.map(windowKey => {
-    const filtered = extended.filter(x => x.window === windowKey);
+    const filtered = parsed.filter(x => x.window === windowKey);
 
     // eslint-disable-next-line fp/no-mutating-methods
     const dates = [
@@ -187,8 +117,93 @@ export function transform(data: any[]) {
       groupedByDistrict.set(district, rows ? [...rows, x] : [x]);
     });
 
+    // eslint-disable-next-line fp/no-mutating-methods
+    const windowDates = [...new Set(filtered.map(x => x.date))].sort();
+
+    const computedExtraRows: [
+      string,
+      AnticipatoryActionDataRow[],
+    ][] = Array.from(groupedByDistrict.entries()).map(([district, aaData]) => {
+      // eslint-disable-next-line fp/no-mutating-methods
+      const sorted = aaData.sort((a, b) => -sortFn(a, b));
+      let isSetSev: boolean = false;
+      let isSetMod: boolean = false;
+      let isSetMil: boolean = false;
+
+      let newRows = [] as AnticipatoryActionDataRow[];
+
+      windowDates.forEach(date => {
+        const dateData = sorted.filter(x => x.date === date);
+        const sampleElem = dateData[0];
+
+        dateData.forEach(x => {
+          if (x.probability > x.trigger && x.phase === 'Set') {
+            if (x.category === 'Severe') {
+              // eslint-disable-next-line fp/no-mutation
+              isSetSev = true;
+            } else if (x.category === 'Moderate') {
+              // eslint-disable-next-line fp/no-mutation
+              isSetMod = true;
+            } else {
+              // eslint-disable-next-line fp/no-mutation
+              isSetMil = true;
+            }
+          }
+        });
+
+        const prev =
+          newRows.length > 0 ? newRows[newRows.length - 1] : undefined;
+        if (
+          (isSetSev || isSetMod || isSetMil) &&
+          (!prev || prev.date !== date)
+        ) {
+          let newElems: AnticipatoryActionDataRow[] = [];
+          if (isSetMil) {
+            // eslint-disable-next-line fp/no-mutation
+            newElems = [
+              ...newElems,
+              {
+                ...sampleElem,
+                computedRow: true,
+                category: 'Mild',
+                phase: 'Set',
+              },
+            ];
+          }
+          if (isSetMod) {
+            // eslint-disable-next-line fp/no-mutation
+            newElems = [
+              ...newElems,
+              {
+                ...sampleElem,
+                computedRow: true,
+                category: 'Moderate',
+                phase: 'Set',
+              },
+            ];
+          }
+          if (isSetSev) {
+            // eslint-disable-next-line fp/no-mutation
+            newElems = [
+              ...newElems,
+              {
+                ...sampleElem,
+                computedRow: true,
+                category: 'Severe',
+                phase: 'Set',
+              },
+            ];
+          }
+          // eslint-disable-next-line no-const-assign, fp/no-mutation
+          newRows = [...newRows, ...newElems];
+        }
+      });
+
+      return [district, [...aaData, ...newRows]];
+    });
+
     const result = Object.fromEntries(
-      Array.from(groupedByDistrict.entries()).map(x => [
+      computedExtraRows.map(x => [
         x[0],
         // eslint-disable-next-line fp/no-mutating-methods
         x[1].sort(sortFn),
