@@ -159,9 +159,9 @@ def stats(stats_model: StatsModel) -> list[dict[str, Any]]:
         prefix="stats_",
         group_by=group_by,
         geojson_out=geojson_out,
-        wfs_response=frozenset(wfs_response.items())
-        if wfs_response is not None
-        else None,
+        wfs_response=(
+            frozenset(wfs_response.items()) if wfs_response is not None else None
+        ),
         intersect_comparison=intersect_comparison_tuple,
         mask_geotiff=mask_geotiff,
         mask_calc_expr=mask_calc_expr,

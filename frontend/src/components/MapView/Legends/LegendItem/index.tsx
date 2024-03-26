@@ -21,13 +21,16 @@ import {
   withStyles,
   WithStyles,
 } from '@material-ui/core';
-import { Cancel, Opacity } from '@material-ui/icons';
+import { Cancel, Opacity, SwapVert } from '@material-ui/icons';
 import { useDispatch, useSelector } from 'react-redux';
 import { LayerType, LegendDefinitionItem } from 'config/types';
 import { mapSelector, layersSelector } from 'context/mapStateSlice/selectors';
 import { clearDataset } from 'context/datasetStateSlice';
 import { useSafeTranslation } from 'i18n';
-import { clearAnalysisResult } from 'context/analysisResultStateSlice';
+import {
+  clearAnalysisResult,
+  analysisLayerInvertColors,
+} from 'context/analysisResultStateSlice';
 import LayerContentPreview from 'components/MapView/Legends/layerContentPreview';
 import ColorIndicator from 'components/MapView/Legends/ColorIndicator';
 import { getLegendItemLabel } from 'components/MapView/utils';
@@ -227,6 +230,16 @@ const LegendItem = memo(
                 <Opacity fontSize="small" />
               </IconButton>
             </Tooltip>
+            {isAnalysis && (
+              <Tooltip title={t('Reverse colors') as string}>
+                <IconButton
+                  size="small"
+                  onClick={() => dispatch(analysisLayerInvertColors())}
+                >
+                  <SwapVert fontSize="small" />
+                </IconButton>
+              </Tooltip>
+            )}
             <>
               <Popover
                 id={opacityId}
