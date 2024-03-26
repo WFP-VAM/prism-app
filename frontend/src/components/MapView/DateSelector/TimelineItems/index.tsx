@@ -34,9 +34,6 @@ const DARK_GREEN_HEX = '#68CC71';
 const LIGHT_ORANGE_HEX = '#F9CEC1';
 const DARK_ORANGE_HEX = '#FF9473';
 
-// const LIGHT_YELLOW_HEX = '#FFF176';
-// const DARK_YELLOW_HEX = '#FEC600';
-
 const TimelineItems = memo(
   ({
     classes,
