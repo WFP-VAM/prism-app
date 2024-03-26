@@ -126,80 +126,52 @@ export function transform(data: any[]) {
     ][] = Array.from(groupedByDistrict.entries()).map(([district, aaData]) => {
       // eslint-disable-next-line fp/no-mutating-methods
       const sorted = aaData.sort((a, b) => -sortFn(a, b));
-      let isSetSev: boolean = false;
-      let isSetMod: boolean = false;
-      let isSetMil: boolean = false;
-
+      let setElementsToPropagate = [] as AnticipatoryActionDataRow[];
       let newRows = [] as AnticipatoryActionDataRow[];
 
-      windowDates.forEach(date => {
+      windowDates.forEach((date, index) => {
         const dateData = sorted.filter(x => x.date === date);
-        const sampleElem = dateData[0];
+        const validatedData = dateData.map(x => {
+          if (x.phase === 'Ready') {
+            return {
+              ...x,
+              isValid: x.probability >= x.trigger,
+            };
+          }
+          if (x.phase === 'Set') {
+            const prev = sorted.find(
+              y =>
+                y.date === windowDates[index - 1] &&
+                y.index === x.index &&
+                y.phase === 'Ready',
+            );
+            return {
+              ...x,
+              isValid: prev && prev.probability >= prev.trigger,
+            };
+          }
+          console.error(`Invalid phase ${x.phase}`);
+          return x;
+        });
+        const propagatedSetElements = setElementsToPropagate.map(x => ({
+          ...x,
+          computedRow: true,
+          date,
+        }));
 
-        dateData.forEach(x => {
-          if (x.probability > x.trigger && x.phase === 'Set') {
-            if (x.category === 'Severe') {
-              // eslint-disable-next-line fp/no-mutation
-              isSetSev = true;
-            } else if (x.category === 'Moderate') {
-              // eslint-disable-next-line fp/no-mutation
-              isSetMod = true;
-            } else {
-              // eslint-disable-next-line fp/no-mutation
-              isSetMil = true;
-            }
+        // if a district reaches a set state, it will propagate until the end of the window
+        validatedData.forEach(x => {
+          // TODO - make sure that this logic is also applied on the first date
+          if (x.phase === 'Set' && x.isValid) {
+            // eslint-disable-next-line fp/no-mutation
+            setElementsToPropagate = [...setElementsToPropagate, { ...x }];
           }
         });
 
-        const prev =
-          newRows.length > 0 ? newRows[newRows.length - 1] : undefined;
-        if (
-          (isSetSev || isSetMod || isSetMil) &&
-          (!prev || prev.date !== date)
-        ) {
-          let newElems: AnticipatoryActionDataRow[] = [];
-          if (isSetMil) {
-            // eslint-disable-next-line fp/no-mutation
-            newElems = [
-              ...newElems,
-              {
-                ...sampleElem,
-                computedRow: true,
-                category: 'Mild',
-                phase: 'Set',
-              },
-            ];
-          }
-          if (isSetMod) {
-            // eslint-disable-next-line fp/no-mutation
-            newElems = [
-              ...newElems,
-              {
-                ...sampleElem,
-                computedRow: true,
-                category: 'Moderate',
-                phase: 'Set',
-              },
-            ];
-          }
-          if (isSetSev) {
-            // eslint-disable-next-line fp/no-mutation
-            newElems = [
-              ...newElems,
-              {
-                ...sampleElem,
-                computedRow: true,
-                category: 'Severe',
-                phase: 'Set',
-              },
-            ];
-          }
-          // eslint-disable-next-line no-const-assign, fp/no-mutation
-          newRows = [...newRows, ...newElems];
-        }
+        // eslint-disable-next-line no-const-assign, fp/no-mutation
+        newRows = [...newRows, ...validatedData, ...propagatedSetElements];
       });
-
-      return [district, [...aaData, ...newRows]];
+      return [district, newRows];
     });
 
     const result = Object.fromEntries(
@@ -285,19 +257,18 @@ export function calculateMapRenderedDistricts({
       }
       const entries = Object.entries(districts).map(
         ([districtName, districtData]) => {
-          const dateData = districtData.filter(x => x.date === selectedDate);
-          if (dateData.length === 0) {
+          if (
+            !selectedDate ||
+            districtData.filter(x => x.date <= selectedDate)?.length === 0
+          ) {
             return [
               districtName,
               { category: 'ny', phase: 'ny', isNew: false },
             ];
           }
-
+          const dateData = districtData.filter(x => x.date === selectedDate);
           const validData = dateData.filter(
-            x =>
-              (x.computedRow ||
-                (!Number.isNaN(x.probability) && x.probability >= x.trigger)) &&
-              categories[x.category],
+            x => (x.computedRow || x.isValid) && categories[x.category],
           );
           if (validData.length === 0) {
             return [

@@ -19,6 +19,7 @@ export interface AnticipatoryActionDataRow {
   window: typeof AAWindowKeys[number];
   date: string;
   new: boolean;
+  isValid?: boolean;
   computedRow?: boolean;
 }
 
