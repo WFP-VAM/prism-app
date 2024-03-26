@@ -24,7 +24,10 @@ test('renders as expected', () => {
       boundaryRelationData: {},
     },
     serverState: { availableDates: {}, loading: false },
-    anticipatoryActionState: { renderedDistricts: {} },
+    anticipatoryActionState: {
+      renderedDistricts: { 'Window 1': {}, 'Window 2': {} },
+      filters: { selectedWindow: 'All' },
+    },
   });
 
   const { container } = render(

@@ -19,14 +19,16 @@ const store = mockStore({
   },
   serverState: { availableDates: {}, loading: false },
   anticipatoryActionState: {
-    selectedWindow: 'Window 1',
-    categoryFilters: {
-      Severe: true,
-      Moderate: true,
-      Mild: true,
+    filters: {
+      selectedWindow: 'Window 1',
+      categories: {
+        Severe: true,
+        Moderate: true,
+        Mild: true,
+      },
     },
-    monitoredDistricts: ['Caia'],
-    data: {
+    renderedDistricts: {
+      'Window 1': {},
       'Window 2': {
         Caia: [
           {
@@ -35,8 +37,8 @@ const store = mockStore({
             index: 'SPI MA',
             month: '12',
             phase: 'Set',
-            probability: '0.41',
-            trigger: '0',
+            probability: 0.41,
+            trigger: 0,
             triggerNB: 'trigger2',
             triggerType: 'Acionadores de Crise',
             type: 'SPI',
