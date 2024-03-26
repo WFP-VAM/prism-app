@@ -1,4 +1,5 @@
 """Alert database access functions."""
+
 import base64
 import hashlib
 import logging

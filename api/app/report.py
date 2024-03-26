@@ -8,9 +8,9 @@ from app.caching import CACHE_DIRECTORY
 from playwright.async_api import async_playwright, expect
 
 # Html selectors
-LAYER_ACCORDION_SELECTOR: Final[
-    str
-] = 'div[class="MuiAccordionSummary-root"], div[aria-expanded="false"]'
+LAYER_ACCORDION_SELECTOR: Final[str] = (
+    'div[class="MuiAccordionSummary-root"], div[aria-expanded="false"]'
+)
 DOWNLOAD_BUTTON_SELECTOR: Final[str] = "a[download]"
 CREATE_REPORT_BUTTON_SELECTOR: Final[str] = 'button[id="create-report"]'
 
