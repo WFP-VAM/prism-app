@@ -65,7 +65,7 @@ function Row({ iconContent, windows, header }: RowProps) {
 
   if (header) {
     return (
-      <div className={classes.rowWrapper}>
+      <div className={classes.rowWrapper} style={{ height: '1.5rem' }}>
         <div className={classes.iconCol}>{iconContent}</div>
         {header.map(name => (
           <div
@@ -140,10 +140,10 @@ const useRowStyles = makeStyles(() =>
     headerText: {
       fontWeight: 'bold',
       textTransform: 'uppercase',
-      minHeight: '3rem',
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
+      marginBottom: '0.5rem',
     },
     emptyText: {
       color: borderGray,

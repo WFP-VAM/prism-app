@@ -11,6 +11,10 @@ import {
 import { black, borderGray, gray } from 'muiTheme';
 import React from 'react';
 import {
+  LIGHT_BLUE_HEX,
+  LIGHT_GREEN_HEX,
+} from 'components/MapView/DateSelector/TimelineItems';
+import {
   AACategoryType,
   AAPhaseType,
   AAcategory,
@@ -37,10 +41,32 @@ export const StyledRadioLabel = withStyles({
   const radioGroup = useRadioGroup();
   const checked = radioGroup?.value === props.value;
 
+  const colorTags: { [key: string]: string } = {
+    'Window 1': LIGHT_BLUE_HEX,
+    'Window 2': LIGHT_GREEN_HEX,
+  };
+
+  const color = colorTags[label as string] || undefined;
+
   return (
     <FormControlLabel
       style={{ background: checked ? gray : undefined }}
-      label={<span style={{ marginRight: '1rem' }}>{label}</span>}
+      label={
+        <span style={{ marginRight: '1rem' }}>
+          {color ? (
+            <span
+              style={{
+                display: 'inline-block',
+                width: '10px',
+                height: '10px',
+                backgroundColor: color,
+                marginRight: '0.5rem',
+              }}
+            />
+          ) : null}
+          {label}
+        </span>
+      }
       control={<StyledRadio />}
       {...props}
     />
