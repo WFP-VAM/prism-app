@@ -13,17 +13,24 @@ import { useSafeTranslation } from 'i18n';
 import { GetApp, EditOutlined, BarChartOutlined } from '@material-ui/icons';
 import { useDispatch, useSelector } from 'react-redux';
 import {
-  AACategoryFiltersSelector,
-  setCategoryFilters,
-  setSelectedWindow,
-} from 'context/anticipatoryActionStateSlice';
-import {
   AACategoryType,
   allWindowsKey,
 } from 'context/anticipatoryActionStateSlice/types';
 import { AAWindowKeys } from 'config/utils';
-import HomeTable from './HomeTable';
+import {
+  AAFiltersSelector,
+  setAAFilters,
+} from 'context/anticipatoryActionStateSlice';
+import { availableDatesSelector } from 'context/serverStateSlice';
+import { dateRangeSelector } from 'context/mapStateSlice/selectors';
+import {
+  getAAAvailableDatesCombined,
+  getRequestDate,
+} from 'utils/server-utils';
+import { getFormattedDate } from 'utils/date-utils';
+import { DateFormat } from 'utils/name-utils';
 import { StyledCheckboxLabel, StyledRadioLabel } from './utils';
+import HomeTable from './HomeTable';
 
 const buttons = [
   { icon: GetApp, text: 'Assets' },
@@ -49,7 +56,18 @@ function AnticipatoryActionPanel() {
   const classes = useStyles();
   const dispatch = useDispatch();
   const { t } = useSafeTranslation();
-  const categoryFilters = useSelector(AACategoryFiltersSelector);
+  const { categories: categoryFilters } = useSelector(AAFiltersSelector);
+  const serverAvailableDates = useSelector(availableDatesSelector);
+
+  const { startDate: selectedDate } = useSelector(dateRangeSelector);
+
+  const layerAvailableDates = getAAAvailableDatesCombined(serverAvailableDates);
+  const queryDate = getRequestDate(layerAvailableDates, selectedDate);
+  const date = getFormattedDate(queryDate, DateFormat.Default) as string;
+
+  React.useEffect(() => {
+    dispatch(setAAFilters({ selectedDate: date }));
+  }, [date, dispatch]);
 
   return (
     <div className={classes.anticipatoryActionPanel}>
@@ -62,7 +80,9 @@ function AnticipatoryActionPanel() {
             <RadioGroup
               defaultValue={allWindowsKey}
               className={classes.radioButtonGroup}
-              onChange={(e, val) => dispatch(setSelectedWindow(val as any))}
+              onChange={(e, val) =>
+                dispatch(setAAFilters({ selectedWindow: val as any }))
+              }
             >
               <StyledRadioLabel value={allWindowsKey} label="All" />
               {AAWindowKeys.map(x => (
@@ -80,7 +100,7 @@ function AnticipatoryActionPanel() {
                 checked: categoryFilters[x.id],
                 onChange: e => {
                   const { checked } = e.target;
-                  dispatch(setCategoryFilters({ [x.id]: checked }));
+                  dispatch(setAAFilters({ categories: { [x.id]: checked } }));
                 },
               }}
               label={x.label}

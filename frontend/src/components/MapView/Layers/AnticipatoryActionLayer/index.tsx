@@ -8,13 +8,17 @@ import {
 } from 'context/mapStateSlice/selectors';
 import { LayerData } from 'context/layers/layer-data';
 import { Layer, Marker, Source } from 'react-map-gl/maplibre';
-import { AARenderedDistrictsSelector } from 'context/anticipatoryActionStateSlice';
+import {
+  AAFiltersSelector,
+  AARenderedDistrictsSelector,
+} from 'context/anticipatoryActionStateSlice';
 import {
   getAAColor,
   getAAIcon,
 } from 'components/MapView/LeftPanel/AnticipatoryActionPanel/utils';
 import { calculateCentroids, useAAMarkerScalePercent } from 'utils/map-utils';
 import { AAWindowKeys, getBoundaryLayerSingleton } from 'config/utils';
+import { calculateCombinedAAMapData } from 'context/anticipatoryActionStateSlice/utils';
 
 const boundaryLayer = getBoundaryLayerSingleton();
 
@@ -26,9 +30,19 @@ function AnticipatoryActionLayer({ layer, before }: LayersProps) {
   const { data } = boundaryLayerState || {};
   const map = useSelector(mapSelector);
   const renderedDistricts = useSelector(AARenderedDistrictsSelector);
+  const { selectedWindow } = useSelector(AAFiltersSelector);
   const layerWindowIndex = AAWindowKeys.findIndex(
     x => x === layer.csvWindowKey,
   );
+  const shouldRenderData = React.useMemo(() => {
+    if (selectedWindow === layer.csvWindowKey) {
+      return renderedDistricts[layer.csvWindowKey];
+    }
+    if (selectedWindow === 'All') {
+      return calculateCombinedAAMapData(renderedDistricts, layer.csvWindowKey);
+    }
+    return {};
+  }, [layer.csvWindowKey, renderedDistricts, selectedWindow]);
 
   // Calculate centroids only once per data change
   const districtCentroids = React.useMemo(() => calculateCentroids(data), [
@@ -36,15 +50,13 @@ function AnticipatoryActionLayer({ layer, before }: LayersProps) {
   ]);
 
   const coloredDistrictsLayer = React.useMemo(() => {
-    const districtEntries = Object.entries(
-      renderedDistricts[layer.csvWindowKey],
-    );
+    const districtEntries = Object.entries(shouldRenderData);
     if (!data || !districtEntries.length) {
       return null;
     }
     return {
       ...data,
-      features: Object.entries(renderedDistricts[layer.csvWindowKey])
+      features: Object.entries(shouldRenderData)
         .map(([districtId, { category, phase }]: [string, any]) => {
           const feature = data?.features.find(
             f =>
@@ -66,12 +78,10 @@ function AnticipatoryActionLayer({ layer, before }: LayersProps) {
         })
         .filter(f => f !== null),
     };
-  }, [data, renderedDistricts, layer.csvWindowKey]);
+  }, [data, shouldRenderData]);
 
   const markers = React.useMemo(() => {
-    const districtEntries = Object.entries(
-      renderedDistricts[layer.csvWindowKey],
-    );
+    const districtEntries = Object.entries(shouldRenderData);
     if (!districtEntries.length) {
       return [];
     }
@@ -90,7 +100,7 @@ function AnticipatoryActionLayer({ layer, before }: LayersProps) {
         };
       },
     );
-  }, [renderedDistricts, layer.csvWindowKey, districtCentroids]);
+  }, [shouldRenderData, districtCentroids]);
 
   const scalePercent = useAAMarkerScalePercent(map);
 
