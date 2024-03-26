@@ -96,6 +96,7 @@ type AnalysisResultState = {
   analysisResultDataSortOrder: 'asc' | 'desc';
   exposureAnalysisResultDataSortByKey: Column['id'];
   exposureAnalysisResultDataSortOrder: 'asc' | 'desc';
+  invertedColors?: boolean;
 };
 
 export type TableRow = {
@@ -119,6 +120,7 @@ const initialState: AnalysisResultState = {
   exposureAnalysisResultDataSortByKey: 'name',
   exposureAnalysisResultDataSortOrder: 'asc',
   opacity: 0.5,
+  invertedColors: false,
 };
 
 /* Gets a public URL for the admin boundaries used by this application.
@@ -934,6 +936,10 @@ export const analysisResultSlice = createSlice({
       ...state,
       isDataTableDrawerActive: false,
     }),
+    analysisLayerInvertColors: state => ({
+      ...state,
+      invertedColors: !state.invertedColors,
+    }),
     clearAnalysisResult: state => ({
       ...state,
       result: undefined,
@@ -1084,6 +1090,9 @@ export const isAnalysisLayerActiveSelector = (state: RootState): boolean =>
 export const isDataTableDrawerActiveSelector = (state: RootState): boolean =>
   state.analysisResultState.isDataTableDrawerActive;
 
+export const invertedColorsSelector = (state: RootState): boolean =>
+  state.analysisResultState.invertedColors!!;
+
 // Setters
 export const {
   setIsMapLayerActive,
@@ -1097,6 +1106,7 @@ export const {
   setAnalysisResultSortOrder,
   setExposureAnalysisResultSortByKey,
   setExposureAnalysisResultSortOrder,
+  analysisLayerInvertColors,
 } = analysisResultSlice.actions;
 
 export default analysisResultSlice.reducer;
