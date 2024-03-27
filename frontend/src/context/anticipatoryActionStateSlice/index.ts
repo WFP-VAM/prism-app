@@ -131,10 +131,10 @@ export function transform(data: any[]) {
       let isSetMil: boolean = false;
 
       let newRows = [] as AnticipatoryActionDataRow[];
+      const sampleElem = aaData[0];
 
       windowDates.forEach(date => {
         const dateData = sorted.filter(x => x.date === date);
-        const sampleElem = dateData[0];
 
         dateData.forEach(x => {
           if (x.probability > x.trigger && x.phase === 'Set') {
@@ -167,6 +167,7 @@ export function transform(data: any[]) {
                 computedRow: true,
                 category: 'Mild',
                 phase: 'Set',
+                date,
               },
             ];
           }
@@ -179,6 +180,7 @@ export function transform(data: any[]) {
                 computedRow: true,
                 category: 'Moderate',
                 phase: 'Set',
+                date,
               },
             ];
           }
@@ -191,6 +193,7 @@ export function transform(data: any[]) {
                 computedRow: true,
                 category: 'Severe',
                 phase: 'Set',
+                date,
               },
             ];
           }
