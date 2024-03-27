@@ -11,22 +11,27 @@ import {
   AAPhaseType,
   AnticipatoryActionData,
   AnticipatoryActionDataRow,
+  AnticipatoryActionState,
   allWindowsKey,
 } from './types';
 
-const AACSVKeys: [string, keyof AnticipatoryActionDataRow][] = [
-  ['Category', 'category'],
-  ['District', 'district'],
-  ['Index', 'index'],
-  ['Month', 'month'],
-  ['Phase', 'phase'],
-  ['Probability', 'probability'],
-  ['Trigger', 'trigger'],
-  ['Trigger_nb', 'triggerNB'],
-  ['Trigger_type', 'triggerType'],
-  ['Type', 'type'],
-  ['Windows', 'windows'],
-  ['Year_of_issue', 'yearOfIssue'],
+const AACSVKeys: string[] = [
+  'district',
+  'index',
+  'category',
+  'window',
+  'season',
+  'type',
+  'date_ready',
+  'date_set',
+  'issue_ready',
+  'issue_set',
+  'prob_ready',
+  'prob_set',
+  'trigger_ready',
+  'trigger_set',
+  'state',
+  'new_tag',
 ];
 
 const sortFn = (a: AnticipatoryActionDataRow, b: AnticipatoryActionDataRow) => {
@@ -49,19 +54,39 @@ const sortFn = (a: AnticipatoryActionDataRow, b: AnticipatoryActionDataRow) => {
   return 0;
 };
 
-function transform(data: any[], keys: [string, string][]) {
-  const parsed = data
-    .filter(x => !!x[keys[0][0]]) // filter empty rows
-    .map(obj => {
-      const entries = keys.map(k => [k[1], obj[k[0]]]);
-      const month = obj.Month.padStart(2, '0');
-      const year = obj.Year_of_issue.split('-')[0];
+export function transform(data: any[]) {
+  const nonEmpty = data.filter(x => !!x[AACSVKeys[0]]); // filter empty rows
+  const parsed = nonEmpty
+    .map(x => {
+      const common = {
+        category: x.category,
+        district: x.district,
+        index: x.index,
+        type: x.type,
+        window: x.window,
+        new: Boolean(Number(x.new_tag)),
+      };
 
-      // TODO: update this once CSV date format is revised
-      const actualYear = Number(month) < 5 ? String(Number(year) + 1) : year;
-      const date = `${actualYear}-${month}-01`;
-      return Object.fromEntries([...entries, ['date', date]]);
-    }) as AnticipatoryActionDataRow[];
+      const ready = {
+        phase: 'Ready',
+        probability: Number(x.prob_ready),
+        trigger: Number(x.trigger_ready),
+        date: x.date_ready,
+      };
+
+      const set = {
+        phase: 'Set',
+        probability: Number(x.prob_set),
+        trigger: Number(x.trigger_set),
+        date: x.date_set,
+      };
+
+      return [
+        { ...common, ...ready },
+        { ...common, ...set },
+      ];
+    })
+    .flat() as AnticipatoryActionDataRow[];
 
   const validity: Validity = {
     mode: DatesPropagation.DEKAD,
@@ -74,7 +99,7 @@ function transform(data: any[], keys: [string, string][]) {
   );
 
   const windowData = AAWindowKeys.map(windowKey => {
-    const filtered = parsed.filter(x => x.windows === windowKey);
+    const filtered = parsed.filter(x => x.window === windowKey);
 
     // eslint-disable-next-line fp/no-mutating-methods
     const dates = [
@@ -92,8 +117,68 @@ function transform(data: any[], keys: [string, string][]) {
       groupedByDistrict.set(district, rows ? [...rows, x] : [x]);
     });
 
+    // eslint-disable-next-line fp/no-mutating-methods
+    const windowDates = [...new Set(filtered.map(x => x.date))].sort();
+
+    const computedExtraRows: [
+      string,
+      AnticipatoryActionDataRow[],
+    ][] = Array.from(groupedByDistrict.entries()).map(([district, aaData]) => {
+      // eslint-disable-next-line fp/no-mutating-methods
+      const sorted = aaData.sort((a, b) => -sortFn(a, b));
+      let setElementsToPropagate = [] as AnticipatoryActionDataRow[];
+      let newRows = [] as AnticipatoryActionDataRow[];
+
+      windowDates.forEach((date, index) => {
+        const dateData = sorted.filter(x => x.date === date);
+        const validatedData = dateData.map(x => {
+          if (x.phase === 'Ready') {
+            return {
+              ...x,
+              isValid: x.probability >= x.trigger,
+            };
+          }
+          if (x.phase === 'Set') {
+            const prev = sorted.find(
+              y =>
+                y.date === windowDates[index - 1] &&
+                y.index === x.index &&
+                y.phase === 'Ready',
+            );
+            return {
+              ...x,
+              isValid:
+                prev &&
+                prev.probability >= prev.trigger &&
+                x.probability >= x.trigger,
+            };
+          }
+          console.error(`Invalid phase ${x.phase}`);
+          return x;
+        });
+        const propagatedSetElements = setElementsToPropagate.map(x => ({
+          ...x,
+          computedRow: true,
+          date,
+        }));
+
+        // if a district reaches a set state, it will propagate until the end of the window
+        validatedData.forEach(x => {
+          // TODO - make sure that this logic is also applied on the first date
+          if (x.phase === 'Set' && x.isValid) {
+            // eslint-disable-next-line fp/no-mutation
+            setElementsToPropagate = [...setElementsToPropagate, { ...x }];
+          }
+        });
+
+        // eslint-disable-next-line no-const-assign, fp/no-mutation
+        newRows = [...newRows, ...validatedData, ...propagatedSetElements];
+      });
+      return [district, newRows];
+    });
+
     const result = Object.fromEntries(
-      Array.from(groupedByDistrict.entries()).map(x => [
+      computedExtraRows.map(x => [
         x[0],
         // eslint-disable-next-line fp/no-mutating-methods
         x[1].sort(sortFn),
@@ -110,42 +195,26 @@ function transform(data: any[], keys: [string, string][]) {
   return { windowData, monitoredDistricts };
 }
 
-type AnticipatoryActionState = {
-  data: { [windowKey: string]: AnticipatoryActionData | undefined };
-  availableDates?: { [windowKey: string]: DateItem[] };
-  monitoredDistricts: string[];
-  selectedDateData: {
-    [key: string]: Pick<
-      AnticipatoryActionDataRow,
-      'district' | 'windows' | 'category' | 'phase'
-    >[];
-  };
-  selectedWindow: typeof AAWindowKeys[number] | typeof allWindowsKey;
-  categoryFilters: Record<AACategoryType, boolean>;
-  renderedDistricts: Record<
-    typeof AAWindowKeys[number],
-    {
-      [district: string]: { category: AACategoryType; phase: AAPhaseType };
-    }
-  >;
-  loading: boolean;
-  error: string | null;
-};
+const emptyWindows = {
+  'Window 1': {},
+  'Window 2': {},
+} as AnticipatoryActionState['renderedDistricts'];
 
 const initialState: AnticipatoryActionState = {
   data: {},
   availableDates: undefined,
-  monitoredDistricts: [],
-  selectedDateData: {},
-  selectedWindow: allWindowsKey,
-  categoryFilters: {
-    Severo: true,
-    Moderado: true,
-    Leve: true,
-    na: true,
-    ny: true,
+  filters: {
+    selectedDate: undefined,
+    selectedWindow: allWindowsKey,
+    categories: {
+      Severe: true,
+      Moderate: true,
+      Mild: true,
+      na: true,
+      ny: true,
+    },
   },
-  renderedDistricts: { 'Window 1': {}, 'Window 2': {} },
+  renderedDistricts: emptyWindows,
   loading: false,
   error: null,
 };
@@ -168,143 +237,129 @@ export const loadAAData = createAsyncThunk<
     Papa.parse(url, {
       header: true,
       download: true,
-      complete: results => resolve(transform(results.data, AACSVKeys)),
+      complete: results => resolve(transform(results.data)),
       error: error => reject(error),
     }),
   );
 });
 
 interface CalculateMapRenderedDistrictsParams {
-  selectedDateData: AnticipatoryActionState['selectedDateData'];
-  categoryFilters: AnticipatoryActionState['categoryFilters'];
-  selectedWindow: AnticipatoryActionState['selectedWindow'];
+  filters: AnticipatoryActionState['filters'];
+  data: AnticipatoryActionState['data'];
 }
 
-function calculateMapRenderedDistricts({
-  selectedDateData,
-  categoryFilters,
-  selectedWindow,
+export function calculateMapRenderedDistricts({
+  filters,
+  data,
 }: CalculateMapRenderedDistrictsParams) {
-  if (Object.entries(selectedDateData).length === 0) {
-    return { 'Window 1': {}, 'Window 2': {} };
-  }
-  const mapped = Object.entries(selectedDateData).map<
-    Pick<
-      AnticipatoryActionDataRow,
-      'district' | 'windows' | 'category' | 'phase'
-    >
-  >(([district, districtData]) => {
-    // eslint-disable-next-line fp/no-mutating-methods
-    const sortedData = [...districtData].sort((a, b) => {
-      const aOrder = AADataSeverityOrder(a.category, a.phase);
-      const bOrder = AADataSeverityOrder(b.category, b.phase);
-
-      if (aOrder > bOrder) {
-        return -1;
+  const { selectedDate, categories } = filters;
+  const res = Object.entries(data)
+    .map(([winKey, districts]) => {
+      if (!districts) {
+        return undefined;
       }
-      if (aOrder < bOrder) {
-        return 1;
-      }
-      return 0;
-    });
+      const entries = Object.entries(districts).map(
+        ([districtName, districtData]) => {
+          if (
+            !selectedDate ||
+            districtData.filter(x => x.date <= selectedDate)?.length === 0
+          ) {
+            return [
+              districtName,
+              { category: 'ny', phase: 'ny', isNew: false },
+            ];
+          }
+          const dateData = districtData.filter(x => x.date === selectedDate);
+          const validData = dateData.filter(
+            x => (x.computedRow || x.isValid) && categories[x.category],
+          );
+          if (validData.length === 0) {
+            return [
+              districtName,
+              { category: 'na', phase: 'na', isNew: false },
+            ];
+          }
 
-    const filtered = sortedData.filter(x => categoryFilters[x.category]);
-
-    // let the first window layer to render empty district
-    if (filtered.length === 0) {
-      return { district, category: 'ny', phase: 'ny', windows: 'Window 1' };
-    }
-
-    if (selectedWindow === 'All') {
-      const first = filtered[0];
-      return {
-        district,
-        category: first.category,
-        phase: first.phase,
-        windows: first.windows,
-      };
-    }
-
-    const windowFirst = filtered.find(x => x.windows === selectedWindow);
-    if (windowFirst) {
-      return {
-        district,
-        category: windowFirst.category,
-        phase: windowFirst.phase,
-        windows: selectedWindow,
-      };
-    }
-
-    return { district, category: 'ny', phase: 'ny', windows: selectedWindow };
-  });
-
-  const windowMap = new Map<
-    typeof AAWindowKeys[number],
-    Pick<AnticipatoryActionDataRow, 'district' | 'category' | 'phase'>[]
-  >();
-  windowMap.set('Window 1', []);
-  windowMap.set('Window 2', []);
-  mapped.forEach(({ windows, ...rest }) => {
-    const val = windowMap.get(windows);
-    windowMap.set(windows, val ? [...val, rest] : [rest]);
-  });
-
-  return Object.fromEntries(
-    Array.from(windowMap.entries()).map(([win, rows]) => {
+          const max = validData.reduce((m, curr) => {
+            if (
+              AADataSeverityOrder(curr.category, curr.phase) >
+              AADataSeverityOrder(m.category, m.phase)
+            ) {
+              return curr;
+            }
+            return m;
+          }, validData[0]);
+          return [
+            districtName,
+            {
+              category: max.category,
+              phase: max.phase,
+              isNew: max.computedRow ? false : max.new,
+            },
+          ];
+        },
+      );
       return [
-        win,
-        Object.fromEntries(
-          rows.map(({ district, ...rest }) => [district, rest]),
-        ),
+        winKey,
+        Object.fromEntries(entries) as {
+          [district: string]: {
+            category: AACategoryType;
+            phase: AAPhaseType;
+            isNew: boolean;
+          };
+        },
       ];
-    }),
-  );
+    })
+    .filter((x): x is any[] => x !== undefined);
+
+  const obj = Object.fromEntries(res) as {
+    [windowKey: string]: {
+      [district: string]: {
+        category: AACategoryType;
+        phase: AAPhaseType;
+        isNew: boolean;
+      };
+    };
+  };
+
+  return { ...emptyWindows, ...obj };
 }
 
 export const anticipatoryActionStateSlice = createSlice({
   name: 'anticipatoryActionState',
   initialState,
   reducers: {
-    setSelectedWindow: (
-      state,
-      { payload }: PayloadAction<AnticipatoryActionState['selectedWindow']>,
-    ) => ({
-      ...state,
-      selectedWindow: payload,
-      renderedDistricts: calculateMapRenderedDistricts({
-        selectedDateData: state.selectedDateData,
-        categoryFilters: state.categoryFilters,
-        selectedWindow: payload,
-      }) as any,
-    }),
-    setCategoryFilters: (
+    setAAFilters: (
       state,
       {
         payload,
       }: PayloadAction<
-        Partial<Record<'Leve' | 'Moderado' | 'Severo', boolean>>
+        Partial<{
+          selectedDate: string | undefined;
+          selectedWindow: typeof AAWindowKeys[number] | typeof allWindowsKey;
+          categories: Partial<Record<AACategoryType, boolean>>;
+        }>
       >,
-    ) => ({
-      ...state,
-      categoryFilters: { ...state.categoryFilters, ...payload },
-      renderedDistricts: calculateMapRenderedDistricts({
-        selectedDateData: state.selectedDateData,
-        categoryFilters: { ...state.categoryFilters, ...payload },
-        selectedWindow: state.selectedWindow,
-      }) as any,
-    }),
-    setSelectedDateData: (
-      state,
-      { payload }: PayloadAction<AnticipatoryActionState['selectedDateData']>,
-    ) => ({
-      ...state,
-      selectedDateData: payload,
-      renderedDistricts: calculateMapRenderedDistricts({
-        selectedDateData: payload,
-        categoryFilters: state.categoryFilters,
-        selectedWindow: state.selectedWindow,
-      }) as any,
-    }),
+    ) => {
+      const { categories, ...rest } = payload;
+      const newCategories =
+        categories !== undefined
+          ? { ...state.filters.categories, ...categories }
+          : state.filters.categories;
+      const newFilters = {
+        ...state.filters,
+        ...rest,
+        categories: newCategories,
+      };
+      return {
+        ...state,
+        filters: newFilters,
+        renderedDistricts: calculateMapRenderedDistricts({
+          filters: newFilters,
+          data: state.data,
+        }),
+      };
+    },
   },
   extraReducers: builder => {
     builder.addCase(loadAAData.fulfilled, (state, { payload }) => ({
@@ -339,29 +394,19 @@ export const anticipatoryActionStateSlice = createSlice({
 });
 
 // export selectors
-export const AnticipatoryActionDataSelector = (state: RootState) =>
+export const AADataSelector = (state: RootState) =>
   state.anticipatoryActionState.data;
 
-export const AnticipatoryActionAvailableDatesSelector = (state: RootState) =>
+export const AAAvailableDatesSelector = (state: RootState) =>
   state.anticipatoryActionState.availableDates;
 
-export const AASelectedWindowSelector = (state: RootState) =>
-  state.anticipatoryActionState.selectedWindow;
-
-export const AACategoryFiltersSelector = (state: RootState) =>
-  state.anticipatoryActionState.categoryFilters;
-
-export const AASelectedDateDateSelector = (state: RootState) =>
-  state.anticipatoryActionState.selectedDateData;
+export const AAFiltersSelector = (state: RootState) =>
+  state.anticipatoryActionState.filters;
 
 export const AARenderedDistrictsSelector = (state: RootState) =>
   state.anticipatoryActionState.renderedDistricts;
 
 // export actions
-export const {
-  setSelectedWindow,
-  setCategoryFilters,
-  setSelectedDateData,
-} = anticipatoryActionStateSlice.actions;
+export const { setAAFilters } = anticipatoryActionStateSlice.actions;
 
 export default anticipatoryActionStateSlice.reducer;
