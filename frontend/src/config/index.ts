@@ -100,6 +100,7 @@ const appConfig: Record<string, any> = merge(
   configMap[safeCountry].appConfig,
 );
 
+// Perform deep merges between shared and country-specific layers and legends
 const rawLayers: Record<string, any> = Object.fromEntries(
   Object.entries(merge({}, sharedLayers, configMap[safeCountry].rawLayers)).map(
     ([key, layer]) => {
