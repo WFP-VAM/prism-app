@@ -1,0 +1,27 @@
+{
+    "country": "Global",
+    "alertFormActive": false,
+    "hidePanel": false,
+    "icons": {
+        "capacity": "icon_capacity.png",
+        "tables": "icon_table.png",
+        "rainfall": "icon_rain.png",
+        "vegetation": "icon_veg.png",
+        "temperature": "icon_climate.png",
+        "vulnerability": "icon_vulnerable.png"
+    },
+    "serversUrls": {
+        "wms": [
+            "https://api.earthobservation.vam.wfp.org/ows/wms"
+        ]
+    },
+    "map": {
+        "boundingBox": [
+            -171,
+            -56,
+            180,
+            76
+        ]
+    },
+    "categories": {}
+}
