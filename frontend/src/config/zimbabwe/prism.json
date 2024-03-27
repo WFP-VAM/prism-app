@@ -17,7 +17,11 @@
   "map": {
     "boundingBox": [25.26, -22.27, 32.85, -15.51]
   },
-  "defaultDisplayBoundaries": ["admin_boundaries", "admin1_boundaries"],
+  "defaultDisplayBoundaries": [
+    "admin_boundaries",
+    "admin1_boundaries",
+    "admin2_boundaries"
+  ],
   "categories": {
     "rainfall": {
       "MSD_rainfall_data": [
