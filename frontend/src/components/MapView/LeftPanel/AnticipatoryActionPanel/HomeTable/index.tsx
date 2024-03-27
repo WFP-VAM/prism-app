@@ -2,28 +2,16 @@ import { Typography, createStyles, makeStyles } from '@material-ui/core';
 import { useSafeTranslation } from 'i18n';
 import { borderGray, gray } from 'muiTheme';
 import React from 'react';
-import {
-  AACategoryFiltersSelector,
-  AASelectedWindowSelector,
-  AnticipatoryActionDataSelector,
-  setSelectedDateData,
-} from 'context/anticipatoryActionStateSlice';
 import { useDispatch, useSelector } from 'react-redux';
-import { dateRangeSelector } from 'context/mapStateSlice/selectors';
-import { getFormattedDate } from 'utils/date-utils';
-import { DateFormat } from 'utils/name-utils';
 import {
   AACategoryType,
   AAPhaseType,
-  AnticipatoryActionData,
-  AnticipatoryActionDataRow,
 } from 'context/anticipatoryActionStateSlice/types';
 import { AAWindowKeys } from 'config/utils';
 import {
-  getAAAvailableDatesCombined,
-  getRequestDate,
-} from 'utils/server-utils';
-import { availableDatesSelector } from 'context/serverStateSlice';
+  AAFiltersSelector,
+  AARenderedDistrictsSelector,
+} from 'context/anticipatoryActionStateSlice';
 import { setPanelSize } from 'context/leftPanelStateSlice';
 import { PanelSize } from 'config/types';
 import { AADataSeverityOrder, getAAIcon } from '../utils';
@@ -85,10 +73,8 @@ function Row({ iconContent, windows, header }: RowProps) {
 
   if (header) {
     return (
-      <div className={classes.rowWrapper}>
-        <div className={classes.iconCol} style={{ minHeight: 0 }}>
-          {iconContent}
-        </div>
+      <div className={classes.rowWrapper} style={{ height: '1.5rem' }}>
+        <div className={classes.iconCol}>{iconContent}</div>
         {header.map(name => (
           <div
             key={name}
@@ -162,10 +148,10 @@ const useRowStyles = makeStyles(() =>
     headerText: {
       fontWeight: 'bold',
       textTransform: 'uppercase',
-      minHeight: '3rem',
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
+      marginBottom: '0.5rem',
     },
     emptyText: {
       color: borderGray,
@@ -173,107 +159,16 @@ const useRowStyles = makeStyles(() =>
   }),
 );
 
-function getDistrictData(
-  data: AnticipatoryActionData,
-  date: string,
-  category: AnticipatoryActionDataRow['category'],
-  phase: AnticipatoryActionDataRow['phase'],
-  setSelectedDistrict: React.Dispatch<React.SetStateAction<string>>,
-) {
-  return Object.entries(data)
-    .map(([district, districtData]) => {
-      const onClick = () => setSelectedDistrict(district);
-
-      const validData = districtData.filter(
-        x =>
-          x.probability !== 'NA' &&
-          Number(x.probability) >= Number(x.trigger) &&
-          x.date <= date,
-      );
-
-      // NA: There is a date for this district, but all probabilities are under the trigger
-      if (category === 'na') {
-        const dataExistForDate = !!validData.find(x => x.date === date);
-        if (!dataExistForDate) {
-          return { name: district, isNew: false, onClick };
-        }
-        return undefined;
-      }
-
-      // NY: is monitored, but there are no entry until this date
-      if (category === 'ny') {
-        if (districtData.filter(x => x.date <= date).length > 0) {
-          return undefined;
-        }
-        return { name: district, isNew: false, onClick };
-      }
-
-      const categoryData = validData.filter(x => x.category === category);
-
-      const current = categoryData.find(
-        x => x.category === category && x.phase === phase && x.date === date,
-      );
-
-      if (phase === 'Ready') {
-        if (current) {
-          return { name: district, isNew: true, onClick };
-        }
-        return undefined;
-      }
-
-      // eslint-disable-next-line fp/no-mutating-methods
-      const dates = [...new Set(districtData.map(x => x.date))].sort();
-      const dateIndex = dates.findIndex(x => x === date);
-
-      if (dates.length === 0 || dateIndex === 0) {
-        return undefined;
-      }
-
-      const previousDate =
-        dateIndex === -1 ? dates.slice(-1)[0] : dates[dateIndex - 1];
-
-      const previous = categoryData.find(
-        x =>
-          x.category === category &&
-          x.phase === 'Ready' &&
-          x.date === previousDate,
-      );
-
-      if (phase === 'Set') {
-        if (current && previous) {
-          return { name: district, isNew: true, onClick };
-        }
-
-        // Check if the district was in SET mode previously for this category
-        // If it is the case, we keep the SET status for this district until the end of the window
-        const previouslySet = getDistrictData(
-          { [district]: data[district] },
-          previousDate,
-          category,
-          'Set',
-          setSelectedDistrict,
-        ).find(x => x.name === district);
-        if (previouslySet) {
-          return { name: district, isNew: false, onClick };
-        }
-        return undefined;
-      }
-
-      return undefined;
-    })
-    .filter((x): x is AreaTagProps => x !== undefined);
-}
-
 const rowCategories: {
   category: AACategoryType;
   phase: AAPhaseType;
 }[] = [
-  { category: 'Severo', phase: 'Set' },
-  { category: 'Severo', phase: 'Ready' },
-  { category: 'Moderado', phase: 'Set' },
-  { category: 'Moderado', phase: 'Ready' },
-  { category: 'Leve', phase: 'Set' },
-  { category: 'Leve', phase: 'Ready' },
+  { category: 'Severe', phase: 'Set' },
+  { category: 'Severe', phase: 'Ready' },
+  { category: 'Moderate', phase: 'Set' },
+  { category: 'Moderate', phase: 'Ready' },
+  { category: 'Mild', phase: 'Set' },
+  { category: 'Mild', phase: 'Ready' },
   { category: 'na', phase: 'na' },
   { category: 'ny', phase: 'ny' },
 ];
@@ -287,15 +182,8 @@ interface HomeTableProps {
 function HomeTable({ setSelectedDistrict }: HomeTableProps) {
   const classes = useHomeTableStyles();
   const dispatch = useDispatch();
-  const RawAAData = useSelector(AnticipatoryActionDataSelector);
-  const selectedWindow = useSelector(AASelectedWindowSelector);
-  const categoryFilters = useSelector(AACategoryFiltersSelector);
-  const serverAvailableDates = useSelector(availableDatesSelector);
-  const { startDate: selectedDate } = useSelector(dateRangeSelector);
-
-  const layerAvailableDates = getAAAvailableDatesCombined(serverAvailableDates);
-  const queryDate = getRequestDate(layerAvailableDates, selectedDate);
-  const date = getFormattedDate(queryDate, DateFormat.Default) as string;
+  const { selectedWindow, categories } = useSelector(AAFiltersSelector);
+  const renderedDistricts = useSelector(AARenderedDistrictsSelector);
 
   React.useEffect(() => {
     dispatch(setPanelSize(PanelSize.medium));
@@ -308,108 +196,39 @@ function HomeTable({ setSelectedDistrict }: HomeTableProps) {
     header: selectedWindow === 'All' ? [...AAWindowKeys] : [selectedWindow],
   };
 
-  const dataForRows: {
-    'Window 1': AreaTagProps[];
-    'Window 2': AreaTagProps[];
-    category: 'ny' | 'na' | 'Leve' | 'Moderado' | 'Severo';
-    phase: 'ny' | 'na' | 'Ready' | 'Set';
-  }[] = React.useMemo(() => {
-    // Calculate initial data for each category and phase without filtering 'na' category
-    const initialRows = rowCategories.map(r => {
-      const windowData = AAWindowKeys.map(x => [
-        x,
-        getDistrictData(
-          RawAAData[x] || {},
-          date,
-          r.category,
-          r.phase,
-          setSelectedDistrict,
-        ),
-      ]);
-      return {
-        ...r,
-        ...Object.fromEntries(windowData),
-      };
-    });
-
-    // Find all district names that are not 'na' to prepare for filtering
-    const allDistrictsExceptNa = new Set(
-      initialRows
-        .filter(r => r.category !== 'na')
-        .flatMap(r =>
-          AAWindowKeys.flatMap(x =>
-            r[x].map((districtData: AreaTagProps) => districtData.name),
-          ),
-        ),
-    );
-
-    // Apply filtering for 'na' category
-    const finalRows = initialRows.map(row => {
-      if (row.category === 'na') {
-        AAWindowKeys.forEach(x => {
-          // eslint-disable-next-line fp/no-mutation, no-param-reassign
-          row[x] = row[x].filter(
-            (districtData: AreaTagProps) =>
-              !allDistrictsExceptNa.has(districtData.name),
-          );
-        });
-      }
-      return row;
-    });
-
-    return finalRows;
-  }, [RawAAData, date, setSelectedDistrict]);
-
-  const shouldRenderRows = dataForRows.filter(x => {
-    switch (x.category) {
-      case 'na':
-      case 'ny':
-        return true;
-
-      case 'Leve':
-      case 'Moderado':
-      case 'Severo':
-        return categoryFilters[x.category];
-
-      default:
-        throw new Error(`Invalid category ${x.category}`);
-    }
-  });
-
   const districtRows: ExtendedRowProps[] = React.useMemo(
     () =>
-      shouldRenderRows.map(r => ({
-        id: AADataSeverityOrder(r.category, r.phase),
-        iconContent: getAAIcon(r.category, r.phase),
-        windows:
-          selectedWindow === 'All'
-            ? AAWindowKeys.map(x => r[x])
-            : [r[selectedWindow]],
-      })),
-    [selectedWindow, shouldRenderRows],
+      rowCategories
+        .filter(x => categories[x.category])
+        .map(x => {
+          const getWinData = (win: typeof AAWindowKeys[number]) =>
+            Object.entries(renderedDistricts[win])
+              .map(([district, distData]) => {
+                if (
+                  distData.category === x.category &&
+                  distData.phase === x.phase
+                ) {
+                  return {
+                    name: district,
+                    isNew: distData.isNew,
+                    onClick: () => setSelectedDistrict(district),
+                  };
+                }
+                return undefined;
+              })
+              .filter(y => y !== undefined);
+
+          return {
+            id: AADataSeverityOrder(x.category, x.phase),
+            iconContent: getAAIcon(x.category, x.phase),
+            windows:
+              selectedWindow === 'All'
+                ? AAWindowKeys.map(winKey => getWinData(winKey))
+                : [getWinData(selectedWindow)],
+          } as any;
+        }),
+    [categories, renderedDistricts, selectedWindow, setSelectedDistrict],
   );
-
-  React.useEffect(() => {
-    const selectedDateData = dataForRows.reduce((acc, curr) => {
-      AAWindowKeys.forEach(w => {
-        const districts = curr[w].map(x => x.name);
-        districts.forEach(dist => {
-          const prev = acc.get(dist);
-          const newItem = {
-            district: dist,
-            windows: w,
-            category: curr.category,
-            phase: curr.phase,
-          };
-          acc.set(dist, prev ? [...prev, newItem] : [newItem]);
-        });
-      });
-
-      return acc;
-    }, new Map<string, Pick<AnticipatoryActionDataRow, 'district' | 'windows' | 'category' | 'phase'>[]>());
-
-    dispatch(setSelectedDateData(Object.fromEntries(selectedDateData)));
-  }, [dataForRows, dispatch]);
 
   const rows: ExtendedRowProps[] = [headerRow, ...districtRows];
 

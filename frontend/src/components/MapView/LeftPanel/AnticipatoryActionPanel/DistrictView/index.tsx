@@ -5,15 +5,14 @@ import { useDispatch, useSelector } from 'react-redux';
 import { setPanelSize } from 'context/leftPanelStateSlice';
 import { PanelSize } from 'config/types';
 import {
-  AACategoryFiltersSelector,
-  AASelectedWindowSelector,
-  AnticipatoryActionDataSelector,
-} from 'context/anticipatoryActionStateSlice';
-import {
   AACategoryType,
   AnticipatoryActionDataRow,
 } from 'context/anticipatoryActionStateSlice/types';
 import { AAWindowKeys } from 'config/utils';
+import {
+  AADataSelector,
+  AAFiltersSelector,
+} from 'context/anticipatoryActionStateSlice';
 import { AADataSeverityOrder, getAAIcon } from '../utils';
 
 function transform(
@@ -25,10 +24,7 @@ function transform(
   }
 
   const validData = data.filter(
-    x =>
-      x.probability !== 'NA' &&
-      Number(x.probability) >= Number(x.trigger) &&
-      categoryFilters[x.category],
+    x => (x.computedRow || x.isValid) && categoryFilters[x.category],
   );
 
   const monthsMap = new Map<string, string>();
@@ -59,8 +55,8 @@ interface WindowColumnProps {
 
 function WindowColumn({ win, selectedDistrict }: WindowColumnProps) {
   const classes = useWindowColumnStyles();
-  const rawAAData = useSelector(AnticipatoryActionDataSelector);
-  const categoryFilters = useSelector(AACategoryFiltersSelector);
+  const rawAAData = useSelector(AADataSelector);
+  const { categories: categoryFilters } = useSelector(AAFiltersSelector);
 
   const windowData = rawAAData[win][selectedDistrict];
 
@@ -168,7 +164,7 @@ interface DistrictViewProps {
 function DistrictView({ selectedDistrict }: DistrictViewProps) {
   const dispatch = useDispatch();
   const classes = useDistrictViewStyles();
-  const selectedWindow = useSelector(AASelectedWindowSelector);
+  const { selectedWindow } = useSelector(AAFiltersSelector);
 
   const windows = selectedWindow === 'All' ? AAWindowKeys : [selectedWindow];
 

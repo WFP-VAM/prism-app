@@ -20,11 +20,13 @@ const store = mockStore({
   },
   serverState: { availableDates: {}, loading: false },
   anticipatoryActionState: {
-    selectedWindow: 'Window 1',
-    categoryFilters: {
-      Severo: true,
-      Moderado: true,
-      Leve: true,
+    filters: {
+      selectedWindow: 'Window 1',
+      categories: {
+        Severe: true,
+        Moderate: true,
+        Mild: true,
+      },
     },
     monitoredDistricts: ['Caia'],
     data: mockAAData,

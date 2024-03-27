@@ -25,6 +25,15 @@ type DateItemStyle = {
   emphasis?: string;
 };
 
+export const LIGHT_BLUE_HEX = '#C0E8FF';
+const DARK_BLUE_HEX = '#00A3FF';
+
+export const LIGHT_GREEN_HEX = '#B5F8BB';
+const DARK_GREEN_HEX = '#68CC71';
+
+const LIGHT_ORANGE_HEX = '#F9CEC1';
+const DARK_ORANGE_HEX = '#FF9473';
+
 const TimelineItems = memo(
   ({
     classes,
@@ -35,23 +44,37 @@ const TimelineItems = memo(
   }: TimelineItemsProps) => {
     const { t } = useSafeTranslation();
 
+    // Keep anticipatory actions at the top of the timeline
+    // eslint-disable-next-line fp/no-mutating-methods
+    const orderedLayers = selectedLayers.sort((a, b) => {
+      const aIsAnticipatory = a.id.includes('anticipatory_action');
+      const bIsAnticipatory = b.id.includes('anticipatory_action');
+      if (aIsAnticipatory && !bIsAnticipatory) {
+        return -1;
+      }
+      if (!aIsAnticipatory && bIsAnticipatory) {
+        return 1;
+      }
+      return 0;
+    });
+
     // Hard coded styling for date items (first, second, and third layers)
     const DATE_ITEM_STYLING: DateItemStyle[] = [
       {
         class: classes.layerOneDate,
-        color: '#C0E8FF',
+        color: LIGHT_BLUE_HEX,
         layerDirectionClass: classes.layerOneDirection,
         emphasis: classes.layerOneEmphasis,
       },
       {
         class: classes.layerTwoDate,
-        color: '#FFF176',
+        color: LIGHT_GREEN_HEX,
         layerDirectionClass: classes.layerTwoDirection,
         emphasis: classes.layerTwoEmphasis,
       },
       {
         class: classes.layerThreeDate,
-        color: '#F9CEC1',
+        color: LIGHT_ORANGE_HEX,
         layerDirectionClass: classes.layerThreeDirection,
         emphasis: classes.layerThreeEmphasis,
       },
@@ -60,7 +83,7 @@ const TimelineItems = memo(
     const getTooltipTitle = useCallback(
       (date: DateRangeType): React.JSX.Element[] => {
         const tooltipTitleArray: React.JSX.Element[] = compact(
-          selectedLayers.map((selectedLayer, layerIndex) => {
+          orderedLayers.map((selectedLayer, layerIndex) => {
             return (
               <TooltipItem
                 key={`Tootlip-${date.label}-${date.value}-${selectedLayer.title}`}
@@ -74,7 +97,7 @@ const TimelineItems = memo(
         tooltipTitleArray.unshift(<div key={date.label}>{date.label}</div>);
         return tooltipTitleArray;
       },
-      [DATE_ITEM_STYLING, selectedLayers, t],
+      [DATE_ITEM_STYLING, orderedLayers, t],
     );
 
     const timelineStartDate: string = new Date(
@@ -91,7 +114,7 @@ const TimelineItems = memo(
       };
 
       // For each selectedLayer truncate DateItem array
-      return [...selectedLayers.map(layer => layer.dateItems)].map(
+      return [...orderedLayers.map(layer => layer.dateItems)].map(
         (dateItemsForLayer: DateItem[]) => {
           const firstIndex = findLayerFirstDateIndex(dateItemsForLayer);
           if (firstIndex === -1) {
@@ -103,7 +126,7 @@ const TimelineItems = memo(
           return dateItemsForLayer.slice(firstIndex, dateItemsForLayer.length);
         },
       );
-    }, [selectedLayers, timelineStartDate]);
+    }, [orderedLayers, timelineStartDate]);
 
     // Draw a column for each date of the Timeline that start at the beginning of the year
     return (
@@ -162,14 +185,6 @@ const createDirectionStyles = (
   borderLeft: `6px solid ${borderColor}`,
 });
 
-const LIGHT_BLUE_HEX = '#C0E8FF';
-const LIGHT_YELLOW_HEX = '#FFF176';
-const LIGHT_ORANGE_HEX = '#F9CEC1';
-
-const DARK_BLUE_HEX = '#00A3FF';
-const DARK_YELLOW_HEX = '#FEC600';
-const DARK_ORANGE_HEX = '#FF9473';
-
 const styles = () =>
   createStyles({
     dateItemFull: {
@@ -198,15 +213,15 @@ const styles = () =>
       },
     },
     layerOneDate: createLayerStyles(LIGHT_BLUE_HEX, 0),
-    layerTwoDate: createLayerStyles(LIGHT_YELLOW_HEX, 10),
+    layerTwoDate: createLayerStyles(LIGHT_GREEN_HEX, 10),
     layerThreeDate: createLayerStyles(LIGHT_ORANGE_HEX, 20),
 
     layerOneEmphasis: createLayerStyles(DARK_BLUE_HEX, 0),
-    layerTwoEmphasis: createLayerStyles(DARK_YELLOW_HEX, 10),
+    layerTwoEmphasis: createLayerStyles(DARK_GREEN_HEX, 10),
     layerThreeEmphasis: createLayerStyles(DARK_ORANGE_HEX, 20),
 
     layerOneDirection: createDirectionStyles(DARK_BLUE_HEX, 0),
-    layerTwoDirection: createDirectionStyles(DARK_YELLOW_HEX, 10),
+    layerTwoDirection: createDirectionStyles(DARK_GREEN_HEX, 10),
     layerThreeDirection: createDirectionStyles(DARK_ORANGE_HEX, 20),
 
     currentDate: {
