@@ -115,7 +115,7 @@ const Legends = memo(({ classes, extent, layers }: LegendsProps) => {
         key={analysisResult?.key ?? Date.now()}
         legend={analysisResult?.legend}
         title={analysisResult?.getTitle(t)}
-        opacity={analysisLayerOpacity} // TODO: initial opacity value
+        opacity={analysisLayerOpacity}
       >
         {renderedLegendImpactResult}
       </LegendItem>,
