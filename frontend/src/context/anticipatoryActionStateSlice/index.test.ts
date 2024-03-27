@@ -3,11 +3,11 @@ import {
   mockAAInput,
   mockAARenderedDistricts,
 } from 'components/MapView/LeftPanel/AnticipatoryActionPanel/test.utils';
-import { calculateMapRenderedDistricts, transform } from '.';
+import { calculateMapRenderedDistricts, parseAndTransformAA } from './utils';
 
 describe('Anticipatory Action', () => {
   test('Transforms input', () => {
-    const out = transform(mockAAInput);
+    const out = parseAndTransformAA(mockAAInput);
     const data = Object.fromEntries(
       out.windowData.map(x => [x.windowKey, x.data]),
     );

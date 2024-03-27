@@ -12,6 +12,7 @@ import { AAWindowKeys } from 'config/utils';
 import {
   AADataSelector,
   AAFiltersSelector,
+  AASelectedDistrictSelector,
 } from 'context/anticipatoryActionStateSlice';
 import { AADataSeverityOrder, getAAIcon } from '../utils';
 
@@ -50,13 +51,13 @@ function transform(
 
 interface WindowColumnProps {
   win: typeof AAWindowKeys[number];
-  selectedDistrict: string;
 }
 
-function WindowColumn({ win, selectedDistrict }: WindowColumnProps) {
+function WindowColumn({ win }: WindowColumnProps) {
   const classes = useWindowColumnStyles();
   const rawAAData = useSelector(AADataSelector);
   const { categories: categoryFilters } = useSelector(AAFiltersSelector);
+  const selectedDistrict = useSelector(AASelectedDistrictSelector);
 
   const windowData = rawAAData[win][selectedDistrict];
 
@@ -157,11 +158,7 @@ const useWindowColumnStyles = makeStyles(() =>
   }),
 );
 
-interface DistrictViewProps {
-  selectedDistrict: string;
-}
-
-function DistrictView({ selectedDistrict }: DistrictViewProps) {
+function DistrictView() {
   const dispatch = useDispatch();
   const classes = useDistrictViewStyles();
   const { selectedWindow } = useSelector(AAFiltersSelector);
@@ -176,7 +173,7 @@ function DistrictView({ selectedDistrict }: DistrictViewProps) {
     <div className={classes.root}>
       <div className={classes.districtViewWrapper}>
         {windows.map(x => (
-          <WindowColumn key={x} win={x} selectedDistrict={selectedDistrict} />
+          <WindowColumn key={x} win={x} />
         ))}
       </div>
       <div className={classes.actionsWrapper}>

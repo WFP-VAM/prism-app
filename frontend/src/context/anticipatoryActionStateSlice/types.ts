@@ -39,6 +39,7 @@ export type AnticipatoryActionState = {
     selectedWindow: typeof AAWindowKeys[number] | typeof allWindowsKey;
     categories: Record<AACategoryType, boolean>;
   };
+  selectedDistrict: string;
   renderedDistricts: Record<
     typeof AAWindowKeys[number],
     {

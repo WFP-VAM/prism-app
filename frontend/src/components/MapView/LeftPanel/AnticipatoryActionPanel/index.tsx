@@ -30,7 +30,9 @@ import { AAWindowKeys } from 'config/utils';
 import {
   AAFiltersSelector,
   AAMonitoredDistrictsSelector,
+  AASelectedDistrictSelector,
   setAAFilters,
+  setAASelectedDistrict,
 } from 'context/anticipatoryActionStateSlice';
 import { availableDatesSelector } from 'context/serverStateSlice';
 import { dateRangeSelector } from 'context/mapStateSlice/selectors';
@@ -77,8 +79,8 @@ function AnticipatoryActionPanel() {
   const { categories: categoryFilters } = useSelector(AAFiltersSelector);
   const serverAvailableDates = useSelector(availableDatesSelector);
   const { startDate: selectedDate } = useSelector(dateRangeSelector);
+  const selectedDistrict = useSelector(AASelectedDistrictSelector);
 
-  const [selectedDistrict, setSelectedDistrict] = React.useState<string>('');
   const [
     districtAnchorEl,
     setDistrictAnchorEl,
@@ -106,7 +108,7 @@ function AnticipatoryActionPanel() {
         <div className={classes.titleSelectWrapper}>
           <div className={classes.titleSelectWrapper}>
             {selectedDistrict && (
-              <IconButton onClick={() => setSelectedDistrict('')}>
+              <IconButton onClick={() => dispatch(setAASelectedDistrict(''))}>
                 <ArrowBackIos fontSize="small" />
               </IconButton>
             )}
@@ -127,7 +129,7 @@ function AnticipatoryActionPanel() {
             <MenuItem
               value=""
               onClick={() => {
-                setSelectedDistrict('');
+                dispatch(setAASelectedDistrict(''));
                 handleDistrictClose();
               }}
             >
@@ -138,7 +140,7 @@ function AnticipatoryActionPanel() {
                 key={x}
                 value={x}
                 onClick={() => {
-                  setSelectedDistrict(x);
+                  dispatch(setAASelectedDistrict(x));
                   handleDistrictClose();
                 }}
               >
@@ -181,12 +183,8 @@ function AnticipatoryActionPanel() {
           ))}
         </div>
       </div>
-      {selectedDistrict === '' && (
-        <HomeTable setSelectedDistrict={setSelectedDistrict} />
-      )}
-      {selectedDistrict !== '' && (
-        <DistrictView selectedDistrict={selectedDistrict} />
-      )}
+      {selectedDistrict === '' && <HomeTable />}
+      {selectedDistrict !== '' && <DistrictView />}
       {/* TODO: consider moving this part to each sub-component */}
       <div className={classes.footerWrapper}>
         <div className={classes.footerActionsWrapper}>

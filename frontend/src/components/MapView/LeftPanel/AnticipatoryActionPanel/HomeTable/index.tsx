@@ -11,6 +11,7 @@ import { AAWindowKeys } from 'config/utils';
 import {
   AAFiltersSelector,
   AARenderedDistrictsSelector,
+  setAASelectedDistrict,
 } from 'context/anticipatoryActionStateSlice';
 import { setPanelSize } from 'context/leftPanelStateSlice';
 import { PanelSize } from 'config/types';
@@ -175,11 +176,7 @@ const rowCategories: {
 
 type ExtendedRowProps = RowProps & { id: number | 'na' | 'ny' };
 
-interface HomeTableProps {
-  setSelectedDistrict: React.Dispatch<React.SetStateAction<string>>;
-}
-
-function HomeTable({ setSelectedDistrict }: HomeTableProps) {
+function HomeTable() {
   const classes = useHomeTableStyles();
   const dispatch = useDispatch();
   const { selectedWindow, categories } = useSelector(AAFiltersSelector);
@@ -211,7 +208,7 @@ function HomeTable({ setSelectedDistrict }: HomeTableProps) {
                   return {
                     name: district,
                     isNew: distData.isNew,
-                    onClick: () => setSelectedDistrict(district),
+                    onClick: () => dispatch(setAASelectedDistrict(district)),
                   };
                 }
                 return undefined;
@@ -227,7 +224,7 @@ function HomeTable({ setSelectedDistrict }: HomeTableProps) {
                 : [getWinData(selectedWindow)],
           } as any;
         }),
-    [categories, renderedDistricts, selectedWindow, setSelectedDistrict],
+    [categories, dispatch, renderedDistricts, selectedWindow],
   );
 
   const rows: ExtendedRowProps[] = [headerRow, ...districtRows];
