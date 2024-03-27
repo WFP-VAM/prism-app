@@ -39,7 +39,6 @@
   "dependencies": {
     "@azure/msal-browser": "^2.19.0",
     "@azure/msal-react": "^1.1.1",
-    "@fortawesome/fontawesome-common-types": "^6.5.1",
     "@fortawesome/fontawesome-free": "^6.5.1",
     "@fortawesome/fontawesome-svg-core": "^6.5.1",
     "@fortawesome/free-brands-svg-icons": "^6.5.1",
@@ -143,6 +142,7 @@
     ]
   },
   "devDependencies": {
+    "@fortawesome/fontawesome-common-types": "^6.5.1",
     "@react-pdf/types": "^2.1.0",
     "@testing-library/dom": "^6.15.0",
     "@testing-library/jest-dom": "^4.2.4",
