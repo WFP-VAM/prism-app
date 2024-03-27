@@ -86,7 +86,12 @@ const {
   rawReports: Record<string, any>;
 } = configMap[safeCountry];
 
-const { defaultConfig, sharedLayers, translation: sharedTranslation } = shared;
+const {
+  defaultConfig,
+  sharedLayers,
+  translation: sharedTranslation,
+  sharedLegends,
+} = shared;
 
 // Perform deep merges between shared and country-specific configurations
 const appConfig: Record<string, any> = merge(
@@ -94,10 +99,22 @@ const appConfig: Record<string, any> = merge(
   defaultConfig,
   configMap[safeCountry].appConfig,
 );
-const rawLayers: Record<string, any> = merge(
-  {},
-  sharedLayers,
-  configMap[safeCountry].rawLayers,
+
+const rawLayers: Record<string, any> = Object.fromEntries(
+  Object.entries(merge({}, sharedLayers, configMap[safeCountry].rawLayers)).map(
+    ([key, layer]) => {
+      if (typeof layer.legend === 'string') {
+        if (!sharedLegends[layer.legend]) {
+          throw new Error(
+            `Legend '${layer.legend}' could not be found in shared legends.`,
+          );
+        }
+        // eslint-disable-next-line no-param-reassign, fp/no-mutation
+        layer.legend = sharedLegends[layer.legend] || layer.legend;
+      }
+      return [key, layer];
+    },
+  ),
 );
 
 // Merge translations
