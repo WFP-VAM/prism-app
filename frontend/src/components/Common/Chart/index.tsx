@@ -160,6 +160,7 @@ const Chart = memo(
         if (foundDataSetFieldPointRadius !== undefined) {
           return foundDataSetFieldPointRadius;
         }
+        // Disable point rendering for EWS charts.
         if (isEWSChart) {
           return 0;
         }
