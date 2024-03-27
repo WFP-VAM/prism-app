@@ -11,6 +11,7 @@ import { Layer, Marker, Source } from 'react-map-gl/maplibre';
 import {
   AAFiltersSelector,
   AARenderedDistrictsSelector,
+  AASelectedDistrictSelector,
 } from 'context/anticipatoryActionStateSlice';
 import {
   getAAColor,
@@ -31,6 +32,7 @@ function AnticipatoryActionLayer({ layer, before }: LayersProps) {
   const map = useSelector(mapSelector);
   const renderedDistricts = useSelector(AARenderedDistrictsSelector);
   const { selectedWindow } = useSelector(AAFiltersSelector);
+  const selectedDistrict = useSelector(AASelectedDistrictSelector);
   const layerWindowIndex = AAWindowKeys.findIndex(
     x => x === layer.csvWindowKey,
   );
@@ -48,6 +50,20 @@ function AnticipatoryActionLayer({ layer, before }: LayersProps) {
   const districtCentroids = React.useMemo(() => calculateCentroids(data), [
     data,
   ]);
+
+  const highlightDistrictLine = React.useMemo(
+    () => ({
+      ...data,
+      features: [
+        data?.features.find(
+          f =>
+            f.properties?.[boundaryLayer.adminLevelLocalNames[1]] ===
+            selectedDistrict,
+        ),
+      ].filter(x => x),
+    }),
+    [data, selectedDistrict],
+  );
 
   const coloredDistrictsLayer = React.useMemo(() => {
     const districtEntries = Object.entries(shouldRenderData);
@@ -104,6 +120,10 @@ function AnticipatoryActionLayer({ layer, before }: LayersProps) {
 
   const scalePercent = useAAMarkerScalePercent(map);
 
+  const mainLayerBefore = selectedDistrict
+    ? 'anticipatory-action-selected-line'
+    : before;
+
   return (
     <>
       {markers.map(marker => (
@@ -118,6 +138,25 @@ function AnticipatoryActionLayer({ layer, before }: LayersProps) {
           </div>
         </Marker>
       ))}
+      {layer.csvWindowKey === 'Window 1' && (
+        <Source
+          id="anticipatory-action-selected"
+          type="geojson"
+          data={highlightDistrictLine}
+        >
+          <Layer
+            beforeId={before}
+            id="anticipatory-action-selected-line"
+            type="line"
+            source="anticipatory-action-selected"
+            paint={{
+              'line-color':
+                highlightDistrictLine.features.length > 0 ? 'red' : undefined,
+              'line-width': 6,
+            }}
+          />
+        </Source>
+      )}
       {coloredDistrictsLayer && (
         <Source
           key={`anticipatory-action-${layerWindowIndex}`}
@@ -126,7 +165,7 @@ function AnticipatoryActionLayer({ layer, before }: LayersProps) {
           data={coloredDistrictsLayer}
         >
           <Layer
-            beforeId={before}
+            beforeId={mainLayerBefore}
             type="fill"
             id={`anticipatory-action-${layerWindowIndex}-fill`}
             source={`anticipatory-action-${layerWindowIndex}`}
@@ -137,7 +176,7 @@ function AnticipatoryActionLayer({ layer, before }: LayersProps) {
             }}
           />
           <Layer
-            beforeId={before}
+            beforeId={mainLayerBefore}
             id={`anticipatory-action-${layerWindowIndex}-boundary`}
             type="line"
             source={`anticipatory-action-${layerWindowIndex}`}
