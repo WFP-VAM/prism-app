@@ -4,7 +4,7 @@ import { Provider } from 'react-redux';
 import { BrowserRouter } from 'react-router-dom';
 import configureStore from 'redux-mock-store';
 import HomeTable from '.';
-import { mockAAData } from '../test.utils';
+import { mockAARenderedDistricts } from '../test.utils';
 
 const mockStore = configureStore([]);
 
@@ -29,7 +29,7 @@ const store = mockStore({
       },
     },
     monitoredDistricts: ['Caia'],
-    data: mockAAData,
+    renderedDistricts: mockAARenderedDistricts,
   },
 });
 

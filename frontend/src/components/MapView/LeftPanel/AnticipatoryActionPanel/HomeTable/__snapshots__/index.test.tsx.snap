@@ -11,7 +11,6 @@ exports[`renders as expected 1`] = `
     >
       <div
         class="makeStyles-iconCol-3"
-        style="min-height: 0;"
       />
       <div>
         <mock-typography
@@ -195,13 +194,14 @@ exports[`renders as expected 1`] = `
           <div
             class="makeStyles-tagWrapper-5"
           >
-            <mock-typography
-              classname="makeStyles-emptyText-7"
+            <button
+              class="makeStyles-areaTagWrapper-12"
+              type="button"
             >
-              (
-              no district
-              )
-            </mock-typography>
+              <mock-typography>
+                Changara
+              </mock-typography>
+            </button>
           </div>
         </div>
       </div>
