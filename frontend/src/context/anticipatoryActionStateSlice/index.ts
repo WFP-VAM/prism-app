@@ -143,7 +143,8 @@ export function transform(data: any[]) {
               y =>
                 y.date === windowDates[index - 1] &&
                 y.index === x.index &&
-                y.phase === 'Ready',
+                y.phase === 'Ready' &&
+                y.probability >= y.trigger,
             );
             return {
               ...x,
