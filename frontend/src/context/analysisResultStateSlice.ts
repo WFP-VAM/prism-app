@@ -383,12 +383,14 @@ async function createAPIRequestParams(
   exposureValue?: ExposureValue,
 ): Promise<ApiData> {
   // Get default values for groupBy and admin boundary file path at the proper adminLevel
+
+  const adminLevel =
+    (params as AdminLevelDataLayerProps)?.adminLevel ||
+    (params as BoundaryLayerProps)?.adminLevelCodes.length;
   const {
     path: adminBoundariesPath,
     adminCode: groupBy,
-  } = getBoundaryLayersByAdminLevel(
-    (params as AdminLevelDataLayerProps)?.adminLevel,
-  );
+  } = getBoundaryLayersByAdminLevel(adminLevel);
 
   // Note - This may not work when running locally as the function
   // will default to the boundary layer hosted in S3.
@@ -671,7 +673,9 @@ export const requestAndStoreAnalysis = createAsyncThunk<
     api.getState(),
   ) as LayerData<AdminLevelDataLayerProps>;
 
-  const { adminLevel } = baselineLayer as AdminLevelDataLayerProps;
+  const adminLevel =
+    (baselineLayer as AdminLevelDataLayerProps)?.adminLevel ||
+    (baselineLayer as BoundaryLayerProps)?.adminLevelCodes.length;
   const adminBoundaries = getBoundaryLayersByAdminLevel(adminLevel);
   const adminBoundariesData = layerDataSelector(adminBoundaries.id)(
     api.getState(),
@@ -703,7 +707,7 @@ export const requestAndStoreAnalysis = createAsyncThunk<
     // if the baselineData doesn't exist, lets load it, otherwise check then load existing data.
     // similar code can be found at impact.ts
     if (baselineLayer.type === 'boundary') {
-      return { features: adminBoundariesData.data, layerData: [] };
+      return { ...adminBoundariesData.data, layerData: [] };
     }
     if (!baselineData && baselineLayer) {
       const { payload } = (await api.dispatch(
@@ -720,7 +724,7 @@ export const requestAndStoreAnalysis = createAsyncThunk<
       return checkBaselineDataLayer(baselineLayer.id, baselineData.data);
     }
 
-    return { features: adminBoundariesData.data, layerData: [] };
+    return { ...adminBoundariesData.data, layerData: [] };
   };
 
   const loadedAndCheckedBaselineData: BaselineLayerData = await getCheckedBaselineData();

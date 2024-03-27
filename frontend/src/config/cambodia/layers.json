@@ -1647,7 +1647,7 @@
     "loader": "ews",
     "type": "point_data",
     "data": "https://sensors.ews1294.com/api/v1",
-    "date_url": "",
+    "date_url": "active",
     "feature_info_props": {
       "status": {
         "type": "labelMapping",

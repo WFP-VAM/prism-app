@@ -116,7 +116,6 @@ const AdminLevelDataLayers = ({
     | LayerData<AdminLevelDataLayerProps>
     | undefined;
   const { data } = layerData || {};
-  const { features } = data || {};
 
   useEffect(() => {
     addFillPatternImagesInMap(layer, map);
@@ -148,12 +147,12 @@ const AdminLevelDataLayers = ({
         );
       }
     }
-    if (!features) {
+    if (!data) {
       dispatch(loadLayerData({ layer, date: queryDate }));
     }
-  }, [boundaryId, dispatch, features, layer, map, queryDate]);
+  }, [boundaryId, dispatch, data, layer, map, queryDate]);
 
-  if (!features) {
+  if (!data) {
     return null;
   }
 
@@ -162,7 +161,7 @@ const AdminLevelDataLayers = ({
   }
 
   return (
-    <Source type="geojson" data={features}>
+    <Source type="geojson" data={data}>
       <Layer
         id={getLayerMapId(layer.id)}
         type="fill"
