@@ -6,17 +6,15 @@ import {
   Block,
   //   Diversity3 in mui 5 for social assistance
 } from '@material-ui/icons';
-
-import { faSeedling, faSyringe } from '@fortawesome/free-solid-svg-icons';
-
-// verify the import of these icons
 import {
-  faPersonDigging,
   faCow,
-  faPlateWheat,
+  faHandshake,
   faPeopleGroup,
-  faHandshakeSimple,
-} from '@fortawesome/free-???-svg-icons';
+  faPersonDigging,
+  faPlateWheat,
+  faSeedling,
+  faSyringe,
+} from '@fortawesome/free-solid-svg-icons';
 
 interface Action {
   name: string;
@@ -57,7 +55,7 @@ const actions = {
   },
   contracts: {
     name: 'Signing contracts and mobilization of assets',
-    icon: faHandshakeSimple,
+    icon: faHandshake,
   },
   naMild: {
     name: 'No anticipatory action linked to Mild levels',
@@ -107,7 +105,7 @@ const actionsMap: ActionsMap = {
 };
 
 // Function to get actions by state, severity, and window
-function getActionsByStateSeverityAndWindow(
+export function getActionsByStateSeverityAndWindow(
   state: string,
   severity: string,
   window: string,
