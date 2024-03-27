@@ -212,7 +212,9 @@
     "exposure": {
       "population": ["population"],
       "crops": ["wheat", "potato", "veg", "fruit"],
-      "livestock": ["livestock"]
+      "livestock": ["livestock"],
+      "health_facilities": ["health_facilities"],
+      "fires": ["viirs_fires_2023_06_09"]
     }
   }
 }
