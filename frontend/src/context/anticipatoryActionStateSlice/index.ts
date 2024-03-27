@@ -147,7 +147,10 @@ export function transform(data: any[]) {
             );
             return {
               ...x,
-              isValid: prev && prev.probability >= prev.trigger,
+              isValid:
+                prev &&
+                prev.probability >= prev.trigger &&
+                x.probability >= x.trigger,
             };
           }
           console.error(`Invalid phase ${x.phase}`);
