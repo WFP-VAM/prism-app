@@ -2,6 +2,7 @@ import { camelCase, get, map, mapKeys } from 'lodash';
 import { appConfig, rawLayers, rawReports, rawTables } from '.';
 import {
   AdminLevelDataLayerProps,
+  AnticipatoryActionLayerProps,
   BoundaryLayerProps,
   checkRequiredKeys,
   CompositeLayerProps,
@@ -110,6 +111,11 @@ const getLayerByKey = (layerKey: LayerKey): LayerType => {
         return throwInvalidLayer();
       }
       return definition;
+    case 'anticipatory_action':
+      if (!checkRequiredKeys(AnticipatoryActionLayerProps, definition, true)) {
+        return throwInvalidLayer();
+      }
+      return definition;
     default:
       // doesn't do anything, but it helps catch any layer type cases we forgot above compile time via TS.
       // https://stackoverflow.com/questions/39419170/how-do-i-check-that-a-switch-block-is-exhaustive-in-typescript
@@ -137,13 +143,44 @@ function verifyValidImpactLayer(
   throwIfInvalid('baselineLayer');
 }
 
+export const AAWindowKeys = ['Window 1', 'Window 2'] as const;
+export const AAWindowKeyToLayerId: Record<
+  typeof AAWindowKeys[number],
+  string
+> = {
+  'Window 1': 'anticipatory_action_window_1',
+  'Window 2': 'anticipatory_action_window_2',
+};
+
 export const LayerDefinitions: LayersMap = (() => {
+  const aaUrl = appConfig.anticipatoryActionUrl;
+  const window1: AnticipatoryActionLayerProps = {
+    id: AAWindowKeyToLayerId[AAWindowKeys[0]],
+    csvWindowKey: AAWindowKeys[0],
+    title: 'Anticipatory Action Window 1',
+    type: 'anticipatory_action',
+    opacity: 0.9,
+  };
+
+  const window2: AnticipatoryActionLayerProps = {
+    id: AAWindowKeyToLayerId[AAWindowKeys[1]],
+    csvWindowKey: AAWindowKeys[1],
+    title: 'Anticipatory Action Window 2',
+    type: 'anticipatory_action',
+    opacity: 0.9,
+  };
+
   const layers = Object.keys(rawLayers).reduce(
     (acc, layerKey) => ({
       ...acc,
       [layerKey]: getLayerByKey(layerKey as LayerKey),
     }),
-    {} as LayersMap,
+    (aaUrl
+      ? {
+          [AAWindowKeyToLayerId[AAWindowKeys[0]]]: window1,
+          [AAWindowKeyToLayerId[AAWindowKeys[1]]]: window2,
+        }
+      : {}) as LayersMap,
   );
 
   // Verify that the layers referenced by impact layers actually exist

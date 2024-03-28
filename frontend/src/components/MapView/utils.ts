@@ -196,7 +196,10 @@ export const checkLayerAvailableDatesAndContinueOrRemove = (
   dispatch: Dispatch,
 ) => {
   const { id: layerId } = layer as any;
-  if (serverAvailableDates[layerId]?.length !== 0) {
+  if (
+    serverAvailableDates[layerId]?.length !== 0 ||
+    layer.type === 'anticipatory_action'
+  ) {
     return;
   }
   const urlLayerKey = getUrlKey(layer);

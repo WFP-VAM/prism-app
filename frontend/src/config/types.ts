@@ -9,7 +9,7 @@ import {
 import { Dispatch } from 'redux';
 import { TFunction } from 'i18next';
 import { rawLayers } from '.';
-import type { ReportKey, TableKey } from './utils';
+import type { AAWindowKeys, ReportKey, TableKey } from './utils';
 import type { PopupMetaData } from '../context/tooltipStateSlice';
 
 // TODO currently unused. Could be harnessed within admin levels key typing
@@ -25,7 +25,8 @@ export type LayerType =
   | ImpactLayerProps
   | PointDataLayerProps
   | CompositeLayerProps
-  | StaticRasterLayerProps;
+  | StaticRasterLayerProps
+  | AnticipatoryActionLayerProps;
 
 type UnionToIntersection<U> = (U extends any ? (k: U) => void : never) extends (
   k: infer I,
@@ -411,8 +412,8 @@ export type ValidityPeriod = {
 
 export type Validity = {
   mode: DatesPropagation; // Propagation mode for dates.
-  backward: number; // Number of days/dekades backward.
-  forward: number; // Number of days/dekades forward.
+  backward?: number; // Number of days/dekades backward.
+  forward?: number; // Number of days/dekades forward.
 };
 
 export class WMSLayerProps extends CommonLayerProps {
@@ -866,3 +867,11 @@ export type MapEventWrapFunctionProps<T> = {
 export type MapEventWrapFunction<T> = (
   props: MapEventWrapFunctionProps<T>,
 ) => (evt: MapLayerMouseEvent) => void;
+
+export class AnticipatoryActionLayerProps extends CommonLayerProps {
+  type: 'anticipatory_action';
+  csvWindowKey: typeof AAWindowKeys[number];
+
+  @makeRequired
+  title: string;
+}

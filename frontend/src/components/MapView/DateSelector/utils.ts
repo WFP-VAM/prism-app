@@ -1,7 +1,7 @@
 import { DateCompatibleLayer } from 'utils/server-utils';
 import { DateItem } from 'config/types';
 
-export const TIMELINE_ITEM_WIDTH = 10;
+export const TIMELINE_ITEM_WIDTH = 4;
 
 export type DateCompatibleLayerWithDateItems = DateCompatibleLayer & {
   dateItems: DateItem[];

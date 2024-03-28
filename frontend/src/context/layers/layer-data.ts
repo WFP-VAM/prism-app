@@ -1,5 +1,6 @@
 import { createAsyncThunk, AsyncThunk } from '@reduxjs/toolkit';
 import {
+  AnticipatoryActionLayerProps,
   DiscriminateUnion,
   LayerType,
   PointLayerData,
@@ -19,7 +20,10 @@ import { fetchImpactLayerData, ImpactLayerData } from './impact';
 import type { CompositeLayerData } from './composite_data';
 import { fetchCompositeLayerData } from './composite_data';
 
-export type LayerAcceptingDataType = Exclude<LayerType, StaticRasterLayerProps>;
+export type LayerAcceptingDataType = Exclude<
+  LayerType,
+  StaticRasterLayerProps | AnticipatoryActionLayerProps
+>;
 
 type LayerSpecificDataTypes = {
   boundary: BoundaryLayerData;

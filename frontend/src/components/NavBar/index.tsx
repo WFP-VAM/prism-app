@@ -22,6 +22,7 @@ import {
   ImageAspectRatioOutlined,
   LayersOutlined,
   TableChartOutlined,
+  TimerOutlined,
 } from '@material-ui/icons';
 import { useDispatch, useSelector } from 'react-redux';
 import {
@@ -37,7 +38,10 @@ import Legends from 'components/MapView/Legends';
 import { black, cyanBlue } from 'muiTheme';
 import { analysisResultSelector } from 'context/analysisResultStateSlice';
 import { areChartLayersAvailable } from 'config/utils';
-import { areTablesAvailable } from 'components/MapView/LeftPanel/utils';
+import {
+  areTablesAvailable,
+  isAnticipatoryActionAvailable,
+} from 'components/MapView/LeftPanel/utils';
 import { PanelSize } from 'config/types';
 import About from './About';
 import LanguageSelector from './LanguageSelector';
@@ -56,6 +60,15 @@ const panels = [
   ...(areTablesAvailable
     ? [{ panel: Panel.Tables, label: 'Tables', icon: <TableChartOutlined /> }]
     : []),
+  ...(isAnticipatoryActionAvailable
+    ? [
+        {
+          panel: Panel.AnticipatoryAction,
+          label: 'A. Action',
+          icon: <TimerOutlined />,
+        },
+      ]
+    : []),
 ];
 
 function NavBar({ classes, isAlertFormOpen, setIsAlertFormOpen }: NavBarProps) {
@@ -68,9 +81,7 @@ function NavBar({ classes, isAlertFormOpen, setIsAlertFormOpen }: NavBarProps) {
 
   const { numberOfActiveLayers } = useLayers();
 
-  const badgeContent = !analysisData
-    ? numberOfActiveLayers
-    : numberOfActiveLayers + 1;
+  const badgeContent = numberOfActiveLayers + Number(Boolean(analysisData));
 
   const rightSideLinks = [
     {

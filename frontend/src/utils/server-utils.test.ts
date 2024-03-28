@@ -25,7 +25,10 @@ describe('Test generateIntermediateDateItemFromValidity', () => {
       },
     };
 
-    const output = generateIntermediateDateItemFromValidity(layer);
+    const output = generateIntermediateDateItemFromValidity(
+      layer.dates,
+      layer.validity,
+    );
     expect(output).toEqual([
       {
         displayDate: new Date('2023-12-01').setHours(12, 0),
@@ -172,7 +175,10 @@ describe('Test generateIntermediateDateItemFromValidity', () => {
         mode: DatesPropagation.DAYS,
       },
     };
-    const output = generateIntermediateDateItemFromValidity(layer);
+    const output = generateIntermediateDateItemFromValidity(
+      layer.dates,
+      layer.validity,
+    );
     expect(output).toEqual([
       {
         displayDate: new Date('2023-11-21').setHours(12, 0),
@@ -277,7 +283,10 @@ describe('Test generateIntermediateDateItemFromValidity', () => {
         mode: DatesPropagation.DEKAD,
       },
     };
-    const output = generateIntermediateDateItemFromValidity(layer);
+    const output = generateIntermediateDateItemFromValidity(
+      layer.dates,
+      layer.validity,
+    );
     expect(output).toEqual([
       {
         displayDate: new Date('2023-11-21').setHours(12, 0),

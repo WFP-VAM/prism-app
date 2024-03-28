@@ -55,6 +55,7 @@ const getTypeOrder = (layer: LayerType) => {
   return layer.type;
 };
 
+// TODO: update ordering?
 // Order layers to keep boundaries and point_data on top. boundaries first.
 export const layerOrdering = (a: LayerType, b: LayerType) => {
   // Dictionary with all the available layerTypes
@@ -69,7 +70,8 @@ export const layerOrdering = (a: LayerType, b: LayerType) => {
       | 'impact'
       | 'point_data'
       | 'polygon'
-      | 'static_raster']: number;
+      | 'static_raster'
+      | 'anticipatory_action']: number;
   } = {
     point_data: 0,
     polygon: 1,
@@ -80,6 +82,7 @@ export const layerOrdering = (a: LayerType, b: LayerType) => {
     composite: 5,
     wms: 6,
     static_raster: 7,
+    anticipatory_action: 8,
   };
 
   const typeA = getTypeOrder(a);

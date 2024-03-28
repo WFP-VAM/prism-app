@@ -329,6 +329,12 @@ exports[`renders as expected 1`] = `
             style="display: none; flex-grow: 1; overflow-x: auto;"
           />
           <div
+            aria-labelledby="full-width-tab-anticipatory_action"
+            id="full-width-tabpanel-anticipatory_action"
+            role="tabpanel"
+            style="display: none; flex-grow: 1; overflow-x: auto;"
+          />
+          <div
             aria-labelledby="full-width-tab-none"
             id="full-width-tabpanel-none"
             role="tabpanel"
