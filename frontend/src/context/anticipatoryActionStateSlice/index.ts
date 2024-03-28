@@ -136,7 +136,7 @@ export function transform(data: any[]) {
           if (x.phase === 'Ready') {
             return {
               ...x,
-              isValid: x.probability >= x.trigger,
+              isValid: x.probability > x.trigger,
             };
           }
           if (x.phase === 'Set') {
@@ -150,8 +150,8 @@ export function transform(data: any[]) {
               ...x,
               isValid:
                 prev &&
-                prev.probability >= prev.trigger &&
-                x.probability >= x.trigger,
+                prev.probability > prev.trigger &&
+                x.probability > x.trigger,
             };
           }
           console.error(`Invalid phase ${x.phase}`);
