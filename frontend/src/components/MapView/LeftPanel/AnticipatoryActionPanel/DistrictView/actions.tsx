@@ -1,3 +1,4 @@
+import React from 'react';
 import {
   MarkunreadOutlined,
   LocalDrink,
@@ -15,6 +16,14 @@ import {
   faSeedling,
   faSyringe,
 } from '@fortawesome/free-solid-svg-icons';
+import {
+  FontAwesomeIcon,
+  FontAwesomeIconProps,
+} from '@fortawesome/react-fontawesome';
+
+const FontAwesomeIconWrap = (props: FontAwesomeIconProps) => (
+  <FontAwesomeIcon fontSize="1.5rem" {...props} />
+);
 
 interface Action {
   name: string;
@@ -22,44 +31,53 @@ interface Action {
 }
 
 // Simplified, reusable action items with full names
-const actions = {
+export const AActions = {
   warnings: {
     name: 'Dissemination of early warning messages',
-    icon: MarkunreadOutlined,
+    icon: <MarkunreadOutlined />,
   },
-  seeds: { name: 'Distribution of seeds for re-sowing', icon: faSeedling },
+  seeds: {
+    name: 'Distribution of seeds for re-sowing',
+    icon: <FontAwesomeIconWrap icon={faSeedling} />,
+  },
   seedsW2: {
     name: 'Distribution of seeds and vegetative material for the second season',
     // TODO - get 2 plant icon figma
-    icon: faSeedling,
+    icon: <FontAwesomeIconWrap icon={faSeedling} />,
   },
-  waterHoles: { name: 'Rehabilitation of boreholes', icon: LocalDrink },
+  waterHoles: { name: 'Rehabilitation of boreholes', icon: <LocalDrink /> },
   multiUse: {
     name: 'Transform boreholes into multi-use systems',
-    icon: faPersonDigging,
+    icon: <FontAwesomeIconWrap icon={faPersonDigging} />,
   },
   cattle: {
     name: 'Moving Cattle to places with water availability',
-    icon: faCow,
+    icon: <FontAwesomeIconWrap icon={faCow} />,
   },
   vaccination: {
     name: 'Vaccination of birds against New Castle',
-    icon: faSyringe,
+    icon: <FontAwesomeIconWrap icon={faSyringe} />,
   },
-  foodAssistance: { name: 'Food Assistance', icon: faPlateWheat },
-  socialAssistance: { name: 'Social assistance', icon: faPeopleGroup }, // replace with 'Diversity3'
-  schoolLunch: { name: 'School lunches', icon: School },
+  foodAssistance: {
+    name: 'Food Assistance',
+    icon: <FontAwesomeIconWrap icon={faPlateWheat} />,
+  },
+  socialAssistance: {
+    name: 'Social assistance',
+    icon: <FontAwesomeIconWrap icon={faPeopleGroup} />,
+  }, // replace with 'Diversity3'
+  schoolLunch: { name: 'School lunches', icon: <School /> },
   procurement: {
     name: 'Launching tenders and other Procurement procedures',
-    icon: AccountTree,
+    icon: <AccountTree />,
   },
   contracts: {
     name: 'Signing contracts and mobilization of assets',
-    icon: faHandshake,
+    icon: <FontAwesomeIconWrap icon={faHandshake} />,
   },
   naMild: {
     name: 'No anticipatory action linked to Mild levels',
-    icon: Block,
+    icon: <Block />,
   },
 };
 
@@ -70,37 +88,37 @@ type ActionsMap = {
 
 // Define the actions map
 const actionsMap: ActionsMap = {
-  readyModerateW1: [actions.procurement],
-  readyModerateW2: [actions.procurement],
-  readySevereW1: [actions.procurement],
-  readySevereW2: [actions.procurement],
+  readyModerateW1: [AActions.procurement],
+  readyModerateW2: [AActions.procurement],
+  readySevereW1: [AActions.procurement],
+  readySevereW2: [AActions.procurement],
   setModerateW1: [
-    actions.contracts,
-    actions.warnings,
-    actions.seeds,
-    actions.waterHoles,
-    actions.multiUse,
+    AActions.contracts,
+    AActions.warnings,
+    AActions.seeds,
+    AActions.waterHoles,
+    AActions.multiUse,
   ],
   setModerateW2: [
-    actions.contracts,
-    actions.warnings,
-    actions.seeds,
-    actions.vaccination,
-    actions.socialAssistance,
+    AActions.contracts,
+    AActions.warnings,
+    AActions.seeds,
+    AActions.vaccination,
+    AActions.socialAssistance,
   ],
   setSevereW1: [
-    actions.contracts,
-    actions.warnings,
-    actions.cattle,
-    actions.waterHoles,
-    actions.multiUse,
+    AActions.contracts,
+    AActions.warnings,
+    AActions.cattle,
+    AActions.waterHoles,
+    AActions.multiUse,
   ],
   setSevereW2: [
-    actions.contracts,
-    actions.warnings,
-    actions.foodAssistance,
-    actions.schoolLunch,
-    actions.socialAssistance,
+    AActions.contracts,
+    AActions.warnings,
+    AActions.foodAssistance,
+    AActions.schoolLunch,
+    AActions.socialAssistance,
   ],
 };
 
