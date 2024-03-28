@@ -36,13 +36,12 @@ function AAIcon({ background, topText, bottomText, color }: AAIconProps) {
 const useAAIconStyles = makeStyles(() =>
   createStyles({
     iconWrapper: {
-      minHeight: '4rem',
       height: '100%',
       borderRadius: '2px 0 0 2px',
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
-      fontWeight: 'bolder',
+      fontFamily: 'Roboto',
     },
     centerContainer: {
       width: '2.1em',
@@ -54,11 +53,13 @@ const useAAIconStyles = makeStyles(() =>
       textAlign: 'center',
       fontSize: '14px',
       lineHeight: '17px',
+      fontWeight: 700,
     },
     bottomTextContainer: {
       textAlign: 'center',
       fontSize: '10px',
       lineHeight: '17px',
+      fontWeight: 400,
     },
   }),
 );

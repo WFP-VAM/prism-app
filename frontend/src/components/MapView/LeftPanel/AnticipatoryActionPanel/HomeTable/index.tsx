@@ -2,7 +2,7 @@ import { Typography, createStyles, makeStyles } from '@material-ui/core';
 import { useSafeTranslation } from 'i18n';
 import { borderGray, gray } from 'muiTheme';
 import React from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import {
   AACategoryType,
   AAPhaseType,
@@ -11,21 +11,25 @@ import { AAWindowKeys } from 'config/utils';
 import {
   AAFiltersSelector,
   AARenderedDistrictsSelector,
+  setAASelectedDistrict,
 } from 'context/anticipatoryActionStateSlice';
+import { setPanelSize } from 'context/leftPanelStateSlice';
+import { PanelSize } from 'config/types';
 import { AADataSeverityOrder, getAAIcon } from '../utils';
 
 interface AreaTagProps {
   name: string;
   isNew: boolean;
+  onClick: (e?: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
 }
 
-function AreaTag({ name, isNew }: AreaTagProps) {
+function AreaTag({ name, isNew, onClick }: AreaTagProps) {
   const classes = useAreaTagStyles();
   return (
-    <div className={classes.areaTagWrapper}>
+    <button type="button" className={classes.areaTagWrapper} onClick={onClick}>
       <Typography>{name}</Typography>
       {isNew && <div className={classes.newTag}>NEW</div>}
-    </div>
+    </button>
   );
 }
 
@@ -39,6 +43,11 @@ const useAreaTagStyles = makeStyles(() =>
       alignItems: 'center',
       gap: '0.25em',
       padding: '0 0.25em',
+      background: 'none',
+      boxShadow: 'none',
+      '&:hover': {
+        cursor: 'pointer',
+      },
     },
     newTag: {
       height: '2em',
@@ -123,7 +132,7 @@ const useRowStyles = makeStyles(() =>
       justifyContent: 'space-between',
       padding: '0.125rem 0.5rem',
     },
-    iconCol: { width: '3rem' },
+    iconCol: { width: '3rem', minHeight: '4rem' },
     windowBackground: {
       background: 'white',
       height: '100%',
@@ -169,8 +178,13 @@ type ExtendedRowProps = RowProps & { id: number | 'na' | 'ny' };
 
 function HomeTable() {
   const classes = useHomeTableStyles();
+  const dispatch = useDispatch();
   const { selectedWindow, categories } = useSelector(AAFiltersSelector);
   const renderedDistricts = useSelector(AARenderedDistrictsSelector);
+
+  React.useEffect(() => {
+    dispatch(setPanelSize(PanelSize.medium));
+  }, [dispatch]);
 
   const headerRow: ExtendedRowProps = {
     id: -1,
@@ -191,7 +205,11 @@ function HomeTable() {
                   distData.category === x.category &&
                   distData.phase === x.phase
                 ) {
-                  return { name: district, isNew: distData.isNew };
+                  return {
+                    name: district,
+                    isNew: distData.isNew,
+                    onClick: () => dispatch(setAASelectedDistrict(district)),
+                  };
                 }
                 return undefined;
               })
@@ -206,7 +224,7 @@ function HomeTable() {
                 : [getWinData(selectedWindow)],
           } as any;
         }),
-    [categories, renderedDistricts, selectedWindow],
+    [categories, dispatch, renderedDistricts, selectedWindow],
   );
 
   const rows: ExtendedRowProps[] = [headerRow, ...districtRows];
@@ -225,7 +243,7 @@ const useHomeTableStyles = makeStyles(() =>
     tableWrapper: {
       display: 'flex',
       flexDirection: 'column',
-      width: '100%',
+      width: PanelSize.medium,
       background: gray,
       padding: '0.5rem 0',
       overflow: 'scroll',

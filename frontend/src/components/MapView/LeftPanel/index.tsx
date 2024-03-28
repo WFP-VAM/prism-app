@@ -13,13 +13,13 @@ import {
   availableDatesSelector,
   updateLayersCapabilities,
 } from 'context/serverStateSlice';
+import { getUrlKey, useUrlHistory } from 'utils/url-utils';
+import { layersSelector, mapSelector } from 'context/mapStateSlice/selectors';
 import {
   AAAvailableDatesSelector,
   AADataSelector,
   loadAAData,
 } from 'context/anticipatoryActionStateSlice';
-import { getUrlKey, useUrlHistory } from 'utils/url-utils';
-import { layersSelector, mapSelector } from 'context/mapStateSlice/selectors';
 import AnalysisPanel from './AnalysisPanel';
 import ChartsPanel from './ChartsPanel';
 import TablesPanel from './TablesPanel';
@@ -111,7 +111,7 @@ const LeftPanel = memo(() => {
     if (
       tabValue !== Panel.AnticipatoryAction &&
       AALayersInUrl.length > 0 &&
-      Object.keys(AAData).length === 0
+      Object.keys(AAData['Window 1']).length === 0
     ) {
       dispatch(setTabValue(Panel.AnticipatoryAction));
     }
@@ -123,7 +123,7 @@ const LeftPanel = memo(() => {
       tabValue !== Panel.AnticipatoryAction &&
       tabValue !== Panel.None &&
       AALayersInUrl.length > 0 &&
-      Object.keys(AAData).length !== 0
+      Object.keys(AAData['Window 1']).length !== 0
     ) {
       AALayers.forEach(x =>
         toggleRemoveLayer(x, map, getUrlKey(x), dispatch, removeLayerFromUrl),
@@ -255,8 +255,7 @@ const useStyles = makeStyles<Theme, StyleProps>(() =>
       flexDirection: 'column',
       height: '100%',
       order: -2,
-      width: ({ panelSize }) =>
-        panelSize !== PanelSize.folded ? PanelSize.medium : PanelSize.folded,
+      width: ({ panelSize }) => panelSize,
     },
   }),
 );

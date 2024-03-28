@@ -1,16 +1,25 @@
 import {
   Button,
   FormControl,
+  IconButton,
+  Input,
+  MenuItem,
   RadioGroup,
   Typography,
   createStyles,
   makeStyles,
 } from '@material-ui/core';
-import { PanelSize } from 'config/types';
 import { black, cyanBlue } from 'muiTheme';
 import React from 'react';
 import { useSafeTranslation } from 'i18n';
-import { GetApp, EditOutlined, BarChartOutlined } from '@material-ui/icons';
+import {
+  GetApp,
+  EditOutlined,
+  BarChartOutlined,
+  ArrowBackIos,
+  ClearAll,
+  Equalizer,
+} from '@material-ui/icons';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   AACategoryType,
@@ -18,8 +27,12 @@ import {
 } from 'context/anticipatoryActionStateSlice/types';
 import { AAWindowKeys } from 'config/utils';
 import {
+  AADataSelector,
   AAFiltersSelector,
+  AAMonitoredDistrictsSelector,
+  AASelectedDistrictSelector,
   setAAFilters,
+  setAASelectedDistrict,
 } from 'context/anticipatoryActionStateSlice';
 import { availableDatesSelector } from 'context/serverStateSlice';
 import { dateRangeSelector } from 'context/mapStateSlice/selectors';
@@ -29,13 +42,19 @@ import {
 } from 'utils/server-utils';
 import { getFormattedDate } from 'utils/date-utils';
 import { DateFormat } from 'utils/name-utils';
-import { StyledCheckboxLabel, StyledRadioLabel } from './utils';
+import { StyledCheckboxLabel, StyledRadioLabel, StyledSelect } from './utils';
+import DistrictView from './DistrictView/index';
 import HomeTable from './HomeTable';
 
-const buttons = [
+const homeButtons = [
   { icon: GetApp, text: 'Assets' },
   { icon: EditOutlined, text: 'Report' },
   { icon: BarChartOutlined, text: 'Forecast' },
+];
+
+const districtButtons = [
+  { icon: ClearAll, text: 'Timeline' },
+  { icon: Equalizer, text: 'Forecast' },
 ];
 
 const links = [
@@ -56,10 +75,28 @@ function AnticipatoryActionPanel() {
   const classes = useStyles();
   const dispatch = useDispatch();
   const { t } = useSafeTranslation();
-  const { categories: categoryFilters } = useSelector(AAFiltersSelector);
+  const monitoredDistricts = useSelector(AAMonitoredDistrictsSelector);
+  const { categories: categoryFilters, selectedIndex } = useSelector(
+    AAFiltersSelector,
+  );
   const serverAvailableDates = useSelector(availableDatesSelector);
-
   const { startDate: selectedDate } = useSelector(dateRangeSelector);
+  const selectedDistrict = useSelector(AASelectedDistrictSelector);
+  const aaData = useSelector(AADataSelector);
+  const [indexOptions, setIndexOptions] = React.useState<string[]>([]);
+
+  React.useEffect(() => {
+    if (!selectedDistrict) {
+      return;
+    }
+    const entries = Object.values(aaData)
+      .map(x => x[selectedDistrict])
+      .flat()
+      .filter(x => x);
+
+    const options = [...new Set(entries.map(x => x.index))];
+    setIndexOptions(options);
+  }, [aaData, selectedDistrict]);
 
   const layerAvailableDates = getAAAvailableDatesCombined(serverAvailableDates);
   const queryDate = getRequestDate(layerAvailableDates, selectedDate);
@@ -72,9 +109,38 @@ function AnticipatoryActionPanel() {
   return (
     <div className={classes.anticipatoryActionPanel}>
       <div className={classes.headerWrapper}>
-        <div>
-          <Typography variant="h2">Phases: global view</Typography>
+        <div className={classes.titleSelectWrapper}>
+          <div className={classes.titleSelectWrapper}>
+            {selectedDistrict && (
+              <IconButton onClick={() => dispatch(setAASelectedDistrict(''))}>
+                <ArrowBackIos fontSize="small" />
+              </IconButton>
+            )}
+            <StyledSelect
+              value={selectedDistrict || 'empty'}
+              fullWidth
+              input={<Input disableUnderline />}
+              renderValue={() => (
+                <Typography variant="h2">
+                  {selectedDistrict || 'Phases: global view'}
+                </Typography>
+              )}
+            >
+              {monitoredDistricts.map(x => (
+                <MenuItem
+                  key={x}
+                  value={x}
+                  onClick={() => {
+                    dispatch(setAASelectedDistrict(x));
+                  }}
+                >
+                  {x}
+                </MenuItem>
+              ))}
+            </StyledSelect>
+          </div>
         </div>
+
         <div>
           <FormControl component="fieldset">
             <RadioGroup
@@ -91,6 +157,7 @@ function AnticipatoryActionPanel() {
             </RadioGroup>
           </FormControl>
         </div>
+
         <div>
           {checkboxes.map(x => (
             <StyledCheckboxLabel
@@ -107,11 +174,48 @@ function AnticipatoryActionPanel() {
             />
           ))}
         </div>
+
+        {selectedDistrict && (
+          <div>
+            <StyledSelect
+              value={selectedIndex || 'empty'}
+              fullWidth
+              input={<Input disableUnderline />}
+              renderValue={() => (
+                <Typography variant="h3">
+                  {selectedIndex || 'Emergency triggers'}
+                </Typography>
+              )}
+            >
+              <MenuItem
+                value=""
+                onClick={() => {
+                  dispatch(setAAFilters({ selectedIndex: '' }));
+                }}
+              >
+                All
+              </MenuItem>
+              {indexOptions.map(x => (
+                <MenuItem
+                  key={x}
+                  value={x}
+                  onClick={() => {
+                    dispatch(setAAFilters({ selectedIndex: x }));
+                  }}
+                >
+                  {x}
+                </MenuItem>
+              ))}
+            </StyledSelect>
+          </div>
+        )}
       </div>
-      <HomeTable />
+      {selectedDistrict === '' && <HomeTable />}
+      {selectedDistrict !== '' && <DistrictView />}
+      {/* TODO: consider moving this part to each sub-component */}
       <div className={classes.footerWrapper}>
         <div className={classes.footerActionsWrapper}>
-          {buttons.map(x => (
+          {(selectedDistrict !== '' ? districtButtons : homeButtons).map(x => (
             <Button
               key={x.text}
               className={classes.footerButton}
@@ -145,7 +249,6 @@ function AnticipatoryActionPanel() {
 const useStyles = makeStyles(() =>
   createStyles({
     anticipatoryActionPanel: {
-      width: PanelSize.medium,
       display: 'flex',
       flexDirection: 'column',
       gap: '1rem',
@@ -179,6 +282,12 @@ const useStyles = makeStyles(() =>
     },
     footerButton: { borderColor: cyanBlue, color: black },
     footerLink: { textDecoration: 'underline' },
+    titleSelectWrapper: {
+      display: 'flex',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      width: '100%',
+    },
   }),
 );
 

@@ -30,14 +30,17 @@ export interface AnticipatoryActionData {
 export const allWindowsKey = 'All';
 
 export type AnticipatoryActionState = {
-  data: { [windowKey: string]: AnticipatoryActionData | undefined };
+  data: Record<typeof AAWindowKeys[number], AnticipatoryActionData>;
   // availableDates used to update layer available dates after csv processed
   availableDates?: { [windowKey: string]: DateItem[] };
+  monitoredDistricts: string[];
   filters: {
     selectedDate: string | undefined;
     selectedWindow: typeof AAWindowKeys[number] | typeof allWindowsKey;
+    selectedIndex: string;
     categories: Record<AACategoryType, boolean>;
   };
+  selectedDistrict: string;
   renderedDistricts: Record<
     typeof AAWindowKeys[number],
     {
