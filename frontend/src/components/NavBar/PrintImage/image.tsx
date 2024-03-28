@@ -45,9 +45,13 @@ import { cyanBlue } from 'muiTheme';
 import { SimpleBoundaryDropdown } from 'components/MapView/Layers/BoundaryDropdown';
 import { getBoundaryLayerSingleton } from 'config/utils';
 import { LayerData } from 'context/layers/layer-data';
-import { AARenderedDistrictsSelector } from 'context/anticipatoryActionStateSlice';
+import {
+  AAFiltersSelector,
+  AARenderedDistrictsSelector,
+} from 'context/anticipatoryActionStateSlice';
 import { calculateCentroids, useAAMarkerScalePercent } from 'utils/map-utils';
 import { getAAIcon } from 'components/MapView/LeftPanel/AnticipatoryActionPanel/utils';
+import { calculateCombinedAAMapData } from 'context/anticipatoryActionStateSlice/utils';
 import {
   dateRangeSelector,
   layerDataSelector,
@@ -157,6 +161,7 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
   const selectedMap = useSelector(mapSelector);
   const dateRange = useSelector(dateRangeSelector);
   const AARenderedDistricts = useSelector(AARenderedDistrictsSelector);
+  const { selectedWindow: AASelectedWindow } = useSelector(AAFiltersSelector);
   const printRef = useRef<HTMLDivElement>(null);
   const overlayContainerRef = useRef<HTMLDivElement>(null);
   const titleOverlayRef = useRef<HTMLDivElement>(null);
@@ -508,25 +513,31 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
   ]);
 
   const AAMarkers = React.useMemo(() => {
-    const combined = Object.values(AARenderedDistricts).reduce(
-      (acc, curr) => ({ ...acc, ...curr }),
-      {},
-    );
-    return Object.entries(combined).map(([district, { category, phase }]) => {
-      const centroid = districtCentroids[district] || {
-        geometry: { coordinates: [0, 0] },
-      };
-      const icon = getAAIcon(category, phase, true);
+    const AADistricts =
+      AASelectedWindow === 'All'
+        ? {
+            ...calculateCombinedAAMapData(AARenderedDistricts, 'Window 1'),
+            ...calculateCombinedAAMapData(AARenderedDistricts, 'Window 2'),
+          }
+        : AARenderedDistricts[AASelectedWindow];
 
-      return {
-        district,
-        longitude: centroid?.geometry.coordinates[0],
-        latitude: centroid?.geometry.coordinates[1],
-        icon,
-        centroid,
-      };
-    });
-  }, [AARenderedDistricts, districtCentroids]);
+    return Object.entries(AADistricts).map(
+      ([district, { category, phase }]) => {
+        const centroid = districtCentroids[district] || {
+          geometry: { coordinates: [0, 0] },
+        };
+        const icon = getAAIcon(category, phase, true);
+
+        return {
+          district,
+          longitude: centroid?.geometry.coordinates[0],
+          latitude: centroid?.geometry.coordinates[1],
+          icon,
+          centroid,
+        };
+      },
+    );
+  }, [AARenderedDistricts, AASelectedWindow, districtCentroids]);
 
   const scalePercent = useAAMarkerScalePercent(mapRef.current?.getMap());
 

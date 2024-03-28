@@ -13,13 +13,13 @@ import {
   availableDatesSelector,
   updateLayersCapabilities,
 } from 'context/serverStateSlice';
-import {
-  AnticipatoryActionAvailableDatesSelector,
-  AnticipatoryActionDataSelector,
-  loadAAData,
-} from 'context/anticipatoryActionStateSlice';
 import { getUrlKey, useUrlHistory } from 'utils/url-utils';
 import { layersSelector, mapSelector } from 'context/mapStateSlice/selectors';
+import {
+  AAAvailableDatesSelector,
+  AADataSelector,
+  loadAAData,
+} from 'context/anticipatoryActionStateSlice';
 import AnalysisPanel from './AnalysisPanel';
 import ChartsPanel from './ChartsPanel';
 import TablesPanel from './TablesPanel';
@@ -62,11 +62,9 @@ const LeftPanel = memo(() => {
   const dispatch = useDispatch();
   const tabValue = useSelector(leftPanelTabValueSelector);
   const panelSize = useSelector(leftPanelSizeSelector);
-  const AAData = useSelector(AnticipatoryActionDataSelector);
+  const AAData = useSelector(AADataSelector);
   const serverAvailableDates = useSelector(availableDatesSelector);
-  const AAAvailableDates = useSelector(
-    AnticipatoryActionAvailableDatesSelector,
-  );
+  const AAAvailableDates = useSelector(AAAvailableDatesSelector);
   const selectedLayers = useSelector(layersSelector);
   const map = useSelector(mapSelector);
   const {

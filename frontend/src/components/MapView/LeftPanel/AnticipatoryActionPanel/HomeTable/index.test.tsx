@@ -4,7 +4,7 @@ import { Provider } from 'react-redux';
 import { BrowserRouter } from 'react-router-dom';
 import configureStore from 'redux-mock-store';
 import HomeTable from '.';
-import { mockAAData } from '../test.utils';
+import { mockAARenderedDistricts } from '../test.utils';
 
 const mockStore = configureStore([]);
 
@@ -20,14 +20,16 @@ const store = mockStore({
   },
   serverState: { availableDates: {}, loading: false },
   anticipatoryActionState: {
-    selectedWindow: 'Window 1',
-    categoryFilters: {
-      Severo: true,
-      Moderado: true,
-      Leve: true,
+    filters: {
+      selectedWindow: 'Window 1',
+      categories: {
+        Severe: true,
+        Moderate: true,
+        Mild: true,
+      },
     },
     monitoredDistricts: ['Caia'],
-    data: mockAAData,
+    renderedDistricts: mockAARenderedDistricts,
   },
 });
 

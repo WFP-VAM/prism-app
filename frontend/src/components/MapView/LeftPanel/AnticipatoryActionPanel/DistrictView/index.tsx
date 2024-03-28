@@ -5,43 +5,89 @@ import { useDispatch, useSelector } from 'react-redux';
 import { setPanelSize } from 'context/leftPanelStateSlice';
 import { PanelSize } from 'config/types';
 import {
-  AACategoryFiltersSelector,
-  AASelectedWindowSelector,
-  AnticipatoryActionDataSelector,
-} from 'context/anticipatoryActionStateSlice';
-import {
-  AACategoryType,
   AnticipatoryActionDataRow,
+  AnticipatoryActionState,
 } from 'context/anticipatoryActionStateSlice/types';
 import { AAWindowKeys } from 'config/utils';
+import {
+  AADataSelector,
+  AAFiltersSelector,
+  AASelectedDistrictSelector,
+} from 'context/anticipatoryActionStateSlice';
 import { AADataSeverityOrder, getAAIcon } from '../utils';
 
 function transform(
   data: AnticipatoryActionDataRow[] | undefined,
-  categoryFilters: Record<AACategoryType, boolean>,
+  filters: AnticipatoryActionState['filters'],
 ) {
   if (!data) {
     return undefined;
   }
+  const { categories: categoryFilters, selectedIndex } = filters;
 
   const validData = data.filter(
     x =>
-      x.probability !== 'NA' &&
-      Number(x.probability) >= Number(x.trigger) &&
-      categoryFilters[x.category],
+      (x.computedRow || x.isValid) &&
+      categoryFilters[x.category] &&
+      (selectedIndex === '' || x.index === selectedIndex),
   );
 
-  const monthsMap = new Map<string, string>();
+  const monthsMap = new Map<string, AnticipatoryActionDataRow[]>();
   validData.forEach(x => {
-    monthsMap.set(
-      x.date,
-      new Date(x.date).toLocaleString('en-US', { month: 'long' }),
-    );
+    const val = monthsMap.get(x.date);
+    monthsMap.set(x.date, val ? [...val, x] : [x]);
   });
-  const months = Object.fromEntries(monthsMap);
+
+  // eslint-disable-next-line fp/no-mutating-methods
+  const months = Array.from(monthsMap.keys()).sort();
+
+  let prevMax: AnticipatoryActionDataRow | undefined;
+  const topFiltered = months
+    .map(date => {
+      const dateData = monthsMap.get(date);
+      if (!dateData) {
+        // this should never happen
+        throw new Error('Invalid Date');
+      }
+
+      if (dateData.filter(x => !x.computedRow).length === 0) {
+        return [];
+      }
+
+      // eslint-disable-next-line fp/no-mutating-methods
+      const sorted = dateData.sort((a, b) => {
+        const aVal = AADataSeverityOrder(a.category, a.phase, 1);
+        const bVal = AADataSeverityOrder(b.category, b.phase, 1);
+
+        if (aVal > bVal) {
+          return -1;
+        }
+        if (aVal < bVal) {
+          return 1;
+        }
+        return 0;
+      });
+      if (prevMax === undefined) {
+        // eslint-disable-next-line fp/no-mutation, prefer-destructuring
+        prevMax = sorted[0];
+        return [sorted[0]];
+      }
+
+      const ret = sorted.filter(
+        x =>
+          AADataSeverityOrder(x.category, x.phase, 1) >=
+          AADataSeverityOrder(prevMax!.category, prevMax!.phase, 1),
+      );
+
+      // eslint-disable-next-line fp/no-mutation, prefer-destructuring
+      prevMax = ret[0];
+
+      return ret;
+    })
+    .flat();
 
   const sevMap = new Map<number, AnticipatoryActionDataRow[]>();
-  validData.forEach(x => {
+  topFiltered.forEach(x => {
     const sevVal = AADataSeverityOrder(x.category, x.phase, 1);
     const val = sevMap.get(sevVal);
     sevMap.set(sevVal, val ? [...val, x] : [x]);
@@ -49,22 +95,36 @@ function transform(
 
   const transformed = Object.fromEntries(sevMap);
 
-  return { months, transformed };
+  return {
+    months: Object.fromEntries(
+      [...new Set(topFiltered.map(x => x.date))].map(x => [
+        x,
+        new Date(x).toLocaleString('en-US', { month: 'long' }),
+      ]),
+    ),
+    transformed,
+  };
 }
 
 interface WindowColumnProps {
   win: typeof AAWindowKeys[number];
-  selectedDistrict: string;
+  transformed: ReturnType<typeof transform>;
+  rowKeys: string[];
 }
 
-function WindowColumn({ win, selectedDistrict }: WindowColumnProps) {
+function WindowColumn({ win, transformed, rowKeys }: WindowColumnProps) {
   const classes = useWindowColumnStyles();
-  const rawAAData = useSelector(AnticipatoryActionDataSelector);
-  const categoryFilters = useSelector(AACategoryFiltersSelector);
 
-  const windowData = rawAAData[win][selectedDistrict];
+  const extendedTransformed = {
+    ...Object.fromEntries(
+      rowKeys.map(x => [x, [] as AnticipatoryActionDataRow[]]),
+    ),
+    ...(transformed?.transformed || {}),
+  };
 
-  const transformed = transform(windowData, categoryFilters);
+  if (!transformed) {
+    return null;
+  }
 
   return (
     <div className={classes.windowWrapper}>
@@ -83,7 +143,7 @@ function WindowColumn({ win, selectedDistrict }: WindowColumnProps) {
         </div>
         {
           // eslint-disable-next-line fp/no-mutating-methods
-          Object.entries(transformed?.transformed || {})
+          Object.entries(extendedTransformed)
             .sort((a, b) => {
               if (a[0] > b[0]) {
                 return -1;
@@ -111,6 +171,16 @@ function WindowColumn({ win, selectedDistrict }: WindowColumnProps) {
               </div>
             ))
         }
+      </div>
+      <div className={classes.actionsWrapper}>
+        <div style={{ textAlign: 'center', paddingTop: '0.5rem' }}>
+          <Typography variant="h3">ACTIONS</Typography>
+        </div>
+        <div className={classes.actionBoxesWrapper}>
+          {Object.keys(transformed.months).map(x => (
+            <div id={String(x)} className={classes.actionBox} />
+          ))}
+        </div>
       </div>
     </div>
   );
@@ -158,19 +228,36 @@ const useWindowColumnStyles = makeStyles(() =>
       width: '100%',
       height: '100%',
     },
+    actionsWrapper: { display: 'flex', flexDirection: 'column', gap: '2px' },
+    actionBoxesWrapper: {
+      display: 'flex',
+      flexDirection: 'row',
+    },
+    actionBox: {
+      height: '6rem',
+      width: '5.2rem',
+      margin: '0.1rem 0.25rem',
+      background: 'white',
+      borderRadius: '4px',
+    },
   }),
 );
 
-interface DistrictViewProps {
-  selectedDistrict: string;
-}
-
-function DistrictView({ selectedDistrict }: DistrictViewProps) {
+function DistrictView() {
   const dispatch = useDispatch();
   const classes = useDistrictViewStyles();
-  const selectedWindow = useSelector(AASelectedWindowSelector);
+  const { selectedWindow } = useSelector(AAFiltersSelector);
+  const rawAAData = useSelector(AADataSelector);
+  const aaFilters = useSelector(AAFiltersSelector);
+  const selectedDistrict = useSelector(AASelectedDistrictSelector);
 
   const windows = selectedWindow === 'All' ? AAWindowKeys : [selectedWindow];
+  const transformed = windows.map(x =>
+    transform(rawAAData[x][selectedDistrict], aaFilters),
+  );
+  const rowKeys = transformed
+    .map(x => Object.keys(x?.transformed || {}))
+    .flat();
 
   React.useEffect(() => {
     dispatch(setPanelSize(PanelSize.undef));
@@ -179,19 +266,14 @@ function DistrictView({ selectedDistrict }: DistrictViewProps) {
   return (
     <div className={classes.root}>
       <div className={classes.districtViewWrapper}>
-        {windows.map(x => (
-          <WindowColumn key={x} win={x} selectedDistrict={selectedDistrict} />
+        {windows.map((win, index) => (
+          <WindowColumn
+            key={win}
+            win={win}
+            transformed={transformed[index]}
+            rowKeys={rowKeys}
+          />
         ))}
-      </div>
-      <div className={classes.actionsWrapper}>
-        <div style={{ textAlign: 'center', paddingTop: '0.5rem' }}>
-          <Typography variant="h3">ACTIONS</Typography>
-        </div>
-        <div className={classes.actionBoxesWrapper}>
-          {[1, 2, 3, 4].map(x => (
-            <div id={String(x)} className={classes.actionBox} />
-          ))}
-        </div>
       </div>
     </div>
   );
@@ -213,24 +295,6 @@ const useDistrictViewStyles = makeStyles(() =>
       background: gray,
       overflow: 'scroll',
       justifyContent: 'center',
-    },
-    actionsWrapper: {
-      display: 'flex',
-      flexDirection: 'column',
-      width: '100%',
-      background: gray,
-      justifyContent: 'center',
-    },
-    actionBoxesWrapper: {
-      display: 'flex',
-      flexDirection: 'row',
-      justifyContent: 'space-around',
-    },
-    actionBox: {
-      height: '6rem',
-      width: '20%',
-      background: 'white',
-      margin: '0.5rem 0',
     },
   }),
 );

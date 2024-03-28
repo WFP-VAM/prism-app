@@ -34,7 +34,10 @@ import { DateFormat } from 'utils/name-utils';
 import { useUrlHistory } from 'utils/url-utils';
 import useLayers from 'utils/layers-utils';
 import { format } from 'date-fns';
-import { leftPanelSizeSelector } from 'context/leftPanelStateSlice';
+import {
+  leftPanelSizeSelector,
+  leftPanelTabValueSelector,
+} from 'context/leftPanelStateSlice';
 import { ReactComponent as TickSvg } from './tick.svg';
 import DateSelectorInput from './DateSelectorInput';
 import TimelineItems from './TimelineItems';
@@ -48,6 +51,17 @@ type Point = {
 
 const TIMELINE_ID = 'dateTimelineSelector';
 const POINTER_ID = 'datePointerSelector';
+
+const calculateStartAndEndDates = (startDate: Date, selectedTab: string) => {
+  const year =
+    startDate.getFullYear() -
+    (selectedTab === 'anticipatory_action' && startDate.getMonth() < 3 ? 1 : 0);
+  const startMonth = selectedTab === 'anticipatory_action' ? 3 : 0; // April for anticipatory_action, January otherwise
+  const start = new Date(year, startMonth, 1);
+  const end = new Date(year, startMonth + 11, 31);
+
+  return { start, end };
+};
 
 const DateSelector = memo(({ classes }: DateSelectorProps) => {
   const {
@@ -123,11 +137,11 @@ const DateSelector = memo(({ classes }: DateSelectorProps) => {
     return t('date_locale') ? t('date_locale') : 'en';
   }, [t]);
 
+  const panelTab = useSelector(leftPanelTabValueSelector);
+
   const range = useMemo(() => {
     const startDate = stateStartDate ? new Date(stateStartDate) : new Date();
-    const year = startDate.getFullYear();
-    const start = new Date(year, 0, 1);
-    const end = new Date(year, 11, 31); // December is 11th month
+    const { start, end } = calculateStartAndEndDates(startDate, panelTab);
     const daysArray: Date[] = [];
 
     for (
@@ -150,7 +164,7 @@ const DateSelector = memo(({ classes }: DateSelectorProps) => {
           }),
         ),
         month: dateStrToUpperCase(
-          format(date, DateFormat.MonthOnly, {
+          format(date, DateFormat.ShortMonthYear, {
             locale: locales[locale as keyof typeof locales],
           }),
         ),
@@ -158,7 +172,7 @@ const DateSelector = memo(({ classes }: DateSelectorProps) => {
         isFirstDay: date.getDate() === 1,
       };
     });
-  }, [locale, stateStartDate]);
+  }, [locale, stateStartDate, panelTab]);
 
   const dateIndex = useMemo(() => {
     return findIndex(
@@ -503,17 +517,17 @@ const styles = (theme: Theme) =>
     },
 
     timeline: {
-      position: 'relative',
+      position: 'absolute',
       top: 8,
     },
 
     pointer: {
-      cursor: 'pointer',
       position: 'absolute',
       zIndex: 5,
       top: -20,
-      left: -9,
+      left: -3.5,
       height: '16px',
+      cursor: 'pointer',
       pointerEvents: 'none',
     },
   });

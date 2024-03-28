@@ -2,7 +2,7 @@ import {
   Button,
   FormControl,
   IconButton,
-  Menu,
+  Input,
   MenuItem,
   RadioGroup,
   Typography,
@@ -16,26 +16,35 @@ import {
   GetApp,
   EditOutlined,
   BarChartOutlined,
-  ExpandMore,
   ArrowBackIos,
   ClearAll,
   Equalizer,
 } from '@material-ui/icons';
 import { useDispatch, useSelector } from 'react-redux';
 import {
-  AACategoryFiltersSelector,
-  AAMonitoredDistrictsSelector,
-  setCategoryFilters,
-  setSelectedWindow,
-} from 'context/anticipatoryActionStateSlice';
-import {
   AACategoryType,
   allWindowsKey,
 } from 'context/anticipatoryActionStateSlice/types';
 import { AAWindowKeys } from 'config/utils';
-import HomeTable from './HomeTable';
-import { StyledCheckboxLabel, StyledRadioLabel } from './utils';
+import {
+  AADataSelector,
+  AAFiltersSelector,
+  AAMonitoredDistrictsSelector,
+  AASelectedDistrictSelector,
+  setAAFilters,
+  setAASelectedDistrict,
+} from 'context/anticipatoryActionStateSlice';
+import { availableDatesSelector } from 'context/serverStateSlice';
+import { dateRangeSelector } from 'context/mapStateSlice/selectors';
+import {
+  getAAAvailableDatesCombined,
+  getRequestDate,
+} from 'utils/server-utils';
+import { getFormattedDate } from 'utils/date-utils';
+import { DateFormat } from 'utils/name-utils';
+import { StyledCheckboxLabel, StyledRadioLabel, StyledSelect } from './utils';
 import DistrictView from './DistrictView/index';
+import HomeTable from './HomeTable';
 
 const homeButtons = [
   { icon: GetApp, text: 'Assets' },
@@ -57,30 +66,45 @@ const checkboxes: {
   label: string;
   id: Exclude<AACategoryType, 'na' | 'ny'>;
 }[] = [
-  { label: 'Severe', id: 'Severo' },
-  { label: 'Moderate', id: 'Moderado' },
-  { label: 'Mild', id: 'Leve' },
+  { label: 'Severe', id: 'Severe' },
+  { label: 'Moderate', id: 'Moderate' },
+  { label: 'Mild', id: 'Mild' },
 ];
 
 function AnticipatoryActionPanel() {
   const classes = useStyles();
   const dispatch = useDispatch();
   const { t } = useSafeTranslation();
-  const categoryFilters = useSelector(AACategoryFiltersSelector);
   const monitoredDistricts = useSelector(AAMonitoredDistrictsSelector);
-  const [selectedDistrict, setSelectedDistrict] = React.useState<string>('');
-  const [
-    districtAnchorEl,
-    setDistrictAnchorEl,
-  ] = React.useState<null | HTMLElement>(null);
+  const { categories: categoryFilters, selectedIndex } = useSelector(
+    AAFiltersSelector,
+  );
+  const serverAvailableDates = useSelector(availableDatesSelector);
+  const { startDate: selectedDate } = useSelector(dateRangeSelector);
+  const selectedDistrict = useSelector(AASelectedDistrictSelector);
+  const aaData = useSelector(AADataSelector);
+  const [indexOptions, setIndexOptions] = React.useState<string[]>([]);
 
-  const handleDistrictClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-    setDistrictAnchorEl(event.currentTarget);
-  };
+  React.useEffect(() => {
+    if (!selectedDistrict) {
+      return;
+    }
+    const entries = Object.values(aaData)
+      .map(x => x[selectedDistrict])
+      .flat()
+      .filter(x => x);
 
-  const handleDistrictClose = () => {
-    setDistrictAnchorEl(null);
-  };
+    const options = [...new Set(entries.map(x => x.index))];
+    setIndexOptions(options);
+  }, [aaData, selectedDistrict]);
+
+  const layerAvailableDates = getAAAvailableDatesCombined(serverAvailableDates);
+  const queryDate = getRequestDate(layerAvailableDates, selectedDate);
+  const date = getFormattedDate(queryDate, DateFormat.Default) as string;
+
+  React.useEffect(() => {
+    dispatch(setAAFilters({ selectedDate: date }));
+  }, [date, dispatch]);
 
   return (
     <div className={classes.anticipatoryActionPanel}>
@@ -88,46 +112,33 @@ function AnticipatoryActionPanel() {
         <div className={classes.titleSelectWrapper}>
           <div className={classes.titleSelectWrapper}>
             {selectedDistrict && (
-              <IconButton onClick={() => setSelectedDistrict('')}>
+              <IconButton onClick={() => dispatch(setAASelectedDistrict(''))}>
                 <ArrowBackIos fontSize="small" />
               </IconButton>
             )}
-            <Typography variant="h2">
-              {selectedDistrict || 'Phases: global view'}
-            </Typography>
-          </div>
-
-          <IconButton onClick={handleDistrictClick}>
-            <ExpandMore />
-          </IconButton>
-          <Menu
-            anchorEl={districtAnchorEl}
-            keepMounted
-            open={Boolean(districtAnchorEl)}
-            onClose={handleDistrictClose}
-          >
-            <MenuItem
-              value=""
-              onClick={() => {
-                setSelectedDistrict('');
-                handleDistrictClose();
-              }}
+            <StyledSelect
+              value={selectedDistrict || 'empty'}
+              fullWidth
+              input={<Input disableUnderline />}
+              renderValue={() => (
+                <Typography variant="h2">
+                  {selectedDistrict || 'Phases: global view'}
+                </Typography>
+              )}
             >
-              Phases: global view
-            </MenuItem>
-            {monitoredDistricts.map(x => (
-              <MenuItem
-                key={x}
-                value={x}
-                onClick={() => {
-                  setSelectedDistrict(x);
-                  handleDistrictClose();
-                }}
-              >
-                {x}
-              </MenuItem>
-            ))}
-          </Menu>
+              {monitoredDistricts.map(x => (
+                <MenuItem
+                  key={x}
+                  value={x}
+                  onClick={() => {
+                    dispatch(setAASelectedDistrict(x));
+                  }}
+                >
+                  {x}
+                </MenuItem>
+              ))}
+            </StyledSelect>
+          </div>
         </div>
 
         <div>
@@ -135,7 +146,9 @@ function AnticipatoryActionPanel() {
             <RadioGroup
               defaultValue={allWindowsKey}
               className={classes.radioButtonGroup}
-              onChange={(e, val) => dispatch(setSelectedWindow(val as any))}
+              onChange={(e, val) =>
+                dispatch(setAAFilters({ selectedWindow: val as any }))
+              }
             >
               <StyledRadioLabel value={allWindowsKey} label="All" />
               {AAWindowKeys.map(x => (
@@ -144,6 +157,7 @@ function AnticipatoryActionPanel() {
             </RadioGroup>
           </FormControl>
         </div>
+
         <div>
           {checkboxes.map(x => (
             <StyledCheckboxLabel
@@ -153,20 +167,51 @@ function AnticipatoryActionPanel() {
                 checked: categoryFilters[x.id],
                 onChange: e => {
                   const { checked } = e.target;
-                  dispatch(setCategoryFilters({ [x.id]: checked }));
+                  dispatch(setAAFilters({ categories: { [x.id]: checked } }));
                 },
               }}
               label={x.label}
             />
           ))}
         </div>
+
+        {selectedDistrict && (
+          <div>
+            <StyledSelect
+              value={selectedIndex || 'empty'}
+              fullWidth
+              input={<Input disableUnderline />}
+              renderValue={() => (
+                <Typography variant="h3">
+                  {selectedIndex || 'Emergency triggers'}
+                </Typography>
+              )}
+            >
+              <MenuItem
+                value=""
+                onClick={() => {
+                  dispatch(setAAFilters({ selectedIndex: '' }));
+                }}
+              >
+                All
+              </MenuItem>
+              {indexOptions.map(x => (
+                <MenuItem
+                  key={x}
+                  value={x}
+                  onClick={() => {
+                    dispatch(setAAFilters({ selectedIndex: x }));
+                  }}
+                >
+                  {x}
+                </MenuItem>
+              ))}
+            </StyledSelect>
+          </div>
+        )}
       </div>
-      {selectedDistrict === '' && (
-        <HomeTable setSelectedDistrict={setSelectedDistrict} />
-      )}
-      {selectedDistrict !== '' && (
-        <DistrictView selectedDistrict={selectedDistrict} />
-      )}
+      {selectedDistrict === '' && <HomeTable />}
+      {selectedDistrict !== '' && <DistrictView />}
       {/* TODO: consider moving this part to each sub-component */}
       <div className={classes.footerWrapper}>
         <div className={classes.footerActionsWrapper}>
@@ -241,6 +286,7 @@ const useStyles = makeStyles(() =>
       display: 'flex',
       justifyContent: 'space-between',
       alignItems: 'center',
+      width: '100%',
     },
   }),
 );

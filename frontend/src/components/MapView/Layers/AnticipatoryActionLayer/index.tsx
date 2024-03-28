@@ -1,7 +1,7 @@
 import React from 'react';
 import { AnticipatoryActionLayerProps, BoundaryLayerProps } from 'config/types';
 import { useDefaultDate } from 'utils/useDefaultDate';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import {
   layerDataSelector,
   mapSelector,
@@ -9,142 +9,120 @@ import {
 import { LayerData } from 'context/layers/layer-data';
 import { Layer, Marker, Source } from 'react-map-gl/maplibre';
 import {
-  AACategoryFiltersSelector,
+  AAFiltersSelector,
   AARenderedDistrictsSelector,
-  AASelectedDateDateSelector,
-  AASelectedWindowSelector,
-  setRenderedDistricts,
+  AASelectedDistrictSelector,
 } from 'context/anticipatoryActionStateSlice';
 import {
-  AADataSeverityOrder,
   getAAColor,
   getAAIcon,
 } from 'components/MapView/LeftPanel/AnticipatoryActionPanel/utils';
 import { calculateCentroids, useAAMarkerScalePercent } from 'utils/map-utils';
-import { getBoundaryLayerSingleton } from 'config/utils';
+import { AAWindowKeys, getBoundaryLayerSingleton } from 'config/utils';
+import { calculateCombinedAAMapData } from 'context/anticipatoryActionStateSlice/utils';
 
 const boundaryLayer = getBoundaryLayerSingleton();
 
 function AnticipatoryActionLayer({ layer, before }: LayersProps) {
   useDefaultDate(layer.id);
-  const dispatch = useDispatch();
-  const aaWindow = useSelector(AASelectedWindowSelector);
-  const aaCategories = useSelector(AACategoryFiltersSelector);
   const boundaryLayerState = useSelector(
     layerDataSelector(boundaryLayer.id),
   ) as LayerData<BoundaryLayerProps> | undefined;
   const { data } = boundaryLayerState || {};
   const map = useSelector(mapSelector);
-  const selectedDateData = useSelector(AASelectedDateDateSelector);
   const renderedDistricts = useSelector(AARenderedDistrictsSelector);
+  const { selectedWindow } = useSelector(AAFiltersSelector);
+  const selectedDistrict = useSelector(AASelectedDistrictSelector);
+  const layerWindowIndex = AAWindowKeys.findIndex(
+    x => x === layer.csvWindowKey,
+  );
+  const shouldRenderData = React.useMemo(() => {
+    if (selectedWindow === layer.csvWindowKey) {
+      return renderedDistricts[layer.csvWindowKey];
+    }
+    if (selectedWindow === 'All') {
+      return calculateCombinedAAMapData(renderedDistricts, layer.csvWindowKey);
+    }
+    return {};
+  }, [layer.csvWindowKey, renderedDistricts, selectedWindow]);
 
   // Calculate centroids only once per data change
   const districtCentroids = React.useMemo(() => calculateCentroids(data), [
     data,
   ]);
 
-  React.useEffect(() => {
-    const newRendered = Object.fromEntries(
-      Object.entries(selectedDateData)
-        .map(([district, districtData]) => {
-          // eslint-disable-next-line fp/no-mutating-methods
-          const sortedData = [...districtData].sort((a, b) => {
-            const aOrder = AADataSeverityOrder(a.category, a.phase);
-            const bOrder = AADataSeverityOrder(b.category, b.phase);
-
-            if (aOrder > bOrder) {
-              return -1;
-            }
-            if (aOrder < bOrder) {
-              return 1;
-            }
-            return 0;
-          });
-
-          const filtered = sortedData.filter(x => aaCategories[x.category]);
-
-          // let the first window layer to render empty district
-          if (filtered.length === 0 && layer.csvWindowKey === 'Window 1') {
-            return [district, { category: 'ny', phase: 'ny' }];
-          }
-
-          const maxValid = filtered.find((x, i) => {
-            if (aaWindow !== layer.csvWindowKey && aaWindow !== 'All') {
-              return false;
-            }
-            if (aaWindow === layer.csvWindowKey) {
-              return x.windows === layer.csvWindowKey;
-            }
-            return x.windows === layer.csvWindowKey && i === 0;
-          });
-
-          if (!maxValid) {
-            if (aaWindow === layer.csvWindowKey) {
-              return [district, { category: 'ny', phase: 'ny' }];
-            }
-            return [district, undefined];
-          }
-          return [
-            district,
-            {
-              category: maxValid.category,
-              phase: maxValid.phase,
-            },
-          ];
-        })
-        .filter(x => x[1] !== undefined),
-    );
-
-    dispatch(
-      setRenderedDistricts({
-        data: newRendered,
-        windowKey: layer.csvWindowKey,
-      }),
-    );
-  }, [aaCategories, aaWindow, dispatch, layer.csvWindowKey, selectedDateData]);
-
-  const layers = Object.entries(renderedDistricts[layer.csvWindowKey])
-    .map(([district, { category, phase }]: [string, any]) => {
-      const color = getAAColor(category, phase, true);
-      const icon = getAAIcon(category, phase, true);
-      const features = [
+  const highlightDistrictLine = React.useMemo(
+    () => ({
+      ...data,
+      features: [
         data?.features.find(
-          cell =>
-            cell.properties?.[boundaryLayer.adminLevelLocalNames[1]] ===
-            district,
+          f =>
+            f.properties?.[boundaryLayer.adminLevelLocalNames[1]] ===
+            selectedDistrict,
         ),
-      ];
-      const centroid = districtCentroids[district] || {
-        geometry: { coordinates: [0, 0] },
-      };
+      ].filter(x => x),
+    }),
+    [data, selectedDistrict],
+  );
 
-      return {
-        id: `anticipatory-action-${district}`,
-        district,
-        data: { ...data, features },
-        color,
-        icon,
-        centroid,
-      };
-    })
-    .filter(x => x.color !== null && x.data.features !== undefined);
+  const coloredDistrictsLayer = React.useMemo(() => {
+    const districtEntries = Object.entries(shouldRenderData);
+    if (!data || !districtEntries.length) {
+      return null;
+    }
+    return {
+      ...data,
+      features: Object.entries(shouldRenderData)
+        .map(([districtId, { category, phase }]: [string, any]) => {
+          const feature = data?.features.find(
+            f =>
+              f.properties?.[boundaryLayer.adminLevelLocalNames[1]] ===
+              districtId,
+          );
+
+          if (!feature) {
+            return null;
+          }
+          const color = getAAColor(category, phase, true);
+          return {
+            ...feature,
+            properties: {
+              ...feature.properties,
+              fillColor: color || 'grey',
+            },
+          };
+        })
+        .filter(f => f !== null),
+    };
+  }, [data, shouldRenderData]);
 
   const markers = React.useMemo(() => {
-    if (!layers || layers.length === 0) {
+    const districtEntries = Object.entries(shouldRenderData);
+    if (!districtEntries.length) {
       return [];
     }
-    return layers.map(tempLayer => {
-      return {
-        district: tempLayer.district,
-        longitude: tempLayer.centroid?.geometry.coordinates[0],
-        latitude: tempLayer.centroid?.geometry.coordinates[1],
-        icon: tempLayer.icon,
-        centroid: tempLayer.centroid,
-      };
-    });
-  }, [layers]);
+    return districtEntries.map(
+      ([district, { category, phase }]: [string, any]) => {
+        const icon = getAAIcon(category, phase, true);
+        const centroid = districtCentroids[district] || {
+          geometry: { coordinates: [0, 0] },
+        };
+        return {
+          district,
+          longitude: centroid.geometry.coordinates[0],
+          latitude: centroid.geometry.coordinates[1],
+          icon,
+          centroid,
+        };
+      },
+    );
+  }, [shouldRenderData, districtCentroids]);
 
   const scalePercent = useAAMarkerScalePercent(map);
+
+  const mainLayerBefore = selectedDistrict
+    ? 'anticipatory-action-selected-line'
+    : before;
 
   return (
     <>
@@ -160,30 +138,54 @@ function AnticipatoryActionLayer({ layer, before }: LayersProps) {
           </div>
         </Marker>
       ))}
-      {layers.map(l => (
-        <Source key={l.id} id={l.id} type="geojson" data={l.data}>
+      {layer.csvWindowKey === 'Window 1' && (
+        <Source
+          id="anticipatory-action-selected"
+          type="geojson"
+          data={highlightDistrictLine}
+        >
           <Layer
             beforeId={before}
+            id="anticipatory-action-selected-line"
+            type="line"
+            source="anticipatory-action-selected"
+            paint={{
+              'line-color': 'red',
+              'line-width': 6,
+              'line-opacity': highlightDistrictLine.features.length > 0 ? 1 : 0,
+            }}
+          />
+        </Source>
+      )}
+      {coloredDistrictsLayer && (
+        <Source
+          key={`anticipatory-action-${layerWindowIndex}`}
+          id={`anticipatory-action-${layerWindowIndex}`}
+          type="geojson"
+          data={coloredDistrictsLayer}
+        >
+          <Layer
+            beforeId={mainLayerBefore}
             type="fill"
-            id={l.id}
-            source={l.id}
+            id={`anticipatory-action-${layerWindowIndex}-fill`}
+            source={`anticipatory-action-${layerWindowIndex}`}
             layout={{}}
             paint={{
-              'fill-color': l.color as string,
+              'fill-color': ['get', 'fillColor'],
               'fill-opacity': 0.9,
             }}
           />
           <Layer
-            beforeId={before}
-            id={`${l.id}-boundary`}
+            beforeId={mainLayerBefore}
+            id={`anticipatory-action-${layerWindowIndex}-boundary`}
             type="line"
-            source={l.id}
+            source={`anticipatory-action-${layerWindowIndex}`}
             paint={{
               'line-color': 'black',
             }}
           />
         </Source>
-      ))}
+      )}
     </>
   );
 }

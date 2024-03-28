@@ -1,4 +1,5 @@
 """Tests files for the analytics API."""
+
 from datetime import datetime, timezone
 from unittest.mock import patch
 
