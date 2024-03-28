@@ -136,6 +136,7 @@ export function parseAndTransformAA(data: any[]) {
             const prev = sorted.find(
               y =>
                 y.date === windowDates[index - 1] &&
+                y.category === x.category &&
                 y.index === x.index &&
                 y.phase === 'Ready',
             );
