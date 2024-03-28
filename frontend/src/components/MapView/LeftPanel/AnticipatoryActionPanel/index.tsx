@@ -175,38 +175,40 @@ function AnticipatoryActionPanel() {
           ))}
         </div>
 
-        <div>
-          <StyledSelect
-            value={selectedIndex || 'empty'}
-            fullWidth
-            input={<Input disableUnderline />}
-            renderValue={() => (
-              <Typography variant="h3">
-                {selectedIndex || 'Emergency triggers'}
-              </Typography>
-            )}
-          >
-            <MenuItem
-              value=""
-              onClick={() => {
-                dispatch(setAAFilters({ selectedIndex: '' }));
-              }}
+        {selectedDistrict && (
+          <div>
+            <StyledSelect
+              value={selectedIndex || 'empty'}
+              fullWidth
+              input={<Input disableUnderline />}
+              renderValue={() => (
+                <Typography variant="h3">
+                  {selectedIndex || 'Emergency triggers'}
+                </Typography>
+              )}
             >
-              None
-            </MenuItem>
-            {indexOptions.map(x => (
               <MenuItem
-                key={x}
-                value={x}
+                value=""
                 onClick={() => {
-                  dispatch(setAAFilters({ selectedIndex: x }));
+                  dispatch(setAAFilters({ selectedIndex: '' }));
                 }}
               >
-                {x}
+                All
               </MenuItem>
-            ))}
-          </StyledSelect>
-        </div>
+              {indexOptions.map(x => (
+                <MenuItem
+                  key={x}
+                  value={x}
+                  onClick={() => {
+                    dispatch(setAAFilters({ selectedIndex: x }));
+                  }}
+                >
+                  {x}
+                </MenuItem>
+              ))}
+            </StyledSelect>
+          </div>
+        )}
       </div>
       {selectedDistrict === '' && <HomeTable />}
       {selectedDistrict !== '' && <DistrictView />}
