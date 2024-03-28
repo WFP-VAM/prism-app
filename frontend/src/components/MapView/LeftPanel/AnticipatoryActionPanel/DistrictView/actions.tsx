@@ -30,6 +30,17 @@ interface Action {
   icon: any; // Placeholder type for the icon, adjust as necessary
 }
 
+const DoubleIcon = (props: FontAwesomeIconProps) => (
+  <div style={{ display: 'flex' }}>
+    <FontAwesomeIcon fontSize="1rem" {...props} />
+    <FontAwesomeIcon
+      fontSize="1rem"
+      style={{ paddingTop: '0.5rem', marginLeft: '-0.2rem' }}
+      {...props}
+    />
+  </div>
+);
+
 // Simplified, reusable action items with full names
 export const AActions = {
   warnings: {
@@ -43,7 +54,7 @@ export const AActions = {
   seedsW2: {
     name: 'Distribution of seeds and vegetative material for the second season',
     // TODO - get 2 plant icon figma
-    icon: <FontAwesomeIconWrap icon={faSeedling} />,
+    icon: <DoubleIcon icon={faSeedling} />,
   },
   waterHoles: { name: 'Rehabilitation of boreholes', icon: <LocalDrink /> },
   multiUse: {
