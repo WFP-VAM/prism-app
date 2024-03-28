@@ -68,6 +68,7 @@ export function transform(data: any[]) {
         new: Boolean(Number(x.new_tag)),
       };
 
+      // TODO - do isValid here.
       const ready = {
         phase: 'Ready',
         probability: Number(x.prob_ready),
@@ -144,6 +145,7 @@ export function transform(data: any[]) {
               y =>
                 y.date === windowDates[index - 1] &&
                 y.index === x.index &&
+                y.category === x.category &&
                 y.phase === 'Ready',
             );
             return {
@@ -157,11 +159,13 @@ export function transform(data: any[]) {
           console.error(`Invalid phase ${x.phase}`);
           return x;
         });
-        const propagatedSetElements = setElementsToPropagate.map(x => ({
-          ...x,
-          computedRow: true,
-          date,
-        }));
+        const propagatedSetElements = setElementsToPropagate
+          .filter(element => element.date < date)
+          .map(x => ({
+            ...x,
+            computedRow: true,
+            date,
+          }));
 
         // if a district reaches a set state, it will propagate until the end of the window
         validatedData.forEach(x => {
