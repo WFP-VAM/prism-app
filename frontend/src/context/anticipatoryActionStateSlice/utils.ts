@@ -66,6 +66,7 @@ export function parseAndTransformAA(data: any[]) {
         probability: Number(x.prob_ready),
         trigger: Number(x.trigger_ready),
         date: x.date_ready,
+        isValid: Number(x.prob_ready) > Number(x.trigger_ready),
       };
 
       const set = {
@@ -73,6 +74,7 @@ export function parseAndTransformAA(data: any[]) {
         probability: Number(x.prob_set),
         trigger: Number(x.trigger_set),
         date: x.date_set,
+        isValid: ready.isValid && Number(x.prob_set) > Number(x.trigger_set),
       };
 
       return [
@@ -125,49 +127,24 @@ export function parseAndTransformAA(data: any[]) {
 
       windowDates.forEach((date, index) => {
         const dateData = sorted.filter(x => x.date === date);
-        const validatedData = dateData.map(x => {
-          if (x.phase === 'Ready') {
-            return {
-              ...x,
-              isValid: x.probability > x.trigger,
-            };
-          }
-          if (x.phase === 'Set') {
-            const prev = sorted.find(
-              y =>
-                y.date === windowDates[index - 1] &&
-                y.category === x.category &&
-                y.index === x.index &&
-                y.phase === 'Ready',
-            );
-            return {
-              ...x,
-              isValid:
-                prev &&
-                prev.probability > prev.trigger &&
-                x.probability > x.trigger,
-            };
-          }
-          console.error(`Invalid phase ${x.phase}`);
-          return x;
-        });
+
+        // Propagate SET elements from previous dates
         const propagatedSetElements = setElementsToPropagate.map(x => ({
           ...x,
           computedRow: true,
           date,
         }));
 
-        // if a district reaches a set state, it will propagate until the end of the window
-        validatedData.forEach(x => {
-          // TODO - make sure that this logic is also applied on the first date
+        // If a district reaches a set state, it will propagate until the end of the window
+        dateData.forEach(x => {
           if (x.phase === 'Set' && x.isValid) {
             // eslint-disable-next-line fp/no-mutation
-            setElementsToPropagate = [...setElementsToPropagate, { ...x }];
+            setElementsToPropagate = [...setElementsToPropagate, x];
           }
         });
 
         // eslint-disable-next-line no-const-assign, fp/no-mutation
-        newRows = [...newRows, ...validatedData, ...propagatedSetElements];
+        newRows = [...newRows, ...dateData, ...propagatedSetElements];
       });
       return [district, newRows];
     });
