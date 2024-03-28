@@ -64,6 +64,7 @@ export function transform(data: any[]) {
         index: x.index,
         type: x.type,
         window: x.window,
+        // TODO - review this logic. Might be simpler to calculate.
         new: Boolean(Number(x.new_tag)),
       };
 
