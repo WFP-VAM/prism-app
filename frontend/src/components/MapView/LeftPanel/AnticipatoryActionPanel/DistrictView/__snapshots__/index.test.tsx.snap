@@ -7,62 +7,7 @@ exports[`renders as expected 1`] = `
   >
     <div
       class="makeStyles-districtViewWrapper-2"
-    >
-      <div
-        class="makeStyles-windowWrapper-6"
-      >
-        <div
-          style="text-align: center;"
-        >
-          <mock-typography
-            classname="makeStyles-headerText-10"
-            variant="h3"
-          >
-            Window 2
-          </mock-typography>
-        </div>
-        <div
-          class="makeStyles-tableWrapper-7"
-        >
-          <div
-            class="makeStyles-rowWrapper-8"
-          />
-        </div>
-      </div>
-    </div>
-    <div
-      class="makeStyles-actionsWrapper-3"
-    >
-      <div
-        style="text-align: center; padding-top: 0.5rem;"
-      >
-        <mock-typography
-          variant="h3"
-        >
-          ACTIONS
-        </mock-typography>
-      </div>
-      <div
-        class="makeStyles-actionBoxesWrapper-4"
-      >
-        <div
-          class="makeStyles-actionBox-5"
-          id="1"
-        />
-        <div
-          class="makeStyles-actionBox-5"
-          id="2"
-        />
-        <div
-          class="makeStyles-actionBox-5"
-          id="3"
-        />
-        <div
-          class="makeStyles-actionBox-5"
-          id="4"
-        />
-      </div>
-    </div>
+    />
   </div>
 </div>
 `;

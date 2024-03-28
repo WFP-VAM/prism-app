@@ -2,7 +2,7 @@ import {
   Button,
   FormControl,
   IconButton,
-  Menu,
+  Input,
   MenuItem,
   RadioGroup,
   Typography,
@@ -16,7 +16,6 @@ import {
   GetApp,
   EditOutlined,
   BarChartOutlined,
-  ExpandMore,
   ArrowBackIos,
   ClearAll,
   Equalizer,
@@ -28,6 +27,7 @@ import {
 } from 'context/anticipatoryActionStateSlice/types';
 import { AAWindowKeys } from 'config/utils';
 import {
+  AADataSelector,
   AAFiltersSelector,
   AAMonitoredDistrictsSelector,
   AASelectedDistrictSelector,
@@ -42,7 +42,7 @@ import {
 } from 'utils/server-utils';
 import { getFormattedDate } from 'utils/date-utils';
 import { DateFormat } from 'utils/name-utils';
-import { StyledCheckboxLabel, StyledRadioLabel } from './utils';
+import { StyledCheckboxLabel, StyledRadioLabel, StyledSelect } from './utils';
 import DistrictView from './DistrictView/index';
 import HomeTable from './HomeTable';
 
@@ -76,23 +76,27 @@ function AnticipatoryActionPanel() {
   const dispatch = useDispatch();
   const { t } = useSafeTranslation();
   const monitoredDistricts = useSelector(AAMonitoredDistrictsSelector);
-  const { categories: categoryFilters } = useSelector(AAFiltersSelector);
+  const { categories: categoryFilters, selectedIndex } = useSelector(
+    AAFiltersSelector,
+  );
   const serverAvailableDates = useSelector(availableDatesSelector);
   const { startDate: selectedDate } = useSelector(dateRangeSelector);
   const selectedDistrict = useSelector(AASelectedDistrictSelector);
+  const aaData = useSelector(AADataSelector);
+  const [indexOptions, setIndexOptions] = React.useState<string[]>([]);
 
-  const [
-    districtAnchorEl,
-    setDistrictAnchorEl,
-  ] = React.useState<null | HTMLElement>(null);
+  React.useEffect(() => {
+    if (!selectedDistrict) {
+      return;
+    }
+    const entries = Object.values(aaData)
+      .map(x => x[selectedDistrict])
+      .flat()
+      .filter(x => x);
 
-  const handleDistrictClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-    setDistrictAnchorEl(event.currentTarget);
-  };
-
-  const handleDistrictClose = () => {
-    setDistrictAnchorEl(null);
-  };
+    const options = [...new Set(entries.map(x => x.index))];
+    setIndexOptions(options);
+  }, [aaData, selectedDistrict]);
 
   const layerAvailableDates = getAAAvailableDatesCombined(serverAvailableDates);
   const queryDate = getRequestDate(layerAvailableDates, selectedDate);
@@ -112,42 +116,29 @@ function AnticipatoryActionPanel() {
                 <ArrowBackIos fontSize="small" />
               </IconButton>
             )}
-            <Typography variant="h2">
-              {selectedDistrict || 'Phases: global view'}
-            </Typography>
-          </div>
-
-          <IconButton onClick={handleDistrictClick}>
-            <ExpandMore />
-          </IconButton>
-          <Menu
-            anchorEl={districtAnchorEl}
-            keepMounted
-            open={Boolean(districtAnchorEl)}
-            onClose={handleDistrictClose}
-          >
-            <MenuItem
-              value=""
-              onClick={() => {
-                dispatch(setAASelectedDistrict(''));
-                handleDistrictClose();
-              }}
+            <StyledSelect
+              value={selectedDistrict || 'empty'}
+              fullWidth
+              input={<Input disableUnderline />}
+              renderValue={() => (
+                <Typography variant="h2">
+                  {selectedDistrict || 'Phases: global view'}
+                </Typography>
+              )}
             >
-              Phases: global view
-            </MenuItem>
-            {monitoredDistricts.map(x => (
-              <MenuItem
-                key={x}
-                value={x}
-                onClick={() => {
-                  dispatch(setAASelectedDistrict(x));
-                  handleDistrictClose();
-                }}
-              >
-                {x}
-              </MenuItem>
-            ))}
-          </Menu>
+              {monitoredDistricts.map(x => (
+                <MenuItem
+                  key={x}
+                  value={x}
+                  onClick={() => {
+                    dispatch(setAASelectedDistrict(x));
+                  }}
+                >
+                  {x}
+                </MenuItem>
+              ))}
+            </StyledSelect>
+          </div>
         </div>
 
         <div>
@@ -166,6 +157,7 @@ function AnticipatoryActionPanel() {
             </RadioGroup>
           </FormControl>
         </div>
+
         <div>
           {checkboxes.map(x => (
             <StyledCheckboxLabel
@@ -181,6 +173,39 @@ function AnticipatoryActionPanel() {
               label={x.label}
             />
           ))}
+        </div>
+
+        <div>
+          <StyledSelect
+            value={selectedIndex || 'empty'}
+            fullWidth
+            input={<Input disableUnderline />}
+            renderValue={() => (
+              <Typography variant="h3">
+                {selectedIndex || 'Emergency triggers'}
+              </Typography>
+            )}
+          >
+            <MenuItem
+              value=""
+              onClick={() => {
+                dispatch(setAAFilters({ selectedIndex: '' }));
+              }}
+            >
+              None
+            </MenuItem>
+            {indexOptions.map(x => (
+              <MenuItem
+                key={x}
+                value={x}
+                onClick={() => {
+                  dispatch(setAAFilters({ selectedIndex: x }));
+                }}
+              >
+                {x}
+              </MenuItem>
+            ))}
+          </StyledSelect>
         </div>
       </div>
       {selectedDistrict === '' && <HomeTable />}
@@ -259,6 +284,7 @@ const useStyles = makeStyles(() =>
       display: 'flex',
       justifyContent: 'space-between',
       alignItems: 'center',
+      width: '100%',
     },
   }),
 );

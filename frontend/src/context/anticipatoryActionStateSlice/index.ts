@@ -23,6 +23,7 @@ const initialState: AnticipatoryActionState = {
   filters: {
     selectedDate: undefined,
     selectedWindow: allWindowsKey,
+    selectedIndex: '',
     categories: {
       Severe: true,
       Moderate: true,
@@ -31,7 +32,7 @@ const initialState: AnticipatoryActionState = {
       ny: true,
     },
   },
-  selectedDistrict: '',
+  selectedDistrict: 'Mapai',
   renderedDistricts: emptyWindows,
   loading: false,
   error: null,
@@ -73,6 +74,7 @@ export const anticipatoryActionStateSlice = createSlice({
         Partial<{
           selectedDate: string | undefined;
           selectedWindow: typeof AAWindowKeys[number] | typeof allWindowsKey;
+          selectedIndex: string;
           categories: Partial<Record<AACategoryType, boolean>>;
         }>
       >,

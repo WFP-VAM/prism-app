@@ -37,6 +37,7 @@ export type AnticipatoryActionState = {
   filters: {
     selectedDate: string | undefined;
     selectedWindow: typeof AAWindowKeys[number] | typeof allWindowsKey;
+    selectedIndex: string;
     categories: Record<AACategoryType, boolean>;
   };
   selectedDistrict: string;

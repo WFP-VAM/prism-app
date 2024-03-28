@@ -5,6 +5,8 @@ import {
   FormControlLabelProps,
   Radio,
   RadioProps,
+  Select,
+  SelectProps,
   useRadioGroup,
   withStyles,
 } from '@material-ui/core';
@@ -107,6 +109,14 @@ export const StyledCheckboxLabel = withStyles({
     );
   },
 );
+
+export const StyledSelect = withStyles({
+  root: {
+    '&:focus': {
+      backgroundColor: 'transparent',
+    },
+  },
+})((props: SelectProps) => <Select {...props} />);
 
 const AACategoryPhaseMap: { [key: string]: any } = {
   na: {
