@@ -151,7 +151,7 @@ function AnticipatoryActionLayer({ layer, before }: LayersProps) {
             source="anticipatory-action-selected"
             paint={{
               'line-color': 'red',
-              'line-width': 6,
+              'line-width': 4,
               'line-opacity': highlightDistrictLine.features.length > 0 ? 1 : 0,
             }}
           />
