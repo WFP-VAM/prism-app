@@ -20,6 +20,11 @@ import {
   FontAwesomeIcon,
   FontAwesomeIconProps,
 } from '@fortawesome/react-fontawesome';
+import {
+  AACategoryType,
+  AAPhaseType,
+} from 'context/anticipatoryActionStateSlice/types';
+import { AAWindowKeys } from 'config/utils';
 
 const FontAwesomeIconWrap = (props: FontAwesomeIconProps) => (
   <FontAwesomeIcon fontSize="1.5rem" {...props} />
@@ -99,32 +104,32 @@ type ActionsMap = {
 
 // Define the actions map
 const actionsMap: ActionsMap = {
-  readyModerateW1: [AActions.procurement],
-  readyModerateW2: [AActions.procurement],
-  readySevereW1: [AActions.procurement],
-  readySevereW2: [AActions.procurement],
-  setModerateW1: [
+  ReadyModerateW1: [AActions.procurement],
+  ModerateW2: [AActions.procurement],
+  ReadySevereW1: [AActions.procurement],
+  ReadySevereW2: [AActions.procurement],
+  SetModerateW1: [
     AActions.contracts,
     AActions.warnings,
     AActions.seeds,
     AActions.waterHoles,
     AActions.multiUse,
   ],
-  setModerateW2: [
+  SetModerateW2: [
     AActions.contracts,
     AActions.warnings,
     AActions.seeds,
     AActions.vaccination,
     AActions.socialAssistance,
   ],
-  setSevereW1: [
+  SetSevereW1: [
     AActions.contracts,
     AActions.warnings,
     AActions.cattle,
     AActions.waterHoles,
     AActions.multiUse,
   ],
-  setSevereW2: [
+  SetSevereW2: [
     AActions.contracts,
     AActions.warnings,
     AActions.foodAssistance,
@@ -134,11 +139,12 @@ const actionsMap: ActionsMap = {
 };
 
 // Function to get actions by state, severity, and window
-export function getActionsByStateSeverityAndWindow(
-  state: string,
-  severity: string,
-  window: string,
+export function getActionsByPhaseCategoryAndWindow(
+  phase: AAPhaseType,
+  category: AACategoryType,
+  win: typeof AAWindowKeys[number],
 ): Action[] {
-  const key = `${state}${severity}${window}`;
+  const windowIndex = AAWindowKeys.findIndex(x => x === win) + 1;
+  const key = `${phase}${category}W${windowIndex}`;
   return actionsMap[key] || [];
 }

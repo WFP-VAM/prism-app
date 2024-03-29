@@ -1,4 +1,9 @@
-import { Typography, createStyles, makeStyles } from '@material-ui/core';
+import {
+  Tooltip,
+  Typography,
+  createStyles,
+  makeStyles,
+} from '@material-ui/core';
 import { gray } from 'muiTheme';
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -15,6 +20,7 @@ import {
   AASelectedDistrictSelector,
 } from 'context/anticipatoryActionStateSlice';
 import { AADataSeverityOrder, getAAIcon } from '../utils';
+import { getActionsByPhaseCategoryAndWindow } from './actions';
 
 function transform(
   data: AnticipatoryActionDataRow[] | undefined,
@@ -122,6 +128,8 @@ function WindowColumn({ win, transformed, rowKeys }: WindowColumnProps) {
     ...(transformed?.transformed || {}),
   };
 
+  const allEntries = Object.values(transformed?.transformed || {}).flat();
+
   if (!transformed) {
     return null;
   }
@@ -177,9 +185,38 @@ function WindowColumn({ win, transformed, rowKeys }: WindowColumnProps) {
           <Typography variant="h3">ACTIONS</Typography>
         </div>
         <div className={classes.actionBoxesWrapper}>
-          {Object.keys(transformed.months).map(x => (
-            <div id={String(x)} className={classes.actionBox} />
-          ))}
+          {Object.keys(transformed.months).map((x, i) => {
+            const dateData = allEntries.filter(y => y.date === x);
+            const elem = dateData.reduce(
+              (max, curr) =>
+                AADataSeverityOrder(max.category, max.phase) >
+                AADataSeverityOrder(curr.category, curr.phase)
+                  ? max
+                  : curr,
+              dateData[0],
+            );
+            const actions = getActionsByPhaseCategoryAndWindow(
+              elem.phase,
+              elem.category,
+              elem.window,
+            );
+            return (
+              <div
+                id={String(x)}
+                className={classes.actionBox}
+                style={{
+                  justifyContent: actions.length <= 2 ? 'center' : undefined,
+                }}
+              >
+                {actions.map(action => (
+                  // wrapping in div to show tooltip with FontAwesomeIcons
+                  <Tooltip title={action.name}>
+                    <div>{action.icon}</div>
+                  </Tooltip>
+                ))}
+              </div>
+            );
+          })}
         </div>
       </div>
     </div>
@@ -239,6 +276,13 @@ const useWindowColumnStyles = makeStyles(() =>
       margin: '0.1rem 0.25rem',
       background: 'white',
       borderRadius: '4px',
+      color: 'black',
+      display: 'flex',
+      flexWrap: 'wrap',
+      flexDirection: 'column',
+      alignItems: 'center',
+      gap: '0.5rem',
+      paddingTop: '0.2rem',
     },
   }),
 );
