@@ -18,7 +18,10 @@ import {
 } from 'context/anticipatoryActionStateSlice';
 import { useSafeTranslation } from 'i18n';
 import { AADataSeverityOrder, getAAIcon } from '../utils';
-import { getActionsByPhaseCategoryAndWindow } from './ActionsModal/actions';
+import {
+  Action,
+  getActionsByPhaseCategoryAndWindow,
+} from './ActionsModal/actions';
 import ActionsModal from './ActionsModal';
 import { districtViewTransform } from './utils';
 
@@ -27,6 +30,7 @@ interface WindowColumnProps {
   transformed: ReturnType<typeof districtViewTransform>;
   rowKeys: string[];
   openActionsDialog: () => void;
+  setModalActions: React.Dispatch<React.SetStateAction<Action[]>>;
 }
 
 function WindowColumn({
@@ -34,6 +38,7 @@ function WindowColumn({
   transformed,
   rowKeys,
   openActionsDialog,
+  setModalActions,
 }: WindowColumnProps) {
   const classes = useWindowColumnStyles();
   const { t } = useSafeTranslation();
@@ -136,7 +141,13 @@ function WindowColumn({
                     justifyContent: actions.length <= 2 ? 'center' : undefined,
                     cursor: actions.length > 0 ? 'pointer' : undefined,
                   }}
-                  onClick={() => openActionsDialog()}
+                  onClick={() => {
+                    if (actions.length === 0) {
+                      return;
+                    }
+                    openActionsDialog();
+                    setModalActions(actions);
+                  }}
                 >
                   {actions.map(action => (
                     // wrapping in div to show tooltip with FontAwesomeIcons
@@ -245,6 +256,7 @@ function DistrictView() {
   const [actionsModalOpen, setActionsModalOpen] = React.useState<boolean>(
     false,
   );
+  const [modalActions, setModalActions] = React.useState<Action[]>([]);
 
   const windows = selectedWindow === 'All' ? AAWindowKeys : [selectedWindow];
   const transformed = windows.map(x =>
@@ -263,6 +275,7 @@ function DistrictView() {
       <ActionsModal
         open={actionsModalOpen}
         onClose={() => setActionsModalOpen(false)}
+        actions={modalActions}
       />
       <div className={classes.districtViewWrapper}>
         {windows.map((win, index) => (
@@ -272,6 +285,7 @@ function DistrictView() {
             transformed={transformed[index]}
             rowKeys={rowKeys}
             openActionsDialog={() => setActionsModalOpen(true)}
+            setModalActions={setModalActions}
           />
         ))}
       </div>

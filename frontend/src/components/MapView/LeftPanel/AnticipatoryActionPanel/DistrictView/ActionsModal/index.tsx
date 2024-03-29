@@ -13,14 +13,15 @@ import { Cancel, Close } from '@material-ui/icons';
 import { useSafeTranslation } from 'i18n';
 import React from 'react';
 import { black, cyanBlue } from 'muiTheme';
-import { AActions } from './actions';
+import { Action } from './actions';
 
 interface ActionsModalProps {
+  actions: Action[];
   open: boolean;
   onClose: () => void;
 }
 
-function ActionsModal({ open, onClose }: ActionsModalProps) {
+function ActionsModal({ open, onClose, actions }: ActionsModalProps) {
   const { t } = useSafeTranslation();
   const classes = useStyles();
 
@@ -36,10 +37,10 @@ function ActionsModal({ open, onClose }: ActionsModalProps) {
       </DialogTitle>
       <DialogContent dividers>
         <div className={classes.contentWrapper}>
-          {Object.entries(AActions).map(([action, data]) => (
-            <div key={action} className={classes.actionRow}>
-              <div className={classes.actionIconWrapper}>{data.icon}</div>
-              <Typography variant="h3">{data.name}</Typography>
+          {actions.map(action => (
+            <div key={action.name} className={classes.actionRow}>
+              <div className={classes.actionIconWrapper}>{action.icon}</div>
+              <Typography variant="h3">{action.name}</Typography>
             </div>
           ))}
         </div>

@@ -30,7 +30,7 @@ const FontAwesomeIconWrap = (props: FontAwesomeIconProps) => (
   <FontAwesomeIcon fontSize="1.5rem" {...props} />
 );
 
-interface Action {
+export interface Action {
   name: string;
   icon: any; // Placeholder type for the icon, adjust as necessary
 }
