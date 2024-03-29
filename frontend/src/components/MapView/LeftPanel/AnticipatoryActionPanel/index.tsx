@@ -45,6 +45,7 @@ import { DateFormat } from 'utils/name-utils';
 import { StyledCheckboxLabel, StyledRadioLabel, StyledSelect } from './utils';
 import DistrictView from './DistrictView/index';
 import HomeTable from './HomeTable';
+import ActionsModal from './DistrictView/ActionsModal';
 
 const homeButtons = [
   { icon: GetApp, text: 'Assets' },
@@ -55,11 +56,6 @@ const homeButtons = [
 const districtButtons = [
   { icon: ClearAll, text: 'Timeline' },
   { icon: Equalizer, text: 'Forecast' },
-];
-
-const links = [
-  { text: 'Group assumptions', href: 'google.com' },
-  { text: 'How to read this screen', href: 'google.com' },
 ];
 
 const checkboxes: {
@@ -84,6 +80,17 @@ function AnticipatoryActionPanel() {
   const selectedDistrict = useSelector(AASelectedDistrictSelector);
   const aaData = useSelector(AADataSelector);
   const [indexOptions, setIndexOptions] = React.useState<string[]>([]);
+  const [actionsModalOpen, setActionsModalOpen] = React.useState<boolean>(
+    false,
+  );
+
+  const dialogs = [
+    { text: 'Group assumptions', onclick: () => {} },
+    {
+      text: 'How to read this screen',
+      onclick: () => setActionsModalOpen(true),
+    },
+  ];
 
   React.useEffect(() => {
     if (!selectedDistrict) {
@@ -108,6 +115,10 @@ function AnticipatoryActionPanel() {
 
   return (
     <div className={classes.anticipatoryActionPanel}>
+      <ActionsModal
+        open={actionsModalOpen}
+        onClose={() => setActionsModalOpen(false)}
+      />
       <div className={classes.headerWrapper}>
         <div className={classes.titleSelectWrapper}>
           <div className={classes.titleSelectWrapper}>
@@ -228,16 +239,14 @@ function AnticipatoryActionPanel() {
           ))}
         </div>
         <div className={classes.footerLinksWrapper}>
-          {links.map(link => (
+          {dialogs.map(dialog => (
             <Typography
-              key={link.text}
+              key={dialog.text}
               className={classes.footerLink}
-              component="a"
-              target="_blank"
-              rel="noopener noreferrer"
-              href={link.href}
+              component="button"
+              onClick={() => dialog.onclick()}
             >
-              {link.text}
+              {dialog.text}
             </Typography>
           ))}
         </div>
@@ -281,7 +290,12 @@ const useStyles = makeStyles(() =>
       padding: '0.5rem',
     },
     footerButton: { borderColor: cyanBlue, color: black },
-    footerLink: { textDecoration: 'underline' },
+    footerLink: {
+      textDecoration: 'underline',
+      backgroundColor: 'transparent',
+      border: 'none',
+      cursor: 'pointer',
+    },
     titleSelectWrapper: {
       display: 'flex',
       justifyContent: 'space-between',
