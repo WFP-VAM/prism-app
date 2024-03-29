@@ -19,6 +19,7 @@ import {
   AAFiltersSelector,
   AASelectedDistrictSelector,
 } from 'context/anticipatoryActionStateSlice';
+import { useSafeTranslation } from 'i18n';
 import { AADataSeverityOrder, getAAIcon } from '../utils';
 import { getActionsByPhaseCategoryAndWindow } from './actions';
 import ActionsModal from './ActionsModal';
@@ -127,6 +128,7 @@ function WindowColumn({
   openActionsDialog,
 }: WindowColumnProps) {
   const classes = useWindowColumnStyles();
+  const { t } = useSafeTranslation();
 
   const extendedTransformed = {
     ...Object.fromEntries(
@@ -140,6 +142,7 @@ function WindowColumn({
   if (!transformed) {
     return null;
   }
+  const hasWindowData = Object.keys(transformed.months).length > 0;
 
   return (
     <div className={classes.windowWrapper}>
@@ -148,87 +151,96 @@ function WindowColumn({
           {win}
         </Typography>
       </div>
-      <div className={classes.tableWrapper}>
-        <div className={classes.headRowWrapper}>
-          {Object.entries(transformed?.months || {}).map(x => (
-            <div key={x[0]} className={classes.headColumn}>
-              <Typography className={classes.monthText}>{x[1]}</Typography>
-            </div>
-          ))}
-        </div>
-        {
-          // eslint-disable-next-line fp/no-mutating-methods
-          Object.entries(extendedTransformed)
-            .sort((a, b) => {
-              if (a[0] > b[0]) {
-                return -1;
-              }
-              if (a[0] < b[0]) {
-                return 1;
-              }
-              return 0;
-            })
-            .map(x => (
-              <div key={x[0]} className={classes.rowWrapper}>
-                {Object.entries(transformed?.months || {}).map(y => {
-                  const elem = x[1].find(z => z.date === y[0]);
-                  if (!elem) {
-                    return <div key={y[0]} className={classes.column} />;
-                  }
-                  return (
-                    <div key={y[0]} className={classes.column}>
-                      <div className={classes.iconWrapper}>
-                        {getAAIcon(elem.category, elem.phase)}
-                      </div>
-                    </div>
-                  );
-                })}
+      {!hasWindowData && (
+        <Typography variant="h3" className={classes.noDataText}>
+          {t('No data')}
+        </Typography>
+      )}
+      {hasWindowData && (
+        <div className={classes.tableWrapper}>
+          <div className={classes.headRowWrapper}>
+            {Object.entries(transformed?.months || {}).map(x => (
+              <div key={x[0]} className={classes.headColumn}>
+                <Typography className={classes.monthText}>{x[1]}</Typography>
               </div>
-            ))
-        }
-      </div>
-      <div className={classes.actionsWrapper}>
-        <div style={{ textAlign: 'center', paddingTop: '0.5rem' }}>
-          <Typography variant="h3">ACTIONS</Typography>
+            ))}
+          </div>
+          {
+            // eslint-disable-next-line fp/no-mutating-methods
+            Object.entries(extendedTransformed)
+              .sort((a, b) => {
+                if (a[0] > b[0]) {
+                  return -1;
+                }
+                if (a[0] < b[0]) {
+                  return 1;
+                }
+                return 0;
+              })
+              .map(x => (
+                <div key={x[0]} className={classes.rowWrapper}>
+                  {Object.entries(transformed?.months || {}).map(y => {
+                    const elem = x[1].find(z => z.date === y[0]);
+                    if (!elem) {
+                      return <div key={y[0]} className={classes.column} />;
+                    }
+                    return (
+                      <div key={y[0]} className={classes.column}>
+                        <div className={classes.iconWrapper}>
+                          {getAAIcon(elem.category, elem.phase)}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              ))
+          }
         </div>
-        <div className={classes.actionBoxesWrapper}>
-          {Object.keys(transformed.months).map((x, i) => {
-            const dateData = allEntries.filter(y => y.date === x);
-            const elem = dateData.reduce(
-              (max, curr) =>
-                AADataSeverityOrder(max.category, max.phase) >
-                AADataSeverityOrder(curr.category, curr.phase)
-                  ? max
-                  : curr,
-              dateData[0],
-            );
-            const actions = getActionsByPhaseCategoryAndWindow(
-              elem.phase,
-              elem.category,
-              elem.window,
-            );
-            return (
-              <button
-                type="button"
-                id={String(x)}
-                className={classes.actionBox}
-                style={{
-                  justifyContent: actions.length <= 2 ? 'center' : undefined,
-                  cursor: actions.length > 0 ? 'pointer' : undefined,
-                }}
-                onClick={() => openActionsDialog()}
-              >
-                {actions.map(action => (
-                  // wrapping in div to show tooltip with FontAwesomeIcons
-                  <Tooltip title={action.name}>
-                    <div>{action.icon}</div>
-                  </Tooltip>
-                ))}
-              </button>
-            );
-          })}
+      )}
+      {hasWindowData && (
+        <div className={classes.actionsWrapper}>
+          <div style={{ textAlign: 'center', paddingTop: '0.5rem' }}>
+            <Typography variant="h3">ACTIONS</Typography>
+          </div>
+          <div className={classes.actionBoxesWrapper}>
+            {Object.keys(transformed.months).map((x, i) => {
+              const dateData = allEntries.filter(y => y.date === x);
+              const elem = dateData.reduce(
+                (max, curr) =>
+                  AADataSeverityOrder(max.category, max.phase) >
+                  AADataSeverityOrder(curr.category, curr.phase)
+                    ? max
+                    : curr,
+                dateData[0],
+              );
+              const actions = getActionsByPhaseCategoryAndWindow(
+                elem.phase,
+                elem.category,
+                elem.window,
+              );
+              return (
+                <button
+                  type="button"
+                  id={String(x)}
+                  className={classes.actionBox}
+                  style={{
+                    justifyContent: actions.length <= 2 ? 'center' : undefined,
+                    cursor: actions.length > 0 ? 'pointer' : undefined,
+                  }}
+                  onClick={() => openActionsDialog()}
+                >
+                  {actions.map(action => (
+                    // wrapping in div to show tooltip with FontAwesomeIcons
+                    <Tooltip title={action.name}>
+                      <div>{action.icon}</div>
+                    </Tooltip>
+                  ))}
+                </button>
+              );
+            })}
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }
@@ -307,6 +319,9 @@ const useWindowColumnStyles = makeStyles(() =>
       gap: '0.5rem',
       paddingTop: '0.2rem',
       border: 'none',
+    },
+    noDataText: {
+      margin: 'auto',
     },
   }),
 );
