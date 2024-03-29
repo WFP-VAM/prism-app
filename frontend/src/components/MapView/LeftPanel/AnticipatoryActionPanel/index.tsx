@@ -176,6 +176,7 @@ function AnticipatoryActionPanel() {
               id={x.id}
               checkBoxProps={{
                 checked: categoryFilters[x.id],
+                disabled: x.id !== 'Mild',
                 onChange: e => {
                   const { checked } = e.target;
                   dispatch(setAAFilters({ categories: { [x.id]: checked } }));
