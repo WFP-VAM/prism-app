@@ -96,30 +96,36 @@ function Row({ iconContent, windows, header }: RowProps) {
   return (
     <div className={classes.rowWrapper}>
       <div className={classes.iconCol}>{iconContent}</div>
-      {windows.map((col, index) => (
-        <div
-          // we can actually use the index as key here, since we know each index is a window
-          // eslint-disable-next-line react/no-array-index-key
-          key={index}
-          style={{
-            width:
-              windows.length > 1 ? 'calc(50% - 1.75rem)' : 'calc(100% - 3rem)',
-          }}
-        >
-          <div className={classes.windowBackground}>
-            <div className={classes.tagWrapper}>
-              {col.map(x => (
-                <AreaTag key={x.name} {...x} />
-              ))}
-              {col.length === 0 && (
-                <Typography className={classes.emptyText}>
-                  ({t('no district')})
-                </Typography>
-              )}
+      {windows.map((col, index) => {
+        // we may have 2 entries for multiple indexes
+        const unique = [...new Map(col.map(x => [x.name, x])).values()];
+        return (
+          <div
+            // we can actually use the index as key here, since we know each index is a window
+            // eslint-disable-next-line react/no-array-index-key
+            key={index}
+            style={{
+              width:
+                windows.length > 1
+                  ? 'calc(50% - 1.75rem)'
+                  : 'calc(100% - 3rem)',
+            }}
+          >
+            <div className={classes.windowBackground}>
+              <div className={classes.tagWrapper}>
+                {unique.map(x => (
+                  <AreaTag key={x.name} {...x} />
+                ))}
+                {unique.length === 0 && (
+                  <Typography className={classes.emptyText}>
+                    ({t('no district')})
+                  </Typography>
+                )}
+              </div>
             </div>
           </div>
-        </div>
-      ))}
+        );
+      })}
     </div>
   );
 }
@@ -201,18 +207,18 @@ function HomeTable() {
           const getWinData = (win: typeof AAWindowKeys[number]) =>
             Object.entries(renderedDistricts[win])
               .map(([district, distData]) => {
-                if (
-                  distData.category === x.category &&
-                  distData.phase === x.phase
-                ) {
-                  return {
-                    name: district,
-                    isNew: distData.isNew,
-                    onClick: () => dispatch(setAASelectedDistrict(district)),
-                  };
-                }
-                return undefined;
+                return distData.map(dist => {
+                  if (dist.category === x.category && dist.phase === x.phase) {
+                    return {
+                      name: district,
+                      isNew: dist.isNew,
+                      onClick: () => dispatch(setAASelectedDistrict(district)),
+                    };
+                  }
+                  return undefined;
+                });
               })
+              .flat()
               .filter(y => y !== undefined);
 
           return {

@@ -303,27 +303,40 @@ export const mockAAData: AnticipatoryActionState['data'] = {
 
 export const mockAARenderedDistricts: AnticipatoryActionState['renderedDistricts'] = {
   'Window 1': {
-    Caia: {
-      category: 'ny',
-      phase: 'ny',
-      isNew: false,
-    },
-    Changara: {
-      category: 'Moderate',
-      phase: 'Ready',
-      isNew: false,
-    },
+    Caia: [
+      {
+        category: 'ny',
+        phase: 'ny',
+        isNew: false,
+      },
+    ],
+    Changara: [
+      {
+        category: 'Moderate',
+        phase: 'Ready',
+        isNew: false,
+      },
+      {
+        category: 'Mild',
+        phase: 'Ready',
+        isNew: false,
+      },
+    ],
   },
   'Window 2': {
-    Caia: {
-      category: 'ny',
-      phase: 'ny',
-      isNew: false,
-    },
-    Changara: {
-      category: 'ny',
-      phase: 'ny',
-      isNew: false,
-    },
+    Caia: [
+      {
+        category: 'ny',
+        phase: 'ny',
+        isNew: false,
+      },
+    ],
+    Changara: [
+      {
+        category: 'ny',
+        phase: 'ny',
+        isNew: false,
+      },
+    ],
   },
 };

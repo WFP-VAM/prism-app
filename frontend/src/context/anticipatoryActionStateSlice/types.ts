@@ -48,7 +48,7 @@ export type AnticipatoryActionState = {
         category: AACategoryType;
         phase: AAPhaseType;
         isNew: boolean;
-      };
+      }[];
     }
   >;
   loading: boolean;
