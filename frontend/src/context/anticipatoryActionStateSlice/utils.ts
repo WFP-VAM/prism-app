@@ -58,7 +58,6 @@ export function parseAndTransformAA(data: any[]) {
         index: x.index,
         type: x.type,
         window: x.window,
-        new: Boolean(Number(x.new_tag)),
       };
 
       const ready = {
@@ -125,6 +124,7 @@ export function parseAndTransformAA(data: any[]) {
       let setElementsToPropagate = [] as AnticipatoryActionDataRow[];
       let newRows = [] as AnticipatoryActionDataRow[];
 
+      let prevMax: AnticipatoryActionDataRow | undefined;
       windowDates.forEach((date, index) => {
         const dateData = sorted.filter(x => x.date === date);
 
@@ -132,14 +132,29 @@ export function parseAndTransformAA(data: any[]) {
         const propagatedSetElements = setElementsToPropagate.map(x => ({
           ...x,
           computedRow: true,
+          new: false,
           date,
         }));
 
         // If a district reaches a set state, it will propagate until the end of the window
         dateData.forEach(x => {
-          if (x.phase === 'Set' && x.isValid) {
+          if (!x.isValid) {
+            return;
+          }
+          if (x.phase === 'Set') {
             // eslint-disable-next-line fp/no-mutation
             setElementsToPropagate = [...setElementsToPropagate, x];
+          }
+          // set new parameter
+          if (
+            prevMax === undefined ||
+            AADataSeverityOrder(x.category, x.phase) >
+              AADataSeverityOrder(prevMax.category, prevMax.phase)
+          ) {
+            // eslint-disable-next-line fp/no-mutation
+            prevMax = x;
+            // eslint-disable-next-line fp/no-mutation, no-param-reassign
+            x.new = true;
           }
         });
 
