@@ -72,7 +72,7 @@ const out = {
         index: 'SPI DJF',
         type: 'SPI',
         window: 'Window 1',
-        new: false,
+        new: true,
         phase: 'Ready',
         probability: 0.19,
         trigger: 0.1,

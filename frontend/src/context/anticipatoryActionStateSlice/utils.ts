@@ -58,6 +58,8 @@ export function parseAndTransformAA(data: any[]) {
         index: x.index,
         type: x.type,
         window: x.window,
+        // initialize to false and override later
+        new: false,
       };
 
       const ready = {
