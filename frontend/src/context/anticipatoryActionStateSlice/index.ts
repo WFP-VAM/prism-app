@@ -32,7 +32,7 @@ const initialState: AnticipatoryActionState = {
       ny: true,
     },
   },
-  selectedDistrict: 'Mapai',
+  selectedDistrict: '',
   renderedDistricts: emptyWindows,
   loading: false,
   error: null,
