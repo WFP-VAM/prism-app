@@ -142,9 +142,9 @@ function WindowColumn({ win, transformed, rowKeys }: WindowColumnProps) {
         </Typography>
       </div>
       <div className={classes.tableWrapper}>
-        <div className={classes.rowWrapper}>
+        <div className={classes.headRowWrapper}>
           {Object.entries(transformed?.months || {}).map(x => (
-            <div key={x[0]} className={classes.column}>
+            <div key={x[0]} className={classes.headColumn}>
               <Typography className={classes.monthText}>{x[1]}</Typography>
             </div>
           ))}
@@ -236,6 +236,19 @@ const useWindowColumnStyles = makeStyles(() =>
       flexDirection: 'row',
       minHeight: '3rem',
       background: 'white',
+    },
+    headRowWrapper: {
+      display: 'flex',
+      flexDirection: 'row',
+      minHeight: '2.5rem',
+      background: 'white',
+    },
+    headColumn: {
+      width: '5.2rem',
+      padding: '0.1rem 0.25rem',
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
     },
     column: {
       width: '5.2rem',
