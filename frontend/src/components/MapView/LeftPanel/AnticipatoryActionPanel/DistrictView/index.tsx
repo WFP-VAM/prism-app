@@ -226,7 +226,7 @@ const useWindowColumnStyles = makeStyles(() =>
       flexDirection: 'row',
     },
     actionBox: {
-      height: '6rem',
+      height: '6.2rem',
       width: '5.2rem',
       margin: '0.1rem 0.25rem',
       background: 'white',
