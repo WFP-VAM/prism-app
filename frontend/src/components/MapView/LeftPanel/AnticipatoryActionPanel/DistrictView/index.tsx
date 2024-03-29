@@ -111,7 +111,7 @@ function WindowColumn({
             <Typography variant="h3">ACTIONS</Typography>
           </div>
           <div className={classes.actionBoxesWrapper}>
-            {Object.keys(transformed.months).map((x, i) => {
+            {Object.keys(transformed.months).map(x => {
               const dateData = allEntries.filter(y => y.date === x);
               const elem = dateData.reduce(
                 (max, curr) =>
@@ -128,6 +128,7 @@ function WindowColumn({
               );
               return (
                 <button
+                  key={x}
                   type="button"
                   id={String(x)}
                   className={classes.actionBox}
@@ -139,7 +140,7 @@ function WindowColumn({
                 >
                   {actions.map(action => (
                     // wrapping in div to show tooltip with FontAwesomeIcons
-                    <Tooltip title={action.name}>
+                    <Tooltip key={action.name} title={action.name}>
                       <div>{action.icon}</div>
                     </Tooltip>
                   ))}
