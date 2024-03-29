@@ -45,7 +45,6 @@ import { DateFormat } from 'utils/name-utils';
 import { StyledCheckboxLabel, StyledRadioLabel, StyledSelect } from './utils';
 import DistrictView from './DistrictView/index';
 import HomeTable from './HomeTable';
-import ActionsModal from './DistrictView/ActionsModal';
 
 const homeButtons = [
   { icon: GetApp, text: 'Assets' },
@@ -80,15 +79,12 @@ function AnticipatoryActionPanel() {
   const selectedDistrict = useSelector(AASelectedDistrictSelector);
   const aaData = useSelector(AADataSelector);
   const [indexOptions, setIndexOptions] = React.useState<string[]>([]);
-  const [actionsModalOpen, setActionsModalOpen] = React.useState<boolean>(
-    false,
-  );
 
   const dialogs = [
     { text: 'Group assumptions', onclick: () => {} },
     {
       text: 'How to read this screen',
-      onclick: () => setActionsModalOpen(true),
+      onclick: () => {},
     },
   ];
 
@@ -115,10 +111,6 @@ function AnticipatoryActionPanel() {
 
   return (
     <div className={classes.anticipatoryActionPanel}>
-      <ActionsModal
-        open={actionsModalOpen}
-        onClose={() => setActionsModalOpen(false)}
-      />
       <div className={classes.headerWrapper}>
         <div className={classes.titleSelectWrapper}>
           <div className={classes.titleSelectWrapper}>
@@ -137,6 +129,14 @@ function AnticipatoryActionPanel() {
                 </Typography>
               )}
             >
+              <MenuItem
+                value=""
+                onClick={() => {
+                  dispatch(setAASelectedDistrict(''));
+                }}
+              >
+                Global view
+              </MenuItem>
               {monitoredDistricts.map(x => (
                 <MenuItem
                   key={x}

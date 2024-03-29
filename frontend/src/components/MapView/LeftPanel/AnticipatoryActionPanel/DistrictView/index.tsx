@@ -21,6 +21,7 @@ import {
 } from 'context/anticipatoryActionStateSlice';
 import { AADataSeverityOrder, getAAIcon } from '../utils';
 import { getActionsByPhaseCategoryAndWindow } from './actions';
+import ActionsModal from './ActionsModal';
 
 function transform(
   data: AnticipatoryActionDataRow[] | undefined,
@@ -116,9 +117,15 @@ interface WindowColumnProps {
   win: typeof AAWindowKeys[number];
   transformed: ReturnType<typeof transform>;
   rowKeys: string[];
+  openActionsDialog: () => void;
 }
 
-function WindowColumn({ win, transformed, rowKeys }: WindowColumnProps) {
+function WindowColumn({
+  win,
+  transformed,
+  rowKeys,
+  openActionsDialog,
+}: WindowColumnProps) {
   const classes = useWindowColumnStyles();
 
   const extendedTransformed = {
@@ -201,12 +208,15 @@ function WindowColumn({ win, transformed, rowKeys }: WindowColumnProps) {
               elem.window,
             );
             return (
-              <div
+              <button
+                type="button"
                 id={String(x)}
                 className={classes.actionBox}
                 style={{
                   justifyContent: actions.length <= 2 ? 'center' : undefined,
+                  cursor: actions.length > 0 ? 'pointer' : undefined,
                 }}
+                onClick={() => openActionsDialog()}
               >
                 {actions.map(action => (
                   // wrapping in div to show tooltip with FontAwesomeIcons
@@ -214,7 +224,7 @@ function WindowColumn({ win, transformed, rowKeys }: WindowColumnProps) {
                     <div>{action.icon}</div>
                   </Tooltip>
                 ))}
-              </div>
+              </button>
             );
           })}
         </div>
@@ -296,6 +306,7 @@ const useWindowColumnStyles = makeStyles(() =>
       alignItems: 'center',
       gap: '0.5rem',
       paddingTop: '0.2rem',
+      border: 'none',
     },
   }),
 );
@@ -307,6 +318,9 @@ function DistrictView() {
   const rawAAData = useSelector(AADataSelector);
   const aaFilters = useSelector(AAFiltersSelector);
   const selectedDistrict = useSelector(AASelectedDistrictSelector);
+  const [actionsModalOpen, setActionsModalOpen] = React.useState<boolean>(
+    false,
+  );
 
   const windows = selectedWindow === 'All' ? AAWindowKeys : [selectedWindow];
   const transformed = windows.map(x =>
@@ -322,6 +336,10 @@ function DistrictView() {
 
   return (
     <div className={classes.root}>
+      <ActionsModal
+        open={actionsModalOpen}
+        onClose={() => setActionsModalOpen(false)}
+      />
       <div className={classes.districtViewWrapper}>
         {windows.map((win, index) => (
           <WindowColumn
@@ -329,6 +347,7 @@ function DistrictView() {
             win={win}
             transformed={transformed[index]}
             rowKeys={rowKeys}
+            openActionsDialog={() => setActionsModalOpen(true)}
           />
         ))}
       </div>
@@ -351,7 +370,7 @@ const useDistrictViewStyles = makeStyles(() =>
       width: '100%',
       background: gray,
       overflow: 'scroll',
-      justifyContent: 'center',
+      justifyContent: 'space-around',
     },
   }),
 );
