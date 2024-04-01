@@ -17,7 +17,7 @@ import {
 } from './utils';
 
 const initialState: AnticipatoryActionState = {
-  data: { 'Window 1': {}, 'Window 2': {} },
+  data: emptyWindows,
   availableDates: undefined,
   monitoredDistricts: [],
   filters: {
@@ -35,6 +35,7 @@ const initialState: AnticipatoryActionState = {
   markers: [],
   selectedDistrict: '',
   renderedDistricts: emptyWindows,
+  windowRanges: { 'Window 1': undefined, 'Window 2': undefined },
   loading: false,
   error: null,
 };
@@ -45,6 +46,7 @@ export const loadAAData = createAsyncThunk<
       data: AnticipatoryActionData;
       availableDates: DateItem[];
       windowKey: typeof AAWindowKeys[number];
+      range: { start: string; end: string };
     }[];
     monitoredDistricts: string[];
   },
@@ -96,6 +98,7 @@ export const anticipatoryActionStateSlice = createSlice({
         renderedDistricts: calculateMapRenderedDistricts({
           filters: newFilters,
           data: state.data,
+          windowRanges: state.windowRanges,
         }),
       };
     },
@@ -127,6 +130,9 @@ export const anticipatoryActionStateSlice = createSlice({
           x.availableDates,
         ]),
       ),
+      windowRanges: Object.fromEntries(
+        payload.windowData.map(x => [x.windowKey, x.range]),
+      ) as Record<typeof AAWindowKeys[number], { start: string; end: string }>,
       monitoredDistricts: payload.monitoredDistricts,
     }));
 

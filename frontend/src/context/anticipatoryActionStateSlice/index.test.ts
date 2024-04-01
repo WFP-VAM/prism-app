@@ -30,6 +30,10 @@ describe('Anticipatory Action', () => {
     const out = calculateMapRenderedDistricts({
       data: mockAAData as any,
       filters,
+      windowRanges: {
+        'Window 1': { start: '2023-08-01', end: '2023-12-01' },
+        'Window 2': undefined,
+      },
     });
 
     expect(out).toEqual(mockAARenderedDistricts);

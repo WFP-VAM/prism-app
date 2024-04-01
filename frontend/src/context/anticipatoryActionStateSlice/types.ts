@@ -60,6 +60,10 @@ export type AnticipatoryActionState = {
     icon: React.JSX.Element;
     centroid: any;
   }[];
+  windowRanges: Record<
+    typeof AAWindowKeys[number],
+    { start: string; end: string } | undefined
+  >;
   loading: boolean;
   error: string | null;
 };

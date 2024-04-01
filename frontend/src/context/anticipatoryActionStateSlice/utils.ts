@@ -5,6 +5,8 @@ import {
 } from 'components/MapView/LeftPanel/AnticipatoryActionPanel/utils';
 import { DatesPropagation, Validity } from 'config/types';
 import { generateIntermediateDateItemFromValidity } from 'utils/server-utils';
+import { getFormattedDate } from 'utils/date-utils';
+import { DateFormat } from 'utils/name-utils';
 import {
   AACategoryType,
   AAPhaseType,
@@ -105,6 +107,7 @@ export function parseAndTransformAA(data: any[]) {
     const dates = [
       ...new Set(filtered.map(x => new Date(x.date).getTime())),
     ].sort();
+
     const availableDates = generateIntermediateDateItemFromValidity(
       dates,
       validity,
@@ -180,6 +183,10 @@ export function parseAndTransformAA(data: any[]) {
     return {
       data: { ...emptyDistricts, ...result },
       availableDates,
+      range: {
+        start: getFormattedDate(dates[0], DateFormat.Default),
+        end: getFormattedDate(dates[dates.length - 1], DateFormat.Default),
+      },
       windowKey,
     };
   });
@@ -190,16 +197,18 @@ export function parseAndTransformAA(data: any[]) {
 export const emptyWindows = {
   'Window 1': {},
   'Window 2': {},
-} as AnticipatoryActionState['renderedDistricts'];
+};
 
 interface CalculateMapRenderedDistrictsParams {
   filters: AnticipatoryActionState['filters'];
   data: AnticipatoryActionState['data'];
+  windowRanges: AnticipatoryActionState['windowRanges'];
 }
 
 export function calculateMapRenderedDistricts({
   filters,
   data,
+  windowRanges,
 }: CalculateMapRenderedDistrictsParams) {
   const { selectedDate, categories } = filters;
   const res = Object.entries(data)
@@ -218,7 +227,15 @@ export function calculateMapRenderedDistricts({
               [{ category: 'ny', phase: 'ny', isNew: false }],
             ];
           }
-          const dateData = districtData.filter(x => x.date === selectedDate);
+
+          // keep showing latest window data, even for later dates
+          const range = windowRanges[winKey as typeof AAWindowKeys[number]];
+          const date =
+            range?.end === undefined || selectedDate < range.end
+              ? selectedDate
+              : range.end;
+
+          const dateData = districtData.filter(x => x.date === date);
           const validData = dateData.filter(
             x => (x.computedRow || x.isValid) && categories[x.category],
           );
