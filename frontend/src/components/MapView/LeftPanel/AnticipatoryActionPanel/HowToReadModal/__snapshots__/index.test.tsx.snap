@@ -1,0 +1,160 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`renders actions modal 1`] = `
+<div>
+  <mock-dialog
+    open="true"
+  >
+    <mock-dialogtitle>
+      <div
+        class="makeStyles-titleWrapper-1"
+      >
+        <mock-typography
+          variant="h2"
+        >
+          How to read this screen
+        </mock-typography>
+        <button
+          class="MuiButtonBase-root MuiIconButton-root"
+          style="padding: 0px;"
+          tabindex="0"
+          type="button"
+        >
+          <span
+            class="MuiIconButton-label"
+          >
+            <svg
+              aria-hidden="true"
+              class="MuiSvgIcon-root"
+              focusable="false"
+              viewBox="0 0 24 24"
+            >
+              <path
+                d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm5 13.59L15.59 17 12 13.41 8.41 17 7 15.59 10.59 12 7 8.41 8.41 7 12 10.59 15.59 7 17 8.41 13.41 12 17 15.59z"
+              />
+            </svg>
+          </span>
+          <span
+            class="MuiTouchRipple-root"
+          />
+        </button>
+      </div>
+    </mock-dialogtitle>
+    <mock-dialogcontent
+      dividers="true"
+    >
+      <div
+        class="makeStyles-contentWrapper-2"
+      >
+        <div
+          class="makeStyles-contentItem-3"
+        >
+          <mock-typography
+            style="font-weight: bold;"
+            variant="h3"
+          >
+            Window 1
+          </mock-typography>
+           
+          <mock-typography
+            variant="h3"
+          >
+            Start to mid of the rainfall season.
+          </mock-typography>
+           
+        </div>
+        <div
+          class="makeStyles-contentItem-3"
+        >
+          <mock-typography
+            style="font-weight: bold;"
+            variant="h3"
+          >
+            Window 2
+          </mock-typography>
+           
+          <mock-typography
+            variant="h3"
+          >
+            Mid to end of rainfall season.
+          </mock-typography>
+           
+        </div>
+        <div
+          class="makeStyles-contentItem-3"
+        >
+          <mock-typography
+            style="font-weight: bold;"
+            variant="h3"
+          >
+            Moderate category
+          </mock-typography>
+           
+          <mock-typography
+            variant="h3"
+          >
+            Drought events that happen on average 1 in 5 years.
+          </mock-typography>
+           
+        </div>
+        <div
+          class="makeStyles-contentItem-3"
+        >
+          <mock-typography
+            style="font-weight: bold;"
+            variant="h3"
+          >
+            Severe category
+          </mock-typography>
+           
+          <mock-typography
+            variant="h3"
+          >
+            Drought events that happen on average 1 in 7 years.
+          </mock-typography>
+           
+        </div>
+        <div
+          class="makeStyles-contentItem-3"
+        >
+          <mock-typography
+            style="font-weight: bold;"
+            variant="h3"
+          >
+            Ready, Set and Go phases
+          </mock-typography>
+           
+          <mock-typography
+            variant="h3"
+          >
+            The “Ready, Set & Go!” system uses seasonal forecasts with longer lead time for preparedness (Ready phase) and shorter lead times for activation and mobilization (Set & Go! phases).
+          </mock-typography>
+           
+        </div>
+      </div>
+    </mock-dialogcontent>
+    <mock-dialogactions
+      classname="makeStyles-dialogActionsWrapper-4"
+    >
+      <mock-button
+        classname="makeStyles-dialogButton-5"
+        starticon="[object Object]"
+        variant="outlined"
+      >
+        <mock-typography>
+          I STILL NEED HELP
+        </mock-typography>
+      </mock-button>
+      <mock-button
+        classname="makeStyles-dialogButton-5"
+        starticon="[object Object]"
+        variant="outlined"
+      >
+        <mock-typography>
+          Close
+        </mock-typography>
+      </mock-button>
+    </mock-dialogactions>
+  </mock-dialog>
+</div>
+`;

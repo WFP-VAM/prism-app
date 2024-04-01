@@ -45,6 +45,7 @@ import { DateFormat } from 'utils/name-utils';
 import { StyledCheckboxLabel, StyledRadioLabel, StyledSelect } from './utils';
 import DistrictView from './DistrictView/index';
 import HomeTable from './HomeTable';
+import HowToReadModal from './HowToReadModal';
 
 const homeButtons = [
   { icon: GetApp, text: 'Assets' },
@@ -79,12 +80,13 @@ function AnticipatoryActionPanel() {
   const selectedDistrict = useSelector(AASelectedDistrictSelector);
   const aaData = useSelector(AADataSelector);
   const [indexOptions, setIndexOptions] = React.useState<string[]>([]);
+  const [howToReadModalOpen, setHowToReadModalOpen] = React.useState(false);
 
   const dialogs = [
     { text: 'Group assumptions', onclick: () => {} },
     {
       text: 'How to read this screen',
-      onclick: () => {},
+      onclick: () => setHowToReadModalOpen(true),
     },
   ];
 
@@ -111,6 +113,10 @@ function AnticipatoryActionPanel() {
 
   return (
     <div className={classes.anticipatoryActionPanel}>
+      <HowToReadModal
+        open={howToReadModalOpen}
+        onClose={() => setHowToReadModalOpen(false)}
+      />
       <div className={classes.headerWrapper}>
         <div className={classes.titleSelectWrapper}>
           <div className={classes.titleSelectWrapper}>
