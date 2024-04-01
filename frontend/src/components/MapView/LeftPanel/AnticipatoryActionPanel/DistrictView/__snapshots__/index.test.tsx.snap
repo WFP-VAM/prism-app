@@ -172,7 +172,7 @@ exports[`renders as expected 1`] = `
           class="makeStyles-actionsWrapper-18"
         >
           <div
-            style="text-align: center; padding-top: 0.5rem;"
+            style="text-align: center;"
           >
             <mock-typography
               variant="h3"

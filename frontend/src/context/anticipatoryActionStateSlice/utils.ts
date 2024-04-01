@@ -212,7 +212,7 @@ export function calculateMapRenderedDistricts({
           ) {
             return [
               districtName,
-              { category: 'ny', phase: 'ny', isNew: false },
+              [{ category: 'ny', phase: 'ny', isNew: false }],
             ];
           }
           const dateData = districtData.filter(x => x.date === selectedDate);
@@ -222,26 +222,19 @@ export function calculateMapRenderedDistricts({
           if (validData.length === 0) {
             return [
               districtName,
-              { category: 'na', phase: 'na', isNew: false },
+              [{ category: 'na', phase: 'na', isNew: false }],
             ];
           }
 
-          const max = validData.reduce((m, curr) => {
-            if (
-              AADataSeverityOrder(curr.category, curr.phase) >
-              AADataSeverityOrder(m.category, m.phase)
-            ) {
-              return curr;
-            }
-            return m;
-          }, validData[0]);
+          // eslint-disable-next-line fp/no-mutating-methods
+          const sorted = validData.sort(sortFn);
           return [
             districtName,
-            {
-              category: max.category,
-              phase: max.phase,
-              isNew: max.computedRow ? false : max.new,
-            },
+            sorted.map(x => ({
+              category: x.category,
+              phase: x.phase,
+              isNew: x.computedRow ? false : x.new,
+            })),
           ];
         },
       );
@@ -252,7 +245,7 @@ export function calculateMapRenderedDistricts({
             category: AACategoryType;
             phase: AAPhaseType;
             isNew: boolean;
-          };
+          }[];
         },
       ];
     })
@@ -282,10 +275,17 @@ export function calculateCombinedAAMapData(
   }
   return Object.fromEntries(
     Object.entries(renderedDistricts[windowKey])
-      .map(([district, val]) => {
+      .map(([district, values]) => {
+        const val = values[0];
+        if (!val) {
+          return null;
+        }
         const thisWindowsSev = AADataSeverityOrder(val.category, val.phase);
 
-        const otherWindowData = renderedDistricts[otherWindowKey][district];
+        const otherWindowData = renderedDistricts[otherWindowKey][district][0];
+        if (!otherWindowData) {
+          return null;
+        }
         const otherWindowSev = AADataSeverityOrder(
           otherWindowData.category,
           otherWindowData.phase,

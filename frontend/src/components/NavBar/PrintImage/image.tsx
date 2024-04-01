@@ -519,7 +519,11 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
             ...calculateCombinedAAMapData(AARenderedDistricts, 'Window 1'),
             ...calculateCombinedAAMapData(AARenderedDistricts, 'Window 2'),
           }
-        : AARenderedDistricts[AASelectedWindow];
+        : Object.fromEntries(
+            Object.entries(
+              AARenderedDistricts[AASelectedWindow],
+            ).map(([dist, val]) => [dist, val[0]]),
+          );
 
     return Object.entries(AADistricts).map(
       ([district, { category, phase }]) => {

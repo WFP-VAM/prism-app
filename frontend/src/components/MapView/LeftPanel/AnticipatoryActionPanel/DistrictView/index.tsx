@@ -112,7 +112,7 @@ function WindowColumn({
       )}
       {hasWindowData && (
         <div className={classes.actionsWrapper}>
-          <div style={{ textAlign: 'center', paddingTop: '0.5rem' }}>
+          <div style={{ textAlign: 'center' }}>
             <Typography variant="h3">ACTIONS</Typography>
           </div>
           <div className={classes.actionBoxesWrapper}>
@@ -220,7 +220,12 @@ const useWindowColumnStyles = makeStyles(() =>
       width: '100%',
       height: '100%',
     },
-    actionsWrapper: { display: 'flex', flexDirection: 'column', gap: '2px' },
+    actionsWrapper: {
+      display: 'flex',
+      flexDirection: 'column',
+      gap: '2px',
+      padding: '0.5rem 0',
+    },
     actionBoxesWrapper: {
       display: 'flex',
       flexDirection: 'row',
