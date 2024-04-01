@@ -275,8 +275,8 @@ export function calculateCombinedAAMapData(
   }
   return Object.fromEntries(
     Object.entries(renderedDistricts[windowKey])
-      .map(([district, vals]) => {
-        const val = vals[0];
+      .map(([district, values]) => {
+        const val = values[0];
         if (!val) {
           return null;
         }

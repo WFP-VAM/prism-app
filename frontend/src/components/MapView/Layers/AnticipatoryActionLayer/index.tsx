@@ -38,7 +38,11 @@ function AnticipatoryActionLayer({ layer, before }: LayersProps) {
   );
   const shouldRenderData = React.useMemo(() => {
     if (selectedWindow === layer.csvWindowKey) {
-      return renderedDistricts[layer.csvWindowKey];
+      return Object.fromEntries(
+        Object.entries(
+          renderedDistricts[layer.csvWindowKey],
+        ).map(([dist, values]) => [dist, values[0]]),
+      );
     }
     if (selectedWindow === 'All') {
       return calculateCombinedAAMapData(renderedDistricts, layer.csvWindowKey);
