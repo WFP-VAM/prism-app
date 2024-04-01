@@ -45,13 +45,8 @@ import { cyanBlue } from 'muiTheme';
 import { SimpleBoundaryDropdown } from 'components/MapView/Layers/BoundaryDropdown';
 import { getBoundaryLayerSingleton } from 'config/utils';
 import { LayerData } from 'context/layers/layer-data';
-import {
-  AAFiltersSelector,
-  AARenderedDistrictsSelector,
-} from 'context/anticipatoryActionStateSlice';
-import { calculateCentroids, useAAMarkerScalePercent } from 'utils/map-utils';
-import { getAAIcon } from 'components/MapView/LeftPanel/AnticipatoryActionPanel/utils';
-import { calculateCombinedAAMapData } from 'context/anticipatoryActionStateSlice/utils';
+import { AAMarkersSelector } from 'context/anticipatoryActionStateSlice';
+import { useAAMarkerScalePercent } from 'utils/map-utils';
 import {
   dateRangeSelector,
   layerDataSelector,
@@ -160,8 +155,7 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
   const { country } = appConfig;
   const selectedMap = useSelector(mapSelector);
   const dateRange = useSelector(dateRangeSelector);
-  const AARenderedDistricts = useSelector(AARenderedDistrictsSelector);
-  const { selectedWindow: AASelectedWindow } = useSelector(AAFiltersSelector);
+  const AAMarkers = useSelector(AAMarkersSelector);
   const printRef = useRef<HTMLDivElement>(null);
   const overlayContainerRef = useRef<HTMLDivElement>(null);
   const titleOverlayRef = useRef<HTMLDivElement>(null);
@@ -507,41 +501,6 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
     handleClose();
     handleDownloadMenuClose();
   };
-
-  const districtCentroids = React.useMemo(() => calculateCentroids(data), [
-    data,
-  ]);
-
-  const AAMarkers = React.useMemo(() => {
-    const AADistricts =
-      AASelectedWindow === 'All'
-        ? {
-            ...calculateCombinedAAMapData(AARenderedDistricts, 'Window 1'),
-            ...calculateCombinedAAMapData(AARenderedDistricts, 'Window 2'),
-          }
-        : Object.fromEntries(
-            Object.entries(
-              AARenderedDistricts[AASelectedWindow],
-            ).map(([dist, val]) => [dist, val[0]]),
-          );
-
-    return Object.entries(AADistricts).map(
-      ([district, { category, phase }]) => {
-        const centroid = districtCentroids[district] || {
-          geometry: { coordinates: [0, 0] },
-        };
-        const icon = getAAIcon(category, phase, true);
-
-        return {
-          district,
-          longitude: centroid?.geometry.coordinates[0],
-          latitude: centroid?.geometry.coordinates[1],
-          icon,
-          centroid,
-        };
-      },
-    );
-  }, [AARenderedDistricts, AASelectedWindow, districtCentroids]);
 
   const scalePercent = useAAMarkerScalePercent(mapRef.current?.getMap());
 

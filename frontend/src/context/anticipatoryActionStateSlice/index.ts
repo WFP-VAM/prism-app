@@ -32,6 +32,7 @@ const initialState: AnticipatoryActionState = {
       ny: true,
     },
   },
+  markers: [],
   selectedDistrict: '',
   renderedDistricts: emptyWindows,
   loading: false,
@@ -105,6 +106,13 @@ export const anticipatoryActionStateSlice = createSlice({
       ...state,
       selectedDistrict: payload,
     }),
+    setAAMarkers: (
+      state,
+      { payload }: PayloadAction<AnticipatoryActionState['markers']>,
+    ) => ({
+      ...state,
+      markers: payload,
+    }),
   },
   extraReducers: builder => {
     builder.addCase(loadAAData.fulfilled, (state, { payload }) => ({
@@ -157,10 +165,14 @@ export const AARenderedDistrictsSelector = (state: RootState) =>
 export const AASelectedDistrictSelector = (state: RootState) =>
   state.anticipatoryActionState.selectedDistrict;
 
+export const AAMarkersSelector = (state: RootState) =>
+  state.anticipatoryActionState.markers;
+
 // export actions
 export const {
   setAAFilters,
   setAASelectedDistrict,
+  setAAMarkers,
 } = anticipatoryActionStateSlice.actions;
 
 export default anticipatoryActionStateSlice.reducer;

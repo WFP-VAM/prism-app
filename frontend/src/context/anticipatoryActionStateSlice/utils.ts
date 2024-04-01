@@ -1,5 +1,8 @@
 import { AAWindowKeys } from 'config/utils';
-import { AADataSeverityOrder } from 'components/MapView/LeftPanel/AnticipatoryActionPanel/utils';
+import {
+  AADataSeverityOrder,
+  getAAIcon,
+} from 'components/MapView/LeftPanel/AnticipatoryActionPanel/utils';
 import { DatesPropagation, Validity } from 'config/types';
 import { generateIntermediateDateItemFromValidity } from 'utils/server-utils';
 import {
@@ -309,4 +312,45 @@ export function calculateCombinedAAMapData(
       isNew: boolean;
     };
   };
+}
+
+interface CalculateAAMarkersParams {
+  renderedDistricts: AnticipatoryActionState['renderedDistricts'];
+  selectedWindow: AnticipatoryActionState['filters']['selectedWindow'];
+  districtCentroids: {
+    [key: string]: any;
+  };
+}
+
+export function calculateAAMarkers({
+  renderedDistricts,
+  selectedWindow,
+  districtCentroids,
+}: CalculateAAMarkersParams) {
+  const AADistricts =
+    selectedWindow === 'All'
+      ? {
+          ...calculateCombinedAAMapData(renderedDistricts, 'Window 1'),
+          ...calculateCombinedAAMapData(renderedDistricts, 'Window 2'),
+        }
+      : Object.fromEntries(
+          Object.entries(
+            renderedDistricts[selectedWindow],
+          ).map(([dist, val]) => [dist, val[0]]),
+        );
+
+  return Object.entries(AADistricts).map(([district, { category, phase }]) => {
+    const centroid = districtCentroids[district] || {
+      geometry: { coordinates: [0, 0] },
+    };
+    const icon = getAAIcon(category, phase, true);
+
+    return {
+      district,
+      longitude: centroid?.geometry.coordinates[0],
+      latitude: centroid?.geometry.coordinates[1],
+      icon,
+      centroid,
+    };
+  });
 }

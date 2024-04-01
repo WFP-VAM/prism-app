@@ -1,6 +1,8 @@
 // na/ny are not actually found in CSV, but defined not to cause confusion when calling the functions
 import { DateItem } from 'config/types';
 import { AAWindowKeys } from 'config/utils';
+import React from 'react';
+
 // NOTE: order matters for AADataSeverityOrder
 export const AAcategory = ['ny', 'na', 'Mild', 'Moderate', 'Severe'] as const;
 export type AACategoryType = typeof AAcategory[number];
@@ -51,6 +53,13 @@ export type AnticipatoryActionState = {
       }[];
     }
   >;
+  markers: {
+    district: string;
+    longitude: any;
+    latitude: any;
+    icon: React.JSX.Element;
+    centroid: any;
+  }[];
   loading: boolean;
   error: string | null;
 };

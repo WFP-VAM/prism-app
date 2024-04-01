@@ -1,7 +1,7 @@
 import React from 'react';
 import { AnticipatoryActionLayerProps, BoundaryLayerProps } from 'config/types';
 import { useDefaultDate } from 'utils/useDefaultDate';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import {
   layerDataSelector,
   mapSelector,
@@ -10,16 +10,18 @@ import { LayerData } from 'context/layers/layer-data';
 import { Layer, Marker, Source } from 'react-map-gl/maplibre';
 import {
   AAFiltersSelector,
+  AAMarkersSelector,
   AARenderedDistrictsSelector,
   AASelectedDistrictSelector,
+  setAAMarkers,
 } from 'context/anticipatoryActionStateSlice';
-import {
-  getAAColor,
-  getAAIcon,
-} from 'components/MapView/LeftPanel/AnticipatoryActionPanel/utils';
+import { getAAColor } from 'components/MapView/LeftPanel/AnticipatoryActionPanel/utils';
 import { calculateCentroids, useAAMarkerScalePercent } from 'utils/map-utils';
 import { AAWindowKeys, getBoundaryLayerSingleton } from 'config/utils';
-import { calculateCombinedAAMapData } from 'context/anticipatoryActionStateSlice/utils';
+import {
+  calculateAAMarkers,
+  calculateCombinedAAMapData,
+} from 'context/anticipatoryActionStateSlice/utils';
 
 const boundaryLayer = getBoundaryLayerSingleton();
 
@@ -30,9 +32,11 @@ function AnticipatoryActionLayer({ layer, before }: LayersProps) {
   ) as LayerData<BoundaryLayerProps> | undefined;
   const { data } = boundaryLayerState || {};
   const map = useSelector(mapSelector);
+  const dispatch = useDispatch();
   const renderedDistricts = useSelector(AARenderedDistrictsSelector);
   const { selectedWindow } = useSelector(AAFiltersSelector);
   const selectedDistrict = useSelector(AASelectedDistrictSelector);
+  const markers = useSelector(AAMarkersSelector);
   const layerWindowIndex = AAWindowKeys.findIndex(
     x => x === layer.csvWindowKey,
   );
@@ -51,9 +55,15 @@ function AnticipatoryActionLayer({ layer, before }: LayersProps) {
   }, [layer.csvWindowKey, renderedDistricts, selectedWindow]);
 
   // Calculate centroids only once per data change
-  const districtCentroids = React.useMemo(() => calculateCentroids(data), [
-    data,
-  ]);
+  React.useEffect(() => {
+    const districtCentroids = calculateCentroids(data);
+    const m = calculateAAMarkers({
+      renderedDistricts,
+      selectedWindow,
+      districtCentroids,
+    });
+    dispatch(setAAMarkers(m));
+  }, [data, dispatch, renderedDistricts, selectedWindow]);
 
   const highlightDistrictLine = React.useMemo(
     () => ({
@@ -100,28 +110,6 @@ function AnticipatoryActionLayer({ layer, before }: LayersProps) {
     };
   }, [data, shouldRenderData]);
 
-  const markers = React.useMemo(() => {
-    const districtEntries = Object.entries(shouldRenderData);
-    if (!districtEntries.length) {
-      return [];
-    }
-    return districtEntries.map(
-      ([district, { category, phase }]: [string, any]) => {
-        const icon = getAAIcon(category, phase, true);
-        const centroid = districtCentroids[district] || {
-          geometry: { coordinates: [0, 0] },
-        };
-        return {
-          district,
-          longitude: centroid.geometry.coordinates[0],
-          latitude: centroid.geometry.coordinates[1],
-          icon,
-          centroid,
-        };
-      },
-    );
-  }, [shouldRenderData, districtCentroids]);
-
   const scalePercent = useAAMarkerScalePercent(map);
 
   const mainLayerBefore = selectedDistrict
@@ -130,18 +118,19 @@ function AnticipatoryActionLayer({ layer, before }: LayersProps) {
 
   return (
     <>
-      {markers.map(marker => (
-        <Marker
-          key={`marker-${marker.district}`}
-          longitude={marker.longitude}
-          latitude={marker.latitude}
-          anchor="center"
-        >
-          <div style={{ transform: `scale(${scalePercent})` }}>
-            {marker.icon}
-          </div>
-        </Marker>
-      ))}
+      {layer.csvWindowKey === 'Window 1' &&
+        markers.map(marker => (
+          <Marker
+            key={`marker-${marker.district}`}
+            longitude={marker.longitude}
+            latitude={marker.latitude}
+            anchor="center"
+          >
+            <div style={{ transform: `scale(${scalePercent})` }}>
+              {marker.icon}
+            </div>
+          </Marker>
+        ))}
       {layer.csvWindowKey === 'Window 1' && (
         <Source
           id="anticipatory-action-selected"
