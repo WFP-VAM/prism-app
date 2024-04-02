@@ -16,7 +16,7 @@ import { black, cyanBlue } from 'muiTheme';
 
 const content = [
   { title: 'Window 1', text: 'Start to mid of the rainfall season.' },
-  { title: 'Window 2', text: 'Mid to end of rainfall season.' },
+  { title: 'Window 2', text: 'Mid to end of the rainfall season.' },
   {
     title: 'Moderate category',
     text: 'Drought events that happen on average 1 in 5 years.',
@@ -54,7 +54,7 @@ function HowToReadModal({ open, onClose }: HowToReadModalProps) {
       <DialogContent dividers>
         <div className={classes.contentWrapper}>
           {content.map(x => (
-            <div className={classes.contentItem}>
+            <div className={classes.contentItem} key={x.title.toLowerCase()}>
               <Typography variant="h3" style={{ fontWeight: 'bold' }}>
                 {t(x.title)}
               </Typography>{' '}

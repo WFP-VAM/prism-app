@@ -76,7 +76,7 @@ exports[`renders actions modal 1`] = `
           <mock-typography
             variant="h3"
           >
-            Mid to end of rainfall season.
+            Mid to end of the rainfall season.
           </mock-typography>
            
         </div>
