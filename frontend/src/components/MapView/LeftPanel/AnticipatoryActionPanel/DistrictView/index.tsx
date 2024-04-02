@@ -23,7 +23,7 @@ import {
   getActionsByPhaseCategoryAndWindow,
 } from './ActionsModal/actions';
 import ActionsModal from './ActionsModal';
-import { districtViewTransform } from './utils';
+import { dateSorter, districtViewTransform } from './utils';
 
 interface WindowColumnProps {
   win: typeof AAWindowKeys[number];
@@ -81,15 +81,7 @@ function WindowColumn({
           {
             // eslint-disable-next-line fp/no-mutating-methods
             Object.entries(extendedTransformed)
-              .sort((a, b) => {
-                if (a[0] > b[0]) {
-                  return -1;
-                }
-                if (a[0] < b[0]) {
-                  return 1;
-                }
-                return 0;
-              })
+              .sort(dateSorter)
               .map(x => (
                 <div key={x[0]} className={classes.rowWrapper}>
                   {Object.entries(transformed?.months || {}).map(y => {

@@ -71,3 +71,16 @@ export function districtViewTransform(
     transformed,
   };
 }
+
+export function dateSorter(
+  a: [string, AnticipatoryActionDataRow[]],
+  b: [string, AnticipatoryActionDataRow[]],
+) {
+  if (a[0] > b[0]) {
+    return -1;
+  }
+  if (a[0] < b[0]) {
+    return 1;
+  }
+  return 0;
+}

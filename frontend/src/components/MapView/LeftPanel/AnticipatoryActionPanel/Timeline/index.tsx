@@ -16,6 +16,7 @@ import { setPanelSize } from 'context/leftPanelStateSlice';
 import { PanelSize } from 'config/types';
 import { AAWindowKeys } from 'config/utils';
 import { getAAColor, getAAIcon } from '../utils';
+import { dateSorter } from '../DistrictView/utils';
 
 interface TimelineItemProps {
   item: AnticipatoryActionDataRow;
@@ -160,15 +161,7 @@ function Timeline() {
               {
                 // eslint-disable-next-line fp/no-mutating-methods
                 Object.entries(data)
-                  .sort((a, b) => {
-                    if (a[0] > b[0]) {
-                      return -1;
-                    }
-                    if (a[0] < b[0]) {
-                      return 1;
-                    }
-                    return 0;
-                  })
+                  .sort(dateSorter)
                   .map(([rowId, rowData]) => (
                     <div key={rowId} className={classes.rowWrapper}>
                       <div className={classes.iconColumn}>
