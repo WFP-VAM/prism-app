@@ -6,12 +6,14 @@ import { useDispatch, useSelector } from 'react-redux';
 import {
   AACategoryType,
   AAPhaseType,
+  AAView,
 } from 'context/anticipatoryActionStateSlice/types';
 import { AAWindowKeys } from 'config/utils';
 import {
   AAFiltersSelector,
   AARenderedDistrictsSelector,
   setAASelectedDistrict,
+  setAAView,
 } from 'context/anticipatoryActionStateSlice';
 import { setPanelSize } from 'context/leftPanelStateSlice';
 import { PanelSize } from 'config/types';
@@ -212,7 +214,10 @@ function HomeTable() {
                     return {
                       name: district,
                       isNew: dist.isNew,
-                      onClick: () => dispatch(setAASelectedDistrict(district)),
+                      onClick: () => {
+                        dispatch(setAASelectedDistrict(district));
+                        dispatch(setAAView(AAView.District));
+                      },
                     };
                   }
                   return undefined;

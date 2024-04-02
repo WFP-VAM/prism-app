@@ -6,6 +6,7 @@ import { AAWindowKeyToLayerId, AAWindowKeys } from 'config/utils';
 import type { CreateAsyncThunkTypes, RootState } from '../store';
 import {
   AACategoryType,
+  AAView,
   AnticipatoryActionData,
   AnticipatoryActionState,
   allWindowsKey,
@@ -33,9 +34,10 @@ const initialState: AnticipatoryActionState = {
     },
   },
   markers: [],
-  selectedDistrict: '',
+  selectedDistrict: 'Mapai',
   renderedDistricts: emptyWindows,
   windowRanges: { 'Window 1': undefined, 'Window 2': undefined },
+  view: AAView.Timeline,
   loading: false,
   error: null,
 };
@@ -116,6 +118,13 @@ export const anticipatoryActionStateSlice = createSlice({
       ...state,
       markers: payload,
     }),
+    setAAView: (
+      state,
+      { payload }: PayloadAction<AnticipatoryActionState['view']>,
+    ) => ({
+      ...state,
+      view: payload,
+    }),
   },
   extraReducers: builder => {
     builder.addCase(loadAAData.fulfilled, (state, { payload }) => ({
@@ -174,11 +183,15 @@ export const AASelectedDistrictSelector = (state: RootState) =>
 export const AAMarkersSelector = (state: RootState) =>
   state.anticipatoryActionState.markers;
 
+export const AAViewSelector = (state: RootState) =>
+  state.anticipatoryActionState.view;
+
 // export actions
 export const {
   setAAFilters,
   setAASelectedDistrict,
   setAAMarkers,
+  setAAView,
 } = anticipatoryActionStateSlice.actions;
 
 export default anticipatoryActionStateSlice.reducer;

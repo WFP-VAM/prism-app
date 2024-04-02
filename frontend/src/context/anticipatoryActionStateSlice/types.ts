@@ -31,6 +31,12 @@ export interface AnticipatoryActionData {
 
 export const allWindowsKey = 'All';
 
+export enum AAView {
+  Home = 'home',
+  District = 'district',
+  Timeline = 'timeline',
+}
+
 export type AnticipatoryActionState = {
   data: Record<typeof AAWindowKeys[number], AnticipatoryActionData>;
   // availableDates used to update layer available dates after csv processed
@@ -64,6 +70,7 @@ export type AnticipatoryActionState = {
     typeof AAWindowKeys[number],
     { start: string; end: string } | undefined
   >;
+  view: AAView;
   loading: boolean;
   error: string | null;
 };

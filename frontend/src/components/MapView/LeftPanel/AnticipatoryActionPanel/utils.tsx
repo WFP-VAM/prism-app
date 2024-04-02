@@ -136,6 +136,10 @@ const AACategoryPhaseMap: { [key: string]: any } = {
       color: '#E63701',
       iconProps: { topText: 'R', bottomText: 'SEV', color: 'white' },
     },
+    na: {
+      color: '#F1F1F1',
+      iconProps: { topText: 'na', bottomText: 'SEV', color: 'black' },
+    },
   },
   Moderate: {
     Set: {
@@ -146,6 +150,10 @@ const AACategoryPhaseMap: { [key: string]: any } = {
       color: '#FFD52D',
       iconProps: { topText: 'R', bottomText: 'MOD', color: 'black' },
     },
+    na: {
+      color: '#F1F1F1',
+      iconProps: { topText: 'na', bottomText: 'MOD', color: 'black' },
+    },
   },
   Mild: {
     Set: {
@@ -155,6 +163,10 @@ const AACategoryPhaseMap: { [key: string]: any } = {
     Ready: {
       color: '#FFFCB3',
       iconProps: { topText: 'R', bottomText: 'MIL', color: 'black' },
+    },
+    na: {
+      color: '#F1F1F1',
+      iconProps: { topText: 'na', bottomText: 'MIL', color: 'black' },
     },
   },
 };

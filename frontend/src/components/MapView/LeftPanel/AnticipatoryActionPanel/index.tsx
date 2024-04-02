@@ -23,6 +23,7 @@ import {
 import { useDispatch, useSelector } from 'react-redux';
 import {
   AACategoryType,
+  AAView,
   allWindowsKey,
 } from 'context/anticipatoryActionStateSlice/types';
 import { AAWindowKeys } from 'config/utils';
@@ -31,8 +32,10 @@ import {
   AAFiltersSelector,
   AAMonitoredDistrictsSelector,
   AASelectedDistrictSelector,
+  AAViewSelector,
   setAAFilters,
   setAASelectedDistrict,
+  setAAView,
 } from 'context/anticipatoryActionStateSlice';
 import { availableDatesSelector } from 'context/serverStateSlice';
 import { dateRangeSelector } from 'context/mapStateSlice/selectors';
@@ -46,17 +49,7 @@ import { StyledCheckboxLabel, StyledRadioLabel, StyledSelect } from './utils';
 import DistrictView from './DistrictView/index';
 import HomeTable from './HomeTable';
 import HowToReadModal from './HowToReadModal';
-
-const homeButtons = [
-  { icon: GetApp, text: 'Assets' },
-  { icon: EditOutlined, text: 'Report' },
-  { icon: BarChartOutlined, text: 'Forecast' },
-];
-
-const districtButtons = [
-  { icon: ClearAll, text: 'Timeline' },
-  { icon: Equalizer, text: 'Forecast' },
-];
+import Timeline from './Timeline';
 
 const checkboxes: {
   label: string;
@@ -79,6 +72,7 @@ function AnticipatoryActionPanel() {
   const { startDate: selectedDate } = useSelector(dateRangeSelector);
   const selectedDistrict = useSelector(AASelectedDistrictSelector);
   const aaData = useSelector(AADataSelector);
+  const view = useSelector(AAViewSelector);
   const [indexOptions, setIndexOptions] = React.useState<string[]>([]);
   const [howToReadModalOpen, setHowToReadModalOpen] = React.useState(false);
 
@@ -88,6 +82,25 @@ function AnticipatoryActionPanel() {
       text: 'How to read this screen',
       onclick: () => setHowToReadModalOpen(true),
     },
+  ];
+
+  const homeButtons = [
+    { icon: GetApp, text: 'Assets', onClick: undefined },
+    { icon: EditOutlined, text: 'Report', onClick: undefined },
+    { icon: BarChartOutlined, text: 'Forecast', onClick: undefined },
+  ];
+
+  const districtButtons = [
+    {
+      icon: ClearAll,
+      text: 'Timeline',
+      onClick: () => dispatch(setAAView(AAView.Timeline)),
+    },
+    { icon: Equalizer, text: 'Forecast', onClick: undefined },
+  ];
+
+  const timelineButtons = [
+    { icon: Equalizer, text: 'Forecast', onClick: undefined },
   ];
 
   React.useEffect(() => {
@@ -120,8 +133,13 @@ function AnticipatoryActionPanel() {
       <div className={classes.headerWrapper}>
         <div className={classes.titleSelectWrapper}>
           <div className={classes.titleSelectWrapper}>
-            {selectedDistrict && (
-              <IconButton onClick={() => dispatch(setAASelectedDistrict(''))}>
+            {view === AAView.District && (
+              <IconButton
+                onClick={() => {
+                  dispatch(setAASelectedDistrict(''));
+                  dispatch(setAAView(AAView.Home));
+                }}
+              >
                 <ArrowBackIos fontSize="small" />
               </IconButton>
             )}
@@ -131,7 +149,8 @@ function AnticipatoryActionPanel() {
               input={<Input disableUnderline />}
               renderValue={() => (
                 <Typography variant="h2">
-                  {selectedDistrict || 'Phases: global view'}
+                  {selectedDistrict || 'Phases: global view'}{' '}
+                  {view === AAView.Timeline && t('Timeline')}
                 </Typography>
               )}
             >
@@ -139,6 +158,7 @@ function AnticipatoryActionPanel() {
                 value=""
                 onClick={() => {
                   dispatch(setAASelectedDistrict(''));
+                  dispatch(setAAView(AAView.Home));
                 }}
               >
                 Global view
@@ -149,6 +169,7 @@ function AnticipatoryActionPanel() {
                   value={x}
                   onClick={() => {
                     dispatch(setAASelectedDistrict(x));
+                    dispatch(setAAView(AAView.District));
                   }}
                 >
                   {x}
@@ -193,7 +214,7 @@ function AnticipatoryActionPanel() {
           ))}
         </div>
 
-        {selectedDistrict && (
+        {(view === AAView.District || view === AAView.Timeline) && (
           <div>
             <StyledSelect
               value={selectedIndex || 'empty'}
@@ -228,17 +249,30 @@ function AnticipatoryActionPanel() {
           </div>
         )}
       </div>
-      {selectedDistrict === '' && <HomeTable />}
-      {selectedDistrict !== '' && <DistrictView />}
+      {view === AAView.Home && <HomeTable />}
+      {view === AAView.District && <DistrictView />}
+      {view === AAView.Timeline && <Timeline />}
       {/* TODO: consider moving this part to each sub-component */}
       <div className={classes.footerWrapper}>
         <div className={classes.footerActionsWrapper}>
-          {(selectedDistrict !== '' ? districtButtons : homeButtons).map(x => (
+          {(() => {
+            if (view === AAView.Home) {
+              return homeButtons;
+            }
+            if (view === AAView.District) {
+              return districtButtons;
+            }
+            if (view === AAView.Timeline) {
+              return timelineButtons;
+            }
+            return [];
+          })().map(x => (
             <Button
               key={x.text}
               className={classes.footerButton}
               variant="outlined"
               fullWidth
+              onClick={x.onClick}
               startIcon={<x.icon />}
             >
               <Typography>{t(x.text)}</Typography>
