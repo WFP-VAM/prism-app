@@ -105,7 +105,7 @@ type ActionsMap = {
 // Define the actions map
 const actionsMap: ActionsMap = {
   ReadyModerateW1: [AActions.procurement],
-  ModerateW2: [AActions.procurement],
+  ReadyModerateW2: [AActions.procurement],
   ReadySevereW1: [AActions.procurement],
   ReadySevereW2: [AActions.procurement],
   SetModerateW1: [
@@ -144,6 +144,9 @@ export function getActionsByPhaseCategoryAndWindow(
   category: AACategoryType,
   win: typeof AAWindowKeys[number],
 ): Action[] {
+  if (category === 'Mild') {
+    return [AActions.naMild];
+  }
   const windowIndex = AAWindowKeys.findIndex(x => x === win) + 1;
   const key = `${phase}${category}W${windowIndex}`;
   return actionsMap[key] || [];
