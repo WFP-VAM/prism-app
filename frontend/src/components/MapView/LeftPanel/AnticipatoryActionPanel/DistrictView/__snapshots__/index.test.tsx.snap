@@ -187,45 +187,6 @@ exports[`renders as expected 1`] = `
             />
             <div
               class="makeStyles-column-14"
-            />
-            <div
-              class="makeStyles-column-14"
-            >
-              <div
-                class="makeStyles-iconWrapper-17"
-              >
-                <div
-                  class="makeStyles-iconWrapper-22"
-                  style="background: rgb(255, 245, 3);"
-                >
-                  <div
-                    class="makeStyles-centerContainer-23"
-                    style="border: 1px solid black; color: black;"
-                  >
-                    <div
-                      class="makeStyles-topTextContainer-24"
-                      style="border-bottom: 1px solid black;"
-                    >
-                      S
-                    </div>
-                    <div
-                      class="makeStyles-bottomTextContainer-25"
-                    >
-                      MIL
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div
-            class="makeStyles-rowWrapper-11"
-          >
-            <div
-              class="makeStyles-column-14"
-            />
-            <div
-              class="makeStyles-column-14"
             >
               <div
                 class="makeStyles-iconWrapper-17"
@@ -255,7 +216,33 @@ exports[`renders as expected 1`] = `
             </div>
             <div
               class="makeStyles-column-14"
-            />
+            >
+              <div
+                class="makeStyles-iconWrapper-17"
+              >
+                <div
+                  class="makeStyles-iconWrapper-22"
+                  style="background: rgb(255, 245, 3);"
+                >
+                  <div
+                    class="makeStyles-centerContainer-23"
+                    style="border: 1px solid black; color: black;"
+                  >
+                    <div
+                      class="makeStyles-topTextContainer-24"
+                      style="border-bottom: 1px solid black;"
+                    >
+                      S
+                    </div>
+                    <div
+                      class="makeStyles-bottomTextContainer-25"
+                    >
+                      MIL
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
         <div

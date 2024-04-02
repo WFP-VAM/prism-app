@@ -80,8 +80,6 @@ const out = {
         date: '2023-10-01',
         isValid: true,
       },
-    ],
-    '21': [
       {
         category: 'Mild',
         district: 'Changara',
