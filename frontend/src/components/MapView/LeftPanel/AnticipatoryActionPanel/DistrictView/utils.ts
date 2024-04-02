@@ -29,7 +29,6 @@ export function districtViewTransform(
   // eslint-disable-next-line fp/no-mutating-methods
   const months = Array.from(monthsMap.keys()).sort();
 
-  let prevMax: AnticipatoryActionDataRow | undefined;
   const topFiltered = months
     .map(date => {
       const dateData = monthsMap.get(date);
@@ -42,33 +41,12 @@ export function districtViewTransform(
         return [];
       }
 
-      // eslint-disable-next-line fp/no-mutating-methods
-      const sorted = dateData.sort((a, b) => {
-        const aVal = AADataSeverityOrder(a.category, a.phase, 1);
-        const bVal = AADataSeverityOrder(b.category, b.phase, 1);
-
-        if (aVal > bVal) {
-          return -1;
-        }
-        if (aVal < bVal) {
-          return 1;
-        }
-        return 0;
-      });
-      if (prevMax === undefined) {
-        // eslint-disable-next-line fp/no-mutation, prefer-destructuring
-        prevMax = sorted[0];
-        return [sorted[0]];
-      }
-
-      const ret = sorted.filter(
-        x =>
-          AADataSeverityOrder(x.category, x.phase, 1) >=
-          AADataSeverityOrder(prevMax!.category, prevMax!.phase, 1),
+      const setCategories = new Set(
+        dateData.filter(x => x.phase === 'Set').map(x => x.category),
       );
-
-      // eslint-disable-next-line fp/no-mutation, prefer-destructuring
-      prevMax = ret[0];
+      const ret = dateData.filter(
+        x => x.phase === 'Set' || !setCategories.has(x.category),
+      );
 
       return ret;
     })

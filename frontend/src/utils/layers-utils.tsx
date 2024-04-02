@@ -129,8 +129,10 @@ const useLayers = () => {
       selectedLayersWithDateSupport
         .map(layer => {
           if (layer.type === 'anticipatory_action') {
-            // Combine dates for all AA windows.
-            return getAAAvailableDatesCombined(serverAvailableDates);
+            // Combine dates for all AA windows and avoid double counting.
+            return layer.id.includes('window_1')
+              ? getAAAvailableDatesCombined(serverAvailableDates)
+              : [];
           }
           return getPossibleDatesForLayer(layer, serverAvailableDates);
         })
@@ -148,13 +150,18 @@ const useLayers = () => {
     /*
       Only keep the dates which were duplicated the same amount of times as the amount of layers active...and convert back to array.
      */
-    return Object.keys(
-      pickBy(
-        selectedLayerDatesDupCount,
-        dupTimes => dupTimes >= selectedLayersWithDateSupport.length,
-      ),
-      // convert back to number array after using YYYY-MM-DD strings in countBy
-    ).map(dateString => new Date(dateString).setUTCHours(12, 0, 0, 0));
+    return (
+      // eslint-disable-next-line fp/no-mutating-methods
+      Object.keys(
+        pickBy(
+          selectedLayerDatesDupCount,
+          dupTimes => dupTimes >= selectedLayersWithDateSupport.length,
+        ),
+        // convert back to number array after using YYYY-MM-DD strings in countBy
+      )
+        .map(dateString => new Date(dateString).setUTCHours(12, 0, 0, 0))
+        .sort()
+    );
   }, [selectedLayerDatesDupCount, selectedLayersWithDateSupport.length]);
 
   const defaultLayer = useMemo(() => {
