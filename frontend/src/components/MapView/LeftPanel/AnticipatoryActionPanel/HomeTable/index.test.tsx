@@ -37,7 +37,7 @@ test('renders as expected', () => {
   const { container } = render(
     <BrowserRouter>
       <Provider store={store}>
-        <HomeTable setSelectedDistrict={() => {}} />
+        <HomeTable />
       </Provider>
     </BrowserRouter>,
   );

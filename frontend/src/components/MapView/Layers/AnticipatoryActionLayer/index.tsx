@@ -1,5 +1,10 @@
 import React from 'react';
-import { AnticipatoryActionLayerProps, BoundaryLayerProps } from 'config/types';
+import {
+  AdminLevelDataLayerProps,
+  AnticipatoryActionLayerProps,
+  BoundaryLayerProps,
+  MapEventWrapFunctionProps,
+} from 'config/types';
 import { useDefaultDate } from 'utils/useDefaultDate';
 import { useDispatch, useSelector } from 'react-redux';
 import {
@@ -7,16 +12,26 @@ import {
   mapSelector,
 } from 'context/mapStateSlice/selectors';
 import { LayerData } from 'context/layers/layer-data';
-import { Layer, Marker, Source } from 'react-map-gl/maplibre';
+import {
+  Layer,
+  MapLayerMouseEvent,
+  Marker,
+  Source,
+} from 'react-map-gl/maplibre';
 import {
   AAFiltersSelector,
   AAMarkersSelector,
   AARenderedDistrictsSelector,
   AASelectedDistrictSelector,
   setAAMarkers,
+  setAASelectedDistrict,
 } from 'context/anticipatoryActionStateSlice';
 import { getAAColor } from 'components/MapView/LeftPanel/AnticipatoryActionPanel/utils';
-import { calculateCentroids, useAAMarkerScalePercent } from 'utils/map-utils';
+import {
+  calculateCentroids,
+  useAAMarkerScalePercent,
+  useMapCallback,
+} from 'utils/map-utils';
 import { AAWindowKeys, getBoundaryLayerSingleton } from 'config/utils';
 import {
   calculateAAMarkers,
@@ -24,6 +39,18 @@ import {
 } from 'context/anticipatoryActionStateSlice/utils';
 
 const boundaryLayer = getBoundaryLayerSingleton();
+
+const onDistrictClick = ({
+  dispatch,
+}: MapEventWrapFunctionProps<AdminLevelDataLayerProps>) => (
+  evt: MapLayerMouseEvent,
+) => {
+  const districtId =
+    evt.features?.[0]?.properties?.[boundaryLayer.adminLevelLocalNames[1]];
+  if (districtId) {
+    dispatch(setAASelectedDistrict(districtId));
+  }
+};
 
 function AnticipatoryActionLayer({ layer, before }: LayersProps) {
   useDefaultDate(layer.id);
@@ -37,6 +64,14 @@ function AnticipatoryActionLayer({ layer, before }: LayersProps) {
   const { selectedWindow } = useSelector(AAFiltersSelector);
   const selectedDistrict = useSelector(AASelectedDistrictSelector);
   const markers = useSelector(AAMarkersSelector);
+
+  useMapCallback(
+    'click',
+    'anticipatory-action-0-fill',
+    layer as any,
+    onDistrictClick,
+  );
+
   const layerWindowIndex = AAWindowKeys.findIndex(
     x => x === layer.csvWindowKey,
   );
@@ -125,8 +160,24 @@ function AnticipatoryActionLayer({ layer, before }: LayersProps) {
             longitude={marker.longitude}
             latitude={marker.latitude}
             anchor="center"
+            onClick={e => {
+              e.originalEvent.stopPropagation();
+              // Simulate the expected structure for onDistrictClick
+              const simulatedEvent = {
+                features: [
+                  {
+                    properties: {
+                      [boundaryLayer.adminLevelLocalNames[1]]: marker.district,
+                    },
+                  },
+                ],
+              };
+              onDistrictClick({ dispatch } as any)(simulatedEvent as any);
+            }}
           >
-            <div style={{ transform: `scale(${scalePercent})` }}>
+            <div
+              style={{ transform: `scale(${scalePercent})`, cursor: 'pointer' }}
+            >
               {marker.icon}
             </div>
           </Marker>
