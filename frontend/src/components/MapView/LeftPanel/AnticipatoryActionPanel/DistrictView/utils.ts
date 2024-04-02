@@ -54,7 +54,8 @@ export function districtViewTransform(
 
   const sevMap = new Map<number, AnticipatoryActionDataRow[]>();
   topFiltered.forEach(x => {
-    const sevVal = AADataSeverityOrder(x.category, x.phase, 1);
+    // return category data on one line by setting phase bonus to 0
+    const sevVal = AADataSeverityOrder(x.category, x.phase, 0);
     const val = sevMap.get(sevVal);
     sevMap.set(sevVal, val ? [...val, x] : [x]);
   });
