@@ -104,6 +104,15 @@ exports[`renders as expected 1`] = `
                 October
               </mock-typography>
             </div>
+            <div
+              class="makeStyles-headColumn-13"
+            >
+              <mock-typography
+                classname="makeStyles-monthText-16"
+              >
+                November
+              </mock-typography>
+            </div>
           </div>
           <div
             class="makeStyles-rowWrapper-11"
@@ -166,6 +175,87 @@ exports[`renders as expected 1`] = `
                 </div>
               </div>
             </div>
+            <div
+              class="makeStyles-column-14"
+            />
+          </div>
+          <div
+            class="makeStyles-rowWrapper-11"
+          >
+            <div
+              class="makeStyles-column-14"
+            />
+            <div
+              class="makeStyles-column-14"
+            />
+            <div
+              class="makeStyles-column-14"
+            >
+              <div
+                class="makeStyles-iconWrapper-17"
+              >
+                <div
+                  class="makeStyles-iconWrapper-22"
+                  style="background: rgb(255, 245, 3);"
+                >
+                  <div
+                    class="makeStyles-centerContainer-23"
+                    style="border: 1px solid black; color: black;"
+                  >
+                    <div
+                      class="makeStyles-topTextContainer-24"
+                      style="border-bottom: 1px solid black;"
+                    >
+                      S
+                    </div>
+                    <div
+                      class="makeStyles-bottomTextContainer-25"
+                    >
+                      MIL
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div
+            class="makeStyles-rowWrapper-11"
+          >
+            <div
+              class="makeStyles-column-14"
+            />
+            <div
+              class="makeStyles-column-14"
+            >
+              <div
+                class="makeStyles-iconWrapper-17"
+              >
+                <div
+                  class="makeStyles-iconWrapper-22"
+                  style="background: rgb(255, 252, 179);"
+                >
+                  <div
+                    class="makeStyles-centerContainer-23"
+                    style="border: 1px solid black; color: black;"
+                  >
+                    <div
+                      class="makeStyles-topTextContainer-24"
+                      style="border-bottom: 1px solid black;"
+                    >
+                      R
+                    </div>
+                    <div
+                      class="makeStyles-bottomTextContainer-25"
+                    >
+                      MIL
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div
+              class="makeStyles-column-14"
+            />
           </div>
         </div>
         <div
@@ -229,6 +319,12 @@ exports[`renders as expected 1`] = `
                 </div>
               </mock-tooltip>
             </button>
+            <button
+              class="makeStyles-actionBox-20"
+              id="2023-11-01"
+              style="justify-content: center;"
+              type="button"
+            />
           </div>
         </div>
       </div>

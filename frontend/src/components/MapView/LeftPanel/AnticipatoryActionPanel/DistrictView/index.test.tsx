@@ -63,8 +63,39 @@ const out = {
   months: {
     '2023-09-01': 'September',
     '2023-10-01': 'October',
+    '2023-11-01': 'November',
   },
   transformed: {
+    '20': [
+      {
+        category: 'Mild',
+        district: 'Changara',
+        index: 'SPI DJF',
+        type: 'SPI',
+        window: 'Window 1',
+        new: false,
+        phase: 'Ready',
+        probability: 0.31,
+        trigger: 0.2,
+        date: '2023-10-01',
+        isValid: true,
+      },
+    ],
+    '21': [
+      {
+        category: 'Mild',
+        district: 'Changara',
+        index: 'SPI DJF',
+        type: 'SPI',
+        window: 'Window 1',
+        new: true,
+        phase: 'Set',
+        probability: 0.28,
+        trigger: 0.25,
+        date: '2023-11-01',
+        isValid: true,
+      },
+    ],
     '30': [
       {
         category: 'Moderate',
