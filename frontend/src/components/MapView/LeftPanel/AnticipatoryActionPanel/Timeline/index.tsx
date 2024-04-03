@@ -47,7 +47,7 @@ function TimelineItem({ item }: TimelineItemProps) {
           width: `${item.trigger * 100}%`,
         }}
       />
-      <Typography>{item.index}</Typography>
+      <Typography style={{ whiteSpace: 'nowrap' }}>{item.index}</Typography>
     </div>
   );
 }
@@ -222,7 +222,7 @@ const useTimelineStyles = makeStyles(() =>
     rowWrapper: {
       display: 'flex',
       flexDirection: 'row',
-      minHeight: '5rem',
+      minHeight: '5.3rem',
       background: 'white',
     },
     iconColumn: {
