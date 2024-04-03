@@ -1,5 +1,4 @@
 import {
-  Button,
   FormControl,
   IconButton,
   Input,
@@ -12,14 +11,7 @@ import {
 import { black, cyanBlue } from 'muiTheme';
 import React from 'react';
 import { useSafeTranslation } from 'i18n';
-import {
-  GetApp,
-  EditOutlined,
-  BarChartOutlined,
-  ArrowBackIos,
-  ClearAll,
-  Equalizer,
-} from '@material-ui/icons';
+import { ArrowBackIos } from '@material-ui/icons';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   AACategoryType,
@@ -82,25 +74,6 @@ function AnticipatoryActionPanel() {
       text: 'How to read this screen',
       onclick: () => setHowToReadModalOpen(true),
     },
-  ];
-
-  const homeButtons = [
-    { icon: GetApp, text: 'Assets', onClick: undefined },
-    { icon: EditOutlined, text: 'Report', onClick: undefined },
-    { icon: BarChartOutlined, text: 'Forecast', onClick: undefined },
-  ];
-
-  const districtButtons = [
-    {
-      icon: ClearAll,
-      text: 'Timeline',
-      onClick: () => dispatch(setAAView(AAView.Timeline)),
-    },
-    { icon: Equalizer, text: 'Forecast', onClick: undefined },
-  ];
-
-  const timelineButtons = [
-    { icon: Equalizer, text: 'Forecast', onClick: undefined },
   ];
 
   React.useEffect(() => {
@@ -249,49 +222,9 @@ function AnticipatoryActionPanel() {
           </div>
         )}
       </div>
-      {view === AAView.Home && <HomeTable />}
-      {view === AAView.District && <DistrictView />}
-      {view === AAView.Timeline && <Timeline />}
-      {/* TODO: consider moving this part to each sub-component */}
-      <div className={classes.footerWrapper}>
-        <div className={classes.footerActionsWrapper}>
-          {(() => {
-            if (view === AAView.Home) {
-              return homeButtons;
-            }
-            if (view === AAView.District) {
-              return districtButtons;
-            }
-            if (view === AAView.Timeline) {
-              return timelineButtons;
-            }
-            return [];
-          })().map(x => (
-            <Button
-              key={x.text}
-              className={classes.footerButton}
-              variant="outlined"
-              fullWidth
-              onClick={x.onClick}
-              startIcon={<x.icon />}
-            >
-              <Typography>{t(x.text)}</Typography>
-            </Button>
-          ))}
-        </div>
-        <div className={classes.footerLinksWrapper}>
-          {dialogs.map(dialog => (
-            <Typography
-              key={dialog.text}
-              className={classes.footerLink}
-              component="button"
-              onClick={() => dialog.onclick()}
-            >
-              {dialog.text}
-            </Typography>
-          ))}
-        </div>
-      </div>
+      {view === AAView.Home && <HomeTable dialogs={dialogs} />}
+      {view === AAView.District && <DistrictView dialogs={dialogs} />}
+      {view === AAView.Timeline && <Timeline dialogs={dialogs} />}
     </div>
   );
 }

@@ -1,4 +1,9 @@
-import { Typography, createStyles, makeStyles } from '@material-ui/core';
+import {
+  Button,
+  Typography,
+  createStyles,
+  makeStyles,
+} from '@material-ui/core';
 import {
   AADataSelector,
   AAFiltersSelector,
@@ -15,7 +20,9 @@ import { useDispatch, useSelector } from 'react-redux';
 import { setPanelSize } from 'context/leftPanelStateSlice';
 import { PanelSize } from 'config/types';
 import { AAWindowKeys } from 'config/utils';
-import { getAAColor, getAAIcon } from '../utils';
+import { useSafeTranslation } from 'i18n';
+import { Equalizer } from '@material-ui/icons';
+import { getAAColor, getAAIcon, useAACommonStyles } from '../utils';
 import { dateSorter } from '../DistrictView/utils';
 
 interface TimelineItemProps {
@@ -83,8 +90,17 @@ function getColumnKey(val: AnticipatoryActionDataRow): number {
   return catIndex * 10 + phaseIndex;
 }
 
-function Timeline() {
+interface TimelineProps {
+  dialogs: {
+    text: string;
+    onclick: () => void;
+  }[];
+}
+
+function Timeline({ dialogs }: TimelineProps) {
   const classes = useTimelineStyles();
+  const commonClasses = useAACommonStyles();
+  const { t } = useSafeTranslation();
   const dispatch = useDispatch();
   const AAData = useSelector(AADataSelector);
   const selectedDistrict = useSelector(AASelectedDistrictSelector);
@@ -95,6 +111,10 @@ function Timeline() {
   React.useEffect(() => {
     dispatch(setPanelSize(PanelSize.undef));
   }, [dispatch]);
+
+  const timelineButtons = [
+    { icon: Equalizer, text: 'Forecast', onClick: undefined },
+  ];
 
   const windowData = (selectedWindow === 'All'
     ? AAWindowKeys
@@ -135,60 +155,92 @@ function Timeline() {
   ][];
 
   return (
-    <div className={classes.root}>
-      {windowData.map(([win, winData]) => {
-        if (winData === null || Object.keys(windowData).length === 0) {
+    <>
+      <div className={classes.root}>
+        {windowData.map(([win, winData]) => {
+          if (winData === null || Object.keys(windowData).length === 0) {
+            return (
+              <div key={win} className={classes.windowWrapper}>
+                No Data{' '}
+              </div>
+            );
+          }
+          const { months, data } = winData;
           return (
             <div key={win} className={classes.windowWrapper}>
-              No Data{' '}
+              <div className={classes.tableWrapper}>
+                <div className={classes.headRowWrapper}>
+                  <div className={classes.iconColumn} />
+                  {months.map(([date, label]) => (
+                    <div key={date} className={classes.headColumn}>
+                      <Typography className={classes.monthText}>
+                        {label}
+                      </Typography>
+                    </div>
+                  ))}
+                </div>
+                {
+                  // eslint-disable-next-line fp/no-mutating-methods
+                  Object.entries(data)
+                    .sort(dateSorter)
+                    .map(([rowId, rowData]) => (
+                      <div key={rowId} className={classes.rowWrapper}>
+                        <div className={classes.iconColumn}>
+                          {getAAIcon(
+                            rowData[0].category,
+                            rowData[0].isValid ? rowData[0].phase : 'na',
+                          )}
+                        </div>
+                        {months.map(([date, label]) => {
+                          const elem = rowData.find(z => z.date === date);
+                          if (!elem) {
+                            return (
+                              <div key={date} className={classes.column} />
+                            );
+                          }
+                          return (
+                            <div key={date} className={classes.column}>
+                              <TimelineItem item={elem} />
+                            </div>
+                          );
+                        })}
+                      </div>
+                    ))
+                }
+              </div>
             </div>
           );
-        }
-        const { months, data } = winData;
-        return (
-          <div key={win} className={classes.windowWrapper}>
-            <div className={classes.tableWrapper}>
-              <div className={classes.headRowWrapper}>
-                <div className={classes.iconColumn} />
-                {months.map(([date, label]) => (
-                  <div key={date} className={classes.headColumn}>
-                    <Typography className={classes.monthText}>
-                      {label}
-                    </Typography>
-                  </div>
-                ))}
-              </div>
-              {
-                // eslint-disable-next-line fp/no-mutating-methods
-                Object.entries(data)
-                  .sort(dateSorter)
-                  .map(([rowId, rowData]) => (
-                    <div key={rowId} className={classes.rowWrapper}>
-                      <div className={classes.iconColumn}>
-                        {getAAIcon(
-                          rowData[0].category,
-                          rowData[0].isValid ? rowData[0].phase : 'na',
-                        )}
-                      </div>
-                      {months.map(([date, label]) => {
-                        const elem = rowData.find(z => z.date === date);
-                        if (!elem) {
-                          return <div key={date} className={classes.column} />;
-                        }
-                        return (
-                          <div key={date} className={classes.column}>
-                            <TimelineItem item={elem} />
-                          </div>
-                        );
-                      })}
-                    </div>
-                  ))
-              }
-            </div>
-          </div>
-        );
-      })}
-    </div>
+        })}
+      </div>
+      <div className={commonClasses.footerWrapperVert}>
+        <div className={commonClasses.footerActionsWrapper}>
+          {timelineButtons.map(x => (
+            <Button
+              key={x.text}
+              className={commonClasses.footerButton}
+              variant="outlined"
+              fullWidth
+              onClick={x.onClick}
+              startIcon={<x.icon />}
+            >
+              <Typography>{t(x.text)}</Typography>
+            </Button>
+          ))}
+        </div>
+        <div className={commonClasses.footerDialogsWrapperVert}>
+          {dialogs.map(dialog => (
+            <Typography
+              key={dialog.text}
+              className={commonClasses.footerDialog}
+              component="button"
+              onClick={() => dialog.onclick()}
+            >
+              {dialog.text}
+            </Typography>
+          ))}
+        </div>
+      </div>
+    </>
   );
 }
 

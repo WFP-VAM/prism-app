@@ -42,11 +42,19 @@ const store = mockStore({
   },
 });
 
+const dialogs = [
+  { text: 'Group assumptions', onclick: () => {} },
+  {
+    text: 'How to read this screen',
+    onclick: () => {},
+  },
+];
+
 test('renders as expected', () => {
   const { container } = render(
     <BrowserRouter>
       <Provider store={store}>
-        <DistrictView />
+        <DistrictView dialogs={dialogs} />
       </Provider>
     </BrowserRouter>,
   );

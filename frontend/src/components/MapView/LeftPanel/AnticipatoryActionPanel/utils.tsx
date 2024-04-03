@@ -7,10 +7,12 @@ import {
   RadioProps,
   Select,
   SelectProps,
+  createStyles,
+  makeStyles,
   useRadioGroup,
   withStyles,
 } from '@material-ui/core';
-import { black, borderGray, gray } from 'muiTheme';
+import { black, borderGray, cyanBlue, gray } from 'muiTheme';
 import React from 'react';
 import {
   LIGHT_BLUE_HEX,
@@ -229,3 +231,41 @@ export function AADataSeverityOrder(
 
   return catIndex * 10 + phaseBonus;
 }
+
+export const useAACommonStyles = makeStyles(() =>
+  createStyles({
+    footerWrapper: { display: 'flex', flexDirection: 'column' },
+    footerActionsWrapper: {
+      display: 'flex',
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      padding: '0.5rem',
+      gap: '1rem',
+    },
+    footerDialogsWrapper: {
+      display: 'flex',
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      padding: '0.5rem',
+    },
+    footerButton: { borderColor: cyanBlue, color: black },
+    footerDialog: {
+      textDecoration: 'underline',
+      backgroundColor: 'transparent',
+      border: 'none',
+      cursor: 'pointer',
+      textAlign: 'right',
+    },
+    footerWrapperVert: {
+      display: 'flex',
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+    },
+    footerDialogsWrapperVert: {
+      display: 'flex',
+      flexDirection: 'column',
+      justifyContent: 'space-between',
+      padding: '0.5rem',
+    },
+  }),
+);
