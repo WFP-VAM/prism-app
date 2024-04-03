@@ -127,23 +127,32 @@ export const anticipatoryActionStateSlice = createSlice({
     }),
   },
   extraReducers: builder => {
-    builder.addCase(loadAAData.fulfilled, (state, { payload }) => ({
-      ...state,
-      loading: false,
-      data: Object.fromEntries(
+    builder.addCase(loadAAData.fulfilled, (state, { payload }) => {
+      const newData = Object.fromEntries(
         payload.windowData.map(x => [x.windowKey, x.data]),
-      ) as Record<typeof AAWindowKeys[number], AnticipatoryActionData>,
-      availableDates: Object.fromEntries(
-        payload.windowData.map(x => [
-          AAWindowKeyToLayerId[x.windowKey],
-          x.availableDates,
-        ]),
-      ),
-      windowRanges: Object.fromEntries(
+      ) as Record<typeof AAWindowKeys[number], AnticipatoryActionData>;
+      const newRanges = Object.fromEntries(
         payload.windowData.map(x => [x.windowKey, x.range]),
-      ) as Record<typeof AAWindowKeys[number], { start: string; end: string }>,
-      monitoredDistricts: payload.monitoredDistricts,
-    }));
+      ) as Record<typeof AAWindowKeys[number], { start: string; end: string }>;
+      return {
+        ...state,
+        loading: false,
+        data: newData,
+        availableDates: Object.fromEntries(
+          payload.windowData.map(x => [
+            AAWindowKeyToLayerId[x.windowKey],
+            x.availableDates,
+          ]),
+        ),
+        windowRanges: newRanges,
+        monitoredDistricts: payload.monitoredDistricts,
+        renderedDistricts: calculateMapRenderedDistricts({
+          filters: state.filters,
+          data: newData,
+          windowRanges: newRanges,
+        }),
+      };
+    });
 
     builder.addCase(loadAAData.rejected, (state, action) => ({
       ...state,

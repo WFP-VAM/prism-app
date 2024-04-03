@@ -210,7 +210,7 @@ export function calculateMapRenderedDistricts({
   data,
   windowRanges,
 }: CalculateMapRenderedDistrictsParams) {
-  const { selectedDate, categories, selectedWindow } = filters;
+  const { selectedDate, categories } = filters;
   const res = Object.entries(data)
     .map(([winKey, districts]) => {
       if (!districts) {
@@ -231,9 +231,7 @@ export function calculateMapRenderedDistricts({
           // keep showing latest window data, even for later dates
           const range = windowRanges[winKey as typeof AAWindowKeys[number]];
           const date =
-            selectedWindow !== 'All' ||
-            range?.end === undefined ||
-            selectedDate < range.end
+            range?.end === undefined || selectedDate < range.end
               ? selectedDate
               : range.end;
 

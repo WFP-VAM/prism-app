@@ -1,5 +1,10 @@
 import React from 'react';
-import { AnticipatoryActionLayerProps, BoundaryLayerProps } from 'config/types';
+import {
+  AdminLevelDataLayerProps,
+  AnticipatoryActionLayerProps,
+  BoundaryLayerProps,
+  MapEventWrapFunctionProps,
+} from 'config/types';
 import { useDefaultDate } from 'utils/useDefaultDate';
 import { useDispatch, useSelector } from 'react-redux';
 import {
@@ -7,16 +12,26 @@ import {
   mapSelector,
 } from 'context/mapStateSlice/selectors';
 import { LayerData } from 'context/layers/layer-data';
-import { Layer, Marker, Source } from 'react-map-gl/maplibre';
+import {
+  Layer,
+  MapLayerMouseEvent,
+  Marker,
+  Source,
+} from 'react-map-gl/maplibre';
 import {
   AAFiltersSelector,
   AAMarkersSelector,
   AARenderedDistrictsSelector,
   AASelectedDistrictSelector,
   setAAMarkers,
+  setAASelectedDistrict,
 } from 'context/anticipatoryActionStateSlice';
 import { getAAColor } from 'components/MapView/LeftPanel/AnticipatoryActionPanel/utils';
-import { calculateCentroids, useAAMarkerScalePercent } from 'utils/map-utils';
+import {
+  calculateCentroids,
+  useAAMarkerScalePercent,
+  useMapCallback,
+} from 'utils/map-utils';
 import { AAWindowKeys, getBoundaryLayerSingleton } from 'config/utils';
 import {
   calculateAAMarkers,
@@ -24,6 +39,18 @@ import {
 } from 'context/anticipatoryActionStateSlice/utils';
 
 const boundaryLayer = getBoundaryLayerSingleton();
+
+const onDistrictClick = ({
+  dispatch,
+}: MapEventWrapFunctionProps<AdminLevelDataLayerProps>) => (
+  evt: MapLayerMouseEvent,
+) => {
+  const districtId =
+    evt.features?.[0]?.properties?.[boundaryLayer.adminLevelLocalNames[1]];
+  if (districtId) {
+    dispatch(setAASelectedDistrict(districtId));
+  }
+};
 
 function AnticipatoryActionLayer({ layer, before }: LayersProps) {
   useDefaultDate(layer.id);
@@ -40,6 +67,14 @@ function AnticipatoryActionLayer({ layer, before }: LayersProps) {
   const layerWindowIndex = AAWindowKeys.findIndex(
     x => x === layer.csvWindowKey,
   );
+
+  useMapCallback(
+    'click',
+    `anticipatory-action-${layerWindowIndex}-fill`,
+    layer as any,
+    onDistrictClick,
+  );
+
   const shouldRenderData = React.useMemo(() => {
     if (selectedWindow === layer.csvWindowKey) {
       return Object.fromEntries(
@@ -126,7 +161,9 @@ function AnticipatoryActionLayer({ layer, before }: LayersProps) {
             latitude={marker.latitude}
             anchor="center"
           >
-            <div style={{ transform: `scale(${scalePercent})` }}>
+            <div
+              style={{ transform: `scale(${scalePercent})`, cursor: 'pointer' }}
+            >
               {marker.icon}
             </div>
           </Marker>
