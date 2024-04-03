@@ -14,12 +14,23 @@ export function districtViewTransform(
   }
   const { categories: categoryFilters, selectedIndex } = filters;
 
-  const validData = data.filter(
-    x =>
-      (x.computedRow || x.isValid) &&
-      categoryFilters[x.category] &&
-      (selectedIndex === '' || x.index === selectedIndex),
-  );
+  // Keep valid data only and switch SET phase to 'na' if the READY was not valid
+  const validData = data
+    .filter(
+      x =>
+        categoryFilters[x.category] &&
+        (x.computedRow || x.isValid || x.wasReadyValid) &&
+        (selectedIndex === '' || x.index === selectedIndex),
+    )
+    .map(x => {
+      if (x.isValid) {
+        return x;
+      }
+      return {
+        ...x,
+        phase: 'na',
+      } as AnticipatoryActionDataRow;
+    });
 
   const monthsMap = new Map<string, AnticipatoryActionDataRow[]>();
   validData.forEach(x => {

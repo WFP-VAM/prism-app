@@ -153,6 +153,7 @@ export const mockAAData: AnticipatoryActionState['data'] = {
         trigger: 0,
         date: '2023-12-01',
         isValid: false,
+        wasReadyValid: false,
       },
     ],
     Changara: [
@@ -207,6 +208,7 @@ export const mockAAData: AnticipatoryActionState['data'] = {
         trigger: 0.3,
         date: '2023-09-01',
         isValid: false,
+        wasReadyValid: false,
       },
       {
         category: 'Mild',
@@ -246,6 +248,7 @@ export const mockAAData: AnticipatoryActionState['data'] = {
         trigger: 0.33,
         date: '2023-10-01',
         isValid: false,
+        wasReadyValid: false,
       },
       {
         category: 'Moderate',
@@ -259,6 +262,7 @@ export const mockAAData: AnticipatoryActionState['data'] = {
         trigger: 0.26,
         date: '2023-10-01',
         isValid: false,
+        wasReadyValid: true,
       },
       {
         category: 'Mild',
@@ -272,6 +276,7 @@ export const mockAAData: AnticipatoryActionState['data'] = {
         trigger: 0.25,
         date: '2023-11-01',
         isValid: true,
+        wasReadyValid: true,
       },
       {
         category: 'Moderate',
@@ -285,6 +290,7 @@ export const mockAAData: AnticipatoryActionState['data'] = {
         trigger: 0.3,
         date: '2023-11-01',
         isValid: false,
+        wasReadyValid: true,
       },
       {
         category: 'Mild',
@@ -299,6 +305,7 @@ export const mockAAData: AnticipatoryActionState['data'] = {
         date: '2023-12-01',
         isValid: true,
         computedRow: true,
+        wasReadyValid: true,
       },
     ],
   },

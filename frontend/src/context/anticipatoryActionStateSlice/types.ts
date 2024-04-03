@@ -22,6 +22,7 @@ export interface AnticipatoryActionDataRow {
   date: string;
   new: boolean;
   isValid?: boolean;
+  wasReadyValid?: boolean;
   computedRow?: boolean;
 }
 

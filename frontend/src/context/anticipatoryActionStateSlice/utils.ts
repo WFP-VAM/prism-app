@@ -67,12 +67,14 @@ export function parseAndTransformAA(data: any[]) {
         new: false,
       };
 
+      const isReadyValid = Number(x.prob_ready) > Number(x.trigger_ready);
+
       const ready = {
         phase: 'Ready',
         probability: Number(x.prob_ready),
         trigger: Number(x.trigger_ready),
         date: x.date_ready,
-        isValid: Number(x.prob_ready) > Number(x.trigger_ready),
+        isValid: isReadyValid,
       };
 
       const set = {
@@ -81,6 +83,7 @@ export function parseAndTransformAA(data: any[]) {
         trigger: Number(x.trigger_set),
         date: x.date_set,
         isValid: ready.isValid && Number(x.prob_set) > Number(x.trigger_set),
+        wasReadyValid: isReadyValid,
       };
 
       return [
