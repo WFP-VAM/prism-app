@@ -1,5 +1,12 @@
 import { AnticipatoryActionState } from 'context/anticipatoryActionStateSlice/types';
 
+export const defaultDialogs = [
+  {
+    text: 'How to read this screen',
+    onclick: () => {},
+  },
+];
+
 export const mockAAInput = [
   // This is here to set window size.
   {

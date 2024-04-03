@@ -4,7 +4,7 @@ import { Provider } from 'react-redux';
 import { BrowserRouter } from 'react-router-dom';
 import configureStore from 'redux-mock-store';
 import { AnticipatoryActionState } from 'context/anticipatoryActionStateSlice/types';
-import { mockAAData } from '../test.utils';
+import { defaultDialogs, mockAAData } from '../test.utils';
 import { timelineTransform } from './utils';
 import Timeline from '.';
 
@@ -42,18 +42,11 @@ const store = mockStore({
   },
 });
 
-const dialogs = [
-  {
-    text: 'How to read this screen',
-    onclick: () => {},
-  },
-];
-
 test('renders as expected', () => {
   const { container } = render(
     <BrowserRouter>
       <Provider store={store}>
-        <Timeline dialogs={dialogs} />
+        <Timeline dialogs={defaultDialogs} />
       </Provider>
     </BrowserRouter>,
   );
