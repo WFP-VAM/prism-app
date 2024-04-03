@@ -129,10 +129,8 @@ const useLayers = () => {
       selectedLayersWithDateSupport
         .map(layer => {
           if (layer.type === 'anticipatory_action') {
-            // Combine dates for all AA windows and avoid double counting.
-            return layer.id.includes('window_1')
-              ? getAAAvailableDatesCombined(serverAvailableDates)
-              : [];
+            // Combine dates for all AA windows to allow selecting AA for the whole period
+            return getAAAvailableDatesCombined(serverAvailableDates);
           }
           return getPossibleDatesForLayer(layer, serverAvailableDates);
         })
