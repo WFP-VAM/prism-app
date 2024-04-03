@@ -34,7 +34,6 @@ const store = mockStore({
 });
 
 const dialogs = [
-  { text: 'Group assumptions', onclick: () => {} },
   {
     text: 'How to read this screen',
     onclick: () => {},

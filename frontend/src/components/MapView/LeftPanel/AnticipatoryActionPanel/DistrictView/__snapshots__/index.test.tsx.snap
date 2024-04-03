@@ -368,12 +368,6 @@ exports[`renders as expected 1`] = `
         classname="makeStyles-footerDialog-7"
         component="button"
       >
-        Group assumptions
-      </mock-typography>
-      <mock-typography
-        classname="makeStyles-footerDialog-7"
-        component="button"
-      >
         How to read this screen
       </mock-typography>
     </div>

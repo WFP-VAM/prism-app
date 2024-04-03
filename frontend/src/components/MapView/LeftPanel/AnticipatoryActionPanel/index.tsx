@@ -69,7 +69,6 @@ function AnticipatoryActionPanel() {
   const [howToReadModalOpen, setHowToReadModalOpen] = React.useState(false);
 
   const dialogs = [
-    { text: 'Group assumptions', onclick: () => {} },
     {
       text: 'How to read this screen',
       onclick: () => setHowToReadModalOpen(true),
