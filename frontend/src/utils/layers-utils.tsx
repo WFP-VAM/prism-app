@@ -130,7 +130,7 @@ const useLayers = () => {
         .map(layer => {
           if (layer.type === 'anticipatory_action') {
             // Combine dates for all AA windows and avoid double counting.
-            return layer.id.includes('window_1')
+            return layer.id.includes('w1')
               ? getAAAvailableDatesCombined(serverAvailableDates)
               : [];
           }

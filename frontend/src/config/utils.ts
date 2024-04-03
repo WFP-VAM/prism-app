@@ -148,8 +148,8 @@ export const AAWindowKeyToLayerId: Record<
   typeof AAWindowKeys[number],
   string
 > = {
-  'Window 1': 'anticipatory_action_window_1',
-  'Window 2': 'anticipatory_action_window_2',
+  'Window 1': 'aa_w1',
+  'Window 2': 'aa_w2',
 };
 
 export const LayerDefinitions: LayersMap = (() => {
