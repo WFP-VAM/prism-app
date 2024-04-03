@@ -25,6 +25,7 @@ import {
   AASelectedDistrictSelector,
   setAAMarkers,
   setAASelectedDistrict,
+  setAAView,
 } from 'context/anticipatoryActionStateSlice';
 import { getAAColor } from 'components/MapView/LeftPanel/AnticipatoryActionPanel/utils';
 import {
@@ -37,6 +38,7 @@ import {
   calculateAAMarkers,
   calculateCombinedAAMapData,
 } from 'context/anticipatoryActionStateSlice/utils';
+import { AAView } from 'context/anticipatoryActionStateSlice/types';
 
 const boundaryLayer = getBoundaryLayerSingleton();
 
@@ -49,6 +51,7 @@ const onDistrictClick = ({
     evt.features?.[0]?.properties?.[boundaryLayer.adminLevelLocalNames[1]];
   if (districtId) {
     dispatch(setAASelectedDistrict(districtId));
+    dispatch(setAAView(AAView.District));
   }
 };
 

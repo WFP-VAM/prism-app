@@ -34,10 +34,10 @@ const initialState: AnticipatoryActionState = {
     },
   },
   markers: [],
-  selectedDistrict: 'Mapai',
+  selectedDistrict: '',
   renderedDistricts: emptyWindows,
   windowRanges: { 'Window 1': undefined, 'Window 2': undefined },
-  view: AAView.Timeline,
+  view: AAView.Home,
   loading: false,
   error: null,
 };
