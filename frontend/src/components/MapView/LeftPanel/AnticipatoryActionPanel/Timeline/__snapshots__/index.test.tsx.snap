@@ -1,0 +1,546 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`renders as expected 1`] = `
+<div>
+  <div
+    class="makeStyles-root-1"
+  >
+    <div
+      class="makeStyles-windowWrapper-2"
+    >
+      <div
+        class="makeStyles-tableWrapper-3"
+      >
+        <div
+          class="makeStyles-headRowWrapper-4"
+        >
+          <div
+            class="makeStyles-iconColumn-6"
+          />
+          <div
+            class="makeStyles-headColumn-7"
+          >
+            <mock-typography
+              classname="makeStyles-monthText-9"
+            >
+              Aug
+            </mock-typography>
+          </div>
+          <div
+            class="makeStyles-headColumn-7"
+          >
+            <mock-typography
+              classname="makeStyles-monthText-9"
+            >
+              Sep
+            </mock-typography>
+          </div>
+          <div
+            class="makeStyles-headColumn-7"
+          >
+            <mock-typography
+              classname="makeStyles-monthText-9"
+            >
+              Oct
+            </mock-typography>
+          </div>
+          <div
+            class="makeStyles-headColumn-7"
+          >
+            <mock-typography
+              classname="makeStyles-monthText-9"
+            >
+              Nov
+            </mock-typography>
+          </div>
+        </div>
+        <div
+          class="makeStyles-rowWrapper-5"
+        >
+          <div
+            class="makeStyles-iconColumn-6"
+          >
+            <div
+              class="makeStyles-iconWrapper-17"
+              style="background: rgb(255, 213, 45);"
+            >
+              <div
+                class="makeStyles-centerContainer-18"
+                style="border: 1px solid black; color: black;"
+              >
+                <div
+                  class="makeStyles-topTextContainer-19"
+                  style="border-bottom: 1px solid black;"
+                >
+                  R
+                </div>
+                <div
+                  class="makeStyles-bottomTextContainer-20"
+                >
+                  MOD
+                </div>
+              </div>
+            </div>
+          </div>
+          <div
+            class="makeStyles-column-8"
+          />
+          <div
+            class="makeStyles-column-8"
+          >
+            <div
+              class="makeStyles-wrapper-21"
+              style="border: 1px solid #ffd52d;"
+            >
+              <mock-typography
+                variant="h3"
+              >
+                0.19
+              </mock-typography>
+              <mock-typography>
+                trig. 
+                0.1
+              </mock-typography>
+              <div
+                class="makeStyles-probabilityBar-22"
+                style="background-color: rgb(255, 213, 45); width: 19%;"
+              />
+              <div
+                class="makeStyles-triggerBar-23"
+                style="width: 10%;"
+              />
+              <mock-typography
+                style="white-space: nowrap;"
+              >
+                SPI DJF
+              </mock-typography>
+            </div>
+          </div>
+          <div
+            class="makeStyles-column-8"
+          >
+            <div
+              class="makeStyles-wrapper-21"
+              style="border: 1px solid #ffd52d;"
+            >
+              <mock-typography
+                variant="h3"
+              >
+                0.28
+              </mock-typography>
+              <mock-typography>
+                trig. 
+                0.2
+              </mock-typography>
+              <div
+                class="makeStyles-probabilityBar-22"
+                style="background-color: rgb(255, 213, 45); width: 28.000000000000004%;"
+              />
+              <div
+                class="makeStyles-triggerBar-23"
+                style="width: 20%;"
+              />
+              <mock-typography
+                style="white-space: nowrap;"
+              >
+                SPI DJF
+              </mock-typography>
+            </div>
+          </div>
+          <div
+            class="makeStyles-column-8"
+          />
+        </div>
+        <div
+          class="makeStyles-rowWrapper-5"
+        >
+          <div
+            class="makeStyles-iconColumn-6"
+          >
+            <div
+              class="makeStyles-iconWrapper-17"
+              style="background: rgb(241, 241, 241);"
+            >
+              <div
+                class="makeStyles-centerContainer-18"
+                style="border: 1px solid black; color: black;"
+              >
+                <div
+                  class="makeStyles-topTextContainer-19"
+                  style="border-bottom: 1px solid black;"
+                >
+                  na
+                </div>
+                <div
+                  class="makeStyles-bottomTextContainer-20"
+                >
+                  MOD
+                </div>
+              </div>
+            </div>
+          </div>
+          <div
+            class="makeStyles-column-8"
+          />
+          <div
+            class="makeStyles-column-8"
+          />
+          <div
+            class="makeStyles-column-8"
+          >
+            <div
+              class="makeStyles-wrapper-21"
+              style="border: 1px solid #f1f1f1;"
+            >
+              <mock-typography
+                variant="h3"
+              >
+                0.25
+              </mock-typography>
+              <mock-typography>
+                trig. 
+                0.26
+              </mock-typography>
+              <div
+                class="makeStyles-probabilityBar-22"
+                style="background-color: rgb(241, 241, 241); width: 25%;"
+              />
+              <div
+                class="makeStyles-triggerBar-23"
+                style="width: 26%;"
+              />
+              <mock-typography
+                style="white-space: nowrap;"
+              >
+                SPI DJF
+              </mock-typography>
+            </div>
+          </div>
+          <div
+            class="makeStyles-column-8"
+          >
+            <div
+              class="makeStyles-wrapper-21"
+              style="border: 1px solid #f1f1f1;"
+            >
+              <mock-typography
+                variant="h3"
+              >
+                0.22
+              </mock-typography>
+              <mock-typography>
+                trig. 
+                0.3
+              </mock-typography>
+              <div
+                class="makeStyles-probabilityBar-22"
+                style="background-color: rgb(241, 241, 241); width: 22%;"
+              />
+              <div
+                class="makeStyles-triggerBar-23"
+                style="width: 30%;"
+              />
+              <mock-typography
+                style="white-space: nowrap;"
+              >
+                SPI DJF
+              </mock-typography>
+            </div>
+          </div>
+        </div>
+        <div
+          class="makeStyles-rowWrapper-5"
+        >
+          <div
+            class="makeStyles-iconColumn-6"
+          >
+            <div
+              class="makeStyles-iconWrapper-17"
+              style="background: rgb(255, 245, 3);"
+            >
+              <div
+                class="makeStyles-centerContainer-18"
+                style="border: 1px solid black; color: black;"
+              >
+                <div
+                  class="makeStyles-topTextContainer-19"
+                  style="border-bottom: 1px solid black;"
+                >
+                  S
+                </div>
+                <div
+                  class="makeStyles-bottomTextContainer-20"
+                >
+                  MIL
+                </div>
+              </div>
+            </div>
+          </div>
+          <div
+            class="makeStyles-column-8"
+          />
+          <div
+            class="makeStyles-column-8"
+          />
+          <div
+            class="makeStyles-column-8"
+          />
+          <div
+            class="makeStyles-column-8"
+          >
+            <div
+              class="makeStyles-wrapper-21"
+              style="border: 1px solid #fff503;"
+            >
+              <mock-typography
+                variant="h3"
+              >
+                0.28
+              </mock-typography>
+              <mock-typography>
+                trig. 
+                0.25
+              </mock-typography>
+              <div
+                class="makeStyles-probabilityBar-22"
+                style="background-color: rgb(255, 245, 3); width: 28.000000000000004%;"
+              />
+              <div
+                class="makeStyles-triggerBar-23"
+                style="width: 25%;"
+              />
+              <mock-typography
+                style="white-space: nowrap;"
+              >
+                SPI DJF
+              </mock-typography>
+            </div>
+          </div>
+        </div>
+        <div
+          class="makeStyles-rowWrapper-5"
+        >
+          <div
+            class="makeStyles-iconColumn-6"
+          >
+            <div
+              class="makeStyles-iconWrapper-17"
+              style="background: rgb(255, 252, 179);"
+            >
+              <div
+                class="makeStyles-centerContainer-18"
+                style="border: 1px solid black; color: black;"
+              >
+                <div
+                  class="makeStyles-topTextContainer-19"
+                  style="border-bottom: 1px solid black;"
+                >
+                  R
+                </div>
+                <div
+                  class="makeStyles-bottomTextContainer-20"
+                >
+                  MIL
+                </div>
+              </div>
+            </div>
+          </div>
+          <div
+            class="makeStyles-column-8"
+          />
+          <div
+            class="makeStyles-column-8"
+          />
+          <div
+            class="makeStyles-column-8"
+          >
+            <div
+              class="makeStyles-wrapper-21"
+              style="border: 1px solid #fffcb3;"
+            >
+              <mock-typography
+                variant="h3"
+              >
+                0.31
+              </mock-typography>
+              <mock-typography>
+                trig. 
+                0.2
+              </mock-typography>
+              <div
+                class="makeStyles-probabilityBar-22"
+                style="background-color: rgb(255, 252, 179); width: 31%;"
+              />
+              <div
+                class="makeStyles-triggerBar-23"
+                style="width: 20%;"
+              />
+              <mock-typography
+                style="white-space: nowrap;"
+              >
+                SPI DJF
+              </mock-typography>
+            </div>
+          </div>
+          <div
+            class="makeStyles-column-8"
+          />
+        </div>
+        <div
+          class="makeStyles-rowWrapper-5"
+        >
+          <div
+            class="makeStyles-iconColumn-6"
+          >
+            <div
+              class="makeStyles-iconWrapper-17"
+              style="background: rgb(241, 241, 241);"
+            >
+              <div
+                class="makeStyles-centerContainer-18"
+                style="border: 1px solid black; color: black;"
+              >
+                <div
+                  class="makeStyles-topTextContainer-19"
+                  style="border-bottom: 1px solid black;"
+                >
+                  na
+                </div>
+                <div
+                  class="makeStyles-bottomTextContainer-20"
+                >
+                  MIL
+                </div>
+              </div>
+            </div>
+          </div>
+          <div
+            class="makeStyles-column-8"
+          >
+            <div
+              class="makeStyles-wrapper-21"
+              style="border: 1px solid #f1f1f1;"
+            >
+              <mock-typography
+                variant="h3"
+              >
+                0.16
+              </mock-typography>
+              <mock-typography>
+                trig. 
+                0.17
+              </mock-typography>
+              <div
+                class="makeStyles-probabilityBar-22"
+                style="background-color: rgb(241, 241, 241); width: 16%;"
+              />
+              <div
+                class="makeStyles-triggerBar-23"
+                style="width: 17%;"
+              />
+              <mock-typography
+                style="white-space: nowrap;"
+              >
+                SPI DJF
+              </mock-typography>
+            </div>
+          </div>
+          <div
+            class="makeStyles-column-8"
+          >
+            <div
+              class="makeStyles-wrapper-21"
+              style="border: 1px solid #f1f1f1;"
+            >
+              <mock-typography
+                variant="h3"
+              >
+                0.22
+              </mock-typography>
+              <mock-typography>
+                trig. 
+                0.3
+              </mock-typography>
+              <div
+                class="makeStyles-probabilityBar-22"
+                style="background-color: rgb(241, 241, 241); width: 22%;"
+              />
+              <div
+                class="makeStyles-triggerBar-23"
+                style="width: 30%;"
+              />
+              <mock-typography
+                style="white-space: nowrap;"
+              >
+                SPI DJF
+              </mock-typography>
+            </div>
+          </div>
+          <div
+            class="makeStyles-column-8"
+          >
+            <div
+              class="makeStyles-wrapper-21"
+              style="border: 1px solid #f1f1f1;"
+            >
+              <mock-typography
+                variant="h3"
+              >
+                0.34
+              </mock-typography>
+              <mock-typography>
+                trig. 
+                0.33
+              </mock-typography>
+              <div
+                class="makeStyles-probabilityBar-22"
+                style="background-color: rgb(241, 241, 241); width: 34%;"
+              />
+              <div
+                class="makeStyles-triggerBar-23"
+                style="width: 33%;"
+              />
+              <mock-typography
+                style="white-space: nowrap;"
+              >
+                SPI DJF
+              </mock-typography>
+            </div>
+          </div>
+          <div
+            class="makeStyles-column-8"
+          />
+        </div>
+      </div>
+    </div>
+  </div>
+  <div
+    class="makeStyles-footerWrapperVert-15"
+  >
+    <div
+      class="makeStyles-footerActionsWrapper-11"
+    >
+      <mock-button
+        classname="makeStyles-footerButton-13"
+        fullwidth="true"
+        starticon="[object Object]"
+        variant="outlined"
+      >
+        <mock-typography>
+          Forecast
+        </mock-typography>
+      </mock-button>
+    </div>
+    <div
+      class="makeStyles-footerDialogsWrapperVert-16"
+    >
+      <mock-typography
+        classname="makeStyles-footerDialog-14"
+        component="button"
+      >
+        How to read this screen
+      </mock-typography>
+    </div>
+  </div>
+</div>
+`;

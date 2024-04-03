@@ -1,4 +1,9 @@
-import { Typography, createStyles, makeStyles } from '@material-ui/core';
+import {
+  Button,
+  Typography,
+  createStyles,
+  makeStyles,
+} from '@material-ui/core';
 import { useSafeTranslation } from 'i18n';
 import { borderGray, gray } from 'muiTheme';
 import React from 'react';
@@ -6,16 +11,19 @@ import { useDispatch, useSelector } from 'react-redux';
 import {
   AACategoryType,
   AAPhaseType,
+  AAView,
 } from 'context/anticipatoryActionStateSlice/types';
 import { AAWindowKeys } from 'config/utils';
 import {
   AAFiltersSelector,
   AARenderedDistrictsSelector,
   setAASelectedDistrict,
+  setAAView,
 } from 'context/anticipatoryActionStateSlice';
 import { setPanelSize } from 'context/leftPanelStateSlice';
 import { PanelSize } from 'config/types';
-import { AADataSeverityOrder, getAAIcon } from '../utils';
+import { GetApp, EditOutlined, BarChartOutlined } from '@material-ui/icons';
+import { AADataSeverityOrder, getAAIcon, useAACommonStyles } from '../utils';
 
 interface AreaTagProps {
   name: string;
@@ -182,8 +190,17 @@ const rowCategories: {
 
 type ExtendedRowProps = RowProps & { id: number | 'na' | 'ny' };
 
-function HomeTable() {
+interface HomeTableProps {
+  dialogs: {
+    text: string;
+    onclick: () => void;
+  }[];
+}
+
+function HomeTable({ dialogs }: HomeTableProps) {
   const classes = useHomeTableStyles();
+  const commonClasses = useAACommonStyles();
+  const { t } = useSafeTranslation();
   const dispatch = useDispatch();
   const { selectedWindow, categories } = useSelector(AAFiltersSelector);
   const renderedDistricts = useSelector(AARenderedDistrictsSelector);
@@ -191,6 +208,12 @@ function HomeTable() {
   React.useEffect(() => {
     dispatch(setPanelSize(PanelSize.medium));
   }, [dispatch]);
+
+  const homeButtons = [
+    { icon: GetApp, text: 'Assets', onClick: undefined },
+    { icon: EditOutlined, text: 'Report', onClick: undefined },
+    { icon: BarChartOutlined, text: 'Forecast', onClick: undefined },
+  ];
 
   const headerRow: ExtendedRowProps = {
     id: -1,
@@ -212,7 +235,10 @@ function HomeTable() {
                     return {
                       name: district,
                       isNew: dist.isNew,
-                      onClick: () => dispatch(setAASelectedDistrict(district)),
+                      onClick: () => {
+                        dispatch(setAASelectedDistrict(district));
+                        dispatch(setAAView(AAView.District));
+                      },
                     };
                   }
                   return undefined;
@@ -236,11 +262,41 @@ function HomeTable() {
   const rows: ExtendedRowProps[] = [headerRow, ...districtRows];
 
   return (
-    <div className={classes.tableWrapper}>
-      {rows.map(({ id, ...r }) => (
-        <Row key={id} {...r} />
-      ))}
-    </div>
+    <>
+      <div className={classes.tableWrapper}>
+        {rows.map(({ id, ...r }) => (
+          <Row key={id} {...r} />
+        ))}
+      </div>
+      <div className={commonClasses.footerWrapper}>
+        <div className={commonClasses.footerActionsWrapper}>
+          {homeButtons.map(x => (
+            <Button
+              key={x.text}
+              className={commonClasses.footerButton}
+              variant="outlined"
+              fullWidth
+              onClick={x.onClick}
+              startIcon={<x.icon />}
+            >
+              <Typography>{t(x.text)}</Typography>
+            </Button>
+          ))}
+        </div>
+        <div className={commonClasses.footerDialogsWrapper}>
+          {dialogs.map(dialog => (
+            <Typography
+              key={dialog.text}
+              className={commonClasses.footerDialog}
+              component="button"
+              onClick={() => dialog.onclick()}
+            >
+              {dialog.text}
+            </Typography>
+          ))}
+        </div>
+      </div>
+    </>
   );
 }
 

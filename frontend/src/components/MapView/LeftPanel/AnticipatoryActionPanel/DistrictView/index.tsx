@@ -1,4 +1,5 @@
 import {
+  Button,
   Tooltip,
   Typography,
   createStyles,
@@ -9,21 +10,26 @@ import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { setPanelSize } from 'context/leftPanelStateSlice';
 import { PanelSize } from 'config/types';
-import { AnticipatoryActionDataRow } from 'context/anticipatoryActionStateSlice/types';
+import {
+  AAView,
+  AnticipatoryActionDataRow,
+} from 'context/anticipatoryActionStateSlice/types';
 import { AAWindowKeys } from 'config/utils';
 import {
   AADataSelector,
   AAFiltersSelector,
   AASelectedDistrictSelector,
+  setAAView,
 } from 'context/anticipatoryActionStateSlice';
 import { useSafeTranslation } from 'i18n';
-import { AADataSeverityOrder, getAAIcon } from '../utils';
+import { ClearAll, Equalizer } from '@material-ui/icons';
+import { AADataSeverityOrder, getAAIcon, useAACommonStyles } from '../utils';
 import {
   Action,
   getActionsByPhaseCategoryAndWindow,
 } from './ActionsModal/actions';
 import ActionsModal from './ActionsModal';
-import { districtViewTransform } from './utils';
+import { dateSorter, districtViewTransform } from './utils';
 
 interface WindowColumnProps {
   win: typeof AAWindowKeys[number];
@@ -81,15 +87,7 @@ function WindowColumn({
           {
             // eslint-disable-next-line fp/no-mutating-methods
             Object.entries(extendedTransformed)
-              .sort((a, b) => {
-                if (a[0] > b[0]) {
-                  return -1;
-                }
-                if (a[0] < b[0]) {
-                  return 1;
-                }
-                return 0;
-              })
+              .sort(dateSorter)
               .map(x => (
                 <div key={x[0]} className={classes.rowWrapper}>
                   {Object.entries(transformed?.months || {}).map(y => {
@@ -251,9 +249,18 @@ const useWindowColumnStyles = makeStyles(() =>
   }),
 );
 
-function DistrictView() {
+interface DistrictViewProps {
+  dialogs: {
+    text: string;
+    onclick: () => void;
+  }[];
+}
+
+function DistrictView({ dialogs }: DistrictViewProps) {
   const dispatch = useDispatch();
+  const { t } = useSafeTranslation();
   const classes = useDistrictViewStyles();
+  const commonClasses = useAACommonStyles();
   const { selectedWindow } = useSelector(AAFiltersSelector);
   const rawAAData = useSelector(AADataSelector);
   const aaFilters = useSelector(AAFiltersSelector);
@@ -262,6 +269,15 @@ function DistrictView() {
     false,
   );
   const [modalActions, setModalActions] = React.useState<Action[]>([]);
+
+  const districtButtons = [
+    {
+      icon: ClearAll,
+      text: 'Timeline',
+      onClick: () => dispatch(setAAView(AAView.Timeline)),
+    },
+    { icon: Equalizer, text: 'Forecast', onClick: undefined },
+  ];
 
   const windows = selectedWindow === 'All' ? AAWindowKeys : [selectedWindow];
   const transformed = windows.map(x =>
@@ -276,25 +292,55 @@ function DistrictView() {
   }, [dispatch]);
 
   return (
-    <div className={classes.root}>
-      <ActionsModal
-        open={actionsModalOpen}
-        onClose={() => setActionsModalOpen(false)}
-        actions={modalActions}
-      />
-      <div className={classes.districtViewWrapper}>
-        {windows.map((win, index) => (
-          <WindowColumn
-            key={win}
-            win={win}
-            transformed={transformed[index]}
-            rowKeys={rowKeys}
-            openActionsDialog={() => setActionsModalOpen(true)}
-            setModalActions={setModalActions}
-          />
-        ))}
+    <>
+      <div className={classes.root}>
+        <ActionsModal
+          open={actionsModalOpen}
+          onClose={() => setActionsModalOpen(false)}
+          actions={modalActions}
+        />
+        <div className={classes.districtViewWrapper}>
+          {windows.map((win, index) => (
+            <WindowColumn
+              key={win}
+              win={win}
+              transformed={transformed[index]}
+              rowKeys={rowKeys}
+              openActionsDialog={() => setActionsModalOpen(true)}
+              setModalActions={setModalActions}
+            />
+          ))}
+        </div>
       </div>
-    </div>
+      <div className={commonClasses.footerWrapper}>
+        <div className={commonClasses.footerActionsWrapper}>
+          {districtButtons.map(x => (
+            <Button
+              key={x.text}
+              className={commonClasses.footerButton}
+              variant="outlined"
+              fullWidth
+              onClick={x.onClick}
+              startIcon={<x.icon />}
+            >
+              <Typography>{t(x.text)}</Typography>
+            </Button>
+          ))}
+        </div>
+        <div className={commonClasses.footerDialogsWrapper}>
+          {dialogs.map(dialog => (
+            <Typography
+              key={dialog.text}
+              className={commonClasses.footerDialog}
+              component="button"
+              onClick={() => dialog.onclick()}
+            >
+              {dialog.text}
+            </Typography>
+          ))}
+        </div>
+      </div>
+    </>
   );
 }
 

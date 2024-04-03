@@ -5,7 +5,7 @@ import { BrowserRouter } from 'react-router-dom';
 import configureStore from 'redux-mock-store';
 import { AnticipatoryActionState } from 'context/anticipatoryActionStateSlice/types';
 import DistrictView from '.';
-import { mockAAData } from '../test.utils';
+import { defaultDialogs, mockAAData } from '../test.utils';
 import { districtViewTransform } from './utils';
 
 const mockStore = configureStore([]);
@@ -46,7 +46,7 @@ test('renders as expected', () => {
   const { container } = render(
     <BrowserRouter>
       <Provider store={store}>
-        <DistrictView />
+        <DistrictView dialogs={defaultDialogs} />
       </Provider>
     </BrowserRouter>,
   );

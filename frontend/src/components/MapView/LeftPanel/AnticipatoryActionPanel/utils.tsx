@@ -7,10 +7,12 @@ import {
   RadioProps,
   Select,
   SelectProps,
+  createStyles,
+  makeStyles,
   useRadioGroup,
   withStyles,
 } from '@material-ui/core';
-import { black, borderGray, gray } from 'muiTheme';
+import { black, borderGray, cyanBlue, gray } from 'muiTheme';
 import React from 'react';
 import {
   LIGHT_BLUE_HEX,
@@ -136,6 +138,10 @@ const AACategoryPhaseMap: { [key: string]: any } = {
       color: '#E63701',
       iconProps: { topText: 'R', bottomText: 'SEV', color: 'white' },
     },
+    na: {
+      color: '#F1F1F1',
+      iconProps: { topText: 'na', bottomText: 'SEV', color: 'black' },
+    },
   },
   Moderate: {
     Set: {
@@ -146,6 +152,10 @@ const AACategoryPhaseMap: { [key: string]: any } = {
       color: '#FFD52D',
       iconProps: { topText: 'R', bottomText: 'MOD', color: 'black' },
     },
+    na: {
+      color: '#F1F1F1',
+      iconProps: { topText: 'na', bottomText: 'MOD', color: 'black' },
+    },
   },
   Mild: {
     Set: {
@@ -155,6 +165,10 @@ const AACategoryPhaseMap: { [key: string]: any } = {
     Ready: {
       color: '#FFFCB3',
       iconProps: { topText: 'R', bottomText: 'MIL', color: 'black' },
+    },
+    na: {
+      color: '#F1F1F1',
+      iconProps: { topText: 'na', bottomText: 'MIL', color: 'black' },
     },
   },
 };
@@ -217,3 +231,41 @@ export function AADataSeverityOrder(
 
   return catIndex * 10 + phaseBonus;
 }
+
+export const useAACommonStyles = makeStyles(() =>
+  createStyles({
+    footerWrapper: { display: 'flex', flexDirection: 'column' },
+    footerActionsWrapper: {
+      display: 'flex',
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      padding: '0.5rem',
+      gap: '1rem',
+    },
+    footerDialogsWrapper: {
+      display: 'flex',
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      padding: '0.5rem',
+    },
+    footerButton: { borderColor: cyanBlue, color: black },
+    footerDialog: {
+      textDecoration: 'underline',
+      backgroundColor: 'transparent',
+      border: 'none',
+      cursor: 'pointer',
+      textAlign: 'right',
+    },
+    footerWrapperVert: {
+      display: 'flex',
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+    },
+    footerDialogsWrapperVert: {
+      display: 'flex',
+      flexDirection: 'column',
+      justifyContent: 'space-between',
+      padding: '0.5rem',
+    },
+  }),
+);

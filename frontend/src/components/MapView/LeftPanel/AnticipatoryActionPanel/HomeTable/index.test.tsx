@@ -4,7 +4,7 @@ import { Provider } from 'react-redux';
 import { BrowserRouter } from 'react-router-dom';
 import configureStore from 'redux-mock-store';
 import HomeTable from '.';
-import { mockAARenderedDistricts } from '../test.utils';
+import { defaultDialogs, mockAARenderedDistricts } from '../test.utils';
 
 const mockStore = configureStore([]);
 
@@ -37,7 +37,7 @@ test('renders as expected', () => {
   const { container } = render(
     <BrowserRouter>
       <Provider store={store}>
-        <HomeTable />
+        <HomeTable dialogs={defaultDialogs} />
       </Provider>
     </BrowserRouter>,
   );
