@@ -64,17 +64,17 @@ function AnticipatoryActionLayer({ layer, before }: LayersProps) {
   const { selectedWindow } = useSelector(AAFiltersSelector);
   const selectedDistrict = useSelector(AASelectedDistrictSelector);
   const markers = useSelector(AAMarkersSelector);
+  const layerWindowIndex = AAWindowKeys.findIndex(
+    x => x === layer.csvWindowKey,
+  );
 
   useMapCallback(
     'click',
-    'anticipatory-action-0-fill',
+    `anticipatory-action-${layerWindowIndex}-fill`,
     layer as any,
     onDistrictClick,
   );
 
-  const layerWindowIndex = AAWindowKeys.findIndex(
-    x => x === layer.csvWindowKey,
-  );
   const shouldRenderData = React.useMemo(() => {
     if (selectedWindow === layer.csvWindowKey) {
       return Object.fromEntries(
@@ -160,20 +160,6 @@ function AnticipatoryActionLayer({ layer, before }: LayersProps) {
             longitude={marker.longitude}
             latitude={marker.latitude}
             anchor="center"
-            onClick={e => {
-              e.originalEvent.stopPropagation();
-              // Simulate the expected structure for onDistrictClick
-              const simulatedEvent = {
-                features: [
-                  {
-                    properties: {
-                      [boundaryLayer.adminLevelLocalNames[1]]: marker.district,
-                    },
-                  },
-                ],
-              };
-              onDistrictClick({ dispatch } as any)(simulatedEvent as any);
-            }}
           >
             <div
               style={{ transform: `scale(${scalePercent})`, cursor: 'pointer' }}
