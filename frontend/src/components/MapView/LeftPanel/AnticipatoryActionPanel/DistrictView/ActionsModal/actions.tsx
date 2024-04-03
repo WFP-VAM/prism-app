@@ -32,7 +32,7 @@ const FontAwesomeIconWrap = (props: FontAwesomeIconProps) => (
 
 export interface Action {
   name: string;
-  icon: any; // Placeholder type for the icon, adjust as necessary
+  icon: React.JSX.Element;
 }
 
 const DoubleIcon = (props: FontAwesomeIconProps) => (
@@ -46,7 +46,7 @@ const DoubleIcon = (props: FontAwesomeIconProps) => (
   </div>
 );
 
-// Simplified, reusable action items with full names
+// Reusable action items with full names
 export const AActions = {
   warnings: {
     name: 'Dissemination of early warning messages',
@@ -58,7 +58,6 @@ export const AActions = {
   },
   seedsW2: {
     name: 'Distribution of seeds and vegetative material for the second season',
-    // TODO - get 2 plant icon figma
     icon: <DoubleIcon icon={faSeedling} />,
   },
   waterHoles: { name: 'Rehabilitation of boreholes', icon: <LocalDrink /> },
@@ -95,9 +94,12 @@ export const AActions = {
     name: 'No anticipatory action linked to Mild levels',
     icon: <Block />,
   },
+  na: {
+    name: 'No action',
+    icon: <Block />,
+  },
 };
 
-// Define the map type
 type ActionsMap = {
   [key: string]: Action[];
 };
@@ -149,5 +151,5 @@ export function getActionsByPhaseCategoryAndWindow(
   }
   const windowIndex = AAWindowKeys.findIndex(x => x === win) + 1;
   const key = `${phase}${category}W${windowIndex}`;
-  return actionsMap[key] || [];
+  return actionsMap[key] || [AActions.na];
 }
