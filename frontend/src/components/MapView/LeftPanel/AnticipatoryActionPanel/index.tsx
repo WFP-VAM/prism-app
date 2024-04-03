@@ -106,11 +106,17 @@ function AnticipatoryActionPanel() {
       <div className={classes.headerWrapper}>
         <div className={classes.titleSelectWrapper}>
           <div className={classes.titleSelectWrapper}>
-            {view === AAView.District && (
+            {(view === AAView.District || view === AAView.Timeline) && (
               <IconButton
                 onClick={() => {
-                  dispatch(setAASelectedDistrict(''));
-                  dispatch(setAAView(AAView.Home));
+                  if (view === AAView.District) {
+                    dispatch(setAASelectedDistrict(''));
+                    dispatch(setAAView(AAView.Home));
+                    return;
+                  }
+                  if (view === AAView.Timeline) {
+                    dispatch(setAAView(AAView.District));
+                  }
                 }}
               >
                 <ArrowBackIos fontSize="small" />

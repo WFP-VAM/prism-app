@@ -9,21 +9,17 @@ import {
   AAFiltersSelector,
   AASelectedDistrictSelector,
 } from 'context/anticipatoryActionStateSlice';
-import {
-  AAPhase,
-  AAcategory,
-  AnticipatoryActionDataRow,
-} from 'context/anticipatoryActionStateSlice/types';
+import { AnticipatoryActionDataRow } from 'context/anticipatoryActionStateSlice/types';
 import { gray } from 'muiTheme';
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { setPanelSize } from 'context/leftPanelStateSlice';
 import { PanelSize } from 'config/types';
-import { AAWindowKeys } from 'config/utils';
 import { useSafeTranslation } from 'i18n';
 import { Equalizer } from '@material-ui/icons';
 import { getAAColor, getAAIcon, useAACommonStyles } from '../utils';
 import { dateSorter } from '../DistrictView/utils';
+import { timelineTransform } from './utils';
 
 interface TimelineItemProps {
   item: AnticipatoryActionDataRow;
@@ -80,16 +76,6 @@ const useTimelineItemStyles = makeStyles(() =>
   }),
 );
 
-function getColumnKey(val: AnticipatoryActionDataRow): number {
-  const { category, phase, isValid } = val;
-  const catIndex = AAcategory.findIndex(x => x === category);
-  const phaseIndex = AAPhase.findIndex(x => x === phase);
-  if (!isValid) {
-    return catIndex * 10;
-  }
-  return catIndex * 10 + phaseIndex;
-}
-
 interface TimelineProps {
   dialogs: {
     text: string;
@@ -104,9 +90,7 @@ function Timeline({ dialogs }: TimelineProps) {
   const dispatch = useDispatch();
   const AAData = useSelector(AADataSelector);
   const selectedDistrict = useSelector(AASelectedDistrictSelector);
-  const { selectedWindow, selectedIndex, categories } = useSelector(
-    AAFiltersSelector,
-  );
+  const AAFilters = useSelector(AAFiltersSelector);
 
   React.useEffect(() => {
     dispatch(setPanelSize(PanelSize.undef));
@@ -116,56 +100,25 @@ function Timeline({ dialogs }: TimelineProps) {
     { icon: Equalizer, text: 'Forecast', onClick: undefined },
   ];
 
-  const windowData = (selectedWindow === 'All'
-    ? AAWindowKeys
-    : [selectedWindow]
-  ).map(win => {
-    const data = !!selectedDistrict && AAData[win][selectedDistrict];
-    if (!data) {
-      return [win, null];
-    }
-
-    const filtered = data.filter(
-      x =>
-        !x.computedRow &&
-        (selectedIndex === '' || selectedIndex === x.index) &&
-        categories[x.category],
-    );
-
-    const months = [...new Set(filtered.map(x => x.date))].map(x => [
-      x,
-      new Date(x).toLocaleString('en-US', { month: 'short' }),
-    ]);
-
-    const categoriesMap = new Map<number, AnticipatoryActionDataRow[]>();
-    filtered.forEach(x => {
-      const key = getColumnKey(x);
-      const val = categoriesMap.get(key);
-      categoriesMap.set(key, val ? [...val, x] : [x]);
-    });
-    return [win, { months, data: Object.fromEntries(categoriesMap) }];
-  }) as [
-    typeof AAWindowKeys[number],
-    {
-      months: string[][];
-      data: {
-        [k: string]: AnticipatoryActionDataRow[];
-      };
-    } | null,
-  ][];
+  const { windowData, allRows } = timelineTransform({
+    filters: AAFilters,
+    data: AAData,
+    selectedDistrict,
+  });
 
   return (
     <>
       <div className={classes.root}>
-        {windowData.map(([win, winData]) => {
-          if (winData === null || Object.keys(windowData).length === 0) {
+        {Object.entries(windowData).map(([win, winData]) => {
+          if (!winData || Object.keys(winData.rows).length === 0) {
             return (
               <div key={win} className={classes.windowWrapper}>
                 No Data{' '}
               </div>
             );
           }
-          const { months, data } = winData;
+          const { months, rows } = winData;
+
           return (
             <div key={win} className={classes.windowWrapper}>
               <div className={classes.tableWrapper}>
@@ -181,18 +134,18 @@ function Timeline({ dialogs }: TimelineProps) {
                 </div>
                 {
                   // eslint-disable-next-line fp/no-mutating-methods
-                  Object.entries(data)
+                  Object.entries({ ...allRows, ...rows })
                     .sort(dateSorter)
                     .map(([rowId, rowData]) => (
                       <div key={rowId} className={classes.rowWrapper}>
                         <div className={classes.iconColumn}>
                           {getAAIcon(
-                            rowData[0].category,
-                            rowData[0].isValid ? rowData[0].phase : 'na',
+                            rowData.status.category,
+                            rowData.status.phase,
                           )}
                         </div>
                         {months.map(([date, label]) => {
-                          const elem = rowData.find(z => z.date === date);
+                          const elem = rowData.data.find(z => z.date === date);
                           if (!elem) {
                             return (
                               <div key={date} className={classes.column} />

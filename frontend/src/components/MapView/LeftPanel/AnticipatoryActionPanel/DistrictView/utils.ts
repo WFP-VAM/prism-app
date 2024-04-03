@@ -3,6 +3,7 @@ import {
   AnticipatoryActionState,
 } from 'context/anticipatoryActionStateSlice/types';
 import { AADataSeverityOrder } from '../utils';
+import { TimelineRow } from '../Timeline/utils';
 
 export function districtViewTransform(
   data: AnticipatoryActionDataRow[] | undefined,
@@ -74,8 +75,8 @@ export function districtViewTransform(
 }
 
 export function dateSorter(
-  a: [string, AnticipatoryActionDataRow[]],
-  b: [string, AnticipatoryActionDataRow[]],
+  a: [string, AnticipatoryActionDataRow[] | TimelineRow],
+  b: [string, AnticipatoryActionDataRow[] | TimelineRow],
 ) {
   if (a[0] > b[0]) {
     return -1;
