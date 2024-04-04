@@ -93,7 +93,7 @@ function Timeline({ dialogs }: TimelineProps) {
   const AAFilters = useSelector(AAFiltersSelector);
 
   React.useEffect(() => {
-    dispatch(setPanelSize(PanelSize.undef));
+    dispatch(setPanelSize(PanelSize.auto));
   }, [dispatch]);
 
   const timelineButtons = [

@@ -288,7 +288,7 @@ function DistrictView({ dialogs }: DistrictViewProps) {
     .flat();
 
   React.useEffect(() => {
-    dispatch(setPanelSize(PanelSize.undef));
+    dispatch(setPanelSize(PanelSize.auto));
   }, [dispatch]);
 
   return (
