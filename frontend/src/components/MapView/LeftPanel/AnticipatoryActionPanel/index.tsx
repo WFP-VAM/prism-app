@@ -57,15 +57,15 @@ function AnticipatoryActionPanel() {
   const dispatch = useDispatch();
   const { t } = useSafeTranslation();
   const monitoredDistricts = useSelector(AAMonitoredDistrictsSelector);
-  const { categories: categoryFilters, selectedIndex } = useSelector(
-    AAFiltersSelector,
-  );
+  const selectedDistrict = useSelector(AASelectedDistrictSelector);
+  const { categories: categoryFilters } = useSelector(AAFiltersSelector);
   const serverAvailableDates = useSelector(availableDatesSelector);
   const { startDate: selectedDate } = useSelector(dateRangeSelector);
-  const selectedDistrict = useSelector(AASelectedDistrictSelector);
   const aaData = useSelector(AADataSelector);
   const view = useSelector(AAViewSelector);
-  const [indexOptions, setIndexOptions] = React.useState<string[]>([]);
+  const [vulnerability, setDistrictVulnerability] = React.useState<string>(
+    'General Triggers',
+  );
   const [howToReadModalOpen, setHowToReadModalOpen] = React.useState(false);
 
   const dialogs = [
@@ -83,9 +83,9 @@ function AnticipatoryActionPanel() {
       .map(x => x[selectedDistrict])
       .flat()
       .filter(x => x);
-
-    const options = [...new Set(entries.map(x => x.index))];
-    setIndexOptions(options);
+    if (entries[0]?.vulnerability) {
+      setDistrictVulnerability(entries[0].vulnerability);
+    }
   }, [aaData, selectedDistrict]);
 
   const layerAvailableDates = getAAAvailableDatesCombined(serverAvailableDates);
@@ -193,38 +193,7 @@ function AnticipatoryActionPanel() {
         </div>
 
         {(view === AAView.District || view === AAView.Timeline) && (
-          <div>
-            <StyledSelect
-              value={selectedIndex || 'empty'}
-              fullWidth
-              input={<Input disableUnderline />}
-              renderValue={() => (
-                <Typography variant="h3">
-                  {selectedIndex || 'Emergency triggers'}
-                </Typography>
-              )}
-            >
-              <MenuItem
-                value=""
-                onClick={() => {
-                  dispatch(setAAFilters({ selectedIndex: '' }));
-                }}
-              >
-                All
-              </MenuItem>
-              {indexOptions.map(x => (
-                <MenuItem
-                  key={x}
-                  value={x}
-                  onClick={() => {
-                    dispatch(setAAFilters({ selectedIndex: x }));
-                  }}
-                >
-                  {x}
-                </MenuItem>
-              ))}
-            </StyledSelect>
-          </div>
+          <Typography>{t(vulnerability)}</Typography>
         )}
       </div>
       {view === AAView.Home && <HomeTable dialogs={dialogs} />}

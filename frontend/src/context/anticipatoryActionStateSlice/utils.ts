@@ -65,6 +65,7 @@ export function parseAndTransformAA(data: any[]) {
         window: x.window,
         // initialize to false and override later
         new: false,
+        vulnerability: x.vulnerability,
       };
 
       const isReadyValid = Number(x.prob_ready) > Number(x.trigger_ready);

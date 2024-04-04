@@ -9,6 +9,7 @@ export type AACategoryType = typeof AAcategory[number];
 
 export const AAPhase = ['ny', 'na', 'Ready', 'Set'] as const;
 export type AAPhaseType = typeof AAPhase[number];
+export type Vulnerability = 'General Triggers' | 'Emergency Triggers';
 
 export interface AnticipatoryActionDataRow {
   category: AACategoryType;
@@ -24,6 +25,8 @@ export interface AnticipatoryActionDataRow {
   isValid?: boolean;
   wasReadyValid?: boolean;
   computedRow?: boolean;
+  // district vulnerability level
+  vulnerability?: Vulnerability;
 }
 
 export interface AnticipatoryActionData {
