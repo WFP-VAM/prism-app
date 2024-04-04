@@ -82,6 +82,9 @@ const options = {
           suggestedMin: 0,
           suggestedMax: 40,
           stepSize: 10,
+          // Add a callback function to format the ticks
+          callback: (value: number, index: number, values: number[]) =>
+            `${value}%`,
         },
       },
     ],
