@@ -19,17 +19,37 @@ const indexes = {
   'SPI OND': 15,
 };
 
+function createTriangleCanvas(color: string) {
+  const size = 15; // Size of the canvas (and the triangle)
+  const canvas = document.createElement('canvas');
+  canvas.width = size;
+  canvas.height = size;
+  const ctx = canvas.getContext('2d');
+
+  if (ctx) {
+    ctx.fillStyle = color || '#E63701'; // Red color
+    ctx.beginPath();
+    ctx.moveTo(0, 0); // Top left
+    ctx.lineTo(size, size / 2); // Middle right
+    ctx.lineTo(0, size); // Bottom left
+    ctx.closePath();
+    ctx.fill();
+  }
+
+  return canvas;
+}
+
 const data = {
   labels: Object.keys(indexes),
   datasets: [
     {
       label: 'Severe',
       data: Object.entries(indexes).map(([index, val], i) => ({
-        x: i,
+        x: i + 0.7,
         y: val,
       })),
-      pointStyle: 'rect',
-      backgroundColor: '#E63701', // Custom color for bars
+      pointStyle: createTriangleCanvas('#E63701'),
+      backgroundColor: '#E63701',
       datalabels: {
         labels: {
           value: {
@@ -82,7 +102,6 @@ const options = {
           suggestedMin: 0,
           suggestedMax: 40,
           stepSize: 10,
-          // Add a callback function to format the ticks
           callback: (value: number, index: number, values: number[]) =>
             `${value}%`,
         },
@@ -115,10 +134,15 @@ function Forecast() {
     <div className={classes.root}>
       <div>
         <div
-          style={{ display: 'flex', flexDirection: 'row', flexWrap: 'nowrap' }}
+          style={{
+            display: 'flex',
+            flexDirection: 'row',
+            flexWrap: 'nowrap',
+            paddingLeft: '3.5rem',
+            paddingRight: '0.5rem',
+          }}
         >
           <div style={{ minWidth: '3rem' }} />
-          <div style={{ minWidth: '10px' }} />
           {Object.keys(indexes).map(x => (
             <Typography className={classes.label}>{x}</Typography>
           ))}
@@ -177,6 +201,7 @@ const useForecastStyle = makeStyles(() =>
     },
     label: {
       background: gray,
+      margin: '0.5rem',
       borderRadius: '4px',
       textAlign: 'center',
       textTransform: 'uppercase',
