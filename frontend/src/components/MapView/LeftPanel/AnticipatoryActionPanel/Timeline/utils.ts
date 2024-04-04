@@ -9,12 +9,9 @@ import {
 } from 'context/anticipatoryActionStateSlice/types';
 
 function getColumnKey(val: AnticipatoryActionDataRow): number {
-  const { category, phase, isValid } = val;
+  const { category, phase } = val;
   const catIndex = AAcategory.findIndex(x => x === category);
   const phaseIndex = AAPhase.findIndex(x => x === phase);
-  if (!isValid) {
-    return catIndex * 10;
-  }
   return catIndex * 10 + phaseIndex;
 }
 
@@ -77,7 +74,7 @@ export function timelineTransform({
           : {
               status: {
                 category: x.category,
-                phase: x.isValid ? x.phase : 'na',
+                phase: x.phase,
               },
               data: [x],
             },
