@@ -276,7 +276,11 @@ function DistrictView({ dialogs }: DistrictViewProps) {
       text: 'Timeline',
       onClick: () => dispatch(setAAView(AAView.Timeline)),
     },
-    { icon: Equalizer, text: 'Forecast', onClick: undefined },
+    {
+      icon: Equalizer,
+      text: 'Forecast',
+      onClick: () => dispatch(setAAView(AAView.Forecast)),
+    },
   ];
 
   const windows = selectedWindow === 'All' ? AAWindowKeys : [selectedWindow];

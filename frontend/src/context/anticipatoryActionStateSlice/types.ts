@@ -36,6 +36,7 @@ export enum AAView {
   Home = 'home',
   District = 'district',
   Timeline = 'timeline',
+  Forecast = 'forecast',
 }
 
 export type AnticipatoryActionState = {

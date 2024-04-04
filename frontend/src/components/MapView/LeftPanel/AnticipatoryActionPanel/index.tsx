@@ -42,6 +42,7 @@ import DistrictView from './DistrictView/index';
 import HomeTable from './HomeTable';
 import HowToReadModal from './HowToReadModal';
 import Timeline from './Timeline';
+import Forecast from './Forecast';
 
 const checkboxes: {
   label: string;
@@ -105,7 +106,9 @@ function AnticipatoryActionPanel() {
       <div className={classes.headerWrapper}>
         <div className={classes.titleSelectWrapper}>
           <div className={classes.titleSelectWrapper}>
-            {(view === AAView.District || view === AAView.Timeline) && (
+            {(view === AAView.District ||
+              view === AAView.Timeline ||
+              view === AAView.Forecast) && (
               <IconButton
                 onClick={() => {
                   if (view === AAView.District) {
@@ -114,6 +117,10 @@ function AnticipatoryActionPanel() {
                     return;
                   }
                   if (view === AAView.Timeline) {
+                    dispatch(setAAView(AAView.District));
+                    return;
+                  }
+                  if (view === AAView.Forecast) {
                     dispatch(setAAView(AAView.District));
                   }
                 }}
@@ -139,7 +146,7 @@ function AnticipatoryActionPanel() {
                   dispatch(setAAView(AAView.Home));
                 }}
               >
-                Global view
+                {t('Global view')}
               </MenuItem>
               {monitoredDistricts.map(x => (
                 <MenuItem
@@ -230,6 +237,7 @@ function AnticipatoryActionPanel() {
       {view === AAView.Home && <HomeTable dialogs={dialogs} />}
       {view === AAView.District && <DistrictView dialogs={dialogs} />}
       {view === AAView.Timeline && <Timeline dialogs={dialogs} />}
+      {view === AAView.Forecast && <Forecast />}
     </div>
   );
 }
