@@ -162,13 +162,15 @@ function Forecast() {
             <Typography
               variant="h2"
               style={{
+                fontWeight: 400,
                 color: 'white',
                 border: '1px solid white',
                 borderRadius: '2px',
                 writingMode: 'vertical-lr',
+                textTransform: 'uppercase',
                 transform: 'rotate(180deg)',
                 padding: '0.1rem',
-                height: '4rem',
+                height: '5rem',
                 margin: 'auto',
               }}
             >
