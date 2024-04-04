@@ -1,0 +1,402 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`renders as expected 1`] = `
+<div>
+  <div
+    class="makeStyles-root-1"
+  >
+    <mock-dialog
+      open="false"
+    >
+      <mock-dialogtitle>
+        <div
+          class="makeStyles-titleWrapper-10"
+        >
+          <mock-typography
+            variant="h2"
+          >
+            Actions undertaken
+          </mock-typography>
+          <button
+            class="MuiButtonBase-root MuiIconButton-root"
+            style="padding: 0px;"
+            tabindex="0"
+            type="button"
+          >
+            <span
+              class="MuiIconButton-label"
+            >
+              <svg
+                aria-hidden="true"
+                class="MuiSvgIcon-root"
+                focusable="false"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm5 13.59L15.59 17 12 13.41 8.41 17 7 15.59 10.59 12 7 8.41 8.41 7 12 10.59 15.59 7 17 8.41 13.41 12 17 15.59z"
+                />
+              </svg>
+            </span>
+            <span
+              class="MuiTouchRipple-root"
+            />
+          </button>
+        </div>
+      </mock-dialogtitle>
+      <mock-dialogcontent
+        dividers="true"
+      >
+        <div
+          class="makeStyles-contentWrapper-11"
+        />
+      </mock-dialogcontent>
+      <mock-dialogactions
+        classname="makeStyles-dialogActionsWrapper-14"
+      >
+        <mock-button
+          classname="makeStyles-dialogButton-15"
+          starticon="[object Object]"
+          variant="outlined"
+        >
+          <mock-typography>
+            Close
+          </mock-typography>
+        </mock-button>
+      </mock-dialogactions>
+    </mock-dialog>
+    <div
+      class="makeStyles-districtViewWrapper-2"
+    >
+      <div
+        class="makeStyles-windowWrapper-16"
+      >
+        <div
+          style="text-align: center;"
+        >
+          <mock-typography
+            classname="makeStyles-headerText-22"
+            variant="h3"
+          >
+            Window 1
+          </mock-typography>
+        </div>
+        <div
+          class="makeStyles-tableWrapper-17"
+        >
+          <div
+            class="makeStyles-headRowWrapper-19"
+          >
+            <div
+              class="makeStyles-headColumn-20"
+            >
+              <mock-typography
+                classname="makeStyles-monthText-23"
+              >
+                September
+              </mock-typography>
+            </div>
+            <div
+              class="makeStyles-headColumn-20"
+            >
+              <mock-typography
+                classname="makeStyles-monthText-23"
+              >
+                October
+              </mock-typography>
+            </div>
+            <div
+              class="makeStyles-headColumn-20"
+            >
+              <mock-typography
+                classname="makeStyles-monthText-23"
+              >
+                November
+              </mock-typography>
+            </div>
+          </div>
+          <div
+            class="makeStyles-rowWrapper-18"
+          >
+            <div
+              class="makeStyles-column-21"
+            >
+              <div
+                class="makeStyles-iconWrapper-24"
+              >
+                <div
+                  class="makeStyles-iconWrapper-29"
+                  style="background: rgb(255, 213, 45);"
+                >
+                  <div
+                    class="makeStyles-centerContainer-30"
+                    style="border: 1px solid black; color: black;"
+                  >
+                    <div
+                      class="makeStyles-topTextContainer-31"
+                      style="border-bottom: 1px solid black;"
+                    >
+                      R
+                    </div>
+                    <div
+                      class="makeStyles-bottomTextContainer-32"
+                    >
+                      MOD
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div
+              class="makeStyles-column-21"
+            >
+              <div
+                class="makeStyles-iconWrapper-24"
+              >
+                <div
+                  class="makeStyles-iconWrapper-29"
+                  style="background: rgb(255, 213, 45);"
+                >
+                  <div
+                    class="makeStyles-centerContainer-30"
+                    style="border: 1px solid black; color: black;"
+                  >
+                    <div
+                      class="makeStyles-topTextContainer-31"
+                      style="border-bottom: 1px solid black;"
+                    >
+                      R
+                    </div>
+                    <div
+                      class="makeStyles-bottomTextContainer-32"
+                    >
+                      MOD
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div
+              class="makeStyles-column-21"
+            >
+              <div
+                class="makeStyles-iconWrapper-24"
+              >
+                <div
+                  class="makeStyles-iconWrapper-29"
+                  style="background: rgb(241, 241, 241);"
+                >
+                  <div
+                    class="makeStyles-centerContainer-30"
+                    style="border: 1px solid black; color: black;"
+                  >
+                    <div
+                      class="makeStyles-topTextContainer-31"
+                      style="border-bottom: 1px solid black;"
+                    >
+                      na
+                    </div>
+                    <div
+                      class="makeStyles-bottomTextContainer-32"
+                    >
+                      MOD
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div
+            class="makeStyles-rowWrapper-18"
+          >
+            <div
+              class="makeStyles-column-21"
+            />
+            <div
+              class="makeStyles-column-21"
+            >
+              <div
+                class="makeStyles-iconWrapper-24"
+              >
+                <div
+                  class="makeStyles-iconWrapper-29"
+                  style="background: rgb(255, 252, 179);"
+                >
+                  <div
+                    class="makeStyles-centerContainer-30"
+                    style="border: 1px solid black; color: black;"
+                  >
+                    <div
+                      class="makeStyles-topTextContainer-31"
+                      style="border-bottom: 1px solid black;"
+                    >
+                      R
+                    </div>
+                    <div
+                      class="makeStyles-bottomTextContainer-32"
+                    >
+                      MIL
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div
+              class="makeStyles-column-21"
+            >
+              <div
+                class="makeStyles-iconWrapper-24"
+              >
+                <div
+                  class="makeStyles-iconWrapper-29"
+                  style="background: rgb(255, 245, 3);"
+                >
+                  <div
+                    class="makeStyles-centerContainer-30"
+                    style="border: 1px solid black; color: black;"
+                  >
+                    <div
+                      class="makeStyles-topTextContainer-31"
+                      style="border-bottom: 1px solid black;"
+                    >
+                      S
+                    </div>
+                    <div
+                      class="makeStyles-bottomTextContainer-32"
+                    >
+                      MIL
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="makeStyles-actionsWrapper-25"
+        >
+          <div
+            style="text-align: center;"
+          >
+            <mock-typography
+              variant="h3"
+            >
+              ACTIONS
+            </mock-typography>
+          </div>
+          <div
+            class="makeStyles-actionBoxesWrapper-26"
+          >
+            <button
+              class="makeStyles-actionBox-27"
+              id="2023-09-01"
+              style="justify-content: center; cursor: pointer;"
+              type="button"
+            >
+              <mock-tooltip
+                title="Launching tenders and other Procurement procedures"
+              >
+                <div>
+                  <svg
+                    aria-hidden="true"
+                    class="MuiSvgIcon-root"
+                    focusable="false"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      d="M22 11V3h-7v3H9V3H2v8h7V8h2v10h4v3h7v-8h-7v3h-2V8h2v3z"
+                    />
+                  </svg>
+                </div>
+              </mock-tooltip>
+            </button>
+            <button
+              class="makeStyles-actionBox-27"
+              id="2023-10-01"
+              style="justify-content: center; cursor: pointer;"
+              type="button"
+            >
+              <mock-tooltip
+                title="No action"
+              >
+                <div>
+                  <svg
+                    aria-hidden="true"
+                    class="MuiSvgIcon-root"
+                    focusable="false"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zM4 12c0-4.42 3.58-8 8-8 1.85 0 3.55.63 4.9 1.69L5.69 16.9C4.63 15.55 4 13.85 4 12zm8 8c-1.85 0-3.55-.63-4.9-1.69L18.31 7.1C19.37 8.45 20 10.15 20 12c0 4.42-3.58 8-8 8z"
+                    />
+                  </svg>
+                </div>
+              </mock-tooltip>
+            </button>
+            <button
+              class="makeStyles-actionBox-27"
+              id="2023-11-01"
+              style="justify-content: center; cursor: pointer;"
+              type="button"
+            >
+              <mock-tooltip
+                title="No anticipatory action linked to Mild levels"
+              >
+                <div>
+                  <svg
+                    aria-hidden="true"
+                    class="MuiSvgIcon-root"
+                    focusable="false"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zM4 12c0-4.42 3.58-8 8-8 1.85 0 3.55.63 4.9 1.69L5.69 16.9C4.63 15.55 4 13.85 4 12zm8 8c-1.85 0-3.55-.63-4.9-1.69L18.31 7.1C19.37 8.45 20 10.15 20 12c0 4.42-3.58 8-8 8z"
+                    />
+                  </svg>
+                </div>
+              </mock-tooltip>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div
+    class="makeStyles-footerWrapper-3"
+  >
+    <div
+      class="makeStyles-footerActionsWrapper-4"
+    >
+      <mock-button
+        classname="makeStyles-footerButton-6"
+        fullwidth="true"
+        starticon="[object Object]"
+        variant="outlined"
+      >
+        <mock-typography>
+          Timeline
+        </mock-typography>
+      </mock-button>
+      <mock-button
+        classname="makeStyles-footerButton-6"
+        fullwidth="true"
+        starticon="[object Object]"
+        variant="outlined"
+      >
+        <mock-typography>
+          Forecast
+        </mock-typography>
+      </mock-button>
+    </div>
+    <div
+      class="makeStyles-footerDialogsWrapper-5"
+    >
+      <mock-typography
+        classname="makeStyles-footerDialog-7"
+        component="button"
+      >
+        How to read this screen
+      </mock-typography>
+    </div>
+  </div>
+</div>
+`;

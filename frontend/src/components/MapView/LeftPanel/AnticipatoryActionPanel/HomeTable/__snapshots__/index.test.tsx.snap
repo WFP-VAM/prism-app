@@ -6,15 +6,15 @@ exports[`renders as expected 1`] = `
     class="makeStyles-tableWrapper-1"
   >
     <div
-      class="makeStyles-rowWrapper-2"
+      class="makeStyles-rowWrapper-9"
       style="height: 1.5rem;"
     >
       <div
-        class="makeStyles-iconCol-3"
+        class="makeStyles-iconCol-10"
       />
       <div>
         <mock-typography
-          classname="makeStyles-headerText-6"
+          classname="makeStyles-headerText-13"
           variant="h3"
         >
           Window 1
@@ -22,27 +22,27 @@ exports[`renders as expected 1`] = `
       </div>
     </div>
     <div
-      class="makeStyles-rowWrapper-2"
+      class="makeStyles-rowWrapper-9"
     >
       <div
-        class="makeStyles-iconCol-3"
+        class="makeStyles-iconCol-10"
       >
         <div
-          class="makeStyles-iconWrapper-8"
+          class="makeStyles-iconWrapper-15"
           style="background: rgb(131, 31, 0);"
         >
           <div
-            class="makeStyles-centerContainer-9"
+            class="makeStyles-centerContainer-16"
             style="border: 1px solid white; color: white;"
           >
             <div
-              class="makeStyles-topTextContainer-10"
+              class="makeStyles-topTextContainer-17"
               style="border-bottom: 1px solid white;"
             >
               S
             </div>
             <div
-              class="makeStyles-bottomTextContainer-11"
+              class="makeStyles-bottomTextContainer-18"
             >
               SEV
             </div>
@@ -51,13 +51,13 @@ exports[`renders as expected 1`] = `
       </div>
       <div>
         <div
-          class="makeStyles-windowBackground-4"
+          class="makeStyles-windowBackground-11"
         >
           <div
-            class="makeStyles-tagWrapper-5"
+            class="makeStyles-tagWrapper-12"
           >
             <mock-typography
-              classname="makeStyles-emptyText-7"
+              classname="makeStyles-emptyText-14"
             >
               (
               no district
@@ -68,27 +68,27 @@ exports[`renders as expected 1`] = `
       </div>
     </div>
     <div
-      class="makeStyles-rowWrapper-2"
+      class="makeStyles-rowWrapper-9"
     >
       <div
-        class="makeStyles-iconCol-3"
+        class="makeStyles-iconCol-10"
       >
         <div
-          class="makeStyles-iconWrapper-8"
+          class="makeStyles-iconWrapper-15"
           style="background: rgb(230, 55, 1);"
         >
           <div
-            class="makeStyles-centerContainer-9"
+            class="makeStyles-centerContainer-16"
             style="border: 1px solid white; color: white;"
           >
             <div
-              class="makeStyles-topTextContainer-10"
+              class="makeStyles-topTextContainer-17"
               style="border-bottom: 1px solid white;"
             >
               R
             </div>
             <div
-              class="makeStyles-bottomTextContainer-11"
+              class="makeStyles-bottomTextContainer-18"
             >
               SEV
             </div>
@@ -97,13 +97,13 @@ exports[`renders as expected 1`] = `
       </div>
       <div>
         <div
-          class="makeStyles-windowBackground-4"
+          class="makeStyles-windowBackground-11"
         >
           <div
-            class="makeStyles-tagWrapper-5"
+            class="makeStyles-tagWrapper-12"
           >
             <mock-typography
-              classname="makeStyles-emptyText-7"
+              classname="makeStyles-emptyText-14"
             >
               (
               no district
@@ -114,27 +114,27 @@ exports[`renders as expected 1`] = `
       </div>
     </div>
     <div
-      class="makeStyles-rowWrapper-2"
+      class="makeStyles-rowWrapper-9"
     >
       <div
-        class="makeStyles-iconCol-3"
+        class="makeStyles-iconCol-10"
       >
         <div
-          class="makeStyles-iconWrapper-8"
+          class="makeStyles-iconWrapper-15"
           style="background: rgb(255, 137, 52);"
         >
           <div
-            class="makeStyles-centerContainer-9"
+            class="makeStyles-centerContainer-16"
             style="border: 1px solid black; color: black;"
           >
             <div
-              class="makeStyles-topTextContainer-10"
+              class="makeStyles-topTextContainer-17"
               style="border-bottom: 1px solid black;"
             >
               S
             </div>
             <div
-              class="makeStyles-bottomTextContainer-11"
+              class="makeStyles-bottomTextContainer-18"
             >
               MOD
             </div>
@@ -143,13 +143,13 @@ exports[`renders as expected 1`] = `
       </div>
       <div>
         <div
-          class="makeStyles-windowBackground-4"
+          class="makeStyles-windowBackground-11"
         >
           <div
-            class="makeStyles-tagWrapper-5"
+            class="makeStyles-tagWrapper-12"
           >
             <mock-typography
-              classname="makeStyles-emptyText-7"
+              classname="makeStyles-emptyText-14"
             >
               (
               no district
@@ -160,27 +160,27 @@ exports[`renders as expected 1`] = `
       </div>
     </div>
     <div
-      class="makeStyles-rowWrapper-2"
+      class="makeStyles-rowWrapper-9"
     >
       <div
-        class="makeStyles-iconCol-3"
+        class="makeStyles-iconCol-10"
       >
         <div
-          class="makeStyles-iconWrapper-8"
+          class="makeStyles-iconWrapper-15"
           style="background: rgb(255, 213, 45);"
         >
           <div
-            class="makeStyles-centerContainer-9"
+            class="makeStyles-centerContainer-16"
             style="border: 1px solid black; color: black;"
           >
             <div
-              class="makeStyles-topTextContainer-10"
+              class="makeStyles-topTextContainer-17"
               style="border-bottom: 1px solid black;"
             >
               R
             </div>
             <div
-              class="makeStyles-bottomTextContainer-11"
+              class="makeStyles-bottomTextContainer-18"
             >
               MOD
             </div>
@@ -189,44 +189,45 @@ exports[`renders as expected 1`] = `
       </div>
       <div>
         <div
-          class="makeStyles-windowBackground-4"
+          class="makeStyles-windowBackground-11"
         >
           <div
-            class="makeStyles-tagWrapper-5"
+            class="makeStyles-tagWrapper-12"
           >
-            <mock-typography
-              classname="makeStyles-emptyText-7"
+            <button
+              class="makeStyles-areaTagWrapper-19"
+              type="button"
             >
-              (
-              no district
-              )
-            </mock-typography>
+              <mock-typography>
+                Changara
+              </mock-typography>
+            </button>
           </div>
         </div>
       </div>
     </div>
     <div
-      class="makeStyles-rowWrapper-2"
+      class="makeStyles-rowWrapper-9"
     >
       <div
-        class="makeStyles-iconCol-3"
+        class="makeStyles-iconCol-10"
       >
         <div
-          class="makeStyles-iconWrapper-8"
+          class="makeStyles-iconWrapper-15"
           style="background: rgb(255, 245, 3);"
         >
           <div
-            class="makeStyles-centerContainer-9"
+            class="makeStyles-centerContainer-16"
             style="border: 1px solid black; color: black;"
           >
             <div
-              class="makeStyles-topTextContainer-10"
+              class="makeStyles-topTextContainer-17"
               style="border-bottom: 1px solid black;"
             >
               S
             </div>
             <div
-              class="makeStyles-bottomTextContainer-11"
+              class="makeStyles-bottomTextContainer-18"
             >
               MIL
             </div>
@@ -235,13 +236,13 @@ exports[`renders as expected 1`] = `
       </div>
       <div>
         <div
-          class="makeStyles-windowBackground-4"
+          class="makeStyles-windowBackground-11"
         >
           <div
-            class="makeStyles-tagWrapper-5"
+            class="makeStyles-tagWrapper-12"
           >
             <mock-typography
-              classname="makeStyles-emptyText-7"
+              classname="makeStyles-emptyText-14"
             >
               (
               no district
@@ -252,27 +253,27 @@ exports[`renders as expected 1`] = `
       </div>
     </div>
     <div
-      class="makeStyles-rowWrapper-2"
+      class="makeStyles-rowWrapper-9"
     >
       <div
-        class="makeStyles-iconCol-3"
+        class="makeStyles-iconCol-10"
       >
         <div
-          class="makeStyles-iconWrapper-8"
+          class="makeStyles-iconWrapper-15"
           style="background: rgb(255, 252, 179);"
         >
           <div
-            class="makeStyles-centerContainer-9"
+            class="makeStyles-centerContainer-16"
             style="border: 1px solid black; color: black;"
           >
             <div
-              class="makeStyles-topTextContainer-10"
+              class="makeStyles-topTextContainer-17"
               style="border-bottom: 1px solid black;"
             >
               R
             </div>
             <div
-              class="makeStyles-bottomTextContainer-11"
+              class="makeStyles-bottomTextContainer-18"
             >
               MIL
             </div>
@@ -281,21 +282,70 @@ exports[`renders as expected 1`] = `
       </div>
       <div>
         <div
-          class="makeStyles-windowBackground-4"
+          class="makeStyles-windowBackground-11"
         >
           <div
-            class="makeStyles-tagWrapper-5"
+            class="makeStyles-tagWrapper-12"
           >
-            <mock-typography
-              classname="makeStyles-emptyText-7"
+            <button
+              class="makeStyles-areaTagWrapper-19"
+              type="button"
             >
-              (
-              no district
-              )
-            </mock-typography>
+              <mock-typography>
+                Changara
+              </mock-typography>
+            </button>
           </div>
         </div>
       </div>
+    </div>
+  </div>
+  <div
+    class="makeStyles-footerWrapper-2"
+  >
+    <div
+      class="makeStyles-footerActionsWrapper-3"
+    >
+      <mock-button
+        classname="makeStyles-footerButton-5"
+        fullwidth="true"
+        starticon="[object Object]"
+        variant="outlined"
+      >
+        <mock-typography>
+          Assets
+        </mock-typography>
+      </mock-button>
+      <mock-button
+        classname="makeStyles-footerButton-5"
+        fullwidth="true"
+        starticon="[object Object]"
+        variant="outlined"
+      >
+        <mock-typography>
+          Report
+        </mock-typography>
+      </mock-button>
+      <mock-button
+        classname="makeStyles-footerButton-5"
+        fullwidth="true"
+        starticon="[object Object]"
+        variant="outlined"
+      >
+        <mock-typography>
+          Forecast
+        </mock-typography>
+      </mock-button>
+    </div>
+    <div
+      class="makeStyles-footerDialogsWrapper-4"
+    >
+      <mock-typography
+        classname="makeStyles-footerDialog-6"
+        component="button"
+      >
+        How to read this screen
+      </mock-typography>
     </div>
   </div>
 </div>

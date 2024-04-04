@@ -1,31 +1,43 @@
-import { Typography, createStyles, makeStyles } from '@material-ui/core';
+import {
+  Button,
+  Typography,
+  createStyles,
+  makeStyles,
+} from '@material-ui/core';
 import { useSafeTranslation } from 'i18n';
 import { borderGray, gray } from 'muiTheme';
 import React from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import {
   AACategoryType,
   AAPhaseType,
+  AAView,
 } from 'context/anticipatoryActionStateSlice/types';
 import { AAWindowKeys } from 'config/utils';
 import {
   AAFiltersSelector,
   AARenderedDistrictsSelector,
+  setAASelectedDistrict,
+  setAAView,
 } from 'context/anticipatoryActionStateSlice';
-import { AADataSeverityOrder, getAAIcon } from '../utils';
+import { setPanelSize } from 'context/leftPanelStateSlice';
+import { PanelSize } from 'config/types';
+import { GetApp, EditOutlined, BarChartOutlined } from '@material-ui/icons';
+import { AADataSeverityOrder, getAAIcon, useAACommonStyles } from '../utils';
 
 interface AreaTagProps {
   name: string;
   isNew: boolean;
+  onClick: (e?: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
 }
 
-function AreaTag({ name, isNew }: AreaTagProps) {
+function AreaTag({ name, isNew, onClick }: AreaTagProps) {
   const classes = useAreaTagStyles();
   return (
-    <div className={classes.areaTagWrapper}>
+    <button type="button" className={classes.areaTagWrapper} onClick={onClick}>
       <Typography>{name}</Typography>
       {isNew && <div className={classes.newTag}>NEW</div>}
-    </div>
+    </button>
   );
 }
 
@@ -39,6 +51,11 @@ const useAreaTagStyles = makeStyles(() =>
       alignItems: 'center',
       gap: '0.25em',
       padding: '0 0.25em',
+      background: 'none',
+      boxShadow: 'none',
+      '&:hover': {
+        cursor: 'pointer',
+      },
     },
     newTag: {
       height: '2em',
@@ -87,30 +104,36 @@ function Row({ iconContent, windows, header }: RowProps) {
   return (
     <div className={classes.rowWrapper}>
       <div className={classes.iconCol}>{iconContent}</div>
-      {windows.map((col, index) => (
-        <div
-          // we can actually use the index as key here, since we know each index is a window
-          // eslint-disable-next-line react/no-array-index-key
-          key={index}
-          style={{
-            width:
-              windows.length > 1 ? 'calc(50% - 1.75rem)' : 'calc(100% - 3rem)',
-          }}
-        >
-          <div className={classes.windowBackground}>
-            <div className={classes.tagWrapper}>
-              {col.map(x => (
-                <AreaTag key={x.name} {...x} />
-              ))}
-              {col.length === 0 && (
-                <Typography className={classes.emptyText}>
-                  ({t('no district')})
-                </Typography>
-              )}
+      {windows.map((col, index) => {
+        // we may have 2 entries for multiple indexes
+        const unique = [...new Map(col.map(x => [x.name, x])).values()];
+        return (
+          <div
+            // we can actually use the index as key here, since we know each index is a window
+            // eslint-disable-next-line react/no-array-index-key
+            key={index}
+            style={{
+              width:
+                windows.length > 1
+                  ? 'calc(50% - 1.75rem)'
+                  : 'calc(100% - 3rem)',
+            }}
+          >
+            <div className={classes.windowBackground}>
+              <div className={classes.tagWrapper}>
+                {unique.map(x => (
+                  <AreaTag key={x.name} {...x} />
+                ))}
+                {unique.length === 0 && (
+                  <Typography className={classes.emptyText}>
+                    ({t('no district')})
+                  </Typography>
+                )}
+              </div>
             </div>
           </div>
-        </div>
-      ))}
+        );
+      })}
     </div>
   );
 }
@@ -123,7 +146,7 @@ const useRowStyles = makeStyles(() =>
       justifyContent: 'space-between',
       padding: '0.125rem 0.5rem',
     },
-    iconCol: { width: '3rem' },
+    iconCol: { width: '3rem', minHeight: '4rem' },
     windowBackground: {
       background: 'white',
       height: '100%',
@@ -167,10 +190,30 @@ const rowCategories: {
 
 type ExtendedRowProps = RowProps & { id: number | 'na' | 'ny' };
 
-function HomeTable() {
+interface HomeTableProps {
+  dialogs: {
+    text: string;
+    onclick: () => void;
+  }[];
+}
+
+function HomeTable({ dialogs }: HomeTableProps) {
   const classes = useHomeTableStyles();
+  const commonClasses = useAACommonStyles();
+  const { t } = useSafeTranslation();
+  const dispatch = useDispatch();
   const { selectedWindow, categories } = useSelector(AAFiltersSelector);
   const renderedDistricts = useSelector(AARenderedDistrictsSelector);
+
+  React.useEffect(() => {
+    dispatch(setPanelSize(PanelSize.medium));
+  }, [dispatch]);
+
+  const homeButtons = [
+    { icon: GetApp, text: 'Assets', onClick: undefined },
+    { icon: EditOutlined, text: 'Report', onClick: undefined },
+    { icon: BarChartOutlined, text: 'Forecast', onClick: undefined },
+  ];
 
   const headerRow: ExtendedRowProps = {
     id: -1,
@@ -187,14 +230,21 @@ function HomeTable() {
           const getWinData = (win: typeof AAWindowKeys[number]) =>
             Object.entries(renderedDistricts[win])
               .map(([district, distData]) => {
-                if (
-                  distData.category === x.category &&
-                  distData.phase === x.phase
-                ) {
-                  return { name: district, isNew: distData.isNew };
-                }
-                return undefined;
+                return distData.map(dist => {
+                  if (dist.category === x.category && dist.phase === x.phase) {
+                    return {
+                      name: district,
+                      isNew: dist.isNew,
+                      onClick: () => {
+                        dispatch(setAASelectedDistrict(district));
+                        dispatch(setAAView(AAView.District));
+                      },
+                    };
+                  }
+                  return undefined;
+                });
               })
+              .flat()
               .filter(y => y !== undefined);
 
           return {
@@ -206,17 +256,47 @@ function HomeTable() {
                 : [getWinData(selectedWindow)],
           } as any;
         }),
-    [categories, renderedDistricts, selectedWindow],
+    [categories, dispatch, renderedDistricts, selectedWindow],
   );
 
   const rows: ExtendedRowProps[] = [headerRow, ...districtRows];
 
   return (
-    <div className={classes.tableWrapper}>
-      {rows.map(({ id, ...r }) => (
-        <Row key={id} {...r} />
-      ))}
-    </div>
+    <>
+      <div className={classes.tableWrapper}>
+        {rows.map(({ id, ...r }) => (
+          <Row key={id} {...r} />
+        ))}
+      </div>
+      <div className={commonClasses.footerWrapper}>
+        <div className={commonClasses.footerActionsWrapper}>
+          {homeButtons.map(x => (
+            <Button
+              key={x.text}
+              className={commonClasses.footerButton}
+              variant="outlined"
+              fullWidth
+              onClick={x.onClick}
+              startIcon={<x.icon />}
+            >
+              <Typography>{t(x.text)}</Typography>
+            </Button>
+          ))}
+        </div>
+        <div className={commonClasses.footerDialogsWrapper}>
+          {dialogs.map(dialog => (
+            <Typography
+              key={dialog.text}
+              className={commonClasses.footerDialog}
+              component="button"
+              onClick={() => dialog.onclick()}
+            >
+              {dialog.text}
+            </Typography>
+          ))}
+        </div>
+      </div>
+    </>
   );
 }
 
@@ -225,7 +305,7 @@ const useHomeTableStyles = makeStyles(() =>
     tableWrapper: {
       display: 'flex',
       flexDirection: 'column',
-      width: '100%',
+      width: PanelSize.medium,
       background: gray,
       padding: '0.5rem 0',
       overflow: 'scroll',

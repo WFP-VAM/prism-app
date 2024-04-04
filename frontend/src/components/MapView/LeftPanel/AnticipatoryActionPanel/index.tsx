@@ -1,25 +1,33 @@
 import {
-  Button,
   FormControl,
+  IconButton,
+  Input,
+  MenuItem,
   RadioGroup,
   Typography,
   createStyles,
   makeStyles,
 } from '@material-ui/core';
-import { PanelSize } from 'config/types';
 import { black, cyanBlue } from 'muiTheme';
 import React from 'react';
 import { useSafeTranslation } from 'i18n';
-import { GetApp, EditOutlined, BarChartOutlined } from '@material-ui/icons';
+import { ArrowBackIos } from '@material-ui/icons';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   AACategoryType,
+  AAView,
   allWindowsKey,
 } from 'context/anticipatoryActionStateSlice/types';
 import { AAWindowKeys } from 'config/utils';
 import {
+  AADataSelector,
   AAFiltersSelector,
+  AAMonitoredDistrictsSelector,
+  AASelectedDistrictSelector,
+  AAViewSelector,
   setAAFilters,
+  setAASelectedDistrict,
+  setAAView,
 } from 'context/anticipatoryActionStateSlice';
 import { availableDatesSelector } from 'context/serverStateSlice';
 import { dateRangeSelector } from 'context/mapStateSlice/selectors';
@@ -29,19 +37,11 @@ import {
 } from 'utils/server-utils';
 import { getFormattedDate } from 'utils/date-utils';
 import { DateFormat } from 'utils/name-utils';
-import { StyledCheckboxLabel, StyledRadioLabel } from './utils';
+import { StyledCheckboxLabel, StyledRadioLabel, StyledSelect } from './utils';
+import DistrictView from './DistrictView/index';
 import HomeTable from './HomeTable';
-
-const buttons = [
-  { icon: GetApp, text: 'Assets' },
-  { icon: EditOutlined, text: 'Report' },
-  { icon: BarChartOutlined, text: 'Forecast' },
-];
-
-const links = [
-  { text: 'Group assumptions', href: 'google.com' },
-  { text: 'How to read this screen', href: 'google.com' },
-];
+import HowToReadModal from './HowToReadModal';
+import Timeline from './Timeline';
 
 const checkboxes: {
   label: string;
@@ -56,10 +56,37 @@ function AnticipatoryActionPanel() {
   const classes = useStyles();
   const dispatch = useDispatch();
   const { t } = useSafeTranslation();
-  const { categories: categoryFilters } = useSelector(AAFiltersSelector);
+  const monitoredDistricts = useSelector(AAMonitoredDistrictsSelector);
+  const { categories: categoryFilters, selectedIndex } = useSelector(
+    AAFiltersSelector,
+  );
   const serverAvailableDates = useSelector(availableDatesSelector);
-
   const { startDate: selectedDate } = useSelector(dateRangeSelector);
+  const selectedDistrict = useSelector(AASelectedDistrictSelector);
+  const aaData = useSelector(AADataSelector);
+  const view = useSelector(AAViewSelector);
+  const [indexOptions, setIndexOptions] = React.useState<string[]>([]);
+  const [howToReadModalOpen, setHowToReadModalOpen] = React.useState(false);
+
+  const dialogs = [
+    {
+      text: 'How to read this screen',
+      onclick: () => setHowToReadModalOpen(true),
+    },
+  ];
+
+  React.useEffect(() => {
+    if (!selectedDistrict) {
+      return;
+    }
+    const entries = Object.values(aaData)
+      .map(x => x[selectedDistrict])
+      .flat()
+      .filter(x => x);
+
+    const options = [...new Set(entries.map(x => x.index))];
+    setIndexOptions(options);
+  }, [aaData, selectedDistrict]);
 
   const layerAvailableDates = getAAAvailableDatesCombined(serverAvailableDates);
   const queryDate = getRequestDate(layerAvailableDates, selectedDate);
@@ -71,10 +98,65 @@ function AnticipatoryActionPanel() {
 
   return (
     <div className={classes.anticipatoryActionPanel}>
+      <HowToReadModal
+        open={howToReadModalOpen}
+        onClose={() => setHowToReadModalOpen(false)}
+      />
       <div className={classes.headerWrapper}>
-        <div>
-          <Typography variant="h2">Phases: global view</Typography>
+        <div className={classes.titleSelectWrapper}>
+          <div className={classes.titleSelectWrapper}>
+            {(view === AAView.District || view === AAView.Timeline) && (
+              <IconButton
+                onClick={() => {
+                  if (view === AAView.District) {
+                    dispatch(setAASelectedDistrict(''));
+                    dispatch(setAAView(AAView.Home));
+                    return;
+                  }
+                  if (view === AAView.Timeline) {
+                    dispatch(setAAView(AAView.District));
+                  }
+                }}
+              >
+                <ArrowBackIos fontSize="small" />
+              </IconButton>
+            )}
+            <StyledSelect
+              value={selectedDistrict || 'empty'}
+              fullWidth
+              input={<Input disableUnderline />}
+              renderValue={() => (
+                <Typography variant="h2">
+                  {selectedDistrict || 'Phases: global view'}{' '}
+                  {view === AAView.Timeline && t('Timeline')}
+                </Typography>
+              )}
+            >
+              <MenuItem
+                value=""
+                onClick={() => {
+                  dispatch(setAASelectedDistrict(''));
+                  dispatch(setAAView(AAView.Home));
+                }}
+              >
+                Global view
+              </MenuItem>
+              {monitoredDistricts.map(x => (
+                <MenuItem
+                  key={x}
+                  value={x}
+                  onClick={() => {
+                    dispatch(setAASelectedDistrict(x));
+                    dispatch(setAAView(AAView.District));
+                  }}
+                >
+                  {x}
+                </MenuItem>
+              ))}
+            </StyledSelect>
+          </div>
         </div>
+
         <div>
           <FormControl component="fieldset">
             <RadioGroup
@@ -91,6 +173,7 @@ function AnticipatoryActionPanel() {
             </RadioGroup>
           </FormControl>
         </div>
+
         <div>
           {checkboxes.map(x => (
             <StyledCheckboxLabel
@@ -98,6 +181,7 @@ function AnticipatoryActionPanel() {
               id={x.id}
               checkBoxProps={{
                 checked: categoryFilters[x.id],
+                disabled: x.id !== 'Mild',
                 onChange: e => {
                   const { checked } = e.target;
                   dispatch(setAAFilters({ categories: { [x.id]: checked } }));
@@ -107,37 +191,45 @@ function AnticipatoryActionPanel() {
             />
           ))}
         </div>
-      </div>
-      <HomeTable />
-      <div className={classes.footerWrapper}>
-        <div className={classes.footerActionsWrapper}>
-          {buttons.map(x => (
-            <Button
-              key={x.text}
-              className={classes.footerButton}
-              variant="outlined"
+
+        {(view === AAView.District || view === AAView.Timeline) && (
+          <div>
+            <StyledSelect
+              value={selectedIndex || 'empty'}
               fullWidth
-              startIcon={<x.icon />}
+              input={<Input disableUnderline />}
+              renderValue={() => (
+                <Typography variant="h3">
+                  {selectedIndex || 'Emergency triggers'}
+                </Typography>
+              )}
             >
-              <Typography>{t(x.text)}</Typography>
-            </Button>
-          ))}
-        </div>
-        <div className={classes.footerLinksWrapper}>
-          {links.map(link => (
-            <Typography
-              key={link.text}
-              className={classes.footerLink}
-              component="a"
-              target="_blank"
-              rel="noopener noreferrer"
-              href={link.href}
-            >
-              {link.text}
-            </Typography>
-          ))}
-        </div>
+              <MenuItem
+                value=""
+                onClick={() => {
+                  dispatch(setAAFilters({ selectedIndex: '' }));
+                }}
+              >
+                All
+              </MenuItem>
+              {indexOptions.map(x => (
+                <MenuItem
+                  key={x}
+                  value={x}
+                  onClick={() => {
+                    dispatch(setAAFilters({ selectedIndex: x }));
+                  }}
+                >
+                  {x}
+                </MenuItem>
+              ))}
+            </StyledSelect>
+          </div>
+        )}
       </div>
+      {view === AAView.Home && <HomeTable dialogs={dialogs} />}
+      {view === AAView.District && <DistrictView dialogs={dialogs} />}
+      {view === AAView.Timeline && <Timeline dialogs={dialogs} />}
     </div>
   );
 }
@@ -145,7 +237,6 @@ function AnticipatoryActionPanel() {
 const useStyles = makeStyles(() =>
   createStyles({
     anticipatoryActionPanel: {
-      width: PanelSize.medium,
       display: 'flex',
       flexDirection: 'column',
       gap: '1rem',
@@ -178,7 +269,18 @@ const useStyles = makeStyles(() =>
       padding: '0.5rem',
     },
     footerButton: { borderColor: cyanBlue, color: black },
-    footerLink: { textDecoration: 'underline' },
+    footerLink: {
+      textDecoration: 'underline',
+      backgroundColor: 'transparent',
+      border: 'none',
+      cursor: 'pointer',
+    },
+    titleSelectWrapper: {
+      display: 'flex',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      width: '100%',
+    },
   }),
 );
 
