@@ -16,6 +16,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import {
   AACategoryType,
   AAView,
+  Vulnerability,
   allWindowsKey,
 } from 'context/anticipatoryActionStateSlice/types';
 import { AAWindowKeys } from 'config/utils';
@@ -63,9 +64,9 @@ function AnticipatoryActionPanel() {
   const { startDate: selectedDate } = useSelector(dateRangeSelector);
   const aaData = useSelector(AADataSelector);
   const view = useSelector(AAViewSelector);
-  const [vulnerability, setDistrictVulnerability] = React.useState<string>(
-    'General Triggers',
-  );
+  const [vulnerability, setDistrictVulnerability] = React.useState<
+    Vulnerability
+  >('General Triggers');
   const [howToReadModalOpen, setHowToReadModalOpen] = React.useState(false);
 
   const dialogs = [
