@@ -73,10 +73,10 @@ const out = {
         ['2023-11-01', 'Nov'],
       ],
       rows: {
-        '20': {
+        '22': {
           status: {
             category: 'Mild',
-            phase: 'na',
+            phase: 'Ready',
           },
           data: [
             {
@@ -112,6 +112,27 @@ const out = {
               type: 'SPI',
               window: 'Window 1',
               new: false,
+              phase: 'Ready',
+              probability: 0.31,
+              trigger: 0.2,
+              date: '2023-10-01',
+              isValid: true,
+            },
+          ],
+        },
+        '23': {
+          status: {
+            category: 'Mild',
+            phase: 'Set',
+          },
+          data: [
+            {
+              category: 'Mild',
+              district: 'Changara',
+              index: 'SPI DJF',
+              type: 'SPI',
+              window: 'Window 1',
+              new: false,
               phase: 'Set',
               probability: 0.12,
               trigger: 0.3,
@@ -133,35 +154,6 @@ const out = {
               isValid: false,
               wasReadyValid: false,
             },
-          ],
-        },
-        '22': {
-          status: {
-            category: 'Mild',
-            phase: 'Ready',
-          },
-          data: [
-            {
-              category: 'Mild',
-              district: 'Changara',
-              index: 'SPI DJF',
-              type: 'SPI',
-              window: 'Window 1',
-              new: false,
-              phase: 'Ready',
-              probability: 0.31,
-              trigger: 0.2,
-              date: '2023-10-01',
-              isValid: true,
-            },
-          ],
-        },
-        '23': {
-          status: {
-            category: 'Mild',
-            phase: 'Set',
-          },
-          data: [
             {
               category: 'Mild',
               district: 'Changara',
@@ -174,42 +166,6 @@ const out = {
               trigger: 0.25,
               date: '2023-11-01',
               isValid: true,
-              wasReadyValid: true,
-            },
-          ],
-        },
-        '30': {
-          status: {
-            category: 'Moderate',
-            phase: 'na',
-          },
-          data: [
-            {
-              category: 'Moderate',
-              district: 'Changara',
-              index: 'SPI DJF',
-              type: 'SPI',
-              window: 'Window 1',
-              new: false,
-              phase: 'Set',
-              probability: 0.25,
-              trigger: 0.26,
-              date: '2023-10-01',
-              isValid: false,
-              wasReadyValid: true,
-            },
-            {
-              category: 'Moderate',
-              district: 'Changara',
-              index: 'SPI DJF',
-              type: 'SPI',
-              window: 'Window 1',
-              new: false,
-              phase: 'Set',
-              probability: 0.22,
-              trigger: 0.3,
-              date: '2023-11-01',
-              isValid: false,
               wasReadyValid: true,
             },
           ],
@@ -248,17 +204,46 @@ const out = {
             },
           ],
         },
+        '33': {
+          status: {
+            category: 'Moderate',
+            phase: 'Set',
+          },
+          data: [
+            {
+              category: 'Moderate',
+              district: 'Changara',
+              index: 'SPI DJF',
+              type: 'SPI',
+              window: 'Window 1',
+              new: false,
+              phase: 'Set',
+              probability: 0.25,
+              trigger: 0.26,
+              date: '2023-10-01',
+              isValid: false,
+              wasReadyValid: true,
+            },
+            {
+              category: 'Moderate',
+              district: 'Changara',
+              index: 'SPI DJF',
+              type: 'SPI',
+              window: 'Window 1',
+              new: false,
+              phase: 'Set',
+              probability: 0.22,
+              trigger: 0.3,
+              date: '2023-11-01',
+              isValid: false,
+              wasReadyValid: true,
+            },
+          ],
+        },
       },
     },
   },
   allRows: {
-    '20': {
-      status: {
-        category: 'Mild',
-        phase: 'na',
-      },
-      data: [],
-    },
     '22': {
       status: {
         category: 'Mild',
@@ -273,17 +258,17 @@ const out = {
       },
       data: [],
     },
-    '30': {
-      status: {
-        category: 'Moderate',
-        phase: 'na',
-      },
-      data: [],
-    },
     '32': {
       status: {
         category: 'Moderate',
         phase: 'Ready',
+      },
+      data: [],
+    },
+    '33': {
+      status: {
+        category: 'Moderate',
+        phase: 'Set',
       },
       data: [],
     },
