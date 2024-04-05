@@ -191,7 +191,7 @@ exports[`renders as expected 1`] = `
           </div>
         </div>
         <div
-          class="makeStyles-wrapper-16"
+          class="makeStyles-wrapper-15"
         >
           <mock-typography
             variant="h4"
