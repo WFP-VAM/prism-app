@@ -66,10 +66,10 @@ test('District view transformation', () => {
 const out = {
   chartData: {
     Mild: {
-      'SPI DJF': 34,
+      'SPI DJF': 28,
     },
     Moderate: {
-      'SPI DJF': 28,
+      'SPI DJF': 22,
     },
   },
   indexes: ['SPI DJF'],

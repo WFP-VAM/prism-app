@@ -3,16 +3,16 @@
 exports[`renders as expected 1`] = `
 <div>
   <div
-    class="makeStyles-charts-1"
+    class="makeStyles-charts-2"
   >
     <div
-      class="makeStyles-chartsHeader-2"
+      class="makeStyles-chartsHeader-3"
     >
       <div
         style="min-width: 3rem;"
       />
       <mock-typography
-        classname="makeStyles-label-7"
+        classname="makeStyles-label-8"
       >
         SPI DJF
       </mock-typography>
@@ -21,14 +21,14 @@ exports[`renders as expected 1`] = `
       />
     </div>
     <div
-      class="makeStyles-chartLine-3"
+      class="makeStyles-chartLine-4"
     >
       <div
-        class="makeStyles-textWrap-4"
+        class="makeStyles-textWrap-5"
         style="background-color: rgb(255, 213, 45);"
       >
         <mock-typography
-          classname="makeStyles-text-5"
+          classname="makeStyles-text-6"
           style="color: black; border: 1px solid black;"
           variant="h3"
         >
@@ -36,7 +36,7 @@ exports[`renders as expected 1`] = `
         </mock-typography>
       </div>
       <div
-        class="makeStyles-chartWrapper-6"
+        class="makeStyles-chartWrapper-7"
       >
         <canvas
           height="150"
@@ -45,14 +45,14 @@ exports[`renders as expected 1`] = `
       </div>
     </div>
     <div
-      class="makeStyles-chartLine-3"
+      class="makeStyles-chartLine-4"
     >
       <div
-        class="makeStyles-textWrap-4"
+        class="makeStyles-textWrap-5"
         style="background-color: rgb(255, 252, 179);"
       >
         <mock-typography
-          classname="makeStyles-text-5"
+          classname="makeStyles-text-6"
           style="color: black; border: 1px solid black;"
           variant="h3"
         >
@@ -60,7 +60,7 @@ exports[`renders as expected 1`] = `
         </mock-typography>
       </div>
       <div
-        class="makeStyles-chartWrapper-6"
+        class="makeStyles-chartWrapper-7"
       >
         <canvas
           height="150"
@@ -70,13 +70,13 @@ exports[`renders as expected 1`] = `
     </div>
   </div>
   <div
-    class="makeStyles-footerWrapperVert-13"
+    class="makeStyles-footerWrapperVert-14"
   >
     <div
-      class="makeStyles-footerActionsWrapper-9"
+      class="makeStyles-footerActionsWrapper-10"
     >
       <mock-button
-        classname="makeStyles-footerButton-11"
+        classname="makeStyles-footerButton-12"
         fullwidth="true"
         starticon="[object Object]"
         variant="outlined"
@@ -87,10 +87,10 @@ exports[`renders as expected 1`] = `
       </mock-button>
     </div>
     <div
-      class="makeStyles-footerDialogsWrapperVert-14"
+      class="makeStyles-footerDialogsWrapperVert-15"
     >
       <mock-typography
-        classname="makeStyles-footerDialog-12"
+        classname="makeStyles-footerDialog-13"
         component="button"
       >
         How to read this screen
