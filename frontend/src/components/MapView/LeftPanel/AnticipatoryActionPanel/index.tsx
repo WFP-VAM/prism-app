@@ -154,7 +154,9 @@ function AnticipatoryActionPanel() {
                   value={x}
                   onClick={() => {
                     dispatch(setAASelectedDistrict(x));
-                    dispatch(setAAView(AAView.District));
+                    if (view === AAView.Home) {
+                      dispatch(setAAView(AAView.District));
+                    }
                   }}
                 >
                   {x}
