@@ -165,7 +165,7 @@ function AnticipatoryActionLayer({ layer, before }: LayersProps) {
             latitude={marker.latitude}
             anchor="center"
           >
-            <Tooltip title={marker.district}>
+            <Tooltip title={marker.district} arrow>
               <div
                 style={{
                   transform: `scale(${scalePercent})`,
