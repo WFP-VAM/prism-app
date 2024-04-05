@@ -75,7 +75,7 @@ function Forecast({ dialogs }: ForecastProps) {
         {
           // eslint-disable-next-line fp/no-mutating-methods
           Object.entries(chartData)
-            .filter(([sev, index]) => filters.categories[sev as AACategoryType])
+            .filter(([sev, _]) => filters.categories[sev as AACategoryType])
             .sort((a, b) => {
               const indexA = AAcategory.findIndex(x => x === a[0]);
               const indexB = AAcategory.findIndex(x => x === b[0]);
@@ -88,7 +88,7 @@ function Forecast({ dialogs }: ForecastProps) {
               }
               return 0;
             })
-            .map(([sev, index]) => {
+            .map(([sev, indexData]) => {
               const color = getAAColor(sev as AACategoryType, 'Ready');
               return (
                 <div className={classes.chartLine}>
@@ -112,7 +112,7 @@ function Forecast({ dialogs }: ForecastProps) {
 
                   <div className={classes.chartWrapper}>
                     <Scatter
-                      data={getChartData(index, color) as any}
+                      data={getChartData(indexData, color) as any}
                       plugins={[ChartDataLabels]}
                       options={chartOptions as any}
                     />

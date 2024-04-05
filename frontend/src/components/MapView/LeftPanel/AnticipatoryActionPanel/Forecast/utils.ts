@@ -4,20 +4,32 @@ import {
   AnticipatoryActionState,
 } from 'context/anticipatoryActionStateSlice/types';
 
-const months = [
-  'JF',
-  'F',
-  'MA',
-  'AM',
-  'MJ',
-  'JJ',
-  'JA',
-  'AS',
-  'S',
-  'O',
-  'N',
-  'D',
-];
+const indexOrder = ['SPI', 'DRY'];
+const monthsOrder = ['O', 'N', 'D', 'J', 'F', 'M', 'A', 'M', 'J'];
+
+function sortIndexes(indexes: string[]): string[] {
+  // eslint-disable-next-line fp/no-mutating-methods
+  return indexes.sort((a, b) => {
+    const [typeA, monthA] = a.split(' ');
+    const [typeB, monthB] = b.split(' ');
+
+    const typeIndexA = indexOrder.indexOf(typeA);
+    const typeIndexB = indexOrder.indexOf(typeB);
+
+    if (typeIndexA !== typeIndexB) {
+      return typeIndexA - typeIndexB;
+    }
+
+    const monthIndexA = monthsOrder.findIndex(month =>
+      monthA.startsWith(month),
+    );
+    const monthIndexB = monthsOrder.findIndex(month =>
+      monthB.startsWith(month),
+    );
+
+    return monthIndexA - monthIndexB;
+  });
+}
 
 interface ForecastTransformParams {
   filters: AnticipatoryActionState['filters'];
@@ -41,29 +53,7 @@ export function forecastTransform({
       : data[selectedWindow][selectedDistrict] || [];
 
   // eslint-disable-next-line fp/no-mutating-methods
-  const indexes = [...new Set(allData.map(x => x.index))].sort((a, b) => {
-    const typeA = a.split(' ')[0];
-    const typeB = b.split(' ')[0];
-
-    const indexA = a.split(' ')[1];
-    const indexB = b.split(' ')[1];
-    const monthA = months.findIndex(x => indexA.startsWith(x));
-    const monthB = months.findIndex(x => indexB.startsWith(x));
-
-    if (typeA > typeB) {
-      return 1;
-    }
-    if (typeA < typeB) {
-      return -1;
-    }
-    if (monthA > monthB) {
-      return 1;
-    }
-    if (monthA < monthB) {
-      return -1;
-    }
-    return 0;
-  });
+  const indexes = sortIndexes([...new Set(allData.map(x => x.index))]);
 
   const sevMap = new Map<AACategoryType, AnticipatoryActionDataRow[]>();
   allData.forEach(x => {
@@ -112,6 +102,7 @@ export const chartOptions = {
           display: false,
         },
         ticks: {
+          suggestedMin: 0,
           display: false,
         },
       },
@@ -149,9 +140,8 @@ export const getChartData = (
   labels: Object.keys(indexes),
   datasets: [
     {
-      label: 'Severe',
       data: Object.entries(indexes).map(([index, val], i) => ({
-        x: i + 0.7,
+        x: i + 0.6,
         y: val,
       })),
       // Triangle pointer
