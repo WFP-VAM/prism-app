@@ -8,8 +8,12 @@ import {
   AADataSelector,
   AAFiltersSelector,
   AASelectedDistrictSelector,
+  setAAView,
 } from 'context/anticipatoryActionStateSlice';
-import { AnticipatoryActionDataRow } from 'context/anticipatoryActionStateSlice/types';
+import {
+  AAView,
+  AnticipatoryActionDataRow,
+} from 'context/anticipatoryActionStateSlice/types';
 import { gray } from 'muiTheme';
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -97,7 +101,11 @@ function Timeline({ dialogs }: TimelineProps) {
   }, [dispatch]);
 
   const timelineButtons = [
-    { icon: Equalizer, text: 'Forecast', onClick: undefined },
+    {
+      icon: Equalizer,
+      text: 'Forecast',
+      onClick: () => dispatch(setAAView(AAView.Forecast)),
+    },
   ];
 
   const { windowData, allRows } = timelineTransform({

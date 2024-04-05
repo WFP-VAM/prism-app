@@ -237,7 +237,7 @@ function AnticipatoryActionPanel() {
       {view === AAView.Home && <HomeTable dialogs={dialogs} />}
       {view === AAView.District && <DistrictView dialogs={dialogs} />}
       {view === AAView.Timeline && <Timeline dialogs={dialogs} />}
-      {view === AAView.Forecast && <Forecast />}
+      {view === AAView.Forecast && <Forecast dialogs={dialogs} />}
     </div>
   );
 }
