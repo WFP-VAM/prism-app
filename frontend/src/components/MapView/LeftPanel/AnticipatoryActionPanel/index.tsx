@@ -150,7 +150,7 @@ function AnticipatoryActionPanel() {
                     dispatch(setAAView(AAView.District));
                   }}
                 >
-                  {x}
+                  {x.name}
                 </MenuItem>
               ))}
             </StyledSelect>
