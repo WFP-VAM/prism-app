@@ -124,7 +124,7 @@ function Forecast() {
             display: 'flex',
             flexDirection: 'row',
             flexWrap: 'nowrap',
-            paddingLeft: '3.5rem',
+            paddingLeft: '3rem',
             paddingRight: '0.5rem',
           }}
         >
@@ -183,7 +183,7 @@ const useForecastStyle = makeStyles(() =>
       width: '100%',
     },
     chartWrapper: {
-      padding: '0.5rem',
+      paddingBottom: '0.5rem',
       height: '15rem',
       width: '100%',
     },
