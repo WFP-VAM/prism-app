@@ -9,6 +9,7 @@ export type AACategoryType = typeof AAcategory[number];
 
 export const AAPhase = ['ny', 'na', 'Ready', 'Set'] as const;
 export type AAPhaseType = typeof AAPhase[number];
+export type Vulnerability = 'General Triggers' | 'Emergency Triggers';
 
 export interface AnticipatoryActionDataRow {
   category: AACategoryType;
@@ -24,6 +25,8 @@ export interface AnticipatoryActionDataRow {
   isValid?: boolean;
   wasReadyValid?: boolean;
   computedRow?: boolean;
+  // district vulnerability level
+  vulnerability?: Vulnerability;
 }
 
 export interface AnticipatoryActionData {
@@ -42,7 +45,7 @@ export type AnticipatoryActionState = {
   data: Record<typeof AAWindowKeys[number], AnticipatoryActionData>;
   // availableDates used to update layer available dates after csv processed
   availableDates?: { [windowKey: string]: DateItem[] };
-  monitoredDistricts: string[];
+  monitoredDistricts: { name: string; vulnerability: Vulnerability }[];
   filters: {
     selectedDate: string | undefined;
     selectedWindow: typeof AAWindowKeys[number] | typeof allWindowsKey;

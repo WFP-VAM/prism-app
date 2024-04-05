@@ -57,12 +57,12 @@ function AnticipatoryActionPanel() {
   const dispatch = useDispatch();
   const { t } = useSafeTranslation();
   const monitoredDistricts = useSelector(AAMonitoredDistrictsSelector);
+  const selectedDistrict = useSelector(AASelectedDistrictSelector);
   const { categories: categoryFilters, selectedIndex } = useSelector(
     AAFiltersSelector,
   );
   const serverAvailableDates = useSelector(availableDatesSelector);
   const { startDate: selectedDate } = useSelector(dateRangeSelector);
-  const selectedDistrict = useSelector(AASelectedDistrictSelector);
   const aaData = useSelector(AADataSelector);
   const view = useSelector(AAViewSelector);
   const [indexOptions, setIndexOptions] = React.useState<string[]>([]);
@@ -143,14 +143,14 @@ function AnticipatoryActionPanel() {
               </MenuItem>
               {monitoredDistricts.map(x => (
                 <MenuItem
-                  key={x}
-                  value={x}
+                  key={x.name}
+                  value={x.name}
                   onClick={() => {
-                    dispatch(setAASelectedDistrict(x));
+                    dispatch(setAASelectedDistrict(x.name));
                     dispatch(setAAView(AAView.District));
                   }}
                 >
-                  {x}
+                  {x.name}
                 </MenuItem>
               ))}
             </StyledSelect>
@@ -192,7 +192,15 @@ function AnticipatoryActionPanel() {
           ))}
         </div>
 
-        {(view === AAView.District || view === AAView.Timeline) && (
+        {view === AAView.District && (
+          <Typography>
+            {t(
+              monitoredDistricts.find(x => x.name === selectedDistrict)
+                ?.vulnerability || '',
+            )}
+          </Typography>
+        )}
+        {view === AAView.Timeline && (
           <div>
             <StyledSelect
               value={selectedIndex || 'empty'}
@@ -200,7 +208,7 @@ function AnticipatoryActionPanel() {
               input={<Input disableUnderline />}
               renderValue={() => (
                 <Typography variant="h3">
-                  {selectedIndex || 'Emergency triggers'}
+                  {selectedIndex || t('Indicators')}
                 </Typography>
               )}
             >
@@ -210,7 +218,7 @@ function AnticipatoryActionPanel() {
                   dispatch(setAAFilters({ selectedIndex: '' }));
                 }}
               >
-                All
+                {t('All')}
               </MenuItem>
               {indexOptions.map(x => (
                 <MenuItem

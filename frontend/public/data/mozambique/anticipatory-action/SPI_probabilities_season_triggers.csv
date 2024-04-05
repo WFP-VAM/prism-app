@@ -1,271 +1,136 @@
-district,index,category,window,season,type,date_ready,date_set,issue_ready,issue_set,prob_ready,prob_set,trigger_ready,trigger_set,state,new_tag
-
-Caia,DRY DJ,Mild,Window 1,2023-24,DRYSPELL,2023-09-01,2023-10-01,9.0,10.0,0.27,0.23,0.24,0.22,set,0
-
-Caia,DRY DJ,Moderate,Window 1,2023-24,DRYSPELL,2023-08-01,2023-09-01,8.0,9.0,0.21,0.26,0.1,0.25,set,0
-
-Caia,DRY DJ,Severe,Window 1,2023-24,DRYSPELL,2023-08-01,2023-09-01,8.0,9.0,0.14,0.21,0.1,0.22,na,0
-
-Caia,DRY DJ,Severe,Window 1,2023-24,DRYSPELL,2023-09-01,2023-10-01,9.0,10.0,0.21,0.12,0.24,0.19,na,0
-
-Caia,DRY FM,Mild,Window 2,2023-24,DRYSPELL,2023-10-01,2023-11-01,10.0,11.0,0.24,0.35,0.27,0.16,na,0
-
-Caia,SPI DJF,Mild,Window 1,2023-24,SPI,2023-08-01,2023-09-01,8.0,9.0,0.2,0.23,0.27,0.0,na,0
-
-Caia,SPI DJF,Moderate,Window 1,2023-24,SPI,2023-08-01,2023-09-01,8.0,9.0,0.17,0.18,0.22,0.0,na,0
-
-Caia,SPI MA,Moderate,Window 2,2023-24,SPI,2023-10-01,2023-11-01,10.0,11.0,0.11,0.16,0.0,0.25,na,0
-
-Caia,SPI MA,Moderate,Window 2,2023-24,SPI,2023-11-01,2023-12-01,11.0,12.0,0.16,0.49,0.25,0.0,na,0
-
-Caia,SPI MA,Severe,Window 2,2023-24,SPI,2023-10-01,2023-11-01,10.0,11.0,0.09,0.12,0.0,0.24,na,0
-
-Caia,SPI MA,Severe,Window 2,2023-24,SPI,2023-11-01,2023-12-01,11.0,12.0,0.12,0.41,0.24,0.0,na,0
-
-Caia,SPI MAM,Mild,Window 2,2023-24,SPI,2023-11-01,2023-12-01,11.0,12.0,0.2,0.5,0.3,0.0,na,0
-
-Changara,DRY DJ,Mild,Window 1,2023-24,DRYSPELL,2023-08-01,2023-09-01,8.0,9.0,0.16,0.12,0.16,0.3,na,0
-
-Changara,DRY MA,Moderate,Window 2,2023-24,DRYSPELL,2023-12-01,2024-01-01,12.0,1.0,0.24,0.29,0.32,0.16,na,0
-
-Changara,DRY MA,Severe,Window 2,2023-24,DRYSPELL,2023-11-01,2023-12-01,11.0,12.0,0.06,0.21,0.0,0.28,na,0
-
-Changara,DRY MA,Severe,Window 2,2023-24,DRYSPELL,2023-12-01,2024-01-01,12.0,1.0,0.21,0.23,0.28,0.0,na,0
-
-Changara,SPI DJF,Moderate,Window 1,2023-24,SPI,2023-08-01,2023-09-01,8.0,9.0,0.22,0.28,0.0,0.33,na,0
-
-Changara,SPI DJF,Moderate,Window 1,2023-24,SPI,2023-09-01,2023-10-01,9.0,10.0,0.28,0.22,0.33,0.0,na,0
-
-Changara,SPI DJF,Severe,Window 1,2023-24,SPI,2023-08-01,2023-09-01,8.0,9.0,0.19,0.25,0.0,0.26,na,0
-
-Changara,SPI DJF,Severe,Window 1,2023-24,SPI,2023-09-01,2023-10-01,9.0,10.0,0.25,0.17,0.26,0.0,na,0
-
-Changara,SPI MAM,Mild,Window 2,2023-24,SPI,2023-11-01,2023-12-01,11.0,12.0,0.41,0.41,0.21,0.31,set,0
-
-Changara,SPI MAM,Mild,Window 2,2023-24,SPI,2023-12-01,2024-01-01,12.0,1.0,0.41,0.47,0.31,0.11,set,0
-
-Changara,SPI NDJ,Mild,Window 1,2023-24,SPI,2023-08-01,2023-09-01,8.0,9.0,0.31,0.28,0.0,0.38,na,0
-
-Chemba,DRY DJ,Moderate,Window 1,2023-24,DRYSPELL,2023-07-01,2023-08-01,7.0,8.0,0.04,0.16,0.08,0.23,na,1
-
-Chemba,SPI DJ,Mild,Window 1,2023-24,SPI,2023-09-01,2023-10-01,9.0,10.0,0.15,0.14,0.27,0.0,na,1
-
-Chemba,SPI DJF,Severe,Window 1,2023-24,SPI,2023-09-01,2023-10-01,9.0,10.0,0.1,0.08,0.3,0.0,na,1
-
-Chemba,SPI JF,Mild,Window 1,2023-24,SPI,2023-08-01,2023-09-01,8.0,9.0,0.2,0.17,0.3,0.0,na,1
-
-Chemba,SPI JF,Moderate,Window 1,2023-24,SPI,2023-08-01,2023-09-01,8.0,9.0,0.13,0.12,0.25,0.0,na,1
-
-Chemba,SPI MA,Mild,Window 2,2023-24,SPI,2023-10-01,2023-11-01,10.0,11.0,0.14,0.17,0.25,0.32,na,1
-
-Chemba,SPI MA,Moderate,Window 2,2023-24,SPI,2023-10-01,2023-11-01,10.0,11.0,0.08,0.13,0.0,0.29,na,1
-
-Chemba,SPI MA,Moderate,Window 2,2023-24,SPI,2023-11-01,2023-12-01,11.0,12.0,0.13,0.45,0.29,0.0,na,1
-
-Chemba,SPI MA,Severe,Window 2,2023-24,SPI,2023-10-01,2023-11-01,10.0,11.0,0.15,0.1,0.0,0.26,na,1
-
-Chemba,SPI MA,Severe,Window 2,2023-24,SPI,2023-11-01,2023-12-01,11.0,12.0,0.1,0.37,0.26,0.0,na,1
-
-Chemba,SPI MAM,Mild,Window 2,2023-24,SPI,2023-12-01,2024-01-01,12.0,1.0,0.44,0.25,0.13,0.32,na,1
-
-Chemba,SPI NDJ,Severe,Window 1,2023-24,SPI,2023-08-01,2023-09-01,8.0,9.0,0.08,0.12,0.0,0.25,na,1
-
-Chibuto,DRY DJ,Mild,Window 2,2023-24,DRYSPELL,2023-09-01,2023-10-01,9.0,10.0,0.17,0.29,0.17,0.28,set,0
-
-Chibuto,DRY DJ,Moderate,Window 2,2023-24,DRYSPELL,2023-07-01,2023-08-01,7.0,8.0,0.23,0.21,0.14,0.29,na,0
-
-Chibuto,DRY DJ,Moderate,Window 2,2023-24,DRYSPELL,2023-08-01,2023-09-01,8.0,9.0,0.21,0.14,0.32,0.0,na,0
-
-Chibuto,DRY MA,Mild,Window 2,2023-24,DRYSPELL,2023-11-01,2023-12-01,11.0,12.0,0.14,0.38,0.15,0.23,na,0
-
-Chibuto,SPI DJ,Moderate,Window 1,2023-24,SPI,2023-07-01,2023-08-01,7.0,8.0,0.17,0.32,0.22,0.05,na,0
-
-Chibuto,SPI DJF,Severe,Window 2,2023-24,SPI,2023-08-01,2023-09-01,8.0,9.0,0.24,0.38,0.0,0.3,set,0
-
-Chibuto,SPI DJF,Severe,Window 2,2023-24,SPI,2023-09-01,2023-10-01,9.0,10.0,0.38,0.29,0.3,0.0,set,0
-
-Chibuto,SPI ND,Moderate,Window 1,2023-24,SPI,2023-06-01,2023-07-01,6.0,7.0,0.19,0.18,0.15,0.21,na,0
-
-Chibuto,SPI NDJ,Mild,Window 1,2023-24,SPI,2023-08-01,2023-09-01,8.0,9.0,0.42,0.46,0.01,0.26,set,0
-
-Chibuto,SPI ON,Severe,Window 1,2023-24,SPI,2023-05-01,2023-06-01,5.0,6.0,0.1,0.32,0.18,0.14,na,0
-
-Chibuto,SPI OND,Mild,Window 1,2023-24,SPI,2023-07-01,2023-08-01,7.0,8.0,0.26,0.25,0.2,0.25,set,0
-
-Chicualacuala,SPI DJ,Mild,Window 1,2023-24,SPI,2023-09-01,2023-10-01,9.0,10.0,0.57,0.41,0.11,0.17,set,1
-
-Chicualacuala,SPI DJ,Severe,Window 1,2023-24,SPI,2023-09-01,2023-10-01,9.0,10.0,0.21,0.16,0.23,0.24,na,1
-
-Chicualacuala,SPI DJF,Mild,Window 2,2023-24,SPI,2023-09-01,2023-10-01,9.0,10.0,0.34,0.37,0.31,0.0,set,1
-
-Chicualacuala,SPI DJF,Moderate,Window 2,2023-24,SPI,2023-08-01,2023-09-01,8.0,9.0,0.25,0.49,0.18,0.11,set,1
-
-Chicualacuala,SPI DJF,Severe,Window 2,2023-24,SPI,2023-08-01,2023-09-01,8.0,9.0,0.18,0.38,0.24,0.0,na,1
-
-Chicualacuala,SPI JF,Mild,Window 2,2023-24,SPI,2023-08-01,2023-09-01,8.0,9.0,0.26,0.3,0.3,0.0,na,1
-
-Chicualacuala,SPI MA,Moderate,Window 2,2023-24,SPI,2023-11-01,2023-12-01,11.0,12.0,0.33,0.39,0.15,0.24,set,1
-
-Chicualacuala,SPI MA,Severe,Window 2,2023-24,SPI,2023-12-01,2024-01-01,12.0,1.0,0.29,0.37,0.17,0.19,set,1
-
-Chicualacuala,SPI ND,Moderate,Window 1,2023-24,SPI,2023-06-01,2023-07-01,6.0,7.0,0.19,0.19,0.2,0.12,na,1
-
-Chicualacuala,SPI NDJ,Mild,Window 1,2023-24,SPI,2023-07-01,2023-08-01,7.0,8.0,0.45,0.48,0.19,0.11,set,1
-
-Chiure,DRY DJ,Moderate,Window 1,2023-24,DRYSPELL,2023-08-01,2023-09-01,8.0,9.0,0.13,0.21,0.22,0.17,na,0
-
-Chiure,DRY DJ,Severe,Window 1,2023-24,DRYSPELL,2023-07-01,2023-08-01,7.0,8.0,0.16,0.12,0.24,0.1,na,0
-
-Chiure,DRY MA,Mild,Window 2,2023-24,DRYSPELL,2023-10-01,2023-11-01,10.0,11.0,0.22,0.21,0.25,0.34,na,0
-
-Chiure,DRY MA,Mild,Window 2,2023-24,DRYSPELL,2023-11-01,2023-12-01,11.0,12.0,0.21,0.34,0.35,0.27,na,0
-
-Chiure,SPI DJ,Mild,Window 1,2023-24,SPI,2023-07-01,2023-08-01,7.0,8.0,0.23,0.01,0.17,0.27,na,0
-
-Chiure,SPI DJ,Severe,Window 1,2023-24,SPI,2023-09-01,2023-10-01,9.0,10.0,0.0,0.0,0.0,0.43,na,0
-
-Chiure,SPI DJF,Mild,Window 1,2023-24,SPI,2023-08-01,2023-09-01,8.0,9.0,0.25,0.0,0.2,0.18,na,0
-
-Chiure,SPI DJF,Moderate,Window 1,2023-24,SPI,2023-08-01,2023-09-01,8.0,9.0,0.21,0.0,0.23,0.0,na,0
-
-Chiure,SPI FMA,Severe,Window 2,2023-24,SPI,2023-10-01,2023-11-01,10.0,11.0,0.19,0.14,0.24,0.2,na,0
-
-Chiure,SPI FMA,Severe,Window 2,2023-24,SPI,2023-11-01,2023-12-01,11.0,12.0,0.14,0.22,0.26,0.0,na,0
-
-Guija,DRY FM,Severe,Window 2,2023-24,DRYSPELL,2023-10-01,2023-11-01,10.0,11.0,0.29,0.21,0.21,0.07,set,0
-
-Guija,DRY MA,Mild,Window 2,2023-24,DRYSPELL,2023-10-01,2023-11-01,10.0,11.0,0.31,0.1,0.24,0.19,na,0
-
-Guija,SPI JF,Severe,Window 2,2023-24,SPI,2023-08-01,2023-09-01,8.0,9.0,0.14,0.24,0.28,0.0,na,0
-
-Guija,SPI JFM,Moderate,Window 2,2023-24,SPI,2023-09-01,2023-10-01,9.0,10.0,0.33,0.31,0.0,0.28,set,0
-
-Guija,SPI JFM,Moderate,Window 2,2023-24,SPI,2023-10-01,2023-11-01,10.0,11.0,0.31,0.27,0.28,0.12,set,0
-
-Guija,SPI MA,Mild,Window 2,2023-24,SPI,2023-10-01,2023-11-01,10.0,11.0,0.46,0.09,0.1,0.28,na,0
-
-Guija,SPI NDJ,Moderate,Window 1,2023-24,SPI,2023-07-01,2023-08-01,7.0,8.0,0.21,0.16,0.0,0.31,na,0
-
-Guija,SPI ON,Mild,Window 1,2023-24,SPI,2023-05-01,2023-06-01,5.0,6.0,0.23,0.29,0.24,0.24,na,0
-
-Guija,SPI ON,Moderate,Window 1,2023-24,SPI,2023-05-01,2023-06-01,5.0,6.0,0.18,0.23,0.21,0.22,na,0
-
-Guija,SPI OND,Mild,Window 1,2023-24,SPI,2023-07-01,2023-08-01,7.0,8.0,0.26,0.25,0.27,0.25,na,0
-
-Guija,SPI OND,Severe,Window 1,2023-24,SPI,2023-06-01,2023-07-01,6.0,7.0,0.22,0.1,0.0,0.22,na,0
-
-Guija,SPI OND,Severe,Window 1,2023-24,SPI,2023-07-01,2023-08-01,7.0,8.0,0.1,0.17,0.22,0.05,na,0
-
-Mabalane,DRY DJ,Mild,Window 2,2023-24,DRYSPELL,2023-09-01,2023-10-01,9.0,10.0,0.18,0.28,0.0,0.31,na,0
-
-Mabalane,DRY DJ,Moderate,Window 2,2023-24,DRYSPELL,2023-09-01,2023-10-01,9.0,10.0,0.15,0.26,0.0,0.26,set,0
-
-Mabalane,DRY FM,Severe,Window 2,2023-24,DRYSPELL,2023-11-01,2023-12-01,11.0,12.0,0.14,0.2,0.0,0.24,na,0
-
-Mabalane,SPI DJF,Mild,Window 2,2023-24,SPI,2023-08-01,2023-09-01,8.0,9.0,0.28,0.34,0.01,0.31,set,0
-
-Mabalane,SPI JF,Moderate,Window 2,2023-24,SPI,2023-10-01,2023-11-01,10.0,11.0,0.23,0.32,0.16,0.26,set,0
-
-Mabalane,SPI JF,Severe,Window 2,2023-24,SPI,2023-08-01,2023-09-01,8.0,9.0,0.14,0.21,0.29,0.0,na,0
-
-Mabalane,SPI NDJ,Severe,Window 1,2023-24,SPI,2023-07-01,2023-08-01,7.0,8.0,0.16,0.1,0.16,0.24,na,0
-
-Mabalane,SPI NDJ,Severe,Window 1,2023-24,SPI,2023-08-01,2023-09-01,8.0,9.0,0.1,0.22,0.26,0.21,na,0
-
-Mabalane,SPI OND,Mild,Window 1,2023-24,SPI,2023-06-01,2023-07-01,6.0,7.0,0.26,0.22,0.22,0.23,na,0
-
-Mabalane,SPI OND,Mild,Window 1,2023-24,SPI,2023-07-01,2023-08-01,7.0,8.0,0.22,0.24,0.18,0.26,na,0
-
-Mabalane,SPI OND,Moderate,Window 1,2023-24,SPI,2023-06-01,2023-07-01,6.0,7.0,0.2,0.13,0.16,0.2,na,0
-
-Mabalane,SPI OND,Moderate,Window 1,2023-24,SPI,2023-07-01,2023-08-01,7.0,8.0,0.13,0.22,0.15,0.21,na,0
-
-Magude,DRY DJ,Moderate,Window 2,2023-24,DRYSPELL,2023-08-01,2023-09-01,8.0,9.0,0.14,0.14,0.25,0.0,na,0
-
-Magude,DRY FM,Moderate,Window 2,2023-24,DRYSPELL,2023-11-01,2023-12-01,11.0,12.0,0.18,0.21,0.0,0.37,na,0
-
-Magude,SPI DJ,Severe,Window 1,2023-24,SPI,2023-09-01,2023-10-01,9.0,10.0,0.23,0.13,0.0,0.31,na,0
-
-Magude,SPI DJF,Severe,Window 2,2023-24,SPI,2023-09-01,2023-10-01,9.0,10.0,0.36,0.19,0.0,0.34,na,0
-
-Magude,SPI JF,Severe,Window 2,2023-24,SPI,2023-08-01,2023-09-01,8.0,9.0,0.1,0.24,0.24,0.16,na,0
-
-Magude,SPI JFM,Mild,Window 2,2023-24,SPI,2023-09-01,2023-10-01,9.0,10.0,0.41,0.34,0.24,0.33,set,0
-
-Magude,SPI JFM,Mild,Window 2,2023-24,SPI,2023-10-01,2023-11-01,10.0,11.0,0.34,0.4,0.34,0.0,set,0
-
-Magude,SPI ON,Mild,Window 1,2023-24,SPI,2023-05-01,2023-06-01,5.0,6.0,0.2,0.24,0.21,0.27,na,0
-
-Magude,SPI ON,Mild,Window 1,2023-24,SPI,2023-06-01,2023-07-01,6.0,7.0,0.24,0.26,0.26,0.22,na,0
-
-Magude,SPI ON,Moderate,Window 1,2023-24,SPI,2023-05-01,2023-06-01,5.0,6.0,0.18,0.18,0.25,0.21,na,0
-
-Magude,SPI ON,Moderate,Window 1,2023-24,SPI,2023-06-01,2023-07-01,6.0,7.0,0.18,0.22,0.21,0.22,na,0
-
-Magude,SPI ON,Severe,Window 1,2023-24,SPI,2023-06-01,2023-07-01,6.0,7.0,0.15,0.18,0.17,0.14,na,0
-
-Mapai,DRY DJ,Moderate,Window 2,2023-24,DRYSPELL,2023-09-01,2023-10-01,9.0,10.0,0.15,0.29,0.17,0.28,na,0
-
-Mapai,DRY DJ,Severe,Window 2,2023-24,DRYSPELL,2023-09-01,2023-10-01,9.0,10.0,0.12,0.27,0.12,0.24,set,0
-
-Mapai,DRY FM,Mild,Window 2,2023-24,DRYSPELL,2023-11-01,2023-12-01,11.0,12.0,0.4,0.31,0.23,0.24,set,0
-
-Mapai,SPI DJ,Mild,Window 1,2023-24,SPI,2023-09-01,2023-10-01,9.0,10.0,0.26,0.41,0.23,0.12,set,0
-
-Mapai,SPI DJ,Moderate,Window 1,2023-24,SPI,2023-08-01,2023-09-01,8.0,9.0,0.26,0.22,0.01,0.2,set,0
-
-Mapai,SPI DJ,Moderate,Window 1,2023-24,SPI,2023-09-01,2023-10-01,9.0,10.0,0.22,0.19,0.18,0.26,na,0
-
-Mapai,SPI DJF,Mild,Window 2,2023-24,SPI,2023-09-01,2023-10-01,9.0,10.0,0.35,0.51,0.3,0.01,set,0
-
-Mapai,SPI DJF,Moderate,Window 2,2023-24,SPI,2023-08-01,2023-09-01,8.0,9.0,0.25,0.52,0.25,0.05,set,0
-
-Mapai,SPI DJF,Severe,Window 2,2023-24,SPI,2023-08-01,2023-09-01,8.0,9.0,0.19,0.44,0.21,0.03,na,0
-
-Mapai,SPI ND,Severe,Window 1,2023-24,SPI,2023-06-01,2023-07-01,6.0,7.0,0.13,0.18,0.19,0.13,na,0
-
-Mapai,SPI NDJ,Mild,Window 1,2023-24,SPI,2023-07-01,2023-08-01,7.0,8.0,0.37,0.48,0.24,0.0,set,0
-
-Mapai,SPI OND,Severe,Window 1,2023-24,SPI,2023-07-01,2023-08-01,7.0,8.0,0.14,0.21,0.13,0.2,set,0
-
-Marara,DRY DJ,Moderate,Window 1,2023-24,DRYSPELL,2023-08-01,2023-09-01,8.0,9.0,0.24,0.07,0.26,0.0,na,0
-
-Marara,DRY JF,Severe,Window 1,2023-24,DRYSPELL,2023-09-01,2023-10-01,9.0,10.0,0.11,0.13,0.26,0.11,na,0
-
-Marara,SPI AM,Mild,Window 2,2023-24,SPI,2024-01-01,2024-02-01,1.0,2.0,0.42,,0.0,0.59,ready,0
-
-Marara,SPI AM,Mild,Window 2,2023-24,SPI,2023-11-01,2023-12-01,11.0,12.0,0.31,0.4,0.41,0.35,na,0
-
-Marara,SPI AM,Severe,Window 2,2023-24,SPI,2024-01-01,2024-02-01,1.0,2.0,0.28,,0.27,0.42,ready,0
-
-Marara,SPI DJ,Mild,Window 1,2023-24,SPI,2023-09-01,2023-10-01,9.0,10.0,0.25,0.22,0.25,0.17,set,0
-
-Marara,SPI DJ,Moderate,Window 1,2023-24,SPI,2023-09-01,2023-10-01,9.0,10.0,0.24,0.2,0.21,0.19,set,0
-
-Marara,SPI DJF,Mild,Window 1,2023-24,SPI,2023-08-01,2023-09-01,8.0,9.0,0.25,0.31,0.29,0.0,na,0
-
-Marara,SPI NDJ,Severe,Window 1,2023-24,SPI,2023-07-01,2023-08-01,7.0,8.0,0.11,0.17,0.27,0.2,na,0
-
-Massingir,DRY MA,Mild,Window 2,2023-24,DRYSPELL,2023-10-01,2023-11-01,10.0,11.0,0.28,0.12,0.25,0.21,na,0
-
-Massingir,SPI DJF,Mild,Window 2,2023-24,SPI,2023-09-01,2023-10-01,9.0,10.0,0.48,0.41,0.11,0.0,set,0
-
-Massingir,SPI JF,Severe,Window 2,2023-24,SPI,2023-08-01,2023-09-01,8.0,9.0,0.1,0.18,0.24,0.0,na,0
-
-Massingir,SPI MA,Moderate,Window 2,2023-24,SPI,2023-10-01,2023-11-01,10.0,11.0,0.36,0.2,0.23,0.13,set,0
-
-Massingir,SPI MA,Moderate,Window 2,2023-24,SPI,2023-12-01,2024-01-01,12.0,1.0,0.26,0.34,0.23,0.22,set,0
-
-Massingir,SPI MA,Severe,Window 2,2023-24,SPI,2023-12-01,2024-01-01,12.0,1.0,0.22,0.26,0.13,0.19,set,0
-
-Massingir,SPI ND,Mild,Window 1,2023-24,SPI,2023-06-01,2023-07-01,6.0,7.0,0.19,0.22,0.25,0.14,na,0
-
-Massingir,SPI ND,Mild,Window 1,2023-24,SPI,2023-07-01,2023-08-01,7.0,8.0,0.22,0.22,0.14,0.26,na,0
-
-Massingir,SPI ON,Moderate,Window 1,2023-24,SPI,2023-05-01,2023-06-01,5.0,6.0,0.27,0.39,0.16,0.0,set,0
-
-Massingir,SPI ON,Moderate,Window 1,2023-24,SPI,2023-06-01,2023-07-01,6.0,7.0,0.39,0.35,0.0,0.24,set,0
-
-Massingir,SPI ON,Severe,Window 1,2023-24,SPI,2023-07-01,2023-08-01,7.0,8.0,0.26,0.19,0.25,0.0,set,0
-
-Massingir,SPI OND,Severe,Window 1,2023-24,SPI,2023-06-01,2023-07-01,6.0,7.0,0.13,0.08,0.22,0.06,na,0
+district,index,category,window,season,type,date_ready,date_set,issue_ready,issue_set,prob_ready,prob_set,trigger_ready,trigger_set,state,new_tag,vulnerability
+Caia,DRY DJ,Mild,Window 1,2023-24,DRYSPELL,2023-09-01,2023-10-01,9.0,10.0,0.27,0.23,0.24,0.22,set,0,Emergency Triggers
+Caia,DRY DJ,Moderate,Window 1,2023-24,DRYSPELL,2023-08-01,2023-09-01,8.0,9.0,0.21,0.26,0.1,0.25,set,0,Emergency Triggers
+Caia,DRY DJ,Severe,Window 1,2023-24,DRYSPELL,2023-08-01,2023-09-01,8.0,9.0,0.14,0.21,0.1,0.22,na,0,Emergency Triggers
+Caia,DRY DJ,Severe,Window 1,2023-24,DRYSPELL,2023-09-01,2023-10-01,9.0,10.0,0.21,0.12,0.24,0.19,na,0,Emergency Triggers
+Caia,DRY FM,Mild,Window 2,2023-24,DRYSPELL,2023-10-01,2023-11-01,10.0,11.0,0.24,0.35,0.27,0.16,na,0,Emergency Triggers
+Caia,SPI DJF,Mild,Window 1,2023-24,SPI,2023-08-01,2023-09-01,8.0,9.0,0.2,0.23,0.27,0.0,na,0,Emergency Triggers
+Caia,SPI DJF,Moderate,Window 1,2023-24,SPI,2023-08-01,2023-09-01,8.0,9.0,0.17,0.18,0.22,0.0,na,0,Emergency Triggers
+Caia,SPI MA,Moderate,Window 2,2023-24,SPI,2023-10-01,2023-11-01,10.0,11.0,0.11,0.16,0.0,0.25,na,0,Emergency Triggers
+Caia,SPI MA,Moderate,Window 2,2023-24,SPI,2023-11-01,2023-12-01,11.0,12.0,0.16,0.49,0.25,0.0,na,0,Emergency Triggers
+Caia,SPI MA,Severe,Window 2,2023-24,SPI,2023-10-01,2023-11-01,10.0,11.0,0.09,0.12,0.0,0.24,na,0,Emergency Triggers
+Caia,SPI MA,Severe,Window 2,2023-24,SPI,2023-11-01,2023-12-01,11.0,12.0,0.12,0.41,0.24,0.0,na,0,Emergency Triggers
+Caia,SPI MAM,Mild,Window 2,2023-24,SPI,2023-11-01,2023-12-01,11.0,12.0,0.2,0.5,0.3,0.0,na,0,Emergency Triggers
+Changara,DRY DJ,Mild,Window 1,2023-24,DRYSPELL,2023-08-01,2023-09-01,8.0,9.0,0.16,0.12,0.16,0.3,na,0,General Triggers
+Changara,DRY MA,Moderate,Window 2,2023-24,DRYSPELL,2023-12-01,2024-01-01,12.0,1.0,0.24,0.29,0.32,0.16,na,0,General Triggers
+Changara,DRY MA,Severe,Window 2,2023-24,DRYSPELL,2023-11-01,2023-12-01,11.0,12.0,0.06,0.21,0.0,0.28,na,0,General Triggers
+Changara,DRY MA,Severe,Window 2,2023-24,DRYSPELL,2023-12-01,2024-01-01,12.0,1.0,0.21,0.23,0.28,0.0,na,0,General Triggers
+Changara,SPI DJF,Moderate,Window 1,2023-24,SPI,2023-08-01,2023-09-01,8.0,9.0,0.22,0.28,0.0,0.33,na,0,General Triggers
+Changara,SPI DJF,Moderate,Window 1,2023-24,SPI,2023-09-01,2023-10-01,9.0,10.0,0.28,0.22,0.33,0.0,na,0,General Triggers
+Changara,SPI DJF,Severe,Window 1,2023-24,SPI,2023-08-01,2023-09-01,8.0,9.0,0.19,0.25,0.0,0.26,na,0,General Triggers
+Changara,SPI DJF,Severe,Window 1,2023-24,SPI,2023-09-01,2023-10-01,9.0,10.0,0.25,0.17,0.26,0.0,na,0,General Triggers
+Changara,SPI MAM,Mild,Window 2,2023-24,SPI,2023-11-01,2023-12-01,11.0,12.0,0.41,0.41,0.21,0.31,set,0,General Triggers
+Changara,SPI MAM,Mild,Window 2,2023-24,SPI,2023-12-01,2024-01-01,12.0,1.0,0.41,0.47,0.31,0.11,set,0,General Triggers
+Changara,SPI NDJ,Mild,Window 1,2023-24,SPI,2023-08-01,2023-09-01,8.0,9.0,0.31,0.28,0.0,0.38,na,0,General Triggers
+Chemba,DRY DJ,Moderate,Window 1,2023-24,DRYSPELL,2023-07-01,2023-08-01,7.0,8.0,0.04,0.16,0.08,0.23,na,1,General Triggers
+Chemba,SPI DJ,Mild,Window 1,2023-24,SPI,2023-09-01,2023-10-01,9.0,10.0,0.15,0.14,0.27,0.0,na,1,General Triggers
+Chemba,SPI DJF,Severe,Window 1,2023-24,SPI,2023-09-01,2023-10-01,9.0,10.0,0.1,0.08,0.3,0.0,na,1,General Triggers
+Chemba,SPI JF,Mild,Window 1,2023-24,SPI,2023-08-01,2023-09-01,8.0,9.0,0.2,0.17,0.3,0.0,na,1,General Triggers
+Chemba,SPI JF,Moderate,Window 1,2023-24,SPI,2023-08-01,2023-09-01,8.0,9.0,0.13,0.12,0.25,0.0,na,1,General Triggers
+Chemba,SPI MA,Mild,Window 2,2023-24,SPI,2023-10-01,2023-11-01,10.0,11.0,0.14,0.17,0.25,0.32,na,1,General Triggers
+Chemba,SPI MA,Moderate,Window 2,2023-24,SPI,2023-10-01,2023-11-01,10.0,11.0,0.08,0.13,0.0,0.29,na,1,General Triggers
+Chemba,SPI MA,Moderate,Window 2,2023-24,SPI,2023-11-01,2023-12-01,11.0,12.0,0.13,0.45,0.29,0.0,na,1,General Triggers
+Chemba,SPI MA,Severe,Window 2,2023-24,SPI,2023-10-01,2023-11-01,10.0,11.0,0.15,0.1,0.0,0.26,na,1,General Triggers
+Chemba,SPI MA,Severe,Window 2,2023-24,SPI,2023-11-01,2023-12-01,11.0,12.0,0.1,0.37,0.26,0.0,na,1,General Triggers
+Chemba,SPI MAM,Mild,Window 2,2023-24,SPI,2023-12-01,2024-01-01,12.0,1.0,0.44,0.25,0.13,0.32,na,1,General Triggers
+Chemba,SPI NDJ,Severe,Window 1,2023-24,SPI,2023-08-01,2023-09-01,8.0,9.0,0.08,0.12,0.0,0.25,na,1,General Triggers
+Chibuto,DRY DJ,Mild,Window 2,2023-24,DRYSPELL,2023-09-01,2023-10-01,9.0,10.0,0.17,0.29,0.17,0.28,set,0,Emergency Triggers
+Chibuto,DRY DJ,Moderate,Window 2,2023-24,DRYSPELL,2023-07-01,2023-08-01,7.0,8.0,0.23,0.21,0.14,0.29,na,0,Emergency Triggers
+Chibuto,DRY DJ,Moderate,Window 2,2023-24,DRYSPELL,2023-08-01,2023-09-01,8.0,9.0,0.21,0.14,0.32,0.0,na,0,Emergency Triggers
+Chibuto,DRY MA,Mild,Window 2,2023-24,DRYSPELL,2023-11-01,2023-12-01,11.0,12.0,0.14,0.38,0.15,0.23,na,0,Emergency Triggers
+Chibuto,SPI DJ,Moderate,Window 1,2023-24,SPI,2023-07-01,2023-08-01,7.0,8.0,0.17,0.32,0.22,0.05,na,0,Emergency Triggers
+Chibuto,SPI DJF,Severe,Window 2,2023-24,SPI,2023-08-01,2023-09-01,8.0,9.0,0.24,0.38,0.0,0.3,set,0,Emergency Triggers
+Chibuto,SPI DJF,Severe,Window 2,2023-24,SPI,2023-09-01,2023-10-01,9.0,10.0,0.38,0.29,0.3,0.0,set,0,Emergency Triggers
+Chibuto,SPI ND,Moderate,Window 1,2023-24,SPI,2023-06-01,2023-07-01,6.0,7.0,0.19,0.18,0.15,0.21,na,0,Emergency Triggers
+Chibuto,SPI NDJ,Mild,Window 1,2023-24,SPI,2023-08-01,2023-09-01,8.0,9.0,0.42,0.46,0.01,0.26,set,0,Emergency Triggers
+Chibuto,SPI ON,Severe,Window 1,2023-24,SPI,2023-05-01,2023-06-01,5.0,6.0,0.1,0.32,0.18,0.14,na,0,Emergency Triggers
+Chibuto,SPI OND,Mild,Window 1,2023-24,SPI,2023-07-01,2023-08-01,7.0,8.0,0.26,0.25,0.2,0.25,set,0,Emergency Triggers
+Chicualacuala,SPI DJ,Mild,Window 1,2023-24,SPI,2023-09-01,2023-10-01,9.0,10.0,0.57,0.41,0.11,0.17,set,1,Emergency Triggers
+Chicualacuala,SPI DJ,Severe,Window 1,2023-24,SPI,2023-09-01,2023-10-01,9.0,10.0,0.21,0.16,0.23,0.24,na,1,Emergency Triggers
+Chicualacuala,SPI DJF,Mild,Window 2,2023-24,SPI,2023-09-01,2023-10-01,9.0,10.0,0.34,0.37,0.31,0.0,set,1,Emergency Triggers
+Chicualacuala,SPI DJF,Moderate,Window 2,2023-24,SPI,2023-08-01,2023-09-01,8.0,9.0,0.25,0.49,0.18,0.11,set,1,Emergency Triggers
+Chicualacuala,SPI DJF,Severe,Window 2,2023-24,SPI,2023-08-01,2023-09-01,8.0,9.0,0.18,0.38,0.24,0.0,na,1,Emergency Triggers
+Chicualacuala,SPI JF,Mild,Window 2,2023-24,SPI,2023-08-01,2023-09-01,8.0,9.0,0.26,0.3,0.3,0.0,na,1,Emergency Triggers
+Chicualacuala,SPI MA,Moderate,Window 2,2023-24,SPI,2023-11-01,2023-12-01,11.0,12.0,0.33,0.39,0.15,0.24,set,1,Emergency Triggers
+Chicualacuala,SPI MA,Severe,Window 2,2023-24,SPI,2023-12-01,2024-01-01,12.0,1.0,0.29,0.37,0.17,0.19,set,1,Emergency Triggers
+Chicualacuala,SPI ND,Moderate,Window 1,2023-24,SPI,2023-06-01,2023-07-01,6.0,7.0,0.19,0.19,0.2,0.12,na,1,Emergency Triggers
+Chicualacuala,SPI NDJ,Mild,Window 1,2023-24,SPI,2023-07-01,2023-08-01,7.0,8.0,0.45,0.48,0.19,0.11,set,1,Emergency Triggers
+Chiure,DRY DJ,Moderate,Window 1,2023-24,DRYSPELL,2023-08-01,2023-09-01,8.0,9.0,0.13,0.21,0.22,0.17,na,0,General Triggers
+Chiure,DRY DJ,Severe,Window 1,2023-24,DRYSPELL,2023-07-01,2023-08-01,7.0,8.0,0.16,0.12,0.24,0.1,na,0,General Triggers
+Chiure,DRY MA,Mild,Window 2,2023-24,DRYSPELL,2023-10-01,2023-11-01,10.0,11.0,0.22,0.21,0.25,0.34,na,0,General Triggers
+Chiure,DRY MA,Mild,Window 2,2023-24,DRYSPELL,2023-11-01,2023-12-01,11.0,12.0,0.21,0.34,0.35,0.27,na,0,General Triggers
+Chiure,SPI DJ,Mild,Window 1,2023-24,SPI,2023-07-01,2023-08-01,7.0,8.0,0.23,0.01,0.17,0.27,na,0,General Triggers
+Chiure,SPI DJ,Severe,Window 1,2023-24,SPI,2023-09-01,2023-10-01,9.0,10.0,0.0,0.0,0.0,0.43,na,0,General Triggers
+Chiure,SPI DJF,Mild,Window 1,2023-24,SPI,2023-08-01,2023-09-01,8.0,9.0,0.25,0.0,0.2,0.18,na,0,General Triggers
+Chiure,SPI DJF,Moderate,Window 1,2023-24,SPI,2023-08-01,2023-09-01,8.0,9.0,0.21,0.0,0.23,0.0,na,0,General Triggers
+Chiure,SPI FMA,Severe,Window 2,2023-24,SPI,2023-10-01,2023-11-01,10.0,11.0,0.19,0.14,0.24,0.2,na,0,General Triggers
+Chiure,SPI FMA,Severe,Window 2,2023-24,SPI,2023-11-01,2023-12-01,11.0,12.0,0.14,0.22,0.26,0.0,na,0,General Triggers
+Guija,DRY FM,Severe,Window 2,2023-24,DRYSPELL,2023-10-01,2023-11-01,10.0,11.0,0.29,0.21,0.21,0.07,set,0,Emergency Triggers
+Guija,DRY MA,Mild,Window 2,2023-24,DRYSPELL,2023-10-01,2023-11-01,10.0,11.0,0.31,0.1,0.24,0.19,na,0,Emergency Triggers
+Guija,SPI JF,Severe,Window 2,2023-24,SPI,2023-08-01,2023-09-01,8.0,9.0,0.14,0.24,0.28,0.0,na,0,Emergency Triggers
+Guija,SPI JFM,Moderate,Window 2,2023-24,SPI,2023-09-01,2023-10-01,9.0,10.0,0.33,0.31,0.0,0.28,set,0,Emergency Triggers
+Guija,SPI JFM,Moderate,Window 2,2023-24,SPI,2023-10-01,2023-11-01,10.0,11.0,0.31,0.27,0.28,0.12,set,0,Emergency Triggers
+Guija,SPI MA,Mild,Window 2,2023-24,SPI,2023-10-01,2023-11-01,10.0,11.0,0.46,0.09,0.1,0.28,na,0,Emergency Triggers
+Guija,SPI NDJ,Moderate,Window 1,2023-24,SPI,2023-07-01,2023-08-01,7.0,8.0,0.21,0.16,0.0,0.31,na,0,Emergency Triggers
+Guija,SPI ON,Mild,Window 1,2023-24,SPI,2023-05-01,2023-06-01,5.0,6.0,0.23,0.29,0.24,0.24,na,0,Emergency Triggers
+Guija,SPI ON,Moderate,Window 1,2023-24,SPI,2023-05-01,2023-06-01,5.0,6.0,0.18,0.23,0.21,0.22,na,0,Emergency Triggers
+Guija,SPI OND,Mild,Window 1,2023-24,SPI,2023-07-01,2023-08-01,7.0,8.0,0.26,0.25,0.27,0.25,na,0,Emergency Triggers
+Guija,SPI OND,Severe,Window 1,2023-24,SPI,2023-06-01,2023-07-01,6.0,7.0,0.22,0.1,0.0,0.22,na,0,Emergency Triggers
+Guija,SPI OND,Severe,Window 1,2023-24,SPI,2023-07-01,2023-08-01,7.0,8.0,0.1,0.17,0.22,0.05,na,0,Emergency Triggers
+Mabalane,DRY DJ,Mild,Window 2,2023-24,DRYSPELL,2023-09-01,2023-10-01,9.0,10.0,0.18,0.28,0.0,0.31,na,0,Emergency Triggers
+Mabalane,DRY DJ,Moderate,Window 2,2023-24,DRYSPELL,2023-09-01,2023-10-01,9.0,10.0,0.15,0.26,0.0,0.26,set,0,Emergency Triggers
+Mabalane,DRY FM,Severe,Window 2,2023-24,DRYSPELL,2023-11-01,2023-12-01,11.0,12.0,0.14,0.2,0.0,0.24,na,0,Emergency Triggers
+Mabalane,SPI DJF,Mild,Window 2,2023-24,SPI,2023-08-01,2023-09-01,8.0,9.0,0.28,0.34,0.01,0.31,set,0,Emergency Triggers
+Mabalane,SPI JF,Moderate,Window 2,2023-24,SPI,2023-10-01,2023-11-01,10.0,11.0,0.23,0.32,0.16,0.26,set,0,Emergency Triggers
+Mabalane,SPI JF,Severe,Window 2,2023-24,SPI,2023-08-01,2023-09-01,8.0,9.0,0.14,0.21,0.29,0.0,na,0,Emergency Triggers
+Mabalane,SPI NDJ,Severe,Window 1,2023-24,SPI,2023-07-01,2023-08-01,7.0,8.0,0.16,0.1,0.16,0.24,na,0,Emergency Triggers
+Mabalane,SPI NDJ,Severe,Window 1,2023-24,SPI,2023-08-01,2023-09-01,8.0,9.0,0.1,0.22,0.26,0.21,na,0,Emergency Triggers
+Mabalane,SPI OND,Mild,Window 1,2023-24,SPI,2023-06-01,2023-07-01,6.0,7.0,0.26,0.22,0.22,0.23,na,0,Emergency Triggers
+Mabalane,SPI OND,Mild,Window 1,2023-24,SPI,2023-07-01,2023-08-01,7.0,8.0,0.22,0.24,0.18,0.26,na,0,Emergency Triggers
+Mabalane,SPI OND,Moderate,Window 1,2023-24,SPI,2023-06-01,2023-07-01,6.0,7.0,0.2,0.13,0.16,0.2,na,0,Emergency Triggers
+Mabalane,SPI OND,Moderate,Window 1,2023-24,SPI,2023-07-01,2023-08-01,7.0,8.0,0.13,0.22,0.15,0.21,na,0,Emergency Triggers
+Magude,DRY DJ,Moderate,Window 2,2023-24,DRYSPELL,2023-08-01,2023-09-01,8.0,9.0,0.14,0.14,0.25,0.0,na,0,General Triggers
+Magude,DRY FM,Moderate,Window 2,2023-24,DRYSPELL,2023-11-01,2023-12-01,11.0,12.0,0.18,0.21,0.0,0.37,na,0,General Triggers
+Magude,SPI DJ,Severe,Window 1,2023-24,SPI,2023-09-01,2023-10-01,9.0,10.0,0.23,0.13,0.0,0.31,na,0,General Triggers
+Magude,SPI DJF,Severe,Window 2,2023-24,SPI,2023-09-01,2023-10-01,9.0,10.0,0.36,0.19,0.0,0.34,na,0,General Triggers
+Magude,SPI JF,Severe,Window 2,2023-24,SPI,2023-08-01,2023-09-01,8.0,9.0,0.1,0.24,0.24,0.16,na,0,General Triggers
+Magude,SPI JFM,Mild,Window 2,2023-24,SPI,2023-09-01,2023-10-01,9.0,10.0,0.41,0.34,0.24,0.33,set,0,General Triggers
+Magude,SPI JFM,Mild,Window 2,2023-24,SPI,2023-10-01,2023-11-01,10.0,11.0,0.34,0.4,0.34,0.0,set,0,General Triggers
+Magude,SPI ON,Mild,Window 1,2023-24,SPI,2023-05-01,2023-06-01,5.0,6.0,0.2,0.24,0.21,0.27,na,0,General Triggers
+Magude,SPI ON,Mild,Window 1,2023-24,SPI,2023-06-01,2023-07-01,6.0,7.0,0.24,0.26,0.26,0.22,na,0,General Triggers
+Magude,SPI ON,Moderate,Window 1,2023-24,SPI,2023-05-01,2023-06-01,5.0,6.0,0.18,0.18,0.25,0.21,na,0,General Triggers
+Magude,SPI ON,Moderate,Window 1,2023-24,SPI,2023-06-01,2023-07-01,6.0,7.0,0.18,0.22,0.21,0.22,na,0,General Triggers
+Magude,SPI ON,Severe,Window 1,2023-24,SPI,2023-06-01,2023-07-01,6.0,7.0,0.15,0.18,0.17,0.14,na,0,General Triggers
+Mapai,DRY DJ,Moderate,Window 2,2023-24,DRYSPELL,2023-09-01,2023-10-01,9.0,10.0,0.15,0.29,0.17,0.28,na,0,Emergency Triggers
+Mapai,DRY DJ,Severe,Window 2,2023-24,DRYSPELL,2023-09-01,2023-10-01,9.0,10.0,0.12,0.27,0.12,0.24,set,0,Emergency Triggers
+Mapai,DRY FM,Mild,Window 2,2023-24,DRYSPELL,2023-11-01,2023-12-01,11.0,12.0,0.4,0.31,0.23,0.24,set,0,Emergency Triggers
+Mapai,SPI DJ,Mild,Window 1,2023-24,SPI,2023-09-01,2023-10-01,9.0,10.0,0.26,0.41,0.23,0.12,set,0,Emergency Triggers
+Mapai,SPI DJ,Moderate,Window 1,2023-24,SPI,2023-08-01,2023-09-01,8.0,9.0,0.26,0.22,0.01,0.2,set,0,Emergency Triggers
+Mapai,SPI DJ,Moderate,Window 1,2023-24,SPI,2023-09-01,2023-10-01,9.0,10.0,0.22,0.19,0.18,0.26,na,0,Emergency Triggers
+Mapai,SPI DJF,Mild,Window 2,2023-24,SPI,2023-09-01,2023-10-01,9.0,10.0,0.35,0.51,0.3,0.01,set,0,Emergency Triggers
+Mapai,SPI DJF,Moderate,Window 2,2023-24,SPI,2023-08-01,2023-09-01,8.0,9.0,0.25,0.52,0.25,0.05,set,0,Emergency Triggers
+Mapai,SPI DJF,Severe,Window 2,2023-24,SPI,2023-08-01,2023-09-01,8.0,9.0,0.19,0.44,0.21,0.03,na,0,Emergency Triggers
+Mapai,SPI ND,Severe,Window 1,2023-24,SPI,2023-06-01,2023-07-01,6.0,7.0,0.13,0.18,0.19,0.13,na,0,Emergency Triggers
+Mapai,SPI NDJ,Mild,Window 1,2023-24,SPI,2023-07-01,2023-08-01,7.0,8.0,0.37,0.48,0.24,0.0,set,0,Emergency Triggers
+Mapai,SPI OND,Severe,Window 1,2023-24,SPI,2023-07-01,2023-08-01,7.0,8.0,0.14,0.21,0.13,0.2,set,0,Emergency Triggers
+Marara,DRY DJ,Moderate,Window 1,2023-24,DRYSPELL,2023-08-01,2023-09-01,8.0,9.0,0.24,0.07,0.26,0.0,na,0,General Triggers
+Marara,DRY JF,Severe,Window 1,2023-24,DRYSPELL,2023-09-01,2023-10-01,9.0,10.0,0.11,0.13,0.26,0.11,na,0,General Triggers
+Marara,SPI AM,Mild,Window 2,2023-24,SPI,2024-01-01,2024-02-01,1.0,2.0,0.42,,0.0,0.59,ready,0,General Triggers
+Marara,SPI AM,Mild,Window 2,2023-24,SPI,2023-11-01,2023-12-01,11.0,12.0,0.31,0.4,0.41,0.35,na,0,General Triggers
+Marara,SPI AM,Severe,Window 2,2023-24,SPI,2024-01-01,2024-02-01,1.0,2.0,0.28,,0.27,0.42,ready,0,General Triggers
+Marara,SPI DJ,Mild,Window 1,2023-24,SPI,2023-09-01,2023-10-01,9.0,10.0,0.25,0.22,0.25,0.17,set,0,General Triggers
+Marara,SPI DJ,Moderate,Window 1,2023-24,SPI,2023-09-01,2023-10-01,9.0,10.0,0.24,0.2,0.21,0.19,set,0,General Triggers
+Marara,SPI DJF,Mild,Window 1,2023-24,SPI,2023-08-01,2023-09-01,8.0,9.0,0.25,0.31,0.29,0.0,na,0,General Triggers
+Marara,SPI NDJ,Severe,Window 1,2023-24,SPI,2023-07-01,2023-08-01,7.0,8.0,0.11,0.17,0.27,0.2,na,0,General Triggers
+Massingir,DRY MA,Mild,Window 2,2023-24,DRYSPELL,2023-10-01,2023-11-01,10.0,11.0,0.28,0.12,0.25,0.21,na,0,Emergency Triggers
+Massingir,SPI DJF,Mild,Window 2,2023-24,SPI,2023-09-01,2023-10-01,9.0,10.0,0.48,0.41,0.11,0.0,set,0,Emergency Triggers
+Massingir,SPI JF,Severe,Window 2,2023-24,SPI,2023-08-01,2023-09-01,8.0,9.0,0.1,0.18,0.24,0.0,na,0,Emergency Triggers
+Massingir,SPI MA,Moderate,Window 2,2023-24,SPI,2023-10-01,2023-11-01,10.0,11.0,0.36,0.2,0.23,0.13,set,0,Emergency Triggers
+Massingir,SPI MA,Moderate,Window 2,2023-24,SPI,2023-12-01,2024-01-01,12.0,1.0,0.26,0.34,0.23,0.22,set,0,Emergency Triggers
+Massingir,SPI MA,Severe,Window 2,2023-24,SPI,2023-12-01,2024-01-01,12.0,1.0,0.22,0.26,0.13,0.19,set,0,Emergency Triggers
+Massingir,SPI ND,Mild,Window 1,2023-24,SPI,2023-06-01,2023-07-01,6.0,7.0,0.19,0.22,0.25,0.14,na,0,Emergency Triggers
+Massingir,SPI ND,Mild,Window 1,2023-24,SPI,2023-07-01,2023-08-01,7.0,8.0,0.22,0.22,0.14,0.26,na,0,Emergency Triggers
+Massingir,SPI ON,Moderate,Window 1,2023-24,SPI,2023-05-01,2023-06-01,5.0,6.0,0.27,0.39,0.16,0.0,set,0,Emergency Triggers
+Massingir,SPI ON,Moderate,Window 1,2023-24,SPI,2023-06-01,2023-07-01,6.0,7.0,0.39,0.35,0.0,0.24,set,0,Emergency Triggers
+Massingir,SPI ON,Severe,Window 1,2023-24,SPI,2023-07-01,2023-08-01,7.0,8.0,0.26,0.19,0.25,0.0,set,0,Emergency Triggers
+Massingir,SPI OND,Severe,Window 1,2023-24,SPI,2023-06-01,2023-07-01,6.0,7.0,0.13,0.08,0.22,0.06,na,0,Emergency Triggers
