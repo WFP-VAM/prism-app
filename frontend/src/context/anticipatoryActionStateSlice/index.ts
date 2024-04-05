@@ -9,6 +9,7 @@ import {
   AAView,
   AnticipatoryActionData,
   AnticipatoryActionState,
+  Vulnerability,
   allWindowsKey,
 } from './types';
 import {
@@ -50,7 +51,7 @@ export const loadAAData = createAsyncThunk<
       windowKey: typeof AAWindowKeys[number];
       range: { start: string; end: string };
     }[];
-    monitoredDistricts: string[];
+    monitoredDistricts: { name: string; vulnerability: Vulnerability }[];
   },
   undefined,
   CreateAsyncThunkTypes

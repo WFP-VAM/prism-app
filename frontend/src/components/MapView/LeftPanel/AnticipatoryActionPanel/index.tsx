@@ -16,7 +16,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import {
   AACategoryType,
   AAView,
-  Vulnerability,
   allWindowsKey,
 } from 'context/anticipatoryActionStateSlice/types';
 import { AAWindowKeys } from 'config/utils';
@@ -59,14 +58,14 @@ function AnticipatoryActionPanel() {
   const { t } = useSafeTranslation();
   const monitoredDistricts = useSelector(AAMonitoredDistrictsSelector);
   const selectedDistrict = useSelector(AASelectedDistrictSelector);
-  const { categories: categoryFilters } = useSelector(AAFiltersSelector);
+  const { categories: categoryFilters, selectedIndex } = useSelector(
+    AAFiltersSelector,
+  );
   const serverAvailableDates = useSelector(availableDatesSelector);
   const { startDate: selectedDate } = useSelector(dateRangeSelector);
   const aaData = useSelector(AADataSelector);
   const view = useSelector(AAViewSelector);
-  const [vulnerability, setDistrictVulnerability] = React.useState<
-    Vulnerability
-  >('General Triggers');
+  const [indexOptions, setIndexOptions] = React.useState<string[]>([]);
   const [howToReadModalOpen, setHowToReadModalOpen] = React.useState(false);
 
   const dialogs = [
@@ -84,9 +83,9 @@ function AnticipatoryActionPanel() {
       .map(x => x[selectedDistrict])
       .flat()
       .filter(x => x);
-    if (entries[0]?.vulnerability) {
-      setDistrictVulnerability(entries[0].vulnerability);
-    }
+
+    const options = [...new Set(entries.map(x => x.index))];
+    setIndexOptions(options);
   }, [aaData, selectedDistrict]);
 
   const layerAvailableDates = getAAAvailableDatesCombined(serverAvailableDates);
@@ -144,10 +143,10 @@ function AnticipatoryActionPanel() {
               </MenuItem>
               {monitoredDistricts.map(x => (
                 <MenuItem
-                  key={x}
-                  value={x}
+                  key={x.name}
+                  value={x.name}
                   onClick={() => {
-                    dispatch(setAASelectedDistrict(x));
+                    dispatch(setAASelectedDistrict(x.name));
                     dispatch(setAAView(AAView.District));
                   }}
                 >
@@ -193,8 +192,47 @@ function AnticipatoryActionPanel() {
           ))}
         </div>
 
-        {(view === AAView.District || view === AAView.Timeline) && (
-          <Typography>{t(vulnerability)}</Typography>
+        {view === AAView.District && (
+          <Typography>
+            {t(
+              monitoredDistricts.find(x => x.name === selectedDistrict)
+                ?.vulnerability || '',
+            )}
+          </Typography>
+        )}
+        {view === AAView.Timeline && (
+          <div>
+            <StyledSelect
+              value={selectedIndex || 'empty'}
+              fullWidth
+              input={<Input disableUnderline />}
+              renderValue={() => (
+                <Typography variant="h3">
+                  {selectedIndex || t('Indicators')}
+                </Typography>
+              )}
+            >
+              <MenuItem
+                value=""
+                onClick={() => {
+                  dispatch(setAAFilters({ selectedIndex: '' }));
+                }}
+              >
+                {t('All')}
+              </MenuItem>
+              {indexOptions.map(x => (
+                <MenuItem
+                  key={x}
+                  value={x}
+                  onClick={() => {
+                    dispatch(setAAFilters({ selectedIndex: x }));
+                  }}
+                >
+                  {x}
+                </MenuItem>
+              ))}
+            </StyledSelect>
+          </div>
         )}
       </div>
       {view === AAView.Home && <HomeTable dialogs={dialogs} />}

@@ -45,7 +45,7 @@ export type AnticipatoryActionState = {
   data: Record<typeof AAWindowKeys[number], AnticipatoryActionData>;
   // availableDates used to update layer available dates after csv processed
   availableDates?: { [windowKey: string]: DateItem[] };
-  monitoredDistricts: string[];
+  monitoredDistricts: { name: string; vulnerability: Vulnerability }[];
   filters: {
     selectedDate: string | undefined;
     selectedWindow: typeof AAWindowKeys[number] | typeof allWindowsKey;
