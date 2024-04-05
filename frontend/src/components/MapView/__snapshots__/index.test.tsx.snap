@@ -202,11 +202,11 @@ exports[`renders as expected 1`] = `
                 class="MuiPaper-root MuiAccordion-root makeStyles-root-13 MuiAccordion-rounded MuiPaper-elevation0 MuiPaper-rounded"
               >
                 <div
-                  aria-controls="Snow"
+                  aria-controls="Tropical Storms"
                   aria-disabled="false"
                   aria-expanded="false"
                   class="MuiButtonBase-root MuiAccordionSummary-root makeStyles-rootSummary-14"
-                  id="Snow"
+                  id="Tropical Storms"
                   role="button"
                   tabindex="0"
                 >
@@ -216,53 +216,7 @@ exports[`renders as expected 1`] = `
                     <mock-typography
                       classes="[object Object]"
                     >
-                      Snow
-                    </mock-typography>
-                  </div>
-                  <div
-                    aria-disabled="false"
-                    aria-hidden="true"
-                    class="MuiButtonBase-root MuiIconButton-root MuiAccordionSummary-expandIcon makeStyles-expandIcon-16 MuiIconButton-edgeEnd"
-                  >
-                    <span
-                      class="MuiIconButton-label"
-                    >
-                      <svg
-                        aria-hidden="true"
-                        class="MuiSvgIcon-root"
-                        focusable="false"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          d="M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z"
-                        />
-                      </svg>
-                    </span>
-                    <span
-                      class="MuiTouchRipple-root"
-                    />
-                  </div>
-                </div>
-              </div>
-              <div
-                class="MuiPaper-root MuiAccordion-root makeStyles-root-13 MuiAccordion-rounded MuiPaper-elevation0 MuiPaper-rounded"
-              >
-                <div
-                  aria-controls="Floods And Mudflows"
-                  aria-disabled="false"
-                  aria-expanded="false"
-                  class="MuiButtonBase-root MuiAccordionSummary-root makeStyles-rootSummary-14"
-                  id="Floods And Mudflows"
-                  role="button"
-                  tabindex="0"
-                >
-                  <div
-                    class="MuiAccordionSummary-content makeStyles-summaryContent-17"
-                  >
-                    <mock-typography
-                      classes="[object Object]"
-                    >
-                      Floods And Mudflows
+                      Tropical Storms
                     </mock-typography>
                   </div>
                   <div
@@ -486,7 +440,7 @@ exports[`renders as expected 1`] = `
               style="pointer-events: auto;"
             >
               <mock-legends
-                extent="68,39.28,80.26,43.3"
+                extent="30.18,-26.8,40.78,-10.32"
                 layers="[object Object],[object Object]"
               />
             </div>
