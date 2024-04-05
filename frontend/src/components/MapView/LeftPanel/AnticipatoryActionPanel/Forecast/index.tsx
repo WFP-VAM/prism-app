@@ -19,26 +19,6 @@ const indexes = {
   'SPI OND': 15,
 };
 
-function createTriangleCanvas(color: string) {
-  const size = 15; // Size of the canvas (and the triangle)
-  const canvas = document.createElement('canvas');
-  canvas.width = size;
-  canvas.height = size;
-  const ctx = canvas.getContext('2d');
-
-  if (ctx) {
-    ctx.fillStyle = color || '#E63701'; // Red color
-    ctx.beginPath();
-    ctx.moveTo(0, 0); // Top left
-    ctx.lineTo(size, size / 2); // Middle right
-    ctx.lineTo(0, size); // Bottom left
-    ctx.closePath();
-    ctx.fill();
-  }
-
-  return canvas;
-}
-
 const data = {
   labels: Object.keys(indexes),
   datasets: [
@@ -48,11 +28,17 @@ const data = {
         x: i + 0.7,
         y: val,
       })),
-      pointStyle: createTriangleCanvas('#E63701'),
+      // Triangle pointer
+      pointStyle: 'triangle',
+      rotation: 90,
+      radius: 10,
+      hoverRadius: 10,
       backgroundColor: '#E63701',
+      // Label
       datalabels: {
         labels: {
           value: {
+            offset: -2, // offset from the point
             align: 'left',
             backgroundColor: 'white',
             borderColor: (ctx: any) => {
