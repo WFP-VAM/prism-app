@@ -42,21 +42,21 @@ export function forecastTransform({
   selectedDistrict,
   data,
 }: ForecastTransformParams) {
-  const { selectedWindow } = filters;
+  const { selectedWindow, selectedDate } = filters;
 
-  const allData =
-    selectedWindow === 'All'
-      ? [
-          ...(data['Window 1'][selectedDistrict] || []),
-          ...(data['Window 2'][selectedDistrict] || []),
-        ]
-      : data[selectedWindow][selectedDistrict] || [];
+  const dateData = (selectedWindow === 'All'
+    ? [
+        ...(data['Window 1'][selectedDistrict] || []),
+        ...(data['Window 2'][selectedDistrict] || []),
+      ]
+    : data[selectedWindow][selectedDistrict] || []
+  ).filter(x => !selectedDate || x.date <= selectedDate);
 
   // eslint-disable-next-line fp/no-mutating-methods
-  const indexes = sortIndexes([...new Set(allData.map(x => x.index))]);
+  const indexes = sortIndexes([...new Set(dateData.map(x => x.index))]);
 
   const sevMap = new Map<AACategoryType, AnticipatoryActionDataRow[]>();
-  allData.forEach(x => {
+  dateData.forEach(x => {
     const val = sevMap.get(x.category);
     sevMap.set(x.category, val ? [...val, x] : [x]);
   });
@@ -66,12 +66,15 @@ export function forecastTransform({
     Object.entries(groupedBySev).map(([cat, catData]) => {
       const val = indexes.map(index => {
         const indexData = catData.filter(x => x.index === index);
-        // TODO: is this right?
-        const max =
-          indexData.length > 0
-            ? Math.trunc(Math.max(...indexData.map(x => x.probability)) * 100)
-            : null;
-        return [index, max];
+        if (indexData.length > 0) {
+          // Sort by date in descending order to get the latest date first
+          // eslint-disable-next-line fp/no-mutating-methods
+          indexData.sort((a, b) => b.date.localeCompare(a.date));
+          // Take the probability of the first element (latest date)
+          const max = Math.trunc(indexData[0].probability * 100);
+          return [index, max];
+        }
+        return [index, null];
       });
       return [cat, Object.fromEntries(val)];
     }),
