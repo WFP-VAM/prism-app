@@ -65,6 +65,7 @@ export function parseAndTransformAA(data: any[]) {
         window: x.window,
         // initialize to false and override later
         new: false,
+        vulnerability: x.vulnerability,
       };
 
       const isReadyValid = Number(x.prob_ready) > Number(x.trigger_ready);
@@ -98,9 +99,9 @@ export function parseAndTransformAA(data: any[]) {
     forward: 3,
   };
 
-  const monitoredDistricts = [...new Set(parsed.map(x => x.district))];
+  const districtNames = [...new Set(parsed.map(x => x.district))];
   const emptyDistricts = Object.fromEntries(
-    monitoredDistricts.map(x => [x, [] as AnticipatoryActionDataRow[]]),
+    districtNames.map(x => [x, [] as AnticipatoryActionDataRow[]]),
   );
 
   const windowData = AAWindowKeys.map(windowKey => {
@@ -193,6 +194,11 @@ export function parseAndTransformAA(data: any[]) {
       windowKey,
     };
   });
+
+  const monitoredDistricts = districtNames.map(dist => ({
+    name: dist,
+    vulnerability: windowData.map(x => x.data[dist]).flat()[0].vulnerability,
+  }));
 
   return { windowData, monitoredDistricts };
 }
