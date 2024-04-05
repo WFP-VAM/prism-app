@@ -39,6 +39,7 @@ import {
   calculateCombinedAAMapData,
 } from 'context/anticipatoryActionStateSlice/utils';
 import { AAView } from 'context/anticipatoryActionStateSlice/types';
+import { Tooltip } from '@material-ui/core';
 
 const boundaryLayer = getBoundaryLayerSingleton();
 
@@ -164,11 +165,16 @@ function AnticipatoryActionLayer({ layer, before }: LayersProps) {
             latitude={marker.latitude}
             anchor="center"
           >
-            <div
-              style={{ transform: `scale(${scalePercent})`, cursor: 'pointer' }}
-            >
-              {marker.icon}
-            </div>
+            <Tooltip title={marker.district} arrow>
+              <div
+                style={{
+                  transform: `scale(${scalePercent})`,
+                  cursor: 'pointer',
+                }}
+              >
+                {marker.icon}
+              </div>
+            </Tooltip>
           </Marker>
         ))}
       {layer.csvWindowKey === 'Window 1' && (
