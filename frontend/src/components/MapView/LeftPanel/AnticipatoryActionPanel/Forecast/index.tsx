@@ -61,6 +61,18 @@ function Forecast({ dialogs }: ForecastProps) {
     },
   ];
 
+  if (indexes.length === 0) {
+    return (
+      <div className={classes.noData}>
+        <Typography>
+          {t(
+            `No data available yet for ${selectedDistrict}. Please pick a later date.`,
+          )}
+        </Typography>
+      </div>
+    );
+  }
+
   return (
     <>
       <div className={classes.charts}>
@@ -156,6 +168,12 @@ function Forecast({ dialogs }: ForecastProps) {
 
 const useForecastStyle = makeStyles(() =>
   createStyles({
+    noData: {
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
+      height: '100%',
+    },
     charts: {
       display: 'flex',
       flexDirection: 'column',
