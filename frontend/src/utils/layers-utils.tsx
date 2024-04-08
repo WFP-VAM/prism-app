@@ -4,8 +4,7 @@ import { appConfig } from 'config';
 import { Extent } from 'components/MapView/Layers/raster-utils';
 import { LayerKey, LayerType, isMainLayer, DateItem } from 'config/types';
 import {
-  AAWindowKeyToLayerId,
-  AAWindowKeys,
+  AALayerId,
   LayerDefinitions,
   getBoundaryLayerSingleton,
 } from 'config/utils';
@@ -32,6 +31,7 @@ import {
   getPossibleDatesForLayer,
 } from 'utils/server-utils';
 import { UrlLayerKey, getUrlKey, useUrlHistory } from 'utils/url-utils';
+import { AAAvailableDatesSelector } from 'context/anticipatoryActionStateSlice';
 import {
   datesAreEqualWithoutTime,
   binaryIncludes,
@@ -56,7 +56,14 @@ const useLayers = () => {
 
   const unsortedSelectedLayers = useSelector(layersSelector);
   const serverAvailableDates = useSelector(availableDatesSelector);
+  const AAAvailableDates = useSelector(AAAvailableDatesSelector);
   const { startDate: selectedDate } = useSelector(dateRangeSelector);
+
+  const AAAvailableDatesCombined = useMemo(
+    () =>
+      AAAvailableDates ? getAAAvailableDatesCombined(AAAvailableDates) : [],
+    [AAAvailableDates],
+  );
 
   const hazardLayerIds = useMemo(() => {
     return urlParams.get(UrlLayerKey.HAZARD);
@@ -76,9 +83,8 @@ const useLayers = () => {
 
   const numberOfActiveLayers = useMemo(() => {
     return (
-      hazardLayersArray.filter(
-        x => !AAWindowKeys.find(y => AAWindowKeyToLayerId[y] === x),
-      ).length + baselineLayersArray.length
+      hazardLayersArray.filter(x => x !== AALayerId).length +
+      baselineLayersArray.length
     );
   }, [baselineLayersArray.length, hazardLayersArray]);
 
@@ -130,7 +136,7 @@ const useLayers = () => {
         .map(layer => {
           if (layer.type === 'anticipatory_action') {
             // Combine dates for all AA windows to allow selecting AA for the whole period
-            return getAAAvailableDatesCombined(serverAvailableDates);
+            return AAAvailableDatesCombined;
           }
           return getPossibleDatesForLayer(layer, serverAvailableDates);
         })
@@ -138,7 +144,11 @@ const useLayers = () => {
         .flat()
         .map(value => new Date(value.displayDate).toISOString().slice(0, 10)),
     );
-  }, [selectedLayersWithDateSupport, serverAvailableDates]);
+  }, [
+    AAAvailableDatesCombined,
+    selectedLayersWithDateSupport,
+    serverAvailableDates,
+  ]);
 
   // calculate possible dates user can pick from the currently selected layers
   const selectedLayerDates: number[] = useMemo(() => {
@@ -393,13 +403,13 @@ const useLayers = () => {
     (layer: DateCompatibleLayer, date: Date) => {
       return binaryIncludes<DateItem>(
         layer.type === 'anticipatory_action'
-          ? getAAAvailableDatesCombined(serverAvailableDates)
+          ? AAAvailableDatesCombined
           : getPossibleDatesForLayer(layer, serverAvailableDates),
         date.setUTCHours(12, 0, 0, 0),
         x => new Date(x.displayDate).setUTCHours(12, 0, 0, 0),
       );
     },
-    [serverAvailableDates],
+    [AAAvailableDatesCombined, serverAvailableDates],
   );
 
   useEffect(() => {

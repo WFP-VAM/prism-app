@@ -2,7 +2,7 @@ import { PayloadAction, createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import Papa from 'papaparse';
 import { DateItem } from 'config/types';
 import { appConfig } from 'config';
-import { AAWindowKeyToLayerId, AAWindowKeys } from 'config/utils';
+import { AAWindowKeys } from 'config/utils';
 import type { CreateAsyncThunkTypes, RootState } from '../store';
 import {
   AACategoryType,
@@ -140,11 +140,8 @@ export const anticipatoryActionStateSlice = createSlice({
         loading: false,
         data: newData,
         availableDates: Object.fromEntries(
-          payload.windowData.map(x => [
-            AAWindowKeyToLayerId[x.windowKey],
-            x.availableDates,
-          ]),
-        ),
+          payload.windowData.map(x => [x.windowKey, x.availableDates]),
+        ) as Record<typeof AAWindowKeys[number], DateItem[]>,
         windowRanges: newRanges,
         monitoredDistricts: payload.monitoredDistricts,
         renderedDistricts: calculateMapRenderedDistricts({

@@ -15,15 +15,15 @@ import {
 import { black, borderGray, cyanBlue, gray } from 'muiTheme';
 import React from 'react';
 import {
-  LIGHT_BLUE_HEX,
-  LIGHT_GREEN_HEX,
-} from 'components/MapView/DateSelector/TimelineItems';
-import {
   AACategoryType,
   AAPhaseType,
   AAcategory,
   AnticipatoryActionDataRow,
 } from 'context/anticipatoryActionStateSlice/types';
+import {
+  LIGHT_BLUE_HEX,
+  LIGHT_GREEN_HEX,
+} from 'components/MapView/DateSelector/TimelineItems/utils';
 import AAIcon from './AAIcon';
 
 const StyledRadio = withStyles({

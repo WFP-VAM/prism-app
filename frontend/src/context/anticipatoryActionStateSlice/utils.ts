@@ -295,40 +295,32 @@ export function calculateMapRenderedDistricts({
 
 export function calculateCombinedAAMapData(
   renderedDistricts: AnticipatoryActionState['renderedDistricts'],
-  windowKey: typeof AAWindowKeys[number],
 ) {
-  const otherWindowKey = AAWindowKeys.find(x => x !== windowKey);
-  if (!otherWindowKey) {
-    // this is never supposed to happen
-    throw new Error('Unknown window key');
-  }
   return Object.fromEntries(
-    Object.entries(renderedDistricts[windowKey])
+    Object.entries(renderedDistricts['Window 1'])
       .map(([district, values]) => {
-        const val = values[0];
-        if (!val) {
+        const windowOneData = values[0];
+        if (!windowOneData) {
           return null;
         }
-        const thisWindowsSev = AADataSeverityOrder(val.category, val.phase);
-
-        const otherWindowData = renderedDistricts[otherWindowKey][district][0];
-        if (!otherWindowData) {
-          return null;
-        }
-        const otherWindowSev = AADataSeverityOrder(
-          otherWindowData.category,
-          otherWindowData.phase,
+        const windowOneSev = AADataSeverityOrder(
+          windowOneData.category,
+          windowOneData.phase,
         );
-        if (thisWindowsSev > otherWindowSev) {
-          return [district, val];
-        }
-        if (thisWindowsSev < otherWindowSev) {
+
+        const windowTwoData = renderedDistricts['Window 2'][district][0];
+        if (!windowTwoData) {
           return null;
         }
-        if (windowKey === 'Window 1') {
-          return [district, val];
+        const windowTwoSev = AADataSeverityOrder(
+          windowTwoData.category,
+          windowTwoData.phase,
+        );
+        if (windowOneSev >= windowTwoSev) {
+          return [district, windowOneData];
         }
-        return null;
+
+        return [district, windowTwoData];
       })
       .filter((x): x is any => x !== null),
   ) as {
@@ -355,10 +347,7 @@ export function calculateAAMarkers({
 }: CalculateAAMarkersParams) {
   const AADistricts =
     selectedWindow === 'All'
-      ? {
-          ...calculateCombinedAAMapData(renderedDistricts, 'Window 1'),
-          ...calculateCombinedAAMapData(renderedDistricts, 'Window 2'),
-        }
+      ? calculateCombinedAAMapData(renderedDistricts)
       : Object.fromEntries(
           Object.entries(
             renderedDistricts[selectedWindow],
