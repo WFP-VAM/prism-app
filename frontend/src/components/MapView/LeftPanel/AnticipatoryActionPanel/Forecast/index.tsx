@@ -79,7 +79,7 @@ function Forecast({ dialogs }: ForecastProps) {
         <div className={classes.chartsHeader}>
           <div style={{ minWidth: '3rem' }} />
           {indexes.map(x => (
-            <Typography className={classes.label}>{x}</Typography>
+            <Typography className={classes.label}>{t(x)}</Typography>
           ))}
           <div style={{ minWidth: '10px' }} />
         </div>
@@ -157,7 +157,7 @@ function Forecast({ dialogs }: ForecastProps) {
               component="button"
               onClick={() => dialog.onclick()}
             >
-              {dialog.text}
+              {t(dialog.text)}
             </Typography>
           ))}
         </div>
