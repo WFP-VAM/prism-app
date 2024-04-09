@@ -41,6 +41,7 @@ import {
 import { findFeature, getLayerMapId, useMapCallback } from 'utils/map-utils';
 import { getFormattedDate } from 'utils/date-utils';
 import { geoToH3, h3ToGeoBoundary } from 'h3-js';
+import { opacitySelector } from 'context/opacityStateSlice';
 
 export function legendToStops(
   legend: LegendDefinition = [],
@@ -98,6 +99,7 @@ const PointDataLayer = ({ layer, before }: LayersProps) => {
   const serverAvailableDates = useSelector(availableDatesSelector);
   const layerAvailableDates = serverAvailableDates[layer.id];
   const userAuth = useSelector(userAuthSelector);
+  const opacityState = useSelector(opacitySelector(layer.id));
 
   useMapCallback('click', layerId, layer, onClick);
 
@@ -214,7 +216,7 @@ const PointDataLayer = ({ layer, before }: LayersProps) => {
         <Layer
           id={getLayerMapId(layer.id)}
           type="fill"
-          paint={paintProps(layer.legend || [], layer.opacity)}
+          paint={paintProps(layer.legend || [], opacityState || layer.opacity)}
           beforeId={before}
         />
       </Source>

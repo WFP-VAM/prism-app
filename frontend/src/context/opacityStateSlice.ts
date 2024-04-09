@@ -34,12 +34,8 @@ export const opacityStateSlice = createSlice({
   initialState,
   reducers: {
     setOpacity: (state, action: PayloadAction<SetOpacityParams>) => {
-      // eslint-disable-next-line no-console
-      console.log(action.payload);
       const { map, layerId, layerType, value, callback } =
         action?.payload || {};
-      // eslint-disable-next-line no-console
-      console.log({ value });
       if (!map) {
         return state;
       }
@@ -59,7 +55,7 @@ export const opacityStateSlice = createSlice({
           case 'point_data':
             // This is a hacky way to support opacity change for Kobo data.
             // TODO - Handle Kobo data as admin_level_data instead of point_data. See issue #760.
-            if (layerId?.includes('_report')) {
+            if (layerId?.includes('_report') || layerId?.includes('crop')) {
               return [getLayerMapId(layerId), 'fill-opacity'];
             }
             return [getLayerMapId(layerId), 'circle-opacity'];
