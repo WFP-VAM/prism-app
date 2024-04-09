@@ -33,10 +33,12 @@ interface AreaTagProps {
 
 function AreaTag({ name, isNew, onClick }: AreaTagProps) {
   const classes = useAreaTagStyles();
+  const { t } = useSafeTranslation();
+
   return (
     <button type="button" className={classes.areaTagWrapper} onClick={onClick}>
-      <Typography>{name}</Typography>
-      {isNew && <div className={classes.newTag}>NEW</div>}
+      <Typography>{t(name)}</Typography>
+      {isNew && <div className={classes.newTag}>{t('NEW')}</div>}
     </button>
   );
 }
@@ -93,7 +95,7 @@ function Row({ iconContent, windows, header }: RowProps) {
             }}
           >
             <Typography variant="h3" className={classes.headerText}>
-              {name}
+              {t(name)}
             </Typography>
           </div>
         ))}
@@ -291,7 +293,7 @@ function HomeTable({ dialogs }: HomeTableProps) {
               component="button"
               onClick={() => dialog.onclick()}
             >
-              {dialog.text}
+              {t(dialog.text)}
             </Typography>
           ))}
         </div>

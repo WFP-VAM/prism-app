@@ -137,7 +137,7 @@ function AnticipatoryActionPanel() {
               input={<Input disableUnderline />}
               renderValue={() => (
                 <Typography variant="h2">
-                  {selectedDistrict || 'Phases: global view'}{' '}
+                  {t(selectedDistrict) || t('Phases: global view')}{' '}
                   {view === AAView.Timeline && t('Timeline')}
                 </Typography>
               )}
@@ -162,7 +162,7 @@ function AnticipatoryActionPanel() {
                     }
                   }}
                 >
-                  {x.name}
+                  {t(x.name)}
                 </MenuItem>
               ))}
             </StyledSelect>
@@ -178,7 +178,10 @@ function AnticipatoryActionPanel() {
                 dispatch(setAAFilters({ selectedWindow: val as any }))
               }
             >
-              <StyledRadioLabel value={allWindowsKey} label="All" />
+              <StyledRadioLabel
+                value={allWindowsKey}
+                label={t(allWindowsKey)}
+              />
               {AAWindowKeys.map(x => (
                 <StyledRadioLabel key={x} value={x} label={x} />
               ))}
@@ -199,7 +202,7 @@ function AnticipatoryActionPanel() {
                   dispatch(setAAFilters({ categories: { [x.id]: checked } }));
                 },
               }}
-              label={x.label}
+              label={t(x.label)}
             />
           ))}
         </div>
@@ -220,7 +223,7 @@ function AnticipatoryActionPanel() {
               input={<Input disableUnderline />}
               renderValue={() => (
                 <Typography variant="h3">
-                  {selectedIndex || t('Indicators')}
+                  {t(selectedIndex) || t('Indicators')}
                 </Typography>
               )}
             >
@@ -240,7 +243,7 @@ function AnticipatoryActionPanel() {
                     dispatch(setAAFilters({ selectedIndex: x }));
                   }}
                 >
-                  {x}
+                  {t(x)}
                 </MenuItem>
               ))}
             </StyledSelect>

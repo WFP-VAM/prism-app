@@ -101,7 +101,8 @@ exports[`renders as expected 1`] = `
                 0.25
               </mock-typography>
               <mock-typography>
-                trig. 
+                trig.
+                 
                 0.26
               </mock-typography>
               <div
@@ -132,7 +133,8 @@ exports[`renders as expected 1`] = `
                 0.22
               </mock-typography>
               <mock-typography>
-                trig. 
+                trig.
+                 
                 0.3
               </mock-typography>
               <div
@@ -195,7 +197,8 @@ exports[`renders as expected 1`] = `
                 0.19
               </mock-typography>
               <mock-typography>
-                trig. 
+                trig.
+                 
                 0.1
               </mock-typography>
               <div
@@ -226,7 +229,8 @@ exports[`renders as expected 1`] = `
                 0.28
               </mock-typography>
               <mock-typography>
-                trig. 
+                trig.
+                 
                 0.2
               </mock-typography>
               <div
@@ -292,7 +296,8 @@ exports[`renders as expected 1`] = `
                 0.12
               </mock-typography>
               <mock-typography>
-                trig. 
+                trig.
+                 
                 0.3
               </mock-typography>
               <div
@@ -323,7 +328,8 @@ exports[`renders as expected 1`] = `
                 0.34
               </mock-typography>
               <mock-typography>
-                trig. 
+                trig.
+                 
                 0.33
               </mock-typography>
               <div
@@ -354,7 +360,8 @@ exports[`renders as expected 1`] = `
                 0.28
               </mock-typography>
               <mock-typography>
-                trig. 
+                trig.
+                 
                 0.25
               </mock-typography>
               <div
@@ -414,7 +421,8 @@ exports[`renders as expected 1`] = `
                 0.16
               </mock-typography>
               <mock-typography>
-                trig. 
+                trig.
+                 
                 0.17
               </mock-typography>
               <div
@@ -445,7 +453,8 @@ exports[`renders as expected 1`] = `
                 0.22
               </mock-typography>
               <mock-typography>
-                trig. 
+                trig.
+                 
                 0.3
               </mock-typography>
               <div
@@ -476,7 +485,8 @@ exports[`renders as expected 1`] = `
                 0.31
               </mock-typography>
               <mock-typography>
-                trig. 
+                trig.
+                 
                 0.2
               </mock-typography>
               <div

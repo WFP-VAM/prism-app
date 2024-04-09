@@ -1,4 +1,5 @@
 import { makeStyles, createStyles } from '@material-ui/core';
+import { useSafeTranslation } from 'i18n';
 import React from 'react';
 
 export interface AAIconProps {
@@ -10,6 +11,7 @@ export interface AAIconProps {
 
 function AAIcon({ background, topText, bottomText, color }: AAIconProps) {
   const classes = useAAIconStyles();
+  const { t } = useSafeTranslation();
 
   return (
     <div style={{ background }} className={classes.iconWrapper}>
@@ -23,10 +25,10 @@ function AAIcon({ background, topText, bottomText, color }: AAIconProps) {
           }}
           className={classes.topTextContainer}
         >
-          {topText}
+          {t(topText)}
         </div>
         {bottomText && (
-          <div className={classes.bottomTextContainer}>{bottomText}</div>
+          <div className={classes.bottomTextContainer}>{t(bottomText)}</div>
         )}
       </div>
     </div>
