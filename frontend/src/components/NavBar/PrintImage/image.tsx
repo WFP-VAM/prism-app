@@ -144,8 +144,8 @@ const layerDescriptionSelectorOptions = [
 ];
 
 const countryMaskSelectorOptions = [
-  { value: 0, comp: <VisibilityOffIcon /> },
-  { value: 1, comp: <VisibilityIcon /> },
+  { value: 1, comp: <VisibilityOffIcon /> },
+  { value: 0, comp: <VisibilityIcon /> },
 ];
 
 const boundaryLayer = getBoundaryLayerSingleton();
@@ -168,7 +168,7 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
   // list of toggles
   const [toggles, setToggles] = React.useState({
     fullLayerDescription: true,
-    countryMask: true,
+    countryMask: false,
     scaleBar: true,
     northArrow: true,
   });
