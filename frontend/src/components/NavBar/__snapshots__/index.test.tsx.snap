@@ -278,7 +278,7 @@ exports[`renders as expected 1`] = `
             >
               <svg
                 aria-hidden="true"
-                class="svg-inline--fa fa-github fa-w-16 "
+                class="svg-inline--fa fa-github "
                 data-icon="github"
                 data-prefix="fab"
                 focusable="false"
