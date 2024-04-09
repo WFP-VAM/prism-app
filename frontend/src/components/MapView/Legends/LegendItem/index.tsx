@@ -55,6 +55,7 @@ const LegendItem = memo(
     legendUrl,
     fillPattern,
     extent,
+    showOptions = true,
   }: LegendItemProps) => {
     const dispatch = useDispatch();
     const { removeLayerFromUrl } = useUrlHistory();
@@ -223,44 +224,52 @@ const LegendItem = memo(
           {renderedLegend}
           <LoadingBar layerId={id} />
           {renderedChildren}
-          <Divider style={{ margin: '8px 0px' }} />
-          <Box display="flex" justifyContent="space-between">
-            <Tooltip title="Opacity">
-              <IconButton size="small" onClick={openOpacity}>
-                <Opacity fontSize="small" />
-              </IconButton>
-            </Tooltip>
-            {isAnalysis && (
-              <Tooltip title={t('Reverse colors') as string}>
-                <IconButton
-                  size="small"
-                  onClick={() => dispatch(analysisLayerInvertColors())}
-                >
-                  <SwapVert fontSize="small" />
-                </IconButton>
-              </Tooltip>
-            )}
+          {showOptions && (
             <>
-              <Popover
-                id={opacityId}
-                open={open}
-                anchorEl={opacityEl}
-                onClose={closeOpacity}
-                anchorOrigin={{
-                  vertical: 'bottom',
-                  horizontal: 'left',
-                }}
-              >
-                {renderedOpacitySlider}
-              </Popover>
-              {isAnalysis ? <AnalysisDownloadButton /> : layerDownloadOptions}
-              <Tooltip title="Remove layer">
-                <IconButton size="small" onClick={remove}>
-                  <Cancel fontSize="small" />
-                </IconButton>
-              </Tooltip>
+              <Divider style={{ margin: '8px 0px' }} />
+              <Box display="flex" justifyContent="space-between">
+                <Tooltip title="Opacity">
+                  <IconButton size="small" onClick={openOpacity}>
+                    <Opacity fontSize="small" />
+                  </IconButton>
+                </Tooltip>
+                {isAnalysis && (
+                  <Tooltip title={t('Reverse colors') as string}>
+                    <IconButton
+                      size="small"
+                      onClick={() => dispatch(analysisLayerInvertColors())}
+                    >
+                      <SwapVert fontSize="small" />
+                    </IconButton>
+                  </Tooltip>
+                )}
+                <>
+                  <Popover
+                    id={opacityId}
+                    open={open}
+                    anchorEl={opacityEl}
+                    onClose={closeOpacity}
+                    anchorOrigin={{
+                      vertical: 'bottom',
+                      horizontal: 'left',
+                    }}
+                  >
+                    {renderedOpacitySlider}
+                  </Popover>
+                  {isAnalysis ? (
+                    <AnalysisDownloadButton />
+                  ) : (
+                    layerDownloadOptions
+                  )}
+                  <Tooltip title="Remove layer">
+                    <IconButton size="small" onClick={remove}>
+                      <Cancel fontSize="small" />
+                    </IconButton>
+                  </Tooltip>
+                </>
+              </Box>
             </>
-          </Box>
+          )}
         </Paper>
       </ListItem>
     );
@@ -309,6 +318,7 @@ interface LegendItemProps
   opacity: LayerType['opacity'];
   fillPattern?: 'left' | 'right';
   extent?: Extent;
+  showOptions?: boolean;
 }
 
 export default withStyles(styles)(LegendItem);
