@@ -67,7 +67,7 @@ function WindowColumn({
     <div className={classes.windowWrapper}>
       <div style={{ textAlign: 'center' }}>
         <Typography variant="h3" className={classes.headerText}>
-          {win}
+          {t(win)}
         </Typography>
       </div>
       {!hasWindowData && (
@@ -80,7 +80,7 @@ function WindowColumn({
           <div className={classes.headRowWrapper}>
             {Object.entries(transformed?.months || {}).map(x => (
               <div key={x[0]} className={classes.headColumn}>
-                <Typography className={classes.monthText}>{x[1]}</Typography>
+                <Typography className={classes.monthText}>{t(x[1])}</Typography>
               </div>
             ))}
           </div>
@@ -111,7 +111,7 @@ function WindowColumn({
       {hasWindowData && (
         <div className={classes.actionsWrapper}>
           <div style={{ textAlign: 'center' }}>
-            <Typography variant="h3">ACTIONS</Typography>
+            <Typography variant="h3">{t('ACTIONS')}</Typography>
           </div>
           <div className={classes.actionBoxesWrapper}>
             {Object.keys(transformed.months).map(x => {
@@ -149,7 +149,10 @@ function WindowColumn({
                 >
                   {actions.map(action => (
                     // wrapping in div to show tooltip with FontAwesomeIcons
-                    <Tooltip key={action.name} title={action.name}>
+                    <Tooltip
+                      key={action.name}
+                      title={t(action.name) || action.name}
+                    >
                       <div>{action.icon}</div>
                     </Tooltip>
                   ))}
@@ -339,7 +342,7 @@ function DistrictView({ dialogs }: DistrictViewProps) {
               component="button"
               onClick={() => dialog.onclick()}
             >
-              {dialog.text}
+              {t(dialog.text)}
             </Typography>
           ))}
         </div>

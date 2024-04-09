@@ -14,16 +14,17 @@ import {
 } from '@material-ui/core';
 import { black, borderGray, cyanBlue, gray } from 'muiTheme';
 import React from 'react';
-import {
-  LIGHT_BLUE_HEX,
-  LIGHT_GREEN_HEX,
-} from 'components/MapView/DateSelector/TimelineItems';
+import { useSafeTranslation } from 'i18n';
 import {
   AACategoryType,
   AAPhaseType,
   AAcategory,
   AnticipatoryActionDataRow,
 } from 'context/anticipatoryActionStateSlice/types';
+import {
+  LIGHT_BLUE_HEX,
+  LIGHT_GREEN_HEX,
+} from 'components/MapView/DateSelector/TimelineItems/utils';
 import AAIcon from './AAIcon';
 
 const StyledRadio = withStyles({
@@ -42,6 +43,7 @@ export const StyledRadioLabel = withStyles({
     marginLeft: 0,
   },
 })(({ label, ...props }: Omit<FormControlLabelProps, 'control'>) => {
+  const { t } = useSafeTranslation();
   const radioGroup = useRadioGroup();
   const checked = radioGroup?.value === props.value;
 
@@ -68,7 +70,7 @@ export const StyledRadioLabel = withStyles({
               }}
             />
           ) : null}
-          {label}
+          {typeof label === 'string' ? t(label) : label}
         </span>
       }
       control={<StyledRadio />}

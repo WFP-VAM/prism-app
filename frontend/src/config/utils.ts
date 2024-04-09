@@ -144,28 +144,13 @@ function verifyValidImpactLayer(
 }
 
 export const AAWindowKeys = ['Window 1', 'Window 2'] as const;
-export const AAWindowKeyToLayerId: Record<
-  typeof AAWindowKeys[number],
-  string
-> = {
-  'Window 1': 'anticipatory_action_window_1',
-  'Window 2': 'anticipatory_action_window_2',
-};
+export const AALayerId = 'anticipatory_action';
 
 export const LayerDefinitions: LayersMap = (() => {
   const aaUrl = appConfig.anticipatoryActionUrl;
-  const window1: AnticipatoryActionLayerProps = {
-    id: AAWindowKeyToLayerId[AAWindowKeys[0]],
-    csvWindowKey: AAWindowKeys[0],
-    title: 'Anticipatory Action Window 1',
-    type: 'anticipatory_action',
-    opacity: 0.9,
-  };
-
-  const window2: AnticipatoryActionLayerProps = {
-    id: AAWindowKeyToLayerId[AAWindowKeys[1]],
-    csvWindowKey: AAWindowKeys[1],
-    title: 'Anticipatory Action Window 2',
+  const AALayer: AnticipatoryActionLayerProps = {
+    id: AALayerId,
+    title: 'Anticipatory Action',
     type: 'anticipatory_action',
     opacity: 0.9,
   };
@@ -177,8 +162,7 @@ export const LayerDefinitions: LayersMap = (() => {
     }),
     (aaUrl
       ? {
-          [AAWindowKeyToLayerId[AAWindowKeys[0]]]: window1,
-          [AAWindowKeyToLayerId[AAWindowKeys[1]]]: window2,
+          [AALayerId]: AALayer,
         }
       : {}) as LayersMap,
   );

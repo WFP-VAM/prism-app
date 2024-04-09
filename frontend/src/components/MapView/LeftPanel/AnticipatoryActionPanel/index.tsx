@@ -20,6 +20,7 @@ import {
 } from 'context/anticipatoryActionStateSlice/types';
 import { AAWindowKeys } from 'config/utils';
 import {
+  AAAvailableDatesSelector,
   AADataSelector,
   AAFiltersSelector,
   AAMonitoredDistrictsSelector,
@@ -29,7 +30,6 @@ import {
   setAASelectedDistrict,
   setAAView,
 } from 'context/anticipatoryActionStateSlice';
-import { availableDatesSelector } from 'context/serverStateSlice';
 import { dateRangeSelector } from 'context/mapStateSlice/selectors';
 import {
   getAAAvailableDatesCombined,
@@ -58,11 +58,11 @@ function AnticipatoryActionPanel() {
   const dispatch = useDispatch();
   const { t } = useSafeTranslation();
   const monitoredDistricts = useSelector(AAMonitoredDistrictsSelector);
+  const AAAvailableDates = useSelector(AAAvailableDatesSelector);
   const selectedDistrict = useSelector(AASelectedDistrictSelector);
   const { categories: categoryFilters, selectedIndex } = useSelector(
     AAFiltersSelector,
   );
-  const serverAvailableDates = useSelector(availableDatesSelector);
   const { startDate: selectedDate } = useSelector(dateRangeSelector);
   const aaData = useSelector(AADataSelector);
   const view = useSelector(AAViewSelector);
@@ -89,7 +89,10 @@ function AnticipatoryActionPanel() {
     setIndexOptions(options);
   }, [aaData, selectedDistrict]);
 
-  const layerAvailableDates = getAAAvailableDatesCombined(serverAvailableDates);
+  const layerAvailableDates =
+    AAAvailableDates !== undefined
+      ? getAAAvailableDatesCombined(AAAvailableDates)
+      : [];
   const queryDate = getRequestDate(layerAvailableDates, selectedDate);
   const date = getFormattedDate(queryDate, DateFormat.Default) as string;
 
@@ -134,7 +137,7 @@ function AnticipatoryActionPanel() {
               input={<Input disableUnderline />}
               renderValue={() => (
                 <Typography variant="h2">
-                  {selectedDistrict || 'Phases: global view'}{' '}
+                  {t(selectedDistrict) || t('Phases: global view')}{' '}
                   {view === AAView.Timeline && t('Timeline')}
                 </Typography>
               )}
@@ -159,7 +162,7 @@ function AnticipatoryActionPanel() {
                     }
                   }}
                 >
-                  {x.name}
+                  {t(x.name)}
                 </MenuItem>
               ))}
             </StyledSelect>
@@ -175,7 +178,10 @@ function AnticipatoryActionPanel() {
                 dispatch(setAAFilters({ selectedWindow: val as any }))
               }
             >
-              <StyledRadioLabel value={allWindowsKey} label="All" />
+              <StyledRadioLabel
+                value={allWindowsKey}
+                label={t(allWindowsKey)}
+              />
               {AAWindowKeys.map(x => (
                 <StyledRadioLabel key={x} value={x} label={x} />
               ))}
@@ -196,7 +202,7 @@ function AnticipatoryActionPanel() {
                   dispatch(setAAFilters({ categories: { [x.id]: checked } }));
                 },
               }}
-              label={x.label}
+              label={t(x.label)}
             />
           ))}
         </div>
@@ -217,7 +223,7 @@ function AnticipatoryActionPanel() {
               input={<Input disableUnderline />}
               renderValue={() => (
                 <Typography variant="h3">
-                  {selectedIndex || t('Indicators')}
+                  {t(selectedIndex) || t('Indicators')}
                 </Typography>
               )}
             >
@@ -237,7 +243,7 @@ function AnticipatoryActionPanel() {
                     dispatch(setAAFilters({ selectedIndex: x }));
                   }}
                 >
-                  {x}
+                  {t(x)}
                 </MenuItem>
               ))}
             </StyledSelect>

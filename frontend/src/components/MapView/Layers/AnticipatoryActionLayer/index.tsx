@@ -33,7 +33,7 @@ import {
   useAAMarkerScalePercent,
   useMapCallback,
 } from 'utils/map-utils';
-import { AAWindowKeys, getBoundaryLayerSingleton } from 'config/utils';
+import { getBoundaryLayerSingleton } from 'config/utils';
 import {
   calculateAAMarkers,
   calculateCombinedAAMapData,
@@ -68,30 +68,27 @@ function AnticipatoryActionLayer({ layer, before }: LayersProps) {
   const { selectedWindow } = useSelector(AAFiltersSelector);
   const selectedDistrict = useSelector(AASelectedDistrictSelector);
   const markers = useSelector(AAMarkersSelector);
-  const layerWindowIndex = AAWindowKeys.findIndex(
-    x => x === layer.csvWindowKey,
-  );
 
   useMapCallback(
     'click',
-    `anticipatory-action-${layerWindowIndex}-fill`,
+    `anticipatory-action-fill`,
     layer as any,
     onDistrictClick,
   );
 
   const shouldRenderData = React.useMemo(() => {
-    if (selectedWindow === layer.csvWindowKey) {
+    if (selectedWindow === 'All') {
+      return calculateCombinedAAMapData(renderedDistricts);
+    }
+    if (selectedWindow) {
       return Object.fromEntries(
         Object.entries(
-          renderedDistricts[layer.csvWindowKey],
+          renderedDistricts[selectedWindow],
         ).map(([dist, values]) => [dist, values[0]]),
       );
     }
-    if (selectedWindow === 'All') {
-      return calculateCombinedAAMapData(renderedDistricts, layer.csvWindowKey);
-    }
     return {};
-  }, [layer.csvWindowKey, renderedDistricts, selectedWindow]);
+  }, [renderedDistricts, selectedWindow]);
 
   // Calculate centroids only once per data change
   React.useEffect(() => {
@@ -157,57 +154,54 @@ function AnticipatoryActionLayer({ layer, before }: LayersProps) {
 
   return (
     <>
-      {layer.csvWindowKey === 'Window 1' &&
-        markers.map(marker => (
-          <Marker
-            key={`marker-${marker.district}`}
-            longitude={marker.longitude}
-            latitude={marker.latitude}
-            anchor="center"
-          >
-            <Tooltip title={marker.district} arrow>
-              <div
-                style={{
-                  transform: `scale(${scalePercent})`,
-                  cursor: 'pointer',
-                }}
-              >
-                {marker.icon}
-              </div>
-            </Tooltip>
-          </Marker>
-        ))}
-      {layer.csvWindowKey === 'Window 1' && (
-        <Source
-          id="anticipatory-action-selected"
-          type="geojson"
-          data={highlightDistrictLine}
+      {markers.map(marker => (
+        <Marker
+          key={`marker-${marker.district}`}
+          longitude={marker.longitude}
+          latitude={marker.latitude}
+          anchor="center"
         >
-          <Layer
-            beforeId={before}
-            id="anticipatory-action-selected-line"
-            type="line"
-            source="anticipatory-action-selected"
-            paint={{
-              'line-color': 'red',
-              'line-width': 4,
-              'line-opacity': highlightDistrictLine.features.length > 0 ? 1 : 0,
-            }}
-          />
-        </Source>
-      )}
+          <Tooltip title={marker.district} arrow>
+            <div
+              style={{
+                transform: `scale(${scalePercent})`,
+                cursor: 'pointer',
+              }}
+            >
+              {marker.icon}
+            </div>
+          </Tooltip>
+        </Marker>
+      ))}
+      <Source
+        id="anticipatory-action-selected"
+        type="geojson"
+        data={highlightDistrictLine}
+      >
+        <Layer
+          beforeId={before}
+          id="anticipatory-action-selected-line"
+          type="line"
+          source="anticipatory-action-selected"
+          paint={{
+            'line-color': 'red',
+            'line-width': 4,
+            'line-opacity': highlightDistrictLine.features.length > 0 ? 1 : 0,
+          }}
+        />
+      </Source>
       {coloredDistrictsLayer && (
         <Source
-          key={`anticipatory-action-${layerWindowIndex}`}
-          id={`anticipatory-action-${layerWindowIndex}`}
+          key="anticipatory-action"
+          id="anticipatory-action-"
           type="geojson"
           data={coloredDistrictsLayer}
         >
           <Layer
             beforeId={mainLayerBefore}
             type="fill"
-            id={`anticipatory-action-${layerWindowIndex}-fill`}
-            source={`anticipatory-action-${layerWindowIndex}`}
+            id="anticipatory-action-fill"
+            source="anticipatory-action"
             layout={{}}
             paint={{
               'fill-color': ['get', 'fillColor'],
@@ -216,9 +210,9 @@ function AnticipatoryActionLayer({ layer, before }: LayersProps) {
           />
           <Layer
             beforeId={mainLayerBefore}
-            id={`anticipatory-action-${layerWindowIndex}-boundary`}
+            id="anticipatory-action-boundary"
             type="line"
-            source={`anticipatory-action-${layerWindowIndex}`}
+            source="anticipatory-action"
             paint={{
               'line-color': 'black',
             }}

@@ -31,13 +31,16 @@ interface TimelineItemProps {
 
 function TimelineItem({ item }: TimelineItemProps) {
   const classes = useTimelineItemStyles();
+  const { t } = useSafeTranslation();
 
   const color = getAAColor(item.category, item.isValid ? item.phase : 'na');
 
   return (
     <div className={classes.wrapper} style={{ border: `1px solid ${color}` }}>
       <Typography variant="h3">{item.probability}</Typography>
-      <Typography>trig. {item.trigger}</Typography>
+      <Typography>
+        {t('trig.')} {item.trigger}
+      </Typography>
       <div
         className={classes.probabilityBar}
         style={{
@@ -121,7 +124,7 @@ function Timeline({ dialogs }: TimelineProps) {
           if (!winData || Object.keys(winData.rows).length === 0) {
             return (
               <div key={win} className={classes.windowWrapper}>
-                No Data{' '}
+                {t('No Data')}{' '}
               </div>
             );
           }
@@ -135,7 +138,7 @@ function Timeline({ dialogs }: TimelineProps) {
                   {months.map(([date, label]) => (
                     <div key={date} className={classes.headColumn}>
                       <Typography className={classes.monthText}>
-                        {label}
+                        {t(label)}
                       </Typography>
                     </div>
                   ))}
@@ -196,7 +199,7 @@ function Timeline({ dialogs }: TimelineProps) {
               component="button"
               onClick={() => dialog.onclick()}
             >
-              {dialog.text}
+              {t(dialog.text)}
             </Typography>
           ))}
         </div>
