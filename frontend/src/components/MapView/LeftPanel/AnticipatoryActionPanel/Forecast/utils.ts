@@ -107,6 +107,7 @@ export const chartOptions = {
         ticks: {
           suggestedMin: 0,
           display: false,
+          stepSize: 1,
         },
       },
     ],
