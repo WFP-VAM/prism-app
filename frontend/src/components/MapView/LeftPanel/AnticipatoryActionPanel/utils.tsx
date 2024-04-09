@@ -14,6 +14,7 @@ import {
 } from '@material-ui/core';
 import { black, borderGray, cyanBlue, gray } from 'muiTheme';
 import React from 'react';
+import { useSafeTranslation } from 'i18n';
 import {
   AACategoryType,
   AAPhaseType,
@@ -42,6 +43,7 @@ export const StyledRadioLabel = withStyles({
     marginLeft: 0,
   },
 })(({ label, ...props }: Omit<FormControlLabelProps, 'control'>) => {
+  const { t } = useSafeTranslation();
   const radioGroup = useRadioGroup();
   const checked = radioGroup?.value === props.value;
 
@@ -68,7 +70,7 @@ export const StyledRadioLabel = withStyles({
               }}
             />
           ) : null}
-          {label}
+          {typeof label === 'string' ? t(label) : label}
         </span>
       }
       control={<StyledRadio />}

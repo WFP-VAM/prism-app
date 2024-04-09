@@ -183,7 +183,7 @@ function AnticipatoryActionPanel() {
                 label={t(allWindowsKey)}
               />
               {AAWindowKeys.map(x => (
-                <StyledRadioLabel key={x} value={x} label={t(x)} />
+                <StyledRadioLabel key={x} value={x} label={x} />
               ))}
             </RadioGroup>
           </FormControl>
