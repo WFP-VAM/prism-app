@@ -18,6 +18,7 @@ import {
   AAFiltersSelector,
   AAMonitoredDistrictsSelector,
   AARenderedDistrictsSelector,
+  AAWindowRangesSelector,
   setAASelectedDistrict,
   setAAView,
 } from 'context/anticipatoryActionStateSlice';
@@ -209,10 +210,13 @@ function HomeTable({ dialogs }: HomeTableProps) {
   const { selectedWindow, categories } = useSelector(AAFiltersSelector);
   const renderedDistricts = useSelector(AARenderedDistrictsSelector);
   const monitoredDistrict = useSelector(AAMonitoredDistrictsSelector);
+  const { 'Window 2': window2Range } = useSelector(AAWindowRangesSelector);
 
   React.useEffect(() => {
     dispatch(setPanelSize(PanelSize.medium));
   }, [dispatch]);
+
+  const filename = appConfig.anticipatoryActionUrl?.split('/').at(-1);
 
   const homeButtons = [
     {
@@ -220,6 +224,7 @@ function HomeTable({ dialogs }: HomeTableProps) {
       text: 'Assets',
       component: 'a',
       href: appConfig.anticipatoryActionUrl,
+      download: `${window2Range?.end}-${filename}`,
     },
     {
       startIcon: <BarChartOutlined />,

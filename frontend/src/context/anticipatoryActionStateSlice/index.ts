@@ -193,6 +193,9 @@ export const AAMarkersSelector = (state: RootState) =>
 export const AAViewSelector = (state: RootState) =>
   state.anticipatoryActionState.view;
 
+export const AAWindowRangesSelector = (state: RootState) =>
+  state.anticipatoryActionState.windowRanges;
+
 // export actions
 export const {
   setAAFilters,

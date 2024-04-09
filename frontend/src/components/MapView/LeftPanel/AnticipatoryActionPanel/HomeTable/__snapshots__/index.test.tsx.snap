@@ -309,6 +309,7 @@ exports[`renders as expected 1`] = `
       <mock-button
         classname="makeStyles-footerButton-5"
         component="a"
+        download="2023-12-01-SPI_probabilities_season_triggers.csv"
         fullwidth="true"
         href="data/mozambique/anticipatory-action/SPI_probabilities_season_triggers.csv"
         starticon="[object Object]"
