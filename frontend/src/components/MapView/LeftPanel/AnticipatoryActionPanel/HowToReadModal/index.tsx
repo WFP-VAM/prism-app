@@ -65,6 +65,9 @@ function HowToReadModal({ open, onClose }: HowToReadModalProps) {
       </DialogContent>
       <DialogActions className={classes.dialogActionsWrapper}>
         <Button
+          component="a"
+          href="mailto:anticipatory_action@wfp.org"
+          target="_blank"
           className={classes.dialogButton}
           variant="outlined"
           startIcon={<HelpOutline />}

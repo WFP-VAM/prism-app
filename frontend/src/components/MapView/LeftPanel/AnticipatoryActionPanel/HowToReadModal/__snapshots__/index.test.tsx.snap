@@ -138,7 +138,10 @@ exports[`renders actions modal 1`] = `
     >
       <mock-button
         classname="makeStyles-dialogButton-5"
+        component="a"
+        href="mailto:anticipatory_action@wfp.org"
         starticon="[object Object]"
+        target="_blank"
         variant="outlined"
       >
         <mock-typography>
