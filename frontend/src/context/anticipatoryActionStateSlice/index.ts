@@ -35,10 +35,10 @@ const initialState: AnticipatoryActionState = {
     },
   },
   markers: [],
-  selectedDistrict: 'Caia',
+  selectedDistrict: '',
   renderedDistricts: emptyWindows,
   windowRanges: { 'Window 1': undefined, 'Window 2': undefined },
-  view: AAView.Forecast,
+  view: AAView.Home,
   loading: false,
   error: null,
 };
