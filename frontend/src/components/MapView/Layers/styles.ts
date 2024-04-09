@@ -25,7 +25,7 @@ export const circlePaint = ({
           ...legend.reduce(
             (acc: string[], legendItem: LegendDefinitionItem) => [
               ...acc,
-              legendItem.label as string,
+              (legendItem.value || legendItem.label) as string,
               legendItem.color as string,
             ],
             [],
@@ -38,7 +38,7 @@ export const circlePaint = ({
         };
 
   return {
-    'circle-radius': 8,
+    'circle-radius': 5,
     'circle-opacity': opacity || 0.3,
     // TODO: maplibre: fix any
     'circle-color': circleColor as any,
