@@ -15,17 +15,10 @@
   },
   "alertFormActive": false,
   "serversUrls": {
-    "wms": [
-      "https://api.earthobservation.vam.wfp.org/ows/wms"
-    ]
+    "wms": ["https://api.earthobservation.vam.wfp.org/ows/wms"]
   },
   "map": {
-    "boundingBox": [
-      -26,
-      -1,
-      32,
-      24
-    ]
+    "boundingBox": [-26, -1, 32, 24]
   },
   "defaultDisplayBoundaries": [
     "admin_boundaries",
@@ -128,10 +121,7 @@
           ]
         }
       ],
-      "dry_periods": [
-        "days_dry",
-        "streak_dry_days"
-      ],
+      "dry_periods": ["days_dry", "streak_dry_days"],
       "extreme_rain_events": [
         {
           "group_title": "Rainfall categories:",
@@ -180,7 +170,8 @@
     "vegetation": {
       "vegetation_conditions": [
         "ndvi_dekad",
-        "ndvi_dekad_anomaly"
+        "ndvi_dekad_anomaly",
+        "crop_changes"
       ]
     },
     "temperature": {
@@ -235,26 +226,26 @@
             }
           ]
         },
-          "ch_perc3_5",
-          {
-            "group_title": "Percent of population in phase 3 or above - special populations",
-            "activate_all": false,
-            "layers": [
-              {
-                "id": "ch_idps_perc3_5",
-                "label": "IDPs",
-                "main": true
-              },
-              {
-                "id": "ch_inaccessible_perc3_5",
-                "label": "Inaccessible areas"
-              },
-              {
-                "id": "ch_urban_perc3_5",
-                "label": "Urban"
-              }
-            ]
-          }
+        "ch_perc3_5",
+        {
+          "group_title": "Percent of population in phase 3 or above - special populations",
+          "activate_all": false,
+          "layers": [
+            {
+              "id": "ch_idps_perc3_5",
+              "label": "IDPs",
+              "main": true
+            },
+            {
+              "id": "ch_inaccessible_perc3_5",
+              "label": "Inaccessible areas"
+            },
+            {
+              "id": "ch_urban_perc3_5",
+              "label": "Urban"
+            }
+          ]
+        }
       ]
     },
     "risk_analysis": {

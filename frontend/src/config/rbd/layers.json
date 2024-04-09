@@ -4821,10 +4821,7 @@
     "type": "admin_level_data",
     "path": "data/rbd/ch/urb_admin2_{YYYY_MM_DD}.json",
     "fallbackLayerKeys": ["ch_urban_phase_admin1"],
-    "dates": [
-      "2022-02-01", 
-      "2022-06-01"
-    ],
+    "dates": ["2022-02-01", "2022-06-01"],
     "validityPeriod": {
       "start_date_field": "start_date",
       "end_date_field": "end_date"
@@ -4876,10 +4873,7 @@
     "title": "Urban areas - phase classification",
     "type": "admin_level_data",
     "path": "data/rbd/ch/urb_admin1_{YYYY_MM_DD}.json",
-    "dates": [
-      "2021-02-01", 
-      "2021-06-01"
-    ],
+    "dates": ["2021-02-01", "2021-06-01"],
     "validityPeriod": {
       "start_date_field": "start_date",
       "end_date_field": "end_date"
@@ -4932,10 +4926,7 @@
     "type": "admin_level_data",
     "path": "data/rbd/ch/urb_admin2_{YYYY_MM_DD}.json",
     "fallbackLayerKeys": ["ch_urban_pop3_5_admin1"],
-    "dates": [
-      "2022-02-01", 
-      "2022-06-01"
-    ],
+    "dates": ["2022-02-01", "2022-06-01"],
     "validityPeriod": {
       "start_date_field": "start_date",
       "end_date_field": "end_date"
@@ -4997,10 +4988,7 @@
     "title": "Urban areas - population in phase 3 to 5",
     "type": "admin_level_data",
     "path": "data/rbd/ch/urb_admin1_{YYYY_MM_DD}.json",
-    "dates": [
-      "2021-02-01", 
-      "2021-06-01"
-    ],
+    "dates": ["2021-02-01", "2021-06-01"],
     "validityPeriod": {
       "start_date_field": "start_date",
       "end_date_field": "end_date"
@@ -5063,10 +5051,7 @@
     "type": "admin_level_data",
     "path": "data/rbd/ch/urb_admin2_{YYYY_MM_DD}.json",
     "fallbackLayerKeys": ["ch_urban_perc3_5_admin1"],
-    "dates": [
-      "2022-02-01", 
-      "2022-06-01"
-    ],
+    "dates": ["2022-02-01", "2022-06-01"],
     "validityPeriod": {
       "start_date_field": "start_date",
       "end_date_field": "end_date"
@@ -5157,10 +5142,7 @@
     "title": "Percent of urban population in phase 3 to 5",
     "type": "admin_level_data",
     "path": "data/rbd/ch/urb_admin1_{YYYY_MM_DD}.json",
-    "dates": [
-      "2021-02-01", 
-      "2021-06-01"
-    ],
+    "dates": ["2021-02-01", "2021-06-01"],
     "validityPeriod": {
       "start_date_field": "start_date",
       "end_date_field": "end_date"
@@ -5438,5 +5420,61 @@
         "color": "#ffc4ee"
       }
     ]
-  }  
+  },
+  "crop_changes": {
+    "title": "West Africa Crop Changes",
+    "type": "point_data",
+    "data": "data/rbd/west_africa_cropland_change_2023.json",
+    "data_field": "F2023_an_1",
+    "data_field_type": "text",
+    "opacity": 1,
+    "legend_text": "Health facilities (https://data.humdata.org/dataset/hotosm_kgz_health_facilities)",
+    "legend": [
+      {
+        "label": "Significant decrease",
+        "value": "Significant decrease",
+        "color": "#d73027"
+      },
+      {
+        "label": "Medium decrease",
+        "value": "Medium decrease",
+        "color": "#fc8d59"
+      },
+      {
+        "label": "Slight decrease",
+        "value": "Slight decrease",
+        "color": "#fc8d59"
+      },
+      {
+        "label": "No change",
+        "value": "No change",
+        "color": "#1a9850"
+      },
+      {
+        "label": "Slight increase",
+        "value": "Slight increase",
+        "color": "#fee08b"
+      },
+      {
+        "label": "Medium increase",
+        "value": "Medium increase",
+        "color": "#fc8d59"
+      },
+      {
+        "label": "Significant increase",
+        "value": "Significant increase",
+        "color": "#542788"
+      }
+    ],
+    "feature_info_props": {
+      "name": {
+        "type": "string",
+        "dataTitle": "Name"
+      },
+      "F2023_an_1": {
+        "type": "string",
+        "dataTitle": "Type"
+      }
+    }
+  }
 }

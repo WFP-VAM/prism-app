@@ -34,7 +34,12 @@ export const opacityStateSlice = createSlice({
   initialState,
   reducers: {
     setOpacity: (state, action: PayloadAction<SetOpacityParams>) => {
-      const { map, layerId, layerType, value, callback } = action.payload;
+      // eslint-disable-next-line no-console
+      console.log(action.payload);
+      const { map, layerId, layerType, value, callback } =
+        action?.payload || {};
+      // eslint-disable-next-line no-console
+      console.log({ value });
       if (!map) {
         return state;
       }
@@ -66,7 +71,7 @@ export const opacityStateSlice = createSlice({
       })();
 
       // update map
-      if (map.getLayer(mapLayerId) !== undefined) {
+      if (map.getLayer(mapLayerId) !== undefined && value !== undefined) {
         map.setPaintProperty(mapLayerId, opacityType, value);
         // force a update of the map style to ensure the change is reflected
         // see https://github.com/maplibre/maplibre-gl-js/issues/3373
