@@ -5422,48 +5422,48 @@
     ]
   },
   "crop_changes": {
-    "title": "West Africa Crop Changes",
+    "title": "Cropland change analysis (2023 vs 2022)",
     "type": "point_data",
     "data": "data/rbd/west_africa_cropland_change_2023.json",
     "data_field": "F2023_an_1",
     "data_field_type": "text",
     "opacity": 1,
-    "legend_text": "Health facilities (https://data.humdata.org/dataset/hotosm_kgz_health_facilities)",
+    "legend_text": "Cropland change analysis (2023 vs 2022)",
     "legend": [
       {
         "label": "Significant decrease",
         "value": "Significant decrease",
-        "color": "#d73027"
+        "color": "#fa1a18"
       },
       {
         "label": "Medium decrease",
         "value": "Medium decrease",
-        "color": "#fc8d59"
+        "color": "#fba12e"
       },
       {
         "label": "Slight decrease",
         "value": "Slight decrease",
-        "color": "#fc8d59"
+        "color": "#ffff43"
       },
       {
         "label": "No change",
         "value": "No change",
-        "color": "#1a9850"
+        "color": "#c5c5c5"
       },
       {
         "label": "Slight increase",
         "value": "Slight increase",
-        "color": "#fee08b"
+        "color": "#cefdba"
       },
       {
         "label": "Medium increase",
         "value": "Medium increase",
-        "color": "#fc8d59"
+        "color": "#91e038"
       },
       {
         "label": "Significant increase",
         "value": "Significant increase",
-        "color": "#542788"
+        "color": "#276719"
       }
     ],
     "feature_info_props": {
