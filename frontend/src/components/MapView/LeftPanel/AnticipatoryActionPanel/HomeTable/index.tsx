@@ -16,13 +16,15 @@ import {
 import { AAWindowKeys } from 'config/utils';
 import {
   AAFiltersSelector,
+  AAMonitoredDistrictsSelector,
   AARenderedDistrictsSelector,
   setAASelectedDistrict,
   setAAView,
 } from 'context/anticipatoryActionStateSlice';
 import { setPanelSize } from 'context/leftPanelStateSlice';
 import { PanelSize } from 'config/types';
-import { GetApp, EditOutlined, BarChartOutlined } from '@material-ui/icons';
+import { GetApp, BarChartOutlined } from '@material-ui/icons';
+import { appConfig } from 'config';
 import { AADataSeverityOrder, getAAIcon, useAACommonStyles } from '../utils';
 
 interface AreaTagProps {
@@ -206,15 +208,27 @@ function HomeTable({ dialogs }: HomeTableProps) {
   const dispatch = useDispatch();
   const { selectedWindow, categories } = useSelector(AAFiltersSelector);
   const renderedDistricts = useSelector(AARenderedDistrictsSelector);
+  const monitoredDistrict = useSelector(AAMonitoredDistrictsSelector);
 
   React.useEffect(() => {
     dispatch(setPanelSize(PanelSize.medium));
   }, [dispatch]);
 
   const homeButtons = [
-    { icon: GetApp, text: 'Assets', onClick: undefined },
-    { icon: EditOutlined, text: 'Report', onClick: undefined },
-    { icon: BarChartOutlined, text: 'Forecast', onClick: undefined },
+    {
+      startIcon: <GetApp />,
+      text: 'Assets',
+      component: 'a',
+      href: appConfig.anticipatoryActionUrl,
+    },
+    {
+      startIcon: <BarChartOutlined />,
+      text: 'Forecast',
+      onClick: () => {
+        dispatch(setAASelectedDistrict(monitoredDistrict[0]?.name));
+        dispatch(setAAView(AAView.Forecast));
+      },
+    },
   ];
 
   const headerRow: ExtendedRowProps = {
@@ -272,16 +286,15 @@ function HomeTable({ dialogs }: HomeTableProps) {
       </div>
       <div className={commonClasses.footerWrapper}>
         <div className={commonClasses.footerActionsWrapper}>
-          {homeButtons.map(x => (
+          {homeButtons.map(({ text, ...rest }) => (
             <Button
-              key={x.text}
+              key={text}
               className={commonClasses.footerButton}
               variant="outlined"
               fullWidth
-              onClick={x.onClick}
-              startIcon={<x.icon />}
+              {...rest}
             >
-              <Typography>{t(x.text)}</Typography>
+              <Typography>{t(text)}</Typography>
             </Button>
           ))}
         </div>

@@ -308,22 +308,14 @@ exports[`renders as expected 1`] = `
     >
       <mock-button
         classname="makeStyles-footerButton-5"
+        component="a"
         fullwidth="true"
+        href="data/mozambique/anticipatory-action/SPI_probabilities_season_triggers.csv"
         starticon="[object Object]"
         variant="outlined"
       >
         <mock-typography>
           Assets
-        </mock-typography>
-      </mock-button>
-      <mock-button
-        classname="makeStyles-footerButton-5"
-        fullwidth="true"
-        starticon="[object Object]"
-        variant="outlined"
-      >
-        <mock-typography>
-          Report
         </mock-typography>
       </mock-button>
       <mock-button
