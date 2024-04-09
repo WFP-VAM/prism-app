@@ -46,40 +46,42 @@ const TimelineItems = memo(
     const { t } = useSafeTranslation();
     const AAAvailableDates = useSelector(AAAvailableDatesSelector);
 
+    // Create a temporary layer for each AA window
+    const AALayers = AAAvailableDates
+      ? [
+          {
+            title: 'Window 1',
+            dateItems: AAAvailableDates['Window 1'],
+          },
+          {
+            title: 'Window 2',
+            dateItems: AAAvailableDates['Window 2'],
+          },
+        ]
+      : [];
+
+    // Replace anticipatory action unique layer by window1 and window2 layers
     // Keep anticipatory actions at the top of the timeline
     // eslint-disable-next-line fp/no-mutating-methods
-    const orderedLayers = selectedLayers.sort((a, b) => {
-      const aIsAnticipatory = a.id.includes('anticipatory_action');
-      const bIsAnticipatory = b.id.includes('anticipatory_action');
-      if (aIsAnticipatory && !bIsAnticipatory) {
-        return -1;
-      }
-      if (!aIsAnticipatory && bIsAnticipatory) {
-        return 1;
-      }
-      return 0;
-    });
-
-    const layersWithAA =
-      AAAvailableDates !== undefined
-        ? orderedLayers
-            .map(l => {
-              if (l.type !== 'anticipatory_action') {
-                return [l];
-              }
-              return [
-                {
-                  title: 'Window 1',
-                  dateItems: AAAvailableDates['Window 1'],
-                },
-                {
-                  title: 'Window 2',
-                  dateItems: AAAvailableDates['Window 2'],
-                },
-              ];
-            })
-            .flat()
-        : orderedLayers;
+    const orderedLayers = selectedLayers
+      .sort((a, b) => {
+        const aIsAnticipatory = a.id.includes('anticipatory_action');
+        const bIsAnticipatory = b.id.includes('anticipatory_action');
+        if (aIsAnticipatory && !bIsAnticipatory) {
+          return -1;
+        }
+        if (!aIsAnticipatory && bIsAnticipatory) {
+          return 1;
+        }
+        return 0;
+      })
+      .map(l => {
+        if (l.type === 'anticipatory_action') {
+          return AALayers;
+        }
+        return l;
+      })
+      .flat();
 
     // Hard coded styling for date items (first, second, and third layers)
     const DATE_ITEM_STYLING: DateItemStyle[] = [
@@ -106,7 +108,7 @@ const TimelineItems = memo(
     const getTooltipTitle = useCallback(
       (date: DateRangeType): React.JSX.Element[] => {
         const tooltipTitleArray: React.JSX.Element[] = compact(
-          layersWithAA.map((selectedLayer, layerIndex) => {
+          orderedLayers.map((selectedLayer, layerIndex) => {
             return (
               <TooltipItem
                 key={`Tootlip-${date.label}-${date.value}-${selectedLayer.title}`}
@@ -120,7 +122,7 @@ const TimelineItems = memo(
         tooltipTitleArray.unshift(<div key={date.label}>{date.label}</div>);
         return tooltipTitleArray;
       },
-      [DATE_ITEM_STYLING, layersWithAA, t],
+      [DATE_ITEM_STYLING, orderedLayers, t],
     );
 
     const timelineStartDate: string = new Date(
@@ -137,7 +139,7 @@ const TimelineItems = memo(
       };
 
       // For each selectedLayer truncate DateItem array
-      return [...layersWithAA.map(layer => layer.dateItems)].map(
+      return [...orderedLayers.map(layer => layer.dateItems)].map(
         (dateItemsForLayer: DateItem[]) => {
           const firstIndex = findLayerFirstDateIndex(dateItemsForLayer);
           if (firstIndex === -1) {
@@ -149,7 +151,7 @@ const TimelineItems = memo(
           return dateItemsForLayer.slice(firstIndex, dateItemsForLayer.length);
         },
       );
-    }, [layersWithAA, timelineStartDate]);
+    }, [orderedLayers, timelineStartDate]);
 
     // Draw a column for each date of the Timeline that start at the beginning of the year
     return (
