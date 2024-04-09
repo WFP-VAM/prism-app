@@ -158,18 +158,16 @@ const useLayers = () => {
     /*
       Only keep the dates which were duplicated the same amount of times as the amount of layers active...and convert back to array.
      */
-    return (
-      // eslint-disable-next-line fp/no-mutating-methods
-      Object.keys(
-        pickBy(
-          selectedLayerDatesDupCount,
-          dupTimes => dupTimes >= selectedLayersWithDateSupport.length,
-        ),
-        // convert back to number array after using YYYY-MM-DD strings in countBy
-      )
-        .map(dateString => new Date(dateString).setUTCHours(12, 0, 0, 0))
-        .sort()
-    );
+    // eslint-disable-next-line fp/no-mutating-methods
+    return Object.keys(
+      pickBy(
+        selectedLayerDatesDupCount,
+        dupTimes => dupTimes >= selectedLayersWithDateSupport.length,
+      ),
+      // convert back to number array after using YYYY-MM-DD strings in countBy
+    )
+      .map(dateString => new Date(dateString).setUTCHours(12, 0, 0, 0))
+      .sort((a, b) => a - b);
   }, [selectedLayerDatesDupCount, selectedLayersWithDateSupport.length]);
 
   const defaultLayer = useMemo(() => {
