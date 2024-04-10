@@ -62,7 +62,7 @@ const Legends = memo(({ classes }: LegendsProps) => {
         </IconButton>
       </Hidden>
 
-      <LegendItemsList listStyle={classes.list} />
+      {open && <LegendItemsList listStyle={classes.list} />}
     </>
   );
 });
