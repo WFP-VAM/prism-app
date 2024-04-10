@@ -111,10 +111,10 @@ function ToggleSelector({
 
 const legendSelectorOptions = [
   { value: -1, comp: <VisibilityOffIcon /> },
-  { value: 0.12, comp: <div>60%</div> },
-  { value: 0.09, comp: <div>70%</div> },
-  { value: 0.06, comp: <div>80%</div> },
-  { value: 0.03, comp: <div>90%</div> },
+  { value: 0.4, comp: <div>60%</div> },
+  { value: 0.3, comp: <div>70%</div> },
+  { value: 0.2, comp: <div>80%</div> },
+  { value: 0.1, comp: <div>90%</div> },
   { value: 0, comp: <div>100%</div> },
 ];
 
@@ -477,16 +477,15 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
                   )}
                   {legendScale >= 0 && (
                     <div
-                      style={
-                        {
-                          position: 'absolute',
-                          top: titleOverlayRef.current?.offsetHeight || 0,
-                          left: 0,
-                          width: '20px',
-                          // fontSizeAdjust accepts only number type, but only works when provided with string
-                          fontSizeAdjust: `${0.52 - legendScale}`,
-                        } as any
-                      }
+                      style={{
+                        position: 'absolute',
+                        zIndex: 2,
+                        top: titleOverlayRef?.current?.offsetHeight || 0,
+                        left: 0,
+                        width: '20px',
+                        // Use transform scale to adjust size based on legendScale
+                        transform: `scale(${1 - legendScale})`,
+                      }}
                     >
                       <LegendItemsList
                         forPrinting
