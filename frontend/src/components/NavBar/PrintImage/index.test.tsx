@@ -28,6 +28,9 @@ test('renders as expected', () => {
       renderedDistricts: { 'Window 1': {}, 'Window 2': {} },
       filters: { selectedWindow: 'All' },
     },
+    analysisResultState: {
+      isMapLayerActive: false,
+    },
   });
 
   const { container } = render(

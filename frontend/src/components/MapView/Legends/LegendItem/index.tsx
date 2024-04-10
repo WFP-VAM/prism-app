@@ -40,6 +40,7 @@ import LayerDownloadOptions from 'components/MapView/LeftPanel/layersPanel/MenuI
 import AnalysisDownloadButton from 'components/MapView/Legends//AnalysisDownloadButton';
 import { toggleRemoveLayer } from 'components/MapView/LeftPanel/layersPanel/MenuItem/MenuSwitch/SwitchItem/utils';
 import { opacitySelector, setOpacity } from 'context/opacityStateSlice';
+import { gray } from 'muiTheme';
 import LoadingBar from '../LoadingBar';
 
 // Children here is legendText
@@ -55,7 +56,8 @@ const LegendItem = memo(
     legendUrl,
     fillPattern,
     extent,
-    showOptions = true,
+    forPrinting = false,
+    showDescription = true,
   }: LegendItemProps) => {
     const dispatch = useDispatch();
     const { removeLayerFromUrl } = useUrlHistory();
@@ -213,7 +215,17 @@ const LegendItem = memo(
 
     return (
       <ListItem disableGutters dense>
-        <Paper className={classes.paper}>
+        <Paper
+          className={classes.paper}
+          elevation={forPrinting ? 0 : undefined}
+          style={
+            forPrinting
+              ? {
+                  border: `1px solid ${gray}`,
+                }
+              : undefined
+          }
+        >
           <Grid item style={{ display: 'flex' }}>
             <Typography style={{ flexGrow: 1 }} variant="h4">
               {title}
@@ -222,9 +234,13 @@ const LegendItem = memo(
           </Grid>
           <Divider />
           {renderedLegend}
-          <LoadingBar layerId={id} />
-          {renderedChildren}
-          {showOptions && (
+          {showDescription && (
+            <>
+              <LoadingBar layerId={id} />
+              {renderedChildren}
+            </>
+          )}
+          {!forPrinting && (
             <>
               <Divider style={{ margin: '8px 0px' }} />
               <Box display="flex" justifyContent="space-between">
@@ -318,7 +334,8 @@ interface LegendItemProps
   opacity: LayerType['opacity'];
   fillPattern?: 'left' | 'right';
   extent?: Extent;
-  showOptions?: boolean;
+  forPrinting?: boolean;
+  showDescription?: boolean;
 }
 
 export default withStyles(styles)(LegendItem);

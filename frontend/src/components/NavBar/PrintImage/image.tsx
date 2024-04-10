@@ -40,15 +40,13 @@ import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
 import ToggleButton from '@material-ui/lab/ToggleButton';
 import VisibilityOffIcon from '@material-ui/icons/VisibilityOff';
 import VisibilityIcon from '@material-ui/icons/Visibility';
-import { cyanBlue } from 'muiTheme';
+import { cyanBlue, gray } from 'muiTheme';
 import { SimpleBoundaryDropdown } from 'components/MapView/Layers/BoundaryDropdown';
 import { getBoundaryLayerSingleton } from 'config/utils';
 import { LayerData } from 'context/layers/layer-data';
 import { AAMarkersSelector } from 'context/anticipatoryActionStateSlice';
 import { useAAMarkerScalePercent } from 'utils/map-utils';
-import LegendItemsList, {
-  legendListId,
-} from 'components/MapView/Legends/LegendItemsList';
+import LegendItemsList from 'components/MapView/Legends/LegendItemsList';
 import {
   dateRangeSelector,
   layerDataSelector,
@@ -114,12 +112,12 @@ function ToggleSelector({
 }
 
 const legendSelectorOptions = [
-  { value: 0, comp: <VisibilityOffIcon /> },
-  { value: 60, comp: <div>60%</div> },
-  { value: 70, comp: <div>70%</div> },
-  { value: 80, comp: <div>80%</div> },
-  { value: 90, comp: <div>90%</div> },
-  { value: 100, comp: <div>100%</div> },
+  { value: -1, comp: <VisibilityOffIcon /> },
+  { value: 0.12, comp: <div>60%</div> },
+  { value: 0.09, comp: <div>70%</div> },
+  { value: 0.06, comp: <div>80%</div> },
+  { value: 0.03, comp: <div>90%</div> },
+  { value: 0, comp: <div>100%</div> },
 ];
 
 const mapWidthSelectorOptions = [
@@ -186,7 +184,7 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
   const [footerText, setFooterText] = React.useState('');
   const [elementsLoading, setElementsLoading] = React.useState(true);
   const [footerTextSize, setFooterTextSize] = React.useState(12);
-  const [legendScale, setLegendScale] = React.useState(100);
+  const [legendScale, setLegendScale] = React.useState(0);
   // the % value of the original dimensions
   const [mapDimensions, setMapDimensions] = React.useState<{
     height: number;
@@ -296,61 +294,6 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
 
         context.scale(ratio, ratio);
         context.clearRect(0, 0, canvas.width, canvas.height);
-
-        // toggle legend
-        const div = document.getElementById(legendListId);
-        if (0) {
-          if (div?.firstChild && legendScale > 0) {
-            const childElements = Array.from(div.childNodes).filter(
-              node => node.nodeType === 1,
-            ) as HTMLElement[];
-
-            const target = document.createElement('div');
-            target.style.width = '196px'; // 180px + 2*8px padding
-
-            childElements.forEach((li: HTMLElement, i) => {
-              const isLast = childElements.length - 1 === i;
-
-              const children = Array.from(li.childNodes).filter(
-                // node type 1 represents an HTMLElement
-                node => node.nodeType === 1,
-              ) as HTMLElement[];
-              const divContainer = children[0] as HTMLElement;
-
-              const contents = Array.from(divContainer.childNodes).filter(
-                node => node.nodeType === 1,
-              ) as HTMLElement[];
-
-              const container = document.createElement('div');
-              container.style.padding = '8px';
-              container.style.paddingBottom = isLast ? '8px' : '16px';
-              target.appendChild(container);
-
-              const keepDivider = isLast ? 1 : 0;
-
-              contents
-                .slice(
-                  0,
-                  toggles.fullLayerDescription
-                    ? 6 - keepDivider
-                    : 4 - keepDivider,
-                )
-                .forEach(x => container.appendChild(x.cloneNode(true)));
-            });
-
-            document.body.appendChild(target);
-
-            const c = await html2canvas(target, { useCORS: true });
-            context.drawImage(
-              c,
-              24,
-              24 + (titleOverlayRef.current?.offsetHeight || 0),
-              (target.offsetWidth * legendScale * ratio) / 100.0,
-              (target.offsetHeight * legendScale * ratio) / 100.0,
-            );
-            document.body.removeChild(target);
-          }
-        }
 
         if (toggles.scaleBar) {
           map.addControl(new maplibregl.ScaleControl({}), 'top-right');
@@ -537,16 +480,24 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
                       <div style={{ padding: '8px' }}>{footerText}</div>
                     </div>
                   )}
-                  {legendScale > 0 && (
+                  {legendScale >= 0 && (
                     <div
-                      style={{
-                        position: 'absolute',
-                        top: 0,
-                        right: 0,
-                        zIndex: 2,
-                      }}
+                      style={
+                        {
+                          position: 'absolute',
+                          top: titleOverlayRef.current?.offsetHeight || 0,
+                          left: 0,
+                          width: '20px',
+                          // fontSizeAdjust accepts only number type, but only works when provided with string
+                          fontSizeAdjust: `${0.52 - legendScale}`,
+                        } as any
+                      }
                     >
-                      <LegendItemsList showOptions={false} />
+                      <LegendItemsList
+                        forPrinting
+                        listStyle={classes.legendListStyle}
+                        showDescription={toggles.fullLayerDescription}
+                      />
                     </div>
                   )}
                   <div className={classes.mapContainer}>
@@ -815,6 +766,7 @@ const styles = (theme: Theme) =>
       textAlign: 'center',
       fontSize: '1.5rem',
       padding: '8px 0 8px 0',
+      borderBottom: `1px solid ${gray}`,
     },
     footerOverlay: {
       position: 'absolute',
@@ -824,6 +776,7 @@ const styles = (theme: Theme) =>
       color: 'black',
       backgroundColor: 'white',
       width: '100%',
+      borderTop: `1px solid ${gray}`,
     },
     formControl: {
       width: '100%',
@@ -855,6 +808,12 @@ const styles = (theme: Theme) =>
       scrollbarGutter: 'stable',
       overflow: 'auto',
       paddingRight: '15px',
+    },
+    legendListStyle: {
+      position: 'absolute',
+      top: '8px',
+      left: '8px',
+      zIndex: 2,
     },
   });
 

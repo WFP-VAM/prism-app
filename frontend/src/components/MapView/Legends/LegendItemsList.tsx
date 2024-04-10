@@ -11,11 +11,9 @@ import { BaselineLayerResult } from 'utils/analysis-utils';
 import useLayers from 'utils/layers-utils';
 import { createGetLegendGraphicUrl } from 'prism-common';
 import { useSafeTranslation } from 'i18n';
-import { List, createStyles, makeStyles } from '@material-ui/core';
+import { List } from '@material-ui/core';
 import LegendItem from './LegendItem';
 import LegendImpactResult from './LegendImpactResult';
-
-export const legendListId = 'legend-list';
 
 // Invert the colors of the legend, first color becomes last and vice versa
 export const invertLegendColors = (
@@ -30,11 +28,16 @@ export const invertLegendColors = (
 };
 
 interface LegendItemsListProps {
-  showOptions?: boolean;
+  forPrinting?: boolean;
+  listStyle?: string;
+  showDescription?: boolean;
 }
 
-function LegendItemsList({ showOptions = true }: LegendItemsListProps) {
-  const classes = useStyles();
+function LegendItemsList({
+  listStyle,
+  forPrinting = false,
+  showDescription = true,
+}: LegendItemsListProps) {
   const { t } = useSafeTranslation();
   const isAnalysisLayerActive = useSelector(isAnalysisLayerActiveSelector);
   const analysisResult = useSelector(analysisResultSelector);
@@ -99,7 +102,8 @@ function LegendItemsList({ showOptions = true }: LegendItemsListProps) {
         }
         title={analysisResult?.getTitle(t)}
         opacity={analysisLayerOpacity} // TODO: initial opacity value
-        showOptions={showOptions}
+        forPrinting={forPrinting}
+        showDescription={showDescription}
       >
         {renderedLegendImpactResult}
       </LegendItem>,
@@ -111,7 +115,8 @@ function LegendItemsList({ showOptions = true }: LegendItemsListProps) {
     invertedColorsForAnalysis,
     t,
     analysisLayerOpacity,
-    showOptions,
+    forPrinting,
+    showDescription,
     renderedLegendImpactResult,
   ]);
 
@@ -132,18 +137,20 @@ function LegendItemsList({ showOptions = true }: LegendItemsListProps) {
           opacity={layer.opacity}
           fillPattern={layer.fillPattern}
           extent={adminBoundariesExtent}
-          showOptions={showOptions}
+          forPrinting={forPrinting}
+          showDescription={showDescription}
         >
           {t(layer.legendText)}
         </LegendItem>
       );
     });
   }, [
-    adminBoundariesExtent,
-    getLayerLegendUrl,
     selectedLayers,
-    showOptions,
     t,
+    getLayerLegendUrl,
+    adminBoundariesExtent,
+    forPrinting,
+    showDescription,
   ]);
 
   const legendItems = React.useMemo(() => {
@@ -152,24 +159,7 @@ function LegendItemsList({ showOptions = true }: LegendItemsListProps) {
     );
   }, [analysisLegendItem, layersLegendItems]);
 
-  return (
-    <List id={legendListId} className={classes.list}>
-      {legendItems}
-    </List>
-  );
+  return <List className={listStyle}>{legendItems}</List>;
 }
-
-const useStyles = makeStyles(() =>
-  createStyles({
-    list: {
-      overflowX: 'hidden',
-      overflowY: 'auto',
-      maxHeight: '70vh',
-      position: 'absolute',
-      right: '1rem',
-      top: 'calc(7vh - 8px)',
-    },
-  }),
-);
 
 export default LegendItemsList;
