@@ -46,7 +46,7 @@ const Legends = memo(({ classes, extent, layers }: LegendsProps) => {
         </Hidden>
       </Button>
 
-      <LegendItemsList />
+      <LegendItemsList listStyle={classes.list} />
     </Grid>
   );
 });

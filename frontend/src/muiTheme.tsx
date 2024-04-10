@@ -6,6 +6,7 @@ const greyBlue: string = '#5A686C';
 const darkGreyBlue: string = '#2D3436';
 const white: string = '#FFFFFF';
 const lightGray = '#CCCCCC';
+export const gray = '#F1F1F1';
 export const cyanBlue = '#63B2BD';
 
 export const colors = { skyBlue, greyBlue, darkGreyBlue };
