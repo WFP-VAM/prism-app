@@ -160,7 +160,12 @@ function LegendItemsList({
   const legendItems = React.useMemo(() => {
     const AALegends =
       isAnticipatoryActionAvailable && tabValue === Panel.AnticipatoryAction
-        ? [<AALegend forPrinting={forPrinting} />]
+        ? [
+            <AALegend
+              forPrinting={forPrinting}
+              showDescription={showDescription}
+            />,
+          ]
         : [];
     return [...AALegends, ...layersLegendItems, ...analysisLegendItem].filter(
       (x): x is React.JSX.Element => x !== null,

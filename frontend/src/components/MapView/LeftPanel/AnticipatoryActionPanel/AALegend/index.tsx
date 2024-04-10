@@ -30,9 +30,13 @@ const phases = [
 
 interface AALegendProps {
   forPrinting?: boolean;
+  showDescription?: boolean;
 }
 
-function AALegend({ forPrinting = false }: AALegendProps) {
+function AALegend({
+  forPrinting = false,
+  showDescription = true,
+}: AALegendProps) {
   const classes = useStyles();
   const commonClasses = useAACommonStyles();
   const { t } = useSafeTranslation();
@@ -74,34 +78,40 @@ function AALegend({ forPrinting = false }: AALegendProps) {
             </div>
           </div>
         </div>
-        <Typography>
-          The{' '}
-          <span style={{ fontWeight: 'bold', textDecoration: 'underline' }}>
-            “Ready, Set & Go!” system
-          </span>{' '}
-          uses seasonal forecasts with longer lead time for preparedness (Ready
-          phase) and shorter lead times for activation and mobilization (Set &
-          Go! phases).
-        </Typography>
-        <Divider />
+        {showDescription && (
+          <>
+            <Typography>
+              The{' '}
+              <span style={{ fontWeight: 'bold', textDecoration: 'underline' }}>
+                “Ready, Set & Go!” system
+              </span>{' '}
+              uses seasonal forecasts with longer lead time for preparedness
+              (Ready phase) and shorter lead times for activation and
+              mobilization (Set & Go! phases).
+            </Typography>
+            <Divider />
 
-        <Typography variant="h2">{t('Districts')}</Typography>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-          <div className={classes.itemWrapper}>
+            <Typography variant="h2">{t('Districts')}</Typography>
             <div
-              style={{
-                minWidth: '2.2rem',
-                border: `1px solid ${borderGray}`,
-                borderRadius: '2px',
-              }}
-            />
-            <Typography>{t('District')}</Typography>
-          </div>
-          <div className={classes.itemWrapper}>
-            <div className={commonClasses.newTag}>{t('NEW')}</div>
-            <Typography>{t('District in new phase this month')}</Typography>
-          </div>
-        </div>
+              style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}
+            >
+              <div className={classes.itemWrapper}>
+                <div
+                  style={{
+                    minWidth: '2.2rem',
+                    border: `1px solid ${borderGray}`,
+                    borderRadius: '2px',
+                  }}
+                />
+                <Typography>{t('District')}</Typography>
+              </div>
+              <div className={classes.itemWrapper}>
+                <div className={commonClasses.newTag}>{t('NEW')}</div>
+                <Typography>{t('District in new phase this month')}</Typography>
+              </div>
+            </div>
+          </>
+        )}
       </Paper>
     </ListItem>
   );
