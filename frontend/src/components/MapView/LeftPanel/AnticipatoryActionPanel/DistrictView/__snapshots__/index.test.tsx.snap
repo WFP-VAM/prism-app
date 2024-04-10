@@ -10,7 +10,7 @@ exports[`renders as expected 1`] = `
     >
       <mock-dialogtitle>
         <div
-          class="makeStyles-titleWrapper-10"
+          class="makeStyles-titleWrapper-11"
         >
           <mock-typography
             variant="h2"
@@ -47,14 +47,14 @@ exports[`renders as expected 1`] = `
         dividers="true"
       >
         <div
-          class="makeStyles-contentWrapper-11"
+          class="makeStyles-contentWrapper-12"
         />
       </mock-dialogcontent>
       <mock-dialogactions
-        classname="makeStyles-dialogActionsWrapper-14"
+        classname="makeStyles-dialogActionsWrapper-15"
       >
         <mock-button
-          classname="makeStyles-dialogButton-15"
+          classname="makeStyles-dialogButton-16"
           starticon="[object Object]"
           variant="outlined"
         >
@@ -68,77 +68,77 @@ exports[`renders as expected 1`] = `
       class="makeStyles-districtViewWrapper-2"
     >
       <div
-        class="makeStyles-windowWrapper-16"
+        class="makeStyles-windowWrapper-17"
       >
         <div
           style="text-align: center;"
         >
           <mock-typography
-            classname="makeStyles-headerText-22"
+            classname="makeStyles-headerText-23"
             variant="h3"
           >
             Window 1
           </mock-typography>
         </div>
         <div
-          class="makeStyles-tableWrapper-17"
+          class="makeStyles-tableWrapper-18"
         >
           <div
-            class="makeStyles-headRowWrapper-19"
+            class="makeStyles-headRowWrapper-20"
           >
             <div
-              class="makeStyles-headColumn-20"
+              class="makeStyles-headColumn-21"
             >
               <mock-typography
-                classname="makeStyles-monthText-23"
+                classname="makeStyles-monthText-24"
               >
                 September
               </mock-typography>
             </div>
             <div
-              class="makeStyles-headColumn-20"
+              class="makeStyles-headColumn-21"
             >
               <mock-typography
-                classname="makeStyles-monthText-23"
+                classname="makeStyles-monthText-24"
               >
                 October
               </mock-typography>
             </div>
             <div
-              class="makeStyles-headColumn-20"
+              class="makeStyles-headColumn-21"
             >
               <mock-typography
-                classname="makeStyles-monthText-23"
+                classname="makeStyles-monthText-24"
               >
                 November
               </mock-typography>
             </div>
           </div>
           <div
-            class="makeStyles-rowWrapper-18"
+            class="makeStyles-rowWrapper-19"
           >
             <div
-              class="makeStyles-column-21"
+              class="makeStyles-column-22"
             >
               <div
-                class="makeStyles-iconWrapper-24"
+                class="makeStyles-iconWrapper-25"
               >
                 <div
-                  class="makeStyles-iconWrapper-29"
-                  style="background: rgb(255, 213, 45);"
+                  class="makeStyles-iconWrapper-30"
                 >
                   <div
-                    class="makeStyles-centerContainer-30"
+                    class="makeStyles-centerContainer-31"
                     style="border: 1px solid black; color: black;"
                   >
                     <div
-                      class="makeStyles-topTextContainer-31"
-                      style="border-bottom: 1px solid black;"
+                      class="makeStyles-topTextContainer-32"
+                      style="border-bottom: 1px solid black; background: rgb(255, 213, 45);"
                     >
                       R
                     </div>
                     <div
-                      class="makeStyles-bottomTextContainer-32"
+                      class="makeStyles-bottomTextContainer-33"
+                      style="background: rgb(255, 213, 45);"
                     >
                       MOD
                     </div>
@@ -147,27 +147,27 @@ exports[`renders as expected 1`] = `
               </div>
             </div>
             <div
-              class="makeStyles-column-21"
+              class="makeStyles-column-22"
             >
               <div
-                class="makeStyles-iconWrapper-24"
+                class="makeStyles-iconWrapper-25"
               >
                 <div
-                  class="makeStyles-iconWrapper-29"
-                  style="background: rgb(255, 213, 45);"
+                  class="makeStyles-iconWrapper-30"
                 >
                   <div
-                    class="makeStyles-centerContainer-30"
+                    class="makeStyles-centerContainer-31"
                     style="border: 1px solid black; color: black;"
                   >
                     <div
-                      class="makeStyles-topTextContainer-31"
-                      style="border-bottom: 1px solid black;"
+                      class="makeStyles-topTextContainer-32"
+                      style="border-bottom: 1px solid black; background: rgb(255, 213, 45);"
                     >
                       R
                     </div>
                     <div
-                      class="makeStyles-bottomTextContainer-32"
+                      class="makeStyles-bottomTextContainer-33"
+                      style="background: rgb(255, 213, 45);"
                     >
                       MOD
                     </div>
@@ -176,27 +176,27 @@ exports[`renders as expected 1`] = `
               </div>
             </div>
             <div
-              class="makeStyles-column-21"
+              class="makeStyles-column-22"
             >
               <div
-                class="makeStyles-iconWrapper-24"
+                class="makeStyles-iconWrapper-25"
               >
                 <div
-                  class="makeStyles-iconWrapper-29"
-                  style="background: rgb(241, 241, 241);"
+                  class="makeStyles-iconWrapper-30"
                 >
                   <div
-                    class="makeStyles-centerContainer-30"
+                    class="makeStyles-centerContainer-31"
                     style="border: 1px solid black; color: black;"
                   >
                     <div
-                      class="makeStyles-topTextContainer-31"
-                      style="border-bottom: 1px solid black;"
+                      class="makeStyles-topTextContainer-32"
+                      style="border-bottom: 1px solid black; background: rgb(241, 241, 241);"
                     >
                       na
                     </div>
                     <div
-                      class="makeStyles-bottomTextContainer-32"
+                      class="makeStyles-bottomTextContainer-33"
+                      style="background: rgb(241, 241, 241);"
                     >
                       MOD
                     </div>
@@ -206,33 +206,33 @@ exports[`renders as expected 1`] = `
             </div>
           </div>
           <div
-            class="makeStyles-rowWrapper-18"
+            class="makeStyles-rowWrapper-19"
           >
             <div
-              class="makeStyles-column-21"
+              class="makeStyles-column-22"
             />
             <div
-              class="makeStyles-column-21"
+              class="makeStyles-column-22"
             >
               <div
-                class="makeStyles-iconWrapper-24"
+                class="makeStyles-iconWrapper-25"
               >
                 <div
-                  class="makeStyles-iconWrapper-29"
-                  style="background: rgb(255, 252, 179);"
+                  class="makeStyles-iconWrapper-30"
                 >
                   <div
-                    class="makeStyles-centerContainer-30"
+                    class="makeStyles-centerContainer-31"
                     style="border: 1px solid black; color: black;"
                   >
                     <div
-                      class="makeStyles-topTextContainer-31"
-                      style="border-bottom: 1px solid black;"
+                      class="makeStyles-topTextContainer-32"
+                      style="border-bottom: 1px solid black; background: rgb(255, 252, 179);"
                     >
                       R
                     </div>
                     <div
-                      class="makeStyles-bottomTextContainer-32"
+                      class="makeStyles-bottomTextContainer-33"
+                      style="background: rgb(255, 252, 179);"
                     >
                       MIL
                     </div>
@@ -241,27 +241,27 @@ exports[`renders as expected 1`] = `
               </div>
             </div>
             <div
-              class="makeStyles-column-21"
+              class="makeStyles-column-22"
             >
               <div
-                class="makeStyles-iconWrapper-24"
+                class="makeStyles-iconWrapper-25"
               >
                 <div
-                  class="makeStyles-iconWrapper-29"
-                  style="background: rgb(255, 245, 3);"
+                  class="makeStyles-iconWrapper-30"
                 >
                   <div
-                    class="makeStyles-centerContainer-30"
+                    class="makeStyles-centerContainer-31"
                     style="border: 1px solid black; color: black;"
                   >
                     <div
-                      class="makeStyles-topTextContainer-31"
-                      style="border-bottom: 1px solid black;"
+                      class="makeStyles-topTextContainer-32"
+                      style="border-bottom: 1px solid black; background: rgb(255, 245, 3);"
                     >
                       S
                     </div>
                     <div
-                      class="makeStyles-bottomTextContainer-32"
+                      class="makeStyles-bottomTextContainer-33"
+                      style="background: rgb(255, 245, 3);"
                     >
                       MIL
                     </div>
@@ -272,7 +272,7 @@ exports[`renders as expected 1`] = `
           </div>
         </div>
         <div
-          class="makeStyles-actionsWrapper-25"
+          class="makeStyles-actionsWrapper-26"
         >
           <div
             style="text-align: center;"
@@ -284,10 +284,10 @@ exports[`renders as expected 1`] = `
             </mock-typography>
           </div>
           <div
-            class="makeStyles-actionBoxesWrapper-26"
+            class="makeStyles-actionBoxesWrapper-27"
           >
             <button
-              class="makeStyles-actionBox-27"
+              class="makeStyles-actionBox-28"
               id="2023-09-01"
               style="justify-content: center; cursor: pointer;"
               type="button"
@@ -310,7 +310,7 @@ exports[`renders as expected 1`] = `
               </mock-tooltip>
             </button>
             <button
-              class="makeStyles-actionBox-27"
+              class="makeStyles-actionBox-28"
               id="2023-10-01"
               style="justify-content: center; cursor: pointer;"
               type="button"
@@ -333,7 +333,7 @@ exports[`renders as expected 1`] = `
               </mock-tooltip>
             </button>
             <button
-              class="makeStyles-actionBox-27"
+              class="makeStyles-actionBox-28"
               id="2023-11-01"
               style="justify-content: center; cursor: pointer;"
               type="button"

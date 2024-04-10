@@ -12,8 +12,11 @@ import useLayers from 'utils/layers-utils';
 import { createGetLegendGraphicUrl } from 'prism-common';
 import { useSafeTranslation } from 'i18n';
 import { List } from '@material-ui/core';
+import { Panel, leftPanelTabValueSelector } from 'context/leftPanelStateSlice';
 import LegendItem from './LegendItem';
 import LegendImpactResult from './LegendImpactResult';
+import { isAnticipatoryActionAvailable } from '../LeftPanel/utils';
+import AALegend from '../LeftPanel/AnticipatoryActionPanel/AALegend';
 
 // Invert the colors of the legend, first color becomes last and vice versa
 export const invertLegendColors = (
@@ -43,6 +46,7 @@ function LegendItemsList({
   const analysisResult = useSelector(analysisResultSelector);
   const invertedColorsForAnalysis = useSelector(invertedColorsSelector);
   const analysisLayerOpacity = useSelector(analysisResultOpacitySelector);
+  const tabValue = useSelector(leftPanelTabValueSelector);
   const { selectedLayers, adminBoundariesExtent } = useLayers();
 
   // If legend array is empty, we fetch from remote server the legend as GetLegendGraphic request.
@@ -154,10 +158,14 @@ function LegendItemsList({
   ]);
 
   const legendItems = React.useMemo(() => {
-    return [...layersLegendItems, ...analysisLegendItem].filter(
+    const AALegends =
+      isAnticipatoryActionAvailable && tabValue === Panel.AnticipatoryAction
+        ? [<AALegend forPrinting={forPrinting} />]
+        : [];
+    return [...AALegends, ...layersLegendItems, ...analysisLegendItem].filter(
       (x): x is React.JSX.Element => x !== null,
     );
-  }, [analysisLegendItem, layersLegendItems]);
+  }, [analysisLegendItem, forPrinting, layersLegendItems, tabValue]);
 
   return <List className={listStyle}>{legendItems}</List>;
 }

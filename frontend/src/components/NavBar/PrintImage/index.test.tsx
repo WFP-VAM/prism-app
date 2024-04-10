@@ -3,6 +3,7 @@ import { render } from '@testing-library/react';
 import configureStore from 'redux-mock-store';
 import { Provider } from 'react-redux';
 import { BrowserRouter } from 'react-router-dom';
+import { Panel } from 'context/leftPanelStateSlice';
 import Download from '.';
 
 const mockStore = configureStore([]);
@@ -30,6 +31,9 @@ test('renders as expected', () => {
     },
     analysisResultState: {
       isMapLayerActive: false,
+    },
+    leftPanelState: {
+      tabValue: Panel.AnticipatoryAction,
     },
   });
 

@@ -9,14 +9,11 @@ import {
 } from '@material-ui/core';
 import { VisibilityOutlined, VisibilityOffOutlined } from '@material-ui/icons';
 import React, { useState, memo, useCallback } from 'react';
-import { LayerType } from 'config/types';
 import { useSafeTranslation } from 'i18n';
-import { Extent } from 'components/MapView/Layers/raster-utils';
-
 import { black, cyanBlue } from 'muiTheme';
 import LegendItemsList from './LegendItemsList';
 
-const Legends = memo(({ classes, extent, layers }: LegendsProps) => {
+const Legends = memo(({ classes }: LegendsProps) => {
   const { t } = useSafeTranslation();
 
   const [open, setOpen] = useState(true);
@@ -86,9 +83,6 @@ const styles = () =>
     icon: { color: 'white', fontSize: '1.5rem' },
   });
 
-export interface LegendsProps extends WithStyles<typeof styles> {
-  extent?: Extent;
-  layers: LayerType[];
-}
+export interface LegendsProps extends WithStyles<typeof styles> {}
 
 export default withStyles(styles)(Legends);

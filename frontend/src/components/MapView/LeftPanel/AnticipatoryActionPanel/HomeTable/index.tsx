@@ -36,12 +36,13 @@ interface AreaTagProps {
 
 function AreaTag({ name, isNew, onClick }: AreaTagProps) {
   const classes = useAreaTagStyles();
+  const commonClasses = useAACommonStyles();
   const { t } = useSafeTranslation();
 
   return (
     <button type="button" className={classes.areaTagWrapper} onClick={onClick}>
       <Typography>{t(name)}</Typography>
-      {isNew && <div className={classes.newTag}>{t('NEW')}</div>}
+      {isNew && <div className={commonClasses.newTag}>{t('NEW')}</div>}
     </button>
   );
 }
@@ -61,16 +62,6 @@ const useAreaTagStyles = makeStyles(() =>
       '&:hover': {
         cursor: 'pointer',
       },
-    },
-    newTag: {
-      height: '2em',
-      padding: '0 0.5em',
-      color: 'white',
-      background: '#A4A4A4',
-      fontSize: '10px',
-      borderRadius: '32px',
-      display: 'flex',
-      alignItems: 'center',
     },
   }),
 );

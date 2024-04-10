@@ -205,9 +205,7 @@ export function getAAIcon(
   phase: AAPhaseType,
   forLayer?: boolean,
 ) {
-  const background = forLayer
-    ? undefined
-    : getAAColor(category, phase, forLayer);
+  const background = getAAColor(category, phase, forLayer);
 
   const categoryData = AACategoryPhaseMap[category];
   if (categoryData.iconProps) {
@@ -268,6 +266,16 @@ export const useAACommonStyles = makeStyles(() =>
       flexDirection: 'column',
       justifyContent: 'space-between',
       padding: '0.5rem',
+    },
+    newTag: {
+      height: '2em',
+      padding: '0 0.5em',
+      color: 'white',
+      background: '#A4A4A4',
+      fontSize: '10px',
+      borderRadius: '32px',
+      display: 'flex',
+      alignItems: 'center',
     },
   }),
 );

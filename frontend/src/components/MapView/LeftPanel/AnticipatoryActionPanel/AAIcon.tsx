@@ -14,7 +14,7 @@ function AAIcon({ background, topText, bottomText, color }: AAIconProps) {
   const { t } = useSafeTranslation();
 
   return (
-    <div style={{ background }} className={classes.iconWrapper}>
+    <div className={classes.iconWrapper}>
       <div
         style={{ border: `1px solid ${color}`, color }}
         className={classes.centerContainer}
@@ -22,13 +22,16 @@ function AAIcon({ background, topText, bottomText, color }: AAIconProps) {
         <div
           style={{
             borderBottom: bottomText ? `1px solid ${color}` : undefined,
+            background,
           }}
           className={classes.topTextContainer}
         >
           {t(topText)}
         </div>
         {bottomText && (
-          <div className={classes.bottomTextContainer}>{t(bottomText)}</div>
+          <div style={{ background }} className={classes.bottomTextContainer}>
+            {t(bottomText)}
+          </div>
         )}
       </div>
     </div>
