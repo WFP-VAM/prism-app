@@ -75,7 +75,7 @@ const styles = () =>
     list: {
       overflowX: 'hidden',
       overflowY: 'auto',
-      maxHeight: '70vh',
+      maxHeight: '78vh', // same size as the left panel
       position: 'absolute',
       right: '1rem',
       top: 'calc(7vh - 8px)',
