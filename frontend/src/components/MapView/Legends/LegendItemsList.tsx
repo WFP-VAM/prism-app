@@ -170,7 +170,13 @@ function LegendItemsList({
     return [...AALegends, ...layersLegendItems, ...analysisLegendItem].filter(
       (x): x is React.JSX.Element => x !== null,
     );
-  }, [analysisLegendItem, forPrinting, layersLegendItems, tabValue]);
+  }, [
+    analysisLegendItem,
+    forPrinting,
+    layersLegendItems,
+    showDescription,
+    tabValue,
+  ]);
 
   return <List className={listStyle}>{legendItems}</List>;
 }
