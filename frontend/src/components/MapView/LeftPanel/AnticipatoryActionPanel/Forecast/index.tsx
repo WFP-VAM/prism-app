@@ -79,7 +79,9 @@ function Forecast({ dialogs }: ForecastProps) {
         <div className={classes.chartsHeader}>
           <div style={{ minWidth: '3rem' }} />
           {indexes.map(x => (
-            <Typography className={classes.label}>{t(x)}</Typography>
+            <Typography key={x} className={classes.label}>
+              {t(x)}
+            </Typography>
           ))}
           <div style={{ minWidth: '10px' }} />
         </div>
@@ -103,7 +105,7 @@ function Forecast({ dialogs }: ForecastProps) {
             .map(([sev, indexData]) => {
               const color = getAAColor(sev as AACategoryType, 'Ready');
               return (
-                <div className={classes.chartLine}>
+                <div className={classes.chartLine} key={sev}>
                   <div
                     className={classes.textWrap}
                     style={{ backgroundColor: color }}
