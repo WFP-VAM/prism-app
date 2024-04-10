@@ -44,7 +44,7 @@ import {
   ANALYSIS_REQUEST_TIMEOUT,
   fetchWithTimeout,
 } from './fetch-with-timeout';
-import { getDateFormat } from './date-utils';
+import { getFormattedDate } from './date-utils';
 
 export type BaselineLayerData = AdminLevelDataLayerData;
 
@@ -388,7 +388,11 @@ export function createLegendFromFeatureArray(
     if (statistic === AggregationOperations['Area exposed']) {
       formattedValue = `${(value * 100).toFixed(2)} %`;
     } else {
-      formattedValue = `(${Math.round(value).toLocaleString('en-US')})`;
+      // Keep decimal if delta is less than 10, otherwise round to nearest integer.
+      const keepDecimal = delta < 5;
+      formattedValue = keepDecimal
+        ? `(${value.toFixed(1)})`
+        : `(${Math.round(value).toLocaleString('en-US')})`;
     }
     /* eslint-enable fp/no-mutation */
 
@@ -710,7 +714,7 @@ export function generateAnalysisFilename(
       ? analysisResult.adminLevel
       : undefined;
 
-  const dateString = getDateFormat(selectedDate || createdAt, 'snake');
+  const dateString = getFormattedDate(selectedDate || createdAt, 'snake');
 
   return `analysis_${hazardLayerId}${
     baselineLayerId ? `_${baselineLayerId}` : ''

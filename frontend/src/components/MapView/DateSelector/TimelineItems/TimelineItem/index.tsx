@@ -41,8 +41,8 @@ const TimelineItem = memo(
           (layerDates: DateItem[], layerIndex: number) => {
             const idx = binaryFind<DateItem>(
               layerDates,
-              new Date(currentDate.value).setHours(0, 0, 0, 0),
-              (i: DateItem) => new Date(i.displayDate).setHours(0, 0, 0, 0),
+              new Date(currentDate.value).setUTCHours(0, 0, 0, 0),
+              (i: DateItem) => new Date(i.displayDate).setUTCHours(0, 0, 0, 0),
             );
             const matchingDateItemInLayer: DateItem | undefined =
               idx > -1 ? layerDates[idx] : undefined;

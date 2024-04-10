@@ -1,9 +1,5 @@
-import moment, { Moment } from 'moment';
 import { DateItem } from '../config/types';
-import {
-  DEFAULT_DATE_FORMAT,
-  DEFAULT_DATE_FORMAT_SNAKE_CASE,
-} from './name-utils';
+import { DateFormat } from './name-utils';
 
 export interface StartEndDate {
   startDate?: number;
@@ -14,18 +10,33 @@ export const datesAreEqualWithoutTime = (
   date1: number | Date,
   date2: number | Date,
 ): boolean => {
-  const d1 = new Date(date1).setHours(0, 0, 0, 0);
-  const d2 = new Date(date2).setHours(0, 0, 0, 0);
+  const d1 = new Date(date1).setUTCHours(0, 0, 0, 0);
+  const d2 = new Date(date2).setUTCHours(0, 0, 0, 0);
   return d1 === d2;
 };
 
+function diffInDays(date1: Date, date2: Date) {
+  const date1InMs = date1.getTime();
+  const date2InMs = date2.getTime();
+
+  const differenceInMs = Math.abs(date1InMs - date2InMs);
+
+  const diff = Math.floor(differenceInMs / (1000 * 60 * 60 * 24));
+
+  return diff;
+}
+
 export const generateDatesRange = (
-  startDate: Moment,
-  endDate: Moment,
+  startDate: Date,
+  endDate: Date,
 ): number[] => {
   return Array.from(
-    { length: endDate.diff(startDate, 'days') + 1 },
-    (_, index) => startDate.clone().add(index, 'days').valueOf(),
+    { length: diffInDays(startDate, endDate) + 1 },
+    (_, index) => {
+      const clone = new Date(startDate.getTime());
+      clone.setDate(startDate.getDate() + index);
+      return clone.getTime();
+    },
   );
 };
 
@@ -38,8 +49,8 @@ export const generateDateItemsRange = (
 
   return startEndDateList.flatMap(range => {
     const datesInTime: number[] = generateDatesRange(
-      moment.utc(range.startDate),
-      moment.utc(range.endDate),
+      new Date(range.startDate || 0),
+      new Date(range.endDate || 0),
     );
 
     const dateItems: DateItem[] = datesInTime.map(dateInTime => ({
@@ -99,23 +110,69 @@ export const dateStrToUpperCase = (dateStr: string): string => {
   return `${dateStr.slice(0, 1).toUpperCase()}${dateStr.slice(1)}`;
 };
 
-export const getDateFormat = (
-  date: number | string | undefined,
-  format: 'default' | 'snake',
+export const getFormattedDate = (
+  date: number | string | undefined | Date,
+  format:
+    | 'default'
+    | 'snake'
+    | 'locale'
+    | DateFormat.DefaultSnakeCase
+    | DateFormat.Default
+    | DateFormat.DateTime
+    | DateFormat.DayFirstSnakeCase
+    | DateFormat.ISO,
 ) => {
   if (date === undefined) {
     return undefined;
   }
 
+  if (format === 'locale') {
+    return new Date(date).toLocaleString('default', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+      timeZoneName: 'short',
+      hour12: false,
+    });
+  }
+
+  const jsDate = new Date(date);
+  const year = jsDate.getUTCFullYear();
+  const month = String(jsDate.getUTCMonth() + 1).padStart(2, '0');
+  const day = String(jsDate.getUTCDate()).padStart(2, '0');
+
   switch (format) {
     case 'default':
-      return moment(date).format(DEFAULT_DATE_FORMAT);
+    case DateFormat.Default:
+      return `${year}-${month}-${day}`;
     case 'snake':
-      return moment(date).format(DEFAULT_DATE_FORMAT_SNAKE_CASE);
+    case DateFormat.DefaultSnakeCase:
+      return `${year}_${month}_${day}`;
+    case DateFormat.DayFirstSnakeCase:
+      return `${day}_${month}_${year}`;
+    case DateFormat.DateTime:
+    case DateFormat.ISO: {
+      const hours = String(jsDate.getUTCHours()).padStart(2, '0');
+      const minutes = String(jsDate.getUTCMinutes()).padStart(2, '0');
+      switch (format) {
+        case DateFormat.DateTime:
+          return `${year}-${month}-${day} ${hours}:${minutes}`;
+        case DateFormat.ISO: {
+          const seconds = String(jsDate.getUTCSeconds()).padStart(2, '0');
+          return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}`;
+        }
+        default:
+          throw new Error(`Invalid format: ${format}`);
+      }
+    }
 
     default:
       throw new Error(`Invalid format: ${format}`);
   }
 };
 
-export const getMillisecondsFromISO = (date: string) => moment(date).valueOf();
+export const getTimeInMilliseconds = (date: string | number) =>
+  new Date(date).getTime();

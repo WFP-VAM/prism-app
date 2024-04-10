@@ -403,9 +403,8 @@ interface FeatureInfoProps {
 }
 
 export enum DatesPropagation {
-  FORWARD = 'forward',
-  BACKWARD = 'backward',
-  BOTH = 'both',
+  DAYS = 'days',
+  DEKAD = 'dekad',
 }
 
 export type ValidityPeriod = {
@@ -416,8 +415,9 @@ export type ValidityPeriod = {
 };
 
 export type Validity = {
-  days: number; // Number of days to include in the calendar.
   mode: DatesPropagation; // Propagation mode for dates.
+  backward: number; // Number of days/dekades backward.
+  forward: number; // Number of days/dekades forward.
 };
 
 export class WMSLayerProps extends CommonLayerProps {
@@ -463,10 +463,7 @@ enum AggregationOptions {
   PIXEL = 'pixel',
   GEOJSON = 'geojson',
 }
-enum DateTypeOptions {
-  CONTINUOUS = 'continuous',
-  SINGLE = 'single',
-}
+
 export class CompositeLayerProps extends CommonLayerProps {
   type: 'composite';
   baseUrl: string;
@@ -476,13 +473,14 @@ export class CompositeLayerProps extends CommonLayerProps {
 
   inputLayers: {
     id: LayerType['type'];
-    weight: number;
+    importance: number;
     interval: Interval;
+    key: [string, string];
+    aggregation: 'average' | 'last_dekad';
+    invert?: boolean | undefined;
   }[];
 
   aggregation: AggregationOptions;
-  interval: Interval;
-  dateType: DateTypeOptions;
   dateLayer: LayerKey; // layer to use to get dates from
   startDate: string;
 

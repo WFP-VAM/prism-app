@@ -20,8 +20,8 @@ describe('Test generateIntermediateDateItemFromValidity', () => {
         new Date('2023-12-21').setHours(12, 0),
       ],
       validity: {
-        days: 10,
-        mode: DatesPropagation.FORWARD,
+        forward: 10,
+        mode: DatesPropagation.DAYS,
       },
     };
 
@@ -168,8 +168,113 @@ describe('Test generateIntermediateDateItemFromValidity', () => {
         new Date('2023-12-11').setHours(12, 0),
       ],
       validity: {
-        days: 10,
-        mode: DatesPropagation.BACKWARD,
+        backward: 10,
+        mode: DatesPropagation.DAYS,
+      },
+    };
+    const output = generateIntermediateDateItemFromValidity(layer);
+    expect(output).toEqual([
+      {
+        displayDate: new Date('2023-11-21').setHours(12, 0),
+        queryDate: layer.dates[0],
+      },
+      {
+        displayDate: new Date('2023-11-22').setHours(12, 0),
+        queryDate: layer.dates[0],
+      },
+      {
+        displayDate: new Date('2023-11-23').setHours(12, 0),
+        queryDate: layer.dates[0],
+      },
+      {
+        displayDate: new Date('2023-11-24').setHours(12, 0),
+        queryDate: layer.dates[0],
+      },
+      {
+        displayDate: new Date('2023-11-25').setHours(12, 0),
+        queryDate: layer.dates[0],
+      },
+      {
+        displayDate: new Date('2023-11-26').setHours(12, 0),
+        queryDate: layer.dates[0],
+      },
+      {
+        displayDate: new Date('2023-11-27').setHours(12, 0),
+        queryDate: layer.dates[0],
+      },
+      {
+        displayDate: new Date('2023-11-28').setHours(12, 0),
+        queryDate: layer.dates[0],
+      },
+      {
+        displayDate: new Date('2023-11-29').setHours(12, 0),
+        queryDate: layer.dates[0],
+      },
+      {
+        displayDate: new Date('2023-11-30').setHours(12, 0),
+        queryDate: layer.dates[0],
+      },
+      {
+        displayDate: new Date('2023-12-01').setHours(12, 0),
+        queryDate: layer.dates[0],
+        isStartDate: false,
+        isEndDate: true,
+      },
+      {
+        displayDate: new Date('2023-12-02').setHours(12, 0),
+        queryDate: layer.dates[1],
+      },
+      {
+        displayDate: new Date('2023-12-03').setHours(12, 0),
+        queryDate: layer.dates[1],
+      },
+      {
+        displayDate: new Date('2023-12-04').setHours(12, 0),
+        queryDate: layer.dates[1],
+      },
+      {
+        displayDate: new Date('2023-12-05').setHours(12, 0),
+        queryDate: layer.dates[1],
+      },
+      {
+        displayDate: new Date('2023-12-06').setHours(12, 0),
+        queryDate: layer.dates[1],
+      },
+      {
+        displayDate: new Date('2023-12-07').setHours(12, 0),
+        queryDate: layer.dates[1],
+      },
+      {
+        displayDate: new Date('2023-12-08').setHours(12, 0),
+        queryDate: layer.dates[1],
+      },
+      {
+        displayDate: new Date('2023-12-09').setHours(12, 0),
+        queryDate: layer.dates[1],
+      },
+      {
+        displayDate: new Date('2023-12-10').setHours(12, 0),
+        queryDate: layer.dates[1],
+      },
+      {
+        displayDate: new Date('2023-12-11').setHours(12, 0),
+        queryDate: layer.dates[1],
+        isStartDate: false,
+        isEndDate: true,
+      },
+    ]);
+  });
+
+  test('should return correct dates with backwards propagation and dekad', () => {
+    const layer = {
+      name: 'myd11a2_taa_dekad',
+      dates: [
+        new Date('2023-12-01').setHours(12, 0),
+        new Date('2023-12-11').setHours(12, 0),
+      ],
+      validity: {
+        backward: 1,
+        mode: DatesPropagation.DEKAD,
       },
     };
     const output = generateIntermediateDateItemFromValidity(layer);
