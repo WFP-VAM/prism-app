@@ -11,5 +11,5 @@ export default {
   rawTables,
   rawReports,
   translation,
-  defaultBoundariesFile: 'zim_admin2_boundaries_v2.json',
+  defaultBoundariesFile: 'zwe_polbnda_adm3_250k_cso_dv_merged.json',
 };
