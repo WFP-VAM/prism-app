@@ -153,7 +153,7 @@ exports[`renders as expected 1`] = `
               class="MuiButtonBase-root MuiToggleButton-root MuiToggleButtonGroup-grouped MuiToggleButtonGroup-groupedHorizontal makeStyles-button-18"
               tabindex="0"
               type="button"
-              value="0"
+              value="1"
             >
               <span
                 class="MuiToggleButton-label"
@@ -169,7 +169,7 @@ exports[`renders as expected 1`] = `
               class="MuiButtonBase-root MuiToggleButton-root MuiToggleButtonGroup-grouped MuiToggleButtonGroup-groupedHorizontal makeStyles-button-18 Mui-selected"
               tabindex="0"
               type="button"
-              value="1"
+              value="0"
             >
               <span
                 class="MuiToggleButton-label"
@@ -181,20 +181,6 @@ exports[`renders as expected 1`] = `
               />
             </button>
           </div>
-        </div>
-        <div
-          class="DownloadImage-optionWrap-10"
-        >
-          <mock-typography
-            variant="h4"
-          >
-            Select admin area
-          </mock-typography>
-          <mock-circularprogress
-            color="inherit"
-            size="24"
-            style="padding: 2px;"
-          />
         </div>
         <div
           class="makeStyles-wrapper-16"
