@@ -100,7 +100,7 @@ exports[`renders as expected 1`] = `
                 </div>
               </div>
               <div
-                style="position: absolute; top: 0px; left: 0px; width: 20px; font-size-adjust: 0.52;"
+                style="position: absolute; z-index: 2; top: 0px; left: 0px; width: 20px; transform: scale(1);"
               >
                 <mock-list
                   classname="DownloadImage-legendListStyle-15"
@@ -597,7 +597,7 @@ exports[`renders as expected 1`] = `
               class="MuiButtonBase-root MuiToggleButton-root MuiToggleButtonGroup-grouped MuiToggleButtonGroup-groupedHorizontal makeStyles-button-34"
               tabindex="0"
               type="button"
-              value="0.12"
+              value="0.4"
             >
               <span
                 class="MuiToggleButton-label"
@@ -615,7 +615,7 @@ exports[`renders as expected 1`] = `
               class="MuiButtonBase-root MuiToggleButton-root MuiToggleButtonGroup-grouped MuiToggleButtonGroup-groupedHorizontal makeStyles-button-34"
               tabindex="0"
               type="button"
-              value="0.09"
+              value="0.3"
             >
               <span
                 class="MuiToggleButton-label"
@@ -633,7 +633,7 @@ exports[`renders as expected 1`] = `
               class="MuiButtonBase-root MuiToggleButton-root MuiToggleButtonGroup-grouped MuiToggleButtonGroup-groupedHorizontal makeStyles-button-34"
               tabindex="0"
               type="button"
-              value="0.06"
+              value="0.2"
             >
               <span
                 class="MuiToggleButton-label"
@@ -651,7 +651,7 @@ exports[`renders as expected 1`] = `
               class="MuiButtonBase-root MuiToggleButton-root MuiToggleButtonGroup-grouped MuiToggleButtonGroup-groupedHorizontal makeStyles-button-34"
               tabindex="0"
               type="button"
-              value="0.03"
+              value="0.1"
             >
               <span
                 class="MuiToggleButton-label"
