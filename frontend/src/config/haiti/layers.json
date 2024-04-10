@@ -3124,8 +3124,8 @@
       "styles": "rfh_16_0_300"
     },
     "validity": {
-      "days": 1,
-      "mode": "forward"
+      "forward": 1,
+      "mode": "days"
     },
     "opacity": 0.7,
     "legend_text": "CHIRPS-GEFS daily forecasts (16-day rolling)",
@@ -3222,8 +3222,8 @@
       "styles": "rfh_16_0_300"
     },
     "validity": {
-      "days": 10,
-      "mode": "forward"
+      "forward": 1,
+      "mode": "dekad"
     },
     "opacity": 0.7,
     "legend_text": "CHIRPS-GEFS global dekadal rainfall forecasts",

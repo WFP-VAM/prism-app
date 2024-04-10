@@ -29,7 +29,7 @@ import { useSelector } from 'react-redux';
 import CancelIcon from '@material-ui/icons/Cancel';
 import { mapStyle } from 'components/MapView/Map';
 import { addFillPatternImagesInMap } from 'components/MapView/Layers/AdminLevelDataLayer';
-import { getDateFormat } from 'utils/date-utils';
+import { getFormattedDate } from 'utils/date-utils';
 import useLayers from 'utils/layers-utils';
 import { appConfig, safeCountry } from 'config';
 import {
@@ -142,8 +142,8 @@ const layerDescriptionSelectorOptions = [
 ];
 
 const countryMaskSelectorOptions = [
-  { value: 0, comp: <VisibilityOffIcon /> },
-  { value: 1, comp: <VisibilityIcon /> },
+  { value: 1, comp: <VisibilityOffIcon /> },
+  { value: 0, comp: <VisibilityIcon /> },
 ];
 
 const boundaryLayer = getBoundaryLayerSingleton();
@@ -165,7 +165,7 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
   // list of toggles
   const [toggles, setToggles] = React.useState({
     fullLayerDescription: true,
-    countryMask: true,
+    countryMask: false,
     scaleBar: true,
     northArrow: true,
   });
@@ -202,10 +202,11 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
       }
       return `${t('Layers represent data')} ${
         dateRange.startDate && dateRange.endDate
-          ? `${t('from')} ${getDateFormat(dateRange.startDate, 'default')} ${t(
-              'to',
-            )} ${getDateFormat(dateRange.endDate, 'default')}`
-          : `${t('on')} ${getDateFormat(dateRange.startDate, 'default')}`
+          ? `${t('from')} ${getFormattedDate(
+              dateRange.startDate,
+              'default',
+            )} ${t('to')} ${getFormattedDate(dateRange.endDate, 'default')}`
+          : `${t('on')} ${getFormattedDate(dateRange.startDate, 'default')}`
       }. `;
     };
     return `${getDateText()} ${t(DEFAULT_FOOTER_TEXT)}`;
@@ -455,7 +456,7 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
 
   const download = (format: 'pdf' | 'jpeg' | 'png') => {
     const filename: string = `${titleText || country}_${
-      getDateFormat(dateRange.startDate, 'snake') || 'no_date'
+      getFormattedDate(dateRange.startDate, 'snake') || 'no_date'
     }`;
     const docGeneration = async () => {
       // png is generally preferred for images containing lines and text.

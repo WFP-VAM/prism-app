@@ -11,7 +11,7 @@ const f = () => {
   expect(ret).toEqual(createTableDataTestData.ret);
 };
 
-describe('createTableData utils', () => {
+describe('createTableData DATE', () => {
   afterAll(() => {
     timezoneMock.unregister();
   });
@@ -155,5 +155,120 @@ const createTableDataTestData = {
       },
     ],
     columns: ['Date', 'd1', 'd2'],
+  },
+};
+
+const f2 = () => {
+  const ret = createTableData(
+    createTableDataTestEwsData.results,
+    createTableDataTestEwsData.format,
+  );
+
+  expect(ret).toEqual(createTableDataTestEwsData.ret);
+};
+
+describe('createTableData TIME', () => {
+  afterAll(() => {
+    timezoneMock.unregister();
+  });
+
+  test('Should work with UTC', () => {
+    timezoneMock.register('UTC');
+    f2();
+  });
+
+  test('Should work with US/Pacific', () => {
+    timezoneMock.register('US/Pacific');
+    f2();
+  });
+
+  test('Should work with Etc/GMT-1', () => {
+    timezoneMock.register('Etc/GMT-1');
+    f2();
+  });
+});
+
+const createTableDataTestEwsData = {
+  results: [
+    {
+      date: 1707858456000,
+      values: {
+        measure: '3189',
+      },
+    },
+    {
+      date: 1707859263000,
+      values: {
+        measure: '2038',
+      },
+    },
+    {
+      date: 1707860069000,
+      values: {
+        measure: '1849',
+      },
+    },
+    {
+      date: 1707860886000,
+      values: {
+        measure: '1727',
+      },
+    },
+    {
+      date: 1707861693000,
+      values: {
+        measure: '567',
+      },
+    },
+    {
+      date: 1707862499000,
+      values: {
+        measure: '4244',
+      },
+    },
+    {
+      date: 1707863305000,
+      values: {
+        measure: '3660',
+      },
+    },
+  ],
+  format: TableDataFormat.TIME,
+  ret: {
+    rows: [
+      {
+        Date: 'Date',
+        d1: 'measure',
+      },
+      {
+        Date: '2024-02-13 21:07',
+        d1: '3189',
+      },
+      {
+        Date: '2024-02-13 21:21',
+        d1: '2038',
+      },
+      {
+        Date: '2024-02-13 21:34',
+        d1: '1849',
+      },
+      {
+        Date: '2024-02-13 21:48',
+        d1: '1727',
+      },
+      {
+        Date: '2024-02-13 22:01',
+        d1: '567',
+      },
+      {
+        Date: '2024-02-13 22:14',
+        d1: '4244',
+      },
+      {
+        Date: '2024-02-13 22:28',
+        d1: '3660',
+      },
+    ],
+    columns: ['Date', 'd1'],
   },
 };

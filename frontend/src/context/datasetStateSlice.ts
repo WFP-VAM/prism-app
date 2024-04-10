@@ -1,16 +1,15 @@
-import moment from 'moment';
 import { orderBy } from 'lodash';
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { Dispatch } from 'redux';
 import { ChartType, DatasetField } from 'config/types';
-import { DEFAULT_DATE_FORMAT } from 'utils/name-utils';
+import { DateFormat } from 'utils/name-utils';
 import {
   EWSSensorData,
   EWSTriggersConfig,
   fetchEWSDataPointsByLocation,
 } from 'utils/ews-utils';
 import { fetchWithTimeout } from 'utils/fetch-with-timeout';
-import { getDateFormat, getMillisecondsFromISO } from 'utils/date-utils';
+import { getFormattedDate, getTimeInMilliseconds } from 'utils/date-utils';
 import type { CreateAsyncThunkTypes, RootState } from './store';
 import { TableData } from './tableStateSlice';
 
@@ -87,8 +86,8 @@ export const createTableData = (
   results: DataItem[],
   format: TableDataFormat,
 ): TableData => {
-  const momentFormat =
-    format === TableDataFormat.DATE ? DEFAULT_DATE_FORMAT : 'YYYY-MM-DD HH:mm';
+  const dateFormat =
+    format === TableDataFormat.DATE ? DateFormat.Default : DateFormat.DateTime;
 
   const sortedRows = orderBy(results, item => item.date).map(row => {
     const valuesObj = Object.values(row.values).reduce(
@@ -100,7 +99,7 @@ export const createTableData = (
     );
 
     return {
-      [CHART_DATA_PREFIXES.date]: moment.utc(row.date).format(momentFormat),
+      [CHART_DATA_PREFIXES.date]: getFormattedDate(row.date, dateFormat),
       ...valuesObj,
     };
   });
@@ -137,7 +136,7 @@ export const loadEWSDataset = async (
     const [measureDate, value] = item.value;
 
     return {
-      date: getMillisecondsFromISO(measureDate),
+      date: getTimeInMilliseconds(measureDate),
       values: { measure: value.toString() },
     };
   });
@@ -204,7 +203,7 @@ export const fetchHDC = async (
   responseJson = await response.json();
 
   const dates: number[] = responseJson?.date?.map((date: string) =>
-    getMillisecondsFromISO(date),
+    getTimeInMilliseconds(date),
   );
 
   return dates?.map((date, index) => {
@@ -238,8 +237,8 @@ export const loadAdminBoundaryDataset = async (
   params: AdminBoundaryRequestParams,
   dispatch: Dispatch,
 ): Promise<TableData | undefined> => {
-  const endDateStr = getDateFormat(params.endDate, 'default');
-  const startDateStr = getDateFormat(params.startDate, 'default');
+  const endDateStr = getFormattedDate(params.endDate, 'default');
+  const startDateStr = getFormattedDate(params.startDate, 'default');
 
   const {
     url: hdcUrl,

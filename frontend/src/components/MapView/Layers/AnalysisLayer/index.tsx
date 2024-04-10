@@ -5,6 +5,7 @@ import { useSelector } from 'react-redux';
 import { addPopupData } from 'context/tooltipStateSlice';
 import {
   analysisResultSelector,
+  invertedColorsSelector,
   isAnalysisLayerActiveSelector,
 } from 'context/analysisResultStateSlice';
 import { legendToStops } from 'components/MapView/Layers/layer-utils';
@@ -31,6 +32,7 @@ import {
   useMapCallback,
 } from 'utils/map-utils';
 import { opacitySelector } from 'context/opacityStateSlice';
+import { invertLegendColors } from 'components/MapView/Legends';
 
 export const layerId = getLayerMapId('analysis');
 
@@ -153,7 +155,7 @@ function AnalysisLayer({ before }: { before?: string }) {
   const analysisData = useSelector(analysisResultSelector);
   const isAnalysisLayerActive = useSelector(isAnalysisLayerActiveSelector);
   const opacityState = useSelector(opacitySelector('analysis'));
-
+  const invertedColorsForAnalysis = useSelector(invertedColorsSelector);
   useMapCallback('click', layerId, undefined, onClick(analysisData));
 
   if (!analysisData || !isAnalysisLayerActive) {
@@ -182,17 +184,17 @@ function AnalysisLayer({ before }: { before?: string }) {
       ? getLayerMapId(analysisData.boundaryId)
       : before;
 
+  const legend = invertedColorsForAnalysis
+    ? invertLegendColors(analysisData.legend)
+    : analysisData.legend;
+
   return (
     <Source data={analysisData.featureCollection} type="geojson">
       <Layer
         id={layerId}
         type="fill"
         beforeId={boundary}
-        paint={fillPaintData(
-          analysisData.legend,
-          defaultProperty,
-          opacityState,
-        )}
+        paint={fillPaintData(legend, defaultProperty, opacityState)}
       />
     </Source>
   );

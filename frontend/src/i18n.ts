@@ -1,7 +1,5 @@
 import { merge } from 'lodash';
 import i18n from 'i18next';
-import Moment from 'moment';
-import { extendMoment } from 'moment-range';
 import { initReactI18next, useTranslation } from 'react-i18next';
 import { registerLocale } from 'react-datepicker';
 import { useCallback } from 'react';
@@ -14,16 +12,10 @@ import ru from 'date-fns/locale/ru';
 import mn from 'date-fns/locale/mn';
 
 import { translation } from './config';
-import 'moment/locale/km';
-import 'moment/locale/fr';
-import 'moment/locale/pt';
-import 'moment/locale/es';
-import 'moment/locale/ru';
-import 'moment/locale/mn';
 
 const TRANSLATION_DEBUG = false;
 // Register other date locales to be used by our DatePicker
-// TODO - extract registerLocale and moment/locale imports and loading into a separate file for clarity.
+// TODO - extract registerLocale  imports and loading into a separate file for clarity.
 registerLocale('en', en);
 registerLocale('fr', fr);
 registerLocale('km', km);
@@ -31,8 +23,6 @@ registerLocale('pt', pt);
 registerLocale('es', es);
 registerLocale('ru', ru);
 registerLocale('mn', mn);
-export const moment = extendMoment(Moment as any);
-moment.locale('en');
 
 export type i18nTranslator = typeof i18n['t'];
 
@@ -122,5 +112,15 @@ export function useSafeTranslation(): {
 export function isEnglishLanguageSelected(lang: typeof i18n): boolean {
   return lang.resolvedLanguage === 'en';
 }
+
+export const locales = {
+  en,
+  fr,
+  km,
+  pt,
+  es,
+  ru,
+  mn,
+};
 
 export default i18n;
