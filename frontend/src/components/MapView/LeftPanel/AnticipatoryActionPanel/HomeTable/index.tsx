@@ -142,6 +142,7 @@ const useRowStyles = makeStyles(() =>
       flexDirection: 'row',
       justifyContent: 'space-between',
       padding: '0.125rem 0.5rem',
+      paddingRight: 0,
     },
     iconCol: { width: '3rem', minHeight: '4rem' },
     windowBackground: {
@@ -312,8 +313,22 @@ const useHomeTableStyles = makeStyles(() =>
       width: PanelSize.medium,
       background: gray,
       padding: '0.5rem 0',
-      overflow: 'scroll',
       overflowY: 'scroll',
+      // Browser-specific properties for forcing scrollbar visibility and styling
+      '&::-webkit-scrollbar': {
+        width: '0.5rem',
+        height: '0.5rem',
+      },
+      '&::-webkit-scrollbar-thumb': {
+        background: '#888',
+        borderRadius: '0.25rem', // Rounded corners for the scrollbar thumb
+      },
+      '&::-webkit-scrollbar-thumb:hover': {
+        background: '#555',
+      },
+      '&::-webkit-scrollbar-track': {
+        borderRadius: '0.25rem', // Rounded corners for the scrollbar track
+      },
     },
   }),
 );
