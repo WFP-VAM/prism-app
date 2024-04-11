@@ -66,7 +66,7 @@ function WindowColumn({
   return (
     <div className={classes.windowWrapper}>
       <div style={{ textAlign: 'center' }}>
-        <Typography variant="h3" className={classes.headerText}>
+        <Typography variant="h4" className={classes.headerText}>
           {t(win)}
         </Typography>
       </div>

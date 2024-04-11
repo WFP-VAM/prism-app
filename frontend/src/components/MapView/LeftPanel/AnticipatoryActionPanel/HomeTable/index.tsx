@@ -88,7 +88,7 @@ function Row({ iconContent, windows, header }: RowProps) {
                 header.length > 1 ? 'calc(50% - 1.75rem)' : 'calc(100% - 3rem)',
             }}
           >
-            <Typography variant="h3" className={classes.headerText}>
+            <Typography variant="h4" className={classes.headerText}>
               {t(name)}
             </Typography>
           </div>
