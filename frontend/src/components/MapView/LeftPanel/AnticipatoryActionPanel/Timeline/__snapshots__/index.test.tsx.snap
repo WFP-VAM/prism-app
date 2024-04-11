@@ -10,7 +10,7 @@ exports[`renders as expected 1`] = `
     >
       <mock-typography
         classname="makeStyles-windowHeader-18"
-        variant="h3"
+        variant="h4"
       >
         Window 1
       </mock-typography>

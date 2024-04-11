@@ -171,7 +171,7 @@ const useWindowColumnStyles = makeStyles(() =>
     windowWrapper: {
       display: 'flex',
       flexDirection: 'column',
-      padding: '0.5rem 0.25rem',
+      padding: '0rem 0.25rem',
     },
     tableWrapper: { display: 'flex', flexDirection: 'column', gap: '2px' },
     rowWrapper: {

@@ -132,7 +132,7 @@ function Timeline({ dialogs }: TimelineProps) {
 
           return (
             <div key={win} className={classes.windowWrapper}>
-              <Typography variant="h3" className={commonClasses.windowHeader}>
+              <Typography variant="h4" className={commonClasses.windowHeader}>
                 {t(win)}
               </Typography>
               <div className={classes.tableWrapper}>
