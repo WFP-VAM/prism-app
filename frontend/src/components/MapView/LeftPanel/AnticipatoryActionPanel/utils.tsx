@@ -261,6 +261,7 @@ export const useAACommonStyles = makeStyles(() =>
       flexDirection: 'row',
       justifyContent: 'space-between',
       padding: '0.5rem',
+      paddingTop: 0,
     },
     footerButton: { borderColor: cyanBlue, color: black },
     footerDialog: {
