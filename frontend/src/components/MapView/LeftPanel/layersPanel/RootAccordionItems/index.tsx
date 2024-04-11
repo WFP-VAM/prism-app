@@ -16,7 +16,7 @@ const RootAccordionItems = () => {
   });
 
   return (
-    <>
+    <div style={{ padding: '0.5rem' }}>
       {layersMenuItems.map((menuItem: MenuItemType) => {
         return (
           <MenuItem
@@ -28,7 +28,7 @@ const RootAccordionItems = () => {
           />
         );
       })}
-    </>
+    </div>
   );
 };
 
