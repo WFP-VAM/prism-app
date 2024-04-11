@@ -291,5 +291,13 @@ export const useAACommonStyles = makeStyles(() =>
       display: 'flex',
       alignItems: 'center',
     },
+    windowHeader: {
+      fontWeight: 'bold',
+      textTransform: 'uppercase',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      marginBottom: '0.5rem',
+    },
   }),
 );

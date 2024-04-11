@@ -6,15 +6,15 @@ exports[`renders as expected 1`] = `
     class="makeStyles-tableWrapper-1"
   >
     <div
-      class="makeStyles-rowWrapper-10"
+      class="makeStyles-rowWrapper-11"
       style="height: 1.5rem;"
     >
       <div
-        class="makeStyles-iconCol-11"
+        class="makeStyles-iconCol-12"
       />
       <div>
         <mock-typography
-          classname="makeStyles-headerText-14"
+          classname="makeStyles-windowHeader-10"
           variant="h3"
         >
           Window 1
@@ -22,10 +22,10 @@ exports[`renders as expected 1`] = `
       </div>
     </div>
     <div
-      class="makeStyles-rowWrapper-10"
+      class="makeStyles-rowWrapper-11"
     >
       <div
-        class="makeStyles-iconCol-11"
+        class="makeStyles-iconCol-12"
       >
         <div
           class="makeStyles-iconWrapper-16"
@@ -52,10 +52,10 @@ exports[`renders as expected 1`] = `
       </div>
       <div>
         <div
-          class="makeStyles-windowBackground-12"
+          class="makeStyles-windowBackground-13"
         >
           <div
-            class="makeStyles-tagWrapper-13"
+            class="makeStyles-tagWrapper-14"
           >
             <mock-typography
               classname="makeStyles-emptyText-15"
@@ -69,10 +69,10 @@ exports[`renders as expected 1`] = `
       </div>
     </div>
     <div
-      class="makeStyles-rowWrapper-10"
+      class="makeStyles-rowWrapper-11"
     >
       <div
-        class="makeStyles-iconCol-11"
+        class="makeStyles-iconCol-12"
       >
         <div
           class="makeStyles-iconWrapper-16"
@@ -99,10 +99,10 @@ exports[`renders as expected 1`] = `
       </div>
       <div>
         <div
-          class="makeStyles-windowBackground-12"
+          class="makeStyles-windowBackground-13"
         >
           <div
-            class="makeStyles-tagWrapper-13"
+            class="makeStyles-tagWrapper-14"
           >
             <mock-typography
               classname="makeStyles-emptyText-15"
@@ -116,10 +116,10 @@ exports[`renders as expected 1`] = `
       </div>
     </div>
     <div
-      class="makeStyles-rowWrapper-10"
+      class="makeStyles-rowWrapper-11"
     >
       <div
-        class="makeStyles-iconCol-11"
+        class="makeStyles-iconCol-12"
       >
         <div
           class="makeStyles-iconWrapper-16"
@@ -146,10 +146,10 @@ exports[`renders as expected 1`] = `
       </div>
       <div>
         <div
-          class="makeStyles-windowBackground-12"
+          class="makeStyles-windowBackground-13"
         >
           <div
-            class="makeStyles-tagWrapper-13"
+            class="makeStyles-tagWrapper-14"
           >
             <mock-typography
               classname="makeStyles-emptyText-15"
@@ -163,10 +163,10 @@ exports[`renders as expected 1`] = `
       </div>
     </div>
     <div
-      class="makeStyles-rowWrapper-10"
+      class="makeStyles-rowWrapper-11"
     >
       <div
-        class="makeStyles-iconCol-11"
+        class="makeStyles-iconCol-12"
       >
         <div
           class="makeStyles-iconWrapper-16"
@@ -193,10 +193,10 @@ exports[`renders as expected 1`] = `
       </div>
       <div>
         <div
-          class="makeStyles-windowBackground-12"
+          class="makeStyles-windowBackground-13"
         >
           <div
-            class="makeStyles-tagWrapper-13"
+            class="makeStyles-tagWrapper-14"
           >
             <button
               class="makeStyles-areaTagWrapper-20"
@@ -211,10 +211,10 @@ exports[`renders as expected 1`] = `
       </div>
     </div>
     <div
-      class="makeStyles-rowWrapper-10"
+      class="makeStyles-rowWrapper-11"
     >
       <div
-        class="makeStyles-iconCol-11"
+        class="makeStyles-iconCol-12"
       >
         <div
           class="makeStyles-iconWrapper-16"
@@ -241,10 +241,10 @@ exports[`renders as expected 1`] = `
       </div>
       <div>
         <div
-          class="makeStyles-windowBackground-12"
+          class="makeStyles-windowBackground-13"
         >
           <div
-            class="makeStyles-tagWrapper-13"
+            class="makeStyles-tagWrapper-14"
           >
             <mock-typography
               classname="makeStyles-emptyText-15"
@@ -258,10 +258,10 @@ exports[`renders as expected 1`] = `
       </div>
     </div>
     <div
-      class="makeStyles-rowWrapper-10"
+      class="makeStyles-rowWrapper-11"
     >
       <div
-        class="makeStyles-iconCol-11"
+        class="makeStyles-iconCol-12"
       >
         <div
           class="makeStyles-iconWrapper-16"
@@ -288,10 +288,10 @@ exports[`renders as expected 1`] = `
       </div>
       <div>
         <div
-          class="makeStyles-windowBackground-12"
+          class="makeStyles-windowBackground-13"
         >
           <div
-            class="makeStyles-tagWrapper-13"
+            class="makeStyles-tagWrapper-14"
           >
             <button
               class="makeStyles-areaTagWrapper-20"

@@ -74,6 +74,7 @@ export interface RowProps {
 
 function Row({ iconContent, windows, header }: RowProps) {
   const classes = useRowStyles();
+  const commonClasses = useAACommonStyles();
   const { t } = useSafeTranslation();
 
   if (header) {
@@ -88,7 +89,7 @@ function Row({ iconContent, windows, header }: RowProps) {
                 header.length > 1 ? 'calc(50% - 1.75rem)' : 'calc(100% - 3rem)',
             }}
           >
-            <Typography variant="h3" className={classes.headerText}>
+            <Typography variant="h3" className={commonClasses.windowHeader}>
               {t(name)}
             </Typography>
           </div>
@@ -155,14 +156,6 @@ const useRowStyles = makeStyles(() =>
       flexWrap: 'wrap',
       justifyContent: 'flex-start',
       gap: '0.5em',
-    },
-    headerText: {
-      fontWeight: 'bold',
-      textTransform: 'uppercase',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      marginBottom: '0.5rem',
     },
     emptyText: {
       color: borderGray,
