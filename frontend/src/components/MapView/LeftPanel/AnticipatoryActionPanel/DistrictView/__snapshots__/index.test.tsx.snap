@@ -305,6 +305,7 @@ exports[`renders as expected 1`] = `
                     aria-hidden="true"
                     class="MuiSvgIcon-root"
                     focusable="false"
+                    style="font-size: 1rem;"
                     viewBox="0 0 24 24"
                   >
                     <path
@@ -328,6 +329,7 @@ exports[`renders as expected 1`] = `
                     aria-hidden="true"
                     class="MuiSvgIcon-root"
                     focusable="false"
+                    style="font-size: 1rem;"
                     viewBox="0 0 24 24"
                   >
                     <path
@@ -351,6 +353,7 @@ exports[`renders as expected 1`] = `
                     aria-hidden="true"
                     class="MuiSvgIcon-root"
                     focusable="false"
+                    style="font-size: 1rem;"
                     viewBox="0 0 24 24"
                   >
                     <path

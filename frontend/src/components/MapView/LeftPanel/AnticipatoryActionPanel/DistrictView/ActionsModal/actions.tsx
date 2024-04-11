@@ -26,8 +26,10 @@ import {
 } from 'context/anticipatoryActionStateSlice/types';
 import { AAWindowKeys } from 'config/utils';
 
+const IconSize = '1rem';
+
 const FontAwesomeIconWrap = (props: FontAwesomeIconProps) => (
-  <FontAwesomeIcon fontSize="1.5rem" {...props} />
+  <FontAwesomeIcon fontSize={IconSize} {...props} />
 );
 
 export interface Action {
@@ -37,9 +39,9 @@ export interface Action {
 
 const DoubleIcon = (props: FontAwesomeIconProps) => (
   <div style={{ display: 'flex' }}>
-    <FontAwesomeIcon fontSize="1rem" {...props} />
+    <FontAwesomeIcon fontSize={IconSize} {...props} />
     <FontAwesomeIcon
-      fontSize="1rem"
+      fontSize={IconSize}
       style={{ paddingTop: '0.5rem', marginLeft: '-0.2rem' }}
       {...props}
     />
@@ -50,7 +52,7 @@ const DoubleIcon = (props: FontAwesomeIconProps) => (
 export const AActions = {
   warnings: {
     name: 'Dissemination of early warning messages',
-    icon: <MarkunreadOutlined />,
+    icon: <MarkunreadOutlined style={{ fontSize: IconSize }} />,
   },
   seeds: {
     name: 'Distribution of seeds for re-sowing',
@@ -60,7 +62,10 @@ export const AActions = {
     name: 'Distribution of seeds and vegetative material for the second season',
     icon: <DoubleIcon icon={faSeedling} />,
   },
-  waterHoles: { name: 'Rehabilitation of boreholes', icon: <LocalDrink /> },
+  waterHoles: {
+    name: 'Rehabilitation of boreholes',
+    icon: <LocalDrink style={{ fontSize: IconSize }} />,
+  },
   multiUse: {
     name: 'Transform boreholes into multi-use systems',
     icon: <FontAwesomeIconWrap icon={faPersonDigging} />,
@@ -84,7 +89,7 @@ export const AActions = {
   schoolLunch: { name: 'School lunches', icon: <School /> },
   procurement: {
     name: 'Launching tenders and other Procurement procedures',
-    icon: <AccountTree />,
+    icon: <AccountTree style={{ fontSize: IconSize }} />,
   },
   contracts: {
     name: 'Signing contracts and mobilization of assets',
@@ -92,11 +97,11 @@ export const AActions = {
   },
   naMild: {
     name: 'No anticipatory action linked to Mild levels',
-    icon: <Block />,
+    icon: <Block style={{ fontSize: IconSize }} />,
   },
   na: {
     name: 'No action',
-    icon: <Block />,
+    icon: <Block style={{ fontSize: IconSize }} />,
   },
 };
 

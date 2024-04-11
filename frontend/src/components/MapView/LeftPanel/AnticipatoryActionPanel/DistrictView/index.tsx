@@ -243,7 +243,8 @@ const useWindowColumnStyles = makeStyles(() =>
       flexDirection: 'column',
       alignItems: 'center',
       gap: '0.5rem',
-      paddingTop: '0.2rem',
+      paddingTop: '0.8rem',
+      paddingBottom: '0.8rem',
       border: 'none',
     },
     noDataText: {

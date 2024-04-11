@@ -56,6 +56,7 @@ exports[`renders actions modal 1`] = `
               aria-hidden="true"
               class="MuiSvgIcon-root"
               focusable="false"
+              style="font-size: 1rem;"
               viewBox="0 0 24 24"
             >
               <path
@@ -81,7 +82,7 @@ exports[`renders actions modal 1`] = `
               data-icon="seedling"
               data-prefix="fas"
               focusable="false"
-              font-size="1.5rem"
+              font-size="1rem"
               role="img"
               viewBox="0 0 512 512"
               xmlns="http://www.w3.org/2000/svg"
@@ -158,6 +159,7 @@ exports[`renders actions modal 1`] = `
               aria-hidden="true"
               class="MuiSvgIcon-root"
               focusable="false"
+              style="font-size: 1rem;"
               viewBox="0 0 24 24"
             >
               <path
@@ -183,7 +185,7 @@ exports[`renders actions modal 1`] = `
               data-icon="person-digging"
               data-prefix="fas"
               focusable="false"
-              font-size="1.5rem"
+              font-size="1rem"
               role="img"
               viewBox="0 0 576 512"
               xmlns="http://www.w3.org/2000/svg"
@@ -212,7 +214,7 @@ exports[`renders actions modal 1`] = `
               data-icon="cow"
               data-prefix="fas"
               focusable="false"
-              font-size="1.5rem"
+              font-size="1rem"
               role="img"
               viewBox="0 0 640 512"
               xmlns="http://www.w3.org/2000/svg"
@@ -241,7 +243,7 @@ exports[`renders actions modal 1`] = `
               data-icon="syringe"
               data-prefix="fas"
               focusable="false"
-              font-size="1.5rem"
+              font-size="1rem"
               role="img"
               viewBox="0 0 512 512"
               xmlns="http://www.w3.org/2000/svg"
@@ -270,7 +272,7 @@ exports[`renders actions modal 1`] = `
               data-icon="plate-wheat"
               data-prefix="fas"
               focusable="false"
-              font-size="1.5rem"
+              font-size="1rem"
               role="img"
               viewBox="0 0 512 512"
               xmlns="http://www.w3.org/2000/svg"
@@ -299,7 +301,7 @@ exports[`renders actions modal 1`] = `
               data-icon="people-group"
               data-prefix="fas"
               focusable="false"
-              font-size="1.5rem"
+              font-size="1rem"
               role="img"
               viewBox="0 0 640 512"
               xmlns="http://www.w3.org/2000/svg"
@@ -349,6 +351,7 @@ exports[`renders actions modal 1`] = `
               aria-hidden="true"
               class="MuiSvgIcon-root"
               focusable="false"
+              style="font-size: 1rem;"
               viewBox="0 0 24 24"
             >
               <path
@@ -374,7 +377,7 @@ exports[`renders actions modal 1`] = `
               data-icon="handshake"
               data-prefix="fas"
               focusable="false"
-              font-size="1.5rem"
+              font-size="1rem"
               role="img"
               viewBox="0 0 640 512"
               xmlns="http://www.w3.org/2000/svg"
@@ -401,6 +404,7 @@ exports[`renders actions modal 1`] = `
               aria-hidden="true"
               class="MuiSvgIcon-root"
               focusable="false"
+              style="font-size: 1rem;"
               viewBox="0 0 24 24"
             >
               <path
@@ -424,6 +428,7 @@ exports[`renders actions modal 1`] = `
               aria-hidden="true"
               class="MuiSvgIcon-root"
               focusable="false"
+              style="font-size: 1rem;"
               viewBox="0 0 24 24"
             >
               <path
