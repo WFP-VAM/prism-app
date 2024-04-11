@@ -187,14 +187,14 @@ const useWindowColumnStyles = makeStyles(() =>
       background: 'white',
     },
     headColumn: {
-      width: '5.2rem',
+      width: '4.6rem',
       padding: '0.1rem 0.25rem',
       display: 'flex',
       justifyContent: 'center',
       alignItems: 'center',
     },
     column: {
-      width: '5.2rem',
+      width: '4.6rem',
       height: '3.2rem',
       padding: '0.1rem 0.25rem',
       display: 'flex',
@@ -233,7 +233,7 @@ const useWindowColumnStyles = makeStyles(() =>
     },
     actionBox: {
       height: '6.2rem',
-      width: '5.2rem',
+      width: '4.6rem',
       margin: '0.1rem 0.25rem',
       background: 'white',
       borderRadius: '4px',
