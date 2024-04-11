@@ -39,6 +39,9 @@ test('renders as expected', () => {
       panelSize: PanelSize.medium,
     },
     serverState: { availableDates: {}, loading: false },
+    anticipatoryActionState: {
+      availableDates: undefined,
+    },
   });
 
   const { container } = render(

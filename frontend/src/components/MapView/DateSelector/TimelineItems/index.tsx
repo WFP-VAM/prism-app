@@ -14,9 +14,19 @@ import {
   DateCompatibleLayerWithDateItems,
   TIMELINE_ITEM_WIDTH,
 } from 'components/MapView/DateSelector/utils';
+import { useSelector } from 'react-redux';
+import { AAAvailableDatesSelector } from 'context/anticipatoryActionStateSlice';
 import TimelineItem from './TimelineItem';
 import TimelineLabel from './TimelineLabel';
 import TooltipItem from './TooltipItem';
+import {
+  DARK_BLUE_HEX,
+  DARK_GREEN_HEX,
+  DARK_ORANGE_HEX,
+  LIGHT_BLUE_HEX,
+  LIGHT_GREEN_HEX,
+  LIGHT_ORANGE_HEX,
+} from './utils';
 
 type DateItemStyle = {
   class: string;
@@ -24,15 +34,6 @@ type DateItemStyle = {
   layerDirectionClass?: string;
   emphasis?: string;
 };
-
-export const LIGHT_BLUE_HEX = '#C0E8FF';
-const DARK_BLUE_HEX = '#00A3FF';
-
-export const LIGHT_GREEN_HEX = '#B5F8BB';
-const DARK_GREEN_HEX = '#68CC71';
-
-const LIGHT_ORANGE_HEX = '#F9CEC1';
-const DARK_ORANGE_HEX = '#FF9473';
 
 const TimelineItems = memo(
   ({
@@ -43,20 +44,44 @@ const TimelineItems = memo(
     selectedLayers,
   }: TimelineItemsProps) => {
     const { t } = useSafeTranslation();
+    const AAAvailableDates = useSelector(AAAvailableDatesSelector);
 
+    // Create a temporary layer for each AA window
+    const AALayers = AAAvailableDates
+      ? [
+          {
+            title: 'Window 1',
+            dateItems: AAAvailableDates['Window 1'],
+          },
+          {
+            title: 'Window 2',
+            dateItems: AAAvailableDates['Window 2'],
+          },
+        ]
+      : [];
+
+    // Replace anticipatory action unique layer by window1 and window2 layers
     // Keep anticipatory actions at the top of the timeline
     // eslint-disable-next-line fp/no-mutating-methods
-    const orderedLayers = selectedLayers.sort((a, b) => {
-      const aIsAnticipatory = a.id.includes('anticipatory_action');
-      const bIsAnticipatory = b.id.includes('anticipatory_action');
-      if (aIsAnticipatory && !bIsAnticipatory) {
-        return -1;
-      }
-      if (!aIsAnticipatory && bIsAnticipatory) {
-        return 1;
-      }
-      return 0;
-    });
+    const orderedLayers = selectedLayers
+      .sort((a, b) => {
+        const aIsAnticipatory = a.id.includes('anticipatory_action');
+        const bIsAnticipatory = b.id.includes('anticipatory_action');
+        if (aIsAnticipatory && !bIsAnticipatory) {
+          return -1;
+        }
+        if (!aIsAnticipatory && bIsAnticipatory) {
+          return 1;
+        }
+        return 0;
+      })
+      .map(l => {
+        if (l.type === 'anticipatory_action') {
+          return AALayers;
+        }
+        return l;
+      })
+      .flat();
 
     // Hard coded styling for date items (first, second, and third layers)
     const DATE_ITEM_STYLING: DateItemStyle[] = [

@@ -39,12 +39,13 @@ export enum AAView {
   Home = 'home',
   District = 'district',
   Timeline = 'timeline',
+  Forecast = 'forecast',
 }
 
 export type AnticipatoryActionState = {
   data: Record<typeof AAWindowKeys[number], AnticipatoryActionData>;
   // availableDates used to update layer available dates after csv processed
-  availableDates?: { [windowKey: string]: DateItem[] };
+  availableDates?: Record<typeof AAWindowKeys[number], DateItem[]> | undefined;
   monitoredDistricts: { name: string; vulnerability: Vulnerability }[];
   filters: {
     selectedDate: string | undefined;

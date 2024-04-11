@@ -8,6 +8,12 @@ exports[`renders as expected 1`] = `
     <div
       class="makeStyles-windowWrapper-2"
     >
+      <mock-typography
+        classname="makeStyles-windowHeader-18"
+        variant="h4"
+      >
+        Window 1
+      </mock-typography>
       <div
         class="makeStyles-tableWrapper-3"
       >
@@ -61,21 +67,22 @@ exports[`renders as expected 1`] = `
             class="makeStyles-iconColumn-6"
           >
             <div
-              class="makeStyles-iconWrapper-17"
+              class="makeStyles-iconWrapper-19"
               style="background: rgb(255, 137, 52);"
             >
               <div
-                class="makeStyles-centerContainer-18"
+                class="makeStyles-centerContainer-20"
                 style="border: 1px solid black; color: black;"
               >
                 <div
-                  class="makeStyles-topTextContainer-19"
-                  style="border-bottom: 1px solid black;"
+                  class="makeStyles-topTextContainer-21"
+                  style="border-bottom: 1px solid black; background: rgb(255, 137, 52);"
                 >
                   S
                 </div>
                 <div
-                  class="makeStyles-bottomTextContainer-20"
+                  class="makeStyles-bottomTextContainer-22"
+                  style="background: rgb(255, 137, 52);"
                 >
                   MOD
                 </div>
@@ -92,7 +99,7 @@ exports[`renders as expected 1`] = `
             class="makeStyles-column-8"
           >
             <div
-              class="makeStyles-wrapper-21"
+              class="makeStyles-wrapper-23"
               style="border: 1px solid #f1f1f1;"
             >
               <mock-typography
@@ -101,15 +108,16 @@ exports[`renders as expected 1`] = `
                 0.25
               </mock-typography>
               <mock-typography>
-                trig. 
+                trig.
+                 
                 0.26
               </mock-typography>
               <div
-                class="makeStyles-probabilityBar-22"
+                class="makeStyles-probabilityBar-24"
                 style="background-color: rgb(241, 241, 241); width: 25%;"
               />
               <div
-                class="makeStyles-triggerBar-23"
+                class="makeStyles-triggerBar-25"
                 style="width: 26%;"
               />
               <mock-typography
@@ -123,7 +131,7 @@ exports[`renders as expected 1`] = `
             class="makeStyles-column-8"
           >
             <div
-              class="makeStyles-wrapper-21"
+              class="makeStyles-wrapper-23"
               style="border: 1px solid #f1f1f1;"
             >
               <mock-typography
@@ -132,15 +140,16 @@ exports[`renders as expected 1`] = `
                 0.22
               </mock-typography>
               <mock-typography>
-                trig. 
+                trig.
+                 
                 0.3
               </mock-typography>
               <div
-                class="makeStyles-probabilityBar-22"
+                class="makeStyles-probabilityBar-24"
                 style="background-color: rgb(241, 241, 241); width: 22%;"
               />
               <div
-                class="makeStyles-triggerBar-23"
+                class="makeStyles-triggerBar-25"
                 style="width: 30%;"
               />
               <mock-typography
@@ -158,21 +167,22 @@ exports[`renders as expected 1`] = `
             class="makeStyles-iconColumn-6"
           >
             <div
-              class="makeStyles-iconWrapper-17"
+              class="makeStyles-iconWrapper-19"
               style="background: rgb(255, 213, 45);"
             >
               <div
-                class="makeStyles-centerContainer-18"
+                class="makeStyles-centerContainer-20"
                 style="border: 1px solid black; color: black;"
               >
                 <div
-                  class="makeStyles-topTextContainer-19"
-                  style="border-bottom: 1px solid black;"
+                  class="makeStyles-topTextContainer-21"
+                  style="border-bottom: 1px solid black; background: rgb(255, 213, 45);"
                 >
                   R
                 </div>
                 <div
-                  class="makeStyles-bottomTextContainer-20"
+                  class="makeStyles-bottomTextContainer-22"
+                  style="background: rgb(255, 213, 45);"
                 >
                   MOD
                 </div>
@@ -186,7 +196,7 @@ exports[`renders as expected 1`] = `
             class="makeStyles-column-8"
           >
             <div
-              class="makeStyles-wrapper-21"
+              class="makeStyles-wrapper-23"
               style="border: 1px solid #ffd52d;"
             >
               <mock-typography
@@ -195,15 +205,16 @@ exports[`renders as expected 1`] = `
                 0.19
               </mock-typography>
               <mock-typography>
-                trig. 
+                trig.
+                 
                 0.1
               </mock-typography>
               <div
-                class="makeStyles-probabilityBar-22"
+                class="makeStyles-probabilityBar-24"
                 style="background-color: rgb(255, 213, 45); width: 19%;"
               />
               <div
-                class="makeStyles-triggerBar-23"
+                class="makeStyles-triggerBar-25"
                 style="width: 10%;"
               />
               <mock-typography
@@ -217,7 +228,7 @@ exports[`renders as expected 1`] = `
             class="makeStyles-column-8"
           >
             <div
-              class="makeStyles-wrapper-21"
+              class="makeStyles-wrapper-23"
               style="border: 1px solid #ffd52d;"
             >
               <mock-typography
@@ -226,15 +237,16 @@ exports[`renders as expected 1`] = `
                 0.28
               </mock-typography>
               <mock-typography>
-                trig. 
+                trig.
+                 
                 0.2
               </mock-typography>
               <div
-                class="makeStyles-probabilityBar-22"
+                class="makeStyles-probabilityBar-24"
                 style="background-color: rgb(255, 213, 45); width: 28.000000000000004%;"
               />
               <div
-                class="makeStyles-triggerBar-23"
+                class="makeStyles-triggerBar-25"
                 style="width: 20%;"
               />
               <mock-typography
@@ -255,21 +267,22 @@ exports[`renders as expected 1`] = `
             class="makeStyles-iconColumn-6"
           >
             <div
-              class="makeStyles-iconWrapper-17"
+              class="makeStyles-iconWrapper-19"
               style="background: rgb(255, 245, 3);"
             >
               <div
-                class="makeStyles-centerContainer-18"
+                class="makeStyles-centerContainer-20"
                 style="border: 1px solid black; color: black;"
               >
                 <div
-                  class="makeStyles-topTextContainer-19"
-                  style="border-bottom: 1px solid black;"
+                  class="makeStyles-topTextContainer-21"
+                  style="border-bottom: 1px solid black; background: rgb(255, 245, 3);"
                 >
                   S
                 </div>
                 <div
-                  class="makeStyles-bottomTextContainer-20"
+                  class="makeStyles-bottomTextContainer-22"
+                  style="background: rgb(255, 245, 3);"
                 >
                   MIL
                 </div>
@@ -283,7 +296,7 @@ exports[`renders as expected 1`] = `
             class="makeStyles-column-8"
           >
             <div
-              class="makeStyles-wrapper-21"
+              class="makeStyles-wrapper-23"
               style="border: 1px solid #f1f1f1;"
             >
               <mock-typography
@@ -292,15 +305,16 @@ exports[`renders as expected 1`] = `
                 0.12
               </mock-typography>
               <mock-typography>
-                trig. 
+                trig.
+                 
                 0.3
               </mock-typography>
               <div
-                class="makeStyles-probabilityBar-22"
+                class="makeStyles-probabilityBar-24"
                 style="background-color: rgb(241, 241, 241); width: 12%;"
               />
               <div
-                class="makeStyles-triggerBar-23"
+                class="makeStyles-triggerBar-25"
                 style="width: 30%;"
               />
               <mock-typography
@@ -314,7 +328,7 @@ exports[`renders as expected 1`] = `
             class="makeStyles-column-8"
           >
             <div
-              class="makeStyles-wrapper-21"
+              class="makeStyles-wrapper-23"
               style="border: 1px solid #f1f1f1;"
             >
               <mock-typography
@@ -323,15 +337,16 @@ exports[`renders as expected 1`] = `
                 0.34
               </mock-typography>
               <mock-typography>
-                trig. 
+                trig.
+                 
                 0.33
               </mock-typography>
               <div
-                class="makeStyles-probabilityBar-22"
+                class="makeStyles-probabilityBar-24"
                 style="background-color: rgb(241, 241, 241); width: 34%;"
               />
               <div
-                class="makeStyles-triggerBar-23"
+                class="makeStyles-triggerBar-25"
                 style="width: 33%;"
               />
               <mock-typography
@@ -345,7 +360,7 @@ exports[`renders as expected 1`] = `
             class="makeStyles-column-8"
           >
             <div
-              class="makeStyles-wrapper-21"
+              class="makeStyles-wrapper-23"
               style="border: 1px solid #fff503;"
             >
               <mock-typography
@@ -354,15 +369,16 @@ exports[`renders as expected 1`] = `
                 0.28
               </mock-typography>
               <mock-typography>
-                trig. 
+                trig.
+                 
                 0.25
               </mock-typography>
               <div
-                class="makeStyles-probabilityBar-22"
+                class="makeStyles-probabilityBar-24"
                 style="background-color: rgb(255, 245, 3); width: 28.000000000000004%;"
               />
               <div
-                class="makeStyles-triggerBar-23"
+                class="makeStyles-triggerBar-25"
                 style="width: 25%;"
               />
               <mock-typography
@@ -380,21 +396,22 @@ exports[`renders as expected 1`] = `
             class="makeStyles-iconColumn-6"
           >
             <div
-              class="makeStyles-iconWrapper-17"
+              class="makeStyles-iconWrapper-19"
               style="background: rgb(255, 252, 179);"
             >
               <div
-                class="makeStyles-centerContainer-18"
+                class="makeStyles-centerContainer-20"
                 style="border: 1px solid black; color: black;"
               >
                 <div
-                  class="makeStyles-topTextContainer-19"
-                  style="border-bottom: 1px solid black;"
+                  class="makeStyles-topTextContainer-21"
+                  style="border-bottom: 1px solid black; background: rgb(255, 252, 179);"
                 >
                   R
                 </div>
                 <div
-                  class="makeStyles-bottomTextContainer-20"
+                  class="makeStyles-bottomTextContainer-22"
+                  style="background: rgb(255, 252, 179);"
                 >
                   MIL
                 </div>
@@ -405,7 +422,7 @@ exports[`renders as expected 1`] = `
             class="makeStyles-column-8"
           >
             <div
-              class="makeStyles-wrapper-21"
+              class="makeStyles-wrapper-23"
               style="border: 1px solid #f1f1f1;"
             >
               <mock-typography
@@ -414,15 +431,16 @@ exports[`renders as expected 1`] = `
                 0.16
               </mock-typography>
               <mock-typography>
-                trig. 
+                trig.
+                 
                 0.17
               </mock-typography>
               <div
-                class="makeStyles-probabilityBar-22"
+                class="makeStyles-probabilityBar-24"
                 style="background-color: rgb(241, 241, 241); width: 16%;"
               />
               <div
-                class="makeStyles-triggerBar-23"
+                class="makeStyles-triggerBar-25"
                 style="width: 17%;"
               />
               <mock-typography
@@ -436,7 +454,7 @@ exports[`renders as expected 1`] = `
             class="makeStyles-column-8"
           >
             <div
-              class="makeStyles-wrapper-21"
+              class="makeStyles-wrapper-23"
               style="border: 1px solid #f1f1f1;"
             >
               <mock-typography
@@ -445,15 +463,16 @@ exports[`renders as expected 1`] = `
                 0.22
               </mock-typography>
               <mock-typography>
-                trig. 
+                trig.
+                 
                 0.3
               </mock-typography>
               <div
-                class="makeStyles-probabilityBar-22"
+                class="makeStyles-probabilityBar-24"
                 style="background-color: rgb(241, 241, 241); width: 22%;"
               />
               <div
-                class="makeStyles-triggerBar-23"
+                class="makeStyles-triggerBar-25"
                 style="width: 30%;"
               />
               <mock-typography
@@ -467,7 +486,7 @@ exports[`renders as expected 1`] = `
             class="makeStyles-column-8"
           >
             <div
-              class="makeStyles-wrapper-21"
+              class="makeStyles-wrapper-23"
               style="border: 1px solid #fffcb3;"
             >
               <mock-typography
@@ -476,15 +495,16 @@ exports[`renders as expected 1`] = `
                 0.31
               </mock-typography>
               <mock-typography>
-                trig. 
+                trig.
+                 
                 0.2
               </mock-typography>
               <div
-                class="makeStyles-probabilityBar-22"
+                class="makeStyles-probabilityBar-24"
                 style="background-color: rgb(255, 252, 179); width: 31%;"
               />
               <div
-                class="makeStyles-triggerBar-23"
+                class="makeStyles-triggerBar-25"
                 style="width: 20%;"
               />
               <mock-typography

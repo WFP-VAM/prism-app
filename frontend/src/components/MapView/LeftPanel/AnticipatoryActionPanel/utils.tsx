@@ -14,16 +14,17 @@ import {
 } from '@material-ui/core';
 import { black, borderGray, cyanBlue, gray } from 'muiTheme';
 import React from 'react';
-import {
-  LIGHT_BLUE_HEX,
-  LIGHT_GREEN_HEX,
-} from 'components/MapView/DateSelector/TimelineItems';
+import { useSafeTranslation } from 'i18n';
 import {
   AACategoryType,
   AAPhaseType,
   AAcategory,
   AnticipatoryActionDataRow,
 } from 'context/anticipatoryActionStateSlice/types';
+import {
+  LIGHT_BLUE_HEX,
+  LIGHT_GREEN_HEX,
+} from 'components/MapView/DateSelector/TimelineItems/utils';
 import AAIcon from './AAIcon';
 
 const StyledRadio = withStyles({
@@ -31,6 +32,7 @@ const StyledRadio = withStyles({
     '&$checked': {
       color: black,
     },
+    padding: '0.25rem',
   },
 })((props: RadioProps) => <Radio color="default" {...props} />);
 
@@ -40,8 +42,10 @@ export const StyledRadioLabel = withStyles({
     borderRadius: '32px',
     height: '1.75rem',
     marginLeft: 0,
+    marginRight: '0.5rem',
   },
 })(({ label, ...props }: Omit<FormControlLabelProps, 'control'>) => {
+  const { t } = useSafeTranslation();
   const radioGroup = useRadioGroup();
   const checked = radioGroup?.value === props.value;
 
@@ -68,7 +72,7 @@ export const StyledRadioLabel = withStyles({
               }}
             />
           ) : null}
-          {label}
+          {typeof label === 'string' ? t(label) : label}
         </span>
       }
       control={<StyledRadio />}
@@ -82,7 +86,7 @@ const StyledCheckbox = withStyles({
     '&$checked': {
       color: black,
     },
-    padding: '0.25rem',
+    padding: '0.2rem',
   },
 })((props: CheckboxProps) => <Checkbox color="default" {...props} />);
 
@@ -203,22 +207,32 @@ export function getAAIcon(
   phase: AAPhaseType,
   forLayer?: boolean,
 ) {
-  const background = forLayer
-    ? undefined
-    : getAAColor(category, phase, forLayer);
+  const background = getAAColor(category, phase, forLayer);
 
   const categoryData = AACategoryPhaseMap[category];
   if (categoryData.iconProps) {
     const iconProps = forLayer
       ? { ...categoryData.iconProps, bottomText: undefined }
       : categoryData.iconProps;
-    return <AAIcon background={background} {...iconProps} />;
+    return (
+      <AAIcon
+        background={background}
+        fillBackground={!forLayer}
+        {...iconProps}
+      />
+    );
   }
   const phaseData = categoryData[phase];
   if (!phaseData) {
     throw new Error(`Icon not implemented: ${category}, ${phase}`);
   }
-  return <AAIcon background={background} {...phaseData.iconProps} />;
+  return (
+    <AAIcon
+      background={background}
+      fillBackground={!forLayer}
+      {...phaseData.iconProps}
+    />
+  );
 }
 
 export function AADataSeverityOrder(
@@ -247,6 +261,7 @@ export const useAACommonStyles = makeStyles(() =>
       flexDirection: 'row',
       justifyContent: 'space-between',
       padding: '0.5rem',
+      paddingTop: 0,
     },
     footerButton: { borderColor: cyanBlue, color: black },
     footerDialog: {
@@ -266,6 +281,24 @@ export const useAACommonStyles = makeStyles(() =>
       flexDirection: 'column',
       justifyContent: 'space-between',
       padding: '0.5rem',
+    },
+    newTag: {
+      height: '2em',
+      padding: '0 0.5em',
+      color: 'white',
+      background: '#A4A4A4',
+      fontSize: '10px',
+      borderRadius: '32px',
+      display: 'flex',
+      alignItems: 'center',
+    },
+    windowHeader: {
+      fontWeight: 'bold',
+      textTransform: 'uppercase',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      marginBottom: '0.5rem',
     },
   }),
 );

@@ -78,7 +78,7 @@ export function districtViewTransform(
     months: Object.fromEntries(
       [...new Set(topFiltered.map(x => x.date))].map(x => [
         x,
-        new Date(x).toLocaleString('en-US', { month: 'long' }),
+        new Date(x).toLocaleString('en-US', { month: 'short' }),
       ]),
     ),
     transformed,

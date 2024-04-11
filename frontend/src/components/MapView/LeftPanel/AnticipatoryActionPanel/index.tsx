@@ -20,6 +20,7 @@ import {
 } from 'context/anticipatoryActionStateSlice/types';
 import { AAWindowKeys } from 'config/utils';
 import {
+  AAAvailableDatesSelector,
   AADataSelector,
   AAFiltersSelector,
   AAMonitoredDistrictsSelector,
@@ -29,7 +30,6 @@ import {
   setAASelectedDistrict,
   setAAView,
 } from 'context/anticipatoryActionStateSlice';
-import { availableDatesSelector } from 'context/serverStateSlice';
 import { dateRangeSelector } from 'context/mapStateSlice/selectors';
 import {
   getAAAvailableDatesCombined,
@@ -42,6 +42,7 @@ import DistrictView from './DistrictView/index';
 import HomeTable from './HomeTable';
 import HowToReadModal from './HowToReadModal';
 import Timeline from './Timeline';
+import Forecast from './Forecast';
 
 const checkboxes: {
   label: string;
@@ -57,11 +58,11 @@ function AnticipatoryActionPanel() {
   const dispatch = useDispatch();
   const { t } = useSafeTranslation();
   const monitoredDistricts = useSelector(AAMonitoredDistrictsSelector);
+  const AAAvailableDates = useSelector(AAAvailableDatesSelector);
   const selectedDistrict = useSelector(AASelectedDistrictSelector);
   const { categories: categoryFilters, selectedIndex } = useSelector(
     AAFiltersSelector,
   );
-  const serverAvailableDates = useSelector(availableDatesSelector);
   const { startDate: selectedDate } = useSelector(dateRangeSelector);
   const aaData = useSelector(AADataSelector);
   const view = useSelector(AAViewSelector);
@@ -88,7 +89,10 @@ function AnticipatoryActionPanel() {
     setIndexOptions(options);
   }, [aaData, selectedDistrict]);
 
-  const layerAvailableDates = getAAAvailableDatesCombined(serverAvailableDates);
+  const layerAvailableDates =
+    AAAvailableDates !== undefined
+      ? getAAAvailableDatesCombined(AAAvailableDates)
+      : [];
   const queryDate = getRequestDate(layerAvailableDates, selectedDate);
   const date = getFormattedDate(queryDate, DateFormat.Default) as string;
 
@@ -105,7 +109,9 @@ function AnticipatoryActionPanel() {
       <div className={classes.headerWrapper}>
         <div className={classes.titleSelectWrapper}>
           <div className={classes.titleSelectWrapper}>
-            {(view === AAView.District || view === AAView.Timeline) && (
+            {(view === AAView.District ||
+              view === AAView.Timeline ||
+              view === AAView.Forecast) && (
               <IconButton
                 onClick={() => {
                   if (view === AAView.District) {
@@ -115,6 +121,10 @@ function AnticipatoryActionPanel() {
                   }
                   if (view === AAView.Timeline) {
                     dispatch(setAAView(AAView.District));
+                    return;
+                  }
+                  if (view === AAView.Forecast) {
+                    dispatch(setAAView(AAView.District));
                   }
                 }}
               >
@@ -123,12 +133,12 @@ function AnticipatoryActionPanel() {
             )}
             <StyledSelect
               value={selectedDistrict || 'empty'}
-              fullWidth
               input={<Input disableUnderline />}
               renderValue={() => (
                 <Typography variant="h2">
-                  {selectedDistrict || 'Phases: global view'}{' '}
+                  {t(selectedDistrict) || t('Phases: global view')}{' '}
                   {view === AAView.Timeline && t('Timeline')}
+                  {view === AAView.Forecast && t('Forecast')}
                 </Typography>
               )}
             >
@@ -139,7 +149,7 @@ function AnticipatoryActionPanel() {
                   dispatch(setAAView(AAView.Home));
                 }}
               >
-                Global view
+                {t('Global view')}
               </MenuItem>
               {monitoredDistricts.map(x => (
                 <MenuItem
@@ -147,10 +157,12 @@ function AnticipatoryActionPanel() {
                   value={x.name}
                   onClick={() => {
                     dispatch(setAASelectedDistrict(x.name));
-                    dispatch(setAAView(AAView.District));
+                    if (view === AAView.Home) {
+                      dispatch(setAAView(AAView.District));
+                    }
                   }}
                 >
-                  {x.name}
+                  {t(x.name)}
                 </MenuItem>
               ))}
             </StyledSelect>
@@ -166,7 +178,10 @@ function AnticipatoryActionPanel() {
                 dispatch(setAAFilters({ selectedWindow: val as any }))
               }
             >
-              <StyledRadioLabel value={allWindowsKey} label="All" />
+              <StyledRadioLabel
+                value={allWindowsKey}
+                label={t(allWindowsKey)}
+              />
               {AAWindowKeys.map(x => (
                 <StyledRadioLabel key={x} value={x} label={x} />
               ))}
@@ -187,7 +202,7 @@ function AnticipatoryActionPanel() {
                   dispatch(setAAFilters({ categories: { [x.id]: checked } }));
                 },
               }}
-              label={x.label}
+              label={t(x.label)}
             />
           ))}
         </div>
@@ -208,7 +223,7 @@ function AnticipatoryActionPanel() {
               input={<Input disableUnderline />}
               renderValue={() => (
                 <Typography variant="h3">
-                  {selectedIndex || t('Indicators')}
+                  {t(selectedIndex) || t('Indicators')}
                 </Typography>
               )}
             >
@@ -228,7 +243,7 @@ function AnticipatoryActionPanel() {
                     dispatch(setAAFilters({ selectedIndex: x }));
                   }}
                 >
-                  {x}
+                  {t(x)}
                 </MenuItem>
               ))}
             </StyledSelect>
@@ -238,6 +253,7 @@ function AnticipatoryActionPanel() {
       {view === AAView.Home && <HomeTable dialogs={dialogs} />}
       {view === AAView.District && <DistrictView dialogs={dialogs} />}
       {view === AAView.Timeline && <Timeline dialogs={dialogs} />}
+      {view === AAView.Forecast && <Forecast dialogs={dialogs} />}
     </div>
   );
 }
@@ -285,7 +301,6 @@ const useStyles = makeStyles(() =>
     },
     titleSelectWrapper: {
       display: 'flex',
-      justifyContent: 'space-between',
       alignItems: 'center',
       width: '100%',
     },

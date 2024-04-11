@@ -30,6 +30,7 @@ const store = mockStore({
     },
     monitoredDistricts: ['Caia'],
     renderedDistricts: mockAARenderedDistricts,
+    windowRanges: { 'Window 2': { start: '2023-08-01', end: '2023-12-01' } },
   },
 });
 

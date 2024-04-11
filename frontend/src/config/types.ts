@@ -9,7 +9,7 @@ import {
 import { Dispatch } from 'redux';
 import { TFunction } from 'i18next';
 import { rawLayers } from '.';
-import type { AAWindowKeys, ReportKey, TableKey } from './utils';
+import type { ReportKey, TableKey } from './utils';
 import type { PopupMetaData } from '../context/tooltipStateSlice';
 
 // TODO currently unused. Could be harnessed within admin levels key typing
@@ -876,7 +876,6 @@ export type MapEventWrapFunction<T> = (
 
 export class AnticipatoryActionLayerProps extends CommonLayerProps {
   type: 'anticipatory_action';
-  csvWindowKey: typeof AAWindowKeys[number];
 
   @makeRequired
   title: string;

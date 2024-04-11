@@ -66,8 +66,8 @@ function WindowColumn({
   return (
     <div className={classes.windowWrapper}>
       <div style={{ textAlign: 'center' }}>
-        <Typography variant="h3" className={classes.headerText}>
-          {win}
+        <Typography variant="h4" className={classes.headerText}>
+          {t(win)}
         </Typography>
       </div>
       {!hasWindowData && (
@@ -80,7 +80,7 @@ function WindowColumn({
           <div className={classes.headRowWrapper}>
             {Object.entries(transformed?.months || {}).map(x => (
               <div key={x[0]} className={classes.headColumn}>
-                <Typography className={classes.monthText}>{x[1]}</Typography>
+                <Typography className={classes.monthText}>{t(x[1])}</Typography>
               </div>
             ))}
           </div>
@@ -111,7 +111,7 @@ function WindowColumn({
       {hasWindowData && (
         <div className={classes.actionsWrapper}>
           <div style={{ textAlign: 'center' }}>
-            <Typography variant="h3">ACTIONS</Typography>
+            <Typography variant="h3">{t('ACTIONS')}</Typography>
           </div>
           <div className={classes.actionBoxesWrapper}>
             {Object.keys(transformed.months).map(x => {
@@ -149,7 +149,10 @@ function WindowColumn({
                 >
                   {actions.map(action => (
                     // wrapping in div to show tooltip with FontAwesomeIcons
-                    <Tooltip key={action.name} title={action.name}>
+                    <Tooltip
+                      key={action.name}
+                      title={t(action.name) || action.name}
+                    >
                       <div>{action.icon}</div>
                     </Tooltip>
                   ))}
@@ -168,7 +171,7 @@ const useWindowColumnStyles = makeStyles(() =>
     windowWrapper: {
       display: 'flex',
       flexDirection: 'column',
-      padding: '0.5rem 0.25rem',
+      padding: '0rem 0.25rem',
     },
     tableWrapper: { display: 'flex', flexDirection: 'column', gap: '2px' },
     rowWrapper: {
@@ -184,14 +187,14 @@ const useWindowColumnStyles = makeStyles(() =>
       background: 'white',
     },
     headColumn: {
-      width: '5.2rem',
+      width: '4.6rem',
       padding: '0.1rem 0.25rem',
       display: 'flex',
       justifyContent: 'center',
       alignItems: 'center',
     },
     column: {
-      width: '5.2rem',
+      width: '4.6rem',
       height: '3.2rem',
       padding: '0.1rem 0.25rem',
       display: 'flex',
@@ -230,7 +233,7 @@ const useWindowColumnStyles = makeStyles(() =>
     },
     actionBox: {
       height: '6.2rem',
-      width: '5.2rem',
+      width: '4.6rem',
       margin: '0.1rem 0.25rem',
       background: 'white',
       borderRadius: '4px',
@@ -240,7 +243,8 @@ const useWindowColumnStyles = makeStyles(() =>
       flexDirection: 'column',
       alignItems: 'center',
       gap: '0.5rem',
-      paddingTop: '0.2rem',
+      paddingTop: '0.8rem',
+      paddingBottom: '0.8rem',
       border: 'none',
     },
     noDataText: {
@@ -276,7 +280,11 @@ function DistrictView({ dialogs }: DistrictViewProps) {
       text: 'Timeline',
       onClick: () => dispatch(setAAView(AAView.Timeline)),
     },
-    { icon: Equalizer, text: 'Forecast', onClick: undefined },
+    {
+      icon: Equalizer,
+      text: 'Forecast',
+      onClick: () => dispatch(setAAView(AAView.Forecast)),
+    },
   ];
 
   const windows = selectedWindow === 'All' ? AAWindowKeys : [selectedWindow];
@@ -335,7 +343,7 @@ function DistrictView({ dialogs }: DistrictViewProps) {
               component="button"
               onClick={() => dialog.onclick()}
             >
-              {dialog.text}
+              {t(dialog.text)}
             </Typography>
           ))}
         </div>

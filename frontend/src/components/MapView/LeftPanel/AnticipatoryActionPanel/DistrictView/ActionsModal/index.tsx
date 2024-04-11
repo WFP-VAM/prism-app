@@ -40,7 +40,7 @@ function ActionsModal({ open, onClose, actions }: ActionsModalProps) {
           {actions.map(action => (
             <div key={action.name} className={classes.actionRow}>
               <div className={classes.actionIconWrapper}>{action.icon}</div>
-              <Typography variant="h3">{action.name}</Typography>
+              <Typography variant="h3">{t(action.name)}</Typography>
             </div>
           ))}
         </div>

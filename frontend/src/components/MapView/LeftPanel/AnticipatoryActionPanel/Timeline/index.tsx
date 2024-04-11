@@ -8,8 +8,12 @@ import {
   AADataSelector,
   AAFiltersSelector,
   AASelectedDistrictSelector,
+  setAAView,
 } from 'context/anticipatoryActionStateSlice';
-import { AnticipatoryActionDataRow } from 'context/anticipatoryActionStateSlice/types';
+import {
+  AAView,
+  AnticipatoryActionDataRow,
+} from 'context/anticipatoryActionStateSlice/types';
 import { gray } from 'muiTheme';
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -27,13 +31,16 @@ interface TimelineItemProps {
 
 function TimelineItem({ item }: TimelineItemProps) {
   const classes = useTimelineItemStyles();
+  const { t } = useSafeTranslation();
 
   const color = getAAColor(item.category, item.isValid ? item.phase : 'na');
 
   return (
     <div className={classes.wrapper} style={{ border: `1px solid ${color}` }}>
       <Typography variant="h3">{item.probability}</Typography>
-      <Typography>trig. {item.trigger}</Typography>
+      <Typography>
+        {t('trig.')} {item.trigger}
+      </Typography>
       <div
         className={classes.probabilityBar}
         style={{
@@ -97,7 +104,11 @@ function Timeline({ dialogs }: TimelineProps) {
   }, [dispatch]);
 
   const timelineButtons = [
-    { icon: Equalizer, text: 'Forecast', onClick: undefined },
+    {
+      icon: Equalizer,
+      text: 'Forecast',
+      onClick: () => dispatch(setAAView(AAView.Forecast)),
+    },
   ];
 
   const { windowData, allRows } = timelineTransform({
@@ -113,7 +124,7 @@ function Timeline({ dialogs }: TimelineProps) {
           if (!winData || Object.keys(winData.rows).length === 0) {
             return (
               <div key={win} className={classes.windowWrapper}>
-                No Data{' '}
+                {t('No Data')}{' '}
               </div>
             );
           }
@@ -121,13 +132,16 @@ function Timeline({ dialogs }: TimelineProps) {
 
           return (
             <div key={win} className={classes.windowWrapper}>
+              <Typography variant="h4" className={commonClasses.windowHeader}>
+                {t(win)}
+              </Typography>
               <div className={classes.tableWrapper}>
                 <div className={classes.headRowWrapper}>
                   <div className={classes.iconColumn} />
                   {months.map(([date, label]) => (
                     <div key={date} className={classes.headColumn}>
                       <Typography className={classes.monthText}>
-                        {label}
+                        {t(label)}
                       </Typography>
                     </div>
                   ))}
@@ -188,7 +202,7 @@ function Timeline({ dialogs }: TimelineProps) {
               component="button"
               onClick={() => dialog.onclick()}
             >
-              {dialog.text}
+              {t(dialog.text)}
             </Typography>
           ))}
         </div>
@@ -204,8 +218,24 @@ const useTimelineStyles = makeStyles(() =>
       flexDirection: 'row',
       width: '100%',
       background: gray,
-      overflow: 'scroll',
+      overflow: 'auto',
       justifyContent: 'space-around',
+      overflowY: 'scroll',
+      // Browser-specific properties for forcing scrollbar visibility and styling
+      '&::-webkit-scrollbar': {
+        width: '0.5rem',
+        height: '0.5rem',
+      },
+      '&::-webkit-scrollbar-thumb': {
+        background: '#888',
+        borderRadius: '0.25rem', // Rounded corners for the scrollbar thumb
+      },
+      '&::-webkit-scrollbar-thumb:hover': {
+        background: '#555',
+      },
+      '&::-webkit-scrollbar-track': {
+        borderRadius: '0.25rem', // Rounded corners for the scrollbar track
+      },
     },
     windowWrapper: {
       display: 'flex',

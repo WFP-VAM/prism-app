@@ -16,13 +16,16 @@ import {
 import { AAWindowKeys } from 'config/utils';
 import {
   AAFiltersSelector,
+  AAMonitoredDistrictsSelector,
   AARenderedDistrictsSelector,
+  AAWindowRangesSelector,
   setAASelectedDistrict,
   setAAView,
 } from 'context/anticipatoryActionStateSlice';
 import { setPanelSize } from 'context/leftPanelStateSlice';
 import { PanelSize } from 'config/types';
-import { GetApp, EditOutlined, BarChartOutlined } from '@material-ui/icons';
+import { GetApp, BarChartOutlined } from '@material-ui/icons';
+import { appConfig } from 'config';
 import { AADataSeverityOrder, getAAIcon, useAACommonStyles } from '../utils';
 
 interface AreaTagProps {
@@ -33,10 +36,13 @@ interface AreaTagProps {
 
 function AreaTag({ name, isNew, onClick }: AreaTagProps) {
   const classes = useAreaTagStyles();
+  const commonClasses = useAACommonStyles();
+  const { t } = useSafeTranslation();
+
   return (
     <button type="button" className={classes.areaTagWrapper} onClick={onClick}>
-      <Typography>{name}</Typography>
-      {isNew && <div className={classes.newTag}>NEW</div>}
+      <Typography>{t(name)}</Typography>
+      {isNew && <div className={commonClasses.newTag}>{t('NEW')}</div>}
     </button>
   );
 }
@@ -57,16 +63,6 @@ const useAreaTagStyles = makeStyles(() =>
         cursor: 'pointer',
       },
     },
-    newTag: {
-      height: '2em',
-      padding: '0 0.5em',
-      color: 'white',
-      background: '#A4A4A4',
-      fontSize: '10px',
-      borderRadius: '32px',
-      display: 'flex',
-      alignItems: 'center',
-    },
   }),
 );
 
@@ -78,6 +74,7 @@ export interface RowProps {
 
 function Row({ iconContent, windows, header }: RowProps) {
   const classes = useRowStyles();
+  const commonClasses = useAACommonStyles();
   const { t } = useSafeTranslation();
 
   if (header) {
@@ -92,8 +89,8 @@ function Row({ iconContent, windows, header }: RowProps) {
                 header.length > 1 ? 'calc(50% - 1.75rem)' : 'calc(100% - 3rem)',
             }}
           >
-            <Typography variant="h3" className={classes.headerText}>
-              {name}
+            <Typography variant="h4" className={commonClasses.windowHeader}>
+              {t(name)}
             </Typography>
           </div>
         ))}
@@ -145,6 +142,7 @@ const useRowStyles = makeStyles(() =>
       flexDirection: 'row',
       justifyContent: 'space-between',
       padding: '0.125rem 0.5rem',
+      paddingRight: 0,
     },
     iconCol: { width: '3rem', minHeight: '4rem' },
     windowBackground: {
@@ -153,20 +151,12 @@ const useRowStyles = makeStyles(() =>
       width: '100%',
     },
     tagWrapper: {
-      padding: '1rem 0.5rem',
+      padding: '0.5rem 0.5rem',
       display: 'flex',
       flexDirection: 'row',
       flexWrap: 'wrap',
       justifyContent: 'flex-start',
       gap: '0.5em',
-    },
-    headerText: {
-      fontWeight: 'bold',
-      textTransform: 'uppercase',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      marginBottom: '0.5rem',
     },
     emptyText: {
       color: borderGray,
@@ -204,15 +194,31 @@ function HomeTable({ dialogs }: HomeTableProps) {
   const dispatch = useDispatch();
   const { selectedWindow, categories } = useSelector(AAFiltersSelector);
   const renderedDistricts = useSelector(AARenderedDistrictsSelector);
+  const monitoredDistrict = useSelector(AAMonitoredDistrictsSelector);
+  const { 'Window 2': window2Range } = useSelector(AAWindowRangesSelector);
 
   React.useEffect(() => {
     dispatch(setPanelSize(PanelSize.medium));
   }, [dispatch]);
 
+  const filename = appConfig.anticipatoryActionUrl?.split('/').at(-1);
+
   const homeButtons = [
-    { icon: GetApp, text: 'Assets', onClick: undefined },
-    { icon: EditOutlined, text: 'Report', onClick: undefined },
-    { icon: BarChartOutlined, text: 'Forecast', onClick: undefined },
+    {
+      startIcon: <GetApp />,
+      text: 'Assets',
+      component: 'a',
+      href: appConfig.anticipatoryActionUrl,
+      download: `${window2Range?.end}-${filename}`,
+    },
+    {
+      startIcon: <BarChartOutlined />,
+      text: 'Forecast',
+      onClick: () => {
+        dispatch(setAASelectedDistrict(monitoredDistrict[0]?.name));
+        dispatch(setAAView(AAView.Forecast));
+      },
+    },
   ];
 
   const headerRow: ExtendedRowProps = {
@@ -270,16 +276,15 @@ function HomeTable({ dialogs }: HomeTableProps) {
       </div>
       <div className={commonClasses.footerWrapper}>
         <div className={commonClasses.footerActionsWrapper}>
-          {homeButtons.map(x => (
+          {homeButtons.map(({ text, ...rest }) => (
             <Button
-              key={x.text}
+              key={text}
               className={commonClasses.footerButton}
               variant="outlined"
               fullWidth
-              onClick={x.onClick}
-              startIcon={<x.icon />}
+              {...rest}
             >
-              <Typography>{t(x.text)}</Typography>
+              <Typography>{t(text)}</Typography>
             </Button>
           ))}
         </div>
@@ -291,7 +296,7 @@ function HomeTable({ dialogs }: HomeTableProps) {
               component="button"
               onClick={() => dialog.onclick()}
             >
-              {dialog.text}
+              {t(dialog.text)}
             </Typography>
           ))}
         </div>
@@ -308,7 +313,22 @@ const useHomeTableStyles = makeStyles(() =>
       width: PanelSize.medium,
       background: gray,
       padding: '0.5rem 0',
-      overflow: 'scroll',
+      overflowY: 'scroll',
+      // Browser-specific properties for forcing scrollbar visibility and styling
+      '&::-webkit-scrollbar': {
+        width: '0.5rem',
+        height: '0.5rem',
+      },
+      '&::-webkit-scrollbar-thumb': {
+        background: '#888',
+        borderRadius: '0.25rem', // Rounded corners for the scrollbar thumb
+      },
+      '&::-webkit-scrollbar-thumb:hover': {
+        background: '#555',
+      },
+      '&::-webkit-scrollbar-track': {
+        borderRadius: '0.25rem', // Rounded corners for the scrollbar track
+      },
     },
   }),
 );
