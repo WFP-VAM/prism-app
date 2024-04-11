@@ -68,11 +68,7 @@ async def download_report(
         await expect(flood_extent_checkbox).to_be_visible(timeout=20_000)
 
         # the switch status is flaky (sometimes checked, sometimes not)
-        # so make sure we only check it if needed. This might mean there
-        # is a bug in the frontend code?
-        fec_checked = await flood_extent_checkbox.is_checked()
-        if not fec_checked:
-            flood_extent_checkbox.click()
+        await flood_extent_checkbox.is_checked()
 
         await expect(flood_extent_checkbox).to_be_checked(timeout=10_000)
         await expect(
