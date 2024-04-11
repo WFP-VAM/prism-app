@@ -165,6 +165,7 @@ const useStyles = makeStyles(() =>
     phaseNy: {
       minWidth: '2.2rem',
       background: getAAColor('ny', 'ny', true),
+      borderRadius: '2px',
     },
     dialogButton: {
       fontWeight: 'bold',
