@@ -132,6 +132,9 @@ function Timeline({ dialogs }: TimelineProps) {
 
           return (
             <div key={win} className={classes.windowWrapper}>
+              <Typography variant="h4" className={commonClasses.windowHeader}>
+                {t(win)}
+              </Typography>
               <div className={classes.tableWrapper}>
                 <div className={classes.headRowWrapper}>
                   <div className={classes.iconColumn} />
@@ -215,8 +218,24 @@ const useTimelineStyles = makeStyles(() =>
       flexDirection: 'row',
       width: '100%',
       background: gray,
-      overflow: 'scroll',
+      overflow: 'auto',
       justifyContent: 'space-around',
+      overflowY: 'scroll',
+      // Browser-specific properties for forcing scrollbar visibility and styling
+      '&::-webkit-scrollbar': {
+        width: '0.5rem',
+        height: '0.5rem',
+      },
+      '&::-webkit-scrollbar-thumb': {
+        background: '#888',
+        borderRadius: '0.25rem', // Rounded corners for the scrollbar thumb
+      },
+      '&::-webkit-scrollbar-thumb:hover': {
+        background: '#555',
+      },
+      '&::-webkit-scrollbar-track': {
+        borderRadius: '0.25rem', // Rounded corners for the scrollbar track
+      },
     },
     windowWrapper: {
       display: 'flex',

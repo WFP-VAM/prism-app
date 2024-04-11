@@ -133,12 +133,12 @@ function AnticipatoryActionPanel() {
             )}
             <StyledSelect
               value={selectedDistrict || 'empty'}
-              fullWidth
               input={<Input disableUnderline />}
               renderValue={() => (
                 <Typography variant="h2">
                   {t(selectedDistrict) || t('Phases: global view')}{' '}
                   {view === AAView.Timeline && t('Timeline')}
+                  {view === AAView.Forecast && t('Forecast')}
                 </Typography>
               )}
             >
@@ -301,7 +301,6 @@ const useStyles = makeStyles(() =>
     },
     titleSelectWrapper: {
       display: 'flex',
-      justifyContent: 'space-between',
       alignItems: 'center',
       width: '100%',
     },

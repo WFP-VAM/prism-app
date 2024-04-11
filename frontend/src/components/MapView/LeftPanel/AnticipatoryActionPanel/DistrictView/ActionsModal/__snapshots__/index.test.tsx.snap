@@ -56,6 +56,7 @@ exports[`renders actions modal 1`] = `
               aria-hidden="true"
               class="MuiSvgIcon-root"
               focusable="false"
+              style="font-size: 1rem;"
               viewBox="0 0 24 24"
             >
               <path
@@ -81,7 +82,7 @@ exports[`renders actions modal 1`] = `
               data-icon="seedling"
               data-prefix="fas"
               focusable="false"
-              font-size="1.5rem"
+              font-size="1rem"
               role="img"
               viewBox="0 0 512 512"
               xmlns="http://www.w3.org/2000/svg"
@@ -105,7 +106,7 @@ exports[`renders actions modal 1`] = `
             class="makeStyles-actionIconWrapper-4"
           >
             <div
-              style="display: flex;"
+              style="display: flex; transform: scale(0.75);"
             >
               <svg
                 aria-hidden="true"
@@ -158,6 +159,7 @@ exports[`renders actions modal 1`] = `
               aria-hidden="true"
               class="MuiSvgIcon-root"
               focusable="false"
+              style="font-size: 1rem;"
               viewBox="0 0 24 24"
             >
               <path
@@ -183,7 +185,7 @@ exports[`renders actions modal 1`] = `
               data-icon="person-digging"
               data-prefix="fas"
               focusable="false"
-              font-size="1.5rem"
+              font-size="1rem"
               role="img"
               viewBox="0 0 576 512"
               xmlns="http://www.w3.org/2000/svg"
@@ -212,7 +214,7 @@ exports[`renders actions modal 1`] = `
               data-icon="cow"
               data-prefix="fas"
               focusable="false"
-              font-size="1.5rem"
+              font-size="1rem"
               role="img"
               viewBox="0 0 640 512"
               xmlns="http://www.w3.org/2000/svg"
@@ -241,7 +243,7 @@ exports[`renders actions modal 1`] = `
               data-icon="syringe"
               data-prefix="fas"
               focusable="false"
-              font-size="1.5rem"
+              font-size="1rem"
               role="img"
               viewBox="0 0 512 512"
               xmlns="http://www.w3.org/2000/svg"
@@ -270,7 +272,7 @@ exports[`renders actions modal 1`] = `
               data-icon="plate-wheat"
               data-prefix="fas"
               focusable="false"
-              font-size="1.5rem"
+              font-size="1rem"
               role="img"
               viewBox="0 0 512 512"
               xmlns="http://www.w3.org/2000/svg"
@@ -299,7 +301,7 @@ exports[`renders actions modal 1`] = `
               data-icon="people-group"
               data-prefix="fas"
               focusable="false"
-              font-size="1.5rem"
+              font-size="1rem"
               role="img"
               viewBox="0 0 640 512"
               xmlns="http://www.w3.org/2000/svg"
@@ -349,6 +351,7 @@ exports[`renders actions modal 1`] = `
               aria-hidden="true"
               class="MuiSvgIcon-root"
               focusable="false"
+              style="font-size: 1rem;"
               viewBox="0 0 24 24"
             >
               <path
@@ -374,7 +377,7 @@ exports[`renders actions modal 1`] = `
               data-icon="handshake"
               data-prefix="fas"
               focusable="false"
-              font-size="1.5rem"
+              font-size="1rem"
               role="img"
               viewBox="0 0 640 512"
               xmlns="http://www.w3.org/2000/svg"
@@ -401,10 +404,11 @@ exports[`renders actions modal 1`] = `
               aria-hidden="true"
               class="MuiSvgIcon-root"
               focusable="false"
+              style="font-size: 1rem; color: darkgrey;"
               viewBox="0 0 24 24"
             >
               <path
-                d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zM4 12c0-4.42 3.58-8 8-8 1.85 0 3.55.63 4.9 1.69L5.69 16.9C4.63 15.55 4 13.85 4 12zm8 8c-1.85 0-3.55-.63-4.9-1.69L18.31 7.1C19.37 8.45 20 10.15 20 12c0 4.42-3.58 8-8 8z"
+                d="M19 13H5v-2h14v2z"
               />
             </svg>
           </div>
@@ -424,10 +428,11 @@ exports[`renders actions modal 1`] = `
               aria-hidden="true"
               class="MuiSvgIcon-root"
               focusable="false"
+              style="font-size: 1rem; color: darkgrey;"
               viewBox="0 0 24 24"
             >
               <path
-                d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zM4 12c0-4.42 3.58-8 8-8 1.85 0 3.55.63 4.9 1.69L5.69 16.9C4.63 15.55 4 13.85 4 12zm8 8c-1.85 0-3.55-.63-4.9-1.69L18.31 7.1C19.37 8.45 20 10.15 20 12c0 4.42-3.58 8-8 8z"
+                d="M19 13H5v-2h14v2z"
               />
             </svg>
           </div>

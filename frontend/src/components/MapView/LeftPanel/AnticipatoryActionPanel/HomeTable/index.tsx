@@ -36,12 +36,13 @@ interface AreaTagProps {
 
 function AreaTag({ name, isNew, onClick }: AreaTagProps) {
   const classes = useAreaTagStyles();
+  const commonClasses = useAACommonStyles();
   const { t } = useSafeTranslation();
 
   return (
     <button type="button" className={classes.areaTagWrapper} onClick={onClick}>
       <Typography>{t(name)}</Typography>
-      {isNew && <div className={classes.newTag}>{t('NEW')}</div>}
+      {isNew && <div className={commonClasses.newTag}>{t('NEW')}</div>}
     </button>
   );
 }
@@ -62,16 +63,6 @@ const useAreaTagStyles = makeStyles(() =>
         cursor: 'pointer',
       },
     },
-    newTag: {
-      height: '2em',
-      padding: '0 0.5em',
-      color: 'white',
-      background: '#A4A4A4',
-      fontSize: '10px',
-      borderRadius: '32px',
-      display: 'flex',
-      alignItems: 'center',
-    },
   }),
 );
 
@@ -83,6 +74,7 @@ export interface RowProps {
 
 function Row({ iconContent, windows, header }: RowProps) {
   const classes = useRowStyles();
+  const commonClasses = useAACommonStyles();
   const { t } = useSafeTranslation();
 
   if (header) {
@@ -97,7 +89,7 @@ function Row({ iconContent, windows, header }: RowProps) {
                 header.length > 1 ? 'calc(50% - 1.75rem)' : 'calc(100% - 3rem)',
             }}
           >
-            <Typography variant="h3" className={classes.headerText}>
+            <Typography variant="h4" className={commonClasses.windowHeader}>
               {t(name)}
             </Typography>
           </div>
@@ -150,6 +142,7 @@ const useRowStyles = makeStyles(() =>
       flexDirection: 'row',
       justifyContent: 'space-between',
       padding: '0.125rem 0.5rem',
+      paddingRight: 0,
     },
     iconCol: { width: '3rem', minHeight: '4rem' },
     windowBackground: {
@@ -158,20 +151,12 @@ const useRowStyles = makeStyles(() =>
       width: '100%',
     },
     tagWrapper: {
-      padding: '1rem 0.5rem',
+      padding: '0.5rem 0.5rem',
       display: 'flex',
       flexDirection: 'row',
       flexWrap: 'wrap',
       justifyContent: 'flex-start',
       gap: '0.5em',
-    },
-    headerText: {
-      fontWeight: 'bold',
-      textTransform: 'uppercase',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      marginBottom: '0.5rem',
     },
     emptyText: {
       color: borderGray,
@@ -328,7 +313,22 @@ const useHomeTableStyles = makeStyles(() =>
       width: PanelSize.medium,
       background: gray,
       padding: '0.5rem 0',
-      overflow: 'scroll',
+      overflowY: 'scroll',
+      // Browser-specific properties for forcing scrollbar visibility and styling
+      '&::-webkit-scrollbar': {
+        width: '0.5rem',
+        height: '0.5rem',
+      },
+      '&::-webkit-scrollbar-thumb': {
+        background: '#888',
+        borderRadius: '0.25rem', // Rounded corners for the scrollbar thumb
+      },
+      '&::-webkit-scrollbar-thumb:hover': {
+        background: '#555',
+      },
+      '&::-webkit-scrollbar-track': {
+        borderRadius: '0.25rem', // Rounded corners for the scrollbar track
+      },
     },
   }),
 );

@@ -66,7 +66,7 @@ function WindowColumn({
   return (
     <div className={classes.windowWrapper}>
       <div style={{ textAlign: 'center' }}>
-        <Typography variant="h3" className={classes.headerText}>
+        <Typography variant="h4" className={classes.headerText}>
           {t(win)}
         </Typography>
       </div>
@@ -171,7 +171,7 @@ const useWindowColumnStyles = makeStyles(() =>
     windowWrapper: {
       display: 'flex',
       flexDirection: 'column',
-      padding: '0.5rem 0.25rem',
+      padding: '0rem 0.25rem',
     },
     tableWrapper: { display: 'flex', flexDirection: 'column', gap: '2px' },
     rowWrapper: {
@@ -187,14 +187,14 @@ const useWindowColumnStyles = makeStyles(() =>
       background: 'white',
     },
     headColumn: {
-      width: '5.2rem',
+      width: '4.6rem',
       padding: '0.1rem 0.25rem',
       display: 'flex',
       justifyContent: 'center',
       alignItems: 'center',
     },
     column: {
-      width: '5.2rem',
+      width: '4.6rem',
       height: '3.2rem',
       padding: '0.1rem 0.25rem',
       display: 'flex',
@@ -233,7 +233,7 @@ const useWindowColumnStyles = makeStyles(() =>
     },
     actionBox: {
       height: '6.2rem',
-      width: '5.2rem',
+      width: '4.6rem',
       margin: '0.1rem 0.25rem',
       background: 'white',
       borderRadius: '4px',
@@ -243,7 +243,8 @@ const useWindowColumnStyles = makeStyles(() =>
       flexDirection: 'column',
       alignItems: 'center',
       gap: '0.5rem',
-      paddingTop: '0.2rem',
+      paddingTop: '0.8rem',
+      paddingBottom: '0.8rem',
       border: 'none',
     },
     noDataText: {

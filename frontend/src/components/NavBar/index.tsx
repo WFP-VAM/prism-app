@@ -75,7 +75,6 @@ function NavBar({ classes, isAlertFormOpen, setIsAlertFormOpen }: NavBarProps) {
   const { t } = useSafeTranslation();
   const dispatch = useDispatch();
   const { alertFormActive, header } = appConfig;
-  const { selectedLayers, adminBoundariesExtent } = useLayers();
   const tabValue = useSelector(leftPanelTabValueSelector);
   const analysisData = useSelector(analysisResultSelector);
 
@@ -213,7 +212,7 @@ function NavBar({ classes, isAlertFormOpen, setIsAlertFormOpen }: NavBarProps) {
             </div>
           </div>
           <div className={classes.rightSideContainer}>
-            <Legends layers={selectedLayers} extent={adminBoundariesExtent} />
+            <Legends />
             <PrintImage />
             {buttons}
             <About />
