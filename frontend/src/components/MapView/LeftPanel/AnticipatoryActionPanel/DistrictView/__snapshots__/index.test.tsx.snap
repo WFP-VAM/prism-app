@@ -92,7 +92,7 @@ exports[`renders as expected 1`] = `
               <mock-typography
                 classname="makeStyles-monthText-24"
               >
-                September
+                Sep
               </mock-typography>
             </div>
             <div
@@ -101,7 +101,7 @@ exports[`renders as expected 1`] = `
               <mock-typography
                 classname="makeStyles-monthText-24"
               >
-                October
+                Oct
               </mock-typography>
             </div>
             <div
@@ -110,7 +110,7 @@ exports[`renders as expected 1`] = `
               <mock-typography
                 classname="makeStyles-monthText-24"
               >
-                November
+                Nov
               </mock-typography>
             </div>
           </div>
