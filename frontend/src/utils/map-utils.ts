@@ -222,7 +222,7 @@ export function useAAMarkerScalePercent(map: MaplibreMap | undefined) {
         map.project([center.lng, center.lat]).x;
 
       // Desired size ratio defining the final size of the object on the map.
-      const sizeRatio = 6.5;
+      const sizeRatio = 8;
       const desiredWidthInPixels = sizeRatio * pixelsPerMeter;
 
       // Calculate the scale factor needed to adjust the marker to the desired width in pixels
