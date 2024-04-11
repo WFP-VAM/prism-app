@@ -32,6 +32,7 @@ const StyledRadio = withStyles({
     '&$checked': {
       color: black,
     },
+    padding: '0.25rem',
   },
 })((props: RadioProps) => <Radio color="default" {...props} />);
 
@@ -41,6 +42,7 @@ export const StyledRadioLabel = withStyles({
     borderRadius: '32px',
     height: '1.75rem',
     marginLeft: 0,
+    marginRight: '0.5rem',
   },
 })(({ label, ...props }: Omit<FormControlLabelProps, 'control'>) => {
   const { t } = useSafeTranslation();
@@ -84,7 +86,7 @@ const StyledCheckbox = withStyles({
     '&$checked': {
       color: black,
     },
-    padding: '0.25rem',
+    padding: '0.2rem',
   },
 })((props: CheckboxProps) => <Checkbox color="default" {...props} />);
 
