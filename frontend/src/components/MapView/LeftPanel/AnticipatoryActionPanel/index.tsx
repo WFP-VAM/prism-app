@@ -138,6 +138,7 @@ function AnticipatoryActionPanel() {
                 <Typography variant="h2">
                   {t(selectedDistrict) || t('Phases: global view')}{' '}
                   {view === AAView.Timeline && t('Timeline')}
+                  {view === AAView.Forecast && t('Forecast')}
                 </Typography>
               )}
             >
