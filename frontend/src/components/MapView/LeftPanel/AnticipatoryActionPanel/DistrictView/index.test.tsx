@@ -61,9 +61,9 @@ test('District view transformation', () => {
 
 const out = {
   months: {
-    '2023-09-01': 'September',
-    '2023-10-01': 'October',
-    '2023-11-01': 'November',
+    '2023-09-01': 'Sep',
+    '2023-10-01': 'Oct',
+    '2023-11-01': 'Nov',
   },
   transformed: {
     '20': [

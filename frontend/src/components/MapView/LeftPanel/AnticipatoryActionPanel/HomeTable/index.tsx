@@ -150,7 +150,7 @@ const useRowStyles = makeStyles(() =>
       width: '100%',
     },
     tagWrapper: {
-      padding: '1rem 0.5rem',
+      padding: '0.5rem 0.5rem',
       display: 'flex',
       flexDirection: 'row',
       flexWrap: 'wrap',
@@ -313,6 +313,7 @@ const useHomeTableStyles = makeStyles(() =>
       background: gray,
       padding: '0.5rem 0',
       overflow: 'scroll',
+      overflowY: 'scroll',
     },
   }),
 );
