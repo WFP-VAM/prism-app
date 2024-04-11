@@ -4,7 +4,7 @@ import {
   LocalDrink,
   School,
   AccountTree,
-  Block,
+  Remove,
   //   Diversity3 in mui 5 for social assistance
 } from '@material-ui/icons';
 import {
@@ -97,11 +97,11 @@ export const AActions = {
   },
   naMild: {
     name: 'No anticipatory action linked to Mild levels',
-    icon: <Block style={{ fontSize: IconSize }} />,
+    icon: <Remove style={{ fontSize: IconSize, color: 'darkgrey' }} />,
   },
   na: {
     name: 'No action',
-    icon: <Block style={{ fontSize: IconSize }} />,
+    icon: <Remove style={{ fontSize: IconSize, color: 'darkgrey' }} />,
   },
 };
 
