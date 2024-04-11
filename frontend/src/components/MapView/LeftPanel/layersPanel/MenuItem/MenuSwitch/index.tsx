@@ -51,7 +51,8 @@ const useStyles = makeStyles(() =>
     },
     title: {
       color: 'black',
-      fontWeight: 500,
+      fontSize: '16px',
+      fontWeight: 400,
     },
   }),
 );

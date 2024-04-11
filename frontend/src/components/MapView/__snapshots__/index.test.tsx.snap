@@ -27,278 +27,282 @@ exports[`renders as expected 1`] = `
               class="MuiBox-root MuiBox-root-8"
             >
               <div
-                class="MuiPaper-root MuiAccordion-root makeStyles-root-9 MuiAccordion-rounded MuiPaper-elevation0 MuiPaper-rounded"
+                style="padding: 0.5rem;"
               >
                 <div
-                  aria-controls="Rainfall"
-                  aria-disabled="false"
-                  aria-expanded="false"
-                  class="MuiButtonBase-root MuiAccordionSummary-root makeStyles-rootSummary-10"
-                  id="Rainfall"
-                  role="button"
-                  tabindex="0"
+                  class="MuiPaper-root MuiAccordion-root makeStyles-root-9 MuiAccordion-rounded MuiPaper-elevation0 MuiPaper-rounded"
                 >
                   <div
-                    class="MuiAccordionSummary-content makeStyles-summaryContent-13"
-                  >
-                    <mock-typography
-                      classes="[object Object]"
-                    >
-                      Rainfall
-                    </mock-typography>
-                  </div>
-                  <div
+                    aria-controls="Rainfall"
                     aria-disabled="false"
-                    aria-hidden="true"
-                    class="MuiButtonBase-root MuiIconButton-root MuiAccordionSummary-expandIcon makeStyles-expandIcon-12 MuiIconButton-edgeEnd"
+                    aria-expanded="false"
+                    class="MuiButtonBase-root MuiAccordionSummary-root makeStyles-rootSummary-10"
+                    id="Rainfall"
+                    role="button"
+                    tabindex="0"
                   >
-                    <span
-                      class="MuiIconButton-label"
+                    <div
+                      class="MuiAccordionSummary-content makeStyles-summaryContent-13"
                     >
-                      <svg
-                        aria-hidden="true"
-                        class="MuiSvgIcon-root"
-                        focusable="false"
-                        viewBox="0 0 24 24"
+                      <mock-typography
+                        classes="[object Object]"
                       >
-                        <path
-                          d="M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z"
-                        />
-                      </svg>
-                    </span>
-                    <span
-                      class="MuiTouchRipple-root"
-                    />
+                        Rainfall
+                      </mock-typography>
+                    </div>
+                    <div
+                      aria-disabled="false"
+                      aria-hidden="true"
+                      class="MuiButtonBase-root MuiIconButton-root MuiAccordionSummary-expandIcon makeStyles-expandIcon-12 MuiIconButton-edgeEnd"
+                    >
+                      <span
+                        class="MuiIconButton-label"
+                      >
+                        <svg
+                          aria-hidden="true"
+                          class="MuiSvgIcon-root"
+                          focusable="false"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            d="M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z"
+                          />
+                        </svg>
+                      </span>
+                      <span
+                        class="MuiTouchRipple-root"
+                      />
+                    </div>
                   </div>
                 </div>
-              </div>
-              <div
-                class="MuiPaper-root MuiAccordion-root makeStyles-root-9 MuiAccordion-rounded MuiPaper-elevation0 MuiPaper-rounded"
-              >
                 <div
-                  aria-controls="Vegetation"
-                  aria-disabled="false"
-                  aria-expanded="false"
-                  class="MuiButtonBase-root MuiAccordionSummary-root makeStyles-rootSummary-10"
-                  id="Vegetation"
-                  role="button"
-                  tabindex="0"
+                  class="MuiPaper-root MuiAccordion-root makeStyles-root-9 MuiAccordion-rounded MuiPaper-elevation0 MuiPaper-rounded"
                 >
                   <div
-                    class="MuiAccordionSummary-content makeStyles-summaryContent-13"
-                  >
-                    <mock-typography
-                      classes="[object Object]"
-                    >
-                      Vegetation
-                    </mock-typography>
-                  </div>
-                  <div
+                    aria-controls="Vegetation"
                     aria-disabled="false"
-                    aria-hidden="true"
-                    class="MuiButtonBase-root MuiIconButton-root MuiAccordionSummary-expandIcon makeStyles-expandIcon-12 MuiIconButton-edgeEnd"
+                    aria-expanded="false"
+                    class="MuiButtonBase-root MuiAccordionSummary-root makeStyles-rootSummary-10"
+                    id="Vegetation"
+                    role="button"
+                    tabindex="0"
                   >
-                    <span
-                      class="MuiIconButton-label"
+                    <div
+                      class="MuiAccordionSummary-content makeStyles-summaryContent-13"
                     >
-                      <svg
-                        aria-hidden="true"
-                        class="MuiSvgIcon-root"
-                        focusable="false"
-                        viewBox="0 0 24 24"
+                      <mock-typography
+                        classes="[object Object]"
                       >
-                        <path
-                          d="M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z"
-                        />
-                      </svg>
-                    </span>
-                    <span
-                      class="MuiTouchRipple-root"
-                    />
+                        Vegetation
+                      </mock-typography>
+                    </div>
+                    <div
+                      aria-disabled="false"
+                      aria-hidden="true"
+                      class="MuiButtonBase-root MuiIconButton-root MuiAccordionSummary-expandIcon makeStyles-expandIcon-12 MuiIconButton-edgeEnd"
+                    >
+                      <span
+                        class="MuiIconButton-label"
+                      >
+                        <svg
+                          aria-hidden="true"
+                          class="MuiSvgIcon-root"
+                          focusable="false"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            d="M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z"
+                          />
+                        </svg>
+                      </span>
+                      <span
+                        class="MuiTouchRipple-root"
+                      />
+                    </div>
                   </div>
                 </div>
-              </div>
-              <div
-                class="MuiPaper-root MuiAccordion-root makeStyles-root-9 MuiAccordion-rounded MuiPaper-elevation0 MuiPaper-rounded"
-              >
                 <div
-                  aria-controls="Temperature"
-                  aria-disabled="false"
-                  aria-expanded="false"
-                  class="MuiButtonBase-root MuiAccordionSummary-root makeStyles-rootSummary-10"
-                  id="Temperature"
-                  role="button"
-                  tabindex="0"
+                  class="MuiPaper-root MuiAccordion-root makeStyles-root-9 MuiAccordion-rounded MuiPaper-elevation0 MuiPaper-rounded"
                 >
                   <div
-                    class="MuiAccordionSummary-content makeStyles-summaryContent-13"
-                  >
-                    <mock-typography
-                      classes="[object Object]"
-                    >
-                      Temperature
-                    </mock-typography>
-                  </div>
-                  <div
+                    aria-controls="Temperature"
                     aria-disabled="false"
-                    aria-hidden="true"
-                    class="MuiButtonBase-root MuiIconButton-root MuiAccordionSummary-expandIcon makeStyles-expandIcon-12 MuiIconButton-edgeEnd"
+                    aria-expanded="false"
+                    class="MuiButtonBase-root MuiAccordionSummary-root makeStyles-rootSummary-10"
+                    id="Temperature"
+                    role="button"
+                    tabindex="0"
                   >
-                    <span
-                      class="MuiIconButton-label"
+                    <div
+                      class="MuiAccordionSummary-content makeStyles-summaryContent-13"
                     >
-                      <svg
-                        aria-hidden="true"
-                        class="MuiSvgIcon-root"
-                        focusable="false"
-                        viewBox="0 0 24 24"
+                      <mock-typography
+                        classes="[object Object]"
                       >
-                        <path
-                          d="M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z"
-                        />
-                      </svg>
-                    </span>
-                    <span
-                      class="MuiTouchRipple-root"
-                    />
+                        Temperature
+                      </mock-typography>
+                    </div>
+                    <div
+                      aria-disabled="false"
+                      aria-hidden="true"
+                      class="MuiButtonBase-root MuiIconButton-root MuiAccordionSummary-expandIcon makeStyles-expandIcon-12 MuiIconButton-edgeEnd"
+                    >
+                      <span
+                        class="MuiIconButton-label"
+                      >
+                        <svg
+                          aria-hidden="true"
+                          class="MuiSvgIcon-root"
+                          focusable="false"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            d="M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z"
+                          />
+                        </svg>
+                      </span>
+                      <span
+                        class="MuiTouchRipple-root"
+                      />
+                    </div>
                   </div>
                 </div>
-              </div>
-              <div
-                class="MuiPaper-root MuiAccordion-root makeStyles-root-9 MuiAccordion-rounded MuiPaper-elevation0 MuiPaper-rounded"
-              >
                 <div
-                  aria-controls="Tropical Storms"
-                  aria-disabled="false"
-                  aria-expanded="false"
-                  class="MuiButtonBase-root MuiAccordionSummary-root makeStyles-rootSummary-10"
-                  id="Tropical Storms"
-                  role="button"
-                  tabindex="0"
+                  class="MuiPaper-root MuiAccordion-root makeStyles-root-9 MuiAccordion-rounded MuiPaper-elevation0 MuiPaper-rounded"
                 >
                   <div
-                    class="MuiAccordionSummary-content makeStyles-summaryContent-13"
-                  >
-                    <mock-typography
-                      classes="[object Object]"
-                    >
-                      Tropical Storms
-                    </mock-typography>
-                  </div>
-                  <div
+                    aria-controls="Tropical Storms"
                     aria-disabled="false"
-                    aria-hidden="true"
-                    class="MuiButtonBase-root MuiIconButton-root MuiAccordionSummary-expandIcon makeStyles-expandIcon-12 MuiIconButton-edgeEnd"
+                    aria-expanded="false"
+                    class="MuiButtonBase-root MuiAccordionSummary-root makeStyles-rootSummary-10"
+                    id="Tropical Storms"
+                    role="button"
+                    tabindex="0"
                   >
-                    <span
-                      class="MuiIconButton-label"
+                    <div
+                      class="MuiAccordionSummary-content makeStyles-summaryContent-13"
                     >
-                      <svg
-                        aria-hidden="true"
-                        class="MuiSvgIcon-root"
-                        focusable="false"
-                        viewBox="0 0 24 24"
+                      <mock-typography
+                        classes="[object Object]"
                       >
-                        <path
-                          d="M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z"
-                        />
-                      </svg>
-                    </span>
-                    <span
-                      class="MuiTouchRipple-root"
-                    />
+                        Tropical Storms
+                      </mock-typography>
+                    </div>
+                    <div
+                      aria-disabled="false"
+                      aria-hidden="true"
+                      class="MuiButtonBase-root MuiIconButton-root MuiAccordionSummary-expandIcon makeStyles-expandIcon-12 MuiIconButton-edgeEnd"
+                    >
+                      <span
+                        class="MuiIconButton-label"
+                      >
+                        <svg
+                          aria-hidden="true"
+                          class="MuiSvgIcon-root"
+                          focusable="false"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            d="M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z"
+                          />
+                        </svg>
+                      </span>
+                      <span
+                        class="MuiTouchRipple-root"
+                      />
+                    </div>
                   </div>
                 </div>
-              </div>
-              <div
-                class="MuiPaper-root MuiAccordion-root makeStyles-root-9 MuiAccordion-rounded MuiPaper-elevation0 MuiPaper-rounded"
-              >
                 <div
-                  aria-controls="Vulnerability"
-                  aria-disabled="false"
-                  aria-expanded="false"
-                  class="MuiButtonBase-root MuiAccordionSummary-root makeStyles-rootSummary-10"
-                  id="Vulnerability"
-                  role="button"
-                  tabindex="0"
+                  class="MuiPaper-root MuiAccordion-root makeStyles-root-9 MuiAccordion-rounded MuiPaper-elevation0 MuiPaper-rounded"
                 >
                   <div
-                    class="MuiAccordionSummary-content makeStyles-summaryContent-13"
-                  >
-                    <mock-typography
-                      classes="[object Object]"
-                    >
-                      Vulnerability
-                    </mock-typography>
-                  </div>
-                  <div
+                    aria-controls="Vulnerability"
                     aria-disabled="false"
-                    aria-hidden="true"
-                    class="MuiButtonBase-root MuiIconButton-root MuiAccordionSummary-expandIcon makeStyles-expandIcon-12 MuiIconButton-edgeEnd"
+                    aria-expanded="false"
+                    class="MuiButtonBase-root MuiAccordionSummary-root makeStyles-rootSummary-10"
+                    id="Vulnerability"
+                    role="button"
+                    tabindex="0"
                   >
-                    <span
-                      class="MuiIconButton-label"
+                    <div
+                      class="MuiAccordionSummary-content makeStyles-summaryContent-13"
                     >
-                      <svg
-                        aria-hidden="true"
-                        class="MuiSvgIcon-root"
-                        focusable="false"
-                        viewBox="0 0 24 24"
+                      <mock-typography
+                        classes="[object Object]"
                       >
-                        <path
-                          d="M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z"
-                        />
-                      </svg>
-                    </span>
-                    <span
-                      class="MuiTouchRipple-root"
-                    />
+                        Vulnerability
+                      </mock-typography>
+                    </div>
+                    <div
+                      aria-disabled="false"
+                      aria-hidden="true"
+                      class="MuiButtonBase-root MuiIconButton-root MuiAccordionSummary-expandIcon makeStyles-expandIcon-12 MuiIconButton-edgeEnd"
+                    >
+                      <span
+                        class="MuiIconButton-label"
+                      >
+                        <svg
+                          aria-hidden="true"
+                          class="MuiSvgIcon-root"
+                          focusable="false"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            d="M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z"
+                          />
+                        </svg>
+                      </span>
+                      <span
+                        class="MuiTouchRipple-root"
+                      />
+                    </div>
                   </div>
                 </div>
-              </div>
-              <div
-                class="MuiPaper-root MuiAccordion-root makeStyles-root-9 MuiAccordion-rounded MuiPaper-elevation0 MuiPaper-rounded"
-              >
                 <div
-                  aria-controls="Exposure"
-                  aria-disabled="false"
-                  aria-expanded="false"
-                  class="MuiButtonBase-root MuiAccordionSummary-root makeStyles-rootSummary-10"
-                  id="Exposure"
-                  role="button"
-                  tabindex="0"
+                  class="MuiPaper-root MuiAccordion-root makeStyles-root-9 MuiAccordion-rounded MuiPaper-elevation0 MuiPaper-rounded"
                 >
                   <div
-                    class="MuiAccordionSummary-content makeStyles-summaryContent-13"
-                  >
-                    <mock-typography
-                      classes="[object Object]"
-                    >
-                      Exposure
-                    </mock-typography>
-                  </div>
-                  <div
+                    aria-controls="Exposure"
                     aria-disabled="false"
-                    aria-hidden="true"
-                    class="MuiButtonBase-root MuiIconButton-root MuiAccordionSummary-expandIcon makeStyles-expandIcon-12 MuiIconButton-edgeEnd"
+                    aria-expanded="false"
+                    class="MuiButtonBase-root MuiAccordionSummary-root makeStyles-rootSummary-10"
+                    id="Exposure"
+                    role="button"
+                    tabindex="0"
                   >
-                    <span
-                      class="MuiIconButton-label"
+                    <div
+                      class="MuiAccordionSummary-content makeStyles-summaryContent-13"
                     >
-                      <svg
-                        aria-hidden="true"
-                        class="MuiSvgIcon-root"
-                        focusable="false"
-                        viewBox="0 0 24 24"
+                      <mock-typography
+                        classes="[object Object]"
                       >
-                        <path
-                          d="M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z"
-                        />
-                      </svg>
-                    </span>
-                    <span
-                      class="MuiTouchRipple-root"
-                    />
+                        Exposure
+                      </mock-typography>
+                    </div>
+                    <div
+                      aria-disabled="false"
+                      aria-hidden="true"
+                      class="MuiButtonBase-root MuiIconButton-root MuiAccordionSummary-expandIcon makeStyles-expandIcon-12 MuiIconButton-edgeEnd"
+                    >
+                      <span
+                        class="MuiIconButton-label"
+                      >
+                        <svg
+                          aria-hidden="true"
+                          class="MuiSvgIcon-root"
+                          focusable="false"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            d="M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z"
+                          />
+                        </svg>
+                      </span>
+                      <span
+                        class="MuiTouchRipple-root"
+                      />
+                    </div>
                   </div>
                 </div>
               </div>
