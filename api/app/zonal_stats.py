@@ -26,6 +26,7 @@ from app.validation import VALID_OPERATORS
 from fastapi import HTTPException
 from rasterio.warp import Resampling
 from rasterstats import zonal_stats  # type: ignore
+from shapely.errors import GEOSException  # type: ignore
 from shapely.geometry import mapping, shape  # type: ignore
 from shapely.ops import unary_union  # type: ignore
 
@@ -102,7 +103,7 @@ def _group_zones(zones_filepath: FilePath, group_by: GroupBy) -> FilePath:
     for group_id, polygons in grouped_polygons.items():
         try:
             new_geometry = mapping(unary_union(polygons))
-        except ValueError as error:
+        except (ValueError, GEOSException) as error:
             logger.error(error)
             logger.error(polygons)
             new_geometry = {}
