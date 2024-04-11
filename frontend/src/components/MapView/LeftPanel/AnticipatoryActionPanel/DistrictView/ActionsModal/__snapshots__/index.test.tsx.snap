@@ -106,7 +106,7 @@ exports[`renders actions modal 1`] = `
             class="makeStyles-actionIconWrapper-4"
           >
             <div
-              style="display: flex;"
+              style="display: flex; transform: scale(0.75);"
             >
               <svg
                 aria-hidden="true"

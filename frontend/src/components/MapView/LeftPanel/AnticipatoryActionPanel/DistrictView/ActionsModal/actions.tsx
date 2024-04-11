@@ -38,7 +38,7 @@ export interface Action {
 }
 
 const DoubleIcon = (props: FontAwesomeIconProps) => (
-  <div style={{ display: 'flex' }}>
+  <div style={{ display: 'flex', transform: 'scale(0.75)' }}>
     <FontAwesomeIcon fontSize={IconSize} {...props} />
     <FontAwesomeIcon
       fontSize={IconSize}
