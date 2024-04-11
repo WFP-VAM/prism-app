@@ -16,10 +16,12 @@ const styles = () =>
       lineHeight: 1.8,
       color: 'black',
       fontWeight: 400,
+      fontSize: '14px',
     },
     titleUnchecked: {
       lineHeight: 1.8,
       fontWeight: 400,
+      fontSize: '14px',
     },
     select: {
       '&::before': {

@@ -38,6 +38,7 @@ const useStyles = makeStyles(() =>
     },
     title: {
       color: 'black',
+      fontSize: '16px',
       fontWeight: 600,
     },
   }),
