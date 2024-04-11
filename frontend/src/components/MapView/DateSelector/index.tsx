@@ -87,6 +87,8 @@ const DateSelector = memo(({ classes }: DateSelectorProps) => {
     x: 0,
     y: 0,
   });
+  const today = new Date();
+  today.setHours(12, 0, 0, 0); // Normalize today's date
 
   const dateRef = useRef(availableDates);
   const timeLine = useRef(null);
@@ -374,7 +376,9 @@ const DateSelector = memo(({ classes }: DateSelectorProps) => {
             showYearDropdown
             dropdownMode="select"
             customInput={<DateSelectorInput />}
-            includeDates={includedDates}
+            // Include "today" so that the user can select it and get an error message if
+            // the selected date is not available
+            includeDates={[...includedDates, today]}
           />
 
           <Hidden smUp>
