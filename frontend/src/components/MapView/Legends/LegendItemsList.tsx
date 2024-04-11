@@ -12,10 +12,9 @@ import useLayers from 'utils/layers-utils';
 import { createGetLegendGraphicUrl } from 'prism-common';
 import { useSafeTranslation } from 'i18n';
 import { List } from '@material-ui/core';
-import { Panel, leftPanelTabValueSelector } from 'context/leftPanelStateSlice';
+import { AALayerId } from 'config/utils';
 import LegendItem from './LegendItem';
 import LegendImpactResult from './LegendImpactResult';
-import { isAnticipatoryActionAvailable } from '../LeftPanel/utils';
 import AALegend from '../LeftPanel/AnticipatoryActionPanel/AALegend';
 
 // Invert the colors of the legend, first color becomes last and vice versa
@@ -46,8 +45,12 @@ function LegendItemsList({
   const analysisResult = useSelector(analysisResultSelector);
   const invertedColorsForAnalysis = useSelector(invertedColorsSelector);
   const analysisLayerOpacity = useSelector(analysisResultOpacitySelector);
-  const tabValue = useSelector(leftPanelTabValueSelector);
   const { selectedLayers, adminBoundariesExtent } = useLayers();
+
+  const AALayerInUrl = React.useMemo(
+    () => selectedLayers.find(x => x.id === AALayerId),
+    [selectedLayers],
+  );
 
   // If legend array is empty, we fetch from remote server the legend as GetLegendGraphic request.
   const getLayerLegendUrl = React.useCallback((layer: LayerType) => {
@@ -158,24 +161,24 @@ function LegendItemsList({
   ]);
 
   const legendItems = React.useMemo(() => {
-    const AALegends =
-      isAnticipatoryActionAvailable && tabValue === Panel.AnticipatoryAction
-        ? [
-            <AALegend
-              forPrinting={forPrinting}
-              showDescription={showDescription}
-            />,
-          ]
-        : [];
+    const AALegends = AALayerInUrl
+      ? [
+          <AALegend
+            key="AA"
+            forPrinting={forPrinting}
+            showDescription={showDescription}
+          />,
+        ]
+      : [];
     return [...AALegends, ...layersLegendItems, ...analysisLegendItem].filter(
       (x): x is React.JSX.Element => x !== null,
     );
   }, [
+    AALayerInUrl,
     analysisLegendItem,
     forPrinting,
     layersLegendItems,
     showDescription,
-    tabValue,
   ]);
 
   return <List className={listStyle}>{legendItems}</List>;

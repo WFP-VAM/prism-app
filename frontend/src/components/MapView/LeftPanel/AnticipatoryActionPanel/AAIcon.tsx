@@ -7,14 +7,24 @@ export interface AAIconProps {
   topText: string;
   bottomText?: string;
   color: string;
+  fillBackground: boolean;
 }
 
-function AAIcon({ background, topText, bottomText, color }: AAIconProps) {
+function AAIcon({
+  background,
+  topText,
+  bottomText,
+  color,
+  fillBackground,
+}: AAIconProps) {
   const classes = useAAIconStyles();
   const { t } = useSafeTranslation();
 
   return (
-    <div className={classes.iconWrapper}>
+    <div
+      style={fillBackground ? { background } : undefined}
+      className={classes.iconWrapper}
+    >
       <div
         style={{ border: `1px solid ${color}`, color }}
         className={classes.centerContainer}

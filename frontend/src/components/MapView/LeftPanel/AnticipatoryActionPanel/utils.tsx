@@ -212,13 +212,25 @@ export function getAAIcon(
     const iconProps = forLayer
       ? { ...categoryData.iconProps, bottomText: undefined }
       : categoryData.iconProps;
-    return <AAIcon background={background} {...iconProps} />;
+    return (
+      <AAIcon
+        background={background}
+        fillBackground={!forLayer}
+        {...iconProps}
+      />
+    );
   }
   const phaseData = categoryData[phase];
   if (!phaseData) {
     throw new Error(`Icon not implemented: ${category}, ${phase}`);
   }
-  return <AAIcon background={background} {...phaseData.iconProps} />;
+  return (
+    <AAIcon
+      background={background}
+      fillBackground={!forLayer}
+      {...phaseData.iconProps}
+    />
+  );
 }
 
 export function AADataSeverityOrder(

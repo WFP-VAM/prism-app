@@ -10,19 +10,32 @@ import { useSafeTranslation } from 'i18n';
 import { borderGray, gray } from 'muiTheme';
 import React from 'react';
 import { getAAColor, getAAIcon, useAACommonStyles } from '../utils';
+import HowToReadModal from '../HowToReadModal';
 
 const phases = [
-  { icon: getAAIcon('Severe', 'Set'), phase: 'Set', severity: 'Severe' },
-  { icon: getAAIcon('Severe', 'Ready'), phase: 'Ready', severity: 'Severe' },
-  { icon: getAAIcon('Severe', 'na'), phase: 'No Action', severity: 'Severe' },
-  { icon: getAAIcon('Moderate', 'Set'), phase: 'Set', severity: 'Moderate' },
+  { icon: getAAIcon('Severe', 'Set', true), phase: 'Set', severity: 'Severe' },
   {
-    icon: getAAIcon('Moderate', 'Ready'),
+    icon: getAAIcon('Severe', 'Ready', true),
+    phase: 'Ready',
+    severity: 'Severe',
+  },
+  {
+    icon: getAAIcon('Severe', 'na', true),
+    phase: 'No Action',
+    severity: 'Severe',
+  },
+  {
+    icon: getAAIcon('Moderate', 'Set', true),
+    phase: 'Set',
+    severity: 'Moderate',
+  },
+  {
+    icon: getAAIcon('Moderate', 'Ready', true),
     phase: 'Ready',
     severity: 'Moderate',
   },
   {
-    icon: getAAIcon('Moderate', 'na'),
+    icon: getAAIcon('Moderate', 'na', true),
     phase: 'No Action',
     severity: 'Moderate',
   },
@@ -41,8 +54,11 @@ function AALegend({
   const commonClasses = useAACommonStyles();
   const { t } = useSafeTranslation();
 
+  const [open, setOpen] = React.useState(false);
+
   return (
     <ListItem disableGutters dense>
+      <HowToReadModal open={open} onClose={() => setOpen(false)} />
       <Paper
         className={classes.paper}
         elevation={forPrinting ? 0 : undefined}
@@ -57,7 +73,10 @@ function AALegend({
         <Typography variant="h2">{t('Phases')}</Typography>
         <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
           {phases.map(x => (
-            <div className={classes.itemWrapper}>
+            <div
+              key={`${x.phase}_${x.severity}`}
+              className={classes.itemWrapper}
+            >
               {x.icon}
               <div>
                 <Typography style={{ whiteSpace: 'nowrap' }} variant="h3">
@@ -82,9 +101,19 @@ function AALegend({
           <>
             <Typography>
               The{' '}
-              <span style={{ fontWeight: 'bold', textDecoration: 'underline' }}>
-                “Ready, Set & Go!” system
-              </span>{' '}
+              {
+                // TODO: handle onKeyDown
+                // eslint-disable-next-line jsx-a11y/click-events-have-key-events
+                <span
+                  className={classes.dialogButton}
+                  onClick={() => setOpen(true)}
+                  // onKeyDown={e => console.log(e)}
+                  role="button"
+                  tabIndex={0}
+                >
+                  “Ready, Set & Go!” system
+                </span>
+              }{' '}
               uses seasonal forecasts with longer lead time for preparedness
               (Ready phase) and shorter lead times for activation and
               mobilization (Set & Go! phases).
@@ -121,7 +150,7 @@ const useStyles = makeStyles(() =>
   createStyles({
     paper: {
       padding: 8,
-      width: 180,
+      width: 200,
       borderRadius: '8px',
       display: 'flex',
       flexDirection: 'column',
@@ -136,6 +165,11 @@ const useStyles = makeStyles(() =>
     phaseNy: {
       minWidth: '2.2rem',
       background: getAAColor('ny', 'ny', true),
+    },
+    dialogButton: {
+      fontWeight: 'bold',
+      textDecoration: 'underline',
+      cursor: 'pointer',
     },
   }),
 );

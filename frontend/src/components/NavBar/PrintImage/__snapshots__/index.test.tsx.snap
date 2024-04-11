@@ -104,318 +104,7 @@ exports[`renders as expected 1`] = `
               >
                 <mock-list
                   classname="DownloadImage-legendListStyle-15"
-                >
-                  <mock-listitem
-                    dense="true"
-                    disablegutters="true"
-                  >
-                    <div
-                      class="MuiPaper-root makeStyles-paper-16 MuiPaper-elevation0 MuiPaper-rounded"
-                      style="border: 1px solid #f1f1f1;"
-                    >
-                      <mock-typography
-                        variant="h2"
-                      >
-                        Phases
-                      </mock-typography>
-                      <div
-                        style="display: flex; flex-direction: column; gap: 1rem;"
-                      >
-                        <div
-                          class="makeStyles-itemWrapper-17"
-                        >
-                          <div
-                            class="makeStyles-iconWrapper-27"
-                          >
-                            <div
-                              class="makeStyles-centerContainer-28"
-                              style="border: 1px solid white; color: white;"
-                            >
-                              <div
-                                class="makeStyles-topTextContainer-29"
-                                style="border-bottom: 1px solid white; background: rgb(131, 31, 0);"
-                              >
-                                S
-                              </div>
-                              <div
-                                class="makeStyles-bottomTextContainer-30"
-                                style="background: rgb(131, 31, 0);"
-                              >
-                                SEV
-                              </div>
-                            </div>
-                          </div>
-                          <div>
-                            <mock-typography
-                              style="white-space: nowrap;"
-                              variant="h3"
-                            >
-                              Set
-                            </mock-typography>
-                            <mock-typography
-                              style="white-space: nowrap;"
-                              variant="h3"
-                            >
-                              Severe
-                            </mock-typography>
-                          </div>
-                        </div>
-                        <div
-                          class="makeStyles-itemWrapper-17"
-                        >
-                          <div
-                            class="makeStyles-iconWrapper-27"
-                          >
-                            <div
-                              class="makeStyles-centerContainer-28"
-                              style="border: 1px solid white; color: white;"
-                            >
-                              <div
-                                class="makeStyles-topTextContainer-29"
-                                style="border-bottom: 1px solid white; background: rgb(230, 55, 1);"
-                              >
-                                R
-                              </div>
-                              <div
-                                class="makeStyles-bottomTextContainer-30"
-                                style="background: rgb(230, 55, 1);"
-                              >
-                                SEV
-                              </div>
-                            </div>
-                          </div>
-                          <div>
-                            <mock-typography
-                              style="white-space: nowrap;"
-                              variant="h3"
-                            >
-                              Ready
-                            </mock-typography>
-                            <mock-typography
-                              style="white-space: nowrap;"
-                              variant="h3"
-                            >
-                              Severe
-                            </mock-typography>
-                          </div>
-                        </div>
-                        <div
-                          class="makeStyles-itemWrapper-17"
-                        >
-                          <div
-                            class="makeStyles-iconWrapper-27"
-                          >
-                            <div
-                              class="makeStyles-centerContainer-28"
-                              style="border: 1px solid black; color: black;"
-                            >
-                              <div
-                                class="makeStyles-topTextContainer-29"
-                                style="border-bottom: 1px solid black; background: rgb(241, 241, 241);"
-                              >
-                                na
-                              </div>
-                              <div
-                                class="makeStyles-bottomTextContainer-30"
-                                style="background: rgb(241, 241, 241);"
-                              >
-                                SEV
-                              </div>
-                            </div>
-                          </div>
-                          <div>
-                            <mock-typography
-                              style="white-space: nowrap;"
-                              variant="h3"
-                            >
-                              No Action
-                            </mock-typography>
-                            <mock-typography
-                              style="white-space: nowrap;"
-                              variant="h3"
-                            >
-                              Severe
-                            </mock-typography>
-                          </div>
-                        </div>
-                        <div
-                          class="makeStyles-itemWrapper-17"
-                        >
-                          <div
-                            class="makeStyles-iconWrapper-27"
-                          >
-                            <div
-                              class="makeStyles-centerContainer-28"
-                              style="border: 1px solid black; color: black;"
-                            >
-                              <div
-                                class="makeStyles-topTextContainer-29"
-                                style="border-bottom: 1px solid black; background: rgb(255, 137, 52);"
-                              >
-                                S
-                              </div>
-                              <div
-                                class="makeStyles-bottomTextContainer-30"
-                                style="background: rgb(255, 137, 52);"
-                              >
-                                MOD
-                              </div>
-                            </div>
-                          </div>
-                          <div>
-                            <mock-typography
-                              style="white-space: nowrap;"
-                              variant="h3"
-                            >
-                              Set
-                            </mock-typography>
-                            <mock-typography
-                              style="white-space: nowrap;"
-                              variant="h3"
-                            >
-                              Moderate
-                            </mock-typography>
-                          </div>
-                        </div>
-                        <div
-                          class="makeStyles-itemWrapper-17"
-                        >
-                          <div
-                            class="makeStyles-iconWrapper-27"
-                          >
-                            <div
-                              class="makeStyles-centerContainer-28"
-                              style="border: 1px solid black; color: black;"
-                            >
-                              <div
-                                class="makeStyles-topTextContainer-29"
-                                style="border-bottom: 1px solid black; background: rgb(255, 213, 45);"
-                              >
-                                R
-                              </div>
-                              <div
-                                class="makeStyles-bottomTextContainer-30"
-                                style="background: rgb(255, 213, 45);"
-                              >
-                                MOD
-                              </div>
-                            </div>
-                          </div>
-                          <div>
-                            <mock-typography
-                              style="white-space: nowrap;"
-                              variant="h3"
-                            >
-                              Ready
-                            </mock-typography>
-                            <mock-typography
-                              style="white-space: nowrap;"
-                              variant="h3"
-                            >
-                              Moderate
-                            </mock-typography>
-                          </div>
-                        </div>
-                        <div
-                          class="makeStyles-itemWrapper-17"
-                        >
-                          <div
-                            class="makeStyles-iconWrapper-27"
-                          >
-                            <div
-                              class="makeStyles-centerContainer-28"
-                              style="border: 1px solid black; color: black;"
-                            >
-                              <div
-                                class="makeStyles-topTextContainer-29"
-                                style="border-bottom: 1px solid black; background: rgb(241, 241, 241);"
-                              >
-                                na
-                              </div>
-                              <div
-                                class="makeStyles-bottomTextContainer-30"
-                                style="background: rgb(241, 241, 241);"
-                              >
-                                MOD
-                              </div>
-                            </div>
-                          </div>
-                          <div>
-                            <mock-typography
-                              style="white-space: nowrap;"
-                              variant="h3"
-                            >
-                              No Action
-                            </mock-typography>
-                            <mock-typography
-                              style="white-space: nowrap;"
-                              variant="h3"
-                            >
-                              Moderate
-                            </mock-typography>
-                          </div>
-                        </div>
-                        <div
-                          class="makeStyles-itemWrapper-17"
-                        >
-                          <div
-                            class="makeStyles-phaseNy-18"
-                          />
-                          <div>
-                            <mock-typography
-                              variant="h3"
-                            >
-                              AA triggers not yet monitored
-                            </mock-typography>
-                          </div>
-                        </div>
-                      </div>
-                      <mock-typography>
-                        The
-                         
-                        <span
-                          style="font-weight: bold; text-decoration: underline;"
-                        >
-                          “Ready, Set & Go!” system
-                        </span>
-                         
-                        uses seasonal forecasts with longer lead time for preparedness (Ready phase) and shorter lead times for activation and mobilization (Set & Go! phases).
-                      </mock-typography>
-                      <mock-divider />
-                      <mock-typography
-                        variant="h2"
-                      >
-                        Districts
-                      </mock-typography>
-                      <div
-                        style="display: flex; flex-direction: column; gap: 1rem;"
-                      >
-                        <div
-                          class="makeStyles-itemWrapper-17"
-                        >
-                          <div
-                            style="min-width: 2.2rem; border: 1px solid #a4a4a4; border-radius: 2px;"
-                          />
-                          <mock-typography>
-                            District
-                          </mock-typography>
-                        </div>
-                        <div
-                          class="makeStyles-itemWrapper-17"
-                        >
-                          <div
-                            class="makeStyles-newTag-26"
-                          >
-                            NEW
-                          </div>
-                          <mock-typography>
-                            District in new phase this month
-                          </mock-typography>
-                        </div>
-                      </div>
-                    </div>
-                  </mock-listitem>
-                </mock-list>
+                />
               </div>
               <div
                 class="DownloadImage-mapContainer-7"
@@ -429,7 +118,7 @@ exports[`renders as expected 1`] = `
       >
         <div>
           <div
-            class="MuiBox-root MuiBox-root-31 DownloadImage-title-1"
+            class="MuiBox-root MuiBox-root-16 DownloadImage-title-1"
           >
             Map Options
           </div>
@@ -473,7 +162,7 @@ exports[`renders as expected 1`] = `
           />
         </div>
         <div
-          class="makeStyles-wrapper-32"
+          class="makeStyles-wrapper-17"
         >
           <mock-typography
             variant="h4"
@@ -481,12 +170,12 @@ exports[`renders as expected 1`] = `
             Mask data outside of admin area
           </mock-typography>
           <div
-            class="MuiToggleButtonGroup-root makeStyles-buttonGroup-33"
+            class="MuiToggleButtonGroup-root makeStyles-buttonGroup-18"
             role="group"
           >
             <button
               aria-pressed="false"
-              class="MuiButtonBase-root MuiToggleButton-root MuiToggleButtonGroup-grouped MuiToggleButtonGroup-groupedHorizontal makeStyles-button-34"
+              class="MuiButtonBase-root MuiToggleButton-root MuiToggleButtonGroup-grouped MuiToggleButtonGroup-groupedHorizontal makeStyles-button-19"
               tabindex="0"
               type="button"
               value="1"
@@ -502,7 +191,7 @@ exports[`renders as expected 1`] = `
             </button>
             <button
               aria-pressed="true"
-              class="MuiButtonBase-root MuiToggleButton-root MuiToggleButtonGroup-grouped MuiToggleButtonGroup-groupedHorizontal makeStyles-button-34 Mui-selected"
+              class="MuiButtonBase-root MuiToggleButton-root MuiToggleButtonGroup-grouped MuiToggleButtonGroup-groupedHorizontal makeStyles-button-19 Mui-selected"
               tabindex="0"
               type="button"
               value="0"
@@ -519,7 +208,7 @@ exports[`renders as expected 1`] = `
           </div>
         </div>
         <div
-          class="makeStyles-wrapper-32"
+          class="makeStyles-wrapper-17"
         >
           <mock-typography
             variant="h4"
@@ -527,12 +216,12 @@ exports[`renders as expected 1`] = `
             Legend - Full Layer Description
           </mock-typography>
           <div
-            class="MuiToggleButtonGroup-root makeStyles-buttonGroup-33"
+            class="MuiToggleButtonGroup-root makeStyles-buttonGroup-18"
             role="group"
           >
             <button
               aria-pressed="false"
-              class="MuiButtonBase-root MuiToggleButton-root MuiToggleButtonGroup-grouped MuiToggleButtonGroup-groupedHorizontal makeStyles-button-34"
+              class="MuiButtonBase-root MuiToggleButton-root MuiToggleButtonGroup-grouped MuiToggleButtonGroup-groupedHorizontal makeStyles-button-19"
               tabindex="0"
               type="button"
               value="0"
@@ -548,7 +237,7 @@ exports[`renders as expected 1`] = `
             </button>
             <button
               aria-pressed="true"
-              class="MuiButtonBase-root MuiToggleButton-root MuiToggleButtonGroup-grouped MuiToggleButtonGroup-groupedHorizontal makeStyles-button-34 Mui-selected"
+              class="MuiButtonBase-root MuiToggleButton-root MuiToggleButtonGroup-grouped MuiToggleButtonGroup-groupedHorizontal makeStyles-button-19 Mui-selected"
               tabindex="0"
               type="button"
               value="1"
@@ -565,7 +254,7 @@ exports[`renders as expected 1`] = `
           </div>
         </div>
         <div
-          class="makeStyles-wrapper-32"
+          class="makeStyles-wrapper-17"
         >
           <mock-typography
             variant="h4"
@@ -573,12 +262,12 @@ exports[`renders as expected 1`] = `
             Legend
           </mock-typography>
           <div
-            class="MuiToggleButtonGroup-root makeStyles-buttonGroup-33"
+            class="MuiToggleButtonGroup-root makeStyles-buttonGroup-18"
             role="group"
           >
             <button
               aria-pressed="false"
-              class="MuiButtonBase-root MuiToggleButton-root MuiToggleButtonGroup-grouped MuiToggleButtonGroup-groupedHorizontal makeStyles-button-34"
+              class="MuiButtonBase-root MuiToggleButton-root MuiToggleButtonGroup-grouped MuiToggleButtonGroup-groupedHorizontal makeStyles-button-19"
               tabindex="0"
               type="button"
               value="-1"
@@ -594,7 +283,7 @@ exports[`renders as expected 1`] = `
             </button>
             <button
               aria-pressed="false"
-              class="MuiButtonBase-root MuiToggleButton-root MuiToggleButtonGroup-grouped MuiToggleButtonGroup-groupedHorizontal makeStyles-button-34"
+              class="MuiButtonBase-root MuiToggleButton-root MuiToggleButtonGroup-grouped MuiToggleButtonGroup-groupedHorizontal makeStyles-button-19"
               tabindex="0"
               type="button"
               value="0.4"
@@ -612,7 +301,7 @@ exports[`renders as expected 1`] = `
             </button>
             <button
               aria-pressed="false"
-              class="MuiButtonBase-root MuiToggleButton-root MuiToggleButtonGroup-grouped MuiToggleButtonGroup-groupedHorizontal makeStyles-button-34"
+              class="MuiButtonBase-root MuiToggleButton-root MuiToggleButtonGroup-grouped MuiToggleButtonGroup-groupedHorizontal makeStyles-button-19"
               tabindex="0"
               type="button"
               value="0.3"
@@ -630,7 +319,7 @@ exports[`renders as expected 1`] = `
             </button>
             <button
               aria-pressed="false"
-              class="MuiButtonBase-root MuiToggleButton-root MuiToggleButtonGroup-grouped MuiToggleButtonGroup-groupedHorizontal makeStyles-button-34"
+              class="MuiButtonBase-root MuiToggleButton-root MuiToggleButtonGroup-grouped MuiToggleButtonGroup-groupedHorizontal makeStyles-button-19"
               tabindex="0"
               type="button"
               value="0.2"
@@ -648,7 +337,7 @@ exports[`renders as expected 1`] = `
             </button>
             <button
               aria-pressed="false"
-              class="MuiButtonBase-root MuiToggleButton-root MuiToggleButtonGroup-grouped MuiToggleButtonGroup-groupedHorizontal makeStyles-button-34"
+              class="MuiButtonBase-root MuiToggleButton-root MuiToggleButtonGroup-grouped MuiToggleButtonGroup-groupedHorizontal makeStyles-button-19"
               tabindex="0"
               type="button"
               value="0.1"
@@ -666,7 +355,7 @@ exports[`renders as expected 1`] = `
             </button>
             <button
               aria-pressed="true"
-              class="MuiButtonBase-root MuiToggleButton-root MuiToggleButtonGroup-grouped MuiToggleButtonGroup-groupedHorizontal makeStyles-button-34 Mui-selected"
+              class="MuiButtonBase-root MuiToggleButton-root MuiToggleButtonGroup-grouped MuiToggleButtonGroup-groupedHorizontal makeStyles-button-19 Mui-selected"
               tabindex="0"
               type="button"
               value="0"
@@ -685,7 +374,7 @@ exports[`renders as expected 1`] = `
           </div>
         </div>
         <div
-          class="makeStyles-wrapper-32"
+          class="makeStyles-wrapper-17"
         >
           <mock-typography
             variant="h4"
@@ -693,12 +382,12 @@ exports[`renders as expected 1`] = `
             Map Width
           </mock-typography>
           <div
-            class="MuiToggleButtonGroup-root makeStyles-buttonGroup-33"
+            class="MuiToggleButtonGroup-root makeStyles-buttonGroup-18"
             role="group"
           >
             <button
               aria-pressed="false"
-              class="MuiButtonBase-root MuiToggleButton-root MuiToggleButtonGroup-grouped MuiToggleButtonGroup-groupedHorizontal makeStyles-button-34"
+              class="MuiButtonBase-root MuiToggleButton-root MuiToggleButtonGroup-grouped MuiToggleButtonGroup-groupedHorizontal makeStyles-button-19"
               tabindex="0"
               type="button"
               value="50"
@@ -716,7 +405,7 @@ exports[`renders as expected 1`] = `
             </button>
             <button
               aria-pressed="false"
-              class="MuiButtonBase-root MuiToggleButton-root MuiToggleButtonGroup-grouped MuiToggleButtonGroup-groupedHorizontal makeStyles-button-34"
+              class="MuiButtonBase-root MuiToggleButton-root MuiToggleButtonGroup-grouped MuiToggleButtonGroup-groupedHorizontal makeStyles-button-19"
               tabindex="0"
               type="button"
               value="60"
@@ -734,7 +423,7 @@ exports[`renders as expected 1`] = `
             </button>
             <button
               aria-pressed="false"
-              class="MuiButtonBase-root MuiToggleButton-root MuiToggleButtonGroup-grouped MuiToggleButtonGroup-groupedHorizontal makeStyles-button-34"
+              class="MuiButtonBase-root MuiToggleButton-root MuiToggleButtonGroup-grouped MuiToggleButtonGroup-groupedHorizontal makeStyles-button-19"
               tabindex="0"
               type="button"
               value="70"
@@ -752,7 +441,7 @@ exports[`renders as expected 1`] = `
             </button>
             <button
               aria-pressed="false"
-              class="MuiButtonBase-root MuiToggleButton-root MuiToggleButtonGroup-grouped MuiToggleButtonGroup-groupedHorizontal makeStyles-button-34"
+              class="MuiButtonBase-root MuiToggleButton-root MuiToggleButtonGroup-grouped MuiToggleButtonGroup-groupedHorizontal makeStyles-button-19"
               tabindex="0"
               type="button"
               value="80"
@@ -770,7 +459,7 @@ exports[`renders as expected 1`] = `
             </button>
             <button
               aria-pressed="false"
-              class="MuiButtonBase-root MuiToggleButton-root MuiToggleButtonGroup-grouped MuiToggleButtonGroup-groupedHorizontal makeStyles-button-34"
+              class="MuiButtonBase-root MuiToggleButton-root MuiToggleButtonGroup-grouped MuiToggleButtonGroup-groupedHorizontal makeStyles-button-19"
               tabindex="0"
               type="button"
               value="90"
@@ -788,7 +477,7 @@ exports[`renders as expected 1`] = `
             </button>
             <button
               aria-pressed="true"
-              class="MuiButtonBase-root MuiToggleButton-root MuiToggleButtonGroup-grouped MuiToggleButtonGroup-groupedHorizontal makeStyles-button-34 Mui-selected"
+              class="MuiButtonBase-root MuiToggleButton-root MuiToggleButtonGroup-grouped MuiToggleButtonGroup-groupedHorizontal makeStyles-button-19 Mui-selected"
               tabindex="0"
               type="button"
               value="100"
@@ -807,7 +496,7 @@ exports[`renders as expected 1`] = `
           </div>
         </div>
         <div
-          class="makeStyles-wrapper-32"
+          class="makeStyles-wrapper-17"
         >
           <mock-typography
             variant="h4"
@@ -815,12 +504,12 @@ exports[`renders as expected 1`] = `
             Footer Text
           </mock-typography>
           <div
-            class="MuiToggleButtonGroup-root makeStyles-buttonGroup-33"
+            class="MuiToggleButtonGroup-root makeStyles-buttonGroup-18"
             role="group"
           >
             <button
               aria-pressed="false"
-              class="MuiButtonBase-root MuiToggleButton-root MuiToggleButtonGroup-grouped MuiToggleButtonGroup-groupedHorizontal makeStyles-button-34"
+              class="MuiButtonBase-root MuiToggleButton-root MuiToggleButtonGroup-grouped MuiToggleButtonGroup-groupedHorizontal makeStyles-button-19"
               tabindex="0"
               type="button"
               value="0"
@@ -836,7 +525,7 @@ exports[`renders as expected 1`] = `
             </button>
             <button
               aria-pressed="false"
-              class="MuiButtonBase-root MuiToggleButton-root MuiToggleButtonGroup-grouped MuiToggleButtonGroup-groupedHorizontal makeStyles-button-34"
+              class="MuiButtonBase-root MuiToggleButton-root MuiToggleButtonGroup-grouped MuiToggleButtonGroup-groupedHorizontal makeStyles-button-19"
               tabindex="0"
               type="button"
               value="8"
@@ -856,7 +545,7 @@ exports[`renders as expected 1`] = `
             </button>
             <button
               aria-pressed="false"
-              class="MuiButtonBase-root MuiToggleButton-root MuiToggleButtonGroup-grouped MuiToggleButtonGroup-groupedHorizontal makeStyles-button-34"
+              class="MuiButtonBase-root MuiToggleButton-root MuiToggleButtonGroup-grouped MuiToggleButtonGroup-groupedHorizontal makeStyles-button-19"
               tabindex="0"
               type="button"
               value="10"
@@ -876,7 +565,7 @@ exports[`renders as expected 1`] = `
             </button>
             <button
               aria-pressed="true"
-              class="MuiButtonBase-root MuiToggleButton-root MuiToggleButtonGroup-grouped MuiToggleButtonGroup-groupedHorizontal makeStyles-button-34 Mui-selected"
+              class="MuiButtonBase-root MuiToggleButton-root MuiToggleButtonGroup-grouped MuiToggleButtonGroup-groupedHorizontal makeStyles-button-19 Mui-selected"
               tabindex="0"
               type="button"
               value="12"
@@ -896,7 +585,7 @@ exports[`renders as expected 1`] = `
             </button>
             <button
               aria-pressed="false"
-              class="MuiButtonBase-root MuiToggleButton-root MuiToggleButtonGroup-grouped MuiToggleButtonGroup-groupedHorizontal makeStyles-button-34"
+              class="MuiButtonBase-root MuiToggleButton-root MuiToggleButtonGroup-grouped MuiToggleButtonGroup-groupedHorizontal makeStyles-button-19"
               tabindex="0"
               type="button"
               value="16"
@@ -916,7 +605,7 @@ exports[`renders as expected 1`] = `
             </button>
             <button
               aria-pressed="false"
-              class="MuiButtonBase-root MuiToggleButton-root MuiToggleButtonGroup-grouped MuiToggleButtonGroup-groupedHorizontal makeStyles-button-34"
+              class="MuiButtonBase-root MuiToggleButton-root MuiToggleButtonGroup-grouped MuiToggleButtonGroup-groupedHorizontal makeStyles-button-19"
               tabindex="0"
               type="button"
               value="20"

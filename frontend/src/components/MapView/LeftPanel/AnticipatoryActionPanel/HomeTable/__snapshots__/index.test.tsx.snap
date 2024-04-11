@@ -29,6 +29,7 @@ exports[`renders as expected 1`] = `
       >
         <div
           class="makeStyles-iconWrapper-16"
+          style="background: rgb(131, 31, 0);"
         >
           <div
             class="makeStyles-centerContainer-17"
@@ -75,6 +76,7 @@ exports[`renders as expected 1`] = `
       >
         <div
           class="makeStyles-iconWrapper-16"
+          style="background: rgb(230, 55, 1);"
         >
           <div
             class="makeStyles-centerContainer-17"
@@ -121,6 +123,7 @@ exports[`renders as expected 1`] = `
       >
         <div
           class="makeStyles-iconWrapper-16"
+          style="background: rgb(255, 137, 52);"
         >
           <div
             class="makeStyles-centerContainer-17"
@@ -167,6 +170,7 @@ exports[`renders as expected 1`] = `
       >
         <div
           class="makeStyles-iconWrapper-16"
+          style="background: rgb(255, 213, 45);"
         >
           <div
             class="makeStyles-centerContainer-17"
@@ -214,6 +218,7 @@ exports[`renders as expected 1`] = `
       >
         <div
           class="makeStyles-iconWrapper-16"
+          style="background: rgb(255, 245, 3);"
         >
           <div
             class="makeStyles-centerContainer-17"
@@ -260,6 +265,7 @@ exports[`renders as expected 1`] = `
       >
         <div
           class="makeStyles-iconWrapper-16"
+          style="background: rgb(255, 252, 179);"
         >
           <div
             class="makeStyles-centerContainer-17"
