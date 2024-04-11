@@ -268,4 +268,31 @@ theme.overrides.MuiTableSortLabel = {
   },
 };
 
+// eslint-disable-next-line fp/no-mutation
+theme.overrides.MuiAccordionSummary = {
+  root: {
+    minHeight: '2.5rem',
+    '&.Mui-expanded': {
+      minHeight: '2.5rem',
+    },
+  },
+  content: {
+    margin: 0,
+    '&.Mui-expanded': {
+      margin: 0,
+    },
+  },
+  expandIcon: {
+    paddingTop: 0,
+    paddingBottom: 0,
+  },
+};
+
+// eslint-disable-next-line fp/no-mutation
+theme.overrides.MuiAccordionDetails = {
+  root: {
+    marginLeft: '12px',
+  },
+};
+
 export default theme;
