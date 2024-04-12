@@ -304,106 +304,30 @@
     "legend": "spi"
   },
   "days_dry": {
-    "title": "Number of dry days",
+    "title": "Days since last rain",
     "type": "wms",
     "server_layer_name": "dlc_dekad",
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
     "opacity": 0.7,
     "legend_text": "Number of consecutive days with less than 2 mm precipitation in the last 30 days",
-    "legend": [
-      {
-        "label": "0 days",
-        "color": "#fff9c7"
-      },
-      {
-        "label": "1 day",
-        "color": "#ffeea9"
-      },
-      {
-        "label": "4 days",
-        "color": "#fede86"
-      },
-      {
-        "label": "6 days",
-        "color": "#fec754"
-      },
-      {
-        "label": "10 days",
-        "color": "#fea937"
-      },
-      {
-        "label": "14 days",
-        "color": "#f88a21"
-      },
-      {
-        "label": "18 days",
-        "color": "#e96d13"
-      },
-      {
-        "label": "22 days",
-        "color": "#d15205"
-      },
-      {
-        "label": "25 days",
-        "color": "#b03f03"
-      },
-      {
-        "label": "30 days",
-        "color": "#8b3005"
-      }
-    ]
+    "legend": "dlx_13_0_26",
+    "additional_query_params": {
+      "styles": "dlx_13_0_26"
+    }
   },
   "streak_dry_days": {
-    "title": "Longest number of consecutive dry days",
+    "title": "Longest dry spell",
     "type": "wms",
     "server_layer_name": "dlx_dekad",
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
     "opacity": 0.7,
     "legend_text": "Longest number of consecutive days with less than 2 mm precipitation in the last 30 days",
-    "legend": [
-      {
-        "label": "0 days",
-        "color": "#fff9c7"
-      },
-      {
-        "label": "1 day",
-        "color": "#ffeea9"
-      },
-      {
-        "label": "4 days",
-        "color": "#fede86"
-      },
-      {
-        "label": "6 days",
-        "color": "#fec754"
-      },
-      {
-        "label": "10 days",
-        "color": "#fea937"
-      },
-      {
-        "label": "14 days",
-        "color": "#f88a21"
-      },
-      {
-        "label": "18 days",
-        "color": "#e96d13"
-      },
-      {
-        "label": "22 days",
-        "color": "#d15205"
-      },
-      {
-        "label": "25 days",
-        "color": "#b03f03"
-      },
-      {
-        "label": "30 days",
-        "color": "#8b3005"
-      }
-    ]
+    "legend": "dlx_13_0_26",
+    "additional_query_params": {
+      "styles": "dlx_13_0_26"
+    }
   },
   "days_heavy_rain": {
     "title": "Number of days with heavy rainfall in the last 30 days",
@@ -413,48 +337,10 @@
     "date_interval": "days",
     "opacity": 0.7,
     "legend_text": "Total number of heavy rain days (rainfall > 75th percentile) within last 30 days of dekad",
-    "legend": [
-      {
-        "label": "0 days",
-        "color": "#f2fabc"
-      },
-      {
-        "label": "1 day",
-        "color": "#dcf1b2"
-      },
-      {
-        "label": "4 days",
-        "color": "#bbe4b5"
-      },
-      {
-        "label": "6 days",
-        "color": "#85cfba"
-      },
-      {
-        "label": "10 days",
-        "color": "#57bec1"
-      },
-      {
-        "label": "14 days",
-        "color": "#34a9c3"
-      },
-      {
-        "label": "18 days",
-        "color": "#1d8dbe"
-      },
-      {
-        "label": "22 days",
-        "color": "#2166ac"
-      },
-      {
-        "label": "25 days",
-        "color": "#24479d"
-      },
-      {
-        "label": "30 days",
-        "color": "#1d2e83"
-      }
-    ]
+    "legend": "xnhie_12_0_14",
+    "additional_query_params": {
+      "styles": "xnhie_12_0_14"
+    }
   },
   "days_intense_rain": {
     "title": "Number of days with intense rainfall in the last 30 days",
@@ -464,48 +350,10 @@
     "date_interval": "days",
     "opacity": 0.7,
     "legend_text": "Total number of heavy rain days (rainfall > 90th percentile) within last 30 days of dekad",
-    "legend": [
-      {
-        "label": "0 days",
-        "color": "#f2fabc"
-      },
-      {
-        "label": "1 day",
-        "color": "#dcf1b2"
-      },
-      {
-        "label": "4 days",
-        "color": "#bbe4b5"
-      },
-      {
-        "label": "6 days",
-        "color": "#85cfba"
-      },
-      {
-        "label": "10 days",
-        "color": "#57bec1"
-      },
-      {
-        "label": "14 days",
-        "color": "#34a9c3"
-      },
-      {
-        "label": "18 days",
-        "color": "#1d8dbe"
-      },
-      {
-        "label": "22 days",
-        "color": "#2166ac"
-      },
-      {
-        "label": "25 days",
-        "color": "#24479d"
-      },
-      {
-        "label": "30 days",
-        "color": "#1d2e83"
-      }
-    ]
+    "legend": "xnhie_12_0_14",
+    "additional_query_params": {
+      "styles": "xnhie_12_0_14"
+    }
   },
   "days_extreme_rain": {
     "title": "Number of days with extreme rainfall in the last 30 days",
@@ -515,99 +363,49 @@
     "date_interval": "days",
     "opacity": 0.7,
     "legend_text": "Total number of heavy rain days (rainfall > 95th percentile) within last 30 days of dekad",
-    "legend": [
-      {
-        "label": "0 days",
-        "color": "#f2fabc"
-      },
-      {
-        "label": "1 day",
-        "color": "#dcf1b2"
-      },
-      {
-        "label": "4 days",
-        "color": "#bbe4b5"
-      },
-      {
-        "label": "6 days",
-        "color": "#85cfba"
-      },
-      {
-        "label": "10 days",
-        "color": "#57bec1"
-      },
-      {
-        "label": "14 days",
-        "color": "#34a9c3"
-      },
-      {
-        "label": "18 days",
-        "color": "#1d8dbe"
-      },
-      {
-        "label": "22 days",
-        "color": "#2166ac"
-      },
-      {
-        "label": "25 days",
-        "color": "#24479d"
-      },
-      {
-        "label": "30 days",
-        "color": "#1d2e83"
-      }
-    ]
+    "legend": "xnhie_12_0_14",
+    "additional_query_params": {
+      "styles": "xnhie_12_0_14"
+    }
   },
   "streak_heavy_rain": {
-    "title": "Longest consecutive number of days with heavy rainfall in the last 30 days",
+    "title": "Longest consecutive heavy rainfall days",
     "type": "wms",
     "server_layer_name": "xlh_dekad",
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
     "opacity": 0.7,
     "legend_text": "Longest consecutive number of heavy rain days (rainfall > 75th percentile) within last 30 days of dekad",
-    "legend": [
-      {
-        "label": "0 days",
-        "color": "#f2fabc"
-      },
-      {
-        "label": "1 day",
-        "color": "#dcf1b2"
-      },
-      {
-        "label": "4 days",
-        "color": "#bbe4b5"
-      },
-      {
-        "label": "6 days",
-        "color": "#85cfba"
-      },
-      {
-        "label": "10 days",
-        "color": "#57bec1"
-      },
-      {
-        "label": "14 days",
-        "color": "#34a9c3"
-      },
-      {
-        "label": "18 days",
-        "color": "#1d8dbe"
-      },
-      {
-        "label": "22 days",
-        "color": "#2166ac"
-      },
-      {
-        "label": "25 days",
-        "color": "#24479d"
-      },
-      {
-        "label": "30 days",
-        "color": "#1d2e83"
-      }
-    ]
+    "legend": "xnhie_12_0_14",
+    "additional_query_params": {
+      "styles": "xnhie_12_0_14"
+    }
+  },
+  "streak_intense_rain": {
+    "title": "Longest consecutive intense rainfall days",
+    "type": "wms",
+    "server_layer_name": "xli_dekad",
+    "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
+    "date_interval": "days",
+    "opacity": 0.7,
+    "legend_text": "Longest consecutive number of intense rain days (rainfall > 90th percentile) within last 30 days of dekad",
+    "legend": "xnhie_12_0_14",
+    "additional_query_params": {
+      "styles": "xnhie_12_0_14"
+    }
+  },
+  "streak_extreme_rain": {
+    "title": "Longest consecutive extreme rainfall days",
+    "type": "wms",
+    "server_layer_name": "xle_dekad",
+    "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
+    "date_interval": "days",
+    "opacity": 0.7,
+    "legend_text": "Longest consecutive number of extreme rain days (rainfall > 95th percentile) within last 30 days of dekad",
+    "legend": "xnhie_12_0_14",
+    "additional_query_params": {
+      "styles": "xnhie_12_0_14"
+    }
   },
   "ndvi_dekad": {
     "title": "10-day NDVI (MODIS)",
