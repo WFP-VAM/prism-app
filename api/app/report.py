@@ -60,11 +60,11 @@ async def download_report(
         flood_button_xpath = (
             "//button[contains(text(), 'Flood ') and matches(text(), 'Flood \\d+')]"
         )
-        await page.query_selector(flood_button_xpath).click()
+        await (await page.query_selector(flood_button_xpath)).click()
 
         # XPath to match a button whose name starts with "Flood" followed by a space and any number
         flood_monitoring_button_xpath = "//button[contains(text(), 'Flood ') and matches(text(), 'Flood Monitoring \\d+')]"
-        await page.query_selector(flood_monitoring_button_xpath).click()
+        await (await page.query_selector(flood_monitoring_button_xpath)).click()
 
         # Enable flood extent buttons
         flood_extent_checkbox = page.get_by_role("checkbox", name="Flood extent")
