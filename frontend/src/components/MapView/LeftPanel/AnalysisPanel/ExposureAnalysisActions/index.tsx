@@ -144,19 +144,15 @@ function ExposureAnalysisActions({
       )}
       <Button
         id="create-report"
-        className={bottomButton}
         onClick={handleToggleReport(true)}
         // Hide the preview report button for now. Report creation happens in the backend and is cached.
         style={{
-          opacity: 0,
           position: 'absolute',
-          pointerEvents: 'auto',
-          width: '1px',
-          height: '1px',
-          margin: '-1px',
+          height: 0,
+          width: 0,
+          minWidth: 0,
           padding: 0,
-          border: 0,
-          overflow: 'hidden',
+          margin: 0,
         }}
       >
         {/* <Typography variant="body2">{t('Preview Report (slow)')}</Typography> */}
