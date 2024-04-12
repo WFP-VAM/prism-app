@@ -43,6 +43,7 @@ async def download_report(
         browser = await p.chromium.launch()
         page = await browser.new_page()
 
+        # TODO - this should only be done in CI
         # mock the api call to avoid network issues in CI
         await page.route("https://prism-api.ovio.org/stats", mock_prism_api_stats_call)
 
@@ -56,9 +57,10 @@ async def download_report(
         await page.get_by_role("tab", name="Layers").click()
 
         # expand the first main and first sub dropdowns
-        await page.get_by_role("button", name="Flood 2").click()
+        # XPath to match a button whose name starts with "Flood" followed by a space and any number
+        await page.click('p.MuiTypography-body1:text("Flood")')
 
-        await page.get_by_role("button", name="Flood Monitoring 1").click()
+        await page.click('p.MuiTypography-body1:text("Flood Monitoring")')
 
         # Enable flood extent buttons
         flood_extent_checkbox = page.get_by_role("checkbox", name="Flood extent")

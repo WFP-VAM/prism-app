@@ -8,14 +8,12 @@ import {
   Typography,
 } from '@material-ui/core';
 import React, { ReactElement } from 'react';
+import { startCase } from 'lodash';
 import { menuList } from 'components/MapView/LeftPanel/utils';
 import { LayerKey, LayerType } from 'config/types';
 import { getDisplayBoundaryLayers, LayerDefinitions } from 'config/utils';
 import { useSafeTranslation } from 'i18n';
-import { appConfig } from 'config';
 import { getLayerGeometryIcon } from './layer-utils';
-
-const { multiCountry } = appConfig;
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -54,15 +52,14 @@ function LayerDropdown({
   const classes = useStyles();
 
   // Only take first boundary for now
-  const adminBoundaries = getDisplayBoundaryLayers();
+  const adminBoundaries = getDisplayBoundaryLayers().slice(0, 1);
   const AdminBoundaryCategory = {
     title: 'Admin Levels',
     layers: adminBoundaries.map((aboundary, index) => ({
-      title: t(
-        `Level ${aboundary.adminLevelCodes.length - (multiCountry ? 1 : 0)}`,
-      ),
+      title: startCase(aboundary.id),
       boundary: aboundary.id,
       ...aboundary,
+      adminLevel: index + 1,
     })),
     tables: [],
   };

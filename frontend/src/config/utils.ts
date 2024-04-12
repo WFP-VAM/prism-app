@@ -49,7 +49,7 @@ function parseStatsApiConfig(maybeConfig: {
 }
 
 // CamelCase the keys inside the layer definition & validate config
-export const getLayerByKey = (layerKey: LayerKey): LayerType => {
+const getLayerByKey = (layerKey: LayerKey): LayerType => {
   const rawDefinition = rawLayers[layerKey];
 
   const definition: { id: LayerKey; type: LayerType['type'] } = {
@@ -155,11 +155,8 @@ export const LayerDefinitions: LayersMap = (() => {
 })();
 
 export function getBoundaryLayers(): BoundaryLayerProps[] {
-  return (
-    // eslint-disable-next-line fp/no-mutating-methods
-    Object.values(LayerDefinitions)
-      .filter((layer): layer is BoundaryLayerProps => layer.type === 'boundary')
-      .sort((a, b) => a.adminLevelCodes.length - b.adminLevelCodes.length)
+  return Object.values(LayerDefinitions).filter(
+    (layer): layer is BoundaryLayerProps => layer.type === 'boundary',
   );
 }
 
@@ -195,13 +192,10 @@ export function getDisplayBoundaryLayers(): BoundaryLayerProps[] {
     // get override layers from override names without
     // disrupting the order of which they are defined
     // since the first is considered as default
-    // eslint-disable-next-line fp/no-mutating-methods
-    const defaultDisplayBoundaries = defaultBoundaries
-      .map(
-        // TODO - use a find?
-        id => boundaryLayers.filter(l => l.id === id)[0],
-      )
-      .sort((a, b) => a.adminLevelCodes.length - b.adminLevelCodes.length);
+    const defaultDisplayBoundaries = defaultBoundaries.map(
+      // TODO - use a find?
+      id => boundaryLayers.filter(l => l.id === id)[0],
+    );
 
     if (defaultDisplayBoundaries.length === 0) {
       throw new Error(
@@ -220,7 +214,6 @@ export function getBoundaryLayerSingleton(): BoundaryLayerProps {
 }
 
 // Return a boundary layer with the specified adminLevel depth.
-// TODO - better handle multicountry admin levels
 export function getBoundaryLayersByAdminLevel(adminLevel?: number) {
   if (adminLevel) {
     const boundaryLayers = getBoundaryLayers();
