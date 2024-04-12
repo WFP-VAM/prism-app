@@ -57,7 +57,9 @@ async def download_report(
 
         # expand the first main and first sub dropdowns
         # XPath to match a button whose name starts with "Flood" followed by a space and any number
-        flood_button_xpath = "//button[contains(text(), 'Flood ') and matches(text(), 'Flood \\d+')]"
+        flood_button_xpath = (
+            "//button[contains(text(), 'Flood ') and matches(text(), 'Flood \\d+')]"
+        )
         await page.query_selector(flood_button_xpath).click()
 
         # XPath to match a button whose name starts with "Flood" followed by a space and any number
