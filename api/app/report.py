@@ -8,9 +8,9 @@ from app.caching import CACHE_DIRECTORY
 from playwright.async_api import async_playwright, expect
 
 # Html selectors
-LAYER_ACCORDION_SELECTOR: Final[str] = (
-    'div[class="MuiAccordionSummary-root"], div[aria-expanded="false"]'
-)
+LAYER_ACCORDION_SELECTOR: Final[
+    str
+] = 'div[class="MuiAccordionSummary-root"], div[aria-expanded="false"]'
 DOWNLOAD_BUTTON_SELECTOR: Final[str] = "a[download]"
 CREATE_REPORT_BUTTON_SELECTOR: Final[str] = 'button[id="create-report"]'
 
@@ -57,14 +57,9 @@ async def download_report(
 
         # expand the first main and first sub dropdowns
         # XPath to match a button whose name starts with "Flood" followed by a space and any number
-        flood_button_xpath = (
-            "//button[contains(text(), 'Flood ') and matches(text(), 'Flood \\d+')]"
-        )
-        await (await page.query_selector(flood_button_xpath)).click()
+        await page.click('p.MuiTypography-body1:text("Flood")')
 
-        # XPath to match a button whose name starts with "Flood" followed by a space and any number
-        flood_monitoring_button_xpath = "//button[contains(text(), 'Flood ') and matches(text(), 'Flood Monitoring \\d+')]"
-        await (await page.query_selector(flood_monitoring_button_xpath)).click()
+        await page.click('p.MuiTypography-body1:text("Flood Monitoring")')
 
         # Enable flood extent buttons
         flood_extent_checkbox = page.get_by_role("checkbox", name="Flood extent")
