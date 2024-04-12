@@ -16,7 +16,25 @@
     {"value": 150, "label": "150-200 mm", "color": "#a002fa"},
     {"value": 200, "label": "200-300 mm", "color": "#fa78fa"},
     {"value": 300, "label": ">= 300 mm", "color": "#ffc4ee"}
-    ],
+  ],
+  "rfh_16_0_400": [
+    {"value": 0, "label": "0 mm", "color": "#fafafa"},
+    {"value": 0.01, "label": "1-5 mm", "color": "#fffadf"},
+    {"value": 5, "label": "5-10 mm", "color": "#d3f9d0"},
+    {"value": 10, "label": "10-20 mm", "color": "#a9e4a3"},
+    {"value": 20, "label": "20-30 mm", "color": "#7cc594"},
+    {"value": 30, "label": "30-40 mm", "color": "#5eab91"},
+    {"value": 40, "label": "40-60 mm", "color": "#9fffe8"},
+    {"value": 60, "label": "60-90 mm", "color": "#90e0ef"},
+    {"value": 90, "label": "90-120 mm", "color": "#00b1de"},
+    {"value": 120, "label": "120-150 mm", "color": "#0083f3"},
+    {"value": 150, "label": "150-200 mm", "color": "#0052cd"},
+    {"value": 200, "label": "200-250 mm", "color": "#0000c8"},
+    {"value": 250, "label": "250-300 mm", "color": "#6003b8"},
+    {"value": 300, "label": "300-350 mm", "color": "#a002fa"},
+    {"value": 350, "label": "350-400 mm", "color": "#fa78fa"},
+    {"value": 400, "label": ">= 400 mm", "color": "#ffc4ee"}
+  ],
   "rfq_14_20_400": [
     {"value": 0, "label": "< 20%", "color": "#8c4800"},
     {"value": 20, "label": "20-40%", "color": "#af6b27"},

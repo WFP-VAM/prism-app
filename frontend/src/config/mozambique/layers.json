@@ -1805,14 +1805,6 @@
   },
   "rainfall_agg_1month": {
     "title": "CHIRPS 1-month rainfall aggregate",
-    "type": "wms",
-    "server_layer_name": "r1h_dekad",
-    "additional_query_params": {
-      "styles": "rfh_16_0_400"
-    },
-    "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
-    "date_interval": "days",
-    "opacity": 0.7,
     "chart_data": {
       "fields": [
         {
@@ -1839,90 +1831,7 @@
         }
       ],
       "type": "bar"
-    },
-    "legend_text": "Estimate of precipitation over a 1-month period derived from CHIRPS (UCSB Climate Hazards Group). https://www.chc.ucsb.edu/data/chirps",
-    "legend": [
-      {
-        "value": 0,
-        "label": "0 mm",
-        "color": "#fafafa"
-      },
-      {
-        "value": 0.01,
-        "label": "1-5 mm",
-        "color": "#fffadf"
-      },
-      {
-        "value": 5,
-        "label": "5-10 mm",
-        "color": "#d3f9d0"
-      },
-      {
-        "value": 10,
-        "label": "10-20 mm",
-        "color": "#a9e4a3"
-      },
-      {
-        "value": 20,
-        "label": "20-30 mm",
-        "color": "#7cc594"
-      },
-      {
-        "value": 30,
-        "label": "30-40 mm",
-        "color": "#5eab91"
-      },
-      {
-        "value": 40,
-        "label": "40-60 mm",
-        "color": "#9fffe8"
-      },
-      {
-        "value": 60,
-        "label": "60-90 mm",
-        "color": "#90e0ef"
-      },
-      {
-        "value": 90,
-        "label": "90-120 mm",
-        "color": "#00b1de"
-      },
-      {
-        "value": 120,
-        "label": "120-150 mm",
-        "color": "#0083f3"
-      },
-      {
-        "value": 150,
-        "label": "150-200 mm",
-        "color": "#0052cd"
-      },
-      {
-        "value": 200,
-        "label": "200-250 mm",
-        "color": "#0000c8"
-      },
-      {
-        "value": 250,
-        "label": "250-300 mm",
-        "color": "#6003b8"
-      },
-      {
-        "value": 300,
-        "label": "300-350 mm",
-        "color": "#a002fa"
-      },
-      {
-        "value": 350,
-        "label": "350-400 mm",
-        "color": "#fa78fa"
-      },
-      {
-        "value": 400,
-        "label": ">= 400 mm",
-        "color": "#ffc4ee"
-      }
-    ]
+    }
   },
   "rain_anomaly_1month": {
     "title": "CHIRPS 1-month rainfall anomaly",
