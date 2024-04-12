@@ -8,9 +8,9 @@ from app.caching import CACHE_DIRECTORY
 from playwright.async_api import async_playwright, expect
 
 # Html selectors
-LAYER_ACCORDION_SELECTOR: Final[
-    str
-] = 'div[class="MuiAccordionSummary-root"], div[aria-expanded="false"]'
+LAYER_ACCORDION_SELECTOR: Final[str] = (
+    'div[class="MuiAccordionSummary-root"], div[aria-expanded="false"]'
+)
 DOWNLOAD_BUTTON_SELECTOR: Final[str] = "a[download]"
 CREATE_REPORT_BUTTON_SELECTOR: Final[str] = 'button[id="create-report"]'
 
@@ -43,6 +43,7 @@ async def download_report(
         browser = await p.chromium.launch()
         page = await browser.new_page()
 
+        # TODO - this should only be done in CI
         # mock the api call to avoid network issues in CI
         await page.route("https://prism-api.ovio.org/stats", mock_prism_api_stats_call)
 
