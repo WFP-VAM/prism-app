@@ -191,7 +191,7 @@
           "activate_all": false,
           "layers": [
             {
-              "id": "chirps_rainfall_daily",
+              "id": "rainfall_daily",
               "label": "Daily"
             },
             {
