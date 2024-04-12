@@ -1,5 +1,5 @@
 {
-  "chirps_precipitation_10day": [
+  "rfh_16_0_300": [
     {"value": 0, "label": "0 mm", "color": "#fafafa"},
     {"value": 0.01, "label": "1-2 mm", "color": "#fffadf"},
     {"value": 2, "label": "2-5 mm", "color": "#d3f9d0"},
@@ -16,8 +16,8 @@
     {"value": 150, "label": "150-200 mm", "color": "#a002fa"},
     {"value": 200, "label": "200-300 mm", "color": "#fa78fa"},
     {"value": 300, "label": ">= 300 mm", "color": "#ffc4ee"}
-  ],
-  "shared_chirp_rainfall_anomaly": [
+    ],
+  "rfq_14_20_400": [
     {"value": 0, "label": "< 20%", "color": "#8c4800"},
     {"value": 20, "label": "20-40%", "color": "#af6b27"},
     {"value": 40, "label": "40-60%", "color": "#d58c3e"},
@@ -31,6 +31,22 @@
     {"value": 150, "label": "150-200%", "color": "#0083f3"},
     {"value": 200, "label": "200-300%", "color": "#0052cd"},
     {"value": 300, "label": "300-400%", "color": "#0000c8"},
-    {"value": 400, "label": "> 400%", "color": "#a002fa"}
+    {"value": 400, "label": ">= 400%", "color": "#a002fa"}
+  ],
+  "ryq_14_50_200": [
+    { "value": 0, "label": "< 50%", "color": "#8c4800" },
+    { "value": 50, "label": "50-60%", "color": "#af6b27" },
+    { "value": 60, "label": "60-70%", "color": "#d58c3e" },
+    { "value": 70, "label": "70-80%", "color": "#eaa83d" },
+    { "value": 80, "label": "80-90%", "color": "#f5c878" },
+    { "value": 90, "label": "90-95%", "color": "#fff0c4" },
+    { "value": 95, "label": "95-105%", "color": "#fafafa" },
+    { "value": 105, "label": "105-110%", "color": "#befafa" },
+    { "value": 110, "label": "110-120%", "color": "#78e2f0" },
+    { "value": 120, "label": "120-130%", "color": "#00b9de" },
+    { "value": 130, "label": "130-150%", "color": "#0083f3" },
+    { "value": 150, "label": "150-170%", "color": "#0052cd" },
+    { "value": 170, "label": "170-200%", "color": "#0000c8" },
+    { "value": 200, "label": ">= 200%", "color": "#a002fa" }
   ]
 }

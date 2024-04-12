@@ -76,7 +76,7 @@
     "date_interval": "days",
     "opacity": 0.7,
     "legend_text": "Local station data from INAM blended with CHIRP rainfall estimates",
-    "legend": "chirps_precipitation_10day"
+    "legend": "rfh_16_0_300"
   },
   "precip_blended_dekad_anomaly": {
     "title": "Blended rainfall anomaly (10-day)",
@@ -121,7 +121,7 @@
     "date_interval": "days",
     "opacity": 0.7,
     "legend_text": "Rainfall anomaly based on long term averaged from local station data from INAM blended with CHIRP rainfall estimates",
-    "legend": "shared_chirp_rainfall_anomaly"
+    "legend": "rfq_14_20_400"
   },
   "precip_blended_1m": {
     "title": "Blended rainfall aggregate (1-month)",
@@ -288,7 +288,7 @@
     "date_interval": "days",
     "opacity": 0.7,
     "legend_text": "Rainfall anomaly based on long term averaged from local station data from INAM blended with CHIRP rainfall estimates",
-    "legend": "shared_chirp_rainfall_anomaly"
+    "legend": "rfq_14_20_400"
   },
   "precip_blended_2m": {
     "title": "Blended rainfall aggregate (2-month)",
@@ -395,7 +395,7 @@
     "date_interval": "days",
     "opacity": 0.7,
     "legend_text": "Rainfall anomaly based on long term averaged from local station data from INAM blended with CHIRP rainfall estimates",
-    "legend": "shared_chirp_rainfall_anomaly"
+    "legend": "rfq_14_20_400"
   },
   "precip_blended_3m": {
     "title": "Blended rainfall aggregate (3-month)",
@@ -562,7 +562,7 @@
     "date_interval": "days",
     "opacity": 0.7,
     "legend_text": "Rainfall anomaly based on long term averaged from local station data from INAM blended with CHIRP rainfall estimates",
-    "legend": "shared_chirp_rainfall_anomaly"
+    "legend": "rfq_14_20_400"
   },
   "precip_blended_4m": {
     "title": "Blended rainfall aggregate (4-month)",
@@ -669,7 +669,7 @@
     "date_interval": "days",
     "opacity": 0.7,
     "legend_text": "Rainfall anomaly based on long term averaged from local station data from INAM blended with CHIRP rainfall estimates",
-    "legend": "shared_chirp_rainfall_anomaly"
+    "legend": "rfq_14_20_400"
   },
   "precip_blended_5m": {
     "title": "Blended rainfall aggregate (5-month)",
@@ -1741,11 +1741,6 @@
   },
   "rainfall_dekad": {
     "title": "CHIRPS 10-day rainfall estimate (mm)",
-    "type": "wms",
-    "server_layer_name": "rfh_dekad",
-    "additional_query_params": {
-      "styles": "rfh_16_0_300"
-    },
     "chart_data": {
       "fields": [
         {
@@ -1772,101 +1767,10 @@
         }
       ],
       "type": "bar"
-    },
-    "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
-    "date_interval": "days",
-    "opacity": 0.7,
-    "legend_text": "Estimate of precipitation over a 10-day period derived from CHIRPS (UCSB Climate Hazards Group). https://www.chc.ucsb.edu/data/chirps",
-    "legend": [
-      {
-        "value": 0,
-        "label": "0 mm",
-        "color": "#fafafa"
-      },
-      {
-        "value": 0.01,
-        "label": "1-2 mm",
-        "color": "#fffadf"
-      },
-      {
-        "value": 2,
-        "label": "2-5 mm",
-        "color": "#d3f9d0"
-      },
-      {
-        "value": 5,
-        "label": "5-10 mm",
-        "color": "#a9e4a3"
-      },
-      {
-        "value": 10,
-        "label": "10-20 mm",
-        "color": "#7cc594"
-      },
-      {
-        "value": 20,
-        "label": "20-30 mm",
-        "color": "#5eab91"
-      },
-      {
-        "value": 30,
-        "label": "30-40 mm",
-        "color": "#9fffe8"
-      },
-      {
-        "value": 40,
-        "label": "40-50 mm",
-        "color": "#90e0ef"
-      },
-      {
-        "value": 50,
-        "label": "50-60 mm",
-        "color": "#00b1de"
-      },
-      {
-        "value": 60,
-        "label": "60-80 mm",
-        "color": "#0083f3"
-      },
-      {
-        "value": 80,
-        "label": "80-100 mm",
-        "color": "#0052cd"
-      },
-      {
-        "value": 100,
-        "label": "100-120 mm",
-        "color": "#0000c8"
-      },
-      {
-        "value": 120,
-        "label": "120-150 mm",
-        "color": "#6003b8"
-      },
-      {
-        "value": 150,
-        "label": "150-200 mm",
-        "color": "#a002fa"
-      },
-      {
-        "value": 200,
-        "label": "200-300 mm",
-        "color": "#fa78fa"
-      },
-      {
-        "value": 300,
-        "label": ">= 300 mm",
-        "color": "#ffc4ee"
-      }
-    ]
+    }
   },
   "rain_anomaly_dekad": {
     "title": "CHIRPS 10-day rainfall anomaly",
-    "type": "wms",
-    "server_layer_name": "rfq_dekad",
-    "additional_query_params": {
-      "styles": "rfq_14_20_400"
-    },
     "chart_data": {
       "fields": [
         {
@@ -1897,12 +1801,7 @@
         }
       ],
       "type": "line"
-    },
-    "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
-    "date_interval": "days",
-    "opacity": 0.7,
-    "legend_text": "10-day precipitation anomaly compared to the long term average. Derived from CHIRPS (UCSB Climate Hazards Group). https://www.chc.ucsb.edu/data/chirps",
-    "legend": "shared_chirp_rainfall_anomaly"
+    }
   },
   "rainfall_agg_1month": {
     "title": "CHIRPS 1-month rainfall aggregate",
@@ -2067,7 +1966,7 @@
       "type": "line"
     },
     "legend_text": "1-month precipitation anomaly compared to the long term average. Derived from CHIRPS (UCSB Climate Hazards Group). https://www.chc.ucsb.edu/data/chirps",
-    "legend": "shared_chirp_rainfall_anomaly"
+    "legend": "rfq_14_20_400"
   },
   "rainfall_agg_3month": {
     "title": "CHIRPS 3-month rainfall aggregate (mm)",
@@ -2232,7 +2131,7 @@
       "type": "line"
     },
     "legend_text": "3-month precipitation anomaly compared to the long term average. Derived from CHIRPS (UCSB Climate Hazards Group). https://www.chc.ucsb.edu/data/chirps",
-    "legend": "shared_chirp_rainfall_anomaly"
+    "legend": "rfq_14_20_400"
   },
   "rainfall_agg_6month": {
     "title": "CHIRPS 6-month rainfall aggregate (mm)",
@@ -6330,7 +6229,7 @@
     "date_interval": "days",
     "opacity": 0.7,
     "legend_text": "10-day forecast anomaly compared to the long term average. Derived from CHIRPS and GEFS",
-    "legend": "shared_chirp_rainfall_anomaly"
+    "legend": "rfq_14_20_400"
   },
   "cdi": {
     "title": "Combined Drought Index",
