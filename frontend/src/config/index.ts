@@ -102,20 +102,26 @@ const appConfig: Record<string, any> = merge(
 
 // Perform deep merges between shared and country-specific layers and legends
 const rawLayers: Record<string, any> = Object.fromEntries(
-  Object.entries(merge({}, sharedLayers, configMap[safeCountry].rawLayers)).map(
-    ([key, layer]) => {
-      if (typeof layer.legend === 'string') {
-        if (!sharedLegends[layer.legend]) {
-          throw new Error(
-            `Legend '${layer.legend}' could not be found in shared legends.`,
-          );
-        }
-        // eslint-disable-next-line no-param-reassign, fp/no-mutation
-        layer.legend = sharedLegends[layer.legend] || layer.legend;
+  Object.entries(
+    merge(
+      {},
+      // we initialize with country layers to maintain the order
+      configMap[safeCountry].rawLayers,
+      sharedLayers,
+      configMap[safeCountry].rawLayers,
+    ),
+  ).map(([key, layer]) => {
+    if (typeof layer.legend === 'string') {
+      if (!sharedLegends[layer.legend]) {
+        throw new Error(
+          `Legend '${layer.legend}' could not be found in shared legends.`,
+        );
       }
-      return [key, layer];
-    },
-  ),
+      // eslint-disable-next-line no-param-reassign, fp/no-mutation
+      layer.legend = sharedLegends[layer.legend] || layer.legend;
+    }
+    return [key, layer];
+  }),
 );
 
 // Merge translations
