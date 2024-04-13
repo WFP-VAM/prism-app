@@ -17,10 +17,9 @@ export type DataRecord = {
   value: string | number | null;
 };
 
-export type AdminLevelDataLayerData = {
-  features: FeatureCollection;
+export interface AdminLevelDataLayerData extends FeatureCollection {
   layerData: DataRecord[];
-};
+}
 
 export async function getAdminLevelDataLayerData({
   data,
@@ -212,9 +211,9 @@ export async function getAdminLevelDataLayerData({
       .filter(f => f !== undefined),
   } as FeatureCollection;
   return {
-    features,
+    ...features,
     layerData,
-  };
+  } as AdminLevelDataLayerData;
 }
 
 export const fetchAdminLevelDataLayerData: LazyLoader<AdminLevelDataLayerProps> = () => async (
