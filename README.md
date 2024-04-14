@@ -24,6 +24,10 @@ The configuration is split into three files that you can find in `src/config`:
 - 2. `layers.json`
 - 3. `tables.json`
 
+In addition, since many layers are shared across multiple countries, we created shared files under `src/config/shared`:
+- 1. `legends.json`
+- 2. `layers.json`
+
 ### prism.json
 
 This is the primary configuration file. You can define:
@@ -98,9 +102,55 @@ In some cases, a boundary file may load without any issues but fail to provide c
 
 In addition, boundary files sometimes carry more precise coordinates than is neccessary which makes for a large data file. PRISM will alert you with a message in the browser if the precision is too high. You can run bash /frontend/scripts/truncate_precision.sh to fix this. The script will update any boundary file in the /frontend/public/data folder
 
+#### Data Layers
+Under `categories`, you can specify the menu structure and reference to any layer by ID that is defined under the country country specific or shared `layers.json`. You can also create groups that can be activated all at once, or selectively.
+
+```
+"categories": {
+    "rainfall": {
+      "forecasts": ["daily_rainfall_forecast", "dekad_rainfall_forecast"],
+      "rainfall_amount": [
+        {
+          "group_title": "Rainfall Aggregate",
+          "activate_all": false,
+          "layers": [
+            {
+              "id": "rainfall_dekad",
+              "label": "10-day",
+              "main": true
+            },
+            {
+              "id": "rainfall_agg_1month",
+              "label": "1-month"
+            },
+            {
+              "id": "rainfall_agg_3month",
+              "label": "3-month"
+            },
+            {
+              "id": "rainfall_agg_6month",
+              "label": "6-month"
+            },
+            {
+              "id": "rainfall_agg_9month",
+              "label": "9-month"
+            },
+            {
+              "id": "rainfall_agg_1year",
+              "label": "1-year"
+            }
+          ]
+        }
+      ],
+    }
+}
+```
+
 ### layers.json
 
-There are 4 main types of layers:
+In this file, we define the specific layer settings for data access, titles, and legends. You can define a new layer from scratch, or override a layer that exists in the `shared/layers.json`. In that case, you only need to specify the fields that need to be overriden. Similarly, legends can be predefined in `shared/legends.json` and simply reference to by id.
+
+There are 4 main types of layers.
 
 #### raster
 
@@ -132,7 +182,7 @@ These layers are simply processed as raster images from a WMS server and are ref
 }
 ```
 
-#### vector
+#### admin level
 
 These layers are referred to as `admin_level_data` in PRISM and represent a data value for a polygon. The layers are obtained by matching data from the `data_field` and `admin_code` fields of the `admin_level_data` layer with the administrative boundaries. The default admin boundary file will be used unless otherwise specifed in the `admin_level_data` configuration using the `boundary` attribute
 
