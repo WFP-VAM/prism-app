@@ -217,6 +217,8 @@ const MapComponent = memo(
     return (
       <MapGL
         ref={mapRef}
+        // preserveDrawingBuffer is required for the map to be exported as an image. Used in reportDoc.tsx
+        preserveDrawingBuffer
         dragRotate={false}
         minZoom={minZoom}
         maxZoom={maxZoom}
