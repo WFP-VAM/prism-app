@@ -1,4 +1,4 @@
-import { GeoJSON } from 'geojson';
+import { FeatureCollection, GeoJSON } from 'geojson';
 import { every, map } from 'lodash';
 import 'reflect-metadata';
 import {
@@ -379,6 +379,11 @@ export class BoundaryLayerProps extends CommonLayerProps {
 
   @optional
   isPrimary?: boolean | undefined;
+
+  // Minimum zoom level to display the boundary.
+  // Note that the layer is still loaded, but not displayed.
+  @optional
+  minZoom?: number;
 }
 
 export enum DataType {
@@ -639,7 +644,8 @@ export class PointDataLayerProps extends CommonLayerProps {
   data: string;
   dataField: string;
   // URL to fetch all possible dates from
-  dateUrl: string;
+  @optional
+  dateUrl?: string;
 
   @makeRequired
   title: string;
@@ -826,9 +832,7 @@ export type PointData = {
   [key: string]: any;
 };
 
-export type PointLayerData = {
-  features: PointData[];
-};
+export type PointLayerData = FeatureCollection;
 
 export interface BaseLayer {
   name: string;

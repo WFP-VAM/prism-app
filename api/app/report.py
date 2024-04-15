@@ -43,6 +43,7 @@ async def download_report(
         browser = await p.chromium.launch()
         page = await browser.new_page()
 
+        # TODO - this should only be done in CI
         # mock the api call to avoid network issues in CI
         await page.route("https://prism-api.ovio.org/stats", mock_prism_api_stats_call)
 
@@ -56,22 +57,17 @@ async def download_report(
         await page.get_by_role("tab", name="Layers").click()
 
         # expand the first main and first sub dropdowns
-        await page.get_by_role("button", name="Flood 2").click()
+        # XPath to match a button whose name starts with "Flood" followed by a space and any number
+        await page.click('p.MuiTypography-body1:text("Flood")')
 
-        await page.get_by_role("button", name="Flood Monitoring 1").click()
+        await page.click('p.MuiTypography-body1:text("Flood Monitoring")')
 
         # Enable flood extent buttons
         flood_extent_checkbox = page.get_by_role("checkbox", name="Flood extent")
         await expect(flood_extent_checkbox).to_be_visible(timeout=20_000)
 
         # the switch status is flaky (sometimes checked, sometimes not)
-        # so make sure we only check it if needed. This might mean there
-        # is a bug in the frontend code?
-        fec_checked = await flood_extent_checkbox.is_checked()
-        if not fec_checked:
-            flood_extent_checkbox.click()
-
-        await expect(flood_extent_checkbox).to_be_checked(timeout=10_000)
+        await expect(flood_extent_checkbox).to_be_checked(timeout=20_000)
         await expect(
             page.get_by_role("button", name="Exposure Analysis")
         ).not_to_be_disabled()

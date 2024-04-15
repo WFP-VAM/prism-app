@@ -707,7 +707,7 @@ export const requestAndStoreAnalysis = createAsyncThunk<
     // if the baselineData doesn't exist, lets load it, otherwise check then load existing data.
     // similar code can be found at impact.ts
     if (baselineLayer.type === 'boundary') {
-      return { features: adminBoundariesData.data, layerData: [] };
+      return { ...adminBoundariesData.data, layerData: [] };
     }
     if (!baselineData && baselineLayer) {
       const { payload } = (await api.dispatch(
@@ -724,7 +724,7 @@ export const requestAndStoreAnalysis = createAsyncThunk<
       return checkBaselineDataLayer(baselineLayer.id, baselineData.data);
     }
 
-    return { features: adminBoundariesData.data, layerData: [] };
+    return { ...adminBoundariesData.data, layerData: [] };
   };
 
   const loadedAndCheckedBaselineData: BaselineLayerData = await getCheckedBaselineData();
