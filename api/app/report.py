@@ -67,9 +67,7 @@ async def download_report(
         await expect(flood_extent_checkbox).to_be_visible(timeout=20_000)
 
         # the switch status is flaky (sometimes checked, sometimes not)
-        await flood_extent_checkbox.is_checked()
-
-        await expect(flood_extent_checkbox).to_be_checked(timeout=10_000)
+        await expect(flood_extent_checkbox).to_be_checked(timeout=20_000)
         await expect(
             page.get_by_role("button", name="Exposure Analysis")
         ).not_to_be_disabled()
