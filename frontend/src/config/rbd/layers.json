@@ -5476,5 +5476,263 @@
         "dataTitle": "Type"
       }
     }
+  },
+  "fls_recurrence_all_periods": {
+    "title": "Annual Recurrence of food insecurity: 2013/14 - 2022/23",
+    "type": "admin_level_data",
+    "path": "data/rbd/fls/fls_all_periods.json",
+    "admin_level": 2,
+    "data_field": "Recurrence_CAT_Ph3",
+    "admin_code": "adm2_pcod2",
+    "opacity": 0.9,
+    "legend": [
+      {
+        "label": "Low (0-1 of 5 years)",
+        "value": 1,
+        "color": "#f9e6dc"
+      },
+      {
+        "label": "Medium (2-3 of 5 years)",
+        "value": 2,
+        "color": "#e97253"
+      },
+      {
+        "label": "High (4-5 of 5 years)",
+        "value": 3,
+        "color": "#982420"
+      }
+    ],
+    "legend_text": "Annual Recurrence of food insecurity: 2013/14 - 2022/23. WFP Future of the lean season analysis"
+  },
+  "fls_recurrence_period1": {
+    "title": "Annual Recurrence of food insecurity: 2013/14 - 2017/18",
+    "type": "admin_level_data",
+    "path": "data/rbd/fls/fls_period1.json",
+    "admin_level": 2,
+    "data_field": "Recurrence_CAT_Ph3",
+    "admin_code": "adm2_pcod2",
+    "opacity": 0.9,
+    "legend": [
+      {
+        "label": "Low (0-1 of 5 years)",
+        "value": 1,
+        "color": "#f9e6dc"
+      },
+      {
+        "label": "Medium (2-3 of 5 years)",
+        "value": 2,
+        "color": "#e97253"
+      },
+      {
+        "label": "High (4-5 of 5 years)",
+        "value": 3,
+        "color": "#982420"
+      }
+    ],
+    "legend_text": "Annual Recurrence of food insecurity: 2013/14 - 2017/18. WFP Future of the lean season analysis"
+  },
+  "fls_recurrence_period2": {
+    "title": "Annual Recurrence of food insecurity: 2018/19 - 2022/23",
+    "type": "admin_level_data",
+    "path": "data/rbd/fls/fls_period2.json",
+    "admin_level": 2,
+    "data_field": "Recurrence_CAT_Ph3",
+    "admin_code": "adm2_pcod2",
+    "opacity": 0.9,
+    "legend": [
+      {
+        "label": "Low (0-1 of 5 years)",
+        "value": 1,
+        "color": "#f9e6dc"
+      },
+      {
+        "label": "Medium (2-3 of 5 years)",
+        "value": 2,
+        "color": "#e97253"
+      },
+      {
+        "label": "High (4-5 of 5 years)",
+        "value": 3,
+        "color": "#982420"
+      }
+    ],
+    "legend_text": "Annual Recurrence of food insecurity: 2018/19 - 2022/23. WFP Future of the lean season analysis"
+  },
+  "fls_duration_all_periods": {
+    "title": "Average duration of food insecurity: 2013/14 - 2022/23",
+    "type": "admin_level_data",
+    "path": "data/rbd/fls/fls_all_periods.json",
+    "admin_level": 2,
+    "data_field": "Average_duration",
+    "admin_code": "adm2_pcod2",
+    "opacity": 0.9,
+    "legend": [
+      {
+        "label": "Sporadic (<1 of 3 periods)",
+        "value": 0,
+        "color": "#fef7c4"
+      },
+      {
+        "label": "Seasonal (1 of 3 periods)",
+        "value": 2,
+        "color": "#f6c665"
+      },
+      {
+        "label": "Protracted (2-3 of 3 periods)",
+        "value": 3,
+        "color": "#c8682a"
+      }
+    ],
+    "legend_text": "Average duration of food insecurity: 2013/14 - 2022/23. WFP Future of the lean season analysis"
+  },
+  "fls_duration_period1": {
+    "title": "Average duration of food insecurity: 2013/14 - 2017/18",
+    "type": "admin_level_data",
+    "path": "data/rbd/fls/fls_period1.json",
+    "admin_level": 2,
+    "data_field": "Average_duration",
+    "admin_code": "adm2_pcod2",
+    "opacity": 0.9,
+    "legend": [
+      {
+        "label": "Sporadic (<1 of 3 periods)",
+        "value": 0,
+        "color": "#fef7c4"
+      },
+      {
+        "label": "Seasonal (1 of 3 periods)",
+        "value": 2,
+        "color": "#f6c665"
+      },
+      {
+        "label": "Protracted (2-3 of 3 periods)",
+        "value": 3,
+        "color": "#c8682a"
+      }
+    ],
+    "legend_text": "Average duration of food insecurity: 2018/19 - 2022/23. WFP Future of the lean season analysis"
+  },
+  "fls_duration_period2": {
+    "title": "Average duration of food insecurity: 2018/19 - 2022/23",
+    "type": "admin_level_data",
+    "path": "data/rbd/fls/fls_period2.json",
+    "admin_level": 2,
+    "data_field": "Average_duration",
+    "admin_code": "adm2_pcod2",
+    "opacity": 0.9,
+    "legend": [
+      {
+        "label": "Sporadic (<1 of 3 periods)",
+        "value": 0,
+        "color": "#fef7c4"
+      },
+      {
+        "label": "Seasonal (1 of 3 periods)",
+        "value": 2,
+        "color": "#f6c665"
+      },
+      {
+        "label": "Protracted (2-3 of 3 periods)",
+        "value": 3,
+        "color": "#c8682a"
+      }
+    ],
+    "legend_text": "Average duration of food insecurity: 2018/19 - 2022/23. WFP Future of the lean season analysis"
+  },
+  "fls_cluster_all_periods": {
+    "title": "Clustering - recurrence and duration of food insecurity: 2013/14 - 2022/23",
+    "type": "admin_level_data",
+    "path": "data/rbd/fls/fls_all_periods.json",
+    "admin_level": 2,
+    "data_field": "Clustering_numeric",
+    "admin_code": "adm2_pcod2",
+    "opacity": 0.9,
+    "legend": [
+      {
+        "label": "Cluster 1",
+        "value": 1,
+        "color": "#952943"
+      },
+      {
+        "label": "Cluster 2",
+        "value": 2,
+        "color": "#bf6c27"
+      },
+      {
+        "label": "Cluster 3",
+        "value": 3,
+        "color": "#93b3ac"
+      },
+      {
+        "label": "Cluster 4",
+        "value": 4,
+        "color": "#e7e8cc"
+      }
+    ],
+    "legend_text": "Clustering - recurrence and duration of food insecurity: 2013/14 - 2022/23. WFP Future of the lean season analysis"
+  },
+  "fls_cluster_period1": {
+    "title": "Clustering - recurrence and duration of food insecurity: 2013/14 - 2017/18",
+    "type": "admin_level_data",
+    "path": "data/rbd/fls/fls_period1.json",
+    "admin_level": 2,
+    "data_field": "Clustering_numeric",
+    "admin_code": "adm2_pcod2",
+    "opacity": 0.9,
+    "legend": [
+      {
+        "label": "Cluster 1",
+        "value": 1,
+        "color": "#952943"
+      },
+      {
+        "label": "Cluster 2",
+        "value": 2,
+        "color": "#bf6c27"
+      },
+      {
+        "label": "Cluster 3",
+        "value": 3,
+        "color": "#93b3ac"
+      },
+      {
+        "label": "Cluster 4",
+        "value": 4,
+        "color": "#e7e8cc"
+      }
+    ],
+    "legend_text": "Clustering - recurrence and duration of food insecurity: 2013/14 - 2017/18. WFP Future of the lean season analysis"
+  },
+  "fls_cluster_period2": {
+    "title": "Clustering - recurrence and duration of food insecurity: 2018/19 - 2022/23",
+    "type": "admin_level_data",
+    "path": "data/rbd/fls/fls_period2.json",
+    "admin_level": 2,
+    "data_field": "Clustering_numeric",
+    "admin_code": "adm2_pcod2",
+    "opacity": 0.9,
+    "legend": [
+      {
+        "label": "Cluster 1",
+        "value": 1,
+        "color": "#952943"
+      },
+      {
+        "label": "Cluster 2",
+        "value": 2,
+        "color": "#bf6c27"
+      },
+      {
+        "label": "Cluster 3",
+        "value": 3,
+        "color": "#93b3ac"
+      },
+      {
+        "label": "Cluster 4",
+        "value": 4,
+        "color": "#e7e8cc"
+      }
+    ],
+    "legend_text": "Clustering - recurrence and duration of food insecurity: 2018/19 - 2022/23. WFP Future of the lean season analysis"
   }
 }

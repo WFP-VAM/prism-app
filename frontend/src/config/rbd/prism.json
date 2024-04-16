@@ -248,6 +248,65 @@
         }
       ]
     },
+    "Future_of_the_Lean_Season": {
+      "Future_of_the_Lean_Season_Analysis":[
+        {
+          "group_title": "Annual recurrence of food insecurity",
+          "activate_all": false,
+          "layers": [
+            {
+              "id": "fls_recurrence_all_periods",
+              "label": "All years",
+              "main": true
+            },
+            {
+              "id": "fls_recurrence_period1",
+              "label": "Period 1"
+            },
+            {
+              "id": "fls_recurrence_period2",
+              "label": "Period 2"
+            }
+          ]
+        },
+        {
+          "group_title": "Average duration of food insecurity",
+          "activate_all": false,
+          "layers": [
+            {
+              "id": "fls_duration_all_periods",
+              "label": "All years",
+              "main": true
+            },
+            {
+              "id": "fls_duration_period1",
+              "label": "Period 1"
+            },
+            {
+              "id": "fls_duration_period2",
+              "label": "Period 2"
+            }
+          ]
+        },
+        {
+          "group_title": "Recurrence and duration of food insecurity",
+          "activate_all": false,
+          "layers": [
+            {
+              "id": "fls_cluster_all_periods",
+              "label": "All years",
+              "main": true
+            },            {
+              "id": "fls_cluster_period1",
+              "label": "Period 1"
+            },            {
+              "id": "fls_cluster_period2",
+              "label": "Period 2"
+            }
+          ]
+        }
+      ]
+    },
     "risk_analysis": {
       "integrated_context_analysis": [
         {
