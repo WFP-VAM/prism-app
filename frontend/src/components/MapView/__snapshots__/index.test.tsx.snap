@@ -440,7 +440,7 @@ exports[`renders as expected 1`] = `
               style="pointer-events: auto;"
             >
               <mock-legends
-                extent="30.18,-26.8,40.78,-10.32"
+                extent="31,-25,40,-11"
                 layers="[object Object],[object Object]"
               />
             </div>
