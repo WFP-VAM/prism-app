@@ -1,5 +1,6 @@
-import { has, get } from 'lodash';
+import { has, get, merge } from 'lodash';
 import { PublicClientApplication } from '@azure/msal-browser';
+import shared from './shared';
 import afghanistan from './afghanistan';
 import cambodia from './cambodia';
 import cameroon from './cameroon';
@@ -76,20 +77,60 @@ const safeCountry =
     : DEFAULT;
 
 const {
-  appConfig,
   defaultBoundariesFile,
-  rawLayers,
   rawTables,
   rawReports,
 }: {
-  appConfig: Record<string, any>;
   defaultBoundariesFile: string;
-  rawLayers: Record<string, any>;
   rawTables: Record<string, any>;
   rawReports: Record<string, any>;
 } = configMap[safeCountry];
 
-const translation = get(configMap[safeCountry], 'translation', {});
+const {
+  defaultConfig,
+  sharedLayers,
+  translation: sharedTranslation,
+  sharedLegends,
+} = shared;
+
+// Perform deep merges between shared and country-specific configurations
+const appConfig: Record<string, any> = merge(
+  {},
+  defaultConfig,
+  configMap[safeCountry].appConfig,
+);
+
+// Perform deep merges between shared and country-specific layers and legends
+const rawLayers: Record<string, any> = Object.fromEntries(
+  Object.entries(
+    merge(
+      {},
+      // we initialize with country layers to maintain the order
+      configMap[safeCountry].rawLayers,
+      sharedLayers,
+      configMap[safeCountry].rawLayers,
+    ),
+  ).map(([key, layer]) => {
+    if (typeof layer.legend === 'string') {
+      if (!sharedLegends[layer.legend]) {
+        throw new Error(
+          `Legend '${layer.legend}' could not be found in shared legends.`,
+        );
+      }
+      // eslint-disable-next-line no-param-reassign, fp/no-mutation
+      layer.legend = sharedLegends[layer.legend] || layer.legend;
+    }
+    return [key, layer];
+  }),
+);
+
+// Merge translations
+const countryTranslation = get(configMap[safeCountry], 'translation', {});
+const translation = Object.fromEntries(
+  Object.entries(sharedTranslation)
+    .filter(([key]) => key in countryTranslation)
+    .map(([key, value]) => [key, merge({}, value, countryTranslation[key])]),
+);
 
 const msalConfig = {
   auth: {
