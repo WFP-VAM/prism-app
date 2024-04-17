@@ -5,7 +5,12 @@ import sharedLegends from './legends.json';
 import portuguese from './portuguese.json';
 import french from './french.json';
 
-const translation = { pt: portuguese, fr: french };
+// Available languages need to be initialzed here
+const translation = {
+  fr: french,
+  kh: {},
+  pt: portuguese,
+};
 
 export default {
   defaultConfig,
