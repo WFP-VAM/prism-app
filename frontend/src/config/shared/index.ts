@@ -5,8 +5,8 @@ import sharedLegends from './legends.json';
 import portuguese from './portuguese.json';
 import french from './french.json';
 
-// Available languages need to be initialzed here
-const translation = {
+// TODO - Link translation files for the following languages
+const translation: Record<string, any> = {
   es: {},
   fr: french,
   mn: {},
