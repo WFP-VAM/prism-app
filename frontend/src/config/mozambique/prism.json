@@ -29,7 +29,7 @@
     ]
   },
   "map": {
-    "boundingBox": [30.18, -26.8, 40.78, -10.32]
+    "boundingBox": [31, -25, 40, -11]
   },
   "categories": {
     "rainfall": {
@@ -191,7 +191,7 @@
           "activate_all": false,
           "layers": [
             {
-              "id": "chirps_rainfall_daily",
+              "id": "rainfall_daily",
               "label": "Daily"
             },
             {
