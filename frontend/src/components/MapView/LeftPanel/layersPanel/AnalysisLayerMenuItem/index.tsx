@@ -75,7 +75,7 @@ const AnalysisLayerMenuItem = memo(
           />
         </AccordionSummary>
         <AccordionDetails classes={{ root: classes.rootDetails }}>
-          <Grid container direction="column">
+          <Grid container direction="row" style={{ paddingLeft: 12 }}>
             <AnalysisLayerSwitchItem
               initialOpacity={initialOpacity}
               analysisData={analysisData}
