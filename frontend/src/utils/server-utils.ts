@@ -132,7 +132,7 @@ type PointDataDates = Array<{
 }>;
 // used to cache repeat date requests to same URL
 const pointDataFetchPromises: {
-  [k in PointDataLayerProps['dateUrl']]: Promise<PointDataDates>;
+  [k in string]: Promise<PointDataDates>;
 } = {};
 
 const loadPointLayerDataFromURL = async (
@@ -191,6 +191,10 @@ const getPointDataCoverage = async (
     additionalQueryParams,
     loader,
   } = layer;
+
+  if (!url) {
+    return [];
+  }
 
   // TODO - merge formatUrl and queryParamsToString
   const fetchUrlWithParams = `${url}${
@@ -507,7 +511,8 @@ export async function getLayersAvailableDates(
   const wcsServerUrls: string[] = get(appConfig, 'serversUrls.wcs', []);
 
   const pointDataLayers = Object.values(LayerDefinitions).filter(
-    (layer): layer is PointDataLayerProps => layer.type === 'point_data',
+    (layer): layer is PointDataLayerProps =>
+      layer.type === 'point_data' && Boolean(layer.dateUrl),
   );
 
   const adminWithDateLayers = Object.values(LayerDefinitions).filter(

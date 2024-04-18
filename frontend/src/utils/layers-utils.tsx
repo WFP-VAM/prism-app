@@ -105,6 +105,10 @@ const useLayers = () => {
         ) {
           return Boolean(layer.dates);
         }
+        if (layer.type === 'point_data') {
+          // some WMS layer might not have date dimension (i.e. static data)
+          return Boolean(layer.dateUrl);
+        }
         if (layer.type === 'wms') {
           // some WMS layer might not have date dimension (i.e. static data)
           return layer.id in serverAvailableDates;

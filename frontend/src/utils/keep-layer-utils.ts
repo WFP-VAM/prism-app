@@ -28,8 +28,8 @@ export function keepLayer(layer: LayerType, newLayer: LayerType) {
   if (
     newLayer.type === 'point_data' &&
     layer.type === 'point_data' &&
-    newLayer.dateUrl.includes('kobo') &&
-    layer.dateUrl.includes('kobo')
+    newLayer.dateUrl?.includes('kobo') &&
+    layer.dateUrl?.includes('kobo')
   ) {
     return false;
   }

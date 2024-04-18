@@ -16,3 +16,5 @@ services:
       - HDC_TOKEN
       # Alerts database
       - PRISM_ALERTS_DATABASE_URL
+    ports:
+      - '80:80'

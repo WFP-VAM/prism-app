@@ -108,7 +108,7 @@ function LegendItemsList({
             : analysisResult?.legend
         }
         title={analysisResult?.getTitle(t)}
-        opacity={analysisLayerOpacity} // TODO: initial opacity value
+        opacity={analysisLayerOpacity}
         forPrinting={forPrinting}
         showDescription={showDescription}
       >
