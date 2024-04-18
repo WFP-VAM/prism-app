@@ -33,8 +33,10 @@ function LayersPanel({ setResultsPage }: LayersPanelProps) {
 
   return (
     <Box display="flex" flexDirection="column" height="100%">
-      <RootAccordionItems />
-      <RootAnalysisAccordionItems />
+      <div style={{ padding: '0.5rem' }}>
+        <RootAccordionItems />
+        <RootAnalysisAccordionItems />
+      </div>
       <Box flexGrow={1} />
       <HashText />
     </Box>
