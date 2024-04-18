@@ -172,7 +172,9 @@ exports[`renders as expected 1`] = `
                 classname="NavBar-panelButton-3"
                 starticon="[object Object]"
               >
-                <mock-typography>
+                <mock-typography
+                  style="text-transform: none;"
+                >
                   A. Action
                 </mock-typography>
               </mock-button>
