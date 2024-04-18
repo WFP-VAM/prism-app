@@ -211,7 +211,7 @@
       "vulnerability": ["vulnerability_scaled"]
     },
     "drought": {
-      "combined_drought_index": ["cdi"]
+      "combined_drought_index": ["cdi_v1", "cdi_v2"]
     }
   }
 }
