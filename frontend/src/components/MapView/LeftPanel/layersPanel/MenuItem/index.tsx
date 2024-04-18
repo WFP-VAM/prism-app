@@ -18,7 +18,7 @@ import { layersSelector } from 'context/mapStateSlice/selectors';
 import { filterActiveLayers } from 'components/MapView/utils';
 import SelectedLayersInformation from './SelectedLayersInformation';
 
-const useStyles = makeStyles(() =>
+export const useLayerMenuItemStyles = makeStyles(() =>
   createStyles({
     root: {
       position: 'inherit',
@@ -41,6 +41,9 @@ const useStyles = makeStyles(() =>
       fontSize: '16px',
       fontWeight: 600,
     },
+    chipRoot: {
+      marginLeft: '3%',
+    },
   }),
 );
 
@@ -54,7 +57,7 @@ interface MenuItemProps {
 const MenuItem = memo(({ title, layersCategories, extent }: MenuItemProps) => {
   const { t } = useSafeTranslation();
   const selectedLayers = useSelector(layersSelector);
-  const classes = useStyles();
+  const classes = useLayerMenuItemStyles();
 
   const categoryLayers = layersCategories
     .map(layerCategory => {

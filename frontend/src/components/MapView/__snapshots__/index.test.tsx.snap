@@ -307,7 +307,7 @@ exports[`renders as expected 1`] = `
                 </div>
               </div>
               <div
-                class="MuiBox-root MuiBox-root-16"
+                class="MuiBox-root MuiBox-root-17"
               />
               <a
                 href="https://github.com/WFP-VAM/prism-app/tree/sample_hash"
@@ -348,10 +348,10 @@ exports[`renders as expected 1`] = `
       </div>
     </mock-drawer>
     <div
-      class="MuiBox-root MuiBox-root-19 OtherFeatures-container-17"
+      class="MuiBox-root MuiBox-root-20 OtherFeatures-container-18"
     >
       <div
-        class="MuiBox-root MuiBox-root-20 OtherFeatures-optionContainer-18"
+        class="MuiBox-root MuiBox-root-21 OtherFeatures-optionContainer-19"
       />
     </div>
     <div
