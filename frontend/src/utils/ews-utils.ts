@@ -203,11 +203,9 @@ export const fetchEWSData = async (
     [] as PointData[],
   );
 
-  return {
-    features: GeoJSON.parse(processedFeatures, {
-      Point: ['lat', 'lon'],
-    }),
-  };
+  return (GeoJSON.parse(processedFeatures, {
+    Point: ['lat', 'lon'],
+  }) as any) as PointLayerData;
 };
 
 export const createEWSDatasetParams = (

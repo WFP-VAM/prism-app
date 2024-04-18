@@ -22,7 +22,7 @@ async def test_download_report():
 
     # Act
     report_path: str = await download_report(
-        "http://frontend:3000/?hazardLayerIds=flood_extent%2Cews_remote&date=2023-07-07",
+        "http://frontend:3000/?hazardLayerIds=flood_extent&date=2023-07-07",
         "flood_extent",
         "cambodia",
         "en",
