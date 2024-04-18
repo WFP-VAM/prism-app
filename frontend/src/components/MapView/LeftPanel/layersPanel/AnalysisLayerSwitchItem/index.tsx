@@ -161,12 +161,7 @@ const AnalysisLayerSwitchItem = memo(
         flexDirection="column"
         maxWidth="100%"
       >
-        <Box
-          display="flex"
-          alignItems="center"
-          m={2}
-          justifyContent="space-between"
-        >
+        <Box display="flex" alignItems="center">
           <div style={{ display: 'flex' }}>
             <Switch
               size="small"
@@ -187,7 +182,7 @@ const AnalysisLayerSwitchItem = memo(
               {title}
             </Typography>
           </div>
-          <div>
+          <Box key="analysis-layer" display="flex" alignItems="center">
             {renderedOpacityIconButton}
             <AnalysisLayerSwitchItemDownloadOptions
               analysisData={analysisData}
@@ -195,7 +190,7 @@ const AnalysisLayerSwitchItem = memo(
               analysisResultSortOrder={analysisResultSortOrder}
               selected={selected}
             />
-          </div>
+          </Box>
         </Box>
         {renderedOpacitySlider}
       </Box>

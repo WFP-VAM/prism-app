@@ -38,7 +38,7 @@ export const useLayerMenuItemStyles = makeStyles(() =>
     },
     title: {
       color: 'black',
-      fontSize: '16px',
+      fontSize: '14px',
       fontWeight: 600,
     },
     chipRoot: {

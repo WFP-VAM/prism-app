@@ -51,7 +51,9 @@ function LanguageSelector({ classes }: LanguageSelectorProps) {
         onClick={handleClick}
         endIcon={<ArrowDownward fontSize="small" />}
       >
-        <Typography color="secondary">{i18n.resolvedLanguage}</Typography>
+        <Typography color="secondary" style={{ textTransform: 'none' }}>
+          {i18n.resolvedLanguage}
+        </Typography>
       </Button>
       <Menu
         open={Boolean(anchorEl)}

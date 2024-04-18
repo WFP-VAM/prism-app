@@ -40,7 +40,9 @@ const Legends = memo(({ classes }: LegendsProps) => {
             )
           }
         >
-          <Typography style={{ color: open ? black : 'white' }}>
+          <Typography
+            style={{ color: open ? black : 'white', textTransform: 'none' }}
+          >
             {t('Legend')}
           </Typography>
         </Button>

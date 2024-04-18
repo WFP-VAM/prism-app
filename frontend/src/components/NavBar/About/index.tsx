@@ -49,7 +49,9 @@ const About = memo(() => {
       startIcon={<InfoOutlinedIcon style={{ fontSize: '1.5rem' }} />}
     >
       <Hidden smDown>
-        <Typography color="secondary">{t('About')}</Typography>
+        <Typography color="secondary" style={{ textTransform: 'none' }}>
+          {t('About')}
+        </Typography>
       </Hidden>
       {renderedContentDialog}
     </Button>

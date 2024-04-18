@@ -30,7 +30,9 @@ const GoToBoundaryDropdown = () => {
     <>
       <Hidden smDown>
         <Button startIcon={<RoomOutlinedIcon />} onClick={handleClick}>
-          <Typography style={{ color: '#FFF' }}>{t('Go To')}</Typography>
+          <Typography style={{ color: '#FFF', textTransform: 'none' }}>
+            {t('Go To')}
+          </Typography>
         </Button>
       </Hidden>
       <Hidden mdUp>
