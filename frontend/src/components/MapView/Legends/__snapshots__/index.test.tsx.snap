@@ -11,7 +11,7 @@ exports[`renders as expected 1`] = `
       style="background-color: rgb(99, 178, 189);"
     >
       <mock-typography
-        style="color: rgb(16, 16, 16);"
+        style="color: rgb(16, 16, 16); text-transform: none;"
       >
         Legend
       </mock-typography>

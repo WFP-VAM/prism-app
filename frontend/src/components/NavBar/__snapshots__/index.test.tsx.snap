@@ -47,7 +47,7 @@ exports[`renders as expected 1`] = `
                 style="background-color: rgb(99, 178, 189); color: rgb(16, 16, 16);"
               >
                 <mock-typography
-                  style="color: rgb(16, 16, 16);"
+                  style="color: rgb(16, 16, 16); text-transform: none;"
                 >
                   Layers
                 </mock-typography>
@@ -88,7 +88,9 @@ exports[`renders as expected 1`] = `
                 classname="NavBar-panelButton-3"
                 starticon="[object Object]"
               >
-                <mock-typography>
+                <mock-typography
+                  style="text-transform: none;"
+                >
                   Charts
                 </mock-typography>
               </mock-button>
@@ -128,7 +130,9 @@ exports[`renders as expected 1`] = `
                 classname="NavBar-panelButton-3"
                 starticon="[object Object]"
               >
-                <mock-typography>
+                <mock-typography
+                  style="text-transform: none;"
+                >
                   Analysis
                 </mock-typography>
               </mock-button>
@@ -168,7 +172,7 @@ exports[`renders as expected 1`] = `
                 starticon="[object Object]"
               >
                 <mock-typography
-                  style="color: rgb(255, 255, 255);"
+                  style="color: rgb(255, 255, 255); text-transform: none;"
                 >
                   Go To
                 </mock-typography>
@@ -225,7 +229,7 @@ exports[`renders as expected 1`] = `
               style="background-color: rgb(99, 178, 189);"
             >
               <mock-typography
-                style="color: rgb(16, 16, 16);"
+                style="color: rgb(16, 16, 16); text-transform: none;"
               >
                 Legend
               </mock-typography>
@@ -278,7 +282,7 @@ exports[`renders as expected 1`] = `
             >
               <svg
                 aria-hidden="true"
-                class="svg-inline--fa fa-github fa-w-16 "
+                class="svg-inline--fa fa-github "
                 data-icon="github"
                 data-prefix="fab"
                 focusable="false"
@@ -309,6 +313,7 @@ exports[`renders as expected 1`] = `
             >
               <mock-typography
                 color="secondary"
+                style="text-transform: none;"
               >
                 About
               </mock-typography>
@@ -321,6 +326,7 @@ exports[`renders as expected 1`] = `
           >
             <mock-typography
               color="secondary"
+              style="text-transform: none;"
             >
               en
             </mock-typography>

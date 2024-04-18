@@ -166,6 +166,7 @@ function NavBar({ classes, isAlertFormOpen, setIsAlertFormOpen }: NavBarProps) {
                         <Typography
                           style={{
                             color: tabValue === panel.panel ? black : '#FFFF',
+                            textTransform: 'none',
                           }}
                         >
                           {t(panel.label)}
