@@ -4114,21 +4114,31 @@
     "input_layers": [
       {
         "id": "spi_1m",
+        "importance": 0.3,
+        "key": [
+          "CHIRPS",
+          "R1S_DEKAD"
+        ],
+        "aggregation": "last_dekad"
+      },
+      {
+        "id": "lst_anomaly",
+        "importance": 0.3,
+        "key": [
+          "MODIS",
+          "MYD11C2_TDD_DEKAD"
+        ],
+        "aggregation": "last_dekad"
+      },
+      {
+        "id": "ndvi_dekad",
         "importance": 0.4,
-        "key": ["CHIRPS", "R1S_DEKAD"],
-        "aggregation": "last_dekad"
-      },
-      {
-        "id": "et0",
-        "importance": 0.3,
-        "key": ["FAO", "WAPOR_ET0_DEKAD_LTA"],
-        "aggregation": "last_dekad"
-      },
-      {
-        "id": "rzsm",
-        "importance": 0.3,
-        "key": ["AGERA5", "SOIL_MOIST"],
-        "aggregation": "last_dekad"
+        "key": [
+          "MODIS",
+          "NDVI_smoothed_5KM"
+        ],
+        "aggregation": "average",
+        "invert": "True"
       }
     ],
     "legend": [
@@ -4183,7 +4193,7 @@
         "color": "#014c73"
       }
     ],
-    "legend_text": "Composite Drought Index v2. SPI weight = 0.4; ET0 weight = 0.3; RZSM weight = 0.3",
+    "legend_text": "Composite Drought Index v2. SPI weight = 0.3; LST weight = 0.3; NDVI weight = 0.4",
     "aggregation": "pixel",
     "date_layer": "spi_1m",
     "start_date": "2023-12-01",
