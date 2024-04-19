@@ -5823,6 +5823,39 @@
     ],
     "legend_text": "This layer presents the conflict index rankings of 2023 while at the same time adding information on the recurrent nature of extreme and high political violence in the preceding period between 2018 and 2022"
   },
+  "ifpri_protracted_transient_conflict": {
+    "title": "Protracted and Transient Political Violence: 2018 - 2023",
+    "type": "admin_level_data",
+    "path": "data/rbd/ifpri-aci/aci_all.json",
+    "admin_level": 2,
+    "data_field": "IFPRI_classification_cat",
+    "admin_code": "admin2Pcod",
+    "feature_info_props": {
+      "IFPRI_classification": {
+        "type": "string",
+        "dataTitle": "Classification"
+      }
+    },
+    "opacity": 0.9,
+    "legend": [
+      {
+        "label": "None",
+        "value": 0,
+        "color": "#d9d9d9"
+      },
+      {
+        "label": "Transient",
+        "value": 1,
+        "color": "#969696"
+      },
+      {
+        "label": "Protracted",
+        "value": 2,
+        "color": "#252525"
+      }
+    ],
+    "legend_text": "Protracted and Transient Political Violence. IFPRI / ACLED analysis from 2018 to 2023"
+  },
   "ifpri_conflict_2018": {
     "title": "IFPRI / ACLED Conflict Analysis - 2018",
     "type": "admin_level_data",

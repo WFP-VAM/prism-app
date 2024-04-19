@@ -15,10 +15,17 @@
   },
   "alertFormActive": false,
   "serversUrls": {
-    "wms": ["https://api.earthobservation.vam.wfp.org/ows/wms"]
+    "wms": [
+      "https://api.earthobservation.vam.wfp.org/ows/wms"
+    ]
   },
   "map": {
-    "boundingBox": [-26, -1, 32, 24]
+    "boundingBox": [
+      -26,
+      -1,
+      32,
+      24
+    ]
   },
   "defaultDisplayBoundaries": [
     "admin_boundaries",
@@ -27,7 +34,10 @@
   ],
   "categories": {
     "rainfall": {
-      "forecasts": ["daily_rainfall_forecast", "dekad_rainfall_forecast"],
+      "forecasts": [
+        "daily_rainfall_forecast",
+        "dekad_rainfall_forecast"
+      ],
       "rainfall_amount": [
         {
           "group_title": "Rainfall Aggregate",
@@ -121,7 +131,10 @@
           ]
         }
       ],
-      "dry_periods": ["days_dry", "streak_dry_days"],
+      "dry_periods": [
+        "days_dry",
+        "streak_dry_days"
+      ],
       "extreme_rain_events": [
         {
           "group_title": "Rainfall categories:",
@@ -248,7 +261,7 @@
       ]
     },
     "Future_of_the_Lean_Season": {
-      "Future_of_the_Lean_Season_Analysis":[
+      "Future_of_the_Lean_Season_Analysis": [
         {
           "group_title": "Annual recurrence of food insecurity",
           "activate_all": false,
@@ -295,10 +308,12 @@
               "id": "fls_cluster_all_periods",
               "label": "All years",
               "main": true
-            },            {
+            },
+            {
               "id": "fls_cluster_period1",
               "label": "Period 1"
-            },            {
+            },
+            {
               "id": "fls_cluster_period2",
               "label": "Period 2"
             }
@@ -307,7 +322,7 @@
       ]
     },
     "Cropland_Change_Analysis": {
-      "Cropland_Change_Analysis":[
+      "Cropland_Change_Analysis": [
         {
           "group_title": "Cropland change analysis",
           "activate_all": false,
@@ -316,10 +331,6 @@
               "id": "crop_changes_2023_2022",
               "label": "2023 vs 2022",
               "main": true
-            },
-            {
-              "id": "crop_changes_2023_ref",
-              "label": "2023 vs reference years"
             }
           ]
         }
@@ -357,7 +368,8 @@
               "label": "2018"
             }
           ]
-        }
+        },
+        "ifpri_protracted_transient_conflict"
       ]
     },
     "risk_analysis": {
