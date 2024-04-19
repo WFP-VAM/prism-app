@@ -113,7 +113,7 @@ function ToggleSelector({
 }
 
 const legendSelectorOptions = [
-  { value: -1, comp: <VisibilityOff /> },
+  { value: 0.5, comp: <div>50%</div> },
   { value: 0.4, comp: <div>60%</div> },
   { value: 0.3, comp: <div>70%</div> },
   { value: 0.2, comp: <div>80%</div> },
@@ -121,8 +121,8 @@ const legendSelectorOptions = [
   { value: 0, comp: <div>100%</div> },
 ];
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const legendPositionOptions = [
+  { value: -1, comp: <VisibilityOff /> },
   { value: 0, comp: <CallMade style={{ transform: 'scaleX(-1)' }} /> },
   { value: 1, comp: <CallMade /> },
 ];
@@ -363,7 +363,7 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
       refreshImage();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [toggles, legendScale, mapRef, footerTextSize, footerText, titleText]);
+  }, [toggles, mapRef]);
 
   const handleDownloadMenuClose = () => {
     setDownloadMenuAnchorEl(null);
@@ -486,7 +486,7 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
                       <div style={{ padding: '8px' }}>{footerText}</div>
                     </div>
                   )}
-                  {legendScale >= 0 && (
+                  {legendPosition >= 0 && (
                     <div
                       style={{
                         position: 'absolute',
