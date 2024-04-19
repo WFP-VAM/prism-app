@@ -5421,7 +5421,7 @@
       }
     ]
   },
-  "crop_changes": {
+  "crop_changes_2023_2022": {
     "title": "Cropland change analysis (2023 vs 2022)",
     "type": "point_data",
     "data": "data/rbd/west_africa_cropland_change_2023.json",
@@ -5429,6 +5429,62 @@
     "data_field_type": "text",
     "opacity": 0.7,
     "legend_text": "Cropland change analysis (2023 vs 2022)",
+    "legend": [
+      {
+        "label": "Significant decrease",
+        "value": "Significant decrease",
+        "color": "#fa1a18"
+      },
+      {
+        "label": "Medium decrease",
+        "value": "Medium decrease",
+        "color": "#fba12e"
+      },
+      {
+        "label": "Slight decrease",
+        "value": "Slight decrease",
+        "color": "#ffff43"
+      },
+      {
+        "label": "No change",
+        "value": "No change",
+        "color": "#c5c5c5"
+      },
+      {
+        "label": "Slight increase",
+        "value": "Slight increase",
+        "color": "#cefdba"
+      },
+      {
+        "label": "Medium increase",
+        "value": "Medium increase",
+        "color": "#91e038"
+      },
+      {
+        "label": "Significant increase",
+        "value": "Significant increase",
+        "color": "#276719"
+      }
+    ],
+    "feature_info_props": {
+      "name": {
+        "type": "string",
+        "dataTitle": "Name"
+      },
+      "F2023_an_1": {
+        "type": "string",
+        "dataTitle": "Type"
+      }
+    }
+  },
+  "crop_changes_2023_ref": {
+    "title": "Cropland change analysis (2023 vs reference years)",
+    "type": "point_data",
+    "data": "data/rbd/west_africa_cropland_change_2023.json",
+    "data_field": "F2023_ann",
+    "data_field_type": "text",
+    "opacity": 0.7,
+    "legend_text": "Cropland change analysis (2023 vs reference years)",
     "legend": [
       {
         "label": "Significant decrease",
@@ -5734,5 +5790,229 @@
       }
     ],
     "legend_text": "Clustering - recurrence and duration of food insecurity: 2018/19 - 2022/23. WFP Future of the lean season analysis"
+  },
+  "ifpri_political_violence": {
+    "title": "IFPRI / ACLED Political Violence - 2023",
+    "type": "admin_level_data",
+    "path": "data/rbd/ifpri-aci/aci_2023.json",
+    "admin_level": 2,
+    "data_field": "ACI",
+    "admin_code": "admin2Pcod",
+    "opacity": 0.9,
+    "legend": [
+      {
+        "label": "Low / Inactive",
+        "value": 1,
+        "color": "#e6e6e6"
+      },
+      {
+        "label": "Turbulent",
+        "value": 2,
+        "color": "#1f77b3"
+      },
+      {
+        "label": "High",
+        "value": 3,
+        "color": "#f4a582"
+      },
+      {
+        "label": "Extreme",
+        "value": 4,
+        "color": "#e51a19"
+      }
+    ],
+    "legend_text": "This layer presents the conflict index rankings of 2023 while at the same time adding information on the recurrent nature of extreme and high political violence in the preceding period between 2018 and 2022"
+  },
+  "ifpri_conflict_2018": {
+    "title": "IFPRI / ACLED Conflict Analysis - 2018",
+    "type": "admin_level_data",
+    "path": "data/rbd/ifpri-aci/aci_all.json",
+    "admin_level": 2,
+    "data_field": "aci_2018",
+    "admin_code": "admin2Pcod",
+    "opacity": 0.9,
+    "legend": [
+      {
+        "label": "Low / Inactive",
+        "value": 1,
+        "color": "#e6e6e6"
+      },
+      {
+        "label": "Turbulent",
+        "value": 2,
+        "color": "#1f77b3"
+      },
+      {
+        "label": "High",
+        "value": 3,
+        "color": "#f4a582"
+      },
+      {
+        "label": "Extreme",
+        "value": 4,
+        "color": "#e51a19"
+      }
+    ],
+    "legend_text": "ACLED Conflict analysis 2018. IFPRI"
+  },
+  "ifpri_conflict_2019": {
+    "title": "IFPRI / ACLED Conflict Analysis - 2019",
+    "type": "admin_level_data",
+    "path": "data/rbd/ifpri-aci/aci_all.json",
+    "admin_level": 2,
+    "data_field": "aci_2019",
+    "admin_code": "admin2Pcod",
+    "opacity": 0.9,
+    "legend": [
+      {
+        "label": "Low / Inactive",
+        "value": 1,
+        "color": "#e6e6e6"
+      },
+      {
+        "label": "Turbulent",
+        "value": 2,
+        "color": "#1f77b3"
+      },
+      {
+        "label": "High",
+        "value": 3,
+        "color": "#f4a582"
+      },
+      {
+        "label": "Extreme",
+        "value": 4,
+        "color": "#e51a19"
+      }
+    ],
+    "legend_text": "ACLED Conflict analysis 2019. IFPRI"
+  },
+  "ifpri_conflict_2020": {
+    "title": "IFPRI / ACLED Conflict Analysis - 2020",
+    "type": "admin_level_data",
+    "path": "data/rbd/ifpri-aci/aci_all.json",
+    "admin_level": 2,
+    "data_field": "aci_2020",
+    "admin_code": "admin2Pcod",
+    "opacity": 0.9,
+    "legend": [
+      {
+        "label": "Low / Inactive",
+        "value": 1,
+        "color": "#e6e6e6"
+      },
+      {
+        "label": "Turbulent",
+        "value": 2,
+        "color": "#1f77b3"
+      },
+      {
+        "label": "High",
+        "value": 3,
+        "color": "#f4a582"
+      },
+      {
+        "label": "Extreme",
+        "value": 4,
+        "color": "#e51a19"
+      }
+    ],
+    "legend_text": "ACLED Conflict analysis 2020. IFPRI"
+  },
+  "ifpri_conflict_2021": {
+    "title": "IFPRI / ACLED Conflict Analysis - 2021",
+    "type": "admin_level_data",
+    "path": "data/rbd/ifpri-aci/aci_all.json",
+    "admin_level": 2,
+    "data_field": "aci_2021",
+    "admin_code": "admin2Pcod",
+    "opacity": 0.9,
+    "legend": [
+      {
+        "label": "Low / Inactive",
+        "value": 1,
+        "color": "#e6e6e6"
+      },
+      {
+        "label": "Turbulent",
+        "value": 2,
+        "color": "#1f77b3"
+      },
+      {
+        "label": "High",
+        "value": 3,
+        "color": "#f4a582"
+      },
+      {
+        "label": "Extreme",
+        "value": 4,
+        "color": "#e51a19"
+      }
+    ],
+    "legend_text": "ACLED Conflict analysis 2021. IFPRI"
+  },
+  "ifpri_conflict_2022": {
+    "title": "IFPRI / ACLED Conflict Analysis - 2022",
+    "type": "admin_level_data",
+    "path": "data/rbd/ifpri-aci/aci_all.json",
+    "admin_level": 2,
+    "data_field": "aci_2022",
+    "admin_code": "admin2Pcod",
+    "opacity": 0.9,
+    "legend": [
+      {
+        "label": "Low / Inactive",
+        "value": 1,
+        "color": "#e6e6e6"
+      },
+      {
+        "label": "Turbulent",
+        "value": 2,
+        "color": "#1f77b3"
+      },
+      {
+        "label": "High",
+        "value": 3,
+        "color": "#f4a582"
+      },
+      {
+        "label": "Extreme",
+        "value": 4,
+        "color": "#e51a19"
+      }
+    ],
+    "legend_text": "ACLED Conflict analysis 2022. IFPRI"
+  },
+  "ifpri_conflict_2023": {
+    "title": "IFPRI / ACLED Conflict Analysis - 2023",
+    "type": "admin_level_data",
+    "path": "data/rbd/ifpri-aci/aci_all.json",
+    "admin_level": 2,
+    "data_field": "aci_2023",
+    "admin_code": "admin2Pcod",
+    "opacity": 0.9,
+    "legend": [
+      {
+        "label": "Low / Inactive",
+        "value": 1,
+        "color": "#e6e6e6"
+      },
+      {
+        "label": "Turbulent",
+        "value": 2,
+        "color": "#1f77b3"
+      },
+      {
+        "label": "High",
+        "value": 3,
+        "color": "#f4a582"
+      },
+      {
+        "label": "Extreme",
+        "value": 4,
+        "color": "#e51a19"
+      }
+    ],
+    "legend_text": "ACLED Conflict analysis 2023. IFPRI"
   }
 }
