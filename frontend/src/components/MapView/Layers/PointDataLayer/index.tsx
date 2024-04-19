@@ -191,7 +191,7 @@ const PointDataLayer = ({ layer, before }: LayersProps) => {
           const hexagon = geoToH3(
             point.coordinates[1],
             point.coordinates[0],
-            7, // resolution, adjust as needed
+            6.9, // resolution, adjust as needed
           );
           if (!feature?.properties?.F2023_an_1) {
             return null;
