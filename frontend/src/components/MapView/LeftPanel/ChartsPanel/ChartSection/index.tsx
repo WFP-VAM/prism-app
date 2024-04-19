@@ -273,7 +273,7 @@ const ChartSection = memo(
 
     const adminKey = levelsDict[adminLevel.toString()];
     // Default to country level data.
-    const { code: adminCode } = useMemo(() => {
+    const { code: adminCode, name: adminName } = useMemo(() => {
       return (
         params.boundaryProps[adminKey] || {
           code: appConfig.countryAdmin0Id,
@@ -407,8 +407,9 @@ const ChartSection = memo(
     }, [chartType, colors, maxChartValue, maxValue, minChartValue, minValue]);
 
     const title = useMemo(() => {
-      return chartLayer.title;
-    }, [chartLayer.title]);
+      const prefix = adminName || appConfig.country;
+      return `${prefix} - ${chartLayer.title}`;
+    }, [adminName, chartLayer.title]);
 
     return useMemo(() => {
       if (chartDataSetIsLoading) {
