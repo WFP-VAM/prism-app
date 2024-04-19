@@ -92,7 +92,7 @@ exports[`renders as expected 1`] = `
                 </div>
               </div>
               <div
-                style="position: absolute; z-index: 2; top: 0px; left: 0px; width: 20px; transform: scale(1);"
+                style="position: absolute; z-index: 2; top: 0px; left: 8px; width: 20px; transform: scale(1);"
               >
                 <mock-list
                   classname="DownloadImage-legendListStyle-16"
@@ -358,6 +358,71 @@ exports[`renders as expected 1`] = `
                 <div>
                   100%
                 </div>
+              </span>
+              <span
+                class="MuiTouchRipple-root"
+              />
+            </button>
+          </div>
+        </div>
+        <div
+          class="makeStyles-wrapper-18"
+        >
+          <mock-typography
+            variant="h4"
+          >
+            Legend Position
+          </mock-typography>
+          <div
+            class="MuiToggleButtonGroup-root makeStyles-buttonGroup-19"
+            role="group"
+          >
+            <button
+              aria-pressed="true"
+              class="MuiButtonBase-root MuiToggleButton-root MuiToggleButtonGroup-grouped MuiToggleButtonGroup-groupedHorizontal makeStyles-button-20 Mui-selected"
+              tabindex="0"
+              type="button"
+              value="0"
+            >
+              <span
+                class="MuiToggleButton-label"
+              >
+                <svg
+                  aria-hidden="true"
+                  class="MuiSvgIcon-root"
+                  focusable="false"
+                  style="transform: scaleX(-1);"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    d="M9 5v2h6.59L4 18.59 5.41 20 17 8.41V15h2V5z"
+                  />
+                </svg>
+              </span>
+              <span
+                class="MuiTouchRipple-root"
+              />
+            </button>
+            <button
+              aria-pressed="false"
+              class="MuiButtonBase-root MuiToggleButton-root MuiToggleButtonGroup-grouped MuiToggleButtonGroup-groupedHorizontal makeStyles-button-20"
+              tabindex="0"
+              type="button"
+              value="1"
+            >
+              <span
+                class="MuiToggleButton-label"
+              >
+                <svg
+                  aria-hidden="true"
+                  class="MuiSvgIcon-root"
+                  focusable="false"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    d="M9 5v2h6.59L4 18.59 5.41 20 17 8.41V15h2V5z"
+                  />
+                </svg>
               </span>
               <span
                 class="MuiTouchRipple-root"

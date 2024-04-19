@@ -16,7 +16,13 @@ import {
   makeStyles,
   withStyles,
 } from '@material-ui/core';
-import GetAppIcon from '@material-ui/icons/GetApp';
+import {
+  GetApp,
+  Cancel,
+  Visibility,
+  VisibilityOff,
+  CallMade,
+} from '@material-ui/icons';
 import mask from '@turf/mask';
 import html2canvas from 'html2canvas';
 import { debounce } from 'lodash';
@@ -25,7 +31,6 @@ import maplibregl from 'maplibre-gl';
 import React, { useRef, useState } from 'react';
 import MapGL, { Layer, MapRef, Source } from 'react-map-gl/maplibre';
 import { useSelector } from 'react-redux';
-import CancelIcon from '@material-ui/icons/Cancel';
 import { mapStyle } from 'components/MapView/Map';
 import { addFillPatternImagesInMap } from 'components/MapView/Layers/AdminLevelDataLayer';
 import { getFormattedDate } from 'utils/date-utils';
@@ -38,8 +43,6 @@ import {
 } from 'config/types';
 import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
 import ToggleButton from '@material-ui/lab/ToggleButton';
-import VisibilityOffIcon from '@material-ui/icons/VisibilityOff';
-import VisibilityIcon from '@material-ui/icons/Visibility';
 import { cyanBlue, gray } from 'muiTheme';
 import { SimpleBoundaryDropdown } from 'components/MapView/Layers/BoundaryDropdown';
 import { getBoundaryLayerSingleton } from 'config/utils';
@@ -91,7 +94,7 @@ function ToggleSelector({
       <ToggleButtonGroup
         value={value}
         exclusive
-        onChange={(e, v) => setValue(v)}
+        onChange={(e, v) => v !== null && setValue(v)}
         className={classes.buttonGroup}
       >
         {options.map(x => (
@@ -110,12 +113,18 @@ function ToggleSelector({
 }
 
 const legendSelectorOptions = [
-  { value: -1, comp: <VisibilityOffIcon /> },
+  { value: -1, comp: <VisibilityOff /> },
   { value: 0.4, comp: <div>60%</div> },
   { value: 0.3, comp: <div>70%</div> },
   { value: 0.2, comp: <div>80%</div> },
   { value: 0.1, comp: <div>90%</div> },
   { value: 0, comp: <div>100%</div> },
+];
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const legendPositionOptions = [
+  { value: 0, comp: <CallMade style={{ transform: 'scaleX(-1)' }} /> },
+  { value: 1, comp: <CallMade /> },
 ];
 
 const mapWidthSelectorOptions = [
@@ -128,7 +137,7 @@ const mapWidthSelectorOptions = [
 ];
 
 const footerTextSelectorOptions = [
-  { value: 0, comp: <VisibilityOffIcon /> },
+  { value: 0, comp: <VisibilityOff /> },
   { value: 8, comp: <div style={{ fontSize: '8px' }}>Aa</div> },
   { value: 10, comp: <div style={{ fontSize: '10px' }}>Aa</div> },
   { value: 12, comp: <div style={{ fontSize: '12px' }}>Aa</div> },
@@ -137,13 +146,13 @@ const footerTextSelectorOptions = [
 ];
 
 const layerDescriptionSelectorOptions = [
-  { value: 0, comp: <VisibilityOffIcon /> },
-  { value: 1, comp: <VisibilityIcon /> },
+  { value: 0, comp: <VisibilityOff /> },
+  { value: 1, comp: <Visibility /> },
 ];
 
 const countryMaskSelectorOptions = [
-  { value: 1, comp: <VisibilityOffIcon /> },
-  { value: 0, comp: <VisibilityIcon /> },
+  { value: 1, comp: <VisibilityOff /> },
+  { value: 0, comp: <Visibility /> },
 ];
 
 const boundaryLayer = getBoundaryLayerSingleton();
@@ -157,6 +166,7 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
   const overlayContainerRef = useRef<HTMLDivElement>(null);
   const titleOverlayRef = useRef<HTMLDivElement>(null);
   const footerOverlayRef = useRef<HTMLDivElement>(null);
+  const legendOverlayRef = useRef<HTMLElement>(null);
   const boundaryLayerState = useSelector(
     layerDataSelector(boundaryLayer.id),
   ) as LayerData<BoundaryLayerProps> | undefined;
@@ -182,6 +192,7 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
   const [elementsLoading, setElementsLoading] = React.useState(true);
   const [footerTextSize, setFooterTextSize] = React.useState(12);
   const [legendScale, setLegendScale] = React.useState(0);
+  const [legendPosition, setLegendPosition] = React.useState(0);
   // the % value of the original dimensions
   const [mapDimensions, setMapDimensions] = React.useState<{
     height: number;
@@ -481,13 +492,21 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
                         position: 'absolute',
                         zIndex: 2,
                         top: titleOverlayRef?.current?.offsetHeight || 0,
-                        left: 0,
+                        ...(legendPosition === 0
+                          ? { left: '8px' }
+                          : {
+                              right: `${
+                                (legendOverlayRef?.current?.offsetWidth || 0) *
+                                (1 - legendScale)
+                              }px`,
+                            }),
                         width: '20px',
                         // Use transform scale to adjust size based on legendScale
                         transform: `scale(${1 - legendScale})`,
                       }}
                     >
                       <LegendItemsList
+                        ref={legendOverlayRef}
                         forPrinting
                         listStyle={classes.legendListStyle}
                         showDescription={toggles.fullLayerDescription}
@@ -551,7 +570,7 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
                 className={classes.closeButton}
                 onClick={() => handleClose()}
               >
-                <CancelIcon />
+                <Cancel />
               </IconButton>
             </div>
 
@@ -620,6 +639,13 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
             />
 
             <ToggleSelector
+              value={legendPosition}
+              options={legendPositionOptions}
+              setValue={setLegendPosition}
+              title={t('Legend Position')}
+            />
+
+            <ToggleSelector
               value={mapDimensions.width}
               options={mapWidthSelectorOptions}
               setValue={val =>
@@ -657,7 +683,7 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
               variant="contained"
               color="primary"
               className={classes.gutter}
-              endIcon={<GetAppIcon />}
+              endIcon={<GetApp />}
               onClick={e => handleDownloadMenuOpen(e)}
             >
               {t('Download')}
@@ -793,7 +819,6 @@ const styles = (theme: Theme) =>
     legendListStyle: {
       position: 'absolute',
       top: '8px',
-      left: '8px',
       zIndex: 2,
     },
   });
