@@ -577,8 +577,7 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
             <div className={classes.optionWrap}>
               <Typography variant="h4">{t('Title')}</Typography>
               <TextField
-                key={titleText}
-                defaultValue={titleText}
+                defaultValue={country}
                 fullWidth
                 size="small"
                 inputProps={{ style: { color: 'black' } }}
