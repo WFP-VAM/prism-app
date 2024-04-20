@@ -46,6 +46,7 @@ const useStyles = makeStyles(() => ({
 
 export type ChartProps = {
   title: string;
+  subtitle?: string;
   data: TableData;
   config: ChartConfig;
   datasetFields?: DatasetField[];
@@ -61,6 +62,7 @@ export type ChartProps = {
 const Chart = memo(
   ({
     title,
+    subtitle,
     data,
     config,
     xAxisLabel,
@@ -262,7 +264,7 @@ const Chart = memo(
         title: {
           fontColor: '#CCC',
           display: true,
-          text: title,
+          text: subtitle ? [title, subtitle] : title,
           fontSize: 14,
         },
         scales: {
@@ -319,6 +321,7 @@ const Chart = memo(
       legendAtBottom,
       notMaintainAspectRatio,
       title,
+      subtitle,
       xAxisLabel,
     ]);
 

@@ -407,9 +407,12 @@ const ChartSection = memo(
     }, [chartType, colors, maxChartValue, maxValue, minChartValue, minValue]);
 
     const title = useMemo(() => {
-      const prefix = adminName || appConfig.country;
-      return `${prefix} - ${chartLayer.title}`;
-    }, [adminName, chartLayer.title]);
+      return chartLayer.title;
+    }, [chartLayer.title]);
+
+    const subtitle = useMemo(() => {
+      return adminName || appConfig.country;
+    }, [adminName]);
 
     return useMemo(() => {
       if (chartDataSetIsLoading) {
@@ -423,6 +426,7 @@ const ChartSection = memo(
         return (
           <Chart
             title={t(title)}
+            subtitle={t(subtitle)}
             config={config}
             data={extendedChartDataset}
             datasetFields={params.datasetFields}
@@ -451,6 +455,7 @@ const ChartSection = memo(
       classes.errorContainer,
       t,
       title,
+      subtitle,
       config,
       params.datasetFields,
       chartRange,
