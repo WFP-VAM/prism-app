@@ -112,7 +112,7 @@ function ToggleSelector({
   );
 }
 
-const legendSelectorOptions = [
+const legendScaleSelectorOptions = [
   { value: 0.5, comp: <div>50%</div> },
   { value: 0.4, comp: <div>60%</div> },
   { value: 0.3, comp: <div>70%</div> },
@@ -122,9 +122,9 @@ const legendSelectorOptions = [
 ];
 
 const legendPositionOptions = [
-  { value: -1, comp: <VisibilityOff /> },
-  { value: 0, comp: <CallMade style={{ transform: 'scaleX(-1)' }} /> },
-  { value: 1, comp: <CallMade /> },
+  { value: 0, comp: <VisibilityOff /> },
+  { value: 1, comp: <CallMade style={{ transform: 'scaleX(-1)' }} /> },
+  { value: 2, comp: <CallMade /> },
 ];
 
 const mapWidthSelectorOptions = [
@@ -192,7 +192,7 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
   const [elementsLoading, setElementsLoading] = React.useState(true);
   const [footerTextSize, setFooterTextSize] = React.useState(12);
   const [legendScale, setLegendScale] = React.useState(0);
-  const [legendPosition, setLegendPosition] = React.useState(0);
+  const [legendPosition, setLegendPosition] = React.useState(1);
   // the % value of the original dimensions
   const [mapDimensions, setMapDimensions] = React.useState<{
     height: number;
@@ -486,13 +486,13 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
                       <div style={{ padding: '8px' }}>{footerText}</div>
                     </div>
                   )}
-                  {legendPosition >= 0 && (
+                  {legendPosition !== 0 && (
                     <div
                       style={{
                         position: 'absolute',
                         zIndex: 2,
                         top: titleOverlayRef?.current?.offsetHeight || 0,
-                        ...(legendPosition === 0
+                        ...(legendPosition === 1
                           ? { left: '8px' }
                           : {
                               right: `${
@@ -632,18 +632,26 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
             />
 
             <ToggleSelector
-              value={legendScale}
-              options={legendSelectorOptions}
-              setValue={setLegendScale}
-              title={t('Legend')}
-            />
-
-            <ToggleSelector
               value={legendPosition}
               options={legendPositionOptions}
               setValue={setLegendPosition}
               title={t('Legend Position')}
             />
+
+            <div
+              // disable the legend scale if the legend is not visible
+              style={{
+                opacity: legendPosition !== 0 ? 1 : 0.5,
+                pointerEvents: legendPosition !== 0 ? 'auto' : 'none',
+              }}
+            >
+              <ToggleSelector
+                value={legendScale}
+                options={legendScaleSelectorOptions}
+                setValue={setLegendScale}
+                title={t('Legend Size')}
+              />
+            </div>
 
             <ToggleSelector
               value={mapDimensions.width}
