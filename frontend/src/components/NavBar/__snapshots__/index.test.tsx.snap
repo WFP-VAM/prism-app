@@ -266,7 +266,7 @@ exports[`renders as expected 1`] = `
             smdown="true"
           >
             <mock-button
-              classname="memo-triggerButton-23"
+              classname="memo-triggerButton-22"
               starticon="[object Object]"
               style="background-color: rgb(99, 178, 189);"
             >
@@ -291,7 +291,7 @@ exports[`renders as expected 1`] = `
               >
                 <svg
                   aria-hidden="true"
-                  class="MuiSvgIcon-root memo-icon-25"
+                  class="MuiSvgIcon-root memo-icon-24"
                   focusable="false"
                   style="color: rgb(16, 16, 16);"
                   viewBox="0 0 24 24"
@@ -307,7 +307,7 @@ exports[`renders as expected 1`] = `
             </button>
           </mock-hidden>
           <mock-list
-            classname="memo-list-24"
+            classname="memo-list-23"
           />
           <mock-printimage />
           <a
@@ -373,7 +373,7 @@ exports[`renders as expected 1`] = `
             </mock-typography>
           </mock-button>
           <mock-menu
-            classname="LanguageSelector-block-26"
+            classname="LanguageSelector-block-25"
             open="false"
           >
             <mock-menuitem>

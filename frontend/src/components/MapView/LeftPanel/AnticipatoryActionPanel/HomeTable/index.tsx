@@ -26,7 +26,8 @@ import { setPanelSize } from 'context/leftPanelStateSlice';
 import { PanelSize } from 'config/types';
 import { GetApp, BarChartOutlined } from '@material-ui/icons';
 import { appConfig } from 'config';
-import { AADataSeverityOrder, getAAIcon, useAACommonStyles } from '../utils';
+import { AADataSeverityOrder, useAACommonStyles } from '../utils';
+import AAIcon from '../AAIcon';
 
 interface AreaTagProps {
   name: string;
@@ -255,7 +256,7 @@ function HomeTable({ dialogs }: HomeTableProps) {
 
           return {
             id: AADataSeverityOrder(x.category, x.phase),
-            iconContent: getAAIcon(x.category, x.phase),
+            iconContent: <AAIcon category={x.category} phase={x.phase} />,
             windows:
               selectedWindow === 'All'
                 ? AAWindowKeys.map(winKey => getWinData(winKey))

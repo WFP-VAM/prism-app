@@ -9,33 +9,38 @@ import {
 import { useSafeTranslation } from 'i18n';
 import { borderGray, gray } from 'muiTheme';
 import React from 'react';
-import { getAAColor, getAAIcon, useAACommonStyles } from '../utils';
+import { getAAColor, useAACommonStyles } from '../utils';
 import HowToReadModal from '../HowToReadModal';
+import AAIcon from '../AAIcon';
 
 const phases = [
-  { icon: getAAIcon('Severe', 'Set', true), phase: 'Set', severity: 'Severe' },
   {
-    icon: getAAIcon('Severe', 'Ready', true),
+    icon: <AAIcon category="Severe" phase="Set" forLayer />,
+    phase: 'Set',
+    severity: 'Severe',
+  },
+  {
+    icon: <AAIcon category="Severe" phase="Ready" forLayer />,
     phase: 'Ready',
     severity: 'Severe',
   },
   {
-    icon: getAAIcon('Severe', 'na', true),
+    icon: <AAIcon category="Severe" phase="na" forLayer />,
     phase: 'No Action',
     severity: 'Severe',
   },
   {
-    icon: getAAIcon('Moderate', 'Set', true),
+    icon: <AAIcon category="Moderate" phase="Set" forLayer />,
     phase: 'Set',
     severity: 'Moderate',
   },
   {
-    icon: getAAIcon('Moderate', 'Ready', true),
+    icon: <AAIcon category="Moderate" phase="Ready" forLayer />,
     phase: 'Ready',
     severity: 'Moderate',
   },
   {
-    icon: getAAIcon('Moderate', 'na', true),
+    icon: <AAIcon category="Moderate" phase="na" forLayer />,
     phase: 'No Action',
     severity: 'Moderate',
   },

@@ -1,6 +1,6 @@
 import timezoneMock from 'timezone-mock';
-import { createStaticRasterLayerUrl } from '.';
 import { timezones } from '../../../../../test/helpers';
+import { createStaticRasterLayerUrl } from './utisl';
 
 const f = () => {
   const result = createStaticRasterLayerUrl(

@@ -53,7 +53,7 @@ const useStyles = makeStyles((theme: Theme) => {
   };
 });
 
-export enum MapInteraction {
+enum MapInteraction {
   GoTo = 'goto',
 }
 

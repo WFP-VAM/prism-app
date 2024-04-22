@@ -1,14 +1,24 @@
 import {
+  Checkbox,
+  CheckboxProps,
   FormControl,
+  FormControlLabel,
+  FormControlLabelProps,
   IconButton,
   Input,
   MenuItem,
+  Radio,
   RadioGroup,
+  RadioProps,
+  Select,
+  SelectProps,
   Typography,
   createStyles,
   makeStyles,
+  useRadioGroup,
+  withStyles,
 } from '@material-ui/core';
-import { black, cyanBlue } from 'muiTheme';
+import { black, borderGray, cyanBlue, gray } from 'muiTheme';
 import React from 'react';
 import { useSafeTranslation } from 'i18n';
 import { ArrowBackIos } from '@material-ui/icons';
@@ -37,12 +47,112 @@ import {
 } from 'utils/server-utils';
 import { getFormattedDate } from 'utils/date-utils';
 import { DateFormat } from 'utils/name-utils';
-import { StyledCheckboxLabel, StyledRadioLabel, StyledSelect } from './utils';
+import {
+  LIGHT_BLUE_HEX,
+  LIGHT_GREEN_HEX,
+} from 'components/MapView/DateSelector/TimelineItems/utils';
 import DistrictView from './DistrictView/index';
 import HomeTable from './HomeTable';
 import HowToReadModal from './HowToReadModal';
 import Timeline from './Timeline';
 import Forecast from './Forecast';
+
+const StyledCheckbox = withStyles({
+  root: {
+    '&$checked': {
+      color: black,
+    },
+    padding: '0.2rem',
+  },
+})((props: CheckboxProps) => <Checkbox color="default" {...props} />);
+
+const StyledCheckboxLabel = withStyles({
+  root: {
+    border: `1px solid ${borderGray}`,
+    borderRadius: '2px',
+    height: '1.75rem',
+    marginLeft: 0,
+  },
+})(
+  ({
+    label,
+    checkBoxProps,
+    ...props
+  }: Omit<FormControlLabelProps, 'control'> & {
+    checkBoxProps: CheckboxProps;
+  }) => {
+    return (
+      <FormControlLabel
+        style={{ background: checkBoxProps.checked ? gray : undefined }}
+        label={<span style={{ marginRight: '0.5rem' }}>{label}</span>}
+        control={<StyledCheckbox {...checkBoxProps} />}
+        {...props}
+      />
+    );
+  },
+);
+
+const StyledRadio = withStyles({
+  root: {
+    '&$checked': {
+      color: black,
+    },
+    padding: '0.25rem',
+  },
+})((props: RadioProps) => <Radio color="default" {...props} />);
+
+const StyledRadioLabel = withStyles({
+  root: {
+    border: `1px solid ${borderGray}`,
+    borderRadius: '32px',
+    height: '1.75rem',
+    marginLeft: 0,
+    marginRight: '0.5rem',
+  },
+})(({ label, ...props }: Omit<FormControlLabelProps, 'control'>) => {
+  const { t } = useSafeTranslation();
+  const radioGroup = useRadioGroup();
+  const checked = radioGroup?.value === props.value;
+
+  const colorTags: { [key: string]: string } = {
+    'Window 1': LIGHT_BLUE_HEX,
+    'Window 2': LIGHT_GREEN_HEX,
+  };
+
+  const color = colorTags[label as string] || undefined;
+
+  return (
+    <FormControlLabel
+      style={{ background: checked ? gray : undefined }}
+      label={
+        <span style={{ marginRight: '1rem' }}>
+          {color ? (
+            <span
+              style={{
+                display: 'inline-block',
+                width: '10px',
+                height: '10px',
+                backgroundColor: color,
+                marginRight: '0.5rem',
+              }}
+            />
+          ) : null}
+          {typeof label === 'string' ? t(label) : label}
+        </span>
+      }
+      control={<StyledRadio />}
+      {...props}
+    />
+  );
+});
+
+const StyledSelect = withStyles({
+  root: {
+    '&:focus': {
+      backgroundColor: 'transparent',
+    },
+  },
+})((props: SelectProps) => <Select {...props} />);
 
 const checkboxes: {
   label: string;

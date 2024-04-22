@@ -9,8 +9,8 @@ import {
 } from '@material-ui/core';
 import RoomOutlinedIcon from '@material-ui/icons/RoomOutlined';
 import { useSafeTranslation } from 'i18n';
-import { BoundaryDropdownOptions } from 'components/MapView/Layers/BoundaryDropdown';
 import { mapSelector } from 'context/mapStateSlice/selectors';
+import BoundaryDropdownOptions from 'components/MapView/Layers/BoundaryDropdownOptions';
 
 const GoToBoundaryDropdown = () => {
   const { t } = useSafeTranslation();

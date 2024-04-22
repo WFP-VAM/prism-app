@@ -23,13 +23,14 @@ import {
 } from 'context/anticipatoryActionStateSlice';
 import { useSafeTranslation } from 'i18n';
 import { ClearAll, Equalizer } from '@material-ui/icons';
-import { AADataSeverityOrder, getAAIcon, useAACommonStyles } from '../utils';
+import { AADataSeverityOrder, useAACommonStyles } from '../utils';
 import {
   Action,
   getActionsByPhaseCategoryAndWindow,
 } from './ActionsModal/actions';
 import ActionsModal from './ActionsModal';
 import { dateSorter, districtViewTransform } from './utils';
+import AAIcon from '../AAIcon';
 
 interface WindowColumnProps {
   win: typeof AAWindowKeys[number];
@@ -98,7 +99,7 @@ function WindowColumn({
                     return (
                       <div key={y[0]} className={classes.column}>
                         <div className={classes.iconWrapper}>
-                          {getAAIcon(elem.category, elem.phase)}
+                          <AAIcon category={elem.category} phase={elem.phase} />
                         </div>
                       </div>
                     );

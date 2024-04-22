@@ -21,9 +21,10 @@ import { setPanelSize } from 'context/leftPanelStateSlice';
 import { PanelSize } from 'config/types';
 import { useSafeTranslation } from 'i18n';
 import { Equalizer } from '@material-ui/icons';
-import { getAAColor, getAAIcon, useAACommonStyles } from '../utils';
+import { getAAColor, useAACommonStyles } from '../utils';
 import { dateSorter } from '../DistrictView/utils';
 import { timelineTransform } from './utils';
+import AAIcon from '../AAIcon';
 
 interface TimelineItemProps {
   item: AnticipatoryActionDataRow;
@@ -153,10 +154,10 @@ function Timeline({ dialogs }: TimelineProps) {
                     .map(([rowId, rowData]) => (
                       <div key={rowId} className={classes.rowWrapper}>
                         <div className={classes.iconColumn}>
-                          {getAAIcon(
-                            rowData.status.category,
-                            rowData.status.phase,
-                          )}
+                          <AAIcon
+                            category={rowData.status.category}
+                            phase={rowData.status.phase}
+                          />
                         </div>
                         {months.map(([date, label]) => {
                           const elem = rowData.data.find(z => z.date === date);

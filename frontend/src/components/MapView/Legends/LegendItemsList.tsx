@@ -6,7 +6,7 @@ import {
   invertedColorsSelector,
   isAnalysisLayerActiveSelector,
 } from 'context/analysisResultStateSlice';
-import { LayerType, LegendDefinitionItem } from 'config/types';
+import { LayerType } from 'config/types';
 import { BaselineLayerResult } from 'utils/analysis-utils';
 import useLayers from 'utils/layers-utils';
 import { createGetLegendGraphicUrl } from 'prism-common';
@@ -16,18 +16,7 @@ import { AALayerId } from 'config/utils';
 import LegendItem from './LegendItem';
 import LegendImpactResult from './LegendImpactResult';
 import AALegend from '../LeftPanel/AnticipatoryActionPanel/AALegend';
-
-// Invert the colors of the legend, first color becomes last and vice versa
-export const invertLegendColors = (
-  legendItems: LegendDefinitionItem[],
-): LegendDefinitionItem[] => {
-  // eslint-disable-next-line
-  const reversedColors = legendItems.map(item => item.color).reverse();
-  return legendItems.map((item, index) => ({
-    ...item,
-    color: reversedColors[index],
-  }));
-};
+import { invertLegendColors } from './utils';
 
 interface LegendItemsListProps {
   forPrinting?: boolean;

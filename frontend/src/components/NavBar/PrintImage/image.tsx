@@ -26,8 +26,6 @@ import React, { useRef, useState } from 'react';
 import MapGL, { Layer, MapRef, Marker, Source } from 'react-map-gl/maplibre';
 import { useSelector } from 'react-redux';
 import { Cancel } from '@material-ui/icons';
-import { mapStyle } from 'components/MapView/Map';
-import { addFillPatternImagesInMap } from 'components/MapView/Layers/AdminLevelDataLayer';
 import { getFormattedDate } from 'utils/date-utils';
 import useLayers from 'utils/layers-utils';
 import { appConfig, safeCountry } from 'config';
@@ -41,12 +39,14 @@ import ToggleButton from '@material-ui/lab/ToggleButton';
 import VisibilityOffIcon from '@material-ui/icons/VisibilityOff';
 import VisibilityIcon from '@material-ui/icons/Visibility';
 import { cyanBlue, gray } from 'muiTheme';
-import { SimpleBoundaryDropdown } from 'components/MapView/Layers/BoundaryDropdown';
 import { getBoundaryLayerSingleton } from 'config/utils';
 import { LayerData } from 'context/layers/layer-data';
 import { AAMarkersSelector } from 'context/anticipatoryActionStateSlice';
 import { useAAMarkerScalePercent } from 'utils/map-utils';
 import LegendItemsList from 'components/MapView/Legends/LegendItemsList';
+import { mapStyle } from 'components/MapView/Map/utils';
+import SimpleBoundaryDropdown from 'components/MapView/Layers/SimpleBoundaryDropdown';
+import { addFillPatternImagesInMap } from 'components/MapView/Layers/AdminLevelDataLayer/utils';
 import {
   dateRangeSelector,
   layerDataSelector,

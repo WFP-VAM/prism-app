@@ -1,12 +1,11 @@
 import { AAWindowKeys } from 'config/utils';
-import {
-  AADataSeverityOrder,
-  getAAIcon,
-} from 'components/MapView/LeftPanel/AnticipatoryActionPanel/utils';
+import { AADataSeverityOrder } from 'components/MapView/LeftPanel/AnticipatoryActionPanel/utils';
 import { DatesPropagation, Validity } from 'config/types';
 import { generateIntermediateDateItemFromValidity } from 'utils/server-utils';
 import { getFormattedDate } from 'utils/date-utils';
 import { DateFormat } from 'utils/name-utils';
+import React from 'react';
+import AAIcon from 'components/MapView/LeftPanel/AnticipatoryActionPanel/AAIcon';
 import {
   AACategoryType,
   AAPhaseType,
@@ -358,7 +357,11 @@ export function calculateAAMarkers({
     const centroid = districtCentroids[district] || {
       geometry: { coordinates: [0, 0] },
     };
-    const icon = getAAIcon(category, phase, true);
+    const icon = React.createElement(AAIcon, {
+      category,
+      phase,
+      forLayer: true,
+    });
 
     return {
       district,

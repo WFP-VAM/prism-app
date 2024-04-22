@@ -13,7 +13,7 @@ import { menuList } from 'components/MapView/LeftPanel/utils';
 import { LayerKey, LayerType } from 'config/types';
 import { getDisplayBoundaryLayers, LayerDefinitions } from 'config/utils';
 import { useSafeTranslation } from 'i18n';
-import { getLayerGeometryIcon } from './layer-utils';
+import LayerGeometryIcon from './LayerGeometryIcon';
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -151,7 +151,7 @@ function LayerDropdown({
             ...category.layers.map(layer => (
               <MenuItem key={layer.id} value={layer.id}>
                 {t(layer.title || '')}
-                {getLayerGeometryIcon(layer)}
+                <LayerGeometryIcon layer={layer} />
               </MenuItem>
             )),
           ],

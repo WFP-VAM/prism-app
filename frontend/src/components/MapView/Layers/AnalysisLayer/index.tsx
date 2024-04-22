@@ -32,9 +32,9 @@ import {
   useMapCallback,
 } from 'utils/map-utils';
 import { opacitySelector } from 'context/opacityStateSlice';
-import { invertLegendColors } from 'components/MapView/Legends/LegendItemsList';
+import { invertLegendColors } from 'components/MapView/Legends/utils';
 
-export const layerId = getLayerMapId('analysis');
+const layerId = getLayerMapId('analysis');
 
 const onClick = (analysisData: AnalysisResult | undefined) => ({
   dispatch,

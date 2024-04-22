@@ -1,8 +1,13 @@
 import { makeStyles, createStyles } from '@material-ui/core';
+import {
+  AACategoryType,
+  AAPhaseType,
+} from 'context/anticipatoryActionStateSlice/types';
 import { useSafeTranslation } from 'i18n';
 import React from 'react';
+import { AACategoryPhaseMap, getAAColor } from './utils';
 
-export interface AAIconProps {
+export interface AAIconLayoutProps {
   background?: string;
   topText: string;
   bottomText?: string;
@@ -10,13 +15,13 @@ export interface AAIconProps {
   fillBackground: boolean;
 }
 
-function AAIcon({
+function AAIconLayout({
   background,
   topText,
   bottomText,
   color,
   fillBackground,
-}: AAIconProps) {
+}: AAIconLayoutProps) {
   const classes = useAAIconStyles();
   const { t } = useSafeTranslation();
 
@@ -45,6 +50,41 @@ function AAIcon({
         )}
       </div>
     </div>
+  );
+}
+
+interface AAIconProps {
+  category: AACategoryType;
+  phase: AAPhaseType;
+  forLayer?: boolean;
+}
+
+function AAIcon({ category, phase, forLayer }: AAIconProps) {
+  const background = getAAColor(category, phase, forLayer);
+
+  const categoryData = AACategoryPhaseMap[category];
+  if (categoryData.iconProps) {
+    const iconProps = forLayer
+      ? { ...categoryData.iconProps, bottomText: undefined }
+      : categoryData.iconProps;
+    return (
+      <AAIconLayout
+        background={background}
+        fillBackground={!forLayer}
+        {...iconProps}
+      />
+    );
+  }
+  const phaseData = categoryData[phase];
+  if (!phaseData) {
+    throw new Error(`Icon not implemented: ${category}, ${phase}`);
+  }
+  return (
+    <AAIconLayout
+      background={background}
+      fillBackground={!forLayer}
+      {...phaseData.iconProps}
+    />
   );
 }
 

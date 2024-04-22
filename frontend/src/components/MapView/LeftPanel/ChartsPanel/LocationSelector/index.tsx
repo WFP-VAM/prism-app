@@ -9,12 +9,12 @@ import {
 import { sortBy } from 'lodash';
 import React, { memo, ReactNode } from 'react';
 import { BoundaryLayerProps, PanelSize, AdminCodeString } from 'config/types';
-import {
-  getAdminBoundaryTree,
-  AdminBoundaryTree,
-} from 'components/MapView/Layers/BoundaryDropdown';
 import { useSafeTranslation } from 'i18n';
 import { BoundaryLayerData } from 'context/layers/boundary';
+import {
+  AdminBoundaryTree,
+  getAdminBoundaryTree,
+} from 'components/MapView/Layers/utils';
 
 const useStyles = makeStyles(() =>
   createStyles({
