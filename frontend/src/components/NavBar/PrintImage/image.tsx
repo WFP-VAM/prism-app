@@ -166,7 +166,6 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
   const overlayContainerRef = useRef<HTMLDivElement>(null);
   const titleOverlayRef = useRef<HTMLDivElement>(null);
   const footerOverlayRef = useRef<HTMLDivElement>(null);
-  const legendOverlayRef = useRef<HTMLElement>(null);
   const boundaryLayerState = useSelector(
     layerDataSelector(boundaryLayer.id),
   ) as LayerData<BoundaryLayerProps> | undefined;
@@ -198,6 +197,7 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
     height: number;
     width: number;
   }>({ width: 100, height: 100 });
+  const [legendWidth, setLegendWidth] = React.useState(0);
 
   // Get the style and layers of the old map
   const selectedMapStyle = selectedMap?.getStyle();
@@ -495,10 +495,7 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
                         ...(legendPosition === 1
                           ? { left: '8px' }
                           : {
-                              right: `${
-                                (legendOverlayRef?.current?.offsetWidth || 0) *
-                                (1 - legendScale)
-                              }px`,
+                              right: `${legendWidth * (1 - legendScale)}px`,
                             }),
                         width: '20px',
                         // Use transform scale to adjust size based on legendScale
@@ -506,7 +503,11 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
                       }}
                     >
                       <LegendItemsList
-                        ref={legendOverlayRef}
+                        resizeCallback={e =>
+                          setLegendWidth(
+                            e[0].target.getBoundingClientRect().width,
+                          )
+                        }
                         forPrinting
                         listStyle={classes.legendListStyle}
                         showDescription={toggles.fullLayerDescription}
@@ -822,6 +823,8 @@ const styles = (theme: Theme) =>
       scrollbarGutter: 'stable',
       overflow: 'auto',
       paddingRight: '15px',
+      zIndex: 4,
+      backgroundColor: 'white',
     },
     legendListStyle: {
       position: 'absolute',
