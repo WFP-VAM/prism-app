@@ -4,8 +4,9 @@ import sharedLegends from './legends.json';
 // Translation files
 import portuguese from './portuguese.json';
 import french from './french.json';
+import khmer from './khmer.json';
 
-const translation = { pt: portuguese, fr: french };
+const translation = { pt: portuguese, fr: french, kh: khmer };
 
 export default {
   defaultConfig,
