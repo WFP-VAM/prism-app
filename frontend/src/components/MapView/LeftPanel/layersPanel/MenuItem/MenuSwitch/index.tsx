@@ -21,6 +21,7 @@ import React, {
 import { useSelector } from 'react-redux';
 import { LayerType } from 'config/types';
 import { useSafeTranslation } from 'i18n';
+import { cyanBlue, lightGrey } from 'muiTheme';
 import { Extent } from 'components/MapView/Layers/raster-utils';
 import { layersSelector } from 'context/mapStateSlice/selectors';
 import { filterActiveLayers } from 'components/MapView/utils';
@@ -33,14 +34,14 @@ const useStyles = makeStyles(() =>
       maxWidth: '100%',
     },
     rootSummary: {
-      backgroundColor: '#F5F7F8',
+      backgroundColor: lightGrey,
     },
     rootDetails: {
       padding: 0,
       backgroundColor: '#FFFFFF',
     },
     expandIcon: {
-      color: '#53888F',
+      color: 'black',
     },
     summaryContent: {
       alignItems: 'center',
@@ -49,8 +50,9 @@ const useStyles = makeStyles(() =>
       marginLeft: '1.5%',
     },
     title: {
-      color: '#53888F',
-      fontWeight: 500,
+      color: 'black',
+      fontSize: '14px',
+      fontWeight: 400,
     },
   }),
 );
@@ -112,7 +114,7 @@ const MenuSwitch = memo(({ title, layers, extent }: MenuSwitchProps) => {
         onMouseEnter={handleChipOnMouseEnter}
         onMouseLeave={handleChipOnMouseLeave}
         classes={{ root: classes.chipRoot }}
-        color="secondary"
+        style={{ backgroundColor: cyanBlue }}
         label={informationChipLabel}
       />
     );

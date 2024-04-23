@@ -1,83 +1,141 @@
-import { Drawer } from '@material-ui/core';
-import React, { memo, useMemo } from 'react';
-import { LayersCategoryType, MenuItemType, PanelSize } from 'config/types';
+import { Drawer, Theme, createStyles, makeStyles } from '@material-ui/core';
+import React, { memo } from 'react';
+import { useSelector } from 'react-redux';
+import {
+  Panel,
+  leftPanelSizeSelector,
+  leftPanelTabValueSelector,
+} from 'context/leftPanelStateSlice';
+import { areChartLayersAvailable } from 'config/utils';
+import { PanelSize } from 'config/types';
 import AnalysisPanel from './AnalysisPanel';
 import ChartsPanel from './ChartsPanel';
-import LeftPanelTabs from './LeftPanelTabs';
 import TablesPanel from './TablesPanel';
-import { menuList } from './utils';
+import LayersPanel from './layersPanel';
+import { areTablesAvailable } from './utils';
 
-const LeftPanel = memo(
-  ({ panelSize, setPanelSize, isPanelHidden }: LeftPanelProps) => {
-    const [
-      resultsPage,
-      setResultsPage,
-    ] = React.useState<React.JSX.Element | null>(null);
-
-    const tablesMenuItems = useMemo(() => {
-      return menuList.filter((menuItem: MenuItemType) => {
-        return menuItem.layersCategories.some(
-          (layerCategory: LayersCategoryType) => {
-            return layerCategory.tables.length > 0;
-          },
-        );
-      });
-    }, []);
-
-    const areTablesAvailable = useMemo(() => {
-      return tablesMenuItems.length >= 1;
-    }, [tablesMenuItems.length]);
-
-    return (
-      <Drawer
-        PaperProps={{
-          style: {
-            width: panelSize,
-            marginTop: '7vh',
-            height: '93%',
-            backgroundColor: '#F5F7F8',
-            maxWidth: '100%',
-          },
-        }}
-        variant="persistent"
-        anchor="left"
-        open={!isPanelHidden}
-      >
-        <LeftPanelTabs
-          panelSize={panelSize}
-          setPanelSize={setPanelSize}
-          areTablesAvailable={areTablesAvailable}
-          resultsPage={resultsPage}
-          chartsPanel={
-            <ChartsPanel
-              setPanelSize={setPanelSize}
-              setResultsPage={setResultsPage}
-            />
-          }
-          analysisPanel={
-            <AnalysisPanel
-              panelSize={panelSize}
-              setPanelSize={setPanelSize}
-              setResultsPage={setResultsPage}
-            />
-          }
-          tablesPanel={
-            <TablesPanel
-              tablesMenuItems={tablesMenuItems}
-              setPanelSize={setPanelSize}
-              setResultsPage={setResultsPage}
-            />
-          }
-        />
-      </Drawer>
-    );
-  },
-);
-
-interface LeftPanelProps {
-  panelSize: PanelSize;
-  setPanelSize: React.Dispatch<React.SetStateAction<PanelSize>>;
-  isPanelHidden: boolean;
+interface TabPanelProps {
+  children?: React.ReactNode;
+  index: Panel;
+  value: Panel;
 }
+
+const TabPanel = memo(({ children, value, index, ...other }: TabPanelProps) => {
+  return (
+    <div
+      role="tabpanel"
+      id={`full-width-tabpanel-${index}`}
+      aria-labelledby={`full-width-tab-${index}`}
+      style={{
+        display: index === value ? 'block' : 'none',
+        flexGrow: 1,
+        height: 'calc(94vh - 48px)',
+        order: index === value ? -1 : undefined,
+        overflowX: index === value ? 'hidden' : 'auto',
+      }}
+      {...other}
+    >
+      {index === value && children}
+    </div>
+  );
+});
+
+const LeftPanel = memo(() => {
+  const tabValue = useSelector(leftPanelTabValueSelector);
+  const panelSize = useSelector(leftPanelSizeSelector);
+
+  const classes = useStyles({ panelSize, tabValue });
+
+  const isPanelHidden = tabValue === Panel.None;
+  const [
+    resultsPage,
+    setResultsPage,
+  ] = React.useState<React.JSX.Element | null>(null);
+
+  const renderedChartsPanel = React.useMemo(() => {
+    if (!areChartLayersAvailable) {
+      return null;
+    }
+    return (
+      <TabPanel value={tabValue} index={Panel.Charts}>
+        <ChartsPanel setResultsPage={setResultsPage} />
+      </TabPanel>
+    );
+  }, [tabValue]);
+
+  const renderedTablesPanel = React.useMemo(() => {
+    if (!areTablesAvailable) {
+      return null;
+    }
+    return (
+      <TabPanel value={tabValue} index={Panel.Tables}>
+        <TablesPanel setResultsPage={setResultsPage} />
+      </TabPanel>
+    );
+  }, [tabValue]);
+
+  return (
+    <Drawer
+      PaperProps={{
+        elevation: 1,
+        style: {
+          width: panelSize,
+          marginTop: '6vh',
+          height: tabValue === Panel.Charts ? '94vh' : '80vh',
+          backgroundColor: 'white',
+          maxWidth: '100%',
+          borderRadius: '0 8px 8px 8px',
+        },
+      }}
+      variant="persistent"
+      anchor="left"
+      open={!isPanelHidden}
+    >
+      <div className={classes.root}>
+        <div className={classes.tabsWrapper}>
+          <TabPanel value={tabValue} index={Panel.Layers}>
+            <LayersPanel setResultsPage={setResultsPage} />
+          </TabPanel>
+          {renderedChartsPanel}
+          <TabPanel value={tabValue} index={Panel.Analysis}>
+            <AnalysisPanel setResultsPage={setResultsPage} />
+          </TabPanel>
+          {renderedTablesPanel}
+          {/* Empty panel to remove warnings */}
+          <TabPanel value={tabValue} index={Panel.None} />
+        </div>
+        {resultsPage}
+      </div>
+    </Drawer>
+  );
+});
+
+interface StyleProps {
+  tabValue: Panel;
+  panelSize: PanelSize;
+}
+
+const useStyles = makeStyles<Theme, StyleProps>(() =>
+  createStyles({
+    root: {
+      display: 'flex',
+      flexDirection: 'row',
+      height: '100%',
+      overflowX: 'hidden',
+      overflowY: ({ tabValue }) =>
+        tabValue === Panel.Charts || tabValue === Panel.Tables
+          ? 'hidden'
+          : 'auto',
+    },
+    tabsWrapper: {
+      display: 'flex',
+      flexDirection: 'column',
+      height: '100%',
+      order: -2,
+      width: ({ panelSize }) =>
+        panelSize !== PanelSize.folded ? PanelSize.medium : PanelSize.folded,
+    },
+  }),
+);
 
 export default LeftPanel;

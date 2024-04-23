@@ -21,7 +21,7 @@ import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import Draggable, { DraggableEvent } from 'react-draggable';
 import { useDispatch, useSelector } from 'react-redux';
-import { DateRangeType } from 'config/types';
+import { DateRangeType, PanelSize } from 'config/types';
 import { dateRangeSelector } from 'context/mapStateSlice/selectors';
 import { addNotification } from 'context/notificationStateSlice';
 import { locales, useSafeTranslation } from 'i18n';
@@ -34,6 +34,7 @@ import { DateFormat } from 'utils/name-utils';
 import { useUrlHistory } from 'utils/url-utils';
 import useLayers from 'utils/layers-utils';
 import { format } from 'date-fns';
+import { leftPanelSizeSelector } from 'context/leftPanelStateSlice';
 import { ReactComponent as TickSvg } from './tick.svg';
 import DateSelectorInput from './DateSelectorInput';
 import TimelineItems from './TimelineItems';
@@ -54,6 +55,7 @@ const DateSelector = memo(({ classes }: DateSelectorProps) => {
     selectedLayersWithDateSupport: selectedLayers,
   } = useLayers();
   const { startDate: stateStartDate } = useSelector(dateRangeSelector);
+  const panelSize = useSelector(leftPanelSizeSelector);
   const [dateRange, setDateRange] = useState<DateRangeType[]>([
     {
       value: 0,
@@ -327,7 +329,10 @@ const DateSelector = memo(({ classes }: DateSelectorProps) => {
   );
 
   return (
-    <div className={classes.container}>
+    <div
+      className={classes.container}
+      style={{ zIndex: panelSize === PanelSize.full ? -1 : 1300 }}
+    >
       <Grid
         container
         alignItems="center"
@@ -436,9 +441,8 @@ const styles = (theme: Theme) =>
   createStyles({
     container: {
       position: 'absolute',
-      bottom: '40px',
+      bottom: '1.5rem',
       width: '100%',
-      zIndex: 5,
     },
 
     chevronDate: {
@@ -459,7 +463,7 @@ const styles = (theme: Theme) =>
       boxShadow: '0px 4px 4px rgba(0, 0, 0, 0.25)',
       backgroundColor: 'white',
       color: '#101010',
-      borderRadius: theme.shape.borderRadius,
+      borderRadius: '8px',
       width: '90%',
       margin: 'auto',
       textAlign: 'center',

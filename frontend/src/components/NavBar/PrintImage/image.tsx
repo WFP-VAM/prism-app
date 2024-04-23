@@ -26,7 +26,7 @@ import maplibregl from 'maplibre-gl';
 import React, { useRef, useState } from 'react';
 import MapGL, { Layer, MapRef, Source } from 'react-map-gl/maplibre';
 import { useSelector } from 'react-redux';
-import CancelIcon from '@material-ui/icons/Cancel';
+import { Cancel } from '@material-ui/icons';
 import { mapStyle } from 'components/MapView/Map';
 import { addFillPatternImagesInMap } from 'components/MapView/Layers/AdminLevelDataLayer';
 import { getFormattedDate } from 'utils/date-utils';
@@ -209,7 +209,7 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
           : `${t('on')} ${getFormattedDate(dateRange.startDate, 'default')}`
       }. `;
     };
-    return `${getDateText()} ${t(DEFAULT_FOOTER_TEXT)}`;
+    return `${getDateText()}${t(DEFAULT_FOOTER_TEXT)}`;
   }, [t, dateRange]);
 
   React.useEffect(() => {
@@ -613,7 +613,7 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
                 className={classes.closeButton}
                 onClick={() => handleClose()}
               >
-                <CancelIcon />
+                <Cancel />
               </IconButton>
             </div>
 
@@ -758,7 +758,6 @@ const styles = (theme: Theme) =>
       position: 'absolute',
       right: theme.spacing(1),
       top: theme.spacing(1),
-      color: theme.palette.grey[500],
     },
     backdrop: {
       position: 'absolute',

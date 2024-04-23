@@ -161,12 +161,7 @@ const AnalysisLayerSwitchItem = memo(
         flexDirection="column"
         maxWidth="100%"
       >
-        <Box
-          display="flex"
-          alignItems="center"
-          m={2}
-          justifyContent="space-between"
-        >
+        <Box display="flex" alignItems="center">
           <div style={{ display: 'flex' }}>
             <Switch
               size="small"
@@ -187,7 +182,7 @@ const AnalysisLayerSwitchItem = memo(
               {title}
             </Typography>
           </div>
-          <div>
+          <Box key="analysis-layer" display="flex" alignItems="center">
             {renderedOpacityIconButton}
             <AnalysisLayerSwitchItemDownloadOptions
               analysisData={analysisData}
@@ -195,7 +190,7 @@ const AnalysisLayerSwitchItem = memo(
               analysisResultSortOrder={analysisResultSortOrder}
               selected={selected}
             />
-          </div>
+          </Box>
         </Box>
         {renderedOpacitySlider}
       </Box>
@@ -215,7 +210,6 @@ const styles = () =>
     },
     titleUnchecked: {
       lineHeight: 1.8,
-      color: '#828282',
       fontWeight: 400,
     },
     select: {
@@ -235,7 +229,6 @@ const styles = () =>
       whiteSpace: 'normal',
       fontSize: 13,
       fontWeight: 300,
-      color: '#828282',
       padding: 0,
       marginLeft: 5,
     },
@@ -255,7 +248,6 @@ const styles = () =>
       },
     },
     opacityRoot: {
-      color: '#828282',
       marginLeft: 'auto',
     },
     opacityRootSelected: {
