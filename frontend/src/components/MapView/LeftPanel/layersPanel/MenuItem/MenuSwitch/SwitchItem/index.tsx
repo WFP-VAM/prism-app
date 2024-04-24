@@ -186,7 +186,7 @@ const SwitchItem = memo(
 
     return (
       <Box display="flex" flexDirection="column" maxWidth="100%">
-        <Box key={layerId} display="flex" alignItems="center" m={2}>
+        <Box key={layerId} display="flex" alignItems="center">
           <SwitchAction
             activeLayerId={activeLayerId}
             someLayerAreSelected={someLayerAreSelected}
@@ -262,7 +262,6 @@ const styles = () =>
       },
     },
     opacityRoot: {
-      color: '#828282',
       marginLeft: 'auto',
     },
     opacityRootSelected: {

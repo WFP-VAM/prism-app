@@ -1,7 +1,6 @@
 import React, { useCallback, useState, MouseEvent, memo, useMemo } from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Typography, Grid } from '@material-ui/core';
-import { faInfoCircle } from '@fortawesome/free-solid-svg-icons';
+import InfoOutlinedIcon from '@material-ui/icons/InfoOutlined';
+import { Button, Hidden, Typography } from '@material-ui/core';
 import { useDispatch } from 'react-redux';
 import { appConfig } from 'config';
 import ContentDialog from 'components/NavBar/ContentDialog';
@@ -40,18 +39,22 @@ const About = memo(() => {
   }, [content, handleDialogClose]);
 
   return (
-    <Grid item key="About">
-      <Typography
-        variant="body2"
-        component="a"
-        target="_blank"
-        href={href}
-        onClick={handler}
-      >
-        <FontAwesomeIcon icon={faInfoCircle} /> {t('About')}
-      </Typography>
+    <Button
+      key="About"
+      style={{ fontSize: '1.25rem' }}
+      component="a"
+      target="_blank"
+      href={href}
+      onClick={handler}
+      startIcon={<InfoOutlinedIcon style={{ fontSize: '1.5rem' }} />}
+    >
+      <Hidden smDown>
+        <Typography color="secondary" style={{ textTransform: 'none' }}>
+          {t('About')}
+        </Typography>
+      </Hidden>
       {renderedContentDialog}
-    </Grid>
+    </Button>
   );
 });
 

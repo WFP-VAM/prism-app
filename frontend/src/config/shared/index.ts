@@ -6,7 +6,16 @@ import portuguese from './portuguese.json';
 import french from './french.json';
 import khmer from './khmer.json';
 
-const translation = { pt: portuguese, fr: french, kh: khmer };
+// TODO - Link translation files for the following languages
+const translation: Record<string, any> = {
+  es: {},
+  fr: french,
+  mn: {},
+  kh: khmer
+  pt: portuguese,
+  ru: {},
+  عربى: {},
+};
 
 export default {
   defaultConfig,

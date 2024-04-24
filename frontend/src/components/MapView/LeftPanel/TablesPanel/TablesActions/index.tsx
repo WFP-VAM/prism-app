@@ -2,6 +2,7 @@ import React, { memo, useCallback, useMemo } from 'react';
 import { createStyles, withStyles, WithStyles } from '@material-ui/styles';
 import { Button, Typography } from '@material-ui/core';
 import { useSafeTranslation } from 'i18n';
+import { cyanBlue } from 'muiTheme';
 
 const TablesActions = memo(
   ({
@@ -62,9 +63,9 @@ const styles = () => {
       '&.Mui-disabled': { opacity: 0.5 },
     },
     downloadCsvButton: {
-      backgroundColor: '#62B2BD',
+      backgroundColor: cyanBlue,
       '&:hover': {
-        backgroundColor: '#62B2BD',
+        backgroundColor: cyanBlue,
       },
       width: '100%',
       '&.Mui-disabled': { opacity: 0.5 },
