@@ -1,11 +1,11 @@
 import React, { memo, useEffect } from 'react';
 import { Layer, Source } from 'react-map-gl/maplibre';
-import { FeatureCollection } from 'geojson';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   MapEventWrapFunctionProps,
   PointDataLayerProps,
   PointDataLoader,
+  PointLayerData,
 } from 'config/types';
 import {
   clearUserAuthGlobal,
@@ -71,6 +71,7 @@ const PointDataLayer = ({ layer, before }: LayersProps) => {
   useMapCallback('click', layerId, layer, onClick);
 
   const queryDate = getRequestDate(layerAvailableDates, selectedDate);
+  const validateLayerDate = !layer.dateUrl || queryDate;
 
   const layerData = useSelector(layerDataSelector(layer.id, queryDate)) as
     | LayerData<PointDataLayerProps>
@@ -83,24 +84,27 @@ const PointDataLayer = ({ layer, before }: LayersProps) => {
   } = useUrlHistory();
 
   const { data } = layerData || {};
-  const { features } = data || {};
 
   useEffect(() => {
     if (layer.authRequired && !userAuth) {
       return;
     }
 
-    if (!features && queryDate) {
+    if (!data && validateLayerDate) {
       dispatch(loadLayerData({ layer, date: queryDate, userAuth }));
     }
-  }, [features, dispatch, userAuth, layer, queryDate, layerAvailableDates]);
+  }, [
+    data,
+    dispatch,
+    userAuth,
+    layer,
+    queryDate,
+    layerAvailableDates,
+    validateLayerDate,
+  ]);
 
   useEffect(() => {
-    if (
-      features &&
-      !(features as FeatureCollection).features &&
-      layer.authRequired
-    ) {
+    if (data && !data.features && layer.authRequired) {
       dispatch(
         addNotification({
           message: 'Invalid credentials',
@@ -114,8 +118,8 @@ const PointDataLayer = ({ layer, before }: LayersProps) => {
     }
 
     if (
-      features &&
-      (features as FeatureCollection).features.length === 0 &&
+      data &&
+      (data as PointLayerData).features?.length === 0 &&
       layer.authRequired
     ) {
       dispatch(
@@ -129,9 +133,9 @@ const PointDataLayer = ({ layer, before }: LayersProps) => {
       );
     }
   }, [
-    features,
     dispatch,
     layer,
+    data,
     selectedDate,
     userAuth,
     removeKeyFromUrl,
@@ -139,13 +143,13 @@ const PointDataLayer = ({ layer, before }: LayersProps) => {
     updateHistory,
   ]);
 
-  if (!features || !queryDate) {
+  if (!data || !validateLayerDate) {
     return null;
   }
 
   if (layer.adminLevelDisplay) {
     return (
-      <Source data={features} type="geojson">
+      <Source data={data} type="geojson">
         <Layer
           id={layerId}
           type="fill"
@@ -161,8 +165,9 @@ const PointDataLayer = ({ layer, before }: LayersProps) => {
   }
 
   return (
-    <Source data={features} type="geojson">
+    <Source data={data} type="geojson">
       <Layer
+        beforeId={before}
         id={layerId}
         type="circle"
         layout={circleLayout}

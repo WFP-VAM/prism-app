@@ -26,7 +26,7 @@ import maplibregl from 'maplibre-gl';
 import React, { useRef, useState } from 'react';
 import MapGL, { Layer, MapRef, Source } from 'react-map-gl/maplibre';
 import { useSelector } from 'react-redux';
-import CancelIcon from '@material-ui/icons/Cancel';
+import { Cancel } from '@material-ui/icons';
 import { mapStyle } from 'components/MapView/Map';
 import { addFillPatternImagesInMap } from 'components/MapView/Layers/AdminLevelDataLayer';
 import { getFormattedDate } from 'utils/date-utils';
@@ -209,7 +209,7 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
           : `${t('on')} ${getFormattedDate(dateRange.startDate, 'default')}`
       }. `;
     };
-    return `${getDateText()} ${t(DEFAULT_FOOTER_TEXT)}`;
+    return `${getDateText()}${t(DEFAULT_FOOTER_TEXT)}`;
   }, [t, dateRange]);
 
   React.useEffect(() => {
@@ -613,15 +613,14 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
                 className={classes.closeButton}
                 onClick={() => handleClose()}
               >
-                <CancelIcon />
+                <Cancel />
               </IconButton>
             </div>
 
             <div className={classes.optionWrap}>
-              <Typography variant="h4">Title</Typography>
+              <Typography variant="h4">{t('Title')}</Typography>
               <TextField
-                key={titleText}
-                defaultValue={titleText}
+                defaultValue={country}
                 fullWidth
                 size="small"
                 inputProps={{ style: { color: 'black' } }}
@@ -641,12 +640,12 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
                   countryMask: Boolean(val),
                 }))
               }
-              title="Mask data outside of admin area"
+              title={t('Mask data outside of admin area')}
             />
 
             {toggles.countryMask && (
               <div className={classes.optionWrap}>
-                <Typography variant="h4">Select admin area</Typography>
+                <Typography variant="h4">{t('Select admin area')}</Typography>
                 <SimpleBoundaryDropdown
                   selectAll
                   className={classes.formControl}
@@ -671,14 +670,14 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
                   fullLayerDescription: Boolean(val),
                 }))
               }
-              title="Legend - Full Layer Description"
+              title={t('Legend - Full Layer Description')}
             />
 
             <ToggleSelector
               value={legendScale}
               options={legendSelectorOptions}
               setValue={setLegendScale}
-              title="Legend"
+              title={t('Legend')}
             />
 
             <ToggleSelector
@@ -690,14 +689,14 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
                   width: val as number,
                 }))
               }
-              title="Map Width"
+              title={t('Map Width')}
             />
 
             <ToggleSelector
               value={footerTextSize}
               options={footerTextSelectorOptions}
               setValue={setFooterTextSize}
-              title="Footer Text"
+              title={t('Footer Text')}
             />
 
             <TextField
@@ -759,7 +758,6 @@ const styles = (theme: Theme) =>
       position: 'absolute',
       right: theme.spacing(1),
       top: theme.spacing(1),
-      color: theme.palette.grey[500],
     },
     backdrop: {
       position: 'absolute',

@@ -8,13 +8,14 @@ import {
 import React from 'react';
 import { t } from 'i18next';
 import { downloadChartsToCsv } from 'utils/csv-utils';
+import { cyanBlue } from 'muiTheme';
 
 const styles = () =>
   createStyles({
     downloadButton: {
-      backgroundColor: '#62B2BD',
+      backgroundColor: cyanBlue,
       '&:hover': {
-        backgroundColor: '#62B2BD',
+        backgroundColor: cyanBlue,
       },
       marginLeft: '25%',
       marginRight: '25%',
