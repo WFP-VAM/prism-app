@@ -5,6 +5,7 @@ import {
   CircularProgress,
   Dialog,
   DialogContent,
+  Icon,
   IconButton,
   Menu,
   MenuItem,
@@ -16,13 +17,7 @@ import {
   makeStyles,
   withStyles,
 } from '@material-ui/core';
-import {
-  GetApp,
-  Cancel,
-  Visibility,
-  VisibilityOff,
-  CallMade,
-} from '@material-ui/icons';
+import { GetApp, Cancel, Visibility, VisibilityOff } from '@material-ui/icons';
 import mask from '@turf/mask';
 import html2canvas from 'html2canvas';
 import { debounce } from 'lodash';
@@ -67,7 +62,14 @@ const debounceCallback = debounce((callback: any, ...args: any[]) => {
 interface ToggleSelectorProps {
   title: string;
   value: number;
-  options: { value: number; comp: React.JSX.Element; disabled?: boolean }[];
+  options: {
+    value: number;
+    comp:
+      | React.JSX.Element
+      | (({ value }: { value: number }) => React.JSX.Element);
+    disabled?: boolean;
+  }[];
+  iconProp?: number;
   setValue: (v: number) => void;
 }
 
@@ -85,6 +87,7 @@ function ToggleSelector({
   title,
   options,
   value,
+  iconProp,
   setValue,
 }: ToggleSelectorProps) {
   const classes = toggleSelectorStyles();
@@ -94,7 +97,6 @@ function ToggleSelector({
       <ToggleButtonGroup
         value={value}
         exclusive
-        onChange={(e, v) => v !== null && setValue(v)}
         className={classes.buttonGroup}
       >
         {options.map(x => (
@@ -102,9 +104,14 @@ function ToggleSelector({
             key={x.value}
             className={classes.button}
             value={x.value}
+            onClick={() => setValue(x.value)}
             disabled={x.disabled}
           >
-            {x.comp}
+            {typeof x.comp === 'function' ? (
+              <x.comp value={Number(iconProp)} />
+            ) : (
+              x.comp
+            )}
           </ToggleButton>
         ))}
       </ToggleButtonGroup>
@@ -122,9 +129,15 @@ const legendScaleSelectorOptions = [
 ];
 
 const legendPositionOptions = [
-  { value: 0, comp: <VisibilityOff /> },
-  { value: 1, comp: <CallMade style={{ transform: 'scaleX(-1)' }} /> },
-  { value: 2, comp: <CallMade /> },
+  { value: -1, comp: <VisibilityOff /> },
+  {
+    value: 0,
+    comp: ({ value }: { value: number }) => (
+      <Icon style={{ color: 'black' }}>
+        {value % 2 === 0 ? 'switch_left' : 'switch_right'}
+      </Icon>
+    ),
+  },
 ];
 
 const mapWidthSelectorOptions = [
@@ -191,7 +204,7 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
   const [elementsLoading, setElementsLoading] = React.useState(true);
   const [footerTextSize, setFooterTextSize] = React.useState(12);
   const [legendScale, setLegendScale] = React.useState(0);
-  const [legendPosition, setLegendPosition] = React.useState(1);
+  const [legendPosition, setLegendPosition] = React.useState(0);
   // the % value of the original dimensions
   const [mapDimensions, setMapDimensions] = React.useState<{
     height: number;
@@ -486,13 +499,13 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
                       <div style={{ padding: '8px' }}>{footerText}</div>
                     </div>
                   )}
-                  {legendPosition !== 0 && (
+                  {legendPosition !== -1 && (
                     <div
                       style={{
                         position: 'absolute',
                         zIndex: 2,
                         top: titleOverlayRef?.current?.offsetHeight || 0,
-                        ...(legendPosition === 1
+                        ...(legendPosition % 2 === 0
                           ? { left: '8px' }
                           : {
                               right: `${legendWidth * (1 - legendScale)}px`,
@@ -632,17 +645,20 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
             />
 
             <ToggleSelector
-              value={legendPosition}
+              value={legendPosition > -1 ? 0 : -1}
               options={legendPositionOptions}
-              setValue={setLegendPosition}
+              iconProp={legendPosition}
+              setValue={v =>
+                setLegendPosition(prev => (v === -1 ? -1 : prev + 1))
+              }
               title={t('Legend Position')}
             />
 
             <div
               // disable the legend scale if the legend is not visible
               style={{
-                opacity: legendPosition !== 0 ? 1 : 0.5,
-                pointerEvents: legendPosition !== 0 ? 'auto' : 'none',
+                opacity: legendPosition !== -1 ? 1 : 0.5,
+                pointerEvents: legendPosition !== -1 ? 'auto' : 'none',
               }}
             >
               <ToggleSelector
