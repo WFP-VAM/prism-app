@@ -34,11 +34,11 @@ export const fetchCompositeLayerData: LazyLoader<CompositeLayerProps> = () => as
       start_date: '2002-01-01',
       end_date: endDate,
     },
-    config: inputLayers.map(({ key, aggregation, importance, invert }) => ({
+    layers: inputLayers.map(({ key, aggregation, importance, invert }) => ({
       key,
       aggregation,
       importance,
-      invert: invert || false,
+      invert: Boolean(invert),
     })),
   };
 
