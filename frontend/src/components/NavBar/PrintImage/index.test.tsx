@@ -24,6 +24,9 @@ test('renders as expected', () => {
       boundaryRelationData: {},
     },
     serverState: { availableDates: {}, loading: false },
+    analysisResultState: {
+      isMapLayerActive: false,
+    },
   });
 
   const { container } = render(
