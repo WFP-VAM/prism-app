@@ -230,6 +230,7 @@ const ExposureAnalysisTable = memo(
 const styles = (theme: Theme) =>
   createStyles({
     exposureAnalysisTable: {
+      paddingTop: '1rem',
       display: 'flex',
       flexDirection: 'column',
       alignItems: 'center',

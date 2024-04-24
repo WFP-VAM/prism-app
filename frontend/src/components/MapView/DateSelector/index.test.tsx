@@ -2,6 +2,7 @@ import React from 'react';
 import { Provider } from 'react-redux';
 import { render } from '@testing-library/react';
 import configureStore from 'redux-mock-store';
+import { PanelSize } from 'config/types';
 import DateSelector from '.';
 import { findClosestDate } from './utils';
 
@@ -33,6 +34,9 @@ test('renders as expected', () => {
       layersData: [],
       loadingLayerIds: [],
       boundaryRelationData: {},
+    },
+    leftPanelState: {
+      panelSize: PanelSize.medium,
     },
     serverState: { availableDates: {}, loading: false },
   });

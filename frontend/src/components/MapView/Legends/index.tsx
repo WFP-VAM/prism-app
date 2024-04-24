@@ -1,14 +1,14 @@
 import {
   Button,
   createStyles,
-  Grid,
   Hidden,
+  IconButton,
   List,
   Typography,
   WithStyles,
   withStyles,
 } from '@material-ui/core';
-import { Visibility, VisibilityOff } from '@material-ui/icons';
+import { VisibilityOutlined, VisibilityOffOutlined } from '@material-ui/icons';
 import React, { useState, memo, useMemo, useCallback } from 'react';
 
 import { createGetLegendGraphicUrl } from 'prism-common';
@@ -24,6 +24,7 @@ import { BaselineLayerResult } from 'utils/analysis-utils';
 import { useSafeTranslation } from 'i18n';
 import { Extent } from 'components/MapView/Layers/raster-utils';
 
+import { black, cyanBlue } from 'muiTheme';
 import LegendItem from './LegendItem';
 import LegendImpactResult from './LegendImpactResult';
 
@@ -152,13 +153,6 @@ const Legends = memo(({ classes, extent, layers }: LegendsProps) => {
     return [...layersLegendItems, ...analysisLegendItem];
   }, [analysisLegendItem, layersLegendItems]);
 
-  const renderedVisibilityButton = useMemo(() => {
-    if (open) {
-      return <VisibilityOff fontSize="small" />;
-    }
-    return <Visibility fontSize="small" />;
-  }, [open]);
-
   const renderedLegendItemsList = useMemo(() => {
     if (!open) {
       return null;
@@ -175,43 +169,66 @@ const Legends = memo(({ classes, extent, layers }: LegendsProps) => {
   }, [open]);
 
   return (
-    <Grid item className={classes.container}>
-      <Button
-        className={classes.triggerButton}
-        variant="contained"
-        color="primary"
-        onClick={toggleLegendVisibility}
-      >
-        {renderedVisibilityButton}
-        <Hidden smDown>
-          <Typography className={classes.label} variant="body2">
+    <>
+      <Hidden smDown>
+        <Button
+          className={classes.triggerButton}
+          style={{ backgroundColor: open ? cyanBlue : undefined }}
+          onClick={toggleLegendVisibility}
+          startIcon={
+            open ? (
+              <VisibilityOffOutlined
+                className={classes.icon}
+                style={{ color: black }}
+              />
+            ) : (
+              <VisibilityOutlined className={classes.icon} />
+            )
+          }
+        >
+          <Typography
+            style={{ color: open ? black : 'white', textTransform: 'none' }}
+          >
             {t('Legend')}
           </Typography>
-        </Hidden>
-      </Button>
+        </Button>
+      </Hidden>
+
+      <Hidden mdUp>
+        <IconButton
+          style={{ backgroundColor: open ? cyanBlue : undefined }}
+          onClick={toggleLegendVisibility}
+        >
+          {open ? (
+            <VisibilityOffOutlined
+              className={classes.icon}
+              style={{ color: black }}
+            />
+          ) : (
+            <VisibilityOutlined className={classes.icon} />
+          )}
+        </IconButton>
+      </Hidden>
+
       {renderedLegendItemsList}
-    </Grid>
+    </>
   );
 });
 
 const styles = () =>
   createStyles({
-    container: {
-      textAlign: 'right',
-    },
     triggerButton: {
-      height: '3em',
-    },
-    label: {
-      marginLeft: '10px',
+      height: '2.5em',
     },
     list: {
       overflowX: 'hidden',
       overflowY: 'auto',
       maxHeight: '70vh',
       position: 'absolute',
-      right: '16px',
+      right: '1rem',
+      top: 'calc(7vh - 8px)',
     },
+    icon: { color: 'white', fontSize: '1.5rem' },
   });
 
 export interface LegendsProps extends WithStyles<typeof styles> {

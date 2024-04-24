@@ -5,7 +5,16 @@ import sharedLegends from './legends.json';
 import portuguese from './portuguese.json';
 import french from './french.json';
 
-const translation = { pt: portuguese, fr: french };
+// TODO - Link translation files for the following languages
+const translation: Record<string, any> = {
+  es: {},
+  fr: french,
+  mn: {},
+  kh: {},
+  pt: portuguese,
+  ru: {},
+  عربى: {},
+};
 
 export default {
   defaultConfig,

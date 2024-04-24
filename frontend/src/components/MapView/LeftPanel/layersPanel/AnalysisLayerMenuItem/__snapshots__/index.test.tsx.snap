@@ -24,8 +24,8 @@ exports[`renders as expected 1`] = `
         </mock-typography>
         <mock-chip
           classes="[object Object]"
-          color="secondary"
           label="1"
+          style="background-color: rgb(99, 178, 189);"
         />
       </div>
       <div
@@ -71,7 +71,8 @@ exports[`renders as expected 1`] = `
               class="MuiAccordionDetails-root makeStyles-rootDetails-3"
             >
               <div
-                class="MuiGrid-root MuiGrid-container MuiGrid-direction-xs-column"
+                class="MuiGrid-root MuiGrid-container"
+                style="padding-left: 12px;"
               >
                 <div
                   class="MuiBox-root MuiBox-root-22 memo-analysisLayerSwitchRootItem-8"
@@ -93,7 +94,9 @@ exports[`renders as expected 1`] = `
                         classname="memo-title-9"
                       />
                     </div>
-                    <div>
+                    <div
+                      class="MuiBox-root MuiBox-root-24"
+                    >
                       <mock-tooltip
                         title="Opacity"
                       >

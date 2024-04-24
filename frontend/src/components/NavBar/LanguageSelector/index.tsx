@@ -1,8 +1,9 @@
 import React from 'react';
 import {
   Button,
-  ButtonGroup,
   createStyles,
+  Menu,
+  MenuItem,
   Theme,
   Typography,
   withStyles,
@@ -11,12 +12,23 @@ import {
 import { languages, useSafeTranslation } from 'i18n';
 import { appConfig } from 'config';
 import { get } from 'lodash';
+import ArrowDownward from '@material-ui/icons/ArrowDropDown';
 
 function LanguageSelector({ classes }: LanguageSelectorProps) {
   const { i18n } = useSafeTranslation();
+  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+
+  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
 
   const handleChangeLanguage = (lng: string): void => {
     i18n.changeLanguage(lng);
+    handleClose();
   };
 
   React.useEffect(() => {
@@ -32,24 +44,30 @@ function LanguageSelector({ classes }: LanguageSelectorProps) {
   }
 
   return (
-    <ButtonGroup variant="text" className={classes.block}>
-      {languages.map(lng => (
-        <Button
-          key={lng}
-          type="submit"
-          onClick={() => handleChangeLanguage(lng)}
-        >
-          <Typography
-            variant="body2"
-            style={{
-              fontWeight: i18n.resolvedLanguage === lng ? 'bold' : 'normal',
-            }}
-          >
-            {lng}
-          </Typography>
-        </Button>
-      ))}
-    </ButtonGroup>
+    <>
+      <Button
+        aria-label="language-select-dropdown-button"
+        style={{ paddingLeft: 0 }}
+        onClick={handleClick}
+        endIcon={<ArrowDownward fontSize="small" />}
+      >
+        <Typography color="secondary" style={{ textTransform: 'none' }}>
+          {i18n.resolvedLanguage}
+        </Typography>
+      </Button>
+      <Menu
+        open={Boolean(anchorEl)}
+        onClose={handleClose}
+        className={classes.block}
+        anchorEl={anchorEl}
+      >
+        {languages.map(lng => (
+          <MenuItem key={lng} onClick={() => handleChangeLanguage(lng)}>
+            <Typography>{lng}</Typography>
+          </MenuItem>
+        ))}
+      </Menu>
+    </>
   );
 }
 
@@ -58,9 +76,6 @@ const styles = (theme: Theme) =>
     block: {
       paddingLeft: '10px',
       paddingTop: '4px',
-    },
-    title: {
-      color: theme.palette.text.secondary,
     },
   });
 
