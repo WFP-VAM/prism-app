@@ -221,7 +221,7 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
           : `${t('on')} ${getFormattedDate(dateRange.startDate, 'default')}`
       }. `;
     };
-    return `${getDateText()} ${t(DEFAULT_FOOTER_TEXT)}`;
+    return `${getDateText()}${t(DEFAULT_FOOTER_TEXT)}`;
   }, [t, dateRange]);
 
   React.useEffect(() => {
@@ -731,7 +731,6 @@ const styles = (theme: Theme) =>
       position: 'absolute',
       right: theme.spacing(1),
       top: theme.spacing(1),
-      color: theme.palette.grey[500],
     },
     backdrop: {
       position: 'absolute',

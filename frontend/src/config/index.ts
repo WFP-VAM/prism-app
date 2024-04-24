@@ -127,9 +127,10 @@ const rawLayers: Record<string, any> = Object.fromEntries(
 // Merge translations
 const countryTranslation = get(configMap[safeCountry], 'translation', {});
 const translation = Object.fromEntries(
-  Object.entries(sharedTranslation)
-    .filter(([key]) => key in countryTranslation)
-    .map(([key, value]) => [key, merge({}, value, countryTranslation[key])]),
+  Object.entries(countryTranslation).map(([key, value]) => [
+    key,
+    merge({}, sharedTranslation[key] || {}, value),
+  ]),
 );
 
 const msalConfig = {

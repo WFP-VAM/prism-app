@@ -4,9 +4,7 @@ import {
   AccordionDetails,
   AccordionSummary,
   Chip,
-  createStyles,
   Grid,
-  makeStyles,
   Typography,
 } from '@material-ui/core';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
@@ -17,6 +15,8 @@ import {
   ExposedPopulationResult,
   PolygonAnalysisResult,
 } from 'utils/analysis-utils';
+import { cyanBlue } from 'muiTheme';
+import { useLayerMenuItemStyles } from 'components/MapView/LeftPanel/layersPanel/MenuItem';
 
 interface AnalysisLayerMenuItemProps {
   title: string;
@@ -29,33 +29,6 @@ interface AnalysisLayerMenuItemProps {
   analysisResultSortOrder: 'asc' | 'desc';
 }
 
-const useStyles = makeStyles(() =>
-  createStyles({
-    root: {
-      position: 'inherit',
-    },
-    rootSummary: {
-      backgroundColor: '#D8E9EC',
-    },
-    rootDetails: {
-      padding: 0,
-    },
-    expandIcon: {
-      color: '#53888F',
-    },
-    summaryContent: {
-      alignItems: 'center',
-    },
-    chipRoot: {
-      marginLeft: '3%',
-    },
-    title: {
-      color: '#53888F',
-      fontWeight: 600,
-    },
-  }),
-);
-
 const AnalysisLayerMenuItem = memo(
   ({
     title,
@@ -65,7 +38,7 @@ const AnalysisLayerMenuItem = memo(
     analysisResultSortOrder,
   }: AnalysisLayerMenuItemProps) => {
     const { t } = useSafeTranslation();
-    const classes = useStyles();
+    const classes = useLayerMenuItemStyles();
 
     // We will only have one analysis at a time so when the actual Menu item is visible it will also be enabled
     const [informationChipLabel, setInformationChipLabel] = useState<string>(
@@ -97,12 +70,12 @@ const AnalysisLayerMenuItem = memo(
             onMouseEnter={handleChipOnMouseEnter}
             onMouseLeave={handleChipOnMouseLeave}
             classes={{ root: classes.chipRoot }}
-            color="secondary"
+            style={{ backgroundColor: cyanBlue }}
             label={informationChipLabel}
           />
         </AccordionSummary>
         <AccordionDetails classes={{ root: classes.rootDetails }}>
-          <Grid container direction="column">
+          <Grid container direction="row" style={{ paddingLeft: 12 }}>
             <AnalysisLayerSwitchItem
               initialOpacity={initialOpacity}
               analysisData={analysisData}

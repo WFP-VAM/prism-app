@@ -50,11 +50,14 @@ async def download_report(
         page.set_default_timeout(PAGE_TIMEOUT)
         await page.goto(url)
 
-        # switch to English
-        await page.get_by_role("button", name="en").click()
+        # open language dropdown
+        await page.get_by_role("button", name="language-select-dropdown-button").click()
+
+        # Click on the 'en' option
+        await page.get_by_text("en", exact=True).click()
 
         # make sure we're on the right tab
-        await page.get_by_role("tab", name="Layers").click()
+        # await page.get_by_role("button", name="Layers").click()
 
         # expand the first main and first sub dropdowns
         # XPath to match a button whose name starts with "Flood" followed by a space and any number
