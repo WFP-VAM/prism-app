@@ -24,7 +24,9 @@ exports[`renders as expected 1`] = `
           Some Analysis Layer Title
         </mock-typography>
       </div>
-      <div>
+      <div
+        class="MuiBox-root MuiBox-root-17"
+      >
         <mock-tooltip
           title="Opacity"
         >

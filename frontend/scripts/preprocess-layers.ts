@@ -27,6 +27,9 @@ const mergeBoundaryData = boundaryData => {
 };
 
 async function preprocessBoundaryLayer(country, boundaryLayer) {
+  if (country === 'shared') {
+    return;
+  }
   const outputFilePath = path.join(
     __dirname,
     `../public/data/${country}/admin-boundary-unified-polygon.json`,

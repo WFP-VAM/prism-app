@@ -855,9 +855,10 @@ export type UserAuth = {
 
 export enum PanelSize {
   folded = '0vw',
-  medium = '500px',
+  medium = '425px',
   large = '1000px',
   xlarge = '1400px',
+  full = '100%',
 }
 
 export type MapEventWrapFunctionProps<T> = {

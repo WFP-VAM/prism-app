@@ -78,5 +78,13 @@ export const menuList: MenuItemsType = map(
   },
 );
 
+export const tablesMenuItems = menuList.filter((menuItem: MenuItemType) => {
+  return menuItem.layersCategories.some((layerCategory: LayersCategoryType) => {
+    return layerCategory.tables.length > 0;
+  });
+});
+
+export const areTablesAvailable = tablesMenuItems.length >= 1;
+
 export const oneDayInMs = 24 * 60 * 60 * 1000;
 export const oneYearInMs = 365 * oneDayInMs;
