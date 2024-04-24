@@ -12,7 +12,7 @@ import {
   useRadioGroup,
   withStyles,
 } from '@material-ui/core';
-import { black, borderGray, cyanBlue, gray } from 'muiTheme';
+import { black, borderGray, cyanBlue, lightGrey } from 'muiTheme';
 import React from 'react';
 import { useSafeTranslation } from 'i18n';
 import {
@@ -58,7 +58,7 @@ export const StyledRadioLabel = withStyles({
 
   return (
     <FormControlLabel
-      style={{ background: checked ? gray : undefined }}
+      style={{ background: checked ? lightGrey : undefined }}
       label={
         <span style={{ marginRight: '1rem' }}>
           {color ? (
@@ -107,7 +107,7 @@ export const StyledCheckboxLabel = withStyles({
   }) => {
     return (
       <FormControlLabel
-        style={{ background: checkBoxProps.checked ? gray : undefined }}
+        style={{ background: checkBoxProps.checked ? lightGrey : undefined }}
         label={<span style={{ marginRight: '0.5rem' }}>{label}</span>}
         control={<StyledCheckbox {...checkBoxProps} />}
         {...props}

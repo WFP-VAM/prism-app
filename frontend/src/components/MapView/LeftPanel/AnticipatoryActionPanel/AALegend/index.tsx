@@ -7,7 +7,7 @@ import {
   makeStyles,
 } from '@material-ui/core';
 import { useSafeTranslation } from 'i18n';
-import { borderGray, gray } from 'muiTheme';
+import { borderGray, lightGrey } from 'muiTheme';
 import React from 'react';
 import { getAAColor, getAAIcon, useAACommonStyles } from '../utils';
 import HowToReadModal from '../HowToReadModal';
@@ -65,7 +65,7 @@ function AALegend({
         style={
           forPrinting
             ? {
-                border: `1px solid ${gray}`,
+                border: `1px solid ${lightGrey}`,
               }
             : undefined
         }

@@ -5,7 +5,7 @@ import {
   makeStyles,
 } from '@material-ui/core';
 import { useSafeTranslation } from 'i18n';
-import { borderGray, gray } from 'muiTheme';
+import { borderGray, lightGrey } from 'muiTheme';
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
@@ -311,7 +311,7 @@ const useHomeTableStyles = makeStyles(() =>
       display: 'flex',
       flexDirection: 'column',
       width: PanelSize.medium,
-      background: gray,
+      background: lightGrey,
       padding: '0.5rem 0',
       overflowY: 'scroll',
       // Browser-specific properties for forcing scrollbar visibility and styling

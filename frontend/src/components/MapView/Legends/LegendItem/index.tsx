@@ -40,7 +40,7 @@ import LayerDownloadOptions from 'components/MapView/LeftPanel/layersPanel/MenuI
 import AnalysisDownloadButton from 'components/MapView/Legends//AnalysisDownloadButton';
 import { toggleRemoveLayer } from 'components/MapView/LeftPanel/layersPanel/MenuItem/MenuSwitch/SwitchItem/utils';
 import { opacitySelector, setOpacity } from 'context/opacityStateSlice';
-import { gray } from 'muiTheme';
+import { lightGrey } from 'muiTheme';
 import LoadingBar from '../LoadingBar';
 
 // Children here is legendText
@@ -221,7 +221,7 @@ const LegendItem = memo(
           style={
             forPrinting
               ? {
-                  border: `1px solid ${gray}`,
+                  border: `1px solid ${lightGrey}`,
                 }
               : undefined
           }

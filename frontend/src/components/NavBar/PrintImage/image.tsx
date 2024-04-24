@@ -40,7 +40,7 @@ import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
 import ToggleButton from '@material-ui/lab/ToggleButton';
 import VisibilityOffIcon from '@material-ui/icons/VisibilityOff';
 import VisibilityIcon from '@material-ui/icons/Visibility';
-import { cyanBlue, gray } from 'muiTheme';
+import { cyanBlue, lightGrey } from 'muiTheme';
 import { SimpleBoundaryDropdown } from 'components/MapView/Layers/BoundaryDropdown';
 import { getBoundaryLayerSingleton } from 'config/utils';
 import { LayerData } from 'context/layers/layer-data';
@@ -577,8 +577,7 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
             <div className={classes.optionWrap}>
               <Typography variant="h4">{t('Title')}</Typography>
               <TextField
-                key={titleText}
-                defaultValue={titleText}
+                defaultValue={country}
                 fullWidth
                 size="small"
                 inputProps={{ style: { color: 'black' } }}
@@ -765,7 +764,7 @@ const styles = (theme: Theme) =>
       textAlign: 'center',
       fontSize: '1.5rem',
       padding: '8px 0 8px 0',
-      borderBottom: `1px solid ${gray}`,
+      borderBottom: `1px solid ${lightGrey}`,
     },
     footerOverlay: {
       position: 'absolute',
@@ -775,7 +774,7 @@ const styles = (theme: Theme) =>
       color: 'black',
       backgroundColor: 'white',
       width: '100%',
-      borderTop: `1px solid ${gray}`,
+      borderTop: `1px solid ${lightGrey}`,
     },
     formControl: {
       width: '100%',

@@ -10,7 +10,7 @@ import { Scatter } from 'react-chartjs-2';
 import { useDispatch, useSelector } from 'react-redux';
 import { setPanelSize } from 'context/leftPanelStateSlice';
 import { PanelSize } from 'config/types';
-import { gray } from 'muiTheme';
+import { lightGrey } from 'muiTheme';
 import {
   AADataSelector,
   AAFiltersSelector,
@@ -181,7 +181,7 @@ const useForecastStyle = makeStyles(() =>
       flexDirection: 'column',
       gap: '1rem',
       width: '100%',
-      background: gray,
+      background: lightGrey,
     },
     chartsHeader: {
       display: 'flex',
@@ -218,7 +218,7 @@ const useForecastStyle = makeStyles(() =>
       width: '100%',
     },
     label: {
-      background: gray,
+      background: lightGrey,
       margin: '0.5rem',
       borderRadius: '4px',
       textAlign: 'center',

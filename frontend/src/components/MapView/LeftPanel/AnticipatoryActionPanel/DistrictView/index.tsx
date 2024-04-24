@@ -5,7 +5,7 @@ import {
   createStyles,
   makeStyles,
 } from '@material-ui/core';
-import { gray } from 'muiTheme';
+import { lightGrey } from 'muiTheme';
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { setPanelSize } from 'context/leftPanelStateSlice';
@@ -210,7 +210,7 @@ const useWindowColumnStyles = makeStyles(() =>
       justifyContent: 'center',
     },
     monthText: {
-      background: gray,
+      background: lightGrey,
       borderRadius: '4px',
       textAlign: 'center',
       textTransform: 'uppercase',
@@ -358,14 +358,14 @@ const useDistrictViewStyles = makeStyles(() =>
       display: 'flex',
       flexDirection: 'column',
       width: '100%',
-      background: gray,
+      background: lightGrey,
       overflow: 'scroll',
     },
     districtViewWrapper: {
       display: 'flex',
       flexDirection: 'row',
       width: '100%',
-      background: gray,
+      background: lightGrey,
       overflow: 'scroll',
       justifyContent: 'space-around',
     },

@@ -14,7 +14,7 @@ import {
   AAView,
   AnticipatoryActionDataRow,
 } from 'context/anticipatoryActionStateSlice/types';
-import { gray } from 'muiTheme';
+import { lightGrey } from 'muiTheme';
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { setPanelSize } from 'context/leftPanelStateSlice';
@@ -217,7 +217,7 @@ const useTimelineStyles = makeStyles(() =>
       display: 'flex',
       flexDirection: 'row',
       width: '100%',
-      background: gray,
+      background: lightGrey,
       overflow: 'auto',
       justifyContent: 'space-around',
       overflowY: 'scroll',
@@ -274,7 +274,7 @@ const useTimelineStyles = makeStyles(() =>
       alignItems: 'center',
     },
     monthText: {
-      background: gray,
+      background: lightGrey,
       borderRadius: '4px',
       textAlign: 'center',
       textTransform: 'uppercase',

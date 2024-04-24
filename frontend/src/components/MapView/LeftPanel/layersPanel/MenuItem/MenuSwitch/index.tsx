@@ -21,7 +21,7 @@ import React, {
 import { useSelector } from 'react-redux';
 import { LayerType } from 'config/types';
 import { useSafeTranslation } from 'i18n';
-import { cyanBlue, gray } from 'muiTheme';
+import { cyanBlue, lightGrey } from 'muiTheme';
 import { Extent } from 'components/MapView/Layers/raster-utils';
 import { layersSelector } from 'context/mapStateSlice/selectors';
 import { filterActiveLayers } from 'components/MapView/utils';
@@ -34,7 +34,7 @@ const useStyles = makeStyles(() =>
       maxWidth: '100%',
     },
     rootSummary: {
-      backgroundColor: gray,
+      backgroundColor: lightGrey,
     },
     rootDetails: {
       padding: 0,
