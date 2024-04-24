@@ -23,7 +23,7 @@ import {
   loadAdminBoundaryDataset,
 } from 'context/datasetStateSlice';
 import { TableData } from 'context/tableStateSlice';
-import { useSafeTranslation } from 'i18n';
+import { isEnglishLanguageSelected, useSafeTranslation } from 'i18n';
 import { getChartAdminBoundaryParams } from 'utils/admin-utils';
 import Chart, { ChartProps } from 'components/Common/Chart';
 import { createCsvDataFromDataKeyMap, createDataKeyMap } from 'utils/csv-utils';
@@ -135,7 +135,7 @@ const ChartSection = memo(
     classes,
   }: ChartSectionProps) => {
     const dispatch = useDispatch();
-    const { t } = useSafeTranslation();
+    const { t, i18n: i18nLocale } = useSafeTranslation();
     const [chartDataset, setChartDataset] = useState<undefined | TableData>();
     const [extendedChartDataset, setExtendedChartDataset] = useState<
       undefined | TableData
@@ -273,7 +273,11 @@ const ChartSection = memo(
 
     const adminKey = levelsDict[adminLevel.toString()];
     // Default to country level data.
-    const { code: adminCode, name: adminName } = useMemo(() => {
+    const {
+      code: adminCode,
+      name: adminName,
+      localName: adminLocalName,
+    } = useMemo(() => {
       return (
         params.boundaryProps[adminKey] || {
           code: appConfig.countryAdmin0Id,
@@ -410,9 +414,13 @@ const ChartSection = memo(
       return chartLayer.title;
     }, [chartLayer.title]);
 
+    // i18nLocale does not trigger a refresh here
     const subtitle = useMemo(() => {
-      return adminName || appConfig.country;
-    }, [adminName]);
+      if (isEnglishLanguageSelected(i18nLocale)) {
+        return adminName || appConfig.country;
+      }
+      return adminLocalName || appConfig.country;
+    }, [adminLocalName, adminName, i18nLocale]);
 
     return useMemo(() => {
       if (chartDataSetIsLoading) {
