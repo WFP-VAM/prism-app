@@ -1240,7 +1240,8 @@ const styles = (theme: Theme) =>
       flexWrap: 'wrap',
     },
     analysisPanel: {
-      position: 'relative',
+      display: 'flex',
+      flexDirection: 'column',
       width: PanelSize.medium,
       height: '100%',
     },
@@ -1327,10 +1328,8 @@ const styles = (theme: Theme) =>
       opacity: 1,
     },
     analysisButtonContainer: {
-      position: 'absolute',
       backgroundColor: theme.palette.primary.main,
       width: '100%',
-      bottom: 0,
     },
     analysisButton: {
       backgroundColor: '#788489',
