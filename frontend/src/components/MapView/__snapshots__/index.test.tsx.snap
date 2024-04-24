@@ -348,10 +348,10 @@ exports[`renders as expected 1`] = `
       </div>
     </mock-drawer>
     <div
-      class="MuiBox-root MuiBox-root-20 OtherFeatures-container-18"
+      class="MuiBox-root MuiBox-root-60 OtherFeatures-container-58"
     >
       <div
-        class="MuiBox-root MuiBox-root-21 OtherFeatures-optionContainer-19"
+        class="MuiBox-root MuiBox-root-61 OtherFeatures-optionContainer-59"
       />
     </div>
     <div
