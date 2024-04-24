@@ -369,7 +369,8 @@
             }
           ]
         },
-        "ifpri_protracted_transient_conflict"
+        "ifpri_protracted_transient_conflict",
+        "ifpri_conflict_index_rank"
       ]
     },
     "risk_analysis": {
