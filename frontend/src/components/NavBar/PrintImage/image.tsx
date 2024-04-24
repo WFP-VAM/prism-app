@@ -508,7 +508,7 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
                         ...(legendPosition % 2 === 0
                           ? { left: '8px' }
                           : {
-                              right: `${legendWidth * (1 - legendScale)}px`,
+                              right: `${legendWidth - 8}px`,
                             }),
                         width: '20px',
                         // Use transform scale to adjust size based on legendScale
