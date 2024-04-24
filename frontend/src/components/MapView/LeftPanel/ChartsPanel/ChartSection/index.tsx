@@ -414,13 +414,15 @@ const ChartSection = memo(
       return chartLayer.title;
     }, [chartLayer.title]);
 
-    // i18nLocale does not trigger a refresh here
     const subtitle = useMemo(() => {
       if (isEnglishLanguageSelected(i18nLocale)) {
         return adminName || appConfig.country;
       }
       return adminLocalName || appConfig.country;
-    }, [adminLocalName, adminName, i18nLocale]);
+
+      // i18nLocale does not trigger a refresh. resolvedLanguage does
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [adminLocalName, adminName, i18nLocale.resolvedLanguage]);
 
     return useMemo(() => {
       if (chartDataSetIsLoading) {
