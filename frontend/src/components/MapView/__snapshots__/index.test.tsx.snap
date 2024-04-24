@@ -579,7 +579,7 @@ exports[`renders as expected 1`] = `
                             <input
                               checked=""
                               class="PrivateSwitchBase-input-78"
-                              name="mui-7698"
+                              name="mui-31077"
                               type="radio"
                               value="All"
                             />
@@ -635,7 +635,7 @@ exports[`renders as expected 1`] = `
                           >
                             <input
                               class="PrivateSwitchBase-input-78"
-                              name="mui-7698"
+                              name="mui-31077"
                               type="radio"
                               value="Window 1"
                             />
@@ -694,7 +694,7 @@ exports[`renders as expected 1`] = `
                           >
                             <input
                               class="PrivateSwitchBase-input-78"
-                              name="mui-7698"
+                              name="mui-31077"
                               type="radio"
                               value="Window 2"
                             />
