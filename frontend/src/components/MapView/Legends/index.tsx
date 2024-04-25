@@ -3,166 +3,22 @@ import {
   createStyles,
   Hidden,
   IconButton,
-  List,
   Typography,
   WithStyles,
   withStyles,
 } from '@material-ui/core';
-import { VisibilityOutlined, VisibilityOffOutlined } from '@material-ui/icons';
-import React, { useState, memo, useMemo, useCallback } from 'react';
-
-import { createGetLegendGraphicUrl } from 'prism-common';
-import { useSelector } from 'react-redux';
-import {
-  analysisResultOpacitySelector,
-  analysisResultSelector,
-  invertedColorsSelector,
-  isAnalysisLayerActiveSelector,
-} from 'context/analysisResultStateSlice';
-import { LayerType, LegendDefinitionItem } from 'config/types';
-import { BaselineLayerResult } from 'utils/analysis-utils';
+import { VisibilityOffOutlined, VisibilityOutlined } from '@material-ui/icons';
+import React, { useState, memo, useCallback } from 'react';
+import { LayerType } from 'config/types';
 import { useSafeTranslation } from 'i18n';
 import { Extent } from 'components/MapView/Layers/raster-utils';
-
 import { black, cyanBlue } from 'muiTheme';
-import LegendItem from './LegendItem';
-import LegendImpactResult from './LegendImpactResult';
-
-export const legendListId = 'legend-list';
-
-// Invert the colors of the legend, first color becomes last and vice versa
-export const invertLegendColors = (
-  legendItems: LegendDefinitionItem[],
-): LegendDefinitionItem[] => {
-  // eslint-disable-next-line
-  const reversedColors = legendItems.map(item => item.color).reverse();
-  return legendItems.map((item, index) => ({
-    ...item,
-    color: reversedColors[index],
-  }));
-};
+import LegendItemsList from './LegendItemsList';
 
 const Legends = memo(({ classes, extent, layers }: LegendsProps) => {
-  // Selectors
-  const isAnalysisLayerActive = useSelector(isAnalysisLayerActiveSelector);
-  const analysisResult = useSelector(analysisResultSelector);
-  const analysisLayerOpacity = useSelector(analysisResultOpacitySelector);
-  const invertedColorsForAnalysis = useSelector(invertedColorsSelector);
-
-  // State
-  const [open, setOpen] = useState(true);
-
-  // memoized values from selectors
-  const featureCollection = useMemo(() => {
-    return analysisResult?.featureCollection;
-  }, [analysisResult]);
-
-  const hasData = useMemo(() => {
-    return featureCollection?.features
-      ? featureCollection.features.length > 0
-      : false;
-  }, [featureCollection]);
-
   const { t } = useSafeTranslation();
 
-  // If legend array is empty, we fetch from remote server the legend as GetLegendGraphic request.
-  const getLayerLegendUrl = useCallback((layer: LayerType) => {
-    return layer.type === 'wms' && layer.legend.length === 0
-      ? createGetLegendGraphicUrl({
-          base: layer.baseUrl,
-          layer: layer.serverLayerName,
-        })
-      : undefined;
-  }, []);
-
-  const layersLegendItems = useMemo(() => {
-    return layers.map(layer => {
-      if (!layer.legend || !layer.legendText) {
-        // this layer doesn't have a legend (likely boundary), so lets ignore.
-        return null;
-      }
-      return (
-        <LegendItem
-          key={layer.id}
-          id={layer.id}
-          title={layer.title ? t(layer.title) : undefined}
-          legend={layer.legend}
-          legendUrl={getLayerLegendUrl(layer)}
-          type={layer.type}
-          opacity={layer.opacity}
-          fillPattern={layer.fillPattern}
-          extent={extent}
-        >
-          {t(layer.legendText)}
-        </LegendItem>
-      );
-    });
-  }, [getLayerLegendUrl, layers, t, extent]);
-
-  const renderedLegendImpactResult = useMemo(() => {
-    if (!(analysisResult instanceof BaselineLayerResult)) {
-      return null;
-    }
-    const baselineLayer = analysisResult.getBaselineLayer();
-    const hazardLayer = analysisResult.getHazardLayer();
-    return (
-      <LegendImpactResult
-        legendText={
-          baselineLayer.legendText
-            ? baselineLayer.legendText
-            : hazardLayer.legendText
-        }
-        thresholdBelow={analysisResult.threshold.below}
-        thresholdAbove={analysisResult.threshold.above}
-      />
-    );
-  }, [analysisResult]);
-
-  // add analysis legend item if layer is active and analysis result exists
-  const analysisLegendItem = useMemo(() => {
-    if (!isAnalysisLayerActive || !hasData) {
-      return [];
-    }
-    return [
-      <LegendItem
-        id="analysis"
-        type="analysis"
-        key={analysisResult?.key ?? Date.now()}
-        legend={
-          invertedColorsForAnalysis
-            ? invertLegendColors(analysisResult?.legend || [])
-            : analysisResult?.legend
-        }
-        title={analysisResult?.getTitle(t)}
-        opacity={analysisLayerOpacity}
-      >
-        {renderedLegendImpactResult}
-      </LegendItem>,
-    ];
-  }, [
-    analysisLayerOpacity,
-    analysisResult,
-    invertedColorsForAnalysis,
-    hasData,
-    isAnalysisLayerActive,
-    renderedLegendImpactResult,
-    t,
-  ]);
-
-  const legendItems = useMemo(() => {
-    return [...layersLegendItems, ...analysisLegendItem];
-  }, [analysisLegendItem, layersLegendItems]);
-
-  const renderedLegendItemsList = useMemo(() => {
-    if (!open) {
-      return null;
-    }
-    return (
-      <List id={legendListId} className={classes.list}>
-        {legendItems}
-      </List>
-    );
-  }, [classes.list, legendItems, open]);
+  const [open, setOpen] = useState(true);
 
   const toggleLegendVisibility = useCallback(() => {
     setOpen(!open);
@@ -210,7 +66,7 @@ const Legends = memo(({ classes, extent, layers }: LegendsProps) => {
         </IconButton>
       </Hidden>
 
-      {renderedLegendItemsList}
+      {open && <LegendItemsList listStyle={classes.list} />}
     </>
   );
 });
