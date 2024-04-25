@@ -1,8 +1,6 @@
 import {
-  Backdrop,
   Box,
   Button,
-  CircularProgress,
   Dialog,
   DialogContent,
   Icon,
@@ -27,15 +25,9 @@ import React, { useRef, useState } from 'react';
 import MapGL, { Layer, MapRef, Source } from 'react-map-gl/maplibre';
 import { useSelector } from 'react-redux';
 import { mapStyle } from 'components/MapView/Map';
-import { addFillPatternImagesInMap } from 'components/MapView/Layers/AdminLevelDataLayer';
 import { getFormattedDate } from 'utils/date-utils';
-import useLayers from 'utils/layers-utils';
 import { appConfig, safeCountry } from 'config';
-import {
-  AdminCodeString,
-  AdminLevelDataLayerProps,
-  BoundaryLayerProps,
-} from 'config/types';
+import { AdminCodeString, BoundaryLayerProps } from 'config/types';
 import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
 import ToggleButton from '@material-ui/lab/ToggleButton';
 import { cyanBlue, gray } from 'muiTheme';
@@ -43,6 +35,7 @@ import { SimpleBoundaryDropdown } from 'components/MapView/Layers/BoundaryDropdo
 import { getBoundaryLayerSingleton } from 'config/utils';
 import { LayerData } from 'context/layers/layer-data';
 import LegendItemsList from 'components/MapView/Legends/LegendItemsList';
+import useResizeObserver from 'utils/useOnResizeObserver';
 import {
   dateRangeSelector,
   layerDataSelector,
@@ -50,6 +43,14 @@ import {
 } from '../../../context/mapStateSlice/selectors';
 import { useSafeTranslation } from '../../../i18n';
 import { downloadToFile } from '../../MapView/utils';
+
+const mapLabelLayers = [
+  'label_airport',
+  'label_place_other',
+  'label_place_city',
+  'label_country_other',
+  'label_country',
+];
 
 const DEFAULT_FOOTER_TEXT =
   'The designations employed and the presentation of material in the map(s) do not imply the expression of any opinion on the part of WFP concerning the legal of constitutional status of any country, territory, city, or sea, or concerning the delimitation of its frontiers or boundaries.';
@@ -168,6 +169,11 @@ const countryMaskSelectorOptions = [
   { value: 0, comp: <Visibility /> },
 ];
 
+const mapLabelsVisibilityOptions = [
+  { value: 0, comp: <VisibilityOff /> },
+  { value: 1, comp: <Visibility /> },
+];
+
 const boundaryLayer = getBoundaryLayerSingleton();
 
 function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
@@ -176,9 +182,7 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
   const selectedMap = useSelector(mapSelector);
   const dateRange = useSelector(dateRangeSelector);
   const printRef = useRef<HTMLDivElement>(null);
-  const overlayContainerRef = useRef<HTMLDivElement>(null);
-  const titleOverlayRef = useRef<HTMLDivElement>(null);
-  const footerOverlayRef = useRef<HTMLDivElement>(null);
+  const northArrowRef = useRef<HTMLImageElement>(null);
   const boundaryLayerState = useSelector(
     layerDataSelector(boundaryLayer.id),
   ) as LayerData<BoundaryLayerProps> | undefined;
@@ -201,7 +205,6 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
   >([]);
   const [titleText, setTitleText] = React.useState<string>(country);
   const [footerText, setFooterText] = React.useState('');
-  const [elementsLoading, setElementsLoading] = React.useState(true);
   const [footerTextSize, setFooterTextSize] = React.useState(12);
   const [legendScale, setLegendScale] = React.useState(0);
   const [legendPosition, setLegendPosition] = React.useState(0);
@@ -211,14 +214,17 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
     width: number;
   }>({ width: 100, height: 100 });
   const [legendWidth, setLegendWidth] = React.useState(0);
+  const [mapLabelsVisibility, setMapLabelsVisibility] = React.useState(1);
+  const [footerRef, { height: footerHeight }] = useResizeObserver<
+    HTMLDivElement
+  >(footerText, open);
+  const [titleRef, { height: titleHeight }] = useResizeObserver<HTMLDivElement>(
+    titleText,
+    open,
+  );
 
   // Get the style and layers of the old map
   const selectedMapStyle = selectedMap?.getStyle();
-
-  const { selectedLayers } = useLayers();
-  const adminLevelLayersWithFillPattern = selectedLayers.filter(
-    layer => layer.type === 'admin_level_data' && layer.fillPattern,
-  ) as AdminLevelDataLayerProps[];
 
   const defaultFooterText = React.useMemo(() => {
     const getDateText = (): string => {
@@ -236,6 +242,39 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
     };
     return `${getDateText()}${t(DEFAULT_FOOTER_TEXT)}`;
   }, [t, dateRange]);
+
+  const updateScaleBarAndNorthArrow = React.useCallback(() => {
+    const elem = document.querySelector(
+      '.maplibregl-ctrl-scale',
+    ) as HTMLElement;
+
+    if (elem) {
+      // eslint-disable-next-line fp/no-mutating-assign
+      Object.assign(elem.style, {
+        position: 'absolute',
+        right: '10px',
+        bottom: `${footerHeight + 10}px`,
+        margin: 0,
+      });
+    }
+
+    if (northArrowRef.current) {
+      northArrowRef.current.style.bottom = `${footerHeight + 40}px`;
+    }
+  }, [footerHeight]);
+
+  const updateMapLabelsVisibility = React.useCallback(() => {
+    const map = mapRef.current?.getMap();
+    if (!map) {
+      return;
+    }
+
+    mapLabelLayers.forEach(label => {
+      map.setPaintProperty(label, 'text-opacity', mapLabelsVisibility);
+      // eslint-disable-next-line no-underscore-dangle
+      map.style._updateLayer(label as any);
+    });
+  }, [mapLabelsVisibility]);
 
   React.useEffect(() => {
     setFooterText(defaultFooterText);
@@ -269,114 +308,13 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
     setAdminBoundaryPolygon(masked as any);
   }, [data, selectedBoundaries, selectedBoundaries.length]);
 
-  const refreshImage = async () => {
-    /* eslint-disable fp/no-mutation */
-    setElementsLoading(true);
-    if (open && mapRef.current) {
-      const map = mapRef.current.getMap();
-      const activeLayers = map.getCanvas();
-      // Load fill pattern images to this new map instance if needed.
-      Promise.all(
-        adminLevelLayersWithFillPattern.map(layer =>
-          addFillPatternImagesInMap(layer as AdminLevelDataLayerProps, map),
-        ),
-      );
-
-      const canvasContainer = overlayContainerRef.current;
-      if (!canvasContainer) {
-        return;
-      }
-
-      // clear canvas
-      while (canvasContainer.firstChild) {
-        canvasContainer.removeChild(canvasContainer.firstChild);
-      }
-
-      const canvas = document.createElement('canvas');
-      if (canvas) {
-        let scalerBarLength = 0;
-        const scaleBarGap = 10;
-
-        const { width } = activeLayers;
-        const { height } = activeLayers;
-
-        const ratio = window.devicePixelRatio || 1;
-
-        canvas.width = width * ratio;
-        canvas.height = height * ratio;
-        canvas.style.width = `${width / ratio}px`;
-        canvas.style.height = `${height / ratio}px`;
-
-        const context = canvas.getContext('2d');
-
-        if (!context) {
-          return;
-        }
-
-        context.scale(ratio, ratio);
-        context.clearRect(0, 0, canvas.width, canvas.height);
-
-        if (toggles.scaleBar) {
-          map.addControl(new maplibregl.ScaleControl({}), 'top-right');
-          const elem = document.querySelector(
-            '.maplibregl-ctrl-scale',
-          ) as HTMLElement;
-
-          if (elem) {
-            const html = document.createElement('div');
-
-            scalerBarLength = elem.offsetWidth;
-            html.style.width = `${elem.offsetWidth + 2}px`;
-            html.appendChild(elem);
-
-            document.body.appendChild(html);
-
-            const c = await html2canvas(html);
-            context.drawImage(
-              c,
-              activeLayers.width - (scaleBarGap + elem.offsetWidth) * ratio,
-              activeLayers.height -
-                (30 + (footerOverlayRef.current?.offsetHeight || 0)) * ratio,
-              html.offsetWidth * ratio,
-              html.offsetHeight * ratio,
-            );
-            document.body.removeChild(html);
-          }
-        }
-
-        if (toggles.northArrow) {
-          const image = new Image();
-          const imageWidth = 50 * ratio;
-          const imageHeight = 60 * ratio;
-
-          image.onload = () => {
-            context.drawImage(
-              image,
-              activeLayers.width -
-                (scaleBarGap + imageWidth / 4 + scalerBarLength / 2) * ratio,
-              activeLayers.height -
-                (110 + (footerOverlayRef.current?.offsetHeight || 0)) * ratio,
-              imageWidth,
-              imageHeight,
-            );
-          };
-          image.src = './images/icon_north_arrow.png';
-        }
-
-        canvasContainer.appendChild(canvas);
-      }
-    }
-    /* eslint-enable fp/no-mutation */
-    setElementsLoading(false);
-  };
-
-  // reload the canvas when the settings are changed
   React.useEffect(() => {
-    if (open) {
-      refreshImage();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [toggles, mapRef]);
+    updateMapLabelsVisibility();
+  }, [updateMapLabelsVisibility, toggles.countryMask, open]);
+
+  React.useEffect(() => {
+    updateScaleBarAndNorthArrow();
+  }, [footerText, updateScaleBarAndNorthArrow]);
 
   const handleDownloadMenuClose = () => {
     setDownloadMenuAnchorEl(null);
@@ -472,25 +410,26 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
                 }}
               >
                 <div ref={printRef} className={classes.printContainer}>
-                  <div
-                    ref={overlayContainerRef}
-                    className={classes.mapOverlay}
+                  <img
+                    ref={northArrowRef}
+                    style={{
+                      position: 'absolute',
+                      zIndex: 3,
+                      width: '50px',
+                      bottom: `${footerHeight + 40}px`,
+                      right: '10px',
+                    }}
+                    src="./images/icon_north_arrow.png"
+                    alt="northArrow"
                   />
-                  {elementsLoading && (
-                    <div className={classes.backdropWrapper}>
-                      <Backdrop className={classes.backdrop} open>
-                        <CircularProgress />
-                      </Backdrop>
-                    </div>
-                  )}
                   {titleText && (
-                    <div ref={titleOverlayRef} className={classes.titleOverlay}>
+                    <div ref={titleRef} className={classes.titleOverlay}>
                       {titleText}
                     </div>
                   )}
-                  {footerTextSize > 0 && (
+                  {footerTextSize > 0 && footerText && (
                     <div
-                      ref={footerOverlayRef}
+                      ref={footerRef}
                       className={classes.footerOverlay}
                       style={{
                         fontSize: `${footerTextSize}px`,
@@ -504,7 +443,7 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
                       style={{
                         position: 'absolute',
                         zIndex: 2,
-                        top: titleOverlayRef?.current?.offsetHeight || 0,
+                        top: titleHeight,
                         ...(legendPosition % 2 === 0
                           ? { left: '8px' }
                           : {
@@ -539,8 +478,13 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
                           latitude: selectedMap.getCenter().lat,
                           zoom: selectedMap.getZoom(),
                         }}
-                        onLoad={() => refreshImage()}
-                        onMove={() => debounceCallback(refreshImage)}
+                        onLoad={e => {
+                          e.target.addControl(
+                            new maplibregl.ScaleControl({}),
+                            'bottom-right',
+                          );
+                          updateScaleBarAndNorthArrow();
+                        }}
                         mapStyle={selectedMapStyle || mapStyle.toString()}
                         maxBounds={selectedMap.getMaxBounds() ?? undefined}
                       >
@@ -631,6 +575,15 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
                 />
               </div>
             )}
+
+            <ToggleSelector
+              value={mapLabelsVisibility}
+              options={mapLabelsVisibilityOptions}
+              setValue={val => {
+                setMapLabelsVisibility(val);
+              }}
+              title={t('Map Labels')}
+            />
 
             <ToggleSelector
               value={Number(toggles.fullLayerDescription)}
@@ -772,13 +725,6 @@ const styles = (theme: Theme) =>
       height: '100%',
       width: '100%',
       zIndex: 1,
-    },
-    mapOverlay: {
-      position: 'absolute',
-      top: 0,
-      left: 0,
-      zIndex: 2,
-      pointerEvents: 'none',
     },
     optionWrap: {
       display: 'flex',
