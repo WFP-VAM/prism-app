@@ -5,6 +5,7 @@ import {
   CircularProgress,
   Dialog,
   DialogContent,
+  Icon,
   IconButton,
   Menu,
   MenuItem,
@@ -16,7 +17,7 @@ import {
   makeStyles,
   withStyles,
 } from '@material-ui/core';
-import GetAppIcon from '@material-ui/icons/GetApp';
+import { GetApp, Cancel, Visibility, VisibilityOff } from '@material-ui/icons';
 import mask from '@turf/mask';
 import html2canvas from 'html2canvas';
 import { debounce } from 'lodash';
@@ -25,7 +26,6 @@ import maplibregl from 'maplibre-gl';
 import React, { useRef, useState } from 'react';
 import MapGL, { Layer, MapRef, Marker, Source } from 'react-map-gl/maplibre';
 import { useSelector } from 'react-redux';
-import { Cancel } from '@material-ui/icons';
 import { mapStyle } from 'components/MapView/Map';
 import { addFillPatternImagesInMap } from 'components/MapView/Layers/AdminLevelDataLayer';
 import { getFormattedDate } from 'utils/date-utils';
@@ -38,14 +38,12 @@ import {
 } from 'config/types';
 import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
 import ToggleButton from '@material-ui/lab/ToggleButton';
-import VisibilityOffIcon from '@material-ui/icons/VisibilityOff';
-import VisibilityIcon from '@material-ui/icons/Visibility';
 import { cyanBlue, lightGrey } from 'muiTheme';
+import { AAMarkersSelector } from 'context/anticipatoryActionStateSlice';
+import { useAAMarkerScalePercent } from 'utils/map-utils';
 import { SimpleBoundaryDropdown } from 'components/MapView/Layers/BoundaryDropdown';
 import { getBoundaryLayerSingleton } from 'config/utils';
 import { LayerData } from 'context/layers/layer-data';
-import { AAMarkersSelector } from 'context/anticipatoryActionStateSlice';
-import { useAAMarkerScalePercent } from 'utils/map-utils';
 import LegendItemsList from 'components/MapView/Legends/LegendItemsList';
 import {
   dateRangeSelector,
@@ -66,7 +64,14 @@ const debounceCallback = debounce((callback: any, ...args: any[]) => {
 interface ToggleSelectorProps {
   title: string;
   value: number;
-  options: { value: number; comp: React.JSX.Element; disabled?: boolean }[];
+  options: {
+    value: number;
+    comp:
+      | React.JSX.Element
+      | (({ value }: { value: number }) => React.JSX.Element);
+    disabled?: boolean;
+  }[];
+  iconProp?: number;
   setValue: (v: number) => void;
 }
 
@@ -84,6 +89,7 @@ function ToggleSelector({
   title,
   options,
   value,
+  iconProp,
   setValue,
 }: ToggleSelectorProps) {
   const classes = toggleSelectorStyles();
@@ -93,7 +99,6 @@ function ToggleSelector({
       <ToggleButtonGroup
         value={value}
         exclusive
-        onChange={(e, v) => setValue(v)}
         className={classes.buttonGroup}
       >
         {options.map(x => (
@@ -101,9 +106,14 @@ function ToggleSelector({
             key={x.value}
             className={classes.button}
             value={x.value}
+            onClick={() => setValue(x.value)}
             disabled={x.disabled}
           >
-            {x.comp}
+            {typeof x.comp === 'function' ? (
+              <x.comp value={Number(iconProp)} />
+            ) : (
+              x.comp
+            )}
           </ToggleButton>
         ))}
       </ToggleButtonGroup>
@@ -111,13 +121,25 @@ function ToggleSelector({
   );
 }
 
-const legendSelectorOptions = [
-  { value: -1, comp: <VisibilityOffIcon /> },
+const legendScaleSelectorOptions = [
+  { value: 0.5, comp: <div>50%</div> },
   { value: 0.4, comp: <div>60%</div> },
   { value: 0.3, comp: <div>70%</div> },
   { value: 0.2, comp: <div>80%</div> },
   { value: 0.1, comp: <div>90%</div> },
   { value: 0, comp: <div>100%</div> },
+];
+
+const legendPositionOptions = [
+  { value: -1, comp: <VisibilityOff /> },
+  {
+    value: 0,
+    comp: ({ value }: { value: number }) => (
+      <Icon style={{ color: 'black' }}>
+        {value % 2 === 0 ? 'switch_left' : 'switch_right'}
+      </Icon>
+    ),
+  },
 ];
 
 const mapWidthSelectorOptions = [
@@ -130,7 +152,7 @@ const mapWidthSelectorOptions = [
 ];
 
 const footerTextSelectorOptions = [
-  { value: 0, comp: <VisibilityOffIcon /> },
+  { value: 0, comp: <VisibilityOff /> },
   { value: 8, comp: <div style={{ fontSize: '8px' }}>Aa</div> },
   { value: 10, comp: <div style={{ fontSize: '10px' }}>Aa</div> },
   { value: 12, comp: <div style={{ fontSize: '12px' }}>Aa</div> },
@@ -139,13 +161,13 @@ const footerTextSelectorOptions = [
 ];
 
 const layerDescriptionSelectorOptions = [
-  { value: 0, comp: <VisibilityOffIcon /> },
-  { value: 1, comp: <VisibilityIcon /> },
+  { value: 0, comp: <VisibilityOff /> },
+  { value: 1, comp: <Visibility /> },
 ];
 
 const countryMaskSelectorOptions = [
-  { value: 1, comp: <VisibilityOffIcon /> },
-  { value: 0, comp: <VisibilityIcon /> },
+  { value: 1, comp: <VisibilityOff /> },
+  { value: 0, comp: <Visibility /> },
 ];
 
 const boundaryLayer = getBoundaryLayerSingleton();
@@ -185,11 +207,13 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
   const [elementsLoading, setElementsLoading] = React.useState(true);
   const [footerTextSize, setFooterTextSize] = React.useState(12);
   const [legendScale, setLegendScale] = React.useState(0);
+  const [legendPosition, setLegendPosition] = React.useState(0);
   // the % value of the original dimensions
   const [mapDimensions, setMapDimensions] = React.useState<{
     height: number;
     width: number;
   }>({ width: 100, height: 100 });
+  const [legendWidth, setLegendWidth] = React.useState(0);
 
   // Get the style and layers of the old map
   const selectedMapStyle = selectedMap?.getStyle();
@@ -355,7 +379,7 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
       refreshImage();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [toggles, legendScale, mapRef, footerTextSize, footerText, titleText]);
+  }, [toggles, mapRef]);
 
   const handleDownloadMenuClose = () => {
     setDownloadMenuAnchorEl(null);
@@ -480,19 +504,28 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
                       <div style={{ padding: '8px' }}>{footerText}</div>
                     </div>
                   )}
-                  {legendScale >= 0 && (
+                  {legendPosition !== -1 && (
                     <div
                       style={{
                         position: 'absolute',
                         zIndex: 2,
                         top: titleOverlayRef?.current?.offsetHeight || 0,
-                        left: 0,
+                        ...(legendPosition % 2 === 0
+                          ? { left: '8px' }
+                          : {
+                              right: `${legendWidth - 8}px`,
+                            }),
                         width: '20px',
                         // Use transform scale to adjust size based on legendScale
                         transform: `scale(${1 - legendScale})`,
                       }}
                     >
                       <LegendItemsList
+                        resizeCallback={e =>
+                          setLegendWidth(
+                            e[0].target.getBoundingClientRect().width,
+                          )
+                        }
                         forPrinting
                         listStyle={classes.legendListStyle}
                         showDescription={toggles.fullLayerDescription}
@@ -631,11 +664,29 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
             />
 
             <ToggleSelector
-              value={legendScale}
-              options={legendSelectorOptions}
-              setValue={setLegendScale}
-              title={t('Legend')}
+              value={legendPosition > -1 ? 0 : -1}
+              options={legendPositionOptions}
+              iconProp={legendPosition}
+              setValue={v =>
+                setLegendPosition(prev => (v === -1 ? -1 : prev + 1))
+              }
+              title={t('Legend Position')}
             />
+
+            <div
+              // disable the legend scale if the legend is not visible
+              style={{
+                opacity: legendPosition !== -1 ? 1 : 0.5,
+                pointerEvents: legendPosition !== -1 ? 'auto' : 'none',
+              }}
+            >
+              <ToggleSelector
+                value={legendScale}
+                options={legendScaleSelectorOptions}
+                setValue={setLegendScale}
+                title={t('Legend Size')}
+              />
+            </div>
 
             <ToggleSelector
               value={mapDimensions.width}
@@ -675,7 +726,7 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
               variant="contained"
               color="primary"
               className={classes.gutter}
-              endIcon={<GetAppIcon />}
+              endIcon={<GetApp />}
               onClick={e => handleDownloadMenuOpen(e)}
             >
               {t('Download')}
@@ -806,11 +857,12 @@ const styles = (theme: Theme) =>
       scrollbarGutter: 'stable',
       overflow: 'auto',
       paddingRight: '15px',
+      zIndex: 4,
+      backgroundColor: 'white',
     },
     legendListStyle: {
       position: 'absolute',
       top: '8px',
-      left: '8px',
       zIndex: 2,
     },
   });

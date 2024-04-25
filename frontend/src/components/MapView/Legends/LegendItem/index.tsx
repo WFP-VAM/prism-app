@@ -21,7 +21,7 @@ import {
   withStyles,
   WithStyles,
 } from '@material-ui/core';
-import { Cancel, Opacity, SwapVert } from '@material-ui/icons';
+import { Close, Opacity, SwapVert } from '@material-ui/icons';
 import { useDispatch, useSelector } from 'react-redux';
 import { LayerType, LegendDefinitionItem } from 'config/types';
 import { mapSelector, layersSelector } from 'context/mapStateSlice/selectors';
@@ -279,7 +279,7 @@ const LegendItem = memo(
                   )}
                   <Tooltip title="Remove layer">
                     <IconButton size="small" onClick={remove}>
-                      <Cancel fontSize="small" />
+                      <Close fontSize="small" />
                     </IconButton>
                   </Tooltip>
                 </>

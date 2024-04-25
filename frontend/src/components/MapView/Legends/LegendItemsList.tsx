@@ -13,9 +13,9 @@ import { createGetLegendGraphicUrl } from 'prism-common';
 import { useSafeTranslation } from 'i18n';
 import { List } from '@material-ui/core';
 import { AALayerId } from 'config/utils';
+import AALegend from '../LeftPanel/AnticipatoryActionPanel/AALegend';
 import LegendItem from './LegendItem';
 import LegendImpactResult from './LegendImpactResult';
-import AALegend from '../LeftPanel/AnticipatoryActionPanel/AALegend';
 
 // Invert the colors of the legend, first color becomes last and vice versa
 export const invertLegendColors = (
@@ -33,13 +33,15 @@ interface LegendItemsListProps {
   forPrinting?: boolean;
   listStyle?: string;
   showDescription?: boolean;
+  resizeCallback?: (entries: ResizeObserverEntry[]) => void;
 }
 
-function LegendItemsList({
+const LegendItemsList = ({
   listStyle,
+  resizeCallback,
   forPrinting = false,
   showDescription = true,
-}: LegendItemsListProps) {
+}: LegendItemsListProps) => {
   const { t } = useSafeTranslation();
   const isAnalysisLayerActive = useSelector(isAnalysisLayerActiveSelector);
   const analysisResult = useSelector(analysisResultSelector);
@@ -51,6 +53,21 @@ function LegendItemsList({
     () => selectedLayers.find(x => x.id === AALayerId),
     [selectedLayers],
   );
+  const listRef = React.useRef<HTMLUListElement>(null);
+
+  React.useEffect(() => {
+    const list = listRef?.current;
+    if (!list || !resizeCallback) {
+      return;
+    }
+
+    const observer = new ResizeObserver(resizeCallback);
+    observer.observe(list);
+    // eslint-disable-next-line consistent-return
+    return () => {
+      observer.disconnect();
+    };
+  }, [resizeCallback]);
 
   // If legend array is empty, we fetch from remote server the legend as GetLegendGraphic request.
   const getLayerLegendUrl = React.useCallback((layer: LayerType) => {
@@ -181,7 +198,11 @@ function LegendItemsList({
     showDescription,
   ]);
 
-  return <List className={listStyle}>{legendItems}</List>;
-}
+  return (
+    <List ref={listRef} className={listStyle}>
+      {legendItems}
+    </List>
+  );
+};
 
 export default LegendItemsList;
