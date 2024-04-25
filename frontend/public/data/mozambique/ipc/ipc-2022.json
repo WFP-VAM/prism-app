@@ -3,7 +3,7 @@
         {
             "adm2_id": 1022544,
             "adm1_id": 900949,
-            "ipcphase": 0,
+            "ipcphase": 1,
             "ph2_perc": 0,
             "ph3_perc": 0,
             "ph4_perc": 0,
@@ -603,7 +603,7 @@
         {
             "adm2_id": 1022694,
             "adm1_id": 900954,
-            "ipcphase": 0,
+            "ipcphase": 1,
             "ph2_perc": 0,
             "ph3_perc": 0,
             "ph4_perc": 0,
@@ -678,7 +678,7 @@
         {
             "adm2_id": 1022586,
             "adm1_id": 900955,
-            "ipcphase": 0,
+            "ipcphase": 1,
             "ph2_perc": 0,
             "ph3_perc": 0,
             "ph4_perc": 0,
