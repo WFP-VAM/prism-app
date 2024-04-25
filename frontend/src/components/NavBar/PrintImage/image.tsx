@@ -5,6 +5,7 @@ import {
   CircularProgress,
   Dialog,
   DialogContent,
+  Icon,
   IconButton,
   Menu,
   MenuItem,
@@ -16,9 +17,8 @@ import {
   makeStyles,
   withStyles,
 } from '@material-ui/core';
-import GetAppIcon from '@material-ui/icons/GetApp';
+import { GetApp, Cancel, Visibility, VisibilityOff } from '@material-ui/icons';
 import mask from '@turf/mask';
-import { legendListId } from 'components/MapView/Legends';
 import html2canvas from 'html2canvas';
 import { debounce } from 'lodash';
 import { jsPDF } from 'jspdf';
@@ -26,7 +26,6 @@ import maplibregl from 'maplibre-gl';
 import React, { useRef, useState } from 'react';
 import MapGL, { Layer, MapRef, Source } from 'react-map-gl/maplibre';
 import { useSelector } from 'react-redux';
-import { Cancel } from '@material-ui/icons';
 import { mapStyle } from 'components/MapView/Map';
 import { addFillPatternImagesInMap } from 'components/MapView/Layers/AdminLevelDataLayer';
 import { getFormattedDate } from 'utils/date-utils';
@@ -39,12 +38,11 @@ import {
 } from 'config/types';
 import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
 import ToggleButton from '@material-ui/lab/ToggleButton';
-import VisibilityOffIcon from '@material-ui/icons/VisibilityOff';
-import VisibilityIcon from '@material-ui/icons/Visibility';
-import { cyanBlue } from 'muiTheme';
+import { cyanBlue, gray } from 'muiTheme';
 import { SimpleBoundaryDropdown } from 'components/MapView/Layers/BoundaryDropdown';
 import { getBoundaryLayerSingleton } from 'config/utils';
 import { LayerData } from 'context/layers/layer-data';
+import LegendItemsList from 'components/MapView/Legends/LegendItemsList';
 import {
   dateRangeSelector,
   layerDataSelector,
@@ -64,7 +62,14 @@ const debounceCallback = debounce((callback: any, ...args: any[]) => {
 interface ToggleSelectorProps {
   title: string;
   value: number;
-  options: { value: number; comp: React.JSX.Element; disabled?: boolean }[];
+  options: {
+    value: number;
+    comp:
+      | React.JSX.Element
+      | (({ value }: { value: number }) => React.JSX.Element);
+    disabled?: boolean;
+  }[];
+  iconProp?: number;
   setValue: (v: number) => void;
 }
 
@@ -82,6 +87,7 @@ function ToggleSelector({
   title,
   options,
   value,
+  iconProp,
   setValue,
 }: ToggleSelectorProps) {
   const classes = toggleSelectorStyles();
@@ -91,7 +97,6 @@ function ToggleSelector({
       <ToggleButtonGroup
         value={value}
         exclusive
-        onChange={(e, v) => setValue(v)}
         className={classes.buttonGroup}
       >
         {options.map(x => (
@@ -99,9 +104,14 @@ function ToggleSelector({
             key={x.value}
             className={classes.button}
             value={x.value}
+            onClick={() => setValue(x.value)}
             disabled={x.disabled}
           >
-            {x.comp}
+            {typeof x.comp === 'function' ? (
+              <x.comp value={Number(iconProp)} />
+            ) : (
+              x.comp
+            )}
           </ToggleButton>
         ))}
       </ToggleButtonGroup>
@@ -109,13 +119,25 @@ function ToggleSelector({
   );
 }
 
-const legendSelectorOptions = [
-  { value: 0, comp: <VisibilityOffIcon /> },
-  { value: 60, comp: <div>60%</div> },
-  { value: 70, comp: <div>70%</div> },
-  { value: 80, comp: <div>80%</div> },
-  { value: 90, comp: <div>90%</div> },
-  { value: 100, comp: <div>100%</div> },
+const legendScaleSelectorOptions = [
+  { value: 0.5, comp: <div>50%</div> },
+  { value: 0.4, comp: <div>60%</div> },
+  { value: 0.3, comp: <div>70%</div> },
+  { value: 0.2, comp: <div>80%</div> },
+  { value: 0.1, comp: <div>90%</div> },
+  { value: 0, comp: <div>100%</div> },
+];
+
+const legendPositionOptions = [
+  { value: -1, comp: <VisibilityOff /> },
+  {
+    value: 0,
+    comp: ({ value }: { value: number }) => (
+      <Icon style={{ color: 'black' }}>
+        {value % 2 === 0 ? 'switch_left' : 'switch_right'}
+      </Icon>
+    ),
+  },
 ];
 
 const mapWidthSelectorOptions = [
@@ -128,7 +150,7 @@ const mapWidthSelectorOptions = [
 ];
 
 const footerTextSelectorOptions = [
-  { value: 0, comp: <VisibilityOffIcon /> },
+  { value: 0, comp: <VisibilityOff /> },
   { value: 8, comp: <div style={{ fontSize: '8px' }}>Aa</div> },
   { value: 10, comp: <div style={{ fontSize: '10px' }}>Aa</div> },
   { value: 12, comp: <div style={{ fontSize: '12px' }}>Aa</div> },
@@ -137,13 +159,13 @@ const footerTextSelectorOptions = [
 ];
 
 const layerDescriptionSelectorOptions = [
-  { value: 0, comp: <VisibilityOffIcon /> },
-  { value: 1, comp: <VisibilityIcon /> },
+  { value: 0, comp: <VisibilityOff /> },
+  { value: 1, comp: <Visibility /> },
 ];
 
 const countryMaskSelectorOptions = [
-  { value: 1, comp: <VisibilityOffIcon /> },
-  { value: 0, comp: <VisibilityIcon /> },
+  { value: 1, comp: <VisibilityOff /> },
+  { value: 0, comp: <Visibility /> },
 ];
 
 const boundaryLayer = getBoundaryLayerSingleton();
@@ -156,6 +178,7 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
   const printRef = useRef<HTMLDivElement>(null);
   const overlayContainerRef = useRef<HTMLDivElement>(null);
   const titleOverlayRef = useRef<HTMLDivElement>(null);
+  const footerOverlayRef = useRef<HTMLDivElement>(null);
   const boundaryLayerState = useSelector(
     layerDataSelector(boundaryLayer.id),
   ) as LayerData<BoundaryLayerProps> | undefined;
@@ -180,12 +203,14 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
   const [footerText, setFooterText] = React.useState('');
   const [elementsLoading, setElementsLoading] = React.useState(true);
   const [footerTextSize, setFooterTextSize] = React.useState(12);
-  const [legendScale, setLegendScale] = React.useState(100);
+  const [legendScale, setLegendScale] = React.useState(0);
+  const [legendPosition, setLegendPosition] = React.useState(0);
   // the % value of the original dimensions
   const [mapDimensions, setMapDimensions] = React.useState<{
     height: number;
     width: number;
   }>({ width: 100, height: 100 });
+  const [legendWidth, setLegendWidth] = React.useState(0);
 
   // Get the style and layers of the old map
   const selectedMapStyle = selectedMap?.getStyle();
@@ -244,25 +269,7 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
     setAdminBoundaryPolygon(masked as any);
   }, [data, selectedBoundaries, selectedBoundaries.length]);
 
-  const createFooterElement = (
-    inputFooterText: string = t(DEFAULT_FOOTER_TEXT),
-    width: number,
-    ratio: number,
-    fontSize: number,
-  ): HTMLDivElement => {
-    const footer = document.createElement('div');
-    // eslint-disable-next-line fp/no-mutation
-    footer.innerHTML = `
-      <div style='width:${
-        (width - 16) / ratio
-      }px;margin:8px;font-size:12px;padding-bottom:8px;font-size:${fontSize}px'>
-        ${inputFooterText}
-      </div>
-    `;
-    return footer;
-  };
-
-  const refreshImage = async (currentFooterText = footerText) => {
+  const refreshImage = async () => {
     /* eslint-disable fp/no-mutation */
     setElementsLoading(true);
     if (open && mapRef.current) {
@@ -287,7 +294,6 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
 
       const canvas = document.createElement('canvas');
       if (canvas) {
-        let footerTextHeight = 0;
         let scalerBarLength = 0;
         const scaleBarGap = 10;
 
@@ -310,80 +316,6 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
         context.scale(ratio, ratio);
         context.clearRect(0, 0, canvas.width, canvas.height);
 
-        // toggle legend
-        const div = document.getElementById(legendListId);
-        if (div?.firstChild && legendScale > 0) {
-          const childElements = Array.from(div.childNodes).filter(
-            node => node.nodeType === 1,
-          ) as HTMLElement[];
-
-          const target = document.createElement('div');
-          target.style.width = '196px'; // 180px + 2*8px padding
-
-          childElements.forEach((li: HTMLElement, i) => {
-            const isLast = childElements.length - 1 === i;
-
-            const children = Array.from(li.childNodes).filter(
-              // node type 1 represents an HTMLElement
-              node => node.nodeType === 1,
-            ) as HTMLElement[];
-            const divContainer = children[0] as HTMLElement;
-
-            const contents = Array.from(divContainer.childNodes).filter(
-              node => node.nodeType === 1,
-            ) as HTMLElement[];
-
-            const container = document.createElement('div');
-            container.style.padding = '8px';
-            container.style.paddingBottom = isLast ? '8px' : '16px';
-            target.appendChild(container);
-
-            const keepDivider = isLast ? 1 : 0;
-
-            contents
-              .slice(
-                0,
-                toggles.fullLayerDescription
-                  ? 6 - keepDivider
-                  : 4 - keepDivider,
-              )
-              .forEach(x => container.appendChild(x.cloneNode(true)));
-          });
-
-          document.body.appendChild(target);
-
-          const c = await html2canvas(target, { useCORS: true });
-          context.drawImage(
-            c,
-            24,
-            24 + (titleOverlayRef.current?.offsetHeight || 0),
-            (target.offsetWidth * legendScale * ratio) / 100.0,
-            (target.offsetHeight * legendScale * ratio) / 100.0,
-          );
-          document.body.removeChild(target);
-        }
-
-        // toggle footer
-        if (footerTextSize > 0) {
-          const footer = createFooterElement(
-            currentFooterText,
-            activeLayers.width,
-            ratio,
-            footerTextSize,
-          );
-          document.body.appendChild(footer);
-          const c = await html2canvas(footer);
-          footerTextHeight = footer.offsetHeight;
-          context.drawImage(
-            c,
-            0 * ratio,
-            activeLayers.height - footer.offsetHeight * ratio,
-            footer.offsetWidth * ratio,
-            footer.offsetHeight * ratio,
-          );
-          document.body.removeChild(footer);
-        }
-
         if (toggles.scaleBar) {
           map.addControl(new maplibregl.ScaleControl({}), 'top-right');
           const elem = document.querySelector(
@@ -404,7 +336,7 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
               c,
               activeLayers.width - (scaleBarGap + elem.offsetWidth) * ratio,
               activeLayers.height -
-                (30 + (footerTextSize > 0 ? footerTextHeight : 0)) * ratio,
+                (30 + (footerOverlayRef.current?.offsetHeight || 0)) * ratio,
               html.offsetWidth * ratio,
               html.offsetHeight * ratio,
             );
@@ -423,7 +355,7 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
               activeLayers.width -
                 (scaleBarGap + imageWidth / 4 + scalerBarLength / 2) * ratio,
               activeLayers.height -
-                (110 + (footerTextSize > 0 ? footerTextHeight : 0)) * ratio,
+                (110 + (footerOverlayRef.current?.offsetHeight || 0)) * ratio,
               imageWidth,
               imageHeight,
             );
@@ -444,7 +376,7 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
       refreshImage();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [toggles, legendScale, mapRef, footerTextSize, footerText, titleText]);
+  }, [toggles, mapRef]);
 
   const handleDownloadMenuClose = () => {
     setDownloadMenuAnchorEl(null);
@@ -554,6 +486,45 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
                   {titleText && (
                     <div ref={titleOverlayRef} className={classes.titleOverlay}>
                       {titleText}
+                    </div>
+                  )}
+                  {footerTextSize > 0 && (
+                    <div
+                      ref={footerOverlayRef}
+                      className={classes.footerOverlay}
+                      style={{
+                        fontSize: `${footerTextSize}px`,
+                      }}
+                    >
+                      <div style={{ padding: '8px' }}>{footerText}</div>
+                    </div>
+                  )}
+                  {legendPosition !== -1 && (
+                    <div
+                      style={{
+                        position: 'absolute',
+                        zIndex: 2,
+                        top: titleOverlayRef?.current?.offsetHeight || 0,
+                        ...(legendPosition % 2 === 0
+                          ? { left: '8px' }
+                          : {
+                              right: `${legendWidth - 8}px`,
+                            }),
+                        width: '20px',
+                        // Use transform scale to adjust size based on legendScale
+                        transform: `scale(${1 - legendScale})`,
+                      }}
+                    >
+                      <LegendItemsList
+                        resizeCallback={e =>
+                          setLegendWidth(
+                            e[0].target.getBoundingClientRect().width,
+                          )
+                        }
+                        forPrinting
+                        listStyle={classes.legendListStyle}
+                        showDescription={toggles.fullLayerDescription}
+                      />
                     </div>
                   )}
                   <div className={classes.mapContainer}>
@@ -674,11 +645,29 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
             />
 
             <ToggleSelector
-              value={legendScale}
-              options={legendSelectorOptions}
-              setValue={setLegendScale}
-              title={t('Legend')}
+              value={legendPosition > -1 ? 0 : -1}
+              options={legendPositionOptions}
+              iconProp={legendPosition}
+              setValue={v =>
+                setLegendPosition(prev => (v === -1 ? -1 : prev + 1))
+              }
+              title={t('Legend Position')}
             />
+
+            <div
+              // disable the legend scale if the legend is not visible
+              style={{
+                opacity: legendPosition !== -1 ? 1 : 0.5,
+                pointerEvents: legendPosition !== -1 ? 'auto' : 'none',
+              }}
+            >
+              <ToggleSelector
+                value={legendScale}
+                options={legendScaleSelectorOptions}
+                setValue={setLegendScale}
+                title={t('Legend Size')}
+              />
+            </div>
 
             <ToggleSelector
               value={mapDimensions.width}
@@ -718,7 +707,7 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
               variant="contained"
               color="primary"
               className={classes.gutter}
-              endIcon={<GetAppIcon />}
+              endIcon={<GetApp />}
               onClick={e => handleDownloadMenuOpen(e)}
             >
               {t('Download')}
@@ -807,6 +796,17 @@ const styles = (theme: Theme) =>
       textAlign: 'center',
       fontSize: '1.5rem',
       padding: '8px 0 8px 0',
+      borderBottom: `1px solid ${gray}`,
+    },
+    footerOverlay: {
+      position: 'absolute',
+      bottom: 0,
+      left: 0,
+      zIndex: 2,
+      color: 'black',
+      backgroundColor: 'white',
+      width: '100%',
+      borderTop: `1px solid ${gray}`,
     },
     formControl: {
       width: '100%',
@@ -838,6 +838,13 @@ const styles = (theme: Theme) =>
       scrollbarGutter: 'stable',
       overflow: 'auto',
       paddingRight: '15px',
+      zIndex: 4,
+      backgroundColor: 'white',
+    },
+    legendListStyle: {
+      position: 'absolute',
+      top: '8px',
+      zIndex: 2,
     },
   });
 
