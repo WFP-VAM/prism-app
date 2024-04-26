@@ -6,6 +6,7 @@ const greyBlue: string = '#5A686C';
 const darkGreyBlue: string = '#2D3436';
 const white = '#FFFFFF';
 const midnightSlate = '#323638';
+export const gray = '#F1F1F1';
 export const lightGrey = '#F1F1F1';
 export const grey = '#CCCCCC';
 export const black = '#101010';
