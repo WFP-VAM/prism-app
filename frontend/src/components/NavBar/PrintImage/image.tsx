@@ -18,7 +18,7 @@ import {
 import { GetApp, Cancel, Visibility, VisibilityOff } from '@material-ui/icons';
 import mask from '@turf/mask';
 import html2canvas from 'html2canvas';
-import { debounce } from 'lodash';
+import { debounce, get } from 'lodash';
 import { jsPDF } from 'jspdf';
 import maplibregl from 'maplibre-gl';
 import React, { useRef, useState } from 'react';
@@ -44,8 +44,7 @@ import {
 import { useSafeTranslation } from '../../../i18n';
 import { downloadToFile } from '../../MapView/utils';
 
-const DEFAULT_FOOTER_TEXT =
-  'The designations employed and the presentation of material in the map(s) do not imply the expression of any opinion on the part of WFP concerning the legal of constitutional status of any country, territory, city, or sea, or concerning the delimitation of its frontiers or boundaries.';
+const defaultFooterText = get(appConfig, 'printConfig.defaultFooterText', '');
 
 // Debounce changes so that we don't redraw on every keystroke.
 const debounceCallback = debounce((callback: any, ...args: any[]) => {
@@ -200,7 +199,7 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
     AdminCodeString[]
   >([]);
   const [titleText, setTitleText] = React.useState<string>(country);
-  const [footerText, setFooterText] = React.useState('');
+  const [footerText, setFooterText] = React.useState(defaultFooterText);
   const [footerTextSize, setFooterTextSize] = React.useState(12);
   const [legendScale, setLegendScale] = React.useState(0);
   const [legendPosition, setLegendPosition] = React.useState(0);
@@ -228,50 +227,32 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
     );
   }
 
-  const defaultFooterText = React.useMemo(() => {
-    const getDateText = (): string => {
-      if (!dateRange || !dateRange.startDate) {
-        return '';
-      }
-      return `${t('Layers represent data')} ${
-        dateRange.startDate && dateRange.endDate
-          ? `${t('from')} ${getFormattedDate(
-              dateRange.startDate,
-              'default',
-            )} ${t('to')} ${getFormattedDate(dateRange.endDate, 'default')}`
-          : `${t('on')} ${getFormattedDate(dateRange.startDate, 'default')}`
-      }. `;
-    };
-    return `${getDateText()}${t(DEFAULT_FOOTER_TEXT)}`;
-  }, [t, dateRange]);
-
   const updateScaleBarAndNorthArrow = React.useCallback(() => {
     const elem = document.querySelector(
       '.maplibregl-ctrl-scale',
     ) as HTMLElement;
+
+    // this takes into account the watermark
+    const baseHeight = footerHeight || 20;
 
     if (elem) {
       // eslint-disable-next-line fp/no-mutating-assign
       Object.assign(elem.style, {
         position: 'absolute',
         right: '10px',
-        bottom: `${footerHeight + 10}px`,
+        bottom: `${baseHeight + 10}px`,
         margin: 0,
       });
     }
 
     if (northArrowRef.current) {
-      northArrowRef.current.style.bottom = `${footerHeight + 40}px`;
+      northArrowRef.current.style.bottom = `${baseHeight + 40}px`;
     }
   }, [footerHeight]);
 
   React.useEffect(() => {
     updateScaleBarAndNorthArrow();
   }, [updateScaleBarAndNorthArrow]);
-
-  React.useEffect(() => {
-    setFooterText(defaultFooterText);
-  }, [defaultFooterText]);
 
   const [invertedAdminBoundaryLimitPolygon, setAdminBoundaryPolygon] = useState(
     null,
