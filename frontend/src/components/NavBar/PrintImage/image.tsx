@@ -190,8 +190,7 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
   const [toggles, setToggles] = React.useState({
     fullLayerDescription: true,
     countryMask: false,
-    scaleBar: true,
-    northArrow: true,
+    mapLabelsVisibility: true,
   });
   const [
     downloadMenuAnchorEl,
@@ -211,7 +210,6 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
     width: number;
   }>({ width: 100, height: 100 });
   const [legendWidth, setLegendWidth] = React.useState(0);
-  const [mapLabelsVisibility, setMapLabelsVisibility] = React.useState(1);
   const [footerRef, { height: footerHeight }] = useResizeObserver<
     HTMLDivElement
   >(footerText, open);
@@ -223,7 +221,7 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
   // Get the style and layers of the old map
   const selectedMapStyle = selectedMap?.getStyle();
 
-  if (selectedMapStyle && !mapLabelsVisibility) {
+  if (selectedMapStyle && !toggles.mapLabelsVisibility) {
     // eslint-disable-next-line fp/no-mutation
     selectedMapStyle.layers = selectedMapStyle?.layers.filter(
       x => !x.id.includes('label'),
@@ -543,11 +541,14 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
               />
 
               <ToggleSelector
-                value={mapLabelsVisibility}
+                value={Number(toggles.mapLabelsVisibility)}
                 options={mapLabelsVisibilityOptions}
-                setValue={val => {
-                  setMapLabelsVisibility(val);
-                }}
+                setValue={val =>
+                  setToggles(prev => ({
+                    ...prev,
+                    mapLabelsVisibility: Boolean(val),
+                  }))
+                }
                 align="end"
                 title={t('Map Labels')}
               />
