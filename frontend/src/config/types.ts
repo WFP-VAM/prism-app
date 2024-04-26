@@ -335,6 +335,7 @@ export type DatasetLevel = {
   level: string; // Administrative boundary level.
   id: string; // Geojson property field for admin boundary id.
   name: string; // Geojson property field for admin boundary name.
+  localName?: string; // / Geojson property field for admin boundary local name.
 };
 
 export enum ChartType {

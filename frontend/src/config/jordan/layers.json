@@ -462,12 +462,14 @@
         {
           "level": "1",
           "id": "dataviz_adm1_id",
-          "name": "admin1Name"
+          "name": "admin1Name",
+          "localName": "admin1Na_1"
         },
         {
           "level": "2",
           "id": "dataviz_adm2_id",
-          "name": "admin2Name"
+          "name": "admin2Name",
+          "localName": "admin2Na_1"
         }
       ],
       "type": "bar"
@@ -584,12 +586,14 @@
         {
           "level": "1",
           "id": "dataviz_adm1_id",
-          "name": "admin1Name"
+          "name": "admin1Name",
+          "localName": "admin1Na_1"
         },
         {
           "level": "2",
           "id": "dataviz_adm2_id",
-          "name": "admin2Name"
+          "name": "admin2Name",
+          "localName": "admin2Na_1"
         }
       ],
       "type": "line"
@@ -696,12 +700,14 @@
         {
           "level": "1",
           "id": "dataviz_adm1_id",
-          "name": "admin1Name"
+          "name": "admin1Name",
+          "localName": "admin1Na_1"
         },
         {
           "level": "2",
           "id": "dataviz_adm2_id",
-          "name": "admin2Name"
+          "name": "admin2Name",
+          "localName": "admin2Na_1"
         }
       ],
       "type": "bar"
@@ -817,12 +823,14 @@
         {
           "level": "1",
           "id": "dataviz_adm1_id",
-          "name": "admin1Name"
+          "name": "admin1Name",
+          "localName": "admin1Na_1"
         },
         {
           "level": "2",
           "id": "dataviz_adm2_id",
-          "name": "admin2Name"
+          "name": "admin2Name",
+          "localName": "admin2Na_1"
         }
       ],
       "type": "line"
@@ -928,12 +936,14 @@
         {
           "level": "1",
           "id": "dataviz_adm1_id",
-          "name": "admin1Name"
+          "name": "admin1Name",
+          "localName": "admin1Na_1"
         },
         {
           "level": "2",
           "id": "dataviz_adm2_id",
-          "name": "admin2Name"
+          "name": "admin2Name",
+          "localName": "admin2Na_1"
         }
       ],
       "type": "bar"
@@ -1050,12 +1060,14 @@
         {
           "level": "1",
           "id": "dataviz_adm1_id",
-          "name": "admin1Name"
+          "name": "admin1Name",
+          "localName": "admin1Na_1"
         },
         {
           "level": "2",
           "id": "dataviz_adm2_id",
-          "name": "admin2Name"
+          "name": "admin2Name",
+          "localName": "admin2Na_1"
         }
       ],
       "type": "line"
@@ -2297,12 +2309,14 @@
         {
           "level": "1",
           "id": "dataviz_adm1_id",
-          "name": "admin1Name"
+          "name": "admin1Name",
+          "localName": "admin1Na_1"
         },
         {
           "level": "2",
           "id": "dataviz_adm2_id",
-          "name": "admin2Name"
+          "name": "admin2Name",
+          "localName": "admin2Na_1"
         }
       ],
       "type": "line"
@@ -2416,12 +2430,14 @@
         {
           "level": "1",
           "id": "dataviz_adm1_id",
-          "name": "admin1Name"
+          "name": "admin1Name",
+          "localName": "admin1Na_1"
         },
         {
           "level": "2",
           "id": "dataviz_adm2_id",
-          "name": "admin2Name"
+          "name": "admin2Name",
+          "localName": "admin2Na_1"
         }
       ],
       "type": "line"

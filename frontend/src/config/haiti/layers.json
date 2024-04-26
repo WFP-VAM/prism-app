@@ -433,12 +433,14 @@
         {
           "level": "1",
           "id": "dv_adm1_id",
-          "name": "ADM1_EN"
+          "name": "ADM1_EN",
+          "localName": "ADM1_FR"
         },
         {
           "level": "2",
           "id": "dv_adm2_id",
-          "name": "ADM2_EN"
+          "name": "ADM2_EN",
+          "localName": "ADM2_FR"
         }
       ],
       "type": "bar"
@@ -558,12 +560,14 @@
         {
           "level": "1",
           "id": "dv_adm1_id",
-          "name": "ADM1_EN"
+          "name": "ADM1_EN",
+          "localName": "ADM1_FR"
         },
         {
           "level": "2",
           "id": "dv_adm2_id",
-          "name": "ADM2_EN"
+          "name": "ADM2_EN",
+          "localName": "ADM2_FR"
         }
       ],
       "type": "line"
@@ -668,12 +672,14 @@
         {
           "level": "1",
           "id": "dv_adm1_id",
-          "name": "ADM1_EN"
+          "name": "ADM1_EN",
+          "localName": "ADM1_FR"
         },
         {
           "level": "2",
           "id": "dv_adm2_id",
-          "name": "ADM2_EN"
+          "name": "ADM2_EN",
+          "localName": "ADM2_FR"
         }
       ],
       "type": "bar"
@@ -792,12 +798,14 @@
         {
           "level": "1",
           "id": "dv_adm1_id",
-          "name": "ADM1_EN"
+          "name": "ADM1_EN",
+          "localName": "ADM1_FR"
         },
         {
           "level": "2",
           "id": "dv_adm2_id",
-          "name": "ADM2_EN"
+          "name": "ADM2_EN",
+          "localName": "ADM2_FR"
         }
       ],
       "type": "line"
@@ -903,12 +911,14 @@
         {
           "level": "1",
           "id": "dv_adm1_id",
-          "name": "ADM1_EN"
+          "name": "ADM1_EN",
+          "localName": "ADM1_FR"
         },
         {
           "level": "2",
           "id": "dv_adm2_id",
-          "name": "ADM2_EN"
+          "name": "ADM2_EN",
+          "localName": "ADM2_FR"
         }
       ],
       "type": "bar"
@@ -1026,12 +1036,14 @@
         {
           "level": "1",
           "id": "dv_adm1_id",
-          "name": "ADM1_EN"
+          "name": "ADM1_EN",
+          "localName": "ADM1_FR"
         },
         {
           "level": "2",
           "id": "dv_adm2_id",
-          "name": "ADM2_EN"
+          "name": "ADM2_EN",
+          "localName": "ADM2_FR"
         }
       ],
       "type": "line"
@@ -2558,12 +2570,14 @@
         {
           "level": "1",
           "id": "dv_adm1_id",
-          "name": "ADM1_EN"
+          "name": "ADM1_EN",
+          "localName": "ADM1_FR"
         },
         {
           "level": "2",
           "id": "dv_adm2_id",
-          "name": "ADM2_EN"
+          "name": "ADM2_EN",
+          "localName": "ADM2_FR"
         }
       ],
       "type": "line"
@@ -2672,12 +2686,14 @@
         {
           "level": "1",
           "id": "dv_adm1_id",
-          "name": "ADM1_EN"
+          "name": "ADM1_EN",
+          "localName": "ADM1_FR"
         },
         {
           "level": "2",
           "id": "dv_adm2_id",
-          "name": "ADM2_EN"
+          "name": "ADM2_EN",
+          "localName": "ADM2_FR"
         }
       ],
       "type": "line"

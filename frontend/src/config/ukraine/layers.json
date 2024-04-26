@@ -218,12 +218,14 @@
         {
           "path": "level1",
           "id": "adm1_id",
-          "name": "ADM1_EN"
+          "name": "ADM1_EN",
+          "localName": "ADM1_UA"
         },
         {
           "path": "level2",
           "id": "adm2_id",
-          "name": "ADM2_EN"
+          "name": "ADM2_EN",
+          "localName": "ADM2_UA"
         }
       ],
       "type": "bar"
