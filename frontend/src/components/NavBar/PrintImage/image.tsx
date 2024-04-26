@@ -44,14 +44,6 @@ import {
 import { useSafeTranslation } from '../../../i18n';
 import { downloadToFile } from '../../MapView/utils';
 
-const mapLabelLayers = [
-  'label_airport',
-  'label_place_other',
-  'label_place_city',
-  'label_country_other',
-  'label_country',
-];
-
 const DEFAULT_FOOTER_TEXT =
   'The designations employed and the presentation of material in the map(s) do not imply the expression of any opinion on the part of WFP concerning the legal of constitutional status of any country, territory, city, or sea, or concerning the delimitation of its frontiers or boundaries.';
 
@@ -71,12 +63,13 @@ interface ToggleSelectorProps {
     disabled?: boolean;
   }[];
   iconProp?: number;
+  align?: 'start' | 'end';
   setValue: (v: number) => void;
 }
 
 const toggleSelectorStyles = makeStyles(() => ({
   wrapper: { display: 'flex', flexDirection: 'column', gap: '0.6rem' },
-  buttonGroup: { gap: '4px' },
+  buttonGroup: { display: 'flex', gap: '4px' },
   button: {
     height: '40px',
     width: '48px',
@@ -89,16 +82,20 @@ function ToggleSelector({
   options,
   value,
   iconProp,
+  align,
   setValue,
 }: ToggleSelectorProps) {
   const classes = toggleSelectorStyles();
   return (
     <div className={classes.wrapper}>
-      <Typography variant="h4">{title}</Typography>
+      <Typography variant="h4" style={{ textAlign: align }}>
+        {title}
+      </Typography>
       <ToggleButtonGroup
         value={value}
         exclusive
         className={classes.buttonGroup}
+        style={{ justifyContent: align }}
       >
         {options.map(x => (
           <ToggleButton
@@ -226,6 +223,13 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
   // Get the style and layers of the old map
   const selectedMapStyle = selectedMap?.getStyle();
 
+  if (selectedMapStyle && !mapLabelsVisibility) {
+    // eslint-disable-next-line fp/no-mutation
+    selectedMapStyle.layers = selectedMapStyle?.layers.filter(
+      x => !x.id.includes('label'),
+    );
+  }
+
   const defaultFooterText = React.useMemo(() => {
     const getDateText = (): string => {
       if (!dateRange || !dateRange.startDate) {
@@ -263,18 +267,9 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
     }
   }, [footerHeight]);
 
-  const updateMapLabelsVisibility = React.useCallback(() => {
-    const map = mapRef.current?.getMap();
-    if (!map) {
-      return;
-    }
-
-    mapLabelLayers.forEach(label => {
-      map.setPaintProperty(label, 'text-opacity', mapLabelsVisibility);
-      // eslint-disable-next-line no-underscore-dangle
-      map.style._updateLayer(label as any);
-    });
-  }, [mapLabelsVisibility]);
+  React.useEffect(() => {
+    updateScaleBarAndNorthArrow();
+  }, [updateScaleBarAndNorthArrow]);
 
   React.useEffect(() => {
     setFooterText(defaultFooterText);
@@ -307,14 +302,6 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
     const masked = mask(filteredData as any);
     setAdminBoundaryPolygon(masked as any);
   }, [data, selectedBoundaries, selectedBoundaries.length]);
-
-  React.useEffect(() => {
-    updateMapLabelsVisibility();
-  }, [updateMapLabelsVisibility, toggles.countryMask, open]);
-
-  React.useEffect(() => {
-    updateScaleBarAndNorthArrow();
-  }, [footerText, updateScaleBarAndNorthArrow]);
 
   const handleDownloadMenuClose = () => {
     setDownloadMenuAnchorEl(null);
@@ -455,11 +442,7 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
                       }}
                     >
                       <LegendItemsList
-                        resizeCallback={e =>
-                          setLegendWidth(
-                            e[0].target.getBoundingClientRect().width,
-                          )
-                        }
+                        resizeCallback={({ width }) => setLegendWidth(width)}
                         forPrinting
                         listStyle={classes.legendListStyle}
                         showDescription={toggles.fullLayerDescription}
@@ -546,17 +529,29 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
               />
             </div>
 
-            <ToggleSelector
-              value={Number(toggles.countryMask)}
-              options={countryMaskSelectorOptions}
-              setValue={val =>
-                setToggles(prev => ({
-                  ...prev,
-                  countryMask: Boolean(val),
-                }))
-              }
-              title={t('Mask data outside of admin area')}
-            />
+            <div className={classes.sameRowToggles}>
+              <ToggleSelector
+                value={Number(toggles.countryMask)}
+                options={countryMaskSelectorOptions}
+                setValue={val =>
+                  setToggles(prev => ({
+                    ...prev,
+                    countryMask: Boolean(val),
+                  }))
+                }
+                title={t('Admin area mask')}
+              />
+
+              <ToggleSelector
+                value={mapLabelsVisibility}
+                options={mapLabelsVisibilityOptions}
+                setValue={val => {
+                  setMapLabelsVisibility(val);
+                }}
+                align="end"
+                title={t('Map Labels')}
+              />
+            </div>
 
             {toggles.countryMask && (
               <div className={classes.optionWrap}>
@@ -576,36 +571,30 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
               </div>
             )}
 
-            <ToggleSelector
-              value={mapLabelsVisibility}
-              options={mapLabelsVisibilityOptions}
-              setValue={val => {
-                setMapLabelsVisibility(val);
-              }}
-              title={t('Map Labels')}
-            />
+            <div className={classes.sameRowToggles}>
+              <ToggleSelector
+                value={legendPosition > -1 ? 0 : -1}
+                options={legendPositionOptions}
+                iconProp={legendPosition}
+                setValue={v =>
+                  setLegendPosition(prev => (v === -1 ? -1 : prev + 1))
+                }
+                title={t('Legend Position')}
+              />
 
-            <ToggleSelector
-              value={Number(toggles.fullLayerDescription)}
-              options={layerDescriptionSelectorOptions}
-              setValue={val =>
-                setToggles(prev => ({
-                  ...prev,
-                  fullLayerDescription: Boolean(val),
-                }))
-              }
-              title={t('Legend - Full Layer Description')}
-            />
-
-            <ToggleSelector
-              value={legendPosition > -1 ? 0 : -1}
-              options={legendPositionOptions}
-              iconProp={legendPosition}
-              setValue={v =>
-                setLegendPosition(prev => (v === -1 ? -1 : prev + 1))
-              }
-              title={t('Legend Position')}
-            />
+              <ToggleSelector
+                value={Number(toggles.fullLayerDescription)}
+                options={layerDescriptionSelectorOptions}
+                setValue={val =>
+                  setToggles(prev => ({
+                    ...prev,
+                    fullLayerDescription: Boolean(val),
+                  }))
+                }
+                align="end"
+                title={t('Full Layer Description')}
+              />
+            </div>
 
             <div
               // disable the legend scale if the legend is not visible
@@ -791,6 +780,11 @@ const styles = (theme: Theme) =>
       position: 'absolute',
       top: '8px',
       zIndex: 2,
+    },
+    sameRowToggles: {
+      display: 'flex',
+      flexDirection: 'row',
+      justifyContent: 'space-between',
     },
   });
 
