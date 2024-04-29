@@ -525,14 +525,12 @@
         {
           "level": "1",
           "id": "dv_adm1_id",
-          "name": "ST",
-          "localName": "ST_MMR"
+          "name": "ST"
         },
         {
           "level": "2",
           "id": "dv_adm2_id",
-          "name": "DT",
-          "localName": "DT_MMR"
+          "name": "DT"
         }
       ],
       "type": "bar"
@@ -581,14 +579,12 @@
         {
           "level": "1",
           "id": "dv_adm1_id",
-          "name": "ST",
-          "localName": "ST_MMR"
+          "name": "ST"
         },
         {
           "level": "2",
           "id": "dv_adm2_id",
-          "name": "DT",
-          "localName": "DT_MMR"
+          "name": "DT"
         }
       ],
       "type": "line"
@@ -631,14 +627,12 @@
         {
           "level": "1",
           "id": "dv_adm1_id",
-          "name": "ST",
-          "localName": "ST_MMR"
+          "name": "ST"
         },
         {
           "level": "2",
           "id": "dv_adm2_id",
-          "name": "DT",
-          "localName": "DT_MMR"
+          "name": "DT"
         }
       ],
       "type": "bar"
@@ -686,14 +680,12 @@
         {
           "level": "1",
           "id": "dv_adm1_id",
-          "name": "ST",
-          "localName": "ST_MMR"
+          "name": "ST"
         },
         {
           "level": "2",
           "id": "dv_adm2_id",
-          "name": "DT",
-          "localName": "DT_MMR"
+          "name": "DT"
         }
       ],
       "type": "line"
@@ -735,14 +727,12 @@
         {
           "level": "1",
           "id": "dv_adm1_id",
-          "name": "ST",
-          "localName": "ST_MMR"
+          "name": "ST"
         },
         {
           "level": "2",
           "id": "dv_adm2_id",
-          "name": "DT",
-          "localName": "DT_MMR"
+          "name": "DT"
         }
       ],
       "type": "bar"
@@ -792,14 +782,12 @@
         {
           "level": "1",
           "id": "dv_adm1_id",
-          "name": "ST",
-          "localName": "ST_MMR"
+          "name": "ST"
         },
         {
           "level": "2",
           "id": "dv_adm2_id",
-          "name": "DT",
-          "localName": "DT_MMR"
+          "name": "DT"
         }
       ],
       "type": "line"
@@ -1580,14 +1568,12 @@
         {
           "level": "1",
           "id": "dv_adm1_id",
-          "name": "ST",
-          "localName": "ST_MMR"
+          "name": "ST"
         },
         {
           "level": "2",
           "id": "dv_adm2_id",
-          "name": "DT",
-          "localName": "DT_MMR"
+          "name": "DT"
         }
       ],
       "type": "line"
@@ -1640,14 +1626,12 @@
         {
           "level": "1",
           "id": "dv_adm1_id",
-          "name": "ST",
-          "localName": "ST_MMR"
+          "name": "ST"
         },
         {
           "level": "2",
           "id": "dv_adm2_id",
-          "name": "DT",
-          "localName": "DT_MMR"
+          "name": "DT"
         }
       ],
       "type": "line"

@@ -238,14 +238,12 @@
         {
           "level": "1",
           "id": "dataviz_adm1_id",
-          "name": "Adm1_Name",
-          "localName": "Adm1_Name_"
+          "name": "Adm1_Name"
         },
         {
           "level": "2",
           "id": "dataviz_adm2_id",
-          "name": "Adm2_Name",
-          "localName": "Adm2_Name_"
+          "name": "Adm2_Name"
         }
       ],
       "type": "bar"
@@ -298,14 +296,12 @@
         {
           "level": "1",
           "id": "dataviz_adm1_id",
-          "name": "Adm1_Name",
-          "localName": "Adm1_Name_"
+          "name": "Adm1_Name"
         },
         {
           "level": "2",
           "id": "dataviz_adm2_id",
-          "name": "Adm2_Name",
-          "localName": "Adm2_Name_"
+          "name": "Adm2_Name"
         }
       ],
       "type": "line"
@@ -352,14 +348,12 @@
         {
           "level": "1",
           "id": "dataviz_adm1_id",
-          "name": "Adm1_Name",
-          "localName": "Adm1_Name_"
+          "name": "Adm1_Name"
         },
         {
           "level": "2",
           "id": "dataviz_adm2_id",
-          "name": "Adm2_Name",
-          "localName": "Adm2_Name_"
+          "name": "Adm2_Name"
         }
       ],
       "type": "line"
@@ -407,14 +401,12 @@
         {
           "level": "1",
           "id": "dataviz_adm1_id",
-          "name": "Adm1_Name",
-          "localName": "Adm1_Name_"
+          "name": "Adm1_Name"
         },
         {
           "level": "2",
           "id": "dataviz_adm2_id",
-          "name": "Adm2_Name",
-          "localName": "Adm2_Name_"
+          "name": "Adm2_Name"
         }
       ],
       "type": "line"
@@ -540,14 +532,12 @@
         {
           "level": "1",
           "id": "dataviz_adm1_id",
-          "name": "Adm1_Name",
-          "localName": "Adm1_Name_"
+          "name": "Adm1_Name"
         },
         {
           "level": "2",
           "id": "dataviz_adm2_id",
-          "name": "Adm2_Name",
-          "localName": "Adm2_Name_"
+          "name": "Adm2_Name"
         }
       ],
       "type": "bar"
@@ -590,14 +580,12 @@
         {
           "level": "1",
           "id": "dataviz_adm1_id",
-          "name": "Adm1_Name",
-          "localName": "Adm1_Name_"
+          "name": "Adm1_Name"
         },
         {
           "level": "2",
           "id": "dataviz_adm2_id",
-          "name": "Adm2_Name",
-          "localName": "Adm2_Name_"
+          "name": "Adm2_Name"
         }
       ],
       "type": "bar"
@@ -1297,14 +1285,12 @@
         {
           "level": "1",
           "id": "dataviz_adm1_id",
-          "name": "Adm1_Name",
-          "localName": "Adm1_Name_"
+          "name": "Adm1_Name"
         },
         {
           "level": "2",
           "id": "dataviz_adm2_id",
-          "name": "Adm2_Name",
-          "localName": "Adm2_Name_"
+          "name": "Adm2_Name"
         }
       ],
       "type": "line"
@@ -1357,14 +1343,12 @@
         {
           "level": "1",
           "id": "dataviz_adm1_id",
-          "name": "Adm1_Name",
-          "localName": "Adm1_Name_"
+          "name": "Adm1_Name"
         },
         {
           "level": "2",
           "id": "dataviz_adm2_id",
-          "name": "Adm2_Name",
-          "localName": "Adm2_Name_"
+          "name": "Adm2_Name"
         }
       ],
       "type": "line"
