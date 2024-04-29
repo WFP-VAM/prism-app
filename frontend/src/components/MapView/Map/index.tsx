@@ -23,7 +23,7 @@ import {
   getLayerMapId,
   isLayerOnView,
 } from 'utils/map-utils';
-import { mapSelector } from 'context/mapStateSlice/selectors';
+import { mapSelector, mapStyleSelector } from 'context/mapStateSlice/selectors';
 import {
   AdminLevelDataLayer,
   BoundaryLayer,
@@ -50,7 +50,7 @@ type LayerComponentsMap<U extends LayerType> = {
   };
 };
 
-export const mapStyle = new URL(
+export const fallbackMapStyle = new URL(
   process.env.REACT_APP_DEFAULT_STYLE ||
     'https://api.maptiler.com/maps/0ad52f6b-ccf2-4a36-a9b8-7ebd8365e56f/style.json?key=y2DTSu9yWiu755WByJr3',
 );
@@ -78,6 +78,7 @@ const MapComponent = memo(({ setIsAlertFormOpen }: MapComponentProps) => {
 
   const selectedMap = useSelector(mapSelector);
   const tabValue = useSelector(leftPanelTabValueSelector);
+  const mapStyle = useSelector(mapStyleSelector);
 
   const panelHidden = tabValue === Panel.None;
 
@@ -228,7 +229,7 @@ const MapComponent = memo(({ setIsAlertFormOpen }: MapComponentProps) => {
         bounds: boundingBox,
         fitBoundsOptions: { padding: fitBoundsOptions.padding },
       }}
-      mapStyle={mapStyle.toString()}
+      mapStyle={mapStyle?.url || fallbackMapStyle.toString()}
       onLoad={onMapLoad}
       onClick={mapOnClick()}
       maxBounds={maxBounds}

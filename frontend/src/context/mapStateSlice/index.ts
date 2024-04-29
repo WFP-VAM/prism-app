@@ -9,6 +9,17 @@ import {
 import { BoundaryRelationsDict } from 'components/Common/BoundaryDropdown/utils';
 import { keepLayer } from 'utils/keep-layer-utils';
 import { Map as MaplibreMap } from 'maplibre-gl';
+import { appConfig } from 'config';
+import { get } from 'lodash';
+
+export interface MapStyle {
+  id: string;
+  label: string;
+  url: string;
+  default?: boolean;
+}
+
+const mapStyles: MapStyle[] = get(appConfig, 'mapStyles', []);
 
 interface DateRange {
   startDate?: number;
@@ -18,6 +29,7 @@ interface DateRange {
 
 export type MapState = {
   layers: LayerType[];
+  mapStyle: MapStyle | undefined;
   dateRange: DateRange;
   maplibreMap: MapGetter;
   errors: string[];
@@ -37,6 +49,7 @@ type MapGetter = () => MaplibreMap | undefined;
 
 const initialState: MapState = {
   layers: [],
+  mapStyle: mapStyles?.find(x => x.default),
   dateRange: {} as DateRange,
   maplibreMap: (() => {}) as MapGetter,
   errors: [],
@@ -160,6 +173,11 @@ export const mapStateSlice = createSlice({
       ...rest,
       errors: errors.filter(msg => msg !== payload),
     }),
+
+    setMapStyle: (state, { payload }: PayloadAction<MapStyle>) => ({
+      ...state,
+      mapStyle: payload,
+    }),
   },
   extraReducers: builder => {
     builder.addCase(
@@ -205,6 +223,7 @@ export const {
   setMap,
   removeLayerData,
   setBoundaryRelationData,
+  setMapStyle,
 } = mapStateSlice.actions;
 
 export default mapStateSlice.reducer;

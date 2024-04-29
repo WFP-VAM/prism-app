@@ -26,7 +26,6 @@ import maplibregl from 'maplibre-gl';
 import React, { useRef, useState } from 'react';
 import MapGL, { Layer, MapRef, Source } from 'react-map-gl/maplibre';
 import { useSelector } from 'react-redux';
-import { mapStyle } from 'components/MapView/Map';
 import { addFillPatternImagesInMap } from 'components/MapView/Layers/AdminLevelDataLayer';
 import { getFormattedDate } from 'utils/date-utils';
 import useLayers from 'utils/layers-utils';
@@ -541,7 +540,7 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
                         }}
                         onLoad={() => refreshImage()}
                         onMove={() => debounceCallback(refreshImage)}
-                        mapStyle={selectedMapStyle || mapStyle.toString()}
+                        mapStyle={selectedMapStyle}
                         maxBounds={selectedMap.getMaxBounds() ?? undefined}
                       >
                         {toggles.countryMask && (
