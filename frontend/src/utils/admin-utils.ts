@@ -70,7 +70,10 @@ export const getChartAdminBoundaryParams = (
         code: properties[item.id],
         level: item.level,
         name: properties[item.name],
-        localName: properties[locationLevelNames[Number(item.level) - 1]],
+        localName:
+          properties[
+            locationLevelNames[Number(item.level) - (multiCountry ? 0 : 1)]
+          ],
       },
     }),
     {},
