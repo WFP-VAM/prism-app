@@ -3,6 +3,7 @@
   "description": "Frontend interface for WFP PRISM",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "homepage": ".",
   "husky": {
     "hooks": {
@@ -15,25 +16,11 @@
     ]
   },
   "scripts": {
-    "check-boundary-keys": "node ./scripts/check-boundary-keys-validity.js",
-    "clean": "rimraf ./node_modules && pushd ../common && rimraf ./node_modules && popd",
-    "start": "cross-env EXTEND_ESLINT=true react-scripts start",
-    "analyze": "yarn build && npx source-map-explorer 'build/static/js/*.js'",
-    "build": "export GIT_HASH=$(git rev-parse --short HEAD) || true && cross-env EXTEND_ESLINT=true react-app-rewired build",
-    "profile:serve": "yarn build --profile && npx serve -s build",
-    "test": "cross-env REACT_APP_TESTING=true && react-scripts test",
-    "prettier:json-fix": "prettier --write */**.json",
-    "prettier:json-check": "prettier --check */**.json",
-    "predeploy:prod": "yarn build",
-    "predeploy:staging": "yarn build",
-    "deploy:prod": "firebase deploy --only hosting:prod-target",
-    "deploy:staging": "firebase deploy --only hosting:staging-target",
-    "deploy:surge": "surge --project ./build",
-    "deploy:tests": "./scripts/deploy_to_surge.sh",
-    "eject": "react-scripts eject",
-    "lint": "eslint --ext .js,.jsx,.ts,.tsx -c .eslintrc ./src ../common/src",
-    "precommit": "lint-staged",
-    "preprocess-layers": "ts-node --compilerOptions \"{\\\"module\\\":\\\"commonjs\\\"}\" ./scripts/preprocess-layers.ts",
+    "start": "vite",
+    "test": "jest --silent --maxWorkers=6",
+    "build": "tsc && vite build",
+    "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
+    "preview": "vite preview",
     "setup:common": "rimraf ./node_modules/prism-common && cd ../common && yarn install --network-timeout 600000 && yarn build && cd ../frontend && yarn install --check-files"
   },
   "dependencies": {
@@ -73,8 +60,9 @@
     "enzyme": "^3.11.0",
     "enzyme-adapter-react-16": "^1.15.2",
     "enzyme-to-json": "^3.4.4",
+    "fontkit": "^2.0.2",
     "geojson": "^0.5.0",
-    "geotiff": "^1.0.0-beta.11",
+    "geotiff": "^2.1.3",
     "h3-js": "^3.7.0",
     "html-react-parser": "^1.3.0",
     "html2canvas": "^1.4.1",
@@ -92,7 +80,6 @@
     "prism-common": "file:../common",
     "prop-types": "^15.7.2",
     "react": "^16.13.0",
-    "react-app-rewired": "^2.2.1",
     "react-chartjs-2": "^2.9.0",
     "react-datepicker": "^2.14.1",
     "react-dom": "^16.13.0",
@@ -103,11 +90,9 @@
     "react-range-slider-input": "^3.0.7",
     "react-redux": "^7.2.0",
     "react-router-dom": "^5.1.2",
-    "react-scripts": "3.4.0",
     "react-window": "^1.8.10",
     "redux": "^4.0.5",
     "reflect-metadata": "^0.1.13",
-    "remove-files-webpack-plugin": "^1.5.0",
     "rimraf": "^3.0.2",
     "url": "^0.11.0",
     "xml-js": "^1.6.11"
@@ -119,10 +104,28 @@
     "node-notifier": "^10.0.1"
   },
   "jest": {
+    "testEnvironment": "jest-environment-jsdom",
+    "globalSetup": "./test/global-setup.cjs",
     "snapshotSerializers": [
       "enzyme-to-json/serializer"
     ],
-    "globalSetup": "./test/global-setup.js"
+    "moduleNameMapper": {
+      "\\.(jpg|ico|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$": "<rootDir>/tests/fileMock.ts",
+      "\\.(css|less)$": "<rootDir>/tests/fileMock.ts"
+    },
+    "setupFilesAfterEnv": [
+      "<rootDir>/tests/setupTests.tsx"
+    ],
+    "moduleDirectories": [
+      "node_modules",
+      "src"
+    ],
+    "roots": [
+      "<rootDir>"
+    ],
+    "modulePaths": [
+      "<rootDir>"
+    ]
   },
   "_comment": "The 'defaults' and 'not ie 11' are needed to avoid build issues with maplibre-gl.",
   "browserslist": {
@@ -163,6 +166,9 @@
     "@types/react-redux": "^7.1.7",
     "@types/react-router-dom": "^5.1.3",
     "@types/redux-mock-store": "^1.0.6",
+    "@typescript-eslint/eslint-plugin": "^7.2.0",
+    "@typescript-eslint/parser": "^7.2.0",
+    "@vitejs/plugin-react-swc": "^3.5.0",
     "cross-env": "^7.0.2",
     "eslint": "^6.8.0",
     "eslint-config-airbnb": "^18.0.1",
@@ -176,14 +182,17 @@
     "eslint-plugin-prettier": "^3.1.4",
     "eslint-plugin-react": "^7.19.0",
     "eslint-plugin-react-hooks": "^1.7",
-    "fs": "^0.0.1-security",
+    "jest": "^24.9.0",
+    "jest-environment-jsdom": "^24.9.0",
     "redux-mock-store": "^1.5.4",
     "surge": "^0.23.1",
     "timezone-mock": "^1.3.6",
     "ts-node": "^10.9.2",
-    "typescript": "4.4.4"
+    "typescript": "^5.2.2",
+    "vite": "^5.2.0",
+    "vite-plugin-node-polyfills": "^0.21.0"
   },
   "engines": {
-    "node": "16.x"
+    "node": "20.x"
   }
 }

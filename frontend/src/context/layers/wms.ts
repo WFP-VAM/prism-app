@@ -1,15 +1,15 @@
 import { createGetCoverageUrl } from 'prism-common';
 import { WMSLayerProps } from 'config/types';
 import {
-  GeoTiffImage,
   loadGeoTiff,
   Rasters,
   TransformMatrix,
 } from 'components/MapView/Layers/raster-utils';
 import type { LayerDataParams, LazyLoader } from './layer-data';
+import { GeoTIFFImage } from 'geotiff'
 
 export type WMSLayerData = {
-  image: GeoTiffImage;
+  image: GeoTIFFImage;
   rasters: Rasters;
   transform: TransformMatrix;
 };

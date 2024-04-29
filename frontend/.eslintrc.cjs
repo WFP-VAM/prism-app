@@ -1,14 +1,19 @@
-{
+module.exports = {
   "extends": [
     "react-app",
     "airbnb",
     "plugin:jsx-a11y/recommended",
+    "plugin:@typescript-eslint/recommended",
     "prettier",
     "prettier/react"
   ],
   "parser": "@typescript-eslint/parser",
   "plugins": ["jsx-a11y", "fp", "@typescript-eslint", "prettier", "import"],
   "rules": {
+    'react-refresh/only-export-components': [
+      'warn',
+      { allowConstantExport: true },
+    ],
     // Allow JSX within .js files
     "react/jsx-filename-extension": [
       1,
@@ -100,3 +105,4 @@
     "GeoJSON": true
   }
 }
+

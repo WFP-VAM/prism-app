@@ -1,6 +1,6 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import './index.css';
+import React from 'react'
+import ReactDOM from 'react-dom'
+import './index.css'
 import './i18n';
 import { Provider } from 'react-redux';
 import { MsalProvider } from '@azure/msal-react';
@@ -10,11 +10,13 @@ import { msalInstance } from './config';
 import * as serviceWorker from './serviceWorker';
 
 ReactDOM.render(
-  <Provider store={store}>
-    <MsalProvider instance={msalInstance}>
-      <App />
-    </MsalProvider>
-  </Provider>,
+  <React.StrictMode>
+    <Provider store={store}>
+      <MsalProvider instance={msalInstance}>
+        <App />
+      </MsalProvider>
+    </Provider>
+  </React.StrictMode>,
   document.getElementById('root'),
 );
 

@@ -35,7 +35,7 @@ import { useUrlHistory } from 'utils/url-utils';
 import useLayers from 'utils/layers-utils';
 import { format } from 'date-fns';
 import { leftPanelSizeSelector } from 'context/leftPanelStateSlice';
-import { ReactComponent as TickSvg } from './tick.svg';
+// import { ReactComponent as TickSvg } from './tick.svg';
 import DateSelectorInput from './DateSelectorInput';
 import TimelineItems from './TimelineItems';
 import { TIMELINE_ITEM_WIDTH, findDateIndex } from './utils';
@@ -420,7 +420,7 @@ const DateSelector = memo(({ classes }: DateSelectorProps) => {
                   onStop={onPointerStop}
                 >
                   <div className={classes.pointer} id={POINTER_ID}>
-                    <TickSvg />
+                    {/* <TickSvg /> */}
                   </div>
                 </Draggable>
               </div>
