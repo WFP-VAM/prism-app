@@ -12,6 +12,7 @@ import useLayers from 'utils/layers-utils';
 import { createGetLegendGraphicUrl } from 'prism-common';
 import { useSafeTranslation } from 'i18n';
 import { List } from '@material-ui/core';
+import useResizeObserver from 'utils/useOnResizeObserver';
 import { AALayerId } from 'config/utils';
 import AALegend from '../LeftPanel/AnticipatoryActionPanel/AALegend';
 import LegendItem from './LegendItem';
@@ -33,7 +34,13 @@ interface LegendItemsListProps {
   forPrinting?: boolean;
   listStyle?: string;
   showDescription?: boolean;
-  resizeCallback?: (entries: ResizeObserverEntry[]) => void;
+  resizeCallback?: ({
+    width,
+    height,
+  }: {
+    width: number;
+    height: number;
+  }) => void;
 }
 
 const LegendItemsList = ({
@@ -48,26 +55,20 @@ const LegendItemsList = ({
   const invertedColorsForAnalysis = useSelector(invertedColorsSelector);
   const analysisLayerOpacity = useSelector(analysisResultOpacitySelector);
   const { selectedLayers, adminBoundariesExtent } = useLayers();
+  const [listRef, listSize] = useResizeObserver<HTMLUListElement>(
+    resizeCallback,
+  );
 
   const AALayerInUrl = React.useMemo(
     () => selectedLayers.find(x => x.id === AALayerId),
     [selectedLayers],
   );
-  const listRef = React.useRef<HTMLUListElement>(null);
 
   React.useEffect(() => {
-    const list = listRef?.current;
-    if (!list || !resizeCallback) {
-      return;
+    if (resizeCallback) {
+      resizeCallback(listSize);
     }
-
-    const observer = new ResizeObserver(resizeCallback);
-    observer.observe(list);
-    // eslint-disable-next-line consistent-return
-    return () => {
-      observer.disconnect();
-    };
-  }, [resizeCallback]);
+  }, [listSize, resizeCallback]);
 
   // If legend array is empty, we fetch from remote server the legend as GetLegendGraphic request.
   const getLayerLegendUrl = React.useCallback((layer: LayerType) => {
