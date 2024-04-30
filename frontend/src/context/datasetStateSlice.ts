@@ -47,6 +47,7 @@ type BoundaryProps = {
   code: number;
   level: string;
   name: string;
+  localName: string;
 };
 
 type BoundaryPropsDict = { [key: string]: BoundaryProps };
