@@ -25,7 +25,7 @@ jest.mock('react-router-dom', () => ({
 test('renders as expected', () => {
   const { container } = render(
     <Provider store={store}>
-      <MapView />
+      <MapView setIsAlertFormOpen={() => {}} />
     </Provider>,
   );
   expect(container).toMatchSnapshot();
