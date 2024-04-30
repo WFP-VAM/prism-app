@@ -26,6 +26,7 @@ import {
 import { mapSelector } from 'context/mapStateSlice/selectors';
 import {
   AdminLevelDataLayer,
+  AnticipatoryActionLayer,
   BoundaryLayer,
   CompositeLayer,
   ImpactLayer,
@@ -63,6 +64,9 @@ const componentTypes: LayerComponentsMap<LayerType> = {
   point_data: { component: PointDataLayer },
   static_raster: { component: StaticRasterLayer },
   composite: { component: CompositeLayer },
+  anticipatory_action: {
+    component: AnticipatoryActionLayer,
+  },
 };
 
 const {
@@ -203,8 +207,11 @@ const MapComponent = memo(({ setIsAlertFormOpen }: MapComponentProps) => {
   }, [boundaryLayerId, setIsAlertFormOpen]);
 
   const getBeforeId = useCallback(
-    (index: number) => {
+    (index: number, aboveBoundaries: boolean = false) => {
       if (index === 0) {
+        return firstSymbolId;
+      }
+      if (aboveBoundaries) {
         return firstSymbolId;
       }
       const previousLayerId = selectedLayers[index - 1].id;
@@ -238,7 +245,7 @@ const MapComponent = memo(({ setIsAlertFormOpen }: MapComponentProps) => {
         return createElement(component as any, {
           key: layer.id,
           layer,
-          before: getBeforeId(index),
+          before: getBeforeId(index, layer.type === 'anticipatory_action'),
         });
       })}
       <AnalysisLayer before={firstBoundaryId} />

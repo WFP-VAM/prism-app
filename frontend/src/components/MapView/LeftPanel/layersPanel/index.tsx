@@ -32,7 +32,12 @@ function LayersPanel({ setResultsPage }: LayersPanelProps) {
   }, [dispatch, setResultsPage, tabValue]);
 
   return (
-    <Box display="flex" flexDirection="column" height="100%">
+    <Box
+      display="flex"
+      width={PanelSize.medium}
+      flexDirection="column"
+      height="100%"
+    >
       <div style={{ padding: '0.5rem' }}>
         <RootAccordionItems />
         <RootAnalysisAccordionItems />
