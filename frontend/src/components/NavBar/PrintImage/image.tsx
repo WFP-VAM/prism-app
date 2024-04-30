@@ -24,7 +24,6 @@ import maplibregl from 'maplibre-gl';
 import React, { useRef, useState } from 'react';
 import MapGL, { Layer, MapRef, Marker, Source } from 'react-map-gl/maplibre';
 import { useSelector } from 'react-redux';
-import { mapStyle } from 'components/MapView/Map';
 import { getFormattedDate } from 'utils/date-utils';
 import { appConfig, safeCountry } from 'config';
 import { AdminCodeString, BoundaryLayerProps } from 'config/types';
@@ -445,6 +444,7 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
                           latitude: selectedMap.getCenter().lat,
                           zoom: selectedMap.getZoom(),
                         }}
+                        mapStyle={selectedMapStyle}
                         onLoad={e => {
                           e.target.addControl(
                             new maplibregl.ScaleControl({}),
@@ -452,7 +452,6 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
                           );
                           updateScaleBarAndNorthArrow();
                         }}
-                        mapStyle={selectedMapStyle || mapStyle.toString()}
                         maxBounds={selectedMap.getMaxBounds() ?? undefined}
                       >
                         {AAMarkers.map(marker => (
