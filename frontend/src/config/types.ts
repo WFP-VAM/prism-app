@@ -25,7 +25,8 @@ export type LayerType =
   | ImpactLayerProps
   | PointDataLayerProps
   | CompositeLayerProps
-  | StaticRasterLayerProps;
+  | StaticRasterLayerProps
+  | AnticipatoryActionLayerProps;
 
 type UnionToIntersection<U> = (U extends any ? (k: U) => void : never) extends (
   k: infer I,
@@ -416,8 +417,8 @@ export type ValidityPeriod = {
 
 export type Validity = {
   mode: DatesPropagation; // Propagation mode for dates.
-  backward: number; // Number of days/dekades backward.
-  forward: number; // Number of days/dekades forward.
+  backward?: number; // Number of days/dekades backward.
+  forward?: number; // Number of days/dekades forward.
 };
 
 export class WMSLayerProps extends CommonLayerProps {
@@ -854,6 +855,7 @@ export type UserAuth = {
 };
 
 export enum PanelSize {
+  auto = '',
   folded = '0vw',
   medium = '425px',
   large = '1000px',
@@ -870,3 +872,10 @@ export type MapEventWrapFunctionProps<T> = {
 export type MapEventWrapFunction<T> = (
   props: MapEventWrapFunctionProps<T>,
 ) => (evt: MapLayerMouseEvent) => void;
+
+export class AnticipatoryActionLayerProps extends CommonLayerProps {
+  type: 'anticipatory_action';
+
+  @makeRequired
+  title: string;
+}

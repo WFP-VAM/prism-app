@@ -1,0 +1,351 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`renders as expected 1`] = `
+<div>
+  <div
+    class="makeStyles-tableWrapper-1"
+  >
+    <div
+      class="makeStyles-rowWrapper-11"
+      style="height: 1.5rem;"
+    >
+      <div
+        class="makeStyles-iconCol-12"
+      />
+      <div>
+        <mock-typography
+          classname="makeStyles-windowHeader-10"
+          variant="h4"
+        >
+          Window 1
+        </mock-typography>
+      </div>
+    </div>
+    <div
+      class="makeStyles-rowWrapper-11"
+    >
+      <div
+        class="makeStyles-iconCol-12"
+      >
+        <div
+          class="makeStyles-iconWrapper-16"
+          style="background: rgb(131, 31, 0);"
+        >
+          <div
+            class="makeStyles-centerContainer-17"
+            style="border: 1px solid white; color: white;"
+          >
+            <div
+              class="makeStyles-topTextContainer-18"
+              style="border-bottom: 1px solid white; background: rgb(131, 31, 0);"
+            >
+              S
+            </div>
+            <div
+              class="makeStyles-bottomTextContainer-19"
+              style="background: rgb(131, 31, 0);"
+            >
+              SEV
+            </div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div
+          class="makeStyles-windowBackground-13"
+        >
+          <div
+            class="makeStyles-tagWrapper-14"
+          >
+            <mock-typography
+              classname="makeStyles-emptyText-15"
+            >
+              (
+              no district
+              )
+            </mock-typography>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div
+      class="makeStyles-rowWrapper-11"
+    >
+      <div
+        class="makeStyles-iconCol-12"
+      >
+        <div
+          class="makeStyles-iconWrapper-16"
+          style="background: rgb(230, 55, 1);"
+        >
+          <div
+            class="makeStyles-centerContainer-17"
+            style="border: 1px solid white; color: white;"
+          >
+            <div
+              class="makeStyles-topTextContainer-18"
+              style="border-bottom: 1px solid white; background: rgb(230, 55, 1);"
+            >
+              R
+            </div>
+            <div
+              class="makeStyles-bottomTextContainer-19"
+              style="background: rgb(230, 55, 1);"
+            >
+              SEV
+            </div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div
+          class="makeStyles-windowBackground-13"
+        >
+          <div
+            class="makeStyles-tagWrapper-14"
+          >
+            <mock-typography
+              classname="makeStyles-emptyText-15"
+            >
+              (
+              no district
+              )
+            </mock-typography>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div
+      class="makeStyles-rowWrapper-11"
+    >
+      <div
+        class="makeStyles-iconCol-12"
+      >
+        <div
+          class="makeStyles-iconWrapper-16"
+          style="background: rgb(255, 137, 52);"
+        >
+          <div
+            class="makeStyles-centerContainer-17"
+            style="border: 1px solid black; color: black;"
+          >
+            <div
+              class="makeStyles-topTextContainer-18"
+              style="border-bottom: 1px solid black; background: rgb(255, 137, 52);"
+            >
+              S
+            </div>
+            <div
+              class="makeStyles-bottomTextContainer-19"
+              style="background: rgb(255, 137, 52);"
+            >
+              MOD
+            </div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div
+          class="makeStyles-windowBackground-13"
+        >
+          <div
+            class="makeStyles-tagWrapper-14"
+          >
+            <mock-typography
+              classname="makeStyles-emptyText-15"
+            >
+              (
+              no district
+              )
+            </mock-typography>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div
+      class="makeStyles-rowWrapper-11"
+    >
+      <div
+        class="makeStyles-iconCol-12"
+      >
+        <div
+          class="makeStyles-iconWrapper-16"
+          style="background: rgb(255, 213, 45);"
+        >
+          <div
+            class="makeStyles-centerContainer-17"
+            style="border: 1px solid black; color: black;"
+          >
+            <div
+              class="makeStyles-topTextContainer-18"
+              style="border-bottom: 1px solid black; background: rgb(255, 213, 45);"
+            >
+              R
+            </div>
+            <div
+              class="makeStyles-bottomTextContainer-19"
+              style="background: rgb(255, 213, 45);"
+            >
+              MOD
+            </div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div
+          class="makeStyles-windowBackground-13"
+        >
+          <div
+            class="makeStyles-tagWrapper-14"
+          >
+            <button
+              class="makeStyles-areaTagWrapper-20"
+              type="button"
+            >
+              <mock-typography>
+                Changara
+              </mock-typography>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div
+      class="makeStyles-rowWrapper-11"
+    >
+      <div
+        class="makeStyles-iconCol-12"
+      >
+        <div
+          class="makeStyles-iconWrapper-16"
+          style="background: rgb(255, 245, 3);"
+        >
+          <div
+            class="makeStyles-centerContainer-17"
+            style="border: 1px solid black; color: black;"
+          >
+            <div
+              class="makeStyles-topTextContainer-18"
+              style="border-bottom: 1px solid black; background: rgb(255, 245, 3);"
+            >
+              S
+            </div>
+            <div
+              class="makeStyles-bottomTextContainer-19"
+              style="background: rgb(255, 245, 3);"
+            >
+              MIL
+            </div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div
+          class="makeStyles-windowBackground-13"
+        >
+          <div
+            class="makeStyles-tagWrapper-14"
+          >
+            <mock-typography
+              classname="makeStyles-emptyText-15"
+            >
+              (
+              no district
+              )
+            </mock-typography>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div
+      class="makeStyles-rowWrapper-11"
+    >
+      <div
+        class="makeStyles-iconCol-12"
+      >
+        <div
+          class="makeStyles-iconWrapper-16"
+          style="background: rgb(255, 252, 179);"
+        >
+          <div
+            class="makeStyles-centerContainer-17"
+            style="border: 1px solid black; color: black;"
+          >
+            <div
+              class="makeStyles-topTextContainer-18"
+              style="border-bottom: 1px solid black; background: rgb(255, 252, 179);"
+            >
+              R
+            </div>
+            <div
+              class="makeStyles-bottomTextContainer-19"
+              style="background: rgb(255, 252, 179);"
+            >
+              MIL
+            </div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div
+          class="makeStyles-windowBackground-13"
+        >
+          <div
+            class="makeStyles-tagWrapper-14"
+          >
+            <button
+              class="makeStyles-areaTagWrapper-20"
+              type="button"
+            >
+              <mock-typography>
+                Changara
+              </mock-typography>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div
+    class="makeStyles-footerWrapper-2"
+  >
+    <div
+      class="makeStyles-footerActionsWrapper-3"
+    >
+      <mock-button
+        classname="makeStyles-footerButton-5"
+        component="a"
+        download="2023-12-01-SPI_probabilities_season_triggers.csv"
+        fullwidth="true"
+        href="data/mozambique/anticipatory-action/SPI_probabilities_season_triggers.csv"
+        starticon="[object Object]"
+        variant="outlined"
+      >
+        <mock-typography>
+          Assets
+        </mock-typography>
+      </mock-button>
+      <mock-button
+        classname="makeStyles-footerButton-5"
+        fullwidth="true"
+        starticon="[object Object]"
+        variant="outlined"
+      >
+        <mock-typography>
+          Forecast
+        </mock-typography>
+      </mock-button>
+    </div>
+    <div
+      class="makeStyles-footerDialogsWrapper-4"
+    >
+      <mock-typography
+        classname="makeStyles-footerDialog-6"
+        component="button"
+      >
+        How to read this screen
+      </mock-typography>
+    </div>
+  </div>
+</div>
+`;

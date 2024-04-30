@@ -42,6 +42,8 @@ jest.mock('@react-pdf/renderer', () => ({
   Font: { register: () => {} },
 }));
 
+jest.mock('max-inscribed-circle', () => ({}));
+
 function stubMuiComponent(componentName: string) {
   jest.doMock(
     `@material-ui/core/${componentName}/${componentName}`,
@@ -94,6 +96,8 @@ stubMuiComponent('DialogActions');
 stubMuiComponent('DialogContent');
 stubMuiComponent('DialogContentText');
 stubMuiComponent('DialogTitle');
+stubMuiComponent('Icon');
+stubMuiComponent('Radio');
 
 function stubMuiIcon(iconName: string) {
   jest.doMock(`@material-ui/icons/${iconName}`, () => `mock-${iconName}`);
