@@ -12,7 +12,6 @@ import {
   LayerDefinitions,
   areChartLayersAvailable,
 } from 'config/utils';
-import { PanelSize } from 'config/types';
 import { getUrlKey, useUrlHistory } from 'utils/url-utils';
 import { layersSelector, mapSelector } from 'context/mapStateSlice/selectors';
 import {
@@ -40,6 +39,8 @@ interface TabPanelProps {
 }
 
 const TabPanel = memo(({ children, value, index, ...other }: TabPanelProps) => {
+  const panelSize = useSelector(leftPanelSizeSelector);
+
   return (
     <div
       role="tabpanel"
@@ -51,6 +52,7 @@ const TabPanel = memo(({ children, value, index, ...other }: TabPanelProps) => {
         height: 'calc(94vh - 48px)',
         order: index === value ? -1 : undefined,
         overflowX: index === value ? 'hidden' : 'auto',
+        width: panelSize,
       }}
       {...other}
     >
@@ -74,7 +76,7 @@ const LeftPanel = memo(() => {
     removeLayerFromUrl,
   } = useUrlHistory();
 
-  const classes = useStyles({ panelSize, tabValue });
+  const classes = useStyles({ tabValue });
 
   const isPanelHidden = tabValue === Panel.None;
   const [
@@ -236,7 +238,6 @@ const LeftPanel = memo(() => {
 
 interface StyleProps {
   tabValue: Panel;
-  panelSize: PanelSize;
 }
 
 const useStyles = makeStyles<Theme, StyleProps>(() =>
@@ -256,7 +257,6 @@ const useStyles = makeStyles<Theme, StyleProps>(() =>
       flexDirection: 'column',
       height: '100%',
       order: -2,
-      width: ({ panelSize }) => panelSize,
     },
   }),
 );
