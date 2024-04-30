@@ -792,7 +792,7 @@ const AnalysisPanel = memo(
                 selected={startDate ? new Date(startDate) : null}
                 onChange={date => setStartDate(date?.getTime() || startDate)}
                 maxDate={new Date()}
-                todayButton="Today"
+                todayButton={t('Today')}
                 peekNextMonth
                 showMonthDropdown
                 showYearDropdown
@@ -812,7 +812,7 @@ const AnalysisPanel = memo(
                 selected={endDate ? new Date(endDate) : null}
                 onChange={date => setEndDate(date?.getTime() || endDate)}
                 maxDate={new Date()}
-                todayButton="Today"
+                todayButton={t('Today')}
                 peekNextMonth
                 showMonthDropdown
                 showYearDropdown
