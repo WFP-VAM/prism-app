@@ -7,7 +7,7 @@
     "logo": "images/moz-flag-inam-logo.png"
   },
   "printConfig": {
-    "defaultFooterText": "The designations employed and the presentation of material in the map(s) do not imply the expression of any opinion on the part of WFP concerning the legal of constitutional status of any country, territory, city, or sea, or concerning the delimitation of its frontiers or boundaries."
+    "defaultFooterText": ""
   },
   "countryAdmin0Id": 170,
   "alertFormActive": false,
