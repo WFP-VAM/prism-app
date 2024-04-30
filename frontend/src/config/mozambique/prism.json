@@ -5,6 +5,9 @@
     "title": "PRISM",
     "logo": "images/moz-flag-inam-logo.png"
   },
+  "printConfig": {
+    "defaultFooterText": ""
+  },
   "countryAdmin0Id": 170,
   "alertFormActive": false,
   "hidePanel": false,
