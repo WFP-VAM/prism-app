@@ -13,6 +13,8 @@ import { createGetLegendGraphicUrl } from 'prism-common';
 import { useSafeTranslation } from 'i18n';
 import { List } from '@material-ui/core';
 import useResizeObserver from 'utils/useOnResizeObserver';
+import { AALayerId } from 'config/utils';
+import AALegend from '../LeftPanel/AnticipatoryActionPanel/AALegend';
 import LegendItem from './LegendItem';
 import LegendImpactResult from './LegendImpactResult';
 
@@ -55,6 +57,11 @@ const LegendItemsList = ({
   const { selectedLayers, adminBoundariesExtent } = useLayers();
   const [listRef, listSize] = useResizeObserver<HTMLUListElement>(
     resizeCallback,
+  );
+
+  const AALayerInUrl = React.useMemo(
+    () => selectedLayers.find(x => x.id === AALayerId),
+    [selectedLayers],
   );
 
   React.useEffect(() => {
@@ -119,7 +126,7 @@ const LegendItemsList = ({
             : analysisResult?.legend
         }
         title={analysisResult?.getTitle(t)}
-        opacity={analysisLayerOpacity} // TODO: initial opacity value
+        opacity={analysisLayerOpacity}
         forPrinting={forPrinting}
         showDescription={showDescription}
       >
@@ -172,10 +179,25 @@ const LegendItemsList = ({
   ]);
 
   const legendItems = React.useMemo(() => {
-    return [...layersLegendItems, ...analysisLegendItem].filter(
+    const AALegends = AALayerInUrl
+      ? [
+          <AALegend
+            key="AA"
+            forPrinting={forPrinting}
+            showDescription={showDescription}
+          />,
+        ]
+      : [];
+    return [...AALegends, ...layersLegendItems, ...analysisLegendItem].filter(
       (x): x is React.JSX.Element => x !== null,
     );
-  }, [analysisLegendItem, layersLegendItems]);
+  }, [
+    AALayerInUrl,
+    analysisLegendItem,
+    forPrinting,
+    layersLegendItems,
+    showDescription,
+  ]);
 
   return (
     <List ref={listRef} className={listStyle}>

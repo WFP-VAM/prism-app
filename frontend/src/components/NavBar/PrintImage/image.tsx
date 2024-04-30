@@ -22,7 +22,7 @@ import { debounce, get } from 'lodash';
 import { jsPDF } from 'jspdf';
 import maplibregl from 'maplibre-gl';
 import React, { useRef, useState } from 'react';
-import MapGL, { Layer, MapRef, Source } from 'react-map-gl/maplibre';
+import MapGL, { Layer, MapRef, Marker, Source } from 'react-map-gl/maplibre';
 import { useSelector } from 'react-redux';
 import { mapStyle } from 'components/MapView/Map';
 import { getFormattedDate } from 'utils/date-utils';
@@ -30,7 +30,9 @@ import { appConfig, safeCountry } from 'config';
 import { AdminCodeString, BoundaryLayerProps } from 'config/types';
 import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
 import ToggleButton from '@material-ui/lab/ToggleButton';
-import { cyanBlue, gray } from 'muiTheme';
+import { cyanBlue, lightGrey } from 'muiTheme';
+import { AAMarkersSelector } from 'context/anticipatoryActionStateSlice';
+import { useAAMarkerScalePercent } from 'utils/map-utils';
 import { SimpleBoundaryDropdown } from 'components/MapView/Layers/BoundaryDropdown';
 import { getBoundaryLayerSingleton } from 'config/utils';
 import { LayerData } from 'context/layers/layer-data';
@@ -177,6 +179,7 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
   const { country } = appConfig;
   const selectedMap = useSelector(mapSelector);
   const dateRange = useSelector(dateRangeSelector);
+  const AAMarkers = useSelector(AAMarkersSelector);
   const printRef = useRef<HTMLDivElement>(null);
   const northArrowRef = useRef<HTMLImageElement>(null);
   const boundaryLayerState = useSelector(
@@ -335,6 +338,8 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
     handleDownloadMenuClose();
   };
 
+  const scalePercent = useAAMarkerScalePercent(mapRef.current?.getMap());
+
   return (
     <>
       <Dialog
@@ -450,6 +455,20 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
                         mapStyle={selectedMapStyle || mapStyle.toString()}
                         maxBounds={selectedMap.getMaxBounds() ?? undefined}
                       >
+                        {AAMarkers.map(marker => (
+                          <Marker
+                            key={`marker-${marker.district}`}
+                            longitude={marker.longitude}
+                            latitude={marker.latitude}
+                            anchor="center"
+                          >
+                            <div
+                              style={{ transform: `scale(${scalePercent})` }}
+                            >
+                              {marker.icon}
+                            </div>
+                          </Marker>
+                        ))}
                         {toggles.countryMask && (
                           <Source
                             id="mask-overlay"
@@ -713,7 +732,7 @@ const styles = (theme: Theme) =>
       textAlign: 'center',
       fontSize: '1.5rem',
       padding: '8px 0 8px 0',
-      borderBottom: `1px solid ${gray}`,
+      borderBottom: `1px solid ${lightGrey}`,
     },
     footerOverlay: {
       position: 'absolute',
@@ -723,7 +742,7 @@ const styles = (theme: Theme) =>
       color: 'black',
       backgroundColor: 'white',
       width: '100%',
-      borderTop: `1px solid ${gray}`,
+      borderTop: `1px solid ${lightGrey}`,
     },
     formControl: {
       width: '100%',

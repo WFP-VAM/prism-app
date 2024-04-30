@@ -11,6 +11,7 @@ export enum Panel {
   Charts = 'charts',
   Analysis = 'analysis',
   Tables = 'tables',
+  AnticipatoryAction = 'anticipatory_action',
 }
 
 type LeftPanelState = {

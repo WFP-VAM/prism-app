@@ -352,6 +352,16 @@ exports[`renders as expected 1`] = `
                 />
               </button>
             </div>
+                <mock-icon
+                  style="color: black;"
+                >
+                  switch_left
+                </mock-icon>
+              </span>
+              <span
+                class="MuiTouchRipple-root"
+              />
+            </button>
           </div>
         </div>
         <div
