@@ -291,13 +291,11 @@ exports[`renders as expected 1`] = `
                 <span
                   class="MuiToggleButton-label"
                 >
-                  <span
-                    aria-hidden="true"
-                    class="material-icons MuiIcon-root"
+                  <mock-icon
                     style="color: black;"
                   >
                     switch_left
-                  </span>
+                  </mock-icon>
                 </span>
                 <span
                   class="MuiTouchRipple-root"
@@ -352,16 +350,6 @@ exports[`renders as expected 1`] = `
                 />
               </button>
             </div>
-                <mock-icon
-                  style="color: black;"
-                >
-                  switch_left
-                </mock-icon>
-              </span>
-              <span
-                class="MuiTouchRipple-root"
-              />
-            </button>
           </div>
         </div>
         <div
