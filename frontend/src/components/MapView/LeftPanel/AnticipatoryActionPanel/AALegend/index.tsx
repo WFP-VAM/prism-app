@@ -20,11 +20,6 @@ const phases = [
     severity: 'Severe',
   },
   {
-    icon: getAAIcon('Severe', 'na', true),
-    phase: 'No Action',
-    severity: 'Severe',
-  },
-  {
     icon: getAAIcon('Moderate', 'Set', true),
     phase: 'Set',
     severity: 'Moderate',
@@ -35,9 +30,22 @@ const phases = [
     severity: 'Moderate',
   },
   {
-    icon: getAAIcon('Moderate', 'na', true),
+    icon: getAAIcon('Mild', 'Set', true),
+    phase: 'Set',
+    severity: 'Mild',
+  },
+  {
+    icon: getAAIcon('Mild', 'Ready', true),
+    phase: 'Ready',
+    severity: 'Mild',
+  },
+  {
+    icon: getAAIcon('na', 'na', true),
     phase: 'No Action',
-    severity: 'Moderate',
+  },
+  {
+    icon: getAAIcon('ny', 'ny', true),
+    phase: 'Not Yet Monitored',
   },
 ];
 
@@ -82,20 +90,14 @@ function AALegend({
                 <Typography style={{ whiteSpace: 'nowrap' }} variant="h3">
                   {t(x.phase)}
                 </Typography>
-                <Typography style={{ whiteSpace: 'nowrap' }} variant="h3">
-                  {t(x.severity)}
-                </Typography>
+                {x.severity && (
+                  <Typography style={{ whiteSpace: 'nowrap' }} variant="h3">
+                    {t(x.severity)}
+                  </Typography>
+                )}
               </div>
             </div>
           ))}
-          <div className={classes.itemWrapper}>
-            <div className={classes.phaseNy} />
-            <div>
-              <Typography variant="h3">
-                {t('AA triggers not yet monitored')}
-              </Typography>
-            </div>
-          </div>
         </div>
         {showDescription && (
           <>
