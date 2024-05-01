@@ -264,45 +264,6 @@ exports[`renders as expected 1`] = `
             >
               <div
                 class="makeStyles-topTextContainer-21"
-                style="border-bottom: 1px solid black; background: rgb(241, 241, 241);"
-              >
-                na
-              </div>
-              <div
-                class="makeStyles-bottomTextContainer-22"
-                style="background: rgb(241, 241, 241);"
-              >
-                SEV
-              </div>
-            </div>
-          </div>
-          <div>
-            <mock-typography
-              style="white-space: nowrap;"
-              variant="h3"
-            >
-              No Action
-            </mock-typography>
-            <mock-typography
-              style="white-space: nowrap;"
-              variant="h3"
-            >
-              Severe
-            </mock-typography>
-          </div>
-        </div>
-        <div
-          class="makeStyles-itemWrapper-2"
-        >
-          <div
-            class="makeStyles-iconWrapper-19"
-          >
-            <div
-              class="makeStyles-centerContainer-20"
-              style="border: 1px solid black; color: black;"
-            >
-              <div
-                class="makeStyles-topTextContainer-21"
                 style="border-bottom: 1px solid black; background: rgb(255, 137, 52);"
               >
                 S
@@ -360,45 +321,6 @@ exports[`renders as expected 1`] = `
               variant="h3"
             >
               Ready
-            </mock-typography>
-            <mock-typography
-              style="white-space: nowrap;"
-              variant="h3"
-            >
-              Moderate
-            </mock-typography>
-          </div>
-        </div>
-        <div
-          class="makeStyles-itemWrapper-2"
-        >
-          <div
-            class="makeStyles-iconWrapper-19"
-          >
-            <div
-              class="makeStyles-centerContainer-20"
-              style="border: 1px solid black; color: black;"
-            >
-              <div
-                class="makeStyles-topTextContainer-21"
-                style="border-bottom: 1px solid black; background: rgb(241, 241, 241);"
-              >
-                na
-              </div>
-              <div
-                class="makeStyles-bottomTextContainer-22"
-                style="background: rgb(241, 241, 241);"
-              >
-                MOD
-              </div>
-            </div>
-          </div>
-          <div>
-            <mock-typography
-              style="white-space: nowrap;"
-              variant="h3"
-            >
-              No Action
             </mock-typography>
             <mock-typography
               style="white-space: nowrap;"
@@ -498,15 +420,9 @@ exports[`renders as expected 1`] = `
             >
               <div
                 class="makeStyles-topTextContainer-21"
-                style="border-bottom: 1px solid black; background: rgb(241, 241, 241);"
-              >
-                na
-              </div>
-              <div
-                class="makeStyles-bottomTextContainer-22"
                 style="background: rgb(241, 241, 241);"
               >
-                MIL
+                na
               </div>
             </div>
           </div>
@@ -517,11 +433,32 @@ exports[`renders as expected 1`] = `
             >
               No Action
             </mock-typography>
+          </div>
+        </div>
+        <div
+          class="makeStyles-itemWrapper-2"
+        >
+          <div
+            class="makeStyles-iconWrapper-19"
+          >
+            <div
+              class="makeStyles-centerContainer-20"
+              style="border: 1px solid black; color: black;"
+            >
+              <div
+                class="makeStyles-topTextContainer-21"
+                style="background: rgb(241, 241, 241);"
+              >
+                ny
+              </div>
+            </div>
+          </div>
+          <div>
             <mock-typography
               style="white-space: nowrap;"
               variant="h3"
             >
-              Mild
+              Not Yet Available
             </mock-typography>
           </div>
         </div>
