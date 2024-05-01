@@ -5,6 +5,9 @@
     "title": "PRISM",
     "logo": "images/moz-flag-inam-logo.png"
   },
+  "printConfig": {
+    "defaultFooterText": ""
+  },
   "countryAdmin0Id": 170,
   "alertFormActive": false,
   "hidePanel": false,
@@ -375,37 +378,77 @@
       ],
       "food_insecurity": [
         {
-          "group_title": "IPC",
+          "group_title": "IPC - phase classification",
           "activate_all": false,
           "layers": [
             {
-              "id": "ipc_phase_current",
-              "label": "Current phase classification",
+              "id": "ipc_phase_2023",
+              "label": "2023",
               "main": true
             },
             {
-              "id": "ipc_phase_projected",
-              "label": "Projected phase classification"
+              "id": "ipc_phase_2022",
+              "label": "2022"
+            }
+          ]
+        },
+        {
+          "group_title": "IPC - population in phase 3+",
+          "activate_all": false,
+          "layers": [
+            {
+              "id": "ipc_pop_ph3_2023",
+              "label": "2023",
+              "main": true
             },
             {
-              "id": "ipc_phase_12_2020",
-              "label": "December 2020 phase classification"
+              "id": "ipc_pop_ph3_2022",
+              "label": "2022"
+            }
+          ]
+        },
+        {
+          "group_title": "IPC - population in phase 4",
+          "activate_all": false,
+          "layers": [
+            {
+              "id": "ipc_pop_ph4_2023",
+              "label": "2023",
+              "main": true
             },
             {
-              "id": "ipc_pop_ph3_current",
-              "label": "Current population in phase 3+"
+              "id": "ipc_pop_ph4_2022",
+              "label": "2022"
+            }
+          ]
+        },
+        {
+          "group_title": "IPC - percent of people in phase 3+",
+          "activate_all": false,
+          "layers": [
+            {
+              "id": "ipc_perc_ph3_2023",
+              "label": "2023",
+              "main": true
             },
             {
-              "id": "ipc_pop_ph3_projected",
-              "label": "Projected population in phase 3+"
+              "id": "ipc_perc_ph3_2022",
+              "label": "2022"
+            }
+          ]
+        },
+        {
+          "group_title": "IPC - percent of people in phase 4",
+          "activate_all": false,
+          "layers": [
+            {
+              "id": "ipc_perc_ph4_2023",
+              "label": "2023",
+              "main": true
             },
             {
-              "id": "ipc_perc_ph3_current",
-              "label": "Current percent of population in phase 3+"
-            },
-            {
-              "id": "ipc_perc_ph3_projected",
-              "label": "Projected percent of population in phase 3+"
+              "id": "ipc_perc_ph4_2022",
+              "label": "2022"
             }
           ]
         }

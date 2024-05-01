@@ -10,9 +10,15 @@ function TimelineLabel({ locale, date }: TimelineLabelProps) {
   if (date.isFirstDay) {
     return (
       <Typography variant="body2" className={classes.dateItemLabel}>
-        {format(date.value, DateFormat.MonthYear, {
-          locale: locales[locale as keyof typeof locales],
-        })}
+        {format(
+          date.value,
+          date.month.includes('Jan')
+            ? DateFormat.ShortMonthYear
+            : DateFormat.ShortMonth,
+          {
+            locale: locales[locale as keyof typeof locales],
+          },
+        )}
       </Typography>
     );
   }

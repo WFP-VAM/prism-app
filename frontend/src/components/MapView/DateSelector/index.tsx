@@ -34,7 +34,10 @@ import { DateFormat } from 'utils/name-utils';
 import { useUrlHistory } from 'utils/url-utils';
 import useLayers from 'utils/layers-utils';
 import { format } from 'date-fns';
-import { leftPanelSizeSelector } from 'context/leftPanelStateSlice';
+import {
+  leftPanelSizeSelector,
+  leftPanelTabValueSelector,
+} from 'context/leftPanelStateSlice';
 // import { ReactComponent as TickSvg } from './tick.svg';
 import DateSelectorInput from './DateSelectorInput';
 import TimelineItems from './TimelineItems';
@@ -48,6 +51,17 @@ type Point = {
 
 const TIMELINE_ID = 'dateTimelineSelector';
 const POINTER_ID = 'datePointerSelector';
+
+const calculateStartAndEndDates = (startDate: Date, selectedTab: string) => {
+  const year =
+    startDate.getFullYear() -
+    (selectedTab === 'anticipatory_action' && startDate.getMonth() < 3 ? 1 : 0);
+  const startMonth = selectedTab === 'anticipatory_action' ? 3 : 0; // April for anticipatory_action, January otherwise
+  const start = new Date(year, startMonth, 1);
+  const end = new Date(year, startMonth + 11, 31);
+
+  return { start, end };
+};
 
 const DateSelector = memo(({ classes }: DateSelectorProps) => {
   const {
@@ -73,6 +87,8 @@ const DateSelector = memo(({ classes }: DateSelectorProps) => {
     x: 0,
     y: 0,
   });
+  const today = new Date();
+  today.setHours(12, 0, 0, 0); // Normalize today's date
 
   const dateRef = useRef(availableDates);
   const timeLine = useRef(null);
@@ -81,9 +97,10 @@ const DateSelector = memo(({ classes }: DateSelectorProps) => {
   const { updateHistory } = useUrlHistory();
   const dispatch = useDispatch();
 
-  const maxDate = useMemo(() => {
-    return new Date(Math.max(...availableDates, new Date().getTime()));
-  }, [availableDates]);
+  const maxDate = useMemo(
+    () => new Date(Math.max(...availableDates, new Date().getTime())),
+    [availableDates],
+  );
 
   const timeLineWidth = get(timeLine.current, 'offsetWidth', 0);
 
@@ -119,15 +136,16 @@ const DateSelector = memo(({ classes }: DateSelectorProps) => {
     handleTimeLinePosition(x);
   }, [handleTimeLinePosition, setPointerXPosition]);
 
-  const locale = useMemo(() => {
-    return t('date_locale') ? t('date_locale') : 'en';
-  }, [t]);
+  const locale = useMemo(
+    () => (t('date_locale') ? t('date_locale') : 'en'),
+    [t],
+  );
+
+  const panelTab = useSelector(leftPanelTabValueSelector);
 
   const range = useMemo(() => {
     const startDate = stateStartDate ? new Date(stateStartDate) : new Date();
-    const year = startDate.getFullYear();
-    const start = new Date(year, 0, 1);
-    const end = new Date(year, 11, 31); // December is 11th month
+    const { start, end } = calculateStartAndEndDates(startDate, panelTab);
     const daysArray: Date[] = [];
 
     for (
@@ -150,7 +168,7 @@ const DateSelector = memo(({ classes }: DateSelectorProps) => {
           }),
         ),
         month: dateStrToUpperCase(
-          format(date, DateFormat.MonthOnly, {
+          format(date, DateFormat.ShortMonthYear, {
             locale: locales[locale as keyof typeof locales],
           }),
         ),
@@ -158,16 +176,18 @@ const DateSelector = memo(({ classes }: DateSelectorProps) => {
         isFirstDay: date.getDate() === 1,
       };
     });
-  }, [locale, stateStartDate]);
+  }, [locale, stateStartDate, panelTab]);
 
-  const dateIndex = useMemo(() => {
-    return findIndex(
-      range,
-      date =>
-        !!stateStartDate &&
-        datesAreEqualWithoutTime(date.value, stateStartDate),
-    );
-  }, [range, stateStartDate]);
+  const dateIndex = useMemo(
+    () =>
+      findIndex(
+        range,
+        date =>
+          !!stateStartDate &&
+          datesAreEqualWithoutTime(date.value, stateStartDate),
+      ),
+    [range, stateStartDate],
+  );
 
   // Create timeline range and set pointer position
   useEffect(() => {
@@ -230,15 +250,16 @@ const DateSelector = memo(({ classes }: DateSelectorProps) => {
     setDatePosition(stateStartDate, -1, true);
   }, [setDatePosition, stateStartDate]);
 
-  const includedDates = useMemo(() => {
-    return availableDates?.map(d => new Date(d)) ?? [];
-  }, [availableDates]);
+  const includedDates = useMemo(
+    () => availableDates?.map(d => new Date(d)) ?? [],
+    [availableDates],
+  );
 
   const checkIntersectingDateAndShowPopup = useCallback(
     (selectedDate: Date, positionY: number) => {
-      const findDateInIntersectingDates = includedDates.find(date => {
-        return datesAreEqualWithoutTime(date, selectedDate);
-      });
+      const findDateInIntersectingDates = includedDates.find(date =>
+        datesAreEqualWithoutTime(date, selectedDate),
+      );
       if (findDateInIntersectingDates) {
         return;
       }
@@ -360,7 +381,9 @@ const DateSelector = memo(({ classes }: DateSelectorProps) => {
             showYearDropdown
             dropdownMode="select"
             customInput={<DateSelectorInput />}
-            includeDates={includedDates}
+            // Include "today" so that the user can select it and get an error message if
+            // the selected date is not available
+            includeDates={[...includedDates, today]}
           />
 
           <Hidden smUp>
@@ -503,17 +526,17 @@ const styles = (theme: Theme) =>
     },
 
     timeline: {
-      position: 'relative',
+      position: 'absolute',
       top: 8,
     },
 
     pointer: {
-      cursor: 'pointer',
       position: 'absolute',
       zIndex: 5,
       top: -20,
-      left: -9,
+      left: -3.5,
       height: '16px',
+      cursor: 'pointer',
       pointerEvents: 'none',
     },
   });
