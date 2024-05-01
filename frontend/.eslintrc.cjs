@@ -1,5 +1,11 @@
 module.exports = {
-  extends: ['react-app', 'airbnb', 'plugin:jsx-a11y/recommended', 'prettier'],
+  extends: [
+    'react-app',
+    'airbnb',
+    'plugin:jsx-a11y/recommended',
+    'prettier',
+    'plugin:react/jsx-runtime',
+  ],
   parser: '@typescript-eslint/parser',
   plugins: ['jsx-a11y', 'fp', 'prettier', 'import'],
   rules: {

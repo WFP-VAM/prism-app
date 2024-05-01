@@ -1,6 +1,4 @@
 import { createStyles, Typography, makeStyles } from '@material-ui/core';
-// @ts-ignore
-import React from 'react';
 import { DateRangeType } from 'config/types';
 import { DateFormat } from 'utils/name-utils';
 import { format } from 'date-fns';
