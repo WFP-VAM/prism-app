@@ -201,7 +201,7 @@ export function calculateCentroids(data: BoundaryLayerData | undefined) {
 }
 
 export function useAAMarkerScalePercent(map: MaplibreMap | undefined) {
-  const MAX_SCALE = 1.5;
+  const MAX_SCALE = 1.3;
   const [scalePercent, setScalePercent] = React.useState(1);
 
   React.useEffect(() => {
