@@ -7,6 +7,8 @@ export const TYPES_ALLOWED_TO_OVERLAP = [
   'static_raster',
 ];
 
+const noOverlapPointDataLayers = ['crop_changes'];
+
 export function keepLayer(layer: LayerType, newLayer: LayerType) {
   // Simple function to control which layers can overlap.
   // The same data can not be loaded twice.
@@ -21,6 +23,16 @@ export function keepLayer(layer: LayerType, newLayer: LayerType) {
   // Different types of layers can overlap.
   if (newLayer.type !== layer.type) {
     return true;
+  }
+
+  if (
+    newLayer.type === 'point_data' &&
+    layer.type === 'point_data' &&
+    noOverlapPointDataLayers.some(
+      x => newLayer.id.includes(x) && layer.id.includes(x),
+    )
+  ) {
+    return false;
   }
 
   // Temporary hack preventing the overlap of kobo layers.
