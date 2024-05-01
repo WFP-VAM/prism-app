@@ -38,6 +38,7 @@ import { getBoundaryLayerSingleton } from 'config/utils';
 import { LayerData } from 'context/layers/layer-data';
 import LegendItemsList from 'components/MapView/Legends/LegendItemsList';
 import useResizeObserver from 'utils/useOnResizeObserver';
+import { Panel, leftPanelTabValueSelector } from 'context/leftPanelStateSlice';
 import {
   dateRangeSelector,
   layerDataSelector,
@@ -70,10 +71,10 @@ interface ToggleSelectorProps {
 
 const toggleSelectorStyles = makeStyles(() => ({
   wrapper: { display: 'flex', flexDirection: 'column', gap: '0.6rem' },
-  buttonGroup: { display: 'flex', gap: '4px' },
+  buttonGroup: { display: 'flex', gap: '0.3rem' },
   button: {
-    height: '40px',
-    width: '48px',
+    height: '2.5rem',
+    width: '3rem',
     borderLeft: '1px solid rgba(0, 0, 0, 0.12) !important',
   },
 }));
@@ -180,6 +181,7 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
   const selectedMap = useSelector(mapSelector);
   const dateRange = useSelector(dateRangeSelector);
   const AAMarkers = useSelector(AAMarkersSelector);
+  const tabValue = useSelector(leftPanelTabValueSelector);
   const printRef = useRef<HTMLDivElement>(null);
   const northArrowRef = useRef<HTMLImageElement>(null);
   const boundaryLayerState = useSelector(
@@ -350,13 +352,7 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
         aria-labelledby="dialog-preview"
       >
         <DialogContent className={classes.contentContainer}>
-          <div
-            style={{
-              display: 'flex',
-              flexDirection: 'column',
-              width: '100%',
-            }}
-          >
+          <div className={classes.previewContainer}>
             <div>
               <Typography variant="h3" className={classes.title}>
                 {t('MAP PREVIEW')}
@@ -455,20 +451,21 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
                         mapStyle={selectedMapStyle || mapStyle.toString()}
                         maxBounds={selectedMap.getMaxBounds() ?? undefined}
                       >
-                        {AAMarkers.map(marker => (
-                          <Marker
-                            key={`marker-${marker.district}`}
-                            longitude={marker.longitude}
-                            latitude={marker.latitude}
-                            anchor="center"
-                          >
-                            <div
-                              style={{ transform: `scale(${scalePercent})` }}
+                        {tabValue === Panel.AnticipatoryAction &&
+                          AAMarkers.map(marker => (
+                            <Marker
+                              key={`marker-${marker.district}`}
+                              longitude={marker.longitude}
+                              latitude={marker.latitude}
+                              anchor="center"
                             >
-                              {marker.icon}
-                            </div>
-                          </Marker>
-                        ))}
+                              <div
+                                style={{ transform: `scale(${scalePercent})` }}
+                              >
+                                {marker.icon}
+                              </div>
+                            </Marker>
+                          ))}
                         {toggles.countryMask && (
                           <Source
                             id="mask-overlay"
@@ -770,7 +767,7 @@ const styles = (theme: Theme) =>
       height: '100%',
       flexDirection: 'column',
       gap: '0.8rem',
-      width: '25rem',
+      width: '19.2rem',
       scrollbarGutter: 'stable',
       overflow: 'auto',
       paddingRight: '15px',
@@ -786,6 +783,11 @@ const styles = (theme: Theme) =>
       display: 'flex',
       flexDirection: 'row',
       justifyContent: 'space-between',
+    },
+    previewContainer: {
+      display: 'flex',
+      flexDirection: 'column',
+      flexGrow: 1,
     },
   });
 
