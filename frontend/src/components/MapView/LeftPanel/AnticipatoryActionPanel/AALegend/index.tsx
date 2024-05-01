@@ -45,7 +45,7 @@ const phases = [
   },
   {
     icon: getAAIcon('ny', 'ny', true),
-    phase: 'Not Yet Available',
+    phase: 'Not Yet Monitored',
   },
 ];
 
@@ -98,14 +98,6 @@ function AALegend({
               </div>
             </div>
           ))}
-          <div className={classes.itemWrapper}>
-            <div className={classes.phaseNy} />
-            <div>
-              <Typography variant="h3">
-                {t('AA triggers not yet monitored')}
-              </Typography>
-            </div>
-          </div>
         </div>
         {showDescription && (
           <>

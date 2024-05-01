@@ -458,21 +458,7 @@ exports[`renders as expected 1`] = `
               style="white-space: nowrap;"
               variant="h3"
             >
-              Not Yet Available
-            </mock-typography>
-          </div>
-        </div>
-        <div
-          class="makeStyles-itemWrapper-2"
-        >
-          <div
-            class="makeStyles-phaseNy-3"
-          />
-          <div>
-            <mock-typography
-              variant="h3"
-            >
-              AA triggers not yet monitored
+              Not Yet Monitored
             </mock-typography>
           </div>
         </div>
