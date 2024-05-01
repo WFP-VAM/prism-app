@@ -20,11 +20,6 @@ const phases = [
     severity: 'Severe',
   },
   {
-    icon: getAAIcon('Severe', 'na', true),
-    phase: 'No Action',
-    severity: 'Severe',
-  },
-  {
     icon: getAAIcon('Moderate', 'Set', true),
     phase: 'Set',
     severity: 'Moderate',
@@ -32,11 +27,6 @@ const phases = [
   {
     icon: getAAIcon('Moderate', 'Ready', true),
     phase: 'Ready',
-    severity: 'Moderate',
-  },
-  {
-    icon: getAAIcon('Moderate', 'na', true),
-    phase: 'No Action',
     severity: 'Moderate',
   },
   {
@@ -50,9 +40,12 @@ const phases = [
     severity: 'Mild',
   },
   {
-    icon: getAAIcon('Mild', 'na', true),
+    icon: getAAIcon('na', 'na', true),
     phase: 'No Action',
-    severity: 'Mild',
+  },
+  {
+    icon: getAAIcon('ny', 'ny', true),
+    phase: 'Not Yet Available',
   },
 ];
 
@@ -97,9 +90,11 @@ function AALegend({
                 <Typography style={{ whiteSpace: 'nowrap' }} variant="h3">
                   {t(x.phase)}
                 </Typography>
-                <Typography style={{ whiteSpace: 'nowrap' }} variant="h3">
-                  {t(x.severity)}
-                </Typography>
+                {x.severity && (
+                  <Typography style={{ whiteSpace: 'nowrap' }} variant="h3">
+                    {t(x.severity)}
+                  </Typography>
+                )}
               </div>
             </div>
           ))}
