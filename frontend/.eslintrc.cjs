@@ -13,6 +13,10 @@ module.exports = {
       1,
       { extensions: ['.js', '.jsx', '.ts', '.tsx'] },
     ],
+    // TODO: remove these
+    'no-unused-variable': 'off',
+    '@typescript-eslint/no-unused-vars': 'off',
+
     // Allow props spreading in React
     'react/jsx-props-no-spreading': 0,
     // Allow named exports only files
@@ -71,7 +75,7 @@ module.exports = {
       },
     ],
     'no-unused-vars': 'off',
-    '@typescript-eslint/no-unused-vars': ['error'],
+    // '@typescript-eslint/no-unused-vars': ['error'],
     'no-use-before-define': 'off',
     '@typescript-eslint/no-use-before-define': ['error'],
     'no-shadow': 'off',

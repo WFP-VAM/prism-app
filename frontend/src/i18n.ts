@@ -24,7 +24,7 @@ registerLocale('es', es);
 registerLocale('ru', ru);
 registerLocale('mn', mn);
 
-export type i18nTranslator = typeof i18n['t'];
+export type i18nTranslator = (typeof i18n)['t'];
 
 export const appResources = {
   en: {
@@ -46,9 +46,7 @@ export const formattedTranslation = Object.keys(translation).reduce(
 );
 
 const englishKeys = Object.keys(translation)
-  .flatMap(language => {
-    return Object.keys(translation[language]);
-  })
+  .flatMap(language => Object.keys(translation[language]))
   .reduce(
     (previousKeys, currentKey) => ({
       ...previousKeys,

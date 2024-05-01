@@ -8,6 +8,7 @@
     "baseUrl": "./src",
     "strictPropertyInitialization": false,
     "experimentalDecorators": true,
+    "esModuleInterop": true,
 
     /* Bundler mode */
     "moduleResolution": "bundler",

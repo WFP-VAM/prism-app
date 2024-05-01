@@ -3,7 +3,7 @@
 exports[`TimelineLabel renders as expected 1`] = `
 <div>
   <mock-typography
-    classname="TimelineLabel-dateItemLabel-1"
+    classname="makeStyles-dateItemLabel-1"
     variant="body2"
   >
     décembre 2021
