@@ -39,6 +39,21 @@ const phases = [
     phase: 'No Action',
     severity: 'Moderate',
   },
+  {
+    icon: getAAIcon('Mild', 'Set', true),
+    phase: 'Set',
+    severity: 'Mild',
+  },
+  {
+    icon: getAAIcon('Mild', 'Ready', true),
+    phase: 'Ready',
+    severity: 'Mild',
+  },
+  {
+    icon: getAAIcon('Mild', 'na', true),
+    phase: 'No Action',
+    severity: 'Mild',
+  },
 ];
 
 interface AALegendProps {
