@@ -42,6 +42,8 @@ jest.mock('@react-pdf/renderer', () => ({
   Font: { register: () => {} },
 }));
 
+jest.mock('max-inscribed-circle', () => ({}));
+
 function stubMuiComponent(componentName: string) {
   jest.doMock(
     `@material-ui/core/${componentName}/${componentName}`,
@@ -94,6 +96,8 @@ stubMuiComponent('DialogActions');
 stubMuiComponent('DialogContent');
 stubMuiComponent('DialogContentText');
 stubMuiComponent('DialogTitle');
+stubMuiComponent('Icon');
+stubMuiComponent('Radio');
 
 function stubMuiIcon(iconName: string) {
   jest.doMock(`@material-ui/icons/${iconName}`, () => `mock-${iconName}`);
@@ -111,3 +115,10 @@ stubMuiIcon('VisibilityOff');
 // mock getContext based on https://github.com/hustcc/jest-canvas-mock/issues/2
 // eslint-disable-next-line fp/no-mutation
 HTMLCanvasElement.prototype.getContext = jest.fn();
+
+// eslint-disable-next-line fp/no-mutation
+global.ResizeObserver = jest.fn().mockImplementation(() => ({
+  observe: jest.fn(),
+  unobserve: jest.fn(),
+  disconnect: jest.fn(),
+}));

@@ -21,7 +21,7 @@ import {
   withStyles,
   WithStyles,
 } from '@material-ui/core';
-import { Cancel, Opacity, SwapVert } from '@material-ui/icons';
+import { Close, Opacity, SwapVert } from '@material-ui/icons';
 import { useDispatch, useSelector } from 'react-redux';
 import { LayerType, LegendDefinitionItem } from 'config/types';
 import { mapSelector, layersSelector } from 'context/mapStateSlice/selectors';
@@ -40,6 +40,7 @@ import LayerDownloadOptions from 'components/MapView/LeftPanel/layersPanel/MenuI
 import AnalysisDownloadButton from 'components/MapView/Legends//AnalysisDownloadButton';
 import { toggleRemoveLayer } from 'components/MapView/LeftPanel/layersPanel/MenuItem/MenuSwitch/SwitchItem/utils';
 import { opacitySelector, setOpacity } from 'context/opacityStateSlice';
+import { lightGrey } from 'muiTheme';
 import LoadingBar from '../LoadingBar';
 
 // Children here is legendText
@@ -55,6 +56,8 @@ const LegendItem = memo(
     legendUrl,
     fillPattern,
     extent,
+    forPrinting = false,
+    showDescription = true,
   }: LegendItemProps) => {
     const dispatch = useDispatch();
     const { removeLayerFromUrl } = useUrlHistory();
@@ -212,7 +215,17 @@ const LegendItem = memo(
 
     return (
       <ListItem disableGutters dense>
-        <Paper className={classes.paper}>
+        <Paper
+          className={classes.paper}
+          elevation={forPrinting ? 0 : undefined}
+          style={
+            forPrinting
+              ? {
+                  border: `1px solid ${lightGrey}`,
+                }
+              : undefined
+          }
+        >
           <Grid item style={{ display: 'flex' }}>
             <Typography style={{ flexGrow: 1 }} variant="h4">
               {title}
@@ -221,46 +234,58 @@ const LegendItem = memo(
           </Grid>
           <Divider />
           {renderedLegend}
-          <LoadingBar layerId={id} />
-          {renderedChildren}
-          <Divider style={{ margin: '8px 0px' }} />
-          <Box display="flex" justifyContent="space-between">
-            <Tooltip title="Opacity">
-              <IconButton size="small" onClick={openOpacity}>
-                <Opacity fontSize="small" />
-              </IconButton>
-            </Tooltip>
-            {isAnalysis && (
-              <Tooltip title={t('Reverse colors') as string}>
-                <IconButton
-                  size="small"
-                  onClick={() => dispatch(analysisLayerInvertColors())}
-                >
-                  <SwapVert fontSize="small" />
-                </IconButton>
-              </Tooltip>
-            )}
+          {showDescription && (
             <>
-              <Popover
-                id={opacityId}
-                open={open}
-                anchorEl={opacityEl}
-                onClose={closeOpacity}
-                anchorOrigin={{
-                  vertical: 'bottom',
-                  horizontal: 'left',
-                }}
-              >
-                {renderedOpacitySlider}
-              </Popover>
-              {isAnalysis ? <AnalysisDownloadButton /> : layerDownloadOptions}
-              <Tooltip title="Remove layer">
-                <IconButton size="small" onClick={remove}>
-                  <Cancel fontSize="small" />
-                </IconButton>
-              </Tooltip>
+              <LoadingBar layerId={id} />
+              {renderedChildren}
             </>
-          </Box>
+          )}
+          {!forPrinting && (
+            <>
+              <Divider style={{ margin: '8px 0px' }} />
+              <Box display="flex" justifyContent="space-between">
+                <Tooltip title="Opacity">
+                  <IconButton size="small" onClick={openOpacity}>
+                    <Opacity fontSize="small" />
+                  </IconButton>
+                </Tooltip>
+                {isAnalysis && (
+                  <Tooltip title={t('Reverse colors') as string}>
+                    <IconButton
+                      size="small"
+                      onClick={() => dispatch(analysisLayerInvertColors())}
+                    >
+                      <SwapVert fontSize="small" />
+                    </IconButton>
+                  </Tooltip>
+                )}
+                <>
+                  <Popover
+                    id={opacityId}
+                    open={open}
+                    anchorEl={opacityEl}
+                    onClose={closeOpacity}
+                    anchorOrigin={{
+                      vertical: 'bottom',
+                      horizontal: 'left',
+                    }}
+                  >
+                    {renderedOpacitySlider}
+                  </Popover>
+                  {isAnalysis ? (
+                    <AnalysisDownloadButton />
+                  ) : (
+                    layerDownloadOptions
+                  )}
+                  <Tooltip title="Remove layer">
+                    <IconButton size="small" onClick={remove}>
+                      <Close fontSize="small" />
+                    </IconButton>
+                  </Tooltip>
+                </>
+              </Box>
+            </>
+          )}
         </Paper>
       </ListItem>
     );
@@ -309,6 +334,8 @@ interface LegendItemProps
   opacity: LayerType['opacity'];
   fillPattern?: 'left' | 'right';
   extent?: Extent;
+  forPrinting?: boolean;
+  showDescription?: boolean;
 }
 
 export default withStyles(styles)(LegendItem);
