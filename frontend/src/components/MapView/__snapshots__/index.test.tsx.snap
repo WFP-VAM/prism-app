@@ -21,7 +21,7 @@ exports[`renders as expected 1`] = `
             aria-labelledby="full-width-tab-layers"
             id="full-width-tabpanel-layers"
             role="tabpanel"
-            style="display: block; flex-grow: 1; order: -1; overflow-x: hidden; width: 425px;"
+            style="display: block; flex-grow: 1; order: -1; overflow-x: hidden;"
           >
             <div
               class="MuiBox-root MuiBox-root-7"
@@ -324,22 +324,23 @@ exports[`renders as expected 1`] = `
             aria-labelledby="full-width-tab-charts"
             id="full-width-tabpanel-charts"
             role="tabpanel"
-            style="display: none; flex-grow: 1; overflow-x: auto; width: 425px;"
+            style="display: none; flex-grow: 1; overflow-x: auto;"
           />
           <div
             aria-labelledby="full-width-tab-analysis"
             id="full-width-tabpanel-analysis"
             role="tabpanel"
-            style="display: none; flex-grow: 1; overflow-x: auto; width: 425px;"
+            style="display: none; flex-grow: 1; overflow-x: auto;"
           />
           <div
             aria-labelledby="full-width-tab-anticipatory_action"
             id="full-width-tabpanel-anticipatory_action"
             role="tabpanel"
-            style="display: none; flex-grow: 1; overflow-x: auto; width: 425px;"
+            style="display: none; flex-grow: 1; overflow-x: auto;"
           >
             <div
               class="makeStyles-anticipatoryActionPanel-57"
+              style="width: 425px;"
             >
               <mock-dialog
                 open="false"
@@ -1306,7 +1307,7 @@ exports[`renders as expected 1`] = `
             aria-labelledby="full-width-tab-none"
             id="full-width-tabpanel-none"
             role="tabpanel"
-            style="display: none; flex-grow: 1; overflow-x: auto; width: 425px;"
+            style="display: none; flex-grow: 1; overflow-x: auto;"
           />
         </div>
       </div>
