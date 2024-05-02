@@ -179,8 +179,8 @@ const ExposureAnalysisTable = memo(
     ]);
 
     return (
-      <div className={classes.exposureAnalysisTable}>
-        <TableContainer className={classes.tableContainer}>
+      <>
+        <TableContainer>
           <Table stickyHeader aria-label="exposure analysis table">
             <TableHead>
               <TableRow>{renderedTableHeaderCells}</TableRow>
@@ -222,24 +222,13 @@ const ExposureAnalysisTable = memo(
             },
           }}
         />
-      </div>
+      </>
     );
   },
 );
 
 const styles = (theme: Theme) =>
   createStyles({
-    exposureAnalysisTable: {
-      paddingTop: '1rem',
-      display: 'flex',
-      flexDirection: 'column',
-      alignItems: 'center',
-      justifyContent: 'center',
-      maxHeight: 'inherit',
-    },
-    tableContainer: {
-      maxWidth: '90%',
-    },
     tableHead: {
       backgroundColor: '#EBEBEB',
       boxShadow: 'inset 0px -1px 0px rgba(0, 0, 0, 0.25)',

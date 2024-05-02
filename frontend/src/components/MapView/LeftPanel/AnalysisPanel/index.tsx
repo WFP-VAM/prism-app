@@ -667,20 +667,17 @@ const AnalysisPanel = memo(() => {
       return null;
     }
     return (
-      <div className={classes.exposureAnalysisTable}>
-        <ExposureAnalysisTable
-          tableData={exposureAnalysisTableData}
-          columns={translatedColumns}
-          maxResults={1000}
-          sortColumn={exposureAnalysisSortColumn}
-          handleChangeOrderBy={handleExposureAnalysisTableOrderBy}
-          isAscending={exposureAnalysisIsAscending}
-        />
-      </div>
+      <ExposureAnalysisTable
+        tableData={exposureAnalysisTableData}
+        columns={translatedColumns}
+        maxResults={1000}
+        sortColumn={exposureAnalysisSortColumn}
+        handleChangeOrderBy={handleExposureAnalysisTableOrderBy}
+        isAscending={exposureAnalysisIsAscending}
+      />
     );
   }, [
     analysisResult,
-    classes.exposureAnalysisTable,
     exposureAnalysisIsAscending,
     exposureAnalysisSortColumn,
     exposureAnalysisTableData,
@@ -1155,15 +1152,13 @@ const AnalysisPanel = memo(() => {
                   {t(selectedHazardLayer?.title as TFunctionKeys)}
                 </Typography>
               </div>
-              <div className={classes.analysisTable}>
-                <AnalysisTable
-                  tableData={analysisTableData}
-                  columns={translatedColumns}
-                  sortColumn={analysisSortColumn}
-                  handleChangeOrderBy={handleAnalysisTableOrderBy}
-                  isAscending={analysisIsAscending}
-                />
-              </div>
+              <AnalysisTable
+                tableData={analysisTableData}
+                columns={translatedColumns}
+                sortColumn={analysisSortColumn}
+                handleChangeOrderBy={handleAnalysisTableOrderBy}
+                isAscending={analysisIsAscending}
+              />
             </Box>
           )}
       </div>
@@ -1174,7 +1169,6 @@ const AnalysisPanel = memo(() => {
     analysisSortColumn,
     analysisTableData,
     classes.analysisPanel,
-    classes.analysisTable,
     classes.analysisTableCloseButton,
     classes.analysisTableContainer,
     classes.analysisTableTitle,
@@ -1199,16 +1193,16 @@ const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
       display: 'flex',
-      flexDirection: 'row',
+      flexDirection: 'column',
       width: PanelSize.medium,
       height: '100%',
-      flexWrap: 'wrap',
     },
     analysisPanel: {
       display: 'flex',
       flexDirection: 'column',
       width: PanelSize.medium,
       height: '100%',
+      overflow: 'scroll',
     },
     exposureAnalysisLoadingContainer: {
       display: 'flex',
@@ -1274,6 +1268,8 @@ const useStyles = makeStyles((theme: Theme) =>
       display: 'flex',
       flexDirection: 'column',
       alignItems: 'center',
+      justifyContent: 'space-between',
+      padding: '0 1rem',
     },
     datePickerContainer: {
       marginLeft: 10,
@@ -1352,18 +1348,6 @@ const useStyles = makeStyles((theme: Theme) =>
     analysisTableCloseButton: {
       zIndex: theme.zIndex.modal,
       marginLeft: 'auto',
-    },
-    exposureAnalysisTable: {
-      // to remove after refactor: analysis panel should be a flex container and the bottom buttons should not be position absolute
-      maxHeight: 'calc(80vh - 143px)',
-    },
-    analysisTable: {
-      maxHeight: '75vh',
-      maxWidth: '96%',
-      display: 'flex',
-      flexDirection: 'column',
-      alignItems: 'center',
-      justifyContent: 'center',
     },
   }),
 );
