@@ -18,12 +18,16 @@ const content = [
   { title: 'Window 1', text: 'Start to mid of the rainfall season.' },
   { title: 'Window 2', text: 'Mid to end of the rainfall season.' },
   {
+    title: 'Mild category',
+    text: 'Drought events that typically occur once every 4 years.',
+  },
+  {
     title: 'Moderate category',
-    text: 'Drought events that happen on average 1 in 5 years.',
+    text: 'Drought events that typically occur once every 5 years.',
   },
   {
     title: 'Severe category',
-    text: 'Drought events that happen on average 1 in 7 years.',
+    text: 'Drought events that typically occur once every 7 years.',
   },
   {
     title: 'Ready, Set and Go phases',
