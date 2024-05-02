@@ -24,7 +24,7 @@ import { opacitySelector, setOpacity } from 'context/opacityStateSlice';
 import { toggleRemoveLayer } from './utils';
 import LayerDownloadOptions from './LayerDownloadOptions';
 import ExposureAnalysisOption from './ExposureAnalysisOption';
-import SwitchItemTitle from './SwitchItemTitle';
+import SwitchTitle from './SwitchItemTitle';
 import SwitchAction from './SwitchAction';
 import OpacitySlider from './OpacitySlider';
 
@@ -193,7 +193,7 @@ const SwitchItem = memo(
             toggleLayerValue={toggleLayerValue}
             validatedTitle={validatedTitle}
           />
-          <SwitchItemTitle
+          <SwitchTitle
             layer={layer}
             activeLayerId={activeLayerId}
             someLayerAreSelected={someLayerAreSelected}
