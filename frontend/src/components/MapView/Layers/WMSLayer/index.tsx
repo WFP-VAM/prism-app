@@ -10,7 +10,7 @@ import { getLayerMapId } from 'utils/map-utils';
 import { appConfig } from 'config';
 import { opacitySelector } from 'context/opacityStateSlice';
 
-function expandBoundingBox(
+export function expandBoundingBox(
   bbox: [number, number, number, number],
   extraDegrees: number,
 ): [number, number, number, number] {

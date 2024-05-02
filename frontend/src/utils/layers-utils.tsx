@@ -32,6 +32,8 @@ import {
 } from 'utils/server-utils';
 import { UrlLayerKey, getUrlKey, useUrlHistory } from 'utils/url-utils';
 import { AAAvailableDatesSelector } from 'context/anticipatoryActionStateSlice';
+import { expandBoundingBox } from 'components/MapView/Layers/WMSLayer';
+
 import {
   datesAreEqualWithoutTime,
   binaryIncludes,
@@ -94,7 +96,11 @@ const useLayers = () => {
     return [...unsortedSelectedLayers].sort(layerOrdering);
   }, [unsortedSelectedLayers]);
 
-  const adminBoundariesExtent = appConfig.map.boundingBox as Extent;
+  // expand bounding box by a few degrees to ensure results cover the entire country
+  const adminBoundariesExtent = expandBoundingBox(
+    appConfig.map.boundingBox,
+    2,
+  ) as Extent;
 
   const selectedLayersWithDateSupport = useMemo(() => {
     return selectedLayers
