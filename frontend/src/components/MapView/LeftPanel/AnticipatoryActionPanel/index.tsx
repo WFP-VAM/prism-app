@@ -37,6 +37,7 @@ import {
 } from 'utils/server-utils';
 import { getFormattedDate } from 'utils/date-utils';
 import { DateFormat } from 'utils/name-utils';
+import { PanelSize } from 'config/types';
 import { StyledCheckboxLabel, StyledRadioLabel, StyledSelect } from './utils';
 import DistrictView from './DistrictView/index';
 import HomeTable from './HomeTable';
@@ -101,7 +102,27 @@ function AnticipatoryActionPanel() {
   }, [date, dispatch]);
 
   return (
-    <div className={classes.anticipatoryActionPanel}>
+    <div
+      className={classes.anticipatoryActionPanel}
+      style={{
+        width: (() => {
+          switch (view) {
+            case AAView.Home:
+              return PanelSize.medium;
+            case AAView.District:
+              return PanelSize.auto;
+            case AAView.Timeline:
+              return PanelSize.auto;
+            case AAView.Forecast:
+              return PanelSize.large;
+
+            default:
+              console.error(`No width configured for panel ${view}`);
+              return PanelSize.auto;
+          }
+        })(),
+      }}
+    >
       <HowToReadModal
         open={howToReadModalOpen}
         onClose={() => setHowToReadModalOpen(false)}
