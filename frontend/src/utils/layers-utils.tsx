@@ -1,7 +1,10 @@
 import { findClosestDate } from 'components/MapView/DateSelector/utils';
 import { checkLayerAvailableDatesAndContinueOrRemove } from 'components/MapView/utils';
 import { appConfig } from 'config';
-import { Extent } from 'components/MapView/Layers/raster-utils';
+import {
+  Extent,
+  expandBoundingBox,
+} from 'components/MapView/Layers/raster-utils';
 import { LayerKey, LayerType, isMainLayer, DateItem } from 'config/types';
 import {
   AALayerId,
@@ -32,7 +35,6 @@ import {
 } from 'utils/server-utils';
 import { UrlLayerKey, getUrlKey, useUrlHistory } from 'utils/url-utils';
 import { AAAvailableDatesSelector } from 'context/anticipatoryActionStateSlice';
-import { expandBoundingBox } from 'components/MapView/Layers/WMSLayer';
 
 import {
   datesAreEqualWithoutTime,
@@ -98,7 +100,7 @@ const useLayers = () => {
 
   // expand bounding box by a few degrees to ensure results cover the entire country
   const adminBoundariesExtent = expandBoundingBox(
-    appConfig.map.boundingBox,
+    appConfig.map.boundingBox as Extent,
     2,
   ) as Extent;
 
