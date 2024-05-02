@@ -22,7 +22,7 @@ import {
   setAAView,
 } from 'context/anticipatoryActionStateSlice';
 import { useSafeTranslation } from 'i18n';
-import { ClearAll, Equalizer } from '@material-ui/icons';
+import { ClearAll, Equalizer, Reply } from '@material-ui/icons';
 import useTabSelected from 'utils/useTabSelected';
 import { AADataSeverityOrder, getAAIcon, useAACommonStyles } from '../utils';
 import {
@@ -293,6 +293,11 @@ function DistrictView({ dialogs }: DistrictViewProps) {
       icon: Equalizer,
       text: 'Forecast',
       onClick: () => dispatch(setAAView(AAView.Forecast)),
+    },
+    {
+      icon: Reply,
+      text: 'Global View',
+      onClick: () => dispatch(setAAView(AAView.Home)),
     },
   ];
 

@@ -23,7 +23,7 @@ import {
   AAcategory,
 } from 'context/anticipatoryActionStateSlice/types';
 import { useSafeTranslation } from 'i18n';
-import { ClearAll } from '@material-ui/icons';
+import { ClearAll, Reply } from '@material-ui/icons';
 import useTabSelected from 'utils/useTabSelected';
 import { getAAColor, useAACommonStyles } from '../utils';
 import { chartOptions, forecastTransform, getChartData } from './utils';
@@ -59,6 +59,11 @@ function Forecast({ dialogs }: ForecastProps) {
   });
 
   const forecastButtons = [
+    {
+      icon: Reply,
+      text: 'Back',
+      onClick: () => dispatch(setAAView(AAView.District)),
+    },
     {
       icon: ClearAll,
       text: t('Timeline'),

@@ -20,7 +20,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Panel, setPanelSize } from 'context/leftPanelStateSlice';
 import { PanelSize } from 'config/types';
 import { useSafeTranslation } from 'i18n';
-import { Equalizer } from '@material-ui/icons';
+import { Equalizer, Reply } from '@material-ui/icons';
 import useTabSelected from 'utils/useTabSelected';
 import { getAAColor, getAAIcon, useAACommonStyles } from '../utils';
 import { dateSorter } from '../DistrictView/utils';
@@ -109,6 +109,11 @@ function Timeline({ dialogs }: TimelineProps) {
   );
 
   const timelineButtons = [
+    {
+      icon: Reply,
+      text: 'Back',
+      onClick: () => dispatch(setAAView(AAView.District)),
+    },
     {
       icon: Equalizer,
       text: 'Forecast',
