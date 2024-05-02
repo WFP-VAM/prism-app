@@ -201,6 +201,7 @@ export function calculateCentroids(data: BoundaryLayerData | undefined) {
 }
 
 export function useAAMarkerScalePercent(map: MaplibreMap | undefined) {
+  const MAX_SCALE = 1.3;
   const [scalePercent, setScalePercent] = React.useState(1);
 
   React.useEffect(() => {
@@ -228,7 +229,10 @@ export function useAAMarkerScalePercent(map: MaplibreMap | undefined) {
       // Calculate the scale factor needed to adjust the marker to the desired width in pixels
       // Assuming the original width of the marker image is known
       const originalMarkerWidthInPixels = 40; // Adjust this value to the actual width of your marker image
-      const scale = desiredWidthInPixels / originalMarkerWidthInPixels;
+      const scale = Math.min(
+        MAX_SCALE,
+        desiredWidthInPixels / originalMarkerWidthInPixels,
+      );
 
       setScalePercent(scale);
       // Explicitly return undefined to clarify that no value is intended to be returned
