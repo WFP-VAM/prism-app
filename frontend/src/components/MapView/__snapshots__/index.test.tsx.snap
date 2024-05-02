@@ -432,7 +432,7 @@ exports[`renders as expected 1`] = `
                       <mock-typography
                         variant="h3"
                       >
-                        Drought events that happen on average 1 in 5 years.
+                        Drought events that typically occur once every 5 years.
                       </mock-typography>
                        
                     </div>
@@ -449,7 +449,7 @@ exports[`renders as expected 1`] = `
                       <mock-typography
                         variant="h3"
                       >
-                        Drought events that happen on average 1 in 7 years.
+                        Drought events that typically occur once every 7 years.
                       </mock-typography>
                        
                     </div>
