@@ -8,6 +8,7 @@ export const TYPES_ALLOWED_TO_OVERLAP = [
   'static_raster',
 ];
 
+// finds layer's group as defined in "categories" in "prism.json"
 function getLayerGroup(layer: LayerType) {
   let group: MenuGroup | undefined;
 
@@ -45,6 +46,7 @@ export function keepLayer(layer: LayerType, newLayer: LayerType) {
     return true;
   }
 
+  // Layers on the same group cannot overlap
   const newLayerGroup = getLayerGroup(newLayer);
   if (newLayerGroup?.layers.some(l => l.id === layer.id)) {
     return false;
