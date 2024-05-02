@@ -21,7 +21,6 @@ import {
   AAcategory,
 } from 'context/anticipatoryActionStateSlice/types';
 import { dateRangeSelector } from 'context/mapStateSlice/selectors';
-
 import { useSafeTranslation } from 'i18n';
 import { ClearAll } from '@material-ui/icons';
 import { getFormattedDate } from 'utils/date-utils';
