@@ -5834,6 +5834,22 @@
       "IFPRI_classification": {
         "type": "string",
         "dataTitle": "Classification"
+      },
+      "deadliness_2023": {
+        "type": "number",
+        "dataTitle": "Deadliness score"
+      },
+      "danger_2023": {
+        "type": "number",
+        "dataTitle": "Danger score"
+      },
+      "diffusion_2023": {
+        "type": "number",
+        "dataTitle": "Diffusion score"
+      },
+      "fragmentation_2023": {
+        "type": "number",
+        "dataTitle": "Fragmentation score"
       }
     },
     "opacity": 0.9,
@@ -5975,7 +5991,7 @@
         "color": "#e51a19"
       }
     ],
-    "legend_text": "ACLED Conflict analysis 2018. IFPRI"
+    "legend_text": "ACLED Conflict analysis 2018 produced by IFPRI. For more details, see https://hdl.handle.net/10568/139670"
   },
   "ifpri_conflict_2019": {
     "title": "IFPRI / ACLED Conflict Analysis - 2019",
@@ -6007,7 +6023,7 @@
         "color": "#e51a19"
       }
     ],
-    "legend_text": "ACLED Conflict analysis 2019. IFPRI"
+    "legend_text": "ACLED Conflict analysis 2019 produced by IFPRI. For more details, see https://hdl.handle.net/10568/139670"
   },
   "ifpri_conflict_2020": {
     "title": "IFPRI / ACLED Conflict Analysis - 2020",
@@ -6039,7 +6055,7 @@
         "color": "#e51a19"
       }
     ],
-    "legend_text": "ACLED Conflict analysis 2020. IFPRI"
+    "legend_text": "ACLED Conflict analysis 2020 produced by IFPRI. For more details, see https://hdl.handle.net/10568/139670"
   },
   "ifpri_conflict_2021": {
     "title": "IFPRI / ACLED Conflict Analysis - 2021",
@@ -6071,7 +6087,7 @@
         "color": "#e51a19"
       }
     ],
-    "legend_text": "ACLED Conflict analysis 2021. IFPRI"
+    "legend_text": "ACLED Conflict analysis 2021 produced by IFPRI. For more details, see https://hdl.handle.net/10568/139670"
   },
   "ifpri_conflict_2022": {
     "title": "IFPRI / ACLED Conflict Analysis - 2022",
@@ -6103,7 +6119,7 @@
         "color": "#e51a19"
       }
     ],
-    "legend_text": "ACLED Conflict analysis 2022. IFPRI"
+    "legend_text": "ACLED Conflict analysis 2022 produced by IFPRI. For more details, see https://hdl.handle.net/10568/139670"
   },
   "ifpri_conflict_2023": {
     "title": "IFPRI / ACLED Conflict Analysis - 2023",
@@ -6135,6 +6151,6 @@
         "color": "#e51a19"
       }
     ],
-    "legend_text": "ACLED Conflict analysis 2023. IFPRI"
+    "legend_text": "ACLED Conflict analysis 2023 produced by IFPRI. For more details, see [this link](https://hdl.handle.net/10568/139670)"
   }
 }
