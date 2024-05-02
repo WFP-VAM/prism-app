@@ -6,7 +6,8 @@ exports[`renders as expected 1`] = `
     style="margin-left: 1rem;"
     variant="h3"
   >
-    Latest forecast available on selected date: 
+    Latest forecast available on selected date
+    : 
     2023-12-01
   </mock-typography>
   <div

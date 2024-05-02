@@ -73,7 +73,8 @@ function Forecast({ dialogs }: ForecastProps) {
   return (
     <>
       <Typography variant="h3" style={{ marginLeft: '1rem' }}>
-        {t('Latest forecast available on selected date: ')}
+        {t('Latest forecast available on selected date')}
+        {': '}
         {getFormattedDate(selectedDate, 'default')}
       </Typography>
       <div className={classes.charts}>
