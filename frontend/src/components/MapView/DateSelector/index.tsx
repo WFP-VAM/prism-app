@@ -38,7 +38,7 @@ import {
   leftPanelSizeSelector,
   leftPanelTabValueSelector,
 } from 'context/leftPanelStateSlice';
-import { ReactComponent as TickSvg } from './tick.svg';
+// import { ReactComponent as TickSvg } from './tick.svg';
 import DateSelectorInput from './DateSelectorInput';
 import TimelineItems from './TimelineItems';
 import { TIMELINE_ITEM_WIDTH, findDateIndex } from './utils';
@@ -97,9 +97,10 @@ const DateSelector = memo(({ classes }: DateSelectorProps) => {
   const { updateHistory } = useUrlHistory();
   const dispatch = useDispatch();
 
-  const maxDate = useMemo(() => {
-    return new Date(Math.max(...availableDates, new Date().getTime()));
-  }, [availableDates]);
+  const maxDate = useMemo(
+    () => new Date(Math.max(...availableDates, new Date().getTime())),
+    [availableDates],
+  );
 
   const timeLineWidth = get(timeLine.current, 'offsetWidth', 0);
 
@@ -135,9 +136,10 @@ const DateSelector = memo(({ classes }: DateSelectorProps) => {
     handleTimeLinePosition(x);
   }, [handleTimeLinePosition, setPointerXPosition]);
 
-  const locale = useMemo(() => {
-    return t('date_locale') ? t('date_locale') : 'en';
-  }, [t]);
+  const locale = useMemo(
+    () => (t('date_locale') ? t('date_locale') : 'en'),
+    [t],
+  );
 
   const panelTab = useSelector(leftPanelTabValueSelector);
 
@@ -176,14 +178,16 @@ const DateSelector = memo(({ classes }: DateSelectorProps) => {
     });
   }, [locale, stateStartDate, panelTab]);
 
-  const dateIndex = useMemo(() => {
-    return findIndex(
-      range,
-      date =>
-        !!stateStartDate &&
-        datesAreEqualWithoutTime(date.value, stateStartDate),
-    );
-  }, [range, stateStartDate]);
+  const dateIndex = useMemo(
+    () =>
+      findIndex(
+        range,
+        date =>
+          !!stateStartDate &&
+          datesAreEqualWithoutTime(date.value, stateStartDate),
+      ),
+    [range, stateStartDate],
+  );
 
   // Create timeline range and set pointer position
   useEffect(() => {
@@ -246,15 +250,16 @@ const DateSelector = memo(({ classes }: DateSelectorProps) => {
     setDatePosition(stateStartDate, -1, true);
   }, [setDatePosition, stateStartDate]);
 
-  const includedDates = useMemo(() => {
-    return availableDates?.map(d => new Date(d)) ?? [];
-  }, [availableDates]);
+  const includedDates = useMemo(
+    () => availableDates?.map(d => new Date(d)) ?? [],
+    [availableDates],
+  );
 
   const checkIntersectingDateAndShowPopup = useCallback(
     (selectedDate: Date, positionY: number) => {
-      const findDateInIntersectingDates = includedDates.find(date => {
-        return datesAreEqualWithoutTime(date, selectedDate);
-      });
+      const findDateInIntersectingDates = includedDates.find(date =>
+        datesAreEqualWithoutTime(date, selectedDate),
+      );
       if (findDateInIntersectingDates) {
         return;
       }
@@ -438,7 +443,7 @@ const DateSelector = memo(({ classes }: DateSelectorProps) => {
                   onStop={onPointerStop}
                 >
                   <div className={classes.pointer} id={POINTER_ID}>
-                    <TickSvg />
+                    {/* <TickSvg /> */}
                   </div>
                 </Draggable>
               </div>

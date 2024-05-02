@@ -142,7 +142,7 @@ function ExposureAnalysisActions({
           <Typography variant="body2">{t('Download as CSV')}</Typography>
         </Button>
       )}
-      <Button
+      {false && <Button
         id="create-report"
         className={bottomButton}
         onClick={handleToggleReport(true)}
@@ -157,7 +157,7 @@ function ExposureAnalysisActions({
         // }}
       >
         <Typography variant="body2">{t('Preview Report (slow)')}</Typography>
-      </Button>
+      </Button>}
       <Button
         className={bottomButton}
         onClick={handleDownloadReport}
@@ -166,13 +166,13 @@ function ExposureAnalysisActions({
         <Typography variant="body2">{t('Download Report')}</Typography>
         {downloadReportIsLoading && <LoadingBlinkingDots dotColor="white" />}
       </Button>
-      <ReportDialog
+      {/* <ReportDialog
         open={openReport}
         handleClose={handleToggleReport(false)}
         reportConfig={reportConfig}
         tableData={tableData}
         columns={columns}
-      />
+      /> */}
     </>
   );
 }
