@@ -4,6 +4,7 @@ import { Provider } from 'react-redux';
 import { BrowserRouter } from 'react-router-dom';
 import configureStore from 'redux-mock-store';
 import { AnticipatoryActionState } from 'context/anticipatoryActionStateSlice/types';
+import { Panel } from 'context/leftPanelStateSlice';
 import { defaultDialogs, mockAAData } from '../test.utils';
 import { forecastTransform } from './utils';
 import Forecast from '.';
@@ -39,6 +40,9 @@ const store = mockStore({
     selectedDistrict: 'Changara',
     monitoredDistricts: ['Changara'],
     data: mockAAData,
+  },
+  leftPanelState: {
+    tabValue: Panel.AnticipatoryAction,
   },
 });
 

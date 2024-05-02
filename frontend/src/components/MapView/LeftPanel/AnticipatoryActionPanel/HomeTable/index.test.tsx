@@ -3,6 +3,7 @@ import { render } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import { BrowserRouter } from 'react-router-dom';
 import configureStore from 'redux-mock-store';
+import { Panel } from 'context/leftPanelStateSlice';
 import HomeTable from '.';
 import { defaultDialogs, mockAARenderedDistricts } from '../test.utils';
 
@@ -31,6 +32,9 @@ const store = mockStore({
     monitoredDistricts: ['Caia'],
     renderedDistricts: mockAARenderedDistricts,
     windowRanges: { 'Window 2': { start: '2023-08-01', end: '2023-12-01' } },
+  },
+  leftPanelState: {
+    tabValue: Panel.AnticipatoryAction,
   },
 });
 
