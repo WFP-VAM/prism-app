@@ -2,31 +2,16 @@ import React, { memo } from 'react';
 import { useSelector } from 'react-redux';
 import { Layer, Source } from 'react-map-gl/maplibre';
 import { WMSLayerProps } from 'config/types';
-import { getWMSUrl } from 'components/MapView/Layers/raster-utils';
+import {
+  expandBoundingBox,
+  getWMSUrl,
+} from 'components/MapView/Layers/raster-utils';
 import { useDefaultDate } from 'utils/useDefaultDate';
 import { getRequestDate } from 'utils/server-utils';
 import { availableDatesSelector } from 'context/serverStateSlice';
 import { getLayerMapId } from 'utils/map-utils';
 import { appConfig } from 'config';
 import { opacitySelector } from 'context/opacityStateSlice';
-
-export function expandBoundingBox(
-  bbox: [number, number, number, number],
-  extraDegrees: number,
-): [number, number, number, number] {
-  const currentXDistance = bbox[2] - bbox[0];
-  const currentYDistance = bbox[3] - bbox[1];
-  const newXDistance = currentXDistance + 2 * extraDegrees;
-  const newYDistance = currentYDistance + 2 * extraDegrees;
-  const xChange = newXDistance - currentXDistance;
-  const yChange = newYDistance - currentYDistance;
-  const lowX = bbox[0] - xChange / 2;
-  const lowY = bbox[1] - yChange / 2;
-  const highX = xChange / 2 + bbox[2];
-  const highY = yChange / 2 + bbox[3];
-
-  return [lowX, lowY, highX, highY];
-}
 
 const WMSLayers = ({
   layer: { id, baseUrl, serverLayerName, additionalQueryParams, opacity },

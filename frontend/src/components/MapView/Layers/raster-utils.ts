@@ -185,6 +185,24 @@ export function pixelsInFeature(
   }, [] as number[]);
 }
 
+export function expandBoundingBox(
+  bbox: Extent,
+  extraDegrees: number,
+): [number, number, number, number] {
+  const currentXDistance = bbox[2] - bbox[0];
+  const currentYDistance = bbox[3] - bbox[1];
+  const newXDistance = currentXDistance + 2 * extraDegrees;
+  const newYDistance = currentYDistance + 2 * extraDegrees;
+  const xChange = newXDistance - currentXDistance;
+  const yChange = newYDistance - currentYDistance;
+  const lowX = bbox[0] - xChange / 2;
+  const lowY = bbox[1] - yChange / 2;
+  const highX = xChange / 2 + bbox[2];
+  const highY = yChange / 2 + bbox[3];
+
+  return [lowX, lowY, highX, highY] as Extent;
+}
+
 export function getExtent(map?: MaplibreMap): Extent {
   // TODO - Use bbox on the admin boundaries instead.
   const bounds = map?.getBounds();
