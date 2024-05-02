@@ -22,11 +22,9 @@ import {
   setAASelectedDistrict,
   setAAView,
 } from 'context/anticipatoryActionStateSlice';
-import { Panel, setPanelSize } from 'context/leftPanelStateSlice';
-import { PanelSize } from 'config/types';
 import { GetApp, BarChartOutlined } from '@material-ui/icons';
 import { appConfig } from 'config';
-import useTabSelected from 'utils/useTabSelected';
+import { PanelSize } from 'config/types';
 import { AADataSeverityOrder, getAAIcon, useAACommonStyles } from '../utils';
 
 interface AreaTagProps {
@@ -197,14 +195,6 @@ function HomeTable({ dialogs }: HomeTableProps) {
   const renderedDistricts = useSelector(AARenderedDistrictsSelector);
   const monitoredDistrict = useSelector(AAMonitoredDistrictsSelector);
   const { 'Window 2': window2Range } = useSelector(AAWindowRangesSelector);
-
-  useTabSelected(
-    Panel.AnticipatoryAction,
-    () => {
-      dispatch(setPanelSize(PanelSize.medium));
-    },
-    [dispatch],
-  );
 
   const filename = appConfig.anticipatoryActionUrl?.split('/').at(-1);
 
