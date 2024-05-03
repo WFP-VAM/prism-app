@@ -140,6 +140,18 @@ const legendPositionOptions = [
   },
 ];
 
+const logoPositionOptions = [
+  { value: -1, comp: <VisibilityOff /> },
+  {
+    value: 0,
+    comp: ({ value }: { value: number }) => (
+      <Icon style={{ color: 'black' }}>
+        {value % 2 === 0 ? 'switch_left' : 'switch_right'}
+      </Icon>
+    ),
+  },
+];
+
 const mapWidthSelectorOptions = [
   { value: 50, comp: <div>50%</div> },
   { value: 60, comp: <div>60%</div> },
@@ -208,6 +220,7 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
   const [footerTextSize, setFooterTextSize] = React.useState(12);
   const [legendScale, setLegendScale] = React.useState(0);
   const [legendPosition, setLegendPosition] = React.useState(0);
+  const [logoPosition, setLogoPosition] = React.useState(-1);
   // the % value of the original dimensions
   const [mapDimensions, setMapDimensions] = React.useState<{
     height: number;
@@ -340,7 +353,9 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
     handleDownloadMenuClose();
   };
 
+  const { logo } = appConfig.header;
   const scalePercent = useAAMarkerScalePercent(mapRef.current?.getMap());
+  console.log(logoPosition);
 
   return (
     <>
@@ -405,12 +420,32 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
                       <div style={{ padding: '8px' }}>{footerText}</div>
                     </div>
                   )}
+                  {logoPosition !== -1 && (
+                    <img
+                      style={{
+                        position: 'absolute',
+                        zIndex: 2,
+                        top: titleHeight + 8,
+                        height: 32,
+                        left: logoPosition % 2 === 0 ? '8px' : 'auto',
+                        right: logoPosition % 2 === 0 ? 'auto' : '8px',
+                        display: 'flex',
+                        justifyContent:
+                          logoPosition % 2 === 0 ? 'flex-start' : 'flex-end',
+                      }}
+                      src={logo}
+                      alt="logo"
+                    />
+                  )}
+
                   {legendPosition !== -1 && (
                     <div
                       style={{
                         position: 'absolute',
                         zIndex: 2,
-                        top: titleHeight,
+                        top:
+                          titleHeight +
+                          (logoPosition === legendPosition ? 32 : 0),
                         ...(legendPosition % 2 === 0
                           ? { left: '8px' }
                           : {
@@ -551,6 +586,18 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
               />
             </div>
 
+            {logo && (
+              <ToggleSelector
+                value={logoPosition > -1 ? 0 : -1}
+                options={logoPositionOptions}
+                iconProp={logoPosition}
+                setValue={v =>
+                  setLogoPosition(prev => (v === -1 ? -1 : (prev + 1) % 2))
+                }
+                title={t('Logo Position')}
+              />
+            )}
+
             {toggles.countryMask && (
               <div className={classes.optionWrap}>
                 <Typography variant="h4">{t('Select admin area')}</Typography>
@@ -575,11 +622,10 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
                 options={legendPositionOptions}
                 iconProp={legendPosition}
                 setValue={v =>
-                  setLegendPosition(prev => (v === -1 ? -1 : prev + 1))
+                  setLegendPosition(prev => (v === -1 ? -1 : (prev + 1) % 2))
                 }
                 title={t('Legend Position')}
               />
-
               <ToggleSelector
                 value={Number(toggles.fullLayerDescription)}
                 options={layerDescriptionSelectorOptions}

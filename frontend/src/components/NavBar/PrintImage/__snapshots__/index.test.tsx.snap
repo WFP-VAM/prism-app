@@ -242,6 +242,56 @@ exports[`renders as expected 1`] = `
           </div>
         </div>
         <div
+          class="makeStyles-wrapper-18"
+        >
+          <mock-typography
+            variant="h4"
+          >
+            Logo Position
+          </mock-typography>
+          <div
+            class="MuiToggleButtonGroup-root makeStyles-buttonGroup-19"
+            role="group"
+          >
+            <button
+              aria-pressed="true"
+              class="MuiButtonBase-root MuiToggleButton-root MuiToggleButtonGroup-grouped MuiToggleButtonGroup-groupedHorizontal makeStyles-button-20 Mui-selected"
+              tabindex="0"
+              type="button"
+              value="-1"
+            >
+              <span
+                class="MuiToggleButton-label"
+              >
+                <mock-visibilityoff />
+              </span>
+              <span
+                class="MuiTouchRipple-root"
+              />
+            </button>
+            <button
+              aria-pressed="false"
+              class="MuiButtonBase-root MuiToggleButton-root MuiToggleButtonGroup-grouped MuiToggleButtonGroup-groupedHorizontal makeStyles-button-20"
+              tabindex="0"
+              type="button"
+              value="0"
+            >
+              <span
+                class="MuiToggleButton-label"
+              >
+                <mock-icon
+                  style="color: black;"
+                >
+                  switch_right
+                </mock-icon>
+              </span>
+              <span
+                class="MuiTouchRipple-root"
+              />
+            </button>
+          </div>
+        </div>
+        <div
           class="DownloadImage-sameRowToggles-15"
         >
           <div
