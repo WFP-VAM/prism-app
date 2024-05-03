@@ -18,7 +18,7 @@ import { lightGrey } from 'muiTheme';
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useSafeTranslation } from 'i18n';
-import { Equalizer } from '@material-ui/icons';
+import { Equalizer, Reply } from '@material-ui/icons';
 import { getAAColor, getAAIcon, useAACommonStyles } from '../utils';
 import { dateSorter } from '../DistrictView/utils';
 import { timelineTransform } from './utils';
@@ -98,6 +98,11 @@ function Timeline({ dialogs }: TimelineProps) {
   const AAFilters = useSelector(AAFiltersSelector);
 
   const timelineButtons = [
+    {
+      icon: Reply,
+      text: 'Back',
+      onClick: () => dispatch(setAAView(AAView.District)),
+    },
     {
       icon: Equalizer,
       text: 'Forecast',
