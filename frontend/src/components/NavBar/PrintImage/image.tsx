@@ -344,10 +344,14 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
   const dateText = `${t('Publication date: ')}${getFormattedDate(
     new Date(),
     'default',
-  )}. ${t('Layer selection date: ')}${getFormattedDate(
-    dateRange.startDate,
-    'default',
-  )}.`;
+  )}${
+    dateRange.startDate
+      ? `. ${t('Layer selection date: ')}${getFormattedDate(
+          dateRange.startDate,
+          'default',
+        )}`
+      : ''
+  }.`;
 
   return (
     <>
