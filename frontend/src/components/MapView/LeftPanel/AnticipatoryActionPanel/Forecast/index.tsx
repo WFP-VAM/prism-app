@@ -20,8 +20,10 @@ import {
   AAView,
   AAcategory,
 } from 'context/anticipatoryActionStateSlice/types';
+import { dateRangeSelector } from 'context/mapStateSlice/selectors';
 import { useSafeTranslation } from 'i18n';
 import { ClearAll } from '@material-ui/icons';
+import { getFormattedDate } from 'utils/date-utils';
 import { getAAColor, useAACommonStyles } from '../utils';
 import { chartOptions, forecastTransform, getChartData } from './utils';
 
@@ -40,6 +42,7 @@ function Forecast({ dialogs }: ForecastProps) {
   const AAData = useSelector(AADataSelector);
   const selectedDistrict = useSelector(AASelectedDistrictSelector);
   const filters = useSelector(AAFiltersSelector);
+  const { startDate: selectedDate } = useSelector(dateRangeSelector);
 
   const { chartData, indexes } = forecastTransform({
     data: AAData,
@@ -69,6 +72,10 @@ function Forecast({ dialogs }: ForecastProps) {
 
   return (
     <>
+      <Typography variant="h3" style={{ marginLeft: '1rem' }}>
+        {t('Forecast data as of ')}
+        {getFormattedDate(selectedDate, 'locale')}
+      </Typography>
       <div className={classes.charts}>
         <div className={classes.chartsHeader}>
           <div style={{ minWidth: '3rem' }} />
