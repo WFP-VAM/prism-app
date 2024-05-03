@@ -17,6 +17,7 @@ import {
   AADataSelector,
   AAFiltersSelector,
   AASelectedDistrictSelector,
+  setAASelectedDistrict,
   setAAView,
 } from 'context/anticipatoryActionStateSlice';
 import { useSafeTranslation } from 'i18n';
@@ -286,7 +287,8 @@ function DistrictView({ dialogs }: DistrictViewProps) {
     {
       icon: Reply,
       text: 'Summary',
-      onClick: () => dispatch(setAAView(AAView.Home)),
+      onClick: () =>
+        dispatch(setAAView(AAView.Home)) && dispatch(setAASelectedDistrict('')),
     },
   ];
 
