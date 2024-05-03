@@ -559,6 +559,18 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
               />
             </div>
 
+            {logo && (
+              <ToggleSelector
+                value={logoPosition > -1 ? 0 : -1}
+                options={logoPositionOptions}
+                iconProp={logoPosition}
+                setValue={v =>
+                  setLogoPosition(prev => (v === -1 ? -1 : (prev + 1) % 2))
+                }
+                title={t('Logo Position')}
+              />
+            )}
+
             <div className={classes.sameRowToggles}>
               <ToggleSelector
                 value={Number(toggles.countryMask)}
@@ -569,7 +581,7 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
                     countryMask: Boolean(val),
                   }))
                 }
-                title={t('Admin area mask')}
+                title={t('Admin Area Mask')}
               />
 
               <ToggleSelector
@@ -585,18 +597,6 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
                 title={t('Map Labels')}
               />
             </div>
-
-            {logo && (
-              <ToggleSelector
-                value={logoPosition > -1 ? 0 : -1}
-                options={logoPositionOptions}
-                iconProp={logoPosition}
-                setValue={v =>
-                  setLogoPosition(prev => (v === -1 ? -1 : (prev + 1) % 2))
-                }
-                title={t('Logo Position')}
-              />
-            )}
 
             {toggles.countryMask && (
               <div className={classes.optionWrap}>
