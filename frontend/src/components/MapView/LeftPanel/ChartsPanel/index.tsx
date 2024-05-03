@@ -25,7 +25,7 @@ import React, {
   useRef,
   useState,
 } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { TFunctionKeys } from 'i18next';
 import { appConfig } from 'config';
 import {
@@ -40,11 +40,7 @@ import {
   getWMSLayersWithChart,
 } from 'config/utils';
 import { LayerData } from 'context/layers/layer-data';
-import {
-  leftPanelTabValueSelector,
-  Panel,
-  setPanelSize,
-} from 'context/leftPanelStateSlice';
+import { leftPanelTabValueSelector, Panel } from 'context/leftPanelStateSlice';
 import { layerDataSelector } from 'context/mapStateSlice/selectors';
 import { useSafeTranslation } from 'i18n';
 import { buildCsvFileName } from 'components/MapView/utils';
@@ -194,9 +190,8 @@ const menuProps: Partial<MenuProps> = {
   },
 };
 
-const ChartsPanel = memo(({ setResultsPage }: ChartsPanelProps) => {
+const ChartsPanel = memo(() => {
   const { countryAdmin0Id, country } = appConfig;
-  const dispatch = useDispatch();
 
   const boundaryLayerData = useSelector(layerDataSelector(boundaryLayer.id)) as
     | LayerData<BoundaryLayerProps>
@@ -367,21 +362,6 @@ const ChartsPanel = memo(({ setResultsPage }: ChartsPanelProps) => {
       setSecondAdminProperties(getProperties(data));
     }
   }, [secondAdminProperties, countryAdmin0Id, data]);
-
-  useEffect(() => {
-    if (adminProperties && startDate1 && selectedLayerTitles.length >= 1) {
-      dispatch(setPanelSize(PanelSize.full));
-    } else {
-      dispatch(setPanelSize(PanelSize.medium));
-    }
-  }, [
-    adminProperties,
-    startDate1,
-    startDate2,
-    selectedLayerTitles.length,
-    countryAdmin0Id,
-    dispatch,
-  ]);
 
   const singleDownloadChartPrefix = adminProperties
     ? [
@@ -677,57 +657,6 @@ const ChartsPanel = memo(({ setResultsPage }: ChartsPanelProps) => {
     t,
   ]);
 
-  useEffect(() => {
-    if (showChartsPanel) {
-      dispatch(setPanelSize(PanelSize.full));
-      setResultsPage(
-        <Box className={classes.chartsContainer}>
-          <Box className={classes.chartsPanelCharts}>{renderResultsPage}</Box>
-          {showSlider && maxDataTicks > 1 && (
-            <>
-              <TimePeriodSelector
-                wrapperStyle={{ padding: '0 2rem 0 2rem' }}
-                startDate={startDate1}
-                setStartDate={setStartDate1}
-                endDate={endDate1}
-                setEndDate={setEndDate1}
-                title={comparePeriods ? t('Period 1') : null}
-                startLabel="Min Date"
-                endLabel="Max Date"
-              />
-              <DateSlider
-                chartSelectedDateRange={chartSelectedDateRange}
-                chartRange={chartRange}
-                setChartRange={setChartRange}
-                maxDataTicks={maxDataTicks}
-                disabled={selectedLayerTitles.length < 1}
-              />
-            </>
-          )}
-        </Box>,
-      );
-    }
-
-    return () => setResultsPage(null);
-  }, [
-    chartRange,
-    chartSelectedDateRange,
-    classes.chartsContainer,
-    classes.chartsPanelCharts,
-    classes.textLabel,
-    comparePeriods,
-    dispatch,
-    endDate1,
-    maxDataTicks,
-    renderResultsPage,
-    selectedLayerTitles.length,
-    setResultsPage,
-    showChartsPanel,
-    showSlider,
-    startDate1,
-    t,
-  ]);
-
   const handleClearAllSelectedCharts = useCallback(() => {
     setSelectedLayerTitles([]);
     // Clear the date
@@ -800,207 +729,236 @@ const ChartsPanel = memo(({ setResultsPage }: ChartsPanelProps) => {
   }
 
   return (
-    <Box className={classes.chartsPanelParams}>
-      <FormGroup className={classes.formGroup}>
-        <FormControlLabel
-          style={{ marginLeft: 20 }}
-          control={
-            <Switch
-              checked={compareLocations}
-              size="small"
-              className={classes.switch}
-              classes={{
-                switchBase: classes.switchBase,
-                track: classes.switchTrack,
-              }}
-              onChange={handleOnChangeCompareLocationsSwitch}
-              inputProps={{
-                'aria-label': 'Compare Locations',
-              }}
-            />
-          }
-          label={
-            <Typography
-              className={
-                compareLocations
-                  ? classes.switchTitle
-                  : classes.switchTitleUnchecked
-              }
-            >
-              {t('Compare Locations')}
-            </Typography>
-          }
-          checked={compareLocations}
-        />
+    <div
+      style={{
+        display: 'flex',
+        flexDirection: 'row',
+        height: '100%',
+        width: showChartsPanel ? '100vw' : undefined,
+      }}
+    >
+      <Box className={classes.chartsPanelParams}>
+        <FormGroup className={classes.formGroup}>
+          <FormControlLabel
+            style={{ marginLeft: 20 }}
+            control={
+              <Switch
+                checked={compareLocations}
+                size="small"
+                className={classes.switch}
+                classes={{
+                  switchBase: classes.switchBase,
+                  track: classes.switchTrack,
+                }}
+                onChange={handleOnChangeCompareLocationsSwitch}
+                inputProps={{
+                  'aria-label': 'Compare Locations',
+                }}
+              />
+            }
+            label={
+              <Typography
+                className={
+                  compareLocations
+                    ? classes.switchTitle
+                    : classes.switchTitleUnchecked
+                }
+              >
+                {t('Compare Locations')}
+              </Typography>
+            }
+            checked={compareLocations}
+          />
 
-        <LocationSelector
-          admin0Key={admin0Key}
-          admin1Key={admin1Key}
-          admin2Key={admin2Key}
-          boundaryLayer={boundaryLayer}
-          country={country}
-          countryAdmin0Id={countryAdmin0Id}
-          data={data}
-          getProperties={getProperties}
-          multiCountry={multiCountry}
-          setAdmin0Key={setAdmin0Key}
-          setAdmin1Key={setAdmin1Key}
-          setAdmin2Key={setAdmin2Key}
-          setAdminLevel={setAdminLevel}
-          setAdminProperties={setAdminProperties}
-          setSelectedAdmin1Area={setSelectedAdmin1Area}
-          setSelectedAdmin2Area={setSelectedAdmin2Area}
-          title={compareLocations ? t('Location 1') : null}
-        />
-        {compareLocations && (
           <LocationSelector
-            admin0Key={secondAdmin0Key}
-            admin1Key={secondAdmin1Key}
-            admin2Key={secondAdmin2Key}
+            admin0Key={admin0Key}
+            admin1Key={admin1Key}
+            admin2Key={admin2Key}
             boundaryLayer={boundaryLayer}
             country={country}
             countryAdmin0Id={countryAdmin0Id}
             data={data}
             getProperties={getProperties}
             multiCountry={multiCountry}
-            setAdmin0Key={setSecondAdmin0Key}
-            setAdmin1Key={setSecondAdmin1Key}
-            setAdmin2Key={setSecondAdmin2Key}
-            setAdminLevel={setSecondAdminLevel}
-            setAdminProperties={setSecondAdminProperties}
-            setSelectedAdmin1Area={setSecondSelectedAdmin1Area}
-            setSelectedAdmin2Area={setSecondSelectedAdmin2Area}
-            title={compareLocations ? t('Location 2') : null}
+            setAdmin0Key={setAdmin0Key}
+            setAdmin1Key={setAdmin1Key}
+            setAdmin2Key={setAdmin2Key}
+            setAdminLevel={setAdminLevel}
+            setAdminProperties={setAdminProperties}
+            setSelectedAdmin1Area={setSelectedAdmin1Area}
+            setSelectedAdmin2Area={setSelectedAdmin2Area}
+            title={compareLocations ? t('Location 1') : null}
           />
-        )}
-      </FormGroup>
-
-      <FormGroup className={classes.formGroup}>
-        <FormControlLabel
-          style={{ marginLeft: 20 }}
-          control={
-            <Switch
-              checked={comparePeriods}
-              size="small"
-              className={classes.switch}
-              classes={{
-                switchBase: classes.switchBase,
-                track: classes.switchTrack,
-              }}
-              onChange={handleOnChangeComparePeriodsSwitch}
-              inputProps={{
-                'aria-label': 'Compare Periods',
-              }}
+          {compareLocations && (
+            <LocationSelector
+              admin0Key={secondAdmin0Key}
+              admin1Key={secondAdmin1Key}
+              admin2Key={secondAdmin2Key}
+              boundaryLayer={boundaryLayer}
+              country={country}
+              countryAdmin0Id={countryAdmin0Id}
+              data={data}
+              getProperties={getProperties}
+              multiCountry={multiCountry}
+              setAdmin0Key={setSecondAdmin0Key}
+              setAdmin1Key={setSecondAdmin1Key}
+              setAdmin2Key={setSecondAdmin2Key}
+              setAdminLevel={setSecondAdminLevel}
+              setAdminProperties={setSecondAdminProperties}
+              setSelectedAdmin1Area={setSecondSelectedAdmin1Area}
+              setSelectedAdmin2Area={setSecondSelectedAdmin2Area}
+              title={compareLocations ? t('Location 2') : null}
             />
+          )}
+        </FormGroup>
+
+        <FormGroup className={classes.formGroup}>
+          <FormControlLabel
+            style={{ marginLeft: 20 }}
+            control={
+              <Switch
+                checked={comparePeriods}
+                size="small"
+                className={classes.switch}
+                classes={{
+                  switchBase: classes.switchBase,
+                  track: classes.switchTrack,
+                }}
+                onChange={handleOnChangeComparePeriodsSwitch}
+                inputProps={{
+                  'aria-label': 'Compare Periods',
+                }}
+              />
+            }
+            label={
+              <Typography
+                className={
+                  comparePeriods
+                    ? classes.switchTitle
+                    : classes.switchTitleUnchecked
+                }
+              >
+                {t('Compare Periods')}
+              </Typography>
+            }
+            checked={comparePeriods}
+          />
+
+          {comparePeriods && (
+            <>
+              <TimePeriodSelector
+                startDate={startDate1}
+                setStartDate={setStartDate1}
+                endDate={endDate1}
+                setEndDate={setEndDate1}
+                title={comparePeriods ? t('Period 1') : null}
+                startLabel="Start"
+                endLabel="End"
+              />
+              <TimePeriodSelector
+                startDate={startDate2}
+                setStartDate={setStartDate2}
+                endDate={endDate2}
+                setEndDate={setEndDate2}
+                title={comparePeriods ? t('Period 2') : null}
+                startLabel="Start"
+                endLabel="End"
+              />
+            </>
+          )}
+        </FormGroup>
+
+        <FormControl className={classes.layerFormControl}>
+          <InputLabel id="chart-layers-mutiple-checkbox-label">
+            {t('Select Charts')}
+          </InputLabel>
+          <Select
+            labelId="chart-layers-mutiple-checkbox-label"
+            id="chart-layers-mutiple-checkbox"
+            multiple={!(compareLocations || comparePeriods)}
+            value={selectedLayerTitles}
+            onChange={onChangeChartLayers}
+            input={<Input />}
+            renderValue={chartsSelectRenderValue}
+            MenuProps={menuProps}
+          >
+            {chartLayers.map(layer => (
+              <MenuItem key={layer.id} value={layer.title}>
+                <Checkbox
+                  checked={selectedLayerTitles.indexOf(layer.title) > -1}
+                  color="primary"
+                />
+                <ListItemText
+                  classes={{ primary: classes.textLabel }}
+                  primary={t(layer.title)}
+                />
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+        <DownloadCsvButton
+          filesData={[
+            {
+              fileName: firstCSVFilename,
+              data: dataForCsv.current,
+            },
+            {
+              fileName: secondCSVFilename,
+              data: dataForSecondCsv.current,
+            },
+          ]}
+          disabled={
+            !(
+              adminProperties &&
+              startDate1 &&
+              tabPanelType === tabValue &&
+              selectedLayerTitles.length >= 1
+            )
           }
-          label={
-            <Typography
-              className={
-                comparePeriods
-                  ? classes.switchTitle
-                  : classes.switchTitleUnchecked
-              }
-            >
-              {t('Compare Periods')}
-            </Typography>
-          }
-          checked={comparePeriods}
         />
-
-        {comparePeriods && (
-          <>
-            <TimePeriodSelector
-              startDate={startDate1}
-              setStartDate={setStartDate1}
-              endDate={endDate1}
-              setEndDate={setEndDate1}
-              title={comparePeriods ? t('Period 1') : null}
-              startLabel="Start"
-              endLabel="End"
-            />
-            <TimePeriodSelector
-              startDate={startDate2}
-              setStartDate={setStartDate2}
-              endDate={endDate2}
-              setEndDate={setEndDate2}
-              title={comparePeriods ? t('Period 2') : null}
-              startLabel="Start"
-              endLabel="End"
-            />
-          </>
-        )}
-      </FormGroup>
-
-      <FormControl className={classes.layerFormControl}>
-        <InputLabel id="chart-layers-mutiple-checkbox-label">
-          {t('Select Charts')}
-        </InputLabel>
-        <Select
-          labelId="chart-layers-mutiple-checkbox-label"
-          id="chart-layers-mutiple-checkbox"
-          multiple={!(compareLocations || comparePeriods)}
-          value={selectedLayerTitles}
-          onChange={onChangeChartLayers}
-          input={<Input />}
-          renderValue={chartsSelectRenderValue}
-          MenuProps={menuProps}
+        <Button
+          className={classes.clearAllSelectionsButton}
+          onClick={handleClearAllSelectedCharts}
+          disabled={
+            !(
+              adminProperties &&
+              startDate1 &&
+              tabPanelType === tabValue &&
+              selectedLayerTitles.length >= 1
+            )
+          }
         >
-          {chartLayers.map(layer => (
-            <MenuItem key={layer.id} value={layer.title}>
-              <Checkbox
-                checked={selectedLayerTitles.indexOf(layer.title) > -1}
-                color="primary"
+          <Typography variant="body2">{t('Clear All')}</Typography>
+        </Button>
+      </Box>
+      {showChartsPanel && (
+        <Box className={classes.chartsContainer}>
+          <Box className={classes.chartsPanelCharts}>{renderResultsPage}</Box>
+          {showSlider && maxDataTicks > 1 && (
+            <>
+              <TimePeriodSelector
+                wrapperStyle={{ padding: '0 2rem 0 2rem' }}
+                startDate={startDate1}
+                setStartDate={setStartDate1}
+                endDate={endDate1}
+                setEndDate={setEndDate1}
+                title={comparePeriods ? t('Period 1') : null}
+                startLabel="Min Date"
+                endLabel="Max Date"
               />
-              <ListItemText
-                classes={{ primary: classes.textLabel }}
-                primary={t(layer.title)}
+              <DateSlider
+                chartSelectedDateRange={chartSelectedDateRange}
+                chartRange={chartRange}
+                setChartRange={setChartRange}
+                maxDataTicks={maxDataTicks}
+                disabled={selectedLayerTitles.length < 1}
               />
-            </MenuItem>
-          ))}
-        </Select>
-      </FormControl>
-      <DownloadCsvButton
-        filesData={[
-          {
-            fileName: firstCSVFilename,
-            data: dataForCsv.current,
-          },
-          {
-            fileName: secondCSVFilename,
-            data: dataForSecondCsv.current,
-          },
-        ]}
-        disabled={
-          !(
-            adminProperties &&
-            startDate1 &&
-            tabPanelType === tabValue &&
-            selectedLayerTitles.length >= 1
-          )
-        }
-      />
-      <Button
-        className={classes.clearAllSelectionsButton}
-        onClick={handleClearAllSelectedCharts}
-        disabled={
-          !(
-            adminProperties &&
-            startDate1 &&
-            tabPanelType === tabValue &&
-            selectedLayerTitles.length >= 1
-          )
-        }
-      >
-        <Typography variant="body2">{t('Clear All')}</Typography>
-      </Button>
-    </Box>
+            </>
+          )}
+        </Box>
+      )}
+    </div>
   );
 });
-
-interface ChartsPanelProps {
-  setResultsPage: React.Dispatch<
-    React.SetStateAction<React.JSX.Element | null>
-  >;
-}
 
 export default ChartsPanel;

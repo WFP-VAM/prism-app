@@ -8,8 +8,6 @@ import React from 'react';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 import { Scatter } from 'react-chartjs-2';
 import { useDispatch, useSelector } from 'react-redux';
-import { Panel, setPanelSize } from 'context/leftPanelStateSlice';
-import { PanelSize } from 'config/types';
 import { lightGrey } from 'muiTheme';
 import {
   AADataSelector,
@@ -24,7 +22,6 @@ import {
 } from 'context/anticipatoryActionStateSlice/types';
 import { useSafeTranslation } from 'i18n';
 import { ClearAll, Reply } from '@material-ui/icons';
-import useTabSelected from 'utils/useTabSelected';
 import { getAAColor, useAACommonStyles } from '../utils';
 import { chartOptions, forecastTransform, getChartData } from './utils';
 
@@ -43,14 +40,6 @@ function Forecast({ dialogs }: ForecastProps) {
   const AAData = useSelector(AADataSelector);
   const selectedDistrict = useSelector(AASelectedDistrictSelector);
   const filters = useSelector(AAFiltersSelector);
-
-  useTabSelected(
-    Panel.AnticipatoryAction,
-    () => {
-      dispatch(setPanelSize(PanelSize.large));
-    },
-    [dispatch],
-  );
 
   const { chartData, indexes } = forecastTransform({
     data: AAData,

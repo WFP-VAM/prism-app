@@ -8,8 +8,6 @@ import {
 import { lightGrey } from 'muiTheme';
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Panel, setPanelSize } from 'context/leftPanelStateSlice';
-import { PanelSize } from 'config/types';
 import {
   AAView,
   AnticipatoryActionDataRow,
@@ -23,7 +21,6 @@ import {
 } from 'context/anticipatoryActionStateSlice';
 import { useSafeTranslation } from 'i18n';
 import { ClearAll, Equalizer, Reply } from '@material-ui/icons';
-import useTabSelected from 'utils/useTabSelected';
 import { AADataSeverityOrder, getAAIcon, useAACommonStyles } from '../utils';
 import {
   Action,
@@ -274,14 +271,6 @@ function DistrictView({ dialogs }: DistrictViewProps) {
     false,
   );
   const [modalActions, setModalActions] = React.useState<Action[]>([]);
-
-  useTabSelected(
-    Panel.AnticipatoryAction,
-    () => {
-      dispatch(setPanelSize(PanelSize.auto));
-    },
-    [dispatch],
-  );
 
   const districtButtons = [
     {

@@ -17,11 +17,8 @@ import {
 import { lightGrey } from 'muiTheme';
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Panel, setPanelSize } from 'context/leftPanelStateSlice';
-import { PanelSize } from 'config/types';
 import { useSafeTranslation } from 'i18n';
 import { Equalizer, Reply } from '@material-ui/icons';
-import useTabSelected from 'utils/useTabSelected';
 import { getAAColor, getAAIcon, useAACommonStyles } from '../utils';
 import { dateSorter } from '../DistrictView/utils';
 import { timelineTransform } from './utils';
@@ -99,14 +96,6 @@ function Timeline({ dialogs }: TimelineProps) {
   const AAData = useSelector(AADataSelector);
   const selectedDistrict = useSelector(AASelectedDistrictSelector);
   const AAFilters = useSelector(AAFiltersSelector);
-
-  useTabSelected(
-    Panel.AnticipatoryAction,
-    () => {
-      dispatch(setPanelSize(PanelSize.auto));
-    },
-    [dispatch],
-  );
 
   const timelineButtons = [
     {
