@@ -92,7 +92,7 @@ exports[`renders as expected 1`] = `
                 </div>
               </div>
               <div
-                style="position: absolute; z-index: 2; top: 0px; left: 8px; width: 20px; transform: scale(1);"
+                style="position: absolute; z-index: 2; top: 0px; left: 8px; display: flex; justify-content: flex-start; width: 20px; transform: scale(1);"
               >
                 <mock-list
                   classname="DownloadImage-legendListStyle-15"
@@ -154,6 +154,56 @@ exports[`renders as expected 1`] = `
           />
         </div>
         <div
+          class="makeStyles-wrapper-19"
+        >
+          <mock-typography
+            variant="h4"
+          >
+            Logo Position
+          </mock-typography>
+          <div
+            class="MuiToggleButtonGroup-root makeStyles-buttonGroup-20"
+            role="group"
+          >
+            <button
+              aria-pressed="true"
+              class="MuiButtonBase-root MuiToggleButton-root MuiToggleButtonGroup-grouped MuiToggleButtonGroup-groupedHorizontal makeStyles-button-21 Mui-selected"
+              tabindex="0"
+              type="button"
+              value="-1"
+            >
+              <span
+                class="MuiToggleButton-label"
+              >
+                <mock-visibilityoff />
+              </span>
+              <span
+                class="MuiTouchRipple-root"
+              />
+            </button>
+            <button
+              aria-pressed="false"
+              class="MuiButtonBase-root MuiToggleButton-root MuiToggleButtonGroup-grouped MuiToggleButtonGroup-groupedHorizontal makeStyles-button-21"
+              tabindex="0"
+              type="button"
+              value="0"
+            >
+              <span
+                class="MuiToggleButton-label"
+              >
+                <mock-icon
+                  style="color: black;"
+                >
+                  switch_right
+                </mock-icon>
+              </span>
+              <span
+                class="MuiTouchRipple-root"
+              />
+            </button>
+          </div>
+        </div>
+        <div
           class="DownloadImage-sameRowToggles-16"
         >
           <div
@@ -162,7 +212,7 @@ exports[`renders as expected 1`] = `
             <mock-typography
               variant="h4"
             >
-              Admin area mask
+              Admin Area Mask
             </mock-typography>
             <div
               class="MuiToggleButtonGroup-root makeStyles-buttonGroup-20"
