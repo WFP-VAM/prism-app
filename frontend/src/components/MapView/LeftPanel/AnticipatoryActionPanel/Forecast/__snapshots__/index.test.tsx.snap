@@ -6,8 +6,7 @@ exports[`renders as expected 1`] = `
     style="margin-left: 1rem;"
     variant="h3"
   >
-    Forecast data as of
-    : 
+    Forecast data as of 
     December 1, 2023
   </mock-typography>
   <div
