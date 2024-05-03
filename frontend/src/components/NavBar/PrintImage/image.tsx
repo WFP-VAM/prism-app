@@ -754,7 +754,7 @@ const styles = (theme: Theme) =>
       left: 0,
       zIndex: 2,
       display: 'flex',
-      justifyContent: 'flex-end',
+      justifyContent: 'flex-start',
       color: 'black',
       backgroundColor: 'white',
       width: '100%',
