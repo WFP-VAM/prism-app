@@ -152,6 +152,12 @@ const logoPositionOptions = [
   },
 ];
 
+const logoScaleSelectorOptions = [
+  { value: 0.5, comp: <div>S</div> },
+  { value: 1, comp: <div>M</div> },
+  { value: 1.5, comp: <div>L</div> },
+];
+
 const mapWidthSelectorOptions = [
   { value: 50, comp: <div>50%</div> },
   { value: 60, comp: <div>60%</div> },
@@ -221,6 +227,7 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
   const [legendScale, setLegendScale] = React.useState(0);
   const [legendPosition, setLegendPosition] = React.useState(0);
   const [logoPosition, setLogoPosition] = React.useState(-1);
+  const [logoScale, setLogoScale] = React.useState(1);
   // the % value of the original dimensions
   const [mapDimensions, setMapDimensions] = React.useState<{
     height: number;
@@ -435,7 +442,7 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
                         position: 'absolute',
                         zIndex: 2,
                         top: titleHeight + 8,
-                        height: 32,
+                        height: 32 * logoScale,
                         left: logoPosition % 2 === 0 ? '8px' : 'auto',
                         right: logoPosition % 2 === 0 ? 'auto' : '8px',
                         display: 'flex',
@@ -463,7 +470,9 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
                         zIndex: 2,
                         top:
                           titleHeight +
-                          (logoPosition === legendPosition ? 32 : 0),
+                          (logoPosition === legendPosition
+                            ? 32 * logoScale
+                            : 0),
                         left: legendPosition % 2 === 0 ? '8px' : 'auto',
                         right: legendPosition % 2 === 0 ? 'auto' : '8px',
                         display: 'flex',
@@ -577,15 +586,33 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
             </div>
 
             {logo && (
-              <ToggleSelector
-                value={logoPosition > -1 ? 0 : -1}
-                options={logoPositionOptions}
-                iconProp={logoPosition}
-                setValue={v =>
-                  setLogoPosition(prev => (v === -1 ? -1 : (prev + 1) % 2))
-                }
-                title={t('Logo Position')}
-              />
+              <div className={classes.sameRowToggles}>
+                <ToggleSelector
+                  value={logoPosition > -1 ? 0 : -1}
+                  options={logoPositionOptions}
+                  iconProp={logoPosition}
+                  setValue={v =>
+                    setLogoPosition(prev => (v === -1 ? -1 : (prev + 1) % 2))
+                  }
+                  title={t('Logo Position')}
+                />
+
+                <div
+                  // disable the legend scale if the legend is not visible
+                  style={{
+                    opacity: logoPosition !== -1 ? 1 : 0.5,
+                    pointerEvents: logoPosition !== -1 ? 'auto' : 'none',
+                  }}
+                >
+                  <ToggleSelector
+                    align="end"
+                    value={logoScale}
+                    options={logoScaleSelectorOptions}
+                    setValue={setLogoScale}
+                    title={t('Logo Size')}
+                  />
+                </div>
+              </div>
             )}
 
             <div className={classes.sameRowToggles}>
