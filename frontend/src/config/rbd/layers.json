@@ -5821,7 +5821,7 @@
         "color": "#e51a19"
       }
     ],
-    "legend_text": "This layer presents the conflict index rankings of 2023 while at the same time adding information on the recurrent nature of extreme and high political violence in the preceding period between 2018 and 2022"
+    "legend_text": "ACLED Conflict Analysis produced by IFPRI. For more details, see: https://hdl.handle.net/10568/139670"
   },
   "ifpri_protracted_transient_conflict": {
     "title": "Protracted and Transient Political Violence: 2018 - 2023",
@@ -5835,21 +5835,29 @@
         "type": "string",
         "dataTitle": "Classification"
       },
-      "deadliness_2023": {
-        "type": "number",
-        "dataTitle": "Deadliness score"
+      "ACI_class_2018": {
+        "type": "string",
+        "dataTitle": "2018 conflict index category"
       },
-      "danger_2023": {
-        "type": "number",
-        "dataTitle": "Danger score"
+      "ACI_class_2019": {
+        "type": "string",
+        "dataTitle": "2019 conflict index category"
       },
-      "diffusion_2023": {
-        "type": "number",
-        "dataTitle": "Diffusion score"
+      "ACI_class_2020": {
+        "type": "string",
+        "dataTitle": "2020 conflict index category"
       },
-      "fragmentation_2023": {
-        "type": "number",
-        "dataTitle": "Fragmentation score"
+      "ACI_class_2021": {
+        "type": "string",
+        "dataTitle": "2021 conflict index category"
+      },
+      "ACI_class_2022": {
+        "type": "string",
+        "dataTitle": "2022 conflict index category"
+      },
+      "ACI_class_2023": {
+        "type": "string",
+        "dataTitle": "2023 conflict index category"
       }
     },
     "opacity": 0.9,
@@ -5870,7 +5878,7 @@
         "color": "#252525"
       }
     ],
-    "legend_text": "Protracted and Transient Political Violence. IFPRI / ACLED analysis from 2018 to 2023"
+    "legend_text": "ACLED Conflict Analysis produced by IFPRI. For more details, see: https://hdl.handle.net/10568/139670"
   },
   "ifpri_conflict_index_rank": {
     "title": "Conflict Index",
@@ -5959,15 +5967,53 @@
         "color": "#e6e5e7"
       }
     ],
-    "legend_text": "Political vioelnce, G5 Sahel 2023. Produced by IFPRI based on ACLED’s curated dataset for Africa (5 January 2024)"
+    "legend_text": "ACLED Conflict Analysis produced by IFPRI. For more details, see: https://hdl.handle.net/10568/139670"
   },
   "ifpri_conflict_2018": {
     "title": "IFPRI / ACLED Conflict Analysis - 2018",
     "type": "admin_level_data",
-    "path": "data/rbd/ifpri-aci/aci_all.json",
+    "path": "data/rbd/ifpri-aci/aci_2018.json",
     "admin_level": 2,
-    "data_field": "aci_2018",
+    "data_field": "ACI_value",
     "admin_code": "admin2Pcod",
+    "feature_info_props": {
+      "ACI_class": {
+        "type": "string",
+        "dataTitle": "Conflict level"
+      },
+      "deadliness": {
+        "type": "number",
+        "dataTitle": "Deadliness score"
+      },
+      "r_deadliness": {
+        "type": "number",
+        "dataTitle": "Deadliness rank"
+      },
+      "danger": {
+        "type": "number",
+        "dataTitle": "Danger score"
+      },
+      "r_danger": {
+        "type": "number",
+        "dataTitle": "Danger rank"
+      },
+      "diffusion": {
+        "type": "number",
+        "dataTitle": "Diffusion score"
+      },
+      "r_diffusion": {
+        "type": "number",
+        "dataTitle": "Diffusion rank"
+      },
+      "fragmentation": {
+        "type": "number",
+        "dataTitle": "Fragmentation score"
+      },
+      "r_fragmentation": {
+        "type": "number",
+        "dataTitle": "Fragmentation rank"
+      }
+    },
     "opacity": 0.9,
     "legend": [
       {
@@ -5996,10 +6042,48 @@
   "ifpri_conflict_2019": {
     "title": "IFPRI / ACLED Conflict Analysis - 2019",
     "type": "admin_level_data",
-    "path": "data/rbd/ifpri-aci/aci_all.json",
+    "path": "data/rbd/ifpri-aci/aci_2019.json",
     "admin_level": 2,
-    "data_field": "aci_2019",
+    "data_field": "ACI_value",
     "admin_code": "admin2Pcod",
+    "feature_info_props": {
+      "ACI_class": {
+        "type": "string",
+        "dataTitle": "Conflict level"
+      },
+      "deadliness": {
+        "type": "number",
+        "dataTitle": "Deadliness score"
+      },
+      "r_deadliness": {
+        "type": "number",
+        "dataTitle": "Deadliness rank"
+      },
+      "danger": {
+        "type": "number",
+        "dataTitle": "Danger score"
+      },
+      "r_danger": {
+        "type": "number",
+        "dataTitle": "Danger rank"
+      },
+      "diffusion": {
+        "type": "number",
+        "dataTitle": "Diffusion score"
+      },
+      "r_diffusion": {
+        "type": "number",
+        "dataTitle": "Diffusion rank"
+      },
+      "fragmentation": {
+        "type": "number",
+        "dataTitle": "Fragmentation score"
+      },
+      "r_fragmentation": {
+        "type": "number",
+        "dataTitle": "Fragmentation rank"
+      }
+    },
     "opacity": 0.9,
     "legend": [
       {
@@ -6028,10 +6112,48 @@
   "ifpri_conflict_2020": {
     "title": "IFPRI / ACLED Conflict Analysis - 2020",
     "type": "admin_level_data",
-    "path": "data/rbd/ifpri-aci/aci_all.json",
+    "path": "data/rbd/ifpri-aci/aci_2020.json",
     "admin_level": 2,
-    "data_field": "aci_2020",
+    "data_field": "ACI_value",
     "admin_code": "admin2Pcod",
+    "feature_info_props": {
+      "ACI_class": {
+        "type": "string",
+        "dataTitle": "Conflict level"
+      },
+      "deadliness": {
+        "type": "number",
+        "dataTitle": "Deadliness score"
+      },
+      "r_deadliness": {
+        "type": "number",
+        "dataTitle": "Deadliness rank"
+      },
+      "danger": {
+        "type": "number",
+        "dataTitle": "Danger score"
+      },
+      "r_danger": {
+        "type": "number",
+        "dataTitle": "Danger rank"
+      },
+      "diffusion": {
+        "type": "number",
+        "dataTitle": "Diffusion score"
+      },
+      "r_diffusion": {
+        "type": "number",
+        "dataTitle": "Diffusion rank"
+      },
+      "fragmentation": {
+        "type": "number",
+        "dataTitle": "Fragmentation score"
+      },
+      "r_fragmentation": {
+        "type": "number",
+        "dataTitle": "Fragmentation rank"
+      }
+    },
     "opacity": 0.9,
     "legend": [
       {
@@ -6060,10 +6182,48 @@
   "ifpri_conflict_2021": {
     "title": "IFPRI / ACLED Conflict Analysis - 2021",
     "type": "admin_level_data",
-    "path": "data/rbd/ifpri-aci/aci_all.json",
+    "path": "data/rbd/ifpri-aci/aci_2021.json",
     "admin_level": 2,
-    "data_field": "aci_2021",
+    "data_field": "ACI_value",
     "admin_code": "admin2Pcod",
+    "feature_info_props": {
+      "ACI_class": {
+        "type": "string",
+        "dataTitle": "Conflict level"
+      },
+      "deadliness": {
+        "type": "number",
+        "dataTitle": "Deadliness score"
+      },
+      "r_deadliness": {
+        "type": "number",
+        "dataTitle": "Deadliness rank"
+      },
+      "danger": {
+        "type": "number",
+        "dataTitle": "Danger score"
+      },
+      "r_danger": {
+        "type": "number",
+        "dataTitle": "Danger rank"
+      },
+      "diffusion": {
+        "type": "number",
+        "dataTitle": "Diffusion score"
+      },
+      "r_diffusion": {
+        "type": "number",
+        "dataTitle": "Diffusion rank"
+      },
+      "fragmentation": {
+        "type": "number",
+        "dataTitle": "Fragmentation score"
+      },
+      "r_fragmentation": {
+        "type": "number",
+        "dataTitle": "Fragmentation rank"
+      }
+    },
     "opacity": 0.9,
     "legend": [
       {
@@ -6092,10 +6252,48 @@
   "ifpri_conflict_2022": {
     "title": "IFPRI / ACLED Conflict Analysis - 2022",
     "type": "admin_level_data",
-    "path": "data/rbd/ifpri-aci/aci_all.json",
+    "path": "data/rbd/ifpri-aci/aci_2022.json",
     "admin_level": 2,
-    "data_field": "aci_2022",
+    "data_field": "ACI_value",
     "admin_code": "admin2Pcod",
+    "feature_info_props": {
+      "ACI_class": {
+        "type": "string",
+        "dataTitle": "Conflict level"
+      },
+      "deadliness": {
+        "type": "number",
+        "dataTitle": "Deadliness score"
+      },
+      "r_deadliness": {
+        "type": "number",
+        "dataTitle": "Deadliness rank"
+      },
+      "danger": {
+        "type": "number",
+        "dataTitle": "Danger score"
+      },
+      "r_danger": {
+        "type": "number",
+        "dataTitle": "Danger rank"
+      },
+      "diffusion": {
+        "type": "number",
+        "dataTitle": "Diffusion score"
+      },
+      "r_diffusion": {
+        "type": "number",
+        "dataTitle": "Diffusion rank"
+      },
+      "fragmentation": {
+        "type": "number",
+        "dataTitle": "Fragmentation score"
+      },
+      "r_fragmentation": {
+        "type": "number",
+        "dataTitle": "Fragmentation rank"
+      }
+    },
     "opacity": 0.9,
     "legend": [
       {
@@ -6124,10 +6322,48 @@
   "ifpri_conflict_2023": {
     "title": "IFPRI / ACLED Conflict Analysis - 2023",
     "type": "admin_level_data",
-    "path": "data/rbd/ifpri-aci/aci_all.json",
+    "path": "data/rbd/ifpri-aci/aci_2023.json",
     "admin_level": 2,
-    "data_field": "aci_2023",
+    "data_field": "ACI_value",
     "admin_code": "admin2Pcod",
+    "feature_info_props": {
+      "ACI_class": {
+        "type": "string",
+        "dataTitle": "Conflict level"
+      },
+      "deadliness": {
+        "type": "number",
+        "dataTitle": "Deadliness score"
+      },
+      "r_deadliness": {
+        "type": "number",
+        "dataTitle": "Deadliness rank"
+      },
+      "danger": {
+        "type": "number",
+        "dataTitle": "Danger score"
+      },
+      "r_danger": {
+        "type": "number",
+        "dataTitle": "Danger rank"
+      },
+      "diffusion": {
+        "type": "number",
+        "dataTitle": "Diffusion score"
+      },
+      "r_diffusion": {
+        "type": "number",
+        "dataTitle": "Diffusion rank"
+      },
+      "fragmentation": {
+        "type": "number",
+        "dataTitle": "Fragmentation score"
+      },
+      "r_fragmentation": {
+        "type": "number",
+        "dataTitle": "Fragmentation rank"
+      }
+    },
     "opacity": 0.9,
     "legend": [
       {
@@ -6151,6 +6387,6 @@
         "color": "#e51a19"
       }
     ],
-    "legend_text": "ACLED Conflict analysis 2023 produced by IFPRI. For more details, see [this link](https://hdl.handle.net/10568/139670)"
+    "legend_text": "ACLED Conflict Analysis 2023 produced by IFPRI. For more details, see https://hdl.handle.net/10568/139670"
   }
 }
