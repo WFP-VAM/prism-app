@@ -394,6 +394,16 @@ exports[`renders as expected 1`] = `
           Forecast
         </mock-typography>
       </mock-button>
+      <mock-button
+        classname="makeStyles-footerButton-6"
+        fullwidth="true"
+        starticon="[object Object]"
+        variant="outlined"
+      >
+        <mock-typography>
+          Summary
+        </mock-typography>
+      </mock-button>
     </div>
     <div
       class="makeStyles-footerDialogsWrapper-5"

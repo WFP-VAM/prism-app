@@ -17,10 +17,11 @@ import {
   AADataSelector,
   AAFiltersSelector,
   AASelectedDistrictSelector,
+  setAASelectedDistrict,
   setAAView,
 } from 'context/anticipatoryActionStateSlice';
 import { useSafeTranslation } from 'i18n';
-import { ClearAll, Equalizer } from '@material-ui/icons';
+import { ClearAll, Equalizer, Reply } from '@material-ui/icons';
 import { AADataSeverityOrder, getAAIcon, useAACommonStyles } from '../utils';
 import {
   Action,
@@ -282,6 +283,12 @@ function DistrictView({ dialogs }: DistrictViewProps) {
       icon: Equalizer,
       text: 'Forecast',
       onClick: () => dispatch(setAAView(AAView.Forecast)),
+    },
+    {
+      icon: Reply,
+      text: 'Summary',
+      onClick: () =>
+        dispatch(setAAView(AAView.Home)) && dispatch(setAASelectedDistrict('')),
     },
   ];
 
