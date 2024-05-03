@@ -355,7 +355,6 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
 
   const { logo } = appConfig.header;
   const scalePercent = useAAMarkerScalePercent(mapRef.current?.getMap());
-  console.log(logoPosition);
 
   return (
     <>

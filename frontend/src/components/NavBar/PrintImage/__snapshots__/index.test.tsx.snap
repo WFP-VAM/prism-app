@@ -202,7 +202,7 @@ exports[`renders as expected 1`] = `
             <mock-typography
               variant="h4"
             >
-              Admin area mask
+              Admin Area Mask
             </mock-typography>
             <div
               class="MuiToggleButtonGroup-root makeStyles-buttonGroup-19"
