@@ -341,6 +341,13 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
   };
 
   const scalePercent = useAAMarkerScalePercent(mapRef.current?.getMap());
+  const dateText = `${t('Publication date: ')}${getFormattedDate(
+    new Date(),
+    'default',
+  )}. ${t('Layer selection date: ')}${getFormattedDate(
+    dateRange.startDate,
+    'default',
+  )}.`;
 
   return (
     <>
@@ -403,6 +410,16 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
                       }}
                     >
                       <div style={{ padding: '8px' }}>{footerText}</div>
+                    </div>
+                  )}
+                  {dateText && (
+                    <div
+                      className={classes.dateFooterOverlay}
+                      style={{
+                        fontSize: `${footerTextSize}px`,
+                      }}
+                    >
+                      <div style={{ padding: '8px' }}>{dateText}</div>
                     </div>
                   )}
                   {legendPosition !== -1 && (
@@ -731,11 +748,22 @@ const styles = (theme: Theme) =>
       padding: '8px 0 8px 0',
       borderBottom: `1px solid ${lightGrey}`,
     },
-    footerOverlay: {
+    dateFooterOverlay: {
       position: 'absolute',
       bottom: 0,
       left: 0,
       zIndex: 2,
+      display: 'flex',
+      justifyContent: 'flex-end',
+      color: 'black',
+      backgroundColor: 'white',
+      width: '100%',
+    },
+    footerOverlay: {
+      position: 'absolute',
+      bottom: 20, // leave room for the date text
+      left: 0,
+      zIndex: 3,
       color: 'black',
       backgroundColor: 'white',
       width: '100%',
