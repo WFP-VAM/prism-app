@@ -157,7 +157,7 @@ function AnticipatoryActionPanel() {
               input={<Input disableUnderline />}
               renderValue={() => (
                 <Typography variant="h2">
-                  {t(selectedDistrict) || t('Phases: global view')}{' '}
+                  {t(selectedDistrict) || t('Summary')}{' '}
                   {view === AAView.Timeline && t('Timeline')}
                   {view === AAView.Forecast && t('Forecast')}
                 </Typography>
@@ -170,7 +170,7 @@ function AnticipatoryActionPanel() {
                   dispatch(setAAView(AAView.Home));
                 }}
               >
-                {t('Global view')}
+                {t('Summary')}
               </MenuItem>
               {monitoredDistricts.map(x => (
                 <MenuItem
@@ -227,6 +227,12 @@ function AnticipatoryActionPanel() {
             />
           ))}
         </div>
+        {!selectedDistrict && (
+          <Typography>
+            {t('Summary data as of ')}
+            {getFormattedDate(selectedDate, 'locale')}
+          </Typography>
+        )}
 
         {view === AAView.District && (
           <Typography>
