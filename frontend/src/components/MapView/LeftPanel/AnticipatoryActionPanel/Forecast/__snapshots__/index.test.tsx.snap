@@ -2,6 +2,13 @@
 
 exports[`renders as expected 1`] = `
 <div>
+  <mock-typography
+    style="margin-left: 1rem;"
+    variant="h3"
+  >
+    Forecast data as of 
+    December 1, 2023
+  </mock-typography>
   <div
     class="makeStyles-charts-2"
   >
@@ -75,6 +82,16 @@ exports[`renders as expected 1`] = `
     <div
       class="makeStyles-footerActionsWrapper-10"
     >
+      <mock-button
+        classname="makeStyles-footerButton-12"
+        fullwidth="true"
+        starticon="[object Object]"
+        variant="outlined"
+      >
+        <mock-typography>
+          Back
+        </mock-typography>
+      </mock-button>
       <mock-button
         classname="makeStyles-footerButton-12"
         fullwidth="true"

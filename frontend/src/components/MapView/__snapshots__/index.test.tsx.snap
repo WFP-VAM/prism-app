@@ -537,7 +537,7 @@ exports[`renders as expected 1`] = `
                         <mock-typography
                           variant="h2"
                         >
-                          Phases: global view
+                          Summary
                            
                         </mock-typography>
                       </div>
@@ -569,7 +569,7 @@ exports[`renders as expected 1`] = `
                           role="option"
                           selected="false"
                         >
-                          Global view
+                          Summary
                         </mock-menuitem>
                       </mock-menu>
                     </div>
@@ -721,6 +721,9 @@ exports[`renders as expected 1`] = `
                     </mock-typography>
                   </label>
                 </div>
+                <mock-typography>
+                  Summary data as of 
+                </mock-typography>
               </div>
               <div
                 class="makeStyles-tableWrapper-74"
