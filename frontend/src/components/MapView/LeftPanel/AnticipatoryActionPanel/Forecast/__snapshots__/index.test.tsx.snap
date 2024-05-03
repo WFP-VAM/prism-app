@@ -6,9 +6,9 @@ exports[`renders as expected 1`] = `
     style="margin-left: 1rem;"
     variant="h3"
   >
-    Latest forecast available on selected date
+    Forecast data as of
     : 
-    2023-12-01
+    December 1, 2023
   </mock-typography>
   <div
     class="makeStyles-charts-2"
