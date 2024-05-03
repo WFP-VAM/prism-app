@@ -341,12 +341,12 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
   };
 
   const scalePercent = useAAMarkerScalePercent(mapRef.current?.getMap());
-  const dateText = `${t('Publication date: ')}${getFormattedDate(
+  const dateText = `${t('Publication date')}: ${getFormattedDate(
     new Date(),
     'default',
   )}${
     dateRange.startDate
-      ? `. ${t('Layer selection date: ')}${getFormattedDate(
+      ? `. ${t('Layer selection date')}: ${getFormattedDate(
           dateRange.startDate,
           'default',
         )}`
