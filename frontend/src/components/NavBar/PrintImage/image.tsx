@@ -352,7 +352,7 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
     handleDownloadMenuClose();
   };
 
-  const { logo } = appConfig.header;
+  const { logo } = appConfig.header || {};
   const scalePercent = useAAMarkerScalePercent(mapRef.current?.getMap());
 
   return (
