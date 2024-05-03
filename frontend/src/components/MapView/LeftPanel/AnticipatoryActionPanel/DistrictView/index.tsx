@@ -285,7 +285,7 @@ function DistrictView({ dialogs }: DistrictViewProps) {
     },
     {
       icon: Reply,
-      text: 'Global View',
+      text: 'Summary',
       onClick: () => dispatch(setAAView(AAView.Home)),
     },
   ];
