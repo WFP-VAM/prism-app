@@ -226,7 +226,6 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
     height: number;
     width: number;
   }>({ width: 100, height: 100 });
-  const [legendWidth, setLegendWidth] = React.useState(0);
   const [footerRef, { height: footerHeight }] = useResizeObserver<
     HTMLDivElement
   >(footerText, open);
@@ -445,18 +444,17 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
                         top:
                           titleHeight +
                           (logoPosition === legendPosition ? 32 : 0),
-                        ...(legendPosition % 2 === 0
-                          ? { left: '8px' }
-                          : {
-                              right: `${legendWidth - 8}px`,
-                            }),
+                        left: legendPosition % 2 === 0 ? '8px' : 'auto',
+                        right: legendPosition % 2 === 0 ? 'auto' : '8px',
+                        display: 'flex',
+                        justifyContent:
+                          legendPosition % 2 === 0 ? 'flex-start' : 'flex-end',
                         width: '20px',
                         // Use transform scale to adjust size based on legendScale
                         transform: `scale(${1 - legendScale})`,
                       }}
                     >
                       <LegendItemsList
-                        resizeCallback={({ width }) => setLegendWidth(width)}
                         forPrinting
                         listStyle={classes.legendListStyle}
                         showDescription={toggles.fullLayerDescription}
