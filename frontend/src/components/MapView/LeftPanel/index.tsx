@@ -3,7 +3,6 @@ import React, { memo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   Panel,
-  leftPanelSizeSelector,
   leftPanelTabValueSelector,
   setTabValue,
 } from 'context/leftPanelStateSlice';
@@ -39,8 +38,6 @@ interface TabPanelProps {
 }
 
 const TabPanel = memo(({ children, value, index, ...other }: TabPanelProps) => {
-  const panelSize = useSelector(leftPanelSizeSelector);
-
   return (
     <div
       role="tabpanel"
@@ -52,7 +49,6 @@ const TabPanel = memo(({ children, value, index, ...other }: TabPanelProps) => {
         height: 'calc(94vh - 48px)',
         order: index === value ? -1 : undefined,
         overflowX: index === value ? 'hidden' : 'auto',
-        width: panelSize,
       }}
       {...other}
     >
@@ -64,7 +60,6 @@ const TabPanel = memo(({ children, value, index, ...other }: TabPanelProps) => {
 const LeftPanel = memo(() => {
   const dispatch = useDispatch();
   const tabValue = useSelector(leftPanelTabValueSelector);
-  const panelSize = useSelector(leftPanelSizeSelector);
   const AAData = useSelector(AADataSelector);
   const serverAvailableDates = useSelector(availableDatesSelector);
   const AAAvailableDates = useSelector(AAAvailableDatesSelector);
@@ -79,10 +74,6 @@ const LeftPanel = memo(() => {
   const classes = useStyles({ tabValue });
 
   const isPanelHidden = tabValue === Panel.None;
-  const [
-    resultsPage,
-    setResultsPage,
-  ] = React.useState<React.JSX.Element | null>(null);
 
   // Sync serverAvailableDates with AAAvailableDates when the latter updates.
   React.useEffect(() => {
@@ -172,7 +163,7 @@ const LeftPanel = memo(() => {
     }
     return (
       <TabPanel value={tabValue} index={Panel.Charts}>
-        <ChartsPanel setResultsPage={setResultsPage} />
+        <ChartsPanel />
       </TabPanel>
     );
   }, [tabValue]);
@@ -183,7 +174,7 @@ const LeftPanel = memo(() => {
     }
     return (
       <TabPanel value={tabValue} index={Panel.Tables}>
-        <TablesPanel setResultsPage={setResultsPage} />
+        <TablesPanel />
       </TabPanel>
     );
   }, [tabValue]);
@@ -204,7 +195,6 @@ const LeftPanel = memo(() => {
       PaperProps={{
         elevation: 1,
         style: {
-          width: panelSize,
           marginTop: '6vh',
           height: tabValue === Panel.Charts ? '94vh' : '80vh',
           backgroundColor: 'white',
@@ -219,18 +209,17 @@ const LeftPanel = memo(() => {
       <div className={classes.root}>
         <div className={classes.tabsWrapper}>
           <TabPanel value={tabValue} index={Panel.Layers}>
-            <LayersPanel setResultsPage={setResultsPage} />
+            <LayersPanel />
           </TabPanel>
           {renderedChartsPanel}
           <TabPanel value={tabValue} index={Panel.Analysis}>
-            <AnalysisPanel setResultsPage={setResultsPage} />
+            <AnalysisPanel />
           </TabPanel>
           {renderedTablesPanel}
           {renderedAnticipatoryActionPanel}
           {/* Empty panel to remove warnings */}
           <TabPanel value={tabValue} index={Panel.None} />
         </div>
-        {resultsPage}
       </div>
     </Drawer>
   );
