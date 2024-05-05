@@ -117,7 +117,6 @@ function Forecast({ dialogs }: ForecastProps) {
                     style={{ backgroundColor: color }}
                   >
                     <Typography
-                      variant="h3"
                       className={classes.text}
                       style={{
                         color: sev === 'Severe' ? 'white' : ' black',
@@ -193,7 +192,7 @@ const useForecastStyle = makeStyles(() =>
       display: 'flex',
       flexDirection: 'row',
       flexWrap: 'nowrap',
-      paddingLeft: '3rem',
+      paddingLeft: '2.6rem',
       paddingRight: '0.5rem',
       marginBottom: '-1rem',
       background: 'white',
@@ -205,11 +204,12 @@ const useForecastStyle = makeStyles(() =>
       background: 'white',
     },
     textWrap: {
-      width: '3rem',
+      width: '2.6rem',
       display: 'flex',
       justifyContent: 'center',
     },
     text: {
+      fontSize: '0.9rem',
       fontWeight: 400,
       borderRadius: '2px',
       writingMode: 'vertical-lr',

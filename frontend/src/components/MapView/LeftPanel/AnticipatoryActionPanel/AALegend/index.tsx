@@ -79,7 +79,14 @@ function AALegend({
         }
       >
         <Typography variant="h2">{t('Phases')}</Typography>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '0.5rem',
+            marginBottom: '0.5rem',
+          }}
+        >
           {phases.map(x => (
             <div
               key={`${x.phase}_${x.severity}`}
@@ -87,11 +94,11 @@ function AALegend({
             >
               {x.icon}
               <div>
-                <Typography style={{ whiteSpace: 'nowrap' }} variant="h3">
+                <Typography style={{ whiteSpace: 'nowrap' }}>
                   {t(x.phase)}
                 </Typography>
                 {x.severity && (
-                  <Typography style={{ whiteSpace: 'nowrap' }} variant="h3">
+                  <Typography style={{ whiteSpace: 'nowrap' }}>
                     {t(x.severity)}
                   </Typography>
                 )}
@@ -152,7 +159,7 @@ const useStyles = makeStyles(() =>
   createStyles({
     paper: {
       padding: 8,
-      width: 200,
+      width: 180,
       borderRadius: '8px',
       display: 'flex',
       flexDirection: 'column',
