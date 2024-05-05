@@ -78,7 +78,9 @@ function AALegend({
             : undefined
         }
       >
-        <Typography variant="h2">{t('Phases')}</Typography>
+        <Typography variant="h3" style={{ fontWeight: 'bold' }}>
+          {t('Phases')}
+        </Typography>
         <div
           style={{
             display: 'flex',
@@ -129,7 +131,9 @@ function AALegend({
             </Typography>
             <Divider />
 
-            <Typography variant="h2">{t('Districts')}</Typography>
+            <Typography variant="h3" style={{ fontWeight: 'bold' }}>
+              {t('Districts')}
+            </Typography>
             <div
               style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}
             >

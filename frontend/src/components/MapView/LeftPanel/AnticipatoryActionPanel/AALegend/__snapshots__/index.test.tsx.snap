@@ -184,7 +184,8 @@ exports[`renders as expected 1`] = `
       class="MuiPaper-root makeStyles-paper-1 MuiPaper-elevation1 MuiPaper-rounded"
     >
       <mock-typography
-        variant="h2"
+        style="font-weight: bold;"
+        variant="h3"
       >
         Phases
       </mock-typography>
@@ -481,7 +482,8 @@ exports[`renders as expected 1`] = `
       </mock-typography>
       <mock-divider />
       <mock-typography
-        variant="h2"
+        style="font-weight: bold;"
+        variant="h3"
       >
         Districts
       </mock-typography>
