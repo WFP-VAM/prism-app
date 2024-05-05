@@ -135,7 +135,11 @@ function AALegend({
               {t('Districts')}
             </Typography>
             <div
-              style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}
+              style={{
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '0.5rem',
+              }}
             >
               <div className={classes.itemWrapper}>
                 <div
