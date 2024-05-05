@@ -134,7 +134,9 @@ const renderPositionIcon = ({
 }: {
   value: number;
 }): React.JSX.Element => {
-  if (value === -1) return <Visibility />;
+  if (value === -1) {
+    return <Visibility />;
+  }
   return (
     <Icon style={{ color: 'black' }}>
       {value % 2 === 0 ? 'switch_left' : 'switch_right'}
