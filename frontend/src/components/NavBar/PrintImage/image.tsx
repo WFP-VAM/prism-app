@@ -128,15 +128,25 @@ const legendScaleSelectorOptions = [
   { value: 0, comp: <div>100%</div> },
 ];
 
+// A function that returns Visibility if the element is off, else returns a switch icon to flip the position
+const renderPositionIcon = ({
+  value,
+}: {
+  value: number;
+}): React.JSX.Element => {
+  if (value === -1) return <Visibility />;
+  return (
+    <Icon style={{ color: 'black' }}>
+      {value % 2 === 0 ? 'switch_left' : 'switch_right'}
+    </Icon>
+  );
+};
+
 const legendPositionOptions = [
   { value: -1, comp: <VisibilityOff /> },
   {
     value: 0,
-    comp: ({ value }: { value: number }) => (
-      <Icon style={{ color: 'black' }}>
-        {value % 2 === 0 ? 'switch_left' : 'switch_right'}
-      </Icon>
-    ),
+    comp: renderPositionIcon,
   },
 ];
 
@@ -144,11 +154,7 @@ const logoPositionOptions = [
   { value: -1, comp: <VisibilityOff /> },
   {
     value: 0,
-    comp: ({ value }: { value: number }) => (
-      <Icon style={{ color: 'black' }}>
-        {value % 2 === 0 ? 'switch_left' : 'switch_right'}
-      </Icon>
-    ),
+    comp: renderPositionIcon,
   },
 ];
 
@@ -362,7 +368,7 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
   const { logo } = appConfig.header || {};
   const scalePercent = useAAMarkerScalePercent(mapRef.current?.getMap());
   const dateText = `${t('Publication date')}: ${getFormattedDate(
-    new Date(),
+    Date.now(),
     'default',
   )}${
     dateRange.startDate

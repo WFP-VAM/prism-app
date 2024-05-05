@@ -88,7 +88,7 @@ exports[`renders as expected 1`] = `
                 <div
                   style="padding: 8px;"
                 >
-                  Publication date: 2024-05-03. Layer selection date: 2018-07-02.
+                  Publication date: 2018-07-02. Layer selection date: 2018-07-02.
                 </div>
               </div>
               <div
@@ -194,11 +194,7 @@ exports[`renders as expected 1`] = `
                 <span
                   class="MuiToggleButton-label"
                 >
-                  <mock-icon
-                    style="color: black;"
-                  >
-                    switch_right
-                  </mock-icon>
+                  <mock-visibility />
                 </span>
                 <span
                   class="MuiTouchRipple-root"
