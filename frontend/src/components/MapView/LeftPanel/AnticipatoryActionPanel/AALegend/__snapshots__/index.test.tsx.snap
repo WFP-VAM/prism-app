@@ -186,7 +186,7 @@ exports[`renders as expected 1`] = `
       <mock-typography
         variant="h2"
       >
-        Anticipatory Action Phases
+        Phases
       </mock-typography>
       <div
         style="display: flex; flex-direction: column; gap: 0.5rem; margin-bottom: 0.5rem;"
