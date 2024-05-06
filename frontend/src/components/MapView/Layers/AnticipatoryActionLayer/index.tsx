@@ -92,7 +92,7 @@ function AnticipatoryActionLayer({ layer, before }: LayersProps) {
 
   // Calculate centroids only once per data change
   React.useEffect(() => {
-    const districtCentroids = calculateCentroids(data);
+    const districtCentroids = calculateCentroids(undefined);
     const m = calculateAAMarkers({
       renderedDistricts,
       selectedWindow,
