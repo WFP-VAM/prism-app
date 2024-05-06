@@ -190,7 +190,7 @@ exports[`renders as expected 1`] = `
         Phases
       </mock-typography>
       <div
-        style="display: flex; flex-direction: column; gap: 0.5rem; margin-bottom: 0.5rem;"
+        style="display: flex; flex-direction: column; gap: 0.5rem; margin-bottom: 0.75rem;"
       >
         <div
           class="makeStyles-itemWrapper-2"

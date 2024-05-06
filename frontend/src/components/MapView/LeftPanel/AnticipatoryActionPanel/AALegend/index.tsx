@@ -86,7 +86,7 @@ function AALegend({
             display: 'flex',
             flexDirection: 'column',
             gap: '0.5rem',
-            marginBottom: '0.5rem',
+            marginBottom: '0.75rem',
           }}
         >
           {phases.map(x => (
@@ -177,7 +177,7 @@ const useStyles = makeStyles(() =>
       display: 'flex',
       flexDirection: 'row',
       flexWrap: 'nowrap',
-      gap: '0.25rem',
+      gap: '0.5rem',
     },
     phaseNy: {
       minWidth: '2.2rem',
