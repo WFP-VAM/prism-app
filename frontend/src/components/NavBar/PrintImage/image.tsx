@@ -144,6 +144,14 @@ const renderPositionIcon = ({
   );
 };
 
+// A function that returns Visibility if the element is off, else returns a switch icon to flip the position
+const renderOnOffIcon = ({ value }: { value: number }): React.JSX.Element => {
+  if (!value) {
+    return <VisibilityOff />;
+  }
+  return <Visibility />;
+};
+
 const legendPositionOptions = [
   { value: -1, comp: <VisibilityOff /> },
   {
@@ -190,8 +198,8 @@ const layerDescriptionSelectorOptions = [
 ];
 
 const countryMaskSelectorOptions = [
-  { value: 1, comp: <VisibilityOff /> },
-  { value: 0, comp: <Visibility /> },
+  { value: 0, comp: renderOnOffIcon },
+  // { value: 0, comp: <Visibility /> },
 ];
 
 const mapLabelsVisibilityOptions = [
@@ -625,12 +633,13 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
 
             <div className={classes.sameRowToggles}>
               <ToggleSelector
-                value={Number(toggles.countryMask)}
+                value={toggles.countryMask ? 0 : 1}
                 options={countryMaskSelectorOptions}
+                iconProp={toggles.countryMask ? 0 : 1}
                 setValue={val =>
                   setToggles(prev => ({
                     ...prev,
-                    countryMask: Boolean(val),
+                    countryMask: Boolean((Number(prev.countryMask) + 1) % 2),
                   }))
                 }
                 title={t('Admin Area Mask')}

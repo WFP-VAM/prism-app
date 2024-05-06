@@ -297,22 +297,6 @@ exports[`renders as expected 1`] = `
                 class="MuiButtonBase-root MuiToggleButton-root MuiToggleButtonGroup-grouped MuiToggleButtonGroup-groupedHorizontal makeStyles-button-21"
                 tabindex="0"
                 type="button"
-                value="1"
-              >
-                <span
-                  class="MuiToggleButton-label"
-                >
-                  <mock-visibilityoff />
-                </span>
-                <span
-                  class="MuiTouchRipple-root"
-                />
-              </button>
-              <button
-                aria-pressed="true"
-                class="MuiButtonBase-root MuiToggleButton-root MuiToggleButtonGroup-grouped MuiToggleButtonGroup-groupedHorizontal makeStyles-button-21 Mui-selected"
-                tabindex="0"
-                type="button"
                 value="0"
               >
                 <span
