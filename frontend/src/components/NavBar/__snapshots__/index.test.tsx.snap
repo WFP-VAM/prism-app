@@ -308,6 +308,7 @@ exports[`renders as expected 1`] = `
           </mock-hidden>
           <mock-list
             classname="memo-list-24"
+            disablepadding="true"
           />
           <mock-printimage />
           <a

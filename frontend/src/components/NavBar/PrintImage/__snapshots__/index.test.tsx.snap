@@ -88,7 +88,7 @@ exports[`renders as expected 1`] = `
                 <div
                   style="padding: 8px;"
                 >
-                  Publication date: 2024-05-03. Layer selection date: 2018-07-02.
+                  Publication date: 2024-05-06. Layer selection date: 2018-07-02.
                 </div>
               </div>
               <div
@@ -96,6 +96,7 @@ exports[`renders as expected 1`] = `
               >
                 <mock-list
                   classname="DownloadImage-legendListStyle-15"
+                  disablepadding="true"
                 />
               </div>
               <div
