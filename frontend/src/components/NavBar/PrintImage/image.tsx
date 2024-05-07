@@ -825,7 +825,8 @@ const styles = (theme: Theme) =>
       backgroundColor: 'white',
       width: '100%',
       textAlign: 'center',
-      fontSize: '1.5rem',
+      fontSize: '1.25rem',
+      fontWeight: 600,
       padding: '8px 0 8px 0',
       borderBottom: `1px solid ${lightGrey}`,
     },
@@ -894,6 +895,7 @@ const styles = (theme: Theme) =>
       justifyContent: 'space-between',
     },
     previewContainer: {
+      fontFamily: 'Roboto',
       display: 'flex',
       flexDirection: 'column',
       flexGrow: 1,
