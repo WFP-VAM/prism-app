@@ -200,7 +200,7 @@ const LegendItemsList = ({
   ]);
 
   return (
-    <List ref={listRef} className={listStyle}>
+    <List disablePadding ref={listRef} className={listStyle}>
       {legendItems}
     </List>
   );
