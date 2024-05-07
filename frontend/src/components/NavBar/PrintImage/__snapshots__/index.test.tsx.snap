@@ -230,7 +230,9 @@ exports[`renders as expected 1`] = `
                   <span
                     class="MuiToggleButton-label"
                   >
-                    <div>
+                    <div
+                      style="font-size: 0.75rem;"
+                    >
                       S
                     </div>
                   </span>
@@ -248,7 +250,9 @@ exports[`renders as expected 1`] = `
                   <span
                     class="MuiToggleButton-label"
                   >
-                    <div>
+                    <div
+                      style="font-size: 1rem;"
+                    >
                       M
                     </div>
                   </span>
@@ -266,7 +270,9 @@ exports[`renders as expected 1`] = `
                   <span
                     class="MuiToggleButton-label"
                   >
-                    <div>
+                    <div
+                      style="font-size: 1.25rem;"
+                    >
                       L
                     </div>
                   </span>

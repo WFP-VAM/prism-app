@@ -161,9 +161,9 @@ const logoPositionOptions = [
 ];
 
 const logoScaleSelectorOptions = [
-  { value: 0.5, comp: <div>S</div> },
-  { value: 1, comp: <div>M</div> },
-  { value: 1.5, comp: <div>L</div> },
+  { value: 0.5, comp: <div style={{ fontSize: '0.75rem' }}>S</div> },
+  { value: 1, comp: <div style={{ fontSize: '1rem' }}>M</div> },
+  { value: 1.5, comp: <div style={{ fontSize: '1.25rem' }}>L</div> },
 ];
 
 const mapWidthSelectorOptions = [
@@ -864,6 +864,7 @@ const styles = (theme: Theme) =>
       },
     },
     contentContainer: {
+      fontFamily: 'Roboto',
       scrollbarGutter: 'stable',
       display: 'flex',
       gap: '1rem',
@@ -895,7 +896,6 @@ const styles = (theme: Theme) =>
       justifyContent: 'space-between',
     },
     previewContainer: {
-      fontFamily: 'Roboto',
       display: 'flex',
       flexDirection: 'column',
       flexGrow: 1,
