@@ -134,9 +134,10 @@ const renderPositionIcon = ({
 }: {
   value: number;
 }): React.JSX.Element => {
-  if (value === -1) {
-    return <Visibility />;
-  }
+  // TODO - decide if we want to use the visibility icon when the toggle is off
+  // if (value === -1) {
+  //   return <Visibility />;
+  // }
   return (
     <Icon style={{ color: 'black' }}>
       {value % 2 === 0 ? 'switch_left' : 'switch_right'}
@@ -600,7 +601,9 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
                   options={logoPositionOptions}
                   iconProp={logoPosition}
                   setValue={v =>
-                    setLogoPosition(prev => (v === -1 ? -1 : (prev + 1) % 2))
+                    setLogoPosition(prev =>
+                      v === -1 && prev !== -1 ? -1 : (prev + 1) % 2,
+                    )
                   }
                   title={t('Logo Position')}
                 />
@@ -674,7 +677,9 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
                 options={legendPositionOptions}
                 iconProp={legendPosition}
                 setValue={v =>
-                  setLegendPosition(prev => (v === -1 ? -1 : (prev + 1) % 2))
+                  setLegendPosition(prev =>
+                    v === -1 && prev !== -1 ? -1 : (prev + 1) % 2,
+                  )
                 }
                 title={t('Legend Position')}
               />

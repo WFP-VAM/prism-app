@@ -195,7 +195,11 @@ exports[`renders as expected 1`] = `
                 <span
                   class="MuiToggleButton-label"
                 >
-                  <mock-visibility />
+                  <mock-icon
+                    style="color: black;"
+                  >
+                    switch_right
+                  </mock-icon>
                 </span>
                 <span
                   class="MuiTouchRipple-root"
