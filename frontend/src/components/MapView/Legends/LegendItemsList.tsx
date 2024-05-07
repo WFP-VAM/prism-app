@@ -181,7 +181,11 @@ const LegendItemsList = ({
     showDescription,
   ]);
 
-  return <List className={listStyle}>{legendItems}</List>;
+  return (
+    <List disablePadding className={listStyle}>
+      {legendItems}
+    </List>
+  );
 };
 
 export default LegendItemsList;

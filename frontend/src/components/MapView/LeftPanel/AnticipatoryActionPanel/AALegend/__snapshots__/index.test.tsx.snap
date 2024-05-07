@@ -184,12 +184,13 @@ exports[`renders as expected 1`] = `
       class="MuiPaper-root makeStyles-paper-1 MuiPaper-elevation1 MuiPaper-rounded"
     >
       <mock-typography
-        variant="h2"
+        style="font-weight: bold;"
+        variant="h3"
       >
         Phases
       </mock-typography>
       <div
-        style="display: flex; flex-direction: column; gap: 1rem;"
+        style="display: flex; flex-direction: column; gap: 0.5rem; margin-bottom: 0.75rem;"
       >
         <div
           class="makeStyles-itemWrapper-2"
@@ -218,13 +219,11 @@ exports[`renders as expected 1`] = `
           <div>
             <mock-typography
               style="white-space: nowrap;"
-              variant="h3"
             >
               Set
             </mock-typography>
             <mock-typography
               style="white-space: nowrap;"
-              variant="h3"
             >
               Severe
             </mock-typography>
@@ -257,13 +256,11 @@ exports[`renders as expected 1`] = `
           <div>
             <mock-typography
               style="white-space: nowrap;"
-              variant="h3"
             >
               Ready
             </mock-typography>
             <mock-typography
               style="white-space: nowrap;"
-              variant="h3"
             >
               Severe
             </mock-typography>
@@ -296,13 +293,11 @@ exports[`renders as expected 1`] = `
           <div>
             <mock-typography
               style="white-space: nowrap;"
-              variant="h3"
             >
               Set
             </mock-typography>
             <mock-typography
               style="white-space: nowrap;"
-              variant="h3"
             >
               Moderate
             </mock-typography>
@@ -335,13 +330,11 @@ exports[`renders as expected 1`] = `
           <div>
             <mock-typography
               style="white-space: nowrap;"
-              variant="h3"
             >
               Ready
             </mock-typography>
             <mock-typography
               style="white-space: nowrap;"
-              variant="h3"
             >
               Moderate
             </mock-typography>
@@ -374,13 +367,11 @@ exports[`renders as expected 1`] = `
           <div>
             <mock-typography
               style="white-space: nowrap;"
-              variant="h3"
             >
               Set
             </mock-typography>
             <mock-typography
               style="white-space: nowrap;"
-              variant="h3"
             >
               Mild
             </mock-typography>
@@ -413,13 +404,11 @@ exports[`renders as expected 1`] = `
           <div>
             <mock-typography
               style="white-space: nowrap;"
-              variant="h3"
             >
               Ready
             </mock-typography>
             <mock-typography
               style="white-space: nowrap;"
-              variant="h3"
             >
               Mild
             </mock-typography>
@@ -446,7 +435,6 @@ exports[`renders as expected 1`] = `
           <div>
             <mock-typography
               style="white-space: nowrap;"
-              variant="h3"
             >
               No Action
             </mock-typography>
@@ -473,7 +461,6 @@ exports[`renders as expected 1`] = `
           <div>
             <mock-typography
               style="white-space: nowrap;"
-              variant="h3"
             >
               Not Yet Monitored
             </mock-typography>
@@ -495,12 +482,13 @@ exports[`renders as expected 1`] = `
       </mock-typography>
       <mock-divider />
       <mock-typography
-        variant="h2"
+        style="font-weight: bold;"
+        variant="h3"
       >
         Districts
       </mock-typography>
       <div
-        style="display: flex; flex-direction: column; gap: 1rem;"
+        style="display: flex; flex-direction: column; gap: 0.5rem;"
       >
         <div
           class="makeStyles-itemWrapper-2"

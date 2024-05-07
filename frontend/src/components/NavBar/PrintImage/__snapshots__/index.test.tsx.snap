@@ -96,6 +96,7 @@ exports[`renders as expected 1`] = `
               >
                 <mock-list
                   classname="DownloadImage-legendListStyle-15"
+                  disablepadding="true"
                 />
               </div>
               <div
