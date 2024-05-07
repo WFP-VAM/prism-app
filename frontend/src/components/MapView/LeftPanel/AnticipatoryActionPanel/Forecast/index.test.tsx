@@ -72,13 +72,13 @@ const out = {
     Mild: {
       'SPI DJF': {
         probability: 28,
-        triggerExceeded: true,
+        showWarningSign: true,
       },
     },
     Moderate: {
       'SPI DJF': {
         probability: 22,
-        triggerExceeded: false,
+        showWarningSign: false,
       },
     },
   },
