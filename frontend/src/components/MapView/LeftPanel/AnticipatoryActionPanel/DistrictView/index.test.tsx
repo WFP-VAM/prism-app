@@ -70,7 +70,7 @@ const out = {
     '2023-11-01': 'Nov',
   },
   transformed: {
-    '20': [
+    '30': [
       {
         category: 'Mild',
         district: 'Changara',
@@ -99,7 +99,7 @@ const out = {
         wasReadyValid: true,
       },
     ],
-    '30': [
+    '40': [
       {
         category: 'Moderate',
         district: 'Changara',
