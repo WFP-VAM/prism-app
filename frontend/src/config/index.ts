@@ -2,6 +2,7 @@ import { has, get, merge } from 'lodash';
 import { PublicClientApplication } from '@azure/msal-browser';
 import shared from './shared';
 import afghanistan from './afghanistan';
+import bhutan from './bhutan';
 import cambodia from './cambodia';
 import cameroon from './cameroon';
 import colombia from './colombia';
@@ -33,6 +34,7 @@ const DEFAULT_BOUNDARIES_FOLDER =
 
 const configMap = {
   afghanistan,
+  bhutan,
   cambodia,
   cameroon,
   colombia,
