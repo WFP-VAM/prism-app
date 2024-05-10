@@ -150,6 +150,7 @@ function AnticipatoryActionPanel() {
                   }
                   if (view === AAView.Timeline) {
                     dispatch(setAAView(AAView.District));
+                    dispatch(setAAFilters({ selectedIndex: '' }));
                     return;
                   }
                   if (view === AAView.Forecast) {
