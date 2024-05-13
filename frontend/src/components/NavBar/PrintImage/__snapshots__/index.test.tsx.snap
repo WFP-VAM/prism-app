@@ -85,11 +85,9 @@ exports[`renders as expected 1`] = `
                 style="font-size: 12px;"
               >
                 
-                <div
-                  style="padding: 8px;"
-                >
+                <mock-typography>
                   Publication date: 2018-07-02. Layer selection date: 2018-07-02.
-                </div>
+                </mock-typography>
               </div>
               <div
                 style="position: absolute; z-index: 2; top: 0px; left: 8px; display: flex; justify-content: flex-start; width: 20px; transform: scale(1);"
