@@ -92,6 +92,15 @@ exports[`renders as expected 1`] = `
               <mock-typography
                 classname="makeStyles-monthText-25"
               >
+                Aug
+              </mock-typography>
+            </div>
+            <div
+              class="makeStyles-headColumn-22"
+            >
+              <mock-typography
+                classname="makeStyles-monthText-25"
+              >
                 Sep
               </mock-typography>
             </div>
@@ -117,6 +126,9 @@ exports[`renders as expected 1`] = `
           <div
             class="makeStyles-rowWrapper-20"
           >
+            <div
+              class="makeStyles-column-23"
+            />
             <div
               class="makeStyles-column-23"
             >
@@ -213,7 +225,64 @@ exports[`renders as expected 1`] = `
           >
             <div
               class="makeStyles-column-23"
-            />
+            >
+              <div
+                class="makeStyles-iconWrapper-26"
+              >
+                <div
+                  class="makeStyles-iconWrapper-31"
+                  style="background: rgb(241, 241, 241);"
+                >
+                  <div
+                    class="makeStyles-centerContainer-32"
+                    style="border: 1px solid black; color: black;"
+                  >
+                    <div
+                      class="makeStyles-topTextContainer-33"
+                      style="border-bottom: 1px solid black; background: rgb(241, 241, 241);"
+                    >
+                      na
+                    </div>
+                    <div
+                      class="makeStyles-bottomTextContainer-34"
+                      style="background: rgb(241, 241, 241);"
+                    >
+                      MIL
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div
+              class="makeStyles-column-23"
+            >
+              <div
+                class="makeStyles-iconWrapper-26"
+              >
+                <div
+                  class="makeStyles-iconWrapper-31"
+                  style="background: rgb(241, 241, 241);"
+                >
+                  <div
+                    class="makeStyles-centerContainer-32"
+                    style="border: 1px solid black; color: black;"
+                  >
+                    <div
+                      class="makeStyles-topTextContainer-33"
+                      style="border-bottom: 1px solid black; background: rgb(241, 241, 241);"
+                    >
+                      na
+                    </div>
+                    <div
+                      class="makeStyles-bottomTextContainer-34"
+                      style="background: rgb(241, 241, 241);"
+                    >
+                      MIL
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
             <div
               class="makeStyles-column-23"
             >
@@ -291,6 +360,30 @@ exports[`renders as expected 1`] = `
           <div
             class="makeStyles-actionBoxesWrapper-28"
           >
+            <button
+              class="makeStyles-actionBox-29"
+              id="2023-08-01"
+              style="justify-content: center; cursor: pointer;"
+              type="button"
+            >
+              <mock-tooltip
+                title="No anticipatory action linked to Mild levels"
+              >
+                <div>
+                  <svg
+                    aria-hidden="true"
+                    class="MuiSvgIcon-root"
+                    focusable="false"
+                    style="font-size: 1rem; color: darkgrey;"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      d="M19 13H5v-2h14v2z"
+                    />
+                  </svg>
+                </div>
+              </mock-tooltip>
+            </button>
             <button
               class="makeStyles-actionBox-29"
               id="2023-09-01"

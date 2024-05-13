@@ -19,7 +19,6 @@ export function districtViewTransform(
     .filter(
       x =>
         categoryFilters[x.category] &&
-        (x.computedRow || x.isValid || x.wasReadyValid) &&
         (selectedIndex === '' || x.index === selectedIndex),
     )
     .map(x => {
