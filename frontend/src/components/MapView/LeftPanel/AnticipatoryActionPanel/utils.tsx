@@ -175,6 +175,20 @@ const AACategoryPhaseMap: { [key: string]: any } = {
       iconProps: { topText: 'na', bottomText: 'MIL', color: 'black' },
     },
   },
+  Normal: {
+    Set: {
+      color: '#FFF503',
+      iconProps: { topText: 'S', bottomText: 'BNO', color: 'black' },
+    },
+    Ready: {
+      color: '#FFFCB3',
+      iconProps: { topText: 'R', bottomText: 'BNO', color: 'black' },
+    },
+    na: {
+      color: '#F1F1F1',
+      iconProps: { topText: 'na', bottomText: 'BNO', color: 'black' },
+    },
+  },
 };
 
 export function getAAColor(

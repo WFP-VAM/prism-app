@@ -30,6 +30,7 @@ const initialState: AnticipatoryActionState = {
       Severe: true,
       Moderate: true,
       Mild: true,
+      Normal: true,
       na: true,
       ny: true,
     },
