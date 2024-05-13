@@ -434,7 +434,7 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
                       {titleText}
                     </div>
                   )}
-                  {footerTextSize > 0 && footerText && (
+                  {footerTextSize > 0 && (footerText || dateText) && (
                     <div
                       ref={footerRef}
                       className={classes.footerOverlay}
@@ -442,7 +442,12 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
                         fontSize: `${footerTextSize}px`,
                       }}
                     >
-                      <div style={{ padding: '8px' }}>{footerText}</div>
+                      {footerText && (
+                        <div style={{ padding: '8px' }}>{footerText}</div>
+                      )}
+                      {dateText && (
+                        <div style={{ padding: '8px' }}>{dateText}</div>
+                      )}
                     </div>
                   )}
                   {logoPosition !== -1 && (
@@ -461,16 +466,6 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
                       src={logo}
                       alt="logo"
                     />
-                  )}
-                  {dateText && (
-                    <div
-                      className={classes.dateFooterOverlay}
-                      style={{
-                        fontSize: `${footerTextSize}px`,
-                      }}
-                    >
-                      <div style={{ padding: '8px' }}>{dateText}</div>
-                    </div>
                   )}
                   {legendPosition !== -1 && (
                     <div
@@ -835,20 +830,9 @@ const styles = (theme: Theme) =>
       padding: '8px 0 8px 0',
       borderBottom: `1px solid ${lightGrey}`,
     },
-    dateFooterOverlay: {
-      position: 'absolute',
-      bottom: 0,
-      left: 0,
-      zIndex: 2,
-      display: 'flex',
-      justifyContent: 'flex-start',
-      color: 'black',
-      backgroundColor: 'white',
-      width: '100%',
-    },
     footerOverlay: {
       position: 'absolute',
-      bottom: 20, // leave room for the date text
+      bottom: 0,
       left: 0,
       zIndex: 3,
       color: 'black',
