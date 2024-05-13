@@ -9,16 +9,27 @@ import {
 import { useSafeTranslation } from 'i18n';
 import { borderGray, lightGrey } from 'muiTheme';
 import React from 'react';
+import { safeCountry } from 'config';
 import { getAAColor, getAAIcon, useAACommonStyles } from '../utils';
 import HowToReadModal from '../HowToReadModal';
 
+const isZimbabwe = safeCountry === 'zimbabwe';
+
 const phases = [
-  { icon: getAAIcon('Severe', 'Set', true), phase: 'Set', severity: 'Severe' },
-  {
-    icon: getAAIcon('Severe', 'Ready', true),
-    phase: 'Ready',
-    severity: 'Severe',
-  },
+  ...(isZimbabwe
+    ? []
+    : [
+        {
+          icon: getAAIcon('Severe', 'Set', true),
+          phase: 'Set',
+          severity: 'Severe',
+        },
+        {
+          icon: getAAIcon('Severe', 'Ready', true),
+          phase: 'Ready',
+          severity: 'Severe',
+        },
+      ]),
   {
     icon: getAAIcon('Moderate', 'Set', true),
     phase: 'Set',
@@ -29,16 +40,31 @@ const phases = [
     phase: 'Ready',
     severity: 'Moderate',
   },
-  {
-    icon: getAAIcon('Mild', 'Set', true),
-    phase: 'Set',
-    severity: 'Mild',
-  },
-  {
-    icon: getAAIcon('Mild', 'Ready', true),
-    phase: 'Ready',
-    severity: 'Mild',
-  },
+  ...(isZimbabwe
+    ? [
+        {
+          icon: getAAIcon('Normal', 'Set', true),
+          phase: 'Set',
+          severity: 'Below Normal',
+        },
+        {
+          icon: getAAIcon('Normal', 'Ready', true),
+          phase: 'Ready',
+          severity: 'Below Normal',
+        },
+      ]
+    : [
+        {
+          icon: getAAIcon('Mild', 'Set', true),
+          phase: 'Set',
+          severity: 'Mild',
+        },
+        {
+          icon: getAAIcon('Mild', 'Ready', true),
+          phase: 'Ready',
+          severity: 'Mild',
+        },
+      ]),
   {
     icon: getAAIcon('na', 'na', true),
     phase: 'No Action',
