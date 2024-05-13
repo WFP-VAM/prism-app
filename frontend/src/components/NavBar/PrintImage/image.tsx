@@ -443,11 +443,11 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
                       }}
                     >
                       {footerText && (
-                        <div style={{ padding: '8px' }}>{footerText}</div>
+                        <Typography style={{ whiteSpace: 'pre-line' }}>
+                          {footerText}
+                        </Typography>
                       )}
-                      {dateText && (
-                        <div style={{ padding: '8px' }}>{dateText}</div>
-                      )}
+                      {dateText && <Typography>{dateText}</Typography>}
                     </div>
                   )}
                   {logoPosition !== -1 && (
@@ -831,6 +831,7 @@ const styles = (theme: Theme) =>
       borderBottom: `1px solid ${lightGrey}`,
     },
     footerOverlay: {
+      padding: '8px',
       position: 'absolute',
       bottom: 0,
       left: 0,
