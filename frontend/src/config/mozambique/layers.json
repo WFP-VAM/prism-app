@@ -56,6 +56,25 @@
       }
     }
   },
+  "basin_boundaries": {
+    "type": "boundary",
+    "path": "data/mozambique/moz_hyd_basins_gov_2023.json",
+    "opacity": 0.8,
+    "admin_code": "ID",
+    "admin_level_codes": ["ID"],
+    "admin_level_names": ["Basins"],
+    "admin_level_local_names": ["Basins"],
+    "styles:": {
+      "fill": {
+        "fill-opacity": 0
+      },
+      "line": {
+        "line-color": "gray",
+        "line-width": 0.7,
+        "line-opacity": 0.8
+      }
+    }
+  },
   "precip_blended_dekad": {
     "title": "Blended rainfall aggregate (10-day)",
     "type": "wms",
