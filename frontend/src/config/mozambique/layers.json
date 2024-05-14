@@ -18,7 +18,7 @@
       }
     }
   },
-  "admin_boundaries": {
+  "admin2_boundaries": {
     "type": "boundary",
     "path": "data/mozambique/moz_bnd_adm2_WFP.json",
     "opacity": 0.8,
@@ -33,6 +33,25 @@
       "line": {
         "line-color": "gray",
         "line-width": 1,
+        "line-opacity": 0.8
+      }
+    }
+  },  
+  "admin_boundaries": {
+    "type": "boundary",
+    "path": "data/mozambique/moz_bnd_adm3_WFP.json",
+    "opacity": 0.8,
+    "admin_code": "adm3_source_id",
+    "admin_level_codes": ["adm1_source_id", "adm2_source_id", "adm3_source_id"],
+    "admin_level_names": ["adm1_name", "adm2_name", "adm3_name"],
+    "admin_level_local_names": ["adm1_name", "adm2_name", "adm3_name"],
+    "styles:": {
+      "fill": {
+        "fill-opacity": 0
+      },
+      "line": {
+        "line-color": "gray",
+        "line-width": 0.7,
         "line-opacity": 0.8
       }
     }
