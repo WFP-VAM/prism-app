@@ -51,7 +51,7 @@
       },
       "line": {
         "line-color": "gray",
-        "line-width": 0.7,
+        "line-width": 0.2,
         "line-opacity": 0.8
       }
     }
