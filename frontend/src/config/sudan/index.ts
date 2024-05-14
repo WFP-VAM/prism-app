@@ -11,5 +11,5 @@ export default {
   rawTables,
   rawReports,
   translation,
-  defaultBoundariesFile: 'jor_admbnda_adm2_jdos.json',
+  defaultBoundariesFile: 'sdn_admbnda_adm2_cbs_nic_ssa_20200831.json',
 };

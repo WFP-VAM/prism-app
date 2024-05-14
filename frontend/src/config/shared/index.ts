@@ -5,6 +5,7 @@ import sharedLegends from './legends.json';
 import portuguese from './portuguese.json';
 import french from './french.json';
 import khmer from './khmer.json';
+import arabic from './arabic.json';
 
 // TODO - Link translation files for the following languages
 const translation: Record<string, any> = {
@@ -14,7 +15,7 @@ const translation: Record<string, any> = {
   kh: khmer,
   pt: portuguese,
   ru: {},
-  عربى: {},
+  عربى: arabic,
 };
 
 export default {
