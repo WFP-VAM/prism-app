@@ -27,8 +27,8 @@ COPY pyproject.toml /
 
 COPY poetry.lock /
 
-RUN wget -qO - https://regolith-desktop.org/regolith.key | \
-    gpg --dearmor | tee /usr/share/keyrings/regolith-archive-keyring.gpg > /dev/null
+RUN gpg --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 871920D1991BC93C
+RUN gpg --export 871920D1991BC93C | tee /etc/apt/trusted.gpg.d/ubuntu.lafibre.info.gpg
 
 RUN --mount=type=cache,target=/var/cache/apt \
     apt-get update && \
