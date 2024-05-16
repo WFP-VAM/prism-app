@@ -24,6 +24,7 @@
   },
   "defaultDisplayBoundaries": [
     "admin_boundaries",
+    "admin2_boundaries",
     "admin1_boundaries"
   ],
   "serversUrls": {
