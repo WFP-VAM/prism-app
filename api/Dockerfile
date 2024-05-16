@@ -36,6 +36,7 @@ RUN pip install --upgrade pip
 RUN --mount=type=cache,target=/root/.cache \
     poetry install
 
+RUN apt-key adv --keyserver hkp://keyserver.ubuntu.com --recv-keys 275C532289DD0F4A
 # RUN --mount=type=cache,target=/root/.cache poetry run playwright install chromium
 RUN poetry run playwright install chromium
 # playwright installs a lot of apt packages
