@@ -27,7 +27,7 @@ COPY pyproject.toml /
 
 COPY poetry.lock /
 
-RUN apt-get clean
+RUN rm -f /etc/apt/sources.list.d/archive_uri-*
 
 RUN apt-get update && \
     apt-get --no-install-recommends install -y python3-pip libpq-dev curl python3-dev build-essential
