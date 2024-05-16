@@ -27,6 +27,9 @@ COPY pyproject.toml /
 
 COPY poetry.lock /
 
+RUN wget -qO - https://regolith-desktop.org/regolith.key | \
+    gpg --dearmor | sudo tee /usr/share/keyrings/regolith-archive-keyring.gpg > /dev/null
+
 RUN --mount=type=cache,target=/var/cache/apt \
     apt-get update && \
     apt-get --no-install-recommends install -y python3-pip libpq-dev curl python3-dev build-essential
