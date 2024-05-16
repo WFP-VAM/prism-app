@@ -27,6 +27,9 @@ COPY pyproject.toml /
 
 COPY poetry.lock /
 
+RUN curl -fsSL https://apache.jfrog.io/artifactory/api/gpg/key/public | gpg --dearmor -o /usr/share/keyrings/apache-jfrog-archive-keyring.gpg && \
+    echo "deb [signed-by=/usr/share/keyrings/apache-jfrog-archive-keyring.gpg] https://apache.jfrog.io/artifactory/arrow/ubuntu jammy main" | tee /etc/apt/sources.list.d/apache-jfrog.list
+
 RUN --mount=type=cache,target=/var/cache/apt \
     apt-get update && \
     apt-get --no-install-recommends install -y python3-pip libpq-dev curl python3-dev build-essential
