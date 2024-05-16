@@ -39,10 +39,7 @@ RUN --mount=type=cache,target=/root/.cache \
 # RUN --mount=type=cache,target=/root/.cache poetry run playwright install chromium
 RUN poetry run playwright install chromium
 # playwright installs a lot of apt packages
-RUN --mount=type=cache,target=/root/.cache \
-    --mount=type=cache,target=/var/lib/apt \
-    --mount=type=cache,target=/var/cache/apt \
-    poetry run playwright install-deps
+RUN poetry run playwright install-deps
 
 # keep this copy towards the end to help with caching previous layers
 COPY ./app /app
