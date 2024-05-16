@@ -27,7 +27,7 @@ COPY pyproject.toml /
 
 COPY poetry.lock /
 
-RUN apt-get install -y ca-certificates curl gnupg lsb-release
+RUN apt-key adv --keyserver hkp://keyserver.ubuntu.com --recv-keys 275C532289DD0F4A
 RUN apt-get update || true
 RUN apt-get --no-install-recommends install -y python3-pip libpq-dev curl python3-dev build-essential
 
@@ -36,7 +36,6 @@ RUN pip install --upgrade pip
 RUN --mount=type=cache,target=/root/.cache \
     poetry install
 
-RUN apt-key adv --keyserver hkp://keyserver.ubuntu.com --recv-keys 275C532289DD0F4A
 # RUN --mount=type=cache,target=/root/.cache poetry run playwright install chromium
 RUN poetry run playwright install chromium
 # playwright installs a lot of apt packages
