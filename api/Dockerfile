@@ -1,4 +1,4 @@
-FROM ghcr.io/osgeo/gdal:ubuntu-full-3.9.0
+FROM ghcr.io/osgeo/gdal:ubuntu-full-3.8.0
 
 ENV PYTHONPATH=/
 
