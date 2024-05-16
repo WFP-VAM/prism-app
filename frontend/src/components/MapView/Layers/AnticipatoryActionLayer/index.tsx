@@ -33,7 +33,7 @@ import {
   useAAMarkerScalePercent,
   useMapCallback,
 } from 'utils/map-utils';
-import { getBoundaryLayerSingleton } from 'config/utils';
+import { getBoundaryLayersByAdminLevel } from 'config/utils';
 import {
   calculateAAMarkers,
   calculateCombinedAAMapData,
@@ -41,7 +41,8 @@ import {
 import { AAView } from 'context/anticipatoryActionStateSlice/types';
 import { Tooltip } from '@material-ui/core';
 
-const boundaryLayer = getBoundaryLayerSingleton();
+// Use admin level 2 boundary layer for Anticipatory Action
+const boundaryLayer = getBoundaryLayersByAdminLevel(2);
 
 const onDistrictClick = ({
   dispatch,
