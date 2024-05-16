@@ -21,15 +21,19 @@ ENV PATH="$POETRY_HOME/bin:$PATH"
 
 RUN --mount=type=cache,target=/root/.cache curl -sSL https://install.python-poetry.org | python3 -
 
-# COPY requirements.txt .
-# copy pyproject so that black and isort use the right config
+# Copy pyproject so that black and isort use the right config
 COPY pyproject.toml /
 
 COPY poetry.lock /
 
-RUN echo "deb [trusted=yes] https://apache.jfrog.io/artifactory/arrow/ubuntu jammy main" | tee /etc/apt/sources.list.d/apache-arrow.list
-RUN apt-get update || true
-RUN apt-get --no-install-recommends install -y python3-pip libpq-dev curl python3-dev build-essential
+# Add the repository to the sources list
+# RUN echo "deb https://apache.jfrog.io/artifactory/arrow/ubuntu jammy main" | tee /etc/apt/sources.list.d/apache-arrow.list
+
+# Update the package list and allow unauthenticated packages
+RUN --mount=type=cache,target=/var/cache/apt apt-get update --allow-unauthenticated
+
+RUN --mount=type=cache,target=/var/cache/apt \
+    apt-get --no-install-recommends install -y python3-pip libpq-dev curl python3-dev build-essential
 
 RUN pip install --upgrade pip
 
@@ -39,7 +43,10 @@ RUN --mount=type=cache,target=/root/.cache \
 # RUN --mount=type=cache,target=/root/.cache poetry run playwright install chromium
 RUN poetry run playwright install chromium
 # playwright installs a lot of apt packages
-RUN poetry run playwright install-deps
+RUN --mount=type=cache,target=/root/.cache \
+    --mount=type=cache,target=/var/lib/apt \
+    --mount=type=cache,target=/var/cache/apt \
+    DEBIAN_FRONTEND=noninteractive apt-get install -y --allow-unauthenticated $(poetry run playwright install-deps --dry-run | grep -oP '(?<=Install ).*')
 
 # keep this copy towards the end to help with caching previous layers
 COPY ./app /app
