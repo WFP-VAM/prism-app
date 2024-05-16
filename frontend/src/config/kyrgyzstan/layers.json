@@ -383,7 +383,7 @@
       "styles": "rfh_16_0_300"
     },
     "chart_data": {
-      "url": "https://dev.api.earthobservation.vam.wfp.org/stats/admin",
+      "url": "https://api.earthobservation.vam.wfp.org/stats/admin",
       "fields": [
         {
           "key": "rfh",
@@ -505,7 +505,7 @@
       "styles": "rfq_14_20_400"
     },
     "chart_data": {
-      "url": "https://dev.api.earthobservation.vam.wfp.org/stats/admin",
+      "url": "https://api.earthobservation.vam.wfp.org/stats/admin",
       "fields": [
         {
           "key": "rfq",
@@ -621,7 +621,7 @@
       "styles": "rfh_16_0_400"
     },
     "chart_data": {
-      "url": "https://dev.api.earthobservation.vam.wfp.org/stats/admin",
+      "url": "https://api.earthobservation.vam.wfp.org/stats/admin",
       "fields": [
         {
           "key": "r1h",
@@ -743,7 +743,7 @@
       "styles": "rfq_14_20_400"
     },
     "chart_data": {
-      "url": "https://dev.api.earthobservation.vam.wfp.org/stats/admin",
+      "url": "https://api.earthobservation.vam.wfp.org/stats/admin",
       "fields": [
         {
           "key": "r1q",
@@ -859,7 +859,7 @@
       "styles": "rfh_16_0_800"
     },
     "chart_data": {
-      "url": "https://dev.api.earthobservation.vam.wfp.org/stats/admin",
+      "url": "https://api.earthobservation.vam.wfp.org/stats/admin",
       "fields": [
         {
           "key": "r3h",
@@ -981,7 +981,7 @@
       "styles": "rfq_14_20_400"
     },
     "chart_data": {
-      "url": "https://dev.api.earthobservation.vam.wfp.org/stats/admin",
+      "url": "https://api.earthobservation.vam.wfp.org/stats/admin",
       "fields": [
         {
           "key": "r3q",
@@ -2588,7 +2588,7 @@
       "styles": "vim_14_01_09"
     },
     "chart_data": {
-      "url": "https://dev.api.earthobservation.vam.wfp.org/stats/admin",
+      "url": "https://api.earthobservation.vam.wfp.org/stats/admin",
       "fields": [
         {
           "key": "vim",
@@ -2707,7 +2707,7 @@
       "styles": "viq_13_50_150"
     },
     "chart_data": {
-      "url": "https://dev.api.earthobservation.vam.wfp.org/stats/admin",
+      "url": "https://api.earthobservation.vam.wfp.org/stats/admin",
       "fields": [
         {
           "key": "viq",
