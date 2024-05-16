@@ -1,4 +1,4 @@
-FROM ghcr.io/osgeo/gdal:ubuntu-full-3.7.0
+FROM ghcr.io/osgeo/gdal:ubuntu-full-3.9.0
 
 ENV PYTHONPATH=/
 
@@ -26,14 +26,6 @@ RUN --mount=type=cache,target=/root/.cache curl -sSL https://install.python-poet
 COPY pyproject.toml /
 
 COPY poetry.lock /
-
-# Remove old conflicting source lists and keys if they exist
-RUN rm -f /etc/apt/sources.list.d/apache-jfrog.list \
-    /usr/share/keyrings/apache-arrow-apt-source.gpg
-
-# Add the missing GPG key for the Apache JFrog repository
-RUN curl -fsSL https://apache.jfrog.io/artifactory/api/gpg/key/public | gpg --dearmor -o /usr/share/keyrings/apache-jfrog-archive-keyring.gpg && \
-    echo "deb [signed-by=/usr/share/keyrings/apache-jfrog-archive-keyring.gpg] https://apache.jfrog.io/artifactory/arrow/ubuntu jammy main" | tee /etc/apt/sources.list.d/apache-jfrog.list
 
 RUN --mount=type=cache,target=/var/cache/apt \
     apt-get update && \
