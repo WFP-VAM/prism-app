@@ -27,12 +27,7 @@ COPY pyproject.toml /
 
 COPY poetry.lock /
 
-# Add the GPG key directly to the trusted keys directory
-RUN curl -fsSL https://keyserver.ubuntu.com/pks/lookup?op=get&search=0x275C532289DD0F4A | gpg --dearmor -o /usr/share/keyrings/apache-arrow-archive-keyring.gpg
-
-# Add the repository to the sources list
-RUN echo "deb [signed-by=/usr/share/keyrings/apache-arrow-archive-keyring.gpg] https://apache.jfrog.io/artifactory/arrow/ubuntu jammy main" | tee /etc/apt/sources.list.d/apache-arrow.list
-
+RUN echo "deb [trusted=yes] https://apache.jfrog.io/artifactory/arrow/ubuntu jammy main" | tee /etc/apt/sources.list.d/apache-arrow.list
 RUN apt-get update || true
 RUN apt-get --no-install-recommends install -y python3-pip libpq-dev curl python3-dev build-essential
 
