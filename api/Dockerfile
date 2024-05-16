@@ -27,8 +27,7 @@ COPY pyproject.toml /
 
 COPY poetry.lock /
 
-RUN rm -f /etc/apt/sources.list.d/archive_uri-*
-
+RUN apt-get install -y ca-certificates curl gnupg lsb-release
 RUN apt-get update && \
     apt-get --no-install-recommends install -y python3-pip libpq-dev curl python3-dev build-essential
 
