@@ -27,7 +27,8 @@ COPY pyproject.toml /
 
 COPY poetry.lock /
 
-RUN curl -fsSL https://keyserver.ubuntu.com/pks/lookup?op=get&search=0x275C532289DD0F4A | apt-key add -RUN apt-get update || true
+RUN curl -fsSL https://keyserver.ubuntu.com/pks/lookup?op=get&search=0x275C532289DD0F4A | apt-key add -
+RUN apt-get update || true
 RUN apt-get --no-install-recommends install -y python3-pip libpq-dev curl python3-dev build-essential
 
 RUN pip install --upgrade pip
