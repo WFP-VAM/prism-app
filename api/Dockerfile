@@ -29,9 +29,9 @@ COPY poetry.lock /
 
 RUN apt-get clean
 
-RUN --mount=type=cache,target=/var/cache/apt \
-    apt-get update && \
+RUN apt-get update && \
     apt-get --no-install-recommends install -y python3-pip libpq-dev curl python3-dev build-essential
+
 RUN pip install --upgrade pip
 
 RUN --mount=type=cache,target=/root/.cache \
