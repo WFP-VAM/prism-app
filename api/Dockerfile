@@ -27,8 +27,7 @@ COPY pyproject.toml /
 
 COPY poetry.lock /
 
-RUN gpg --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 871920D1991BC93C
-RUN gpg --export 871920D1991BC93C | tee /etc/apt/trusted.gpg.d/ubuntu.lafibre.info.gpg
+RUN apt-get clean
 
 RUN --mount=type=cache,target=/var/cache/apt \
     apt-get update && \
