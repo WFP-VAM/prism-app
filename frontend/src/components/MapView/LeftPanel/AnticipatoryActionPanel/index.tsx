@@ -13,6 +13,7 @@ import React from 'react';
 import { useSafeTranslation } from 'i18n';
 import { ArrowBackIos } from '@material-ui/icons';
 import { useDispatch, useSelector } from 'react-redux';
+import { safeCountry } from 'config';
 import {
   AACategoryType,
   AAView,
@@ -45,14 +46,21 @@ import HowToReadModal from './HowToReadModal';
 import Timeline from './Timeline';
 import Forecast from './Forecast';
 
+const isZimbabwe = safeCountry === 'zimbabwe';
+
 const checkboxes: {
   label: string;
   id: Exclude<AACategoryType, 'na' | 'ny'>;
-}[] = [
-  { label: 'Severe', id: 'Severe' },
-  { label: 'Moderate', id: 'Moderate' },
-  { label: 'Mild', id: 'Mild' },
-];
+}[] = isZimbabwe
+  ? [
+      { label: 'Moderate', id: 'Moderate' },
+      { label: 'Below Normal', id: 'Normal' },
+    ]
+  : [
+      { label: 'Severe', id: 'Severe' },
+      { label: 'Moderate', id: 'Moderate' },
+      { label: 'Mild', id: 'Mild' },
+    ];
 
 function AnticipatoryActionPanel() {
   const classes = useStyles();
@@ -142,6 +150,7 @@ function AnticipatoryActionPanel() {
                   }
                   if (view === AAView.Timeline) {
                     dispatch(setAAView(AAView.District));
+                    dispatch(setAAFilters({ selectedIndex: '' }));
                     return;
                   }
                   if (view === AAView.Forecast) {

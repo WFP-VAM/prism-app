@@ -3,6 +3,7 @@
   "countryAdmin0Id": 271,
   "alertFormActive": false,
   "enableNavigationDropdown": true,
+  "anticipatoryActionUrl": "data/zimbabwe/anticipatory-action/zim-aa-2023-11.csv",
   "serversUrls": {
     "wms": ["https://api.earthobservation.vam.wfp.org/ows/wms"]
   },
@@ -19,8 +20,7 @@
   },
   "defaultDisplayBoundaries": [
     "admin_boundaries",
-    "admin1_boundaries",
-    "admin2_boundaries"
+    "admin1_boundaries"
   ],
   "categories": {
     "rainfall": {

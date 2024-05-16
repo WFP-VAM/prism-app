@@ -9,16 +9,27 @@ import {
 import { useSafeTranslation } from 'i18n';
 import { borderGray, lightGrey } from 'muiTheme';
 import React from 'react';
+import { safeCountry } from 'config';
 import { getAAColor, getAAIcon, useAACommonStyles } from '../utils';
 import HowToReadModal from '../HowToReadModal';
 
+const isZimbabwe = safeCountry === 'zimbabwe';
+
 const phases = [
-  { icon: getAAIcon('Severe', 'Set', true), phase: 'Set', severity: 'Severe' },
-  {
-    icon: getAAIcon('Severe', 'Ready', true),
-    phase: 'Ready',
-    severity: 'Severe',
-  },
+  ...(isZimbabwe
+    ? []
+    : [
+        {
+          icon: getAAIcon('Severe', 'Set', true),
+          phase: 'Set',
+          severity: 'Severe',
+        },
+        {
+          icon: getAAIcon('Severe', 'Ready', true),
+          phase: 'Ready',
+          severity: 'Severe',
+        },
+      ]),
   {
     icon: getAAIcon('Moderate', 'Set', true),
     phase: 'Set',
@@ -29,16 +40,31 @@ const phases = [
     phase: 'Ready',
     severity: 'Moderate',
   },
-  {
-    icon: getAAIcon('Mild', 'Set', true),
-    phase: 'Set',
-    severity: 'Mild',
-  },
-  {
-    icon: getAAIcon('Mild', 'Ready', true),
-    phase: 'Ready',
-    severity: 'Mild',
-  },
+  ...(isZimbabwe
+    ? [
+        {
+          icon: getAAIcon('Normal', 'Set', true),
+          phase: 'Set',
+          severity: 'Below Normal',
+        },
+        {
+          icon: getAAIcon('Normal', 'Ready', true),
+          phase: 'Ready',
+          severity: 'Below Normal',
+        },
+      ]
+    : [
+        {
+          icon: getAAIcon('Mild', 'Set', true),
+          phase: 'Set',
+          severity: 'Mild',
+        },
+        {
+          icon: getAAIcon('Mild', 'Ready', true),
+          phase: 'Ready',
+          severity: 'Mild',
+        },
+      ]),
   {
     icon: getAAIcon('na', 'na', true),
     phase: 'No Action',
@@ -78,8 +104,17 @@ function AALegend({
             : undefined
         }
       >
-        <Typography variant="h2">{t('Phases')}</Typography>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+        <Typography variant="h3" style={{ fontWeight: 'bold' }}>
+          {t('Phases')}
+        </Typography>
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '0.5rem',
+            marginBottom: '0.75rem',
+          }}
+        >
           {phases.map(x => (
             <div
               key={`${x.phase}_${x.severity}`}
@@ -87,11 +122,11 @@ function AALegend({
             >
               {x.icon}
               <div>
-                <Typography style={{ whiteSpace: 'nowrap' }} variant="h3">
+                <Typography style={{ whiteSpace: 'nowrap' }}>
                   {t(x.phase)}
                 </Typography>
                 {x.severity && (
-                  <Typography style={{ whiteSpace: 'nowrap' }} variant="h3">
+                  <Typography style={{ whiteSpace: 'nowrap' }}>
                     {t(x.severity)}
                   </Typography>
                 )}
@@ -122,9 +157,15 @@ function AALegend({
             </Typography>
             <Divider />
 
-            <Typography variant="h2">{t('Districts')}</Typography>
+            <Typography variant="h3" style={{ fontWeight: 'bold' }}>
+              {t('Districts')}
+            </Typography>
             <div
-              style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}
+              style={{
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '0.5rem',
+              }}
             >
               <div className={classes.itemWrapper}>
                 <div
@@ -152,7 +193,7 @@ const useStyles = makeStyles(() =>
   createStyles({
     paper: {
       padding: 8,
-      width: 200,
+      width: 180,
       borderRadius: '8px',
       display: 'flex',
       flexDirection: 'column',
@@ -162,7 +203,7 @@ const useStyles = makeStyles(() =>
       display: 'flex',
       flexDirection: 'row',
       flexWrap: 'nowrap',
-      gap: '0.25rem',
+      gap: '0.5rem',
     },
     phaseNy: {
       minWidth: '2.2rem',

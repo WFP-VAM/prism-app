@@ -1,10 +1,9 @@
 import appConfig from './prism.json';
 import rawLayers from './layers.json';
-import jordanTranslation from './translation.json';
 
 const rawTables = {};
 const rawReports = {};
-const translation = { عربى: jordanTranslation };
+const translation = { عربى: {} };
 
 export default {
   appConfig,

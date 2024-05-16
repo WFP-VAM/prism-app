@@ -19,7 +19,6 @@ export function districtViewTransform(
     .filter(
       x =>
         categoryFilters[x.category] &&
-        (x.computedRow || x.isValid || x.wasReadyValid) &&
         (selectedIndex === '' || x.index === selectedIndex),
     )
     .map(x => {
@@ -49,15 +48,26 @@ export function districtViewTransform(
         throw new Error('Invalid Date');
       }
 
-      if (dateData.filter(x => !x.computedRow).length === 0) {
+      if (dateData.every(x => x.computedRow)) {
         return [];
       }
 
       const setCategories = new Set(
         dateData.filter(x => x.phase === 'Set').map(x => x.category),
       );
+
+      const readyCategories = new Set(
+        dateData.filter(x => x.phase === 'Ready').map(x => x.category),
+      );
+
+      // only keep data for the highest phase by category
       const ret = dateData.filter(
-        x => x.phase === 'Set' || !setCategories.has(x.category),
+        x =>
+          x.phase === 'Set' ||
+          (x.phase === 'Ready' && !setCategories.has(x.category)) ||
+          (x.phase === 'na' &&
+            !setCategories.has(x.category) &&
+            !readyCategories.has(x.category)),
       );
 
       return ret;

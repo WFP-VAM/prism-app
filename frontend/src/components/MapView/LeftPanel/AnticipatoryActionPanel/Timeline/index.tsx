@@ -8,6 +8,7 @@ import {
   AADataSelector,
   AAFiltersSelector,
   AASelectedDistrictSelector,
+  setAAFilters,
   setAAView,
 } from 'context/anticipatoryActionStateSlice';
 import {
@@ -101,12 +102,18 @@ function Timeline({ dialogs }: TimelineProps) {
     {
       icon: Reply,
       text: 'Back',
-      onClick: () => dispatch(setAAView(AAView.District)),
+      onClick: () => {
+        dispatch(setAAFilters({ selectedIndex: '' }));
+        dispatch(setAAView(AAView.District));
+      },
     },
     {
       icon: Equalizer,
       text: 'Forecast',
-      onClick: () => dispatch(setAAView(AAView.Forecast)),
+      onClick: () => {
+        dispatch(setAAFilters({ selectedIndex: '' }));
+        dispatch(setAAView(AAView.Forecast));
+      },
     },
   ];
 

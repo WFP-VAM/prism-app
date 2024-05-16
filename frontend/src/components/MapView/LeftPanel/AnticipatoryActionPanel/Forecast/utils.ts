@@ -39,7 +39,7 @@ interface ForecastTransformParams {
 
 interface IndexData {
   probability: number | null;
-  triggerExceeded: boolean;
+  showWarningSign: boolean;
 }
 
 interface CategoryData {
@@ -84,12 +84,11 @@ export function forecastTransform({
           // eslint-disable-next-line fp/no-mutating-methods
           indexData.sort((a, b) => b.date.localeCompare(a.date));
           // Take the probability of the first element (latest date)
-          const max = Math.trunc(indexData[0].probability * 100);
-          const triggerExceeded =
-            indexData[0].probability > indexData[0].trigger;
-          return [index, { probability: max, triggerExceeded }];
+          const latest = Math.trunc(indexData[0].probability * 100);
+          const showWarningSign = Boolean(indexData[0].isValid);
+          return [index, { probability: latest, showWarningSign }];
         }
-        return [index, { probability: null, triggerExceeded: false }];
+        return [index, { probability: null, showWarningSign: false }];
       });
       return [cat, Object.fromEntries(val)];
     }),
@@ -156,7 +155,7 @@ export const getChartData = (
   indexes: {
     [key: string]: {
       probability?: number | null;
-      triggerExceeded: boolean | null;
+      showWarningSign: boolean | null;
     } | null;
   },
   backgroundColor: string,
@@ -167,7 +166,7 @@ export const getChartData = (
       data: Object.entries(indexes).map(([index, val], i) => ({
         x: i + 0.6,
         y: val?.probability,
-        z: val?.triggerExceeded,
+        z: val?.showWarningSign,
       })),
       // Triangle pointer
       pointStyle: 'triangle',

@@ -4,7 +4,14 @@ import { AAWindowKeys } from 'config/utils';
 import React from 'react';
 
 // NOTE: order matters for AADataSeverityOrder
-export const AAcategory = ['ny', 'na', 'Mild', 'Moderate', 'Severe'] as const;
+export const AAcategory = [
+  'ny',
+  'na',
+  'Normal',
+  'Mild',
+  'Moderate',
+  'Severe',
+] as const;
 export type AACategoryType = typeof AAcategory[number];
 
 export const AAPhase = ['ny', 'na', 'Ready', 'Set'] as const;

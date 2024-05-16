@@ -5,7 +5,7 @@ import {
   makeStyles,
 } from '@material-ui/core';
 import { useSafeTranslation } from 'i18n';
-import { borderGray, lightGrey } from 'muiTheme';
+import { borderGray, grey, lightGrey } from 'muiTheme';
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
@@ -23,7 +23,7 @@ import {
   setAAView,
 } from 'context/anticipatoryActionStateSlice';
 import { GetApp, BarChartOutlined } from '@material-ui/icons';
-import { appConfig } from 'config';
+import { appConfig, safeCountry } from 'config';
 import { PanelSize } from 'config/types';
 import { AADataSeverityOrder, getAAIcon, useAACommonStyles } from '../utils';
 
@@ -163,19 +163,30 @@ const useRowStyles = makeStyles(() =>
   }),
 );
 
+const isZimbabwe = safeCountry === 'zimbabwe';
+
 const rowCategories: {
   category: AACategoryType;
   phase: AAPhaseType;
-}[] = [
-  { category: 'Severe', phase: 'Set' },
-  { category: 'Severe', phase: 'Ready' },
-  { category: 'Moderate', phase: 'Set' },
-  { category: 'Moderate', phase: 'Ready' },
-  { category: 'Mild', phase: 'Set' },
-  { category: 'Mild', phase: 'Ready' },
-  { category: 'na', phase: 'na' },
-  { category: 'ny', phase: 'ny' },
-];
+}[] = isZimbabwe
+  ? [
+      { category: 'Moderate', phase: 'Set' },
+      { category: 'Moderate', phase: 'Ready' },
+      { category: 'Normal', phase: 'Set' },
+      { category: 'Normal', phase: 'Ready' },
+      { category: 'na', phase: 'na' },
+      { category: 'ny', phase: 'ny' },
+    ]
+  : [
+      { category: 'Severe', phase: 'Set' },
+      { category: 'Severe', phase: 'Ready' },
+      { category: 'Moderate', phase: 'Set' },
+      { category: 'Moderate', phase: 'Ready' },
+      { category: 'Mild', phase: 'Set' },
+      { category: 'Mild', phase: 'Ready' },
+      { category: 'na', phase: 'na' },
+      { category: 'ny', phase: 'ny' },
+    ];
 
 type ExtendedRowProps = RowProps & { id: number | 'na' | 'ny' };
 
@@ -309,6 +320,7 @@ const useHomeTableStyles = makeStyles(() =>
       background: lightGrey,
       padding: '0.5rem 0',
       overflowY: 'scroll',
+      borderBottom: `1px solid ${grey}`,
       // Browser-specific properties for forcing scrollbar visibility and styling
       '&::-webkit-scrollbar': {
         width: '0.5rem',
