@@ -28,7 +28,7 @@ COPY pyproject.toml /
 COPY poetry.lock /
 
 RUN wget -qO - https://regolith-desktop.org/regolith.key | \
-    gpg --dearmor | sudo tee /usr/share/keyrings/regolith-archive-keyring.gpg > /dev/null
+    gpg --dearmor | tee /usr/share/keyrings/regolith-archive-keyring.gpg > /dev/null
 
 RUN --mount=type=cache,target=/var/cache/apt \
     apt-get update && \
