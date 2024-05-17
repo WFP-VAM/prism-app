@@ -207,12 +207,12 @@ def get_acled_incidents(
 
 @app.get("/hdc")
 def wrap_get_hdc_stats(
-    level: str, admin_id: str, coverage: str, vam: str, start: str, end: str
+    level: str, id_code: str, coverage: str, vam: str, start: str, end: str
 ):
     return JSONResponse(
         content=get_hdc_stats(
             level=level,
-            admin_id=admin_id,
+            id_code=id_code,
             coverage=coverage,
             vam=vam,
             start=start,
