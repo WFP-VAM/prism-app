@@ -83,7 +83,7 @@
       "styles": "rfb_blended"
     },
     "chart_data": {
-      "url": "https://api.earthobservation.vam.wfp.org/stats/admin/fetch",
+      "url": "https://api.earthobservation.vam.wfp.org/stats/admin",
       "fields": [
         {
           "key": "rfb",
@@ -124,7 +124,7 @@
       "styles": "rfq_blended"
     },
     "chart_data": {
-      "url": "https://api.earthobservation.vam.wfp.org/stats/admin/fetch",
+      "url": "https://api.earthobservation.vam.wfp.org/stats/admin",
       "fields": [
         {
           "key": "rfq",
@@ -169,7 +169,7 @@
       "styles": "r1b_blended"
     },
     "chart_data": {
-      "url": "https://api.earthobservation.vam.wfp.org/stats/admin/fetch",
+      "url": "https://api.earthobservation.vam.wfp.org/stats/admin",
       "fields": [
         {
           "key": "r1b",
@@ -291,7 +291,7 @@
       "styles": "r1q_blended"
     },
     "chart_data": {
-      "url": "https://api.earthobservation.vam.wfp.org/stats/admin/fetch",
+      "url": "https://api.earthobservation.vam.wfp.org/stats/admin",
       "fields": [
         {
           "key": "r1q",
@@ -443,7 +443,7 @@
       "styles": "r3b_blended"
     },
     "chart_data": {
-      "url": "https://api.earthobservation.vam.wfp.org/stats/admin/fetch",
+      "url": "https://api.earthobservation.vam.wfp.org/stats/admin",
       "fields": [
         {
           "key": "r3b",
@@ -565,7 +565,7 @@
       "styles": "r3q_blended"
     },
     "chart_data": {
-      "url": "https://api.earthobservation.vam.wfp.org/stats/admin/fetch",
+      "url": "https://api.earthobservation.vam.wfp.org/stats/admin",
       "fields": [
         {
           "key": "r3q",
