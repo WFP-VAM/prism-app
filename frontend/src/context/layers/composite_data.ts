@@ -41,10 +41,6 @@ export const fetchCompositeLayerData: LazyLoader<CompositeLayerProps> = () => as
     })),
   };
 
-  // eslint-disable-next-line no-console
-  console.log('Request config used for Qmulti:', {
-    body,
-  });
   try {
     const response = await fetchWithTimeout(
       baseUrl,
