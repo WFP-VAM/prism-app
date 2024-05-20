@@ -8,8 +8,6 @@ import {
 import { lightGrey } from 'muiTheme';
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Panel, setPanelSize } from 'context/leftPanelStateSlice';
-import { PanelSize } from 'config/types';
 import {
   AAView,
   AnticipatoryActionDataRow,
@@ -19,11 +17,11 @@ import {
   AADataSelector,
   AAFiltersSelector,
   AASelectedDistrictSelector,
+  setAASelectedDistrict,
   setAAView,
 } from 'context/anticipatoryActionStateSlice';
 import { useSafeTranslation } from 'i18n';
-import { ClearAll, Equalizer } from '@material-ui/icons';
-import useTabSelected from 'utils/useTabSelected';
+import { ClearAll, Equalizer, Reply } from '@material-ui/icons';
 import { AADataSeverityOrder, getAAIcon, useAACommonStyles } from '../utils';
 import {
   Action,
@@ -275,14 +273,6 @@ function DistrictView({ dialogs }: DistrictViewProps) {
   );
   const [modalActions, setModalActions] = React.useState<Action[]>([]);
 
-  useTabSelected(
-    Panel.AnticipatoryAction,
-    () => {
-      dispatch(setPanelSize(PanelSize.auto));
-    },
-    [dispatch],
-  );
-
   const districtButtons = [
     {
       icon: ClearAll,
@@ -293,6 +283,12 @@ function DistrictView({ dialogs }: DistrictViewProps) {
       icon: Equalizer,
       text: 'Forecast',
       onClick: () => dispatch(setAAView(AAView.Forecast)),
+    },
+    {
+      icon: Reply,
+      text: 'Summary',
+      onClick: () =>
+        dispatch(setAAView(AAView.Home)) && dispatch(setAASelectedDistrict('')),
     },
   ];
 

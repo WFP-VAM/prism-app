@@ -8,8 +8,6 @@ import React from 'react';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 import { Scatter } from 'react-chartjs-2';
 import { useDispatch, useSelector } from 'react-redux';
-import { Panel, setPanelSize } from 'context/leftPanelStateSlice';
-import { PanelSize } from 'config/types';
 import { lightGrey } from 'muiTheme';
 import {
   AADataSelector,
@@ -22,9 +20,10 @@ import {
   AAView,
   AAcategory,
 } from 'context/anticipatoryActionStateSlice/types';
+import { dateRangeSelector } from 'context/mapStateSlice/selectors';
 import { useSafeTranslation } from 'i18n';
-import { ClearAll } from '@material-ui/icons';
-import useTabSelected from 'utils/useTabSelected';
+import { ClearAll, Reply } from '@material-ui/icons';
+import { getFormattedDate } from 'utils/date-utils';
 import { getAAColor, useAACommonStyles } from '../utils';
 import { chartOptions, forecastTransform, getChartData } from './utils';
 
@@ -43,14 +42,7 @@ function Forecast({ dialogs }: ForecastProps) {
   const AAData = useSelector(AADataSelector);
   const selectedDistrict = useSelector(AASelectedDistrictSelector);
   const filters = useSelector(AAFiltersSelector);
-
-  useTabSelected(
-    Panel.AnticipatoryAction,
-    () => {
-      dispatch(setPanelSize(PanelSize.large));
-    },
-    [dispatch],
-  );
+  const { startDate: selectedDate } = useSelector(dateRangeSelector);
 
   const { chartData, indexes } = forecastTransform({
     data: AAData,
@@ -59,6 +51,11 @@ function Forecast({ dialogs }: ForecastProps) {
   });
 
   const forecastButtons = [
+    {
+      icon: Reply,
+      text: 'Back',
+      onClick: () => dispatch(setAAView(AAView.District)),
+    },
     {
       icon: ClearAll,
       text: t('Timeline'),
@@ -80,6 +77,10 @@ function Forecast({ dialogs }: ForecastProps) {
 
   return (
     <>
+      <Typography variant="h3" style={{ marginLeft: '1rem' }}>
+        {t('Forecast data as of ')}
+        {getFormattedDate(selectedDate, 'locale')}
+      </Typography>
       <div className={classes.charts}>
         <div className={classes.chartsHeader}>
           <div style={{ minWidth: '3rem' }} />
@@ -116,7 +117,6 @@ function Forecast({ dialogs }: ForecastProps) {
                     style={{ backgroundColor: color }}
                   >
                     <Typography
-                      variant="h3"
                       className={classes.text}
                       style={{
                         color: sev === 'Severe' ? 'white' : ' black',
@@ -192,7 +192,7 @@ const useForecastStyle = makeStyles(() =>
       display: 'flex',
       flexDirection: 'row',
       flexWrap: 'nowrap',
-      paddingLeft: '3rem',
+      paddingLeft: '2.6rem',
       paddingRight: '0.5rem',
       marginBottom: '-1rem',
       background: 'white',
@@ -204,11 +204,12 @@ const useForecastStyle = makeStyles(() =>
       background: 'white',
     },
     textWrap: {
-      width: '3rem',
+      width: '2.6rem',
       display: 'flex',
       justifyContent: 'center',
     },
     text: {
+      fontSize: '0.9rem',
       fontWeight: 400,
       borderRadius: '2px',
       writingMode: 'vertical-lr',

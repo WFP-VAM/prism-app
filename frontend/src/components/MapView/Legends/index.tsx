@@ -80,7 +80,7 @@ const styles = () =>
       maxHeight: '78vh', // same size as the left panel
       position: 'absolute',
       right: '1rem',
-      top: 'calc(7vh - 8px)',
+      top: 'calc(6vh + 16px)',
     },
     icon: { color: 'white', fontSize: '1.5rem' },
   });

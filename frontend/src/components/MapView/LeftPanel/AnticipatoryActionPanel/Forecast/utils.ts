@@ -37,6 +37,19 @@ interface ForecastTransformParams {
   data: AnticipatoryActionState['data'];
 }
 
+interface IndexData {
+  probability: number | null;
+  showWarningSign: boolean;
+}
+
+interface CategoryData {
+  [index: string]: IndexData;
+}
+
+interface ChartData {
+  [category: string]: CategoryData;
+}
+
 export function forecastTransform({
   filters,
   selectedDistrict,
@@ -62,7 +75,7 @@ export function forecastTransform({
   });
   const groupedBySev = Object.fromEntries(sevMap);
 
-  const chartData = Object.fromEntries(
+  const chartData: ChartData = Object.fromEntries(
     Object.entries(groupedBySev).map(([cat, catData]) => {
       const val = indexes.map(index => {
         const indexData = catData.filter(x => x.index === index);
@@ -71,10 +84,11 @@ export function forecastTransform({
           // eslint-disable-next-line fp/no-mutating-methods
           indexData.sort((a, b) => b.date.localeCompare(a.date));
           // Take the probability of the first element (latest date)
-          const max = Math.trunc(indexData[0].probability * 100);
-          return [index, max];
+          const latest = Math.trunc(indexData[0].probability * 100);
+          const showWarningSign = Boolean(indexData[0].isValid);
+          return [index, { probability: latest, showWarningSign }];
         }
-        return [index, null];
+        return [index, { probability: null, showWarningSign: false }];
       });
       return [cat, Object.fromEntries(val)];
     }),
@@ -138,7 +152,12 @@ export const chartOptions = {
 };
 
 export const getChartData = (
-  indexes: { [key: string]: number | null },
+  indexes: {
+    [key: string]: {
+      probability?: number | null;
+      showWarningSign: boolean | null;
+    } | null;
+  },
   backgroundColor: string,
 ) => ({
   labels: Object.keys(indexes),
@@ -146,7 +165,8 @@ export const getChartData = (
     {
       data: Object.entries(indexes).map(([index, val], i) => ({
         x: i + 0.6,
-        y: val,
+        y: val?.probability,
+        z: val?.showWarningSign,
       })),
       // Triangle pointer
       pointStyle: 'triangle',
@@ -168,7 +188,7 @@ export const getChartData = (
             borderRadius: 2,
             color: 'black',
             formatter: (value: any, ctx: any) => {
-              return `${value.y}%`;
+              return `${value.z ? '⚠️ ' : ''}${value.y}%`;
             },
           },
         },

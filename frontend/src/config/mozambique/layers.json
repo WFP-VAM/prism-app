@@ -18,7 +18,7 @@
       }
     }
   },
-  "admin_boundaries": {
+  "admin2_boundaries": {
     "type": "boundary",
     "path": "data/mozambique/moz_bnd_adm2_WFP.json",
     "opacity": 0.8,
@@ -36,6 +36,44 @@
         "line-opacity": 0.8
       }
     }
+  },  
+  "admin_boundaries": {
+    "type": "boundary",
+    "path": "data/mozambique/moz_bnd_adm3_WFP.json",
+    "opacity": 0.8,
+    "admin_code": "adm3_source_id",
+    "admin_level_codes": ["adm1_source_id", "adm2_source_id", "adm3_source_id"],
+    "admin_level_names": ["adm1_name", "adm2_name", "adm3_name"],
+    "admin_level_local_names": ["adm1_name", "adm2_name", "adm3_name"],
+    "styles:": {
+      "fill": {
+        "fill-opacity": 0
+      },
+      "line": {
+        "line-color": "gray",
+        "line-width": 0.2,
+        "line-opacity": 0.8
+      }
+    }
+  },
+  "basin_boundaries": {
+    "type": "boundary",
+    "path": "data/mozambique/moz_hyd_basins_gov_2023.json",
+    "opacity": 0.8,
+    "admin_code": "ID",
+    "admin_level_codes": ["ID"],
+    "admin_level_names": ["Basins"],
+    "admin_level_local_names": ["Basins"],
+    "styles:": {
+      "fill": {
+        "fill-opacity": 0
+      },
+      "line": {
+        "line-color": "gray",
+        "line-width": 0.7,
+        "line-opacity": 0.8
+      }
+    }
   },
   "precip_blended_dekad": {
     "title": "Blended rainfall aggregate (10-day)",
@@ -45,7 +83,7 @@
       "styles": "rfb_blended"
     },
     "chart_data": {
-      "url": "https://api.earthobservation.vam.wfp.org/stats/admin/fetch",
+      "url": "https://api.earthobservation.vam.wfp.org/stats/admin",
       "fields": [
         {
           "key": "rfb",
@@ -86,7 +124,7 @@
       "styles": "rfq_blended"
     },
     "chart_data": {
-      "url": "https://api.earthobservation.vam.wfp.org/stats/admin/fetch",
+      "url": "https://api.earthobservation.vam.wfp.org/stats/admin",
       "fields": [
         {
           "key": "rfq",
@@ -131,7 +169,7 @@
       "styles": "r1b_blended"
     },
     "chart_data": {
-      "url": "https://api.earthobservation.vam.wfp.org/stats/admin/fetch",
+      "url": "https://api.earthobservation.vam.wfp.org/stats/admin",
       "fields": [
         {
           "key": "r1b",
@@ -253,7 +291,7 @@
       "styles": "r1q_blended"
     },
     "chart_data": {
-      "url": "https://api.earthobservation.vam.wfp.org/stats/admin/fetch",
+      "url": "https://api.earthobservation.vam.wfp.org/stats/admin",
       "fields": [
         {
           "key": "r1q",
@@ -405,7 +443,7 @@
       "styles": "r3b_blended"
     },
     "chart_data": {
-      "url": "https://api.earthobservation.vam.wfp.org/stats/admin/fetch",
+      "url": "https://api.earthobservation.vam.wfp.org/stats/admin",
       "fields": [
         {
           "key": "r3b",
@@ -527,7 +565,7 @@
       "styles": "r3q_blended"
     },
     "chart_data": {
-      "url": "https://api.earthobservation.vam.wfp.org/stats/admin/fetch",
+      "url": "https://api.earthobservation.vam.wfp.org/stats/admin",
       "fields": [
         {
           "key": "r3q",
@@ -2214,6 +2252,7 @@
     "title": "IPC Phase Classification 2022",
     "type": "admin_level_data",
     "path": "data/mozambique/ipc/ipc-2022.json",
+    "boundary": "admin2_boundaries",
     "admin_level": 2,
     "data_field": "ipcphase",
     "admin_code": "adm2_source_id",
@@ -2251,6 +2290,7 @@
     "title": "IPC Phase Classification 2023",
     "type": "admin_level_data",
     "path": "data/mozambique/ipc/ipc-2023.json",
+    "boundary": "admin2_boundaries",
     "admin_level": 2,
     "data_field": "ipcphase",
     "admin_code": "adm2_source_id",
@@ -2289,6 +2329,7 @@
     "type": "admin_level_data",
     "path": "data/mozambique/ipc/ipc-2022.json",
     "data_field": "ph3plus",
+    "boundary": "admin2_boundaries",
     "admin_level": 2,
     "admin_code": "adm2_source_id",
     "opacity": 0.9,
@@ -2331,6 +2372,7 @@
     "type": "admin_level_data",
     "path": "data/mozambique/ipc/ipc-2023.json",
     "data_field": "ph3plus",
+    "boundary": "admin2_boundaries",
     "admin_level": 2,
     "admin_code": "adm2_source_id",
     "opacity": 0.9,
@@ -2373,6 +2415,7 @@
     "type": "admin_level_data",
     "path": "data/mozambique/ipc/ipc-2022.json",
     "data_field": "ph3ps_p",
+    "boundary": "admin2_boundaries",  
     "admin_level": 2,
     "admin_code": "adm2_source_id",
     "opacity": 0.9,
@@ -2415,6 +2458,7 @@
     "type": "admin_level_data",
     "path": "data/mozambique/ipc/ipc-2023.json",
     "data_field": "ph3ps_p",
+    "boundary": "admin2_boundaries",
     "admin_level": 2,
     "admin_code": "adm2_source_id",
     "opacity": 0.9,
@@ -2457,6 +2501,7 @@
     "type": "admin_level_data",
     "path": "data/mozambique/ipc/ipc-2022.json",
     "data_field": "ph4",
+    "boundary": "admin2_boundaries",
     "admin_level": 2,
     "admin_code": "adm2_source_id",
     "opacity": 0.9,
@@ -2499,6 +2544,7 @@
     "type": "admin_level_data",
     "path": "data/mozambique/ipc/ipc-2023.json",
     "data_field": "ph4",
+    "boundary": "admin2_boundaries",
     "admin_level": 2,
     "admin_code": "adm2_source_id",
     "opacity": 0.9,
@@ -2541,6 +2587,7 @@
     "type": "admin_level_data",
     "path": "data/mozambique/ipc/ipc-2022.json",
     "data_field": "ph4_perc",
+    "boundary": "admin2_boundaries",
     "admin_level": 2,
     "admin_code": "adm2_source_id",
     "opacity": 0.9,
@@ -2583,6 +2630,7 @@
     "type": "admin_level_data",
     "path": "data/mozambique/ipc/ipc-2023.json",
     "data_field": "ph4_perc",
+    "boundary": "admin2_boundaries",
     "admin_level": 2,
     "admin_code": "adm2_source_id",
     "opacity": 0.9,
@@ -2676,6 +2724,7 @@
     "type": "admin_level_data",
     "path": "data/mozambique/moz-pop-projc-2022-INE.json",
     "data_field": "2022_Tot",
+    "boundary": "admin2_boundaries",
     "admin_level": 2,
     "admin_code": "adm2_source_id",
     "opacity": 0.7,

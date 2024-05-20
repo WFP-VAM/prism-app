@@ -13,6 +13,7 @@ import React from 'react';
 import { useSafeTranslation } from 'i18n';
 import { ArrowBackIos } from '@material-ui/icons';
 import { useDispatch, useSelector } from 'react-redux';
+import { safeCountry } from 'config';
 import {
   AACategoryType,
   AAView,
@@ -37,6 +38,7 @@ import {
 } from 'utils/server-utils';
 import { getFormattedDate } from 'utils/date-utils';
 import { DateFormat } from 'utils/name-utils';
+import { PanelSize } from 'config/types';
 import { StyledCheckboxLabel, StyledRadioLabel, StyledSelect } from './utils';
 import DistrictView from './DistrictView/index';
 import HomeTable from './HomeTable';
@@ -44,14 +46,21 @@ import HowToReadModal from './HowToReadModal';
 import Timeline from './Timeline';
 import Forecast from './Forecast';
 
+const isZimbabwe = safeCountry === 'zimbabwe';
+
 const checkboxes: {
   label: string;
   id: Exclude<AACategoryType, 'na' | 'ny'>;
-}[] = [
-  { label: 'Severe', id: 'Severe' },
-  { label: 'Moderate', id: 'Moderate' },
-  { label: 'Mild', id: 'Mild' },
-];
+}[] = isZimbabwe
+  ? [
+      { label: 'Moderate', id: 'Moderate' },
+      { label: 'Below Normal', id: 'Normal' },
+    ]
+  : [
+      { label: 'Severe', id: 'Severe' },
+      { label: 'Moderate', id: 'Moderate' },
+      { label: 'Mild', id: 'Mild' },
+    ];
 
 function AnticipatoryActionPanel() {
   const classes = useStyles();
@@ -101,7 +110,27 @@ function AnticipatoryActionPanel() {
   }, [date, dispatch]);
 
   return (
-    <div className={classes.anticipatoryActionPanel}>
+    <div
+      className={classes.anticipatoryActionPanel}
+      style={{
+        width: (() => {
+          switch (view) {
+            case AAView.Home:
+              return PanelSize.medium;
+            case AAView.District:
+              return PanelSize.auto;
+            case AAView.Timeline:
+              return PanelSize.auto;
+            case AAView.Forecast:
+              return PanelSize.large;
+
+            default:
+              console.error(`No width configured for panel ${view}`);
+              return PanelSize.auto;
+          }
+        })(),
+      }}
+    >
       <HowToReadModal
         open={howToReadModalOpen}
         onClose={() => setHowToReadModalOpen(false)}
@@ -121,6 +150,7 @@ function AnticipatoryActionPanel() {
                   }
                   if (view === AAView.Timeline) {
                     dispatch(setAAView(AAView.District));
+                    dispatch(setAAFilters({ selectedIndex: '' }));
                     return;
                   }
                   if (view === AAView.Forecast) {
@@ -136,7 +166,7 @@ function AnticipatoryActionPanel() {
               input={<Input disableUnderline />}
               renderValue={() => (
                 <Typography variant="h2">
-                  {t(selectedDistrict) || t('Phases: global view')}{' '}
+                  {t(selectedDistrict) || t('Summary')}{' '}
                   {view === AAView.Timeline && t('Timeline')}
                   {view === AAView.Forecast && t('Forecast')}
                 </Typography>
@@ -149,7 +179,7 @@ function AnticipatoryActionPanel() {
                   dispatch(setAAView(AAView.Home));
                 }}
               >
-                {t('Global view')}
+                {t('Summary')}
               </MenuItem>
               {monitoredDistricts.map(x => (
                 <MenuItem
@@ -206,6 +236,12 @@ function AnticipatoryActionPanel() {
             />
           ))}
         </div>
+        {!selectedDistrict && (
+          <Typography>
+            {t('Summary data as of ')}
+            {getFormattedDate(selectedDate, 'locale')}
+          </Typography>
+        )}
 
         {view === AAView.District && (
           <Typography>

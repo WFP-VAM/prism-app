@@ -21,7 +21,7 @@ exports[`renders as expected 1`] = `
             aria-labelledby="full-width-tab-layers"
             id="full-width-tabpanel-layers"
             role="tabpanel"
-            style="display: block; flex-grow: 1; order: -1; overflow-x: hidden; width: 425px;"
+            style="display: block; flex-grow: 1; order: -1; overflow-x: hidden;"
           >
             <div
               class="MuiBox-root MuiBox-root-7"
@@ -324,29 +324,30 @@ exports[`renders as expected 1`] = `
             aria-labelledby="full-width-tab-charts"
             id="full-width-tabpanel-charts"
             role="tabpanel"
-            style="display: none; flex-grow: 1; overflow-x: auto; width: 425px;"
+            style="display: none; flex-grow: 1; overflow-x: auto;"
           />
           <div
             aria-labelledby="full-width-tab-analysis"
             id="full-width-tabpanel-analysis"
             role="tabpanel"
-            style="display: none; flex-grow: 1; overflow-x: auto; width: 425px;"
+            style="display: none; flex-grow: 1; overflow-x: auto;"
           />
           <div
             aria-labelledby="full-width-tab-anticipatory_action"
             id="full-width-tabpanel-anticipatory_action"
             role="tabpanel"
-            style="display: none; flex-grow: 1; overflow-x: auto; width: 425px;"
+            style="display: none; flex-grow: 1; overflow-x: auto;"
           >
             <div
-              class="makeStyles-anticipatoryActionPanel-57"
+              class="makeStyles-anticipatoryActionPanel-55"
+              style="width: 425px;"
             >
               <mock-dialog
                 open="false"
               >
                 <mock-dialogtitle>
                   <div
-                    class="makeStyles-titleWrapper-66"
+                    class="makeStyles-titleWrapper-64"
                   >
                     <mock-typography
                       variant="h2"
@@ -383,10 +384,10 @@ exports[`renders as expected 1`] = `
                   dividers="true"
                 >
                   <div
-                    class="makeStyles-contentWrapper-67"
+                    class="makeStyles-contentWrapper-65"
                   >
                     <div
-                      class="makeStyles-contentItem-68"
+                      class="makeStyles-contentItem-66"
                     >
                       <mock-typography
                         style="font-weight: bold;"
@@ -403,7 +404,7 @@ exports[`renders as expected 1`] = `
                        
                     </div>
                     <div
-                      class="makeStyles-contentItem-68"
+                      class="makeStyles-contentItem-66"
                     >
                       <mock-typography
                         style="font-weight: bold;"
@@ -420,7 +421,7 @@ exports[`renders as expected 1`] = `
                        
                     </div>
                     <div
-                      class="makeStyles-contentItem-68"
+                      class="makeStyles-contentItem-66"
                     >
                       <mock-typography
                         style="font-weight: bold;"
@@ -437,7 +438,7 @@ exports[`renders as expected 1`] = `
                        
                     </div>
                     <div
-                      class="makeStyles-contentItem-68"
+                      class="makeStyles-contentItem-66"
                     >
                       <mock-typography
                         style="font-weight: bold;"
@@ -454,7 +455,7 @@ exports[`renders as expected 1`] = `
                        
                     </div>
                     <div
-                      class="makeStyles-contentItem-68"
+                      class="makeStyles-contentItem-66"
                     >
                       <mock-typography
                         style="font-weight: bold;"
@@ -471,7 +472,7 @@ exports[`renders as expected 1`] = `
                        
                     </div>
                     <div
-                      class="makeStyles-contentItem-68"
+                      class="makeStyles-contentItem-66"
                     >
                       <mock-typography
                         style="font-weight: bold;"
@@ -490,10 +491,10 @@ exports[`renders as expected 1`] = `
                   </div>
                 </mock-dialogcontent>
                 <mock-dialogactions
-                  classname="makeStyles-dialogActionsWrapper-69"
+                  classname="makeStyles-dialogActionsWrapper-67"
                 >
                   <mock-button
-                    classname="makeStyles-dialogButton-70"
+                    classname="makeStyles-dialogButton-68"
                     component="a"
                     href="mailto:anticipatory_action@wfp.org"
                     starticon="[object Object]"
@@ -505,7 +506,7 @@ exports[`renders as expected 1`] = `
                     </mock-typography>
                   </mock-button>
                   <mock-button
-                    classname="makeStyles-dialogButton-70"
+                    classname="makeStyles-dialogButton-68"
                     starticon="[object Object]"
                     variant="outlined"
                   >
@@ -516,27 +517,27 @@ exports[`renders as expected 1`] = `
                 </mock-dialogactions>
               </mock-dialog>
               <div
-                class="makeStyles-headerWrapper-58"
+                class="makeStyles-headerWrapper-56"
               >
                 <div
-                  class="makeStyles-titleSelectWrapper-65"
+                  class="makeStyles-titleSelectWrapper-63"
                 >
                   <div
-                    class="makeStyles-titleSelectWrapper-65"
+                    class="makeStyles-titleSelectWrapper-63"
                   >
                     <div
                       class="MuiInputBase-root MuiInput-root"
                     >
                       <div
                         aria-haspopup="listbox"
-                        class="MuiSelect-root Component-root-71 MuiSelect-select MuiSelect-selectMenu MuiInputBase-input MuiInput-input"
+                        class="MuiSelect-root Component-root-69 MuiSelect-select MuiSelect-selectMenu MuiInputBase-input MuiInput-input"
                         role="button"
                         tabindex="0"
                       >
                         <mock-typography
                           variant="h2"
                         >
-                          Phases: global view
+                          Summary
                            
                         </mock-typography>
                       </div>
@@ -568,7 +569,7 @@ exports[`renders as expected 1`] = `
                           role="option"
                           selected="false"
                         >
-                          Global view
+                          Summary
                         </mock-menuitem>
                       </mock-menu>
                     </div>
@@ -579,11 +580,11 @@ exports[`renders as expected 1`] = `
                     class="MuiFormControl-root"
                   >
                     <div
-                      class="MuiFormGroup-root makeStyles-radioButtonGroup-59"
+                      class="MuiFormGroup-root makeStyles-radioButtonGroup-57"
                       role="radiogroup"
                     >
                       <label
-                        class="MuiFormControlLabel-root Component-root-72"
+                        class="MuiFormControlLabel-root Component-root-70"
                         style="background: rgb(241, 241, 241);"
                       >
                         <mock-radio
@@ -604,7 +605,7 @@ exports[`renders as expected 1`] = `
                         </mock-typography>
                       </label>
                       <label
-                        class="MuiFormControlLabel-root Component-root-72"
+                        class="MuiFormControlLabel-root Component-root-70"
                       >
                         <mock-radio
                           classes="[object Object]"
@@ -627,7 +628,7 @@ exports[`renders as expected 1`] = `
                         </mock-typography>
                       </label>
                       <label
-                        class="MuiFormControlLabel-root Component-root-72"
+                        class="MuiFormControlLabel-root Component-root-70"
                       >
                         <mock-radio
                           classes="[object Object]"
@@ -654,7 +655,7 @@ exports[`renders as expected 1`] = `
                 </div>
                 <div>
                   <label
-                    class="MuiFormControlLabel-root Component-root-74 Mui-disabled"
+                    class="MuiFormControlLabel-root Component-root-72 Mui-disabled"
                     id="Severe"
                     style="background: rgb(241, 241, 241);"
                   >
@@ -676,7 +677,7 @@ exports[`renders as expected 1`] = `
                     </mock-typography>
                   </label>
                   <label
-                    class="MuiFormControlLabel-root Component-root-74 Mui-disabled"
+                    class="MuiFormControlLabel-root Component-root-72 Mui-disabled"
                     id="Moderate"
                     style="background: rgb(241, 241, 241);"
                   >
@@ -698,7 +699,7 @@ exports[`renders as expected 1`] = `
                     </mock-typography>
                   </label>
                   <label
-                    class="MuiFormControlLabel-root Component-root-74"
+                    class="MuiFormControlLabel-root Component-root-72"
                     id="Mild"
                     style="background: rgb(241, 241, 241);"
                   >
@@ -720,20 +721,23 @@ exports[`renders as expected 1`] = `
                     </mock-typography>
                   </label>
                 </div>
+                <mock-typography>
+                  Summary data as of 
+                </mock-typography>
               </div>
               <div
-                class="makeStyles-tableWrapper-76"
+                class="makeStyles-tableWrapper-74"
               >
                 <div
-                  class="makeStyles-rowWrapper-86"
+                  class="makeStyles-rowWrapper-84"
                   style="height: 1.5rem;"
                 >
                   <div
-                    class="makeStyles-iconCol-87"
+                    class="makeStyles-iconCol-85"
                   />
                   <div>
                     <mock-typography
-                      classname="makeStyles-windowHeader-85"
+                      classname="makeStyles-windowHeader-83"
                       variant="h4"
                     >
                       Window 1
@@ -741,7 +745,7 @@ exports[`renders as expected 1`] = `
                   </div>
                   <div>
                     <mock-typography
-                      classname="makeStyles-windowHeader-85"
+                      classname="makeStyles-windowHeader-83"
                       variant="h4"
                     >
                       Window 2
@@ -749,27 +753,27 @@ exports[`renders as expected 1`] = `
                   </div>
                 </div>
                 <div
-                  class="makeStyles-rowWrapper-86"
+                  class="makeStyles-rowWrapper-84"
                 >
                   <div
-                    class="makeStyles-iconCol-87"
+                    class="makeStyles-iconCol-85"
                   >
                     <div
-                      class="makeStyles-iconWrapper-91"
+                      class="makeStyles-iconWrapper-89"
                       style="background: rgb(131, 31, 0);"
                     >
                       <div
-                        class="makeStyles-centerContainer-92"
+                        class="makeStyles-centerContainer-90"
                         style="border: 1px solid white; color: white;"
                       >
                         <div
-                          class="makeStyles-topTextContainer-93"
+                          class="makeStyles-topTextContainer-91"
                           style="border-bottom: 1px solid white; background: rgb(131, 31, 0);"
                         >
                           S
                         </div>
                         <div
-                          class="makeStyles-bottomTextContainer-94"
+                          class="makeStyles-bottomTextContainer-92"
                           style="background: rgb(131, 31, 0);"
                         >
                           SEV
@@ -779,13 +783,13 @@ exports[`renders as expected 1`] = `
                   </div>
                   <div>
                     <div
-                      class="makeStyles-windowBackground-88"
+                      class="makeStyles-windowBackground-86"
                     >
                       <div
-                        class="makeStyles-tagWrapper-89"
+                        class="makeStyles-tagWrapper-87"
                       >
                         <mock-typography
-                          classname="makeStyles-emptyText-90"
+                          classname="makeStyles-emptyText-88"
                         >
                           (
                           no district
@@ -796,13 +800,13 @@ exports[`renders as expected 1`] = `
                   </div>
                   <div>
                     <div
-                      class="makeStyles-windowBackground-88"
+                      class="makeStyles-windowBackground-86"
                     >
                       <div
-                        class="makeStyles-tagWrapper-89"
+                        class="makeStyles-tagWrapper-87"
                       >
                         <mock-typography
-                          classname="makeStyles-emptyText-90"
+                          classname="makeStyles-emptyText-88"
                         >
                           (
                           no district
@@ -813,27 +817,27 @@ exports[`renders as expected 1`] = `
                   </div>
                 </div>
                 <div
-                  class="makeStyles-rowWrapper-86"
+                  class="makeStyles-rowWrapper-84"
                 >
                   <div
-                    class="makeStyles-iconCol-87"
+                    class="makeStyles-iconCol-85"
                   >
                     <div
-                      class="makeStyles-iconWrapper-91"
+                      class="makeStyles-iconWrapper-89"
                       style="background: rgb(230, 55, 1);"
                     >
                       <div
-                        class="makeStyles-centerContainer-92"
+                        class="makeStyles-centerContainer-90"
                         style="border: 1px solid white; color: white;"
                       >
                         <div
-                          class="makeStyles-topTextContainer-93"
+                          class="makeStyles-topTextContainer-91"
                           style="border-bottom: 1px solid white; background: rgb(230, 55, 1);"
                         >
                           R
                         </div>
                         <div
-                          class="makeStyles-bottomTextContainer-94"
+                          class="makeStyles-bottomTextContainer-92"
                           style="background: rgb(230, 55, 1);"
                         >
                           SEV
@@ -843,13 +847,13 @@ exports[`renders as expected 1`] = `
                   </div>
                   <div>
                     <div
-                      class="makeStyles-windowBackground-88"
+                      class="makeStyles-windowBackground-86"
                     >
                       <div
-                        class="makeStyles-tagWrapper-89"
+                        class="makeStyles-tagWrapper-87"
                       >
                         <mock-typography
-                          classname="makeStyles-emptyText-90"
+                          classname="makeStyles-emptyText-88"
                         >
                           (
                           no district
@@ -860,13 +864,13 @@ exports[`renders as expected 1`] = `
                   </div>
                   <div>
                     <div
-                      class="makeStyles-windowBackground-88"
+                      class="makeStyles-windowBackground-86"
                     >
                       <div
-                        class="makeStyles-tagWrapper-89"
+                        class="makeStyles-tagWrapper-87"
                       >
                         <mock-typography
-                          classname="makeStyles-emptyText-90"
+                          classname="makeStyles-emptyText-88"
                         >
                           (
                           no district
@@ -877,27 +881,27 @@ exports[`renders as expected 1`] = `
                   </div>
                 </div>
                 <div
-                  class="makeStyles-rowWrapper-86"
+                  class="makeStyles-rowWrapper-84"
                 >
                   <div
-                    class="makeStyles-iconCol-87"
+                    class="makeStyles-iconCol-85"
                   >
                     <div
-                      class="makeStyles-iconWrapper-91"
+                      class="makeStyles-iconWrapper-89"
                       style="background: rgb(255, 137, 52);"
                     >
                       <div
-                        class="makeStyles-centerContainer-92"
+                        class="makeStyles-centerContainer-90"
                         style="border: 1px solid black; color: black;"
                       >
                         <div
-                          class="makeStyles-topTextContainer-93"
+                          class="makeStyles-topTextContainer-91"
                           style="border-bottom: 1px solid black; background: rgb(255, 137, 52);"
                         >
                           S
                         </div>
                         <div
-                          class="makeStyles-bottomTextContainer-94"
+                          class="makeStyles-bottomTextContainer-92"
                           style="background: rgb(255, 137, 52);"
                         >
                           MOD
@@ -907,13 +911,13 @@ exports[`renders as expected 1`] = `
                   </div>
                   <div>
                     <div
-                      class="makeStyles-windowBackground-88"
+                      class="makeStyles-windowBackground-86"
                     >
                       <div
-                        class="makeStyles-tagWrapper-89"
+                        class="makeStyles-tagWrapper-87"
                       >
                         <mock-typography
-                          classname="makeStyles-emptyText-90"
+                          classname="makeStyles-emptyText-88"
                         >
                           (
                           no district
@@ -924,13 +928,13 @@ exports[`renders as expected 1`] = `
                   </div>
                   <div>
                     <div
-                      class="makeStyles-windowBackground-88"
+                      class="makeStyles-windowBackground-86"
                     >
                       <div
-                        class="makeStyles-tagWrapper-89"
+                        class="makeStyles-tagWrapper-87"
                       >
                         <mock-typography
-                          classname="makeStyles-emptyText-90"
+                          classname="makeStyles-emptyText-88"
                         >
                           (
                           no district
@@ -941,27 +945,27 @@ exports[`renders as expected 1`] = `
                   </div>
                 </div>
                 <div
-                  class="makeStyles-rowWrapper-86"
+                  class="makeStyles-rowWrapper-84"
                 >
                   <div
-                    class="makeStyles-iconCol-87"
+                    class="makeStyles-iconCol-85"
                   >
                     <div
-                      class="makeStyles-iconWrapper-91"
+                      class="makeStyles-iconWrapper-89"
                       style="background: rgb(255, 213, 45);"
                     >
                       <div
-                        class="makeStyles-centerContainer-92"
+                        class="makeStyles-centerContainer-90"
                         style="border: 1px solid black; color: black;"
                       >
                         <div
-                          class="makeStyles-topTextContainer-93"
+                          class="makeStyles-topTextContainer-91"
                           style="border-bottom: 1px solid black; background: rgb(255, 213, 45);"
                         >
                           R
                         </div>
                         <div
-                          class="makeStyles-bottomTextContainer-94"
+                          class="makeStyles-bottomTextContainer-92"
                           style="background: rgb(255, 213, 45);"
                         >
                           MOD
@@ -971,13 +975,13 @@ exports[`renders as expected 1`] = `
                   </div>
                   <div>
                     <div
-                      class="makeStyles-windowBackground-88"
+                      class="makeStyles-windowBackground-86"
                     >
                       <div
-                        class="makeStyles-tagWrapper-89"
+                        class="makeStyles-tagWrapper-87"
                       >
                         <mock-typography
-                          classname="makeStyles-emptyText-90"
+                          classname="makeStyles-emptyText-88"
                         >
                           (
                           no district
@@ -988,13 +992,13 @@ exports[`renders as expected 1`] = `
                   </div>
                   <div>
                     <div
-                      class="makeStyles-windowBackground-88"
+                      class="makeStyles-windowBackground-86"
                     >
                       <div
-                        class="makeStyles-tagWrapper-89"
+                        class="makeStyles-tagWrapper-87"
                       >
                         <mock-typography
-                          classname="makeStyles-emptyText-90"
+                          classname="makeStyles-emptyText-88"
                         >
                           (
                           no district
@@ -1005,27 +1009,27 @@ exports[`renders as expected 1`] = `
                   </div>
                 </div>
                 <div
-                  class="makeStyles-rowWrapper-86"
+                  class="makeStyles-rowWrapper-84"
                 >
                   <div
-                    class="makeStyles-iconCol-87"
+                    class="makeStyles-iconCol-85"
                   >
                     <div
-                      class="makeStyles-iconWrapper-91"
+                      class="makeStyles-iconWrapper-89"
                       style="background: rgb(255, 245, 3);"
                     >
                       <div
-                        class="makeStyles-centerContainer-92"
+                        class="makeStyles-centerContainer-90"
                         style="border: 1px solid black; color: black;"
                       >
                         <div
-                          class="makeStyles-topTextContainer-93"
+                          class="makeStyles-topTextContainer-91"
                           style="border-bottom: 1px solid black; background: rgb(255, 245, 3);"
                         >
                           S
                         </div>
                         <div
-                          class="makeStyles-bottomTextContainer-94"
+                          class="makeStyles-bottomTextContainer-92"
                           style="background: rgb(255, 245, 3);"
                         >
                           MIL
@@ -1035,13 +1039,13 @@ exports[`renders as expected 1`] = `
                   </div>
                   <div>
                     <div
-                      class="makeStyles-windowBackground-88"
+                      class="makeStyles-windowBackground-86"
                     >
                       <div
-                        class="makeStyles-tagWrapper-89"
+                        class="makeStyles-tagWrapper-87"
                       >
                         <mock-typography
-                          classname="makeStyles-emptyText-90"
+                          classname="makeStyles-emptyText-88"
                         >
                           (
                           no district
@@ -1052,13 +1056,13 @@ exports[`renders as expected 1`] = `
                   </div>
                   <div>
                     <div
-                      class="makeStyles-windowBackground-88"
+                      class="makeStyles-windowBackground-86"
                     >
                       <div
-                        class="makeStyles-tagWrapper-89"
+                        class="makeStyles-tagWrapper-87"
                       >
                         <mock-typography
-                          classname="makeStyles-emptyText-90"
+                          classname="makeStyles-emptyText-88"
                         >
                           (
                           no district
@@ -1069,27 +1073,27 @@ exports[`renders as expected 1`] = `
                   </div>
                 </div>
                 <div
-                  class="makeStyles-rowWrapper-86"
+                  class="makeStyles-rowWrapper-84"
                 >
                   <div
-                    class="makeStyles-iconCol-87"
+                    class="makeStyles-iconCol-85"
                   >
                     <div
-                      class="makeStyles-iconWrapper-91"
+                      class="makeStyles-iconWrapper-89"
                       style="background: rgb(255, 252, 179);"
                     >
                       <div
-                        class="makeStyles-centerContainer-92"
+                        class="makeStyles-centerContainer-90"
                         style="border: 1px solid black; color: black;"
                       >
                         <div
-                          class="makeStyles-topTextContainer-93"
+                          class="makeStyles-topTextContainer-91"
                           style="border-bottom: 1px solid black; background: rgb(255, 252, 179);"
                         >
                           R
                         </div>
                         <div
-                          class="makeStyles-bottomTextContainer-94"
+                          class="makeStyles-bottomTextContainer-92"
                           style="background: rgb(255, 252, 179);"
                         >
                           MIL
@@ -1099,13 +1103,13 @@ exports[`renders as expected 1`] = `
                   </div>
                   <div>
                     <div
-                      class="makeStyles-windowBackground-88"
+                      class="makeStyles-windowBackground-86"
                     >
                       <div
-                        class="makeStyles-tagWrapper-89"
+                        class="makeStyles-tagWrapper-87"
                       >
                         <mock-typography
-                          classname="makeStyles-emptyText-90"
+                          classname="makeStyles-emptyText-88"
                         >
                           (
                           no district
@@ -1116,13 +1120,13 @@ exports[`renders as expected 1`] = `
                   </div>
                   <div>
                     <div
-                      class="makeStyles-windowBackground-88"
+                      class="makeStyles-windowBackground-86"
                     >
                       <div
-                        class="makeStyles-tagWrapper-89"
+                        class="makeStyles-tagWrapper-87"
                       >
                         <mock-typography
-                          classname="makeStyles-emptyText-90"
+                          classname="makeStyles-emptyText-88"
                         >
                           (
                           no district
@@ -1133,27 +1137,27 @@ exports[`renders as expected 1`] = `
                   </div>
                 </div>
                 <div
-                  class="makeStyles-rowWrapper-86"
+                  class="makeStyles-rowWrapper-84"
                 >
                   <div
-                    class="makeStyles-iconCol-87"
+                    class="makeStyles-iconCol-85"
                   >
                     <div
-                      class="makeStyles-iconWrapper-91"
+                      class="makeStyles-iconWrapper-89"
                       style="background: rgb(241, 241, 241);"
                     >
                       <div
-                        class="makeStyles-centerContainer-92"
+                        class="makeStyles-centerContainer-90"
                         style="border: 1px solid black; color: black;"
                       >
                         <div
-                          class="makeStyles-topTextContainer-93"
+                          class="makeStyles-topTextContainer-91"
                           style="border-bottom: 1px solid black; background: rgb(241, 241, 241);"
                         >
                           na
                         </div>
                         <div
-                          class="makeStyles-bottomTextContainer-94"
+                          class="makeStyles-bottomTextContainer-92"
                           style="background: rgb(241, 241, 241);"
                         >
                           -
@@ -1163,13 +1167,13 @@ exports[`renders as expected 1`] = `
                   </div>
                   <div>
                     <div
-                      class="makeStyles-windowBackground-88"
+                      class="makeStyles-windowBackground-86"
                     >
                       <div
-                        class="makeStyles-tagWrapper-89"
+                        class="makeStyles-tagWrapper-87"
                       >
                         <mock-typography
-                          classname="makeStyles-emptyText-90"
+                          classname="makeStyles-emptyText-88"
                         >
                           (
                           no district
@@ -1180,13 +1184,13 @@ exports[`renders as expected 1`] = `
                   </div>
                   <div>
                     <div
-                      class="makeStyles-windowBackground-88"
+                      class="makeStyles-windowBackground-86"
                     >
                       <div
-                        class="makeStyles-tagWrapper-89"
+                        class="makeStyles-tagWrapper-87"
                       >
                         <mock-typography
-                          classname="makeStyles-emptyText-90"
+                          classname="makeStyles-emptyText-88"
                         >
                           (
                           no district
@@ -1197,26 +1201,26 @@ exports[`renders as expected 1`] = `
                   </div>
                 </div>
                 <div
-                  class="makeStyles-rowWrapper-86"
+                  class="makeStyles-rowWrapper-84"
                 >
                   <div
-                    class="makeStyles-iconCol-87"
+                    class="makeStyles-iconCol-85"
                   >
                     <div
-                      class="makeStyles-iconWrapper-91"
+                      class="makeStyles-iconWrapper-89"
                     >
                       <div
-                        class="makeStyles-centerContainer-92"
+                        class="makeStyles-centerContainer-90"
                         style="border: 1px solid black; color: black;"
                       >
                         <div
-                          class="makeStyles-topTextContainer-93"
+                          class="makeStyles-topTextContainer-91"
                           style="border-bottom: 1px solid black;"
                         >
                           ny
                         </div>
                         <div
-                          class="makeStyles-bottomTextContainer-94"
+                          class="makeStyles-bottomTextContainer-92"
                         >
                           -
                         </div>
@@ -1225,13 +1229,13 @@ exports[`renders as expected 1`] = `
                   </div>
                   <div>
                     <div
-                      class="makeStyles-windowBackground-88"
+                      class="makeStyles-windowBackground-86"
                     >
                       <div
-                        class="makeStyles-tagWrapper-89"
+                        class="makeStyles-tagWrapper-87"
                       >
                         <mock-typography
-                          classname="makeStyles-emptyText-90"
+                          classname="makeStyles-emptyText-88"
                         >
                           (
                           no district
@@ -1242,13 +1246,13 @@ exports[`renders as expected 1`] = `
                   </div>
                   <div>
                     <div
-                      class="makeStyles-windowBackground-88"
+                      class="makeStyles-windowBackground-86"
                     >
                       <div
-                        class="makeStyles-tagWrapper-89"
+                        class="makeStyles-tagWrapper-87"
                       >
                         <mock-typography
-                          classname="makeStyles-emptyText-90"
+                          classname="makeStyles-emptyText-88"
                         >
                           (
                           no district
@@ -1260,13 +1264,13 @@ exports[`renders as expected 1`] = `
                 </div>
               </div>
               <div
-                class="makeStyles-footerWrapper-77"
+                class="makeStyles-footerWrapper-75"
               >
                 <div
-                  class="makeStyles-footerActionsWrapper-78"
+                  class="makeStyles-footerActionsWrapper-76"
                 >
                   <mock-button
-                    classname="makeStyles-footerButton-80"
+                    classname="makeStyles-footerButton-78"
                     component="a"
                     download="undefined-SPI_probabilities_season_triggers.csv"
                     fullwidth="true"
@@ -1279,7 +1283,7 @@ exports[`renders as expected 1`] = `
                     </mock-typography>
                   </mock-button>
                   <mock-button
-                    classname="makeStyles-footerButton-80"
+                    classname="makeStyles-footerButton-78"
                     fullwidth="true"
                     starticon="[object Object]"
                     variant="outlined"
@@ -1290,10 +1294,10 @@ exports[`renders as expected 1`] = `
                   </mock-button>
                 </div>
                 <div
-                  class="makeStyles-footerDialogsWrapper-79"
+                  class="makeStyles-footerDialogsWrapper-77"
                 >
                   <mock-typography
-                    classname="makeStyles-footerDialog-81"
+                    classname="makeStyles-footerDialog-79"
                     component="button"
                   >
                     How to read this screen
@@ -1306,16 +1310,16 @@ exports[`renders as expected 1`] = `
             aria-labelledby="full-width-tab-none"
             id="full-width-tabpanel-none"
             role="tabpanel"
-            style="display: none; flex-grow: 1; overflow-x: auto; width: 425px;"
+            style="display: none; flex-grow: 1; overflow-x: auto;"
           />
         </div>
       </div>
     </mock-drawer>
     <div
-      class="MuiBox-root MuiBox-root-97 OtherFeatures-container-95"
+      class="MuiBox-root MuiBox-root-95 OtherFeatures-container-93"
     >
       <div
-        class="MuiBox-root MuiBox-root-98 OtherFeatures-optionContainer-96"
+        class="MuiBox-root MuiBox-root-96 OtherFeatures-optionContainer-94"
       />
     </div>
     <div

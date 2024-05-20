@@ -128,16 +128,43 @@ const legendScaleSelectorOptions = [
   { value: 0, comp: <div>100%</div> },
 ];
 
+// A function that returns Visibility if the element is off, else returns a switch icon to flip the position
+const renderPositionIcon = ({
+  value,
+}: {
+  value: number;
+}): React.JSX.Element => {
+  // TODO - decide if we want to use the visibility icon when the toggle is off
+  // if (value === -1) {
+  //   return <Visibility />;
+  // }
+  return (
+    <Icon style={{ color: 'black' }}>
+      {value % 2 === 0 ? 'switch_left' : 'switch_right'}
+    </Icon>
+  );
+};
+
 const legendPositionOptions = [
   { value: -1, comp: <VisibilityOff /> },
   {
     value: 0,
-    comp: ({ value }: { value: number }) => (
-      <Icon style={{ color: 'black' }}>
-        {value % 2 === 0 ? 'switch_left' : 'switch_right'}
-      </Icon>
-    ),
+    comp: renderPositionIcon,
   },
+];
+
+const logoPositionOptions = [
+  { value: -1, comp: <VisibilityOff /> },
+  {
+    value: 0,
+    comp: renderPositionIcon,
+  },
+];
+
+const logoScaleSelectorOptions = [
+  { value: 0.5, comp: <div style={{ fontSize: '0.75rem' }}>S</div> },
+  { value: 1, comp: <div style={{ fontSize: '1rem' }}>M</div> },
+  { value: 1.5, comp: <div style={{ fontSize: '1.25rem' }}>L</div> },
 ];
 
 const mapWidthSelectorOptions = [
@@ -208,12 +235,13 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
   const [footerTextSize, setFooterTextSize] = React.useState(12);
   const [legendScale, setLegendScale] = React.useState(0);
   const [legendPosition, setLegendPosition] = React.useState(0);
+  const [logoPosition, setLogoPosition] = React.useState(-1);
+  const [logoScale, setLogoScale] = React.useState(1);
   // the % value of the original dimensions
   const [mapDimensions, setMapDimensions] = React.useState<{
     height: number;
     width: number;
   }>({ width: 100, height: 100 });
-  const [legendWidth, setLegendWidth] = React.useState(0);
   const [footerRef, { height: footerHeight }] = useResizeObserver<
     HTMLDivElement
   >(footerText, open);
@@ -340,7 +368,19 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
     handleDownloadMenuClose();
   };
 
+  const { logo } = appConfig.header || {};
   const scalePercent = useAAMarkerScalePercent(mapRef.current?.getMap());
+  const dateText = `${t('Publication date')}: ${getFormattedDate(
+    Date.now(),
+    'default',
+  )}${
+    dateRange.startDate
+      ? `. ${t('Layer selection date')}: ${getFormattedDate(
+          dateRange.startDate,
+          'default',
+        )}`
+      : ''
+  }.`;
 
   return (
     <>
@@ -394,7 +434,7 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
                       {titleText}
                     </div>
                   )}
-                  {footerTextSize > 0 && footerText && (
+                  {footerTextSize > 0 && (footerText || dateText) && (
                     <div
                       ref={footerRef}
                       className={classes.footerOverlay}
@@ -402,27 +442,52 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
                         fontSize: `${footerTextSize}px`,
                       }}
                     >
-                      <div style={{ padding: '8px' }}>{footerText}</div>
+                      {footerText && (
+                        <Typography style={{ whiteSpace: 'pre-line' }}>
+                          {footerText}
+                        </Typography>
+                      )}
+                      {dateText && <Typography>{dateText}</Typography>}
                     </div>
+                  )}
+                  {logoPosition !== -1 && (
+                    <img
+                      style={{
+                        position: 'absolute',
+                        zIndex: 2,
+                        top: titleHeight + 8,
+                        height: 32 * logoScale,
+                        left: logoPosition % 2 === 0 ? '8px' : 'auto',
+                        right: logoPosition % 2 === 0 ? 'auto' : '8px',
+                        display: 'flex',
+                        justifyContent:
+                          logoPosition % 2 === 0 ? 'flex-start' : 'flex-end',
+                      }}
+                      src={logo}
+                      alt="logo"
+                    />
                   )}
                   {legendPosition !== -1 && (
                     <div
                       style={{
                         position: 'absolute',
                         zIndex: 2,
-                        top: titleHeight,
-                        ...(legendPosition % 2 === 0
-                          ? { left: '8px' }
-                          : {
-                              right: `${legendWidth - 8}px`,
-                            }),
+                        top:
+                          titleHeight +
+                          (logoPosition === legendPosition
+                            ? 32 * logoScale
+                            : 0),
+                        left: legendPosition % 2 === 0 ? '8px' : 'auto',
+                        right: legendPosition % 2 === 0 ? 'auto' : '8px',
+                        display: 'flex',
+                        justifyContent:
+                          legendPosition % 2 === 0 ? 'flex-start' : 'flex-end',
                         width: '20px',
                         // Use transform scale to adjust size based on legendScale
                         transform: `scale(${1 - legendScale})`,
                       }}
                     >
                       <LegendItemsList
-                        resizeCallback={({ width }) => setLegendWidth(width)}
                         forPrinting
                         listStyle={classes.legendListStyle}
                         showDescription={toggles.fullLayerDescription}
@@ -524,6 +589,38 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
               />
             </div>
 
+            {logo && (
+              <div className={classes.sameRowToggles}>
+                <ToggleSelector
+                  value={logoPosition > -1 ? 0 : -1}
+                  options={logoPositionOptions}
+                  iconProp={logoPosition}
+                  setValue={v =>
+                    setLogoPosition(prev =>
+                      v === -1 && prev !== -1 ? -1 : (prev + 1) % 2,
+                    )
+                  }
+                  title={t('Logo Position')}
+                />
+
+                <div
+                  // disable the legend scale if the legend is not visible
+                  style={{
+                    opacity: logoPosition !== -1 ? 1 : 0.5,
+                    pointerEvents: logoPosition !== -1 ? 'auto' : 'none',
+                  }}
+                >
+                  <ToggleSelector
+                    align="end"
+                    value={logoScale}
+                    options={logoScaleSelectorOptions}
+                    setValue={setLogoScale}
+                    title={t('Logo Size')}
+                  />
+                </div>
+              </div>
+            )}
+
             <div className={classes.sameRowToggles}>
               <ToggleSelector
                 value={Number(toggles.countryMask)}
@@ -534,7 +631,7 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
                     countryMask: Boolean(val),
                   }))
                 }
-                title={t('Admin area mask')}
+                title={t('Admin Area Mask')}
               />
 
               <ToggleSelector
@@ -575,11 +672,12 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
                 options={legendPositionOptions}
                 iconProp={legendPosition}
                 setValue={v =>
-                  setLegendPosition(prev => (v === -1 ? -1 : prev + 1))
+                  setLegendPosition(prev =>
+                    v === -1 && prev !== -1 ? -1 : (prev + 1) % 2,
+                  )
                 }
                 title={t('Legend Position')}
               />
-
               <ToggleSelector
                 value={Number(toggles.fullLayerDescription)}
                 options={layerDescriptionSelectorOptions}
@@ -727,15 +825,17 @@ const styles = (theme: Theme) =>
       backgroundColor: 'white',
       width: '100%',
       textAlign: 'center',
-      fontSize: '1.5rem',
+      fontSize: '1.25rem',
+      fontWeight: 600,
       padding: '8px 0 8px 0',
       borderBottom: `1px solid ${lightGrey}`,
     },
     footerOverlay: {
+      padding: '8px',
       position: 'absolute',
       bottom: 0,
       left: 0,
-      zIndex: 2,
+      zIndex: 3,
       color: 'black',
       backgroundColor: 'white',
       width: '100%',
@@ -754,6 +854,7 @@ const styles = (theme: Theme) =>
       },
     },
     contentContainer: {
+      fontFamily: 'Roboto',
       scrollbarGutter: 'stable',
       display: 'flex',
       gap: '1rem',

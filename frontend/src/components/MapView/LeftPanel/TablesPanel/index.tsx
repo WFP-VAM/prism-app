@@ -13,9 +13,10 @@ import {
   TextField,
   Theme,
   Typography,
+  makeStyles,
 } from '@material-ui/core';
 import { useDispatch, useSelector } from 'react-redux';
-import { createStyles, withStyles, WithStyles } from '@material-ui/styles';
+import { createStyles } from '@material-ui/styles';
 import {
   LayersCategoryType,
   MenuItemType,
@@ -30,11 +31,7 @@ import {
   isLoading as tableLoading,
   loadTable,
 } from 'context/tableStateSlice';
-import {
-  Panel,
-  leftPanelTabValueSelector,
-  setPanelSize,
-} from 'context/leftPanelStateSlice';
+import { Panel, leftPanelTabValueSelector } from 'context/leftPanelStateSlice';
 import TablesActions from './TablesActions';
 import DataTable from './DataTable';
 import { tablesMenuItems } from '../utils';
@@ -47,7 +44,8 @@ const tableCategories = tablesMenuItems
 
 const tabPanelType = Panel.Tables;
 
-const TablesPanel = memo(({ classes, setResultsPage }: TablePanelProps) => {
+const TablesPanel = memo(() => {
+  const classes = useStyles();
   const dispatch = useDispatch();
   const dataTableIsLoading = useSelector(tableLoading);
   const tableDefinition = useSelector(getTableDefinition);
@@ -70,36 +68,6 @@ const TablesPanel = memo(({ classes, setResultsPage }: TablePanelProps) => {
     }
     setShowDataTable(true);
   }, [tabValue, tableData, tableDefinition, tableShowing]);
-
-  useEffect(() => {
-    if (tabValue !== tabPanelType) {
-      return;
-    }
-
-    if (!showDataTable) {
-      dispatch(setPanelSize(PanelSize.medium));
-      setResultsPage(null);
-      return;
-    }
-    dispatch(setPanelSize(PanelSize.xlarge));
-    setResultsPage(
-      <DataTable
-        title={tableDefinition?.title}
-        legendText={tableDefinition?.legendText}
-        tableLoading={dataTableIsLoading}
-        tableData={tableData}
-        chart={tableDefinition?.chart}
-      />,
-    );
-  }, [
-    dataTableIsLoading,
-    dispatch,
-    setResultsPage,
-    showDataTable,
-    tabValue,
-    tableData,
-    tableDefinition,
-  ]);
 
   const handleShowDataTable = useCallback((show: boolean) => {
     setShowDataTable(show);
@@ -185,43 +153,61 @@ const TablesPanel = memo(({ classes, setResultsPage }: TablePanelProps) => {
   );
 
   return (
-    <div className={classes.root}>
-      <div className={classes.tablesPanel}>
-        <TextField
-          classes={{ root: classes.selectRoot }}
-          variant="outlined"
-          onChange={handleTableDropdownChange}
-          value={tableValue}
-          select
-          placeholder={t('Choose a table')}
-          label={t('Tables')}
-          defaultValue=""
-          InputProps={{
-            classes: {
-              focused: classes.focused,
-              input: classes.input,
-            },
-          }}
-          InputLabelProps={{
-            classes: {
-              root: classes.label,
-            },
-          }}
-        >
-          {renderedTextFieldBody}
-        </TextField>
+    <div
+      style={{
+        display: 'flex',
+        flexDirection: 'row',
+        height: '100%',
+        width: showDataTable ? PanelSize.xlarge : PanelSize.medium,
+      }}
+    >
+      <div className={classes.root}>
+        <div className={classes.tablesPanel}>
+          <TextField
+            classes={{ root: classes.selectRoot }}
+            variant="outlined"
+            onChange={handleTableDropdownChange}
+            value={tableValue}
+            select
+            placeholder={t('Choose a table')}
+            label={t('Tables')}
+            defaultValue=""
+            InputProps={{
+              classes: {
+                focused: classes.focused,
+                input: classes.input,
+              },
+            }}
+            InputLabelProps={{
+              classes: {
+                root: classes.label,
+              },
+            }}
+          >
+            {renderedTextFieldBody}
+          </TextField>
+        </div>
+        {renderedTablesActions}
       </div>
-      {renderedTablesActions}
+      {showDataTable && (
+        <DataTable
+          title={tableDefinition?.title}
+          legendText={tableDefinition?.legendText}
+          tableLoading={dataTableIsLoading}
+          tableData={tableData}
+          chart={tableDefinition?.chart}
+        />
+      )}
     </div>
   );
 });
 
-const styles = (theme: Theme) =>
+const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
       position: 'relative',
       display: 'flex',
-      width: '100%',
+      width: PanelSize.medium,
       height: '100%',
     },
     linearProgress: {
@@ -264,12 +250,7 @@ const styles = (theme: Theme) =>
     label: {
       color: '#333333',
     },
-  });
+  }),
+);
 
-interface TablePanelProps extends WithStyles<typeof styles> {
-  setResultsPage: React.Dispatch<
-    React.SetStateAction<React.JSX.Element | null>
-  >;
-}
-
-export default withStyles(styles)(TablesPanel);
+export default TablesPanel;

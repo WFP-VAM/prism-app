@@ -65,7 +65,7 @@
     },
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "chart_data": {
-      "url": "https://api.earthobservation.vam.wfp.org/stats/admin/fetch",
+      "url": "https://api.earthobservation.vam.wfp.org/stats/admin",
       "fields": [
         { "key": "rfh", "label": "Rainfall", "color": "#233f5f" },
         { "key": "rfh_avg", "label": "Average", "color": "#bdf2e6" }
@@ -191,7 +191,7 @@
       "mode": "dekad"
     },
     "chart_data": {
-      "url": "https://api.earthobservation.vam.wfp.org/stats/admin/fetch",
+      "url": "https://api.earthobservation.vam.wfp.org/stats/admin",
       "fields": [
         {
           "key": "rfq",
@@ -316,7 +316,7 @@
       "mode": "dekad"
     },
     "chart_data": {
-      "url": "https://api.earthobservation.vam.wfp.org/stats/admin/fetch",
+      "url": "https://api.earthobservation.vam.wfp.org/stats/admin",
       "fields": [
         { "key": "r1h", "label": "Rainfall", "color": "#233f5f" },
         { "key": "r1h_avg", "label": "Average", "color": "#bdf2e6" }
@@ -440,7 +440,7 @@
       "mode": "dekad"
     },
     "chart_data": {
-      "url": "https://api.earthobservation.vam.wfp.org/stats/admin/fetch",
+      "url": "https://api.earthobservation.vam.wfp.org/stats/admin",
       "fields": [
         {
           "key": "r1q",
@@ -564,7 +564,7 @@
       "mode": "dekad"
     },
     "chart_data": {
-      "url": "https://api.earthobservation.vam.wfp.org/stats/admin/fetch",
+      "url": "https://api.earthobservation.vam.wfp.org/stats/admin",
       "fields": [
         { "key": "r3h", "label": "Rainfall", "color": "#233f5f" },
         { "key": "r3h_avg", "label": "Average", "color": "#bdf2e6" }
@@ -687,7 +687,7 @@
       "mode": "dekad"
     },
     "chart_data": {
-      "url": "https://api.earthobservation.vam.wfp.org/stats/admin/fetch",
+      "url": "https://api.earthobservation.vam.wfp.org/stats/admin",
       "fields": [
         {
           "key": "r3q",
@@ -2347,7 +2347,7 @@
       "mode": "dekad"
     },
     "chart_data": {
-      "url": "https://api.earthobservation.vam.wfp.org/stats/admin/fetch",
+      "url": "https://api.earthobservation.vam.wfp.org/stats/admin",
       "fields": [
         { "key": "vim", "label": "NDVI", "color": "#4eac5b" },
         { "key": "vim_avg", "label": "Average", "color": "#99ff99" }
@@ -2467,7 +2467,7 @@
       "mode": "dekad"
     },
     "chart_data": {
-      "url": "https://api.earthobservation.vam.wfp.org/stats/admin/fetch",
+      "url": "https://api.earthobservation.vam.wfp.org/stats/admin",
       "fields": [
         {
           "key": "viq",
@@ -4821,10 +4821,7 @@
     "type": "admin_level_data",
     "path": "data/rbd/ch/urb_admin2_{YYYY_MM_DD}.json",
     "fallbackLayerKeys": ["ch_urban_phase_admin1"],
-    "dates": [
-      "2022-02-01", 
-      "2022-06-01"
-    ],
+    "dates": ["2022-02-01", "2022-06-01"],
     "validityPeriod": {
       "start_date_field": "start_date",
       "end_date_field": "end_date"
@@ -4876,10 +4873,7 @@
     "title": "Urban areas - phase classification",
     "type": "admin_level_data",
     "path": "data/rbd/ch/urb_admin1_{YYYY_MM_DD}.json",
-    "dates": [
-      "2021-02-01", 
-      "2021-06-01"
-    ],
+    "dates": ["2021-02-01", "2021-06-01"],
     "validityPeriod": {
       "start_date_field": "start_date",
       "end_date_field": "end_date"
@@ -4932,10 +4926,7 @@
     "type": "admin_level_data",
     "path": "data/rbd/ch/urb_admin2_{YYYY_MM_DD}.json",
     "fallbackLayerKeys": ["ch_urban_pop3_5_admin1"],
-    "dates": [
-      "2022-02-01", 
-      "2022-06-01"
-    ],
+    "dates": ["2022-02-01", "2022-06-01"],
     "validityPeriod": {
       "start_date_field": "start_date",
       "end_date_field": "end_date"
@@ -4997,10 +4988,7 @@
     "title": "Urban areas - population in phase 3 to 5",
     "type": "admin_level_data",
     "path": "data/rbd/ch/urb_admin1_{YYYY_MM_DD}.json",
-    "dates": [
-      "2021-02-01", 
-      "2021-06-01"
-    ],
+    "dates": ["2021-02-01", "2021-06-01"],
     "validityPeriod": {
       "start_date_field": "start_date",
       "end_date_field": "end_date"
@@ -5063,10 +5051,7 @@
     "type": "admin_level_data",
     "path": "data/rbd/ch/urb_admin2_{YYYY_MM_DD}.json",
     "fallbackLayerKeys": ["ch_urban_perc3_5_admin1"],
-    "dates": [
-      "2022-02-01", 
-      "2022-06-01"
-    ],
+    "dates": ["2022-02-01", "2022-06-01"],
     "validityPeriod": {
       "start_date_field": "start_date",
       "end_date_field": "end_date"
@@ -5157,10 +5142,7 @@
     "title": "Percent of urban population in phase 3 to 5",
     "type": "admin_level_data",
     "path": "data/rbd/ch/urb_admin1_{YYYY_MM_DD}.json",
-    "dates": [
-      "2021-02-01", 
-      "2021-06-01"
-    ],
+    "dates": ["2021-02-01", "2021-06-01"],
     "validityPeriod": {
       "start_date_field": "start_date",
       "end_date_field": "end_date"
@@ -5438,5 +5420,5 @@
         "color": "#ffc4ee"
       }
     ]
-  }  
+  }
 }

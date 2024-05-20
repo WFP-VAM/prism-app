@@ -28,7 +28,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import {
   Panel,
   leftPanelTabValueSelector,
-  setPanelSize,
   setTabValue,
 } from 'context/leftPanelStateSlice';
 import GoToBoundaryDropdown from 'components/Common/BoundaryDropdown/goto';
@@ -42,7 +41,6 @@ import {
   areTablesAvailable,
   isAnticipatoryActionAvailable,
 } from 'components/MapView/LeftPanel/utils';
-import { PanelSize } from 'config/types';
 import About from './About';
 import LanguageSelector from './LanguageSelector';
 import PrintImage from './PrintImage';
@@ -170,7 +168,6 @@ function NavBar({ classes, isAlertFormOpen, setIsAlertFormOpen }: NavBarProps) {
                         startIcon={<Wrap>{panel.icon}</Wrap>}
                         onClick={() => {
                           dispatch(setTabValue(panel.panel));
-                          dispatch(setPanelSize(PanelSize.medium));
                         }}
                       >
                         <Typography
@@ -193,7 +190,6 @@ function NavBar({ classes, isAlertFormOpen, setIsAlertFormOpen }: NavBarProps) {
                           }}
                           onClick={() => {
                             dispatch(setTabValue(panel.panel));
-                            dispatch(setPanelSize(PanelSize.medium));
                           }}
                         >
                           {panel.icon}
