@@ -16,23 +16,25 @@ export const fetchCompositeLayerData: LazyLoader<CompositeLayerProps> = () => as
   // to complete later with new endpoint for composite chart
 
   const { layer, date } = params;
-  const endDate = (date ? new Date(date) : new Date())
-    .toISOString()
-    .split('T')[0];
-  const { baseUrl, inputLayers, startDate } = layer;
+  console.log(date);
+  const startDate = date ? new Date(date) : new Date();
+  const endDate = new Date(startDate.getTime());
+  endDate.setMonth(endDate.getMonth() + 1);
+
+  const { baseUrl, inputLayers } = layer;
   const { boundingBox } = appConfig.map;
 
   // docs: https://hip-service.ovio.org/docs#/default/run_q_multi_geojson_q_multi_geojson_post
   const body = {
-    begin: startDate,
-    end: endDate,
+    begin: startDate.toISOString().split('T')[0],
+    end: endDate.toISOString().split('T')[0],
     area: {
       min_lon: boundingBox[0],
       min_lat: boundingBox[1],
       max_lon: boundingBox[2],
       max_lat: boundingBox[3],
       start_date: '2002-01-01',
-      end_date: endDate,
+      end_date: '2021-07-31',
     },
     layers: inputLayers.map(({ key, aggregation, importance, invert }) => ({
       key,
