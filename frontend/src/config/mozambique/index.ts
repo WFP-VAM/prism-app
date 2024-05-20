@@ -11,5 +11,5 @@ export default {
   rawTables,
   rawReports,
   translation,
-  defaultBoundariesFile: 'moz_bnd_adm2_WFP.json',
+  defaultBoundariesFile: 'moz_bnd_adm3_WFP.json',
 };
