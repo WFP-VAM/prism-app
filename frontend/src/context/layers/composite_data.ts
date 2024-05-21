@@ -16,7 +16,7 @@ export const fetchCompositeLayerData: LazyLoader<CompositeLayerProps> = () => as
 ) => {
   const { layer, date } = params;
   const startDate = date ? new Date(date) : new Date();
-  const endDate = new Date(startDate.getTime());
+  const endDate = new Date(startDate);
   endDate.setMonth(endDate.getMonth() + 1);
 
   const { baseUrl, inputLayers } = layer;
