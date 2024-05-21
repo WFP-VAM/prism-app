@@ -222,7 +222,8 @@ export function getDisplayBoundaryLayers(): BoundaryLayerProps[] {
         // TODO - use a find?
         id => boundaryLayers.filter(l => l.id === id)[0],
       )
-      .sort((a, b) => a.adminLevelCodes.length - b.adminLevelCodes.length);
+      // order by admin level depth [decreasing]
+      .sort((a, b) => b.adminLevelCodes.length - a.adminLevelCodes.length);
 
     if (defaultDisplayBoundaries.length === 0) {
       throw new Error(
