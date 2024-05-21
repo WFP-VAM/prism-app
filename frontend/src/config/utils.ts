@@ -184,6 +184,7 @@ export function getBoundaryLayers(): BoundaryLayerProps[] {
   );
 }
 
+// TODO - is this still relevant? @Amit do we have boundary files that we do not want displayed?
 export function getDisplayBoundaryLayers(): BoundaryLayerProps[] {
   const boundaryLayers = getBoundaryLayers();
   const boundariesCount = boundaryLayers.length;
