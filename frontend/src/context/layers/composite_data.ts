@@ -4,6 +4,7 @@ import type { CompositeLayerProps } from 'config/types';
 import { fetchWithTimeout } from 'utils/fetch-with-timeout';
 import { LocalError } from 'utils/error-utils';
 import { addNotification } from 'context/notificationStateSlice';
+import { getFormattedDate } from 'utils/date-utils';
 
 import type { LayerDataParams, LazyLoader } from './layer-data';
 
@@ -23,8 +24,8 @@ export const fetchCompositeLayerData: LazyLoader<CompositeLayerProps> = () => as
 
   // docs: https://hip-service.ovio.org/docs#/default/run_q_multi_geojson_q_multi_geojson_post
   const body = {
-    begin: startDate.toISOString().split('T')[0],
-    end: endDate.toISOString().split('T')[0],
+    begin: getFormattedDate(startDate, 'default'),
+    end: getFormattedDate(endDate, 'default'),
     area: {
       min_lon: boundingBox[0],
       min_lat: boundingBox[1],
