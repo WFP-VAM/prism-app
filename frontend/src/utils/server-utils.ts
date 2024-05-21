@@ -4,11 +4,13 @@ import { WFS, WMS, fetchCoverageLayerDays, formatUrl } from 'prism-common';
 import { Dispatch } from 'redux';
 import { appConfig, safeCountry } from '../config';
 import type {
+  AnticipatoryActionLayerProps,
   AvailableDates,
   CompositeLayerProps,
   PathLayer,
   PointDataLayerProps,
   RequestFeatureInfo,
+  Validity,
   ValidityLayer,
   ValidityPeriod,
 } from '../config/types';
@@ -53,7 +55,7 @@ export const getRequestDate = (
     return undefined;
   }
 
-  if (!layerAvailableDates) {
+  if (!layerAvailableDates || layerAvailableDates.length === 0) {
     return selectedDate;
   }
 
@@ -77,7 +79,8 @@ export type DateCompatibleLayer =
   | ImpactLayerProps
   | PointDataLayerProps
   | StaticRasterLayerProps
-  | CompositeLayerProps;
+  | CompositeLayerProps
+  | AnticipatoryActionLayerProps;
 
 export const getPossibleDatesForLayer = (
   layer: DateCompatibleLayer,
@@ -117,6 +120,8 @@ export const getPossibleDatesForLayer = (
         date => date.displayDate > startDateTimestamp,
       );
     }
+    case 'anticipatory_action':
+      return serverAvailableDates[layer.id] || [];
     default:
       return [];
   }
@@ -304,14 +309,16 @@ async function generateIntermediateDateItemFromDataFile(
   return generateDateItemsRange(rangesWithoutMissing);
 }
 
-export function generateIntermediateDateItemFromValidity(layer: ValidityLayer) {
-  const { dates } = layer;
-  const { forward, backward, mode } = layer.validity;
+export function generateIntermediateDateItemFromValidity(
+  dates: number[],
+  validity: Validity,
+) {
+  const { forward, backward, mode } = validity;
 
   const sortedDates = Array.prototype.sort.call(dates) as typeof dates;
 
   // Generate first DateItem[] from dates array.
-  const baseItem = layer.validity
+  const baseItem = validity
     ? {
         isStartDate: !!forward,
         isEndDate: !!backward,
@@ -626,7 +633,8 @@ export async function getLayersAvailableDates(
         if (matchingValidityLayer) {
           return {
             [layerName]: generateIntermediateDateItemFromValidity(
-              matchingValidityLayer,
+              matchingValidityLayer.dates,
+              matchingValidityLayer.validity,
             ),
           };
         }
@@ -835,4 +843,10 @@ export async function fetchWMSLayerAsGeoJSON(options: {
     console.error(error);
     return { type: 'FeatureCollection', features: [] };
   }
+}
+
+export function getAAAvailableDatesCombined(AAAvailableDates: AvailableDates) {
+  return Object.values(AAAvailableDates)
+    .filter(Boolean) // Filter out undefined or null values
+    .flat();
 }

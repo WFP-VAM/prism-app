@@ -1,10 +1,9 @@
 import {
-  Backdrop,
   Box,
   Button,
-  CircularProgress,
   Dialog,
   DialogContent,
+  Icon,
   IconButton,
   Menu,
   MenuItem,
@@ -16,35 +15,30 @@ import {
   makeStyles,
   withStyles,
 } from '@material-ui/core';
-import GetAppIcon from '@material-ui/icons/GetApp';
+import { GetApp, Cancel, Visibility, VisibilityOff } from '@material-ui/icons';
 import mask from '@turf/mask';
-import { legendListId } from 'components/MapView/Legends';
 import html2canvas from 'html2canvas';
-import { debounce } from 'lodash';
+import { debounce, get } from 'lodash';
 import { jsPDF } from 'jspdf';
 import maplibregl from 'maplibre-gl';
 import React, { useRef, useState } from 'react';
-import MapGL, { Layer, MapRef, Source } from 'react-map-gl/maplibre';
+import MapGL, { Layer, MapRef, Marker, Source } from 'react-map-gl/maplibre';
 import { useSelector } from 'react-redux';
-import { Cancel } from '@material-ui/icons';
 import { mapStyle } from 'components/MapView/Map';
-import { addFillPatternImagesInMap } from 'components/MapView/Layers/AdminLevelDataLayer';
 import { getFormattedDate } from 'utils/date-utils';
-import useLayers from 'utils/layers-utils';
 import { appConfig, safeCountry } from 'config';
-import {
-  AdminCodeString,
-  AdminLevelDataLayerProps,
-  BoundaryLayerProps,
-} from 'config/types';
+import { AdminCodeString, BoundaryLayerProps } from 'config/types';
 import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
 import ToggleButton from '@material-ui/lab/ToggleButton';
-import VisibilityOffIcon from '@material-ui/icons/VisibilityOff';
-import VisibilityIcon from '@material-ui/icons/Visibility';
-import { cyanBlue } from 'muiTheme';
+import { cyanBlue, lightGrey } from 'muiTheme';
+import { AAMarkersSelector } from 'context/anticipatoryActionStateSlice';
+import { useAAMarkerScalePercent } from 'utils/map-utils';
 import { SimpleBoundaryDropdown } from 'components/MapView/Layers/BoundaryDropdown';
 import { getBoundaryLayerSingleton } from 'config/utils';
 import { LayerData } from 'context/layers/layer-data';
+import LegendItemsList from 'components/MapView/Legends/LegendItemsList';
+import useResizeObserver from 'utils/useOnResizeObserver';
+import { Panel, leftPanelTabValueSelector } from 'context/leftPanelStateSlice';
 import {
   dateRangeSelector,
   layerDataSelector,
@@ -53,8 +47,7 @@ import {
 import { useSafeTranslation } from '../../../i18n';
 import { downloadToFile } from '../../MapView/utils';
 
-const DEFAULT_FOOTER_TEXT =
-  'The designations employed and the presentation of material in the map(s) do not imply the expression of any opinion on the part of WFP concerning the legal of constitutional status of any country, territory, city, or sea, or concerning the delimitation of its frontiers or boundaries.';
+const defaultFooterText = get(appConfig, 'printConfig.defaultFooterText', '');
 
 // Debounce changes so that we don't redraw on every keystroke.
 const debounceCallback = debounce((callback: any, ...args: any[]) => {
@@ -64,16 +57,24 @@ const debounceCallback = debounce((callback: any, ...args: any[]) => {
 interface ToggleSelectorProps {
   title: string;
   value: number;
-  options: { value: number; comp: React.JSX.Element; disabled?: boolean }[];
+  options: {
+    value: number;
+    comp:
+      | React.JSX.Element
+      | (({ value }: { value: number }) => React.JSX.Element);
+    disabled?: boolean;
+  }[];
+  iconProp?: number;
+  align?: 'start' | 'end';
   setValue: (v: number) => void;
 }
 
 const toggleSelectorStyles = makeStyles(() => ({
   wrapper: { display: 'flex', flexDirection: 'column', gap: '0.6rem' },
-  buttonGroup: { gap: '4px' },
+  buttonGroup: { display: 'flex', gap: '0.3rem' },
   button: {
-    height: '40px',
-    width: '48px',
+    height: '2.5rem',
+    width: '3rem',
     borderLeft: '1px solid rgba(0, 0, 0, 0.12) !important',
   },
 }));
@@ -82,26 +83,35 @@ function ToggleSelector({
   title,
   options,
   value,
+  iconProp,
+  align,
   setValue,
 }: ToggleSelectorProps) {
   const classes = toggleSelectorStyles();
   return (
     <div className={classes.wrapper}>
-      <Typography variant="h4">{title}</Typography>
+      <Typography variant="h4" style={{ textAlign: align }}>
+        {title}
+      </Typography>
       <ToggleButtonGroup
         value={value}
         exclusive
-        onChange={(e, v) => setValue(v)}
         className={classes.buttonGroup}
+        style={{ justifyContent: align }}
       >
         {options.map(x => (
           <ToggleButton
             key={x.value}
             className={classes.button}
             value={x.value}
+            onClick={() => setValue(x.value)}
             disabled={x.disabled}
           >
-            {x.comp}
+            {typeof x.comp === 'function' ? (
+              <x.comp value={Number(iconProp)} />
+            ) : (
+              x.comp
+            )}
           </ToggleButton>
         ))}
       </ToggleButtonGroup>
@@ -109,13 +119,52 @@ function ToggleSelector({
   );
 }
 
-const legendSelectorOptions = [
-  { value: 0, comp: <VisibilityOffIcon /> },
-  { value: 60, comp: <div>60%</div> },
-  { value: 70, comp: <div>70%</div> },
-  { value: 80, comp: <div>80%</div> },
-  { value: 90, comp: <div>90%</div> },
-  { value: 100, comp: <div>100%</div> },
+const legendScaleSelectorOptions = [
+  { value: 0.5, comp: <div>50%</div> },
+  { value: 0.4, comp: <div>60%</div> },
+  { value: 0.3, comp: <div>70%</div> },
+  { value: 0.2, comp: <div>80%</div> },
+  { value: 0.1, comp: <div>90%</div> },
+  { value: 0, comp: <div>100%</div> },
+];
+
+// A function that returns Visibility if the element is off, else returns a switch icon to flip the position
+const renderPositionIcon = ({
+  value,
+}: {
+  value: number;
+}): React.JSX.Element => {
+  // TODO - decide if we want to use the visibility icon when the toggle is off
+  // if (value === -1) {
+  //   return <Visibility />;
+  // }
+  return (
+    <Icon style={{ color: 'black' }}>
+      {value % 2 === 0 ? 'switch_left' : 'switch_right'}
+    </Icon>
+  );
+};
+
+const legendPositionOptions = [
+  { value: -1, comp: <VisibilityOff /> },
+  {
+    value: 0,
+    comp: renderPositionIcon,
+  },
+];
+
+const logoPositionOptions = [
+  { value: -1, comp: <VisibilityOff /> },
+  {
+    value: 0,
+    comp: renderPositionIcon,
+  },
+];
+
+const logoScaleSelectorOptions = [
+  { value: 0.5, comp: <div style={{ fontSize: '0.75rem' }}>S</div> },
+  { value: 1, comp: <div style={{ fontSize: '1rem' }}>M</div> },
+  { value: 1.5, comp: <div style={{ fontSize: '1.25rem' }}>L</div> },
 ];
 
 const mapWidthSelectorOptions = [
@@ -128,7 +177,7 @@ const mapWidthSelectorOptions = [
 ];
 
 const footerTextSelectorOptions = [
-  { value: 0, comp: <VisibilityOffIcon /> },
+  { value: 0, comp: <VisibilityOff /> },
   { value: 8, comp: <div style={{ fontSize: '8px' }}>Aa</div> },
   { value: 10, comp: <div style={{ fontSize: '10px' }}>Aa</div> },
   { value: 12, comp: <div style={{ fontSize: '12px' }}>Aa</div> },
@@ -137,13 +186,18 @@ const footerTextSelectorOptions = [
 ];
 
 const layerDescriptionSelectorOptions = [
-  { value: 0, comp: <VisibilityOffIcon /> },
-  { value: 1, comp: <VisibilityIcon /> },
+  { value: 0, comp: <VisibilityOff /> },
+  { value: 1, comp: <Visibility /> },
 ];
 
 const countryMaskSelectorOptions = [
-  { value: 1, comp: <VisibilityOffIcon /> },
-  { value: 0, comp: <VisibilityIcon /> },
+  { value: 1, comp: <VisibilityOff /> },
+  { value: 0, comp: <Visibility /> },
+];
+
+const mapLabelsVisibilityOptions = [
+  { value: 0, comp: <VisibilityOff /> },
+  { value: 1, comp: <Visibility /> },
 ];
 
 const boundaryLayer = getBoundaryLayerSingleton();
@@ -153,9 +207,10 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
   const { country } = appConfig;
   const selectedMap = useSelector(mapSelector);
   const dateRange = useSelector(dateRangeSelector);
+  const AAMarkers = useSelector(AAMarkersSelector);
+  const tabValue = useSelector(leftPanelTabValueSelector);
   const printRef = useRef<HTMLDivElement>(null);
-  const overlayContainerRef = useRef<HTMLDivElement>(null);
-  const titleOverlayRef = useRef<HTMLDivElement>(null);
+  const northArrowRef = useRef<HTMLImageElement>(null);
   const boundaryLayerState = useSelector(
     layerDataSelector(boundaryLayer.id),
   ) as LayerData<BoundaryLayerProps> | undefined;
@@ -166,8 +221,7 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
   const [toggles, setToggles] = React.useState({
     fullLayerDescription: true,
     countryMask: false,
-    scaleBar: true,
-    northArrow: true,
+    mapLabelsVisibility: true,
   });
   const [
     downloadMenuAnchorEl,
@@ -177,44 +231,61 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
     AdminCodeString[]
   >([]);
   const [titleText, setTitleText] = React.useState<string>(country);
-  const [footerText, setFooterText] = React.useState('');
-  const [elementsLoading, setElementsLoading] = React.useState(true);
+  const [footerText, setFooterText] = React.useState(defaultFooterText);
   const [footerTextSize, setFooterTextSize] = React.useState(12);
-  const [legendScale, setLegendScale] = React.useState(100);
+  const [legendScale, setLegendScale] = React.useState(0);
+  const [legendPosition, setLegendPosition] = React.useState(0);
+  const [logoPosition, setLogoPosition] = React.useState(-1);
+  const [logoScale, setLogoScale] = React.useState(1);
   // the % value of the original dimensions
   const [mapDimensions, setMapDimensions] = React.useState<{
     height: number;
     width: number;
   }>({ width: 100, height: 100 });
+  const [footerRef, { height: footerHeight }] = useResizeObserver<
+    HTMLDivElement
+  >(footerText, open);
+  const [titleRef, { height: titleHeight }] = useResizeObserver<HTMLDivElement>(
+    titleText,
+    open,
+  );
 
   // Get the style and layers of the old map
   const selectedMapStyle = selectedMap?.getStyle();
 
-  const { selectedLayers } = useLayers();
-  const adminLevelLayersWithFillPattern = selectedLayers.filter(
-    layer => layer.type === 'admin_level_data' && layer.fillPattern,
-  ) as AdminLevelDataLayerProps[];
+  if (selectedMapStyle && !toggles.mapLabelsVisibility) {
+    // eslint-disable-next-line fp/no-mutation
+    selectedMapStyle.layers = selectedMapStyle?.layers.filter(
+      x => !x.id.includes('label'),
+    );
+  }
 
-  const defaultFooterText = React.useMemo(() => {
-    const getDateText = (): string => {
-      if (!dateRange || !dateRange.startDate) {
-        return '';
-      }
-      return `${t('Layers represent data')} ${
-        dateRange.startDate && dateRange.endDate
-          ? `${t('from')} ${getFormattedDate(
-              dateRange.startDate,
-              'default',
-            )} ${t('to')} ${getFormattedDate(dateRange.endDate, 'default')}`
-          : `${t('on')} ${getFormattedDate(dateRange.startDate, 'default')}`
-      }. `;
-    };
-    return `${getDateText()}${t(DEFAULT_FOOTER_TEXT)}`;
-  }, [t, dateRange]);
+  const updateScaleBarAndNorthArrow = React.useCallback(() => {
+    const elem = document.querySelector(
+      '.maplibregl-ctrl-scale',
+    ) as HTMLElement;
+
+    // this takes into account the watermark
+    const baseHeight = footerHeight || 20;
+
+    if (elem) {
+      // eslint-disable-next-line fp/no-mutating-assign
+      Object.assign(elem.style, {
+        position: 'absolute',
+        right: '10px',
+        bottom: `${baseHeight + 10}px`,
+        margin: 0,
+      });
+    }
+
+    if (northArrowRef.current) {
+      northArrowRef.current.style.bottom = `${baseHeight + 40}px`;
+    }
+  }, [footerHeight]);
 
   React.useEffect(() => {
-    setFooterText(defaultFooterText);
-  }, [defaultFooterText]);
+    updateScaleBarAndNorthArrow();
+  }, [updateScaleBarAndNorthArrow]);
 
   const [invertedAdminBoundaryLimitPolygon, setAdminBoundaryPolygon] = useState(
     null,
@@ -243,208 +314,6 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
     const masked = mask(filteredData as any);
     setAdminBoundaryPolygon(masked as any);
   }, [data, selectedBoundaries, selectedBoundaries.length]);
-
-  const createFooterElement = (
-    inputFooterText: string = t(DEFAULT_FOOTER_TEXT),
-    width: number,
-    ratio: number,
-    fontSize: number,
-  ): HTMLDivElement => {
-    const footer = document.createElement('div');
-    // eslint-disable-next-line fp/no-mutation
-    footer.innerHTML = `
-      <div style='width:${
-        (width - 16) / ratio
-      }px;margin:8px;font-size:12px;padding-bottom:8px;font-size:${fontSize}px'>
-        ${inputFooterText}
-      </div>
-    `;
-    return footer;
-  };
-
-  const refreshImage = async (currentFooterText = footerText) => {
-    /* eslint-disable fp/no-mutation */
-    setElementsLoading(true);
-    if (open && mapRef.current) {
-      const map = mapRef.current.getMap();
-      const activeLayers = map.getCanvas();
-      // Load fill pattern images to this new map instance if needed.
-      Promise.all(
-        adminLevelLayersWithFillPattern.map(layer =>
-          addFillPatternImagesInMap(layer as AdminLevelDataLayerProps, map),
-        ),
-      );
-
-      const canvasContainer = overlayContainerRef.current;
-      if (!canvasContainer) {
-        return;
-      }
-
-      // clear canvas
-      while (canvasContainer.firstChild) {
-        canvasContainer.removeChild(canvasContainer.firstChild);
-      }
-
-      const canvas = document.createElement('canvas');
-      if (canvas) {
-        let footerTextHeight = 0;
-        let scalerBarLength = 0;
-        const scaleBarGap = 10;
-
-        const { width } = activeLayers;
-        const { height } = activeLayers;
-
-        const ratio = window.devicePixelRatio || 1;
-
-        canvas.width = width * ratio;
-        canvas.height = height * ratio;
-        canvas.style.width = `${width / ratio}px`;
-        canvas.style.height = `${height / ratio}px`;
-
-        const context = canvas.getContext('2d');
-
-        if (!context) {
-          return;
-        }
-
-        context.scale(ratio, ratio);
-        context.clearRect(0, 0, canvas.width, canvas.height);
-
-        // toggle legend
-        const div = document.getElementById(legendListId);
-        if (div?.firstChild && legendScale > 0) {
-          const childElements = Array.from(div.childNodes).filter(
-            node => node.nodeType === 1,
-          ) as HTMLElement[];
-
-          const target = document.createElement('div');
-          target.style.width = '196px'; // 180px + 2*8px padding
-
-          childElements.forEach((li: HTMLElement, i) => {
-            const isLast = childElements.length - 1 === i;
-
-            const children = Array.from(li.childNodes).filter(
-              // node type 1 represents an HTMLElement
-              node => node.nodeType === 1,
-            ) as HTMLElement[];
-            const divContainer = children[0] as HTMLElement;
-
-            const contents = Array.from(divContainer.childNodes).filter(
-              node => node.nodeType === 1,
-            ) as HTMLElement[];
-
-            const container = document.createElement('div');
-            container.style.padding = '8px';
-            container.style.paddingBottom = isLast ? '8px' : '16px';
-            target.appendChild(container);
-
-            const keepDivider = isLast ? 1 : 0;
-
-            contents
-              .slice(
-                0,
-                toggles.fullLayerDescription
-                  ? 6 - keepDivider
-                  : 4 - keepDivider,
-              )
-              .forEach(x => container.appendChild(x.cloneNode(true)));
-          });
-
-          document.body.appendChild(target);
-
-          const c = await html2canvas(target, { useCORS: true });
-          context.drawImage(
-            c,
-            24,
-            24 + (titleOverlayRef.current?.offsetHeight || 0),
-            (target.offsetWidth * legendScale * ratio) / 100.0,
-            (target.offsetHeight * legendScale * ratio) / 100.0,
-          );
-          document.body.removeChild(target);
-        }
-
-        // toggle footer
-        if (footerTextSize > 0) {
-          const footer = createFooterElement(
-            currentFooterText,
-            activeLayers.width,
-            ratio,
-            footerTextSize,
-          );
-          document.body.appendChild(footer);
-          const c = await html2canvas(footer);
-          footerTextHeight = footer.offsetHeight;
-          context.drawImage(
-            c,
-            0 * ratio,
-            activeLayers.height - footer.offsetHeight * ratio,
-            footer.offsetWidth * ratio,
-            footer.offsetHeight * ratio,
-          );
-          document.body.removeChild(footer);
-        }
-
-        if (toggles.scaleBar) {
-          map.addControl(new maplibregl.ScaleControl({}), 'top-right');
-          const elem = document.querySelector(
-            '.maplibregl-ctrl-scale',
-          ) as HTMLElement;
-
-          if (elem) {
-            const html = document.createElement('div');
-
-            scalerBarLength = elem.offsetWidth;
-            html.style.width = `${elem.offsetWidth + 2}px`;
-            html.appendChild(elem);
-
-            document.body.appendChild(html);
-
-            const c = await html2canvas(html);
-            context.drawImage(
-              c,
-              activeLayers.width - (scaleBarGap + elem.offsetWidth) * ratio,
-              activeLayers.height -
-                (30 + (footerTextSize > 0 ? footerTextHeight : 0)) * ratio,
-              html.offsetWidth * ratio,
-              html.offsetHeight * ratio,
-            );
-            document.body.removeChild(html);
-          }
-        }
-
-        if (toggles.northArrow) {
-          const image = new Image();
-          const imageWidth = 50 * ratio;
-          const imageHeight = 60 * ratio;
-
-          image.onload = () => {
-            context.drawImage(
-              image,
-              activeLayers.width -
-                (scaleBarGap + imageWidth / 4 + scalerBarLength / 2) * ratio,
-              activeLayers.height -
-                (110 + (footerTextSize > 0 ? footerTextHeight : 0)) * ratio,
-              imageWidth,
-              imageHeight,
-            );
-          };
-          image.src = './images/icon_north_arrow.png';
-        }
-
-        canvasContainer.appendChild(canvas);
-      }
-    }
-    /* eslint-enable fp/no-mutation */
-    setElementsLoading(false);
-  };
-
-  // reload the canvas when the settings are changed
-  React.useEffect(() => {
-    if (open) {
-      refreshImage();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [toggles, legendScale, mapRef, footerTextSize, footerText, titleText]);
 
   const handleDownloadMenuClose = () => {
     setDownloadMenuAnchorEl(null);
@@ -499,6 +368,20 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
     handleDownloadMenuClose();
   };
 
+  const { logo } = appConfig.header || {};
+  const scalePercent = useAAMarkerScalePercent(mapRef.current?.getMap());
+  const dateText = `${t('Publication date')}: ${getFormattedDate(
+    Date.now(),
+    'default',
+  )}${
+    dateRange.startDate
+      ? `. ${t('Layer selection date')}: ${getFormattedDate(
+          dateRange.startDate,
+          'default',
+        )}`
+      : ''
+  }.`;
+
   return (
     <>
       <Dialog
@@ -509,13 +392,7 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
         aria-labelledby="dialog-preview"
       >
         <DialogContent className={classes.contentContainer}>
-          <div
-            style={{
-              display: 'flex',
-              flexDirection: 'column',
-              width: '100%',
-            }}
-          >
+          <div className={classes.previewContainer}>
             <div>
               <Typography variant="h3" className={classes.title}>
                 {t('MAP PREVIEW')}
@@ -540,20 +417,81 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
                 }}
               >
                 <div ref={printRef} className={classes.printContainer}>
-                  <div
-                    ref={overlayContainerRef}
-                    className={classes.mapOverlay}
+                  <img
+                    ref={northArrowRef}
+                    style={{
+                      position: 'absolute',
+                      zIndex: 3,
+                      width: '50px',
+                      bottom: `${footerHeight + 40}px`,
+                      right: '10px',
+                    }}
+                    src="./images/icon_north_arrow.png"
+                    alt="northArrow"
                   />
-                  {elementsLoading && (
-                    <div className={classes.backdropWrapper}>
-                      <Backdrop className={classes.backdrop} open>
-                        <CircularProgress />
-                      </Backdrop>
+                  {titleText && (
+                    <div ref={titleRef} className={classes.titleOverlay}>
+                      {titleText}
                     </div>
                   )}
-                  {titleText && (
-                    <div ref={titleOverlayRef} className={classes.titleOverlay}>
-                      {titleText}
+                  {footerTextSize > 0 && (footerText || dateText) && (
+                    <div
+                      ref={footerRef}
+                      className={classes.footerOverlay}
+                      style={{
+                        fontSize: `${footerTextSize}px`,
+                      }}
+                    >
+                      {footerText && (
+                        <Typography style={{ whiteSpace: 'pre-line' }}>
+                          {footerText}
+                        </Typography>
+                      )}
+                      {dateText && <Typography>{dateText}</Typography>}
+                    </div>
+                  )}
+                  {logoPosition !== -1 && (
+                    <img
+                      style={{
+                        position: 'absolute',
+                        zIndex: 2,
+                        top: titleHeight + 8,
+                        height: 32 * logoScale,
+                        left: logoPosition % 2 === 0 ? '8px' : 'auto',
+                        right: logoPosition % 2 === 0 ? 'auto' : '8px',
+                        display: 'flex',
+                        justifyContent:
+                          logoPosition % 2 === 0 ? 'flex-start' : 'flex-end',
+                      }}
+                      src={logo}
+                      alt="logo"
+                    />
+                  )}
+                  {legendPosition !== -1 && (
+                    <div
+                      style={{
+                        position: 'absolute',
+                        zIndex: 2,
+                        top:
+                          titleHeight +
+                          (logoPosition === legendPosition
+                            ? 32 * logoScale
+                            : 0),
+                        left: legendPosition % 2 === 0 ? '8px' : 'auto',
+                        right: legendPosition % 2 === 0 ? 'auto' : '8px',
+                        display: 'flex',
+                        justifyContent:
+                          legendPosition % 2 === 0 ? 'flex-start' : 'flex-end',
+                        width: '20px',
+                        // Use transform scale to adjust size based on legendScale
+                        transform: `scale(${1 - legendScale})`,
+                      }}
+                    >
+                      <LegendItemsList
+                        forPrinting
+                        listStyle={classes.legendListStyle}
+                        showDescription={toggles.fullLayerDescription}
+                      />
                     </div>
                   )}
                   <div className={classes.mapContainer}>
@@ -568,11 +506,31 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
                           latitude: selectedMap.getCenter().lat,
                           zoom: selectedMap.getZoom(),
                         }}
-                        onLoad={() => refreshImage()}
-                        onMove={() => debounceCallback(refreshImage)}
+                        onLoad={e => {
+                          e.target.addControl(
+                            new maplibregl.ScaleControl({}),
+                            'bottom-right',
+                          );
+                          updateScaleBarAndNorthArrow();
+                        }}
                         mapStyle={selectedMapStyle || mapStyle.toString()}
                         maxBounds={selectedMap.getMaxBounds() ?? undefined}
                       >
+                        {tabValue === Panel.AnticipatoryAction &&
+                          AAMarkers.map(marker => (
+                            <Marker
+                              key={`marker-${marker.district}`}
+                              longitude={marker.longitude}
+                              latitude={marker.latitude}
+                              anchor="center"
+                            >
+                              <div
+                                style={{ transform: `scale(${scalePercent})` }}
+                              >
+                                {marker.icon}
+                              </div>
+                            </Marker>
+                          ))}
                         {toggles.countryMask && (
                           <Source
                             id="mask-overlay"
@@ -631,17 +589,64 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
               />
             </div>
 
-            <ToggleSelector
-              value={Number(toggles.countryMask)}
-              options={countryMaskSelectorOptions}
-              setValue={val =>
-                setToggles(prev => ({
-                  ...prev,
-                  countryMask: Boolean(val),
-                }))
-              }
-              title={t('Mask data outside of admin area')}
-            />
+            {logo && (
+              <div className={classes.sameRowToggles}>
+                <ToggleSelector
+                  value={logoPosition > -1 ? 0 : -1}
+                  options={logoPositionOptions}
+                  iconProp={logoPosition}
+                  setValue={v =>
+                    setLogoPosition(prev =>
+                      v === -1 && prev !== -1 ? -1 : (prev + 1) % 2,
+                    )
+                  }
+                  title={t('Logo Position')}
+                />
+
+                <div
+                  // disable the legend scale if the legend is not visible
+                  style={{
+                    opacity: logoPosition !== -1 ? 1 : 0.5,
+                    pointerEvents: logoPosition !== -1 ? 'auto' : 'none',
+                  }}
+                >
+                  <ToggleSelector
+                    align="end"
+                    value={logoScale}
+                    options={logoScaleSelectorOptions}
+                    setValue={setLogoScale}
+                    title={t('Logo Size')}
+                  />
+                </div>
+              </div>
+            )}
+
+            <div className={classes.sameRowToggles}>
+              <ToggleSelector
+                value={Number(toggles.countryMask)}
+                options={countryMaskSelectorOptions}
+                setValue={val =>
+                  setToggles(prev => ({
+                    ...prev,
+                    countryMask: Boolean(val),
+                  }))
+                }
+                title={t('Admin Area Mask')}
+              />
+
+              <ToggleSelector
+                value={Number(toggles.mapLabelsVisibility)}
+                options={mapLabelsVisibilityOptions}
+                setValue={val =>
+                  setToggles(prev => ({
+                    ...prev,
+                    mapLabelsVisibility: Boolean(val),
+                  }))
+                }
+                align="end"
+                title={t('Map Labels')}
+              />
+            </div>
 
             {toggles.countryMask && (
               <div className={classes.optionWrap}>
@@ -661,24 +666,46 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
               </div>
             )}
 
-            <ToggleSelector
-              value={Number(toggles.fullLayerDescription)}
-              options={layerDescriptionSelectorOptions}
-              setValue={val =>
-                setToggles(prev => ({
-                  ...prev,
-                  fullLayerDescription: Boolean(val),
-                }))
-              }
-              title={t('Legend - Full Layer Description')}
-            />
+            <div className={classes.sameRowToggles}>
+              <ToggleSelector
+                value={legendPosition > -1 ? 0 : -1}
+                options={legendPositionOptions}
+                iconProp={legendPosition}
+                setValue={v =>
+                  setLegendPosition(prev =>
+                    v === -1 && prev !== -1 ? -1 : (prev + 1) % 2,
+                  )
+                }
+                title={t('Legend Position')}
+              />
+              <ToggleSelector
+                value={Number(toggles.fullLayerDescription)}
+                options={layerDescriptionSelectorOptions}
+                setValue={val =>
+                  setToggles(prev => ({
+                    ...prev,
+                    fullLayerDescription: Boolean(val),
+                  }))
+                }
+                align="end"
+                title={t('Full Layer Description')}
+              />
+            </div>
 
-            <ToggleSelector
-              value={legendScale}
-              options={legendSelectorOptions}
-              setValue={setLegendScale}
-              title={t('Legend')}
-            />
+            <div
+              // disable the legend scale if the legend is not visible
+              style={{
+                opacity: legendPosition !== -1 ? 1 : 0.5,
+                pointerEvents: legendPosition !== -1 ? 'auto' : 'none',
+              }}
+            >
+              <ToggleSelector
+                value={legendScale}
+                options={legendScaleSelectorOptions}
+                setValue={setLegendScale}
+                title={t('Legend Size')}
+              />
+            </div>
 
             <ToggleSelector
               value={mapDimensions.width}
@@ -718,7 +745,7 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
               variant="contained"
               color="primary"
               className={classes.gutter}
-              endIcon={<GetAppIcon />}
+              endIcon={<GetApp />}
               onClick={e => handleDownloadMenuOpen(e)}
             >
               {t('Download')}
@@ -784,13 +811,6 @@ const styles = (theme: Theme) =>
       width: '100%',
       zIndex: 1,
     },
-    mapOverlay: {
-      position: 'absolute',
-      top: 0,
-      left: 0,
-      zIndex: 2,
-      pointerEvents: 'none',
-    },
     optionWrap: {
       display: 'flex',
       flexDirection: 'column',
@@ -805,8 +825,21 @@ const styles = (theme: Theme) =>
       backgroundColor: 'white',
       width: '100%',
       textAlign: 'center',
-      fontSize: '1.5rem',
+      fontSize: '1.25rem',
+      fontWeight: 600,
       padding: '8px 0 8px 0',
+      borderBottom: `1px solid ${lightGrey}`,
+    },
+    footerOverlay: {
+      padding: '8px',
+      position: 'absolute',
+      bottom: 0,
+      left: 0,
+      zIndex: 3,
+      color: 'black',
+      backgroundColor: 'white',
+      width: '100%',
+      borderTop: `1px solid ${lightGrey}`,
     },
     formControl: {
       width: '100%',
@@ -821,6 +854,7 @@ const styles = (theme: Theme) =>
       },
     },
     contentContainer: {
+      fontFamily: 'Roboto',
       scrollbarGutter: 'stable',
       display: 'flex',
       gap: '1rem',
@@ -834,10 +868,27 @@ const styles = (theme: Theme) =>
       height: '100%',
       flexDirection: 'column',
       gap: '0.8rem',
-      width: '25rem',
+      width: '19.2rem',
       scrollbarGutter: 'stable',
       overflow: 'auto',
       paddingRight: '15px',
+      zIndex: 4,
+      backgroundColor: 'white',
+    },
+    legendListStyle: {
+      position: 'absolute',
+      top: '8px',
+      zIndex: 2,
+    },
+    sameRowToggles: {
+      display: 'flex',
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+    },
+    previewContainer: {
+      display: 'flex',
+      flexDirection: 'column',
+      flexGrow: 1,
     },
   });
 

@@ -47,6 +47,7 @@ type BoundaryProps = {
   code: number;
   level: string;
   name: string;
+  localName: string;
 };
 
 type BoundaryPropsDict = { [key: string]: BoundaryProps };
@@ -250,7 +251,7 @@ export const loadAdminBoundaryDataset = async (
 
   const hdcRequestParams = {
     level,
-    admin_id: adminCode,
+    id_code: adminCode,
     coverage: 'full',
     vam: getVamParam(serverLayerName),
     start: startDateStr,

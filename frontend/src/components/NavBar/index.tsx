@@ -22,12 +22,12 @@ import {
   ImageAspectRatioOutlined,
   LayersOutlined,
   TableChartOutlined,
+  TimerOutlined,
 } from '@material-ui/icons';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   Panel,
   leftPanelTabValueSelector,
-  setPanelSize,
   setTabValue,
 } from 'context/leftPanelStateSlice';
 import GoToBoundaryDropdown from 'components/Common/BoundaryDropdown/goto';
@@ -37,8 +37,10 @@ import Legends from 'components/MapView/Legends';
 import { black, cyanBlue } from 'muiTheme';
 import { analysisResultSelector } from 'context/analysisResultStateSlice';
 import { areChartLayersAvailable } from 'config/utils';
-import { areTablesAvailable } from 'components/MapView/LeftPanel/utils';
-import { PanelSize } from 'config/types';
+import {
+  areTablesAvailable,
+  isAnticipatoryActionAvailable,
+} from 'components/MapView/LeftPanel/utils';
 import About from './About';
 import LanguageSelector from './LanguageSelector';
 import PrintImage from './PrintImage';
@@ -56,21 +58,27 @@ const panels = [
   ...(areTablesAvailable
     ? [{ panel: Panel.Tables, label: 'Tables', icon: <TableChartOutlined /> }]
     : []),
+  ...(isAnticipatoryActionAvailable
+    ? [
+        {
+          panel: Panel.AnticipatoryAction,
+          label: 'A. Action',
+          icon: <TimerOutlined />,
+        },
+      ]
+    : []),
 ];
 
 function NavBar({ classes, isAlertFormOpen, setIsAlertFormOpen }: NavBarProps) {
   const { t } = useSafeTranslation();
   const dispatch = useDispatch();
   const { alertFormActive, header } = appConfig;
-  const { selectedLayers, adminBoundariesExtent } = useLayers();
   const tabValue = useSelector(leftPanelTabValueSelector);
   const analysisData = useSelector(analysisResultSelector);
 
   const { numberOfActiveLayers } = useLayers();
 
-  const badgeContent = !analysisData
-    ? numberOfActiveLayers
-    : numberOfActiveLayers + 1;
+  const badgeContent = numberOfActiveLayers + Number(Boolean(analysisData));
 
   const rightSideLinks = [
     {
@@ -160,7 +168,6 @@ function NavBar({ classes, isAlertFormOpen, setIsAlertFormOpen }: NavBarProps) {
                         startIcon={<Wrap>{panel.icon}</Wrap>}
                         onClick={() => {
                           dispatch(setTabValue(panel.panel));
-                          dispatch(setPanelSize(PanelSize.medium));
                         }}
                       >
                         <Typography
@@ -183,7 +190,6 @@ function NavBar({ classes, isAlertFormOpen, setIsAlertFormOpen }: NavBarProps) {
                           }}
                           onClick={() => {
                             dispatch(setTabValue(panel.panel));
-                            dispatch(setPanelSize(PanelSize.medium));
                           }}
                         >
                           {panel.icon}
@@ -203,7 +209,7 @@ function NavBar({ classes, isAlertFormOpen, setIsAlertFormOpen }: NavBarProps) {
             </div>
           </div>
           <div className={classes.rightSideContainer}>
-            <Legends layers={selectedLayers} extent={adminBoundariesExtent} />
+            <Legends />
             <PrintImage />
             {buttons}
             <About />

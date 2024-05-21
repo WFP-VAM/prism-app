@@ -180,7 +180,7 @@ const AnalysisTable = memo(
     ]);
 
     return (
-      <div className={classes.root}>
+      <>
         <TableContainer className={classes.tableContainer}>
           <Table stickyHeader aria-label="analysis table">
             <TableHead>
@@ -221,21 +221,13 @@ const AnalysisTable = memo(
             },
           }}
         />
-      </div>
+      </>
     );
   },
 );
 
 const styles = (theme: Theme) =>
   createStyles({
-    root: {
-      display: 'flex',
-      flexDirection: 'column',
-      alignItems: 'center',
-      justifyContent: 'center',
-      maxHeight: 'inherit',
-      maxWidth: 'inherit',
-    },
     tableContainer: {
       marginTop: 10,
       zIndex: theme.zIndex.modal + 1,

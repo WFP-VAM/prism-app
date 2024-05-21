@@ -2,6 +2,7 @@ import { camelCase, get, map, mapKeys } from 'lodash';
 import { appConfig, rawLayers, rawReports, rawTables } from '.';
 import {
   AdminLevelDataLayerProps,
+  AnticipatoryActionLayerProps,
   BoundaryLayerProps,
   checkRequiredKeys,
   CompositeLayerProps,
@@ -110,6 +111,11 @@ export const getLayerByKey = (layerKey: LayerKey): LayerType => {
         return throwInvalidLayer();
       }
       return definition;
+    case 'anticipatory_action':
+      if (!checkRequiredKeys(AnticipatoryActionLayerProps, definition, true)) {
+        return throwInvalidLayer();
+      }
+      return definition;
     default:
       // doesn't do anything, but it helps catch any layer type cases we forgot above compile time via TS.
       // https://stackoverflow.com/questions/39419170/how-do-i-check-that-a-switch-block-is-exhaustive-in-typescript
@@ -137,13 +143,28 @@ function verifyValidImpactLayer(
   throwIfInvalid('baselineLayer');
 }
 
+export const AAWindowKeys = ['Window 1', 'Window 2'] as const;
+export const AALayerId = 'anticipatory_action';
+
 export const LayerDefinitions: LayersMap = (() => {
+  const aaUrl = appConfig.anticipatoryActionUrl;
+  const AALayer: AnticipatoryActionLayerProps = {
+    id: AALayerId,
+    title: 'Anticipatory Action',
+    type: 'anticipatory_action',
+    opacity: 0.9,
+  };
+
   const layers = Object.keys(rawLayers).reduce(
     (acc, layerKey) => ({
       ...acc,
       [layerKey]: getLayerByKey(layerKey as LayerKey),
     }),
-    {} as LayersMap,
+    (aaUrl
+      ? {
+          [AALayerId]: AALayer,
+        }
+      : {}) as LayersMap,
   );
 
   // Verify that the layers referenced by impact layers actually exist

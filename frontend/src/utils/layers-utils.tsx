@@ -1,9 +1,16 @@
 import { findClosestDate } from 'components/MapView/DateSelector/utils';
 import { checkLayerAvailableDatesAndContinueOrRemove } from 'components/MapView/utils';
 import { appConfig } from 'config';
-import { Extent } from 'components/MapView/Layers/raster-utils';
+import {
+  Extent,
+  expandBoundingBox,
+} from 'components/MapView/Layers/raster-utils';
 import { LayerKey, LayerType, isMainLayer, DateItem } from 'config/types';
-import { LayerDefinitions, getBoundaryLayerSingleton } from 'config/utils';
+import {
+  AALayerId,
+  LayerDefinitions,
+  getBoundaryLayerSingleton,
+} from 'config/utils';
 import {
   addLayer,
   layerOrdering,
@@ -23,9 +30,12 @@ import { LocalError } from 'utils/error-utils';
 import { DateFormat } from 'utils/name-utils';
 import {
   DateCompatibleLayer,
+  getAAAvailableDatesCombined,
   getPossibleDatesForLayer,
 } from 'utils/server-utils';
 import { UrlLayerKey, getUrlKey, useUrlHistory } from 'utils/url-utils';
+import { AAAvailableDatesSelector } from 'context/anticipatoryActionStateSlice';
+
 import {
   datesAreEqualWithoutTime,
   binaryIncludes,
@@ -38,6 +48,7 @@ const dateSupportLayerTypes: Array<LayerType['type']> = [
   'point_data',
   'wms',
   'static_raster',
+  'anticipatory_action',
 ];
 
 const useLayers = () => {
@@ -49,7 +60,14 @@ const useLayers = () => {
 
   const unsortedSelectedLayers = useSelector(layersSelector);
   const serverAvailableDates = useSelector(availableDatesSelector);
+  const AAAvailableDates = useSelector(AAAvailableDatesSelector);
   const { startDate: selectedDate } = useSelector(dateRangeSelector);
+
+  const AAAvailableDatesCombined = useMemo(
+    () =>
+      AAAvailableDates ? getAAAvailableDatesCombined(AAAvailableDates) : [],
+    [AAAvailableDates],
+  );
 
   const hazardLayerIds = useMemo(() => {
     return urlParams.get(UrlLayerKey.HAZARD);
@@ -68,8 +86,11 @@ const useLayers = () => {
   }, [baselineLayerIds]);
 
   const numberOfActiveLayers = useMemo(() => {
-    return hazardLayersArray.length + baselineLayersArray.length;
-  }, [baselineLayersArray.length, hazardLayersArray.length]);
+    return (
+      hazardLayersArray.filter(x => x !== AALayerId).length +
+      baselineLayersArray.length
+    );
+  }, [baselineLayersArray.length, hazardLayersArray]);
 
   // Prioritize boundary and point_data layers
   const selectedLayers: LayerType[] = useMemo(() => {
@@ -77,7 +98,11 @@ const useLayers = () => {
     return [...unsortedSelectedLayers].sort(layerOrdering);
   }, [unsortedSelectedLayers]);
 
-  const adminBoundariesExtent = appConfig.map.boundingBox as Extent;
+  // expand bounding box by a few degrees to ensure results cover the entire country
+  const adminBoundariesExtent = expandBoundingBox(
+    appConfig.map.boundingBox as Extent,
+    2,
+  ) as Extent;
 
   const selectedLayersWithDateSupport = useMemo(() => {
     return selectedLayers
@@ -120,12 +145,22 @@ const useLayers = () => {
   const selectedLayerDatesDupCount = useMemo(() => {
     return countBy(
       selectedLayersWithDateSupport
-        .map(layer => getPossibleDatesForLayer(layer, serverAvailableDates))
+        .map(layer => {
+          if (layer.type === 'anticipatory_action') {
+            // Combine dates for all AA windows to allow selecting AA for the whole period
+            return AAAvailableDatesCombined;
+          }
+          return getPossibleDatesForLayer(layer, serverAvailableDates);
+        })
         .filter(value => value) // null check
         .flat()
         .map(value => new Date(value.displayDate).toISOString().slice(0, 10)),
     );
-  }, [selectedLayersWithDateSupport, serverAvailableDates]);
+  }, [
+    AAAvailableDatesCombined,
+    selectedLayersWithDateSupport,
+    serverAvailableDates,
+  ]);
 
   // calculate possible dates user can pick from the currently selected layers
   const selectedLayerDates: number[] = useMemo(() => {
@@ -135,13 +170,16 @@ const useLayers = () => {
     /*
       Only keep the dates which were duplicated the same amount of times as the amount of layers active...and convert back to array.
      */
+    // eslint-disable-next-line fp/no-mutating-methods
     return Object.keys(
       pickBy(
         selectedLayerDatesDupCount,
         dupTimes => dupTimes >= selectedLayersWithDateSupport.length,
       ),
       // convert back to number array after using YYYY-MM-DD strings in countBy
-    ).map(dateString => new Date(dateString).setUTCHours(12, 0, 0, 0));
+    )
+      .map(dateString => new Date(dateString).setUTCHours(12, 0, 0, 0))
+      .sort((a, b) => a - b);
   }, [selectedLayerDatesDupCount, selectedLayersWithDateSupport.length]);
 
   const defaultLayer = useMemo(() => {
@@ -276,7 +314,6 @@ const useLayers = () => {
       return;
     }
 
-    // Add the missing layers
     addMissingLayers();
 
     if (!urlDate || dateInt === selectedDate) {
@@ -341,10 +378,13 @@ const useLayers = () => {
 
   // let users know if the layers selected are not possible to view together.
   useEffect(() => {
+    // TODO: Why is this the case here? maybe we should remove it;
     if (
+      // eslint-disable-next-line no-constant-condition
       selectedLayerDates.length !== 0 ||
       selectedLayersWithDateSupport.length === 0 ||
-      !selectedDate
+      !selectedDate ||
+      1
     ) {
       return;
     }
@@ -372,12 +412,14 @@ const useLayers = () => {
   const possibleDatesForLayerIncludeSelectedDate = useCallback(
     (layer: DateCompatibleLayer, date: Date) => {
       return binaryIncludes<DateItem>(
-        getPossibleDatesForLayer(layer, serverAvailableDates),
+        layer.type === 'anticipatory_action'
+          ? AAAvailableDatesCombined
+          : getPossibleDatesForLayer(layer, serverAvailableDates),
         date.setUTCHours(12, 0, 0, 0),
         x => new Date(x.displayDate).setUTCHours(12, 0, 0, 0),
       );
     },
-    [serverAvailableDates],
+    [AAAvailableDatesCombined, serverAvailableDates],
   );
 
   useEffect(() => {
@@ -391,9 +433,14 @@ const useLayers = () => {
     selectedLayersWithDateSupport.forEach(layer => {
       const jsSelectedDate = new Date(selectedDate);
 
+      const AADatesLoaded =
+        layer.type !== 'anticipatory_action' ||
+        layer.id in serverAvailableDates;
+
       if (
         serverAvailableDatesAreEmpty ||
-        possibleDatesForLayerIncludeSelectedDate(layer, jsSelectedDate)
+        possibleDatesForLayerIncludeSelectedDate(layer, jsSelectedDate) ||
+        !AADatesLoaded
       ) {
         return;
       }
@@ -438,6 +485,7 @@ const useLayers = () => {
     selectedDate,
     selectedLayerDates,
     selectedLayersWithDateSupport,
+    serverAvailableDates,
     serverAvailableDatesAreEmpty,
     updateHistory,
     urlDate,

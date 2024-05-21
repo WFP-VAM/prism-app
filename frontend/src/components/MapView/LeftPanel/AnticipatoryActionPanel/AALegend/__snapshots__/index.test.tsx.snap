@@ -1,0 +1,519 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`renders as expected 1`] = `
+<div>
+  <mock-listitem
+    dense="true"
+    disablegutters="true"
+  >
+    <mock-dialog
+      open="false"
+    >
+      <mock-dialogtitle>
+        <div
+          class="makeStyles-titleWrapper-14"
+        >
+          <mock-typography
+            variant="h2"
+          >
+            How to read this screen
+          </mock-typography>
+          <button
+            class="MuiButtonBase-root MuiIconButton-root"
+            style="padding: 0px;"
+            tabindex="0"
+            type="button"
+          >
+            <span
+              class="MuiIconButton-label"
+            >
+              <svg
+                aria-hidden="true"
+                class="MuiSvgIcon-root"
+                focusable="false"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm5 13.59L15.59 17 12 13.41 8.41 17 7 15.59 10.59 12 7 8.41 8.41 7 12 10.59 15.59 7 17 8.41 13.41 12 17 15.59z"
+                />
+              </svg>
+            </span>
+            <span
+              class="MuiTouchRipple-root"
+            />
+          </button>
+        </div>
+      </mock-dialogtitle>
+      <mock-dialogcontent
+        dividers="true"
+      >
+        <div
+          class="makeStyles-contentWrapper-15"
+        >
+          <div
+            class="makeStyles-contentItem-16"
+          >
+            <mock-typography
+              style="font-weight: bold;"
+              variant="h3"
+            >
+              Window 1
+            </mock-typography>
+             
+            <mock-typography
+              variant="h3"
+            >
+              Start to mid of the rainfall season.
+            </mock-typography>
+             
+          </div>
+          <div
+            class="makeStyles-contentItem-16"
+          >
+            <mock-typography
+              style="font-weight: bold;"
+              variant="h3"
+            >
+              Window 2
+            </mock-typography>
+             
+            <mock-typography
+              variant="h3"
+            >
+              Mid to end of the rainfall season.
+            </mock-typography>
+             
+          </div>
+          <div
+            class="makeStyles-contentItem-16"
+          >
+            <mock-typography
+              style="font-weight: bold;"
+              variant="h3"
+            >
+              Mild category
+            </mock-typography>
+             
+            <mock-typography
+              variant="h3"
+            >
+              Drought events that typically occur once every 4 years.
+            </mock-typography>
+             
+          </div>
+          <div
+            class="makeStyles-contentItem-16"
+          >
+            <mock-typography
+              style="font-weight: bold;"
+              variant="h3"
+            >
+              Moderate category
+            </mock-typography>
+             
+            <mock-typography
+              variant="h3"
+            >
+              Drought events that typically occur once every 5 years.
+            </mock-typography>
+             
+          </div>
+          <div
+            class="makeStyles-contentItem-16"
+          >
+            <mock-typography
+              style="font-weight: bold;"
+              variant="h3"
+            >
+              Severe category
+            </mock-typography>
+             
+            <mock-typography
+              variant="h3"
+            >
+              Drought events that typically occur once every 7 years.
+            </mock-typography>
+             
+          </div>
+          <div
+            class="makeStyles-contentItem-16"
+          >
+            <mock-typography
+              style="font-weight: bold;"
+              variant="h3"
+            >
+              Ready, Set and Go phases
+            </mock-typography>
+             
+            <mock-typography
+              variant="h3"
+            >
+              The “Ready, Set & Go!” system uses seasonal forecasts with longer lead time for preparedness (Ready phase) and shorter lead times for activation and mobilization (Set & Go! phases).
+            </mock-typography>
+             
+          </div>
+        </div>
+      </mock-dialogcontent>
+      <mock-dialogactions
+        classname="makeStyles-dialogActionsWrapper-17"
+      >
+        <mock-button
+          classname="makeStyles-dialogButton-18"
+          component="a"
+          href="mailto:anticipatory_action@wfp.org"
+          starticon="[object Object]"
+          target="_blank"
+          variant="outlined"
+        >
+          <mock-typography>
+            I STILL NEED HELP
+          </mock-typography>
+        </mock-button>
+        <mock-button
+          classname="makeStyles-dialogButton-18"
+          starticon="[object Object]"
+          variant="outlined"
+        >
+          <mock-typography>
+            Close
+          </mock-typography>
+        </mock-button>
+      </mock-dialogactions>
+    </mock-dialog>
+    <div
+      class="MuiPaper-root makeStyles-paper-1 MuiPaper-elevation1 MuiPaper-rounded"
+    >
+      <mock-typography
+        style="font-weight: bold;"
+        variant="h3"
+      >
+        Phases
+      </mock-typography>
+      <div
+        style="display: flex; flex-direction: column; gap: 0.5rem; margin-bottom: 0.75rem;"
+      >
+        <div
+          class="makeStyles-itemWrapper-2"
+        >
+          <div
+            class="makeStyles-iconWrapper-19"
+          >
+            <div
+              class="makeStyles-centerContainer-20"
+              style="border: 1px solid white; color: white;"
+            >
+              <div
+                class="makeStyles-topTextContainer-21"
+                style="border-bottom: 1px solid white; background: rgb(131, 31, 0);"
+              >
+                S
+              </div>
+              <div
+                class="makeStyles-bottomTextContainer-22"
+                style="background: rgb(131, 31, 0);"
+              >
+                SEV
+              </div>
+            </div>
+          </div>
+          <div>
+            <mock-typography
+              style="white-space: nowrap;"
+            >
+              Set
+            </mock-typography>
+            <mock-typography
+              style="white-space: nowrap;"
+            >
+              Severe
+            </mock-typography>
+          </div>
+        </div>
+        <div
+          class="makeStyles-itemWrapper-2"
+        >
+          <div
+            class="makeStyles-iconWrapper-19"
+          >
+            <div
+              class="makeStyles-centerContainer-20"
+              style="border: 1px solid white; color: white;"
+            >
+              <div
+                class="makeStyles-topTextContainer-21"
+                style="border-bottom: 1px solid white; background: rgb(230, 55, 1);"
+              >
+                R
+              </div>
+              <div
+                class="makeStyles-bottomTextContainer-22"
+                style="background: rgb(230, 55, 1);"
+              >
+                SEV
+              </div>
+            </div>
+          </div>
+          <div>
+            <mock-typography
+              style="white-space: nowrap;"
+            >
+              Ready
+            </mock-typography>
+            <mock-typography
+              style="white-space: nowrap;"
+            >
+              Severe
+            </mock-typography>
+          </div>
+        </div>
+        <div
+          class="makeStyles-itemWrapper-2"
+        >
+          <div
+            class="makeStyles-iconWrapper-19"
+          >
+            <div
+              class="makeStyles-centerContainer-20"
+              style="border: 1px solid black; color: black;"
+            >
+              <div
+                class="makeStyles-topTextContainer-21"
+                style="border-bottom: 1px solid black; background: rgb(255, 137, 52);"
+              >
+                S
+              </div>
+              <div
+                class="makeStyles-bottomTextContainer-22"
+                style="background: rgb(255, 137, 52);"
+              >
+                MOD
+              </div>
+            </div>
+          </div>
+          <div>
+            <mock-typography
+              style="white-space: nowrap;"
+            >
+              Set
+            </mock-typography>
+            <mock-typography
+              style="white-space: nowrap;"
+            >
+              Moderate
+            </mock-typography>
+          </div>
+        </div>
+        <div
+          class="makeStyles-itemWrapper-2"
+        >
+          <div
+            class="makeStyles-iconWrapper-19"
+          >
+            <div
+              class="makeStyles-centerContainer-20"
+              style="border: 1px solid black; color: black;"
+            >
+              <div
+                class="makeStyles-topTextContainer-21"
+                style="border-bottom: 1px solid black; background: rgb(255, 213, 45);"
+              >
+                R
+              </div>
+              <div
+                class="makeStyles-bottomTextContainer-22"
+                style="background: rgb(255, 213, 45);"
+              >
+                MOD
+              </div>
+            </div>
+          </div>
+          <div>
+            <mock-typography
+              style="white-space: nowrap;"
+            >
+              Ready
+            </mock-typography>
+            <mock-typography
+              style="white-space: nowrap;"
+            >
+              Moderate
+            </mock-typography>
+          </div>
+        </div>
+        <div
+          class="makeStyles-itemWrapper-2"
+        >
+          <div
+            class="makeStyles-iconWrapper-19"
+          >
+            <div
+              class="makeStyles-centerContainer-20"
+              style="border: 1px solid black; color: black;"
+            >
+              <div
+                class="makeStyles-topTextContainer-21"
+                style="border-bottom: 1px solid black; background: rgb(255, 245, 3);"
+              >
+                S
+              </div>
+              <div
+                class="makeStyles-bottomTextContainer-22"
+                style="background: rgb(255, 245, 3);"
+              >
+                MIL
+              </div>
+            </div>
+          </div>
+          <div>
+            <mock-typography
+              style="white-space: nowrap;"
+            >
+              Set
+            </mock-typography>
+            <mock-typography
+              style="white-space: nowrap;"
+            >
+              Mild
+            </mock-typography>
+          </div>
+        </div>
+        <div
+          class="makeStyles-itemWrapper-2"
+        >
+          <div
+            class="makeStyles-iconWrapper-19"
+          >
+            <div
+              class="makeStyles-centerContainer-20"
+              style="border: 1px solid black; color: black;"
+            >
+              <div
+                class="makeStyles-topTextContainer-21"
+                style="border-bottom: 1px solid black; background: rgb(255, 252, 179);"
+              >
+                R
+              </div>
+              <div
+                class="makeStyles-bottomTextContainer-22"
+                style="background: rgb(255, 252, 179);"
+              >
+                MIL
+              </div>
+            </div>
+          </div>
+          <div>
+            <mock-typography
+              style="white-space: nowrap;"
+            >
+              Ready
+            </mock-typography>
+            <mock-typography
+              style="white-space: nowrap;"
+            >
+              Mild
+            </mock-typography>
+          </div>
+        </div>
+        <div
+          class="makeStyles-itemWrapper-2"
+        >
+          <div
+            class="makeStyles-iconWrapper-19"
+          >
+            <div
+              class="makeStyles-centerContainer-20"
+              style="border: 1px solid black; color: black;"
+            >
+              <div
+                class="makeStyles-topTextContainer-21"
+                style="background: rgb(241, 241, 241);"
+              >
+                na
+              </div>
+            </div>
+          </div>
+          <div>
+            <mock-typography
+              style="white-space: nowrap;"
+            >
+              No Action
+            </mock-typography>
+          </div>
+        </div>
+        <div
+          class="makeStyles-itemWrapper-2"
+        >
+          <div
+            class="makeStyles-iconWrapper-19"
+          >
+            <div
+              class="makeStyles-centerContainer-20"
+              style="border: 1px solid black; color: black;"
+            >
+              <div
+                class="makeStyles-topTextContainer-21"
+                style="background: rgb(241, 241, 241);"
+              >
+                ny
+              </div>
+            </div>
+          </div>
+          <div>
+            <mock-typography
+              style="white-space: nowrap;"
+            >
+              Not Yet Monitored
+            </mock-typography>
+          </div>
+        </div>
+      </div>
+      <mock-typography>
+        The
+         
+        <span
+          class="makeStyles-dialogButton-4"
+          role="button"
+          tabindex="0"
+        >
+          “Ready, Set & Go!” system
+        </span>
+         
+        uses seasonal forecasts with longer lead time for preparedness (Ready phase) and shorter lead times for activation and mobilization (Set & Go! phases).
+      </mock-typography>
+      <mock-divider />
+      <mock-typography
+        style="font-weight: bold;"
+        variant="h3"
+      >
+        Districts
+      </mock-typography>
+      <div
+        style="display: flex; flex-direction: column; gap: 0.5rem;"
+      >
+        <div
+          class="makeStyles-itemWrapper-2"
+        >
+          <div
+            style="min-width: 2.2rem; border: 1px solid #a4a4a4; border-radius: 2px;"
+          />
+          <mock-typography>
+            District
+          </mock-typography>
+        </div>
+        <div
+          class="makeStyles-itemWrapper-2"
+        >
+          <div
+            class="makeStyles-newTag-12"
+          >
+            NEW
+          </div>
+          <mock-typography>
+            District in new phase this month
+          </mock-typography>
+        </div>
+      </div>
+    </div>
+  </mock-listitem>
+</div>
+`;
