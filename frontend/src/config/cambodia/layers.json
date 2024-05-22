@@ -1,5 +1,5 @@
 {
-  "admin_boundaries": {
+  "admin3_boundaries": {
     "type": "boundary",
     "path": "data/cambodia/khm_bnd_admin3_gov_ed2022_w_dataviz.json",
     "opacity": 0.8,
@@ -280,7 +280,10 @@
     },
     "chart_data": {
       "fields": [
-        { "key": "rfq", "label": "Rainfall anomaly", "color": "#375692",
+        {
+          "key": "rfq",
+          "label": "Rainfall anomaly",
+          "color": "#375692",
           "minValue": 0,
           "maxValue": 300
         },
