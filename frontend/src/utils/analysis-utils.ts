@@ -514,7 +514,7 @@ export class BaselineLayerResult {
     return t
       ? `${t(this.getHazardLayer().title)} (${t(
           aggregationOperationsToDisplay[this.statistic],
-        )} at Level ${adminLevel})`
+        )} ${t('at Level')} ${adminLevel})`
       : `${this.getHazardLayer().title} (${
           aggregationOperationsToDisplay[this.statistic]
         } at Level ${adminLevel})`;
