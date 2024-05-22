@@ -11,6 +11,7 @@ import { Feature, FeatureCollection } from 'geojson';
 import { createGetCoverageUrl } from 'prism-common';
 import { TFunctionKeys } from 'i18next';
 import { Dispatch } from 'redux';
+import { appConfig } from 'config';
 import {
   AdminLevelDataLayerProps,
   AdminLevelType,
@@ -45,6 +46,8 @@ import {
   fetchWithTimeout,
 } from './fetch-with-timeout';
 import { getFormattedDate } from './date-utils';
+
+const { multiCountry } = appConfig;
 
 export type BaselineLayerData = AdminLevelDataLayerData;
 
@@ -500,18 +503,21 @@ export class BaselineLayerResult {
     return LayerDefinitions[this.hazardLayerId] as WMSLayerProps;
   }
 
-  getBaselineLayer(): AdminLevelDataLayerProps {
-    return LayerDefinitions[this.baselineLayerId] as AdminLevelDataLayerProps;
+  getBaselineLayer(): BoundaryLayerProps {
+    return LayerDefinitions[this.baselineLayerId] as BoundaryLayerProps;
   }
 
   getStatTitle(t?: i18nTranslator): string {
+    // TODO - simplify once we revamp admin boundaries
+    const { adminLevelCodes } = this.getBaselineLayer();
+    const adminLevel = adminLevelCodes.length - (multiCountry ? 1 : 0);
     return t
       ? `${t(this.getHazardLayer().title)} (${t(
           aggregationOperationsToDisplay[this.statistic],
-        )})`
+        )} ${t('at Level')} ${adminLevel})`
       : `${this.getHazardLayer().title} (${
           aggregationOperationsToDisplay[this.statistic]
-        })`;
+        } at Level ${adminLevel})`;
   }
 
   getTitle(t?: i18nTranslator): string | undefined {
