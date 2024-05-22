@@ -10,7 +10,7 @@ import {
 import InfoIcon from '@material-ui/icons/Info';
 import { useDispatch } from 'react-redux';
 import { LayerType } from 'config/types';
-import { LayerDefinitions } from 'config/utils';
+import { LayerDefinitions, getBoundaryLayerSingleton } from 'config/utils';
 import ContentDialog from 'components/NavBar/ContentDialog';
 import { loadLayerContent } from 'utils/load-layer-utils';
 
@@ -21,7 +21,7 @@ const LayerContentPreview = memo(({ layerId, classes }: PreviewProps) => {
 
   const layer =
     layerId === 'analysis' || !layerId
-      ? LayerDefinitions.admin_boundaries
+      ? getBoundaryLayerSingleton()
       : LayerDefinitions[layerId];
 
   const handleIconButtonClick = useCallback(async () => {
