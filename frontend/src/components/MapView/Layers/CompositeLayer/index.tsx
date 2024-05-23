@@ -106,8 +106,9 @@ const CompositeLayer = ({ layer, before }: Props) => {
       features: finalFeatures,
     };
     return (
-      <Source type="geojson" data={filteredData}>
+      <Source key={queryDate} type="geojson" data={filteredData}>
         <Layer
+          key={queryDate}
           id={getLayerMapId(layer.id)}
           type="fill"
           paint={paintProps(layer.legend || [], opacityState || layer.opacity)}
