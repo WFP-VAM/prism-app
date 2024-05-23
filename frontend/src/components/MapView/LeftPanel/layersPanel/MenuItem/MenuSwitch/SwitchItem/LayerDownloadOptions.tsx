@@ -198,10 +198,8 @@ function LayerDownloadOptions({
   const handleDownloadQmlStyle = (): void => {
     const { legend, opacity, wcsConfig } = layer as WMSLayerProps;
     const scalingFactor = wcsConfig?.scale ? 1 / Number(wcsConfig.scale) : 1;
-    // Generate QML content from the legend
     const qmlContent = generateQmlContent(legend, opacity, scalingFactor);
 
-    // Trigger download
     downloadToFile(
       {
         content: qmlContent,
