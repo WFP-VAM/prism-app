@@ -10,11 +10,14 @@ import {
 import {
   faCow,
   faHandshake,
+  faMoneyBillWave,
+  faMoneyBillTransfer,
   faPeopleGroup,
   faPersonDigging,
   faPlateWheat,
   faSeedling,
   faSyringe,
+  faList,
 } from '@fortawesome/free-solid-svg-icons';
 import {
   FontAwesomeIcon,
@@ -95,6 +98,36 @@ export const AActions = {
     name: 'Signing contracts and mobilization of assets',
     icon: <FontAwesomeIconWrap icon={faHandshake} />,
   },
+  // Actions for Normal Phase (Zimbabwe)
+  convening: {
+    name: 'Convening with stakeholders',
+    icon: <FontAwesomeIconWrap icon={faPeopleGroup} />,
+  },
+  requestingFunds: {
+    name: 'Requesting funds',
+    icon: <FontAwesomeIconWrap icon={faMoneyBillWave} />,
+  },
+  updatingLists: {
+    name: 'Updating beneficiary lists',
+    icon: <FontAwesomeIconWrap icon={faList} />,
+  },
+  climateInfo: {
+    name: 'Dissemination of climate information',
+    icon: <MarkunreadOutlined style={{ fontSize: IconSize }} />,
+  },
+  droughtInputs: {
+    name: 'Distribution of drought tolerant inputs',
+    icon: <FontAwesomeIconWrap icon={faSeedling} />,
+  },
+  waterProvision: {
+    name: 'Water provision',
+    icon: <LocalDrink style={{ fontSize: IconSize }} />,
+  },
+  cashTransfer: {
+    name: 'In kind/cash transfer',
+    icon: <FontAwesomeIconWrap icon={faMoneyBillTransfer} />,
+  },
+  // No Action
   naMild: {
     name: 'No anticipatory action linked to Mild levels',
     icon: <Remove style={{ fontSize: IconSize, color: 'darkgrey' }} />,
@@ -143,6 +176,22 @@ const actionsMap: ActionsMap = {
     AActions.schoolLunch,
     AActions.socialAssistance,
   ],
+  ReadyNormalW1: [
+    AActions.convening,
+    AActions.requestingFunds,
+    AActions.updatingLists,
+  ],
+  ReadyNormalW2: [
+    AActions.convening,
+    AActions.requestingFunds,
+    AActions.updatingLists,
+  ],
+  SetNormalW1: [
+    AActions.climateInfo,
+    AActions.droughtInputs,
+    AActions.waterProvision,
+  ],
+  SetNormalW2: [AActions.climateInfo, AActions.cashTransfer],
 };
 
 // Function to get actions by state, severity, and window
