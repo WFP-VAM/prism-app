@@ -148,6 +148,7 @@ function LayerDownloadOptions({
   const generateQmlContent = (
     legend: LegendDefinitionItem[],
     opacity: number = 1,
+    scalingFactor: number = 1,
   ): string => {
     let qml = `<!DOCTYPE qgis PUBLIC 'http://mrcc.com/qgis.dtd' 'SYSTEM'>
 <qgis hasScaleBasedVisibilityFlag="0" styleCategories="AllStyleCategories">
@@ -165,7 +166,8 @@ function LayerDownloadOptions({
       // TEMPORARY: shift the value index by 1 to account for the 0 value
       // and match the QML style format. See https://github.com/WFP-VAM/prism-app/pull/1161
       const shouldShiftIndex =
-        legend[0].value === 0 &&
+        (legend[0].value === 0 ||
+          (legend[0].label as string).includes('< -')) &&
         ((legend[0].label as string)?.includes('<') ||
           (legend[1].label as string)?.includes('<') ||
           (legend[1].label as string)?.includes('-') ||
@@ -173,8 +175,9 @@ function LayerDownloadOptions({
 
       const value =
         index < legend.length - 1
-          ? legend[index + Number(shouldShiftIndex)]?.value
-          : (item.value as number) + Number(shouldShiftIndex);
+          ? (legend[index + Number(shouldShiftIndex)]?.value as number) *
+            scalingFactor
+          : 'INF';
       // eslint-disable-next-line fp/no-mutation
       qml += `
                     <item color="${item.color}" value="${value}" alpha="255" label="${label}" />`;
@@ -193,10 +196,10 @@ function LayerDownloadOptions({
   };
 
   const handleDownloadQmlStyle = (): void => {
-    const { legend, opacity } = layer as WMSLayerProps;
-
+    const { legend, opacity, wcsConfig } = layer as WMSLayerProps;
+    const scalingFactor = wcsConfig?.scale ? 1 / Number(wcsConfig.scale) : 1;
     // Generate QML content from the legend
-    const qmlContent = generateQmlContent(legend, opacity);
+    const qmlContent = generateQmlContent(legend, opacity, scalingFactor);
 
     // Trigger download
     downloadToFile(
