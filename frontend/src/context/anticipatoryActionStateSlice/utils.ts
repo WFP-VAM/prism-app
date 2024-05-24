@@ -197,7 +197,7 @@ export function parseAndTransformAA(data: any[]) {
 
   const monitoredDistricts = districtNames.map(dist => ({
     name: dist,
-    vulnerability: windowData.map(x => x.data[dist]).flat()[0].vulnerability,
+    vulnerability: windowData.map(x => x.data[dist]).flat()[0]?.vulnerability,
   }));
 
   return { windowData, monitoredDistricts };
