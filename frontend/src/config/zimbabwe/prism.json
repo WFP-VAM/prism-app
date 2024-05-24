@@ -3,7 +3,7 @@
   "countryAdmin0Id": 271,
   "alertFormActive": false,
   "enableNavigationDropdown": true,
-  "anticipatoryActionUrl": "https://data.earthobservation.vam.wfp.org/public-share/example-dashboard-zimbabwe.csv",
+  "anticipatoryActionUrl": "https://data.earthobservation.vam.wfp.org/public-share/example-dashboard-zimbabwe-fixed.csv",
   "serversUrls": {
     "wms": ["https://api.earthobservation.vam.wfp.org/ows/wms"]
   },
