@@ -29,10 +29,15 @@ export const fetchWithTimeout = async (
       signal: controller.signal,
     });
     if (!res.ok) {
-      throw new HTTPError(
-        fetchErrorMessage ?? `Something went wrong requesting at ${resource}`,
-        res.status,
-      );
+      await res.json().then(r => {
+        console.log(r);
+        throw new HTTPError(
+          r.detail ??
+            fetchErrorMessage ??
+            `Something went wrong requesting at ${resource}`,
+          res.status,
+        );
+      });
     }
     return res;
   } catch (error) {

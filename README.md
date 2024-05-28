@@ -343,7 +343,7 @@ cd frontend
 yarn clean
 yarn install
 yarn setup:common
-REACT_APP_COUNTRY=cambodia yarn start
+REACT_APP_COUNTRY=jordan yarn start
 ```
 
 ### Available Scripts
