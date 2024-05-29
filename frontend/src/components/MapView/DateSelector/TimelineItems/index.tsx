@@ -16,6 +16,8 @@ import {
 } from 'components/MapView/DateSelector/utils';
 import { useSelector } from 'react-redux';
 import { AAAvailableDatesSelector } from 'context/anticipatoryActionStateSlice';
+import { dateRangeSelector } from 'context/mapStateSlice/selectors';
+import { getRequestDate } from 'utils/server-utils';
 import TimelineItem from './TimelineItem';
 import TimelineLabel from './TimelineLabel';
 import TooltipItem from './TooltipItem';
@@ -129,29 +131,49 @@ const TimelineItems = memo(
       dateRange[0].value,
     ).toDateString();
 
+    const dateSelector = useSelector(dateRangeSelector);
     // We truncate layer by removing date that will not be drawn to the Timeline
-    const truncatedLayers: DateItem[][] = useMemo(() => {
-      // returns the index of the fist date in layer that match the first Timeline date
+    const truncatedLayers: Map<string, DateItem[]> = useMemo(() => {
+      // returns the index of the first date in layer that matches the first Timeline date
       const findLayerFirstDateIndex = (items: DateItem[]): number => {
         return items
           .map(d => new Date(d.displayDate).toDateString())
           .indexOf(timelineStartDate);
       };
 
-      // For each selectedLayer truncate DateItem array
-      return [...orderedLayers.map(layer => layer.dateItems)].map(
-        (dateItemsForLayer: DateItem[]) => {
-          const firstIndex = findLayerFirstDateIndex(dateItemsForLayer);
-          if (firstIndex === -1) {
-            return dateItemsForLayer;
-          }
+      // Create a map where each key is the layer's id and the value is the truncated DateItem array
+      const layersMap = new Map<string, DateItem[]>();
+      orderedLayers.forEach(layer => {
+        const dateItemsForLayer = layer.dateItems;
+        const firstIndex = findLayerFirstDateIndex(dateItemsForLayer);
+        const layerQueryDate = getRequestDate(
+          layer.dateItems,
+          dateSelector.startDate,
+        );
+        // Define a function to filter date items based on queryDate and layerQueryDate
+        const filterDateItems = (items: DateItem[]) =>
+          items.filter(item => {
+            return (
+              item.queryDate === layerQueryDate ||
+              item.queryDate === item.displayDate
+            );
+          });
 
-          // truncate the date item array at index matching timeline first date
-          // eslint-disable-next-line fp/no-mutating-methods
-          return dateItemsForLayer.slice(firstIndex, dateItemsForLayer.length);
-        },
-      );
-    }, [orderedLayers, timelineStartDate]);
+        if (firstIndex === -1) {
+          // Apply filtering when no matching start date is found
+          layersMap.set((layer as any).id, filterDateItems(dateItemsForLayer));
+        } else {
+          // Truncate the date item array at index matching timeline first date
+          // and then apply filtering
+          layersMap.set(
+            (layer as any).id,
+            filterDateItems(dateItemsForLayer.slice(firstIndex)),
+          );
+        }
+      });
+
+      return layersMap;
+    }, [orderedLayers, timelineStartDate, dateSelector.startDate]);
 
     // Draw a column for each date of the Timeline that start at the beginning of the year
     return (

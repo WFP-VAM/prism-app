@@ -16,6 +16,7 @@ const TimelineItem = memo(
       layerDates: DateItem[],
     ): boolean => {
       return (
+        false &&
         layerDates.indexOf(matchingDate) !== 0 &&
         !!layerDates[layerDates.indexOf(matchingDate) - 1].isStartDate
       );
@@ -26,18 +27,19 @@ const TimelineItem = memo(
       layerDates: DateItem[],
     ): boolean => {
       return (
+        false &&
         layerDates.indexOf(matchingDate) !== layerDates.length - 1 &&
         !!layerDates[layerDates.indexOf(matchingDate) + 1].isEndDate
       );
     };
 
-    const isStartOrEndDate = (date: DateItem): boolean => {
-      return !!date.isEndDate || !!date.isStartDate;
+    const isQueryDate = (date: DateItem): boolean => {
+      return date.queryDate === date.displayDate;
     };
 
     return (
       <>
-        {concatenatedLayers.map(
+        {Array.from(concatenatedLayers.values()).map(
           (layerDates: DateItem[], layerIndex: number) => {
             const idx = binaryFind<DateItem>(
               layerDates,
@@ -76,7 +78,7 @@ const TimelineItem = memo(
                 {/* Add a bold square if start or end date (emphasis), normal otherwise */}
                 <div
                   className={`${
-                    isStartOrEndDate(matchingDateItemInLayer)
+                    isQueryDate(matchingDateItemInLayer)
                       ? dateItemStyling[layerIndex].emphasis
                       : dateItemStyling[layerIndex].class
                   }`}
@@ -111,7 +113,7 @@ const styles = () =>
   });
 
 export interface TimelineItemProps extends WithStyles<typeof styles> {
-  concatenatedLayers: DateItem[][];
+  concatenatedLayers: Map<string, DateItem[]>;
   currentDate: DateRangeType;
   dateItemStyling: {
     class: string;
