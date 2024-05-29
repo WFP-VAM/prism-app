@@ -25,7 +25,7 @@
     "boundingBox": [102.35, 10.49, 107.61, 14.57]
   },
   "defaultDisplayBoundaries": [
-    "admin_boundaries",
+    "admin3_boundaries",
     "admin1_boundaries",
     "admin2_boundaries"
   ],

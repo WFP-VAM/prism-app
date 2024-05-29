@@ -3,7 +3,7 @@
   "countryAdmin0Id": 271,
   "alertFormActive": false,
   "enableNavigationDropdown": true,
-  "anticipatoryActionUrl": "data/zimbabwe/anticipatory-action/zim-aa-2023-11.csv",
+  "anticipatoryActionUrl": "https://data.earthobservation.vam.wfp.org/public-share/example-dashboard-zimbabwe-fixed.csv",
   "serversUrls": {
     "wms": ["https://api.earthobservation.vam.wfp.org/ows/wms"]
   },
@@ -18,10 +18,7 @@
   "map": {
     "boundingBox": [25.26, -22.27, 32.85, -15.51]
   },
-  "defaultDisplayBoundaries": [
-    "admin_boundaries",
-    "admin1_boundaries"
-  ],
+  "defaultDisplayBoundaries": ["admin_boundaries", "admin1_boundaries"],
   "categories": {
     "rainfall": {
       "MSD_rainfall_data": [
@@ -59,8 +56,8 @@
               "label": "6-month"
             },
             {
-            "id": "precip_blended_7m",
-            "label": "7-month"
+              "id": "precip_blended_7m",
+              "label": "7-month"
             }
           ]
         },
@@ -104,7 +101,11 @@
           ]
         }
       ],
-      "forecasts": ["daily_rainfall_forecast", "dekad_rainfall_forecast", "dekad_rainfall_anomaly_forecast"],
+      "forecasts": [
+        "daily_rainfall_forecast",
+        "dekad_rainfall_forecast",
+        "dekad_rainfall_anomaly_forecast"
+      ],
       "global_rainfall_products": [
         {
           "group_title": "CHIRPS rainfall aggregate",
