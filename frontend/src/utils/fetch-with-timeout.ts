@@ -30,6 +30,7 @@ export const fetchWithTimeout = async (
     });
     if (!res.ok) {
       await res.json().then(r => {
+        // eslint-disable-next-line no-console
         console.log(r);
         throw new HTTPError(
           r.detail ??

@@ -16,7 +16,6 @@ export const fetchCompositeLayerData: LazyLoader<CompositeLayerProps> = () => as
   // to complete later with new endpoint for composite chart
 
   const { layer, date } = params;
-  console.log(date);
   const startDate = date ? new Date(date) : new Date();
   const endDate = new Date(startDate.getTime());
   endDate.setMonth(endDate.getMonth() + 1);
