@@ -4,6 +4,7 @@ exports[`renders as expected 1`] = `
 <div>
   <mock-tooltip
     arrow="true"
+    classes="[object Object]"
     placement="top"
     title="[object Object]"
     transitioncomponent="[object Object]"
@@ -13,7 +14,7 @@ exports[`renders as expected 1`] = `
       class="MuiGrid-root memo-dateItem-2 MuiGrid-item MuiGrid-grid-xs-true"
     >
       <div
-        class="TimelineLabel-dayItem-14"
+        class="TimelineLabel-dayItem-16"
       />
     </div>
   </mock-tooltip>

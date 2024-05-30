@@ -6,22 +6,25 @@ import TimelineItem, { TimelineItemProps } from '.';
 test('TimelineItem renders as expected', () => {
   // Arrange
   const currentDateTime = new Date().getTime();
+  const concatenatedLayers = new Map<string, DateItem[]>();
+  concatenatedLayers.set('layer1', [
+    { displayDate: currentDateTime, queryDate: currentDateTime },
+  ]);
+  concatenatedLayers.set('layer2', [
+    {
+      displayDate: currentDateTime,
+      queryDate: currentDateTime,
+    },
+    {
+      displayDate: currentDateTime,
+      queryDate: currentDateTime,
+      isStartDate: true,
+    },
+  ]);
+
   const props: Omit<TimelineItemProps, 'classes'> = {
     clickDate: () => {},
-    concatenatedLayers: [
-      [{ displayDate: currentDateTime, queryDate: currentDateTime }],
-      [
-        {
-          displayDate: currentDateTime,
-          queryDate: currentDateTime,
-        },
-        {
-          displayDate: currentDateTime,
-          queryDate: currentDateTime,
-          isStartDate: true,
-        },
-      ],
-    ],
+    concatenatedLayers,
     currentDate: {
       value: currentDateTime,
       label: '',
@@ -37,6 +40,8 @@ test('TimelineItem renders as expected', () => {
         color: '',
         layerDirectionClass: 'layerDirectionClass',
       },
+      { class: 'intersectionDate', color: 'White' },
+      { class: 'intersectionDate', color: 'White' },
     ],
   };
 
@@ -64,9 +69,13 @@ test('TimelineItem renders as expected with data point starting after Timeline s
     },
   ];
 
+  const concatenatedLayers = new Map<string, DateItem[]>();
+  concatenatedLayers.set('layer1', layerDates);
+  concatenatedLayers.set('layer2', layerDates);
+
   const props: Omit<TimelineItemProps, 'classes'> = {
     clickDate: () => {},
-    concatenatedLayers: [layerDates, layerDates],
+    concatenatedLayers,
     currentDate: {
       value: currentDateTime,
       label: '',
@@ -82,6 +91,8 @@ test('TimelineItem renders as expected with data point starting after Timeline s
         color: '',
         layerDirectionClass: 'layerDirectionClass',
       },
+      { class: 'intersectionDate', color: 'White' },
+      { class: 'intersectionDate', color: 'White' },
     ],
   };
 
