@@ -147,7 +147,7 @@ function AALegend({
                   role="button"
                   tabIndex={0}
                 >
-                  {t('The “Ready, Set & Go!” system')}
+                  {t('The "Ready, Set & Go!" system')}
                 </span>
               }{' '}
               {t(
