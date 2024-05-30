@@ -417,6 +417,7 @@ const DateSelector = memo(({ classes }: DateSelectorProps) => {
                       clickDate={clickDate}
                       locale={locale}
                       selectedLayers={selectedLayers}
+                      availableDates={availableDates}
                     />
                   )}
                 </Grid>

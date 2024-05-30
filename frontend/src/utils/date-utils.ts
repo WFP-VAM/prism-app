@@ -116,6 +116,7 @@ export const getFormattedDate = (
     | 'default'
     | 'snake'
     | 'locale'
+    | 'monthDay' // Add this new format option
     | DateFormat.DefaultSnakeCase
     | DateFormat.Default
     | DateFormat.DateTime
@@ -124,14 +125,6 @@ export const getFormattedDate = (
 ) => {
   if (date === undefined) {
     return undefined;
-  }
-
-  if (format === 'locale') {
-    return new Date(date).toLocaleString('default', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-    });
   }
 
   const jsDate = new Date(date);
@@ -163,7 +156,18 @@ export const getFormattedDate = (
           throw new Error(`Invalid format: ${format}`);
       }
     }
-
+    case 'monthDay': // Handle the new format
+      return new Date(date).toLocaleString('default', {
+        year: undefined,
+        month: 'long',
+        day: 'numeric',
+      });
+    case 'locale':
+      return new Date(date).toLocaleString('default', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+      });
     default:
       throw new Error(`Invalid format: ${format}`);
   }

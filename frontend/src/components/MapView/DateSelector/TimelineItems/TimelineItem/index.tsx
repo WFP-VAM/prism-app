@@ -11,6 +11,17 @@ const TimelineItem = memo(
     currentDate,
     dateItemStyling,
   }: TimelineItemProps) => {
+    // Pre-compute the matching indices for all layers
+    const layerMatches = Array.from(concatenatedLayers.values()).map(
+      layerDates => {
+        return binaryFind<DateItem>(
+          layerDates,
+          new Date(currentDate.value).setUTCHours(0, 0, 0, 0),
+          (i: DateItem) => new Date(i.displayDate).setUTCHours(0, 0, 0, 0),
+        );
+      },
+    );
+
     const hasNextItemDirectionForward = (
       matchingDate: DateItem,
       layerDates: DateItem[],
@@ -39,55 +50,59 @@ const TimelineItem = memo(
 
     return (
       <>
-        {Array.from(concatenatedLayers.values()).map(
-          (layerDates: DateItem[], layerIndex: number) => {
-            const idx = binaryFind<DateItem>(
-              layerDates,
-              new Date(currentDate.value).setUTCHours(0, 0, 0, 0),
-              (i: DateItem) => new Date(i.displayDate).setUTCHours(0, 0, 0, 0),
-            );
-            const matchingDateItemInLayer: DateItem | undefined =
-              idx > -1 ? layerDates[idx] : undefined;
-
-            if (!matchingDateItemInLayer) {
-              return null;
-            }
-
-            return (
-              <React.Fragment key={Math.random()}>
-                {/* Add a directional arrow forward if previous item is a start date */}
-                {hasNextItemDirectionForward(
-                  matchingDateItemInLayer,
-                  layerDates,
-                ) && (
-                  <div
-                    className={`${dateItemStyling[layerIndex].layerDirectionClass} ${classes.layerDirectionBase}`}
-                  />
-                )}
-
-                {/* Add a directional arrow backward if next item is an end date */}
-                {hasNextItemDirectionBackward(
-                  matchingDateItemInLayer,
-                  layerDates,
-                ) && (
-                  <div
-                    className={`${dateItemStyling[layerIndex].layerDirectionClass} ${classes.layerDirectionBase} ${classes.layerDirectionBackwardBase}`}
-                  />
-                )}
-
-                {/* Add a bold square if start or end date (emphasis), normal otherwise */}
-                <div
-                  className={`${
-                    isQueryDate(matchingDateItemInLayer)
-                      ? dateItemStyling[layerIndex].emphasis
-                      : dateItemStyling[layerIndex].class
-                  }`}
-                  role="presentation"
-                />
-              </React.Fragment>
-            );
-          },
+        {layerMatches.length > 1 && (
+          <div
+            className={dateItemStyling[3].class}
+            style={{ height: 5, top: 10 * layerMatches?.length + 1 }}
+            key={Math.random()}
+            role="presentation"
+          />
         )}
+        {layerMatches.map((idx, layerIndex) => {
+          const layerDates = Array.from(concatenatedLayers.values())[
+            layerIndex
+          ];
+          const matchingDateItemInLayer: DateItem | undefined =
+            idx > -1 ? layerDates[idx] : undefined;
+
+          if (!matchingDateItemInLayer) {
+            return null;
+          }
+
+          return (
+            <React.Fragment key={Math.random()}>
+              {/* Add a directional arrow forward if previous item is a start date */}
+              {hasNextItemDirectionForward(
+                matchingDateItemInLayer,
+                layerDates,
+              ) && (
+                <div
+                  className={`${dateItemStyling[layerIndex].layerDirectionClass} ${classes.layerDirectionBase}`}
+                />
+              )}
+
+              {/* Add a directional arrow backward if next item is an end date */}
+              {hasNextItemDirectionBackward(
+                matchingDateItemInLayer,
+                layerDates,
+              ) && (
+                <div
+                  className={`${dateItemStyling[layerIndex].layerDirectionClass} ${classes.layerDirectionBase} ${classes.layerDirectionBackwardBase}`}
+                />
+              )}
+
+              {/* Add a bold square if start or end date (emphasis), normal otherwise */}
+              <div
+                className={`${
+                  isQueryDate(matchingDateItemInLayer)
+                    ? dateItemStyling[layerIndex].emphasis
+                    : dateItemStyling[layerIndex].class
+                }`}
+                role="presentation"
+              />
+            </React.Fragment>
+          );
+        })}
       </>
     );
   },
