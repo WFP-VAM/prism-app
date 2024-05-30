@@ -137,7 +137,6 @@ function AALegend({
         {showDescription && (
           <>
             <Typography>
-              The{' '}
               {
                 // TODO: handle onKeyDown
                 // eslint-disable-next-line jsx-a11y/click-events-have-key-events
@@ -148,12 +147,12 @@ function AALegend({
                   role="button"
                   tabIndex={0}
                 >
-                  “Ready, Set & Go!” system
+                  {t('The “Ready, Set & Go!” system')}
                 </span>
               }{' '}
-              uses seasonal forecasts with longer lead time for preparedness
-              (Ready phase) and shorter lead times for activation and
-              mobilization (Set & Go! phases).
+              {t(
+                'uses seasonal forecasts with longer lead time for preparedness (Ready phase) and shorter lead times for activation and mobilization (Set & Go! phases).',
+              )}
             </Typography>
             <Divider />
 

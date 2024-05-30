@@ -244,7 +244,7 @@ const LegendItem = memo(
             <>
               <Divider style={{ margin: '8px 0px' }} />
               <Box display="flex" justifyContent="space-between">
-                <Tooltip title="Opacity">
+                <Tooltip title={t('Opacity') as string}>
                   <IconButton size="small" onClick={openOpacity}>
                     <Opacity fontSize="small" />
                   </IconButton>
@@ -277,7 +277,7 @@ const LegendItem = memo(
                   ) : (
                     layerDownloadOptions
                   )}
-                  <Tooltip title="Remove layer">
+                  <Tooltip title={t('Remove layer') as string}>
                     <IconButton size="small" onClick={remove}>
                       <Close fontSize="small" />
                     </IconButton>
