@@ -4,18 +4,9 @@
     "path": "data/kyrgyzstan/District_KRYG.json",
     "opacity": 1,
     "admin_code": "Adm2_Code",
-    "admin_level_codes": [
-      "Adm1_Code",
-      "Adm2_Code"
-    ],
-    "admin_level_names": [
-      "Adm1_RU",
-      "Adm2_RU"
-    ],
-    "admin_level_local_names": [
-      "Adm1_KR",
-      "Adm2_KR"
-    ],
+    "admin_level_codes": ["Adm1_Code", "Adm2_Code"],
+    "admin_level_names": ["Adm1_RU", "Adm2_RU"],
+    "admin_level_local_names": ["Adm1_KR", "Adm2_KR"],
     "styles:": {
       "fill": {
         "fill-opacity": 0
@@ -32,15 +23,9 @@
     "path": "data/kyrgyzstan/Province_KYRG.json",
     "opacity": 1,
     "admin_code": "Adm1_Code",
-    "admin_level_codes": [
-      "Adm1_Code"
-    ],
-    "admin_level_names": [
-      "Adm1_RU"
-    ],
-    "admin_level_local_names": [
-      "Adm1_KR"
-    ],
+    "admin_level_codes": ["Adm1_Code"],
+    "admin_level_names": ["Adm1_RU"],
+    "admin_level_local_names": ["Adm1_KR"],
     "styles:": {
       "fill": {
         "fill-opacity": 0
@@ -398,7 +383,7 @@
       "styles": "rfh_16_0_300"
     },
     "chart_data": {
-      "url": "https://api.earthobservation.vam.wfp.org/stats/admin/fetch",
+      "url": "https://api.earthobservation.vam.wfp.org/stats/admin",
       "fields": [
         {
           "key": "rfh",
@@ -520,7 +505,7 @@
       "styles": "rfq_14_20_400"
     },
     "chart_data": {
-      "url": "https://api.earthobservation.vam.wfp.org/stats/admin/fetch",
+      "url": "https://api.earthobservation.vam.wfp.org/stats/admin",
       "fields": [
         {
           "key": "rfq",
@@ -636,7 +621,7 @@
       "styles": "rfh_16_0_400"
     },
     "chart_data": {
-      "url": "https://api.earthobservation.vam.wfp.org/stats/admin/fetch",
+      "url": "https://api.earthobservation.vam.wfp.org/stats/admin",
       "fields": [
         {
           "key": "r1h",
@@ -758,7 +743,7 @@
       "styles": "rfq_14_20_400"
     },
     "chart_data": {
-      "url": "https://api.earthobservation.vam.wfp.org/stats/admin/fetch",
+      "url": "https://api.earthobservation.vam.wfp.org/stats/admin",
       "fields": [
         {
           "key": "r1q",
@@ -874,7 +859,7 @@
       "styles": "rfh_16_0_800"
     },
     "chart_data": {
-      "url": "https://api.earthobservation.vam.wfp.org/stats/admin/fetch",
+      "url": "https://api.earthobservation.vam.wfp.org/stats/admin",
       "fields": [
         {
           "key": "r3h",
@@ -996,7 +981,7 @@
       "styles": "rfq_14_20_400"
     },
     "chart_data": {
-      "url": "https://api.earthobservation.vam.wfp.org/stats/admin/fetch",
+      "url": "https://api.earthobservation.vam.wfp.org/stats/admin",
       "fields": [
         {
           "key": "r3q",
@@ -2603,7 +2588,7 @@
       "styles": "vim_14_01_09"
     },
     "chart_data": {
-      "url": "https://api.earthobservation.vam.wfp.org/stats/admin/fetch",
+      "url": "https://api.earthobservation.vam.wfp.org/stats/admin",
       "fields": [
         {
           "key": "vim",
@@ -2722,7 +2707,7 @@
       "styles": "viq_13_50_150"
     },
     "chart_data": {
-      "url": "https://api.earthobservation.vam.wfp.org/stats/admin/fetch",
+      "url": "https://api.earthobservation.vam.wfp.org/stats/admin",
       "fields": [
         {
           "key": "viq",
@@ -3638,8 +3623,7 @@
       "TIME": "2024-03-21/2024-03-22"
     },
     "legend_text": "Provides VIIRS 375m Fires/Hotspots for the past 24 hours",
-    "legend": [
-    ]
+    "legend": []
   },
   "active_fires_7days": {
     "title": "Active fires in the past 7 days",

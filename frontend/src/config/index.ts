@@ -23,6 +23,7 @@ import rbd from './rbd';
 import sierraleone from './sierraleone';
 import southsudan from './southsudan';
 import srilanka from './srilanka';
+import sudan from './sudan';
 import tajikistan from './tajikistan';
 import tanzania from './tanzania';
 import ukraine from './ukraine';
@@ -55,6 +56,7 @@ const configMap = {
   sierraleone,
   southsudan,
   srilanka,
+  sudan,
   tajikistan,
   tanzania,
   ukraine,

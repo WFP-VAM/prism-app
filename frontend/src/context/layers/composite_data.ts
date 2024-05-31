@@ -4,6 +4,7 @@ import type { CompositeLayerProps } from 'config/types';
 import { fetchWithTimeout } from 'utils/fetch-with-timeout';
 import { LocalError } from 'utils/error-utils';
 import { addNotification } from 'context/notificationStateSlice';
+import { getFormattedDate } from 'utils/date-utils';
 
 import type { LayerDataParams, LazyLoader } from './layer-data';
 
@@ -13,15 +14,12 @@ export const fetchCompositeLayerData: LazyLoader<CompositeLayerProps> = () => as
   params: LayerDataParams<CompositeLayerProps>,
   { dispatch },
 ) => {
-  // to complete later with new endpoint for composite chart
-
   const { layer, date } = params;
-  console.log(date);
   const startDate = date ? new Date(date) : new Date();
-  const endDate = new Date(startDate.getTime());
+  const endDate = new Date(startDate);
   endDate.setMonth(endDate.getMonth() + 1);
 
-  const { baseUrl: _baseUrl, inputLayers } = layer;
+  const { baseUrl: _baseUrl, inputLayers, startDate: areaStartDate } = layer;
   const baseUrl = process.env.REACT_APP_USE_LOCAL_HIP_SERVICE
     ? process.env.REACT_APP_USE_LOCAL_HIP_SERVICE
     : _baseUrl;
@@ -29,14 +27,14 @@ export const fetchCompositeLayerData: LazyLoader<CompositeLayerProps> = () => as
 
   // docs: https://hip-service.ovio.org/docs#/default/run_q_multi_geojson_q_multi_geojson_post
   const body = {
-    begin: startDate.toISOString().split('T')[0],
-    end: endDate.toISOString().split('T')[0],
+    begin: getFormattedDate(startDate, 'default'),
+    end: getFormattedDate(endDate, 'default'),
     area: {
       min_lon: boundingBox[0],
       min_lat: boundingBox[1],
       max_lon: boundingBox[2],
       max_lat: boundingBox[3],
-      start_date: '2002-01-01',
+      start_date: areaStartDate ?? '2002-01-01',
       end_date: '2021-07-31',
     },
     layers: inputLayers.map(({ key, aggregation, importance, invert }) => ({
@@ -47,10 +45,6 @@ export const fetchCompositeLayerData: LazyLoader<CompositeLayerProps> = () => as
     })),
   };
 
-  // eslint-disable-next-line no-console
-  console.log('Request config used for Qmulti:', {
-    body,
-  });
   try {
     const response = await fetchWithTimeout(
       baseUrl,

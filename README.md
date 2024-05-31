@@ -343,7 +343,7 @@ cd frontend
 yarn clean
 yarn install
 yarn setup:common
-REACT_APP_COUNTRY=jordan yarn start
+REACT_APP_COUNTRY=jordan REACT_APP_USE_LOCAL_HIP_SERVICE=http://localhost:3001/q_multi_geojson docker compose up
 ```
 
 ### Available Scripts
