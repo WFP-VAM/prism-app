@@ -15,7 +15,7 @@ exports[`renders as expected 1`] = `
           <mock-typography
             variant="h2"
           >
-            Actions undertaken
+            Recommended actions
           </mock-typography>
           <button
             class="MuiButtonBase-root MuiIconButton-root"
@@ -391,7 +391,7 @@ exports[`renders as expected 1`] = `
               type="button"
             >
               <mock-tooltip
-                title="Launching tenders and other Procurement procedures"
+                title="Launch tenders and other procurement procedures"
               >
                 <div>
                   <svg
@@ -415,7 +415,7 @@ exports[`renders as expected 1`] = `
               type="button"
             >
               <mock-tooltip
-                title="Launching tenders and other Procurement procedures"
+                title="Launch tenders and other procurement procedures"
               >
                 <div>
                   <svg

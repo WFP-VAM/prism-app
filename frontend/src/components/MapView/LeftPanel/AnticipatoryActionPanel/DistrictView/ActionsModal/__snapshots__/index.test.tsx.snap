@@ -12,7 +12,7 @@ exports[`renders actions modal 1`] = `
         <mock-typography
           variant="h2"
         >
-          Actions undertaken
+          Recommended actions
         </mock-typography>
         <button
           class="MuiButtonBase-root MuiIconButton-root"
@@ -67,7 +67,7 @@ exports[`renders actions modal 1`] = `
           <mock-typography
             variant="h3"
           >
-            Dissemination of early warning messages
+            Disseminate early warning messages
           </mock-typography>
         </div>
         <div
@@ -96,7 +96,7 @@ exports[`renders actions modal 1`] = `
           <mock-typography
             variant="h3"
           >
-            Distribution of seeds for re-sowing
+            Distribute seeds for re-sowing
           </mock-typography>
         </div>
         <div
@@ -146,7 +146,7 @@ exports[`renders actions modal 1`] = `
           <mock-typography
             variant="h3"
           >
-            Distribution of seeds and vegetative material for the second season
+            Distribute seeds and vegetative material for the second season
           </mock-typography>
         </div>
         <div
@@ -170,7 +170,7 @@ exports[`renders actions modal 1`] = `
           <mock-typography
             variant="h3"
           >
-            Rehabilitation of boreholes
+            Rehabilitate boreholes
           </mock-typography>
         </div>
         <div
@@ -228,7 +228,7 @@ exports[`renders actions modal 1`] = `
           <mock-typography
             variant="h3"
           >
-            Moving Cattle to places with water availability
+            Move cattle to places with water availability
           </mock-typography>
         </div>
         <div
@@ -257,7 +257,7 @@ exports[`renders actions modal 1`] = `
           <mock-typography
             variant="h3"
           >
-            Vaccination of birds against New Castle
+            Vaccinate birds against New Castle
           </mock-typography>
         </div>
         <div
@@ -286,7 +286,7 @@ exports[`renders actions modal 1`] = `
           <mock-typography
             variant="h3"
           >
-            Food Assistance
+            Provide food assistance
           </mock-typography>
         </div>
         <div
@@ -315,7 +315,7 @@ exports[`renders actions modal 1`] = `
           <mock-typography
             variant="h3"
           >
-            Social assistance
+            Provide social assistance
           </mock-typography>
         </div>
         <div
@@ -338,7 +338,7 @@ exports[`renders actions modal 1`] = `
           <mock-typography
             variant="h3"
           >
-            School lunches
+            Provide school lunches
           </mock-typography>
         </div>
         <div
@@ -362,7 +362,7 @@ exports[`renders actions modal 1`] = `
           <mock-typography
             variant="h3"
           >
-            Launching tenders and other Procurement procedures
+            Launch tenders and other procurement procedures
           </mock-typography>
         </div>
         <div
@@ -391,7 +391,7 @@ exports[`renders actions modal 1`] = `
           <mock-typography
             variant="h3"
           >
-            Signing contracts and mobilization of assets
+            Sign contracts and mobilize assets
           </mock-typography>
         </div>
         <div
@@ -420,7 +420,7 @@ exports[`renders actions modal 1`] = `
           <mock-typography
             variant="h3"
           >
-            Convening with stakeholders
+            Convene with stakeholders
           </mock-typography>
         </div>
         <div
@@ -449,7 +449,7 @@ exports[`renders actions modal 1`] = `
           <mock-typography
             variant="h3"
           >
-            Requesting funds
+            Request funds
           </mock-typography>
         </div>
         <div
@@ -478,7 +478,7 @@ exports[`renders actions modal 1`] = `
           <mock-typography
             variant="h3"
           >
-            Updating beneficiary lists
+            Update beneficiary lists
           </mock-typography>
         </div>
         <div
@@ -502,7 +502,7 @@ exports[`renders actions modal 1`] = `
           <mock-typography
             variant="h3"
           >
-            Dissemination of climate information
+            Disseminate climate information
           </mock-typography>
         </div>
         <div
@@ -531,7 +531,7 @@ exports[`renders actions modal 1`] = `
           <mock-typography
             variant="h3"
           >
-            Distribution of drought tolerant inputs
+            Distribute drought tolerant inputs
           </mock-typography>
         </div>
         <div
@@ -555,7 +555,7 @@ exports[`renders actions modal 1`] = `
           <mock-typography
             variant="h3"
           >
-            Water provision
+            Make water provisions
           </mock-typography>
         </div>
         <div
@@ -584,7 +584,7 @@ exports[`renders actions modal 1`] = `
           <mock-typography
             variant="h3"
           >
-            In kind/cash transfer
+            Provide in kind/cash transfer
           </mock-typography>
         </div>
         <div

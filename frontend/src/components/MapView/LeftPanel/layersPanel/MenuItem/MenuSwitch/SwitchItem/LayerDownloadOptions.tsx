@@ -220,7 +220,7 @@ function LayerDownloadOptions({
   return (
     <>
       {shouldShowDownloadButton && (
-        <Tooltip title="Download">
+        <Tooltip title={t('Download') as string}>
           <span>
             <IconButton
               disabled={!selected || isGeotiffLoading}

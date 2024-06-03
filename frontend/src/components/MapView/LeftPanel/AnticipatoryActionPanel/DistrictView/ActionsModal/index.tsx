@@ -29,7 +29,7 @@ function ActionsModal({ open, onClose, actions }: ActionsModalProps) {
     <Dialog open={open}>
       <DialogTitle>
         <div className={classes.titleWrapper}>
-          <Typography variant="h2">{t('Actions undertaken')}</Typography>
+          <Typography variant="h2">{t('Recommended actions')}</Typography>
           <IconButton style={{ padding: 0 }} onClick={() => onClose()}>
             <Cancel />
           </IconButton>
