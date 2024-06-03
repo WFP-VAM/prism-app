@@ -203,7 +203,7 @@ const SwitchItem = memo(
             groupMenuFilter={groupMenuFilter}
             disabledMenuSelection={disabledMenuSelection}
           />
-          <Tooltip title="Opacity">
+          <Tooltip title={t('Opacity') as string}>
             <span style={{ marginLeft: 'auto' }}>
               <IconButton
                 disabled={!someLayerAreSelected}

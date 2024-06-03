@@ -484,7 +484,7 @@ exports[`renders as expected 1`] = `
                       <mock-typography
                         variant="h3"
                       >
-                        The “Ready, Set & Go!” system uses seasonal forecasts with longer lead time for preparedness (Ready phase) and shorter lead times for activation and mobilization (Set & Go! phases).
+                        The "Ready, Set & Go!" system uses seasonal forecasts with longer lead time for preparedness (Ready phase) and shorter lead times for activation and mobilization (Set & Go! phases).
                       </mock-typography>
                        
                     </div>

@@ -87,13 +87,13 @@ const AnalysisLayerSwitchItemDownloadOptions = memo(
         );
       }
       return (
-        <Tooltip title="Download">
+        <Tooltip title={t('Download') as string}>
           <IconButton onClick={handleDownloadMenuOpen}>
             <GetAppIcon />
           </IconButton>
         </Tooltip>
       );
-    }, [handleDownloadMenuOpen, selected]);
+    }, [handleDownloadMenuOpen, selected, t]);
 
     const analysisDate = useMemo(() => {
       if (analysisData instanceof BaselineLayerResult) {
