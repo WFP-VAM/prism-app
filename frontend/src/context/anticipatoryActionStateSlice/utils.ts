@@ -14,7 +14,7 @@ import {
   AnticipatoryActionState,
 } from './types';
 
-const AACSVKeys: string[] = [
+export const AACSVKeys: string[] = [
   'district',
   'index',
   'category',
@@ -54,7 +54,7 @@ const sortFn = (a: AnticipatoryActionDataRow, b: AnticipatoryActionDataRow) => {
 };
 
 export function parseAndTransformAA(data: any[]) {
-  const nonEmpty = data.filter(x => !!x[AACSVKeys[0]]); // filter empty rows
+  const nonEmpty = data.filter(x => !!x.prob_ready); // filter empty rows
   const parsed = nonEmpty
     .map(x => {
       const common = {
@@ -87,10 +87,16 @@ export function parseAndTransformAA(data: any[]) {
         wasReadyValid: isReadyValid,
       };
 
-      return [
-        { ...common, ...ready },
-        { ...common, ...set },
-      ];
+      const result = [];
+      if (x.prob_ready !== undefined && x.prob_ready !== '') {
+        // eslint-disable-next-line fp/no-mutating-methods
+        result.push({ ...common, ...ready });
+      }
+      if (x.prob_set !== undefined && x.prob_set !== '') {
+        // eslint-disable-next-line fp/no-mutating-methods
+        result.push({ ...common, ...set });
+      }
+      return result;
     })
     .flat() as AnticipatoryActionDataRow[];
 
@@ -99,7 +105,9 @@ export function parseAndTransformAA(data: any[]) {
     forward: 3,
   };
 
-  const districtNames = [...new Set(parsed.map(x => x.district))];
+  const districtNames = [
+    ...new Set(data.filter(x => x.district).map(x => x.district)),
+  ];
   const emptyDistricts = Object.fromEntries(
     districtNames.map(x => [x, [] as AnticipatoryActionDataRow[]]),
   );
