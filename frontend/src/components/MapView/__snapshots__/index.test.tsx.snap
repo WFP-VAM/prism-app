@@ -1272,9 +1272,9 @@ exports[`renders as expected 1`] = `
                   <mock-button
                     classname="makeStyles-footerButton-78"
                     component="a"
-                    download="undefined-SPI_probabilities_season_triggers.csv"
+                    download="undefined-aa_probabilities_triggers_moz.csv"
                     fullwidth="true"
-                    href="data/mozambique/anticipatory-action/SPI_probabilities_season_triggers.csv"
+                    href="https://data.earthobservation.vam.wfp.org/public-share/_nocache/aa_probabilities_triggers_moz.csv"
                     starticon="[object Object]"
                     variant="outlined"
                   >
