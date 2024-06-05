@@ -218,13 +218,12 @@ const TimelineItems = memo(
                 onClick={() => clickDate(index)}
               >
                 <TimelineLabel locale={locale} date={date} />
-                {isDateAvailable && (
-                  <TimelineItem
-                    concatenatedLayers={truncatedLayers}
-                    currentDate={date}
-                    dateItemStyling={DATE_ITEM_STYLING}
-                  />
-                )}
+                <TimelineItem
+                  concatenatedLayers={truncatedLayers}
+                  currentDate={date}
+                  dateItemStyling={DATE_ITEM_STYLING}
+                  isDateAvailable={isDateAvailable}
+                />
               </Grid>
             </Tooltip>
           );

@@ -10,6 +10,7 @@ const TimelineItem = memo(
     concatenatedLayers,
     currentDate,
     dateItemStyling,
+    isDateAvailable,
   }: TimelineItemProps) => {
     // Pre-compute the matching indices for all layers
     const layerMatches = Array.from(concatenatedLayers.values()).map(
@@ -50,7 +51,7 @@ const TimelineItem = memo(
 
     return (
       <>
-        {layerMatches.length > 1 && (
+        {isDateAvailable && (
           <div
             className={dateItemStyling[3].class}
             style={{ height: 5, top: 10 * layerMatches?.length + 1 }}
@@ -136,6 +137,7 @@ export interface TimelineItemProps extends WithStyles<typeof styles> {
     layerDirectionClass?: string;
     emphasis?: string;
   }[];
+  isDateAvailable: boolean;
 }
 
 export default withStyles(styles)(TimelineItem);
