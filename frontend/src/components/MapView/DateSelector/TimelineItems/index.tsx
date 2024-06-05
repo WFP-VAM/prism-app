@@ -56,10 +56,12 @@ const TimelineItems = memo(
     const AALayers = AAAvailableDates
       ? [
           {
+            id: 'anticipatory_action_window_1',
             title: 'Window 1',
             dateItems: AAAvailableDates['Window 1'],
           },
           {
+            id: 'anticipatory_action_window_2',
             title: 'Window 2',
             dateItems: AAAvailableDates['Window 2'],
           },
@@ -177,7 +179,7 @@ const TimelineItems = memo(
 
         if (firstIndex === -1) {
           // Apply filtering when no matching start date is found
-          layersMap.set((layer as any).id, filterDateItems(dateItemsForLayer));
+          layersMap.set(layer.id, filterDateItems(dateItemsForLayer));
         } else {
           // Truncate the date item array at index matching timeline first date
           // and then apply filtering

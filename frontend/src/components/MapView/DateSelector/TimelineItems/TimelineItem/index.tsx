@@ -55,7 +55,11 @@ const TimelineItem = memo(
         {layerMatches.length > 1 && isDateAvailable && (
           <div
             className={dateItemStyling[3].class}
-            style={{ height: 5, top: 10 * layerMatches?.length + 1 }}
+            style={{
+              height: 4,
+              // TODO - handle more than 3 layers
+              top: 10 * Math.min(layerMatches?.length + 1, 3),
+            }}
             key={Math.random()}
             role="presentation"
           />
