@@ -51,7 +51,8 @@ const TimelineItem = memo(
 
     return (
       <>
-        {isDateAvailable && (
+        {/* Add a small grey line to indicate where dates are overlapping */}
+        {layerMatches.length > 1 && isDateAvailable && (
           <div
             className={dateItemStyling[3].class}
             style={{ height: 5, top: 10 * layerMatches?.length + 1 }}
