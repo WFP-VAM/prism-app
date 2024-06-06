@@ -149,7 +149,7 @@ function AnalysisDownloadButton() {
 
   return (
     <>
-      <Tooltip title="Download">
+      <Tooltip title={t('Download') as string}>
         <IconButton onClick={handleDownloadMenuOpen} size="small">
           <GetAppIcon fontSize="small" />
         </IconButton>

@@ -17,6 +17,7 @@ import {
 import { createStyles, WithStyles, withStyles } from '@material-ui/styles';
 import { useDispatch, useSelector } from 'react-redux';
 import OpacityIcon from '@material-ui/icons/Opacity';
+import { useSafeTranslation } from 'i18n';
 import { clearAnalysisResult } from 'context/analysisResultStateSlice';
 import {
   BaselineLayerResult,
@@ -44,6 +45,8 @@ const AnalysisLayerSwitchItem = memo(
     const [selected, setSelected] = useState<boolean>(true);
     const [isOpacitySelected, setIsOpacitySelected] = useState<boolean>(false);
     const opacity = useSelector(opacitySelector('analysis'));
+
+    const { t } = useSafeTranslation();
 
     const setOpacity = useCallback(
       (value: number) =>
@@ -130,7 +133,7 @@ const AnalysisLayerSwitchItem = memo(
         );
       }
       return (
-        <Tooltip title="Opacity">
+        <Tooltip title={t('Opacity') as string}>
           <span>
             <IconButton
               disabled={!selected}
@@ -152,6 +155,7 @@ const AnalysisLayerSwitchItem = memo(
       handleOpacityClick,
       isOpacitySelected,
       selected,
+      t,
     ]);
 
     return (
