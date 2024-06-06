@@ -148,7 +148,7 @@ exports[`renders as expected 1`] = `
             <mock-typography
               variant="h3"
             >
-              The “Ready, Set & Go!” system uses seasonal forecasts with longer lead time for preparedness (Ready phase) and shorter lead times for activation and mobilization (Set & Go! phases).
+              The "Ready, Set & Go!" system uses seasonal forecasts with longer lead time for preparedness (Ready phase) and shorter lead times for activation and mobilization (Set & Go! phases).
             </mock-typography>
              
           </div>
@@ -468,14 +468,12 @@ exports[`renders as expected 1`] = `
         </div>
       </div>
       <mock-typography>
-        The
-         
         <span
           class="makeStyles-dialogButton-4"
           role="button"
           tabindex="0"
         >
-          “Ready, Set & Go!” system
+          The "Ready, Set & Go!" system
         </span>
          
         uses seasonal forecasts with longer lead time for preparedness (Ready phase) and shorter lead times for activation and mobilization (Set & Go! phases).
