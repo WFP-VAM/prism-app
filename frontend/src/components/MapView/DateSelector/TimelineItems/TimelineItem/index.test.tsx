@@ -6,21 +6,20 @@ import TimelineItem, { TimelineItemProps } from '.';
 test('TimelineItem renders as expected', () => {
   // Arrange
   const currentDateTime = new Date().getTime();
-  const concatenatedLayers = new Map<string, DateItem[]>();
-  concatenatedLayers.set('layer1', [
-    { displayDate: currentDateTime, queryDate: currentDateTime },
-  ]);
-  concatenatedLayers.set('layer2', [
-    {
-      displayDate: currentDateTime,
-      queryDate: currentDateTime,
-    },
-    {
-      displayDate: currentDateTime,
-      queryDate: currentDateTime,
-      isStartDate: true,
-    },
-  ]);
+  const concatenatedLayers = [
+    [{ displayDate: currentDateTime, queryDate: currentDateTime }],
+    [
+      {
+        displayDate: currentDateTime,
+        queryDate: currentDateTime,
+      },
+      {
+        displayDate: currentDateTime,
+        queryDate: currentDateTime,
+        isStartDate: true,
+      },
+    ],
+  ];
 
   const props: Omit<TimelineItemProps, 'classes'> = {
     clickDate: () => {},
@@ -69,9 +68,7 @@ test('TimelineItem renders as expected with data point starting after Timeline s
     },
   ];
 
-  const concatenatedLayers = new Map<string, DateItem[]>();
-  concatenatedLayers.set('layer1', layerDates);
-  concatenatedLayers.set('layer2', layerDates);
+  const concatenatedLayers = [layerDates, layerDates];
 
   const props: Omit<TimelineItemProps, 'classes'> = {
     clickDate: () => {},
