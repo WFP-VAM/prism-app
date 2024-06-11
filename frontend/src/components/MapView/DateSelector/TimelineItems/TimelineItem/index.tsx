@@ -13,15 +13,13 @@ const TimelineItem = memo(
     isDateAvailable,
   }: TimelineItemProps) => {
     // Pre-compute the matching indices for all layers
-    const layerMatches = Array.from(concatenatedLayers.values()).map(
-      layerDates => {
-        return binaryFind<DateItem>(
-          layerDates,
-          new Date(currentDate.value).setUTCHours(0, 0, 0, 0),
-          (i: DateItem) => new Date(i.displayDate).setUTCHours(0, 0, 0, 0),
-        );
-      },
-    );
+    const layerMatches = concatenatedLayers.map(layerDates => {
+      return binaryFind<DateItem>(
+        layerDates,
+        new Date(currentDate.value).setUTCHours(0, 0, 0, 0),
+        (i: DateItem) => new Date(i.displayDate).setUTCHours(0, 0, 0, 0),
+      );
+    });
 
     const hasNextItemDirectionForward = (
       matchingDate: DateItem,
@@ -52,7 +50,7 @@ const TimelineItem = memo(
     return (
       <>
         {/* Add a small grey line to indicate where dates are overlapping */}
-        {layerMatches.length > 1 && isDateAvailable && (
+        {layerMatches.length >= 1 && isDateAvailable && (
           <div
             className={dateItemStyling[3].class}
             style={{
@@ -65,9 +63,7 @@ const TimelineItem = memo(
           />
         )}
         {layerMatches.map((idx, layerIndex) => {
-          const layerDates = Array.from(concatenatedLayers.values())[
-            layerIndex
-          ];
+          const layerDates = concatenatedLayers[layerIndex];
           const matchingDateItemInLayer: DateItem | undefined =
             idx > -1 ? layerDates[idx] : undefined;
 
@@ -134,7 +130,7 @@ const styles = () =>
   });
 
 export interface TimelineItemProps extends WithStyles<typeof styles> {
-  concatenatedLayers: Map<string, DateItem[]>;
+  concatenatedLayers: DateItem[][];
   currentDate: DateRangeType;
   dateItemStyling: {
     class: string;

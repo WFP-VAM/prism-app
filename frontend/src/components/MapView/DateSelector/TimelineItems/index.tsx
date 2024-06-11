@@ -151,7 +151,7 @@ const TimelineItems = memo(
 
     const dateSelector = useSelector(dateRangeSelector);
     // We truncate layer by removing date that will not be drawn to the Timeline
-    const truncatedLayers: Map<string, DateItem[]> = useMemo(() => {
+    const truncatedLayers: DateItem[][] = useMemo(() => {
       // returns the index of the first date in layer that matches the first Timeline date
       const findLayerFirstDateIndex = (items: DateItem[]): number => {
         return items
@@ -159,37 +159,29 @@ const TimelineItems = memo(
           .indexOf(timelineStartDate);
       };
 
-      // Create a map where each key is the layer's id and the value is the truncated DateItem array
-      const layersMap = new Map<string, DateItem[]>();
-      orderedLayers.forEach(layer => {
-        const dateItemsForLayer = layer.dateItems;
-        const firstIndex = findLayerFirstDateIndex(dateItemsForLayer);
-        const layerQueryDate = getRequestDate(
-          layer.dateItems,
-          dateSelector.startDate,
-        );
-        // Filter date items based on queryDate and layerQueryDate
-        const filterDateItems = (items: DateItem[]) =>
-          items.filter(item => {
-            return (
-              item.queryDate === layerQueryDate ||
-              item.queryDate === item.displayDate
-            );
-          });
-
-        if (firstIndex === -1) {
-          // Apply filtering when no matching start date is found
-          layersMap.set(layer.id, filterDateItems(dateItemsForLayer));
-        } else {
-          // Truncate the date item array at index matching timeline first date
-          // and then apply filtering
-          layersMap.set(
-            (layer as any).id,
-            filterDateItems(dateItemsForLayer.slice(firstIndex)),
+      return [
+        ...orderedLayers.map(layer => {
+          const firstIndex = findLayerFirstDateIndex(layer.dateItems);
+          const layerQueryDate = getRequestDate(
+            layer.dateItems,
+            dateSelector.startDate,
           );
-        }
-      });
-      return layersMap;
+          // Filter date items based on queryDate and layerQueryDate
+          const filterDateItems = (items: DateItem[]) =>
+            items.filter(item => {
+              return (
+                item.queryDate === layerQueryDate ||
+                item.queryDate === item.displayDate
+              );
+            });
+          if (firstIndex === -1) {
+            return filterDateItems(layer.dateItems);
+          }
+          // truncate the date item array at index matching timeline first date
+          // eslint-disable-next-line fp/no-mutating-methods
+          return filterDateItems(layer.dateItems.slice(firstIndex));
+        }),
+      ];
     }, [orderedLayers, timelineStartDate, dateSelector.startDate]);
 
     const availableDatesToDisplay = availableDates.filter(

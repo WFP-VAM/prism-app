@@ -116,7 +116,7 @@ export const getFormattedDate = (
     | 'default'
     | 'snake'
     | 'locale'
-    | 'monthDay' // Add this new format option
+    | 'monthDay'
     | DateFormat.DefaultSnakeCase
     | DateFormat.Default
     | DateFormat.DateTime
