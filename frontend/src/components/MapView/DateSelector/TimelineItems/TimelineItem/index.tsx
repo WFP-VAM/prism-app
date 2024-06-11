@@ -85,7 +85,7 @@ const TimelineItem = memo(
                 />
               )}
 
-              {/* Add a bold square if start or end date (emphasis), normal otherwise */}
+              {/* Add a bold square if queryDate (emphasis), normal otherwise */}
               <div
                 className={`${
                   isQueryDate(matchingDateItemInLayer)
