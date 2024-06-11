@@ -16,7 +16,6 @@ test('TimelineItem renders as expected', () => {
       {
         displayDate: currentDateTime,
         queryDate: currentDateTime,
-        isStartDate: true,
       },
     ],
   ];

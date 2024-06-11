@@ -56,12 +56,9 @@ export const generateDateItemsRange = (
     const dateItems: DateItem[] = datesInTime.map(dateInTime => ({
       displayDate: dateInTime,
       queryDate: range.startDate!,
+      startDate: range.startDate!,
+      endDate: range.endDate!,
     }));
-
-    // eslint-disable-next-line fp/no-mutation
-    dateItems[0].isStartDate = true;
-    // eslint-disable-next-line fp/no-mutation
-    dateItems[dateItems.length - 1].isEndDate = true;
 
     return dateItems;
   });
@@ -159,7 +156,7 @@ export const getFormattedDate = (
     case 'monthDay': // Handle the new format
       return new Date(date).toLocaleString('default', {
         year: undefined,
-        month: 'long',
+        month: 'short',
         day: 'numeric',
       });
     case 'locale':

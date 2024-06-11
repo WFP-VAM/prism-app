@@ -25,22 +25,14 @@ const TimelineItem = memo(
       matchingDate: DateItem,
       layerDates: DateItem[],
     ): boolean => {
-      return (
-        false &&
-        layerDates.indexOf(matchingDate) !== 0 &&
-        !!layerDates[layerDates.indexOf(matchingDate) - 1].isStartDate
-      );
+      return false;
     };
 
     const hasNextItemDirectionBackward = (
       matchingDate: DateItem,
       layerDates: DateItem[],
     ): boolean => {
-      return (
-        false &&
-        layerDates.indexOf(matchingDate) !== layerDates.length - 1 &&
-        !!layerDates[layerDates.indexOf(matchingDate) + 1].isEndDate
-      );
+      return false;
     };
 
     const isQueryDate = (date: DateItem): boolean => {

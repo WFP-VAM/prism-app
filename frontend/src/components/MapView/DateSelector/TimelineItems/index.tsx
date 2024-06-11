@@ -125,10 +125,15 @@ const TimelineItems = memo(
             if (!dateItem) {
               return null;
             }
-            const formattedDate = getFormattedDate(
-              dateItem.queryDate,
-              'monthDay',
-            );
+
+            // Display range dates when available
+            const formattedDate =
+              dateItem.startDate && dateItem.endDate
+                ? `${getFormattedDate(
+                    dateItem.startDate,
+                    'monthDay',
+                  )} - ${getFormattedDate(dateItem.endDate, 'monthDay')}`
+                : getFormattedDate(dateItem.queryDate, 'monthDay');
             return (
               <TooltipItem
                 key={`Tootlip-${date.label}-${date.value}-${selectedLayer.title}`}
@@ -278,7 +283,7 @@ const styles = () =>
 
     tooltip: {
       backgroundColor: '#222222',
-      opacity: '0.8 !important',
+      opacity: '0.85 !important',
     },
 
     layerOneDate: createLayerStyles(LIGHT_BLUE_HEX, 0),
