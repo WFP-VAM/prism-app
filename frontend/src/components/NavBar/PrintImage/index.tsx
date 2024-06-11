@@ -6,7 +6,8 @@ import { mapSelector } from 'context/mapStateSlice/selectors';
 import DownloadImage from './image';
 
 function PrintImage() {
-  const [openImage, setOpenImage] = useState(false);
+  // TODO: remove this
+  const [openImage, setOpenImage] = useState(true);
   const selectedMap = useSelector(mapSelector);
 
   const previewRef = useRef<HTMLCanvasElement>(null);
