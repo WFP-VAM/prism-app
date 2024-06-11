@@ -137,7 +137,7 @@ const TimelineItems = memo(
             return (
               <TooltipItem
                 key={`Tootlip-${date.label}-${date.value}-${selectedLayer.title}`}
-                layerTitle={`${t(selectedLayer.title)}  ${formattedDate}`}
+                layerTitle={`${t(selectedLayer.title)}:  ${formattedDate}`}
                 color={DATE_ITEM_STYLING[layerIndex].color}
               />
             );
