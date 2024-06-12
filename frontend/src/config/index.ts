@@ -73,6 +73,7 @@ const {
   REACT_APP_OAUTH_AUTHORITY: AUTHORITY,
   REACT_APP_OAUTH_REDIRECT_URI: REDIRECT_URI,
   REACT_APP_TESTING: TESTING,
+  REACT_APP_QA_MODE: QA_MODE,
 } = process.env;
 
 const safeCountry =
@@ -132,7 +133,7 @@ const rawLayers: Record<string, any> = Object.fromEntries(
 const countryTranslation = get(configMap[safeCountry], 'translation', {});
 const translation = Object.fromEntries(
   Object.entries(
-    TESTING
+    QA_MODE || TESTING
       ? merge({}, sharedTranslation, countryTranslation)
       : countryTranslation,
   ).map(([key, value]) => [
