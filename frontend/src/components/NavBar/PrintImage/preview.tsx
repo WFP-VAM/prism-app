@@ -331,7 +331,7 @@ const styles = () =>
       zIndex: 3,
       color: 'black',
       backgroundColor: 'white',
-      width: '100%',
+      width: 'calc(100% - 16px)',
       borderTop: `1px solid ${lightGrey}`,
     },
     legendListStyle: {

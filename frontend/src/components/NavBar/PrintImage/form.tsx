@@ -2,6 +2,7 @@ import {
   Box,
   Button,
   Collapse,
+  Divider,
   Icon,
   IconButton,
   Menu,
@@ -15,7 +16,7 @@ import {
   makeStyles,
   withStyles,
 } from '@material-ui/core';
-import { GetApp, Cancel, Visibility, VisibilityOff } from '@material-ui/icons';
+import { GetApp, Cancel, VisibilityOff } from '@material-ui/icons';
 import React, { useCallback } from 'react';
 import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
 import ToggleButton from '@material-ui/lab/ToggleButton';
@@ -46,6 +47,9 @@ const toggleSelectorStyles = makeStyles(() => ({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
+    '& h4': {
+      fontSize: '14px',
+    },
   },
   buttonGroup: { display: 'flex' },
   button: {
@@ -82,11 +86,13 @@ function ToggleSelector({
             key={x.value}
             className={classes.button}
             value={x.value}
-            onClick={() => setValue(x.value)}
+            onClick={() => {
+              setValue(x.value);
+            }}
             disabled={x.disabled}
           >
-            {typeof x.comp === 'function' ? (
-              <x.comp value={Number(iconProp)} />
+            {typeof x.comp === 'function' && typeof iconProp === 'number' ? (
+              <x.comp value={iconProp} />
             ) : (
               x.comp
             )}
@@ -106,29 +112,61 @@ function SectionToggle({
   classes,
 }: {
   title: string;
-  children: React.ReactNode;
+  children?: React.ReactNode;
   expanded: boolean;
   handleChange: (
     event: React.ChangeEvent<HTMLInputElement>,
     checked: boolean,
   ) => void;
-  classes: any;
-}) {
-  console.log('expanded', expanded);
+} & WithStyles<typeof styles>) {
   return (
     <>
-      <Switch
-        checked={expanded}
-        onChange={handleChange}
-        className={classes.switch}
-        color="primary"
-        classes={{
-          switchBase: classes.switchBase,
-          track: classes.switchTrack,
-        }}
-      />
-      <Typography variant="h4">{title}</Typography>
+      <div className={classes.collapsibleWrapper}>
+        <Switch
+          checked={expanded}
+          onChange={handleChange}
+          className={classes.switch}
+          color="primary"
+          classes={{
+            switchBase: classes.switchBase,
+            track: classes.switchTrack,
+          }}
+        />
+        <Typography variant="h4" style={{ paddingLeft: '0.5rem' }}>
+          {title}
+        </Typography>
+      </div>
       <Collapse in={expanded}>{children}</Collapse>
+    </>
+  );
+}
+
+function GreyContainer({ children }: { children: React.ReactNode }) {
+  return (
+    <Box
+      bgcolor="#F1F1F1"
+      sx={{
+        borderRadius: '4px',
+        padding: 4,
+        marginY: 2,
+      }}
+    >
+      {children}
+    </Box>
+  );
+}
+
+function GreyContainerSection({
+  children,
+  isLast,
+}: {
+  children: React.ReactNode;
+  isLast?: boolean;
+}) {
+  return (
+    <>
+      <Box sx={{ margin: 4 }}>{children}</Box>
+      {!isLast && <Divider style={{ background: '#ffffff' }} />}
     </>
   );
 }
@@ -150,16 +188,16 @@ const renderPositionIcon = ({
 }): React.JSX.Element => {
   return (
     <Icon style={{ color: 'black' }}>
-      {value % 2 === 0 ? 'switch_left' : 'switch_right'}
+      {value === 1 ? 'fast_rewind' : 'fast_forward'}
     </Icon>
   );
 };
 
 const legendPositionOptions = [
-  { value: -1, comp: <VisibilityOff /> },
+  { value: 0, comp: () => <Icon style={{ color: 'black' }}>fast_rewind</Icon> },
   {
-    value: 0,
-    comp: renderPositionIcon,
+    value: 1,
+    comp: () => <Icon style={{ color: 'black' }}>fast_forward</Icon>,
   },
 ];
 
@@ -195,20 +233,10 @@ const footerTextSelectorOptions = [
   { value: 20, comp: <div style={{ fontSize: '20px' }}>Aa</div> },
 ];
 
-const layerDescriptionSelectorOptions = [
-  { value: 0, comp: <VisibilityOff /> },
-  { value: 1, comp: <Visibility /> },
-];
-
-const countryMaskSelectorOptions = [
-  { value: 1, comp: <VisibilityOff /> },
-  { value: 0, comp: <Visibility /> },
-];
-
-const mapLabelsVisibilityOptions = [
-  { value: 0, comp: <VisibilityOff /> },
-  { value: 1, comp: <Visibility /> },
-];
+// const layerDescriptionSelectorOptions = [
+//   { value: 0, comp: <VisibilityOff /> },
+//   { value: 1, comp: <Visibility /> },
+// ];
 
 type ExpandedSections = {
   logos: boolean;
@@ -347,40 +375,31 @@ function DownloadFormUI({
       <SectionToggle
         title={t('Map Labels')}
         classes={classes}
-        expanded={expandedSections.labels}
-        handleChange={toggleExpanded('labels')}
-      >
-        <ToggleSelector
-          value={Number(toggles.mapLabelsVisibility)}
-          options={mapLabelsVisibilityOptions}
-          setValue={val =>
-            setToggles(prev => ({
-              ...prev,
-              mapLabelsVisibility: Boolean(val),
-            }))
-          }
-          align="end"
-          title={t('Map Labels')}
-        />
-      </SectionToggle>
-
-      {/* Admin Area */}
-      <ToggleSelector
-        value={Number(toggles.countryMask)}
-        options={countryMaskSelectorOptions}
-        setValue={val =>
+        expanded={toggles.mapLabelsVisibility}
+        handleChange={({ target }) =>
           setToggles(prev => ({
             ...prev,
-            countryMask: Boolean(val),
+            mapLabelsVisibility: Boolean(target.checked),
           }))
         }
-        title={t('Admin Area Mask')}
       />
-      {toggles.countryMask && (
+
+      {/* Admin Area */}
+      <SectionToggle
+        title={t('Admin Areas')}
+        classes={classes}
+        expanded={toggles.countryMask}
+        handleChange={({ target }) =>
+          setToggles(prev => ({
+            ...prev,
+            countryMask: Boolean(target.checked),
+          }))
+        }
+      >
         <div className={classes.optionWrap}>
-          <Typography variant="h4">{t('Select admin area')}</Typography>
           <SimpleBoundaryDropdown
             selectAll
+            labelMessage={t('Select admin area')}
             className={classes.formControl}
             selectedBoundaries={selectedBoundaries}
             setSelectedBoundaries={setSelectedBoundaries}
@@ -392,7 +411,7 @@ function DownloadFormUI({
             size="small"
           />
         </div>
-      )}
+      </SectionToggle>
 
       {/* Legend */}
       <SectionToggle
@@ -401,67 +420,92 @@ function DownloadFormUI({
         expanded={expandedSections.legend}
         handleChange={toggleExpanded('legend')}
       >
-        <ToggleSelector
-          value={legendPosition > -1 ? 0 : -1}
-          options={legendPositionOptions}
-          iconProp={legendPosition}
-          setValue={v =>
-            setLegendPosition(prev =>
-              v === -1 && prev !== -1 ? -1 : (prev + 1) % 2,
-            )
-          }
-          title={t('Legend Position')}
-        />
-        <ToggleSelector
-          value={Number(toggles.fullLayerDescription)}
-          options={layerDescriptionSelectorOptions}
-          setValue={val =>
-            setToggles(prev => ({
-              ...prev,
-              fullLayerDescription: Boolean(val),
-            }))
-          }
-          align="end"
-          title={t('Full Layer Description')}
-        />
+        <GreyContainer>
+          <GreyContainerSection>
+            <Box display="flex" flexDirection="row">
+              <ToggleSelector
+                value={legendPosition > -1 ? legendPosition : -1}
+                options={legendPositionOptions}
+                iconProp={legendPosition}
+                setValue={setLegendPosition}
+                title={t('Legend Position')}
+              />
+              <div className={classes.collapsibleWrapper}>
+                <Switch
+                  checked={!!toggles.fullLayerDescription}
+                  onChange={() => {
+                    setToggles(prev => ({
+                      ...prev,
+                      fullLayerDescription: !toggles.fullLayerDescription,
+                    }));
+                  }}
+                  className={classes.switch}
+                  color="primary"
+                  classes={{
+                    switchBase: classes.switchBase,
+                    track: classes.switchTrack,
+                  }}
+                />
+                <Typography variant="h4" style={{ paddingLeft: '0.5rem' }}>
+                  {t('Full Layer Description')}
+                </Typography>
+              </div>
+            </Box>
+          </GreyContainerSection>
+          <GreyContainerSection isLast>
+            <div
+              // disable the legend scale if the legend is not visible
+              style={{
+                opacity: legendPosition !== -1 ? 1 : 0.5,
+                pointerEvents: legendPosition !== -1 ? 'auto' : 'none',
+              }}
+            >
+              <ToggleSelector
+                value={legendScale}
+                options={legendScaleSelectorOptions}
+                setValue={setLegendScale}
+                title={t('Legend Size')}
+              />
+            </div>
+          </GreyContainerSection>
+        </GreyContainer>
       </SectionToggle>
 
-      <div
-        // disable the legend scale if the legend is not visible
-        style={{
-          opacity: legendPosition !== -1 ? 1 : 0.5,
-          pointerEvents: legendPosition !== -1 ? 'auto' : 'none',
-        }}
-      >
-        <ToggleSelector
-          value={legendScale}
-          options={legendScaleSelectorOptions}
-          setValue={setLegendScale}
-          title={t('Legend Size')}
-        />
-      </div>
-
       {/* Footer */}
-      <ToggleSelector
-        value={footerTextSize}
-        options={footerTextSelectorOptions}
-        setValue={setFooterTextSize}
-        title={t('Footer Text')}
-      />
-
-      <TextField
-        size="small"
-        key={defaultFooterText}
-        multiline
-        defaultValue={defaultFooterText}
-        inputProps={{ style: { color: 'black', fontSize: '0.9rem' } }}
-        minRows={3}
-        maxRows={3}
-        onChange={event => {
-          debounceCallback(setFooterText, event.target.value);
-        }}
-        variant="outlined"
-      />
+      <SectionToggle
+        title={t('Footer')}
+        classes={classes}
+        expanded={expandedSections.footer}
+        handleChange={toggleExpanded('footer')}
+      >
+        <GreyContainer>
+          <GreyContainerSection>
+            <ToggleSelector
+              value={footerTextSize}
+              options={footerTextSelectorOptions}
+              setValue={setFooterTextSize}
+              title={t('Footer Text')}
+            />
+          </GreyContainerSection>
+          <GreyContainerSection isLast>
+            <TextField
+              size="small"
+              key={defaultFooterText}
+              multiline
+              defaultValue={defaultFooterText}
+              inputProps={{ style: { color: 'black', fontSize: '0.8rem' } }}
+              style={{ backgroundColor: 'white', borderRadius: '5px' }}
+              minRows={3}
+              maxRows={6}
+              fullWidth
+              onChange={event => {
+                debounceCallback(setFooterText, event.target.value);
+              }}
+              variant="outlined"
+            />
+          </GreyContainerSection>
+        </GreyContainer>
+      </SectionToggle>
 
       <Button
         style={{ backgroundColor: cyanBlue, color: 'black' }}
@@ -519,16 +563,24 @@ const styles = (theme: Theme) =>
       flexDirection: 'column',
       gap: '0.6rem',
     },
+    collapsibleWrapper: {
+      display: 'flex',
+      alignItems: 'center',
+      '& h4': {
+        fontSize: '14px',
+      },
+    },
     formControl: {
       width: '100%',
       '& > .MuiInputLabel-shrink': { display: 'none' },
       '& > .MuiInput-root': { margin: 0 },
       '& label': {
-        textTransform: 'uppercase',
-        letterSpacing: '3px',
-        fontSize: '11px',
-        position: 'absolute',
-        top: '-13px',
+        color: '#000000',
+        opacity: 0.6,
+        fontSize: '14px',
+        marginLeft: '10px',
+        position: 'relative',
+        top: '7px',
       },
     },
     sameRowToggles: {
