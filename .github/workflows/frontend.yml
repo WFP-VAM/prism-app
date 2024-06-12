@@ -116,7 +116,7 @@ jobs:
       - name: build frontend
         run: |
           cd frontend
-          GENERATE_SOURCEMAP=false REACT_APP_COUNTRY=${{ steps.country_regex.outputs.group1 || 'mozambique'}} yarn build
+          REACT_APP_TESTING=true GENERATE_SOURCEMAP=false REACT_APP_COUNTRY=${{ steps.country_regex.outputs.group1 || 'mozambique'}} yarn build
       - name: Deploy on surge
         uses: dswistowski/surge-sh-action@v1
         with:
