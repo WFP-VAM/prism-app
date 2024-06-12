@@ -67,7 +67,7 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
   const [footerTextSize, setFooterTextSize] = React.useState(12);
   const [legendScale, setLegendScale] = React.useState(0);
   const [legendPosition, setLegendPosition] = React.useState(0);
-  const [logoPosition, setLogoPosition] = React.useState(-1);
+  const [logoPosition, setLogoPosition] = React.useState(0);
   const [logoScale, setLogoScale] = React.useState(1);
   // the % value of the original dimensions
   const [mapDimensions, setMapDimensions] = React.useState<MapDimensions>({
@@ -202,6 +202,7 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
             logoScale={logoScale}
             legendPosition={legendPosition}
             legendScale={legendScale}
+            printRef={printRef}
             invertedAdminBoundaryLimitPolygon={
               invertedAdminBoundaryLimitPolygon
             }

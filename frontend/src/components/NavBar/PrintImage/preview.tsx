@@ -50,13 +50,13 @@ function ImagePreview({
   legendPosition,
   legendScale,
   invertedAdminBoundaryLimitPolygon,
+  printRef,
 }: ImagePreviewProps) {
   const { t } = useSafeTranslation();
   const selectedMap = useSelector(mapSelector);
   const dateRange = useSelector(dateRangeSelector);
   const AAMarkers = useSelector(AAMarkersSelector);
   const tabValue = useSelector(leftPanelTabValueSelector);
-  const printRef = useRef<HTMLDivElement>(null);
   const northArrowRef = useRef<HTMLImageElement>(null);
 
   const mapRef = React.useRef<MapRef>(null);
@@ -369,6 +369,7 @@ export interface ImagePreviewProps extends WithStyles<typeof styles> {
   legendPosition: number;
   legendScale: number;
   invertedAdminBoundaryLimitPolygon: any;
+  printRef: React.RefObject<HTMLDivElement>;
 }
 
 export default withStyles(styles)(ImagePreview);

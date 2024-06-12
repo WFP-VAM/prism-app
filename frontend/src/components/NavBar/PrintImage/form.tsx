@@ -180,19 +180,6 @@ const legendScaleSelectorOptions = [
   { value: 0, comp: <div>100%</div> },
 ];
 
-// A function that returns Visibility if the element is off, else returns a switch icon to flip the position
-const renderPositionIcon = ({
-  value,
-}: {
-  value: number;
-}): React.JSX.Element => {
-  return (
-    <Icon style={{ color: 'black' }}>
-      {value === 1 ? 'fast_rewind' : 'fast_forward'}
-    </Icon>
-  );
-};
-
 const legendPositionOptions = [
   { value: 0, comp: () => <Icon style={{ color: 'black' }}>fast_rewind</Icon> },
   {
@@ -202,10 +189,10 @@ const legendPositionOptions = [
 ];
 
 const logoPositionOptions = [
-  { value: -1, comp: <VisibilityOff /> },
+  { value: 0, comp: () => <Icon style={{ color: 'black' }}>fast_rewind</Icon> },
   {
-    value: 0,
-    comp: renderPositionIcon,
+    value: 1,
+    comp: () => <Icon style={{ color: 'black' }}>fast_forward</Icon>,
   },
 ];
 
@@ -232,11 +219,6 @@ const footerTextSelectorOptions = [
   { value: 16, comp: <div style={{ fontSize: '16px' }}>Aa</div> },
   { value: 20, comp: <div style={{ fontSize: '20px' }}>Aa</div> },
 ];
-
-// const layerDescriptionSelectorOptions = [
-//   { value: 0, comp: <VisibilityOff /> },
-//   { value: 1, comp: <Visibility /> },
-// ];
 
 type ExpandedSections = {
   logos: boolean;
@@ -340,35 +322,48 @@ function DownloadFormUI({
 
       {/* Logo */}
       {logo && (
-        <div className={classes.sameRowToggles}>
-          <ToggleSelector
-            value={logoPosition > -1 ? 0 : -1}
-            options={logoPositionOptions}
-            iconProp={logoPosition}
-            setValue={v =>
-              setLogoPosition(prev =>
-                v === -1 && prev !== -1 ? -1 : (prev + 1) % 2,
-              )
-            }
-            title={t('Logo Position')}
-          />
+        <SectionToggle
+          title={t('Logo')}
+          classes={classes}
+          expanded={toggles.logoVisibility}
+          handleChange={({ target }) => {
+            setToggles(prev => ({
+              ...prev,
+              logoVisibility: Boolean(target.checked),
+            }));
+            setLogoPosition(target.checked ? 0 : -1);
+          }}
+        >
+          <GreyContainer>
+            <GreyContainerSection>
+              <Box display="flex" flexDirection="row">
+                <ToggleSelector
+                  value={logoPosition}
+                  options={logoPositionOptions}
+                  iconProp={logoPosition}
+                  setValue={setLogoPosition}
+                  title={t('Logo Position')}
+                />
 
-          <div
-            // disable the legend scale if the legend is not visible
-            style={{
-              opacity: logoPosition !== -1 ? 1 : 0.5,
-              pointerEvents: logoPosition !== -1 ? 'auto' : 'none',
-            }}
-          >
-            <ToggleSelector
-              align="end"
-              value={logoScale}
-              options={logoScaleSelectorOptions}
-              setValue={setLogoScale}
-              title={t('Logo Size')}
-            />
-          </div>
-        </div>
+                <div
+                  // disable the legend scale if the legend is not visible
+                  style={{
+                    opacity: logoPosition !== -1 ? 1 : 0.5,
+                    pointerEvents: logoPosition !== -1 ? 'auto' : 'none',
+                  }}
+                >
+                  <ToggleSelector
+                    align="end"
+                    value={logoScale}
+                    options={logoScaleSelectorOptions}
+                    setValue={setLogoScale}
+                    title={t('Logo Size')}
+                  />
+                </div>
+              </Box>
+            </GreyContainerSection>
+          </GreyContainer>
+        </SectionToggle>
       )}
 
       {/* Labels */}
