@@ -36,13 +36,14 @@ function PrintPreview({ classes }: PrintPreviewProps) {
 
   const mapRef = React.useRef<MapRef>(null);
 
+  const footerHeight = printConfig?.footerHeight;
   const updateScaleBarAndNorthArrow = React.useCallback(() => {
     const elem = document.querySelector(
       '.maplibregl-ctrl-scale',
     ) as HTMLElement;
 
     // this takes into account the watermark
-    const baseHeight = printConfig?.footerHeight || 20;
+    const baseHeight = footerHeight || 20;
 
     if (elem) {
       // eslint-disable-next-line fp/no-mutating-assign
@@ -57,7 +58,7 @@ function PrintPreview({ classes }: PrintPreviewProps) {
     if (northArrowRef.current) {
       northArrowRef.current.style.bottom = `${baseHeight + 40}px`;
     }
-  }, [printConfig.footerHeight]);
+  }, [footerHeight]);
 
   React.useEffect(() => {
     updateScaleBarAndNorthArrow();
@@ -86,7 +87,6 @@ function PrintPreview({ classes }: PrintPreviewProps) {
     open,
     toggles,
     mapDimensions,
-    footerHeight,
     titleText,
     titleRef,
     footerTextSize,
@@ -135,7 +135,7 @@ function PrintPreview({ classes }: PrintPreviewProps) {
                 position: 'absolute',
                 zIndex: 3,
                 width: '50px',
-                bottom: `${footerHeight + 40}px`,
+                bottom: `${(footerHeight as number) + 40}px`,
                 right: '10px',
               }}
               src="./images/icon_north_arrow.png"
