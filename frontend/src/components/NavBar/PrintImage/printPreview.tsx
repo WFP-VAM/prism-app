@@ -23,17 +23,9 @@ import {
   mapSelector,
 } from '../../../context/mapStateSlice/selectors';
 import { useSafeTranslation } from '../../../i18n';
-import { MapDimensions } from './printImage.types';
+import { MapDimensions, Toggles } from './printImage.types';
 
-type Toggles = {
-  fullLayerDescription: boolean;
-  countryMask: boolean;
-  mapLabelsVisibility: boolean;
-  logoVisibility: boolean;
-  legendVisibility: boolean;
-};
-
-function ImagePreview({
+function PrintPreview({
   classes,
   open,
   toggles,
@@ -51,7 +43,7 @@ function ImagePreview({
   legendScale,
   invertedAdminBoundaryLimitPolygon,
   printRef,
-}: ImagePreviewProps) {
+}: PrintPreviewProps) {
   const { t } = useSafeTranslation();
   const selectedMap = useSelector(mapSelector);
   const dateRange = useSelector(dateRangeSelector);
@@ -161,23 +153,26 @@ function ImagePreview({
                 </Box>
               </div>
             )}
-            {footerTextSize > 0 && (footerText || dateText) && (
-              <div
-                ref={footerRef}
-                className={classes.footerOverlay}
-                style={{
-                  fontSize: `${footerTextSize}px`,
-                }}
-              >
+            {toggles.footerVisibility && (footerText || dateText) && (
+              <div ref={footerRef} className={classes.footerOverlay}>
                 {footerText && (
-                  <Typography style={{ whiteSpace: 'pre-line' }}>
+                  <Typography
+                    style={{
+                      fontSize: `${footerTextSize}px`,
+                      whiteSpace: 'pre-line',
+                    }}
+                  >
                     {footerText}
                   </Typography>
                 )}
-                {dateText && <Typography>{dateText}</Typography>}
+                {dateText && (
+                  <Typography style={{ fontSize: `${footerTextSize}px` }}>
+                    {dateText}
+                  </Typography>
+                )}
               </div>
             )}
-            {logoPosition !== -1 && (
+            {toggles.logoVisibility && (
               <img
                 style={{
                   position: 'absolute',
@@ -194,7 +189,7 @@ function ImagePreview({
                 alt="logo"
               />
             )}
-            {legendPosition !== -1 && (
+            {toggles.legendVisibility && (
               <div
                 style={{
                   position: 'absolute',
@@ -351,7 +346,7 @@ const styles = () =>
     },
   });
 
-export interface ImagePreviewProps extends WithStyles<typeof styles> {
+export interface PrintPreviewProps extends WithStyles<typeof styles> {
   open: boolean;
   toggles: Toggles;
   mapDimensions: MapDimensions;
@@ -372,4 +367,4 @@ export interface ImagePreviewProps extends WithStyles<typeof styles> {
   printRef: React.RefObject<HTMLDivElement>;
 }
 
-export default withStyles(styles)(ImagePreview);
+export default withStyles(styles)(PrintPreview);

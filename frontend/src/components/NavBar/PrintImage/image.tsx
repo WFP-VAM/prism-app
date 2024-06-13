@@ -23,9 +23,9 @@ import {
   mapSelector,
 } from '../../../context/mapStateSlice/selectors';
 import { downloadToFile } from '../../MapView/utils';
-import DownloadFormUI from './form';
+import PrintConfig from './printConfig';
 import { MapDimensions, Toggles } from './printImage.types';
-import ImagePreview from './preview';
+import PrintPreview from './printPreview';
 
 const defaultFooterText = get(appConfig, 'printConfig.defaultFooterText', '');
 
@@ -37,7 +37,8 @@ const debounceCallback = debounce((callback: any, ...args: any[]) => {
 const boundaryLayer = getBoundaryLayerSingleton();
 
 function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
-  const { country } = appConfig;
+  const { country, header } = appConfig;
+  const logo = header?.logo;
   const selectedMap = useSelector(mapSelector);
   const dateRange = useSelector(dateRangeSelector);
   const printRef = useRef<HTMLDivElement>(null);
@@ -51,8 +52,9 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
     fullLayerDescription: true,
     countryMask: false,
     mapLabelsVisibility: true,
-    logoVisibility: true,
+    logoVisibility: !!logo,
     legendVisibility: true,
+    footerVisibility: true,
   });
 
   const [
@@ -173,8 +175,6 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
     handleDownloadMenuClose();
   };
 
-  const { logo } = appConfig.header || {};
-
   return (
     <>
       <Dialog
@@ -185,7 +185,7 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
         aria-labelledby="dialog-preview"
       >
         <DialogContent className={classes.contentContainer}>
-          <ImagePreview
+          <PrintPreview
             open={open}
             toggles={toggles}
             mapDimensions={mapDimensions}
@@ -207,7 +207,7 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
               invertedAdminBoundaryLimitPolygon
             }
           />
-          <DownloadFormUI
+          <PrintConfig
             handleClose={handleClose}
             setTitleText={setTitleText}
             debounceCallback={debounceCallback}

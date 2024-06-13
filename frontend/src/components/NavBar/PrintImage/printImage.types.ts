@@ -4,6 +4,7 @@ export type Toggles = {
   mapLabelsVisibility: boolean;
   logoVisibility: boolean;
   legendVisibility: boolean;
+  footerVisibility: boolean;
 };
 
 export type MapDimensions = { width: number; height: number };

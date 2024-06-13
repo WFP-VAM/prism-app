@@ -7,7 +7,6 @@ import {
   IconButton,
   Menu,
   MenuItem,
-  Switch,
   TextField,
   Theme,
   Typography,
@@ -16,15 +15,16 @@ import {
   makeStyles,
   withStyles,
 } from '@material-ui/core';
-import { GetApp, Cancel, VisibilityOff } from '@material-ui/icons';
-import React, { useCallback } from 'react';
+import { GetApp, Cancel } from '@material-ui/icons';
+import React from 'react';
 import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
 import ToggleButton from '@material-ui/lab/ToggleButton';
 import { cyanBlue } from 'muiTheme';
 import { SimpleBoundaryDropdown } from 'components/MapView/Layers/BoundaryDropdown';
 import { AdminCodeString } from 'config/types';
-import { useSafeTranslation } from '../../../i18n';
+import Switch from 'components/Common/Switch';
 import { MapDimensions, Toggles } from './printImage.types';
+import { useSafeTranslation } from '../../../i18n';
 
 interface ToggleSelectorProps {
   title: string;
@@ -72,7 +72,10 @@ function ToggleSelector({
   const classes = toggleSelectorStyles();
   return (
     <div className={classes.wrapper}>
-      <Typography variant="h4" style={{ textAlign: align }}>
+      <Typography
+        variant="h4"
+        style={{ textAlign: align, marginRight: '0.5rem' }}
+      >
         {title}
       </Typography>
       <ToggleButtonGroup
@@ -122,19 +125,7 @@ function SectionToggle({
   return (
     <>
       <div className={classes.collapsibleWrapper}>
-        <Switch
-          checked={expanded}
-          onChange={handleChange}
-          className={classes.switch}
-          color="primary"
-          classes={{
-            switchBase: classes.switchBase,
-            track: classes.switchTrack,
-          }}
-        />
-        <Typography variant="h4" style={{ paddingLeft: '0.5rem' }}>
-          {title}
-        </Typography>
+        <Switch checked={expanded} onChange={handleChange} title={title} />
       </div>
       <Collapse in={expanded}>{children}</Collapse>
     </>
@@ -148,7 +139,6 @@ function GreyContainer({ children }: { children: React.ReactNode }) {
       sx={{
         borderRadius: '4px',
         padding: 4,
-        marginY: 2,
       }}
     >
       {children}
@@ -212,7 +202,6 @@ const mapWidthSelectorOptions = [
 ];
 
 const footerTextSelectorOptions = [
-  { value: 0, comp: <VisibilityOff /> },
   { value: 8, comp: <div style={{ fontSize: '8px' }}>Aa</div> },
   { value: 10, comp: <div style={{ fontSize: '10px' }}>Aa</div> },
   { value: 12, comp: <div style={{ fontSize: '12px' }}>Aa</div> },
@@ -220,15 +209,7 @@ const footerTextSelectorOptions = [
   { value: 20, comp: <div style={{ fontSize: '20px' }}>Aa</div> },
 ];
 
-type ExpandedSections = {
-  logos: boolean;
-  labels: boolean;
-  adminAreas: boolean;
-  legend: boolean;
-  footer: boolean;
-};
-
-function DownloadFormUI({
+function PrintConfig({
   classes,
   handleClose,
   setTitleText,
@@ -257,26 +238,8 @@ function DownloadFormUI({
   handleDownloadMenuOpen,
   handleDownloadMenuClose,
   downloadMenuAnchorEl,
-}: DownloadFormUIProps) {
+}: PrintConfigProps) {
   const { t } = useSafeTranslation();
-
-  // list of expandible section
-  const [expandedSections, setExpandedSections] = React.useState<
-    ExpandedSections
-  >({
-    logos: false,
-    labels: false,
-    adminAreas: false,
-    legend: false,
-    footer: false,
-  });
-
-  const toggleExpanded = useCallback(
-    (section: keyof typeof expandedSections) => () => {
-      setExpandedSections(prev => ({ ...prev, [section]: !prev[section] }));
-    },
-    [expandedSections],
-  );
 
   return (
     <div className={classes.optionsContainer}>
@@ -335,14 +298,18 @@ function DownloadFormUI({
           }}
         >
           <GreyContainer>
-            <GreyContainerSection>
-              <Box display="flex" flexDirection="row">
+            <GreyContainerSection isLast>
+              <Box
+                display="flex"
+                flexDirection="row"
+                justifyContent="space-between"
+              >
                 <ToggleSelector
                   value={logoPosition}
                   options={logoPositionOptions}
                   iconProp={logoPosition}
                   setValue={setLogoPosition}
-                  title={t('Logo Position')}
+                  title={t('Position')}
                 />
 
                 <div
@@ -357,7 +324,7 @@ function DownloadFormUI({
                     value={logoScale}
                     options={logoScaleSelectorOptions}
                     setValue={setLogoScale}
-                    title={t('Logo Size')}
+                    title={t('Size')}
                   />
                 </div>
               </Box>
@@ -412,21 +379,31 @@ function DownloadFormUI({
       <SectionToggle
         title={t('Legend')}
         classes={classes}
-        expanded={expandedSections.legend}
-        handleChange={toggleExpanded('legend')}
+        expanded={toggles.legendVisibility}
+        handleChange={() => {
+          setToggles(prev => ({
+            ...prev,
+            legendVisibility: !prev.legendVisibility,
+          }));
+        }}
       >
         <GreyContainer>
           <GreyContainerSection>
-            <Box display="flex" flexDirection="row">
+            <Box
+              display="flex"
+              flexDirection="row"
+              justifyContent="space-between"
+            >
               <ToggleSelector
                 value={legendPosition > -1 ? legendPosition : -1}
                 options={legendPositionOptions}
                 iconProp={legendPosition}
                 setValue={setLegendPosition}
-                title={t('Legend Position')}
+                title={t('Position')}
               />
               <div className={classes.collapsibleWrapper}>
                 <Switch
+                  title={t('Full Layer')}
                   checked={!!toggles.fullLayerDescription}
                   onChange={() => {
                     setToggles(prev => ({
@@ -434,16 +411,7 @@ function DownloadFormUI({
                       fullLayerDescription: !toggles.fullLayerDescription,
                     }));
                   }}
-                  className={classes.switch}
-                  color="primary"
-                  classes={{
-                    switchBase: classes.switchBase,
-                    track: classes.switchTrack,
-                  }}
                 />
-                <Typography variant="h4" style={{ paddingLeft: '0.5rem' }}>
-                  {t('Full Layer Description')}
-                </Typography>
               </div>
             </Box>
           </GreyContainerSection>
@@ -459,7 +427,7 @@ function DownloadFormUI({
                 value={legendScale}
                 options={legendScaleSelectorOptions}
                 setValue={setLegendScale}
-                title={t('Legend Size')}
+                title={t('Size')}
               />
             </div>
           </GreyContainerSection>
@@ -470,8 +438,13 @@ function DownloadFormUI({
       <SectionToggle
         title={t('Footer')}
         classes={classes}
-        expanded={expandedSections.footer}
-        handleChange={toggleExpanded('footer')}
+        expanded={toggles.footerVisibility}
+        handleChange={() => {
+          setToggles(prev => ({
+            ...prev,
+            footerVisibility: !prev.footerVisibility,
+          }));
+        }}
       >
         <GreyContainer>
           <GreyContainerSection>
@@ -479,7 +452,7 @@ function DownloadFormUI({
               value={footerTextSize}
               options={footerTextSelectorOptions}
               setValue={setFooterTextSize}
-              title={t('Footer Text')}
+              title={t('Size')}
             />
           </GreyContainerSection>
           <GreyContainerSection isLast>
@@ -545,7 +518,7 @@ const styles = (theme: Theme) =>
       display: 'flex',
       height: '100%',
       flexDirection: 'column',
-      gap: '0.8rem',
+      gap: '0.5rem',
       width: '19.2rem',
       scrollbarGutter: 'stable',
       overflow: 'auto',
@@ -574,8 +547,9 @@ const styles = (theme: Theme) =>
         opacity: 0.6,
         fontSize: '14px',
         marginLeft: '10px',
-        position: 'relative',
-        top: '7px',
+        position: 'absolute',
+        top: '50%',
+        transform: 'translateY(-50%)',
       },
     },
     sameRowToggles: {
@@ -583,36 +557,9 @@ const styles = (theme: Theme) =>
       flexDirection: 'row',
       justifyContent: 'space-between',
     },
-    switch: {
-      padding: '7px',
-    },
-    switchTrack: {
-      backgroundColor: '#E0E0E0',
-      borderRadius: '12px',
-    },
-    switchRipple: {
-      backgroundColor: cyanBlue,
-    },
-    switchBase: {
-      color: '#CECECE',
-      '&.Mui-checked': {
-        color: 'white',
-      },
-      '& .MuiSwitch-thumb': {
-        boxShadow:
-          '0px 1px 1px -1px rgba(0,0,0,0.2),0px 0px 1px 0px rgba(0,0,0,0.14),0px 1px 3px 0px rgba(0,0,0,0.12)',
-      },
-      '&.Mui-checked + MuiTouchRipple-root': {
-        backgroundColor: cyanBlue,
-      },
-      '&.Mui-checked + .MuiSwitch-track': {
-        backgroundColor: cyanBlue,
-        opacity: 0.8,
-      },
-    },
   });
 
-export interface DownloadFormUIProps extends WithStyles<typeof styles> {
+export interface PrintConfigProps extends WithStyles<typeof styles> {
   handleClose: () => void;
   setTitleText: React.Dispatch<React.SetStateAction<string>>;
   debounceCallback: (
@@ -647,4 +594,4 @@ export interface DownloadFormUIProps extends WithStyles<typeof styles> {
   setLegendScale: React.Dispatch<React.SetStateAction<number>>;
 }
 
-export default withStyles(styles)(DownloadFormUI);
+export default withStyles(styles)(PrintConfig);
