@@ -52,6 +52,7 @@ const toggleSelectorStyles = makeStyles(() => ({
   },
   buttonGroup: { display: 'flex' },
   button: {
+    backgroundColor: 'white',
     height: '32px',
     width: '36px',
     padding: '4px',
@@ -170,18 +171,50 @@ const legendScaleSelectorOptions = [
 ];
 
 const legendPositionOptions = [
-  { value: 0, comp: () => <Icon style={{ color: 'black' }}>fast_rewind</Icon> },
+  {
+    value: 0,
+    comp: () => (
+      <Icon
+        style={{
+          color: 'black',
+          transform: 'rotate(90deg)',
+        }}
+      >
+        vertical_align_bottom
+      </Icon>
+    ),
+  },
   {
     value: 1,
-    comp: () => <Icon style={{ color: 'black' }}>fast_forward</Icon>,
+    comp: () => (
+      <Icon style={{ color: 'black', transform: 'rotate(270deg)' }}>
+        vertical_align_bottom
+      </Icon>
+    ),
   },
 ];
 
 const logoPositionOptions = [
-  { value: 0, comp: () => <Icon style={{ color: 'black' }}>fast_rewind</Icon> },
+  {
+    value: 0,
+    comp: () => (
+      <Icon
+        style={{
+          color: 'black',
+          transform: 'rotate(90deg)',
+        }}
+      >
+        vertical_align_bottom
+      </Icon>
+    ),
+  },
   {
     value: 1,
-    comp: () => <Icon style={{ color: 'black' }}>fast_forward</Icon>,
+    comp: () => (
+      <Icon style={{ color: 'black', transform: 'rotate(270deg)' }}>
+        vertical_align_bottom
+      </Icon>
+    ),
   },
 ];
 

@@ -44,14 +44,14 @@ const styles = () =>
       padding: '7px',
     },
     switchTrack: {
-      backgroundColor: '#E0E0E0',
+      backgroundColor: 'grey',
       borderRadius: '12px',
     },
     switchRipple: {
       backgroundColor: cyanBlue,
     },
     switchBase: {
-      color: '#CECECE',
+      color: 'white',
       '&.Mui-checked': {
         color: 'white',
       },

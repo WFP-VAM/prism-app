@@ -330,9 +330,9 @@ exports[`renders as expected 1`] = `
                             class="MuiToggleButton-label"
                           >
                             <mock-icon
-                              style="color: black;"
+                              style="color: black; transform: rotate(90deg);"
                             >
-                              fast_rewind
+                              vertical_align_bottom
                             </mock-icon>
                           </span>
                           <span
@@ -350,9 +350,9 @@ exports[`renders as expected 1`] = `
                             class="MuiToggleButton-label"
                           >
                             <mock-icon
-                              style="color: black;"
+                              style="color: black; transform: rotate(270deg);"
                             >
-                              fast_forward
+                              vertical_align_bottom
                             </mock-icon>
                           </span>
                           <span
@@ -575,9 +575,9 @@ exports[`renders as expected 1`] = `
                             class="MuiToggleButton-label"
                           >
                             <mock-icon
-                              style="color: black;"
+                              style="color: black; transform: rotate(90deg);"
                             >
-                              fast_rewind
+                              vertical_align_bottom
                             </mock-icon>
                           </span>
                           <span
@@ -595,9 +595,9 @@ exports[`renders as expected 1`] = `
                             class="MuiToggleButton-label"
                           >
                             <mock-icon
-                              style="color: black;"
+                              style="color: black; transform: rotate(270deg);"
                             >
-                              fast_forward
+                              vertical_align_bottom
                             </mock-icon>
                           </span>
                           <span
