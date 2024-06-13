@@ -64,7 +64,7 @@ const styles = () =>
       },
       '&.Mui-checked + .MuiSwitch-track': {
         backgroundColor: cyanBlue,
-        opacity: 0.8,
+        opacity: 1,
       },
     },
   });
