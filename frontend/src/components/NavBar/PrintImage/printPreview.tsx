@@ -6,13 +6,12 @@ import {
   withStyles,
 } from '@material-ui/core';
 import maplibregl from 'maplibre-gl';
-import React, { useRef } from 'react';
+import React, { useContext, useRef } from 'react';
 import MapGL, { Layer, MapRef, Marker, Source } from 'react-map-gl/maplibre';
 import { useSelector } from 'react-redux';
 import { mapStyle } from 'components/MapView/Map';
 import { getFormattedDate } from 'utils/date-utils';
 import { appConfig } from 'config';
-import { AdminCodeString } from 'config/types';
 import { lightGrey } from 'muiTheme';
 import { AAMarkersSelector } from 'context/anticipatoryActionStateSlice';
 import { useAAMarkerScalePercent } from 'utils/map-utils';
@@ -23,28 +22,12 @@ import {
   mapSelector,
 } from '../../../context/mapStateSlice/selectors';
 import { useSafeTranslation } from '../../../i18n';
-import { MapDimensions, Toggles } from './printImage.types';
+import PrintConfigContext from './printConfig.context';
 
-function PrintPreview({
-  classes,
-  open,
-  toggles,
-  mapDimensions,
-  footerHeight,
-  titleText,
-  titleRef,
-  footerTextSize,
-  footerText,
-  footerRef,
-  logoPosition,
-  titleHeight,
-  logoScale,
-  legendPosition,
-  legendScale,
-  invertedAdminBoundaryLimitPolygon,
-  printRef,
-}: PrintPreviewProps) {
+function PrintPreview({ classes }: PrintPreviewProps) {
   const { t } = useSafeTranslation();
+  const { printConfig } = useContext(PrintConfigContext);
+
   const selectedMap = useSelector(mapSelector);
   const dateRange = useSelector(dateRangeSelector);
   const AAMarkers = useSelector(AAMarkersSelector);
@@ -53,23 +36,13 @@ function PrintPreview({
 
   const mapRef = React.useRef<MapRef>(null);
 
-  // Get the style and layers of the old map
-  const selectedMapStyle = selectedMap?.getStyle();
-
-  if (selectedMapStyle && !toggles.mapLabelsVisibility) {
-    // eslint-disable-next-line fp/no-mutation
-    selectedMapStyle.layers = selectedMapStyle?.layers.filter(
-      x => !x.id.includes('label'),
-    );
-  }
-
   const updateScaleBarAndNorthArrow = React.useCallback(() => {
     const elem = document.querySelector(
       '.maplibregl-ctrl-scale',
     ) as HTMLElement;
 
     // this takes into account the watermark
-    const baseHeight = footerHeight || 20;
+    const baseHeight = printConfig?.footerHeight || 20;
 
     if (elem) {
       // eslint-disable-next-line fp/no-mutating-assign
@@ -84,7 +57,7 @@ function PrintPreview({
     if (northArrowRef.current) {
       northArrowRef.current.style.bottom = `${baseHeight + 40}px`;
     }
-  }, [footerHeight]);
+  }, [printConfig.footerHeight]);
 
   React.useEffect(() => {
     updateScaleBarAndNorthArrow();
@@ -103,6 +76,40 @@ function PrintPreview({
         )}`
       : ''
   }.`;
+
+  // Appease TS by ensuring printConfig is defined
+  if (!printConfig) {
+    return null;
+  }
+
+  const {
+    open,
+    toggles,
+    mapDimensions,
+    footerHeight,
+    titleText,
+    titleRef,
+    footerTextSize,
+    footerText,
+    footerRef,
+    logoPosition,
+    titleHeight,
+    logoScale,
+    legendPosition,
+    legendScale,
+    invertedAdminBoundaryLimitPolygon,
+    printRef,
+  } = printConfig;
+
+  // Get the style and layers of the old map
+  const selectedMapStyle = selectedMap?.getStyle();
+
+  if (selectedMapStyle && !toggles.mapLabelsVisibility) {
+    // eslint-disable-next-line fp/no-mutation
+    selectedMapStyle.layers = selectedMapStyle?.layers.filter(
+      x => !x.id.includes('label'),
+    );
+  }
 
   return (
     <div className={classes.previewContainer}>
@@ -346,25 +353,6 @@ const styles = () =>
     },
   });
 
-export interface PrintPreviewProps extends WithStyles<typeof styles> {
-  open: boolean;
-  toggles: Toggles;
-  mapDimensions: MapDimensions;
-  footerHeight: number;
-  selectedBoundaries: AdminCodeString[];
-  setDownloadMenuAnchorEl: (anchorEl: HTMLElement | null) => void;
-  titleText: string;
-  titleRef: React.RefObject<HTMLDivElement>;
-  footerTextSize: number;
-  footerText: string;
-  footerRef: React.RefObject<HTMLDivElement>;
-  logoPosition: number;
-  titleHeight: number;
-  logoScale: number;
-  legendPosition: number;
-  legendScale: number;
-  invertedAdminBoundaryLimitPolygon: any;
-  printRef: React.RefObject<HTMLDivElement>;
-}
+export interface PrintPreviewProps extends WithStyles<typeof styles> {}
 
 export default withStyles(styles)(PrintPreview);

@@ -24,8 +24,11 @@ import {
 } from '../../../context/mapStateSlice/selectors';
 import { downloadToFile } from '../../MapView/utils';
 import PrintConfig from './printConfig';
-import { MapDimensions, Toggles } from './printImage.types';
 import PrintPreview from './printPreview';
+import PrintConfigContext, {
+  MapDimensions,
+  Toggles,
+} from './printConfig.context';
 
 const defaultFooterText = get(appConfig, 'printConfig.defaultFooterText', '');
 
@@ -175,8 +178,50 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
     handleDownloadMenuClose();
   };
 
+  const printContext = {
+    printConfig: {
+      open,
+      toggles,
+      mapDimensions,
+      footerHeight,
+      selectedBoundaries,
+      setDownloadMenuAnchorEl,
+      titleText,
+      titleRef,
+      footerTextSize,
+      footerText,
+      footerRef,
+      logoPosition,
+      titleHeight,
+      logoScale,
+      legendPosition,
+      legendScale,
+      printRef,
+      invertedAdminBoundaryLimitPolygon,
+      handleClose,
+      setTitleText,
+      debounceCallback,
+      country,
+      setMapDimensions,
+      logo,
+      setLogoPosition,
+      setLogoScale,
+      setToggles,
+      setLegendPosition,
+      setFooterText,
+      setFooterTextSize,
+      handleDownloadMenuOpen,
+      downloadMenuAnchorEl,
+      handleDownloadMenuClose,
+      download,
+      defaultFooterText,
+      setSelectedBoundaries,
+      setLegendScale,
+    },
+  };
+
   return (
-    <>
+    <PrintConfigContext.Provider value={printContext}>
       <Dialog
         maxWidth="xl"
         open={open}
@@ -185,60 +230,11 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
         aria-labelledby="dialog-preview"
       >
         <DialogContent className={classes.contentContainer}>
-          <PrintPreview
-            open={open}
-            toggles={toggles}
-            mapDimensions={mapDimensions}
-            footerHeight={footerHeight}
-            selectedBoundaries={selectedBoundaries}
-            setDownloadMenuAnchorEl={setDownloadMenuAnchorEl}
-            titleText={titleText}
-            titleRef={titleRef}
-            footerTextSize={footerTextSize}
-            footerText={footerText}
-            footerRef={footerRef}
-            logoPosition={logoPosition}
-            titleHeight={titleHeight}
-            logoScale={logoScale}
-            legendPosition={legendPosition}
-            legendScale={legendScale}
-            printRef={printRef}
-            invertedAdminBoundaryLimitPolygon={
-              invertedAdminBoundaryLimitPolygon
-            }
-          />
-          <PrintConfig
-            handleClose={handleClose}
-            setTitleText={setTitleText}
-            debounceCallback={debounceCallback}
-            country={country}
-            mapDimensions={mapDimensions}
-            setMapDimensions={setMapDimensions}
-            logo={logo}
-            logoPosition={logoPosition}
-            setLogoPosition={setLogoPosition}
-            logoScale={logoScale}
-            setLogoScale={setLogoScale}
-            toggles={toggles}
-            setToggles={setToggles}
-            legendPosition={legendPosition}
-            setLegendPosition={setLegendPosition}
-            setFooterText={setFooterText}
-            footerTextSize={footerTextSize}
-            setFooterTextSize={setFooterTextSize}
-            handleDownloadMenuOpen={handleDownloadMenuOpen}
-            downloadMenuAnchorEl={downloadMenuAnchorEl}
-            handleDownloadMenuClose={handleDownloadMenuClose}
-            download={download}
-            defaultFooterText={defaultFooterText}
-            selectedBoundaries={selectedBoundaries}
-            setSelectedBoundaries={setSelectedBoundaries}
-            legendScale={legendScale}
-            setLegendScale={setLegendScale}
-          />
+          <PrintPreview />
+          <PrintConfig />
         </DialogContent>
       </Dialog>
-    </>
+    </PrintConfigContext.Provider>
   );
 }
 
