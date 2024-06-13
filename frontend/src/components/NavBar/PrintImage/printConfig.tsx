@@ -281,262 +281,268 @@ function PrintConfig({ classes }: PrintConfigProps) {
   } = printConfig;
 
   return (
-    <div className={classes.optionsContainer}>
-      <div>
-        <Box fontSize={14} fontWeight={900} mb={1} className={classes.title}>
-          {t('Map Options')}
-        </Box>
-        <IconButton
-          className={classes.closeButton}
-          onClick={() => handleClose()}
-        >
-          <Cancel />
-        </IconButton>
-      </div>
+    <Box overflow="scroll">
+      <div className={classes.optionsContainer}>
+        <div>
+          <Box fontSize={14} fontWeight={900} mb={1} className={classes.title}>
+            {t('Map Options')}
+          </Box>
+          <IconButton
+            className={classes.closeButton}
+            onClick={() => handleClose()}
+          >
+            <Cancel />
+          </IconButton>
+        </div>
 
-      {/* Title */}
-      <div className={classes.optionWrap}>
-        <TextField
-          defaultValue={country}
-          placeholder={t('Title')}
-          fullWidth
-          size="small"
-          inputProps={{ label: t('Title'), style: { color: 'black' } }}
-          onChange={event => {
-            debounceCallback(setTitleText, event.target.value);
-          }}
-          variant="outlined"
+        {/* Title */}
+        <div className={classes.optionWrap}>
+          <TextField
+            defaultValue={country}
+            placeholder={t('Title')}
+            fullWidth
+            size="small"
+            inputProps={{ label: t('Title'), style: { color: 'black' } }}
+            onChange={event => {
+              debounceCallback(setTitleText, event.target.value);
+            }}
+            variant="outlined"
+          />
+        </div>
+
+        {/* Width */}
+        <ToggleSelector
+          value={mapDimensions.width}
+          options={mapWidthSelectorOptions}
+          setValue={val =>
+            setMapDimensions((prev: MapDimensions) => ({
+              ...(prev || {}),
+              width: val as number,
+            }))
+          }
+          title={t('Map Width')}
         />
-      </div>
 
-      {/* Width */}
-      <ToggleSelector
-        value={mapDimensions.width}
-        options={mapWidthSelectorOptions}
-        setValue={val =>
-          setMapDimensions((prev: MapDimensions) => ({
-            ...(prev || {}),
-            width: val as number,
-          }))
-        }
-        title={t('Map Width')}
-      />
+        {/* Logo */}
+        {logo && (
+          <SectionToggle
+            title={t('Logo')}
+            classes={classes}
+            expanded={toggles.logoVisibility}
+            handleChange={({ target }) => {
+              setToggles(prev => ({
+                ...prev,
+                logoVisibility: Boolean(target.checked),
+              }));
+              setLogoPosition(target.checked ? 0 : -1);
+            }}
+          >
+            <GreyContainer>
+              <GreyContainerSection isLast>
+                <Box
+                  display="flex"
+                  flexDirection="row"
+                  justifyContent="space-between"
+                >
+                  <ToggleSelector
+                    value={logoPosition}
+                    options={logoPositionOptions}
+                    iconProp={logoPosition}
+                    setValue={setLogoPosition}
+                    title={t('Position')}
+                  />
 
-      {/* Logo */}
-      {logo && (
+                  <div
+                    // disable the legend scale if the legend is not visible
+                    style={{
+                      opacity: logoPosition !== -1 ? 1 : 0.5,
+                      pointerEvents: logoPosition !== -1 ? 'auto' : 'none',
+                    }}
+                  >
+                    <ToggleSelector
+                      align="end"
+                      value={logoScale}
+                      options={logoScaleSelectorOptions}
+                      setValue={setLogoScale}
+                      title={t('Size')}
+                    />
+                  </div>
+                </Box>
+              </GreyContainerSection>
+            </GreyContainer>
+          </SectionToggle>
+        )}
+
+        {/* Labels */}
         <SectionToggle
-          title={t('Logo')}
+          title={t('Map Labels')}
           classes={classes}
-          expanded={toggles.logoVisibility}
-          handleChange={({ target }) => {
+          expanded={toggles.mapLabelsVisibility}
+          handleChange={({ target }) =>
             setToggles(prev => ({
               ...prev,
-              logoVisibility: Boolean(target.checked),
+              mapLabelsVisibility: Boolean(target.checked),
+            }))
+          }
+        />
+
+        {/* Admin Area */}
+        <SectionToggle
+          title={t('Admin Areas')}
+          classes={classes}
+          expanded={toggles.countryMask}
+          handleChange={({ target }) =>
+            setToggles(prev => ({
+              ...prev,
+              countryMask: Boolean(target.checked),
+            }))
+          }
+        >
+          <div className={classes.optionWrap}>
+            <SimpleBoundaryDropdown
+              selectAll
+              labelMessage={t('Select admin area')}
+              className={classes.formControl}
+              selectedBoundaries={selectedBoundaries}
+              setSelectedBoundaries={setSelectedBoundaries}
+              selectProps={{
+                variant: 'outlined',
+                fullWidth: true,
+              }}
+              multiple={false}
+              size="small"
+            />
+          </div>
+        </SectionToggle>
+
+        {/* Legend */}
+        <SectionToggle
+          title={t('Legend')}
+          classes={classes}
+          expanded={toggles.legendVisibility}
+          handleChange={() => {
+            setToggles(prev => ({
+              ...prev,
+              legendVisibility: !prev.legendVisibility,
             }));
-            setLogoPosition(target.checked ? 0 : -1);
           }}
         >
           <GreyContainer>
-            <GreyContainerSection isLast>
+            <GreyContainerSection>
               <Box
                 display="flex"
                 flexDirection="row"
                 justifyContent="space-between"
               >
                 <ToggleSelector
-                  value={logoPosition}
-                  options={logoPositionOptions}
-                  iconProp={logoPosition}
-                  setValue={setLogoPosition}
+                  value={legendPosition > -1 ? legendPosition : -1}
+                  options={legendPositionOptions}
+                  iconProp={legendPosition}
+                  setValue={setLegendPosition}
                   title={t('Position')}
                 />
-
-                <div
-                  // disable the legend scale if the legend is not visible
-                  style={{
-                    opacity: logoPosition !== -1 ? 1 : 0.5,
-                    pointerEvents: logoPosition !== -1 ? 'auto' : 'none',
-                  }}
-                >
-                  <ToggleSelector
-                    align="end"
-                    value={logoScale}
-                    options={logoScaleSelectorOptions}
-                    setValue={setLogoScale}
-                    title={t('Size')}
+                <div className={classes.collapsibleWrapper}>
+                  <Switch
+                    title={t('Full Layer')}
+                    checked={!!toggles.fullLayerDescription}
+                    onChange={() => {
+                      setToggles(prev => ({
+                        ...prev,
+                        fullLayerDescription: !toggles.fullLayerDescription,
+                      }));
+                    }}
                   />
                 </div>
               </Box>
             </GreyContainerSection>
-          </GreyContainer>
-        </SectionToggle>
-      )}
-
-      {/* Labels */}
-      <SectionToggle
-        title={t('Map Labels')}
-        classes={classes}
-        expanded={toggles.mapLabelsVisibility}
-        handleChange={({ target }) =>
-          setToggles(prev => ({
-            ...prev,
-            mapLabelsVisibility: Boolean(target.checked),
-          }))
-        }
-      />
-
-      {/* Admin Area */}
-      <SectionToggle
-        title={t('Admin Areas')}
-        classes={classes}
-        expanded={toggles.countryMask}
-        handleChange={({ target }) =>
-          setToggles(prev => ({
-            ...prev,
-            countryMask: Boolean(target.checked),
-          }))
-        }
-      >
-        <div className={classes.optionWrap}>
-          <SimpleBoundaryDropdown
-            selectAll
-            labelMessage={t('Select admin area')}
-            className={classes.formControl}
-            selectedBoundaries={selectedBoundaries}
-            setSelectedBoundaries={setSelectedBoundaries}
-            selectProps={{
-              variant: 'outlined',
-              fullWidth: true,
-            }}
-            multiple={false}
-            size="small"
-          />
-        </div>
-      </SectionToggle>
-
-      {/* Legend */}
-      <SectionToggle
-        title={t('Legend')}
-        classes={classes}
-        expanded={toggles.legendVisibility}
-        handleChange={() => {
-          setToggles(prev => ({
-            ...prev,
-            legendVisibility: !prev.legendVisibility,
-          }));
-        }}
-      >
-        <GreyContainer>
-          <GreyContainerSection>
-            <Box
-              display="flex"
-              flexDirection="row"
-              justifyContent="space-between"
-            >
-              <ToggleSelector
-                value={legendPosition > -1 ? legendPosition : -1}
-                options={legendPositionOptions}
-                iconProp={legendPosition}
-                setValue={setLegendPosition}
-                title={t('Position')}
-              />
-              <div className={classes.collapsibleWrapper}>
-                <Switch
-                  title={t('Full Layer')}
-                  checked={!!toggles.fullLayerDescription}
-                  onChange={() => {
-                    setToggles(prev => ({
-                      ...prev,
-                      fullLayerDescription: !toggles.fullLayerDescription,
-                    }));
-                  }}
+            <GreyContainerSection isLast>
+              <div
+                // disable the legend scale if the legend is not visible
+                style={{
+                  opacity: legendPosition !== -1 ? 1 : 0.5,
+                  pointerEvents: legendPosition !== -1 ? 'auto' : 'none',
+                }}
+              >
+                <ToggleSelector
+                  value={legendScale}
+                  options={legendScaleSelectorOptions}
+                  setValue={setLegendScale}
+                  title={t('Size')}
                 />
               </div>
-            </Box>
-          </GreyContainerSection>
-          <GreyContainerSection isLast>
-            <div
-              // disable the legend scale if the legend is not visible
-              style={{
-                opacity: legendPosition !== -1 ? 1 : 0.5,
-                pointerEvents: legendPosition !== -1 ? 'auto' : 'none',
-              }}
-            >
+            </GreyContainerSection>
+          </GreyContainer>
+        </SectionToggle>
+
+        {/* Footer */}
+        <SectionToggle
+          title={t('Footer')}
+          classes={classes}
+          expanded={toggles.footerVisibility}
+          handleChange={() => {
+            setToggles(prev => ({
+              ...prev,
+              footerVisibility: !prev.footerVisibility,
+            }));
+          }}
+        >
+          <GreyContainer>
+            <GreyContainerSection>
               <ToggleSelector
-                value={legendScale}
-                options={legendScaleSelectorOptions}
-                setValue={setLegendScale}
+                value={footerTextSize}
+                options={footerTextSelectorOptions}
+                setValue={setFooterTextSize}
                 title={t('Size')}
               />
-            </div>
-          </GreyContainerSection>
-        </GreyContainer>
-      </SectionToggle>
+            </GreyContainerSection>
+            <GreyContainerSection isLast>
+              <TextField
+                size="small"
+                key={defaultFooterText}
+                multiline
+                defaultValue={defaultFooterText}
+                inputProps={{ style: { color: 'black', fontSize: '0.8rem' } }}
+                style={{ backgroundColor: 'white', borderRadius: '5px' }}
+                minRows={3}
+                maxRows={6}
+                fullWidth
+                onChange={event => {
+                  debounceCallback(setFooterText, event.target.value);
+                }}
+                variant="outlined"
+              />
+            </GreyContainerSection>
+          </GreyContainer>
+        </SectionToggle>
 
-      {/* Footer */}
-      <SectionToggle
-        title={t('Footer')}
-        classes={classes}
-        expanded={toggles.footerVisibility}
-        handleChange={() => {
-          setToggles(prev => ({
-            ...prev,
-            footerVisibility: !prev.footerVisibility,
-          }));
-        }}
-      >
-        <GreyContainer>
-          <GreyContainerSection>
-            <ToggleSelector
-              value={footerTextSize}
-              options={footerTextSelectorOptions}
-              setValue={setFooterTextSize}
-              title={t('Size')}
-            />
-          </GreyContainerSection>
-          <GreyContainerSection isLast>
-            <TextField
-              size="small"
-              key={defaultFooterText}
-              multiline
-              defaultValue={defaultFooterText}
-              inputProps={{ style: { color: 'black', fontSize: '0.8rem' } }}
-              style={{ backgroundColor: 'white', borderRadius: '5px' }}
-              minRows={3}
-              maxRows={6}
-              fullWidth
-              onChange={event => {
-                debounceCallback(setFooterText, event.target.value);
-              }}
-              variant="outlined"
-            />
-          </GreyContainerSection>
-        </GreyContainer>
-      </SectionToggle>
-
-      <Button
-        style={{ backgroundColor: cyanBlue, color: 'black' }}
-        variant="contained"
-        color="primary"
-        className={classes.gutter}
-        endIcon={<GetApp />}
-        onClick={e => handleDownloadMenuOpen(e)}
-      >
-        {t('Download')}
-      </Button>
-      <Menu
-        anchorEl={downloadMenuAnchorEl}
-        keepMounted
-        open={Boolean(downloadMenuAnchorEl)}
-        onClose={handleDownloadMenuClose}
-      >
-        <MenuItem onClick={() => download('png')}>{t('Download PNG')}</MenuItem>
-        <MenuItem onClick={() => download('jpeg')}>
-          {t('Download JPEG')}
-        </MenuItem>
-        <MenuItem onClick={() => download('pdf')}>{t('Download PDF')}</MenuItem>
-      </Menu>
-    </div>
+        <Button
+          style={{ backgroundColor: cyanBlue, color: 'black' }}
+          variant="contained"
+          color="primary"
+          className={classes.gutter}
+          endIcon={<GetApp />}
+          onClick={e => handleDownloadMenuOpen(e)}
+        >
+          {t('Download')}
+        </Button>
+        <Menu
+          anchorEl={downloadMenuAnchorEl}
+          keepMounted
+          open={Boolean(downloadMenuAnchorEl)}
+          onClose={handleDownloadMenuClose}
+        >
+          <MenuItem onClick={() => download('png')}>
+            {t('Download PNG')}
+          </MenuItem>
+          <MenuItem onClick={() => download('jpeg')}>
+            {t('Download JPEG')}
+          </MenuItem>
+          <MenuItem onClick={() => download('pdf')}>
+            {t('Download PDF')}
+          </MenuItem>
+        </Menu>
+      </div>
+    </Box>
   );
 }
 
@@ -558,6 +564,7 @@ const styles = (theme: Theme) =>
       height: '100%',
       flexDirection: 'column',
       gap: '0.5rem',
+      minHeight: '740px',
       width: '19.2rem',
       scrollbarGutter: 'stable',
       overflow: 'auto',
