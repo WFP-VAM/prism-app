@@ -12,6 +12,7 @@ exports[`renders as expected 1`] = `
   >
     <div
       class="MuiGrid-root memo-dateItem-2 MuiGrid-item MuiGrid-grid-xs-true"
+      data-date-index="0"
     >
       <div
         class="TimelineLabel-dayItem-16"

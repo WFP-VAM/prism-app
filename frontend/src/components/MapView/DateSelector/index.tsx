@@ -297,6 +297,43 @@ const DateSelector = memo(({ classes }: DateSelectorProps) => {
     e.stopPropagation();
   }, []);
 
+  const onPointerDrag = useCallback(
+    (e: DraggableEvent, position: Point) => {
+      const exactX = Math.round(position.x / TIMELINE_ITEM_WIDTH);
+      if (exactX >= dateRange.length) {
+        return;
+      }
+      const selectedIndex = findDateIndex(
+        availableDates,
+        dateRange[exactX].value,
+      );
+      if (selectedIndex < 0) {
+        return;
+      }
+      setPointerPosition({
+        x: exactX * TIMELINE_ITEM_WIDTH,
+        y: position.y,
+      });
+
+      // Hide all tooltips
+      const allTooltips = document.querySelectorAll('[data-date-index]');
+      allTooltips.forEach(tooltip => {
+        tooltip.dispatchEvent(new MouseEvent('mouseout', { bubbles: true }));
+      });
+
+      // Show current tooltip
+      const tooltipElement = document.querySelector(
+        `[data-date-index="${exactX}"]`,
+      );
+      if (tooltipElement) {
+        tooltipElement.dispatchEvent(
+          new MouseEvent('mouseover', { bubbles: true }),
+        );
+      }
+    },
+    [availableDates, dateRange],
+  );
+
   // Set pointer position after being dragged
   const onPointerStop = useCallback(
     (e: DraggableEvent, position: Point) => {
@@ -434,6 +471,7 @@ const DateSelector = memo(({ classes }: DateSelectorProps) => {
                   position={pointerPosition}
                   onStart={onPointerStart}
                   onStop={onPointerStop}
+                  onDrag={onPointerDrag}
                 >
                   <div className={classes.pointer} id={POINTER_ID}>
                     <TickSvg />

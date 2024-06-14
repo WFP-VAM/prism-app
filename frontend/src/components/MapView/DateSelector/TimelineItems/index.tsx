@@ -215,6 +215,7 @@ const TimelineItems = memo(
                   date.isFirstDay ? classes.dateItemFull : classes.dateItem
                 }`}
                 onClick={() => clickDate(index)}
+                data-date-index={index} // Used by the pointer tick to trigger tooltips
               >
                 <TimelineLabel locale={locale} date={date} />
                 <TimelineItem
