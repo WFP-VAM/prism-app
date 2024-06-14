@@ -361,6 +361,16 @@ const DateSelector = memo(({ classes }: DateSelectorProps) => {
         position.y,
       );
       updateStartDate(updatedDate, true);
+
+      // Hide the tooltip for exactX
+      const tooltipElement = document.querySelector(
+        `[data-date-index="${exactX}"]`,
+      );
+      if (tooltipElement) {
+        tooltipElement.dispatchEvent(
+          new MouseEvent('mouseout', { bubbles: true }),
+        );
+      }
     },
     [
       availableDates,
