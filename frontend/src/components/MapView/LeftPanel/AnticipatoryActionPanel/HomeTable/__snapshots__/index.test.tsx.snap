@@ -317,7 +317,7 @@ exports[`renders as expected 1`] = `
         component="a"
         download="2023-12-01-aa_probabilities_triggers_moz.csv"
         fullwidth="true"
-        href="https://data.earthobservation.vam.wfp.org/public-share/aa/aa_probabilities_triggers_moz.csv"
+        href="https://data.earthobservation.vam.wfp.org/public-share/_nocache/aa_probabilities_triggers_moz.csv"
         starticon="[object Object]"
         variant="outlined"
       >
