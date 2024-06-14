@@ -525,12 +525,12 @@ const styles = (theme: Theme) =>
 
     pointer: {
       position: 'absolute',
-      zIndex: 5,
-      top: -20,
-      left: -3.5,
+      zIndex: 100,
+      top: -7,
+      left: -12,
       height: '16px',
-      cursor: 'pointer',
-      pointerEvents: 'none',
+      cursor: 'grab',
+      // pointerEvents: 'none',
     },
   });
 
