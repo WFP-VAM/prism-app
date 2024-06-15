@@ -484,7 +484,9 @@ const DateSelector = memo(({ classes }: DateSelectorProps) => {
                   onDrag={onPointerDrag}
                 >
                   <div className={classes.pointer} id={POINTER_ID}>
-                    <TickSvg />
+                    <TickSvg
+                      style={{ pointerEvents: 'none', marginTop: -29 }}
+                    />
                   </div>
                 </Draggable>
               </div>
@@ -574,11 +576,10 @@ const styles = (theme: Theme) =>
     pointer: {
       position: 'absolute',
       zIndex: 100,
-      top: -7,
+      marginTop: 22,
       left: -12,
       height: '16px',
       cursor: 'grab',
-      // pointerEvents: 'none',
     },
   });
 
