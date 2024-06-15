@@ -105,6 +105,7 @@ function ToggleSelector({
     </div>
   );
 }
+// Mozambique - Blended Rainfall Aggregate (10-day) - May 2024
 
 // The SectionToggle contain a toggle, a label, and (when opened) a container that animates open
 function SectionToggle({
@@ -123,12 +124,16 @@ function SectionToggle({
   ) => void;
 } & WithStyles<typeof styles>) {
   return (
-    <>
-      <div className={classes.collapsibleWrapper}>
+    <div>
+      <div
+        className={`${classes.collapsibleWrapper} ${
+          expanded && children ? classes.collapsibleWrapperExpanded : ''
+        }`}
+      >
         <Switch checked={expanded} onChange={handleChange} title={title} />
       </div>
       <Collapse in={expanded}>{children}</Collapse>
-    </>
+    </div>
   );
 }
 
@@ -583,6 +588,9 @@ const styles = (theme: Theme) =>
       '& h4': {
         fontSize: '14px',
       },
+    },
+    collapsibleWrapperExpanded: {
+      marginBottom: '0.25rem',
     },
     formControl: {
       width: '100%',

@@ -1,5 +1,4 @@
 import {
-  Box,
   Typography,
   WithStyles,
   createStyles,
@@ -111,6 +110,15 @@ function PrintPreview({ classes }: PrintPreviewProps) {
     );
   }
 
+  const logoHeightMultipler = 32;
+  const logoHeight = logoHeightMultipler * logoScale;
+  // Title min height is based on the logo size but only if visible
+  const titleMinHeight = toggles.logoVisibility ? logoHeight : 0;
+  // Title max width is based on the logo width plus the padding, assume a image ratio of 4:1 (very long) or taller
+  const titleMaxWidth = toggles.logoVisibility
+    ? `calc(100% - ${logoHeight * 8}px)`
+    : '100%';
+
   return (
     <div className={classes.previewContainer}>
       <div
@@ -142,22 +150,30 @@ function PrintPreview({ classes }: PrintPreviewProps) {
               alt="northArrow"
             />
             {titleText && (
-              <div ref={titleRef}>
-                <Box
-                  display="inline-block"
-                  bgcolor="white"
-                  px={2}
-                  py={1}
-                  boxShadow={3}
-                  borderRadius={2}
-                  zIndex={2}
-                  position="absolute"
-                  top={0}
-                  left="50%"
-                  style={{ transform: 'translateX(-50%)' }}
-                >
-                  <Typography variant="h6">{titleText}</Typography>
-                </Box>
+              <div
+                ref={titleRef}
+                className={classes.titleOverlay}
+                style={{ minHeight: `${titleMinHeight}px` }}
+              >
+                {toggles.logoVisibility && (
+                  <img
+                    style={{
+                      position: 'absolute',
+                      zIndex: 2,
+                      height: logoHeight,
+                      left: logoPosition % 2 === 0 ? '8px' : 'auto',
+                      right: logoPosition % 2 === 0 ? 'auto' : '8px',
+                      display: 'flex',
+                      justifyContent:
+                        logoPosition % 2 === 0 ? 'flex-start' : 'flex-end',
+                    }}
+                    src={logo}
+                    alt="logo"
+                  />
+                )}
+                <Typography variant="h6" style={{ maxWidth: titleMaxWidth }}>
+                  {titleText}
+                </Typography>
               </div>
             )}
             {toggles.footerVisibility && (footerText || dateText) && (
@@ -179,13 +195,13 @@ function PrintPreview({ classes }: PrintPreviewProps) {
                 )}
               </div>
             )}
-            {toggles.logoVisibility && (
+            {toggles.logoVisibility && !titleText && (
               <img
                 style={{
                   position: 'absolute',
                   zIndex: 2,
                   top: titleHeight + 8,
-                  height: 32 * logoScale,
+                  height: logoHeight,
                   left: logoPosition % 2 === 0 ? '8px' : 'auto',
                   right: logoPosition % 2 === 0 ? 'auto' : '8px',
                   display: 'flex',
@@ -203,7 +219,9 @@ function PrintPreview({ classes }: PrintPreviewProps) {
                   zIndex: 2,
                   top:
                     titleHeight +
-                    (logoPosition === legendPosition ? 32 * logoScale : 0),
+                    (!titleText && logoPosition === legendPosition
+                      ? logoHeight + 4
+                      : 0),
                   left: legendPosition % 2 === 0 ? '8px' : 'auto',
                   right: legendPosition % 2 === 0 ? 'auto' : '8px',
                   display: 'flex',
@@ -312,6 +330,9 @@ const styles = () =>
       zIndex: 1,
     },
     titleOverlay: {
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
       position: 'absolute',
       top: 0,
       left: 0,
@@ -324,6 +345,7 @@ const styles = () =>
       fontWeight: 600,
       padding: '8px 0 8px 0',
       borderBottom: `1px solid ${lightGrey}`,
+      '& h6': {},
     },
     footerOverlay: {
       padding: '8px',
