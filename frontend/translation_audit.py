@@ -30,13 +30,39 @@ def find_translation_files(directory):
 def get_file_name(file_path):
     return file_path.split("/")[-2]
 
+def format_list(keys):
+    if not keys:
+        return ""
+    return "".join(f"<li>{key}</li>" for key in keys)
+
+def print_results(results, as_table=False):
+    if as_table:
+        print("| Translation File | Missing Keys | Extra Keys |")
+        print("| ---------------- | ------------ | ---------- |")
+        for file_name, missing_keys, extra_keys in results:
+            print(f"| {file_name} | <ul>{format_list(missing_keys)}</ul> | <ul>{format_list(extra_keys)}</ul> |")
+    else:
+        for file_name, missing_keys, extra_keys in results:
+            print(f"Translation File: {file_name}")
+            print("Missing Keys:")
+            for key in missing_keys:
+                print(f"- {key}")
+            print("Extra Keys:")
+            for key in extra_keys:
+                print(f"- {key}")
+            print()
+
+# Usage
 project_directory = "./src/"
 translation_keys = find_translation_keys(project_directory)
 translation_files = find_translation_files(project_directory)
 
+# Flag to control the output format
+print_as_table = True
+
+results = []
 for file_path in translation_files:
     file_name = get_file_name(file_path)
-    print(f"Translation File: {file_name}")
     
     with open(file_path, "r") as f:
         translation_data = json.load(f)
@@ -45,13 +71,6 @@ for file_path in translation_files:
         missing_keys = set(translation_keys) - set(json_keys)
         extra_keys = set(json_keys) - set(translation_keys)
         
-        print("\nKeys in codebase missing in translation.json:")
-        for key in missing_keys:
-            print("- " + key)
-        
-        print("\nKeys in translation.json missing in codebase:")
-        for key in extra_keys:
-            print("- " + key)
-        
-        print("\n --- \n")
-        
+        results.append((file_name, missing_keys, extra_keys))
+
+print_results(results, as_table=print_as_table)
