@@ -224,11 +224,9 @@
     "Use your mouse to pan and zoom the map": "Используйте мышь для панорамирования и масштабирования карты",
     "Map Options": "Параметры карты",
     "Title": "Заголовок",
-    "Mask data outside of admin area": "Маскировать данные за пределами административной области",
     "Select admin area": "Выберите административную область",
-    "Legend - Full Layer Description": "Легенда – полное описание слоя",
     "legend": "Легенда",
     "Map Width": "Ширина карты",
-    "Footer Text": "Текст нижнего колонтитула",
+    "Size": "Размер",
     "Kyrgyzstan": "Кыргызстан"
 }
