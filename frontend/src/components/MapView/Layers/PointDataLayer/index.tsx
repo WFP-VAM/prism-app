@@ -1,7 +1,10 @@
 import React, { memo, useEffect } from 'react';
 import { Layer, Source } from 'react-map-gl/maplibre';
+import { Point } from 'geojson';
+
 import { useDispatch, useSelector } from 'react-redux';
 import {
+  LegendDefinition,
   MapEventWrapFunctionProps,
   PointDataLayerProps,
   PointDataLoader,
@@ -26,7 +29,10 @@ import {
 } from 'components/MapView/Layers/styles';
 import { setEWSParams, clearDataset } from 'context/datasetStateSlice';
 import { createEWSDatasetParams } from 'utils/ews-utils';
-import { addPopupParams } from 'components/MapView/Layers/layer-utils';
+import {
+  addPopupParams,
+  // legendToStops,
+} from 'components/MapView/Layers/layer-utils';
 import {
   CircleLayerSpecification,
   FillLayerSpecification,
@@ -34,6 +40,32 @@ import {
 } from 'maplibre-gl';
 import { findFeature, getLayerMapId, useMapCallback } from 'utils/map-utils';
 import { getFormattedDate } from 'utils/date-utils';
+import { geoToH3, h3ToGeoBoundary } from 'h3-js';
+import { opacitySelector } from 'context/opacityStateSlice';
+
+export function legendToStops(
+  legend: LegendDefinition = [],
+): [string, string][] {
+  // TODO - Make this function easier to use for point data and explicit its behavior.
+  return legend.map(({ value, color }) => [value as string, color]);
+}
+
+export const paintProps: (
+  legend: LegendDefinition,
+  opacity: number | undefined,
+) => FillLayerSpecification['paint'] = (
+  legend: LegendDefinition,
+  opacity?: number,
+) =>
+  ({
+    'fill-opacity': opacity || 0.5,
+    'fill-color': [
+      'match',
+      ['get', 'F2023_an_1'],
+      ...legendToStops(legend).flat(),
+      '#000000',
+    ],
+  } as any);
 
 const onClick = ({
   layer,
@@ -67,6 +99,7 @@ const PointDataLayer = ({ layer, before }: LayersProps) => {
   const serverAvailableDates = useSelector(availableDatesSelector);
   const layerAvailableDates = serverAvailableDates[layer.id];
   const userAuth = useSelector(userAuthSelector);
+  const opacityState = useSelector(opacitySelector(layer.id));
 
   useMapCallback('click', layerId, layer, onClick);
 
@@ -145,6 +178,49 @@ const PointDataLayer = ({ layer, before }: LayersProps) => {
 
   if (!data || !validateLayerDate) {
     return null;
+  }
+
+  if (layer.id.includes('crop_change')) {
+    const finalFeatures =
+      data &&
+      data.features
+        .map(feature => {
+          const point = feature.geometry as Point;
+
+          // Convert the point to a hexagon
+          const hexagon = geoToH3(
+            point.coordinates[1],
+            point.coordinates[0],
+            6.9, // resolution, adjust as needed
+          );
+          if (!feature?.properties?.F2023_an_1) {
+            return null;
+          }
+          return {
+            ...feature,
+            geometry: {
+              type: 'Polygon',
+              coordinates: [h3ToGeoBoundary(hexagon, true)], // Convert the hexagon to a GeoJSON polygon
+            },
+          };
+        })
+        .filter(Boolean);
+
+    const filteredData = {
+      ...data,
+      features: finalFeatures,
+    };
+
+    return (
+      <Source type="geojson" data={filteredData}>
+        <Layer
+          id={getLayerMapId(layer.id)}
+          type="fill"
+          paint={paintProps(layer.legend || [], opacityState || layer.opacity)}
+          beforeId={before}
+        />
+      </Source>
+    );
   }
 
   if (layer.adminLevelDisplay) {
