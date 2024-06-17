@@ -1,10 +1,9 @@
 import appConfig from './prism.json';
 import rawLayers from './layers.json';
-import ecuadorTranslation from './translation.json';
 
 const rawTables = {};
 const rawReports = {};
-const translation = { es: ecuadorTranslation };
+const translation = { es: {} };
 
 export default {
   appConfig,

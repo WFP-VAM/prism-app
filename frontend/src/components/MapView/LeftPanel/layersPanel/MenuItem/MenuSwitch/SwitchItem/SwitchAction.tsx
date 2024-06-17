@@ -1,38 +1,13 @@
-import {
-  Switch,
-  WithStyles,
-  createStyles,
-  withStyles,
-} from '@material-ui/core';
 import React, { ChangeEvent, memo, useCallback } from 'react';
+import Switch from 'components/Common/Switch';
 
-const styles = () =>
-  createStyles({
-    switch: {
-      marginRight: 2,
-    },
-    switchTrack: {
-      backgroundColor: '#E0E0E0',
-    },
-    switchBase: {
-      color: '#E0E0E0',
-      '&.Mui-checked': {
-        color: '#53888F',
-      },
-      '&.Mui-checked + .MuiSwitch-track': {
-        backgroundColor: '#B1D6DB',
-      },
-    },
-  });
-
-interface SwitchActionProps extends WithStyles<typeof styles> {
+interface SwitchActionProps {
   someLayerAreSelected: boolean;
   toggleLayerValue: (selectedLayerId: string, checked: boolean) => void;
   activeLayerId: string;
   validatedTitle: string;
 }
 const SwitchAction = ({
-  classes,
   someLayerAreSelected,
   toggleLayerValue,
   activeLayerId,
@@ -46,19 +21,11 @@ const SwitchAction = ({
   );
   return (
     <Switch
-      size="small"
-      className={classes.switch}
-      classes={{
-        switchBase: classes.switchBase,
-        track: classes.switchTrack,
-      }}
       checked={someLayerAreSelected}
       onChange={handleOnChangeSwitch}
-      inputProps={{
-        'aria-label': validatedTitle,
-      }}
+      ariaLabel={validatedTitle}
     />
   );
 };
 
-export default memo(withStyles(styles)(SwitchAction));
+export default memo(SwitchAction);
