@@ -5,12 +5,12 @@ exports[`renders as expected 1`] = `
   <div
     class="memo-tooltipItemContainer-1"
   >
-    <div>
-      Some Title
-    </div>
     <div
       class="memo-tooltipItemColor-2"
     />
+    <div>
+      Some Title
+    </div>
   </div>
 </div>
 `;
