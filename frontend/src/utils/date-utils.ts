@@ -16,8 +16,16 @@ export const datesAreEqualWithoutTime = (
 };
 
 function diffInDays(date1: Date, date2: Date) {
-  const date1InMs = date1.getTime();
-  const date2InMs = date2.getTime();
+  // Normalize both dates to midnight UTC
+  const d1 = new Date(
+    Date.UTC(date1.getUTCFullYear(), date1.getUTCMonth(), date1.getUTCDate()),
+  );
+  const d2 = new Date(
+    Date.UTC(date2.getUTCFullYear(), date2.getUTCMonth(), date2.getUTCDate()),
+  );
+
+  const date1InMs = d1.getTime();
+  const date2InMs = d2.getTime();
 
   const differenceInMs = Math.abs(date1InMs - date2InMs);
 
