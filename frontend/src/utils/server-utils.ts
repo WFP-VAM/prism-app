@@ -317,17 +317,6 @@ export function generateIntermediateDateItemFromValidity(
 
   const sortedDates = Array.prototype.sort.call(dates) as typeof dates;
 
-  // Generate first DateItem[] from dates array.
-  const baseItem = validity
-    ? {
-        isStartDate: !!forward,
-        isEndDate: !!backward,
-      }
-    : {};
-  const dateItemsDefault = sortedDates.map(sortedDate =>
-    generateDefaultDateItem(sortedDate, baseItem),
-  );
-
   // only calculate validity for dates that are less than 5 years old
   const fiveYearsInMs = 5 * 365 * oneDayInMs;
   const earliestDate = Date.now() - fiveYearsInMs;
@@ -387,6 +376,8 @@ export function generateIntermediateDateItemFromValidity(
       const dateItemsToAdd = daysToAdd.map(dateToAdd => ({
         displayDate: dateToAdd,
         queryDate: date.getTime(),
+        startDate: startDate.getTime(),
+        endDate: endDate.getTime(),
       }));
 
       // We filter the dates that don't include the displayDate of the previous item array
@@ -400,7 +391,7 @@ export function generateIntermediateDateItemFromValidity(
   // We sort the defaultDateItems and the dateItemsWithValidity and we order by displayDate to filter the duplicates
   // or the overlapping dates
   return sortedUniqBy(
-    sortBy([...dateItemsDefault, ...dateItemsWithValidity], 'displayDate'),
+    sortBy(dateItemsWithValidity, 'displayDate'),
     'displayDate',
   );
 }

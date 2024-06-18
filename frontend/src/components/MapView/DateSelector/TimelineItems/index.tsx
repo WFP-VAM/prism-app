@@ -10,12 +10,17 @@ import {
 import { compact } from 'lodash';
 import { DateItem, DateRangeType } from 'config/types';
 import { useSafeTranslation } from 'i18n';
+import { grey } from 'muiTheme';
+
 import {
   DateCompatibleLayerWithDateItems,
   TIMELINE_ITEM_WIDTH,
 } from 'components/MapView/DateSelector/utils';
+import { datesAreEqualWithoutTime, getFormattedDate } from 'utils/date-utils';
 import { useSelector } from 'react-redux';
 import { AAAvailableDatesSelector } from 'context/anticipatoryActionStateSlice';
+import { dateRangeSelector } from 'context/mapStateSlice/selectors';
+import { getRequestDate } from 'utils/server-utils';
 import TimelineItem from './TimelineItem';
 import TimelineLabel from './TimelineLabel';
 import TooltipItem from './TooltipItem';
@@ -42,6 +47,7 @@ const TimelineItems = memo(
     clickDate,
     locale,
     selectedLayers,
+    availableDates,
   }: TimelineItemsProps) => {
     const { t } = useSafeTranslation();
     const AAAvailableDates = useSelector(AAAvailableDatesSelector);
@@ -50,10 +56,12 @@ const TimelineItems = memo(
     const AALayers = AAAvailableDates
       ? [
           {
+            id: 'anticipatory_action_window_1',
             title: 'Window 1',
             dateItems: AAAvailableDates['Window 1'],
           },
           {
+            id: 'anticipatory_action_window_2',
             title: 'Window 2',
             dateItems: AAAvailableDates['Window 2'],
           },
@@ -103,16 +111,33 @@ const TimelineItems = memo(
         layerDirectionClass: classes.layerThreeDirection,
         emphasis: classes.layerThreeEmphasis,
       },
+      { class: classes.availabilityDate, color: LIGHT_ORANGE_HEX },
     ];
 
     const getTooltipTitle = useCallback(
       (date: DateRangeType): React.JSX.Element[] => {
         const tooltipTitleArray: React.JSX.Element[] = compact(
           orderedLayers.map((selectedLayer, layerIndex) => {
+            // find closest date element for layer
+            const dateItem = selectedLayer.dateItems.find(item =>
+              datesAreEqualWithoutTime(item.displayDate, date.value),
+            );
+            if (!dateItem) {
+              return null;
+            }
+
+            // Display range dates when available
+            const formattedDate =
+              dateItem.startDate && dateItem.endDate
+                ? `${getFormattedDate(
+                    dateItem.startDate,
+                    'monthDay',
+                  )} - ${getFormattedDate(dateItem.endDate, 'monthDay')}`
+                : getFormattedDate(dateItem.queryDate, 'monthDay');
             return (
               <TooltipItem
                 key={`Tootlip-${date.label}-${date.value}-${selectedLayer.title}`}
-                layerTitle={t(selectedLayer.title)}
+                layerTitle={`${t(selectedLayer.title)}:  ${formattedDate}`}
                 color={DATE_ITEM_STYLING[layerIndex].color}
               />
             );
@@ -129,34 +154,50 @@ const TimelineItems = memo(
       dateRange[0].value,
     ).toDateString();
 
+    const dateSelector = useSelector(dateRangeSelector);
     // We truncate layer by removing date that will not be drawn to the Timeline
     const truncatedLayers: DateItem[][] = useMemo(() => {
-      // returns the index of the fist date in layer that match the first Timeline date
+      // returns the index of the first date in layer that matches the first Timeline date
       const findLayerFirstDateIndex = (items: DateItem[]): number => {
         return items
           .map(d => new Date(d.displayDate).toDateString())
           .indexOf(timelineStartDate);
       };
 
-      // For each selectedLayer truncate DateItem array
-      return [...orderedLayers.map(layer => layer.dateItems)].map(
-        (dateItemsForLayer: DateItem[]) => {
-          const firstIndex = findLayerFirstDateIndex(dateItemsForLayer);
+      return [
+        ...orderedLayers.map(layer => {
+          const firstIndex = findLayerFirstDateIndex(layer.dateItems);
+          const layerQueryDate = getRequestDate(
+            layer.dateItems,
+            dateSelector.startDate,
+          );
+          // Filter date items based on queryDate and layerQueryDate
+          const filterDateItems = (items: DateItem[]) =>
+            items.filter(item => {
+              return (
+                item.queryDate === layerQueryDate ||
+                item.queryDate === item.displayDate
+              );
+            });
           if (firstIndex === -1) {
-            return dateItemsForLayer;
+            return filterDateItems(layer.dateItems);
           }
-
           // truncate the date item array at index matching timeline first date
           // eslint-disable-next-line fp/no-mutating-methods
-          return dateItemsForLayer.slice(firstIndex, dateItemsForLayer.length);
-        },
-      );
-    }, [orderedLayers, timelineStartDate]);
+          return filterDateItems(layer.dateItems.slice(firstIndex));
+        }),
+      ];
+    }, [orderedLayers, timelineStartDate, dateSelector.startDate]);
+
+    const availableDatesToDisplay = availableDates.filter(
+      date => date >= dateRange[0].value,
+    );
 
     // Draw a column for each date of the Timeline that start at the beginning of the year
     return (
       <>
         {dateRange.map((date, index) => {
+          const isDateAvailable = availableDatesToDisplay.includes(date.value);
           return (
             <Tooltip
               key={`Root-${date.label}-${date.value}`}
@@ -165,6 +206,7 @@ const TimelineItems = memo(
               TransitionProps={{ timeout: 0 }}
               placement="top"
               arrow
+              classes={{ tooltip: classes.tooltip }}
             >
               <Grid
                 item
@@ -173,12 +215,14 @@ const TimelineItems = memo(
                   date.isFirstDay ? classes.dateItemFull : classes.dateItem
                 }`}
                 onClick={() => clickDate(index)}
+                data-date-index={index} // Used by the pointer tick to trigger tooltips
               >
                 <TimelineLabel locale={locale} date={date} />
                 <TimelineItem
                   concatenatedLayers={truncatedLayers}
                   currentDate={date}
                   dateItemStyling={DATE_ITEM_STYLING}
+                  isDateAvailable={isDateAvailable}
                 />
               </Grid>
             </Tooltip>
@@ -237,9 +281,16 @@ const styles = () =>
         },
       },
     },
+
+    tooltip: {
+      backgroundColor: '#222222',
+      opacity: '0.85 !important',
+    },
+
     layerOneDate: createLayerStyles(LIGHT_BLUE_HEX, 0),
     layerTwoDate: createLayerStyles(LIGHT_GREEN_HEX, 10),
     layerThreeDate: createLayerStyles(LIGHT_ORANGE_HEX, 20),
+    availabilityDate: createLayerStyles(grey, 0),
 
     layerOneEmphasis: createLayerStyles(DARK_BLUE_HEX, 0),
     layerTwoEmphasis: createLayerStyles(DARK_GREEN_HEX, 10),
@@ -280,6 +331,7 @@ export interface TimelineItemsProps extends WithStyles<typeof styles> {
   clickDate: (arg: number) => void;
   locale: string;
   selectedLayers: DateCompatibleLayerWithDateItems[];
+  availableDates: number[];
 }
 
 export default withStyles(styles)(TimelineItems);

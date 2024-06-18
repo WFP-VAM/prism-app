@@ -4,13 +4,13 @@ import { createStyles, withStyles, WithStyles } from '@material-ui/core';
 const TooltipItem = memo(({ layerTitle, color, classes }: TooltipItemProps) => {
   return (
     <div className={classes.tooltipItemContainer}>
-      <div>{layerTitle}</div>
       <div
         className={classes.tooltipItemColor}
         style={{
           backgroundColor: color,
         }}
       />
+      <div>{layerTitle}</div>
     </div>
   );
 });
@@ -26,7 +26,7 @@ const styles = () =>
       display: 'flex',
       width: 10,
       height: 10,
-      marginLeft: 3,
+      marginRight: 3,
     },
   });
 

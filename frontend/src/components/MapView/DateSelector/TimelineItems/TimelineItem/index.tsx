@@ -10,82 +10,93 @@ const TimelineItem = memo(
     concatenatedLayers,
     currentDate,
     dateItemStyling,
+    isDateAvailable,
   }: TimelineItemProps) => {
+    // Pre-compute the matching indices for all layers
+    const layerMatches = concatenatedLayers.map(layerDates => {
+      return binaryFind<DateItem>(
+        layerDates,
+        new Date(currentDate.value).setUTCHours(0, 0, 0, 0),
+        (i: DateItem) => new Date(i.displayDate).setUTCHours(0, 0, 0, 0),
+      );
+    });
+
     const hasNextItemDirectionForward = (
       matchingDate: DateItem,
       layerDates: DateItem[],
     ): boolean => {
-      return (
-        layerDates.indexOf(matchingDate) !== 0 &&
-        !!layerDates[layerDates.indexOf(matchingDate) - 1].isStartDate
-      );
+      return false;
     };
 
     const hasNextItemDirectionBackward = (
       matchingDate: DateItem,
       layerDates: DateItem[],
     ): boolean => {
-      return (
-        layerDates.indexOf(matchingDate) !== layerDates.length - 1 &&
-        !!layerDates[layerDates.indexOf(matchingDate) + 1].isEndDate
-      );
+      return false;
     };
 
-    const isStartOrEndDate = (date: DateItem): boolean => {
-      return !!date.isEndDate || !!date.isStartDate;
+    const isQueryDate = (date: DateItem): boolean => {
+      return date.queryDate === date.displayDate;
     };
 
     return (
       <>
-        {concatenatedLayers.map(
-          (layerDates: DateItem[], layerIndex: number) => {
-            const idx = binaryFind<DateItem>(
-              layerDates,
-              new Date(currentDate.value).setUTCHours(0, 0, 0, 0),
-              (i: DateItem) => new Date(i.displayDate).setUTCHours(0, 0, 0, 0),
-            );
-            const matchingDateItemInLayer: DateItem | undefined =
-              idx > -1 ? layerDates[idx] : undefined;
-
-            if (!matchingDateItemInLayer) {
-              return null;
-            }
-
-            return (
-              <React.Fragment key={Math.random()}>
-                {/* Add a directional arrow forward if previous item is a start date */}
-                {hasNextItemDirectionForward(
-                  matchingDateItemInLayer,
-                  layerDates,
-                ) && (
-                  <div
-                    className={`${dateItemStyling[layerIndex].layerDirectionClass} ${classes.layerDirectionBase}`}
-                  />
-                )}
-
-                {/* Add a directional arrow backward if next item is an end date */}
-                {hasNextItemDirectionBackward(
-                  matchingDateItemInLayer,
-                  layerDates,
-                ) && (
-                  <div
-                    className={`${dateItemStyling[layerIndex].layerDirectionClass} ${classes.layerDirectionBase} ${classes.layerDirectionBackwardBase}`}
-                  />
-                )}
-
-                {/* Add a bold square if start or end date (emphasis), normal otherwise */}
-                <div
-                  className={`${
-                    isStartOrEndDate(matchingDateItemInLayer)
-                      ? dateItemStyling[layerIndex].emphasis
-                      : dateItemStyling[layerIndex].class
-                  }`}
-                  role="presentation"
-                />
-              </React.Fragment>
-            );
-          },
+        {/* Add a small grey line to indicate where dates are overlapping */}
+        {layerMatches.length >= 1 && isDateAvailable && (
+          <div
+            className={dateItemStyling[3].class}
+            style={{
+              height: 4,
+              // TODO - handle more than 3 layers
+              top: 10 * Math.min(layerMatches?.length + 1, 3),
+            }}
+            key={Math.random()}
+            role="presentation"
+          />
         )}
+        {layerMatches.map((idx, layerIndex) => {
+          const layerDates = concatenatedLayers[layerIndex];
+          const matchingDateItemInLayer: DateItem | undefined =
+            idx > -1 ? layerDates[idx] : undefined;
+
+          if (!matchingDateItemInLayer) {
+            return null;
+          }
+
+          return (
+            <React.Fragment key={Math.random()}>
+              {/* Add a directional arrow forward if previous item is a start date */}
+              {hasNextItemDirectionForward(
+                matchingDateItemInLayer,
+                layerDates,
+              ) && (
+                <div
+                  className={`${dateItemStyling[layerIndex].layerDirectionClass} ${classes.layerDirectionBase}`}
+                />
+              )}
+
+              {/* Add a directional arrow backward if next item is an end date */}
+              {hasNextItemDirectionBackward(
+                matchingDateItemInLayer,
+                layerDates,
+              ) && (
+                <div
+                  className={`${dateItemStyling[layerIndex].layerDirectionClass} ${classes.layerDirectionBase} ${classes.layerDirectionBackwardBase}`}
+                />
+              )}
+
+              {/* Add a bold square if queryDate (emphasis), normal otherwise */}
+              <div
+                className={`${
+                  isQueryDate(matchingDateItemInLayer)
+                    ? dateItemStyling[layerIndex].emphasis
+                    : dateItemStyling[layerIndex].class
+                }`}
+                role="presentation"
+              />
+            </React.Fragment>
+          );
+        })}
       </>
     );
   },
@@ -119,6 +130,7 @@ export interface TimelineItemProps extends WithStyles<typeof styles> {
     layerDirectionClass?: string;
     emphasis?: string;
   }[];
+  isDateAvailable: boolean;
 }
 
 export default withStyles(styles)(TimelineItem);
