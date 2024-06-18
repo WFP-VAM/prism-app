@@ -46,6 +46,7 @@ import {
   fetchWithTimeout,
 } from './fetch-with-timeout';
 import { getFormattedDate } from './date-utils';
+import { DateFormat } from './name-utils';
 
 const { multiCountry } = appConfig;
 
@@ -509,15 +510,19 @@ export class BaselineLayerResult {
 
   getStatTitle(t?: i18nTranslator): string {
     // TODO - simplify once we revamp admin boundaries
+    const hazardTitle = t
+      ? t(this.getHazardLayer().title)
+      : this.getHazardLayer().title;
+    const statTitle = t
+      ? t(aggregationOperationsToDisplay[this.statistic])
+      : aggregationOperationsToDisplay[this.statistic];
+    const atLevel = t ? t('at Level') : 'at Level';
     const { adminLevelCodes } = this.getBaselineLayer();
     const adminLevel = adminLevelCodes.length - (multiCountry ? 1 : 0);
-    return t
-      ? `${t(this.getHazardLayer().title)} (${t(
-          aggregationOperationsToDisplay[this.statistic],
-        )} ${t('at Level')} ${adminLevel})`
-      : `${this.getHazardLayer().title} (${
-          aggregationOperationsToDisplay[this.statistic]
-        } at Level ${adminLevel})`;
+    const analysisDate = this.analysisDate
+      ? ` ${getFormattedDate(this.analysisDate, DateFormat.DayFirst)}`
+      : '';
+    return `${hazardTitle} (${statTitle} ${atLevel} ${adminLevel})${analysisDate}`;
   }
 
   getTitle(t?: i18nTranslator): string | undefined {

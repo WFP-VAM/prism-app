@@ -120,7 +120,8 @@ export const getFormattedDate = (
     | DateFormat.Default
     | DateFormat.DateTime
     | DateFormat.DayFirstSnakeCase
-    | DateFormat.ISO,
+    | DateFormat.ISO
+    | DateFormat.DayFirst,
 ) => {
   if (date === undefined) {
     return undefined;
@@ -148,6 +149,8 @@ export const getFormattedDate = (
       return `${year}_${month}_${day}`;
     case DateFormat.DayFirstSnakeCase:
       return `${day}_${month}_${year}`;
+    case DateFormat.DayFirst:
+      return `${day}-${month}-${year}`;
     case DateFormat.DateTime:
     case DateFormat.ISO: {
       const hours = String(jsDate.getUTCHours()).padStart(2, '0');

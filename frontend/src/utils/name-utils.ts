@@ -28,4 +28,5 @@ export enum DateFormat {
   ISO = 'YYYY-MM-DDTHH:mm:ss',
   DateTime = 'YYYY-MM-DD HH:mm',
   DayFirstSnakeCase = 'DD_MM_YYYY',
+  DayFirst = 'DD-MM-YYYY',
 }

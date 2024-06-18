@@ -6,6 +6,7 @@ import {
   getTimeInMilliseconds,
   StartEndDate,
 } from './date-utils';
+import { DateFormat } from './name-utils';
 
 describe('Test buildDateItemsFromStartEndDates', () => {
   test('should return empty', () => {
@@ -133,6 +134,25 @@ test.each(snakeFormateTests)(
   'Test getFormattedDate snake',
   (input, expected) => {
     expect(expected).toEqual(getFormattedDate(input, 'snake'));
+  },
+);
+
+const dayFirstFormatTests = [
+  [1641158400000, '02-01-2022'],
+  [1642387200000, '17-01-2022'],
+  [1644556800000, '11-02-2022'],
+  [1644710400000, '13-02-2022'],
+  [1643059200000, '24-01-2022'],
+  [1643932800000, '04-02-2022'],
+  [1642060800000, '13-01-2022'],
+  [1643222400000, '26-01-2022'],
+  [1644307200000, '08-02-2022'],
+];
+
+test.each(dayFirstFormatTests)(
+  'Test getFormattedDate dayFirst',
+  (input, expected) => {
+    expect(expected).toEqual(getFormattedDate(input, DateFormat.DayFirst));
   },
 );
 
