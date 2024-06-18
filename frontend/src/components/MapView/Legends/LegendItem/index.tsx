@@ -212,12 +212,12 @@ const LegendItem = memo(
           {typeof children === 'string' ? (
             <Markdown
               components={{
-                p: ({ children }: { children: React.ReactNode }) => (
+                p: ({ children: pChildren }: { children: React.ReactNode }) => (
                   <Typography
                     variant="h5"
                     className={classes.legendTextMarkdown}
                   >
-                    {children}
+                    {pChildren}
                   </Typography>
                 ),
               }}
