@@ -24,10 +24,10 @@ function NotFound({ classes }: NotFoundProps) {
             information about this error.
           </Typography>
           <Typography variant="body1" gutterBottom>
-            If you have typed the address of this web page, you may misspelled
-            it or if you redirected to this page, it may be moved to another
-            location. Please go back to the website home page and try to find
-            your page from the website navigation.
+            If you have typed the address of this web page, you may have
+            misspelled it or if you redirected to this page, it may be moved to
+            another location. Please go back to the website home page and try to
+            find your page from the website navigation.
           </Typography>
         </Grid>
 
