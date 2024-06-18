@@ -575,7 +575,7 @@ const styles = (theme: Theme) =>
 
     pointer: {
       position: 'absolute',
-      zIndex: 100,
+      zIndex: 5,
       marginTop: 22,
       left: -12,
       height: '16px',
