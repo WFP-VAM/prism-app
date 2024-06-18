@@ -211,6 +211,7 @@ const LegendItem = memo(
         <Grid item>
           {typeof children === 'string' ? (
             <Markdown
+              linkTarget="_blank"
               components={{
                 p: ({ children: pChildren }: { children: React.ReactNode }) => (
                   <Typography
