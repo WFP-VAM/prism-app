@@ -46,7 +46,6 @@ import {
   fetchWithTimeout,
 } from './fetch-with-timeout';
 import { getFormattedDate } from './date-utils';
-import { DateFormat } from './name-utils';
 
 const { multiCountry } = appConfig;
 
@@ -419,16 +418,23 @@ export class ExposedPopulationResult {
   legendText: string;
   statistic: AggregationOperations;
   tableData: TableRow[];
-  date: number;
+  analysisDate: ReturnType<Date['getTime']>;
   tableColumns: any;
 
   getTitle = (t?: i18nTranslator): string => {
     return t ? t('Population Exposure') : 'Population Exposure';
   };
 
-  getStatTitle = (t?: i18nTranslator): string => {
+  getLayerTitle = (t?: i18nTranslator): string => {
     return this.getTitle(t);
   };
+
+  getStatLabel(t?: i18nTranslator): string {
+    const statTitle = t
+      ? t(aggregationOperationsToDisplay[this.statistic])
+      : aggregationOperationsToDisplay[this.statistic];
+    return statTitle;
+  }
 
   getHazardLayer = (): WMSLayerProps => {
     return this.getHazardLayer();
@@ -442,7 +448,7 @@ export class ExposedPopulationResult {
     legendText: string,
     groupBy: string,
     key: string,
-    date: number,
+    analysisDate: ReturnType<Date['getTime']>,
     tableColumns: any,
   ) {
     this.tableData = tableData;
@@ -452,7 +458,7 @@ export class ExposedPopulationResult {
     this.legendText = legendText;
     this.groupBy = groupBy;
     this.key = key;
-    this.date = date;
+    this.analysisDate = analysisDate;
     this.tableColumns = tableColumns;
   }
 }
@@ -508,28 +514,15 @@ export class BaselineLayerResult {
     return LayerDefinitions[this.baselineLayerId] as BoundaryLayerProps;
   }
 
-  getStatTitle(t?: i18nTranslator): string {
-    // TODO - simplify once we revamp admin boundaries
-    const hazardTitle = t
-      ? t(this.getHazardLayer().title)
-      : this.getHazardLayer().title;
-    const statTitle = t
-      ? t(aggregationOperationsToDisplay[this.statistic])
-      : aggregationOperationsToDisplay[this.statistic];
-    const atLevel = t ? t('at Level') : 'at Level';
-    const { adminLevelCodes } = this.getBaselineLayer();
-    const adminLevel = adminLevelCodes.length - (multiCountry ? 1 : 0);
-    const analysisDate = this.analysisDate
-      ? ` ${getFormattedDate(this.analysisDate, DateFormat.DayFirst)}`
-      : '';
-    return `${hazardTitle} (${statTitle} ${atLevel} ${adminLevel})${analysisDate}`;
+  getLayerTitle(t?: i18nTranslator): string {
+    return t ? t(this.getHazardLayer().title) : this.getHazardLayer().title;
   }
 
   getTitle(t?: i18nTranslator): string | undefined {
     const baselineLayer = this.getBaselineLayer();
-    // If there is no title, we are using admin boundaries and return StatTitle instead.
+
     if (!baselineLayer.title) {
-      return this.getStatTitle(t);
+      return this.getStatSummaryTitle(t);
     }
     const baselineTitle = baselineLayer.title || 'Admin levels';
     return t
@@ -537,6 +530,20 @@ export class BaselineLayerResult {
           this.getHazardLayer().title,
         )}`
       : `${baselineTitle} exposed to ${this.getHazardLayer().title}`;
+  }
+
+  getStatLabel(t?: i18nTranslator): string {
+    const statTitle = t
+      ? t(aggregationOperationsToDisplay[this.statistic])
+      : aggregationOperationsToDisplay[this.statistic];
+    const atLevel = t ? t('at Level') : 'at Level';
+    const { adminLevelCodes } = this.getBaselineLayer();
+    const adminLevel = adminLevelCodes.length - (multiCountry ? 1 : 0);
+    return `${statTitle} ${atLevel} ${adminLevel}`;
+  }
+
+  getStatSummaryTitle(t?: i18nTranslator): string {
+    return `${this.getLayerTitle(t)} ${this.getStatLabel(t)}`;
   }
 }
 
