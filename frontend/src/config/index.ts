@@ -21,6 +21,7 @@ import nepal from './nepal';
 import nigeria from './nigeria';
 import rbd from './rbd';
 import sierraleone from './sierraleone';
+import somalia from './somalia';
 import southsudan from './southsudan';
 import srilanka from './srilanka';
 import sudan from './sudan';
@@ -54,6 +55,7 @@ const configMap = {
   nigeria,
   rbd,
   sierraleone,
+  somalia,
   southsudan,
   srilanka,
   sudan,
@@ -73,6 +75,7 @@ const {
   REACT_APP_OAUTH_AUTHORITY: AUTHORITY,
   REACT_APP_OAUTH_REDIRECT_URI: REDIRECT_URI,
   REACT_APP_TESTING: TESTING,
+  REACT_APP_QA_MODE: QA_MODE,
 } = process.env;
 
 const safeCountry =
@@ -131,7 +134,11 @@ const rawLayers: Record<string, any> = Object.fromEntries(
 // Merge translations
 const countryTranslation = get(configMap[safeCountry], 'translation', {});
 const translation = Object.fromEntries(
-  Object.entries(countryTranslation).map(([key, value]) => [
+  Object.entries(
+    QA_MODE || TESTING
+      ? merge({}, sharedTranslation, countryTranslation)
+      : countryTranslation,
+  ).map(([key, value]) => [
     key,
     merge({}, sharedTranslation[key] || {}, value),
   ]),

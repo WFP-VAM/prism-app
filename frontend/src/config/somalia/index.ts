@@ -3,7 +3,7 @@ import rawLayers from './layers.json';
 
 const rawTables = {};
 const rawReports = {};
-const translation = { es: {} };
+const translation = {};
 
 export default {
   appConfig,
@@ -11,5 +11,5 @@ export default {
   rawTables,
   rawReports,
   translation,
-  defaultBoundariesFile: 'ecu_admbnda_adm2.json',
+  defaultBoundariesFile: 'som_admbnda_adm2_ocha_20230308_dv.json',
 };
