@@ -34,7 +34,6 @@ import {
 import { opacitySelector } from 'context/opacityStateSlice';
 import { invertLegendColors } from 'components/MapView/Legends/LegendItemsList';
 import { getFormattedDate } from 'utils/date-utils';
-import { DateFormat } from 'utils/name-utils';
 
 export const layerId = getLayerMapId('analysis');
 
@@ -88,7 +87,7 @@ const onClick = (analysisData: AnalysisResult | undefined) => ({
               [t('Date analyzed')]: {
                 data: getFormattedDate(
                   analysisData.analysisDate,
-                  DateFormat.DayFirst,
+                  'locale',
                 ) as string,
                 coordinates,
               },
