@@ -7,6 +7,7 @@ import TimelineItems from '.';
 const props = {
   selectedLayers: [],
   selectedLayerTitles: [],
+  availableDates: [],
   dateRange: [
     {
       value: 1640883600000,
@@ -25,6 +26,10 @@ const mockStore = configureStore([]);
 const store = mockStore({
   anticipatoryActionState: {
     availableDates: undefined,
+  },
+  mapState: {
+    layers: [],
+    dateRange: { startDate: 1678528800000 },
   },
 });
 

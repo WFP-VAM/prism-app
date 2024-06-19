@@ -3,11 +3,11 @@
 exports[`TimelineItem renders as expected 1`] = `
 <div>
   <div
-    class="intersectionDate"
+    class="undefined"
     role="presentation"
   />
   <div
-    class="layerOneDate"
+    class="undefined"
     role="presentation"
   />
 </div>
