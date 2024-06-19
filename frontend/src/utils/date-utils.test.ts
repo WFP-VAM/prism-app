@@ -30,24 +30,32 @@ describe('Test buildDateItemsFromStartEndDates', () => {
       {
         displayDate: new Date('2018-02-01').getTime(),
         queryDate: startDate0,
-        isStartDate: true,
+        startDate: startDate0,
+        endDate: endDate0,
       },
       {
         displayDate: new Date('2018-02-02').getTime(),
         queryDate: startDate0,
+        startDate: startDate0,
+        endDate: endDate0,
       },
       {
         displayDate: new Date('2018-02-03').getTime(),
         queryDate: startDate0,
+        startDate: startDate0,
+        endDate: endDate0,
       },
       {
         displayDate: new Date('2018-02-04').getTime(),
         queryDate: startDate0,
+        startDate: startDate0,
+        endDate: endDate0,
       },
       {
         displayDate: new Date('2018-02-05').getTime(),
         queryDate: startDate0,
-        isEndDate: true,
+        startDate: startDate0,
+        endDate: endDate0,
       },
     ]);
   });
