@@ -421,19 +421,16 @@ export class ExposedPopulationResult {
   analysisDate: ReturnType<Date['getTime']>;
   tableColumns: any;
 
-  getTitle = (t?: i18nTranslator): string => {
-    return t ? t('Population Exposure') : 'Population Exposure';
+  getTitle = (t: i18nTranslator): string => {
+    return t('Population Exposure');
   };
 
-  getLayerTitle = (t?: i18nTranslator): string => {
+  getLayerTitle = (t: i18nTranslator): string => {
     return this.getTitle(t);
   };
 
-  getStatLabel(t?: i18nTranslator): string {
-    const statTitle = t
-      ? t(aggregationOperationsToDisplay[this.statistic])
-      : aggregationOperationsToDisplay[this.statistic];
-    return statTitle;
+  getStatLabel(t: i18nTranslator): string {
+    return t(aggregationOperationsToDisplay[this.statistic]);
   }
 
   getHazardLayer = (): WMSLayerProps => {
@@ -514,35 +511,31 @@ export class BaselineLayerResult {
     return LayerDefinitions[this.baselineLayerId] as BoundaryLayerProps;
   }
 
-  getLayerTitle(t?: i18nTranslator): string {
-    return t ? t(this.getHazardLayer().title) : this.getHazardLayer().title;
+  getLayerTitle(t: i18nTranslator): string {
+    return t(this.getHazardLayer().title);
   }
 
-  getTitle(t?: i18nTranslator): string | undefined {
+  getTitle(t: i18nTranslator): string | undefined {
     const baselineLayer = this.getBaselineLayer();
 
     if (!baselineLayer.title) {
       return this.getStatSummaryTitle(t);
     }
     const baselineTitle = baselineLayer.title || 'Admin levels';
-    return t
-      ? `${t(baselineTitle)} ${t('exposed to')} ${t(
-          this.getHazardLayer().title,
-        )}`
-      : `${baselineTitle} exposed to ${this.getHazardLayer().title}`;
+    return `${t(baselineTitle)} ${t('exposed to')} ${t(
+      this.getHazardLayer().title,
+    )}`;
   }
 
-  getStatLabel(t?: i18nTranslator): string {
-    const statTitle = t
-      ? t(aggregationOperationsToDisplay[this.statistic])
-      : aggregationOperationsToDisplay[this.statistic];
-    const atLevel = t ? t('at Level') : 'at Level';
+  getStatLabel(t: i18nTranslator): string {
+    const statTitle = t(aggregationOperationsToDisplay[this.statistic]);
+    const atLevel = t('at Level');
     const { adminLevelCodes } = this.getBaselineLayer();
     const adminLevel = adminLevelCodes.length - (multiCountry ? 1 : 0);
     return `${statTitle} ${atLevel} ${adminLevel}`;
   }
 
-  getStatSummaryTitle(t?: i18nTranslator): string {
+  getStatSummaryTitle(t: i18nTranslator): string {
     return `${this.getLayerTitle(t)} ${this.getStatLabel(t)}`;
   }
 }
@@ -691,20 +684,14 @@ export class PolygonAnalysisResult {
     return LayerDefinitions[this.hazardLayerId] as WMSLayerProps;
   }
 
-  getTitle(t?: i18nTranslator): string {
-    return t
-      ? `${t(this.getHazardLayer().title)} ${t('intersecting admin level')} ${t(
-          (this.adminLevel as unknown) as TFunctionKeys,
-        )}`
-      : `${this.getHazardLayer().title} intersecting admin level ${
-          this.adminLevel
-        }`;
+  getTitle(t: i18nTranslator): string {
+    return `${t(this.getHazardLayer().title)} ${t(
+      'intersecting admin level',
+    )} ${t((this.adminLevel as unknown) as TFunctionKeys)}`;
   }
 
-  getStatTitle(t?: i18nTranslator): string {
-    return t
-      ? `${t(this.getHazardLayer().title)} (${t(this.statistic)})`
-      : `${this.getHazardLayer().title} (${this.statistic})`;
+  getStatTitle(t: i18nTranslator): string {
+    return `${t(this.getHazardLayer().title)} (${t(this.statistic)})`;
   }
 }
 
