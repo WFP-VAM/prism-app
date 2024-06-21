@@ -4121,7 +4121,7 @@
       "2023-02-01",
       "2023-06-01",
       "2024-02-01",
-      "2024-06-01"      
+      "2024-06-01"
     ],
     "validityPeriod": {
       "start_date_field": "start_date",
@@ -5438,6 +5438,7 @@
   "crop_changes_2023_2022": {
     "title": "Cropland change analysis (2023 vs 2022)",
     "type": "point_data",
+    "hex_display": true,
     "data": "data/rbd/west_africa_cropland_change_2023.json",
     "data_field": "F2023_an_1",
     "data_field_type": "text",
@@ -5494,6 +5495,7 @@
   "crop_changes_2023_ref": {
     "title": "Cropland change analysis (2023 vs reference years)",
     "type": "point_data",
+    "hex_display": true,
     "data": "data/rbd/west_africa_cropland_change_2023.json",
     "data_field": "F2023_ann",
     "data_field_type": "text",

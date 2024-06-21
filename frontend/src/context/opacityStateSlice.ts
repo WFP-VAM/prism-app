@@ -55,7 +55,7 @@ export const opacityStateSlice = createSlice({
           case 'point_data':
             // This is a hacky way to support opacity change for Kobo data.
             // TODO - Handle Kobo data as admin_level_data instead of point_data. See issue #760.
-            if (layerId?.includes('_report') || layerId?.includes('crop')) {
+            if (layerId?.includes('_report')) {
               return [getLayerMapId(layerId), 'fill-opacity'];
             }
             return [getLayerMapId(layerId), 'circle-opacity'];

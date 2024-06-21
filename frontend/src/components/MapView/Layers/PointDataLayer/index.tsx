@@ -180,7 +180,7 @@ const PointDataLayer = ({ layer, before }: LayersProps) => {
     return null;
   }
 
-  if (layer.id.includes('crop_change')) {
+  if (layer.hexDisplay) {
     const finalFeatures =
       data &&
       data.features
