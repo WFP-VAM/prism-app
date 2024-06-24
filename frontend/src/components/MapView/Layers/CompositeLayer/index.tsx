@@ -24,7 +24,7 @@ interface Props extends WithStyles<typeof styles> {
   before?: string;
 }
 
-export const paintProps: (
+const paintProps: (
   legend: LegendDefinition,
   opacity: number | undefined,
 ) => FillLayerSpecification['paint'] = (
