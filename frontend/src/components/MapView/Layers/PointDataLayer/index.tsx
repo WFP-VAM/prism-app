@@ -4,7 +4,6 @@ import { Point } from 'geojson';
 
 import { useDispatch, useSelector } from 'react-redux';
 import {
-  LegendDefinition,
   MapEventWrapFunctionProps,
   PointDataLayerProps,
   PointDataLoader,
@@ -39,7 +38,6 @@ import {
 import { findFeature, getLayerMapId, useMapCallback } from 'utils/map-utils';
 import { getFormattedDate } from 'utils/date-utils';
 import { geoToH3, h3ToGeoBoundary } from 'h3-js';
-import { opacitySelector } from 'context/opacityStateSlice';
 
 const onClick = ({
   layer,
@@ -73,7 +71,6 @@ const PointDataLayer = ({ layer, before }: LayersProps) => {
   const serverAvailableDates = useSelector(availableDatesSelector);
   const layerAvailableDates = serverAvailableDates[layer.id];
   const userAuth = useSelector(userAuthSelector);
-  const opacityState = useSelector(opacitySelector(layer.id));
 
   useMapCallback('click', layerId, layer, onClick);
 
