@@ -33,6 +33,7 @@ import {
 } from 'utils/map-utils';
 import { opacitySelector } from 'context/opacityStateSlice';
 import { invertLegendColors } from 'components/MapView/Legends/LegendItemsList';
+import { getFormattedDate } from 'utils/date-utils';
 
 export const layerId = getLayerMapId('analysis');
 
@@ -77,7 +78,22 @@ const onClick = (analysisData: AnalysisResult | undefined) => ({
     );
     dispatch(
       addPopupData({
-        [analysisData.getStatTitle(t)]: {
+        [t('Analysis layer')]: {
+          data: analysisData.getLayerTitle(t),
+          coordinates,
+        },
+        ...(analysisData.analysisDate
+          ? {
+              [t('Date analyzed')]: {
+                data: getFormattedDate(
+                  analysisData.analysisDate,
+                  'locale',
+                ) as string,
+                coordinates,
+              },
+            }
+          : {}),
+        [analysisData.getStatLabel(t)]: {
           data: `${getRoundedData(
             formattedProperties[statisticKey],
             t,
