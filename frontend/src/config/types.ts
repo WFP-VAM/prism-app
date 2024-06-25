@@ -658,6 +658,9 @@ export class PointDataLayerProps extends CommonLayerProps {
   legendText: string;
 
   @optional
+  hexDisplay?: boolean; // display data in hexagon grid
+
+  @optional
   fallbackData?: string;
 
   @optional

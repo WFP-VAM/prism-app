@@ -19,7 +19,6 @@ import { LayerDefinitions } from 'config/utils';
 export function legendToStops(
   legend: LegendDefinition = [],
 ): [number, string][] {
-  // TODO - Make this function easier to use for point data and explicit its behavior.
   return legend.map(({ value, color }) => [
     typeof value === 'string' ? parseFloat(value.replace('< ', '')) : value,
     color,
