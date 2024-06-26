@@ -1,4 +1,5 @@
-import { LayerType } from 'config/types';
+import { LayerType, MenuGroup } from 'config/types';
+import { menuList } from 'components/MapView/LeftPanel/utils';
 
 // Layer types that are allowed to have multiple layers overlap on the map.
 export const TYPES_ALLOWED_TO_OVERLAP = [
@@ -6,6 +7,28 @@ export const TYPES_ALLOWED_TO_OVERLAP = [
   'point_data',
   'static_raster',
 ];
+
+// finds layer's group as defined in "categories" in "prism.json"
+function getLayerGroup(layer: LayerType) {
+  let group: MenuGroup | undefined;
+
+  menuList.find(menuItem =>
+    menuItem.layersCategories.find(layerCategories => {
+      const foundLayer = layerCategories.layers.find(
+        l =>
+          l.id === layer.id || l.group?.layers.find(ll => ll.id === layer.id),
+      );
+      if (foundLayer) {
+        // eslint-disable-next-line fp/no-mutation
+        group = foundLayer.group;
+        return true;
+      }
+      return false;
+    }),
+  );
+
+  return group;
+}
 
 export function keepLayer(layer: LayerType, newLayer: LayerType) {
   // Simple function to control which layers can overlap.
@@ -21,6 +44,12 @@ export function keepLayer(layer: LayerType, newLayer: LayerType) {
   // Different types of layers can overlap.
   if (newLayer.type !== layer.type) {
     return true;
+  }
+
+  // Layers on the same group cannot overlap
+  const newLayerGroup = getLayerGroup(newLayer);
+  if (newLayerGroup?.layers.some(l => l.id === layer.id)) {
+    return false;
   }
 
   // Temporary hack preventing the overlap of kobo layers.
