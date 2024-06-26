@@ -6404,5 +6404,139 @@
       }
     ],
     "legend_text": "ACLED Conflict Analysis 2023 produced by IFPRI. For more details, see https://hdl.handle.net/10568/139670"
+  },
+  "fs_hotspot_2024": {
+    "title": "Food Security Hotspot June 2024",
+    "type": "admin_level_data",
+    "path": "data/rbd/fsn-hotspot/fs-hotspot-1-4-2024.json",
+    "admin_level": 2,
+    "data_field": "FS_Hotspot_Jun_2024",
+    "admin_code": "admin2Pcod",
+    "opacity": 0.9,
+    "legend": [
+      {
+        "label": "Priority 1",
+        "value": 2,
+        "color": "#b30101"
+      },
+      {
+        "label": "Priority 2",
+        "value": 3,
+        "color": "#e24a32"
+      },
+      {
+        "label": "Priority 3",
+        "value": 4,
+        "color": "#fcca8b"
+      },
+      {
+        "label": "Priority 4",
+        "value": 5,
+        "color": "#fff0d9"
+      },
+      {
+        "label": "Not analyzed",
+        "value": 9,
+        "color": "#c9d2cd"
+      }
+    ],
+    "legend_text": "Joint Food Security & Nutrition Hotspot Analysis conducted by WFP, UNICEF, and partners based on SMART surveys and Cadre Harmonisé (CH) & Integrated Food Security Phase Classification (IPC) analyses"
+  },
+  "fs_hotspot_1a_2024": {
+    "title": "Food Security Hotspot June 2024",
+    "type": "admin_level_data",
+    "path": "data/rbd/fsn-hotspot/fs-hotspot-1a-2024.json",
+    "admin_level": 2,
+    "data_field": "FS_Hotspot_Jun_2024",
+    "admin_code": "admin2Pcod",
+    "fill_pattern": "right",
+    "opacity": 0.9,
+    "legend": [
+      {
+        "label": "Priority 1a",
+        "value": 1,
+        "color": "#b30101"
+      }
+    ],
+    "legend_text": " "
+  },
+  "nutr_hotspot_2024": {
+    "title": "Nutrition hotspot analysis",
+    "type": "admin_level_data",
+    "path": "data/rbd/fsn-hotspot/fsn-hotspot-2024.json",
+    "admin_level": 2,
+    "data_field": "NUT_Hotspot_Jun_2024",
+    "admin_code": "admin2Pcod",
+    "opacity": 0.9,
+    "legend": [
+      {
+        "label": "Low",
+        "value": 1,
+        "color": "#70a800"
+      },
+      {
+        "label": "Medium",
+        "value": 2,
+        "color": "#ffcc33"
+      },
+      {
+        "label": "High",
+        "value": 3,
+        "color": "#e67800"
+      },
+      {
+        "label": "Very high",
+        "value": 4,
+        "color": "#e60000"
+      },
+      {
+        "label": "Not analyzed",
+        "value": 9,
+        "color": "#c9d2cd"
+      }
+    ],
+    "legend_text": "Joint Food Security & Nutrition Hotspot Analysis conducted by WFP, UNICEF, and partners based on SMART surveys and Cadre Harmonisé (CH) & Integrated Food Security Phase Classification (IPC) analyses"
+  },
+  "integrated_hotspot_2024": {
+    "title": "Integrated food security and nutrition hotspot analysis",
+    "type": "admin_level_data",
+    "path": "data/rbd/fsn-hotspot/fsn-hotspot-2024.json",
+    "admin_level": 2,
+    "data_field": "Integrated_FS_NUT_Hotspot_Jun_2024",
+    "admin_code": "admin2Pcod",
+    "opacity": 0.9,
+    "legend": [
+      {
+        "label": "Very low",
+        "value": 1,
+        "color": "#f1f0f6"
+      },
+      {
+        "label": "Low",
+        "value": 2,
+        "color": "#cccae2"
+      },
+      {
+        "label": "Medium",
+        "value": 3,
+        "color": "#9c99c6"
+      },
+      {
+        "label": "High",
+        "value": 4,
+        "color": "#746aaf"
+      },
+      {
+        "label": "Very high",
+        "value": 5,
+        "color": "#54278e"
+      },
+      {
+        "label": "Not analyzed",
+        "value": 9,
+        "color": "#c9d2cd"
+      }
+    ],
+    "legend_text": "Joint Food Security & Nutrition Hotspot Analysis conducted by WFP, UNICEF, and partners based on SMART surveys and Cadre Harmonisé (CH) & Integrated Food Security Phase Classification (IPC) analyses"
   }
 }
