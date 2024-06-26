@@ -41,6 +41,7 @@ import AnalysisDownloadButton from 'components/MapView/Legends//AnalysisDownload
 import { toggleRemoveLayer } from 'components/MapView/LeftPanel/layersPanel/MenuItem/MenuSwitch/SwitchItem/utils';
 import { opacitySelector, setOpacity } from 'context/opacityStateSlice';
 import { lightGrey } from 'muiTheme';
+import Markdown from 'react-markdown';
 import LoadingBar from '../LoadingBar';
 
 // Children here is legendText
@@ -208,10 +209,29 @@ const LegendItem = memo(
       }
       return (
         <Grid item>
-          <Typography variant="h5">{children}</Typography>
+          {typeof children === 'string' ? (
+            <Markdown
+              linkTarget="_blank"
+              components={{
+                p: ({ children: pChildren }: { children: React.ReactNode }) => (
+                  <Typography
+                    variant="h5"
+                    className={classes.legendTextMarkdown}
+                  >
+                    {pChildren}
+                  </Typography>
+                ),
+              }}
+              allowedElements={['p', 'h5', 'strong', 'em', 'a']}
+            >
+              {children}
+            </Markdown>
+          ) : (
+            <Typography variant="h5">{children}</Typography>
+          )}
         </Grid>
       );
-    }, [children]);
+    }, [children, classes.legendTextMarkdown]);
 
     return (
       <ListItem disableGutters dense>
@@ -320,6 +340,11 @@ const styles = () =>
       marginRight: 5,
       width: 28,
       lineHeight: '36px',
+    },
+    legendTextMarkdown: {
+      '& a': {
+        textDecoration: 'underline',
+      },
     },
   });
 
