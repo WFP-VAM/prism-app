@@ -6448,24 +6448,6 @@
     ],
     "legend_text": "Joint Food Security & Nutrition Hotspot Analysis conducted by WFP, UNICEF, and partners based on SMART surveys and Cadre Harmonisé (CH) & Integrated Food Security Phase Classification (IPC) analyses"
   },
-  "fs_hotspot_1a_2024": {
-    "title": "Food Security Hotspot June 2024",
-    "type": "admin_level_data",
-    "path": "data/rbd/fsn-hotspot/fs-hotspot-1a-2024.json",
-    "admin_level": 2,
-    "data_field": "FS_Hotspot_Jun_2024",
-    "admin_code": "admin2Pcod",
-    "fill_pattern": "right",
-    "opacity": 0.9,
-    "legend": [
-      {
-        "label": "Priority 1a",
-        "value": 1,
-        "color": "#b30101"
-      }
-    ],
-    "legend_text": " "
-  },
   "nutr_hotspot_2024": {
     "title": "Nutrition hotspot analysis",
     "type": "admin_level_data",
