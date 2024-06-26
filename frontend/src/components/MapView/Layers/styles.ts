@@ -11,37 +11,54 @@ export const circleLayout: CircleLayerSpecification['layout'] = {
   visibility: 'visible',
 };
 
+const dataFieldColor = (
+  legend: LegendDefinitionItem[],
+  dataField: string,
+  dataFieldType?: DataFieldType,
+) => {
+  return dataFieldType === DataFieldType.TEXT
+    ? [
+        'match',
+        ['get', dataField],
+        ...legend.reduce(
+          (acc: string[], legendItem: LegendDefinitionItem) => [
+            ...acc,
+            (legendItem.value || legendItem.label) as string,
+            legendItem.color as string,
+          ],
+          [],
+        ),
+        '#CCC',
+      ]
+    : {
+        property: dataField,
+        stops: legendToStops(legend),
+      };
+};
+
 export const circlePaint = ({
   opacity,
   legend,
   dataField,
   dataFieldType,
 }: PointDataLayerProps): CircleLayerSpecification['paint'] => {
-  const circleColor =
-    dataFieldType === DataFieldType.TEXT
-      ? [
-          'match',
-          ['get', dataField],
-          ...legend.reduce(
-            (acc: string[], legendItem: LegendDefinitionItem) => [
-              ...acc,
-              (legendItem.value || legendItem.label) as string,
-              legendItem.color as string,
-            ],
-            [],
-          ),
-          '#CCC',
-        ]
-      : {
-          property: dataField,
-          stops: legendToStops(legend),
-        };
-
+  const circleColor = dataFieldColor(legend, dataField, dataFieldType);
   return {
     'circle-radius': 5,
     'circle-opacity': opacity || 0.3,
-    // TODO: maplibre: fix any
     'circle-color': circleColor as any,
+  };
+};
+
+export const fillPaintCategorical = ({
+  opacity,
+  legend,
+  dataField,
+  dataFieldType,
+}: PointDataLayerProps): FillLayerSpecification['paint'] => {
+  return {
+    'fill-opacity': opacity || 0.5,
+    'fill-color': dataFieldColor(legend, dataField, dataFieldType) as any,
   };
 };
 
