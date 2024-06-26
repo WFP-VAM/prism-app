@@ -169,7 +169,9 @@ const PopupContent = ({
         })
         .map(([key, value]) => {
           // If the data is undefined, null, or an empty string, we don't want to show the key/value pair
-          const isKeyValuePair = value.data ?? value.data !== '';
+          const isKeyValuePair = [undefined, null, ''].every(
+            item => item !== value.data,
+          );
           return (
             <Fragment key={key}>
               <div>
