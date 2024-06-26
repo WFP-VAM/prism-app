@@ -144,7 +144,7 @@ export const convertSvgToPngBase64Image = async (
     });
     return base64Image as string;
   } catch (error) {
-    console.error(error);
+    console.error('Error converting SVG to PNG:', error);
     throw error;
   }
 };
@@ -175,13 +175,42 @@ export const getSVGShape = (
   strokeColor = '#000000',
   direction: 'left' | 'right' = 'left',
 ) => {
-  // Added switch here for future enhancements maybe horizontal or other directions
   switch (direction) {
     case 'right':
       // Right Diagonal lines svg (///////)
-      return `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 100 100" width="50" height="50"><defs><style>.cls-1,.cls-3{fill:none;}.cls-2{clip-path:url(#clip-path);}.cls-3{stroke:${strokeColor};stroke-miterlimit:10;stroke-width:2px;}.cls-4{fill:url(#_19-2_black_diagonal);}</style><clipPath id="clip-path"><rect id="SVGID" class="cls-1" width="100" height="100"/></clipPath><pattern id="_19-2_black_diagonal" data-name="19-2 black diagonal" width="100" height="100" patternTransform="translate(-13.41 -30.89)" patternUnits="userSpaceOnUse" viewBox="0 0 100 100"><rect class="cls-1" width="100" height="100"/><g class="cls-2"><line class="cls-3" x1="-13.41" y1="53.03" x2="93.66" y2="-53.03"/><line class="cls-3" x1="-7.86" y1="58.59" x2="99.22" y2="-47.48"/><line class="cls-3" x1="-2.3" y1="64.14" x2="104.78" y2="-41.92"/><line class="cls-3" x1="3.26" y1="69.7" x2="110.34" y2="-36.37"/><line class="cls-3" x1="8.81" y1="75.26" x2="115.89" y2="-30.81"/><line class="cls-3" x1="14.37" y1="80.81" x2="121.44" y2="-25.26"/><line class="cls-3" x1="19.92" y1="86.37" x2="126.99" y2="-19.7"/><line class="cls-3" x1="25.48" y1="91.92" x2="132.55" y2="-14.14"/><line class="cls-3" x1="31.03" y1="97.48" x2="138.1" y2="-8.59"/><line class="cls-3" x1="36.59" y1="103.03" x2="143.66" y2="-3.03"/><line class="cls-3" x1="42.14" y1="108.59" x2="149.21" y2="2.52"/><line class="cls-3" x1="47.7" y1="114.14" x2="154.77" y2="8.08"/><line class="cls-3" x1="53.26" y1="119.7" x2="160.33" y2="13.63"/><line class="cls-3" x1="58.81" y1="125.26" x2="165.88" y2="19.19"/><line class="cls-3" x1="64.37" y1="130.81" x2="171.44" y2="24.74"/><line class="cls-3" x1="69.92" y1="136.37" x2="176.99" y2="30.3"/><line class="cls-3" x1="75.48" y1="141.92" x2="182.55" y2="35.86"/><line class="cls-3" x1="81.03" y1="147.48" x2="188.1" y2="41.41"/><line class="cls-3" x1="86.59" y1="153.03" x2="193.66" y2="46.97"/></g></pattern></defs><title>Asset 8</title><g id="Layer_2" data-name="Layer 2"><g id="Layer_1-2" data-name="Layer 1"><rect class="cls-4" width="100" height="100"/></g></g></svg>`;
+      return `
+        <svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 80 80">
+          <defs>
+            <pattern id="right-diagonal" patternUnits="userSpaceOnUse" width="80" height="80">
+              <line x1="0" y1="80" x2="80" y2="0" stroke="${strokeColor}" stroke-width="2"/>
+              <line x1="0" y1="60" x2="60" y2="0" stroke="${strokeColor}" stroke-width="2"/>
+              <line x1="0" y1="40" x2="40" y2="0" stroke="${strokeColor}" stroke-width="2"/>
+              <line x1="0" y1="20" x2="20" y2="0" stroke="${strokeColor}" stroke-width="2"/>
+              <line x1="20" y1="80" x2="80" y2="20" stroke="${strokeColor}" stroke-width="2"/>
+              <line x1="40" y1="80" x2="80" y2="40" stroke="${strokeColor}" stroke-width="2"/>
+              <line x1="60" y1="80" x2="80" y2="60" stroke="${strokeColor}" stroke-width="2"/>
+            </pattern>
+          </defs>
+          <rect width="80" height="80" fill="url(#right-diagonal)" />
+        </svg>
+      `;
     default:
       // Defaults to left diagonal lines (\\\\\\\)
-      return `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 100 100" width="50" height="50"><defs><style>.cls-1,.cls-3{fill:none;}.cls-2{clip-path:url(#clip-path);}.cls-3{stroke:${strokeColor};stroke-miterlimit:10;stroke-width:2px;}.cls-4{fill:url(#_19-2_black_diagonal);}</style><clipPath id="clip-path"><rect id="SVGID" class="cls-1" width="100" height="100"/></clipPath><pattern id="_19-2_black_diagonal" data-name="19-2 black diagonal" width="100" height="100" patternTransform="translate(-86.59 -30.89)" patternUnits="userSpaceOnUse" viewBox="0 0 100 100"><rect class="cls-1" width="100" height="100"/><g class="cls-2"><line class="cls-3" x1="153.03" y1="53.03" x2="46.97" y2="-53.03"/><line class="cls-3" x1="147.48" y1="58.59" x2="41.41" y2="-47.48"/><line class="cls-3" x1="141.92" y1="64.14" x2="35.86" y2="-41.92"/><line class="cls-3" x1="136.37" y1="69.7" x2="30.3" y2="-36.37"/><line class="cls-3" x1="130.81" y1="75.26" x2="24.74" y2="-30.81"/><line class="cls-3" x1="125.26" y1="80.81" x2="19.19" y2="-25.26"/><line class="cls-3" x1="119.7" y1="86.37" x2="13.63" y2="-19.7"/><line class="cls-3" x1="114.14" y1="91.92" x2="8.08" y2="-14.14"/><line class="cls-3" x1="108.59" y1="97.48" x2="2.52" y2="-8.59"/><line class="cls-3" x1="103.03" y1="103.03" x2="-3.03" y2="-3.03"/><line class="cls-3" x1="97.48" y1="108.59" x2="-8.59" y2="2.52"/><line class="cls-3" x1="91.92" y1="114.14" x2="-14.14" y2="8.08"/><line class="cls-3" x1="86.37" y1="119.7" x2="-19.7" y2="13.63"/><line class="cls-3" x1="80.81" y1="125.26" x2="-25.26" y2="19.19"/><line class="cls-3" x1="75.26" y1="130.81" x2="-30.81" y2="24.74"/><line class="cls-3" x1="69.7" y1="136.37" x2="-36.37" y2="30.3"/><line class="cls-3" x1="64.14" y1="141.92" x2="-41.92" y2="35.86"/><line class="cls-3" x1="58.59" y1="147.48" x2="-47.48" y2="41.41"/><line class="cls-3" x1="53.03" y1="153.03" x2="-53.03" y2="46.97"/></g></pattern></defs><title>Asset 8</title><g id="Layer_2" data-name="Layer 2"><g id="Layer_1-2" data-name="Layer 1"><rect class="cls-4" width="100" height="100"/></g></g></svg>`;
+      return `
+        <svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 80 80">
+          <defs>
+            <pattern id="left-diagonal" patternUnits="userSpaceOnUse" width="80" height="80">
+              <line x1="0" y1="0" x2="80" y2="80" stroke="${strokeColor}" stroke-width="2"/>
+              <line x1="0" y1="20" x2="20" y2="80" stroke="${strokeColor}" stroke-width="2"/>
+              <line x1="0" y1="40" x2="40" y2="80" stroke="${strokeColor}" stroke-width="2"/>
+              <line x1="0" y1="60" x2="60" y2="80" stroke="${strokeColor}" stroke-width="2"/>
+              <line x1="20" y1="0" x2="80" y2="60" stroke="${strokeColor}" stroke-width="2"/>
+              <line x1="40" y1="0" x2="80" y2="40" stroke="${strokeColor}" stroke-width="2"/>
+              <line x1="60" y1="0" x2="80" y2="20" stroke="${strokeColor}" stroke-width="2"/>
+            </pattern>
+          </defs>
+          <rect width="80" height="80" fill="url(#left-diagonal)" />
+        </svg>
+      `;
   }
 };
