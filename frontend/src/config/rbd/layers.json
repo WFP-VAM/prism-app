@@ -6406,7 +6406,7 @@
     "legend_text": "ACLED Conflict Analysis 2023 produced by IFPRI. For more details, see https://hdl.handle.net/10568/139670"
   },
   "fs_hotspot_2024": {
-    "title": "Food Security Hotspot June 2024",
+    "title": "Food security hotspot analysis",
     "type": "admin_level_data",
     "path": "data/rbd/fsn-hotspot/fsn-hotspot-2024.json",
     "admin_level": 2,
