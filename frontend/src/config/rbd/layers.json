@@ -5991,12 +5991,10 @@
     "path": "data/rbd/ifpri-aci/aci_2018.json",
     "admin_level": 2,
     "data_field": "ACI_value",
+    "data_label": "Classification",
+    "display_source": "legend_label",
     "admin_code": "admin2Pcod",
     "feature_info_props": {
-      "ACI_class": {
-        "type": "string",
-        "dataTitle": "Conflict level"
-      },
       "deadliness": {
         "type": "number",
         "dataTitle": "Deadliness score"
@@ -6061,12 +6059,10 @@
     "path": "data/rbd/ifpri-aci/aci_2019.json",
     "admin_level": 2,
     "data_field": "ACI_value",
+    "data_label": "Classification",
+    "display_source": "legend_label",
     "admin_code": "admin2Pcod",
     "feature_info_props": {
-      "ACI_class": {
-        "type": "string",
-        "dataTitle": "Conflict level"
-      },
       "deadliness": {
         "type": "number",
         "dataTitle": "Deadliness score"
@@ -6131,12 +6127,10 @@
     "path": "data/rbd/ifpri-aci/aci_2020.json",
     "admin_level": 2,
     "data_field": "ACI_value",
+    "data_label": "Classification",
+    "display_source": "legend_label",
     "admin_code": "admin2Pcod",
     "feature_info_props": {
-      "ACI_class": {
-        "type": "string",
-        "dataTitle": "Conflict level"
-      },
       "deadliness": {
         "type": "number",
         "dataTitle": "Deadliness score"
@@ -6201,12 +6195,10 @@
     "path": "data/rbd/ifpri-aci/aci_2021.json",
     "admin_level": 2,
     "data_field": "ACI_value",
+    "data_label": "Classification",
+    "display_source": "legend_label",
     "admin_code": "admin2Pcod",
     "feature_info_props": {
-      "ACI_class": {
-        "type": "string",
-        "dataTitle": "Conflict level"
-      },
       "deadliness": {
         "type": "number",
         "dataTitle": "Deadliness score"
@@ -6271,12 +6263,10 @@
     "path": "data/rbd/ifpri-aci/aci_2022.json",
     "admin_level": 2,
     "data_field": "ACI_value",
+    "data_label": "Classification",
+    "display_source": "legend_label",
     "admin_code": "admin2Pcod",
     "feature_info_props": {
-      "ACI_class": {
-        "type": "string",
-        "dataTitle": "Conflict level"
-      },
       "deadliness": {
         "type": "number",
         "dataTitle": "Deadliness score"
@@ -6341,12 +6331,10 @@
     "path": "data/rbd/ifpri-aci/aci_2023.json",
     "admin_level": 2,
     "data_field": "ACI_value",
+    "data_label": "Classification",
+    "display_source": "legend_label",
     "admin_code": "admin2Pcod",
     "feature_info_props": {
-      "ACI_class": {
-        "type": "string",
-        "dataTitle": "Conflict level"
-      },
       "deadliness": {
         "type": "number",
         "dataTitle": "Deadliness score"

@@ -8,7 +8,7 @@ import {
   AdminLevelDataLayerProps,
   PointDataLayerProps,
 } from 'config/types';
-import { addPopupData } from 'context/tooltipStateSlice';
+import { PopupData, addPopupData } from 'context/tooltipStateSlice';
 import { findFeature, getEvtCoords, getLayerMapId } from 'utils/map-utils';
 import { getRoundedData } from 'utils/data-utils';
 import { i18nTranslator } from 'i18n';
@@ -85,23 +85,52 @@ export const addPopupParams = (
 
   const coordinates = getEvtCoords(evt);
 
-  const { dataField, featureInfoProps, title } = layer;
+  const {
+    dataField,
+    featureInfoProps,
+    title,
+    dataLabel,
+    displaySource,
+    legend,
+  } = layer;
 
   // adminLevelLayer uses data field by default.
   const propertyField: string = dataField
     ? `properties.${dataField}`
     : 'properties.data';
 
-  // by default add `dataField` to the tooltip if it is not within the feature_info_props dictionary.
-  if (!Object.keys(featureInfoProps || {}).includes(dataField)) {
-    dispatch(
-      addPopupData({
-        [title]: {
-          data: getRoundedData(get(feature, propertyField), t),
-          coordinates,
-        },
-      }),
-    );
+  // By default, we add `dataField` to the tooltip if it is not within the feature_info_props dictionary.
+  // If a custom dataLabel is provided, we'll make sure to use that before the value
+  // If displaySource is set to `legend_label`, use the matching legend label for the dataField.
+  const useCustomLabel = !!dataLabel || displaySource === 'legend_label';
+  if (
+    useCustomLabel ||
+    !Object.keys(featureInfoProps || {}).includes(dataField)
+  ) {
+    const popupDataRows: PopupData = {};
+
+    if (dataLabel) {
+      popupDataRows[title] = {
+        data: null,
+        coordinates,
+      };
+    }
+
+    const customDisplayData =
+      displaySource === 'legend_label' &&
+      legend.find(
+        legendItem => legendItem.value === get(feature, propertyField),
+      )?.label;
+    const displayData = customDisplayData
+      ? `${t(`${customDisplayData}`)}`
+      : getRoundedData(get(feature, propertyField), t);
+
+    popupDataRows[dataLabel ?? title] = {
+      data: displayData,
+      coordinates,
+    };
+
+    dispatch(addPopupData(popupDataRows));
   }
 
   // Add feature_info_props as extra fields to the tooltip
@@ -120,22 +149,28 @@ export const addPopupParams = (
     });
   }
 
+  // temporary fix for the admin level
+  const possibleAdminLevelData: PopupData = adminLevel
+    ? {
+        'Admin Level': {
+          data: feature.properties.adminLevel,
+          coordinates,
+        },
+      }
+    : {};
+
+  const featureInfoPropsData = getFeatureInfoPropsData(
+    featureInfoPropsWithFallback || {},
+    coordinates,
+    feature,
+  );
+
   dispatch(
     addPopupData({
-      // temporary fix for the admin level
-      ...(adminLevel
-        ? {
-            'Admin Level': {
-              data: feature.properties.adminLevel,
-              coordinates,
-            },
-          }
-        : {}),
-      ...getFeatureInfoPropsData(
-        featureInfoPropsWithFallback || {},
-        coordinates,
-        feature,
-      ),
+      // Only if we're providing a custom label, put the data before admin level
+      ...(!useCustomLabel ? possibleAdminLevelData : {}),
+      ...featureInfoPropsData,
+      ...(useCustomLabel ? possibleAdminLevelData : {}),
     }),
   );
 };
