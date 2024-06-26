@@ -73,7 +73,7 @@ export const addFillPatternImageInMap = (
     const imageId = `fill-pattern-${layer.id}-legend-${index}`;
     if (!map.hasImage(imageId)) {
       // Add the image since it doesn't exist
-      map.addImage(imageId, image, { pixelRatio: 2 });
+      map.addImage(imageId, image, { pixelRatio: 4 });
     }
   });
 };

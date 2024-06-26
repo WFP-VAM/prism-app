@@ -6408,12 +6408,18 @@
   "fs_hotspot_2024": {
     "title": "Food Security Hotspot June 2024",
     "type": "admin_level_data",
-    "path": "data/rbd/fsn-hotspot/fs-hotspot-1-4-2024.json",
+    "path": "data/rbd/fsn-hotspot/fsn-hotspot-2024.json",
     "admin_level": 2,
     "data_field": "FS_Hotspot_Jun_2024",
     "admin_code": "admin2Pcod",
     "opacity": 0.9,
     "legend": [
+      {
+        "label": "Priority 1a",
+        "value": 1,
+        "color": "#b30101",
+        "fillPattern": "right"
+      },
       {
         "label": "Priority 1",
         "value": 2,
@@ -6509,8 +6515,7 @@
       {
         "label": "Very low",
         "value": 1,
-        "color": "#f1f0f6",
-        "fillPattern": "right"
+        "color": "#f1f0f6"
       },
       {
         "label": "Low",
@@ -6530,8 +6535,7 @@
       {
         "label": "Very high",
         "value": 5,
-        "color": "#54278e",
-        "fillPattern": "right"
+        "color": "#54278e"
       },
       {
         "label": "Not analyzed",

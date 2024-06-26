@@ -182,13 +182,13 @@ export const getSVGShape = (
         <svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 80 80">
           <defs>
             <pattern id="right-diagonal" patternUnits="userSpaceOnUse" width="80" height="80">
-              <line x1="0" y1="80" x2="80" y2="0" stroke="${strokeColor}" stroke-width="2"/>
-              <line x1="0" y1="60" x2="60" y2="0" stroke="${strokeColor}" stroke-width="2"/>
-              <line x1="0" y1="40" x2="40" y2="0" stroke="${strokeColor}" stroke-width="2"/>
-              <line x1="0" y1="20" x2="20" y2="0" stroke="${strokeColor}" stroke-width="2"/>
-              <line x1="20" y1="80" x2="80" y2="20" stroke="${strokeColor}" stroke-width="2"/>
-              <line x1="40" y1="80" x2="80" y2="40" stroke="${strokeColor}" stroke-width="2"/>
-              <line x1="60" y1="80" x2="80" y2="60" stroke="${strokeColor}" stroke-width="2"/>
+              <line x1="0" y1="80" x2="80" y2="0" stroke="${strokeColor}" stroke-width="4"/>
+              <line x1="0" y1="60" x2="60" y2="0" stroke="${strokeColor}" stroke-width="4"/>
+              <line x1="0" y1="40" x2="40" y2="0" stroke="${strokeColor}" stroke-width="4"/>
+              <line x1="0" y1="20" x2="20" y2="0" stroke="${strokeColor}" stroke-width="4"/>
+              <line x1="20" y1="80" x2="80" y2="20" stroke="${strokeColor}" stroke-width="4"/>
+              <line x1="40" y1="80" x2="80" y2="40" stroke="${strokeColor}" stroke-width="4"/>
+              <line x1="60" y1="80" x2="80" y2="60" stroke="${strokeColor}" stroke-width="4"/>
             </pattern>
           </defs>
           <rect width="80" height="80" fill="url(#right-diagonal)" />
@@ -207,13 +207,13 @@ export const getSVGShape = (
         <svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 80 80">
           <defs>
             <pattern id="left-diagonal" patternUnits="userSpaceOnUse" width="80" height="80">
-              <line x1="0" y1="0" x2="80" y2="80" stroke="${strokeColor}" stroke-width="2"/>
-              <line x1="0" y1="20" x2="20" y2="80" stroke="${strokeColor}" stroke-width="2"/>
-              <line x1="0" y1="40" x2="40" y2="80" stroke="${strokeColor}" stroke-width="2"/>
-              <line x1="0" y1="60" x2="60" y2="80" stroke="${strokeColor}" stroke-width="2"/>
-              <line x1="20" y1="0" x2="80" y2="60" stroke="${strokeColor}" stroke-width="2"/>
-              <line x1="40" y1="0" x2="80" y2="40" stroke="${strokeColor}" stroke-width="2"/>
-              <line x1="60" y1="0" x2="80" y2="20" stroke="${strokeColor}" stroke-width="2"/>
+              <line x1="0" y1="0" x2="80" y2="80" stroke="${strokeColor}" stroke-width="4"/>
+              <line x1="0" y1="20" x2="20" y2="80" stroke="${strokeColor}" stroke-width="4"/>
+              <line x1="0" y1="40" x2="40" y2="80" stroke="${strokeColor}" stroke-width="4"/>
+              <line x1="0" y1="60" x2="60" y2="80" stroke="${strokeColor}" stroke-width="4"/>
+              <line x1="20" y1="0" x2="80" y2="60" stroke="${strokeColor}" stroke-width="4"/>
+              <line x1="40" y1="0" x2="80" y2="40" stroke="${strokeColor}" stroke-width="4"/>
+              <line x1="60" y1="0" x2="80" y2="20" stroke="${strokeColor}" stroke-width="4"/>
             </pattern>
           </defs>
           <rect width="80" height="80" fill="url(#left-diagonal)" />

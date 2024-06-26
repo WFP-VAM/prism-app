@@ -247,21 +247,7 @@
     "Food_Security_and_Nutrition_Hotspots": {
       "Food_Security_and_Nutrition_Hotspot_Analysis": [
         "integrated_hotspot_2024",
-        {
-          "group_title": "Food security hotspot analysis",
-          "activate_all": true,
-          "layers": [
-            {
-              "id": "fs_hotspot_1a_2024",
-              "label": "Priority 1a"
-            },
-            {
-              "id": "fs_hotspot_2024",
-              "label": "Priority 1-4",
-              "main": true
-            }
-          ]
-        },
+        "fs_hotspot_2024",
         "nutr_hotspot_2024"
       ]
     },
