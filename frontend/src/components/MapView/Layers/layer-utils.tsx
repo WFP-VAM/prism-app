@@ -107,15 +107,6 @@ export const addPopupParams = (
     useCustomLabel ||
     !Object.keys(featureInfoProps || {}).includes(dataField)
   ) {
-    const popupDataRows: PopupData = {};
-
-    if (dataLabel) {
-      popupDataRows[title] = {
-        data: null,
-        coordinates,
-      };
-    }
-
     const customDisplayData =
       displaySource === 'legend_label' &&
       legend.find(
@@ -125,9 +116,12 @@ export const addPopupParams = (
       ? `${t(`${customDisplayData}`)}`
       : getRoundedData(get(feature, propertyField), t);
 
-    popupDataRows[dataLabel ?? title] = {
-      data: displayData,
-      coordinates,
+    const popupDataRows: PopupData = {
+      ...(dataLabel ? { [title]: { data: null, coordinates } } : {}),
+      [dataLabel ?? title]: {
+        data: displayData,
+        coordinates,
+      },
     };
 
     dispatch(addPopupData(popupDataRows));
