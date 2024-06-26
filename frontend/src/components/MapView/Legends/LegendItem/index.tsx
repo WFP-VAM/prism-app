@@ -183,7 +183,7 @@ const LegendItem = memo(
           value={getLegendItemLabel(t, item)}
           color={item.color as string}
           opacity={opacity as number}
-          fillPattern={fillPattern}
+          fillPattern={fillPattern || item.fillPattern}
         />
       ));
     }, [fillPattern, getColorIndicatorKey, legend, opacity, t]);

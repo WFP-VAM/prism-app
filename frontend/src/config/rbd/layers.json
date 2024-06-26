@@ -6509,7 +6509,8 @@
       {
         "label": "Very low",
         "value": 1,
-        "color": "#f1f0f6"
+        "color": "#f1f0f6",
+        "fillPattern": "right"
       },
       {
         "label": "Low",
@@ -6529,7 +6530,8 @@
       {
         "label": "Very high",
         "value": 5,
-        "color": "#54278e"
+        "color": "#54278e",
+        "fillPattern": "right"
       },
       {
         "label": "Not analyzed",
