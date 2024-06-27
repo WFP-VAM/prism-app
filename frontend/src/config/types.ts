@@ -177,6 +177,7 @@ export type LegendDefinitionItem = {
   // Optional, to create custom label like '≤50'. if label is not defined
   // then value attribute will be shown instead
   label?: LegendLabel | string;
+  fillPattern?: 'left' | 'right';
 };
 
 export type LegendDefinition = LegendDefinitionItem[];
