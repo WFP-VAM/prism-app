@@ -1,4 +1,4 @@
-import { camelCase, get, map, mapKeys } from 'lodash';
+import { camelCase, get, map, mapKeys, isPlainObject, mapValues } from 'lodash';
 import { appConfig, rawLayers, rawReports, rawTables } from '.';
 import {
   AdminLevelDataLayerProps,
@@ -49,6 +49,19 @@ function parseStatsApiConfig(maybeConfig: {
   return undefined;
 }
 
+export function deepCamelCaseKeys(obj: any): any {
+  if (Array.isArray(obj)) {
+    return obj.map(deepCamelCaseKeys);
+  }
+  if (isPlainObject(obj)) {
+    return mapValues(
+      mapKeys(obj, (v, k) => camelCase(k)),
+      deepCamelCaseKeys,
+    );
+  }
+  return obj;
+}
+
 // CamelCase the keys inside the layer definition & validate config
 export const getLayerByKey = (layerKey: LayerKey): LayerType => {
   const rawDefinition = rawLayers[layerKey];
@@ -56,6 +69,8 @@ export const getLayerByKey = (layerKey: LayerKey): LayerType => {
   const definition: { id: LayerKey; type: LayerType['type'] } = {
     id: layerKey,
     type: rawDefinition.type as LayerType['type'],
+    // TODO - Transition to deepCamelCaseKeys
+    // but handle line-opacity and other special cases
     ...mapKeys(rawDefinition, (v, k) => camelCase(k)),
   };
 

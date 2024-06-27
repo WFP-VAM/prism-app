@@ -76,7 +76,7 @@ export const fillPaintData = (
       type: 'interval',
     },
   };
-  if (fillPattern) {
+  if (fillPattern || legend?.some(l => l.fillPattern)) {
     // eslint-disable-next-line fp/no-mutation
     fillPaint = {
       ...fillPaint,

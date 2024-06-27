@@ -244,6 +244,13 @@
         }
       ]
     },
+    "Food_Security_and_Nutrition_Hotspots": {
+      "Food_Security_and_Nutrition_Hotspot_Analysis": [
+        "integrated_hotspot_2024",
+        "fs_hotspot_2024",
+        "nutr_hotspot_2024"
+      ]
+    },
     "Future_of_the_Lean_Season": {
       "Future_of_the_Lean_Season_Analysis": [
         {
