@@ -21,6 +21,7 @@ import nepal from './nepal';
 import nigeria from './nigeria';
 import rbd from './rbd';
 import sierraleone from './sierraleone';
+import somalia from './somalia';
 import southsudan from './southsudan';
 import srilanka from './srilanka';
 import sudan from './sudan';
@@ -54,6 +55,7 @@ const configMap = {
   nigeria,
   rbd,
   sierraleone,
+  somalia,
   southsudan,
   srilanka,
   sudan,

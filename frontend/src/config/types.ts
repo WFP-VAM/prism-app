@@ -177,6 +177,7 @@ export type LegendDefinitionItem = {
   // Optional, to create custom label like '≤50'. if label is not defined
   // then value attribute will be shown instead
   label?: LegendLabel | string;
+  fillPattern?: 'left' | 'right';
 };
 
 export type LegendDefinition = LegendDefinitionItem[];
@@ -658,6 +659,9 @@ export class PointDataLayerProps extends CommonLayerProps {
   legendText: string;
 
   @optional
+  hexDisplay?: boolean; // display data in hexagon grid
+
+  @optional
   fallbackData?: string;
 
   @optional
@@ -712,8 +716,9 @@ export interface MenuItemType {
 export type DateItem = {
   displayDate: number; // Date that will be rendered in the calendar.
   queryDate: number; // Date that will be used in the WMS request.
-  isStartDate?: boolean;
-  isEndDate?: boolean;
+  // start and end dates of the date range.
+  startDate?: number;
+  endDate?: number;
 };
 
 export type AvailableDates = {

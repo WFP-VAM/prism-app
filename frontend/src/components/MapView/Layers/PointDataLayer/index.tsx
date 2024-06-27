@@ -1,5 +1,7 @@
 import React, { memo, useEffect } from 'react';
 import { Layer, Source } from 'react-map-gl/maplibre';
+import { Point } from 'geojson';
+
 import { useDispatch, useSelector } from 'react-redux';
 import {
   MapEventWrapFunctionProps,
@@ -22,6 +24,7 @@ import { useUrlHistory } from 'utils/url-utils';
 import {
   circleLayout,
   circlePaint,
+  fillPaintCategorical,
   fillPaintData,
 } from 'components/MapView/Layers/styles';
 import { setEWSParams, clearDataset } from 'context/datasetStateSlice';
@@ -34,6 +37,7 @@ import {
 } from 'maplibre-gl';
 import { findFeature, getLayerMapId, useMapCallback } from 'utils/map-utils';
 import { getFormattedDate } from 'utils/date-utils';
+import { geoToH3, h3ToGeoBoundary } from 'h3-js';
 
 const onClick = ({
   layer,
@@ -145,6 +149,49 @@ const PointDataLayer = ({ layer, before }: LayersProps) => {
 
   if (!data || !validateLayerDate) {
     return null;
+  }
+
+  if (layer.hexDisplay) {
+    const finalFeatures =
+      data &&
+      data.features
+        .map(feature => {
+          const point = feature.geometry as Point;
+
+          // Convert the point to a hexagon
+          const hexagon = geoToH3(
+            point.coordinates[1],
+            point.coordinates[0],
+            6.9, // resolution, adjust as needed
+          );
+          if (!feature?.properties?.F2023_an_1) {
+            return null;
+          }
+          return {
+            ...feature,
+            geometry: {
+              type: 'Polygon',
+              coordinates: [h3ToGeoBoundary(hexagon, true)], // Convert the hexagon to a GeoJSON polygon
+            },
+          };
+        })
+        .filter(Boolean);
+
+    const filteredData = {
+      ...data,
+      features: finalFeatures,
+    };
+
+    return (
+      <Source type="geojson" data={filteredData}>
+        <Layer
+          id={getLayerMapId(layer.id)}
+          type="fill"
+          paint={fillPaintCategorical(layer)}
+          beforeId={before}
+        />
+      </Source>
+    );
   }
 
   if (layer.adminLevelDisplay) {
