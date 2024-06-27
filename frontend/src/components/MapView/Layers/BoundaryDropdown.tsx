@@ -214,6 +214,10 @@ export function getAdminBoundaryTree(
   }, rootNode);
 }
 
+// TODO - fix this function to make sure it returns
+// children of selected elements. Eg. when typing "Mali" it should return
+// children of Mali, not just Mali itself.
+
 function flattenAreaTree(
   tree: AdminBoundaryTree,
   search: string = '',
@@ -273,6 +277,9 @@ export const BoundaryDropdownOptions = React.forwardRef(
     }
 
     const areaTree = getAdminBoundaryTree(data, boundaryLayer, i18nLocale);
+    // the completeFlattenedList should not be needed once
+    // flattenAreaTree is fixed to return children of selected elements
+    const completeFlattenedList = flattenAreaTree(areaTree);
     const flattenedAreaList = flattenAreaTree(areaTree, search).slice(1);
     const rootLevel = flattenedAreaList[0]?.level;
 
@@ -351,11 +358,11 @@ export const BoundaryDropdownOptions = React.forwardRef(
                     newSelectedBoundaries.splice(itemIndex, 1);
                   }
                   if (setSelectedBoundaries !== undefined) {
-                    const boundariesToSelect = flattenedAreaList
+                    const boundariesToSelect = completeFlattenedList
                       .filter(b =>
-                        newSelectedBoundaries.some((v: string) =>
-                          b.adminCode.startsWith(v),
-                        ),
+                        newSelectedBoundaries.some((v: string) => {
+                          return b.adminCode.startsWith(v);
+                        }),
                       )
                       .map(b => b.adminCode);
 
