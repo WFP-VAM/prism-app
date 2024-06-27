@@ -336,6 +336,7 @@ export function generateIntermediateDateItemFromValidity(
       // only calculate validity for dates that are less than 5 years old
       if (date.getTime() < earliestDate) {
         return [
+          ...acc,
           {
             displayDate: date.getTime(),
             queryDate: date.getTime(),
