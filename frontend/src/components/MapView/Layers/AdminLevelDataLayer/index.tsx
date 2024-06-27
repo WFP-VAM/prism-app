@@ -37,9 +37,12 @@ export const createFillPatternsForLayerLegends = async (
   layer: AdminLevelDataLayerProps,
 ) => {
   return Promise.all(
-    legendToStops(layer.legend).map(async legendToStop => {
+    legendToStops(layer.legend).map(async (legendToStop, index) => {
       return convertSvgToPngBase64Image(
-        getSVGShape(legendToStop[1] as string, layer.fillPattern),
+        getSVGShape(
+          legendToStop[1] as string,
+          layer.fillPattern || layer.legend[index]?.fillPattern,
+        ),
       );
     }),
   );
@@ -51,7 +54,11 @@ export const addFillPatternImageInMap = (
   index: number,
   convertedImage?: string,
 ) => {
-  if (!map || !layer.fillPattern || !convertedImage) {
+  if (
+    !map ||
+    !convertedImage ||
+    (!layer.fillPattern && !layer.legend.some(l => l.fillPattern))
+  ) {
     return;
   }
   map.loadImage(convertedImage, (err: any, image) => {
@@ -66,7 +73,7 @@ export const addFillPatternImageInMap = (
     const imageId = `fill-pattern-${layer.id}-legend-${index}`;
     if (!map.hasImage(imageId)) {
       // Add the image since it doesn't exist
-      map.addImage(imageId, image);
+      map.addImage(imageId, image, { pixelRatio: 4 });
     }
   });
 };
