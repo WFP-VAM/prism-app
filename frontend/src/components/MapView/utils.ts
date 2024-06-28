@@ -19,6 +19,7 @@ import { Column, quoteAndEscapeCell } from 'utils/analysis-utils';
 import { TableRow } from 'context/analysisResultStateSlice';
 import { AdminBoundaryParams, EWSParams } from 'context/datasetStateSlice';
 import { MapRef, Point } from 'react-map-gl/maplibre';
+import { PopupData } from 'context/tooltipStateSlice';
 import { getExtent } from './Layers/raster-utils';
 
 // TODO: maplibre: fix feature
@@ -156,7 +157,7 @@ export function getFeatureInfoPropsData(
   featureInfoProps: FeatureInfoObject,
   coordinates: number[],
   feature: any,
-) {
+): PopupData {
   const [keys, metaDataKeys] = sortKeys(featureInfoProps);
   const { properties } = feature;
 
