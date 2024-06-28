@@ -133,6 +133,7 @@ const LegendItemsList = ({
         // this layer doesn't have a legend (likely boundary), so lets ignore.
         return null;
       }
+      const hexDisplay = layer.type === 'point_data' && layer.hexDisplay;
       return (
         <LegendItem
           key={layer.id}
@@ -140,7 +141,8 @@ const LegendItemsList = ({
           title={layer.title ? t(layer.title) : undefined}
           legend={layer.legend}
           legendUrl={getLayerLegendUrl(layer)}
-          type={layer.type}
+          // Hack to use fill opacity for hexDisplay layers
+          type={hexDisplay ? 'composite' : layer.type}
           opacity={layer.opacity}
           fillPattern={layer.fillPattern}
           extent={adminBoundariesExtent}

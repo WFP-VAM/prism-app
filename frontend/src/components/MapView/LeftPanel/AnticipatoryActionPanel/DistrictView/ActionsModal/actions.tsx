@@ -54,19 +54,19 @@ const DoubleIcon = (props: FontAwesomeIconProps) => (
 // Reusable action items with full names
 export const AActions = {
   warnings: {
-    name: 'Dissemination of early warning messages',
+    name: 'Disseminate early warning messages',
     icon: <MarkunreadOutlined style={{ fontSize: IconSize }} />,
   },
   seeds: {
-    name: 'Distribution of seeds for re-sowing',
+    name: 'Distribute seeds for re-sowing',
     icon: <FontAwesomeIconWrap icon={faSeedling} />,
   },
   seedsW2: {
-    name: 'Distribution of seeds and vegetative material for the second season',
+    name: 'Distribute seeds and vegetative material for the second season',
     icon: <DoubleIcon icon={faSeedling} />,
   },
   waterHoles: {
-    name: 'Rehabilitation of boreholes',
+    name: 'Rehabilitate boreholes',
     icon: <LocalDrink style={{ fontSize: IconSize }} />,
   },
   multiUse: {
@@ -74,57 +74,60 @@ export const AActions = {
     icon: <FontAwesomeIconWrap icon={faPersonDigging} />,
   },
   cattle: {
-    name: 'Moving Cattle to places with water availability',
+    name: 'Move cattle to places with water availability',
     icon: <FontAwesomeIconWrap icon={faCow} />,
   },
   vaccination: {
-    name: 'Vaccination of birds against New Castle',
+    name: 'Vaccinate birds against New Castle',
     icon: <FontAwesomeIconWrap icon={faSyringe} />,
   },
   foodAssistance: {
-    name: 'Food Assistance',
+    name: 'Provide food assistance',
     icon: <FontAwesomeIconWrap icon={faPlateWheat} />,
   },
   socialAssistance: {
-    name: 'Social assistance',
+    name: 'Provide social assistance',
     icon: <FontAwesomeIconWrap icon={faPeopleGroup} />,
   }, // replace with 'Diversity3'
-  schoolLunch: { name: 'School lunches', icon: <School /> },
+  schoolLunch: {
+    name: 'Provide school lunches',
+    icon: <School />,
+  },
   procurement: {
-    name: 'Launching tenders and other Procurement procedures',
+    name: 'Launch tenders and other procurement procedures',
     icon: <AccountTree style={{ fontSize: IconSize }} />,
   },
   contracts: {
-    name: 'Signing contracts and mobilization of assets',
+    name: 'Sign contracts and mobilize assets',
     icon: <FontAwesomeIconWrap icon={faHandshake} />,
   },
   // Actions for Normal Phase (Zimbabwe)
   convening: {
-    name: 'Convening with stakeholders',
+    name: 'Convene with stakeholders',
     icon: <FontAwesomeIconWrap icon={faPeopleGroup} />,
   },
   requestingFunds: {
-    name: 'Requesting funds',
+    name: 'Request funds',
     icon: <FontAwesomeIconWrap icon={faMoneyBillWave} />,
   },
   updatingLists: {
-    name: 'Updating beneficiary lists',
+    name: 'Update beneficiary lists',
     icon: <FontAwesomeIconWrap icon={faList} />,
   },
   climateInfo: {
-    name: 'Dissemination of climate information',
+    name: 'Disseminate climate information',
     icon: <MarkunreadOutlined style={{ fontSize: IconSize }} />,
   },
   droughtInputs: {
-    name: 'Distribution of drought tolerant inputs',
+    name: 'Distribute drought tolerant inputs',
     icon: <FontAwesomeIconWrap icon={faSeedling} />,
   },
   waterProvision: {
-    name: 'Water provision',
+    name: 'Make water provisions',
     icon: <LocalDrink style={{ fontSize: IconSize }} />,
   },
   cashTransfer: {
-    name: 'In kind/cash transfer',
+    name: 'Provide in kind/cash transfer',
     icon: <FontAwesomeIconWrap icon={faMoneyBillTransfer} />,
   },
   // No Action

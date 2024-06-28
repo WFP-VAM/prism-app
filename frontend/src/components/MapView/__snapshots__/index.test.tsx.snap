@@ -484,7 +484,7 @@ exports[`renders as expected 1`] = `
                       <mock-typography
                         variant="h3"
                       >
-                        The “Ready, Set & Go!” system uses seasonal forecasts with longer lead time for preparedness (Ready phase) and shorter lead times for activation and mobilization (Set & Go! phases).
+                        The "Ready, Set & Go!" system uses seasonal forecasts with longer lead time for preparedness (Ready phase) and shorter lead times for activation and mobilization (Set & Go! phases).
                       </mock-typography>
                        
                     </div>
@@ -1272,9 +1272,9 @@ exports[`renders as expected 1`] = `
                   <mock-button
                     classname="makeStyles-footerButton-78"
                     component="a"
-                    download="undefined-SPI_probabilities_season_triggers.csv"
+                    download="undefined-aa_probabilities_triggers_moz.csv"
                     fullwidth="true"
-                    href="data/mozambique/anticipatory-action/SPI_probabilities_season_triggers.csv"
+                    href="https://data.earthobservation.vam.wfp.org/public-share/aa/aa_probabilities_triggers_moz.csv"
                     starticon="[object Object]"
                     variant="outlined"
                   >

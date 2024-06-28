@@ -52,9 +52,9 @@ const ReportDialog = memo(
     ) as ExposedPopulationResult;
 
     const reportDate = useMemo(() => {
-      return analysisResult?.date
+      return analysisResult?.analysisDate
         ? getFormattedDate(
-            new Date(analysisResult?.date).toISOString(),
+            new Date(analysisResult?.analysisDate).toISOString(),
             'default',
           )
         : '';

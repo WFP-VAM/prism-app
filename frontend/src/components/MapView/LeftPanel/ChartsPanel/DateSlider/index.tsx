@@ -3,6 +3,7 @@ import React from 'react';
 import RangeSlider from 'react-range-slider-input';
 import 'react-range-slider-input/dist/style.css';
 import './slider.css';
+import { useSafeTranslation } from 'i18n';
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -36,6 +37,8 @@ function DateSlider({
 }: DateSliderProps) {
   const classes = useStyles();
 
+  const { t } = useSafeTranslation();
+
   return (
     <Box className={classes.sliderContainer}>
       <Box
@@ -46,8 +49,9 @@ function DateSlider({
       >
         <Box display="flex" flexDirection="row" alignItems="center">
           <Typography className={classes.textLabel} variant="body2">
-            start:
-          </Typography>{' '}
+            {t('Start')}
+          </Typography>
+          {': '}
           <Typography className={classes.textLabel}>
             {chartSelectedDateRange[0]}
           </Typography>
@@ -55,8 +59,9 @@ function DateSlider({
 
         <Box display="flex" flexDirection="row" alignItems="center">
           <Typography className={classes.textLabel} variant="body2">
-            end:
-          </Typography>{' '}
+            {t('End')}
+          </Typography>
+          {': '}
           <Typography className={classes.textLabel}>
             {chartSelectedDateRange[1]}
           </Typography>

@@ -29,7 +29,7 @@ exports[`renders as expected 1`] = `
           gutterbottom="true"
           variant="body1"
         >
-          If you have typed the address of this web page, you may misspelled it or if you redirected to this page, it may be moved to another location. Please go back to the website home page and try to find your page from the website navigation.
+          If you have typed the address of this web page, you may have misspelled it or if you redirected to this page, it may be moved to another location. Please go back to the website home page and try to find your page from the website navigation.
         </mock-typography>
       </div>
       <div
