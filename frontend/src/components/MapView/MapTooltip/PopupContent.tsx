@@ -168,7 +168,7 @@ const PopupContent = ({
           return true;
         })
         .map(([key, value]) => {
-          // If the data is undefined, null, or an empty string, we don't want to show the key/value pair
+          // If the data is undefined, null, or an empty string, we do not render the data (only render the key)
           const isKeyValuePair = [undefined, null, ''].every(
             item => item !== value.data,
           );
