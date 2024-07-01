@@ -48,13 +48,13 @@ const CompositeLayer = ({ layer, before }: Props) => {
   const opacityState = useSelector(opacitySelector(layer.id));
   const dispatch = useDispatch();
 
-  const { data } =
-    (useSelector(layerDataSelector(layer.id)) as LayerData<
-      CompositeLayerProps
-    >) || {};
-
   const layerAvailableDates = serverAvailableDates[layer.dateLayer];
   const queryDate = getRequestDate(layerAvailableDates, selectedDate);
+
+  const { data } =
+    (useSelector(layerDataSelector(layer.id, queryDate)) as LayerData<
+      CompositeLayerProps
+    >) || {};
 
   useEffect(() => {
     // admin-boundary-unified-polygon.json is generated using "yarn preprocess-layers"
@@ -106,8 +106,9 @@ const CompositeLayer = ({ layer, before }: Props) => {
       features: finalFeatures,
     };
     return (
-      <Source type="geojson" data={filteredData}>
+      <Source key={queryDate} type="geojson" data={filteredData}>
         <Layer
+          key={queryDate}
           id={getLayerMapId(layer.id)}
           type="fill"
           paint={paintProps(layer.legend || [], opacityState || layer.opacity)}
