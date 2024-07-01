@@ -369,9 +369,9 @@ export const BoundaryDropdownOptions = React.forwardRef(
                   if (setSelectedBoundaries !== undefined) {
                     const boundariesToSelect = flattenedAreaList
                       .filter(b =>
-                        newSelectedBoundaries.some((v: string) => {
-                          return b.adminCode.startsWith(v);
-                        }),
+                        newSelectedBoundaries.some((v: string) =>
+                          b.adminCode.startsWith(v),
+                        ),
                       )
                       .map(b => b.adminCode);
 
