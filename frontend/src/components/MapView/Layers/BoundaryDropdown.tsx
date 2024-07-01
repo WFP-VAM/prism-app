@@ -230,21 +230,17 @@ function flattenAreaTree(
     subTree: AdminBoundaryTree,
   ): FlattenedAdminBoundary[] {
     const { children, ...node } = subTree;
-    let childrenToShow: FlattenedAdminBoundary[];
-    if (node.label.toLowerCase().includes(localSearch.toLowerCase())) {
-      // current node matches the search string, include it and all its children
-      // without filtering them
-      const flattenFullTree = flattenSubTree.bind(null, '');
-      childrenToShow = sortBy(Object.values(children), 'label').flatMap(
-        flattenFullTree,
-      );
-    } else {
-      // current node des not match the search, keep filtering its own children
-      const flattenSearchTree = flattenSubTree.bind(null, localSearch);
-      childrenToShow = sortBy(Object.values(children), 'label').flatMap(
-        flattenSearchTree,
-      );
-    }
+    // if current node matches the search string, include it and all its children
+    // without filtering them, otherwise keep searching through the children
+    const boundFlatten = node.label
+      .toLowerCase()
+      .includes(localSearch.toLowerCase())
+      ? flattenSubTree.bind(null, '')
+      : flattenSubTree.bind(null, localSearch);
+    const childrenToShow: FlattenedAdminBoundary[] = sortBy(
+      Object.values(children),
+      'label',
+    ).flatMap(boundFlatten);
     if (
       childrenToShow.length > 0 ||
       node.label.toLowerCase().includes(localSearch.toLowerCase())
