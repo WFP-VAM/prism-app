@@ -43,11 +43,14 @@ const paintProps: (
 const CompositeLayer = ({ layer, before }: Props) => {
   // look to refacto with impactLayer and maybe other layers
   const [adminBoundaryLimitPolygon, setAdminBoundaryPolygon] = useState(null);
-  const selectedDate = useDefaultDate(layer.dateLayer);
+  const selectedDate = useDefaultDate(
+    layer.dateLayer,
+    layer.expectedDataLagDays,
+  );
+  console.log('selectedDate', selectedDate);
   const serverAvailableDates = useSelector(availableDatesSelector);
   const opacityState = useSelector(opacitySelector(layer.id));
   const dispatch = useDispatch();
-
   const layerAvailableDates = serverAvailableDates[layer.dateLayer];
   const queryDate = getRequestDate(layerAvailableDates, selectedDate);
 

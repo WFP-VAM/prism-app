@@ -487,6 +487,9 @@ export class CompositeLayerProps extends CommonLayerProps {
 
   @optional
   endDate?: string;
+
+  @optional
+  expectedDataLagDays?: number;
 }
 
 export class StaticRasterLayerProps extends CommonLayerProps {

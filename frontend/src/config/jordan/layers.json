@@ -4197,6 +4197,7 @@
     "aggregation": "pixel",
     "date_layer": "spi_1m",
     "start_date": "2020-12-01",
+    "expected_data_lag_days": 55,
     "opacity": 0.7
   },
   "daily_rainfall_forecast": {
