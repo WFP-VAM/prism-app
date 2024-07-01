@@ -1,6 +1,6 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { useEffect, useMemo } from 'react';
-import { isMainLayer, LayerKey } from 'config/types';
+import { DateItem, isMainLayer, LayerKey } from 'config/types';
 import { availableDatesSelector } from 'context/serverStateSlice';
 import {
   dateRangeSelector,
@@ -35,13 +35,15 @@ export function useDefaultDate(
     new Date().getTime() - (expectedDataLagDays ?? 0) * 24 * 60 * 60 * 1000;
 
   const defaultDate = useMemo(() => {
-    let index = possibleDates?.length - 1;
-    let defaultDate = possibleDates?.[index]?.displayDate;
-    while (defaultDate && defaultDate > soonestAvailableDate) {
-      index -= 1;
-      defaultDate = possibleDates?.[index]?.displayDate;
-    }
-    return defaultDate;
+    return possibleDates?.reduceRight(
+      (acc: number | undefined, date: DateItem) => {
+        if (!acc && date.displayDate <= soonestAvailableDate) {
+          return date.displayDate;
+        }
+        return acc;
+      },
+      undefined,
+    );
   }, [possibleDates, soonestAvailableDate]);
 
   // React doesn't allow updating other components within another component

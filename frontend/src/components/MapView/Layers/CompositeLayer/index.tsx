@@ -47,7 +47,6 @@ const CompositeLayer = ({ layer, before }: Props) => {
     layer.dateLayer,
     layer.expectedDataLagDays,
   );
-  console.log('selectedDate', selectedDate);
   const serverAvailableDates = useSelector(availableDatesSelector);
   const opacityState = useSelector(opacitySelector(layer.id));
   const dispatch = useDispatch();
