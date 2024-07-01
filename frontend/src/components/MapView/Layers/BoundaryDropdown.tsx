@@ -214,30 +214,46 @@ export function getAdminBoundaryTree(
   }, rootNode);
 }
 
-// TODO - fix this function to make sure it returns
-// children of selected elements. Eg. when typing "Mali" it should return
-// children of Mali, not just Mali itself.
-
+/**
+ * Flatten an admin tree into a list of admin areas, sorted
+ * "as you would expect": sub-areas follow their parent area,
+ * ordered alphabetically.
+ * Returned array includes parents and children of matched
+ * elements.
+ */
 function flattenAreaTree(
   tree: AdminBoundaryTree,
   search: string = '',
 ): FlattenedAdminBoundary[] {
   function flattenSubTree(
+    localSearch: string,
     subTree: AdminBoundaryTree,
   ): FlattenedAdminBoundary[] {
-    const { children, ...rest } = subTree;
-    const childrenToShow = sortBy(Object.values(children), 'label').flatMap(
-      flattenSubTree,
-    );
+    const { children, ...node } = subTree;
+    let childrenToShow: FlattenedAdminBoundary[];
+    if (node.label.toLowerCase().includes(localSearch.toLowerCase())) {
+      // current node matches the search string, include it and all its children
+      // without filtering them
+      const flattenFullTree = flattenSubTree.bind(null, '');
+      childrenToShow = sortBy(Object.values(children), 'label').flatMap(
+        flattenFullTree,
+      );
+    } else {
+      // current node des not match the search, keep filtering its own children
+      const flattenSearchTree = flattenSubTree.bind(null, localSearch);
+      childrenToShow = sortBy(Object.values(children), 'label').flatMap(
+        flattenSearchTree,
+      );
+    }
     if (
       childrenToShow.length > 0 ||
-      rest.label.toLowerCase().includes(search.toLowerCase())
+      node.label.toLowerCase().includes(localSearch.toLowerCase())
     ) {
-      return [rest, childrenToShow].flat();
+      return [node, childrenToShow].flat();
     }
     return childrenToShow.flat();
   }
-  return flattenSubTree(tree);
+  return flattenSubTree(search, tree);
 }
 
 interface BoundaryDropdownOptionsProps {
@@ -277,9 +293,6 @@ export const BoundaryDropdownOptions = React.forwardRef(
     }
 
     const areaTree = getAdminBoundaryTree(data, boundaryLayer, i18nLocale);
-    // the completeFlattenedList should not be needed once
-    // flattenAreaTree is fixed to return children of selected elements
-    const completeFlattenedList = flattenAreaTree(areaTree);
     const flattenedAreaList = flattenAreaTree(areaTree, search).slice(1);
     const rootLevel = flattenedAreaList[0]?.level;
 
@@ -358,7 +371,7 @@ export const BoundaryDropdownOptions = React.forwardRef(
                     newSelectedBoundaries.splice(itemIndex, 1);
                   }
                   if (setSelectedBoundaries !== undefined) {
-                    const boundariesToSelect = completeFlattenedList
+                    const boundariesToSelect = flattenedAreaList
                       .filter(b =>
                         newSelectedBoundaries.some((v: string) => {
                           return b.adminCode.startsWith(v);
