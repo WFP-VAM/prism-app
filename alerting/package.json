@@ -22,7 +22,7 @@
     "migration:revert": "yarn typeorm migration:revert",
     "typeorm-seeding": "ts-node $(yarn bin typeorm-seeding)",
     "alert-worker": "yarn ts-node src/alert-worker.ts",
-    "docker-alert": "docker compose run --entrypoint 'yarn alert-worker' alerting-node"
+    "docker-alert": "source ../api/set_envs.sh && docker compose run --entrypoint 'yarn alert-worker' alerting-node"
   },
   "dependencies": {
     "@turf/bbox": "^6.3.0",
