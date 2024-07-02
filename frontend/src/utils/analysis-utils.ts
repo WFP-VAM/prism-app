@@ -756,11 +756,13 @@ export function downloadCSVFromTableData(
         .join(','),
     ),
   ];
-  const rawCsv = `data:text/csv;charset=utf-8,${csvLines.join('\n')}`;
+  const rawCsv = csvLines.join('\n');
 
-  const encodedUri = encodeURI(rawCsv);
+  // Use Blob to handle large data
+  const blob = new Blob([rawCsv], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
   const link = document.createElement('a');
-  link.setAttribute('href', encodedUri);
+  link.setAttribute('href', url);
 
   link.setAttribute(
     'download',
@@ -769,6 +771,7 @@ export function downloadCSVFromTableData(
   document.body.appendChild(link); // Required for FF
 
   link.click();
+  document.body.removeChild(link); // Clean up
 }
 
 // type of results that have the tableData property
