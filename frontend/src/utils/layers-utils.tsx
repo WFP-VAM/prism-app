@@ -105,7 +105,7 @@ const useLayers = () => {
   ) as Extent;
 
   const selectedLayersWithDateSupport = useMemo(() => {
-    return selectedLayers
+    const initSelectedLayersWithDateSupport = selectedLayers
       .filter((layer): layer is DateCompatibleLayer => {
         if (
           layer.type === 'admin_level_data' ||
@@ -127,15 +127,24 @@ const useLayers = () => {
         }
         return dateSupportLayerTypes.includes(layer.type);
       })
-      .filter(layer => isMainLayer(layer.id, selectedLayers))
-      .map(layer => {
-        return {
-          ...layer,
-          dateItems: getPossibleDatesForLayer(layer, serverAvailableDates)
-            .filter(value => value) // null check
-            .flat(),
-        };
-      });
+      .filter(layer => isMainLayer(layer.id, selectedLayers));
+
+    const earliestExpectedDataLagDays = initSelectedLayersWithDateSupport.reduce(
+      (acc, layer) => Math.max(acc, layer.expectedDataLagDays ?? 0),
+      0,
+    );
+    const soonestAvailableDate =
+      new Date().getTime() -
+      (earliestExpectedDataLagDays ?? 0) * 24 * 60 * 60 * 1000;
+    return initSelectedLayersWithDateSupport.map(layer => {
+      return {
+        ...layer,
+        dateItems: getPossibleDatesForLayer(layer, serverAvailableDates)
+          .filter(value => value) // null check
+          .filter(date => date.displayDate <= soonestAvailableDate)
+          .flat(),
+      };
+    });
   }, [selectedLayers, serverAvailableDates]);
 
   /*
@@ -167,6 +176,14 @@ const useLayers = () => {
     if (selectedLayersWithDateSupport.length === 0) {
       return [];
     }
+    const earliestExpectedDataLagDays = selectedLayersWithDateSupport.reduce(
+      (acc, layer) => Math.max(acc, layer.expectedDataLagDays ?? 0),
+      0,
+    );
+    const soonestAvailableDate =
+      new Date().getTime() -
+      (earliestExpectedDataLagDays ?? 0) * 24 * 60 * 60 * 1000;
+
     /*
       Only keep the dates which were duplicated the same amount of times as the amount of layers active...and convert back to array.
      */
@@ -179,8 +196,9 @@ const useLayers = () => {
       // convert back to number array after using YYYY-MM-DD strings in countBy
     )
       .map(dateString => new Date(dateString).setUTCHours(12, 0, 0, 0))
+      .filter(date => date <= soonestAvailableDate)
       .sort((a, b) => a - b);
-  }, [selectedLayerDatesDupCount, selectedLayersWithDateSupport.length]);
+  }, [selectedLayerDatesDupCount, selectedLayersWithDateSupport]);
 
   const defaultLayer = useMemo(() => {
     return get(appConfig, 'defaultLayer');
