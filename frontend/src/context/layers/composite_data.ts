@@ -19,7 +19,10 @@ export const fetchCompositeLayerData: LazyLoader<CompositeLayerProps> = () => as
   const endDate = new Date(startDate);
   endDate.setMonth(endDate.getMonth() + 1);
 
-  const { baseUrl, inputLayers, startDate: areaStartDate } = layer;
+  const { baseUrl: _baseUrl, inputLayers, startDate: areaStartDate } = layer;
+  const baseUrl = process.env.REACT_APP_USE_LOCAL_HIP_SERVICE
+    ? process.env.REACT_APP_USE_LOCAL_HIP_SERVICE
+    : _baseUrl;
   const { boundingBox } = appConfig.map;
 
   // docs: https://hip-service.ovio.org/docs#/default/run_q_multi_geojson_q_multi_geojson_post

@@ -15,7 +15,9 @@ export class HTTPError extends Error {
   constructor(
     public readonly message: string,
     public readonly statusCode: number,
+    public readonly detail?: string,
   ) {
     super(message);
+    console.error('New HTTP Error: ', { message, statusCode, detail });
   }
 }
