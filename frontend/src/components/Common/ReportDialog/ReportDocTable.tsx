@@ -141,18 +141,18 @@ const ReportDocTable = memo(
     const renderedTableRow = useCallback(
       (tableRow: AnalysisTableRow[]) =>
         tableRow.map((rowData, index) => (
-            <View
-              key={rowData.key}
-              style={[
-                styles.tableRow,
-                { backgroundColor: getTableRowColor(index) },
-              ]}
-              wrap={false}
-            >
-              {renderedTableCellValues(rowData)}
-              {renderedTotalRow(rowData)}
-            </View>
-          )),
+          <View
+            key={rowData.key}
+            style={[
+              styles.tableRow,
+              { backgroundColor: getTableRowColor(index) },
+            ]}
+            wrap={false}
+          >
+            {renderedTableCellValues(rowData)}
+            {renderedTotalRow(rowData)}
+          </View>
+        )),
       [
         getTableRowColor,
         renderedTableCellValues,
@@ -175,7 +175,7 @@ const ReportDocTable = memo(
             />
             {renderedTableRow(chunkRow)}
           </View>
-        )), 
+        )),
       [cellWidth, chunks, columns, name, renderedTableRow, showRowTotal, theme],
     );
 
@@ -209,8 +209,9 @@ const ReportDocTable = memo(
     );
 
     const totalsNumberForTotalRow = useMemo(
-      () =>
-        totals.reduce((prev, cur) => prev + cur, 0), [totals]);
+      () => totals.reduce((prev, cur) => prev + cur, 0),
+      [totals],
+    );
 
     const renderedLastRowTotal = useMemo(() => {
       if (!showRowTotal) {

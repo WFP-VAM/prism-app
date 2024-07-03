@@ -154,7 +154,7 @@ const Chart = memo(
           data: indices.map(index => (row[index] as number) || null),
           pointHitRadius: 10,
         })),
-      [colors, config.category, config.fill, indices, isEWSChart, t, tableRows]
+      [colors, config.category, config.fill, indices, isEWSChart, t, tableRows],
     );
 
     const configureIndicePointRadius = useCallback(
@@ -183,7 +183,8 @@ const Chart = memo(
           data: tableRows.map(row => (row[indiceKey] as number) || null),
           pointRadius: configureIndicePointRadius(indiceKey),
           pointHitRadius: 10,
-        })), [
+        })),
+      [
         colors,
         config.fill,
         configureIndicePointRadius,
@@ -268,10 +269,9 @@ const Chart = memo(
                   display: false,
                 },
                 ticks: {
-                  callback: value => 
-                  // for EWS charts, we only want to display the time
-                   isEWSChart ? String(value).split(' ')[1] : value
-                ,
+                  callback: value =>
+                    // for EWS charts, we only want to display the time
+                    isEWSChart ? String(value).split(' ')[1] : value,
                   fontColor: '#CCC',
                 },
                 ...(xAxisLabel

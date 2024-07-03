@@ -8,8 +8,10 @@ function RootAccordionItems() {
   const { adminBoundariesExtent: extent } = useLayers();
 
   const layersMenuItems = menuList.filter((menuItem: MenuItemType) =>
-    menuItem.layersCategories.some((layerCategory: LayersCategoryType) => layerCategory.layers.length > 0,
-  ));
+    menuItem.layersCategories.some(
+      (layerCategory: LayersCategoryType) => layerCategory.layers.length > 0,
+    ),
+  );
 
   return (
     <>
