@@ -31,12 +31,12 @@ interface OpacitySliderProps extends WithStyles<typeof styles> {
   layerId: string;
   layerType: LayerType['type'];
 }
-const OpacitySlider = ({
+function OpacitySlider({
   classes,
   activeLayerId,
   layerId,
   layerType,
-}: OpacitySliderProps) => {
+}: OpacitySliderProps) {
   const dispatch = useDispatch();
   const opacity = useSelector(opacitySelector(activeLayerId || layerId));
   const map = useSelector(mapSelector);
@@ -78,6 +78,6 @@ const OpacitySlider = ({
       </Box>
     </Box>
   );
-};
+}
 
 export default memo(withStyles(styles)(OpacitySlider));

@@ -71,7 +71,7 @@ const availableAdminLevels: AdminLevelType[] = multiCountry
 
 interface TooltipProps extends WithStyles<typeof styles> {}
 
-const MapTooltip = ({ classes }: TooltipProps) => {
+function MapTooltip({ classes }: TooltipProps) {
   const dispatch = useDispatch();
   const popup = useSelector(tooltipSelector);
   const { i18n } = useSafeTranslation();
@@ -175,6 +175,6 @@ const MapTooltip = ({ classes }: TooltipProps) => {
       <Loader showLoader={popup.wmsGetFeatureInfoLoading} />
     </Popup>
   );
-};
+}
 
 export default memo(withStyles(styles)(MapTooltip));

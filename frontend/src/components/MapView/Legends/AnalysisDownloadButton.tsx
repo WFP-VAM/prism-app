@@ -1,5 +1,5 @@
 import { IconButton, Menu, MenuItem, Tooltip } from '@material-ui/core';
-import { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import {
   analysisResultSelector,
@@ -43,10 +43,8 @@ function AnalysisDownloadButton() {
   );
   const analysisDefinition = useSelector(getCurrentDefinition);
 
-  const [
-    downloadMenuAnchorEl,
-    setDownloadMenuAnchorEl,
-  ] = useState<HTMLElement | null>(null);
+  const [downloadMenuAnchorEl, setDownloadMenuAnchorEl] =
+    useState<HTMLElement | null>(null);
 
   const handleDownloadMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
     setDownloadMenuAnchorEl(event.currentTarget);
@@ -61,19 +59,20 @@ function AnalysisDownloadButton() {
     exposureAnalysisResultSortByKey,
     exposureAnalysisResultSortOrder,
   );
-  const exposureAnalysisColumnsToRender = getExposureAnalysisColumnsToRender(
-    translatedColumns,
-  );
-  const exposureAnalysisTableRowsToRender = getExposureAnalysisTableDataRowsToRender(
-    translatedColumns,
-    exposureAnalysisTableData,
-  );
+  const exposureAnalysisColumnsToRender =
+    getExposureAnalysisColumnsToRender(translatedColumns);
+  const exposureAnalysisTableRowsToRender =
+    getExposureAnalysisTableDataRowsToRender(
+      translatedColumns,
+      exposureAnalysisTableData,
+    );
 
   const { t } = useSafeTranslation();
 
-  const featureCollection = useMemo(() => {
-    return analysisResult?.featureCollection;
-  }, [analysisResult]);
+  const featureCollection = useMemo(
+    () => analysisResult?.featureCollection,
+    [analysisResult],
+  );
 
   const analysisDate = useMemo(() => {
     if (analysisResult instanceof BaselineLayerResult) {

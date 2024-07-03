@@ -35,11 +35,11 @@ interface LegendItemsListProps {
   showDescription?: boolean;
 }
 
-const LegendItemsList = ({
+function LegendItemsList({
   listStyle,
   forPrinting = false,
   showDescription = true,
-}: LegendItemsListProps) => {
+}: LegendItemsListProps) {
   const { t } = useSafeTranslation();
   const isAnalysisLayerActive = useSelector(isAnalysisLayerActiveSelector);
   const analysisResult = useSelector(analysisResultSelector);
@@ -53,25 +53,30 @@ const LegendItemsList = ({
   );
 
   // If legend array is empty, we fetch from remote server the legend as GetLegendGraphic request.
-  const getLayerLegendUrl = React.useCallback((layer: LayerType) => {
-    return layer.type === 'wms' && layer.legend.length === 0
-      ? createGetLegendGraphicUrl({
-          base: layer.baseUrl,
-          layer: layer.serverLayerName,
-        })
-      : undefined;
-  }, []);
+  const getLayerLegendUrl = React.useCallback(
+    (layer: LayerType) =>
+      layer.type === 'wms' && layer.legend.length === 0
+        ? createGetLegendGraphicUrl({
+            base: layer.baseUrl,
+            layer: layer.serverLayerName,
+          })
+        : undefined,
+    [],
+  );
 
   // memoized values from selectors
-  const featureCollection = React.useMemo(() => {
-    return analysisResult?.featureCollection;
-  }, [analysisResult]);
+  const featureCollection = React.useMemo(
+    () => analysisResult?.featureCollection,
+    [analysisResult],
+  );
 
-  const hasData = React.useMemo(() => {
-    return featureCollection?.features
-      ? featureCollection.features.length > 0
-      : false;
-  }, [featureCollection]);
+  const hasData = React.useMemo(
+    () =>
+      featureCollection?.features
+        ? featureCollection.features.length > 0
+        : false,
+    [featureCollection],
+  );
 
   const renderedLegendImpactResult = React.useMemo(() => {
     if (!(analysisResult instanceof BaselineLayerResult)) {
@@ -127,40 +132,42 @@ const LegendItemsList = ({
     renderedLegendImpactResult,
   ]);
 
-  const layersLegendItems = React.useMemo(() => {
-    return selectedLayers.map(layer => {
-      if (!layer.legend || !layer.legendText) {
-        // this layer doesn't have a legend (likely boundary), so lets ignore.
-        return null;
-      }
-      const hexDisplay = layer.type === 'point_data' && layer.hexDisplay;
-      return (
-        <LegendItem
-          key={layer.id}
-          id={layer.id}
-          title={layer.title ? t(layer.title) : undefined}
-          legend={layer.legend}
-          legendUrl={getLayerLegendUrl(layer)}
-          // Hack to use fill opacity for hexDisplay layers
-          type={hexDisplay ? 'composite' : layer.type}
-          opacity={layer.opacity}
-          fillPattern={layer.fillPattern}
-          extent={adminBoundariesExtent}
-          forPrinting={forPrinting}
-          showDescription={showDescription}
-        >
-          {t(layer.legendText)}
-        </LegendItem>
-      );
-    });
-  }, [
-    selectedLayers,
-    t,
-    getLayerLegendUrl,
-    adminBoundariesExtent,
-    forPrinting,
-    showDescription,
-  ]);
+  const layersLegendItems = React.useMemo(
+    () =>
+      selectedLayers.map(layer => {
+        if (!layer.legend || !layer.legendText) {
+          // this layer doesn't have a legend (likely boundary), so lets ignore.
+          return null;
+        }
+        const hexDisplay = layer.type === 'point_data' && layer.hexDisplay;
+        return (
+          <LegendItem
+            key={layer.id}
+            id={layer.id}
+            title={layer.title ? t(layer.title) : undefined}
+            legend={layer.legend}
+            legendUrl={getLayerLegendUrl(layer)}
+            // Hack to use fill opacity for hexDisplay layers
+            type={hexDisplay ? 'composite' : layer.type}
+            opacity={layer.opacity}
+            fillPattern={layer.fillPattern}
+            extent={adminBoundariesExtent}
+            forPrinting={forPrinting}
+            showDescription={showDescription}
+          >
+            {t(layer.legendText)}
+          </LegendItem>
+        );
+      }),
+    [
+      selectedLayers,
+      t,
+      getLayerLegendUrl,
+      adminBoundariesExtent,
+      forPrinting,
+      showDescription,
+    ],
+  );
 
   const legendItems = React.useMemo(() => {
     const AALegends = AALayerInUrl
@@ -188,6 +195,6 @@ const LegendItemsList = ({
       {legendItems}
     </List>
   );
-};
+}
 
 export default LegendItemsList;

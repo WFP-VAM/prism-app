@@ -27,9 +27,9 @@ const ContentDialog = memo(
       if (!open || !elementId) {
         return;
       }
-      (document.querySelector(
-        `#${elementId}`,
-      ) as HTMLHeadingElement).scrollIntoView({
+      (
+        document.querySelector(`#${elementId}`) as HTMLHeadingElement
+      ).scrollIntoView({
         behavior: 'smooth',
         block: 'start',
       });

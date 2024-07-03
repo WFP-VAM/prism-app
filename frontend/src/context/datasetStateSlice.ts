@@ -275,11 +275,10 @@ export const loadDataset = createAsyncThunk<
   CreateAsyncThunkTypes
 >(
   'datasetState/loadDataset',
-  async (params: DatasetRequestParams, { dispatch }) => {
-    return (params as AdminBoundaryRequestParams).id
+  async (params: DatasetRequestParams, { dispatch }) =>
+    (params as AdminBoundaryRequestParams).id
       ? loadAdminBoundaryDataset(params as AdminBoundaryRequestParams, dispatch)
-      : loadEWSDataset(params as EWSDataPointsRequestParams, dispatch);
-  },
+      : loadEWSDataset(params as EWSDataPointsRequestParams, dispatch),
 );
 
 export const datasetResultStateSlice = createSlice({

@@ -44,13 +44,10 @@ function ExposureAnalysisActions({
 
   const API_URL = 'https://prism-api.ovio.org/report';
 
-  const exposureAnalysisColumnsToRender = getExposureAnalysisColumnsToRender(
-    columns,
-  );
-  const exposureAnalysisTableRowsToRender = getExposureAnalysisTableDataRowsToRender(
-    columns,
-    tableData,
-  );
+  const exposureAnalysisColumnsToRender =
+    getExposureAnalysisColumnsToRender(columns);
+  const exposureAnalysisTableRowsToRender =
+    getExposureAnalysisTableDataRowsToRender(columns, tableData);
   const exposureAnalysisCsvData = getExposureAnalysisCsvData(
     exposureAnalysisColumnsToRender,
     exposureAnalysisTableRowsToRender,
@@ -60,11 +57,8 @@ function ExposureAnalysisActions({
     // We use find here because exposure reports and layers have 1 - 1 sync.
     // TODO Future enhancement if exposure reports are more than one for specific layer
     const foundReportKeyBasedOnLayerId = Object.keys(ReportsDefinitions).find(
-      reportDefinitionKey => {
-        return (
-          ReportsDefinitions[reportDefinitionKey].layerId === exposureLayerId
-        );
-      },
+      reportDefinitionKey =>
+        ReportsDefinitions[reportDefinitionKey].layerId === exposureLayerId,
     );
     return ReportsDefinitions[foundReportKeyBasedOnLayerId as string];
   }, [exposureLayerId]);
@@ -126,10 +120,8 @@ function ExposureAnalysisActions({
     setDownloadReportIsLoading(false);
   };
 
-  const handleToggleReport = (toggle: boolean) => {
-    return () => {
-      setOpenReport(toggle);
-    };
+  const handleToggleReport = (toggle: boolean) => () => {
+    setOpenReport(toggle);
   };
 
   return (
@@ -142,22 +134,24 @@ function ExposureAnalysisActions({
           <Typography variant="body2">{t('Download as CSV')}</Typography>
         </Button>
       )}
-      {false && <Button
-        id="create-report"
-        className={bottomButton}
-        onClick={handleToggleReport(true)}
-        // TOTO - Hide the preview report button for now. Report creation happens in the backend and is cached.
-        // style={{
-        //   position: 'absolute',
-        //   height: 0,
-        //   width: 0,
-        //   minWidth: 0,
-        //   padding: 0,
-        //   margin: 0,
-        // }}
-      >
-        <Typography variant="body2">{t('Preview Report (slow)')}</Typography>
-      </Button>}
+      {false && (
+        <Button
+          id="create-report"
+          className={bottomButton}
+          onClick={handleToggleReport(true)}
+          // TOTO - Hide the preview report button for now. Report creation happens in the backend and is cached.
+          // style={{
+          //   position: 'absolute',
+          //   height: 0,
+          //   width: 0,
+          //   minWidth: 0,
+          //   padding: 0,
+          //   margin: 0,
+          // }}
+        >
+          <Typography variant="body2">{t('Preview Report (slow)')}</Typography>
+        </Button>
+      )}
       <Button
         className={bottomButton}
         onClick={handleDownloadReport}

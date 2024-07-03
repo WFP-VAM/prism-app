@@ -7,7 +7,7 @@ import {
   Typography,
 } from '@material-ui/core';
 import { sortBy } from 'lodash';
-import { memo, ReactNode } from 'react';
+import React, { memo, ReactNode } from 'react';
 import { BoundaryLayerProps, PanelSize, AdminCodeString } from 'config/types';
 import {
   getAdminBoundaryTree,
@@ -109,11 +109,10 @@ const LocationSelector = memo(
 
     const selectedAdmin1Area = () => admin0BoundaryTree?.[admin1Key];
 
-    const orderedAdmin2areas: () => AdminBoundaryTree[] = () => {
-      return data && admin1Key
+    const orderedAdmin2areas: () => AdminBoundaryTree[] = () =>
+      data && admin1Key
         ? sortBy(Object.values(selectedAdmin1Area().children), 'label')
         : [];
-    };
 
     const selectedAdmin2Area = () => selectedAdmin1Area().children[admin2Key];
 
@@ -124,13 +123,11 @@ const LocationSelector = memo(
       return adminBoundaryTree.children[admin0keyValue].label as ReactNode;
     };
 
-    const renderAdmin1Value = (admin1keyValue: any) => {
-      return admin0BoundaryTree[admin1keyValue]?.label;
-    };
+    const renderAdmin1Value = (admin1keyValue: any) =>
+      admin0BoundaryTree[admin1keyValue]?.label;
 
-    const renderAdmin2Value = (admin2KeyValue: any) => {
-      return selectedAdmin1Area().children[admin2KeyValue].label;
-    };
+    const renderAdmin2Value = (admin2KeyValue: any) =>
+      selectedAdmin1Area().children[admin2KeyValue].label;
 
     const onChangeAdmin0Area = (event: React.ChangeEvent<HTMLInputElement>) => {
       const admin0Id = event.target.value;

@@ -20,10 +20,10 @@ export const createStaticRasterLayerUrl = (
       )
     : baseUrl;
 
-const StaticRasterLayer = ({
+function StaticRasterLayer({
   layer: { id, baseUrl, opacity, minZoom, maxZoom, dates },
   before,
-}: LayersProps) => {
+}: LayersProps) {
   const selectedDate = useDefaultDate(id);
   const url = createStaticRasterLayerUrl(baseUrl, dates, selectedDate);
   const opacityState = useSelector(opacitySelector(id));
@@ -40,7 +40,7 @@ const StaticRasterLayer = ({
       />
     </Source>
   );
-};
+}
 
 export interface LayersProps {
   layer: StaticRasterLayerProps;

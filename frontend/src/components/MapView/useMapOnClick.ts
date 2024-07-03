@@ -33,11 +33,10 @@ const useMapOnClick = (
 
   // Whether the boundary layer data are outside of boundary bbox
   const boundaryLayerDataAreOutsideOfBoundaryBBox = useCallback(
-    (lng: any, lat: any) => {
-      return boundaryLayerData?.data.features.every(
+    (lng: any, lat: any) =>
+      boundaryLayerData?.data.features.every(
         feature => !inside([lng, lat], feature as Feature<MultiPolygon>),
-      );
-    },
+      ),
     [boundaryLayerData],
   );
 
@@ -53,9 +52,10 @@ const useMapOnClick = (
   );
 
   // TODO: maplibre: fix feature
-  const getFeatureInfoLayers = useCallback((features?: any) => {
-    return getActiveFeatureInfoLayers(features);
-  }, []);
+  const getFeatureInfoLayers = useCallback(
+    (features?: any) => getActiveFeatureInfoLayers(features),
+    [],
+  );
 
   const dateFromRef = getFormattedDate(selectedDate, 'default');
 

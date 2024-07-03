@@ -17,7 +17,7 @@ import {
   Typography,
 } from '@material-ui/core';
 import { GeoJsonProperties } from 'geojson';
-import {
+import React, {
   memo,
   useCallback,
   useEffect,
@@ -251,9 +251,8 @@ const ChartsPanel = memo(() => {
     new Date().getTime() - oneYearInMs - oneDayInMs,
   );
   const [adminProperties, setAdminProperties] = useState<GeoJsonProperties>();
-  const [secondAdminProperties, setSecondAdminProperties] = useState<
-    GeoJsonProperties
-  >();
+  const [secondAdminProperties, setSecondAdminProperties] =
+    useState<GeoJsonProperties>();
   const oneYearInTicks = 34;
   // maxDataTicks used for setting slider max ticks
   const [maxDataTicks, setMaxDataTicks] = useState(0);
@@ -324,9 +323,7 @@ const ChartsPanel = memo(() => {
   );
 
   const getCountryName: (admProps: GeoJsonProperties) => string = useCallback(
-    admProps => {
-      return multiCountry ? admProps?.admin0Name : country;
-    },
+    admProps => (multiCountry ? admProps?.admin0Name : country),
     [country],
   );
 
@@ -342,14 +339,14 @@ const ChartsPanel = memo(() => {
     }`;
   };
 
-  const showChartsPanel = useMemo(() => {
-    return (
+  const showChartsPanel = useMemo(
+    () =>
       adminProperties &&
       startDate1 &&
       tabPanelType === tabValue &&
-      selectedLayerTitles.length >= 1
-    );
-  }, [adminProperties, startDate1, selectedLayerTitles.length, tabValue]);
+      selectedLayerTitles.length >= 1,
+    [adminProperties, startDate1, selectedLayerTitles.length, tabValue],
+  );
 
   useEffect(() => {
     if (!adminProperties && countryAdmin0Id && data) {
@@ -714,13 +711,10 @@ const ChartsPanel = memo(() => {
   }, [compareLocations, comparePeriods, selectedLayerTitles]);
 
   const chartsSelectRenderValue = useCallback(
-    selected => {
-      return selected
-        .map((selectedValue: string | TFunctionKeys) => {
-          return t(selectedValue);
-        })
-        .join(', ');
-    },
+    selected =>
+      selected
+        .map((selectedValue: string | TFunctionKeys) => t(selectedValue))
+        .join(', '),
     [t],
   );
 

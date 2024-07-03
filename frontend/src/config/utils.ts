@@ -27,9 +27,8 @@ export type ReportKey = string;
  * Check if a string is an explicitly defined report in reports.json
  * @param reportsKey the string to check
  */
-export const isReportsKey = (reportsKey: string): reportsKey is ReportKey => {
-  return reportsKey in rawReports;
-};
+export const isReportsKey = (reportsKey: string): reportsKey is ReportKey =>
+  reportsKey in rawReports;
 
 /**
  * Check if a string is an explicitly defined table in tables.json
@@ -286,9 +285,8 @@ export const areChartLayersAvailable = getWMSLayersWithChart().length > 0;
 
 const isValidReportsDefinition = (
   maybeReport: object,
-): maybeReport is ReportType => {
-  return checkRequiredKeys(ReportType, maybeReport, true);
-};
+): maybeReport is ReportType =>
+  checkRequiredKeys(ReportType, maybeReport, true);
 
 function isValidTableDefinition(maybeTable: object): maybeTable is TableType {
   return checkRequiredKeys(TableType, maybeTable, true);
@@ -352,9 +350,11 @@ export const getCompositeLayers = (layer: LayerType): LayerType[] => {
   const compositeLayersIds = inputLayers?.map(inputLayer => inputLayer.id);
 
   if (compositeLayersIds?.length) {
-    const compositeLayers = map(LayerDefinitions, (value, key) => {
-      return compositeLayersIds.includes(key as LayerType['type']) && value;
-    }).filter(x => x);
+    const compositeLayers = map(
+      LayerDefinitions,
+      (value, key) =>
+        compositeLayersIds.includes(key as LayerType['type']) && value,
+    ).filter(x => x);
     return compositeLayers as LayerType[];
   }
   return [];

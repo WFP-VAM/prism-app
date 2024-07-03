@@ -12,7 +12,7 @@ import { useSafeTranslation } from 'i18n';
 import { BoundaryDropdownOptions } from 'components/MapView/Layers/BoundaryDropdown';
 import { mapSelector } from 'context/mapStateSlice/selectors';
 
-const GoToBoundaryDropdown = () => {
+function GoToBoundaryDropdown() {
   const { t } = useSafeTranslation();
   const map = useSelector(mapSelector);
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
@@ -56,6 +56,6 @@ const GoToBoundaryDropdown = () => {
       </Menu>
     </>
   );
-};
+}
 
 export default GoToBoundaryDropdown;

@@ -60,10 +60,8 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
     footerVisibility: true,
   });
 
-  const [
-    downloadMenuAnchorEl,
-    setDownloadMenuAnchorEl,
-  ] = React.useState<HTMLElement | null>(null);
+  const [downloadMenuAnchorEl, setDownloadMenuAnchorEl] =
+    React.useState<HTMLElement | null>(null);
   const [selectedBoundaries, setSelectedBoundaries] = React.useState<
     AdminCodeString[]
   >([]);
@@ -79,9 +77,8 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
     width: 100,
     height: 100,
   });
-  const [footerRef, { height: footerHeight }] = useResizeObserver<
-    HTMLDivElement
-  >(footerText, open);
+  const [footerRef, { height: footerHeight }] =
+    useResizeObserver<HTMLDivElement>(footerText, open);
   const [titleRef, { height: titleHeight }] = useResizeObserver<HTMLDivElement>(
     titleText,
     open,
@@ -97,9 +94,8 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
     );
   }
 
-  const [invertedAdminBoundaryLimitPolygon, setAdminBoundaryPolygon] = useState(
-    null,
-  );
+  const [invertedAdminBoundaryLimitPolygon, setAdminBoundaryPolygon] =
+    useState(null);
 
   React.useEffect(() => {
     // admin-boundary-unified-polygon.json is generated using "yarn preprocess-layers"

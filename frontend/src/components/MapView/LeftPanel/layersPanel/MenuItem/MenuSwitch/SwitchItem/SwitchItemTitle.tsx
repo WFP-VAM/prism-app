@@ -7,7 +7,7 @@ import {
 } from '@material-ui/core';
 import { WithStyles } from '@material-ui/styles';
 import { LayerType, MenuGroupItem } from 'config/types';
-import { memo, useCallback } from 'react';
+import React, { memo, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 
 const styles = () =>
@@ -58,7 +58,7 @@ interface SwitchTitleProps extends WithStyles<typeof styles> {
   groupMenuFilter?: string;
   disabledMenuSelection?: boolean;
 }
-const SwitchItemTitle = ({
+function SwitchItemTitle({
   layer,
   someLayerAreSelected,
   toggleLayerValue,
@@ -68,7 +68,7 @@ const SwitchItemTitle = ({
   groupMenuFilter,
   disabledMenuSelection = false,
   classes,
-}: SwitchTitleProps) => {
+}: SwitchTitleProps) {
   const { t } = useTranslation();
   const { group } = layer;
 
@@ -103,18 +103,16 @@ const SwitchItemTitle = ({
           disabled={disabledMenuSelection}
         >
           {getFilteredMenuGroupItems(group.layers, groupMenuFilter).map(
-            menu => {
-              return (
-                <MenuItem key={menu.id} value={menu.id}>
-                  {t(menu.label)}
-                </MenuItem>
-              );
-            },
+            menu => (
+              <MenuItem key={menu.id} value={menu.id}>
+                {t(menu.label)}
+              </MenuItem>
+            ),
           )}
         </Select>
       )}
     </>
   );
-};
+}
 
 export default memo(withStyles(styles)(SwitchItemTitle));

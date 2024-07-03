@@ -1,4 +1,4 @@
-import { memo, useCallback, useEffect, useMemo, useState } from 'react';
+import React, { memo, useCallback, useEffect, useMemo, useState } from 'react';
 import { createStyles, withStyles, WithStyles } from '@material-ui/styles';
 import {
   Box,
@@ -36,17 +36,11 @@ const DataTable = memo(
     const [rowsPerPage, setRowsPerPage] = useState(10);
     const [isAscending, setIsAscending] = useState<boolean>(true);
 
-    const rows = useMemo(() => {
-      return tableData.rows;
-    }, [tableData.rows]);
+    const rows = useMemo(() => tableData.rows, [tableData.rows]);
 
-    const tableRowsToRender = useMemo(() => {
-      return rows.slice(1);
-    }, [rows]);
+    const tableRowsToRender = useMemo(() => rows.slice(1), [rows]);
 
-    const columns = useMemo(() => {
-      return tableData.columns;
-    }, [tableData.columns]);
+    const columns = useMemo(() => tableData.columns, [tableData.columns]);
 
     // defaults to the first item of the columns collection
     const [sortColumn, setSortColumn] = useState<string>(columns[0]);
@@ -55,21 +49,15 @@ const DataTable = memo(
       setSortColumn(columns[0]);
     }, [columns]);
 
-    const sortedTableRowsToRender = useMemo(() => {
-      return orderBy(
-        tableRowsToRender,
-        sortColumn,
-        isAscending ? 'asc' : 'desc',
-      );
-    }, [isAscending, sortColumn, tableRowsToRender]);
+    const sortedTableRowsToRender = useMemo(
+      () =>
+        orderBy(tableRowsToRender, sortColumn, isAscending ? 'asc' : 'desc'),
+      [isAscending, sortColumn, tableRowsToRender],
+    );
 
-    const renderedTitle = useMemo(() => {
-      return title ?? '';
-    }, [title]);
+    const renderedTitle = useMemo(() => title ?? '', [title]);
 
-    const renderedLegendText = useMemo(() => {
-      return legendText ?? '';
-    }, [legendText]);
+    const renderedLegendText = useMemo(() => legendText ?? '', [legendText]);
 
     // handler of sort order
     const handleTableOrderBy = useCallback(
@@ -111,61 +99,58 @@ const DataTable = memo(
 
     // Whether the table sort label is active
     const tableSortLabelIsActive = useCallback(
-      (column: string) => {
-        return sortColumn === column;
-      },
+      (column: string) => sortColumn === column,
       [sortColumn],
     );
 
     // table sort label direction
     const tableSortLabelDirection = useCallback(
-      (column: string) => {
-        return sortColumn === column && !isAscending ? 'desc' : 'asc';
-      },
+      (column: string) =>
+        sortColumn === column && !isAscending ? 'desc' : 'asc',
       [isAscending, sortColumn],
     );
 
     // on table sort label click
     const onTableSortLabelClick = useCallback(
-      (column: string) => {
-        return () => {
-          handleTableOrderBy(column);
-        };
+      (column: string) => () => {
+        handleTableOrderBy(column);
       },
       [handleTableOrderBy],
     );
 
-    const renderedTableHeaderCells = useMemo(() => {
-      return columns.map((column: string) => {
-        const formattedColValue = getTableCellVal(rows[0], column, t);
-        return (
-          <TableCell key={column} className={classes.tableHead}>
-            <TableSortLabel
-              active={tableSortLabelIsActive(column)}
-              direction={tableSortLabelDirection(column)}
-              onClick={onTableSortLabelClick(column)}
-            >
-              <Typography className={classes.tableHeaderText}>
-                {formattedColValue}
-              </Typography>
-            </TableSortLabel>
-          </TableCell>
-        );
-      });
-    }, [
-      classes.tableHead,
-      classes.tableHeaderText,
-      columns,
-      onTableSortLabelClick,
-      rows,
-      t,
-      tableSortLabelDirection,
-      tableSortLabelIsActive,
-    ]);
+    const renderedTableHeaderCells = useMemo(
+      () =>
+        columns.map((column: string) => {
+          const formattedColValue = getTableCellVal(rows[0], column, t);
+          return (
+            <TableCell key={column} className={classes.tableHead}>
+              <TableSortLabel
+                active={tableSortLabelIsActive(column)}
+                direction={tableSortLabelDirection(column)}
+                onClick={onTableSortLabelClick(column)}
+              >
+                <Typography className={classes.tableHeaderText}>
+                  {formattedColValue}
+                </Typography>
+              </TableSortLabel>
+            </TableCell>
+          );
+        }),
+      [
+        classes.tableHead,
+        classes.tableHeaderText,
+        columns,
+        onTableSortLabelClick,
+        rows,
+        t,
+        tableSortLabelDirection,
+        tableSortLabelIsActive,
+      ],
+    );
 
     const renderedTableBodyCells = useCallback(
-      (row: TableRowType) => {
-        return columns.map(column => {
+      (row: TableRowType) =>
+        columns.map(column => {
           const formattedColValue = getTableCellVal(row, column, t);
           return (
             <TableCell key={column}>
@@ -174,19 +159,20 @@ const DataTable = memo(
               </Typography>
             </TableCell>
           );
-        });
-      },
+        }),
       [classes.tableBodyText, columns, t],
     );
 
-    const renderedTableBodyRows = useMemo(() => {
-      return sortedTableRowsToRender
-        .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-        .map((row: TableRowType, rowIndex: number) => {
-          const key = `TableRow-${(row as unknown) as string}}-${rowIndex}`;
-          return <TableRow key={key}>{renderedTableBodyCells(row)}</TableRow>;
-        });
-    }, [page, renderedTableBodyCells, rowsPerPage, sortedTableRowsToRender]);
+    const renderedTableBodyRows = useMemo(
+      () =>
+        sortedTableRowsToRender
+          .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+          .map((row: TableRowType, rowIndex: number) => {
+            const key = `TableRow-${row as unknown as string}}-${rowIndex}`;
+            return <TableRow key={key}>{renderedTableBodyCells(row)}</TableRow>;
+          }),
+      [page, renderedTableBodyCells, rowsPerPage, sortedTableRowsToRender],
+    );
 
     const renderedTable = useMemo(() => {
       if (!tableData) {
@@ -212,11 +198,11 @@ const DataTable = memo(
             onRowsPerPageChange={handleChangeRowsPerPage}
             labelRowsPerPage={t('Rows Per Page')}
             // Temporary manual translation before we upgrade to MUI 5.
-            labelDisplayedRows={({ from, to, count }) => {
-              return `${from}–${to} ${t('of')} ${
+            labelDisplayedRows={({ from, to, count }) =>
+              `${from}–${to} ${t('of')} ${
                 count !== -1 ? count : `${t('more than')} ${to}`
-              }`;
-            }}
+              }`
+            }
             classes={{
               root: classes.tablePagination,
             }}
@@ -296,8 +282,8 @@ const DataTable = memo(
   },
 );
 
-const styles = (theme: Theme) => {
-  return createStyles({
+const styles = (theme: Theme) =>
+  createStyles({
     dataTableRoot: {
       display: 'flex',
       flexDirection: 'column',
@@ -362,7 +348,6 @@ const styles = (theme: Theme) => {
       flexShrink: 0,
     },
   });
-};
 
 interface DataTableProps extends WithStyles<typeof styles> {
   title?: string;

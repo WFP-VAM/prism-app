@@ -7,12 +7,12 @@ interface SwitchActionProps {
   activeLayerId: string;
   validatedTitle: string;
 }
-const SwitchAction = ({
+function SwitchAction({
   someLayerAreSelected,
   toggleLayerValue,
   activeLayerId,
   validatedTitle,
-}: SwitchActionProps) => {
+}: SwitchActionProps) {
   const handleOnChangeSwitch = useCallback(
     (event: ChangeEvent<HTMLInputElement>) => {
       toggleLayerValue(activeLayerId, event.target.checked);
@@ -26,6 +26,6 @@ const SwitchAction = ({
       ariaLabel={validatedTitle}
     />
   );
-};
+}
 
 export default memo(SwitchAction);

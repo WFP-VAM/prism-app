@@ -47,8 +47,7 @@ const content = [
       ]),
   {
     title: 'Ready, Set and Go phases',
-    text:
-      'The "Ready, Set & Go!" system uses seasonal forecasts with longer lead time for preparedness (Ready phase) and shorter lead times for activation and mobilization (Set & Go! phases).',
+    text: 'The "Ready, Set & Go!" system uses seasonal forecasts with longer lead time for preparedness (Ready phase) and shorter lead times for activation and mobilization (Set & Go! phases).',
   },
 ];
 

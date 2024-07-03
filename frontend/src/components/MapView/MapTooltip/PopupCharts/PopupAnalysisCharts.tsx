@@ -63,14 +63,14 @@ interface PopupChartProps extends WithStyles<typeof styles> {
   adminLevel: AdminLevelType;
   adminLevelsNames: () => string[];
 }
-const PopupAnalysisCharts = ({
+function PopupAnalysisCharts({
   filteredChartLayers,
   adminCode,
   adminSelectorKey,
   adminLevel,
   adminLevelsNames,
   classes,
-}: PopupChartProps) => {
+}: PopupChartProps) {
   const { t } = useSafeTranslation();
   const dataForCsv = useRef<{ [key: string]: any[] }>({});
   const boundaryLayerData = useSelector(layerDataSelector(boundaryLayer.id)) as
@@ -113,6 +113,6 @@ const PopupAnalysisCharts = ({
       ))}
     </PopupChartWrapper>
   );
-};
+}
 
 export default withStyles(styles)(PopupAnalysisCharts);

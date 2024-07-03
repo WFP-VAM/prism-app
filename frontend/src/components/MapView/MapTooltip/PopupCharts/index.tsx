@@ -1,7 +1,7 @@
 import { AdminLevelType, AdminCodeString } from 'config/types';
 import { getWMSLayersWithChart } from 'config/utils';
 import { layersSelector } from 'context/mapStateSlice/selectors';
-import { memo, useEffect } from 'react';
+import React, { memo, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import PopupAnalysisCharts from './PopupAnalysisCharts';
 import PopupChartsList from './PopupChartsList';
@@ -20,7 +20,7 @@ interface PopupChartsProps {
   availableAdminLevels: AdminLevelType[];
 }
 
-const PopupCharts = ({
+function PopupCharts({
   setPopupTitle,
   adminCode,
   adminSelectorKey,
@@ -28,7 +28,7 @@ const PopupCharts = ({
   setAdminLevel,
   adminLevelsNames,
   availableAdminLevels,
-}: PopupChartsProps) => {
+}: PopupChartsProps) {
   const mapState = useSelector(layersSelector);
 
   const mapStateIds = mapState.map(item => item.id);
@@ -65,6 +65,6 @@ const PopupCharts = ({
       )}
     </>
   );
-};
+}
 
 export default memo(PopupCharts);

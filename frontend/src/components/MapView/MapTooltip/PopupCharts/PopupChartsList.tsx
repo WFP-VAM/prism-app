@@ -8,7 +8,7 @@ import {
 } from '@material-ui/core';
 import { AdminLevelType, WMSLayerProps } from 'config/types';
 import { t } from 'i18next';
-import { memo } from 'react';
+import React, { memo } from 'react';
 
 const styles = () =>
   createStyles({
@@ -43,13 +43,13 @@ interface PopupChartsListProps extends WithStyles<typeof styles> {
   availableAdminLevels: AdminLevelType[];
 }
 
-const PopupChartsList = ({
+function PopupChartsList({
   filteredChartLayers,
   adminLevelsNames,
   setAdminLevel,
   availableAdminLevels,
   classes,
-}: PopupChartsListProps) => {
+}: PopupChartsListProps) {
   return (
     <div className={classes.selectChartContainer}>
       {filteredChartLayers.map(layer =>
@@ -76,6 +76,6 @@ const PopupChartsList = ({
       )}
     </div>
   );
-};
+}
 
 export default memo(withStyles(styles)(PopupChartsList));

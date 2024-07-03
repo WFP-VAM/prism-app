@@ -10,18 +10,16 @@ const DateSelectorInput = forwardRef(
   (
     { value, onClick, classes }: DateSelectorInputProps,
     ref?: Ref<HTMLButtonElement>,
-  ) => {
-    return (
-      <Button
-        className={classes.buttonStyle}
-        variant="outlined"
-        onClick={onClick}
-        ref={ref}
-      >
-        {value}
-      </Button>
-    );
-  },
+  ) => (
+    <Button
+      className={classes.buttonStyle}
+      variant="outlined"
+      onClick={onClick}
+      ref={ref}
+    >
+      {value}
+    </Button>
+  ),
 );
 
 const styles = () =>

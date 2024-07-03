@@ -18,40 +18,38 @@ import { useSafeTranslation } from 'i18n';
 import SearchBar from './searchBar';
 import { setMenuItemStyle, containsText, createMatchesTree } from './utils';
 
-const useStyles = makeStyles((theme: Theme) => {
-  return {
-    header: {
+const useStyles = makeStyles((theme: Theme) => ({
+  header: {
+    textTransform: 'uppercase',
+    letterSpacing: '3px',
+    fontSize: '0.7em',
+  },
+  subHeader: {
+    paddingLeft: '2em',
+  },
+  menuItem: {
+    paddingLeft: '2.8em',
+    fontSize: '0.9em',
+  },
+  select: {
+    '& .MuiSelect-icon': {
+      color: theme.palette.text.primary,
+      fontSize: '1.25rem',
+    },
+  },
+  formControl: {
+    width: '100%',
+    '& > .MuiInputLabel-shrink': { display: 'none' },
+    '& > .MuiInput-root': { margin: 0 },
+    '& label': {
       textTransform: 'uppercase',
       letterSpacing: '3px',
-      fontSize: '0.7em',
+      fontSize: '11px',
+      position: 'absolute',
+      top: '-13px',
     },
-    subHeader: {
-      paddingLeft: '2em',
-    },
-    menuItem: {
-      paddingLeft: '2.8em',
-      fontSize: '0.9em',
-    },
-    select: {
-      '& .MuiSelect-icon': {
-        color: theme.palette.text.primary,
-        fontSize: '1.25rem',
-      },
-    },
-    formControl: {
-      width: '100%',
-      '& > .MuiInputLabel-shrink': { display: 'none' },
-      '& > .MuiInput-root': { margin: 0 },
-      '& label': {
-        textTransform: 'uppercase',
-        letterSpacing: '3px',
-        fontSize: '11px',
-        position: 'absolute',
-        top: '-13px',
-      },
-    },
-  };
-});
+  },
+}));
 
 export enum MapInteraction {
   GoTo = 'goto',
@@ -73,9 +71,10 @@ const BoundaryDropdown = memo(
 
     const styles = useStyles();
 
-    const levelsRelations = useMemo(() => {
-      return boundaryRelationDataDict[i18nLocale.language];
-    }, [boundaryRelationDataDict, i18nLocale.language]);
+    const levelsRelations = useMemo(
+      () => boundaryRelationDataDict[i18nLocale.language],
+      [boundaryRelationDataDict, i18nLocale.language],
+    );
 
     const relationsToRender = useMemo(() => {
       if (

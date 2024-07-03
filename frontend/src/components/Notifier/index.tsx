@@ -68,19 +68,17 @@ function Notifier({ classes }: NotifierProps) {
 
   return (
     <div className={classes.notificationsContainer} style={{ top: topOffset }}>
-      {notifications.map(notification => {
-        return (
-          <Alert
-            variant="filled"
-            severity={notification.type}
-            key={notification.key}
-            onClose={handleClose(notification)}
-            className={classes.alert}
-          >
-            {notification.message}
-          </Alert>
-        );
-      })}
+      {notifications.map(notification => (
+        <Alert
+          variant="filled"
+          severity={notification.type}
+          key={notification.key}
+          onClose={handleClose(notification)}
+          className={classes.alert}
+        >
+          {notification.message}
+        </Alert>
+      ))}
     </div>
   );
 }

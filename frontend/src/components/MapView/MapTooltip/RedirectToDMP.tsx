@@ -39,11 +39,11 @@ const computeDisasterTypeFromDistTyp = (distTyp: string) => {
   return 'INCIDENT';
 };
 
-const RedirectToDMP = ({
+function RedirectToDMP({
   dmpDisTyp,
   dmpSubmissionId,
   classes,
-}: RedirectToDMPProps) => {
+}: RedirectToDMPProps) {
   if (!dmpDisTyp) {
     return null;
   }
@@ -60,6 +60,6 @@ const RedirectToDMP = ({
       </Typography>
     </Link>
   );
-};
+}
 
 export default memo(withStyles(styles)(RedirectToDMP));

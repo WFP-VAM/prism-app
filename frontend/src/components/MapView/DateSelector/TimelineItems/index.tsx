@@ -1,4 +1,4 @@
-import { CSSProperties, memo, useCallback, useMemo } from 'react';
+import React, { CSSProperties, memo, useCallback, useMemo } from 'react';
 import {
   Fade,
   Grid,
@@ -158,11 +158,10 @@ const TimelineItems = memo(
     // We truncate layer by removing date that will not be drawn to the Timeline
     const truncatedLayers: DateItem[][] = useMemo(() => {
       // returns the index of the first date in layer that matches the first Timeline date
-      const findLayerFirstDateIndex = (items: DateItem[]): number => {
-        return items
+      const findLayerFirstDateIndex = (items: DateItem[]): number =>
+        items
           .map(d => new Date(d.displayDate).toDateString())
           .indexOf(timelineStartDate);
-      };
 
       return [
         ...orderedLayers.map(layer => {
@@ -173,12 +172,11 @@ const TimelineItems = memo(
           );
           // Filter date items based on queryDate and layerQueryDate
           const filterDateItems = (items: DateItem[]) =>
-            items.filter(item => {
-              return (
+            items.filter(
+              item =>
                 item.queryDate === layerQueryDate ||
-                item.queryDate === item.displayDate
-              );
-            });
+                item.queryDate === item.displayDate,
+            );
           if (firstIndex === -1) {
             return filterDateItems(layer.dateItems);
           }

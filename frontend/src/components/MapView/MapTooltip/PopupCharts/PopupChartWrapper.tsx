@@ -20,10 +20,12 @@ interface PopupChartWrapperProps extends WithStyles<typeof styles> {
   children: ReactNode;
 }
 
-const PopupChartWrapper = ({ children, classes }: PopupChartWrapperProps) => (
-  <div className={classes.chartsContainer}>
-    <div className={classes.charts}>{children}</div>
-  </div>
-);
+function PopupChartWrapper({ children, classes }: PopupChartWrapperProps) {
+  return (
+    <div className={classes.chartsContainer}>
+      <div className={classes.charts}>{children}</div>
+    </div>
+  );
+}
 
 export default memo(withStyles(styles)(PopupChartWrapper));

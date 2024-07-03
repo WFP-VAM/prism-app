@@ -69,9 +69,8 @@ function AnticipatoryActionPanel() {
   const monitoredDistricts = useSelector(AAMonitoredDistrictsSelector);
   const AAAvailableDates = useSelector(AAAvailableDatesSelector);
   const selectedDistrict = useSelector(AASelectedDistrictSelector);
-  const { categories: categoryFilters, selectedIndex } = useSelector(
-    AAFiltersSelector,
-  );
+  const { categories: categoryFilters, selectedIndex } =
+    useSelector(AAFiltersSelector);
   const { startDate: selectedDate } = useSelector(dateRangeSelector);
   const aaData = useSelector(AADataSelector);
   const view = useSelector(AAViewSelector);

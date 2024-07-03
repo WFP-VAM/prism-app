@@ -39,32 +39,28 @@ import { findFeature, getLayerMapId, useMapCallback } from 'utils/map-utils';
 import { getFormattedDate } from 'utils/date-utils';
 import { geoToH3, h3ToGeoBoundary } from 'h3-js';
 
-const onClick = ({
-  layer,
-  dispatch,
-  t,
-}: MapEventWrapFunctionProps<PointDataLayerProps>) => (
-  evt: MapLayerMouseEvent,
-) => {
-  addPopupParams(layer, dispatch, evt, t, false);
+const onClick =
+  ({ layer, dispatch, t }: MapEventWrapFunctionProps<PointDataLayerProps>) =>
+  (evt: MapLayerMouseEvent) => {
+    addPopupParams(layer, dispatch, evt, t, false);
 
-  const layerId = getLayerMapId(layer.id);
-  const feature = findFeature(layerId, evt);
-  if (layer.loader === PointDataLoader.EWS) {
-    dispatch(clearDataset());
-    if (!feature?.properties) {
-      return;
+    const layerId = getLayerMapId(layer.id);
+    const feature = findFeature(layerId, evt);
+    if (layer.loader === PointDataLoader.EWS) {
+      dispatch(clearDataset());
+      if (!feature?.properties) {
+        return;
+      }
+      const ewsDatasetParams = createEWSDatasetParams(
+        feature?.properties,
+        layer.data,
+      );
+      dispatch(setEWSParams(ewsDatasetParams));
     }
-    const ewsDatasetParams = createEWSDatasetParams(
-      feature?.properties,
-      layer.data,
-    );
-    dispatch(setEWSParams(ewsDatasetParams));
-  }
-};
+  };
 
 // Point Data, takes any GeoJSON of points and shows it.
-const PointDataLayer = ({ layer, before }: LayersProps) => {
+function PointDataLayer({ layer, before }: LayersProps) {
   const layerId = getLayerMapId(layer.id);
 
   const selectedDate = useDefaultDate(layer.id);
@@ -81,11 +77,8 @@ const PointDataLayer = ({ layer, before }: LayersProps) => {
     | LayerData<PointDataLayerProps>
     | undefined;
   const dispatch = useDispatch();
-  const {
-    updateHistory,
-    removeKeyFromUrl,
-    removeLayerFromUrl,
-  } = useUrlHistory();
+  const { updateHistory, removeKeyFromUrl, removeLayerFromUrl } =
+    useUrlHistory();
 
   const { data } = layerData || {};
 
@@ -222,7 +215,7 @@ const PointDataLayer = ({ layer, before }: LayersProps) => {
       />
     </Source>
   );
-};
+}
 
 export interface LayersProps {
   layer: PointDataLayerProps;

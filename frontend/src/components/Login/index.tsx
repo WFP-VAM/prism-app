@@ -12,7 +12,7 @@ import { msalRequest } from 'config';
 
 import { colors } from 'muiTheme';
 
-const Login = ({ classes }: LoginProps) => {
+function Login({ classes }: LoginProps) {
   const { instance } = useMsal();
 
   return (
@@ -45,7 +45,7 @@ const Login = ({ classes }: LoginProps) => {
       </Grid>
     </div>
   );
-};
+}
 
 const styles = () =>
   createStyles({

@@ -204,14 +204,16 @@ export function getAdminBoundaryTree(
     return { ...partialTree, children: newChildren };
   };
 
-  return features.reduce<AdminBoundaryTree>((outputTree, feature) => {
-    return addBranchToTree(
-      outputTree,
-      adminLevelCodes,
-      feature,
-      0 as AdminLevelType,
-    );
-  }, rootNode);
+  return features.reduce<AdminBoundaryTree>(
+    (outputTree, feature) =>
+      addBranchToTree(
+        outputTree,
+        adminLevelCodes,
+        feature,
+        0 as AdminLevelType,
+      ),
+    rootNode,
+  );
 }
 
 /**

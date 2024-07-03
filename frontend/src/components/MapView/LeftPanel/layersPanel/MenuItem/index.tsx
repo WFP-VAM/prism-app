@@ -60,9 +60,7 @@ const MenuItem = memo(({ title, layersCategories, extent }: MenuItemProps) => {
   const classes = useLayerMenuItemStyles();
 
   const categoryLayers = layersCategories
-    .map(layerCategory => {
-      return layerCategory.layers;
-    })
+    .map(layerCategory => layerCategory.layers)
     .flat();
 
   const selectedCategoryLayers = useMemo(

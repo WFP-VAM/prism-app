@@ -14,7 +14,7 @@ test("Base.getCapabilities", async ({ eq }) => {
     {
       fetch,
       service: "WFS",
-    }
+    },
   );
   const xml3 = await ows.getCapabilities({ debug: true });
   const xml4 = await ows.getCapabilities({ debug: true, version: "2.0.0" });

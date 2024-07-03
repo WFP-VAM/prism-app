@@ -1,4 +1,4 @@
-import { memo, useCallback, useMemo, useState } from 'react';
+import React, { memo, useCallback, useMemo, useState } from 'react';
 import {
   createStyles,
   Table,
@@ -52,33 +52,28 @@ const AnalysisTable = memo(
 
     // Whether the table sort label is active
     const tableSortLabelIsActive = useCallback(
-      (column: Column) => {
-        return sortColumn === column.id;
-      },
+      (column: Column) => sortColumn === column.id,
       [sortColumn],
     );
 
     // table sort label direction
     const tableSortLabelDirection = useCallback(
-      (column: Column) => {
-        return sortColumn === column.id && !isAscending ? 'desc' : 'asc';
-      },
+      (column: Column) =>
+        sortColumn === column.id && !isAscending ? 'desc' : 'asc',
       [isAscending, sortColumn],
     );
 
     // on table sort label click
     const onTableSortLabelClick = useCallback(
-      (column: Column) => {
-        return () => {
-          handleChangeOrderBy(column.id);
-        };
+      (column: Column) => () => {
+        handleChangeOrderBy(column.id);
       },
       [handleChangeOrderBy],
     );
 
-    const renderedTableHeaderCells = useMemo(() => {
-      return columns.map(column => {
-        return (
+    const renderedTableHeaderCells = useMemo(
+      () =>
+        columns.map(column => (
           <TableCell key={column.id} className={classes.tableHead}>
             <TableSortLabel
               active={tableSortLabelIsActive(column)}
@@ -90,41 +85,37 @@ const AnalysisTable = memo(
               </Typography>
             </TableSortLabel>
           </TableCell>
-        );
-      });
-    }, [
-      classes.tableHead,
-      classes.tableHeaderText,
-      columns,
-      onTableSortLabelClick,
-      t,
-      tableSortLabelDirection,
-      tableSortLabelIsActive,
-    ]);
+        )),
+      [
+        classes.tableHead,
+        classes.tableHeaderText,
+        columns,
+        onTableSortLabelClick,
+        t,
+        tableSortLabelDirection,
+        tableSortLabelIsActive,
+      ],
+    );
 
     const handleClickTableBodyRow = useCallback(
-      row => {
-        return async () => {
-          if (!row.coordinates || !map) {
-            return;
-          }
-          await dispatch(hidePopup());
-          map.fire('click', {
-            lngLat: row.coordinates,
-            point: map.project(row.coordinates),
-          });
-        };
+      row => async () => {
+        if (!row.coordinates || !map) {
+          return;
+        }
+        await dispatch(hidePopup());
+        map.fire('click', {
+          lngLat: row.coordinates,
+          point: map.project(row.coordinates),
+        });
       },
       [dispatch, map],
     );
 
     const renderedTableRowStyles = useCallback(
-      (row: AnalysisTableRow, index: number) => {
-        return {
-          cursor: row.coordinates ? 'pointer' : 'default',
-          backgroundColor: index % 2 === 0 ? 'white' : '#EBEBEB',
-        };
-      },
+      (row: AnalysisTableRow, index: number) => ({
+        cursor: row.coordinates ? 'pointer' : 'default',
+        backgroundColor: index % 2 === 0 ? 'white' : '#EBEBEB',
+      }),
       [],
     );
 
@@ -139,25 +130,22 @@ const AnalysisTable = memo(
     );
 
     const renderedTableBodyCells = useCallback(
-      (row: AnalysisTableRow) => {
-        return columns.map(column => {
-          return (
-            <TableCell key={column.id}>
-              <Typography className={classes.tableBodyText}>
-                {renderedTableBodyCellValue(row[column.id], column)}
-              </Typography>
-            </TableCell>
-          );
-        });
-      },
+      (row: AnalysisTableRow) =>
+        columns.map(column => (
+          <TableCell key={column.id}>
+            <Typography className={classes.tableBodyText}>
+              {renderedTableBodyCellValue(row[column.id], column)}
+            </Typography>
+          </TableCell>
+        )),
       [classes.tableBodyText, columns, renderedTableBodyCellValue],
     );
 
-    const renderedTableBodyRows = useMemo(() => {
-      return tableData
-        .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-        .map((row, index) => {
-          return (
+    const renderedTableBodyRows = useMemo(
+      () =>
+        tableData
+          .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+          .map((row, index) => (
             <TableRow
               hover
               role="checkbox"
@@ -168,16 +156,16 @@ const AnalysisTable = memo(
             >
               {renderedTableBodyCells(row)}
             </TableRow>
-          );
-        });
-    }, [
-      handleClickTableBodyRow,
-      page,
-      renderedTableBodyCells,
-      renderedTableRowStyles,
-      rowsPerPage,
-      tableData,
-    ]);
+          )),
+      [
+        handleClickTableBodyRow,
+        page,
+        renderedTableBodyCells,
+        renderedTableRowStyles,
+        rowsPerPage,
+        tableData,
+      ],
+    );
 
     return (
       <>
@@ -199,11 +187,11 @@ const AnalysisTable = memo(
           onRowsPerPageChange={handleChangeRowsPerPage}
           labelRowsPerPage={t('Rows Per Page')}
           // Temporary manual translation before we upgrade to MUI 5.
-          labelDisplayedRows={({ from, to, count }) => {
-            return `${from}–${to} ${t('of')} ${
+          labelDisplayedRows={({ from, to, count }) =>
+            `${from}–${to} ${t('of')} ${
               count !== -1 ? count : `${t('more than')} ${to}`
-            }`;
-          }}
+            }`
+          }
           classes={{
             root: classes.tablePagination,
             select: classes.select,

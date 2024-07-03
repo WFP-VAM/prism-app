@@ -41,9 +41,8 @@ const AnalysisLayerMenuItem = memo(
     const classes = useLayerMenuItemStyles();
 
     // We will only have one analysis at a time so when the actual Menu item is visible it will also be enabled
-    const [informationChipLabel, setInformationChipLabel] = useState<string>(
-      '1',
-    );
+    const [informationChipLabel, setInformationChipLabel] =
+      useState<string>('1');
 
     const handleChipOnMouseEnter = useCallback(() => {
       setInformationChipLabel(`1 ${t('Active Layer(s)')}`);

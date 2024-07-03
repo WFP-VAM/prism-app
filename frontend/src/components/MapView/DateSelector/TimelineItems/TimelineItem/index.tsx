@@ -13,31 +13,26 @@ const TimelineItem = memo(
     isDateAvailable,
   }: TimelineItemProps) => {
     // Pre-compute the matching indices for all layers
-    const layerMatches = concatenatedLayers.map(layerDates => {
-      return binaryFind<DateItem>(
+    const layerMatches = concatenatedLayers.map(layerDates =>
+      binaryFind<DateItem>(
         layerDates,
         new Date(currentDate.value).setUTCHours(0, 0, 0, 0),
         (i: DateItem) => new Date(i.displayDate).setUTCHours(0, 0, 0, 0),
-      );
-    });
+      ),
+    );
 
     const hasNextItemDirectionForward = (
       matchingDate: DateItem,
       layerDates: DateItem[],
-    ): boolean => {
-      return false;
-    };
+    ): boolean => false;
 
     const hasNextItemDirectionBackward = (
       matchingDate: DateItem,
       layerDates: DateItem[],
-    ): boolean => {
-      return false;
-    };
+    ): boolean => false;
 
-    const isQueryDate = (date: DateItem): boolean => {
-      return date.queryDate === date.displayDate;
-    };
+    const isQueryDate = (date: DateItem): boolean =>
+      date.queryDate === date.displayDate;
 
     return (
       <>

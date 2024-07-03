@@ -41,17 +41,17 @@ const AuthModal = ({ classes }: AuthModalProps) => {
   const { removeLayerFromUrl } = useUrlHistory();
   const dispatch = useDispatch();
 
-  const isUserAuthenticated = useMemo(() => {
-    return userAuth !== undefined;
-  }, [userAuth]);
+  const isUserAuthenticated = useMemo(() => userAuth !== undefined, [userAuth]);
 
   const { t } = useSafeTranslation();
 
-  const layersWithAuthRequired = useMemo(() => {
-    return selectedLayers.filter(
-      layer => layer.type === 'point_data' && layer.authRequired,
-    );
-  }, [selectedLayers]);
+  const layersWithAuthRequired = useMemo(
+    () =>
+      selectedLayers.filter(
+        layer => layer.type === 'point_data' && layer.authRequired,
+      ),
+    [selectedLayers],
+  );
 
   useEffect(() => {
     if (!layersWithAuthRequired.length || isUserAuthenticated) {
@@ -70,24 +70,26 @@ const AuthModal = ({ classes }: AuthModalProps) => {
   );
 
   // The layer with auth title
-  const layerWithAuthTitle = useMemo(() => {
-    return layersWithAuthRequired.reduce(
-      (acc: string, currentLayer, currentLayerIndex) => {
-        return currentLayerIndex === 0
-          ? t(currentLayer?.title as TFunctionKeys) ?? ''
-          : `${acc}, ${t(currentLayer.title as TFunctionKeys)}`;
-      },
-      '',
-    );
-  }, [layersWithAuthRequired, t]);
+  const layerWithAuthTitle = useMemo(
+    () =>
+      layersWithAuthRequired.reduce(
+        (acc: string, currentLayer, currentLayerIndex) =>
+          currentLayerIndex === 0
+            ? t(currentLayer?.title as TFunctionKeys) ?? ''
+            : `${acc}, ${t(currentLayer.title as TFunctionKeys)}`,
+        '',
+      ),
+    [layersWithAuthRequired, t],
+  );
 
   // function that handles the text-field on change
-  const handleInputTextChanged = useCallback((identifier: keyof UserAuth) => {
-    return (event: ChangeEvent<HTMLInputElement>) => {
+  const handleInputTextChanged = useCallback(
+    (identifier: keyof UserAuth) => (event: ChangeEvent<HTMLInputElement>) => {
       const { value } = event.target;
       setAuth(params => ({ ...params, [identifier]: value }));
-    };
-  }, []);
+    },
+    [],
+  );
 
   // function that is invoked when cancel is clicked
   const onCancelClick = useCallback(() => {

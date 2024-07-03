@@ -51,14 +51,16 @@ const ReportDialog = memo(
       analysisResultSelector,
     ) as ExposedPopulationResult;
 
-    const reportDate = useMemo(() => {
-      return analysisResult?.analysisDate
-        ? getFormattedDate(
-            new Date(analysisResult?.analysisDate).toISOString(),
-            'default',
-          )
-        : '';
-    }, [analysisResult]);
+    const reportDate = useMemo(
+      () =>
+        analysisResult?.analysisDate
+          ? getFormattedDate(
+              new Date(analysisResult?.analysisDate).toISOString(),
+              'default',
+            )
+          : '',
+      [analysisResult],
+    );
 
     const getPDFName = useMemo(() => {
       const type = snakeCase(analysisResult?.legendText);
@@ -171,27 +173,25 @@ const ReportDialog = memo(
         return null;
       }
       return (
-        <>
-          <Button id="download-action">
-            <PDFDownloadLink
-              document={
-                <ReportDoc
-                  exposureLegendDefinition={analysisResult?.legend ?? []}
-                  theme={theme}
-                  reportTitle={`${t(reportConfig.title)} ${reportDate}`}
-                  reportConfig={reportConfig}
-                  tableShowTotal
-                  mapImage={mapImage}
-                  tableData={tableData}
-                  columns={columns}
-                />
-              }
-              fileName={getPDFName}
-            >
-              {renderedLoadingButtonText}
-            </PDFDownloadLink>
-          </Button>
-        </>
+        <Button id="download-action">
+          <PDFDownloadLink
+            document={
+              <ReportDoc
+                exposureLegendDefinition={analysisResult?.legend ?? []}
+                theme={theme}
+                reportTitle={`${t(reportConfig.title)} ${reportDate}`}
+                reportConfig={reportConfig}
+                tableShowTotal
+                mapImage={mapImage}
+                tableData={tableData}
+                columns={columns}
+              />
+            }
+            fileName={getPDFName}
+          >
+            {renderedLoadingButtonText}
+          </PDFDownloadLink>
+        </Button>
       );
     }, [
       analysisResult,
@@ -206,11 +206,13 @@ const ReportDialog = memo(
       theme,
     ]);
 
-    const renderedSignatureText = useMemo(() => {
-      return reportConfig?.signatureText
-        ? t(reportConfig.signatureText)
-        : t('PRISM automated report');
-    }, [reportConfig, t]);
+    const renderedSignatureText = useMemo(
+      () =>
+        reportConfig?.signatureText
+          ? t(reportConfig.signatureText)
+          : t('PRISM automated report'),
+      [reportConfig, t],
+    );
 
     return (
       <Dialog

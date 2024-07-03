@@ -1,19 +1,17 @@
 import { memo } from 'react';
 import { createStyles, withStyles, WithStyles } from '@material-ui/core';
 
-const TooltipItem = memo(({ layerTitle, color, classes }: TooltipItemProps) => {
-  return (
-    <div className={classes.tooltipItemContainer}>
-      <div
-        className={classes.tooltipItemColor}
-        style={{
-          backgroundColor: color,
-        }}
-      />
-      <div>{layerTitle}</div>
-    </div>
-  );
-});
+const TooltipItem = memo(({ layerTitle, color, classes }: TooltipItemProps) => (
+  <div className={classes.tooltipItemContainer}>
+    <div
+      className={classes.tooltipItemColor}
+      style={{
+        backgroundColor: color,
+      }}
+    />
+    <div>{layerTitle}</div>
+  </div>
+));
 
 const styles = () =>
   createStyles({

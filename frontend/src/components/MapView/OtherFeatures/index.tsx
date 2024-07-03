@@ -21,12 +21,13 @@ const styles = createStyles({
 
 interface OtherFeaturesProps extends WithStyles<typeof styles> {}
 
-const OtherFeatures = ({ classes }: OtherFeaturesProps) => {
+function OtherFeatures({ classes }: OtherFeaturesProps) {
   const { selectedLayerDates } = useLayers();
 
-  const showBoundaryInfo = useMemo(() => {
-    return JSON.parse(process.env.REACT_APP_SHOW_MAP_INFO || 'false');
-  }, []);
+  const showBoundaryInfo = useMemo(
+    () => JSON.parse(process.env.REACT_APP_SHOW_MAP_INFO || 'false'),
+    [],
+  );
 
   return (
     <Box className={classes.container}>
@@ -36,6 +37,6 @@ const OtherFeatures = ({ classes }: OtherFeaturesProps) => {
       </Box>
     </Box>
   );
-};
+}
 
 export default memo(withStyles(styles)(OtherFeatures));

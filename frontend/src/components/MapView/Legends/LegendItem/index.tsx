@@ -1,4 +1,4 @@
-import {
+import React, {
   memo,
   PropsWithChildren,
   useCallback,
@@ -95,12 +95,13 @@ const LegendItem = memo(
     const opacityId = open ? 'opacity-popover' : undefined;
 
     const selectedLayers = useSelector(layersSelector);
-    const layer = useMemo(() => {
-      return selectedLayers.find(l => l.id === id);
-    }, [id, selectedLayers]);
+    const layer = useMemo(
+      () => selectedLayers.find(l => l.id === id),
+      [id, selectedLayers],
+    );
 
-    const renderedOpacitySlider = useMemo(() => {
-      return (
+    const renderedOpacitySlider = useMemo(
+      () => (
         <Box px={2} display="flex" className={classes.opacityBox}>
           <Typography classes={{ root: classes.opacityText }}>
             {`${Math.round((opacity || 0) * 100)}%`}
@@ -127,29 +128,32 @@ const LegendItem = memo(
             }
           />
         </Box>
-      );
-    }, [
-      classes.opacityBox,
-      classes.opacitySliderRoot,
-      classes.opacitySliderThumb,
-      classes.opacityText,
-      dispatch,
-      id,
-      map,
-      opacity,
-      type,
-    ]);
+      ),
+      [
+        classes.opacityBox,
+        classes.opacitySliderRoot,
+        classes.opacitySliderThumb,
+        classes.opacityText,
+        dispatch,
+        id,
+        map,
+        opacity,
+        type,
+      ],
+    );
 
-    const layerDownloadOptions = useMemo(() => {
-      return layer ? (
-        <LayerDownloadOptions
-          layerId={layer.id}
-          extent={extent}
-          selected
-          size="small"
-        />
-      ) : null;
-    }, [layer, extent]);
+    const layerDownloadOptions = useMemo(
+      () =>
+        layer ? (
+          <LayerDownloadOptions
+            layerId={layer.id}
+            extent={extent}
+            selected
+            size="small"
+          />
+        ) : null,
+      [layer, extent],
+    );
 
     const remove = useCallback(() => {
       if (isAnalysis) {
@@ -170,24 +174,26 @@ const LegendItem = memo(
       }
     }, [isAnalysis, layer, dispatch, map, removeLayerFromUrl]);
 
-    const getColorIndicatorKey = useCallback((item: LegendDefinitionItem) => {
-      return (
+    const getColorIndicatorKey = useCallback(
+      (item: LegendDefinitionItem) =>
         item.value ||
-        (typeof item.label === 'string' ? item?.label : item?.label?.text)
-      );
-    }, []);
+        (typeof item.label === 'string' ? item?.label : item?.label?.text),
+      [],
+    );
 
-    const renderedLegendDefinitionItems = useMemo(() => {
-      return legend?.map((item: LegendDefinitionItem) => (
-        <ColorIndicator
-          key={getColorIndicatorKey(item)}
-          value={getLegendItemLabel(t, item)}
-          color={item.color as string}
-          opacity={opacity as number}
-          fillPattern={fillPattern || item.fillPattern}
-        />
-      ));
-    }, [fillPattern, getColorIndicatorKey, legend, opacity, t]);
+    const renderedLegendDefinitionItems = useMemo(
+      () =>
+        legend?.map((item: LegendDefinitionItem) => (
+          <ColorIndicator
+            key={getColorIndicatorKey(item)}
+            value={getLegendItemLabel(t, item)}
+            color={item.color as string}
+            opacity={opacity as number}
+            fillPattern={fillPattern || item.fillPattern}
+          />
+        )),
+      [fillPattern, getColorIndicatorKey, legend, opacity, t],
+    );
 
     const renderedLegendUrl = useMemo(() => {
       if (legendUrl) {

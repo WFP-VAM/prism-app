@@ -9,7 +9,7 @@ import {
 import { useSafeTranslation } from 'i18n';
 import AnalysisLayerMenuItem from '../AnalysisLayerMenuItem';
 
-const RootAnalysisAccordionItems = () => {
+function RootAnalysisAccordionItems() {
   const analysisData = useSelector(analysisResultSelector);
   const analysisResultSortOrder = useSelector(analysisResultSortOrderSelector);
   const analysisResultSortByKey = useSelector(analysisResultSortByKeySelector);
@@ -28,6 +28,6 @@ const RootAnalysisAccordionItems = () => {
       initialOpacity={analysisResultOpacity}
     />
   );
-};
+}
 
 export default memo(RootAnalysisAccordionItems);

@@ -76,13 +76,13 @@ const MenuSwitch = memo(({ title, layers, extent }: MenuSwitchProps) => {
     [],
   );
 
-  const selectedInternalLayers = useMemo(() => {
-    return selectedLayers.filter(layer => {
-      return layers.some(internalLayer => {
-        return filterActiveLayers(layer, internalLayer);
-      });
-    });
-  }, [layers, selectedLayers]);
+  const selectedInternalLayers = useMemo(
+    () =>
+      selectedLayers.filter(layer =>
+        layers.some(internalLayer => filterActiveLayers(layer, internalLayer)),
+      ),
+    [layers, selectedLayers],
+  );
 
   const [informationChipLabel, setInformationChipLabel] = useState<string>(
     selectedInternalLayers.length.toString(),

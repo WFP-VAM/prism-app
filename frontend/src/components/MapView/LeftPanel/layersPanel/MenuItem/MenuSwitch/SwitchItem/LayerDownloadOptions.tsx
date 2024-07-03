@@ -6,7 +6,7 @@ import {
   MenuItem,
   Tooltip,
 } from '@material-ui/core';
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { mapValues } from 'lodash';
 import GetAppIcon from '@material-ui/icons/GetApp';
@@ -46,10 +46,8 @@ function LayerDownloadOptions({
   const dispatch = useDispatch();
   const layer = LayerDefinitions[layerId] || Object.values(LayerDefinitions)[0];
 
-  const [
-    downloadMenuAnchorEl,
-    setDownloadMenuAnchorEl,
-  ] = useState<HTMLElement | null>(null);
+  const [downloadMenuAnchorEl, setDownloadMenuAnchorEl] =
+    useState<HTMLElement | null>(null);
   const [isGeotiffLoading, setIsGeotiffLoading] = useState(false);
   const isAnalysisExposureLoading = useSelector(
     isExposureAnalysisLoadingSelector,
@@ -140,9 +138,8 @@ function LayerDownloadOptions({
   };
 
   // Helper function to escape special XML characters
-  const escapeXml = (str: string): string => {
-    return str.replace(/</g, '&lt;').replace(/>/g, '&gt;');
-  };
+  const escapeXml = (str: string): string =>
+    str.replace(/</g, '&lt;').replace(/>/g, '&gt;');
 
   // Helper function to generate QML content from legend
   const generateQmlContent = (

@@ -104,16 +104,14 @@ export const StyledCheckboxLabel = withStyles({
     ...props
   }: Omit<FormControlLabelProps, 'control'> & {
     checkBoxProps: CheckboxProps;
-  }) => {
-    return (
-      <FormControlLabel
-        style={{ background: checkBoxProps.checked ? lightGrey : undefined }}
-        label={<span style={{ marginRight: '0.5rem' }}>{label}</span>}
-        control={<StyledCheckbox {...checkBoxProps} />}
-        {...props}
-      />
-    );
-  },
+  }) => (
+    <FormControlLabel
+      style={{ background: checkBoxProps.checked ? lightGrey : undefined }}
+      label={<span style={{ marginRight: '0.5rem' }}>{label}</span>}
+      control={<StyledCheckbox {...checkBoxProps} />}
+      {...props}
+    />
+  ),
 );
 
 export const StyledSelect = withStyles({

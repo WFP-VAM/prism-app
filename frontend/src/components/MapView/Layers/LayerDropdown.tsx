@@ -91,9 +91,9 @@ function LayerDropdown({
         if (layerCategory.layers.some(f => f.group)) {
           const layers = layerCategory.layers.map(layer => {
             if (layer.group && !layer.group.activateAll) {
-              return layer.group.layers.map(layerKey => {
-                return LayerDefinitions[layerKey.id as LayerKey];
-              });
+              return layer.group.layers.map(
+                layerKey => LayerDefinitions[layerKey.id as LayerKey],
+              );
             }
             return layer;
           });

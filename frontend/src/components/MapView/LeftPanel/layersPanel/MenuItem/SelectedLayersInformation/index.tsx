@@ -15,9 +15,9 @@ const useStyles = makeStyles(() =>
 interface SelectedLayersInformationProps {
   selectedCategoryLayers: LayerType[];
 }
-const SelectedLayersInformation = ({
+function SelectedLayersInformation({
   selectedCategoryLayers,
-}: SelectedLayersInformationProps) => {
+}: SelectedLayersInformationProps) {
   const classes = useStyles();
   const { t } = useSafeTranslation();
   const [informationChipLabel, setInformationChipLabel] = useState<string>(
@@ -53,6 +53,6 @@ const SelectedLayersInformation = ({
       label={informationChipLabel}
     />
   );
-};
+}
 
 export default memo(SelectedLayersInformation);

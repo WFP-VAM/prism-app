@@ -11,9 +11,11 @@ import { isAdminBoundary } from '../../utils';
 
 const usePointDataChart = () => {
   const dispatch = useDispatch();
-  const { data: dataset, datasetParams, isLoading } = useSelector(
-    datasetSelector,
-  );
+  const {
+    data: dataset,
+    datasetParams,
+    isLoading,
+  } = useSelector(datasetSelector);
   const { startDate: selectedDate } = useSelector(dateRangeSelector);
 
   useEffect(() => {
@@ -22,9 +24,8 @@ const usePointDataChart = () => {
     }
 
     if (isAdminBoundary(datasetParams)) {
-      const { code: adminCode, level } = datasetParams.boundaryProps[
-        datasetParams.id
-      ];
+      const { code: adminCode, level } =
+        datasetParams.boundaryProps[datasetParams.id];
       const requestParams: DatasetRequestParams = {
         id: datasetParams.id,
         level,

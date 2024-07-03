@@ -13,10 +13,10 @@ import { getLayerMapId } from 'utils/map-utils';
 import { appConfig } from 'config';
 import { opacitySelector } from 'context/opacityStateSlice';
 
-const WMSLayers = ({
+function WMSLayers({
   layer: { id, baseUrl, serverLayerName, additionalQueryParams, opacity },
   before,
-}: LayersProps) => {
+}: LayersProps) {
   const selectedDate = useDefaultDate(id);
   const serverAvailableDates = useSelector(availableDatesSelector);
   const opacityState = useSelector(opacitySelector(id));
@@ -64,7 +64,7 @@ const WMSLayers = ({
       />
     </Source>
   );
-};
+}
 
 export interface LayersProps {
   layer: WMSLayerProps;

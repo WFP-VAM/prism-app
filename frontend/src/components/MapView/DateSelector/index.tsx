@@ -126,9 +126,10 @@ const DateSelector = memo(({ classes }: DateSelectorProps) => {
     handleTimeLinePosition(x);
   }, [handleTimeLinePosition, setPointerXPosition]);
 
-  const locale = useMemo(() => (t('date_locale') ? t('date_locale') : 'en'), [
-    t,
-  ]);
+  const locale = useMemo(
+    () => (t('date_locale') ? t('date_locale') : 'en'),
+    [t],
+  );
 
   const panelTab = useSelector(leftPanelTabValueSelector);
 

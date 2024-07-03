@@ -57,12 +57,13 @@ export function forecastTransform({
 }: ForecastTransformParams) {
   const { selectedWindow, selectedDate } = filters;
 
-  const dateData = (selectedWindow === 'All'
-    ? [
-        ...(data['Window 1'][selectedDistrict] || []),
-        ...(data['Window 2'][selectedDistrict] || []),
-      ]
-    : data[selectedWindow][selectedDistrict] || []
+  const dateData = (
+    selectedWindow === 'All'
+      ? [
+          ...(data['Window 1'][selectedDistrict] || []),
+          ...(data['Window 2'][selectedDistrict] || []),
+        ]
+      : data[selectedWindow][selectedDistrict] || []
   ).filter(x => !selectedDate || x.date <= selectedDate);
 
   // eslint-disable-next-line fp/no-mutating-methods
@@ -181,15 +182,12 @@ export const getChartData = (
             offset: -2, // offset from the point
             align: 'left',
             backgroundColor: 'white',
-            borderColor: (ctx: any) => {
-              return ctx.dataset.backgroundColor;
-            },
+            borderColor: (ctx: any) => ctx.dataset.backgroundColor,
             borderWidth: 1,
             borderRadius: 2,
             color: 'black',
-            formatter: (value: any, ctx: any) => {
-              return `${value.z ? '⚠️ ' : ''}${value.y}%`;
-            },
+            formatter: (value: any, ctx: any) =>
+              `${value.z ? '⚠️ ' : ''}${value.y}%`,
           },
         },
       },

@@ -27,10 +27,13 @@ const styles = () =>
 
 interface PopupDatasetChartProps extends WithStyles<typeof styles> {}
 
-const PopupPointDataChart = ({ classes }: PopupDatasetChartProps) => {
-  const { data: dataset, datasetParams, title, chartType } = useSelector(
-    datasetSelector,
-  );
+function PopupPointDataChart({ classes }: PopupDatasetChartProps) {
+  const {
+    data: dataset,
+    datasetParams,
+    title,
+    chartType,
+  } = useSelector(datasetSelector);
   const config: ChartConfig = {
     type: chartType,
     stacked: false,
@@ -62,6 +65,6 @@ const PopupPointDataChart = ({ classes }: PopupDatasetChartProps) => {
       </div>
     </div>
   );
-};
+}
 
 export default memo(withStyles(styles)(PopupPointDataChart));

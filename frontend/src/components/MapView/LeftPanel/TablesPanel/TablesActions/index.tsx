@@ -44,8 +44,8 @@ const TablesActions = memo(
   },
 );
 
-const styles = () => {
-  return createStyles({
+const styles = () =>
+  createStyles({
     buttonsContainer: {
       display: 'flex',
       flexDirection: 'column',
@@ -71,7 +71,6 @@ const styles = () => {
       '&.Mui-disabled': { opacity: 0.5 },
     },
   });
-};
 
 interface TablesActionsProps extends WithStyles<typeof styles> {
   showTable: boolean;

@@ -66,11 +66,10 @@ export const isLayerKey = (layerKey: string | MenuGroup) => {
  * @param layerId
  * @param layers
  */
-export const isMainLayer = (layerId: string, layers: LayerType[]) => {
-  return !layers
+export const isMainLayer = (layerId: string, layers: LayerType[]) =>
+  !layers
     .filter(sl => sl.group)
     .some(sl => sl.group?.layers?.find(l => l.id === layerId && !l.main));
-};
 
 /**
  * Decorator to mark a property on a class type as optional. This allows us to get a list of all required keys at
@@ -109,8 +108,8 @@ export type AsyncReturnType<T extends (...args: any) => any> =
   T extends (...args: any) => Promise<infer U>
     ? U // if T matches this signature and returns anything else, // extract the return value U and use that, or...
     : T extends (...args: any) => infer U
-    ? U // if everything goes to hell, return an `any`
-    : any;
+      ? U // if everything goes to hell, return an `any`
+      : any;
 
 /*
  * Get an array of required keys for a class.
@@ -706,11 +705,8 @@ export type RequiredKeys<T> = {
 }[keyof T];
 
 // Get the type of a union based on the value (V) and lookup field (K)
-export type DiscriminateUnion<
-  T,
-  K extends keyof T,
-  V extends T[K]
-> = T extends Record<K, V> ? T : never;
+export type DiscriminateUnion<T, K extends keyof T, V extends T[K]> =
+  T extends Record<K, V> ? T : never;
 
 export type LayersMap = {
   [key in LayerKey]: LayerType;

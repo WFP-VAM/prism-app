@@ -54,11 +54,8 @@ const SwitchItem = memo(
     // Hack to use composite layer type for hexDisplay layers and switch
     // to using fill for opacity control
     const layerTypeOverride = hexDisplay ? 'composite' : layerType;
-    const {
-      updateHistory,
-      appendLayerToUrl,
-      removeLayerFromUrl,
-    } = useUrlHistory();
+    const { updateHistory, appendLayerToUrl, removeLayerFromUrl } =
+      useUrlHistory();
 
     useEffect(() => {
       setIsOpacitySelected(false);
@@ -78,13 +75,15 @@ const SwitchItem = memo(
       );
     }, [dispatch, initialOpacity, layerId, layerTypeOverride, map, opacity]);
 
-    const someLayerAreSelected = useMemo(() => {
-      return selectedLayers.some(
-        ({ id: testId }) =>
-          testId === layerId ||
-          (group && group.layers.some(l => l.id === testId)),
-      );
-    }, [group, layerId, selectedLayers]);
+    const someLayerAreSelected = useMemo(
+      () =>
+        selectedLayers.some(
+          ({ id: testId }) =>
+            testId === layerId ||
+            (group && group.layers.some(l => l.id === testId)),
+        ),
+      [group, layerId, selectedLayers],
+    );
 
     const selectedActiveLayer = useMemo(
       () =>
@@ -100,12 +99,12 @@ const SwitchItem = memo(
       [group, someLayerAreSelected, selectedLayers],
     );
 
-    const initialActiveLayerId = useMemo(() => {
-      return selectedActiveLayer.length > 0
-        ? selectedActiveLayer[0].id
-        : layer.id;
+    const initialActiveLayerId = useMemo(
+      () =>
+        selectedActiveLayer.length > 0 ? selectedActiveLayer[0].id : layer.id,
       // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [layer.id]);
+      [layer.id],
+    );
 
     const [activeLayerId, setActiveLayerId] = useState(
       initialActiveLayerId || (group?.layers?.find(l => l.main)?.id as string),
@@ -118,13 +117,15 @@ const SwitchItem = memo(
       );
     }, [group, initialActiveLayerId]);
 
-    const exposure = useMemo(() => {
-      return (layer.type === 'wms' && layer.exposure) || undefined;
-    }, [layer.exposure, layer.type]);
+    const exposure = useMemo(
+      () => (layer.type === 'wms' && layer.exposure) || undefined,
+      [layer.exposure, layer.type],
+    );
 
-    const validatedTitle = useMemo(() => {
-      return t(group?.groupTitle || layerTitle || '');
-    }, [group, layerTitle, t]);
+    const validatedTitle = useMemo(
+      () => t(group?.groupTitle || layerTitle || ''),
+      [group, layerTitle, t],
+    );
 
     const toggleLayerValue = useCallback(
       (selectedLayerId: string, checked: boolean) => {

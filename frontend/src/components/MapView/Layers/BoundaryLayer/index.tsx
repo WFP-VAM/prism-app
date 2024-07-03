@@ -36,55 +36,51 @@ interface ComponentProps {
   before?: string;
 }
 
-const onClick = ({
-  dispatch,
-  layer,
-  t,
-}: MapEventWrapFunctionProps<BoundaryLayerProps>) => (
-  evt: MapLayerMouseEvent,
-) => {
-  const isPrimaryLayer = isPrimaryBoundaryLayer(layer);
-  if (!isPrimaryLayer) {
-    return;
-  }
+const onClick =
+  ({ dispatch, layer, t }: MapEventWrapFunctionProps<BoundaryLayerProps>) =>
+  (evt: MapLayerMouseEvent) => {
+    const isPrimaryLayer = isPrimaryBoundaryLayer(layer);
+    if (!isPrimaryLayer) {
+      return;
+    }
 
-  const layerId = getLayerMapId(layer.id, 'fill');
+    const layerId = getLayerMapId(layer.id, 'fill');
 
-  const feature = findFeature(layerId, evt);
-  if (!feature) {
-    return;
-  }
+    const feature = findFeature(layerId, evt);
+    if (!feature) {
+      return;
+    }
 
-  // send the selection to the map selection layer. No-op if selection mode isn't on.
-  dispatch(toggleSelectedBoundary(feature.properties[layer.adminCode]));
+    // send the selection to the map selection layer. No-op if selection mode isn't on.
+    dispatch(toggleSelectedBoundary(feature.properties[layer.adminCode]));
 
-  const coordinates = getEvtCoords(evt);
-  const locationSelectorKey = layer.adminCode;
-  const locationAdminCode = feature.properties[layer.adminCode];
-  const locationName = getFullLocationName(layer.adminLevelNames, feature);
+    const coordinates = getEvtCoords(evt);
+    const locationSelectorKey = layer.adminCode;
+    const locationAdminCode = feature.properties[layer.adminCode];
+    const locationName = getFullLocationName(layer.adminLevelNames, feature);
 
-  const locationLocalName = getFullLocationName(
-    layer.adminLevelLocalNames,
-    feature,
-  );
+    const locationLocalName = getFullLocationName(
+      layer.adminLevelLocalNames,
+      feature,
+    );
 
-  dispatch(
-    showPopup({
-      coordinates,
-      locationSelectorKey,
-      locationAdminCode,
-      locationName,
-      locationLocalName,
-    }),
-  );
-};
+    dispatch(
+      showPopup({
+        coordinates,
+        locationSelectorKey,
+        locationAdminCode,
+        locationName,
+        locationLocalName,
+      }),
+    );
+  };
 
 const onMouseEnter = () => (evt: MapLayerMouseEvent) =>
   onToggleHover('pointer', evt.target);
 const onMouseLeave = () => (evt: MapLayerMouseEvent) =>
   onToggleHover('', evt.target);
 
-const BoundaryLayer = ({ layer, before }: ComponentProps) => {
+function BoundaryLayer({ layer, before }: ComponentProps) {
   const dispatch = useDispatch();
   const selectedMap = useSelector(mapSelector);
   const [isZoomLevelSufficient, setIsZoomLevelSufficient] = useState(
@@ -166,6 +162,6 @@ const BoundaryLayer = ({ layer, before }: ComponentProps) => {
       />
     </Source>
   );
-};
+}
 
 export default memo(BoundaryLayer);

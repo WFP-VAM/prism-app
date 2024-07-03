@@ -67,8 +67,8 @@ const calculateImageHeight = (
  * @see https://ourcodeworld.com/articles/read/1456/how-to-convert-a-plain-svg-string-or-svg-node-to-an-image-png-or-jpeg-in-the-browser-with-javascript
  * @returns {Promise<string | Blob>}
  */
-const SVGToImage = (settings: SVGToImageSettings): Promise<string | Blob> => {
-  return new Promise<string | Blob>(resolve => {
+const SVGToImage = (settings: SVGToImageSettings): Promise<string | Blob> =>
+  new Promise<string | Blob>(resolve => {
     const svgNode = createSvgNode(settings.svg);
 
     const canvas = document.createElement('canvas');
@@ -125,7 +125,6 @@ const SVGToImage = (settings: SVGToImageSettings): Promise<string | Blob> => {
     // eslint-disable-next-line fp/no-mutation
     image.src = svgBase64;
   });
-};
 
 export const convertSvgToPngBase64Image = async (
   svg: Node | string,

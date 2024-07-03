@@ -32,17 +32,13 @@ interface DownloadChartCSVButtonProps extends WithStyles<typeof styles> {
   disabled?: boolean;
 }
 
-const DownloadChartCSVButton = ({
+function DownloadChartCSVButton({
   filesData,
   disabled = false,
   classes,
-}: DownloadChartCSVButtonProps) => {
-  const buildDataToDownload: () => [
-    { [key: string]: any[] },
-    string,
-  ][] = () => {
-    return filesData.map(fileData => [fileData.data, fileData.fileName]);
-  };
+}: DownloadChartCSVButtonProps) {
+  const buildDataToDownload: () => [{ [key: string]: any[] }, string][] = () =>
+    filesData.map(fileData => [fileData.data, fileData.fileName]);
 
   return (
     <Button
@@ -53,6 +49,6 @@ const DownloadChartCSVButton = ({
       <Typography variant="body2">{t('Download CSV')}</Typography>
     </Button>
   );
-};
+}
 
 export default withStyles(styles)(DownloadChartCSVButton);

@@ -40,7 +40,7 @@ const paintProps: (
   ],
 });
 
-const CompositeLayer = ({ layer, before }: Props) => {
+function CompositeLayer({ layer, before }: Props) {
   // look to refacto with impactLayer and maybe other layers
   const [adminBoundaryLimitPolygon, setAdminBoundaryPolygon] = useState(null);
   const selectedDate = useDefaultDate(layer.dateLayer);
@@ -49,9 +49,9 @@ const CompositeLayer = ({ layer, before }: Props) => {
   const dispatch = useDispatch();
 
   const { data } =
-    (useSelector(layerDataSelector(layer.id)) as LayerData<
-      CompositeLayerProps
-    >) || {};
+    (useSelector(
+      layerDataSelector(layer.id),
+    ) as LayerData<CompositeLayerProps>) || {};
 
   const layerAvailableDates = serverAvailableDates[layer.dateLayer];
   const queryDate = getRequestDate(layerAvailableDates, selectedDate);
@@ -118,6 +118,6 @@ const CompositeLayer = ({ layer, before }: Props) => {
   }
 
   return null;
-};
+}
 
 export default memo(withStyles(styles)(CompositeLayer));

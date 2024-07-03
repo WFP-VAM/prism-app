@@ -15,22 +15,17 @@ export function castObjectsArrayToCsv<T extends { [key: string]: any }>(
   return [
     ...(sep === ',' ? [] : [`sep=${sep}`]),
     columns.join(sep),
-    ...objectsArray.map(obj => {
-      return Object.values(obj).join(sep);
-    }),
+    ...objectsArray.map(obj => Object.values(obj).join(sep)),
   ].join('\n');
 }
 
 export const getExposureAnalysisCsvData = (
   exposureAnalysisColumnsToRender: { [x: string]: string | number },
   exposureAnalysisTableRowsToRender: { [x: string]: string | number }[],
-) => {
-  return [exposureAnalysisColumnsToRender, ...exposureAnalysisTableRowsToRender]
-    .map(analysisCsvItem => {
-      return Object.values(analysisCsvItem);
-    })
+) =>
+  [exposureAnalysisColumnsToRender, ...exposureAnalysisTableRowsToRender]
+    .map(analysisCsvItem => Object.values(analysisCsvItem))
     .join('\n');
-};
 
 export const createCsvDataFromDataKeyMap = (
   tableData: TableData,
@@ -38,37 +33,32 @@ export const createCsvDataFromDataKeyMap = (
 ) => {
   // The column names of the csv based on the rows first item
   const columnNamesObject = tableData.rows.slice(0, 1)[0];
-  return tableData.rows.slice(1).map(row => {
-    return Object.fromEntries(
+  return tableData.rows.slice(1).map(row =>
+    Object.fromEntries(
       // Filters the Normal column or `fallback` data from every data set
       Object.entries(row)
-        .filter(([key]) => {
-          return columnNamesObject[key] !== 'Normal';
-        })
+        .filter(([key]) => columnNamesObject[key] !== 'Normal')
         .map(([key, value]) => {
           const newKey = keyMap[key] ? keyMap[key] : key;
           return [newKey, value];
         }),
-    );
-  });
+    ),
+  );
 };
 
 export const createDataKeyMap = (
   tableData: TableData,
   datasetFields: DatasetField[],
-) => {
-  return Object.fromEntries(
+) =>
+  Object.fromEntries(
     Object.entries(tableData.rows[0]).map(([key, value]) => {
       const newKey = datasetFields.find(x => x.label === value)?.key;
       return [key, newKey];
     }),
   );
-};
 
-export const downloadChartsToCsv = (
-  params: [{ [key: string]: any[] }, string][],
-) => {
-  return () => {
+export const downloadChartsToCsv =
+  (params: [{ [key: string]: any[] }, string][]) => () => {
     params.forEach(([dataForCsv, filename]) => {
       const dateColumn = 'Date';
       const getKeyName = (key: string, chartName: string) =>
@@ -91,13 +81,13 @@ export const downloadChartsToCsv = (
       );
 
       const merged = Object.entries(dataForCsv)
-        .map(([key, value]) => {
-          return value.map(x => {
-            return mapKeys(x, (v, k) =>
+        .map(([key, value]) =>
+          value.map(x =>
+            mapKeys(x, (v, k) =>
               k === dateColumn ? dateColumn : getKeyName(k, key),
-            );
-          });
-        })
+            ),
+          ),
+        )
         .flat();
       if (merged.length < 1) {
         return;
@@ -114,12 +104,12 @@ export const downloadChartsToCsv = (
         {},
       );
 
-      const objectsArray = Object.entries(grouped).map(([, value]) => {
-        return value.reduce(
+      const objectsArray = Object.entries(grouped).map(([, value]) =>
+        value.reduce(
           (prev, curr) => ({ ...prev, ...curr }),
           initialObjectsArrayBlueprintData,
-        );
-      });
+        ),
+      );
 
       downloadToFile(
         {
@@ -131,4 +121,3 @@ export const downloadChartsToCsv = (
       );
     });
   };
-};

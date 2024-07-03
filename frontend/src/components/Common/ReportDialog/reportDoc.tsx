@@ -105,43 +105,44 @@ const ReportDoc = memo(
 
     const styles = makeStyles(theme, i18n.language);
 
-    const date = useMemo(() => {
-      return new Date().toUTCString();
-    }, []);
+    const date = useMemo(() => new Date().toUTCString(), []);
 
-    const tableName = useMemo(() => {
-      return reportConfig?.tableName
-        ? reportConfig?.tableName
-        : 'Population Exposure';
-    }, [reportConfig]);
+    const tableName = useMemo(
+      () =>
+        reportConfig?.tableName
+          ? reportConfig?.tableName
+          : 'Population Exposure',
+      [reportConfig],
+    );
 
-    const showRowTotal = useMemo(() => {
-      return columns.length > 2;
-    }, [columns.length]);
+    const showRowTotal = useMemo(() => columns.length > 2, [columns.length]);
 
-    const tableCellWidth = useMemo(() => {
-      return `${100 / (columns.length + (showRowTotal ? 1 : 0))}%`;
-    }, [columns.length, showRowTotal]);
+    const tableCellWidth = useMemo(
+      () => `${100 / (columns.length + (showRowTotal ? 1 : 0))}%`,
+      [columns.length, showRowTotal],
+    );
 
-    const trimmedTableRows = useMemo(() => {
-      return tableRowsNum !== undefined
-        ? tableData.slice(0, tableRowsNum - (tableShowTotal ? 1 : 0))
-        : tableData;
-    }, [tableData, tableRowsNum, tableShowTotal]);
+    const trimmedTableRows = useMemo(
+      () =>
+        tableRowsNum !== undefined
+          ? tableData.slice(0, tableRowsNum - (tableShowTotal ? 1 : 0))
+          : tableData,
+      [tableData, tableRowsNum, tableShowTotal],
+    );
 
-    const areasLegendDefinition: PDFLegendDefinition[] = useMemo(() => {
-      return reportConfig.areasLegendDefinition.items.map(areaDefinition => {
-        return {
+    const areasLegendDefinition: PDFLegendDefinition[] = useMemo(
+      () =>
+        reportConfig.areasLegendDefinition.items.map(areaDefinition => ({
           value: t(areaDefinition.title),
           style: [styles.dash, { backgroundColor: areaDefinition.color }],
-        };
-      });
-    }, [reportConfig.areasLegendDefinition.items, styles.dash, t]);
+        })),
+      [reportConfig.areasLegendDefinition.items, styles.dash, t],
+    );
 
-    const typeLegendDefinition: PDFLegendDefinition[] = useMemo(() => {
-      return reportConfig.typeLegendDefinition.items.map(
-        typeLegendDefinitionItem => {
-          return {
+    const typeLegendDefinition: PDFLegendDefinition[] = useMemo(
+      () =>
+        reportConfig.typeLegendDefinition.items.map(
+          typeLegendDefinitionItem => ({
             value: t(typeLegendDefinitionItem.title),
             style: [
               typeLegendDefinitionItem?.border
@@ -154,22 +155,24 @@ const ReportDoc = memo(
                 }),
               },
             ],
-          };
-        },
-      );
-    }, [
-      reportConfig.typeLegendDefinition.items,
-      styles.borderedBox,
-      styles.box,
-      t,
-    ]);
+          }),
+        ),
+      [
+        reportConfig.typeLegendDefinition.items,
+        styles.borderedBox,
+        styles.box,
+        t,
+      ],
+    );
 
-    const populationExposureLegendDefinition: PDFLegendDefinition[] = useMemo(() => {
-      return exposureLegendDefinition.map(item => ({
-        value: getLegendItemLabel(t, item),
-        style: [styles.box, { backgroundColor: item.color, opacity: 0.5 }],
-      }));
-    }, [exposureLegendDefinition, styles.box, t]);
+    const populationExposureLegendDefinition: PDFLegendDefinition[] = useMemo(
+      () =>
+        exposureLegendDefinition.map(item => ({
+          value: getLegendItemLabel(t, item),
+          style: [styles.box, { backgroundColor: item.color, opacity: 0.5 }],
+        })),
+      [exposureLegendDefinition, styles.box, t],
+    );
 
     const renderedMapFooterText = useMemo(() => {
       if (!reportConfig?.mapFooterText) {
@@ -222,11 +225,13 @@ const ReportDoc = memo(
       return <Text style={styles.subText}>{t(reportConfig.subText)}</Text>;
     }, [reportConfig, styles.subText, t]);
 
-    const renderedSignatureText = useMemo(() => {
-      return reportConfig?.signatureText
-        ? t(reportConfig.signatureText)
-        : t('PRISM automated report');
-    }, [reportConfig, t]);
+    const renderedSignatureText = useMemo(
+      () =>
+        reportConfig?.signatureText
+          ? t(reportConfig.signatureText)
+          : t('PRISM automated report'),
+      [reportConfig, t],
+    );
 
     return (
       <Document>

@@ -20,13 +20,13 @@ interface SwitchItemsProps extends WithStyles<typeof styles> {
   layers: LayerType[];
   extent?: Extent;
 }
-const SwitchItems = ({ layers, extent, classes }: SwitchItemsProps) => {
+function SwitchItems({ layers, extent, classes }: SwitchItemsProps) {
   return (
     <>
       {layers.map((layer: LayerType) => {
-        const foundNotRenderedLayer = layer.group?.layers.find(layerItem => {
-          return layerItem.id === layer.id && !layerItem.main;
-        });
+        const foundNotRenderedLayer = layer.group?.layers.find(
+          layerItem => layerItem.id === layer.id && !layerItem.main,
+        );
         if (layer.group && foundNotRenderedLayer) {
           return null;
         }
@@ -57,6 +57,6 @@ const SwitchItems = ({ layers, extent, classes }: SwitchItemsProps) => {
       })}
     </>
   );
-};
+}
 
 export default memo(withStyles(styles)(SwitchItems));

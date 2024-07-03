@@ -9,7 +9,7 @@ import { PopupData, PopupMetaData } from 'context/tooltipStateSlice';
 import { Position } from 'geojson';
 import { useSafeTranslation } from 'i18n';
 import { isEmpty, isEqual, sum } from 'lodash';
-import { Fragment, memo } from 'react';
+import React, { Fragment, memo } from 'react';
 import { TFunction } from 'utils/data-utils';
 
 const styles = () =>
@@ -117,11 +117,7 @@ interface PopupContentProps extends WithStyles<typeof styles> {
   coordinates: Position | undefined;
 }
 
-const PopupContent = ({
-  popupData,
-  coordinates,
-  classes,
-}: PopupContentProps) => {
+function PopupContent({ popupData, coordinates, classes }: PopupContentProps) {
   const { t } = useSafeTranslation();
 
   const phasePopulationTable = generatePhasePopulationTable(
@@ -205,6 +201,6 @@ const PopupContent = ({
         })}
     </>
   );
-};
+}
 
 export default memo(withStyles(styles)(PopupContent));

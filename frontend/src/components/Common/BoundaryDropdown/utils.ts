@@ -205,9 +205,8 @@ export const setMenuItemStyle = (
   }
 };
 
-export const containsText = (text: string, searchText: string) => {
-  return (text?.toLowerCase().indexOf(searchText?.toLowerCase()) || 0) > -1;
-};
+export const containsText = (text: string, searchText: string) =>
+  (text?.toLowerCase().indexOf(searchText?.toLowerCase()) || 0) > -1;
 
 /*
  * This function returns the higher level relations from a given relation match.

@@ -35,18 +35,17 @@ import { opacitySelector } from 'context/opacityStateSlice';
 
 export const createFillPatternsForLayerLegends = async (
   layer: AdminLevelDataLayerProps,
-) => {
-  return Promise.all(
-    legendToStops(layer.legend).map(async (legendToStop, index) => {
-      return convertSvgToPngBase64Image(
+) =>
+  Promise.all(
+    legendToStops(layer.legend).map(async (legendToStop, index) =>
+      convertSvgToPngBase64Image(
         getSVGShape(
           legendToStop[1] as string,
           layer.fillPattern || layer.legend[index]?.fillPattern,
         ),
-      );
-    }),
+      ),
+    ),
   );
-};
 
 export const addFillPatternImageInMap = (
   layer: AdminLevelDataLayerProps,
@@ -88,23 +87,23 @@ export const addFillPatternImagesInMap = async (
   });
 };
 
-const onClick = ({
-  layer,
-  dispatch,
-  t,
-}: MapEventWrapFunctionProps<AdminLevelDataLayerProps>) => (
-  evt: MapLayerMouseEvent,
-) => {
-  addPopupParams(layer, dispatch, evt, t, true);
-};
+const onClick =
+  ({
+    layer,
+    dispatch,
+    t,
+  }: MapEventWrapFunctionProps<AdminLevelDataLayerProps>) =>
+  (evt: MapLayerMouseEvent) => {
+    addPopupParams(layer, dispatch, evt, t, true);
+  };
 
-const AdminLevelDataLayers = ({
+function AdminLevelDataLayers({
   layer,
   before,
 }: {
   layer: AdminLevelDataLayerProps;
   before?: string;
-}) => {
+}) {
   const dispatch = useDispatch();
   const map = useSelector(mapSelector);
   const serverAvailableDates = useSelector(availableDatesSelector);
@@ -183,6 +182,6 @@ const AdminLevelDataLayers = ({
       />
     </Source>
   );
-};
+}
 
 export default memo(AdminLevelDataLayers);
