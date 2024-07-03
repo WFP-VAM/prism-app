@@ -1,4 +1,4 @@
-import { memo, useCallback, useMemo } from 'react';
+import React, { memo, useCallback, useMemo } from 'react';
 import colormap from 'colormap';
 import { ChartOptions } from 'chart.js';
 import { Bar, Line } from 'react-chartjs-2';
@@ -153,8 +153,8 @@ const Chart = memo(
           pointRadius: isEWSChart ? 0 : 1, // Disable point rendering for EWS only.
           data: indices.map(index => (row[index] as number) || null),
           pointHitRadius: 10,
-        })), [
-      [colors, config.category, config.fill, indices, isEWSChart, t, tableRows],
+        })),
+      [colors, config.category, config.fill, indices, isEWSChart, t, tableRows]
     );
 
     const configureIndicePointRadius = useCallback(
