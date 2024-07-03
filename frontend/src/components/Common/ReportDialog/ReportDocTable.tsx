@@ -175,7 +175,7 @@ const ReportDocTable = memo(
             />
             {renderedTableRow(chunkRow)}
           </View>
-        )), [
+        )), 
       [cellWidth, chunks, columns, name, renderedTableRow, showRowTotal, theme],
     );
 
