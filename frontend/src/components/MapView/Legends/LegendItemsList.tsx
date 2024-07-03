@@ -12,7 +12,6 @@ import useLayers from 'utils/layers-utils';
 import { createGetLegendGraphicUrl } from 'prism-common';
 import { useSafeTranslation } from 'i18n';
 import { List } from '@material-ui/core';
-import useResizeObserver from 'utils/useOnResizeObserver';
 import { AALayerId } from 'config/utils';
 import AALegend from '../LeftPanel/AnticipatoryActionPanel/AALegend';
 import LegendItem from './LegendItem';
@@ -34,18 +33,10 @@ interface LegendItemsListProps {
   forPrinting?: boolean;
   listStyle?: string;
   showDescription?: boolean;
-  resizeCallback?: ({
-    width,
-    height,
-  }: {
-    width: number;
-    height: number;
-  }) => void;
 }
 
 const LegendItemsList = ({
   listStyle,
-  resizeCallback,
   forPrinting = false,
   showDescription = true,
 }: LegendItemsListProps) => {
@@ -55,20 +46,11 @@ const LegendItemsList = ({
   const invertedColorsForAnalysis = useSelector(invertedColorsSelector);
   const analysisLayerOpacity = useSelector(analysisResultOpacitySelector);
   const { selectedLayers, adminBoundariesExtent } = useLayers();
-  const [listRef, listSize] = useResizeObserver<HTMLUListElement>(
-    resizeCallback,
-  );
 
   const AALayerInUrl = React.useMemo(
     () => selectedLayers.find(x => x.id === AALayerId),
     [selectedLayers],
   );
-
-  React.useEffect(() => {
-    if (resizeCallback) {
-      resizeCallback(listSize);
-    }
-  }, [listSize, resizeCallback]);
 
   // If legend array is empty, we fetch from remote server the legend as GetLegendGraphic request.
   const getLayerLegendUrl = React.useCallback((layer: LayerType) => {
@@ -151,6 +133,7 @@ const LegendItemsList = ({
         // this layer doesn't have a legend (likely boundary), so lets ignore.
         return null;
       }
+      const hexDisplay = layer.type === 'point_data' && layer.hexDisplay;
       return (
         <LegendItem
           key={layer.id}
@@ -158,7 +141,8 @@ const LegendItemsList = ({
           title={layer.title ? t(layer.title) : undefined}
           legend={layer.legend}
           legendUrl={getLayerLegendUrl(layer)}
-          type={layer.type}
+          // Hack to use fill opacity for hexDisplay layers
+          type={hexDisplay ? 'composite' : layer.type}
           opacity={layer.opacity}
           fillPattern={layer.fillPattern}
           extent={adminBoundariesExtent}
@@ -200,7 +184,7 @@ const LegendItemsList = ({
   ]);
 
   return (
-    <List ref={listRef} className={listStyle}>
+    <List disablePadding className={listStyle}>
       {legendItems}
     </List>
   );

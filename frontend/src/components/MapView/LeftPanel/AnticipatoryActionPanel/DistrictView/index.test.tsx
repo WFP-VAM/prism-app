@@ -4,6 +4,7 @@ import { Provider } from 'react-redux';
 import { BrowserRouter } from 'react-router-dom';
 import configureStore from 'redux-mock-store';
 import { AnticipatoryActionState } from 'context/anticipatoryActionStateSlice/types';
+import { Panel } from 'context/leftPanelStateSlice';
 import DistrictView from '.';
 import { defaultDialogs, mockAAData } from '../test.utils';
 import { districtViewTransform } from './utils';
@@ -40,6 +41,9 @@ const store = mockStore({
     monitoredDistricts: ['Changara'],
     data: mockAAData,
   },
+  leftPanelState: {
+    tabValue: Panel.AnticipatoryAction,
+  },
 });
 
 test('renders as expected', () => {
@@ -61,12 +65,53 @@ test('District view transformation', () => {
 
 const out = {
   months: {
+    '2023-08-01': 'Aug',
     '2023-09-01': 'Sep',
     '2023-10-01': 'Oct',
     '2023-11-01': 'Nov',
   },
   transformed: {
-    '20': [
+    '30': [
+      {
+        category: 'Mild',
+        date: '2023-08-01',
+        district: 'Changara',
+        index: 'SPI DJF',
+        isValid: false,
+        new: false,
+        phase: 'na',
+        probability: 0.16,
+        trigger: 0.17,
+        type: 'SPI',
+        window: 'Window 1',
+      },
+      {
+        category: 'Mild',
+        date: '2023-09-01',
+        district: 'Changara',
+        index: 'SPI DJF',
+        isValid: false,
+        new: false,
+        phase: 'na',
+        probability: 0.22,
+        trigger: 0.3,
+        type: 'SPI',
+        window: 'Window 1',
+      },
+      {
+        category: 'Mild',
+        date: '2023-09-01',
+        district: 'Changara',
+        index: 'SPI DJF',
+        isValid: false,
+        new: false,
+        phase: 'na',
+        probability: 0.12,
+        trigger: 0.3,
+        type: 'SPI',
+        wasReadyValid: false,
+        window: 'Window 1',
+      },
       {
         category: 'Mild',
         district: 'Changara',
@@ -95,7 +140,7 @@ const out = {
         wasReadyValid: true,
       },
     ],
-    '30': [
+    '40': [
       {
         category: 'Moderate',
         district: 'Changara',
@@ -121,20 +166,6 @@ const out = {
         trigger: 0.2,
         date: '2023-10-01',
         isValid: true,
-      },
-      {
-        category: 'Moderate',
-        district: 'Changara',
-        index: 'SPI DJF',
-        type: 'SPI',
-        window: 'Window 1',
-        new: false,
-        phase: 'na',
-        probability: 0.25,
-        trigger: 0.26,
-        date: '2023-10-01',
-        isValid: false,
-        wasReadyValid: true,
       },
       {
         category: 'Moderate',

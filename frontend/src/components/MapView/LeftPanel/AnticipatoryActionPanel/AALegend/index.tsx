@@ -9,21 +9,27 @@ import {
 import { useSafeTranslation } from 'i18n';
 import { borderGray, lightGrey } from 'muiTheme';
 import React from 'react';
+import { safeCountry } from 'config';
 import { getAAColor, getAAIcon, useAACommonStyles } from '../utils';
 import HowToReadModal from '../HowToReadModal';
 
+const isZimbabwe = safeCountry === 'zimbabwe';
+
 const phases = [
-  { icon: getAAIcon('Severe', 'Set', true), phase: 'Set', severity: 'Severe' },
-  {
-    icon: getAAIcon('Severe', 'Ready', true),
-    phase: 'Ready',
-    severity: 'Severe',
-  },
-  {
-    icon: getAAIcon('Severe', 'na', true),
-    phase: 'No Action',
-    severity: 'Severe',
-  },
+  ...(isZimbabwe
+    ? []
+    : [
+        {
+          icon: getAAIcon('Severe', 'Set', true),
+          phase: 'Set',
+          severity: 'Severe',
+        },
+        {
+          icon: getAAIcon('Severe', 'Ready', true),
+          phase: 'Ready',
+          severity: 'Severe',
+        },
+      ]),
   {
     icon: getAAIcon('Moderate', 'Set', true),
     phase: 'Set',
@@ -34,10 +40,38 @@ const phases = [
     phase: 'Ready',
     severity: 'Moderate',
   },
+  ...(isZimbabwe
+    ? [
+        {
+          icon: getAAIcon('Normal', 'Set', true),
+          phase: 'Set',
+          severity: 'Below Normal',
+        },
+        {
+          icon: getAAIcon('Normal', 'Ready', true),
+          phase: 'Ready',
+          severity: 'Below Normal',
+        },
+      ]
+    : [
+        {
+          icon: getAAIcon('Mild', 'Set', true),
+          phase: 'Set',
+          severity: 'Mild',
+        },
+        {
+          icon: getAAIcon('Mild', 'Ready', true),
+          phase: 'Ready',
+          severity: 'Mild',
+        },
+      ]),
   {
-    icon: getAAIcon('Moderate', 'na', true),
+    icon: getAAIcon('na', 'na', true),
     phase: 'No Action',
-    severity: 'Moderate',
+  },
+  {
+    icon: getAAIcon('ny', 'ny', true),
+    phase: 'Not Yet Monitored',
   },
 ];
 
@@ -70,8 +104,17 @@ function AALegend({
             : undefined
         }
       >
-        <Typography variant="h2">{t('Phases')}</Typography>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+        <Typography variant="h3" style={{ fontWeight: 'bold' }}>
+          {t('Phases')}
+        </Typography>
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '0.5rem',
+            marginBottom: '0.75rem',
+          }}
+        >
           {phases.map(x => (
             <div
               key={`${x.phase}_${x.severity}`}
@@ -79,28 +122,21 @@ function AALegend({
             >
               {x.icon}
               <div>
-                <Typography style={{ whiteSpace: 'nowrap' }} variant="h3">
+                <Typography style={{ whiteSpace: 'nowrap' }}>
                   {t(x.phase)}
                 </Typography>
-                <Typography style={{ whiteSpace: 'nowrap' }} variant="h3">
-                  {t(x.severity)}
-                </Typography>
+                {x.severity && (
+                  <Typography style={{ whiteSpace: 'nowrap' }}>
+                    {t(x.severity)}
+                  </Typography>
+                )}
               </div>
             </div>
           ))}
-          <div className={classes.itemWrapper}>
-            <div className={classes.phaseNy} />
-            <div>
-              <Typography variant="h3">
-                {t('AA triggers not yet monitored')}
-              </Typography>
-            </div>
-          </div>
         </div>
         {showDescription && (
           <>
             <Typography>
-              The{' '}
               {
                 // TODO: handle onKeyDown
                 // eslint-disable-next-line jsx-a11y/click-events-have-key-events
@@ -111,18 +147,24 @@ function AALegend({
                   role="button"
                   tabIndex={0}
                 >
-                  “Ready, Set & Go!” system
+                  {t('The "Ready, Set & Go!" system')}
                 </span>
               }{' '}
-              uses seasonal forecasts with longer lead time for preparedness
-              (Ready phase) and shorter lead times for activation and
-              mobilization (Set & Go! phases).
+              {t(
+                'uses seasonal forecasts with longer lead time for preparedness (Ready phase) and shorter lead times for activation and mobilization (Set & Go! phases).',
+              )}
             </Typography>
             <Divider />
 
-            <Typography variant="h2">{t('Districts')}</Typography>
+            <Typography variant="h3" style={{ fontWeight: 'bold' }}>
+              {t('Districts')}
+            </Typography>
             <div
-              style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}
+              style={{
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '0.5rem',
+              }}
             >
               <div className={classes.itemWrapper}>
                 <div
@@ -150,7 +192,7 @@ const useStyles = makeStyles(() =>
   createStyles({
     paper: {
       padding: 8,
-      width: 200,
+      width: 180,
       borderRadius: '8px',
       display: 'flex',
       flexDirection: 'column',
@@ -160,7 +202,7 @@ const useStyles = makeStyles(() =>
       display: 'flex',
       flexDirection: 'row',
       flexWrap: 'nowrap',
-      gap: '0.25rem',
+      gap: '0.5rem',
     },
     phaseNy: {
       minWidth: '2.2rem',

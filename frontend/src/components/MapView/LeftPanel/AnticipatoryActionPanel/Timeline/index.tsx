@@ -8,6 +8,7 @@ import {
   AADataSelector,
   AAFiltersSelector,
   AASelectedDistrictSelector,
+  setAAFilters,
   setAAView,
 } from 'context/anticipatoryActionStateSlice';
 import {
@@ -17,10 +18,8 @@ import {
 import { lightGrey } from 'muiTheme';
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { setPanelSize } from 'context/leftPanelStateSlice';
-import { PanelSize } from 'config/types';
 import { useSafeTranslation } from 'i18n';
-import { Equalizer } from '@material-ui/icons';
+import { Equalizer, Reply } from '@material-ui/icons';
 import { getAAColor, getAAIcon, useAACommonStyles } from '../utils';
 import { dateSorter } from '../DistrictView/utils';
 import { timelineTransform } from './utils';
@@ -99,15 +98,22 @@ function Timeline({ dialogs }: TimelineProps) {
   const selectedDistrict = useSelector(AASelectedDistrictSelector);
   const AAFilters = useSelector(AAFiltersSelector);
 
-  React.useEffect(() => {
-    dispatch(setPanelSize(PanelSize.auto));
-  }, [dispatch]);
-
   const timelineButtons = [
+    {
+      icon: Reply,
+      text: 'Back',
+      onClick: () => {
+        dispatch(setAAFilters({ selectedIndex: '' }));
+        dispatch(setAAView(AAView.District));
+      },
+    },
     {
       icon: Equalizer,
       text: 'Forecast',
-      onClick: () => dispatch(setAAView(AAView.Forecast)),
+      onClick: () => {
+        dispatch(setAAFilters({ selectedIndex: '' }));
+        dispatch(setAAView(AAView.Forecast));
+      },
     },
   ];
 

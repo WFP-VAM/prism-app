@@ -87,13 +87,30 @@ exports[`renders actions modal 1`] = `
             style="font-weight: bold;"
             variant="h3"
           >
+            Mild category
+          </mock-typography>
+           
+          <mock-typography
+            variant="h3"
+          >
+            Drought events that typically occur once every 4 years.
+          </mock-typography>
+           
+        </div>
+        <div
+          class="makeStyles-contentItem-3"
+        >
+          <mock-typography
+            style="font-weight: bold;"
+            variant="h3"
+          >
             Moderate category
           </mock-typography>
            
           <mock-typography
             variant="h3"
           >
-            Drought events that happen on average 1 in 5 years.
+            Drought events that typically occur once every 5 years.
           </mock-typography>
            
         </div>
@@ -110,7 +127,7 @@ exports[`renders actions modal 1`] = `
           <mock-typography
             variant="h3"
           >
-            Drought events that happen on average 1 in 7 years.
+            Drought events that typically occur once every 7 years.
           </mock-typography>
            
         </div>
@@ -127,7 +144,7 @@ exports[`renders actions modal 1`] = `
           <mock-typography
             variant="h3"
           >
-            The “Ready, Set & Go!” system uses seasonal forecasts with longer lead time for preparedness (Ready phase) and shorter lead times for activation and mobilization (Set & Go! phases).
+            The "Ready, Set & Go!" system uses seasonal forecasts with longer lead time for preparedness (Ready phase) and shorter lead times for activation and mobilization (Set & Go! phases).
           </mock-typography>
            
         </div>

@@ -4,6 +4,7 @@ import { Provider } from 'react-redux';
 import { BrowserRouter } from 'react-router-dom';
 import configureStore from 'redux-mock-store';
 import { AnticipatoryActionState } from 'context/anticipatoryActionStateSlice/types';
+import { Panel } from 'context/leftPanelStateSlice';
 import { defaultDialogs, mockAAData } from '../test.utils';
 import { timelineTransform } from './utils';
 import Timeline from '.';
@@ -40,6 +41,9 @@ const store = mockStore({
     monitoredDistricts: ['Changara'],
     data: mockAAData,
   },
+  leftPanelState: {
+    tabValue: Panel.AnticipatoryAction,
+  },
 });
 
 test('renders as expected', () => {
@@ -73,7 +77,7 @@ const out = {
         ['2023-11-01', 'Nov'],
       ],
       rows: {
-        '22': {
+        '32': {
           status: {
             category: 'Mild',
             phase: 'Ready',
@@ -120,7 +124,7 @@ const out = {
             },
           ],
         },
-        '23': {
+        '33': {
           status: {
             category: 'Mild',
             phase: 'Set',
@@ -170,7 +174,7 @@ const out = {
             },
           ],
         },
-        '32': {
+        '42': {
           status: {
             category: 'Moderate',
             phase: 'Ready',
@@ -204,7 +208,7 @@ const out = {
             },
           ],
         },
-        '33': {
+        '43': {
           status: {
             category: 'Moderate',
             phase: 'Set',
@@ -244,28 +248,28 @@ const out = {
     },
   },
   allRows: {
-    '22': {
+    '32': {
       status: {
         category: 'Mild',
         phase: 'Ready',
       },
       data: [],
     },
-    '23': {
+    '33': {
       status: {
         category: 'Mild',
         phase: 'Set',
       },
       data: [],
     },
-    '32': {
+    '42': {
       status: {
         category: 'Moderate',
         phase: 'Ready',
       },
       data: [],
     },
-    '33': {
+    '43': {
       status: {
         category: 'Moderate',
         phase: 'Set',

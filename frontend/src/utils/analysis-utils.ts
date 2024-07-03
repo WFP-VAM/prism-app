@@ -11,6 +11,7 @@ import { Feature, FeatureCollection } from 'geojson';
 import { createGetCoverageUrl } from 'prism-common';
 import { TFunctionKeys } from 'i18next';
 import { Dispatch } from 'redux';
+import { appConfig } from 'config';
 import {
   AdminLevelDataLayerProps,
   AdminLevelType,
@@ -45,6 +46,8 @@ import {
   fetchWithTimeout,
 } from './fetch-with-timeout';
 import { getFormattedDate } from './date-utils';
+
+const { multiCountry } = appConfig;
 
 export type BaselineLayerData = AdminLevelDataLayerData;
 
@@ -415,16 +418,20 @@ export class ExposedPopulationResult {
   legendText: string;
   statistic: AggregationOperations;
   tableData: TableRow[];
-  date: number;
+  analysisDate: ReturnType<Date['getTime']>;
   tableColumns: any;
 
-  getTitle = (t?: i18nTranslator): string => {
-    return t ? t('Population Exposure') : 'Population Exposure';
+  getTitle = (t: i18nTranslator): string => {
+    return t('Population Exposure');
   };
 
-  getStatTitle = (t?: i18nTranslator): string => {
+  getLayerTitle = (t: i18nTranslator): string => {
     return this.getTitle(t);
   };
+
+  getStatLabel(t: i18nTranslator): string {
+    return t(aggregationOperationsToDisplay[this.statistic]);
+  }
 
   getHazardLayer = (): WMSLayerProps => {
     return this.getHazardLayer();
@@ -438,7 +445,7 @@ export class ExposedPopulationResult {
     legendText: string,
     groupBy: string,
     key: string,
-    date: number,
+    analysisDate: ReturnType<Date['getTime']>,
     tableColumns: any,
   ) {
     this.tableData = tableData;
@@ -448,7 +455,7 @@ export class ExposedPopulationResult {
     this.legendText = legendText;
     this.groupBy = groupBy;
     this.key = key;
-    this.date = date;
+    this.analysisDate = analysisDate;
     this.tableColumns = tableColumns;
   }
 }
@@ -500,32 +507,36 @@ export class BaselineLayerResult {
     return LayerDefinitions[this.hazardLayerId] as WMSLayerProps;
   }
 
-  getBaselineLayer(): AdminLevelDataLayerProps {
-    return LayerDefinitions[this.baselineLayerId] as AdminLevelDataLayerProps;
+  getBaselineLayer(): BoundaryLayerProps {
+    return LayerDefinitions[this.baselineLayerId] as BoundaryLayerProps;
   }
 
-  getStatTitle(t?: i18nTranslator): string {
-    return t
-      ? `${t(this.getHazardLayer().title)} (${t(
-          aggregationOperationsToDisplay[this.statistic],
-        )})`
-      : `${this.getHazardLayer().title} (${
-          aggregationOperationsToDisplay[this.statistic]
-        })`;
+  getLayerTitle(t: i18nTranslator): string {
+    return t(this.getHazardLayer().title);
   }
 
-  getTitle(t?: i18nTranslator): string | undefined {
+  getTitle(t: i18nTranslator): string | undefined {
     const baselineLayer = this.getBaselineLayer();
-    // If there is no title, we are using admin boundaries and return StatTitle instead.
+
     if (!baselineLayer.title) {
-      return this.getStatTitle(t);
+      return this.getStatSummaryTitle(t);
     }
     const baselineTitle = baselineLayer.title || 'Admin levels';
-    return t
-      ? `${t(baselineTitle)} ${t('exposed to')} ${t(
-          this.getHazardLayer().title,
-        )}`
-      : `${baselineTitle} exposed to ${this.getHazardLayer().title}`;
+    return `${t(baselineTitle)} ${t('exposed to')} ${t(
+      this.getHazardLayer().title,
+    )}`;
+  }
+
+  getStatLabel(t: i18nTranslator): string {
+    const statTitle = t(aggregationOperationsToDisplay[this.statistic]);
+    const atLevel = t('at Level');
+    const { adminLevelCodes } = this.getBaselineLayer();
+    const adminLevel = adminLevelCodes.length - (multiCountry ? 1 : 0);
+    return `${statTitle} ${atLevel} ${adminLevel}`;
+  }
+
+  getStatSummaryTitle(t: i18nTranslator): string {
+    return `${this.getLayerTitle(t)} ${this.getStatLabel(t)}`;
   }
 }
 
@@ -673,20 +684,14 @@ export class PolygonAnalysisResult {
     return LayerDefinitions[this.hazardLayerId] as WMSLayerProps;
   }
 
-  getTitle(t?: i18nTranslator): string {
-    return t
-      ? `${t(this.getHazardLayer().title)} ${t('intersecting admin level')} ${t(
-          (this.adminLevel as unknown) as TFunctionKeys,
-        )}`
-      : `${this.getHazardLayer().title} intersecting admin level ${
-          this.adminLevel
-        }`;
+  getTitle(t: i18nTranslator): string {
+    return `${t(this.getHazardLayer().title)} ${t(
+      'intersecting admin level',
+    )} ${t((this.adminLevel as unknown) as TFunctionKeys)}`;
   }
 
-  getStatTitle(t?: i18nTranslator): string {
-    return t
-      ? `${t(this.getHazardLayer().title)} (${t(this.statistic)})`
-      : `${this.getHazardLayer().title} (${this.statistic})`;
+  getStatTitle(t: i18nTranslator): string {
+    return `${t(this.getHazardLayer().title)} (${t(this.statistic)})`;
   }
 }
 
@@ -751,11 +756,13 @@ export function downloadCSVFromTableData(
         .join(','),
     ),
   ];
-  const rawCsv = `data:text/csv;charset=utf-8,${csvLines.join('\n')}`;
+  const rawCsv = csvLines.join('\n');
 
-  const encodedUri = encodeURI(rawCsv);
+  // Use Blob to handle large data
+  const blob = new Blob([rawCsv], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
   const link = document.createElement('a');
-  link.setAttribute('href', encodedUri);
+  link.setAttribute('href', url);
 
   link.setAttribute(
     'download',
@@ -764,6 +771,7 @@ export function downloadCSVFromTableData(
   document.body.appendChild(link); // Required for FF
 
   link.click();
+  document.body.removeChild(link); // Clean up
 }
 
 // type of results that have the tableData property

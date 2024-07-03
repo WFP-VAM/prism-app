@@ -13,22 +13,42 @@ import { Cancel, Close, HelpOutline } from '@material-ui/icons';
 import { useSafeTranslation } from 'i18n';
 import React from 'react';
 import { black, cyanBlue } from 'muiTheme';
+import { safeCountry } from 'config';
+
+const isZimbabwe = safeCountry === 'zimbabwe';
 
 const content = [
   { title: 'Window 1', text: 'Start to mid of the rainfall season.' },
   { title: 'Window 2', text: 'Mid to end of the rainfall season.' },
-  {
-    title: 'Moderate category',
-    text: 'Drought events that happen on average 1 in 5 years.',
-  },
-  {
-    title: 'Severe category',
-    text: 'Drought events that happen on average 1 in 7 years.',
-  },
+  ...(isZimbabwe
+    ? [
+        {
+          title: 'Below normal category',
+          text: 'Drought events that typically occur once every 3 years.',
+        },
+        {
+          title: 'Moderate category',
+          text: 'Drought events that typically occur once every 5 years.',
+        },
+      ]
+    : [
+        {
+          title: 'Mild category',
+          text: 'Drought events that typically occur once every 4 years.',
+        },
+        {
+          title: 'Moderate category',
+          text: 'Drought events that typically occur once every 5 years.',
+        },
+        {
+          title: 'Severe category',
+          text: 'Drought events that typically occur once every 7 years.',
+        },
+      ]),
   {
     title: 'Ready, Set and Go phases',
     text:
-      'The “Ready, Set & Go!” system uses seasonal forecasts with longer lead time for preparedness (Ready phase) and shorter lead times for activation and mobilization (Set & Go! phases).',
+      'The "Ready, Set & Go!" system uses seasonal forecasts with longer lead time for preparedness (Ready phase) and shorter lead times for activation and mobilization (Set & Go! phases).',
   },
 ];
 

@@ -4,6 +4,7 @@ import { Provider } from 'react-redux';
 import { BrowserRouter } from 'react-router-dom';
 import configureStore from 'redux-mock-store';
 import { AnticipatoryActionState } from 'context/anticipatoryActionStateSlice/types';
+import { Panel } from 'context/leftPanelStateSlice';
 import { defaultDialogs, mockAAData } from '../test.utils';
 import { forecastTransform } from './utils';
 import Forecast from '.';
@@ -40,6 +41,9 @@ const store = mockStore({
     monitoredDistricts: ['Changara'],
     data: mockAAData,
   },
+  leftPanelState: {
+    tabValue: Panel.AnticipatoryAction,
+  },
 });
 
 test('renders as expected', () => {
@@ -66,10 +70,16 @@ test('District view transformation', () => {
 const out = {
   chartData: {
     Mild: {
-      'SPI DJF': 28,
+      'SPI DJF': {
+        probability: 28,
+        showWarningSign: true,
+      },
     },
     Moderate: {
-      'SPI DJF': 22,
+      'SPI DJF': {
+        probability: 22,
+        showWarningSign: false,
+      },
     },
   },
   indexes: ['SPI DJF'],

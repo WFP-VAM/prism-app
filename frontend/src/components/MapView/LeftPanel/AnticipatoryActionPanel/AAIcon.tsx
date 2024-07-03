@@ -74,7 +74,7 @@ const useAAIconStyles = makeStyles(() =>
       textAlign: 'center',
       fontSize: '10px',
       lineHeight: '17px',
-      fontWeight: 400,
+      fontWeight: 700,
     },
   }),
 );

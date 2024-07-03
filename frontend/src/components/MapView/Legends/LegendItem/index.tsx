@@ -41,6 +41,7 @@ import AnalysisDownloadButton from 'components/MapView/Legends//AnalysisDownload
 import { toggleRemoveLayer } from 'components/MapView/LeftPanel/layersPanel/MenuItem/MenuSwitch/SwitchItem/utils';
 import { opacitySelector, setOpacity } from 'context/opacityStateSlice';
 import { lightGrey } from 'muiTheme';
+import Markdown from 'react-markdown';
 import LoadingBar from '../LoadingBar';
 
 // Children here is legendText
@@ -183,7 +184,7 @@ const LegendItem = memo(
           value={getLegendItemLabel(t, item)}
           color={item.color as string}
           opacity={opacity as number}
-          fillPattern={fillPattern}
+          fillPattern={fillPattern || item.fillPattern}
         />
       ));
     }, [fillPattern, getColorIndicatorKey, legend, opacity, t]);
@@ -208,10 +209,29 @@ const LegendItem = memo(
       }
       return (
         <Grid item>
-          <Typography variant="h5">{children}</Typography>
+          {typeof children === 'string' ? (
+            <Markdown
+              linkTarget="_blank"
+              components={{
+                p: ({ children: pChildren }: { children: React.ReactNode }) => (
+                  <Typography
+                    variant="h5"
+                    className={classes.legendTextMarkdown}
+                  >
+                    {pChildren}
+                  </Typography>
+                ),
+              }}
+              allowedElements={['p', 'h5', 'strong', 'em', 'a']}
+            >
+              {children}
+            </Markdown>
+          ) : (
+            <Typography variant="h5">{children}</Typography>
+          )}
         </Grid>
       );
-    }, [children]);
+    }, [children, classes.legendTextMarkdown]);
 
     return (
       <ListItem disableGutters dense>
@@ -244,7 +264,7 @@ const LegendItem = memo(
             <>
               <Divider style={{ margin: '8px 0px' }} />
               <Box display="flex" justifyContent="space-between">
-                <Tooltip title="Opacity">
+                <Tooltip title={t('Opacity') as string}>
                   <IconButton size="small" onClick={openOpacity}>
                     <Opacity fontSize="small" />
                   </IconButton>
@@ -277,7 +297,7 @@ const LegendItem = memo(
                   ) : (
                     layerDownloadOptions
                   )}
-                  <Tooltip title="Remove layer">
+                  <Tooltip title={t('Remove layer') as string}>
                     <IconButton size="small" onClick={remove}>
                       <Close fontSize="small" />
                     </IconButton>
@@ -320,6 +340,11 @@ const styles = () =>
       marginRight: 5,
       width: 28,
       lineHeight: '36px',
+    },
+    legendTextMarkdown: {
+      '& a': {
+        textDecoration: 'underline',
+      },
     },
   });
 

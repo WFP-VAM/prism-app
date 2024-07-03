@@ -50,6 +50,10 @@ const SwitchItem = memo(
     const [isOpacitySelected, setIsOpacitySelected] = useState(false);
     const dispatch = useDispatch();
     const opacity = useSelector(opacitySelector(layerId));
+    const hexDisplay = layer.type === 'point_data' && layer.hexDisplay;
+    // Hack to use composite layer type for hexDisplay layers and switch
+    // to using fill for opacity control
+    const layerTypeOverride = hexDisplay ? 'composite' : layerType;
     const {
       updateHistory,
       appendLayerToUrl,
@@ -69,10 +73,10 @@ const SwitchItem = memo(
           map,
           value: initialOpacity || 0,
           layerId,
-          layerType,
+          layerType: layerTypeOverride,
         }),
       );
-    }, [dispatch, initialOpacity, layerId, layerType, map, opacity]);
+    }, [dispatch, initialOpacity, layerId, layerTypeOverride, map, opacity]);
 
     const someLayerAreSelected = useMemo(() => {
       return selectedLayers.some(
@@ -203,7 +207,7 @@ const SwitchItem = memo(
             groupMenuFilter={groupMenuFilter}
             disabledMenuSelection={disabledMenuSelection}
           />
-          <Tooltip title="Opacity">
+          <Tooltip title={t('Opacity') as string}>
             <span style={{ marginLeft: 'auto' }}>
               <IconButton
                 disabled={!someLayerAreSelected}
@@ -236,7 +240,7 @@ const SwitchItem = memo(
           <OpacitySlider
             activeLayerId={activeLayerId}
             layerId={layerId}
-            layerType={layerType}
+            layerType={layerTypeOverride}
           />
         )}
       </Box>

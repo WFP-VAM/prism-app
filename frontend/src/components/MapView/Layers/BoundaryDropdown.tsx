@@ -214,26 +214,42 @@ export function getAdminBoundaryTree(
   }, rootNode);
 }
 
+/**
+ * Flatten an admin tree into a list of admin areas, sorted
+ * "as you would expect": sub-areas follow their parent area,
+ * ordered alphabetically.
+ * Returned array includes parents and children of matched
+ * elements.
+ */
 function flattenAreaTree(
   tree: AdminBoundaryTree,
   search: string = '',
 ): FlattenedAdminBoundary[] {
   function flattenSubTree(
+    localSearch: string,
     subTree: AdminBoundaryTree,
   ): FlattenedAdminBoundary[] {
-    const { children, ...rest } = subTree;
-    const childrenToShow = sortBy(Object.values(children), 'label').flatMap(
-      flattenSubTree,
-    );
+    const { children, ...node } = subTree;
+    // if current node matches the search string, include it and all its children
+    // without filtering them, otherwise keep searching through the children
+    const boundFlatten = node.label
+      .toLowerCase()
+      .includes(localSearch.toLowerCase())
+      ? flattenSubTree.bind(null, '')
+      : flattenSubTree.bind(null, localSearch);
+    const childrenToShow: FlattenedAdminBoundary[] = sortBy(
+      Object.values(children),
+      'label',
+    ).flatMap(boundFlatten);
     if (
       childrenToShow.length > 0 ||
-      rest.label.toLowerCase().includes(search.toLowerCase())
+      node.label.toLowerCase().includes(localSearch.toLowerCase())
     ) {
-      return [rest, childrenToShow].flat();
+      return [node, childrenToShow].flat();
     }
     return childrenToShow.flat();
   }
-  return flattenSubTree(tree);
+  return flattenSubTree(search, tree);
 }
 
 interface BoundaryDropdownOptionsProps {
@@ -436,6 +452,7 @@ export function SimpleBoundaryDropdown({
       <Select
         style={{ color: 'black' }}
         multiple
+        placeholder={labelMessage}
         onClose={() => {
           // empty search so that component shows correct options
           // otherwise, we would only show selected options which satisfy the search

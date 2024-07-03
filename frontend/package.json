@@ -88,6 +88,7 @@
     "react-draggable": "^4.4.3",
     "react-i18next": "^11.15.4",
     "react-map-gl": "^7.1.0",
+    "react-markdown": "^8.0.7",
     "react-pdf": "^5.7.2",
     "react-range-slider-input": "^3.0.7",
     "react-redux": "^7.2.0",

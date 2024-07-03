@@ -21,7 +21,7 @@ import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import Draggable, { DraggableEvent } from 'react-draggable';
 import { useDispatch, useSelector } from 'react-redux';
-import { DateRangeType, PanelSize } from 'config/types';
+import { DateRangeType } from 'config/types';
 import { dateRangeSelector } from 'context/mapStateSlice/selectors';
 import { addNotification } from 'context/notificationStateSlice';
 import { locales, useSafeTranslation } from 'i18n';
@@ -34,11 +34,9 @@ import { DateFormat } from 'utils/name-utils';
 import { useUrlHistory } from 'utils/url-utils';
 import useLayers from 'utils/layers-utils';
 import { format } from 'date-fns';
-import {
-  leftPanelSizeSelector,
-  leftPanelTabValueSelector,
-} from 'context/leftPanelStateSlice';
 // import { ReactComponent as TickSvg } from './tick.svg';
+import { Panel, leftPanelTabValueSelector } from 'context/leftPanelStateSlice';
+import { ReactComponent as TickSvg } from './tick.svg';
 import DateSelectorInput from './DateSelectorInput';
 import TimelineItems from './TimelineItems';
 import { TIMELINE_ITEM_WIDTH, findDateIndex } from './utils';
@@ -69,7 +67,7 @@ const DateSelector = memo(({ classes }: DateSelectorProps) => {
     selectedLayersWithDateSupport: selectedLayers,
   } = useLayers();
   const { startDate: stateStartDate } = useSelector(dateRangeSelector);
-  const panelSize = useSelector(leftPanelSizeSelector);
+  const tabValue = useSelector(leftPanelTabValueSelector);
   const [dateRange, setDateRange] = useState<DateRangeType[]>([
     {
       value: 0,
@@ -136,10 +134,9 @@ const DateSelector = memo(({ classes }: DateSelectorProps) => {
     handleTimeLinePosition(x);
   }, [handleTimeLinePosition, setPointerXPosition]);
 
-  const locale = useMemo(
-    () => (t('date_locale') ? t('date_locale') : 'en'),
-    [t],
-  );
+  const locale = useMemo(() => (t('date_locale') ? t('date_locale') : 'en'), [
+    t,
+  ]);
 
   const panelTab = useSelector(leftPanelTabValueSelector);
 
@@ -305,6 +302,43 @@ const DateSelector = memo(({ classes }: DateSelectorProps) => {
     e.stopPropagation();
   }, []);
 
+  const onPointerDrag = useCallback(
+    (e: DraggableEvent, position: Point) => {
+      const exactX = Math.round(position.x / TIMELINE_ITEM_WIDTH);
+      if (exactX >= dateRange.length) {
+        return;
+      }
+      const selectedIndex = findDateIndex(
+        availableDates,
+        dateRange[exactX].value,
+      );
+      if (selectedIndex < 0) {
+        return;
+      }
+      setPointerPosition({
+        x: exactX * TIMELINE_ITEM_WIDTH,
+        y: position.y,
+      });
+
+      // Hide all tooltips
+      const allTooltips = document.querySelectorAll('[data-date-index]');
+      allTooltips.forEach(tooltip => {
+        tooltip.dispatchEvent(new MouseEvent('mouseout', { bubbles: true }));
+      });
+
+      // Show current tooltip
+      const tooltipElement = document.querySelector(
+        `[data-date-index="${exactX}"]`,
+      );
+      if (tooltipElement) {
+        tooltipElement.dispatchEvent(
+          new MouseEvent('mouseover', { bubbles: true }),
+        );
+      }
+    },
+    [availableDates, dateRange],
+  );
+
   // Set pointer position after being dragged
   const onPointerStop = useCallback(
     (e: DraggableEvent, position: Point) => {
@@ -332,6 +366,16 @@ const DateSelector = memo(({ classes }: DateSelectorProps) => {
         position.y,
       );
       updateStartDate(updatedDate, true);
+
+      // Hide the tooltip for exactX
+      const tooltipElement = document.querySelector(
+        `[data-date-index="${exactX}"]`,
+      );
+      if (tooltipElement) {
+        tooltipElement.dispatchEvent(
+          new MouseEvent('mouseout', { bubbles: true }),
+        );
+      }
     },
     [
       availableDates,
@@ -352,7 +396,7 @@ const DateSelector = memo(({ classes }: DateSelectorProps) => {
   return (
     <div
       className={classes.container}
-      style={{ zIndex: panelSize === PanelSize.full ? -1 : 1300 }}
+      style={{ zIndex: tabValue === Panel.Charts ? -1 : 1300 }}
     >
       <Grid
         container
@@ -425,6 +469,7 @@ const DateSelector = memo(({ classes }: DateSelectorProps) => {
                       clickDate={clickDate}
                       locale={locale}
                       selectedLayers={selectedLayers}
+                      availableDates={availableDates}
                     />
                   )}
                 </Grid>
@@ -441,9 +486,12 @@ const DateSelector = memo(({ classes }: DateSelectorProps) => {
                   position={pointerPosition}
                   onStart={onPointerStart}
                   onStop={onPointerStop}
+                  onDrag={onPointerDrag}
                 >
                   <div className={classes.pointer} id={POINTER_ID}>
-                    {/* <TickSvg /> */}
+                    <TickSvg
+                      style={{ pointerEvents: 'none', marginTop: -29 }}
+                    />
                   </div>
                 </Draggable>
               </div>
@@ -533,11 +581,10 @@ const styles = (theme: Theme) =>
     pointer: {
       position: 'absolute',
       zIndex: 5,
-      top: -20,
-      left: -3.5,
+      marginTop: 22,
+      left: -12,
       height: '16px',
-      cursor: 'pointer',
-      pointerEvents: 'none',
+      cursor: 'grab',
     },
   });
 

@@ -2,6 +2,7 @@ import { has, get, merge } from 'lodash';
 import { PublicClientApplication } from '@azure/msal-browser';
 import shared from './shared';
 import afghanistan from './afghanistan';
+import bhutan from './bhutan';
 import cambodia from './cambodia';
 import cameroon from './cameroon';
 import colombia from './colombia';
@@ -20,8 +21,10 @@ import nepal from './nepal';
 import nigeria from './nigeria';
 import rbd from './rbd';
 import sierraleone from './sierraleone';
+import somalia from './somalia';
 import southsudan from './southsudan';
 import srilanka from './srilanka';
+import sudan from './sudan';
 import tajikistan from './tajikistan';
 import tanzania from './tanzania';
 import ukraine from './ukraine';
@@ -33,6 +36,7 @@ const DEFAULT_BOUNDARIES_FOLDER =
 
 const configMap = {
   afghanistan,
+  bhutan,
   cambodia,
   cameroon,
   colombia,
@@ -51,8 +55,10 @@ const configMap = {
   nigeria,
   rbd,
   sierraleone,
+  somalia,
   southsudan,
   srilanka,
+  sudan,
   tajikistan,
   tanzania,
   ukraine,
@@ -69,6 +75,7 @@ const {
   REACT_APP_OAUTH_AUTHORITY: AUTHORITY,
   REACT_APP_OAUTH_REDIRECT_URI: REDIRECT_URI,
   REACT_APP_TESTING: TESTING,
+  REACT_APP_QA_MODE: QA_MODE,
 } = process.env;
 
 const safeCountry =
@@ -127,7 +134,11 @@ const rawLayers: Record<string, any> = Object.fromEntries(
 // Merge translations
 const countryTranslation = get(configMap[safeCountry], 'translation', {});
 const translation = Object.fromEntries(
-  Object.entries(countryTranslation).map(([key, value]) => [
+  Object.entries(
+    QA_MODE || TESTING
+      ? merge({}, sharedTranslation, countryTranslation)
+      : countryTranslation,
+  ).map(([key, value]) => [
     key,
     merge({}, sharedTranslation[key] || {}, value),
   ]),

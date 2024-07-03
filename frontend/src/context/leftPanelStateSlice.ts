@@ -40,20 +40,14 @@ export const leftPanelSlice = createSlice({
         tabValue: payload,
       };
     },
-    setPanelSize: (state, { payload }: PayloadAction<PanelSize>) => ({
-      ...state,
-      panelSize: payload,
-    }),
   },
 });
 
 // Getters
 export const leftPanelTabValueSelector = (state: RootState): Panel =>
   state.leftPanelState.tabValue;
-export const leftPanelSizeSelector = (state: RootState): PanelSize =>
-  state.leftPanelState.panelSize;
 
 // Setters
-export const { setTabValue, setPanelSize } = leftPanelSlice.actions;
+export const { setTabValue } = leftPanelSlice.actions;
 
 export default leftPanelSlice.reducer;
