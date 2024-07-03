@@ -6413,6 +6413,7 @@
     "path": "data/rbd/fsn-hotspot/fsn-hotspot-2024.json",
     "admin_level": 2,
     "data_field": "FS_Hotspot_Jun_2024",
+    "display_source": "legend_label",
     "admin_code": "admin2Pcod",
     "opacity": 0.9,
     "legend": [
@@ -6456,6 +6457,7 @@
     "path": "data/rbd/fsn-hotspot/fsn-hotspot-2024.json",
     "admin_level": 2,
     "data_field": "NUT_Hotspot_Jun_2024",
+    "display_source": "legend_label",
     "admin_code": "admin2Pcod",
     "opacity": 0.9,
     "legend": [
@@ -6493,6 +6495,7 @@
     "path": "data/rbd/fsn-hotspot/fsn-hotspot-2024.json",
     "admin_level": 2,
     "data_field": "Integrated_FS_NUT_Hotspot_Jun_2024",
+    "display_source": "legend_label",
     "admin_code": "admin2Pcod",
     "opacity": 0.9,
     "legend": [
