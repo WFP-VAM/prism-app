@@ -16,7 +16,7 @@ import {
   withStyles,
 } from '@material-ui/core';
 import { GetApp, Cancel } from '@material-ui/icons';
-import React, { useContext } from 'react';
+import { useContext } from 'react';
 import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
 import ToggleButton from '@material-ui/lab/ToggleButton';
 import { cyanBlue } from 'muiTheme';

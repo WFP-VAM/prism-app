@@ -1,4 +1,4 @@
-import React, { memo, useCallback, useMemo } from 'react';
+import { memo, useCallback, useMemo } from 'react';
 import { createStyles, withStyles, WithStyles } from '@material-ui/styles';
 import { Button, Typography } from '@material-ui/core';
 import { useSafeTranslation } from 'i18n';

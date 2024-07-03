@@ -1,4 +1,4 @@
-import React, { CSSProperties, memo, useCallback, useMemo } from 'react';
+import { CSSProperties, memo, useCallback, useMemo } from 'react';
 import {
   Fade,
   Grid,

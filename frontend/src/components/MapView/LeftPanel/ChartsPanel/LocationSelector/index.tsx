@@ -7,7 +7,7 @@ import {
   Typography,
 } from '@material-ui/core';
 import { sortBy } from 'lodash';
-import React, { memo, ReactNode } from 'react';
+import { memo, ReactNode } from 'react';
 import { BoundaryLayerProps, PanelSize, AdminCodeString } from 'config/types';
 import {
   getAdminBoundaryTree,

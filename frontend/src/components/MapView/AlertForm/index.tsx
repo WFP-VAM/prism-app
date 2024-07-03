@@ -10,7 +10,7 @@ import {
   withStyles,
 } from '@material-ui/core';
 import { ArrowDropDown, Notifications } from '@material-ui/icons';
-import React, {
+import {
   Dispatch,
   SetStateAction,
   useCallback,

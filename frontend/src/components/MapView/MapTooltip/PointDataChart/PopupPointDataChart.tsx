@@ -6,7 +6,7 @@ import {
   datasetSelector,
 } from 'context/datasetStateSlice';
 import { t } from 'i18next';
-import React, { memo } from 'react';
+import { memo } from 'react';
 import { useSelector } from 'react-redux';
 import { WithStyles, createStyles, withStyles } from '@material-ui/core';
 

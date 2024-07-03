@@ -1,4 +1,4 @@
-import React, { useCallback, useState, MouseEvent, useMemo } from 'react';
+import { useCallback, useState, MouseEvent, useMemo } from 'react';
 import {
   Button,
   createStyles,

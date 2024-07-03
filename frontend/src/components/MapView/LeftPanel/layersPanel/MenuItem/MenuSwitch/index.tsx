@@ -10,7 +10,7 @@ import {
 } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
 import RemoveIcon from '@material-ui/icons/Remove';
-import React, {
+import {
   ChangeEvent,
   memo,
   useCallback,

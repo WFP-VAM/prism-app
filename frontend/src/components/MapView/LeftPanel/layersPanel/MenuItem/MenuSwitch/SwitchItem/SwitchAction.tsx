@@ -1,4 +1,4 @@
-import React, { ChangeEvent, memo, useCallback } from 'react';
+import { ChangeEvent, memo, useCallback } from 'react';
 import Switch from 'components/Common/Switch';
 
 interface SwitchActionProps {

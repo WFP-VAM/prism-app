@@ -1,4 +1,4 @@
-import React, { memo, useCallback, useEffect, useMemo, useState } from 'react';
+import { memo, useCallback, useEffect, useMemo, useState } from 'react';
 import { createStyles, withStyles, WithStyles } from '@material-ui/styles';
 import {
   Box,

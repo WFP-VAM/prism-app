@@ -1,6 +1,6 @@
 import { StaticRasterLayerProps } from 'config/types';
 import { opacitySelector } from 'context/opacityStateSlice';
-import React, { memo } from 'react';
+import { memo } from 'react';
 import { Layer, Source } from 'react-map-gl/maplibre';
 import { useSelector } from 'react-redux';
 import { getFormattedDate } from 'utils/date-utils';

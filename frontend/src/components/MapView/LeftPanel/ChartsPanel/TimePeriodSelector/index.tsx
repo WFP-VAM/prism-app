@@ -8,7 +8,7 @@ import {
 } from '@material-ui/core';
 import { DateRangeRounded } from '@material-ui/icons';
 import DatePicker from 'react-datepicker';
-import React, { memo } from 'react';
+import { memo } from 'react';
 import { useSafeTranslation } from 'i18n';
 
 const useStyles = makeStyles(() =>

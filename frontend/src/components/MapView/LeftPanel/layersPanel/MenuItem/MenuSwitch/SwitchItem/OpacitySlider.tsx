@@ -9,7 +9,7 @@ import {
 import { LayerType } from 'config/types';
 import { mapSelector } from 'context/mapStateSlice/selectors';
 import { opacitySelector, setOpacity } from 'context/opacityStateSlice';
-import React, { ChangeEvent, memo, useCallback } from 'react';
+import { ChangeEvent, memo, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 const styles = createStyles({

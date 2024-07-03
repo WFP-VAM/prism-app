@@ -8,7 +8,7 @@ import {
 } from '@material-ui/core';
 import { AdminLevelType, WMSLayerProps } from 'config/types';
 import { t } from 'i18next';
-import React, { memo } from 'react';
+import { memo } from 'react';
 
 const styles = () =>
   createStyles({

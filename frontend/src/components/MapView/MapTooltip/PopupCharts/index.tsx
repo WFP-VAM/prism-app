@@ -1,7 +1,7 @@
 import { AdminLevelType, AdminCodeString } from 'config/types';
 import { getWMSLayersWithChart } from 'config/utils';
 import { layersSelector } from 'context/mapStateSlice/selectors';
-import React, { memo, useEffect } from 'react';
+import { memo, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import PopupAnalysisCharts from './PopupAnalysisCharts';
 import PopupChartsList from './PopupChartsList';

@@ -8,7 +8,7 @@ import {
 } from '@material-ui/core';
 import { GeoJsonProperties } from 'geojson';
 import { omit } from 'lodash';
-import React, { memo, useCallback, useEffect, useMemo, useState } from 'react';
+import { memo, useCallback, useEffect, useMemo, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { appConfig } from 'config';
 import {

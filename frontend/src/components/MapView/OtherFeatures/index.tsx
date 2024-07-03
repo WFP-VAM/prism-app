@@ -1,5 +1,5 @@
 import { Box, WithStyles, createStyles, withStyles } from '@material-ui/core';
-import React, { memo, useMemo } from 'react';
+import { memo, useMemo } from 'react';
 import useLayers from 'utils/layers-utils';
 import DateSelector from '../DateSelector';
 import BoundaryInfoBox from '../BoundaryInfoBox';

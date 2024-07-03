@@ -1,4 +1,4 @@
-import React, { memo, useCallback, useMemo } from 'react';
+import { memo, useCallback, useMemo } from 'react';
 import { Theme } from '@material-ui/core';
 import { StyleSheet, Text, View } from '@react-pdf/renderer';
 import { chunk } from 'lodash';

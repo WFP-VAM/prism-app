@@ -2,7 +2,7 @@ import { WithStyles, createStyles, withStyles } from '@material-ui/core';
 import { CompositeLayerProps, LegendDefinition } from 'config/types';
 import { LayerData, loadLayerData } from 'context/layers/layer-data';
 import { layerDataSelector } from 'context/mapStateSlice/selectors';
-import React, { memo, useEffect, useState } from 'react';
+import { memo, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Source, Layer } from 'react-map-gl/maplibre';
 import { getLayerMapId } from 'utils/map-utils';

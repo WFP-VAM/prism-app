@@ -17,7 +17,7 @@ import {
   Typography,
 } from '@material-ui/core';
 import { GeoJsonProperties } from 'geojson';
-import React, {
+import {
   memo,
   useCallback,
   useEffect,

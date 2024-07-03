@@ -1,6 +1,6 @@
 import { CompositeLayerProps, LayerType } from 'config/types';
 import { getCompositeLayers } from 'config/utils';
-import React, { Fragment, memo } from 'react';
+import { Fragment, memo } from 'react';
 import { Extent } from 'components/MapView/Layers/raster-utils';
 import { WithStyles, createStyles, withStyles } from '@material-ui/core';
 import SwitchItem from './SwitchItem';

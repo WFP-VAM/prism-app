@@ -1,4 +1,4 @@
-import React, { memo } from 'react';
+import { memo } from 'react';
 import { createStyles, withStyles, WithStyles } from '@material-ui/core';
 
 const LoadingBlinkingDots = memo(

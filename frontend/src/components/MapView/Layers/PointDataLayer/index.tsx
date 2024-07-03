@@ -1,4 +1,4 @@
-import React, { memo, useEffect } from 'react';
+import { memo, useEffect } from 'react';
 import { Layer, Source } from 'react-map-gl/maplibre';
 import { Point } from 'geojson';
 

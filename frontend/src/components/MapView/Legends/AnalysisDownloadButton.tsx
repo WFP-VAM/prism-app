@@ -1,5 +1,5 @@
 import { IconButton, Menu, MenuItem, Tooltip } from '@material-ui/core';
-import React, { useCallback, useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import {
   analysisResultSelector,

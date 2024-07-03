@@ -1,5 +1,5 @@
 import { Box } from '@material-ui/core';
-import React, { memo } from 'react';
+import { memo } from 'react';
 import HashText from 'components/Common/HashText';
 import { PanelSize } from 'config/types';
 import RootAccordionItems from './RootAccordionItems';

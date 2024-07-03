@@ -2,7 +2,7 @@ import { Chip, createStyles, makeStyles } from '@material-ui/core';
 import { LayerType } from 'config/types';
 import { useSafeTranslation } from 'i18n';
 import { cyanBlue } from 'muiTheme';
-import React, { memo, useCallback, useEffect, useState } from 'react';
+import { memo, useCallback, useEffect, useState } from 'react';
 
 const useStyles = makeStyles(() =>
   createStyles({

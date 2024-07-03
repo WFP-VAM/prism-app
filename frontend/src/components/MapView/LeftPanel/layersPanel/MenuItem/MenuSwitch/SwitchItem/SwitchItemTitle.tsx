@@ -7,7 +7,7 @@ import {
 } from '@material-ui/core';
 import { WithStyles } from '@material-ui/styles';
 import { LayerType, MenuGroupItem } from 'config/types';
-import React, { memo, useCallback } from 'react';
+import { memo, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 
 const styles = () =>

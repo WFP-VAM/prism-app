@@ -1,4 +1,4 @@
-import React, { memo } from 'react';
+import { memo } from 'react';
 import { useSelector } from 'react-redux';
 import { Layer, Source } from 'react-map-gl/maplibre';
 import { WMSLayerProps } from 'config/types';

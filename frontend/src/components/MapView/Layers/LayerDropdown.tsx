@@ -7,7 +7,7 @@ import {
   TextField,
   Typography,
 } from '@material-ui/core';
-import React, { ReactElement } from 'react';
+import { ReactElement } from 'react';
 import { menuList } from 'components/MapView/LeftPanel/utils';
 import { LayerKey, LayerType } from 'config/types';
 import { getDisplayBoundaryLayers, LayerDefinitions } from 'config/utils';

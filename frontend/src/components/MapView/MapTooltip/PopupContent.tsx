@@ -9,7 +9,7 @@ import { PopupData, PopupMetaData } from 'context/tooltipStateSlice';
 import { Position } from 'geojson';
 import { useSafeTranslation } from 'i18n';
 import { isEmpty, isEqual, sum } from 'lodash';
-import React, { Fragment, memo } from 'react';
+import { Fragment, memo } from 'react';
 import { TFunction } from 'utils/data-utils';
 
 const styles = () =>

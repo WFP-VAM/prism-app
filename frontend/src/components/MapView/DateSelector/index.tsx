@@ -9,14 +9,7 @@ import {
 } from '@material-ui/core';
 import { ChevronLeft, ChevronRight } from '@material-ui/icons';
 import { findIndex, get, isEqual } from 'lodash';
-import React, {
-  memo,
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from 'react';
+import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import Draggable, { DraggableEvent } from 'react-draggable';
@@ -34,9 +27,8 @@ import { DateFormat } from 'utils/name-utils';
 import { useUrlHistory } from 'utils/url-utils';
 import useLayers from 'utils/layers-utils';
 import { format } from 'date-fns';
-// import { ReactComponent as TickSvg } from './tick.svg';
 import { Panel, leftPanelTabValueSelector } from 'context/leftPanelStateSlice';
-import { ReactComponent as TickSvg } from './tick.svg';
+import TickSvg from './tick.svg';
 import DateSelectorInput from './DateSelectorInput';
 import TimelineItems from './TimelineItems';
 import { TIMELINE_ITEM_WIDTH, findDateIndex } from './utils';
@@ -489,7 +481,9 @@ const DateSelector = memo(({ classes }: DateSelectorProps) => {
                   onDrag={onPointerDrag}
                 >
                   <div className={classes.pointer} id={POINTER_ID}>
-                    <TickSvg
+                    <img
+                      src={TickSvg}
+                      alt="Tick Svg"
                       style={{ pointerEvents: 'none', marginTop: -29 }}
                     />
                   </div>

@@ -1,4 +1,4 @@
-import React, { useCallback, useState, MouseEvent, memo, useMemo } from 'react';
+import { useCallback, useState, MouseEvent, memo, useMemo } from 'react';
 import InfoOutlinedIcon from '@material-ui/icons/InfoOutlined';
 import { Button, Hidden, Typography } from '@material-ui/core';
 import { useDispatch } from 'react-redux';

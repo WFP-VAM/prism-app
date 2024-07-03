@@ -1,5 +1,5 @@
 import { LayersCategoryType, MenuItemType } from 'config/types';
-import React, { memo } from 'react';
+import { memo } from 'react';
 import useLayers from 'utils/layers-utils';
 import MenuItem from '../MenuItem';
 import { menuList } from '../../utils';

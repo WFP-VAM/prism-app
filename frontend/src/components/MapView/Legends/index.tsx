@@ -8,7 +8,7 @@ import {
   withStyles,
 } from '@material-ui/core';
 import { VisibilityOutlined, VisibilityOffOutlined } from '@material-ui/icons';
-import React, { useState, memo, useCallback } from 'react';
+import { useState, memo, useCallback } from 'react';
 import { useSafeTranslation } from 'i18n';
 import { black, cyanBlue } from 'muiTheme';
 import LegendItemsList from './LegendItemsList';

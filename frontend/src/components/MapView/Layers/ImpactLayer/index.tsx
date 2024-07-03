@@ -1,4 +1,4 @@
-import React, { memo, useEffect } from 'react';
+import { memo, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { get } from 'lodash';
 import { createStyles, withStyles, WithStyles, Theme } from '@material-ui/core';

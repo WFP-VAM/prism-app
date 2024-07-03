@@ -6,7 +6,7 @@ import {
   MenuItem,
   Tooltip,
 } from '@material-ui/core';
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { mapValues } from 'lodash';
 import GetAppIcon from '@material-ui/icons/GetApp';

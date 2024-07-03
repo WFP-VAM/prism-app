@@ -1,4 +1,4 @@
-import React, { memo, useCallback, useMemo } from 'react';
+import { memo, useCallback, useMemo } from 'react';
 import colormap from 'colormap';
 import { ChartOptions } from 'chart.js';
 import { Bar, Line } from 'react-chartjs-2';

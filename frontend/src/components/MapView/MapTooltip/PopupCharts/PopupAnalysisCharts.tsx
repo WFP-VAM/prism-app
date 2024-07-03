@@ -14,7 +14,7 @@ import {
   dateRangeSelector,
   layerDataSelector,
 } from 'context/mapStateSlice/selectors';
-import React, { useRef } from 'react';
+import { useRef } from 'react';
 import { useSelector } from 'react-redux';
 import { appConfig } from 'config';
 import { useSafeTranslation } from 'i18n';

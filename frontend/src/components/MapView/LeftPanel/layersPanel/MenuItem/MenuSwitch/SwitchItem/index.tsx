@@ -7,7 +7,7 @@ import {
   withStyles,
 } from '@material-ui/core';
 import OpacityIcon from '@material-ui/icons/Opacity';
-import React, { memo, useCallback, useEffect, useMemo, useState } from 'react';
+import { memo, useCallback, useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { LayerKey, LayerType } from 'config/types';
 import { LayerDefinitions } from 'config/utils';

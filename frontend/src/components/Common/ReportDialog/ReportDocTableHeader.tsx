@@ -1,4 +1,4 @@
-import React, { memo, useMemo } from 'react';
+import { memo, useMemo } from 'react';
 import { StyleSheet, Text, View } from '@react-pdf/renderer';
 import { Theme } from '@material-ui/core';
 import { Column } from 'utils/analysis-utils';
