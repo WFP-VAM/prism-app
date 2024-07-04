@@ -27,6 +27,7 @@ import ExposureAnalysisOption from './ExposureAnalysisOption';
 import SwitchTitle from './SwitchItemTitle';
 import SwitchAction from './SwitchAction';
 import OpacitySlider from './OpacitySlider';
+import { addLayer } from 'context/mapStateSlice';
 
 const SwitchItem = memo(
   ({
@@ -168,6 +169,7 @@ const SwitchItem = memo(
           selectedLayer,
         );
         updateHistory(urlLayerKey, updatedUrl);
+        dispatch(addLayer(layer));
         if (
           'boundary' in selectedLayer ||
           selectedLayer.type !== 'admin_level_data'
