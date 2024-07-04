@@ -30,14 +30,14 @@ exports[`renders as expected 1`] = `
         />
       </div>
       <div
-        class="MuiLinearProgress-root makeStyles-root-11 MuiLinearProgress-colorPrimary MuiLinearProgress-indeterminate"
+        class="MuiLinearProgress-root makeStyles-root-10 MuiLinearProgress-colorPrimary MuiLinearProgress-indeterminate"
         role="progressbar"
       >
         <div
-          class="MuiLinearProgress-bar makeStyles-hide-13 MuiLinearProgress-barColorPrimary MuiLinearProgress-bar1Indeterminate"
+          class="MuiLinearProgress-bar makeStyles-hide-12 MuiLinearProgress-barColorPrimary MuiLinearProgress-bar1Indeterminate"
         />
         <div
-          class="MuiLinearProgress-bar makeStyles-hide-13 MuiLinearProgress-bar2Indeterminate MuiLinearProgress-barColorPrimary"
+          class="MuiLinearProgress-bar makeStyles-hide-12 MuiLinearProgress-bar2Indeterminate MuiLinearProgress-barColorPrimary"
         />
       </div>
       <div
@@ -55,7 +55,7 @@ exports[`renders as expected 1`] = `
         style="margin: 8px 0px;"
       />
       <div
-        class="MuiBox-root MuiBox-root-14"
+        class="MuiBox-root MuiBox-root-13"
       >
         <mock-tooltip
           title="Opacity"
@@ -89,7 +89,7 @@ exports[`renders as expected 1`] = `
           open="false"
         >
           <div
-            class="MuiBox-root MuiBox-root-15 memo-opacityBox-3"
+            class="MuiBox-root MuiBox-root-14 memo-opacityBox-3"
           >
             <mock-typography
               classes="[object Object]"
