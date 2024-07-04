@@ -1,5 +1,6 @@
 import React, { memo } from 'react';
 import { useSafeTranslation } from 'i18n';
+import LegendMarkdown from '../LegendMarkdown';
 
 interface LegendImpactProps {
   legendText: string;
@@ -12,11 +13,24 @@ const LegendImpactResult = memo(
     const { t } = useSafeTranslation();
     return (
       <>
-        {`${t('Impact Analysis on')}: ${t(legendText)}`}
-        <br />
-        {thresholdAbove ? `${t('Above Threshold')}: ${thresholdAbove}` : ''}
-        <br />
-        {thresholdBelow ? `${t('Below Threshold')}: ${thresholdBelow}` : ''}
+        {`${t('Impact Analysis on')}:`}
+        <LegendMarkdown>{t(legendText)}</LegendMarkdown>
+        {thresholdAbove ? (
+          <>
+            <br />
+            {t('Above Threshold')}: {thresholdAbove}
+          </>
+        ) : (
+          ''
+        )}
+        {thresholdBelow ? (
+          <>
+            <br />
+            {t('Below Threshold')}: {thresholdBelow}
+          </>
+        ) : (
+          ''
+        )}
       </>
     );
   },
