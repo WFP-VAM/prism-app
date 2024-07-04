@@ -18,6 +18,7 @@ const filters: AnticipatoryActionState['filters'] = {
     Mild: true,
     na: true,
     ny: true,
+    Normal: true,
   },
   selectedIndex: '',
   selectedDate: undefined,
