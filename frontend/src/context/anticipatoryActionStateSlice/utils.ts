@@ -143,7 +143,7 @@ export function parseAndTransformAA(data: any[]) {
         let newRows = [] as AnticipatoryActionDataRow[];
 
         let prevMax: AnticipatoryActionDataRow | undefined;
-        windowDates.forEach((date, index) => {
+        windowDates.forEach(date => {
           const dateData = sorted.filter(x => x.date === date);
 
           // Propagate SET elements from previous dates

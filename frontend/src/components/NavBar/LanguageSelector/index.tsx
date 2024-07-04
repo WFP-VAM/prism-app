@@ -4,7 +4,6 @@ import {
   createStyles,
   Menu,
   MenuItem,
-  Theme,
   Typography,
   withStyles,
   WithStyles,
@@ -71,7 +70,7 @@ function LanguageSelector({ classes }: LanguageSelectorProps) {
   );
 }
 
-const styles = (theme: Theme) =>
+const styles = () =>
   createStyles({
     block: {
       paddingLeft: '10px',

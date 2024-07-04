@@ -674,7 +674,6 @@ const AnalysisPanel = memo(() => {
       <ExposureAnalysisTable
         tableData={exposureAnalysisTableData}
         columns={translatedColumns}
-        maxResults={1000}
         sortColumn={exposureAnalysisSortColumn}
         handleChangeOrderBy={handleExposureAnalysisTableOrderBy}
         isAscending={exposureAnalysisIsAscending}
