@@ -251,19 +251,17 @@ function LayerDownloadOptions({
           </MenuItem>,
         ]}
         {layer.type === 'wms' &&
-          layer.baseUrl.includes('api.earthobservation.vam.wfp.org/ows') && (
-            <>
-              <MenuItem
-                key="download-as-geotiff"
-                onClick={handleDownloadGeoTiff}
-              >
-                {t('Download as GeoTIFF')}
-              </MenuItem>
-              <MenuItem key="download-style" onClick={handleDownloadQmlStyle}>
-                {t('Download QML Style')}
-              </MenuItem>
-            </>
-          )}
+          layer.baseUrl.includes('api.earthobservation.vam.wfp.org/ows') && [
+            <MenuItem
+              key="download-as-geotiff"
+              onClick={handleDownloadGeoTiff}
+            >
+              {t('Download as GeoTIFF')}
+            </MenuItem>,
+            <MenuItem key="download-style" onClick={handleDownloadQmlStyle}>
+              {t('Download QML Style')}
+            </MenuItem>,
+          ]}
       </Menu>
     </>
   );
