@@ -26,6 +26,7 @@ class Worker {
 
 // eslint-disable-next-line fp/no-mutation
 // @ts-ignore
+// eslint-disable-next-line fp/no-mutation
 window.Worker = Worker;
 
 // eslint-disable-next-line fp/no-mutating-methods
@@ -50,9 +51,10 @@ jest.mock('@react-pdf/renderer', () => ({
 }));
 
 // https://github.com/remarkjs/react-markdown/issues/635
-jest.mock('react-markdown', () => (props: { children: React.ReactNode }) => {
-  return <>{props.children}</>;
-});
+jest.mock(
+  'react-markdown',
+  () => (props: { children: React.ReactNode }) => props.children,
+);
 
 jest.mock('max-inscribed-circle', () => ({}));
 
