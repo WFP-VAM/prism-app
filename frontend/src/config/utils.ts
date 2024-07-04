@@ -41,7 +41,7 @@ export function isTableKey(tableKey: string): tableKey is TableKey {
 function parseStatsApiConfig(maybeConfig: {
   [key: string]: any;
 }): StatsApi | undefined {
-  const config = mapKeys(maybeConfig, (v, k) => camelCase(k));
+  const config = mapKeys(maybeConfig, (_v, k) => camelCase(k));
   if (checkRequiredKeys(StatsApi, config, true)) {
     return config as StatsApi;
   }
@@ -54,7 +54,7 @@ export function deepCamelCaseKeys(obj: any): any {
   }
   if (isPlainObject(obj)) {
     return mapValues(
-      mapKeys(obj, (v, k) => camelCase(k)),
+      mapKeys(obj, (_v, k) => camelCase(k)),
       deepCamelCaseKeys,
     );
   }
@@ -70,7 +70,7 @@ export const getLayerByKey = (layerKey: LayerKey): LayerType => {
     type: rawDefinition.type as LayerType['type'],
     // TODO - Transition to deepCamelCaseKeys
     // but handle line-opacity and other special cases
-    ...mapKeys(rawDefinition, (v, k) => camelCase(k)),
+    ...mapKeys(rawDefinition, (_v, k) => camelCase(k)),
   };
 
   const throwInvalidLayer = () => {
@@ -298,7 +298,7 @@ const getReportByKey = (key: ReportKey): ReportType => {
   const reports = rawReports as Record<string, any>;
   const rawDefinition = {
     id: key,
-    ...mapKeys(isReportsKey(key) ? reports[key] : {}, (v, k) => camelCase(k)),
+    ...mapKeys(isReportsKey(key) ? reports[key] : {}, (_v, k) => camelCase(k)),
   };
 
   if (isValidReportsDefinition(rawDefinition)) {
@@ -315,7 +315,7 @@ function getTableByKey(key: TableKey): TableType {
   const tables = rawTables as Record<string, any>;
   const rawDefinition = {
     id: key,
-    ...mapKeys(isTableKey(key) ? tables[key] : {}, (v, k) => camelCase(k)),
+    ...mapKeys(isTableKey(key) ? tables[key] : {}, (_v, k) => camelCase(k)),
   };
 
   if (isValidTableDefinition(rawDefinition)) {

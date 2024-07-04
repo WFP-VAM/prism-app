@@ -83,7 +83,7 @@ export const downloadChartsToCsv =
       const merged = Object.entries(dataForCsv)
         .map(([key, value]) =>
           value.map(x =>
-            mapKeys(x, (v, k) =>
+            mapKeys(x, (_v, k) =>
               k === dateColumn ? dateColumn : getKeyName(k, key),
             ),
           ),

@@ -108,8 +108,8 @@ export type AsyncReturnType<T extends (...args: any) => any> =
   T extends (...args: any) => Promise<infer U>
     ? U // if T matches this signature and returns anything else, // extract the return value U and use that, or...
     : T extends (...args: any) => infer U
-      ? U // if everything goes to hell, return an `any`
-      : any;
+    ? U // if everything goes to hell, return an `any`
+    : any;
 
 /*
  * Get an array of required keys for a class.
@@ -422,18 +422,18 @@ export type Validity = {
 };
 
 export class WMSLayerProps extends CommonLayerProps {
-  type: 'wms';
+  type: 'wms' = 'wms';
   baseUrl: string;
   serverLayerName: string;
 
   @makeRequired
-  title: string;
+  declare title: string;
 
   @makeRequired
-  legend: LegendDefinition;
+  declare legend: LegendDefinition;
 
   @makeRequired
-  legendText: string;
+  declare legendText: string;
 
   @optional
   additionalQueryParams?: { [key: string]: string };
@@ -466,11 +466,11 @@ enum AggregationOptions {
 }
 
 export class CompositeLayerProps extends CommonLayerProps {
-  type: 'composite';
+  type: 'composite' = 'composite';
   baseUrl: string;
 
   @makeRequired
-  title: string;
+  declare title: string;
 
   inputLayers: {
     id: LayerType['type'];
@@ -490,17 +490,17 @@ export class CompositeLayerProps extends CommonLayerProps {
 }
 
 export class StaticRasterLayerProps extends CommonLayerProps {
-  type: 'static_raster';
+  type: 'static_raster' = 'static_raster';
   baseUrl: string;
 
   @makeRequired
-  title: string;
+  declare title: string;
 
   @makeRequired
-  legend: LegendDefinition;
+  declare legend: LegendDefinition;
 
   @makeRequired
-  legendText: string;
+  declare legendText: string;
 
   minZoom: number;
 
@@ -516,7 +516,7 @@ export enum DataFieldType {
 }
 
 export class AdminLevelDataLayerProps extends CommonLayerProps {
-  type: 'admin_level_data';
+  type: 'admin_level_data' = 'admin_level_data';
   path: string;
 
   @optional
@@ -526,13 +526,13 @@ export class AdminLevelDataLayerProps extends CommonLayerProps {
   validityPeriod?: ValidityPeriod;
 
   @makeRequired
-  title: string;
+  declare title: string;
 
   @makeRequired
-  legend: LegendDefinition;
+  declare legend: LegendDefinition;
 
   @makeRequired
-  legendText: string;
+  declare legendText: string;
 
   @makeRequired
   adminCode: string;
@@ -617,16 +617,16 @@ export type AllAggregationOperations =
 export type ThresholdDefinition = { below?: number; above?: number };
 
 export class ImpactLayerProps extends CommonLayerProps {
-  type: 'impact';
+  type: 'impact' = 'impact';
 
   @makeRequired
-  title: string;
+  declare title: string;
 
   @makeRequired
-  legend: LegendDefinition;
+  declare legend: LegendDefinition;
 
   @makeRequired
-  legendText: string;
+  declare legendText: string;
 
   hazardLayer: LayerKey; // not all layers supported here, just WMS layers
   baselineLayer: LayerKey; // not all layers supported here, just NSO layers. Maybe an advanced way to type this?
@@ -647,7 +647,7 @@ export enum PointDataLoader {
 }
 
 export class PointDataLayerProps extends CommonLayerProps {
-  type: 'point_data';
+  type: 'point_data' = 'point_data';
   data: string;
 
   @makeRequired
@@ -664,13 +664,13 @@ export class PointDataLayerProps extends CommonLayerProps {
   dateUrl?: string;
 
   @makeRequired
-  title: string;
+  declare title: string;
 
   @makeRequired
-  legend: LegendDefinition;
+  declare legend: LegendDefinition;
 
   @makeRequired
-  legendText: string;
+  declare legendText: string;
 
   @optional
   hexDisplay?: boolean; // display data in hexagon grid
@@ -682,7 +682,7 @@ export class PointDataLayerProps extends CommonLayerProps {
   additionalQueryParams?: { [key: string]: string | { [key: string]: string } };
 
   @optional
-  featureInfoProps?: FeatureInfoObject;
+  declare featureInfoProps?: FeatureInfoObject;
 
   @optional
   adminLevelDisplay?: AdminLevelDisplayType;
@@ -705,8 +705,11 @@ export type RequiredKeys<T> = {
 }[keyof T];
 
 // Get the type of a union based on the value (V) and lookup field (K)
-export type DiscriminateUnion<T, K extends keyof T, V extends T[K]> =
-  T extends Record<K, V> ? T : never;
+export type DiscriminateUnion<
+  T,
+  K extends keyof T,
+  V extends T[K]
+> = T extends Record<K, V> ? T : never;
 
 export type LayersMap = {
   [key in LayerKey]: LayerType;
@@ -890,8 +893,8 @@ export type MapEventWrapFunction<T> = (
 ) => (evt: MapLayerMouseEvent) => void;
 
 export class AnticipatoryActionLayerProps extends CommonLayerProps {
-  type: 'anticipatory_action';
+  type: 'anticipatory_action' = 'anticipatory_action';
 
   @makeRequired
-  title: string;
+  declare title: string;
 }

@@ -449,6 +449,7 @@ export class BaselineLayerResult {
   featureCollection: FeatureCollection;
   tableData: TableRow[];
   // for debugging purposes only, as its easy to view the raw API response via Redux Devtools. Should be left empty in production
+  // @ts-ignore: TS6133
   private rawApiData?: object[];
 
   statistic: AggregationOperations;
@@ -593,7 +594,9 @@ export function getAnalysisTableColumns(
   ];
 }
 
-export function useAnalysisTableColumns(analysisResult?: AnalysisResult): {
+export function useAnalysisTableColumns(
+  analysisResult?: AnalysisResult,
+): {
   translatedColumns: Column[];
   analysisTableColumns: Column[];
 } {
@@ -668,7 +671,7 @@ export class PolygonAnalysisResult {
   getTitle(t: i18nTranslator): string {
     return `${t(this.getHazardLayer().title)} ${t(
       'intersecting admin level',
-    )} ${t(this.adminLevel as unknown as any)}`;
+    )} ${t((this.adminLevel as unknown) as any)}`;
   }
 
   getStatTitle(t: i18nTranslator): string {

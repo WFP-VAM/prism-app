@@ -102,7 +102,7 @@ function LayerDownloadOptions({
     }
     const translatedColumnsNames = mapValues(
       adminLevelLayerData?.data.layerData[0],
-      (v, k) => (k === 'value' ? t(adminLevelLayerData.layer.id) : t(k)),
+      (_v, k) => (k === 'value' ? t(adminLevelLayerData.layer.id) : t(k)),
     );
     downloadToFile(
       {
@@ -275,3 +275,4 @@ interface LayerDownloadOptionsProps {
 }
 
 export default LayerDownloadOptions;
+
