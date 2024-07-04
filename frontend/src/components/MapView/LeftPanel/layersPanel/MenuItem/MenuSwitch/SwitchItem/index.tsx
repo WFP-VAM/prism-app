@@ -21,13 +21,13 @@ import { availableDatesSelector } from 'context/serverStateSlice';
 import { checkLayerAvailableDatesAndContinueOrRemove } from 'components/MapView/utils';
 import { LocalError } from 'utils/error-utils';
 import { opacitySelector, setOpacity } from 'context/opacityStateSlice';
+import { addLayer } from 'context/mapStateSlice';
 import { toggleRemoveLayer } from './utils';
 import LayerDownloadOptions from './LayerDownloadOptions';
 import ExposureAnalysisOption from './ExposureAnalysisOption';
 import SwitchTitle from './SwitchItemTitle';
 import SwitchAction from './SwitchAction';
 import OpacitySlider from './OpacitySlider';
-import { addLayer } from 'context/mapStateSlice';
 
 const SwitchItem = memo(
   ({

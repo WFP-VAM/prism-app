@@ -108,8 +108,8 @@ export type AsyncReturnType<T extends (...args: any) => any> =
   T extends (...args: any) => Promise<infer U>
     ? U // if T matches this signature and returns anything else, // extract the return value U and use that, or...
     : T extends (...args: any) => infer U
-    ? U // if everything goes to hell, return an `any`
-    : any;
+      ? U // if everything goes to hell, return an `any`
+      : any;
 
 /*
  * Get an array of required keys for a class.
@@ -370,7 +370,7 @@ export type AdminLevelNameString = string & {
 export type FilePath = string & { 'a path to a file': {} };
 
 export class BoundaryLayerProps extends CommonLayerProps {
-  type: 'boundary';
+  type: 'boundary' = 'boundary';
   path: FilePath; // path to admin_boundries.json file - web or local.
   adminCode: AdminCodeString; // same value as last item in adminLevelCodes below
   adminLevelCodes: AdminCodeString[]; // Ordered as below
@@ -705,11 +705,8 @@ export type RequiredKeys<T> = {
 }[keyof T];
 
 // Get the type of a union based on the value (V) and lookup field (K)
-export type DiscriminateUnion<
-  T,
-  K extends keyof T,
-  V extends T[K]
-> = T extends Record<K, V> ? T : never;
+export type DiscriminateUnion<T, K extends keyof T, V extends T[K]> =
+  T extends Record<K, V> ? T : never;
 
 export type LayersMap = {
   [key in LayerKey]: LayerType;

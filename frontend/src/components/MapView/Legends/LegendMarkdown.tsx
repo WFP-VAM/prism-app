@@ -11,21 +11,23 @@ interface LegendMarkdownProps extends WithStyles<typeof styles> {
   children: string;
 }
 
-const LegendMarkdown = ({ children, classes }: LegendMarkdownProps) => (
-  <Markdown
-    linkTarget="_blank"
-    components={{
-      p: ({ children: pChildren }: { children: React.ReactNode }) => (
-        <Typography variant="h5" className={classes.legendTextMarkdown}>
-          {pChildren}
-        </Typography>
-      ),
-    }}
-    allowedElements={['p', 'h5', 'strong', 'em', 'a']}
-  >
-    {children}
-  </Markdown>
-);
+function LegendMarkdown({ children, classes }: LegendMarkdownProps) {
+  return (
+    <Markdown
+      linkTarget="_blank"
+      components={{
+        p: ({ children: pChildren }: { children: React.ReactNode }) => (
+          <Typography variant="h5" className={classes.legendTextMarkdown}>
+            {pChildren}
+          </Typography>
+        ),
+      }}
+      allowedElements={['p', 'h5', 'strong', 'em', 'a']}
+    >
+      {children}
+    </Markdown>
+  );
+}
 
 const styles = () =>
   createStyles({

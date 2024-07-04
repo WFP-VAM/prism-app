@@ -42,7 +42,7 @@ const ExposureAnalysisTable = memo(
 
     const dispatch = useDispatch();
 
-    const handleChangePage = useCallback((event: unknown, newPage: number) => {
+    const handleChangePage = useCallback((_event: unknown, newPage: number) => {
       setPage(newPage);
     }, []);
 

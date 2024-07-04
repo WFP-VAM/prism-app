@@ -594,9 +594,7 @@ export function getAnalysisTableColumns(
   ];
 }
 
-export function useAnalysisTableColumns(
-  analysisResult?: AnalysisResult,
-): {
+export function useAnalysisTableColumns(analysisResult?: AnalysisResult): {
   translatedColumns: Column[];
   analysisTableColumns: Column[];
 } {
@@ -671,7 +669,7 @@ export class PolygonAnalysisResult {
   getTitle(t: i18nTranslator): string {
     return `${t(this.getHazardLayer().title)} ${t(
       'intersecting admin level',
-    )} ${t((this.adminLevel as unknown) as any)}`;
+    )} ${t(this.adminLevel as unknown as any)}`;
   }
 
   getStatTitle(t: i18nTranslator): string {

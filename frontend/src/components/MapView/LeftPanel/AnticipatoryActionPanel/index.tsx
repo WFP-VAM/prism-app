@@ -203,7 +203,7 @@ function AnticipatoryActionPanel() {
             <RadioGroup
               defaultValue={allWindowsKey}
               className={classes.radioButtonGroup}
-              onChange={(e, val) =>
+              onChange={(_e, val) =>
                 dispatch(setAAFilters({ selectedWindow: val as any }))
               }
             >

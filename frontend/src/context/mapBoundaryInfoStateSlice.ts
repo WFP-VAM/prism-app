@@ -18,7 +18,7 @@ export const mapBoundaryInfoStateSlice = createSlice({
       ...state,
       bounds: payload,
     }),
-    setLocation: (state, { payload }: PayloadAction<MapBoundaryInfoState>) =>
+    setLocation: (_state, { payload }: PayloadAction<MapBoundaryInfoState>) =>
       payload,
   },
 });

@@ -116,7 +116,7 @@ const LegendItem = memo(
               root: classes.opacitySliderRoot,
               thumb: classes.opacitySliderThumb,
             }}
-            onChange={(e, newValue) =>
+            onChange={(_e, newValue) =>
               dispatch(
                 setOpacity({
                   map,
