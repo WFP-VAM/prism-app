@@ -42,7 +42,7 @@ function OpacitySlider({
   const map = useSelector(mapSelector);
 
   const handleOnChangeSliderValue = useCallback(
-    (event: ChangeEvent<{}>, newValue: number | number[]) => {
+    (_event: ChangeEvent<{}>, newValue: number | number[]) => {
       dispatch(
         setOpacity({
           map,

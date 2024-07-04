@@ -176,7 +176,7 @@ const MapComponent = memo(({ setIsAlertFormOpen }: MapComponentProps) => {
 
   // TODO: maplibre: Maybe replace this with the map provider
   // Saves a reference to base MaplibreGl Map object in case child layers need access beyond the React wrappers.
-  const onMapLoad = (e: MapEvent) => {
+  const onMapLoad = (_e: MapEvent) => {
     if (!mapRef.current) {
       return;
     }

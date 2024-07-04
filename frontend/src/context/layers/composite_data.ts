@@ -1,4 +1,4 @@
-import { FeatureCollection } from '@turf/helpers';
+import { FeatureCollection } from 'geojson';
 import { appConfig } from 'config';
 import type { CompositeLayerProps } from 'config/types';
 import { fetchWithTimeout } from 'utils/fetch-with-timeout';

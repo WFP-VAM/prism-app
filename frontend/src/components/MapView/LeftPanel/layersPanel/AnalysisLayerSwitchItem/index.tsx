@@ -99,7 +99,7 @@ const AnalysisLayerSwitchItem = memo(
                 root: classes.opacitySliderRoot,
                 thumb: classes.opacitySliderThumb,
               }}
-              onChange={(event: ChangeEvent<{}>, value: number | number[]) => {
+              onChange={(_event: ChangeEvent<{}>, value: number | number[]) => {
                 setOpacity(value as number);
               }}
             />
