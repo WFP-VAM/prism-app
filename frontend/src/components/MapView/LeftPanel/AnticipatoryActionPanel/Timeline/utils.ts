@@ -89,7 +89,7 @@ export function timelineTransform({
   ][];
 
   const allRows = windowData
-    .map(([win, x]) =>
+    .map(([_win, x]) =>
       Object.entries(x?.rows || {}).map(([id, info]) => [
         id,
         { status: info.status, data: [] },

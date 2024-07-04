@@ -230,7 +230,7 @@ function HomeTable({ dialogs }: HomeTableProps) {
   const headerRow: ExtendedRowProps = {
     id: -1,
     iconContent: null,
-    windows: selectedWindow === 'All' ? AAWindowKeys.map(x => []) : [[]],
+    windows: selectedWindow === 'All' ? AAWindowKeys.map(_x => []) : [[]],
     header: selectedWindow === 'All' ? [...AAWindowKeys] : [selectedWindow],
   };
 

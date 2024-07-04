@@ -134,20 +134,20 @@ function ExposureAnalysisActions({
           <Typography variant="body2">{t('Download as CSV')}</Typography>
         </Button>
       )}
-      {false && (
+      {reportConfig && (
         <Button
           id="create-report"
           className={bottomButton}
           onClick={handleToggleReport(true)}
           // TOTO - Hide the preview report button for now. Report creation happens in the backend and is cached.
-          // style={{
-          //   position: 'absolute',
-          //   height: 0,
-          //   width: 0,
-          //   minWidth: 0,
-          //   padding: 0,
-          //   margin: 0,
-          // }}
+          style={{
+            position: 'absolute',
+            height: 0,
+            width: 0,
+            minWidth: 0,
+            padding: 0,
+            margin: 0,
+          }}
         >
           <Typography variant="body2">{t('Preview Report (slow)')}</Typography>
         </Button>
@@ -160,13 +160,13 @@ function ExposureAnalysisActions({
         <Typography variant="body2">{t('Download Report')}</Typography>
         {downloadReportIsLoading && <LoadingBlinkingDots dotColor="white" />}
       </Button>
-      {/* <ReportDialog
+      <ReportDialog
         open={openReport}
         handleClose={handleToggleReport(false)}
         reportConfig={reportConfig}
         tableData={tableData}
         columns={columns}
-      /> */}
+      />
     </>
   );
 }

@@ -57,7 +57,7 @@ function LayerDropdown({
   const adminBoundaries = getDisplayBoundaryLayers();
   const AdminBoundaryCategory = {
     title: 'Admin Levels',
-    layers: adminBoundaries.map((aboundary, index) => ({
+    layers: adminBoundaries.map((aboundary, _index) => ({
       title: t(
         `Level ${aboundary.adminLevelCodes.length - (multiCountry ? 1 : 0)}`,
       ),

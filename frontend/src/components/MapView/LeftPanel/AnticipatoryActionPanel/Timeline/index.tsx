@@ -163,7 +163,7 @@ function Timeline({ dialogs }: TimelineProps) {
                             rowData.status.phase,
                           )}
                         </div>
-                        {months.map(([date, label]) => {
+                        {months.map(([date, _label]) => {
                           const elem = rowData.data.find(z => z.date === date);
                           if (!elem) {
                             return (

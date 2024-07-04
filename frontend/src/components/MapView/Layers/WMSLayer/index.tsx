@@ -23,6 +23,7 @@ function WMSLayers({
 
   const expansionFactor = 2;
   // eslint-disable-next-line
+  // @ts-ignore #TS6133
   const expandedBoundingBox = expandBoundingBox(
     appConfig.map.boundingBox,
     expansionFactor,

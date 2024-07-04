@@ -132,7 +132,7 @@ export const chartOptions = {
           suggestedMin: 0,
           suggestedMax: 40,
           stepSize: 10,
-          callback: (value: number, index: number, values: number[]) =>
+          callback: (value: number, _index: number, _values: number[]) =>
             `${value}%`,
         },
       },
@@ -164,7 +164,7 @@ export const getChartData = (
   labels: Object.keys(indexes),
   datasets: [
     {
-      data: Object.entries(indexes).map(([index, val], i) => ({
+      data: Object.entries(indexes).map(([_index, val], i) => ({
         x: i + 0.6,
         y: val?.probability,
         z: val?.showWarningSign,
@@ -186,7 +186,7 @@ export const getChartData = (
             borderWidth: 1,
             borderRadius: 2,
             color: 'black',
-            formatter: (value: any, ctx: any) =>
+            formatter: (value: any, _ctx: any) =>
               `${value.z ? '⚠️ ' : ''}${value.y}%`,
           },
         },
