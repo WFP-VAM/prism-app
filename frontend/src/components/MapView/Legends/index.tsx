@@ -1,7 +1,6 @@
 import {
   Button,
   createStyles,
-  Hidden,
   IconButton,
   Typography,
   WithStyles,
@@ -24,31 +23,33 @@ const Legends = memo(({ classes }: LegendsProps) => {
 
   return (
     <>
-      <Hidden smDown>
-        <Button
-          className={classes.triggerButton}
-          style={{ backgroundColor: open ? cyanBlue : undefined }}
-          onClick={toggleLegendVisibility}
-          startIcon={
-            open ? (
-              <VisibilityOffOutlined
-                className={classes.icon}
-                style={{ color: black }}
-              />
-            ) : (
-              <VisibilityOutlined className={classes.icon} />
-            )
-          }
+      {/* TODO: useMediaQuery */}
+      {/* <Hidden smDown> */}
+      <Button
+        className={classes.triggerButton}
+        style={{ backgroundColor: open ? cyanBlue : undefined }}
+        onClick={toggleLegendVisibility}
+        startIcon={
+          open ? (
+            <VisibilityOffOutlined
+              className={classes.icon}
+              style={{ color: black }}
+            />
+          ) : (
+            <VisibilityOutlined className={classes.icon} />
+          )
+        }
+      >
+        <Typography
+          style={{ color: open ? black : 'white', textTransform: 'none' }}
         >
-          <Typography
-            style={{ color: open ? black : 'white', textTransform: 'none' }}
-          >
-            {t('Legend')}
-          </Typography>
-        </Button>
-      </Hidden>
+          {t('Legend')}
+        </Typography>
+      </Button>
+      {/* </Hidden> */}
 
-      <Hidden mdUp>
+      {/* <Hidden mdUp> */}
+      {0 && (
         <IconButton
           style={{ backgroundColor: open ? cyanBlue : undefined }}
           onClick={toggleLegendVisibility}
@@ -62,7 +63,8 @@ const Legends = memo(({ classes }: LegendsProps) => {
             <VisibilityOutlined className={classes.icon} />
           )}
         </IconButton>
-      </Hidden>
+      )}
+      {/* </Hidden> */}
 
       {open && <LegendItemsList listStyle={classes.list} />}
     </>

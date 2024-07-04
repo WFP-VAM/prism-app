@@ -9,7 +9,6 @@ import {
 } from 'lodash';
 import { Feature, FeatureCollection } from 'geojson';
 import { createGetCoverageUrl } from 'prism-common';
-import { TFunctionKeys } from 'i18next';
 import { Dispatch } from 'redux';
 import { appConfig } from 'config';
 import {
@@ -297,7 +296,7 @@ export function quoteAndEscapeCell(value: number | string) {
   if (isUndefined(value)) {
     return '';
   }
-  return `"${value.toString().replaceAll('"', '""')}"`;
+  return `"${(value.toString() as any)?.replaceAll('"', '""')}"`;
 }
 
 export type AnalysisResult =
@@ -410,9 +409,10 @@ export class ExposedPopulationResult {
   analysisDate: ReturnType<Date['getTime']>;
   tableColumns: any;
 
-  getTitle = (t: i18nTranslator): string => t('Population Exposure');
+  static getTitle = (t: i18nTranslator): string => t('Population Exposure');
 
-  getLayerTitle = (t: i18nTranslator): string => this.getTitle(t);
+  static getLayerTitle = (t: i18nTranslator): string =>
+    ExposedPopulationResult.getTitle(t);
 
   getStatLabel(t: i18nTranslator): string {
     return t(aggregationOperationsToDisplay[this.statistic]);
@@ -668,7 +668,7 @@ export class PolygonAnalysisResult {
   getTitle(t: i18nTranslator): string {
     return `${t(this.getHazardLayer().title)} ${t(
       'intersecting admin level',
-    )} ${t(this.adminLevel as unknown as TFunctionKeys)}`;
+    )} ${t(this.adminLevel as unknown as any)}`;
   }
 
   getStatTitle(t: i18nTranslator): string {

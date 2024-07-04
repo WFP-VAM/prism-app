@@ -19,7 +19,6 @@ import {
   WithStyles,
   withStyles,
 } from '@material-ui/core';
-import { TFunctionKeys } from 'i18next';
 import { useSafeTranslation } from 'i18n';
 import { layersSelector } from 'context/mapStateSlice/selectors';
 import { setUserAuthGlobal, userAuthSelector } from 'context/serverStateSlice';
@@ -27,11 +26,12 @@ import { UserAuth } from 'config/types';
 import { getUrlKey, useUrlHistory } from 'utils/url-utils';
 import { removeLayer } from 'context/mapStateSlice';
 
+const initialAuthState: UserAuth = {
+  username: '',
+  password: '',
+};
+
 const AuthModal = ({ classes }: AuthModalProps) => {
-  const initialAuthState: UserAuth = {
-    username: '',
-    password: '',
-  };
   const [open, setOpen] = useState(false);
   const [auth, setAuth] = useState<UserAuth>(initialAuthState);
 
@@ -75,8 +75,8 @@ const AuthModal = ({ classes }: AuthModalProps) => {
       layersWithAuthRequired.reduce(
         (acc: string, currentLayer, currentLayerIndex) =>
           currentLayerIndex === 0
-            ? t(currentLayer?.title as TFunctionKeys) ?? ''
-            : `${acc}, ${t(currentLayer.title as TFunctionKeys)}`,
+            ? t(currentLayer?.title as any) ?? ''
+            : `${acc}, ${t(currentLayer.title as any)}`,
         '',
       ),
     [layersWithAuthRequired, t],
@@ -101,11 +101,11 @@ const AuthModal = ({ classes }: AuthModalProps) => {
     });
     setAuth(initialAuthState);
     setOpen(false);
-  }, [dispatch, initialAuthState, layersWithAuthRequired, removeLayerFromUrl]);
+  }, [dispatch, layersWithAuthRequired, removeLayerFromUrl]);
 
   // function that handles the close modal
   const closeModal = useCallback(
-    (event, reason) => {
+    (_event: any, reason: any) => {
       if (reason === 'backdropClick') {
         onCancelClick();
         return;

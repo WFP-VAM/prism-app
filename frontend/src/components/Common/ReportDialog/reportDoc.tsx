@@ -234,52 +234,55 @@ const ReportDoc = memo(
     );
 
     return (
+      // @ts-ignore
       <Document>
-        <Page size="A4" style={styles.page}>
-          <View style={[styles.section]}>
-            <Text style={styles.title}>{reportTitle}</Text>
-            <Text style={styles.title}>
-              {t(reportConfig.publicationDateLabel)}: {date}
+        {1 && (
+          // @ts-ignore
+          <Page size="A4" style={styles.page}>
+            <View style={[styles.section]}>
+              <Text style={styles.title}>{reportTitle}</Text>
+              <Text style={styles.title}>
+                {t(reportConfig.publicationDateLabel)}: {date}
+              </Text>
+              {renderedSubText}
+            </View>
+            <View style={styles.section}>
+              <Image src={mapImage} style={styles.mapImage} />
+            </View>
+            <View style={[styles.legendsContainer, styles.section]}>
+              <ReportDocLegend
+                theme={theme}
+                title={t(reportConfig.areasLegendDefinition.title)}
+                definition={areasLegendDefinition}
+              />
+              <ReportDocLegend
+                title={t(reportConfig.typeLegendDefinition.title)}
+                definition={typeLegendDefinition}
+                theme={theme}
+              />
+              <ReportDocLegend
+                title="Population Exposure"
+                definition={populationExposureLegendDefinition}
+                theme={theme}
+              />
+            </View>
+            {renderedSourcesView}
+            <View style={[styles.section]}>
+              <ReportDocTable
+                theme={theme}
+                name={tableName}
+                rows={trimmedTableRows}
+                columns={columns}
+                cellWidth={tableCellWidth}
+                showTotal={tableShowTotal}
+                showRowTotal={showRowTotal}
+              />
+            </View>
+            <Text fixed style={styles.footer}>
+              {renderedSignatureText}
             </Text>
-            {renderedSubText}
-          </View>
-          <View style={styles.section}>
-            <Image src={mapImage} style={styles.mapImage} />
-          </View>
-          <View style={[styles.legendsContainer, styles.section]}>
-            <ReportDocLegend
-              theme={theme}
-              title={t(reportConfig.areasLegendDefinition.title)}
-              definition={areasLegendDefinition}
-            />
-            <ReportDocLegend
-              title={t(reportConfig.typeLegendDefinition.title)}
-              definition={typeLegendDefinition}
-              theme={theme}
-            />
-            <ReportDocLegend
-              title="Population Exposure"
-              definition={populationExposureLegendDefinition}
-              theme={theme}
-            />
-          </View>
-          {renderedSourcesView}
-          <View style={[styles.section]}>
-            <ReportDocTable
-              theme={theme}
-              name={tableName}
-              rows={trimmedTableRows}
-              columns={columns}
-              cellWidth={tableCellWidth}
-              showTotal={tableShowTotal}
-              showRowTotal={showRowTotal}
-              t={t}
-            />
-          </View>
-          <Text fixed style={styles.footer}>
-            {renderedSignatureText}
-          </Text>
-        </Page>
+          </Page>
+        )}
       </Document>
     );
   },

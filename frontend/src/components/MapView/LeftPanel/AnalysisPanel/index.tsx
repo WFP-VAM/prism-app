@@ -34,7 +34,6 @@ import {
 import { useDispatch, useSelector } from 'react-redux';
 import DatePicker from 'react-datepicker';
 import { isNil, orderBy, range } from 'lodash';
-import { TFunctionKeys } from 'i18next';
 import {
   mapSelector,
   layersSelector,
@@ -220,15 +219,20 @@ const AnalysisPanel = memo(() => {
   const hazardDataType: HazardDataType | null = selectedHazardLayer
     ? selectedHazardLayer.geometry || RasterType.Raster
     : null;
-  const availableHazardDates = selectedHazardLayer
-    ? Array.from(
-        new Set(
-          getPossibleDatesForLayer(selectedHazardLayer, availableDates)?.map(
-            d => d.queryDate,
-          ),
-        ),
-      ).map(d => new Date(d)) || []
-    : [];
+  const availableHazardDates = React.useMemo(
+    () =>
+      selectedHazardLayer
+        ? Array.from(
+            new Set(
+              getPossibleDatesForLayer(
+                selectedHazardLayer,
+                availableDates,
+              )?.map(d => d.queryDate),
+            ),
+          ).map(d => new Date(d)) || []
+        : [],
+    [availableDates, selectedHazardLayer],
+  );
 
   const BASELINE_URL_LAYER_KEY = 'baselineLayerId';
   const preSelectedBaselineLayer = selectedLayers.find(
@@ -1149,7 +1153,7 @@ const AnalysisPanel = memo(() => {
                   <CloseRounded />
                 </IconButton>
                 <Typography className={classes.analysisTableTitle}>
-                  {t(selectedHazardLayer?.title as TFunctionKeys)}
+                  {t(selectedHazardLayer?.title as any)}
                 </Typography>
               </div>
               <AnalysisTable

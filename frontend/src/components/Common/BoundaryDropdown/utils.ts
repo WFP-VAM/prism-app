@@ -1,4 +1,3 @@
-import type { Feature, MultiPolygon, BBox } from '@turf/helpers';
 import { sortBy } from 'lodash';
 import bbox from '@turf/bbox';
 import { BoundaryLayerData } from 'context/layers/boundary';
@@ -8,6 +7,7 @@ import {
   BoundaryLayerProps,
   AdminLevelType,
 } from 'config/types';
+import { BBox, Feature, MultiPolygon } from 'geojson';
 
 export type BoundaryRelationsDict = { [key: string]: BoundaryRelationData };
 

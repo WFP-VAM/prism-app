@@ -1,12 +1,6 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import {
-  Button,
-  Hidden,
-  IconButton,
-  Menu,
-  Typography,
-} from '@material-ui/core';
+import { Button, IconButton, Menu, Typography } from '@material-ui/core';
 import RoomOutlinedIcon from '@material-ui/icons/RoomOutlined';
 import { useSafeTranslation } from 'i18n';
 import { BoundaryDropdownOptions } from 'components/MapView/Layers/BoundaryDropdown';
@@ -28,18 +22,21 @@ function GoToBoundaryDropdown() {
 
   return (
     <>
-      <Hidden smDown>
-        <Button startIcon={<RoomOutlinedIcon />} onClick={handleClick}>
-          <Typography style={{ color: '#FFF', textTransform: 'none' }}>
-            {t('Go To')}
-          </Typography>
-        </Button>
-      </Hidden>
-      <Hidden mdUp>
+      {/* TODO: useMediaQuery */}
+      {/* <Hidden smDown> */}
+      <Button startIcon={<RoomOutlinedIcon />} onClick={handleClick}>
+        <Typography style={{ color: '#FFF', textTransform: 'none' }}>
+          {t('Go To')}
+        </Typography>
+      </Button>
+      {/* </Hidden> */}
+      {/* <Hidden mdUp> */}
+      {0 && (
         <IconButton style={{ color: 'white' }} onClick={handleClick}>
           <RoomOutlinedIcon />
         </IconButton>
-      </Hidden>
+      )}
+      {/* </Hidden> */}
 
       <Menu
         anchorEl={anchorEl}

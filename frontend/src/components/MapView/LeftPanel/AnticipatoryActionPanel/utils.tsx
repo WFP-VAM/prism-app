@@ -13,7 +13,6 @@ import {
   withStyles,
 } from '@material-ui/core';
 import { black, borderGray, cyanBlue, lightGrey } from 'muiTheme';
-import React from 'react';
 import { useSafeTranslation } from 'i18n';
 import {
   AACategoryType,

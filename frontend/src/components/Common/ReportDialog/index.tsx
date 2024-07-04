@@ -159,7 +159,7 @@ const ReportDialog = memo(
     ]);
 
     const renderedLoadingButtonText = useCallback(
-      ({ loading }) => {
+      ({ loading }: any) => {
         if (loading || documentIsLoading) {
           return `${t('Loading document')}...`;
         }

@@ -1,7 +1,6 @@
 import {
   Button,
   Grid,
-  Hidden,
   Theme,
   WithStyles,
   createStyles,
@@ -287,7 +286,7 @@ const DateSelector = memo(({ classes }: DateSelectorProps) => {
   };
 
   // Set timeline position after being dragged
-  const onTimelineStop = useCallback((e: DraggableEvent, position: Point) => {
+  const onTimelineStop = useCallback((_e: DraggableEvent, position: Point) => {
     setTimelinePosition(position);
   }, []);
 
@@ -296,7 +295,7 @@ const DateSelector = memo(({ classes }: DateSelectorProps) => {
   }, []);
 
   const onPointerDrag = useCallback(
-    (e: DraggableEvent, position: Point) => {
+    (_e: DraggableEvent, position: Point) => {
       const exactX = Math.round(position.x / TIMELINE_ITEM_WIDTH);
       if (exactX >= dateRange.length) {
         return;
@@ -334,7 +333,7 @@ const DateSelector = memo(({ classes }: DateSelectorProps) => {
 
   // Set pointer position after being dragged
   const onPointerStop = useCallback(
-    (e: DraggableEvent, position: Point) => {
+    (_e: DraggableEvent, position: Point) => {
       const exactX = Math.round(position.x / TIMELINE_ITEM_WIDTH);
       if (exactX >= dateRange.length) {
         return;
@@ -399,11 +398,14 @@ const DateSelector = memo(({ classes }: DateSelectorProps) => {
       >
         {/* Mobile */}
         <Grid item xs={12} sm={1} className={classes.datePickerGrid}>
-          <Hidden smUp>
+          {/* TODO: useMediaQuery */}
+          {/* <Hidden smUp> */}
+          {0 && (
             <Button onClick={decrementDate}>
               <ChevronLeft style={{ color: '#101010' }} />
             </Button>
-          </Hidden>
+          )}
+          {/* </Hidden> */}
 
           <DatePicker
             locale={t('date_locale')}
@@ -423,20 +425,22 @@ const DateSelector = memo(({ classes }: DateSelectorProps) => {
             includeDates={[...includedDates, today]}
           />
 
-          <Hidden smUp>
+          {/* <Hidden smUp> */}
+          {0 && (
             <Button onClick={incrementDate}>
               <ChevronRight style={{ color: '#101010' }} />
             </Button>
-          </Hidden>
+          )}
+          {/* </Hidden> */}
         </Grid>
 
         {/* Desktop */}
         <Grid item xs={12} sm className={classes.slider}>
-          <Hidden xsDown>
-            <Button onClick={decrementDate} className={classes.chevronDate}>
-              <ChevronLeft />
-            </Button>
-          </Hidden>
+          {/* <Hidden xsDown> */}
+          <Button onClick={decrementDate} className={classes.chevronDate}>
+            <ChevronLeft />
+          </Button>
+          {/* </Hidden> */}
           <Grid className={classes.dateContainer} ref={timeLine}>
             <Draggable
               axis="x"
@@ -492,11 +496,11 @@ const DateSelector = memo(({ classes }: DateSelectorProps) => {
               </div>
             </Draggable>
           </Grid>
-          <Hidden xsDown>
-            <Button onClick={incrementDate} className={classes.chevronDate}>
-              <ChevronRight />
-            </Button>
-          </Hidden>
+          {/* <Hidden xsDown> */}
+          <Button onClick={incrementDate} className={classes.chevronDate}>
+            <ChevronRight />
+          </Button>
+          {/* </Hidden> */}
         </Grid>
       </Grid>
     </div>

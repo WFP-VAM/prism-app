@@ -1,6 +1,5 @@
 import { IconButton, Tooltip } from '@material-ui/core';
 import { ImageAspectRatioOutlined } from '@material-ui/icons';
-import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   AggregationOperations,

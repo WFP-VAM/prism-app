@@ -37,7 +37,7 @@ interface ComponentProps {
 }
 
 const onClick =
-  ({ dispatch, layer, t }: MapEventWrapFunctionProps<BoundaryLayerProps>) =>
+  ({ dispatch, layer }: MapEventWrapFunctionProps<BoundaryLayerProps>) =>
   (evt: MapLayerMouseEvent) => {
     const isPrimaryLayer = isPrimaryBoundaryLayer(layer);
     if (!isPrimaryLayer) {

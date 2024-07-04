@@ -5,7 +5,6 @@ import {
   createStyles,
   withStyles,
 } from '@material-ui/core';
-import React from 'react';
 import { t } from 'i18next';
 import { downloadChartsToCsv } from 'utils/csv-utils';
 import { cyanBlue } from 'muiTheme';

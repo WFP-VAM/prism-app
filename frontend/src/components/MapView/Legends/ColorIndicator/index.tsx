@@ -1,4 +1,3 @@
-import React from 'react';
 import { createStyles, makeStyles, Typography } from '@material-ui/core';
 import { alpha } from '@material-ui/core/styles';
 

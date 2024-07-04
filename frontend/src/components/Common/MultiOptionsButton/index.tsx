@@ -1,7 +1,6 @@
 import {
   Button,
   Grid,
-  Hidden,
   ListItemText,
   MenuItem,
   Theme,
@@ -77,7 +76,10 @@ function MultiOptionsButton({ mainLabel, options }: IProps) {
         fullWidth
         onClick={handleClick}
       >
-        <Hidden smDown>{t(mainLabel)}</Hidden>
+        {/* TODO: useMediaQuery */}
+        {/* <Hidden smDown> */}
+        {t(mainLabel)}
+        {/* </Hidden> */}
         <ArrowDropDown fontSize="small" />
       </StyledButton>
       <StyledMenu

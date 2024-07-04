@@ -1,6 +1,6 @@
 import bbox from '@turf/bbox';
 import booleanPointInPolygon from '@turf/boolean-point-in-polygon';
-import { Feature, MultiPolygon, point } from '@turf/helpers';
+import { point } from '@turf/helpers';
 import { buffer } from 'd3-fetch';
 import { fromArrayBuffer, GeoTIFFImage } from 'geotiff';
 import { createGetMapUrl } from 'prism-common';
@@ -10,6 +10,7 @@ import { fetchWithTimeout } from 'utils/fetch-with-timeout';
 import { LocalError } from 'utils/error-utils';
 import { addNotification } from 'context/notificationStateSlice';
 import { Map as MaplibreMap } from 'maplibre-gl';
+import { Feature, MultiPolygon } from 'geojson';
 
 export type TransformMatrix = [number, number, number, number, number, number];
 export type TypedArray =

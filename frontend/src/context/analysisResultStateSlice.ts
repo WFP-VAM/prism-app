@@ -240,8 +240,8 @@ const generateTableFromApiData = (
   groupBy: string, // Reuse the groupBy parameter to generate the table
   baselineLayerData: DataRecord[] | null,
   extraColumns: string[],
-  isExposureAnalysisTable: boolean = false,
   key?: string,
+  isExposureAnalysisTable: boolean = false,
 ): TableRow[] => {
   // find the key that will let us reference the names of the bounding boxes.
   // We get the one corresponding to the specific level of baseline, or the first if we fail.
@@ -613,8 +613,8 @@ export const requestAndStoreExposedPopulation = createAsyncThunk<
       apiRequest.group_by,
       null,
       [], // no extra columns
-      true,
       key,
+      true,
     );
 
     // If a key exists, we are likely running an exposure analysis for storms or earthquakes.

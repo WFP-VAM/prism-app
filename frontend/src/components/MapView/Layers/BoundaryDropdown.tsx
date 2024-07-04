@@ -33,8 +33,8 @@ import { getBoundaryLayerSingleton } from 'config/utils';
 import { layerDataSelector } from 'context/mapStateSlice/selectors';
 import { LayerData } from 'context/layers/layer-data';
 import { isEnglishLanguageSelected, useSafeTranslation } from 'i18n';
-import { BBox } from '@turf/helpers';
 import { Map as MaplibreMap } from 'maplibre-gl';
+import { BBox } from 'geojson';
 
 const boundaryLayer = getBoundaryLayerSingleton();
 

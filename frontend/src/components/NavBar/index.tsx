@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import { faGithub } from '@fortawesome/free-brands-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
@@ -12,7 +13,6 @@ import {
   WithStyles,
   IconButton,
   Badge,
-  Hidden,
 } from '@material-ui/core';
 import React from 'react';
 import { useSafeTranslation } from 'i18n';
@@ -122,15 +122,15 @@ function NavBar({ classes, isAlertFormOpen, setIsAlertFormOpen }: NavBarProps) {
                   </Typography>
                 )}
                 {subtitle && (
-                  <Hidden smDown>
-                    <Typography
-                      color="secondary"
-                      variant="subtitle2"
-                      className={classes.subtitle}
-                    >
-                      {t(subtitle)}
-                    </Typography>
-                  </Hidden>
+                  // <Hidden smDown>
+                  <Typography
+                    color="secondary"
+                    variant="subtitle2"
+                    className={classes.subtitle}
+                  >
+                    {t(subtitle)}
+                  </Typography>
+                  // </Hidden>
                 )}
               </Box>
             </div>
@@ -138,7 +138,9 @@ function NavBar({ classes, isAlertFormOpen, setIsAlertFormOpen }: NavBarProps) {
               {panels.map(panel => {
                 const Wrap =
                   badgeContent >= 1 && panel.panel === Panel.Layers
-                    ? ({ children }: { children: React.ReactNode }) => (
+                    ? // TODO:??
+                      // eslint-disable-next-line react/no-unused-prop-types
+                      ({ children }: { children: React.ReactNode }) => (
                         <Badge
                           anchorOrigin={{
                             horizontal: 'left',
@@ -151,36 +153,35 @@ function NavBar({ classes, isAlertFormOpen, setIsAlertFormOpen }: NavBarProps) {
                           {children}
                         </Badge>
                       )
-                    : ({ children }: { children: React.ReactNode }) => (
-                        <>{children}</>
-                      );
+                    : ({ children }: { children: React.ReactNode }) => children;
 
                 return (
                   <React.Fragment key={panel.panel}>
-                    <Hidden smDown>
-                      <Button
-                        className={classes.panelButton}
+                    {/* <Hidden smDown> */}
+                    <Button
+                      className={classes.panelButton}
+                      style={{
+                        backgroundColor:
+                          tabValue === panel.panel ? cyanBlue : undefined,
+                        color: tabValue === panel.panel ? black : undefined,
+                      }}
+                      startIcon={<Wrap>{panel.icon}</Wrap>}
+                      onClick={() => {
+                        dispatch(setTabValue(panel.panel));
+                      }}
+                    >
+                      <Typography
                         style={{
-                          backgroundColor:
-                            tabValue === panel.panel ? cyanBlue : undefined,
-                          color: tabValue === panel.panel ? black : undefined,
-                        }}
-                        startIcon={<Wrap>{panel.icon}</Wrap>}
-                        onClick={() => {
-                          dispatch(setTabValue(panel.panel));
+                          color: tabValue === panel.panel ? black : '#FFFF',
+                          textTransform: 'none',
                         }}
                       >
-                        <Typography
-                          style={{
-                            color: tabValue === panel.panel ? black : '#FFFF',
-                            textTransform: 'none',
-                          }}
-                        >
-                          {t(panel.label)}
-                        </Typography>
-                      </Button>
-                    </Hidden>
-                    <Hidden mdUp>
+                        {t(panel.label)}
+                      </Typography>
+                    </Button>
+                    {/* </Hidden> */}
+                    {/* <Hidden mdUp> */}
+                    {0 && (
                       <Wrap>
                         <IconButton
                           style={{
@@ -195,7 +196,8 @@ function NavBar({ classes, isAlertFormOpen, setIsAlertFormOpen }: NavBarProps) {
                           {panel.icon}
                         </IconButton>
                       </Wrap>
-                    </Hidden>
+                    )}
+                    {/* </Hidden> */}
                   </React.Fragment>
                 );
               })}

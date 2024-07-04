@@ -1,4 +1,3 @@
-import React from 'react';
 import { get } from 'lodash';
 import { Layer, Source } from 'react-map-gl/maplibre';
 import { useSelector } from 'react-redux';
@@ -79,7 +78,8 @@ const onClick =
       dispatch(
         addPopupData({
           [t('Analysis layer')]: {
-            data: analysisData.getLayerTitle(t),
+            // TODO: ?
+            data: (analysisData as any).getLayerTitle(t),
             coordinates,
           },
           ...(analysisData.analysisDate

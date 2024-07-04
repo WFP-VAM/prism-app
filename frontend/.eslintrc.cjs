@@ -86,6 +86,7 @@ module.exports = {
     '@typescript-eslint/no-use-before-define': ['error'],
     'no-shadow': 'off',
     '@typescript-eslint/no-shadow': 'warn',
+    'react/prop-types': 'off',
   },
   settings: {
     'import/resolver': {

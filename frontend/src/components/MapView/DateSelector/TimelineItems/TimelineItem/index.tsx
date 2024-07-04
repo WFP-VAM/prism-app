@@ -22,13 +22,13 @@ const TimelineItem = memo(
     );
 
     const hasNextItemDirectionForward = (
-      matchingDate: DateItem,
-      layerDates: DateItem[],
+      _matchingDate: DateItem,
+      _layerDates: DateItem[],
     ): boolean => false;
 
     const hasNextItemDirectionBackward = (
-      matchingDate: DateItem,
-      layerDates: DateItem[],
+      _matchingDate: DateItem,
+      _layerDates: DateItem[],
     ): boolean => false;
 
     const isQueryDate = (date: DateItem): boolean =>
@@ -43,7 +43,7 @@ const TimelineItem = memo(
             style={{
               height: 4,
               // TODO - handle more than 3 layers
-              top: 10 * Math.min(layerMatches?.length + 1, 3),
+              top: 10 * Math.min((layerMatches?.length || 0) + 1, 3),
             }}
             key={Math.random()}
             role="presentation"

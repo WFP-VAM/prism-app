@@ -16,7 +16,6 @@ import {
   AnticipatoryActionDataRow,
 } from 'context/anticipatoryActionStateSlice/types';
 import { lightGrey } from 'muiTheme';
-import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useSafeTranslation } from 'i18n';
 import { Equalizer, Reply } from '@material-ui/icons';

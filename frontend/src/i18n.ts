@@ -2,7 +2,7 @@ import { merge } from 'lodash';
 import i18n from 'i18next';
 import { initReactI18next, useTranslation } from 'react-i18next';
 import { registerLocale } from 'react-datepicker';
-import { useCallback } from 'react';
+// import { useCallback } from 'react';
 import en from 'date-fns/locale/en-US';
 import fr from 'date-fns/locale/fr';
 import km from 'date-fns/locale/km';
@@ -13,7 +13,7 @@ import mn from 'date-fns/locale/mn';
 
 import { translation } from './config';
 
-const TRANSLATION_DEBUG = false;
+// const TRANSLATION_DEBUG = false;
 // Register other date locales to be used by our DatePicker
 // TODO - extract registerLocale  imports and loading into a separate file for clarity.
 registerLocale('en', en);
@@ -86,23 +86,7 @@ export function useSafeTranslation(): {
 } {
   const { t, ...rest } = useTranslation();
   return {
-    t: useCallback(
-      (key: string) => {
-        if (key === undefined) {
-          return '';
-        }
-        if (key in resources.en.translation) {
-          return t(key);
-        }
-        if (TRANSLATION_DEBUG) {
-          console.warn(
-            `Translation for "${key}" is not configured in your translation file.`,
-          );
-        }
-        return key;
-      },
-      [t],
-    ),
+    t,
     ...rest,
   };
 }

@@ -26,7 +26,6 @@ import React, {
   useState,
 } from 'react';
 import { useSelector } from 'react-redux';
-import { TFunctionKeys } from 'i18next';
 import { appConfig } from 'config';
 import {
   AdminCodeString,
@@ -233,7 +232,7 @@ const ChartsPanel = memo(() => {
   );
 
   const [selectedLayerTitles, setSelectedLayerTitles] = useState<
-    string[] | TFunctionKeys[]
+    string[] | any[]
   >([]);
 
   const yearsToFetchDataFor = 5;
@@ -360,13 +359,23 @@ const ChartsPanel = memo(() => {
     }
   }, [secondAdminProperties, countryAdmin0Id, data]);
 
-  const singleDownloadChartPrefix = adminProperties
-    ? [
-        getCountryName(adminProperties),
-        selectedAdmin1Area,
-        selectedAdmin2Area,
-      ].map(x => t(x))
-    : [];
+  const singleDownloadChartPrefix = React.useMemo(
+    () =>
+      adminProperties
+        ? [
+            getCountryName(adminProperties),
+            selectedAdmin1Area,
+            selectedAdmin2Area,
+          ].map(x => t(x))
+        : [],
+    [
+      adminProperties,
+      getCountryName,
+      selectedAdmin1Area,
+      selectedAdmin2Area,
+      t,
+    ],
+  );
 
   const firstCSVFilename = adminProperties
     ? buildCsvFileName([

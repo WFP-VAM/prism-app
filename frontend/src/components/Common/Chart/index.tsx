@@ -2,7 +2,6 @@ import React, { memo, useCallback, useMemo } from 'react';
 import colormap from 'colormap';
 import { ChartOptions } from 'chart.js';
 import { Bar, Line } from 'react-chartjs-2';
-import { TFunctionKeys } from 'i18next';
 import { ChartConfig, DatasetField } from 'config/types';
 import { TableData } from 'context/tableStateSlice';
 import { useSafeTranslation } from 'i18n';
@@ -145,7 +144,7 @@ const Chart = memo(
     const tableRowsDataSet = useMemo(
       () =>
         tableRows.map((row, i) => ({
-          label: t(row[config.category] as TFunctionKeys) || '',
+          label: t(row[config.category] as any) || '',
           fill: config.fill || false,
           backgroundColor: colors[i],
           borderColor: colors[i],
@@ -175,7 +174,7 @@ const Chart = memo(
     const indicesDataSet = useMemo(
       () =>
         indices.map((indiceKey, i) => ({
-          label: t(header[indiceKey] as TFunctionKeys),
+          label: t(header[indiceKey] as any),
           fill: config.fill || false,
           backgroundColor: colors[i],
           borderColor: colors[i],
@@ -246,10 +245,13 @@ const Chart = memo(
       data: set.data.slice(chartRange[0], chartRange[1]),
     }));
 
-    const chartData = {
-      labels,
-      datasets: datasetsTrimmed,
-    };
+    const chartData = React.useMemo(
+      () => ({
+        labels,
+        datasets: datasetsTrimmed,
+      }),
+      [datasetsTrimmed, labels],
+    );
 
     const chartConfig = useMemo(
       () =>

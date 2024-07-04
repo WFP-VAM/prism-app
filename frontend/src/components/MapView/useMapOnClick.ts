@@ -1,6 +1,5 @@
 import { useDispatch, useSelector } from 'react-redux';
 import inside from '@turf/boolean-point-in-polygon';
-import { Feature, MultiPolygon } from '@turf/helpers';
 import { useCallback } from 'react';
 import {
   dateRangeSelector,
@@ -18,6 +17,7 @@ import { clearDataset } from 'context/datasetStateSlice';
 import { LngLat, MapLayerMouseEvent } from 'maplibre-gl';
 import { MapRef } from 'react-map-gl/maplibre';
 import { getFormattedDate } from 'utils/date-utils';
+import { Feature, MultiPolygon } from 'geojson';
 import { getActiveFeatureInfoLayers, getFeatureInfoParams } from './utils';
 
 const useMapOnClick = (
