@@ -20,7 +20,7 @@ import {
   getCurrentDefinition,
   TableRow as AnalysisTableRow,
 } from 'context/analysisResultStateSlice';
-// import ReportDialog from 'components/Common/ReportDialog';
+import ReportDialog from 'components/Common/ReportDialog';
 import { Column } from 'utils/analysis-utils';
 import { ReportsDefinitions } from 'config/utils';
 import { getExposureAnalysisCsvData } from 'utils/csv-utils';
@@ -39,7 +39,7 @@ function ExposureAnalysisActions({
   const analysisDefinition = useSelector(getCurrentDefinition);
   const exposureLayerId = useSelector(exposureLayerIdSelector);
 
-  const [_openReport, setOpenReport] = useState(false);
+  const [openReport, setOpenReport] = useState(false);
   const [downloadReportIsLoading, setDownloadReportIsLoading] = useState(false);
 
   const API_URL = 'https://prism-api.ovio.org/report';
@@ -161,13 +161,13 @@ function ExposureAnalysisActions({
         {downloadReportIsLoading && <LoadingBlinkingDots dotColor="white" />}
       </Button>
       {/* TODO: */}
-      {/* <ReportDialog
+      <ReportDialog
         open={openReport}
         handleClose={handleToggleReport(false)}
         reportConfig={reportConfig}
         tableData={tableData}
         columns={columns}
-      /> */}
+      />
     </>
   );
 }

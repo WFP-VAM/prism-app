@@ -50,7 +50,7 @@
     "@material-ui/lab": "4.0.0-alpha.61",
     "@material-ui/styles": "4.11.5",
     "@react-pdf/font": "2.2.0",
-    "@react-pdf/renderer": "2.1.0",
+    "@react-pdf/renderer": "3.4.4",
     "@reduxjs/toolkit": "^1.4.0",
     "@sentry/browser": "^5.15.5",
     "@turf/bbox": "^7",
