@@ -16,12 +16,26 @@
     ]
   },
   "scripts": {
-    "start": "vite",
-    "test": "jest --maxWorkers=6",
-    "build": "tsc && vite build",
+    "start": "cross-env vite",
+    "test": "cross-env REACT_APP_TESTING=true && jest --maxWorkers=6",
+    "build": "export GIT_HASH=$(git rev-parse --short HEAD) || true && tsc && cross-env vite build",
     "lint": "eslint ./src ../common/src --ext js,jsx,ts,tsx -c .eslintrc.cjs",
     "preview": "vite preview",
-    "setup:common": "rimraf ./node_modules/prism-common && cd ../common && yarn install --network-timeout 600000 && yarn build && cd ../frontend && yarn install --check-files"
+    "setup:common": "rimraf ./node_modules/prism-common && cd ../common && yarn install --network-timeout 600000 && yarn build && cd ../frontend && yarn install --check-files",
+    "clean": "rimraf ./node_modules && pushd ../common && rimraf ./node_modules && popd",
+    "analyze": "yarn build && npx source-map-explorer 'build/static/js/*.js'",
+    "profile:serve": "yarn build --profile && npx serve -s build",
+    "prettier:json-fix": "prettier --write */**.json",
+    "prettier:json-check": "prettier --check */**.json",
+    "predeploy:prod": "yarn build",
+    "predeploy:staging": "yarn build",
+    "deploy:prod": "firebase deploy --only hosting:prod-target",
+    "deploy:staging": "firebase deploy --only hosting:staging-target",
+    "deploy:surge": "surge --project ./build",
+    "deploy:tests": "./scripts/deploy_to_surge.sh",
+    "precommit": "lint-staged",
+    "check-boundary-keys": "node ./scripts/check-boundary-keys-validity.js",
+    "preprocess-layers": "ts-node --compilerOptions \"{\\\"module\\\":\\\"commonjs\\\"}\" ./scripts/preprocess-layers.ts"
   },
   "dependencies": {
     "@azure/msal-browser": "^2.19.0",
