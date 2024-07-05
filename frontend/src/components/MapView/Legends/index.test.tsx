@@ -11,7 +11,7 @@ test('renders as expected', () => {
   const { container } = render(
     <BrowserRouter>
       <Provider store={store}>
-        <Legends layers={[]} />
+        <Legends />
       </Provider>
     </BrowserRouter>,
   );

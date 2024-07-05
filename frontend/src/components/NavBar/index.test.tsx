@@ -10,7 +10,7 @@ test('renders as expected', () => {
   const { container } = render(
     <BrowserRouter>
       <Provider store={store}>
-        <NavBar />
+        <NavBar isAlertFormOpen={false} setIsAlertFormOpen={() => {}} />
       </Provider>
     </BrowserRouter>,
   );

@@ -15,6 +15,7 @@ const filters: AnticipatoryActionState['filters'] = {
   categories: {
     Severe: true,
     Moderate: true,
+    Normal: true,
     Mild: true,
     na: true,
     ny: true,
