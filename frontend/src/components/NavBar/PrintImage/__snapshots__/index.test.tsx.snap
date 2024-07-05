@@ -80,7 +80,6 @@ exports[`renders as expected 1`] = `
               <div
                 class="PrintPreview-footerOverlay-7"
               >
-                
                 <mock-typography
                   style="font-size: 12px;"
                 >
@@ -104,6 +103,7 @@ exports[`renders as expected 1`] = `
       </div>
       <div
         class="MuiBox-root MuiBox-root-20"
+        style="overflow: scroll;"
       >
         <div
           class="PrintConfig-optionsContainer-14"
@@ -111,6 +111,7 @@ exports[`renders as expected 1`] = `
           <div>
             <div
               class="MuiBox-root MuiBox-root-21 PrintConfig-title-11"
+              style="font-size: 14px; font-weight: 900; margin-bottom: 1em;"
             >
               Map Options
             </div>
@@ -308,6 +309,7 @@ exports[`renders as expected 1`] = `
                     >
                       <div
                         class="MuiBox-root MuiBox-root-31"
+                        style="display: flex; flex-direction: row; justify-content: space-between;"
                       >
                         <div
                           class="makeStyles-wrapper-22"
@@ -559,6 +561,7 @@ exports[`renders as expected 1`] = `
                     >
                       <div
                         class="MuiBox-root MuiBox-root-34"
+                        style="display: flex; flex-direction: row; justify-content: space-between;"
                       >
                         <div
                           class="makeStyles-wrapper-22"

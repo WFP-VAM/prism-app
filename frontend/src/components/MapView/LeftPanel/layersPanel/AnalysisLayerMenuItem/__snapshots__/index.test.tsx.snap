@@ -76,9 +76,11 @@ exports[`renders as expected 1`] = `
               >
                 <div
                   class="MuiBox-root MuiBox-root-22 memo-analysisLayerSwitchRootItem-8"
+                  style="display: flex; flex-direction: column; max-width: 100%;"
                 >
                   <div
                     class="MuiBox-root MuiBox-root-23"
+                    style="display: flex; align-items: center;"
                   >
                     <div
                       style="display: flex;"
@@ -96,6 +98,7 @@ exports[`renders as expected 1`] = `
                     </div>
                     <div
                       class="MuiBox-root MuiBox-root-24"
+                      style="display: flex; align-items: center;"
                     >
                       <mock-tooltip
                         title="Opacity"

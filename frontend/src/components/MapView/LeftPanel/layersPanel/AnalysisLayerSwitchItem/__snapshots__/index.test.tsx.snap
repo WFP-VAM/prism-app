@@ -4,9 +4,11 @@ exports[`renders as expected 1`] = `
 <div>
   <div
     class="MuiBox-root MuiBox-root-15 memo-analysisLayerSwitchRootItem-1"
+    style="display: flex; flex-direction: column; max-width: 100%;"
   >
     <div
       class="MuiBox-root MuiBox-root-16"
+      style="display: flex; align-items: center;"
     >
       <div
         style="display: flex;"
@@ -26,6 +28,7 @@ exports[`renders as expected 1`] = `
       </div>
       <div
         class="MuiBox-root MuiBox-root-17"
+        style="display: flex; align-items: center;"
       >
         <mock-tooltip
           title="Opacity"

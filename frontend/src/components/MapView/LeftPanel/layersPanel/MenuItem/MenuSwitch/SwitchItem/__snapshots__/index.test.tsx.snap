@@ -4,9 +4,11 @@ exports[`renders as expected 1`] = `
 <div>
   <div
     class="MuiBox-root MuiBox-root-6"
+    style="display: flex; flex-direction: column; max-width: 100%;"
   >
     <div
       class="MuiBox-root MuiBox-root-7"
+      style="display: flex; align-items: center;"
     >
       <mock-switch
         checked="false"

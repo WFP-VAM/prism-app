@@ -19,8 +19,8 @@ test('renders as expected', () => {
               color: '#000000', // Test color e.g. black
             },
           ]}
-          id="id"
-          type="analysis"
+          id="precip_blended_dekad"
+          type="wms"
         >
           <div>Test Children</div>
         </LegendItem>

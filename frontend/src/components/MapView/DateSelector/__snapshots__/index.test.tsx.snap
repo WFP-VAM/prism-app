@@ -12,15 +12,6 @@ exports[`renders as expected 1`] = `
       <div
         class="MuiGrid-root memo-datePickerGrid-5 MuiGrid-item MuiGrid-grid-xs-12 MuiGrid-grid-sm-1"
       >
-        <mock-hidden
-          smup="true"
-        >
-          <mock-button>
-            <mock-chevronleft
-              style="color: rgb(16, 16, 16);"
-            />
-          </mock-button>
-        </mock-hidden>
         <div
           class="react-datepicker-wrapper"
         >
@@ -35,28 +26,15 @@ exports[`renders as expected 1`] = `
             </mock-button>
           </div>
         </div>
-        <mock-hidden
-          smup="true"
-        >
-          <mock-button>
-            <mock-chevronright
-              style="color: rgb(16, 16, 16);"
-            />
-          </mock-button>
-        </mock-hidden>
       </div>
       <div
         class="MuiGrid-root memo-slider-6 MuiGrid-item MuiGrid-grid-xs-12 MuiGrid-grid-sm-true"
       >
-        <mock-hidden
-          xsdown="true"
+        <mock-button
+          classname="memo-chevronDate-2"
         >
-          <mock-button
-            classname="memo-chevronDate-2"
-          >
-            <mock-chevronleft />
-          </mock-button>
-        </mock-hidden>
+          <mock-chevronleft />
+        </mock-button>
         <div
           class="MuiGrid-root memo-dateContainer-7"
         >
@@ -75,23 +53,19 @@ exports[`renders as expected 1`] = `
               id="datePointerSelector"
               style="transform: translate(276px,0px);"
             >
-              <svg
+              <img
+                alt="Tick Svg"
+                src="[object Object]"
                 style="pointer-events: none; margin-top: -29px;"
-              >
-                tick.svg
-              </svg>
+              />
             </div>
           </div>
         </div>
-        <mock-hidden
-          xsdown="true"
+        <mock-button
+          classname="memo-chevronDate-2"
         >
-          <mock-button
-            classname="memo-chevronDate-2"
-          >
-            <mock-chevronright />
-          </mock-button>
-        </mock-hidden>
+          <mock-chevronright />
+        </mock-button>
       </div>
     </div>
   </div>

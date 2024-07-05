@@ -56,6 +56,7 @@ exports[`renders as expected 1`] = `
       />
       <div
         class="MuiBox-root MuiBox-root-13"
+        style="display: flex; justify-content: space-between;"
       >
         <mock-tooltip
           title="Opacity"
@@ -90,6 +91,7 @@ exports[`renders as expected 1`] = `
         >
           <div
             class="MuiBox-root MuiBox-root-14 memo-opacityBox-3"
+            style="padding-left: 2px; padding-right: 2px; display: flex;"
           >
             <mock-typography
               classes="[object Object]"
