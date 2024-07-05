@@ -82,13 +82,28 @@ const AnalysisLayerSwitchItem = memo(
         return null;
       }
       return (
-        <Box display="flex" justifyContent="right" alignItems="center">
-          <Box pr={3}>
+        <Box
+          style={{
+            display: 'flex',
+            justifyContent: 'right',
+            alignItems: 'center',
+          }}
+        >
+          <Box
+            style={{
+              paddingRight: '3em',
+            }}
+          >
             <Typography
               classes={{ root: classes.opacityText }}
             >{`Opacity ${Math.round((opacity || 0) * 100)}%`}</Typography>
           </Box>
-          <Box width="25%" pr={3}>
+          <Box
+            style={{
+              width: '25%',
+              paddingRight: '3em',
+            }}
+          >
             <Slider
               value={opacity}
               step={0.01}
@@ -161,11 +176,18 @@ const AnalysisLayerSwitchItem = memo(
     return (
       <Box
         className={classes.analysisLayerSwitchRootItem}
-        display="flex"
-        flexDirection="column"
-        maxWidth="100%"
+        style={{
+          display: 'flex',
+          flexDirection: 'column',
+          maxWidth: '100%',
+        }}
       >
-        <Box display="flex" alignItems="center">
+        <Box
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+          }}
+        >
           <div style={{ display: 'flex' }}>
             <Switch
               size="small"
@@ -186,7 +208,13 @@ const AnalysisLayerSwitchItem = memo(
               {title}
             </Typography>
           </div>
-          <Box key="analysis-layer" display="flex" alignItems="center">
+          <Box
+            key="analysis-layer"
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+            }}
+          >
             {renderedOpacityIconButton}
             <AnalysisLayerSwitchItemDownloadOptions
               analysisData={analysisData}

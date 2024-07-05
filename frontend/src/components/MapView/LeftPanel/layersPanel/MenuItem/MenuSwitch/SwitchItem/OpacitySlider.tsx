@@ -56,13 +56,28 @@ function OpacitySlider({
   );
 
   return (
-    <Box display="flex" justifyContent="right" alignItems="center">
-      <Box pr={3}>
+    <Box
+      style={{
+        display: 'flex',
+        justifyContent: 'flex-end',
+        alignItems: 'center',
+      }}
+    >
+      <Box
+        style={{
+          paddingRight: '3em',
+        }}
+      >
         <Typography
           classes={{ root: classes.opacityText }}
         >{`Opacity ${Math.round((opacity || 0) * 100)}%`}</Typography>
       </Box>
-      <Box width="25%" pr={3}>
+      <Box
+        style={{
+          width: '25%',
+          paddingRight: 3,
+        }}
+      >
         <Slider
           value={opacity}
           step={0.01}

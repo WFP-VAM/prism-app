@@ -192,8 +192,20 @@ const SwitchItem = memo(
     );
 
     return (
-      <Box display="flex" flexDirection="column" maxWidth="100%">
-        <Box key={layerId} display="flex" alignItems="center">
+      <Box
+        style={{
+          display: 'flex',
+          flexDirection: 'column',
+          maxWidth: '100%',
+        }}
+      >
+        <Box
+          key={layerId}
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+          }}
+        >
           <SwitchAction
             activeLayerId={activeLayerId}
             someLayerAreSelected={someLayerAreSelected}

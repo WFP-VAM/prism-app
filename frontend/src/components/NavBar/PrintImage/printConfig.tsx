@@ -280,10 +280,21 @@ function PrintConfig({ classes }: PrintConfigProps) {
   } = printConfig;
 
   return (
-    <Box overflow="scroll">
+    <Box
+      style={{
+        overflow: 'scroll',
+      }}
+    >
       <div className={classes.optionsContainer}>
         <div>
-          <Box fontSize={14} fontWeight={900} mb={1} className={classes.title}>
+          <Box
+            style={{
+              fontSize: 14,
+              fontWeight: 900,
+              marginBottom: '1em',
+            }}
+            className={classes.title}
+          >
             {t('Map Options')}
           </Box>
           <IconButton
@@ -339,9 +350,11 @@ function PrintConfig({ classes }: PrintConfigProps) {
             <GreyContainer>
               <GreyContainerSection isLast>
                 <Box
-                  display="flex"
-                  flexDirection="row"
-                  justifyContent="space-between"
+                  style={{
+                    display: 'flex',
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
+                  }}
                 >
                   <ToggleSelector
                     value={logoPosition}
@@ -429,9 +442,11 @@ function PrintConfig({ classes }: PrintConfigProps) {
           <GreyContainer>
             <GreyContainerSection>
               <Box
-                display="flex"
-                flexDirection="row"
-                justifyContent="space-between"
+                style={{
+                  display: 'flex',
+                  flexDirection: 'row',
+                  justifyContent: 'space-between',
+                }}
               >
                 <ToggleSelector
                   value={legendPosition > -1 ? legendPosition : -1}

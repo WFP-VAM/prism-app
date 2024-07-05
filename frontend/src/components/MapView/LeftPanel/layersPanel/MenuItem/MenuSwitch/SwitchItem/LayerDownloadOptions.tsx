@@ -231,7 +231,12 @@ function LayerDownloadOptions({
       )}
       {isGeotiffLoading ||
         (isAnalysisExposureLoading && (
-          <Box display="flex" alignItems="center">
+          <Box
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+            }}
+          >
             <CircularProgress size="20px" />
           </Box>
         ))}

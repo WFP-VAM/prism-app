@@ -111,7 +111,12 @@ function NavBar({ classes, isAlertFormOpen, setIsAlertFormOpen }: NavBarProps) {
           <div className={classes.leftSideContainer}>
             <div className={classes.titleContainer}>
               {logo && <img className={classes.logo} src={logo} alt="logo" />}
-              <Box display="flex" flexDirection="column">
+              <Box
+                style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                }}
+              >
                 {title && (
                   <Typography
                     color="secondary"

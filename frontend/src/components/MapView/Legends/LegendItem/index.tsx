@@ -102,7 +102,14 @@ const LegendItem = memo(
 
     const renderedOpacitySlider = useMemo(
       () => (
-        <Box px={2} display="flex" className={classes.opacityBox}>
+        <Box
+          style={{
+            paddingLeft: 2,
+            paddingRight: 2,
+            display: 'flex',
+          }}
+          className={classes.opacityBox}
+        >
           <Typography classes={{ root: classes.opacityText }}>
             {`${Math.round((opacity || 0) * 100)}%`}
           </Typography>
@@ -254,7 +261,12 @@ const LegendItem = memo(
           {!forPrinting && (
             <>
               <Divider style={{ margin: '8px 0px' }} />
-              <Box display="flex" justifyContent="space-between">
+              <Box
+                style={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                }}
+              >
                 <Tooltip title={t('Opacity') as string}>
                   <IconButton size="small" onClick={openOpacity}>
                     <Opacity fontSize="small" />

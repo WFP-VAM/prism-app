@@ -8,16 +8,22 @@ import RootAnalysisAccordionItems from './RootAnalysisAccordionItems';
 function LayersPanel() {
   return (
     <Box
-      display="flex"
-      width={PanelSize.medium}
-      flexDirection="column"
-      height="100%"
+      style={{
+        width: PanelSize.medium,
+        display: 'flex',
+        flexDirection: 'column',
+        height: '100%',
+      }}
     >
       <div style={{ padding: '0.5rem' }}>
         <RootAccordionItems />
         <RootAnalysisAccordionItems />
       </div>
-      <Box flexGrow={1} />
+      <Box
+        style={{
+          flexGrow: 1,
+        }}
+      />
       <HashText />
     </Box>
   );

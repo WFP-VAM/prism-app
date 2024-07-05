@@ -139,12 +139,18 @@ const AuthModal = ({ classes }: AuthModalProps) => {
           </Typography>
           <form noValidate onSubmit={validateToken}>
             <Box
-              width="100%"
-              display="flex"
-              justifyContent="space-between"
-              marginTop="2em"
+              style={{
+                width: '100%',
+                display: 'flex',
+                justifyContent: 'space-between',
+                marginTop: '2em',
+              }}
             >
-              <Box width="45%">
+              <Box
+                style={{
+                  width: '45%',
+                }}
+              >
                 <Typography className={classes.label} variant="body2">
                   {t('Username')}
                 </Typography>
@@ -155,7 +161,11 @@ const AuthModal = ({ classes }: AuthModalProps) => {
                   onChange={handleInputTextChanged('username')}
                 />
               </Box>
-              <Box width="45%">
+              <Box
+                style={{
+                  width: '45%',
+                }}
+              >
                 <Typography className={classes.label} variant="body2">
                   {t('Password')}
                 </Typography>
@@ -168,7 +178,12 @@ const AuthModal = ({ classes }: AuthModalProps) => {
                 />
               </Box>
             </Box>
-            <Box display="flex" justifyContent="flex-end">
+            <Box
+              style={{
+                display: 'flex',
+                justifyContent: 'flex-end',
+              }}
+            >
               <div className={classes.buttonWrapper}>
                 <Button type="submit" variant="contained" color="primary">
                   {t('Send')}
