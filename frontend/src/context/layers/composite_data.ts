@@ -19,7 +19,12 @@ export const fetchCompositeLayerData: LazyLoader<CompositeLayerProps> = () => as
   const endDate = new Date(startDate);
   endDate.setMonth(endDate.getMonth() + 1);
 
-  const { baseUrl, inputLayers, startDate: areaStartDate } = layer;
+  const {
+    baseUrl,
+    inputLayers,
+    startDate: areaStartDate,
+    endDate: areaEndDate,
+  } = layer;
   const { boundingBox } = appConfig.map;
 
   // docs: https://hip-service.ovio.org/docs#/default/run_q_multi_geojson_q_multi_geojson_post
@@ -32,7 +37,7 @@ export const fetchCompositeLayerData: LazyLoader<CompositeLayerProps> = () => as
       max_lon: boundingBox[2],
       max_lat: boundingBox[3],
       start_date: areaStartDate ?? '2002-01-01',
-      end_date: '2021-07-31',
+      end_date: areaEndDate ?? '2021-07-31',
     },
     layers: inputLayers.map(({ key, aggregation, importance, invert }) => ({
       key,

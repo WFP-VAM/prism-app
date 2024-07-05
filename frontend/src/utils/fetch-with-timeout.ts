@@ -30,13 +30,17 @@ export const fetchWithTimeout = async (
     });
     if (!res.ok) {
       const body = await res.json();
-      throw new HTTPError(
-        body.detail ??
-          fetchErrorMessage ??
-          `Something went wrong requesting at ${resource}`,
-        res.status,
-        body,
-      );
+      const detail =
+        body.detail === 'string' ? body.detail : body.detail?.[0]?.msg;
+      const message =
+        detail ??
+        fetchErrorMessage ??
+        `Something went wrong requesting at ${resource}`;
+      console.error('New HTTP Error: ', {
+        message,
+        statusCode: res.status,
+      });
+      throw new HTTPError(message, res.status);
     }
     return res;
   } catch (error) {

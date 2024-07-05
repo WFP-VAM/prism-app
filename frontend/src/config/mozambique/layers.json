@@ -2847,6 +2847,7 @@
     "aggregation": "pixel",
     "date_layer": "spi_1m",
     "start_date": "2020-12-01",
+    "end_date": "2021-07-31",
     "opacity": 0.7
   },
   "cdi_test": {
@@ -2939,6 +2940,7 @@
     "aggregation": "pixel",
     "date_layer": "spi_1m",
     "start_date": "2020-12-01",
+    "end_date": "2021-07-31",
     "opacity": 0.7
   }
 }
