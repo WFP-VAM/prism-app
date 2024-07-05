@@ -161,7 +161,9 @@ export const loadEWSDataset = async (
     EWSConfig,
   };
 
-  return new Promise<TableData>(resolve => resolve(tableDataWithEWSConfig));
+  return new Promise<TableData>(resolve => {
+    resolve(tableDataWithEWSConfig);
+  });
 };
 
 type HDCResponse = {
@@ -266,7 +268,9 @@ export const loadAdminBoundaryDataset = async (
   );
 
   const tableData = createTableData(results, TableDataFormat.DATE);
-  return new Promise<TableData>(resolve => resolve(tableData));
+  return new Promise<TableData>(resolve => {
+    resolve(tableData);
+  });
 };
 
 export const loadDataset = createAsyncThunk<

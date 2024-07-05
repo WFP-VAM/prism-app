@@ -70,7 +70,7 @@ const MenuSwitch = memo(({ title, layers, extent }: MenuSwitchProps) => {
   const [isExpanded, setIsExpanded] = useState(false);
 
   const handleAccordionExpand = useCallback(
-    (event: ChangeEvent<{}>, expanded: boolean) => {
+    (_event: ChangeEvent<{}>, expanded: boolean) => {
       setIsExpanded(expanded);
     },
     [],

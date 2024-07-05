@@ -49,7 +49,6 @@ export const useLayerMenuItemStyles = makeStyles(() =>
 
 interface MenuItemProps {
   title: string;
-  icon: string;
   layersCategories: LayersCategoryType[];
   extent?: Extent;
 }

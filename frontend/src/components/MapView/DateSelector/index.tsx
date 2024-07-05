@@ -400,7 +400,7 @@ const DateSelector = memo(({ classes }: DateSelectorProps) => {
         <Grid item xs={12} sm={1} className={classes.datePickerGrid}>
           {/* TODO: useMediaQuery */}
           {/* <Hidden smUp> */}
-          {0 && (
+          {false && (
             <Button onClick={decrementDate}>
               <ChevronLeft style={{ color: '#101010' }} />
             </Button>
@@ -426,7 +426,7 @@ const DateSelector = memo(({ classes }: DateSelectorProps) => {
           />
 
           {/* <Hidden smUp> */}
-          {0 && (
+          {false && (
             <Button onClick={incrementDate}>
               <ChevronRight style={{ color: '#101010' }} />
             </Button>

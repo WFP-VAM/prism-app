@@ -199,7 +199,7 @@ const LegendItem = memo(
       if (legendUrl) {
         return <img src={legendUrl} alt={title} />;
       }
-      return <>{renderedLegendDefinitionItems}</>;
+      return renderedLegendDefinitionItems;
     }, [legendUrl, renderedLegendDefinitionItems, title]);
 
     const renderedLegend = useMemo(() => {

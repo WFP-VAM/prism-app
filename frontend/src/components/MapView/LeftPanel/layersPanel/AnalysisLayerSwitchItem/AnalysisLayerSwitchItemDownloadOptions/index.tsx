@@ -110,7 +110,7 @@ const AnalysisLayerSwitchItemDownloadOptions = memo(
         !analysisData ||
         analysisData instanceof ExposedPopulationResult
       ) {
-        return analysisData?.getTitle(t);
+        return (analysisData as any)?.getTitle(t);
       }
       return generateAnalysisFilename(analysisData, analysisDate ?? null);
     }, [analysisData, analysisDate, t]);

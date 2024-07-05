@@ -181,7 +181,7 @@ function NavBar({ classes, isAlertFormOpen, setIsAlertFormOpen }: NavBarProps) {
                     </Button>
                     {/* </Hidden> */}
                     {/* <Hidden mdUp> */}
-                    {0 && (
+                    {false && (
                       <Wrap>
                         <IconButton
                           style={{

@@ -26,4 +26,5 @@ export const fetchWCSLayerData: LazyLoader<WMSLayerProps> =
         time: date,
         url: layer.baseUrl,
       }),
-    );
+      // TODO:
+    ) as any;

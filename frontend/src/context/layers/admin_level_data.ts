@@ -56,7 +56,9 @@ export async function getAdminLevelDataLayerData({
   // WARNING - This is a hack and should be replaced by a better handling of admin boundaries.
   // TODO - make sure we only run this once.
   if (!adminBoundariesLayer || !adminBoundariesLayer.data) {
-    await new Promise(resolve => setTimeout(resolve, 15000));
+    await new Promise(resolve => {
+      setTimeout(resolve, 15000);
+    });
     // eslint-disable-next-line fp/no-mutation
     adminBoundariesLayer = layerDataSelector(adminBoundaryLayer.id)(
       getState(),

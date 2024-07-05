@@ -112,7 +112,7 @@ function LegendItemsList({
             ? invertLegendColors(analysisResult?.legend || [])
             : analysisResult?.legend
         }
-        title={analysisResult?.getTitle(t)}
+        title={(analysisResult as any)?.getTitle(t)}
         opacity={analysisLayerOpacity}
         forPrinting={forPrinting}
         showDescription={showDescription}

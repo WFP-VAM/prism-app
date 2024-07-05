@@ -92,27 +92,30 @@ const TimelineItems = memo(
       .flat();
 
     // Hard coded styling for date items (first, second, and third layers)
-    const DATE_ITEM_STYLING: DateItemStyle[] = [
-      {
-        class: classes.layerOneDate,
-        color: LIGHT_BLUE_HEX,
-        layerDirectionClass: classes.layerOneDirection,
-        emphasis: classes.layerOneEmphasis,
-      },
-      {
-        class: classes.layerTwoDate,
-        color: LIGHT_GREEN_HEX,
-        layerDirectionClass: classes.layerTwoDirection,
-        emphasis: classes.layerTwoEmphasis,
-      },
-      {
-        class: classes.layerThreeDate,
-        color: LIGHT_ORANGE_HEX,
-        layerDirectionClass: classes.layerThreeDirection,
-        emphasis: classes.layerThreeEmphasis,
-      },
-      { class: classes.availabilityDate, color: LIGHT_ORANGE_HEX },
-    ];
+    const DATE_ITEM_STYLING: DateItemStyle[] = React.useMemo(
+      () => [
+        {
+          class: classes.layerOneDate,
+          color: LIGHT_BLUE_HEX,
+          layerDirectionClass: classes.layerOneDirection,
+          emphasis: classes.layerOneEmphasis,
+        },
+        {
+          class: classes.layerTwoDate,
+          color: LIGHT_GREEN_HEX,
+          layerDirectionClass: classes.layerTwoDirection,
+          emphasis: classes.layerTwoEmphasis,
+        },
+        {
+          class: classes.layerThreeDate,
+          color: LIGHT_ORANGE_HEX,
+          layerDirectionClass: classes.layerThreeDirection,
+          emphasis: classes.layerThreeEmphasis,
+        },
+        { class: classes.availabilityDate, color: LIGHT_ORANGE_HEX },
+      ],
+      [classes],
+    );
 
     const getTooltipTitle = useCallback(
       (date: DateRangeType): React.JSX.Element[] => {

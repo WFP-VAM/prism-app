@@ -196,9 +196,10 @@ const MapComponent = memo(({ setIsAlertFormOpen }: MapComponentProps) => {
 
   const firstBoundaryId = boundaryId && getLayerMapId(boundaryId);
 
-  const mapOnClick = useCallback(
-    () => useMapOnClick(setIsAlertFormOpen, boundaryLayerId, mapRef.current),
-    [boundaryLayerId, setIsAlertFormOpen],
+  const mapOnClick = useMapOnClick(
+    setIsAlertFormOpen,
+    boundaryLayerId,
+    mapRef.current,
   );
 
   const getBeforeId = useCallback(
@@ -232,7 +233,7 @@ const MapComponent = memo(({ setIsAlertFormOpen }: MapComponentProps) => {
       }}
       mapStyle={mapStyle.toString()}
       onLoad={onMapLoad}
-      onClick={mapOnClick()}
+      onClick={mapOnClick}
       maxBounds={maxBounds}
     >
       {selectedLayers.map((layer, index) => {

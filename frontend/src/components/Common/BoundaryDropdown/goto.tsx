@@ -31,7 +31,7 @@ function GoToBoundaryDropdown() {
       </Button>
       {/* </Hidden> */}
       {/* <Hidden mdUp> */}
-      {0 && (
+      {false && (
         <IconButton style={{ color: 'white' }} onClick={handleClick}>
           <RoomOutlinedIcon />
         </IconButton>

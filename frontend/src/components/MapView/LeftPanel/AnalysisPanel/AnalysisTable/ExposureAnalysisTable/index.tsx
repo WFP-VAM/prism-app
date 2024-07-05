@@ -126,7 +126,7 @@ const ExposureAnalysisTable = memo(
     );
 
     const handleClickTableBodyRow = useCallback(
-      row => async () => {
+      (row: any) => async () => {
         if (!row.coordinates || !map) {
           return;
         }

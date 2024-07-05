@@ -1,6 +1,6 @@
 import { useCallback, useState, MouseEvent, memo, useMemo } from 'react';
 import InfoOutlinedIcon from '@material-ui/icons/InfoOutlined';
-import { Button, Hidden, Typography } from '@material-ui/core';
+import { Button, Typography } from '@material-ui/core';
 import { useDispatch } from 'react-redux';
 import { appConfig } from 'config';
 import ContentDialog from 'components/NavBar/ContentDialog';
@@ -48,11 +48,11 @@ const About = memo(() => {
       onClick={handler}
       startIcon={<InfoOutlinedIcon style={{ fontSize: '1.5rem' }} />}
     >
-      <Hidden smDown>
-        <Typography color="secondary" style={{ textTransform: 'none' }}>
-          {t('About')}
-        </Typography>
-      </Hidden>
+      {/* <Hidden smDown> */}
+      <Typography color="secondary" style={{ textTransform: 'none' }}>
+        {t('About')}
+      </Typography>
+      {/* </Hidden> */}
       {renderedContentDialog}
     </Button>
   );

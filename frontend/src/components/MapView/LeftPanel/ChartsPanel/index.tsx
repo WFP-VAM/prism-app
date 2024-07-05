@@ -720,9 +720,9 @@ const ChartsPanel = memo(() => {
   }, [compareLocations, comparePeriods, selectedLayerTitles]);
 
   const chartsSelectRenderValue = useCallback(
-    selected =>
+    (selected: any) =>
       selected
-        .map((selectedValue: string | TFunctionKeys) => t(selectedValue))
+        .map((selectedValue: string | any) => t(selectedValue))
         .join(', '),
     [t],
   );

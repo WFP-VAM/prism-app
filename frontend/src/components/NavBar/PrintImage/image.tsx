@@ -174,6 +174,7 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
     handleDownloadMenuClose();
   };
 
+  // eslint-disable-next-line react/jsx-no-constructed-context-values
   const printContext = {
     printConfig: {
       open,

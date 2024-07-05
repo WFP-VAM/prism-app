@@ -49,7 +49,7 @@ const Legends = memo(({ classes }: LegendsProps) => {
       {/* </Hidden> */}
 
       {/* <Hidden mdUp> */}
-      {0 && (
+      {false && (
         <IconButton
           style={{ backgroundColor: open ? cyanBlue : undefined }}
           onClick={toggleLegendVisibility}

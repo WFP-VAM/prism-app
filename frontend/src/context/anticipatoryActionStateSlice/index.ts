@@ -59,14 +59,14 @@ export const loadAAData = createAsyncThunk<
 >('anticipatoryActionState/loadAAData', async () => {
   const url = appConfig.anticipatoryActionUrl;
 
-  return new Promise<any>((resolve, reject) =>
+  return new Promise<any>((resolve, reject) => {
     Papa.parse(url, {
       header: true,
       download: true,
       complete: results => resolve(parseAndTransformAA(results.data)),
       error: error => reject(error),
-    }),
-  );
+    });
+  });
 });
 
 export const anticipatoryActionStateSlice = createSlice({

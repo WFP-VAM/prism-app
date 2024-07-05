@@ -30,9 +30,7 @@ interface ToggleSelectorProps {
   value: number;
   options: {
     value: number;
-    comp:
-      | React.JSX.Element
-      | (({ value }: { value: number }) => React.JSX.Element);
+    comp: React.JSX.Element;
     disabled?: boolean;
   }[];
   iconProp?: number;
@@ -65,7 +63,7 @@ function ToggleSelector({
   title,
   options,
   value,
-  iconProp,
+  iconProp: _iconProp,
   align,
   setValue,
 }: ToggleSelectorProps) {
@@ -94,11 +92,7 @@ function ToggleSelector({
             }}
             disabled={x.disabled}
           >
-            {typeof x.comp === 'function' && typeof iconProp === 'number' ? (
-              <x.comp value={iconProp} />
-            ) : (
-              x.comp
-            )}
+            {x.comp}
           </ToggleButton>
         ))}
       </ToggleButtonGroup>
@@ -178,7 +172,7 @@ const legendScaleSelectorOptions = [
 const legendPositionOptions = [
   {
     value: 0,
-    comp: () => (
+    comp: (
       <Icon
         style={{
           color: 'black',
@@ -191,7 +185,7 @@ const legendPositionOptions = [
   },
   {
     value: 1,
-    comp: () => (
+    comp: (
       <Icon style={{ color: 'black', transform: 'rotate(270deg)' }}>
         vertical_align_bottom
       </Icon>
@@ -202,7 +196,7 @@ const legendPositionOptions = [
 const logoPositionOptions = [
   {
     value: 0,
-    comp: () => (
+    comp: (
       <Icon
         style={{
           color: 'black',
@@ -215,7 +209,7 @@ const logoPositionOptions = [
   },
   {
     value: 1,
-    comp: () => (
+    comp: (
       <Icon style={{ color: 'black', transform: 'rotate(270deg)' }}>
         vertical_align_bottom
       </Icon>

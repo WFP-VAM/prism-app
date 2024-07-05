@@ -224,6 +224,7 @@ export const createEWSDatasetParams = (
   };
   /* eslint-enable camelcase */
   return {
+    // eslint-disable-next-line camelcase
     externalId: external_id,
     triggerLevels,
     chartTitle,

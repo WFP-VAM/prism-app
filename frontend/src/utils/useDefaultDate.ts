@@ -28,7 +28,7 @@ export function useDefaultDate(layerId: LayerKey): number | undefined {
   const possibleDates = useSelector(availableDatesSelector)[layerId];
 
   const defaultDate: number | undefined =
-    possibleDates?.[possibleDates?.length - 1]?.displayDate;
+    possibleDates?.[(possibleDates?.length || 0) - 1]?.displayDate;
 
   // React doesn't allow updating other components within another component
   // useEffect removes this error and updates DateSelector correctly in the lifecycle.
