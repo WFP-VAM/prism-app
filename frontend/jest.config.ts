@@ -2,8 +2,6 @@ import type { Config } from 'jest';
 
 const config: Config = {
   preset: 'ts-jest',
-  // TODO: remove testMatch
-  testMatch: ['**/TimelineLabel/index.test.tsx'],
   testEnvironment: 'jest-environment-jsdom',
   globalSetup: '<rootDir>/test/global-setup.cjs',
   transform: {

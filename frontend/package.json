@@ -17,6 +17,7 @@
   "scripts": {
     "start": "cross-env vite",
     "test": "cross-env REACT_APP_TESTING=true && jest --maxWorkers=6",
+    "test:watch": "yarn test --watch",
     "build": "export GIT_HASH=$(git rev-parse --short HEAD) || true && tsc && cross-env vite build",
     "lint": "eslint ./src ../common/src --ext js,jsx,ts,tsx -c .eslintrc.cjs",
     "preview": "vite preview",
@@ -136,7 +137,7 @@
     "@fortawesome/fontawesome-common-types": "^6.5.1",
     "@react-pdf/types": "^2.1.0",
     "@testing-library/jest-dom": "^6.1.3",
-    "@testing-library/react": "^12.0.0",
+    "@testing-library/react": "^14.0.0",
     "@turf/helpers": "^7",
     "@types/chart.js": "^2.9.21",
     "@types/colormap": "^2.3.1",
