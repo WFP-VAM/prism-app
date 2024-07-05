@@ -5,7 +5,16 @@ const config: Config = {
   testEnvironment: 'jest-environment-jsdom',
   globalSetup: '<rootDir>/test/global-setup.cjs',
   transform: {
-    '^.+\\.tsx?$': 'ts-jest',
+    '^.+\\.tsx?$': [
+      'ts-jest',
+      {
+        transformIgnorePatterns: [
+          '<rootDir>/node_modules/(?!(.*\\.mjs$|quick-lru))',
+        ],
+        babelConfig: true,
+        useESM: true,
+      },
+    ],
     // process `*.tsx` files with `ts-jest`
   },
   moduleNameMapper: {
