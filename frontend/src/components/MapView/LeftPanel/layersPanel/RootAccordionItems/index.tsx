@@ -20,7 +20,7 @@ function RootAccordionItems() {
           key={menuItem.title}
           title={menuItem.title}
           layersCategories={menuItem.layersCategories}
-          icon={menuItem.icon}
+          // icon={menuItem.icon}
           extent={extent}
         />
       ))}
