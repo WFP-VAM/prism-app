@@ -22,7 +22,7 @@
     "lint": "eslint ./src ../common/src --ext js,jsx,ts,tsx -c .eslintrc.cjs",
     "preview": "vite preview",
     "setup:common": "rimraf ./node_modules/prism-common && cd ../common && yarn install --network-timeout 600000 && yarn build && cd ../frontend && yarn install --check-files",
-    "clean": "rimraf ./node_modules && pushd ../common && rimraf ./node_modules && popd",
+    "clean": "pushd ../common && rimraf ./node_modules && popd && rimraf ./node_modules",
     "analyze": "yarn build && npx source-map-explorer 'build/static/js/*.js'",
     "profile:serve": "yarn build --profile && npx serve -s build",
     "prettier:json-fix": "prettier --write */**.json",
