@@ -3,7 +3,6 @@
   "description": "Frontend interface for WFP PRISM",
   "version": "0.1.0",
   "private": true,
-  "type": "module",
   "homepage": ".",
   "husky": {
     "hooks": {
