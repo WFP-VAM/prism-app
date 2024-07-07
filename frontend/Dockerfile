@@ -1,7 +1,7 @@
 # A small image around the frontend code
 # that makes it easier to run python tests
 # against the frontend using playwright
-FROM node:20-bookworm
+FROM node:20
 
 # copy dependencies definitions for better caching
 WORKDIR /common/

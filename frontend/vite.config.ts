@@ -67,7 +67,9 @@ export default defineConfig({
   },
   server: {
     port: 3000,
-    open: true,
+    // TODO - this is a hack to prevent the browser from opening automatically in docker
+    open: false,
+    host: true,
   },
   resolve: {
     alias: {
