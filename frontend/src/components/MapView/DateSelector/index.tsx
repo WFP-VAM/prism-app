@@ -4,6 +4,8 @@ import {
   Theme,
   createStyles,
   makeStyles,
+  useMediaQuery,
+  useTheme,
 } from '@material-ui/core';
 import { ChevronLeft, ChevronRight } from '@material-ui/icons';
 import { findIndex, get, isEqual } from 'lodash';
@@ -85,6 +87,9 @@ const DateSelector = memo(() => {
   const { t } = useSafeTranslation();
   const { updateHistory } = useUrlHistory();
   const dispatch = useDispatch();
+  const theme = useTheme();
+  const smUp = useMediaQuery(theme.breakpoints.up('sm'));
+  const xsDown = useMediaQuery(theme.breakpoints.down('xs'));
 
   const maxDate = useMemo(
     () => new Date(Math.max(...availableDates, new Date().getTime())),
@@ -398,14 +403,11 @@ const DateSelector = memo(() => {
       >
         {/* Mobile */}
         <Grid item xs={12} sm={1} className={classes.datePickerGrid}>
-          {/* TODO: useMediaQuery */}
-          {/* <Hidden smUp> */}
-          {false && (
+          {!smUp && (
             <Button onClick={decrementDate}>
               <ChevronLeft style={{ color: '#101010' }} />
             </Button>
           )}
-          {/* </Hidden> */}
 
           <DatePicker
             locale={t('date_locale')}
@@ -425,22 +427,20 @@ const DateSelector = memo(() => {
             includeDates={[...includedDates, today]}
           />
 
-          {/* <Hidden smUp> */}
-          {false && (
+          {!smUp && (
             <Button onClick={incrementDate}>
               <ChevronRight style={{ color: '#101010' }} />
             </Button>
           )}
-          {/* </Hidden> */}
         </Grid>
 
         {/* Desktop */}
         <Grid item xs={12} sm className={classes.slider}>
-          {/* <Hidden xsDown> */}
-          <Button onClick={decrementDate} className={classes.chevronDate}>
-            <ChevronLeft />
-          </Button>
-          {/* </Hidden> */}
+          {!xsDown && (
+            <Button onClick={decrementDate} className={classes.chevronDate}>
+              <ChevronLeft />
+            </Button>
+          )}
           <Grid className={classes.dateContainer} ref={timeLine}>
             <Draggable
               axis="x"
@@ -496,11 +496,11 @@ const DateSelector = memo(() => {
               </div>
             </Draggable>
           </Grid>
-          {/* <Hidden xsDown> */}
-          <Button onClick={incrementDate} className={classes.chevronDate}>
-            <ChevronRight />
-          </Button>
-          {/* </Hidden> */}
+          {!xsDown && (
+            <Button onClick={incrementDate} className={classes.chevronDate}>
+              <ChevronRight />
+            </Button>
+          )}
         </Grid>
       </Grid>
     </div>

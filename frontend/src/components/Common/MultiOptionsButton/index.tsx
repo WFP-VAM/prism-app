@@ -4,6 +4,8 @@ import {
   ListItemText,
   MenuItem,
   Theme,
+  useMediaQuery,
+  useTheme,
   withStyles,
 } from '@material-ui/core';
 import Menu, { MenuProps } from '@material-ui/core/Menu';
@@ -54,6 +56,8 @@ interface IProps {
 function MultiOptionsButton({ mainLabel, options }: IProps) {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const { t } = useSafeTranslation();
+  const theme = useTheme();
+  const smDown = useMediaQuery(theme.breakpoints.down('sm'));
 
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -76,10 +80,7 @@ function MultiOptionsButton({ mainLabel, options }: IProps) {
         fullWidth
         onClick={handleClick}
       >
-        {/* TODO: useMediaQuery */}
-        {/* <Hidden smDown> */}
-        {t(mainLabel)}
-        {/* </Hidden> */}
+        {!smDown && <>{t(mainLabel)}</>}
         <ArrowDropDown fontSize="small" />
       </StyledButton>
       <StyledMenu

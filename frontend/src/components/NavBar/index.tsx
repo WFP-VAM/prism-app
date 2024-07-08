@@ -12,6 +12,8 @@ import {
   IconButton,
   Badge,
   makeStyles,
+  useTheme,
+  useMediaQuery,
 } from '@material-ui/core';
 import React from 'react';
 import { useSafeTranslation } from 'i18n';
@@ -75,6 +77,9 @@ function NavBar({ isAlertFormOpen, setIsAlertFormOpen }: NavBarProps) {
   const { alertFormActive, header } = appConfig;
   const tabValue = useSelector(leftPanelTabValueSelector);
   const analysisData = useSelector(analysisResultSelector);
+  const theme = useTheme();
+  const smDown = useMediaQuery(theme.breakpoints.down('sm'));
+  const mdUp = useMediaQuery(theme.breakpoints.up('md'));
 
   const { numberOfActiveLayers } = useLayers();
 
@@ -126,8 +131,7 @@ function NavBar({ isAlertFormOpen, setIsAlertFormOpen }: NavBarProps) {
                     {t(title)}
                   </Typography>
                 )}
-                {subtitle && (
-                  // <Hidden smDown>
+                {subtitle && !smDown && (
                   <Typography
                     color="secondary"
                     variant="subtitle2"
@@ -135,7 +139,6 @@ function NavBar({ isAlertFormOpen, setIsAlertFormOpen }: NavBarProps) {
                   >
                     {t(subtitle)}
                   </Typography>
-                  // </Hidden>
                 )}
               </Box>
             </div>
@@ -162,31 +165,30 @@ function NavBar({ isAlertFormOpen, setIsAlertFormOpen }: NavBarProps) {
 
                 return (
                   <React.Fragment key={panel.panel}>
-                    {/* <Hidden smDown> */}
-                    <Button
-                      className={classes.panelButton}
-                      style={{
-                        backgroundColor:
-                          tabValue === panel.panel ? cyanBlue : undefined,
-                        color: tabValue === panel.panel ? black : undefined,
-                      }}
-                      startIcon={<Wrap>{panel.icon}</Wrap>}
-                      onClick={() => {
-                        dispatch(setTabValue(panel.panel));
-                      }}
-                    >
-                      <Typography
+                    {!smDown && (
+                      <Button
+                        className={classes.panelButton}
                         style={{
-                          color: tabValue === panel.panel ? black : '#FFFF',
-                          textTransform: 'none',
+                          backgroundColor:
+                            tabValue === panel.panel ? cyanBlue : undefined,
+                          color: tabValue === panel.panel ? black : undefined,
+                        }}
+                        startIcon={<Wrap>{panel.icon}</Wrap>}
+                        onClick={() => {
+                          dispatch(setTabValue(panel.panel));
                         }}
                       >
-                        {t(panel.label)}
-                      </Typography>
-                    </Button>
-                    {/* </Hidden> */}
-                    {/* <Hidden mdUp> */}
-                    {false && (
+                        <Typography
+                          style={{
+                            color: tabValue === panel.panel ? black : '#FFFF',
+                            textTransform: 'none',
+                          }}
+                        >
+                          {t(panel.label)}
+                        </Typography>
+                      </Button>
+                    )}
+                    {!mdUp && (
                       <Wrap>
                         <IconButton
                           style={{
@@ -202,7 +204,6 @@ function NavBar({ isAlertFormOpen, setIsAlertFormOpen }: NavBarProps) {
                         </IconButton>
                       </Wrap>
                     )}
-                    {/* </Hidden> */}
                   </React.Fragment>
                 );
               })}

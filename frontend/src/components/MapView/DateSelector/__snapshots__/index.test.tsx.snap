@@ -12,6 +12,11 @@ exports[`renders as expected 1`] = `
       <div
         class="MuiGrid-root makeStyles-datePickerGrid-5 MuiGrid-item MuiGrid-grid-xs-12 MuiGrid-grid-sm-1"
       >
+        <mock-button>
+          <mock-chevronleft
+            style="color: rgb(16, 16, 16);"
+          />
+        </mock-button>
         <div
           class="react-datepicker-wrapper"
         >
@@ -26,6 +31,11 @@ exports[`renders as expected 1`] = `
             </mock-button>
           </div>
         </div>
+        <mock-button>
+          <mock-chevronright
+            style="color: rgb(16, 16, 16);"
+          />
+        </mock-button>
       </div>
       <div
         class="MuiGrid-root makeStyles-slider-6 MuiGrid-item MuiGrid-grid-xs-12 MuiGrid-grid-sm-true"

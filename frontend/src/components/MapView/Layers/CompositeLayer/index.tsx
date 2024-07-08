@@ -55,7 +55,7 @@ const CompositeLayer = memo(({ layer, before }: Props) => {
 
   useEffect(() => {
     // admin-boundary-unified-polygon.json is generated using "yarn preprocess-layers"
-    // which runs ./scripts/preprocess-layers.js
+    // which runs ./src/scripts/preprocess-layers.js
     fetch(`data/${safeCountry}/admin-boundary-unified-polygon.json`)
       .then(response => response.json())
       .then(polygonData => setAdminBoundaryPolygon(polygonData))

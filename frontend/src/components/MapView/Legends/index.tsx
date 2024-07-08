@@ -4,6 +4,8 @@ import {
   IconButton,
   Typography,
   makeStyles,
+  useTheme,
+  useMediaQuery,
 } from '@material-ui/core';
 import { VisibilityOutlined, VisibilityOffOutlined } from '@material-ui/icons';
 import { useState, memo, useCallback } from 'react';
@@ -14,6 +16,9 @@ import LegendItemsList from './LegendItemsList';
 const Legends = memo(() => {
   const classes = useStyles();
   const { t } = useSafeTranslation();
+  const theme = useTheme();
+  const smDown = useMediaQuery(theme.breakpoints.down('sm'));
+  const mdUp = useMediaQuery(theme.breakpoints.up('md'));
 
   const [open, setOpen] = useState(true);
 
@@ -23,33 +28,31 @@ const Legends = memo(() => {
 
   return (
     <>
-      {/* TODO: useMediaQuery */}
-      {/* <Hidden smDown> */}
-      <Button
-        className={classes.triggerButton}
-        style={{ backgroundColor: open ? cyanBlue : undefined }}
-        onClick={toggleLegendVisibility}
-        startIcon={
-          open ? (
-            <VisibilityOffOutlined
-              className={classes.icon}
-              style={{ color: black }}
-            />
-          ) : (
-            <VisibilityOutlined className={classes.icon} />
-          )
-        }
-      >
-        <Typography
-          style={{ color: open ? black : 'white', textTransform: 'none' }}
+      {!smDown && (
+        <Button
+          className={classes.triggerButton}
+          style={{ backgroundColor: open ? cyanBlue : undefined }}
+          onClick={toggleLegendVisibility}
+          startIcon={
+            open ? (
+              <VisibilityOffOutlined
+                className={classes.icon}
+                style={{ color: black }}
+              />
+            ) : (
+              <VisibilityOutlined className={classes.icon} />
+            )
+          }
         >
-          {t('Legend')}
-        </Typography>
-      </Button>
-      {/* </Hidden> */}
+          <Typography
+            style={{ color: open ? black : 'white', textTransform: 'none' }}
+          >
+            {t('Legend')}
+          </Typography>
+        </Button>
+      )}
 
-      {/* <Hidden mdUp> */}
-      {false && (
+      {!mdUp && (
         <IconButton
           style={{ backgroundColor: open ? cyanBlue : undefined }}
           onClick={toggleLegendVisibility}
@@ -64,7 +67,6 @@ const Legends = memo(() => {
           )}
         </IconButton>
       )}
-      {/* </Hidden> */}
 
       {open && <LegendItemsList listStyle={classes.list} />}
     </>

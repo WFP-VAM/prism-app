@@ -1,6 +1,13 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { Button, IconButton, Menu, Typography } from '@material-ui/core';
+import {
+  Button,
+  IconButton,
+  Menu,
+  Typography,
+  useMediaQuery,
+  useTheme,
+} from '@material-ui/core';
 import RoomOutlinedIcon from '@material-ui/icons/RoomOutlined';
 import { useSafeTranslation } from 'i18n';
 import BoundaryDropdownOptions from 'components/MapView/Layers/BoundaryDropdown/BoundaryDropdownOptions';
@@ -11,6 +18,9 @@ function GoToBoundaryDropdown() {
   const map = useSelector(mapSelector);
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [search, setSearch] = React.useState('');
+  const theme = useTheme();
+  const smDown = useMediaQuery(theme.breakpoints.down('sm'));
+  const mdUp = useMediaQuery(theme.breakpoints.up('md'));
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
@@ -22,22 +32,18 @@ function GoToBoundaryDropdown() {
 
   return (
     <>
-      {/* TODO: useMediaQuery */}
-      {/* <Hidden smDown> */}
-      <Button startIcon={<RoomOutlinedIcon />} onClick={handleClick}>
-        <Typography style={{ color: '#FFF', textTransform: 'none' }}>
-          {t('Go To')}
-        </Typography>
-      </Button>
-      {/* </Hidden> */}
-      {/* <Hidden mdUp> */}
-      {false && (
+      {!smDown && (
+        <Button startIcon={<RoomOutlinedIcon />} onClick={handleClick}>
+          <Typography style={{ color: '#FFF', textTransform: 'none' }}>
+            {t('Go To')}
+          </Typography>
+        </Button>
+      )}
+      {!mdUp && (
         <IconButton style={{ color: 'white' }} onClick={handleClick}>
           <RoomOutlinedIcon />
         </IconButton>
       )}
-      {/* </Hidden> */}
-
       <Menu
         anchorEl={anchorEl}
         keepMounted
