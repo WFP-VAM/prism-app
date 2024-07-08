@@ -90,7 +90,7 @@ function AnalysisDownloadButton() {
       !analysisResult ||
       analysisResult instanceof ExposedPopulationResult
     ) {
-      return (analysisResult as any)?.getTitle(t);
+      return analysisResult?.getTitle(t);
     }
     return generateAnalysisFilename(analysisResult, analysisDate ?? null);
   }, [analysisDate, analysisResult, t]);

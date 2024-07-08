@@ -78,7 +78,7 @@ const AnalysisLayerMenuItem = memo(
             <AnalysisLayerSwitchItem
               initialOpacity={initialOpacity}
               analysisData={analysisData}
-              title={(analysisData as any)?.getTitle(t) ?? ''}
+              title={analysisData?.getTitle(t) ?? ''}
               analysisResultSortByKey={analysisResultSortByKey}
               analysisResultSortOrder={analysisResultSortOrder}
             />

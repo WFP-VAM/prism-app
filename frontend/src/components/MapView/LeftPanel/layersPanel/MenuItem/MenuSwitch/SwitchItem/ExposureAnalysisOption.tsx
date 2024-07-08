@@ -74,7 +74,7 @@ function ExposureAnalysisOption({
     dispatch(
       setCurrentDataDefinition({
         id: generateUniqueTableKey('exposure_analysis') as TableKey,
-        title: (analysisResult as any)?.getTitle(t) || '',
+        title: analysisResult?.getTitle(t) || '',
         table: '',
         legendText: t(analysisResult?.legendText || ''),
       }),

@@ -409,10 +409,10 @@ export class ExposedPopulationResult {
   analysisDate: ReturnType<Date['getTime']>;
   tableColumns: any;
 
-  static getTitle = (t: i18nTranslator): string => t('Population Exposure');
+  // eslint-disable-next-line class-methods-use-this
+  getTitle = (t: i18nTranslator): string => t('Population Exposure');
 
-  static getLayerTitle = (t: i18nTranslator): string =>
-    ExposedPopulationResult.getTitle(t);
+  getLayerTitle = (t: i18nTranslator): string => this.getTitle(t);
 
   getStatLabel(t: i18nTranslator): string {
     return t(aggregationOperationsToDisplay[this.statistic]);
