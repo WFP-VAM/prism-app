@@ -9,10 +9,7 @@ module.exports = {
   parser: '@typescript-eslint/parser',
   plugins: ['jsx-a11y', 'fp', 'prettier', 'import', 'react-refresh'],
   rules: {
-    'react-refresh/only-export-components': [
-      'error',
-      { allowConstantExport: true },
-    ],
+    'react-refresh/only-export-components': 'error',
     // Allow JSX within .js files
     'react/jsx-filename-extension': [
       1,
