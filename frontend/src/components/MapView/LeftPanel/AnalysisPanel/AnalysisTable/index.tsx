@@ -1,6 +1,7 @@
 import React, { memo, useCallback, useMemo, useState } from 'react';
 import {
   createStyles,
+  makeStyles,
   Table,
   TableBody,
   TableCell,
@@ -11,8 +12,6 @@ import {
   TableSortLabel,
   Theme,
   Typography,
-  withStyles,
-  WithStyles,
 } from '@material-ui/core';
 import { useDispatch, useSelector } from 'react-redux';
 import { TableRow as AnalysisTableRow } from 'context/analysisResultStateSlice';
@@ -23,7 +22,6 @@ import { hidePopup } from 'context/tooltipStateSlice';
 
 const AnalysisTable = memo(
   ({
-    classes,
     tableData,
     columns,
     sortColumn,
@@ -32,6 +30,7 @@ const AnalysisTable = memo(
   }: AnalysisTableProps) => {
     // only display local names if local language is selected, otherwise display english name
     const { t } = useSafeTranslation();
+    const classes = useStyles();
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(10);
     const map = useSelector(mapSelector);
@@ -214,7 +213,7 @@ const AnalysisTable = memo(
   },
 );
 
-const styles = (theme: Theme) =>
+const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     tableContainer: {
       marginTop: 10,
@@ -260,9 +259,10 @@ const styles = (theme: Theme) =>
       flex: '1 1 5%',
       maxWidth: '5%',
     },
-  });
+  }),
+);
 
-interface AnalysisTableProps extends WithStyles<typeof styles> {
+interface AnalysisTableProps {
   tableData: AnalysisTableRow[];
   columns: Column[];
   sortColumn: string | number | undefined;
@@ -270,4 +270,4 @@ interface AnalysisTableProps extends WithStyles<typeof styles> {
   handleChangeOrderBy: (newAnalysisColumn: Column['id']) => void;
 }
 
-export default withStyles(styles)(AnalysisTable);
+export default AnalysisTable;

@@ -1,5 +1,5 @@
-import { memo, useCallback, useEffect, useMemo, useState } from 'react';
 import {
+  makeStyles,
   Box,
   Button,
   createStyles,
@@ -11,9 +11,9 @@ import {
   Theme,
   Typography,
   useTheme,
-  WithStyles,
-  withStyles,
 } from '@material-ui/core';
+
+import { memo, useCallback, useEffect, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { ArrowBack } from '@material-ui/icons';
 import { PDFDownloadLink, PDFViewer } from '@react-pdf/renderer';
@@ -34,14 +34,8 @@ import ReportDoc from './reportDoc';
 type Format = 'png' | 'jpeg';
 
 const ReportDialog = memo(
-  ({
-    classes,
-    open,
-    reportConfig,
-    handleClose,
-    tableData,
-    columns,
-  }: ReportProps) => {
+  ({ open, reportConfig, handleClose, tableData, columns }: ReportProps) => {
+    const classes = useStyles();
     const theme = useTheme();
     const { t } = useSafeTranslation();
     const [mapImage, setMapImage] = useState<string | null>(null);
@@ -253,7 +247,7 @@ const ReportDialog = memo(
   },
 );
 
-const styles = (theme: Theme) =>
+const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     documentLoadingContainer: {
       backgroundColor: 'white',
@@ -303,9 +297,10 @@ const styles = (theme: Theme) =>
       fontWeight: 500,
       paddingLeft: '1em',
     },
-  });
+  }),
+);
 
-export interface ReportProps extends WithStyles<typeof styles> {
+export interface ReportProps {
   open: boolean;
   reportConfig: ReportType;
   handleClose: () => void;
@@ -313,4 +308,4 @@ export interface ReportProps extends WithStyles<typeof styles> {
   columns: Column[];
 }
 
-export default withStyles(styles)(ReportDialog);
+export default ReportDialog;

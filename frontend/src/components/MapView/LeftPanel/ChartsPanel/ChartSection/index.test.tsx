@@ -1,5 +1,5 @@
 import timezoneMock from 'timezone-mock';
-import { generateDateStrings } from '.';
+import { generateDateStrings } from './utils';
 import { timezones } from '../../../../../../test/helpers';
 
 const f = () => {

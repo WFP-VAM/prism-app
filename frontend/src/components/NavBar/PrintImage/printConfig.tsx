@@ -10,10 +10,8 @@ import {
   TextField,
   Theme,
   Typography,
-  WithStyles,
   createStyles,
   makeStyles,
-  withStyles,
 } from '@material-ui/core';
 import { GetApp, Cancel } from '@material-ui/icons';
 import React, { useContext } from 'react';
@@ -107,7 +105,6 @@ function SectionToggle({
   children,
   expanded,
   handleChange,
-  classes,
 }: {
   title: string;
   children?: React.ReactNode;
@@ -116,7 +113,8 @@ function SectionToggle({
     event: React.ChangeEvent<HTMLInputElement>,
     checked: boolean,
   ) => void;
-} & WithStyles<typeof styles>) {
+}) {
+  const classes = useStyles();
   return (
     <div>
       <div
@@ -240,7 +238,8 @@ const footerTextSelectorOptions = [
   { value: 20, comp: <div style={{ fontSize: '20px' }}>Aa</div> },
 ];
 
-function PrintConfig({ classes }: PrintConfigProps) {
+function PrintConfig() {
+  const classes = useStyles();
   const { t } = useSafeTranslation();
   const { printConfig } = useContext(PrintConfigContext);
 
@@ -337,7 +336,6 @@ function PrintConfig({ classes }: PrintConfigProps) {
         {logo && (
           <SectionToggle
             title={t('Logo')}
-            classes={classes}
             expanded={toggles.logoVisibility}
             handleChange={({ target }) => {
               setToggles(prev => ({
@@ -388,7 +386,6 @@ function PrintConfig({ classes }: PrintConfigProps) {
         {/* Labels */}
         <SectionToggle
           title={t('Map Labels')}
-          classes={classes}
           expanded={toggles.mapLabelsVisibility}
           handleChange={({ target }) =>
             setToggles(prev => ({
@@ -401,7 +398,6 @@ function PrintConfig({ classes }: PrintConfigProps) {
         {/* Admin Area */}
         <SectionToggle
           title={t('Admin Areas')}
-          classes={classes}
           expanded={toggles.countryMask}
           handleChange={({ target }) =>
             setToggles(prev => ({
@@ -430,7 +426,6 @@ function PrintConfig({ classes }: PrintConfigProps) {
         {/* Legend */}
         <SectionToggle
           title={t('Legend')}
-          classes={classes}
           expanded={toggles.legendVisibility}
           handleChange={() => {
             setToggles(prev => ({
@@ -491,7 +486,6 @@ function PrintConfig({ classes }: PrintConfigProps) {
         {/* Footer */}
         <SectionToggle
           title={t('Footer')}
-          classes={classes}
           expanded={toggles.footerVisibility}
           handleChange={() => {
             setToggles(prev => ({
@@ -560,7 +554,7 @@ function PrintConfig({ classes }: PrintConfigProps) {
   );
 }
 
-const styles = (theme: Theme) =>
+const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     title: {
       color: theme.palette.text.secondary,
@@ -620,8 +614,9 @@ const styles = (theme: Theme) =>
       flexDirection: 'row',
       justifyContent: 'space-between',
     },
-  });
+  }),
+);
 
-export interface PrintConfigProps extends WithStyles<typeof styles> {}
+export interface PrintConfigProps {}
 
-export default withStyles(styles)(PrintConfig);
+export default PrintConfig;

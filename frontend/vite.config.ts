@@ -9,56 +9,56 @@ import path from 'path';
 dotenv.config({ path: '.env' });
 const env = Object.keys(process.env)
   .filter(key => key.startsWith('REACT_APP_'))
-  .reduce((obj, key) => {
-    obj[key] = process.env[key];
-    return obj;
-  }, {} as { [key: string]: string | undefined });
+  .reduce(
+    (obj, key) => {
+      // eslint-disable-next-line fp/no-mutation, no-param-reassign
+      obj[key] = process.env[key];
+      return obj;
+    },
+    {} as { [key: string]: string | undefined },
+  );
 
 const country = process.env.REACT_APP_COUNTRY || 'mozambique';
-if (!!country) {
+if (country) {
+  // eslint-disable-next-line no-console
   console.log(
     `Building for country ${country}. Removing data for other countries.`,
   );
 }
 
 // In case GIT_HASH is not set we are in github actions environment
+// eslint-disable-next-line fp/no-mutation
 process.env.REACT_APP_GIT_HASH = (
   process.env.GITHUB_SHA || process.env.GIT_HASH
 )?.slice(0, 8);
 
 // Custom plugin to remove files
-const removeFilesPlugin = (): Plugin => {
-  return {
-    name: 'vite-plugin-remove-files',
-    closeBundle() {
-      const root = path.resolve(__dirname, 'build', 'data');
-      const regex = new RegExp(country.toLowerCase(), 'm');
+const removeFilesPlugin = (): Plugin => ({
+  name: 'vite-plugin-remove-files',
+  closeBundle() {
+    const root = path.resolve(__dirname, 'build', 'data');
+    const regex = new RegExp(country.toLowerCase(), 'm');
 
-      const removeFiles = (dir: string) => {
-        fs.readdirSync(dir).forEach(file => {
-          const absPath = path.join(dir, file);
-          if (fs.statSync(absPath).isDirectory()) {
-            removeFiles(absPath);
-          } else if (!regex.test(absPath)) {
-            fs.unlinkSync(absPath);
-          }
-        });
-      };
+    const removeFiles = (dir: string) => {
+      fs.readdirSync(dir).forEach(file => {
+        const absPath = path.join(dir, file);
+        if (fs.statSync(absPath).isDirectory()) {
+          removeFiles(absPath);
+        } else if (!regex.test(absPath)) {
+          fs.unlinkSync(absPath);
+        }
+      });
+    };
 
-      if (fs.existsSync(root)) {
-        removeFiles(root);
-      }
-    },
-  };
-};
+    if (fs.existsSync(root)) {
+      removeFiles(root);
+    }
+  },
+});
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [
-    react(),
-    nodePolyfills(),
-    removeFilesPlugin(),
-  ],
+  plugins: [react(), nodePolyfills(), removeFilesPlugin()],
   define: {
     'process.env': env,
   },

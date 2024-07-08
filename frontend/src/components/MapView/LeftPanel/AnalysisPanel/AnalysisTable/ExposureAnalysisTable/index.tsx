@@ -11,8 +11,7 @@ import {
   TableSortLabel,
   Theme,
   Typography,
-  withStyles,
-  WithStyles,
+  makeStyles,
 } from '@material-ui/core';
 
 import { useDispatch, useSelector } from 'react-redux';
@@ -26,7 +25,6 @@ import { hidePopup } from 'context/tooltipStateSlice';
 
 const ExposureAnalysisTable = memo(
   ({
-    classes,
     tableData,
     columns,
     sortColumn,
@@ -35,6 +33,7 @@ const ExposureAnalysisTable = memo(
   }: ExposureAnalysisTableProps) => {
     // only display local names if local language is selected, otherwise display english name
     const { t } = useSafeTranslation();
+    const classes = useStyles();
 
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(10);
@@ -217,7 +216,7 @@ const ExposureAnalysisTable = memo(
   },
 );
 
-const styles = (theme: Theme) =>
+const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     tableHead: {
       backgroundColor: '#EBEBEB',
@@ -263,9 +262,10 @@ const styles = (theme: Theme) =>
       flex: '1 1 5%',
       maxWidth: '5%',
     },
-  });
+  }),
+);
 
-interface ExposureAnalysisTableProps extends WithStyles<typeof styles> {
+interface ExposureAnalysisTableProps {
   tableData: AnalysisTableRow[];
   columns: Column[];
   sortColumn: string | number | undefined;
@@ -273,4 +273,4 @@ interface ExposureAnalysisTableProps extends WithStyles<typeof styles> {
   handleChangeOrderBy: (newExposureAnalysisSortColumn: Column['id']) => void;
 }
 
-export default withStyles(styles)(ExposureAnalysisTable);
+export default ExposureAnalysisTable;

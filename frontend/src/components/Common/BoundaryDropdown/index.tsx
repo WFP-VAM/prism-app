@@ -16,7 +16,12 @@ import {
 import { useSafeTranslation } from 'i18n';
 
 import SearchBar from './searchBar';
-import { setMenuItemStyle, containsText, createMatchesTree } from './utils';
+import {
+  setMenuItemStyle,
+  containsText,
+  createMatchesTree,
+  MapInteraction,
+} from './utils';
 
 const useStyles = makeStyles((theme: Theme) => ({
   header: {
@@ -50,10 +55,6 @@ const useStyles = makeStyles((theme: Theme) => ({
     },
   },
 }));
-
-export enum MapInteraction {
-  GoTo = 'goto',
-}
 
 type BoundaryDropdownProps = {
   labelText: string;

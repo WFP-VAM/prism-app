@@ -7,13 +7,12 @@ module.exports = {
     'plugin:react/jsx-runtime',
   ],
   parser: '@typescript-eslint/parser',
-  plugins: ['jsx-a11y', 'fp', 'prettier', 'import'],
+  plugins: ['jsx-a11y', 'fp', 'prettier', 'import', 'react-refresh'],
   rules: {
-    // TODO: enable before merging
-    // 'react-refresh/only-export-components': [
-    //   'warn',
-    //   { allowConstantExport: true },
-    // ],
+    'react-refresh/only-export-components': [
+      'error',
+      { allowConstantExport: true },
+    ],
     // Allow JSX within .js files
     'react/jsx-filename-extension': [
       1,

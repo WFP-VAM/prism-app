@@ -1,5 +1,5 @@
 import React, { memo, useCallback, useEffect, useMemo, useState } from 'react';
-import { createStyles, withStyles, WithStyles } from '@material-ui/styles';
+import { createStyles } from '@material-ui/styles';
 import {
   Box,
   CircularProgress,
@@ -13,6 +13,7 @@ import {
   TableSortLabel,
   Theme,
   Typography,
+  makeStyles,
 } from '@material-ui/core';
 import { orderBy } from 'lodash';
 import { useSafeTranslation } from 'i18n';
@@ -23,14 +24,8 @@ import LoadingBlinkingDots from 'components/Common/LoadingBlinkingDots';
 import { getTableCellVal } from 'utils/data-utils';
 
 const DataTable = memo(
-  ({
-    classes,
-    title,
-    legendText,
-    chart,
-    tableData,
-    tableLoading,
-  }: DataTableProps) => {
+  ({ title, legendText, chart, tableData, tableLoading }: DataTableProps) => {
+    const classes = useStyles();
     const { t } = useSafeTranslation();
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(10);
@@ -282,7 +277,7 @@ const DataTable = memo(
   },
 );
 
-const styles = (theme: Theme) =>
+const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     dataTableRoot: {
       display: 'flex',
@@ -347,9 +342,10 @@ const styles = (theme: Theme) =>
       color: 'black',
       flexShrink: 0,
     },
-  });
+  }),
+);
 
-interface DataTableProps extends WithStyles<typeof styles> {
+interface DataTableProps {
   title?: string;
   legendText?: string;
   chart?: ChartConfig;
@@ -357,4 +353,4 @@ interface DataTableProps extends WithStyles<typeof styles> {
   tableLoading: boolean;
 }
 
-export default withStyles(styles)(DataTable);
+export default DataTable;

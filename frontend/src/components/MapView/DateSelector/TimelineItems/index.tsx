@@ -3,15 +3,13 @@ import {
   Fade,
   Grid,
   Tooltip,
-  WithStyles,
   createStyles,
-  withStyles,
+  makeStyles,
 } from '@material-ui/core';
 import { compact } from 'lodash';
 import { DateItem, DateRangeType } from 'config/types';
 import { useSafeTranslation } from 'i18n';
 import { grey } from 'muiTheme';
-
 import {
   DateCompatibleLayerWithDateItems,
   TIMELINE_ITEM_WIDTH,
@@ -42,13 +40,13 @@ type DateItemStyle = {
 
 const TimelineItems = memo(
   ({
-    classes,
     dateRange,
     clickDate,
     locale,
     selectedLayers,
     availableDates,
   }: TimelineItemsProps) => {
+    const classes = useStyles();
     const { t } = useSafeTranslation();
     const AAAvailableDates = useSelector(AAAvailableDatesSelector);
 
@@ -255,7 +253,7 @@ const createDirectionStyles = (
   borderLeft: `6px solid ${borderColor}`,
 });
 
-const styles = () =>
+const useStyles = makeStyles(() =>
   createStyles({
     dateItemFull: {
       color: '#101010',
@@ -310,7 +308,8 @@ const styles = () =>
         border: '2px solid black',
       },
     },
-  });
+  }),
+);
 
 type LayerStyle = {
   position: CSSProperties['position'];
@@ -327,7 +326,7 @@ type DirectionStyle = {
   borderLeft: CSSProperties['borderLeft'];
 };
 
-export interface TimelineItemsProps extends WithStyles<typeof styles> {
+export interface TimelineItemsProps {
   dateRange: DateRangeType[];
   clickDate: (arg: number) => void;
   locale: string;
@@ -335,4 +334,4 @@ export interface TimelineItemsProps extends WithStyles<typeof styles> {
   availableDates: number[];
 }
 
-export default withStyles(styles)(TimelineItems);
+export default TimelineItems;

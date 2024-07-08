@@ -80,7 +80,7 @@ const onMouseEnter = () => (evt: MapLayerMouseEvent) =>
 const onMouseLeave = () => (evt: MapLayerMouseEvent) =>
   onToggleHover('', evt.target);
 
-function BoundaryLayer({ layer, before }: ComponentProps) {
+const BoundaryLayer = memo(({ layer, before }: ComponentProps) => {
   const dispatch = useDispatch();
   const selectedMap = useSelector(mapSelector);
   const [isZoomLevelSufficient, setIsZoomLevelSufficient] = useState(
@@ -162,6 +162,6 @@ function BoundaryLayer({ layer, before }: ComponentProps) {
       />
     </Source>
   );
-}
+});
 
-export default memo(BoundaryLayer);
+export default BoundaryLayer;

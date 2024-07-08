@@ -3,8 +3,7 @@ import {
   createStyles,
   IconButton,
   Tooltip,
-  WithStyles,
-  withStyles,
+  makeStyles,
 } from '@material-ui/core';
 import OpacityIcon from '@material-ui/icons/Opacity';
 import { memo, useCallback, useEffect, useMemo, useState } from 'react';
@@ -31,7 +30,6 @@ import OpacitySlider from './OpacitySlider';
 
 const SwitchItem = memo(
   ({
-    classes,
     layer,
     extent,
     groupMenuFilter,
@@ -44,6 +42,7 @@ const SwitchItem = memo(
       type: layerType,
       group,
     } = layer;
+    const classes = useStyles();
     const { t } = useSafeTranslation();
     const selectedLayers = useSelector(layersSelector);
     const serverAvailableDates = useSelector(availableDatesSelector);
@@ -263,7 +262,7 @@ const SwitchItem = memo(
   },
 );
 
-const styles = () =>
+const useStyles = makeStyles(() =>
   createStyles({
     switch: {
       marginRight: 2,
@@ -291,13 +290,14 @@ const styles = () =>
         color: '#4CA1AD',
       },
     },
-  });
+  }),
+);
 
-export interface SwitchItemProps extends WithStyles<typeof styles> {
+export interface SwitchItemProps {
   layer: LayerType;
   extent?: Extent;
   groupMenuFilter?: string;
   disabledMenuSelection?: boolean;
 }
 
-export default withStyles(styles)(SwitchItem);
+export default SwitchItem;

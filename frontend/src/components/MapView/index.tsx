@@ -4,8 +4,7 @@ import {
   Box,
   CircularProgress,
   createStyles,
-  WithStyles,
-  withStyles,
+  makeStyles,
 } from '@material-ui/core';
 import { getDisplayBoundaryLayers } from 'config/utils';
 import { addLayer } from 'context/mapStateSlice';
@@ -25,7 +24,8 @@ import OtherFeatures from './OtherFeatures';
 // eslint-disable-next-line fp/no-mutating-methods
 const displayedBoundaryLayers = getDisplayBoundaryLayers().reverse();
 
-const MapView = memo(({ classes, setIsAlertFormOpen }: MapViewProps) => {
+const MapView = memo(({ setIsAlertFormOpen }: MapViewProps) => {
+  const classes = useStyles();
   // Selectors
   const datesLoading = useSelector(areDatesLoading);
 
@@ -55,7 +55,7 @@ const MapView = memo(({ classes, setIsAlertFormOpen }: MapViewProps) => {
   );
 });
 
-const styles = () =>
+const useStyles = makeStyles(() =>
   createStyles({
     root: {
       height: '100%',
@@ -73,14 +73,11 @@ const styles = () =>
       justifyContent: 'center',
       alignItems: 'center',
     },
-  });
+  }),
+);
 
-interface MapViewIncomingProps {
+export interface MapViewProps {
   setIsAlertFormOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-export interface MapViewProps
-  extends WithStyles<typeof styles>,
-    MapViewIncomingProps {}
-
-export default withStyles(styles)(MapView);
+export default MapView;

@@ -1,4 +1,3 @@
-import { WithStyles, createStyles, withStyles } from '@material-ui/core';
 import { CompositeLayerProps, LegendDefinition } from 'config/types';
 import { LayerData, loadLayerData } from 'context/layers/layer-data';
 import { layerDataSelector } from 'context/mapStateSlice/selectors';
@@ -17,9 +16,7 @@ import { geoToH3, h3ToGeoBoundary } from 'h3-js'; // ts-ignore
 import { opacitySelector } from 'context/opacityStateSlice';
 import { legendToStops } from '../layer-utils';
 
-const styles = () => createStyles({});
-
-interface Props extends WithStyles<typeof styles> {
+interface Props {
   layer: CompositeLayerProps;
   before?: string;
 }
@@ -40,7 +37,7 @@ const paintProps: (
   ],
 });
 
-function CompositeLayer({ layer, before }: Props) {
+const CompositeLayer = memo(({ layer, before }: Props) => {
   // look to refacto with impactLayer and maybe other layers
   const [adminBoundaryLimitPolygon, setAdminBoundaryPolygon] = useState(null);
   const selectedDate = useDefaultDate(layer.dateLayer);
@@ -118,6 +115,6 @@ function CompositeLayer({ layer, before }: Props) {
   }
 
   return null;
-}
+});
 
-export default memo(withStyles(styles)(CompositeLayer));
+export default CompositeLayer;

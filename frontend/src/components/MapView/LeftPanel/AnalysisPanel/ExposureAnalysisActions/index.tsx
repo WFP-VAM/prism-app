@@ -1,12 +1,5 @@
 import { useCallback, useState, MouseEvent, useMemo } from 'react';
-import {
-  Button,
-  createStyles,
-  Theme,
-  Typography,
-  withStyles,
-  WithStyles,
-} from '@material-ui/core';
+import { Button, Typography } from '@material-ui/core';
 import { snakeCase } from 'lodash';
 import { useSelector } from 'react-redux';
 import {
@@ -172,57 +165,7 @@ function ExposureAnalysisActions({
   );
 }
 
-const styles = (theme: Theme) =>
-  createStyles({
-    tableContainer: {
-      height: '60vh',
-      maxWidth: '90%',
-      marginTop: 5,
-      zIndex: theme.zIndex.modal + 1,
-    },
-    tableHead: {
-      backgroundColor: '#EBEBEB',
-      boxShadow: 'inset 0px -1px 0px rgba(0, 0, 0, 0.25)',
-    },
-    tableHeaderText: {
-      color: 'black',
-      fontWeight: 500,
-    },
-    tableBodyText: {
-      color: 'black',
-    },
-    innerAnalysisButton: {
-      backgroundColor: theme.surfaces?.dark,
-    },
-    tablePagination: {
-      display: 'flex',
-      justifyContent: 'center',
-      color: 'black',
-    },
-    select: {
-      flex: '1 1 10%',
-      maxWidth: '10%',
-      marginRight: 0,
-    },
-    caption: {
-      flex: '1 2 30%',
-      marginLeft: 0,
-    },
-    backButton: {
-      flex: '1 1 5%',
-      maxWidth: '10%',
-    },
-    nextButton: {
-      flex: '1 1 5%',
-      maxWidth: '10%',
-    },
-    spacer: {
-      flex: '1 1 5%',
-      maxWidth: '5%',
-    },
-  });
-
-interface ExposureAnalysisActionsProps extends WithStyles<typeof styles> {
+interface ExposureAnalysisActionsProps {
   analysisButton?: string;
   bottomButton?: string;
   clearAnalysis: () => void;
@@ -230,4 +173,4 @@ interface ExposureAnalysisActionsProps extends WithStyles<typeof styles> {
   columns: Column[];
 }
 
-export default withStyles(styles)(ExposureAnalysisActions);
+export default ExposureAnalysisActions;

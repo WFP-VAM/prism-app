@@ -5,15 +5,15 @@ import {
   Menu,
   MenuItem,
   Typography,
-  withStyles,
-  WithStyles,
+  makeStyles,
 } from '@material-ui/core';
 import { languages, useSafeTranslation } from 'i18n';
 import { appConfig } from 'config';
 import { get } from 'lodash';
 import ArrowDownward from '@material-ui/icons/ArrowDropDown';
 
-function LanguageSelector({ classes }: LanguageSelectorProps) {
+function LanguageSelector() {
+  const classes = useStyles();
   const { i18n } = useSafeTranslation();
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
 
@@ -70,14 +70,15 @@ function LanguageSelector({ classes }: LanguageSelectorProps) {
   );
 }
 
-const styles = () =>
+const useStyles = makeStyles(() =>
   createStyles({
     block: {
       paddingLeft: '10px',
       paddingTop: '4px',
     },
-  });
+  }),
+);
 
-export interface LanguageSelectorProps extends WithStyles<typeof styles> {}
+export interface LanguageSelectorProps {}
 
-export default withStyles(styles)(LanguageSelector);
+export default LanguageSelector;

@@ -1,14 +1,9 @@
-import {
-  Typography,
-  WithStyles,
-  createStyles,
-  withStyles,
-} from '@material-ui/core';
+import { Typography, createStyles, makeStyles } from '@material-ui/core';
 import { ClassNameMap } from '@material-ui/styles';
 import React from 'react';
 import Markdown from 'react-markdown';
 
-interface LegendMarkdownProps extends WithStyles<typeof styles> {
+interface LegendMarkdownProps {
   children: string;
 }
 
@@ -22,7 +17,8 @@ const p = (classes: ClassNameMap<'legendTextMarkdown'>) =>
     );
   };
 
-function LegendMarkdown({ children, classes }: LegendMarkdownProps) {
+function LegendMarkdown({ children }: LegendMarkdownProps) {
+  const classes = useStyles();
   return (
     <Markdown
       linkTarget="_blank"
@@ -36,13 +32,14 @@ function LegendMarkdown({ children, classes }: LegendMarkdownProps) {
   );
 }
 
-const styles = () =>
+const useStyles = makeStyles(() =>
   createStyles({
     legendTextMarkdown: {
       '& a': {
         textDecoration: 'underline',
       },
     },
-  });
+  }),
+);
 
-export default withStyles(styles)(LegendMarkdown);
+export default LegendMarkdown;

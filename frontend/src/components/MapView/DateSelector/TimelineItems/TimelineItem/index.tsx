@@ -1,4 +1,4 @@
-import { WithStyles, createStyles, withStyles } from '@material-ui/core';
+import { createStyles, makeStyles } from '@material-ui/core';
 import React, { memo } from 'react';
 import 'react-datepicker/dist/react-datepicker.css';
 import { DateItem, DateRangeType } from 'config/types';
@@ -6,13 +6,13 @@ import { binaryFind } from 'utils/date-utils';
 
 const TimelineItem = memo(
   ({
-    classes,
     concatenatedLayers,
     currentDate,
     dateItemStyling,
     isDateAvailable,
   }: TimelineItemProps) => {
     // Pre-compute the matching indices for all layers
+    const classes = useStyles();
     const layerMatches = concatenatedLayers.map(layerDates =>
       binaryFind<DateItem>(
         layerDates,
@@ -97,7 +97,7 @@ const TimelineItem = memo(
   },
 );
 
-const styles = () =>
+const useStyles = makeStyles(() =>
   createStyles({
     layerDirectionBase: {
       display: 'block',
@@ -114,9 +114,10 @@ const styles = () =>
       right: 0,
       transform: 'rotate(180deg)',
     },
-  });
+  }),
+);
 
-export interface TimelineItemProps extends WithStyles<typeof styles> {
+export interface TimelineItemProps {
   concatenatedLayers: DateItem[][];
   currentDate: DateRangeType;
   dateItemStyling: {
@@ -128,4 +129,4 @@ export interface TimelineItemProps extends WithStyles<typeof styles> {
   isDateAvailable: boolean;
 }
 
-export default withStyles(styles)(TimelineItem);
+export default TimelineItem;

@@ -1,4 +1,5 @@
 import {
+  makeStyles,
   Box,
   Button,
   createStyles,
@@ -6,9 +7,8 @@ import {
   TextField,
   Theme,
   Typography,
-  WithStyles,
-  withStyles,
 } from '@material-ui/core';
+
 import { ArrowDropDown, Notifications } from '@material-ui/icons';
 import React, {
   Dispatch,
@@ -42,7 +42,8 @@ const ALERT_FORM_ENABLED = true;
 
 const boundaryLayer = getBoundaryLayerSingleton();
 
-function AlertForm({ classes, isOpen, setOpen }: AlertFormProps) {
+function AlertForm({ isOpen, setOpen }: AlertFormProps) {
+  const classes = useStyles();
   const boundaryLayerData = useSelector(layerDataSelector(boundaryLayer.id)) as
     | LayerData<BoundaryLayerProps>
     | undefined;
@@ -332,7 +333,7 @@ function AlertForm({ classes, isOpen, setOpen }: AlertFormProps) {
   );
 }
 
-const styles = (theme: Theme) =>
+const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     alertLabel: { marginLeft: '10px' },
     alertTriggerButton: {
@@ -401,11 +402,12 @@ const styles = (theme: Theme) =>
     alertFormResponseText: {
       marginLeft: '15px',
     },
-  });
+  }),
+);
 
-interface AlertFormProps extends WithStyles<typeof styles> {
+interface AlertFormProps {
   isOpen: boolean;
   setOpen: (isOpen: boolean) => void;
 }
 
-export default withStyles(styles)(AlertForm);
+export default AlertForm;

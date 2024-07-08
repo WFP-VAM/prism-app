@@ -7,6 +7,7 @@ import {
   useEffect,
 } from 'react';
 import {
+  makeStyles,
   Box,
   IconButton,
   Slider,
@@ -14,7 +15,8 @@ import {
   Tooltip,
   Typography,
 } from '@material-ui/core';
-import { createStyles, WithStyles, withStyles } from '@material-ui/styles';
+
+import { createStyles } from '@material-ui/styles';
 import { useDispatch, useSelector } from 'react-redux';
 import OpacityIcon from '@material-ui/icons/Opacity';
 import { useSafeTranslation } from 'i18n';
@@ -33,13 +35,13 @@ import AnalysisLayerSwitchItemDownloadOptions from './AnalysisLayerSwitchItemDow
 
 const AnalysisLayerSwitchItem = memo(
   ({
-    classes,
     title,
     initialOpacity,
     analysisData,
     analysisResultSortOrder,
     analysisResultSortByKey,
   }: AnalysisLayerSwitchItemProps) => {
+    const classes = useStyles();
     const dispatch = useDispatch();
     const map = useSelector(mapSelector);
     const [selected, setSelected] = useState<boolean>(true);
@@ -230,7 +232,7 @@ const AnalysisLayerSwitchItem = memo(
   },
 );
 
-const styles = () =>
+const useStyles = makeStyles(() =>
   createStyles({
     analysisLayerSwitchRootItem: {
       backgroundColor: '#FFFFFF',
@@ -301,9 +303,10 @@ const styles = () =>
     opacitySliderThumb: {
       backgroundColor: '#4CA1AD',
     },
-  });
+  }),
+);
 
-interface AnalysisLayerSwitchItemProps extends WithStyles<typeof styles> {
+interface AnalysisLayerSwitchItemProps {
   title: string;
   initialOpacity: number;
   analysisData?:
@@ -314,4 +317,4 @@ interface AnalysisLayerSwitchItemProps extends WithStyles<typeof styles> {
   analysisResultSortOrder: 'asc' | 'desc';
 }
 
-export default withStyles(styles)(AnalysisLayerSwitchItem);
+export default AnalysisLayerSwitchItem;

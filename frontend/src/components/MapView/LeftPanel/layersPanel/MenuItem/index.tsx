@@ -1,12 +1,10 @@
 import { memo, useMemo } from 'react';
 import {
-  createStyles,
   Grid,
   Typography,
   Accordion,
   AccordionDetails,
   AccordionSummary,
-  makeStyles,
 } from '@material-ui/core';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { useSelector } from 'react-redux';
@@ -17,35 +15,7 @@ import { Extent } from 'components/MapView/Layers/raster-utils';
 import { layersSelector } from 'context/mapStateSlice/selectors';
 import { filterActiveLayers } from 'components/MapView/utils';
 import SelectedLayersInformation from './SelectedLayersInformation';
-
-export const useLayerMenuItemStyles = makeStyles(() =>
-  createStyles({
-    root: {
-      position: 'inherit',
-      backgroundColor: '#FFFF',
-    },
-    rootSummary: {
-      backgroundColor: '#FFFF',
-    },
-    rootDetails: {
-      padding: 0,
-    },
-    expandIcon: {
-      color: 'black',
-    },
-    summaryContent: {
-      alignItems: 'center',
-    },
-    title: {
-      color: 'black',
-      fontSize: '14px',
-      fontWeight: 600,
-    },
-    chipRoot: {
-      marginLeft: '3%',
-    },
-  }),
-);
+import { useLayerMenuItemStyles } from './utils';
 
 interface MenuItemProps {
   title: string;

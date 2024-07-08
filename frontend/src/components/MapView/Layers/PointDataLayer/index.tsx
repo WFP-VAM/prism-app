@@ -60,7 +60,7 @@ const onClick =
   };
 
 // Point Data, takes any GeoJSON of points and shows it.
-function PointDataLayer({ layer, before }: LayersProps) {
+const PointDataLayer = memo(({ layer, before }: LayersProps) => {
   const layerId = getLayerMapId(layer.id);
 
   const selectedDate = useDefaultDate(layer.id);
@@ -215,11 +215,11 @@ function PointDataLayer({ layer, before }: LayersProps) {
       />
     </Source>
   );
-}
+});
 
 export interface LayersProps {
   layer: PointDataLayerProps;
   before?: string;
 }
 
-export default memo(PointDataLayer);
+export default PointDataLayer;

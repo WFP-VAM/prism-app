@@ -1,7 +1,7 @@
 import { memo, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { get } from 'lodash';
-import { createStyles, withStyles, WithStyles, Theme } from '@material-ui/core';
+import { createStyles, Theme, makeStyles } from '@material-ui/core';
 import { getExtent, Extent } from 'components/MapView/Layers/raster-utils';
 import { legendToStops } from 'components/MapView/Layers/layer-utils';
 import { ImpactLayerProps, MapEventWrapFunctionProps } from 'config/types';
@@ -82,7 +82,8 @@ const onClick =
     );
   };
 
-function ImpactLayer({ classes, layer, before }: ComponentProps) {
+const ImpactLayer = memo(({ layer, before }: ComponentProps) => {
+  const classes = useStyles();
   const map = useSelector(mapSelector);
   const { startDate: selectedDate } = useSelector(dateRangeSelector);
   const { data, date } =
@@ -154,9 +155,9 @@ function ImpactLayer({ classes, layer, before }: ComponentProps) {
       />
     </Source>
   );
-}
+});
 
-const styles = (theme: Theme) =>
+const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     message: {
       position: 'absolute',
@@ -173,11 +174,12 @@ const styles = (theme: Theme) =>
       backgroundColor: theme.palette.grey.A100,
       borderRadius: theme.spacing(2),
     },
-  });
+  }),
+);
 
-interface ComponentProps extends WithStyles<typeof styles> {
+interface ComponentProps {
   layer: ImpactLayerProps;
   before?: string;
 }
 
-export default memo(withStyles(styles)(ImpactLayer));
+export default ImpactLayer;

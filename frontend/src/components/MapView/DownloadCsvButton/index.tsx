@@ -1,15 +1,14 @@
 import {
   Button,
   Typography,
-  WithStyles,
   createStyles,
-  withStyles,
+  makeStyles,
 } from '@material-ui/core';
 import { t } from 'i18next';
 import { downloadChartsToCsv } from 'utils/csv-utils';
 import { cyanBlue } from 'muiTheme';
 
-const styles = () =>
+const useStyles = makeStyles(() =>
   createStyles({
     downloadButton: {
       backgroundColor: cyanBlue,
@@ -21,9 +20,10 @@ const styles = () =>
       width: '50%',
       '&.Mui-disabled': { opacity: 0.5 },
     },
-  });
+  }),
+);
 
-interface DownloadChartCSVButtonProps extends WithStyles<typeof styles> {
+interface DownloadChartCSVButtonProps {
   filesData: {
     fileName: string;
     data: { [key: string]: any[] };
@@ -34,8 +34,8 @@ interface DownloadChartCSVButtonProps extends WithStyles<typeof styles> {
 function DownloadChartCSVButton({
   filesData,
   disabled = false,
-  classes,
 }: DownloadChartCSVButtonProps) {
+  const classes = useStyles();
   const buildDataToDownload: () => [{ [key: string]: any[] }, string][] = () =>
     filesData.map(fileData => [fileData.data, fileData.fileName]);
 
@@ -50,4 +50,4 @@ function DownloadChartCSVButton({
   );
 }
 
-export default withStyles(styles)(DownloadChartCSVButton);
+export default DownloadChartCSVButton;

@@ -4,7 +4,7 @@ import useLayers from 'utils/layers-utils';
 import MenuItem from '../MenuItem';
 import { menuList } from '../../utils';
 
-function RootAccordionItems() {
+const RootAccordionItems = memo(() => {
   const { adminBoundariesExtent: extent } = useLayers();
 
   const layersMenuItems = menuList.filter((menuItem: MenuItemType) =>
@@ -26,6 +26,6 @@ function RootAccordionItems() {
       ))}
     </>
   );
-}
+});
 
-export default memo(RootAccordionItems);
+export default RootAccordionItems;

@@ -1,17 +1,17 @@
 import {
   createStyles,
-  WithStyles,
-  withStyles,
   Typography,
   Button,
   Grid,
+  makeStyles,
 } from '@material-ui/core';
 import { useMsal } from '@azure/msal-react';
 import { msalRequest } from 'config';
 
 import { colors } from 'muiTheme';
 
-function Login({ classes }: LoginProps) {
+function Login() {
+  const classes = useStyles();
   const { instance } = useMsal();
 
   return (
@@ -46,7 +46,7 @@ function Login({ classes }: LoginProps) {
   );
 }
 
-const styles = () =>
+const useStyles = makeStyles(() =>
   createStyles({
     container: {
       width: '100vw',
@@ -65,8 +65,7 @@ const styles = () =>
       width: '90%',
       opacity: '0.5',
     },
-  });
+  }),
+);
 
-export interface LoginProps extends WithStyles<typeof styles> {}
-
-export default withStyles(styles)(Login);
+export default Login;

@@ -2,10 +2,10 @@ import {
   CircularProgress,
   createStyles,
   Typography,
-  WithStyles,
-  withStyles,
   Box,
+  makeStyles,
 } from '@material-ui/core';
+
 import { GeoJsonProperties } from 'geojson';
 import { omit } from 'lodash';
 import React, { memo, useCallback, useEffect, useMemo, useState } from 'react';
@@ -28,6 +28,7 @@ import { getChartAdminBoundaryParams } from 'utils/admin-utils';
 import Chart, { ChartProps } from 'components/Common/Chart';
 import { createCsvDataFromDataKeyMap, createDataKeyMap } from 'utils/csv-utils';
 import { getFormattedDate } from 'utils/date-utils';
+import { generateDateStrings } from './utils';
 
 /**
  * This function removes the first occurrence of a specific number from an array.
@@ -43,33 +44,6 @@ function removeFirstOccurrence(arr: number[], numberToRemove: number) {
     return [...arr.slice(0, indexToRemove), ...arr.slice(indexToRemove + 1)];
   }
   return arr;
-}
-
-// returns startDate and endDate as part of result
-export function generateDateStrings(startDate: Date, endDate: Date) {
-  const result = [];
-  const interval = [1, 11, 21];
-  const currentDate = new Date(startDate);
-  currentDate.setUTCHours(12, 0, 0, 0);
-  endDate.setUTCHours(12, 0, 0, 0);
-
-  while (currentDate <= endDate) {
-    // eslint-disable-next-line fp/no-mutation, no-plusplus
-    for (let i = 0; i < 3; i++) {
-      currentDate.setDate(interval[i]);
-      const formattedDate = currentDate.toISOString().split('T')[0];
-
-      if (currentDate > startDate && currentDate <= endDate) {
-        // eslint-disable-next-line fp/no-mutating-methods
-        result.push(formattedDate);
-      }
-    }
-
-    currentDate.setDate(1);
-    currentDate.setMonth(currentDate.getMonth() + 1);
-  }
-
-  return result;
 }
 
 function extendDatasetRows(
@@ -132,8 +106,8 @@ const ChartSection = memo(
     maxChartValue,
     minChartValue,
     chartProps,
-    classes,
   }: ChartSectionProps) => {
+    const classes = useStyles();
     const dispatch = useDispatch();
     const { t, i18n: i18nLocale } = useSafeTranslation();
     const [chartDataset, setChartDataset] = useState<undefined | TableData>();
@@ -471,7 +445,7 @@ const ChartSection = memo(
   },
 );
 
-const styles = () =>
+const useStyles = makeStyles(() =>
   createStyles({
     errorContainer: {
       display: 'flex',
@@ -487,9 +461,10 @@ const styles = () =>
       justifyContent: 'center',
       alignItems: 'center',
     },
-  });
+  }),
+);
 
-export interface ChartSectionProps extends WithStyles<typeof styles> {
+export interface ChartSectionProps {
   chartLayer: WMSLayerProps;
   adminProperties: GeoJsonProperties;
   adminLevel: AdminLevelType;
@@ -510,4 +485,4 @@ export interface ChartSectionProps extends WithStyles<typeof styles> {
   chartProps?: Partial<ChartProps>;
 }
 
-export default withStyles(styles)(ChartSection);
+export default ChartSection;

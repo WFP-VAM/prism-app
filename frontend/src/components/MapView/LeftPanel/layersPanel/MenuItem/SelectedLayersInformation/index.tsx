@@ -15,44 +15,45 @@ const useStyles = makeStyles(() =>
 interface SelectedLayersInformationProps {
   selectedCategoryLayers: LayerType[];
 }
-function SelectedLayersInformation({
-  selectedCategoryLayers,
-}: SelectedLayersInformationProps) {
-  const classes = useStyles();
-  const { t } = useSafeTranslation();
-  const [informationChipLabel, setInformationChipLabel] = useState<string>(
-    selectedCategoryLayers.length.toString(),
-  );
 
-  useEffect(() => {
-    if (!selectedCategoryLayers.length) {
-      return;
-    }
-    setInformationChipLabel(selectedCategoryLayers.length.toString());
-  }, [selectedCategoryLayers.length]);
-
-  const handleChipOnMouseEnter = useCallback(() => {
-    setInformationChipLabel(
-      `${selectedCategoryLayers.length} ${t('Active Layer(s)')}`,
+const SelectedLayersInformation = memo(
+  ({ selectedCategoryLayers }: SelectedLayersInformationProps) => {
+    const classes = useStyles();
+    const { t } = useSafeTranslation();
+    const [informationChipLabel, setInformationChipLabel] = useState<string>(
+      selectedCategoryLayers.length.toString(),
     );
-  }, [selectedCategoryLayers.length, t]);
 
-  const handleChipOnMouseLeave = useCallback(() => {
-    setInformationChipLabel(selectedCategoryLayers.length.toString());
-  }, [selectedCategoryLayers.length]);
+    useEffect(() => {
+      if (!selectedCategoryLayers.length) {
+        return;
+      }
+      setInformationChipLabel(selectedCategoryLayers.length.toString());
+    }, [selectedCategoryLayers.length]);
 
-  if (!selectedCategoryLayers.length) {
-    return null;
-  }
-  return (
-    <Chip
-      onMouseEnter={handleChipOnMouseEnter}
-      onMouseLeave={handleChipOnMouseLeave}
-      classes={{ root: classes.chipRoot }}
-      style={{ backgroundColor: cyanBlue }}
-      label={informationChipLabel}
-    />
-  );
-}
+    const handleChipOnMouseEnter = useCallback(() => {
+      setInformationChipLabel(
+        `${selectedCategoryLayers.length} ${t('Active Layer(s)')}`,
+      );
+    }, [selectedCategoryLayers.length, t]);
 
-export default memo(SelectedLayersInformation);
+    const handleChipOnMouseLeave = useCallback(() => {
+      setInformationChipLabel(selectedCategoryLayers.length.toString());
+    }, [selectedCategoryLayers.length]);
+
+    if (!selectedCategoryLayers.length) {
+      return null;
+    }
+    return (
+      <Chip
+        onMouseEnter={handleChipOnMouseEnter}
+        onMouseLeave={handleChipOnMouseLeave}
+        classes={{ root: classes.chipRoot }}
+        style={{ backgroundColor: cyanBlue }}
+        label={informationChipLabel}
+      />
+    );
+  },
+);
+
+export default SelectedLayersInformation;

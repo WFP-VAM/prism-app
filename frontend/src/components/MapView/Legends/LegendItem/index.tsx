@@ -18,8 +18,7 @@ import {
   Slider,
   Tooltip,
   Typography,
-  withStyles,
-  WithStyles,
+  makeStyles,
 } from '@material-ui/core';
 import { Close, Opacity, SwapVert } from '@material-ui/icons';
 import { useDispatch, useSelector } from 'react-redux';
@@ -47,7 +46,6 @@ import LegendMarkdown from '../LegendMarkdown';
 // Children here is legendText
 const LegendItem = memo(
   ({
-    classes,
     id,
     title,
     legend,
@@ -60,6 +58,7 @@ const LegendItem = memo(
     forPrinting = false,
     showDescription = true,
   }: LegendItemProps) => {
+    const classes = useStyles();
     const dispatch = useDispatch();
     const { removeLayerFromUrl } = useUrlHistory();
     const map = useSelector(mapSelector);
@@ -315,7 +314,7 @@ const LegendItem = memo(
   },
 );
 
-const styles = () =>
+const useStyles = makeStyles(() =>
   createStyles({
     paper: {
       padding: 8,
@@ -344,11 +343,10 @@ const styles = () =>
       width: 28,
       lineHeight: '36px',
     },
-  });
+  }),
+);
 
-interface LegendItemProps
-  extends WithStyles<typeof styles>,
-    PropsWithChildren<{}> {
+interface LegendItemProps extends PropsWithChildren<{}> {
   id: LayerType['id'];
   title: LayerType['title'];
   legend: LayerType['legend'];
@@ -361,4 +359,4 @@ interface LegendItemProps
   showDescription?: boolean;
 }
 
-export default withStyles(styles)(LegendItem);
+export default LegendItem;

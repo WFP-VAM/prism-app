@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import { Button, IconButton, Menu, Typography } from '@material-ui/core';
 import RoomOutlinedIcon from '@material-ui/icons/RoomOutlined';
 import { useSafeTranslation } from 'i18n';
-import { BoundaryDropdownOptions } from 'components/MapView/Layers/BoundaryDropdown';
+import BoundaryDropdownOptions from 'components/MapView/Layers/BoundaryDropdown/BoundaryDropdownOptions';
 import { mapSelector } from 'context/mapStateSlice/selectors';
 
 function GoToBoundaryDropdown() {

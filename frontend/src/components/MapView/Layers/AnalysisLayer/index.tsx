@@ -31,10 +31,10 @@ import {
   useMapCallback,
 } from 'utils/map-utils';
 import { opacitySelector } from 'context/opacityStateSlice';
-import { invertLegendColors } from 'components/MapView/Legends/LegendItemsList';
 import { getFormattedDate } from 'utils/date-utils';
+import { invertLegendColors } from 'components/MapView/Legends/utils';
 
-export const layerId = getLayerMapId('analysis');
+const layerId = getLayerMapId('analysis');
 
 const onClick =
   (analysisData: AnalysisResult | undefined) =>

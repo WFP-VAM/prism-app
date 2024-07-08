@@ -1,4 +1,4 @@
-import { WithStyles, createStyles, withStyles } from '@material-ui/core';
+import { createStyles, makeStyles } from '@material-ui/core';
 import ChartSection from 'components/MapView/LeftPanel/ChartsPanel/ChartSection';
 import { oneYearInMs } from 'components/MapView/LeftPanel/utils';
 import {
@@ -22,7 +22,7 @@ import PopupChartWrapper from './PopupChartWrapper';
 
 const { country } = appConfig;
 
-const styles = () =>
+const useStyles = makeStyles(() =>
   createStyles({
     chartContainer: {
       display: 'flex',
@@ -34,7 +34,8 @@ const styles = () =>
       width: '400px',
       flexGrow: 1,
     },
-  });
+  }),
+);
 
 const boundaryLayer = getBoundaryLayersByAdminLevel();
 
@@ -56,7 +57,7 @@ const getProperties = (
   return features.properties;
 };
 
-interface PopupChartProps extends WithStyles<typeof styles> {
+interface PopupChartProps {
   filteredChartLayers: WMSLayerProps[];
   adminCode: AdminCodeString;
   adminSelectorKey: string;
@@ -69,8 +70,8 @@ function PopupAnalysisCharts({
   adminSelectorKey,
   adminLevel,
   adminLevelsNames,
-  classes,
 }: PopupChartProps) {
+  const classes = useStyles();
   const { t } = useSafeTranslation();
   const dataForCsv = useRef<{ [key: string]: any[] }>({});
   const boundaryLayerData = useSelector(layerDataSelector(boundaryLayer.id)) as
@@ -115,4 +116,4 @@ function PopupAnalysisCharts({
   );
 }
 
-export default withStyles(styles)(PopupAnalysisCharts);
+export default PopupAnalysisCharts;

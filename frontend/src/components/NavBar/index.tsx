@@ -9,10 +9,9 @@ import {
   Theme,
   Toolbar,
   Typography,
-  withStyles,
-  WithStyles,
   IconButton,
   Badge,
+  makeStyles,
 } from '@material-ui/core';
 import React from 'react';
 import { useSafeTranslation } from 'i18n';
@@ -69,9 +68,10 @@ const panels = [
     : []),
 ];
 
-function NavBar({ classes, isAlertFormOpen, setIsAlertFormOpen }: NavBarProps) {
+function NavBar({ isAlertFormOpen, setIsAlertFormOpen }: NavBarProps) {
   const { t } = useSafeTranslation();
   const dispatch = useDispatch();
+  const classes = useStyles();
   const { alertFormActive, header } = appConfig;
   const tabValue = useSelector(leftPanelTabValueSelector);
   const analysisData = useSelector(analysisResultSelector);
@@ -228,7 +228,7 @@ function NavBar({ classes, isAlertFormOpen, setIsAlertFormOpen }: NavBarProps) {
   );
 }
 
-const styles = (theme: Theme) =>
+const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     logo: {
       height: 32,
@@ -311,11 +311,12 @@ const styles = (theme: Theme) =>
       gap: '0.5rem',
       alignItems: 'center',
     },
-  });
+  }),
+);
 
-export interface NavBarProps extends WithStyles<typeof styles> {
+export interface NavBarProps {
   isAlertFormOpen: boolean;
   setIsAlertFormOpen: (v: boolean) => void;
 }
 
-export default withStyles(styles)(NavBar);
+export default NavBar;

@@ -16,7 +16,7 @@ import {
   PolygonAnalysisResult,
 } from 'utils/analysis-utils';
 import { cyanBlue } from 'muiTheme';
-import { useLayerMenuItemStyles } from 'components/MapView/LeftPanel/layersPanel/MenuItem';
+import { useLayerMenuItemStyles } from 'components/MapView/LeftPanel/layersPanel/MenuItem/utils';
 
 interface AnalysisLayerMenuItemProps {
   title: string;

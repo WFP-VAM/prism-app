@@ -1,16 +1,12 @@
 import { memo, useCallback, useMemo } from 'react';
-import { createStyles, withStyles, WithStyles } from '@material-ui/styles';
-import { Button, Typography } from '@material-ui/core';
+import { createStyles } from '@material-ui/styles';
+import { Button, Typography, makeStyles } from '@material-ui/core';
 import { useSafeTranslation } from 'i18n';
 import { cyanBlue } from 'muiTheme';
 
 const TablesActions = memo(
-  ({
-    classes,
-    showTable,
-    handleShowTable,
-    csvTableData,
-  }: TablesActionsProps) => {
+  ({ showTable, handleShowTable, csvTableData }: TablesActionsProps) => {
+    const classes = useStyles();
     const { t } = useSafeTranslation();
 
     const handleOnClickHideShowTable = useCallback(() => {
@@ -44,7 +40,7 @@ const TablesActions = memo(
   },
 );
 
-const styles = () =>
+const useStyles = makeStyles(() =>
   createStyles({
     buttonsContainer: {
       display: 'flex',
@@ -70,12 +66,13 @@ const styles = () =>
       width: '100%',
       '&.Mui-disabled': { opacity: 0.5 },
     },
-  });
+  }),
+);
 
-interface TablesActionsProps extends WithStyles<typeof styles> {
+interface TablesActionsProps {
   showTable: boolean;
   handleShowTable: (show: boolean) => void;
   csvTableData: any;
 }
 
-export default withStyles(styles)(TablesActions);
+export default TablesActions;

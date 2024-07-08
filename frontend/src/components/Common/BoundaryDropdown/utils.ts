@@ -255,3 +255,7 @@ export const createMatchesTree = (
 
       return [...acc, item];
     }, [] as BoundaryRelation[]);
+
+export enum MapInteraction {
+  GoTo = 'goto',
+}

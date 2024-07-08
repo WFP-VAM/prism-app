@@ -1,9 +1,8 @@
 import {
   Dialog,
   DialogContent,
-  WithStyles,
   createStyles,
-  withStyles,
+  makeStyles,
 } from '@material-ui/core';
 import mask from '@turf/mask';
 import html2canvas from 'html2canvas';
@@ -39,9 +38,10 @@ const debounceCallback = debounce((callback: any, ...args: any[]) => {
 
 const boundaryLayer = getBoundaryLayerSingleton();
 
-function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
+function DownloadImage({ open, handleClose }: DownloadImageProps) {
   const { country, header } = appConfig;
   const logo = header?.logo;
+  const classes = useStyles();
   const selectedMap = useSelector(mapSelector);
   const dateRange = useSelector(dateRangeSelector);
   const printRef = useRef<HTMLDivElement>(null);
@@ -235,7 +235,7 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
   );
 }
 
-const styles = () =>
+const useStyles = makeStyles(() =>
   createStyles({
     contentContainer: {
       fontFamily: 'Roboto',
@@ -249,11 +249,12 @@ const styles = () =>
       width: '90vw',
       height: '90vh',
     },
-  });
+  }),
+);
 
-export interface DownloadImageProps extends WithStyles<typeof styles> {
+export interface DownloadImageProps {
   open: boolean;
   handleClose: () => void;
 }
 
-export default withStyles(styles)(DownloadImage);
+export default DownloadImage;

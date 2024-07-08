@@ -3,8 +3,7 @@ import {
   createStyles,
   IconButton,
   Typography,
-  WithStyles,
-  withStyles,
+  makeStyles,
 } from '@material-ui/core';
 import { VisibilityOutlined, VisibilityOffOutlined } from '@material-ui/icons';
 import { useState, memo, useCallback } from 'react';
@@ -12,7 +11,8 @@ import { useSafeTranslation } from 'i18n';
 import { black, cyanBlue } from 'muiTheme';
 import LegendItemsList from './LegendItemsList';
 
-const Legends = memo(({ classes }: LegendsProps) => {
+const Legends = memo(() => {
+  const classes = useStyles();
   const { t } = useSafeTranslation();
 
   const [open, setOpen] = useState(true);
@@ -71,7 +71,7 @@ const Legends = memo(({ classes }: LegendsProps) => {
   );
 });
 
-const styles = () =>
+const useStyles = makeStyles(() =>
   createStyles({
     triggerButton: {
       height: '2.5em',
@@ -85,8 +85,7 @@ const styles = () =>
       top: 'calc(6vh + 16px)',
     },
     icon: { color: 'white', fontSize: '1.5rem' },
-  });
+  }),
+);
 
-export interface LegendsProps extends WithStyles<typeof styles> {}
-
-export default withStyles(styles)(Legends);
+export default Legends;

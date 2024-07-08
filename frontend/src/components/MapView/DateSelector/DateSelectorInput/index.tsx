@@ -1,38 +1,37 @@
 import { forwardRef, Ref } from 'react';
-import {
-  Button,
-  createStyles,
-  WithStyles,
-  withStyles,
-} from '@material-ui/core';
+import { Button, createStyles, makeStyles } from '@material-ui/core';
 
 const DateSelectorInput = forwardRef(
   (
-    { value, onClick, classes }: DateSelectorInputProps,
+    { value, onClick }: DateSelectorInputProps,
     ref?: Ref<HTMLButtonElement>,
-  ) => (
-    <Button
-      className={classes.buttonStyle}
-      variant="outlined"
-      onClick={onClick}
-      ref={ref}
-    >
-      {value}
-    </Button>
-  ),
+  ) => {
+    const classes = useStyles();
+    return (
+      <Button
+        className={classes.buttonStyle}
+        variant="outlined"
+        onClick={onClick}
+        ref={ref}
+      >
+        {value}
+      </Button>
+    );
+  },
 );
 
-const styles = () =>
+const useStyles = makeStyles(() =>
   createStyles({
     buttonStyle: {
       color: '#101010',
       fontWeight: 'bold',
     },
-  });
+  }),
+);
 
-interface DateSelectorInputProps extends WithStyles<typeof styles> {
+interface DateSelectorInputProps {
   value?: string;
   onClick?: () => void;
 }
 
-export default withStyles(styles)(DateSelectorInput);
+export default DateSelectorInput;

@@ -8,9 +8,9 @@ import {
 import { t } from 'i18next';
 import { memo } from 'react';
 import { useSelector } from 'react-redux';
-import { WithStyles, createStyles, withStyles } from '@material-ui/core';
+import { createStyles, makeStyles } from '@material-ui/core';
 
-const styles = () =>
+const useStyles = makeStyles(() =>
   createStyles({
     chartContainer: {
       display: 'flex',
@@ -23,11 +23,11 @@ const styles = () =>
       height: '200px',
       width: '400px',
     },
-  });
+  }),
+);
 
-interface PopupDatasetChartProps extends WithStyles<typeof styles> {}
-
-function PopupPointDataChart({ classes }: PopupDatasetChartProps) {
+const PopupPointDataChart = memo(() => {
+  const classes = useStyles();
   const {
     data: dataset,
     datasetParams,
@@ -65,6 +65,6 @@ function PopupPointDataChart({ classes }: PopupDatasetChartProps) {
       </div>
     </div>
   );
-}
+});
 
-export default memo(withStyles(styles)(PopupPointDataChart));
+export default PopupPointDataChart;

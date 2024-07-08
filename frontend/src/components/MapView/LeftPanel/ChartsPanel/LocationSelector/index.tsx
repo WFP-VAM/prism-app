@@ -12,7 +12,7 @@ import { BoundaryLayerProps, PanelSize, AdminCodeString } from 'config/types';
 import {
   getAdminBoundaryTree,
   AdminBoundaryTree,
-} from 'components/MapView/Layers/BoundaryDropdown';
+} from 'components/MapView/Layers/BoundaryDropdown/utils';
 import { useSafeTranslation } from 'i18n';
 import { BoundaryLayerData } from 'context/layers/boundary';
 

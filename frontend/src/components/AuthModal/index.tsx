@@ -16,8 +16,7 @@ import {
   TextField,
   Theme,
   Typography,
-  WithStyles,
-  withStyles,
+  makeStyles,
 } from '@material-ui/core';
 import { useSafeTranslation } from 'i18n';
 import { layersSelector } from 'context/mapStateSlice/selectors';
@@ -31,7 +30,8 @@ const initialAuthState: UserAuth = {
   password: '',
 };
 
-const AuthModal = ({ classes }: AuthModalProps) => {
+const AuthModal = () => {
+  const classes = useStyles();
   const [open, setOpen] = useState(false);
   const [auth, setAuth] = useState<UserAuth>(initialAuthState);
 
@@ -221,7 +221,7 @@ const AuthModal = ({ classes }: AuthModalProps) => {
   ]);
 };
 
-const styles = (theme: Theme) => {
+const useStyles = makeStyles((theme: Theme) => {
   const { secondary } = theme.palette.text;
 
   const color = {
@@ -252,8 +252,6 @@ const styles = (theme: Theme) => {
       justifyContent: 'space-between',
     },
   });
-};
+});
 
-export interface AuthModalProps extends WithStyles<typeof styles> {}
-
-export default withStyles(styles)(AuthModal);
+export default AuthModal;

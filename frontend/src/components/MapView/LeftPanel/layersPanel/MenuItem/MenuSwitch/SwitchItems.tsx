@@ -2,25 +2,28 @@ import { CompositeLayerProps, LayerType } from 'config/types';
 import { getCompositeLayers } from 'config/utils';
 import { Fragment, memo } from 'react';
 import { Extent } from 'components/MapView/Layers/raster-utils';
-import { WithStyles, createStyles, withStyles } from '@material-ui/core';
+import { createStyles, makeStyles } from '@material-ui/core';
 import SwitchItem from './SwitchItem';
 
-const styles = createStyles({
-  compositeLayersContainer: {
-    display: 'flex',
-    flexDirection: 'column',
-    marginLeft: '24px',
-    marginBottom: '12px',
-    fontStyle: 'italic',
-    borderLeft: '1px #B1D6DB solid',
-  },
-});
+const useStyles = makeStyles(() =>
+  createStyles({
+    compositeLayersContainer: {
+      display: 'flex',
+      flexDirection: 'column',
+      marginLeft: '24px',
+      marginBottom: '12px',
+      fontStyle: 'italic',
+      borderLeft: '1px #B1D6DB solid',
+    },
+  }),
+);
 
-interface SwitchItemsProps extends WithStyles<typeof styles> {
+interface SwitchItemsProps {
   layers: LayerType[];
   extent?: Extent;
 }
-function SwitchItems({ layers, extent, classes }: SwitchItemsProps) {
+const SwitchItems = memo(({ layers, extent }: SwitchItemsProps) => {
+  const classes = useStyles();
   return (
     <>
       {layers.map((layer: LayerType) => {
@@ -57,6 +60,6 @@ function SwitchItems({ layers, extent, classes }: SwitchItemsProps) {
       })}
     </>
   );
-}
+});
 
-export default memo(withStyles(styles)(SwitchItems));
+export default SwitchItems;

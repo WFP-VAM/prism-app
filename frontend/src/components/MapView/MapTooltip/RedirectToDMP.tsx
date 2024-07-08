@@ -1,15 +1,9 @@
 import { faExternalLinkAlt } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {
-  Link,
-  Typography,
-  WithStyles,
-  createStyles,
-  withStyles,
-} from '@material-ui/core';
+import { Link, Typography, createStyles, makeStyles } from '@material-ui/core';
 import { memo } from 'react';
 
-const styles = () =>
+const useStyles = makeStyles(() =>
   createStyles({
     externalLinkContainer: {
       display: 'flex',
@@ -19,9 +13,10 @@ const styles = () =>
       marginBottom: '8px',
       alignItems: 'center',
     },
-  });
+  }),
+);
 
-interface RedirectToDMPProps extends WithStyles<typeof styles> {
+interface RedirectToDMPProps {
   dmpDisTyp: string | undefined;
   dmpSubmissionId: string | undefined;
 }
@@ -39,27 +34,26 @@ const computeDisasterTypeFromDistTyp = (distTyp: string) => {
   return 'INCIDENT';
 };
 
-function RedirectToDMP({
-  dmpDisTyp,
-  dmpSubmissionId,
-  classes,
-}: RedirectToDMPProps) {
-  if (!dmpDisTyp) {
-    return null;
-  }
-  return (
-    <Link
-      href={`https://dmp.ovio.org/form/${computeDisasterTypeFromDistTyp(
-        dmpDisTyp,
-      )}/${dmpSubmissionId}`}
-      target="_blank"
-    >
-      <Typography className={classes.externalLinkContainer}>
-        <u>Report details</u>
-        <FontAwesomeIcon icon={faExternalLinkAlt} />
-      </Typography>
-    </Link>
-  );
-}
+const RedirectToDMP = memo(
+  ({ dmpDisTyp, dmpSubmissionId }: RedirectToDMPProps) => {
+    const classes = useStyles();
+    if (!dmpDisTyp) {
+      return null;
+    }
+    return (
+      <Link
+        href={`https://dmp.ovio.org/form/${computeDisasterTypeFromDistTyp(
+          dmpDisTyp,
+        )}/${dmpSubmissionId}`}
+        target="_blank"
+      >
+        <Typography className={classes.externalLinkContainer}>
+          <u>Report details</u>
+          <FontAwesomeIcon icon={faExternalLinkAlt} />
+        </Typography>
+      </Link>
+    );
+  },
+);
 
-export default memo(withStyles(styles)(RedirectToDMP));
+export default RedirectToDMP;

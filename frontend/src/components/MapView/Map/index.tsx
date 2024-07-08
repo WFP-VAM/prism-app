@@ -40,6 +40,7 @@ import { MapSourceDataEvent, Map as MaplibreMap } from 'maplibre-gl';
 
 import 'maplibre-gl/dist/maplibre-gl.css';
 import { Panel, leftPanelTabValueSelector } from 'context/leftPanelStateSlice';
+import { mapStyle } from './utils';
 
 interface MapComponentProps {
   setIsAlertFormOpen: Dispatch<SetStateAction<boolean>>;
@@ -50,11 +51,6 @@ type LayerComponentsMap<U extends LayerType> = {
     component: ComponentType<{ layer: DiscriminateUnion<U, 'type', T> }>;
   };
 };
-
-export const mapStyle = new URL(
-  process.env.REACT_APP_DEFAULT_STYLE ||
-    'https://api.maptiler.com/maps/0ad52f6b-ccf2-4a36-a9b8-7ebd8365e56f/style.json?key=y2DTSu9yWiu755WByJr3',
-);
 
 const componentTypes: LayerComponentsMap<LayerType> = {
   boundary: { component: BoundaryLayer },

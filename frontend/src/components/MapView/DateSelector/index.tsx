@@ -2,9 +2,8 @@ import {
   Button,
   Grid,
   Theme,
-  WithStyles,
   createStyles,
-  withStyles,
+  makeStyles,
 } from '@material-ui/core';
 import { ChevronLeft, ChevronRight } from '@material-ui/icons';
 import { findIndex, get, isEqual } from 'lodash';
@@ -52,7 +51,8 @@ const calculateStartAndEndDates = (startDate: Date, selectedTab: string) => {
   return { start, end };
 };
 
-const DateSelector = memo(({ classes }: DateSelectorProps) => {
+const DateSelector = memo(() => {
+  const classes = useStyles();
   const {
     selectedLayerDates: availableDates,
     selectedLayersWithDateSupport: selectedLayers,
@@ -507,7 +507,7 @@ const DateSelector = memo(({ classes }: DateSelectorProps) => {
   );
 });
 
-const styles = (theme: Theme) =>
+const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     container: {
       position: 'absolute',
@@ -585,8 +585,7 @@ const styles = (theme: Theme) =>
       height: '16px',
       cursor: 'grab',
     },
-  });
+  }),
+);
 
-export interface DateSelectorProps extends WithStyles<typeof styles> {}
-
-export default withStyles(styles)(DateSelector);
+export default DateSelector;
