@@ -3,14 +3,14 @@
 exports[`renders as expected 1`] = `
 <div>
   <div
-    class="memo-container-1"
+    class="makeStyles-container-1"
     style="z-index: 1300;"
   >
     <div
-      class="MuiGrid-root memo-datePickerContainer-3 MuiGrid-container MuiGrid-align-items-xs-center MuiGrid-justify-content-xs-center"
+      class="MuiGrid-root makeStyles-datePickerContainer-3 MuiGrid-container MuiGrid-align-items-xs-center MuiGrid-justify-content-xs-center"
     >
       <div
-        class="MuiGrid-root memo-datePickerGrid-5 MuiGrid-item MuiGrid-grid-xs-12 MuiGrid-grid-sm-1"
+        class="MuiGrid-root makeStyles-datePickerGrid-5 MuiGrid-item MuiGrid-grid-xs-12 MuiGrid-grid-sm-1"
       >
         <div
           class="react-datepicker-wrapper"
@@ -19,7 +19,7 @@ exports[`renders as expected 1`] = `
             class="react-datepicker__input-container"
           >
             <mock-button
-              classname="ForwardRef-buttonStyle-11"
+              classname="makeStyles-buttonStyle-11"
               variant="outlined"
             >
               Mar 11, 2023
@@ -28,28 +28,28 @@ exports[`renders as expected 1`] = `
         </div>
       </div>
       <div
-        class="MuiGrid-root memo-slider-6 MuiGrid-item MuiGrid-grid-xs-12 MuiGrid-grid-sm-true"
+        class="MuiGrid-root makeStyles-slider-6 MuiGrid-item MuiGrid-grid-xs-12 MuiGrid-grid-sm-true"
       >
         <mock-button
-          classname="memo-chevronDate-2"
+          classname="makeStyles-chevronDate-2"
         >
           <mock-chevronleft />
         </mock-button>
         <div
-          class="MuiGrid-root memo-dateContainer-7"
+          class="MuiGrid-root makeStyles-dateContainer-7"
         >
           <div
-            class="memo-timeline-9 react-draggable"
+            class="makeStyles-timeline-9 react-draggable"
             id="dateTimelineSelector"
             style="transform: translate(-276px,0px);"
           >
             <div
-              class="MuiGrid-root memo-dateLabelContainer-8 MuiGrid-container"
+              class="MuiGrid-root makeStyles-dateLabelContainer-8 MuiGrid-container"
             >
               mock-timelineitems
             </div>
             <div
-              class="memo-pointer-10 react-draggable"
+              class="makeStyles-pointer-10 react-draggable"
               id="datePointerSelector"
               style="transform: translate(276px,0px);"
             >
@@ -62,7 +62,7 @@ exports[`renders as expected 1`] = `
           </div>
         </div>
         <mock-button
-          classname="memo-chevronDate-2"
+          classname="makeStyles-chevronDate-2"
         >
           <mock-chevronright />
         </mock-button>

@@ -3,7 +3,7 @@
 exports[`renders as expected 1`] = `
 <div>
   <mock-button
-    classname="ForwardRef-buttonStyle-1"
+    classname="makeStyles-buttonStyle-1"
     variant="outlined"
   >
     Some Value

@@ -3,24 +3,24 @@
 exports[`renders as expected 1`] = `
 <div>
   <mock-appbar
-    classname="NavBar-appBar-2"
+    classname="makeStyles-appBar-2"
     position="static"
   >
     <mock-toolbar
       variant="dense"
     >
       <div
-        class="NavBar-navbarContainer-10"
+        class="makeStyles-navbarContainer-10"
       >
         <div
-          class="NavBar-leftSideContainer-11"
+          class="makeStyles-leftSideContainer-11"
         >
           <div
-            class="NavBar-titleContainer-12"
+            class="makeStyles-titleContainer-12"
           >
             <img
               alt="logo"
-              class="NavBar-logo-1"
+              class="makeStyles-logo-1"
               src="images/moz-flag-inam-logo.png"
             />
             <div
@@ -28,7 +28,7 @@ exports[`renders as expected 1`] = `
               style="display: flex; flex-direction: column;"
             >
               <mock-typography
-                classname="NavBar-title-4"
+                classname="makeStyles-title-4"
                 color="secondary"
                 variant="h6"
               >
@@ -37,10 +37,10 @@ exports[`renders as expected 1`] = `
             </div>
           </div>
           <div
-            class="NavBar-panelsContainer-13"
+            class="makeStyles-panelsContainer-13"
           >
             <mock-button
-              classname="NavBar-panelButton-3"
+              classname="makeStyles-panelButton-3"
               starticon="[object Object]"
               style="background-color: rgb(99, 178, 189); color: rgb(16, 16, 16);"
             >
@@ -51,7 +51,7 @@ exports[`renders as expected 1`] = `
               </mock-typography>
             </mock-button>
             <mock-button
-              classname="NavBar-panelButton-3"
+              classname="makeStyles-panelButton-3"
               starticon="[object Object]"
             >
               <mock-typography
@@ -61,7 +61,7 @@ exports[`renders as expected 1`] = `
               </mock-typography>
             </mock-button>
             <mock-button
-              classname="NavBar-panelButton-3"
+              classname="makeStyles-panelButton-3"
               starticon="[object Object]"
             >
               <mock-typography
@@ -71,7 +71,7 @@ exports[`renders as expected 1`] = `
               </mock-typography>
             </mock-button>
             <mock-button
-              classname="NavBar-panelButton-3"
+              classname="makeStyles-panelButton-3"
               starticon="[object Object]"
             >
               <mock-typography
@@ -96,10 +96,10 @@ exports[`renders as expected 1`] = `
           </div>
         </div>
         <div
-          class="NavBar-rightSideContainer-14"
+          class="makeStyles-rightSideContainer-14"
         >
           <mock-button
-            classname="memo-triggerButton-23"
+            classname="makeStyles-triggerButton-23"
             starticon="[object Object]"
             style="background-color: rgb(99, 178, 189);"
           >
@@ -110,7 +110,7 @@ exports[`renders as expected 1`] = `
             </mock-typography>
           </mock-button>
           <mock-list
-            classname="memo-list-24"
+            classname="makeStyles-list-24"
             disablepadding="true"
           />
           <mock-printimage />
@@ -173,7 +173,7 @@ exports[`renders as expected 1`] = `
             </mock-typography>
           </mock-button>
           <mock-menu
-            classname="LanguageSelector-block-26"
+            classname="makeStyles-block-26"
             open="false"
           >
             <mock-menuitem>

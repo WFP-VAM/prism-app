@@ -7,7 +7,7 @@ exports[`renders as expected 1`] = `
     disablegutters="true"
   >
     <div
-      class="MuiPaper-root memo-paper-1 MuiPaper-elevation1 MuiPaper-rounded"
+      class="MuiPaper-root makeStyles-paper-1 MuiPaper-elevation1 MuiPaper-rounded"
     >
       <div
         class="MuiGrid-root MuiGrid-item"
@@ -90,7 +90,7 @@ exports[`renders as expected 1`] = `
           open="false"
         >
           <div
-            class="MuiBox-root MuiBox-root-14 memo-opacityBox-3"
+            class="MuiBox-root MuiBox-root-14 makeStyles-opacityBox-3"
             style="padding-left: 2px; padding-right: 2px; display: flex;"
           >
             <mock-typography
@@ -99,7 +99,7 @@ exports[`renders as expected 1`] = `
               0%
             </mock-typography>
             <span
-              class="MuiSlider-root memo-opacitySliderRoot-4 MuiSlider-colorPrimary"
+              class="MuiSlider-root makeStyles-opacitySliderRoot-4 MuiSlider-colorPrimary"
             >
               <span
                 class="MuiSlider-rail"
@@ -118,7 +118,7 @@ exports[`renders as expected 1`] = `
                 aria-valuemax="1"
                 aria-valuemin="0"
                 aria-valuenow="NaN"
-                class="MuiSlider-thumb memo-opacitySliderThumb-5 MuiSlider-thumbColorPrimary"
+                class="MuiSlider-thumb makeStyles-opacitySliderThumb-5 MuiSlider-thumbColorPrimary"
                 data-index="0"
                 role="slider"
                 tabindex="0"

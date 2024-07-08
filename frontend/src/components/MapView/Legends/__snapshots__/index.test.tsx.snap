@@ -3,7 +3,7 @@
 exports[`renders as expected 1`] = `
 <div>
   <mock-button
-    classname="memo-triggerButton-1"
+    classname="makeStyles-triggerButton-1"
     starticon="[object Object]"
     style="background-color: rgb(99, 178, 189);"
   >
@@ -14,7 +14,7 @@ exports[`renders as expected 1`] = `
     </mock-typography>
   </mock-button>
   <mock-list
-    classname="memo-list-2"
+    classname="makeStyles-list-2"
     disablepadding="true"
   />
 </div>

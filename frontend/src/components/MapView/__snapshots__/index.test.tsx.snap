@@ -3,7 +3,7 @@
 exports[`renders as expected 1`] = `
 <div>
   <div
-    class="MuiBox-root MuiBox-root-3 memo-root-1"
+    class="MuiBox-root MuiBox-root-3 makeStyles-root-1"
   >
     <mock-drawer
       anchor="left"
@@ -1354,14 +1354,14 @@ exports[`renders as expected 1`] = `
       </div>
     </mock-drawer>
     <div
-      class="MuiBox-root MuiBox-root-95 OtherFeatures-container-93"
+      class="MuiBox-root MuiBox-root-95 makeStyles-container-93"
     >
       <div
-        class="MuiBox-root MuiBox-root-96 OtherFeatures-optionContainer-94"
+        class="MuiBox-root MuiBox-root-96 makeStyles-optionContainer-94"
       />
     </div>
     <div
-      class="memo-loading-2"
+      class="makeStyles-loading-2"
     >
       <mock-circularprogress
         size="100"

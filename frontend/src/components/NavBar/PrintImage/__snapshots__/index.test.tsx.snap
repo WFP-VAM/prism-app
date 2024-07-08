@@ -42,10 +42,10 @@ exports[`renders as expected 1`] = `
     open="false"
   >
     <mock-dialogcontent
-      classname="DownloadImage-contentContainer-1"
+      classname="makeStyles-contentContainer-1"
     >
       <div
-        class="PrintPreview-previewContainer-10"
+        class="makeStyles-previewContainer-10"
       >
         <div
           style="width: 100%; height: 100%;"
@@ -54,7 +54,7 @@ exports[`renders as expected 1`] = `
             style="position: relative; z-index: 3; border: 1px solid black; height: 100%; width: 100%;"
           >
             <div
-              class="PrintPreview-printContainer-4"
+              class="makeStyles-printContainer-4"
             >
               <img
                 alt="northArrow"
@@ -62,7 +62,7 @@ exports[`renders as expected 1`] = `
                 style="position: absolute; z-index: 3; width: 50px; bottom: 60px; right: 10px;"
               />
               <div
-                class="PrintPreview-titleOverlay-6"
+                class="makeStyles-titleOverlay-6"
                 style="min-height: 32px;"
               >
                 <img
@@ -78,7 +78,7 @@ exports[`renders as expected 1`] = `
                 </mock-typography>
               </div>
               <div
-                class="PrintPreview-footerOverlay-7"
+                class="makeStyles-footerOverlay-7"
               >
                 <mock-typography
                   style="font-size: 12px;"
@@ -90,12 +90,12 @@ exports[`renders as expected 1`] = `
                 style="position: absolute; z-index: 2; top: 0px; left: 8px; display: flex; justify-content: flex-start; width: 20px; transform: scale(1);"
               >
                 <mock-list
-                  classname="PrintPreview-legendListStyle-8"
+                  classname="makeStyles-legendListStyle-8"
                   disablepadding="true"
                 />
               </div>
               <div
-                class="PrintPreview-mapContainer-5"
+                class="makeStyles-mapContainer-5"
               />
             </div>
           </div>
@@ -106,17 +106,17 @@ exports[`renders as expected 1`] = `
         style="overflow: scroll;"
       >
         <div
-          class="PrintConfig-optionsContainer-14"
+          class="makeStyles-optionsContainer-14"
         >
           <div>
             <div
-              class="MuiBox-root MuiBox-root-21 PrintConfig-title-11"
+              class="MuiBox-root MuiBox-root-21 makeStyles-title-11"
               style="font-size: 14px; font-weight: 900; margin-bottom: 1em;"
             >
               Map Options
             </div>
             <button
-              class="MuiButtonBase-root MuiIconButton-root PrintConfig-closeButton-13"
+              class="MuiButtonBase-root MuiIconButton-root makeStyles-closeButton-13"
               tabindex="0"
               type="button"
             >
@@ -140,7 +140,7 @@ exports[`renders as expected 1`] = `
             </button>
           </div>
           <div
-            class="PrintConfig-optionWrap-15"
+            class="makeStyles-optionWrap-15"
           >
             <mock-textfield
               fullwidth="true"
@@ -275,12 +275,12 @@ exports[`renders as expected 1`] = `
           </div>
           <div>
             <div
-              class="PrintConfig-collapsibleWrapper-16 PrintConfig-collapsibleWrapperExpanded-17"
+              class="makeStyles-collapsibleWrapper-16 makeStyles-collapsibleWrapperExpanded-17"
             >
               <mock-switch
                 checked="true"
                 classes="[object Object]"
-                classname="Switch-switch-25"
+                classname="makeStyles-switch-25"
                 color="primary"
                 inputprops="[object Object]"
               />
@@ -455,12 +455,12 @@ exports[`renders as expected 1`] = `
           </div>
           <div>
             <div
-              class="PrintConfig-collapsibleWrapper-16 "
+              class="makeStyles-collapsibleWrapper-16 "
             >
               <mock-switch
                 checked="true"
                 classes="[object Object]"
-                classname="Switch-switch-25"
+                classname="makeStyles-switch-25"
                 color="primary"
                 inputprops="[object Object]"
               />
@@ -486,12 +486,12 @@ exports[`renders as expected 1`] = `
           </div>
           <div>
             <div
-              class="PrintConfig-collapsibleWrapper-16 "
+              class="makeStyles-collapsibleWrapper-16 "
             >
               <mock-switch
                 checked="false"
                 classes="[object Object]"
-                classname="Switch-switch-25"
+                classname="makeStyles-switch-25"
                 color="primary"
                 inputprops="[object Object]"
               />
@@ -513,7 +513,7 @@ exports[`renders as expected 1`] = `
                   class="MuiCollapse-wrapperInner"
                 >
                   <div
-                    class="PrintConfig-optionWrap-15"
+                    class="makeStyles-optionWrap-15"
                   >
                     <mock-circularprogress
                       color="inherit"
@@ -527,12 +527,12 @@ exports[`renders as expected 1`] = `
           </div>
           <div>
             <div
-              class="PrintConfig-collapsibleWrapper-16 PrintConfig-collapsibleWrapperExpanded-17"
+              class="makeStyles-collapsibleWrapper-16 makeStyles-collapsibleWrapperExpanded-17"
             >
               <mock-switch
                 checked="true"
                 classes="[object Object]"
-                classname="Switch-switch-25"
+                classname="makeStyles-switch-25"
                 color="primary"
                 inputprops="[object Object]"
               />
@@ -619,12 +619,12 @@ exports[`renders as expected 1`] = `
                           </div>
                         </div>
                         <div
-                          class="PrintConfig-collapsibleWrapper-16"
+                          class="makeStyles-collapsibleWrapper-16"
                         >
                           <mock-switch
                             checked="true"
                             classes="[object Object]"
-                            classname="Switch-switch-25"
+                            classname="makeStyles-switch-25"
                             color="primary"
                             inputprops="[object Object]"
                           />
@@ -778,12 +778,12 @@ exports[`renders as expected 1`] = `
           </div>
           <div>
             <div
-              class="PrintConfig-collapsibleWrapper-16 PrintConfig-collapsibleWrapperExpanded-17"
+              class="makeStyles-collapsibleWrapper-16 makeStyles-collapsibleWrapperExpanded-17"
             >
               <mock-switch
                 checked="true"
                 classes="[object Object]"
-                classname="Switch-switch-25"
+                classname="makeStyles-switch-25"
                 color="primary"
                 inputprops="[object Object]"
               />
@@ -949,7 +949,7 @@ exports[`renders as expected 1`] = `
             </div>
           </div>
           <mock-button
-            classname="PrintConfig-gutter-12"
+            classname="makeStyles-gutter-12"
             color="primary"
             endicon="[object Object]"
             style="background-color: rgb(99, 178, 189); color: black;"
