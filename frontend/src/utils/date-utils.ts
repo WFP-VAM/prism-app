@@ -195,6 +195,6 @@ export const getSeasonBounds = (date: Date) => {
   ) as [number, number];
   return {
     start: new Date(date.getFullYear(), foundSeason[0], 1),
-    end: new Date(date.getFullYear(), foundSeason[1] + 1, -1),
+    end: new Date(date.getFullYear(), foundSeason[1] + 1, 1),
   };
 };
