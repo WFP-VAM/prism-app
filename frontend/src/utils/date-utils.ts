@@ -190,11 +190,11 @@ const SEASON_MAP: [number, number][] = [
 
 export const getSeasonBounds = (date: Date) => {
   const monthIndex = date.getMonth();
-  const season = SEASON_MAP.find(
+  const foundSeason = SEASON_MAP.find(
     season => season[0] <= monthIndex && monthIndex <= season[1],
   ) as [number, number];
   return {
-    start: new Date(date.getFullYear(), season[0], 1),
-    end: new Date(date.getFullYear(), season[1] + 1, -1),
+    start: new Date(date.getFullYear(), foundSeason[0], 1),
+    end: new Date(date.getFullYear(), foundSeason[1] + 1, -1),
   };
 };
