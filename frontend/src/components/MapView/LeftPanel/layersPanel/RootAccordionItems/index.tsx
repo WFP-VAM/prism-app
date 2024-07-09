@@ -1,11 +1,15 @@
 import { LayersCategoryType, MenuItemType } from 'config/types';
-import React, { memo } from 'react';
+import React, { memo, useMemo } from 'react';
 import useLayers from 'utils/layers-utils';
 import MenuItem from '../MenuItem';
-import { menuList } from '../../utils';
+import { getDynamicMenuList } from '../../utils';
 
 const RootAccordionItems = () => {
   const { adminBoundariesExtent: extent } = useLayers();
+  const { selectedLayers } = useLayers();
+  const menuList = useMemo(() => getDynamicMenuList(selectedLayers), [
+    selectedLayers,
+  ]);
 
   const layersMenuItems = menuList.filter((menuItem: MenuItemType) => {
     return menuItem.layersCategories.some(

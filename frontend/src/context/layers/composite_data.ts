@@ -4,7 +4,7 @@ import type { CompositeLayerProps } from 'config/types';
 import { fetchWithTimeout } from 'utils/fetch-with-timeout';
 import { LocalError } from 'utils/error-utils';
 import { addNotification } from 'context/notificationStateSlice';
-import { getFormattedDate } from 'utils/date-utils';
+import { getFormattedDate, getSeasonBounds } from 'utils/date-utils';
 
 import type { LayerDataParams, LazyLoader } from './layer-data';
 
@@ -15,9 +15,13 @@ export const fetchCompositeLayerData: LazyLoader<CompositeLayerProps> = () => as
   { dispatch },
 ) => {
   const { layer, date } = params;
-  const startDate = date ? new Date(date) : new Date();
-  const endDate = new Date(startDate);
-  endDate.setMonth(endDate.getMonth() + 1);
+  const referenceDate = date ? new Date(date) : new Date();
+  const seasonBounds = getSeasonBounds(referenceDate);
+  const useMonthly = !layer.scale || layer.scale === 'monthly';
+  const startDate = useMonthly ? referenceDate : seasonBounds.start;
+  const endDate = useMonthly
+    ? new Date(startDate).setMonth(startDate.getMonth() + 1)
+    : seasonBounds.end;
 
   const {
     baseUrl,

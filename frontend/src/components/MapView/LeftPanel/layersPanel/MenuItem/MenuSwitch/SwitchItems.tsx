@@ -3,6 +3,7 @@ import { getCompositeLayers } from 'config/utils';
 import React, { Fragment, memo } from 'react';
 import { Extent } from 'components/MapView/Layers/raster-utils';
 import { WithStyles, createStyles, withStyles } from '@material-ui/core';
+import useLayers from 'utils/layers-utils';
 import SwitchItem from './SwitchItem';
 
 const styles = createStyles({
@@ -21,12 +22,18 @@ interface SwitchItemsProps extends WithStyles<typeof styles> {
   extent?: Extent;
 }
 const SwitchItems = ({ layers, extent, classes }: SwitchItemsProps) => {
+  const { selectedLayers } = useLayers();
   return (
     <>
       {layers.map((layer: LayerType) => {
         const foundNotRenderedLayer = layer.group?.layers.find(layerItem => {
-          return layerItem.id === layer.id && !layerItem.main;
+          return (
+            layerItem.id === layer.id &&
+            !layerItem.main &&
+            !selectedLayers.some(sl => sl.id === layerItem.id)
+          );
         });
+        console.log(layer.title, foundNotRenderedLayer);
         if (layer.group && foundNotRenderedLayer) {
           return null;
         }

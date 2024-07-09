@@ -7,7 +7,7 @@ import {
 } from '@material-ui/core';
 import { WithStyles } from '@material-ui/styles';
 import { LayerType, MenuGroupItem } from 'config/types';
-import React, { memo, useCallback } from 'react';
+import React, { memo, useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
 const styles = () =>
@@ -71,6 +71,11 @@ const SwitchItemTitle = ({
 }: SwitchTitleProps) => {
   const { t } = useTranslation();
   const { group } = layer;
+  const filteredLayers = useMemo(
+    () =>
+      group ? getFilteredMenuGroupItems(group.layers, groupMenuFilter) : [],
+    [group, groupMenuFilter],
+  );
 
   const handleSelect = useCallback(
     (event: React.ChangeEvent<{ value: string | unknown }>) => {
@@ -102,15 +107,11 @@ const SwitchItemTitle = ({
           onChange={e => handleSelect(e)}
           disabled={disabledMenuSelection}
         >
-          {getFilteredMenuGroupItems(group.layers, groupMenuFilter).map(
-            menu => {
-              return (
-                <MenuItem key={menu.id} value={menu.id}>
-                  {t(menu.label)}
-                </MenuItem>
-              );
-            },
-          )}
+          {filteredLayers.map(menu => (
+            <MenuItem key={menu.id} value={menu.id}>
+              {t(menu.label)}
+            </MenuItem>
+          ))}
         </Select>
       )}
     </>
