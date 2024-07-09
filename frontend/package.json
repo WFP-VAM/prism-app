@@ -49,7 +49,7 @@
     "@material-ui/icons": "^4.11.3",
     "@material-ui/lab": "4.0.0-alpha.61",
     "@material-ui/styles": "4.11.5",
-    "@react-pdf/font": "2.2.0",
+    "@react-pdf/font": "2.5.1",
     "@react-pdf/renderer": "3.4.4",
     "@reduxjs/toolkit": "^1.4.0",
     "@sentry/browser": "^5.15.5",
@@ -115,7 +115,6 @@
     "xml-js": "^1.6.11"
   },
   "resolutions": {
-    "@react-pdf/font": "2.2.0",
     "node-notifier": "^10.0.1"
   },
   "_comment": "The 'defaults' and 'not ie 11' are needed to avoid build issues with maplibre-gl.",

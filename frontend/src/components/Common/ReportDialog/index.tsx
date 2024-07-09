@@ -77,17 +77,6 @@ const ReportDialog = memo(
       [selectedMap],
     );
 
-    // Manual loader wait to show that the document is loading
-    useEffect(() => {
-      const loadingTimer = setTimeout(() => {
-        setDocumentIsLoading(false);
-      }, 15000);
-      if (!open) {
-        return clearTimeout(loadingTimer);
-      }
-      return () => clearTimeout(loadingTimer);
-    }, [open]);
-
     useEffect(() => {
       if (!open) {
         return;
@@ -129,37 +118,16 @@ const ReportDialog = memo(
       theme,
     ]);
 
-    const renderedPdfDocumentLoading = useMemo(() => {
-      if (!documentIsLoading) {
-        return null;
-      }
-      return (
-        <Box className={classes.documentLoadingContainer}>
-          <Typography
-            className={classes.documentLoaderText}
-            variant="body1"
-            component="span"
-          >
-            {t('Loading document')}
-          </Typography>
-          <LoadingBlinkingDots dotColor="white" />
-        </Box>
-      );
-    }, [
-      classes.documentLoaderText,
-      classes.documentLoadingContainer,
-      documentIsLoading,
-      t,
-    ]);
-
     const renderedLoadingButtonText = useCallback(
       ({ loading }: any) => {
-        if (loading || documentIsLoading) {
+        if (loading) {
+          setDocumentIsLoading(true);
           return `${t('Loading document')}...`;
         }
+        setDocumentIsLoading(false);
         return t('Download');
       },
-      [documentIsLoading, t],
+      [t],
     );
 
     const renderedDownloadPdfButton = useMemo(() => {
@@ -235,7 +203,18 @@ const ReportDialog = memo(
             position: 'relative',
           }}
         >
-          {renderedPdfDocumentLoading}
+          {documentIsLoading && (
+            <Box className={classes.documentLoadingContainer}>
+              <Typography
+                className={classes.documentLoaderText}
+                variant="body1"
+                component="span"
+              >
+                {t('Loading document')}
+              </Typography>
+              <LoadingBlinkingDots dotColor="white" />
+            </Box>
+          )}
           {renderedPdfViewer}
         </DialogContent>
         <DialogActions className={classes.actions}>
@@ -250,6 +229,7 @@ const ReportDialog = memo(
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     documentLoadingContainer: {
+      zIndex: 1000,
       backgroundColor: 'white',
       display: 'flex',
       justifyContent: 'center',

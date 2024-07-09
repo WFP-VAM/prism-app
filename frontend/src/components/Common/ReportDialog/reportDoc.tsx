@@ -1,7 +1,6 @@
 import { memo, useMemo } from 'react';
 import {
   Document,
-  Font,
   Image,
   Page,
   StyleSheet,
@@ -13,24 +12,11 @@ import { TableRow as AnalysisTableRow } from 'context/analysisResultStateSlice';
 import { getLegendItemLabel } from 'components/MapView/utils';
 import { LegendDefinition, ReportType } from 'config/types';
 import { Column } from 'utils/analysis-utils';
-import RobotoFont from 'fonts/Roboto-Regular.ttf';
-import KhmerFont from 'fonts/Khmer-Regular.ttf';
 import { useSafeTranslation } from 'i18n';
 import { PDFLegendDefinition } from './types';
 import ReportDocLegend from './ReportDocLegend';
 import ReportDocTable from './ReportDocTable';
 import { getReportFontFamily } from './utils';
-
-// Register all the fonts necessary
-Font.register({
-  family: 'Roboto',
-  src: RobotoFont,
-});
-
-Font.register({
-  family: 'Khmer',
-  src: KhmerFont,
-});
 
 const makeStyles = (theme: Theme, selectedLanguage: string) =>
   StyleSheet.create({
@@ -234,55 +220,51 @@ const ReportDoc = memo(
     );
 
     return (
-      // @ts-ignore
       <Document>
-        {1 && (
-          // @ts-ignore
-          <Page size="A4" style={styles.page}>
-            <View style={[styles.section]}>
-              <Text style={styles.title}>{reportTitle}</Text>
-              <Text style={styles.title}>
-                {t(reportConfig.publicationDateLabel)}: {date}
-              </Text>
-              {renderedSubText}
-            </View>
-            <View style={styles.section}>
-              <Image src={mapImage} style={styles.mapImage} />
-            </View>
-            <View style={[styles.legendsContainer, styles.section]}>
-              <ReportDocLegend
-                theme={theme}
-                title={t(reportConfig.areasLegendDefinition.title)}
-                definition={areasLegendDefinition}
-              />
-              <ReportDocLegend
-                title={t(reportConfig.typeLegendDefinition.title)}
-                definition={typeLegendDefinition}
-                theme={theme}
-              />
-              <ReportDocLegend
-                title="Population Exposure"
-                definition={populationExposureLegendDefinition}
-                theme={theme}
-              />
-            </View>
-            {renderedSourcesView}
-            <View style={[styles.section]}>
-              <ReportDocTable
-                theme={theme}
-                name={tableName}
-                rows={trimmedTableRows}
-                columns={columns}
-                cellWidth={tableCellWidth}
-                showTotal={tableShowTotal}
-                showRowTotal={showRowTotal}
-              />
-            </View>
-            <Text fixed style={styles.footer}>
-              {renderedSignatureText}
+        <Page size="A4" style={styles.page}>
+          <View style={[styles.section]}>
+            <Text style={styles.title}>{reportTitle}</Text>
+            <Text style={styles.title}>
+              {t(reportConfig.publicationDateLabel)}: {date}
             </Text>
-          </Page>
-        )}
+            {renderedSubText}
+          </View>
+          <View style={styles.section}>
+            <Image src={mapImage} style={styles.mapImage} />
+          </View>
+          <View style={[styles.legendsContainer, styles.section]}>
+            <ReportDocLegend
+              theme={theme}
+              title={t(reportConfig.areasLegendDefinition.title)}
+              definition={areasLegendDefinition}
+            />
+            <ReportDocLegend
+              title={t(reportConfig.typeLegendDefinition.title)}
+              definition={typeLegendDefinition}
+              theme={theme}
+            />
+            <ReportDocLegend
+              title="Population Exposure"
+              definition={populationExposureLegendDefinition}
+              theme={theme}
+            />
+          </View>
+          {renderedSourcesView}
+          <View style={[styles.section]}>
+            <ReportDocTable
+              theme={theme}
+              name={tableName}
+              rows={trimmedTableRows}
+              columns={columns}
+              cellWidth={tableCellWidth}
+              showTotal={tableShowTotal}
+              showRowTotal={showRowTotal}
+            />
+          </View>
+          <Text fixed style={styles.footer}>
+            {renderedSignatureText}
+          </Text>
+        </Page>
       </Document>
     );
   },
