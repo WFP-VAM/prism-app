@@ -128,20 +128,6 @@ function ExposureAnalysisActions({
         </Button>
       )}
       <Button
-        id="create-report"
-        className={bottomButton}
-        onClick={handleToggleReport(true)}
-        // TOTO - Hide the preview report button for now. Report creation happens in the backend and is cached.
-        style={{
-          position: 'absolute',
-          minWidth: 0,
-          padding: 0,
-          margin: 0,
-        }}
-      >
-        <Typography variant="body2">{t('Preview Report (slow)')}</Typography>
-      </Button>
-      <Button
         className={bottomButton}
         onClick={handleDownloadReport}
         disabled={downloadReportIsLoading}
@@ -156,6 +142,22 @@ function ExposureAnalysisActions({
         tableData={tableData}
         columns={columns}
       />
+      <Button
+        id="create-report"
+        // className={bottomButton}
+        onClick={handleToggleReport(true)}
+        // Hide the preview report button for now. Report creation happens in the backend and is cached.
+        style={{
+          left: -0,
+          opacity: 0,
+          height: 1,
+          minWidth: 0,
+          padding: 0,
+          margin: 0,
+        }}
+      >
+        <Typography variant="body2">{t('Preview Report (slow)')}</Typography>
+      </Button>
     </>
   );
 }
