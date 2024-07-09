@@ -20,25 +20,25 @@ async function processAlert(alert: Alert, alertRepository: Repository<Alert>) {
     id: hazardLayerId,
   } = alert.alertConfig;
 
-  const {
-    id,
-    alertName,
-    createdAt,
-    email,
-    lastTriggered,
-    prismUrl,
-    active,
-  } = alert;
+  const { id, alertName, createdAt, email, lastTriggered, prismUrl, active } =
+    alert;
 
   let availableDates;
   let layerAvailableDates = [];
   try {
-    availableDates = type === 'wms'
-      ? await new WMS(`${baseUrl}/wms`.replace(/([^:]\/)\/+/g, "$1")).getLayerDays()
-      : await fetchCoverageLayerDays(baseUrl);
+    availableDates =
+      type === 'wms'
+        ? await new WMS(
+            `${baseUrl}/wms`.replace(/([^:]\/)\/+/g, '$1'),
+          ).getLayerDays()
+        : await fetchCoverageLayerDays(baseUrl);
     layerAvailableDates = availableDates[serverLayerName];
   } catch (error) {
-    console.warn(`Failed to fetch available dates for ${baseUrl} ${serverLayerName}: ${(error as Error).message}`);
+    console.warn(
+      `Failed to fetch available dates for ${baseUrl} ${serverLayerName}: ${
+        (error as Error).message
+      }`,
+    );
   }
 
   if (!layerAvailableDates) {
@@ -89,9 +89,8 @@ async function processAlert(alert: Alert, alertRepository: Repository<Alert>) {
     console.log(
       `Alert ${id} - '${alert.alertName}' was triggered on ${maxDate}.`,
     );
-    // TODO - Send an email using WFP SMTP servers.
     await sendEmail({
-      from: 'prism-alert@ovio.org',
+      from: 'wfp.prism@wfp.org',
       to: email,
       subject: `PRISM Alert Triggered`,
       text: emailMessage,
