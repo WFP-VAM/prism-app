@@ -668,8 +668,10 @@ export async function getLayersAvailableDates(
     ),
   );
 
-  // eslint-disable-next-line fp/no-mutating-assign
-  return Object.assign(layerDefinitionsBluePrint, ...layerDateItemsMap);
+  return {
+    ...layerDefinitionsBluePrint,
+    ...Object.assign({}, ...layerDateItemsMap),
+  };
 }
 
 /**
