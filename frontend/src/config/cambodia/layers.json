@@ -1950,6 +1950,7 @@
   "cdi": {
     "title": "Combined Drought Index",
     "type": "composite",
+    "scale": "monthly",
     "base_url": "https://to-fill-later",
     "input_layers": [
       { "id": "spi_1m", "weight": 0.4, "interval": "1-month" },

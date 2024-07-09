@@ -2770,6 +2770,7 @@
   "cdi": {
     "title": "Combined Drought Index",
     "type": "composite",
+    "scale": "monthly",
     "base_url": "https://hip-service.ovio.org/q_multi_geojson",
     "input_layers": [
       {
@@ -2853,6 +2854,7 @@
   "cdi_test": {
     "title": "Combined Drought Index (v1)",
     "type": "composite",
+    "scale": "monthly",
     "base_url": "https://hip-service.ovio.org/q_multi_geojson",
     "input_layers": [
       {

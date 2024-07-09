@@ -33,7 +33,6 @@ const SwitchItems = ({ layers, extent, classes }: SwitchItemsProps) => {
             !selectedLayers.some(sl => sl.id === layerItem.id)
           );
         });
-        console.log(layer.title, foundNotRenderedLayer);
         if (layer.group && foundNotRenderedLayer) {
           return null;
         }
