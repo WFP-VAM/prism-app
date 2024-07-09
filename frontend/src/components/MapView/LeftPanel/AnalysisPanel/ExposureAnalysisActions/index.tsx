@@ -134,8 +134,6 @@ function ExposureAnalysisActions({
         // TOTO - Hide the preview report button for now. Report creation happens in the backend and is cached.
         style={{
           position: 'absolute',
-          height: 0,
-          width: 0,
           minWidth: 0,
           padding: 0,
           margin: 0,
