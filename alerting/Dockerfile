@@ -6,6 +6,6 @@ COPY ./common /common
 
 WORKDIR /app
 
-RUN yarn
+RUN yarn --frozen-lockfile
 
 RUN yarn setup:common
