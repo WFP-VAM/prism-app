@@ -2,7 +2,6 @@ import { merge } from 'lodash';
 import i18n from 'i18next';
 import { initReactI18next, useTranslation } from 'react-i18next';
 import { registerLocale } from 'react-datepicker';
-// import { useCallback } from 'react';
 import en from 'date-fns/locale/en-US';
 import fr from 'date-fns/locale/fr';
 import km from 'date-fns/locale/km';
@@ -13,9 +12,10 @@ import mn from 'date-fns/locale/mn';
 
 import { translation } from './config';
 
-// const TRANSLATION_DEBUG = false;
+const TRANSLATION_DEBUG = true;
 // Register other date locales to be used by our DatePicker
 // TODO - extract registerLocale  imports and loading into a separate file for clarity.
+// Test for missing locales
 registerLocale('en', en);
 registerLocale('fr', fr);
 registerLocale('km', km);
@@ -65,6 +65,29 @@ export const resources = merge(
 
 export const languages = Object.keys(resources);
 
+const isDevelopment = ['development', 'test'].includes(
+  process.env.NODE_ENV || '',
+);
+const missingKeys: Record<string, string[]> = {};
+
+function logMissingKey(lng: string, key: string) {
+  if (TRANSLATION_DEBUG || isDevelopment) {
+    // eslint-disable-next-line no-console
+    if (!missingKeys[lng]) {
+      // eslint-disable-next-line fp/no-mutation
+      missingKeys[lng] = [];
+    }
+
+    if (!missingKeys[lng].includes(key) && key !== '') {
+      // eslint-disable-next-line fp/no-mutating-methods
+      missingKeys[lng].push(key);
+      console.warn(`Missing translation key: "${key}" for language: ${lng}`);
+      // eslint-disable-next-line no-console
+      console.log(`Updated missing keys for ${lng}:`, missingKeys[lng]);
+    }
+  }
+}
+
 i18n
   .use(initReactI18next) // passes i18n down to react-i18next
   .init({
@@ -77,6 +100,10 @@ i18n
     preload: languages,
     ns: ['translation'],
     defaultNS: 'translation',
+    saveMissing: true,
+    missingKeyHandler: (lng, _ns, key) => {
+      logMissingKey(Array.isArray(lng) ? lng[0] : lng, key);
+    },
   });
 
 export function useSafeTranslation(): {
