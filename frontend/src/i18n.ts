@@ -12,7 +12,7 @@ import mn from 'date-fns/locale/mn';
 
 import { translation } from './config';
 
-const TRANSLATION_DEBUG = true;
+const TRANSLATION_DEBUG = false;
 // Register other date locales to be used by our DatePicker
 // TODO - extract registerLocale  imports and loading into a separate file for clarity.
 // Test for missing locales
