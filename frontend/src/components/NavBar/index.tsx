@@ -146,8 +146,7 @@ function NavBar({ isAlertFormOpen, setIsAlertFormOpen }: NavBarProps) {
               {panels.map(panel => {
                 const Wrap =
                   badgeContent >= 1 && panel.panel === Panel.Layers
-                    ? // TODO:??
-                      // eslint-disable-next-line react/no-unused-prop-types
+                    ? // eslint-disable-next-line react/no-unused-prop-types
                       ({ children }: { children: React.ReactNode }) => (
                         <Badge
                           anchorOrigin={{

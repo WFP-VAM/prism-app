@@ -78,8 +78,7 @@ const onClick =
       dispatch(
         addPopupData({
           [t('Analysis layer')]: {
-            // TODO: ?
-            data: (analysisData as any).getLayerTitle(t),
+            data: (analysisData as ExposedPopulationResult).getLayerTitle(t),
             coordinates,
           },
           ...(analysisData.analysisDate

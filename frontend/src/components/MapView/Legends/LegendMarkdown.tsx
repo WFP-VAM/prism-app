@@ -7,7 +7,6 @@ interface LegendMarkdownProps {
   children: string;
 }
 
-// TODO: ?
 const p = (classes: ClassNameMap<'legendTextMarkdown'>) =>
   function _p({ children: pChildren }: { children: React.ReactNode }) {
     return (
