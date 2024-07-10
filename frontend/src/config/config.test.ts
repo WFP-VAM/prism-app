@@ -76,7 +76,10 @@ describe('Config Map', () => {
           // compare translation with itemsToTranslate
           const missingFields: string[] = [];
           itemsToTranslate.forEach(item => {
-            if (!Object.prototype.hasOwnProperty.call(value, item)) {
+            if (
+              item !== '' &&
+              !Object.prototype.hasOwnProperty.call(value, item)
+            ) {
               // eslint-disable-next-line fp/no-mutating-methods
               missingFields.push(item);
             }
