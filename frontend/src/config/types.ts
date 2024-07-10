@@ -136,6 +136,7 @@ export function requiredKeysForClassType(constructor: ClassType<any>) {
 export function checkRequiredKeys<T extends Record<string, any>>(
   classType: ClassType<T>,
   maybeType: Record<string, any>,
+  // eslint-disable-next-line default-param-last
   logErrors = false,
   id?: string,
 ): maybeType is T {

@@ -60,7 +60,6 @@ module.exports = {
       },
     ],
     'no-console': ['warn', { allow: ['warn', 'error'] }],
-
     'lines-between-class-members': 'off',
     'max-classes-per-file': 'off',
     'spaced-comment': 'warn',
@@ -87,7 +86,7 @@ module.exports = {
     'no-shadow': 'off',
     '@typescript-eslint/no-shadow': 'warn',
     'react/prop-types': 'off',
-    'default-param-last': 'off',
+    'default-param-last': 'warn',
   },
   settings: {
     'import/resolver': {
