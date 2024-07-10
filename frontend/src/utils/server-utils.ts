@@ -318,11 +318,11 @@ export function generateIntermediateDateItemFromValidity(
   const sortedDates = Array.prototype.sort.call(dates) as typeof dates;
 
   // only calculate validity for dates that are less than 5 years old
-  const fiveYearsInMs = 5 * 365 * oneDayInMs;
+  const EXTENDED_VALIDITY_YEARS = 5;
+  const fiveYearsInMs = EXTENDED_VALIDITY_YEARS * 365 * oneDayInMs;
   const earliestDate = Date.now() - fiveYearsInMs;
 
   const dateItemsWithValidity = sortedDates
-    .filter(date => date > earliestDate)
     .map(d => {
       const date = new Date(d);
       date.setUTCHours(12, 0, 0, 0);
@@ -332,6 +332,19 @@ export function generateIntermediateDateItemFromValidity(
       // We create the start and the end date for every date
       const startDate = new Date(date.getTime());
       const endDate = new Date(date.getTime());
+
+      // only calculate validity for dates that are less than 5 years old
+      if (date.getTime() < earliestDate) {
+        return [
+          ...acc,
+          {
+            displayDate: date.getTime(),
+            queryDate: date.getTime(),
+            startDate: date.getTime(),
+            endDate: date.getTime(),
+          },
+        ] as DateItem[];
+      }
 
       if (mode === DatesPropagation.DAYS) {
         // If mode is "days", adjust dates directly based on the duration

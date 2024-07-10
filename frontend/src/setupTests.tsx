@@ -1,3 +1,4 @@
+import React from 'react';
 // jest-dom adds custom jest matchers for asserting on DOM nodes.
 // allows you to do things like:
 // expect(element).toHaveTextContent(/react/i)
@@ -41,6 +42,11 @@ jest.mock('@react-pdf/renderer', () => ({
   StyleSheet: { create: () => {} },
   Font: { register: () => {} },
 }));
+
+// https://github.com/remarkjs/react-markdown/issues/635
+jest.mock('react-markdown', () => (props: { children: React.ReactNode }) => {
+  return <>{props.children}</>;
+});
 
 jest.mock('max-inscribed-circle', () => ({}));
 

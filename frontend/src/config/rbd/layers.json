@@ -95,7 +95,7 @@
     },
     "date_interval": "days",
     "opacity": 0.7,
-    "legend_text": "Estimate of precipitation over a 10-day period derived from CHIRPS (UCSB Climate Hazards Group). https://www.chc.ucsb.edu/data/chirps",
+    "legend_text": "Estimate of precipitation over a 10-day period derived from [CHIRPS (UCSB Climate Hazards Group)](https://www.chc.ucsb.edu/data/chirps).",
     "legend": [
       {
         "value": 0,
@@ -230,7 +230,7 @@
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
     "opacity": 0.7,
-    "legend_text": "10-day precipitation anomaly compared to the long term average. Derived from CHIRPS (UCSB Climate Hazards Group). https://www.chc.ucsb.edu/data/chirps",
+    "legend_text": "10-day precipitation anomaly compared to the long term average. Derived from [CHIRPS (UCSB Climate Hazards Group)](https://www.chc.ucsb.edu/data/chirps).",
     "legend": [
       {
         "value": 0,
@@ -343,7 +343,7 @@
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
     "opacity": 0.7,
-    "legend_text": "Total aggregate precipitation over a 1-month period, rolling every 10 days. Derived from CHIRPS (UCSB Climate Hazards Group). https://www.chc.ucsb.edu/data/chirps",
+    "legend_text": "Total aggregate precipitation over a 1-month period, rolling every 10 days. Derived from [CHIRPS (UCSB Climate Hazards Group)](https://www.chc.ucsb.edu/data/chirps).",
     "legend": [
       {
         "value": 0,
@@ -478,7 +478,7 @@
     },
     "date_interval": "days",
     "opacity": 0.7,
-    "legend_text": "Monthly precipitation anomaly compared to the long term average. Derived from CHIRPS (UCSB Climate Hazards Group). https://www.chc.ucsb.edu/data/chirps",
+    "legend_text": "Monthly precipitation anomaly compared to the long term average. Derived from [CHIRPS (UCSB Climate Hazards Group)](https://www.chc.ucsb.edu/data/chirps).",
     "legend": [
       {
         "value": 0,
@@ -591,7 +591,7 @@
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
     "opacity": 0.7,
-    "legend_text": "Total aggregate precipitation over a 3-month period, rolling every 10 days. Derived from CHIRPS (UCSB Climate Hazards Group). https://www.chc.ucsb.edu/data/chirps",
+    "legend_text": "Total aggregate precipitation over a 3-month period, rolling every 10 days. Derived from [CHIRPS (UCSB Climate Hazards Group)](https://www.chc.ucsb.edu/data/chirps).",
     "legend": [
       {
         "value": 0,
@@ -726,7 +726,7 @@
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
     "opacity": 0.7,
-    "legend_text": "3-month precipitation anomaly compared to the long term average. Derived from CHIRPS (UCSB Climate Hazards Group). https://www.chc.ucsb.edu/data/chirps",
+    "legend_text": "3-month precipitation anomaly compared to the long term average. Derived from [CHIRPS (UCSB Climate Hazards Group)](https://www.chc.ucsb.edu/data/chirps).",
     "legend": [
       {
         "value": 0,
@@ -814,7 +814,7 @@
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
     "opacity": 0.7,
-    "legend_text": "Total aggregate precipitation over a 6-month period, rolling every 10 days. Derived from CHIRPS (UCSB Climate Hazards Group). https://www.chc.ucsb.edu/data/chirps",
+    "legend_text": "Total aggregate precipitation over a 6-month period, rolling every 10 days. Derived from [CHIRPS (UCSB Climate Hazards Group)](https://www.chc.ucsb.edu/data/chirps).",
     "legend": [
       {
         "value": 0,
@@ -912,7 +912,7 @@
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
     "opacity": 0.7,
-    "legend_text": "6-month precipitation anomaly compared to the long term average. Derived from CHIRPS (UCSB Climate Hazards Group). https://www.chc.ucsb.edu/data/chirps",
+    "legend_text": "6-month precipitation anomaly compared to the long term average. Derived from [CHIRPS (UCSB Climate Hazards Group)](https://www.chc.ucsb.edu/data/chirps).",
     "legend": [
       {
         "value": 0,
@@ -1000,7 +1000,7 @@
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
     "opacity": 0.7,
-    "legend_text": "Total aggregate precipitation over a 9-month period, rolling every 10 days. Derived from CHIRPS (UCSB Climate Hazards Group). https://www.chc.ucsb.edu/data/chirps",
+    "legend_text": "Total aggregate precipitation over a 9-month period, rolling every 10 days. Derived from [CHIRPS (UCSB Climate Hazards Group)](https://www.chc.ucsb.edu/data/chirps).",
     "legend": [
       {
         "value": 0,
@@ -1098,7 +1098,7 @@
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
     "opacity": 0.7,
-    "legend_text": "9-month precipitation anomaly compared to the long term average. Derived from CHIRPS (UCSB Climate Hazards Group). https://www.chc.ucsb.edu/data/chirps",
+    "legend_text": "9-month precipitation anomaly compared to the long term average. Derived from [CHIRPS (UCSB Climate Hazards Group)](https://www.chc.ucsb.edu/data/chirps).",
     "legend": [
       {
         "value": 0,
@@ -1186,7 +1186,7 @@
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
     "opacity": 0.7,
-    "legend_text": "Total aggregate precipitation over a 1-year period, rolling every 10 days. Derived from CHIRPS (UCSB Climate Hazards Group). https://www.chc.ucsb.edu/data/chirps",
+    "legend_text": "Total aggregate precipitation over a 1-year period, rolling every 10 days. Derived from [CHIRPS (UCSB Climate Hazards Group)](https://www.chc.ucsb.edu/data/chirps).",
     "legend": [
       {
         "value": 0,
@@ -1284,7 +1284,7 @@
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
     "opacity": 0.7,
-    "legend_text": "1-year precipitation anomaly compared to the long term average. Derived from CHIRPS (UCSB Climate Hazards Group). https://www.chc.ucsb.edu/data/chirps",
+    "legend_text": "1-year precipitation anomaly compared to the long term average. Derived from [CHIRPS (UCSB Climate Hazards Group)](https://www.chc.ucsb.edu/data/chirps).",
     "legend": [
       {
         "value": 0,
@@ -3065,12 +3065,13 @@
     "type": "admin_level_data",
     "path": "data/rbd/ica.json",
     "data_field": "fs_recurrence_nat",
+    "display_source": "legend_label",
     "admin_level": 2,
     "admin_code": "admin2Pcod",
     "opacity": 0.7,
     "legend": [
       {
-        "value": 1,
+        "value": 0,
         "label": "1 - Low",
         "color": "#FFB597"
       },
@@ -3092,12 +3093,13 @@
     "type": "admin_level_data",
     "path": "data/rbd/ica.json",
     "data_field": "fs_recurrence_reg",
+    "display_source": "legend_label",
     "admin_level": 2,
     "admin_code": "admin2Pcod",
     "opacity": 0.7,
     "legend": [
       {
-        "value": 1,
+        "value": 0,
         "label": "1 - Low",
         "color": "#FFB597"
       },
@@ -3119,12 +3121,13 @@
     "type": "admin_level_data",
     "path": "data/rbd/ica.json",
     "data_field": "npgs_classnat",
+    "display_source": "legend_label",
     "admin_level": 2,
     "admin_code": "admin2Pcod",
     "opacity": 0.7,
     "legend": [
       {
-        "value": 1,
+        "value": 0,
         "label": "1 - Low",
         "color": "#F0CA6A"
       },
@@ -3146,12 +3149,13 @@
     "type": "admin_level_data",
     "path": "data/rbd/ica.json",
     "data_field": "npgs_classreg",
+    "display_source": "legend_label",
     "admin_level": 2,
     "admin_code": "admin2Pcod",
     "opacity": 0.7,
     "legend": [
       {
-        "value": 1,
+        "value": 0,
         "label": "1 - Low",
         "color": "#F0CA6A"
       },
@@ -3173,12 +3177,13 @@
     "type": "admin_level_data",
     "path": "data/rbd/ica.json",
     "data_field": "floodclass",
+    "display_source": "legend_label",
     "admin_level": 2,
     "admin_code": "admin2Pcod",
     "opacity": 0.7,
     "legend": [
       {
-        "value": 1,
+        "value": 0,
         "label": "1 - Low",
         "color": "#66CCFF"
       },
@@ -3200,12 +3205,13 @@
     "type": "admin_level_data",
     "path": "data/rbd/ica.json",
     "data_field": "lsclass",
+    "display_source": "legend_label",
     "admin_level": 2,
     "admin_code": "admin2Pcod",
     "opacity": 0.7,
     "legend": [
       {
-        "value": 1,
+        "value": 0,
         "label": "1 - Low",
         "color": "#FFCCFF"
       },
@@ -3227,6 +3233,7 @@
     "type": "admin_level_data",
     "path": "data/rbd/ica.json",
     "data_field": "combined_hazard_risk_nat",
+    "display_source": "legend_label",
     "admin_level": 2,
     "admin_code": "admin2Pcod",
     "opacity": 0.7,
@@ -3254,6 +3261,7 @@
     "type": "admin_level_data",
     "path": "data/rbd/ica.json",
     "data_field": "combined_hazard_risk_reg",
+    "display_source": "legend_label",
     "admin_level": 2,
     "admin_code": "admin2Pcod",
     "opacity": 0.7,
@@ -3281,52 +3289,54 @@
     "type": "admin_level_data",
     "path": "data/rbd/ica_focus_areas.json",
     "data_field": "ica_area_nat",
+    "data_label": "Classification",
+    "display_source": "legend_label",
     "admin_level": 2,
     "admin_code": "admin2Pcod",
     "opacity": 0.7,
     "legend": [
       {
-        "value": "1",
+        "value": 1,
         "label": "1A",
         "color": "#7030A0"
       },
       {
-        "value": "2",
+        "value": 2,
         "label": "1B",
         "color": "#9954CC"
       },
       {
-        "value": "3",
+        "value": 3,
         "label": "2A",
         "color": "#E10000"
       },
       {
-        "value": "4",
+        "value": 4,
         "label": "2B",
         "color": "#E16161"
       },
       {
-        "value": "5",
+        "value": 5,
         "label": "3A",
         "color": "#FFA401"
       },
       {
-        "value": "6",
+        "value": 6,
         "label": "3B",
         "color": "#FFC969"
       },
       {
-        "value": "7",
+        "value": 7,
         "label": "4A",
         "color": "#FFFF00"
       },
       {
-        "value": "8",
+        "value": 8,
         "label": "4B",
         "color": "#FFFF99"
       },
       {
-        "value": "9",
+        "value": 9,
         "label": "5",
         "color": "#CCFF99"
       }
@@ -3338,52 +3348,54 @@
     "type": "admin_level_data",
     "path": "data/rbd/ica_focus_areas.json",
     "data_field": "ica_area_reg",
+    "data_label": "Classification",
+    "display_source": "legend_label",
     "admin_level": 2,
     "admin_code": "admin2Pcod",
     "opacity": 0.7,
     "legend": [
       {
-        "value": "1",
+        "value": 1,
         "label": "1A",
         "color": "#7030A0"
       },
       {
-        "value": "2",
+        "value": 2,
         "label": "1B",
         "color": "#9954CC"
       },
       {
-        "value": "3",
+        "value": 3,
         "label": "2A",
         "color": "#E10000"
       },
       {
-        "value": "4",
+        "value": 4,
         "label": "2B",
         "color": "#E16161"
       },
       {
-        "value": "5",
+        "value": 5,
         "label": "3A",
         "color": "#FFA401"
       },
       {
-        "value": "6",
+        "value": 6,
         "label": "3B",
         "color": "#FFC969"
       },
       {
-        "value": "7",
+        "value": 7,
         "label": "4A",
         "color": "#FFFF00"
       },
       {
-        "value": "8",
+        "value": 8,
         "label": "4B",
         "color": "#FFFF99"
       },
       {
-        "value": "9",
+        "value": 9,
         "label": "5",
         "color": "#CCFF99"
       }
@@ -3583,6 +3595,7 @@
     "fallbackLayerKeys": ["ch_phase_admin1"],
     "admin_level": 2,
     "data_field": "calc_ph_admin2",
+    "display_source": "legend_label",
     "admin_code": "adm2_pcod2",
     "opacity": 0.7,
     "feature_info_props": {
@@ -3654,6 +3667,8 @@
     "path": "data/rbd/ch/admin1_{YYYY_MM_DD}.json",
     "admin_level": 1,
     "data_field": "calc_ph_admin1",
+    "data_label": "Classification",
+    "display_source": "legend_label",
     "admin_code": "adm1_pcod2",
     "opacity": 0.7,
     "feature_info_props": {
@@ -3752,6 +3767,7 @@
     "fallbackLayerKeys": ["ch_pop3_5_admin1"],
     "admin_level": 2,
     "data_field": "calc_pop_ph3_5_admin2",
+    "display_source": "legend_label",
     "admin_code": "adm2_pcod2",
     "opacity": 0.7,
     "feature_info_props": {
@@ -3833,6 +3849,7 @@
     "path": "data/rbd/ch/admin1_{YYYY_MM_DD}.json",
     "admin_level": 1,
     "data_field": "calc_pop_ph3_5_admin1",
+    "display_source": "legend_label",
     "admin_code": "adm1_pcod2",
     "opacity": 0.7,
     "feature_info_props": {
@@ -4129,6 +4146,7 @@
     },
     "admin_level": 2,
     "data_field": "phase_class",
+    "display_source": "legend_label",
     "admin_code": "adm2_pcod2",
     "fallbackLayerKeys": ["ch_idps_phase_admin1"],
     "opacity": 0.7,
@@ -4177,6 +4195,7 @@
     "path": "data/rbd/ch/idps_admin1_{YYYY_MM_DD}.json",
     "admin_level": 1,
     "data_field": "phase_class",
+    "display_source": "legend_label",
     "admin_code": "adm1_pcod2",
     "dates": [
       "2021-02-01",
@@ -4608,6 +4627,7 @@
     },
     "admin_level": 2,
     "data_field": "phase_class",
+    "display_source": "legend_label",
     "admin_code": "adm2_pcod2",
     "opacity": 0.7,
     "feature_info_props": {
@@ -4842,6 +4862,7 @@
     },
     "admin_level": 2,
     "data_field": "phase_class",
+    "display_source": "legend_label",
     "admin_code": "adm2_pcod2",
     "opacity": 0.7,
     "feature_info_props": {
@@ -4894,6 +4915,7 @@
     },
     "admin_level": 1,
     "data_field": "phase_class",
+    "display_source": "legend_label",
     "admin_code": "adm1_pcod2",
     "opacity": 0.7,
     "feature_info_props": {
@@ -5441,6 +5463,8 @@
     "hex_display": true,
     "data": "data/rbd/west_africa_cropland_change_2023.json",
     "data_field": "F2023_an_1",
+    "data_label": "Change",
+    "display_source": "legend_label",
     "data_field_type": "text",
     "opacity": 0.7,
     "legend_text": "Cropland change analysis (2023 vs 2022)",
@@ -5480,17 +5504,7 @@
         "value": "Significant increase",
         "color": "#276719"
       }
-    ],
-    "feature_info_props": {
-      "name": {
-        "type": "string",
-        "dataTitle": "Name"
-      },
-      "F2023_an_1": {
-        "type": "string",
-        "dataTitle": "Type"
-      }
-    }
+    ]
   },
   "crop_changes_2023_ref": {
     "title": "Cropland change analysis (2023 vs reference years)",
@@ -5498,6 +5512,8 @@
     "hex_display": true,
     "data": "data/rbd/west_africa_cropland_change_2023.json",
     "data_field": "F2023_ann",
+    "data_label": "Change",
+    "display_source": "legend_label",
     "data_field_type": "text",
     "opacity": 0.7,
     "legend_text": "Cropland change analysis (2023 vs reference years)",
@@ -5537,17 +5553,7 @@
         "value": "Significant increase",
         "color": "#276719"
       }
-    ],
-    "feature_info_props": {
-      "name": {
-        "type": "string",
-        "dataTitle": "Name"
-      },
-      "F2023_an_1": {
-        "type": "string",
-        "dataTitle": "Type"
-      }
-    }
+    ]
   },
   "fls_recurrence_all_periods": {
     "title": "Annual Recurrence of food insecurity: 2013/14 - 2022/23",
@@ -5555,6 +5561,7 @@
     "path": "data/rbd/fls/fls_all_periods.json",
     "admin_level": 2,
     "data_field": "Recurrence_CAT_Ph3",
+    "data_label": "Food insecurity recurrence",
     "admin_code": "adm2_pcod2",
     "opacity": 0.9,
     "legend": [
@@ -5582,6 +5589,7 @@
     "path": "data/rbd/fls/fls_period1.json",
     "admin_level": 2,
     "data_field": "Recurrence_CAT_Ph3",
+    "data_label": "Recurrence of food insecurity",
     "admin_code": "adm2_pcod2",
     "opacity": 0.9,
     "legend": [
@@ -5609,6 +5617,7 @@
     "path": "data/rbd/fls/fls_period2.json",
     "admin_level": 2,
     "data_field": "Recurrence_CAT_Ph3",
+    "data_label": "Recurrence of food insecurity",
     "admin_code": "adm2_pcod2",
     "opacity": 0.9,
     "legend": [
@@ -5717,6 +5726,7 @@
     "path": "data/rbd/fls/fls_all_periods.json",
     "admin_level": 2,
     "data_field": "Clustering_numeric",
+    "display_source": "legend_label",
     "admin_code": "adm2_pcod2",
     "opacity": 0.9,
     "legend": [
@@ -5749,6 +5759,7 @@
     "path": "data/rbd/fls/fls_period1.json",
     "admin_level": 2,
     "data_field": "Clustering_numeric",
+    "display_source": "legend_label",
     "admin_code": "adm2_pcod2",
     "opacity": 0.9,
     "legend": [
@@ -5781,6 +5792,7 @@
     "path": "data/rbd/fls/fls_period2.json",
     "admin_level": 2,
     "data_field": "Clustering_numeric",
+    "display_source": "legend_label",
     "admin_code": "adm2_pcod2",
     "opacity": 0.9,
     "legend": [
@@ -5813,6 +5825,8 @@
     "path": "data/rbd/ifpri-aci/aci_2023.json",
     "admin_level": 2,
     "data_field": "ACI",
+    "data_label": "Classification",
+    "display_source": "legend_label",
     "admin_code": "admin2Pcod",
     "opacity": 0.9,
     "legend": [
@@ -5837,7 +5851,7 @@
         "color": "#e51a19"
       }
     ],
-    "legend_text": "ACLED Conflict Analysis produced by IFPRI. For more details, see: https://hdl.handle.net/10568/139670"
+    "legend_text": "ACLED Conflict Analysis produced by IFPRI. For more details, see [Political violence in the G5 Sahel Countries](https://hdl.handle.net/10568/139670)"
   },
   "ifpri_protracted_transient_conflict": {
     "title": "Protracted and Transient Political Violence: 2018 - 2023",
@@ -5845,12 +5859,10 @@
     "path": "data/rbd/ifpri-aci/aci_all.json",
     "admin_level": 2,
     "data_field": "IFPRI_classification_cat",
+    "data_label": "Classification",
+    "display_source": "legend_label",
     "admin_code": "admin2Pcod",
     "feature_info_props": {
-      "IFPRI_classification": {
-        "type": "string",
-        "dataTitle": "Classification"
-      },
       "ACI_class_2018": {
         "type": "string",
         "dataTitle": "2018 conflict index category"
@@ -5894,7 +5906,7 @@
         "color": "#252525"
       }
     ],
-    "legend_text": "ACLED Conflict Analysis produced by IFPRI. For more details, see: https://hdl.handle.net/10568/139670"
+    "legend_text": "ACLED Conflict Analysis produced by IFPRI. For more details, see [Political violence in the G5 Sahel Countries](https://hdl.handle.net/10568/139670)"
   },
   "ifpri_conflict_index_rank": {
     "title": "Conflict Index",
@@ -5902,6 +5914,8 @@
     "path": "data/rbd/ifpri-aci/aci_2023.json",
     "admin_level": 2,
     "data_field": "ACI",
+    "data_label": "Conflict index",
+    "display_source": "legend_label",
     "admin_code": "admin2Pcod",
     "feature_info_props": {
       "ACI_class": {
@@ -5983,7 +5997,7 @@
         "color": "#e6e5e7"
       }
     ],
-    "legend_text": "ACLED Conflict Analysis produced by IFPRI. For more details, see: https://hdl.handle.net/10568/139670"
+    "legend_text": "ACLED Conflict Analysis produced by IFPRI. For more details, see [Political violence in the G5 Sahel Countries](https://hdl.handle.net/10568/139670)"
   },
   "ifpri_conflict_2018": {
     "title": "IFPRI / ACLED Conflict Analysis - 2018",
@@ -5991,12 +6005,10 @@
     "path": "data/rbd/ifpri-aci/aci_2018.json",
     "admin_level": 2,
     "data_field": "ACI_value",
+    "data_label": "Classification",
+    "display_source": "legend_label",
     "admin_code": "admin2Pcod",
     "feature_info_props": {
-      "ACI_class": {
-        "type": "string",
-        "dataTitle": "Conflict level"
-      },
       "deadliness": {
         "type": "number",
         "dataTitle": "Deadliness score"
@@ -6053,7 +6065,7 @@
         "color": "#e51a19"
       }
     ],
-    "legend_text": "ACLED Conflict analysis 2018 produced by IFPRI. For more details, see https://hdl.handle.net/10568/139670"
+    "legend_text": "ACLED Conflict analysis 2018 produced by IFPRI. For more details, see [Political violence in the G5 Sahel Countries](https://hdl.handle.net/10568/139670)"
   },
   "ifpri_conflict_2019": {
     "title": "IFPRI / ACLED Conflict Analysis - 2019",
@@ -6061,12 +6073,10 @@
     "path": "data/rbd/ifpri-aci/aci_2019.json",
     "admin_level": 2,
     "data_field": "ACI_value",
+    "data_label": "Classification",
+    "display_source": "legend_label",
     "admin_code": "admin2Pcod",
     "feature_info_props": {
-      "ACI_class": {
-        "type": "string",
-        "dataTitle": "Conflict level"
-      },
       "deadliness": {
         "type": "number",
         "dataTitle": "Deadliness score"
@@ -6123,7 +6133,7 @@
         "color": "#e51a19"
       }
     ],
-    "legend_text": "ACLED Conflict analysis 2019 produced by IFPRI. For more details, see https://hdl.handle.net/10568/139670"
+    "legend_text": "ACLED Conflict analysis 2019 produced by IFPRI. For more details, see [Political violence in the G5 Sahel Countries](https://hdl.handle.net/10568/139670)"
   },
   "ifpri_conflict_2020": {
     "title": "IFPRI / ACLED Conflict Analysis - 2020",
@@ -6131,12 +6141,10 @@
     "path": "data/rbd/ifpri-aci/aci_2020.json",
     "admin_level": 2,
     "data_field": "ACI_value",
+    "data_label": "Classification",
+    "display_source": "legend_label",
     "admin_code": "admin2Pcod",
     "feature_info_props": {
-      "ACI_class": {
-        "type": "string",
-        "dataTitle": "Conflict level"
-      },
       "deadliness": {
         "type": "number",
         "dataTitle": "Deadliness score"
@@ -6193,7 +6201,7 @@
         "color": "#e51a19"
       }
     ],
-    "legend_text": "ACLED Conflict analysis 2020 produced by IFPRI. For more details, see https://hdl.handle.net/10568/139670"
+    "legend_text": "ACLED Conflict analysis 2020 produced by IFPRI. For more details, see [Political violence in the G5 Sahel Countries](https://hdl.handle.net/10568/139670)"
   },
   "ifpri_conflict_2021": {
     "title": "IFPRI / ACLED Conflict Analysis - 2021",
@@ -6201,12 +6209,10 @@
     "path": "data/rbd/ifpri-aci/aci_2021.json",
     "admin_level": 2,
     "data_field": "ACI_value",
+    "data_label": "Classification",
+    "display_source": "legend_label",
     "admin_code": "admin2Pcod",
     "feature_info_props": {
-      "ACI_class": {
-        "type": "string",
-        "dataTitle": "Conflict level"
-      },
       "deadliness": {
         "type": "number",
         "dataTitle": "Deadliness score"
@@ -6263,7 +6269,7 @@
         "color": "#e51a19"
       }
     ],
-    "legend_text": "ACLED Conflict analysis 2021 produced by IFPRI. For more details, see https://hdl.handle.net/10568/139670"
+    "legend_text": "ACLED Conflict analysis 2021 produced by IFPRI. For more details, see [Political violence in the G5 Sahel Countries](https://hdl.handle.net/10568/139670)"
   },
   "ifpri_conflict_2022": {
     "title": "IFPRI / ACLED Conflict Analysis - 2022",
@@ -6271,12 +6277,10 @@
     "path": "data/rbd/ifpri-aci/aci_2022.json",
     "admin_level": 2,
     "data_field": "ACI_value",
+    "data_label": "Classification",
+    "display_source": "legend_label",
     "admin_code": "admin2Pcod",
     "feature_info_props": {
-      "ACI_class": {
-        "type": "string",
-        "dataTitle": "Conflict level"
-      },
       "deadliness": {
         "type": "number",
         "dataTitle": "Deadliness score"
@@ -6333,7 +6337,7 @@
         "color": "#e51a19"
       }
     ],
-    "legend_text": "ACLED Conflict analysis 2022 produced by IFPRI. For more details, see https://hdl.handle.net/10568/139670"
+    "legend_text": "ACLED Conflict analysis 2022 produced by IFPRI. For more details, see [Political violence in the G5 Sahel Countries](https://hdl.handle.net/10568/139670)"
   },
   "ifpri_conflict_2023": {
     "title": "IFPRI / ACLED Conflict Analysis - 2023",
@@ -6341,12 +6345,10 @@
     "path": "data/rbd/ifpri-aci/aci_2023.json",
     "admin_level": 2,
     "data_field": "ACI_value",
+    "data_label": "Classification",
+    "display_source": "legend_label",
     "admin_code": "admin2Pcod",
     "feature_info_props": {
-      "ACI_class": {
-        "type": "string",
-        "dataTitle": "Conflict level"
-      },
       "deadliness": {
         "type": "number",
         "dataTitle": "Deadliness score"
@@ -6403,6 +6405,131 @@
         "color": "#e51a19"
       }
     ],
-    "legend_text": "ACLED Conflict Analysis 2023 produced by IFPRI. For more details, see https://hdl.handle.net/10568/139670"
+   "legend_text": "ACLED Conflict analysis 2021 produced by IFPRI. For more details, see [Political violence in the G5 Sahel Countries](https://hdl.handle.net/10568/139670)"
+  },
+  "fs_hotspot_2024": {
+    "title": "Food security hotspot analysis",
+    "type": "admin_level_data",
+    "path": "data/rbd/fsn-hotspot/fsn-hotspot-2024.json",
+    "admin_level": 2,
+    "data_field": "FS_Hotspot_Jun_2024",
+    "display_source": "legend_label",
+    "admin_code": "admin2Pcod",
+    "opacity": 0.9,
+    "legend": [
+      {
+        "label": "Priority 1a",
+        "value": 1,
+        "color": "#b30101",
+        "fillPattern": "right"
+      },
+      {
+        "label": "Priority 1",
+        "value": 2,
+        "color": "#b30101"
+      },
+      {
+        "label": "Priority 2",
+        "value": 3,
+        "color": "#e24a32"
+      },
+      {
+        "label": "Priority 3",
+        "value": 4,
+        "color": "#fcca8b"
+      },
+      {
+        "label": "Priority 4",
+        "value": 5,
+        "color": "#fff0d9"
+      },
+      {
+        "label": "Not analyzed",
+        "value": 9,
+        "color": "#c9d2cd"
+      }
+    ],
+    "legend_text": "Joint Food Security & Nutrition Hotspot Analysis conducted by WFP, UNICEF, and partners based on SMART surveys and Cadre Harmonisé (CH) & Integrated Food Security Phase Classification (IPC) analyses"
+  },
+  "nutr_hotspot_2024": {
+    "title": "Nutrition hotspot analysis",
+    "type": "admin_level_data",
+    "path": "data/rbd/fsn-hotspot/fsn-hotspot-2024.json",
+    "admin_level": 2,
+    "data_field": "NUT_Hotspot_Jun_2024",
+    "display_source": "legend_label",
+    "admin_code": "admin2Pcod",
+    "opacity": 0.9,
+    "legend": [
+      {
+        "label": "Low",
+        "value": 1,
+        "color": "#70a800"
+      },
+      {
+        "label": "Medium",
+        "value": 2,
+        "color": "#ffcc33"
+      },
+      {
+        "label": "High",
+        "value": 3,
+        "color": "#e67800"
+      },
+      {
+        "label": "Very high",
+        "value": 4,
+        "color": "#e60000"
+      },
+      {
+        "label": "Not analyzed",
+        "value": 9,
+        "color": "#c9d2cd"
+      }
+    ],
+    "legend_text": "Joint Food Security & Nutrition Hotspot Analysis conducted by WFP, UNICEF, and partners based on SMART surveys and Cadre Harmonisé (CH) & Integrated Food Security Phase Classification (IPC) analyses"
+  },
+  "integrated_hotspot_2024": {
+    "title": "Integrated food security and nutrition hotspot analysis",
+    "type": "admin_level_data",
+    "path": "data/rbd/fsn-hotspot/fsn-hotspot-2024.json",
+    "admin_level": 2,
+    "data_field": "Integrated_FS_NUT_Hotspot_Jun_2024",
+    "display_source": "legend_label",
+    "admin_code": "admin2Pcod",
+    "opacity": 0.9,
+    "legend": [
+      {
+        "label": "Very low",
+        "value": 1,
+        "color": "#f1f0f6"
+      },
+      {
+        "label": "Low",
+        "value": 2,
+        "color": "#cccae2"
+      },
+      {
+        "label": "Medium",
+        "value": 3,
+        "color": "#9c99c6"
+      },
+      {
+        "label": "High",
+        "value": 4,
+        "color": "#746aaf"
+      },
+      {
+        "label": "Very high",
+        "value": 5,
+        "color": "#54278e"
+      },
+      {
+        "label": "Not analyzed",
+        "value": 9,
+        "color": "#c9d2cd"
+      }
+    ],
+    "legend_text": "Joint Food Security & Nutrition Hotspot Analysis conducted by WFP, UNICEF, and partners based on SMART surveys and Cadre Harmonisé (CH) & Integrated Food Security Phase Classification (IPC) analyses"
   }
 }

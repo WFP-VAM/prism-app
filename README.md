@@ -148,7 +148,7 @@ Under `categories`, you can specify the menu structure and reference to any laye
 
 ### layers.json
 
-In this file, we define the specific layer settings for data access, titles, and legends. You can define a new layer from scratch, or override a layer that exists in the `shared/layers.json`. In that case, you only need to specify the fields that need to be overriden. Similarly, legends can be predefined in `shared/legends.json` and simply reference to by id.
+In this file, we define the specific layer settings for data access, titles, and legends. You can define a new layer from scratch, or override a layer that exists in the `shared/layers.json`. In that case, you only need to specify the fields that need to be overriden. Similarly, legends can be predefined in `shared/legends.json` and simply reference to by id. The `"legend_text"` attribute describes the source of the data and can use Markdown syntax to render [links](example.com), *italics*, and **bold** text within our H5 typography.
 
 There are 4 main types of layers.
 
