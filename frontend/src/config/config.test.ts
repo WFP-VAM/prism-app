@@ -1,6 +1,6 @@
 import jp from 'jsonpath';
-import { Country, configMap, getRawLayers, getTranslation } from './index';
 import { startCase } from 'lodash';
+import { Country, configMap, getRawLayers, getTranslation } from './index';
 
 describe('Config Map', () => {
   it('should have necessary data for each country', () => {
@@ -66,6 +66,7 @@ describe('Config Map', () => {
         ...chartLegendLabels,
       ];
       // Deduplicate items using a Set
+      // eslint-disable-next-line fp/no-mutation
       itemsToTranslate = Array.from(new Set(itemsToTranslate));
 
       Object.entries(translation).forEach(([key, value]) => {
@@ -76,6 +77,7 @@ describe('Config Map', () => {
           const missingFields: string[] = [];
           itemsToTranslate.forEach(item => {
             if (!Object.prototype.hasOwnProperty.call(value, item)) {
+              // eslint-disable-next-line fp/no-mutating-methods
               missingFields.push(item);
             }
           });
