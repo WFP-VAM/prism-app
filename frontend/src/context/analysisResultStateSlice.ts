@@ -936,7 +936,7 @@ export const analysisResultSlice = createSlice({
     builder.addCase(
       requestAndStoreExposedPopulation.fulfilled,
       (
-        { result, ...rest },
+        { result: _result, ...rest },
         { payload }: PayloadAction<AnalysisResult>,
       ): AnalysisResultState => ({
         ...rest,
@@ -967,7 +967,7 @@ export const analysisResultSlice = createSlice({
     builder.addCase(
       requestAndStoreAnalysis.fulfilled,
       (
-        { result, ...rest },
+        { result: _result, ...rest },
         { payload }: PayloadAction<AnalysisResult>,
       ): AnalysisResultState => ({
         ...rest,
@@ -998,7 +998,7 @@ export const analysisResultSlice = createSlice({
     builder.addCase(
       requestAndStorePolygonAnalysis.fulfilled,
       (
-        { result, ...rest },
+        { result: _result, ...rest },
         { payload }: PayloadAction<PolygonAnalysisResult>,
       ): AnalysisResultState => ({
         ...rest,

@@ -23,9 +23,8 @@ const WMSLayers = memo(
     const opacityState = useSelector(opacitySelector(id));
 
     const expansionFactor = 2;
-    // eslint-disable-next-line
-  // @ts-ignore #TS6133
-    const expandedBoundingBox = expandBoundingBox(
+    // @ts-expect-error #TS6133 see TODO bellow
+    const _expandedBoundingBox = expandBoundingBox(
       appConfig.map.boundingBox,
       expansionFactor,
     );

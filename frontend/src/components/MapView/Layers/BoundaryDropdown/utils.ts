@@ -96,7 +96,6 @@ export interface BoundaryDropdownProps {
   className: string;
   labelMessage?: string;
   map?: MaplibreMap | undefined;
-  onlyNewCategory?: boolean;
   selectAll?: boolean;
   size?: 'small' | 'medium';
   selectedBoundaries?: AdminCodeString[];

@@ -39,7 +39,6 @@ export function SimpleBoundaryDropdown({
   labelMessage,
   map,
   selectAll,
-  onlyNewCategory,
   selectProps,
   goto,
   multiple = true,

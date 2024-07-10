@@ -164,7 +164,7 @@ export const anticipatoryActionStateSlice = createSlice({
         : action.error.toString(),
     }));
 
-    builder.addCase(loadAAData.pending, ({ error, ...state }) => ({
+    builder.addCase(loadAAData.pending, ({ error: _error, ...state }) => ({
       ...state,
       error: null,
       loading: true,

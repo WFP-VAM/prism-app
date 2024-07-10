@@ -68,12 +68,15 @@ export const tableStateSlice = createSlice({
         : action.error.toString(),
     }));
 
-    builder.addCase(loadTable.pending, ({ error, ...state }, { meta }) => ({
-      ...state,
-      definition: TableDefinitions[meta.arg],
-      isShowing: true,
-      loading: true,
-    }));
+    builder.addCase(
+      loadTable.pending,
+      ({ error: _error, ...state }, { meta }) => ({
+        ...state,
+        definition: TableDefinitions[meta.arg],
+        isShowing: true,
+        loading: true,
+      }),
+    );
   },
 });
 
