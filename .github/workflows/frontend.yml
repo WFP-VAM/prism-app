@@ -14,6 +14,7 @@ jobs:
         os:
           - ubuntu-latest
           - windows-latest
+      max-parallel: 2
 
     name: frontend_tests
     runs-on: ${{ matrix.os }}
@@ -48,7 +49,10 @@ jobs:
         run: cd frontend && yarn lint
 
       - name: Test
-        run: cd frontend && yarn test
+        run: |
+          cd frontend
+          yarn add canvas
+          yarn test
 
       - name: JSON check
         run: cd frontend && yarn prettier:json-check
