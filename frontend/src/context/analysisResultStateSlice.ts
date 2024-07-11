@@ -724,7 +724,8 @@ export const requestAndStoreAnalysis = createAsyncThunk<
   );
 
   // Create a legend based on statistic data to be used for admin level analsysis.
-  const legend = createLegendFromFeatureArray(features, statistic);
+  const legend =
+    hazardLayer.legend ?? createLegendFromFeatureArray(features, statistic);
 
   const enrichedStatistics: (AggregationOperations | 'stats_intersect_area')[] =
     [statistic];
