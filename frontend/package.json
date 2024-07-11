@@ -117,7 +117,8 @@
     "xml-js": "^1.6.11"
   },
   "resolutions": {
-    "node-notifier": "^10.0.1"
+    "node-notifier": "^10.0.1",
+    "canvas": "link:./node_modules/.cache/null"
   },
   "_comment": "The 'defaults' and 'not ie 11' are needed to avoid build issues with maplibre-gl.",
   "browserslist": {
