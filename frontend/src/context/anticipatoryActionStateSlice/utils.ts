@@ -242,9 +242,11 @@ export function calculateMapRenderedDistricts({
   windowRanges,
 }: CalculateMapRenderedDistrictsParams) {
   const { selectedDate, categories } = filters;
-  // TODO - use date to find season
-  console.log({ selectedDate });
+  // TODO - use date to find season and filter data
   const season = getSeason(selectedDate || '');
+  // eslint-disable-next-line no-console
+  console.log({ selectedDate });
+  // eslint-disable-next-line no-console
   console.log(season);
 
   const res = Object.entries(data)
