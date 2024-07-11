@@ -1,8 +1,8 @@
 import jp from 'jsonpath';
 import { startCase } from 'lodash';
-import { Country, configMap, getRawLayers, getTranslation } from './index';
 import fg from 'fast-glob';
 import fs from 'fs';
+import { Country, configMap, getRawLayers, getTranslation } from './index';
 
 // Load all translation keys from the source code
 const translationKeyRegex = /[ {]t\('([^']+)'\)/g;
