@@ -75,6 +75,7 @@ const out = {
       {
         category: 'Mild',
         date: '2023-08-01',
+        season: '2023-24',
         district: 'Changara',
         index: 'SPI DJF',
         isValid: false,
@@ -88,6 +89,7 @@ const out = {
       {
         category: 'Mild',
         date: '2023-09-01',
+        season: '2023-24',
         district: 'Changara',
         index: 'SPI DJF',
         isValid: false,
@@ -101,6 +103,7 @@ const out = {
       {
         category: 'Mild',
         date: '2023-09-01',
+        season: '2023-24',
         district: 'Changara',
         index: 'SPI DJF',
         isValid: false,
@@ -123,6 +126,7 @@ const out = {
         probability: 0.31,
         trigger: 0.2,
         date: '2023-10-01',
+        season: '2023-24',
         isValid: true,
       },
       {
@@ -136,6 +140,7 @@ const out = {
         probability: 0.28,
         trigger: 0.25,
         date: '2023-11-01',
+        season: '2023-24',
         isValid: true,
         wasReadyValid: true,
       },
@@ -152,6 +157,7 @@ const out = {
         probability: 0.19,
         trigger: 0.1,
         date: '2023-09-01',
+        season: '2023-24',
         isValid: true,
       },
       {
@@ -165,6 +171,7 @@ const out = {
         probability: 0.28,
         trigger: 0.2,
         date: '2023-10-01',
+        season: '2023-24',
         isValid: true,
       },
       {
@@ -178,6 +185,7 @@ const out = {
         probability: 0.22,
         trigger: 0.3,
         date: '2023-11-01',
+        season: '2023-24',
         isValid: false,
         wasReadyValid: true,
       },
