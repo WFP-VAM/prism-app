@@ -9,5 +9,5 @@ export default {
   rawLayers,
   rawTables,
   rawReports,
-  defaultBoundariesFile: 'btn_adm2.json',
+  defaultBoundariesFile: 'btn_adm3.json',
 };

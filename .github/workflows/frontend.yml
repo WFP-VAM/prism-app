@@ -51,8 +51,6 @@ jobs:
       - name: Test
         run: |
           cd frontend
-          # tests are being a bit flaky so we force install of canvas and prism-common
-          yarn install --check-files && yarn add canvas
           yarn test
 
       - name: JSON check
