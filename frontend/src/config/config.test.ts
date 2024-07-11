@@ -36,6 +36,10 @@ describe('Config Map', () => {
       const layers = getRawLayers(country as Country);
       const translation = getTranslation(country as Country);
 
+      // TODO - activate translation for reports and tables
+      // const reports = config.rawReports;
+      // const tables = config.rawTables;
+
       // All the elements need translation and should appear at least once in the translations:
       /**
        * - All the keys in config.categories
