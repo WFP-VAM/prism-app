@@ -1,6 +1,22 @@
 import jp from 'jsonpath';
 import { startCase } from 'lodash';
 import { Country, configMap, getRawLayers, getTranslation } from './index';
+import fg from 'fast-glob';
+import fs from 'fs';
+
+// Load all translation keys from the source code
+const translationKeyRegex = /[ {]t\('([^']+)'\)/g;
+const files = fg.sync('./src/**/*.{ts,tsx}');
+const translationKeys = new Set<string>();
+
+files.forEach(file => {
+  const content = fs.readFileSync(file, 'utf8');
+  let match;
+  // eslint-disable-next-line fp/no-mutation, no-cond-assign
+  while ((match = translationKeyRegex.exec(content)) !== null) {
+    translationKeys.add(match[1]);
+  }
+});
 
 describe('Config Map', () => {
   it('should have necessary data for each country', () => {
@@ -59,6 +75,7 @@ describe('Config Map', () => {
       // const legendLabels = jp.query(layers, '$..legend[*].label');
       // eslint-disable-next-line fp/no-mutation
       itemsToTranslate = [
+        ...Array.from(translationKeys),
         ...categoryKeys,
         ...categoryGroupTitles,
         ...layerTitles,
