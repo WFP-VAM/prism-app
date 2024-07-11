@@ -66,6 +66,7 @@ export function parseAndTransformAA(data: any[]) {
         // initialize to false and override later
         new: false,
         vulnerability: x.vulnerability,
+        season: x.season,
       };
 
       const isReadyValid = Number(x.prob_ready) > Number(x.trigger_ready);
@@ -156,7 +157,7 @@ export function parseAndTransformAA(data: any[]) {
 
           // If a district reaches a set state, it will propagate until the end of the window
           dateData.forEach(x => {
-            if (!x.isValid) {
+            if (!x.isValid || (prevMax && x.season !== prevMax?.season)) {
               return;
             }
             if (x.phase === 'Set') {
@@ -220,12 +221,32 @@ interface CalculateMapRenderedDistrictsParams {
   windowRanges: AnticipatoryActionState['windowRanges'];
 }
 
+const getSeason = (date?: string) => {
+  if (!date) {
+    return undefined;
+  }
+  const year = new Date(date).getFullYear();
+  const month = new Date(date).getMonth();
+
+  if (month >= 4) {
+    // May (4) to December (11)
+    return `${year}-${(year + 1).toString().slice(-2)}`;
+  }
+  // January (0) to April (3)
+  return `${year - 1}-${year.toString().slice(-2)}`;
+};
+
 export function calculateMapRenderedDistricts({
   filters,
   data,
   windowRanges,
 }: CalculateMapRenderedDistrictsParams) {
   const { selectedDate, categories } = filters;
+  // TODO - use date to find season
+  console.log({ selectedDate });
+  const season = getSeason(selectedDate || '');
+  console.log(season);
+
   const res = Object.entries(data)
     .map(([winKey, districts]) => {
       if (!districts) {
@@ -235,7 +256,9 @@ export function calculateMapRenderedDistricts({
         ([districtName, districtData]) => {
           if (
             !selectedDate ||
-            districtData.filter(x => x.date <= selectedDate)?.length === 0
+            districtData.filter(
+              x => x.date <= selectedDate && season && season === x.season,
+            )?.length === 0
           ) {
             return [
               districtName,
@@ -250,7 +273,9 @@ export function calculateMapRenderedDistricts({
               ? selectedDate
               : range.end;
 
-          const dateData = districtData.filter(x => x.date === date);
+          const dateData = districtData.filter(
+            x => x.date === date && x.season === season,
+          );
           const validData = dateData.filter(
             x => (x.computedRow || x.isValid) && categories[x.category],
           );
