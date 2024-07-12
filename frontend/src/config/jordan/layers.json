@@ -4020,6 +4020,10 @@
     "type": "composite",
     "scale": "monthly",
     "base_url": "https://hip-service.ovio.org/q_multi_geojson",
+    "validity": {
+      "forward": 3,
+      "mode": "dekad"
+    },
     "input_layers": [
       {
         "id": "spi_1m",
@@ -4114,6 +4118,10 @@
     "type": "composite",
     "scale": "seasonal",
     "base_url": "https://hip-service.ovio.org/q_multi_geojson",
+    "validity": {
+      "forward": 9,
+      "mode": "dekad"
+    },
     "input_layers": [
       {
         "id": "spi_3m",
@@ -4208,6 +4216,10 @@
     "type": "composite",
     "scale": "monthly",
     "base_url": "https://hip-service.ovio.org/q_multi_geojson",
+    "validity": {
+      "forward": 3,
+      "mode": "dekad"
+    },
     "input_layers": [
       {
         "id": "spi_1m",
@@ -4302,6 +4314,10 @@
     "type": "composite",
     "scale": "seasonal",
     "base_url": "https://hip-service.ovio.org/q_multi_geojson",
+    "validity": {
+      "forward": 9,
+      "mode": "dekad"
+    },
     "input_layers": [
       {
         "id": "spi_3m",

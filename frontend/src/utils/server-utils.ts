@@ -116,7 +116,11 @@ export const getPossibleDatesForLayer = (
     case 'composite': {
       // Filter dates that are after layer.startDate
       const startDateTimestamp = Date.parse(layer.startDate);
-      return (serverAvailableDates[layer.dateLayer] || []).filter(
+      const layerServerAvailableDates =
+        serverAvailableDates[layer.id] ||
+        serverAvailableDates[layer.dateLayer] ||
+        [];
+      return layerServerAvailableDates.filter(
         date => date.displayDate > startDateTimestamp,
       );
     }
@@ -471,7 +475,11 @@ const localWMSGetLayerDates = async (
 const layerDefinitionsBluePrint: AvailableDates = Object.keys(
   LayerDefinitions,
 ).reduce((acc, layerDefinitionKey) => {
-  const { serverLayerName } = LayerDefinitions[layerDefinitionKey] as any;
+  const layer = LayerDefinitions[layerDefinitionKey];
+  const serverLayerName =
+    layer.type === 'composite'
+      ? (LayerDefinitions[layer.dateLayer] as WMSLayerProps).serverLayerName
+      : (layer as WMSLayerProps).serverLayerName;
   if (!serverLayerName) {
     return {
       ...acc,
@@ -514,23 +522,42 @@ export async function getLayersAvailableDates(
   const wmsServerUrls: string[] = get(appConfig, 'serversUrls.wms', []);
   const wcsServerUrls: string[] = get(appConfig, 'serversUrls.wcs', []);
 
+  const compositeLayers = Object.values(LayerDefinitions).filter(
+    (layer): layer is CompositeLayerProps => layer.type === 'composite',
+  );
+
+  const compositeLayersWithDateLayerTypeMap: {
+    [key: string]: string;
+  } = compositeLayers.reduce(
+    (acc, layer) => ({
+      ...acc,
+      [layer.id]: LayerDefinitions[layer.dateLayer].type,
+    }),
+    {},
+  );
+
   const pointDataLayers = Object.values(LayerDefinitions).filter(
     (layer): layer is PointDataLayerProps =>
-      layer.type === 'point_data' && Boolean(layer.dateUrl),
+      (layer.type === 'point_data' && Boolean(layer.dateUrl)) ||
+      compositeLayersWithDateLayerTypeMap[layer.id] === 'point_data',
   );
 
   const adminWithDateLayers = Object.values(LayerDefinitions).filter(
     (layer): layer is AdminLevelDataLayerProps =>
-      layer.type === 'admin_level_data' && Boolean(layer.dates),
+      (layer.type === 'admin_level_data' && Boolean(layer.dates)) ||
+      compositeLayersWithDateLayerTypeMap[layer.id] === 'admin_level_data',
   );
 
   const staticRasterWithDateLayers = Object.values(LayerDefinitions).filter(
     (layer): layer is StaticRasterLayerProps =>
-      layer.type === 'static_raster' && Boolean(layer.dates),
+      (layer.type === 'static_raster' && Boolean(layer.dates)) ||
+      compositeLayersWithDateLayerTypeMap[layer.id] === 'static_raster',
   );
 
   const WCSWMSLayers = Object.values(LayerDefinitions).filter(
-    (layer): layer is WMSLayerProps => layer.type === 'wms',
+    (layer): layer is WMSLayerProps =>
+      layer.type === 'wms' ||
+      compositeLayersWithDateLayerTypeMap[layer.id] === 'wms',
   );
 
   /**
@@ -542,10 +569,14 @@ export async function getLayersAvailableDates(
    */
   const mapServerDatesToLayerIds = (
     serverDates: Record<string, number[]>,
-    layers: WMSLayerProps[],
+    layers: (WMSLayerProps | CompositeLayerProps)[],
   ): Record<string, number[]> => {
     return layers.reduce((acc: Record<string, number[]>, layer) => {
-      const layerDates = serverDates[layer.serverLayerName];
+      const serverLayerName =
+        layer.type === 'composite'
+          ? (LayerDefinitions[layer.dateLayer] as WMSLayerProps).serverLayerName
+          : layer.serverLayerName;
+      const layerDates = serverDates[serverLayerName];
       if (layerDates) {
         // Filter WMS layers by startDate, used for forecast layers in particular.
         if (layer.startDate) {
