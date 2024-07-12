@@ -96,9 +96,10 @@ export const opacityStateSlice = createSlice({
 });
 
 // Getters
-export const opacitySelector = (layerId: string) => (
-  state: RootState,
-): number | undefined => state.opacityState.opacityMap[layerId]?.value;
+export const opacitySelector =
+  (layerId: string) =>
+  (state: RootState): number | undefined =>
+    state.opacityState.opacityMap[layerId]?.value;
 
 // Setters
 export const { setOpacity } = opacityStateSlice.actions;

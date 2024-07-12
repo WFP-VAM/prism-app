@@ -32,12 +32,10 @@ test("ows: parseBoundingBox", ({ eq }) => {
   <ows:LowerCorner>-180.0625 -81.0625</ows:LowerCorner>
   <ows:UpperCorner>179.9375 81.0625</ows:UpperCorner>
   </ows:WGS84BoundingBox>`;
-  eq(findAndParseWGS84BoundingBox(xml), [
-    -180.0625,
-    -81.0625,
-    179.9375,
-    81.0625,
-  ]);
+  eq(
+    findAndParseWGS84BoundingBox(xml),
+    [-180.0625, -81.0625, 179.9375, 81.0625],
+  );
 });
 
 test("ows: findAndParseWGS84BoundingBox", ({ eq }) => {
@@ -53,12 +51,13 @@ test("ows: findAndParseBoundingBox", ({ eq }) => {
   <ows:LowerCorner>-60.35240259408949 -44.9887429023503</ows:LowerCorner>
   <ows:UpperCorner>80.34944659977604 60.53764399304885</ows:UpperCorner>
   </ows:BoundingBox>`;
-  eq(findAndParseBoundingBox(xml), [
-    -60.35240259408949,
-    -44.9887429023503,
-    80.34944659977604,
-    60.53764399304885,
-  ]);
+  eq(
+    findAndParseBoundingBox(xml),
+    [
+      -60.35240259408949, -44.9887429023503, 80.34944659977604,
+      60.53764399304885,
+    ],
+  );
 });
 
 test("ows: find operation and its url", ({ eq }) => {
@@ -98,7 +97,7 @@ test("ows: find operation and its url", ({ eq }) => {
 
   eq(
     findAndParseOperationUrl(xml, "DescribeCoverage"),
-    "https://geonode.wfp.org/geoserver/wcs?"
+    "https://geonode.wfp.org/geoserver/wcs?",
   );
 });
 
@@ -109,14 +108,14 @@ test("ows: findException", ({ eq }) => {
 Unexpected error occurred during describe coverage xml encoding
 Unable to acquire a reader for this coverage with format: GeoTIFF
 </ServiceException></ServiceExceptionReport>`),
-    "Unable to acquire a reader for this coverage with format: GeoTIFFTranslator error\nUnexpected error occurred during describe coverage xml encoding\nUnable to acquire a reader for this coverage with format: GeoTIFF"
+    "Unable to acquire a reader for this coverage with format: GeoTIFFTranslator error\nUnexpected error occurred during describe coverage xml encoding\nUnable to acquire a reader for this coverage with format: GeoTIFF",
   );
 
   eq(
     findException(`<?xml version="1.0" encoding="UTF-8"?><ServiceExceptionReport version="1.2.0" >   <ServiceException>
   Could not understand version:1.0
 </ServiceException></ServiceExceptionReport>`),
-    "Could not understand version:1.0"
+    "Could not understand version:1.0",
   );
 
   eq(
@@ -125,7 +124,7 @@ Unable to acquire a reader for this coverage with format: GeoTIFF
   <ows:ExceptionText>Could not determine geoserver request from http request org.geoserver.monitor.MonitorServletRequest@4b7091d3</ows:ExceptionText>
   </ows:Exception>
   </ows:ExceptionReport>`),
-    "Could not determine geoserver request from http request org.geoserver.monitor.MonitorServletRequest@4b7091d3"
+    "Could not determine geoserver request from http request org.geoserver.monitor.MonitorServletRequest@4b7091d3",
   );
 
   eq(
@@ -135,51 +134,51 @@ Unable to acquire a reader for this coverage with format: GeoTIFF
   </ows:Exception>
   </ows:ExceptionReport>
   `),
-    "Missing version"
+    "Missing version",
   );
 
   const exception = findException(wcsException);
   eq(
     exception?.startsWith("java.io.IOException: Failed to create reader from"),
-    true
+    true,
   );
   eq(
     exception?.endsWith("STYLE_FACTORY                    = StyleFactoryImpl"),
-    true
+    true,
   );
 });
 
 test("getting capabilities url", async ({ eq }) => {
   eq(
     await getCapabilitiesUrl("https://geonode.wfp.org/geoserver/wfs"),
-    "https://geonode.wfp.org/geoserver/wfs?request=GetCapabilities&service=WFS"
+    "https://geonode.wfp.org/geoserver/wfs?request=GetCapabilities&service=WFS",
   );
   eq(
     await getCapabilitiesUrl(
-      "https://geonode.wfp.org/geoserver/ows/?service=WFS"
+      "https://geonode.wfp.org/geoserver/ows/?service=WFS",
     ),
-    "https://geonode.wfp.org/geoserver/ows/?request=GetCapabilities&service=WFS"
+    "https://geonode.wfp.org/geoserver/ows/?request=GetCapabilities&service=WFS",
   );
   eq(
     await getCapabilitiesUrl(
-      "https://geonode.wfp.org/geoserver/ows/?service=WFS&extra=true"
+      "https://geonode.wfp.org/geoserver/ows/?service=WFS&extra=true",
     ),
-    "https://geonode.wfp.org/geoserver/ows/?extra=true&request=GetCapabilities&service=WFS"
+    "https://geonode.wfp.org/geoserver/ows/?extra=true&request=GetCapabilities&service=WFS",
   );
   eq(
     await getCapabilitiesUrl("https://geonode.wfp.org/geoserver/ows", {
       service: "WFS",
     }),
-    "https://geonode.wfp.org/geoserver/ows?request=GetCapabilities&service=WFS"
+    "https://geonode.wfp.org/geoserver/ows?request=GetCapabilities&service=WFS",
   );
   eq(
     await getCapabilitiesUrl(
       "https://geonode.wfp.org/geoserver/ows?service=WFS",
       {
         version: "1.1.0", // add version
-      }
+      },
     ),
-    "https://geonode.wfp.org/geoserver/ows?request=GetCapabilities&service=WFS&version=1.1.0"
+    "https://geonode.wfp.org/geoserver/ows?request=GetCapabilities&service=WFS&version=1.1.0",
   );
   eq(
     await getCapabilitiesUrl(
@@ -187,9 +186,9 @@ test("getting capabilities url", async ({ eq }) => {
       {
         service: "WFS",
         version: "1.1.1", // override
-      }
+      },
     ),
-    "https://geonode.wfp.org/geoserver/ows?request=GetCapabilities&service=WFS&version=1.1.1"
+    "https://geonode.wfp.org/geoserver/ows?request=GetCapabilities&service=WFS&version=1.1.1",
   );
 });
 
@@ -201,14 +200,14 @@ test("getCapabilities", async ({ eq }) => {
         wait: 3,
       })
     ).length > 100,
-    true
+    true,
   );
   const capabilities = await getCapabilities(
     "https://geonode.wfp.org/geoserver/wfs",
     {
       fetch,
       wait: 3,
-    }
+    },
   );
   eq(capabilities.includes("<wfs:WFS_Capabilities"), true);
   eq(capabilities.includes("<ows:ServiceType>WFS</ows:ServiceType>"), true);

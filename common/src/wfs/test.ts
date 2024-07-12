@@ -32,12 +32,10 @@ const xmls = {
 
 test("findAndParseLatLongBoundingBox", ({ eq }) => {
   const xml = `<LatLongBoundingBox minx="-81.7356205563041" miny="-4.22940646575291" maxx="-66.8472154271626" maxy="13.394727761822"/>`;
-  eq(findAndParseLatLongBoundingBox(xml), [
-    -81.7356205563041,
-    -4.22940646575291,
-    -66.8472154271626,
-    13.394727761822,
-  ]);
+  eq(
+    findAndParseLatLongBoundingBox(xml),
+    [-81.7356205563041, -4.22940646575291, -66.8472154271626, 13.394727761822],
+  );
 });
 
 Object.entries(xmls).forEach(([version, xml]) => {
@@ -45,11 +43,11 @@ Object.entries(xmls).forEach(([version, xml]) => {
     eq(parseGetFeatureUrl(xml), "https://geonode.wfp.org/geoserver/wfs");
     eq(
       parseGetFeatureUrl(xml, { method: "GET" }),
-      "https://geonode.wfp.org/geoserver/wfs"
+      "https://geonode.wfp.org/geoserver/wfs",
     );
     eq(
       parseGetFeatureUrl(xml, { method: "POST" }),
-      "https://geonode.wfp.org/geoserver/wfs"
+      "https://geonode.wfp.org/geoserver/wfs",
     );
   });
 });
@@ -85,9 +83,7 @@ Object.entries(xmls).forEach(([version, xml]) => {
       ],
       srs: "EPSG:4326",
       bbox: [
-        -81.7356205563041,
-        -4.22940646575291,
-        -66.8472154271626,
+        -81.7356205563041, -4.22940646575291, -66.8472154271626,
         13.394727761822,
       ],
     };
@@ -102,23 +98,23 @@ Object.entries(xmls).forEach(([version, xml]) => {
     const featureTypes = getFeatureTypesFromCapabilities(xml);
     eq(
       hasFeatureType(featureTypes, "geonode:col_second_level_admin_boundaries"),
-      true
+      true,
     );
     eq(
       hasFeatureType(featureTypes, "wrong:col_second_level_admin_boundaries"),
-      false
+      false,
     );
     eq(hasFeatureType(featureTypes, "col_second_level_admin_boundaries"), true);
     eq(
       hasFeatureType(featureTypes, "col_second_level_admin_boundaries", {
         strict: false,
       }),
-      true
+      true,
     );
     eq(hasFeatureType(featureTypes, "geonode:does_not_exist"), false);
     eq(
       hasFeatureType(featureTypes, "geonode:does_not_exist", { strict: true }),
-      false
+      false,
     );
   });
 });
@@ -129,7 +125,7 @@ Object.entries(xmls).forEach(([version, xml]) => {
       getFeaturesUrl(xml, ["col_second_level_admin_boundaries"], {
         count: 2,
       }),
-      "https://geonode.wfp.org/geoserver/wfs?count=2&outputFormat=json&request=GetFeature&service=WFS&typeNames=col_second_level_admin_boundaries&version=2.0.0"
+      "https://geonode.wfp.org/geoserver/wfs?count=2&outputFormat=json&request=GetFeature&service=WFS&typeNames=col_second_level_admin_boundaries&version=2.0.0",
     );
     eq(
       getFeaturesUrl(xml, "acled_incidents_syria", {
@@ -137,13 +133,13 @@ Object.entries(xmls).forEach(([version, xml]) => {
         dateField: "event_date",
         dateRange: ["2020-09-18", "2022-09-20"],
       }),
-      "https://geonode.wfp.org/geoserver/wfs?count=1&cql_filter=event_date+BETWEEN+2020-09-18T00%3A00%3A00+AND+2022-09-20T23%3A59%3A59&outputFormat=json&request=GetFeature&service=WFS&typeNames=acled_incidents_syria&version=2.0.0"
+      "https://geonode.wfp.org/geoserver/wfs?count=1&cql_filter=event_date+BETWEEN+2020-09-18T00%3A00%3A00+AND+2022-09-20T23%3A59%3A59&outputFormat=json&request=GetFeature&service=WFS&typeNames=acled_incidents_syria&version=2.0.0",
     );
     eq(
       getFeaturesUrl(xml, "geonode:afg_trs_roads_wfp", {
         count: Infinity,
       }),
-      "https://geonode.wfp.org/geoserver/wfs?outputFormat=json&request=GetFeature&service=WFS&typeNames=geonode%3Aafg_trs_roads_wfp&version=2.0.0"
+      "https://geonode.wfp.org/geoserver/wfs?outputFormat=json&request=GetFeature&service=WFS&typeNames=geonode%3Aafg_trs_roads_wfp&version=2.0.0",
     );
   });
 });
@@ -197,7 +193,7 @@ test("WFS", async ({ eq }) => {
   eq(layerNames.includes("_2020_global_adm3"), true);
   eq(
     layerNames.every((layerName) => layerName.indexOf(":") === -1),
-    true
+    true,
   );
 
   eq(await instance.hasLayerId("_2020_global_adm3"), true);

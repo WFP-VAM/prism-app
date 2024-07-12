@@ -11,7 +11,7 @@ export function getCapabilitiesUrl(
     params?: { [k: string]: number | string };
     service?: string;
     version?: string;
-  } = { service: undefined, version: undefined }
+  } = { service: undefined, version: undefined },
 ) {
   try {
     const { origin, pathname, searchParams } = new URL(url);
@@ -37,7 +37,7 @@ export function getCapabilitiesUrl(
     return formatUrl(base, paramsObj);
   } catch (error) {
     throw Error(
-      `getCapabilitiesUrl failed to parse "${url}" because of the following error:\n${error}`
+      `getCapabilitiesUrl failed to parse "${url}" because of the following error:\n${error}`,
     );
   }
 }
@@ -57,7 +57,7 @@ export async function getCapabilities(
     service?: string;
     version?: string;
     wait?: number;
-  } = {}
+  } = {},
 ): Promise<string> {
   const run = async () => {
     const capabilitiesUrl = getCapabilitiesUrl(url, {
@@ -69,7 +69,7 @@ export async function getCapabilities(
 
     if (response.status !== 200) {
       throw new Error(
-        `fetch failed for "${capabilitiesUrl}" returning a status code of ${response.status}`
+        `fetch failed for "${capabilitiesUrl}" returning a status code of ${response.status}`,
       );
     }
 
@@ -78,7 +78,7 @@ export async function getCapabilities(
     const exception = findException(xml);
     if (exception) {
       throw new Error(
-        `fetch to "${capabilitiesUrl}" returned the following exception: "${exception}"`
+        `fetch to "${capabilitiesUrl}" returned the following exception: "${exception}"`,
       );
     }
 

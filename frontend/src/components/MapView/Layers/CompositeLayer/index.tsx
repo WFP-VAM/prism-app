@@ -1,8 +1,7 @@
-import { WithStyles, createStyles, withStyles } from '@material-ui/core';
 import { CompositeLayerProps, LegendDefinition } from 'config/types';
 import { LayerData, loadLayerData } from 'context/layers/layer-data';
 import { layerDataSelector } from 'context/mapStateSlice/selectors';
-import React, { memo, useEffect, useState } from 'react';
+import { memo, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Source, Layer } from 'react-map-gl/maplibre';
 import { getLayerMapId } from 'utils/map-utils';
@@ -17,9 +16,7 @@ import { geoToH3, h3ToGeoBoundary } from 'h3-js'; // ts-ignore
 import { opacitySelector } from 'context/opacityStateSlice';
 import { legendToStops } from '../layer-utils';
 
-const styles = () => createStyles({});
-
-interface Props extends WithStyles<typeof styles> {
+interface Props {
   layer: CompositeLayerProps;
   before?: string;
 }
@@ -40,7 +37,7 @@ const paintProps: (
   ],
 });
 
-const CompositeLayer = ({ layer, before }: Props) => {
+const CompositeLayer = memo(({ layer, before }: Props) => {
   // look to refacto with impactLayer and maybe other layers
   const [adminBoundaryLimitPolygon, setAdminBoundaryPolygon] = useState(null);
   const selectedDate = useDefaultDate(layer.dateLayer);
@@ -49,16 +46,16 @@ const CompositeLayer = ({ layer, before }: Props) => {
   const dispatch = useDispatch();
 
   const { data } =
-    (useSelector(layerDataSelector(layer.id)) as LayerData<
-      CompositeLayerProps
-    >) || {};
+    (useSelector(
+      layerDataSelector(layer.id),
+    ) as LayerData<CompositeLayerProps>) || {};
 
   const layerAvailableDates = serverAvailableDates[layer.dateLayer];
   const queryDate = getRequestDate(layerAvailableDates, selectedDate);
 
   useEffect(() => {
     // admin-boundary-unified-polygon.json is generated using "yarn preprocess-layers"
-    // which runs ./scripts/preprocess-layers.js
+    // which runs ./src/scripts/preprocess-layers.js
     fetch(`data/${safeCountry}/admin-boundary-unified-polygon.json`)
       .then(response => response.json())
       .then(polygonData => setAdminBoundaryPolygon(polygonData))
@@ -118,6 +115,6 @@ const CompositeLayer = ({ layer, before }: Props) => {
   }
 
   return null;
-};
+});
 
-export default memo(withStyles(styles)(CompositeLayer));
+export default CompositeLayer;

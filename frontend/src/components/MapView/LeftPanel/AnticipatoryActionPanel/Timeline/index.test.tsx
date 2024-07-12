@@ -1,4 +1,3 @@
-import React from 'react';
 import { render } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import { BrowserRouter } from 'react-router-dom';
@@ -16,6 +15,7 @@ const filters: AnticipatoryActionState['filters'] = {
   categories: {
     Severe: true,
     Moderate: true,
+    Normal: true,
     Mild: true,
     na: true,
     ny: true,

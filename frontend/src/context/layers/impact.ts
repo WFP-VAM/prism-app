@@ -22,64 +22,64 @@ export type ImpactLayerData = {
   impactFeatures: FeatureCollection;
 };
 
-export const fetchImpactLayerData: LazyLoader<ImpactLayerProps> = loadLayerData => async (
-  params: LayerDataParams<ImpactLayerProps>,
-  api: ThunkApi,
-) => {
-  const { getState, dispatch } = api;
-  const { layer, extent, date } = params;
+export const fetchImpactLayerData: LazyLoader<ImpactLayerProps> =
+  loadLayerData =>
+  async (params: LayerDataParams<ImpactLayerProps>, api: ThunkApi) => {
+    const { getState, dispatch } = api;
+    const { layer, extent, date } = params;
 
-  const operation = layer.operation || AggregationOperations.Mean;
+    const operation = layer.operation || AggregationOperations.Mean;
 
-  const hazardLayerDef = LayerDefinitions[layer.hazardLayer] as WMSLayerProps;
+    const hazardLayerDef = LayerDefinitions[layer.hazardLayer] as WMSLayerProps;
 
-  const baselineLayer = layerDataSelector(layer.baselineLayer)(getState());
+    const baselineLayer = layerDataSelector(layer.baselineLayer)(getState());
 
-  const adminBoundariesLayer = layerDataSelector(
-    getBoundaryLayerSingleton().id,
-  )(getState()) as LayerData<BoundaryLayerProps> | undefined;
-  if (!adminBoundariesLayer || !adminBoundariesLayer.data) {
-    // TODO we are assuming here it's already loaded. In the future if layers can be preloaded like boundary this will break.
-    throw new Error('Boundary Layer not loaded!');
-  }
-  const adminBoundaries = adminBoundariesLayer.data;
+    const adminBoundariesLayer = layerDataSelector(
+      getBoundaryLayerSingleton().id,
+    )(getState()) as LayerData<BoundaryLayerProps> | undefined;
+    if (!adminBoundariesLayer || !adminBoundariesLayer.data) {
+      // TODO we are assuming here it's already loaded. In the future if layers can be preloaded like boundary this will break.
+      throw new Error('Boundary Layer not loaded!');
+    }
+    const adminBoundaries = adminBoundariesLayer.data;
 
-  let baselineData: BaselineLayerData;
-  if (!baselineLayer) {
-    const baselineLayerDef = LayerDefinitions[layer.baselineLayer];
-    const {
-      payload: { data },
-    } = (await dispatch(
-      loadLayerData({ layer: baselineLayerDef, extent } as LayerDataParams<
-        AdminLevelDataLayerProps
-      >),
-    )) as { payload: { data: unknown } };
+    let baselineData: BaselineLayerData;
+    if (!baselineLayer) {
+      const baselineLayerDef = LayerDefinitions[layer.baselineLayer];
+      const {
+        payload: { data },
+      } = (await dispatch(
+        loadLayerData({
+          layer: baselineLayerDef,
+          extent,
+        } as LayerDataParams<AdminLevelDataLayerProps>),
+      )) as { payload: { data: unknown } };
 
-    // eslint-disable-next-line fp/no-mutation
-    baselineData = checkBaselineDataLayer(layer.baselineLayer, data);
-  } else {
-    // eslint-disable-next-line fp/no-mutation
-    baselineData = checkBaselineDataLayer(
-      layer.baselineLayer,
-      baselineLayer.data,
+      // eslint-disable-next-line fp/no-mutation
+      baselineData = checkBaselineDataLayer(layer.baselineLayer, data);
+    } else {
+      // eslint-disable-next-line fp/no-mutation
+      baselineData = checkBaselineDataLayer(
+        layer.baselineLayer,
+        baselineLayer.data,
+      );
+    }
+
+    const activeFeatures = await loadFeaturesFromApi(
+      layer,
+      baselineData,
+      hazardLayerDef,
+      operation,
+      dispatch,
+      extent,
+      date,
     );
-  }
 
-  const activeFeatures = await loadFeaturesFromApi(
-    layer,
-    baselineData,
-    hazardLayerDef,
-    operation,
-    dispatch,
-    extent,
-    date,
-  );
-
-  return {
-    boundaries: adminBoundaries,
-    impactFeatures: {
-      ...adminBoundaries,
-      features: activeFeatures,
-    },
+    return {
+      boundaries: adminBoundaries,
+      impactFeatures: {
+        ...adminBoundaries,
+        features: activeFeatures,
+      },
+    };
   };
-};

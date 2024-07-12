@@ -9,7 +9,6 @@ import {
 } from 'lodash';
 import { Feature, FeatureCollection } from 'geojson';
 import { createGetCoverageUrl } from 'prism-common';
-import { TFunctionKeys } from 'i18next';
 import { Dispatch } from 'redux';
 import { appConfig } from 'config';
 import {
@@ -60,15 +59,8 @@ export type Column = {
 const hasKeys = (obj: any, keys: string[]): boolean =>
   !keys.find(key => !has(obj, key));
 
-const scaleValueIfDefined = (
-  value: number,
-  scale?: number,
-  offset?: number,
-) => {
-  return scale !== undefined && offset !== undefined
-    ? value * scale + offset
-    : value;
-};
+const scaleValueIfDefined = (value: number, scale?: number, offset?: number) =>
+  scale !== undefined && offset !== undefined ? value * scale + offset : value;
 
 function thresholdOrNaN(value: number, threshold?: ThresholdDefinition) {
   // filter out nullish values.
@@ -182,8 +174,8 @@ export const fetchApiData = async (
   url: string,
   apiData: ApiData | AlertRequest,
   dispatch: Dispatch,
-): Promise<Array<KeyValueResponse | Feature>> => {
-  return (
+): Promise<Array<KeyValueResponse | Feature>> =>
+  (
     await fetchWithTimeout(
       url,
       dispatch,
@@ -213,7 +205,6 @@ export const fetchApiData = async (
         };
       }
     });
-};
 
 export function scaleAndFilterAggregateData(
   aggregateData: AsyncReturnType<typeof fetchApiData>,
@@ -225,21 +216,18 @@ export function scaleAndFilterAggregateData(
   const { scale, offset } = wcsConfig || {};
 
   return (aggregateData as KeyValueResponse[])
-    .map(data => {
-      return {
-        ...data,
-        [operation]: scaleValueIfDefined(
-          get(data, `stats_${operation}`) as number,
-          scale,
-          offset,
-        ),
-      };
-    })
-    .filter(data => {
-      return !Number.isNaN(
-        thresholdOrNaN(data[operation] as number, threshold),
-      );
-    });
+    .map(data => ({
+      ...data,
+      [operation]: scaleValueIfDefined(
+        get(data, `stats_${operation}`) as number,
+        scale,
+        offset,
+      ),
+    }))
+    .filter(
+      data =>
+        !Number.isNaN(thresholdOrNaN(data[operation] as number, threshold)),
+    );
 }
 
 export function generateFeaturesFromApiData(
@@ -308,7 +296,7 @@ export function quoteAndEscapeCell(value: number | string) {
   if (isUndefined(value)) {
     return '';
   }
-  return `"${value.toString().replaceAll('"', '""')}"`;
+  return `"${(value.toString() as any)?.replaceAll('"', '""')}"`;
 }
 
 export type AnalysisResult =
@@ -421,21 +409,16 @@ export class ExposedPopulationResult {
   analysisDate: ReturnType<Date['getTime']>;
   tableColumns: any;
 
-  getTitle = (t: i18nTranslator): string => {
-    return t('Population Exposure');
-  };
+  // eslint-disable-next-line class-methods-use-this
+  getTitle = (t: i18nTranslator): string => t('Population Exposure');
 
-  getLayerTitle = (t: i18nTranslator): string => {
-    return this.getTitle(t);
-  };
+  getLayerTitle = (t: i18nTranslator): string => this.getTitle(t);
 
   getStatLabel(t: i18nTranslator): string {
     return t(aggregationOperationsToDisplay[this.statistic]);
   }
 
-  getHazardLayer = (): WMSLayerProps => {
-    return this.getHazardLayer();
-  };
+  getHazardLayer = (): WMSLayerProps => this.getHazardLayer();
 
   constructor(
     tableData: TableRow[],
@@ -466,6 +449,7 @@ export class BaselineLayerResult {
   featureCollection: FeatureCollection;
   tableData: TableRow[];
   // for debugging purposes only, as its easy to view the raw API response via Redux Devtools. Should be left empty in production
+  // @ts-ignore: TS6133
   private rawApiData?: object[];
 
   statistic: AggregationOperations;
@@ -610,9 +594,7 @@ export function getAnalysisTableColumns(
   ];
 }
 
-export function useAnalysisTableColumns(
-  analysisResult?: AnalysisResult,
-): {
+export function useAnalysisTableColumns(analysisResult?: AnalysisResult): {
   translatedColumns: Column[];
   analysisTableColumns: Column[];
 } {
@@ -687,7 +669,7 @@ export class PolygonAnalysisResult {
   getTitle(t: i18nTranslator): string {
     return `${t(this.getHazardLayer().title)} ${t(
       'intersecting admin level',
-    )} ${t((this.adminLevel as unknown) as TFunctionKeys)}`;
+    )} ${t(this.adminLevel as unknown as any)}`;
   }
 
   getStatTitle(t: i18nTranslator): string {

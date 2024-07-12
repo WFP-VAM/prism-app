@@ -1,4 +1,3 @@
-import type { Feature, MultiPolygon, BBox } from '@turf/helpers';
 import { sortBy } from 'lodash';
 import bbox from '@turf/bbox';
 import { BoundaryLayerData } from 'context/layers/boundary';
@@ -8,6 +7,7 @@ import {
   BoundaryLayerProps,
   AdminLevelType,
 } from 'config/types';
+import { BBox, Feature, MultiPolygon } from 'geojson';
 
 export type BoundaryRelationsDict = { [key: string]: BoundaryRelationData };
 
@@ -205,9 +205,8 @@ export const setMenuItemStyle = (
   }
 };
 
-export const containsText = (text: string, searchText: string) => {
-  return (text?.toLowerCase().indexOf(searchText?.toLowerCase()) || 0) > -1;
-};
+export const containsText = (text: string, searchText: string) =>
+  (text?.toLowerCase().indexOf(searchText?.toLowerCase()) || 0) > -1;
 
 /*
  * This function returns the higher level relations from a given relation match.
@@ -256,3 +255,7 @@ export const createMatchesTree = (
 
       return [...acc, item];
     }, [] as BoundaryRelation[]);
+
+export enum MapInteraction {
+  GoTo = 'goto',
+}

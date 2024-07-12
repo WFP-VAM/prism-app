@@ -3,15 +3,13 @@ import {
   Fade,
   Grid,
   Tooltip,
-  WithStyles,
   createStyles,
-  withStyles,
+  makeStyles,
 } from '@material-ui/core';
 import { compact } from 'lodash';
 import { DateItem, DateRangeType } from 'config/types';
 import { useSafeTranslation } from 'i18n';
 import { grey } from 'muiTheme';
-
 import {
   DateCompatibleLayerWithDateItems,
   TIMELINE_ITEM_WIDTH,
@@ -42,13 +40,13 @@ type DateItemStyle = {
 
 const TimelineItems = memo(
   ({
-    classes,
     dateRange,
     clickDate,
     locale,
     selectedLayers,
     availableDates,
   }: TimelineItemsProps) => {
+    const classes = useStyles();
     const { t } = useSafeTranslation();
     const AAAvailableDates = useSelector(AAAvailableDatesSelector);
 
@@ -92,27 +90,30 @@ const TimelineItems = memo(
       .flat();
 
     // Hard coded styling for date items (first, second, and third layers)
-    const DATE_ITEM_STYLING: DateItemStyle[] = [
-      {
-        class: classes.layerOneDate,
-        color: LIGHT_BLUE_HEX,
-        layerDirectionClass: classes.layerOneDirection,
-        emphasis: classes.layerOneEmphasis,
-      },
-      {
-        class: classes.layerTwoDate,
-        color: LIGHT_GREEN_HEX,
-        layerDirectionClass: classes.layerTwoDirection,
-        emphasis: classes.layerTwoEmphasis,
-      },
-      {
-        class: classes.layerThreeDate,
-        color: LIGHT_ORANGE_HEX,
-        layerDirectionClass: classes.layerThreeDirection,
-        emphasis: classes.layerThreeEmphasis,
-      },
-      { class: classes.availabilityDate, color: LIGHT_ORANGE_HEX },
-    ];
+    const DATE_ITEM_STYLING: DateItemStyle[] = React.useMemo(
+      () => [
+        {
+          class: classes.layerOneDate,
+          color: LIGHT_BLUE_HEX,
+          layerDirectionClass: classes.layerOneDirection,
+          emphasis: classes.layerOneEmphasis,
+        },
+        {
+          class: classes.layerTwoDate,
+          color: LIGHT_GREEN_HEX,
+          layerDirectionClass: classes.layerTwoDirection,
+          emphasis: classes.layerTwoEmphasis,
+        },
+        {
+          class: classes.layerThreeDate,
+          color: LIGHT_ORANGE_HEX,
+          layerDirectionClass: classes.layerThreeDirection,
+          emphasis: classes.layerThreeEmphasis,
+        },
+        { class: classes.availabilityDate, color: LIGHT_ORANGE_HEX },
+      ],
+      [classes],
+    );
 
     const getTooltipTitle = useCallback(
       (date: DateRangeType): React.JSX.Element[] => {
@@ -158,11 +159,10 @@ const TimelineItems = memo(
     // We truncate layer by removing date that will not be drawn to the Timeline
     const truncatedLayers: DateItem[][] = useMemo(() => {
       // returns the index of the first date in layer that matches the first Timeline date
-      const findLayerFirstDateIndex = (items: DateItem[]): number => {
-        return items
+      const findLayerFirstDateIndex = (items: DateItem[]): number =>
+        items
           .map(d => new Date(d.displayDate).toDateString())
           .indexOf(timelineStartDate);
-      };
 
       return [
         ...orderedLayers.map(layer => {
@@ -173,12 +173,11 @@ const TimelineItems = memo(
           );
           // Filter date items based on queryDate and layerQueryDate
           const filterDateItems = (items: DateItem[]) =>
-            items.filter(item => {
-              return (
+            items.filter(
+              item =>
                 item.queryDate === layerQueryDate ||
-                item.queryDate === item.displayDate
-              );
-            });
+                item.queryDate === item.displayDate,
+            );
           if (firstIndex === -1) {
             return filterDateItems(layer.dateItems);
           }
@@ -254,7 +253,7 @@ const createDirectionStyles = (
   borderLeft: `6px solid ${borderColor}`,
 });
 
-const styles = () =>
+const useStyles = makeStyles(() =>
   createStyles({
     dateItemFull: {
       color: '#101010',
@@ -309,7 +308,8 @@ const styles = () =>
         border: '2px solid black',
       },
     },
-  });
+  }),
+);
 
 type LayerStyle = {
   position: CSSProperties['position'];
@@ -326,7 +326,7 @@ type DirectionStyle = {
   borderLeft: CSSProperties['borderLeft'];
 };
 
-export interface TimelineItemsProps extends WithStyles<typeof styles> {
+export interface TimelineItemsProps {
   dateRange: DateRangeType[];
   clickDate: (arg: number) => void;
   locale: string;
@@ -334,4 +334,4 @@ export interface TimelineItemsProps extends WithStyles<typeof styles> {
   availableDates: number[];
 }
 
-export default withStyles(styles)(TimelineItems);
+export default TimelineItems;

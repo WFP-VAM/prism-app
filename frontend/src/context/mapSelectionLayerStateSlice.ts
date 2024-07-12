@@ -45,24 +45,18 @@ export const mapSelectionLayerStateSlice = createSlice({
     setSelectedBoundaries: (
       state,
       { payload }: PayloadAction<AdminCodeString[]>,
-    ) => {
-      return {
-        ...state,
-        selectedBoundaries: uniq(payload),
-      };
-    },
-    clearSelectedBoundaries: state => {
-      return { ...state, selectedBoundaries: [] };
-    },
+    ) => ({
+      ...state,
+      selectedBoundaries: uniq(payload),
+    }),
+    clearSelectedBoundaries: state => ({ ...state, selectedBoundaries: [] }),
     setIsSelectionMode: (
       state,
       { payload: isSelectionMode }: PayloadAction<boolean>,
-    ) => {
-      return {
-        ...state,
-        isSelectionMode,
-      };
-    },
+    ) => ({
+      ...state,
+      isSelectionMode,
+    }),
   },
 });
 
