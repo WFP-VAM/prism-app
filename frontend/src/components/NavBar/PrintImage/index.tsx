@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import { IconButton } from '@material-ui/core';
 import { useSelector } from 'react-redux';
 import PrintOutlined from '@material-ui/icons/PrintOutlined';

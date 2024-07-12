@@ -33,10 +33,8 @@ const AnalysisLayerSwitchItemDownloadOptions = memo(
     analysisResultSortByKey,
     analysisResultSortOrder,
   }: AnalysisLayerSwitchItemDownloadOptionsProps) => {
-    const [
-      downloadMenuAnchorEl,
-      setDownloadMenuAnchorEl,
-    ] = useState<HTMLElement | null>(null);
+    const [downloadMenuAnchorEl, setDownloadMenuAnchorEl] =
+      useState<HTMLElement | null>(null);
 
     const { translatedColumns } = useAnalysisTableColumns(analysisData);
 
@@ -53,19 +51,20 @@ const AnalysisLayerSwitchItemDownloadOptions = memo(
       exposureAnalysisResultSortByKey,
       exposureAnalysisResultSortOrder,
     );
-    const exposureAnalysisColumnsToRender = getExposureAnalysisColumnsToRender(
-      translatedColumns,
-    );
-    const exposureAnalysisTableRowsToRender = getExposureAnalysisTableDataRowsToRender(
-      translatedColumns,
-      exposureAnalysisTableData,
-    );
+    const exposureAnalysisColumnsToRender =
+      getExposureAnalysisColumnsToRender(translatedColumns);
+    const exposureAnalysisTableRowsToRender =
+      getExposureAnalysisTableDataRowsToRender(
+        translatedColumns,
+        exposureAnalysisTableData,
+      );
 
     const { t } = useSafeTranslation();
 
-    const featureCollection = useMemo(() => {
-      return analysisData?.featureCollection;
-    }, [analysisData]);
+    const featureCollection = useMemo(
+      () => analysisData?.featureCollection,
+      [analysisData],
+    );
 
     const handleDownloadMenuClose = useCallback(() => {
       setDownloadMenuAnchorEl(null);
@@ -168,13 +167,14 @@ const AnalysisLayerSwitchItemDownloadOptions = memo(
       );
     }, [analysisData, featureCollection, fileName]);
 
-    const renderedDownloadAsCSVMenuItem = useMemo(() => {
-      return (
+    const renderedDownloadAsCSVMenuItem = useMemo(
+      () => (
         <MenuItem key="download-as-csv" onClick={handleDownloadCsv}>
           {t('Download as CSV')}
         </MenuItem>
-      );
-    }, [handleDownloadCsv, t]);
+      ),
+      [handleDownloadCsv, t],
+    );
 
     return (
       <>

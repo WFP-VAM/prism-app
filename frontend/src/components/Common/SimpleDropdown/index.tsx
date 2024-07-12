@@ -1,5 +1,4 @@
 import { FormControl, MenuItem, Select, Typography } from '@material-ui/core';
-import React from 'react';
 import { useSafeTranslation } from 'i18n';
 
 type OptionLabel = string;

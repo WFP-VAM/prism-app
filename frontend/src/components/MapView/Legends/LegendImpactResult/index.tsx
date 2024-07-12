@@ -1,4 +1,4 @@
-import React, { memo } from 'react';
+import { memo } from 'react';
 import { useSafeTranslation } from 'i18n';
 import LegendMarkdown from '../LegendMarkdown';
 

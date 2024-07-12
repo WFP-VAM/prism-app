@@ -34,7 +34,6 @@ import {
 import { useDispatch, useSelector } from 'react-redux';
 import DatePicker from 'react-datepicker';
 import { isNil, orderBy, range } from 'lodash';
-import { TFunctionKeys } from 'i18next';
 import {
   mapSelector,
   layersSelector,
@@ -150,10 +149,8 @@ const AnalysisPanel = memo(() => {
     Column['id']
   >(exposureAnalysisResultSortByKey);
   // exposure analysis sort order
-  const [
-    exposureAnalysisIsAscending,
-    setExposureAnalysisIsAscending,
-  ] = useState(exposureAnalysisResultSortOrder === 'asc');
+  const [exposureAnalysisIsAscending, setExposureAnalysisIsAscending] =
+    useState(exposureAnalysisResultSortOrder === 'asc');
   // defaults the sort column of every other analysis table to 'name'
   const [analysisSortColumn, setAnalysisSortColumn] = useState<Column['id']>(
     analysisResultSortByKey,
@@ -222,15 +219,20 @@ const AnalysisPanel = memo(() => {
   const hazardDataType: HazardDataType | null = selectedHazardLayer
     ? selectedHazardLayer.geometry || RasterType.Raster
     : null;
-  const availableHazardDates = selectedHazardLayer
-    ? Array.from(
-        new Set(
-          getPossibleDatesForLayer(selectedHazardLayer, availableDates)?.map(
-            d => d.queryDate,
-          ),
-        ),
-      ).map(d => new Date(d)) || []
-    : [];
+  const availableHazardDates = React.useMemo(
+    () =>
+      selectedHazardLayer
+        ? Array.from(
+            new Set(
+              getPossibleDatesForLayer(
+                selectedHazardLayer,
+                availableDates,
+              )?.map(d => d.queryDate),
+            ),
+          ).map(d => new Date(d)) || []
+        : [],
+    [availableDates, selectedHazardLayer],
+  );
 
   const BASELINE_URL_LAYER_KEY = 'baselineLayerId';
   const preSelectedBaselineLayer = selectedLayers.find(
@@ -296,13 +298,15 @@ const AnalysisPanel = memo(() => {
   }, [analysisResult]);
 
   // The analysis table data
-  const analysisTableData = useMemo(() => {
-    return orderBy(
-      analysisResult?.tableData,
-      analysisSortColumn,
-      analysisIsAscending ? 'asc' : 'desc',
-    );
-  }, [analysisIsAscending, analysisResult, analysisSortColumn]);
+  const analysisTableData = useMemo(
+    () =>
+      orderBy(
+        analysisResult?.tableData,
+        analysisSortColumn,
+        analysisIsAscending ? 'asc' : 'desc',
+      ),
+    [analysisIsAscending, analysisResult, analysisSortColumn],
+  );
 
   // handler of general analysis tables sort order
   const handleAnalysisTableOrderBy = useCallback(
@@ -321,69 +325,69 @@ const AnalysisPanel = memo(() => {
   );
 
   const onOptionChange = useCallback(
-    <T extends string>(setterFunc: Dispatch<SetStateAction<T>>) => (
-      event: React.ChangeEvent<HTMLInputElement>,
-    ) => {
-      const value = event.target.value as T;
-      setterFunc(value);
-      return value;
-    },
+    <T extends string>(setterFunc: Dispatch<SetStateAction<T>>) =>
+      (event: React.ChangeEvent<HTMLInputElement>) => {
+        const value = event.target.value as T;
+        setterFunc(value);
+        return value;
+      },
     [],
   );
   // specially for threshold values, also does error checking
   const onThresholdOptionChange = useCallback(
-    (thresholdType: 'above' | 'below') => (
-      event: React.ChangeEvent<HTMLInputElement>,
-    ) => {
-      const setterFunc =
-        thresholdType === 'above' ? setAboveThreshold : setBelowThreshold;
-      const changedOption = onOptionChange(setterFunc)(event);
-      // setting a value doesn't update the existing value until next render, therefore we must decide whether to access the old one or the newly change one here.
-      const aboveThresholdValue = parseFloat(
-        thresholdType === 'above' ? changedOption : aboveThreshold,
-      );
-      const belowThresholdValue = parseFloat(
-        thresholdType === 'below' ? changedOption : belowThreshold,
-      );
-      if (belowThresholdValue > aboveThresholdValue) {
-        setThresholdError('Below threshold is larger than above threshold!');
-      } else {
-        setThresholdError(null);
-      }
-    },
+    (thresholdType: 'above' | 'below') =>
+      (event: React.ChangeEvent<HTMLInputElement>) => {
+        const setterFunc =
+          thresholdType === 'above' ? setAboveThreshold : setBelowThreshold;
+        const changedOption = onOptionChange(setterFunc)(event);
+        // setting a value doesn't update the existing value until next render, therefore we must decide whether to access the old one or the newly change one here.
+        const aboveThresholdValue = parseFloat(
+          thresholdType === 'above' ? changedOption : aboveThreshold,
+        );
+        const belowThresholdValue = parseFloat(
+          thresholdType === 'below' ? changedOption : belowThreshold,
+        );
+        if (belowThresholdValue > aboveThresholdValue) {
+          setThresholdError('Below threshold is larger than above threshold!');
+        } else {
+          setThresholdError(null);
+        }
+      },
     [aboveThreshold, belowThreshold, onOptionChange],
   );
 
-  const statisticOptions = useMemo(() => {
-    return Object.entries(AggregationOperations)
-      .filter(([, value]) => value !== AggregationOperations.Sum) // sum is used only for exposure analysis.
-      .map(([key, value]) => (
-        <FormControlLabel
-          key={key}
-          value={value}
-          control={
-            <Radio
-              classes={{
-                root: classes.radioOptions,
-                checked: classes.radioOptionsChecked,
-              }}
-              color="default"
-              size="small"
-            />
-          }
-          label={
-            <Typography className={classes.analysisPanelParamText}>
-              {t(key)}
-            </Typography>
-          }
-        />
-      ));
-  }, [
-    classes.analysisPanelParamText,
-    classes.radioOptions,
-    classes.radioOptionsChecked,
-    t,
-  ]);
+  const statisticOptions = useMemo(
+    () =>
+      Object.entries(AggregationOperations)
+        .filter(([, value]) => value !== AggregationOperations.Sum) // sum is used only for exposure analysis.
+        .map(([key, value]) => (
+          <FormControlLabel
+            key={key}
+            value={value}
+            control={
+              <Radio
+                classes={{
+                  root: classes.radioOptions,
+                  checked: classes.radioOptionsChecked,
+                }}
+                color="default"
+                size="small"
+              />
+            }
+            label={
+              <Typography className={classes.analysisPanelParamText}>
+                {t(key)}
+              </Typography>
+            }
+          />
+        )),
+    [
+      classes.analysisPanelParamText,
+      classes.radioOptions,
+      classes.radioOptionsChecked,
+      t,
+    ],
+  );
 
   const activateUniqueBoundary = useCallback(
     (forceAdminLevel?: BoundaryLayerProps) => {
@@ -670,7 +674,6 @@ const AnalysisPanel = memo(() => {
       <ExposureAnalysisTable
         tableData={exposureAnalysisTableData}
         columns={translatedColumns}
-        maxResults={1000}
         sortColumn={exposureAnalysisSortColumn}
         handleChangeOrderBy={handleExposureAnalysisTableOrderBy}
         isAscending={exposureAnalysisIsAscending}
@@ -1149,7 +1152,7 @@ const AnalysisPanel = memo(() => {
                   <CloseRounded />
                 </IconButton>
                 <Typography className={classes.analysisTableTitle}>
-                  {t(selectedHazardLayer?.title as TFunctionKeys)}
+                  {t(selectedHazardLayer?.title as any)}
                 </Typography>
               </div>
               <AnalysisTable

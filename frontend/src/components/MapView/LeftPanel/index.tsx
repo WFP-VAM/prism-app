@@ -37,25 +37,23 @@ interface TabPanelProps {
   value: Panel;
 }
 
-const TabPanel = memo(({ children, value, index, ...other }: TabPanelProps) => {
-  return (
-    <div
-      role="tabpanel"
-      id={`full-width-tabpanel-${index}`}
-      aria-labelledby={`full-width-tab-${index}`}
-      style={{
-        display: index === value ? 'block' : 'none',
-        flexGrow: 1,
-        height: 'calc(94vh - 48px)',
-        order: index === value ? -1 : undefined,
-        overflowX: index === value ? 'hidden' : 'auto',
-      }}
-      {...other}
-    >
-      {children}
-    </div>
-  );
-});
+const TabPanel = memo(({ children, value, index, ...other }: TabPanelProps) => (
+  <div
+    role="tabpanel"
+    id={`full-width-tabpanel-${index}`}
+    aria-labelledby={`full-width-tab-${index}`}
+    style={{
+      display: index === value ? 'block' : 'none',
+      flexGrow: 1,
+      height: 'calc(94vh - 48px)',
+      order: index === value ? -1 : undefined,
+      overflowX: index === value ? 'hidden' : 'auto',
+    }}
+    {...other}
+  >
+    {children}
+  </div>
+));
 
 const LeftPanel = memo(() => {
   const dispatch = useDispatch();
@@ -65,11 +63,8 @@ const LeftPanel = memo(() => {
   const AAAvailableDates = useSelector(AAAvailableDatesSelector);
   const selectedLayers = useSelector(layersSelector);
   const map = useSelector(mapSelector);
-  const {
-    updateHistory,
-    appendLayerToUrl,
-    removeLayerFromUrl,
-  } = useUrlHistory();
+  const { updateHistory, appendLayerToUrl, removeLayerFromUrl } =
+    useUrlHistory();
 
   const classes = useStyles({ tabValue });
 

@@ -6,7 +6,7 @@ import { titlecase } from "../utils";
 export default function findAndParseOperationUrl(
   xml: string,
   op: string,
-  method: "GET" | "POST" | "Get" | "Post" = "Get"
+  method: "GET" | "POST" | "Get" | "Post" = "Get",
 ): string | undefined {
   const xmlOp = findOperation(xml, op);
   if (!xmlOp) {

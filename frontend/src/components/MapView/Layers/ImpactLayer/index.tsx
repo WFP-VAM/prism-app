@@ -1,7 +1,7 @@
-import React, { memo, useEffect } from 'react';
+import { memo, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { get } from 'lodash';
-import { createStyles, withStyles, WithStyles, Theme } from '@material-ui/core';
+import { createStyles, Theme, makeStyles } from '@material-ui/core';
 import { getExtent, Extent } from 'components/MapView/Layers/raster-utils';
 import { legendToStops } from 'components/MapView/Layers/layer-utils';
 import { ImpactLayerProps, MapEventWrapFunctionProps } from 'config/types';
@@ -41,58 +41,55 @@ function getHazardData(evt: any, operation: string, t?: i18nTranslator) {
   return getRoundedData(data, t);
 }
 
-const onClick = ({
-  layer,
-  t,
-  dispatch,
-}: MapEventWrapFunctionProps<ImpactLayerProps>) => (
-  evt: MapLayerMouseEvent,
-) => {
-  const hazardLayerDef = LayerDefinitions[layer.hazardLayer];
-  const operation = layer.operation || 'median';
-  const hazardTitle = `${
-    hazardLayerDef.title ? t(hazardLayerDef.title) : ''
-  } (${t(operation)})`;
+const onClick =
+  ({ layer, t, dispatch }: MapEventWrapFunctionProps<ImpactLayerProps>) =>
+  (evt: MapLayerMouseEvent) => {
+    const hazardLayerDef = LayerDefinitions[layer.hazardLayer];
+    const operation = layer.operation || 'median';
+    const hazardTitle = `${
+      hazardLayerDef.title ? t(hazardLayerDef.title) : ''
+    } (${t(operation)})`;
 
-  const layerId = getLayerMapId(layer.id);
-  const feature = findFeature(layerId, evt);
-  if (!feature) {
-    return;
-  }
+    const layerId = getLayerMapId(layer.id);
+    const feature = findFeature(layerId, evt);
+    if (!feature) {
+      return;
+    }
 
-  const coordinates = getEvtCoords(evt);
+    const coordinates = getEvtCoords(evt);
 
-  const popupData = {
-    [layer.title]: {
-      data: getRoundedData(get(feature, 'properties.impactValue'), t),
-      coordinates,
-    },
-    [hazardTitle]: {
-      data: getHazardData(evt, operation, t),
-      coordinates,
-    },
-  };
-  // by default add `impactValue` to the tooltip
-  dispatch(addPopupData(popupData));
-  // then add feature_info_props as extra fields to the tooltip
-  dispatch(
-    addPopupData(
-      getFeatureInfoPropsData(
-        layer.featureInfoProps || {},
+    const popupData = {
+      [layer.title]: {
+        data: getRoundedData(get(feature, 'properties.impactValue'), t),
         coordinates,
-        feature,
+      },
+      [hazardTitle]: {
+        data: getHazardData(evt, operation, t),
+        coordinates,
+      },
+    };
+    // by default add `impactValue` to the tooltip
+    dispatch(addPopupData(popupData));
+    // then add feature_info_props as extra fields to the tooltip
+    dispatch(
+      addPopupData(
+        getFeatureInfoPropsData(
+          layer.featureInfoProps || {},
+          coordinates,
+          feature,
+        ),
       ),
-    ),
-  );
-};
+    );
+  };
 
-const ImpactLayer = ({ classes, layer, before }: ComponentProps) => {
+const ImpactLayer = memo(({ layer, before }: ComponentProps) => {
+  const classes = useStyles();
   const map = useSelector(mapSelector);
   const { startDate: selectedDate } = useSelector(dateRangeSelector);
   const { data, date } =
-    (useSelector(layerDataSelector(layer.id, selectedDate)) as LayerData<
-      ImpactLayerProps
-    >) || {};
+    (useSelector(
+      layerDataSelector(layer.id, selectedDate),
+    ) as LayerData<ImpactLayerProps>) || {};
   const dispatch = useDispatch();
   const { t } = useSafeTranslation();
   const opacityState = useSelector(opacitySelector(layer.id));
@@ -158,9 +155,9 @@ const ImpactLayer = ({ classes, layer, before }: ComponentProps) => {
       />
     </Source>
   );
-};
+});
 
-const styles = (theme: Theme) =>
+const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     message: {
       position: 'absolute',
@@ -177,11 +174,12 @@ const styles = (theme: Theme) =>
       backgroundColor: theme.palette.grey.A100,
       borderRadius: theme.spacing(2),
     },
-  });
+  }),
+);
 
-interface ComponentProps extends WithStyles<typeof styles> {
+interface ComponentProps {
   layer: ImpactLayerProps;
   before?: string;
 }
 
-export default memo(withStyles(styles)(ImpactLayer));
+export default ImpactLayer;
