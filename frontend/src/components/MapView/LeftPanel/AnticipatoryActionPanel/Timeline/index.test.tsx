@@ -21,7 +21,7 @@ const filters: AnticipatoryActionState['filters'] = {
     ny: true,
   },
   selectedIndex: '',
-  selectedDate: undefined,
+  selectedDate: '2024-02-01',
 };
 
 const store = mockStore({
