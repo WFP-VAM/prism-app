@@ -106,11 +106,21 @@ describe('Config Map', () => {
             }
           });
           if (missingFields.length > 0) {
+            // Create an array to hold the table data
+            const tableData: { [key: string]: string }[] = [];
+
+            // Populate the table data with missing fields
+            missingFields.forEach(field => {
+              const row: { [key: string]: string } = {
+                [`Missing Fields: ${country} - ${key}`]: `${field.slice(0, 64)}${field.length > 64 ? '...' : ''}`,
+              };
+              // eslint-disable-next-line fp/no-mutating-methods
+              tableData.push(row);
+            });
+
+            // Print the table to the console
             // eslint-disable-next-line no-console
-            console.log(
-              `${missingFields.length} missing fields for ${country} - language: ${key}`,
-            );
-            console.error(missingFields);
+            console.table(tableData);
           }
           // TODO - activate this assertion once all translations are complete
           // expect(missingFields).toEqual([]);
