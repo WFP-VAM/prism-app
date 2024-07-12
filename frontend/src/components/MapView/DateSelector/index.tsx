@@ -207,6 +207,7 @@ const DateSelector = memo(() => {
       // This updates state because a useEffect in MapView updates the redux state
       // TODO this is convoluted coupling, we should update state here if feasible.
       updateHistory('date', getFormattedDate(time, 'default') as string);
+      updateDateRange({ startDate: time });
     },
     [stateStartDate, updateHistory, dispatch],
   );
