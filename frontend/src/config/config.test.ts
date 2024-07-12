@@ -72,6 +72,9 @@ describe('Config Map', () => {
       // layers titles
       const layerTitles = jp.query(layers, '$..title');
       const layerLegendTexts = jp.query(layers, '$..legend_text');
+      const legendLabels = jp
+        .query(layers, '$..legend[*].label')
+        .filter(label => !label.includes(' mm'));
       const chartLegendLabels = jp.query(
         layers,
         '$..chart_data.fields[*].label',
@@ -84,6 +87,7 @@ describe('Config Map', () => {
         ...categoryGroupTitles,
         ...layerTitles,
         ...layerLegendTexts,
+        ...legendLabels,
         ...chartLegendLabels,
       ];
       // Deduplicate items using a Set
