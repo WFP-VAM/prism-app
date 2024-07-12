@@ -57,12 +57,13 @@ export function forecastTransform({
 }: ForecastTransformParams) {
   const { selectedWindow, selectedDate } = filters;
 
-  const dateData = (selectedWindow === 'All'
-    ? [
-        ...(data['Window 1'][selectedDistrict] || []),
-        ...(data['Window 2'][selectedDistrict] || []),
-      ]
-    : data[selectedWindow][selectedDistrict] || []
+  const dateData = (
+    selectedWindow === 'All'
+      ? [
+          ...(data['Window 1'][selectedDistrict] || []),
+          ...(data['Window 2'][selectedDistrict] || []),
+        ]
+      : data[selectedWindow][selectedDistrict] || []
   ).filter(x => !selectedDate || x.date <= selectedDate);
 
   // eslint-disable-next-line fp/no-mutating-methods
@@ -131,7 +132,7 @@ export const chartOptions = {
           suggestedMin: 0,
           suggestedMax: 40,
           stepSize: 10,
-          callback: (value: number, index: number, values: number[]) =>
+          callback: (value: number, _index: number, _values: number[]) =>
             `${value}%`,
         },
       },
@@ -163,7 +164,7 @@ export const getChartData = (
   labels: Object.keys(indexes),
   datasets: [
     {
-      data: Object.entries(indexes).map(([index, val], i) => ({
+      data: Object.entries(indexes).map(([_index, val], i) => ({
         x: i + 0.6,
         y: val?.probability,
         z: val?.showWarningSign,
@@ -181,15 +182,12 @@ export const getChartData = (
             offset: -2, // offset from the point
             align: 'left',
             backgroundColor: 'white',
-            borderColor: (ctx: any) => {
-              return ctx.dataset.backgroundColor;
-            },
+            borderColor: (ctx: any) => ctx.dataset.backgroundColor,
             borderWidth: 1,
             borderRadius: 2,
             color: 'black',
-            formatter: (value: any, ctx: any) => {
-              return `${value.z ? '⚠️ ' : ''}${value.y}%`;
-            },
+            formatter: (value: any, _ctx: any) =>
+              `${value.z ? '⚠️ ' : ''}${value.y}%`,
           },
         },
       },

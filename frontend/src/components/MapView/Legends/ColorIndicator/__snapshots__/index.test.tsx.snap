@@ -6,7 +6,8 @@ exports[`renders as expected 1`] = `
     class="makeStyles-container-1"
   >
     <div
-      class="makeStyles-indicator-2 makeStyles-indicator-4"
+      class="makeStyles-indicator-2"
+      style="background-color: rgba(239, 50, 2, 0.7);"
     />
     <mock-typography
       color="textSecondary"

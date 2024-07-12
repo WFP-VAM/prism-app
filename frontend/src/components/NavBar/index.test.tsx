@@ -1,4 +1,3 @@
-import React from 'react';
 import { render } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import { store } from 'context/store';
@@ -11,7 +10,7 @@ test('renders as expected', () => {
   const { container } = render(
     <BrowserRouter>
       <Provider store={store}>
-        <NavBar />
+        <NavBar isAlertFormOpen={false} setIsAlertFormOpen={() => {}} />
       </Provider>
     </BrowserRouter>,
   );

@@ -1,16 +1,14 @@
 import {
   Button,
   Typography,
-  WithStyles,
   createStyles,
-  withStyles,
+  makeStyles,
 } from '@material-ui/core';
-import React from 'react';
 import { t } from 'i18next';
 import { downloadChartsToCsv } from 'utils/csv-utils';
 import { cyanBlue } from 'muiTheme';
 
-const styles = () =>
+const useStyles = makeStyles(() =>
   createStyles({
     downloadButton: {
       backgroundColor: cyanBlue,
@@ -22,9 +20,10 @@ const styles = () =>
       width: '50%',
       '&.Mui-disabled': { opacity: 0.5 },
     },
-  });
+  }),
+);
 
-interface DownloadChartCSVButtonProps extends WithStyles<typeof styles> {
+interface DownloadChartCSVButtonProps {
   filesData: {
     fileName: string;
     data: { [key: string]: any[] };
@@ -32,17 +31,13 @@ interface DownloadChartCSVButtonProps extends WithStyles<typeof styles> {
   disabled?: boolean;
 }
 
-const DownloadChartCSVButton = ({
+function DownloadChartCSVButton({
   filesData,
   disabled = false,
-  classes,
-}: DownloadChartCSVButtonProps) => {
-  const buildDataToDownload: () => [
-    { [key: string]: any[] },
-    string,
-  ][] = () => {
-    return filesData.map(fileData => [fileData.data, fileData.fileName]);
-  };
+}: DownloadChartCSVButtonProps) {
+  const classes = useStyles();
+  const buildDataToDownload: () => [{ [key: string]: any[] }, string][] = () =>
+    filesData.map(fileData => [fileData.data, fileData.fileName]);
 
   return (
     <Button
@@ -53,6 +48,6 @@ const DownloadChartCSVButton = ({
       <Typography variant="body2">{t('Download CSV')}</Typography>
     </Button>
   );
-};
+}
 
-export default withStyles(styles)(DownloadChartCSVButton);
+export default DownloadChartCSVButton;

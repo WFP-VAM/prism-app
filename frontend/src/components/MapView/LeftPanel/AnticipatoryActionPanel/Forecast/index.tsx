@@ -4,7 +4,6 @@ import {
   createStyles,
   makeStyles,
 } from '@material-ui/core';
-import React from 'react';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 import { Scatter } from 'react-chartjs-2';
 import { useDispatch, useSelector } from 'react-redux';

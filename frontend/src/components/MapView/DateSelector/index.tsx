@@ -1,22 +1,15 @@
 import {
   Button,
   Grid,
-  Hidden,
   Theme,
-  WithStyles,
   createStyles,
-  withStyles,
+  makeStyles,
+  useMediaQuery,
+  useTheme,
 } from '@material-ui/core';
 import { ChevronLeft, ChevronRight } from '@material-ui/icons';
 import { findIndex, get, isEqual } from 'lodash';
-import React, {
-  memo,
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from 'react';
+import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import Draggable, { DraggableEvent } from 'react-draggable';
@@ -35,7 +28,8 @@ import { useUrlHistory } from 'utils/url-utils';
 import useLayers from 'utils/layers-utils';
 import { format } from 'date-fns';
 import { Panel, leftPanelTabValueSelector } from 'context/leftPanelStateSlice';
-import { ReactComponent as TickSvg } from './tick.svg';
+import { updateDateRange } from 'context/mapStateSlice';
+import TickSvg from './tick.svg';
 import DateSelectorInput from './DateSelectorInput';
 import TimelineItems from './TimelineItems';
 import { TIMELINE_ITEM_WIDTH, findDateIndex } from './utils';
@@ -60,7 +54,8 @@ const calculateStartAndEndDates = (startDate: Date, selectedTab: string) => {
   return { start, end };
 };
 
-const DateSelector = memo(({ classes }: DateSelectorProps) => {
+const DateSelector = memo(() => {
+  const classes = useStyles();
   const {
     selectedLayerDates: availableDates,
     selectedLayersWithDateSupport: selectedLayers,
@@ -93,10 +88,14 @@ const DateSelector = memo(({ classes }: DateSelectorProps) => {
   const { t } = useSafeTranslation();
   const { updateHistory } = useUrlHistory();
   const dispatch = useDispatch();
+  const theme = useTheme();
+  const smUp = useMediaQuery(theme.breakpoints.up('sm'));
+  const xsDown = useMediaQuery(theme.breakpoints.down('xs'));
 
-  const maxDate = useMemo(() => {
-    return new Date(Math.max(...availableDates, new Date().getTime()));
-  }, [availableDates]);
+  const maxDate = useMemo(
+    () => new Date(Math.max(...availableDates, new Date().getTime())),
+    [availableDates],
+  );
 
   const timeLineWidth = get(timeLine.current, 'offsetWidth', 0);
 
@@ -132,9 +131,10 @@ const DateSelector = memo(({ classes }: DateSelectorProps) => {
     handleTimeLinePosition(x);
   }, [handleTimeLinePosition, setPointerXPosition]);
 
-  const locale = useMemo(() => {
-    return t('date_locale') ? t('date_locale') : 'en';
-  }, [t]);
+  const locale = useMemo(
+    () => (t('date_locale') ? t('date_locale') : 'en'),
+    [t],
+  );
 
   const panelTab = useSelector(leftPanelTabValueSelector);
 
@@ -173,14 +173,16 @@ const DateSelector = memo(({ classes }: DateSelectorProps) => {
     });
   }, [locale, stateStartDate, panelTab]);
 
-  const dateIndex = useMemo(() => {
-    return findIndex(
-      range,
-      date =>
-        !!stateStartDate &&
-        datesAreEqualWithoutTime(date.value, stateStartDate),
-    );
-  }, [range, stateStartDate]);
+  const dateIndex = useMemo(
+    () =>
+      findIndex(
+        range,
+        date =>
+          !!stateStartDate &&
+          datesAreEqualWithoutTime(date.value, stateStartDate),
+      ),
+    [range, stateStartDate],
+  );
 
   // Create timeline range and set pointer position
   useEffect(() => {
@@ -205,8 +207,9 @@ const DateSelector = memo(({ classes }: DateSelectorProps) => {
       // This updates state because a useEffect in MapView updates the redux state
       // TODO this is convoluted coupling, we should update state here if feasible.
       updateHistory('date', getFormattedDate(time, 'default') as string);
+      dispatch(updateDateRange({ startDate: time }));
     },
-    [stateStartDate, updateHistory],
+    [stateStartDate, updateHistory, dispatch],
   );
 
   const setDatePosition = useCallback(
@@ -243,15 +246,16 @@ const DateSelector = memo(({ classes }: DateSelectorProps) => {
     setDatePosition(stateStartDate, -1, true);
   }, [setDatePosition, stateStartDate]);
 
-  const includedDates = useMemo(() => {
-    return availableDates?.map(d => new Date(d)) ?? [];
-  }, [availableDates]);
+  const includedDates = useMemo(
+    () => availableDates?.map(d => new Date(d)) ?? [],
+    [availableDates],
+  );
 
   const checkIntersectingDateAndShowPopup = useCallback(
     (selectedDate: Date, positionY: number) => {
-      const findDateInIntersectingDates = includedDates.find(date => {
-        return datesAreEqualWithoutTime(date, selectedDate);
-      });
+      const findDateInIntersectingDates = includedDates.find(date =>
+        datesAreEqualWithoutTime(date, selectedDate),
+      );
       if (findDateInIntersectingDates) {
         return;
       }
@@ -289,7 +293,7 @@ const DateSelector = memo(({ classes }: DateSelectorProps) => {
   };
 
   // Set timeline position after being dragged
-  const onTimelineStop = useCallback((e: DraggableEvent, position: Point) => {
+  const onTimelineStop = useCallback((_e: DraggableEvent, position: Point) => {
     setTimelinePosition(position);
   }, []);
 
@@ -297,9 +301,46 @@ const DateSelector = memo(({ classes }: DateSelectorProps) => {
     e.stopPropagation();
   }, []);
 
+  const onPointerDrag = useCallback(
+    (_e: DraggableEvent, position: Point) => {
+      const exactX = Math.round(position.x / TIMELINE_ITEM_WIDTH);
+      if (exactX >= dateRange.length) {
+        return;
+      }
+      const selectedIndex = findDateIndex(
+        availableDates,
+        dateRange[exactX].value,
+      );
+      if (selectedIndex < 0) {
+        return;
+      }
+      setPointerPosition({
+        x: exactX * TIMELINE_ITEM_WIDTH,
+        y: position.y,
+      });
+
+      // Hide all tooltips
+      const allTooltips = document.querySelectorAll('[data-date-index]');
+      allTooltips.forEach(tooltip => {
+        tooltip.dispatchEvent(new MouseEvent('mouseout', { bubbles: true }));
+      });
+
+      // Show current tooltip
+      const tooltipElement = document.querySelector(
+        `[data-date-index="${exactX}"]`,
+      );
+      if (tooltipElement) {
+        tooltipElement.dispatchEvent(
+          new MouseEvent('mouseover', { bubbles: true }),
+        );
+      }
+    },
+    [availableDates, dateRange],
+  );
+
   // Set pointer position after being dragged
   const onPointerStop = useCallback(
-    (e: DraggableEvent, position: Point) => {
+    (_e: DraggableEvent, position: Point) => {
       const exactX = Math.round(position.x / TIMELINE_ITEM_WIDTH);
       if (exactX >= dateRange.length) {
         return;
@@ -324,6 +365,16 @@ const DateSelector = memo(({ classes }: DateSelectorProps) => {
         position.y,
       );
       updateStartDate(updatedDate, true);
+
+      // Hide the tooltip for exactX
+      const tooltipElement = document.querySelector(
+        `[data-date-index="${exactX}"]`,
+      );
+      if (tooltipElement) {
+        tooltipElement.dispatchEvent(
+          new MouseEvent('mouseout', { bubbles: true }),
+        );
+      }
     },
     [
       availableDates,
@@ -354,11 +405,11 @@ const DateSelector = memo(({ classes }: DateSelectorProps) => {
       >
         {/* Mobile */}
         <Grid item xs={12} sm={1} className={classes.datePickerGrid}>
-          <Hidden smUp>
+          {!smUp && (
             <Button onClick={decrementDate}>
               <ChevronLeft style={{ color: '#101010' }} />
             </Button>
-          </Hidden>
+          )}
 
           <DatePicker
             locale={t('date_locale')}
@@ -378,20 +429,20 @@ const DateSelector = memo(({ classes }: DateSelectorProps) => {
             includeDates={[...includedDates, today]}
           />
 
-          <Hidden smUp>
+          {!smUp && (
             <Button onClick={incrementDate}>
               <ChevronRight style={{ color: '#101010' }} />
             </Button>
-          </Hidden>
+          )}
         </Grid>
 
         {/* Desktop */}
         <Grid item xs={12} sm className={classes.slider}>
-          <Hidden xsDown>
+          {!xsDown && (
             <Button onClick={decrementDate} className={classes.chevronDate}>
               <ChevronLeft />
             </Button>
-          </Hidden>
+          )}
           <Grid className={classes.dateContainer} ref={timeLine}>
             <Draggable
               axis="x"
@@ -417,6 +468,7 @@ const DateSelector = memo(({ classes }: DateSelectorProps) => {
                       clickDate={clickDate}
                       locale={locale}
                       selectedLayers={selectedLayers}
+                      availableDates={availableDates}
                     />
                   )}
                 </Grid>
@@ -433,26 +485,31 @@ const DateSelector = memo(({ classes }: DateSelectorProps) => {
                   position={pointerPosition}
                   onStart={onPointerStart}
                   onStop={onPointerStop}
+                  onDrag={onPointerDrag}
                 >
                   <div className={classes.pointer} id={POINTER_ID}>
-                    <TickSvg />
+                    <img
+                      src={TickSvg}
+                      alt="Tick Svg"
+                      style={{ pointerEvents: 'none', marginTop: -29 }}
+                    />
                   </div>
                 </Draggable>
               </div>
             </Draggable>
           </Grid>
-          <Hidden xsDown>
+          {!xsDown && (
             <Button onClick={incrementDate} className={classes.chevronDate}>
               <ChevronRight />
             </Button>
-          </Hidden>
+          )}
         </Grid>
       </Grid>
     </div>
   );
 });
 
-const styles = (theme: Theme) =>
+const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     container: {
       position: 'absolute',
@@ -525,14 +582,12 @@ const styles = (theme: Theme) =>
     pointer: {
       position: 'absolute',
       zIndex: 5,
-      top: -20,
-      left: -3.5,
+      marginTop: 22,
+      left: -12,
       height: '16px',
-      cursor: 'pointer',
-      pointerEvents: 'none',
+      cursor: 'grab',
     },
-  });
+  }),
+);
 
-export interface DateSelectorProps extends WithStyles<typeof styles> {}
-
-export default withStyles(styles)(DateSelector);
+export default DateSelector;

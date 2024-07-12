@@ -29,24 +29,32 @@ describe('Test buildDateItemsFromStartEndDates', () => {
       {
         displayDate: new Date('2018-02-01').getTime(),
         queryDate: startDate0,
-        isStartDate: true,
+        startDate: startDate0,
+        endDate: endDate0,
       },
       {
         displayDate: new Date('2018-02-02').getTime(),
         queryDate: startDate0,
+        startDate: startDate0,
+        endDate: endDate0,
       },
       {
         displayDate: new Date('2018-02-03').getTime(),
         queryDate: startDate0,
+        startDate: startDate0,
+        endDate: endDate0,
       },
       {
         displayDate: new Date('2018-02-04').getTime(),
         queryDate: startDate0,
+        startDate: startDate0,
+        endDate: endDate0,
       },
       {
         displayDate: new Date('2018-02-05').getTime(),
         queryDate: startDate0,
-        isEndDate: true,
+        startDate: startDate0,
+        endDate: endDate0,
       },
     ]);
   });
@@ -55,16 +63,8 @@ describe('Test buildDateItemsFromStartEndDates', () => {
 describe('Binary search in ordered arrays of timestamps', () => {
   test('should return the index of found element', () => {
     const arr = [
-      1701160000000,
-      1702160000000,
-      1703160000000,
-      1703460000000,
-      1705160000000,
-      1705395000000,
-      1706160000000,
-      1715160000000,
-      1725160000000,
-      1735160000000,
+      1701160000000, 1702160000000, 1703160000000, 1703460000000, 1705160000000,
+      1705395000000, 1706160000000, 1715160000000, 1725160000000, 1735160000000,
     ];
     arr.forEach((elem, i) => {
       const idx = binaryFind<number>(arr, elem, x => x);
@@ -169,17 +169,8 @@ test('Test generateDatesRange', () => {
     new Date('2023-02-13'),
   );
   expect(ret).toEqual([
-    1675296000000,
-    1675382400000,
-    1675468800000,
-    1675555200000,
-    1675641600000,
-    1675728000000,
-    1675814400000,
-    1675900800000,
-    1675987200000,
-    1676073600000,
-    1676160000000,
-    1676246400000,
+    1675296000000, 1675382400000, 1675468800000, 1675555200000, 1675641600000,
+    1675728000000, 1675814400000, 1675900800000, 1675987200000, 1676073600000,
+    1676160000000, 1676246400000,
   ]);
 });

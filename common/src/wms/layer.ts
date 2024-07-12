@@ -15,7 +15,7 @@ export default class WMSLayer extends Layer {
 
     if (!this.layer) {
       this.layer = this.capabilities.then(
-        (xml) => findLayer(xml, this.id, { errorStrategy: "throw" })!
+        (xml) => findLayer(xml, this.id, { errorStrategy: "throw" })!,
       );
     }
 
@@ -36,7 +36,7 @@ export default class WMSLayer extends Layer {
   }
 
   async getImage(
-    options: GetImageOptions
+    options: GetImageOptions,
   ): Promise<GetImageOptions & { image: ArrayBuffer }> {
     const url = await this.getImageUrl(options);
     const response = await this.fetch(url);

@@ -1,6 +1,5 @@
 import { useDispatch, useSelector } from 'react-redux';
 import inside from '@turf/boolean-point-in-polygon';
-import { Feature, MultiPolygon } from '@turf/helpers';
 import { useCallback } from 'react';
 import {
   dateRangeSelector,
@@ -18,6 +17,7 @@ import { clearDataset } from 'context/datasetStateSlice';
 import { LngLat, MapLayerMouseEvent } from 'maplibre-gl';
 import { MapRef } from 'react-map-gl/maplibre';
 import { getFormattedDate } from 'utils/date-utils';
+import { Feature, MultiPolygon } from 'geojson';
 import { getActiveFeatureInfoLayers, getFeatureInfoParams } from './utils';
 
 const useMapOnClick = (
@@ -33,11 +33,10 @@ const useMapOnClick = (
 
   // Whether the boundary layer data are outside of boundary bbox
   const boundaryLayerDataAreOutsideOfBoundaryBBox = useCallback(
-    (lng: any, lat: any) => {
-      return boundaryLayerData?.data.features.every(
+    (lng: any, lat: any) =>
+      boundaryLayerData?.data.features.every(
         feature => !inside([lng, lat], feature as Feature<MultiPolygon>),
-      );
-    },
+      ),
     [boundaryLayerData],
   );
 
@@ -53,9 +52,10 @@ const useMapOnClick = (
   );
 
   // TODO: maplibre: fix feature
-  const getFeatureInfoLayers = useCallback((features?: any) => {
-    return getActiveFeatureInfoLayers(features);
-  }, []);
+  const getFeatureInfoLayers = useCallback(
+    (features?: any) => getActiveFeatureInfoLayers(features),
+    [],
+  );
 
   const dateFromRef = getFormattedDate(selectedDate, 'default');
 

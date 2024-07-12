@@ -1,4 +1,3 @@
-import React from 'react';
 import { render } from '@testing-library/react';
 import { DateItem } from 'config/types';
 import TimelineItem, { TimelineItemProps } from '.';
@@ -6,22 +5,23 @@ import TimelineItem, { TimelineItemProps } from '.';
 test('TimelineItem renders as expected', () => {
   // Arrange
   const currentDateTime = new Date().getTime();
-  const props: Omit<TimelineItemProps, 'classes'> = {
-    clickDate: () => {},
-    concatenatedLayers: [
-      [{ displayDate: currentDateTime, queryDate: currentDateTime }],
-      [
-        {
-          displayDate: currentDateTime,
-          queryDate: currentDateTime,
-        },
-        {
-          displayDate: currentDateTime,
-          queryDate: currentDateTime,
-          isStartDate: true,
-        },
-      ],
+  const concatenatedLayers = [
+    [{ displayDate: currentDateTime, queryDate: currentDateTime }],
+    [
+      {
+        displayDate: currentDateTime,
+        queryDate: currentDateTime,
+      },
+      {
+        displayDate: currentDateTime,
+        queryDate: currentDateTime,
+      },
     ],
+  ];
+
+  const props: Omit<TimelineItemProps, 'classes'> = {
+    isDateAvailable: false,
+    concatenatedLayers,
     currentDate: {
       value: currentDateTime,
       label: '',
@@ -29,7 +29,6 @@ test('TimelineItem renders as expected', () => {
       isFirstDay: false,
       date: '',
     },
-    index: 1,
     dateItemStyling: [
       { class: 'intersectionDate', color: 'White' },
       {
@@ -37,6 +36,8 @@ test('TimelineItem renders as expected', () => {
         color: '',
         layerDirectionClass: 'layerDirectionClass',
       },
+      { class: 'intersectionDate', color: 'White' },
+      { class: 'intersectionDate', color: 'White' },
     ],
   };
 
@@ -64,9 +65,11 @@ test('TimelineItem renders as expected with data point starting after Timeline s
     },
   ];
 
+  const concatenatedLayers = [layerDates, layerDates];
+
   const props: Omit<TimelineItemProps, 'classes'> = {
-    clickDate: () => {},
-    concatenatedLayers: [layerDates, layerDates],
+    isDateAvailable: false,
+    concatenatedLayers,
     currentDate: {
       value: currentDateTime,
       label: '',
@@ -74,7 +77,6 @@ test('TimelineItem renders as expected with data point starting after Timeline s
       isFirstDay: false,
       date: '',
     },
-    index: 1,
     dateItemStyling: [
       { class: 'intersectionDate', color: 'White' },
       {
@@ -82,6 +84,8 @@ test('TimelineItem renders as expected with data point starting after Timeline s
         color: '',
         layerDirectionClass: 'layerDirectionClass',
       },
+      { class: 'intersectionDate', color: 'White' },
+      { class: 'intersectionDate', color: 'White' },
     ],
   };
 

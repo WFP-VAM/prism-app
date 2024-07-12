@@ -15,7 +15,7 @@ export default class FeatureLayer extends Layer {
       fetch: undefined,
       method: "POST",
       wait: 0,
-    }
+    },
   ): Promise<any> {
     // to-do: check if post available
     return getFeatures(await this.capabilities, this.id, {

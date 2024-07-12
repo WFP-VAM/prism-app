@@ -1,8 +1,8 @@
-import React, { memo, useCallback, useMemo } from 'react';
+import { memo, useCallback, useMemo } from 'react';
 import { Theme } from '@material-ui/core';
 import { StyleSheet, Text, View } from '@react-pdf/renderer';
 import { chunk } from 'lodash';
-import { TFunction, getRoundedData } from 'utils/data-utils';
+import { getRoundedData } from 'utils/data-utils';
 import { TableRow as AnalysisTableRow } from 'context/analysisResultStateSlice';
 import { Column } from 'utils/analysis-utils';
 import { FIRST_PAGE_TABLE_ROWS, MAX_TABLE_ROWS_PER_PAGE } from './types';
@@ -34,7 +34,6 @@ interface TableProps {
   cellWidth: string;
   showTotal: boolean;
   showRowTotal: boolean;
-  t: TFunction;
 }
 
 const ReportDocTable = memo(
@@ -49,61 +48,64 @@ const ReportDocTable = memo(
   }: TableProps) => {
     const styles = makeStyles(theme);
 
-    const totals = useMemo(() => {
-      return showTotal
-        ? columns.reduce<number[]>((colPrev, colCurr) => {
-            const rowTotal = rows.reduce((rowPrev, rowCurr) => {
-              const val = Number(rowCurr[colCurr.id]);
-              if (!Number.isNaN(val)) {
-                return rowPrev + val;
-              }
-              return rowPrev;
-            }, 0);
-            return [...colPrev, rowTotal];
-          }, [])
-        : [];
-    }, [columns, rows, showTotal]);
+    const totals = useMemo(
+      () =>
+        showTotal
+          ? columns.reduce<number[]>((colPrev, colCurr) => {
+              const rowTotal = rows.reduce((rowPrev, rowCurr) => {
+                const val = Number(rowCurr[colCurr.id]);
+                if (!Number.isNaN(val)) {
+                  return rowPrev + val;
+                }
+                return rowPrev;
+              }, 0);
+              return [...colPrev, rowTotal];
+            }, [])
+          : [],
+      [columns, rows, showTotal],
+    );
 
-    const firstPageChunk = useMemo(() => {
-      return rows.slice(0, FIRST_PAGE_TABLE_ROWS);
-    }, [rows]);
+    const firstPageChunk = useMemo(
+      () => rows.slice(0, FIRST_PAGE_TABLE_ROWS),
+      [rows],
+    );
 
-    const restPagesChunks = useMemo(() => {
-      return chunk(rows.slice(FIRST_PAGE_TABLE_ROWS), MAX_TABLE_ROWS_PER_PAGE);
-    }, [rows]);
+    const restPagesChunks = useMemo(
+      () => chunk(rows.slice(FIRST_PAGE_TABLE_ROWS), MAX_TABLE_ROWS_PER_PAGE),
+      [rows],
+    );
 
-    const chunks = useMemo(() => {
-      return [firstPageChunk, ...restPagesChunks];
-    }, [firstPageChunk, restPagesChunks]);
+    const chunks = useMemo(
+      () => [firstPageChunk, ...restPagesChunks],
+      [firstPageChunk, restPagesChunks],
+    );
 
     // the table row color
     const getTableRowColor = useCallback(
-      (rowIndex: number) => {
-        return rowIndex % 2
+      (rowIndex: number) =>
+        rowIndex % 2
           ? theme.pdf?.table?.darkRowColor
-          : theme.pdf?.table?.lightRowColor;
-      },
+          : theme.pdf?.table?.lightRowColor,
       [theme.pdf],
     );
 
     // Gets the total sum of row
     const getRowTotal = useCallback(
-      (rowData: AnalysisTableRow) => {
-        return columns.reduce((prev, curr) => {
+      (rowData: AnalysisTableRow) =>
+        columns.reduce((prev, curr) => {
           const val = rowData[curr.id];
           if (!Number.isNaN(Number(val))) {
             return prev + Number(val);
           }
           return prev;
-        }, 0);
-      },
+        }, 0),
       [columns],
     );
 
     // The rendered tableCell values
     const renderedTableCellValues = useCallback(
-      (rowData: AnalysisTableRow) => {
-        return columns.map((column: Column) => {
+      (rowData: AnalysisTableRow) =>
+        columns.map((column: Column) => {
           const value = rowData[column.id];
           return (
             <Text
@@ -115,14 +117,13 @@ const ReportDocTable = memo(
                 : value}
             </Text>
           );
-        });
-      },
+        }),
       [cellWidth, columns, styles.tableCell],
     );
 
     // The rendered total row
     const renderedTotalRow = useCallback(
-      rowData => {
+      (rowData: any) => {
         if (!showRowTotal) {
           return null;
         }
@@ -137,23 +138,20 @@ const ReportDocTable = memo(
 
     // The rendered table row
     const renderedTableRow = useCallback(
-      (tableRow: AnalysisTableRow[]) => {
-        return tableRow.map((rowData, index) => {
-          return (
-            <View
-              key={rowData.key}
-              style={[
-                styles.tableRow,
-                { backgroundColor: getTableRowColor(index) },
-              ]}
-              wrap={false}
-            >
-              {renderedTableCellValues(rowData)}
-              {renderedTotalRow(rowData)}
-            </View>
-          );
-        });
-      },
+      (tableRow: AnalysisTableRow[]) =>
+        tableRow.map((rowData, index) => (
+          <View
+            key={rowData.key}
+            style={[
+              styles.tableRow,
+              { backgroundColor: getTableRowColor(index) },
+            ]}
+            wrap={false}
+          >
+            {renderedTableCellValues(rowData)}
+            {renderedTotalRow(rowData)}
+          </View>
+        )),
       [
         getTableRowColor,
         renderedTableCellValues,
@@ -163,9 +161,9 @@ const ReportDocTable = memo(
     );
 
     // The rendered table view
-    const renderedTableView = useMemo(() => {
-      return chunks.map(chunkRow => {
-        return (
+    const renderedTableView = useMemo(
+      () =>
+        chunks.map(chunkRow => (
           <View key={chunkRow[0].key} wrap={false}>
             <ReportDocTableHeader
               theme={theme}
@@ -176,48 +174,43 @@ const ReportDocTable = memo(
             />
             {renderedTableRow(chunkRow)}
           </View>
-        );
-      });
-    }, [
-      cellWidth,
-      chunks,
-      columns,
-      name,
-      renderedTableRow,
-      showRowTotal,
-      theme,
-    ]);
+        )),
+      [cellWidth, chunks, columns, name, renderedTableRow, showRowTotal, theme],
+    );
 
     // gets the total row color
-    const totalRowBackgroundColor = useMemo(() => {
-      return rows.length % 2
-        ? theme.pdf?.table?.darkRowColor
-        : theme.pdf?.table?.lightRowColor;
-    }, [rows.length, theme.pdf]);
+    const totalRowBackgroundColor = useMemo(
+      () =>
+        rows.length % 2
+          ? theme.pdf?.table?.darkRowColor
+          : theme.pdf?.table?.lightRowColor,
+      [rows.length, theme.pdf],
+    );
 
     // The total row
-    const totalRow = useMemo(() => {
-      return totals.map((val, index) => {
-        if (index === 0) {
+    const totalRow = useMemo(
+      () =>
+        totals.map((val, index) => {
+          if (index === 0) {
+            return (
+              <Text key={val} style={[styles.tableCell, { width: cellWidth }]}>
+                Total
+              </Text>
+            );
+          }
           return (
             <Text key={val} style={[styles.tableCell, { width: cellWidth }]}>
-              Total
+              {getRoundedData(val)}
             </Text>
           );
-        }
-        return (
-          <Text key={val} style={[styles.tableCell, { width: cellWidth }]}>
-            {getRoundedData(val)}
-          </Text>
-        );
-      });
-    }, [cellWidth, styles.tableCell, totals]);
+        }),
+      [cellWidth, styles.tableCell, totals],
+    );
 
-    const totalsNumberForTotalRow = useMemo(() => {
-      return totals.reduce((prev, cur) => {
-        return prev + cur;
-      }, 0);
-    }, [totals]);
+    const totalsNumberForTotalRow = useMemo(
+      () => totals.reduce((prev, cur) => prev + cur, 0),
+      [totals],
+    );
 
     const renderedLastRowTotal = useMemo(() => {
       if (!showRowTotal) {

@@ -15,17 +15,10 @@
   },
   "alertFormActive": false,
   "serversUrls": {
-    "wms": [
-      "https://api.earthobservation.vam.wfp.org/ows/wms"
-    ]
+    "wms": ["https://api.earthobservation.vam.wfp.org/ows/wms"]
   },
   "map": {
-    "boundingBox": [
-      -26,
-      -1,
-      32,
-      24
-    ]
+    "boundingBox": [-26, -1, 32, 24]
   },
   "defaultDisplayBoundaries": [
     "admin_boundaries",
@@ -128,10 +121,7 @@
           ]
         }
       ],
-      "dry_periods": [
-        "days_dry",
-        "streak_dry_days"
-      ],
+      "dry_periods": ["days_dry", "streak_dry_days"],
       "extreme_rain_events": [
         {
           "group_title": "Rainfall categories:",
@@ -178,10 +168,7 @@
       ]
     },
     "vegetation": {
-      "vegetation_conditions": [
-        "ndvi_dekad",
-        "ndvi_dekad_anomaly"
-      ]
+      "vegetation_conditions": ["ndvi_dekad", "ndvi_dekad_anomaly"]
     },
     "temperature": {
       "land_surface_temperature": [
@@ -235,26 +222,149 @@
             }
           ]
         },
-          "ch_perc3_5",
-          {
-            "group_title": "Percent of population in phase 3 or above - special populations",
-            "activate_all": false,
-            "layers": [
-              {
-                "id": "ch_idps_perc3_5",
-                "label": "IDPs",
-                "main": true
-              },
-              {
-                "id": "ch_inaccessible_perc3_5",
-                "label": "Inaccessible areas"
-              },
-              {
-                "id": "ch_urban_perc3_5",
-                "label": "Urban"
-              }
-            ]
-          }
+        "ch_perc3_5",
+        {
+          "group_title": "Percent of population in phase 3 or above - special populations",
+          "activate_all": false,
+          "layers": [
+            {
+              "id": "ch_idps_perc3_5",
+              "label": "IDPs",
+              "main": true
+            },
+            {
+              "id": "ch_inaccessible_perc3_5",
+              "label": "Inaccessible areas"
+            },
+            {
+              "id": "ch_urban_perc3_5",
+              "label": "Urban"
+            }
+          ]
+        }
+      ]
+    },
+    "Food_Security_and_Nutrition_Hotspots": {
+      "Food_Security_and_Nutrition_Hotspot_Analysis": [
+        "integrated_hotspot_2024",
+        "fs_hotspot_2024",
+        "nutr_hotspot_2024"
+      ]
+    },
+    "Future_of_the_Lean_Season": {
+      "Future_of_the_Lean_Season_Analysis": [
+        {
+          "group_title": "Annual recurrence of food insecurity",
+          "activate_all": false,
+          "layers": [
+            {
+              "id": "fls_recurrence_all_periods",
+              "label": "All years",
+              "main": true
+            },
+            {
+              "id": "fls_recurrence_period1",
+              "label": "Period 1"
+            },
+            {
+              "id": "fls_recurrence_period2",
+              "label": "Period 2"
+            }
+          ]
+        },
+        {
+          "group_title": "Average duration of food insecurity",
+          "activate_all": false,
+          "layers": [
+            {
+              "id": "fls_duration_all_periods",
+              "label": "All years",
+              "main": true
+            },
+            {
+              "id": "fls_duration_period1",
+              "label": "Period 1"
+            },
+            {
+              "id": "fls_duration_period2",
+              "label": "Period 2"
+            }
+          ]
+        },
+        {
+          "group_title": "Recurrence and duration of food insecurity",
+          "activate_all": false,
+          "layers": [
+            {
+              "id": "fls_cluster_all_periods",
+              "label": "All years",
+              "main": true
+            },
+            {
+              "id": "fls_cluster_period1",
+              "label": "Period 1"
+            },
+            {
+              "id": "fls_cluster_period2",
+              "label": "Period 2"
+            }
+          ]
+        }
+      ]
+    },
+    "Cropland_Change_Analysis": {
+      "Cropland_Change_Analysis": [
+        {
+          "group_title": "Cropland change analysis",
+          "activate_all": false,
+          "layers": [
+            {
+              "id": "crop_changes_2023_2022",
+              "label": "2023 vs 2022",
+              "main": true
+            },
+            {
+              "id": "crop_changes_2023_ref",
+              "label": "2023 vs ref"
+            }
+          ]
+        }
+      ]
+    },
+    "Conflict_Analysis": {
+      "ACLED_Conflict_Index": [
+        {
+          "group_title": "ACLED Conflict Index for the Sahel",
+          "activate_all": false,
+          "layers": [
+            {
+              "id": "ifpri_conflict_2023",
+              "label": "2023",
+              "main": true
+            },
+            {
+              "id": "ifpri_conflict_2022",
+              "label": "2022"
+            },
+            {
+              "id": "ifpri_conflict_2021",
+              "label": "2021"
+            },
+            {
+              "id": "ifpri_conflict_2020",
+              "label": "2020"
+            },
+            {
+              "id": "ifpri_conflict_2019",
+              "label": "2019"
+            },
+            {
+              "id": "ifpri_conflict_2018",
+              "label": "2018"
+            }
+          ]
+        },
+        "ifpri_protracted_transient_conflict"
       ]
     },
     "risk_analysis": {
