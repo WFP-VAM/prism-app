@@ -36,9 +36,8 @@ export function timelineTransform({
 }: TimelineTransformParams) {
   const { selectedWindow, selectedIndex, categories } = filters;
 
-  const windowData = (selectedWindow === 'All'
-    ? AAWindowKeys
-    : [selectedWindow]
+  const windowData = (
+    selectedWindow === 'All' ? AAWindowKeys : [selectedWindow]
   ).map(win => {
     const districtData = !!selectedDistrict && data[win][selectedDistrict];
     if (!districtData) {
@@ -82,7 +81,7 @@ export function timelineTransform({
     });
     return [win, { months, rows: Object.fromEntries(categoriesMap) }];
   }) as [
-    typeof AAWindowKeys[number],
+    (typeof AAWindowKeys)[number],
     {
       months: string[][];
       rows: { [id: string]: TimelineRow };
@@ -90,7 +89,7 @@ export function timelineTransform({
   ][];
 
   const allRows = windowData
-    .map(([win, x]) =>
+    .map(([_win, x]) =>
       Object.entries(x?.rows || {}).map(([id, info]) => [
         id,
         { status: info.status, data: [] },

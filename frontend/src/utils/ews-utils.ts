@@ -203,9 +203,9 @@ export const fetchEWSData = async (
     [] as PointData[],
   );
 
-  return (GeoJSON.parse(processedFeatures, {
+  return GeoJSON.parse(processedFeatures, {
     Point: ['lat', 'lon'],
-  }) as any) as PointLayerData;
+  }) as any as PointLayerData;
 };
 
 export const createEWSDatasetParams = (
@@ -224,6 +224,7 @@ export const createEWSDatasetParams = (
   };
   /* eslint-enable camelcase */
   return {
+    // eslint-disable-next-line camelcase
     externalId: external_id,
     triggerLevels,
     chartTitle,

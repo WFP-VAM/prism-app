@@ -1,14 +1,8 @@
-import {
-  Typography,
-  WithStyles,
-  createStyles,
-  withStyles,
-} from '@material-ui/core';
+import { Typography, createStyles, makeStyles } from '@material-ui/core';
 import maplibregl from 'maplibre-gl';
 import React, { useContext, useRef } from 'react';
 import MapGL, { Layer, MapRef, Marker, Source } from 'react-map-gl/maplibre';
 import { useSelector } from 'react-redux';
-import { mapStyle } from 'components/MapView/Map';
 import { getFormattedDate } from 'utils/date-utils';
 import { appConfig } from 'config';
 import { lightGrey } from 'muiTheme';
@@ -18,7 +12,8 @@ import LegendItemsList from 'components/MapView/Legends/LegendItemsList';
 import { Panel, leftPanelTabValueSelector } from 'context/leftPanelStateSlice';
 import useLayers from 'utils/layers-utils';
 import { AdminLevelDataLayerProps } from 'config/types';
-import { addFillPatternImagesInMap } from 'components/MapView/Layers/AdminLevelDataLayer';
+import { addFillPatternImagesInMap } from 'components/MapView/Layers/AdminLevelDataLayer/utils';
+import { mapStyle } from 'components/MapView/Map/utils';
 import {
   dateRangeSelector,
   mapSelector,
@@ -26,7 +21,8 @@ import {
 import { useSafeTranslation } from '../../../i18n';
 import PrintConfigContext from './printConfig.context';
 
-function PrintPreview({ classes }: PrintPreviewProps) {
+function PrintPreview() {
+  const classes = useStyles();
   const { t } = useSafeTranslation();
   const { printConfig } = useContext(PrintConfigContext);
 
@@ -322,7 +318,7 @@ function PrintPreview({ classes }: PrintPreviewProps) {
   );
 }
 
-const styles = () =>
+const useStyles = makeStyles(() =>
   createStyles({
     backdrop: {
       position: 'absolute',
@@ -393,8 +389,7 @@ const styles = () =>
       flexDirection: 'column',
       flexGrow: 1,
     },
-  });
+  }),
+);
 
-export interface PrintPreviewProps extends WithStyles<typeof styles> {}
-
-export default withStyles(styles)(PrintPreview);
+export default PrintPreview;

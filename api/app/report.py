@@ -3,7 +3,6 @@ import os
 from typing import Final, Optional
 from urllib.parse import parse_qs, urlparse
 
-import pytest
 from app.caching import CACHE_DIRECTORY
 from playwright.async_api import async_playwright, expect
 

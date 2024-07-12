@@ -60,7 +60,7 @@ export function findTitle(xml: string): string | undefined {
 export function findLayer(
   xml: string,
   layerName: string,
-  options?: { errorStrategy?: string }
+  options?: { errorStrategy?: string },
 ): string | undefined {
   const result = findLayers(xml).find((layer) => {
     const name = findName(layer);
@@ -81,7 +81,7 @@ export function getLayerIds(xml: string): string[] {
 export function getLayerNames(
   xml: string,
   // sometimes layer titles will have an extra space in the front or end unsuitable for display
-  { clean = false }: { clean: boolean } = { clean: false }
+  { clean = false }: { clean: boolean } = { clean: false },
 ): string[] {
   const layers = findLayers(xml);
   const titles = layers.map((layer) => findTitle(layer) || "");
@@ -95,9 +95,9 @@ export function parseLayerDates(xml: string): string[] {
   }
 
   const dimensions = findTagsByName(xml, "Dimension");
-  const timeDimension = dimensions.find((dimension) => {
-    return getAttribute(dimension.outer, "name") === "time";
-  });
+  const timeDimension = dimensions.find(
+    (dimension) => getAttribute(dimension.outer, "name") === "time",
+  );
 
   // we have to trim because sometimes WMS adds spaces or new line
   if (timeDimension?.inner?.trim()) {
@@ -110,9 +110,9 @@ export function parseLayerDates(xml: string): string[] {
   // we weren't able to find any times using the <Dimension name="time">
   // so let's try <Extent name="time">
   const extents = findTagsByName(xml, "Extent");
-  const timeExtent = extents.find((extent) => {
-    return getAttribute(extent.outer, "name") === "time";
-  });
+  const timeExtent = extents.find(
+    (extent) => getAttribute(extent.outer, "name") === "time",
+  );
 
   // we have to trim because sometimes WMS adds spaces or new line
   if (timeExtent?.inner?.trim()) {
@@ -179,14 +179,13 @@ export function parseLayer(xml: string): WMSLayer | undefined {
     namespace,
     abstract: findAndParseAbstract(xml),
     keywords: findTagArray(xml, "Keyword"),
-    srs: ((): string[] => {
+    srs: ((): string[] =>
       // sometimes called CRS or SRS depending on the WMS version
-      return [...findTagArray(xml, "CRS"), ...findTagArray(xml, "SRS")];
-    })(),
+      [...findTagArray(xml, "CRS"), ...findTagArray(xml, "SRS")])(),
     bbox: (() => {
       const ExGeographicBoundingBox = findTagByName(
         xml,
-        "EX_GeographicBoundingBox"
+        "EX_GeographicBoundingBox",
       );
       if (ExGeographicBoundingBox) {
         const { inner } = ExGeographicBoundingBox;

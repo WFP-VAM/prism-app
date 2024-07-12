@@ -46,10 +46,8 @@ function LayerDownloadOptions({
   const dispatch = useDispatch();
   const layer = LayerDefinitions[layerId] || Object.values(LayerDefinitions)[0];
 
-  const [
-    downloadMenuAnchorEl,
-    setDownloadMenuAnchorEl,
-  ] = useState<HTMLElement | null>(null);
+  const [downloadMenuAnchorEl, setDownloadMenuAnchorEl] =
+    useState<HTMLElement | null>(null);
   const [isGeotiffLoading, setIsGeotiffLoading] = useState(false);
   const isAnalysisExposureLoading = useSelector(
     isExposureAnalysisLoadingSelector,
@@ -104,7 +102,7 @@ function LayerDownloadOptions({
     }
     const translatedColumnsNames = mapValues(
       adminLevelLayerData?.data.layerData[0],
-      (v, k) => (k === 'value' ? t(adminLevelLayerData.layer.id) : t(k)),
+      (_v, k) => (k === 'value' ? t(adminLevelLayerData.layer.id) : t(k)),
     );
     downloadToFile(
       {
@@ -140,9 +138,8 @@ function LayerDownloadOptions({
   };
 
   // Helper function to escape special XML characters
-  const escapeXml = (str: string): string => {
-    return str.replace(/</g, '&lt;').replace(/>/g, '&gt;');
-  };
+  const escapeXml = (str: string): string =>
+    str.replace(/</g, '&lt;').replace(/>/g, '&gt;');
 
   // Helper function to generate QML content from legend
   const generateQmlContent = (
@@ -234,7 +231,12 @@ function LayerDownloadOptions({
       )}
       {isGeotiffLoading ||
         (isAnalysisExposureLoading && (
-          <Box display="flex" alignItems="center">
+          <Box
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+            }}
+          >
             <CircularProgress size="20px" />
           </Box>
         ))}
@@ -254,19 +256,14 @@ function LayerDownloadOptions({
           </MenuItem>,
         ]}
         {layer.type === 'wms' &&
-          layer.baseUrl.includes('api.earthobservation.vam.wfp.org/ows') && (
-            <>
-              <MenuItem
-                key="download-as-geotiff"
-                onClick={handleDownloadGeoTiff}
-              >
-                {t('Download as GeoTIFF')}
-              </MenuItem>
-              <MenuItem key="download-style" onClick={handleDownloadQmlStyle}>
-                {t('Download QML Style')}
-              </MenuItem>
-            </>
-          )}
+          layer.baseUrl.includes('api.earthobservation.vam.wfp.org/ows') && [
+            <MenuItem key="download-as-geotiff" onClick={handleDownloadGeoTiff}>
+              {t('Download as GeoTIFF')}
+            </MenuItem>,
+            <MenuItem key="download-style" onClick={handleDownloadQmlStyle}>
+              {t('Download QML Style')}
+            </MenuItem>,
+          ]}
       </Menu>
     </>
   );

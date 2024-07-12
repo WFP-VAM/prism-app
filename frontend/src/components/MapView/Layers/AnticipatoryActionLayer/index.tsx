@@ -44,20 +44,18 @@ import { Tooltip } from '@material-ui/core';
 // Use admin level 2 boundary layer for Anticipatory Action
 const boundaryLayer = getBoundaryLayersByAdminLevel(2);
 
-const onDistrictClick = ({
-  dispatch,
-}: MapEventWrapFunctionProps<AdminLevelDataLayerProps>) => (
-  evt: MapLayerMouseEvent,
-) => {
-  const districtId =
-    evt.features?.[0]?.properties?.[boundaryLayer.adminLevelLocalNames[1]];
-  if (districtId) {
-    dispatch(setAASelectedDistrict(districtId));
-    dispatch(setAAView(AAView.District));
-  }
-};
+const onDistrictClick =
+  ({ dispatch }: MapEventWrapFunctionProps<AdminLevelDataLayerProps>) =>
+  (evt: MapLayerMouseEvent) => {
+    const districtId =
+      evt.features?.[0]?.properties?.[boundaryLayer.adminLevelLocalNames[1]];
+    if (districtId) {
+      dispatch(setAASelectedDistrict(districtId));
+      dispatch(setAAView(AAView.District));
+    }
+  };
 
-function AnticipatoryActionLayer({ layer, before }: LayersProps) {
+const AnticipatoryActionLayer = React.memo(({ layer, before }: LayersProps) => {
   useDefaultDate(layer.id);
   const boundaryLayerState = useSelector(
     layerDataSelector(boundaryLayer.id),
@@ -83,9 +81,9 @@ function AnticipatoryActionLayer({ layer, before }: LayersProps) {
     }
     if (selectedWindow) {
       return Object.fromEntries(
-        Object.entries(
-          renderedDistricts[selectedWindow],
-        ).map(([dist, values]) => [dist, values[0]]),
+        Object.entries(renderedDistricts[selectedWindow]).map(
+          ([dist, values]) => [dist, values[0]],
+        ),
       );
     }
     return {};
@@ -222,11 +220,10 @@ function AnticipatoryActionLayer({ layer, before }: LayersProps) {
       )}
     </>
   );
-}
-
+});
 export interface LayersProps {
   layer: AnticipatoryActionLayerProps;
   before?: string;
 }
 
-export default React.memo(AnticipatoryActionLayer);
+export default AnticipatoryActionLayer;

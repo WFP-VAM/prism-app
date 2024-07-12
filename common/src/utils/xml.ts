@@ -8,7 +8,7 @@ import {
 
 export function findTagArray(
   xml: string,
-  tagNameOrPath: string | string[]
+  tagNameOrPath: string | string[],
 ): string[] {
   return findTagsByPath(xml, castArray(tagNameOrPath))
     .filter((tag) => tag.inner !== null)
@@ -23,7 +23,7 @@ export function findTagText(xml: string, tagName: string): string | undefined {
 export function findTagAttribute(
   xml: string,
   tagNameOrPath: string | string[],
-  attribute: string
+  attribute: string,
 ): string | undefined {
   const tag = findTagByPath(xml, castArray(tagNameOrPath));
   if (!tag) {

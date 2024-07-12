@@ -87,9 +87,9 @@ export const fetchACLEDIncidents = async (
       fatalities: parseInt(incident.fatalities, 10),
     }));
 
-    return (GeoJSON.parse(incidents, {
+    return GeoJSON.parse(incidents, {
       Point: ['lat', 'lon'],
-    }) as any) as PointLayerData;
+    }) as any as PointLayerData;
   } catch (error) {
     return {
       type: 'FeatureCollection',

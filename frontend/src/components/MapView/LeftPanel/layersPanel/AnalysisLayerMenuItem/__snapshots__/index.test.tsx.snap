@@ -75,10 +75,12 @@ exports[`renders as expected 1`] = `
                 style="padding-left: 12px;"
               >
                 <div
-                  class="MuiBox-root MuiBox-root-22 memo-analysisLayerSwitchRootItem-8"
+                  class="MuiBox-root MuiBox-root-22 makeStyles-analysisLayerSwitchRootItem-8"
+                  style="display: flex; flex-direction: column; max-width: 100%;"
                 >
                   <div
                     class="MuiBox-root MuiBox-root-23"
+                    style="display: flex; align-items: center;"
                   >
                     <div
                       style="display: flex;"
@@ -86,23 +88,24 @@ exports[`renders as expected 1`] = `
                       <mock-switch
                         checked="true"
                         classes="[object Object]"
-                        classname="memo-switch-14"
+                        classname="makeStyles-switch-14"
                         inputprops="[object Object]"
                         size="small"
                       />
                       <mock-typography
-                        classname="memo-title-9"
+                        classname="makeStyles-title-9"
                       />
                     </div>
                     <div
                       class="MuiBox-root MuiBox-root-24"
+                      style="display: flex; align-items: center;"
                     >
                       <mock-tooltip
                         title="Opacity"
                       >
                         <span>
                           <button
-                            class="MuiButtonBase-root MuiIconButton-root memo-opacityRoot-17"
+                            class="MuiButtonBase-root MuiIconButton-root makeStyles-opacityRoot-17"
                             tabindex="0"
                             type="button"
                           >

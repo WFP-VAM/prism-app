@@ -8,12 +8,12 @@ const { port } = serve({ max: 20 });
 test("WFP GeoNode", async ({ eq }) => {
   const wcs1 = new WCS(
     `https://geonode.wfp.org/geoserver/wcs?version=1.1.1&request=GetCapabilities&service=WCS`,
-    { fetch }
+    { fetch },
   );
 
   const wcs2 = new WCS(
     `https://geonode.wfp.org/geoserver/wcs?version=2.0.1&request=GetCapabilities&service=WCS`,
-    { fetch }
+    { fetch },
   );
 
   const layerIds1 = await wcs1.getLayerIds();
@@ -35,11 +35,11 @@ test("WFP GeoNode", async ({ eq }) => {
   const days2 = await wcs2.getLayerDays();
   eq(
     Object.values(days1).every((days) => days.length === 0),
-    true
+    true,
   );
   eq(
     Object.values(days2).every((days) => days.length === 0),
-    true
+    true,
   );
 
   const layer1 = await wcs1.getLayer("geonode:wld_cli_tp_7d_ecmwf");
@@ -57,14 +57,14 @@ test("WFP GeoNode", async ({ eq }) => {
   });
   eq(
     url,
-    "https://geonode.wfp.org/geoserver/wcs?bbox=-180.1%2C-81.1%2C179.9%2C81.1&coverage=geonode%3Awld_cli_tp_7d_ecmwf&crs=EPSG%3A4326&format=png&height=500&request=GetCoverage&service=WCS&version=1.0.0&width=500"
+    "https://geonode.wfp.org/geoserver/wcs?bbox=-180.1%2C-81.1%2C179.9%2C81.1&coverage=geonode%3Awld_cli_tp_7d_ecmwf&crs=EPSG%3A4326&format=png&height=500&request=GetCoverage&service=WCS&version=1.0.0&width=500",
   );
 });
 
 test("WCS version 1.0.0", async ({ eq }) => {
   const wcs = new WCS(
     `http://localhost:${port}/data/mongolia-sibelius-datacube-wcs-get-capabilities-1.0.0.xml`,
-    { fetch, service: "WCS", version: "1.0.0" }
+    { fetch, service: "WCS", version: "1.0.0" },
   );
   const layerIds = await wcs.getLayerIds();
   eq(layerIds.includes("10DayAnomaly"), true);
@@ -73,7 +73,7 @@ test("WCS version 1.0.0", async ({ eq }) => {
   eq(layerNames[0], "mdc 10 Day Indices");
   eq(
     layerNames.every((layerName) => typeof layerName === "string"),
-    true
+    true,
   );
 
   const days = await wcs.getLayerDays();
@@ -86,21 +86,21 @@ test("WCS version 1.0.0", async ({ eq }) => {
   eq(new Date(layerDays[0]).toUTCString(), "Tue, 21 May 2019 12:00:00 GMT");
   eq(
     new Date(layerDays[layerDays.length - 1]).toUTCString(),
-    "Thu, 01 Oct 2020 12:00:00 GMT"
+    "Thu, 01 Oct 2020 12:00:00 GMT",
   );
 });
 
 test("WCS on version 1.1.1", async ({ eq }) => {
   const wcs = new WCS(
     `http://localhost:${port}/data/geonode-wfp-wcs-get-capabilities-1.1.1.xml`,
-    { fetch, service: "WCS", version: "1.1.1" }
+    { fetch, service: "WCS", version: "1.1.1" },
   );
   eq(wcs.version, "1.1.1");
   eq(typeof wcs.fetch, "function");
   const layerIds = await wcs.getLayerIds();
   eq(
     layerIds.includes("geonode:_20apr08074540_s2as_r2c3_012701709010_01_p001"),
-    true
+    true,
   );
 
   const layerNames = await wcs.getLayerNames();
@@ -125,17 +125,15 @@ test("WCS for data cube", async ({ eq }) => {
   eq(dates.length, 29);
   eq(
     dates.every((d) => typeof d === "string"),
-    true
+    true,
   );
   eq(dates[0], "2019-05-21T00:00:00.000Z");
 
   const extent = await layer.getExtent();
-  eq(extent, [
-    86.7469655846003,
-    41.4606540712216,
-    117.717378164332,
-    52.3174921613588,
-  ]);
+  eq(
+    extent,
+    [86.7469655846003, 41.4606540712216, 117.717378164332, 52.3174921613588],
+  );
 
   // use WCS extent as bbox
   const url1 = await layer.getImageUrl({
@@ -146,7 +144,7 @@ test("WCS for data cube", async ({ eq }) => {
   });
   eq(
     url1,
-    "https://mongolia.sibelius-datacube.org:5000/wcs?bbox=86.7%2C41.5%2C117.7%2C52.3&coverage=10DayTrend&crs=EPSG%3A4326&format=GeoTIFF&height=500&request=GetCoverage&service=WCS&version=1.0.0&width=500"
+    "https://mongolia.sibelius-datacube.org:5000/wcs?bbox=86.7%2C41.5%2C117.7%2C52.3&coverage=10DayTrend&crs=EPSG%3A4326&format=GeoTIFF&height=500&request=GetCoverage&service=WCS&version=1.0.0&width=500",
   );
 
   // with bbox
@@ -158,7 +156,7 @@ test("WCS for data cube", async ({ eq }) => {
   });
   eq(
     url2,
-    "https://mongolia.sibelius-datacube.org:5000/wcs?bbox=100%2C45%2C103.09704125797317%2C46.08568380901372&coverage=10DayTrend&crs=EPSG%3A4326&format=GeoTIFF&height=222&request=GetCoverage&service=WCS&version=1.0.0&width=677"
+    "https://mongolia.sibelius-datacube.org:5000/wcs?bbox=100%2C45%2C103.09704125797317%2C46.08568380901372&coverage=10DayTrend&crs=EPSG%3A4326&format=GeoTIFF&height=222&request=GetCoverage&service=WCS&version=1.0.0&width=677",
   );
 
   const image = await layer.getImage({
@@ -192,22 +190,22 @@ test("wcs: getLayerDays", async ({ eq }) => {
   eq(
     await new WCS(
       `http://localhost:${port}/data/geonode-wfp-wcs-get-capabilities-1.1.1.xml`,
-      { fetch }
+      { fetch },
     ).getLayerDays(),
-    expectedGeoNodeDays
+    expectedGeoNodeDays,
   );
   eq(
     await new WCS(
       `http://localhost:${port}/data/geonode-wfp-wcs-get-capabilities-2.0.1.xml`,
-      { fetch }
+      { fetch },
     ).getLayerDays(),
-    expectedGeoNodeDays
+    expectedGeoNodeDays,
   );
 
   eq(
     await new WCS(
       `http://localhost:${port}/data/mongolia-sibelius-datacube-wcs-get-capabilities-1.0.0.xml`,
-      { fetch }
+      { fetch },
     ).getLayerDays(),
     {
       "10DayIndices": [1376222400000, 1642766400000],
@@ -233,7 +231,7 @@ test("wcs: getLayerDays", async ({ eq }) => {
       ModisTCI: [1230811200000, 1657540800000],
       ModisVHI: [1230811200000, 1657540800000],
       DzudRisk: [1448366400000, 1610280000000],
-    }
+    },
   );
 
   const urls3 = [
@@ -241,14 +239,14 @@ test("wcs: getLayerDays", async ({ eq }) => {
     "https://api.earthobservation.vam.wfp.org/ows/wcs?service=WCS&request=GetCapabilities&version=2.0.1",
   ];
   const layerDays3 = await Promise.all(
-    urls3.map((url) => new WCS(url, { fetch }).getLayerDays())
+    urls3.map((url) => new WCS(url, { fetch }).getLayerDays()),
   );
   eq(JSON.stringify(layerDays3[0]) === JSON.stringify(layerDays3[1]), true);
   eq(Object.keys(layerDays3[0]).length > 10, true);
   Object.values(layerDays3[0]).forEach((range) => {
     eq(
       range.every((day) => typeof day === "number"),
-      true
+      true,
     );
     if (range.length === 2) {
       eq(range[0] < range[1], true);

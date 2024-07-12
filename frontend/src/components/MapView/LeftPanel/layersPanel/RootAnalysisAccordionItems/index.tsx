@@ -1,4 +1,4 @@
-import React, { memo } from 'react';
+import { memo } from 'react';
 import { useSelector } from 'react-redux';
 import {
   analysisResultOpacitySelector,
@@ -9,7 +9,7 @@ import {
 import { useSafeTranslation } from 'i18n';
 import AnalysisLayerMenuItem from '../AnalysisLayerMenuItem';
 
-const RootAnalysisAccordionItems = () => {
+const RootAnalysisAccordionItems = memo(() => {
   const analysisData = useSelector(analysisResultSelector);
   const analysisResultSortOrder = useSelector(analysisResultSortOrderSelector);
   const analysisResultSortByKey = useSelector(analysisResultSortByKeySelector);
@@ -28,6 +28,5 @@ const RootAnalysisAccordionItems = () => {
       initialOpacity={analysisResultOpacity}
     />
   );
-};
-
-export default memo(RootAnalysisAccordionItems);
+});
+export default RootAnalysisAccordionItems;

@@ -1,4 +1,3 @@
-import React from 'react';
 import { useSelector } from 'react-redux';
 import { Layer, Source } from 'react-map-gl/maplibre';
 import {

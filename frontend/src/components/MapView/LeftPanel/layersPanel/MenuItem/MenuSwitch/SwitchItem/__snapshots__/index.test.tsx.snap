@@ -4,19 +4,21 @@ exports[`renders as expected 1`] = `
 <div>
   <div
     class="MuiBox-root MuiBox-root-6"
+    style="display: flex; flex-direction: column; max-width: 100%;"
   >
     <div
       class="MuiBox-root MuiBox-root-7"
+      style="display: flex; align-items: center;"
     >
       <mock-switch
         checked="false"
         classes="[object Object]"
-        classname="Switch-switch-8"
+        classname="makeStyles-switch-8"
         color="primary"
         inputprops="[object Object]"
       />
       <mock-typography
-        classname="SwitchItemTitle-titleUnchecked-13"
+        classname="makeStyles-titleUnchecked-13"
       />
       <mock-tooltip
         title="Opacity"
@@ -25,7 +27,7 @@ exports[`renders as expected 1`] = `
           style="margin-left: auto;"
         >
           <button
-            class="MuiButtonBase-root MuiIconButton-root memo-opacityRoot-4 Mui-disabled Mui-disabled"
+            class="MuiButtonBase-root MuiIconButton-root makeStyles-opacityRoot-4 Mui-disabled Mui-disabled"
             disabled=""
             tabindex="-1"
             type="button"
