@@ -1,9 +1,11 @@
-import React from 'react';
 import { render } from '@testing-library/react';
-
+import configureStore from 'redux-mock-store';
 import { Provider } from 'react-redux';
-import { store } from 'context/store';
+import { BrowserRouter } from 'react-router-dom';
+import { Panel } from 'context/leftPanelStateSlice';
 import Download from '.';
+
+const mockStore = configureStore([]);
 
 test('renders as expected', () => {
   const realDateNow = Date.now.bind(global.Date);
@@ -11,10 +13,35 @@ test('renders as expected', () => {
   // eslint-disable-next-line fp/no-mutation
   global.Date.now = dateNowStub;
 
+  const store = mockStore({
+    mapState: {
+      layers: [],
+      dateRange: { startDate: 1530518207007 },
+      maplibreMap: () => {},
+      errors: [],
+      layersData: [],
+      loadingLayerIds: [],
+      boundaryRelationData: {},
+    },
+    serverState: { availableDates: {}, loading: false },
+    anticipatoryActionState: {
+      renderedDistricts: { 'Window 1': {}, 'Window 2': {} },
+      filters: { selectedWindow: 'All' },
+    },
+    analysisResultState: {
+      isMapLayerActive: false,
+    },
+    leftPanelState: {
+      tabValue: Panel.AnticipatoryAction,
+    },
+  });
+
   const { container } = render(
-    <Provider store={store}>
-      <Download />
-    </Provider>,
+    <BrowserRouter>
+      <Provider store={store}>
+        <Download />
+      </Provider>
+    </BrowserRouter>,
   );
   expect(container).toMatchSnapshot();
 

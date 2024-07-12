@@ -1,59 +1,64 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { makeStyles, Theme } from '@material-ui/core';
-import { CenterFocusWeak } from '@material-ui/icons';
+import {
+  Button,
+  IconButton,
+  Menu,
+  Typography,
+  useMediaQuery,
+  useTheme,
+} from '@material-ui/core';
+import RoomOutlinedIcon from '@material-ui/icons/RoomOutlined';
 import { useSafeTranslation } from 'i18n';
-import { SimpleBoundaryDropdown } from 'components/MapView/Layers/BoundaryDropdown';
+import BoundaryDropdownOptions from 'components/MapView/Layers/BoundaryDropdown/BoundaryDropdownOptions';
 import { mapSelector } from 'context/mapStateSlice/selectors';
 
-// TODO - Dedup files and styling in BoundaryDropdown.tsx
-const useStyles = makeStyles((theme: Theme) => ({
-  button: {
-    backgroundColor: theme.palette.primary.main,
-    color: theme.palette.text.primary,
-    display: 'inline-flex',
-    padding: theme.spacing(0.8, 2.66),
-    borderRadius: '4px',
-    alignItems: 'center',
-    boxShadow: theme.shadows[2],
-  },
-  formControl: {
-    width: '100%',
-    '& > .MuiInputLabel-shrink': { display: 'none' },
-    '& > .MuiInput-root': { margin: 0 },
-    '& label': {
-      textTransform: 'uppercase',
-      letterSpacing: '3px',
-      fontSize: '11px',
-      position: 'absolute',
-      top: '-13px',
-    },
-  },
-  selectContainer: {
-    width: '140px',
-    marginLeft: '10px',
-    overflow: 'hidden',
-  },
-}));
-
-const GoToBoundaryDropdown = () => {
-  const styles = useStyles();
+function GoToBoundaryDropdown() {
   const { t } = useSafeTranslation();
   const map = useSelector(mapSelector);
+  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  const [search, setSearch] = React.useState('');
+  const theme = useTheme();
+  const smDown = useMediaQuery(theme.breakpoints.down('sm'));
+  const mdUp = useMediaQuery(theme.breakpoints.up('md'));
+
+  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
 
   return (
-    <div className={styles.button}>
-      <CenterFocusWeak fontSize="small" />
-      <div className={styles.selectContainer}>
-        <SimpleBoundaryDropdown
-          className={styles.formControl}
-          labelMessage={t('Go To')}
-          map={map}
+    <>
+      {!smDown && (
+        <Button startIcon={<RoomOutlinedIcon />} onClick={handleClick}>
+          <Typography style={{ color: '#FFF', textTransform: 'none' }}>
+            {t('Go To')}
+          </Typography>
+        </Button>
+      )}
+      {!mdUp && (
+        <IconButton style={{ color: 'white' }} onClick={handleClick}>
+          <RoomOutlinedIcon />
+        </IconButton>
+      )}
+      <Menu
+        anchorEl={anchorEl}
+        keepMounted
+        open={Boolean(anchorEl)}
+        onClose={handleClose}
+      >
+        <BoundaryDropdownOptions
+          search={search}
+          setSearch={setSearch}
           selectedBoundaries={[]}
+          map={map}
         />
-      </div>
-    </div>
+      </Menu>
+    </>
   );
-};
+}
 
 export default GoToBoundaryDropdown;

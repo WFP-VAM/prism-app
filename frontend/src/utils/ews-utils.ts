@@ -1,8 +1,10 @@
 import GeoJSON, { FeatureCollection, Point } from 'geojson';
-import moment from 'moment';
 import { Dispatch } from 'redux';
 import { PointData, PointLayerData } from 'config/types';
+import { oneDayInMs } from 'components/MapView/LeftPanel/utils';
 import { fetchWithTimeout } from './fetch-with-timeout';
+import { getFormattedDate } from './date-utils';
+import { DateFormat } from './name-utils';
 
 type EWSChartConfig = {
   label: string;
@@ -33,12 +35,6 @@ export const EWSTriggersConfig: EWSChartConfigObject = {
   },
 };
 
-type statsEWS = {
-  max: number;
-  mean: number;
-  min: number;
-};
-
 enum EWSLevelStatus {
   NORMAL = 0,
   WATCH = 1,
@@ -59,18 +55,24 @@ type EWSTriggerLevels = {
 };
 /* eslint-enable camelcase */
 
-export const createEWSDatesArray = (): number[] => {
+// input parameter is used here only for testing
+export const createEWSDatesArray = (testEndDate?: number): number[] => {
   const datesArray = [];
 
-  const endDate = moment(moment.utc().format('YYYY-MM-DD')).valueOf();
+  const now = new Date();
 
-  const tempDate = moment('2021-01-01');
+  const endDate = testEndDate
+    ? new Date(testEndDate).setUTCHours(12, 0, 0, 0)
+    : now.setUTCHours(12, 0, 0, 0);
 
-  while (tempDate.valueOf() <= endDate) {
+  const tempDate = new Date('2021-01-01');
+  tempDate.setUTCHours(12, 0, 0, 0);
+
+  while (tempDate.getTime() <= endDate) {
     // eslint-disable-next-line fp/no-mutating-methods
-    datesArray.push(tempDate.clone().set({ hour: 12, minute: 0 }).valueOf());
+    datesArray.push(tempDate.getTime());
 
-    tempDate.add(1, 'days');
+    tempDate.setTime(tempDate.getTime() + oneDayInMs);
   }
 
   return datesArray;
@@ -103,16 +105,16 @@ export const fetchEWSDataPointsByLocation = async (
   dispatch: Dispatch,
   externalId?: string,
 ): Promise<EWSSensorData[]> => {
-  const endDate = moment(date)
-    .clone()
-    .set({ hour: 23, minute: 59, second: 59 });
+  const endDate = new Date(date);
+  endDate.setUTCHours(23, 59, 59, 999);
   // FIXME: pass start/end here? why the 24h delta?
-  const startDate = endDate.clone().subtract(1, 'days');
-  const format = 'YYYY-MM-DDTHH:mm:ss';
+  const startDate = new Date(endDate.getTime() - oneDayInMs);
+  const format = DateFormat.ISO;
 
-  const url = `${baseUrl}/sensors/sensor_event?start=${startDate.format(
+  const url = `${baseUrl}/sensors/sensor_event?start=${getFormattedDate(
+    startDate,
     format,
-  )}&end=${endDate.format(format)}`;
+  )}&end=${getFormattedDate(endDate, format)}`;
 
   const resource = externalId ? `${url}&external_id=${externalId}` : url;
 
@@ -201,11 +203,9 @@ export const fetchEWSData = async (
     [] as PointData[],
   );
 
-  return {
-    features: GeoJSON.parse(processedFeatures, {
-      Point: ['lat', 'lon'],
-    }),
-  };
+  return GeoJSON.parse(processedFeatures, {
+    Point: ['lat', 'lon'],
+  }) as any as PointLayerData;
 };
 
 export const createEWSDatasetParams = (
@@ -224,6 +224,7 @@ export const createEWSDatasetParams = (
   };
   /* eslint-enable camelcase */
   return {
+    // eslint-disable-next-line camelcase
     externalId: external_id,
     triggerLevels,
     chartTitle,

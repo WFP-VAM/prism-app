@@ -1,6 +1,5 @@
 import { IconButton, Tooltip } from '@material-ui/core';
 import { ImageAspectRatioOutlined } from '@material-ui/icons';
-import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   AggregationOperations,
@@ -35,9 +34,8 @@ function ExposureAnalysisOption({
   const { startDate: selectedDate } = useSelector(dateRangeSelector);
 
   const foundReports = Object.keys(ReportsDefinitions).filter(
-    reportDefinitionKey => {
-      return ReportsDefinitions[reportDefinitionKey].layerId === layer.id;
-    },
+    reportDefinitionKey =>
+      ReportsDefinitions[reportDefinitionKey].layerId === layer.id,
   );
   if (!exposure || !foundReports.length) {
     return null;

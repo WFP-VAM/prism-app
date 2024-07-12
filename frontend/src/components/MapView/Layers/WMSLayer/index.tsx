@@ -1,55 +1,72 @@
-import React from 'react';
-import moment from 'moment';
+import { memo } from 'react';
 import { useSelector } from 'react-redux';
-import { Layer, Source } from 'react-mapbox-gl';
+import { Layer, Source } from 'react-map-gl/maplibre';
 import { WMSLayerProps } from 'config/types';
-import { getWMSUrl } from 'components/MapView/Layers/raster-utils';
+import {
+  expandBoundingBox,
+  getWMSUrl,
+} from 'components/MapView/Layers/raster-utils';
 import { useDefaultDate } from 'utils/useDefaultDate';
-import { DEFAULT_DATE_FORMAT } from 'utils/name-utils';
 import { getRequestDate } from 'utils/server-utils';
 import { availableDatesSelector } from 'context/serverStateSlice';
+import { getLayerMapId } from 'utils/map-utils';
+import { appConfig } from 'config';
+import { opacitySelector } from 'context/opacityStateSlice';
 
-function WMSLayers({
-  layer: { id, baseUrl, serverLayerName, additionalQueryParams, opacity },
-  before,
-}: LayersProps) {
-  const selectedDate = useDefaultDate(serverLayerName, id);
-  const serverAvailableDates = useSelector(availableDatesSelector);
+const WMSLayers = memo(
+  ({
+    layer: { id, baseUrl, serverLayerName, additionalQueryParams, opacity },
+    before,
+  }: LayersProps) => {
+    const selectedDate = useDefaultDate(id);
+    const serverAvailableDates = useSelector(availableDatesSelector);
+    const opacityState = useSelector(opacitySelector(id));
 
-  if (!selectedDate) {
-    return null;
-  }
-  const layerAvailableDates = serverAvailableDates[serverLayerName];
-  const queryDate = getRequestDate(layerAvailableDates, selectedDate);
+    const expansionFactor = 2;
+    // @ts-expect-error #TS6133 see TODO bellow
+    const _expandedBoundingBox = expandBoundingBox(
+      appConfig.map.boundingBox,
+      expansionFactor,
+    );
 
-  return (
-    <>
+    if (!selectedDate) {
+      return null;
+    }
+    const layerAvailableDates = serverAvailableDates[id];
+    const queryDate = getRequestDate(layerAvailableDates, selectedDate);
+    const queryDateString = (queryDate ? new Date(queryDate) : new Date())
+      .toISOString()
+      .slice(0, 10);
+
+    return (
       <Source
         id={`source-${id}`}
-        tileJsonSource={{
-          type: 'raster',
-          tiles: [
-            `${getWMSUrl(baseUrl, serverLayerName, {
-              ...additionalQueryParams,
-              ...(selectedDate && {
-                time: moment(queryDate).format(DEFAULT_DATE_FORMAT),
-              }),
-            })}&bbox={bbox-epsg-3857}`,
-          ],
-          tileSize: 256,
-        }}
-      />
-
-      <Layer
-        before={before}
         type="raster"
-        id={`layer-${id}`}
-        sourceId={`source-${id}`}
-        paint={{ 'raster-opacity': opacity }}
-      />
-    </>
-  );
-}
+        // refresh tiles every time date changes
+        key={queryDateString}
+        tiles={[
+          `${getWMSUrl(baseUrl, serverLayerName, {
+            ...additionalQueryParams,
+            ...(selectedDate && {
+              time: queryDateString,
+            }),
+          })}&bbox={bbox-epsg-3857}`,
+        ]}
+        tileSize={256}
+        // TODO - activate after reviewing bbox for all countries
+        // bounds={expandedBoundingBox}
+      >
+        <Layer
+          beforeId={before}
+          type="raster"
+          id={getLayerMapId(id)}
+          source={`source-${id}`}
+          paint={{ 'raster-opacity': opacityState || opacity }}
+        />
+      </Source>
+    );
+  },
+);
 
 export interface LayersProps {
   layer: WMSLayerProps;

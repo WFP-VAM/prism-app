@@ -11,5 +11,5 @@ export default {
   rawTables,
   rawReports,
   translation,
-  defaultBoundariesFile: 'zim_admin2_boundaries_v2.json',
+  defaultBoundariesFile: 'zim_admin2_boundaries_v3_w_dataviz.json',
 };

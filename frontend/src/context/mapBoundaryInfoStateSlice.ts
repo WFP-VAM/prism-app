@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { LngLatBounds } from 'mapbox-gl';
+import { LngLatBounds } from 'maplibre-gl';
 import type { RootState } from './store';
 
 type MapBoundaryInfoState = {
@@ -14,15 +14,12 @@ export const mapBoundaryInfoStateSlice = createSlice({
     zoom: null,
   } as MapBoundaryInfoState,
   reducers: {
-    setBounds: (state, { payload }: PayloadAction<LngLatBounds>) => {
-      return {
-        ...state,
-        bounds: payload,
-      };
-    },
-    setLocation: (state, { payload }: PayloadAction<MapBoundaryInfoState>) => {
-      return payload;
-    },
+    setBounds: (state, { payload }: PayloadAction<LngLatBounds>) => ({
+      ...state,
+      bounds: payload,
+    }),
+    setLocation: (_state, { payload }: PayloadAction<MapBoundaryInfoState>) =>
+      payload,
   },
 });
 

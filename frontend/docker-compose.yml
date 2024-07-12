@@ -1,0 +1,17 @@
+version: "3"
+
+services:
+  frontend:
+    build:
+      context: ..
+      dockerfile: ./frontend/Dockerfile
+    entrypoint: yarn start
+    environment:
+      - REACT_APP_COUNTRY
+    ports:
+      - "3000:3000"
+    volumes:
+      - ../common:/common
+      - ../frontend:/frontend
+      # do not override node_modules as libs are already installed in the image
+      - /frontend/node_modules

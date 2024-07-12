@@ -1,15 +1,15 @@
-import moment from 'moment';
 import { orderBy } from 'lodash';
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { Dispatch } from 'redux';
 import { ChartType, DatasetField } from 'config/types';
-import { DEFAULT_DATE_FORMAT } from 'utils/name-utils';
+import { DateFormat } from 'utils/name-utils';
 import {
   EWSSensorData,
   EWSTriggersConfig,
   fetchEWSDataPointsByLocation,
 } from 'utils/ews-utils';
 import { fetchWithTimeout } from 'utils/fetch-with-timeout';
+import { getFormattedDate, getTimeInMilliseconds } from 'utils/date-utils';
 import type { CreateAsyncThunkTypes, RootState } from './store';
 import { TableData } from './tableStateSlice';
 
@@ -47,6 +47,7 @@ type BoundaryProps = {
   code: number;
   level: string;
   name: string;
+  localName: string;
 };
 
 type BoundaryPropsDict = { [key: string]: BoundaryProps };
@@ -82,12 +83,12 @@ export enum TableDataFormat {
 
 export const CHART_DATA_PREFIXES = { col: 'd', date: 'Date' };
 
-const createTableData = (
+export const createTableData = (
   results: DataItem[],
   format: TableDataFormat,
 ): TableData => {
-  const momentFormat =
-    format === TableDataFormat.DATE ? DEFAULT_DATE_FORMAT : 'YYYY-MM-DD HH:mm';
+  const dateFormat =
+    format === TableDataFormat.DATE ? DateFormat.Default : DateFormat.DateTime;
 
   const sortedRows = orderBy(results, item => item.date).map(row => {
     const valuesObj = Object.values(row.values).reduce(
@@ -99,7 +100,7 @@ const createTableData = (
     );
 
     return {
-      [CHART_DATA_PREFIXES.date]: moment(row.date).format(momentFormat),
+      [CHART_DATA_PREFIXES.date]: getFormattedDate(row.date, dateFormat),
       ...valuesObj,
     };
   });
@@ -136,7 +137,7 @@ export const loadEWSDataset = async (
     const [measureDate, value] = item.value;
 
     return {
-      date: moment(measureDate).valueOf(),
+      date: getTimeInMilliseconds(measureDate),
       values: { measure: value.toString() },
     };
   });
@@ -160,7 +161,9 @@ export const loadEWSDataset = async (
     EWSConfig,
   };
 
-  return new Promise<TableData>(resolve => resolve(tableDataWithEWSConfig));
+  return new Promise<TableData>(resolve => {
+    resolve(tableDataWithEWSConfig);
+  });
 };
 
 type HDCResponse = {
@@ -174,7 +177,7 @@ type HDCResponse = {
  *
  * @return Promise with parsed object from request as DataItem array.
  */
-const fetchHDC = async (
+export const fetchHDC = async (
   url: string,
   datasetFields: DatasetField[],
   params: { [key: string]: any },
@@ -203,7 +206,7 @@ const fetchHDC = async (
   responseJson = await response.json();
 
   const dates: number[] = responseJson?.date?.map((date: string) =>
-    moment(date).valueOf(),
+    getTimeInMilliseconds(date),
   );
 
   return dates?.map((date, index) => {
@@ -237,8 +240,8 @@ export const loadAdminBoundaryDataset = async (
   params: AdminBoundaryRequestParams,
   dispatch: Dispatch,
 ): Promise<TableData | undefined> => {
-  const endDate = moment(params.endDate);
-  const startDate = moment(params.startDate);
+  const endDateStr = getFormattedDate(params.endDate, 'default');
+  const startDateStr = getFormattedDate(params.startDate, 'default');
 
   const {
     url: hdcUrl,
@@ -248,12 +251,9 @@ export const loadAdminBoundaryDataset = async (
     datasetFields,
   } = params;
 
-  const endDateStr = endDate.format(DEFAULT_DATE_FORMAT);
-  const startDateStr = startDate.format(DEFAULT_DATE_FORMAT);
-
   const hdcRequestParams = {
     level,
-    admin_id: adminCode,
+    id_code: adminCode,
     coverage: 'full',
     vam: getVamParam(serverLayerName),
     start: startDateStr,
@@ -268,7 +268,9 @@ export const loadAdminBoundaryDataset = async (
   );
 
   const tableData = createTableData(results, TableDataFormat.DATE);
-  return new Promise<TableData>(resolve => resolve(tableData));
+  return new Promise<TableData>(resolve => {
+    resolve(tableData);
+  });
 };
 
 export const loadDataset = createAsyncThunk<
@@ -277,11 +279,10 @@ export const loadDataset = createAsyncThunk<
   CreateAsyncThunkTypes
 >(
   'datasetState/loadDataset',
-  async (params: DatasetRequestParams, { dispatch }) => {
-    return (params as AdminBoundaryRequestParams).id
+  async (params: DatasetRequestParams, { dispatch }) =>
+    (params as AdminBoundaryRequestParams).id
       ? loadAdminBoundaryDataset(params as AdminBoundaryRequestParams, dispatch)
-      : loadEWSDataset(params as EWSDataPointsRequestParams, dispatch);
-  },
+      : loadEWSDataset(params as EWSDataPointsRequestParams, dispatch),
 );
 
 export const datasetResultStateSlice = createSlice({

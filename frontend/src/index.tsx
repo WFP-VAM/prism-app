@@ -1,21 +1,25 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
+import { createRoot } from 'react-dom/client';
 import './index.css';
 import './i18n';
 import { Provider } from 'react-redux';
 import { MsalProvider } from '@azure/msal-react';
+import React from 'react';
 import App from './components/App';
 import { store } from './context/store';
 import { msalInstance } from './config';
 import * as serviceWorker from './serviceWorker';
 
-ReactDOM.render(
-  <Provider store={store}>
-    <MsalProvider instance={msalInstance}>
-      <App />
-    </MsalProvider>
-  </Provider>,
-  document.getElementById('root'),
+const container = document.getElementById('root');
+const root = createRoot(container!);
+
+root.render(
+  <React.StrictMode>
+    <Provider store={store}>
+      <MsalProvider instance={msalInstance}>
+        <App />
+      </MsalProvider>
+    </Provider>
+  </React.StrictMode>,
 );
 
 // If you want your app to work offline and load faster, you can change

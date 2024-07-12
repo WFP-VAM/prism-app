@@ -1,9 +1,14 @@
-import React, { useEffect } from 'react';
-import moment from 'moment';
-import { GeoJSONLayer } from 'react-mapbox-gl';
-import { FeatureCollection } from 'geojson';
+import { memo, useEffect } from 'react';
+import { Layer, Source } from 'react-map-gl/maplibre';
+import { Point } from 'geojson';
+
 import { useDispatch, useSelector } from 'react-redux';
-import { PointDataLayerProps, PointDataLoader } from 'config/types';
+import {
+  MapEventWrapFunctionProps,
+  PointDataLayerProps,
+  PointDataLoader,
+  PointLayerData,
+} from 'config/types';
 import {
   clearUserAuthGlobal,
   userAuthSelector,
@@ -16,55 +21,87 @@ import { addNotification } from 'context/notificationStateSlice';
 import { useDefaultDate } from 'utils/useDefaultDate';
 import { getRequestDate } from 'utils/server-utils';
 import { useUrlHistory } from 'utils/url-utils';
-import { useSafeTranslation } from 'i18n';
 import {
   circleLayout,
   circlePaint,
+  fillPaintCategorical,
   fillPaintData,
 } from 'components/MapView/Layers/styles';
 import { setEWSParams, clearDataset } from 'context/datasetStateSlice';
 import { createEWSDatasetParams } from 'utils/ews-utils';
 import { addPopupParams } from 'components/MapView/Layers/layer-utils';
+import {
+  CircleLayerSpecification,
+  FillLayerSpecification,
+  MapLayerMouseEvent,
+} from 'maplibre-gl';
+import { findFeature, getLayerMapId, useMapCallback } from 'utils/map-utils';
+import { getFormattedDate } from 'utils/date-utils';
+import { geoToH3, h3ToGeoBoundary } from 'h3-js';
+
+const onClick =
+  ({ layer, dispatch, t }: MapEventWrapFunctionProps<PointDataLayerProps>) =>
+  (evt: MapLayerMouseEvent) => {
+    addPopupParams(layer, dispatch, evt, t, false);
+
+    const layerId = getLayerMapId(layer.id);
+    const feature = findFeature(layerId, evt);
+    if (layer.loader === PointDataLoader.EWS) {
+      dispatch(clearDataset());
+      if (!feature?.properties) {
+        return;
+      }
+      const ewsDatasetParams = createEWSDatasetParams(
+        feature?.properties,
+        layer.data,
+      );
+      dispatch(setEWSParams(ewsDatasetParams));
+    }
+  };
 
 // Point Data, takes any GeoJSON of points and shows it.
-function PointDataLayer({ layer, before }: LayersProps) {
+const PointDataLayer = memo(({ layer, before }: LayersProps) => {
+  const layerId = getLayerMapId(layer.id);
+
   const selectedDate = useDefaultDate(layer.id);
   const serverAvailableDates = useSelector(availableDatesSelector);
   const layerAvailableDates = serverAvailableDates[layer.id];
   const userAuth = useSelector(userAuthSelector);
 
+  useMapCallback('click', layerId, layer, onClick);
+
   const queryDate = getRequestDate(layerAvailableDates, selectedDate);
+  const validateLayerDate = !layer.dateUrl || queryDate;
 
   const layerData = useSelector(layerDataSelector(layer.id, queryDate)) as
     | LayerData<PointDataLayerProps>
     | undefined;
   const dispatch = useDispatch();
-  const {
-    updateHistory,
-    removeKeyFromUrl,
-    removeLayerFromUrl,
-  } = useUrlHistory();
+  const { updateHistory, removeKeyFromUrl, removeLayerFromUrl } =
+    useUrlHistory();
 
   const { data } = layerData || {};
-  const { features } = data || {};
-  const { t } = useSafeTranslation();
 
   useEffect(() => {
     if (layer.authRequired && !userAuth) {
       return;
     }
 
-    if (!features && queryDate) {
+    if (!data && validateLayerDate) {
       dispatch(loadLayerData({ layer, date: queryDate, userAuth }));
     }
-  }, [features, dispatch, userAuth, layer, queryDate, layerAvailableDates]);
+  }, [
+    data,
+    dispatch,
+    userAuth,
+    layer,
+    queryDate,
+    layerAvailableDates,
+    validateLayerDate,
+  ]);
 
   useEffect(() => {
-    if (
-      features &&
-      !(features as FeatureCollection).features &&
-      layer.authRequired
-    ) {
+    if (data && !data.features && layer.authRequired) {
       dispatch(
         addNotification({
           message: 'Invalid credentials',
@@ -78,23 +115,24 @@ function PointDataLayer({ layer, before }: LayersProps) {
     }
 
     if (
-      features &&
-      (features as FeatureCollection).features.length === 0 &&
+      data &&
+      (data as PointLayerData).features?.length === 0 &&
       layer.authRequired
     ) {
       dispatch(
         addNotification({
-          message: `Data not found for provided date: ${moment(
+          message: `Data not found for provided date: ${getFormattedDate(
             selectedDate,
-          ).format('YYYY-MM-DD')}`,
+            'default',
+          )}`,
           type: 'warning',
         }),
       );
     }
   }, [
-    features,
     dispatch,
     layer,
+    data,
     selectedDate,
     userAuth,
     removeKeyFromUrl,
@@ -102,46 +140,82 @@ function PointDataLayer({ layer, before }: LayersProps) {
     updateHistory,
   ]);
 
-  if (!features || !queryDate) {
+  if (!data || !validateLayerDate) {
     return null;
   }
 
-  const onClickFunc = async (evt: any) => {
-    addPopupParams(layer, dispatch, evt, t, false);
+  if (layer.hexDisplay) {
+    const finalFeatures =
+      data &&
+      data.features
+        .map(feature => {
+          const point = feature.geometry as Point;
 
-    const feature = evt.features[0];
-    if (layer.loader === PointDataLoader.EWS) {
-      dispatch(clearDataset());
+          // Convert the point to a hexagon
+          const hexagon = geoToH3(
+            point.coordinates[1],
+            point.coordinates[0],
+            6.9, // resolution, adjust as needed
+          );
+          if (!feature?.properties?.F2023_an_1) {
+            return null;
+          }
+          return {
+            ...feature,
+            geometry: {
+              type: 'Polygon',
+              coordinates: [h3ToGeoBoundary(hexagon, true)], // Convert the hexagon to a GeoJSON polygon
+            },
+          };
+        })
+        .filter(Boolean);
 
-      const ewsDatasetParams = createEWSDatasetParams(
-        feature?.properties,
-        layer.data,
-      );
-      dispatch(setEWSParams(ewsDatasetParams));
-    }
-  };
+    const filteredData = {
+      ...data,
+      features: finalFeatures,
+    };
+
+    return (
+      <Source type="geojson" data={filteredData}>
+        <Layer
+          id={getLayerMapId(layer.id)}
+          type="fill"
+          paint={fillPaintCategorical(layer)}
+          beforeId={before}
+        />
+      </Source>
+    );
+  }
 
   if (layer.adminLevelDisplay) {
     return (
-      <GeoJSONLayer
-        before={before}
-        id={`layer-${layer.id}`}
-        data={features}
-        fillPaint={fillPaintData(layer, layer.dataField)}
-        fillOnClick={onClickFunc}
-      />
+      <Source data={data} type="geojson">
+        <Layer
+          id={layerId}
+          type="fill"
+          paint={
+            fillPaintData(
+              layer,
+              layer.dataField,
+            ) as FillLayerSpecification['paint']
+          }
+        />
+      </Source>
     );
   }
+
   return (
-    <GeoJSONLayer
-      id={`layer-${layer.id}`}
-      data={features}
-      circleLayout={circleLayout}
-      circlePaint={circlePaint(layer)}
-      circleOnClick={onClickFunc}
-    />
+    <Source data={data} type="geojson">
+      <Layer
+        beforeId={before}
+        id={layerId}
+        type="circle"
+        layout={circleLayout}
+        paint={circlePaint(layer) as CircleLayerSpecification['paint']}
+      />
+    </Source>
   );
-}
+});
 
 export interface LayersProps {
   layer: PointDataLayerProps;

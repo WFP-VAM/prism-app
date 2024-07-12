@@ -10,6 +10,7 @@ export type TFunction = _TFunction;
 export function getRoundedData(
   data: number | string | null,
   t?: i18nTranslator,
+  // eslint-disable-next-line default-param-last
   decimals: number = 2,
   statistic?: AggregationOperations | string,
 ): string {

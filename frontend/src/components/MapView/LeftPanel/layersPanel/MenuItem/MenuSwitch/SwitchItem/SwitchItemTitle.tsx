@@ -3,24 +3,24 @@ import {
   Select,
   Typography,
   createStyles,
-  withStyles,
+  makeStyles,
 } from '@material-ui/core';
-import { WithStyles } from '@material-ui/styles';
 import { LayerType, MenuGroupItem } from 'config/types';
-import React, { memo, useCallback, useState } from 'react';
+import React, { memo, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 
-const styles = () =>
+const useStyles = makeStyles(() =>
   createStyles({
     title: {
       lineHeight: 1.8,
       color: 'black',
       fontWeight: 400,
+      fontSize: '14px',
     },
     titleUnchecked: {
       lineHeight: 1.8,
-      color: '#828282',
       fontWeight: 400,
+      fontSize: '14px',
     },
     select: {
       '&::before': {
@@ -39,84 +39,82 @@ const styles = () =>
       whiteSpace: 'normal',
       fontSize: 13,
       fontWeight: 300,
-      color: '#828282',
       padding: 0,
       marginLeft: 5,
     },
-  });
+  }),
+);
 
 const getFilteredMenuGroupItems = (menus: MenuGroupItem[], filter?: string) =>
   menus.filter(menu => (filter ? menu.id === filter : true));
 
-interface SwitchTitleProps extends WithStyles<typeof styles> {
+interface SwitchTitleProps {
   layer: LayerType;
   someLayerAreSelected: boolean;
   toggleLayerValue: (selectedLayerId: string, checked: boolean) => void;
   validatedTitle: string;
-  initialActiveLayerId: string | null;
+  activeLayerId: string;
+  setActiveLayerId: (v: string) => void;
   groupMenuFilter?: string;
   disabledMenuSelection?: boolean;
 }
-const SwitchItemTitle = ({
-  layer,
-  someLayerAreSelected,
-  toggleLayerValue,
-  validatedTitle,
-  initialActiveLayerId,
-  groupMenuFilter,
-  disabledMenuSelection = false,
-  classes,
-}: SwitchTitleProps) => {
-  const { t } = useTranslation();
-  const { group } = layer;
+const SwitchItemTitle = memo(
+  ({
+    layer,
+    someLayerAreSelected,
+    toggleLayerValue,
+    validatedTitle,
+    activeLayerId,
+    setActiveLayerId,
+    groupMenuFilter,
+    disabledMenuSelection = false,
+  }: SwitchTitleProps) => {
+    const classes = useStyles();
+    const { t } = useTranslation();
+    const { group } = layer;
 
-  const [activeLayerId, setActiveLayerId] = useState(
-    initialActiveLayerId || (group?.layers?.find(l => l.main)?.id as string),
-  );
+    const handleSelect = useCallback(
+      (event: React.ChangeEvent<{ value: string | unknown }>) => {
+        const selectedId = event.target.value;
+        setActiveLayerId(selectedId as string);
+        toggleLayerValue(selectedId as string, true);
+      },
+      [setActiveLayerId, toggleLayerValue],
+    );
 
-  const handleSelect = useCallback(
-    (event: React.ChangeEvent<{ value: string | unknown }>) => {
-      const selectedId = event.target.value;
-      setActiveLayerId(selectedId as string);
-      toggleLayerValue(selectedId as string, true);
-    },
-    [toggleLayerValue],
-  );
-
-  return (
-    <>
-      <Typography
-        className={
-          someLayerAreSelected ? classes.title : classes.titleUnchecked
-        }
-      >
-        {validatedTitle}
-      </Typography>
-      {group && !group.activateAll && (
-        <Select
-          className={classes.select}
-          classes={{
-            root: someLayerAreSelected
-              ? classes.selectItem
-              : classes.selectItemUnchecked,
-          }}
-          value={activeLayerId}
-          onChange={e => handleSelect(e)}
-          disabled={disabledMenuSelection}
+    return (
+      <>
+        <Typography
+          className={
+            someLayerAreSelected ? classes.title : classes.titleUnchecked
+          }
         >
-          {getFilteredMenuGroupItems(group.layers, groupMenuFilter).map(
-            menu => {
-              return (
+          {validatedTitle}
+        </Typography>
+        {group && !group.activateAll && (
+          <Select
+            className={classes.select}
+            classes={{
+              root: someLayerAreSelected
+                ? classes.selectItem
+                : classes.selectItemUnchecked,
+            }}
+            value={activeLayerId}
+            onChange={e => handleSelect(e)}
+            disabled={disabledMenuSelection}
+          >
+            {getFilteredMenuGroupItems(group.layers, groupMenuFilter).map(
+              menu => (
                 <MenuItem key={menu.id} value={menu.id}>
                   {t(menu.label)}
                 </MenuItem>
-              );
-            },
-          )}
-        </Select>
-      )}
-    </>
-  );
-};
+              ),
+            )}
+          </Select>
+        )}
+      </>
+    );
+  },
+);
 
-export default memo(withStyles(styles)(SwitchItemTitle));
+export default SwitchItemTitle;

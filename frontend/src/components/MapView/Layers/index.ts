@@ -5,6 +5,7 @@ import BoundaryLayer from './BoundaryLayer';
 import ImpactLayer from './ImpactLayer';
 import StaticRasterLayer from './StaticRasterLayer';
 import CompositeLayer from './CompositeLayer';
+import AnticipatoryActionLayer from './AnticipatoryActionLayer';
 
 export {
   ImpactLayer,
@@ -14,4 +15,5 @@ export {
   PointDataLayer,
   BoundaryLayer,
   CompositeLayer,
+  AnticipatoryActionLayer,
 };

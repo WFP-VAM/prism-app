@@ -1,10 +1,12 @@
+import { oneDayInMs } from 'components/MapView/LeftPanel/utils';
 import { get, merge, snakeCase, sortBy, sortedUniqBy } from 'lodash';
-import moment from 'moment';
 import { WFS, WMS, fetchCoverageLayerDays, formatUrl } from 'prism-common';
 import { Dispatch } from 'redux';
-import { appConfig } from '../config';
+import { appConfig, safeCountry } from '../config';
 import type {
+  AnticipatoryActionLayerProps,
   AvailableDates,
+  CompositeLayerProps,
   PathLayer,
   PointDataLayerProps,
   RequestFeatureInfo,
@@ -24,19 +26,21 @@ import {
   WMSLayerProps,
 } from '../config/types';
 
+import { LayerDefinitions } from '../config/utils';
 import { addNotification } from '../context/notificationStateSlice';
 import { fetchACLEDDates } from './acled-utils';
 import {
   StartEndDate,
+  binaryIncludes,
   datesAreEqualWithoutTime,
   generateDateItemsRange,
   generateDatesRange,
+  getFormattedDate,
 } from './date-utils';
 import { LocalError } from './error-utils';
 import { createEWSDatesArray } from './ews-utils';
 import { fetchWithTimeout } from './fetch-with-timeout';
 import { queryParamsToString } from './url-utils';
-import { LayerDefinitions } from '../config/utils';
 
 /**
  * Function that gets the correct date used to make the request. If available dates is undefined. Return selectedDate as default.
@@ -51,13 +55,13 @@ export const getRequestDate = (
     return undefined;
   }
 
-  if (!layerAvailableDates) {
+  if (!layerAvailableDates || layerAvailableDates.length === 0) {
     return selectedDate;
   }
 
-  const dateItem = layerAvailableDates.find(date => {
-    return datesAreEqualWithoutTime(date.displayDate, selectedDate);
-  });
+  const dateItem = layerAvailableDates.find(date =>
+    datesAreEqualWithoutTime(date.displayDate, selectedDate),
+  );
   if (!dateItem) {
     return layerAvailableDates[layerAvailableDates.length - 1].queryDate;
   }
@@ -66,14 +70,17 @@ export const getRequestDate = (
 };
 
 // Note: PRISM's date picker is designed to work with dates in the UTC timezone
-// Therefore, ambiguous dates (dates passed as string e.g 2020-08-01) shouldn't be calculated from the user's timezone and instead be converted directly to UTC. Possibly with moment.utc(string)
+// Therefore, ambiguous dates (dates passed as string e.g 2020-08-01) shouldn't be calculated from the user's timezone and instead be converted directly to UTC.
+// plain JS Date `new Date('2020-08-01').toISOString()`, yields: '2020-08-01T00:00:00.000Z'.
 
 export type DateCompatibleLayer =
   | AdminLevelDataLayerProps
   | WMSLayerProps
   | ImpactLayerProps
   | PointDataLayerProps
-  | StaticRasterLayerProps;
+  | StaticRasterLayerProps
+  | CompositeLayerProps
+  | AnticipatoryActionLayerProps;
 
 export const getPossibleDatesForLayer = (
   layer: DateCompatibleLayer,
@@ -81,17 +88,40 @@ export const getPossibleDatesForLayer = (
   // eslint-disable-next-line consistent-return
 ): DateItem[] => {
   switch (layer.type) {
+    case 'admin_level_data':
+    case 'point_data':
+    case 'static_raster':
     case 'wms':
-      return serverAvailableDates[layer.serverLayerName];
+      // get available dates for the layer and its fallback layers
+      // eslint-disable-next-line no-case-declarations
+      const { fallbackLayerKeys } = layer as AdminLevelDataLayerProps;
+      if (!fallbackLayerKeys?.length) {
+        return serverAvailableDates[layer.id];
+      }
+      return (
+        // eslint-disable-next-line fp/no-mutating-methods
+        [layer.id, ...(fallbackLayerKeys || [])]
+          .reduce((acc: DateItem[], key) => {
+            if (serverAvailableDates[key]) {
+              return [...acc, ...serverAvailableDates[key]];
+            }
+            return acc;
+          }, [])
+          .sort((a, b) => a.displayDate - b.displayDate)
+      );
     case 'impact':
       return serverAvailableDates[
-        (LayerDefinitions[layer.hazardLayer] as WMSLayerProps).serverLayerName
+        (LayerDefinitions[layer.hazardLayer] as WMSLayerProps).id
       ];
-    case 'point_data':
-    case 'admin_level_data':
-      return serverAvailableDates[layer.id];
-    case 'static_raster':
-      return serverAvailableDates[layer.id];
+    case 'composite': {
+      // Filter dates that are after layer.startDate
+      const startDateTimestamp = Date.parse(layer.startDate);
+      return (serverAvailableDates[layer.dateLayer] || []).filter(
+        date => date.displayDate > startDateTimestamp,
+      );
+    }
+    case 'anticipatory_action':
+      return serverAvailableDates[layer.id] || [];
     default:
       return [];
   }
@@ -102,7 +132,7 @@ type PointDataDates = Array<{
 }>;
 // used to cache repeat date requests to same URL
 const pointDataFetchPromises: {
-  [k in PointDataLayerProps['dateUrl']]: Promise<PointDataDates>;
+  [k in string]: Promise<PointDataDates>;
 } = {};
 
 const loadPointLayerDataFromURL = async (
@@ -162,6 +192,10 @@ const getPointDataCoverage = async (
     loader,
   } = layer;
 
+  if (!url) {
+    return [];
+  }
+
   // TODO - merge formatUrl and queryParamsToString
   const fetchUrlWithParams = `${url}${
     url.includes('?') ? '&' : '?'
@@ -184,30 +218,28 @@ const getPointDataCoverage = async (
   return (
     data
       // adding 12 hours to avoid  errors due to daylight saving, and convert to number
-      .map(item => moment.utc(item.date).set({ hour: 12, minute: 0 }).valueOf())
+      .map(item => new Date(item.date).setUTCHours(12, 0, 0, 0))
       // remove duplicate dates - indexOf returns first index of item
-      .filter((date, index, arr) => {
-        return arr.indexOf(date) === index;
-      })
+      .filter((date, index, arr) => arr.indexOf(date) === index)
   );
 };
 
-const getAdminLevelDataCoverage = (layer: AdminLevelDataLayerProps) => {
+export const getAdminLevelDataCoverage = (layer: AdminLevelDataLayerProps) => {
   const { dates } = layer;
   if (!dates) {
     return [];
   }
   // raw data comes in as {"dates": ["YYYY-MM-DD"]}
-  return dates.map(v => moment(v, 'YYYY-MM-DD').valueOf());
+  return dates.map(v => new Date(v).getTime());
 };
 
-const getStaticRasterDataCoverage = (layer: StaticRasterLayerProps) => {
+export const getStaticRasterDataCoverage = (layer: StaticRasterLayerProps) => {
   const { dates } = layer;
   if (!dates) {
     return [];
   }
   // raw data comes in as {"dates": ["YYYY-MM-DD"]}
-  return dates.map(v => moment(v, 'YYYY-MM-DD').valueOf());
+  return dates.map(v => new Date(v).getTime());
 };
 
 /**
@@ -215,28 +247,19 @@ const getStaticRasterDataCoverage = (layer: StaticRasterLayerProps) => {
  *
  * @return DateItem
  */
-const generateDefaultDateItem = (
-  date: number,
-  validity?: Validity,
-): DateItem => {
-  const dateWithTz = moment(date).set({ hour: 12, minute: 0 }).valueOf();
-  const dateItemToReturn = {
-    displayDate: dateWithTz,
-    queryDate: dateWithTz,
+const generateDefaultDateItem = (date: number, baseItem?: Object): DateItem => {
+  const newDate = new Date(date).setUTCHours(12, 0, 0, 0);
+  const r = {
+    displayDate: newDate,
+    queryDate: newDate,
   };
-  if (validity) {
-    const { mode } = validity;
+  if (baseItem) {
     return {
-      ...dateItemToReturn,
-      isStartDate:
-        mode === DatesPropagation.FORWARD || mode === DatesPropagation.BOTH,
-      isEndDate:
-        mode === DatesPropagation.BACKWARD || mode === DatesPropagation.BOTH,
+      ...r,
+      ...baseItem,
     };
   }
-  return {
-    ...dateItemToReturn,
-  };
+  return r;
 };
 
 /**
@@ -252,7 +275,7 @@ async function generateIntermediateDateItemFromDataFile(
     layerDates.map(async r => {
       const path = layerPathTemplate.replace(/{.*?}/g, match => {
         const format = match.slice(1, -1);
-        return moment(r).format(format);
+        return getFormattedDate(r, format as any) as string;
       });
 
       const res = await fetch(path);
@@ -274,8 +297,8 @@ async function generateIntermediateDateItemFromDataFile(
       const endDate = jsonBody.DataList[0][validityPeriod.end_date_field];
 
       return {
-        startDate: moment(startDate).set({ hour: 12, minute: 0 }).valueOf(),
-        endDate: moment(endDate).set({ hour: 12, minute: 0 }).valueOf(),
+        startDate: new Date(startDate).setUTCHours(12, 0, 0, 0),
+        endDate: new Date(endDate).setUTCHours(12, 0, 0, 0),
       };
     }),
   );
@@ -284,55 +307,93 @@ async function generateIntermediateDateItemFromDataFile(
   return generateDateItemsRange(rangesWithoutMissing);
 }
 
-function generateIntermediateDateItemFromValidity(layer: ValidityLayer) {
-  const { dates } = layer;
-  const { days, mode } = layer.validity;
+export function generateIntermediateDateItemFromValidity(
+  dates: number[],
+  validity: Validity,
+) {
+  const { forward, backward, mode } = validity;
 
-  // Convert the dates to moment dates
-  const momentDates = Array.prototype.sort
-    .call(dates)
-    .map(d => moment(d).set({ hour: 12, minute: 0 }));
-
-  // Generate first DateItem[] from dates array.
-  const dateItemsDefault: DateItem[] = momentDates.map(momentDate =>
-    generateDefaultDateItem(momentDate.valueOf(), layer.validity),
-  );
+  const sortedDates = Array.prototype.sort.call(dates) as typeof dates;
 
   // only calculate validity for dates that are less than 5 years old
-  const dateItemsWithValidity = momentDates
-    .filter(date => moment().diff(date, 'years') < 5)
-    .reduce((acc: DateItem[], momentDate) => {
-      // We create the start and the end date for every moment date
-      let startDate = momentDate.clone();
-      let endDate = momentDate.clone();
+  const EXTENDED_VALIDITY_YEARS = 5;
+  const fiveYearsInMs = EXTENDED_VALIDITY_YEARS * 365 * oneDayInMs;
+  const earliestDate = Date.now() - fiveYearsInMs;
 
-      // if the mode is `both` or backward we add the days of the validity to the end date keeping the startDate as it is
-      if (mode === DatesPropagation.BOTH || mode === DatesPropagation.FORWARD) {
-        // eslint-disable-next-line fp/no-mutation
-        endDate = endDate.add(days, 'days');
+  const dateItemsWithValidity = sortedDates
+    .map(d => {
+      const date = new Date(d);
+      date.setUTCHours(12, 0, 0, 0);
+      return date;
+    })
+    .reduce((acc: DateItem[], date) => {
+      // We create the start and the end date for every date
+      const startDate = new Date(date.getTime());
+      const endDate = new Date(date.getTime());
+
+      // only calculate validity for dates that are less than 5 years old
+      if (date.getTime() < earliestDate) {
+        return [
+          ...acc,
+          {
+            displayDate: date.getTime(),
+            queryDate: date.getTime(),
+            startDate: date.getTime(),
+            endDate: date.getTime(),
+          },
+        ] as DateItem[];
       }
 
-      // if the mode is `both` or `forward` we subtract the days of the validity to the start date keeping the endDate as it is
-      if (
-        mode === DatesPropagation.BOTH ||
-        mode === DatesPropagation.BACKWARD
-      ) {
-        // eslint-disable-next-line fp/no-mutation
-        startDate = startDate.subtract(days, 'days');
+      if (mode === DatesPropagation.DAYS) {
+        // If mode is "days", adjust dates directly based on the duration
+        startDate.setDate(startDate.getDate() - (backward || 0));
+        endDate.setDate(endDate.getDate() + (forward || 0));
+        // For "dekad" mode, calculate start and end dates based on backward and forward dekads
+        // Dekads are 10-day periods, so we adjust dates accordingly
+      } else if (mode === DatesPropagation.DEKAD) {
+        const DekadStartingDays = [1, 11, 21];
+        const startDayOfTheMonth = startDate.getDate();
+        if (!DekadStartingDays.includes(startDayOfTheMonth)) {
+          throw Error(
+            'publishing day for dekad layers is expected to be 1, 11, 21.',
+          );
+        }
+        // find the index so that we can use a modulo to find the new dekad start and end date.
+        const dekadStartIndex = DekadStartingDays.findIndex(
+          x => x === startDayOfTheMonth,
+        );
+
+        if (forward) {
+          const newDekadEndIndex = (dekadStartIndex + forward) % 3;
+          const nMonthsForward = Math.floor((dekadStartIndex + forward) / 3);
+          endDate.setDate(DekadStartingDays[newDekadEndIndex]);
+          endDate.setMonth(endDate.getMonth() + nMonthsForward);
+          endDate.setDate(endDate.getDate() - 1);
+        }
+        if (backward) {
+          const newDekadStartIndex = (dekadStartIndex - backward + 3) % 3;
+          const nMonthsBackward = Math.floor((dekadStartIndex - backward) / 3);
+          startDate.setDate(DekadStartingDays[newDekadStartIndex]);
+          startDate.setMonth(startDate.getMonth() + nMonthsBackward);
+        }
+      } else {
+        return [];
       }
 
       // We create an array with the diff between the endDate and startDate and we create an array with the addition of the days in the startDate
       const daysToAdd = generateDatesRange(startDate, endDate);
 
-      // convert the available days for a specific moment day to the DefaultDate format
+      // convert the available days for a specific day to the DefaultDate format
       const dateItemsToAdd = daysToAdd.map(dateToAdd => ({
         displayDate: dateToAdd,
-        queryDate: momentDate.valueOf(),
+        queryDate: date.getTime(),
+        startDate: startDate.getTime(),
+        endDate: endDate.getTime(),
       }));
 
       // We filter the dates that don't include the displayDate of the previous item array
       const filteredDateItems = acc.filter(
-        dateItem => !daysToAdd.includes(dateItem.displayDate),
+        dateItem => !binaryIncludes(daysToAdd, dateItem.displayDate, x => x),
       );
 
       return [...filteredDateItems, ...dateItemsToAdd];
@@ -341,7 +402,7 @@ function generateIntermediateDateItemFromValidity(layer: ValidityLayer) {
   // We sort the defaultDateItems and the dateItemsWithValidity and we order by displayDate to filter the duplicates
   // or the overlapping dates
   return sortedUniqBy(
-    sortBy([...dateItemsDefault, ...dateItemsWithValidity], 'displayDate'),
+    sortBy(dateItemsWithValidity, 'displayDate'),
     'displayDate',
   );
 }
@@ -421,6 +482,26 @@ const layerDefinitionsBluePrint: AvailableDates = Object.keys(
 }, {});
 
 /**
+ * Load preprocessed date ranges if available
+ * */
+async function fetchPreprocessedDates(): Promise<any> {
+  try {
+    // preprocessed-layer-dates.json is generated using "yarn preprocess-layers"
+    // which runs ./scripts/preprocess-layers.js - preprocessValidityPeriods
+    const response = await fetch(
+      `data/${safeCountry}/preprocessed-layer-dates.json`,
+    );
+    if (!response.ok) {
+      console.error(`HTTP error! status: ${response.status}`);
+      return {};
+    }
+    return await response.json();
+  } catch (error) {
+    return {};
+  }
+}
+
+/**
  * Load available dates for WMS and WCS using a serverUri defined in prism.json and for GeoJSONs (point data) using their API endpoint.
  *
  * @return a Promise of Map<LayerID (not always id from LayerProps but can be), availableDates[]>
@@ -432,7 +513,8 @@ export async function getLayersAvailableDates(
   const wcsServerUrls: string[] = get(appConfig, 'serversUrls.wcs', []);
 
   const pointDataLayers = Object.values(LayerDefinitions).filter(
-    (layer): layer is PointDataLayerProps => layer.type === 'point_data',
+    (layer): layer is PointDataLayerProps =>
+      layer.type === 'point_data' && Boolean(layer.dateUrl),
   );
 
   const adminWithDateLayers = Object.values(LayerDefinitions).filter(
@@ -445,9 +527,55 @@ export async function getLayersAvailableDates(
       layer.type === 'static_raster' && Boolean(layer.dates),
   );
 
+  const WCSWMSLayers = Object.values(LayerDefinitions).filter(
+    (layer): layer is WMSLayerProps => layer.type === 'wms',
+  );
+
+  /**
+   * Function to map server dates to layer IDs
+   *
+   * @param serverDates - The dates fetched from the server
+   * @param layers - The layers to map the dates to
+   * @return A record of layer IDs to dates
+   */
+  const mapServerDatesToLayerIds = (
+    serverDates: Record<string, number[]>,
+    layers: WMSLayerProps[],
+  ): Record<string, number[]> =>
+    layers.reduce((acc: Record<string, number[]>, layer) => {
+      const layerDates = serverDates[layer.serverLayerName];
+      if (layerDates) {
+        // Filter WMS layers by startDate, used for forecast layers in particular.
+        if (layer.startDate) {
+          const limitStartDate =
+            layer.startDate === 'today'
+              ? new Date().setUTCHours(0, 0).valueOf()
+              : new Date(layer.startDate).setUTCHours(0, 0).valueOf();
+          const availableDates = layerDates.filter(
+            date => date >= limitStartDate,
+          );
+          // If there are no dates after filtering, get the last data available
+          // eslint-disable-next-line fp/no-mutation
+          acc[layer.id] = availableDates.length
+            ? availableDates
+            : [layerDates[layerDates.length - 1]];
+        } else {
+          // eslint-disable-next-line fp/no-mutation
+          acc[layer.id] = layerDates;
+        }
+      }
+      return acc;
+    }, {});
+
   const layerDates = await Promise.all([
-    ...wmsServerUrls.map(url => localWMSGetLayerDates(url, dispatch)),
-    ...wcsServerUrls.map(url => localFetchCoverageLayerDays(url, dispatch)),
+    ...wmsServerUrls.map(async url => {
+      const serverDates = await localWMSGetLayerDates(url, dispatch);
+      return mapServerDatesToLayerIds(serverDates, WCSWMSLayers);
+    }),
+    ...wcsServerUrls.map(async url => {
+      const serverDates = await localFetchCoverageLayerDays(url, dispatch);
+      return mapServerDatesToLayerIds(serverDates, WCSWMSLayers);
+    }),
     ...pointDataLayers.map(async layer => ({
       [layer.id]: await getPointDataCoverage(layer, dispatch),
     })),
@@ -466,7 +594,7 @@ export async function getLayersAvailableDates(
   const layersWithValidity: ValidityLayer[] = Object.values(LayerDefinitions)
     .filter(layer => layer.validity !== undefined)
     .map(layer => {
-      const layerId = layer.type === 'wms' ? layer.serverLayerName : layer.id;
+      const layerId = layer.id;
 
       return {
         name: layerId,
@@ -480,43 +608,49 @@ export async function getLayersAvailableDates(
     LayerDefinitions,
   )
     .filter(layer => !!(layer as AdminLevelDataLayerProps).validityPeriod)
-    .map(layer => {
-      const layerId = layer.type === 'wms' ? layer.serverLayerName : layer.id;
+    .map(layer => ({
+      name: layer.id,
+      dates: mergedLayers[layer.id],
+      path: (layer as AdminLevelDataLayerProps).path,
+      validityPeriod: (layer as AdminLevelDataLayerProps)
+        .validityPeriod as ValidityPeriod,
+    }));
 
-      return {
-        name: layerId,
-        dates: mergedLayers[layerId],
-        path: (layer as AdminLevelDataLayerProps).path,
-        validityPeriod: (layer as AdminLevelDataLayerProps)
-          .validityPeriod as ValidityPeriod,
-      };
-    });
+  // Use preprocessed dates for layers with dates path
+  const preprocessedDates = await fetchPreprocessedDates();
 
   // Generate and replace date items for layers with all intermediates dates
   const layerDateItemsMap = await Promise.all(
     Object.entries(mergedLayers).map(
       async (layerDatesEntry: [string, number[]]) => {
+        const layerName = layerDatesEntry[0];
         // Generate dates for layers with validity and no path
         const matchingValidityLayer = layersWithValidity.find(
-          validityLayer => validityLayer.name === layerDatesEntry[0],
+          validityLayer => validityLayer.name === layerName,
         );
 
         if (matchingValidityLayer) {
           return {
-            [layerDatesEntry[0]]: generateIntermediateDateItemFromValidity(
-              matchingValidityLayer,
+            [layerName]: generateIntermediateDateItemFromValidity(
+              matchingValidityLayer.dates,
+              matchingValidityLayer.validity,
             ),
           };
         }
 
         // Generate dates for layers with path
         const matchingPathLayer = layersWithValidityStartEndDate.find(
-          validityLayer => validityLayer.name === layerDatesEntry[0],
+          validityLayer => validityLayer.name === layerName,
         );
 
         if (matchingPathLayer) {
+          if (layerName in preprocessedDates) {
+            return {
+              [layerName]: generateDateItemsRange(preprocessedDates[layerName]),
+            };
+          }
           return {
-            [layerDatesEntry[0]]: await generateIntermediateDateItemFromDataFile(
+            [layerName]: await generateIntermediateDateItemFromDataFile(
               matchingPathLayer.dates,
               matchingPathLayer.path,
               matchingPathLayer.validityPeriod,
@@ -526,16 +660,18 @@ export async function getLayersAvailableDates(
 
         // Genererate dates for layers with validity but not an admin_level_data type
         return {
-          [layerDatesEntry[0]]: layerDatesEntry[1].map((d: number) =>
-            generateDefaultDateItem(d),
+          [layerName]: layerDatesEntry[1].map((d: number) =>
+            generateDefaultDateItem(new Date(d).setUTCHours(12, 0, 0, 0)),
           ),
         };
       },
     ),
   );
 
-  // eslint-disable-next-line fp/no-mutating-assign
-  return Object.assign(layerDefinitionsBluePrint, ...layerDateItemsMap);
+  return {
+    ...layerDefinitionsBluePrint,
+    ...Object.assign({}, ...layerDateItemsMap),
+  };
 }
 
 /**
@@ -549,7 +685,7 @@ export function formatFeatureInfo(
   labelMap?: { [key: string]: string },
 ): string {
   if (type === DataType.Date) {
-    return `${moment(value).utc().format('MMMM Do YYYY, h:mm:ss')} UTC`;
+    return getFormattedDate(value, 'locale') as string;
   }
 
   if (type === DataType.LabelMapping) {
@@ -708,4 +844,10 @@ export async function fetchWMSLayerAsGeoJSON(options: {
     console.error(error);
     return { type: 'FeatureCollection', features: [] };
   }
+}
+
+export function getAAAvailableDatesCombined(AAAvailableDates: AvailableDates) {
+  return Object.values(AAAvailableDates)
+    .filter(Boolean) // Filter out undefined or null values
+    .flat();
 }

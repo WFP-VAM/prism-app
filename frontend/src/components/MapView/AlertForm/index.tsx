@@ -1,13 +1,14 @@
 import {
+  makeStyles,
   Box,
   Button,
   createStyles,
+  Menu,
   TextField,
   Theme,
   Typography,
-  WithStyles,
-  withStyles,
 } from '@material-ui/core';
+
 import { ArrowDropDown, Notifications } from '@material-ui/icons';
 import React, {
   Dispatch,
@@ -31,7 +32,8 @@ import { ALERT_API_URL } from 'utils/constants';
 
 // Not fully RFC-compliant, but should filter out obviously-invalid emails.
 // Source: https://stackoverflow.com/questions/46155/how-to-validate-an-email-address-in-javascript
-const EMAIL_REGEX: RegExp = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+const EMAIL_REGEX: RegExp =
+  /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
 // This should probably be determined on a case-by-case basis,
 // depending on if the downstream API has the capability.
@@ -40,7 +42,8 @@ const ALERT_FORM_ENABLED = true;
 
 const boundaryLayer = getBoundaryLayerSingleton();
 
-function AlertForm({ classes, isOpen, setOpen }: AlertFormProps) {
+function AlertForm({ isOpen, setOpen }: AlertFormProps) {
+  const classes = useStyles();
   const boundaryLayerData = useSelector(layerDataSelector(boundaryLayer.id)) as
     | LayerData<BoundaryLayerProps>
     | undefined;
@@ -55,6 +58,7 @@ function AlertForm({ classes, isOpen, setOpen }: AlertFormProps) {
   const [thresholdError, setThresholdError] = useState<string | null>(null);
   const [alertName, setAlertName] = useState('');
   const [alertWaiting, setAlertWaiting] = useState(false);
+  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
 
   const { t } = useSafeTranslation();
   const regionCodesToFeatureData: { [k: string]: object } = useMemo(() => {
@@ -66,9 +70,10 @@ function AlertForm({ classes, isOpen, setOpen }: AlertFormProps) {
     return Object.fromEntries(
       boundaryLayerData.data.features
         .filter(feature => feature.properties !== null)
-        .map(feature => {
-          return [feature.properties?.[boundaryLayer.adminCode], feature];
-        }),
+        .map(feature => [
+          feature.properties?.[boundaryLayer.adminCode],
+          feature,
+        ]),
     );
   }, [boundaryLayerData]);
 
@@ -82,9 +87,9 @@ function AlertForm({ classes, isOpen, setOpen }: AlertFormProps) {
       throw new Error('Please select at least one region boundary.');
     }
 
-    const features = regionsList.map(region => {
-      return regionCodesToFeatureData[region];
-    });
+    const features = regionsList.map(
+      region => regionCodesToFeatureData[region],
+    );
 
     // Generate a copy of admin layer data (to preserve top-level properties)
     // and replace the 'features' property with just the selected regions.
@@ -103,36 +108,35 @@ function AlertForm({ classes, isOpen, setOpen }: AlertFormProps) {
     setEmail(newEmail);
   };
 
-  const onOptionChange = <T extends string>(
-    setterFunc: Dispatch<SetStateAction<T>>,
-  ) => (event: React.ChangeEvent<HTMLInputElement>) => {
-    const value = event.target.value as T;
-    setterFunc(value);
-    return value;
-  };
+  const onOptionChange =
+    <T extends string>(setterFunc: Dispatch<SetStateAction<T>>) =>
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      const value = event.target.value as T;
+      setterFunc(value);
+      return value;
+    };
 
   // specially for threshold values, also does error checking
   const onThresholdOptionChange = useCallback(
-    (thresholdType: 'above' | 'below') => (
-      event: React.ChangeEvent<HTMLInputElement>,
-    ) => {
-      const setterFunc =
-        thresholdType === 'above' ? setAboveThreshold : setBelowThreshold;
-      const changedOption = onOptionChange(setterFunc)(event);
-      // setting a value doesn't update the existing value until next render,
-      // therefore we must decide whether to access the old one or the newly change one here.
-      const aboveThresholdValue = parseFloat(
-        thresholdType === 'above' ? changedOption : aboveThreshold,
-      );
-      const belowThresholdValue = parseFloat(
-        thresholdType === 'below' ? changedOption : belowThreshold,
-      );
-      if (belowThresholdValue > aboveThresholdValue) {
-        setThresholdError('Below threshold is larger than above threshold!');
-      } else {
-        setThresholdError(null);
-      }
-    },
+    (thresholdType: 'above' | 'below') =>
+      (event: React.ChangeEvent<HTMLInputElement>) => {
+        const setterFunc =
+          thresholdType === 'above' ? setAboveThreshold : setBelowThreshold;
+        const changedOption = onOptionChange(setterFunc)(event);
+        // setting a value doesn't update the existing value until next render,
+        // therefore we must decide whether to access the old one or the newly change one here.
+        const aboveThresholdValue = parseFloat(
+          thresholdType === 'above' ? changedOption : aboveThreshold,
+        );
+        const belowThresholdValue = parseFloat(
+          thresholdType === 'below' ? changedOption : belowThreshold,
+        );
+        if (belowThresholdValue > aboveThresholdValue) {
+          setThresholdError('Below threshold is larger than above threshold!');
+        } else {
+          setThresholdError(null);
+        }
+      },
     [aboveThreshold, belowThreshold],
   );
 
@@ -302,8 +306,9 @@ function AlertForm({ classes, isOpen, setOpen }: AlertFormProps) {
         className={classes.alertTriggerButton}
         variant="contained"
         color="primary"
-        onClick={() => {
+        onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
           setOpen(!isOpen);
+          setAnchorEl(e.currentTarget);
         }}
       >
         <Notifications fontSize="small" />
@@ -312,12 +317,23 @@ function AlertForm({ classes, isOpen, setOpen }: AlertFormProps) {
         </Typography>
         <ArrowDropDown fontSize="small" />
       </Button>
-      {renderedAlertForm}
+      <Menu
+        anchorEl={anchorEl}
+        keepMounted
+        open={Boolean(anchorEl)}
+        onClose={() => {
+          setOpen(false);
+          setAnchorEl(null);
+        }}
+        PaperProps={{ style: { background: 'transparent', boxShadow: 'none' } }}
+      >
+        {renderedAlertForm}
+      </Menu>
     </div>
   );
 }
 
-const styles = (theme: Theme) =>
+const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     alertLabel: { marginLeft: '10px' },
     alertTriggerButton: {
@@ -386,11 +402,12 @@ const styles = (theme: Theme) =>
     alertFormResponseText: {
       marginLeft: '15px',
     },
-  });
+  }),
+);
 
-interface AlertFormProps extends WithStyles<typeof styles> {
+interface AlertFormProps {
   isOpen: boolean;
   setOpen: (isOpen: boolean) => void;
 }
 
-export default withStyles(styles)(AlertForm);
+export default AlertForm;

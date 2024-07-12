@@ -1,12 +1,12 @@
-import { camelCase, get, map, mapKeys } from 'lodash';
+import { camelCase, get, map, mapKeys, isPlainObject, mapValues } from 'lodash';
 import { appConfig, rawLayers, rawReports, rawTables } from '.';
 import {
   AdminLevelDataLayerProps,
+  AnticipatoryActionLayerProps,
   BoundaryLayerProps,
   checkRequiredKeys,
   CompositeLayerProps,
   ImpactLayerProps,
-  Interval,
   LayerKey,
   LayersMap,
   LayerType,
@@ -27,9 +27,8 @@ export type ReportKey = string;
  * Check if a string is an explicitly defined report in reports.json
  * @param reportsKey the string to check
  */
-export const isReportsKey = (reportsKey: string): reportsKey is ReportKey => {
-  return reportsKey in rawReports;
-};
+export const isReportsKey = (reportsKey: string): reportsKey is ReportKey =>
+  reportsKey in rawReports;
 
 /**
  * Check if a string is an explicitly defined table in tables.json
@@ -42,48 +41,41 @@ export function isTableKey(tableKey: string): tableKey is TableKey {
 function parseStatsApiConfig(maybeConfig: {
   [key: string]: any;
 }): StatsApi | undefined {
-  const config = mapKeys(maybeConfig, (v, k) => camelCase(k));
+  const config = mapKeys(maybeConfig, (_v, k) => camelCase(k));
   if (checkRequiredKeys(StatsApi, config, true)) {
     return config as StatsApi;
   }
   return undefined;
 }
 
-const orderedInterval: Record<Interval, number> = {
-  [Interval.ONE_DAY]: 1,
-  [Interval.TEN_DAYS]: 10,
-  [Interval.ONE_MONTH]: 30,
-  [Interval.ONE_YEAR]: 365,
-};
-function checkIntervals(definition: CompositeLayerProps) {
-  const layerIntervalValue = orderedInterval[definition.interval];
-  const subLayersIntervalsValues = definition.inputLayers.map(
-    subLayer => orderedInterval[subLayer.interval],
-  );
-  return Math.max(...subLayersIntervalsValues) <= layerIntervalValue;
+export function deepCamelCaseKeys(obj: any): any {
+  if (Array.isArray(obj)) {
+    return obj.map(deepCamelCaseKeys);
+  }
+  if (isPlainObject(obj)) {
+    return mapValues(
+      mapKeys(obj, (_v, k) => camelCase(k)),
+      deepCamelCaseKeys,
+    );
+  }
+  return obj;
 }
 
 // CamelCase the keys inside the layer definition & validate config
-const getLayerByKey = (layerKey: LayerKey): LayerType => {
+export const getLayerByKey = (layerKey: LayerKey): LayerType => {
   const rawDefinition = rawLayers[layerKey];
 
   const definition: { id: LayerKey; type: LayerType['type'] } = {
     id: layerKey,
     type: rawDefinition.type as LayerType['type'],
-    ...mapKeys(rawDefinition, (v, k) => camelCase(k)),
+    // TODO - Transition to deepCamelCaseKeys
+    // but handle line-opacity and other special cases
+    ...mapKeys(rawDefinition, (_v, k) => camelCase(k)),
   };
 
   const throwInvalidLayer = () => {
     throw new Error(
       `Found invalid layer definition for layer '${layerKey}'. Check console for more details.`,
-    );
-  };
-
-  const throwInvalidInterval = () => {
-    // eslint-disable-next-line no-console
-    console.log('Please verify intervals in layer definition', definition);
-    throw new Error(
-      `Found invalid Interval definition for layer '${layerKey}'. InputLayers intervals should be lower than global interval.`,
     );
   };
 
@@ -132,8 +124,10 @@ const getLayerByKey = (layerKey: LayerKey): LayerType => {
       if (!checkRequiredKeys(CompositeLayerProps, definition, true)) {
         return throwInvalidLayer();
       }
-      if (!checkIntervals(definition)) {
-        return throwInvalidInterval();
+      return definition;
+    case 'anticipatory_action':
+      if (!checkRequiredKeys(AnticipatoryActionLayerProps, definition, true)) {
+        return throwInvalidLayer();
       }
       return definition;
     default:
@@ -163,13 +157,28 @@ function verifyValidImpactLayer(
   throwIfInvalid('baselineLayer');
 }
 
+export const AAWindowKeys = ['Window 1', 'Window 2'] as const;
+export const AALayerId = 'anticipatory_action';
+
 export const LayerDefinitions: LayersMap = (() => {
+  const aaUrl = appConfig.anticipatoryActionUrl;
+  const AALayer: AnticipatoryActionLayerProps = {
+    id: AALayerId,
+    title: 'Anticipatory Action',
+    type: 'anticipatory_action',
+    opacity: 0.9,
+  };
+
   const layers = Object.keys(rawLayers).reduce(
     (acc, layerKey) => ({
       ...acc,
       [layerKey]: getLayerByKey(layerKey as LayerKey),
     }),
-    {} as LayersMap,
+    (aaUrl
+      ? {
+          [AALayerId]: AALayer,
+        }
+      : {}) as LayersMap,
   );
 
   // Verify that the layers referenced by impact layers actually exist
@@ -181,11 +190,15 @@ export const LayerDefinitions: LayersMap = (() => {
 })();
 
 export function getBoundaryLayers(): BoundaryLayerProps[] {
-  return Object.values(LayerDefinitions).filter(
-    (layer): layer is BoundaryLayerProps => layer.type === 'boundary',
+  return (
+    // eslint-disable-next-line fp/no-mutating-methods
+    Object.values(LayerDefinitions)
+      .filter((layer): layer is BoundaryLayerProps => layer.type === 'boundary')
+      .sort((a, b) => a.adminLevelCodes.length - b.adminLevelCodes.length)
   );
 }
 
+// TODO - is this still relevant? @Amit do we have boundary files that we do not want displayed?
 export function getDisplayBoundaryLayers(): BoundaryLayerProps[] {
   const boundaryLayers = getBoundaryLayers();
   const boundariesCount = boundaryLayers.length;
@@ -218,9 +231,14 @@ export function getDisplayBoundaryLayers(): BoundaryLayerProps[] {
     // get override layers from override names without
     // disrupting the order of which they are defined
     // since the first is considered as default
-    const defaultDisplayBoundaries = defaultBoundaries.map(
-      id => boundaryLayers.filter(l => l.id === id)[0],
-    );
+    // eslint-disable-next-line fp/no-mutating-methods
+    const defaultDisplayBoundaries = defaultBoundaries
+      .map(
+        // TODO - use a find?
+        id => boundaryLayers.filter(l => l.id === id)[0],
+      )
+      // order by admin level depth [decreasing]
+      .sort((a, b) => b.adminLevelCodes.length - a.adminLevelCodes.length);
 
     if (defaultDisplayBoundaries.length === 0) {
       throw new Error(
@@ -239,6 +257,7 @@ export function getBoundaryLayerSingleton(): BoundaryLayerProps {
 }
 
 // Return a boundary layer with the specified adminLevel depth.
+// TODO - better handle multicountry admin levels
 export function getBoundaryLayersByAdminLevel(adminLevel?: number) {
   if (adminLevel) {
     const boundaryLayers = getBoundaryLayers();
@@ -262,11 +281,12 @@ export function getWMSLayersWithChart(): WMSLayerProps[] {
   ) as WMSLayerProps[];
 }
 
+export const areChartLayersAvailable = getWMSLayersWithChart().length > 0;
+
 const isValidReportsDefinition = (
   maybeReport: object,
-): maybeReport is ReportType => {
-  return checkRequiredKeys(ReportType, maybeReport, true);
-};
+): maybeReport is ReportType =>
+  checkRequiredKeys(ReportType, maybeReport, true);
 
 function isValidTableDefinition(maybeTable: object): maybeTable is TableType {
   return checkRequiredKeys(TableType, maybeTable, true);
@@ -278,7 +298,7 @@ const getReportByKey = (key: ReportKey): ReportType => {
   const reports = rawReports as Record<string, any>;
   const rawDefinition = {
     id: key,
-    ...mapKeys(isReportsKey(key) ? reports[key] : {}, (v, k) => camelCase(k)),
+    ...mapKeys(isReportsKey(key) ? reports[key] : {}, (_v, k) => camelCase(k)),
   };
 
   if (isValidReportsDefinition(rawDefinition)) {
@@ -295,7 +315,7 @@ function getTableByKey(key: TableKey): TableType {
   const tables = rawTables as Record<string, any>;
   const rawDefinition = {
     id: key,
-    ...mapKeys(isTableKey(key) ? tables[key] : {}, (v, k) => camelCase(k)),
+    ...mapKeys(isTableKey(key) ? tables[key] : {}, (_v, k) => camelCase(k)),
   };
 
   if (isValidTableDefinition(rawDefinition)) {
@@ -330,10 +350,29 @@ export const getCompositeLayers = (layer: LayerType): LayerType[] => {
   const compositeLayersIds = inputLayers?.map(inputLayer => inputLayer.id);
 
   if (compositeLayersIds?.length) {
-    const compositeLayers = map(LayerDefinitions, (value, key) => {
-      return compositeLayersIds.includes(key as LayerType['type']) && value;
-    }).filter(x => x);
+    const compositeLayers = map(
+      LayerDefinitions,
+      (value, key) =>
+        compositeLayersIds.includes(key as LayerType['type']) && value,
+    ).filter(x => x);
     return compositeLayers as LayerType[];
   }
   return [];
+};
+
+/**
+ * A utility function to get the STAC band parameter.
+ * WARNING: This function is fragile as it is using the _blended pattern in styles.
+ * @param additionalQueryParams - additional query parameters
+ * @returns the band parameter
+ */
+export const getStacBand = (
+  additionalQueryParams: Record<string, string> | undefined,
+) => {
+  const { band, styles } =
+    (additionalQueryParams as {
+      styles?: string;
+      band?: string;
+    }) || {};
+  return band || styles?.replace('_blended', '');
 };

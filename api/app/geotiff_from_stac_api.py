@@ -109,14 +109,22 @@ def get_geotiff(
     bbox: [float, float, float, float],
     date: str | None = None,
     band: str | None = None,
+    filename_override: str | None = None,
 ):
     """Generate a geotiff and return presigned download url"""
     s3_filename = generate_geotiff_and_upload_to_s3(collection, bbox, date, band)
 
     s3_client = boto3.client("s3")
+
+    params = {"Bucket": GEOTIFF_BUCKET_NAME, "Key": s3_filename}
+    if filename_override is not None:
+        params["ResponseContentDisposition"] = (
+            f'attachment; filename="{filename_override or s3_filename}"'
+        )
+
     presigned_download_url = s3_client.generate_presigned_url(
         "get_object",
-        Params={"Bucket": GEOTIFF_BUCKET_NAME, "Key": s3_filename},
+        Params=params,
         ExpiresIn=3600,
     )
     return presigned_download_url

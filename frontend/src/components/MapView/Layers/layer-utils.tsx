@@ -1,4 +1,3 @@
-import React from 'react';
 import Tooltip from '@material-ui/core/Tooltip';
 import { get } from 'lodash';
 import { Dispatch } from 'redux';
@@ -8,13 +7,17 @@ import {
   AdminLevelDataLayerProps,
   PointDataLayerProps,
 } from 'config/types';
-import { addPopupData } from 'context/tooltipStateSlice';
+import { PopupData, addPopupData } from 'context/tooltipStateSlice';
+import { findFeature, getEvtCoords, getLayerMapId } from 'utils/map-utils';
 import { getRoundedData } from 'utils/data-utils';
 import { i18nTranslator } from 'i18n';
 import { getFeatureInfoPropsData } from 'components/MapView/utils';
+import { MapLayerMouseEvent } from 'maplibre-gl';
+import { LayerDefinitions } from 'config/utils';
 
-export function legendToStops(legend: LegendDefinition = []) {
-  // TODO - Make this function easier to use for point data and explicit its behavior.
+export function legendToStops(
+  legend: LegendDefinition = [],
+): [number, string][] {
   return legend.map(({ value, color }) => [
     typeof value === 'string' ? parseFloat(value.replace('< ', '')) : value,
     color,
@@ -69,38 +72,106 @@ export function getLayerGeometryIcon(layer: LayerType) {
 export const addPopupParams = (
   layer: AdminLevelDataLayerProps | PointDataLayerProps,
   dispatch: Dispatch,
-  evt: any,
+  evt: MapLayerMouseEvent,
   t: i18nTranslator,
   adminLevel: boolean,
 ): void => {
-  const feature = evt.features[0];
+  const layerId = getLayerMapId(layer.id);
+  const feature = findFeature(layerId, evt);
+  if (!feature) {
+    return;
+  }
 
-  const { dataField, featureInfoProps, title } = layer;
+  const coordinates = getEvtCoords(evt);
+
+  const {
+    dataField,
+    featureInfoProps,
+    title,
+    dataLabel,
+    displaySource,
+    legend,
+  } = layer;
 
   // adminLevelLayer uses data field by default.
   const propertyField: string = dataField
     ? `properties.${dataField}`
     : 'properties.data';
 
-  // by default add `dataField` to the tooltip if it is not within the feature_info_props dictionary.
-  if (!Object.keys(featureInfoProps || {}).includes(dataField)) {
-    const adminLevelObj = adminLevel
-      ? { adminLevel: feature.properties.adminLevel }
-      : {};
+  // By default, we add `dataField` to the tooltip if it is not within the feature_info_props dictionary.
+  // If a custom dataLabel is provided, we'll make sure to use that before the value
+  // If displaySource is set to `legend_label`, use the matching legend label for the dataField.
+  const useCustomLabel = !!dataLabel || displaySource === 'legend_label';
+  if (
+    useCustomLabel ||
+    !Object.keys(featureInfoProps || {}).includes(dataField)
+  ) {
+    const customDisplayData =
+      displaySource === 'legend_label' &&
+      legend.find(
+        legendItem => legendItem.value === get(feature, propertyField),
+      )?.label;
+    const displayData = customDisplayData
+      ? `${t(`${customDisplayData}`)}`
+      : getRoundedData(get(feature, propertyField), t);
 
-    dispatch(
-      addPopupData({
-        [title]: {
-          ...adminLevelObj,
-          data: getRoundedData(get(feature, propertyField), t),
-          coordinates: evt.lngLat,
-        },
-      }),
-    );
+    const popupDataRows: PopupData = {
+      ...(dataLabel ? { [title]: { data: null, coordinates } } : {}),
+      [dataLabel ?? title]: {
+        data: displayData,
+        coordinates,
+      },
+    };
+
+    dispatch(addPopupData(popupDataRows));
   }
 
   // Add feature_info_props as extra fields to the tooltip
+  let featureInfoPropsWithFallback = featureInfoProps || {};
+  if ('fallbackLayerKeys' in layer) {
+    // eslint-disable-next-line
+    layer.fallbackLayerKeys?.forEach(backupLayerKey => {
+      const layerDef = LayerDefinitions[
+        backupLayerKey
+      ] as AdminLevelDataLayerProps;
+      // eslint-disable-next-line fp/no-mutation
+      featureInfoPropsWithFallback = {
+        ...layerDef.featureInfoProps,
+        ...featureInfoPropsWithFallback,
+      };
+    });
+  }
+
+  // temporary fix for the admin level
+  const possibleAdminLevelData: PopupData = adminLevel
+    ? {
+        'Admin Level': {
+          data: feature.properties.adminLevel,
+          coordinates,
+        },
+      }
+    : {};
+
+  const featureInfoPropsData = getFeatureInfoPropsData(
+    featureInfoPropsWithFallback || {},
+    coordinates,
+    feature,
+  );
+
   dispatch(
-    addPopupData(getFeatureInfoPropsData(layer.featureInfoProps || {}, evt)),
+    addPopupData({
+      // Only if we're providing a custom label, put the data before admin level
+      ...(!useCustomLabel ? possibleAdminLevelData : {}),
+      ...featureInfoPropsData,
+      ...(useCustomLabel ? possibleAdminLevelData : {}),
+    }),
   );
 };
+
+/**
+ * A simple function to check if a layer is a data layer.
+ */
+export const isDataLayer = (layerId: string) =>
+  layerId.includes('layer-') &&
+  !layerId.includes('boundaries') &&
+  !layerId.includes('boundary');

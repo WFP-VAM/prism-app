@@ -1,21 +1,8 @@
-import { faTimes } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {
-  IconButton,
-  WithStyles,
-  createStyles,
-  withStyles,
-} from '@material-ui/core';
-import React, { ReactNode, memo } from 'react';
+import { createStyles, makeStyles } from '@material-ui/core';
+import { ReactNode, memo } from 'react';
 
-const styles = () =>
+const useStyles = makeStyles(() =>
   createStyles({
-    closeButton: {
-      color: 'white',
-      position: 'absolute',
-      right: 0,
-      top: 0,
-    },
     chartsContainer: {
       position: 'relative',
       display: 'flex',
@@ -27,29 +14,21 @@ const styles = () =>
       flexDirection: 'column',
       gap: '8px',
     },
-  });
-
-interface PopupChartWrapperProps extends WithStyles<typeof styles> {
-  children: ReactNode;
-  onClose: React.Dispatch<React.SetStateAction<any>>;
-}
-
-const PopupChartWrapper = ({
-  onClose,
-  children,
-  classes,
-}: PopupChartWrapperProps) => (
-  <div className={classes.chartsContainer}>
-    <IconButton
-      aria-label="close"
-      className={classes.closeButton}
-      onClick={() => onClose(undefined)}
-      size="small"
-    >
-      <FontAwesomeIcon icon={faTimes} />
-    </IconButton>
-    <div className={classes.charts}>{children}</div>
-  </div>
+  }),
 );
 
-export default memo(withStyles(styles)(PopupChartWrapper));
+interface PopupChartWrapperProps {
+  children: ReactNode;
+}
+
+const PopupChartWrapper = memo(({ children }: PopupChartWrapperProps) => {
+  const classes = useStyles();
+
+  return (
+    <div className={classes.chartsContainer}>
+      <div className={classes.charts}>{children}</div>
+    </div>
+  );
+});
+
+export default PopupChartWrapper;

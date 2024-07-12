@@ -13,7 +13,6 @@ import {
   Geometry,
   Position,
 } from 'geojson';
-import moment from 'moment';
 import { get, groupBy as _groupBy, uniq } from 'lodash';
 import { createGetCoverageUrl } from 'prism-common';
 import { calculate } from 'utils/zonal-utils';
@@ -55,10 +54,11 @@ import {
   scaleFeatureStat,
 } from 'utils/analysis-utils';
 import { getRoundedData } from 'utils/data-utils';
-import { DEFAULT_DATE_FORMAT, getFullLocationName } from 'utils/name-utils';
+import { getFullLocationName } from 'utils/name-utils';
 import {
   getBoundaryLayersByAdminLevel,
   getBoundaryLayerSingleton,
+  getStacBand,
   LayerDefinitions,
 } from 'config/utils';
 import {
@@ -68,6 +68,7 @@ import {
 import { fetchWMSLayerAsGeoJSON } from 'utils/server-utils';
 import { isLocalhost } from 'serviceWorker';
 import { ANALYSIS_API_URL } from 'utils/constants';
+import { getFormattedDate } from 'utils/date-utils';
 import { layerDataSelector } from './mapStateSlice/selectors';
 import { LayerData, LayerDataParams, loadLayerData } from './layers/layer-data';
 import { DataRecord } from './layers/admin_level_data';
@@ -95,6 +96,7 @@ type AnalysisResultState = {
   analysisResultDataSortOrder: 'asc' | 'desc';
   exposureAnalysisResultDataSortByKey: Column['id'];
   exposureAnalysisResultDataSortOrder: 'asc' | 'desc';
+  invertedColors?: boolean;
 };
 
 export type TableRow = {
@@ -118,6 +120,7 @@ const initialState: AnalysisResultState = {
   exposureAnalysisResultDataSortByKey: 'name',
   exposureAnalysisResultDataSortOrder: 'asc',
   opacity: 0.5,
+  invertedColors: false,
 };
 
 /* Gets a public URL for the admin boundaries used by this application.
@@ -174,9 +177,9 @@ const getFeatureBoundary = (
     return adminLayerData.features.find(
       ({ properties }) =>
         properties?.[groupBy] ===
-          row?.['properties']?.[groupBy as keyof typeof properties] ||
+          row?.properties?.[groupBy as keyof typeof properties] ||
         properties?.[adminLevelName] ===
-          row?.['properties'][adminLevelName as keyof typeof properties],
+          row?.properties[adminLevelName as keyof typeof properties],
     );
   }
   return adminLayerData.features.find(
@@ -237,8 +240,8 @@ const generateTableFromApiData = (
   groupBy: string, // Reuse the groupBy parameter to generate the table
   baselineLayerData: DataRecord[] | null,
   extraColumns: string[],
-  isExposureAnalysisTable: boolean = false,
   key?: string,
+  isExposureAnalysisTable: boolean = false,
 ): TableRow[] => {
   // find the key that will let us reference the names of the bounding boxes.
   // We get the one corresponding to the specific level of baseline, or the first if we fail.
@@ -265,15 +268,14 @@ const generateTableFromApiData = (
     // find feature (a cell on the map) from admin boundaries json that closely matches this api row.
     // we decide it matches if the feature json has the same name as the name for this row.
     // once we find it we can get the corresponding local name.
-    const featureBoundary:
-      | Feature<Geometry, GeoJsonProperties>
-      | undefined = getFeatureBoundary(
-      isExposureAnalysisTable,
-      adminLayerData,
-      groupBy,
-      row,
-      adminLevelName,
-    );
+    const featureBoundary: Feature<Geometry, GeoJsonProperties> | undefined =
+      getFeatureBoundary(
+        isExposureAnalysisTable,
+        adminLayerData,
+        groupBy,
+        row,
+        adminLevelName,
+      );
 
     const name = getFullLocationName(
       adminLevelNames.slice(0, adminIndex + 1),
@@ -287,16 +289,16 @@ const generateTableFromApiData = (
     // we are searching the data of baseline layer to find the data associated with this feature
     // adminKey here refers to a specific feature (could be several) where the data is attached to.
     const rawBaselineValue =
-      baselineLayerData?.find(({ adminKey }) => {
+      baselineLayerData?.find(({ adminKey }) =>
         // TODO - Make this code more flexible.
         // we only check startsWith because the adminCode grows longer the deeper the level.
         // For example, 34 is state and 14 is district, therefore 3414 is a specific district in a specific state.
         // if this baseline layer only focuses on a higher level (just states) it would only contain 34, but every feature is very specific (uses the full number 3414)
         // therefore checking the start will cover all levels.
-        return featureBoundary?.properties?.[adminLayer.adminCode].startsWith(
+        featureBoundary?.properties?.[adminLayer.adminCode].startsWith(
           adminKey,
-        );
-      })?.value || 'No Data';
+        ),
+      )?.value || 'No Data';
 
     // The multiple statistics for the new table row
     const multipleStatistics: {
@@ -380,12 +382,12 @@ async function createAPIRequestParams(
   exposureValue?: ExposureValue,
 ): Promise<ApiData> {
   // Get default values for groupBy and admin boundary file path at the proper adminLevel
-  const {
-    path: adminBoundariesPath,
-    adminCode: groupBy,
-  } = getBoundaryLayersByAdminLevel(
-    (params as AdminLevelDataLayerProps)?.adminLevel,
-  );
+
+  const adminLevel =
+    (params as AdminLevelDataLayerProps)?.adminLevel ||
+    (params as BoundaryLayerProps)?.adminLevelCodes.length;
+  const { path: adminBoundariesPath, adminCode: groupBy } =
+    getBoundaryLayersByAdminLevel(adminLevel);
 
   // Note - This may not work when running locally as the function
   // will default to the boundary layer hosted in S3.
@@ -396,24 +398,13 @@ async function createAPIRequestParams(
     ? { wfs_params: params as WfsRequestParams }
     : undefined;
 
-  const {
-    additionalQueryParams,
-    baseUrl,
-    serverLayerName,
-    wcsConfig,
-  } = geotiffLayer;
+  const { additionalQueryParams, baseUrl, serverLayerName, wcsConfig } =
+    geotiffLayer;
   const dateValue = !wcsConfig?.disableDateParam ? date : undefined;
-  const dateString = dateValue
-    ? moment(dateValue).format(DEFAULT_DATE_FORMAT)
-    : undefined;
+  const dateString = getFormattedDate(dateValue, 'default');
 
   // get geotiff url using band
-  const { band } =
-    (additionalQueryParams as {
-      styles?: string;
-      band?: string;
-    }) || {};
-
+  const band = getStacBand(additionalQueryParams);
   // Get geotiff_url using STAC for layers in earthobservation.vam.
   // TODO - What happens if there is no date? are some layers not STAC?
   const geotiffUrl =
@@ -458,8 +449,8 @@ async function createAPIRequestParams(
 const mergeTableRows = (tableRows: TableRow[]): TableRow => {
   /* eslint-disable no-param-reassign, fp/no-mutation */
   const mergedObject: TableRow = tableRows.reduce(
-    (acc, tableRow) => {
-      return Object.keys(tableRow).reduce((tableRowAcc, tableRowKey) => {
+    (acc, tableRow) =>
+      Object.keys(tableRow).reduce((tableRowAcc, tableRowKey) => {
         if (typeof tableRow[tableRowKey] === 'number') {
           tableRowAcc[tableRowKey] = tableRowAcc[tableRowKey]
             ? Number(tableRowAcc[tableRowKey]) + Number(tableRow[tableRowKey])
@@ -468,8 +459,7 @@ const mergeTableRows = (tableRows: TableRow[]): TableRow => {
           tableRowAcc[tableRowKey] = tableRow[tableRowKey];
         }
         return tableRowAcc;
-      }, acc);
-    },
+      }, acc),
     {
       key: '',
       localName: '',
@@ -502,14 +492,8 @@ export const requestAndStoreExposedPopulation = createAsyncThunk<
 >(
   'analysisResultState/requestAndStoreExposedPopulation',
   async (params, api) => {
-    const {
-      exposure,
-      date,
-      extent,
-      statistic,
-      wfsLayerId,
-      maskLayerId,
-    } = params;
+    const { exposure, date, extent, statistic, wfsLayerId, maskLayerId } =
+      params;
 
     const adminBoundaries = getBoundaryLayerSingleton();
     const adminBoundariesData = layerDataSelector(adminBoundaries.id)(
@@ -529,7 +513,7 @@ export const requestAndStoreExposedPopulation = createAsyncThunk<
       ? {
           url: `${wfsLayer.baseUrl}/ows`,
           layer_name: wfsLayer.serverLayerName,
-          time: moment(date).format(DEFAULT_DATE_FORMAT),
+          time: getFormattedDate(date, 'default'),
           key,
         }
       : undefined;
@@ -542,22 +526,18 @@ export const requestAndStoreExposedPopulation = createAsyncThunk<
     if (maskLayer) {
       const { additionalQueryParams, baseUrl, serverLayerName } = maskLayer;
 
-      const { band } =
-        (additionalQueryParams as {
-          styles?: string;
-          band?: string;
-        }) || {};
+      const band = getStacBand(additionalQueryParams);
 
       const dateValue = !maskLayer.wcsConfig?.disableDateParam
         ? date
         : undefined;
-      const dateString = dateValue
-        ? moment(dateValue).format(DEFAULT_DATE_FORMAT)
-        : undefined;
+      const dateString = getFormattedDate(dateValue, 'default');
 
       // Get geotiff_url using STAC for layers in earthobservation.vam.
       // eslint-disable-next-line
-      maskUrl = baseUrl.includes('api.earthobservation.vam.wfp.org/ows') && !serverLayerName.includes("hf_water")
+      maskUrl =
+        baseUrl.includes('api.earthobservation.vam.wfp.org/ows') &&
+        !serverLayerName.includes('hf_water')
           ? await getDownloadGeotiffURL(
               serverLayerName,
               band,
@@ -633,8 +613,8 @@ export const requestAndStoreExposedPopulation = createAsyncThunk<
       apiRequest.group_by,
       null,
       [], // no extra columns
-      true,
       key,
+      true,
     );
 
     // If a key exists, we are likely running an exposure analysis for storms or earthquakes.
@@ -679,7 +659,9 @@ export const requestAndStoreAnalysis = createAsyncThunk<
     api.getState(),
   ) as LayerData<AdminLevelDataLayerProps>;
 
-  const { adminLevel } = baselineLayer as AdminLevelDataLayerProps;
+  const adminLevel =
+    (baselineLayer as AdminLevelDataLayerProps)?.adminLevel ||
+    (baselineLayer as BoundaryLayerProps)?.adminLevelCodes.length;
   const adminBoundaries = getBoundaryLayersByAdminLevel(adminLevel);
   const adminBoundariesData = layerDataSelector(adminBoundaries.id)(
     api.getState(),
@@ -711,7 +693,7 @@ export const requestAndStoreAnalysis = createAsyncThunk<
     // if the baselineData doesn't exist, lets load it, otherwise check then load existing data.
     // similar code can be found at impact.ts
     if (baselineLayer.type === 'boundary') {
-      return { features: adminBoundariesData.data, layerData: [] };
+      return { ...adminBoundariesData.data, layerData: [] };
     }
     if (!baselineData && baselineLayer) {
       const { payload } = (await api.dispatch(
@@ -728,10 +710,11 @@ export const requestAndStoreAnalysis = createAsyncThunk<
       return checkBaselineDataLayer(baselineLayer.id, baselineData.data);
     }
 
-    return { features: adminBoundariesData.data, layerData: [] };
+    return { ...adminBoundariesData.data, layerData: [] };
   };
 
-  const loadedAndCheckedBaselineData: BaselineLayerData = await getCheckedBaselineData();
+  const loadedAndCheckedBaselineData: BaselineLayerData =
+    await getCheckedBaselineData();
 
   const features = generateFeaturesFromApiData(
     aggregateData,
@@ -741,12 +724,11 @@ export const requestAndStoreAnalysis = createAsyncThunk<
   );
 
   // Create a legend based on statistic data to be used for admin level analsysis.
-  const legend = createLegendFromFeatureArray(features, statistic);
+  const legend =
+    hazardLayer.legend ?? createLegendFromFeatureArray(features, statistic);
 
-  const enrichedStatistics: (
-    | AggregationOperations
-    | 'stats_intersect_area'
-  )[] = [statistic];
+  const enrichedStatistics: (AggregationOperations | 'stats_intersect_area')[] =
+    [statistic];
   if (statistic === AggregationOperations['Area exposed']) {
     /* eslint-disable-next-line fp/no-mutating-methods */
     enrichedStatistics.push('stats_intersect_area');
@@ -836,23 +818,21 @@ export const requestAndStorePolygonAnalysis = createAsyncThunk<
     },
   ];
 
-  const zonalTableRows = result.table.rows.map((row: ZonalPolygonRow) => {
-    return {
-      area: Math.round(convertArea(row['stat:area'], 'meters', 'kilometers')),
+  const zonalTableRows = result.table.rows.map((row: ZonalPolygonRow) => ({
+    area: Math.round(convertArea(row['stat:area'], 'meters', 'kilometers')),
 
-      percentage: row['stat:percentage'],
+    percentage: row['stat:percentage'],
 
-      // other keys
-      ...Object.fromEntries(
-        Object.entries(row)
-          // filter out statistic columns because they
-          // are already included above
-          .filter(entry => !entry[0].startsWith('stat:'))
-          // remove prefix from column labels
-          .map(([key, value]) => [key.replace(/^[a-z]+:/i, ''), value]),
-      ),
-    };
-  });
+    // other keys
+    ...Object.fromEntries(
+      Object.entries(row)
+        // filter out statistic columns because they
+        // are already included above
+        .filter(entry => !entry[0].startsWith('stat:'))
+        // remove prefix from column labels
+        .map(([key, value]) => [key.replace(/^[a-z]+:/i, ''), value]),
+    ),
+  }));
 
   const tableRows: TableRow[] = generateTableFromApiData(
     [
@@ -944,6 +924,10 @@ export const analysisResultSlice = createSlice({
       ...state,
       isDataTableDrawerActive: false,
     }),
+    analysisLayerInvertColors: state => ({
+      ...state,
+      invertedColors: !state.invertedColors,
+    }),
     clearAnalysisResult: state => ({
       ...state,
       result: undefined,
@@ -953,15 +937,13 @@ export const analysisResultSlice = createSlice({
     builder.addCase(
       requestAndStoreExposedPopulation.fulfilled,
       (
-        { result, ...rest },
+        { result: _result, ...rest },
         { payload }: PayloadAction<AnalysisResult>,
-      ): AnalysisResultState => {
-        return {
-          ...rest,
-          result: payload as ExposedPopulationResult,
-          isExposureLoading: false,
-        };
-      },
+      ): AnalysisResultState => ({
+        ...rest,
+        result: payload as ExposedPopulationResult,
+        isExposureLoading: false,
+      }),
     );
 
     builder.addCase(
@@ -986,7 +968,7 @@ export const analysisResultSlice = createSlice({
     builder.addCase(
       requestAndStoreAnalysis.fulfilled,
       (
-        { result, ...rest },
+        { result: _result, ...rest },
         { payload }: PayloadAction<AnalysisResult>,
       ): AnalysisResultState => ({
         ...rest,
@@ -1017,7 +999,7 @@ export const analysisResultSlice = createSlice({
     builder.addCase(
       requestAndStorePolygonAnalysis.fulfilled,
       (
-        { result, ...rest },
+        { result: _result, ...rest },
         { payload }: PayloadAction<PolygonAnalysisResult>,
       ): AnalysisResultState => ({
         ...rest,
@@ -1094,6 +1076,9 @@ export const isAnalysisLayerActiveSelector = (state: RootState): boolean =>
 export const isDataTableDrawerActiveSelector = (state: RootState): boolean =>
   state.analysisResultState.isDataTableDrawerActive;
 
+export const invertedColorsSelector = (state: RootState): boolean =>
+  state.analysisResultState.invertedColors!!;
+
 // Setters
 export const {
   setIsMapLayerActive,
@@ -1107,6 +1092,7 @@ export const {
   setAnalysisResultSortOrder,
   setExposureAnalysisResultSortByKey,
   setExposureAnalysisResultSortOrder,
+  analysisLayerInvertColors,
 } = analysisResultSlice.actions;
 
 export default analysisResultSlice.reducer;

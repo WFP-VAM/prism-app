@@ -1,7 +1,13 @@
-import { GeoJSON } from 'geojson';
+import { FeatureCollection, GeoJSON } from 'geojson';
 import { every, map } from 'lodash';
-import { FillPaint, LinePaint } from 'mapbox-gl';
 import 'reflect-metadata';
+import {
+  FillLayerSpecification,
+  LineLayerSpecification,
+  MapLayerMouseEvent,
+} from 'maplibre-gl';
+import { Dispatch } from 'redux';
+import { TFunction } from 'i18next';
 import { rawLayers } from '.';
 import type { ReportKey, TableKey } from './utils';
 import type { PopupMetaData } from '../context/tooltipStateSlice';
@@ -19,7 +25,8 @@ export type LayerType =
   | ImpactLayerProps
   | PointDataLayerProps
   | CompositeLayerProps
-  | StaticRasterLayerProps;
+  | StaticRasterLayerProps
+  | AnticipatoryActionLayerProps;
 
 type UnionToIntersection<U> = (U extends any ? (k: U) => void : never) extends (
   k: infer I,
@@ -59,11 +66,10 @@ export const isLayerKey = (layerKey: string | MenuGroup) => {
  * @param layerId
  * @param layers
  */
-export const isMainLayer = (layerId: string, layers: LayerType[]) => {
-  return !layers
+export const isMainLayer = (layerId: string, layers: LayerType[]) =>
+  !layers
     .filter(sl => sl.group)
     .some(sl => sl.group?.layers?.find(l => l.id === layerId && !l.main));
-};
 
 /**
  * Decorator to mark a property on a class type as optional. This allows us to get a list of all required keys at
@@ -102,8 +108,8 @@ export type AsyncReturnType<T extends (...args: any) => any> =
   T extends (...args: any) => Promise<infer U>
     ? U // if T matches this signature and returns anything else, // extract the return value U and use that, or...
     : T extends (...args: any) => infer U
-    ? U // if everything goes to hell, return an `any`
-    : any;
+      ? U // if everything goes to hell, return an `any`
+      : any;
 
 /*
  * Get an array of required keys for a class.
@@ -130,6 +136,7 @@ export function requiredKeysForClassType(constructor: ClassType<any>) {
 export function checkRequiredKeys<T extends Record<string, any>>(
   classType: ClassType<T>,
   maybeType: Record<string, any>,
+  // eslint-disable-next-line default-param-last
   logErrors = false,
   id?: string,
 ): maybeType is T {
@@ -170,6 +177,7 @@ export type LegendDefinitionItem = {
   // Optional, to create custom label like '≤50'. if label is not defined
   // then value attribute will be shown instead
   label?: LegendLabel | string;
+  fillPattern?: 'left' | 'right';
 };
 
 export type LegendDefinition = LegendDefinitionItem[];
@@ -320,14 +328,9 @@ export class CommonLayerProps {
   disableAnalysis?: boolean; // Hide layer in Analysis feature
 }
 
-/*
-  To get possible values for fill and lines, go to:
-  https://docs.mapbox.com/mapbox-gl-js/style-spec/layers/#line
-  https://docs.mapbox.com/mapbox-gl-js/style-spec/layers/#fill
-*/
 type LayerStyleProps = {
-  fill: FillPaint;
-  line: LinePaint;
+  fill: FillLayerSpecification['paint'];
+  line: LineLayerSpecification['paint'];
 };
 
 export type DatasetLevel = {
@@ -368,16 +371,21 @@ export type AdminLevelNameString = string & {
 export type FilePath = string & { 'a path to a file': {} };
 
 export class BoundaryLayerProps extends CommonLayerProps {
-  type: 'boundary';
+  type: 'boundary' = 'boundary';
   path: FilePath; // path to admin_boundries.json file - web or local.
   adminCode: AdminCodeString; // same value as last item in adminLevelCodes below
   adminLevelCodes: AdminCodeString[]; // Ordered as below
   adminLevelNames: AdminLevelNameString[]; // Ordered (Admin1, Admin2, ...)
   adminLevelLocalNames: AdminLevelNameString[]; // Same as above, local to country
-  styles: LayerStyleProps; // Mapbox line and fill properties.,
+  styles: LayerStyleProps; // Maplibre line and fill properties.,
 
   @optional
   isPrimary?: boolean | undefined;
+
+  // Minimum zoom level to display the boundary.
+  // Note that the layer is still loaded, but not displayed.
+  @optional
+  minZoom?: number;
 }
 
 export enum DataType {
@@ -397,9 +405,8 @@ interface FeatureInfoProps {
 }
 
 export enum DatesPropagation {
-  FORWARD = 'forward',
-  BACKWARD = 'backward',
-  BOTH = 'both',
+  DAYS = 'days',
+  DEKAD = 'dekad',
 }
 
 export type ValidityPeriod = {
@@ -410,23 +417,24 @@ export type ValidityPeriod = {
 };
 
 export type Validity = {
-  days: number; // Number of days to include in the calendar.
   mode: DatesPropagation; // Propagation mode for dates.
+  backward?: number; // Number of days/dekades backward.
+  forward?: number; // Number of days/dekades forward.
 };
 
 export class WMSLayerProps extends CommonLayerProps {
-  type: 'wms';
+  type: 'wms' = 'wms';
   baseUrl: string;
   serverLayerName: string;
 
   @makeRequired
-  title: string;
+  declare title: string;
 
   @makeRequired
-  legend: LegendDefinition;
+  declare legend: LegendDefinition;
 
   @makeRequired
-  legendText: string;
+  declare legendText: string;
 
   @optional
   additionalQueryParams?: { [key: string]: string };
@@ -444,36 +452,38 @@ export class WMSLayerProps extends CommonLayerProps {
   chartData?: DatasetProps; // If included, on a click event, prism will display data from the selected boundary.
 
   @optional
-  'areaExposedValues'?: { label: string; value: string | number }[];
+  areaExposedValues?: { label: string; value: string | number }[];
 
   @optional
-  'thresholdValues'?: { label: string; value: string | number }[];
+  thresholdValues?: { label: string; value: string | number }[];
+
+  @optional
+  startDate?: string; // limit the date range for the layer
 }
 
 enum AggregationOptions {
   PIXEL = 'pixel',
   GEOJSON = 'geojson',
 }
-enum DateTypeOptions {
-  CONTINUOUS = 'continuous',
-  SINGLE = 'single',
-}
+
 export class CompositeLayerProps extends CommonLayerProps {
-  type: 'composite';
+  type: 'composite' = 'composite';
   baseUrl: string;
 
   @makeRequired
-  title: string;
+  declare title: string;
 
   inputLayers: {
     id: LayerType['type'];
-    weight: number;
+    importance: number;
     interval: Interval;
+    key: [string, string];
+    aggregation: 'average' | 'last_dekad';
+    invert?: boolean | undefined;
   }[];
 
   aggregation: AggregationOptions;
-  interval: Interval;
-  dateType: DateTypeOptions;
+  dateLayer: LayerKey; // layer to use to get dates from
   startDate: string;
 
   @optional
@@ -481,17 +491,17 @@ export class CompositeLayerProps extends CommonLayerProps {
 }
 
 export class StaticRasterLayerProps extends CommonLayerProps {
-  type: 'static_raster';
+  type: 'static_raster' = 'static_raster';
   baseUrl: string;
 
   @makeRequired
-  title: string;
+  declare title: string;
 
   @makeRequired
-  legend: LegendDefinition;
+  declare legend: LegendDefinition;
 
   @makeRequired
-  legendText: string;
+  declare legendText: string;
 
   minZoom: number;
 
@@ -507,7 +517,7 @@ export enum DataFieldType {
 }
 
 export class AdminLevelDataLayerProps extends CommonLayerProps {
-  type: 'admin_level_data';
+  type: 'admin_level_data' = 'admin_level_data';
   path: string;
 
   @optional
@@ -517,13 +527,13 @@ export class AdminLevelDataLayerProps extends CommonLayerProps {
   validityPeriod?: ValidityPeriod;
 
   @makeRequired
-  title: string;
+  declare title: string;
 
   @makeRequired
-  legend: LegendDefinition;
+  declare legend: LegendDefinition;
 
   @makeRequired
-  legendText: string;
+  declare legendText: string;
 
   @makeRequired
   adminCode: string;
@@ -533,6 +543,12 @@ export class AdminLevelDataLayerProps extends CommonLayerProps {
 
   @makeRequired
   dataField: string;
+
+  @optional // An additional label to display in Tooltips for the dataField or custom displaySource
+  dataLabel?: string;
+
+  @optional // if legend_label, uses the label from legend to display in feature info. if not, uses dataField
+  displaySource?: 'legend_label' | 'data_field';
 
   @optional
   boundary?: LayerKey;
@@ -602,16 +618,16 @@ export type AllAggregationOperations =
 export type ThresholdDefinition = { below?: number; above?: number };
 
 export class ImpactLayerProps extends CommonLayerProps {
-  type: 'impact';
+  type: 'impact' = 'impact';
 
   @makeRequired
-  title: string;
+  declare title: string;
 
   @makeRequired
-  legend: LegendDefinition;
+  declare legend: LegendDefinition;
 
   @makeRequired
-  legendText: string;
+  declare legendText: string;
 
   hazardLayer: LayerKey; // not all layers supported here, just WMS layers
   baselineLayer: LayerKey; // not all layers supported here, just NSO layers. Maybe an advanced way to type this?
@@ -632,20 +648,33 @@ export enum PointDataLoader {
 }
 
 export class PointDataLayerProps extends CommonLayerProps {
-  type: 'point_data';
+  type: 'point_data' = 'point_data';
   data: string;
+
+  @makeRequired
   dataField: string;
+
+  @optional // An additional label to display in Tooltips for the dataField or custom displaySource
+  dataLabel?: string;
+
+  @optional // if legend_label, uses the label from legend to display in feature info. if not, uses dataField
+  displaySource?: 'legend_label' | 'data_field';
+
   // URL to fetch all possible dates from
-  dateUrl: string;
+  @optional
+  dateUrl?: string;
 
   @makeRequired
-  title: string;
+  declare title: string;
 
   @makeRequired
-  legend: LegendDefinition;
+  declare legend: LegendDefinition;
 
   @makeRequired
-  legendText: string;
+  declare legendText: string;
+
+  @optional
+  hexDisplay?: boolean; // display data in hexagon grid
 
   @optional
   fallbackData?: string;
@@ -654,7 +683,7 @@ export class PointDataLayerProps extends CommonLayerProps {
   additionalQueryParams?: { [key: string]: string | { [key: string]: string } };
 
   @optional
-  featureInfoProps?: FeatureInfoObject;
+  declare featureInfoProps?: FeatureInfoObject;
 
   @optional
   adminLevelDisplay?: AdminLevelDisplayType;
@@ -677,11 +706,8 @@ export type RequiredKeys<T> = {
 }[keyof T];
 
 // Get the type of a union based on the value (V) and lookup field (K)
-export type DiscriminateUnion<
-  T,
-  K extends keyof T,
-  V extends T[K]
-> = T extends Record<K, V> ? T : never;
+export type DiscriminateUnion<T, K extends keyof T, V extends T[K]> =
+  T extends Record<K, V> ? T : never;
 
 export type LayersMap = {
   [key in LayerKey]: LayerType;
@@ -702,8 +728,9 @@ export interface MenuItemType {
 export type DateItem = {
   displayDate: number; // Date that will be rendered in the calendar.
   queryDate: number; // Date that will be used in the WMS request.
-  isStartDate?: boolean;
-  isEndDate?: boolean;
+  // start and end dates of the date range.
+  startDate?: number;
+  endDate?: number;
 };
 
 export type AvailableDates = {
@@ -823,9 +850,7 @@ export type PointData = {
   [key: string]: any;
 };
 
-export type PointLayerData = {
-  features: PointData[];
-};
+export type PointLayerData = FeatureCollection;
 
 export interface BaseLayer {
   name: string;
@@ -847,8 +872,27 @@ export type UserAuth = {
 };
 
 export enum PanelSize {
+  auto = '',
   folded = '0vw',
-  medium = '500px',
+  medium = '425px',
   large = '1000px',
   xlarge = '1400px',
+  full = '100%',
+}
+
+export type MapEventWrapFunctionProps<T> = {
+  dispatch: Dispatch;
+  layer: T;
+  t: TFunction;
+};
+
+export type MapEventWrapFunction<T> = (
+  props: MapEventWrapFunctionProps<T>,
+) => (evt: MapLayerMouseEvent) => void;
+
+export class AnticipatoryActionLayerProps extends CommonLayerProps {
+  type: 'anticipatory_action' = 'anticipatory_action';
+
+  @makeRequired
+  declare title: string;
 }

@@ -10,7 +10,7 @@ import {
 } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
 import RemoveIcon from '@material-ui/icons/Remove';
-import React, {
+import {
   ChangeEvent,
   memo,
   useCallback,
@@ -21,6 +21,7 @@ import React, {
 import { useSelector } from 'react-redux';
 import { LayerType } from 'config/types';
 import { useSafeTranslation } from 'i18n';
+import { cyanBlue, lightGrey } from 'muiTheme';
 import { Extent } from 'components/MapView/Layers/raster-utils';
 import { layersSelector } from 'context/mapStateSlice/selectors';
 import { filterActiveLayers } from 'components/MapView/utils';
@@ -33,14 +34,14 @@ const useStyles = makeStyles(() =>
       maxWidth: '100%',
     },
     rootSummary: {
-      backgroundColor: '#F5F7F8',
+      backgroundColor: lightGrey,
     },
     rootDetails: {
       padding: 0,
       backgroundColor: '#FFFFFF',
     },
     expandIcon: {
-      color: '#53888F',
+      color: 'black',
     },
     summaryContent: {
       alignItems: 'center',
@@ -49,8 +50,9 @@ const useStyles = makeStyles(() =>
       marginLeft: '1.5%',
     },
     title: {
-      color: '#53888F',
-      fontWeight: 500,
+      color: 'black',
+      fontSize: '14px',
+      fontWeight: 400,
     },
   }),
 );
@@ -68,19 +70,19 @@ const MenuSwitch = memo(({ title, layers, extent }: MenuSwitchProps) => {
   const [isExpanded, setIsExpanded] = useState(false);
 
   const handleAccordionExpand = useCallback(
-    (event: ChangeEvent<{}>, expanded: boolean) => {
+    (_event: ChangeEvent<{}>, expanded: boolean) => {
       setIsExpanded(expanded);
     },
     [],
   );
 
-  const selectedInternalLayers = useMemo(() => {
-    return selectedLayers.filter(layer => {
-      return layers.some(internalLayer => {
-        return filterActiveLayers(layer, internalLayer);
-      });
-    });
-  }, [layers, selectedLayers]);
+  const selectedInternalLayers = useMemo(
+    () =>
+      selectedLayers.filter(layer =>
+        layers.some(internalLayer => filterActiveLayers(layer, internalLayer)),
+      ),
+    [layers, selectedLayers],
+  );
 
   const [informationChipLabel, setInformationChipLabel] = useState<string>(
     selectedInternalLayers.length.toString(),
@@ -112,7 +114,7 @@ const MenuSwitch = memo(({ title, layers, extent }: MenuSwitchProps) => {
         onMouseEnter={handleChipOnMouseEnter}
         onMouseLeave={handleChipOnMouseLeave}
         classes={{ root: classes.chipRoot }}
-        color="secondary"
+        style={{ backgroundColor: cyanBlue }}
         label={informationChipLabel}
       />
     );
@@ -129,6 +131,7 @@ const MenuSwitch = memo(({ title, layers, extent }: MenuSwitchProps) => {
       elevation={0}
       classes={{ root: classes.root }}
       onChange={handleAccordionExpand}
+      TransitionProps={{ unmountOnExit: true }}
     >
       <AccordionSummary
         expandIcon={isExpanded ? <RemoveIcon /> : <AddIcon />}

@@ -1,12 +1,12 @@
 import { MutableRefObject } from 'react';
 import { downloadToFile } from 'components/MapView/utils';
-import { downloadCsv } from '.';
+import { downloadChartsToCsv } from 'utils/csv-utils';
 
 jest.mock('../utils.ts', () => ({
   downloadToFile: jest.fn(),
 }));
 
-describe('downloadCsv', () => {
+describe('downloadChartsToCsv', () => {
   const dataForCsv: MutableRefObject<{ [key: string]: any[] }> = {
     current: {
       key1: [
@@ -69,7 +69,7 @@ describe('downloadCsv', () => {
   });
 
   it('should call downloadToFile with the correct arguments when data is present', () => {
-    downloadCsv([[dataForCsv, filename]])();
+    downloadChartsToCsv([[dataForCsv.current, filename]])();
 
     expect(downloadToFile).toHaveBeenCalledWith(
       {
@@ -86,7 +86,7 @@ describe('downloadCsv', () => {
     const emptyData: MutableRefObject<{ [key: string]: any[] }> = {
       current: {},
     };
-    downloadCsv([[emptyData, filename]])();
+    downloadChartsToCsv([[emptyData.current, filename]])();
 
     expect(downloadToFile).not.toHaveBeenCalled();
   });
@@ -137,7 +137,7 @@ describe('downloadCsv', () => {
         ],
       },
     };
-    downloadCsv([[missingDataForCsv, filename]])();
+    downloadChartsToCsv([[missingDataForCsv.current, filename]])();
 
     expect(downloadToFile).toHaveBeenCalledWith(
       {

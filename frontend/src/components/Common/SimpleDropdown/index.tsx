@@ -1,5 +1,4 @@
 import { FormControl, MenuItem, Select, Typography } from '@material-ui/core';
-import React from 'react';
 import { useSafeTranslation } from 'i18n';
 
 type OptionLabel = string;
@@ -13,7 +12,7 @@ export default function SimpleDropdown<OptionValue extends number | string>({
 }: {
   options: [OptionValue, OptionLabel][];
   value: OptionValue;
-  onChange: (value: OptionValue) => void;
+  onChange: (v: OptionValue) => void;
   textClass: string;
 }) {
   const { t } = useSafeTranslation();

@@ -1,204 +1,93 @@
 import {
   Button,
   createStyles,
-  Grid,
-  Hidden,
-  List,
+  IconButton,
   Typography,
-  WithStyles,
-  withStyles,
+  makeStyles,
+  useTheme,
+  useMediaQuery,
 } from '@material-ui/core';
-import { Visibility, VisibilityOff } from '@material-ui/icons';
-import React, { useState, memo, useMemo, useCallback } from 'react';
-
-import { createGetLegendGraphicUrl } from 'prism-common';
-import { useSelector } from 'react-redux';
-import {
-  analysisResultOpacitySelector,
-  analysisResultSelector,
-  isAnalysisLayerActiveSelector,
-} from 'context/analysisResultStateSlice';
-import { LayerType } from 'config/types';
-import { BaselineLayerResult } from 'utils/analysis-utils';
+import { VisibilityOutlined, VisibilityOffOutlined } from '@material-ui/icons';
+import { useState, memo, useCallback } from 'react';
 import { useSafeTranslation } from 'i18n';
-import { Extent } from 'components/MapView/Layers/raster-utils';
+import { black, cyanBlue } from 'muiTheme';
+import LegendItemsList from './LegendItemsList';
 
-import LegendItem from './LegendItem';
-import LegendImpactResult from './LegendImpactResult';
-
-export const legendListId = 'legend-list';
-
-const Legends = memo(({ classes, extent, layers }: LegendsProps) => {
-  // Selectors
-  const isAnalysisLayerActive = useSelector(isAnalysisLayerActiveSelector);
-  const analysisResult = useSelector(analysisResultSelector);
-  const analysisLayerOpacity = useSelector(analysisResultOpacitySelector);
-
-  // State
-  const [open, setOpen] = useState(true);
-
-  // memoized values from selectors
-  const featureCollection = useMemo(() => {
-    return analysisResult?.featureCollection;
-  }, [analysisResult]);
-
-  const hasData = useMemo(() => {
-    return featureCollection?.features
-      ? featureCollection.features.length > 0
-      : false;
-  }, [featureCollection]);
-
+const Legends = memo(() => {
+  const classes = useStyles();
   const { t } = useSafeTranslation();
+  const theme = useTheme();
+  const smDown = useMediaQuery(theme.breakpoints.down('sm'));
+  const mdUp = useMediaQuery(theme.breakpoints.up('md'));
 
-  // If legend array is empty, we fetch from remote server the legend as GetLegendGraphic request.
-  const getLayerLegendUrl = useCallback((layer: LayerType) => {
-    return layer.type === 'wms' && layer.legend.length === 0
-      ? createGetLegendGraphicUrl({
-          base: layer.baseUrl,
-          layer: layer.serverLayerName,
-        })
-      : undefined;
-  }, []);
-
-  const layersLegendItems = useMemo(() => {
-    return layers.map(layer => {
-      if (!layer.legend || !layer.legendText) {
-        // this layer doesn't have a legend (likely boundary), so lets ignore.
-        return null;
-      }
-      return (
-        <LegendItem
-          key={layer.id}
-          id={layer.id}
-          title={layer.title ? t(layer.title) : undefined}
-          legend={layer.legend}
-          legendUrl={getLayerLegendUrl(layer)}
-          type={layer.type}
-          opacity={layer.opacity}
-          fillPattern={layer.fillPattern}
-          extent={extent}
-        >
-          {t(layer.legendText)}
-        </LegendItem>
-      );
-    });
-  }, [getLayerLegendUrl, layers, t, extent]);
-
-  const renderedLegendImpactResult = useMemo(() => {
-    if (!(analysisResult instanceof BaselineLayerResult)) {
-      return null;
-    }
-    const baselineLayer = analysisResult.getBaselineLayer();
-    const hazardLayer = analysisResult.getHazardLayer();
-    return (
-      <LegendImpactResult
-        legendText={
-          baselineLayer.legendText
-            ? baselineLayer.legendText
-            : hazardLayer.legendText
-        }
-        thresholdBelow={analysisResult.threshold.below}
-        thresholdAbove={analysisResult.threshold.above}
-      />
-    );
-  }, [analysisResult]);
-
-  // add analysis legend item if layer is active and analysis result exists
-  const analysisLegendItem = useMemo(() => {
-    if (!isAnalysisLayerActive || !hasData) {
-      return [];
-    }
-    return [
-      <LegendItem
-        key={analysisResult?.key ?? Date.now()}
-        legend={analysisResult?.legend}
-        title={analysisResult?.getTitle(t)}
-        opacity={analysisLayerOpacity} // TODO: initial opacity value
-        // Control opacity only for analysis
-        // for the other layers it is controlled from the left panel
-        isAnalysis={isAnalysisLayerActive && hasData}
-      >
-        {renderedLegendImpactResult}
-      </LegendItem>,
-    ];
-  }, [
-    analysisLayerOpacity,
-    analysisResult,
-    hasData,
-    isAnalysisLayerActive,
-    renderedLegendImpactResult,
-    t,
-  ]);
-
-  const legendItems = useMemo(() => {
-    return [...layersLegendItems, ...analysisLegendItem];
-  }, [analysisLegendItem, layersLegendItems]);
-
-  const renderedVisibilityButton = useMemo(() => {
-    if (open) {
-      return <VisibilityOff fontSize="small" />;
-    }
-    return <Visibility fontSize="small" />;
-  }, [open]);
-
-  const renderedLegendItemsList = useMemo(() => {
-    if (!open) {
-      return null;
-    }
-    return (
-      <List id={legendListId} className={classes.list}>
-        {legendItems}
-      </List>
-    );
-  }, [classes.list, legendItems, open]);
+  const [open, setOpen] = useState(true);
 
   const toggleLegendVisibility = useCallback(() => {
     setOpen(!open);
   }, [open]);
 
   return (
-    <Grid item className={classes.container}>
-      <Button
-        className={classes.triggerButton}
-        variant="contained"
-        color="primary"
-        onClick={toggleLegendVisibility}
-      >
-        {renderedVisibilityButton}
-        <Hidden smDown>
-          <Typography className={classes.label} variant="body2">
+    <>
+      {!smDown && (
+        <Button
+          className={classes.triggerButton}
+          style={{ backgroundColor: open ? cyanBlue : undefined }}
+          onClick={toggleLegendVisibility}
+          startIcon={
+            open ? (
+              <VisibilityOffOutlined
+                className={classes.icon}
+                style={{ color: black }}
+              />
+            ) : (
+              <VisibilityOutlined className={classes.icon} />
+            )
+          }
+        >
+          <Typography
+            style={{ color: open ? black : 'white', textTransform: 'none' }}
+          >
             {t('Legend')}
           </Typography>
-        </Hidden>
-      </Button>
-      {renderedLegendItemsList}
-    </Grid>
+        </Button>
+      )}
+
+      {!mdUp && (
+        <IconButton
+          style={{ backgroundColor: open ? cyanBlue : undefined }}
+          onClick={toggleLegendVisibility}
+        >
+          {open ? (
+            <VisibilityOffOutlined
+              className={classes.icon}
+              style={{ color: black }}
+            />
+          ) : (
+            <VisibilityOutlined className={classes.icon} />
+          )}
+        </IconButton>
+      )}
+
+      {open && <LegendItemsList listStyle={classes.list} />}
+    </>
   );
 });
 
-const styles = () =>
+const useStyles = makeStyles(() =>
   createStyles({
-    container: {
-      textAlign: 'right',
-    },
     triggerButton: {
-      height: '3em',
-    },
-    label: {
-      marginLeft: '10px',
+      height: '2.5em',
     },
     list: {
       overflowX: 'hidden',
       overflowY: 'auto',
-      maxHeight: '70vh',
+      maxHeight: '78vh', // same size as the left panel
       position: 'absolute',
-      right: '16px',
+      right: '1rem',
+      top: 'calc(6vh + 16px)',
     },
-  });
+    icon: { color: 'white', fontSize: '1.5rem' },
+  }),
+);
 
-export interface LegendsProps extends WithStyles<typeof styles> {
-  extent?: Extent;
-  layers: LayerType[];
-}
-
-export default withStyles(styles)(Legends);
+export default Legends;

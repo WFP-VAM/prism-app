@@ -3,6 +3,7 @@
   "countryAdmin0Id": 271,
   "alertFormActive": false,
   "enableNavigationDropdown": true,
+  "anticipatoryActionUrl": "https://data.earthobservation.vam.wfp.org/public-share/aa/aa_probabilities_triggers_zwe.csv",
   "serversUrls": {
     "wms": ["https://api.earthobservation.vam.wfp.org/ows/wms"]
   },
@@ -20,7 +21,7 @@
   "defaultDisplayBoundaries": ["admin_boundaries", "admin1_boundaries"],
   "categories": {
     "rainfall": {
-      "ZMSD_rainfall_data": [
+      "MSD_rainfall_data": [
         {
           "group_title": "Rainfall aggregate",
           "activate_all": false,
@@ -55,8 +56,8 @@
               "label": "6-month"
             },
             {
-            "id": "precip_blended_7m",
-            "label": "7-month"
+              "id": "precip_blended_7m",
+              "label": "7-month"
             }
           ]
         },
@@ -100,10 +101,14 @@
           ]
         }
       ],
-      "forecasts": ["daily_rainfall_forecast", "dekad_rainfall_forecast"],
+      "forecasts": [
+        "daily_rainfall_forecast",
+        "dekad_rainfall_forecast",
+        "dekad_rainfall_anomaly_forecast"
+      ],
       "global_rainfall_products": [
         {
-          "group_title": "Rainfall aggregate",
+          "group_title": "CHIRPS rainfall aggregate",
           "activate_all": false,
           "layers": [
             {
@@ -138,7 +143,7 @@
           ]
         },
         {
-          "group_title": "Rainfall anomaly",
+          "group_title": "CHIRPS rainfall anomaly",
           "activate_all": false,
           "layers": [
             {
@@ -173,7 +178,7 @@
           ]
         },
         {
-          "group_title": "SPI",
+          "group_title": "CHIRPS SPI",
           "activate_all": false,
           "layers": [
             {

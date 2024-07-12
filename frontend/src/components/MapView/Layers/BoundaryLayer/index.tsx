@@ -1,11 +1,9 @@
-import * as MapboxGL from 'mapbox-gl';
-import React, { useEffect } from 'react';
-import { GeoJSONLayer } from 'react-mapbox-gl';
+import { memo, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { BoundaryLayerProps } from 'config/types';
+import { BoundaryLayerProps, MapEventWrapFunctionProps } from 'config/types';
 import { LayerData } from 'context/layers/layer-data';
 import { showPopup } from 'context/tooltipStateSlice';
-
+import { Source, Layer, MapLayerMouseEvent } from 'react-map-gl/maplibre';
 import { setBoundaryRelationData } from 'context/mapStateSlice';
 import {
   loadBoundaryRelations,
@@ -13,12 +11,22 @@ import {
 } from 'components/Common/BoundaryDropdown/utils';
 import { isPrimaryBoundaryLayer } from 'config/utils';
 import { toggleSelectedBoundary } from 'context/mapSelectionLayerStateSlice';
-import { layerDataSelector } from 'context/mapStateSlice/selectors';
+import {
+  layerDataSelector,
+  mapSelector,
+} from 'context/mapStateSlice/selectors';
 import { getFullLocationName } from 'utils/name-utils';
 
 import { languages } from 'i18n';
+import { Map as MaplibreMap } from 'maplibre-gl';
+import {
+  findFeature,
+  getEvtCoords,
+  getLayerMapId,
+  useMapCallback,
+} from 'utils/map-utils';
 
-function onToggleHover(cursor: string, targetMap: MapboxGL.Map) {
+function onToggleHover(cursor: string, targetMap: MaplibreMap) {
   // eslint-disable-next-line no-param-reassign, fp/no-mutation
   targetMap.getCanvas().style.cursor = cursor;
 }
@@ -28,8 +36,56 @@ interface ComponentProps {
   before?: string;
 }
 
-function BoundaryLayer({ layer, before }: ComponentProps) {
+const onClick =
+  ({ dispatch, layer }: MapEventWrapFunctionProps<BoundaryLayerProps>) =>
+  (evt: MapLayerMouseEvent) => {
+    const isPrimaryLayer = isPrimaryBoundaryLayer(layer);
+    if (!isPrimaryLayer) {
+      return;
+    }
+
+    const layerId = getLayerMapId(layer.id, 'fill');
+
+    const feature = findFeature(layerId, evt);
+    if (!feature) {
+      return;
+    }
+
+    // send the selection to the map selection layer. No-op if selection mode isn't on.
+    dispatch(toggleSelectedBoundary(feature.properties[layer.adminCode]));
+
+    const coordinates = getEvtCoords(evt);
+    const locationSelectorKey = layer.adminCode;
+    const locationAdminCode = feature.properties[layer.adminCode];
+    const locationName = getFullLocationName(layer.adminLevelNames, feature);
+
+    const locationLocalName = getFullLocationName(
+      layer.adminLevelLocalNames,
+      feature,
+    );
+
+    dispatch(
+      showPopup({
+        coordinates,
+        locationSelectorKey,
+        locationAdminCode,
+        locationName,
+        locationLocalName,
+      }),
+    );
+  };
+
+const onMouseEnter = () => (evt: MapLayerMouseEvent) =>
+  onToggleHover('pointer', evt.target);
+const onMouseLeave = () => (evt: MapLayerMouseEvent) =>
+  onToggleHover('', evt.target);
+
+const BoundaryLayer = memo(({ layer, before }: ComponentProps) => {
   const dispatch = useDispatch();
+  const selectedMap = useSelector(mapSelector);
+  const [isZoomLevelSufficient, setIsZoomLevelSufficient] = useState(
+    !layer.minZoom,
+  );
 
   const boundaryLayer = useSelector(layerDataSelector(layer.id)) as
     | LayerData<BoundaryLayerProps>
@@ -37,6 +93,27 @@ function BoundaryLayer({ layer, before }: ComponentProps) {
   const { data } = boundaryLayer || {};
 
   const isPrimaryLayer = isPrimaryBoundaryLayer(layer);
+  const layerId = getLayerMapId(layer.id, 'fill');
+
+  useMapCallback('click', layerId, layer, onClick);
+  useMapCallback('mouseenter', layerId, layer, onMouseEnter);
+  useMapCallback('mouseleave', layerId, layer, onMouseLeave);
+
+  // Control the zoom level threshold above which the layer will not be displayed
+  useEffect(() => {
+    if (!selectedMap || !layer.minZoom) {
+      return undefined;
+    }
+    const checkZoom = () => {
+      const zoom = selectedMap.getZoom();
+      setIsZoomLevelSufficient(zoom > layer.minZoom!);
+    };
+    checkZoom(); // Initial check
+    selectedMap.on('zoomend', checkZoom);
+    return () => {
+      selectedMap.off('zoomend', checkZoom);
+    };
+  }, [selectedMap, layer.minZoom]);
 
   useEffect(() => {
     if (!data || !isPrimaryLayer) {
@@ -63,65 +140,28 @@ function BoundaryLayer({ layer, before }: ComponentProps) {
     return null; // boundary layer hasn't loaded yet. We load it on init inside MapView. We can't load it here since its a dependency of other layers.
   }
 
-  const onClickShowPopup = (evt: any) => {
-    const coordinates = evt.lngLat;
-    const locationSelectorKey = layer.adminCode;
-    const locationAdminCode = evt.features[0].properties[layer.adminCode];
-    const locationName = getFullLocationName(
-      layer.adminLevelNames,
-      evt.features[0],
-    );
-
-    const locationLocalName = getFullLocationName(
-      layer.adminLevelLocalNames,
-      evt.features[0],
-    );
-
-    dispatch(
-      showPopup({
-        coordinates,
-        locationSelectorKey,
-        locationAdminCode,
-        locationName,
-        locationLocalName,
-      }),
-    );
-  };
-
-  const onClickFunc = (evt: any) => {
-    // send the selection to the map selection layer. No-op if selection mode isn't on.
-    dispatch(
-      toggleSelectedBoundary(evt.features[0].properties[layer.adminCode]),
-    );
-
-    onClickShowPopup(evt);
-  };
-
-  // Only use mouse effects and click effects on the main layer.
-  const { fillOnMouseEnter, fillOnMouseLeave, fillOnClick } = isPrimaryLayer
-    ? {
-        fillOnMouseEnter: (evt: any) => onToggleHover('pointer', evt.target),
-        fillOnMouseLeave: (evt: any) => onToggleHover('', evt.target),
-        fillOnClick: onClickFunc,
-      }
-    : {
-        fillOnMouseEnter: undefined,
-        fillOnMouseLeave: undefined,
-        fillOnClick: undefined,
-      };
-
+  // We need 2 layers here since react-map-gl does not support styling "line" for "fill" typed layers
   return (
-    <GeoJSONLayer
-      id={`layer-${layer.id}`}
-      data={data}
-      fillPaint={layer.styles.fill}
-      linePaint={layer.styles.line}
-      fillOnMouseEnter={fillOnMouseEnter}
-      fillOnMouseLeave={fillOnMouseLeave}
-      fillOnClick={fillOnClick}
-      before={before}
-    />
+    <Source type="geojson" data={data}>
+      <Layer
+        id={getLayerMapId(layer.id)}
+        type="line"
+        paint={{
+          ...layer.styles.line,
+          'line-opacity': isZoomLevelSufficient
+            ? layer.styles.line?.['line-opacity']
+            : 0, // Adjust opacity based on zoom level
+        }}
+        beforeId={before}
+      />
+      <Layer
+        id={layerId}
+        type="fill"
+        paint={layer.styles.fill}
+        beforeId={before}
+      />
+    </Source>
   );
-}
+});
 
 export default BoundaryLayer;

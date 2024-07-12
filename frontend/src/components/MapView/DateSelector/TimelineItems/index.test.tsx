@@ -1,11 +1,12 @@
 import { render } from '@testing-library/react';
-import React from 'react';
-
+import configureStore from 'redux-mock-store';
+import { Provider } from 'react-redux';
 import TimelineItems from '.';
 
 const props = {
   selectedLayers: [],
   selectedLayerTitles: [],
+  availableDates: [],
   dateRange: [
     {
       value: 1640883600000,
@@ -19,7 +20,23 @@ const props = {
   locale: 'en',
 };
 
+const mockStore = configureStore([]);
+
+const store = mockStore({
+  anticipatoryActionState: {
+    availableDates: undefined,
+  },
+  mapState: {
+    layers: [],
+    dateRange: { startDate: 1678528800000 },
+  },
+});
+
 test('renders as expected', () => {
-  const { container } = render(<TimelineItems {...props} />);
+  const { container } = render(
+    <Provider store={store}>
+      <TimelineItems {...props} />
+    </Provider>,
+  );
   expect(container).toMatchSnapshot();
 });

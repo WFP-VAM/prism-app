@@ -1,9 +1,4 @@
-import {
-  Typography,
-  WithStyles,
-  createStyles,
-  withStyles,
-} from '@material-ui/core';
+import { Typography, createStyles, makeStyles } from '@material-ui/core';
 import { ClassNameMap } from '@material-ui/styles';
 import { PopupData, PopupMetaData } from 'context/tooltipStateSlice';
 import { Position } from 'geojson';
@@ -12,7 +7,7 @@ import { isEmpty, isEqual, sum } from 'lodash';
 import React, { Fragment, memo } from 'react';
 import { TFunction } from 'utils/data-utils';
 
-const styles = () =>
+const useStyles = makeStyles(() =>
   createStyles({
     phasePopulationTable: {
       tableLayout: 'fixed',
@@ -29,7 +24,8 @@ const styles = () =>
     text: {
       marginBottom: '4px',
     },
-  });
+  }),
+);
 
 // This function prepares phasePopulationTable for rendering and is specific
 // to the data structure of the phase classification layer.
@@ -39,7 +35,7 @@ const generatePhasePopulationTable = (
   popupData: PopupData,
   t: TFunction,
   classes: ClassNameMap,
-): JSX.Element | null => {
+): React.JSX.Element | null => {
   const phasePopulations: Record<string, number> = Object.entries(
     popupData,
   ).reduce((acc: any, cur: any) => {
@@ -63,6 +59,10 @@ const generatePhasePopulationTable = (
   phasePopulations.Total =
     sum(Object.values(phasePopulations)) - phasePopulations['3 to 5'];
 
+  if (phasePopulations.Total === 0) {
+    return null;
+  }
+
   const phasePopulationTable = (
     <div>
       <Typography display="inline" variant="h4" color="inherit">
@@ -73,23 +73,34 @@ const generatePhasePopulationTable = (
         {t('Population and percentage by phase classification')}
       </Typography>
       <table className={classes.phasePopulationTable}>
-        <tr className={classes.phasePopulationTableRow}>
-          {Object.keys(phasePopulations).map((phaseName: string) => (
-            <th>{t(phaseName)}</th>
-          ))}
-        </tr>
-        <tr className={classes.phasePopulationTableRow}>
-          {Object.values(phasePopulations).map((populationInPhase: number) => (
-            <th>{populationInPhase.toLocaleString()}</th>
-          ))}
-        </tr>
-        <tr className={classes.phasePopulationTableRow}>
-          {Object.values(phasePopulations).map((populationInPhase: number) => (
-            <th>
-              {Math.round((populationInPhase / phasePopulations.Total) * 100)}%
-            </th>
-          ))}
-        </tr>
+        <tbody>
+          <tr className={classes.phasePopulationTableRow}>
+            {Object.keys(phasePopulations).map((phaseName: string) => (
+              <th key={phaseName}>{t(phaseName)}</th>
+            ))}
+          </tr>
+          <tr className={classes.phasePopulationTableRow}>
+            {Object.values(phasePopulations).map(
+              (populationInPhase: number) => (
+                <th key={populationInPhase}>
+                  {populationInPhase.toLocaleString()}
+                </th>
+              ),
+            )}
+          </tr>
+          <tr className={classes.phasePopulationTableRow}>
+            {Object.values(phasePopulations).map(
+              (populationInPhase: number) => (
+                <th key={`perc_${populationInPhase}`}>
+                  {Math.round(
+                    (populationInPhase / phasePopulations.Total) * 100,
+                  )}
+                  %
+                </th>
+              ),
+            )}
+          </tr>
+        </tbody>
       </table>
     </div>
   );
@@ -97,16 +108,13 @@ const generatePhasePopulationTable = (
   return phasePopulationTable;
 };
 
-interface PopupContentProps extends WithStyles<typeof styles> {
+interface PopupContentProps {
   popupData: PopupData & PopupMetaData;
   coordinates: Position | undefined;
 }
 
-const PopupContent = ({
-  popupData,
-  coordinates,
-  classes,
-}: PopupContentProps) => {
+const PopupContent = memo(({ popupData, coordinates }: PopupContentProps) => {
+  const classes = useStyles();
   const { t } = useSafeTranslation();
 
   const phasePopulationTable = generatePhasePopulationTable(
@@ -114,21 +122,21 @@ const PopupContent = ({
     t,
     classes,
   );
-  // filter out popupData where key value contains "Population in phase "
-  const popupDataWithoutPhasePopulations: PopupData = Object.entries(
-    popupData,
-  ).reduce((acc: any, cur: any) => {
-    const [key, value] = cur;
-    if (
-      // keep "Population in phase 1" as a placeholder for the phase population table
-      key === 'Population in phase 1' ||
-      (!key.includes('Population in phase ') &&
-        !key.includes('Reference period '))
-    ) {
-      return { ...acc, [key]: value };
-    }
-    return acc;
-  }, {});
+  // If a table is displayed, filter out popupData where key value contains "Population in phase"
+  const popupDataWithoutPhasePopulations: PopupData = !phasePopulationTable
+    ? popupData
+    : Object.entries(popupData).reduce((acc: any, cur: any) => {
+        const [key, value] = cur;
+        if (
+          // keep "Population in phase 1" as a placeholder for the phase population table
+          key === 'Population in phase 1' ||
+          (!key.includes('Population in phase ') &&
+            !key.includes('Reference period '))
+        ) {
+          return { ...acc, [key]: value };
+        }
+        return acc;
+      }, {});
 
   return (
     <>
@@ -146,44 +154,50 @@ const PopupContent = ({
             console.log('Popup coordinates:', coordinates);
             /* eslint-enable no-console */
           }
+          if (value.data === undefined) {
+            return false;
+          }
           // return isEqual(value.coordinates, coordinates);
           return true;
         })
         .map(([key, value]) => {
+          // If the data is undefined, null, or an empty string, we do not render the data (only render the key)
+          const isKeyValuePair = [undefined, null, ''].every(
+            item => item !== value.data,
+          );
           return (
             <Fragment key={key}>
-              {/* Allow users to show data without a key/title */}
-              {!key.includes('do_not_display') &&
-                key !== 'Population in phase 1' && (
+              <div>
+                {/* Allow users to show data without a key/title */}
+                {!key.includes('do_not_display') &&
+                  key !== 'Population in phase 1' && (
+                    <Typography
+                      display="inline"
+                      variant="h4"
+                      color="inherit"
+                      className={classes.text}
+                    >
+                      {isKeyValuePair ? `${t(key)}: ` : t(key)}
+                    </Typography>
+                  )}
+                {key !== 'Population in phase 1' && isKeyValuePair && (
                   <Typography
                     display="inline"
                     variant="h4"
                     color="inherit"
                     className={classes.text}
                   >
-                    {`${t(key)}: `}
+                    {`${value.data}`}
                   </Typography>
                 )}
-              {key !== 'Population in phase 1' && (
-                <Typography
-                  display="inline"
-                  variant="h4"
-                  color="inherit"
-                  className={classes.text}
-                >
-                  {`${value.data}`}
-                </Typography>
-              )}
+              </div>
               {/* Phase classification data */}
-              <Typography variant="h4" color="inherit">
-                {value.adminLevel && `${t('Admin Level')}: ${value.adminLevel}`}
-              </Typography>
               {key === 'Population in phase 1' && phasePopulationTable}
             </Fragment>
           );
         })}
     </>
   );
-};
+});
 
-export default memo(withStyles(styles)(PopupContent));
+export default PopupContent;

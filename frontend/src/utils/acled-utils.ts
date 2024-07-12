@@ -1,13 +1,12 @@
 import { sortBy } from 'lodash';
 import GeoJSON from 'geojson';
-import moment from 'moment';
 import { Dispatch } from 'redux';
 import { PointLayerData, PointDataLayerProps } from 'config/types';
 import { addNotification } from 'context/notificationStateSlice';
-import { DEFAULT_DATE_FORMAT } from './name-utils';
 import { queryParamsToString } from './url-utils';
 import { fetchWithTimeout } from './fetch-with-timeout';
 import { LocalError } from './error-utils';
+import { getFormattedDate, getTimeInMilliseconds } from './date-utils';
 
 export const fetchACLEDDates = async (
   url: string,
@@ -37,7 +36,7 @@ export const fetchACLEDDates = async (
 
     /* eslint-disable camelcase */
     const dates: number[] = respJson.data.map((item: { event_date: string }) =>
-      moment(item.event_date).valueOf(),
+      getTimeInMilliseconds(item.event_date),
     );
     /* eslint-enable camelcase */
 
@@ -64,7 +63,10 @@ export const fetchACLEDIncidents = async (
   dispatch: Dispatch,
   additionalQueryParams?: PointDataLayerProps['additionalQueryParams'],
 ): Promise<PointLayerData> => {
-  const dateStr = moment(date).format(DEFAULT_DATE_FORMAT);
+  const dateStr = getFormattedDate(date, 'default');
+  if (!dateStr) {
+    throw new Error(`Invalid value for date: ${date}`);
+  }
 
   const queryParams = { ...additionalQueryParams, event_date: dateStr };
 
@@ -85,13 +87,12 @@ export const fetchACLEDIncidents = async (
       fatalities: parseInt(incident.fatalities, 10),
     }));
 
-    return {
-      features: GeoJSON.parse(incidents, {
-        Point: ['lat', 'lon'],
-      }),
-    };
+    return GeoJSON.parse(incidents, {
+      Point: ['lat', 'lon'],
+    }) as any as PointLayerData;
   } catch (error) {
     return {
+      type: 'FeatureCollection',
       features: [],
     };
   }

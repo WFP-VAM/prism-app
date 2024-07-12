@@ -1,21 +1,30 @@
 import { Box } from '@material-ui/core';
-import React, { memo } from 'react';
+import { memo } from 'react';
 import HashText from 'components/Common/HashText';
-import { Extent } from 'components/MapView/Layers/raster-utils';
+import { PanelSize } from 'config/types';
 import RootAccordionItems from './RootAccordionItems';
 import RootAnalysisAccordionItems from './RootAnalysisAccordionItems';
 
-interface LayersPanelProps {
-  extent?: Extent;
-}
-
-const LayersPanel = ({ extent }: LayersPanelProps) => (
-  <Box display="flex" flexDirection="column" height="100%">
-    <RootAccordionItems extent={extent} />
-    <RootAnalysisAccordionItems />
-    <Box flexGrow={1} />
+const LayersPanel = memo(() => (
+  <Box
+    style={{
+      width: PanelSize.medium,
+      display: 'flex',
+      flexDirection: 'column',
+      height: '100%',
+    }}
+  >
+    <div style={{ padding: '0.5rem' }}>
+      <RootAccordionItems />
+      <RootAnalysisAccordionItems />
+    </div>
+    <Box
+      style={{
+        flexGrow: 1,
+      }}
+    />
     <HashText />
   </Box>
-);
+));
 
-export default memo(LayersPanel);
+export default LayersPanel;

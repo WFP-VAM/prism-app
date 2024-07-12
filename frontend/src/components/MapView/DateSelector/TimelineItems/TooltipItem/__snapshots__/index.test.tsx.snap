@@ -3,14 +3,14 @@
 exports[`renders as expected 1`] = `
 <div>
   <div
-    class="memo-tooltipItemContainer-1"
+    class="makeStyles-tooltipItemContainer-1"
   >
+    <div
+      class="makeStyles-tooltipItemColor-2"
+    />
     <div>
       Some Title
     </div>
-    <div
-      class="memo-tooltipItemColor-2"
-    />
   </div>
 </div>
 `;

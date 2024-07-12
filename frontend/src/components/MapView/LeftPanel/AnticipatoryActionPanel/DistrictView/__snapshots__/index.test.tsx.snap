@@ -1,0 +1,513 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`renders as expected 1`] = `
+<div>
+  <div
+    class="makeStyles-root-1"
+  >
+    <mock-dialog
+      open="false"
+    >
+      <mock-dialogtitle>
+        <div
+          class="makeStyles-titleWrapper-12"
+        >
+          <mock-typography
+            variant="h2"
+          >
+            Recommended actions
+          </mock-typography>
+          <button
+            class="MuiButtonBase-root MuiIconButton-root"
+            style="padding: 0px;"
+            tabindex="0"
+            type="button"
+          >
+            <span
+              class="MuiIconButton-label"
+            >
+              <svg
+                aria-hidden="true"
+                class="MuiSvgIcon-root"
+                focusable="false"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm5 13.59L15.59 17 12 13.41 8.41 17 7 15.59 10.59 12 7 8.41 8.41 7 12 10.59 15.59 7 17 8.41 13.41 12 17 15.59z"
+                />
+              </svg>
+            </span>
+            <span
+              class="MuiTouchRipple-root"
+            />
+          </button>
+        </div>
+      </mock-dialogtitle>
+      <mock-dialogcontent
+        dividers="true"
+      >
+        <div
+          class="makeStyles-contentWrapper-13"
+        />
+      </mock-dialogcontent>
+      <mock-dialogactions
+        classname="makeStyles-dialogActionsWrapper-16"
+      >
+        <mock-button
+          classname="makeStyles-dialogButton-17"
+          starticon="[object Object]"
+          variant="outlined"
+        >
+          <mock-typography>
+            Close
+          </mock-typography>
+        </mock-button>
+      </mock-dialogactions>
+    </mock-dialog>
+    <div
+      class="makeStyles-districtViewWrapper-2"
+    >
+      <div
+        class="makeStyles-windowWrapper-18"
+      >
+        <div
+          style="text-align: center;"
+        >
+          <mock-typography
+            classname="makeStyles-headerText-24"
+            variant="h4"
+          >
+            Window 1
+          </mock-typography>
+        </div>
+        <div
+          class="makeStyles-tableWrapper-19"
+        >
+          <div
+            class="makeStyles-headRowWrapper-21"
+          >
+            <div
+              class="makeStyles-headColumn-22"
+            >
+              <mock-typography
+                classname="makeStyles-monthText-25"
+              >
+                Aug
+              </mock-typography>
+            </div>
+            <div
+              class="makeStyles-headColumn-22"
+            >
+              <mock-typography
+                classname="makeStyles-monthText-25"
+              >
+                Sep
+              </mock-typography>
+            </div>
+            <div
+              class="makeStyles-headColumn-22"
+            >
+              <mock-typography
+                classname="makeStyles-monthText-25"
+              >
+                Oct
+              </mock-typography>
+            </div>
+            <div
+              class="makeStyles-headColumn-22"
+            >
+              <mock-typography
+                classname="makeStyles-monthText-25"
+              >
+                Nov
+              </mock-typography>
+            </div>
+          </div>
+          <div
+            class="makeStyles-rowWrapper-20"
+          >
+            <div
+              class="makeStyles-column-23"
+            />
+            <div
+              class="makeStyles-column-23"
+            >
+              <div
+                class="makeStyles-iconWrapper-26"
+              >
+                <div
+                  class="makeStyles-iconWrapper-31"
+                  style="background: rgb(255, 213, 45);"
+                >
+                  <div
+                    class="makeStyles-centerContainer-32"
+                    style="border: 1px solid black; color: black;"
+                  >
+                    <div
+                      class="makeStyles-topTextContainer-33"
+                      style="border-bottom: 1px solid black; background: rgb(255, 213, 45);"
+                    >
+                      R
+                    </div>
+                    <div
+                      class="makeStyles-bottomTextContainer-34"
+                      style="background: rgb(255, 213, 45);"
+                    >
+                      MOD
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div
+              class="makeStyles-column-23"
+            >
+              <div
+                class="makeStyles-iconWrapper-26"
+              >
+                <div
+                  class="makeStyles-iconWrapper-31"
+                  style="background: rgb(255, 213, 45);"
+                >
+                  <div
+                    class="makeStyles-centerContainer-32"
+                    style="border: 1px solid black; color: black;"
+                  >
+                    <div
+                      class="makeStyles-topTextContainer-33"
+                      style="border-bottom: 1px solid black; background: rgb(255, 213, 45);"
+                    >
+                      R
+                    </div>
+                    <div
+                      class="makeStyles-bottomTextContainer-34"
+                      style="background: rgb(255, 213, 45);"
+                    >
+                      MOD
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div
+              class="makeStyles-column-23"
+            >
+              <div
+                class="makeStyles-iconWrapper-26"
+              >
+                <div
+                  class="makeStyles-iconWrapper-31"
+                  style="background: rgb(241, 241, 241);"
+                >
+                  <div
+                    class="makeStyles-centerContainer-32"
+                    style="border: 1px solid black; color: black;"
+                  >
+                    <div
+                      class="makeStyles-topTextContainer-33"
+                      style="border-bottom: 1px solid black; background: rgb(241, 241, 241);"
+                    >
+                      na
+                    </div>
+                    <div
+                      class="makeStyles-bottomTextContainer-34"
+                      style="background: rgb(241, 241, 241);"
+                    >
+                      MOD
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div
+            class="makeStyles-rowWrapper-20"
+          >
+            <div
+              class="makeStyles-column-23"
+            >
+              <div
+                class="makeStyles-iconWrapper-26"
+              >
+                <div
+                  class="makeStyles-iconWrapper-31"
+                  style="background: rgb(241, 241, 241);"
+                >
+                  <div
+                    class="makeStyles-centerContainer-32"
+                    style="border: 1px solid black; color: black;"
+                  >
+                    <div
+                      class="makeStyles-topTextContainer-33"
+                      style="border-bottom: 1px solid black; background: rgb(241, 241, 241);"
+                    >
+                      na
+                    </div>
+                    <div
+                      class="makeStyles-bottomTextContainer-34"
+                      style="background: rgb(241, 241, 241);"
+                    >
+                      MIL
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div
+              class="makeStyles-column-23"
+            >
+              <div
+                class="makeStyles-iconWrapper-26"
+              >
+                <div
+                  class="makeStyles-iconWrapper-31"
+                  style="background: rgb(241, 241, 241);"
+                >
+                  <div
+                    class="makeStyles-centerContainer-32"
+                    style="border: 1px solid black; color: black;"
+                  >
+                    <div
+                      class="makeStyles-topTextContainer-33"
+                      style="border-bottom: 1px solid black; background: rgb(241, 241, 241);"
+                    >
+                      na
+                    </div>
+                    <div
+                      class="makeStyles-bottomTextContainer-34"
+                      style="background: rgb(241, 241, 241);"
+                    >
+                      MIL
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div
+              class="makeStyles-column-23"
+            >
+              <div
+                class="makeStyles-iconWrapper-26"
+              >
+                <div
+                  class="makeStyles-iconWrapper-31"
+                  style="background: rgb(255, 252, 179);"
+                >
+                  <div
+                    class="makeStyles-centerContainer-32"
+                    style="border: 1px solid black; color: black;"
+                  >
+                    <div
+                      class="makeStyles-topTextContainer-33"
+                      style="border-bottom: 1px solid black; background: rgb(255, 252, 179);"
+                    >
+                      R
+                    </div>
+                    <div
+                      class="makeStyles-bottomTextContainer-34"
+                      style="background: rgb(255, 252, 179);"
+                    >
+                      MIL
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div
+              class="makeStyles-column-23"
+            >
+              <div
+                class="makeStyles-iconWrapper-26"
+              >
+                <div
+                  class="makeStyles-iconWrapper-31"
+                  style="background: rgb(255, 245, 3);"
+                >
+                  <div
+                    class="makeStyles-centerContainer-32"
+                    style="border: 1px solid black; color: black;"
+                  >
+                    <div
+                      class="makeStyles-topTextContainer-33"
+                      style="border-bottom: 1px solid black; background: rgb(255, 245, 3);"
+                    >
+                      S
+                    </div>
+                    <div
+                      class="makeStyles-bottomTextContainer-34"
+                      style="background: rgb(255, 245, 3);"
+                    >
+                      MIL
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="makeStyles-actionsWrapper-27"
+        >
+          <div
+            style="text-align: center;"
+          >
+            <mock-typography
+              variant="h3"
+            >
+              ACTIONS
+            </mock-typography>
+          </div>
+          <div
+            class="makeStyles-actionBoxesWrapper-28"
+          >
+            <button
+              class="makeStyles-actionBox-29"
+              id="2023-08-01"
+              style="justify-content: center; cursor: pointer;"
+              type="button"
+            >
+              <mock-tooltip
+                title="No anticipatory action linked to Mild levels"
+              >
+                <div>
+                  <svg
+                    aria-hidden="true"
+                    class="MuiSvgIcon-root"
+                    focusable="false"
+                    style="font-size: 1rem; color: darkgrey;"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      d="M19 13H5v-2h14v2z"
+                    />
+                  </svg>
+                </div>
+              </mock-tooltip>
+            </button>
+            <button
+              class="makeStyles-actionBox-29"
+              id="2023-09-01"
+              style="justify-content: center; cursor: pointer;"
+              type="button"
+            >
+              <mock-tooltip
+                title="Launch tenders and other procurement procedures"
+              >
+                <div>
+                  <svg
+                    aria-hidden="true"
+                    class="MuiSvgIcon-root"
+                    focusable="false"
+                    style="font-size: 1rem;"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      d="M22 11V3h-7v3H9V3H2v8h7V8h2v10h4v3h7v-8h-7v3h-2V8h2v3z"
+                    />
+                  </svg>
+                </div>
+              </mock-tooltip>
+            </button>
+            <button
+              class="makeStyles-actionBox-29"
+              id="2023-10-01"
+              style="justify-content: center; cursor: pointer;"
+              type="button"
+            >
+              <mock-tooltip
+                title="Launch tenders and other procurement procedures"
+              >
+                <div>
+                  <svg
+                    aria-hidden="true"
+                    class="MuiSvgIcon-root"
+                    focusable="false"
+                    style="font-size: 1rem;"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      d="M22 11V3h-7v3H9V3H2v8h7V8h2v10h4v3h7v-8h-7v3h-2V8h2v3z"
+                    />
+                  </svg>
+                </div>
+              </mock-tooltip>
+            </button>
+            <button
+              class="makeStyles-actionBox-29"
+              id="2023-11-01"
+              style="justify-content: center; cursor: pointer;"
+              type="button"
+            >
+              <mock-tooltip
+                title="No anticipatory action linked to Mild levels"
+              >
+                <div>
+                  <svg
+                    aria-hidden="true"
+                    class="MuiSvgIcon-root"
+                    focusable="false"
+                    style="font-size: 1rem; color: darkgrey;"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      d="M19 13H5v-2h14v2z"
+                    />
+                  </svg>
+                </div>
+              </mock-tooltip>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div
+    class="makeStyles-footerWrapper-3"
+  >
+    <div
+      class="makeStyles-footerActionsWrapper-4"
+    >
+      <mock-button
+        classname="makeStyles-footerButton-6"
+        fullwidth="true"
+        starticon="[object Object]"
+        variant="outlined"
+      >
+        <mock-typography>
+          Timeline
+        </mock-typography>
+      </mock-button>
+      <mock-button
+        classname="makeStyles-footerButton-6"
+        fullwidth="true"
+        starticon="[object Object]"
+        variant="outlined"
+      >
+        <mock-typography>
+          Forecast
+        </mock-typography>
+      </mock-button>
+      <mock-button
+        classname="makeStyles-footerButton-6"
+        fullwidth="true"
+        starticon="[object Object]"
+        variant="outlined"
+      >
+        <mock-typography>
+          Summary
+        </mock-typography>
+      </mock-button>
+    </div>
+    <div
+      class="makeStyles-footerDialogsWrapper-5"
+    >
+      <mock-typography
+        classname="makeStyles-footerDialog-7"
+        component="button"
+      >
+        How to read this screen
+      </mock-typography>
+    </div>
+  </div>
+</div>
+`;

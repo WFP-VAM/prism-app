@@ -1,5 +1,4 @@
 import { orderBy, snakeCase, values } from 'lodash';
-import { Map } from 'mapbox-gl';
 import { TFunction } from 'i18next';
 import { Dispatch } from 'redux';
 import { LayerDefinitions } from 'config/utils';
@@ -19,15 +18,17 @@ import { LocalError } from 'utils/error-utils';
 import { Column, quoteAndEscapeCell } from 'utils/analysis-utils';
 import { TableRow } from 'context/analysisResultStateSlice';
 import { AdminBoundaryParams, EWSParams } from 'context/datasetStateSlice';
+import { MapRef, Point } from 'react-map-gl/maplibre';
+import { PopupData } from 'context/tooltipStateSlice';
 import { getExtent } from './Layers/raster-utils';
 
-export const getActiveFeatureInfoLayers = (map: Map): WMSLayerProps[] => {
+// TODO: maplibre: fix feature
+export const getActiveFeatureInfoLayers = (features?: any): WMSLayerProps[] => {
   const matchStr = 'layer-';
   const layerIds =
-    map
-      .getStyle()
-      .layers?.filter(l => l.id.startsWith(matchStr))
-      .map(l => l.id.split(matchStr)[1]) ?? [];
+    features
+      ?.filter((feat: any) => feat?.layer?.id.startsWith(matchStr))
+      .map((feat: any) => feat.layer.id.split(matchStr)[1]) ?? [];
 
   if (layerIds.length === 0) {
     return [];
@@ -45,12 +46,12 @@ export const getActiveFeatureInfoLayers = (map: Map): WMSLayerProps[] => {
 };
 
 export const getFeatureInfoParams = (
-  map: Map,
-  evt: any,
+  map: MapRef,
+  point: Point,
   date: string,
 ): FeatureInfoType => {
-  const { x, y } = evt.point;
-  const bbox = getExtent(map);
+  const { x, y } = point;
+  const bbox = getExtent(map.getMap());
   const { clientWidth, clientHeight } = map.getContainer();
 
   const params = {
@@ -88,12 +89,11 @@ export const downloadToFile = (
   link.click();
 };
 
-export const buildCsvFileName = (items: string[]) => {
-  return items
+export const buildCsvFileName = (items: string[]) =>
+  items
     .filter(x => !!x)
     .map(snakeCase)
     .join('_');
-};
 
 const sortKeys = (featureInfoProps: FeatureInfoObject): string[][] => {
   const [dataKeys, metaDataKeys] = Object.entries(featureInfoProps).reduce(
@@ -137,8 +137,8 @@ const getData = (
 ) =>
   Object.keys(properties)
     .filter(prop => keys.includes(prop))
-    .reduce((obj, item) => {
-      return {
+    .reduce(
+      (obj, item) => ({
         ...obj,
         [featureInfoProps[item].dataTitle]: {
           data: formatFeatureInfo(
@@ -148,16 +148,18 @@ const getData = (
           ),
           coordinates,
         },
-      };
-    }, {});
+      }),
+      {},
+    );
 
+// TODO: maplibre: fix feature
 export function getFeatureInfoPropsData(
   featureInfoProps: FeatureInfoObject,
-  event: any,
-) {
+  coordinates: number[],
+  feature: any,
+): PopupData {
   const [keys, metaDataKeys] = sortKeys(featureInfoProps);
-  const { properties } = event.features[0];
-  const coordinates = event.lngLat;
+  const { properties } = feature;
 
   return {
     ...getMetaData(featureInfoProps, metaDataKeys, properties),
@@ -184,9 +186,8 @@ export const getLegendItemLabel = (
   return t(value);
 };
 
-export const generateUniqueTableKey = (activityName: string) => {
-  return `${activityName}_${Date.now()}`;
-};
+export const generateUniqueTableKey = (activityName: string) =>
+  `${activityName}_${Date.now()}`;
 
 export const checkLayerAvailableDatesAndContinueOrRemove = (
   layer: LayerType,
@@ -194,8 +195,11 @@ export const checkLayerAvailableDatesAndContinueOrRemove = (
   removeLayerFromUrl: (layerKey: UrlLayerKey, layerId: string) => void,
   dispatch: Dispatch,
 ) => {
-  const { serverLayerName } = layer as any;
-  if (serverAvailableDates[serverLayerName]?.length !== 0) {
+  const { id: layerId } = layer as any;
+  if (
+    serverAvailableDates[layerId]?.length !== 0 ||
+    layer.type === 'anticipatory_action'
+  ) {
     return;
   }
   const urlLayerKey = getUrlKey(layer);
@@ -215,16 +219,13 @@ export const checkLayerAvailableDatesAndContinueOrRemove = (
 const filterActiveGroupedLayers = (
   selectedLayer: LayerType,
   categoryLayer: LayerType,
-): boolean | undefined => {
-  return (
-    (categoryLayer?.group?.activateAll &&
-      categoryLayer?.group?.layers.some(
-        l => l.id === selectedLayer.id && l.main,
-      )) ||
-    (!categoryLayer?.group?.activateAll &&
-      categoryLayer?.group?.layers.some(l => l.id === selectedLayer.id))
-  );
-};
+): boolean | undefined =>
+  (categoryLayer?.group?.activateAll &&
+    categoryLayer?.group?.layers.some(
+      l => l.id === selectedLayer.id && l.main,
+    )) ||
+  (!categoryLayer?.group?.activateAll &&
+    categoryLayer?.group?.layers.some(l => l.id === selectedLayer.id));
 
 /**
  * Filters the active layers in the layers panel
@@ -233,12 +234,9 @@ const filterActiveGroupedLayers = (
 export const filterActiveLayers = (
   selectedLayer: LayerType,
   categoryLayer: LayerType,
-): boolean | undefined => {
-  return (
-    selectedLayer.id === categoryLayer.id ||
-    filterActiveGroupedLayers(selectedLayer, categoryLayer)
-  );
-};
+): boolean | undefined =>
+  selectedLayer.id === categoryLayer.id ||
+  filterActiveGroupedLayers(selectedLayer, categoryLayer);
 
 export const formatIntersectPercentageAttribute = (
   /* eslint-disable camelcase */
@@ -250,7 +248,7 @@ export const formatIntersectPercentageAttribute = (
 ) => {
   /* eslint-disable fp/no-mutation */
   let transformedData = data;
-  if (parseInt((data.intersect_percentage as unknown) as string, 10) >= 0) {
+  if (parseInt(data.intersect_percentage as unknown as string, 10) >= 0) {
     transformedData = {
       ...transformedData,
       intersect_percentage: 100 * ((data.intersect_percentage as number) || 0),
@@ -276,24 +274,21 @@ const getExposureAnalysisTableCellValue = (
   return quoteAndEscapeCell(value);
 };
 
-export const getExposureAnalysisColumnsToRender = (columns: Column[]) => {
-  return columns.reduce(
-    (acc: { [key: string]: string | number }, column: Column) => {
-      return {
-        ...acc,
-        [column.id]: column.label,
-      };
-    },
+export const getExposureAnalysisColumnsToRender = (columns: Column[]) =>
+  columns.reduce(
+    (acc: { [key: string]: string | number }, column: Column) => ({
+      ...acc,
+      [column.id]: column.label,
+    }),
     {},
   );
-};
 
 export const getExposureAnalysisTableDataRowsToRender = (
   columns: Column[],
   tableData: TableRow[],
-) => {
-  return tableData.map((tableRowData: TableRow) => {
-    return columns.reduce(
+) =>
+  tableData.map((tableRowData: TableRow) =>
+    columns.reduce(
       (acc: { [key: string]: string | number }, column: Column) => {
         const value = tableRowData[column.id];
         return {
@@ -302,17 +297,14 @@ export const getExposureAnalysisTableDataRowsToRender = (
         };
       },
       {},
-    );
-  });
-};
+    ),
+  );
 
 export const getExposureAnalysisTableData = (
   tableData: TableRow[],
   sortColumn: Column['id'],
   sortOrder: 'asc' | 'desc',
-) => {
-  return orderBy(tableData, sortColumn, sortOrder);
-};
+) => orderBy(tableData, sortColumn, sortOrder);
 
 export const isAdminBoundary = (
   params: AdminBoundaryParams | EWSParams,

@@ -159,9 +159,9 @@ def stats(stats_model: StatsModel) -> list[dict[str, Any]]:
         prefix="stats_",
         group_by=group_by,
         geojson_out=geojson_out,
-        wfs_response=frozenset(wfs_response.items())
-        if wfs_response is not None
-        else None,
+        wfs_response=(
+            frozenset(wfs_response.items()) if wfs_response is not None else None
+        ),
         intersect_comparison=intersect_comparison_tuple,
         mask_geotiff=mask_geotiff,
         mask_calc_expr=mask_calc_expr,
@@ -207,12 +207,12 @@ def get_acled_incidents(
 
 @app.get("/hdc")
 def wrap_get_hdc_stats(
-    level: str, admin_id: str, coverage: str, vam: str, start: str, end: str
+    level: str, id_code: str, coverage: str, vam: str, start: str, end: str
 ):
     return JSONResponse(
         content=get_hdc_stats(
             level=level,
-            admin_id=admin_id,
+            id_code=id_code,
             coverage=coverage,
             vam=vam,
             start=start,
@@ -401,7 +401,13 @@ def post_raster_geotiff(raster_geotiff: RasterGeotiffModel):
     )
     date_value = raster_geotiff.date
     band = raster_geotiff.band
-    presigned_download_url = get_geotiff(collection, bbox, date_value, band)
+    presigned_download_url = get_geotiff(
+        collection,
+        bbox,
+        date_value,
+        band,
+        filename_override=raster_geotiff.filename_override,
+    )
 
     return JSONResponse(
         content={"download_url": presigned_download_url}, status_code=200

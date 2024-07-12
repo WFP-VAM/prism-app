@@ -1,10 +1,11 @@
-import React, { useCallback, useEffect } from 'react';
+import { memo, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { GeoJSONLayer } from 'react-mapbox-gl';
+import { Source, Layer, MapLayerMouseEvent } from 'react-map-gl/maplibre';
 import {
   AdminLevelDataLayerProps,
   BoundaryLayerProps,
   LayerKey,
+  MapEventWrapFunctionProps,
 } from 'config/types';
 import { LayerData, loadLayerData } from 'context/layers/layer-data';
 import {
@@ -15,147 +16,111 @@ import { addLayer, removeLayer } from 'context/mapStateSlice';
 import { useDefaultDate } from 'utils/useDefaultDate';
 import { getBoundaryLayers, LayerDefinitions } from 'config/utils';
 import { addNotification } from 'context/notificationStateSlice';
-import { firstBoundaryOnView, isLayerOnView } from 'utils/map-utils';
-import { useSafeTranslation } from 'i18n';
+import {
+  firstBoundaryOnView,
+  getLayerMapId,
+  isLayerOnView,
+  useMapCallback,
+} from 'utils/map-utils';
 import { fillPaintData } from 'components/MapView/Layers/styles';
 import { availableDatesSelector } from 'context/serverStateSlice';
-import { getRequestDate } from 'utils/server-utils';
-import {
-  addPopupParams,
-  legendToStops,
-} from 'components/MapView/Layers/layer-utils';
-import { convertSvgToPngBase64Image, getSVGShape } from 'utils/image-utils';
+import { getPossibleDatesForLayer, getRequestDate } from 'utils/server-utils';
+import { addPopupParams } from 'components/MapView/Layers/layer-utils';
+import { FillLayerSpecification } from 'maplibre-gl';
+import { opacitySelector } from 'context/opacityStateSlice';
+import { addFillPatternImagesInMap } from './utils';
 
-function AdminLevelDataLayers({
-  layer,
-  before,
-}: {
-  layer: AdminLevelDataLayerProps;
-  before?: string;
-}) {
-  const dispatch = useDispatch();
-  const map = useSelector(mapSelector);
-  const serverAvailableDates = useSelector(availableDatesSelector);
+const onClick =
+  ({
+    layer,
+    dispatch,
+    t,
+  }: MapEventWrapFunctionProps<AdminLevelDataLayerProps>) =>
+  (evt: MapLayerMouseEvent) => {
+    addPopupParams(layer, dispatch, evt, t, true);
+  };
 
-  const boundaryId = layer.boundary || firstBoundaryOnView(map);
+const AdminLevelDataLayers = memo(
+  ({ layer, before }: { layer: AdminLevelDataLayerProps; before?: string }) => {
+    const dispatch = useDispatch();
+    const map = useSelector(mapSelector);
+    const serverAvailableDates = useSelector(availableDatesSelector);
 
-  const selectedDate = useDefaultDate(layer.id);
-  const layerAvailableDates = serverAvailableDates[layer.id];
-  const queryDate = getRequestDate(layerAvailableDates, selectedDate);
+    const boundaryId = layer.boundary || firstBoundaryOnView(map);
 
-  const layerData = useSelector(layerDataSelector(layer.id, queryDate)) as
-    | LayerData<AdminLevelDataLayerProps>
-    | undefined;
-  const { data } = layerData || {};
-  const { features } = data || {};
-  const { t } = useSafeTranslation();
-
-  const createFillPatternsForLayerLegends = useCallback(async () => {
-    return Promise.all(
-      legendToStops(layer.legend).map(async legendToStop => {
-        return convertSvgToPngBase64Image(
-          getSVGShape(legendToStop[1] as string, layer.fillPattern),
-        );
-      }),
+    const selectedDate = useDefaultDate(layer.id);
+    useMapCallback('click', getLayerMapId(layer.id), layer, onClick);
+    const layerAvailableDates = getPossibleDatesForLayer(
+      layer,
+      serverAvailableDates,
     );
-  }, [layer.fillPattern, layer.legend]);
+    const queryDate = getRequestDate(layerAvailableDates, selectedDate);
+    const opacityState = useSelector(opacitySelector(layer.id));
+    const layerData = useSelector(layerDataSelector(layer.id, queryDate)) as
+      | LayerData<AdminLevelDataLayerProps>
+      | undefined;
+    const { data } = layerData || {};
 
-  const addFillPatternImageInMap = useCallback(
-    (index: number, convertedImage?: string) => {
-      if (!map || !layer.fillPattern || !convertedImage) {
-        return;
-      }
-      map.loadImage(
-        convertedImage,
-        (
-          err: any,
-          image:
-            | HTMLImageElement
-            | ArrayBufferView
-            | {
-                width: number;
-                height: number;
-                data: Uint8Array | Uint8ClampedArray;
-              }
-            | ImageData
-            | ImageBitmap,
-        ) => {
-          // Throw an error if something goes wrong.
-          if (err) {
-            throw err;
+    useEffect(() => {
+      addFillPatternImagesInMap(layer, map);
+    }, [layer, map]);
+
+    useEffect(() => {
+      // before loading layer check if it has unique boundary?
+      const boundaryLayers = getBoundaryLayers();
+      const boundaryLayer = LayerDefinitions[
+        boundaryId as LayerKey
+      ] as BoundaryLayerProps;
+
+      if ('boundary' in layer) {
+        if (Object.keys(LayerDefinitions).includes(boundaryId)) {
+          boundaryLayers.map(l => dispatch(removeLayer(l)));
+          dispatch(addLayer({ ...boundaryLayer, isPrimary: true }));
+
+          // load unique boundary only once
+          // to avoid double loading which proven to be performance issue
+          if (!isLayerOnView(map, boundaryId)) {
+            dispatch(loadLayerData({ layer: boundaryLayer }));
           }
-          // Add the image to the map style.
-          map.addImage(`fill-pattern-${layer.id}-legend-${index}`, image);
-        },
-      );
-    },
-    [layer.fillPattern, layer.id, map],
-  );
-
-  const addFillPatternImagesInMap = useCallback(async () => {
-    const fillPatternsForLayer = await createFillPatternsForLayerLegends();
-    fillPatternsForLayer.forEach((base64Image, index) => {
-      addFillPatternImageInMap(index, base64Image);
-    });
-  }, [addFillPatternImageInMap, createFillPatternsForLayerLegends]);
-
-  useEffect(() => {
-    if (isLayerOnView(map, layer.id)) {
-      return;
-    }
-    addFillPatternImagesInMap();
-  }, [addFillPatternImagesInMap, layer.id, map]);
-
-  useEffect(() => {
-    // before loading layer check if it has unique boundary?
-    const boundaryLayers = getBoundaryLayers();
-    const boundaryLayer = LayerDefinitions[
-      boundaryId as LayerKey
-    ] as BoundaryLayerProps;
-
-    if ('boundary' in layer) {
-      if (Object.keys(LayerDefinitions).includes(boundaryId)) {
-        boundaryLayers.map(l => dispatch(removeLayer(l)));
-        dispatch(addLayer({ ...boundaryLayer, isPrimary: true }));
-
-        // load unique boundary only once
-        // to avoid double loading which proven to be performance issue
-        if (!isLayerOnView(map, boundaryId)) {
-          dispatch(loadLayerData({ layer: boundaryLayer }));
+        } else {
+          dispatch(
+            addNotification({
+              message: `Invalid unique boundary: ${boundaryId} for ${layer.id}`,
+              type: 'error',
+            }),
+          );
         }
-      } else {
-        dispatch(
-          addNotification({
-            message: `Invalid unique boundary: ${boundaryId} for ${layer.id}`,
-            type: 'error',
-          }),
-        );
       }
+      if (!data) {
+        dispatch(loadLayerData({ layer, date: queryDate }));
+      }
+    }, [boundaryId, dispatch, data, layer, map, queryDate]);
+
+    if (!data) {
+      return null;
     }
-    if (!features) {
-      dispatch(loadLayerData({ layer, date: queryDate }));
+
+    if (!isLayerOnView(map, boundaryId)) {
+      return null;
     }
-  }, [boundaryId, dispatch, features, layer, map, queryDate]);
 
-  if (!features) {
-    return null;
-  }
-
-  if (!isLayerOnView(map, boundaryId)) {
-    return null;
-  }
-
-  return (
-    <GeoJSONLayer
-      before={before || `layer-${boundaryId}-line`}
-      id={`layer-${layer.id}`}
-      data={features}
-      fillPaint={fillPaintData(layer, 'data', layer?.fillPattern)}
-      fillOnClick={async (evt: any) => {
-        addPopupParams(layer, dispatch, evt, t, true);
-      }}
-    />
-  );
-}
+    return (
+      <Source type="geojson" data={data}>
+        <Layer
+          id={getLayerMapId(layer.id)}
+          type="fill"
+          paint={
+            fillPaintData(
+              { ...layer, opacity: opacityState || layer.opacity },
+              'data',
+              layer?.fillPattern,
+            ) as FillLayerSpecification['paint']
+          }
+          beforeId={before || getLayerMapId(boundaryId)}
+        />
+      </Source>
+    );
+  },
+);
 
 export default AdminLevelDataLayers;

@@ -1,54 +1,72 @@
-import * as MapboxGL from 'mapbox-gl';
 import {
   CommonLayerProps,
   DataFieldType,
   LegendDefinitionItem,
   PointDataLayerProps,
 } from 'config/types';
+import { CircleLayerSpecification, FillLayerSpecification } from 'maplibre-gl';
 import { legendToStops } from './layer-utils';
 
-export const circleLayout: MapboxGL.CircleLayout = { visibility: 'visible' };
+export const circleLayout: CircleLayerSpecification['layout'] = {
+  visibility: 'visible',
+};
+
+const dataFieldColor = (
+  legend: LegendDefinitionItem[],
+  dataField: string,
+  dataFieldType?: DataFieldType,
+) =>
+  dataFieldType === DataFieldType.TEXT
+    ? [
+        'match',
+        ['get', dataField],
+        ...legend.reduce(
+          (acc: string[], legendItem: LegendDefinitionItem) => [
+            ...acc,
+            (legendItem.value || legendItem.label) as string,
+            legendItem.color as string,
+          ],
+          [],
+        ),
+        '#CCC',
+      ]
+    : {
+        property: dataField,
+        stops: legendToStops(legend),
+      };
 
 export const circlePaint = ({
   opacity,
   legend,
   dataField,
   dataFieldType,
-}: PointDataLayerProps): MapboxGL.CirclePaint => {
-  const circleColor =
-    dataFieldType === DataFieldType.TEXT
-      ? [
-          'match',
-          ['get', dataField],
-          ...legend.reduce(
-            (acc: string[], legendItem: LegendDefinitionItem) => [
-              ...acc,
-              legendItem.label as string,
-              legendItem.color as string,
-            ],
-            [],
-          ),
-          '#CCC',
-        ]
-      : {
-          property: dataField,
-          stops: legendToStops(legend),
-        };
-
+}: PointDataLayerProps): CircleLayerSpecification['paint'] => {
+  const circleColor = dataFieldColor(legend, dataField, dataFieldType);
   return {
-    'circle-radius': 8,
+    'circle-radius': 5,
     'circle-opacity': opacity || 0.3,
-    'circle-color': circleColor as MapboxGL.Expression,
+    'circle-color': circleColor as any,
   };
 };
+
+export const fillPaintCategorical = ({
+  opacity,
+  legend,
+  dataField,
+  dataFieldType,
+}: PointDataLayerProps): FillLayerSpecification['paint'] => ({
+  'fill-opacity': opacity || 0.5,
+  'fill-color': dataFieldColor(legend, dataField, dataFieldType) as any,
+});
 
 // We use the legend values from the config to define "intervals".
 export const fillPaintData = (
   { opacity, legend, id }: CommonLayerProps,
+  // eslint-disable-next-line default-param-last
   property: string = 'data',
   fillPattern?: 'right' | 'left',
-): MapboxGL.FillPaint => {
-  let fillPaint: MapboxGL.FillPaint = {
+): FillLayerSpecification['paint'] => {
+  let fillPaint: FillLayerSpecification['paint'] = {
     'fill-opacity': opacity || 0.3,
     'fill-color': {
       property,
@@ -56,7 +74,7 @@ export const fillPaintData = (
       type: 'interval',
     },
   };
-  if (fillPattern) {
+  if (fillPattern || legend?.some(l => l.fillPattern)) {
     // eslint-disable-next-line fp/no-mutation
     fillPaint = {
       ...fillPaint,
@@ -73,7 +91,8 @@ export const fillPaintData = (
           ],
           [],
         ),
-      ] as MapboxGL.Expression,
+        // TODO: maplibre: fix any
+      ] as any,
     };
   }
   return fillPaint;

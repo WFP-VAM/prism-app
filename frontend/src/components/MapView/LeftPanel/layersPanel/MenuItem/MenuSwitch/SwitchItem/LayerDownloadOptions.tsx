@@ -8,12 +8,12 @@ import {
 } from '@material-ui/core';
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import moment from 'moment';
 import { mapValues } from 'lodash';
 import GetAppIcon from '@material-ui/icons/GetApp';
 import {
   AdminLevelDataLayerProps,
   LayerKey,
+  LegendDefinitionItem,
   WMSLayerProps,
 } from 'config/types';
 import {
@@ -22,10 +22,6 @@ import {
 } from 'context/mapStateSlice/selectors';
 import { LayerData } from 'context/layers/layer-data';
 import { downloadToFile } from 'components/MapView/utils';
-import {
-  DEFAULT_DATE_FORMAT,
-  DEFAULT_DATE_FORMAT_SNAKE_CASE,
-} from 'utils/name-utils';
 import { castObjectsArrayToCsv } from 'utils/csv-utils';
 import {
   downloadGeotiff,
@@ -35,7 +31,9 @@ import { useSafeTranslation } from 'i18n';
 import { isExposureAnalysisLoadingSelector } from 'context/analysisResultStateSlice';
 import { availableDatesSelector } from 'context/serverStateSlice';
 import { getRequestDate } from 'utils/server-utils';
-import { LayerDefinitions } from 'config/utils';
+import { LayerDefinitions, getStacBand } from 'config/utils';
+import { getFormattedDate } from 'utils/date-utils';
+import { safeCountry } from 'config';
 
 // TODO - return early when the layer is not selected.
 function LayerDownloadOptions({
@@ -48,10 +46,8 @@ function LayerDownloadOptions({
   const dispatch = useDispatch();
   const layer = LayerDefinitions[layerId] || Object.values(LayerDefinitions)[0];
 
-  const [
-    downloadMenuAnchorEl,
-    setDownloadMenuAnchorEl,
-  ] = useState<HTMLElement | null>(null);
+  const [downloadMenuAnchorEl, setDownloadMenuAnchorEl] =
+    useState<HTMLElement | null>(null);
   const [isGeotiffLoading, setIsGeotiffLoading] = useState(false);
   const isAnalysisExposureLoading = useSelector(
     isExposureAnalysisLoadingSelector,
@@ -79,9 +75,7 @@ function LayerDownloadOptions({
   const getFilename = (): string => {
     const safeTitle = layer.title ?? layer.id;
     if (selectedDate && (layer as AdminLevelDataLayerProps).dates) {
-      const dateString = moment(selectedDate).format(
-        DEFAULT_DATE_FORMAT_SNAKE_CASE,
-      );
+      const dateString = getFormattedDate(selectedDate, 'snake');
       return `${safeTitle}_${dateString}`;
     }
     return safeTitle;
@@ -108,7 +102,7 @@ function LayerDownloadOptions({
     }
     const translatedColumnsNames = mapValues(
       adminLevelLayerData?.data.layerData[0],
-      (v, k) => (k === 'value' ? t(adminLevelLayerData.layer.id) : t(k)),
+      (_v, k) => (k === 'value' ? t(adminLevelLayerData.layer.id) : t(k)),
     );
     downloadToFile(
       {
@@ -127,22 +121,91 @@ function LayerDownloadOptions({
 
   const handleDownloadGeoTiff = (): void => {
     const { serverLayerName, additionalQueryParams } = layer as WMSLayerProps;
-    // TODO - figure out a way to leverage style to guess band?
-    const { band } =
-      (additionalQueryParams as {
-        styles?: string;
-        band?: string;
-      }) || {};
+    const band = getStacBand(additionalQueryParams);
+    const dateString = getFormattedDate(selectedDate, 'default') as string;
 
     setIsGeotiffLoading(true);
     downloadGeotiff(
       serverLayerName,
       band,
       extent,
-      moment(selectedDate).format(DEFAULT_DATE_FORMAT),
+      dateString,
+      `${safeCountry}_${layerId}_${dateString}.tif`,
       dispatch,
       () => setIsGeotiffLoading(false),
     );
+    handleDownloadMenuClose();
+  };
+
+  // Helper function to escape special XML characters
+  const escapeXml = (str: string): string =>
+    str.replace(/</g, '&lt;').replace(/>/g, '&gt;');
+
+  // Helper function to generate QML content from legend
+  const generateQmlContent = (
+    legend: LegendDefinitionItem[],
+    opacity: number = 1,
+    scalingFactor: number = 1,
+  ): string => {
+    let qml = `<!DOCTYPE qgis PUBLIC 'http://mrcc.com/qgis.dtd' 'SYSTEM'>
+<qgis hasScaleBasedVisibilityFlag="0" styleCategories="AllStyleCategories">
+    <pipe>
+        <rasterrenderer opacity="${opacity}" alphaBand="-1" band="1" classificationMin="-1" classificationMax="inf" type="singlebandpseudocolor">
+            <rasterTransparency />
+            <rastershader>
+                <colorrampshader colorRampType="DISCRETE" classificationMode="1" clip="0">`;
+    // Add color entries for each legend item
+    legend.forEach((item, index) => {
+      const label = item.label
+        ? escapeXml(item.label as string)
+        : item.value.toString();
+
+      // TEMPORARY: shift the value index by 1 to account for the 0 value
+      // and match the QML style format. See https://github.com/WFP-VAM/prism-app/pull/1161
+      const shouldShiftIndex =
+        (legend[0].value === 0 ||
+          (legend[0].label as string).includes('< -')) &&
+        ((legend[0].label as string)?.includes('<') ||
+          (legend[1].label as string)?.includes('<') ||
+          (legend[1].label as string)?.includes('-') ||
+          (legend[1].label as string)?.includes(' to '));
+
+      const value =
+        index < legend.length - 1
+          ? (legend[index + Number(shouldShiftIndex)]?.value as number) *
+            scalingFactor
+          : 'INF';
+      // eslint-disable-next-line fp/no-mutation
+      qml += `
+                    <item color="${item.color}" value="${value}" alpha="255" label="${label}" />`;
+    });
+
+    // End of QML file content
+    // eslint-disable-next-line fp/no-mutation
+    qml += `
+                </colorrampshader>
+            </rastershader>
+        </rasterrenderer>
+    </pipe>
+</qgis>`;
+
+    return qml;
+  };
+
+  const handleDownloadQmlStyle = (): void => {
+    const { legend, opacity, wcsConfig } = layer as WMSLayerProps;
+    const scalingFactor = wcsConfig?.scale ? 1 / Number(wcsConfig.scale) : 1;
+    const qmlContent = generateQmlContent(legend, opacity, scalingFactor);
+
+    downloadToFile(
+      {
+        content: qmlContent,
+        isUrl: false,
+      },
+      `${safeCountry}_${layerId}`,
+      'application/qml',
+    );
+
     handleDownloadMenuClose();
   };
 
@@ -154,7 +217,7 @@ function LayerDownloadOptions({
   return (
     <>
       {shouldShowDownloadButton && (
-        <Tooltip title="Download">
+        <Tooltip title={t('Download') as string}>
           <span>
             <IconButton
               disabled={!selected || isGeotiffLoading}
@@ -168,7 +231,12 @@ function LayerDownloadOptions({
       )}
       {isGeotiffLoading ||
         (isAnalysisExposureLoading && (
-          <Box display="flex" alignItems="center">
+          <Box
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+            }}
+          >
             <CircularProgress size="20px" />
           </Box>
         ))}
@@ -188,11 +256,14 @@ function LayerDownloadOptions({
           </MenuItem>,
         ]}
         {layer.type === 'wms' &&
-          layer.baseUrl.includes('api.earthobservation.vam.wfp.org/ows') && (
+          layer.baseUrl.includes('api.earthobservation.vam.wfp.org/ows') && [
             <MenuItem key="download-as-geotiff" onClick={handleDownloadGeoTiff}>
               {t('Download as GeoTIFF')}
-            </MenuItem>
-          )}
+            </MenuItem>,
+            <MenuItem key="download-style" onClick={handleDownloadQmlStyle}>
+              {t('Download QML Style')}
+            </MenuItem>,
+          ]}
       </Menu>
     </>
   );

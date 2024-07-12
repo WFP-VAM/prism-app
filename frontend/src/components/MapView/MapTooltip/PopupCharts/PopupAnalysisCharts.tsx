@@ -1,9 +1,6 @@
-import { WithStyles, createStyles, withStyles } from '@material-ui/core';
-import DownloadCsvButton from 'components/MapView/DownloadCsvButton';
+import { createStyles, makeStyles } from '@material-ui/core';
 import ChartSection from 'components/MapView/LeftPanel/ChartsPanel/ChartSection';
 import { oneYearInMs } from 'components/MapView/LeftPanel/utils';
-import { buildCsvFileName } from 'components/MapView/utils';
-import { appConfig } from 'config';
 import {
   AdminLevelType,
   BoundaryLayerProps,
@@ -17,11 +14,15 @@ import {
   dateRangeSelector,
   layerDataSelector,
 } from 'context/mapStateSlice/selectors';
-import React, { useRef } from 'react';
+import { useRef } from 'react';
 import { useSelector } from 'react-redux';
+import { appConfig } from 'config';
+import { useSafeTranslation } from 'i18n';
 import PopupChartWrapper from './PopupChartWrapper';
 
-const styles = () =>
+const { country } = appConfig;
+
+const useStyles = makeStyles(() =>
   createStyles({
     chartContainer: {
       display: 'flex',
@@ -33,9 +34,8 @@ const styles = () =>
       width: '400px',
       flexGrow: 1,
     },
-  });
-
-const { countryAdmin0Id, country, multiCountry } = appConfig;
+  }),
+);
 
 const boundaryLayer = getBoundaryLayersByAdminLevel();
 
@@ -57,23 +57,22 @@ const getProperties = (
   return features.properties;
 };
 
-interface PopupChartProps extends WithStyles<typeof styles> {
+interface PopupChartProps {
   filteredChartLayers: WMSLayerProps[];
   adminCode: AdminCodeString;
   adminSelectorKey: string;
   adminLevel: AdminLevelType;
-  onClose: React.Dispatch<React.SetStateAction<AdminLevelType | undefined>>;
   adminLevelsNames: () => string[];
 }
-const PopupAnalysisCharts = ({
+function PopupAnalysisCharts({
   filteredChartLayers,
   adminCode,
   adminSelectorKey,
   adminLevel,
-  onClose,
   adminLevelsNames,
-  classes,
-}: PopupChartProps) => {
+}: PopupChartProps) {
+  const classes = useStyles();
+  const { t } = useSafeTranslation();
   const dataForCsv = useRef<{ [key: string]: any[] }>({});
   const boundaryLayerData = useSelector(layerDataSelector(boundaryLayer.id)) as
     | LayerData<BoundaryLayerProps>
@@ -84,8 +83,12 @@ const PopupAnalysisCharts = ({
   const chartEndDate = selectedDate || new Date().getTime();
   const chartStartDate = chartEndDate - oneYearInMs;
 
+  if (filteredChartLayers.length < 1) {
+    return null;
+  }
+
   return (
-    <PopupChartWrapper onClose={onClose}>
+    <PopupChartWrapper>
       {filteredChartLayers.map(filteredChartLayer => (
         <div key={filteredChartLayer.id} className={classes.chartContainer}>
           <div className={classes.chartSection}>
@@ -100,24 +103,17 @@ const PopupAnalysisCharts = ({
               startDate={chartStartDate}
               endDate={chartEndDate}
               dataForCsv={dataForCsv}
+              chartProps={{
+                showDownloadIcons: true,
+                iconStyles: { color: 'white' },
+                downloadFilenamePrefix: [t(country), ...adminLevelsNames()],
+              }}
             />
           </div>
-          <DownloadCsvButton
-            filesData={[
-              {
-                fileName: buildCsvFileName([
-                  multiCountry ? countryAdmin0Id : country,
-                  ...adminLevelsNames(),
-                  filteredChartLayer.title,
-                ]),
-                data: dataForCsv,
-              },
-            ]}
-          />
         </div>
       ))}
     </PopupChartWrapper>
   );
-};
+}
 
-export default withStyles(styles)(PopupAnalysisCharts);
+export default PopupAnalysisCharts;

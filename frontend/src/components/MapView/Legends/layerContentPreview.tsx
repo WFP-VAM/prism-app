@@ -1,25 +1,28 @@
-import React, { useState, memo, useMemo, useCallback } from 'react';
+import { useState, memo, useMemo, useCallback } from 'react';
 import {
   IconButton,
   createStyles,
   Grid,
   Theme,
-  WithStyles,
-  withStyles,
+  makeStyles,
 } from '@material-ui/core';
 import InfoIcon from '@material-ui/icons/Info';
 import { useDispatch } from 'react-redux';
 import { LayerType } from 'config/types';
-import { LayerDefinitions } from 'config/utils';
+import { LayerDefinitions, getBoundaryLayerSingleton } from 'config/utils';
 import ContentDialog from 'components/NavBar/ContentDialog';
 import { loadLayerContent } from 'utils/load-layer-utils';
 
-const LayerContentPreview = memo(({ layerId, classes }: PreviewProps) => {
+const LayerContentPreview = memo(({ layerId }: PreviewProps) => {
+  const classes = useStyles();
   const [content, setContent] = useState<string | undefined>(undefined);
 
   const dispatch = useDispatch();
 
-  const layer = LayerDefinitions[layerId || 'admin_boundaries'];
+  const layer =
+    layerId === 'analysis' || !layerId
+      ? getBoundaryLayerSingleton()
+      : LayerDefinitions[layerId];
 
   const handleIconButtonClick = useCallback(async () => {
     if (!layer.contentPath) {
@@ -78,7 +81,7 @@ const LayerContentPreview = memo(({ layerId, classes }: PreviewProps) => {
   ]);
 });
 
-const styles = (theme: Theme) =>
+const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     icon: {
       top: '-4px',
@@ -92,10 +95,11 @@ const styles = (theme: Theme) =>
       fontWeight: 'bold',
       minWidth: '600px',
     },
-  });
+  }),
+);
 
-export interface PreviewProps extends WithStyles<typeof styles> {
-  layerId?: LayerType['id'];
+export interface PreviewProps {
+  layerId: LayerType['id'] | 'analysis';
 }
 
-export default withStyles(styles)(LayerContentPreview);
+export default LayerContentPreview;

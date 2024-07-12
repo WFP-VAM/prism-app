@@ -1,5 +1,5 @@
 {
-  "admin_boundaries": {
+  "admin3_boundaries": {
     "type": "boundary",
     "path": "data/cambodia/khm_bnd_admin3_gov_ed2022_w_dataviz.json",
     "opacity": 0.8,
@@ -97,7 +97,7 @@
         "color": "#a63603"
       }
     ],
-    "legend_text": "This layer shows number of households of IDPoor level 1 and 2 at commune level"
+    "legend_text": "Number of households of IDPoor level 1 and 2 at commune level"
   },
   "idpoor_1": {
     "title": "IDPoor Level 1",
@@ -140,7 +140,7 @@
         "color": "#a63603"
       }
     ],
-    "legend_text": "This layer shows number of households of IDPoor level 1 at commune level"
+    "legend_text": "Number of households of IDPoor level 1 at commune level"
   },
   "idpoor_2": {
     "title": "IDPoor Level 2",
@@ -183,7 +183,7 @@
         "color": "#a63603"
       }
     ],
-    "legend_text": "This layer shows number of households of IDPoor level 2 at commune level"
+    "legend_text": "Number of households of IDPoor level 2 at commune level"
   },
   "flood_hazard": {
     "title": "Flood hazard index",
@@ -251,7 +251,7 @@
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
     "opacity": 0.7,
-    "legend_text": "Estimate of precipitation over a 10-day period derived from CHIRPS (UCSB Climate Hazards Group). https://www.chc.ucsb.edu/data/chirps",
+    "legend_text": "Estimate of precipitation over a 10-day period derived from [CHIRPS (UCSB Climate Hazards Group)](https://www.chc.ucsb.edu/data/chirps).",
     "legend": [
       { "value": 0, "label": "0 mm", "color": "#fafafa" },
       { "value": 0.01, "label": "1-2 mm", "color": "#fffadf" },
@@ -280,7 +280,10 @@
     },
     "chart_data": {
       "fields": [
-        { "key": "rfq", "label": "Rainfall anomaly", "color": "#375692",
+        {
+          "key": "rfq",
+          "label": "Rainfall anomaly",
+          "color": "#375692",
           "minValue": 0,
           "maxValue": 300
         },
@@ -309,7 +312,7 @@
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
     "opacity": 0.7,
-    "legend_text": "10-day precipitation anomaly compared to the long term average. Derived from CHIRPS (UCSB Climate Hazards Group). https://www.chc.ucsb.edu/data/chirps",
+    "legend_text": "10-day precipitation anomaly compared to the long term average. Derived from [CHIRPS (UCSB Climate Hazards Group)](https://www.chc.ucsb.edu/data/chirps).",
     "legend": [
       { "value": 0, "label": "< 20%", "color": "#8c4800" },
       { "value": 20, "label": "20-40%", "color": "#af6b27" },
@@ -361,7 +364,7 @@
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
     "opacity": 0.7,
-    "legend_text": "Monthly precipitation anomaly compared to the long term average. Derived from CHIRPS (UCSB Climate Hazards Group). https://www.chc.ucsb.edu/data/chirps",
+    "legend_text": "Monthly precipitation anomaly compared to the long term average. Derived from [CHIRPS (UCSB Climate Hazards Group)](https://www.chc.ucsb.edu/data/chirps).",
     "legend": [
       { "value": 0, "label": "< 20%", "color": "#8c4800" },
       { "value": 20, "label": "20-40%", "color": "#af6b27" },
@@ -413,7 +416,7 @@
     },
     "date_interval": "days",
     "opacity": 0.7,
-    "legend_text": "3-month precipitation anomaly compared to the long term average. Derived from CHIRPS (UCSB Climate Hazards Group). https://www.chc.ucsb.edu/data/chirps",
+    "legend_text": "3-month precipitation anomaly compared to the long term average. Derived from [CHIRPS (UCSB Climate Hazards Group)](https://www.chc.ucsb.edu/data/chirps).",
     "legend": [
       { "value": 0, "label": "< 20%", "color": "#8c4800" },
       { "value": 20, "label": "20-40%", "color": "#af6b27" },
@@ -441,7 +444,7 @@
     },
     "date_interval": "days",
     "opacity": 0.7,
-    "legend_text": "6-month precipitation anomaly compared to the long term average. Derived from CHIRPS (UCSB Climate Hazards Group). https://www.chc.ucsb.edu/data/chirps",
+    "legend_text": "6-month precipitation anomaly compared to the long term average. Derived from [CHIRPS (UCSB Climate Hazards Group)](https://www.chc.ucsb.edu/data/chirps).",
     "legend": [
       { "value": 0, "label": "< 50%", "color": "#8c4800" },
       { "value": 50, "label": "50-60%", "color": "#af6b27" },
@@ -469,7 +472,7 @@
     },
     "date_interval": "days",
     "opacity": 0.7,
-    "legend_text": "9-month precipitation anomaly compared to the long term average. Derived from CHIRPS (UCSB Climate Hazards Group). https://www.chc.ucsb.edu/data/chirps",
+    "legend_text": "9-month precipitation anomaly compared to the long term average. Derived from [CHIRPS (UCSB Climate Hazards Group)](https://www.chc.ucsb.edu/data/chirps).",
     "legend": [
       { "value": 0, "label": "< 50%", "color": "#8c4800" },
       { "value": 50, "label": "50-60%", "color": "#af6b27" },
@@ -497,7 +500,7 @@
     },
     "date_interval": "days",
     "opacity": 0.7,
-    "legend_text": "1-year precipitation anomaly compared to the long term average. Derived from CHIRPS (UCSB Climate Hazards Group). https://www.chc.ucsb.edu/data/chirps",
+    "legend_text": "1-year precipitation anomaly compared to the long term average. Derived from [CHIRPS (UCSB Climate Hazards Group)](https://www.chc.ucsb.edu/data/chirps).",
     "legend": [
       { "value": 0, "label": "< 50%", "color": "#8c4800" },
       { "value": 50, "label": "50-60%", "color": "#af6b27" },
@@ -544,7 +547,7 @@
     },
     "date_interval": "days",
     "opacity": 0.7,
-    "legend_text": "Total aggregate precipitation over a 1-month period, rolling every 10 days. Derived from CHIRPS (UCSB Climate Hazards Group). https://www.chc.ucsb.edu/data/chirps",
+    "legend_text": "Total aggregate precipitation over a 1-month period, rolling every 10 days. Derived from [CHIRPS (UCSB Climate Hazards Group)](https://www.chc.ucsb.edu/data/chirps).",
     "legend": [
       { "value": 0, "label": "0 mm", "color": "#fafafa" },
       { "value": 0.01, "label": "1-5 mm", "color": "#fffadf" },
@@ -1647,7 +1650,7 @@
     "loader": "ews",
     "type": "point_data",
     "data": "https://sensors.ews1294.com/api/v1",
-    "date_url": "",
+    "date_url": "active",
     "feature_info_props": {
       "status": {
         "type": "labelMapping",
@@ -1956,6 +1959,7 @@
     "aggregation": "pixel",
     "interval": "1-month",
     "date_type": "continuous",
+    "date_layer": "spi_1m",
     "start_date": "2020-01-01",
     "end_date": "",
     "opacity": 0.8

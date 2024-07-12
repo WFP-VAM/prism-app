@@ -1,12 +1,10 @@
-import React, { memo, useMemo } from 'react';
+import { memo, useMemo } from 'react';
 import {
-  createStyles,
   Grid,
   Typography,
   Accordion,
   AccordionDetails,
   AccordionSummary,
-  makeStyles,
 } from '@material-ui/core';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { useSelector } from 'react-redux';
@@ -17,34 +15,10 @@ import { Extent } from 'components/MapView/Layers/raster-utils';
 import { layersSelector } from 'context/mapStateSlice/selectors';
 import { filterActiveLayers } from 'components/MapView/utils';
 import SelectedLayersInformation from './SelectedLayersInformation';
-
-const useStyles = makeStyles(() =>
-  createStyles({
-    root: {
-      position: 'inherit',
-    },
-    rootSummary: {
-      backgroundColor: '#D8E9EC',
-    },
-    rootDetails: {
-      padding: 0,
-    },
-    expandIcon: {
-      color: '#53888F',
-    },
-    summaryContent: {
-      alignItems: 'center',
-    },
-    title: {
-      color: '#53888F',
-      fontWeight: 600,
-    },
-  }),
-);
+import { useLayerMenuItemStyles } from './utils';
 
 interface MenuItemProps {
   title: string;
-  icon: string;
   layersCategories: LayersCategoryType[];
   extent?: Extent;
 }
@@ -52,12 +26,10 @@ interface MenuItemProps {
 const MenuItem = memo(({ title, layersCategories, extent }: MenuItemProps) => {
   const { t } = useSafeTranslation();
   const selectedLayers = useSelector(layersSelector);
-  const classes = useStyles();
+  const classes = useLayerMenuItemStyles();
 
   const categoryLayers = layersCategories
-    .map(layerCategory => {
-      return layerCategory.layers;
-    })
+    .map(layerCategory => layerCategory.layers)
     .flat();
 
   const selectedCategoryLayers = useMemo(
@@ -71,7 +43,11 @@ const MenuItem = memo(({ title, layersCategories, extent }: MenuItemProps) => {
   );
 
   return (
-    <Accordion elevation={0} classes={{ root: classes.root }}>
+    <Accordion
+      elevation={0}
+      classes={{ root: classes.root }}
+      TransitionProps={{ unmountOnExit: true }}
+    >
       <AccordionSummary
         expandIcon={<ExpandMoreIcon />}
         classes={{
@@ -88,7 +64,7 @@ const MenuItem = memo(({ title, layersCategories, extent }: MenuItemProps) => {
         />
       </AccordionSummary>
       <AccordionDetails classes={{ root: classes.rootDetails }}>
-        <Grid container direction="column">
+        <Grid container direction="column" wrap="nowrap">
           {layersCategories.map((layerCategory: LayersCategoryType) => (
             <MenuSwitch
               key={layerCategory.title}

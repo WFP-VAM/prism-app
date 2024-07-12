@@ -1,24 +1,26 @@
-import React, { memo, useCallback, useMemo, useState } from 'react';
-import { useSelector } from 'react-redux';
-import { Popup } from 'react-mapbox-gl';
+import { memo, useCallback, useMemo, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { Popup } from 'react-map-gl/maplibre';
 import {
   createStyles,
-  withStyles,
-  WithStyles,
   Typography,
+  IconButton,
+  makeStyles,
 } from '@material-ui/core';
-import { tooltipSelector } from 'context/tooltipStateSlice';
+import { hidePopup, tooltipSelector } from 'context/tooltipStateSlice';
 import { isEnglishLanguageSelected, useSafeTranslation } from 'i18n';
 import { AdminLevelType } from 'config/types';
 import { appConfig } from 'config';
 import Loader from 'components/Common/Loader';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faTimes } from '@fortawesome/free-solid-svg-icons';
 import PopupCharts from './PopupCharts';
 import RedirectToDMP from './RedirectToDMP';
 import PopupContent from './PopupContent';
 import PopupPointDataChart from './PointDataChart/PopupPointDataChart';
 import usePointDataChart from './PointDataChart/usePointDataChart';
 
-const styles = () =>
+const useStyles = makeStyles(() =>
   createStyles({
     phasePopulationTable: {
       tableLayout: 'fixed',
@@ -40,7 +42,7 @@ const styles = () =>
       marginBottom: '4px',
     },
     popup: {
-      '& div.mapboxgl-popup-content': {
+      '& div.maplibregl-popup-content': {
         background: 'black',
         color: 'white',
         padding: '5px 5px 5px 5px',
@@ -48,21 +50,28 @@ const styles = () =>
         maxHeight: '400px',
         overflow: 'auto',
       },
-      '& div.mapboxgl-popup-tip': {
+      '& div.maplibregl-popup-tip': {
         'border-top-color': 'black',
         'border-bottom-color': 'black',
       },
     },
-  });
+    closeButton: {
+      color: 'white',
+      position: 'absolute',
+      right: 0,
+      top: 0,
+    },
+  }),
+);
 
 const { multiCountry } = appConfig;
 const availableAdminLevels: AdminLevelType[] = multiCountry
   ? [0, 1, 2]
   : [1, 2];
 
-interface TooltipProps extends WithStyles<typeof styles> {}
-
-const MapTooltip = ({ classes }: TooltipProps) => {
+const MapTooltip = memo(() => {
+  const classes = useStyles();
+  const dispatch = useDispatch();
   const popup = useSelector(tooltipSelector);
   const { i18n } = useSafeTranslation();
   const [popupTitle, setPopupTitle] = useState<string>('');
@@ -81,7 +90,7 @@ const MapTooltip = ({ classes }: TooltipProps) => {
 
   const popupData = popup.data;
 
-  // TODO - simplify logic once we revamp admin levels ojbect
+  // TODO - simplify logic once we revamp admin levels object
   const adminLevelsNames = useCallback(() => {
     const locationName = isEnglishLanguageSelected(i18n)
       ? popup.locationName
@@ -101,23 +110,39 @@ const MapTooltip = ({ classes }: TooltipProps) => {
     return null;
   }
 
+  const key = JSON.stringify(popup.coordinates);
+
   if (dataset) {
     return (
       <Popup
-        coordinates={popup.coordinates}
+        key={key}
+        latitude={popup.coordinates?.[1]}
+        longitude={popup.coordinates?.[0]}
         className={classes.popup}
-        style={{ zIndex: 5 }}
+        style={{ zIndex: 5, maxWidth: 'none' }}
+        closeButton={false}
       >
-        <PopupPointDataChart adminLevelsNames={() => [...adminLevelsNames()]} />
+        <IconButton
+          aria-label="close"
+          className={classes.closeButton}
+          onClick={() => dispatch(hidePopup())}
+          size="small"
+        >
+          <FontAwesomeIcon icon={faTimes} style={{ paddingRight: '3px' }} />
+        </IconButton>
+        <PopupPointDataChart />
       </Popup>
     );
   }
 
   return (
     <Popup
-      coordinates={popup.coordinates}
+      key={key}
+      latitude={popup.coordinates?.[1]}
+      longitude={popup.coordinates?.[0]}
       className={classes.popup}
-      style={{ zIndex: 5 }}
+      style={{ zIndex: 5, maxWidth: 'none' }}
+      closeButton={false}
     >
       {adminLevel === undefined && (
         <RedirectToDMP
@@ -131,6 +156,16 @@ const MapTooltip = ({ classes }: TooltipProps) => {
       {adminLevel === undefined && (
         <PopupContent popupData={popupData} coordinates={popup.coordinates} />
       )}
+      {availableAdminLevels.length > 0 && adminLevel !== undefined && (
+        <IconButton
+          aria-label="close"
+          className={classes.closeButton}
+          onClick={() => setAdminLevel(undefined)}
+          size="small"
+        >
+          <FontAwesomeIcon icon={faTimes} style={{ paddingRight: '3px' }} />
+        </IconButton>
+      )}
       <PopupCharts
         setPopupTitle={setPopupTitle}
         adminCode={popup.locationAdminCode}
@@ -143,6 +178,6 @@ const MapTooltip = ({ classes }: TooltipProps) => {
       <Loader showLoader={popup.wmsGetFeatureInfoLoading} />
     </Popup>
   );
-};
+});
 
-export default memo(withStyles(styles)(MapTooltip));
+export default MapTooltip;

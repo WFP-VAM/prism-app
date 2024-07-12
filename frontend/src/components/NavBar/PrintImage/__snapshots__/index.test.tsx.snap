@@ -5,27 +5,35 @@ exports[`renders as expected 1`] = `
   <div
     style="padding-top: 4px;"
   >
-    <mock-button
-      style="background-color: transparent;"
+    <button
+      class="MuiButtonBase-root MuiIconButton-root"
+      style="background-color: transparent; color: white;"
+      tabindex="0"
+      type="button"
     >
-      <svg
-        aria-hidden="true"
-        class="MuiSvgIcon-root MuiSvgIcon-fontSizeSmall"
-        focusable="false"
-        style="padding-right: 0.2em;"
-        viewBox="0 0 24 24"
+      <span
+        class="MuiIconButton-label"
       >
-        <path
-          d="M19 8H5c-1.66 0-3 1.34-3 3v6h4v4h12v-4h4v-6c0-1.66-1.34-3-3-3zm-3 11H8v-5h8v5zm3-7c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1zm-1-9H6v4h12V3z"
-        />
-      </svg>
-      <mock-typography
-        classname="PrintImage-printText-1"
-        variant="body2"
-      >
-        Print
-      </mock-typography>
-    </mock-button>
+        <svg
+          aria-hidden="true"
+          class="MuiSvgIcon-root"
+          focusable="false"
+          viewBox="0 0 24 24"
+        >
+          <path
+            d="M19 8h-1V3H6v5H5c-1.66 0-3 1.34-3 3v6h4v4h12v-4h4v-6c0-1.66-1.34-3-3-3zM8 5h8v3H8V5zm8 12v2H8v-4h8v2zm2-2v-2H6v2H4v-4c0-.55.45-1 1-1h14c.55 0 1 .45 1 1v4h-2z"
+          />
+          <circle
+            cx="18"
+            cy="11.5"
+            r="1"
+          />
+        </svg>
+      </span>
+      <span
+        class="MuiTouchRipple-root"
+      />
+    </button>
   </div>
   <mock-dialog
     aria-labelledby="dialog-preview"
@@ -33,189 +41,939 @@ exports[`renders as expected 1`] = `
     maxwidth="xl"
     open="false"
   >
-    <mock-dialogtitle
-      classname="DownloadImage-title-2"
-      id="dialog-preview"
+    <mock-dialogcontent
+      classname="makeStyles-contentContainer-1"
     >
-      Map Preview
-      <button
-        class="MuiButtonBase-root MuiIconButton-root DownloadImage-closeButton-6"
-        tabindex="0"
-        type="button"
-      >
-        <span
-          class="MuiIconButton-label"
-        >
-          <svg
-            aria-hidden="true"
-            class="MuiSvgIcon-root"
-            focusable="false"
-            viewBox="0 0 24 24"
-          >
-            <path
-              d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"
-            />
-          </svg>
-        </span>
-        <span
-          class="MuiTouchRipple-root"
-        />
-      </button>
-    </mock-dialogtitle>
-    <mock-dialogcontent>
       <div
-        class="MuiGrid-root MuiGrid-container"
+        class="makeStyles-previewContainer-10"
       >
         <div
-          class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-10"
-          id="canvas-preview-container"
-        />
-        <div
-          class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-true"
+          style="width: 100%; height: 100%;"
         >
           <div
-            class="MuiBox-root MuiBox-root-7"
+            style="position: relative; z-index: 3; border: 1px solid black; height: 100%; width: 100%;"
           >
             <div
-              class="MuiBox-root MuiBox-root-8 DownloadImage-title-2"
+              class="makeStyles-printContainer-4"
             >
-              Map Options
+              <img
+                alt="northArrow"
+                src="./images/icon_north_arrow.png"
+                style="position: absolute; z-index: 3; width: 50px; bottom: 60px; right: 10px;"
+              />
+              <div
+                class="makeStyles-titleOverlay-6"
+                style="min-height: 32px;"
+              >
+                <img
+                  alt="logo"
+                  src="images/moz-flag-inam-logo.png"
+                  style="position: absolute; z-index: 2; height: 32px; left: 8px; display: flex; justify-content: flex-start;"
+                />
+                <mock-typography
+                  style="max-width: calc(100% - 256px);"
+                  variant="h6"
+                >
+                  Mozambique
+                </mock-typography>
+              </div>
+              <div
+                class="makeStyles-footerOverlay-7"
+              >
+                <mock-typography
+                  style="font-size: 12px;"
+                >
+                  Publication date: 2018-07-02. Layer selection date: 2018-07-02.
+                </mock-typography>
+              </div>
+              <div
+                style="position: absolute; z-index: 2; top: 0px; left: 8px; display: flex; justify-content: flex-start; width: 20px; transform: scale(1);"
+              >
+                <mock-list
+                  classname="makeStyles-legendListStyle-8"
+                  disablepadding="true"
+                />
+              </div>
+              <div
+                class="makeStyles-mapContainer-5"
+              />
             </div>
-            <label
-              class="MuiFormControlLabel-root"
-            >
-              <mock-switch
-                checked="true"
-                color="primary"
-                name="legend"
-              />
-              <mock-typography
-                classname="MuiFormControlLabel-label"
-                component="span"
-              >
-                <mock-typography
-                  variant="h4"
-                >
-                  Legend
-                </mock-typography>
-              </mock-typography>
-            </label>
-            <label
-              class="MuiFormControlLabel-root"
-            >
-              <mock-switch
-                checked="true"
-                color="primary"
-                name="fullLayerDescription"
-              />
-              <mock-typography
-                classname="MuiFormControlLabel-label"
-                component="span"
-              >
-                <mock-typography
-                  variant="h4"
-                >
-                  Full Layer Description
-                </mock-typography>
-              </mock-typography>
-            </label>
-            <label
-              class="MuiFormControlLabel-root"
-            >
-              <mock-switch
-                checked="true"
-                color="primary"
-                name="footer"
-              />
-              <mock-typography
-                classname="MuiFormControlLabel-label"
-                component="span"
-              >
-                <mock-typography
-                  variant="h4"
-                >
-                  Footer Text
-                </mock-typography>
-              </mock-typography>
-            </label>
-            <mock-button
-              classname="DownloadImage-editFooterButton-5"
-              color="primary"
-              disabled="false"
-              endicon="[object Object]"
-              variant="contained"
-            >
-              Edit Footer Text
-            </mock-button>
-            <mock-button
-              classname="DownloadImage-gutter-4"
-              color="primary"
-              disabled="true"
-              endicon="[object Object]"
-              variant="contained"
-            >
-              Refresh Image
-            </mock-button>
-            <mock-button
-              classname="DownloadImage-gutter-4"
-              color="primary"
-              endicon="[object Object]"
-              variant="contained"
-            >
-              Download
-            </mock-button>
-            <mock-menu
-              keepmounted="true"
-              open="false"
-            >
-              <mock-menuitem>
-                Download PNG
-              </mock-menuitem>
-              <mock-menuitem>
-                Download JPEG
-              </mock-menuitem>
-              <mock-menuitem>
-                Download PDF
-              </mock-menuitem>
-            </mock-menu>
           </div>
         </div>
       </div>
-    </mock-dialogcontent>
-  </mock-dialog>
-  <mock-dialog
-    maxwidth="xl"
-    open="false"
-  >
-    <mock-dialogtitle
-      classname="makeStyles-title-9"
-    >
-      Edit Footer Text
-    </mock-dialogtitle>
-    <mock-dialogcontent
-      style="width: 40rem;"
-    >
-      <mock-textfield
-        fullwidth="true"
-        inputprops="[object Object]"
-        maxrows="4"
-        multiline="true"
-        value="Layers represent data on 2018-07-02.  The designations employed and the presentation of material in the map(s) do not imply the expression of any opinion on the part of WFP concerning the legal of constitutional status of any country, territory, city, or sea, or concerning the delimitation of its frontiers or boundaries."
-        variant="outlined"
-      />
-    </mock-dialogcontent>
-    <mock-dialogactions>
-      <mock-button
-        color="secondary"
+      <div
+        class="MuiBox-root MuiBox-root-20"
+        style="overflow: scroll;"
       >
-        Cancel
-      </mock-button>
-      <mock-button
-        color="primary"
-      >
-        Ok
-      </mock-button>
-    </mock-dialogactions>
+        <div
+          class="makeStyles-optionsContainer-14"
+        >
+          <div>
+            <div
+              class="MuiBox-root MuiBox-root-21 makeStyles-title-11"
+              style="font-size: 14px; font-weight: 900; margin-bottom: 1em;"
+            >
+              Map Options
+            </div>
+            <button
+              class="MuiButtonBase-root MuiIconButton-root makeStyles-closeButton-13"
+              tabindex="0"
+              type="button"
+            >
+              <span
+                class="MuiIconButton-label"
+              >
+                <svg
+                  aria-hidden="true"
+                  class="MuiSvgIcon-root"
+                  focusable="false"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm5 13.59L15.59 17 12 13.41 8.41 17 7 15.59 10.59 12 7 8.41 8.41 7 12 10.59 15.59 7 17 8.41 13.41 12 17 15.59z"
+                  />
+                </svg>
+              </span>
+              <span
+                class="MuiTouchRipple-root"
+              />
+            </button>
+          </div>
+          <div
+            class="makeStyles-optionWrap-15"
+          >
+            <mock-textfield
+              fullwidth="true"
+              inputprops="[object Object]"
+              placeholder="Title"
+              size="small"
+              variant="outlined"
+            />
+          </div>
+          <div
+            class="makeStyles-wrapper-22"
+          >
+            <mock-typography
+              style="margin-right: 0.5rem;"
+              variant="h4"
+            >
+              Map Width
+            </mock-typography>
+            <div
+              class="MuiToggleButtonGroup-root makeStyles-buttonGroup-23"
+              role="group"
+            >
+              <button
+                aria-pressed="false"
+                class="MuiButtonBase-root MuiToggleButton-root MuiToggleButtonGroup-grouped MuiToggleButtonGroup-groupedHorizontal makeStyles-button-24"
+                tabindex="0"
+                type="button"
+                value="50"
+              >
+                <span
+                  class="MuiToggleButton-label"
+                >
+                  <div>
+                    50%
+                  </div>
+                </span>
+                <span
+                  class="MuiTouchRipple-root"
+                />
+              </button>
+              <button
+                aria-pressed="false"
+                class="MuiButtonBase-root MuiToggleButton-root MuiToggleButtonGroup-grouped MuiToggleButtonGroup-groupedHorizontal makeStyles-button-24"
+                tabindex="0"
+                type="button"
+                value="60"
+              >
+                <span
+                  class="MuiToggleButton-label"
+                >
+                  <div>
+                    60%
+                  </div>
+                </span>
+                <span
+                  class="MuiTouchRipple-root"
+                />
+              </button>
+              <button
+                aria-pressed="false"
+                class="MuiButtonBase-root MuiToggleButton-root MuiToggleButtonGroup-grouped MuiToggleButtonGroup-groupedHorizontal makeStyles-button-24"
+                tabindex="0"
+                type="button"
+                value="70"
+              >
+                <span
+                  class="MuiToggleButton-label"
+                >
+                  <div>
+                    70%
+                  </div>
+                </span>
+                <span
+                  class="MuiTouchRipple-root"
+                />
+              </button>
+              <button
+                aria-pressed="false"
+                class="MuiButtonBase-root MuiToggleButton-root MuiToggleButtonGroup-grouped MuiToggleButtonGroup-groupedHorizontal makeStyles-button-24"
+                tabindex="0"
+                type="button"
+                value="80"
+              >
+                <span
+                  class="MuiToggleButton-label"
+                >
+                  <div>
+                    80%
+                  </div>
+                </span>
+                <span
+                  class="MuiTouchRipple-root"
+                />
+              </button>
+              <button
+                aria-pressed="false"
+                class="MuiButtonBase-root MuiToggleButton-root MuiToggleButtonGroup-grouped MuiToggleButtonGroup-groupedHorizontal makeStyles-button-24"
+                tabindex="0"
+                type="button"
+                value="90"
+              >
+                <span
+                  class="MuiToggleButton-label"
+                >
+                  <div>
+                    90%
+                  </div>
+                </span>
+                <span
+                  class="MuiTouchRipple-root"
+                />
+              </button>
+              <button
+                aria-pressed="true"
+                class="MuiButtonBase-root MuiToggleButton-root MuiToggleButtonGroup-grouped MuiToggleButtonGroup-groupedHorizontal makeStyles-button-24 Mui-selected"
+                tabindex="0"
+                type="button"
+                value="100"
+              >
+                <span
+                  class="MuiToggleButton-label"
+                >
+                  <div>
+                    100%
+                  </div>
+                </span>
+                <span
+                  class="MuiTouchRipple-root"
+                />
+              </button>
+            </div>
+          </div>
+          <div>
+            <div
+              class="makeStyles-collapsibleWrapper-16 makeStyles-collapsibleWrapperExpanded-17"
+            >
+              <mock-switch
+                checked="true"
+                classes="[object Object]"
+                classname="makeStyles-switch-25"
+                color="primary"
+                inputprops="[object Object]"
+              />
+              <mock-typography
+                style="padding-left: 0.5rem;"
+                variant="h4"
+              >
+                Logo
+              </mock-typography>
+            </div>
+            <div
+              class="MuiCollapse-root MuiCollapse-entered"
+              style="min-height: 0px;"
+            >
+              <div
+                class="MuiCollapse-wrapper"
+              >
+                <div
+                  class="MuiCollapse-wrapperInner"
+                >
+                  <div
+                    class="MuiBox-root MuiBox-root-29"
+                  >
+                    <div
+                      class="MuiBox-root MuiBox-root-30"
+                    >
+                      <div
+                        class="MuiBox-root MuiBox-root-31"
+                        style="display: flex; flex-direction: row; justify-content: space-between;"
+                      >
+                        <div
+                          class="makeStyles-wrapper-22"
+                        >
+                          <mock-typography
+                            style="margin-right: 0.5rem;"
+                            variant="h4"
+                          >
+                            Position
+                          </mock-typography>
+                          <div
+                            class="MuiToggleButtonGroup-root makeStyles-buttonGroup-23"
+                            role="group"
+                          >
+                            <button
+                              aria-pressed="true"
+                              class="MuiButtonBase-root MuiToggleButton-root MuiToggleButtonGroup-grouped MuiToggleButtonGroup-groupedHorizontal makeStyles-button-24 Mui-selected"
+                              tabindex="0"
+                              type="button"
+                              value="0"
+                            >
+                              <span
+                                class="MuiToggleButton-label"
+                              >
+                                <mock-icon
+                                  style="color: black; transform: rotate(90deg);"
+                                >
+                                  vertical_align_bottom
+                                </mock-icon>
+                              </span>
+                              <span
+                                class="MuiTouchRipple-root"
+                              />
+                            </button>
+                            <button
+                              aria-pressed="false"
+                              class="MuiButtonBase-root MuiToggleButton-root MuiToggleButtonGroup-grouped MuiToggleButtonGroup-groupedHorizontal makeStyles-button-24"
+                              tabindex="0"
+                              type="button"
+                              value="1"
+                            >
+                              <span
+                                class="MuiToggleButton-label"
+                              >
+                                <mock-icon
+                                  style="color: black; transform: rotate(270deg);"
+                                >
+                                  vertical_align_bottom
+                                </mock-icon>
+                              </span>
+                              <span
+                                class="MuiTouchRipple-root"
+                              />
+                            </button>
+                          </div>
+                        </div>
+                        <div
+                          style="opacity: 1; pointer-events: auto;"
+                        >
+                          <div
+                            class="makeStyles-wrapper-22"
+                          >
+                            <mock-typography
+                              style="text-align: end; margin-right: 0.5rem;"
+                              variant="h4"
+                            >
+                              Size
+                            </mock-typography>
+                            <div
+                              class="MuiToggleButtonGroup-root makeStyles-buttonGroup-23"
+                              role="group"
+                              style="justify-content: end;"
+                            >
+                              <button
+                                aria-pressed="false"
+                                class="MuiButtonBase-root MuiToggleButton-root MuiToggleButtonGroup-grouped MuiToggleButtonGroup-groupedHorizontal makeStyles-button-24"
+                                tabindex="0"
+                                type="button"
+                                value="0.5"
+                              >
+                                <span
+                                  class="MuiToggleButton-label"
+                                >
+                                  <div
+                                    style="font-size: 0.75rem;"
+                                  >
+                                    S
+                                  </div>
+                                </span>
+                                <span
+                                  class="MuiTouchRipple-root"
+                                />
+                              </button>
+                              <button
+                                aria-pressed="true"
+                                class="MuiButtonBase-root MuiToggleButton-root MuiToggleButtonGroup-grouped MuiToggleButtonGroup-groupedHorizontal makeStyles-button-24 Mui-selected"
+                                tabindex="0"
+                                type="button"
+                                value="1"
+                              >
+                                <span
+                                  class="MuiToggleButton-label"
+                                >
+                                  <div
+                                    style="font-size: 1rem;"
+                                  >
+                                    M
+                                  </div>
+                                </span>
+                                <span
+                                  class="MuiTouchRipple-root"
+                                />
+                              </button>
+                              <button
+                                aria-pressed="false"
+                                class="MuiButtonBase-root MuiToggleButton-root MuiToggleButtonGroup-grouped MuiToggleButtonGroup-groupedHorizontal makeStyles-button-24"
+                                tabindex="0"
+                                type="button"
+                                value="1.5"
+                              >
+                                <span
+                                  class="MuiToggleButton-label"
+                                >
+                                  <div
+                                    style="font-size: 1.25rem;"
+                                  >
+                                    L
+                                  </div>
+                                </span>
+                                <span
+                                  class="MuiTouchRipple-root"
+                                />
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div>
+            <div
+              class="makeStyles-collapsibleWrapper-16 "
+            >
+              <mock-switch
+                checked="true"
+                classes="[object Object]"
+                classname="makeStyles-switch-25"
+                color="primary"
+                inputprops="[object Object]"
+              />
+              <mock-typography
+                style="padding-left: 0.5rem;"
+                variant="h4"
+              >
+                Map Labels
+              </mock-typography>
+            </div>
+            <div
+              class="MuiCollapse-root MuiCollapse-entered"
+              style="min-height: 0px;"
+            >
+              <div
+                class="MuiCollapse-wrapper"
+              >
+                <div
+                  class="MuiCollapse-wrapperInner"
+                />
+              </div>
+            </div>
+          </div>
+          <div>
+            <div
+              class="makeStyles-collapsibleWrapper-16 "
+            >
+              <mock-switch
+                checked="false"
+                classes="[object Object]"
+                classname="makeStyles-switch-25"
+                color="primary"
+                inputprops="[object Object]"
+              />
+              <mock-typography
+                style="padding-left: 0.5rem;"
+                variant="h4"
+              >
+                Admin Areas
+              </mock-typography>
+            </div>
+            <div
+              class="MuiCollapse-root MuiCollapse-hidden"
+              style="min-height: 0px;"
+            >
+              <div
+                class="MuiCollapse-wrapper"
+              >
+                <div
+                  class="MuiCollapse-wrapperInner"
+                >
+                  <div
+                    class="makeStyles-optionWrap-15"
+                  >
+                    <mock-circularprogress
+                      color="inherit"
+                      size="24"
+                      style="padding: 2px;"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div>
+            <div
+              class="makeStyles-collapsibleWrapper-16 makeStyles-collapsibleWrapperExpanded-17"
+            >
+              <mock-switch
+                checked="true"
+                classes="[object Object]"
+                classname="makeStyles-switch-25"
+                color="primary"
+                inputprops="[object Object]"
+              />
+              <mock-typography
+                style="padding-left: 0.5rem;"
+                variant="h4"
+              >
+                Legend
+              </mock-typography>
+            </div>
+            <div
+              class="MuiCollapse-root MuiCollapse-entered"
+              style="min-height: 0px;"
+            >
+              <div
+                class="MuiCollapse-wrapper"
+              >
+                <div
+                  class="MuiCollapse-wrapperInner"
+                >
+                  <div
+                    class="MuiBox-root MuiBox-root-32"
+                  >
+                    <div
+                      class="MuiBox-root MuiBox-root-33"
+                    >
+                      <div
+                        class="MuiBox-root MuiBox-root-34"
+                        style="display: flex; flex-direction: row; justify-content: space-between;"
+                      >
+                        <div
+                          class="makeStyles-wrapper-22"
+                        >
+                          <mock-typography
+                            style="margin-right: 0.5rem;"
+                            variant="h4"
+                          >
+                            Position
+                          </mock-typography>
+                          <div
+                            class="MuiToggleButtonGroup-root makeStyles-buttonGroup-23"
+                            role="group"
+                          >
+                            <button
+                              aria-pressed="true"
+                              class="MuiButtonBase-root MuiToggleButton-root MuiToggleButtonGroup-grouped MuiToggleButtonGroup-groupedHorizontal makeStyles-button-24 Mui-selected"
+                              tabindex="0"
+                              type="button"
+                              value="0"
+                            >
+                              <span
+                                class="MuiToggleButton-label"
+                              >
+                                <mock-icon
+                                  style="color: black; transform: rotate(90deg);"
+                                >
+                                  vertical_align_bottom
+                                </mock-icon>
+                              </span>
+                              <span
+                                class="MuiTouchRipple-root"
+                              />
+                            </button>
+                            <button
+                              aria-pressed="false"
+                              class="MuiButtonBase-root MuiToggleButton-root MuiToggleButtonGroup-grouped MuiToggleButtonGroup-groupedHorizontal makeStyles-button-24"
+                              tabindex="0"
+                              type="button"
+                              value="1"
+                            >
+                              <span
+                                class="MuiToggleButton-label"
+                              >
+                                <mock-icon
+                                  style="color: black; transform: rotate(270deg);"
+                                >
+                                  vertical_align_bottom
+                                </mock-icon>
+                              </span>
+                              <span
+                                class="MuiTouchRipple-root"
+                              />
+                            </button>
+                          </div>
+                        </div>
+                        <div
+                          class="makeStyles-collapsibleWrapper-16"
+                        >
+                          <mock-switch
+                            checked="true"
+                            classes="[object Object]"
+                            classname="makeStyles-switch-25"
+                            color="primary"
+                            inputprops="[object Object]"
+                          />
+                          <mock-typography
+                            style="padding-left: 0.5rem;"
+                            variant="h4"
+                          >
+                            Full Layer
+                          </mock-typography>
+                        </div>
+                      </div>
+                    </div>
+                    <mock-divider
+                      style="background: rgb(255, 255, 255);"
+                    />
+                    <div
+                      class="MuiBox-root MuiBox-root-35"
+                    >
+                      <div
+                        style="opacity: 1; pointer-events: auto;"
+                      >
+                        <div
+                          class="makeStyles-wrapper-22"
+                        >
+                          <mock-typography
+                            style="margin-right: 0.5rem;"
+                            variant="h4"
+                          >
+                            Size
+                          </mock-typography>
+                          <div
+                            class="MuiToggleButtonGroup-root makeStyles-buttonGroup-23"
+                            role="group"
+                          >
+                            <button
+                              aria-pressed="false"
+                              class="MuiButtonBase-root MuiToggleButton-root MuiToggleButtonGroup-grouped MuiToggleButtonGroup-groupedHorizontal makeStyles-button-24"
+                              tabindex="0"
+                              type="button"
+                              value="0.5"
+                            >
+                              <span
+                                class="MuiToggleButton-label"
+                              >
+                                <div>
+                                  50%
+                                </div>
+                              </span>
+                              <span
+                                class="MuiTouchRipple-root"
+                              />
+                            </button>
+                            <button
+                              aria-pressed="false"
+                              class="MuiButtonBase-root MuiToggleButton-root MuiToggleButtonGroup-grouped MuiToggleButtonGroup-groupedHorizontal makeStyles-button-24"
+                              tabindex="0"
+                              type="button"
+                              value="0.4"
+                            >
+                              <span
+                                class="MuiToggleButton-label"
+                              >
+                                <div>
+                                  60%
+                                </div>
+                              </span>
+                              <span
+                                class="MuiTouchRipple-root"
+                              />
+                            </button>
+                            <button
+                              aria-pressed="false"
+                              class="MuiButtonBase-root MuiToggleButton-root MuiToggleButtonGroup-grouped MuiToggleButtonGroup-groupedHorizontal makeStyles-button-24"
+                              tabindex="0"
+                              type="button"
+                              value="0.3"
+                            >
+                              <span
+                                class="MuiToggleButton-label"
+                              >
+                                <div>
+                                  70%
+                                </div>
+                              </span>
+                              <span
+                                class="MuiTouchRipple-root"
+                              />
+                            </button>
+                            <button
+                              aria-pressed="false"
+                              class="MuiButtonBase-root MuiToggleButton-root MuiToggleButtonGroup-grouped MuiToggleButtonGroup-groupedHorizontal makeStyles-button-24"
+                              tabindex="0"
+                              type="button"
+                              value="0.2"
+                            >
+                              <span
+                                class="MuiToggleButton-label"
+                              >
+                                <div>
+                                  80%
+                                </div>
+                              </span>
+                              <span
+                                class="MuiTouchRipple-root"
+                              />
+                            </button>
+                            <button
+                              aria-pressed="false"
+                              class="MuiButtonBase-root MuiToggleButton-root MuiToggleButtonGroup-grouped MuiToggleButtonGroup-groupedHorizontal makeStyles-button-24"
+                              tabindex="0"
+                              type="button"
+                              value="0.1"
+                            >
+                              <span
+                                class="MuiToggleButton-label"
+                              >
+                                <div>
+                                  90%
+                                </div>
+                              </span>
+                              <span
+                                class="MuiTouchRipple-root"
+                              />
+                            </button>
+                            <button
+                              aria-pressed="true"
+                              class="MuiButtonBase-root MuiToggleButton-root MuiToggleButtonGroup-grouped MuiToggleButtonGroup-groupedHorizontal makeStyles-button-24 Mui-selected"
+                              tabindex="0"
+                              type="button"
+                              value="0"
+                            >
+                              <span
+                                class="MuiToggleButton-label"
+                              >
+                                <div>
+                                  100%
+                                </div>
+                              </span>
+                              <span
+                                class="MuiTouchRipple-root"
+                              />
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div>
+            <div
+              class="makeStyles-collapsibleWrapper-16 makeStyles-collapsibleWrapperExpanded-17"
+            >
+              <mock-switch
+                checked="true"
+                classes="[object Object]"
+                classname="makeStyles-switch-25"
+                color="primary"
+                inputprops="[object Object]"
+              />
+              <mock-typography
+                style="padding-left: 0.5rem;"
+                variant="h4"
+              >
+                Footer
+              </mock-typography>
+            </div>
+            <div
+              class="MuiCollapse-root MuiCollapse-entered"
+              style="min-height: 0px;"
+            >
+              <div
+                class="MuiCollapse-wrapper"
+              >
+                <div
+                  class="MuiCollapse-wrapperInner"
+                >
+                  <div
+                    class="MuiBox-root MuiBox-root-36"
+                  >
+                    <div
+                      class="MuiBox-root MuiBox-root-37"
+                    >
+                      <div
+                        class="makeStyles-wrapper-22"
+                      >
+                        <mock-typography
+                          style="margin-right: 0.5rem;"
+                          variant="h4"
+                        >
+                          Size
+                        </mock-typography>
+                        <div
+                          class="MuiToggleButtonGroup-root makeStyles-buttonGroup-23"
+                          role="group"
+                        >
+                          <button
+                            aria-pressed="false"
+                            class="MuiButtonBase-root MuiToggleButton-root MuiToggleButtonGroup-grouped MuiToggleButtonGroup-groupedHorizontal makeStyles-button-24"
+                            tabindex="0"
+                            type="button"
+                            value="8"
+                          >
+                            <span
+                              class="MuiToggleButton-label"
+                            >
+                              <div
+                                style="font-size: 8px;"
+                              >
+                                Aa
+                              </div>
+                            </span>
+                            <span
+                              class="MuiTouchRipple-root"
+                            />
+                          </button>
+                          <button
+                            aria-pressed="false"
+                            class="MuiButtonBase-root MuiToggleButton-root MuiToggleButtonGroup-grouped MuiToggleButtonGroup-groupedHorizontal makeStyles-button-24"
+                            tabindex="0"
+                            type="button"
+                            value="10"
+                          >
+                            <span
+                              class="MuiToggleButton-label"
+                            >
+                              <div
+                                style="font-size: 10px;"
+                              >
+                                Aa
+                              </div>
+                            </span>
+                            <span
+                              class="MuiTouchRipple-root"
+                            />
+                          </button>
+                          <button
+                            aria-pressed="true"
+                            class="MuiButtonBase-root MuiToggleButton-root MuiToggleButtonGroup-grouped MuiToggleButtonGroup-groupedHorizontal makeStyles-button-24 Mui-selected"
+                            tabindex="0"
+                            type="button"
+                            value="12"
+                          >
+                            <span
+                              class="MuiToggleButton-label"
+                            >
+                              <div
+                                style="font-size: 12px;"
+                              >
+                                Aa
+                              </div>
+                            </span>
+                            <span
+                              class="MuiTouchRipple-root"
+                            />
+                          </button>
+                          <button
+                            aria-pressed="false"
+                            class="MuiButtonBase-root MuiToggleButton-root MuiToggleButtonGroup-grouped MuiToggleButtonGroup-groupedHorizontal makeStyles-button-24"
+                            tabindex="0"
+                            type="button"
+                            value="16"
+                          >
+                            <span
+                              class="MuiToggleButton-label"
+                            >
+                              <div
+                                style="font-size: 16px;"
+                              >
+                                Aa
+                              </div>
+                            </span>
+                            <span
+                              class="MuiTouchRipple-root"
+                            />
+                          </button>
+                          <button
+                            aria-pressed="false"
+                            class="MuiButtonBase-root MuiToggleButton-root MuiToggleButtonGroup-grouped MuiToggleButtonGroup-groupedHorizontal makeStyles-button-24"
+                            tabindex="0"
+                            type="button"
+                            value="20"
+                          >
+                            <span
+                              class="MuiToggleButton-label"
+                            >
+                              <div
+                                style="font-size: 20px;"
+                              >
+                                Aa
+                              </div>
+                            </span>
+                            <span
+                              class="MuiTouchRipple-root"
+                            />
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                    <mock-divider
+                      style="background: rgb(255, 255, 255);"
+                    />
+                    <div
+                      class="MuiBox-root MuiBox-root-38"
+                    >
+                      <mock-textfield
+                        fullwidth="true"
+                        inputprops="[object Object]"
+                        maxrows="6"
+                        minrows="3"
+                        multiline="true"
+                        size="small"
+                        style="background-color: white; border-radius: 5px;"
+                        variant="outlined"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <mock-button
+            classname="makeStyles-gutter-12"
+            color="primary"
+            endicon="[object Object]"
+            style="background-color: rgb(99, 178, 189); color: black;"
+            variant="contained"
+          >
+            Download
+          </mock-button>
+          <mock-menu
+            keepmounted="true"
+            open="false"
+          >
+            <mock-menuitem>
+              Download PNG
+            </mock-menuitem>
+            <mock-menuitem>
+              Download JPEG
+            </mock-menuitem>
+            <mock-menuitem>
+              Download PDF
+            </mock-menuitem>
+          </mock-menu>
+        </div>
+      </div>
+    </mock-dialogcontent>
   </mock-dialog>
 </div>
 `;

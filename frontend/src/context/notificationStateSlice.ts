@@ -77,47 +77,44 @@ export const notificationsSelector = (
 ): NotificationState['notifications'] => state.notificationState.notifications;
 
 // Setters
-export const {
-  addNotification,
-  removeNotification,
-} = notificationStateSlice.actions;
+export const { addNotification, removeNotification } =
+  notificationStateSlice.actions;
 
 // middleware to add error as notifications to this slice
 // Typing could improve?
-export const errorToNotificationMiddleware: Middleware<{}, RootState> = () => (
-  dispatch: AppDispatch,
-) => (action: AnyAction) => {
-  let dispatchResult;
-  try {
-    // catch sync errors
-    // eslint-disable-next-line fp/no-mutation
-    dispatchResult = dispatch(action);
-  } catch (err) {
-    dispatch(
-      addNotification({
-        type: 'error',
-        message: err.message || err,
-      }),
-    );
-    throw err;
-  }
+export const errorToNotificationMiddleware: Middleware<{}, RootState> =
+  () => (dispatch: AppDispatch) => (action: AnyAction) => {
+    let dispatchResult;
+    try {
+      // catch sync errors
+      // eslint-disable-next-line fp/no-mutation
+      dispatchResult = dispatch(action);
+    } catch (err) {
+      dispatch(
+        addNotification({
+          type: 'error',
+          message: (err as any).message || err,
+        }),
+      );
+      throw err;
+    }
 
-  // typical layout for rejected thunk e.g mapState/loadLayerData/rejected
-  const thunkRejectedRegex = /^[A-z]+\/[A-z]+\/rejected$/;
+    // typical layout for rejected thunk e.g mapState/loadLayerData/rejected
+    const thunkRejectedRegex = /^[A-z]+\/[A-z]+\/rejected$/;
 
-  if (thunkRejectedRegex.test(action.type)) {
-    const errorMessage = action.error.message || action.error;
+    if (thunkRejectedRegex.test(action.type)) {
+      const errorMessage = action.error.message || action.error;
 
-    dispatch(
-      addNotification({
-        type: 'error',
-        message: errorMessage,
-      }),
-    );
-    console.error(`Above error(s) caused by: ${errorMessage}`);
-  }
+      dispatch(
+        addNotification({
+          type: 'error',
+          message: errorMessage,
+        }),
+      );
+      console.error(`Above error(s) caused by: ${errorMessage}`);
+    }
 
-  return dispatchResult;
-};
+    return dispatchResult;
+  };
 
 export default notificationStateSlice.reducer;

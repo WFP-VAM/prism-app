@@ -1,5 +1,4 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { Map as MapBoxMap } from 'mapbox-gl';
 import { LayerKey, LayerType } from 'config/types';
 import { LayerDefinitions } from 'config/utils';
 import {
@@ -9,6 +8,7 @@ import {
 } from 'context/layers/layer-data';
 import { BoundaryRelationsDict } from 'components/Common/BoundaryDropdown/utils';
 import { keepLayer } from 'utils/keep-layer-utils';
+import { Map as MaplibreMap } from 'maplibre-gl';
 
 interface DateRange {
   startDate?: number;
@@ -19,7 +19,7 @@ interface DateRange {
 export type MapState = {
   layers: LayerType[];
   dateRange: DateRange;
-  mapboxMap: MapGetter;
+  maplibreMap: MapGetter;
   errors: string[];
   // TODO this shouldn't be any
   layersData: LayerData<any>[];
@@ -30,15 +30,15 @@ export type MapState = {
   boundaryRelationData: BoundaryRelationsDict;
 };
 
-// MapboxGL's map type contains some kind of cyclic dependency that causes an infinite loop in immers's change
+// Maplibre's map type contains some kind of cyclic dependency that causes an infinite loop in immers's change
 // tracking. To save it off, we wrap it in a JS closure so that Redux just checks the function for changes, rather
 // than recursively walking the whole object.
-type MapGetter = () => MapBoxMap | undefined;
+type MapGetter = () => MaplibreMap | undefined;
 
 const initialState: MapState = {
   layers: [],
   dateRange: {} as DateRange,
-  mapboxMap: (() => {}) as MapGetter,
+  maplibreMap: (() => {}) as MapGetter,
   errors: [],
   layersData: [],
   loadingLayerIds: [],
@@ -55,6 +55,7 @@ const getTypeOrder = (layer: LayerType) => {
   return layer.type;
 };
 
+// TODO: update ordering?
 // Order layers to keep boundaries and point_data on top. boundaries first.
 export const layerOrdering = (a: LayerType, b: LayerType) => {
   // Dictionary with all the available layerTypes
@@ -69,7 +70,8 @@ export const layerOrdering = (a: LayerType, b: LayerType) => {
       | 'impact'
       | 'point_data'
       | 'polygon'
-      | 'static_raster']: number;
+      | 'static_raster'
+      | 'anticipatory_action']: number;
   } = {
     point_data: 0,
     polygon: 1,
@@ -77,9 +79,10 @@ export const layerOrdering = (a: LayerType, b: LayerType) => {
     pattern_admin_level_data: 3,
     admin_level_data: 4,
     impact: 5,
+    composite: 5,
     wms: 6,
     static_raster: 7,
-    composite: 8,
+    anticipatory_action: 8,
   };
 
   const typeA = getTypeOrder(a);
@@ -99,6 +102,8 @@ export const mapStateSlice = createSlice({
           )
         : [payload];
 
+      // TODO: something is wrong with the types imported by 'maplibre-gl' in config/types.ts
+      //  @ts-ignore
       const filteredLayers = layers.filter(layer => keepLayer(layer, payload));
 
       // Keep boundary layers at the top of our stack and remove duplicates
@@ -140,7 +145,7 @@ export const mapStateSlice = createSlice({
 
     setMap: (state, { payload }: PayloadAction<MapGetter>) => ({
       ...state,
-      mapboxMap: payload,
+      maplibreMap: payload,
     }),
 
     setBoundaryRelationData: (

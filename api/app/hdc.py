@@ -1,4 +1,5 @@
 """Get data from Humanitarian Data Cube (HDC) API"""
+
 import logging
 from os import getenv
 
@@ -12,13 +13,13 @@ if hdc_token == "":
 
 
 def get_hdc_stats(
-    level: str, admin_id: str, coverage: str, vam: str, start: str, end: str
+    level: str, id_code: str, coverage: str, vam: str, start: str, end: str
 ):
     """Get statistical charts data"""
     url = "https://api.wfp.org/hdc/1.0.0/stats/admin"
     params = {
         "level": level,
-        "id_code": admin_id,
+        "id_code": id_code,
         "coverage": coverage,
         "vam": vam,
         "start": start,

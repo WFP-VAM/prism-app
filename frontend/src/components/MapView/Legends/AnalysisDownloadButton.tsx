@@ -43,10 +43,8 @@ function AnalysisDownloadButton() {
   );
   const analysisDefinition = useSelector(getCurrentDefinition);
 
-  const [
-    downloadMenuAnchorEl,
-    setDownloadMenuAnchorEl,
-  ] = useState<HTMLElement | null>(null);
+  const [downloadMenuAnchorEl, setDownloadMenuAnchorEl] =
+    useState<HTMLElement | null>(null);
 
   const handleDownloadMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
     setDownloadMenuAnchorEl(event.currentTarget);
@@ -61,19 +59,20 @@ function AnalysisDownloadButton() {
     exposureAnalysisResultSortByKey,
     exposureAnalysisResultSortOrder,
   );
-  const exposureAnalysisColumnsToRender = getExposureAnalysisColumnsToRender(
-    translatedColumns,
-  );
-  const exposureAnalysisTableRowsToRender = getExposureAnalysisTableDataRowsToRender(
-    translatedColumns,
-    exposureAnalysisTableData,
-  );
+  const exposureAnalysisColumnsToRender =
+    getExposureAnalysisColumnsToRender(translatedColumns);
+  const exposureAnalysisTableRowsToRender =
+    getExposureAnalysisTableDataRowsToRender(
+      translatedColumns,
+      exposureAnalysisTableData,
+    );
 
   const { t } = useSafeTranslation();
 
-  const featureCollection = useMemo(() => {
-    return analysisResult?.featureCollection;
-  }, [analysisResult]);
+  const featureCollection = useMemo(
+    () => analysisResult?.featureCollection,
+    [analysisResult],
+  );
 
   const analysisDate = useMemo(() => {
     if (analysisResult instanceof BaselineLayerResult) {
@@ -149,7 +148,7 @@ function AnalysisDownloadButton() {
 
   return (
     <>
-      <Tooltip title="Download">
+      <Tooltip title={t('Download') as string}>
         <IconButton onClick={handleDownloadMenuOpen} size="small">
           <GetAppIcon fontSize="small" />
         </IconButton>

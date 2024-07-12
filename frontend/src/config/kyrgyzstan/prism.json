@@ -23,11 +23,13 @@
   "serversUrls": {
     "wms": [
       "https://api.earthobservation.vam.wfp.org/ows/wms",
-      "https://kyrgyzstan.sibelius-datacube.org:5000/wms"
+      "https://kyrgyzstan.sibelius-datacube.org:5000/wms",
+      "https://firms.modaps.eosdis.nasa.gov/mapserver/wms/fires/49278a84c3c473e387548ae0c6b31ced/"
     ]
   },
   "categories": {
     "rainfall": {
+      "forecasts": ["daily_rainfall_forecast", "dekad_rainfall_forecast"],
       "rainfall_amount": [
         {
           "group_title": "Rainfall Aggregate",
@@ -202,15 +204,17 @@
       "snow_conditions": ["snow_cover", "modis_snow_percentage"]
     },
     "floods_and_mudflows": {
-      "": ["flood_mudflows"]
+      "floods_and_mudflows": ["flood_mudflows"]
     },
     "vulnerability": {
-      "": ["poverty"]
+      "poverty": ["poverty"]
     },
     "exposure": {
       "population": ["population"],
       "crops": ["wheat", "potato", "veg", "fruit"],
-      "livestock": ["livestock"]
+      "livestock": ["livestock"],
+      "health_facilities": ["health_facilities"],
+      "fires": ["viirs_fires_2023_06_09"]
     }
   }
 }

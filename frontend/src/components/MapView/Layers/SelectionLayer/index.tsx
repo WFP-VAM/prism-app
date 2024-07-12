@@ -1,7 +1,5 @@
-import React from 'react';
 import { useSelector } from 'react-redux';
-import { GeoJSONLayer } from 'react-mapbox-gl';
-import * as MapboxGL from 'mapbox-gl';
+import { Layer, Source } from 'react-map-gl/maplibre';
 import {
   getIsSelectionMode,
   getSelectedBoundaries,
@@ -10,9 +8,10 @@ import { getBoundaryLayerSingleton } from 'config/utils';
 import { layerDataSelector } from 'context/mapStateSlice/selectors';
 import { LayerData } from 'context/layers/layer-data';
 import { BoundaryLayerProps } from 'config/types';
+import { LineLayerSpecification } from 'maplibre-gl';
 
 const boundaryLayer = getBoundaryLayerSingleton();
-const LINE_PAINT_DATA: MapboxGL.LinePaint = {
+const LINE_PAINT_DATA: LineLayerSpecification['paint'] = {
   'line-color': 'green',
   'line-width': 4,
 };
@@ -41,12 +40,14 @@ function SelectionLayer({ before }: { before?: string }) {
   };
 
   return (
-    <GeoJSONLayer
-      id="map-selection-layer"
-      before={before}
-      data={filteredData}
-      linePaint={LINE_PAINT_DATA}
-    />
+    <Source data={filteredData} type="geojson">
+      <Layer
+        id="map-selection-layer"
+        beforeId={before}
+        type="line"
+        paint={LINE_PAINT_DATA}
+      />
+    </Source>
   );
 }
 

@@ -3,14 +3,13 @@ import os
 from typing import Final, Optional
 from urllib.parse import parse_qs, urlparse
 
-import pytest
 from app.caching import CACHE_DIRECTORY
 from playwright.async_api import async_playwright, expect
 
 # Html selectors
-LAYER_ACCORDION_SELECTOR: Final[
-    str
-] = 'div[class="MuiAccordionSummary-root"], div[aria-expanded="false"]'
+LAYER_ACCORDION_SELECTOR: Final[str] = (
+    'div[class="MuiAccordionSummary-root"], div[aria-expanded="false"]'
+)
 DOWNLOAD_BUTTON_SELECTOR: Final[str] = "a[download]"
 CREATE_REPORT_BUTTON_SELECTOR: Final[str] = 'button[id="create-report"]'
 
@@ -43,35 +42,34 @@ async def download_report(
         browser = await p.chromium.launch()
         page = await browser.new_page()
 
+        # TODO - this should only be done in CI
         # mock the api call to avoid network issues in CI
         await page.route("https://prism-api.ovio.org/stats", mock_prism_api_stats_call)
 
         page.set_default_timeout(PAGE_TIMEOUT)
         await page.goto(url)
 
-        # switch to English
-        await page.get_by_role("button", name="en").click()
+        # open language dropdown
+        await page.get_by_role("button", name="language-select-dropdown-button").click()
+
+        # Click on the 'en' option
+        await page.get_by_text("en", exact=True).click()
 
         # make sure we're on the right tab
-        await page.get_by_role("tab", name="Layers").click()
+        # await page.get_by_role("button", name="Layers").click()
 
         # expand the first main and first sub dropdowns
-        await page.get_by_role("button", name="Flood 2").click()
+        # XPath to match a button whose name starts with "Flood" followed by a space and any number
+        await page.click('p.MuiTypography-body1:text("Flood")')
 
-        await page.get_by_role("button", name="Flood Monitoring 1").click()
+        await page.click('p.MuiTypography-body1:text("Flood Monitoring")')
 
         # Enable flood extent buttons
         flood_extent_checkbox = page.get_by_role("checkbox", name="Flood extent")
         await expect(flood_extent_checkbox).to_be_visible(timeout=20_000)
 
         # the switch status is flaky (sometimes checked, sometimes not)
-        # so make sure we only check it if needed. This might mean there
-        # is a bug in the frontend code?
-        fec_checked = await flood_extent_checkbox.is_checked()
-        if not fec_checked:
-            flood_extent_checkbox.click()
-
-        await expect(flood_extent_checkbox).to_be_checked(timeout=10_000)
+        await expect(flood_extent_checkbox).to_be_checked(timeout=20_000)
         await expect(
             page.get_by_role("button", name="Exposure Analysis")
         ).not_to_be_disabled()
@@ -85,7 +83,7 @@ async def download_report(
         )
 
         await page.wait_for_selector(
-            'div[class^="memo-analysisButtonContainer-"]', state="visible"
+            'div[class*="analysisButtonContainer-"]', state="visible"
         )
 
         await page.wait_for_selector(CREATE_REPORT_BUTTON_SELECTOR, state="attached")

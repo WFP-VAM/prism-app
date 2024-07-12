@@ -1,5 +1,4 @@
 import { get } from 'lodash';
-import { Feature } from '@turf/helpers';
 /**
  * Format full location name in ascending admin levels
  * @param layer admin layer, both props and data
@@ -9,7 +8,10 @@ import { Feature } from '@turf/helpers';
 
 export function getFullLocationName(
   levelNames: string[],
-  featureBoundary?: Feature<GeoJSON.Geometry, GeoJSON.GeoJsonProperties>,
+  featureBoundary?: GeoJSON.Feature<
+    GeoJSON.Geometry,
+    GeoJSON.GeoJsonProperties
+  >,
 ): string {
   return (
     levelNames
@@ -18,8 +20,14 @@ export function getFullLocationName(
   );
 }
 
-export const MONTH_FIRST_DATE_FORMAT = 'MMM DD YYYY';
-export const DEFAULT_DATE_FORMAT = 'YYYY-MM-DD';
-export const DEFAULT_DATE_FORMAT_SNAKE_CASE = 'YYYY_MM_DD';
-export const MONTH_ONLY_DATE_FORMAT = 'MMM YYYY';
-export const MONTH_YEAR_DATE_FORMAT = 'MMMM YYYY';
+export enum DateFormat {
+  MonthFirst = 'MMM dd yyyy',
+  Default = 'YYYY-MM-DD',
+  DefaultSnakeCase = 'YYYY_MM_DD',
+  ShortMonth = 'MMM',
+  ShortMonthYear = 'MMM yyyy',
+  MonthYear = 'MMMM yyyy',
+  ISO = 'YYYY-MM-DDTHH:mm:ss',
+  DateTime = 'YYYY-MM-DD HH:mm',
+  DayFirstSnakeCase = 'DD_MM_YYYY',
+}

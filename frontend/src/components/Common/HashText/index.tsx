@@ -1,13 +1,15 @@
 // This component creates a hidden link, to the version in which the app was built.
-import React from 'react';
 
-const HashText = () => {
+function HashText() {
   const hash = process.env.REACT_APP_GIT_HASH;
   if (hash) {
     // eslint-disable-next-line no-console
     console.info(`The application is running version #${hash}`);
     // eslint-disable-next-line no-console
     console.info(`https://github.com/WFP-VAM/prism-app/tree/${hash}`);
+  }
+  if (!hash) {
+    return null;
   }
   return (
     <a
@@ -27,6 +29,6 @@ const HashText = () => {
       version hash: {hash}
     </a>
   );
-};
+}
 
 export default HashText;

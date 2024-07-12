@@ -3,10 +3,10 @@
 exports[`renders as expected 1`] = `
 <div>
   <div
-    class="AlertForm-alertForm-3"
+    class="makeStyles-alertForm-3"
   >
     <mock-button
-      classname="AlertForm-alertTriggerButton-2"
+      classname="makeStyles-alertTriggerButton-2"
       color="primary"
       variant="contained"
     >
@@ -21,7 +21,7 @@ exports[`renders as expected 1`] = `
         />
       </svg>
       <mock-typography
-        classname="AlertForm-alertLabel-1"
+        classname="makeStyles-alertLabel-1"
         variant="body2"
       >
         Create Alert
@@ -30,109 +30,116 @@ exports[`renders as expected 1`] = `
         fontsize="small"
       />
     </mock-button>
-    <div
-      class="MuiBox-root MuiBox-root-15 AlertForm-alertFormMenu-4"
+    <mock-menu
+      keepmounted="true"
+      open="false"
+      paperprops="[object Object]"
     >
       <div
-        class="AlertForm-newAlertFormContainer-8"
+        class="MuiBox-root MuiBox-root-15 makeStyles-alertFormMenu-4"
       >
         <div
-          class="AlertForm-alertFormOptions-7"
+          class="makeStyles-newAlertFormContainer-8"
         >
-          <mock-typography
-            variant="body2"
-          >
-            Hazard Layer
-          </mock-typography>
-          <mock-layer-dropdown
-            classname="AlertForm-selector-10"
-            placeholder="Choose hazard layer"
-            type="wms"
-          />
-        </div>
-        <div
-          class="AlertForm-alertFormOptions-7"
-        >
-          <mock-typography
-            variant="body2"
-          >
-            Threshold
-          </mock-typography>
           <div
-            class="AlertForm-thresholdInputsContainer-6"
+            class="makeStyles-alertFormOptions-7"
+          >
+            <mock-typography
+              variant="body2"
+            >
+              Hazard Layer
+            </mock-typography>
+            <mock-layer-dropdown
+              classname="makeStyles-selector-10"
+              placeholder="Choose hazard layer"
+              type="wms"
+            />
+          </div>
+          <div
+            class="makeStyles-alertFormOptions-7"
+          >
+            <mock-typography
+              variant="body2"
+            >
+              Threshold
+            </mock-typography>
+            <div
+              class="makeStyles-thresholdInputsContainer-6"
+            >
+              <mock-textfield
+                classname="makeStyles-numberField-12"
+                error="false"
+                helpertext=""
+                id="filled-number"
+                inputlabelprops="[object Object]"
+                label="Below"
+                type="number"
+                value=""
+                variant="filled"
+              />
+              <mock-textfield
+                classname="makeStyles-numberField-12"
+                id="filled-number"
+                inputlabelprops="[object Object]"
+                label="Above"
+                type="number"
+                value=""
+                variant="filled"
+              />
+            </div>
+          </div>
+          <div
+            class="makeStyles-alertFormOptions-7"
+          >
+            <mock-typography
+              variant="body2"
+            >
+              Regions
+            </mock-typography>
+            <mock-circularprogress
+              color="inherit"
+              size="24"
+              style="padding: 2px;"
+            />
+          </div>
+          <div
+            class="makeStyles-alertFormOptions-7"
           >
             <mock-textfield
-              classname="AlertForm-numberField-12"
-              error="false"
-              helpertext=""
-              id="filled-number"
+              fullwidth="true"
+              id="alert-name"
               inputlabelprops="[object Object]"
-              label="Below"
-              type="number"
-              value=""
-              variant="filled"
-            />
-            <mock-textfield
-              classname="AlertForm-numberField-12"
-              id="filled-number"
-              inputlabelprops="[object Object]"
-              label="Above"
-              type="number"
+              label="Alert Name"
+              type="text"
               value=""
               variant="filled"
             />
           </div>
+          <div
+            class="makeStyles-alertFormOptions-7"
+          >
+            <mock-textfield
+              fullwidth="true"
+              id="email-address"
+              inputlabelprops="[object Object]"
+              label="Email Address"
+              type="text"
+              variant="filled"
+            />
+          </div>
         </div>
-        <div
-          class="AlertForm-alertFormOptions-7"
+        <mock-button
+          classname="makeStyles-innerCreateAlertButton-9"
+          disabled="true"
         >
           <mock-typography
             variant="body2"
           >
-            Regions
+            Create Alert
           </mock-typography>
-          <mock-circularprogress
-            color="inherit"
-            size="24"
-          />
-        </div>
-        <div
-          class="AlertForm-alertFormOptions-7"
-        >
-          <mock-textfield
-            fullwidth="true"
-            id="alert-name"
-            inputlabelprops="[object Object]"
-            label="Alert Name"
-            type="text"
-            value=""
-            variant="filled"
-          />
-        </div>
-        <div
-          class="AlertForm-alertFormOptions-7"
-        >
-          <mock-textfield
-            fullwidth="true"
-            id="email-address"
-            inputlabelprops="[object Object]"
-            label="Email Address"
-            type="text"
-            variant="filled"
-          />
-        </div>
+        </mock-button>
       </div>
-      <mock-button
-        classname="AlertForm-innerCreateAlertButton-9"
-        disabled="true"
-      >
-        <mock-typography
-          variant="body2"
-        >
-          Create Alert
-        </mock-typography>
-      </mock-button>
-    </div>
+    </mock-menu>
   </div>
 </div>
 `;

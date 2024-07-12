@@ -1,4 +1,5 @@
 """Calulate zonal statistics and return a json or a geojson."""
+
 import logging
 from collections import defaultdict
 from datetime import datetime
@@ -20,21 +21,17 @@ from app.models import (
 )
 from app.raster_utils import calculate_pixel_area, gdal_calc, reproj_match
 from app.timer import timed
-from app.utils import WarningsFilter
 from app.validation import VALID_OPERATORS
 from fastapi import HTTPException
 from rasterio.warp import Resampling
 from rasterstats import zonal_stats  # type: ignore
+from shapely.errors import GEOSException  # type: ignore
 from shapely.geometry import mapping, shape  # type: ignore
 from shapely.ops import unary_union  # type: ignore
 
 logger = logging.getLogger(__name__)
 
-# Add custom filter to silence 'converting a masked element to nan' warnings
-logger.addFilter(WarningsFilter())
-
-
-DEFAULT_STATS = ["min", "max", "mean", "median", "sum", "std", "nodata", "count"]
+DEFAULT_STATS = ["min", "max", "mean", "median", "sum", "std", "count"]
 
 AreaInSqKm = NewType("AreaInSqKm", float)
 Percentage = NewType("Percentage", float)
@@ -101,7 +98,7 @@ def _group_zones(zones_filepath: FilePath, group_by: GroupBy) -> FilePath:
     for group_id, polygons in grouped_polygons.items():
         try:
             new_geometry = mapping(unary_union(polygons))
-        except ValueError as error:
+        except (ValueError, GEOSException) as error:
             logger.error(error)
             logger.error(polygons)
             new_geometry = {}
@@ -300,7 +297,9 @@ def calculate_stats(
                 [x if x.isalnum() else "" for x in (slugified_calc)]
             )
 
-        masked_pop_geotiff: FilePath = f"{CACHE_DIRECTORY}raster_reproj_{geotiff_hash}_masked_by_{mask_hash}_{slugified_calc}.tif"
+        masked_pop_geotiff: FilePath = (
+            f"{CACHE_DIRECTORY}raster_reproj_{geotiff_hash}_masked_by_{mask_hash}_{slugified_calc}.tif"
+        )
 
         if not is_file_valid(masked_pop_geotiff):
             # tentatively remove the reprojection step now that we are consolidating our requests

@@ -1,4 +1,3 @@
-import React from 'react';
 import { Provider } from 'react-redux';
 import { render } from '@testing-library/react';
 
@@ -22,18 +21,10 @@ jest.mock('react-router-dom', () => ({
   }),
 }));
 
-jest.mock('react-mapbox-gl', () => ({
-  __esModule: true,
-  default: () => () => {
-    return <span>Mock map</span>;
-  },
-  Cluster: () => <span>Mock cluster</span>,
-}));
-
 test('renders as expected', () => {
   const { container } = render(
     <Provider store={store}>
-      <MapView />
+      <MapView setIsAlertFormOpen={() => {}} />
     </Provider>,
   );
   expect(container).toMatchSnapshot();

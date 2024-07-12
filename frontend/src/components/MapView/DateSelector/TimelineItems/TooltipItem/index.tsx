@@ -1,21 +1,22 @@
-import React, { memo } from 'react';
-import { createStyles, withStyles, WithStyles } from '@material-ui/core';
+import { memo } from 'react';
+import { createStyles, makeStyles } from '@material-ui/core';
 
-const TooltipItem = memo(({ layerTitle, color, classes }: TooltipItemProps) => {
+const TooltipItem = memo(({ layerTitle, color }: TooltipItemProps) => {
+  const classes = useStyles();
   return (
     <div className={classes.tooltipItemContainer}>
-      <div>{layerTitle}</div>
       <div
         className={classes.tooltipItemColor}
         style={{
           backgroundColor: color,
         }}
       />
+      <div>{layerTitle}</div>
     </div>
   );
 });
 
-const styles = () =>
+const useStyles = makeStyles(() =>
   createStyles({
     tooltipItemContainer: {
       display: 'flex',
@@ -26,13 +27,14 @@ const styles = () =>
       display: 'flex',
       width: 10,
       height: 10,
-      marginLeft: 3,
+      marginRight: 3,
     },
-  });
+  }),
+);
 
-interface TooltipItemProps extends WithStyles<typeof styles> {
+interface TooltipItemProps {
   layerTitle: string;
   color: string;
 }
 
-export default withStyles(styles)(TooltipItem);
+export default TooltipItem;
