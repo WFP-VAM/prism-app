@@ -1,27 +1,26 @@
-import React, { memo } from 'react';
-import { createStyles, withStyles, WithStyles } from '@material-ui/core';
+import { memo } from 'react';
+import { createStyles, makeStyles } from '@material-ui/core';
 
-const LoadingBlinkingDots = memo(
-  ({ classes, dotColor }: LoadingBlinkingDotsProps) => {
-    const colorStyle = { color: dotColor || 'black' };
-    return (
-      <>
-        &nbsp;
-        <span className={classes.dot} style={colorStyle}>
-          .
-        </span>
-        <span className={classes.dot} style={colorStyle}>
-          .
-        </span>
-        <span className={classes.dot} style={colorStyle}>
-          .
-        </span>
-      </>
-    );
-  },
-);
+const LoadingBlinkingDots = memo(({ dotColor }: LoadingBlinkingDotsProps) => {
+  const classes = useStyles();
+  const colorStyle = { color: dotColor || 'black' };
+  return (
+    <>
+      &nbsp;
+      <span className={classes.dot} style={colorStyle}>
+        .
+      </span>
+      <span className={classes.dot} style={colorStyle}>
+        .
+      </span>
+      <span className={classes.dot} style={colorStyle}>
+        .
+      </span>
+    </>
+  );
+});
 
-const styles = () =>
+const useStyles = makeStyles(() =>
   createStyles({
     '@keyframes blink': {
       '50%': {
@@ -37,10 +36,11 @@ const styles = () =>
         animationDelay: '500ms',
       },
     },
-  });
+  }),
+);
 
-export interface LoadingBlinkingDotsProps extends WithStyles<typeof styles> {
+export interface LoadingBlinkingDotsProps {
   dotColor?: string;
 }
 
-export default withStyles(styles)(LoadingBlinkingDots);
+export default LoadingBlinkingDots;

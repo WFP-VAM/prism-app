@@ -38,7 +38,7 @@ export default class WCS extends Base {
   > {
     const capabilities = await this.getCapabilities();
     const coverages = findCoverages(capabilities);
-    return (Promise.all(
+    return Promise.all(
       coverages.slice(0, count).map((layer, layerIndex) => {
         try {
           return new WCSLayer({
@@ -55,10 +55,10 @@ export default class WCS extends Base {
           }
           throw error;
         }
-      })
+      }),
     ).then((values) =>
-      values.filter((value) => value !== undefined)
-    ) as any) as Promise<WCSLayer[]>;
+      values.filter((value) => value !== undefined),
+    ) as any as Promise<WCSLayer[]>;
   }
 
   async getLayerDays(options?: {

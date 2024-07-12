@@ -34,19 +34,12 @@ function diffInDays(date1: Date, date2: Date) {
   return diff;
 }
 
-export const generateDatesRange = (
-  startDate: Date,
-  endDate: Date,
-): number[] => {
-  return Array.from(
-    { length: diffInDays(startDate, endDate) + 1 },
-    (_, index) => {
-      const clone = new Date(startDate.getTime());
-      clone.setDate(startDate.getDate() + index);
-      return clone.getTime();
-    },
-  );
-};
+export const generateDatesRange = (startDate: Date, endDate: Date): number[] =>
+  Array.from({ length: diffInDays(startDate, endDate) + 1 }, (_, index) => {
+    const clone = new Date(startDate.getTime());
+    clone.setDate(startDate.getDate() + index);
+    return clone.getTime();
+  });
 
 export const generateDateItemsRange = (
   startEndDateList: StartEndDate[],
@@ -111,9 +104,8 @@ export function binaryIncludes<T extends any>(
   return binaryFind(arry, timestamp, callback) > -1;
 }
 
-export const dateStrToUpperCase = (dateStr: string): string => {
-  return `${dateStr.slice(0, 1).toUpperCase()}${dateStr.slice(1)}`;
-};
+export const dateStrToUpperCase = (dateStr: string): string =>
+  `${dateStr.slice(0, 1).toUpperCase()}${dateStr.slice(1)}`;
 
 export const getFormattedDate = (
   date: number | string | undefined | Date,

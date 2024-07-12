@@ -1,4 +1,3 @@
-import React from 'react';
 import { makeStyles, LinearProgress } from '@material-ui/core';
 import { useSelector } from 'react-redux';
 import { LayerKey } from 'config/types';

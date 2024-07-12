@@ -41,8 +41,8 @@ export class WMS extends Base {
             id: findName(layer)!,
             fetch: this.fetch,
             layer,
-          })
-      )
+          }),
+      ),
     );
   }
 

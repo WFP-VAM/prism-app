@@ -1,12 +1,11 @@
-import React, { memo, useCallback, useMemo, useState } from 'react';
+import { memo, useCallback, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Popup } from 'react-map-gl/maplibre';
 import {
   createStyles,
-  withStyles,
-  WithStyles,
   Typography,
   IconButton,
+  makeStyles,
 } from '@material-ui/core';
 import { hidePopup, tooltipSelector } from 'context/tooltipStateSlice';
 import { isEnglishLanguageSelected, useSafeTranslation } from 'i18n';
@@ -21,7 +20,7 @@ import PopupContent from './PopupContent';
 import PopupPointDataChart from './PointDataChart/PopupPointDataChart';
 import usePointDataChart from './PointDataChart/usePointDataChart';
 
-const styles = () =>
+const useStyles = makeStyles(() =>
   createStyles({
     phasePopulationTable: {
       tableLayout: 'fixed',
@@ -62,16 +61,16 @@ const styles = () =>
       right: 0,
       top: 0,
     },
-  });
+  }),
+);
 
 const { multiCountry } = appConfig;
 const availableAdminLevels: AdminLevelType[] = multiCountry
   ? [0, 1, 2]
   : [1, 2];
 
-interface TooltipProps extends WithStyles<typeof styles> {}
-
-const MapTooltip = ({ classes }: TooltipProps) => {
+const MapTooltip = memo(() => {
+  const classes = useStyles();
   const dispatch = useDispatch();
   const popup = useSelector(tooltipSelector);
   const { i18n } = useSafeTranslation();
@@ -111,9 +110,12 @@ const MapTooltip = ({ classes }: TooltipProps) => {
     return null;
   }
 
+  const key = JSON.stringify(popup.coordinates);
+
   if (dataset) {
     return (
       <Popup
+        key={key}
         latitude={popup.coordinates?.[1]}
         longitude={popup.coordinates?.[0]}
         className={classes.popup}
@@ -135,6 +137,7 @@ const MapTooltip = ({ classes }: TooltipProps) => {
 
   return (
     <Popup
+      key={key}
       latitude={popup.coordinates?.[1]}
       longitude={popup.coordinates?.[0]}
       className={classes.popup}
@@ -175,6 +178,6 @@ const MapTooltip = ({ classes }: TooltipProps) => {
       <Loader showLoader={popup.wmsGetFeatureInfoLoading} />
     </Popup>
   );
-};
+});
 
-export default memo(withStyles(styles)(MapTooltip));
+export default MapTooltip;

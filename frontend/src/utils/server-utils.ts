@@ -59,9 +59,9 @@ export const getRequestDate = (
     return selectedDate;
   }
 
-  const dateItem = layerAvailableDates.find(date => {
-    return datesAreEqualWithoutTime(date.displayDate, selectedDate);
-  });
+  const dateItem = layerAvailableDates.find(date =>
+    datesAreEqualWithoutTime(date.displayDate, selectedDate),
+  );
   if (!dateItem) {
     return layerAvailableDates[layerAvailableDates.length - 1].queryDate;
   }
@@ -224,9 +224,7 @@ const getPointDataCoverage = async (
       // adding 12 hours to avoid  errors due to daylight saving, and convert to number
       .map(item => new Date(item.date).setUTCHours(12, 0, 0, 0))
       // remove duplicate dates - indexOf returns first index of item
-      .filter((date, index, arr) => {
-        return arr.indexOf(date) === index;
-      })
+      .filter((date, index, arr) => arr.indexOf(date) === index)
   );
 };
 
@@ -570,8 +568,8 @@ export async function getLayersAvailableDates(
   const mapServerDatesToLayerIds = (
     serverDates: Record<string, number[]>,
     layers: (WMSLayerProps | CompositeLayerProps)[],
-  ): Record<string, number[]> => {
-    return layers.reduce((acc: Record<string, number[]>, layer) => {
+  ): Record<string, number[]> =>
+    layers.reduce((acc: Record<string, number[]>, layer) => {
       const serverLayerName =
         layer.type === 'composite'
           ? (LayerDefinitions[layer.dateLayer] as WMSLayerProps).serverLayerName
@@ -599,7 +597,6 @@ export async function getLayersAvailableDates(
       }
       return acc;
     }, {});
-  };
 
   const layerDates = await Promise.all([
     ...wmsServerUrls.map(async url => {
@@ -642,15 +639,13 @@ export async function getLayersAvailableDates(
     LayerDefinitions,
   )
     .filter(layer => !!(layer as AdminLevelDataLayerProps).validityPeriod)
-    .map(layer => {
-      return {
-        name: layer.id,
-        dates: mergedLayers[layer.id],
-        path: (layer as AdminLevelDataLayerProps).path,
-        validityPeriod: (layer as AdminLevelDataLayerProps)
-          .validityPeriod as ValidityPeriod,
-      };
-    });
+    .map(layer => ({
+      name: layer.id,
+      dates: mergedLayers[layer.id],
+      path: (layer as AdminLevelDataLayerProps).path,
+      validityPeriod: (layer as AdminLevelDataLayerProps)
+        .validityPeriod as ValidityPeriod,
+    }));
 
   // Use preprocessed dates for layers with dates path
   const preprocessedDates = await fetchPreprocessedDates();
@@ -704,8 +699,10 @@ export async function getLayersAvailableDates(
     ),
   );
 
-  // eslint-disable-next-line fp/no-mutating-assign
-  return Object.assign(layerDefinitionsBluePrint, ...layerDateItemsMap);
+  return {
+    ...layerDefinitionsBluePrint,
+    ...Object.assign({}, ...layerDateItemsMap),
+  };
 }
 
 /**

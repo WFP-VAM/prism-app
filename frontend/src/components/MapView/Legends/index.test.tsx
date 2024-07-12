@@ -1,4 +1,3 @@
-import React from 'react';
 import { render } from '@testing-library/react';
 
 import { Provider } from 'react-redux';
@@ -12,7 +11,7 @@ test('renders as expected', () => {
   const { container } = render(
     <BrowserRouter>
       <Provider store={store}>
-        <Legends layers={[]} />
+        <Legends />
       </Provider>
     </BrowserRouter>,
   );

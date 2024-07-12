@@ -230,7 +230,7 @@ function HomeTable({ dialogs }: HomeTableProps) {
   const headerRow: ExtendedRowProps = {
     id: -1,
     iconContent: null,
-    windows: selectedWindow === 'All' ? AAWindowKeys.map(x => []) : [[]],
+    windows: selectedWindow === 'All' ? AAWindowKeys.map(_x => []) : [[]],
     header: selectedWindow === 'All' ? [...AAWindowKeys] : [selectedWindow],
   };
 
@@ -239,10 +239,10 @@ function HomeTable({ dialogs }: HomeTableProps) {
       rowCategories
         .filter(x => categories[x.category])
         .map(x => {
-          const getWinData = (win: typeof AAWindowKeys[number]) =>
+          const getWinData = (win: (typeof AAWindowKeys)[number]) =>
             Object.entries(renderedDistricts[win])
-              .map(([district, distData]) => {
-                return distData.map(dist => {
+              .map(([district, distData]) =>
+                distData.map(dist => {
                   if (dist.category === x.category && dist.phase === x.phase) {
                     return {
                       name: district,
@@ -254,8 +254,8 @@ function HomeTable({ dialogs }: HomeTableProps) {
                     };
                   }
                   return undefined;
-                });
-              })
+                }),
+              )
               .flat()
               .filter(y => y !== undefined);
 

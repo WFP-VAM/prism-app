@@ -26,28 +26,26 @@ function formatLayersCategories(
   },
   selectedLayers?: LayerType[],
 ): LayersCategoriesType {
-  return map(layersList, (layerKeys, layersListKey) => {
-    return {
-      title: startCase(layersListKey),
-      layers: layerKeys.filter(isLayerKey).map(key => {
-        if (typeof key === 'object') {
-          const group = (mapKeys(key, (_v, k: string) =>
-            camelCase(k),
-          ) as unknown) as MenuGroup;
-          const visibleLayer =
-            group.layers.find(gl =>
-              selectedLayers?.some(sl => sl.id === gl.id),
-            ) || group.layers.find(l => l.main);
+  return map(layersList, (layerKeys, layersListKey) => ({
+    title: startCase(layersListKey),
+    layers: layerKeys.filter(isLayerKey).map(key => {
+      if (typeof key === 'object') {
+        const group = mapKeys(key, (_v, k: string) =>
+          camelCase(k),
+        ) as unknown as MenuGroup;
+        const visibleLayer =
+          group.layers.find(gl =>
+            selectedLayers?.some(sl => sl.id === gl.id),
+          ) || group.layers.find(l => l.main);
 
-          const staticLayer = LayerDefinitions[visibleLayer?.id as LayerKey];
-          const layer = { ...staticLayer, group };
-          return layer;
-        }
-        return LayerDefinitions[key as LayerKey];
-      }),
-      tables: layerKeys.filter(isTableKey).map(key => TableDefinitions[key]),
-    };
-  });
+        const staticLayer = LayerDefinitions[visibleLayer?.id as LayerKey];
+        const layer = { ...staticLayer, group };
+        return layer;
+      }
+      return LayerDefinitions[key as LayerKey];
+    }),
+    tables: layerKeys.filter(isTableKey).map(key => TableDefinitions[key]),
+  }));
 }
 
 /**
@@ -102,11 +100,11 @@ export const getDynamicMenuList = (selectedLayers?: LayerType[]) =>
     };
   });
 
-export const tablesMenuItems = menuList.filter((menuItem: MenuItemType) => {
-  return menuItem.layersCategories.some((layerCategory: LayersCategoryType) => {
-    return layerCategory.tables.length > 0;
-  });
-});
+export const tablesMenuItems = menuList.filter((menuItem: MenuItemType) =>
+  menuItem.layersCategories.some(
+    (layerCategory: LayersCategoryType) => layerCategory.tables.length > 0,
+  ),
+);
 
 export const areTablesAvailable = tablesMenuItems.length >= 1;
 export const isAnticipatoryActionAvailable = !!appConfig.anticipatoryActionUrl;

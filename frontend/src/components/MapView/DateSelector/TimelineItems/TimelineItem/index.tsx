@@ -1,4 +1,4 @@
-import { WithStyles, createStyles, withStyles } from '@material-ui/core';
+import { createStyles, makeStyles } from '@material-ui/core';
 import React, { memo } from 'react';
 import 'react-datepicker/dist/react-datepicker.css';
 import { DateItem, DateRangeType } from 'config/types';
@@ -6,38 +6,33 @@ import { binaryFind } from 'utils/date-utils';
 
 const TimelineItem = memo(
   ({
-    classes,
     concatenatedLayers,
     currentDate,
     dateItemStyling,
     isDateAvailable,
   }: TimelineItemProps) => {
     // Pre-compute the matching indices for all layers
-    const layerMatches = concatenatedLayers.map(layerDates => {
-      return binaryFind<DateItem>(
+    const classes = useStyles();
+    const layerMatches = concatenatedLayers.map(layerDates =>
+      binaryFind<DateItem>(
         layerDates,
         new Date(currentDate.value).setUTCHours(0, 0, 0, 0),
         (i: DateItem) => new Date(i.displayDate).setUTCHours(0, 0, 0, 0),
-      );
-    });
+      ),
+    );
 
     const hasNextItemDirectionForward = (
-      matchingDate: DateItem,
-      layerDates: DateItem[],
-    ): boolean => {
-      return false;
-    };
+      _matchingDate: DateItem,
+      _layerDates: DateItem[],
+    ): boolean => false;
 
     const hasNextItemDirectionBackward = (
-      matchingDate: DateItem,
-      layerDates: DateItem[],
-    ): boolean => {
-      return false;
-    };
+      _matchingDate: DateItem,
+      _layerDates: DateItem[],
+    ): boolean => false;
 
-    const isQueryDate = (date: DateItem): boolean => {
-      return date.queryDate === date.displayDate;
-    };
+    const isQueryDate = (date: DateItem): boolean =>
+      date.queryDate === date.displayDate;
 
     return (
       <>
@@ -48,7 +43,7 @@ const TimelineItem = memo(
             style={{
               height: 4,
               // TODO - handle more than 3 layers
-              top: 10 * Math.min(layerMatches?.length + 1, 3),
+              top: 10 * Math.min((layerMatches?.length || 0) + 1, 3),
             }}
             key={Math.random()}
             role="presentation"
@@ -102,7 +97,7 @@ const TimelineItem = memo(
   },
 );
 
-const styles = () =>
+const useStyles = makeStyles(() =>
   createStyles({
     layerDirectionBase: {
       display: 'block',
@@ -119,9 +114,10 @@ const styles = () =>
       right: 0,
       transform: 'rotate(180deg)',
     },
-  });
+  }),
+);
 
-export interface TimelineItemProps extends WithStyles<typeof styles> {
+export interface TimelineItemProps {
   concatenatedLayers: DateItem[][];
   currentDate: DateRangeType;
   dateItemStyling: {
@@ -133,4 +129,4 @@ export interface TimelineItemProps extends WithStyles<typeof styles> {
   isDateAvailable: boolean;
 }
 
-export default withStyles(styles)(TimelineItem);
+export default TimelineItem;

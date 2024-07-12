@@ -135,54 +135,52 @@ export function parseAndTransformAA(data: any[]) {
     // eslint-disable-next-line fp/no-mutating-methods
     const windowDates = [...new Set(filtered.map(x => x.date))].sort();
 
-    const computedExtraRows: [
-      string,
-      AnticipatoryActionDataRow[],
-    ][] = Array.from(groupedByDistrict.entries()).map(([district, aaData]) => {
-      // eslint-disable-next-line fp/no-mutating-methods
-      const sorted = aaData.sort((a, b) => -sortFn(a, b));
-      let setElementsToPropagate = [] as AnticipatoryActionDataRow[];
-      let newRows = [] as AnticipatoryActionDataRow[];
+    const computedExtraRows: [string, AnticipatoryActionDataRow[]][] =
+      Array.from(groupedByDistrict.entries()).map(([district, aaData]) => {
+        // eslint-disable-next-line fp/no-mutating-methods
+        const sorted = aaData.sort((a, b) => -sortFn(a, b));
+        let setElementsToPropagate = [] as AnticipatoryActionDataRow[];
+        let newRows = [] as AnticipatoryActionDataRow[];
 
-      let prevMax: AnticipatoryActionDataRow | undefined;
-      windowDates.forEach((date, index) => {
-        const dateData = sorted.filter(x => x.date === date);
+        let prevMax: AnticipatoryActionDataRow | undefined;
+        windowDates.forEach(date => {
+          const dateData = sorted.filter(x => x.date === date);
 
-        // Propagate SET elements from previous dates
-        const propagatedSetElements = setElementsToPropagate.map(x => ({
-          ...x,
-          computedRow: true,
-          new: false,
-          date,
-        }));
+          // Propagate SET elements from previous dates
+          const propagatedSetElements = setElementsToPropagate.map(x => ({
+            ...x,
+            computedRow: true,
+            new: false,
+            date,
+          }));
 
-        // If a district reaches a set state, it will propagate until the end of the window
-        dateData.forEach(x => {
-          if (!x.isValid) {
-            return;
-          }
-          if (x.phase === 'Set') {
-            // eslint-disable-next-line fp/no-mutation
-            setElementsToPropagate = [...setElementsToPropagate, x];
-          }
-          // set new parameter
-          if (
-            prevMax === undefined ||
-            AADataSeverityOrder(x.category, x.phase) >
-              AADataSeverityOrder(prevMax.category, prevMax.phase)
-          ) {
-            // eslint-disable-next-line fp/no-mutation
-            prevMax = x;
-            // eslint-disable-next-line fp/no-mutation, no-param-reassign
-            x.new = true;
-          }
+          // If a district reaches a set state, it will propagate until the end of the window
+          dateData.forEach(x => {
+            if (!x.isValid) {
+              return;
+            }
+            if (x.phase === 'Set') {
+              // eslint-disable-next-line fp/no-mutation
+              setElementsToPropagate = [...setElementsToPropagate, x];
+            }
+            // set new parameter
+            if (
+              prevMax === undefined ||
+              AADataSeverityOrder(x.category, x.phase) >
+                AADataSeverityOrder(prevMax.category, prevMax.phase)
+            ) {
+              // eslint-disable-next-line fp/no-mutation
+              prevMax = x;
+              // eslint-disable-next-line fp/no-mutation, no-param-reassign
+              x.new = true;
+            }
+          });
+
+          // eslint-disable-next-line no-const-assign, fp/no-mutation
+          newRows = [...newRows, ...dateData, ...propagatedSetElements];
         });
-
-        // eslint-disable-next-line no-const-assign, fp/no-mutation
-        newRows = [...newRows, ...dateData, ...propagatedSetElements];
+        return [district, newRows];
       });
-      return [district, newRows];
-    });
 
     const result = Object.fromEntries(
       computedExtraRows.map(x => [
@@ -246,7 +244,7 @@ export function calculateMapRenderedDistricts({
           }
 
           // keep showing latest window data, even for later dates
-          const range = windowRanges[winKey as typeof AAWindowKeys[number]];
+          const range = windowRanges[winKey as (typeof AAWindowKeys)[number]];
           const date =
             range?.end === undefined || selectedDate < range.end
               ? selectedDate
@@ -357,9 +355,9 @@ export function calculateAAMarkers({
     selectedWindow === 'All'
       ? calculateCombinedAAMapData(renderedDistricts)
       : Object.fromEntries(
-          Object.entries(
-            renderedDistricts[selectedWindow],
-          ).map(([dist, val]) => [dist, val[0]]),
+          Object.entries(renderedDistricts[selectedWindow]).map(
+            ([dist, val]) => [dist, val[0]],
+          ),
         );
 
   return Object.entries(AADistricts).map(([district, { category, phase }]) => {
