@@ -28,6 +28,7 @@ import { useUrlHistory } from 'utils/url-utils';
 import useLayers from 'utils/layers-utils';
 import { format } from 'date-fns';
 import { Panel, leftPanelTabValueSelector } from 'context/leftPanelStateSlice';
+import { updateDateRange } from 'context/mapStateSlice';
 import TickSvg from './tick.svg';
 import DateSelectorInput from './DateSelectorInput';
 import TimelineItems from './TimelineItems';
@@ -206,8 +207,9 @@ const DateSelector = memo(() => {
       // This updates state because a useEffect in MapView updates the redux state
       // TODO this is convoluted coupling, we should update state here if feasible.
       updateHistory('date', getFormattedDate(time, 'default') as string);
+      dispatch(updateDateRange({ startDate: time }));
     },
-    [stateStartDate, updateHistory],
+    [stateStartDate, updateHistory, dispatch],
   );
 
   const setDatePosition = useCallback(
