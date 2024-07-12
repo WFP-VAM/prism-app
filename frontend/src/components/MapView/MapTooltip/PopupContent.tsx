@@ -168,6 +168,10 @@ const PopupContent = ({
           return true;
         })
         .map(([key, value]) => {
+          // If the data is undefined, null, or an empty string, we do not render the data (only render the key)
+          const isKeyValuePair = [undefined, null, ''].every(
+            item => item !== value.data,
+          );
           return (
             <Fragment key={key}>
               <div>
@@ -180,10 +184,10 @@ const PopupContent = ({
                       color="inherit"
                       className={classes.text}
                     >
-                      {`${t(key)}: `}
+                      {isKeyValuePair ? `${t(key)}: ` : t(key)}
                     </Typography>
                   )}
-                {key !== 'Population in phase 1' && (
+                {key !== 'Population in phase 1' && isKeyValuePair && (
                   <Typography
                     display="inline"
                     variant="h4"

@@ -5,7 +5,7 @@ import type { RootState } from './store';
 
 export interface PopupData {
   [key: string]: {
-    data: number | string;
+    data: number | string | null;
     coordinates: GeoJSON.Position;
   };
 }

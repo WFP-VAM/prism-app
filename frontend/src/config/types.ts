@@ -177,6 +177,7 @@ export type LegendDefinitionItem = {
   // Optional, to create custom label like '≤50'. if label is not defined
   // then value attribute will be shown instead
   label?: LegendLabel | string;
+  fillPattern?: 'left' | 'right';
 };
 
 export type LegendDefinition = LegendDefinitionItem[];
@@ -544,6 +545,12 @@ export class AdminLevelDataLayerProps extends CommonLayerProps {
   @makeRequired
   dataField: string;
 
+  @optional // An additional label to display in Tooltips for the dataField or custom displaySource
+  dataLabel?: string;
+
+  @optional // if legend_label, uses the label from legend to display in feature info. if not, uses dataField
+  displaySource?: 'legend_label' | 'data_field';
+
   @optional
   boundary?: LayerKey;
 
@@ -644,7 +651,16 @@ export enum PointDataLoader {
 export class PointDataLayerProps extends CommonLayerProps {
   type: 'point_data';
   data: string;
+
+  @makeRequired
   dataField: string;
+
+  @optional // An additional label to display in Tooltips for the dataField or custom displaySource
+  dataLabel?: string;
+
+  @optional // if legend_label, uses the label from legend to display in feature info. if not, uses dataField
+  displaySource?: 'legend_label' | 'data_field';
+
   // URL to fetch all possible dates from
   @optional
   dateUrl?: string;

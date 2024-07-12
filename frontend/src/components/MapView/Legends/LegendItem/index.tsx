@@ -42,6 +42,7 @@ import { toggleRemoveLayer } from 'components/MapView/LeftPanel/layersPanel/Menu
 import { opacitySelector, setOpacity } from 'context/opacityStateSlice';
 import { lightGrey } from 'muiTheme';
 import LoadingBar from '../LoadingBar';
+import LegendMarkdown from '../LegendMarkdown';
 
 // Children here is legendText
 const LegendItem = memo(
@@ -183,7 +184,7 @@ const LegendItem = memo(
           value={getLegendItemLabel(t, item)}
           color={item.color as string}
           opacity={opacity as number}
-          fillPattern={fillPattern}
+          fillPattern={fillPattern || item.fillPattern}
         />
       ));
     }, [fillPattern, getColorIndicatorKey, legend, opacity, t]);
@@ -208,7 +209,11 @@ const LegendItem = memo(
       }
       return (
         <Grid item>
-          <Typography variant="h5">{children}</Typography>
+          {typeof children === 'string' ? (
+            <LegendMarkdown>{children}</LegendMarkdown>
+          ) : (
+            <Typography variant="h5">{children}</Typography>
+          )}
         </Grid>
       );
     }, [children]);
