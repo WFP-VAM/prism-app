@@ -91,9 +91,7 @@ function AlertForm({ isOpen, setOpen }: AlertFormProps) {
     }
 
     const features = regionsList
-      .map(region => {
-        return regionCodesToFeatureData[region];
-      })
+      .map(region => regionCodesToFeatureData[region])
       .filter(Boolean);
 
     // Generate a copy of admin layer data (to preserve top-level properties)
