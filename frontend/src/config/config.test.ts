@@ -95,40 +95,44 @@ describe('Config Map', () => {
       itemsToTranslate = Array.from(new Set(itemsToTranslate));
 
       Object.entries(translation).forEach(([key, value]) => {
-        if (key === 'en') {
-          // nothing to do, we assume keys are in english
-        } else {
-          // compare translation with itemsToTranslate
-          const missingFields: string[] = [];
-          itemsToTranslate.forEach(item => {
-            if (
-              item !== '' &&
-              !Object.prototype.hasOwnProperty.call(value, item)
-            ) {
-              // eslint-disable-next-line fp/no-mutating-methods
-              missingFields.push(item);
-            }
-          });
-          if (missingFields.length > 0) {
-            // Create an array to hold the table data
-            const tableData: { [key: string]: string }[] = [];
-
-            // Populate the table data with missing fields
-            missingFields.forEach(field => {
-              const row: { [key: string]: string } = {
-                [`Missing Fields: ${country} - ${key}`]: `${field.slice(0, 64)}${field.length > 64 ? '...' : ''}`,
-              };
-              // eslint-disable-next-line fp/no-mutating-methods
-              tableData.push(row);
-            });
-
-            // Print the table to the console
-            // eslint-disable-next-line no-console
-            console.table(tableData);
-          }
-          // TODO - activate this assertion once all translations are complete
-          // expect(missingFields).toEqual([]);
+        if (key === 'en' && country !== 'mozambbique') {
+          // return early so we only test for English keys once
+          return;
         }
+        if (key === 'en') {
+          // eslint-disable-next-line fp/no-mutation
+          itemsToTranslate = Array.from(new Set(translationKeys));
+        }
+        // compare translation with itemsToTranslate
+        const missingFields: string[] = [];
+        itemsToTranslate.forEach(item => {
+          if (
+            item !== '' &&
+            !Object.prototype.hasOwnProperty.call(value, item)
+          ) {
+            // eslint-disable-next-line fp/no-mutating-methods
+            missingFields.push(item);
+          }
+        });
+        if (missingFields.length > 0) {
+          // Create an array to hold the table data
+          const tableData: { [key: string]: string }[] = [];
+
+          // Populate the table data with missing fields
+          missingFields.forEach(field => {
+            const row: { [key: string]: string } = {
+              [`Missing Fields: ${country} - ${key}`]: `${field.slice(0, 64)}${field.length > 64 ? '...' : ''}`,
+            };
+            // eslint-disable-next-line fp/no-mutating-methods
+            tableData.push(row);
+          });
+
+          // Print the table to the console
+          // eslint-disable-next-line no-console
+          console.table(tableData);
+        }
+        // TODO - activate this assertion once all translations are complete
+        // expect(missingFields).toEqual([]);
       });
     });
   });
