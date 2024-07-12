@@ -33,6 +33,7 @@ import DateSelectorInput from './DateSelectorInput';
 import TimelineItems from './TimelineItems';
 import { TIMELINE_ITEM_WIDTH, findDateIndex } from './utils';
 import { oneDayInMs } from '../LeftPanel/utils';
+import { updateDateRange } from 'context/mapStateSlice';
 
 type Point = {
   x: number;
@@ -206,6 +207,7 @@ const DateSelector = memo(() => {
       // This updates state because a useEffect in MapView updates the redux state
       // TODO this is convoluted coupling, we should update state here if feasible.
       updateHistory('date', getFormattedDate(time, 'default') as string);
+      dispatch(updateDateRange({ startDate: time }));
     },
     [stateStartDate, updateHistory],
   );

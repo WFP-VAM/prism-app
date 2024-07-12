@@ -221,12 +221,11 @@ interface CalculateMapRenderedDistrictsParams {
   windowRanges: AnticipatoryActionState['windowRanges'];
 }
 
-const getSeason = (date?: string) => {
-  if (!date) {
-    return undefined;
-  }
-  const year = new Date(date).getFullYear();
-  const month = new Date(date).getMonth();
+export const getSeason = (date?: string) => {
+  // Use today's date if date is undefined
+  const currentDate = date ? new Date(date) : new Date();
+  const year = currentDate.getFullYear();
+  const month = currentDate.getMonth();
 
   if (month >= 4) {
     // May (4) to December (11)
@@ -259,7 +258,7 @@ export function calculateMapRenderedDistricts({
           if (
             !selectedDate ||
             districtData.filter(
-              x => x.date <= selectedDate && season && season === x.season,
+              x => x.date <= selectedDate && season === x.season,
             )?.length === 0
           ) {
             return [
