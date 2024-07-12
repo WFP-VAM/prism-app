@@ -1,4 +1,4 @@
-import React, {
+import {
   ChangeEvent,
   memo,
   useCallback,
@@ -37,9 +37,7 @@ import DataTable from './DataTable';
 import { tablesMenuItems } from '../utils';
 
 const tableCategories = tablesMenuItems
-  .map((menuItem: MenuItemType) => {
-    return menuItem.layersCategories;
-  })
+  .map((menuItem: MenuItemType) => menuItem.layersCategories)
   .flat();
 
 const tabPanelType = Panel.Tables;
@@ -110,39 +108,37 @@ const TablesPanel = memo(() => {
   ]);
 
   const renderTablesMenuItems = useCallback(
-    (tables: TableType[]) => {
-      return tables.map((individualTable: TableType) => {
-        return (
-          <MenuItem key={individualTable.id} value={individualTable.id}>
-            {t(individualTable.title)}
-          </MenuItem>
-        );
-      });
-    },
+    (tables: TableType[]) =>
+      tables.map((individualTable: TableType) => (
+        <MenuItem key={individualTable.id} value={individualTable.id}>
+          {t(individualTable.title)}
+        </MenuItem>
+      )),
     [t],
   );
 
-  const renderedTextFieldItems = useMemo(() => {
-    return tableCategories.map((tableCategory: LayersCategoryType) => {
-      return [
+  const renderedTextFieldItems = useMemo(
+    () =>
+      tableCategories.map((tableCategory: LayersCategoryType) => [
         <ListSubheader key={tableCategory.title}>
           <Typography variant="body2" color="primary">
             {t(tableCategory.title)}
           </Typography>
         </ListSubheader>,
         renderTablesMenuItems(tableCategory.tables),
-      ];
-    });
-  }, [renderTablesMenuItems, t]);
+      ]),
+    [renderTablesMenuItems, t],
+  );
 
-  const renderedTextFieldBody = useMemo(() => {
-    return [
+  const renderedTextFieldBody = useMemo(
+    () => [
       <MenuItem key="placeholder" value="placeholder" disabled>
         {t('Choose Table')}
       </MenuItem>,
       renderedTextFieldItems,
-    ];
-  }, [renderedTextFieldItems, t]);
+    ],
+    [renderedTextFieldItems, t],
+  );
 
   const handleTableDropdownChange = useCallback(
     (event: ChangeEvent<HTMLInputElement>) => {

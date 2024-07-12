@@ -1,8 +1,9 @@
 import { Style } from '@react-pdf/types';
-import { TFunctionResult } from 'i18next';
+// import { TFunctionResult } from 'i18next';
 
+// TODO:
 export interface PDFLegendDefinition {
-  value: string | number | TFunctionResult;
+  value: string | number; // | TFunctionResult;
   style: Style | Style[];
 }
 

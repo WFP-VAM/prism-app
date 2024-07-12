@@ -12,11 +12,9 @@ export const mapTileLoadingState = createSlice({
     loadingLayerIds: [],
   } as MapTileLoadingState,
   reducers: {
-    setLoadingLayerIds: (state, { payload }: PayloadAction<LayerKey[]>) => {
-      return {
-        loadingLayerIds: payload,
-      };
-    },
+    setLoadingLayerIds: (_state, { payload }: PayloadAction<LayerKey[]>) => ({
+      loadingLayerIds: payload,
+    }),
   },
 });
 

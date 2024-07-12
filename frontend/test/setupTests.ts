@@ -3,29 +3,38 @@ import React from 'react';
 // allows you to do things like:
 // expect(element).toHaveTextContent(/react/i)
 // learn more: https://github.com/testing-library/jest-dom
-import '@testing-library/jest-dom/extend-expect';
+// import '@testing-library/jest-dom/extend-expect';
+import '@testing-library/jest-dom';
+// eslint-disable-next-line import/no-extraneous-dependencies
+import 'cross-fetch/polyfill';
 import { randomBytes } from 'crypto';
 
 // Mock Workers
 // eslint-disable-next-line fp/no-mutation
 global.URL.createObjectURL = jest.fn(() => 'worker');
 class Worker {
-  constructor(stringUrl) {
+  url: any;
+  onmessage: (v: any) => void;
+
+  constructor(stringUrl: any) {
     this.url = stringUrl;
     this.onmessage = () => {};
   }
 
-  postMessage(msg) {
+  postMessage(msg: any) {
     this.onmessage(msg);
   }
 }
+
+// eslint-disable-next-line fp/no-mutation
+// @ts-ignore
 // eslint-disable-next-line fp/no-mutation
 window.Worker = Worker;
 
 // eslint-disable-next-line fp/no-mutating-methods
 Object.defineProperty(global.self, 'crypto', {
   value: {
-    getRandomValues: <T extends ArrayBufferView | null>(arr: T) => {
+    getRandomValues: (arr: any) => {
       if (!arr) {
         return arr;
       }
@@ -44,9 +53,10 @@ jest.mock('@react-pdf/renderer', () => ({
 }));
 
 // https://github.com/remarkjs/react-markdown/issues/635
-jest.mock('react-markdown', () => (props: { children: React.ReactNode }) => {
-  return <>{props.children}</>;
-});
+jest.mock(
+  'react-markdown',
+  () => (props: { children: React.ReactNode }) => props.children,
+);
 
 jest.mock('max-inscribed-circle', () => ({}));
 
@@ -63,6 +73,16 @@ jest.mock('react-router-dom', () => ({
     pathname: 'localhost:3000/',
   }),
 }));
+
+// jest.mock('i18next', () => ({
+//   __esModule: true,
+//   default: {
+//     t: (k: any) => k,
+//     use: () => ({
+//       init: () => {},
+//     }),
+//   },
+// }));
 
 stubMuiComponent('Typography');
 stubMuiComponent('Button');
@@ -105,7 +125,7 @@ stubMuiComponent('DialogTitle');
 stubMuiComponent('Icon');
 stubMuiComponent('Radio');
 
-function stubMuiIcon(iconName: string) {
+function stubMuiIcon(iconName: any) {
   jest.doMock(`@material-ui/icons/${iconName}`, () => `mock-${iconName}`);
 }
 

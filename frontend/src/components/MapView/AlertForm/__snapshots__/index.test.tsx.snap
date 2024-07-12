@@ -3,10 +3,10 @@
 exports[`renders as expected 1`] = `
 <div>
   <div
-    class="AlertForm-alertForm-3"
+    class="makeStyles-alertForm-3"
   >
     <mock-button
-      classname="AlertForm-alertTriggerButton-2"
+      classname="makeStyles-alertTriggerButton-2"
       color="primary"
       variant="contained"
     >
@@ -21,7 +21,7 @@ exports[`renders as expected 1`] = `
         />
       </svg>
       <mock-typography
-        classname="AlertForm-alertLabel-1"
+        classname="makeStyles-alertLabel-1"
         variant="body2"
       >
         Create Alert
@@ -36,13 +36,13 @@ exports[`renders as expected 1`] = `
       paperprops="[object Object]"
     >
       <div
-        class="MuiBox-root MuiBox-root-15 AlertForm-alertFormMenu-4"
+        class="MuiBox-root MuiBox-root-15 makeStyles-alertFormMenu-4"
       >
         <div
-          class="AlertForm-newAlertFormContainer-8"
+          class="makeStyles-newAlertFormContainer-8"
         >
           <div
-            class="AlertForm-alertFormOptions-7"
+            class="makeStyles-alertFormOptions-7"
           >
             <mock-typography
               variant="body2"
@@ -50,13 +50,13 @@ exports[`renders as expected 1`] = `
               Hazard Layer
             </mock-typography>
             <mock-layer-dropdown
-              classname="AlertForm-selector-10"
+              classname="makeStyles-selector-10"
               placeholder="Choose hazard layer"
               type="wms"
             />
           </div>
           <div
-            class="AlertForm-alertFormOptions-7"
+            class="makeStyles-alertFormOptions-7"
           >
             <mock-typography
               variant="body2"
@@ -64,10 +64,10 @@ exports[`renders as expected 1`] = `
               Threshold
             </mock-typography>
             <div
-              class="AlertForm-thresholdInputsContainer-6"
+              class="makeStyles-thresholdInputsContainer-6"
             >
               <mock-textfield
-                classname="AlertForm-numberField-12"
+                classname="makeStyles-numberField-12"
                 error="false"
                 helpertext=""
                 id="filled-number"
@@ -78,7 +78,7 @@ exports[`renders as expected 1`] = `
                 variant="filled"
               />
               <mock-textfield
-                classname="AlertForm-numberField-12"
+                classname="makeStyles-numberField-12"
                 id="filled-number"
                 inputlabelprops="[object Object]"
                 label="Above"
@@ -89,7 +89,7 @@ exports[`renders as expected 1`] = `
             </div>
           </div>
           <div
-            class="AlertForm-alertFormOptions-7"
+            class="makeStyles-alertFormOptions-7"
           >
             <mock-typography
               variant="body2"
@@ -103,7 +103,7 @@ exports[`renders as expected 1`] = `
             />
           </div>
           <div
-            class="AlertForm-alertFormOptions-7"
+            class="makeStyles-alertFormOptions-7"
           >
             <mock-textfield
               fullwidth="true"
@@ -116,7 +116,7 @@ exports[`renders as expected 1`] = `
             />
           </div>
           <div
-            class="AlertForm-alertFormOptions-7"
+            class="makeStyles-alertFormOptions-7"
           >
             <mock-textfield
               fullwidth="true"
@@ -129,7 +129,7 @@ exports[`renders as expected 1`] = `
           </div>
         </div>
         <mock-button
-          classname="AlertForm-innerCreateAlertButton-9"
+          classname="makeStyles-innerCreateAlertButton-9"
           disabled="true"
         >
           <mock-typography

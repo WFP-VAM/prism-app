@@ -1,4 +1,4 @@
-import React, { memo, useCallback, useState } from 'react';
+import { memo, useCallback, useState } from 'react';
 import {
   Accordion,
   AccordionDetails,
@@ -16,7 +16,7 @@ import {
   PolygonAnalysisResult,
 } from 'utils/analysis-utils';
 import { cyanBlue } from 'muiTheme';
-import { useLayerMenuItemStyles } from 'components/MapView/LeftPanel/layersPanel/MenuItem';
+import { useLayerMenuItemStyles } from 'components/MapView/LeftPanel/layersPanel/MenuItem/utils';
 
 interface AnalysisLayerMenuItemProps {
   title: string;
@@ -41,9 +41,8 @@ const AnalysisLayerMenuItem = memo(
     const classes = useLayerMenuItemStyles();
 
     // We will only have one analysis at a time so when the actual Menu item is visible it will also be enabled
-    const [informationChipLabel, setInformationChipLabel] = useState<string>(
-      '1',
-    );
+    const [informationChipLabel, setInformationChipLabel] =
+      useState<string>('1');
 
     const handleChipOnMouseEnter = useCallback(() => {
       setInformationChipLabel(`1 ${t('Active Layer(s)')}`);

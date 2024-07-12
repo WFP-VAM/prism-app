@@ -1,17 +1,16 @@
-import React from 'react';
 import {
   createStyles,
-  WithStyles,
-  withStyles,
   Typography,
   Button,
   Grid,
+  makeStyles,
 } from '@material-ui/core';
 import { Link } from 'react-router-dom';
 
 import { colors } from 'muiTheme';
 
-function NotFound({ classes }: NotFoundProps) {
+function NotFound() {
+  const classes = useStyles();
   return (
     <div className={classes.container}>
       <Grid container spacing={3} className={classes.content}>
@@ -49,7 +48,7 @@ function NotFound({ classes }: NotFoundProps) {
   );
 }
 
-const styles = () =>
+const useStyles = makeStyles(() =>
   createStyles({
     container: {
       width: '100vw',
@@ -68,8 +67,7 @@ const styles = () =>
       width: '90%',
       opacity: '0.5',
     },
-  });
+  }),
+);
 
-export interface NotFoundProps extends WithStyles<typeof styles> {}
-
-export default withStyles(styles)(NotFound);
+export default NotFound;

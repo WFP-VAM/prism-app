@@ -1,4 +1,4 @@
-import React, { memo, useMemo } from 'react';
+import { memo, useMemo } from 'react';
 import { StyleSheet, Text, View } from '@react-pdf/renderer';
 import { Theme } from '@material-ui/core';
 import { Column } from 'utils/analysis-utils';
@@ -39,18 +39,18 @@ const ReportDocTableHeader = memo(
     const styles = makeStyles(theme);
 
     // The rendered table header columns
-    const renderedTableHeaderColumns = useMemo(() => {
-      return columns.map((column: Column) => {
-        return (
+    const renderedTableHeaderColumns = useMemo(
+      () =>
+        columns.map((column: Column) => (
           <Text
             key={column.id}
             style={[styles.tableCell, { width: cellWidth }]}
           >
             {column.label}
           </Text>
-        );
-      });
-    }, [cellWidth, columns, styles.tableCell]);
+        )),
+      [cellWidth, columns, styles.tableCell],
+    );
 
     // Whether to show the total columns number
     const renderedTotalColumnsNumber = useMemo(() => {

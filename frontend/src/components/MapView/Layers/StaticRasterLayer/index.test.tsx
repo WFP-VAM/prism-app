@@ -1,5 +1,5 @@
 import timezoneMock from 'timezone-mock';
-import { createStaticRasterLayerUrl } from '.';
+import { createStaticRasterLayerUrl } from './utils';
 import { timezones } from '../../../../../test/helpers';
 
 const f = () => {

@@ -1,4 +1,4 @@
-import React, { memo, useEffect, useRef, useState } from 'react';
+import { memo, useEffect, useRef, useState } from 'react';
 import parse from 'html-react-parser';
 import { marked } from 'marked';
 import { Dialog, DialogContent, Typography } from '@material-ui/core';
@@ -27,9 +27,9 @@ const ContentDialog = memo(
       if (!open || !elementId) {
         return;
       }
-      (document.querySelector(
-        `#${elementId}`,
-      ) as HTMLHeadingElement).scrollIntoView({
+      (
+        document.querySelector(`#${elementId}`) as HTMLHeadingElement
+      ).scrollIntoView({
         behavior: 'smooth',
         block: 'start',
       });

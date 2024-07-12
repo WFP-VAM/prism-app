@@ -10,7 +10,7 @@ import {
 } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
 import RemoveIcon from '@material-ui/icons/Remove';
-import React, {
+import {
   ChangeEvent,
   memo,
   useCallback,
@@ -70,19 +70,19 @@ const MenuSwitch = memo(({ title, layers, extent }: MenuSwitchProps) => {
   const [isExpanded, setIsExpanded] = useState(false);
 
   const handleAccordionExpand = useCallback(
-    (event: ChangeEvent<{}>, expanded: boolean) => {
+    (_event: ChangeEvent<{}>, expanded: boolean) => {
       setIsExpanded(expanded);
     },
     [],
   );
 
-  const selectedInternalLayers = useMemo(() => {
-    return selectedLayers.filter(layer => {
-      return layers.some(internalLayer => {
-        return filterActiveLayers(layer, internalLayer);
-      });
-    });
-  }, [layers, selectedLayers]);
+  const selectedInternalLayers = useMemo(
+    () =>
+      selectedLayers.filter(layer =>
+        layers.some(internalLayer => filterActiveLayers(layer, internalLayer)),
+      ),
+    [layers, selectedLayers],
+  );
 
   const [informationChipLabel, setInformationChipLabel] = useState<string>(
     selectedInternalLayers.length.toString(),

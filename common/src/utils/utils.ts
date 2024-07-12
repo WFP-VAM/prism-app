@@ -1,6 +1,6 @@
 export function setTimeoutAsync(
   seconds: number,
-  callback: () => any
+  callback: () => any,
 ): Promise<any> {
   // how do I error out if promise rejected
   return new Promise((resolve, reject) => {

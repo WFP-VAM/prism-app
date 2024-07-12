@@ -1,6 +1,5 @@
 import { makeStyles, createStyles } from '@material-ui/core';
 import { useSafeTranslation } from 'i18n';
-import React from 'react';
 
 export interface AAIconProps {
   background?: string;

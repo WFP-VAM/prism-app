@@ -7,7 +7,7 @@ import {
   TextField,
   Typography,
 } from '@material-ui/core';
-import React, { ReactElement } from 'react';
+import { ReactElement } from 'react';
 import { menuList } from 'components/MapView/LeftPanel/utils';
 import { LayerKey, LayerType } from 'config/types';
 import { getDisplayBoundaryLayers, LayerDefinitions } from 'config/utils';
@@ -57,7 +57,7 @@ function LayerDropdown({
   const adminBoundaries = getDisplayBoundaryLayers();
   const AdminBoundaryCategory = {
     title: 'Admin Levels',
-    layers: adminBoundaries.map((aboundary, index) => ({
+    layers: adminBoundaries.map((aboundary, _index) => ({
       title: t(
         `Level ${aboundary.adminLevelCodes.length - (multiCountry ? 1 : 0)}`,
       ),
@@ -91,9 +91,9 @@ function LayerDropdown({
         if (layerCategory.layers.some(f => f.group)) {
           const layers = layerCategory.layers.map(layer => {
             if (layer.group && !layer.group.activateAll) {
-              return layer.group.layers.map(layerKey => {
-                return LayerDefinitions[layerKey.id as LayerKey];
-              });
+              return layer.group.layers.map(
+                layerKey => LayerDefinitions[layerKey.id as LayerKey],
+              );
             }
             return layer;
           });

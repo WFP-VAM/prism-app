@@ -43,9 +43,13 @@ async function preprocessBoundaryLayer(country, boundaryLayer) {
       'utf-8',
     );
     const boundaryData = JSON.parse(fileContent);
-    const preprocessedData = mergeBoundaryData(boundaryData);
-
-    fs.writeFileSync(outputFilePath, JSON.stringify(preprocessedData));
+    try {
+      const preprocessedData = mergeBoundaryData(boundaryData);
+      fs.writeFileSync(outputFilePath, JSON.stringify(preprocessedData));
+    } catch (error) {
+      console.warn(`Warning: Failed to merge boundary data for ${country}.`, error);
+      return;
+    }
   }
 }
 
