@@ -66,7 +66,7 @@
     "@turf/union": "^7",
     "@types/react-window": "^1.8.8",
     "babel-eslint": "10.0.3",
-    "canvas": "^2.11.2",
+    "canvas": "link:./node_modules/.cache/null",
     "chart.js": "^2.9.3",
     "chartjs-plugin-datalabels": "^1.0.0",
     "colormap": "^2.3.1",
@@ -117,7 +117,8 @@
     "xml-js": "^1.6.11"
   },
   "resolutions": {
-    "node-notifier": "^10.0.1"
+    "node-notifier": "^10.0.1",
+    "canvas": "link:./node_modules/.cache/null"
   },
   "_comment": "The 'defaults' and 'not ie 11' are needed to avoid build issues with maplibre-gl.",
   "browserslist": {
