@@ -28,12 +28,12 @@ import { useUrlHistory } from 'utils/url-utils';
 import useLayers from 'utils/layers-utils';
 import { format } from 'date-fns';
 import { Panel, leftPanelTabValueSelector } from 'context/leftPanelStateSlice';
+import { updateDateRange } from 'context/mapStateSlice';
 import TickSvg from './tick.svg';
 import DateSelectorInput from './DateSelectorInput';
 import TimelineItems from './TimelineItems';
 import { TIMELINE_ITEM_WIDTH, findDateIndex } from './utils';
 import { oneDayInMs } from '../LeftPanel/utils';
-import { updateDateRange } from 'context/mapStateSlice';
 
 type Point = {
   x: number;
@@ -209,7 +209,7 @@ const DateSelector = memo(() => {
       updateHistory('date', getFormattedDate(time, 'default') as string);
       dispatch(updateDateRange({ startDate: time }));
     },
-    [stateStartDate, updateHistory],
+    [stateStartDate, updateHistory, dispatch],
   );
 
   const setDatePosition = useCallback(
