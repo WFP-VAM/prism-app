@@ -23,7 +23,10 @@ async function processAlert(alert: Alert, alertRepository: Repository<Alert>) {
   const { id, alertName, createdAt, email, lastTriggered, prismUrl, active } =
     alert;
 
-  console.log({ id, alertName, email, lastTriggered, prismUrl });
+  console.log(
+    `Processing alert with ID: ${id}, Name: ${alertName}, Email: ${email}, Last Triggered: ${lastTriggered}, PRISM URL: ${prismUrl}`,
+  );
+
   let availableDates;
   let layerAvailableDates = [];
   try {
@@ -49,14 +52,16 @@ async function processAlert(alert: Alert, alertRepository: Repository<Alert>) {
 
   const maxDate = new Date(Math.max(...(layerAvailableDates || [])));
 
-  console.log({ maxDate });
-
   if (
     isNaN(maxDate.getTime()) ||
     (lastTriggered && lastTriggered >= maxDate) ||
     createdAt >= maxDate
   ) {
-    console.log(`No new data for alert ${id}.`);
+    console.log(
+      `No new data for alert ${id}. Last triggered or created on ${
+        lastTriggered || createdAt
+      }. Max available date is ${maxDate}.`,
+    );
     return;
   }
 
