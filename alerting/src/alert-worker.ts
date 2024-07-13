@@ -109,7 +109,11 @@ async function run() {
   const alertRepository = connection.getRepository(Alert);
 
   const alerts = await alertRepository.find({ where: { active: true } });
-  console.info(`Processing ${alerts.length} active alerts.`);
+  console.info(
+    `Processing ${
+      alerts.length
+    } active alerts on ${new Date().toLocaleDateString()}.`,
+  );
 
   await Bluebird.map(
     alerts,
