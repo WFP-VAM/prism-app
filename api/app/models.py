@@ -104,7 +104,7 @@ class AlertsZonesModel(BaseModel):
 
     type: str = Field(..., example=alert_data_zones["type"])
     name: str = Field(..., example=alert_data_zones["name"])
-    crs: dict = Field(..., example=alert_data_zones["crs"])
+    crs: Optional[dict] = Field(None, example=alert_data_zones["crs"])
     features: dict | list[dict] = Field(..., example=alert_data_zones["features"])
 
     _val_type = validator("type", allow_reuse=True)(must_not_contain_null_char)
