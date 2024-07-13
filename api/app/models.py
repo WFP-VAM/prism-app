@@ -65,6 +65,13 @@ class StatsModel(BaseModel):
     mask_calc_expr: Optional[str] = None
     filter_by: Optional[FilterProperty] = None
 
+    @root_validator
+    def check_zones_or_zones_url(cls, values):
+        zones_url, zones = values.get("zones_url"), values.get("zones")
+        if not zones_url and not zones:
+            raise ValueError("Either zones_url or zones must be provided.")
+        return values
+
 
 class RasterGeotiffModel(BaseModel):
     """Schema for raster_geotiff data to be passed to /raster_geotiff endpoint."""
