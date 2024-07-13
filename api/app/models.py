@@ -55,7 +55,7 @@ class StatsModel(BaseModel):
     """Schema for stats data to be passed to /stats endpoint."""
 
     geotiff_url: HttpUrl = Field(..., example=stats_data["geotiff_url"])
-    zones_url: HttpUrl = Field(..., example=stats_data["zones_url"])
+    zones_url: Optional[HttpUrl] = Field(..., example=stats_data["zones_url"])
     group_by: str = Field(..., example=stats_data["group_by"])
     wfs_params: Optional[WfsParamsModel] = None
     geojson_out: Optional[bool] = False
