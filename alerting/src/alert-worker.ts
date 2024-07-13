@@ -23,6 +23,7 @@ async function processAlert(alert: Alert, alertRepository: Repository<Alert>) {
   const { id, alertName, createdAt, email, lastTriggered, prismUrl, active } =
     alert;
 
+  console.log({ id, alertName, email, lastTriggered, prismUrl });
   let availableDates;
   let layerAvailableDates = [];
   try {
