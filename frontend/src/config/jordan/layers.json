@@ -4021,7 +4021,8 @@
     "scale": "monthly",
     "base_url": "https://hip-service.ovio.org/q_multi_geojson",
     "validity": {
-      "forward": 3,
+      "forward": 1,
+      "backward": 2,
       "mode": "dekad"
     },
     "input_layers": [
@@ -4217,7 +4218,8 @@
     "scale": "monthly",
     "base_url": "https://hip-service.ovio.org/q_multi_geojson",
     "validity": {
-      "forward": 3,
+      "forward": 1,
+      "backward": 2,
       "mode": "dekad"
     },
     "input_layers": [

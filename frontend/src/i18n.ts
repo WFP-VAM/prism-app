@@ -102,7 +102,10 @@ i18n
     defaultNS: 'translation',
     saveMissing: true,
     missingKeyHandler: (lng, _ns, key) => {
-      logMissingKey(Array.isArray(lng) ? lng[0] : lng, key);
+      const foundLng = Array.isArray(lng) ? lng[0] : lng;
+      if (foundLng !== 'en') {
+        logMissingKey(foundLng, key);
+      }
     },
   });
 

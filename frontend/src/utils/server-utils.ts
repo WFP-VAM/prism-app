@@ -1,5 +1,5 @@
 import { oneDayInMs } from 'components/MapView/LeftPanel/utils';
-import { get, merge, snakeCase, sortBy, sortedUniqBy } from 'lodash';
+import { get, merge, snakeCase, sortBy } from 'lodash';
 import { WFS, WMS, fetchCoverageLayerDays, formatUrl } from 'prism-common';
 import { Dispatch } from 'redux';
 import { appConfig, safeCountry } from '../config';
@@ -31,7 +31,6 @@ import { addNotification } from '../context/notificationStateSlice';
 import { fetchACLEDDates } from './acled-utils';
 import {
   StartEndDate,
-  binaryIncludes,
   datesAreEqualWithoutTime,
   generateDateItemsRange,
   generateDatesRange,
@@ -395,20 +394,12 @@ export function generateIntermediateDateItemFromValidity(
         endDate: endDate.getTime(),
       }));
 
-      // We filter the dates that don't include the displayDate of the previous item array
-      const filteredDateItems = acc.filter(
-        dateItem => !binaryIncludes(daysToAdd, dateItem.displayDate, x => x),
-      );
-
-      return [...filteredDateItems, ...dateItemsToAdd];
+      return [...acc, ...dateItemsToAdd];
     }, []);
 
   // We sort the defaultDateItems and the dateItemsWithValidity and we order by displayDate to filter the duplicates
   // or the overlapping dates
-  return sortedUniqBy(
-    sortBy(dateItemsWithValidity, 'displayDate'),
-    'displayDate',
-  );
+  return sortBy(dateItemsWithValidity, 'displayDate');
 }
 
 /**
