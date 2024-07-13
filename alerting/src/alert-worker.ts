@@ -58,9 +58,9 @@ async function processAlert(alert: Alert, alertRepository: Repository<Alert>) {
     createdAt >= maxDate
   ) {
     console.log(
-      `No new data for alert ${id}. Last triggered or created on ${
+      `No new data for alert ${id}. Last triggered or created on ${(
         lastTriggered || createdAt
-      }. Max available date is ${maxDate}.`,
+      ).toDateString()}. Max available date is ${maxDate.toDateString()}.`,
     );
     return;
   }
