@@ -42,12 +42,14 @@ async function processAlert(alert: Alert, alertRepository: Repository<Alert>) {
     );
   }
 
-  if (!layerAvailableDates) {
+  if (!layerAvailableDates || layerAvailableDates.length === 0) {
     console.warn(`No dates available for ${baseUrl} ${serverLayerName}.`);
     return;
   }
 
   const maxDate = new Date(Math.max(...(layerAvailableDates || [])));
+
+  console.log({ maxDate });
 
   if (
     isNaN(maxDate.getTime()) ||
