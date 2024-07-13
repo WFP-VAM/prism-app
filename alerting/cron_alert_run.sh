@@ -4,7 +4,7 @@ cd ~/prism-app/alerting
 # source secrets from AWS
 source ../api/set_envs.sh
 
-docker compose run --entrypoint 'yarn alert-worker' alerting-node >>~/prism-app/alerting/alert_worker.log 2>&1
+docker compose run --entrypoint 'yarn alert-worker' alerting-node 2>&1 | tee -a ~/prism-app/alerting/alert_worker.log
 
 ## To set up the cron job, run the following command on the server:
 # contrab -e
