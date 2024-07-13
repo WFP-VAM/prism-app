@@ -54,6 +54,7 @@ async function processAlert(alert: Alert, alertRepository: Repository<Alert>) {
     (lastTriggered && lastTriggered >= maxDate) ||
     createdAt >= maxDate
   ) {
+    console.log(`No new data for alert ${id}.`);
     return;
   }
 
@@ -100,7 +101,7 @@ async function processAlert(alert: Alert, alertRepository: Repository<Alert>) {
 
     console.log(alertMessage);
   }
-  // Update lastTriggered (imnactive during testing)
+  // Update lastTriggered (inactive during testing)
   await alertRepository.update(alert.id, { lastTriggered: maxDate });
 }
 async function run() {
