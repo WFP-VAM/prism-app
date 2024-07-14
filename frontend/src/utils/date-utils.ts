@@ -10,10 +10,14 @@ const millisecondsInADay = 24 * 60 * 60 * 1000;
 export const datesAreEqualWithoutTime = (
   date1: number | Date,
   date2: number | Date,
-): boolean =>
-  ((date1 instanceof Date ? date1.getTime() : date1) % millisecondsInADay) -
-    ((date2 instanceof Date ? date2.getTime() : date2) % millisecondsInADay) <
-  millisecondsInADay;
+): boolean => {
+  const cleanDate1 = date1 instanceof Date ? date1.getTime() : date1;
+  const cleanDate2 = date2 instanceof Date ? date2.getTime() : date2;
+  return (
+    cleanDate1 - (cleanDate1 % millisecondsInADay) ===
+    cleanDate2 - (cleanDate2 % millisecondsInADay)
+  );
+};
 
 function diffInDays(date1: Date, date2: Date) {
   // Normalize both dates to midnight UTC
