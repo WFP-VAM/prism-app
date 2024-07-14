@@ -15,6 +15,7 @@ export const fetchCompositeLayerData: LazyLoader<CompositeLayerProps> =
   async (params: LayerDataParams<CompositeLayerProps>, { dispatch }) => {
     const { layer, date } = params;
     const startDate = date ? new Date(date) : new Date();
+    // Setting an end date one month after the start date, adding support for seasons in WFP-VAM/prism-app#1301
     const endDate = new Date(startDate);
     endDate.setMonth(endDate.getMonth() + 1);
 
@@ -55,11 +56,6 @@ export const fetchCompositeLayerData: LazyLoader<CompositeLayerProps> =
           Accept: 'application/json',
           'Content-Type': 'application/json',
         },
-      });
-
-      // eslint-disable-next-line no-console
-      console.log('Request config used for Qmulti:', {
-        body,
       });
 
       const geojson = await response.json();
