@@ -6,14 +6,14 @@ export interface StartEndDate {
   endDate?: number;
 }
 
+const millisecondsInADay = 24 * 60 * 60 * 1000;
 export const datesAreEqualWithoutTime = (
   date1: number | Date,
   date2: number | Date,
-): boolean => {
-  const d1 = new Date(date1).setUTCHours(0, 0, 0, 0);
-  const d2 = new Date(date2).setUTCHours(0, 0, 0, 0);
-  return d1 === d2;
-};
+): boolean =>
+  ((date1 instanceof Date ? date1.getTime() : date1) % millisecondsInADay) -
+    ((date2 instanceof Date ? date2.getTime() : date2) % millisecondsInADay) <
+  millisecondsInADay;
 
 function diffInDays(date1: Date, date2: Date) {
   // Normalize both dates to midnight UTC
