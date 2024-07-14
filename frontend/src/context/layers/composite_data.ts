@@ -61,11 +61,6 @@ export const fetchCompositeLayerData: LazyLoader<CompositeLayerProps> =
         },
       });
 
-      // eslint-disable-next-line no-console
-      console.log('Request config used for Qmulti:', {
-        body,
-      });
-
       const geojson = await response.json();
 
       return geojson;
