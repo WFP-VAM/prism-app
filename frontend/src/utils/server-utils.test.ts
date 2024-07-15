@@ -10,8 +10,7 @@ import { timezones } from '../../test/helpers';
 // NOTE: all timestamps are created in the LOCAL timezone (as per js docs), so that
 // these tests should pass for any TZ.
 
-// Skipping to enable surge deployment, Will to update tests on 7/15
-describe.skip('Test generateIntermediateDateItemFromValidity', () => {
+describe('Test generateIntermediateDateItemFromValidity', () => {
   test('should return correct dates with forward propagation', () => {
     const layer = {
       name: 'myd11a2_taa_dekad',
@@ -94,6 +93,12 @@ describe.skip('Test generateIntermediateDateItemFromValidity', () => {
       },
       {
         displayDate: new Date('2023-12-11').setHours(12, 0),
+        queryDate: layer.dates[0],
+        startDate: layer.dates[0],
+        endDate: new Date('2023-12-11').setHours(12, 0),
+      },
+      {
+        displayDate: new Date('2023-12-11').setHours(12, 0),
         queryDate: layer.dates[1],
         startDate: layer.dates[1],
         endDate: new Date('2023-12-21').setHours(12, 0),
@@ -148,6 +153,12 @@ describe.skip('Test generateIntermediateDateItemFromValidity', () => {
       },
       {
         displayDate: new Date('2023-12-20').setHours(12, 0),
+        queryDate: layer.dates[1],
+        startDate: layer.dates[1],
+        endDate: new Date('2023-12-21').setHours(12, 0),
+      },
+      {
+        displayDate: new Date('2023-12-21').setHours(12, 0),
         queryDate: layer.dates[1],
         startDate: layer.dates[1],
         endDate: new Date('2023-12-21').setHours(12, 0),
@@ -300,6 +311,12 @@ describe.skip('Test generateIntermediateDateItemFromValidity', () => {
       },
       {
         displayDate: new Date('2023-12-01').setHours(12, 0),
+        queryDate: layer.dates[0],
+        startDate: new Date('2023-11-21').setHours(12, 0),
+        endDate: layer.dates[0],
+      },
+      {
+        displayDate: new Date('2023-12-01').setHours(12, 0),
         queryDate: layer.dates[1],
         startDate: new Date('2023-12-01').setHours(12, 0),
         endDate: layer.dates[1],
@@ -440,6 +457,12 @@ describe.skip('Test generateIntermediateDateItemFromValidity', () => {
       },
       {
         displayDate: new Date('2023-11-30').setHours(12, 0),
+        queryDate: layer.dates[0],
+        endDate: layer.dates[0],
+        startDate: new Date('2023-11-21').setHours(12, 0),
+      },
+      {
+        displayDate: new Date('2023-12-01').setHours(12, 0),
         queryDate: layer.dates[0],
         endDate: layer.dates[0],
         startDate: new Date('2023-11-21').setHours(12, 0),
