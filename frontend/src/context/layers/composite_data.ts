@@ -4,6 +4,7 @@ import type { CompositeLayerProps } from 'config/types';
 import { fetchWithTimeout } from 'utils/fetch-with-timeout';
 import { LocalError } from 'utils/error-utils';
 import { addNotification } from 'context/notificationStateSlice';
+import { getFormattedDate } from 'utils/date-utils';
 
 import type { LayerDataParams, LazyLoader } from './layer-data';
 
@@ -12,26 +13,31 @@ export interface CompositeLayerData extends FeatureCollection {}
 export const fetchCompositeLayerData: LazyLoader<CompositeLayerProps> =
   () =>
   async (params: LayerDataParams<CompositeLayerProps>, { dispatch }) => {
-    // to complete later with new endpoint for composite chart
-
     const { layer, date } = params;
-    const endDate = (date ? new Date(date) : new Date())
-      .toISOString()
-      .split('T')[0];
-    const { baseUrl, inputLayers, startDate } = layer;
+    const startDate = date ? new Date(date) : new Date();
+    // Setting an end date one month after the start date, adding support for seasons in WFP-VAM/prism-app#1301
+    const endDate = new Date(startDate);
+    endDate.setMonth(endDate.getMonth() + 1);
+
+    const {
+      baseUrl,
+      inputLayers,
+      startDate: areaStartDate,
+      endDate: areaEndDate,
+    } = layer;
     const { boundingBox } = appConfig.map;
 
     // docs: https://hip-service.ovio.org/docs#/default/run_q_multi_geojson_q_multi_geojson_post
     const body = {
-      begin: startDate,
-      end: endDate,
+      begin: getFormattedDate(startDate, 'default'),
+      end: getFormattedDate(endDate, 'default'),
       area: {
         min_lon: boundingBox[0],
         min_lat: boundingBox[1],
         max_lon: boundingBox[2],
         max_lat: boundingBox[3],
-        start_date: '2002-01-01',
-        end_date: endDate,
+        start_date: areaStartDate ?? '2002-01-01',
+        end_date: areaEndDate ?? '2021-07-31',
       },
       layers: inputLayers.map(({ key, aggregation, importance, invert }) => ({
         key,
@@ -41,25 +47,17 @@ export const fetchCompositeLayerData: LazyLoader<CompositeLayerProps> =
       })),
     };
 
-    // eslint-disable-next-line no-console
-    console.log('Request config used for Qmulti:', {
-      body,
-    });
     try {
-      const response = await fetchWithTimeout(
-        baseUrl,
-        dispatch,
-        {
-          body: JSON.stringify(body),
-          method: 'POST',
-          timeout: 600000, // 10min
-          headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/json',
-          },
+      const response = await fetchWithTimeout(baseUrl, dispatch, {
+        body: JSON.stringify(body),
+        method: 'POST',
+        timeout: 600000, // 10min
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
         },
-        `Request failed for fetching boundary layer data at ${baseUrl}`,
-      );
+      });
+
       const geojson = await response.json();
 
       return geojson;
