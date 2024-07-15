@@ -18,6 +18,42 @@ files.forEach(file => {
   }
 });
 
+export function extractTranslationItems(config: any, layers: any): string[] {
+  const categoryKeys = jp
+    .query(config.appConfig.categories, '$.*')
+    .filter(
+      (value: any) =>
+        typeof value === 'string' ||
+        (typeof value === 'object' && value !== null && !Array.isArray(value)),
+    )
+    .map((value: any) =>
+      typeof value === 'object' ? Object.keys(value) : value,
+    )
+    .flat()
+    .map((value: any) => startCase(value));
+
+  const categoryGroupTitles = jp.query(
+    config.appConfig.categories,
+    '$..group_title',
+  );
+
+  const layerTitles = jp.query(layers, '$..title');
+  const layerLegendTexts = jp.query(layers, '$..legend_text');
+  const legendLabels = jp
+    .query(layers, '$..legend[*].label')
+    .filter((label: string) => !label.includes(' mm'));
+  const chartLegendLabels = jp.query(layers, '$..chart_data.fields[*].label');
+
+  return [
+    ...categoryKeys,
+    ...categoryGroupTitles,
+    ...layerTitles,
+    ...layerLegendTexts,
+    ...legendLabels,
+    ...chartLegendLabels,
+  ];
+}
+
 describe('Config Map', () => {
   it('should have necessary data for each country', () => {
     Object.keys(configMap).forEach(country => {
@@ -47,48 +83,11 @@ describe('Config Map', () => {
        */
       let itemsToTranslate: string[] = [];
 
-      // categories
-      const categoryKeys = jp
-        .query(config.appConfig.categories, '$.*')
-        .filter(
-          (value: any) =>
-            typeof value === 'string' ||
-            (typeof value === 'object' &&
-              value !== null &&
-              !Array.isArray(value)),
-        )
-        .map((value: any) =>
-          typeof value === 'object' ? Object.keys(value) : value,
-        )
-        .flat()
-        .map((value: any) => startCase(value));
-
-      // grouped layer titles
-      const categoryGroupTitles = jp.query(
-        config.appConfig.categories,
-        '$..group_title',
-      );
-
-      // layers titles
-      const layerTitles = jp.query(layers, '$..title');
-      const layerLegendTexts = jp.query(layers, '$..legend_text');
-      const legendLabels = jp
-        .query(layers, '$..legend[*].label')
-        .filter(label => !label.includes(' mm'));
-      const chartLegendLabels = jp.query(
-        layers,
-        '$..chart_data.fields[*].label',
-      );
       // const legendLabels = jp.query(layers, '$..legend[*].label');
       // eslint-disable-next-line fp/no-mutation
       itemsToTranslate = [
         ...Array.from(translationKeys),
-        ...categoryKeys,
-        ...categoryGroupTitles,
-        ...layerTitles,
-        ...layerLegendTexts,
-        ...legendLabels,
-        ...chartLegendLabels,
+        ...extractTranslationItems(config, layers),
       ];
       // Deduplicate items using a Set
       // eslint-disable-next-line fp/no-mutation
