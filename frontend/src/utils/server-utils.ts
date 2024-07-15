@@ -396,7 +396,10 @@ export function generateIntermediateDateItemFromValidity(
       // convert the available days for a specific day to the DefaultDate format
       const dateItemsToAdd = daysToAdd.map(dateToAdd => ({
         displayDate: dateToAdd,
-        queryDate: startDate.getTime(),
+        queryDate:
+          mode === DatesPropagation.SEASON
+            ? startDate.getTime()
+            : date.getTime(),
         startDate: startDate.getTime(),
         endDate: endDate.getTime(),
       }));
