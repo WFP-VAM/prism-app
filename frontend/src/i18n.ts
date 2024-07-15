@@ -82,7 +82,7 @@ function logMissingKey(lng: string, key: string) {
       // eslint-disable-next-line fp/no-mutating-methods
       missingKeys[lng].push(key);
       // eslint-disable-next-line no-console
-      console.log(`Updated missing keys for ${lng}:`, missingKeys[lng]);
+      console.log('Missing keys:', missingKeys[lng]);
     }
   }
 }
