@@ -35,6 +35,7 @@ import {
   generateDateItemsRange,
   generateDatesRange,
   getFormattedDate,
+  getSeasonBounds,
 } from './date-utils';
 import { LocalError } from './error-utils';
 import { createEWSDatesArray } from './ews-utils';
@@ -379,6 +380,12 @@ export function generateIntermediateDateItemFromValidity(
           startDate.setDate(DekadStartingDays[newDekadStartIndex]);
           startDate.setMonth(startDate.getMonth() + nMonthsBackward);
         }
+      } else if (mode === DatesPropagation.SEASON) {
+        // TODO: add support flexible seasons (i.e. s1_start, s1_end, etc.)
+        const { start, end } = getSeasonBounds(startDate);
+
+        startDate.setTime(start.getTime());
+        endDate.setTime(end.getTime() - oneDayInMs);
       } else {
         return [];
       }
@@ -389,7 +396,7 @@ export function generateIntermediateDateItemFromValidity(
       // convert the available days for a specific day to the DefaultDate format
       const dateItemsToAdd = daysToAdd.map(dateToAdd => ({
         displayDate: dateToAdd,
-        queryDate: date.getTime(),
+        queryDate: startDate.getTime(),
         startDate: startDate.getTime(),
         endDate: endDate.getTime(),
       }));

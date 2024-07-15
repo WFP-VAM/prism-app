@@ -4120,8 +4120,7 @@
     "scale": "seasonal",
     "base_url": "https://hip-service.ovio.org/q_multi_geojson",
     "validity": {
-      "forward": 9,
-      "mode": "dekad"
+      "mode": "season"
     },
     "input_layers": [
       {
@@ -4317,8 +4316,7 @@
     "scale": "seasonal",
     "base_url": "https://hip-service.ovio.org/q_multi_geojson",
     "validity": {
-      "forward": 9,
-      "mode": "dekad"
+      "mode": "season"
     },
     "input_layers": [
       {

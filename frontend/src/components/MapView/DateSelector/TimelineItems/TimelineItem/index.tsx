@@ -2,7 +2,7 @@ import { createStyles, makeStyles } from '@material-ui/core';
 import React, { memo } from 'react';
 import 'react-datepicker/dist/react-datepicker.css';
 import { DateItem, DateRangeType } from 'config/types';
-import { binaryFind } from 'utils/date-utils';
+import { binaryFind, datesAreEqualWithoutTime } from 'utils/date-utils';
 
 const TimelineItem = memo(
   ({
@@ -32,7 +32,7 @@ const TimelineItem = memo(
     ): boolean => false;
 
     const isQueryDate = (date: DateItem): boolean =>
-      date.queryDate === date.displayDate;
+      datesAreEqualWithoutTime(date.queryDate, date.displayDate);
 
     return (
       <>

@@ -175,8 +175,9 @@ const TimelineItems = memo(
           const filterDateItems = (items: DateItem[]) =>
             items.filter(
               item =>
-                item.queryDate === layerQueryDate ||
-                item.queryDate === item.displayDate,
+                (layerQueryDate &&
+                  datesAreEqualWithoutTime(item.queryDate, layerQueryDate)) ||
+                datesAreEqualWithoutTime(item.queryDate, item.displayDate),
             );
           if (firstIndex === -1) {
             return filterDateItems(layer.dateItems);

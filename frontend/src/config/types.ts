@@ -407,6 +407,7 @@ interface FeatureInfoProps {
 export enum DatesPropagation {
   DAYS = 'days',
   DEKAD = 'dekad',
+  SEASON = 'season',
 }
 
 export type ValidityPeriod = {
