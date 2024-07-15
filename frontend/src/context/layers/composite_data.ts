@@ -2,7 +2,7 @@ import { FeatureCollection } from 'geojson';
 import { appConfig } from 'config';
 import type { CompositeLayerProps } from 'config/types';
 import { fetchWithTimeout } from 'utils/fetch-with-timeout';
-import { LocalError } from 'utils/error-utils';
+import { HTTPError, LocalError } from 'utils/error-utils';
 import { addNotification } from 'context/notificationStateSlice';
 import { getFormattedDate, getSeasonBounds } from 'utils/date-utils';
 
@@ -65,7 +65,7 @@ export const fetchCompositeLayerData: LazyLoader<CompositeLayerProps> =
 
       return geojson;
     } catch (error) {
-      if (!(error instanceof LocalError)) {
+      if (!(error instanceof LocalError) && !(error instanceof HTTPError)) {
         return undefined;
       }
       console.error(error);
