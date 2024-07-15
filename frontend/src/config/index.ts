@@ -34,7 +34,7 @@ import zimbabwe from './zimbabwe';
 const DEFAULT_BOUNDARIES_FOLDER =
   'https://prism-admin-boundaries.s3.us-east-2.amazonaws.com';
 
-const configMap = {
+export const configMap = {
   afghanistan,
   bhutan,
   cambodia,
@@ -65,7 +65,7 @@ const configMap = {
   zimbabwe,
 } as const;
 
-type Country = keyof typeof configMap;
+export type Country = keyof typeof configMap;
 
 const DEFAULT: Country = 'mozambique';
 
@@ -107,42 +107,47 @@ const appConfig: Record<string, any> = merge(
   configMap[safeCountry].appConfig,
 );
 
-// Perform deep merges between shared and country-specific layers and legends
-const rawLayers: Record<string, any> = Object.fromEntries(
-  Object.entries(
-    merge(
-      {},
-      // we initialize with country layers to maintain the order
-      configMap[safeCountry].rawLayers,
-      sharedLayers,
-      configMap[safeCountry].rawLayers,
-    ),
-  ).map(([key, layer]) => {
-    if (typeof layer.legend === 'string') {
-      if (!sharedLegends[layer.legend]) {
-        throw new Error(
-          `Legend '${layer.legend}' could not be found in shared legends.`,
-        );
+export function getRawLayers(country: Country): Record<string, any> {
+  return Object.fromEntries(
+    Object.entries(
+      merge(
+        {},
+        // we initialize with country layers to maintain the order
+        configMap[country].rawLayers,
+        sharedLayers,
+        configMap[country].rawLayers,
+      ),
+    ).map(([key, layer]) => {
+      if (typeof layer.legend === 'string') {
+        if (!sharedLegends[layer.legend]) {
+          throw new Error(
+            `Legend '${layer.legend}' could not be found in shared legends.`,
+          );
+        }
+        // eslint-disable-next-line no-param-reassign, fp/no-mutation
+        layer.legend = sharedLegends[layer.legend] || layer.legend;
       }
-      // eslint-disable-next-line no-param-reassign, fp/no-mutation
-      layer.legend = sharedLegends[layer.legend] || layer.legend;
-    }
-    return [key, layer];
-  }),
-);
+      return [key, layer];
+    }),
+  );
+}
 
-// Merge translations
-const countryTranslation = get(configMap[safeCountry], 'translation', {});
-const translation = Object.fromEntries(
-  Object.entries(
-    QA_MODE || TESTING
-      ? merge({}, sharedTranslation, countryTranslation)
-      : countryTranslation,
-  ).map(([key, value]) => [
-    key,
-    merge({}, sharedTranslation[key] || {}, value),
-  ]),
-);
+export function getTranslation(country: Country): Record<string, any> {
+  const countryTranslation = get(configMap[country], 'translation', {});
+  return Object.fromEntries(
+    Object.entries(
+      QA_MODE || TESTING
+        ? merge({}, sharedTranslation, countryTranslation)
+        : countryTranslation,
+    ).map(([key, value]) => [
+      key,
+      merge({}, sharedTranslation[key] || {}, value),
+    ]),
+  );
+}
+
+const rawLayers = getRawLayers(safeCountry);
+const translation = getTranslation(safeCountry);
 
 const msalConfig = {
   auth: {
