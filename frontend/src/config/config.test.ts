@@ -129,6 +129,16 @@ describe('Config Map', () => {
           // Print the table to the console
           // eslint-disable-next-line no-console
           console.table(tableData);
+
+          // utility to print the missing fields as an exploitable JSON object
+          // if (key === 'fr') {
+          //   // eslint-disable-next-line no-console
+          //   console.log(
+          //     JSON.stringify(
+          //       Object.fromEntries(missingFields.map(field => [field, field])),
+          //     ),
+          //   );
+          // }
         }
         // TODO - activate this assertion once all translations are complete
         // expect(missingFields).toEqual([]);
