@@ -287,7 +287,8 @@
       ],
       "dry_periods": [
         "days_dry",
-        "streak_dry_days"
+        "streak_dry_days",
+        "cdi"
       ],
       "extreme_rain_events": [
         {
