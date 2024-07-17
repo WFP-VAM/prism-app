@@ -110,60 +110,6 @@ function ToggleSelector({
   );
 }
 
-const legendScaleSelectorOptions = [
-  { value: 0.5, comp: <div>50%</div> },
-  { value: 0.4, comp: <div>60%</div> },
-  { value: 0.3, comp: <div>70%</div> },
-  { value: 0.2, comp: <div>80%</div> },
-  { value: 0.1, comp: <div>90%</div> },
-  { value: 0, comp: <div>100%</div> },
-];
-
-const legendPositionOptions = [
-  { value: -1, comp: <VisibilityOff /> },
-  {
-    value: 0,
-    comp: ({ value }: { value: number }) => (
-      <Icon style={{ color: 'black' }}>
-        {value % 2 === 0 ? 'switch_left' : 'switch_right'}
-      </Icon>
-    ),
-  },
-];
-
-const mapWidthSelectorOptions = [
-  { value: 50, comp: <div>50%</div> },
-  { value: 60, comp: <div>60%</div> },
-  { value: 70, comp: <div>70%</div> },
-  { value: 80, comp: <div>80%</div> },
-  { value: 90, comp: <div>90%</div> },
-  { value: 100, comp: <div>100%</div> },
-];
-
-const footerTextSelectorOptions = [
-  { value: 0, comp: <VisibilityOff /> },
-  { value: 8, comp: <div style={{ fontSize: '8px' }}>Aa</div> },
-  { value: 10, comp: <div style={{ fontSize: '10px' }}>Aa</div> },
-  { value: 12, comp: <div style={{ fontSize: '12px' }}>Aa</div> },
-  { value: 16, comp: <div style={{ fontSize: '16px' }}>Aa</div> },
-  { value: 20, comp: <div style={{ fontSize: '20px' }}>Aa</div> },
-];
-
-const layerDescriptionSelectorOptions = [
-  { value: 0, comp: <VisibilityOff /> },
-  { value: 1, comp: <Visibility /> },
-];
-
-const countryMaskSelectorOptions = [
-  { value: 1, comp: <VisibilityOff /> },
-  { value: 0, comp: <Visibility /> },
-];
-
-const mapLabelsVisibilityOptions = [
-  { value: 0, comp: <VisibilityOff /> },
-  { value: 1, comp: <Visibility /> },
-];
-
 const boundaryLayer = getBoundaryLayerSingleton();
 
 function DownloadImage({ open, handleClose }: DownloadImageProps) {
