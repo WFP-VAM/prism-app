@@ -81,9 +81,8 @@ function logMissingKey(lng: string, key: string) {
     if (!missingKeys[lng].includes(key) && key !== '') {
       // eslint-disable-next-line fp/no-mutating-methods
       missingKeys[lng].push(key);
-      console.warn(`Missing translation key: "${key}" for language: ${lng}`);
       // eslint-disable-next-line no-console
-      console.log(`Updated missing keys for ${lng}:`, missingKeys[lng]);
+      console.log('Missing keys:', missingKeys[lng]);
     }
   }
 }
@@ -102,7 +101,8 @@ i18n
     defaultNS: 'translation',
     saveMissing: true,
     missingKeyHandler: (lng, _ns, key) => {
-      logMissingKey(Array.isArray(lng) ? lng[0] : lng, key);
+      const foundLng = Array.isArray(lng) ? lng[0] : lng;
+      logMissingKey(foundLng, key);
     },
   });
 

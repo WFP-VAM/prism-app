@@ -176,6 +176,7 @@ export type LegendDefinitionItem = {
   color: string;
   // Optional, to create custom label like '≤50'. if label is not defined
   // then value attribute will be shown instead
+  // TODO - the label.text functionality does not seem to be used. Remove? @Amit
   label?: LegendLabel | string;
   fillPattern?: 'left' | 'right';
 };
