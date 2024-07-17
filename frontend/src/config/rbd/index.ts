@@ -13,5 +13,5 @@ export default {
   rawTables,
   rawReports,
   translation,
-  defaultBoundariesFile: 'wca_admbnda_adm2_ocha.json',
+  defaultBoundariesFile: 'wca_admbnda_adm2_ocha.json?v2',
 };

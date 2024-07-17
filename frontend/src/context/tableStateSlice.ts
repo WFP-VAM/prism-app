@@ -32,15 +32,18 @@ export const loadTable = createAsyncThunk<
   CreateAsyncThunkTypes
 >('tableState/loadTable', async (key: keyof typeof TableDefinitions) => {
   const url = TableDefinitions[key].table;
-  return new Promise<TableData>((resolve, reject) =>
+  return new Promise<TableData>((resolve, reject) => {
     Papa.parse(url, {
       header: true,
       download: true,
       complete: results =>
-        resolve({ rows: results.data, columns: Object.keys(results.data[0]) }),
+        resolve({
+          rows: results.data as any,
+          columns: Object.keys(results.data[0] as any),
+        }),
       error: error => reject(error),
-    }),
-  );
+    });
+  });
 });
 
 export const tableStateSlice = createSlice({
@@ -65,12 +68,15 @@ export const tableStateSlice = createSlice({
         : action.error.toString(),
     }));
 
-    builder.addCase(loadTable.pending, ({ error, ...state }, { meta }) => ({
-      ...state,
-      definition: TableDefinitions[meta.arg],
-      isShowing: true,
-      loading: true,
-    }));
+    builder.addCase(
+      loadTable.pending,
+      ({ error: _error, ...state }, { meta }) => ({
+        ...state,
+        definition: TableDefinitions[meta.arg],
+        isShowing: true,
+        loading: true,
+      }),
+    );
   },
 });
 

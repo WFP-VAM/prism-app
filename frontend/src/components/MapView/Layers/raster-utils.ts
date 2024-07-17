@@ -1,8 +1,8 @@
 import bbox from '@turf/bbox';
 import booleanPointInPolygon from '@turf/boolean-point-in-polygon';
-import { Feature, MultiPolygon, point } from '@turf/helpers';
+import { point } from '@turf/helpers';
 import { buffer } from 'd3-fetch';
-import * as GeoTIFF from 'geotiff';
+import { fromArrayBuffer, GeoTIFFImage } from 'geotiff';
 import { createGetMapUrl } from 'prism-common';
 import { Dispatch } from 'redux';
 import { RASTER_API_URL } from 'utils/constants';
@@ -10,6 +10,7 @@ import { fetchWithTimeout } from 'utils/fetch-with-timeout';
 import { LocalError } from 'utils/error-utils';
 import { addNotification } from 'context/notificationStateSlice';
 import { Map as MaplibreMap } from 'maplibre-gl';
+import { Feature, MultiPolygon } from 'geojson';
 
 export type TransformMatrix = [number, number, number, number, number, number];
 export type TypedArray =
@@ -32,39 +33,6 @@ export type GeoJsonBoundary = Feature<MultiPolygon>;
 // GDAL style extent: xmin ymin xmax ymax
 export type Extent = [number, number, number, number];
 
-// Placeholder for Geotiff image (since library doesn't contain types)
-export type GeoTiffImage = {
-  getBoundingBox: () => Extent;
-  getBytesPerPixel: () => number;
-  getFileDirectory: () => { ModelPixelScale: number[] };
-  getHeight: () => number;
-  getOrigin: () => [number, number, number];
-  getResolution: () => [number, number, number];
-  getSamplesPerPixel: () => number;
-  getTiePoints: () => {
-    i: number;
-    j: number;
-    k: number;
-    x: number;
-    y: number;
-    z: number;
-  }[];
-  getTileHeight: () => number;
-  getTileWidth: () => number;
-  getWidth: () => number;
-  pixelIsArea: () => boolean;
-  readRasters: (options?: {
-    window?: Extent;
-    samples?: number[];
-    interleave?: boolean;
-    pool?: number;
-    width?: number;
-    height?: number;
-    resampleMethod?: string;
-    fillValue?: number | number[];
-  }) => Promise<Rasters>;
-};
-
 export function getWMSUrl(
   baseUrl: string,
   layerName: string,
@@ -82,7 +50,7 @@ export function getWMSUrl(
   });
 }
 
-export function getTransform(geoTiffImage: GeoTiffImage): TransformMatrix {
+export function getTransform(geoTiffImage: GeoTIFFImage): TransformMatrix {
   const tiepoint = geoTiffImage.getTiePoints()[0];
   const pixelScale = geoTiffImage.getFileDirectory().ModelPixelScale;
   return [
@@ -97,8 +65,8 @@ export function getTransform(geoTiffImage: GeoTiffImage): TransformMatrix {
 
 export async function loadGeoTiff(path: string) {
   const raw = await buffer(path);
-  const tiff = await GeoTIFF.fromArrayBuffer(raw);
-  const image = (await tiff.getImage()) as GeoTiffImage;
+  const tiff = await fromArrayBuffer(raw);
+  const image = await tiff.getImage();
   const rasters = await image.readRasters();
   const transform = getTransform(image);
   return { image, rasters, transform };
@@ -135,7 +103,7 @@ export function geoCoordsToRowCol(
 
 export function featureIntersectsImage(
   feature: GeoJsonBoundary,
-  image: GeoTiffImage,
+  image: GeoTIFFImage,
 ) {
   const featureExtent = bbox(feature);
   const imageExtent = image.getBoundingBox();
@@ -183,6 +151,24 @@ export function pixelsInFeature(
       ),
     );
   }, [] as number[]);
+}
+
+export function expandBoundingBox(
+  boundingBox: Extent,
+  extraDegrees: number,
+): [number, number, number, number] {
+  const currentXDistance = boundingBox[2] - boundingBox[0];
+  const currentYDistance = boundingBox[3] - boundingBox[1];
+  const newXDistance = currentXDistance + 2 * extraDegrees;
+  const newYDistance = currentYDistance + 2 * extraDegrees;
+  const xChange = newXDistance - currentXDistance;
+  const yChange = newYDistance - currentYDistance;
+  const lowX = boundingBox[0] - xChange / 2;
+  const lowY = boundingBox[1] - yChange / 2;
+  const highX = xChange / 2 + boundingBox[2];
+  const highY = yChange / 2 + boundingBox[3];
+
+  return [lowX, lowY, highX, highY] as Extent;
 }
 
 export function getExtent(map?: MaplibreMap): Extent {

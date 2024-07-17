@@ -7,13 +7,15 @@ import {
   TextField,
   Typography,
 } from '@material-ui/core';
-import React, { ReactElement } from 'react';
-import { startCase } from 'lodash';
+import { ReactElement } from 'react';
 import { menuList } from 'components/MapView/LeftPanel/utils';
 import { LayerKey, LayerType } from 'config/types';
 import { getDisplayBoundaryLayers, LayerDefinitions } from 'config/utils';
 import { useSafeTranslation } from 'i18n';
+import { appConfig } from 'config';
 import { getLayerGeometryIcon } from './layer-utils';
+
+const { multiCountry } = appConfig;
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -52,14 +54,15 @@ function LayerDropdown({
   const classes = useStyles();
 
   // Only take first boundary for now
-  const adminBoundaries = getDisplayBoundaryLayers().slice(0, 1);
+  const adminBoundaries = getDisplayBoundaryLayers();
   const AdminBoundaryCategory = {
     title: 'Admin Levels',
-    layers: adminBoundaries.map((aboundary, index) => ({
-      title: startCase(aboundary.id),
+    layers: adminBoundaries.map((aboundary, _index) => ({
+      title: t(
+        `Level ${aboundary.adminLevelCodes.length - (multiCountry ? 1 : 0)}`,
+      ),
       boundary: aboundary.id,
       ...aboundary,
-      adminLevel: index + 1,
     })),
     tables: [],
   };
@@ -88,9 +91,9 @@ function LayerDropdown({
         if (layerCategory.layers.some(f => f.group)) {
           const layers = layerCategory.layers.map(layer => {
             if (layer.group && !layer.group.activateAll) {
-              return layer.group.layers.map(layerKey => {
-                return LayerDefinitions[layerKey.id as LayerKey];
-              });
+              return layer.group.layers.map(
+                layerKey => LayerDefinitions[layerKey.id as LayerKey],
+              );
             }
             return layer;
           });

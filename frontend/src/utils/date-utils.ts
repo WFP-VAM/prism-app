@@ -16,8 +16,16 @@ export const datesAreEqualWithoutTime = (
 };
 
 function diffInDays(date1: Date, date2: Date) {
-  const date1InMs = date1.getTime();
-  const date2InMs = date2.getTime();
+  // Normalize both dates to midnight UTC
+  const d1 = new Date(
+    Date.UTC(date1.getUTCFullYear(), date1.getUTCMonth(), date1.getUTCDate()),
+  );
+  const d2 = new Date(
+    Date.UTC(date2.getUTCFullYear(), date2.getUTCMonth(), date2.getUTCDate()),
+  );
+
+  const date1InMs = d1.getTime();
+  const date2InMs = d2.getTime();
 
   const differenceInMs = Math.abs(date1InMs - date2InMs);
 
@@ -26,19 +34,12 @@ function diffInDays(date1: Date, date2: Date) {
   return diff;
 }
 
-export const generateDatesRange = (
-  startDate: Date,
-  endDate: Date,
-): number[] => {
-  return Array.from(
-    { length: diffInDays(startDate, endDate) + 1 },
-    (_, index) => {
-      const clone = new Date(startDate.getTime());
-      clone.setDate(startDate.getDate() + index);
-      return clone.getTime();
-    },
-  );
-};
+export const generateDatesRange = (startDate: Date, endDate: Date): number[] =>
+  Array.from({ length: diffInDays(startDate, endDate) + 1 }, (_, index) => {
+    const clone = new Date(startDate.getTime());
+    clone.setDate(startDate.getDate() + index);
+    return clone.getTime();
+  });
 
 export const generateDateItemsRange = (
   startEndDateList: StartEndDate[],
@@ -56,12 +57,9 @@ export const generateDateItemsRange = (
     const dateItems: DateItem[] = datesInTime.map(dateInTime => ({
       displayDate: dateInTime,
       queryDate: range.startDate!,
+      startDate: range.startDate!,
+      endDate: range.endDate!,
     }));
-
-    // eslint-disable-next-line fp/no-mutation
-    dateItems[0].isStartDate = true;
-    // eslint-disable-next-line fp/no-mutation
-    dateItems[dateItems.length - 1].isEndDate = true;
 
     return dateItems;
   });
@@ -106,9 +104,8 @@ export function binaryIncludes<T extends any>(
   return binaryFind(arry, timestamp, callback) > -1;
 }
 
-export const dateStrToUpperCase = (dateStr: string): string => {
-  return `${dateStr.slice(0, 1).toUpperCase()}${dateStr.slice(1)}`;
-};
+export const dateStrToUpperCase = (dateStr: string): string =>
+  `${dateStr.slice(0, 1).toUpperCase()}${dateStr.slice(1)}`;
 
 export const getFormattedDate = (
   date: number | string | undefined | Date,
@@ -116,6 +113,7 @@ export const getFormattedDate = (
     | 'default'
     | 'snake'
     | 'locale'
+    | 'monthDay'
     | DateFormat.DefaultSnakeCase
     | DateFormat.Default
     | DateFormat.DateTime
@@ -124,19 +122,6 @@ export const getFormattedDate = (
 ) => {
   if (date === undefined) {
     return undefined;
-  }
-
-  if (format === 'locale') {
-    return new Date(date).toLocaleString('default', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
-      second: '2-digit',
-      timeZoneName: 'short',
-      hour12: false,
-    });
   }
 
   const jsDate = new Date(date);
@@ -168,7 +153,18 @@ export const getFormattedDate = (
           throw new Error(`Invalid format: ${format}`);
       }
     }
-
+    case 'monthDay': // Handle the new format
+      return new Date(date).toLocaleString('default', {
+        year: undefined,
+        month: 'short',
+        day: 'numeric',
+      });
+    case 'locale':
+      return new Date(date).toLocaleString('default', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+      });
     default:
       throw new Error(`Invalid format: ${format}`);
   }

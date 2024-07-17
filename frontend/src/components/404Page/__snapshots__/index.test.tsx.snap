@@ -3,10 +3,10 @@
 exports[`renders as expected 1`] = `
 <div>
   <div
-    class="NotFound-container-1"
+    class="makeStyles-container-1"
   >
     <div
-      class="MuiGrid-root NotFound-content-2 MuiGrid-container MuiGrid-spacing-xs-3"
+      class="MuiGrid-root makeStyles-content-2 MuiGrid-container MuiGrid-spacing-xs-3"
     >
       <div
         class="MuiGrid-root MuiGrid-item"
@@ -29,7 +29,7 @@ exports[`renders as expected 1`] = `
           gutterbottom="true"
           variant="body1"
         >
-          If you have typed the address of this web page, you may misspelled it or if you redirected to this page, it may be moved to another location. Please go back to the website home page and try to find your page from the website navigation.
+          If you have typed the address of this web page, you may have misspelled it or if you redirected to this page, it may be moved to another location. Please go back to the website home page and try to find your page from the website navigation.
         </mock-typography>
       </div>
       <div
@@ -50,7 +50,7 @@ exports[`renders as expected 1`] = `
       >
         <img
           alt="World Food Programme logo"
-          class="NotFound-image-3"
+          class="makeStyles-image-3"
           src="images/wfp_logo.png"
         />
       </div>

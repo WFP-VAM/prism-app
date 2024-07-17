@@ -31,33 +31,33 @@ const xml = findAndRead("geonode-wfp-wcs-get-capabilities-2.0.1.xml", {
 });
 const xmlGeoNode111 = findAndRead(
   "geonode-wfp-wcs-get-capabilities-1.1.1.xml",
-  { encoding: "utf-8" }
+  { encoding: "utf-8" },
 );
 const xml100 = findAndRead(
   "mongolia-sibelius-datacube-wcs-get-capabilities-1.0.0.xml",
-  { encoding: "utf-8" }
+  { encoding: "utf-8" },
 );
 const xmlDescription201 = findAndRead(
   "geonode-wfp-wcs-describe-coverage-geonode__wld_cli_tp_7d_ecmwf-2.0.1.xml",
-  { encoding: "utf-8" }
+  { encoding: "utf-8" },
 );
 const xmlTemporalDescription100 = findAndRead(
   "mongolia-sibelius-datacube-wcs-coverage-description-10DayTrend-1.0.0.xml",
-  { encoding: "utf-8" }
+  { encoding: "utf-8" },
 );
 
 test("wcs: find coverage by id and name", ({ eq }) => {
   const coverageByFullId = findCoverage(
     xml,
-    "geonode:eyxao70woaa14nh_modificado"
+    "geonode:eyxao70woaa14nh_modificado",
   )!;
   const coverageByLegacyId = findCoverage(
     xml,
-    "geonode__eyxao70woaa14nh_modificado"
+    "geonode__eyxao70woaa14nh_modificado",
   )!;
   const coverageByName = findCoverage(
     xml,
-    "Climate Outlook across Eastern Africa"
+    "Climate Outlook across Eastern Africa",
   )!;
   eq(coverageByFullId.length, 2507);
   eq(coverageByLegacyId.length, 2507);
@@ -110,9 +110,9 @@ test("wcs: find coverages", ({ eq }) => {
 test("wcs: normalize coverage identifier", ({ eq }) => {
   eq(
     normalizeCoverageId(
-      "geonode___20apr08074540_s2as_r2c3_012701709010_01_p001"
+      "geonode___20apr08074540_s2as_r2c3_012701709010_01_p001",
     ),
-    "geonode:_20apr08074540_s2as_r2c3_012701709010_01_p001"
+    "geonode:_20apr08074540_s2as_r2c3_012701709010_01_p001",
   );
 });
 
@@ -126,7 +126,7 @@ test("wcs: find layer id", ({ eq }) => {
   eq(findCoverageId(coverageId), "geonode__sdn_fl_0909_noaa_40ff");
   eq(
     findLayerId(coverageId, { normalize: true }),
-    "geonode:sdn_fl_0909_noaa_40ff"
+    "geonode:sdn_fl_0909_noaa_40ff",
   );
 });
 
@@ -135,9 +135,9 @@ test("wcs: find layer ids", ({ eq }) => {
   eq(layerNames.length, 15);
   eq(
     layerNames.includes(
-      "geonode:_20apr08074540_s2as_r2c3_012701709010_01_p001"
+      "geonode:_20apr08074540_s2as_r2c3_012701709010_01_p001",
     ),
-    true
+    true,
   );
 });
 
@@ -152,15 +152,11 @@ test("parse coverage", ({ eq }) => {
     keywords: ["WCS", "GeoTIFF", "eyxao70woaa14nh_modificado"],
     subType: "RectifiedGridCoverage",
     bbox: [
-      -60.35240259408949,
-      -44.9887429023503,
-      80.34944659977604,
+      -60.35240259408949, -44.9887429023503, 80.34944659977604,
       60.53764399304885,
     ],
     wgs84bbox: [
-      -52.12430934201362,
-      -42.939883795000185,
-      72.12135334770016,
+      -52.12430934201362, -42.939883795000185, 72.12135334770016,
       58.488784885698735,
     ],
   });
@@ -170,11 +166,11 @@ test("parse describe coverage url", ({ eq }) => {
   eq(findDescribeCoverageUrl(xml), "https://geonode.wfp.org/geoserver/wcs?");
   eq(
     findAndParseCapabilityUrl(xml100, "GetCapabilities"),
-    "https://mongolia.sibelius-datacube.org:5000/wcs?"
+    "https://mongolia.sibelius-datacube.org:5000/wcs?",
   );
   eq(
     findDescribeCoverageUrl(xml100),
-    "https://mongolia.sibelius-datacube.org:5000/wcs?"
+    "https://mongolia.sibelius-datacube.org:5000/wcs?",
   );
 });
 
@@ -182,11 +178,11 @@ test("parse GetCoverage url", ({ eq }) => {
   eq(findGetCoverageUrl(xml), "https://geonode.wfp.org/geoserver/wcs?");
   eq(
     findAndParseCapabilityUrl(xml100, "GetCoverage"),
-    "https://mongolia.sibelius-datacube.org:5000/wcs?"
+    "https://mongolia.sibelius-datacube.org:5000/wcs?",
   );
   eq(
     findGetCoverageUrl(xml100),
-    "https://mongolia.sibelius-datacube.org:5000/wcs?"
+    "https://mongolia.sibelius-datacube.org:5000/wcs?",
   );
 });
 
@@ -194,14 +190,14 @@ test("createDescribeCoverageUrl", ({ eq }) => {
   eq(
     createDescribeCoverageUrl(
       xmlGeoNode111,
-      "geonode:eyxao70woaa14nh_modificado"
+      "geonode:eyxao70woaa14nh_modificado",
     ),
-    "https://geonode.wfp.org/geoserver/wcs?identifiers=geonode%3Aeyxao70woaa14nh_modificado&request=DescribeCoverage&service=WCS&version=1.1.1"
+    "https://geonode.wfp.org/geoserver/wcs?identifiers=geonode%3Aeyxao70woaa14nh_modificado&request=DescribeCoverage&service=WCS&version=1.1.1",
   );
 
   eq(
     createDescribeCoverageUrl(xml100, "10DayTrend"),
-    "https://mongolia.sibelius-datacube.org:5000/wcs?coverage=10DayTrend&request=DescribeCoverage&service=WCS&version=1.0.0"
+    "https://mongolia.sibelius-datacube.org:5000/wcs?coverage=10DayTrend&request=DescribeCoverage&service=WCS&version=1.0.0",
   );
 });
 
@@ -216,7 +212,7 @@ test("wcs: createGetCoverageUrl", ({ eq }) => {
   });
   eq(
     url,
-    "https://mongolia.sibelius-datacube.org:5000/wcs?bbox=87.7%2C41.6%2C119.9%2C52.1&coverage=ModisLST&crs=EPSG%3A4326&format=GeoTIFF&height=222&request=GetCoverage&service=WCS&version=1.0.0&width=677"
+    "https://mongolia.sibelius-datacube.org:5000/wcs?bbox=87.7%2C41.6%2C119.9%2C52.1&coverage=ModisLST&crs=EPSG%3A4326&format=GeoTIFF&height=222&request=GetCoverage&service=WCS&version=1.0.0&width=677",
   );
 });
 
@@ -231,7 +227,7 @@ test("parseDates", ({ eq }) => {
   eq(dates.length, 29);
   eq(
     dates.every((d) => typeof d === "string"),
-    true
+    true,
   );
   eq(dates[0], "2019-05-21T00:00:00.000Z");
 });
@@ -243,12 +239,10 @@ test("parse envelope", ({ eq }) => {
   <gml:timePosition>2009-01-01</gml:timePosition>
   <gml:timePosition>2022-07-11</gml:timePosition>
   </lonLatEnvelope>`;
-  eq(findAndParseLonLatEnvelope(lonLatEnvelope), [
-    74.1288466392506,
-    36.3432058634784,
-    132.918744933946,
-    54.4717721170595,
-  ]);
+  eq(
+    findAndParseLonLatEnvelope(lonLatEnvelope),
+    [74.1288466392506, 36.3432058634784, 132.918744933946, 54.4717721170595],
+  );
 });
 
 test("parse coverage (1.0.0)", ({ eq }) => {
@@ -262,10 +256,7 @@ test("parse coverage (1.0.0)", ({ eq }) => {
     name: "mdc 10 Day Indices",
     subType: undefined,
     wgs84bbox: [
-      86.7469655846003,
-      41.4606540712216,
-      121.185885426709,
-      52.3476515518552,
+      86.7469655846003, 41.4606540712216, 121.185885426709, 52.3476515518552,
     ],
   });
 });
@@ -274,7 +265,7 @@ test("fetchCoverageDescriptionFromCapabilities", async ({ eq }) => {
   const result = await fetchCoverageDescriptionFromCapabilities(
     xml100,
     "10DayTrend",
-    { fetch }
+    { fetch },
   );
   eq(result.length > 5000, true);
   eq(result.includes("CoverageDescription"), true);

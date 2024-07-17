@@ -1,12 +1,13 @@
 {
   "country": "Mozambique",
   "defaultLanguage": "en",
+  "anticipatoryActionUrl": "https://data.earthobservation.vam.wfp.org/public-share/aa/aa_probabilities_triggers_moz.csv",
   "header": {
     "title": "PRISM",
     "logo": "images/moz-flag-inam-logo.png"
   },
   "printConfig": {
-    "defaultFooterText": "The designations employed and the presentation of material in the map(s) do not imply the expression of any opinion on the part of WFP concerning the legal of constitutional status of any country, territory, city, or sea, or concerning the delimitation of its frontiers or boundaries."
+    "defaultFooterText": ""
   },
   "countryAdmin0Id": 170,
   "alertFormActive": false,
@@ -23,6 +24,7 @@
   },
   "defaultDisplayBoundaries": [
     "admin_boundaries",
+    "admin2_boundaries",
     "admin1_boundaries"
   ],
   "serversUrls": {
@@ -283,10 +285,7 @@
           ]
         }
       ],
-      "dry_periods": [
-        "days_dry",
-        "streak_dry_days"
-      ],
+      "dry_periods": ["days_dry", "streak_dry_days"],
       "extreme_rain_events": [
         {
           "group_title": "Rainfall categories:",
@@ -333,10 +332,7 @@
       ]
     },
     "vegetation": {
-      "vegetation_conditions": [
-        "ndvi_dekad",
-        "ndvi_dekad_anomaly"
-      ]
+      "vegetation_conditions": ["ndvi_dekad", "ndvi_dekad_anomaly"]
     },
     "temperature": {
       "INAM_air_temperature": [
@@ -373,51 +369,87 @@
       ]
     },
     "vulnerability": {
-      "poverty": [
-        "mpi"
-      ],
+      "poverty": ["mpi"],
       "food_insecurity": [
         {
-          "group_title": "IPC",
+          "group_title": "IPC - phase classification",
           "activate_all": false,
           "layers": [
             {
-              "id": "ipc_phase_current",
-              "label": "Current phase classification",
+              "id": "ipc_phase_2023",
+              "label": "2023",
               "main": true
             },
             {
-              "id": "ipc_phase_projected",
-              "label": "Projected phase classification"
+              "id": "ipc_phase_2022",
+              "label": "2022"
+            }
+          ]
+        },
+        {
+          "group_title": "IPC - population in phase 3+",
+          "activate_all": false,
+          "layers": [
+            {
+              "id": "ipc_pop_ph3_2023",
+              "label": "2023",
+              "main": true
             },
             {
-              "id": "ipc_phase_12_2020",
-              "label": "December 2020 phase classification"
+              "id": "ipc_pop_ph3_2022",
+              "label": "2022"
+            }
+          ]
+        },
+        {
+          "group_title": "IPC - population in phase 4",
+          "activate_all": false,
+          "layers": [
+            {
+              "id": "ipc_pop_ph4_2023",
+              "label": "2023",
+              "main": true
             },
             {
-              "id": "ipc_pop_ph3_current",
-              "label": "Current population in phase 3+"
+              "id": "ipc_pop_ph4_2022",
+              "label": "2022"
+            }
+          ]
+        },
+        {
+          "group_title": "IPC - percent of people in phase 3+",
+          "activate_all": false,
+          "layers": [
+            {
+              "id": "ipc_perc_ph3_2023",
+              "label": "2023",
+              "main": true
             },
             {
-              "id": "ipc_pop_ph3_projected",
-              "label": "Projected population in phase 3+"
+              "id": "ipc_perc_ph3_2022",
+              "label": "2022"
+            }
+          ]
+        },
+        {
+          "group_title": "IPC - percent of people in phase 4",
+          "activate_all": false,
+          "layers": [
+            {
+              "id": "ipc_perc_ph4_2023",
+              "label": "2023",
+              "main": true
             },
             {
-              "id": "ipc_perc_ph3_current",
-              "label": "Current percent of population in phase 3+"
-            },
-            {
-              "id": "ipc_perc_ph3_projected",
-              "label": "Projected percent of population in phase 3+"
+              "id": "ipc_perc_ph4_2022",
+              "label": "2022"
             }
           ]
         }
       ]
     },
     "exposure": {
-      "population": [
-        "census"
-      ]
+      "population": ["census"]
     }
   }
 }

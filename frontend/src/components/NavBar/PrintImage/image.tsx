@@ -3,26 +3,14 @@ import {
   Button,
   Dialog,
   DialogContent,
-  Icon,
-  IconButton,
-  Menu,
-  MenuItem,
-  TextField,
-  Theme,
-  Typography,
-  WithStyles,
   createStyles,
   makeStyles,
-  withStyles,
 } from '@material-ui/core';
-import { GetApp, Cancel, Visibility, VisibilityOff } from '@material-ui/icons';
 import mask from '@turf/mask';
 import html2canvas from 'html2canvas';
 import { debounce, get } from 'lodash';
 import { jsPDF } from 'jspdf';
-import maplibregl from 'maplibre-gl';
 import React, { useRef, useState } from 'react';
-import MapGL, { Layer, MapRef, Source } from 'react-map-gl/maplibre';
 import { useSelector } from 'react-redux';
 import { getFormattedDate } from 'utils/date-utils';
 import { appConfig, safeCountry } from 'config';
@@ -34,14 +22,21 @@ import { SimpleBoundaryDropdown } from 'components/MapView/Layers/BoundaryDropdo
 import { getBoundaryLayerSingleton } from 'config/utils';
 import { LayerData } from 'context/layers/layer-data';
 import LegendItemsList from 'components/MapView/Legends/LegendItemsList';
+import { getBoundaryLayerSingleton } from 'config/utils';
+import { LayerData } from 'context/layers/layer-data';
 import useResizeObserver from 'utils/useOnResizeObserver';
 import {
   dateRangeSelector,
   layerDataSelector,
   mapSelector,
 } from '../../../context/mapStateSlice/selectors';
-import { useSafeTranslation } from '../../../i18n';
 import { downloadToFile } from '../../MapView/utils';
+import PrintConfig from './printConfig';
+import PrintPreview from './printPreview';
+import PrintConfigContext, {
+  MapDimensions,
+  Toggles,
+} from './printConfig.context';
 
 const defaultFooterText = get(appConfig, 'printConfig.defaultFooterText', '');
 
@@ -171,29 +166,30 @@ const mapLabelsVisibilityOptions = [
 
 const boundaryLayer = getBoundaryLayerSingleton();
 
-function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
-  const { t } = useSafeTranslation();
-  const { country } = appConfig;
+function DownloadImage({ open, handleClose }: DownloadImageProps) {
+  const { country, header } = appConfig;
+  const logo = header?.logo;
+  const classes = useStyles();
   const selectedMap = useSelector(mapSelector);
   const dateRange = useSelector(dateRangeSelector);
   const printRef = useRef<HTMLDivElement>(null);
-  const northArrowRef = useRef<HTMLImageElement>(null);
   const boundaryLayerState = useSelector(
     layerDataSelector(boundaryLayer.id),
   ) as LayerData<BoundaryLayerProps> | undefined;
   const { data } = boundaryLayerState || {};
 
-  const mapRef = React.useRef<MapRef>(null);
   // list of toggles
-  const [toggles, setToggles] = React.useState({
+  const [toggles, setToggles] = React.useState<Toggles>({
     fullLayerDescription: true,
     countryMask: false,
     mapLabelsVisibility: true,
+    logoVisibility: !!logo,
+    legendVisibility: true,
+    footerVisibility: true,
   });
-  const [
-    downloadMenuAnchorEl,
-    setDownloadMenuAnchorEl,
-  ] = React.useState<HTMLElement | null>(null);
+
+  const [downloadMenuAnchorEl, setDownloadMenuAnchorEl] =
+    React.useState<HTMLElement | null>(null);
   const [selectedBoundaries, setSelectedBoundaries] = React.useState<
     AdminCodeString[]
   >([]);
@@ -202,15 +198,15 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
   const [footerTextSize, setFooterTextSize] = React.useState(12);
   const [legendScale, setLegendScale] = React.useState(0);
   const [legendPosition, setLegendPosition] = React.useState(0);
+  const [logoPosition, setLogoPosition] = React.useState(0);
+  const [logoScale, setLogoScale] = React.useState(1);
   // the % value of the original dimensions
-  const [mapDimensions, setMapDimensions] = React.useState<{
-    height: number;
-    width: number;
-  }>({ width: 100, height: 100 });
-  const [legendWidth, setLegendWidth] = React.useState(0);
-  const [footerRef, { height: footerHeight }] = useResizeObserver<
-    HTMLDivElement
-  >(footerText, open);
+  const [mapDimensions, setMapDimensions] = React.useState<MapDimensions>({
+    width: 100,
+    height: 100,
+  });
+  const [footerRef, { height: footerHeight }] =
+    useResizeObserver<HTMLDivElement>(footerText, open);
   const [titleRef, { height: titleHeight }] = useResizeObserver<HTMLDivElement>(
     titleText,
     open,
@@ -226,36 +222,8 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
     );
   }
 
-  const updateScaleBarAndNorthArrow = React.useCallback(() => {
-    const elem = document.querySelector(
-      '.maplibregl-ctrl-scale',
-    ) as HTMLElement;
-
-    // this takes into account the watermark
-    const baseHeight = footerHeight || 20;
-
-    if (elem) {
-      // eslint-disable-next-line fp/no-mutating-assign
-      Object.assign(elem.style, {
-        position: 'absolute',
-        right: '10px',
-        bottom: `${baseHeight + 10}px`,
-        margin: 0,
-      });
-    }
-
-    if (northArrowRef.current) {
-      northArrowRef.current.style.bottom = `${baseHeight + 40}px`;
-    }
-  }, [footerHeight]);
-
-  React.useEffect(() => {
-    updateScaleBarAndNorthArrow();
-  }, [updateScaleBarAndNorthArrow]);
-
-  const [invertedAdminBoundaryLimitPolygon, setAdminBoundaryPolygon] = useState(
-    null,
-  );
+  const [invertedAdminBoundaryLimitPolygon, setAdminBoundaryPolygon] =
+    useState(null);
 
   React.useEffect(() => {
     // admin-boundary-unified-polygon.json is generated using "yarn preprocess-layers"
@@ -334,8 +302,51 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
     handleDownloadMenuClose();
   };
 
+  // eslint-disable-next-line react/jsx-no-constructed-context-values
+  const printContext = {
+    printConfig: {
+      open,
+      toggles,
+      mapDimensions,
+      footerHeight,
+      selectedBoundaries,
+      setDownloadMenuAnchorEl,
+      titleText,
+      titleRef,
+      footerTextSize,
+      footerText,
+      footerRef,
+      logoPosition,
+      titleHeight,
+      logoScale,
+      legendPosition,
+      legendScale,
+      printRef,
+      invertedAdminBoundaryLimitPolygon,
+      handleClose,
+      setTitleText,
+      debounceCallback,
+      country,
+      setMapDimensions,
+      logo,
+      setLogoPosition,
+      setLogoScale,
+      setToggles,
+      setLegendPosition,
+      setFooterText,
+      setFooterTextSize,
+      handleDownloadMenuOpen,
+      downloadMenuAnchorEl,
+      handleDownloadMenuClose,
+      download,
+      defaultFooterText,
+      setSelectedBoundaries,
+      setLegendScale,
+    },
+  };
+
   return (
-    <>
+    <PrintConfigContext.Provider value={printContext}>
       <Dialog
         maxWidth="xl"
         open={open}
@@ -344,434 +355,39 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
         aria-labelledby="dialog-preview"
       >
         <DialogContent className={classes.contentContainer}>
-          <div
-            style={{
-              display: 'flex',
-              flexDirection: 'column',
-              width: '100%',
-            }}
-          >
-            <div>
-              <Typography variant="h3" className={classes.title}>
-                {t('MAP PREVIEW')}
-              </Typography>
-              <Typography color="textSecondary" variant="body1">
-                {t('Use your mouse to pan and zoom the map')}
-              </Typography>
-            </div>
-            <div
-              style={{
-                width: '100%',
-                height: '100%',
-              }}
-            >
-              <div
-                style={{
-                  position: 'relative',
-                  zIndex: 3,
-                  border: '1px solid black',
-                  height: `${mapDimensions.height}%`,
-                  width: `${mapDimensions.width}%`,
-                }}
-              >
-                <div ref={printRef} className={classes.printContainer}>
-                  <img
-                    ref={northArrowRef}
-                    style={{
-                      position: 'absolute',
-                      zIndex: 3,
-                      width: '50px',
-                      bottom: `${footerHeight + 40}px`,
-                      right: '10px',
-                    }}
-                    src="./images/icon_north_arrow.png"
-                    alt="northArrow"
-                  />
-                  {titleText && (
-                    <div ref={titleRef} className={classes.titleOverlay}>
-                      {titleText}
-                    </div>
-                  )}
-                  {footerTextSize > 0 && footerText && (
-                    <div
-                      ref={footerRef}
-                      className={classes.footerOverlay}
-                      style={{
-                        fontSize: `${footerTextSize}px`,
-                      }}
-                    >
-                      <div style={{ padding: '8px' }}>{footerText}</div>
-                    </div>
-                  )}
-                  {legendPosition !== -1 && (
-                    <div
-                      style={{
-                        position: 'absolute',
-                        zIndex: 2,
-                        top: titleHeight,
-                        ...(legendPosition % 2 === 0
-                          ? { left: '8px' }
-                          : {
-                              right: `${legendWidth - 8}px`,
-                            }),
-                        width: '20px',
-                        // Use transform scale to adjust size based on legendScale
-                        transform: `scale(${1 - legendScale})`,
-                      }}
-                    >
-                      <LegendItemsList
-                        resizeCallback={({ width }) => setLegendWidth(width)}
-                        forPrinting
-                        listStyle={classes.legendListStyle}
-                        showDescription={toggles.fullLayerDescription}
-                      />
-                    </div>
-                  )}
-                  <div className={classes.mapContainer}>
-                    {selectedMap && open && (
-                      <MapGL
-                        ref={mapRef}
-                        dragRotate={false}
-                        // preserveDrawingBuffer is required for the map to be exported as an image
-                        preserveDrawingBuffer
-                        initialViewState={{
-                          longitude: selectedMap.getCenter().lng,
-                          latitude: selectedMap.getCenter().lat,
-                          zoom: selectedMap.getZoom(),
-                        }}
-                        mapStyle={selectedMapStyle}
-                        onLoad={e => {
-                          e.target.addControl(
-                            new maplibregl.ScaleControl({}),
-                            'bottom-right',
-                          );
-                          updateScaleBarAndNorthArrow();
-                        }}
-                        maxBounds={selectedMap.getMaxBounds() ?? undefined}
-                      >
-                        {toggles.countryMask && (
-                          <Source
-                            id="mask-overlay"
-                            type="geojson"
-                            data={invertedAdminBoundaryLimitPolygon}
-                          >
-                            <Layer
-                              id="mask-layer-overlay"
-                              type="fill"
-                              source="mask-overlay"
-                              layout={{}}
-                              paint={{
-                                'fill-color': '#000',
-                                'fill-opacity': 0.7,
-                              }}
-                            />
-                          </Source>
-                        )}
-                      </MapGL>
-                    )}
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div className={classes.optionsContainer}>
-            <div>
-              <Box
-                fontSize={14}
-                fontWeight={900}
-                mb={1}
-                className={classes.title}
-              >
-                {t('Map Options')}
-              </Box>
-              <IconButton
-                className={classes.closeButton}
-                onClick={() => handleClose()}
-              >
-                <Cancel />
-              </IconButton>
-            </div>
-
-            <div className={classes.optionWrap}>
-              <Typography variant="h4">{t('Title')}</Typography>
-              <TextField
-                defaultValue={country}
-                fullWidth
-                size="small"
-                inputProps={{ style: { color: 'black' } }}
-                onChange={event => {
-                  debounceCallback(setTitleText, event.target.value);
-                }}
-                variant="outlined"
-              />
-            </div>
-
-            <div className={classes.sameRowToggles}>
-              <ToggleSelector
-                value={Number(toggles.countryMask)}
-                options={countryMaskSelectorOptions}
-                setValue={val =>
-                  setToggles(prev => ({
-                    ...prev,
-                    countryMask: Boolean(val),
-                  }))
-                }
-                title={t('Admin area mask')}
-              />
-
-              <ToggleSelector
-                value={Number(toggles.mapLabelsVisibility)}
-                options={mapLabelsVisibilityOptions}
-                setValue={val =>
-                  setToggles(prev => ({
-                    ...prev,
-                    mapLabelsVisibility: Boolean(val),
-                  }))
-                }
-                align="end"
-                title={t('Map Labels')}
-              />
-            </div>
-
-            {toggles.countryMask && (
-              <div className={classes.optionWrap}>
-                <Typography variant="h4">{t('Select admin area')}</Typography>
-                <SimpleBoundaryDropdown
-                  selectAll
-                  className={classes.formControl}
-                  selectedBoundaries={selectedBoundaries}
-                  setSelectedBoundaries={setSelectedBoundaries}
-                  selectProps={{
-                    variant: 'outlined',
-                    fullWidth: true,
-                  }}
-                  multiple={false}
-                  size="small"
-                />
-              </div>
-            )}
-
-            <div className={classes.sameRowToggles}>
-              <ToggleSelector
-                value={legendPosition > -1 ? 0 : -1}
-                options={legendPositionOptions}
-                iconProp={legendPosition}
-                setValue={v =>
-                  setLegendPosition(prev => (v === -1 ? -1 : prev + 1))
-                }
-                title={t('Legend Position')}
-              />
-
-              <ToggleSelector
-                value={Number(toggles.fullLayerDescription)}
-                options={layerDescriptionSelectorOptions}
-                setValue={val =>
-                  setToggles(prev => ({
-                    ...prev,
-                    fullLayerDescription: Boolean(val),
-                  }))
-                }
-                align="end"
-                title={t('Full Layer Description')}
-              />
-            </div>
-
-            <div
-              // disable the legend scale if the legend is not visible
-              style={{
-                opacity: legendPosition !== -1 ? 1 : 0.5,
-                pointerEvents: legendPosition !== -1 ? 'auto' : 'none',
-              }}
-            >
-              <ToggleSelector
-                value={legendScale}
-                options={legendScaleSelectorOptions}
-                setValue={setLegendScale}
-                title={t('Legend Size')}
-              />
-            </div>
-
-            <ToggleSelector
-              value={mapDimensions.width}
-              options={mapWidthSelectorOptions}
-              setValue={val =>
-                setMapDimensions(prev => ({
-                  ...(prev || {}),
-                  width: val as number,
-                }))
-              }
-              title={t('Map Width')}
-            />
-
-            <ToggleSelector
-              value={footerTextSize}
-              options={footerTextSelectorOptions}
-              setValue={setFooterTextSize}
-              title={t('Footer Text')}
-            />
-
-            <TextField
-              size="small"
-              key={defaultFooterText}
-              multiline
-              defaultValue={defaultFooterText}
-              inputProps={{ style: { color: 'black', fontSize: '0.9rem' } }}
-              minRows={3}
-              maxRows={3}
-              onChange={event => {
-                debounceCallback(setFooterText, event.target.value);
-              }}
-              variant="outlined"
-            />
-
-            <Button
-              style={{ backgroundColor: cyanBlue, color: 'black' }}
-              variant="contained"
-              color="primary"
-              className={classes.gutter}
-              endIcon={<GetApp />}
-              onClick={e => handleDownloadMenuOpen(e)}
-            >
-              {t('Download')}
-            </Button>
-            <Menu
-              anchorEl={downloadMenuAnchorEl}
-              keepMounted
-              open={Boolean(downloadMenuAnchorEl)}
-              onClose={handleDownloadMenuClose}
-            >
-              <MenuItem onClick={() => download('png')}>
-                {t('Download PNG')}
-              </MenuItem>
-              <MenuItem onClick={() => download('jpeg')}>
-                {t('Download JPEG')}
-              </MenuItem>
-              <MenuItem onClick={() => download('pdf')}>
-                {t('Download PDF')}
-              </MenuItem>
-            </Menu>
-          </div>
+          <PrintPreview />
+          <PrintConfig />
         </DialogContent>
       </Dialog>
-    </>
+    </PrintConfigContext.Provider>
   );
 }
 
-const styles = (theme: Theme) =>
+const useStyles = makeStyles(() =>
   createStyles({
-    title: {
-      color: theme.palette.text.secondary,
-    },
-    gutter: {
-      marginBottom: 10,
-    },
-    closeButton: {
-      position: 'absolute',
-      right: theme.spacing(1),
-      top: theme.spacing(1),
-    },
-    backdrop: {
-      position: 'absolute',
-    },
-    backdropWrapper: {
-      position: 'absolute',
-      top: 0,
-      left: 0,
-      zIndex: 2,
-      width: '100%',
-      height: '100%',
-      display: 'flex',
-      justifyContent: 'center',
-    },
-    printContainer: {
-      width: '100%',
-      height: '100%',
-    },
-    mapContainer: {
-      position: 'absolute',
-      top: 0,
-      left: 0,
-      height: '100%',
-      width: '100%',
-      zIndex: 1,
-    },
-    optionWrap: {
-      display: 'flex',
-      flexDirection: 'column',
-      gap: '0.6rem',
-    },
-    titleOverlay: {
-      position: 'absolute',
-      top: 0,
-      left: 0,
-      zIndex: 2,
-      color: 'black',
-      backgroundColor: 'white',
-      width: '100%',
-      textAlign: 'center',
-      fontSize: '1.5rem',
-      padding: '8px 0 8px 0',
-      borderBottom: `1px solid ${gray}`,
-    },
-    footerOverlay: {
-      position: 'absolute',
-      bottom: 0,
-      left: 0,
-      zIndex: 2,
-      color: 'black',
-      backgroundColor: 'white',
-      width: '100%',
-      borderTop: `1px solid ${gray}`,
-    },
-    formControl: {
-      width: '100%',
-      '& > .MuiInputLabel-shrink': { display: 'none' },
-      '& > .MuiInput-root': { margin: 0 },
-      '& label': {
-        textTransform: 'uppercase',
-        letterSpacing: '3px',
-        fontSize: '11px',
-        position: 'absolute',
-        top: '-13px',
-      },
-    },
     contentContainer: {
+      fontFamily: 'Roboto',
       scrollbarGutter: 'stable',
       display: 'flex',
       gap: '1rem',
+      // Adjust for the printConfig scroll bar
+      marginRight: '-15px',
       flexDirection: 'row',
       justifyContent: 'space-between',
       width: '90vw',
       height: '90vh',
-    },
-    optionsContainer: {
-      display: 'flex',
-      height: '100%',
-      flexDirection: 'column',
-      gap: '0.8rem',
-      width: '25rem',
-      scrollbarGutter: 'stable',
-      overflow: 'auto',
-      paddingRight: '15px',
-      zIndex: 4,
-      backgroundColor: 'white',
-    },
-    legendListStyle: {
-      position: 'absolute',
-      top: '8px',
-      zIndex: 2,
     },
     sameRowToggles: {
       display: 'flex',
       flexDirection: 'row',
       justifyContent: 'space-between',
     },
-  });
+  }),
+);
 
-export interface DownloadImageProps extends WithStyles<typeof styles> {
+export interface DownloadImageProps {
   open: boolean;
   handleClose: () => void;
 }
 
-export default withStyles(styles)(DownloadImage);
+export default DownloadImage;

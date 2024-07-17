@@ -1,22 +1,24 @@
 import {
   Button,
   createStyles,
-  Hidden,
   IconButton,
   Typography,
-  WithStyles,
-  withStyles,
+  makeStyles,
+  useTheme,
+  useMediaQuery,
 } from '@material-ui/core';
-import { VisibilityOffOutlined, VisibilityOutlined } from '@material-ui/icons';
-import React, { useState, memo, useCallback } from 'react';
-import { LayerType } from 'config/types';
+import { VisibilityOutlined, VisibilityOffOutlined } from '@material-ui/icons';
+import { useState, memo, useCallback } from 'react';
 import { useSafeTranslation } from 'i18n';
-import { Extent } from 'components/MapView/Layers/raster-utils';
 import { black, cyanBlue } from 'muiTheme';
 import LegendItemsList from './LegendItemsList';
 
-const Legends = memo(({ classes, extent, layers }: LegendsProps) => {
+const Legends = memo(() => {
+  const classes = useStyles();
   const { t } = useSafeTranslation();
+  const theme = useTheme();
+  const smDown = useMediaQuery(theme.breakpoints.down('sm'));
+  const mdUp = useMediaQuery(theme.breakpoints.up('md'));
 
   const [open, setOpen] = useState(true);
 
@@ -26,7 +28,7 @@ const Legends = memo(({ classes, extent, layers }: LegendsProps) => {
 
   return (
     <>
-      <Hidden smDown>
+      {!smDown && (
         <Button
           className={classes.triggerButton}
           style={{ backgroundColor: open ? cyanBlue : undefined }}
@@ -48,9 +50,9 @@ const Legends = memo(({ classes, extent, layers }: LegendsProps) => {
             {t('Legend')}
           </Typography>
         </Button>
-      </Hidden>
+      )}
 
-      <Hidden mdUp>
+      {!mdUp && (
         <IconButton
           style={{ backgroundColor: open ? cyanBlue : undefined }}
           onClick={toggleLegendVisibility}
@@ -64,14 +66,14 @@ const Legends = memo(({ classes, extent, layers }: LegendsProps) => {
             <VisibilityOutlined className={classes.icon} />
           )}
         </IconButton>
-      </Hidden>
+      )}
 
       {open && <LegendItemsList listStyle={classes.list} />}
     </>
   );
 });
 
-const styles = () =>
+const useStyles = makeStyles(() =>
   createStyles({
     triggerButton: {
       height: '2.5em',
@@ -79,17 +81,13 @@ const styles = () =>
     list: {
       overflowX: 'hidden',
       overflowY: 'auto',
-      maxHeight: '70vh',
+      maxHeight: '78vh', // same size as the left panel
       position: 'absolute',
       right: '1rem',
-      top: 'calc(7vh - 8px)',
+      top: 'calc(6vh + 16px)',
     },
     icon: { color: 'white', fontSize: '1.5rem' },
-  });
+  }),
+);
 
-export interface LegendsProps extends WithStyles<typeof styles> {
-  extent?: Extent;
-  layers: LayerType[];
-}
-
-export default withStyles(styles)(Legends);
+export default Legends;

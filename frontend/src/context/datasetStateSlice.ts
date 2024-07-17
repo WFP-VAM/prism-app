@@ -47,6 +47,7 @@ type BoundaryProps = {
   code: number;
   level: string;
   name: string;
+  localName: string;
 };
 
 type BoundaryPropsDict = { [key: string]: BoundaryProps };
@@ -160,7 +161,9 @@ export const loadEWSDataset = async (
     EWSConfig,
   };
 
-  return new Promise<TableData>(resolve => resolve(tableDataWithEWSConfig));
+  return new Promise<TableData>(resolve => {
+    resolve(tableDataWithEWSConfig);
+  });
 };
 
 type HDCResponse = {
@@ -250,7 +253,7 @@ export const loadAdminBoundaryDataset = async (
 
   const hdcRequestParams = {
     level,
-    admin_id: adminCode,
+    id_code: adminCode,
     coverage: 'full',
     vam: getVamParam(serverLayerName),
     start: startDateStr,
@@ -265,7 +268,9 @@ export const loadAdminBoundaryDataset = async (
   );
 
   const tableData = createTableData(results, TableDataFormat.DATE);
-  return new Promise<TableData>(resolve => resolve(tableData));
+  return new Promise<TableData>(resolve => {
+    resolve(tableData);
+  });
 };
 
 export const loadDataset = createAsyncThunk<
@@ -274,11 +279,10 @@ export const loadDataset = createAsyncThunk<
   CreateAsyncThunkTypes
 >(
   'datasetState/loadDataset',
-  async (params: DatasetRequestParams, { dispatch }) => {
-    return (params as AdminBoundaryRequestParams).id
+  async (params: DatasetRequestParams, { dispatch }) =>
+    (params as AdminBoundaryRequestParams).id
       ? loadAdminBoundaryDataset(params as AdminBoundaryRequestParams, dispatch)
-      : loadEWSDataset(params as EWSDataPointsRequestParams, dispatch);
-  },
+      : loadEWSDataset(params as EWSDataPointsRequestParams, dispatch),
 );
 
 export const datasetResultStateSlice = createSlice({

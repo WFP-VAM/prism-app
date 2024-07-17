@@ -2,10 +2,10 @@ import {
   CircularProgress,
   createStyles,
   Typography,
-  WithStyles,
-  withStyles,
   Box,
+  makeStyles,
 } from '@material-ui/core';
+
 import { GeoJsonProperties } from 'geojson';
 import { omit } from 'lodash';
 import React, { memo, useCallback, useEffect, useMemo, useState } from 'react';
@@ -23,11 +23,12 @@ import {
   loadAdminBoundaryDataset,
 } from 'context/datasetStateSlice';
 import { TableData } from 'context/tableStateSlice';
-import { useSafeTranslation } from 'i18n';
+import { isEnglishLanguageSelected, useSafeTranslation } from 'i18n';
 import { getChartAdminBoundaryParams } from 'utils/admin-utils';
 import Chart, { ChartProps } from 'components/Common/Chart';
 import { createCsvDataFromDataKeyMap, createDataKeyMap } from 'utils/csv-utils';
 import { getFormattedDate } from 'utils/date-utils';
+import { generateDateStrings } from './utils';
 
 /**
  * This function removes the first occurrence of a specific number from an array.
@@ -43,33 +44,6 @@ function removeFirstOccurrence(arr: number[], numberToRemove: number) {
     return [...arr.slice(0, indexToRemove), ...arr.slice(indexToRemove + 1)];
   }
   return arr;
-}
-
-// returns startDate and endDate as part of result
-export function generateDateStrings(startDate: Date, endDate: Date) {
-  const result = [];
-  const interval = [1, 11, 21];
-  const currentDate = new Date(startDate);
-  currentDate.setUTCHours(12, 0, 0, 0);
-  endDate.setUTCHours(12, 0, 0, 0);
-
-  while (currentDate <= endDate) {
-    // eslint-disable-next-line fp/no-mutation, no-plusplus
-    for (let i = 0; i < 3; i++) {
-      currentDate.setDate(interval[i]);
-      const formattedDate = currentDate.toISOString().split('T')[0];
-
-      if (currentDate > startDate && currentDate <= endDate) {
-        // eslint-disable-next-line fp/no-mutating-methods
-        result.push(formattedDate);
-      }
-    }
-
-    currentDate.setDate(1);
-    currentDate.setMonth(currentDate.getMonth() + 1);
-  }
-
-  return result;
 }
 
 function extendDatasetRows(
@@ -132,10 +106,10 @@ const ChartSection = memo(
     maxChartValue,
     minChartValue,
     chartProps,
-    classes,
   }: ChartSectionProps) => {
+    const classes = useStyles();
     const dispatch = useDispatch();
-    const { t } = useSafeTranslation();
+    const { t, i18n: i18nLocale } = useSafeTranslation();
     const [chartDataset, setChartDataset] = useState<undefined | TableData>();
     const [extendedChartDataset, setExtendedChartDataset] = useState<
       undefined | TableData
@@ -252,9 +226,8 @@ const ChartSection = memo(
       setMaxDataTicks,
     ]);
 
-    const [chartDataSetIsLoading, setChartDataSetIsLoading] = useState<boolean>(
-      false,
-    );
+    const [chartDataSetIsLoading, setChartDataSetIsLoading] =
+      useState<boolean>(false);
     const [chartDataSetError, setChartDataSetError] = useState<
       string | undefined
     >(undefined);
@@ -273,16 +246,20 @@ const ChartSection = memo(
 
     const adminKey = levelsDict[adminLevel.toString()];
     // Default to country level data.
-    const { code: adminCode } = useMemo(() => {
-      return (
+    const {
+      code: adminCode,
+      name: adminName,
+      localName: adminLocalName,
+    } = useMemo(
+      () =>
         params.boundaryProps[adminKey] || {
           code: appConfig.countryAdmin0Id,
-        }
-      );
-    }, [adminKey, params]);
+        },
+      [adminKey, params],
+    );
 
-    const requestParams: DatasetRequestParams = useMemo(() => {
-      return {
+    const requestParams: DatasetRequestParams = useMemo(
+      () => ({
         id: adminKey,
         level: adminLevel.toString(),
         adminCode: adminCode || appConfig.countryAdmin0Id,
@@ -292,18 +269,19 @@ const ChartSection = memo(
         datasetFields: params.datasetFields,
         startDate,
         endDate,
-      };
-    }, [
-      adminCode,
-      adminKey,
-      adminLevel,
-      startDate,
-      endDate,
-      params.boundaryProps,
-      params.datasetFields,
-      params.serverLayerName,
-      params.url,
-    ]);
+      }),
+      [
+        adminCode,
+        adminKey,
+        adminLevel,
+        startDate,
+        endDate,
+        params.boundaryProps,
+        params.datasetFields,
+        params.serverLayerName,
+        params.url,
+      ],
+    );
 
     const getData = useCallback(async () => {
       setChartDataSetIsLoading(true);
@@ -360,40 +338,38 @@ const ChartSection = memo(
       };
     }, [chartLayer.title, dataForCsv, getData]);
 
-    const chartType = useMemo(() => {
-      return chartLayer.chartData!.type;
-    }, [chartLayer.chartData]);
+    const chartType = useMemo(
+      () => chartLayer.chartData!.type,
+      [chartLayer.chartData],
+    );
 
-    const colors = useMemo(() => {
-      return params.datasetFields?.map(row => row.color);
-    }, [params.datasetFields]);
+    const colors = useMemo(
+      () => params.datasetFields?.map(row => row.color),
+      [params.datasetFields],
+    );
 
-    const minValue = useMemo(() => {
-      return Math.min(
-        ...(params.datasetFields
-          ?.filter((row: DatasetField) => {
-            return row?.minValue !== undefined;
-          })
-          .map((row: DatasetField) => {
-            return row.minValue;
-          }) as number[]),
-      );
-    }, [params.datasetFields]);
+    const minValue = useMemo(
+      () =>
+        Math.min(
+          ...(params.datasetFields
+            ?.filter((row: DatasetField) => row?.minValue !== undefined)
+            .map((row: DatasetField) => row.minValue) as number[]),
+        ),
+      [params.datasetFields],
+    );
 
-    const maxValue = useMemo(() => {
-      return Math.max(
-        ...(params.datasetFields
-          ?.filter((row: DatasetField) => {
-            return row?.maxValue !== undefined;
-          })
-          .map((row: DatasetField) => {
-            return row.maxValue;
-          }) as number[]),
-      );
-    }, [params.datasetFields]);
+    const maxValue = useMemo(
+      () =>
+        Math.max(
+          ...(params.datasetFields
+            ?.filter((row: DatasetField) => row?.maxValue !== undefined)
+            .map((row: DatasetField) => row.maxValue) as number[]),
+        ),
+      [params.datasetFields],
+    );
 
-    const config: ChartConfig = useMemo(() => {
-      return {
+    const config: ChartConfig = useMemo(
+      () => ({
         type: chartType,
         stacked: false,
         category: CHART_DATA_PREFIXES.date,
@@ -403,12 +379,21 @@ const ChartSection = memo(
         minValue: minChartValue || minValue,
         maxValue: maxChartValue || maxValue,
         colors,
-      };
-    }, [chartType, colors, maxChartValue, maxValue, minChartValue, minValue]);
+      }),
+      [chartType, colors, maxChartValue, maxValue, minChartValue, minValue],
+    );
 
-    const title = useMemo(() => {
-      return chartLayer.title;
-    }, [chartLayer.title]);
+    const title = useMemo(() => chartLayer.title, [chartLayer.title]);
+
+    const subtitle = useMemo(() => {
+      if (isEnglishLanguageSelected(i18nLocale)) {
+        return adminName || appConfig.country;
+      }
+      return adminLocalName || appConfig.country;
+
+      // i18nLocale does not trigger a refresh. resolvedLanguage does
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [adminLocalName, adminName, i18nLocale.resolvedLanguage]);
 
     return useMemo(() => {
       if (chartDataSetIsLoading) {
@@ -422,6 +407,7 @@ const ChartSection = memo(
         return (
           <Chart
             title={t(title)}
+            subtitle={t(subtitle)}
             config={config}
             data={extendedChartDataset}
             datasetFields={params.datasetFields}
@@ -450,6 +436,7 @@ const ChartSection = memo(
       classes.errorContainer,
       t,
       title,
+      subtitle,
       config,
       params.datasetFields,
       chartRange,
@@ -458,7 +445,7 @@ const ChartSection = memo(
   },
 );
 
-const styles = () =>
+const useStyles = makeStyles(() =>
   createStyles({
     errorContainer: {
       display: 'flex',
@@ -474,9 +461,10 @@ const styles = () =>
       justifyContent: 'center',
       alignItems: 'center',
     },
-  });
+  }),
+);
 
-export interface ChartSectionProps extends WithStyles<typeof styles> {
+export interface ChartSectionProps {
   chartLayer: WMSLayerProps;
   adminProperties: GeoJsonProperties;
   adminLevel: AdminLevelType;
@@ -497,4 +485,4 @@ export interface ChartSectionProps extends WithStyles<typeof styles> {
   chartProps?: Partial<ChartProps>;
 }
 
-export default withStyles(styles)(ChartSection);
+export default ChartSection;

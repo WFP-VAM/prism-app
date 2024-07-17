@@ -1,0 +1,116 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`renders as expected 1`] = `
+<div>
+  <mock-typography
+    style="margin-left: 1rem;"
+    variant="h3"
+  >
+    Forecast data as of 
+    December 1, 2023
+  </mock-typography>
+  <div
+    class="makeStyles-charts-2"
+  >
+    <div
+      class="makeStyles-chartsHeader-3"
+    >
+      <div
+        style="min-width: 3rem;"
+      />
+      <mock-typography
+        classname="makeStyles-label-8"
+      >
+        SPI DJF
+      </mock-typography>
+      <div
+        style="min-width: 10px;"
+      />
+    </div>
+    <div
+      class="makeStyles-chartLine-4"
+    >
+      <div
+        class="makeStyles-textWrap-5"
+        style="background-color: rgb(255, 213, 45);"
+      >
+        <mock-typography
+          classname="makeStyles-text-6"
+          style="color: black; border: 1px solid black;"
+        >
+          Moderate
+        </mock-typography>
+      </div>
+      <div
+        class="makeStyles-chartWrapper-7"
+      >
+        <canvas
+          height="150"
+          width="300"
+        />
+      </div>
+    </div>
+    <div
+      class="makeStyles-chartLine-4"
+    >
+      <div
+        class="makeStyles-textWrap-5"
+        style="background-color: rgb(255, 252, 179);"
+      >
+        <mock-typography
+          classname="makeStyles-text-6"
+          style="color: black; border: 1px solid black;"
+        >
+          Mild
+        </mock-typography>
+      </div>
+      <div
+        class="makeStyles-chartWrapper-7"
+      >
+        <canvas
+          height="150"
+          width="300"
+        />
+      </div>
+    </div>
+  </div>
+  <div
+    class="makeStyles-footerWrapperVert-14"
+  >
+    <div
+      class="makeStyles-footerActionsWrapper-10"
+    >
+      <mock-button
+        classname="makeStyles-footerButton-12"
+        fullwidth="true"
+        starticon="[object Object]"
+        variant="outlined"
+      >
+        <mock-typography>
+          Back
+        </mock-typography>
+      </mock-button>
+      <mock-button
+        classname="makeStyles-footerButton-12"
+        fullwidth="true"
+        starticon="[object Object]"
+        variant="outlined"
+      >
+        <mock-typography>
+          Timeline
+        </mock-typography>
+      </mock-button>
+    </div>
+    <div
+      class="makeStyles-footerDialogsWrapperVert-15"
+    >
+      <mock-typography
+        classname="makeStyles-footerDialog-13"
+        component="button"
+      >
+        How to read this screen
+      </mock-typography>
+    </div>
+  </div>
+</div>
+`;

@@ -18,8 +18,7 @@ import {
   Slider,
   Tooltip,
   Typography,
-  withStyles,
-  WithStyles,
+  makeStyles,
 } from '@material-ui/core';
 import { Close, Opacity, SwapVert } from '@material-ui/icons';
 import { useDispatch, useSelector } from 'react-redux';
@@ -40,13 +39,13 @@ import LayerDownloadOptions from 'components/MapView/LeftPanel/layersPanel/MenuI
 import AnalysisDownloadButton from 'components/MapView/Legends//AnalysisDownloadButton';
 import { toggleRemoveLayer } from 'components/MapView/LeftPanel/layersPanel/MenuItem/MenuSwitch/SwitchItem/utils';
 import { opacitySelector, setOpacity } from 'context/opacityStateSlice';
-import { gray } from 'muiTheme';
+import { lightGrey } from 'muiTheme';
 import LoadingBar from '../LoadingBar';
+import LegendMarkdown from '../LegendMarkdown';
 
 // Children here is legendText
 const LegendItem = memo(
   ({
-    classes,
     id,
     title,
     legend,
@@ -59,6 +58,7 @@ const LegendItem = memo(
     forPrinting = false,
     showDescription = true,
   }: LegendItemProps) => {
+    const classes = useStyles();
     const dispatch = useDispatch();
     const { removeLayerFromUrl } = useUrlHistory();
     const map = useSelector(mapSelector);
@@ -94,13 +94,21 @@ const LegendItem = memo(
     const opacityId = open ? 'opacity-popover' : undefined;
 
     const selectedLayers = useSelector(layersSelector);
-    const layer = useMemo(() => {
-      return selectedLayers.find(l => l.id === id);
-    }, [id, selectedLayers]);
+    const layer = useMemo(
+      () => selectedLayers.find(l => l.id === id),
+      [id, selectedLayers],
+    );
 
-    const renderedOpacitySlider = useMemo(() => {
-      return (
-        <Box px={2} display="flex" className={classes.opacityBox}>
+    const renderedOpacitySlider = useMemo(
+      () => (
+        <Box
+          style={{
+            paddingLeft: 2,
+            paddingRight: 2,
+            display: 'flex',
+          }}
+          className={classes.opacityBox}
+        >
           <Typography classes={{ root: classes.opacityText }}>
             {`${Math.round((opacity || 0) * 100)}%`}
           </Typography>
@@ -114,7 +122,7 @@ const LegendItem = memo(
               root: classes.opacitySliderRoot,
               thumb: classes.opacitySliderThumb,
             }}
-            onChange={(e, newValue) =>
+            onChange={(_e, newValue) =>
               dispatch(
                 setOpacity({
                   map,
@@ -126,29 +134,32 @@ const LegendItem = memo(
             }
           />
         </Box>
-      );
-    }, [
-      classes.opacityBox,
-      classes.opacitySliderRoot,
-      classes.opacitySliderThumb,
-      classes.opacityText,
-      dispatch,
-      id,
-      map,
-      opacity,
-      type,
-    ]);
+      ),
+      [
+        classes.opacityBox,
+        classes.opacitySliderRoot,
+        classes.opacitySliderThumb,
+        classes.opacityText,
+        dispatch,
+        id,
+        map,
+        opacity,
+        type,
+      ],
+    );
 
-    const layerDownloadOptions = useMemo(() => {
-      return layer ? (
-        <LayerDownloadOptions
-          layerId={layer.id}
-          extent={extent}
-          selected
-          size="small"
-        />
-      ) : null;
-    }, [layer, extent]);
+    const layerDownloadOptions = useMemo(
+      () =>
+        layer ? (
+          <LayerDownloadOptions
+            layerId={layer.id}
+            extent={extent}
+            selected
+            size="small"
+          />
+        ) : null,
+      [layer, extent],
+    );
 
     const remove = useCallback(() => {
       if (isAnalysis) {
@@ -169,30 +180,32 @@ const LegendItem = memo(
       }
     }, [isAnalysis, layer, dispatch, map, removeLayerFromUrl]);
 
-    const getColorIndicatorKey = useCallback((item: LegendDefinitionItem) => {
-      return (
+    const getColorIndicatorKey = useCallback(
+      (item: LegendDefinitionItem) =>
         item.value ||
-        (typeof item.label === 'string' ? item?.label : item?.label?.text)
-      );
-    }, []);
+        (typeof item.label === 'string' ? item?.label : item?.label?.text),
+      [],
+    );
 
-    const renderedLegendDefinitionItems = useMemo(() => {
-      return legend?.map((item: LegendDefinitionItem) => (
-        <ColorIndicator
-          key={getColorIndicatorKey(item)}
-          value={getLegendItemLabel(t, item)}
-          color={item.color as string}
-          opacity={opacity as number}
-          fillPattern={fillPattern}
-        />
-      ));
-    }, [fillPattern, getColorIndicatorKey, legend, opacity, t]);
+    const renderedLegendDefinitionItems = useMemo(
+      () =>
+        legend?.map((item: LegendDefinitionItem) => (
+          <ColorIndicator
+            key={getColorIndicatorKey(item)}
+            value={getLegendItemLabel(t, item)}
+            color={item.color as string}
+            opacity={opacity as number}
+            fillPattern={fillPattern || item.fillPattern}
+          />
+        )),
+      [fillPattern, getColorIndicatorKey, legend, opacity, t],
+    );
 
     const renderedLegendUrl = useMemo(() => {
       if (legendUrl) {
         return <img src={legendUrl} alt={title} />;
       }
-      return <>{renderedLegendDefinitionItems}</>;
+      return renderedLegendDefinitionItems;
     }, [legendUrl, renderedLegendDefinitionItems, title]);
 
     const renderedLegend = useMemo(() => {
@@ -208,7 +221,11 @@ const LegendItem = memo(
       }
       return (
         <Grid item>
-          <Typography variant="h5">{children}</Typography>
+          {typeof children === 'string' ? (
+            <LegendMarkdown>{children}</LegendMarkdown>
+          ) : (
+            <Typography variant="h5">{children}</Typography>
+          )}
         </Grid>
       );
     }, [children]);
@@ -221,7 +238,7 @@ const LegendItem = memo(
           style={
             forPrinting
               ? {
-                  border: `1px solid ${gray}`,
+                  border: `1px solid ${lightGrey}`,
                 }
               : undefined
           }
@@ -243,8 +260,13 @@ const LegendItem = memo(
           {!forPrinting && (
             <>
               <Divider style={{ margin: '8px 0px' }} />
-              <Box display="flex" justifyContent="space-between">
-                <Tooltip title="Opacity">
+              <Box
+                style={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                }}
+              >
+                <Tooltip title={t('Opacity') as string}>
                   <IconButton size="small" onClick={openOpacity}>
                     <Opacity fontSize="small" />
                   </IconButton>
@@ -277,7 +299,7 @@ const LegendItem = memo(
                   ) : (
                     layerDownloadOptions
                   )}
-                  <Tooltip title="Remove layer">
+                  <Tooltip title={t('Remove layer') as string}>
                     <IconButton size="small" onClick={remove}>
                       <Close fontSize="small" />
                     </IconButton>
@@ -292,7 +314,7 @@ const LegendItem = memo(
   },
 );
 
-const styles = () =>
+const useStyles = makeStyles(() =>
   createStyles({
     paper: {
       padding: 8,
@@ -321,11 +343,10 @@ const styles = () =>
       width: 28,
       lineHeight: '36px',
     },
-  });
+  }),
+);
 
-interface LegendItemProps
-  extends WithStyles<typeof styles>,
-    PropsWithChildren<{}> {
+interface LegendItemProps extends PropsWithChildren<{}> {
   id: LayerType['id'];
   title: LayerType['title'];
   legend: LayerType['legend'];
@@ -338,4 +359,4 @@ interface LegendItemProps
   showDescription?: boolean;
 }
 
-export default withStyles(styles)(LegendItem);
+export default LegendItem;

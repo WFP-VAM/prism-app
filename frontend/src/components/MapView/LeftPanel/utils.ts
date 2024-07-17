@@ -22,25 +22,23 @@ type MenuItemsType = MenuItemType[];
 function formatLayersCategories(layersList: {
   [key: string]: Array<LayerKey | TableKey>;
 }): LayersCategoriesType {
-  return map(layersList, (layerKeys, layersListKey) => {
-    return {
-      title: startCase(layersListKey),
-      layers: layerKeys.filter(isLayerKey).map(key => {
-        if (typeof key === 'object') {
-          const group = (mapKeys(key, (_v, k: string) =>
-            camelCase(k),
-          ) as unknown) as MenuGroup;
-          const mainLayer = group.layers.find(l => l.main);
-          const layer = LayerDefinitions[mainLayer?.id as LayerKey];
-          // eslint-disable-next-line fp/no-mutation
-          layer.group = group;
-          return layer;
-        }
-        return LayerDefinitions[key as LayerKey];
-      }),
-      tables: layerKeys.filter(isTableKey).map(key => TableDefinitions[key]),
-    };
-  });
+  return map(layersList, (layerKeys, layersListKey) => ({
+    title: startCase(layersListKey),
+    layers: layerKeys.filter(isLayerKey).map(key => {
+      if (typeof key === 'object') {
+        const group = mapKeys(key, (_v, k: string) =>
+          camelCase(k),
+        ) as unknown as MenuGroup;
+        const mainLayer = group.layers.find(l => l.main);
+        const layer = LayerDefinitions[mainLayer?.id as LayerKey];
+        // eslint-disable-next-line fp/no-mutation
+        layer.group = group;
+        return layer;
+      }
+      return LayerDefinitions[key as LayerKey];
+    }),
+    tables: layerKeys.filter(isTableKey).map(key => TableDefinitions[key]),
+  }));
 }
 
 /**
@@ -78,13 +76,14 @@ export const menuList: MenuItemsType = map(
   },
 );
 
-export const tablesMenuItems = menuList.filter((menuItem: MenuItemType) => {
-  return menuItem.layersCategories.some((layerCategory: LayersCategoryType) => {
-    return layerCategory.tables.length > 0;
-  });
-});
+export const tablesMenuItems = menuList.filter((menuItem: MenuItemType) =>
+  menuItem.layersCategories.some(
+    (layerCategory: LayersCategoryType) => layerCategory.tables.length > 0,
+  ),
+);
 
 export const areTablesAvailable = tablesMenuItems.length >= 1;
+export const isAnticipatoryActionAvailable = !!appConfig.anticipatoryActionUrl;
 
 export const oneDayInMs = 24 * 60 * 60 * 1000;
 export const oneYearInMs = 365 * oneDayInMs;

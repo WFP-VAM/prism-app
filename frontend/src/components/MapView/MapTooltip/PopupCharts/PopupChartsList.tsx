@@ -1,16 +1,11 @@
 import { faChartBar } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {
-  Button,
-  WithStyles,
-  createStyles,
-  withStyles,
-} from '@material-ui/core';
+import { Button, createStyles, makeStyles } from '@material-ui/core';
 import { AdminLevelType, WMSLayerProps } from 'config/types';
 import { t } from 'i18next';
 import React, { memo } from 'react';
 
-const styles = () =>
+const useStyles = makeStyles(() =>
   createStyles({
     selectChartContainer: {
       display: 'flex',
@@ -32,9 +27,10 @@ const styles = () =>
       textOverflow: 'ellipsis',
       maxWidth: '280px',
     },
-  });
+  }),
+);
 
-interface PopupChartsListProps extends WithStyles<typeof styles> {
+interface PopupChartsListProps {
   filteredChartLayers: WMSLayerProps[];
   adminLevelsNames: () => string[];
   setAdminLevel: React.Dispatch<
@@ -43,39 +39,41 @@ interface PopupChartsListProps extends WithStyles<typeof styles> {
   availableAdminLevels: AdminLevelType[];
 }
 
-const PopupChartsList = ({
-  filteredChartLayers,
-  adminLevelsNames,
-  setAdminLevel,
-  availableAdminLevels,
-  classes,
-}: PopupChartsListProps) => {
-  return (
-    <div className={classes.selectChartContainer}>
-      {filteredChartLayers.map(layer =>
-        adminLevelsNames().map((level, index) => (
-          <Button
-            key={level}
-            variant="text"
-            size="small"
-            className={classes.selectLevelButton}
-            onClick={() =>
-              setAdminLevel(
-                (index + Math.min(...availableAdminLevels)) as AdminLevelType,
-              )
-            }
-          >
-            <div className={classes.selectLevelButtonValue}>
-              <FontAwesomeIcon icon={faChartBar} />
-              <div className={classes.selectLevelButtonText}>
-                {level} - {t(layer.title)}
+const PopupChartsList = memo(
+  ({
+    filteredChartLayers,
+    adminLevelsNames,
+    setAdminLevel,
+    availableAdminLevels,
+  }: PopupChartsListProps) => {
+    const classes = useStyles();
+    return (
+      <div className={classes.selectChartContainer}>
+        {filteredChartLayers.map(layer =>
+          adminLevelsNames().map((level, index) => (
+            <Button
+              key={level}
+              variant="text"
+              size="small"
+              className={classes.selectLevelButton}
+              onClick={() =>
+                setAdminLevel(
+                  (index + Math.min(...availableAdminLevels)) as AdminLevelType,
+                )
+              }
+            >
+              <div className={classes.selectLevelButtonValue}>
+                <FontAwesomeIcon icon={faChartBar} />
+                <div className={classes.selectLevelButtonText}>
+                  {level} - {t(layer.title)}
+                </div>
               </div>
-            </div>
-          </Button>
-        )),
-      )}
-    </div>
-  );
-};
+            </Button>
+          )),
+        )}
+      </div>
+    );
+  },
+);
 
-export default memo(withStyles(styles)(PopupChartsList));
+export default PopupChartsList;

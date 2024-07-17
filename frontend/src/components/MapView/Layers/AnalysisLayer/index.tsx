@@ -1,4 +1,3 @@
-import React from 'react';
 import { get } from 'lodash';
 import { Layer, Source } from 'react-map-gl/maplibre';
 import { useSelector } from 'react-redux';
@@ -32,106 +31,122 @@ import {
   useMapCallback,
 } from 'utils/map-utils';
 import { opacitySelector } from 'context/opacityStateSlice';
-import { invertLegendColors } from 'components/MapView/Legends/LegendItemsList';
+import { getFormattedDate } from 'utils/date-utils';
+import { invertLegendColors } from 'components/MapView/Legends/utils';
 
-export const layerId = getLayerMapId('analysis');
+const layerId = getLayerMapId('analysis');
 
-const onClick = (analysisData: AnalysisResult | undefined) => ({
-  dispatch,
-  t,
-}: MapEventWrapFunctionProps<undefined>) => (evt: MapLayerMouseEvent) => {
-  const coordinates = getEvtCoords(evt);
+const onClick =
+  (analysisData: AnalysisResult | undefined) =>
+  ({ dispatch, t }: MapEventWrapFunctionProps<undefined>) =>
+  (evt: MapLayerMouseEvent) => {
+    const coordinates = getEvtCoords(evt);
 
-  if (!analysisData) {
-    return;
-  }
+    if (!analysisData) {
+      return;
+    }
 
-  const feature = findFeature(layerId, evt);
-  if (!feature) {
-    return;
-  }
+    const feature = findFeature(layerId, evt);
+    if (!feature) {
+      return;
+    }
 
-  // Statistic Data
-  if (analysisData instanceof PolygonAnalysisResult) {
-    const stats = JSON.parse(feature.properties['zonal:stat:classes']);
-    // keys are the zonal classes like ['60 km/h', 'Uncertainty Cones']
-    const keys = Object.keys(stats).filter(key => key !== 'null');
-    const popupData = Object.fromEntries(
-      keys.map(key => [
-        key,
-        {
-          // we convert the percentage from a number like 0.832 to something that is
-          // more intuitive and can fit in the popup better like "83%"
-          data: `${Math.round(stats[key].percentage * 100)}%`,
-          coordinates,
-        },
-      ]),
-    );
-    dispatch(addPopupData(popupData));
-  } else {
-    const statisticKey = analysisData.statistic;
-    const precision =
-      analysisData instanceof ExposedPopulationResult ? 0 : undefined;
-    const formattedProperties = formatIntersectPercentageAttribute(
-      feature.properties,
-    );
-    dispatch(
-      addPopupData({
-        [analysisData.getStatTitle(t)]: {
-          data: `${getRoundedData(
-            formattedProperties[statisticKey],
-            t,
-            precision,
-          )} ${units[statisticKey] || ''}`,
-          coordinates,
-        },
-      }),
-    );
-    if (statisticKey === AggregationOperations['Area exposed']) {
+    // Statistic Data
+    if (analysisData instanceof PolygonAnalysisResult) {
+      const stats = JSON.parse(feature.properties['zonal:stat:classes']);
+      // keys are the zonal classes like ['60 km/h', 'Uncertainty Cones']
+      const keys = Object.keys(stats).filter(key => key !== 'null');
+      const popupData = Object.fromEntries(
+        keys.map(key => [
+          key,
+          {
+            // we convert the percentage from a number like 0.832 to something that is
+            // more intuitive and can fit in the popup better like "83%"
+            data: `${Math.round(stats[key].percentage * 100)}%`,
+            coordinates,
+          },
+        ]),
+      );
+      dispatch(addPopupData(popupData));
+    } else {
+      const statisticKey = analysisData.statistic;
+      const precision =
+        analysisData instanceof ExposedPopulationResult ? 0 : undefined;
+      const formattedProperties = formatIntersectPercentageAttribute(
+        feature.properties,
+      );
       dispatch(
         addPopupData({
-          [`${analysisData.getHazardLayer().title} (Area exposed in km²)`]: {
+          [t('Analysis layer')]: {
+            data: (analysisData as ExposedPopulationResult).getLayerTitle(t),
+            coordinates,
+          },
+          ...(analysisData.analysisDate
+            ? {
+                [t('Date analyzed')]: {
+                  data: getFormattedDate(
+                    analysisData.analysisDate,
+                    'locale',
+                  ) as string,
+                  coordinates,
+                },
+              }
+            : {}),
+          [analysisData.getStatLabel(t)]: {
             data: `${getRoundedData(
-              formattedProperties.stats_intersect_area || null,
+              formattedProperties[statisticKey],
               t,
               precision,
-            )} ${units.stats_intersect_area}`,
+            )} ${units[statisticKey] || ''}`,
             coordinates,
           },
         }),
       );
+      if (statisticKey === AggregationOperations['Area exposed']) {
+        dispatch(
+          addPopupData({
+            [`${analysisData.getHazardLayer().title} (Area exposed in km²)`]: {
+              data: `${getRoundedData(
+                formattedProperties.stats_intersect_area || null,
+                t,
+                precision,
+              )} ${units.stats_intersect_area}`,
+              coordinates,
+            },
+          }),
+        );
+      }
     }
-  }
 
-  if (analysisData instanceof BaselineLayerResult) {
-    const baselineLayer = analysisData.getBaselineLayer();
-    if (baselineLayer?.title) {
+    if (analysisData instanceof BaselineLayerResult) {
+      const baselineLayer = analysisData.getBaselineLayer();
+      if (baselineLayer?.title) {
+        dispatch(
+          addPopupData({
+            [baselineLayer.title]: {
+              data: getRoundedData(get(feature, 'properties.data'), t),
+              coordinates,
+            },
+          }),
+        );
+      }
+    }
+
+    if (analysisData instanceof ExposedPopulationResult && analysisData.key) {
       dispatch(
         addPopupData({
-          [baselineLayer.title]: {
-            data: getRoundedData(get(feature, 'properties.data'), t),
+          [analysisData.key]: {
+            // TODO - consider using a simple safeTranslate here instead.
+            data: getRoundedData(
+              get(feature, `properties.${analysisData.key}`),
+              t,
+            ),
             coordinates,
           },
         }),
       );
     }
-  }
-
-  if (analysisData instanceof ExposedPopulationResult && analysisData.key) {
-    dispatch(
-      addPopupData({
-        [analysisData.key]: {
-          // TODO - consider using a simple safeTranslate here instead.
-          data: getRoundedData(
-            get(feature, `properties.${analysisData.key}`),
-            t,
-          ),
-          coordinates,
-        },
-      }),
-    );
-  }
-};
+  };
 
 // We use the legend values from the baseline layer
 function fillPaintData(

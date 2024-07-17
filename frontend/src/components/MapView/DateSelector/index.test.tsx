@@ -1,4 +1,3 @@
-import React from 'react';
 import { Provider } from 'react-redux';
 import { render } from '@testing-library/react';
 import configureStore from 'redux-mock-store';
@@ -39,11 +38,14 @@ test('renders as expected', () => {
       panelSize: PanelSize.medium,
     },
     serverState: { availableDates: {}, loading: false },
+    anticipatoryActionState: {
+      availableDates: undefined,
+    },
   });
 
   const { container } = render(
     <Provider store={store}>
-      <DateSelector availableDates={[]} selectedLayers={[]} />
+      <DateSelector />
     </Provider>,
   );
 
@@ -67,25 +69,10 @@ test('DateSelector utils', () => {
 const findClosestDateData = {
   date: 1702288800000,
   availableDates: [
-    1689076800000,
-    1689940800000,
-    1690891200000,
-    1691755200000,
-    1692619200000,
-    1693569600000,
-    1694433600000,
-    1695297600000,
-    1696161600000,
-    1697025600000,
-    1697889600000,
-    1698840000000,
-    1699704000000,
-    1700568000000,
-    1701432000000,
-    1702296000000,
-    1703160000000,
-    1704110400000,
-    1704974400000,
+    1689076800000, 1689940800000, 1690891200000, 1691755200000, 1692619200000,
+    1693569600000, 1694433600000, 1695297600000, 1696161600000, 1697025600000,
+    1697889600000, 1698840000000, 1699704000000, 1700568000000, 1701432000000,
+    1702296000000, 1703160000000, 1704110400000, 1704974400000,
   ],
   result: '2023-12-11T12:00:00.000Z',
 };

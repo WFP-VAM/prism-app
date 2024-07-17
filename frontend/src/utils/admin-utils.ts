@@ -1,3 +1,4 @@
+import { appConfig } from 'config';
 import {
   AdminLevelType,
   DatasetLevel,
@@ -6,10 +7,15 @@ import {
 } from 'config/types';
 import {
   getBoundaryLayerSingleton,
+  getBoundaryLayersByAdminLevel,
   getDisplayBoundaryLayers,
 } from 'config/utils';
 import { AdminBoundaryParams } from 'context/datasetStateSlice';
 import { CHART_API_URL } from 'utils/constants';
+
+const { multiCountry } = appConfig;
+const MAX_ADMIN_LEVEL = multiCountry ? 3 : 2;
+const boundaryLayer = getBoundaryLayersByAdminLevel(MAX_ADMIN_LEVEL);
 
 export function getAdminLevelLayer(
   adminLevel: AdminLevelType = 1,
@@ -49,6 +55,7 @@ export const getChartAdminBoundaryParams = (
   properties: { [key: string]: any },
 ): AdminBoundaryParams => {
   const { serverLayerName, chartData } = layer;
+  const locationLevelNames = boundaryLayer.adminLevelLocalNames;
 
   const { levels, url: chartUrl, fields: datasetFields } = chartData!;
 
@@ -63,6 +70,10 @@ export const getChartAdminBoundaryParams = (
         code: properties[item.id],
         level: item.level,
         name: properties[item.name],
+        localName:
+          properties[
+            locationLevelNames[Number(item.level) - (multiCountry ? 0 : 1)]
+          ],
       },
     }),
     {},

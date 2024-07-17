@@ -2,10 +2,7 @@
 
 exports[`renders as expected 1`] = `
 <div>
-  Impact Analysis on: Some test legend text
-  <br />
-  
-  <br />
-  
+  Impact Analysis on:
+  Some test legend text
 </div>
 `;

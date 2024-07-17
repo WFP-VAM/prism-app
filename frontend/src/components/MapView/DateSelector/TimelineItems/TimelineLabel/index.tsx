@@ -1,29 +1,31 @@
-import {
-  WithStyles,
-  createStyles,
-  withStyles,
-  Typography,
-} from '@material-ui/core';
-import React from 'react';
+import { createStyles, Typography, makeStyles } from '@material-ui/core';
 import { DateRangeType } from 'config/types';
 import { DateFormat } from 'utils/name-utils';
 import { format } from 'date-fns';
 import { locales } from 'i18n';
 
-const TimelineLabel = ({ classes, locale, date }: TimelineLabelProps) => {
+function TimelineLabel({ locale, date }: TimelineLabelProps) {
+  const classes = useStyles();
+
   if (date.isFirstDay) {
     return (
       <Typography variant="body2" className={classes.dateItemLabel}>
-        {format(date.value, DateFormat.MonthYear, {
-          locale: locales[locale as keyof typeof locales],
-        })}
+        {format(
+          date.value,
+          date.month.includes('Jan')
+            ? DateFormat.ShortMonthYear
+            : DateFormat.ShortMonth,
+          {
+            locale: locales[locale as keyof typeof locales],
+          },
+        )}
       </Typography>
     );
   }
   return <div className={classes.dayItem} />;
-};
+}
 
-const styles = () =>
+const useStyles = makeStyles(() =>
   createStyles({
     dateItemLabel: {
       color: '#101010',
@@ -40,11 +42,12 @@ const styles = () =>
       height: 10,
       borderLeft: '1px solid #ededed',
     },
-  });
+  }),
+);
 
-export interface TimelineLabelProps extends WithStyles<typeof styles> {
+export interface TimelineLabelProps {
   locale: string;
   date: DateRangeType;
 }
 
-export default withStyles(styles)(TimelineLabel);
+export default TimelineLabel;

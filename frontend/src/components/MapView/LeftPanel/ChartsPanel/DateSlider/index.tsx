@@ -3,6 +3,7 @@ import React from 'react';
 import RangeSlider from 'react-range-slider-input';
 import 'react-range-slider-input/dist/style.css';
 import './slider.css';
+import { useSafeTranslation } from 'i18n';
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -36,27 +37,45 @@ function DateSlider({
 }: DateSliderProps) {
   const classes = useStyles();
 
+  const { t } = useSafeTranslation();
+
   return (
     <Box className={classes.sliderContainer}>
       <Box
-        display="flex"
-        flexDirection="row"
-        justifyContent="space-between"
-        style={{ paddingBottom: '0.5em' }}
+        style={{
+          display: 'flex',
+          flexDirection: 'row',
+          justifyContent: 'space-between',
+          paddingBottom: '0.5em',
+        }}
       >
-        <Box display="flex" flexDirection="row" alignItems="center">
+        <Box
+          style={{
+            display: 'flex',
+            flexDirection: 'row',
+            alignItems: 'center',
+          }}
+        >
           <Typography className={classes.textLabel} variant="body2">
-            start:
-          </Typography>{' '}
+            {t('Start')}
+          </Typography>
+          {': '}
           <Typography className={classes.textLabel}>
             {chartSelectedDateRange[0]}
           </Typography>
         </Box>
 
-        <Box display="flex" flexDirection="row" alignItems="center">
+        <Box
+          style={{
+            display: 'flex',
+            flexDirection: 'row',
+            alignItems: 'center',
+          }}
+        >
           <Typography className={classes.textLabel} variant="body2">
-            end:
-          </Typography>{' '}
+            {t('End')}
+          </Typography>
+          {': '}
           <Typography className={classes.textLabel}>
             {chartSelectedDateRange[1]}
           </Typography>

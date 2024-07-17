@@ -1,0 +1,604 @@
+{
+  "admin1_boundaries": {
+    "type": "boundary",
+    "path": "data/bhutan/btn_adm1.json",
+    "opacity": 0.8,
+    "admin_code": "Adm1_Code_",
+    "admin_level_codes": ["Adm1_Code_"],
+    "admin_level_names": ["Adm1_En"],
+    "admin_level_local_names": ["Adm1_En"],
+    "styles:": {
+      "fill": {
+        "fill-opacity": 0
+      },
+      "line": {
+        "line-color": "gray",
+        "line-width": 2,
+        "line-opacity": 0.8
+      }
+    }
+  },
+  "admin2_boundaries": {
+    "type": "boundary",
+    "path": "data/bhutan/btn_adm2.json",
+    "opacity": 0.8,
+    "admin_code": "Adm2_Code_",
+    "admin_level_codes": ["Adm1_Code_", "Adm2_Code_"],
+    "admin_level_names": ["Adm1_En", "Adm2_En"],
+    "admin_level_local_names": ["Adm1_En", "Adm2_En"],
+    "styles:": {
+      "fill": {
+        "fill-opacity": 0
+      },
+      "line": {
+        "line-color": "gray",
+        "line-width": 1,
+        "line-opacity": 0.8
+      }
+    }
+  },
+  "admin_boundaries": {
+    "type": "boundary",
+    "path": "data/bhutan/btn_adm3.json",
+    "opacity": 0.8,
+    "admin_code": "Adm3_Code_",
+    "admin_level_codes": ["Adm1_Code_", "Adm2_Code_", "Adm3_Code_"],
+    "admin_level_names": ["Adm1_En", "Adm2_En", "Adm3_En_NS"],
+    "admin_level_local_names": ["Adm1_En", "Adm2_En", "Adm3_En_NS"],
+    "styles:": {
+      "fill": {
+        "fill-opacity": 0
+      },
+      "line": {
+        "line-color": "gray",
+        "line-width": 0.5,
+        "line-opacity": 0.8
+      }
+    }
+  },
+
+  "rainfall_dekad": {
+    "chart_data": {
+      "fields": [
+        {
+          "key": "rfh",
+          "label": "Rainfall",
+          "color": "#233f5f"
+        },
+        {
+          "key": "rfh_avg",
+          "label": "Average",
+          "color": "#bdf2e6"
+        }
+      ],
+      "levels": [
+        {
+          "level": "1",
+          "id": "dv_adm1_id",
+          "name": "Adm1_En"
+        },
+        {
+          "level": "2",
+          "id": "dv_adm2_id",
+          "name": "Adm2_En"
+        }
+      ],
+      "type": "bar"
+    }
+  },
+  "rain_anomaly_dekad": {
+    "chart_data": {
+      "fields": [
+        {
+          "key": "rfq",
+          "label": "Rainfall anomaly",
+          "color": "#375692",
+          "minValue": 0,
+          "maxValue": 300
+        },
+        {
+          "key": "rfq_avg",
+          "label": "Normal",
+          "fallback": 100,
+          "pointRadius": 0,
+          "color": "#eb3223"
+        }
+      ],
+      "levels": [
+        {
+          "level": "1",
+          "id": "dv_adm1_id",
+          "name": "Adm1_En"
+        },
+        {
+          "level": "2",
+          "id": "dv_adm2_id",
+          "name": "Adm2_En"
+        }
+      ],
+      "type": "line"
+    }
+  },
+  "rainfall_agg_1month": {
+    "chart_data": {
+      "fields": [
+        {
+          "key": "r1h",
+          "label": "Rainfall",
+          "color": "#233f5f"
+        },
+        {
+          "key": "r1h_avg",
+          "label": "Average",
+          "color": "#bdf2e6"
+        }
+      ],
+      "levels": [
+        {
+          "level": "1",
+          "id": "dv_adm1_id",
+          "name": "Adm1_En"
+        },
+        {
+          "level": "2",
+          "id": "dv_adm2_id",
+          "name": "Adm2_En"
+        }
+      ],
+      "type": "bar"
+    }
+  },
+  "rain_anomaly_1month": {
+    "chart_data": {
+      "fields": [
+        {
+          "key": "r1q",
+          "label": "Rainfall anomaly",
+          "minValue": 0,
+          "maxValue": 300,
+          "color": "#375692"
+        },
+        {
+          "key": "rfq_avg",
+          "label": "Normal",
+          "fallback": 100,
+          "pointRadius": 0,
+          "color": "#eb3223"
+        }
+      ],
+      "levels": [
+        {
+          "level": "1",
+          "id": "dv_adm1_id",
+          "name": "Adm1_En"
+        },
+        {
+          "level": "2",
+          "id": "dv_adm2_id",
+          "name": "Adm2_En"
+        }
+      ],
+      "type": "line"
+    }
+  },
+  "rainfall_agg_3month": {
+    "chart_data": {
+      "fields": [
+        {
+          "key": "r3h",
+          "label": "Rainfall",
+          "color": "#233f5f"
+        },
+        {
+          "key": "r3h_avg",
+          "label": "Average",
+          "color": "#bdf2e6"
+        }
+      ],
+      "levels": [
+        {
+          "level": "1",
+          "id": "dv_adm1_id",
+          "name": "Adm1_En"
+        },
+        {
+          "level": "2",
+          "id": "dv_adm2_id",
+          "name": "Adm2_En"
+        }
+      ],
+      "type": "bar"
+    }
+  },
+  "rain_anomaly_3month": {
+    "chart_data": {
+      "fields": [
+        {
+          "key": "r3q",
+          "label": "Rainfall anomaly",
+          "minValue": 0,
+          "maxValue": 300,
+          "color": "#375692"
+        },
+        {
+          "key": "rfq_avg",
+          "label": "Normal",
+          "fallback": 100,
+          "pointRadius": 0,
+          "color": "#eb3223"
+        }
+      ],
+      "levels": [
+        {
+          "level": "1",
+          "id": "dv_adm1_id",
+          "name": "Adm1_En"
+        },
+        {
+          "level": "2",
+          "id": "dv_adm2_id",
+          "name": "Adm2_En"
+        }
+      ],
+      "type": "line"
+    }
+  },
+  "ndvi_dekad": {
+    "chart_data": {
+      "fields": [
+        {
+          "key": "vim",
+          "label": "NDVI",
+          "color": "#4eac5b"
+        },
+        {
+          "key": "vim_avg",
+          "label": "Average",
+          "color": "#99ff99"
+        }
+      ],
+      "levels": [
+        {
+          "level": "1",
+          "id": "dv_adm1_id",
+          "name": "Adm1_En"
+        },
+        {
+          "level": "2",
+          "id": "dv_adm2_id",
+          "name": "Adm2_En"
+        }
+      ],
+      "type": "line"
+    }
+  },
+  "ndvi_dekad_anomaly": {
+    "chart_data": {
+      "fields": [
+        {
+          "key": "viq",
+          "label": "NDVI anomaly",
+          "minValue": 0,
+          "maxValue": 150,
+          "color": "#5e803f"
+        },
+        {
+          "key": "viq_avg",
+          "label": "Normal",
+          "color": "#eb3223",
+          "pointRadius": 0,
+          "fallback": 100
+        }
+      ],
+      "levels": [
+        {
+          "level": "1",
+          "id": "dv_adm1_id",
+          "name": "Adm1_En"
+        },
+        {
+          "level": "2",
+          "id": "dv_adm2_id",
+          "name": "Adm2_En"
+        }
+      ],
+      "type": "line"
+    }
+  },
+  "population": {
+    "title": "Total population",
+    "type": "admin_level_data",
+    "path": "data/bhutan/btn_adm3_level_data.json",
+    "data_field": "TotPop",
+    "admin_level": 3,
+    "admin_code": "Adm3_Code",
+    "opacity": 0.8,
+    "legend": [
+      {
+        "value": 0,
+        "label": "1 - 499",
+        "color": "#edf8e9"
+      },
+      {
+        "value": 500,
+        "label": "500 - 999",
+        "color": "#bae4b3"
+      },
+      {
+        "value": 1000,
+        "label": "1000 - 1499",
+        "color": "#74c476"
+      },
+      {
+        "value": 1500,
+        "label": "1500 - 1999",
+        "color": "#31a354"
+      },
+      {
+        "value": 2000,
+        "label": ">= 2000",
+        "color": "#006d2c"
+      }
+    ],
+    "legend_text": "Source: Population and Housing Census of Bhutan, 2017"
+  },
+  "households": {
+    "title": "Number of households",
+    "type": "admin_level_data",
+    "path": "data/bhutan/btn_adm3_level_data.json",
+    "data_field": "TotalHousehold",
+    "admin_level": 3,
+    "admin_code": "Adm3_Code",
+    "opacity": 0.8,
+    "legend": [
+      {
+        "value": 0,
+        "label": "1 - 249",
+        "color": "#edf8e9"
+      },
+      {
+        "value": 250,
+        "label": "250 - 499",
+        "color": "#bae4b3"
+      },
+      {
+        "value": 500,
+        "label": "500 - 749",
+        "color": "#74c476"
+      },
+      {
+        "value": 750,
+        "label": "750 - 999",
+        "color": "#31a354"
+      },
+      {
+        "value": 1000,
+        "label": ">= 1000",
+        "color": "#006d2c"
+      }
+    ],
+    "legend_text": "Source: Population and Housing Census of Bhutan, 2017"
+  },
+  "rice": {
+    "title": "Rice - 274g / head / day in Kg Unit",
+    "type": "admin_level_data",
+    "path": "data/bhutan/btn_adm3_level_data.json",
+    "data_field": "rice",
+    "admin_level": 3,
+    "admin_code": "Adm3_Code",
+    "opacity": 0.8,
+    "legend": [
+      {
+        "value": 0,
+        "label": "0 - 149",
+        "color": "#d7191c"
+      },
+      {
+        "value": 150,
+        "label": "150 - 273",
+        "color": "#fdae61"
+      },
+      {
+        "value": 274,
+        "label": "274 - 324",
+        "color": "#ffffbf"
+      },
+      {
+        "value": 325,
+        "label": "325 - 399",
+        "color": "#a6d96a"
+      },
+      {
+        "value": 400,
+        "label": ">= 400",
+        "color": "#1a9641"
+      }
+    ],
+    "legend_text": "Source: Population and Housing Census of Bhutan, 2017"
+  },
+  "oil": {
+    "title": "Oil - 27g / head / day in Kg Unit",
+    "type": "admin_level_data",
+    "path": "data/bhutan/btn_adm3_level_data.json",
+    "data_field": "oil",
+    "admin_level": 3,
+    "admin_code": "Adm3_Code",
+    "opacity": 0.8,
+    "legend": [
+      {
+        "value": 0,
+        "label": "0 - 9",
+        "color": "#f2f0f7"
+      },
+      {
+        "value": 10,
+        "label": "10 - 19",
+        "color": "#cbc9e2"
+      },
+      {
+        "value": 20,
+        "label": "20 - 29",
+        "color": "#9e9ac8"
+      },
+      {
+        "value": 30,
+        "label": "30 - 39",
+        "color": "#756bb1"
+      },
+      {
+        "value": 40,
+        "label": ">= 40",
+        "color": "#54278f"
+      }
+    ],
+    "legend_text": "Source: Population and Housing Census of Bhutan, 2017"
+  },
+  "salt": {
+    "title": "Salt - 5g / head / day in Kg Unit",
+    "type": "admin_level_data",
+    "path": "data/bhutan/btn_adm3_level_data.json",
+    "data_field": "salt",
+    "admin_level": 3,
+    "admin_code": "Adm3_Code",
+    "opacity": 0.8,
+    "legend": [
+      {
+        "value": 0,
+        "label": "0 - 1.49",
+        "color": "#f2f0f7"
+      },
+      {
+        "value": 1.5,
+        "label": "1.5 - 2.99",
+        "color": "#cbc9e2"
+      },
+      {
+        "value": 3,
+        "label": "3 - 4.49",
+        "color": "#9e9ac8"
+      },
+      {
+        "value": 4.5,
+        "label": "4.5 - 5.99",
+        "color": "#756bb1"
+      },
+      {
+        "value": 6,
+        "label": ">= 6",
+        "color": "#54278f"
+      }
+    ],
+    "legend_text": "Source: Population and Housing Census of Bhutan, 2017"
+  },
+  "lentils": {
+    "title": "Lentils - 11g / head / day in Kg Unit",
+    "type": "admin_level_data",
+    "path": "data/bhutan/btn_adm3_level_data.json",
+    "data_field": "lentils",
+    "admin_level": 3,
+    "admin_code": "Adm3_Code",
+    "opacity": 0.8,
+    "legend": [
+      {
+        "value": 0,
+        "label": "0 - 2.9",
+        "color": "#f2f0f7"
+      },
+      {
+        "value": 3,
+        "label": "3 - 5.9",
+        "color": "#cbc9e2"
+      },
+      {
+        "value": 6,
+        "label": "6 - 8.9",
+        "color": "#9e9ac8"
+      },
+      {
+        "value": 9,
+        "label": "9 - 11.9",
+        "color": "#756bb1"
+      },
+      {
+        "value": 12,
+        "label": ">= 12",
+        "color": "#54278f"
+      }
+    ],
+    "legend_text": "Source: Population and Housing Census of Bhutan, 2017"
+  },
+  "total_vuln": {
+    "title": "Overall vulnerability",
+    "type": "admin_level_data",
+    "path": "data/bhutan/btn_adm3_level_data.json",
+    "data_field": "TotalWeight_Vulnerability",
+    "admin_level": 3,
+    "admin_code": "Adm3_Code",
+    "opacity": 0.8,
+    "legend": [
+      {
+        "value": 0,
+        "label": "0 - 0.14",
+        "color": "#fee5d9"
+      },
+      {
+        "value": 0.15,
+        "label": "0.15 - 0.19",
+        "color": "#fcae91"
+      },
+      {
+        "value": 0.2,
+        "label": "0.2 - 0.24",
+        "color": "#fb6a4a"
+      },
+      {
+        "value": 0.25,
+        "label": "0.25 - 0.29",
+        "color": "#de2d26"
+      },
+      {
+        "value": 0.3,
+        "label": ">= 0.3",
+        "color": "#a50f15"
+      }
+    ],
+    "legend_text": "Source: Population and Housing Census of Bhutan, 2017"
+  },
+  "fs_vuln": {
+    "title": "Food security vulnerability",
+    "type": "admin_level_data",
+    "path": "data/bhutan/btn_adm3_level_data.json",
+    "data_field": "Vulnerability_FoodInsecurity",
+    "admin_level": 3,
+    "admin_code": "Adm3_Code",
+    "opacity": 0.8,
+    "legend": [
+      {
+        "value": 0,
+        "label": "0 - 0.019",
+        "color": "#fee5d9"
+      },
+      {
+        "value": 0.02,
+        "label": "0.02 - 0.029",
+        "color": "#fcae91"
+      },
+      {
+        "value": 0.03,
+        "label": "0.03 - 0.039",
+        "color": "#fb6a4a"
+      },
+      {
+        "value": 0.04,
+        "label": "0.04 - 0.049",
+        "color": "#de2d26"
+      },
+      {
+        "value": 0.05,
+        "label": ">= 0.05",
+        "color": "#a50f15"
+      }
+    ],
+    "legend_text": "Source: Population and Housing Census of Bhutan, 2017"
+  }
+}

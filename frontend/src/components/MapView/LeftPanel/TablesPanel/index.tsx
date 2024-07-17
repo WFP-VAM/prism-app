@@ -1,4 +1,4 @@
-import React, {
+import {
   ChangeEvent,
   memo,
   useCallback,
@@ -13,9 +13,10 @@ import {
   TextField,
   Theme,
   Typography,
+  makeStyles,
 } from '@material-ui/core';
 import { useDispatch, useSelector } from 'react-redux';
-import { createStyles, withStyles, WithStyles } from '@material-ui/styles';
+import { createStyles } from '@material-ui/styles';
 import {
   LayersCategoryType,
   MenuItemType,
@@ -30,24 +31,19 @@ import {
   isLoading as tableLoading,
   loadTable,
 } from 'context/tableStateSlice';
-import {
-  Panel,
-  leftPanelTabValueSelector,
-  setPanelSize,
-} from 'context/leftPanelStateSlice';
+import { Panel, leftPanelTabValueSelector } from 'context/leftPanelStateSlice';
 import TablesActions from './TablesActions';
 import DataTable from './DataTable';
 import { tablesMenuItems } from '../utils';
 
 const tableCategories = tablesMenuItems
-  .map((menuItem: MenuItemType) => {
-    return menuItem.layersCategories;
-  })
+  .map((menuItem: MenuItemType) => menuItem.layersCategories)
   .flat();
 
 const tabPanelType = Panel.Tables;
 
-const TablesPanel = memo(({ classes, setResultsPage }: TablePanelProps) => {
+const TablesPanel = memo(() => {
+  const classes = useStyles();
   const dispatch = useDispatch();
   const dataTableIsLoading = useSelector(tableLoading);
   const tableDefinition = useSelector(getTableDefinition);
@@ -70,36 +66,6 @@ const TablesPanel = memo(({ classes, setResultsPage }: TablePanelProps) => {
     }
     setShowDataTable(true);
   }, [tabValue, tableData, tableDefinition, tableShowing]);
-
-  useEffect(() => {
-    if (tabValue !== tabPanelType) {
-      return;
-    }
-
-    if (!showDataTable) {
-      dispatch(setPanelSize(PanelSize.medium));
-      setResultsPage(null);
-      return;
-    }
-    dispatch(setPanelSize(PanelSize.xlarge));
-    setResultsPage(
-      <DataTable
-        title={tableDefinition?.title}
-        legendText={tableDefinition?.legendText}
-        tableLoading={dataTableIsLoading}
-        tableData={tableData}
-        chart={tableDefinition?.chart}
-      />,
-    );
-  }, [
-    dataTableIsLoading,
-    dispatch,
-    setResultsPage,
-    showDataTable,
-    tabValue,
-    tableData,
-    tableDefinition,
-  ]);
 
   const handleShowDataTable = useCallback((show: boolean) => {
     setShowDataTable(show);
@@ -142,39 +108,37 @@ const TablesPanel = memo(({ classes, setResultsPage }: TablePanelProps) => {
   ]);
 
   const renderTablesMenuItems = useCallback(
-    (tables: TableType[]) => {
-      return tables.map((individualTable: TableType) => {
-        return (
-          <MenuItem key={individualTable.id} value={individualTable.id}>
-            {t(individualTable.title)}
-          </MenuItem>
-        );
-      });
-    },
+    (tables: TableType[]) =>
+      tables.map((individualTable: TableType) => (
+        <MenuItem key={individualTable.id} value={individualTable.id}>
+          {t(individualTable.title)}
+        </MenuItem>
+      )),
     [t],
   );
 
-  const renderedTextFieldItems = useMemo(() => {
-    return tableCategories.map((tableCategory: LayersCategoryType) => {
-      return [
+  const renderedTextFieldItems = useMemo(
+    () =>
+      tableCategories.map((tableCategory: LayersCategoryType) => [
         <ListSubheader key={tableCategory.title}>
           <Typography variant="body2" color="primary">
             {t(tableCategory.title)}
           </Typography>
         </ListSubheader>,
         renderTablesMenuItems(tableCategory.tables),
-      ];
-    });
-  }, [renderTablesMenuItems, t]);
+      ]),
+    [renderTablesMenuItems, t],
+  );
 
-  const renderedTextFieldBody = useMemo(() => {
-    return [
+  const renderedTextFieldBody = useMemo(
+    () => [
       <MenuItem key="placeholder" value="placeholder" disabled>
         {t('Choose Table')}
       </MenuItem>,
       renderedTextFieldItems,
-    ];
-  }, [renderedTextFieldItems, t]);
+    ],
+    [renderedTextFieldItems, t],
+  );
 
   const handleTableDropdownChange = useCallback(
     (event: ChangeEvent<HTMLInputElement>) => {
@@ -185,43 +149,61 @@ const TablesPanel = memo(({ classes, setResultsPage }: TablePanelProps) => {
   );
 
   return (
-    <div className={classes.root}>
-      <div className={classes.tablesPanel}>
-        <TextField
-          classes={{ root: classes.selectRoot }}
-          variant="outlined"
-          onChange={handleTableDropdownChange}
-          value={tableValue}
-          select
-          placeholder={t('Choose a table')}
-          label={t('Tables')}
-          defaultValue=""
-          InputProps={{
-            classes: {
-              focused: classes.focused,
-              input: classes.input,
-            },
-          }}
-          InputLabelProps={{
-            classes: {
-              root: classes.label,
-            },
-          }}
-        >
-          {renderedTextFieldBody}
-        </TextField>
+    <div
+      style={{
+        display: 'flex',
+        flexDirection: 'row',
+        height: '100%',
+        width: showDataTable ? PanelSize.xlarge : PanelSize.medium,
+      }}
+    >
+      <div className={classes.root}>
+        <div className={classes.tablesPanel}>
+          <TextField
+            classes={{ root: classes.selectRoot }}
+            variant="outlined"
+            onChange={handleTableDropdownChange}
+            value={tableValue}
+            select
+            placeholder={t('Choose a table')}
+            label={t('Tables')}
+            defaultValue=""
+            InputProps={{
+              classes: {
+                focused: classes.focused,
+                input: classes.input,
+              },
+            }}
+            InputLabelProps={{
+              classes: {
+                root: classes.label,
+              },
+            }}
+          >
+            {renderedTextFieldBody}
+          </TextField>
+        </div>
+        {renderedTablesActions}
       </div>
-      {renderedTablesActions}
+      {showDataTable && (
+        <DataTable
+          title={tableDefinition?.title}
+          legendText={tableDefinition?.legendText}
+          tableLoading={dataTableIsLoading}
+          tableData={tableData}
+          chart={tableDefinition?.chart}
+        />
+      )}
     </div>
   );
 });
 
-const styles = (theme: Theme) =>
+const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
       position: 'relative',
       display: 'flex',
-      width: '100%',
+      width: PanelSize.medium,
       height: '100%',
     },
     linearProgress: {
@@ -264,12 +246,7 @@ const styles = (theme: Theme) =>
     label: {
       color: '#333333',
     },
-  });
+  }),
+);
 
-interface TablePanelProps extends WithStyles<typeof styles> {
-  setResultsPage: React.Dispatch<
-    React.SetStateAction<React.JSX.Element | null>
-  >;
-}
-
-export default withStyles(styles)(TablesPanel);
+export default TablesPanel;

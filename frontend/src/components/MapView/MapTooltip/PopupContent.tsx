@@ -1,9 +1,4 @@
-import {
-  Typography,
-  WithStyles,
-  createStyles,
-  withStyles,
-} from '@material-ui/core';
+import { Typography, createStyles, makeStyles } from '@material-ui/core';
 import { ClassNameMap } from '@material-ui/styles';
 import { PopupData, PopupMetaData } from 'context/tooltipStateSlice';
 import { Position } from 'geojson';
@@ -12,7 +7,7 @@ import { isEmpty, isEqual, sum } from 'lodash';
 import React, { Fragment, memo } from 'react';
 import { TFunction } from 'utils/data-utils';
 
-const styles = () =>
+const useStyles = makeStyles(() =>
   createStyles({
     phasePopulationTable: {
       tableLayout: 'fixed',
@@ -29,7 +24,8 @@ const styles = () =>
     text: {
       marginBottom: '4px',
     },
-  });
+  }),
+);
 
 // This function prepares phasePopulationTable for rendering and is specific
 // to the data structure of the phase classification layer.
@@ -112,16 +108,13 @@ const generatePhasePopulationTable = (
   return phasePopulationTable;
 };
 
-interface PopupContentProps extends WithStyles<typeof styles> {
+interface PopupContentProps {
   popupData: PopupData & PopupMetaData;
   coordinates: Position | undefined;
 }
 
-const PopupContent = ({
-  popupData,
-  coordinates,
-  classes,
-}: PopupContentProps) => {
+const PopupContent = memo(({ popupData, coordinates }: PopupContentProps) => {
+  const classes = useStyles();
   const { t } = useSafeTranslation();
 
   const phasePopulationTable = generatePhasePopulationTable(
@@ -168,6 +161,10 @@ const PopupContent = ({
           return true;
         })
         .map(([key, value]) => {
+          // If the data is undefined, null, or an empty string, we do not render the data (only render the key)
+          const isKeyValuePair = [undefined, null, ''].every(
+            item => item !== value.data,
+          );
           return (
             <Fragment key={key}>
               <div>
@@ -180,10 +177,10 @@ const PopupContent = ({
                       color="inherit"
                       className={classes.text}
                     >
-                      {`${t(key)}: `}
+                      {isKeyValuePair ? `${t(key)}: ` : t(key)}
                     </Typography>
                   )}
-                {key !== 'Population in phase 1' && (
+                {key !== 'Population in phase 1' && isKeyValuePair && (
                   <Typography
                     display="inline"
                     variant="h4"
@@ -201,6 +198,6 @@ const PopupContent = ({
         })}
     </>
   );
-};
+});
 
-export default memo(withStyles(styles)(PopupContent));
+export default PopupContent;

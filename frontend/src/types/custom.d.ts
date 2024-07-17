@@ -21,7 +21,6 @@ declare module '*.css' {
 
 declare module '*.png';
 declare module 'comlink';
-declare module 'geotiff';
 declare module 'prism-common';
 declare module 'zonal';
 
@@ -30,3 +29,5 @@ declare module 'redux-async-initial-state';
 declare module '*.ttf';
 
 declare module 'react-range-slider-input';
+
+declare module 'max-inscribed-circle';

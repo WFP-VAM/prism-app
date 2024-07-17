@@ -1,4 +1,4 @@
-import { WithStyles, createStyles, withStyles } from '@material-ui/core';
+import { createStyles, makeStyles } from '@material-ui/core';
 import ChartSection from 'components/MapView/LeftPanel/ChartsPanel/ChartSection';
 import { oneYearInMs } from 'components/MapView/LeftPanel/utils';
 import {
@@ -14,7 +14,7 @@ import {
   dateRangeSelector,
   layerDataSelector,
 } from 'context/mapStateSlice/selectors';
-import React, { useRef } from 'react';
+import { useRef } from 'react';
 import { useSelector } from 'react-redux';
 import { appConfig } from 'config';
 import { useSafeTranslation } from 'i18n';
@@ -22,7 +22,7 @@ import PopupChartWrapper from './PopupChartWrapper';
 
 const { country } = appConfig;
 
-const styles = () =>
+const useStyles = makeStyles(() =>
   createStyles({
     chartContainer: {
       display: 'flex',
@@ -34,7 +34,8 @@ const styles = () =>
       width: '400px',
       flexGrow: 1,
     },
-  });
+  }),
+);
 
 const boundaryLayer = getBoundaryLayersByAdminLevel();
 
@@ -56,21 +57,21 @@ const getProperties = (
   return features.properties;
 };
 
-interface PopupChartProps extends WithStyles<typeof styles> {
+interface PopupChartProps {
   filteredChartLayers: WMSLayerProps[];
   adminCode: AdminCodeString;
   adminSelectorKey: string;
   adminLevel: AdminLevelType;
   adminLevelsNames: () => string[];
 }
-const PopupAnalysisCharts = ({
+function PopupAnalysisCharts({
   filteredChartLayers,
   adminCode,
   adminSelectorKey,
   adminLevel,
   adminLevelsNames,
-  classes,
-}: PopupChartProps) => {
+}: PopupChartProps) {
+  const classes = useStyles();
   const { t } = useSafeTranslation();
   const dataForCsv = useRef<{ [key: string]: any[] }>({});
   const boundaryLayerData = useSelector(layerDataSelector(boundaryLayer.id)) as
@@ -113,6 +114,6 @@ const PopupAnalysisCharts = ({
       ))}
     </PopupChartWrapper>
   );
-};
+}
 
-export default withStyles(styles)(PopupAnalysisCharts);
+export default PopupAnalysisCharts;

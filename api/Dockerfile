@@ -27,6 +27,14 @@ COPY pyproject.toml /
 
 COPY poetry.lock /
 
+# There is an issue with the arrow repository keyring, so we need to bypass GPG verification
+# Clean up all existing repository entries and keyrings
+RUN rm -f /etc/apt/sources.list.d/*
+RUN rm -f /usr/share/keyrings/*
+
+# Add the repository to the sources list with trusted=yes to bypass GPG verification
+RUN echo "deb [trusted=yes] https://apache.jfrog.io/artifactory/arrow/ubuntu jammy main" | tee /etc/apt/sources.list.d/apache-arrow.list
+
 RUN --mount=type=cache,target=/var/cache/apt \
     apt-get update && \
     apt-get --no-install-recommends install -y python3-pip libpq-dev curl python3-dev build-essential

@@ -1,8 +1,8 @@
-import React from 'react';
 import { render } from '@testing-library/react';
 import configureStore from 'redux-mock-store';
 import { Provider } from 'react-redux';
 import { BrowserRouter } from 'react-router-dom';
+import { Panel } from 'context/leftPanelStateSlice';
 import Download from '.';
 
 const mockStore = configureStore([]);
@@ -24,8 +24,15 @@ test('renders as expected', () => {
       boundaryRelationData: {},
     },
     serverState: { availableDates: {}, loading: false },
+    anticipatoryActionState: {
+      renderedDistricts: { 'Window 1': {}, 'Window 2': {} },
+      filters: { selectedWindow: 'All' },
+    },
     analysisResultState: {
       isMapLayerActive: false,
+    },
+    leftPanelState: {
+      tabValue: Panel.AnticipatoryAction,
     },
   });
 
