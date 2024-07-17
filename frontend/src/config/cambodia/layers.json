@@ -1950,7 +1950,7 @@
   "cdi": {
     "title": "Combined Drought Index",
     "type": "composite",
-    "scale": "monthly",
+    "period": "monthly",
     "base_url": "https://hip-service.ovio.org/q_multi_geojson",
     "validity": {
       "forward": 1,

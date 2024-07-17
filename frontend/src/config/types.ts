@@ -470,7 +470,7 @@ enum AggregationOptions {
 
 export class CompositeLayerProps extends CommonLayerProps {
   type: 'composite' = 'composite';
-  scale?: 'monthly' | 'seasonal';
+  period: 'monthly' | 'seasonal';
   baseUrl: string;
 
   @makeRequired

@@ -4018,7 +4018,7 @@
   "cdi_v1_monthly": {
     "title": "Monthly Combined Drought Index (v1)",
     "type": "composite",
-    "scale": "monthly",
+    "period": "monthly",
     "base_url": "https://hip-service.ovio.org/q_multi_geojson",
     "validity": {
       "forward": 1,
@@ -4117,7 +4117,7 @@
   "cdi_v1_seasonal": {
     "title": "Seasonal Combined Drought Index (v1)",
     "type": "composite",
-    "scale": "seasonal",
+    "period": "seasonal",
     "base_url": "https://hip-service.ovio.org/q_multi_geojson",
     "validity": {
       "mode": "season"
@@ -4214,7 +4214,7 @@
   "cdi_v2_monthly": {
     "title": "Monthly Combined Drought Index (v2)",
     "type": "composite",
-    "scale": "monthly",
+    "period": "monthly",
     "base_url": "https://hip-service.ovio.org/q_multi_geojson",
     "validity": {
       "forward": 1,
@@ -4313,7 +4313,7 @@
   "cdi_v2_seasonal": {
     "title": "Seasonal Combined Drought Index (v2)",
     "type": "composite",
-    "scale": "seasonal",
+    "period": "seasonal",
     "base_url": "https://hip-service.ovio.org/q_multi_geojson",
     "validity": {
       "mode": "season"
