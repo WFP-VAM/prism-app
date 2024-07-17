@@ -1,7 +1,7 @@
 import { CompositeLayerProps, LegendDefinition } from 'config/types';
 import { LayerData, loadLayerData } from 'context/layers/layer-data';
 import { layerDataSelector } from 'context/mapStateSlice/selectors';
-import { memo, useEffect, useState } from 'react';
+import { memo, useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Source, Layer } from 'react-map-gl/maplibre';
 import { getLayerMapId } from 'utils/map-utils';
@@ -47,10 +47,14 @@ const CompositeLayer = memo(({ layer, before }: Props) => {
 
   const layerAvailableDates =
     serverAvailableDates[layer.id] || serverAvailableDates[layer.dateLayer];
-  const queryDateItem = getRequestDateItem(layerAvailableDates, selectedDate);
+  const queryDateItem = useMemo(
+    () => getRequestDateItem(layerAvailableDates, selectedDate),
+    [layerAvailableDates, selectedDate],
+  );
+  const requestDate = queryDateItem?.startDate || queryDateItem?.queryDate;
   const { data } =
     (useSelector(
-      layerDataSelector(layer.id, queryDateItem?.queryDate),
+      layerDataSelector(layer.id, requestDate),
     ) as LayerData<CompositeLayerProps>) || {};
 
   useEffect(() => {
@@ -63,8 +67,8 @@ const CompositeLayer = memo(({ layer, before }: Props) => {
   }, []);
 
   useEffect(() => {
-    dispatch(loadLayerData({ layer, date: queryDateItem?.startDate }));
-  }, [dispatch, layer, queryDateItem]);
+    dispatch(loadLayerData({ layer, date: requestDate }));
+  }, [dispatch, layer, requestDate]);
 
   // Investigate performance impact of hexagons for large countries
   const finalFeatures =
@@ -103,9 +107,9 @@ const CompositeLayer = memo(({ layer, before }: Props) => {
       features: finalFeatures,
     };
     return (
-      <Source key={queryDateItem?.queryDate} type="geojson" data={filteredData}>
+      <Source key={requestDate} type="geojson" data={filteredData}>
         <Layer
-          key={queryDateItem?.queryDate}
+          key={requestDate}
           id={getLayerMapId(layer.id)}
           type="fill"
           paint={paintProps(layer.legend || [], opacityState || layer.opacity)}
