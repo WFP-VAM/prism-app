@@ -387,7 +387,11 @@ const DateSelector = memo(() => {
 
     // Find the dates that are queriable for all layers
     const validDates = queriableDates.reduce((acc, currentArray) =>
-      acc.filter(date => currentArray.includes(date)),
+      acc.filter(date =>
+        currentArray.some(currentDate =>
+          datesAreEqualWithoutTime(date, currentDate),
+        ),
+      ),
     );
 
     const selectedIndex = findDateIndex(validDates, dateRange[index].value);
