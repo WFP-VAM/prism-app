@@ -26,9 +26,9 @@
         "default": true
       },
       {
-        "id": "street",
-        "label": "Street",
-        "url": "https://api.maptiler.com/maps/streets/style.json?key=y2DTSu9yWiu755WByJr3"
+        "id": "satellite",
+        "label": "Satellite",
+        "url": "https://api.maptiler.com/maps/satellite/style.json?key=y2DTSu9yWiu755WByJr3"
       }
     ]
   },
