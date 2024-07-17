@@ -2787,7 +2787,7 @@
       {
         "id": "et0",
         "importance": 0.3,
-        "key": ["FAO", "WAPOR_ET0_DEKAD_LTA"],
+        "key": ["FAO", "WAPOR_ET0_DEKAD"],
         "aggregation": "last_dekad"
       },
       {
