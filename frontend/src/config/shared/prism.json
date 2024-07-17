@@ -26,16 +26,6 @@
         "default": true
       },
       {
-        "id": "noLabels",
-        "label": "No labels",
-        "url": "https://api.maptiler.com/maps/a97e9d31-055d-48f2-bfa9-ea6b369b9535/style.json?key=y2DTSu9yWiu755WByJr3"
-      },
-      {
-        "id": "satellite",
-        "label": "Satellite",
-        "url": "https://api.maptiler.com/maps/a97e9d31-055d-48f2-bfa9-ea6b369b9535/style.json?key=y2DTSu9yWiu755WByJr3"
-      },
-      {
         "id": "street",
         "label": "Street",
         "url": "https://api.maptiler.com/maps/streets/style.json?key=y2DTSu9yWiu755WByJr3"

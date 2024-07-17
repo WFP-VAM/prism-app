@@ -1,6 +1,4 @@
 import {
-  Box,
-  Button,
   Dialog,
   DialogContent,
   createStyles,
@@ -15,16 +13,9 @@ import { useSelector } from 'react-redux';
 import { getFormattedDate } from 'utils/date-utils';
 import { appConfig, safeCountry } from 'config';
 import { AdminCodeString, BoundaryLayerProps } from 'config/types';
-import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
-import ToggleButton from '@material-ui/lab/ToggleButton';
-import { cyanBlue, gray } from 'muiTheme';
-import { SimpleBoundaryDropdown } from 'components/MapView/Layers/BoundaryDropdown';
 import { getBoundaryLayerSingleton } from 'config/utils';
-import { LayerData } from 'context/layers/layer-data';
-import LegendItemsList from 'components/MapView/Legends/LegendItemsList';
-import { getBoundaryLayerSingleton } from 'config/utils';
-import { LayerData } from 'context/layers/layer-data';
 import useResizeObserver from 'utils/useOnResizeObserver';
+import { LayerData } from 'context/layers/layer-data';
 import {
   dateRangeSelector,
   layerDataSelector,
@@ -44,71 +35,6 @@ const defaultFooterText = get(appConfig, 'printConfig.defaultFooterText', '');
 const debounceCallback = debounce((callback: any, ...args: any[]) => {
   callback(...args);
 }, 750);
-
-interface ToggleSelectorProps {
-  title: string;
-  value: number;
-  options: {
-    value: number;
-    comp:
-      | React.JSX.Element
-      | (({ value }: { value: number }) => React.JSX.Element);
-    disabled?: boolean;
-  }[];
-  iconProp?: number;
-  align?: 'start' | 'end';
-  setValue: (v: number) => void;
-}
-
-const toggleSelectorStyles = makeStyles(() => ({
-  wrapper: { display: 'flex', flexDirection: 'column', gap: '0.6rem' },
-  buttonGroup: { display: 'flex', gap: '4px' },
-  button: {
-    height: '40px',
-    width: '48px',
-    borderLeft: '1px solid rgba(0, 0, 0, 0.12) !important',
-  },
-}));
-
-function ToggleSelector({
-  title,
-  options,
-  value,
-  iconProp,
-  align,
-  setValue,
-}: ToggleSelectorProps) {
-  const classes = toggleSelectorStyles();
-  return (
-    <div className={classes.wrapper}>
-      <Typography variant="h4" style={{ textAlign: align }}>
-        {title}
-      </Typography>
-      <ToggleButtonGroup
-        value={value}
-        exclusive
-        className={classes.buttonGroup}
-        style={{ justifyContent: align }}
-      >
-        {options.map(x => (
-          <ToggleButton
-            key={x.value}
-            className={classes.button}
-            value={x.value}
-            onClick={() => setValue(x.value)}
-            disabled={x.disabled}
-          >
-            {typeof x.comp === 'function' ? (
-              <x.comp value={Number(iconProp)} />
-            ) : (
-              x.comp
-            )}
-          </ToggleButton>
-        ))}
-      </ToggleButtonGroup>
-    </div>
-  );
-}
 
 const boundaryLayer = getBoundaryLayerSingleton();
 
