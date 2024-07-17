@@ -28,6 +28,7 @@ export interface AnticipatoryActionDataRow {
   type: string;
   window: (typeof AAWindowKeys)[number];
   date: string;
+  season: string;
   new: boolean;
   isValid?: boolean;
   wasReadyValid?: boolean;

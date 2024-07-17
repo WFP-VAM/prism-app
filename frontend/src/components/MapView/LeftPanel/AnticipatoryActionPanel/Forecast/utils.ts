@@ -3,6 +3,7 @@ import {
   AnticipatoryActionDataRow,
   AnticipatoryActionState,
 } from 'context/anticipatoryActionStateSlice/types';
+import { getSeason } from 'context/anticipatoryActionStateSlice/utils';
 
 const indexOrder = ['SPI', 'DRY'];
 const monthsOrder = ['O', 'N', 'D', 'J', 'F', 'M', 'A', 'M', 'J'];
@@ -56,6 +57,7 @@ export function forecastTransform({
   data,
 }: ForecastTransformParams) {
   const { selectedWindow, selectedDate } = filters;
+  const season = getSeason(selectedDate);
 
   const dateData = (
     selectedWindow === 'All'
@@ -64,7 +66,9 @@ export function forecastTransform({
           ...(data['Window 2'][selectedDistrict] || []),
         ]
       : data[selectedWindow][selectedDistrict] || []
-  ).filter(x => !selectedDate || x.date <= selectedDate);
+  ).filter(
+    x => !selectedDate || (x.date <= selectedDate && x.season === season),
+  );
 
   // eslint-disable-next-line fp/no-mutating-methods
   const indexes = sortIndexes([...new Set(dateData.map(x => x.index))]);
