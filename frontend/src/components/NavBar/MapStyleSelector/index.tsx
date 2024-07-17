@@ -15,7 +15,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { mapStyleSelector } from 'context/mapStateSlice/selectors';
 import { MapStyle, setMapStyle } from 'context/mapStateSlice';
 
-const mapStyles: MapStyle[] = get(appConfig, 'mapStyles', []);
+const mapStyles: MapStyle[] = get(appConfig.map, 'styles', []);
 
 function MapStyleSelector() {
   const classes = useStyles();

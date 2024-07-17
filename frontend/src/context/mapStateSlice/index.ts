@@ -19,7 +19,7 @@ export interface MapStyle {
   default?: boolean;
 }
 
-const mapStyles: MapStyle[] = get(appConfig, 'mapStyles', []);
+const mapStyles: MapStyle[] = get(appConfig.map, 'styles', []);
 
 interface DateRange {
   startDate?: number;
