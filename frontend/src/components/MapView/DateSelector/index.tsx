@@ -14,7 +14,7 @@ import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import Draggable, { DraggableEvent } from 'react-draggable';
 import { useDispatch, useSelector } from 'react-redux';
-import { DateRangeType } from 'config/types';
+import { DateItem, DateRangeType } from 'config/types';
 import { dateRangeSelector } from 'context/mapStateSlice/selectors';
 import { addNotification } from 'context/notificationStateSlice';
 import { locales, useSafeTranslation } from 'i18n';
@@ -29,10 +29,16 @@ import useLayers from 'utils/layers-utils';
 import { format } from 'date-fns';
 import { Panel, leftPanelTabValueSelector } from 'context/leftPanelStateSlice';
 import { updateDateRange } from 'context/mapStateSlice';
+import { getRequestDate } from 'utils/server-utils';
+import { AAAvailableDatesSelector } from 'context/anticipatoryActionStateSlice';
 import TickSvg from './tick.svg';
 import DateSelectorInput from './DateSelectorInput';
 import TimelineItems from './TimelineItems';
-import { TIMELINE_ITEM_WIDTH, findDateIndex } from './utils';
+import {
+  DateCompatibleLayerWithDateItems,
+  TIMELINE_ITEM_WIDTH,
+  findDateIndex,
+} from './utils';
 import { oneDayInMs } from '../LeftPanel/utils';
 
 type Point = {
@@ -96,6 +102,98 @@ const DateSelector = memo(() => {
     () => new Date(Math.max(...availableDates, new Date().getTime())),
     [availableDates],
   );
+
+  const AAAvailableDates = useSelector(AAAvailableDatesSelector);
+
+  // Create a temporary layer for each AA window
+  const AALayers: DateCompatibleLayerWithDateItems[] = useMemo(
+    () =>
+      AAAvailableDates
+        ? [
+            {
+              id: 'anticipatory_action_window_1',
+              title: 'Window 1',
+              dateItems: AAAvailableDates['Window 1'],
+              type: 'anticipatory_action',
+              opacity: 1,
+            },
+            {
+              id: 'anticipatory_action_window_2',
+              title: 'Window 2',
+              dateItems: AAAvailableDates['Window 2'],
+              type: 'anticipatory_action',
+              opacity: 1,
+            },
+          ]
+        : [],
+    [AAAvailableDates],
+  );
+
+  // Replace anticipatory action unique layer by window1 and window2 layers
+  // Keep anticipatory actions at the top of the timeline
+  const orderedLayers: DateCompatibleLayerWithDateItems[] = useMemo(
+    () =>
+      // eslint-disable-next-line fp/no-mutating-methods
+      selectedLayers
+        .sort((a, b) => {
+          const aIsAnticipatory = a.id.includes('anticipatory_action');
+          const bIsAnticipatory = b.id.includes('anticipatory_action');
+          if (aIsAnticipatory && !bIsAnticipatory) {
+            return -1;
+          }
+          if (!aIsAnticipatory && bIsAnticipatory) {
+            return 1;
+          }
+          return 0;
+        })
+        .map(l => {
+          if (l.type === 'anticipatory_action') {
+            return AALayers;
+          }
+          return l;
+        })
+        .flat(),
+    [selectedLayers, AALayers],
+  );
+
+  const timelineStartDate: string = useMemo(
+    () => new Date(dateRange[0].value).toDateString(),
+    [dateRange],
+  );
+
+  const dateSelector = useSelector(dateRangeSelector);
+  // We truncate layer by removing date that will not be drawn to the Timeline
+  const truncatedLayers: DateItem[][] = useMemo(() => {
+    // returns the index of the first date in layer that matches the first Timeline date
+    const findLayerFirstDateIndex = (items: DateItem[]): number =>
+      items
+        .map(d => new Date(d.displayDate).toDateString())
+        .indexOf(timelineStartDate);
+
+    return [
+      ...orderedLayers.map(layer => {
+        const firstIndex = findLayerFirstDateIndex(layer.dateItems);
+        const layerQueryDate = getRequestDate(
+          layer.dateItems,
+          dateSelector.startDate,
+        );
+        // Filter date items based on queryDate and layerQueryDate
+        const filterDateItems = (items: DateItem[]) =>
+          items.filter(
+            item =>
+              (layerQueryDate &&
+                datesAreEqualWithoutTime(item.queryDate, layerQueryDate)) ||
+              datesAreEqualWithoutTime(item.queryDate, item.displayDate),
+          );
+        if (firstIndex === -1) {
+          return filterDateItems(layer.dateItems);
+        }
+        // truncate the date item array at index matching timeline first date
+        // eslint-disable-next-line fp/no-mutating-methods
+        return filterDateItems(layer.dateItems.slice(firstIndex));
+      }),
+    ];
+  }, [orderedLayers, timelineStartDate, dateSelector.startDate]);
 
   const timeLineWidth = get(timeLine.current, 'offsetWidth', 0);
 
@@ -278,16 +376,31 @@ const DateSelector = memo(() => {
 
   // Click on available date to move the pointer
   const clickDate = (index: number) => {
-    const selectedIndex = findDateIndex(availableDates, dateRange[index].value);
+    // Get all dates that are queriable for each layer
+    const queriableDates = truncatedLayers.map(layerDates =>
+      layerDates
+        .filter(dateItem =>
+          datesAreEqualWithoutTime(dateItem.queryDate, dateItem.displayDate),
+        )
+        .map(dateItem => dateItem.displayDate),
+    );
+
+    // Find the dates that are queriable for all layers
+    const validDates = queriableDates.reduce((acc, currentArray) =>
+      acc.filter(date => currentArray.includes(date)),
+    );
+
+    const selectedIndex = findDateIndex(validDates, dateRange[index].value);
+
     if (
       selectedIndex < 0 ||
       (stateStartDate &&
-        datesAreEqualWithoutTime(availableDates[selectedIndex], stateStartDate))
+        datesAreEqualWithoutTime(validDates[selectedIndex], stateStartDate))
     ) {
       return;
     }
     setPointerPosition({ x: index * TIMELINE_ITEM_WIDTH, y: 0 });
-    const updatedDate = new Date(availableDates[selectedIndex]);
+    const updatedDate = new Date(validDates[selectedIndex]);
     checkIntersectingDateAndShowPopup(new Date(dateRange[index].value), 0);
     updateStartDate(updatedDate, true);
   };
@@ -467,7 +580,8 @@ const DateSelector = memo(() => {
                       dateRange={dateRange}
                       clickDate={clickDate}
                       locale={locale}
-                      selectedLayers={selectedLayers}
+                      orderedLayers={orderedLayers}
+                      truncatedLayers={truncatedLayers}
                       availableDates={availableDates}
                     />
                   )}
