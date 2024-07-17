@@ -57,7 +57,7 @@ export const loadAAData = createAsyncThunk<
   undefined,
   CreateAsyncThunkTypes
 >('anticipatoryActionState/loadAAData', async () => {
-  const url = appConfig.anticipatoryActionUrl;
+  const url = `${appConfig.anticipatoryActionUrl}?_=${new Date().toDateString()}`;
 
   return new Promise<any>((resolve, reject) => {
     Papa.parse(url, {
