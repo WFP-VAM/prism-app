@@ -43,6 +43,33 @@ import { fetchWithTimeout } from './fetch-with-timeout';
 import { queryParamsToString } from './url-utils';
 
 /**
+ * Function that gets the correct date item.
+ *
+ * @return DateItem
+ */
+export const getRequestDateItem = (
+  layerAvailableDates: DateItem[] | undefined,
+  selectedDate?: number,
+): DateItem | undefined => {
+  if (!selectedDate) {
+    return undefined;
+  }
+
+  if (!layerAvailableDates || layerAvailableDates.length === 0) {
+    return undefined;
+  }
+
+  const dateItem = layerAvailableDates.find(date =>
+    datesAreEqualWithoutTime(date.displayDate, selectedDate),
+  );
+  if (!dateItem) {
+    return layerAvailableDates[layerAvailableDates.length - 1];
+  }
+
+  return dateItem;
+};
+
+/**
  * Function that gets the correct date used to make the request. If available dates is undefined. Return selectedDate as default.
  *
  * @return unix timestamp
@@ -51,19 +78,10 @@ export const getRequestDate = (
   layerAvailableDates: DateItem[] | undefined,
   selectedDate?: number,
 ): number | undefined => {
-  if (!selectedDate) {
-    return undefined;
-  }
+  const dateItem = getRequestDateItem(layerAvailableDates, selectedDate);
 
-  if (!layerAvailableDates || layerAvailableDates.length === 0) {
-    return selectedDate;
-  }
-
-  const dateItem = layerAvailableDates.find(date =>
-    datesAreEqualWithoutTime(date.displayDate, selectedDate),
-  );
   if (!dateItem) {
-    return layerAvailableDates[layerAvailableDates.length - 1].queryDate;
+    return selectedDate;
   }
 
   return dateItem.queryDate;

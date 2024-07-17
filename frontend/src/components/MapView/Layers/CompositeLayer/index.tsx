@@ -10,7 +10,7 @@ import { Point } from 'geojson';
 import booleanPointInPolygon from '@turf/boolean-point-in-polygon';
 import { availableDatesSelector } from 'context/serverStateSlice';
 import { useDefaultDate } from 'utils/useDefaultDate';
-import { getRequestDate } from 'utils/server-utils';
+import { getRequestDateItem } from 'utils/server-utils';
 import { safeCountry } from 'config';
 import { geoToH3, h3ToGeoBoundary } from 'h3-js'; // ts-ignore
 import { opacitySelector } from 'context/opacityStateSlice';
@@ -47,10 +47,10 @@ const CompositeLayer = memo(({ layer, before }: Props) => {
 
   const layerAvailableDates =
     serverAvailableDates[layer.id] || serverAvailableDates[layer.dateLayer];
-  const queryDate = getRequestDate(layerAvailableDates, selectedDate);
+  const queryDateItem = getRequestDateItem(layerAvailableDates, selectedDate);
   const { data } =
     (useSelector(
-      layerDataSelector(layer.id, queryDate),
+      layerDataSelector(layer.id, queryDateItem?.queryDate),
     ) as LayerData<CompositeLayerProps>) || {};
 
   useEffect(() => {
@@ -63,8 +63,8 @@ const CompositeLayer = memo(({ layer, before }: Props) => {
   }, []);
 
   useEffect(() => {
-    dispatch(loadLayerData({ layer, date: queryDate }));
-  }, [dispatch, layer, queryDate]);
+    dispatch(loadLayerData({ layer, date: queryDateItem?.startDate }));
+  }, [dispatch, layer, queryDateItem]);
 
   // Investigate performance impact of hexagons for large countries
   const finalFeatures =
@@ -103,9 +103,9 @@ const CompositeLayer = memo(({ layer, before }: Props) => {
       features: finalFeatures,
     };
     return (
-      <Source key={queryDate} type="geojson" data={filteredData}>
+      <Source key={queryDateItem?.queryDate} type="geojson" data={filteredData}>
         <Layer
-          key={queryDate}
+          key={queryDateItem?.queryDate}
           id={getLayerMapId(layer.id)}
           type="fill"
           paint={paintProps(layer.legend || [], opacityState || layer.opacity)}
