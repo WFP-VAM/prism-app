@@ -357,7 +357,7 @@ exports[`renders as expected 1`] = `
               color="secondary"
               style="text-transform: none;"
             >
-              Basic
+              Default
             </mock-typography>
           </mock-button>
           <mock-menu
@@ -366,22 +366,12 @@ exports[`renders as expected 1`] = `
           >
             <mock-menuitem>
               <mock-typography>
-                Basic
-              </mock-typography>
-            </mock-menuitem>
-            <mock-menuitem>
-              <mock-typography>
-                No labels
+                Default
               </mock-typography>
             </mock-menuitem>
             <mock-menuitem>
               <mock-typography>
                 Satellite
-              </mock-typography>
-            </mock-menuitem>
-            <mock-menuitem>
-              <mock-typography>
-                Street
               </mock-typography>
             </mock-menuitem>
           </mock-menu>
