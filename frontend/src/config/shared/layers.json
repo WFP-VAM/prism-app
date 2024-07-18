@@ -480,6 +480,24 @@
       "styles": "tda_42_n24_70"
     }
   },
+  "lst_nighttime": {
+    "title": "Nighttime Land Surface Temperature - 10-day (MODIS)",
+    "type": "wms",
+    "server_layer_name": "myd11a2_txa_dekad",
+    "additional_query_params": {
+      "styles": "tna_42_n24_70"
+    },
+    "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
+    "date_interval": "days",
+    "wcsConfig": {
+      "scale": 0.02,
+      "offset": -273,
+      "pixelResolution": 64
+    },
+    "opacity": 0.7,
+    "legend_text": "Nighttime land surface temperature",
+    "legend": "tna_42_n24_70"
+  },
   "lst_day_anomaly": {
     "title": "Land Surface Temperature - 10-day Anomaly (MODIS)",
     "type": "wms",
