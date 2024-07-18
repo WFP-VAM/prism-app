@@ -98,6 +98,14 @@ const DateSelector = memo(() => {
   const smUp = useMediaQuery(theme.breakpoints.up('sm'));
   const xsDown = useMediaQuery(theme.breakpoints.down('xs'));
 
+  useEffect(() => {
+    if (stateStartDate) {
+      checkIntersectingDateAndShowPopup(new Date(stateStartDate), 0);
+    }
+    // Only run this check when selectedLayers changes
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedLayers]);
+
   const maxDate = useMemo(
     () => new Date(Math.max(...availableDates, new Date().getTime())),
     [availableDates],
@@ -146,12 +154,7 @@ const DateSelector = memo(() => {
           }
           return 0;
         })
-        .map(l => {
-          if (l.type === 'anticipatory_action') {
-            return AALayers;
-          }
-          return l;
-        })
+        .map(l => (l.type === 'anticipatory_action' ? AALayers : l))
         .flat(),
     [selectedLayers, AALayers],
   );
@@ -310,7 +313,7 @@ const DateSelector = memo(() => {
   );
 
   // Find the dates that are queriable
-  const queriableDates = useMemo(() => {
+  const selectableDates = useMemo(() => {
     if (truncatedLayers.length === 0) {
       return [];
     }
@@ -331,7 +334,8 @@ const DateSelector = memo(() => {
 
   const checkIntersectingDateAndShowPopup = useCallback(
     (selectedDate: Date, positionY: number) => {
-      const findDateInIntersectingDates = queriableDates.find(date =>
+      console.log('selectableDates', selectableDates);
+      const findDateInIntersectingDates = selectableDates.find(date =>
         datesAreEqualWithoutTime(date, selectedDate),
       );
       if (findDateInIntersectingDates) {
@@ -351,7 +355,7 @@ const DateSelector = memo(() => {
         }),
       );
     },
-    [dateIndex, dispatch, queriableDates, t],
+    [dateIndex, dispatch, selectableDates, t],
   );
 
   const updateStartDate = useCallback(
@@ -361,13 +365,13 @@ const DateSelector = memo(() => {
       }
       checkIntersectingDateAndShowPopup(date, 0);
       const time = date.getTime();
-      const selectedIndex = findDateIndex(queriableDates, date.getTime());
+      const selectedIndex = findDateIndex(selectableDates, date.getTime());
 
       if (
         selectedIndex < 0 ||
         (stateStartDate &&
           datesAreEqualWithoutTime(
-            queriableDates[selectedIndex],
+            selectableDates[selectedIndex],
             stateStartDate,
           ))
       ) {
@@ -380,7 +384,7 @@ const DateSelector = memo(() => {
     },
     [
       checkIntersectingDateAndShowPopup,
-      queriableDates,
+      selectableDates,
       stateStartDate,
       updateHistory,
       dispatch,
@@ -418,20 +422,26 @@ const DateSelector = memo(() => {
 
   // Click on available date to move the pointer
   const clickDate = (index: number) => {
-    const selectedIndex = findDateIndex(queriableDates, dateRange[index].value);
+    const selectedIndex = findDateIndex(
+      selectableDates,
+      dateRange[index].value,
+    );
     checkIntersectingDateAndShowPopup(
-      new Date(queriableDates[selectedIndex]),
+      new Date(selectableDates[selectedIndex]),
       0,
     );
     if (
       selectedIndex < 0 ||
       (stateStartDate &&
-        datesAreEqualWithoutTime(queriableDates[selectedIndex], stateStartDate))
+        datesAreEqualWithoutTime(
+          selectableDates[selectedIndex],
+          stateStartDate,
+        ))
     ) {
       return;
     }
     setPointerPosition({ x: index * TIMELINE_ITEM_WIDTH, y: 0 });
-    const updatedDate = new Date(queriableDates[selectedIndex]);
+    const updatedDate = new Date(selectableDates[selectedIndex]);
     updateStartDate(updatedDate, true);
   };
 
