@@ -162,6 +162,7 @@ const DateSelector = memo(() => {
   );
 
   const dateSelector = useSelector(dateRangeSelector);
+
   // We truncate layer by removing date that will not be drawn to the Timeline
   const truncatedLayers: DateItem[][] = useMemo(() => {
     // returns the index of the first date in layer that matches the first Timeline date
@@ -173,27 +174,30 @@ const DateSelector = memo(() => {
     return [
       ...orderedLayers.map(layer => {
         const firstIndex = findLayerFirstDateIndex(layer.dateItems);
-        const layerQueryDate = getRequestDate(
-          layer.dateItems,
-          dateSelector.startDate,
-        );
-        // Filter date items based on queryDate and layerQueryDate
-        const filterDateItems = (items: DateItem[]) =>
-          items.filter(
-            item =>
-              (layerQueryDate &&
-                datesAreEqualWithoutTime(item.queryDate, layerQueryDate)) ||
-              datesAreEqualWithoutTime(item.queryDate, item.displayDate),
-          );
         if (firstIndex === -1) {
-          return filterDateItems(layer.dateItems);
+          return layer.dateItems;
         }
         // truncate the date item array at index matching timeline first date
         // eslint-disable-next-line fp/no-mutating-methods
-        return filterDateItems(layer.dateItems.slice(firstIndex));
+        return layer.dateItems.slice(firstIndex);
       }),
     ];
-  }, [orderedLayers, timelineStartDate, dateSelector.startDate]);
+  }, [orderedLayers, timelineStartDate]);
+
+  const visibleLayers = useMemo(
+    () =>
+      truncatedLayers.map(layer => {
+        const layerQueryDate = getRequestDate(layer, dateSelector.startDate);
+        // Filter date items based on queryDate and layerQueryDate
+        return layer.filter(
+          item =>
+            (layerQueryDate &&
+              datesAreEqualWithoutTime(item.queryDate, layerQueryDate)) ||
+            datesAreEqualWithoutTime(item.queryDate, item.displayDate),
+        );
+      }),
+    [truncatedLayers, dateSelector.startDate],
+  );
 
   const timeLineWidth = get(timeLine.current, 'offsetWidth', 0);
 
@@ -315,12 +319,12 @@ const DateSelector = memo(() => {
         // Get the dates that are queriable for any layers
         .map(layerDates =>
           layerDates
-            .filter(dateItem =>
-              datesAreEqualWithoutTime(
-                dateItem.queryDate,
-                dateItem.displayDate,
-              ),
-            )
+            // .filter(dateItem =>
+            //   datesAreEqualWithoutTime(
+            //     dateItem.queryDate,
+            //     dateItem.displayDate,
+            //   ),
+            // )
             .map(dateItem => dateItem.displayDate),
         )
         // Get the dates that are queriable for all layers
@@ -616,7 +620,7 @@ const DateSelector = memo(() => {
                       clickDate={clickDate}
                       locale={locale}
                       orderedLayers={orderedLayers}
-                      truncatedLayers={truncatedLayers}
+                      truncatedLayers={visibleLayers}
                       availableDates={availableDates}
                     />
                   )}
