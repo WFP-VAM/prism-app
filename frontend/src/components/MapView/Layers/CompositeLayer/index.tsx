@@ -48,9 +48,10 @@ const CompositeLayer = memo(({ layer, before }: Props) => {
   const layerAvailableDates =
     serverAvailableDates[layer.id] || serverAvailableDates[layer.dateLayer];
   const queryDateItem = useMemo(
-    () => getRequestDateItem(layerAvailableDates, selectedDate),
+    () => getRequestDateItem(layerAvailableDates, selectedDate, false),
     [layerAvailableDates, selectedDate],
   );
+
   const requestDate = queryDateItem?.startDate || queryDateItem?.queryDate;
   const { data } =
     (useSelector(
@@ -67,7 +68,9 @@ const CompositeLayer = memo(({ layer, before }: Props) => {
   }, []);
 
   useEffect(() => {
-    dispatch(loadLayerData({ layer, date: requestDate }));
+    if (requestDate) {
+      dispatch(loadLayerData({ layer, date: requestDate }));
+    }
   }, [dispatch, layer, requestDate]);
 
   // Investigate performance impact of hexagons for large countries
