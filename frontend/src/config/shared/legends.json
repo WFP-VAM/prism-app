@@ -225,6 +225,26 @@
     { "value": 56, "label": "56C - 58C", "color": "#a50026" },
     { "value": 58, "label": "58C - 60C", "color": "#ad3a00" }
   ],
+  "tna_42_n24_70": [
+    { "value": 0, "label": "0C - 2C", "color": "#1d2e83" },
+    { "value": 2, "label": "2C - 4C", "color": "#24479d" },
+    { "value": 4, "label": "4C - 6C", "color": "#2166ac" },
+    { "value": 6, "label": "6C - 8C", "color": "#0564c3" },
+    { "value": 8, "label": "8C - 10C", "color": "#1d8dbe" },
+    { "value": 10, "label": "10C - 12C", "color": "#34a9c3" },
+    { "value": 12, "label": "12C - 14C", "color": "#005867" },
+    { "value": 14, "label": "14C - 16C", "color": "#378a95" },
+    { "value": 16, "label": "16C - 18C", "color": "#6c9fa4" },
+    { "value": 18, "label": "18C - 20C", "color": "#7ab2b9" },
+    { "value": 20, "label": "20C - 22C", "color": "#57bec1" },
+    { "value": 22, "label": "22C - 24C", "color": "#85cfba" },
+    { "value": 24, "label": "24C - 26C", "color": "#aee0c4" },
+    { "value": 26, "label": "26C - 28C", "color": "#bbe4b5" },
+    { "value": 28, "label": "28C - 30C", "color": "#dcf1b2" },
+    { "value": 30, "label": "30C - 32C", "color": "#e8ffde" },
+    { "value": 32, "label": "32C - 34C", "color": "#f2fabc" },
+    { "value": 34, "label": "34C - 36C", "color": "#ffffbf" }
+  ],
   "tdd_21_m12_12": [
     { "value": -100, "label": "< -12C", "color": "#05284b" },
     { "value": -12, "label": "-12C to -10C", "color": "#1d2e83" },
