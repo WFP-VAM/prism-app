@@ -321,12 +321,14 @@ const DateSelector = memo(() => {
             .map(dateItem => dateItem.displayDate),
         )
         // Get the dates that are queriable for all layers
-        .reduce((acc, currentArray) =>
-          acc.filter(date =>
-            currentArray.some(currentDate =>
-              datesAreEqualWithoutTime(date, currentDate),
+        .reduce(
+          (acc, currentArray) =>
+            acc.filter(date =>
+              currentArray.some(currentDate =>
+                datesAreEqualWithoutTime(date, currentDate),
+              ),
             ),
-          ),
+          [],
         ),
     [truncatedLayers],
   );
