@@ -419,30 +419,39 @@ const DateSelector = memo(() => {
     setDatePosition(stateStartDate, -1, true);
   }, [setDatePosition, stateStartDate]);
 
-  // Click on available date to move the pointer
-  const clickDate = (index: number) => {
-    const selectedIndex = findDateIndex(
+  const clickDate = useCallback(
+    (index: number) => {
+      const selectedIndex = findDateIndex(
+        selectableDates,
+        dateRange[index].value,
+      );
+      checkIntersectingDateAndShowPopup(
+        new Date(selectableDates[selectedIndex]),
+        0,
+      );
+      if (
+        selectedIndex < 0 ||
+        (stateStartDate &&
+          datesAreEqualWithoutTime(
+            selectableDates[selectedIndex],
+            stateStartDate,
+          ))
+      ) {
+        return;
+      }
+      setPointerPosition({ x: index * TIMELINE_ITEM_WIDTH, y: 0 });
+      const updatedDate = new Date(selectableDates[selectedIndex]);
+      updateStartDate(updatedDate, true);
+    },
+    [
       selectableDates,
-      dateRange[index].value,
-    );
-    checkIntersectingDateAndShowPopup(
-      new Date(selectableDates[selectedIndex]),
-      0,
-    );
-    if (
-      selectedIndex < 0 ||
-      (stateStartDate &&
-        datesAreEqualWithoutTime(
-          selectableDates[selectedIndex],
-          stateStartDate,
-        ))
-    ) {
-      return;
-    }
-    setPointerPosition({ x: index * TIMELINE_ITEM_WIDTH, y: 0 });
-    const updatedDate = new Date(selectableDates[selectedIndex]);
-    updateStartDate(updatedDate, true);
-  };
+      dateRange,
+      checkIntersectingDateAndShowPopup,
+      stateStartDate,
+      setPointerPosition,
+      updateStartDate,
+    ],
+  );
 
   // Set timeline position after being dragged
   const onTimelineStop = useCallback((_e: DraggableEvent, position: Point) => {
@@ -508,13 +517,7 @@ const DateSelector = memo(() => {
         );
       }
     },
-    [
-      clickDate,
-      checkIntersectingDateAndShowPopup,
-      dateRange,
-      stateStartDate,
-      updateStartDate,
-    ],
+    [clickDate, dateRange],
   );
 
   const handleOnDatePickerChange = useCallback(
