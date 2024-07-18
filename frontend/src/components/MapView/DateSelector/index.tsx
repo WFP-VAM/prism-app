@@ -306,8 +306,11 @@ const DateSelector = memo(() => {
   );
 
   // Find the dates that are queriable
-  const queriableDates = useMemo(
-    () =>
+  const queriableDates = useMemo(() => {
+    if (truncatedLayers.length === 0) {
+      return [];
+    }
+    return (
       truncatedLayers
         // Get the dates that are queriable for any layers
         .map(layerDates =>
@@ -321,17 +324,15 @@ const DateSelector = memo(() => {
             .map(dateItem => dateItem.displayDate),
         )
         // Get the dates that are queriable for all layers
-        .reduce(
-          (acc, currentArray) =>
-            acc.filter(date =>
-              currentArray.some(currentDate =>
-                datesAreEqualWithoutTime(date, currentDate),
-              ),
+        .reduce((acc, currentArray) =>
+          acc.filter(date =>
+            currentArray.some(currentDate =>
+              datesAreEqualWithoutTime(date, currentDate),
             ),
-          [],
-        ),
-    [truncatedLayers],
-  );
+          ),
+        )
+    );
+  }, [truncatedLayers]);
 
   const checkIntersectingDateAndShowPopup = useCallback(
     (selectedDate: Date, positionY: number) => {
