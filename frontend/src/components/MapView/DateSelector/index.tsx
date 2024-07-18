@@ -509,7 +509,7 @@ const DateSelector = memo(() => {
       }
     },
     [
-      availableDates,
+      clickDate,
       checkIntersectingDateAndShowPopup,
       dateRange,
       stateStartDate,
