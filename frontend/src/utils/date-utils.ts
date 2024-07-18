@@ -7,6 +7,12 @@ export interface StartEndDate {
 }
 
 const millisecondsInADay = 24 * 60 * 60 * 1000;
+
+export const dateWithoutTime = (date: number | Date): number => {
+  const cleanDate = date instanceof Date ? date.getTime() : date;
+  return cleanDate - (cleanDate % millisecondsInADay);
+};
+
 export const datesAreEqualWithoutTime = (
   date1: number | Date,
   date2: number | Date,

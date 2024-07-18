@@ -23,7 +23,7 @@ import {
 } from 'context/mapStateSlice/selectors';
 import { addNotification } from 'context/notificationStateSlice';
 import { availableDatesSelector } from 'context/serverStateSlice';
-import { countBy, get, pickBy } from 'lodash';
+import { countBy, get, pickBy, uniqBy } from 'lodash';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { LocalError } from 'utils/error-utils';
@@ -41,6 +41,7 @@ import {
   binaryIncludes,
   getFormattedDate,
   getTimeInMilliseconds,
+  dateWithoutTime,
 } from './date-utils';
 
 const dateSupportLayerTypes: Array<LayerType['type']> = [
@@ -160,7 +161,14 @@ const useLayers = () => {
               // Combine dates for all AA windows to allow selecting AA for the whole period
               return AAAvailableDatesCombined;
             }
-            return getPossibleDatesForLayer(layer, serverAvailableDates);
+            const possibleDates = getPossibleDatesForLayer(
+              layer,
+              serverAvailableDates,
+            );
+            const uniqueDates = uniqBy(possibleDates, dateItem =>
+              dateWithoutTime(dateItem.displayDate),
+            );
+            return uniqueDates;
           })
           .filter(value => value) // null check
           .flat()
