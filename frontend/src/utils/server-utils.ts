@@ -50,7 +50,7 @@ import { queryParamsToString } from './url-utils';
 export const getRequestDateItem = (
   layerAvailableDates: DateItem[] | undefined,
   selectedDate?: number,
-  defaultToMostRecent?: boolean = true,
+  defaultToMostRecent: boolean = true,
 ): DateItem | undefined => {
   if (!selectedDate) {
     return undefined;
