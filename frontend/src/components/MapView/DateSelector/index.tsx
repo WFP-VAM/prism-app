@@ -291,42 +291,6 @@ const DateSelector = memo(() => {
     });
   }, [dateIndex, range]);
 
-  const updateStartDate = useCallback(
-    (date: Date, isUpdatingHistory: boolean) => {
-      if (!isUpdatingHistory) {
-        return;
-      }
-      const time = date.getTime();
-      const startDate = new Date(stateStartDate as number);
-      const dateEqualsToStartDate = datesAreEqualWithoutTime(date, startDate);
-      if (dateEqualsToStartDate) {
-        return;
-      }
-      // This updates state because a useEffect in MapView updates the redux state
-      // TODO this is convoluted coupling, we should update state here if feasible.
-      updateHistory('date', getFormattedDate(time, 'default') as string);
-      dispatch(updateDateRange({ startDate: time }));
-    },
-    [stateStartDate, updateHistory, dispatch],
-  );
-
-  const setDatePosition = useCallback(
-    (
-      date: number | undefined,
-      increment: number,
-      isUpdatingHistory: boolean,
-    ) => {
-      const selectedIndex = findDateIndex(availableDates, date);
-      if (availableDates[selectedIndex + increment]) {
-        updateStartDate(
-          new Date(availableDates[selectedIndex + increment]),
-          isUpdatingHistory,
-        );
-      }
-    },
-    [availableDates, updateStartDate],
-  );
-
   // move pointer to closest date when change map layer
   useEffect(() => {
     if (isEqual(dateRef.current, availableDates)) {
@@ -336,22 +300,40 @@ const DateSelector = memo(() => {
     dateRef.current = availableDates;
   });
 
-  const incrementDate = useCallback(() => {
-    setDatePosition(stateStartDate, 1, true);
-  }, [setDatePosition, stateStartDate]);
-
-  const decrementDate = useCallback(() => {
-    setDatePosition(stateStartDate, -1, true);
-  }, [setDatePosition, stateStartDate]);
-
   const includedDates = useMemo(
     () => availableDates?.map(d => new Date(d)) ?? [],
     [availableDates],
   );
 
+  // Find the dates that are queriable
+  const queriableDates = useMemo(
+    () =>
+      truncatedLayers
+        // Get the dates that are queriable for any layers
+        .map(layerDates =>
+          layerDates
+            .filter(dateItem =>
+              datesAreEqualWithoutTime(
+                dateItem.queryDate,
+                dateItem.displayDate,
+              ),
+            )
+            .map(dateItem => dateItem.displayDate),
+        )
+        // Get the dates that are queriable for all layers
+        .reduce((acc, currentArray) =>
+          acc.filter(date =>
+            currentArray.some(currentDate =>
+              datesAreEqualWithoutTime(date, currentDate),
+            ),
+          ),
+        ),
+    [truncatedLayers],
+  );
+
   const checkIntersectingDateAndShowPopup = useCallback(
     (selectedDate: Date, positionY: number) => {
-      const findDateInIntersectingDates = includedDates.find(date =>
+      const findDateInIntersectingDates = queriableDates.find(date =>
         datesAreEqualWithoutTime(date, selectedDate),
       );
       if (findDateInIntersectingDates) {
@@ -371,41 +353,87 @@ const DateSelector = memo(() => {
         }),
       );
     },
-    [dateIndex, dispatch, includedDates, t],
+    [dateIndex, dispatch, queriableDates, t],
   );
+
+  const updateStartDate = useCallback(
+    (date: Date, isUpdatingHistory: boolean) => {
+      if (!isUpdatingHistory) {
+        return;
+      }
+      checkIntersectingDateAndShowPopup(date, 0);
+      const time = date.getTime();
+      const selectedIndex = findDateIndex(queriableDates, date.getTime());
+
+      if (
+        selectedIndex < 0 ||
+        (stateStartDate &&
+          datesAreEqualWithoutTime(
+            queriableDates[selectedIndex],
+            stateStartDate,
+          ))
+      ) {
+        return;
+      }
+      // This updates state because a useEffect in MapView updates the redux state
+      // TODO this is convoluted coupling, we should update state here if feasible.
+      updateHistory('date', getFormattedDate(time, 'default') as string);
+      dispatch(updateDateRange({ startDate: time }));
+    },
+    [
+      checkIntersectingDateAndShowPopup,
+      queriableDates,
+      stateStartDate,
+      updateHistory,
+      dispatch,
+    ],
+  );
+
+  const setDatePosition = useCallback(
+    (
+      date: number | undefined,
+      increment: number,
+      isUpdatingHistory: boolean,
+    ) => {
+      const selectedIndex = findDateIndex(availableDates, date);
+      if (availableDates[selectedIndex + increment]) {
+        updateStartDate(
+          new Date(availableDates[selectedIndex + increment]),
+          isUpdatingHistory,
+        );
+        checkIntersectingDateAndShowPopup(
+          new Date(availableDates[selectedIndex + increment]),
+          0,
+        );
+      }
+    },
+    [availableDates, updateStartDate, checkIntersectingDateAndShowPopup],
+  );
+
+  const incrementDate = useCallback(() => {
+    setDatePosition(stateStartDate, 1, true);
+  }, [setDatePosition, stateStartDate]);
+
+  const decrementDate = useCallback(() => {
+    setDatePosition(stateStartDate, -1, true);
+  }, [setDatePosition, stateStartDate]);
 
   // Click on available date to move the pointer
   const clickDate = (index: number) => {
-    // Get all dates that are queriable for each layer
-    const queriableDates = truncatedLayers.map(layerDates =>
-      layerDates
-        .filter(dateItem =>
-          datesAreEqualWithoutTime(dateItem.queryDate, dateItem.displayDate),
-        )
-        .map(dateItem => dateItem.displayDate),
+    const selectedIndex = findDateIndex(queriableDates, dateRange[index].value);
+    checkIntersectingDateAndShowPopup(
+      new Date(queriableDates[selectedIndex]),
+      0,
     );
-
-    // Find the dates that are queriable for all layers
-    const validDates = queriableDates.reduce((acc, currentArray) =>
-      acc.filter(date =>
-        currentArray.some(currentDate =>
-          datesAreEqualWithoutTime(date, currentDate),
-        ),
-      ),
-    );
-
-    const selectedIndex = findDateIndex(validDates, dateRange[index].value);
-
     if (
       selectedIndex < 0 ||
       (stateStartDate &&
-        datesAreEqualWithoutTime(validDates[selectedIndex], stateStartDate))
+        datesAreEqualWithoutTime(queriableDates[selectedIndex], stateStartDate))
     ) {
       return;
     }
     setPointerPosition({ x: index * TIMELINE_ITEM_WIDTH, y: 0 });
-    const updatedDate = new Date(validDates[selectedIndex]);
-    checkIntersectingDateAndShowPopup(new Date(dateRange[index].value), 0);
+    const updatedDate = new Date(queriableDates[selectedIndex]);
     updateStartDate(updatedDate, true);
   };
 

@@ -439,7 +439,7 @@ const useLayers = () => {
     if (
       !selectedDate ||
       !urlDate ||
-      getTimeInMilliseconds(urlDate) === selectedDate
+      datesAreEqualWithoutTime(getTimeInMilliseconds(urlDate), selectedDate)
     ) {
       return;
     }
