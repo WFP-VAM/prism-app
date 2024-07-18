@@ -497,27 +497,7 @@ const DateSelector = memo(() => {
       if (exactX >= dateRange.length) {
         return;
       }
-      const selectedIndex = findDateIndex(
-        availableDates,
-        dateRange[exactX].value,
-      );
-      if (
-        selectedIndex < 0 ||
-        availableDates[selectedIndex] === stateStartDate
-      ) {
-        return;
-      }
-      setPointerPosition({
-        x: exactX * TIMELINE_ITEM_WIDTH,
-        y: position.y,
-      });
-      const updatedDate = new Date(availableDates[selectedIndex]);
-      checkIntersectingDateAndShowPopup(
-        new Date(dateRange[exactX].value),
-        position.y,
-      );
-      updateStartDate(updatedDate, true);
-
+      clickDate(exactX);
       // Hide the tooltip for exactX
       const tooltipElement = document.querySelector(
         `[data-date-index="${exactX}"]`,
