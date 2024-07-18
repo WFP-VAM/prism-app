@@ -4104,7 +4104,8 @@
     "legend_text": "Composite Drought Index v1. SPI weight = 0.5; LST weight = 0.25; NDVI weight = 0.25",
     "aggregation": "pixel",
     "date_layer": "spi_1m",
-    "start_date": "2023-12-01",
+    "start_date": "2020-12-01",
+    "end_date": "2021-07-31",
     "opacity": 0.7
   },
   "cdi_v2": {
@@ -4196,7 +4197,8 @@
     "legend_text": "Composite Drought Index v2. SPI weight = 0.3; LST weight = 0.3; NDVI weight = 0.4",
     "aggregation": "pixel",
     "date_layer": "spi_1m",
-    "start_date": "2023-12-01",
+    "start_date": "2020-12-01",
+    "end_date": "2021-07-31",
     "opacity": 0.7
   },
   "daily_rainfall_forecast": {

@@ -246,6 +246,7 @@ const useTimelineStyles = makeStyles(() =>
       display: 'flex',
       flexDirection: 'column',
       padding: '0.5rem 0.25rem',
+      color: 'black',
     },
     tableWrapper: { display: 'flex', flexDirection: 'column', gap: '2px' },
     headRowWrapper: {
