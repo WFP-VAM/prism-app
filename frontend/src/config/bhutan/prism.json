@@ -172,7 +172,12 @@
     "demographics": {
       "census_data": [
         "population",
-        "households"
+        "households",
+        "females",
+        "males",
+        "age_below15",
+        "age15_64",
+        "age_over64"
       ]
     },
     "food_consumption": {
