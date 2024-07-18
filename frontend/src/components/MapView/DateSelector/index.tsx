@@ -334,7 +334,6 @@ const DateSelector = memo(() => {
 
   const checkIntersectingDateAndShowPopup = useCallback(
     (selectedDate: Date, positionY: number) => {
-      console.log('selectableDates', selectableDates);
       const findDateInIntersectingDates = selectableDates.find(date =>
         datesAreEqualWithoutTime(date, selectedDate),
       );
