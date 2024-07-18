@@ -21,7 +21,7 @@ const filters: AnticipatoryActionState['filters'] = {
     ny: true,
   },
   selectedIndex: '',
-  selectedDate: undefined,
+  selectedDate: '2024-02-01',
 };
 
 const store = mockStore({
@@ -94,6 +94,7 @@ const out = {
               probability: 0.16,
               trigger: 0.17,
               date: '2023-08-01',
+              season: '2023-24',
               isValid: false,
             },
             {
@@ -107,6 +108,7 @@ const out = {
               probability: 0.22,
               trigger: 0.3,
               date: '2023-09-01',
+              season: '2023-24',
               isValid: false,
             },
             {
@@ -120,6 +122,7 @@ const out = {
               probability: 0.31,
               trigger: 0.2,
               date: '2023-10-01',
+              season: '2023-24',
               isValid: true,
             },
           ],
@@ -141,6 +144,7 @@ const out = {
               probability: 0.12,
               trigger: 0.3,
               date: '2023-09-01',
+              season: '2023-24',
               isValid: false,
               wasReadyValid: false,
             },
@@ -155,6 +159,7 @@ const out = {
               probability: 0.34,
               trigger: 0.33,
               date: '2023-10-01',
+              season: '2023-24',
               isValid: false,
               wasReadyValid: false,
             },
@@ -169,6 +174,7 @@ const out = {
               probability: 0.28,
               trigger: 0.25,
               date: '2023-11-01',
+              season: '2023-24',
               isValid: true,
               wasReadyValid: true,
             },
@@ -191,6 +197,7 @@ const out = {
               probability: 0.19,
               trigger: 0.1,
               date: '2023-09-01',
+              season: '2023-24',
               isValid: true,
             },
             {
@@ -204,6 +211,7 @@ const out = {
               probability: 0.28,
               trigger: 0.2,
               date: '2023-10-01',
+              season: '2023-24',
               isValid: true,
             },
           ],
@@ -225,6 +233,7 @@ const out = {
               probability: 0.25,
               trigger: 0.26,
               date: '2023-10-01',
+              season: '2023-24',
               isValid: false,
               wasReadyValid: true,
             },
@@ -239,6 +248,7 @@ const out = {
               probability: 0.22,
               trigger: 0.3,
               date: '2023-11-01',
+              season: '2023-24',
               isValid: false,
               wasReadyValid: true,
             },

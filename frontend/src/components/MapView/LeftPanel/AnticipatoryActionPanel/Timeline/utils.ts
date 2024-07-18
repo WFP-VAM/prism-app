@@ -7,6 +7,7 @@ import {
   AnticipatoryActionDataRow,
   AnticipatoryActionState,
 } from 'context/anticipatoryActionStateSlice/types';
+import { getSeason } from 'context/anticipatoryActionStateSlice/utils';
 
 function getColumnKey(val: AnticipatoryActionDataRow): number {
   const { category, phase } = val;
@@ -34,7 +35,8 @@ export function timelineTransform({
   selectedDistrict,
   data,
 }: TimelineTransformParams) {
-  const { selectedWindow, selectedIndex, categories } = filters;
+  const { selectedWindow, selectedIndex, categories, selectedDate } = filters;
+  const season = getSeason(selectedDate);
 
   const windowData = (
     selectedWindow === 'All' ? AAWindowKeys : [selectedWindow]
@@ -46,6 +48,7 @@ export function timelineTransform({
 
     const filtered = districtData.filter(
       x =>
+        x.season === season &&
         !x.computedRow &&
         (selectedIndex === '' || selectedIndex === x.index) &&
         categories[x.category],
