@@ -2,7 +2,7 @@ import React, { memo, useMemo } from 'react';
 import * as Sentry from '@sentry/browser';
 import { useIsAuthenticated } from '@azure/msal-react';
 import { ThemeProvider } from '@material-ui/core/styles';
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import { Font } from '@react-pdf/renderer';
 import { authRequired } from 'config';
 import NavBar from 'components/NavBar';
@@ -64,12 +64,13 @@ const Wrapper = memo(() => {
         isAlertFormOpen={isAlertFormOpen}
         setIsAlertFormOpen={setIsAlertFormOpen}
       />
-      <Switch>
-        <Route>
-          <MapView setIsAlertFormOpen={setIsAlertFormOpen} />
-          <AuthModal />
-        </Route>
-      </Switch>
+      <Routes>
+        <Route
+          path="/"
+          element={<MapView setIsAlertFormOpen={setIsAlertFormOpen} />}
+        />
+        <Route path="/auth" element={<AuthModal />} />
+      </Routes>
     </div>
   );
 });

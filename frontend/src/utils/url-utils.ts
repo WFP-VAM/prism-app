@@ -1,5 +1,5 @@
 import { camelCase } from 'lodash';
-import { useHistory } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { LayerType } from 'config/types';
 import { AnalysisParams } from './types';
 import { keepLayer } from './keep-layer-utils';
@@ -33,11 +33,12 @@ export const getUrlKey = (layer: LayerType): UrlLayerKey =>
     : UrlLayerKey.HAZARD;
 
 export const useUrlHistory = () => {
-  const { replace, location } = useHistory();
+  const navigate = useNavigate();
+  const location = useLocation();
   const urlParams = new URLSearchParams(location.search);
 
   const clearHistory = () => {
-    replace({ search: '' });
+    navigate({ search: '' }, { replace: true });
   };
 
   const appendLayerToUrl = (
@@ -80,7 +81,7 @@ export const useUrlHistory = () => {
       urlParams.set(layerKey, filteredSelectedLayers);
     }
 
-    replace({ search: urlParams.toString() });
+    navigate({ search: urlParams.toString() }, { replace: true });
   };
 
   const updateAnalysisParams = (analysisParams: AnalysisParams) => {
@@ -89,7 +90,7 @@ export const useUrlHistory = () => {
         urlParams.set(key, value);
       }
     });
-    replace({ search: urlParams.toString() });
+    navigate({ search: urlParams.toString() }, { replace: true });
   };
 
   const getAnalysisParams = (): AnalysisParams => {
@@ -104,12 +105,12 @@ export const useUrlHistory = () => {
     Object.keys(dummyAnalysisParams).forEach(key => {
       urlParams.delete(key);
     });
-    replace({ search: urlParams.toString() });
+    navigate({ search: urlParams.toString() }, { replace: true });
   };
 
   const updateHistory = (key: string, value: string) => {
     urlParams.set(key, value);
-    replace({ search: urlParams.toString() });
+    navigate({ search: urlParams.toString() }, { replace: true });
   };
 
   const removeKeyFromUrl = (key: string) => {
@@ -119,7 +120,7 @@ export const useUrlHistory = () => {
       urlParams.delete('date');
     }
 
-    replace({ search: urlParams.toString() });
+    navigate({ search: urlParams.toString() }, { replace: true });
   };
 
   return {
