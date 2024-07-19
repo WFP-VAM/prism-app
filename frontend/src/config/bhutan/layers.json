@@ -565,7 +565,7 @@
     "legend_text": "Source: Population and Housing Census of Bhutan, 2017"
   },
   "rice": {
-    "title": "Rice - 274g / head / day in Kg Unit",
+    "title": "Rice daily per capita consumption in grams",
     "type": "admin_level_data",
     "path": "data/bhutan/btn_adm3_level_data.json",
     "data_field": "rice",
@@ -575,34 +575,34 @@
     "legend": [
       {
         "value": 0,
-        "label": "0 - 149",
-        "color": "#d7191c"
+        "label": "0 - 99",
+        "color": "#f2f0f7"
       },
       {
-        "value": 150,
-        "label": "150 - 273",
-        "color": "#fdae61"
+        "value": 100,
+        "label": "100 - 199",
+        "color": "#cbc9e2"
       },
       {
-        "value": 274,
-        "label": "274 - 324",
-        "color": "#ffffbf"
+        "value": 200,
+        "label": "200 - 299",
+        "color": "#9e9ac8"
       },
       {
-        "value": 325,
-        "label": "325 - 399",
-        "color": "#a6d96a"
+        "value": 300,
+        "label": "300 - 399",
+        "color": "#756bb1"
       },
       {
         "value": 400,
         "label": ">= 400",
-        "color": "#1a9641"
+        "color": "#54278f"
       }
     ],
     "legend_text": "Source: Population and Housing Census of Bhutan, 2017"
   },
   "oil": {
-    "title": "Oil - 27g / head / day in Kg Unit",
+    "title": "Oil daily per capita consumption in grams",
     "type": "admin_level_data",
     "path": "data/bhutan/btn_adm3_level_data.json",
     "data_field": "oil",
@@ -639,7 +639,7 @@
     "legend_text": "Source: Population and Housing Census of Bhutan, 2017"
   },
   "salt": {
-    "title": "Salt - 5g / head / day in Kg Unit",
+    "title": "Salt daily per capita consumption in grams",
     "type": "admin_level_data",
     "path": "data/bhutan/btn_adm3_level_data.json",
     "data_field": "salt",
@@ -676,7 +676,7 @@
     "legend_text": "Source: Population and Housing Census of Bhutan, 2017"
   },
   "lentils": {
-    "title": "Lentils - 11g / head / day in Kg Unit",
+    "title": "Lentils daily per capita consumption in grams",
     "type": "admin_level_data",
     "path": "data/bhutan/btn_adm3_level_data.json",
     "data_field": "lentils",
