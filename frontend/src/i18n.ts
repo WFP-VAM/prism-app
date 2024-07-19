@@ -12,7 +12,6 @@ import mn from 'date-fns/locale/mn';
 
 import { appConfig, rawLayers, translation } from './config';
 import { extractTranslationItems } from 'config/config.test.utils';
-import { LayerDefinitions } from 'config/utils';
 
 const TRANSLATION_DEBUG = false;
 // Register other date locales to be used by our DatePicker
