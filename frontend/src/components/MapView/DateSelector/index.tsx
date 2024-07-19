@@ -337,7 +337,7 @@ const DateSelector = memo(() => {
       const findDateInIntersectingDates = selectableDates.find(date =>
         datesAreEqualWithoutTime(date, selectedDate),
       );
-      if (findDateInIntersectingDates) {
+      if (findDateInIntersectingDates || selectableDates.length === 0) {
         return;
       }
       // if the date is not an intersecting one default to last intersecting date

@@ -400,13 +400,10 @@ const useLayers = () => {
 
   // let users know if the layers selected are not possible to view together.
   useEffect(() => {
-    // TODO: Why is this the case here? maybe we should remove it;
     if (
-      // eslint-disable-next-line no-constant-condition
       selectedLayerDates.length !== 0 ||
       selectedLayersWithDateSupport.length === 0 ||
-      !selectedDate ||
-      1
+      !selectedDate
     ) {
       return;
     }
@@ -417,7 +414,7 @@ const useLayers = () => {
 
     dispatch(
       addNotification({
-        message: `No dates overlap with the selected layers. Removing previous layer: ${layerToRemove.id}.`,
+        message: `No dates overlap with the selected layers. Removing previous layer: ${layerToRemove.title || layerToRemove.id}.`,
         type: 'warning',
       }),
     );
