@@ -10,8 +10,8 @@ import es from 'date-fns/locale/es';
 import ru from 'date-fns/locale/ru';
 import mn from 'date-fns/locale/mn';
 
-import { appConfig, rawLayers, translation } from './config';
 import { extractTranslationItems } from 'config/config.test.utils';
+import { appConfig, rawLayers, translation } from './config';
 
 const TRANSLATION_DEBUG = false;
 // Register other date locales to be used by our DatePicker
@@ -80,11 +80,12 @@ if (TRANSLATION_DEBUG || isDevelopment) {
       !Object.prototype.hasOwnProperty.call(resources.en.translation, item)
     ) {
       // eslint-disable-next-line fp/no-mutating-methods
-      missingKeys['en'].push(item);
+      missingKeys.en.push(item);
     }
   });
 
-  console.log('Missing translation keys:', missingKeys['en']);
+  // eslint-disable-next-line no-console
+  console.log('Missing translation keys:', missingKeys.en);
 }
 
 function logMissingKey(lng: string, key: string) {
