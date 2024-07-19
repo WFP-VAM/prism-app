@@ -1,7 +1,7 @@
-import { WithStyles, createStyles, withStyles } from '@material-ui/core';
-import React, { ReactNode, memo } from 'react';
+import { createStyles, makeStyles } from '@material-ui/core';
+import { ReactNode, memo } from 'react';
 
-const styles = () =>
+const useStyles = makeStyles(() =>
   createStyles({
     chartsContainer: {
       position: 'relative',
@@ -14,16 +14,21 @@ const styles = () =>
       flexDirection: 'column',
       gap: '8px',
     },
-  });
+  }),
+);
 
-interface PopupChartWrapperProps extends WithStyles<typeof styles> {
+interface PopupChartWrapperProps {
   children: ReactNode;
 }
 
-const PopupChartWrapper = ({ children, classes }: PopupChartWrapperProps) => (
-  <div className={classes.chartsContainer}>
-    <div className={classes.charts}>{children}</div>
-  </div>
-);
+const PopupChartWrapper = memo(({ children }: PopupChartWrapperProps) => {
+  const classes = useStyles();
 
-export default memo(withStyles(styles)(PopupChartWrapper));
+  return (
+    <div className={classes.chartsContainer}>
+      <div className={classes.charts}>{children}</div>
+    </div>
+  );
+});
+
+export default PopupChartWrapper;

@@ -1,14 +1,8 @@
-import {
-  Typography,
-  WithStyles,
-  createStyles,
-  withStyles,
-} from '@material-ui/core';
+import { Typography, createStyles, makeStyles } from '@material-ui/core';
 import maplibregl from 'maplibre-gl';
 import React, { useContext, useRef } from 'react';
 import MapGL, { Layer, MapRef, Marker, Source } from 'react-map-gl/maplibre';
 import { useSelector } from 'react-redux';
-import { mapStyle } from 'components/MapView/Map';
 import { getFormattedDate } from 'utils/date-utils';
 import { appConfig } from 'config';
 import { lightGrey } from 'muiTheme';
@@ -16,6 +10,10 @@ import { AAMarkersSelector } from 'context/anticipatoryActionStateSlice';
 import { useAAMarkerScalePercent } from 'utils/map-utils';
 import LegendItemsList from 'components/MapView/Legends/LegendItemsList';
 import { Panel, leftPanelTabValueSelector } from 'context/leftPanelStateSlice';
+import useLayers from 'utils/layers-utils';
+import { AdminLevelDataLayerProps } from 'config/types';
+import { addFillPatternImagesInMap } from 'components/MapView/Layers/AdminLevelDataLayer/utils';
+import { mapStyle } from 'components/MapView/Map/utils';
 import {
   dateRangeSelector,
   mapSelector,
@@ -23,7 +21,8 @@ import {
 import { useSafeTranslation } from '../../../i18n';
 import PrintConfigContext from './printConfig.context';
 
-function PrintPreview({ classes }: PrintPreviewProps) {
+function PrintPreview() {
+  const classes = useStyles();
   const { t } = useSafeTranslation();
   const { printConfig } = useContext(PrintConfigContext);
 
@@ -65,6 +64,13 @@ function PrintPreview({ classes }: PrintPreviewProps) {
 
   const { logo } = appConfig.header || {};
   const scalePercent = useAAMarkerScalePercent(mapRef.current?.getMap());
+  const { selectedLayers } = useLayers();
+  const adminLevelLayersWithFillPattern = selectedLayers.filter(
+    layer =>
+      layer.type === 'admin_level_data' &&
+      (layer.fillPattern || layer.legend.some(legend => legend.fillPattern)),
+  ) as AdminLevelDataLayerProps[];
+
   const dateText = `${t('Publication date')}: ${getFormattedDate(
     Date.now(),
     'default',
@@ -257,6 +263,16 @@ function PrintPreview({ classes }: PrintPreviewProps) {
                       'bottom-right',
                     );
                     updateScaleBarAndNorthArrow();
+
+                    // Load fill pattern images to this new map instance if needed.
+                    Promise.all(
+                      adminLevelLayersWithFillPattern.map(layer =>
+                        addFillPatternImagesInMap(
+                          layer as AdminLevelDataLayerProps,
+                          mapRef.current?.getMap(),
+                        ),
+                      ),
+                    );
                   }}
                   mapStyle={selectedMapStyle || mapStyle.toString()}
                   maxBounds={selectedMap.getMaxBounds() ?? undefined}
@@ -302,7 +318,7 @@ function PrintPreview({ classes }: PrintPreviewProps) {
   );
 }
 
-const styles = () =>
+const useStyles = makeStyles(() =>
   createStyles({
     backdrop: {
       position: 'absolute',
@@ -373,8 +389,7 @@ const styles = () =>
       flexDirection: 'column',
       flexGrow: 1,
     },
-  });
+  }),
+);
 
-export interface PrintPreviewProps extends WithStyles<typeof styles> {}
-
-export default withStyles(styles)(PrintPreview);
+export default PrintPreview;

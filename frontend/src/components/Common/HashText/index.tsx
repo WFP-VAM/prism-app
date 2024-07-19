@@ -1,7 +1,6 @@
 // This component creates a hidden link, to the version in which the app was built.
-import React from 'react';
 
-const HashText = () => {
+function HashText() {
   const hash = process.env.REACT_APP_GIT_HASH;
   if (hash) {
     // eslint-disable-next-line no-console
@@ -30,6 +29,6 @@ const HashText = () => {
       version hash: {hash}
     </a>
   );
-};
+}
 
 export default HashText;

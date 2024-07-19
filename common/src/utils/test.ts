@@ -29,11 +29,11 @@ test("bboxToString", ({ eq }) => {
   eq(bboxToString([-180, -90, 180, 90] as const), "-180,-90,180,90");
   eq(
     bboxToString([-180.0001, -90.0001, 180.0001, 90.0001], 2),
-    "-180.00,-90.00,180.00,90.00"
+    "-180.00,-90.00,180.00,90.00",
   );
   eq(
     bboxToString([100, 45, 103.09704125797317, 46.08568380901372]),
-    "100,45,103.09704125797317,46.08568380901372"
+    "100,45,103.09704125797317,46.08568380901372",
   );
 });
 
@@ -48,7 +48,7 @@ test("check-extent", ({ eq }) => {
   }
   eq(
     msg,
-    'Error: the extent 170,-90,150,90 seems malformed or else may contain "wrapping" which is not supported'
+    'Error: the extent 170,-90,150,90 seems malformed or else may contain "wrapping" which is not supported',
   );
 });
 
@@ -76,8 +76,7 @@ test("format-url: base url should add params", ({ eq }) => {
     service: "WMS",
     request: "GetMap",
     layers: "ModisIndices",
-    bbox:
-      "11897270.578531113,6261721.357121639,12523442.714243278,6887893.492833804",
+    bbox: "11897270.578531113,6261721.357121639,12523442.714243278,6887893.492833804",
     bboxsr: "3857",
     height: 256,
     srs: "EPSG:3857",
@@ -90,7 +89,7 @@ test("format-url: base url should add params", ({ eq }) => {
   const url = formatUrl(baseUrl, params);
   eq(
     url,
-    "https://mongolia.sibelius-datacube.org:5000/wms?bbox=11897270.578531113%2C6261721.357121639%2C12523442.714243278%2C6887893.492833804&bboxsr=3857&crs=EPSG%3A3857&format=image%2Fpng&height=256&layers=ModisIndices&request=GetMap&service=WMS&srs=EPSG%3A3857&time=2022-07-11&transparent=true&version=1.3.0&width=256"
+    "https://mongolia.sibelius-datacube.org:5000/wms?bbox=11897270.578531113%2C6261721.357121639%2C12523442.714243278%2C6887893.492833804&bboxsr=3857&crs=EPSG%3A3857&format=image%2Fpng&height=256&layers=ModisIndices&request=GetMap&service=WMS&srs=EPSG%3A3857&time=2022-07-11&transparent=true&version=1.3.0&width=256",
   );
 });
 
@@ -145,15 +144,15 @@ test("parse service from url", async ({ eq }) => {
   eq(
     parseService(
       "https://example.org/geoserver/ows?request=GetCapabilities&service=WFS",
-      { case: "lower" }
+      { case: "lower" },
     ),
-    "wfs"
+    "wfs",
   );
   eq(
     parseService(
-      "https://example.org/geoserver/ows?request=GetCapabilities&service=wfs"
+      "https://example.org/geoserver/ows?request=GetCapabilities&service=wfs",
     ),
-    "wfs"
+    "wfs",
   );
 });
 
@@ -172,7 +171,7 @@ test("scaleImage", async ({ eq }) => {
       maxPixels: 5096,
       resolution: 64,
     }),
-    { height: 222, width: 677 }
+    { height: 222, width: 677 },
   );
 });
 

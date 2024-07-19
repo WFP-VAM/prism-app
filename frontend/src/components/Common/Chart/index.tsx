@@ -2,7 +2,6 @@ import React, { memo, useCallback, useMemo } from 'react';
 import colormap from 'colormap';
 import { ChartOptions } from 'chart.js';
 import { Bar, Line } from 'react-chartjs-2';
-import { TFunctionKeys } from 'i18next';
 import { ChartConfig, DatasetField } from 'config/types';
 import { TableData } from 'context/tableStateSlice';
 import { useSafeTranslation } from 'i18n';
@@ -84,22 +83,23 @@ const Chart = memo(
       ...title.split(' '),
     ]);
 
-    const transpose = useMemo(() => {
-      return config.transpose || false;
-    }, [config.transpose]);
+    const transpose = useMemo(
+      () => config.transpose || false,
+      [config.transpose],
+    );
 
-    const header = useMemo(() => {
-      return data.rows[0];
-    }, [data.rows]);
+    const header = useMemo(() => data.rows[0], [data.rows]);
 
-    const tableRows = useMemo(() => {
-      return data.rows.slice(1, data.rows.length);
-    }, [data.rows]);
+    const tableRows = useMemo(
+      () => data.rows.slice(1, data.rows.length),
+      [data.rows],
+    );
 
     // Get the keys for the data of interest
-    const indices = useMemo(() => {
-      return Object.keys(header).filter(key => key.includes(config.data || ''));
-    }, [config.data, header]);
+    const indices = useMemo(
+      () => Object.keys(header).filter(key => key.includes(config.data || '')),
+      [config.data, header],
+    );
 
     // rainbow-soft map requires nshades to be at least size 11
     const nshades = useMemo(() => {
@@ -109,14 +109,16 @@ const Chart = memo(
       return Math.max(11, indices.length);
     }, [indices.length, tableRows.length, transpose]);
 
-    const colorShuffle = useCallback((colors: string[]) => {
-      return colors.map((_, i) =>
-        i % 2 ? colors[i] : colors[colors.length - i - 1],
-      );
-    }, []);
+    const colorShuffle = useCallback(
+      (colors: string[]) =>
+        colors.map((_, i) =>
+          i % 2 ? colors[i] : colors[colors.length - i - 1],
+        ),
+      [],
+    );
 
-    const colors = useMemo(() => {
-      return (
+    const colors = useMemo(
+      () =>
         config.colors ||
         colorShuffle(
           colormap({
@@ -125,9 +127,9 @@ const Chart = memo(
             format: 'hex',
             alpha: 0.5,
           }),
-        )
-      );
-    }, [colorShuffle, config.colors, nshades]);
+        ),
+      [colorShuffle, config.colors, nshades],
+    );
 
     const labels = React.useMemo(() => {
       if (!transpose) {
@@ -139,10 +141,10 @@ const Chart = memo(
     }, [chartRange, config.category, header, indices, tableRows, transpose]);
 
     // The table rows data sets
-    const tableRowsDataSet = useMemo(() => {
-      return tableRows.map((row, i) => {
-        return {
-          label: t(row[config.category] as TFunctionKeys) || '',
+    const tableRowsDataSet = useMemo(
+      () =>
+        tableRows.map((row, i) => ({
+          label: t(row[config.category] as any) || '',
           fill: config.fill || false,
           backgroundColor: colors[i],
           borderColor: colors[i],
@@ -150,24 +152,14 @@ const Chart = memo(
           pointRadius: isEWSChart ? 0 : 1, // Disable point rendering for EWS only.
           data: indices.map(index => (row[index] as number) || null),
           pointHitRadius: 10,
-        };
-      });
-    }, [
-      colors,
-      config.category,
-      config.fill,
-      indices,
-      isEWSChart,
-      t,
-      tableRows,
-    ]);
+        })),
+      [colors, config.category, config.fill, indices, isEWSChart, t, tableRows],
+    );
 
     const configureIndicePointRadius = useCallback(
       (indiceKey: string) => {
         const foundDataSetFieldPointRadius = datasetFields?.find(
-          datasetField => {
-            return header[indiceKey] === datasetField.label;
-          },
+          datasetField => header[indiceKey] === datasetField.label,
         )?.pointRadius;
 
         if (foundDataSetFieldPointRadius !== undefined) {
@@ -179,10 +171,10 @@ const Chart = memo(
     );
 
     // The indicesDataSet
-    const indicesDataSet = useMemo(() => {
-      return indices.map((indiceKey, i) => {
-        return {
-          label: t(header[indiceKey] as TFunctionKeys),
+    const indicesDataSet = useMemo(
+      () =>
+        indices.map((indiceKey, i) => ({
+          label: t(header[indiceKey] as any),
           fill: config.fill || false,
           backgroundColor: colors[i],
           borderColor: colors[i],
@@ -190,17 +182,17 @@ const Chart = memo(
           data: tableRows.map(row => (row[indiceKey] as number) || null),
           pointRadius: configureIndicePointRadius(indiceKey),
           pointHitRadius: 10,
-        };
-      });
-    }, [
-      colors,
-      config.fill,
-      configureIndicePointRadius,
-      header,
-      indices,
-      t,
-      tableRows,
-    ]);
+        })),
+      [
+        colors,
+        config.fill,
+        configureIndicePointRadius,
+        header,
+        indices,
+        t,
+        tableRows,
+      ],
+    );
 
     const EWSthresholds = useMemo(() => {
       if (data.EWSConfig) {
@@ -253,77 +245,81 @@ const Chart = memo(
       data: set.data.slice(chartRange[0], chartRange[1]),
     }));
 
-    const chartData = {
-      labels,
-      datasets: datasetsTrimmed,
-    };
+    const chartData = React.useMemo(
+      () => ({
+        labels,
+        datasets: datasetsTrimmed,
+      }),
+      [datasetsTrimmed, labels],
+    );
 
-    const chartConfig = useMemo(() => {
-      return {
-        maintainAspectRatio: !(notMaintainAspectRatio ?? false),
-        title: {
-          fontColor: '#CCC',
-          display: true,
-          text: subtitle ? [title, subtitle] : title,
-          fontSize: 14,
-        },
-        scales: {
-          xAxes: [
-            {
-              stacked: config?.stacked ?? false,
-              gridLines: {
-                display: false,
-              },
-              ticks: {
-                callback: value => {
-                  // for EWS charts, we only want to display the time
-                  return isEWSChart ? String(value).split(' ')[1] : value;
+    const chartConfig = useMemo(
+      () =>
+        ({
+          maintainAspectRatio: !(notMaintainAspectRatio ?? false),
+          title: {
+            fontColor: '#CCC',
+            display: true,
+            text: subtitle ? [title, subtitle] : title,
+            fontSize: 14,
+          },
+          scales: {
+            xAxes: [
+              {
+                stacked: config?.stacked ?? false,
+                gridLines: {
+                  display: false,
                 },
-                fontColor: '#CCC',
+                ticks: {
+                  callback: value =>
+                    // for EWS charts, we only want to display the time
+                    isEWSChart ? String(value).split(' ')[1] : value,
+                  fontColor: '#CCC',
+                },
+                ...(xAxisLabel
+                  ? {
+                      scaleLabel: {
+                        labelString: xAxisLabel,
+                        display: true,
+                      },
+                    }
+                  : {}),
               },
-              ...(xAxisLabel
-                ? {
-                    scaleLabel: {
-                      labelString: xAxisLabel,
-                      display: true,
-                    },
-                  }
-                : {}),
-            },
-          ],
-          yAxes: [
-            {
-              ticks: {
-                fontColor: '#CCC',
-                ...(config?.minValue && { suggestedMin: config?.minValue }),
-                ...(config?.maxValue && { suggestedMax: config?.maxValue }),
+            ],
+            yAxes: [
+              {
+                ticks: {
+                  fontColor: '#CCC',
+                  ...(config?.minValue && { suggestedMin: config?.minValue }),
+                  ...(config?.maxValue && { suggestedMax: config?.maxValue }),
+                },
+                stacked: config?.stacked ?? false,
+                gridLines: {
+                  display: false,
+                },
               },
-              stacked: config?.stacked ?? false,
-              gridLines: {
-                display: false,
-              },
-            },
-          ],
-        },
-        // display values for all datasets in the tooltip
-        tooltips: {
-          mode: 'index',
-        },
-        legend: {
-          display: config.displayLegend,
-          position: legendAtBottom ? 'bottom' : 'right',
-          labels: { boxWidth: 12, boxHeight: 12 },
-        },
-      } as ChartOptions;
-    }, [
-      config,
-      isEWSChart,
-      legendAtBottom,
-      notMaintainAspectRatio,
-      title,
-      subtitle,
-      xAxisLabel,
-    ]);
+            ],
+          },
+          // display values for all datasets in the tooltip
+          tooltips: {
+            mode: 'index',
+          },
+          legend: {
+            display: config.displayLegend,
+            position: legendAtBottom ? 'bottom' : 'right',
+            labels: { boxWidth: 12, boxHeight: 12 },
+          },
+        }) as ChartOptions,
+      [
+        config,
+        isEWSChart,
+        legendAtBottom,
+        notMaintainAspectRatio,
+        title,
+        subtitle,
+        xAxisLabel,
+      ],
+    );
 
     return useMemo(
       () => (

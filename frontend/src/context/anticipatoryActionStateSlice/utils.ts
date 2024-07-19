@@ -66,6 +66,7 @@ export function parseAndTransformAA(data: any[]) {
         // initialize to false and override later
         new: false,
         vulnerability: x.vulnerability,
+        season: x.season,
       };
 
       const isReadyValid = Number(x.prob_ready) > Number(x.trigger_ready);
@@ -135,54 +136,52 @@ export function parseAndTransformAA(data: any[]) {
     // eslint-disable-next-line fp/no-mutating-methods
     const windowDates = [...new Set(filtered.map(x => x.date))].sort();
 
-    const computedExtraRows: [
-      string,
-      AnticipatoryActionDataRow[],
-    ][] = Array.from(groupedByDistrict.entries()).map(([district, aaData]) => {
-      // eslint-disable-next-line fp/no-mutating-methods
-      const sorted = aaData.sort((a, b) => -sortFn(a, b));
-      let setElementsToPropagate = [] as AnticipatoryActionDataRow[];
-      let newRows = [] as AnticipatoryActionDataRow[];
+    const computedExtraRows: [string, AnticipatoryActionDataRow[]][] =
+      Array.from(groupedByDistrict.entries()).map(([district, aaData]) => {
+        // eslint-disable-next-line fp/no-mutating-methods
+        const sorted = aaData.sort((a, b) => -sortFn(a, b));
+        let setElementsToPropagate = [] as AnticipatoryActionDataRow[];
+        let newRows = [] as AnticipatoryActionDataRow[];
 
-      let prevMax: AnticipatoryActionDataRow | undefined;
-      windowDates.forEach((date, index) => {
-        const dateData = sorted.filter(x => x.date === date);
+        let prevMax: AnticipatoryActionDataRow | undefined;
+        windowDates.forEach(date => {
+          const dateData = sorted.filter(x => x.date === date);
 
-        // Propagate SET elements from previous dates
-        const propagatedSetElements = setElementsToPropagate.map(x => ({
-          ...x,
-          computedRow: true,
-          new: false,
-          date,
-        }));
+          // Propagate SET elements from previous dates
+          const propagatedSetElements = setElementsToPropagate.map(x => ({
+            ...x,
+            computedRow: true,
+            new: false,
+            date,
+          }));
 
-        // If a district reaches a set state, it will propagate until the end of the window
-        dateData.forEach(x => {
-          if (!x.isValid) {
-            return;
-          }
-          if (x.phase === 'Set') {
-            // eslint-disable-next-line fp/no-mutation
-            setElementsToPropagate = [...setElementsToPropagate, x];
-          }
-          // set new parameter
-          if (
-            prevMax === undefined ||
-            AADataSeverityOrder(x.category, x.phase) >
-              AADataSeverityOrder(prevMax.category, prevMax.phase)
-          ) {
-            // eslint-disable-next-line fp/no-mutation
-            prevMax = x;
-            // eslint-disable-next-line fp/no-mutation, no-param-reassign
-            x.new = true;
-          }
+          // If a district reaches a set state, it will propagate until the end of the window
+          dateData.forEach(x => {
+            if (!x.isValid || (prevMax && x.season !== prevMax?.season)) {
+              return;
+            }
+            if (x.phase === 'Set') {
+              // eslint-disable-next-line fp/no-mutation
+              setElementsToPropagate = [...setElementsToPropagate, x];
+            }
+            // set new parameter
+            if (
+              prevMax === undefined ||
+              AADataSeverityOrder(x.category, x.phase) >
+                AADataSeverityOrder(prevMax.category, prevMax.phase)
+            ) {
+              // eslint-disable-next-line fp/no-mutation
+              prevMax = x;
+              // eslint-disable-next-line fp/no-mutation, no-param-reassign
+              x.new = true;
+            }
+          });
+
+          // eslint-disable-next-line no-const-assign, fp/no-mutation
+          newRows = [...newRows, ...dateData, ...propagatedSetElements];
         });
-
-        // eslint-disable-next-line no-const-assign, fp/no-mutation
-        newRows = [...newRows, ...dateData, ...propagatedSetElements];
+        return [district, newRows];
       });
-      return [district, newRows];
-    });
 
     const result = Object.fromEntries(
       computedExtraRows.map(x => [
@@ -222,12 +221,32 @@ interface CalculateMapRenderedDistrictsParams {
   windowRanges: AnticipatoryActionState['windowRanges'];
 }
 
+export const getSeason = (date?: string) => {
+  // Use today's date if date is undefined
+  const currentDate = date ? new Date(date) : new Date();
+  const year = currentDate.getFullYear();
+  const month = currentDate.getMonth();
+
+  if (month >= 4) {
+    // May (4) to December (11)
+    return `${year}-${(year + 1).toString().slice(-2)}`;
+  }
+  // January (0) to April (3)
+  return `${year - 1}-${year.toString().slice(-2)}`;
+};
+
 export function calculateMapRenderedDistricts({
   filters,
   data,
   windowRanges,
 }: CalculateMapRenderedDistrictsParams) {
   const { selectedDate, categories } = filters;
+  const season = getSeason(selectedDate);
+  // eslint-disable-next-line no-console
+  console.log({ selectedDate });
+  // eslint-disable-next-line no-console
+  console.log(season);
+
   const res = Object.entries(data)
     .map(([winKey, districts]) => {
       if (!districts) {
@@ -237,7 +256,9 @@ export function calculateMapRenderedDistricts({
         ([districtName, districtData]) => {
           if (
             !selectedDate ||
-            districtData.filter(x => x.date <= selectedDate)?.length === 0
+            districtData.filter(
+              x => x.date <= selectedDate && season === x.season,
+            )?.length === 0
           ) {
             return [
               districtName,
@@ -246,13 +267,15 @@ export function calculateMapRenderedDistricts({
           }
 
           // keep showing latest window data, even for later dates
-          const range = windowRanges[winKey as typeof AAWindowKeys[number]];
+          const range = windowRanges[winKey as (typeof AAWindowKeys)[number]];
           const date =
             range?.end === undefined || selectedDate < range.end
               ? selectedDate
               : range.end;
 
-          const dateData = districtData.filter(x => x.date === date);
+          const dateData = districtData.filter(
+            x => x.date === date && x.season === season,
+          );
           const validData = dateData.filter(
             x => (x.computedRow || x.isValid) && categories[x.category],
           );
@@ -357,9 +380,9 @@ export function calculateAAMarkers({
     selectedWindow === 'All'
       ? calculateCombinedAAMapData(renderedDistricts)
       : Object.fromEntries(
-          Object.entries(
-            renderedDistricts[selectedWindow],
-          ).map(([dist, val]) => [dist, val[0]]),
+          Object.entries(renderedDistricts[selectedWindow]).map(
+            ([dist, val]) => [dist, val[0]],
+          ),
         );
 
   return Object.entries(AADistricts).map(([district, { category, phase }]) => {

@@ -26,7 +26,6 @@ import React, {
   useState,
 } from 'react';
 import { useSelector } from 'react-redux';
-import { TFunctionKeys } from 'i18next';
 import { appConfig } from 'config';
 import {
   AdminCodeString,
@@ -233,7 +232,7 @@ const ChartsPanel = memo(() => {
   );
 
   const [selectedLayerTitles, setSelectedLayerTitles] = useState<
-    string[] | TFunctionKeys[]
+    string[] | any[]
   >([]);
 
   const yearsToFetchDataFor = 5;
@@ -251,9 +250,8 @@ const ChartsPanel = memo(() => {
     new Date().getTime() - oneYearInMs - oneDayInMs,
   );
   const [adminProperties, setAdminProperties] = useState<GeoJsonProperties>();
-  const [secondAdminProperties, setSecondAdminProperties] = useState<
-    GeoJsonProperties
-  >();
+  const [secondAdminProperties, setSecondAdminProperties] =
+    useState<GeoJsonProperties>();
   const oneYearInTicks = 34;
   // maxDataTicks used for setting slider max ticks
   const [maxDataTicks, setMaxDataTicks] = useState(0);
@@ -324,9 +322,7 @@ const ChartsPanel = memo(() => {
   );
 
   const getCountryName: (admProps: GeoJsonProperties) => string = useCallback(
-    admProps => {
-      return multiCountry ? admProps?.admin0Name : country;
-    },
+    admProps => (multiCountry ? admProps?.admin0Name : country),
     [country],
   );
 
@@ -342,14 +338,14 @@ const ChartsPanel = memo(() => {
     }`;
   };
 
-  const showChartsPanel = useMemo(() => {
-    return (
+  const showChartsPanel = useMemo(
+    () =>
       adminProperties &&
       startDate1 &&
       tabPanelType === tabValue &&
-      selectedLayerTitles.length >= 1
-    );
-  }, [adminProperties, startDate1, selectedLayerTitles.length, tabValue]);
+      selectedLayerTitles.length >= 1,
+    [adminProperties, startDate1, selectedLayerTitles.length, tabValue],
+  );
 
   useEffect(() => {
     if (!adminProperties && countryAdmin0Id && data) {
@@ -363,13 +359,23 @@ const ChartsPanel = memo(() => {
     }
   }, [secondAdminProperties, countryAdmin0Id, data]);
 
-  const singleDownloadChartPrefix = adminProperties
-    ? [
-        getCountryName(adminProperties),
-        selectedAdmin1Area,
-        selectedAdmin2Area,
-      ].map(x => t(x))
-    : [];
+  const singleDownloadChartPrefix = React.useMemo(
+    () =>
+      adminProperties
+        ? [
+            getCountryName(adminProperties),
+            selectedAdmin1Area,
+            selectedAdmin2Area,
+          ].map(x => t(x))
+        : [],
+    [
+      adminProperties,
+      getCountryName,
+      selectedAdmin1Area,
+      selectedAdmin2Area,
+      t,
+    ],
+  );
 
   const firstCSVFilename = adminProperties
     ? buildCsvFileName([
@@ -714,13 +720,10 @@ const ChartsPanel = memo(() => {
   }, [compareLocations, comparePeriods, selectedLayerTitles]);
 
   const chartsSelectRenderValue = useCallback(
-    selected => {
-      return selected
-        .map((selectedValue: string | TFunctionKeys) => {
-          return t(selectedValue);
-        })
-        .join(', ');
-    },
+    (selected: any) =>
+      selected
+        .map((selectedValue: string | any) => t(selectedValue))
+        .join(', '),
     [t],
   );
 

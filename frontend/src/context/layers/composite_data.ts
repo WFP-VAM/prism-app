@@ -1,56 +1,54 @@
-import { FeatureCollection } from '@turf/helpers';
+import { FeatureCollection } from 'geojson';
 import { appConfig } from 'config';
 import type { CompositeLayerProps } from 'config/types';
 import { fetchWithTimeout } from 'utils/fetch-with-timeout';
 import { LocalError } from 'utils/error-utils';
 import { addNotification } from 'context/notificationStateSlice';
+import { getFormattedDate } from 'utils/date-utils';
 
 import type { LayerDataParams, LazyLoader } from './layer-data';
 
 export interface CompositeLayerData extends FeatureCollection {}
 
-export const fetchCompositeLayerData: LazyLoader<CompositeLayerProps> = () => async (
-  params: LayerDataParams<CompositeLayerProps>,
-  { dispatch },
-) => {
-  // to complete later with new endpoint for composite chart
+export const fetchCompositeLayerData: LazyLoader<CompositeLayerProps> =
+  () =>
+  async (params: LayerDataParams<CompositeLayerProps>, { dispatch }) => {
+    const { layer, date } = params;
+    const startDate = date ? new Date(date) : new Date();
+    // Setting an end date one month after the start date, adding support for seasons in WFP-VAM/prism-app#1301
+    const endDate = new Date(startDate);
+    endDate.setMonth(endDate.getMonth() + 1);
 
-  const { layer, date } = params;
-  const endDate = (date ? new Date(date) : new Date())
-    .toISOString()
-    .split('T')[0];
-  const { baseUrl, inputLayers, startDate } = layer;
-  const { boundingBox } = appConfig.map;
-
-  // docs: https://hip-service.ovio.org/docs#/default/run_q_multi_geojson_q_multi_geojson_post
-  const body = {
-    begin: startDate,
-    end: endDate,
-    area: {
-      min_lon: boundingBox[0],
-      min_lat: boundingBox[1],
-      max_lon: boundingBox[2],
-      max_lat: boundingBox[3],
-      start_date: '2002-01-01',
-      end_date: endDate,
-    },
-    layers: inputLayers.map(({ key, aggregation, importance, invert }) => ({
-      key,
-      aggregation,
-      importance,
-      invert: Boolean(invert),
-    })),
-  };
-
-  // eslint-disable-next-line no-console
-  console.log('Request config used for Qmulti:', {
-    body,
-  });
-  try {
-    const response = await fetchWithTimeout(
+    const {
       baseUrl,
-      dispatch,
-      {
+      inputLayers,
+      startDate: areaStartDate,
+      endDate: areaEndDate,
+    } = layer;
+    const { boundingBox } = appConfig.map;
+
+    // docs: https://hip-service.ovio.org/docs#/default/run_q_multi_geojson_q_multi_geojson_post
+    const body = {
+      begin: getFormattedDate(startDate, 'default'),
+      end: getFormattedDate(endDate, 'default'),
+      area: {
+        min_lon: boundingBox[0],
+        min_lat: boundingBox[1],
+        max_lon: boundingBox[2],
+        max_lat: boundingBox[3],
+        start_date: areaStartDate ?? '2002-01-01',
+        end_date: areaEndDate ?? '2021-07-31',
+      },
+      layers: inputLayers.map(({ key, aggregation, importance, invert }) => ({
+        key,
+        aggregation,
+        importance,
+        invert: Boolean(invert),
+      })),
+    };
+
+    try {
+      const response = await fetchWithTimeout(baseUrl, dispatch, {
         body: JSON.stringify(body),
         method: 'POST',
         timeout: 600000, // 10min
@@ -58,23 +56,22 @@ export const fetchCompositeLayerData: LazyLoader<CompositeLayerProps> = () => as
           Accept: 'application/json',
           'Content-Type': 'application/json',
         },
-      },
-      `Request failed for fetching boundary layer data at ${baseUrl}`,
-    );
-    const geojson = await response.json();
+      });
 
-    return geojson;
-  } catch (error) {
-    if (!(error instanceof LocalError)) {
+      const geojson = await response.json();
+
+      return geojson;
+    } catch (error) {
+      if (!(error instanceof LocalError)) {
+        return undefined;
+      }
+      console.error(error);
+      dispatch(
+        addNotification({
+          message: error.message,
+          type: 'warning',
+        }),
+      );
       return undefined;
     }
-    console.error(error);
-    dispatch(
-      addNotification({
-        message: error.message,
-        type: 'warning',
-      }),
-    );
-    return undefined;
-  }
-};
+  };

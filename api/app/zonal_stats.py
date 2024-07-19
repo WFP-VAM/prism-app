@@ -21,7 +21,6 @@ from app.models import (
 )
 from app.raster_utils import calculate_pixel_area, gdal_calc, reproj_match
 from app.timer import timed
-from app.utils import WarningsFilter
 from app.validation import VALID_OPERATORS
 from fastapi import HTTPException
 from rasterio.warp import Resampling
@@ -32,11 +31,7 @@ from shapely.ops import unary_union  # type: ignore
 
 logger = logging.getLogger(__name__)
 
-# Add custom filter to silence 'converting a masked element to nan' warnings
-logger.addFilter(WarningsFilter())
-
-
-DEFAULT_STATS = ["min", "max", "mean", "median", "sum", "std", "nodata", "count"]
+DEFAULT_STATS = ["min", "max", "mean", "median", "sum", "std", "count"]
 
 AreaInSqKm = NewType("AreaInSqKm", float)
 Percentage = NewType("Percentage", float)

@@ -3,7 +3,7 @@
 exports[`renders as expected 1`] = `
 <div>
   <div
-    class="MuiBox-root MuiBox-root-3 memo-root-1"
+    class="MuiBox-root MuiBox-root-3 makeStyles-root-1"
   >
     <mock-drawer
       anchor="left"
@@ -21,10 +21,11 @@ exports[`renders as expected 1`] = `
             aria-labelledby="full-width-tab-layers"
             id="full-width-tabpanel-layers"
             role="tabpanel"
-            style="display: block; flex-grow: 1; order: -1; overflow-x: hidden;"
+            style="display: block; flex-grow: 1; height: calc(94vh - 48px); order: -1; overflow-x: hidden;"
           >
             <div
               class="MuiBox-root MuiBox-root-7"
+              style="width: 425px; display: flex; flex-direction: column; height: 100%;"
             >
               <div
                 style="padding: 0.5rem;"
@@ -308,6 +309,7 @@ exports[`renders as expected 1`] = `
               </div>
               <div
                 class="MuiBox-root MuiBox-root-16"
+                style="flex-grow: 1;"
               />
               <a
                 href="https://github.com/WFP-VAM/prism-app/tree/sample_hash"
@@ -324,19 +326,19 @@ exports[`renders as expected 1`] = `
             aria-labelledby="full-width-tab-charts"
             id="full-width-tabpanel-charts"
             role="tabpanel"
-            style="display: none; flex-grow: 1; overflow-x: auto;"
+            style="display: none; flex-grow: 1; height: calc(94vh - 48px); overflow-x: auto;"
           />
           <div
             aria-labelledby="full-width-tab-analysis"
             id="full-width-tabpanel-analysis"
             role="tabpanel"
-            style="display: none; flex-grow: 1; overflow-x: auto;"
+            style="display: none; flex-grow: 1; height: calc(94vh - 48px); overflow-x: auto;"
           />
           <div
             aria-labelledby="full-width-tab-anticipatory_action"
             id="full-width-tabpanel-anticipatory_action"
             role="tabpanel"
-            style="display: none; flex-grow: 1; overflow-x: auto;"
+            style="display: none; flex-grow: 1; height: calc(94vh - 48px); overflow-x: auto;"
           >
             <div
               class="makeStyles-anticipatoryActionPanel-55"
@@ -735,7 +737,9 @@ exports[`renders as expected 1`] = `
                   <div
                     class="makeStyles-iconCol-85"
                   />
-                  <div>
+                  <div
+                    style="width: calc(50% - 1.75rem);"
+                  >
                     <mock-typography
                       classname="makeStyles-windowHeader-83"
                       variant="h4"
@@ -743,7 +747,9 @@ exports[`renders as expected 1`] = `
                       Window 1
                     </mock-typography>
                   </div>
-                  <div>
+                  <div
+                    style="width: calc(50% - 1.75rem);"
+                  >
                     <mock-typography
                       classname="makeStyles-windowHeader-83"
                       variant="h4"
@@ -781,7 +787,9 @@ exports[`renders as expected 1`] = `
                       </div>
                     </div>
                   </div>
-                  <div>
+                  <div
+                    style="width: calc(50% - 1.75rem);"
+                  >
                     <div
                       class="makeStyles-windowBackground-86"
                     >
@@ -798,7 +806,9 @@ exports[`renders as expected 1`] = `
                       </div>
                     </div>
                   </div>
-                  <div>
+                  <div
+                    style="width: calc(50% - 1.75rem);"
+                  >
                     <div
                       class="makeStyles-windowBackground-86"
                     >
@@ -845,7 +855,9 @@ exports[`renders as expected 1`] = `
                       </div>
                     </div>
                   </div>
-                  <div>
+                  <div
+                    style="width: calc(50% - 1.75rem);"
+                  >
                     <div
                       class="makeStyles-windowBackground-86"
                     >
@@ -862,7 +874,9 @@ exports[`renders as expected 1`] = `
                       </div>
                     </div>
                   </div>
-                  <div>
+                  <div
+                    style="width: calc(50% - 1.75rem);"
+                  >
                     <div
                       class="makeStyles-windowBackground-86"
                     >
@@ -909,7 +923,9 @@ exports[`renders as expected 1`] = `
                       </div>
                     </div>
                   </div>
-                  <div>
+                  <div
+                    style="width: calc(50% - 1.75rem);"
+                  >
                     <div
                       class="makeStyles-windowBackground-86"
                     >
@@ -926,7 +942,9 @@ exports[`renders as expected 1`] = `
                       </div>
                     </div>
                   </div>
-                  <div>
+                  <div
+                    style="width: calc(50% - 1.75rem);"
+                  >
                     <div
                       class="makeStyles-windowBackground-86"
                     >
@@ -973,7 +991,9 @@ exports[`renders as expected 1`] = `
                       </div>
                     </div>
                   </div>
-                  <div>
+                  <div
+                    style="width: calc(50% - 1.75rem);"
+                  >
                     <div
                       class="makeStyles-windowBackground-86"
                     >
@@ -990,7 +1010,9 @@ exports[`renders as expected 1`] = `
                       </div>
                     </div>
                   </div>
-                  <div>
+                  <div
+                    style="width: calc(50% - 1.75rem);"
+                  >
                     <div
                       class="makeStyles-windowBackground-86"
                     >
@@ -1037,7 +1059,9 @@ exports[`renders as expected 1`] = `
                       </div>
                     </div>
                   </div>
-                  <div>
+                  <div
+                    style="width: calc(50% - 1.75rem);"
+                  >
                     <div
                       class="makeStyles-windowBackground-86"
                     >
@@ -1054,7 +1078,9 @@ exports[`renders as expected 1`] = `
                       </div>
                     </div>
                   </div>
-                  <div>
+                  <div
+                    style="width: calc(50% - 1.75rem);"
+                  >
                     <div
                       class="makeStyles-windowBackground-86"
                     >
@@ -1101,7 +1127,9 @@ exports[`renders as expected 1`] = `
                       </div>
                     </div>
                   </div>
-                  <div>
+                  <div
+                    style="width: calc(50% - 1.75rem);"
+                  >
                     <div
                       class="makeStyles-windowBackground-86"
                     >
@@ -1118,7 +1146,9 @@ exports[`renders as expected 1`] = `
                       </div>
                     </div>
                   </div>
-                  <div>
+                  <div
+                    style="width: calc(50% - 1.75rem);"
+                  >
                     <div
                       class="makeStyles-windowBackground-86"
                     >
@@ -1165,7 +1195,9 @@ exports[`renders as expected 1`] = `
                       </div>
                     </div>
                   </div>
-                  <div>
+                  <div
+                    style="width: calc(50% - 1.75rem);"
+                  >
                     <div
                       class="makeStyles-windowBackground-86"
                     >
@@ -1182,7 +1214,9 @@ exports[`renders as expected 1`] = `
                       </div>
                     </div>
                   </div>
-                  <div>
+                  <div
+                    style="width: calc(50% - 1.75rem);"
+                  >
                     <div
                       class="makeStyles-windowBackground-86"
                     >
@@ -1227,7 +1261,9 @@ exports[`renders as expected 1`] = `
                       </div>
                     </div>
                   </div>
-                  <div>
+                  <div
+                    style="width: calc(50% - 1.75rem);"
+                  >
                     <div
                       class="makeStyles-windowBackground-86"
                     >
@@ -1244,7 +1280,9 @@ exports[`renders as expected 1`] = `
                       </div>
                     </div>
                   </div>
-                  <div>
+                  <div
+                    style="width: calc(50% - 1.75rem);"
+                  >
                     <div
                       class="makeStyles-windowBackground-86"
                     >
@@ -1310,20 +1348,20 @@ exports[`renders as expected 1`] = `
             aria-labelledby="full-width-tab-none"
             id="full-width-tabpanel-none"
             role="tabpanel"
-            style="display: none; flex-grow: 1; overflow-x: auto;"
+            style="display: none; flex-grow: 1; height: calc(94vh - 48px); overflow-x: auto;"
           />
         </div>
       </div>
     </mock-drawer>
     <div
-      class="MuiBox-root MuiBox-root-95 OtherFeatures-container-93"
+      class="MuiBox-root MuiBox-root-95 makeStyles-container-93"
     >
       <div
-        class="MuiBox-root MuiBox-root-96 OtherFeatures-optionContainer-94"
+        class="MuiBox-root MuiBox-root-96 makeStyles-optionContainer-94"
       />
     </div>
     <div
-      class="memo-loading-2"
+      class="makeStyles-loading-2"
     >
       <mock-circularprogress
         size="100"

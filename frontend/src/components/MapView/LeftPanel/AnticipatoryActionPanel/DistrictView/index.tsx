@@ -31,7 +31,7 @@ import ActionsModal from './ActionsModal';
 import { dateSorter, districtViewTransform } from './utils';
 
 interface WindowColumnProps {
-  win: typeof AAWindowKeys[number];
+  win: (typeof AAWindowKeys)[number];
   transformed: ReturnType<typeof districtViewTransform>;
   rowKeys: string[];
   openActionsDialog: () => void;
@@ -268,9 +268,8 @@ function DistrictView({ dialogs }: DistrictViewProps) {
   const rawAAData = useSelector(AADataSelector);
   const aaFilters = useSelector(AAFiltersSelector);
   const selectedDistrict = useSelector(AASelectedDistrictSelector);
-  const [actionsModalOpen, setActionsModalOpen] = React.useState<boolean>(
-    false,
-  );
+  const [actionsModalOpen, setActionsModalOpen] =
+    React.useState<boolean>(false);
   const [modalActions, setModalActions] = React.useState<Action[]>([]);
 
   const districtButtons = [

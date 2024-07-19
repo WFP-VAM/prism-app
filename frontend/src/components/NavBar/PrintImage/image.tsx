@@ -1,9 +1,8 @@
 import {
   Dialog,
   DialogContent,
-  WithStyles,
   createStyles,
-  withStyles,
+  makeStyles,
 } from '@material-ui/core';
 import mask from '@turf/mask';
 import html2canvas from 'html2canvas';
@@ -39,9 +38,10 @@ const debounceCallback = debounce((callback: any, ...args: any[]) => {
 
 const boundaryLayer = getBoundaryLayerSingleton();
 
-function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
+function DownloadImage({ open, handleClose }: DownloadImageProps) {
   const { country, header } = appConfig;
   const logo = header?.logo;
+  const classes = useStyles();
   const selectedMap = useSelector(mapSelector);
   const dateRange = useSelector(dateRangeSelector);
   const printRef = useRef<HTMLDivElement>(null);
@@ -60,10 +60,8 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
     footerVisibility: true,
   });
 
-  const [
-    downloadMenuAnchorEl,
-    setDownloadMenuAnchorEl,
-  ] = React.useState<HTMLElement | null>(null);
+  const [downloadMenuAnchorEl, setDownloadMenuAnchorEl] =
+    React.useState<HTMLElement | null>(null);
   const [selectedBoundaries, setSelectedBoundaries] = React.useState<
     AdminCodeString[]
   >([]);
@@ -79,9 +77,8 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
     width: 100,
     height: 100,
   });
-  const [footerRef, { height: footerHeight }] = useResizeObserver<
-    HTMLDivElement
-  >(footerText, open);
+  const [footerRef, { height: footerHeight }] =
+    useResizeObserver<HTMLDivElement>(footerText, open);
   const [titleRef, { height: titleHeight }] = useResizeObserver<HTMLDivElement>(
     titleText,
     open,
@@ -97,9 +94,8 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
     );
   }
 
-  const [invertedAdminBoundaryLimitPolygon, setAdminBoundaryPolygon] = useState(
-    null,
-  );
+  const [invertedAdminBoundaryLimitPolygon, setAdminBoundaryPolygon] =
+    useState(null);
 
   React.useEffect(() => {
     // admin-boundary-unified-polygon.json is generated using "yarn preprocess-layers"
@@ -178,6 +174,7 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
     handleDownloadMenuClose();
   };
 
+  // eslint-disable-next-line react/jsx-no-constructed-context-values
   const printContext = {
     printConfig: {
       open,
@@ -238,7 +235,7 @@ function DownloadImage({ classes, open, handleClose }: DownloadImageProps) {
   );
 }
 
-const styles = () =>
+const useStyles = makeStyles(() =>
   createStyles({
     contentContainer: {
       fontFamily: 'Roboto',
@@ -252,11 +249,12 @@ const styles = () =>
       width: '90vw',
       height: '90vh',
     },
-  });
+  }),
+);
 
-export interface DownloadImageProps extends WithStyles<typeof styles> {
+export interface DownloadImageProps {
   open: boolean;
   handleClose: () => void;
 }
 
-export default withStyles(styles)(DownloadImage);
+export default DownloadImage;

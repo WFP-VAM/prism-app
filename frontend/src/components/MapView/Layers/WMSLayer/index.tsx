@@ -1,4 +1,4 @@
-import React, { memo } from 'react';
+import { memo } from 'react';
 import { useSelector } from 'react-redux';
 import { Layer, Source } from 'react-map-gl/maplibre';
 import { WMSLayerProps } from 'config/types';
@@ -13,62 +13,64 @@ import { getLayerMapId } from 'utils/map-utils';
 import { appConfig } from 'config';
 import { opacitySelector } from 'context/opacityStateSlice';
 
-const WMSLayers = ({
-  layer: { id, baseUrl, serverLayerName, additionalQueryParams, opacity },
-  before,
-}: LayersProps) => {
-  const selectedDate = useDefaultDate(id);
-  const serverAvailableDates = useSelector(availableDatesSelector);
-  const opacityState = useSelector(opacitySelector(id));
+const WMSLayers = memo(
+  ({
+    layer: { id, baseUrl, serverLayerName, additionalQueryParams, opacity },
+    before,
+  }: LayersProps) => {
+    const selectedDate = useDefaultDate(id);
+    const serverAvailableDates = useSelector(availableDatesSelector);
+    const opacityState = useSelector(opacitySelector(id));
 
-  const expansionFactor = 2;
-  // eslint-disable-next-line
-  const expandedBoundingBox = expandBoundingBox(
-    appConfig.map.boundingBox,
-    expansionFactor,
-  );
+    const expansionFactor = 2;
+    // @ts-expect-error #TS6133 see TODO bellow
+    const _expandedBoundingBox = expandBoundingBox(
+      appConfig.map.boundingBox,
+      expansionFactor,
+    );
 
-  if (!selectedDate) {
-    return null;
-  }
-  const layerAvailableDates = serverAvailableDates[id];
-  const queryDate = getRequestDate(layerAvailableDates, selectedDate);
-  const queryDateString = (queryDate ? new Date(queryDate) : new Date())
-    .toISOString()
-    .slice(0, 10);
+    if (!selectedDate) {
+      return null;
+    }
+    const layerAvailableDates = serverAvailableDates[id];
+    const queryDate = getRequestDate(layerAvailableDates, selectedDate);
+    const queryDateString = (queryDate ? new Date(queryDate) : new Date())
+      .toISOString()
+      .slice(0, 10);
 
-  return (
-    <Source
-      id={`source-${id}`}
-      type="raster"
-      // refresh tiles every time date changes
-      key={queryDateString}
-      tiles={[
-        `${getWMSUrl(baseUrl, serverLayerName, {
-          ...additionalQueryParams,
-          ...(selectedDate && {
-            time: queryDateString,
-          }),
-        })}&bbox={bbox-epsg-3857}`,
-      ]}
-      tileSize={256}
-      // TODO - activate after reviewing bbox for all countries
-      // bounds={expandedBoundingBox}
-    >
-      <Layer
-        beforeId={before}
+    return (
+      <Source
+        id={`source-${id}`}
         type="raster"
-        id={getLayerMapId(id)}
-        source={`source-${id}`}
-        paint={{ 'raster-opacity': opacityState || opacity }}
-      />
-    </Source>
-  );
-};
+        // refresh tiles every time date changes
+        key={queryDateString}
+        tiles={[
+          `${getWMSUrl(baseUrl, serverLayerName, {
+            ...additionalQueryParams,
+            ...(selectedDate && {
+              time: queryDateString,
+            }),
+          })}&bbox={bbox-epsg-3857}`,
+        ]}
+        tileSize={256}
+        // TODO - activate after reviewing bbox for all countries
+        // bounds={expandedBoundingBox}
+      >
+        <Layer
+          beforeId={before}
+          type="raster"
+          id={getLayerMapId(id)}
+          source={`source-${id}`}
+          paint={{ 'raster-opacity': opacityState || opacity }}
+        />
+      </Source>
+    );
+  },
+);
 
 export interface LayersProps {
   layer: WMSLayerProps;
   before?: string;
 }
 
-export default memo(WMSLayers);
+export default WMSLayers;

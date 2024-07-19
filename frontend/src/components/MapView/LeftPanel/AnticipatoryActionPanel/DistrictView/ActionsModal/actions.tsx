@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components */
 import React from 'react';
 import {
   MarkunreadOutlined,
@@ -31,25 +32,27 @@ import { AAWindowKeys } from 'config/utils';
 
 const IconSize = '1rem';
 
-const FontAwesomeIconWrap = (props: FontAwesomeIconProps) => (
-  <FontAwesomeIcon fontSize={IconSize} {...props} />
-);
+function FontAwesomeIconWrap(props: FontAwesomeIconProps) {
+  return <FontAwesomeIcon fontSize={IconSize} {...props} />;
+}
 
 export interface Action {
   name: string;
   icon: React.JSX.Element;
 }
 
-const DoubleIcon = (props: FontAwesomeIconProps) => (
-  <div style={{ display: 'flex', transform: 'scale(0.75)' }}>
-    <FontAwesomeIcon fontSize={IconSize} {...props} />
-    <FontAwesomeIcon
-      fontSize={IconSize}
-      style={{ paddingTop: '0.5rem', marginLeft: '-0.2rem' }}
-      {...props}
-    />
-  </div>
-);
+function DoubleIcon(props: FontAwesomeIconProps) {
+  return (
+    <div style={{ display: 'flex', transform: 'scale(0.75)' }}>
+      <FontAwesomeIcon fontSize={IconSize} {...props} />
+      <FontAwesomeIcon
+        fontSize={IconSize}
+        style={{ paddingTop: '0.5rem', marginLeft: '-0.2rem' }}
+        {...props}
+      />
+    </div>
+  );
+}
 
 // Reusable action items with full names
 export const AActions = {
@@ -201,7 +204,7 @@ const actionsMap: ActionsMap = {
 export function getActionsByPhaseCategoryAndWindow(
   phase: AAPhaseType,
   category: AACategoryType,
-  win: typeof AAWindowKeys[number],
+  win: (typeof AAWindowKeys)[number],
 ): Action[] {
   if (category === 'Mild') {
     return [AActions.naMild];

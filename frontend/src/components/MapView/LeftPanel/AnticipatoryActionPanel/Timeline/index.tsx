@@ -16,7 +16,6 @@ import {
   AnticipatoryActionDataRow,
 } from 'context/anticipatoryActionStateSlice/types';
 import { lightGrey } from 'muiTheme';
-import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useSafeTranslation } from 'i18n';
 import { Equalizer, Reply } from '@material-ui/icons';
@@ -164,7 +163,7 @@ function Timeline({ dialogs }: TimelineProps) {
                             rowData.status.phase,
                           )}
                         </div>
-                        {months.map(([date, label]) => {
+                        {months.map(([date, _label]) => {
                           const elem = rowData.data.find(z => z.date === date);
                           if (!elem) {
                             return (
@@ -247,6 +246,7 @@ const useTimelineStyles = makeStyles(() =>
       display: 'flex',
       flexDirection: 'column',
       padding: '0.5rem 0.25rem',
+      color: 'black',
     },
     tableWrapper: { display: 'flex', flexDirection: 'column', gap: '2px' },
     headRowWrapper: {

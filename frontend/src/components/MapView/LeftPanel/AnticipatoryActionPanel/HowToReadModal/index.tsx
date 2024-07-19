@@ -11,7 +11,6 @@ import {
 } from '@material-ui/core';
 import { Cancel, Close, HelpOutline } from '@material-ui/icons';
 import { useSafeTranslation } from 'i18n';
-import React from 'react';
 import { black, cyanBlue } from 'muiTheme';
 import { safeCountry } from 'config';
 
@@ -47,8 +46,7 @@ const content = [
       ]),
   {
     title: 'Ready, Set and Go phases',
-    text:
-      'The "Ready, Set & Go!" system uses seasonal forecasts with longer lead time for preparedness (Ready phase) and shorter lead times for activation and mobilization (Set & Go! phases).',
+    text: 'The "Ready, Set & Go!" system uses seasonal forecasts with longer lead time for preparedness (Ready phase) and shorter lead times for activation and mobilization (Set & Go! phases).',
   },
 ];
 

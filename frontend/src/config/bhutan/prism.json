@@ -5,7 +5,8 @@
   "enableNavigationDropdown": true,
   "defaultDisplayBoundaries": [
     "admin_boundaries",
-    "admin1_boundaries"
+    "admin1_boundaries",
+    "admin2_boundaries"
   ],
   "map": {
     "boundingBox": [88.8, 26.7, 92.1, 28.3]
@@ -166,6 +167,31 @@
       "vegetation_conditions": [
         "ndvi_dekad",
         "ndvi_dekad_anomaly"
+      ]
+    },
+    "demographics": {
+      "census_data": [
+        "population",
+        "households",
+        "females",
+        "males",
+        "age_below15",
+        "age15_64",
+        "age_over64"
+      ]
+    },
+    "food_consumption": {
+      "minimum_food_requirements": [
+        "rice",
+        "oil",
+        "salt",
+        "lentils"
+      ]
+    },
+    "vulnerability": {
+      "vulnerability_indices": [
+        "total_vuln",
+        "fs_vuln"
       ]
     }
   }
