@@ -439,70 +439,78 @@ const useLayers = () => {
     [AAAvailableDatesCombined, serverAvailableDates],
   );
 
+  const checkSelectedDateForLayerSupport = useCallback(
+    (providedSelectedDate?: number): number | null => {
+      if (!providedSelectedDate || selectedLayerDates.length === 0) {
+        return null;
+      }
+      let closestDate: number | null = null;
+      selectedLayersWithDateSupport.forEach(layer => {
+        const jsSelectedDate = new Date(providedSelectedDate);
+
+        const AADatesLoaded =
+          layer.type !== 'anticipatory_action' ||
+          layer.id in serverAvailableDates;
+
+        if (
+          serverAvailableDatesAreEmpty ||
+          possibleDatesForLayerIncludeSelectedDate(layer, jsSelectedDate) ||
+          !AADatesLoaded
+        ) {
+          return;
+        }
+
+        // eslint-disable-next-line fp/no-mutation
+        closestDate = findClosestDate(providedSelectedDate, selectedLayerDates);
+
+        if (
+          datesAreEqualWithoutTime(
+            jsSelectedDate.valueOf(),
+            closestDate.valueOf(),
+          )
+        ) {
+          console.warn({ closestDate });
+          console.warn(
+            'closest dates is the same as selected date, not updating url',
+          );
+        } else {
+          updateHistory(
+            'date',
+            getFormattedDate(closestDate, DateFormat.Default) as string,
+          );
+        }
+
+        dispatch(
+          addNotification({
+            message: `No data was found for layer '${
+              layer.title
+            }' on ${getFormattedDate(
+              jsSelectedDate,
+              DateFormat.Default,
+            )}. The closest date ${getFormattedDate(
+              closestDate,
+              DateFormat.Default,
+            )} has been loaded instead.`,
+            type: 'warning',
+          }),
+        );
+      });
+      return closestDate;
+    },
+    [
+      dispatch,
+      possibleDatesForLayerIncludeSelectedDate,
+      selectedLayerDates,
+      selectedLayersWithDateSupport,
+      serverAvailableDates,
+      serverAvailableDatesAreEmpty,
+      updateHistory,
+    ],
+  );
+
   useEffect(() => {
-    if (!selectedDate || !urlDate) {
-      return;
-    }
-    selectedLayersWithDateSupport.forEach(layer => {
-      const jsSelectedDate = new Date(selectedDate);
-
-      const AADatesLoaded =
-        layer.type !== 'anticipatory_action' ||
-        layer.id in serverAvailableDates;
-
-      if (
-        serverAvailableDatesAreEmpty ||
-        possibleDatesForLayerIncludeSelectedDate(layer, jsSelectedDate) ||
-        !AADatesLoaded
-      ) {
-        return;
-      }
-
-      const closestDate = findClosestDate(selectedDate, selectedLayerDates);
-
-      if (
-        datesAreEqualWithoutTime(
-          jsSelectedDate.valueOf(),
-          closestDate.valueOf(),
-        )
-      ) {
-        console.warn({ closestDate });
-        console.warn(
-          'closest dates is the same as selected date, not updating url',
-        );
-      } else {
-        updateHistory(
-          'date',
-          getFormattedDate(closestDate, DateFormat.Default) as string,
-        );
-      }
-
-      dispatch(
-        addNotification({
-          message: `No data was found for layer '${
-            layer.title
-          }' on ${getFormattedDate(
-            jsSelectedDate,
-            DateFormat.Default,
-          )}. The closest date ${getFormattedDate(
-            closestDate,
-            DateFormat.Default,
-          )} has been loaded instead.`,
-          type: 'warning',
-        }),
-      );
-    });
-  }, [
-    dispatch,
-    possibleDatesForLayerIncludeSelectedDate,
-    selectedDate,
-    selectedLayerDates,
-    selectedLayersWithDateSupport,
-    serverAvailableDates,
-    serverAvailableDatesAreEmpty,
-    updateHistory,
-    urlDate,
-  ]);
+    checkSelectedDateForLayerSupport(selectedDate);
+  }, [checkSelectedDateForLayerSupport, selectedDate]);
 
   return {
     adminBoundariesExtent,
@@ -511,6 +519,7 @@ const useLayers = () => {
     selectedLayerDates,
     selectedLayers,
     selectedLayersWithDateSupport,
+    checkSelectedDateForLayerSupport,
   };
 };
 

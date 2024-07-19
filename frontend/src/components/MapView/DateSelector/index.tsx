@@ -16,7 +16,6 @@ import Draggable, { DraggableEvent } from 'react-draggable';
 import { useDispatch, useSelector } from 'react-redux';
 import { DateItem, DateRangeType } from 'config/types';
 import { dateRangeSelector } from 'context/mapStateSlice/selectors';
-import { addNotification } from 'context/notificationStateSlice';
 import { locales, useSafeTranslation } from 'i18n';
 import {
   dateStrToUpperCase,
@@ -65,6 +64,7 @@ const DateSelector = memo(() => {
   const {
     selectedLayerDates: availableDates,
     selectedLayersWithDateSupport: selectedLayers,
+    checkSelectedDateForLayerSupport,
   } = useLayers();
   const { startDate: stateStartDate } = useSelector(dateRangeSelector);
   const tabValue = useSelector(leftPanelTabValueSelector);
@@ -99,8 +99,9 @@ const DateSelector = memo(() => {
   const xsDown = useMediaQuery(theme.breakpoints.down('xs'));
 
   useEffect(() => {
-    if (stateStartDate) {
-      checkIntersectingDateAndShowPopup(new Date(stateStartDate), 0);
+    const closestDate = checkSelectedDateForLayerSupport(stateStartDate);
+    if (closestDate) {
+      updateStartDate(new Date(closestDate), true);
     }
     // Only run this check when selectedLayers changes
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -332,40 +333,14 @@ const DateSelector = memo(() => {
     );
   }, [truncatedLayers]);
 
-  const checkIntersectingDateAndShowPopup = useCallback(
-    (selectedDate: Date, positionY: number) => {
-      const findDateInIntersectingDates = selectableDates.find(date =>
-        datesAreEqualWithoutTime(date, selectedDate),
-      );
-      if (findDateInIntersectingDates || selectableDates.length === 0) {
-        return;
-      }
-      // if the date is not an intersecting one default to last intersecting date
-      setPointerPosition({
-        x: dateIndex * TIMELINE_ITEM_WIDTH,
-        y: positionY,
-      });
-      dispatch(
-        addNotification({
-          message: t(
-            'The date you selected is not valid for all selected layers. To change the date, either select a date where all selected layers have data (see timeline ticks), or deselect a layer',
-          ),
-          type: 'warning',
-        }),
-      );
-    },
-    [dateIndex, dispatch, selectableDates, t],
-  );
-
   const updateStartDate = useCallback(
     (date: Date, isUpdatingHistory: boolean) => {
       if (!isUpdatingHistory) {
         return;
       }
-      checkIntersectingDateAndShowPopup(date, 0);
       const time = date.getTime();
       const selectedIndex = findDateIndex(selectableDates, date.getTime());
-
+      checkSelectedDateForLayerSupport(date.getTime());
       if (
         selectedIndex < 0 ||
         (stateStartDate &&
@@ -376,14 +351,12 @@ const DateSelector = memo(() => {
       ) {
         return;
       }
-      // This updates state because a useEffect in MapView updates the redux state
-      // TODO this is convoluted coupling, we should update state here if feasible.
       updateHistory('date', getFormattedDate(time, 'default') as string);
       dispatch(updateDateRange({ startDate: time }));
     },
     [
-      checkIntersectingDateAndShowPopup,
       selectableDates,
+      checkSelectedDateForLayerSupport,
       stateStartDate,
       updateHistory,
       dispatch,
@@ -402,13 +375,9 @@ const DateSelector = memo(() => {
           new Date(availableDates[selectedIndex + increment]),
           isUpdatingHistory,
         );
-        checkIntersectingDateAndShowPopup(
-          new Date(availableDates[selectedIndex + increment]),
-          0,
-        );
       }
     },
-    [availableDates, updateStartDate, checkIntersectingDateAndShowPopup],
+    [availableDates, updateStartDate],
   );
 
   const incrementDate = useCallback(() => {
@@ -425,12 +394,10 @@ const DateSelector = memo(() => {
         selectableDates,
         dateRange[index].value,
       );
-      checkIntersectingDateAndShowPopup(
-        new Date(selectableDates[selectedIndex]),
-        0,
-      );
       const inRangeDate = new Date(dateRange[index].value);
+
       updateStartDate(inRangeDate, true);
+      // setTimeout(() => {
       if (
         selectedIndex < 0 ||
         (stateStartDate &&
@@ -444,11 +411,11 @@ const DateSelector = memo(() => {
       setPointerPosition({ x: index * TIMELINE_ITEM_WIDTH, y: 0 });
       const updatedDate = new Date(selectableDates[selectedIndex]);
       updateStartDate(updatedDate, true);
+      // }, 100);
     },
     [
       selectableDates,
       dateRange,
-      checkIntersectingDateAndShowPopup,
       stateStartDate,
       setPointerPosition,
       updateStartDate,
