@@ -379,8 +379,193 @@
     ],
     "legend_text": "Source: Population and Housing Census of Bhutan, 2017"
   },
+  "females": {
+    "title": "Number of females",
+    "type": "admin_level_data",
+    "path": "data/bhutan/btn_adm3_level_data.json",
+    "data_field": "Female",
+    "admin_level": 3,
+    "admin_code": "Adm3_Code",
+    "opacity": 0.8,
+    "legend": [
+      {
+        "value": 0,
+        "label": "1 - 249",
+        "color": "#edf8e9"
+      },
+      {
+        "value": 250,
+        "label": "250 - 499",
+        "color": "#bae4b3"
+      },
+      {
+        "value": 500,
+        "label": "500 - 749",
+        "color": "#74c476"
+      },
+      {
+        "value": 750,
+        "label": "750 - 999",
+        "color": "#31a354"
+      },
+      {
+        "value": 1000,
+        "label": ">= 1000",
+        "color": "#006d2c"
+      }
+    ],
+    "legend_text": "Source: Population and Housing Census of Bhutan, 2017"
+  },
+  "males": {
+    "title": "Number of males",
+    "type": "admin_level_data",
+    "path": "data/bhutan/btn_adm3_level_data.json",
+    "data_field": "Male",
+    "admin_level": 3,
+    "admin_code": "Adm3_Code",
+    "opacity": 0.8,
+    "legend": [
+      {
+        "value": 0,
+        "label": "1 - 249",
+        "color": "#edf8e9"
+      },
+      {
+        "value": 250,
+        "label": "250 - 499",
+        "color": "#bae4b3"
+      },
+      {
+        "value": 500,
+        "label": "500 - 749",
+        "color": "#74c476"
+      },
+      {
+        "value": 750,
+        "label": "750 - 999",
+        "color": "#31a354"
+      },
+      {
+        "value": 1000,
+        "label": ">= 1000",
+        "color": "#006d2c"
+      }
+    ],
+    "legend_text": "Source: Population and Housing Census of Bhutan, 2017"
+  },
+  "age_below15": {
+    "title": "Population under 15 years old",
+    "type": "admin_level_data",
+    "path": "data/bhutan/btn_adm3_level_data.json",
+    "data_field": "AgeBelow15",
+    "admin_level": 3,
+    "admin_code": "Adm3_Code",
+    "opacity": 0.8,
+    "legend": [
+      {
+        "value": 0,
+        "label": "1 - 249",
+        "color": "#edf8e9"
+      },
+      {
+        "value": 250,
+        "label": "250 - 499",
+        "color": "#bae4b3"
+      },
+      {
+        "value": 500,
+        "label": "500 - 749",
+        "color": "#74c476"
+      },
+      {
+        "value": 750,
+        "label": "750 - 999",
+        "color": "#31a354"
+      },
+      {
+        "value": 1000,
+        "label": ">= 1000",
+        "color": "#006d2c"
+      }
+    ],
+    "legend_text": "Source: Population and Housing Census of Bhutan, 2017"
+  },
+  "age15_64": {
+    "title": "Population 15-64 years old",
+    "type": "admin_level_data",
+    "path": "data/bhutan/btn_adm3_level_data.json",
+    "data_field": "Age15_64",
+    "admin_level": 3,
+    "admin_code": "Adm3_Code",
+    "opacity": 0.8,
+    "legend": [
+      {
+        "value": 0,
+        "label": "1 - 249",
+        "color": "#edf8e9"
+      },
+      {
+        "value": 250,
+        "label": "250 - 499",
+        "color": "#bae4b3"
+      },
+      {
+        "value": 500,
+        "label": "500 - 749",
+        "color": "#74c476"
+      },
+      {
+        "value": 750,
+        "label": "750 - 999",
+        "color": "#31a354"
+      },
+      {
+        "value": 1000,
+        "label": ">= 1000",
+        "color": "#006d2c"
+      }
+    ],
+    "legend_text": "Source: Population and Housing Census of Bhutan, 2017"
+  },
+  "age_over64": {
+    "title": "Population over 64 years old",
+    "type": "admin_level_data",
+    "path": "data/bhutan/btn_adm3_level_data.json",
+    "data_field": "AgeAbove65",
+    "admin_level": 3,
+    "admin_code": "Adm3_Code",
+    "opacity": 0.8,
+    "legend": [
+      {
+        "value": 0,
+        "label": "1 - 24",
+        "color": "#edf8e9"
+      },
+      {
+        "value": 25,
+        "label": "25 - 49",
+        "color": "#bae4b3"
+      },
+      {
+        "value": 50,
+        "label": "50 - 74",
+        "color": "#74c476"
+      },
+      {
+        "value": 75,
+        "label": "75 - 99",
+        "color": "#31a354"
+      },
+      {
+        "value": 100,
+        "label": ">= 100",
+        "color": "#006d2c"
+      }
+    ],
+    "legend_text": "Source: Population and Housing Census of Bhutan, 2017"
+  },
   "rice": {
-    "title": "Rice - 274g / head / day in Kg Unit",
+    "title": "Rice daily per capita consumption in grams",
     "type": "admin_level_data",
     "path": "data/bhutan/btn_adm3_level_data.json",
     "data_field": "rice",
@@ -390,34 +575,34 @@
     "legend": [
       {
         "value": 0,
-        "label": "0 - 149",
-        "color": "#d7191c"
+        "label": "0 - 99",
+        "color": "#f2f0f7"
       },
       {
-        "value": 150,
-        "label": "150 - 273",
-        "color": "#fdae61"
+        "value": 100,
+        "label": "100 - 199",
+        "color": "#cbc9e2"
       },
       {
-        "value": 274,
-        "label": "274 - 324",
-        "color": "#ffffbf"
+        "value": 200,
+        "label": "200 - 299",
+        "color": "#9e9ac8"
       },
       {
-        "value": 325,
-        "label": "325 - 399",
-        "color": "#a6d96a"
+        "value": 300,
+        "label": "300 - 399",
+        "color": "#756bb1"
       },
       {
         "value": 400,
         "label": ">= 400",
-        "color": "#1a9641"
+        "color": "#54278f"
       }
     ],
     "legend_text": "Source: Population and Housing Census of Bhutan, 2017"
   },
   "oil": {
-    "title": "Oil - 27g / head / day in Kg Unit",
+    "title": "Oil daily per capita consumption in grams",
     "type": "admin_level_data",
     "path": "data/bhutan/btn_adm3_level_data.json",
     "data_field": "oil",
@@ -454,7 +639,7 @@
     "legend_text": "Source: Population and Housing Census of Bhutan, 2017"
   },
   "salt": {
-    "title": "Salt - 5g / head / day in Kg Unit",
+    "title": "Salt daily per capita consumption in grams",
     "type": "admin_level_data",
     "path": "data/bhutan/btn_adm3_level_data.json",
     "data_field": "salt",
@@ -491,7 +676,7 @@
     "legend_text": "Source: Population and Housing Census of Bhutan, 2017"
   },
   "lentils": {
-    "title": "Lentils - 11g / head / day in Kg Unit",
+    "title": "Lentils daily per capita consumption in grams",
     "type": "admin_level_data",
     "path": "data/bhutan/btn_adm3_level_data.json",
     "data_field": "lentils",
