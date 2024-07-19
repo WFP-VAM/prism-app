@@ -10,7 +10,9 @@ import es from 'date-fns/locale/es';
 import ru from 'date-fns/locale/ru';
 import mn from 'date-fns/locale/mn';
 
-import { translation } from './config';
+import { appConfig, rawLayers, translation } from './config';
+import { extractTranslationItems } from 'config/config.test.utils';
+import { LayerDefinitions } from 'config/utils';
 
 const TRANSLATION_DEBUG = false;
 // Register other date locales to be used by our DatePicker
@@ -65,10 +67,26 @@ export const resources = merge(
 
 export const languages = Object.keys(resources);
 
-const isDevelopment = ['development', 'test'].includes(
-  process.env.NODE_ENV || '',
-);
-const missingKeys: Record<string, string[]> = {};
+const isDevelopment = ['development'].includes(process.env.NODE_ENV || '');
+
+const missingKeys: Record<string, string[]> = { en: [] };
+if (TRANSLATION_DEBUG || isDevelopment) {
+  const itemsToTranslate: string[] = extractTranslationItems(
+    appConfig,
+    rawLayers,
+  );
+  itemsToTranslate.forEach(item => {
+    if (
+      item !== '' &&
+      !Object.prototype.hasOwnProperty.call(resources.en.translation, item)
+    ) {
+      // eslint-disable-next-line fp/no-mutating-methods
+      missingKeys['en'].push(item);
+    }
+  });
+
+  console.log('Missing translation keys:', missingKeys['en']);
+}
 
 function logMissingKey(lng: string, key: string) {
   if (TRANSLATION_DEBUG || isDevelopment) {
