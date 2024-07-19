@@ -40,7 +40,6 @@ import {
   datesAreEqualWithoutTime,
   binaryIncludes,
   getFormattedDate,
-  getTimeInMilliseconds,
   dateWithoutTime,
 } from './date-utils';
 
@@ -441,11 +440,7 @@ const useLayers = () => {
   );
 
   useEffect(() => {
-    if (
-      !selectedDate ||
-      !urlDate ||
-      datesAreEqualWithoutTime(getTimeInMilliseconds(urlDate), selectedDate)
-    ) {
+    if (!selectedDate || !urlDate) {
       return;
     }
     selectedLayersWithDateSupport.forEach(layer => {

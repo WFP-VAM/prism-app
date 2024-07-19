@@ -429,6 +429,8 @@ const DateSelector = memo(() => {
         new Date(selectableDates[selectedIndex]),
         0,
       );
+      const inRangeDate = new Date(dateRange[index].value);
+      updateStartDate(inRangeDate, true);
       if (
         selectedIndex < 0 ||
         (stateStartDate &&
