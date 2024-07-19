@@ -397,7 +397,7 @@ const DateSelector = memo(() => {
       const inRangeDate = new Date(dateRange[index].value);
 
       updateStartDate(inRangeDate, true);
-      // setTimeout(() => {
+
       if (
         selectedIndex < 0 ||
         (stateStartDate &&
@@ -411,7 +411,6 @@ const DateSelector = memo(() => {
       setPointerPosition({ x: index * TIMELINE_ITEM_WIDTH, y: 0 });
       const updatedDate = new Date(selectableDates[selectedIndex]);
       updateStartDate(updatedDate, true);
-      // }, 100);
     },
     [
       selectableDates,

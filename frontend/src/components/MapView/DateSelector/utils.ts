@@ -1,5 +1,6 @@
 import { DateCompatibleLayer } from 'utils/server-utils';
 import { DateItem } from 'config/types';
+import { datesAreEqualWithoutTime } from 'utils/date-utils';
 
 export const TIMELINE_ITEM_WIDTH = 4;
 
@@ -56,7 +57,7 @@ export function findDateIndex(
   let endIndex = availableDates.length - 1;
   while (startIndex <= endIndex) {
     const midIndex = Math.floor((startIndex + endIndex) / 2);
-    if (availableDates[midIndex] === date) {
+    if (datesAreEqualWithoutTime(availableDates[midIndex], date)) {
       return midIndex;
     }
     if (midIndex === startIndex && endIndex - startIndex <= 1) {
