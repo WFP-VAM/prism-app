@@ -538,49 +538,5 @@
     "opacity": 0,
     "legend_text": "",
     "legend": []
-  },
-  "adamts_buffers": {
-    "title": "Tropical Storms - Wind buffers",
-    "type": "wms",
-    "server_layer_name": "moz_gdacs_buffers",
-    "opacity": 0.9,
-    "legend": [],
-    "legend_text": "Wind buffers (radii) estimate potential wind speeds along the path of a storm with a buffer estimating the area exposed to each wind speed category. Source: GDACS",
-    "base_url": "https://ogcserver.gis.wfp.org/geoserver",
-    "feature_info_props": {
-      "event_name": {
-        "type": "text",
-        "dataTitle": "Event name"
-      },
-      "timestamp": {
-        "type": "date",
-        "dataTitle": "Publication date"
-      }
-    },
-    "exposure": {
-      "id": "wp_pop_cicunadj",
-      "key": "label"
-    },
-    "geometry": "polygon"
-  },
-  "adamts_nodes": {
-    "title": "Tropical Storms - Nodes",
-    "type": "wms",
-    "server_layer_name": "wld_gdacs_tc_events_nodes",
-    "opacity": 0.9,
-    "legend": [],
-    "legend_text": "Nodes visualize estimated maximum wind speed along a storm's path at various points in time. Source: GDACS",
-    "base_url": "https://ogcserver.gis.wfp.org/geoserver",
-    "geometry": "point"
-  },
-  "adamts_tracks": {
-    "title": "Tropical Storms - Tracks",
-    "type": "wms",
-    "server_layer_name": "wld_gdacs_tc_events_tracks",
-    "opacity": 0.9,
-    "legend": [],
-    "legend_text": "Tracks visualize the projected path of a storm based on the forecasted position of it's center at various points in time. Source: GDACS",
-    "base_url": "https://ogcserver.gis.wfp.org/geoserver",
-    "geometry": "linestring"
   }
 }
