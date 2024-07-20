@@ -1947,21 +1947,46 @@
       }
     ]
   },
-  "cdi": {
-    "title": "Combined Drought Index",
-    "type": "composite",
-    "base_url": "https://to-fill-later",
-    "input_layers": [
-      { "id": "spi_1m", "weight": 0.4, "interval": "1-month" },
-      { "id": "lst_anomaly", "weight": 0.3, "interval": "10-days" },
-      { "id": "ndvi_dekad_anomaly", "weight": 0.3, "interval": "10-days" }
+  "vuln_index": {
+    "title": "Socioeconomic Vulnerability Index",
+    "type": "admin_level_data",
+    "path": "data/cambodia/vuln_index.json",
+    "data_field": "IndexValue",
+    "admin_level": 3,
+    "admin_code": "Adm3_text",
+    "opacity": 0.9,
+    "legend": [
+      {
+        "value": 0,
+        "label": "Minimal: 0 - 0.1",
+        "color": "#7fbc41"
+      },
+      {
+        "value": 0.1,
+        "label": "Very Low: 0.1 - 0.2",
+        "color": "#b8e186"
+      },
+      {
+        "value": 0.2,
+        "label": "Low: 0.2 - 0.4",
+        "color": "#e6f5d0"
+      },
+      {
+        "value": 0.4,
+        "label": "Moderate: 0.4 - 0.6",
+        "color": "#f1b6da"
+      },
+      {
+        "value": 0.6,
+        "label": "High: 0.6 - 0.8",
+        "color": "#de77ae"
+      },
+      {
+        "value": 0.8,
+        "label": "Very High: 0.8 - 1",
+        "color": "#c51b7d"
+      }
     ],
-    "aggregation": "pixel",
-    "interval": "1-month",
-    "date_type": "continuous",
-    "date_layer": "spi_1m",
-    "start_date": "2020-01-01",
-    "end_date": "",
-    "opacity": 0.8
+    "legend_text": "Index meausring a household’s social and economic capacities and resilience to cope with, adapt to and recover from the floods and droughts. Aggregated at Commune level"
   }
 }
