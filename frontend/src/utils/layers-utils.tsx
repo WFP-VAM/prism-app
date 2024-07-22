@@ -413,7 +413,7 @@ const useLayers = () => {
 
     dispatch(
       addNotification({
-        message: `No dates overlap with the selected layers. Removing previous layer: ${layerToRemove.title || layerToRemove.id}.`,
+        message: `No dates overlap with the selected layers. Removing layer: ${layerToRemove.title || layerToRemove.id}.`,
         type: 'warning',
       }),
     );
