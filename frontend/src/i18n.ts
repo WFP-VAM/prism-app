@@ -11,9 +11,10 @@ import ru from 'date-fns/locale/ru';
 import mn from 'date-fns/locale/mn';
 
 import { extractTranslationItems } from 'config/config.test.utils';
-import { appConfig, rawLayers, translation } from './config';
+import { appConfig, getRawLayers, safeCountry, translation } from './config';
 
 const TRANSLATION_DEBUG = false;
+const layers = getRawLayers(safeCountry, true);
 // Register other date locales to be used by our DatePicker
 // TODO - extract registerLocale  imports and loading into a separate file for clarity.
 // Test for missing locales
@@ -70,10 +71,7 @@ const isDevelopment = ['development'].includes(process.env.NODE_ENV || '');
 
 const missingKeys: Record<string, string[]> = { en: [] };
 if (TRANSLATION_DEBUG || isDevelopment) {
-  const itemsToTranslate: string[] = extractTranslationItems(
-    appConfig,
-    rawLayers,
-  );
+  const itemsToTranslate: string[] = extractTranslationItems(appConfig, layers);
   itemsToTranslate.forEach(item => {
     if (
       item !== '' &&

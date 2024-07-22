@@ -107,7 +107,10 @@ const appConfig: Record<string, any> = merge(
   configMap[safeCountry].appConfig,
 );
 
-export function getRawLayers(country: Country): Record<string, any> {
+export function getRawLayers(
+  country: Country,
+  filter = false,
+): Record<string, any> {
   const countryLayerIds = JSON.stringify(get(configMap, country, {}));
 
   return Object.fromEntries(
@@ -121,7 +124,7 @@ export function getRawLayers(country: Country): Record<string, any> {
       ),
     )
       // Filter layers that appear in the country config
-      .filter(([key, _layer]) => countryLayerIds.includes(key))
+      .filter(([key, _layer]) => !filter || countryLayerIds.includes(key))
       .map(([key, layer]) => {
         if (typeof layer.legend === 'string') {
           if (!sharedLegends[layer.legend]) {
