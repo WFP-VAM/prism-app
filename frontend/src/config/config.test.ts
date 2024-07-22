@@ -35,7 +35,7 @@ describe('Config Map', () => {
   it('should have translations with correct depth', () => {
     Object.keys(configMap).forEach(country => {
       const config = configMap[country as Country];
-      const layers = getRawLayers(country as Country);
+      const layers = getRawLayers(country as Country, true);
       const translation = getTranslation(country as Country);
       // Translation keys in the code
       const translationKeys = loadTranslationKeys();
