@@ -36,6 +36,11 @@
       "early_warning": ["ews_remote"]
     },
     "rainfall": {
+      "forecasts": [
+        "daily_rainfall_forecast",
+        "dekad_rainfall_forecast",
+        "dekad_rainfall_anomaly_forecast"
+      ],
       "rainfall_amount": [
         {
           "group_title": "Rainfall aggregate",
@@ -200,7 +205,7 @@
       ]
     },
     "vulnerability": {
-      "poverty": ["idpoor", "idpoor_1", "idpoor_2"]
+      "poverty": ["idpoor", "idpoor_1", "idpoor_2", "vuln_index"]
     },
     "field_reports": {
       "field_reports": ["flood_report", "drought_report", "kh_incident_report"]
