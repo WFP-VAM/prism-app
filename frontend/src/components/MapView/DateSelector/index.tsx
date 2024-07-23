@@ -495,6 +495,11 @@ const DateSelector = memo(() => {
     [updateStartDate],
   );
 
+  // Only display the date selector once dates are loaded
+  if (dateRange.length <= 1) {
+    return null;
+  }
+
   return (
     <div
       className={classes.container}

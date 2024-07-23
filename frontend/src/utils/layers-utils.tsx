@@ -399,8 +399,11 @@ const useLayers = () => {
 
   // let users know if the layers selected are not possible to view together.
   useEffect(() => {
+    const nonBoundaryLayers = selectedLayers.filter(
+      layer => layer.type !== 'boundary',
+    );
     if (
-      selectedLayerDates.length !== 0 ||
+      nonBoundaryLayers.length !== 0 ||
       selectedLayersWithDateSupport.length === 0 ||
       !selectedDate
     ) {
@@ -408,8 +411,8 @@ const useLayers = () => {
     }
 
     // WARNING - This logic doesn't apply anymore if we order layers differently...
-    const layerToRemove = selectedLayers[selectedLayers.length - 2];
-    const layerToKeep = selectedLayers[selectedLayers.length - 1];
+    const layerToRemove = nonBoundaryLayers[nonBoundaryLayers.length - 2];
+    const layerToKeep = nonBoundaryLayers[nonBoundaryLayers.length - 1];
 
     dispatch(
       addNotification({
