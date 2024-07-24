@@ -190,8 +190,14 @@ const DateSelector = memo(() => {
 
   const visibleLayers = useMemo(
     () =>
-      truncatedLayers.map(layer => {
-        const layerQueryDate = getRequestDate(layer, dateSelector.startDate);
+      truncatedLayers.map((layer, index) => {
+        const layerQueryDate = getRequestDate(
+          layer,
+          dateSelector.startDate,
+          // Do not default to most recent for anticpatory action layers.
+          // TODO - what about other layers?
+          !orderedLayers[index].id.includes('anticipatory_action'),
+        );
         // Filter date items based on queryDate and layerQueryDate
         return layer.filter(
           item =>
@@ -200,7 +206,7 @@ const DateSelector = memo(() => {
             datesAreEqualWithoutTime(item.queryDate, item.displayDate),
         );
       }),
-    [truncatedLayers, dateSelector.startDate],
+    [orderedLayers, truncatedLayers, dateSelector.startDate],
   );
 
   const timeLineWidth = get(timeLine.current, 'offsetWidth', 0);

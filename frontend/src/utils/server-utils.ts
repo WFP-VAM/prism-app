@@ -78,8 +78,13 @@ export const getRequestDateItem = (
 export const getRequestDate = (
   layerAvailableDates: DateItem[] | undefined,
   selectedDate?: number,
+  defaultToMostRecent = true,
 ): number | undefined => {
-  const dateItem = getRequestDateItem(layerAvailableDates, selectedDate);
+  const dateItem = getRequestDateItem(
+    layerAvailableDates,
+    selectedDate,
+    defaultToMostRecent,
+  );
 
   if (!dateItem) {
     return selectedDate;
