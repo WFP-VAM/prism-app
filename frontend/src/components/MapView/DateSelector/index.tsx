@@ -323,6 +323,7 @@ const DateSelector = memo(() => {
       layerDates.map(dateItem => dateItem.displayDate),
     );
 
+    // All dates in AA windows should be selectable, regardless of overlap
     if (panelTab === Panel.AnticipatoryAction && AAAvailableDates) {
       // eslint-disable-next-line fp/no-mutating-methods
       dates.push(
@@ -342,6 +343,7 @@ const DateSelector = memo(() => {
         .sort((a, b) => a - b);
     }
 
+    // Other layers should rely on the dates available in truncatedLayers
     return dates.reduce((acc, currentArray) =>
       acc.filter(date =>
         currentArray.some(currentDate =>
