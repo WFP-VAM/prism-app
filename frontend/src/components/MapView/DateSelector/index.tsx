@@ -318,20 +318,38 @@ const DateSelector = memo(() => {
     if (truncatedLayers.length === 0) {
       return [];
     }
-    return (
-      truncatedLayers
-        // Get the dates that are queriable for any layers
-        .map(layerDates => layerDates.map(dateItem => dateItem.displayDate))
-        // Get the dates that are queriable for all layers
-        .reduce((acc, currentArray) =>
-          acc.filter(date =>
-            currentArray.some(currentDate =>
-              datesAreEqualWithoutTime(date, currentDate),
-            ),
-          ),
-        )
+    // Get the dates that are queriable for any layers
+    const dates = truncatedLayers.map(layerDates =>
+      layerDates.map(dateItem => dateItem.displayDate),
     );
-  }, [truncatedLayers]);
+
+    if (panelTab === Panel.AnticipatoryAction && AAAvailableDates) {
+      // eslint-disable-next-line fp/no-mutating-methods
+      dates.push(
+        AAAvailableDates?.['Window 1']?.map(d => d.displayDate) ?? [],
+        AAAvailableDates?.['Window 2']?.map(d => d.displayDate) ?? [],
+      );
+
+      // eslint-disable-next-line fp/no-mutating-methods
+      return dates
+        .reduce((acc, currentArray) => [
+          ...acc,
+          ...currentArray.filter(
+            date =>
+              !acc.some(accDate => datesAreEqualWithoutTime(date, accDate)),
+          ),
+        ])
+        .sort((a, b) => a - b);
+    }
+
+    return dates.reduce((acc, currentArray) =>
+      acc.filter(date =>
+        currentArray.some(currentDate =>
+          datesAreEqualWithoutTime(date, currentDate),
+        ),
+      ),
+    );
+  }, [AAAvailableDates, panelTab, truncatedLayers]);
 
   const updateStartDate = useCallback(
     (date: Date, isUpdatingHistory: boolean) => {
