@@ -320,7 +320,7 @@ export class CommonLayerProps {
     },
   */
   @optional
-  group?: MenuGroup;
+  group?: MenuGroup = undefined; // Defaulting to undefined to make sure that the group property is writable
 
   @optional
   validity?: Validity; // Include additional dates in the calendar based on the number provided.

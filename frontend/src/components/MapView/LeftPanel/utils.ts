@@ -33,13 +33,22 @@ function formatLayersCategories(
         const group = mapKeys(key, (_v, k: string) =>
           camelCase(k),
         ) as unknown as MenuGroup;
-        const visibleLayer =
+        const mainLayer =
           group.layers.find(gl =>
             selectedLayers?.some(sl => sl.id === gl.id),
           ) || group.layers.find(l => l.main);
 
-        const staticLayer = LayerDefinitions[visibleLayer?.id as LayerKey];
-        const layer = { ...staticLayer, group };
+        const layer = LayerDefinitions[mainLayer?.id as LayerKey];
+
+        // Check if layer is frozen or sealed before writing to it, required to prevent a race condition
+        if (Object.isFrozen(layer)) {
+          console.error(`Layer ${layer?.id} is frozen and cannot be modified.`);
+        } else if (Object.isSealed(layer)) {
+          console.error(`Layer ${layer?.id} is sealed and cannot be modified.`);
+        } else {
+          layer.group = group;
+        }
+
         return layer;
       }
       return LayerDefinitions[key as LayerKey];
