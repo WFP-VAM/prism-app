@@ -407,7 +407,7 @@ const useLayers = () => {
       layer => layer.type !== 'boundary',
     );
     if (
-      nonBoundaryLayers.length !== 0 ||
+      selectedLayerDates.length !== 0 ||
       selectedLayersWithDateSupport.length === 0 ||
       !selectedDate
     ) {
