@@ -46,6 +46,7 @@ function formatLayersCategories(
         } else if (Object.isSealed(layer)) {
           console.error(`Layer ${layer?.id} is sealed and cannot be modified.`);
         } else {
+          // eslint-disable-next-line fp/no-mutation
           layer.group = group;
         }
 
