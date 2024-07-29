@@ -15,10 +15,6 @@ import {
   TIMELINE_ITEM_WIDTH,
 } from 'components/MapView/DateSelector/utils';
 import { datesAreEqualWithoutTime, getFormattedDate } from 'utils/date-utils';
-import { useSelector } from 'react-redux';
-import { AAAvailableDatesSelector } from 'context/anticipatoryActionStateSlice';
-import { dateRangeSelector } from 'context/mapStateSlice/selectors';
-import { getRequestDate } from 'utils/server-utils';
 import TimelineItem from './TimelineItem';
 import TimelineLabel from './TimelineLabel';
 import TooltipItem from './TooltipItem';
@@ -43,54 +39,15 @@ const TimelineItems = memo(
     dateRange,
     clickDate,
     locale,
-    selectedLayers,
+    orderedLayers,
+    truncatedLayers,
     availableDates,
   }: TimelineItemsProps) => {
     const classes = useStyles();
     const { t } = useSafeTranslation();
-    const AAAvailableDates = useSelector(AAAvailableDatesSelector);
-
-    // Create a temporary layer for each AA window
-    const AALayers = AAAvailableDates
-      ? [
-          {
-            id: 'anticipatory_action_window_1',
-            title: 'Window 1',
-            dateItems: AAAvailableDates['Window 1'],
-          },
-          {
-            id: 'anticipatory_action_window_2',
-            title: 'Window 2',
-            dateItems: AAAvailableDates['Window 2'],
-          },
-        ]
-      : [];
-
-    // Replace anticipatory action unique layer by window1 and window2 layers
-    // Keep anticipatory actions at the top of the timeline
-    // eslint-disable-next-line fp/no-mutating-methods
-    const orderedLayers = selectedLayers
-      .sort((a, b) => {
-        const aIsAnticipatory = a.id.includes('anticipatory_action');
-        const bIsAnticipatory = b.id.includes('anticipatory_action');
-        if (aIsAnticipatory && !bIsAnticipatory) {
-          return -1;
-        }
-        if (!aIsAnticipatory && bIsAnticipatory) {
-          return 1;
-        }
-        return 0;
-      })
-      .map(l => {
-        if (l.type === 'anticipatory_action') {
-          return AALayers;
-        }
-        return l;
-      })
-      .flat();
 
     // Hard coded styling for date items (first, second, and third layers)
-    const DATE_ITEM_STYLING: DateItemStyle[] = React.useMemo(
+    const DATE_ITEM_STYLING: DateItemStyle[] = useMemo(
       () => [
         {
           class: classes.layerOneDate,
@@ -150,43 +107,6 @@ const TimelineItems = memo(
       },
       [DATE_ITEM_STYLING, orderedLayers, t],
     );
-
-    const timelineStartDate: string = new Date(
-      dateRange[0].value,
-    ).toDateString();
-
-    const dateSelector = useSelector(dateRangeSelector);
-    // We truncate layer by removing date that will not be drawn to the Timeline
-    const truncatedLayers: DateItem[][] = useMemo(() => {
-      // returns the index of the first date in layer that matches the first Timeline date
-      const findLayerFirstDateIndex = (items: DateItem[]): number =>
-        items
-          .map(d => new Date(d.displayDate).toDateString())
-          .indexOf(timelineStartDate);
-
-      return [
-        ...orderedLayers.map(layer => {
-          const firstIndex = findLayerFirstDateIndex(layer.dateItems);
-          const layerQueryDate = getRequestDate(
-            layer.dateItems,
-            dateSelector.startDate,
-          );
-          // Filter date items based on queryDate and layerQueryDate
-          const filterDateItems = (items: DateItem[]) =>
-            items.filter(
-              item =>
-                item.queryDate === layerQueryDate ||
-                item.queryDate === item.displayDate,
-            );
-          if (firstIndex === -1) {
-            return filterDateItems(layer.dateItems);
-          }
-          // truncate the date item array at index matching timeline first date
-          // eslint-disable-next-line fp/no-mutating-methods
-          return filterDateItems(layer.dateItems.slice(firstIndex));
-        }),
-      ];
-    }, [orderedLayers, timelineStartDate, dateSelector.startDate]);
 
     const availableDatesToDisplay = availableDates.filter(
       date => date >= dateRange[0].value,
@@ -330,8 +250,9 @@ export interface TimelineItemsProps {
   dateRange: DateRangeType[];
   clickDate: (arg: number) => void;
   locale: string;
-  selectedLayers: DateCompatibleLayerWithDateItems[];
   availableDates: number[];
+  orderedLayers: DateCompatibleLayerWithDateItems[];
+  truncatedLayers: DateItem[][];
 }
 
 export default TimelineItems;

@@ -4,7 +4,8 @@ import { Provider } from 'react-redux';
 import TimelineItems from '.';
 
 const props = {
-  selectedLayers: [],
+  orderedLayers: [],
+  truncatedLayers: [],
   selectedLayerTitles: [],
   availableDates: [],
   dateRange: [

@@ -14,9 +14,8 @@ import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import Draggable, { DraggableEvent } from 'react-draggable';
 import { useDispatch, useSelector } from 'react-redux';
-import { DateRangeType } from 'config/types';
+import { DateItem, DateRangeType } from 'config/types';
 import { dateRangeSelector } from 'context/mapStateSlice/selectors';
-import { addNotification } from 'context/notificationStateSlice';
 import { locales, useSafeTranslation } from 'i18n';
 import {
   dateStrToUpperCase,
@@ -29,10 +28,16 @@ import useLayers from 'utils/layers-utils';
 import { format } from 'date-fns';
 import { Panel, leftPanelTabValueSelector } from 'context/leftPanelStateSlice';
 import { updateDateRange } from 'context/mapStateSlice';
+import { getRequestDate } from 'utils/server-utils';
+import { AAAvailableDatesSelector } from 'context/anticipatoryActionStateSlice';
 import TickSvg from './tick.svg';
 import DateSelectorInput from './DateSelectorInput';
 import TimelineItems from './TimelineItems';
-import { TIMELINE_ITEM_WIDTH, findDateIndex } from './utils';
+import {
+  DateCompatibleLayerWithDateItems,
+  TIMELINE_ITEM_WIDTH,
+  findDateIndex,
+} from './utils';
 import { oneDayInMs } from '../LeftPanel/utils';
 
 type Point = {
@@ -59,6 +64,7 @@ const DateSelector = memo(() => {
   const {
     selectedLayerDates: availableDates,
     selectedLayersWithDateSupport: selectedLayers,
+    checkSelectedDateForLayerSupport,
   } = useLayers();
   const { startDate: stateStartDate } = useSelector(dateRangeSelector);
   const tabValue = useSelector(leftPanelTabValueSelector);
@@ -92,9 +98,115 @@ const DateSelector = memo(() => {
   const smUp = useMediaQuery(theme.breakpoints.up('sm'));
   const xsDown = useMediaQuery(theme.breakpoints.down('xs'));
 
+  useEffect(() => {
+    const closestDate = checkSelectedDateForLayerSupport(stateStartDate);
+    if (closestDate) {
+      updateStartDate(new Date(closestDate), true);
+    }
+    // Only run this check when selectedLayers changes
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedLayers]);
+
   const maxDate = useMemo(
     () => new Date(Math.max(...availableDates, new Date().getTime())),
     [availableDates],
+  );
+
+  const AAAvailableDates = useSelector(AAAvailableDatesSelector);
+
+  // Create a temporary layer for each AA window
+  const AALayers: DateCompatibleLayerWithDateItems[] = useMemo(
+    () =>
+      AAAvailableDates
+        ? [
+            {
+              id: 'anticipatory_action_window_1',
+              title: 'Window 1',
+              dateItems: AAAvailableDates['Window 1'],
+              type: 'anticipatory_action',
+              opacity: 1,
+            },
+            {
+              id: 'anticipatory_action_window_2',
+              title: 'Window 2',
+              dateItems: AAAvailableDates['Window 2'],
+              type: 'anticipatory_action',
+              opacity: 1,
+            },
+          ]
+        : [],
+    [AAAvailableDates],
+  );
+
+  // Replace anticipatory action unique layer by window1 and window2 layers
+  // Keep anticipatory actions at the top of the timeline
+  const orderedLayers: DateCompatibleLayerWithDateItems[] = useMemo(
+    () =>
+      // eslint-disable-next-line fp/no-mutating-methods
+      selectedLayers
+        .sort((a, b) => {
+          const aIsAnticipatory = a.id.includes('anticipatory_action');
+          const bIsAnticipatory = b.id.includes('anticipatory_action');
+          if (aIsAnticipatory && !bIsAnticipatory) {
+            return -1;
+          }
+          if (!aIsAnticipatory && bIsAnticipatory) {
+            return 1;
+          }
+          return 0;
+        })
+        .map(l => (l.type === 'anticipatory_action' ? AALayers : l))
+        .flat(),
+    [selectedLayers, AALayers],
+  );
+
+  const timelineStartDate: string = useMemo(
+    () => new Date(dateRange[0].value).toDateString(),
+    [dateRange],
+  );
+
+  const dateSelector = useSelector(dateRangeSelector);
+
+  // We truncate layer by removing date that will not be drawn to the Timeline
+  const truncatedLayers: DateItem[][] = useMemo(() => {
+    // returns the index of the first date in layer that matches the first Timeline date
+    const findLayerFirstDateIndex = (items: DateItem[]): number =>
+      items
+        .map(d => new Date(d.displayDate).toDateString())
+        .indexOf(timelineStartDate);
+
+    return [
+      ...orderedLayers.map(layer => {
+        const firstIndex = findLayerFirstDateIndex(layer.dateItems);
+        if (firstIndex === -1) {
+          return layer.dateItems;
+        }
+        // truncate the date item array at index matching timeline first date
+        // eslint-disable-next-line fp/no-mutating-methods
+        return layer.dateItems.slice(firstIndex);
+      }),
+    ];
+  }, [orderedLayers, timelineStartDate]);
+
+  const visibleLayers = useMemo(
+    () =>
+      truncatedLayers.map((layer, index) => {
+        const layerQueryDate = getRequestDate(
+          layer,
+          dateSelector.startDate,
+          // Do not default to most recent for anticpatory action layers.
+          // TODO - what about other layers?
+          !orderedLayers[index].id.includes('anticipatory_action'),
+        );
+        // Filter date items based on queryDate and layerQueryDate
+        return layer.filter(
+          item =>
+            (layerQueryDate &&
+              datesAreEqualWithoutTime(item.queryDate, layerQueryDate)) ||
+            datesAreEqualWithoutTime(item.queryDate, item.displayDate),
+        );
+      }),
+    [orderedLayers, truncatedLayers, dateSelector.startDate],
   );
 
   const timeLineWidth = get(timeLine.current, 'offsetWidth', 0);
@@ -193,23 +305,88 @@ const DateSelector = memo(() => {
     });
   }, [dateIndex, range]);
 
+  // move pointer to closest date when change map layer
+  useEffect(() => {
+    if (isEqual(dateRef.current, availableDates)) {
+      return;
+    }
+    setDatePosition(stateStartDate, 0, false);
+    dateRef.current = availableDates;
+  });
+
+  const includedDates = useMemo(
+    () => availableDates?.map(d => new Date(d)) ?? [],
+    [availableDates],
+  );
+
+  // Find the dates that are queriable
+  const selectableDates = useMemo(() => {
+    if (truncatedLayers.length === 0) {
+      return [];
+    }
+    // Get the dates that are queriable for any layers
+    const dates = truncatedLayers.map(layerDates =>
+      layerDates.map(dateItem => dateItem.displayDate),
+    );
+
+    // All dates in AA windows should be selectable, regardless of overlap
+    if (panelTab === Panel.AnticipatoryAction && AAAvailableDates) {
+      // eslint-disable-next-line fp/no-mutating-methods
+      dates.push(
+        AAAvailableDates?.['Window 1']?.map(d => d.displayDate) ?? [],
+        AAAvailableDates?.['Window 2']?.map(d => d.displayDate) ?? [],
+      );
+
+      // eslint-disable-next-line fp/no-mutating-methods
+      return dates
+        .reduce((acc, currentArray) => [
+          ...acc,
+          ...currentArray.filter(
+            date =>
+              !acc.some(accDate => datesAreEqualWithoutTime(date, accDate)),
+          ),
+        ])
+        .sort((a, b) => a - b);
+    }
+
+    // Other layers should rely on the dates available in truncatedLayers
+    return dates.reduce((acc, currentArray) =>
+      acc.filter(date =>
+        currentArray.some(currentDate =>
+          datesAreEqualWithoutTime(date, currentDate),
+        ),
+      ),
+    );
+  }, [AAAvailableDates, panelTab, truncatedLayers]);
+
   const updateStartDate = useCallback(
     (date: Date, isUpdatingHistory: boolean) => {
       if (!isUpdatingHistory) {
         return;
       }
       const time = date.getTime();
-      const startDate = new Date(stateStartDate as number);
-      const dateEqualsToStartDate = datesAreEqualWithoutTime(date, startDate);
-      if (dateEqualsToStartDate) {
+      const selectedIndex = findDateIndex(selectableDates, date.getTime());
+      checkSelectedDateForLayerSupport(date.getTime());
+      if (
+        selectedIndex < 0 ||
+        (stateStartDate &&
+          datesAreEqualWithoutTime(
+            selectableDates[selectedIndex],
+            stateStartDate,
+          ))
+      ) {
         return;
       }
-      // This updates state because a useEffect in MapView updates the redux state
-      // TODO this is convoluted coupling, we should update state here if feasible.
       updateHistory('date', getFormattedDate(time, 'default') as string);
       dispatch(updateDateRange({ startDate: time }));
     },
-    [stateStartDate, updateHistory, dispatch],
+    [
+      selectableDates,
+      checkSelectedDateForLayerSupport,
+      stateStartDate,
+      updateHistory,
+      dispatch,
+    ],
   );
 
   const setDatePosition = useCallback(
@@ -229,15 +406,6 @@ const DateSelector = memo(() => {
     [availableDates, updateStartDate],
   );
 
-  // move pointer to closest date when change map layer
-  useEffect(() => {
-    if (isEqual(dateRef.current, availableDates)) {
-      return;
-    }
-    setDatePosition(stateStartDate, 0, false);
-    dateRef.current = availableDates;
-  });
-
   const incrementDate = useCallback(() => {
     setDatePosition(stateStartDate, 1, true);
   }, [setDatePosition, stateStartDate]);
@@ -246,51 +414,38 @@ const DateSelector = memo(() => {
     setDatePosition(stateStartDate, -1, true);
   }, [setDatePosition, stateStartDate]);
 
-  const includedDates = useMemo(
-    () => availableDates?.map(d => new Date(d)) ?? [],
-    [availableDates],
-  );
-
-  const checkIntersectingDateAndShowPopup = useCallback(
-    (selectedDate: Date, positionY: number) => {
-      const findDateInIntersectingDates = includedDates.find(date =>
-        datesAreEqualWithoutTime(date, selectedDate),
+  const clickDate = useCallback(
+    (index: number) => {
+      const selectedIndex = findDateIndex(
+        selectableDates,
+        dateRange[index].value,
       );
-      if (findDateInIntersectingDates) {
+      const inRangeDate = new Date(dateRange[index].value);
+
+      updateStartDate(inRangeDate, true);
+
+      if (
+        selectedIndex < 0 ||
+        (stateStartDate &&
+          datesAreEqualWithoutTime(
+            selectableDates[selectedIndex],
+            stateStartDate,
+          ))
+      ) {
         return;
       }
-      // if the date is not an intersecting one default to last intersecting date
-      setPointerPosition({
-        x: dateIndex * TIMELINE_ITEM_WIDTH,
-        y: positionY,
-      });
-      dispatch(
-        addNotification({
-          message: t(
-            'The date you selected is not valid for all selected layers. To change the date, either select a date where all selected layers have data (see timeline ticks), or deselect a layer',
-          ),
-          type: 'warning',
-        }),
-      );
+      setPointerPosition({ x: index * TIMELINE_ITEM_WIDTH, y: 0 });
+      const updatedDate = new Date(selectableDates[selectedIndex]);
+      updateStartDate(updatedDate, true);
     },
-    [dateIndex, dispatch, includedDates, t],
+    [
+      selectableDates,
+      dateRange,
+      stateStartDate,
+      setPointerPosition,
+      updateStartDate,
+    ],
   );
-
-  // Click on available date to move the pointer
-  const clickDate = (index: number) => {
-    const selectedIndex = findDateIndex(availableDates, dateRange[index].value);
-    if (
-      selectedIndex < 0 ||
-      (stateStartDate &&
-        datesAreEqualWithoutTime(availableDates[selectedIndex], stateStartDate))
-    ) {
-      return;
-    }
-    setPointerPosition({ x: index * TIMELINE_ITEM_WIDTH, y: 0 });
-    const updatedDate = new Date(availableDates[selectedIndex]);
-    checkIntersectingDateAndShowPopup(new Date(dateRange[index].value), 0);
-    updateStartDate(updatedDate, true);
-  };
 
   // Set timeline position after being dragged
   const onTimelineStop = useCallback((_e: DraggableEvent, position: Point) => {
@@ -345,27 +500,7 @@ const DateSelector = memo(() => {
       if (exactX >= dateRange.length) {
         return;
       }
-      const selectedIndex = findDateIndex(
-        availableDates,
-        dateRange[exactX].value,
-      );
-      if (
-        selectedIndex < 0 ||
-        availableDates[selectedIndex] === stateStartDate
-      ) {
-        return;
-      }
-      setPointerPosition({
-        x: exactX * TIMELINE_ITEM_WIDTH,
-        y: position.y,
-      });
-      const updatedDate = new Date(availableDates[selectedIndex]);
-      checkIntersectingDateAndShowPopup(
-        new Date(dateRange[exactX].value),
-        position.y,
-      );
-      updateStartDate(updatedDate, true);
-
+      clickDate(exactX);
       // Hide the tooltip for exactX
       const tooltipElement = document.querySelector(
         `[data-date-index="${exactX}"]`,
@@ -376,13 +511,7 @@ const DateSelector = memo(() => {
         );
       }
     },
-    [
-      availableDates,
-      checkIntersectingDateAndShowPopup,
-      dateRange,
-      stateStartDate,
-      updateStartDate,
-    ],
+    [clickDate, dateRange],
   );
 
   const handleOnDatePickerChange = useCallback(
@@ -391,6 +520,11 @@ const DateSelector = memo(() => {
     },
     [updateStartDate],
   );
+
+  // Only display the date selector once dates are loaded
+  if (dateRange.length <= 1) {
+    return null;
+  }
 
   return (
     <div
@@ -467,7 +601,8 @@ const DateSelector = memo(() => {
                       dateRange={dateRange}
                       clickDate={clickDate}
                       locale={locale}
-                      selectedLayers={selectedLayers}
+                      orderedLayers={orderedLayers}
+                      truncatedLayers={visibleLayers}
                       availableDates={availableDates}
                     />
                   )}

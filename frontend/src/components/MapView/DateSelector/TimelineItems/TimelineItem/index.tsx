@@ -1,8 +1,8 @@
 import { createStyles, makeStyles } from '@material-ui/core';
-import React, { memo } from 'react';
+import React, { memo, useMemo } from 'react';
 import 'react-datepicker/dist/react-datepicker.css';
 import { DateItem, DateRangeType } from 'config/types';
-import { binaryFind } from 'utils/date-utils';
+import { datesAreEqualWithoutTime } from 'utils/date-utils';
 
 const TimelineItem = memo(
   ({
@@ -13,13 +13,34 @@ const TimelineItem = memo(
   }: TimelineItemProps) => {
     // Pre-compute the matching indices for all layers
     const classes = useStyles();
-    const layerMatches = concatenatedLayers.map(layerDates =>
-      binaryFind<DateItem>(
-        layerDates,
-        new Date(currentDate.value).setUTCHours(0, 0, 0, 0),
-        (i: DateItem) => new Date(i.displayDate).setUTCHours(0, 0, 0, 0),
-      ),
+
+    const displayDateMatches = useMemo(
+      () =>
+        concatenatedLayers.map(layerDates =>
+          layerDates.findIndex(i =>
+            datesAreEqualWithoutTime(i.displayDate, currentDate.value),
+          ),
+        ),
+      [concatenatedLayers, currentDate.value],
     );
+
+    const layerMatches = useMemo(() => {
+      const queryDateMatches = concatenatedLayers.map(layerDates =>
+        layerDates.findIndex(i =>
+          datesAreEqualWithoutTime(i.queryDate, currentDate.value),
+        ),
+      );
+
+      return displayDateMatches.map((displayDateMatch, layerIndex) =>
+        queryDateMatches[layerIndex] > -1 &&
+        !datesAreEqualWithoutTime(
+          concatenatedLayers[layerIndex][displayDateMatch].queryDate,
+          currentDate.value,
+        )
+          ? queryDateMatches[layerIndex]
+          : displayDateMatch,
+      );
+    }, [concatenatedLayers, currentDate.value, displayDateMatches]);
 
     const hasNextItemDirectionForward = (
       _matchingDate: DateItem,
@@ -32,7 +53,7 @@ const TimelineItem = memo(
     ): boolean => false;
 
     const isQueryDate = (date: DateItem): boolean =>
-      date.queryDate === date.displayDate;
+      datesAreEqualWithoutTime(date.queryDate, date.displayDate);
 
     return (
       <>

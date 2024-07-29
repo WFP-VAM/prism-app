@@ -10,6 +10,7 @@ import {
   isLayerKey,
   LayerKey,
   LayersCategoryType,
+  LayerType,
   MenuGroup,
   MenuItemType,
 } from 'config/types';
@@ -19,9 +20,12 @@ type LayersCategoriesType = LayersCategoryType[];
 
 type MenuItemsType = MenuItemType[];
 
-function formatLayersCategories(layersList: {
-  [key: string]: Array<LayerKey | TableKey>;
-}): LayersCategoriesType {
+function formatLayersCategories(
+  layersList: {
+    [key: string]: Array<LayerKey | TableKey>;
+  },
+  selectedLayers?: LayerType[],
+): LayersCategoriesType {
   return map(layersList, (layerKeys, layersListKey) => ({
     title: startCase(layersListKey),
     layers: layerKeys.filter(isLayerKey).map(key => {
@@ -29,10 +33,23 @@ function formatLayersCategories(layersList: {
         const group = mapKeys(key, (_v, k: string) =>
           camelCase(k),
         ) as unknown as MenuGroup;
-        const mainLayer = group.layers.find(l => l.main);
+        const mainLayer =
+          group.layers.find(gl =>
+            selectedLayers?.some(sl => sl.id === gl.id),
+          ) || group.layers.find(l => l.main);
+
         const layer = LayerDefinitions[mainLayer?.id as LayerKey];
-        // eslint-disable-next-line fp/no-mutation
-        layer.group = group;
+
+        // Check if layer is frozen or sealed before writing to it, required to prevent a race condition
+        if (Object.isFrozen(layer)) {
+          console.error(`Layer ${layer?.id} is frozen and cannot be modified.`);
+        } else if (Object.isSealed(layer)) {
+          console.error(`Layer ${layer?.id} is sealed and cannot be modified.`);
+        } else {
+          // eslint-disable-next-line fp/no-mutation
+          layer.group = group;
+        }
+
         return layer;
       }
       return LayerDefinitions[key as LayerKey];
@@ -75,6 +92,23 @@ export const menuList: MenuItemsType = map(
     };
   },
 );
+
+export const getDynamicMenuList = (selectedLayers?: LayerType[]) =>
+  map(appConfig.categories, (layersCategories, categoryKey) => {
+    if (!checkLayersCategories(layersCategories)) {
+      throw new Error(
+        `'${categoryKey}' in prism.json isn't a valid category. Check console for more details.`,
+      );
+    }
+    return {
+      title: startCase(categoryKey),
+      icon: get(appConfig, `icons.${categoryKey}`, 'icon_vulnerable.png'),
+      layersCategories: formatLayersCategories(
+        layersCategories,
+        selectedLayers,
+      ),
+    };
+  });
 
 export const tablesMenuItems = menuList.filter((menuItem: MenuItemType) =>
   menuItem.layersCategories.some(
