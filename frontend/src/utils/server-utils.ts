@@ -10,6 +10,7 @@ import type {
   PathLayer,
   PointDataLayerProps,
   RequestFeatureInfo,
+  SeasonBounds,
   Validity,
   ValidityLayer,
   ValidityPeriod,
@@ -405,13 +406,24 @@ export function generateIntermediateDateItemFromValidity(
           startDate.setMonth(startDate.getMonth() + nMonthsBackward);
         }
       } else if (mode === DatesPropagation.SEASON) {
-        // TODO: add support flexible seasons (i.e. s1_start, s1_end, etc.)
-        const { start, end } = getSeasonBounds(startDate);
-
-        startDate.setTime(start.getTime());
-        endDate.setTime(end.getTime() - oneDayInMs);
+        if (validity.seasons) {
+          const seasonBounds = getSeasonBounds(startDate);
+          if (seasonBounds) {
+            startDate.setTime(seasonBounds.start.getTime());
+            endDate.setTime(seasonBounds.end.getTime() - oneDayInMs);
+          } else {
+            console.warn(
+              `No season found for date: ${startDate.toISOString()}`,
+            );
+            return [];
+          }
+        } else {
+          const { start, end } = getSeasonBounds(startDate) as SeasonBounds;
+          startDate.setTime(start.getTime());
+          endDate.setTime(end.getTime() - oneDayInMs);
+        }
       } else {
-        return [];
+        throw Error(`Invalid validity mode: ${mode}`);
       }
 
       // We create an array with the diff between the endDate and startDate and we create an array with the addition of the days in the startDate

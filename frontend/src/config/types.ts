@@ -418,10 +418,21 @@ export type ValidityPeriod = {
   end_date_field: string;
 };
 
+export type SeasonBoundsConfig = {
+  start: string;
+  end: string;
+};
+
+export type SeasonBounds = {
+  start: Date;
+  end: Date;
+};
+
 export type Validity = {
   mode: DatesPropagation; // Propagation mode for dates.
   backward?: number; // Number of days/dekades backward.
   forward?: number; // Number of days/dekades forward.
+  seasons?: SeasonBoundsConfig[];
 };
 
 export class WMSLayerProps extends CommonLayerProps {

@@ -1,4 +1,4 @@
-import { DateItem } from '../config/types';
+import { DateItem, SeasonBounds, SeasonBoundsConfig } from '../config/types';
 import { DateFormat } from './name-utils';
 
 export interface StartEndDate {
@@ -190,7 +190,35 @@ const SEASON_MAP: [number, number][] = [
   [9, 11],
 ];
 
-export const getSeasonBounds = (date: Date) => {
+/**
+ * Get the start and end date of the season for a given date.
+ * @param date The date to get the season for.
+ * @param seasonBounds The season bounds to use (optional) formatted as "MMMM-DD"
+ * @returns The start and end date of the season or null if no matching season is found.
+ */
+export const getSeasonBounds = (
+  date: Date,
+  seasonBounds?: SeasonBoundsConfig[],
+): SeasonBounds | null => {
+  if (seasonBounds) {
+    const foundSeason = seasonBounds.find(season => {
+      const start = new Date(`${date.getFullYear()}-${season.start}`);
+      const end = new Date(`${date.getFullYear()}-${season.end}`);
+      if (end < start) {
+        end.setFullYear(end.getFullYear() + 1);
+      }
+      return date >= start && date <= end;
+    });
+    if (foundSeason) {
+      const startArr = foundSeason.start.split('-');
+      const endArr = foundSeason.end.split('-');
+      return {
+        start: new Date(`${date.getFullYear()}-${startArr[1]}-${startArr[0]}`),
+        end: new Date(`${date.getFullYear()}-${endArr[1]}-${endArr[0]}`),
+      };
+    }
+    return null;
+  }
   const monthIndex = date.getMonth();
   const foundSeason = SEASON_MAP.find(
     season => season[0] <= monthIndex && monthIndex <= season[1],

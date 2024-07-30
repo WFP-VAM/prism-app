@@ -4120,7 +4120,17 @@
     "period": "seasonal",
     "base_url": "https://hip-service.ovio.org/q_multi_geojson",
     "validity": {
-      "mode": "season"
+      "mode": "season",
+      "seasons": [
+        {
+          "start": "01-March",
+          "end": "31-July"
+        },
+        {
+          "start": "01-August",
+          "end": "28-February"
+        }
+      ]
     },
     "input_layers": [
       {
