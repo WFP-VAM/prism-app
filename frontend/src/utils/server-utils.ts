@@ -407,10 +407,10 @@ export function generateIntermediateDateItemFromValidity(
         }
       } else if (mode === DatesPropagation.SEASON) {
         if (validity.seasons) {
-          const seasonBounds = getSeasonBounds(startDate);
+          const seasonBounds = getSeasonBounds(startDate, validity.seasons);
           if (seasonBounds) {
             startDate.setTime(seasonBounds.start.getTime());
-            endDate.setTime(seasonBounds.end.getTime() - oneDayInMs);
+            endDate.setTime(seasonBounds.end.getTime());
           } else {
             console.warn(
               `No season found for date: ${startDate.toISOString()}`,

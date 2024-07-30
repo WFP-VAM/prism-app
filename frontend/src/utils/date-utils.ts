@@ -183,12 +183,24 @@ export const getFormattedDate = (
 export const getTimeInMilliseconds = (date: string | number) =>
   new Date(date).getTime();
 
-const SEASON_MAP: [number, number][] = [
+export const SEASON_MAP: [number, number][] = [
   [0, 2],
   [3, 5],
   [6, 8],
   [9, 11],
 ];
+
+export const constructDateFromSeason = (
+  date: Date,
+  season: SeasonBoundsConfig,
+) => {
+  const start = new Date(`${date.getFullYear()}-${season.start}`);
+  const end = new Date(`${date.getFullYear()}-${season.end}`);
+  if (end < start) {
+    start.setFullYear(start.getFullYear() - 1);
+  }
+  return { start, end };
+};
 
 /**
  * Get the start and end date of the season for a given date.
@@ -202,20 +214,11 @@ export const getSeasonBounds = (
 ): SeasonBounds | null => {
   if (seasonBounds) {
     const foundSeason = seasonBounds.find(season => {
-      const start = new Date(`${date.getFullYear()}-${season.start}`);
-      const end = new Date(`${date.getFullYear()}-${season.end}`);
-      if (end < start) {
-        end.setFullYear(end.getFullYear() + 1);
-      }
+      const { start, end } = constructDateFromSeason(date, season);
       return date >= start && date <= end;
     });
     if (foundSeason) {
-      const startArr = foundSeason.start.split('-');
-      const endArr = foundSeason.end.split('-');
-      return {
-        start: new Date(`${date.getFullYear()}-${startArr[1]}-${startArr[0]}`),
-        end: new Date(`${date.getFullYear()}-${endArr[1]}-${endArr[0]}`),
-      };
+      return constructDateFromSeason(date, foundSeason);
     }
     return null;
   }
