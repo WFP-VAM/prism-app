@@ -16,6 +16,12 @@ export const fetchCompositeLayerData: LazyLoader<CompositeLayerProps> =
     const { layer, date } = params;
     const referenceDate = date ? new Date(date) : new Date();
     const seasonBounds = getSeasonBounds(referenceDate);
+    if (!seasonBounds) {
+      console.error(
+        `No season bounds found for ${layer.id} with date ${referenceDate}`,
+      );
+      return undefined;
+    }
     const useMonthly = !layer.period || layer.period === 'monthly';
     const startDate = useMonthly ? referenceDate : seasonBounds.start;
     // For monthly, setting an end date to one month after the start date
