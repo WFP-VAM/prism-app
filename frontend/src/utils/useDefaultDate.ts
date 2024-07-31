@@ -34,17 +34,16 @@ export function useDefaultDate(
   const soonestAvailableDate =
     new Date().getTime() - (expectedDataLagDays ?? 0) * 24 * 60 * 60 * 1000;
 
-  const defaultDate = useMemo(() => {
-    return possibleDates?.reduceRight(
-      (acc: number | undefined, date: DateItem) => {
+  const defaultDate = useMemo(
+    () =>
+      possibleDates?.reduceRight((acc: number | undefined, date: DateItem) => {
         if (!acc && date.displayDate <= soonestAvailableDate) {
           return date.displayDate;
         }
         return acc;
-      },
-      undefined,
-    );
-  }, [possibleDates, soonestAvailableDate]);
+      }, undefined),
+    [possibleDates, soonestAvailableDate],
+  );
 
   // React doesn't allow updating other components within another component
   // useEffect removes this error and updates DateSelector correctly in the lifecycle.

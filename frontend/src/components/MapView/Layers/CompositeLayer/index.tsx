@@ -47,8 +47,6 @@ const CompositeLayer = memo(({ layer, before }: Props) => {
   const serverAvailableDates = useSelector(availableDatesSelector);
   const opacityState = useSelector(opacitySelector(layer.id));
   const dispatch = useDispatch();
-  const layerAvailableDates = serverAvailableDates[layer.dateLayer];
-  const queryDate = getRequestDate(layerAvailableDates, selectedDate);
 
   const layerAvailableDates =
     serverAvailableDates[layer.id] || serverAvailableDates[layer.dateLayer];
