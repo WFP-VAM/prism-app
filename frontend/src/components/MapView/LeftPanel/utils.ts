@@ -50,7 +50,7 @@ function formatLayersCategories(
           layer.group = group;
         }
 
-        return layer;
+        return { ...layer, group };
       }
       return LayerDefinitions[key as LayerKey];
     }),
