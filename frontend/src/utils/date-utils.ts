@@ -7,6 +7,7 @@ export interface StartEndDate {
 }
 
 const millisecondsInADay = 24 * 60 * 60 * 1000;
+const millisecondsInAYear = 365 * millisecondsInADay;
 
 export const dateWithoutTime = (date: number | Date): number => {
   const cleanDate = date instanceof Date ? date.getTime() : date;
@@ -193,13 +194,22 @@ export const SEASON_MAP: [number, number][] = [
 export const constructDateFromSeason = (
   date: Date,
   season: SeasonBoundsConfig,
-) => {
-  const start = new Date(`${date.getFullYear()}-${season.start}`);
-  const end = new Date(`${date.getFullYear()}-${season.end}`);
-  if (end < start) {
-    start.setFullYear(start.getFullYear() - 1);
-  }
-  return { start, end };
+): SeasonBounds => {
+  const startCurrentYear = new Date(
+    `${date.getFullYear()}-${season.start}`,
+  ).getTime();
+  const endCurrentYear = new Date(
+    `${date.getFullYear()}-${season.end}`,
+  ).getTime();
+  const startPreviousYear = startCurrentYear - millisecondsInAYear;
+  const endNextYear = endCurrentYear + millisecondsInAYear;
+
+  // eslint-disable-next-line no-nested-ternary
+  return endCurrentYear >= startCurrentYear
+    ? { start: new Date(startCurrentYear), end: new Date(endCurrentYear) }
+    : date.getTime() >= startCurrentYear
+      ? { start: new Date(startCurrentYear), end: new Date(endNextYear) }
+      : { start: new Date(startPreviousYear), end: new Date(endCurrentYear) };
 };
 
 /**

@@ -11,7 +11,7 @@ import { getSeasonBounds, SEASON_MAP } from './date-utils';
 // NOTE: all timestamps are created in the LOCAL timezone (as per js docs), so that
 // these tests should pass for any TZ.
 
-describe.only('Test generateIntermediateDateItemFromValidity', () => {
+describe('Test generateIntermediateDateItemFromValidity', () => {
   test('should return correct dates with forward propagation', () => {
     const layer = {
       name: 'myd11a2_taa_dekad',
