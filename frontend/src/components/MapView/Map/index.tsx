@@ -88,7 +88,7 @@ const MapComponent = memo(({ setIsAlertFormOpen }: MapComponentProps) => {
   const panelHidden = tabValue === Panel.None;
 
   const [firstSymbolId, setFirstSymbolId] = useState<string | undefined>(
-    'label_airport',
+    undefined,
   );
 
   const fitBoundsOptions = useMemo(
