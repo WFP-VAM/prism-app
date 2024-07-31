@@ -12,7 +12,9 @@ exports[`renders as expected 1`] = `
       <div
         class="makeStyles-iconCol-12"
       />
-      <div>
+      <div
+        style="width: calc(100% - 3rem);"
+      >
         <mock-typography
           classname="makeStyles-windowHeader-10"
           variant="h4"
@@ -50,7 +52,9 @@ exports[`renders as expected 1`] = `
           </div>
         </div>
       </div>
-      <div>
+      <div
+        style="width: calc(100% - 3rem);"
+      >
         <div
           class="makeStyles-windowBackground-13"
         >
@@ -97,7 +101,9 @@ exports[`renders as expected 1`] = `
           </div>
         </div>
       </div>
-      <div>
+      <div
+        style="width: calc(100% - 3rem);"
+      >
         <div
           class="makeStyles-windowBackground-13"
         >
@@ -144,7 +150,9 @@ exports[`renders as expected 1`] = `
           </div>
         </div>
       </div>
-      <div>
+      <div
+        style="width: calc(100% - 3rem);"
+      >
         <div
           class="makeStyles-windowBackground-13"
         >
@@ -191,7 +199,9 @@ exports[`renders as expected 1`] = `
           </div>
         </div>
       </div>
-      <div>
+      <div
+        style="width: calc(100% - 3rem);"
+      >
         <div
           class="makeStyles-windowBackground-13"
         >
@@ -239,7 +249,9 @@ exports[`renders as expected 1`] = `
           </div>
         </div>
       </div>
-      <div>
+      <div
+        style="width: calc(100% - 3rem);"
+      >
         <div
           class="makeStyles-windowBackground-13"
         >
@@ -286,7 +298,9 @@ exports[`renders as expected 1`] = `
           </div>
         </div>
       </div>
-      <div>
+      <div
+        style="width: calc(100% - 3rem);"
+      >
         <div
           class="makeStyles-windowBackground-13"
         >

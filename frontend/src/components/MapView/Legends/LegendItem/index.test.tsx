@@ -1,4 +1,3 @@
-import React from 'react';
 import { render } from '@testing-library/react';
 
 import { Provider } from 'react-redux';
@@ -20,6 +19,8 @@ test('renders as expected', () => {
               color: '#000000', // Test color e.g. black
             },
           ]}
+          id="precip_blended_dekad"
+          type="wms"
         >
           <div>Test Children</div>
         </LegendItem>

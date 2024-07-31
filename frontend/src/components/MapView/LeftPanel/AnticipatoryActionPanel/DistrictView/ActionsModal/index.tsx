@@ -11,7 +11,6 @@ import {
 } from '@material-ui/core';
 import { Cancel, Close } from '@material-ui/icons';
 import { useSafeTranslation } from 'i18n';
-import React from 'react';
 import { black, cyanBlue } from 'muiTheme';
 import { Action } from './actions';
 

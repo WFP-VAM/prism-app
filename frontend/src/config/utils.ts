@@ -1,4 +1,4 @@
-import { camelCase, get, map, mapKeys } from 'lodash';
+import { camelCase, get, map, mapKeys, isPlainObject, mapValues } from 'lodash';
 import { appConfig, rawLayers, rawReports, rawTables } from '.';
 import {
   AdminLevelDataLayerProps,
@@ -27,9 +27,8 @@ export type ReportKey = string;
  * Check if a string is an explicitly defined report in reports.json
  * @param reportsKey the string to check
  */
-export const isReportsKey = (reportsKey: string): reportsKey is ReportKey => {
-  return reportsKey in rawReports;
-};
+export const isReportsKey = (reportsKey: string): reportsKey is ReportKey =>
+  reportsKey in rawReports;
 
 /**
  * Check if a string is an explicitly defined table in tables.json
@@ -42,11 +41,24 @@ export function isTableKey(tableKey: string): tableKey is TableKey {
 function parseStatsApiConfig(maybeConfig: {
   [key: string]: any;
 }): StatsApi | undefined {
-  const config = mapKeys(maybeConfig, (v, k) => camelCase(k));
+  const config = mapKeys(maybeConfig, (_v, k) => camelCase(k));
   if (checkRequiredKeys(StatsApi, config, true)) {
     return config as StatsApi;
   }
   return undefined;
+}
+
+export function deepCamelCaseKeys(obj: any): any {
+  if (Array.isArray(obj)) {
+    return obj.map(deepCamelCaseKeys);
+  }
+  if (isPlainObject(obj)) {
+    return mapValues(
+      mapKeys(obj, (_v, k) => camelCase(k)),
+      deepCamelCaseKeys,
+    );
+  }
+  return obj;
 }
 
 // CamelCase the keys inside the layer definition & validate config
@@ -56,7 +68,9 @@ export const getLayerByKey = (layerKey: LayerKey): LayerType => {
   const definition: { id: LayerKey; type: LayerType['type'] } = {
     id: layerKey,
     type: rawDefinition.type as LayerType['type'],
-    ...mapKeys(rawDefinition, (v, k) => camelCase(k)),
+    // TODO - Transition to deepCamelCaseKeys
+    // but handle line-opacity and other special cases
+    ...mapKeys(rawDefinition, (_v, k) => camelCase(k)),
   };
 
   const throwInvalidLayer = () => {
@@ -271,9 +285,8 @@ export const areChartLayersAvailable = getWMSLayersWithChart().length > 0;
 
 const isValidReportsDefinition = (
   maybeReport: object,
-): maybeReport is ReportType => {
-  return checkRequiredKeys(ReportType, maybeReport, true);
-};
+): maybeReport is ReportType =>
+  checkRequiredKeys(ReportType, maybeReport, true);
 
 function isValidTableDefinition(maybeTable: object): maybeTable is TableType {
   return checkRequiredKeys(TableType, maybeTable, true);
@@ -285,7 +298,7 @@ const getReportByKey = (key: ReportKey): ReportType => {
   const reports = rawReports as Record<string, any>;
   const rawDefinition = {
     id: key,
-    ...mapKeys(isReportsKey(key) ? reports[key] : {}, (v, k) => camelCase(k)),
+    ...mapKeys(isReportsKey(key) ? reports[key] : {}, (_v, k) => camelCase(k)),
   };
 
   if (isValidReportsDefinition(rawDefinition)) {
@@ -302,7 +315,7 @@ function getTableByKey(key: TableKey): TableType {
   const tables = rawTables as Record<string, any>;
   const rawDefinition = {
     id: key,
-    ...mapKeys(isTableKey(key) ? tables[key] : {}, (v, k) => camelCase(k)),
+    ...mapKeys(isTableKey(key) ? tables[key] : {}, (_v, k) => camelCase(k)),
   };
 
   if (isValidTableDefinition(rawDefinition)) {
@@ -337,9 +350,11 @@ export const getCompositeLayers = (layer: LayerType): LayerType[] => {
   const compositeLayersIds = inputLayers?.map(inputLayer => inputLayer.id);
 
   if (compositeLayersIds?.length) {
-    const compositeLayers = map(LayerDefinitions, (value, key) => {
-      return compositeLayersIds.includes(key as LayerType['type']) && value;
-    }).filter(x => x);
+    const compositeLayers = map(
+      LayerDefinitions,
+      (value, key) =>
+        compositeLayersIds.includes(key as LayerType['type']) && value,
+    ).filter(x => x);
     return compositeLayers as LayerType[];
   }
   return [];

@@ -1,20 +1,24 @@
 import {
   Button,
   createStyles,
-  Hidden,
   IconButton,
   Typography,
-  WithStyles,
-  withStyles,
+  makeStyles,
+  useTheme,
+  useMediaQuery,
 } from '@material-ui/core';
 import { VisibilityOutlined, VisibilityOffOutlined } from '@material-ui/icons';
-import React, { useState, memo, useCallback } from 'react';
+import { useState, memo, useCallback } from 'react';
 import { useSafeTranslation } from 'i18n';
 import { black, cyanBlue } from 'muiTheme';
 import LegendItemsList from './LegendItemsList';
 
-const Legends = memo(({ classes }: LegendsProps) => {
+const Legends = memo(() => {
+  const classes = useStyles();
   const { t } = useSafeTranslation();
+  const theme = useTheme();
+  const smDown = useMediaQuery(theme.breakpoints.down('sm'));
+  const mdUp = useMediaQuery(theme.breakpoints.up('md'));
 
   const [open, setOpen] = useState(true);
 
@@ -24,7 +28,7 @@ const Legends = memo(({ classes }: LegendsProps) => {
 
   return (
     <>
-      <Hidden smDown>
+      {!smDown && (
         <Button
           className={classes.triggerButton}
           style={{ backgroundColor: open ? cyanBlue : undefined }}
@@ -46,9 +50,9 @@ const Legends = memo(({ classes }: LegendsProps) => {
             {t('Legend')}
           </Typography>
         </Button>
-      </Hidden>
+      )}
 
-      <Hidden mdUp>
+      {!mdUp && (
         <IconButton
           style={{ backgroundColor: open ? cyanBlue : undefined }}
           onClick={toggleLegendVisibility}
@@ -62,14 +66,14 @@ const Legends = memo(({ classes }: LegendsProps) => {
             <VisibilityOutlined className={classes.icon} />
           )}
         </IconButton>
-      </Hidden>
+      )}
 
       {open && <LegendItemsList listStyle={classes.list} />}
     </>
   );
 });
 
-const styles = () =>
+const useStyles = makeStyles(() =>
   createStyles({
     triggerButton: {
       height: '2.5em',
@@ -83,8 +87,7 @@ const styles = () =>
       top: 'calc(6vh + 16px)',
     },
     icon: { color: 'white', fontSize: '1.5rem' },
-  });
+  }),
+);
 
-export interface LegendsProps extends WithStyles<typeof styles> {}
-
-export default withStyles(styles)(Legends);
+export default Legends;

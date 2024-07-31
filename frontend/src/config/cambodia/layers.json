@@ -251,7 +251,7 @@
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
     "opacity": 0.7,
-    "legend_text": "Estimate of precipitation over a 10-day period derived from CHIRPS (UCSB Climate Hazards Group). https://www.chc.ucsb.edu/data/chirps",
+    "legend_text": "Estimate of precipitation over a 10-day period derived from [CHIRPS (UCSB Climate Hazards Group)](https://www.chc.ucsb.edu/data/chirps).",
     "legend": [
       { "value": 0, "label": "0 mm", "color": "#fafafa" },
       { "value": 0.01, "label": "1-2 mm", "color": "#fffadf" },
@@ -312,7 +312,7 @@
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
     "opacity": 0.7,
-    "legend_text": "10-day precipitation anomaly compared to the long term average. Derived from CHIRPS (UCSB Climate Hazards Group). https://www.chc.ucsb.edu/data/chirps",
+    "legend_text": "10-day precipitation anomaly compared to the long term average. Derived from [CHIRPS (UCSB Climate Hazards Group)](https://www.chc.ucsb.edu/data/chirps).",
     "legend": [
       { "value": 0, "label": "< 20%", "color": "#8c4800" },
       { "value": 20, "label": "20-40%", "color": "#af6b27" },
@@ -364,7 +364,7 @@
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
     "opacity": 0.7,
-    "legend_text": "Monthly precipitation anomaly compared to the long term average. Derived from CHIRPS (UCSB Climate Hazards Group). https://www.chc.ucsb.edu/data/chirps",
+    "legend_text": "Monthly precipitation anomaly compared to the long term average. Derived from [CHIRPS (UCSB Climate Hazards Group)](https://www.chc.ucsb.edu/data/chirps).",
     "legend": [
       { "value": 0, "label": "< 20%", "color": "#8c4800" },
       { "value": 20, "label": "20-40%", "color": "#af6b27" },
@@ -416,7 +416,7 @@
     },
     "date_interval": "days",
     "opacity": 0.7,
-    "legend_text": "3-month precipitation anomaly compared to the long term average. Derived from CHIRPS (UCSB Climate Hazards Group). https://www.chc.ucsb.edu/data/chirps",
+    "legend_text": "3-month precipitation anomaly compared to the long term average. Derived from [CHIRPS (UCSB Climate Hazards Group)](https://www.chc.ucsb.edu/data/chirps).",
     "legend": [
       { "value": 0, "label": "< 20%", "color": "#8c4800" },
       { "value": 20, "label": "20-40%", "color": "#af6b27" },
@@ -444,7 +444,7 @@
     },
     "date_interval": "days",
     "opacity": 0.7,
-    "legend_text": "6-month precipitation anomaly compared to the long term average. Derived from CHIRPS (UCSB Climate Hazards Group). https://www.chc.ucsb.edu/data/chirps",
+    "legend_text": "6-month precipitation anomaly compared to the long term average. Derived from [CHIRPS (UCSB Climate Hazards Group)](https://www.chc.ucsb.edu/data/chirps).",
     "legend": [
       { "value": 0, "label": "< 50%", "color": "#8c4800" },
       { "value": 50, "label": "50-60%", "color": "#af6b27" },
@@ -472,7 +472,7 @@
     },
     "date_interval": "days",
     "opacity": 0.7,
-    "legend_text": "9-month precipitation anomaly compared to the long term average. Derived from CHIRPS (UCSB Climate Hazards Group). https://www.chc.ucsb.edu/data/chirps",
+    "legend_text": "9-month precipitation anomaly compared to the long term average. Derived from [CHIRPS (UCSB Climate Hazards Group)](https://www.chc.ucsb.edu/data/chirps).",
     "legend": [
       { "value": 0, "label": "< 50%", "color": "#8c4800" },
       { "value": 50, "label": "50-60%", "color": "#af6b27" },
@@ -500,7 +500,7 @@
     },
     "date_interval": "days",
     "opacity": 0.7,
-    "legend_text": "1-year precipitation anomaly compared to the long term average. Derived from CHIRPS (UCSB Climate Hazards Group). https://www.chc.ucsb.edu/data/chirps",
+    "legend_text": "1-year precipitation anomaly compared to the long term average. Derived from [CHIRPS (UCSB Climate Hazards Group)](https://www.chc.ucsb.edu/data/chirps).",
     "legend": [
       { "value": 0, "label": "< 50%", "color": "#8c4800" },
       { "value": 50, "label": "50-60%", "color": "#af6b27" },
@@ -547,7 +547,7 @@
     },
     "date_interval": "days",
     "opacity": 0.7,
-    "legend_text": "Total aggregate precipitation over a 1-month period, rolling every 10 days. Derived from CHIRPS (UCSB Climate Hazards Group). https://www.chc.ucsb.edu/data/chirps",
+    "legend_text": "Total aggregate precipitation over a 1-month period, rolling every 10 days. Derived from [CHIRPS (UCSB Climate Hazards Group)](https://www.chc.ucsb.edu/data/chirps).",
     "legend": [
       { "value": 0, "label": "0 mm", "color": "#fafafa" },
       { "value": 0.01, "label": "1-5 mm", "color": "#fffadf" },
@@ -1947,21 +1947,46 @@
       }
     ]
   },
-  "cdi": {
-    "title": "Combined Drought Index",
-    "type": "composite",
-    "base_url": "https://to-fill-later",
-    "input_layers": [
-      { "id": "spi_1m", "weight": 0.4, "interval": "1-month" },
-      { "id": "lst_anomaly", "weight": 0.3, "interval": "10-days" },
-      { "id": "ndvi_dekad_anomaly", "weight": 0.3, "interval": "10-days" }
+  "vuln_index": {
+    "title": "Socioeconomic Vulnerability Index",
+    "type": "admin_level_data",
+    "path": "data/cambodia/vuln_index.json",
+    "data_field": "IndexValue",
+    "admin_level": 3,
+    "admin_code": "Adm3_text",
+    "opacity": 0.9,
+    "legend": [
+      {
+        "value": 0,
+        "label": "Minimal: 0 - 0.1",
+        "color": "#7fbc41"
+      },
+      {
+        "value": 0.1,
+        "label": "Very Low: 0.1 - 0.2",
+        "color": "#b8e186"
+      },
+      {
+        "value": 0.2,
+        "label": "Low: 0.2 - 0.4",
+        "color": "#e6f5d0"
+      },
+      {
+        "value": 0.4,
+        "label": "Moderate: 0.4 - 0.6",
+        "color": "#f1b6da"
+      },
+      {
+        "value": 0.6,
+        "label": "High: 0.6 - 0.8",
+        "color": "#de77ae"
+      },
+      {
+        "value": 0.8,
+        "label": "Very High: 0.8 - 1",
+        "color": "#c51b7d"
+      }
     ],
-    "aggregation": "pixel",
-    "interval": "1-month",
-    "date_type": "continuous",
-    "date_layer": "spi_1m",
-    "start_date": "2020-01-01",
-    "end_date": "",
-    "opacity": 0.8
+    "legend_text": "Index meausring a household’s social and economic capacities and resilience to cope with, adapt to and recover from the floods and droughts. Aggregated at Commune level"
   }
 }

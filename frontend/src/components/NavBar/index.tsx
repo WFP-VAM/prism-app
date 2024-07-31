@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import { faGithub } from '@fortawesome/free-brands-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
@@ -8,11 +9,11 @@ import {
   Theme,
   Toolbar,
   Typography,
-  withStyles,
-  WithStyles,
   IconButton,
   Badge,
-  Hidden,
+  makeStyles,
+  useTheme,
+  useMediaQuery,
 } from '@material-ui/core';
 import React from 'react';
 import { useSafeTranslation } from 'i18n';
@@ -69,12 +70,16 @@ const panels = [
     : []),
 ];
 
-function NavBar({ classes, isAlertFormOpen, setIsAlertFormOpen }: NavBarProps) {
+function NavBar({ isAlertFormOpen, setIsAlertFormOpen }: NavBarProps) {
   const { t } = useSafeTranslation();
   const dispatch = useDispatch();
+  const classes = useStyles();
   const { alertFormActive, header } = appConfig;
   const tabValue = useSelector(leftPanelTabValueSelector);
   const analysisData = useSelector(analysisResultSelector);
+  const theme = useTheme();
+  const smDown = useMediaQuery(theme.breakpoints.down('sm'));
+  const mdUp = useMediaQuery(theme.breakpoints.up('md'));
 
   const { numberOfActiveLayers } = useLayers();
 
@@ -111,7 +116,12 @@ function NavBar({ classes, isAlertFormOpen, setIsAlertFormOpen }: NavBarProps) {
           <div className={classes.leftSideContainer}>
             <div className={classes.titleContainer}>
               {logo && <img className={classes.logo} src={logo} alt="logo" />}
-              <Box display="flex" flexDirection="column">
+              <Box
+                style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                }}
+              >
                 {title && (
                   <Typography
                     color="secondary"
@@ -121,16 +131,14 @@ function NavBar({ classes, isAlertFormOpen, setIsAlertFormOpen }: NavBarProps) {
                     {t(title)}
                   </Typography>
                 )}
-                {subtitle && (
-                  <Hidden smDown>
-                    <Typography
-                      color="secondary"
-                      variant="subtitle2"
-                      className={classes.subtitle}
-                    >
-                      {t(subtitle)}
-                    </Typography>
-                  </Hidden>
+                {subtitle && !smDown && (
+                  <Typography
+                    color="secondary"
+                    variant="subtitle2"
+                    className={classes.subtitle}
+                  >
+                    {t(subtitle)}
+                  </Typography>
                 )}
               </Box>
             </div>
@@ -138,7 +146,8 @@ function NavBar({ classes, isAlertFormOpen, setIsAlertFormOpen }: NavBarProps) {
               {panels.map(panel => {
                 const Wrap =
                   badgeContent >= 1 && panel.panel === Panel.Layers
-                    ? ({ children }: { children: React.ReactNode }) => (
+                    ? // eslint-disable-next-line react/no-unused-prop-types
+                      ({ children }: { children: React.ReactNode }) => (
                         <Badge
                           anchorOrigin={{
                             horizontal: 'left',
@@ -151,13 +160,11 @@ function NavBar({ classes, isAlertFormOpen, setIsAlertFormOpen }: NavBarProps) {
                           {children}
                         </Badge>
                       )
-                    : ({ children }: { children: React.ReactNode }) => (
-                        <>{children}</>
-                      );
+                    : ({ children }: { children: React.ReactNode }) => children;
 
                 return (
                   <React.Fragment key={panel.panel}>
-                    <Hidden smDown>
+                    {!smDown && (
                       <Button
                         className={classes.panelButton}
                         style={{
@@ -179,8 +186,8 @@ function NavBar({ classes, isAlertFormOpen, setIsAlertFormOpen }: NavBarProps) {
                           {t(panel.label)}
                         </Typography>
                       </Button>
-                    </Hidden>
-                    <Hidden mdUp>
+                    )}
+                    {!mdUp && (
                       <Wrap>
                         <IconButton
                           style={{
@@ -195,7 +202,7 @@ function NavBar({ classes, isAlertFormOpen, setIsAlertFormOpen }: NavBarProps) {
                           {panel.icon}
                         </IconButton>
                       </Wrap>
-                    </Hidden>
+                    )}
                   </React.Fragment>
                 );
               })}
@@ -221,7 +228,7 @@ function NavBar({ classes, isAlertFormOpen, setIsAlertFormOpen }: NavBarProps) {
   );
 }
 
-const styles = (theme: Theme) =>
+const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     logo: {
       height: 32,
@@ -304,11 +311,12 @@ const styles = (theme: Theme) =>
       gap: '0.5rem',
       alignItems: 'center',
     },
-  });
+  }),
+);
 
-export interface NavBarProps extends WithStyles<typeof styles> {
+export interface NavBarProps {
   isAlertFormOpen: boolean;
   setIsAlertFormOpen: (v: boolean) => void;
 }
 
-export default withStyles(styles)(NavBar);
+export default NavBar;

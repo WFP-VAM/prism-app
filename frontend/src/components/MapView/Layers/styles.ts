@@ -15,8 +15,8 @@ const dataFieldColor = (
   legend: LegendDefinitionItem[],
   dataField: string,
   dataFieldType?: DataFieldType,
-) => {
-  return dataFieldType === DataFieldType.TEXT
+) =>
+  dataFieldType === DataFieldType.TEXT
     ? [
         'match',
         ['get', dataField],
@@ -34,7 +34,6 @@ const dataFieldColor = (
         property: dataField,
         stops: legendToStops(legend),
       };
-};
 
 export const circlePaint = ({
   opacity,
@@ -55,16 +54,15 @@ export const fillPaintCategorical = ({
   legend,
   dataField,
   dataFieldType,
-}: PointDataLayerProps): FillLayerSpecification['paint'] => {
-  return {
-    'fill-opacity': opacity || 0.5,
-    'fill-color': dataFieldColor(legend, dataField, dataFieldType) as any,
-  };
-};
+}: PointDataLayerProps): FillLayerSpecification['paint'] => ({
+  'fill-opacity': opacity || 0.5,
+  'fill-color': dataFieldColor(legend, dataField, dataFieldType) as any,
+});
 
 // We use the legend values from the config to define "intervals".
 export const fillPaintData = (
   { opacity, legend, id }: CommonLayerProps,
+  // eslint-disable-next-line default-param-last
   property: string = 'data',
   fillPattern?: 'right' | 'left',
 ): FillLayerSpecification['paint'] => {
@@ -76,7 +74,7 @@ export const fillPaintData = (
       type: 'interval',
     },
   };
-  if (fillPattern) {
+  if (fillPattern || legend?.some(l => l.fillPattern)) {
     // eslint-disable-next-line fp/no-mutation
     fillPaint = {
       ...fillPaint,

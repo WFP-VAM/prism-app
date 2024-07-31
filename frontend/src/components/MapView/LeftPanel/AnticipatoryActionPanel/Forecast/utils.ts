@@ -3,6 +3,7 @@ import {
   AnticipatoryActionDataRow,
   AnticipatoryActionState,
 } from 'context/anticipatoryActionStateSlice/types';
+import { getSeason } from 'context/anticipatoryActionStateSlice/utils';
 
 const indexOrder = ['SPI', 'DRY'];
 const monthsOrder = ['O', 'N', 'D', 'J', 'F', 'M', 'A', 'M', 'J'];
@@ -56,14 +57,18 @@ export function forecastTransform({
   data,
 }: ForecastTransformParams) {
   const { selectedWindow, selectedDate } = filters;
+  const season = getSeason(selectedDate);
 
-  const dateData = (selectedWindow === 'All'
-    ? [
-        ...(data['Window 1'][selectedDistrict] || []),
-        ...(data['Window 2'][selectedDistrict] || []),
-      ]
-    : data[selectedWindow][selectedDistrict] || []
-  ).filter(x => !selectedDate || x.date <= selectedDate);
+  const dateData = (
+    selectedWindow === 'All'
+      ? [
+          ...(data['Window 1'][selectedDistrict] || []),
+          ...(data['Window 2'][selectedDistrict] || []),
+        ]
+      : data[selectedWindow][selectedDistrict] || []
+  ).filter(
+    x => !selectedDate || (x.date <= selectedDate && x.season === season),
+  );
 
   // eslint-disable-next-line fp/no-mutating-methods
   const indexes = sortIndexes([...new Set(dateData.map(x => x.index))]);
@@ -78,13 +83,18 @@ export function forecastTransform({
   const chartData: ChartData = Object.fromEntries(
     Object.entries(groupedBySev).map(([cat, catData]) => {
       const val = indexes.map(index => {
-        const indexData = catData.filter(x => x.index === index);
+        const indexData = catData.filter(
+          x => x.index === index && !x.computedRow,
+        );
         if (indexData.length > 0) {
           // Sort by date in descending order to get the latest date first
           // eslint-disable-next-line fp/no-mutating-methods
           indexData.sort((a, b) => b.date.localeCompare(a.date));
           // Take the probability of the first element (latest date)
-          const latest = Math.trunc(indexData[0].probability * 100);
+          const latest = parseFloat(
+            ((indexData[0].probability || 0) * 100).toFixed(2),
+          );
+
           const showWarningSign = Boolean(indexData[0].isValid);
           return [index, { probability: latest, showWarningSign }];
         }
@@ -131,7 +141,7 @@ export const chartOptions = {
           suggestedMin: 0,
           suggestedMax: 40,
           stepSize: 10,
-          callback: (value: number, index: number, values: number[]) =>
+          callback: (value: number, _index: number, _values: number[]) =>
             `${value}%`,
         },
       },
@@ -163,7 +173,7 @@ export const getChartData = (
   labels: Object.keys(indexes),
   datasets: [
     {
-      data: Object.entries(indexes).map(([index, val], i) => ({
+      data: Object.entries(indexes).map(([_index, val], i) => ({
         x: i + 0.6,
         y: val?.probability,
         z: val?.showWarningSign,
@@ -181,15 +191,12 @@ export const getChartData = (
             offset: -2, // offset from the point
             align: 'left',
             backgroundColor: 'white',
-            borderColor: (ctx: any) => {
-              return ctx.dataset.backgroundColor;
-            },
+            borderColor: (ctx: any) => ctx.dataset.backgroundColor,
             borderWidth: 1,
             borderRadius: 2,
             color: 'black',
-            formatter: (value: any, ctx: any) => {
-              return `${value.z ? '⚠️ ' : ''}${value.y}%`;
-            },
+            formatter: (value: any, _ctx: any) =>
+              `${value.z ? '⚠️ ' : ''}${value.y}%`,
           },
         },
       },

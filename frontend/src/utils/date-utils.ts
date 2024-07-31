@@ -6,13 +6,23 @@ export interface StartEndDate {
   endDate?: number;
 }
 
+const millisecondsInADay = 24 * 60 * 60 * 1000;
+
+export const dateWithoutTime = (date: number | Date): number => {
+  const cleanDate = date instanceof Date ? date.getTime() : date;
+  return cleanDate - (cleanDate % millisecondsInADay);
+};
+
 export const datesAreEqualWithoutTime = (
   date1: number | Date,
   date2: number | Date,
 ): boolean => {
-  const d1 = new Date(date1).setUTCHours(0, 0, 0, 0);
-  const d2 = new Date(date2).setUTCHours(0, 0, 0, 0);
-  return d1 === d2;
+  const cleanDate1 = date1 instanceof Date ? date1.getTime() : date1;
+  const cleanDate2 = date2 instanceof Date ? date2.getTime() : date2;
+  return (
+    cleanDate1 - (cleanDate1 % millisecondsInADay) ===
+    cleanDate2 - (cleanDate2 % millisecondsInADay)
+  );
 };
 
 function diffInDays(date1: Date, date2: Date) {
@@ -34,19 +44,12 @@ function diffInDays(date1: Date, date2: Date) {
   return diff;
 }
 
-export const generateDatesRange = (
-  startDate: Date,
-  endDate: Date,
-): number[] => {
-  return Array.from(
-    { length: diffInDays(startDate, endDate) + 1 },
-    (_, index) => {
-      const clone = new Date(startDate.getTime());
-      clone.setDate(startDate.getDate() + index);
-      return clone.getTime();
-    },
-  );
-};
+export const generateDatesRange = (startDate: Date, endDate: Date): number[] =>
+  Array.from({ length: diffInDays(startDate, endDate) + 1 }, (_, index) => {
+    const clone = new Date(startDate.getTime());
+    clone.setDate(startDate.getDate() + index);
+    return clone.getTime();
+  });
 
 export const generateDateItemsRange = (
   startEndDateList: StartEndDate[],
@@ -111,9 +114,8 @@ export function binaryIncludes<T extends any>(
   return binaryFind(arry, timestamp, callback) > -1;
 }
 
-export const dateStrToUpperCase = (dateStr: string): string => {
-  return `${dateStr.slice(0, 1).toUpperCase()}${dateStr.slice(1)}`;
-};
+export const dateStrToUpperCase = (dateStr: string): string =>
+  `${dateStr.slice(0, 1).toUpperCase()}${dateStr.slice(1)}`;
 
 export const getFormattedDate = (
   date: number | string | undefined | Date,
@@ -180,3 +182,21 @@ export const getFormattedDate = (
 
 export const getTimeInMilliseconds = (date: string | number) =>
   new Date(date).getTime();
+
+const SEASON_MAP: [number, number][] = [
+  [0, 2],
+  [3, 5],
+  [6, 8],
+  [9, 11],
+];
+
+export const getSeasonBounds = (date: Date) => {
+  const monthIndex = date.getMonth();
+  const foundSeason = SEASON_MAP.find(
+    season => season[0] <= monthIndex && monthIndex <= season[1],
+  ) as [number, number];
+  return {
+    start: new Date(date.getFullYear(), foundSeason[0], 1),
+    end: new Date(date.getFullYear(), foundSeason[1] + 1, 1),
+  };
+};

@@ -3,17 +3,12 @@ import {
   Switch as SwitchUI,
   Typography,
   createStyles,
+  makeStyles,
 } from '@material-ui/core';
-import { WithStyles, withStyles } from '@material-ui/styles';
 import { cyanBlue } from 'muiTheme';
 
-function Switch({
-  checked,
-  onChange,
-  classes,
-  title,
-  ariaLabel,
-}: PrintConfigProps) {
+function Switch({ checked, onChange, title, ariaLabel }: PrintConfigProps) {
+  const classes = useStyles();
   return (
     <>
       <SwitchUI
@@ -38,7 +33,7 @@ function Switch({
   );
 }
 
-const styles = () =>
+const useStyles = makeStyles(() =>
   createStyles({
     switch: {
       padding: '7px',
@@ -67,9 +62,10 @@ const styles = () =>
         opacity: 1,
       },
     },
-  });
+  }),
+);
 
-export interface PrintConfigProps extends WithStyles<typeof styles> {
+export interface PrintConfigProps {
   checked: boolean;
   onChange: (
     event: React.ChangeEvent<HTMLInputElement>,
@@ -79,4 +75,4 @@ export interface PrintConfigProps extends WithStyles<typeof styles> {
   ariaLabel?: string;
 }
 
-export default withStyles(styles)(Switch);
+export default Switch;

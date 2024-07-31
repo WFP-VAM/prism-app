@@ -9,7 +9,7 @@ const { port } = serve({ max: 2 });
 test("WMS", async ({ eq }) => {
   const client = new WMS(
     "https://geonode.wfp.org/geoserver/wms?version=1.3.0",
-    { fetch }
+    { fetch },
   );
   const layerIds = await client.getLayerIds();
   eq(layerIds.length >= 669, true);
@@ -24,7 +24,7 @@ test("WMS", async ({ eq }) => {
   eq(days["prism:col_gdacs_buffers"].length >= 22, true);
   eq(
     new Date(days["prism:col_gdacs_buffers"][0]).toUTCString(),
-    "Sun, 07 Aug 2011 12:00:00 GMT"
+    "Sun, 07 Aug 2011 12:00:00 GMT",
   );
 
   const layer = await client.getLayer("prism:col_gdacs_buffers");
@@ -40,7 +40,7 @@ test("WMS", async ({ eq }) => {
 test("WMS (1.1.1)", async ({ eq }) => {
   const client = new WMS(
     "https://geonode.wfp.org/geoserver/wms?version=1.1.1",
-    { fetch }
+    { fetch },
   );
 
   const layerIds = await client.getLayerIds();
@@ -56,7 +56,7 @@ test("WMS (1.1.1)", async ({ eq }) => {
   eq(days["prism:col_gdacs_buffers"].length >= 22, true);
   eq(
     new Date(days["prism:col_gdacs_buffers"][0]).toUTCString(),
-    "Sun, 07 Aug 2011 12:00:00 GMT"
+    "Sun, 07 Aug 2011 12:00:00 GMT",
   );
 
   const layer = await client.getLayer("prism:col_gdacs_buffers");
@@ -80,9 +80,7 @@ test("WMS (1.1.1)", async ({ eq }) => {
     version: "1.1.1",
     width: 256,
     bbox: [
-      5009377.085697312,
-      -3130860.6785608195,
-      5635549.221409474,
+      5009377.085697312, -3130860.6785608195, 5635549.221409474,
       -2504688.542848654,
     ],
   };
@@ -96,7 +94,7 @@ test("WMS (1.1.1)", async ({ eq }) => {
 
   eq(
     imageUrl,
-    "https://geonode.wfp.org/geoserver/wms?SERVICE=WMS&amp%3B=&bbox=5009377.085697312%2C-3130860.6785608195%2C5635549.221409474%2C-2504688.542848654&bboxsr=3857&exceptions=application%2Fvnd.ogc.se_inimage&format=image%2Fpng&height=256&imagesr=3857&layers=wld_gdacs_tc_events_nodes&request=GetMap&service=WMS&srs=EPSG%3A3857&time=2022-04-27&transparent=true&version=1.1.1&width=256"
+    "https://geonode.wfp.org/geoserver/wms?SERVICE=WMS&amp%3B=&bbox=5009377.085697312%2C-3130860.6785608195%2C5635549.221409474%2C-2504688.542848654&bboxsr=3857&exceptions=application%2Fvnd.ogc.se_inimage&format=image%2Fpng&height=256&imagesr=3857&layers=wld_gdacs_tc_events_nodes&request=GetMap&service=WMS&srs=EPSG%3A3857&time=2022-04-27&transparent=true&version=1.1.1&width=256",
   );
 
   const { image } = await imageLayer.getImage(getImageOptions);
@@ -106,7 +104,7 @@ test("WMS (1.1.1)", async ({ eq }) => {
 test("WMS Data Cube", async ({ eq }) => {
   const client = new WMS(
     `http://localhost:${port}/data/mongolia-sibelius-datacube-wms-get-capabilities-1.3.0.xml`,
-    { fetch }
+    { fetch },
   );
 
   const layerIds = await client.getLayerIds();
@@ -127,9 +125,7 @@ test("WMS Data Cube", async ({ eq }) => {
 
   const params = {
     bbox: [
-      11897270.578531113,
-      6261721.357121639,
-      12523442.714243278,
+      11897270.578531113, 6261721.357121639, 12523442.714243278,
       6887893.492833804,
     ],
     bboxSrs: 3857,
@@ -141,7 +137,7 @@ test("WMS Data Cube", async ({ eq }) => {
   const imageUrl = await layer.getImageUrl(params);
   eq(
     imageUrl,
-    "https://mongolia.sibelius-datacube.org:5000/wms?bbox=11897270.578531113%2C6261721.357121639%2C12523442.714243278%2C6887893.492833804&bboxsr=3857&crs=EPSG%3A3857&format=image%2Fpng&height=256&layers=ModisIndices&request=GetMap&service=WMS&srs=EPSG%3A3857&time=2022-07-11&transparent=true&version=1.3.0&width=256"
+    "https://mongolia.sibelius-datacube.org:5000/wms?bbox=11897270.578531113%2C6261721.357121639%2C12523442.714243278%2C6887893.492833804&bboxsr=3857&crs=EPSG%3A3857&format=image%2Fpng&height=256&layers=ModisIndices&request=GetMap&service=WMS&srs=EPSG%3A3857&time=2022-07-11&transparent=true&version=1.3.0&width=256",
   );
 
   const { image } = await layer.getImage(params);

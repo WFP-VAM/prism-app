@@ -2,6 +2,7 @@ import {
   AnticipatoryActionDataRow,
   AnticipatoryActionState,
 } from 'context/anticipatoryActionStateSlice/types';
+import { getSeason } from 'context/anticipatoryActionStateSlice/utils';
 import { AADataSeverityOrder } from '../utils';
 import { TimelineRow } from '../Timeline/utils';
 
@@ -12,13 +13,15 @@ export function districtViewTransform(
   if (!data) {
     return undefined;
   }
-  const { categories: categoryFilters, selectedIndex } = filters;
+  const { categories: categoryFilters, selectedIndex, selectedDate } = filters;
+  const season = getSeason(selectedDate);
 
   // Keep valid data only and switch SET phase to 'na' if the READY was not valid
   const validData = data
     .filter(
       x =>
         categoryFilters[x.category] &&
+        season === x.season &&
         (selectedIndex === '' || x.index === selectedIndex),
     )
     .map(x => {

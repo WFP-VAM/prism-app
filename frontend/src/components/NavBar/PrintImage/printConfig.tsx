@@ -10,10 +10,8 @@ import {
   TextField,
   Theme,
   Typography,
-  WithStyles,
   createStyles,
   makeStyles,
-  withStyles,
 } from '@material-ui/core';
 import { GetApp, Cancel } from '@material-ui/icons';
 import React, { useContext } from 'react';
@@ -30,9 +28,7 @@ interface ToggleSelectorProps {
   value: number;
   options: {
     value: number;
-    comp:
-      | React.JSX.Element
-      | (({ value }: { value: number }) => React.JSX.Element);
+    comp: React.JSX.Element;
     disabled?: boolean;
   }[];
   iconProp?: number;
@@ -65,7 +61,7 @@ function ToggleSelector({
   title,
   options,
   value,
-  iconProp,
+  iconProp: _iconProp,
   align,
   setValue,
 }: ToggleSelectorProps) {
@@ -94,11 +90,7 @@ function ToggleSelector({
             }}
             disabled={x.disabled}
           >
-            {typeof x.comp === 'function' && typeof iconProp === 'number' ? (
-              <x.comp value={iconProp} />
-            ) : (
-              x.comp
-            )}
+            {x.comp}
           </ToggleButton>
         ))}
       </ToggleButtonGroup>
@@ -113,7 +105,6 @@ function SectionToggle({
   children,
   expanded,
   handleChange,
-  classes,
 }: {
   title: string;
   children?: React.ReactNode;
@@ -122,7 +113,8 @@ function SectionToggle({
     event: React.ChangeEvent<HTMLInputElement>,
     checked: boolean,
   ) => void;
-} & WithStyles<typeof styles>) {
+}) {
+  const classes = useStyles();
   return (
     <div>
       <div
@@ -178,7 +170,7 @@ const legendScaleSelectorOptions = [
 const legendPositionOptions = [
   {
     value: 0,
-    comp: () => (
+    comp: (
       <Icon
         style={{
           color: 'black',
@@ -191,7 +183,7 @@ const legendPositionOptions = [
   },
   {
     value: 1,
-    comp: () => (
+    comp: (
       <Icon style={{ color: 'black', transform: 'rotate(270deg)' }}>
         vertical_align_bottom
       </Icon>
@@ -202,7 +194,7 @@ const legendPositionOptions = [
 const logoPositionOptions = [
   {
     value: 0,
-    comp: () => (
+    comp: (
       <Icon
         style={{
           color: 'black',
@@ -215,7 +207,7 @@ const logoPositionOptions = [
   },
   {
     value: 1,
-    comp: () => (
+    comp: (
       <Icon style={{ color: 'black', transform: 'rotate(270deg)' }}>
         vertical_align_bottom
       </Icon>
@@ -246,7 +238,8 @@ const footerTextSelectorOptions = [
   { value: 20, comp: <div style={{ fontSize: '20px' }}>Aa</div> },
 ];
 
-function PrintConfig({ classes }: PrintConfigProps) {
+function PrintConfig() {
+  const classes = useStyles();
   const { t } = useSafeTranslation();
   const { printConfig } = useContext(PrintConfigContext);
 
@@ -286,10 +279,21 @@ function PrintConfig({ classes }: PrintConfigProps) {
   } = printConfig;
 
   return (
-    <Box overflow="scroll">
+    <Box
+      style={{
+        overflow: 'scroll',
+      }}
+    >
       <div className={classes.optionsContainer}>
         <div>
-          <Box fontSize={14} fontWeight={900} mb={1} className={classes.title}>
+          <Box
+            style={{
+              fontSize: 14,
+              fontWeight: 900,
+              marginBottom: '1em',
+            }}
+            className={classes.title}
+          >
             {t('Map Options')}
           </Box>
           <IconButton
@@ -332,7 +336,6 @@ function PrintConfig({ classes }: PrintConfigProps) {
         {logo && (
           <SectionToggle
             title={t('Logo')}
-            classes={classes}
             expanded={toggles.logoVisibility}
             handleChange={({ target }) => {
               setToggles(prev => ({
@@ -345,9 +348,11 @@ function PrintConfig({ classes }: PrintConfigProps) {
             <GreyContainer>
               <GreyContainerSection isLast>
                 <Box
-                  display="flex"
-                  flexDirection="row"
-                  justifyContent="space-between"
+                  style={{
+                    display: 'flex',
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
+                  }}
                 >
                   <ToggleSelector
                     value={logoPosition}
@@ -381,7 +386,6 @@ function PrintConfig({ classes }: PrintConfigProps) {
         {/* Labels */}
         <SectionToggle
           title={t('Map Labels')}
-          classes={classes}
           expanded={toggles.mapLabelsVisibility}
           handleChange={({ target }) =>
             setToggles(prev => ({
@@ -394,7 +398,6 @@ function PrintConfig({ classes }: PrintConfigProps) {
         {/* Admin Area */}
         <SectionToggle
           title={t('Admin Areas')}
-          classes={classes}
           expanded={toggles.countryMask}
           handleChange={({ target }) =>
             setToggles(prev => ({
@@ -423,7 +426,6 @@ function PrintConfig({ classes }: PrintConfigProps) {
         {/* Legend */}
         <SectionToggle
           title={t('Legend')}
-          classes={classes}
           expanded={toggles.legendVisibility}
           handleChange={() => {
             setToggles(prev => ({
@@ -435,9 +437,11 @@ function PrintConfig({ classes }: PrintConfigProps) {
           <GreyContainer>
             <GreyContainerSection>
               <Box
-                display="flex"
-                flexDirection="row"
-                justifyContent="space-between"
+                style={{
+                  display: 'flex',
+                  flexDirection: 'row',
+                  justifyContent: 'space-between',
+                }}
               >
                 <ToggleSelector
                   value={legendPosition > -1 ? legendPosition : -1}
@@ -482,7 +486,6 @@ function PrintConfig({ classes }: PrintConfigProps) {
         {/* Footer */}
         <SectionToggle
           title={t('Footer')}
-          classes={classes}
           expanded={toggles.footerVisibility}
           handleChange={() => {
             setToggles(prev => ({
@@ -551,7 +554,7 @@ function PrintConfig({ classes }: PrintConfigProps) {
   );
 }
 
-const styles = (theme: Theme) =>
+const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     title: {
       color: theme.palette.text.secondary,
@@ -611,8 +614,9 @@ const styles = (theme: Theme) =>
       flexDirection: 'row',
       justifyContent: 'space-between',
     },
-  });
+  }),
+);
 
-export interface PrintConfigProps extends WithStyles<typeof styles> {}
+export interface PrintConfigProps {}
 
-export default withStyles(styles)(PrintConfig);
+export default PrintConfig;

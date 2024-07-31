@@ -23,7 +23,7 @@ import {
 } from 'context/mapStateSlice/selectors';
 import { addNotification } from 'context/notificationStateSlice';
 import { availableDatesSelector } from 'context/serverStateSlice';
-import { countBy, get, pickBy } from 'lodash';
+import { countBy, get, pickBy, uniqBy } from 'lodash';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { LocalError } from 'utils/error-utils';
@@ -40,7 +40,7 @@ import {
   datesAreEqualWithoutTime,
   binaryIncludes,
   getFormattedDate,
-  getTimeInMilliseconds,
+  dateWithoutTime,
 } from './date-utils';
 
 const dateSupportLayerTypes: Array<LayerType['type']> = [
@@ -69,120 +69,156 @@ const useLayers = () => {
     [AAAvailableDates],
   );
 
-  const hazardLayerIds = useMemo(() => {
-    return urlParams.get(UrlLayerKey.HAZARD);
-  }, [urlParams]);
+  const hazardLayerIds = useMemo(
+    () => urlParams.get(UrlLayerKey.HAZARD),
+    [urlParams],
+  );
 
-  const hazardLayersArray = useMemo(() => {
-    return hazardLayerIds !== null ? hazardLayerIds.split(',') : [];
-  }, [hazardLayerIds]);
+  const hazardLayersArray = useMemo(
+    () => (hazardLayerIds !== null ? hazardLayerIds.split(',') : []),
+    [hazardLayerIds],
+  );
 
-  const baselineLayerIds = useMemo(() => {
-    return urlParams.get(UrlLayerKey.ADMINLEVEL);
-  }, [urlParams]);
+  const baselineLayerIds = useMemo(
+    () => urlParams.get(UrlLayerKey.ADMINLEVEL),
+    [urlParams],
+  );
 
-  const baselineLayersArray = useMemo(() => {
-    return baselineLayerIds !== null ? baselineLayerIds.split(',') : [];
-  }, [baselineLayerIds]);
+  const baselineLayersArray = useMemo(
+    () => (baselineLayerIds !== null ? baselineLayerIds.split(',') : []),
+    [baselineLayerIds],
+  );
 
-  const numberOfActiveLayers = useMemo(() => {
-    return (
+  const numberOfActiveLayers = useMemo(
+    () =>
       hazardLayersArray.filter(x => x !== AALayerId).length +
-      baselineLayersArray.length
-    );
-  }, [baselineLayersArray.length, hazardLayersArray]);
+      baselineLayersArray.length,
+    [baselineLayersArray.length, hazardLayersArray],
+  );
 
   // Prioritize boundary and point_data layers
-  const selectedLayers: LayerType[] = useMemo(() => {
-    // eslint-disable-next-line fp/no-mutating-methods
-    return [...unsortedSelectedLayers].sort(layerOrdering);
-  }, [unsortedSelectedLayers]);
+  const selectedLayers: LayerType[] = useMemo(
+    () =>
+      // eslint-disable-next-line fp/no-mutating-methods
+      [...unsortedSelectedLayers].sort(layerOrdering),
+    [unsortedSelectedLayers],
+  );
 
   // expand bounding box by a few degrees to ensure results cover the entire country
   const adminBoundariesExtent = expandBoundingBox(
     appConfig.map.boundingBox as Extent,
     2,
   ) as Extent;
+  
+//     From Conflict
+//     const earliestExpectedDataLagDays = initSelectedLayersWithDateSupport.reduce(
+//       (acc, layer) => Math.max(acc, layer.expectedDataLagDays ?? 0),
+//       0,
+//     );
+//     const soonestAvailableDate =
+//       new Date().getTime() -
+//       (earliestExpectedDataLagDays ?? 0) * 24 * 60 * 60 * 1000;
+//     return initSelectedLayersWithDateSupport.map(layer => {
+//       return {
+//         ...layer,
+//         dateItems: getPossibleDatesForLayer(layer, serverAvailableDates)
+//           .filter(value => value) // null check
+//           .filter(date => date.displayDate <= soonestAvailableDate)
+//           .flat(),
+//       };
+//     });
+//   }, [selectedLayers, serverAvailableDates]);
 
-  const selectedLayersWithDateSupport = useMemo(() => {
-    const initSelectedLayersWithDateSupport = selectedLayers
-      .filter((layer): layer is DateCompatibleLayer => {
-        if (
-          layer.type === 'admin_level_data' ||
-          layer.type === 'static_raster'
-        ) {
-          return Boolean(layer.dates);
-        }
-        if (layer.type === 'point_data') {
-          // some WMS layer might not have date dimension (i.e. static data)
-          return Boolean(layer.dateUrl);
-        }
-        if (layer.type === 'wms') {
-          // some WMS layer might not have date dimension (i.e. static data)
-          return layer.id in serverAvailableDates;
-        }
-        if (layer.type === 'composite') {
-          // some WMS layer might not have date dimension (i.e. static data)
-          return layer.dateLayer in serverAvailableDates;
-        }
-        return dateSupportLayerTypes.includes(layer.type);
-      })
-      .filter(layer => isMainLayer(layer.id, selectedLayers));
-
-    const earliestExpectedDataLagDays = initSelectedLayersWithDateSupport.reduce(
-      (acc, layer) => Math.max(acc, layer.expectedDataLagDays ?? 0),
-      0,
-    );
-    const soonestAvailableDate =
-      new Date().getTime() -
-      (earliestExpectedDataLagDays ?? 0) * 24 * 60 * 60 * 1000;
-    return initSelectedLayersWithDateSupport.map(layer => {
-      return {
-        ...layer,
-        dateItems: getPossibleDatesForLayer(layer, serverAvailableDates)
-          .filter(value => value) // null check
-          .filter(date => date.displayDate <= soonestAvailableDate)
-          .flat(),
-      };
-    });
-  }, [selectedLayers, serverAvailableDates]);
+  const selectedLayersWithDateSupport = useMemo(
+    () =>
+      selectedLayers
+        .filter((layer): layer is DateCompatibleLayer => {
+          if (
+            layer.type === 'admin_level_data' ||
+            layer.type === 'static_raster'
+          ) {
+            return Boolean(layer.dates);
+          }
+          if (layer.type === 'point_data') {
+            // some WMS layer might not have date dimension (i.e. static data)
+            return Boolean(layer.dateUrl);
+          }
+          if (layer.type === 'wms') {
+            // some WMS layer might not have date dimension (i.e. static data)
+            return layer.id in serverAvailableDates;
+          }
+          if (layer.type === 'composite') {
+            // some WMS layer might not have date dimension (i.e. static data)
+            return (
+              layer.id in serverAvailableDates ||
+              layer.dateLayer in serverAvailableDates
+            );
+          }
+          return dateSupportLayerTypes.includes(layer.type);
+        })
+        .filter(layer => isMainLayer(layer.id, selectedLayers))
+        .map(layer => ({
+          ...layer,
+          dateItems: getPossibleDatesForLayer(layer, serverAvailableDates)
+            .filter(value => value) // null check
+            .flat(),
+        })),
+    [selectedLayers, serverAvailableDates],
+  );
 
   /*
     takes all the dates possible for every layer and counts the amount of times each one is duplicated.
     if a date's duplicate amount is the same as the number of layers active, then this date is compatible with all layers selected.
   */
-  const selectedLayerDatesDupCount = useMemo(() => {
-    return countBy(
-      selectedLayersWithDateSupport
-        .map(layer => {
-          if (layer.type === 'anticipatory_action') {
-            // Combine dates for all AA windows to allow selecting AA for the whole period
-            return AAAvailableDatesCombined;
-          }
-          return getPossibleDatesForLayer(layer, serverAvailableDates);
-        })
-        .filter(value => value) // null check
-        .flat()
-        .map(value => new Date(value.displayDate).toISOString().slice(0, 10)),
-    );
-  }, [
-    AAAvailableDatesCombined,
-    selectedLayersWithDateSupport,
-    serverAvailableDates,
-  ]);
+  const selectedLayerDatesDupCount = useMemo(
+    () =>
+      countBy(
+        selectedLayersWithDateSupport
+          .map(layer => {
+            if (layer.type === 'anticipatory_action') {
+              // Combine dates for all AA windows to allow selecting AA for the whole period
+              return AAAvailableDatesCombined;
+            }
+            const possibleDates = getPossibleDatesForLayer(
+              layer,
+              serverAvailableDates,
+            );
+            const uniqueDates = uniqBy(possibleDates, dateItem =>
+              dateWithoutTime(dateItem.displayDate),
+            );
+            return uniqueDates;
+          })
+          .filter(value => value) // null check
+          .flat()
+          .map(value => new Date(value.displayDate).toISOString().slice(0, 10)),
+      ),
+    [
+      AAAvailableDatesCombined,
+      selectedLayersWithDateSupport,
+      serverAvailableDates,
+    ],
+  );
 
   // calculate possible dates user can pick from the currently selected layers
   const selectedLayerDates: number[] = useMemo(() => {
     if (selectedLayersWithDateSupport.length === 0) {
       return [];
     }
-    const earliestExpectedDataLagDays = selectedLayersWithDateSupport.reduce(
-      (acc, layer) => Math.max(acc, layer.expectedDataLagDays ?? 0),
-      0,
-    );
-    const soonestAvailableDate =
-      new Date().getTime() -
-      (earliestExpectedDataLagDays ?? 0) * 24 * 60 * 60 * 1000;
+
+// From conflict
+//     const earliestExpectedDataLagDays = selectedLayersWithDateSupport.reduce(
+//       (acc, layer) => Math.max(acc, layer.expectedDataLagDays ?? 0),
+//       0,
+//     );
+//     const soonestAvailableDate =
+//       new Date().getTime() -
+//       (earliestExpectedDataLagDays ?? 0) * 24 * 60 * 60 * 1000;
+
+
+    const selectedNonAALayersWithDateSupport =
+      selectedLayersWithDateSupport.filter(
+        layer => layer.type !== 'anticipatory_action',
+      );
 
     /*
       Only keep the dates which were duplicated the same amount of times as the amount of layers active...and convert back to array.
@@ -191,7 +227,7 @@ const useLayers = () => {
     return Object.keys(
       pickBy(
         selectedLayerDatesDupCount,
-        dupTimes => dupTimes >= selectedLayersWithDateSupport.length,
+        dupTimes => dupTimes >= selectedNonAALayersWithDateSupport.length,
       ),
       // convert back to number array after using YYYY-MM-DD strings in countBy
     )
@@ -200,31 +236,35 @@ const useLayers = () => {
       .sort((a, b) => a - b);
   }, [selectedLayerDatesDupCount, selectedLayersWithDateSupport]);
 
-  const defaultLayer = useMemo(() => {
-    return get(appConfig, 'defaultLayer');
-  }, []);
+  const defaultLayer = useMemo(() => get(appConfig, 'defaultLayer'), []);
 
-  const layerDefinitionsIncludeDefaultLayer = useMemo(() => {
-    return Object.keys(LayerDefinitions).includes(defaultLayer);
-  }, [defaultLayer]);
+  const layerDefinitionsIncludeDefaultLayer = useMemo(
+    () => Object.keys(LayerDefinitions).includes(defaultLayer),
+    [defaultLayer],
+  );
 
-  const defaultLayerInLayerDefinitions = useMemo(() => {
-    return LayerDefinitions[defaultLayer as LayerKey];
-  }, [defaultLayer]);
+  const defaultLayerInLayerDefinitions = useMemo(
+    () => LayerDefinitions[defaultLayer as LayerKey],
+    [defaultLayer],
+  );
 
-  const selectedLayersIds = useMemo(() => {
-    return selectedLayers.map(layer => layer.id);
-  }, [selectedLayers]);
+  const selectedLayersIds = useMemo(
+    () => selectedLayers.map(layer => layer.id),
+    [selectedLayers],
+  );
 
-  const urlLayerIds = useMemo(() => {
-    return [...hazardLayersArray, ...baselineLayersArray];
-  }, [baselineLayersArray, hazardLayersArray]);
+  const urlLayerIds = useMemo(
+    () => [...hazardLayersArray, ...baselineLayersArray],
+    [baselineLayersArray, hazardLayersArray],
+  );
 
-  const missingLayers = useMemo(() => {
-    return urlLayerIds.filter(
-      layerId => !selectedLayersIds.includes(layerId as LayerKey),
-    );
-  }, [selectedLayersIds, urlLayerIds]);
+  const missingLayers = useMemo(
+    () =>
+      urlLayerIds.filter(
+        layerId => !selectedLayersIds.includes(layerId as LayerKey),
+      ),
+    [selectedLayersIds, urlLayerIds],
+  );
 
   useEffect(() => {
     /*
@@ -271,18 +311,18 @@ const useLayers = () => {
     updateHistory,
   ]);
 
-  const serverAvailableDatesAreEmpty = useMemo(() => {
-    return Object.keys(serverAvailableDates).length === 0;
-  }, [serverAvailableDates]);
+  const serverAvailableDatesAreEmpty = useMemo(
+    () => Object.keys(serverAvailableDates).length === 0,
+    [serverAvailableDates],
+  );
 
-  const layerDefinitionIds = useMemo(() => {
-    return Object.keys(LayerDefinitions);
-  }, []);
+  const layerDefinitionIds = useMemo(() => Object.keys(LayerDefinitions), []);
 
   // Check for invalid layer ids.
-  const invalidLayersIds = useMemo(() => {
-    return urlLayerIds.filter(layerId => !layerDefinitionIds.includes(layerId));
-  }, [layerDefinitionIds, urlLayerIds]);
+  const invalidLayersIds = useMemo(
+    () => urlLayerIds.filter(layerId => !layerDefinitionIds.includes(layerId)),
+    [layerDefinitionIds, urlLayerIds],
+  );
 
   // Adds missing layers to existing map instance
   const addMissingLayers = useCallback((): void => {
@@ -304,14 +344,13 @@ const useLayers = () => {
   }, [dispatch, missingLayers, removeLayerFromUrl, serverAvailableDates]);
 
   // let users know if their current date doesn't exist in possible dates
-  const urlDate = useMemo(() => {
-    return urlParams.get('date');
-  }, [urlParams]);
+  const urlDate = useMemo(() => urlParams.get('date'), [urlParams]);
 
   // The date integer from url
-  const dateInt = useMemo(() => {
-    return (urlDate ? new Date(urlDate) : new Date()).setUTCHours(12, 0, 0, 0);
-  }, [urlDate]);
+  const dateInt = useMemo(
+    () => (urlDate ? new Date(urlDate) : new Date()).setUTCHours(12, 0, 0, 0),
+    [urlDate],
+  );
 
   useEffect(() => {
     if (
@@ -396,24 +435,24 @@ const useLayers = () => {
 
   // let users know if the layers selected are not possible to view together.
   useEffect(() => {
-    // TODO: Why is this the case here? maybe we should remove it;
+    const nonBoundaryLayers = selectedLayers.filter(
+      layer => layer.type !== 'boundary',
+    );
     if (
-      // eslint-disable-next-line no-constant-condition
       selectedLayerDates.length !== 0 ||
       selectedLayersWithDateSupport.length === 0 ||
-      !selectedDate ||
-      1
+      !selectedDate
     ) {
       return;
     }
 
     // WARNING - This logic doesn't apply anymore if we order layers differently...
-    const layerToRemove = selectedLayers[selectedLayers.length - 2];
-    const layerToKeep = selectedLayers[selectedLayers.length - 1];
+    const layerToRemove = nonBoundaryLayers[nonBoundaryLayers.length - 2];
+    const layerToKeep = nonBoundaryLayers[nonBoundaryLayers.length - 1];
 
     dispatch(
       addNotification({
-        message: `No dates overlap with the selected layers. Removing previous layer: ${layerToRemove.id}.`,
+        message: `No dates overlap with the selected layers. Removing layer: ${layerToRemove.title || layerToRemove.id}.`,
         type: 'warning',
       }),
     );
@@ -428,86 +467,89 @@ const useLayers = () => {
   ]);
 
   const possibleDatesForLayerIncludeSelectedDate = useCallback(
-    (layer: DateCompatibleLayer, date: Date) => {
-      return binaryIncludes<DateItem>(
+    (layer: DateCompatibleLayer, date: Date) =>
+      binaryIncludes<DateItem>(
         layer.type === 'anticipatory_action'
           ? AAAvailableDatesCombined
           : getPossibleDatesForLayer(layer, serverAvailableDates),
         date.setUTCHours(12, 0, 0, 0),
         x => new Date(x.displayDate).setUTCHours(12, 0, 0, 0),
-      );
-    },
+      ),
     [AAAvailableDatesCombined, serverAvailableDates],
   );
 
+  const checkSelectedDateForLayerSupport = useCallback(
+    (providedSelectedDate?: number): number | null => {
+      if (!providedSelectedDate || selectedLayerDates.length === 0) {
+        return null;
+      }
+      let closestDate: number | null = null;
+      selectedLayersWithDateSupport.forEach(layer => {
+        const jsSelectedDate = new Date(providedSelectedDate);
+
+        const AADatesLoaded =
+          layer.type !== 'anticipatory_action' ||
+          layer.id in serverAvailableDates;
+
+        if (
+          serverAvailableDatesAreEmpty ||
+          possibleDatesForLayerIncludeSelectedDate(layer, jsSelectedDate) ||
+          !AADatesLoaded
+        ) {
+          return;
+        }
+
+        // eslint-disable-next-line fp/no-mutation
+        closestDate = findClosestDate(providedSelectedDate, selectedLayerDates);
+
+        if (
+          datesAreEqualWithoutTime(
+            jsSelectedDate.valueOf(),
+            closestDate.valueOf(),
+          )
+        ) {
+          console.warn({ closestDate });
+          console.warn(
+            'closest dates is the same as selected date, not updating url',
+          );
+        } else {
+          updateHistory(
+            'date',
+            getFormattedDate(closestDate, DateFormat.Default) as string,
+          );
+        }
+
+        dispatch(
+          addNotification({
+            message: `No data was found for layer '${
+              layer.title
+            }' on ${getFormattedDate(
+              jsSelectedDate,
+              DateFormat.Default,
+            )}. The closest date ${getFormattedDate(
+              closestDate,
+              DateFormat.Default,
+            )} has been loaded instead.`,
+            type: 'warning',
+          }),
+        );
+      });
+      return closestDate;
+    },
+    [
+      dispatch,
+      possibleDatesForLayerIncludeSelectedDate,
+      selectedLayerDates,
+      selectedLayersWithDateSupport,
+      serverAvailableDates,
+      serverAvailableDatesAreEmpty,
+      updateHistory,
+    ],
+  );
+
   useEffect(() => {
-    if (
-      !selectedDate ||
-      !urlDate ||
-      getTimeInMilliseconds(urlDate) === selectedDate
-    ) {
-      return;
-    }
-    selectedLayersWithDateSupport.forEach(layer => {
-      const jsSelectedDate = new Date(selectedDate);
-
-      const AADatesLoaded =
-        layer.type !== 'anticipatory_action' ||
-        layer.id in serverAvailableDates;
-
-      if (
-        serverAvailableDatesAreEmpty ||
-        possibleDatesForLayerIncludeSelectedDate(layer, jsSelectedDate) ||
-        !AADatesLoaded
-      ) {
-        return;
-      }
-
-      const closestDate = findClosestDate(selectedDate, selectedLayerDates);
-
-      if (
-        datesAreEqualWithoutTime(
-          jsSelectedDate.valueOf(),
-          closestDate.valueOf(),
-        )
-      ) {
-        console.warn({ closestDate });
-        console.warn(
-          'closest dates is the same as selected date, not updating url',
-        );
-      } else {
-        updateHistory(
-          'date',
-          getFormattedDate(closestDate, DateFormat.Default) as string,
-        );
-      }
-
-      dispatch(
-        addNotification({
-          message: `No data was found for layer '${
-            layer.title
-          }' on ${getFormattedDate(
-            jsSelectedDate,
-            DateFormat.Default,
-          )}. The closest date ${getFormattedDate(
-            closestDate,
-            DateFormat.Default,
-          )} has been loaded instead.`,
-          type: 'warning',
-        }),
-      );
-    });
-  }, [
-    dispatch,
-    possibleDatesForLayerIncludeSelectedDate,
-    selectedDate,
-    selectedLayerDates,
-    selectedLayersWithDateSupport,
-    serverAvailableDates,
-    serverAvailableDatesAreEmpty,
-    updateHistory,
-    urlDate,
-  ]);
+    checkSelectedDateForLayerSupport(selectedDate);
+  }, [checkSelectedDateForLayerSupport, selectedDate]);
 
   return {
     adminBoundariesExtent,
@@ -516,6 +558,7 @@ const useLayers = () => {
     selectedLayerDates,
     selectedLayers,
     selectedLayersWithDateSupport,
+    checkSelectedDateForLayerSupport,
   };
 };
 

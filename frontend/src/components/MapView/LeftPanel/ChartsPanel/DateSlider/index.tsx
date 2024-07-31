@@ -42,12 +42,20 @@ function DateSlider({
   return (
     <Box className={classes.sliderContainer}>
       <Box
-        display="flex"
-        flexDirection="row"
-        justifyContent="space-between"
-        style={{ paddingBottom: '0.5em' }}
+        style={{
+          display: 'flex',
+          flexDirection: 'row',
+          justifyContent: 'space-between',
+          paddingBottom: '0.5em',
+        }}
       >
-        <Box display="flex" flexDirection="row" alignItems="center">
+        <Box
+          style={{
+            display: 'flex',
+            flexDirection: 'row',
+            alignItems: 'center',
+          }}
+        >
           <Typography className={classes.textLabel} variant="body2">
             {t('Start')}
           </Typography>
@@ -57,7 +65,13 @@ function DateSlider({
           </Typography>
         </Box>
 
-        <Box display="flex" flexDirection="row" alignItems="center">
+        <Box
+          style={{
+            display: 'flex',
+            flexDirection: 'row',
+            alignItems: 'center',
+          }}
+        >
           <Typography className={classes.textLabel} variant="body2">
             {t('End')}
           </Typography>
