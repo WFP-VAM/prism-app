@@ -93,6 +93,12 @@ describe('Test generateIntermediateDateItemFromValidity', () => {
       },
       {
         displayDate: new Date('2023-12-11').setHours(12, 0),
+        queryDate: layer.dates[0],
+        startDate: layer.dates[0],
+        endDate: new Date('2023-12-11').setHours(12, 0),
+      },
+      {
+        displayDate: new Date('2023-12-11').setHours(12, 0),
         queryDate: layer.dates[1],
         startDate: layer.dates[1],
         endDate: new Date('2023-12-21').setHours(12, 0),
@@ -147,6 +153,12 @@ describe('Test generateIntermediateDateItemFromValidity', () => {
       },
       {
         displayDate: new Date('2023-12-20').setHours(12, 0),
+        queryDate: layer.dates[1],
+        startDate: layer.dates[1],
+        endDate: new Date('2023-12-21').setHours(12, 0),
+      },
+      {
+        displayDate: new Date('2023-12-21').setHours(12, 0),
         queryDate: layer.dates[1],
         startDate: layer.dates[1],
         endDate: new Date('2023-12-21').setHours(12, 0),
@@ -299,6 +311,12 @@ describe('Test generateIntermediateDateItemFromValidity', () => {
       },
       {
         displayDate: new Date('2023-12-01').setHours(12, 0),
+        queryDate: layer.dates[0],
+        startDate: new Date('2023-11-21').setHours(12, 0),
+        endDate: layer.dates[0],
+      },
+      {
+        displayDate: new Date('2023-12-01').setHours(12, 0),
         queryDate: layer.dates[1],
         startDate: new Date('2023-12-01').setHours(12, 0),
         endDate: layer.dates[1],
@@ -439,6 +457,12 @@ describe('Test generateIntermediateDateItemFromValidity', () => {
       },
       {
         displayDate: new Date('2023-11-30').setHours(12, 0),
+        queryDate: layer.dates[0],
+        endDate: layer.dates[0],
+        startDate: new Date('2023-11-21').setHours(12, 0),
+      },
+      {
+        displayDate: new Date('2023-12-01').setHours(12, 0),
         queryDate: layer.dates[0],
         endDate: layer.dates[0],
         startDate: new Date('2023-11-21').setHours(12, 0),

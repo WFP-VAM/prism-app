@@ -2,9 +2,9 @@ import { FeatureCollection } from 'geojson';
 import { appConfig } from 'config';
 import type { CompositeLayerProps } from 'config/types';
 import { fetchWithTimeout } from 'utils/fetch-with-timeout';
-import { LocalError } from 'utils/error-utils';
+import { HTTPError, LocalError } from 'utils/error-utils';
 import { addNotification } from 'context/notificationStateSlice';
-import { getFormattedDate } from 'utils/date-utils';
+import { getFormattedDate, getSeasonBounds } from 'utils/date-utils';
 
 import type { LayerDataParams, LazyLoader } from './layer-data';
 
@@ -14,10 +14,15 @@ export const fetchCompositeLayerData: LazyLoader<CompositeLayerProps> =
   () =>
   async (params: LayerDataParams<CompositeLayerProps>, { dispatch }) => {
     const { layer, date } = params;
-    const startDate = date ? new Date(date) : new Date();
-    // Setting an end date one month after the start date, adding support for seasons in WFP-VAM/prism-app#1301
-    const endDate = new Date(startDate);
-    endDate.setMonth(endDate.getMonth() + 1);
+    const referenceDate = date ? new Date(date) : new Date();
+    const seasonBounds = getSeasonBounds(referenceDate);
+    const useMonthly = !layer.period || layer.period === 'monthly';
+    const startDate = useMonthly ? referenceDate : seasonBounds.start;
+    // For monthly, setting an end date to one month after the start date
+    // For seasonal, setting an end date to the end of the season
+    const endDate = useMonthly
+      ? new Date(startDate).setMonth(startDate.getMonth() + 1)
+      : seasonBounds.end;
 
     const {
       baseUrl,
@@ -62,7 +67,7 @@ export const fetchCompositeLayerData: LazyLoader<CompositeLayerProps> =
 
       return geojson;
     } catch (error) {
-      if (!(error instanceof LocalError)) {
+      if (!(error instanceof LocalError) && !(error instanceof HTTPError)) {
         return undefined;
       }
       console.error(error);
