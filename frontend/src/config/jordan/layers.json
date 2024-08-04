@@ -4123,12 +4123,20 @@
       "mode": "season",
       "seasons": [
         {
-          "start": "01-March",
-          "end": "31-July"
+          "start": "01-January",
+          "end": "31-March"
         },
         {
-          "start": "01-August",
-          "end": "28-February"
+          "start": "01-April",
+          "end": "30-June"
+        },
+        {
+          "start": "01-July",
+          "end": "30-September"
+        },
+        {
+          "start": "01-October",
+          "end": "31-December"
         }
       ]
     },
