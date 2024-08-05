@@ -57,8 +57,8 @@ export const fetchCompositeLayerData: LazyLoader<CompositeLayerProps> =
 
     // docs: https://hip-service.ovio.org/docs#/default/run_q_multi_geojson_q_multi_geojson_post
     const body = {
-      begin: getFormattedDate(closestDateToStart, 'default', true),
-      end: getFormattedDate(closestDateToEnd, 'default', true),
+      begin: getFormattedDate(closestDateToStart, 'default'),
+      end: getFormattedDate(closestDateToEnd, 'default'),
       area: {
         min_lon: boundingBox[0],
         min_lat: boundingBox[1],
