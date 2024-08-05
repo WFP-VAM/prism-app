@@ -196,10 +196,10 @@ export const constructDateFromSeason = (
   season: SeasonBoundsConfig,
 ): SeasonBounds => {
   const startCurrentYear = new Date(
-    `${date.getFullYear()}-${season.start}`,
+    `${date.getFullYear()}-${season.start}T12:00:00Z`,
   ).getTime();
   const endCurrentYear = new Date(
-    `${date.getFullYear()}-${season.end}`,
+    `${date.getFullYear()}-${season.end}T12:00:00Z`,
   ).getTime();
   const startPreviousYear = startCurrentYear - millisecondsInAYear;
   const endNextYear = endCurrentYear + millisecondsInAYear;
@@ -241,3 +241,35 @@ export const getSeasonBounds = (
     end: new Date(date.getFullYear(), foundSeason[1] + 1, 1),
   };
 };
+
+/**
+ * Return the closest date from a given list of available dates
+ * @param date
+ * @param availableDates
+ * @return date as milliseconds
+ */
+export function findClosestDate(
+  date: number,
+  availableDates: ReturnType<Date['getTime']>[],
+) {
+  // TODO - better handle empty arrays.
+  if (availableDates.length === 0) {
+    return date;
+  }
+
+  const reducerFunc = (
+    closest: ReturnType<Date['getTime']>,
+    current: ReturnType<Date['getTime']>,
+  ) => {
+    const diff = Math.abs(current - date);
+    const closestDiff = Math.abs(closest - date);
+
+    if (diff < closestDiff) {
+      return current;
+    }
+
+    return closest;
+  };
+
+  return availableDates.reduce(reducerFunc);
+}
