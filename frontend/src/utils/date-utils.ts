@@ -7,7 +7,6 @@ export interface StartEndDate {
 }
 
 const millisecondsInADay = 24 * 60 * 60 * 1000;
-const millisecondsInAYear = 365 * millisecondsInADay;
 
 export const dateWithoutTime = (date: number | Date): number => {
   const cleanDate = date instanceof Date ? date.getTime() : date;
@@ -201,8 +200,12 @@ export const constructDateFromSeason = (
   const endCurrentYear = new Date(
     `${date.getUTCFullYear()}-${season.end}T12:00:00Z`,
   ).getTime();
-  const startPreviousYear = startCurrentYear - millisecondsInAYear;
-  const endNextYear = endCurrentYear + millisecondsInAYear;
+  const startPreviousYear = new Date(
+    `${date.getUTCFullYear() - 1}-${season.start}T12:00:00Z`,
+  ).getTime();
+  const endNextYear = new Date(
+    `${date.getUTCFullYear() + 1}-${season.end}T12:00:00Z`,
+  ).getTime();
 
   // eslint-disable-next-line no-nested-ternary
   return endCurrentYear >= startCurrentYear
