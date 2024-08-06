@@ -17,7 +17,7 @@ import { getFormattedDate } from './date-utils';
  */
 export function useDefaultDate(
   layerId: LayerKey,
-  expectedDataLagDays: number,
+  expectedDataLagDays?: number,
 ): number | undefined {
   const dispatch = useDispatch();
   const selectedLayers = useSelector(layersSelector);
