@@ -648,7 +648,7 @@ describe('Test generateIntermediateDateItemFromValidity', () => {
 
     expect(output).toEqual(
       daysInSeason.map(date => ({
-        displayDate: new Date(date).getTime(),
+        displayDate: new Date(date).setUTCHours(12),
         queryDate: new Date(start).getTime(),
         endDate: new Date(end).getTime(),
         startDate: new Date(start).getTime(),

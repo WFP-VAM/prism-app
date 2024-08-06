@@ -196,10 +196,10 @@ export const constructDateFromSeason = (
   season: SeasonBoundsConfig,
 ): SeasonBounds => {
   const startCurrentYear = new Date(
-    `${date.getFullYear()}-${season.start}`,
+    `${date.getUTCFullYear()}-${season.start}T12:00:00Z`,
   ).getTime();
   const endCurrentYear = new Date(
-    `${date.getFullYear()}-${season.end}`,
+    `${date.getUTCFullYear()}-${season.end}T12:00:00Z`,
   ).getTime();
   const startPreviousYear = startCurrentYear - millisecondsInAYear;
   const endNextYear = endCurrentYear + millisecondsInAYear;
