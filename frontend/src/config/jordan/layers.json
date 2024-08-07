@@ -1372,7 +1372,7 @@
     "type": "composite",
     "period": "monthly",
     "base_url": "https://hip-service.ovio.org/q_multi_geojson",
-    "expected_data_lag_days": 55,
+    "expected_data_lag_days": 70,
     "validity": {
       "forward": 1,
       "backward": 2,
@@ -1472,7 +1472,7 @@
     "type": "composite",
     "period": "seasonal",
     "base_url": "https://hip-service.ovio.org/q_multi_geojson",
-    "expected_data_lag_days": 55,
+    "expected_data_lag_days": 130,
     "validity": {
       "mode": "season",
       "seasons": [
@@ -1588,7 +1588,7 @@
     "type": "composite",
     "period": "monthly",
     "base_url": "https://hip-service.ovio.org/q_multi_geojson",
-    "expected_data_lag_days": 55,
+    "expected_data_lag_days": 70,
     "validity": {
       "forward": 1,
       "backward": 2,
@@ -1688,7 +1688,7 @@
     "type": "composite",
     "period": "seasonal",
     "base_url": "https://hip-service.ovio.org/q_multi_geojson",
-    "expected_data_lag_days": 55,
+    "expected_data_lag_days": 130,
     "validity": {
       "mode": "season"
     },
