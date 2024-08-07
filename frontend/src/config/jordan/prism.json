@@ -25,7 +25,6 @@
   ],
   "categories": {
     "rainfall": {
-      "forecasts": ["daily_rainfall_forecast", "dekad_rainfall_forecast", "dekad_rainfall_anomaly_forecast"],
       "rainfall_amount": [
         {
           "group_title": "Rainfall Aggregate",
