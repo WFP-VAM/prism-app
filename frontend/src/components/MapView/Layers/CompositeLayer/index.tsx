@@ -69,9 +69,15 @@ const CompositeLayer = memo(({ layer, before }: Props) => {
 
   useEffect(() => {
     if (requestDate) {
-      dispatch(loadLayerData({ layer, date: requestDate }));
+      dispatch(
+        loadLayerData({
+          layer,
+          date: requestDate,
+          availableDates: layerAvailableDates,
+        }),
+      );
     }
-  }, [dispatch, layer, requestDate]);
+  }, [dispatch, layer, layerAvailableDates, requestDate]);
 
   // Investigate performance impact of hexagons for large countries
   const finalFeatures =

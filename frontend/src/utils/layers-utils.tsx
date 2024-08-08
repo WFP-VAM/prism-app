@@ -1,4 +1,3 @@
-import { findClosestDate } from 'components/MapView/DateSelector/utils';
 import { checkLayerAvailableDatesAndContinueOrRemove } from 'components/MapView/utils';
 import { appConfig } from 'config';
 import {
@@ -41,6 +40,7 @@ import {
   binaryIncludes,
   getFormattedDate,
   dateWithoutTime,
+  findClosestDate,
 } from './date-utils';
 
 const dateSupportLayerTypes: Array<LayerType['type']> = [
