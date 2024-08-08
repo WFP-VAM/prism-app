@@ -8,10 +8,9 @@ from pathlib import Path
 from typing import Any, NewType, Optional
 from urllib.parse import urlencode
 
-
+import fiona
 import numpy as np
 import rasterio  # type: ignore
-import fiona
 from app.caching import CACHE_DIRECTORY, cache_file, get_json_file, is_file_valid
 from app.models import (
     FilePath,
@@ -376,7 +375,9 @@ def calculate_stats(
 
     try:
         geotiff_for_stats = geotiff
-        with rasterio.open(geotiff_for_stats) as src_geotiff, fiona.open(stats_input) as src_input:
+        with rasterio.open(geotiff_for_stats) as src_geotiff, fiona.open(
+            stats_input
+        ) as src_input:
             if src_geotiff.crs != src_input.crs:
                 geotiff_for_stats: FilePath = (
                     f"{CACHE_DIRECTORY}raster_reproj_{geotiff_hash}.tif"

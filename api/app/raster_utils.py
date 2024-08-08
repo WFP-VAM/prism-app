@@ -3,13 +3,12 @@
 import logging
 import os
 import subprocess
+
 import fiona
-
-from app.timer import timed
-
 import rasterio
-from rasterio.warp import CRS, Resampling, calculate_default_transform, reproject
+from app.timer import timed
 from rasterio.transform import from_bounds
+from rasterio.warp import CRS, Resampling, calculate_default_transform, reproject
 
 from .models import FilePath
 
@@ -64,7 +63,7 @@ def reproj_match(
     outfile : (string) path to output file tif
     """
     with rasterio.open(infile) as src:
-        if matchfile.endswith('.tif'):
+        if matchfile.endswith(".tif"):
             print("Match file is a raster.")
             with rasterio.open(matchfile) as match:
                 dst_crs = match.crs
@@ -74,7 +73,8 @@ def reproj_match(
                     dst_crs,  # output CRS
                     match.width,  # match width
                     match.height,  # match height
-                    *match.bounds,  # unpacks input outer boundaries (left, bottom, right, top)
+                    # unpacks input outer boundaries (left, bottom, right, top)
+                    *match.bounds,
                     resolution=match.res,  # ensure matching pixel size
                 )
         else:
