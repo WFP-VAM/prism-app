@@ -9,38 +9,6 @@ export type DateCompatibleLayerWithDateItems = DateCompatibleLayer & {
 };
 
 /**
- * Return the closest date from a given list of available dates
- * @param date
- * @param availableDates
- * @return date as milliseconds
- */
-export function findClosestDate(
-  date: number,
-  availableDates: ReturnType<Date['getTime']>[],
-) {
-  // TODO - better handle empty arrays.
-  if (availableDates.length === 0) {
-    return date;
-  }
-
-  const reducerFunc = (
-    closest: ReturnType<Date['getTime']>,
-    current: ReturnType<Date['getTime']>,
-  ) => {
-    const diff = Math.abs(current - date);
-    const closestDiff = Math.abs(closest - date);
-
-    if (diff < closestDiff) {
-      return current;
-    }
-
-    return closest;
-  };
-
-  return availableDates.reduce(reducerFunc);
-}
-
-/**
  * Binary search to return index of available dates that matched
  * @param availableDates in millisecond format, should be sorted
  * @param date in millisecond format

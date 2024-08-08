@@ -1,4 +1,4 @@
-import { DatesPropagation } from 'config/types';
+import { DatesPropagation, SeasonBounds } from 'config/types';
 import timezoneMock from 'timezone-mock';
 import {
   generateIntermediateDateItemFromValidity,
@@ -6,6 +6,7 @@ import {
   getAdminLevelDataCoverage,
 } from './server-utils';
 import { timezones } from '../../test/helpers';
+import { getSeasonBounds, SEASON_MAP } from './date-utils';
 
 // NOTE: all timestamps are created in the LOCAL timezone (as per js docs), so that
 // these tests should pass for any TZ.
@@ -534,6 +535,125 @@ describe('Test generateIntermediateDateItemFromValidity', () => {
         startDate: new Date('2023-12-01').setHours(12, 0),
       },
     ]);
+  });
+
+  test('should return correct dates for seasons', () => {
+    const dates = ['2023-01-01'];
+    const layer = {
+      name: 'myd11a2_taa_season',
+      dates: dates.map(date => new Date(date).setHours(12, 0)),
+      validity: {
+        mode: DatesPropagation.SEASON,
+      },
+    };
+    const output = generateIntermediateDateItemFromValidity(
+      layer.dates,
+      layer.validity,
+    );
+    const startOfWinter = new Date(
+      new Date(dates[0]).getFullYear(),
+      SEASON_MAP[0][0],
+      1,
+    );
+    const endOfWinter = new Date(
+      new Date(dates[0]).getFullYear(),
+      SEASON_MAP[0][1] + 1,
+      0,
+    );
+
+    const daysInSeason: Date[] = [];
+    while (
+      !daysInSeason[daysInSeason.length - 1] ||
+      daysInSeason[daysInSeason.length - 1] < endOfWinter
+    ) {
+      if (daysInSeason.length === 0) {
+        // eslint-disable-next-line fp/no-mutating-methods
+        daysInSeason.push(startOfWinter);
+      } else {
+        // eslint-disable-next-line fp/no-mutating-methods
+        daysInSeason.push(
+          new Date(
+            new Date(startOfWinter).setDate(
+              startOfWinter.getDate() + daysInSeason.length,
+            ),
+          ),
+        );
+      }
+    }
+
+    const { start, end } = getSeasonBounds(
+      new Date(daysInSeason[0]),
+    ) as SeasonBounds;
+    const adjustedEnd = new Date(end).setDate(0);
+    expect(output).toEqual(
+      daysInSeason.map(date => ({
+        displayDate: new Date(date).getTime(),
+        queryDate: new Date(dates[0]).getTime(),
+        endDate: new Date(adjustedEnd).getTime(),
+        startDate: new Date(start).getTime(),
+      })),
+    );
+  });
+
+  test('should return correct dates for custom seasons', () => {
+    const dates = ['2023-01-01'];
+    const layer = {
+      name: 'myd11a2_taa_season',
+      dates: dates.map(date => new Date(date).setHours(12, 0)),
+      validity: {
+        mode: DatesPropagation.SEASON,
+        seasons: [
+          {
+            start: '01-August',
+            end: '28-February',
+          },
+        ],
+      },
+    };
+    const output = generateIntermediateDateItemFromValidity(
+      layer.dates,
+      layer.validity,
+    );
+    const startOfWetSeason = new Date(
+      `${parseInt(dates[0].split('-')[0], 10) - 1}-${layer.validity.seasons[0].start}`,
+    );
+    const endOfWetSeason = new Date(
+      `${dates[0].split('-')[0]}-${layer.validity.seasons[0].end}`,
+    );
+
+    const daysInSeason: Date[] = [];
+    while (
+      !daysInSeason[daysInSeason.length - 1] ||
+      daysInSeason[daysInSeason.length - 1] < endOfWetSeason
+    ) {
+      if (daysInSeason.length === 0) {
+        // eslint-disable-next-line fp/no-mutating-methods
+        daysInSeason.push(startOfWetSeason);
+      } else {
+        // eslint-disable-next-line fp/no-mutating-methods
+        daysInSeason.push(
+          new Date(
+            new Date(startOfWetSeason).setDate(
+              startOfWetSeason.getDate() + daysInSeason.length,
+            ),
+          ),
+        );
+      }
+    }
+
+    const { start, end } = getSeasonBounds(
+      new Date(dates[0]),
+      layer.validity.seasons,
+    ) as SeasonBounds;
+
+    expect(output).toEqual(
+      daysInSeason.map(date => ({
+        displayDate: new Date(date).setUTCHours(12),
+        queryDate: new Date(start).getTime(),
+        endDate: new Date(end).getTime(),
+        startDate: new Date(start).getTime(),
+      })),
+    );
   });
 });
 
