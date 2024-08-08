@@ -3,10 +3,13 @@
 import logging
 import os
 import subprocess
+import fiona
+
+from app.timer import timed
 
 import rasterio
-from app.timer import timed
 from rasterio.warp import CRS, Resampling, calculate_default_transform, reproject
+from rasterio.transform import from_bounds
 
 from .models import FilePath
 
@@ -52,28 +55,37 @@ def reproj_match(
     outfile: FilePath,
     resampling_mode=Resampling.sum,
 ):
-    """Reproject a file to match the shape and projection of existing raster.
+    """Reproject a file to match the shape and projection of existing raster or vector file.
 
     Parameters
     ----------
     infile : (string) path to input file to reproject
-    match : (string) path to raster with desired shape and projection
+    matchfile : (string) path to raster or vector file with desired shape and projection
     outfile : (string) path to output file tif
     """
     with rasterio.open(infile) as src:
-        with rasterio.open(matchfile) as match:
-            dst_crs = match.crs
-            # calculate the output transform matrix
-            dst_transform, dst_width, dst_height = calculate_default_transform(
-                src.crs,  # input CRS
-                dst_crs,  # output CRS
-                match.width,  # match width
-                match.height,  # match height
-                *match.bounds,  # unpacks input outer boundaries (left, bottom, right, top)
-                resolution=match.res,  # ensure matching pixel size
-            )
+        if matchfile.endswith('.tif'):
+            print("Match file is a raster.")
+            with rasterio.open(matchfile) as match:
+                dst_crs = match.crs
+                # calculate the output transform matrix
+                dst_transform, dst_width, dst_height = calculate_default_transform(
+                    src.crs,  # input CRS
+                    dst_crs,  # output CRS
+                    match.width,  # match width
+                    match.height,  # match height
+                    *match.bounds,  # unpacks input outer boundaries (left, bottom, right, top)
+                    resolution=match.res,  # ensure matching pixel size
+                )
+        else:
+            with fiona.open(matchfile) as match:
+                dst_crs = CRS.from_string(match.crs_wkt)
+                dst_bounds = match.bounds
+                dst_width = src.width
+                dst_height = src.height
+                # Manually create the transform
+                dst_transform = from_bounds(*dst_bounds, dst_width, dst_height)
 
-        # set properties for output
         dst_kwargs = src.meta.copy()
         dst_kwargs.update(
             {
