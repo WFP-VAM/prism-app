@@ -107,7 +107,12 @@ const appConfig: Record<string, any> = merge(
   configMap[safeCountry].appConfig,
 );
 
-export function getRawLayers(country: Country): Record<string, any> {
+export function getRawLayers(
+  country: Country,
+  filter = false,
+): Record<string, any> {
+  const countryLayerIds = JSON.stringify(get(configMap, country, {}));
+
   return Object.fromEntries(
     Object.entries(
       merge(
@@ -117,18 +122,21 @@ export function getRawLayers(country: Country): Record<string, any> {
         sharedLayers,
         configMap[country].rawLayers,
       ),
-    ).map(([key, layer]) => {
-      if (typeof layer.legend === 'string') {
-        if (!sharedLegends[layer.legend]) {
-          throw new Error(
-            `Legend '${layer.legend}' could not be found in shared legends.`,
-          );
+    )
+      // Filter layers that appear in the country config
+      .filter(([key, _layer]) => !filter || countryLayerIds.includes(key))
+      .map(([key, layer]) => {
+        if (typeof layer.legend === 'string') {
+          if (!sharedLegends[layer.legend]) {
+            throw new Error(
+              `Legend '${layer.legend}' could not be found in shared legends.`,
+            );
+          }
+          // eslint-disable-next-line no-param-reassign, fp/no-mutation
+          layer.legend = sharedLegends[layer.legend] || layer.legend;
         }
-        // eslint-disable-next-line no-param-reassign, fp/no-mutation
-        layer.legend = sharedLegends[layer.legend] || layer.legend;
-      }
-      return [key, layer];
-    }),
+        return [key, layer];
+      }),
   );
 }
 
