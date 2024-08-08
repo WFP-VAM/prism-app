@@ -45,6 +45,7 @@ import {
 import About from './About';
 import LanguageSelector from './LanguageSelector';
 import PrintImage from './PrintImage';
+import MapStyleSelector from './MapStyleSelector';
 
 const panels = [
   { panel: Panel.Layers, label: 'Layers', icon: <LayersOutlined /> },
@@ -221,6 +222,7 @@ function NavBar({ isAlertFormOpen, setIsAlertFormOpen }: NavBarProps) {
             {buttons}
             <About />
             <LanguageSelector />
+            <MapStyleSelector />
           </div>
         </div>
       </Toolbar>

@@ -23,7 +23,7 @@ import {
   getLayerMapId,
   isLayerOnView,
 } from 'utils/map-utils';
-import { mapSelector } from 'context/mapStateSlice/selectors';
+import { mapSelector, mapStyleSelector } from 'context/mapStateSlice/selectors';
 import {
   AdminLevelDataLayer,
   AnticipatoryActionLayer,
@@ -40,7 +40,6 @@ import { MapSourceDataEvent, Map as MaplibreMap } from 'maplibre-gl';
 
 import 'maplibre-gl/dist/maplibre-gl.css';
 import { Panel, leftPanelTabValueSelector } from 'context/leftPanelStateSlice';
-import { mapStyle } from './utils';
 
 interface MapComponentProps {
   setIsAlertFormOpen: Dispatch<SetStateAction<boolean>>;
@@ -51,6 +50,12 @@ type LayerComponentsMap<U extends LayerType> = {
     component: ComponentType<{ layer: DiscriminateUnion<U, 'type', T> }>;
   };
 };
+
+// eslint-disable-next-line react-refresh/only-export-components
+export const fallbackMapStyle = new URL(
+  process.env.REACT_APP_DEFAULT_STYLE ||
+    'https://api.maptiler.com/maps/0ad52f6b-ccf2-4a36-a9b8-7ebd8365e56f/style.json?key=y2DTSu9yWiu755WByJr3',
+);
 
 const componentTypes: LayerComponentsMap<LayerType> = {
   boundary: { component: BoundaryLayer },
@@ -78,11 +83,12 @@ const MapComponent = memo(({ setIsAlertFormOpen }: MapComponentProps) => {
 
   const selectedMap = useSelector(mapSelector);
   const tabValue = useSelector(leftPanelTabValueSelector);
+  const mapStyle = useSelector(mapStyleSelector);
 
   const panelHidden = tabValue === Panel.None;
 
   const [firstSymbolId, setFirstSymbolId] = useState<string | undefined>(
-    'label_airport',
+    undefined,
   );
 
   const fitBoundsOptions = useMemo(
@@ -227,7 +233,7 @@ const MapComponent = memo(({ setIsAlertFormOpen }: MapComponentProps) => {
         bounds: boundingBox,
         fitBoundsOptions: { padding: fitBoundsOptions.padding },
       }}
-      mapStyle={mapStyle.toString()}
+      mapStyle={mapStyle?.url || fallbackMapStyle.toString()}
       onLoad={onMapLoad}
       onClick={mapOnClick}
       maxBounds={maxBounds}

@@ -33,3 +33,6 @@ export const loadingLayerIdsSelector = (state: RootState): LayerKey[] =>
 export const boundaryRelationSelector = (
   state: RootState,
 ): BoundaryRelationsDict => state.mapState.boundaryRelationData;
+
+export const mapStyleSelector = (state: RootState): MapState['mapStyle'] =>
+  state.mapState.mapStyle;
