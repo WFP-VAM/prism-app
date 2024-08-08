@@ -14,6 +14,7 @@ from app.caching import FilePath, cache_file, cache_geojson
 from app.database.alert_model import AlchemyEncoder, AlertModel
 from app.database.database import AlertsDataBase
 from app.database.user_info_model import UserInfoModel
+from app.googleflood import get_google_floods_gauges
 from app.hdc import get_hdc_stats
 from app.kobo import get_form_dates, get_form_responses, parse_datetime_params
 from app.models import AcledRequest, RasterGeotiffModel
@@ -412,3 +413,10 @@ def post_raster_geotiff(raster_geotiff: RasterGeotiffModel):
     return JSONResponse(
         content={"download_url": presigned_download_url}, status_code=200
     )
+
+
+@app.get("/google-floods-gauges")
+def get_google_floods_gauges_api(
+    iso2: str,
+):
+    return get_google_floods_gauges(iso2)
