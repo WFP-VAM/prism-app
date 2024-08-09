@@ -77,7 +77,7 @@ def generate_geotiff_from_stac_api(
         logger.warning("An error occured writing file")
         raise e
 
-    # If the tif's CRS is not 4326, reproject it to 4326 as expected 
+    # If the tif's CRS is not 4326, reproject it to 4326 as expected
     # (this is particularly useful for the MODIS data)
     if get_raster_crs(file_path) != CRS_EPSG_4326:
         reproject_raster(file_path, CRS_EPSG_4326, file_path)
