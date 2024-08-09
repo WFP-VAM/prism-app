@@ -5,9 +5,9 @@ import os
 import subprocess
 
 import rasterio
+import rioxarray
 from app.timer import timed
 from rasterio.warp import CRS, Resampling, calculate_default_transform, reproject
-import rioxarray
 
 from .models import FilePath
 
@@ -73,7 +73,7 @@ def reproj_match(
                 *match.bounds,  # unpacks input outer boundaries (left, bottom, right, top)
                 resolution=match.res,  # ensure matching pixel size
             )
-        
+
         # set properties for output
         dst_kwargs = src.meta.copy()
         dst_kwargs.update(
@@ -116,11 +116,13 @@ def calculate_pixel_area(geotiff_file):
 
         return area
 
+
 @timed
 def reproject_raster(raster_file: FilePath, dst_crs: str, out_file: FilePath):
     """Reproject a raster file to a new CRS."""
     x_raster = rioxarray.open_rasterio(raster_file, masked=True)
     x_raster.rio.reproject(dst_crs).rio.to_raster(out_file)
+
 
 def get_raster_crs(raster_file: FilePath):
     """Get the CRS of a raster file."""
