@@ -70,7 +70,7 @@ export function getAlertMessage(
   if (!Array.isArray(aggregateData)) {
     console.warn('aggregateData is not an array');
     console.warn('aggregateData', JSON.stringify(aggregateData));
-    return undefined
+    return undefined;
   }
 
   aggregateData.forEach((data) => {
@@ -100,6 +100,7 @@ export function getAlertMessage(
 
 export async function calculateBoundsForAlert(date: Date, alert: Alert) {
   if (!alert.zones) {
+    console.warn(`No zones provided for alert ${alert.id}.`);
     return undefined;
   }
   const extent = bbox(alert.zones) as Extent;

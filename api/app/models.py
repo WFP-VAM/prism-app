@@ -55,7 +55,7 @@ class StatsModel(BaseModel):
     """Schema for stats data to be passed to /stats endpoint."""
 
     geotiff_url: HttpUrl = Field(..., example=stats_data["geotiff_url"])
-    zones_url: HttpUrl = Field(..., example=stats_data["zones_url"])
+    zones_url: Optional[HttpUrl] = Field(..., example=stats_data["zones_url"])
     group_by: str = Field(..., example=stats_data["group_by"])
     wfs_params: Optional[WfsParamsModel] = None
     geojson_out: Optional[bool] = False
@@ -64,6 +64,13 @@ class StatsModel(BaseModel):
     mask_url: Optional[str] = None
     mask_calc_expr: Optional[str] = None
     filter_by: Optional[FilterProperty] = None
+
+    @root_validator
+    def check_zones_or_zones_url(cls, values):
+        zones_url, zones = values.get("zones_url"), values.get("zones")
+        if not zones_url and not zones:
+            raise ValueError("Either zones_url or zones must be provided.")
+        return values
 
 
 class RasterGeotiffModel(BaseModel):
@@ -104,7 +111,7 @@ class AlertsZonesModel(BaseModel):
 
     type: str = Field(..., example=alert_data_zones["type"])
     name: str = Field(..., example=alert_data_zones["name"])
-    crs: dict = Field(..., example=alert_data_zones["crs"])
+    crs: Optional[dict] = Field(None, example=alert_data_zones["crs"])
     features: dict | list[dict] = Field(..., example=alert_data_zones["features"])
 
     _val_type = validator("type", allow_reuse=True)(must_not_contain_null_char)

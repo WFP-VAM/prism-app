@@ -1,6 +1,6 @@
 import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
 import { join } from 'path';
-import { ConnectionOptions } from 'typeorm';
+import { DataSourceOptions } from 'typeorm';
 
 // dotenv is a dev dependency, so conditionally import it (don't need it in Prod).
 try {
@@ -29,7 +29,7 @@ const connectionInfo = process.env.PRISM_ALERTS_DATABASE_URL
 // Unfortunately, we need to use CommonJS/AMD style exports rather than ES6-style modules for this due to how
 // TypeORM expects the config to be available. Typescript doesn't like this- hence the @ts-ignore.
 // @ts-ignore
-export = ({
+export = {
   type: 'postgres',
   ...connectionInfo,
   // We don't want to auto-synchronize production data - we should deliberately run migrations.
@@ -51,4 +51,4 @@ export = ({
     migrationsDir: 'migration',
     subscribersDir: 'subscriber',
   },
-} as unknown) as ConnectionOptions;
+} as unknown as DataSourceOptions;

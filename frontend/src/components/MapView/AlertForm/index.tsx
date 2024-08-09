@@ -77,6 +77,9 @@ function AlertForm({ isOpen, setOpen }: AlertFormProps) {
     );
   }, [boundaryLayerData]);
 
+  // TODO - leverage boundaryDropdown results directly and try to use
+  // top-level boundary data when possible. Eg. when a region is selected,
+  // try to use the boundary of that region instead of all the districts.
   const generateGeoJsonForRegionNames = useCallback(() => {
     // TODO - Handle these errors properly.
     if (!boundaryLayerData) {
@@ -87,9 +90,9 @@ function AlertForm({ isOpen, setOpen }: AlertFormProps) {
       throw new Error('Please select at least one region boundary.');
     }
 
-    const features = regionsList.map(
-      region => regionCodesToFeatureData[region],
-    );
+    const features = regionsList
+      .map(region => regionCodesToFeatureData[region])
+      .filter(Boolean);
 
     // Generate a copy of admin layer data (to preserve top-level properties)
     // and replace the 'features' property with just the selected regions.

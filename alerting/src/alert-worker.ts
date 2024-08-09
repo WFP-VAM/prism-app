@@ -20,28 +20,32 @@ async function processAlert(alert: Alert, alertRepository: Repository<Alert>) {
     id: hazardLayerId,
   } = alert.alertConfig;
 
-  const {
-    id,
-    alertName,
-    createdAt,
-    email,
-    lastTriggered,
-    prismUrl,
-    active,
-  } = alert;
+  const { id, alertName, createdAt, email, lastTriggered, prismUrl, active } =
+    alert;
+
+  console.log(
+    `Processing alert with ID: ${id}, Name: ${alertName}, Email: ${email}, Last Triggered: ${lastTriggered}, PRISM URL: ${prismUrl}`,
+  );
 
   let availableDates;
   let layerAvailableDates = [];
   try {
-    availableDates = type === 'wms'
-      ? await new WMS(`${baseUrl}/wms`.replace(/([^:]\/)\/+/g, "$1")).getLayerDays()
-      : await fetchCoverageLayerDays(baseUrl);
+    availableDates =
+      type === 'wms'
+        ? await new WMS(
+            `${baseUrl}/wms`.replace(/([^:]\/)\/+/g, '$1'),
+          ).getLayerDays()
+        : await fetchCoverageLayerDays(baseUrl);
     layerAvailableDates = availableDates[serverLayerName];
   } catch (error) {
-    console.warn(`Failed to fetch available dates for ${baseUrl} ${serverLayerName}: ${(error as Error).message}`);
+    console.warn(
+      `Failed to fetch available dates for ${baseUrl} ${serverLayerName}: ${
+        (error as Error).message
+      }`,
+    );
   }
 
-  if (!layerAvailableDates) {
+  if (!layerAvailableDates || layerAvailableDates.length === 0) {
     console.warn(`No dates available for ${baseUrl} ${serverLayerName}.`);
     return;
   }
@@ -53,6 +57,11 @@ async function processAlert(alert: Alert, alertRepository: Repository<Alert>) {
     (lastTriggered && lastTriggered >= maxDate) ||
     createdAt >= maxDate
   ) {
+    console.log(
+      `No new data for alert ${id}. Last triggered or created on ${(
+        lastTriggered || createdAt
+      ).toDateString()}. Max available date is ${maxDate.toDateString()}.`,
+    );
     return;
   }
 
@@ -89,9 +98,8 @@ async function processAlert(alert: Alert, alertRepository: Repository<Alert>) {
     console.log(
       `Alert ${id} - '${alert.alertName}' was triggered on ${maxDate}.`,
     );
-    // TODO - Send an email using WFP SMTP servers.
     await sendEmail({
-      from: 'prism-alert@ovio.org',
+      from: 'wfp.prism@wfp.org',
       to: email,
       subject: `PRISM Alert Triggered`,
       text: emailMessage,
@@ -100,7 +108,7 @@ async function processAlert(alert: Alert, alertRepository: Repository<Alert>) {
 
     console.log(alertMessage);
   }
-  // Update lastTriggered (imnactive during testing)
+  // Update lastTriggered (inactive during testing)
   await alertRepository.update(alert.id, { lastTriggered: maxDate });
 }
 async function run() {
@@ -108,7 +116,11 @@ async function run() {
   const alertRepository = connection.getRepository(Alert);
 
   const alerts = await alertRepository.find({ where: { active: true } });
-  console.info(`Processing ${alerts.length} active alerts.`);
+  console.info(
+    `Processing ${
+      alerts.length
+    } active alerts on ${new Date().toLocaleDateString()}.`,
+  );
 
   await Bluebird.map(
     alerts,
