@@ -159,6 +159,7 @@ export function parseAndTransformAA(data: any[]) {
           dateData.forEach(x => {
             // reset prevMax when entering a new season
             if (prevMax && x.season !== prevMax.season) {
+              // eslint-disable-next-line fp/no-mutation
               prevMax = undefined;
             }
             if (!x.isValid) {
