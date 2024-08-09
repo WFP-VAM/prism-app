@@ -8,7 +8,6 @@ from pathlib import Path
 from typing import Any, NewType, Optional
 from urllib.parse import urlencode
 
-import fiona
 import numpy as np
 import rasterio  # type: ignore
 from app.caching import CACHE_DIRECTORY, cache_file, get_json_file, is_file_valid
@@ -282,10 +281,11 @@ def calculate_stats(
     """Calculate stats."""
 
     # Add mask option for flood exposure analysis
-    # quick hack to create "readable" filenames for caching.
-    geotiff_hash = Path(geotiff).name.replace("raster_", "").replace(".tif", "")
     if mask_geotiff:
+        # quick hack to create "readable" filenames for caching.
+        geotiff_hash = Path(geotiff).name.replace("raster_", "").replace(".tif", "")
         mask_hash = Path(mask_geotiff).name.replace("raster_", "").replace(".tif", "")
+
         # Slugify the calc expression into a reasonable filename
         slugified_calc = "default"
         if mask_calc_expr is not None:
@@ -374,24 +374,9 @@ def calculate_stats(
         }
 
     try:
-        geotiff_for_stats = geotiff
-        with rasterio.open(geotiff_for_stats) as src_geotiff, fiona.open(
-            stats_input
-        ) as src_input:
-            if src_geotiff.crs != src_input.crs:
-                geotiff_for_stats: FilePath = (
-                    f"{CACHE_DIRECTORY}raster_reproj_{geotiff_hash}.tif"
-                )
-                reproj_match(
-                    geotiff,
-                    stats_input,
-                    geotiff_for_stats,
-                    resampling_mode=Resampling.average,
-                )
-
         stats_results = zonal_stats(
             stats_input,
-            geotiff_for_stats,
+            geotiff,
             stats=stats if stats is not None else DEFAULT_STATS,
             prefix=prefix,
             geojson_out=geojson_out,
