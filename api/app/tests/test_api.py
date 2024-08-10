@@ -1,6 +1,9 @@
-from unittest.mock import patch
+import os
+import tempfile
+from unittest.mock import MagicMock, patch
 
 import pytest
+import rasterio
 import schemathesis
 from app.database.database import AlertsDataBase
 from app.main import app
@@ -214,3 +217,71 @@ def test_raster_geotiff_endpoint(get_geotiff_mock):
 
     assert response.status_code == 200
     assert response.json() == {"download_url": test_url}
+
+
+@patch("boto3.client")
+@patch("app.geotiff_from_stac_api.upload_to_s3")
+@patch("app.geotiff_from_stac_api.write_cog")
+def test_raster_geotiff_endpoint_non_4326(
+    mock_write_cog, mock_upload_to_s3, mock_boto3_client
+):
+    """
+    Call /raster_geotiff with a non-4326 CRS projection.
+    """
+    # Construct the path to the sample GeoTIFF file
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    sample_tiff_path = os.path.join(
+        current_dir, "raster_sample_not-norm_projection.tif"
+    )
+
+    # Create a temporary file to simulate the COG uploaded to S3
+    with tempfile.NamedTemporaryFile(suffix=".tif", delete=False) as temp_file:
+        temp_filename = temp_file.name
+
+    def copy_geotiff(src_path, dst_path):
+        with rasterio.open(src_path) as src:
+            profile = src.profile
+            profile.update(driver="GTiff")
+            with rasterio.open(dst_path, "w", **profile) as dst:
+                dst.write(src.read())
+
+    # Mock the S3 client to return the temporary file path
+    mock_s3_client = MagicMock()
+    mock_s3_client.generate_presigned_url.return_value = temp_filename
+    mock_boto3_client.return_value = mock_s3_client
+
+    # Mock the upload_to_s3 function to copy the sample GeoTIFF to the temporary file
+    def fake_upload_to_s3(file_path):
+        copy_geotiff(file_path, temp_filename)
+
+    mock_upload_to_s3.side_effect = fake_upload_to_s3
+
+    # Mock the write_cog function to copy the sample GeoTIFF to the temporary file
+    def fake_write_cog(_, file_path):
+        copy_geotiff(sample_tiff_path, file_path)
+
+    mock_write_cog.side_effect = fake_write_cog
+
+    response = client.post(
+        "/raster_geotiff",
+        headers={"Accept": "application/json"},
+        json={
+            "lat_min": -20,
+            "long_min": -71,
+            "lat_max": 21,
+            "long_max": 71.1,
+            "date": "2020-09-01",
+            "collection": "mxd13a2_vim_dekad",
+        },
+    )
+
+    assert response.status_code == 200
+    stored_file = response.json()["download_url"]
+    local_path = stored_file.replace("file://", "")
+
+    # Verify that the file exists and has the correct CRS
+    assert os.path.exists(local_path)
+    with rasterio.open(local_path) as src:
+        assert src.crs == rasterio.crs.CRS.from_epsg(4326)
+
+    os.unlink(local_path)
