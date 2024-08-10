@@ -254,13 +254,13 @@ def test_raster_geotiff_endpoint_non_4326(
     def fake_upload_to_s3(file_path):
         copy_geotiff(file_path, temp_filename)
 
-    mock_upload_to_s3.side_effect = fake_upload_to_s3
+    mock_upload_to_s3.side_effect = lambda file_path: fake_upload_to_s3(file_path)
 
     # Mock the write_cog function to copy the sample GeoTIFF to the temporary file
-    def fake_write_cog(_, file_path):
+    def fake_write_cog(dataset, file_path, overwrite=True):
         copy_geotiff(sample_tiff_path, file_path)
 
-    mock_write_cog.side_effect = fake_write_cog
+    mock_write_cog.side_effect = lambda dataset, file_path, overwrite=True: fake_write_cog(dataset, file_path, overwrite)
 
     response = client.post(
         "/raster_geotiff",
