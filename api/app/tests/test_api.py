@@ -260,7 +260,11 @@ def test_raster_geotiff_endpoint_non_4326(
     def fake_write_cog(dataset, file_path, overwrite=True):
         copy_geotiff(sample_tiff_path, file_path)
 
-    mock_write_cog.side_effect = lambda dataset, file_path, overwrite=True: fake_write_cog(dataset, file_path, overwrite)
+    mock_write_cog.side_effect = (
+        lambda dataset, file_path, overwrite=True: fake_write_cog(
+            dataset, file_path, overwrite
+        )
+    )
 
     response = client.post(
         "/raster_geotiff",
