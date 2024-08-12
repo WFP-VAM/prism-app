@@ -2987,7 +2987,7 @@
       },
       "severity": {
         "type": "labelMapping",
-        "dataTitle": "Severity",
+        "dataTitle": "Flood Status",
         "labelMap": {
           "EXTREME": "Extreme",
           "SEVERE": "Danger",
