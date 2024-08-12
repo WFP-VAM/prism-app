@@ -768,6 +768,36 @@ export function formatFeatureInfo(
 }
 
 /**
+ * Format value into feature title response based on DataType and template provided
+ *
+ * @return a formatted string
+ */
+export function formatFeatureTitle(
+  value: string,
+  type: DataType,
+  template: string,
+  labelMap?: { [key: string]: string },
+): string {
+  let formattedValue = value;
+
+  if (type === DataType.Date) {
+    // eslint-disable-next-line fp/no-mutation
+    formattedValue = getFormattedDate(value, 'locale') as string;
+  }
+
+  if (type === DataType.LabelMapping) {
+    if (!labelMap) {
+      throw new Error('labelMap not defined.');
+    }
+
+    // eslint-disable-next-line fp/no-mutation
+    formattedValue = labelMap[value];
+  }
+
+  return template.replace('%s', formattedValue);
+}
+
+/**
  * Executes a getFeatureInfo request
  *
  * @return object of key: string - value: string with formatted values given label type.

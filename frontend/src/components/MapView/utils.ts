@@ -2,14 +2,14 @@ import { orderBy, snakeCase, values } from 'lodash';
 import { TFunction } from 'i18next';
 import { Dispatch } from 'redux';
 import { LayerDefinitions } from 'config/utils';
-import { formatFeatureInfo } from 'utils/server-utils';
+import { formatFeatureInfo, formatFeatureTitle } from 'utils/server-utils';
 import {
   AvailableDates,
   FeatureInfoObject,
   FeatureInfoProps,
-  FeatureInfoTitle,
   FeatureInfoType,
   FeatureInfoVisibility,
+  FeatureTitleObject,
   LayerType,
   LegendDefinitionItem,
   WMSLayerProps,
@@ -119,23 +119,24 @@ const sortKeys = (featureInfoProps: FeatureInfoObject): string[][] => {
 };
 
 const getTitle = (
-  featureInfoTitle: FeatureInfoTitle | undefined,
-  featureInfoProps: FeatureInfoObject,
+  featureInfoTitle: FeatureTitleObject | undefined,
   properties: any,
 ): PopupData | {} => {
   if (!featureInfoTitle) {
     return {};
   }
-  const titleField = featureInfoTitle?.fields?.find(
+  const titleField = Object.keys(featureInfoTitle).find(
     (field: string) => !!properties[field],
   );
   return titleField
     ? {
         title: {
-          data: formatFeatureInfo(
+          prop: titleField,
+          data: formatFeatureTitle(
             properties[titleField],
-            featureInfoProps[titleField].type,
-            featureInfoProps[titleField].labelMap,
+            featureInfoTitle[titleField].type,
+            featureInfoTitle[titleField].template,
+            featureInfoTitle[titleField].labelMap,
           ),
         },
       }
@@ -188,7 +189,7 @@ const getData = (
 
 // TODO: maplibre: fix feature
 export function getFeatureInfoPropsData(
-  featureInfoTitle: FeatureInfoTitle | undefined,
+  featureInfoTitle: FeatureTitleObject | undefined,
   featureInfoProps: FeatureInfoObject,
   coordinates: number[],
   feature: any,
@@ -197,7 +198,7 @@ export function getFeatureInfoPropsData(
   const { properties } = feature;
 
   return {
-    ...getTitle(featureInfoTitle, featureInfoProps, properties),
+    ...getTitle(featureInfoTitle, properties),
     ...getMetaData(featureInfoProps, metaDataKeys, properties),
     ...getData(featureInfoProps, keys, properties, coordinates),
   };

@@ -3,6 +3,13 @@ import { merge } from 'lodash';
 import { AdminCodeString } from 'config/types';
 import type { RootState } from './store';
 
+export interface PopupTitleData {
+  title: {
+    prop: string;
+    data: number | string | null;
+  };
+}
+
 export interface PopupData {
   [key: string]: {
     data: number | string | null;
@@ -22,7 +29,7 @@ export interface MapTooltipState {
   locationSelectorKey: string;
   locationName: string;
   locationLocalName: string;
-  data: PopupData & PopupMetaData;
+  data: (PopupData & PopupMetaData) | PopupTitleData;
   showing: boolean;
   wmsGetFeatureInfoLoading: boolean;
 }

@@ -267,6 +267,10 @@ export enum Interval {
   ONE_YEAR = '1-year',
 }
 
+export type FeatureTitleObject = {
+  [key: string]: FeatureInfoTitle;
+};
+
 export type FeatureInfoObject = {
   [key: string]: FeatureInfoProps;
 };
@@ -299,7 +303,7 @@ export class CommonLayerProps {
   contentPath?: string;
 
   @optional
-  featureInfoTitle?: FeatureInfoTitle;
+  featureInfoTitle?: FeatureTitleObject;
   @optional
   featureInfoProps?: FeatureInfoObject;
 
@@ -408,7 +412,10 @@ export enum FeatureInfoVisibility {
 type PopupMetaDataKeys = keyof PopupMetaData;
 
 export interface FeatureInfoTitle {
-  fields: string[];
+  type: DataType;
+  template: string;
+  labelMap?: { [key: string]: string };
+  visibility?: FeatureInfoVisibility;
 }
 
 export interface FeatureInfoProps {

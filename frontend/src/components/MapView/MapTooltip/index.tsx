@@ -12,6 +12,7 @@ import {
   hidePopup,
   PopupData,
   PopupMetaData,
+  PopupTitleData,
   tooltipSelector,
 } from 'context/tooltipStateSlice';
 import { isEnglishLanguageSelected, useSafeTranslation } from 'i18n';
@@ -86,9 +87,9 @@ const MapTooltip = memo(() => {
   );
 
   const { dataset, isLoading } = usePointDataChart();
-  const providedPopupTitle = popup.data.title;
-  const popupData = providedPopupTitle
-    ? (omit(popup.data, 'title') as PopupData & PopupMetaData)
+  const providedPopupTitle = (popup.data as PopupTitleData).title;
+  const popupData: PopupData & PopupMetaData = providedPopupTitle
+    ? omit(popup.data, 'title', providedPopupTitle.prop)
     : popup.data;
   const defaultPopupTitle = useMemo(() => {
     if (providedPopupTitle) {

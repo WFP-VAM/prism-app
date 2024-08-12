@@ -2972,7 +2972,21 @@
       { "label": "Unknown", "value": "UNKNOWN", "color": "#858585" }
     ],
     "feature_info_title": {
-      "fields": ["siteName", "river", "gaugeId"]
+      "siteName": {
+        "type": "text",
+        "template": "Site: %s",
+        "visibility": "if-defined"
+      },
+      "river": {
+        "type": "text",
+        "template": "River: %s",
+        "visibility": "if-defined"
+      },
+      "gaugeId": {
+        "type": "text",
+        "template": "Gauge ID: %s",
+        "visibility": "if-defined"
+      }
     },
     "feature_info_props": {
       "siteName": {
