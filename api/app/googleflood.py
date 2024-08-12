@@ -1,4 +1,4 @@
-"""Get data from Humanitarian Data Cube (HDC) API"""
+"""Get data from Google Floods API"""
 
 import logging
 from os import getenv
