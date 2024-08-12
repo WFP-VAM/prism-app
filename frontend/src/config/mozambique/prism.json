@@ -20,7 +20,8 @@
     "risk": "icon_impact.png",
     "tropical_storms": "icon_tropical_storm.png",
     "vulnerability": "icon_vulnerable.png",
-    "exposure": "icon_basemap.png"
+    "exposure": "icon_basemap.png",
+    "flood": "icon_basemap.png"
   },
   "defaultDisplayBoundaries": [
     "admin_boundaries",
@@ -454,6 +455,9 @@
     },
     "exposure": {
       "population": ["census"]
+    },
+    "flood": {
+      "flood_gauges": ["google_flood_gauges"]
     }
   }
 }

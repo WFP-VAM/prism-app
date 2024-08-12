@@ -2954,5 +2954,46 @@
     "start_date": "2020-12-01",
     "end_date": "2021-07-31",
     "opacity": 0.7
+  },
+  "google_flood_gauges": {
+    "title": "Google Flood Gauges",
+    "type": "point_data",
+    "hex_display": false,
+    "data": "http://0.0.0.0:80/google-floods/gauges/?region_code=MZ",
+    "data_field": "severity",
+    "opacity": 0.7,
+    "legend_text": "Google Flood Gauges",
+    "legend": [
+      {
+        "label": "Extreme",
+        "value": "EXTREME",
+        "color": "#fa1a18"
+      },
+      {
+        "label": "Severe",
+        "value": "SEVERE",
+        "color": "#fba12e"
+      },
+      {
+        "label": "Above Normal",
+        "value": "ABOVE_NORMAL",
+        "color": "#ffff43"
+      },
+      {
+        "label": "No Flooding",
+        "value": "NO_FLOODING",
+        "color": "#c5c5c5"
+      },
+      {
+        "label": "Unknown",
+        "value": "UNKNOWN",
+        "color": "#cefdba"
+      },
+      {
+        "label": "Severity Unspecified",
+        "value": "SEVERITY_UNSPECIFIED",
+        "color": "#91e038"
+      }
+    ]
   }
 }
