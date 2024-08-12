@@ -1,4 +1,5 @@
 import { memo, useCallback, useMemo, useState } from 'react';
+import { omit } from 'lodash';
 import { useDispatch, useSelector } from 'react-redux';
 import { Popup } from 'react-map-gl/maplibre';
 import {
@@ -7,7 +8,12 @@ import {
   IconButton,
   makeStyles,
 } from '@material-ui/core';
-import { hidePopup, tooltipSelector } from 'context/tooltipStateSlice';
+import {
+  hidePopup,
+  PopupData,
+  PopupMetaData,
+  tooltipSelector,
+} from 'context/tooltipStateSlice';
 import { isEnglishLanguageSelected, useSafeTranslation } from 'i18n';
 import { AdminLevelType } from 'config/types';
 import { appConfig } from 'config';
@@ -80,15 +86,19 @@ const MapTooltip = memo(() => {
   );
 
   const { dataset, isLoading } = usePointDataChart();
-
+  const providedPopupTitle = popup.data.title;
+  const popupData = providedPopupTitle
+    ? (omit(popup.data, 'title') as PopupData & PopupMetaData)
+    : popup.data;
   const defaultPopupTitle = useMemo(() => {
+    if (providedPopupTitle) {
+      return providedPopupTitle.data;
+    }
     if (isEnglishLanguageSelected(i18n)) {
       return popup.locationName;
     }
     return popup.locationLocalName;
-  }, [i18n, popup.locationLocalName, popup.locationName]);
-
-  const popupData = popup.data;
+  }, [i18n, popup.locationLocalName, popup.locationName, providedPopupTitle]);
 
   // TODO - simplify logic once we revamp admin levels object
   const adminLevelsNames = useCallback(() => {

@@ -6,7 +6,10 @@ import { formatFeatureInfo } from 'utils/server-utils';
 import {
   AvailableDates,
   FeatureInfoObject,
+  FeatureInfoProps,
+  FeatureInfoTitle,
   FeatureInfoType,
+  FeatureInfoVisibility,
   LayerType,
   LegendDefinitionItem,
   WMSLayerProps,
@@ -115,6 +118,30 @@ const sortKeys = (featureInfoProps: FeatureInfoObject): string[][] => {
   return [dataKeys, metaDataKeys];
 };
 
+const getTitle = (
+  featureInfoTitle: FeatureInfoTitle | undefined,
+  featureInfoProps: FeatureInfoObject,
+  properties: any,
+): PopupData | {} => {
+  if (!featureInfoTitle) {
+    return {};
+  }
+  const titleField = featureInfoTitle?.fields?.find(
+    (field: string) => !!properties[field],
+  );
+  return titleField
+    ? {
+        title: {
+          data: formatFeatureInfo(
+            properties[titleField],
+            featureInfoProps[titleField].type,
+            featureInfoProps[titleField].labelMap,
+          ),
+        },
+      }
+    : {};
+};
+
 const getMetaData = (
   featureInfoProps: FeatureInfoObject,
   metaDataKeys: string[],
@@ -136,24 +163,32 @@ const getData = (
   coordinates: any,
 ) =>
   Object.keys(properties)
-    .filter(prop => keys.includes(prop))
-    .reduce(
-      (obj, item) => ({
+    .filter(prop => keys.includes(prop) && prop !== 'title')
+    .reduce((obj, item) => {
+      const itemProps = featureInfoProps[item] as FeatureInfoProps;
+      if (
+        itemProps.visibility === FeatureInfoVisibility.IfDefined &&
+        !properties[item]
+      ) {
+        return obj;
+      }
+
+      return {
         ...obj,
-        [featureInfoProps[item].dataTitle]: {
+        [itemProps.dataTitle]: {
           data: formatFeatureInfo(
             properties[item],
-            featureInfoProps[item].type,
-            featureInfoProps[item].labelMap,
+            itemProps.type,
+            itemProps.labelMap,
           ),
           coordinates,
         },
-      }),
-      {},
-    );
+      };
+    }, {});
 
 // TODO: maplibre: fix feature
 export function getFeatureInfoPropsData(
+  featureInfoTitle: FeatureInfoTitle | undefined,
   featureInfoProps: FeatureInfoObject,
   coordinates: number[],
   feature: any,
@@ -162,6 +197,7 @@ export function getFeatureInfoPropsData(
   const { properties } = feature;
 
   return {
+    ...getTitle(featureInfoTitle, featureInfoProps, properties),
     ...getMetaData(featureInfoProps, metaDataKeys, properties),
     ...getData(featureInfoProps, keys, properties, coordinates),
   };

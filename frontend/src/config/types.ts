@@ -267,7 +267,9 @@ export enum Interval {
   ONE_YEAR = '1-year',
 }
 
-export type FeatureInfoObject = { [key: string]: FeatureInfoProps };
+export type FeatureInfoObject = {
+  [key: string]: FeatureInfoProps;
+};
 
 export class CommonLayerProps {
   id: LayerKey;
@@ -297,7 +299,9 @@ export class CommonLayerProps {
   contentPath?: string;
 
   @optional
-  featureInfoProps?: { [key: string]: FeatureInfoProps };
+  featureInfoTitle?: FeatureInfoTitle;
+  @optional
+  featureInfoProps?: FeatureInfoObject;
 
   /*
   * only for layer that has grouped menu and always assigned to main layer of group (../components/Navbar/utils.ts)
@@ -396,13 +400,23 @@ export enum DataType {
   LabelMapping = 'labelMapping',
 }
 
+export enum FeatureInfoVisibility {
+  Always = 'always', // Default
+  IfDefined = 'if-defined',
+}
+
 type PopupMetaDataKeys = keyof PopupMetaData;
 
-interface FeatureInfoProps {
+export interface FeatureInfoTitle {
+  fields: string[];
+}
+
+export interface FeatureInfoProps {
   type: DataType;
   dataTitle: string;
   labelMap?: { [key: string]: string };
   metadata?: PopupMetaDataKeys;
+  visibility?: FeatureInfoVisibility;
 }
 
 export enum DatesPropagation {

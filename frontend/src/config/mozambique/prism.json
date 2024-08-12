@@ -21,7 +21,7 @@
     "tropical_storms": "icon_tropical_storm.png",
     "vulnerability": "icon_vulnerable.png",
     "exposure": "icon_basemap.png",
-    "flood": "icon_basemap.png"
+    "flooding": "icon_basemap.png"
   },
   "defaultDisplayBoundaries": [
     "admin_boundaries",
@@ -456,8 +456,8 @@
     "exposure": {
       "population": ["census"]
     },
-    "flood": {
-      "flood_gauges": ["google_flood_gauges"]
+    "flooding": {
+      "flood_status": ["google_flood_status_at_gauges"]
     }
   }
 }

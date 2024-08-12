@@ -2,6 +2,7 @@
 
 import logging
 from os import getenv
+from urllib.parse import urlencode
 
 import requests
 from fastapi import HTTPException
@@ -27,9 +28,10 @@ def format_gauge_to_geojson(data):
         "properties": {
             "gaugeId": data["gaugeId"],
             "issuedTime": data["issuedTime"],
-            # "forecastTimeRange": data["forecastTimeRange"],
-            # "forecastChange": data["forecastChange"],
-            # "forecastTrend": data["forecastTrend"],
+            "siteName": data["siteName"],
+            "river": (
+                data["river"] if "river" in data and len(data["river"]) > 1 else None
+            ),
             "severity": data["severity"],
             "source": data["source"],
             "qualityVerified": data["qualityVerified"],
@@ -49,26 +51,56 @@ def get_google_floods_gauges(
     flood_status_url = f"https://floodforecasting.googleapis.com/v1/floodStatus:searchLatestFloodStatusByArea?key={GOOGLE_FLOODS_API_KEY}"
     for _ in range(3):
         try:
-            response = requests.post(
+            status_response = requests.post(
                 flood_status_url, json={"regionCode": iso2}, timeout=2
             ).json()
             break
         except requests.RequestException as e:
-            logger.warning("Request failed: %s", e)
-            response = {}
+            logger.warning("Request failed at url %s: %s", flood_status_url, e)
+            status_response = {}
 
-    if "error" in response:
-        logger.error("Error in response: %s", response["error"])
+    if "error" in status_response:
+        logger.error("Error in response: %s", status_response["error"])
         raise HTTPException(
             status_code=500, detail="Error fetching flood status data from Google API"
         )
 
-    gauges = response.get("floodStatuses", [])
+    initial_gauges = status_response.get("floodStatuses", [])
+
+    gauge_params = urlencode(
+        {"names": [f"gauges/{gauge['gaugeId']}" for gauge in initial_gauges]},
+        doseq=True,
+    )
+    gauges_details_url = f"https://floodforecasting.googleapis.com/v1/gauges:batchGet?key={GOOGLE_FLOODS_API_KEY}&{gauge_params}"
+
+    try:
+        details_response = requests.get(gauges_details_url, timeout=2).json()
+    except requests.RequestException as e:
+        logger.warning("Request failed at url %s: %s", gauges_details_url, e)
+        details_response = {}
+
+    if "error" in details_response:
+        logger.error("Error in response: %s", details_response["error"])
+        raise HTTPException(
+            status_code=500, detail="Error fetching gauges details from Google API"
+        )
+
+    # Create a map for quick lookup
+    gauge_details_map = {
+        item["gaugeId"]: item for item in details_response.get("gauges", [])
+    }
+
+    gauges_details = []
+    for gauge in initial_gauges:
+        gauge_id = gauge["gaugeId"]
+        detail = gauge_details_map.get(gauge_id, {})
+        merged_gauge = {**gauge, **detail}
+        gauges_details.append(merged_gauge)
 
     if as_geojson:
         geojson_feature_collection = {
             "type": "FeatureCollection",
-            "features": [format_gauge_to_geojson(gauge) for gauge in gauges],
+            "features": [format_gauge_to_geojson(gauge) for gauge in gauges_details],
         }
         return geojson_feature_collection
-    return gauges
+    return gauges_details
