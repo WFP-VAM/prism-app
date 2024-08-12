@@ -126,7 +126,9 @@ const getTitle = (
     return {};
   }
   const titleField = Object.keys(featureInfoTitle).find(
-    (field: string) => !!properties[field],
+    (field: string) =>
+      featureInfoTitle[field].visibility !== FeatureInfoVisibility.IfDefined ||
+      !!properties[field],
   );
   return titleField
     ? {

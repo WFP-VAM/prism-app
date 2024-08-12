@@ -419,7 +419,8 @@ def post_raster_geotiff(raster_geotiff: RasterGeotiffModel):
 def get_google_floods_gauges_api(region_code: str):
     if len(region_code) != 2:
         raise HTTPException(
-            status_code=400, detail="region code must be exactly two characters (iso2)."
+            status_code=400,
+            detail="region code must be provided and exactly two characters (iso2).",
         )
     iso2 = region_code.upper()
     return get_google_floods_gauges(iso2)
