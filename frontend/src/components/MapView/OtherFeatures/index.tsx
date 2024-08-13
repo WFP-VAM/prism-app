@@ -22,7 +22,7 @@ const useStyles = makeStyles(() =>
 );
 
 const OtherFeatures = memo(() => {
-  const { selectedLayerDates } = useLayers();
+  const { selectedLayersWithDateSupport } = useLayers();
   const classes = useStyles();
 
   const showBoundaryInfo = useMemo(
@@ -33,7 +33,7 @@ const OtherFeatures = memo(() => {
   return (
     <Box className={classes.container}>
       <Box className={classes.optionContainer}>
-        {selectedLayerDates.length > 0 && <DateSelector />}
+        {selectedLayersWithDateSupport.length > 0 && <DateSelector />}
         {showBoundaryInfo && <BoundaryInfoBox />}
       </Box>
     </Box>

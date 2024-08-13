@@ -2770,7 +2770,13 @@
   "cdi": {
     "title": "Combined Drought Index",
     "type": "composite",
+    "period": "monthly",
     "base_url": "https://hip-service.ovio.org/q_multi_geojson",
+    "validity": {
+      "forward": 1,
+      "backward": 2,
+      "mode": "dekad"
+    },
     "input_layers": [
       {
         "id": "spi_1m",
@@ -2781,7 +2787,7 @@
       {
         "id": "et0",
         "importance": 0.3,
-        "key": ["FAO", "WAPOR_ET0_DEKAD_LTA"],
+        "key": ["FAO", "WAPOR_ET0_DEKAD"],
         "aggregation": "last_dekad"
       },
       {
@@ -2853,7 +2859,13 @@
   "cdi_test": {
     "title": "Combined Drought Index (v1)",
     "type": "composite",
+    "period": "monthly",
     "base_url": "https://hip-service.ovio.org/q_multi_geojson",
+    "validity": {
+      "forward": 1,
+      "backward": 2,
+      "mode": "dekad"
+    },
     "input_layers": [
       {
         "id": "spi_1m",

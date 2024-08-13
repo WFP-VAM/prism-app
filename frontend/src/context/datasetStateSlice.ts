@@ -136,8 +136,11 @@ export const loadEWSDataset = async (
   const results: DataItem[] = dataPoints.map(item => {
     const [measureDate, value] = item.value;
 
+    // offset back from UTC to local time so that the date is displayed correctly
+    // i.e. in Cambodia Time as it is received.
+    const offset = new Date().getTimezoneOffset();
     return {
-      date: getTimeInMilliseconds(measureDate),
+      date: getTimeInMilliseconds(measureDate) - offset * 60 * 1000,
       values: { measure: value.toString() },
     };
   });
