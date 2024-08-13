@@ -31,6 +31,11 @@ export async function fetchApiData(
     // body data type must match "Content-Type" header
     body: JSON.stringify(apiData),
   });
+
+  if (response.status !== 200) {
+    throw new Error(`Failed to fetch data: ${response.statusText}`);
+  }
+
   return response.json();
 }
 
