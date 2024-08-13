@@ -18,5 +18,8 @@ export HDC_TOKEN=$(aws secretsmanager get-secret-value     --secret-id HDC_TOKEN
 export ACLED_API_KEY=$(aws secretsmanager get-secret-value     --secret-id ACLED_CREDENTIALS | jq .SecretString | jq fromjson | jq -r .ACLED_API_KEY)
 export ACLED_API_EMAIL=$(aws secretsmanager get-secret-value     --secret-id ACLED_CREDENTIALS | jq .SecretString | jq fromjson | jq -r .ACLED_API_EMAIL)
 
+# Google Flood
+export GOOGLE_FLOODS_API_KEY=$(aws secretsmanager get-secret-value     --secret-id GOOGLE_FLOODS_API_KEY | jq .SecretString | jq fromjson | jq -r .GOOGLE_FLOODS_API_KEY)
+
 export HOSTNAME=prism-api.ovio.org
 export INFO_EMAIL=info@ovio.org
