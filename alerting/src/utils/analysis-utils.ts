@@ -78,6 +78,8 @@ export function getAlertMessage(
     return undefined;
   }
 
+  console.log({ aggregateData, alertMin, alertMax });
+
   aggregateData.forEach((data) => {
     const minValue = scaleValueIfDefined(
       get(data, 'stats_min') as number,
