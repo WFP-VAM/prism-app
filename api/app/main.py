@@ -132,9 +132,7 @@ def stats(stats_model: StatsModel) -> list[dict[str, Any]]:
 
     zones: FilePath
     if zones_geojson is not None:
-        zones = cache_geojson(
-            prefix="zones_geojson", geojson=zones_geojson, extension="json"
-        )
+        zones = cache_geojson(prefix="zones_geojson", geojson=zones_geojson)
     else:
         zones = cache_file(
             prefix="zones",
