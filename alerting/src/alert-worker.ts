@@ -57,12 +57,12 @@ async function processAlert(alert: Alert, alertRepository: Repository<Alert>) {
     (lastTriggered && lastTriggered >= maxDate) ||
     createdAt >= maxDate
   ) {
-    // console.log(
-    //   `No new data for alert ${id}. Last triggered or created on ${(
-    //     lastTriggered || createdAt
-    //   ).toDateString()}. Max available date is ${maxDate.toDateString()}.`,
-    // );
-    // return;
+    console.log(
+      `No new data for alert ${id}. Last triggered or created on ${(
+        lastTriggered || createdAt
+      ).toDateString()}. Max available date is ${maxDate.toDateString()}.`,
+    );
+    return;
   }
 
   const alertMessage = await calculateBoundsForAlert(maxDate, alert);
@@ -107,6 +107,10 @@ async function processAlert(alert: Alert, alertRepository: Repository<Alert>) {
     });
 
     console.log(alertMessage);
+  } else {
+    console.log(
+      `Alert ${id} - '${alert.alertName}' was NOT triggered on ${maxDate}.`,
+    );
   }
   // Update lastTriggered (inactive during testing)
   await alertRepository.update(alert.id, { lastTriggered: maxDate });
