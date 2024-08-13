@@ -56,7 +56,7 @@ class StatsModel(BaseModel):
 
     geotiff_url: HttpUrl = Field(..., example=stats_data["geotiff_url"])
     zones_url: Optional[HttpUrl] = Field(..., example=stats_data["zones_url"])
-    group_by: str = Field(..., example=stats_data["group_by"])
+    group_by: Optional[str] = Field(..., example=stats_data["group_by"])
     wfs_params: Optional[WfsParamsModel] = None
     geojson_out: Optional[bool] = False
     zones: Optional[GeoJSON] = None
