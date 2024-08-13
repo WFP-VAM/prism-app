@@ -62,8 +62,7 @@ async function processAlert(alert: Alert, alertRepository: Repository<Alert>) {
         lastTriggered || createdAt
       ).toDateString()}. Max available date is ${maxDate.toDateString()}.`,
     );
-    console.log('Temp continue');
-    // return;
+    return;
   }
 
   const alertMessage = await calculateBoundsForAlert(maxDate, alert);
