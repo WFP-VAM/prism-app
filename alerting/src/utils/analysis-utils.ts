@@ -110,7 +110,6 @@ export async function calculateBoundsForAlert(date: Date, alert: Alert) {
   }
   const extent = bbox(alert.zones) as Extent;
   const layer = alert.alertConfig;
-  const zonesGeojsn = alert.zones;
 
   const apiRequest: ApiData = {
     geotiff_url: createGetCoverageUrl({
