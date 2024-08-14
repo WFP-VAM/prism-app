@@ -88,11 +88,7 @@ def generate_geotiff_from_stac_api(
 
 def upload_to_s3(file_path: str) -> str:
     """Upload to s3"""
-    s3_client = boto3.client(
-        "s3",
-        aws_access_key_id=STAC_AWS_ACCESS_KEY_ID,
-        aws_secret_access_key=STAC_AWS_SECRET_ACCESS_KEY,
-    )
+    s3_client = boto3.client("s3")
     s3_filename = os.path.basename(file_path)
 
     s3_client.upload_file(file_path, GEOTIFF_BUCKET_NAME, s3_filename)
@@ -126,11 +122,7 @@ def get_geotiff(
     """Generate a geotiff and return presigned download url"""
     s3_filename = generate_geotiff_and_upload_to_s3(collection, bbox, date, band)
 
-    s3_client = boto3.client(
-        "s3",
-        aws_access_key_id=STAC_AWS_ACCESS_KEY_ID,
-        aws_secret_access_key=STAC_AWS_SECRET_ACCESS_KEY,
-    )
+    s3_client = boto3.client("s3")
 
     params = {"Bucket": GEOTIFF_BUCKET_NAME, "Key": s3_filename}
     if filename_override is not None:
