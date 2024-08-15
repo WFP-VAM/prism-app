@@ -3,6 +3,7 @@ import logging
 import os
 
 import boto3
+from app.raster_utils import get_raster_crs, reproject_raster
 from app.timer import timed
 from cachetools import TTLCache, cached
 from fastapi import HTTPException
@@ -18,6 +19,8 @@ STAC_AWS_ACCESS_KEY_ID = os.getenv("STAC_AWS_ACCESS_KEY_ID")
 STAC_AWS_SECRET_ACCESS_KEY = os.getenv("STAC_AWS_SECRET_ACCESS_KEY")
 
 GEOTIFF_BUCKET_NAME = "prism-stac-geotiff"
+
+CRS_EPSG_4326 = "EPSG:4326"
 
 configure_rio(
     cloud_defaults=True,
@@ -73,6 +76,11 @@ def generate_geotiff_from_stac_api(
     except Exception as e:
         logger.warning("An error occured writing file")
         raise e
+
+    # If the tif's CRS is not 4326, reproject it to 4326 as expected
+    # (this is particularly useful for the MODIS data)
+    if get_raster_crs(file_path) != CRS_EPSG_4326:
+        reproject_raster(file_path, CRS_EPSG_4326, file_path)
 
     logger.debug("returning file: %s", file_path)
     return file_path
