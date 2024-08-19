@@ -144,7 +144,7 @@ class AlertsModel(BaseModel):
     )
 
     @root_validator
-    def check_min_max(self, values):
+    def check_min_max(cls, values):
         """Ensure at least one of 'min' or 'max' is set."""
         min_val, max_val = values.get("min"), values.get("max")
         if min_val is None and max_val is None:
