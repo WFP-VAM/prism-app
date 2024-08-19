@@ -57,7 +57,6 @@ export async function sendEmail({
     return;
   }
 
-  console.log({ host, user, password });
   const transporter = nodemailer.createTransport({
     host,
     port: 465,
