@@ -8,6 +8,7 @@ import { calculateAlert } from './utils/analysis-utils';
 import { sendEmail } from './utils/email';
 import { fetchCoverageLayerDays, formatUrl, WMS } from 'prism-common';
 
+const RUNALL = true;
 // @ts-ignore
 global.fetch = nodeFetch;
 
@@ -52,18 +53,22 @@ async function processAlert(alert: Alert, alertRepository: Repository<Alert>) {
 
   const maxDate = new Date(Math.max(...(layerAvailableDates || [])));
 
-  // if (
-  //   isNaN(maxDate.getTime()) ||
-  //   (lastTriggered && lastTriggered >= maxDate) ||
-  //   createdAt >= maxDate
-  // ) {
-  //   console.log(
-  //     `Alert id ${id} - no new data available. Last triggered or created on ${(
-  //       lastTriggered || createdAt
-  //     ).toDateString()}. Max available date is ${maxDate.toDateString()}.`,
-  //   );
-  //   return;
-  // }
+  if (
+    isNaN(maxDate.getTime()) ||
+    (lastTriggered && lastTriggered >= maxDate) ||
+    createdAt >= maxDate
+  ) {
+    console.log(
+      `Alert id ${id} - no new data available. Last triggered or created on ${(
+        lastTriggered || createdAt
+      ).toDateString()}. Max available date is ${maxDate.toDateString()}.${
+        RUNALL ? 'RUNALL is active, processing.' : ''
+      }`,
+    );
+    if (!RUNALL) {
+      return;
+    }
+  }
 
   const alertMessage = await calculateAlert(maxDate, alert);
 
