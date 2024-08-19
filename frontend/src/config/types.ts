@@ -680,6 +680,7 @@ export class ImpactLayerProps extends CommonLayerProps {
 export enum PointDataLoader {
   EWS = 'ews',
   ACLED = 'acled',
+  GOOGLE_FLOOD = 'google_flood',
 }
 
 export class PointDataLayerProps extends CommonLayerProps {
@@ -734,6 +735,9 @@ export class PointDataLayerProps extends CommonLayerProps {
 
   @optional
   dataFieldType?: DataFieldType = DataFieldType.NUMBER;
+
+  @optional
+  detailUrl?: string;
 }
 
 export type RequiredKeys<T> = {
@@ -881,7 +885,7 @@ type AdminLevelDisplayType = {
 export type PointData = {
   lat: number;
   lon: number;
-  date: number; // in unix time.
+  date?: number; // in unix time.
   [key: string]: any;
 };
 

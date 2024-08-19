@@ -14,7 +14,7 @@ from app.caching import FilePath, cache_file, cache_geojson
 from app.database.alert_model import AlchemyEncoder, AlertModel
 from app.database.database import AlertsDataBase
 from app.database.user_info_model import UserInfoModel
-from app.googleflood import get_google_floods_gauges
+from app.googleflood import get_google_floods_gauge_forecast, get_google_floods_gauges
 from app.hdc import get_hdc_stats
 from app.kobo import get_form_dates, get_form_responses, parse_datetime_params
 from app.models import AcledRequest, RasterGeotiffModel
@@ -417,6 +417,7 @@ def post_raster_geotiff(raster_geotiff: RasterGeotiffModel):
 
 @app.get("/google-floods/gauges/")
 def get_google_floods_gauges_api(region_code: str):
+    """Get all gauges for a region"""
     if len(region_code) != 2:
         raise HTTPException(
             status_code=400,
@@ -424,3 +425,17 @@ def get_google_floods_gauges_api(region_code: str):
         )
     iso2 = region_code.upper()
     return get_google_floods_gauges(iso2)
+
+
+@app.get("/google-floods/gauges/forecasts")
+def get_google_floods_gauge_forecast_api(
+    gauge_ids: str = Query(..., description="Comma-separated list of gauge IDs")
+):
+    """Get forecast data for a gauge or multiple gauges"""
+    gauge_id_list = [id.strip() for id in gauge_ids.split(",")]
+    if not gauge_id_list:
+        raise HTTPException(
+            status_code=400,
+            detail="gauge_ids must be provided and contain at least one value.",
+        )
+    return get_google_floods_gauge_forecast(gauge_id_list)

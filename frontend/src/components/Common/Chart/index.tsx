@@ -77,6 +77,8 @@ const Chart = memo(
     const classes = useStyles();
     const chartRef = React.useRef<Bar | Line>(null);
     const isEWSChart = !!data.EWSConfig;
+    const isGoogleFloodChart = !!data.GoogleFloodConfig;
+    const isFloodChart = isEWSChart || isGoogleFloodChart;
 
     const downloadFilename = buildCsvFileName([
       ...downloadFilenamePrefix,
@@ -149,11 +151,19 @@ const Chart = memo(
           backgroundColor: colors[i],
           borderColor: colors[i],
           borderWidth: 2,
-          pointRadius: isEWSChart ? 0 : 1, // Disable point rendering for EWS only.
+          pointRadius: isFloodChart ? 0 : 1, // Disable point rendering for flood charts only.
           data: indices.map(index => (row[index] as number) || null),
           pointHitRadius: 10,
         })),
-      [colors, config.category, config.fill, indices, isEWSChart, t, tableRows],
+      [
+        colors,
+        config.category,
+        config.fill,
+        indices,
+        isFloodChart,
+        t,
+        tableRows,
+      ],
     );
 
     const configureIndicePointRadius = useCallback(
@@ -165,9 +175,9 @@ const Chart = memo(
         if (foundDataSetFieldPointRadius !== undefined) {
           return foundDataSetFieldPointRadius;
         }
-        return isEWSChart ? 0 : 1; // Disable point rendering for EWS only.
+        return isFloodChart ? 0 : 1; // Disable point rendering for flood charts only.
       },
-      [isEWSChart, datasetFields, header],
+      [isFloodChart, datasetFields, header],
     );
 
     // The indicesDataSet
@@ -194,7 +204,8 @@ const Chart = memo(
       ],
     );
 
-    const EWSthresholds = useMemo(() => {
+    const floodThresholds = useMemo(() => {
+      console.log('data', data);
       if (data.EWSConfig) {
         return Object.values(data.EWSConfig).map(obj => ({
           label: obj.label,
@@ -208,8 +219,21 @@ const Chart = memo(
           fill: false,
         }));
       }
+      if (data.GoogleFloodConfig) {
+        return Object.values(data.GoogleFloodConfig).map(obj => ({
+          label: obj.label,
+          backgroundColor: obj.color,
+          borderColor: obj.color,
+          borderWidth: 2,
+          pointRadius: 0,
+          pointHitRadius: 10,
+          // Deep copy is needed: https://github.com/reactchartjs/react-chartjs-2/issues/524#issuecomment-722814079
+          data: [...obj.values],
+          fill: false,
+        }));
+      }
       return [];
-    }, [data.EWSConfig]);
+    }, [data.EWSConfig, data.GoogleFloodConfig]);
 
     /**
      * The following value assumes that the data is formatted as follows:
@@ -238,7 +262,7 @@ const Chart = memo(
      *  - fill
      */
     const datasets = !transpose ? tableRowsDataSet : indicesDataSet;
-    const datasetsWithThresholds = [...datasets, ...EWSthresholds];
+    const datasetsWithThresholds = [...datasets, ...floodThresholds];
 
     const datasetsTrimmed = datasetsWithThresholds.map(set => ({
       ...set,
