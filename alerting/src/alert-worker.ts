@@ -45,25 +45,25 @@ async function processAlert(alert: Alert, alertRepository: Repository<Alert>) {
     );
   }
 
-  // if (!layerAvailableDates || layerAvailableDates.length === 0) {
-  //   console.warn(`No dates available for ${baseUrl} ${serverLayerName}.`);
-  //   return;
-  // }
+  if (!layerAvailableDates || layerAvailableDates.length === 0) {
+    console.warn(`No dates available for ${baseUrl} ${serverLayerName}.`);
+    return;
+  }
 
   const maxDate = new Date(Math.max(...(layerAvailableDates || [])));
 
-  if (
-    isNaN(maxDate.getTime()) ||
-    (lastTriggered && lastTriggered >= maxDate) ||
-    createdAt >= maxDate
-  ) {
-    console.log(
-      `Alert id ${id} - no new data available. Last triggered or created on ${(
-        lastTriggered || createdAt
-      ).toDateString()}. Max available date is ${maxDate.toDateString()}.`,
-    );
-    return;
-  }
+  // if (
+  //   isNaN(maxDate.getTime()) ||
+  //   (lastTriggered && lastTriggered >= maxDate) ||
+  //   createdAt >= maxDate
+  // ) {
+  //   console.log(
+  //     `Alert id ${id} - no new data available. Last triggered or created on ${(
+  //       lastTriggered || createdAt
+  //     ).toDateString()}. Max available date is ${maxDate.toDateString()}.`,
+  //   );
+  //   return;
+  // }
 
   const alertMessage = await calculateAlert(maxDate, alert);
 
