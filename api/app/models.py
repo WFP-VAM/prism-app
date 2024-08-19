@@ -133,6 +133,8 @@ class AlertsModel(BaseModel):
     alert_name: str = Field(..., example=alert_data["alert_name"])
     alert_config: dict = Field(..., example=alert_data["alert_config"])
     zones: AlertsZonesModel
+    min: Optional[float] = None
+    max: Optional[float] = None
 
     _val_alert_name = validator("alert_name", allow_reuse=True)(
         must_not_contain_null_char
@@ -140,6 +142,14 @@ class AlertsModel(BaseModel):
     _val_alert_config = validator("alert_config", allow_reuse=True)(
         dict_must_not_contain_null_char
     )
+
+    @root_validator
+    def check_min_max(self, values):
+        """Ensure at least one of 'min' or 'max' is set."""
+        min_val, max_val = values.get("min"), values.get("max")
+        if min_val is None and max_val is None:
+            raise ValueError("At least one of 'min' or 'max' must be set")
+        return values
 
 
 class UserInfoPydanticModel(BaseModel):
