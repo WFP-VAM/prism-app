@@ -8,7 +8,8 @@ import { calculateAlert } from './utils/analysis-utils';
 import { sendEmail } from './utils/email';
 import { fetchCoverageLayerDays, formatUrl, WMS } from 'prism-common';
 
-const RUNALL = true;
+const RUNALL = false;
+
 // @ts-ignore
 global.fetch = nodeFetch;
 
