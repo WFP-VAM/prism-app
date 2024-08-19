@@ -99,10 +99,6 @@ export function getAlertMessage(
       // eslint-disable-next-line fp/no-mutation
       alertMessage = `Maximum value ${maxValue} is above the threshold ${alertMax}.`;
     }
-
-    console.log({ alert });
-
-    console.log(alert.id, alertMessage, alertMax, maxValue, alertMin, minValue);
   });
 
   return alertMessage;
