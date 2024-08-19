@@ -100,6 +100,8 @@ export function getAlertMessage(
       alertMessage = `Maximum value ${maxValue} is above the threshold ${alertMax}.`;
     }
 
+    console.log({ alert });
+
     console.log(alert.id, alertMessage, alertMax, maxValue, alertMin, minValue);
   });
 
