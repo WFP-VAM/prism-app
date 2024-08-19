@@ -8,12 +8,6 @@ from fastapi.testclient import TestClient
 
 client = TestClient(app)
 
-import logging
-
-# Configure logger
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
-
 
 def test_stats_endpoint_for_alerting():
     """
