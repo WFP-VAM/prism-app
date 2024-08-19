@@ -4,7 +4,7 @@ import nodeFetch from 'node-fetch';
 import { createConnection, Repository } from 'typeorm';
 import { API_URL } from './constants';
 import { Alert } from './entities/alerts.entity';
-import { calculateBoundsForAlert } from './utils/analysis-utils';
+import { calculateAlert } from './utils/analysis-utils';
 import { sendEmail } from './utils/email';
 import { fetchCoverageLayerDays, formatUrl, WMS } from 'prism-common';
 
@@ -45,10 +45,10 @@ async function processAlert(alert: Alert, alertRepository: Repository<Alert>) {
     );
   }
 
-  if (!layerAvailableDates || layerAvailableDates.length === 0) {
-    console.warn(`No dates available for ${baseUrl} ${serverLayerName}.`);
-    return;
-  }
+  // if (!layerAvailableDates || layerAvailableDates.length === 0) {
+  //   console.warn(`No dates available for ${baseUrl} ${serverLayerName}.`);
+  //   return;
+  // }
 
   const maxDate = new Date(Math.max(...(layerAvailableDates || [])));
 
@@ -65,7 +65,7 @@ async function processAlert(alert: Alert, alertRepository: Repository<Alert>) {
     return;
   }
 
-  const alertMessage = await calculateBoundsForAlert(maxDate, alert);
+  const alertMessage = await calculateAlert(maxDate, alert);
 
   // Use the URL API to create the url and perform url encoding on all character
   const url = new URL(`/alerts/${id}`, API_URL);

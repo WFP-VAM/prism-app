@@ -99,11 +99,14 @@ export function getAlertMessage(
       // eslint-disable-next-line fp/no-mutation
       alertMessage = `Maximum value ${maxValue} is above the threshold ${alertMax}.`;
     }
+
+    console.log(alert.id, alertMessage, alertMax, maxValue, alertMin, minValue);
   });
+
   return alertMessage;
 }
 
-export async function calculateBoundsForAlert(date: Date, alert: Alert) {
+export async function calculateAlert(date: Date, alert: Alert) {
   if (!alert.zones) {
     console.warn(`No zones provided for alert ${alert.id}.`);
     return undefined;
