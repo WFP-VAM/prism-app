@@ -6551,17 +6551,17 @@
     "feature_info_title": {
       "siteName": {
         "type": "text",
-        "template": "Site: %s",
+        "template": "Site: {{siteName}}",
         "visibility": "if-defined"
       },
       "river": {
         "type": "text",
-        "template": "River: %s",
+        "template": "River: {{riverName}}",
         "visibility": "if-defined"
       },
       "gaugeId": {
         "type": "text",
-        "template": "Gauge ID: %s",
+        "template": "Gauge ID: {{gaugeId}}",
         "visibility": "if-defined"
       }
     },

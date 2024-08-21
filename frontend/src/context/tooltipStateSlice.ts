@@ -7,6 +7,9 @@ export interface PopupTitleData {
   title: {
     prop: string;
     data: number | string | null;
+    context?: {
+      [key: string]: string;
+    };
   };
 }
 

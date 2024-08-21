@@ -2,7 +2,7 @@ import { orderBy, snakeCase, values } from 'lodash';
 import { TFunction } from 'i18next';
 import { Dispatch } from 'redux';
 import { LayerDefinitions } from 'config/utils';
-import { formatFeatureInfo, formatFeatureTitle } from 'utils/server-utils';
+import { formatFeatureInfo } from 'utils/server-utils';
 import {
   AvailableDates,
   FeatureInfoObject,
@@ -134,12 +134,10 @@ const getTitle = (
     ? {
         title: {
           prop: titleField,
-          data: formatFeatureTitle(
-            properties[titleField],
-            featureInfoTitle[titleField].type,
-            featureInfoTitle[titleField].template,
-            featureInfoTitle[titleField].labelMap,
-          ),
+          data: featureInfoTitle[titleField].template,
+          context: {
+            [titleField]: properties[titleField],
+          },
         },
       }
     : {};

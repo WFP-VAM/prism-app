@@ -80,26 +80,34 @@ const MapTooltip = memo(() => {
   const classes = useStyles();
   const dispatch = useDispatch();
   const popup = useSelector(tooltipSelector);
-  const { i18n } = useSafeTranslation();
+  const { t, i18n } = useSafeTranslation();
   const [popupTitle, setPopupTitle] = useState<string>('');
   const [adminLevel, setAdminLevel] = useState<AdminLevelType | undefined>(
     undefined,
   );
 
   const { dataset, isLoading } = usePointDataChart();
+
   const providedPopupTitle = (popup.data as PopupTitleData).title;
   const popupData: PopupData & PopupMetaData = providedPopupTitle
     ? omit(popup.data, 'title', providedPopupTitle.prop)
     : popup.data;
   const defaultPopupTitle = useMemo(() => {
     if (providedPopupTitle) {
-      return providedPopupTitle.data;
+      // Title can be a template requiring interpolation
+      return t(providedPopupTitle.data as string, providedPopupTitle.context);
     }
     if (isEnglishLanguageSelected(i18n)) {
       return popup.locationName;
     }
     return popup.locationLocalName;
-  }, [i18n, popup.locationLocalName, popup.locationName, providedPopupTitle]);
+  }, [
+    i18n,
+    popup.locationLocalName,
+    popup.locationName,
+    providedPopupTitle,
+    t,
+  ]);
 
   // TODO - simplify logic once we revamp admin levels object
   const adminLevelsNames = useCallback(() => {
