@@ -1,0 +1,28 @@
+interactions:
+- request:
+    body: ''
+    headers:
+      accept:
+      - '*/*'
+      accept-encoding:
+      - gzip, deflate
+      connection:
+      - keep-alive
+      host:
+      - testserver
+      user-agent:
+      - testclient
+    method: GET
+    uri: http://testserver/google-floods/gauges/?region_codes=usa
+  response:
+    body:
+      string: '{"detail":"Region code ''usa'' must be exactly two characters (iso2)."}'
+    headers:
+      content-length:
+      - '69'
+      content-type:
+      - application/json
+    status:
+      code: 400
+      message: Bad Request
+version: 1

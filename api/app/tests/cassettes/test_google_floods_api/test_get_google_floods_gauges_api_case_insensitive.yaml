@@ -1,0 +1,258 @@
+interactions:
+- request:
+    body: '{"regionCode": "BD"}'
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '20'
+      Content-Type:
+      - application/json
+      User-Agent:
+      - python-requests/2.32.0
+    method: POST
+    uri: https://floodforecasting.googleapis.com/v1/floodStatus:searchLatestFloodStatusByArea
+  response:
+    body:
+      string: !!binary |
+        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
+    headers:
+      Alt-Svc:
+      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+      Cache-Control:
+      - private
+      Content-Encoding:
+      - gzip
+      Content-Type:
+      - application/json; charset=UTF-8
+      Date:
+      - Wed, 21 Aug 2024 01:18:32 GMT
+      Server:
+      - ESF
+      Server-Timing:
+      - gfet4t7; dur=382
+      Transfer-Encoding:
+      - chunked
+      Vary:
+      - Origin
+      - X-Origin
+      - Referer
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-XSS-Protection:
+      - '0'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python-requests/2.32.0
+    method: GET
+    uri: https://floodforecasting.googleapis.com/v1/gauges:batchGet?names=gauges%2FBWDB_SW101&names=gauges%2FBWDB_SW110&names=gauges%2FBWDB_SW117&names=gauges%2FBWDB_SW119.1&names=gauges%2FBWDB_SW131.5&names=gauges%2FBWDB_SW132.2&names=gauges%2FBWDB_SW133&names=gauges%2FBWDB_SW137A&names=gauges%2FBWDB_SW14.5&names=gauges%2FBWDB_SW140&names=gauges%2FBWDB_SW142.1&names=gauges%2FBWDB_SW145&names=gauges%2FBWDB_SW147.5&names=gauges%2FBWDB_SW157&names=gauges%2FBWDB_SW159&names=gauges%2FBWDB_SW15J&names=gauges%2FBWDB_SW162&names=gauges%2FBWDB_SW172&names=gauges%2FBWDB_SW173&names=gauges%2FBWDB_SW175.5&names=gauges%2FBWDB_SW177&names=gauges%2FBWDB_SW179&names=gauges%2FBWDB_SW201&names=gauges%2FBWDB_SW202&names=gauges%2FBWDB_SW203&names=gauges%2FBWDB_SW204&names=gauges%2FBWDB_SW206&names=gauges%2FBWDB_SW207&names=gauges%2FBWDB_SW211.5&names=gauges%2FBWDB_SW212&names=gauges%2FBWDB_SW225&names=gauges%2FBWDB_SW228&names=gauges%2FBWDB_SW236&names=gauges%2FBWDB_SW238&names=gauges%2FBWDB_SW247&names=gauges%2FBWDB_SW248&names=gauges%2FBWDB_SW251&names=gauges%2FBWDB_SW263&names=gauges%2FBWDB_SW263.1&names=gauges%2FBWDB_SW266&names=gauges%2FBWDB_SW267&names=gauges%2FBWDB_SW269&names=gauges%2FBWDB_SW269.5&names=gauges%2FBWDB_SW270&names=gauges%2FBWDB_SW273&names=gauges%2FBWDB_SW274&names=gauges%2FBWDB_SW275.5&names=gauges%2FBWDB_SW277&names=gauges%2FBWDB_SW285&names=gauges%2FBWDB_SW291.5R&names=gauges%2FBWDB_SW294&names=gauges%2FBWDB_SW299&names=gauges%2FBWDB_SW302&names=gauges%2FBWDB_SW36&names=gauges%2FBWDB_SW3A&names=gauges%2FBWDB_SW42&names=gauges%2FBWDB_SW45&names=gauges%2FBWDB_SW45.5&names=gauges%2FBWDB_SW46.9L&names=gauges%2FBWDB_SW49&names=gauges%2FBWDB_SW49A&names=gauges%2FBWDB_SW5&names=gauges%2FBWDB_SW50.6&names=gauges%2FBWDB_SW62&names=gauges%2FBWDB_SW63&names=gauges%2FBWDB_SW65&names=gauges%2FBWDB_SW67&names=gauges%2FBWDB_SW68.5&names=gauges%2FBWDB_SW71A&names=gauges%2FBWDB_SW72&names=gauges%2FBWDB_SW77&names=gauges%2FBWDB_SW84&names=gauges%2FBWDB_SW88&names=gauges%2FBWDB_SW88A&names=gauges%2FBWDB_SW90&names=gauges%2FBWDB_SW91.9R&names=gauges%2FBWDB_SW93.4L&names=gauges%2FBWDB_SW93.5L&names=gauges%2FBWDB_SW95&names=gauges%2FBWDB_SW99&names=gauges%2FCWC_012-MDSIL
+  response:
+    body:
+      string: !!binary |
+        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
+        6aEmTTd+LkvDf//54o8X/wHapSYWR04AAA==
+    headers:
+      Alt-Svc:
+      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+      Cache-Control:
+      - private
+      Content-Encoding:
+      - gzip
+      Content-Type:
+      - application/json; charset=UTF-8
+      Date:
+      - Wed, 21 Aug 2024 01:18:32 GMT
+      Server:
+      - ESF
+      Server-Timing:
+      - gfet4t7; dur=124
+      Transfer-Encoding:
+      - chunked
+      Vary:
+      - Origin
+      - X-Origin
+      - Referer
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-XSS-Protection:
+      - '0'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: ''
+    headers:
+      accept:
+      - '*/*'
+      accept-encoding:
+      - gzip, deflate
+      connection:
+      - keep-alive
+      host:
+      - testserver
+      user-agent:
+      - testclient
+    method: GET
+    uri: http://testserver/google-floods/gauges/?region_codes=bd
+  response:
+    body:
+      string: '{"type":"FeatureCollection","features":[{"type":"Feature","geometry":{"type":"Point","coordinates":[91.389698,24.691644]},"properties":{"gaugeId":"BWDB_SW270","issuedTime":"2024-08-21T01:11:04.800016Z","siteName":"Markuli","river":"Surma-Meghna","severity":"SEVERE","source":"BWDB","qualityVerified":true,"inundationMapSet":{"inundationMaps":[{"level":"HIGH","serializedPolygonId":"f618d9d0b41047e5a73e0352c54737cb"},{"level":"MEDIUM","serializedPolygonId":"5ac17564f96c416aa65622210f7be455"},{"level":"LOW","serializedPolygonId":"3d8b39f6fc0b45df9d6ac2945a8a57b2"}],"inundationMapsTimeRange":{"start":"2024-08-22T09:00:00Z","end":"2024-08-22T09:00:00Z"},"inundationMapType":"PROBABILITY"}}},{"type":"Feature","geometry":{"type":"Point","coordinates":[90.431068,24.737208]},"properties":{"gaugeId":"BWDB_SW228","issuedTime":"2024-08-21T01:09:48.625563Z","siteName":"Mymensingh","river":"Old
+        Brahmaputra","severity":"NO_FLOODING","source":"BWDB","qualityVerified":true}},{"type":"Feature","geometry":{"type":"Point","coordinates":[88.553699,24.368824]},"properties":{"gaugeId":"BWDB_SW88","issuedTime":"2024-08-21T01:02:43.741872Z","siteName":"Rajshahi","river":"Ganges","severity":"NO_FLOODING","source":"BWDB","qualityVerified":true}},{"type":"Feature","geometry":{"type":"Point","coordinates":[91.438231,23.221259]},"properties":{"gaugeId":"BWDB_SW212","issuedTime":"2024-08-21T01:02:43.741974Z","siteName":"Parshuram","river":"Muhuri","severity":"SEVERE","source":"BWDB","qualityVerified":true,"inundationMapSet":{"inundationMaps":[{"level":"HIGH","serializedPolygonId":"3047087919894a6b8fdce086515cc171"},{"level":"MEDIUM","serializedPolygonId":"84c6899783e149eeabcdc05c6ec149e0"},{"level":"LOW","serializedPolygonId":"6544a995d4fd4ff5b5de00c8f261dd1b"}],"inundationMapsTimeRange":{"start":"2024-08-20T09:00:00Z","end":"2024-08-20T09:00:00Z"},"inundationMapType":"PROBABILITY"}}},{"type":"Feature","geometry":{"type":"Point","coordinates":[92.485642,24.872495]},"properties":{"gaugeId":"BWDB_SW172","issuedTime":"2024-08-21T01:02:43.752334Z","siteName":"Amalshid","river":"Kushiyara","severity":"NO_FLOODING","source":"BWDB","qualityVerified":true}},{"type":"Feature","geometry":{"type":"Point","coordinates":[91.119442,23.956966]},"properties":{"gaugeId":"BWDB_SW3A","issuedTime":"2024-08-21T01:02:43.753813Z","siteName":"B.
+        Baria","river":"Titas","severity":"NO_FLOODING","source":"BWDB","qualityVerified":true}},{"type":"Feature","geometry":{"type":"Point","coordinates":[91.774876,24.496424]},"properties":{"gaugeId":"BWDB_SW202","issuedTime":"2024-08-21T01:02:43.747282Z","siteName":"Moulvibazar","river":"Manu","severity":"ABOVE_NORMAL","source":"BWDB","qualityVerified":true,"inundationMapSet":{"inundationMaps":[{"level":"HIGH","serializedPolygonId":"0bca00b745534e5d9f97637c845445af"},{"level":"MEDIUM","serializedPolygonId":"d6d0fa09a1fb472ebc33248431455131"},{"level":"LOW","serializedPolygonId":"4c3976049e454c608c082f9ebfbd9b2a"}],"inundationMapsTimeRange":{"start":"2024-08-20T06:00:00Z","end":"2024-08-20T06:00:00Z"},"inundationMapType":"PROBABILITY"}}},{"type":"Feature","geometry":{"type":"Point","coordinates":[92.063472,22.15791]},"properties":{"gaugeId":"BWDB_SW248","issuedTime":"2024-08-21T01:02:44.639650Z","siteName":"Dohazari","river":"Sangu","severity":"NO_FLOODING","source":"BWDB","qualityVerified":true}},{"type":"Feature","geometry":{"type":"Point","coordinates":[91.703954,22.968128]},"properties":{"gaugeId":"BWDB_SW84","issuedTime":"2024-08-21T01:02:43.752323Z","siteName":"Ramgarh","river":"Feni","severity":"NO_FLOODING","source":"BWDB","qualityVerified":true}},{"type":"Feature","geometry":{"type":"Point","coordinates":[89.580654,24.891637]},"properties":{"gaugeId":"BWDB_SW15J","issuedTime":"2024-08-21T01:02:43.751949Z","siteName":"Sariakandi
+        (Mathurapara)","river":"Jamuna","severity":"NO_FLOODING","source":"BWDB","qualityVerified":true}},{"type":"Feature","geometry":{"type":"Point","coordinates":[92.265191,25.004479]},"properties":{"gaugeId":"BWDB_SW266","issuedTime":"2024-08-21T01:11:03.131730Z","siteName":"Kanaighat","river":"Surma","severity":"NO_FLOODING","source":"BWDB","qualityVerified":true}},{"type":"Feature","geometry":{"type":"Point","coordinates":[88.618762,25.689237]},"properties":{"gaugeId":"BWDB_SW236","issuedTime":"2024-08-21T01:02:43.752832Z","siteName":"Dinajpur","river":"Punarbhaba","severity":"NO_FLOODING","source":"BWDB","qualityVerified":true}},{"type":"Feature","geometry":{"type":"Point","coordinates":[88.460897,26.03796]},"properties":{"gaugeId":"BWDB_SW285","issuedTime":"2024-08-21T01:10:48.136382Z","siteName":"Thakurgaon","river":"Tangon","severity":"NO_FLOODING","source":"BWDB","qualityVerified":true}},{"type":"Feature","geometry":{"type":"Point","coordinates":[88.744249,24.916416]},"properties":{"gaugeId":"BWDB_SW145","issuedTime":"2024-08-21T01:02:43.750317Z","siteName":"Mohadebpur","river":"Atrai","severity":"NO_FLOODING","source":"BWDB","qualityVerified":true}},{"type":"Feature","geometry":{"type":"Point","coordinates":[89.096763,23.101868]},"properties":{"gaugeId":"BWDB_SW162","issuedTime":"2024-08-21T01:02:44.417982Z","siteName":"Jhikargacha","river":"Kobadak","severity":"NO_FLOODING","source":"BWDB","qualityVerified":true}},{"type":"Feature","geometry":{"type":"Point","coordinates":[91.19839,23.471078]},"properties":{"gaugeId":"BWDB_SW110","issuedTime":"2024-08-21T01:02:43.751995Z","siteName":"Cumilla","river":"Gumti","severity":"NO_FLOODING","source":"BWDB","qualityVerified":true}},{"type":"Feature","geometry":{"type":"Point","coordinates":[89.778872,23.768642]},"properties":{"gaugeId":"BWDB_SW91.9R","issuedTime":"2024-08-21T01:02:43.753415Z","siteName":"Goalondo
+        (Transit)","river":"Padma","severity":"NO_FLOODING","source":"BWDB","qualityVerified":true}},{"type":"Feature","geometry":{"type":"Point","coordinates":[89.073729,26.125276]},"properties":{"gaugeId":"BWDB_SW291.5R","issuedTime":"2024-08-21T01:02:43.742990Z","siteName":"Dalia","river":"Teesta","severity":"NO_FLOODING","source":"BWDB","qualityVerified":true}},{"type":"Feature","geometry":{"type":"Point","coordinates":[90.336562,23.784904]},"properties":{"gaugeId":"BWDB_SW302","issuedTime":"2024-08-21T01:02:43.742314Z","siteName":"Mirpur","river":"Turag","severity":"NO_FLOODING","source":"BWDB","qualityVerified":true}},{"type":"Feature","geometry":{"type":"Point","coordinates":[89.516256,23.539828]},"properties":{"gaugeId":"BWDB_SW101","issuedTime":"2024-08-21T01:02:43.747180Z","siteName":"Kamarkhali
+        (Transit)","river":"Gorai","severity":"NO_FLOODING","source":"BWDB","qualityVerified":true}},{"type":"Feature","geometry":{"type":"Point","coordinates":[90.48001,23.56269]},"properties":{"gaugeId":"BWDB_SW71A","issuedTime":"2024-08-21T01:02:43.751997Z","siteName":"Rekabi-Bazar","river":"Dhaleswari","severity":"NO_FLOODING","source":"BWDB","qualityVerified":true}},{"type":"Feature","geometry":{"type":"Point","coordinates":[90.638969,23.58457]},"properties":{"gaugeId":"BWDB_SW275.5","issuedTime":"2024-08-21T01:02:43.752988Z","siteName":"Meghna
+        Bridge","river":"Meghna","severity":"ABOVE_NORMAL","source":"BWDB","qualityVerified":true,"inundationMapSet":{"inundationMaps":[{"level":"HIGH","serializedPolygonId":"c131d800f16b4e1091db58bc2c1843ae"},{"level":"MEDIUM","serializedPolygonId":"28fcb2013d574375bcf045dbdd93e8cd"},{"level":"LOW","serializedPolygonId":"f3eae83263644992857b356dd7f06c4e"}],"inundationMapsTimeRange":{"start":"2024-08-20T09:00:00Z","end":"2024-08-20T09:00:00Z"},"inundationMapType":"PROBABILITY"}}},{"type":"Feature","geometry":{"type":"Point","coordinates":[91.26666666666668,23.473055555555554]},"properties":{"gaugeId":"CWC_012-MDSIL","issuedTime":"2024-08-21T01:03:39.394447Z","siteName":"Sonamura
+        (II)","river":null,"severity":"ABOVE_NORMAL","source":"CWC","qualityVerified":true}},{"type":"Feature","geometry":{"type":"Point","coordinates":[92.079743,21.773552]},"properties":{"gaugeId":"BWDB_SW204","issuedTime":"2024-08-21T01:12:06.279121Z","siteName":"Chiringa","river":"Matamuhuri","severity":"NO_FLOODING","source":"BWDB","qualityVerified":true}},{"type":"Feature","geometry":{"type":"Point","coordinates":[90.439032,23.320123]},"properties":{"gaugeId":"BWDB_SW95","issuedTime":"2024-08-21T01:02:44.441009Z","siteName":"Sureshswar","river":"Padma","severity":"NO_FLOODING","source":"BWDB","qualityVerified":true}},{"type":"Feature","geometry":{"type":"Point","coordinates":[90.661579,25.123256]},"properties":{"gaugeId":"BWDB_SW263","issuedTime":"2024-08-21T01:02:43.752847Z","siteName":"Durgapur","river":"Someswari","severity":"NO_FLOODING","source":"BWDB","qualityVerified":true}},{"type":"Feature","geometry":{"type":"Point","coordinates":[88.249526,24.599517]},"properties":{"gaugeId":"BWDB_SW211.5","issuedTime":"2024-08-21T01:09:59.760859Z","siteName":"Chapai-Nawabganj","river":"Mohananda","severity":"NO_FLOODING","source":"BWDB","qualityVerified":true}},{"type":"Feature","geometry":{"type":"Point","coordinates":[90.991206,24.045541]},"properties":{"gaugeId":"BWDB_SW273","issuedTime":"2024-08-21T01:02:43.750627Z","siteName":"Bhairab
+        Bazar","river":"Upper Meghna","severity":"NO_FLOODING","source":"BWDB","qualityVerified":true}},{"type":"Feature","geometry":{"type":"Point","coordinates":[88.842925,23.645365]},"properties":{"gaugeId":"BWDB_SW207","issuedTime":"2024-08-21T01:02:43.751180Z","siteName":"Chuadanga","river":"Mathabhanga","severity":"NO_FLOODING","source":"BWDB","qualityVerified":true}},{"type":"Feature","geometry":{"type":"Point","coordinates":[89.138756,24.497782]},"properties":{"gaugeId":"BWDB_SW147.5","issuedTime":"2024-08-21T01:02:43.750599Z","siteName":"Singra","river":"Atrai
+        Gur","severity":"NO_FLOODING","source":"BWDB","qualityVerified":true}},{"type":"Feature","geometry":{"type":"Point","coordinates":[89.391511,24.831299]},"properties":{"gaugeId":"BWDB_SW65","issuedTime":"2024-08-21T01:02:43.751897Z","siteName":"Bogura","river":"Karatoa","severity":"NO_FLOODING","source":"BWDB","qualityVerified":true}},{"type":"Feature","geometry":{"type":"Point","coordinates":[89.689858,24.635869]},"properties":{"gaugeId":"BWDB_SW49A","issuedTime":"2024-08-21T01:02:43.749730Z","siteName":"Kazipur","river":"Jamuna","severity":"NO_FLOODING","source":"BWDB","qualityVerified":true}},{"type":"Feature","geometry":{"type":"Point","coordinates":[90.72653,23.918646]},"properties":{"gaugeId":"BWDB_SW274","issuedTime":"2024-08-21T01:08:08.803288Z","siteName":"Narsingdi","river":"Meghna","severity":"NO_FLOODING","source":"BWDB","qualityVerified":true}},{"type":"Feature","geometry":{"type":"Point","coordinates":[90.206392,23.511165]},"properties":{"gaugeId":"BWDB_SW93.4L","issuedTime":"2024-08-21T01:02:43.751012Z","siteName":"Bhagyakul","river":"Padma","severity":"NO_FLOODING","source":"BWDB","qualityVerified":true}},{"type":"Feature","geometry":{"type":"Point","coordinates":[89.686153,25.544273]},"properties":{"gaugeId":"BWDB_SW45.5","issuedTime":"2024-08-21T01:12:38.287522Z","siteName":"Chilmari","river":"Brahmaputra","severity":"NO_FLOODING","source":"BWDB","qualityVerified":true}},{"type":"Feature","geometry":{"type":"Point","coordinates":[89.772772,23.881297]},"properties":{"gaugeId":"BWDB_SW50.6","issuedTime":"2024-08-21T01:02:43.752637Z","siteName":"Aricha","river":"Jamuna","severity":"NO_FLOODING","source":"BWDB","qualityVerified":true}},{"type":"Feature","geometry":{"type":"Point","coordinates":[89.667595,25.82041]},"properties":{"gaugeId":"BWDB_SW77","issuedTime":"2024-08-21T01:02:43.747425Z","siteName":"Kurigram","river":"Dharla","severity":"NO_FLOODING","source":"BWDB","qualityVerified":true}},{"type":"Feature","geometry":{"type":"Point","coordinates":[89.062548,25.675475]},"properties":{"gaugeId":"BWDB_SW62","issuedTime":"2024-08-21T01:02:44.614160Z","siteName":"Badarganj","river":"Jamuneswari","severity":"NO_FLOODING","source":"BWDB","qualityVerified":true}},{"type":"Feature","geometry":{"type":"Point","coordinates":[90.889765,25.073472]},"properties":{"gaugeId":"BWDB_SW263.1","issuedTime":"2024-08-21T01:02:43.741605Z","siteName":"Kalmakanda","river":"Someswari","severity":"UNKNOWN","source":"BWDB","qualityVerified":true}},{"type":"Feature","geometry":{"type":"Point","coordinates":[89.718387,24.470952]},"properties":{"gaugeId":"BWDB_SW49","issuedTime":"2024-08-21T01:02:43.741341Z","siteName":"Serajganj","river":"Jamuna","severity":"NO_FLOODING","source":"BWDB","qualityVerified":true}},{"type":"Feature","geometry":{"type":"Point","coordinates":[89.967658,24.923502]},"properties":{"gaugeId":"BWDB_SW225","issuedTime":"2024-08-21T01:02:44.513328Z","siteName":"Jamalpur","river":"Old
+        Brahmaputra","severity":"NO_FLOODING","source":"BWDB","qualityVerified":true}},{"type":"Feature","geometry":{"type":"Point","coordinates":[88.857085,23.787087]},"properties":{"gaugeId":"BWDB_SW206","issuedTime":"2024-08-21T01:02:43.741928Z","siteName":"Hatboalia","river":"Mathabhanga","severity":"NO_FLOODING","source":"BWDB","qualityVerified":true}},{"type":"Feature","geometry":{"type":"Point","coordinates":[88.544405,26.330021]},"properties":{"gaugeId":"BWDB_SW140","issuedTime":"2024-08-21T01:02:43.751230Z","siteName":"Panchagarh","river":"Upper
+        Karatoa","severity":"NO_FLOODING","source":"BWDB","qualityVerified":true}},{"type":"Feature","geometry":{"type":"Point","coordinates":[91.849452,24.888834]},"properties":{"gaugeId":"BWDB_SW267","issuedTime":"2024-08-21T01:02:43.742505Z","siteName":"Sylhet","river":"Surma","severity":"NO_FLOODING","source":"BWDB","qualityVerified":true}},{"type":"Feature","geometry":{"type":"Point","coordinates":[90.419454,23.696849]},"properties":{"gaugeId":"BWDB_SW42","issuedTime":"2024-08-21T01:02:43.750274Z","siteName":"Dhaka
+        (MilBarack)","river":"Buriganga","severity":"NO_FLOODING","source":"BWDB","qualityVerified":true}},{"type":"Feature","geometry":{"type":"Point","coordinates":[91.84582,24.352029]},"properties":{"gaugeId":"BWDB_SW67","issuedTime":"2024-08-21T01:02:43.746795Z","siteName":"Kamalganj","river":"Dhalai","severity":"SEVERE","source":"BWDB","qualityVerified":true,"inundationMapSet":{"inundationMaps":[{"level":"HIGH","serializedPolygonId":"db6f4ad7e66841bca99a730de855e901"},{"level":"MEDIUM","serializedPolygonId":"0f14f753676647f6bbfccf2962f91723"},{"level":"LOW","serializedPolygonId":"3a88c77589164db4bfc280a5e94360f7"}],"inundationMapsTimeRange":{"start":"2024-08-20T09:00:00Z","end":"2024-08-20T09:00:00Z"},"inundationMapType":"PROBABILITY"}}},{"type":"Feature","geometry":{"type":"Point","coordinates":[88.318746,24.820982]},"properties":{"gaugeId":"BWDB_SW238","issuedTime":"2024-08-21T01:02:43.742372Z","siteName":"Rohanpur","river":"Punarvaba","severity":"NO_FLOODING","source":"BWDB","qualityVerified":true}},{"type":"Feature","geometry":{"type":"Point","coordinates":[89.377776,25.146083]},"properties":{"gaugeId":"BWDB_SW63","issuedTime":"2024-08-21T01:02:43.752743Z","siteName":"Chakrahimpur","river":"Karatoa","severity":"NO_FLOODING","source":"BWDB","qualityVerified":true}},{"type":"Feature","geometry":{"type":"Point","coordinates":[91.110489,24.70217]},"properties":{"gaugeId":"BWDB_SW72","issuedTime":"2024-08-21T01:02:43.752141Z","siteName":"Khaliajuri","river":"Dhanu","severity":"NO_FLOODING","source":"BWDB","qualityVerified":true}},{"type":"Feature","geometry":{"type":"Point","coordinates":[91.681667,24.628307]},"properties":{"gaugeId":"BWDB_SW175.5","issuedTime":"2024-08-21T01:02:43.747298Z","siteName":"Sherpur-Sylhet","river":"Kushiyara","severity":"ABOVE_NORMAL","source":"BWDB","qualityVerified":true,"inundationMapSet":{"inundationMaps":[{"level":"HIGH","serializedPolygonId":"e8278d924c20403199eb8f112356d454"},{"level":"MEDIUM","serializedPolygonId":"76ad2fc7b9e540a79943200e10224160"},{"level":"LOW","serializedPolygonId":"56b85a8803b94a9387ce8dbab72c26f5"}],"inundationMapsTimeRange":{"start":"2024-08-22T06:00:00Z","end":"2024-08-22T06:00:00Z"},"inundationMapType":"PROBABILITY"}}},{"type":"Feature","geometry":{"type":"Point","coordinates":[92.191013,24.890721]},"properties":{"gaugeId":"BWDB_SW173","issuedTime":"2024-08-21T01:02:43.752905Z","siteName":"Sheola","river":"Kushiyara","severity":"SEVERE","source":"BWDB","qualityVerified":true,"inundationMapSet":{"inundationMaps":[{"level":"HIGH","serializedPolygonId":"9c03e0c5c52b45d1bf6a6170ad74117a"},{"level":"MEDIUM","serializedPolygonId":"3ff908a6701c49b3867d546c89ac2a87"},{"level":"LOW","serializedPolygonId":"287018525e2e4c2fa16360708d5e5dc4"}],"inundationMapsTimeRange":{"start":"2024-08-21T20:00:00Z","end":"2024-08-21T20:00:00Z"},"inundationMapType":"PROBABILITY"}}},{"type":"Feature","geometry":{"type":"Point","coordinates":[92.209356,21.793554]},"properties":{"gaugeId":"BWDB_SW203","issuedTime":"2024-08-21T01:02:43.753321Z","siteName":"Lama","river":"Matamuhuri","severity":"NO_FLOODING","source":"BWDB","qualityVerified":true}},{"type":"Feature","geometry":{"type":"Point","coordinates":[90.496305,23.732784]},"properties":{"gaugeId":"BWDB_SW179","issuedTime":"2024-08-21T01:02:43.751669Z","siteName":"Demra","river":"Balu","severity":"NO_FLOODING","source":"BWDB","qualityVerified":true}},{"type":"Feature","geometry":{"type":"Point","coordinates":[91.719765,22.807724]},"properties":{"gaugeId":"BWDB_SW117","issuedTime":"2024-08-21T01:02:43.747064Z","siteName":"Narayanhat","river":"Halda","severity":"NO_FLOODING","source":"BWDB","qualityVerified":true}},{"type":"Feature","geometry":{"type":"Point","coordinates":[91.937553,24.428089]},"properties":{"gaugeId":"BWDB_SW201","issuedTime":"2024-08-21T01:10:01.557770Z","siteName":"Manu-RB","river":"Manu","severity":"ABOVE_NORMAL","source":"BWDB","qualityVerified":true,"inundationMapSet":{"inundationMaps":[{"level":"HIGH","serializedPolygonId":"c35c936946cd4050971396eee52c57fc"},{"level":"MEDIUM","serializedPolygonId":"6b0a2e86bb704b9580dd81671a099132"},{"level":"LOW","serializedPolygonId":"e4cb9c9127af45e9beaf316fe104c2b2"}],"inundationMapsTimeRange":{"start":"2024-08-20T06:00:00Z","end":"2024-08-20T06:00:00Z"},"inundationMapType":"PROBABILITY"}}},{"type":"Feature","geometry":{"type":"Point","coordinates":[90.260002,23.4704]},"properties":{"gaugeId":"BWDB_SW93.5L","issuedTime":"2024-08-21T01:09:51.850328Z","siteName":"Mawa","river":"Padma","severity":"NO_FLOODING","source":"BWDB","qualityVerified":true}},{"type":"Feature","geometry":{"type":"Point","coordinates":[92.216246,22.194878]},"properties":{"gaugeId":"BWDB_SW247","issuedTime":"2024-08-21T01:09:25.330476Z","siteName":"Bandarban","river":"Sangu","severity":"NO_FLOODING","source":"BWDB","qualityVerified":true}},{"type":"Feature","geometry":{"type":"Point","coordinates":[91.250119,25.191499]},"properties":{"gaugeId":"BWDB_SW131.5","issuedTime":"2024-08-21T01:02:43.741552Z","siteName":"Lorergorh","river":"Jadukata","severity":"NO_FLOODING","source":"BWDB","qualityVerified":true}},{"type":"Feature","geometry":{"type":"Point","coordinates":[88.702683,26.030516]},"properties":{"gaugeId":"BWDB_SW132.2","issuedTime":"2024-08-21T01:02:43.750057Z","siteName":"Phulbari","river":"Ichamati-Jamuna","severity":"NO_FLOODING","source":"BWDB","qualityVerified":true}},{"type":"Feature","geometry":{"type":"Point","coordinates":[89.03352,24.06764]},"properties":{"gaugeId":"BWDB_SW90","issuedTime":"2024-08-21T01:02:43.752829Z","siteName":"Hardinge-RB","river":"Ganges","severity":"NO_FLOODING","source":"BWDB","qualityVerified":true}},{"type":"Feature","geometry":{"type":"Point","coordinates":[91.405531,25.071634]},"properties":{"gaugeId":"BWDB_SW269","issuedTime":"2024-08-21T01:02:44.605627Z","siteName":"Sunamganj","river":"Surma","severity":"NO_FLOODING","source":"BWDB","qualityVerified":true}},{"type":"Feature","geometry":{"type":"Point","coordinates":[90.230264,23.911094]},"properties":{"gaugeId":"BWDB_SW14.5","issuedTime":"2024-08-21T01:02:43.741257Z","siteName":"Nayarhat","river":"Bangshi","severity":"NO_FLOODING","source":"BWDB","qualityVerified":true}},{"type":"Feature","geometry":{"type":"Point","coordinates":[89.437306,25.787864]},"properties":{"gaugeId":"BWDB_SW294","issuedTime":"2024-08-21T01:02:43.742417Z","siteName":"Kaunia","river":"Teesta","severity":"NO_FLOODING","source":"BWDB","qualityVerified":true}},{"type":"Feature","geometry":{"type":"Point","coordinates":[89.958068,23.862486]},"properties":{"gaugeId":"BWDB_SW137A","issuedTime":"2024-08-21T01:02:45.009553Z","siteName":"Taraghat","river":"Kaliganga","severity":"NO_FLOODING","source":"BWDB","qualityVerified":true}},{"type":"Feature","geometry":{"type":"Point","coordinates":[89.182899,23.883877]},"properties":{"gaugeId":"BWDB_SW99","issuedTime":"2024-08-21T01:02:43.749961Z","siteName":"Gorai-RB","river":"Gorai","severity":"NO_FLOODING","source":"BWDB","qualityVerified":true}},{"type":"Feature","geometry":{"type":"Point","coordinates":[90.209848,23.187806]},"properties":{"gaugeId":"BWDB_SW5","issuedTime":"2024-08-21T01:02:43.752147Z","siteName":"Madaripur","river":"Arialkhan","severity":"NO_FLOODING","source":"BWDB","qualityVerified":true}},{"type":"Feature","geometry":{"type":"Point","coordinates":[89.76646,25.920668]},"properties":{"gaugeId":"BWDB_SW45","issuedTime":"2024-08-21T01:02:43.741370Z","siteName":"Noonkhawa","river":"Brahmaputra","severity":"NO_FLOODING","source":"BWDB","qualityVerified":true}},{"type":"Feature","geometry":{"type":"Point","coordinates":[91.410342,24.392752]},"properties":{"gaugeId":"BWDB_SW159","issuedTime":"2024-08-21T01:02:43.750462Z","siteName":"Habiganj","river":"Khowai","severity":"ABOVE_NORMAL","source":"BWDB","qualityVerified":true,"inundationMapSet":{"inundationMaps":[{"level":"HIGH","serializedPolygonId":"50e66b72ecb64b4786ed2d2b5f7c05db"},{"level":"MEDIUM","serializedPolygonId":"a6aedce476b747d4905ce6a5a269aec7"},{"level":"LOW","serializedPolygonId":"15cd641a589746b882ada11e7c74dc70"}],"inundationMapsTimeRange":{"start":"2024-08-20T06:00:00Z","end":"2024-08-20T06:00:00Z"},"inundationMapType":"PROBABILITY"}}},{"type":"Feature","geometry":{"type":"Point","coordinates":[90.639487,23.23169]},"properties":{"gaugeId":"BWDB_SW277","issuedTime":"2024-08-21T01:02:43.752489Z","siteName":"Chandpur","river":"Lower
+        Meghna","severity":"ABOVE_NORMAL","source":"BWDB","qualityVerified":true,"inundationMapSet":{"inundationMaps":[{"level":"HIGH","serializedPolygonId":"661a4c6448fa49c7aec78f52b6c64d87"},{"level":"MEDIUM","serializedPolygonId":"b4c5af47cbb94fb2bd65ff49616d861f"},{"level":"LOW","serializedPolygonId":"bc8d872d9673474294e5cc6f4d68a206"}],"inundationMapsTimeRange":{"start":"2024-08-22T00:00:00Z","end":"2024-08-22T00:00:00Z"},"inundationMapType":"PROBABILITY"}}},{"type":"Feature","geometry":{"type":"Point","coordinates":[89.70111,25.104949]},"properties":{"gaugeId":"BWDB_SW46.9L","issuedTime":"2024-08-21T01:02:43.750700Z","siteName":"Bahadurabad
+        (Transit)","river":"Jamuna","severity":"NO_FLOODING","source":"BWDB","qualityVerified":true}},{"type":"Feature","geometry":{"type":"Point","coordinates":[90.025397,23.878853]},"properties":{"gaugeId":"BWDB_SW68.5","issuedTime":"2024-08-21T01:02:43.742212Z","siteName":"Jagir","river":"Old
+        Dhaleswari","severity":"NO_FLOODING","source":"BWDB","qualityVerified":true}},{"type":"Feature","geometry":{"type":"Point","coordinates":[88.068931,24.644253]},"properties":{"gaugeId":"BWDB_SW88A","issuedTime":"2024-08-21T01:07:50.480790Z","siteName":"Pankha","river":"Ganges","severity":"NO_FLOODING","source":"BWDB","qualityVerified":true}},{"type":"Feature","geometry":{"type":"Point","coordinates":[90.652813,25.009779]},"properties":{"gaugeId":"BWDB_SW36","issuedTime":"2024-08-21T01:02:43.741671Z","siteName":"Jariajanjail","river":"Kangsha","severity":"NO_FLOODING","source":"BWDB","qualityVerified":true}},{"type":"Feature","geometry":{"type":"Point","coordinates":[91.59615,24.098525]},"properties":{"gaugeId":"BWDB_SW157","issuedTime":"2024-08-21T01:02:43.741786Z","siteName":"Ballah","river":"Khowai","severity":"EXTREME","source":"BWDB","qualityVerified":true,"inundationMapSet":{"inundationMaps":[{"level":"HIGH","serializedPolygonId":"705c9b71897a4c40ad740b65b22b7429"},{"level":"MEDIUM","serializedPolygonId":"b1fed2465d3d4de48c4c405e5821138b"},{"level":"LOW","serializedPolygonId":"e919a50ee20b4c00a6f8cd91572eefe3"}],"inundationMapsTimeRange":{"start":"2024-08-20T09:00:00Z","end":"2024-08-20T09:00:00Z"},"inundationMapType":"PROBABILITY"}}},{"type":"Feature","geometry":{"type":"Point","coordinates":[88.932033,24.844091]},"properties":{"gaugeId":"BWDB_SW133","issuedTime":"2024-08-21T01:08:28.891683Z","siteName":"Naogaon","river":"Little
+        Jamuna","severity":"NO_FLOODING","source":"BWDB","qualityVerified":true}},{"type":"Feature","geometry":{"type":"Point","coordinates":[90.650532,24.040344]},"properties":{"gaugeId":"BWDB_SW177","issuedTime":"2024-08-21T01:02:43.742057Z","siteName":"Lakhpur","river":"Lakhya","severity":"NO_FLOODING","source":"BWDB","qualityVerified":true}},{"type":"Feature","geometry":{"type":"Point","coordinates":[90.4013,23.881792]},"properties":{"gaugeId":"BWDB_SW299","issuedTime":"2024-08-21T01:02:43.742395Z","siteName":"Tongi","river":"Tongi
+        Khal","severity":"NO_FLOODING","source":"BWDB","qualityVerified":true}},{"type":"Feature","geometry":{"type":"Point","coordinates":[91.846427,22.56086]},"properties":{"gaugeId":"BWDB_SW119.1","issuedTime":"2024-08-21T01:02:43.752413Z","siteName":"Panchpukuria","river":"Halda","severity":"NO_FLOODING","source":"BWDB","qualityVerified":true}},{"type":"Feature","geometry":{"type":"Point","coordinates":[88.731861,25.767523]},"properties":{"gaugeId":"BWDB_SW142.1","issuedTime":"2024-08-21T01:02:43.753367Z","siteName":"Bhusirbandar","river":"Upper
+        Atrai","severity":"NO_FLOODING","source":"BWDB","qualityVerified":true}},{"type":"Feature","geometry":{"type":"Point","coordinates":[92.11833,25.087706]},"properties":{"gaugeId":"BWDB_SW251","issuedTime":"2024-08-21T01:02:43.747689Z","siteName":"Sarighat","river":"Sarigowain","severity":"NO_FLOODING","source":"BWDB","qualityVerified":true}},{"type":"Feature","geometry":{"type":"Point","coordinates":[91.379531,24.785555]},"properties":{"gaugeId":"BWDB_SW269.5","issuedTime":"2024-08-21T01:02:43.750692Z","siteName":"Derai","river":"Surma
+        Old Course","severity":"NO_FLOODING","source":"BWDB","qualityVerified":true}}]}'
+    headers:
+      content-length:
+      - '26138'
+      content-type:
+      - application/json
+    status:
+      code: 200
+      message: OK
+version: 1
