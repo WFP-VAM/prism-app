@@ -6,7 +6,11 @@ from fastapi.testclient import TestClient
 client = TestClient(app)
 
 
-@pytest.mark.vcr(match_on=['uri', 'method'], filter_headers=['Authorization'], filter_query_parameters=['key'])
+@pytest.mark.vcr(
+    match_on=["uri", "method"],
+    filter_headers=["Authorization"],
+    filter_query_parameters=["key"],
+)
 def test_get_google_floods_gauges():
     """
     This test is not used in the API, but is used to test the get_google_floods_gauges function
@@ -22,7 +26,11 @@ def test_get_google_floods_gauges():
         assert "severity" in feature["properties"]
 
 
-@pytest.mark.vcr(match_on=['uri', 'method'], filter_headers=['Authorization'], filter_query_parameters=['key'])
+@pytest.mark.vcr(
+    match_on=["uri", "method"],
+    filter_headers=["Authorization"],
+    filter_query_parameters=["key"],
+)
 def test_get_google_floods_gauges_api():
     """
     This test is used to test the API endpoint for getting Google Floods gauges
@@ -35,7 +43,11 @@ def test_get_google_floods_gauges_api():
     assert len(response_geojson["features"]) > 0
 
 
-@pytest.mark.vcr(match_on=['uri', 'method'], filter_headers=['Authorization'], filter_query_parameters=['key'])
+@pytest.mark.vcr(
+    match_on=["uri", "method"],
+    filter_headers=["Authorization"],
+    filter_query_parameters=["key"],
+)
 def test_get_google_floods_gauges_api_case_insensitive():
     """
     This test is used to test the API endpoint for getting Google Floods gauges with a case insensitive region code
@@ -48,7 +60,11 @@ def test_get_google_floods_gauges_api_case_insensitive():
     assert len(response_geojson["features"]) > 0
 
 
-@pytest.mark.vcr(match_on=['uri', 'method'], filter_headers=['Authorization'], filter_query_parameters=['key'])
+@pytest.mark.vcr(
+    match_on=["uri", "method"],
+    filter_headers=["Authorization"],
+    filter_query_parameters=["key"],
+)
 def test_get_google_floods_gauges_api_requires_valid_region_code():
     """
     This test is used to test the API endpoint for getting Google Floods gauges with an invalid region code
