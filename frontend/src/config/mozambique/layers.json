@@ -2959,7 +2959,7 @@
     "title": "Current Flood Status (Google AI)",
     "type": "point_data",
     "hex_display": false,
-    "data": "http://0.0.0.0:80/google-floods/gauges/?region_code=MZ",
+    "data": "http://0.0.0.0:80/google-floods/gauges/?region_codes=MZ",
     "data_field": "severity",
     "data_field_type": "text",
     "opacity": 0.9,
