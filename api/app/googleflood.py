@@ -4,13 +4,23 @@ import logging
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from os import getenv
 from urllib.parse import urlencode
+from pydantic import BaseModel
+from typing import List
 
 import requests
 from fastapi import HTTPException
+import os
+import requests
+import geopandas as gpd
+import pandas as pd
+import uuid
+
+from fiona.drvsupport import supported_drivers
+supported_drivers['LIBKML'] = 'rw'
 
 logger = logging.getLogger(__name__)
 
-GOOGLE_FLOODS_API_KEY = getenv("GOOGLE_FLOODS_API_KEY", "")
+GOOGLE_FLOODS_API_KEY = os.getenv("GOOGLE_FLOODS_API_KEY", "")
 if GOOGLE_FLOODS_API_KEY == "":
     logger.warning("Missing backend parameter: GOOGLE_FLOODS_API_KEY")
 
@@ -166,3 +176,43 @@ def get_google_floods_gauge_forecast(gauge_ids: list[str]):
     }
 
     return forecast_data
+
+class InundationMap(BaseModel):
+    level: str
+    serializedPolygonId: str
+
+class InundationMapSet(BaseModel):
+    inundationMaps: List[InundationMap]
+
+
+def get_google_floods_inundations(
+    inundationMapSet: InundationMapSet,
+) -> gpd.GeoDataFrame:
+    """Get statistical charts data"""
+    level_to_kml = dict()
+    URL = 'https://floodforecasting.googleapis.com/v1/serializedPolygons/{serializedPolygonId}?key={key}'
+    for inundationMap in inundationMapSet:
+        response = requests.get(
+            URL.format(
+                serializedPolygonId=inundationMap['serializedPolygonId'],
+                key = GOOGLE_FLOODS_API_KEY
+            )
+        ).json()
+        level_to_kml[inundationMap['level']] = response['kml']
+    
+    # Create a temp path for writing kmls
+    tmp_path = os.path.join(f'/tmp/google-floods/{str(uuid.uuid4())}')
+    if not os.path.exists(tmp_path):
+        os.makedirs(tmp_path)
+        
+    gdf_buff = []
+    for level, kml in level_to_kml.items():
+        kml_path = os.path.join(tmp_path, f'{level}.kml')
+        with open(kml_path, 'w') as f:
+            f.write(kml)
+        gdf = gpd.read_file(kml_path, driver='KML')
+        gdf['level'] = level
+        gdf_buff.append(gdf)
+    
+    gdf = pd.concat(gdf_buff)
+    return gdf
