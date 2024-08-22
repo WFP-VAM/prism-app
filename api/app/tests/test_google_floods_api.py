@@ -30,6 +30,7 @@ def test_get_google_floods_gauges():
     match_on=["uri", "method"],
     filter_headers=["Authorization"],
     filter_query_parameters=["key"],
+    ignore_hosts=["testserver"],
 )
 def test_get_google_floods_gauges_api():
     """
@@ -47,6 +48,7 @@ def test_get_google_floods_gauges_api():
     match_on=["uri", "method"],
     filter_headers=["Authorization"],
     filter_query_parameters=["key"],
+    ignore_hosts=["testserver"],
 )
 def test_get_google_floods_gauges_api_case_insensitive():
     """
@@ -64,6 +66,7 @@ def test_get_google_floods_gauges_api_case_insensitive():
     match_on=["uri", "method"],
     filter_headers=["Authorization"],
     filter_query_parameters=["key"],
+    ignore_hosts=["testserver"],
 )
 def test_get_google_floods_gauges_api_requires_valid_region_code():
     """
