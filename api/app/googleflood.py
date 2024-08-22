@@ -30,7 +30,7 @@ def format_gauge_to_geojson(data):
             "gaugeId": data["gaugeId"],
             "issuedTime": data["issuedTime"],
             "siteName": data["siteName"],
-            "river": (
+            "riverName": (
                 data["river"] if "river" in data and len(data["river"]) > 1 else None
             ),
             "severity": data["severity"],

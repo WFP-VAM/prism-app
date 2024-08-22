@@ -6554,7 +6554,7 @@
         "template": "Site: {{siteName}}",
         "visibility": "if-defined"
       },
-      "river": {
+      "riverName": {
         "type": "text",
         "template": "River: {{riverName}}",
         "visibility": "if-defined"
