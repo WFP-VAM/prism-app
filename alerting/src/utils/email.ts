@@ -22,7 +22,9 @@ export async function sendEmail({
   html?: string;
 }) {
   const password = process.env.PRISM_ALERTS_EMAIL_PASSWORD;
-  const user = process.env.PRISM_ALERTS_EMAIL_USER_USER || 'prism.alerts.wfp@gmail.com';
+  const host =
+    process.env.PRISM_ALERTS_EMAIL_HOST || 'email-smtp.eu-west-1.amazonaws.com';
+  const user = process.env.PRISM_ALERTS_EMAIL_USER || 'AKIAWZYYAAWJ4JNCYOO7'; // wfp.prism@wfp.org
 
   if (!(password && user)) {
     // Generate test SMTP service account from ethereal.email
@@ -56,7 +58,9 @@ export async function sendEmail({
   }
 
   const transporter = nodemailer.createTransport({
-    service: 'gmail',
+    host,
+    port: 465,
+    secure: true,
     auth: {
       user,
       pass: password,

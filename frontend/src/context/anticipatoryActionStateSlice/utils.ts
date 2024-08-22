@@ -157,7 +157,12 @@ export function parseAndTransformAA(data: any[]) {
 
           // If a district reaches a set state, it will propagate until the end of the window
           dateData.forEach(x => {
-            if (!x.isValid || (prevMax && x.season !== prevMax?.season)) {
+            // reset prevMax when entering a new season
+            if (prevMax && x.season !== prevMax.season) {
+              // eslint-disable-next-line fp/no-mutation
+              prevMax = undefined;
+            }
+            if (!x.isValid) {
               return;
             }
             if (x.phase === 'Set') {
