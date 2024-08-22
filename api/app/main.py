@@ -14,7 +14,7 @@ from app.caching import FilePath, cache_file, cache_geojson
 from app.database.alert_model import AlchemyEncoder, AlertModel
 from app.database.database import AlertsDataBase
 from app.database.user_info_model import UserInfoModel
-from app.googleflood import get_google_floods_gauges
+from app.googleflood import get_google_floods_gauges, get_google_floods_inundations
 from app.hdc import get_hdc_stats
 from app.kobo import get_form_dates, get_form_responses, parse_datetime_params
 from app.models import AcledRequest, RasterGeotiffModel
@@ -420,3 +420,11 @@ def get_google_floods_gauges_api(
     iso2: str,
 ):
     return get_google_floods_gauges(iso2)
+
+
+@app.get('/google-floods-inundations')
+def get_google_floods_inundations_api(
+    inundationMapSet_JSONString: str,
+):
+    """Get statistical charts data"""
+    return get_google_floods_inundations(json.loads(inundationMapSet_JSONString)).to_json()
