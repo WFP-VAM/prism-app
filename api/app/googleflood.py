@@ -5,11 +5,22 @@ import requests
 import geopandas as gpd
 import pandas as pd
 import uuid
+from io import StringIO
 
 from fiona.drvsupport import supported_drivers
 supported_drivers['LIBKML'] = 'rw'
 
 logger = logging.getLogger(__name__)
+
+from pydantic import BaseModel
+from typing import List
+
+class InundationMap(BaseModel):
+    level: str
+    serializedPolygonId: str
+
+class InundationMapSet(BaseModel):
+    inundationMaps: List[InundationMap]
 
 GOOGLE_FLOODS_API_KEY = os.getenv("GOOGLE_FLOODS_API_KEY", "")
 if GOOGLE_FLOODS_API_KEY == "":
@@ -45,39 +56,38 @@ def get_google_floods_gauges(
     asGeojson: bool = True,
 ):
     """Get statistical charts data"""
-
     URL = f'https://floodforecasting.googleapis.com/v1/floodStatus:searchLatestFloodStatusByArea?key={GOOGLE_FLOODS_API_KEY}'
     response = requests.post(
         URL,
         json={'regionCode': iso2}
-    ).json().get('floodStatuses', [])
+    )
+    assert response.status_code == 200
+    
+    data = response.json().get('floodStatuses', [])
     
     if asGeojson:
         geojson_feature_collection = {
             "type": "FeatureCollection",
-            "features": [format_to_geojson(data) for data in response]
+            "features": [format_to_geojson(d) for d in data]
         }
         return geojson_feature_collection
-    return response
-
-
-from pydantic import BaseModel
-from typing import List
-
-class InundationMap(BaseModel):
-    level: str
-    serializedPolygonId: str
-
-class InundationMapSet(BaseModel):
-    inundationMaps: List[InundationMap]
+    return data
 
 
 def get_google_floods_inundations(
-    inundationMapSet: InundationMapSet,
+    iso2: str,
 ) -> gpd.GeoDataFrame:
-    """Get statistical charts data"""
+    """Get polygonal floodmap data"""
+    gauge_data = get_google_floods_gauges(iso2=iso2, asGeojson=False)
+    inundationMapSet = []
+    for gd in gauge_data:
+        if 'inundationMapSet' in gd.keys():
+            inundationMapSet += gd['inundationMapSet']['inundationMaps']
+    
+    # Fetch the polygons
     level_to_kml = dict()
     URL = 'https://floodforecasting.googleapis.com/v1/serializedPolygons/{serializedPolygonId}?key={key}'
+    
     for inundationMap in inundationMapSet:
         response = requests.get(
             URL.format(
@@ -94,10 +104,10 @@ def get_google_floods_inundations(
         
     gdf_buff = []
     for level, kml in level_to_kml.items():
-        kml_path = os.path.join(tmp_path, f'{level}.kml')
-        with open(kml_path, 'w') as f:
+        with open(os.path.join(tmp_path, f'{level}.kml'), 'w') as f:
             f.write(kml)
-        gdf = gpd.read_file(kml_path, driver='KML')
+        kml_file = os.path.join(tmp_path, f'{level}.kml')
+        gdf = gpd.read_file(kml_file, driver='KML')
         gdf['level'] = level
         gdf_buff.append(gdf)
     
