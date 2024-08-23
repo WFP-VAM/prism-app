@@ -2,7 +2,6 @@ import pytest
 from app.googleflood import get_google_floods_gauges, get_google_floods_inundations
 from app.main import app
 from fastapi.testclient import TestClient
-import json
 
 client = TestClient(app)
 
@@ -135,8 +134,7 @@ def test_get_google_floods_gauge_forecast_multiple_gauges():
     ignore_hosts=["testserver"],
 )
 def test_get_google_floods_inundations():
-    test_inundation_map_set = [{'level': 'HIGH', 'serializedPolygonId': '9631a3143f2543ae9664c4fba7298931'}, {'level': 'MEDIUM', 'serializedPolygonId': '93444f067f42409493fd907b2b0323b7'}, {'level': 'LOW', 'serializedPolygonId': '757ac60c06ea481aba384201a107d611'}]
-    floods = get_google_floods_inundations(test_inundation_map_set)
+    floods = get_google_floods_inundations("BD")
     assert floods.shape[0] > 0
 
 
@@ -147,8 +145,6 @@ def test_get_google_floods_inundations():
     ignore_hosts=["testserver"],
 )
 def test_get_google_floods_inundation_api():
-    test_inundation_map_set = [{'level': 'HIGH', 'serializedPolygonId': '9631a3143f2543ae9664c4fba7298931'}, {'level': 'MEDIUM', 'serializedPolygonId': '93444f067f42409493fd907b2b0323b7'}, {'level': 'LOW', 'serializedPolygonId': '757ac60c06ea481aba384201a107d611'}]
-    test_inundation_map_set_jsonstr = json.dumps(test_inundation_map_set)
-    response = client.get(f"/google-floods-inundations?inundationMapSet_JSONString={test_inundation_map_set_jsonstr}")
+    response = client.get("/google-floods-inundations?iso2=BD")
     assert response.status_code == 200
     assert len(response.json()) > 0

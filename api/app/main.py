@@ -455,7 +455,7 @@ def get_google_floods_gauge_forecast_api(
 
 @app.get('/google-floods/inundations')
 def get_google_floods_inundations_api(
-    inundationMapSet_JSONString: str,
+    iso2: str,
 ):
     """Get statistical charts data"""
-    return get_google_floods_inundations(json.loads(inundationMapSet_JSONString)).to_json()
+    return get_google_floods_inundations(iso2).to_json()
