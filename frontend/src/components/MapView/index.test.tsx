@@ -2,6 +2,7 @@ import { Provider } from 'react-redux';
 import { render } from '@testing-library/react';
 
 import { store } from 'context/store';
+import { createTheme, ThemeProvider } from '@material-ui/core';
 import MapView from '.';
 
 jest.mock('./Layers/WMSLayer', () => 'mock-WMSLayer');
@@ -24,7 +25,9 @@ jest.mock('react-router-dom', () => ({
 test('renders as expected', () => {
   const { container } = render(
     <Provider store={store}>
-      <MapView />
+      <ThemeProvider theme={createTheme()}>
+        <MapView />
+      </ThemeProvider>
     </Provider>,
   );
   expect(container).toMatchSnapshot();
