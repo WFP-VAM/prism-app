@@ -16,7 +16,12 @@ import React, {
   useState,
 } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { BoundaryLayerProps, LayerKey, WMSLayerProps } from 'config/types';
+import {
+  BoundaryLayerProps,
+  LayerKey,
+  PanelSize,
+  WMSLayerProps,
+} from 'config/types';
 import { getBoundaryLayerSingleton, LayerDefinitions } from 'config/utils';
 import { LayerData } from 'context/layers/layer-data';
 import { layerDataSelector } from 'context/mapStateSlice/selectors';
@@ -196,25 +201,17 @@ function AlertsPanel() {
                 helperText={t(thresholdError || '')}
                 className={classes.numberField}
                 label={t('Below')}
-                InputLabelProps={{
-                  style: { color: '#ffffff' },
-                }}
                 type="number"
                 value={belowThreshold}
                 onChange={onThresholdOptionChange('below')}
-                variant="filled"
               />
               <TextField
                 id="filled-number"
                 label={t('Above')}
                 className={classes.numberField}
-                InputLabelProps={{
-                  style: { color: '#ffffff' },
-                }}
                 value={aboveThreshold}
                 onChange={onThresholdOptionChange('above')}
                 type="number"
-                variant="filled"
               />
             </div>
           </div>
@@ -228,9 +225,8 @@ function AlertsPanel() {
               label={t('Alert Name')}
               type="text"
               InputLabelProps={{
-                style: { color: '#ffffff' },
+                style: { color: 'black' },
               }}
-              variant="filled"
               value={alertName}
               onChange={e => setAlertName(e.target.value)}
               fullWidth
@@ -242,9 +238,8 @@ function AlertsPanel() {
               label={t('Email Address')}
               type="text"
               InputLabelProps={{
-                style: { color: '#ffffff' },
+                style: { color: 'black' },
               }}
-              variant="filled"
               onChange={onChangeEmail}
               fullWidth
             />
@@ -293,67 +288,70 @@ function AlertsPanel() {
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    alertTriggerButton: {
-      color: 'white',
-    },
-    alertForm: {
-      zIndex: theme.zIndex.drawer,
-      textAlign: 'left',
-    },
     alertFormMenu: {
+      display: 'flex',
+      flexDirection: 'column',
+      width: PanelSize.medium,
+      height: '100%',
+      overflow: 'scroll',
       backgroundColor: 'white',
       color: 'black',
-      overflowX: 'hidden',
-      whiteSpace: 'nowrap',
-      height: 'auto',
-      maxHeight: '60vh',
-      width: '23vw',
-      marginTop: '0.5em',
-      borderRadius: '10px',
-      padding: '10px',
     },
-    alertFormButton: {
-      height: '36px',
-      marginLeft: '3px',
+    newAlertFormContainer: {
+      padding: '30px 10px 10px 10px',
+      height: 'calc(100% - 90px)',
+      overflow: 'auto',
+    },
+    alertFormOptions: {
+      display: 'flex',
+      flexDirection: 'column',
+      marginBottom: 30,
+      marginLeft: 10,
+      width: '90%',
+      color: 'black',
+    },
+    selector: {
+      width: '100%',
+      '& .MuiInputBase-root': {
+        color: 'black',
+      },
+      '& .MuiFormLabel-root': {
+        color: 'black',
+        '&:hover fieldset': {
+          borderColor: '#333333',
+        },
+      },
+    },
+    regionSelector: {
+      width: '100%',
     },
     thresholdInputsContainer: {
       display: 'flex',
-      justifyContent: 'center',
-      alignItems: 'center',
-      gap: '1em',
-      width: '100%',
-    },
-    alertFormOptions: {
-      padding: '5px 0px',
-    },
-    newAlertFormContainer: {
-      padding: '5px',
+      flexDirection: 'row',
+      gap: '16px',
       marginTop: '10px',
-    },
-    innerCreateAlertButton: {
-      backgroundColor: theme.surfaces?.dark,
-      margin: '10px',
-      '&:disabled': {
-        opacity: '0.5',
-      },
-    },
-    selector: {
-      margin: '5px',
-      width: '100%',
-    },
-    regionSelector: {
-      minWidth: '100%',
-      maxWidth: '200px',
     },
     numberField: {
-      marginTop: '10px',
+      paddingRight: '10px',
+      maxWidth: '140px',
+      '& .MuiInputBase-root': {
+        color: 'black',
+      },
+      '& label': {
+        color: '#333333',
+      },
+    },
+    innerCreateAlertButton: {
+      backgroundColor: theme.palette.primary.main,
+      '&:hover': {
+        backgroundColor: theme.palette.primary.dark,
+      },
+      marginTop: 10,
+      marginBottom: 10,
+      marginLeft: '25%',
+      marginRight: '25%',
       width: '50%',
-    },
-    inputLabelRoot: {
-      color: 'white',
-    },
-    alertFormResponseText: {
-      marginLeft: '15px',
+      '&.Mui-disabled': { opacity: 0.5 },
     },
   }),
 );
