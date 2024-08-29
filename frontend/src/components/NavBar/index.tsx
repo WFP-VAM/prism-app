@@ -24,6 +24,7 @@ import {
   LayersOutlined,
   TableChartOutlined,
   TimerOutlined,
+  Notifications,
 } from '@material-ui/icons';
 import { useDispatch, useSelector } from 'react-redux';
 import {
@@ -32,7 +33,6 @@ import {
   setTabValue,
 } from 'context/leftPanelStateSlice';
 import GoToBoundaryDropdown from 'components/Common/BoundaryDropdown/goto';
-import AlertForm from 'components/MapView/AlertForm';
 import useLayers from 'utils/layers-utils';
 import Legends from 'components/MapView/Legends';
 import { black, cyanBlue } from 'muiTheme';
@@ -45,6 +45,8 @@ import {
 import About from './About';
 import LanguageSelector from './LanguageSelector';
 import PrintImage from './PrintImage';
+
+const { alertFormActive, header } = appConfig;
 
 const panels = [
   { panel: Panel.Layers, label: 'Layers', icon: <LayersOutlined /> },
@@ -68,13 +70,15 @@ const panels = [
         },
       ]
     : []),
+  ...(alertFormActive
+    ? [{ panel: Panel.Alerts, label: '', icon: <Notifications /> }]
+    : []),
 ];
 
-function NavBar({ isAlertFormOpen, setIsAlertFormOpen }: NavBarProps) {
+function NavBar() {
   const { t } = useSafeTranslation();
   const dispatch = useDispatch();
   const classes = useStyles();
-  const { alertFormActive, header } = appConfig;
   const tabValue = useSelector(leftPanelTabValueSelector);
   const analysisData = useSelector(analysisResultSelector);
   const theme = useTheme();
@@ -207,12 +211,6 @@ function NavBar({ isAlertFormOpen, setIsAlertFormOpen }: NavBarProps) {
                 );
               })}
               <GoToBoundaryDropdown />
-              {alertFormActive && (
-                <AlertForm
-                  isOpen={isAlertFormOpen}
-                  setOpen={setIsAlertFormOpen}
-                />
-              )}
             </div>
           </div>
           <div className={classes.rightSideContainer}>
@@ -313,10 +311,5 @@ const useStyles = makeStyles((theme: Theme) =>
     },
   }),
 );
-
-export interface NavBarProps {
-  isAlertFormOpen: boolean;
-  setIsAlertFormOpen: (v: boolean) => void;
-}
 
 export default NavBar;

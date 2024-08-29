@@ -3,13 +3,11 @@ import {
   Box,
   Button,
   createStyles,
-  Menu,
   TextField,
   Theme,
   Typography,
 } from '@material-ui/core';
 
-import { ArrowDropDown, Notifications } from '@material-ui/icons';
 import React, {
   Dispatch,
   SetStateAction,
@@ -35,14 +33,9 @@ import { ALERT_API_URL } from 'utils/constants';
 const EMAIL_REGEX: RegExp =
   /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
-// This should probably be determined on a case-by-case basis,
-// depending on if the downstream API has the capability.
-// For now it can be permanently enabled.
-const ALERT_FORM_ENABLED = true;
-
 const boundaryLayer = getBoundaryLayerSingleton();
 
-function AlertForm({ isOpen, setOpen }: AlertFormProps) {
+function AlertsPanel() {
   const classes = useStyles();
   const boundaryLayerData = useSelector(layerDataSelector(boundaryLayer.id)) as
     | LayerData<BoundaryLayerProps>
@@ -58,7 +51,6 @@ function AlertForm({ isOpen, setOpen }: AlertFormProps) {
   const [thresholdError, setThresholdError] = useState<string | null>(null);
   const [alertName, setAlertName] = useState('');
   const [alertWaiting, setAlertWaiting] = useState(false);
-  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
 
   const { t } = useSafeTranslation();
   const regionCodesToFeatureData: { [k: string]: object } = useMemo(() => {
@@ -181,11 +173,8 @@ function AlertForm({ isOpen, setOpen }: AlertFormProps) {
     hazardLayerId,
   ]);
 
-  const renderedAlertForm = useMemo(() => {
-    if (!isOpen) {
-      return null;
-    }
-    return (
+  const renderedAlertForm = useMemo(
+    () => (
       <Box className={classes.alertFormMenu}>
         <div className={classes.newAlertFormContainer}>
           <div className={classes.alertFormOptions}>
@@ -275,84 +264,45 @@ function AlertForm({ isOpen, setOpen }: AlertFormProps) {
           <Typography variant="body2">{t('Create Alert')}</Typography>
         </Button>
       </Box>
-    );
-  }, [
-    aboveThreshold,
-    alertName,
-    alertWaiting,
-    belowThreshold,
-    classes.alertFormMenu,
-    classes.alertFormOptions,
-    classes.innerCreateAlertButton,
-    classes.newAlertFormContainer,
-    classes.numberField,
-    classes.regionSelector,
-    classes.selector,
-    classes.thresholdInputsContainer,
-    emailValid,
-    hazardLayerId,
-    isOpen,
-    onThresholdOptionChange,
-    regionsList.length,
-    runAlertForm,
-    t,
-    thresholdError,
-  ]);
-
-  if (!ALERT_FORM_ENABLED) {
-    return null;
-  }
-
-  return (
-    <div className={classes.alertForm}>
-      <Button
-        className={classes.alertTriggerButton}
-        variant="contained"
-        color="primary"
-        onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
-          setOpen(!isOpen);
-          setAnchorEl(e.currentTarget);
-        }}
-      >
-        <Notifications fontSize="small" />
-        <Typography variant="body2" className={classes.alertLabel}>
-          {t('Create Alert')}
-        </Typography>
-        <ArrowDropDown fontSize="small" />
-      </Button>
-      <Menu
-        anchorEl={anchorEl}
-        keepMounted
-        open={Boolean(anchorEl)}
-        onClose={() => {
-          setOpen(false);
-          setAnchorEl(null);
-        }}
-        PaperProps={{ style: { background: 'transparent', boxShadow: 'none' } }}
-      >
-        {renderedAlertForm}
-      </Menu>
-    </div>
+    ),
+    [
+      aboveThreshold,
+      alertName,
+      alertWaiting,
+      belowThreshold,
+      classes.alertFormMenu,
+      classes.alertFormOptions,
+      classes.innerCreateAlertButton,
+      classes.newAlertFormContainer,
+      classes.numberField,
+      classes.regionSelector,
+      classes.selector,
+      classes.thresholdInputsContainer,
+      emailValid,
+      hazardLayerId,
+      onThresholdOptionChange,
+      regionsList.length,
+      runAlertForm,
+      t,
+      thresholdError,
+    ],
   );
+
+  return renderedAlertForm;
 }
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    alertLabel: { marginLeft: '10px' },
     alertTriggerButton: {
-      display: 'flex',
-      justifyContent: 'center',
-      alignItems: 'center',
-      height: '3em',
-      padding: theme.spacing(0.8, 2.66),
+      color: 'white',
     },
     alertForm: {
       zIndex: theme.zIndex.drawer,
       textAlign: 'left',
     },
     alertFormMenu: {
-      backgroundColor: theme.surfaces?.light,
-      color: 'white',
+      backgroundColor: 'white',
+      color: 'black',
       overflowX: 'hidden',
       whiteSpace: 'nowrap',
       height: 'auto',
@@ -408,9 +358,4 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 );
 
-interface AlertFormProps {
-  isOpen: boolean;
-  setOpen: (isOpen: boolean) => void;
-}
-
-export default AlertForm;
+export default AlertsPanel;

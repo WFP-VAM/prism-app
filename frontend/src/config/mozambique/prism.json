@@ -11,6 +11,7 @@
   },
   "countryAdmin0Id": 170,
   "alertFormActive": false,
+  "alertFormActive": true,
   "hidePanel": false,
   "enableNavigationDropdown": true,
   "icons": {

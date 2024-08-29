@@ -30,6 +30,7 @@ import AnticipatoryActionPanel from './AnticipatoryActionPanel';
 import LayersPanel from './layersPanel';
 import { areTablesAvailable, isAnticipatoryActionAvailable } from './utils';
 import { toggleRemoveLayer } from './layersPanel/MenuItem/MenuSwitch/SwitchItem/utils';
+import AlertsPanel from '../AlertForm';
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -174,6 +175,15 @@ const LeftPanel = memo(() => {
     );
   }, [tabValue]);
 
+  const renderAlertsPanel = React.useMemo(
+    () => (
+      <TabPanel value={tabValue} index={Panel.Alerts}>
+        <AlertsPanel />
+      </TabPanel>
+    ),
+    [tabValue],
+  );
+
   const renderedAnticipatoryActionPanel = React.useMemo(() => {
     if (!isAnticipatoryActionAvailable) {
       return null;
@@ -211,6 +221,7 @@ const LeftPanel = memo(() => {
             <AnalysisPanel />
           </TabPanel>
           {renderedTablesPanel}
+          {renderAlertsPanel}
           {renderedAnticipatoryActionPanel}
           {/* Empty panel to remove warnings */}
           <TabPanel value={tabValue} index={Panel.None} />
