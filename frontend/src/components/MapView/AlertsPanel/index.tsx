@@ -227,6 +227,9 @@ function AlertsPanel() {
               InputLabelProps={{
                 style: { color: 'black' },
               }}
+              InputProps={{
+                style: { color: 'black' },
+              }}
               value={alertName}
               onChange={e => setAlertName(e.target.value)}
               fullWidth
@@ -238,6 +241,9 @@ function AlertsPanel() {
               label={t('Email Address')}
               type="text"
               InputLabelProps={{
+                style: { color: 'black' },
+              }}
+              InputProps={{
                 style: { color: 'black' },
               }}
               onChange={onChangeEmail}
