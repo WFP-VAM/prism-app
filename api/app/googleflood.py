@@ -156,7 +156,7 @@ def get_google_floods_gauge_forecast(gauge_ids: list[str]):
             {
                 "value": [
                     forecast_range.get("forecastStartTime"),
-                    forecast_range.get("value"),
+                    round(forecast_range.get("value"), 2),
                 ]
             }
             for forecast in forecasts.get(gauge_id, {}).get("forecasts", [])

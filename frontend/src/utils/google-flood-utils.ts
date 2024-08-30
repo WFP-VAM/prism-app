@@ -3,12 +3,20 @@ import { getTitle } from 'utils/title-utils';
 import { FeatureTitleObject } from 'config/types';
 import { PopupData } from 'context/tooltipStateSlice';
 import { FloodChartConfigObject } from 'context/tableStateSlice';
+import { t } from 'i18next';
 
 export type GoogleFloodParams = {
   gaugeId: string;
   triggerLevels: GoogleFloodTriggerLevels;
   detailUrl: string;
   chartTitle: string;
+  unit: string;
+};
+
+const GOOGLE_FLOOD_UNITS = {
+  GAUGE_VALUE_UNIT_UNSPECIFIED: '',
+  METERS: 'm',
+  CUBIC_METERS_PER_SECOND: 'm3/s',
 };
 
 export const GoogleFloodTriggersConfig: FloodChartConfigObject = {
@@ -71,22 +79,28 @@ export const createGoogleFloodDatasetParams = (
   detailUrl: string,
   featureInfoTitle?: FeatureTitleObject,
 ): GoogleFloodParams => {
-  const { gaugeId, thresholds } = featureProperties;
+  const { gaugeId, thresholds, gaugeValueUnit } = featureProperties;
   const chartTitle =
-    ((getTitle(featureInfoTitle, featureProperties) as PopupData)?.title
-      .data as string) || featureProperties.gaugeId;
+    t(
+      (getTitle(featureInfoTitle, featureProperties) as PopupData)?.title
+        .data as string,
+      featureProperties,
+    ) || featureProperties.gaugeId;
 
   const parsedLevels = JSON.parse(thresholds);
   const triggerLevels = {
-    warning: parsedLevels.warningLevel,
-    danger: parsedLevels.dangerLevel,
-    extremeDanger: parsedLevels.extremeDangerLevel,
+    warning: parsedLevels.warningLevel.toFixed(2),
+    danger: parsedLevels.dangerLevel.toFixed(2),
+    extremeDanger: parsedLevels.extremeDangerLevel.toFixed(2),
   };
+  const unit =
+    GOOGLE_FLOOD_UNITS[gaugeValueUnit as keyof typeof GOOGLE_FLOOD_UNITS];
 
   return {
     gaugeId,
     triggerLevels,
     chartTitle,
     detailUrl,
+    unit,
   };
 };

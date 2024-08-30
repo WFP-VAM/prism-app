@@ -56,6 +56,7 @@ export type ChartProps = {
   showDownloadIcons?: boolean;
   iconStyles?: React.CSSProperties;
   downloadFilenamePrefix?: string[];
+  units?: string;
 };
 
 const Chart = memo(
@@ -72,6 +73,7 @@ const Chart = memo(
     showDownloadIcons = false,
     iconStyles,
     downloadFilenamePrefix = [],
+    units,
   }: ChartProps) => {
     const { t } = useSafeTranslation();
     const classes = useStyles();
@@ -205,7 +207,6 @@ const Chart = memo(
     );
 
     const floodThresholds = useMemo(() => {
-      console.log('data', data);
       if (data.EWSConfig) {
         return Object.values(data.EWSConfig).map(obj => ({
           label: obj.label,
@@ -316,6 +317,9 @@ const Chart = memo(
                   fontColor: '#CCC',
                   ...(config?.minValue && { suggestedMin: config?.minValue }),
                   ...(config?.maxValue && { suggestedMax: config?.maxValue }),
+                  maxTicksLimit: 8,
+                  callback: (value: string) =>
+                    `${value}${units ? ` ${units}` : ''}`,
                 },
                 stacked: config?.stacked ?? false,
                 gridLines: {
@@ -327,6 +331,14 @@ const Chart = memo(
           // display values for all datasets in the tooltip
           tooltips: {
             mode: 'index',
+            callbacks: {
+              label: (tooltipItem, labelData) => {
+                const label =
+                  labelData.datasets?.[tooltipItem.datasetIndex as number]
+                    ?.label || '';
+                return `${label}: ${tooltipItem.yLabel}${units ? ` ${units}` : ''}`;
+              },
+            },
           },
           legend: {
             display: config.displayLegend,
@@ -335,13 +347,17 @@ const Chart = memo(
           },
         }) as ChartOptions,
       [
-        config,
-        isEWSChart,
-        legendAtBottom,
         notMaintainAspectRatio,
-        title,
         subtitle,
+        title,
+        config?.stacked,
+        config?.minValue,
+        config?.maxValue,
+        config.displayLegend,
         xAxisLabel,
+        legendAtBottom,
+        isEWSChart,
+        units,
       ],
     );
 
