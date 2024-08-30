@@ -1,6 +1,5 @@
 import { FeatureInfoVisibility, FeatureTitleObject } from 'config/types';
 import { PopupData } from 'context/tooltipStateSlice';
-import { formatFeatureTitle } from './server-utils';
 
 export const getTitle = (
   featureInfoTitle: FeatureTitleObject | undefined,
@@ -18,12 +17,10 @@ export const getTitle = (
     ? {
         title: {
           prop: titleField,
-          data: formatFeatureTitle(
-            properties[titleField],
-            featureInfoTitle[titleField].type,
-            featureInfoTitle[titleField].template,
-            featureInfoTitle[titleField].labelMap,
-          ),
+          data: featureInfoTitle[titleField].template,
+          context: {
+            [titleField]: properties[titleField],
+          },
         },
       }
     : {};

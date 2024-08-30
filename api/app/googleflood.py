@@ -1,6 +1,7 @@
 """Get data from Google Floods API"""
 
 import logging
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from os import getenv
 from urllib.parse import urlencode
 
@@ -51,7 +52,7 @@ def format_gauge_to_geojson(data):
             "gaugeId": data["gaugeId"],
             "issuedTime": data["issuedTime"],
             "siteName": data["siteName"],
-            "river": (
+            "riverName": (
                 data["river"] if "river" in data and len(data["river"]) > 1 else None
             ),
             "severity": data["severity"],
@@ -66,18 +67,36 @@ def format_gauge_to_geojson(data):
     return geojson
 
 
+def fetch_flood_status(region_code):
+    """Fetch flood status for a region code"""
+    flood_status_url = f"https://floodforecasting.googleapis.com/v1/floodStatus:searchLatestFloodStatusByArea?key={GOOGLE_FLOODS_API_KEY}"
+    status_response = make_google_floods_request(
+        flood_status_url, method="post", data={"regionCode": region_code}, retries=3
+    )
+    return status_response
+
+
 def get_google_floods_gauges(
-    iso2: str,
+    region_codes: list[str],
     as_geojson: bool = True,
 ):
     """Get statistical charts data"""
-    # Retry 3 times due to intermittent API errors
-    flood_status_url = f"https://floodforecasting.googleapis.com/v1/floodStatus:searchLatestFloodStatusByArea?key={GOOGLE_FLOODS_API_KEY}"
-    status_response = make_google_floods_request(
-        flood_status_url, method="post", data={"regionCode": iso2}, retries=3
-    )
+    initial_gauges = []
 
-    initial_gauges = status_response.get("floodStatuses", [])
+    # Retry 3 times due to intermittent API errors
+    with ThreadPoolExecutor() as executor:
+        future_to_region = {
+            executor.submit(fetch_flood_status, code): code for code in region_codes
+        }
+        for future in as_completed(future_to_region):
+            status_response = future.result()
+            if "error" in status_response:
+                logger.error("Error in response: %s", status_response["error"])
+                raise HTTPException(
+                    status_code=500,
+                    detail="Error fetching flood status data from Google API",
+                )
+            initial_gauges.extend(status_response.get("floodStatuses", []))
 
     gauge_details_params = urlencode(
         {"names": [f"gauges/{gauge['gaugeId']}" for gauge in initial_gauges]},
