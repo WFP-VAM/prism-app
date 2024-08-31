@@ -446,5 +446,3 @@ def get_google_floods_gauge_forecast_api(
             detail="gauge_ids must be provided and contain at least one value.",
         )
     return get_google_floods_gauge_forecast(gauge_id_list)
-
-    
