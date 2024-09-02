@@ -72,6 +72,7 @@ exports[`renders as expected 1`] = `
           fullwidth="true"
           id="alert-name"
           inputlabelprops="[object Object]"
+          inputprops="[object Object]"
           label="Alert Name"
           type="text"
           value=""
@@ -84,6 +85,7 @@ exports[`renders as expected 1`] = `
           fullwidth="true"
           id="email-address"
           inputlabelprops="[object Object]"
+          inputprops="[object Object]"
           label="Email Address"
           type="text"
         />

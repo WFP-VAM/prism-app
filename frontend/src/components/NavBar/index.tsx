@@ -105,7 +105,7 @@ function NavBar() {
       href={href}
       style={{ color: 'white' }}
     >
-      <FontAwesomeIcon fontSize="20px" icon={icon} />
+      <FontAwesomeIcon fontSize={mdUp ? '1.25rem' : '1.5rem'} icon={icon} />
     </IconButton>
   ));
 
