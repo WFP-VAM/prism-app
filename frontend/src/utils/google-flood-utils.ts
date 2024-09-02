@@ -16,7 +16,7 @@ export type GoogleFloodParams = {
 const GOOGLE_FLOOD_UNITS = {
   GAUGE_VALUE_UNIT_UNSPECIFIED: '',
   METERS: 'm',
-  CUBIC_METERS_PER_SECOND: 'm3/s',
+  CUBIC_METERS_PER_SECOND: 'm³/s',
 };
 
 export const GoogleFloodTriggersConfig: FloodChartConfigObject = {
