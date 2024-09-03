@@ -51,7 +51,6 @@ def make_google_floods_request(url, method="get", data=None, retries=1, timeout=
         raise HTTPException(
             status_code=500, detail="Error fetching data from Google API"
         )
-    print(response_data)
     return response_data
 
 
@@ -86,13 +85,11 @@ def format_gauge_to_geojson(data):
 
 
 def fetch_flood_status(region_code):
-    print("region_code", region_code)
     """Fetch flood status for a region code"""
     flood_status_url = f"https://floodforecasting.googleapis.com/v1/floodStatus:searchLatestFloodStatusByArea?key={GOOGLE_FLOODS_API_KEY}"
     status_response = make_google_floods_request(
         flood_status_url, method="post", data={"regionCode": region_code}, retries=3
     )
-    print(status_response)
     return status_response
 
 
@@ -193,45 +190,106 @@ class InundationMap(BaseModel):
     serializedPolygonId: str
 
 
+def fetch_kml(inundationMap):
+    try:
+        url = f"https://floodforecasting.googleapis.com/v1/serializedPolygons/{inundationMap['serializedPolygonId']}?key={GOOGLE_FLOODS_API_KEY}"
+        logger.debug(f"Fetching KML from URL: {url}")
+        response = requests.get(url)
+        response.raise_for_status()  # Ensure we raise an error for bad responses
+        return inundationMap["level"], response.json()["kml"]
+    except requests.exceptions.RequestException as e:
+        logger.error("Error fetching KML: %s", e)
+        raise
+
+
 def get_google_floods_inundations(
-    region_codes: list[str],
+    region_codes: List[str], run_sequentially: bool = False
 ) -> gpd.GeoDataFrame:
-    print(region_codes)
     gauge_data = get_google_floods_gauges(region_codes, as_geojson=False)
-    print(gauge_data)
+
     inundationMapSet = []
     for gd in gauge_data:
         if "inundationMapSet" in gd.keys():
             inundationMapSet += gd["inundationMapSet"]["inundationMaps"]
 
-    # Fetch the polygons
-    level_to_kml = dict()
-    URL = "https://floodforecasting.googleapis.com/v1/serializedPolygons/{serializedPolygonId}?key={key}"
+    level_to_kml = {}
 
-    for inundationMap in inundationMapSet:
-        response = requests.get(
-            URL.format(
-                serializedPolygonId=inundationMap["serializedPolygonId"],
-                key=GOOGLE_FLOODS_API_KEY,
-            )
-        ).json()
-        print(response)
-        level_to_kml[inundationMap["level"]] = response["kml"]
+    if run_sequentially:
+        for inundationMap in inundationMapSet:
+            level, kml = fetch_kml(inundationMap)
+            level_to_kml[level] = kml
+    else:
+        with ThreadPoolExecutor() as executor:
+            future_to_inundation = {
+                executor.submit(fetch_kml, inundationMap): inundationMap
+                for inundationMap in inundationMapSet
+            }
+            for future in as_completed(future_to_inundation):
+                level, kml = future.result()
+                level_to_kml[level] = kml
 
-    # Create a temp path for writing kmls
     tmp_path = os.path.join(f"/tmp/google-floods/{str(uuid.uuid4())}")
     if not os.path.exists(tmp_path):
         os.makedirs(tmp_path)
-    print(inundationMapSet)
-    print(level_to_kml)
+
     gdf_buff = []
     for level, kml in level_to_kml.items():
-        with open(os.path.join(tmp_path, f"{level}.kml"), "w") as f:
-            f.write(kml)
         kml_file = os.path.join(tmp_path, f"{level}.kml")
+        with open(kml_file, "w") as f:
+            f.write(kml)
         gdf = gpd.read_file(kml_file, driver="KML")
         gdf["level"] = level
         gdf_buff.append(gdf)
 
-    gdf = pd.concat(gdf_buff)
+    if gdf_buff:
+        gdf = pd.concat(gdf_buff).to_json()
+    else:
+        gdf = pd.DataFrame().to_json()
+
     return gdf
+
+
+# def fetch_kml(inundationMap):
+#     try:
+#         url = f"https://floodforecasting.googleapis.com/v1/serializedPolygons/{inundationMap['serializedPolygonId']}?key={GOOGLE_FLOODS_API_KEY}"
+#         logger.debug(f"Fetching KML from URL: {url}")
+#         response = requests.get(url)
+#         response.raise_for_status()  # Ensure we raise an error for bad responses
+#         return inundationMap["level"], response.json()["kml"]
+#     except requests.exceptions.RequestException as e:
+#         logger.error("Error fetching KML: %s", e)
+#         raise
+
+# def get_google_floods_inundations(region_codes: List[str]) -> gpd.GeoDataFrame:
+#     # Simplified for debugging
+#     gauge_data = get_google_floods_gauges(region_codes, as_geojson=False)
+
+#     inundationMapSet = []
+#     for gd in gauge_data:
+#         if "inundationMapSet" in gd.keys():
+#             inundationMapSet += gd["inundationMapSet"]["inundationMaps"]
+
+#     level_to_kml = {}
+#     for inundationMap in inundationMapSet:
+#         level, kml = fetch_kml(inundationMap)
+#         level_to_kml[level] = kml
+
+#     tmp_path = os.path.join(f"/tmp/google-floods/{str(uuid.uuid4())}")
+#     if not os.path.exists(tmp_path):
+#         os.makedirs(tmp_path)
+
+#     gdf_buff = []
+#     for level, kml in level_to_kml.items():
+#         kml_file = os.path.join(tmp_path, f"{level}.kml")
+#         with open(kml_file, "w") as f:
+#             f.write(kml)
+#         gdf = gpd.read_file(kml_file, driver="KML")
+#         gdf["level"] = level
+#         gdf_buff.append(gdf)
+
+#     if gdf_buff:
+#         gdf = pd.concat(gdf_buff).to_json()
+#     else:
+#         gdf = pd.DataFrame().to_json()
+
+#     return gdf

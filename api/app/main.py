@@ -28,7 +28,7 @@ from app.validation import validate_intersect_parameter
 from app.zonal_stats import DEFAULT_STATS, GroupBy, calculate_stats, get_wfs_response
 from fastapi import Depends, FastAPI, HTTPException, Path, Query, Response
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import FileResponse, JSONResponse
+from fastapi.responses import FileResponse, JSONResponse, StreamingResponse
 from pydantic import EmailStr, HttpUrl, ValidationError
 from requests import get
 
@@ -453,7 +453,9 @@ def get_google_floods_gauge_forecast_api(
 
 
 @app.get("/google-floods/inundations")
-def get_google_floods_inundations_api(region_codes: list[str] = Query(...)):
+def get_google_floods_inundations_api(
+    region_codes: list[str] = Query(...), run_sequentially: bool = Query(default=False)
+):
     """Get statistical charts data"""
     if not region_codes:
         raise HTTPException(
@@ -468,4 +470,9 @@ def get_google_floods_inundations_api(region_codes: list[str] = Query(...)):
             )
 
     iso2_codes = [region_code.upper() for region_code in region_codes]
-    return get_google_floods_inundations(iso2_codes).to_json()
+    geojson = get_google_floods_inundations(iso2_codes, run_sequentially)
+
+    def iter_geojson():
+        yield geojson
+
+    return StreamingResponse(iter_geojson(), media_type="application/json")
