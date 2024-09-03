@@ -1,19 +1,18 @@
 """Get data from Google Floods API"""
 
 import logging
-from concurrent.futures import ThreadPoolExecutor, as_completed
-from urllib.parse import urlencode
-from pydantic import BaseModel
-from typing import List
-
-import requests
-from fastapi import HTTPException
 import os
+import uuid
+from concurrent.futures import ThreadPoolExecutor, as_completed
+from typing import List
+from urllib.parse import urlencode
+
 import geopandas as gpd
 import pandas as pd
-import uuid
-
+import requests
+from fastapi import HTTPException
 from fiona.drvsupport import supported_drivers
+from pydantic import BaseModel
 
 supported_drivers["LIBKML"] = "rw"
 
@@ -52,7 +51,7 @@ def make_google_floods_request(url, method="get", data=None, retries=1, timeout=
         raise HTTPException(
             status_code=500, detail="Error fetching data from Google API"
         )
-
+    print(response_data)
     return response_data
 
 
@@ -87,11 +86,13 @@ def format_gauge_to_geojson(data):
 
 
 def fetch_flood_status(region_code):
+    print("region_code", region_code)
     """Fetch flood status for a region code"""
     flood_status_url = f"https://floodforecasting.googleapis.com/v1/floodStatus:searchLatestFloodStatusByArea?key={GOOGLE_FLOODS_API_KEY}"
     status_response = make_google_floods_request(
         flood_status_url, method="post", data={"regionCode": region_code}, retries=3
     )
+    print(status_response)
     return status_response
 
 
@@ -193,10 +194,11 @@ class InundationMap(BaseModel):
 
 
 def get_google_floods_inundations(
-    iso2: str,
+    region_codes: list[str],
 ) -> gpd.GeoDataFrame:
-    """Get polygonal floodmap data"""
-    gauge_data = get_google_floods_gauges(iso2=iso2, asGeojson=False)
+    print(region_codes)
+    gauge_data = get_google_floods_gauges(region_codes, as_geojson=False)
+    print(gauge_data)
     inundationMapSet = []
     for gd in gauge_data:
         if "inundationMapSet" in gd.keys():
@@ -213,13 +215,15 @@ def get_google_floods_inundations(
                 key=GOOGLE_FLOODS_API_KEY,
             )
         ).json()
+        print(response)
         level_to_kml[inundationMap["level"]] = response["kml"]
 
     # Create a temp path for writing kmls
     tmp_path = os.path.join(f"/tmp/google-floods/{str(uuid.uuid4())}")
     if not os.path.exists(tmp_path):
         os.makedirs(tmp_path)
-
+    print(inundationMapSet)
+    print(level_to_kml)
     gdf_buff = []
     for level, kml in level_to_kml.items():
         with open(os.path.join(tmp_path, f"{level}.kml"), "w") as f:

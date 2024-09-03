@@ -3187,10 +3187,5 @@ test = ["big-O", "jaraco.functools", "jaraco.itertools", "jaraco.test", "more-it
 
 [metadata]
 lock-version = "2.0"
-<<<<<<< HEAD
 python-versions = ">=3.10,<3.11"
 content-hash = "df68cc98d18f738f802ed3de16c1c29dcdecf6808da9e5cc001fc987dfc640d8"
-=======
-python-versions = "<3.11,>=3.9.0"
-content-hash = "174175156ddd8041448f74b555795573eaf0796fdaf27d45af5b343d56e5f60a"
->>>>>>> 2e4bf076 (Adding Google Floods Inundation API)
