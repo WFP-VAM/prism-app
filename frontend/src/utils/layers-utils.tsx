@@ -440,7 +440,8 @@ const useLayers = () => {
     if (
       selectedLayerDates.length !== 0 ||
       selectedLayersWithDateSupport.length === 0 ||
-      !selectedDate
+      !selectedDate ||
+      nonBoundaryLayers.length < 2
     ) {
       return;
     }
