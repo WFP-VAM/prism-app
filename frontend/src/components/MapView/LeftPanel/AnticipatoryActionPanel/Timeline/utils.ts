@@ -69,18 +69,24 @@ export function timelineTransform({
     filtered.forEach(x => {
       const key = getColumnKey(x);
       const val = categoriesMap.get(key);
-      categoriesMap.set(
-        key,
-        val
-          ? { status: val.status, data: [...val.data, x] }
-          : {
-              status: {
-                category: x.category,
-                phase: x.phase,
-              },
-              data: [x],
-            },
-      );
+      if (val) {
+        // Prioritize valid elements when multiple indicators overlap on the same date
+        const existingValidItem = val.data.find(
+          item => item.isValid && item.date === x.date,
+        );
+        if (!existingValidItem || x.isValid) {
+          // eslint-disable-next-line fp/no-mutation
+          val.data = [...val.data.filter(item => item.date !== x.date), x];
+        }
+      } else {
+        categoriesMap.set(key, {
+          status: {
+            category: x.category,
+            phase: x.phase,
+          },
+          data: [x],
+        });
+      }
     });
     return [win, { months, rows: Object.fromEntries(categoriesMap) }];
   }) as [
