@@ -92,7 +92,10 @@ function LayerDownloadOptions({
         adminLevelLayerData?.data.features || compositeLayerData?.data.features;
       downloadToFile(
         {
-          content: JSON.stringify(features),
+          content: JSON.stringify({
+            type: 'FeatureCollection',
+            features,
+          }),
           isUrl: false,
         },
         getFilename(),
