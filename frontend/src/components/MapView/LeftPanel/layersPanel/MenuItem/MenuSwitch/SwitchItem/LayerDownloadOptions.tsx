@@ -12,6 +12,7 @@ import { mapValues } from 'lodash';
 import GetAppIcon from '@material-ui/icons/GetApp';
 import {
   AdminLevelDataLayerProps,
+  CompositeLayerProps,
   LayerKey,
   LegendDefinitionItem,
   WMSLayerProps,
@@ -34,6 +35,7 @@ import { getRequestDate } from 'utils/server-utils';
 import { LayerDefinitions, getStacBand } from 'config/utils';
 import { getFormattedDate } from 'utils/date-utils';
 import { safeCountry } from 'config';
+import { Point } from 'geojson';
 
 // TODO - return early when the layer is not selected.
 function LayerDownloadOptions({
@@ -63,6 +65,9 @@ function LayerDownloadOptions({
   const adminLevelLayerData = useSelector(
     layerDataSelector(layer.id, queryDate),
   ) as LayerData<AdminLevelDataLayerProps>;
+  const compositeLayerData = useSelector(
+    layerDataSelector(layer.id),
+  ) as LayerData<CompositeLayerProps>;
 
   const handleDownloadMenuClose = () => {
     setDownloadMenuAnchorEl(null);
@@ -82,41 +87,76 @@ function LayerDownloadOptions({
   };
 
   const handleDownloadGeoJson = (): void => {
-    if (!adminLevelLayerData) {
-      console.warn(`No layer data available for ${layer.id}`);
+    if (adminLevelLayerData || compositeLayerData) {
+      const features =
+        adminLevelLayerData?.data.features || compositeLayerData?.data.features;
+      downloadToFile(
+        {
+          content: JSON.stringify(features),
+          isUrl: false,
+        },
+        getFilename(),
+        'application/json',
+      );
+      handleDownloadMenuClose();
+      return;
     }
-    downloadToFile(
-      {
-        content: JSON.stringify(adminLevelLayerData?.data.features),
-        isUrl: false,
-      },
-      getFilename(),
-      'application/json',
-    );
-    handleDownloadMenuClose();
+    console.warn(`No layer data available for ${layer.id}`);
   };
 
   const handleDownloadCsv = (): void => {
-    if (!adminLevelLayerData) {
-      console.warn(`No layer data available for ${layer.id}`);
+    if (adminLevelLayerData) {
+      const translatedColumnsNames = mapValues(
+        adminLevelLayerData?.data.layerData[0],
+        (_v, k) => (k === 'value' ? t(adminLevelLayerData.layer.id) : t(k)),
+      );
+      downloadToFile(
+        {
+          content: castObjectsArrayToCsv(
+            adminLevelLayerData?.data.layerData,
+            translatedColumnsNames,
+            ';',
+          ),
+          isUrl: false,
+        },
+        getFilename(),
+        'text/csv',
+      );
+      handleDownloadMenuClose();
     }
-    const translatedColumnsNames = mapValues(
-      adminLevelLayerData?.data.layerData[0],
-      (_v, k) => (k === 'value' ? t(adminLevelLayerData.layer.id) : t(k)),
-    );
-    downloadToFile(
-      {
-        content: castObjectsArrayToCsv(
-          adminLevelLayerData?.data.layerData,
-          translatedColumnsNames,
-          ';',
-        ),
-        isUrl: false,
-      },
-      getFilename(),
-      'text/csv',
-    );
-    handleDownloadMenuClose();
+    if (compositeLayerData) {
+      const geoJsonFeatures = compositeLayerData?.data.features;
+      const properties = geoJsonFeatures[0]?.properties;
+
+      if (properties) {
+        // Add coordinates to each feature's properties
+        const csvData = geoJsonFeatures.map(feature => ({
+          ...feature.properties,
+          coordinates: (feature.geometry as Point).coordinates.join(', '),
+        }));
+
+        // Translate column names and set "value" to layer.id
+        const translatedColumnsNames = mapValues(
+          { coordinates: 'coordinates', ...properties },
+          (_v, k) => (k === 'value' ? t(compositeLayerData.layer.id) : t(k)),
+        );
+
+        downloadToFile(
+          {
+            content: castObjectsArrayToCsv(
+              csvData,
+              translatedColumnsNames,
+              ';',
+            ),
+            isUrl: false,
+          },
+          getFilename(),
+          'text/csv',
+        );
+        handleDownloadMenuClose();
+      }
+    }
+    console.warn(`No layer data available for ${layer.id}`);
   };
 
   const handleDownloadGeoTiff = (): void => {
@@ -211,6 +251,7 @@ function LayerDownloadOptions({
 
   const shouldShowDownloadButton =
     layer.type === 'admin_level_data' ||
+    layer.type === 'composite' ||
     (layer.type === 'wms' &&
       layer.baseUrl.includes('api.earthobservation.vam.wfp.org/ows'));
 
@@ -247,7 +288,7 @@ function LayerDownloadOptions({
         open={Boolean(downloadMenuAnchorEl)}
         onClose={handleDownloadMenuClose}
       >
-        {layer.type === 'admin_level_data' && [
+        {(layer.type === 'admin_level_data' || layer.type === 'composite') && [
           <MenuItem key="download-as-csv" onClick={handleDownloadCsv}>
             {t('Download as CSV')}
           </MenuItem>,
