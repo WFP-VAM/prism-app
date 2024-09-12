@@ -214,7 +214,7 @@ function HomeTable({ dialogs }: HomeTableProps) {
       startIcon: <GetApp />,
       text: 'Assets',
       component: 'a',
-      href: appConfig.anticipatoryActionUrl,
+      href: `${appConfig.anticipatoryActionUrl}?date=${new Date().toISOString().split('T')[0]}`,
       download: `${window2Range?.end}-${filename}`,
     },
     {

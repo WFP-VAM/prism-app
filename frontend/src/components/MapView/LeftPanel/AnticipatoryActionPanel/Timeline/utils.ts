@@ -72,9 +72,15 @@ export function timelineTransform({
       if (val) {
         // Prioritize valid elements when multiple indicators overlap on the same date
         const existingValidItem = val.data.find(
-          item => item.isValid && item.date === x.date,
+          item =>
+            item.isValid &&
+            item.date === x.date &&
+            (item.phase !== 'Ready' || item.willSetBeValid),
         );
-        if (!existingValidItem || x.isValid) {
+        if (
+          !existingValidItem ||
+          (x.isValid && (x.phase !== 'Ready' || x.willSetBeValid))
+        ) {
           // eslint-disable-next-line fp/no-mutation
           val.data = [...val.data.filter(item => item.date !== x.date), x];
         }

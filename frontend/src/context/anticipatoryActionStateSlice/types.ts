@@ -32,6 +32,7 @@ export interface AnticipatoryActionDataRow {
   new: boolean;
   isValid?: boolean;
   wasReadyValid?: boolean;
+  willSetBeValid?: boolean;
   computedRow?: boolean;
   // district vulnerability level
   vulnerability?: Vulnerability;

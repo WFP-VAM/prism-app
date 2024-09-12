@@ -77,6 +77,8 @@ export function parseAndTransformAA(data: any[]) {
         trigger: Number(x.trigger_ready),
         date: x.date_ready,
         isValid: isReadyValid,
+        willSetBeValid:
+          isReadyValid && Number(x.prob_set) > Number(x.trigger_set),
       };
 
       const set = {
