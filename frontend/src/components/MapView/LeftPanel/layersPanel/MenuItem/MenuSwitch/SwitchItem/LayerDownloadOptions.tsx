@@ -6,7 +6,7 @@ import {
   MenuItem,
   Tooltip,
 } from '@material-ui/core';
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { mapValues } from 'lodash';
 import GetAppIcon from '@material-ui/icons/GetApp';
@@ -31,7 +31,7 @@ import {
 import { useSafeTranslation } from 'i18n';
 import { isExposureAnalysisLoadingSelector } from 'context/analysisResultStateSlice';
 import { availableDatesSelector } from 'context/serverStateSlice';
-import { getRequestDate } from 'utils/server-utils';
+import { getRequestDateItem } from 'utils/server-utils';
 import { LayerDefinitions, getStacBand } from 'config/utils';
 import { getFormattedDate } from 'utils/date-utils';
 import { safeCountry } from 'config';
@@ -58,15 +58,17 @@ function LayerDownloadOptions({
   const { startDate: selectedDate } = useSelector(dateRangeSelector);
   const serverAvailableDates = useSelector(availableDatesSelector);
   const layerAvailableDates = serverAvailableDates[layer.id];
-  const queryDate = selected
-    ? getRequestDate(layerAvailableDates, selectedDate)
-    : undefined;
+  const queryDateItem = useMemo(
+    () => getRequestDateItem(layerAvailableDates, selectedDate, false),
+    [layerAvailableDates, selectedDate],
+  );
+  const requestDate = queryDateItem?.startDate || queryDateItem?.queryDate;
 
   const adminLevelLayerData = useSelector(
-    layerDataSelector(layer.id, queryDate),
+    layerDataSelector(layer.id, requestDate),
   ) as LayerData<AdminLevelDataLayerProps>;
   const compositeLayerData = useSelector(
-    layerDataSelector(layer.id),
+    layerDataSelector(layer.id, requestDate),
   ) as LayerData<CompositeLayerProps>;
 
   const handleDownloadMenuClose = () => {
