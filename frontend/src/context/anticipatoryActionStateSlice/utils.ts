@@ -77,7 +77,7 @@ export function parseAndTransformAA(data: any[]) {
         trigger: Number(x.trigger_ready),
         date: x.date_ready,
         isValid: isReadyValid,
-        willSetBeValid:
+        isOtherPhaseValid:
           isReadyValid && Number(x.prob_set) > Number(x.trigger_set),
       };
 
@@ -87,7 +87,7 @@ export function parseAndTransformAA(data: any[]) {
         trigger: Number(x.trigger_set),
         date: x.date_set,
         isValid: ready.isValid && Number(x.prob_set) > Number(x.trigger_set),
-        wasReadyValid: isReadyValid,
+        isOtherPhaseValid: isReadyValid,
       };
 
       const result = [];
