@@ -112,7 +112,7 @@ const out = {
         probability: 0.12,
         trigger: 0.3,
         type: 'SPI',
-        wasReadyValid: false,
+        isOtherPhaseValid: false,
         window: 'Window 1',
       },
       {
@@ -142,7 +142,7 @@ const out = {
         date: '2023-11-01',
         season: '2023-24',
         isValid: true,
-        wasReadyValid: true,
+        isOtherPhaseValid: true,
       },
     ],
     '40': [
@@ -187,7 +187,7 @@ const out = {
         date: '2023-11-01',
         season: '2023-24',
         isValid: false,
-        wasReadyValid: true,
+        isOtherPhaseValid: true,
       },
     ],
   },
