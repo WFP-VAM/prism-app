@@ -110,7 +110,7 @@ function LayerDownloadOptions({
   };
 
   const handleDownloadCsv = (): void => {
-    if (adminLevelLayerData) {
+    if (adminLevelLayerData && layer.type === 'admin_level_data') {
       const translatedColumnsNames = mapValues(
         adminLevelLayerData?.data.layerData[0],
         (_v, k) => (k === 'value' ? t(adminLevelLayerData.layer.id) : t(k)),
@@ -129,7 +129,7 @@ function LayerDownloadOptions({
       );
       handleDownloadMenuClose();
     }
-    if (compositeLayerData) {
+    if (compositeLayerData && layer.type === 'composite') {
       const geoJsonFeatures = compositeLayerData?.data.features;
       const properties = geoJsonFeatures[0]?.properties;
 
