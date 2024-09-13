@@ -11,15 +11,12 @@ exports[`renders as expected 1`] = `
       <div
         class="makeStyles-alertFormOptions-3"
       >
-        <mock-typography
-          variant="body2"
-        >
-          Hazard Layer
-        </mock-typography>
         <mock-layer-dropdown
-          classname="makeStyles-selector-4"
+          classname="makeStyles-analysisPanelParamText-4"
+          label="Hazard Layer"
           placeholder="Choose hazard layer"
           type="wms"
+          value=""
         />
       </div>
       <div
@@ -96,6 +93,7 @@ exports[`renders as expected 1`] = `
       disabled="true"
     >
       <mock-typography
+        style="color: white;"
         variant="body2"
       >
         Create Alert

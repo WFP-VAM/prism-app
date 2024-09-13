@@ -349,19 +349,16 @@ exports[`renders as expected 1`] = `
                 <div
                   class="makeStyles-alertFormOptions-57"
                 >
-                  <mock-typography
-                    variant="body2"
-                  >
-                    Hazard Layer
-                  </mock-typography>
                   <div
-                    class="MuiFormControl-root makeStyles-selector-58"
+                    class="MuiFormControl-root makeStyles-analysisPanelParamText-58"
                   >
                     <mock-textfield
                       classes="[object Object]"
                       inputlabelprops="[object Object]"
                       inputprops="[object Object]"
+                      label="Hazard Layer"
                       select="true"
+                      value=""
                       variant="outlined"
                     >
                       <mock-menuitem
@@ -1489,6 +1486,7 @@ exports[`renders as expected 1`] = `
                 disabled="true"
               >
                 <mock-typography
+                  style="color: white;"
                   variant="body2"
                 >
                   Create Alert
