@@ -96,6 +96,7 @@ const out = {
               date: '2023-08-01',
               season: '2023-24',
               isValid: false,
+              isOtherPhaseValid: false,
             },
             {
               category: 'Mild',
@@ -110,6 +111,7 @@ const out = {
               date: '2023-09-01',
               season: '2023-24',
               isValid: false,
+              isOtherPhaseValid: false,
             },
             {
               category: 'Mild',
@@ -124,6 +126,7 @@ const out = {
               date: '2023-10-01',
               season: '2023-24',
               isValid: true,
+              isOtherPhaseValid: true,
             },
           ],
         },
@@ -199,6 +202,7 @@ const out = {
               date: '2023-09-01',
               season: '2023-24',
               isValid: true,
+              isOtherPhaseValid: false,
             },
             {
               category: 'Moderate',
@@ -213,6 +217,7 @@ const out = {
               date: '2023-10-01',
               season: '2023-24',
               isValid: true,
+              isOtherPhaseValid: false,
             },
           ],
         },

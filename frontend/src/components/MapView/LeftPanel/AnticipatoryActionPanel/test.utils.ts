@@ -141,6 +141,7 @@ export const mockAAData: AnticipatoryActionState['data'] = {
         date: '2023-11-01',
         season: '2023-24',
         isValid: false,
+        isOtherPhaseValid: false,
       },
       {
         category: 'Moderate',
@@ -172,6 +173,7 @@ export const mockAAData: AnticipatoryActionState['data'] = {
         date: '2023-08-01',
         season: '2023-24',
         isValid: false,
+        isOtherPhaseValid: false,
       },
       {
         category: 'Mild',
@@ -186,6 +188,7 @@ export const mockAAData: AnticipatoryActionState['data'] = {
         date: '2023-09-01',
         season: '2023-24',
         isValid: false,
+        isOtherPhaseValid: false,
       },
       {
         category: 'Moderate',
@@ -200,6 +203,7 @@ export const mockAAData: AnticipatoryActionState['data'] = {
         date: '2023-09-01',
         season: '2023-24',
         isValid: true,
+        isOtherPhaseValid: false,
       },
       {
         category: 'Mild',
@@ -229,6 +233,7 @@ export const mockAAData: AnticipatoryActionState['data'] = {
         date: '2023-10-01',
         season: '2023-24',
         isValid: true,
+        isOtherPhaseValid: true,
       },
       {
         category: 'Moderate',
@@ -243,6 +248,7 @@ export const mockAAData: AnticipatoryActionState['data'] = {
         date: '2023-10-01',
         season: '2023-24',
         isValid: true,
+        isOtherPhaseValid: false,
       },
       {
         category: 'Mild',
