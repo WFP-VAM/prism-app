@@ -78,7 +78,11 @@ function LayerDownloadOptions({
 
   const getFilename = useCallback((): string => {
     const safeTitle = layer.title ?? layer.id;
-    if (selectedDate && (layer as AdminLevelDataLayerProps).dates) {
+    if (
+      selectedDate &&
+      ((layer as AdminLevelDataLayerProps).dates ||
+        (layer as CompositeLayerProps).dateLayer)
+    ) {
       const dateString = getFormattedDate(selectedDate, 'snake');
       return `${safeCountry}_${safeTitle}_${dateString}`;
     }
@@ -126,7 +130,6 @@ function LayerDownloadOptions({
       handleDownloadMenuClose();
     }
     if (layerData && layer.type === 'composite') {
-      // set layerData as LayerData<CompositeLayerProps>
       const compositeLayerData = layerData as LayerData<CompositeLayerProps>;
       const geoJsonFeatures = compositeLayerData?.data.features;
       const properties = geoJsonFeatures[0]?.properties;
