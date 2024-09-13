@@ -6,7 +6,7 @@ import {
   MenuItem,
   Tooltip,
 } from '@material-ui/core';
-import React, { useMemo, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { mapValues } from 'lodash';
 import GetAppIcon from '@material-ui/icons/GetApp';
@@ -64,12 +64,9 @@ function LayerDownloadOptions({
   );
   const requestDate = queryDateItem?.startDate || queryDateItem?.queryDate;
 
-  const adminLevelLayerData = useSelector(
+  const layerData = useSelector(
     layerDataSelector(layer.id, requestDate),
-  ) as LayerData<AdminLevelDataLayerProps>;
-  const compositeLayerData = useSelector(
-    layerDataSelector(layer.id, requestDate),
-  ) as LayerData<CompositeLayerProps>;
+  ) as LayerData<AdminLevelDataLayerProps | CompositeLayerProps>;
 
   const handleDownloadMenuClose = () => {
     setDownloadMenuAnchorEl(null);
@@ -79,19 +76,18 @@ function LayerDownloadOptions({
     setDownloadMenuAnchorEl(event.currentTarget);
   };
 
-  const getFilename = (): string => {
+  const getFilename = useCallback((): string => {
     const safeTitle = layer.title ?? layer.id;
     if (selectedDate && (layer as AdminLevelDataLayerProps).dates) {
       const dateString = getFormattedDate(selectedDate, 'snake');
-      return `${safeTitle}_${dateString}`;
+      return `${safeCountry}_${safeTitle}_${dateString}`;
     }
     return safeTitle;
-  };
+  }, [layer, selectedDate]);
 
   const handleDownloadGeoJson = (): void => {
-    if (adminLevelLayerData || compositeLayerData) {
-      const features =
-        adminLevelLayerData?.data.features || compositeLayerData?.data.features;
+    if (layerData) {
+      const { features } = layerData.data;
       downloadToFile(
         {
           content: JSON.stringify({
@@ -109,16 +105,16 @@ function LayerDownloadOptions({
     console.warn(`No layer data available for ${layer.id}`);
   };
 
-  const handleDownloadCsv = (): void => {
-    if (adminLevelLayerData && layer.type === 'admin_level_data') {
+  const handleDownloadCsv = useCallback(() => {
+    if (layerData && layer.type === 'admin_level_data') {
       const translatedColumnsNames = mapValues(
-        adminLevelLayerData?.data.layerData[0],
-        (_v, k) => (k === 'value' ? t(adminLevelLayerData.layer.id) : t(k)),
+        (layerData as LayerData<AdminLevelDataLayerProps>)?.data.layerData[0],
+        (_v, k) => (k === 'value' ? t(layerData.layer.id) : t(k)),
       );
       downloadToFile(
         {
           content: castObjectsArrayToCsv(
-            adminLevelLayerData?.data.layerData,
+            (layerData as LayerData<AdminLevelDataLayerProps>)?.data.layerData,
             translatedColumnsNames,
             ';',
           ),
@@ -129,7 +125,9 @@ function LayerDownloadOptions({
       );
       handleDownloadMenuClose();
     }
-    if (compositeLayerData && layer.type === 'composite') {
+    if (layerData && layer.type === 'composite') {
+      // set layerData as LayerData<CompositeLayerProps>
+      const compositeLayerData = layerData as LayerData<CompositeLayerProps>;
       const geoJsonFeatures = compositeLayerData?.data.features;
       const properties = geoJsonFeatures[0]?.properties;
 
@@ -143,7 +141,7 @@ function LayerDownloadOptions({
         // Translate column names and set "value" to layer.id
         const translatedColumnsNames = mapValues(
           { coordinates: 'coordinates', ...properties },
-          (_v, k) => (k === 'value' ? t(compositeLayerData.layer.id) : t(k)),
+          (_v, k) => (k === 'value' ? t(layerData.layer.id) : t(k)),
         );
 
         downloadToFile(
@@ -162,9 +160,9 @@ function LayerDownloadOptions({
       }
     }
     console.warn(`No layer data available for ${layer.id}`);
-  };
+  }, [layerData, layer.type, layer.id, getFilename, t]);
 
-  const handleDownloadGeoTiff = (): void => {
+  const handleDownloadGeoTiff = useCallback(() => {
     const { serverLayerName, additionalQueryParams } = layer as WMSLayerProps;
     const band = getStacBand(additionalQueryParams);
     const dateString = getFormattedDate(selectedDate, 'default') as string;
@@ -180,64 +178,67 @@ function LayerDownloadOptions({
       () => setIsGeotiffLoading(false),
     );
     handleDownloadMenuClose();
-  };
+  }, [layer, selectedDate, extent, layerId, dispatch]);
 
   // Helper function to escape special XML characters
   const escapeXml = (str: string): string =>
     str.replace(/</g, '&lt;').replace(/>/g, '&gt;');
 
   // Helper function to generate QML content from legend
-  const generateQmlContent = (
-    legend: LegendDefinitionItem[],
-    opacity: number = 1,
-    scalingFactor: number = 1,
-  ): string => {
-    let qml = `<!DOCTYPE qgis PUBLIC 'http://mrcc.com/qgis.dtd' 'SYSTEM'>
+  const generateQmlContent = useCallback(
+    (
+      legend: LegendDefinitionItem[],
+      opacity: number = 1,
+      scalingFactor: number = 1,
+    ): string => {
+      let qml = `<!DOCTYPE qgis PUBLIC 'http://mrcc.com/qgis.dtd' 'SYSTEM'>
 <qgis hasScaleBasedVisibilityFlag="0" styleCategories="AllStyleCategories">
     <pipe>
         <rasterrenderer opacity="${opacity}" alphaBand="-1" band="1" classificationMin="-1" classificationMax="inf" type="singlebandpseudocolor">
             <rasterTransparency />
             <rastershader>
                 <colorrampshader colorRampType="DISCRETE" classificationMode="1" clip="0">`;
-    // Add color entries for each legend item
-    legend.forEach((item, index) => {
-      const label = item.label
-        ? escapeXml(item.label as string)
-        : item.value.toString();
+      // Add color entries for each legend item
+      legend.forEach((item, index) => {
+        const label = item.label
+          ? escapeXml(item.label as string)
+          : item.value.toString();
 
-      // TEMPORARY: shift the value index by 1 to account for the 0 value
-      // and match the QML style format. See https://github.com/WFP-VAM/prism-app/pull/1161
-      const shouldShiftIndex =
-        (legend[0].value === 0 ||
-          (legend[0].label as string).includes('< -')) &&
-        ((legend[0].label as string)?.includes('<') ||
-          (legend[1].label as string)?.includes('<') ||
-          (legend[1].label as string)?.includes('-') ||
-          (legend[1].label as string)?.includes(' to '));
+        // TEMPORARY: shift the value index by 1 to account for the 0 value
+        // and match the QML style format. See https://github.com/WFP-VAM/prism-app/pull/1161
+        const shouldShiftIndex =
+          (legend[0].value === 0 ||
+            (legend[0].label as string).includes('< -')) &&
+          ((legend[0].label as string)?.includes('<') ||
+            (legend[1].label as string)?.includes('<') ||
+            (legend[1].label as string)?.includes('-') ||
+            (legend[1].label as string)?.includes(' to '));
 
-      const value =
-        index < legend.length - 1
-          ? (legend[index + Number(shouldShiftIndex)]?.value as number) *
-            scalingFactor
-          : 'INF';
+        const value =
+          index < legend.length - 1
+            ? (legend[index + Number(shouldShiftIndex)]?.value as number) *
+              scalingFactor
+            : 'INF';
+        // eslint-disable-next-line fp/no-mutation
+        qml += `
+                    <item color="${item.color}" value="${value}" alpha="255" label="${label}" />`;
+      });
+
+      // End of QML file content
       // eslint-disable-next-line fp/no-mutation
       qml += `
-                    <item color="${item.color}" value="${value}" alpha="255" label="${label}" />`;
-    });
-
-    // End of QML file content
-    // eslint-disable-next-line fp/no-mutation
-    qml += `
                 </colorrampshader>
             </rastershader>
         </rasterrenderer>
     </pipe>
 </qgis>`;
 
-    return qml;
-  };
+      return qml;
+    },
+    [],
+  );
 
-  const handleDownloadQmlStyle = (): void => {
+  const handleDownloadQmlStyle = useCallback((): void => {
     const { legend, opacity, wcsConfig } = layer as WMSLayerProps;
     const scalingFactor = wcsConfig?.scale ? 1 / Number(wcsConfig.scale) : 1;
     const qmlContent = generateQmlContent(legend, opacity, scalingFactor);
@@ -252,7 +253,7 @@ function LayerDownloadOptions({
     );
 
     handleDownloadMenuClose();
-  };
+  }, [layer, generateQmlContent, layerId]);
 
   const shouldShowDownloadButton =
     layer.type === 'admin_level_data' ||
