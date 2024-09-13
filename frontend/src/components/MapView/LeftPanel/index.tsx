@@ -18,6 +18,7 @@ import {
   AADataSelector,
   loadAAData,
 } from 'context/anticipatoryActionStateSlice';
+import { setSelectedBoundaries } from 'context/mapSelectionLayerStateSlice';
 import {
   availableDatesSelector,
   updateLayersCapabilities,
@@ -183,6 +184,13 @@ const LeftPanel = memo(() => {
     ),
     [tabValue],
   );
+
+  // Reset selected boundaries when tab changes from Alerts
+  React.useEffect(() => {
+    if (tabValue !== Panel.Alerts) {
+      dispatch(setSelectedBoundaries([]));
+    }
+  }, [tabValue, dispatch]);
 
   const renderedAnticipatoryActionPanel = React.useMemo(() => {
     if (!isAnticipatoryActionAvailable) {
