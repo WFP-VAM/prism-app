@@ -183,12 +183,12 @@ function AlertsPanel() {
       <Box className={classes.alertFormMenu}>
         <div className={classes.newAlertFormContainer}>
           <div className={classes.alertFormOptions}>
-            <Typography variant="body2">{t('Hazard Layer')}</Typography>
             <LayerDropdown
               type="wms"
-              value={hazardLayerId}
+              value={hazardLayerId || ''}
               setValue={setHazardLayerId}
-              className={classes.selector}
+              className={classes.analysisPanelParamText}
+              label={t('Hazard Layer')}
               placeholder="Choose hazard layer"
             />
           </div>
@@ -262,7 +262,9 @@ function AlertsPanel() {
             regionsList.length === 0
           }
         >
-          <Typography variant="body2">{t('Create Alert')}</Typography>
+          <Typography style={{ color: 'white' }} variant="body2">
+            {t('Create Alert')}
+          </Typography>
         </Button>
       </Box>
     ),
@@ -271,14 +273,7 @@ function AlertsPanel() {
       alertName,
       alertWaiting,
       belowThreshold,
-      classes.alertFormMenu,
-      classes.alertFormOptions,
-      classes.innerCreateAlertButton,
-      classes.newAlertFormContainer,
-      classes.numberField,
-      classes.regionSelector,
-      classes.selector,
-      classes.thresholdInputsContainer,
+      classes,
       emailValid,
       hazardLayerId,
       onThresholdOptionChange,
@@ -316,17 +311,9 @@ const useStyles = makeStyles((theme: Theme) =>
       width: '90%',
       color: 'black',
     },
-    selector: {
+    analysisPanelParamText: {
       width: '100%',
-      '& .MuiInputBase-root': {
-        color: 'black',
-      },
-      '& .MuiFormLabel-root': {
-        color: 'black',
-        '&:hover fieldset': {
-          borderColor: '#333333',
-        },
-      },
+      color: 'black',
     },
     regionSelector: {
       width: '100%',
@@ -350,7 +337,7 @@ const useStyles = makeStyles((theme: Theme) =>
     innerCreateAlertButton: {
       backgroundColor: theme.palette.primary.main,
       '&:hover': {
-        backgroundColor: theme.palette.primary.dark,
+        backgroundColor: 'black !important',
       },
       marginTop: 10,
       marginBottom: 10,
