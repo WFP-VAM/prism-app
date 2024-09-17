@@ -1372,7 +1372,7 @@
     "type": "composite",
     "period": "monthly",
     "base_url": "https://hip-service.ovio.org/q_multi_geojson",
-    "expected_data_lag_days": 70,
+    "expected_data_lag_days": 110,
     "validity": {
       "forward": 1,
       "backward": 2,
@@ -1386,7 +1386,7 @@
           "CHIRPS",
           "R1S_DEKAD"
         ],
-        "aggregation": "last_dekad"
+        "aggregation": "average"
       },
       {
         "id": "lst_anomaly",
@@ -1395,7 +1395,7 @@
           "MODIS",
           "MYD11C2_TDD_DEKAD"
         ],
-        "aggregation": "last_dekad"
+        "aggregation": "average"
       },
       {
         "id": "ndvi_dekad",
@@ -1405,7 +1405,7 @@
           "NDVI_smoothed_5KM"
         ],
         "aggregation": "average",
-        "invert": "True"
+        "invert": "False"
       }
     ],
     "legend": [
@@ -1472,7 +1472,7 @@
     "type": "composite",
     "period": "seasonal",
     "base_url": "https://hip-service.ovio.org/q_multi_geojson",
-    "expected_data_lag_days": 130,
+    "expected_data_lag_days": 180,
     "validity": {
       "mode": "season",
       "seasons": [
@@ -1494,7 +1494,7 @@
           "CHIRPS",
           "R1S_DEKAD"
         ],
-        "aggregation": "last_dekad"
+        "aggregation": "average"
       },
       {
         "id": "lst_anomaly",
@@ -1503,7 +1503,7 @@
           "MODIS",
           "MYD11C2_TDD_DEKAD"
         ],
-        "aggregation": "last_dekad"
+        "aggregation": "average"
       },
       {
         "id": "ndvi_dekad",
@@ -1513,7 +1513,7 @@
           "NDVI_smoothed_5KM"
         ],
         "aggregation": "average",
-        "invert": "True"
+        "invert": "False"
       }
     ],
     "legend": [
@@ -1580,7 +1580,7 @@
     "type": "composite",
     "period": "monthly",
     "base_url": "https://hip-service.ovio.org/q_multi_geojson",
-    "expected_data_lag_days": 70,
+    "expected_data_lag_days": 110,
     "validity": {
       "forward": 1,
       "backward": 2,
@@ -1594,7 +1594,7 @@
           "CHIRPS",
           "R1S_DEKAD"
         ],
-        "aggregation": "last_dekad"
+        "aggregation": "average"
       },
       {
         "id": "lst_anomaly",
@@ -1603,7 +1603,7 @@
           "MODIS",
           "MYD11C2_TDD_DEKAD"
         ],
-        "aggregation": "last_dekad"
+        "aggregation": "average"
       },
       {
         "id": "ndvi_dekad",
@@ -1613,7 +1613,7 @@
           "NDVI_smoothed_5KM"
         ],
         "aggregation": "average",
-        "invert": "True"
+        "invert": "False"
       }
     ],
     "legend": [
@@ -1680,7 +1680,7 @@
     "type": "composite",
     "period": "seasonal",
     "base_url": "https://hip-service.ovio.org/q_multi_geojson",
-    "expected_data_lag_days": 130,
+    "expected_data_lag_days": 180,
     "validity": {
       "mode": "season",
       "seasons": [
@@ -1702,7 +1702,7 @@
           "CHIRPS",
           "R1S_DEKAD"
         ],
-        "aggregation": "last_dekad"
+        "aggregation": "average"
       },
       {
         "id": "lst_anomaly",
@@ -1711,7 +1711,7 @@
           "MODIS",
           "MYD11C2_TDD_DEKAD"
         ],
-        "aggregation": "last_dekad"
+        "aggregation": "average"
       },
       {
         "id": "ndvi_dekad",
@@ -1721,7 +1721,7 @@
           "NDVI_smoothed_5KM"
         ],
         "aggregation": "average",
-        "invert": "True"
+        "invert": "False"
       }
     ],
     "legend": [
