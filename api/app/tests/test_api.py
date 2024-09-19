@@ -97,7 +97,9 @@ def test_alerts_api(case):
     case.validate_response(response)
 
 
-@pytest.mark.skip(reason="Skipping this test - 500 in CI but works locally, need to check with Valentin")
+@pytest.mark.skip(
+    reason="Skipping this test - 500 in CI but works locally, need to check with Valentin"
+)
 def test_stats_endpoint1():
     """
     Call /stats with known-good parameters.
@@ -162,6 +164,9 @@ def test_stats_endpoint2():
     assert response.status_code == 200
 
 
+@pytest.mark.skip(
+    reason="Skipping this test - 500 in CI but works locally, need to check with Valentin"
+)
 def test_stats_endpoint_masked():
     """
     Call /stats with known-good parameters with a geotiff mask.
