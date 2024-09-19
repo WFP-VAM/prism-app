@@ -502,6 +502,12 @@ export class CompositeLayerProps extends CommonLayerProps {
 
   @optional
   endDate?: string;
+  @optional
+  aggregateBy?: 'mean' | 'median' | 'max';
+  @optional
+  aggregationBoundaryPath?: string;
+  @optional
+  adminCode?: number;
 }
 
 export class StaticRasterLayerProps extends CommonLayerProps {
