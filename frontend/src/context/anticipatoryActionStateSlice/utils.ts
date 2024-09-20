@@ -116,7 +116,9 @@ export function parseAndTransformAA(data: any[]) {
   );
 
   const windowData = AAWindowKeys.map(windowKey => {
-    const filtered = parsed.filter(x => x.window === windowKey);
+    const filtered = parsed.filter(x => x.window === windowKey && x.date);
+
+    console.log({ filtered });
 
     // eslint-disable-next-line fp/no-mutating-methods
     const dates = [
