@@ -8,6 +8,9 @@ export interface StartEndDate {
 
 const millisecondsInADay = 24 * 60 * 60 * 1000;
 
+export const getCurrentDateTimeForUrl = (): string =>
+  new Date().toISOString().slice(0, 16).replace(/[T:]/g, '-');
+
 export const dateWithoutTime = (date: number | Date): number => {
   const cleanDate = date instanceof Date ? date.getTime() : date;
   return cleanDate - (cleanDate % millisecondsInADay);
