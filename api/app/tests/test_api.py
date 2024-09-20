@@ -2,10 +2,9 @@ import os
 import tempfile
 from unittest.mock import MagicMock, patch
 
-import requests
-
 import pytest
 import rasterio
+import requests
 import schemathesis
 from app.database.database import AlertsDataBase
 from app.main import app
