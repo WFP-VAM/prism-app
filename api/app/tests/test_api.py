@@ -104,33 +104,11 @@ def test_stats_endpoint1():
     This endpoint can be slow (>1 min) so this test is deactivated by default.
     """
 
-    geotiff_url_response = requests.post(
-        "https://prism-api.ovio.org/raster_geotiff",
-        headers={
-            "accept": "application/json",
-            "accept-language": "en-US,en;q=0.9",
-        },
-        json={
-            "collection": "rfh_dekad",
-            "long_min": 95.3,
-            "lat_min": 9.93,
-            "long_max": 102.18,
-            "lat_max": 29.34,
-            "date": "2024-09-01",
-            "band": "rfh_16_0_300",
-        },
-        timeout=30,
-    )
-
-    assert geotiff_url_response.status_code == 200
-    data = geotiff_url_response.json()
-    geotiff_url = data.get("download_url")
-
     response = client.post(
         "/stats",
         headers={"Accept": "application/json"},
         json={
-            "geotiff_url": geotiff_url,
+            "geotiff_url": "https://prism-wfp.s3.us-east-2.amazonaws.com/myanmar_rainfall_dekad.tif",
             "zones_url": "https://prism-admin-boundaries.s3.us-east-2.amazonaws.com/mmr_admin_boundaries.json",
             "group_by": "TS_PCODE",
             # TODO - re-add once geonode is back online.
@@ -190,33 +168,11 @@ def test_stats_endpoint_masked():
     Call /stats with known-good parameters with a geotiff mask.
     """
 
-    geotiff_url_response = requests.post(
-        "https://prism-api.ovio.org/raster_geotiff",
-        headers={
-            "accept": "application/json",
-            "accept-language": "en-US,en;q=0.9",
-        },
-        json={
-            "collection": "rfh_dekad",
-            "long_min": 95.3,
-            "lat_min": 9.93,
-            "long_max": 102.18,
-            "lat_max": 29.34,
-            "date": "2024-09-01",
-            "band": "rfh_16_0_300",
-        },
-        timeout=30,
-    )
-
-    assert geotiff_url_response.status_code == 200
-    data = geotiff_url_response.json()
-    geotiff_url = data.get("download_url")
-
     response = client.post(
         "/stats",
         headers={"Accept": "application/json"},
         json={
-            "geotiff_url": geotiff_url,
+            "geotiff_url": "https://prism-wfp.s3.us-east-2.amazonaws.com/myanmar_rainfall_dekad.tif",
             "zones_url": "https://prism-admin-boundaries.s3.us-east-2.amazonaws.com/mmr_admin_boundaries.json",
             "mask_url": "https://api.earthobservation.vam.wfp.org/ows/?service=WCS&request=GetCoverage&version=1.0.0&coverage=hf_water_mmr&crs=EPSG%3A4326&bbox=92.2%2C9.7%2C101.2%2C28.5&width=1098&height=2304&format=GeoTIFF&time=2022-08-11",
             "group_by": "TS_PCODE",
