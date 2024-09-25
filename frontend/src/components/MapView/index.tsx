@@ -13,6 +13,7 @@ import {
   loadAvailableDates,
 } from 'context/serverStateSlice';
 import { loadLayerData } from 'context/layers/layer-data';
+import { mapStyleSelector } from 'context/mapStateSlice/selectors';
 import LeftPanel from './LeftPanel';
 import MapComponent from './Map';
 import OtherFeatures from './OtherFeatures';
@@ -28,6 +29,7 @@ const MapView = memo(({ setIsAlertFormOpen }: MapViewProps) => {
   const classes = useStyles();
   // Selectors
   const datesLoading = useSelector(areDatesLoading);
+  const mapStyle = useSelector(mapStyleSelector);
 
   const dispatch = useDispatch();
 
@@ -50,7 +52,10 @@ const MapView = memo(({ setIsAlertFormOpen }: MapViewProps) => {
           <CircularProgress size={100} />
         </div>
       )}
-      <MapComponent setIsAlertFormOpen={setIsAlertFormOpen} />
+      <MapComponent
+        key={mapStyle?.id || '42'}
+        setIsAlertFormOpen={setIsAlertFormOpen}
+      />
     </Box>
   );
 });

@@ -14,8 +14,8 @@ import { getFormattedDate } from 'utils/date-utils';
 import { appConfig, safeCountry } from 'config';
 import { AdminCodeString, BoundaryLayerProps } from 'config/types';
 import { getBoundaryLayerSingleton } from 'config/utils';
-import { LayerData } from 'context/layers/layer-data';
 import useResizeObserver from 'utils/useOnResizeObserver';
+import { LayerData } from 'context/layers/layer-data';
 import {
   dateRangeSelector,
   layerDataSelector,
@@ -248,6 +248,11 @@ const useStyles = makeStyles(() =>
       justifyContent: 'space-between',
       width: '90vw',
       height: '90vh',
+    },
+    sameRowToggles: {
+      display: 'flex',
+      flexDirection: 'row',
+      justifyContent: 'space-between',
     },
   }),
 );
