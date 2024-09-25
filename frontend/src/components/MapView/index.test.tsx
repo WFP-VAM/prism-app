@@ -21,11 +21,24 @@ jest.mock('react-router-dom', () => ({
   }),
 }));
 
-test('renders as expected', () => {
-  const { container } = render(
-    <Provider store={store}>
-      <MapView setIsAlertFormOpen={() => {}} />
-    </Provider>,
-  );
-  expect(container).toMatchSnapshot();
+describe('MapView', () => {
+  beforeAll(() => {
+    // Mock the date to a specific value
+    jest.useFakeTimers();
+    jest.setSystemTime(new Date('2024-12-01'));
+  });
+
+  afterAll(() => {
+    // Restore the real timer
+    jest.useRealTimers();
+  });
+
+  test('renders as expected', () => {
+    const { container } = render(
+      <Provider store={store}>
+        <MapView setIsAlertFormOpen={() => {}} />
+      </Provider>,
+    );
+    expect(container).toMatchSnapshot();
+  });
 });
