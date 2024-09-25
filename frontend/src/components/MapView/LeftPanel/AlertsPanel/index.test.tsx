@@ -5,7 +5,7 @@ import { createTheme } from '@material-ui/core/styles';
 import { store } from 'context/store';
 import AlertsPanel from '.';
 
-jest.mock('../Layers/LayerDropdown', () => 'mock-Layer-Dropdown');
+jest.mock('../../Layers/LayerDropdown', () => 'mock-Layer-Dropdown');
 
 test('renders as expected', () => {
   const rendered = render(
