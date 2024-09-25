@@ -33,7 +33,7 @@ if GOOGLE_FLOODS_API_KEY == "":
     logger.warning("Missing backend parameter: GOOGLE_FLOODS_API_KEY")
 
 
-def make_google_floods_request(url, method="get", data=None, retries=1, timeout=2):
+def make_google_floods_request(url, method="get", data=None, retries=1, timeout=10):
     """Make a request with retries and error handling."""
     for _ in range(retries):
         try:
