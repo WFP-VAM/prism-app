@@ -37,13 +37,26 @@ const store = mockStore({
   },
 });
 
-test('renders as expected', () => {
-  const { container } = render(
-    <BrowserRouter>
-      <Provider store={store}>
-        <HomeTable dialogs={defaultDialogs} />
-      </Provider>
-    </BrowserRouter>,
-  );
-  expect(container).toMatchSnapshot();
+describe('HomeTable', () => {
+  beforeAll(() => {
+    // Mock the date to a specific value
+    jest.useFakeTimers();
+    jest.setSystemTime(new Date('2024-12-01'));
+  });
+
+  afterAll(() => {
+    // Restore the real timer
+    jest.useRealTimers();
+  });
+
+  test('renders as expected', () => {
+    const { container } = render(
+      <BrowserRouter>
+        <Provider store={store}>
+          <HomeTable dialogs={defaultDialogs} />
+        </Provider>
+      </BrowserRouter>,
+    );
+    expect(container).toMatchSnapshot();
+  });
 });
