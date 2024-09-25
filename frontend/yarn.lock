@@ -7120,10 +7120,10 @@ dommatrix@^1.0.3:
   resolved "https://registry.yarnpkg.com/dommatrix/-/dommatrix-1.0.3.tgz#e7c18e8d6f3abdd1fef3dd4aa74c4d2e620a0525"
   integrity sha512-l32Xp/TLgWb8ReqbVJAFIvXmY7go4nTxxlWiAFyhoQw9RKEOHBZNnyGvJWqDVSPmq3Y9HlM4npqF/T6VMOXhww==
 
-dompurify@^2.2.0, dompurify@^2.3.1:
-  version "2.5.1"
-  resolved "https://registry.yarnpkg.com/dompurify/-/dompurify-2.5.1.tgz#4ccfdab5ee6a887fc9ce62079166507d3fa5f74f"
-  integrity sha512-HH391uRJXAAeelougod93W++2gECfHIVCqq+B/4znhjCgb2zVPL+iLOVnTYwejqAuNf69Ffc5ILQYdPHsZACJA==
+dompurify@^2.2.0, dompurify@^2.5.4:
+  version "2.5.4"
+  resolved "https://registry.yarnpkg.com/dompurify/-/dompurify-2.5.4.tgz#347e91070963b22db31c7c8d0ce9a0a2c3c08746"
+  integrity sha512-l5NNozANzaLPPe0XaAwvg3uZcHtDBnziX/HjsY1UcDj1MxTK8Dd0Kv096jyPK5HRzs/XM5IMj20dW8Fk+HnbUA==
 
 domutils@^3.0.1, domutils@^3.1.0:
   version "3.1.0"
