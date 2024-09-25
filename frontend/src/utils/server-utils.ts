@@ -1,5 +1,5 @@
 import { oneDayInMs } from 'components/MapView/LeftPanel/utils';
-import { get, merge, snakeCase, sortBy, sortedUniqBy } from 'lodash';
+import { get, merge, snakeCase, sortBy } from 'lodash';
 import { WFS, WMS, fetchCoverageLayerDays, formatUrl } from 'prism-common';
 import { Dispatch } from 'redux';
 import { appConfig, safeCountry } from '../config';
@@ -10,6 +10,7 @@ import type {
   PathLayer,
   PointDataLayerProps,
   RequestFeatureInfo,
+  SeasonBounds,
   Validity,
   ValidityLayer,
   ValidityPeriod,
@@ -31,16 +32,44 @@ import { addNotification } from '../context/notificationStateSlice';
 import { fetchACLEDDates } from './acled-utils';
 import {
   StartEndDate,
-  binaryIncludes,
   datesAreEqualWithoutTime,
   generateDateItemsRange,
   generateDatesRange,
   getFormattedDate,
+  getSeasonBounds,
 } from './date-utils';
 import { LocalError } from './error-utils';
 import { createEWSDatesArray } from './ews-utils';
 import { fetchWithTimeout } from './fetch-with-timeout';
 import { queryParamsToString } from './url-utils';
+
+/**
+ * Function that gets the correct date item.
+ *
+ * @return DateItem
+ */
+export const getRequestDateItem = (
+  layerAvailableDates: DateItem[] | undefined,
+  selectedDate?: number,
+  defaultToMostRecent: boolean = true,
+): DateItem | undefined => {
+  if (!selectedDate) {
+    return undefined;
+  }
+
+  if (!layerAvailableDates || layerAvailableDates.length === 0) {
+    return undefined;
+  }
+
+  const dateItem = layerAvailableDates.find(date =>
+    datesAreEqualWithoutTime(date.displayDate, selectedDate),
+  );
+  if (!dateItem && defaultToMostRecent) {
+    return layerAvailableDates[layerAvailableDates.length - 1];
+  }
+
+  return dateItem;
+};
 
 /**
  * Function that gets the correct date used to make the request. If available dates is undefined. Return selectedDate as default.
@@ -50,20 +79,16 @@ import { queryParamsToString } from './url-utils';
 export const getRequestDate = (
   layerAvailableDates: DateItem[] | undefined,
   selectedDate?: number,
+  defaultToMostRecent = true,
 ): number | undefined => {
-  if (!selectedDate) {
-    return undefined;
-  }
-
-  if (!layerAvailableDates || layerAvailableDates.length === 0) {
-    return selectedDate;
-  }
-
-  const dateItem = layerAvailableDates.find(date =>
-    datesAreEqualWithoutTime(date.displayDate, selectedDate),
+  const dateItem = getRequestDateItem(
+    layerAvailableDates,
+    selectedDate,
+    defaultToMostRecent,
   );
+
   if (!dateItem) {
-    return layerAvailableDates[layerAvailableDates.length - 1].queryDate;
+    return selectedDate;
   }
 
   return dateItem.queryDate;
@@ -116,7 +141,11 @@ export const getPossibleDatesForLayer = (
     case 'composite': {
       // Filter dates that are after layer.startDate
       const startDateTimestamp = Date.parse(layer.startDate);
-      return (serverAvailableDates[layer.dateLayer] || []).filter(
+      const layerServerAvailableDates =
+        serverAvailableDates[layer.id] ||
+        serverAvailableDates[layer.dateLayer] ||
+        [];
+      return layerServerAvailableDates.filter(
         date => date.displayDate > startDateTimestamp,
       );
     }
@@ -376,8 +405,25 @@ export function generateIntermediateDateItemFromValidity(
           startDate.setDate(DekadStartingDays[newDekadStartIndex]);
           startDate.setMonth(startDate.getMonth() + nMonthsBackward);
         }
+      } else if (mode === DatesPropagation.SEASON) {
+        if (validity.seasons) {
+          const seasonBounds = getSeasonBounds(startDate, validity.seasons);
+          if (seasonBounds) {
+            startDate.setTime(seasonBounds.start.getTime());
+            endDate.setTime(seasonBounds.end.getTime());
+          } else {
+            console.warn(
+              `No season found for date: ${startDate.toISOString()}`,
+            );
+            return [];
+          }
+        } else {
+          const { start, end } = getSeasonBounds(startDate) as SeasonBounds;
+          startDate.setTime(start.getTime());
+          endDate.setTime(end.getTime() - oneDayInMs);
+        }
       } else {
-        return [];
+        throw Error(`Invalid validity mode: ${mode}`);
       }
 
       // We create an array with the diff between the endDate and startDate and we create an array with the addition of the days in the startDate
@@ -386,25 +432,20 @@ export function generateIntermediateDateItemFromValidity(
       // convert the available days for a specific day to the DefaultDate format
       const dateItemsToAdd = daysToAdd.map(dateToAdd => ({
         displayDate: dateToAdd,
-        queryDate: date.getTime(),
+        queryDate:
+          mode === DatesPropagation.SEASON
+            ? startDate.getTime()
+            : date.getTime(),
         startDate: startDate.getTime(),
         endDate: endDate.getTime(),
       }));
 
-      // We filter the dates that don't include the displayDate of the previous item array
-      const filteredDateItems = acc.filter(
-        dateItem => !binaryIncludes(daysToAdd, dateItem.displayDate, x => x),
-      );
-
-      return [...filteredDateItems, ...dateItemsToAdd];
+      return [...acc, ...dateItemsToAdd];
     }, []);
 
   // We sort the defaultDateItems and the dateItemsWithValidity and we order by displayDate to filter the duplicates
   // or the overlapping dates
-  return sortedUniqBy(
-    sortBy(dateItemsWithValidity, 'displayDate'),
-    'displayDate',
-  );
+  return sortBy(dateItemsWithValidity, 'displayDate');
 }
 
 /**
@@ -469,7 +510,11 @@ const localWMSGetLayerDates = async (
 const layerDefinitionsBluePrint: AvailableDates = Object.keys(
   LayerDefinitions,
 ).reduce((acc, layerDefinitionKey) => {
-  const { serverLayerName } = LayerDefinitions[layerDefinitionKey] as any;
+  const layer = LayerDefinitions[layerDefinitionKey];
+  const serverLayerName =
+    layer.type === 'composite'
+      ? (LayerDefinitions[layer.dateLayer] as WMSLayerProps).serverLayerName
+      : (layer as WMSLayerProps).serverLayerName;
   if (!serverLayerName) {
     return {
       ...acc,
@@ -512,23 +557,42 @@ export async function getLayersAvailableDates(
   const wmsServerUrls: string[] = get(appConfig, 'serversUrls.wms', []);
   const wcsServerUrls: string[] = get(appConfig, 'serversUrls.wcs', []);
 
+  const compositeLayers = Object.values(LayerDefinitions).filter(
+    (layer): layer is CompositeLayerProps => layer.type === 'composite',
+  );
+
+  const compositeLayersWithDateLayerTypeMap: {
+    [key: string]: string;
+  } = compositeLayers.reduce(
+    (acc, layer) => ({
+      ...acc,
+      [layer.id]: LayerDefinitions[layer.dateLayer].type,
+    }),
+    {},
+  );
+
   const pointDataLayers = Object.values(LayerDefinitions).filter(
     (layer): layer is PointDataLayerProps =>
-      layer.type === 'point_data' && Boolean(layer.dateUrl),
+      (layer.type === 'point_data' && Boolean(layer.dateUrl)) ||
+      compositeLayersWithDateLayerTypeMap[layer.id] === 'point_data',
   );
 
   const adminWithDateLayers = Object.values(LayerDefinitions).filter(
     (layer): layer is AdminLevelDataLayerProps =>
-      layer.type === 'admin_level_data' && Boolean(layer.dates),
+      (layer.type === 'admin_level_data' && Boolean(layer.dates)) ||
+      compositeLayersWithDateLayerTypeMap[layer.id] === 'admin_level_data',
   );
 
   const staticRasterWithDateLayers = Object.values(LayerDefinitions).filter(
     (layer): layer is StaticRasterLayerProps =>
-      layer.type === 'static_raster' && Boolean(layer.dates),
+      (layer.type === 'static_raster' && Boolean(layer.dates)) ||
+      compositeLayersWithDateLayerTypeMap[layer.id] === 'static_raster',
   );
 
   const WCSWMSLayers = Object.values(LayerDefinitions).filter(
-    (layer): layer is WMSLayerProps => layer.type === 'wms',
+    (layer): layer is WMSLayerProps =>
+      layer.type === 'wms' ||
+      compositeLayersWithDateLayerTypeMap[layer.id] === 'wms',
   );
 
   /**
@@ -540,10 +604,14 @@ export async function getLayersAvailableDates(
    */
   const mapServerDatesToLayerIds = (
     serverDates: Record<string, number[]>,
-    layers: WMSLayerProps[],
+    layers: (WMSLayerProps | CompositeLayerProps)[],
   ): Record<string, number[]> =>
     layers.reduce((acc: Record<string, number[]>, layer) => {
-      const layerDates = serverDates[layer.serverLayerName];
+      const serverLayerName =
+        layer.type === 'composite'
+          ? (LayerDefinitions[layer.dateLayer] as WMSLayerProps).serverLayerName
+          : layer.serverLayerName;
+      const layerDates = serverDates[serverLayerName];
       if (layerDates) {
         // Filter WMS layers by startDate, used for forecast layers in particular.
         if (layer.startDate) {

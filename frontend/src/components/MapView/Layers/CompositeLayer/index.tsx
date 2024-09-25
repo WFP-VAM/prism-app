@@ -1,7 +1,7 @@
 import { CompositeLayerProps, LegendDefinition } from 'config/types';
 import { LayerData, loadLayerData } from 'context/layers/layer-data';
 import { layerDataSelector } from 'context/mapStateSlice/selectors';
-import { memo, useEffect, useState } from 'react';
+import { memo, useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Source, Layer } from 'react-map-gl/maplibre';
 import { getLayerMapId } from 'utils/map-utils';
@@ -10,7 +10,7 @@ import { Point } from 'geojson';
 import booleanPointInPolygon from '@turf/boolean-point-in-polygon';
 import { availableDatesSelector } from 'context/serverStateSlice';
 import { useDefaultDate } from 'utils/useDefaultDate';
-import { getRequestDate } from 'utils/server-utils';
+import { getRequestDateItem } from 'utils/server-utils';
 import { safeCountry } from 'config';
 import { geoToH3, h3ToGeoBoundary } from 'h3-js'; // ts-ignore
 import { opacitySelector } from 'context/opacityStateSlice';
@@ -45,12 +45,17 @@ const CompositeLayer = memo(({ layer, before }: Props) => {
   const opacityState = useSelector(opacitySelector(layer.id));
   const dispatch = useDispatch();
 
-  const layerAvailableDates = serverAvailableDates[layer.dateLayer];
-  const queryDate = getRequestDate(layerAvailableDates, selectedDate);
+  const layerAvailableDates =
+    serverAvailableDates[layer.id] || serverAvailableDates[layer.dateLayer];
+  const queryDateItem = useMemo(
+    () => getRequestDateItem(layerAvailableDates, selectedDate, false),
+    [layerAvailableDates, selectedDate],
+  );
 
+  const requestDate = queryDateItem?.startDate || queryDateItem?.queryDate;
   const { data } =
     (useSelector(
-      layerDataSelector(layer.id, queryDate),
+      layerDataSelector(layer.id, requestDate),
     ) as LayerData<CompositeLayerProps>) || {};
 
   useEffect(() => {
@@ -63,8 +68,16 @@ const CompositeLayer = memo(({ layer, before }: Props) => {
   }, []);
 
   useEffect(() => {
-    dispatch(loadLayerData({ layer, date: queryDate }));
-  }, [dispatch, layer, queryDate]);
+    if (requestDate) {
+      dispatch(
+        loadLayerData({
+          layer,
+          date: requestDate,
+          availableDates: layerAvailableDates,
+        }),
+      );
+    }
+  }, [dispatch, layer, layerAvailableDates, requestDate]);
 
   // Investigate performance impact of hexagons for large countries
   const finalFeatures =
@@ -103,9 +116,9 @@ const CompositeLayer = memo(({ layer, before }: Props) => {
       features: finalFeatures,
     };
     return (
-      <Source key={queryDate} type="geojson" data={filteredData}>
+      <Source key={requestDate} type="geojson" data={filteredData}>
         <Layer
-          key={queryDate}
+          key={requestDate}
           id={getLayerMapId(layer.id)}
           type="fill"
           paint={paintProps(layer.legend || [], opacityState || layer.opacity)}

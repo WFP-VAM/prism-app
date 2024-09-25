@@ -33,6 +33,16 @@ function TimelineItem({ item }: TimelineItemProps) {
 
   const color = getAAColor(item.category, item.isValid ? item.phase : 'na');
 
+  // Calculate font size based on character count
+  const calculateFontSize = (text: string) => {
+    const baseSize = 0.8; // rem
+    const minSize = 0.2; // rem
+    const charCount = text.length;
+    return Math.max(baseSize - (charCount - 6) * 0.05, minSize);
+  };
+
+  const fontSize = calculateFontSize(item.index);
+
   return (
     <div className={classes.wrapper} style={{ border: `1px solid ${color}` }}>
       <Typography variant="h3">{item.probability}</Typography>
@@ -52,7 +62,14 @@ function TimelineItem({ item }: TimelineItemProps) {
           width: `${item.trigger * 100}%`,
         }}
       />
-      <Typography style={{ whiteSpace: 'nowrap' }}>{item.index}</Typography>
+      <Typography
+        className={classes.indexText}
+        style={{
+          fontSize: `${fontSize}rem`,
+        }}
+      >
+        {item.index}
+      </Typography>
     </div>
   );
 }
@@ -77,6 +94,10 @@ const useTimelineItemStyles = makeStyles(() =>
       height: '0.25rem',
       backgroundColor: 'black',
       borderRadius: '0 2px 2px 0',
+    },
+    indexText: {
+      whiteSpace: 'nowrap',
+      lineHeight: '1.2rem',
     },
   }),
 );
