@@ -10,7 +10,7 @@
     "defaultFooterText": ""
   },
   "countryAdmin0Id": 170,
-  "alertFormActive": false,
+  "alertFormActive": true,
   "hidePanel": false,
   "enableNavigationDropdown": true,
   "icons": {
@@ -285,11 +285,7 @@
           ]
         }
       ],
-      "dry_periods": [
-        "days_dry",
-        "streak_dry_days",
-        "cdi"
-      ],
+      "dry_periods": ["days_dry", "streak_dry_days", "cdi"],
       "extreme_rain_events": [
         {
           "group_title": "Rainfall categories:",
