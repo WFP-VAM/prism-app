@@ -31,7 +31,7 @@ import AnticipatoryActionPanel from './AnticipatoryActionPanel';
 import LayersPanel from './layersPanel';
 import { areTablesAvailable, isAnticipatoryActionAvailable } from './utils';
 import { toggleRemoveLayer } from './layersPanel/MenuItem/MenuSwitch/SwitchItem/utils';
-import AlertsPanel from '../AlertsPanel';
+import AlertsPanel from './AlertsPanel';
 
 interface TabPanelProps {
   children?: React.ReactNode;

@@ -259,7 +259,8 @@ function AlertsPanel() {
             !!thresholdError ||
             !emailValid ||
             alertWaiting ||
-            regionsList.length === 0
+            regionsList.length === 0 ||
+            (aboveThreshold === '' && belowThreshold === '')
           }
         >
           <Typography style={{ color: 'white' }} variant="body2">
