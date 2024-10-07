@@ -14,6 +14,7 @@ const About = memo(() => {
   const dispatch = useDispatch();
   const theme = useTheme();
   const smDown = useMediaQuery(theme.breakpoints.down('sm'));
+  const mdUp = useMediaQuery(theme.breakpoints.up('md'));
 
   const href = aboutPath ? '' : 'https://innovation.wfp.org/project/prism';
 
@@ -48,7 +49,9 @@ const About = memo(() => {
       target="_blank"
       href={href}
       onClick={handler}
-      startIcon={<InfoOutlinedIcon style={{ fontSize: '1.5rem' }} />}
+      startIcon={
+        <InfoOutlinedIcon style={{ fontSize: mdUp ? '1.25rem' : '1.5rem' }} />
+      }
     >
       {!smDown && (
         <Typography color="secondary" style={{ textTransform: 'none' }}>
