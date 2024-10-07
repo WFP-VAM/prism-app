@@ -114,9 +114,16 @@ export const mapStateSlice = createSlice({
           ? [...layersToAdd, ...filteredLayers]
           : [...filteredLayers, ...layersToAdd];
 
+      // Deduplicate layers
+      const dedupedLayers = newLayers.filter(
+        (layer, index, self) =>
+          index ===
+          self.findIndex(t => t.id === layer.id && t.type === layer.type),
+      );
+
       return {
         ...rest,
-        layers: newLayers,
+        layers: dedupedLayers,
       };
     },
     removeLayerData: (

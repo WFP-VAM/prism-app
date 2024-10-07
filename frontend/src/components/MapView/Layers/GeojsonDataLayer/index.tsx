@@ -41,6 +41,10 @@ const GeojsonDataLayer = memo(({ layer, before }: LayersProps) => {
     dispatch(loadLayerData({ layer }));
   }, [dispatch, layer]);
 
+  if (!data) {
+    return null;
+  }
+
   return (
     <Source data={data} type="geojson">
       <Layer
