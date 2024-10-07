@@ -6,6 +6,7 @@ import {
   BoundaryLayerProps,
   checkRequiredKeys,
   CompositeLayerProps,
+  GeojsonDataLayerProps,
   ImpactLayerProps,
   LayerKey,
   LayersMap,
@@ -127,6 +128,11 @@ export const getLayerByKey = (layerKey: LayerKey): LayerType => {
       return definition;
     case 'anticipatory_action':
       if (!checkRequiredKeys(AnticipatoryActionLayerProps, definition, true)) {
+        return throwInvalidLayer();
+      }
+      return definition;
+    case 'geojson_polygon':
+      if (!checkRequiredKeys(GeojsonDataLayerProps, definition, true)) {
         return throwInvalidLayer();
       }
       return definition;
