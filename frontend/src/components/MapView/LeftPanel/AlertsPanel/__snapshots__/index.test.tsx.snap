@@ -1,0 +1,104 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`renders as expected 1`] = `
+<div>
+  <div
+    class="MuiBox-root MuiBox-root-9 makeStyles-alertFormMenu-1"
+  >
+    <div
+      class="makeStyles-newAlertFormContainer-2"
+    >
+      <div
+        class="makeStyles-alertFormOptions-3"
+      >
+        <mock-layer-dropdown
+          classname="makeStyles-analysisPanelParamText-4"
+          label="Hazard Layer"
+          placeholder="Choose hazard layer"
+          type="wms"
+          value=""
+        />
+      </div>
+      <div
+        class="makeStyles-alertFormOptions-3"
+      >
+        <mock-typography
+          variant="body2"
+        >
+          Threshold
+        </mock-typography>
+        <div
+          class="makeStyles-thresholdInputsContainer-6"
+        >
+          <mock-textfield
+            classname="makeStyles-numberField-7"
+            error="false"
+            helpertext=""
+            id="filled-number"
+            label="Below"
+            type="number"
+            value=""
+          />
+          <mock-textfield
+            classname="makeStyles-numberField-7"
+            id="filled-number"
+            label="Above"
+            type="number"
+            value=""
+          />
+        </div>
+      </div>
+      <div
+        class="makeStyles-alertFormOptions-3"
+      >
+        <mock-typography
+          variant="body2"
+        >
+          Regions
+        </mock-typography>
+        <mock-circularprogress
+          color="inherit"
+          size="24"
+          style="padding: 2px;"
+        />
+      </div>
+      <div
+        class="makeStyles-alertFormOptions-3"
+      >
+        <mock-textfield
+          fullwidth="true"
+          id="alert-name"
+          inputlabelprops="[object Object]"
+          inputprops="[object Object]"
+          label="Alert Name"
+          type="text"
+          value=""
+        />
+      </div>
+      <div
+        class="makeStyles-alertFormOptions-3"
+      >
+        <mock-textfield
+          fullwidth="true"
+          id="email-address"
+          inputlabelprops="[object Object]"
+          inputprops="[object Object]"
+          label="Email Address"
+          type="text"
+        />
+      </div>
+    </div>
+    <mock-button
+      classname="makeStyles-innerCreateAlertButton-8"
+      disabled="true"
+    >
+      <mock-typography
+        style="color: white;"
+        variant="body2"
+      >
+        Create Alert
+      </mock-typography>
+    </mock-button>
+  </div>
+</div>
+`;

@@ -1475,20 +1475,12 @@
       "mode": "season",
       "seasons": [
         {
-          "start": "01-January",
-          "end": "31-March"
+          "start": "01-May",
+          "end": "31-October"
         },
         {
-          "start": "01-April",
-          "end": "30-June"
-        },
-        {
-          "start": "01-July",
-          "end": "30-September"
-        },
-        {
-          "start": "01-October",
-          "end": "31-December"
+          "start": "01-November",
+          "end": "30-April"
         }
       ]
     },
@@ -1686,7 +1678,17 @@
     "period": "seasonal",
     "base_url": "https://hip-service.ovio.org/q_multi_geojson",
     "validity": {
-      "mode": "season"
+      "mode": "season",
+      "seasons": [
+        {
+          "start": "01-May",
+          "end": "31-October"
+        },
+        {
+          "start": "01-November",
+          "end": "30-April"
+        }
+      ]
     },
     "input_layers": [
       {

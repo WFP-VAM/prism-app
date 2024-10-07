@@ -1,4 +1,4 @@
-import React, { memo, useEffect } from 'react';
+import { memo, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   Box,
@@ -24,7 +24,7 @@ import OtherFeatures from './OtherFeatures';
 // eslint-disable-next-line fp/no-mutating-methods
 const displayedBoundaryLayers = getDisplayBoundaryLayers().reverse();
 
-const MapView = memo(({ setIsAlertFormOpen }: MapViewProps) => {
+const MapView = memo(() => {
   const classes = useStyles();
   // Selectors
   const datesLoading = useSelector(areDatesLoading);
@@ -50,7 +50,7 @@ const MapView = memo(({ setIsAlertFormOpen }: MapViewProps) => {
           <CircularProgress size={100} />
         </div>
       )}
-      <MapComponent setIsAlertFormOpen={setIsAlertFormOpen} />
+      <MapComponent />
     </Box>
   );
 });
@@ -75,9 +75,5 @@ const useStyles = makeStyles(() =>
     },
   }),
 );
-
-export interface MapViewProps {
-  setIsAlertFormOpen: React.Dispatch<React.SetStateAction<boolean>>;
-}
 
 export default MapView;
