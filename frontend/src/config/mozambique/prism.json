@@ -10,7 +10,7 @@
     "defaultFooterText": ""
   },
   "countryAdmin0Id": 170,
-  "alertFormActive": true,
+  "alertFormActive": false,
   "hidePanel": false,
   "enableNavigationDropdown": true,
   "icons": {

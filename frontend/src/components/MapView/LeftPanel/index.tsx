@@ -179,7 +179,7 @@ const LeftPanel = memo(() => {
   const renderAlertsPanel = React.useMemo(
     () => (
       <TabPanel value={tabValue} index={Panel.Alerts}>
-        <AlertsPanel />
+        {tabValue === Panel.Alerts && <AlertsPanel />}
       </TabPanel>
     ),
     [tabValue],
