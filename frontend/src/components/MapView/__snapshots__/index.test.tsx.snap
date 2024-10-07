@@ -339,1161 +339,7 @@ exports[`MapView renders as expected 1`] = `
             id="full-width-tabpanel-alerts"
             role="tabpanel"
             style="display: none; flex-grow: 1; height: calc(94vh - 48px); overflow-x: auto;"
-          >
-            <div
-              class="MuiBox-root MuiBox-root-63 makeStyles-alertFormMenu-55"
-            >
-              <div
-                class="makeStyles-newAlertFormContainer-56"
-              >
-                <div
-                  class="makeStyles-alertFormOptions-57"
-                >
-                  <div
-                    class="MuiFormControl-root makeStyles-analysisPanelParamText-58"
-                  >
-                    <mock-textfield
-                      classes="[object Object]"
-                      inputlabelprops="[object Object]"
-                      inputprops="[object Object]"
-                      label="Hazard Layer"
-                      select="true"
-                      value=""
-                      variant="outlined"
-                    >
-                      <mock-menuitem
-                        disabled="true"
-                        value="placeholder"
-                      >
-                        Choose hazard layer
-                      </mock-menuitem>
-                      <li
-                        class="MuiListSubheader-root MuiListSubheader-sticky MuiListSubheader-gutters"
-                      >
-                        <mock-typography
-                          color="primary"
-                          variant="body2"
-                        >
-                          INAM Rainfall Data
-                        </mock-typography>
-                      </li>
-                      <mock-menuitem
-                        value="precip_blended_dekad"
-                      >
-                        Blended rainfall aggregate (10-day)
-                        <mock-tooltip
-                          title="raster"
-                        >
-                          <img
-                            alt="raster"
-                            src="images/icon_raster.svg"
-                            style="margin-left: 0.5em; margin-bottom: -2px; height: 1em;"
-                          />
-                        </mock-tooltip>
-                      </mock-menuitem>
-                      <mock-menuitem
-                        value="precip_blended_1m"
-                      >
-                        Blended rainfall aggregate (1-month)
-                        <mock-tooltip
-                          title="raster"
-                        >
-                          <img
-                            alt="raster"
-                            src="images/icon_raster.svg"
-                            style="margin-left: 0.5em; margin-bottom: -2px; height: 1em;"
-                          />
-                        </mock-tooltip>
-                      </mock-menuitem>
-                      <mock-menuitem
-                        value="precip_blended_2m"
-                      >
-                        Blended rainfall aggregate (2-month)
-                        <mock-tooltip
-                          title="raster"
-                        >
-                          <img
-                            alt="raster"
-                            src="images/icon_raster.svg"
-                            style="margin-left: 0.5em; margin-bottom: -2px; height: 1em;"
-                          />
-                        </mock-tooltip>
-                      </mock-menuitem>
-                      <mock-menuitem
-                        value="precip_blended_3m"
-                      >
-                        Blended rainfall aggregate (3-month)
-                        <mock-tooltip
-                          title="raster"
-                        >
-                          <img
-                            alt="raster"
-                            src="images/icon_raster.svg"
-                            style="margin-left: 0.5em; margin-bottom: -2px; height: 1em;"
-                          />
-                        </mock-tooltip>
-                      </mock-menuitem>
-                      <mock-menuitem
-                        value="precip_blended_4m"
-                      >
-                        Blended rainfall aggregate (4-month)
-                        <mock-tooltip
-                          title="raster"
-                        >
-                          <img
-                            alt="raster"
-                            src="images/icon_raster.svg"
-                            style="margin-left: 0.5em; margin-bottom: -2px; height: 1em;"
-                          />
-                        </mock-tooltip>
-                      </mock-menuitem>
-                      <mock-menuitem
-                        value="precip_blended_5m"
-                      >
-                        Blended rainfall aggregate (5-month)
-                        <mock-tooltip
-                          title="raster"
-                        >
-                          <img
-                            alt="raster"
-                            src="images/icon_raster.svg"
-                            style="margin-left: 0.5em; margin-bottom: -2px; height: 1em;"
-                          />
-                        </mock-tooltip>
-                      </mock-menuitem>
-                      <mock-menuitem
-                        value="precip_blended_6m"
-                      >
-                        Blended rainfall aggregate (6-month)
-                        <mock-tooltip
-                          title="raster"
-                        >
-                          <img
-                            alt="raster"
-                            src="images/icon_raster.svg"
-                            style="margin-left: 0.5em; margin-bottom: -2px; height: 1em;"
-                          />
-                        </mock-tooltip>
-                      </mock-menuitem>
-                      <mock-menuitem
-                        value="precip_blended_7m"
-                      >
-                        Blended rainfall aggregate (7-month)
-                        <mock-tooltip
-                          title="raster"
-                        >
-                          <img
-                            alt="raster"
-                            src="images/icon_raster.svg"
-                            style="margin-left: 0.5em; margin-bottom: -2px; height: 1em;"
-                          />
-                        </mock-tooltip>
-                      </mock-menuitem>
-                      <mock-menuitem
-                        value="precip_blended_8m"
-                      >
-                        Blended rainfall aggregate (8-month)
-                        <mock-tooltip
-                          title="raster"
-                        >
-                          <img
-                            alt="raster"
-                            src="images/icon_raster.svg"
-                            style="margin-left: 0.5em; margin-bottom: -2px; height: 1em;"
-                          />
-                        </mock-tooltip>
-                      </mock-menuitem>
-                      <mock-menuitem
-                        value="precip_blended_9m"
-                      >
-                        Blended rainfall aggregate (9-month)
-                        <mock-tooltip
-                          title="raster"
-                        >
-                          <img
-                            alt="raster"
-                            src="images/icon_raster.svg"
-                            style="margin-left: 0.5em; margin-bottom: -2px; height: 1em;"
-                          />
-                        </mock-tooltip>
-                      </mock-menuitem>
-                      <mock-menuitem
-                        value="precip_blended_1y"
-                      >
-                        Blended rainfall aggregate (1-year)
-                        <mock-tooltip
-                          title="raster"
-                        >
-                          <img
-                            alt="raster"
-                            src="images/icon_raster.svg"
-                            style="margin-left: 0.5em; margin-bottom: -2px; height: 1em;"
-                          />
-                        </mock-tooltip>
-                      </mock-menuitem>
-                      <mock-menuitem
-                        value="precip_blended_dekad_anomaly"
-                      >
-                        Blended rainfall anomaly (10-day)
-                        <mock-tooltip
-                          title="raster"
-                        >
-                          <img
-                            alt="raster"
-                            src="images/icon_raster.svg"
-                            style="margin-left: 0.5em; margin-bottom: -2px; height: 1em;"
-                          />
-                        </mock-tooltip>
-                      </mock-menuitem>
-                      <mock-menuitem
-                        value="precip_blended_anomaly_1m"
-                      >
-                        Blended rainfall anomaly (1-month)
-                        <mock-tooltip
-                          title="raster"
-                        >
-                          <img
-                            alt="raster"
-                            src="images/icon_raster.svg"
-                            style="margin-left: 0.5em; margin-bottom: -2px; height: 1em;"
-                          />
-                        </mock-tooltip>
-                      </mock-menuitem>
-                      <mock-menuitem
-                        value="precip_blended_anomaly_2m"
-                      >
-                        Blended rainfall anomaly (2-month)
-                        <mock-tooltip
-                          title="raster"
-                        >
-                          <img
-                            alt="raster"
-                            src="images/icon_raster.svg"
-                            style="margin-left: 0.5em; margin-bottom: -2px; height: 1em;"
-                          />
-                        </mock-tooltip>
-                      </mock-menuitem>
-                      <mock-menuitem
-                        value="precip_blended_anomaly_3m"
-                      >
-                        Blended rainfall anomaly (3-month)
-                        <mock-tooltip
-                          title="raster"
-                        >
-                          <img
-                            alt="raster"
-                            src="images/icon_raster.svg"
-                            style="margin-left: 0.5em; margin-bottom: -2px; height: 1em;"
-                          />
-                        </mock-tooltip>
-                      </mock-menuitem>
-                      <mock-menuitem
-                        value="precip_blended_anomaly_4m"
-                      >
-                        Blended rainfall anomaly (4-month)
-                        <mock-tooltip
-                          title="raster"
-                        >
-                          <img
-                            alt="raster"
-                            src="images/icon_raster.svg"
-                            style="margin-left: 0.5em; margin-bottom: -2px; height: 1em;"
-                          />
-                        </mock-tooltip>
-                      </mock-menuitem>
-                      <mock-menuitem
-                        value="precip_blended_anomaly_5m"
-                      >
-                        Blended rainfall anomaly (5-month)
-                        <mock-tooltip
-                          title="raster"
-                        >
-                          <img
-                            alt="raster"
-                            src="images/icon_raster.svg"
-                            style="margin-left: 0.5em; margin-bottom: -2px; height: 1em;"
-                          />
-                        </mock-tooltip>
-                      </mock-menuitem>
-                      <mock-menuitem
-                        value="precip_blended_anomaly_6m"
-                      >
-                        Blended rainfall anomaly (6-month)
-                        <mock-tooltip
-                          title="raster"
-                        >
-                          <img
-                            alt="raster"
-                            src="images/icon_raster.svg"
-                            style="margin-left: 0.5em; margin-bottom: -2px; height: 1em;"
-                          />
-                        </mock-tooltip>
-                      </mock-menuitem>
-                      <mock-menuitem
-                        value="precip_blended_anomaly_7m"
-                      >
-                        Blended rainfall anomaly (7-month)
-                        <mock-tooltip
-                          title="raster"
-                        >
-                          <img
-                            alt="raster"
-                            src="images/icon_raster.svg"
-                            style="margin-left: 0.5em; margin-bottom: -2px; height: 1em;"
-                          />
-                        </mock-tooltip>
-                      </mock-menuitem>
-                      <mock-menuitem
-                        value="precip_blended_anomaly_8m"
-                      >
-                        Blended rainfall anomaly (8-month)
-                        <mock-tooltip
-                          title="raster"
-                        >
-                          <img
-                            alt="raster"
-                            src="images/icon_raster.svg"
-                            style="margin-left: 0.5em; margin-bottom: -2px; height: 1em;"
-                          />
-                        </mock-tooltip>
-                      </mock-menuitem>
-                      <mock-menuitem
-                        value="precip_blended_anomaly_9m"
-                      >
-                        Blended rainfall anomaly (9-month)
-                        <mock-tooltip
-                          title="raster"
-                        >
-                          <img
-                            alt="raster"
-                            src="images/icon_raster.svg"
-                            style="margin-left: 0.5em; margin-bottom: -2px; height: 1em;"
-                          />
-                        </mock-tooltip>
-                      </mock-menuitem>
-                      <mock-menuitem
-                        value="precip_blended_anomaly_1y"
-                      >
-                        Blended rainfall anomaly (1-year)
-                        <mock-tooltip
-                          title="raster"
-                        >
-                          <img
-                            alt="raster"
-                            src="images/icon_raster.svg"
-                            style="margin-left: 0.5em; margin-bottom: -2px; height: 1em;"
-                          />
-                        </mock-tooltip>
-                      </mock-menuitem>
-                      <mock-menuitem
-                        value="spi_blended_1m"
-                      >
-                        INAM SPI - 1-month
-                        <mock-tooltip
-                          title="raster"
-                        >
-                          <img
-                            alt="raster"
-                            src="images/icon_raster.svg"
-                            style="margin-left: 0.5em; margin-bottom: -2px; height: 1em;"
-                          />
-                        </mock-tooltip>
-                      </mock-menuitem>
-                      <mock-menuitem
-                        value="spi_blended_2m"
-                      >
-                        INAM SPI - 2-month
-                        <mock-tooltip
-                          title="raster"
-                        >
-                          <img
-                            alt="raster"
-                            src="images/icon_raster.svg"
-                            style="margin-left: 0.5em; margin-bottom: -2px; height: 1em;"
-                          />
-                        </mock-tooltip>
-                      </mock-menuitem>
-                      <mock-menuitem
-                        value="spi_blended_3m"
-                      >
-                        INAM SPI - 3-month
-                        <mock-tooltip
-                          title="raster"
-                        >
-                          <img
-                            alt="raster"
-                            src="images/icon_raster.svg"
-                            style="margin-left: 0.5em; margin-bottom: -2px; height: 1em;"
-                          />
-                        </mock-tooltip>
-                      </mock-menuitem>
-                      <mock-menuitem
-                        value="spi_blended_6m"
-                      >
-                        INAM SPI - 6-month
-                        <mock-tooltip
-                          title="raster"
-                        >
-                          <img
-                            alt="raster"
-                            src="images/icon_raster.svg"
-                            style="margin-left: 0.5em; margin-bottom: -2px; height: 1em;"
-                          />
-                        </mock-tooltip>
-                      </mock-menuitem>
-                      <mock-menuitem
-                        value="spi_blended_9m"
-                      >
-                        INAM SPI - 9-month
-                        <mock-tooltip
-                          title="raster"
-                        >
-                          <img
-                            alt="raster"
-                            src="images/icon_raster.svg"
-                            style="margin-left: 0.5em; margin-bottom: -2px; height: 1em;"
-                          />
-                        </mock-tooltip>
-                      </mock-menuitem>
-                      <mock-menuitem
-                        value="spi_blended_1y"
-                      >
-                        INAM SPI - 1-year
-                        <mock-tooltip
-                          title="raster"
-                        >
-                          <img
-                            alt="raster"
-                            src="images/icon_raster.svg"
-                            style="margin-left: 0.5em; margin-bottom: -2px; height: 1em;"
-                          />
-                        </mock-tooltip>
-                      </mock-menuitem>
-                      <mock-menuitem
-                        value="spi_blended_2y"
-                      >
-                        INAM SPI - 2-year
-                        <mock-tooltip
-                          title="raster"
-                        >
-                          <img
-                            alt="raster"
-                            src="images/icon_raster.svg"
-                            style="margin-left: 0.5em; margin-bottom: -2px; height: 1em;"
-                          />
-                        </mock-tooltip>
-                      </mock-menuitem>
-                      <mock-menuitem
-                        value="spi_blended_3y"
-                      >
-                        INAM SPI - 3-year
-                        <mock-tooltip
-                          title="raster"
-                        >
-                          <img
-                            alt="raster"
-                            src="images/icon_raster.svg"
-                            style="margin-left: 0.5em; margin-bottom: -2px; height: 1em;"
-                          />
-                        </mock-tooltip>
-                      </mock-menuitem>
-                      <mock-menuitem
-                        value="spi_blended_5y"
-                      >
-                        INAM SPI - 5-year
-                        <mock-tooltip
-                          title="raster"
-                        >
-                          <img
-                            alt="raster"
-                            src="images/icon_raster.svg"
-                            style="margin-left: 0.5em; margin-bottom: -2px; height: 1em;"
-                          />
-                        </mock-tooltip>
-                      </mock-menuitem>
-                      <li
-                        class="MuiListSubheader-root MuiListSubheader-sticky MuiListSubheader-gutters"
-                      >
-                        <mock-typography
-                          color="primary"
-                          variant="body2"
-                        >
-                          Forecasts
-                        </mock-typography>
-                      </li>
-                      <mock-menuitem
-                        value="daily_rainfall_forecast"
-                      >
-                        Rolling daily rainfall forecast
-                        <mock-tooltip
-                          title="raster"
-                        >
-                          <img
-                            alt="raster"
-                            src="images/icon_raster.svg"
-                            style="margin-left: 0.5em; margin-bottom: -2px; height: 1em;"
-                          />
-                        </mock-tooltip>
-                      </mock-menuitem>
-                      <mock-menuitem
-                        value="dekad_rainfall_forecast"
-                      >
-                        10-day rainfall forecast
-                        <mock-tooltip
-                          title="raster"
-                        >
-                          <img
-                            alt="raster"
-                            src="images/icon_raster.svg"
-                            style="margin-left: 0.5em; margin-bottom: -2px; height: 1em;"
-                          />
-                        </mock-tooltip>
-                      </mock-menuitem>
-                      <mock-menuitem
-                        value="dekad_rainfall_anomaly_forecast"
-                      >
-                        10-day rainfall forecast anomaly
-                        <mock-tooltip
-                          title="raster"
-                        >
-                          <img
-                            alt="raster"
-                            src="images/icon_raster.svg"
-                            style="margin-left: 0.5em; margin-bottom: -2px; height: 1em;"
-                          />
-                        </mock-tooltip>
-                      </mock-menuitem>
-                      <li
-                        class="MuiListSubheader-root MuiListSubheader-sticky MuiListSubheader-gutters"
-                      >
-                        <mock-typography
-                          color="primary"
-                          variant="body2"
-                        >
-                          Global Rainfall Products
-                        </mock-typography>
-                      </li>
-                      <mock-menuitem
-                        value="rainfall_daily"
-                      >
-                        CHIRPS daily rainfall estimate (mm)
-                        <mock-tooltip
-                          title="raster"
-                        >
-                          <img
-                            alt="raster"
-                            src="images/icon_raster.svg"
-                            style="margin-left: 0.5em; margin-bottom: -2px; height: 1em;"
-                          />
-                        </mock-tooltip>
-                      </mock-menuitem>
-                      <mock-menuitem
-                        value="rainfall_dekad"
-                      >
-                        CHIRPS 10-day rainfall estimate (mm)
-                        <mock-tooltip
-                          title="raster"
-                        >
-                          <img
-                            alt="raster"
-                            src="images/icon_raster.svg"
-                            style="margin-left: 0.5em; margin-bottom: -2px; height: 1em;"
-                          />
-                        </mock-tooltip>
-                      </mock-menuitem>
-                      <mock-menuitem
-                        value="rainfall_agg_1month"
-                      >
-                        CHIRPS 1-month rainfall aggregate
-                        <mock-tooltip
-                          title="raster"
-                        >
-                          <img
-                            alt="raster"
-                            src="images/icon_raster.svg"
-                            style="margin-left: 0.5em; margin-bottom: -2px; height: 1em;"
-                          />
-                        </mock-tooltip>
-                      </mock-menuitem>
-                      <mock-menuitem
-                        value="rainfall_agg_3month"
-                      >
-                        CHIRPS 3-month rainfall aggregate (mm)
-                        <mock-tooltip
-                          title="raster"
-                        >
-                          <img
-                            alt="raster"
-                            src="images/icon_raster.svg"
-                            style="margin-left: 0.5em; margin-bottom: -2px; height: 1em;"
-                          />
-                        </mock-tooltip>
-                      </mock-menuitem>
-                      <mock-menuitem
-                        value="rainfall_agg_6month"
-                      >
-                        CHIRPS 6-month rainfall aggregate (mm)
-                        <mock-tooltip
-                          title="raster"
-                        >
-                          <img
-                            alt="raster"
-                            src="images/icon_raster.svg"
-                            style="margin-left: 0.5em; margin-bottom: -2px; height: 1em;"
-                          />
-                        </mock-tooltip>
-                      </mock-menuitem>
-                      <mock-menuitem
-                        value="rainfall_agg_9month"
-                      >
-                        CHIRPS 9-month rainfall aggregate (mm)
-                        <mock-tooltip
-                          title="raster"
-                        >
-                          <img
-                            alt="raster"
-                            src="images/icon_raster.svg"
-                            style="margin-left: 0.5em; margin-bottom: -2px; height: 1em;"
-                          />
-                        </mock-tooltip>
-                      </mock-menuitem>
-                      <mock-menuitem
-                        value="rainfall_agg_1year"
-                      >
-                        CHIRPS 1-year rainfall aggregate (mm)
-                        <mock-tooltip
-                          title="raster"
-                        >
-                          <img
-                            alt="raster"
-                            src="images/icon_raster.svg"
-                            style="margin-left: 0.5em; margin-bottom: -2px; height: 1em;"
-                          />
-                        </mock-tooltip>
-                      </mock-menuitem>
-                      <mock-menuitem
-                        value="rain_anomaly_dekad"
-                      >
-                        CHIRPS 10-day rainfall anomaly
-                        <mock-tooltip
-                          title="raster"
-                        >
-                          <img
-                            alt="raster"
-                            src="images/icon_raster.svg"
-                            style="margin-left: 0.5em; margin-bottom: -2px; height: 1em;"
-                          />
-                        </mock-tooltip>
-                      </mock-menuitem>
-                      <mock-menuitem
-                        value="rain_anomaly_1month"
-                      >
-                        CHIRPS 1-month rainfall anomaly
-                        <mock-tooltip
-                          title="raster"
-                        >
-                          <img
-                            alt="raster"
-                            src="images/icon_raster.svg"
-                            style="margin-left: 0.5em; margin-bottom: -2px; height: 1em;"
-                          />
-                        </mock-tooltip>
-                      </mock-menuitem>
-                      <mock-menuitem
-                        value="rain_anomaly_3month"
-                      >
-                        CHIRPS 3-month rainfall anomaly
-                        <mock-tooltip
-                          title="raster"
-                        >
-                          <img
-                            alt="raster"
-                            src="images/icon_raster.svg"
-                            style="margin-left: 0.5em; margin-bottom: -2px; height: 1em;"
-                          />
-                        </mock-tooltip>
-                      </mock-menuitem>
-                      <mock-menuitem
-                        value="rain_anomaly_6month"
-                      >
-                        CHIRPS 6-month rainfall anomaly
-                        <mock-tooltip
-                          title="raster"
-                        >
-                          <img
-                            alt="raster"
-                            src="images/icon_raster.svg"
-                            style="margin-left: 0.5em; margin-bottom: -2px; height: 1em;"
-                          />
-                        </mock-tooltip>
-                      </mock-menuitem>
-                      <mock-menuitem
-                        value="rain_anomaly_9month"
-                      >
-                        CHIRPS 9-month rainfall anomaly
-                        <mock-tooltip
-                          title="raster"
-                        >
-                          <img
-                            alt="raster"
-                            src="images/icon_raster.svg"
-                            style="margin-left: 0.5em; margin-bottom: -2px; height: 1em;"
-                          />
-                        </mock-tooltip>
-                      </mock-menuitem>
-                      <mock-menuitem
-                        value="rain_anomaly_1year"
-                      >
-                        CHIRPS 1-year rainfall anomaly
-                        <mock-tooltip
-                          title="raster"
-                        >
-                          <img
-                            alt="raster"
-                            src="images/icon_raster.svg"
-                            style="margin-left: 0.5em; margin-bottom: -2px; height: 1em;"
-                          />
-                        </mock-tooltip>
-                      </mock-menuitem>
-                      <mock-menuitem
-                        value="spi_1m"
-                      >
-                        SPI - 1-month
-                        <mock-tooltip
-                          title="raster"
-                        >
-                          <img
-                            alt="raster"
-                            src="images/icon_raster.svg"
-                            style="margin-left: 0.5em; margin-bottom: -2px; height: 1em;"
-                          />
-                        </mock-tooltip>
-                      </mock-menuitem>
-                      <mock-menuitem
-                        value="spi_3m"
-                      >
-                        SPI - 3-month
-                        <mock-tooltip
-                          title="raster"
-                        >
-                          <img
-                            alt="raster"
-                            src="images/icon_raster.svg"
-                            style="margin-left: 0.5em; margin-bottom: -2px; height: 1em;"
-                          />
-                        </mock-tooltip>
-                      </mock-menuitem>
-                      <mock-menuitem
-                        value="spi_6m"
-                      >
-                        SPI - 6-month
-                        <mock-tooltip
-                          title="raster"
-                        >
-                          <img
-                            alt="raster"
-                            src="images/icon_raster.svg"
-                            style="margin-left: 0.5em; margin-bottom: -2px; height: 1em;"
-                          />
-                        </mock-tooltip>
-                      </mock-menuitem>
-                      <mock-menuitem
-                        value="spi_9m"
-                      >
-                        SPI - 9-month
-                        <mock-tooltip
-                          title="raster"
-                        >
-                          <img
-                            alt="raster"
-                            src="images/icon_raster.svg"
-                            style="margin-left: 0.5em; margin-bottom: -2px; height: 1em;"
-                          />
-                        </mock-tooltip>
-                      </mock-menuitem>
-                      <mock-menuitem
-                        value="spi_1y"
-                      >
-                        SPI - 1-year
-                        <mock-tooltip
-                          title="raster"
-                        >
-                          <img
-                            alt="raster"
-                            src="images/icon_raster.svg"
-                            style="margin-left: 0.5em; margin-bottom: -2px; height: 1em;"
-                          />
-                        </mock-tooltip>
-                      </mock-menuitem>
-                      <li
-                        class="MuiListSubheader-root MuiListSubheader-sticky MuiListSubheader-gutters"
-                      >
-                        <mock-typography
-                          color="primary"
-                          variant="body2"
-                        >
-                          Dry Periods
-                        </mock-typography>
-                      </li>
-                      <mock-menuitem
-                        value="days_dry"
-                      >
-                        Days since last rain
-                        <mock-tooltip
-                          title="raster"
-                        >
-                          <img
-                            alt="raster"
-                            src="images/icon_raster.svg"
-                            style="margin-left: 0.5em; margin-bottom: -2px; height: 1em;"
-                          />
-                        </mock-tooltip>
-                      </mock-menuitem>
-                      <mock-menuitem
-                        value="streak_dry_days"
-                      >
-                        Longest dry spell
-                        <mock-tooltip
-                          title="raster"
-                        >
-                          <img
-                            alt="raster"
-                            src="images/icon_raster.svg"
-                            style="margin-left: 0.5em; margin-bottom: -2px; height: 1em;"
-                          />
-                        </mock-tooltip>
-                      </mock-menuitem>
-                      <li
-                        class="MuiListSubheader-root MuiListSubheader-sticky MuiListSubheader-gutters"
-                      >
-                        <mock-typography
-                          color="primary"
-                          variant="body2"
-                        >
-                          Extreme Rain Events
-                        </mock-typography>
-                      </li>
-                      <mock-menuitem
-                        value="days_heavy_rain"
-                      >
-                        Number of days with heavy rainfall in the last 30 days
-                        <mock-tooltip
-                          title="raster"
-                        >
-                          <img
-                            alt="raster"
-                            src="images/icon_raster.svg"
-                            style="margin-left: 0.5em; margin-bottom: -2px; height: 1em;"
-                          />
-                        </mock-tooltip>
-                      </mock-menuitem>
-                      <mock-menuitem
-                        value="days_intense_rain"
-                      >
-                        Number of days with intense rainfall in the last 30 days
-                        <mock-tooltip
-                          title="raster"
-                        >
-                          <img
-                            alt="raster"
-                            src="images/icon_raster.svg"
-                            style="margin-left: 0.5em; margin-bottom: -2px; height: 1em;"
-                          />
-                        </mock-tooltip>
-                      </mock-menuitem>
-                      <mock-menuitem
-                        value="days_extreme_rain"
-                      >
-                        Number of days with extreme rainfall in the last 30 days
-                        <mock-tooltip
-                          title="raster"
-                        >
-                          <img
-                            alt="raster"
-                            src="images/icon_raster.svg"
-                            style="margin-left: 0.5em; margin-bottom: -2px; height: 1em;"
-                          />
-                        </mock-tooltip>
-                      </mock-menuitem>
-                      <mock-menuitem
-                        value="streak_heavy_rain"
-                      >
-                        Longest consecutive heavy rainfall days
-                        <mock-tooltip
-                          title="raster"
-                        >
-                          <img
-                            alt="raster"
-                            src="images/icon_raster.svg"
-                            style="margin-left: 0.5em; margin-bottom: -2px; height: 1em;"
-                          />
-                        </mock-tooltip>
-                      </mock-menuitem>
-                      <mock-menuitem
-                        value="streak_intense_rain"
-                      >
-                        Longest consecutive intense rainfall days
-                        <mock-tooltip
-                          title="raster"
-                        >
-                          <img
-                            alt="raster"
-                            src="images/icon_raster.svg"
-                            style="margin-left: 0.5em; margin-bottom: -2px; height: 1em;"
-                          />
-                        </mock-tooltip>
-                      </mock-menuitem>
-                      <mock-menuitem
-                        value="streak_extreme_rain"
-                      >
-                        Longest consecutive extreme rainfall days
-                        <mock-tooltip
-                          title="raster"
-                        >
-                          <img
-                            alt="raster"
-                            src="images/icon_raster.svg"
-                            style="margin-left: 0.5em; margin-bottom: -2px; height: 1em;"
-                          />
-                        </mock-tooltip>
-                      </mock-menuitem>
-                      <li
-                        class="MuiListSubheader-root MuiListSubheader-sticky MuiListSubheader-gutters"
-                      >
-                        <mock-typography
-                          color="primary"
-                          variant="body2"
-                        >
-                          Vegetation Conditions
-                        </mock-typography>
-                      </li>
-                      <mock-menuitem
-                        value="ndvi_dekad"
-                      >
-                        10-day NDVI (MODIS)
-                        <mock-tooltip
-                          title="raster"
-                        >
-                          <img
-                            alt="raster"
-                            src="images/icon_raster.svg"
-                            style="margin-left: 0.5em; margin-bottom: -2px; height: 1em;"
-                          />
-                        </mock-tooltip>
-                      </mock-menuitem>
-                      <mock-menuitem
-                        value="ndvi_dekad_anomaly"
-                      >
-                        10-day NDVI anomaly (MODIS)
-                        <mock-tooltip
-                          title="raster"
-                        >
-                          <img
-                            alt="raster"
-                            src="images/icon_raster.svg"
-                            style="margin-left: 0.5em; margin-bottom: -2px; height: 1em;"
-                          />
-                        </mock-tooltip>
-                      </mock-menuitem>
-                      <li
-                        class="MuiListSubheader-root MuiListSubheader-sticky MuiListSubheader-gutters"
-                      >
-                        <mock-typography
-                          color="primary"
-                          variant="body2"
-                        >
-                          INAM Air Temperature
-                        </mock-typography>
-                      </li>
-                      <mock-menuitem
-                        value="lst_daytime_blended"
-                      >
-                        INAM mean maximum air temperature (10-day)
-                        <mock-tooltip
-                          title="raster"
-                        >
-                          <img
-                            alt="raster"
-                            src="images/icon_raster.svg"
-                            style="margin-left: 0.5em; margin-bottom: -2px; height: 1em;"
-                          />
-                        </mock-tooltip>
-                      </mock-menuitem>
-                      <mock-menuitem
-                        value="lst_day_anomaly_blended"
-                      >
-                        INAM mean maximum air temperature anomaly (10-day)
-                        <mock-tooltip
-                          title="raster"
-                        >
-                          <img
-                            alt="raster"
-                            src="images/icon_raster.svg"
-                            style="margin-left: 0.5em; margin-bottom: -2px; height: 1em;"
-                          />
-                        </mock-tooltip>
-                      </mock-menuitem>
-                      <li
-                        class="MuiListSubheader-root MuiListSubheader-sticky MuiListSubheader-gutters"
-                      >
-                        <mock-typography
-                          color="primary"
-                          variant="body2"
-                        >
-                          Land Surface Temperature
-                        </mock-typography>
-                      </li>
-                      <mock-menuitem
-                        value="lst_daytime"
-                      >
-                        Daytime Land Surface Temperature - 10-day (MODIS)
-                        <mock-tooltip
-                          title="raster"
-                        >
-                          <img
-                            alt="raster"
-                            src="images/icon_raster.svg"
-                            style="margin-left: 0.5em; margin-bottom: -2px; height: 1em;"
-                          />
-                        </mock-tooltip>
-                      </mock-menuitem>
-                      <mock-menuitem
-                        value="lst_day_anomaly"
-                      >
-                        Land Surface Temperature - 10-day Anomaly (MODIS)
-                        <mock-tooltip
-                          title="raster"
-                        >
-                          <img
-                            alt="raster"
-                            src="images/icon_raster.svg"
-                            style="margin-left: 0.5em; margin-bottom: -2px; height: 1em;"
-                          />
-                        </mock-tooltip>
-                      </mock-menuitem>
-                      <mock-menuitem
-                        value="lst_amplitude"
-                      >
-                        Land Surface Temperature - 10-day Amplitude (MODIS)
-                        <mock-tooltip
-                          title="raster"
-                        >
-                          <img
-                            alt="raster"
-                            src="images/icon_raster.svg"
-                            style="margin-left: 0.5em; margin-bottom: -2px; height: 1em;"
-                          />
-                        </mock-tooltip>
-                      </mock-menuitem>
-                      <li
-                        class="MuiListSubheader-root MuiListSubheader-sticky MuiListSubheader-gutters"
-                      >
-                        <mock-typography
-                          color="primary"
-                          variant="body2"
-                        >
-                          Tropical Storms
-                        </mock-typography>
-                      </li>
-                      <mock-menuitem
-                        value="adamts_buffers"
-                      >
-                        Tropical Storms - Wind buffers
-                        <mock-tooltip
-                          title="polygon"
-                        >
-                          <img
-                            alt="polygon"
-                            src="images/icon_polygon.svg"
-                            style="margin-left: 0.5em; margin-bottom: -2px; height: 1em;"
-                          />
-                        </mock-tooltip>
-                      </mock-menuitem>
-                    </mock-textfield>
-                  </div>
-                </div>
-                <div
-                  class="makeStyles-alertFormOptions-57"
-                >
-                  <mock-typography
-                    variant="body2"
-                  >
-                    Threshold
-                  </mock-typography>
-                  <div
-                    class="makeStyles-thresholdInputsContainer-60"
-                  >
-                    <mock-textfield
-                      classname="makeStyles-numberField-61"
-                      error="false"
-                      helpertext=""
-                      id="filled-number"
-                      label="Below"
-                      type="number"
-                      value=""
-                    />
-                    <mock-textfield
-                      classname="makeStyles-numberField-61"
-                      id="filled-number"
-                      label="Above"
-                      type="number"
-                      value=""
-                    />
-                  </div>
-                </div>
-                <div
-                  class="makeStyles-alertFormOptions-57"
-                >
-                  <mock-typography
-                    variant="body2"
-                  >
-                    Regions
-                  </mock-typography>
-                  <mock-circularprogress
-                    color="inherit"
-                    size="24"
-                    style="padding: 2px;"
-                  />
-                </div>
-                <div
-                  class="makeStyles-alertFormOptions-57"
-                >
-                  <mock-textfield
-                    fullwidth="true"
-                    id="alert-name"
-                    inputlabelprops="[object Object]"
-                    inputprops="[object Object]"
-                    label="Alert Name"
-                    type="text"
-                    value=""
-                  />
-                </div>
-                <div
-                  class="makeStyles-alertFormOptions-57"
-                >
-                  <mock-textfield
-                    fullwidth="true"
-                    id="email-address"
-                    inputlabelprops="[object Object]"
-                    inputprops="[object Object]"
-                    label="Email Address"
-                    type="text"
-                  />
-                </div>
-              </div>
-              <mock-button
-                classname="makeStyles-innerCreateAlertButton-62"
-                disabled="true"
-              >
-                <mock-typography
-                  style="color: white;"
-                  variant="body2"
-                >
-                  Create Alert
-                </mock-typography>
-              </mock-button>
-            </div>
-          </div>
+          />
           <div
             aria-labelledby="full-width-tab-anticipatory_action"
             id="full-width-tabpanel-anticipatory_action"
@@ -1501,7 +347,7 @@ exports[`MapView renders as expected 1`] = `
             style="display: none; flex-grow: 1; height: calc(94vh - 48px); overflow-x: auto;"
           >
             <div
-              class="makeStyles-anticipatoryActionPanel-68"
+              class="makeStyles-anticipatoryActionPanel-55"
               style="width: 425px;"
             >
               <mock-dialog
@@ -1509,7 +355,7 @@ exports[`MapView renders as expected 1`] = `
               >
                 <mock-dialogtitle>
                   <div
-                    class="makeStyles-titleWrapper-77"
+                    class="makeStyles-titleWrapper-64"
                   >
                     <mock-typography
                       variant="h2"
@@ -1546,10 +392,10 @@ exports[`MapView renders as expected 1`] = `
                   dividers="true"
                 >
                   <div
-                    class="makeStyles-contentWrapper-78"
+                    class="makeStyles-contentWrapper-65"
                   >
                     <div
-                      class="makeStyles-contentItem-79"
+                      class="makeStyles-contentItem-66"
                     >
                       <mock-typography
                         style="font-weight: bold;"
@@ -1566,7 +412,7 @@ exports[`MapView renders as expected 1`] = `
                        
                     </div>
                     <div
-                      class="makeStyles-contentItem-79"
+                      class="makeStyles-contentItem-66"
                     >
                       <mock-typography
                         style="font-weight: bold;"
@@ -1583,7 +429,7 @@ exports[`MapView renders as expected 1`] = `
                        
                     </div>
                     <div
-                      class="makeStyles-contentItem-79"
+                      class="makeStyles-contentItem-66"
                     >
                       <mock-typography
                         style="font-weight: bold;"
@@ -1600,7 +446,7 @@ exports[`MapView renders as expected 1`] = `
                        
                     </div>
                     <div
-                      class="makeStyles-contentItem-79"
+                      class="makeStyles-contentItem-66"
                     >
                       <mock-typography
                         style="font-weight: bold;"
@@ -1617,7 +463,7 @@ exports[`MapView renders as expected 1`] = `
                        
                     </div>
                     <div
-                      class="makeStyles-contentItem-79"
+                      class="makeStyles-contentItem-66"
                     >
                       <mock-typography
                         style="font-weight: bold;"
@@ -1634,7 +480,7 @@ exports[`MapView renders as expected 1`] = `
                        
                     </div>
                     <div
-                      class="makeStyles-contentItem-79"
+                      class="makeStyles-contentItem-66"
                     >
                       <mock-typography
                         style="font-weight: bold;"
@@ -1653,10 +499,10 @@ exports[`MapView renders as expected 1`] = `
                   </div>
                 </mock-dialogcontent>
                 <mock-dialogactions
-                  classname="makeStyles-dialogActionsWrapper-80"
+                  classname="makeStyles-dialogActionsWrapper-67"
                 >
                   <mock-button
-                    classname="makeStyles-dialogButton-81"
+                    classname="makeStyles-dialogButton-68"
                     component="a"
                     href="mailto:anticipatory_action@wfp.org"
                     starticon="[object Object]"
@@ -1668,7 +514,7 @@ exports[`MapView renders as expected 1`] = `
                     </mock-typography>
                   </mock-button>
                   <mock-button
-                    classname="makeStyles-dialogButton-81"
+                    classname="makeStyles-dialogButton-68"
                     starticon="[object Object]"
                     variant="outlined"
                   >
@@ -1679,20 +525,20 @@ exports[`MapView renders as expected 1`] = `
                 </mock-dialogactions>
               </mock-dialog>
               <div
-                class="makeStyles-headerWrapper-69"
+                class="makeStyles-headerWrapper-56"
               >
                 <div
-                  class="makeStyles-titleSelectWrapper-76"
+                  class="makeStyles-titleSelectWrapper-63"
                 >
                   <div
-                    class="makeStyles-titleSelectWrapper-76"
+                    class="makeStyles-titleSelectWrapper-63"
                   >
                     <div
                       class="MuiInputBase-root MuiInput-root"
                     >
                       <div
                         aria-haspopup="listbox"
-                        class="MuiSelect-root Component-root-82 MuiSelect-select MuiSelect-selectMenu MuiInputBase-input MuiInput-input"
+                        class="MuiSelect-root Component-root-69 MuiSelect-select MuiSelect-selectMenu MuiInputBase-input MuiInput-input"
                         role="button"
                         tabindex="0"
                       >
@@ -1742,11 +588,11 @@ exports[`MapView renders as expected 1`] = `
                     class="MuiFormControl-root"
                   >
                     <div
-                      class="MuiFormGroup-root makeStyles-radioButtonGroup-70"
+                      class="MuiFormGroup-root makeStyles-radioButtonGroup-57"
                       role="radiogroup"
                     >
                       <label
-                        class="MuiFormControlLabel-root Component-root-83"
+                        class="MuiFormControlLabel-root Component-root-70"
                         style="background: rgb(241, 241, 241);"
                       >
                         <mock-radio
@@ -1767,7 +613,7 @@ exports[`MapView renders as expected 1`] = `
                         </mock-typography>
                       </label>
                       <label
-                        class="MuiFormControlLabel-root Component-root-83"
+                        class="MuiFormControlLabel-root Component-root-70"
                       >
                         <mock-radio
                           classes="[object Object]"
@@ -1790,7 +636,7 @@ exports[`MapView renders as expected 1`] = `
                         </mock-typography>
                       </label>
                       <label
-                        class="MuiFormControlLabel-root Component-root-83"
+                        class="MuiFormControlLabel-root Component-root-70"
                       >
                         <mock-radio
                           classes="[object Object]"
@@ -1817,7 +663,7 @@ exports[`MapView renders as expected 1`] = `
                 </div>
                 <div>
                   <label
-                    class="MuiFormControlLabel-root Component-root-85 Mui-disabled"
+                    class="MuiFormControlLabel-root Component-root-72 Mui-disabled"
                     id="Severe"
                     style="background: rgb(241, 241, 241);"
                   >
@@ -1839,7 +685,7 @@ exports[`MapView renders as expected 1`] = `
                     </mock-typography>
                   </label>
                   <label
-                    class="MuiFormControlLabel-root Component-root-85 Mui-disabled"
+                    class="MuiFormControlLabel-root Component-root-72 Mui-disabled"
                     id="Moderate"
                     style="background: rgb(241, 241, 241);"
                   >
@@ -1861,7 +707,7 @@ exports[`MapView renders as expected 1`] = `
                     </mock-typography>
                   </label>
                   <label
-                    class="MuiFormControlLabel-root Component-root-85"
+                    class="MuiFormControlLabel-root Component-root-72"
                     id="Mild"
                     style="background: rgb(241, 241, 241);"
                   >
@@ -1888,20 +734,20 @@ exports[`MapView renders as expected 1`] = `
                 </mock-typography>
               </div>
               <div
-                class="makeStyles-tableWrapper-87"
+                class="makeStyles-tableWrapper-74"
               >
                 <div
-                  class="makeStyles-rowWrapper-97"
+                  class="makeStyles-rowWrapper-84"
                   style="height: 1.5rem;"
                 >
                   <div
-                    class="makeStyles-iconCol-98"
+                    class="makeStyles-iconCol-85"
                   />
                   <div
                     style="width: calc(50% - 1.75rem);"
                   >
                     <mock-typography
-                      classname="makeStyles-windowHeader-96"
+                      classname="makeStyles-windowHeader-83"
                       variant="h4"
                     >
                       Window 1
@@ -1911,7 +757,7 @@ exports[`MapView renders as expected 1`] = `
                     style="width: calc(50% - 1.75rem);"
                   >
                     <mock-typography
-                      classname="makeStyles-windowHeader-96"
+                      classname="makeStyles-windowHeader-83"
                       variant="h4"
                     >
                       Window 2
@@ -1919,27 +765,27 @@ exports[`MapView renders as expected 1`] = `
                   </div>
                 </div>
                 <div
-                  class="makeStyles-rowWrapper-97"
+                  class="makeStyles-rowWrapper-84"
                 >
                   <div
-                    class="makeStyles-iconCol-98"
+                    class="makeStyles-iconCol-85"
                   >
                     <div
-                      class="makeStyles-iconWrapper-102"
+                      class="makeStyles-iconWrapper-89"
                       style="background: rgb(131, 31, 0);"
                     >
                       <div
-                        class="makeStyles-centerContainer-103"
+                        class="makeStyles-centerContainer-90"
                         style="border: 1px solid white; color: white;"
                       >
                         <div
-                          class="makeStyles-topTextContainer-104"
+                          class="makeStyles-topTextContainer-91"
                           style="border-bottom: 1px solid white; background: rgb(131, 31, 0);"
                         >
                           S
                         </div>
                         <div
-                          class="makeStyles-bottomTextContainer-105"
+                          class="makeStyles-bottomTextContainer-92"
                           style="background: rgb(131, 31, 0);"
                         >
                           SEV
@@ -1951,13 +797,13 @@ exports[`MapView renders as expected 1`] = `
                     style="width: calc(50% - 1.75rem);"
                   >
                     <div
-                      class="makeStyles-windowBackground-99"
+                      class="makeStyles-windowBackground-86"
                     >
                       <div
-                        class="makeStyles-tagWrapper-100"
+                        class="makeStyles-tagWrapper-87"
                       >
                         <mock-typography
-                          classname="makeStyles-emptyText-101"
+                          classname="makeStyles-emptyText-88"
                         >
                           (
                           no district
@@ -1970,13 +816,13 @@ exports[`MapView renders as expected 1`] = `
                     style="width: calc(50% - 1.75rem);"
                   >
                     <div
-                      class="makeStyles-windowBackground-99"
+                      class="makeStyles-windowBackground-86"
                     >
                       <div
-                        class="makeStyles-tagWrapper-100"
+                        class="makeStyles-tagWrapper-87"
                       >
                         <mock-typography
-                          classname="makeStyles-emptyText-101"
+                          classname="makeStyles-emptyText-88"
                         >
                           (
                           no district
@@ -1987,27 +833,27 @@ exports[`MapView renders as expected 1`] = `
                   </div>
                 </div>
                 <div
-                  class="makeStyles-rowWrapper-97"
+                  class="makeStyles-rowWrapper-84"
                 >
                   <div
-                    class="makeStyles-iconCol-98"
+                    class="makeStyles-iconCol-85"
                   >
                     <div
-                      class="makeStyles-iconWrapper-102"
+                      class="makeStyles-iconWrapper-89"
                       style="background: rgb(230, 55, 1);"
                     >
                       <div
-                        class="makeStyles-centerContainer-103"
+                        class="makeStyles-centerContainer-90"
                         style="border: 1px solid white; color: white;"
                       >
                         <div
-                          class="makeStyles-topTextContainer-104"
+                          class="makeStyles-topTextContainer-91"
                           style="border-bottom: 1px solid white; background: rgb(230, 55, 1);"
                         >
                           R
                         </div>
                         <div
-                          class="makeStyles-bottomTextContainer-105"
+                          class="makeStyles-bottomTextContainer-92"
                           style="background: rgb(230, 55, 1);"
                         >
                           SEV
@@ -2019,13 +865,13 @@ exports[`MapView renders as expected 1`] = `
                     style="width: calc(50% - 1.75rem);"
                   >
                     <div
-                      class="makeStyles-windowBackground-99"
+                      class="makeStyles-windowBackground-86"
                     >
                       <div
-                        class="makeStyles-tagWrapper-100"
+                        class="makeStyles-tagWrapper-87"
                       >
                         <mock-typography
-                          classname="makeStyles-emptyText-101"
+                          classname="makeStyles-emptyText-88"
                         >
                           (
                           no district
@@ -2038,13 +884,13 @@ exports[`MapView renders as expected 1`] = `
                     style="width: calc(50% - 1.75rem);"
                   >
                     <div
-                      class="makeStyles-windowBackground-99"
+                      class="makeStyles-windowBackground-86"
                     >
                       <div
-                        class="makeStyles-tagWrapper-100"
+                        class="makeStyles-tagWrapper-87"
                       >
                         <mock-typography
-                          classname="makeStyles-emptyText-101"
+                          classname="makeStyles-emptyText-88"
                         >
                           (
                           no district
@@ -2055,27 +901,27 @@ exports[`MapView renders as expected 1`] = `
                   </div>
                 </div>
                 <div
-                  class="makeStyles-rowWrapper-97"
+                  class="makeStyles-rowWrapper-84"
                 >
                   <div
-                    class="makeStyles-iconCol-98"
+                    class="makeStyles-iconCol-85"
                   >
                     <div
-                      class="makeStyles-iconWrapper-102"
+                      class="makeStyles-iconWrapper-89"
                       style="background: rgb(255, 137, 52);"
                     >
                       <div
-                        class="makeStyles-centerContainer-103"
+                        class="makeStyles-centerContainer-90"
                         style="border: 1px solid black; color: black;"
                       >
                         <div
-                          class="makeStyles-topTextContainer-104"
+                          class="makeStyles-topTextContainer-91"
                           style="border-bottom: 1px solid black; background: rgb(255, 137, 52);"
                         >
                           S
                         </div>
                         <div
-                          class="makeStyles-bottomTextContainer-105"
+                          class="makeStyles-bottomTextContainer-92"
                           style="background: rgb(255, 137, 52);"
                         >
                           MOD
@@ -2087,13 +933,13 @@ exports[`MapView renders as expected 1`] = `
                     style="width: calc(50% - 1.75rem);"
                   >
                     <div
-                      class="makeStyles-windowBackground-99"
+                      class="makeStyles-windowBackground-86"
                     >
                       <div
-                        class="makeStyles-tagWrapper-100"
+                        class="makeStyles-tagWrapper-87"
                       >
                         <mock-typography
-                          classname="makeStyles-emptyText-101"
+                          classname="makeStyles-emptyText-88"
                         >
                           (
                           no district
@@ -2106,13 +952,13 @@ exports[`MapView renders as expected 1`] = `
                     style="width: calc(50% - 1.75rem);"
                   >
                     <div
-                      class="makeStyles-windowBackground-99"
+                      class="makeStyles-windowBackground-86"
                     >
                       <div
-                        class="makeStyles-tagWrapper-100"
+                        class="makeStyles-tagWrapper-87"
                       >
                         <mock-typography
-                          classname="makeStyles-emptyText-101"
+                          classname="makeStyles-emptyText-88"
                         >
                           (
                           no district
@@ -2123,27 +969,27 @@ exports[`MapView renders as expected 1`] = `
                   </div>
                 </div>
                 <div
-                  class="makeStyles-rowWrapper-97"
+                  class="makeStyles-rowWrapper-84"
                 >
                   <div
-                    class="makeStyles-iconCol-98"
+                    class="makeStyles-iconCol-85"
                   >
                     <div
-                      class="makeStyles-iconWrapper-102"
+                      class="makeStyles-iconWrapper-89"
                       style="background: rgb(255, 213, 45);"
                     >
                       <div
-                        class="makeStyles-centerContainer-103"
+                        class="makeStyles-centerContainer-90"
                         style="border: 1px solid black; color: black;"
                       >
                         <div
-                          class="makeStyles-topTextContainer-104"
+                          class="makeStyles-topTextContainer-91"
                           style="border-bottom: 1px solid black; background: rgb(255, 213, 45);"
                         >
                           R
                         </div>
                         <div
-                          class="makeStyles-bottomTextContainer-105"
+                          class="makeStyles-bottomTextContainer-92"
                           style="background: rgb(255, 213, 45);"
                         >
                           MOD
@@ -2155,13 +1001,13 @@ exports[`MapView renders as expected 1`] = `
                     style="width: calc(50% - 1.75rem);"
                   >
                     <div
-                      class="makeStyles-windowBackground-99"
+                      class="makeStyles-windowBackground-86"
                     >
                       <div
-                        class="makeStyles-tagWrapper-100"
+                        class="makeStyles-tagWrapper-87"
                       >
                         <mock-typography
-                          classname="makeStyles-emptyText-101"
+                          classname="makeStyles-emptyText-88"
                         >
                           (
                           no district
@@ -2174,13 +1020,13 @@ exports[`MapView renders as expected 1`] = `
                     style="width: calc(50% - 1.75rem);"
                   >
                     <div
-                      class="makeStyles-windowBackground-99"
+                      class="makeStyles-windowBackground-86"
                     >
                       <div
-                        class="makeStyles-tagWrapper-100"
+                        class="makeStyles-tagWrapper-87"
                       >
                         <mock-typography
-                          classname="makeStyles-emptyText-101"
+                          classname="makeStyles-emptyText-88"
                         >
                           (
                           no district
@@ -2191,27 +1037,27 @@ exports[`MapView renders as expected 1`] = `
                   </div>
                 </div>
                 <div
-                  class="makeStyles-rowWrapper-97"
+                  class="makeStyles-rowWrapper-84"
                 >
                   <div
-                    class="makeStyles-iconCol-98"
+                    class="makeStyles-iconCol-85"
                   >
                     <div
-                      class="makeStyles-iconWrapper-102"
+                      class="makeStyles-iconWrapper-89"
                       style="background: rgb(255, 245, 3);"
                     >
                       <div
-                        class="makeStyles-centerContainer-103"
+                        class="makeStyles-centerContainer-90"
                         style="border: 1px solid black; color: black;"
                       >
                         <div
-                          class="makeStyles-topTextContainer-104"
+                          class="makeStyles-topTextContainer-91"
                           style="border-bottom: 1px solid black; background: rgb(255, 245, 3);"
                         >
                           S
                         </div>
                         <div
-                          class="makeStyles-bottomTextContainer-105"
+                          class="makeStyles-bottomTextContainer-92"
                           style="background: rgb(255, 245, 3);"
                         >
                           MIL
@@ -2223,13 +1069,13 @@ exports[`MapView renders as expected 1`] = `
                     style="width: calc(50% - 1.75rem);"
                   >
                     <div
-                      class="makeStyles-windowBackground-99"
+                      class="makeStyles-windowBackground-86"
                     >
                       <div
-                        class="makeStyles-tagWrapper-100"
+                        class="makeStyles-tagWrapper-87"
                       >
                         <mock-typography
-                          classname="makeStyles-emptyText-101"
+                          classname="makeStyles-emptyText-88"
                         >
                           (
                           no district
@@ -2242,13 +1088,13 @@ exports[`MapView renders as expected 1`] = `
                     style="width: calc(50% - 1.75rem);"
                   >
                     <div
-                      class="makeStyles-windowBackground-99"
+                      class="makeStyles-windowBackground-86"
                     >
                       <div
-                        class="makeStyles-tagWrapper-100"
+                        class="makeStyles-tagWrapper-87"
                       >
                         <mock-typography
-                          classname="makeStyles-emptyText-101"
+                          classname="makeStyles-emptyText-88"
                         >
                           (
                           no district
@@ -2259,27 +1105,27 @@ exports[`MapView renders as expected 1`] = `
                   </div>
                 </div>
                 <div
-                  class="makeStyles-rowWrapper-97"
+                  class="makeStyles-rowWrapper-84"
                 >
                   <div
-                    class="makeStyles-iconCol-98"
+                    class="makeStyles-iconCol-85"
                   >
                     <div
-                      class="makeStyles-iconWrapper-102"
+                      class="makeStyles-iconWrapper-89"
                       style="background: rgb(255, 252, 179);"
                     >
                       <div
-                        class="makeStyles-centerContainer-103"
+                        class="makeStyles-centerContainer-90"
                         style="border: 1px solid black; color: black;"
                       >
                         <div
-                          class="makeStyles-topTextContainer-104"
+                          class="makeStyles-topTextContainer-91"
                           style="border-bottom: 1px solid black; background: rgb(255, 252, 179);"
                         >
                           R
                         </div>
                         <div
-                          class="makeStyles-bottomTextContainer-105"
+                          class="makeStyles-bottomTextContainer-92"
                           style="background: rgb(255, 252, 179);"
                         >
                           MIL
@@ -2291,13 +1137,13 @@ exports[`MapView renders as expected 1`] = `
                     style="width: calc(50% - 1.75rem);"
                   >
                     <div
-                      class="makeStyles-windowBackground-99"
+                      class="makeStyles-windowBackground-86"
                     >
                       <div
-                        class="makeStyles-tagWrapper-100"
+                        class="makeStyles-tagWrapper-87"
                       >
                         <mock-typography
-                          classname="makeStyles-emptyText-101"
+                          classname="makeStyles-emptyText-88"
                         >
                           (
                           no district
@@ -2310,13 +1156,13 @@ exports[`MapView renders as expected 1`] = `
                     style="width: calc(50% - 1.75rem);"
                   >
                     <div
-                      class="makeStyles-windowBackground-99"
+                      class="makeStyles-windowBackground-86"
                     >
                       <div
-                        class="makeStyles-tagWrapper-100"
+                        class="makeStyles-tagWrapper-87"
                       >
                         <mock-typography
-                          classname="makeStyles-emptyText-101"
+                          classname="makeStyles-emptyText-88"
                         >
                           (
                           no district
@@ -2327,27 +1173,27 @@ exports[`MapView renders as expected 1`] = `
                   </div>
                 </div>
                 <div
-                  class="makeStyles-rowWrapper-97"
+                  class="makeStyles-rowWrapper-84"
                 >
                   <div
-                    class="makeStyles-iconCol-98"
+                    class="makeStyles-iconCol-85"
                   >
                     <div
-                      class="makeStyles-iconWrapper-102"
+                      class="makeStyles-iconWrapper-89"
                       style="background: rgb(241, 241, 241);"
                     >
                       <div
-                        class="makeStyles-centerContainer-103"
+                        class="makeStyles-centerContainer-90"
                         style="border: 1px solid black; color: black;"
                       >
                         <div
-                          class="makeStyles-topTextContainer-104"
+                          class="makeStyles-topTextContainer-91"
                           style="border-bottom: 1px solid black; background: rgb(241, 241, 241);"
                         >
                           na
                         </div>
                         <div
-                          class="makeStyles-bottomTextContainer-105"
+                          class="makeStyles-bottomTextContainer-92"
                           style="background: rgb(241, 241, 241);"
                         >
                           -
@@ -2359,13 +1205,13 @@ exports[`MapView renders as expected 1`] = `
                     style="width: calc(50% - 1.75rem);"
                   >
                     <div
-                      class="makeStyles-windowBackground-99"
+                      class="makeStyles-windowBackground-86"
                     >
                       <div
-                        class="makeStyles-tagWrapper-100"
+                        class="makeStyles-tagWrapper-87"
                       >
                         <mock-typography
-                          classname="makeStyles-emptyText-101"
+                          classname="makeStyles-emptyText-88"
                         >
                           (
                           no district
@@ -2378,13 +1224,13 @@ exports[`MapView renders as expected 1`] = `
                     style="width: calc(50% - 1.75rem);"
                   >
                     <div
-                      class="makeStyles-windowBackground-99"
+                      class="makeStyles-windowBackground-86"
                     >
                       <div
-                        class="makeStyles-tagWrapper-100"
+                        class="makeStyles-tagWrapper-87"
                       >
                         <mock-typography
-                          classname="makeStyles-emptyText-101"
+                          classname="makeStyles-emptyText-88"
                         >
                           (
                           no district
@@ -2395,26 +1241,26 @@ exports[`MapView renders as expected 1`] = `
                   </div>
                 </div>
                 <div
-                  class="makeStyles-rowWrapper-97"
+                  class="makeStyles-rowWrapper-84"
                 >
                   <div
-                    class="makeStyles-iconCol-98"
+                    class="makeStyles-iconCol-85"
                   >
                     <div
-                      class="makeStyles-iconWrapper-102"
+                      class="makeStyles-iconWrapper-89"
                     >
                       <div
-                        class="makeStyles-centerContainer-103"
+                        class="makeStyles-centerContainer-90"
                         style="border: 1px solid black; color: black;"
                       >
                         <div
-                          class="makeStyles-topTextContainer-104"
+                          class="makeStyles-topTextContainer-91"
                           style="border-bottom: 1px solid black;"
                         >
                           ny
                         </div>
                         <div
-                          class="makeStyles-bottomTextContainer-105"
+                          class="makeStyles-bottomTextContainer-92"
                         >
                           -
                         </div>
@@ -2425,13 +1271,13 @@ exports[`MapView renders as expected 1`] = `
                     style="width: calc(50% - 1.75rem);"
                   >
                     <div
-                      class="makeStyles-windowBackground-99"
+                      class="makeStyles-windowBackground-86"
                     >
                       <div
-                        class="makeStyles-tagWrapper-100"
+                        class="makeStyles-tagWrapper-87"
                       >
                         <mock-typography
-                          classname="makeStyles-emptyText-101"
+                          classname="makeStyles-emptyText-88"
                         >
                           (
                           no district
@@ -2444,13 +1290,13 @@ exports[`MapView renders as expected 1`] = `
                     style="width: calc(50% - 1.75rem);"
                   >
                     <div
-                      class="makeStyles-windowBackground-99"
+                      class="makeStyles-windowBackground-86"
                     >
                       <div
-                        class="makeStyles-tagWrapper-100"
+                        class="makeStyles-tagWrapper-87"
                       >
                         <mock-typography
-                          classname="makeStyles-emptyText-101"
+                          classname="makeStyles-emptyText-88"
                         >
                           (
                           no district
@@ -2462,13 +1308,13 @@ exports[`MapView renders as expected 1`] = `
                 </div>
               </div>
               <div
-                class="makeStyles-footerWrapper-88"
+                class="makeStyles-footerWrapper-75"
               >
                 <div
-                  class="makeStyles-footerActionsWrapper-89"
+                  class="makeStyles-footerActionsWrapper-76"
                 >
                   <mock-button
-                    classname="makeStyles-footerButton-91"
+                    classname="makeStyles-footerButton-78"
                     component="a"
                     download="undefined-aa_probabilities_triggers_moz.csv"
                     fullwidth="true"
@@ -2481,7 +1327,7 @@ exports[`MapView renders as expected 1`] = `
                     </mock-typography>
                   </mock-button>
                   <mock-button
-                    classname="makeStyles-footerButton-91"
+                    classname="makeStyles-footerButton-78"
                     fullwidth="true"
                     starticon="[object Object]"
                     variant="outlined"
@@ -2492,10 +1338,10 @@ exports[`MapView renders as expected 1`] = `
                   </mock-button>
                 </div>
                 <div
-                  class="makeStyles-footerDialogsWrapper-90"
+                  class="makeStyles-footerDialogsWrapper-77"
                 >
                   <mock-typography
-                    classname="makeStyles-footerDialog-92"
+                    classname="makeStyles-footerDialog-79"
                     component="button"
                   >
                     How to read this screen
@@ -2514,10 +1360,10 @@ exports[`MapView renders as expected 1`] = `
       </div>
     </mock-drawer>
     <div
-      class="MuiBox-root MuiBox-root-108 makeStyles-container-106"
+      class="MuiBox-root MuiBox-root-95 makeStyles-container-93"
     >
       <div
-        class="MuiBox-root MuiBox-root-109 makeStyles-optionContainer-107"
+        class="MuiBox-root MuiBox-root-96 makeStyles-optionContainer-94"
       />
     </div>
     <div
