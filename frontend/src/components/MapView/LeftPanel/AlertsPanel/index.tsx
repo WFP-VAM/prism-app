@@ -3,13 +3,11 @@ import {
   Box,
   Button,
   createStyles,
-  Menu,
   TextField,
   Theme,
   Typography,
 } from '@material-ui/core';
 
-import { ArrowDropDown, Notifications } from '@material-ui/icons';
 import React, {
   Dispatch,
   SetStateAction,
@@ -18,7 +16,12 @@ import React, {
   useState,
 } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { BoundaryLayerProps, LayerKey, WMSLayerProps } from 'config/types';
+import {
+  BoundaryLayerProps,
+  LayerKey,
+  PanelSize,
+  WMSLayerProps,
+} from 'config/types';
 import { getBoundaryLayerSingleton, LayerDefinitions } from 'config/utils';
 import { LayerData } from 'context/layers/layer-data';
 import { layerDataSelector } from 'context/mapStateSlice/selectors';
@@ -35,14 +38,9 @@ import { ALERT_API_URL } from 'utils/constants';
 const EMAIL_REGEX: RegExp =
   /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
-// This should probably be determined on a case-by-case basis,
-// depending on if the downstream API has the capability.
-// For now it can be permanently enabled.
-const ALERT_FORM_ENABLED = true;
-
 const boundaryLayer = getBoundaryLayerSingleton();
 
-function AlertForm({ isOpen, setOpen }: AlertFormProps) {
+function AlertsPanel() {
   const classes = useStyles();
   const boundaryLayerData = useSelector(layerDataSelector(boundaryLayer.id)) as
     | LayerData<BoundaryLayerProps>
@@ -58,7 +56,6 @@ function AlertForm({ isOpen, setOpen }: AlertFormProps) {
   const [thresholdError, setThresholdError] = useState<string | null>(null);
   const [alertName, setAlertName] = useState('');
   const [alertWaiting, setAlertWaiting] = useState(false);
-  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
 
   const { t } = useSafeTranslation();
   const regionCodesToFeatureData: { [k: string]: object } = useMemo(() => {
@@ -181,20 +178,17 @@ function AlertForm({ isOpen, setOpen }: AlertFormProps) {
     hazardLayerId,
   ]);
 
-  const renderedAlertForm = useMemo(() => {
-    if (!isOpen) {
-      return null;
-    }
-    return (
+  const renderedAlertForm = useMemo(
+    () => (
       <Box className={classes.alertFormMenu}>
         <div className={classes.newAlertFormContainer}>
           <div className={classes.alertFormOptions}>
-            <Typography variant="body2">{t('Hazard Layer')}</Typography>
             <LayerDropdown
               type="wms"
-              value={hazardLayerId}
+              value={hazardLayerId || ''}
               setValue={setHazardLayerId}
-              className={classes.selector}
+              className={classes.analysisPanelParamText}
+              label={t('Hazard Layer')}
               placeholder="Choose hazard layer"
             />
           </div>
@@ -207,25 +201,17 @@ function AlertForm({ isOpen, setOpen }: AlertFormProps) {
                 helperText={t(thresholdError || '')}
                 className={classes.numberField}
                 label={t('Below')}
-                InputLabelProps={{
-                  style: { color: '#ffffff' },
-                }}
                 type="number"
                 value={belowThreshold}
                 onChange={onThresholdOptionChange('below')}
-                variant="filled"
               />
               <TextField
                 id="filled-number"
                 label={t('Above')}
                 className={classes.numberField}
-                InputLabelProps={{
-                  style: { color: '#ffffff' },
-                }}
                 value={aboveThreshold}
                 onChange={onThresholdOptionChange('above')}
                 type="number"
-                variant="filled"
               />
             </div>
           </div>
@@ -239,9 +225,11 @@ function AlertForm({ isOpen, setOpen }: AlertFormProps) {
               label={t('Alert Name')}
               type="text"
               InputLabelProps={{
-                style: { color: '#ffffff' },
+                style: { color: 'black' },
               }}
-              variant="filled"
+              InputProps={{
+                style: { color: 'black' },
+              }}
               value={alertName}
               onChange={e => setAlertName(e.target.value)}
               fullWidth
@@ -253,9 +241,11 @@ function AlertForm({ isOpen, setOpen }: AlertFormProps) {
               label={t('Email Address')}
               type="text"
               InputLabelProps={{
-                style: { color: '#ffffff' },
+                style: { color: 'black' },
               }}
-              variant="filled"
+              InputProps={{
+                style: { color: 'black' },
+              }}
               onChange={onChangeEmail}
               fullWidth
             />
@@ -269,148 +259,95 @@ function AlertForm({ isOpen, setOpen }: AlertFormProps) {
             !!thresholdError ||
             !emailValid ||
             alertWaiting ||
-            regionsList.length === 0
+            regionsList.length === 0 ||
+            (aboveThreshold === '' && belowThreshold === '')
           }
         >
-          <Typography variant="body2">{t('Create Alert')}</Typography>
+          <Typography style={{ color: 'white' }} variant="body2">
+            {t('Create Alert')}
+          </Typography>
         </Button>
       </Box>
-    );
-  }, [
-    aboveThreshold,
-    alertName,
-    alertWaiting,
-    belowThreshold,
-    classes.alertFormMenu,
-    classes.alertFormOptions,
-    classes.innerCreateAlertButton,
-    classes.newAlertFormContainer,
-    classes.numberField,
-    classes.regionSelector,
-    classes.selector,
-    classes.thresholdInputsContainer,
-    emailValid,
-    hazardLayerId,
-    isOpen,
-    onThresholdOptionChange,
-    regionsList.length,
-    runAlertForm,
-    t,
-    thresholdError,
-  ]);
-
-  if (!ALERT_FORM_ENABLED) {
-    return null;
-  }
-
-  return (
-    <div className={classes.alertForm}>
-      <Button
-        className={classes.alertTriggerButton}
-        variant="contained"
-        color="primary"
-        onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
-          setOpen(!isOpen);
-          setAnchorEl(e.currentTarget);
-        }}
-      >
-        <Notifications fontSize="small" />
-        <Typography variant="body2" className={classes.alertLabel}>
-          {t('Create Alert')}
-        </Typography>
-        <ArrowDropDown fontSize="small" />
-      </Button>
-      <Menu
-        anchorEl={anchorEl}
-        keepMounted
-        open={Boolean(anchorEl)}
-        onClose={() => {
-          setOpen(false);
-          setAnchorEl(null);
-        }}
-        PaperProps={{ style: { background: 'transparent', boxShadow: 'none' } }}
-      >
-        {renderedAlertForm}
-      </Menu>
-    </div>
+    ),
+    [
+      aboveThreshold,
+      alertName,
+      alertWaiting,
+      belowThreshold,
+      classes,
+      emailValid,
+      hazardLayerId,
+      onThresholdOptionChange,
+      regionsList.length,
+      runAlertForm,
+      t,
+      thresholdError,
+    ],
   );
+
+  return renderedAlertForm;
 }
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    alertLabel: { marginLeft: '10px' },
-    alertTriggerButton: {
-      display: 'flex',
-      justifyContent: 'center',
-      alignItems: 'center',
-      height: '3em',
-      padding: theme.spacing(0.8, 2.66),
-    },
-    alertForm: {
-      zIndex: theme.zIndex.drawer,
-      textAlign: 'left',
-    },
     alertFormMenu: {
-      backgroundColor: theme.surfaces?.light,
-      color: 'white',
-      overflowX: 'hidden',
-      whiteSpace: 'nowrap',
-      height: 'auto',
-      maxHeight: '60vh',
-      width: '23vw',
-      marginTop: '0.5em',
-      borderRadius: '10px',
-      padding: '10px',
+      display: 'flex',
+      flexDirection: 'column',
+      width: PanelSize.medium,
+      height: '100%',
+      overflow: 'scroll',
+      backgroundColor: 'white',
+      color: 'black',
     },
-    alertFormButton: {
-      height: '36px',
-      marginLeft: '3px',
+    newAlertFormContainer: {
+      padding: '30px 10px 10px 10px',
+      height: 'calc(100% - 90px)',
+      overflow: 'auto',
+    },
+    alertFormOptions: {
+      display: 'flex',
+      flexDirection: 'column',
+      marginBottom: 30,
+      marginLeft: 10,
+      width: '90%',
+      color: 'black',
+    },
+    analysisPanelParamText: {
+      width: '100%',
+      color: 'black',
+    },
+    regionSelector: {
+      width: '100%',
     },
     thresholdInputsContainer: {
       display: 'flex',
-      justifyContent: 'center',
-      alignItems: 'center',
-      gap: '1em',
-      width: '100%',
-    },
-    alertFormOptions: {
-      padding: '5px 0px',
-    },
-    newAlertFormContainer: {
-      padding: '5px',
+      flexDirection: 'row',
+      gap: '16px',
       marginTop: '10px',
-    },
-    innerCreateAlertButton: {
-      backgroundColor: theme.surfaces?.dark,
-      margin: '10px',
-      '&:disabled': {
-        opacity: '0.5',
-      },
-    },
-    selector: {
-      margin: '5px',
-      width: '100%',
-    },
-    regionSelector: {
-      minWidth: '100%',
-      maxWidth: '200px',
     },
     numberField: {
-      marginTop: '10px',
+      paddingRight: '10px',
+      maxWidth: '140px',
+      '& .MuiInputBase-root': {
+        color: 'black',
+      },
+      '& label': {
+        color: '#333333',
+      },
+    },
+    innerCreateAlertButton: {
+      backgroundColor: theme.palette.primary.main,
+      '&:hover': {
+        backgroundColor: 'black !important',
+      },
+      marginTop: 10,
+      marginBottom: 10,
+      marginLeft: '25%',
+      marginRight: '25%',
       width: '50%',
-    },
-    inputLabelRoot: {
-      color: 'white',
-    },
-    alertFormResponseText: {
-      marginLeft: '15px',
+      '&.Mui-disabled': { opacity: 0.5 },
     },
   }),
 );
 
-interface AlertFormProps {
-  isOpen: boolean;
-  setOpen: (isOpen: boolean) => void;
-}
-
-export default AlertForm;
+export default AlertsPanel;
