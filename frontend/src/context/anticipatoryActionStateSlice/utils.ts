@@ -77,6 +77,8 @@ export function parseAndTransformAA(data: any[]) {
         trigger: Number(x.trigger_ready),
         date: x.date_ready,
         isValid: isReadyValid,
+        isOtherPhaseValid:
+          isReadyValid && Number(x.prob_set) > Number(x.trigger_set),
       };
 
       const set = {
@@ -85,7 +87,7 @@ export function parseAndTransformAA(data: any[]) {
         trigger: Number(x.trigger_set),
         date: x.date_set,
         isValid: ready.isValid && Number(x.prob_set) > Number(x.trigger_set),
-        wasReadyValid: isReadyValid,
+        isOtherPhaseValid: isReadyValid,
       };
 
       const result = [];
@@ -114,7 +116,7 @@ export function parseAndTransformAA(data: any[]) {
   );
 
   const windowData = AAWindowKeys.map(windowKey => {
-    const filtered = parsed.filter(x => x.window === windowKey);
+    const filtered = parsed.filter(x => x.window === windowKey && x.date);
 
     // eslint-disable-next-line fp/no-mutating-methods
     const dates = [
@@ -157,7 +159,12 @@ export function parseAndTransformAA(data: any[]) {
 
           // If a district reaches a set state, it will propagate until the end of the window
           dateData.forEach(x => {
-            if (!x.isValid || (prevMax && x.season !== prevMax?.season)) {
+            // reset prevMax when entering a new season
+            if (prevMax && x.season !== prevMax.season) {
+              // eslint-disable-next-line fp/no-mutation
+              prevMax = undefined;
+            }
+            if (!x.isValid) {
               return;
             }
             if (x.phase === 'Set') {

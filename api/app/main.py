@@ -14,7 +14,11 @@ from app.caching import FilePath, cache_file, cache_geojson
 from app.database.alert_model import AlchemyEncoder, AlertModel
 from app.database.database import AlertsDataBase
 from app.database.user_info_model import UserInfoModel
-from app.googleflood import get_google_floods_gauges, get_google_floods_inundations
+from app.googleflood import (
+    get_google_floods_gauge_forecast,
+    get_google_floods_gauges,
+    get_google_floods_inundations,
+)
 from app.hdc import get_hdc_stats
 from app.kobo import get_form_dates, get_form_responses, parse_datetime_params
 from app.models import AcledRequest, RasterGeotiffModel
@@ -24,7 +28,7 @@ from app.validation import validate_intersect_parameter
 from app.zonal_stats import DEFAULT_STATS, GroupBy, calculate_stats, get_wfs_response
 from fastapi import Depends, FastAPI, HTTPException, Path, Query, Response
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import FileResponse, JSONResponse
+from fastapi.responses import FileResponse, JSONResponse, StreamingResponse
 from pydantic import EmailStr, HttpUrl, ValidationError
 from requests import get
 
@@ -133,9 +137,7 @@ def stats(stats_model: StatsModel) -> list[dict[str, Any]]:
 
     zones: FilePath
     if zones_geojson is not None:
-        zones = cache_geojson(
-            prefix="zones_geojson", geojson=zones_geojson, extension="json"
-        )
+        zones = cache_geojson(prefix="zones_geojson", geojson=zones_geojson)
     else:
         zones = cache_file(
             prefix="zones",
@@ -415,16 +417,62 @@ def post_raster_geotiff(raster_geotiff: RasterGeotiffModel):
     )
 
 
-@app.get("/google-floods-gauges")
-def get_google_floods_gauges_api(
-    iso2: str,
+@app.get("/google-floods/gauges/")
+def get_google_floods_gauges_api(region_codes: list[str] = Query(...)):
+    """
+    Get the Google Floods gauges for a list of regions.
+    """
+    if not region_codes:
+        raise HTTPException(
+            status_code=400,
+            detail="At least one region code must be provided.",
+        )
+    for region_code in region_codes:
+        if len(region_code) != 2:
+            raise HTTPException(
+                status_code=400,
+                detail=f"Region code '{region_code}' must be exactly two characters (iso2).",
+            )
+
+    iso2_codes = [region_code.upper() for region_code in region_codes]
+    return get_google_floods_gauges(iso2_codes)
+
+
+@app.get("/google-floods/gauges/forecasts")
+def get_google_floods_gauge_forecast_api(
+    gauge_ids: str = Query(..., description="Comma-separated list of gauge IDs")
 ):
-    return get_google_floods_gauges(iso2)
+    """Get forecast data for a gauge or multiple gauges"""
+    gauge_id_list = [id.strip() for id in gauge_ids.split(",")]
+    if not gauge_id_list:
+        raise HTTPException(
+            status_code=400,
+            detail="gauge_ids must be provided and contain at least one value.",
+        )
+    return get_google_floods_gauge_forecast(gauge_id_list)
 
 
-@app.get('/google-floods-inundations')
+@app.get("/google-floods/inundations")
 def get_google_floods_inundations_api(
-    iso2: str,
+    region_codes: list[str] = Query(...), run_sequentially: bool = Query(default=False)
 ):
     """Get statistical charts data"""
-    return get_google_floods_inundations(iso2).to_json()
+    if not region_codes:
+        raise HTTPException(
+            status_code=400,
+            detail="At least one region code must be provided.",
+        )
+    for region_code in region_codes:
+        if len(region_code) != 2:
+            raise HTTPException(
+                status_code=400,
+                detail=f"Region code '{region_code}' must be exactly two characters (iso2).",
+            )
+
+    iso2_codes = [region_code.upper() for region_code in region_codes]
+    geojson = get_google_floods_inundations(iso2_codes, run_sequentially)
+
+    def iter_geojson():
+        yield geojson
+
+    return StreamingResponse(iter_geojson(), media_type="application/json")

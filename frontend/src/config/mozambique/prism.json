@@ -10,7 +10,7 @@
     "defaultFooterText": ""
   },
   "countryAdmin0Id": 170,
-  "alertFormActive": false,
+  "alertFormActive": true,
   "hidePanel": false,
   "enableNavigationDropdown": true,
   "icons": {
@@ -20,7 +20,8 @@
     "risk": "icon_impact.png",
     "tropical_storms": "icon_tropical_storm.png",
     "vulnerability": "icon_vulnerable.png",
-    "exposure": "icon_basemap.png"
+    "exposure": "icon_basemap.png",
+    "flooding": "icon_basemap.png"
   },
   "defaultDisplayBoundaries": [
     "admin_boundaries",
@@ -285,11 +286,7 @@
           ]
         }
       ],
-      "dry_periods": [
-        "days_dry",
-        "streak_dry_days",
-        "cdi"
-      ],
+      "dry_periods": ["days_dry", "streak_dry_days", "cdi"],
       "extreme_rain_events": [
         {
           "group_title": "Rainfall categories:",
@@ -454,6 +451,9 @@
     },
     "exposure": {
       "population": ["census"]
+    },
+    "flooding": {
+      "flood_status": ["google_flood_status_at_gauges"]
     }
   }
 }

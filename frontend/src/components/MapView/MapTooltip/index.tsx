@@ -1,4 +1,5 @@
 import { memo, useCallback, useMemo, useState } from 'react';
+import { omit } from 'lodash';
 import { useDispatch, useSelector } from 'react-redux';
 import { Popup } from 'react-map-gl/maplibre';
 import {
@@ -7,7 +8,13 @@ import {
   IconButton,
   makeStyles,
 } from '@material-ui/core';
-import { hidePopup, tooltipSelector } from 'context/tooltipStateSlice';
+import {
+  hidePopup,
+  PopupData,
+  PopupMetaData,
+  PopupTitleData,
+  tooltipSelector,
+} from 'context/tooltipStateSlice';
 import { isEnglishLanguageSelected, useSafeTranslation } from 'i18n';
 import { AdminLevelType } from 'config/types';
 import { appConfig } from 'config';
@@ -73,7 +80,7 @@ const MapTooltip = memo(() => {
   const classes = useStyles();
   const dispatch = useDispatch();
   const popup = useSelector(tooltipSelector);
-  const { i18n } = useSafeTranslation();
+  const { t, i18n } = useSafeTranslation();
   const [popupTitle, setPopupTitle] = useState<string>('');
   const [adminLevel, setAdminLevel] = useState<AdminLevelType | undefined>(
     undefined,
@@ -81,14 +88,26 @@ const MapTooltip = memo(() => {
 
   const { dataset, isLoading } = usePointDataChart();
 
+  const providedPopupTitle = (popup.data as PopupTitleData).title;
+  const popupData: PopupData & PopupMetaData = providedPopupTitle
+    ? omit(popup.data, 'title', providedPopupTitle.prop)
+    : popup.data;
   const defaultPopupTitle = useMemo(() => {
+    if (providedPopupTitle) {
+      // Title can be a template requiring interpolation
+      return t(providedPopupTitle.data as string, providedPopupTitle.context);
+    }
     if (isEnglishLanguageSelected(i18n)) {
       return popup.locationName;
     }
     return popup.locationLocalName;
-  }, [i18n, popup.locationLocalName, popup.locationName]);
-
-  const popupData = popup.data;
+  }, [
+    i18n,
+    popup.locationLocalName,
+    popup.locationName,
+    providedPopupTitle,
+    t,
+  ]);
 
   // TODO - simplify logic once we revamp admin levels object
   const adminLevelsNames = useCallback(() => {

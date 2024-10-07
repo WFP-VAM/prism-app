@@ -12,11 +12,12 @@ FilePath = NewType("FilePath", str)
 GroupBy = NewType("GroupBy", str)
 
 # a GeoJSON object
-Geometry = TypedDict("Geometry", {"type": str})
+Geometry = TypedDict("Geometry", {"type": str, "coordinates": Any})
 GeoJSONFeature = TypedDict(
     "GeoJSONFeature", {"type": str, "geometry": Geometry, "properties": dict}
 )
 GeoJSON = TypedDict("GeoJSON", {"features": list[GeoJSONFeature]})
+# GeoJSON = geojson.FeatureCollection
 
 WfsResponse = TypedDict("WfsResponse", {"filter_property_key": str, "path": FilePath})
 
@@ -55,15 +56,24 @@ class StatsModel(BaseModel):
     """Schema for stats data to be passed to /stats endpoint."""
 
     geotiff_url: HttpUrl = Field(..., example=stats_data["geotiff_url"])
-    zones_url: HttpUrl = Field(..., example=stats_data["zones_url"])
-    group_by: str = Field(..., example=stats_data["group_by"])
+    zones_url: Optional[HttpUrl] = Field(None, example=stats_data["zones_url"])
+    group_by: Optional[str] = Field(None, example=stats_data["group_by"])
     wfs_params: Optional[WfsParamsModel] = None
     geojson_out: Optional[bool] = False
-    zones: Optional[GeoJSON] = None
+    zones: Optional[Any] = (
+        None  # The GeoJSON types creates unexpected results by cutting off the properties
+    )
     intersect_comparison: Optional[str] = None
     mask_url: Optional[str] = None
     mask_calc_expr: Optional[str] = None
     filter_by: Optional[FilterProperty] = None
+
+    @root_validator
+    def check_zones_or_zones_url(cls, values):
+        zones_url, zones = values.get("zones_url"), values.get("zones")
+        if not zones_url and not zones:
+            raise ValueError("Either zones_url or zones must be provided.")
+        return values
 
 
 class RasterGeotiffModel(BaseModel):
@@ -104,7 +114,7 @@ class AlertsZonesModel(BaseModel):
 
     type: str = Field(..., example=alert_data_zones["type"])
     name: str = Field(..., example=alert_data_zones["name"])
-    crs: dict = Field(..., example=alert_data_zones["crs"])
+    crs: Optional[dict] = Field(None, example=alert_data_zones["crs"])
     features: dict | list[dict] = Field(..., example=alert_data_zones["features"])
 
     _val_type = validator("type", allow_reuse=True)(must_not_contain_null_char)
@@ -123,6 +133,8 @@ class AlertsModel(BaseModel):
     alert_name: str = Field(..., example=alert_data["alert_name"])
     alert_config: dict = Field(..., example=alert_data["alert_config"])
     zones: AlertsZonesModel
+    min: Optional[float] = None
+    max: Optional[float] = None
 
     _val_alert_name = validator("alert_name", allow_reuse=True)(
         must_not_contain_null_char
@@ -130,6 +142,14 @@ class AlertsModel(BaseModel):
     _val_alert_config = validator("alert_config", allow_reuse=True)(
         dict_must_not_contain_null_char
     )
+
+    @root_validator
+    def check_min_max(cls, values):
+        """Ensure at least one of 'min' or 'max' is set."""
+        min_val, max_val = values.get("min"), values.get("max")
+        if min_val is None and max_val is None:
+            raise ValueError("At least one of 'min' or 'max' must be set")
+        return values
 
 
 class UserInfoPydanticModel(BaseModel):

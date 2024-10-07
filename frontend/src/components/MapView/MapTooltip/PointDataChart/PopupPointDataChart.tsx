@@ -1,5 +1,5 @@
 import Chart from 'components/Common/Chart';
-import { isAdminBoundary } from 'components/MapView/utils';
+
 import { ChartConfig } from 'config/types';
 import {
   CHART_DATA_PREFIXES,
@@ -9,6 +9,8 @@ import { t } from 'i18next';
 import { memo } from 'react';
 import { useSelector } from 'react-redux';
 import { createStyles, makeStyles } from '@material-ui/core';
+import { isAdminBoundary } from 'utils/admin-utils';
+import { GoogleFloodParams } from 'utils/google-flood-utils';
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -51,16 +53,17 @@ const PopupPointDataChart = memo(() => {
     <div className={classes.chartContainer}>
       <div className={classes.chartSection}>
         <Chart
-          title={t(title)}
+          title={t(title, datasetParams)}
           config={config}
           data={dataset}
           xAxisLabel={
             isAdminBoundary(datasetParams)
               ? undefined
-              : t('Timestamps reflect local time in Cambodia')
+              : t('Timestamps reflect local time in region')
           }
           showDownloadIcons
           iconStyles={{ color: 'white', marginTop: '20px' }}
+          units={t((datasetParams as GoogleFloodParams).unit)}
         />
       </div>
     </div>

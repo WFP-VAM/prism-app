@@ -1,0 +1,322 @@
+interactions:
+- request:
+    body: '{"regionCode": "BD"}'
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '20'
+      Content-Type:
+      - application/json
+      User-Agent:
+      - python-requests/2.32.0
+    method: POST
+    uri: https://floodforecasting.googleapis.com/v1/floodStatus:searchLatestFloodStatusByArea
+  response:
+    body:
+      string: !!binary |
+        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
+        W6GmYK/mR5IXLS0Ks5+/PPjy4P/Z4amKhs8AAA==
+    headers:
+      Alt-Svc:
+      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+      Cache-Control:
+      - private
+      Content-Encoding:
+      - gzip
+      Content-Type:
+      - application/json; charset=UTF-8
+      Date:
+      - Mon, 07 Oct 2024 20:06:16 GMT
+      Server:
+      - ESF
+      Server-Timing:
+      - gfet4t7; dur=1354
+      Transfer-Encoding:
+      - chunked
+      Vary:
+      - Origin
+      - X-Origin
+      - Referer
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-XSS-Protection:
+      - '0'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python-requests/2.32.0
+    method: GET
+    uri: https://floodforecasting.googleapis.com/v1/gauges:batchGet?names=gauges%2FBWDB_SW101&names=gauges%2FBWDB_SW110&names=gauges%2FBWDB_SW117&names=gauges%2FBWDB_SW119.1&names=gauges%2FBWDB_SW131.5&names=gauges%2FBWDB_SW132.2&names=gauges%2FBWDB_SW133&names=gauges%2FBWDB_SW137A&names=gauges%2FBWDB_SW14.5&names=gauges%2FBWDB_SW140&names=gauges%2FBWDB_SW142.1&names=gauges%2FBWDB_SW145&names=gauges%2FBWDB_SW147.5&names=gauges%2FBWDB_SW157&names=gauges%2FBWDB_SW159&names=gauges%2FBWDB_SW15J&names=gauges%2FBWDB_SW162&names=gauges%2FBWDB_SW172&names=gauges%2FBWDB_SW173&names=gauges%2FBWDB_SW175.5&names=gauges%2FBWDB_SW177&names=gauges%2FBWDB_SW179&names=gauges%2FBWDB_SW201&names=gauges%2FBWDB_SW202&names=gauges%2FBWDB_SW203&names=gauges%2FBWDB_SW204&names=gauges%2FBWDB_SW206&names=gauges%2FBWDB_SW207&names=gauges%2FBWDB_SW211.5&names=gauges%2FBWDB_SW212&names=gauges%2FBWDB_SW225&names=gauges%2FBWDB_SW228&names=gauges%2FBWDB_SW236&names=gauges%2FBWDB_SW238&names=gauges%2FBWDB_SW247&names=gauges%2FBWDB_SW248&names=gauges%2FBWDB_SW251&names=gauges%2FBWDB_SW263&names=gauges%2FBWDB_SW263.1&names=gauges%2FBWDB_SW266&names=gauges%2FBWDB_SW267&names=gauges%2FBWDB_SW269&names=gauges%2FBWDB_SW269.5&names=gauges%2FBWDB_SW270&names=gauges%2FBWDB_SW273&names=gauges%2FBWDB_SW274&names=gauges%2FBWDB_SW275.5&names=gauges%2FBWDB_SW277&names=gauges%2FBWDB_SW285&names=gauges%2FBWDB_SW291.5R&names=gauges%2FBWDB_SW294&names=gauges%2FBWDB_SW299&names=gauges%2FBWDB_SW302&names=gauges%2FBWDB_SW36&names=gauges%2FBWDB_SW3A&names=gauges%2FBWDB_SW42&names=gauges%2FBWDB_SW45&names=gauges%2FBWDB_SW45.5&names=gauges%2FBWDB_SW46.9L&names=gauges%2FBWDB_SW49&names=gauges%2FBWDB_SW49A&names=gauges%2FBWDB_SW5&names=gauges%2FBWDB_SW50.6&names=gauges%2FBWDB_SW62&names=gauges%2FBWDB_SW63&names=gauges%2FBWDB_SW65&names=gauges%2FBWDB_SW67&names=gauges%2FBWDB_SW68.5&names=gauges%2FBWDB_SW71A&names=gauges%2FBWDB_SW72&names=gauges%2FBWDB_SW77&names=gauges%2FBWDB_SW84&names=gauges%2FBWDB_SW88&names=gauges%2FBWDB_SW88A&names=gauges%2FBWDB_SW90&names=gauges%2FBWDB_SW91.9R&names=gauges%2FBWDB_SW93.4L&names=gauges%2FBWDB_SW93.5L&names=gauges%2FBWDB_SW95&names=gauges%2FBWDB_SW99
+  response:
+    body:
+      string: !!binary |
+        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
+    headers:
+      Alt-Svc:
+      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+      Cache-Control:
+      - private
+      Content-Encoding:
+      - gzip
+      Content-Type:
+      - application/json; charset=UTF-8
+      Date:
+      - Mon, 07 Oct 2024 20:06:16 GMT
+      Server:
+      - ESF
+      Server-Timing:
+      - gfet4t7; dur=272
+      Transfer-Encoding:
+      - chunked
+      Vary:
+      - Origin
+      - X-Origin
+      - Referer
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-XSS-Protection:
+      - '0'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python-requests/2.32.0
+    method: GET
+    uri: https://floodforecasting.googleapis.com/v1/gaugeModels:batchGet?names=gaugeModels%2FBWDB_SW101&names=gaugeModels%2FBWDB_SW110&names=gaugeModels%2FBWDB_SW117&names=gaugeModels%2FBWDB_SW119.1&names=gaugeModels%2FBWDB_SW131.5&names=gaugeModels%2FBWDB_SW132.2&names=gaugeModels%2FBWDB_SW133&names=gaugeModels%2FBWDB_SW137A&names=gaugeModels%2FBWDB_SW14.5&names=gaugeModels%2FBWDB_SW140&names=gaugeModels%2FBWDB_SW142.1&names=gaugeModels%2FBWDB_SW145&names=gaugeModels%2FBWDB_SW147.5&names=gaugeModels%2FBWDB_SW157&names=gaugeModels%2FBWDB_SW159&names=gaugeModels%2FBWDB_SW15J&names=gaugeModels%2FBWDB_SW162&names=gaugeModels%2FBWDB_SW172&names=gaugeModels%2FBWDB_SW173&names=gaugeModels%2FBWDB_SW175.5&names=gaugeModels%2FBWDB_SW177&names=gaugeModels%2FBWDB_SW179&names=gaugeModels%2FBWDB_SW201&names=gaugeModels%2FBWDB_SW202&names=gaugeModels%2FBWDB_SW203&names=gaugeModels%2FBWDB_SW204&names=gaugeModels%2FBWDB_SW206&names=gaugeModels%2FBWDB_SW207&names=gaugeModels%2FBWDB_SW211.5&names=gaugeModels%2FBWDB_SW212&names=gaugeModels%2FBWDB_SW225&names=gaugeModels%2FBWDB_SW228&names=gaugeModels%2FBWDB_SW236&names=gaugeModels%2FBWDB_SW238&names=gaugeModels%2FBWDB_SW247&names=gaugeModels%2FBWDB_SW248&names=gaugeModels%2FBWDB_SW251&names=gaugeModels%2FBWDB_SW263&names=gaugeModels%2FBWDB_SW263.1&names=gaugeModels%2FBWDB_SW266&names=gaugeModels%2FBWDB_SW267&names=gaugeModels%2FBWDB_SW269&names=gaugeModels%2FBWDB_SW269.5&names=gaugeModels%2FBWDB_SW270&names=gaugeModels%2FBWDB_SW273&names=gaugeModels%2FBWDB_SW274&names=gaugeModels%2FBWDB_SW275.5&names=gaugeModels%2FBWDB_SW277&names=gaugeModels%2FBWDB_SW285&names=gaugeModels%2FBWDB_SW291.5R&names=gaugeModels%2FBWDB_SW294&names=gaugeModels%2FBWDB_SW299&names=gaugeModels%2FBWDB_SW302&names=gaugeModels%2FBWDB_SW36&names=gaugeModels%2FBWDB_SW3A&names=gaugeModels%2FBWDB_SW42&names=gaugeModels%2FBWDB_SW45&names=gaugeModels%2FBWDB_SW45.5&names=gaugeModels%2FBWDB_SW46.9L&names=gaugeModels%2FBWDB_SW49&names=gaugeModels%2FBWDB_SW49A&names=gaugeModels%2FBWDB_SW5&names=gaugeModels%2FBWDB_SW50.6&names=gaugeModels%2FBWDB_SW62&names=gaugeModels%2FBWDB_SW63&names=gaugeModels%2FBWDB_SW65&names=gaugeModels%2FBWDB_SW67&names=gaugeModels%2FBWDB_SW68.5&names=gaugeModels%2FBWDB_SW71A&names=gaugeModels%2FBWDB_SW72&names=gaugeModels%2FBWDB_SW77&names=gaugeModels%2FBWDB_SW84&names=gaugeModels%2FBWDB_SW88&names=gaugeModels%2FBWDB_SW88A&names=gaugeModels%2FBWDB_SW90&names=gaugeModels%2FBWDB_SW91.9R&names=gaugeModels%2FBWDB_SW93.4L&names=gaugeModels%2FBWDB_SW93.5L&names=gaugeModels%2FBWDB_SW95&names=gaugeModels%2FBWDB_SW99
+  response:
+    body:
+      string: !!binary |
+        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
+        AAA=
+    headers:
+      Alt-Svc:
+      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+      Cache-Control:
+      - private
+      Content-Encoding:
+      - gzip
+      Content-Type:
+      - application/json; charset=UTF-8
+      Date:
+      - Mon, 07 Oct 2024 20:06:17 GMT
+      Server:
+      - ESF
+      Server-Timing:
+      - gfet4t7; dur=296
+      Transfer-Encoding:
+      - chunked
+      Vary:
+      - Origin
+      - X-Origin
+      - Referer
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-XSS-Protection:
+      - '0'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python-requests/2.32.0
+    method: GET
+    uri: https://floodforecasting.googleapis.com/v1/serializedPolygons/bf9bef41a1544a2788b2b17d954dfe9c
+  response:
+    body:
+      string: !!binary |
+        H4sIAAAAAAAC/6vmUlBQSi0qyi9SslKoBnKA3OT8lFQgz9TAQAcikJtaXJyYDhJT8swrSS3KS8xR
+        AOtRSM1Lzi8FCaWm6ClBVReXJJaUFoMV+4W4Bvk5+igBJWq5arkA91Viw20AAAA=
+    headers:
+      Alt-Svc:
+      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+      Cache-Control:
+      - private
+      Content-Encoding:
+      - gzip
+      Content-Type:
+      - application/json; charset=UTF-8
+      Date:
+      - Mon, 07 Oct 2024 20:06:17 GMT
+      Server:
+      - ESF
+      Server-Timing:
+      - gfet4t7; dur=186
+      Transfer-Encoding:
+      - chunked
+      Vary:
+      - Origin
+      - X-Origin
+      - Referer
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-XSS-Protection:
+      - '0'
+    status:
+      code: 500
+      message: Internal Server Error
+version: 1
