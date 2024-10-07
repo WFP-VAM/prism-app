@@ -72,7 +72,6 @@ const MapComponent = memo(() => {
 
   const { selectedLayers, boundaryLayerId } = useLayers();
 
-  console.log(selectedLayers);
   const selectedMap = useSelector(mapSelector);
   const tabValue = useSelector(leftPanelTabValueSelector);
 
