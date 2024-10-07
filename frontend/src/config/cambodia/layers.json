@@ -2063,7 +2063,6 @@
   "google_flood_inundation_maps": {
     "title": "Inundation Probability Map (Google AI)",
     "type": "geojson_polygon",
-    "loader": "google_flood",
     "hex_display": false,
     "data": "https://prism-api.ovio.org/google-floods/inundations/?region_codes=KH",
     "data_field": "level",
