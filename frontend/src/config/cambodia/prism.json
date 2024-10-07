@@ -209,6 +209,9 @@
     },
     "field_reports": {
       "field_reports": ["flood_report", "drought_report", "kh_incident_report"]
+    },
+    "flooding": {
+      "flood_status": ["google_flood_status_at_gauges"]
     }
   }
 }
