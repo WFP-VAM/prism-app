@@ -335,6 +335,12 @@ exports[`MapView renders as expected 1`] = `
             style="display: none; flex-grow: 1; height: calc(94vh - 48px); overflow-x: auto;"
           />
           <div
+            aria-labelledby="full-width-tab-alerts"
+            id="full-width-tabpanel-alerts"
+            role="tabpanel"
+            style="display: none; flex-grow: 1; height: calc(94vh - 48px); overflow-x: auto;"
+          />
+          <div
             aria-labelledby="full-width-tab-anticipatory_action"
             id="full-width-tabpanel-anticipatory_action"
             role="tabpanel"
