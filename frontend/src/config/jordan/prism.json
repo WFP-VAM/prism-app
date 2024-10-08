@@ -212,6 +212,7 @@
     },
     "drought": {
       "combined_drought_index": [
+        "cdi_v1_aggregated",
         {
           "group_title": "Combined Drought Index v1:",
           "activate_all": false,

@@ -16,8 +16,14 @@ export interface CompositeLayerData extends FeatureCollection {}
 
 export const fetchCompositeLayerData: LazyLoader<CompositeLayerProps> =
   () =>
-  async (params: LayerDataParams<CompositeLayerProps>, { dispatch }) => {
-    const { layer, date, availableDates } = params;
+  async (
+    params: LayerDataParams<
+      CompositeLayerProps & { aggregationBoundariesPolygon?: string }
+    >,
+    { dispatch },
+  ) => {
+    const { layer, date, availableDates, aggregationBoundariesPolygon } =
+      params;
 
     const referenceDate = date ? new Date(date) : new Date();
     const providedSeasons = layer.validity?.seasons;
@@ -55,7 +61,14 @@ export const fetchCompositeLayerData: LazyLoader<CompositeLayerProps> =
     } = layer;
     const { boundingBox } = appConfig.map;
 
-    // docs: https://hip-service.ovio.org/docs#/default/run_q_multi_geojson_q_multi_geojson_post
+    const aggregationMaskParam = aggregationBoundariesPolygon
+      ? { aggregation_mask: aggregationBoundariesPolygon }
+      : {};
+
+    const aggregateByParam = layer.aggregateBy
+      ? { aggregate_by: layer.aggregateBy }
+      : {};
+
     const body = {
       begin: getFormattedDate(closestDateToStart, 'default'),
       end: getFormattedDate(closestDateToEnd, 'default'),
@@ -73,6 +86,8 @@ export const fetchCompositeLayerData: LazyLoader<CompositeLayerProps> =
         importance,
         invert: Boolean(invert),
       })),
+      ...aggregationMaskParam,
+      ...aggregateByParam,
     };
 
     try {
