@@ -61,6 +61,8 @@ export const opacityStateSlice = createSlice({
             return [getLayerMapId(layerId), 'circle-opacity'];
           case 'analysis':
             return ['layer-analysis', 'fill-opacity'];
+          case 'pm':
+            return [getLayerMapId(layerId), 'fill-opacity'];
           default:
             throw new Error('Unknown map layer type');
         }

@@ -5,6 +5,7 @@ import React, {
   useCallback,
   useMemo,
   useState,
+  useEffect,
 } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import AnalysisLayer from 'components/MapView/Layers/AnalysisLayer';
@@ -31,13 +32,18 @@ import {
   PointDataLayer,
   StaticRasterLayer,
   WMSLayer,
+  PMLayer,
 } from 'components/MapView/Layers';
 import useLayers from 'utils/layers-utils';
 import MapGL, { MapEvent, MapRef } from 'react-map-gl/maplibre';
-import { MapSourceDataEvent, Map as MaplibreMap } from 'maplibre-gl';
+import maplibregl, {
+  MapSourceDataEvent,
+  Map as MaplibreMap,
+} from 'maplibre-gl';
 
 import 'maplibre-gl/dist/maplibre-gl.css';
 import { Panel, leftPanelTabValueSelector } from 'context/leftPanelStateSlice';
+import { Protocol } from 'pmtiles';
 import { mapStyle } from './utils';
 
 type LayerComponentsMap<U extends LayerType> = {
@@ -57,6 +63,7 @@ const componentTypes: LayerComponentsMap<LayerType> = {
   anticipatory_action: {
     component: AnticipatoryActionLayer,
   },
+  pm: { component: PMLayer },
 };
 
 const {
@@ -163,6 +170,15 @@ const MapComponent = memo(() => {
     },
     [idleMapListener, mapSourceListener],
   );
+
+  useEffect(() => {
+    const protocol = new Protocol();
+    maplibregl.addProtocol('pmtiles', protocol.tile);
+
+    return () => {
+      maplibregl.removeProtocol('pmtiles');
+    };
+  }, []);
 
   // TODO: maplibre: Maybe replace this with the map provider
   // Saves a reference to base MaplibreGl Map object in case child layers need access beyond the React wrappers.

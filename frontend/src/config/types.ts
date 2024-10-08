@@ -26,7 +26,8 @@ export type LayerType =
   | PointDataLayerProps
   | CompositeLayerProps
   | StaticRasterLayerProps
-  | AnticipatoryActionLayerProps;
+  | AnticipatoryActionLayerProps
+  | PMLayerProps;
 
 type UnionToIntersection<U> = (U extends any ? (k: U) => void : never) extends (
   k: infer I,
@@ -434,6 +435,12 @@ export type Validity = {
   forward?: number; // Number of days/dekades forward.
   seasons?: SeasonBoundsConfig[];
 };
+
+export class PMLayerProps extends CommonLayerProps {
+  type: 'pm' = 'pm';
+  tilesUrl: string;
+  pmLayers: { [key: string]: any };
+}
 
 export class WMSLayerProps extends CommonLayerProps {
   type: 'wms' = 'wms';

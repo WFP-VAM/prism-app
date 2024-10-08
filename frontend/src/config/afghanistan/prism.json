@@ -16,7 +16,7 @@
   "map": {
     "boundingBox": [60.53, 29.32, 75.16, 38.49]
   },
-  "defaultDisplayBoundaries": ["admin_boundaries", "admin1_boundaries"],
+  "defaultDisplayBoundaries": ["admin_boundaries"],
   "categories": {
     "rainfall": {
       "rainfall_amount": [
@@ -190,7 +190,8 @@
         "ipc_pop_06_2022",
         "ipc_perc_03_2022",
         "ipc_perc_06_2022"
-      ]
+      ],
+      "overture_maps": ["buildings", "roads"]
     }
   }
 }

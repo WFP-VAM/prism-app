@@ -10,6 +10,7 @@ import {
   LayerKey,
   LayersMap,
   LayerType,
+  PMLayerProps,
   PointDataLayerProps,
   ReportType,
   StaticRasterLayerProps,
@@ -127,6 +128,11 @@ export const getLayerByKey = (layerKey: LayerKey): LayerType => {
       return definition;
     case 'anticipatory_action':
       if (!checkRequiredKeys(AnticipatoryActionLayerProps, definition, true)) {
+        return throwInvalidLayer();
+      }
+      return definition;
+    case 'pm':
+      if (!checkRequiredKeys(PMLayerProps, definition, true)) {
         return throwInvalidLayer();
       }
       return definition;

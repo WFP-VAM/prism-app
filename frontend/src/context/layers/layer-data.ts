@@ -41,6 +41,7 @@ export interface LayerData<L extends LayerAcceptingDataType> {
   layer: L;
   date: number;
   extent?: Extent;
+  // @ts-expect-error: DEMO
   data: LayerSpecificDataTypes[L['type']];
 }
 
@@ -82,6 +83,7 @@ export type LazyLoader<T extends LayerAcceptingDataType> = (
 ) => (
   params: LayerDataParams<T>,
   api: ThunkApi,
+  // @ts-expect-error: DEMO
 ) => Promise<LayerSpecificDataTypes[T['type']]>;
 
 export const loadLayerData: LoadLayerDataFuncType = createAsyncThunk<
@@ -90,6 +92,7 @@ export const loadLayerData: LoadLayerDataFuncType = createAsyncThunk<
   CreateAsyncThunkTypes
 >('mapState/loadLayerData', async (params, thunkApi) => {
   const { layer, extent, date } = params;
+  // @ts-expect-error: DEMO
   const layerLoaders: LayerLoaders = {
     boundary: fetchBoundaryLayerData,
     impact: fetchImpactLayerData,

@@ -95,6 +95,7 @@
     "marked": "^4.0.10",
     "max-inscribed-circle": "^2.0.1",
     "papaparse": "^5.2.0",
+    "pmtiles": "^3.2.0",
     "prism-common": "file:../common",
     "prop-types": "^15.7.2",
     "react": "^18",
