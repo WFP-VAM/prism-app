@@ -14,7 +14,11 @@ from app.caching import FilePath, cache_file, cache_geojson
 from app.database.alert_model import AlchemyEncoder, AlertModel
 from app.database.database import AlertsDataBase
 from app.database.user_info_model import UserInfoModel
-from app.googleflood import get_google_floods_gauge_forecast, get_google_floods_gauges, get_google_flood_dates
+from app.googleflood import (
+    get_google_flood_dates,
+    get_google_floods_gauge_forecast,
+    get_google_floods_gauges,
+)
 from app.hdc import get_hdc_stats
 from app.kobo import get_form_dates, get_form_responses, parse_datetime_params
 from app.models import AcledRequest, RasterGeotiffModel
@@ -468,4 +472,3 @@ def get_google_floods_gauge_forecast_api(
             detail="gauge_ids must be provided and contain at least one value.",
         )
     return get_google_floods_gauge_forecast(gauge_id_list)
-  
