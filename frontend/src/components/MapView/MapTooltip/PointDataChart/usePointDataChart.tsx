@@ -7,7 +7,10 @@ import { dateRangeSelector } from 'context/mapStateSlice/selectors';
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { appConfig } from 'config';
-import { GoogleFloodParams } from 'utils/google-flood-utils';
+import {
+  GoogleFloodParams,
+  isGoogleFloodDatasetParams,
+} from 'utils/google-flood-utils';
 import { isAdminBoundary } from 'utils/admin-utils';
 
 const usePointDataChart = () => {
@@ -35,15 +38,19 @@ const usePointDataChart = () => {
         };
         dispatch(loadDataset(requestParams));
       } else {
+        if (isGoogleFloodDatasetParams(datasetParams as GoogleFloodParams)) {
+          const requestParams = datasetParams as GoogleFloodParams;
+          dispatch(loadDataset(requestParams));
+          return;
+        }
+
+        // Assumes EWSDataset
         const requestParams: DatasetRequestParams = {
           date: selectedDate,
           ...datasetParams,
         };
         dispatch(loadDataset(requestParams));
       }
-    } else if (datasetParams && !selectedDate) {
-      const requestParams = datasetParams as GoogleFloodParams;
-      dispatch(loadDataset(requestParams));
     }
   }, [datasetParams, dispatch, selectedDate]);
 
