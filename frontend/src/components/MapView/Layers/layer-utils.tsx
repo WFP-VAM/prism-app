@@ -86,6 +86,7 @@ export const addPopupParams = (
 
   const {
     dataField,
+    featureInfoTitle,
     featureInfoProps,
     title,
     dataLabel,
@@ -153,6 +154,7 @@ export const addPopupParams = (
     : {};
 
   const featureInfoPropsData = getFeatureInfoPropsData(
+    featureInfoTitle,
     featureInfoPropsWithFallback || {},
     coordinates,
     feature,

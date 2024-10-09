@@ -74,6 +74,7 @@ const onClick =
     dispatch(
       addPopupData(
         getFeatureInfoPropsData(
+          layer.featureInfoTitle || {},
           layer.featureInfoProps || {},
           coordinates,
           feature,
