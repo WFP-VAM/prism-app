@@ -6541,6 +6541,7 @@
     "detail_url": "http://prism-api.ovio.org/google-floods/gauges/forecasts",
     "data_field": "severity",
     "data_field_type": "text",
+    "date_url": "https://prism-api.ovio.org/google-floods/dates/?region_codes=BF&region_codes=CM&region_codes=TD&region_codes=GH&region_codes=ML&region_codes=MR&region_codes=NE&region_codes=SL&region_codes=CI&region_codes=GN&region_codes=SN&region_codes=GM&region_codes=GW&region_codes=LR&region_codes=TG&region_codes=BJ&region_codes=NG&region_codes=CF",
     "opacity": 0.9,
     "legend_text": "Current flood status at verified gauges. Visit [Google Research](https://sites.research.google/floodforecasting/) about Google's AI Forecasting models.",
     "legend": [
