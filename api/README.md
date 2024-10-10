@@ -151,6 +151,7 @@ Before deploying, make sure that:
 
 To deploy, ssh into the EC2 instance:
 - Get the private key and copy it to `~/.ssh/{some name}.pem`
+- Add your IP address to the EC2 instance's whitelist in the AWS console
 - Run `ssh -i ~/.ssh/{some name}.pem ubuntu@{Public IPv4 DNS}`
 - Navigate to the api directory
 - Confirm you're on the right branch and the branch is up to date
