@@ -214,19 +214,26 @@ def get_google_floods_gauge_forecast(gauge_ids: list[str]):
 
     forecasts = forecast_response.get("forecasts", {})
 
-    forecast_data = {
-        gauge_id: [
-            {
-                "value": [
-                    forecast_range.get("forecastStartTime"),
-                    round(forecast_range.get("value"), 2),
-                ]
-            }
-            for forecast in forecasts.get(gauge_id, {}).get("forecasts", [])
-            for forecast_range in forecast.get("forecastRanges", [])
-        ]
-        for gauge_id in gauge_ids
-    }
+    forecast_data = {}
+    for gauge_id in gauge_ids:
+        forecast_map = {}
+        for forecast in forecasts.get(gauge_id, {}).get("forecasts", []):
+            issued_time = forecast.get("issuedTime")
+            for forecast_range in forecast.get("forecastRanges", []):
+                start_time = forecast_range.get("forecastStartTime")
+                value = round(forecast_range.get("value"), 2)
+
+                # Deduplicate by forecastStartTime, keeping the most recent issuedTime
+                if (
+                    start_time not in forecast_map
+                    or issued_time > forecast_map[start_time]["issuedTime"]
+                ):
+                    forecast_map[start_time] = {
+                        "issuedTime": issued_time,
+                        "value": [start_time, value],
+                    }
+
+        forecast_data[gauge_id] = list(forecast_map.values())
 
     return forecast_data
 

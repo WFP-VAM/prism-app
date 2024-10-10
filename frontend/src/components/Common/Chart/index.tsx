@@ -1,6 +1,7 @@
 import React, { memo, useCallback, useMemo } from 'react';
 import colormap from 'colormap';
 import { ChartOptions } from 'chart.js';
+import 'chartjs-plugin-annotation';
 import { Bar, Line } from 'react-chartjs-2';
 import { ChartConfig, DatasetField } from 'config/types';
 import { TableData } from 'context/tableStateSlice';
@@ -262,21 +263,65 @@ const Chart = memo(
      *               using config.transpose = true.
      *  - fill
      */
-    const datasets = !transpose ? tableRowsDataSet : indicesDataSet;
-    const datasetsWithThresholds = [...datasets, ...floodThresholds];
 
-    const datasetsTrimmed = datasetsWithThresholds.map(set => ({
-      ...set,
-      data: set.data.slice(chartRange[0], chartRange[1]),
-    }));
+    const today = useMemo(() => {
+      const date = new Date();
+      date.setHours(0, 0, 0, 0);
+      return date;
+    }, []);
 
-    const chartData = React.useMemo(
-      () => ({
-        labels,
-        datasets: datasetsTrimmed,
-      }),
-      [datasetsTrimmed, labels],
+    const parseDateString = (dateString: string) => {
+      const [year, month, day] = dateString.split('-').map(Number);
+      const date = new Date(year, month - 1, day);
+      date.setHours(0, 0, 0, 0);
+      return date;
+    };
+
+    const isFutureDate = useCallback(
+      (dateString: string) => parseDateString(dateString) >= today,
+      [today],
     );
+    const isPastDate = useCallback(
+      (dateString: string) => parseDateString(dateString) <= today,
+      [today],
+    );
+
+    const datasets = !transpose ? tableRowsDataSet : indicesDataSet;
+    const chartData = React.useMemo(() => {
+      if (isGoogleFloodChart) {
+        const pastDatasets = datasets.map(dataset => ({
+          ...dataset,
+          data: dataset.data.map((point, index) =>
+            isPastDate(labels[index] as string) ? point : null,
+          ),
+          borderDash: 0,
+        }));
+        const futureDatasets = datasets.map(dataset => ({
+          ...dataset,
+          label: t(`${dataset.label} (Future)`),
+          data: dataset.data.map((point, index) =>
+            isFutureDate(labels[index] as string) ? point : null,
+          ),
+          borderDash: [5, 2],
+        }));
+        return {
+          labels,
+          datasets: [...pastDatasets, ...futureDatasets, ...floodThresholds],
+        };
+      }
+      return {
+        labels,
+        datasets: [...datasets, ...floodThresholds],
+      };
+    }, [
+      isGoogleFloodChart,
+      labels,
+      datasets,
+      floodThresholds,
+      isPastDate,
+      t,
+      isFutureDate,
+    ]);
 
     const chartConfig = useMemo(
       () =>
@@ -328,7 +373,6 @@ const Chart = memo(
               },
             ],
           },
-          // display values for all datasets in the tooltip
           tooltips: {
             mode: 'index',
             callbacks: {
@@ -345,6 +389,22 @@ const Chart = memo(
             position: legendAtBottom ? 'bottom' : 'right',
             labels: { boxWidth: 12, boxHeight: 12 },
           },
+          ...(isGoogleFloodChart
+            ? {
+                annotation: {
+                  annotations: [
+                    {
+                      type: 'line',
+                      mode: 'vertical',
+                      scaleID: 'x-axis-0',
+                      value: today.toISOString().split('T')[0], // Assuming your labels are date strings
+                      borderColor: 'rgba(255, 255, 255, 0.8)',
+                      borderWidth: 2,
+                    },
+                  ],
+                },
+              }
+            : {}),
         }) as ChartOptions,
       [
         notMaintainAspectRatio,
@@ -356,6 +416,8 @@ const Chart = memo(
         config.displayLegend,
         xAxisLabel,
         legendAtBottom,
+        isGoogleFloodChart,
+        today,
         isEWSChart,
         units,
       ],
