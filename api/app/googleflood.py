@@ -16,6 +16,28 @@ if GOOGLE_FLOODS_API_KEY == "":
     logger.warning("Missing backend parameter: GOOGLE_FLOODS_API_KEY")
 
 
+def make_google_floods_request(url, method="get", data=None, retries=1, timeout=10):
+    """Make a request with retries and error handling."""
+    for _ in range(retries):
+        try:
+            if method == "post":
+                response_data = requests.post(url, json=data, timeout=timeout).json()
+            else:
+                response_data = requests.get(url, timeout=timeout).json()
+            break
+        except requests.exceptions.RequestException as e:
+            logger.warning("Request failed at url %s: %s", url, e)
+            response_data = {}
+
+    if "error" in response_data:
+        logger.error("Error in response: %s", response_data["error"])
+        raise HTTPException(
+            status_code=500, detail="Error fetching data from Google API"
+        )
+
+    return response_data
+
+
 def format_gauge_to_geojson(data):
     """Format Gauge data to GeoJSON"""
     geojson = {
@@ -37,6 +59,8 @@ def format_gauge_to_geojson(data):
             "severity": data["severity"],
             "source": data["source"],
             "qualityVerified": data["qualityVerified"],
+            "thresholds": data["thresholds"],
+            "gaugeValueUnit": data["gaugeValueUnit"],
         },
     }
     if "inundationMapSet" in data:
@@ -47,15 +71,10 @@ def format_gauge_to_geojson(data):
 def fetch_flood_status(region_code):
     """Fetch flood status for a region code"""
     flood_status_url = f"https://floodforecasting.googleapis.com/v1/floodStatus:searchLatestFloodStatusByArea?key={GOOGLE_FLOODS_API_KEY}"
-    for _ in range(3):
-        try:
-            status_response = requests.post(
-                flood_status_url, json={"regionCode": region_code}, timeout=2
-            ).json()
-            return status_response
-        except requests.RequestException as e:
-            logger.warning("Request failed at url %s: %s", flood_status_url, e)
-    return {}
+    status_response = make_google_floods_request(
+        flood_status_url, method="post", data={"regionCode": region_code}, retries=3
+    )
+    return status_response
 
 
 def get_google_flood_dates(region_codes: list[str]):
@@ -124,34 +143,36 @@ def get_google_floods_gauges(
                 )
             initial_gauges.extend(status_response.get("floodStatuses", []))
 
-    gauge_params = urlencode(
+    gauge_details_params = urlencode(
         {"names": [f"gauges/{gauge['gaugeId']}" for gauge in initial_gauges]},
         doseq=True,
     )
-    gauges_details_url = f"https://floodforecasting.googleapis.com/v1/gauges:batchGet?key={GOOGLE_FLOODS_API_KEY}&{gauge_params}"
+    gauges_details_url = f"https://floodforecasting.googleapis.com/v1/gauges:batchGet?key={GOOGLE_FLOODS_API_KEY}&{gauge_details_params}"
 
-    try:
-        details_response = requests.get(gauges_details_url, timeout=2).json()
-    except requests.RequestException as e:
-        logger.warning("Request failed at url %s: %s", gauges_details_url, e)
-        details_response = {}
+    gauge_models_params = urlencode(
+        {"names": [f"gaugeModels/{gauge['gaugeId']}" for gauge in initial_gauges]},
+        doseq=True,
+    )
+    gauges_models_url = f"https://floodforecasting.googleapis.com/v1/gaugeModels:batchGet?key={GOOGLE_FLOODS_API_KEY}&{gauge_models_params}"
 
-    if "error" in details_response:
-        logger.error("Error in response: %s", details_response["error"])
-        raise HTTPException(
-            status_code=500, detail="Error fetching gauges details from Google API"
-        )
+    # Run both requests
+    details_response = make_google_floods_request(gauges_details_url)
+    models_response = make_google_floods_request(gauges_models_url)
 
-    # Create a map for quick lookup
+    # Create maps for quick lookup
     gauge_details_map = {
         item["gaugeId"]: item for item in details_response.get("gauges", [])
+    }
+    gauge_models_map = {
+        item["gaugeId"]: item for item in models_response.get("gaugeModels", [])
     }
 
     gauges_details = []
     for gauge in initial_gauges:
         gauge_id = gauge["gaugeId"]
         detail = gauge_details_map.get(gauge_id, {})
-        merged_gauge = {**gauge, **detail}
+        model = gauge_models_map.get(gauge_id, {})
+        merged_gauge = {**gauge, **detail, **model}
         gauges_details.append(merged_gauge)
 
     if as_geojson:
@@ -161,3 +182,39 @@ def get_google_floods_gauges(
         }
         return geojson_feature_collection
     return gauges_details
+
+
+def get_google_floods_gauge_forecast(gauge_ids: list[str]):
+    """Get forecast data for a gauge"""
+
+    gauge_params = urlencode(
+        {"gaugeIds": [gauge_id for gauge_id in gauge_ids]},
+        doseq=True,
+    )
+    forecast_url = f"https://floodforecasting.googleapis.com/v1/gauges:queryGaugeForecasts?key={GOOGLE_FLOODS_API_KEY}&{gauge_params}"
+    forecast_response = make_google_floods_request(forecast_url)
+
+    forecasts = forecast_response.get("forecasts", {})
+
+    forecast_data = {}
+    for gauge_id in gauge_ids:
+        forecast_map = {}
+        for forecast in forecasts.get(gauge_id, {}).get("forecasts", []):
+            issued_time = forecast.get("issuedTime")
+            for forecast_range in forecast.get("forecastRanges", []):
+                start_time = forecast_range.get("forecastStartTime")
+                value = round(forecast_range.get("value"), 2)
+
+                # Deduplicate by forecastStartTime, keeping the most recent issuedTime
+                if (
+                    start_time not in forecast_map
+                    or issued_time > forecast_map[start_time]["issuedTime"]
+                ):
+                    forecast_map[start_time] = {
+                        "issuedTime": issued_time,
+                        "value": [start_time, value],
+                    }
+
+        forecast_data[gauge_id] = list(forecast_map.values())
+
+    return forecast_data

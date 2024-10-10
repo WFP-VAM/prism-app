@@ -20,9 +20,9 @@ import { addNotification } from 'context/notificationStateSlice';
 import { LocalError } from 'utils/error-utils';
 import { Column, quoteAndEscapeCell } from 'utils/analysis-utils';
 import { TableRow } from 'context/analysisResultStateSlice';
-import { AdminBoundaryParams, EWSParams } from 'context/datasetStateSlice';
 import { MapRef, Point } from 'react-map-gl/maplibre';
 import { PopupData } from 'context/tooltipStateSlice';
+import { getTitle } from 'utils/title-utils';
 import { getExtent } from './Layers/raster-utils';
 
 // TODO: maplibre: fix feature
@@ -116,31 +116,6 @@ const sortKeys = (featureInfoProps: FeatureInfoObject): string[][] => {
   );
 
   return [dataKeys, metaDataKeys];
-};
-
-const getTitle = (
-  featureInfoTitle: FeatureTitleObject | undefined,
-  properties: any,
-): PopupData | {} => {
-  if (!featureInfoTitle) {
-    return {};
-  }
-  const titleField = Object.keys(featureInfoTitle).find(
-    (field: string) =>
-      featureInfoTitle[field].visibility !== FeatureInfoVisibility.IfDefined ||
-      !!properties[field],
-  );
-  return titleField
-    ? {
-        title: {
-          prop: titleField,
-          data: featureInfoTitle[titleField].template,
-          context: {
-            [titleField]: properties[titleField],
-          },
-        },
-      }
-    : {};
 };
 
 const getMetaData = (
@@ -342,8 +317,3 @@ export const getExposureAnalysisTableData = (
   sortColumn: Column['id'],
   sortOrder: 'asc' | 'desc',
 ) => orderBy(tableData, sortColumn, sortOrder);
-
-export const isAdminBoundary = (
-  params: AdminBoundaryParams | EWSParams,
-): params is AdminBoundaryParams =>
-  (params as AdminBoundaryParams).id !== undefined;

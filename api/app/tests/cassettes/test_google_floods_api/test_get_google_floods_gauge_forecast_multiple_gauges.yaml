@@ -1,0 +1,84 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python-requests/2.32.0
+    method: GET
+    uri: https://floodforecasting.googleapis.com/v1/gauges:queryGaugeForecasts?gaugeIds=hybas_1121465590&gaugeIds=hybas_1121499110
+  response:
+    body:
+      string: !!binary |
+        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
+    headers:
+      Alt-Svc:
+      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+      Cache-Control:
+      - private
+      Content-Encoding:
+      - gzip
+      Content-Type:
+      - application/json; charset=UTF-8
+      Date:
+      - Sat, 31 Aug 2024 00:23:44 GMT
+      Server:
+      - ESF
+      Server-Timing:
+      - gfet4t7; dur=383
+      Transfer-Encoding:
+      - chunked
+      Vary:
+      - Origin
+      - X-Origin
+      - Referer
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-XSS-Protection:
+      - '0'
+    status:
+      code: 200
+      message: OK
+version: 1

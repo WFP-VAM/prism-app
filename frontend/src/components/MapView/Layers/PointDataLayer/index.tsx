@@ -27,7 +27,11 @@ import {
   fillPaintCategorical,
   fillPaintData,
 } from 'components/MapView/Layers/styles';
-import { setEWSParams, clearDataset } from 'context/datasetStateSlice';
+import {
+  setEWSParams,
+  setGoogleFloodParams,
+  clearDataset,
+} from 'context/datasetStateSlice';
 import { createEWSDatasetParams } from 'utils/ews-utils';
 import { addPopupParams } from 'components/MapView/Layers/layer-utils';
 import {
@@ -38,6 +42,7 @@ import {
 import { findFeature, getLayerMapId, useMapCallback } from 'utils/map-utils';
 import { getFormattedDate } from 'utils/date-utils';
 import { geoToH3, h3ToGeoBoundary } from 'h3-js';
+import { createGoogleFloodDatasetParams } from 'utils/google-flood-utils';
 
 const onClick =
   ({ layer, dispatch, t }: MapEventWrapFunctionProps<PointDataLayerProps>) =>
@@ -56,6 +61,18 @@ const onClick =
         layer.data,
       );
       dispatch(setEWSParams(ewsDatasetParams));
+    }
+    if (layer.loader === PointDataLoader.GOOGLE_FLOOD && layer.detailUrl) {
+      dispatch(clearDataset());
+      if (!feature?.properties) {
+        return;
+      }
+      const googleFloodDatasetParams = createGoogleFloodDatasetParams(
+        feature?.properties,
+        layer.detailUrl,
+        layer.featureInfoTitle,
+      );
+      dispatch(setGoogleFloodParams(googleFloodDatasetParams));
     }
   };
 

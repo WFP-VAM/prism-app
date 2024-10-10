@@ -10,8 +10,9 @@ import {
   getBoundaryLayersByAdminLevel,
   getDisplayBoundaryLayers,
 } from 'config/utils';
-import { AdminBoundaryParams } from 'context/datasetStateSlice';
+import { AdminBoundaryParams, EWSParams } from 'context/datasetStateSlice';
 import { CHART_API_URL } from 'utils/constants';
+import { GoogleFloodParams } from './google-flood-utils';
 
 const { multiCountry } = appConfig;
 const MAX_ADMIN_LEVEL = multiCountry ? 3 : 2;
@@ -89,3 +90,8 @@ export const getChartAdminBoundaryParams = (
 
   return adminBoundaryParams;
 };
+
+export const isAdminBoundary = (
+  params: AdminBoundaryParams | EWSParams | GoogleFloodParams,
+): params is AdminBoundaryParams =>
+  (params as AdminBoundaryParams).id !== undefined;
