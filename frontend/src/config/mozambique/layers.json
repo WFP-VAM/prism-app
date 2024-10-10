@@ -2955,6 +2955,7 @@
     "detail_url": "https://prism-api.ovio.org/google-floods/gauges/forecasts",
     "data_field": "severity",
     "data_field_type": "text",
+    "date_url": "https://prism-api.ovio.org/google-floods/dates/?region_codes=MZ",
     "opacity": 0.9,
     "legend_text": "Current flood status at verified gauges. Visit [Google Research](https://sites.research.google/floodforecasting/) about Google's AI Forecasting models.",
     "legend": [

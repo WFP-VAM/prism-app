@@ -104,3 +104,7 @@ export const createGoogleFloodDatasetParams = (
     unit,
   };
 };
+
+export const isGoogleFloodDatasetParams = (
+  params: GoogleFloodParams,
+): params is GoogleFloodParams => params.gaugeId !== undefined;

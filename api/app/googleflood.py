@@ -4,6 +4,8 @@ import logging
 import os
 import uuid
 from concurrent.futures import ThreadPoolExecutor, as_completed
+from datetime import datetime, timezone
+from os import getenv
 from typing import List
 from urllib.parse import urlencode
 
@@ -93,6 +95,50 @@ def fetch_flood_status(region_code):
     return status_response
 
 
+def get_google_flood_dates(region_codes: list[str]):
+    """
+    When more complex date support is needed, this can be used to fetch dates from the Google Floods API.
+
+    For now, we just return today's date at the region
+    """
+    flood_statuses = []
+
+    # Retry 3 times due to intermittent API errors
+    with ThreadPoolExecutor() as executor:
+        future_to_region = {
+            executor.submit(fetch_flood_status, code): code for code in region_codes
+        }
+        for future in as_completed(future_to_region):
+            status_response = future.result()
+            if "error" in status_response:
+                logger.error("Error in response: %s", status_response["error"])
+                raise HTTPException(
+                    status_code=500,
+                    detail="Error fetching flood status data from Google API",
+                )
+            flood_statuses.extend(status_response.get("floodStatuses", []))
+
+    parsed_issued_times = [
+        datetime.strptime(status["issuedTime"], "%Y-%m-%dT%H:%M:%S.%fZ")
+        for status in flood_statuses
+        if "issuedTime" in status
+    ]
+    parsed_issued_times.sort(reverse=True)  # Sort in descending order
+
+    # Format only the most recent date
+    most_recent_date = (
+        {
+            "date": parsed_issued_times[0]
+            .replace(tzinfo=timezone.utc)
+            .strftime("%Y-%m-%d")
+        }
+        if parsed_issued_times
+        else {}
+    )
+
+    return [most_recent_date] if most_recent_date else []
+
+
 def get_google_floods_gauges(
     region_codes: list[str],
     as_geojson: bool = True,
@@ -168,19 +214,26 @@ def get_google_floods_gauge_forecast(gauge_ids: list[str]):
 
     forecasts = forecast_response.get("forecasts", {})
 
-    forecast_data = {
-        gauge_id: [
-            {
-                "value": [
-                    forecast_range.get("forecastStartTime"),
-                    round(forecast_range.get("value"), 2),
-                ]
-            }
-            for forecast in forecasts.get(gauge_id, {}).get("forecasts", [])
-            for forecast_range in forecast.get("forecastRanges", [])
-        ]
-        for gauge_id in gauge_ids
-    }
+    forecast_data = {}
+    for gauge_id in gauge_ids:
+        forecast_map = {}
+        for forecast in forecasts.get(gauge_id, {}).get("forecasts", []):
+            issued_time = forecast.get("issuedTime")
+            for forecast_range in forecast.get("forecastRanges", []):
+                start_time = forecast_range.get("forecastStartTime")
+                value = round(forecast_range.get("value"), 2)
+
+                # Deduplicate by forecastStartTime, keeping the most recent issuedTime
+                if (
+                    start_time not in forecast_map
+                    or issued_time > forecast_map[start_time]["issuedTime"]
+                ):
+                    forecast_map[start_time] = {
+                        "issuedTime": issued_time,
+                        "value": [start_time, value],
+                    }
+
+        forecast_data[gauge_id] = list(forecast_map.values())
 
     return forecast_data
 

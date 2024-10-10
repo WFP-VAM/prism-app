@@ -15,6 +15,7 @@ from app.database.alert_model import AlchemyEncoder, AlertModel
 from app.database.database import AlertsDataBase
 from app.database.user_info_model import UserInfoModel
 from app.googleflood import (
+    get_google_flood_dates,
     get_google_floods_gauge_forecast,
     get_google_floods_gauges,
     get_google_floods_inundations,
@@ -436,6 +437,28 @@ def get_google_floods_gauges_api(region_codes: list[str] = Query(...)):
 
     iso2_codes = [region_code.upper() for region_code in region_codes]
     return get_google_floods_gauges(iso2_codes)
+
+
+@app.get("/google-floods/dates/")
+def get_google_floods_dates_api(region_codes: list[str] = Query(...)):
+    """
+    Get the Google Floods dates for a list of regions.
+    """
+    if not region_codes:
+        raise HTTPException(
+            status_code=400,
+            detail="At least one region code must be provided.",
+        )
+
+    for region_code in region_codes:
+        if len(region_code) != 2:
+            raise HTTPException(
+                status_code=400,
+                detail=f"Region code '{region_code}' must be exactly two characters (iso2).",
+            )
+
+    iso2_codes = [region_code.upper() for region_code in region_codes]
+    return get_google_flood_dates(iso2_codes)
 
 
 @app.get("/google-floods/gauges/forecasts")
