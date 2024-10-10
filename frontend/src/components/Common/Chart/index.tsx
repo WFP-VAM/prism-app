@@ -298,7 +298,7 @@ const Chart = memo(
         }));
         const futureDatasets = datasets.map(dataset => ({
           ...dataset,
-          label: `${dataset.label} (Future)`,
+          label: t(`${dataset.label} (Future)`),
           data: dataset.data.map((point, index) =>
             isFutureDate(labels[index] as string) ? point : null,
           ),
@@ -319,6 +319,7 @@ const Chart = memo(
       datasets,
       floodThresholds,
       isPastDate,
+      t,
       isFutureDate,
     ]);
 
