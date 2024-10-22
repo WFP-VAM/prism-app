@@ -14,8 +14,11 @@
     "wms": ["https://api.earthobservation.vam.wfp.org/ows/wms"]
   },
   "map": {
-    "boundingBox": [-171, -56, 180, 76]
+    "boundingBox": [-100, -35, 150, 50]
   },
+  "defaultDisplayBoundaries": [
+    "global_admin_boundaries"
+  ],
   "categories": {
     "rainfall": {
       "forecasts": [
