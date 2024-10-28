@@ -69,18 +69,46 @@ export function timelineTransform({
     filtered.forEach(x => {
       const key = getColumnKey(x);
       const val = categoriesMap.get(key);
-      categoriesMap.set(
-        key,
-        val
-          ? { status: val.status, data: [...val.data, x] }
-          : {
-              status: {
-                category: x.category,
-                phase: x.phase,
-              },
-              data: [x],
-            },
-      );
+      if (val) {
+        // Sort the new data based on validity
+        // eslint-disable-next-line fp/no-mutating-methods
+        const sortedData = [
+          x,
+          ...val.data.filter(item => item.date === x.date),
+        ].sort((a, b) => {
+          if (a.isValid && a.isOtherPhaseValid) {
+            return -1;
+          }
+          if (b.isValid && b.isOtherPhaseValid) {
+            return 1;
+          }
+          if (a.isValid) {
+            return -1;
+          }
+          if (b.isValid) {
+            return 1;
+          }
+          return 0;
+        });
+
+        // Keep only the highest priority item for this date
+        const highestPriorityItem = sortedData[0];
+
+        // Update the data array
+        // eslint-disable-next-line fp/no-mutation
+        val.data = [
+          ...val.data.filter(item => item.date !== x.date),
+          highestPriorityItem,
+        ];
+      } else {
+        categoriesMap.set(key, {
+          status: {
+            category: x.category,
+            phase: x.phase,
+          },
+          data: [x],
+        });
+      }
     });
     return [win, { months, rows: Object.fromEntries(categoriesMap) }];
   }) as [
