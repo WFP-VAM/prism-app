@@ -121,7 +121,8 @@ exports[`renders as expected 1`] = `
                 style="width: 26%;"
               />
               <mock-typography
-                style="white-space: nowrap;"
+                classname="makeStyles-indexText-26"
+                style="font-size: 0.75rem;"
               >
                 SPI DJF
               </mock-typography>
@@ -153,7 +154,8 @@ exports[`renders as expected 1`] = `
                 style="width: 30%;"
               />
               <mock-typography
-                style="white-space: nowrap;"
+                classname="makeStyles-indexText-26"
+                style="font-size: 0.75rem;"
               >
                 SPI DJF
               </mock-typography>
@@ -218,7 +220,8 @@ exports[`renders as expected 1`] = `
                 style="width: 10%;"
               />
               <mock-typography
-                style="white-space: nowrap;"
+                classname="makeStyles-indexText-26"
+                style="font-size: 0.75rem;"
               >
                 SPI DJF
               </mock-typography>
@@ -250,7 +253,8 @@ exports[`renders as expected 1`] = `
                 style="width: 20%;"
               />
               <mock-typography
-                style="white-space: nowrap;"
+                classname="makeStyles-indexText-26"
+                style="font-size: 0.75rem;"
               >
                 SPI DJF
               </mock-typography>
@@ -318,7 +322,8 @@ exports[`renders as expected 1`] = `
                 style="width: 30%;"
               />
               <mock-typography
-                style="white-space: nowrap;"
+                classname="makeStyles-indexText-26"
+                style="font-size: 0.75rem;"
               >
                 SPI DJF
               </mock-typography>
@@ -350,7 +355,8 @@ exports[`renders as expected 1`] = `
                 style="width: 33%;"
               />
               <mock-typography
-                style="white-space: nowrap;"
+                classname="makeStyles-indexText-26"
+                style="font-size: 0.75rem;"
               >
                 SPI DJF
               </mock-typography>
@@ -382,7 +388,8 @@ exports[`renders as expected 1`] = `
                 style="width: 25%;"
               />
               <mock-typography
-                style="white-space: nowrap;"
+                classname="makeStyles-indexText-26"
+                style="font-size: 0.75rem;"
               >
                 SPI DJF
               </mock-typography>
@@ -444,7 +451,8 @@ exports[`renders as expected 1`] = `
                 style="width: 17%;"
               />
               <mock-typography
-                style="white-space: nowrap;"
+                classname="makeStyles-indexText-26"
+                style="font-size: 0.75rem;"
               >
                 SPI DJF
               </mock-typography>
@@ -476,7 +484,8 @@ exports[`renders as expected 1`] = `
                 style="width: 30%;"
               />
               <mock-typography
-                style="white-space: nowrap;"
+                classname="makeStyles-indexText-26"
+                style="font-size: 0.75rem;"
               >
                 SPI DJF
               </mock-typography>
@@ -508,7 +517,8 @@ exports[`renders as expected 1`] = `
                 style="width: 20%;"
               />
               <mock-typography
-                style="white-space: nowrap;"
+                classname="makeStyles-indexText-26"
+                style="font-size: 0.75rem;"
               >
                 SPI DJF
               </mock-typography>
