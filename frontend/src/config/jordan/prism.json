@@ -212,7 +212,6 @@
     },
     "drought": {
       "combined_drought_index": [
-        "cdi_v1_aggregated",
         {
           "group_title": "Combined Drought Index v1:",
           "activate_all": false,
@@ -229,6 +228,21 @@
           ]
         },
         {
+          "group_title": "Combined Drought Index v1 Aggregated:",
+          "activate_all": false,
+          "layers": [
+            {
+              "id": "cdi_v1_aggregated_monthly",
+              "label": "Monthly",
+              "main": true
+            },
+            {
+              "id": "cdi_v1_aggregated_seasonal",
+              "label": "Seasonal"
+            }
+          ]
+        },
+        {
           "group_title": "Combined Drought Index v2:",
           "activate_all": false,
           "layers": [
@@ -239,6 +253,21 @@
             },
             {
               "id": "cdi_v2_seasonal",
+              "label": "Seasonal"
+            }
+          ]
+        },
+        {
+          "group_title": "Combined Drought Index v2 Aggregated:",
+          "activate_all": false,
+          "layers": [
+            {
+              "id": "cdi_v2_aggregated_monthly",
+              "label": "Monthly",
+              "main": true
+            },
+            {
+              "id": "cdi_v2_aggregated_seasonal",
               "label": "Seasonal"
             }
           ]
