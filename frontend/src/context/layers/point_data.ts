@@ -74,7 +74,11 @@ export const fetchPointLayerData: LazyLoader<PointDataLayerProps> =
 
     const requestUrl = `${dataUrl}${
       dataUrl.includes('?') ? '&' : '?'
-    }${dateQuery}&${queryParamsToString(additionalQueryParams)}`;
+    }${dateQuery}${
+      additionalQueryParams
+        ? `&${queryParamsToString(additionalQueryParams)}`
+        : ''
+    }`;
 
     const headers = authRequired
       ? {
