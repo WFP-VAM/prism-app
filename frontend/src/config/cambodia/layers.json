@@ -1990,7 +1990,8 @@
     "legend_text": "Index meausring a household’s social and economic capacities and resilience to cope with, adapt to and recover from the floods and droughts. Aggregated at Commune level"
   },
   "google_flood_status_at_gauges": {
-    "title": "Flood Status at Gauges (Google AI)",
+    "title": "Current Flood Status (Google AI)",
+    "loader": "google_flood",
     "type": "point_data",
     "loader": "google_flood",
     "hex_display": false,
@@ -2006,7 +2007,7 @@
       { "label": "Danger", "value": "SEVERE", "color": "#ea250a" },
       { "label": "Warning", "value": "ABOVE_NORMAL", "color": "#fba705" },
       { "label": "Normal", "value": "NO_FLOODING", "color": "#089180" },
-      { "label": "Unknown", "value": "UNKNOWN", "color": "#858585" }
+      { "label": "No data", "value": "UNKNOWN", "color": "#858585" }
     ],
     "feature_info_title": {
       "siteName": {
@@ -2044,7 +2045,7 @@
           "SEVERE": "Danger",
           "ABOVE_NORMAL": "Warning",
           "NO_FLOODING": "Normal",
-          "UNKNOWN": "Unknown"
+          "UNKNOWN": "No data"
         }
       },
       "gaugeId": {

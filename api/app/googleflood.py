@@ -53,6 +53,7 @@ def make_google_floods_request(url, method="get", data=None, retries=1, timeout=
         raise HTTPException(
             status_code=500, detail="Error fetching data from Google API"
         )
+
     return response_data
 
 

@@ -32,14 +32,14 @@ function downloadChartPng(ref: React.RefObject<Bar | Line>, filename: string) {
 const useStyles = makeStyles(() => ({
   firstIcon: {
     position: 'absolute',
-    top: 0,
-    right: 0,
+    top: '8px',
+    right: '0rem',
     padding: '0.25rem',
   },
   secondIcon: {
     position: 'absolute',
-    top: 0,
-    right: '2rem',
+    top: '8px',
+    right: '1.75rem',
     padding: '0.25rem',
   },
 }));
@@ -58,6 +58,7 @@ export type ChartProps = {
   iconStyles?: React.CSSProperties;
   downloadFilenamePrefix?: string[];
   units?: string;
+  yAxisLabel?: string;
 };
 
 const Chart = memo(
@@ -75,6 +76,7 @@ const Chart = memo(
     iconStyles,
     downloadFilenamePrefix = [],
     units,
+    yAxisLabel,
   }: ChartProps) => {
     const { t } = useSafeTranslation();
     const classes = useStyles();
@@ -191,7 +193,7 @@ const Chart = memo(
           fill: config.fill || false,
           backgroundColor: colors[i],
           borderColor: colors[i],
-          borderWidth: 2,
+          borderWidth: 4,
           data: tableRows.map(row => (row[indiceKey] as number) || null),
           pointRadius: configureIndicePointRadius(indiceKey),
           pointHitRadius: 10,
@@ -302,7 +304,7 @@ const Chart = memo(
           data: dataset.data.map((point, index) =>
             isFutureDate(labels[index] as string) ? point : null,
           ),
-          borderDash: [5, 2],
+          borderDash: [5, 5],
         }));
         return {
           labels,
@@ -351,6 +353,8 @@ const Chart = memo(
                       scaleLabel: {
                         labelString: xAxisLabel,
                         display: true,
+                        lineHeight: 1.5,
+                        fontColor: '#AAA',
                       },
                     }
                   : {}),
@@ -370,6 +374,23 @@ const Chart = memo(
                 gridLines: {
                   display: false,
                 },
+                afterDataLimits: axis => {
+                  // Increase y-axis by 20% for Google Flood charts to make space for the annotation label
+                  if (isGoogleFloodChart) {
+                    const range = axis.max - axis.min;
+                    axis.max += range * 0.25; // eslint-disable-line no-param-reassign, fp/no-mutation
+                  }
+                },
+                ...(yAxisLabel
+                  ? {
+                      scaleLabel: {
+                        display: true,
+                        labelString: yAxisLabel,
+                        lineHeight: 1.5,
+                        fontColor: '#AAA',
+                      },
+                    }
+                  : {}),
               },
             ],
           },
@@ -377,10 +398,41 @@ const Chart = memo(
             mode: 'index',
             callbacks: {
               label: (tooltipItem, labelData) => {
-                const label =
+                const datasetLabel =
                   labelData.datasets?.[tooltipItem.datasetIndex as number]
                     ?.label || '';
-                return `${label}: ${tooltipItem.yLabel}${units ? ` ${units}` : ''}`;
+                const value = tooltipItem.yLabel;
+                const unitLabel = units ? ` ${units}` : '';
+
+                // Get the data point for the current tooltip item
+                const dataPoint =
+                  labelData.datasets?.[tooltipItem.datasetIndex as number]
+                    ?.data?.[tooltipItem.index as number];
+
+                // Check if any label is present in the tooltip
+                const labelPresent = labelData.datasets?.some(dataset => {
+                  const { label } = dataset;
+                  if (tooltipItem.index !== undefined) {
+                    const indexData = dataset.data?.[tooltipItem.index];
+                    return (
+                      label === datasetLabel.replace(' (Future)', '') &&
+                      indexData !== null
+                    );
+                  }
+                  return false;
+                });
+
+                // Hide "{label} (Future)" if "{label}" is present
+                if (labelPresent && datasetLabel.includes(' (Future)')) {
+                  return null;
+                }
+
+                // Only show labels with non-null data points
+                if (dataPoint !== null) {
+                  return `${datasetLabel}: ${value}${unitLabel}`;
+                }
+
+                return null;
               },
             },
           },
@@ -397,9 +449,17 @@ const Chart = memo(
                       type: 'line',
                       mode: 'vertical',
                       scaleID: 'x-axis-0',
-                      value: today.toISOString().split('T')[0], // Assuming your labels are date strings
+                      value: today.toISOString().split('T')[0],
                       borderColor: 'rgba(255, 255, 255, 0.8)',
                       borderWidth: 2,
+                      label: {
+                        content: t('Today'),
+                        enabled: true,
+                        position: 'top',
+                        yAdjust: -6,
+                        fontColor: '#CCC',
+                        fontSize: 10,
+                      },
                     },
                   ],
                 },
@@ -418,8 +478,10 @@ const Chart = memo(
         legendAtBottom,
         isGoogleFloodChart,
         today,
+        t,
         isEWSChart,
         units,
+        yAxisLabel,
       ],
     );
 
