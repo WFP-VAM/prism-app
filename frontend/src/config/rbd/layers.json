@@ -6549,7 +6549,7 @@
       { "label": "Danger", "value": "SEVERE", "color": "#ea250a" },
       { "label": "Warning", "value": "ABOVE_NORMAL", "color": "#fba705" },
       { "label": "Normal", "value": "NO_FLOODING", "color": "#089180" },
-      { "label": "Unknown", "value": "UNKNOWN", "color": "#858585" }
+      { "label": "No data", "value": "UNKNOWN", "color": "#858585" }
     ],
     "feature_info_title": {
       "siteName": {
@@ -6587,7 +6587,7 @@
           "SEVERE": "Danger",
           "ABOVE_NORMAL": "Warning",
           "NO_FLOODING": "Normal",
-          "UNKNOWN": "Unknown"
+          "UNKNOWN": "No data"
         }
       },
       "gaugeId": {
