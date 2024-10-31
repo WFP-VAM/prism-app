@@ -3017,5 +3017,20 @@
         "dataTitle": "Status issued"
       }
     }
+  },
+  "google_flood_inundation_maps": {
+    "title": "Inundation Probability Map (Google AI)",
+    "type": "geojson_polygon",
+    "hex_display": false,
+    "data": "https://prism-api.ovio.org/google-floods/inundations/?region_codes=MZ",
+    "data_field": "level",
+    "data_field_type": "text",
+    "opacity": 0.9,
+    "legend_text": "Current predicted flood maps. Visit [Google Research](https://sites.research.google/floodforecasting/) about Google's AI Forecasting models.",
+    "legend": [
+      { "label": "High", "value": "HIGH", "color": "#00408A" },
+      { "label": "Medium", "value": "MEDIUM", "color": "#5296E5" },
+      { "label": "Low", "value": "LOW", "color": "#B5D2F5" }
+    ]
   }
 }
