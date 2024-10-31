@@ -1991,9 +1991,11 @@
   },
   "google_flood_status_at_gauges": {
     "title": "Current Flood Status (Google AI)",
+    "loader": "google_flood",
     "type": "point_data",
     "hex_display": false,
     "data": "https://prism-api.ovio.org/google-floods/gauges/?region_codes=KH",
+    "detail_url": "https://prism-api.ovio.org/google-floods/gauges/forecasts",
     "data_field": "severity",
     "data_field_type": "text",
     "date_url": "https://prism-api.ovio.org/google-floods/dates/?region_codes=KH",
@@ -2004,7 +2006,7 @@
       { "label": "Danger", "value": "SEVERE", "color": "#ea250a" },
       { "label": "Warning", "value": "ABOVE_NORMAL", "color": "#fba705" },
       { "label": "Normal", "value": "NO_FLOODING", "color": "#089180" },
-      { "label": "Unknown", "value": "UNKNOWN", "color": "#858585" }
+      { "label": "No data", "value": "UNKNOWN", "color": "#858585" }
     ],
     "feature_info_title": {
       "siteName": {
@@ -2042,7 +2044,7 @@
           "SEVERE": "Danger",
           "ABOVE_NORMAL": "Warning",
           "NO_FLOODING": "Normal",
-          "UNKNOWN": "Unknown"
+          "UNKNOWN": "No data"
         }
       },
       "gaugeId": {
