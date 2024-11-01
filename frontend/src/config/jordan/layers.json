@@ -1371,7 +1371,7 @@
     "title": "Monthly Combined Drought Index (v1)",
     "type": "composite",
     "period": "monthly",
-    "base_url": "http://127.0.0.1:8000/q_multi_geojson",
+    "base_url": "https://hip-service.ovio.org/q_multi_geojson",
     "validity": {
       "forward": 1,
       "backward": 2,
@@ -1470,7 +1470,7 @@
     "title": "Monthly Combined Drought Index Aggregated (v1)",
     "type": "composite",
     "period": "monthly",
-    "base_url": "http://127.0.0.1:8000/q_multi_aggregated",
+    "base_url": "https://hip-service.ovio.org/q_multi_aggregated",
     "validity": {
       "forward": 1,
       "backward": 2,
@@ -1685,7 +1685,7 @@
     "title": "Seasonal Combined Drought Index Aggregated (v1)",
     "type": "composite",
     "period": "seasonal",
-    "base_url": "http://127.0.0.1:8000/q_multi_aggregated",
+    "base_url": "https://hip-service.ovio.org/q_multi_aggregated",
     "validity": {
       "mode": "season",
       "seasons": [
@@ -1801,7 +1801,7 @@
     "title": "Monthly Combined Drought Index (v2)",
     "type": "composite",
     "period": "monthly",
-    "base_url": "http://127.0.0.1:8000/q_multi_geojson",
+    "base_url": "https://hip-service.ovio.org/q_multi_geojson",
     "validity": {
       "forward": 1,
       "backward": 2,
@@ -1900,7 +1900,7 @@
     "title": "Monthly Combined Drought Index Aggregated (v2)",
     "type": "composite",
     "period": "monthly",
-    "base_url": "http://127.0.0.1:8000/q_multi_aggregated",
+    "base_url": "https://hip-service.ovio.org/q_multi_aggregated",
     "validity": {
       "forward": 1,
       "backward": 2,
@@ -2115,7 +2115,7 @@
     "title": "Seasonal Combined Drought Index Aggregated (v2)",
     "type": "composite",
     "period": "seasonal",
-    "base_url": "http://127.0.0.1:8000/q_multi_aggregated",
+    "base_url": "https://hip-service.ovio.org/q_multi_aggregated",
     "validity": {
       "mode": "season",
       "seasons": [
