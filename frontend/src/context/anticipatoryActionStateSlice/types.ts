@@ -31,7 +31,7 @@ export interface AnticipatoryActionDataRow {
   season: string;
   new: boolean;
   isValid?: boolean;
-  wasReadyValid?: boolean;
+  isOtherPhaseValid?: boolean;
   computedRow?: boolean;
   // district vulnerability level
   vulnerability?: Vulnerability;

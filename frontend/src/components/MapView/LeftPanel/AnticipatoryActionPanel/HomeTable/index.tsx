@@ -25,6 +25,7 @@ import {
 import { GetApp, BarChartOutlined } from '@material-ui/icons';
 import { appConfig, safeCountry } from 'config';
 import { PanelSize } from 'config/types';
+import { getCurrentDateTimeForUrl } from 'utils/date-utils';
 import { AADataSeverityOrder, getAAIcon, useAACommonStyles } from '../utils';
 
 interface AreaTagProps {
@@ -214,7 +215,7 @@ function HomeTable({ dialogs }: HomeTableProps) {
       startIcon: <GetApp />,
       text: 'Assets',
       component: 'a',
-      href: appConfig.anticipatoryActionUrl,
+      href: `${appConfig.anticipatoryActionUrl}?date=${getCurrentDateTimeForUrl()}`,
       download: `${window2Range?.end}-${filename}`,
     },
     {

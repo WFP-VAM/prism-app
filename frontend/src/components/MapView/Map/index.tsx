@@ -2,9 +2,7 @@ import React, {
   ComponentType,
   createElement,
   memo,
-  SetStateAction,
   useCallback,
-  Dispatch,
   useMemo,
   useState,
 } from 'react';
@@ -42,10 +40,6 @@ import 'maplibre-gl/dist/maplibre-gl.css';
 import { Panel, leftPanelTabValueSelector } from 'context/leftPanelStateSlice';
 import { mapStyle } from './utils';
 
-interface MapComponentProps {
-  setIsAlertFormOpen: Dispatch<SetStateAction<boolean>>;
-}
-
 type LayerComponentsMap<U extends LayerType> = {
   [T in U['type']]: {
     component: ComponentType<{ layer: DiscriminateUnion<U, 'type', T> }>;
@@ -69,7 +63,7 @@ const {
   map: { boundingBox, minZoom, maxZoom, maxBounds },
 } = appConfig;
 
-const MapComponent = memo(({ setIsAlertFormOpen }: MapComponentProps) => {
+const MapComponent = memo(() => {
   const mapRef = React.useRef<MapRef>(null);
 
   const dispatch = useDispatch();
@@ -192,11 +186,7 @@ const MapComponent = memo(({ setIsAlertFormOpen }: MapComponentProps) => {
 
   const firstBoundaryId = boundaryId && getLayerMapId(boundaryId);
 
-  const mapOnClick = useMapOnClick(
-    setIsAlertFormOpen,
-    boundaryLayerId,
-    mapRef.current,
-  );
+  const mapOnClick = useMapOnClick(boundaryLayerId, mapRef.current);
 
   const getBeforeId = useCallback(
     (index: number, aboveBoundaries: boolean = false) => {
