@@ -1462,8 +1462,8 @@
     "legend_text": "Composite Drought Index v1. SPI weight = 0.5; LST weight = 0.25; NDVI weight = 0.25",
     "aggregation": "pixel",
     "date_layer": "spi_1m",
-    "start_date": "2010-12-01",
-    "end_date": "2020-07-31",
+    "start_date": "2003-01-01",
+    "end_date": "2013-12-31",
     "opacity": 0.7
   },
   "cdi_v1_aggregated_monthly": {
@@ -1570,8 +1570,8 @@
     "admin_code": "admin3Pcod",
     "aggregation_boundary_path": "data/jordan/jor_admbnda_adm3_jdos_merged.json",
     "date_layer": "spi_1m",
-    "start_date": "2010-12-01",
-    "end_date": "2020-07-31",
+    "start_date": "2003-01-01",
+    "end_date": "2013-12-31",
     "opacity": 0.7
   },
   "cdi_v1_seasonal": {
@@ -1677,8 +1677,8 @@
     "legend_text": "Composite Drought Index v1. SPI weight = 0.5; LST weight = 0.25; NDVI weight = 0.25",
     "aggregation": "pixel",
     "date_layer": "spi_3m",
-    "start_date": "2010-12-01",
-    "end_date": "2020-07-31",
+    "start_date": "2003-01-01",
+    "end_date": "2013-12-31",
     "opacity": 0.7
   },
   "cdi_v1_aggregated_seasonal": {
@@ -1793,8 +1793,8 @@
     "admin_code": "admin3Pcod",
     "aggregation_boundary_path": "data/jordan/jor_admbnda_adm3_jdos_merged.json",
     "date_layer": "spi_3m",
-    "start_date": "2010-12-01",
-    "end_date": "2020-07-31",
+    "start_date": "2003-01-01",
+    "end_date": "2013-12-31",
     "opacity": 0.7
   },
   "cdi_v2_monthly": {
@@ -1892,8 +1892,8 @@
     "legend_text": "Composite Drought Index v2. SPI weight = 0.3; LST weight = 0.3; NDVI weight = 0.4",
     "aggregation": "pixel",
     "date_layer": "spi_1m",
-    "start_date": "2010-12-01",
-    "end_date": "2020-07-31",
+    "start_date": "2003-01-01",
+    "end_date": "2013-12-31",
     "opacity": 0.7
   },
   "cdi_v2_aggregated_monthly": {
@@ -2000,8 +2000,8 @@
     "admin_code": "admin3Pcod",
     "aggregation_boundary_path": "data/jordan/jor_admbnda_adm3_jdos_merged.json",
     "date_layer": "spi_1m",
-    "start_date": "2010-12-01",
-    "end_date": "2020-07-31",
+    "start_date": "2003-01-01",
+    "end_date": "2013-12-31",
     "opacity": 0.7
   },
   "cdi_v2_seasonal": {
@@ -2107,8 +2107,8 @@
     "legend_text": "Composite Drought Index v2. SPI weight = 0.3; LST weight = 0.3; NDVI weight = 0.4",
     "aggregation": "pixel",
     "date_layer": "spi_3m",
-    "start_date": "2010-12-01",
-    "end_date": "2020-07-31",
+    "start_date": "2003-01-01",
+    "end_date": "2013-12-31",
     "opacity": 0.7
   },
   "cdi_v2_aggregated_seasonal": {
@@ -2223,8 +2223,8 @@
     "admin_code": "admin3Pcod",
     "aggregation_boundary_path": "data/jordan/jor_admbnda_adm3_jdos_merged.json",
     "date_layer": "spi_3m",
-    "start_date": "2010-12-01",
-    "end_date": "2020-07-31",
+    "start_date": "2003-01-01",
+    "end_date": "2013-12-31",
     "opacity": 0.7
   }
 }
