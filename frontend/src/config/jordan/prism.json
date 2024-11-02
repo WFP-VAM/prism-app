@@ -211,64 +211,66 @@
       "vulnerability": ["vulnerability_scaled"]
     },
     "drought": {
-      "combined_drought_index": [
+      "combined_drought_index_v1": [
         {
-          "group_title": "Combined Drought Index v1:",
-          "activate_all": false,
-          "layers": [
-            {
-              "id": "cdi_v1_monthly",
-              "label": "Monthly",
-              "main": true
-            },
-            {
-              "id": "cdi_v1_seasonal",
-              "label": "Seasonal"
-            }
-          ]
-        },
-        {
-          "group_title": "Combined Drought Index v1 Aggregated:",
+          "group_title": "Monthly",
           "activate_all": false,
           "layers": [
             {
               "id": "cdi_v1_aggregated_monthly",
-              "label": "Monthly",
+              "label": "Aggregated",
               "main": true
             },
             {
-              "id": "cdi_v1_aggregated_seasonal",
-              "label": "Seasonal"
+              "id": "cdi_v1_monthly",
+              "label": "Pixel level",
+              "main": true
             }
           ]
         },
         {
-          "group_title": "Combined Drought Index v2:",
+          "group_title": "Seasonal",
           "activate_all": false,
           "layers": [
             {
-              "id": "cdi_v2_monthly",
-              "label": "Monthly",
-              "main": true
+              "id": "cdi_v1_aggregated_seasonal",
+              "label": "Aggregated"
             },
             {
-              "id": "cdi_v2_seasonal",
-              "label": "Seasonal"
+              "id": "cdi_v1_seasonal",
+              "label": "Pixel level"
             }
           ]
-        },
+        }
+      ],
+      "combined_drought_index_v2": [
         {
-          "group_title": "Combined Drought Index v2 Aggregated:",
+          "group_title": "Monthly",
           "activate_all": false,
           "layers": [
             {
               "id": "cdi_v2_aggregated_monthly",
-              "label": "Monthly",
+              "label": "Aggregated",
               "main": true
             },
             {
+              "id": "cdi_v2_monthly",
+              "label": "Pixel level",
+              "main": true
+            }
+          ]
+        },
+        {
+          "group_title": "Seasonal",
+          "activate_all": false,
+          "layers": [
+            {
               "id": "cdi_v2_aggregated_seasonal",
-              "label": "Seasonal"
+              "label": "Aggregated"
+            },
+            {
+              "id": "cdi_v2_seasonal",
+              "label": "Pixel level"
             }
           ]
         }
