@@ -78,7 +78,7 @@ export const fetchCompositeLayerData: LazyLoader<CompositeLayerProps> =
         max_lon: boundingBox[2],
         max_lat: boundingBox[3],
         start_date: areaStartDate ?? '2002-07-01',
-        end_date: areaEndDate ?? '2021-07-31',
+        end_date: areaEndDate ?? '2018-07-01"',
       },
       layers: inputLayers.map(({ key, aggregation, importance, invert }) => ({
         key,

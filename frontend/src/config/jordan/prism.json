@@ -222,8 +222,7 @@
             },
             {
               "id": "cdi_v1_monthly",
-              "label": "Pixel level",
-              "main": true
+              "label": "Pixel level"
             }
           ]
         },
@@ -233,7 +232,8 @@
           "layers": [
             {
               "id": "cdi_v1_aggregated_seasonal",
-              "label": "Aggregated"
+              "label": "Aggregated",
+              "main": true
             },
             {
               "id": "cdi_v1_seasonal",
@@ -254,8 +254,7 @@
             },
             {
               "id": "cdi_v2_monthly",
-              "label": "Pixel level",
-              "main": true
+              "label": "Pixel level"
             }
           ]
         },
@@ -265,7 +264,8 @@
           "layers": [
             {
               "id": "cdi_v2_aggregated_seasonal",
-              "label": "Aggregated"
+              "label": "Aggregated",
+              "main": true
             },
             {
               "id": "cdi_v2_seasonal",

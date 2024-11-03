@@ -11,5 +11,5 @@ export default {
   rawTables,
   rawReports,
   translation,
-  defaultBoundariesFile: 'jor_admbnda_adm2_jdos.json',
+  defaultBoundariesFile: 'jor_admbnda_adm3_jdos_merged.json',
 };
