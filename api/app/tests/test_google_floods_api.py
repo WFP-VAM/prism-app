@@ -66,6 +66,7 @@ def test_get_google_floods_gauges_api_case_insensitive():
     assert response.status_code == 200
 
     response_geojson = response.json()
+    print(response_geojson)
     assert response_geojson["type"] == "FeatureCollection"
     assert len(response_geojson["features"]) > 0
 
@@ -140,7 +141,7 @@ def test_get_google_floods_gauge_forecast_multiple_gauges():
 )
 def test_get_google_floods_inundations():
     floods = get_google_floods_inundations(["BD"], run_sequentially=True)
-    assert len(json.loads(floods)) > 0
+    assert len(floods) > 0
 
 
 @pytest.mark.vcr(

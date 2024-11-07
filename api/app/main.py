@@ -438,7 +438,7 @@ def get_google_floods_gauges_api(
             )
 
     iso2_codes = [region_code.upper() for region_code in region_codes]
-    return get_google_floods_gauges(iso2_codes, run_sequentially)
+    return get_google_floods_gauges(iso2_codes, True, run_sequentially)
 
 
 @app.get("/google-floods/dates/")
@@ -476,7 +476,7 @@ def get_google_floods_gauge_forecast_api(
             status_code=400,
             detail="gauge_ids must be provided and contain at least one value.",
         )
-    return get_google_floods_gauge_forecast(gauge_id_list, True)
+    return get_google_floods_gauge_forecast(gauge_id_list)
 
 
 @app.get("/google-floods/inundations")

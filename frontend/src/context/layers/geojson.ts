@@ -1,13 +1,12 @@
 import GeoJSON from 'geojson';
 import { GeojsonDataLayerProps } from 'config/types';
 import { queryParamsToString } from 'utils/url-utils';
-import {
-  fetchWithTimeout,
-  GEOJSON_REQUEST_TIMEOUT,
-} from 'utils/fetch-with-timeout';
+import { fetchWithTimeout } from 'utils/fetch-with-timeout';
 import { HTTPError } from 'utils/error-utils';
 import { setUserAuthGlobal } from 'context/serverStateSlice';
 import type { LazyLoader } from './layer-data';
+
+const GEOJSON_REQUEST_TIMEOUT = 60000;
 
 export const fetchGeojsonLayerData: LazyLoader<GeojsonDataLayerProps> =
   () =>
