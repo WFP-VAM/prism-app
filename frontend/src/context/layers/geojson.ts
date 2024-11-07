@@ -1,7 +1,10 @@
 import GeoJSON from 'geojson';
 import { GeojsonDataLayerProps } from 'config/types';
 import { queryParamsToString } from 'utils/url-utils';
-import { fetchWithTimeout } from 'utils/fetch-with-timeout';
+import {
+  fetchWithTimeout,
+  GEOJSON_REQUEST_TIMEOUT,
+} from 'utils/fetch-with-timeout';
 import { HTTPError } from 'utils/error-utils';
 import { setUserAuthGlobal } from 'context/serverStateSlice';
 import type { LazyLoader } from './layer-data';
@@ -22,6 +25,7 @@ export const fetchGeojsonLayerData: LazyLoader<GeojsonDataLayerProps> =
         dispatch,
         {
           mode: 'cors',
+          timeout: GEOJSON_REQUEST_TIMEOUT,
         },
         `Request failed for fetching point layer data at ${requestUrl}`,
       );

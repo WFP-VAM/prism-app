@@ -6537,11 +6537,11 @@
     "type": "point_data",
     "loader": "google_flood",
     "hex_display": false,
-    "data": "https://prism-api.ovio.org/google-floods/gauges/?region_codes=BF&region_codes=CM&region_codes=TD&region_codes=GH&region_codes=ML&region_codes=MR&region_codes=NE&region_codes=SL&region_codes=CI&region_codes=GN&region_codes=SN&region_codes=GM&region_codes=GW&region_codes=LR&region_codes=TG&region_codes=BJ&region_codes=NG&region_codes=CF",
-    "detail_url": "https://prism-api.ovio.org/google-floods/gauges/forecasts",
+    "data": "http://localhost/google-floods/gauges/?region_codes=BF&region_codes=CM&region_codes=TD&region_codes=GH&region_codes=ML&region_codes=MR&region_codes=NE&region_codes=SL&region_codes=CI&region_codes=GN&region_codes=SN&region_codes=GM&region_codes=GW&region_codes=LR&region_codes=TG&region_codes=BJ&region_codes=NG&region_codes=CF",
+    "detail_url": "http://localhost/google-floods/gauges/forecasts",
     "data_field": "severity",
     "data_field_type": "text",
-    "date_url": "https://prism-api.ovio.org/google-floods/dates/?region_codes=BF&region_codes=CM&region_codes=TD&region_codes=GH&region_codes=ML&region_codes=MR&region_codes=NE&region_codes=SL&region_codes=CI&region_codes=GN&region_codes=SN&region_codes=GM&region_codes=GW&region_codes=LR&region_codes=TG&region_codes=BJ&region_codes=NG&region_codes=CF",
+    "date_url": "http://localhost/google-floods/dates/?region_codes=BF&region_codes=CM&region_codes=TD&region_codes=GH&region_codes=ML&region_codes=MR&region_codes=NE&region_codes=SL&region_codes=CI&region_codes=GN&region_codes=SN&region_codes=GM&region_codes=GW&region_codes=LR&region_codes=TG&region_codes=BJ&region_codes=NG&region_codes=CF",
     "opacity": 0.9,
     "legend_text": "Current flood status at verified gauges. Visit [Google Research](https://sites.research.google/floodforecasting/) about Google's AI Forecasting models.",
     "legend": [
@@ -6603,5 +6603,20 @@
         "dataTitle": "Status issued"
       }
     }
+  },
+  "google_flood_inundation_maps": {
+    "title": "Inundation Probability Map (Google AI)",
+    "type": "geojson_polygon",
+    "hex_display": false,
+    "data": "http://localhost/google-floods/inundations/?region_codes=BF&region_codes=CM&region_codes=TD&region_codes=GH&region_codes=ML&region_codes=MR&region_codes=NE&region_codes=SL&region_codes=CI&region_codes=GN&region_codes=SN&region_codes=GM&region_codes=GW&region_codes=LR&region_codes=TG&region_codes=BJ&region_codes=NG&region_codes=CF",
+    "data_field": "level",
+    "data_field_type": "text",
+    "opacity": 1,
+    "legend_text": "Current predicted flood maps. Visit [Google Research](https://sites.research.google/floodforecasting/) about Google's AI Forecasting models.",
+    "legend": [
+      { "label": "High", "value": "HIGH", "color": "#00408A" },
+      { "label": "Medium", "value": "MEDIUM", "color": "#5296E5" },
+      { "label": "Low", "value": "LOW", "color": "#B5D2F5" }
+    ]
   }
 }

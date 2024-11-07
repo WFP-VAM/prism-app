@@ -7,6 +7,7 @@ interface FetchWithTimeoutOptions extends RequestInit {
 }
 
 export const ANALYSIS_REQUEST_TIMEOUT = 60000;
+export const GEOJSON_REQUEST_TIMEOUT = 60000;
 
 const DEFAULT_REQUEST_TIMEOUT = 30000;
 
