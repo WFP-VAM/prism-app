@@ -29,7 +29,7 @@ from app.validation import validate_intersect_parameter
 from app.zonal_stats import DEFAULT_STATS, GroupBy, calculate_stats, get_wfs_response
 from fastapi import Depends, FastAPI, HTTPException, Path, Query, Response
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import FileResponse, JSONResponse, StreamingResponse
+from fastapi.responses import FileResponse, JSONResponse
 from pydantic import EmailStr, HttpUrl, ValidationError
 from requests import get
 
@@ -419,7 +419,9 @@ def post_raster_geotiff(raster_geotiff: RasterGeotiffModel):
 
 
 @app.get("/google-floods/gauges/")
-def get_google_floods_gauges_api(region_codes: list[str] = Query(...)):
+def get_google_floods_gauges_api(
+    region_codes: list[str] = Query(...), run_sequentially: bool = Query(default=False)
+):
     """
     Get the Google Floods gauges for a list of regions.
     """
@@ -436,11 +438,13 @@ def get_google_floods_gauges_api(region_codes: list[str] = Query(...)):
             )
 
     iso2_codes = [region_code.upper() for region_code in region_codes]
-    return get_google_floods_gauges(iso2_codes)
+    return get_google_floods_gauges(iso2_codes, run_sequentially)
 
 
 @app.get("/google-floods/dates/")
-def get_google_floods_dates_api(region_codes: list[str] = Query(...)):
+def get_google_floods_dates_api(
+    region_codes: list[str] = Query(...), run_sequentially: bool = Query(default=False)
+):
     """
     Get the Google Floods dates for a list of regions.
     """
@@ -458,7 +462,7 @@ def get_google_floods_dates_api(region_codes: list[str] = Query(...)):
             )
 
     iso2_codes = [region_code.upper() for region_code in region_codes]
-    return get_google_flood_dates(iso2_codes)
+    return get_google_flood_dates(iso2_codes, run_sequentially)
 
 
 @app.get("/google-floods/gauges/forecasts")
@@ -472,7 +476,7 @@ def get_google_floods_gauge_forecast_api(
             status_code=400,
             detail="gauge_ids must be provided and contain at least one value.",
         )
-    return get_google_floods_gauge_forecast(gauge_id_list)
+    return get_google_floods_gauge_forecast(gauge_id_list, True)
 
 
 @app.get("/google-floods/inundations")
@@ -495,7 +499,4 @@ def get_google_floods_inundations_api(
     iso2_codes = [region_code.upper() for region_code in region_codes]
     geojson = get_google_floods_inundations(iso2_codes, run_sequentially)
 
-    def iter_geojson():
-        yield geojson
-
-    return StreamingResponse(iter_geojson(), media_type="application/json")
+    return JSONResponse(content=geojson, status_code=200)

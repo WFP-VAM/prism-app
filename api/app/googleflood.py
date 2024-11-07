@@ -1,11 +1,11 @@
 """Get data from Google Floods API"""
 
+import json
 import logging
 import os
 import uuid
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import datetime, timezone
-from os import getenv
 from typing import List
 from urllib.parse import urlencode
 
@@ -40,9 +40,11 @@ def make_google_floods_request(url, method="get", data=None, retries=1, timeout=
     for _ in range(retries):
         try:
             if method == "post":
-                response_data = requests.post(url, json=data, timeout=timeout).json()
+                response = requests.post(url, json=data, timeout=timeout)
             else:
-                response_data = requests.get(url, timeout=timeout).json()
+                response = requests.get(url, timeout=timeout)
+
+            response_data = response.json()
             break
         except requests.exceptions.RequestException as e:
             logger.warning("Request failed at url %s: %s", url, e)
@@ -87,30 +89,19 @@ def format_gauge_to_geojson(data):
     return geojson
 
 
-def fetch_flood_status(region_code):
-    """Fetch flood status for a region code"""
-    flood_status_url = f"https://floodforecasting.googleapis.com/v1/floodStatus:searchLatestFloodStatusByArea?key={GOOGLE_FLOODS_API_KEY}"
-    status_response = make_google_floods_request(
-        flood_status_url, method="post", data={"regionCode": region_code}, retries=3
-    )
-    return status_response
-
-
-def get_google_flood_dates(region_codes: list[str]):
-    """
-    When more complex date support is needed, this can be used to fetch dates from the Google Floods API.
-
-    For now, we just return today's date at the region
-    """
+def fetch_flood_status(region_codes: list[str], run_sequentially: bool = False):
+    """Fetch flood status for a list of region codes."""
     flood_statuses = []
 
-    # Retry 3 times due to intermittent API errors
-    with ThreadPoolExecutor() as executor:
-        future_to_region = {
-            executor.submit(fetch_flood_status, code): code for code in region_codes
-        }
-        for future in as_completed(future_to_region):
-            status_response = future.result()
+    if run_sequentially:
+        # Run synchronously
+        for code in region_codes:
+            status_response = make_google_floods_request(
+                f"https://floodforecasting.googleapis.com/v1/floodStatus:searchLatestFloodStatusByArea?key={GOOGLE_FLOODS_API_KEY}",
+                method="post",
+                data={"regionCode": code},
+                retries=3,
+            )
             if "error" in status_response:
                 logger.error("Error in response: %s", status_response["error"])
                 raise HTTPException(
@@ -118,6 +109,39 @@ def get_google_flood_dates(region_codes: list[str]):
                     detail="Error fetching flood status data from Google API",
                 )
             flood_statuses.extend(status_response.get("floodStatuses", []))
+    else:
+        # Run asynchronously
+        with ThreadPoolExecutor() as executor:
+            future_to_region = {
+                executor.submit(
+                    make_google_floods_request,
+                    f"https://floodforecasting.googleapis.com/v1/floodStatus:searchLatestFloodStatusByArea?key={GOOGLE_FLOODS_API_KEY}",
+                    method="post",
+                    data={"regionCode": code},
+                    retries=3,
+                ): code
+                for code in region_codes
+            }
+            for future in as_completed(future_to_region):
+                status_response = future.result()
+                if "error" in status_response:
+                    logger.error("Error in response: %s", status_response["error"])
+                    raise HTTPException(
+                        status_code=500,
+                        detail="Error fetching flood status data from Google API",
+                    )
+                flood_statuses.extend(status_response.get("floodStatuses", []))
+
+    return flood_statuses
+
+
+def get_google_flood_dates(region_codes: list[str], run_sequentially: bool = False):
+    """
+    When more complex date support is needed, this can be used to fetch dates from the Google Floods API.
+
+    For now, we just return today's date at the region
+    """
+    flood_statuses = fetch_flood_status(region_codes, run_sequentially)
 
     parsed_issued_times = [
         datetime.strptime(status["issuedTime"], "%Y-%m-%dT%H:%M:%S.%fZ")
@@ -141,26 +165,10 @@ def get_google_flood_dates(region_codes: list[str]):
 
 
 def get_google_floods_gauges(
-    region_codes: list[str],
-    as_geojson: bool = True,
+    region_codes: list[str], as_geojson: bool = True, run_sequentially: bool = False
 ):
     """Get statistical charts data"""
-    initial_gauges = []
-
-    # Retry 3 times due to intermittent API errors
-    with ThreadPoolExecutor() as executor:
-        future_to_region = {
-            executor.submit(fetch_flood_status, code): code for code in region_codes
-        }
-        for future in as_completed(future_to_region):
-            status_response = future.result()
-            if "error" in status_response:
-                logger.error("Error in response: %s", status_response["error"])
-                raise HTTPException(
-                    status_code=500,
-                    detail="Error fetching flood status data from Google API",
-                )
-            initial_gauges.extend(status_response.get("floodStatuses", []))
+    initial_gauges = fetch_flood_status(region_codes, run_sequentially)
 
     gauge_details_params = urlencode(
         {"names": [f"gauges/{gauge['gaugeId']}" for gauge in initial_gauges]},
@@ -296,8 +304,12 @@ def get_google_floods_inundations(
         gdf_buff.append(gdf)
 
     if gdf_buff:
-        gdf = pd.concat(gdf_buff).to_json()
+        # Concatenate all GeoDataFrames in the buffer
+        combined_gdf = pd.concat(gdf_buff, ignore_index=True)
+        # Convert the combined GeoDataFrame to GeoJSON
+        geojson = json.loads(combined_gdf.to_json())
     else:
-        gdf = pd.DataFrame().to_json()
+        # Return an empty GeoJSON FeatureCollection
+        geojson = {"type": "FeatureCollection", "features": []}
 
-    return gdf
+    return geojson
