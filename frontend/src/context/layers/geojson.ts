@@ -6,6 +6,8 @@ import { HTTPError } from 'utils/error-utils';
 import { setUserAuthGlobal } from 'context/serverStateSlice';
 import type { LazyLoader } from './layer-data';
 
+const GEOJSON_REQUEST_TIMEOUT = 60000;
+
 export const fetchGeojsonLayerData: LazyLoader<GeojsonDataLayerProps> =
   () =>
   async ({ layer: { data: dataUrl, additionalQueryParams } }, { dispatch }) => {
@@ -22,6 +24,7 @@ export const fetchGeojsonLayerData: LazyLoader<GeojsonDataLayerProps> =
         dispatch,
         {
           mode: 'cors',
+          timeout: GEOJSON_REQUEST_TIMEOUT,
         },
         `Request failed for fetching point layer data at ${requestUrl}`,
       );

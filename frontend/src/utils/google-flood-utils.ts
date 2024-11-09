@@ -11,12 +11,19 @@ export type GoogleFloodParams = {
   detailUrl: string;
   chartTitle: string;
   unit: string;
+  yAxisLabel: string;
 };
 
 const GOOGLE_FLOOD_UNITS = {
   GAUGE_VALUE_UNIT_UNSPECIFIED: '',
   METERS: 'm',
   CUBIC_METERS_PER_SECOND: 'm³/s',
+};
+
+const GOOGLE_FLOOD_Y_AXIS_LABEL = {
+  GAUGE_VALUE_UNIT_UNSPECIFIED: '',
+  METERS: 'Unit = water depth in m',
+  CUBIC_METERS_PER_SECOND: 'Unit = discharge in m³/s',
 };
 
 export const GoogleFloodTriggersConfig: FloodChartConfigObject = {
@@ -95,13 +102,19 @@ export const createGoogleFloodDatasetParams = (
   };
   const unit =
     GOOGLE_FLOOD_UNITS[gaugeValueUnit as keyof typeof GOOGLE_FLOOD_UNITS];
+  const yAxisLabel = t(
+    GOOGLE_FLOOD_Y_AXIS_LABEL[
+      gaugeValueUnit as keyof typeof GOOGLE_FLOOD_Y_AXIS_LABEL
+    ],
+  );
 
   return {
     gaugeId,
     triggerLevels,
     chartTitle,
     detailUrl,
-    unit,
+    unit: t(unit),
+    yAxisLabel: t(yAxisLabel),
   };
 };
 

@@ -407,11 +407,25 @@ export const datasetResultStateSlice = createSlice({
       state,
       { payload }: PayloadAction<GoogleFloodParams>,
     ): DatasetState => {
-      const { gaugeId, triggerLevels, detailUrl, chartTitle, unit } = payload;
+      const {
+        gaugeId,
+        triggerLevels,
+        detailUrl,
+        chartTitle,
+        unit,
+        yAxisLabel,
+      } = payload;
 
       return {
         ...state,
-        datasetParams: { gaugeId, triggerLevels, chartTitle, detailUrl, unit },
+        datasetParams: {
+          gaugeId,
+          triggerLevels,
+          chartTitle,
+          detailUrl,
+          unit,
+          yAxisLabel,
+        },
         title: chartTitle,
       };
     },

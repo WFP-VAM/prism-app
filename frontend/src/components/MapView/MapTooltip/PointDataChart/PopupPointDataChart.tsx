@@ -18,7 +18,7 @@ const useStyles = makeStyles(() =>
       display: 'flex',
       flexDirection: 'column',
       gap: '8px',
-      paddingTop: '20px', // leave room for the close icon
+      paddingTop: '8px', // leave room for the close icon
     },
     chartSection: {
       paddingTop: '16px', // leave room for the download icons
@@ -49,6 +49,13 @@ const PopupPointDataChart = memo(() => {
     return null;
   }
 
+  const xAxisLabel = isAdminBoundary(datasetParams)
+    ? undefined
+    : t('Timestamps reflect local time in region');
+  const yAxisLabel = (datasetParams as GoogleFloodParams).yAxisLabel
+    ? t((datasetParams as GoogleFloodParams).yAxisLabel)
+    : undefined;
+
   return (
     <div className={classes.chartContainer}>
       <div className={classes.chartSection}>
@@ -56,11 +63,8 @@ const PopupPointDataChart = memo(() => {
           title={t(title, datasetParams)}
           config={config}
           data={dataset}
-          xAxisLabel={
-            isAdminBoundary(datasetParams)
-              ? undefined
-              : t('Timestamps reflect local time in region')
-          }
+          xAxisLabel={xAxisLabel}
+          yAxisLabel={yAxisLabel}
           showDownloadIcons
           iconStyles={{ color: 'white', marginTop: '20px' }}
           units={t((datasetParams as GoogleFloodParams).unit)}
