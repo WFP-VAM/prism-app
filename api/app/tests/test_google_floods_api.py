@@ -13,11 +13,11 @@ client = TestClient(app)
 )
 def test_get_google_floods_gauges():
     """
-    This test is not used in the API, but is used to test the get_google_floods_gauges function
-    It is used to ensure that the get_google_floods_gauges function returns a valid GeoJSON object
+    Test get_google_floods_gauges returns valid GeoJSON.
     """
     gauges = get_google_floods_gauges(["BD"])
     assert gauges["type"] == "FeatureCollection"
+    assert len(gauges["features"]) > 0
     for feature in gauges["features"]:
         assert feature["geometry"]["type"] == "Point"
         assert len(feature["geometry"]["coordinates"]) == 2
@@ -37,7 +37,7 @@ def test_get_google_floods_gauges():
 )
 def test_get_google_floods_gauges_api():
     """
-    This test is used to test the API endpoint for getting Google Floods gauges
+    Test API endpoint for Google Floods gauges.
     """
     response = client.get("/google-floods/gauges/?region_codes=BD")
     assert response.status_code == 200
@@ -55,7 +55,7 @@ def test_get_google_floods_gauges_api():
 )
 def test_get_google_floods_gauges_api_case_insensitive():
     """
-    This test is used to test the API endpoint for getting Google Floods gauges with a case insensitive region code
+    Test API with case insensitive region code.
     """
     response = client.get("/google-floods/gauges/?region_codes=bd")
     assert response.status_code == 200
@@ -73,7 +73,7 @@ def test_get_google_floods_gauges_api_case_insensitive():
 )
 def test_get_google_floods_gauges_api_requires_valid_region_code():
     """
-    This test is used to test the API endpoint for getting Google Floods gauges with an invalid region code
+    Test API with invalid region code.
     """
     response = client.get("/google-floods/gauges/?region_codes=usa")
     assert response.status_code == 400
@@ -91,7 +91,7 @@ def test_get_google_floods_gauges_api_requires_valid_region_code():
 )
 def test_get_google_floods_gauge_forecast():
     """
-    This test is used to test the API endpoint for getting Google Floods gauge forecast
+    Test API for Google Floods gauge forecast.
     """
     response = client.get("/google-floods/gauges/forecasts/?gauge_ids=hybas_1121465590")
     assert response.status_code == 200
@@ -110,7 +110,7 @@ def test_get_google_floods_gauge_forecast():
 )
 def test_get_google_floods_gauge_forecast_multiple_gauges():
     """
-    This test is used to test the API endpoint for getting Google Floods gauge forecast
+    Test API for multiple gauge forecasts.
     """
     gauge_ids = ["hybas_1121465590", "hybas_1121499110"]
     response = client.get(
