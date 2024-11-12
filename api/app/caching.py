@@ -70,7 +70,7 @@ def get_kobo_form_cached(form_id: str) -> Optional[dict[str, Any]]:
 @timed
 def cache_file(url: str, prefix: str, extension: str = "cache") -> FilePath:
     """Locally cache files fetched from a url."""
-    cache_filepath = _get_cached_filepath(
+    cache_filepath = get_cached_filepath(
         prefix=prefix,
         data=url,
         extension=extension,
@@ -98,13 +98,13 @@ def cache_file(url: str, prefix: str, extension: str = "cache") -> FilePath:
 
 
 @timed
-def cache_geojson(geojson: GeoJSON, prefix: str) -> FilePath:
+def cache_geojson(geojson: GeoJSON, prefix: str, cache_key: str) -> FilePath:
     """Locally store geojson needed for a request."""
     json_string = json.dumps(geojson)
 
-    cache_filepath = _get_cached_filepath(
+    cache_filepath = get_cached_filepath(
         prefix=prefix,
-        data=json_string,
+        data=cache_key if cache_key else json_string,
         extension="json",
     )
 
@@ -121,7 +121,7 @@ def get_json_file(cached_filepath: FilePath) -> GeoJSON:
         return json.load(f)
 
 
-def _get_cached_filepath(prefix: str, data: str, extension: str = "cache") -> FilePath:
+def get_cached_filepath(prefix: str, data: str, extension: str = "cache") -> FilePath:
     """Return the filepath where a cached response would live for the given inputs."""
     filename = "{prefix}_{hash_string}.{extension}".format(
         prefix=prefix,
@@ -151,3 +151,10 @@ def is_file_valid(filepath) -> bool:
         return True
 
     return False
+
+
+def get_cache_age(filepath: FilePath) -> float:
+    """Get the age of a cached file in seconds."""
+    return (
+        datetime.now() - datetime.fromtimestamp(os.path.getctime(filepath))
+    ).total_seconds()
