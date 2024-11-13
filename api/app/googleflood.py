@@ -16,6 +16,14 @@ from fastapi import HTTPException
 from fiona.drvsupport import supported_drivers
 from pydantic import BaseModel
 
+from .caching import (
+    cache_geojson,
+    get_cache_age,
+    get_cached_filepath,
+    get_json_file,
+    is_file_valid,
+)
+
 supported_drivers["LIBKML"] = "rw"
 
 logger = logging.getLogger(__name__)
@@ -30,13 +38,31 @@ class InundationMapSet(BaseModel):
     inundationMaps: List[InundationMap]
 
 
+# This cache helps avoid making repeated requests to the Google Floods API
+CACHE_TIMEOUT = 600  # 10 minutes
 GOOGLE_FLOODS_API_KEY = os.getenv("GOOGLE_FLOODS_API_KEY", "")
 if GOOGLE_FLOODS_API_KEY == "":
     logger.warning("Missing backend parameter: GOOGLE_FLOODS_API_KEY")
 
 
 def make_google_floods_request(url, method="get", data=None, retries=1, timeout=10):
-    """Make a request with retries and error handling."""
+    """Make a request with retries and error handling, caching the result for 5 minutes."""
+    # Create a unique cache key based on the request parameters
+    request_data = json.dumps(data, sort_keys=True) if data else ""
+    cache_key = f"{url}_{method}_{request_data}"
+    cache_filepath = get_cached_filepath(
+        prefix="google_floods", data=cache_key, extension="json"
+    )
+
+    # Check if the cached file is valid and not expired
+    if is_file_valid(cache_filepath):
+        cached_data = get_json_file(cache_filepath)
+        cache_age = get_cache_age(cache_filepath)
+        if cache_age < CACHE_TIMEOUT:
+            logger.debug("Returning cached data.")
+            return cached_data
+
+    # If not cached or expired, make the request
     for _ in range(retries):
         try:
             if method == "post":
@@ -55,6 +81,8 @@ def make_google_floods_request(url, method="get", data=None, retries=1, timeout=
         raise HTTPException(
             status_code=500, detail="Error fetching data from Google API"
         )
+
+    cache_geojson(response_data, prefix="google_floods", cache_key=cache_key)
 
     return response_data
 
@@ -267,6 +295,21 @@ def fetch_kml(inundationMap):
 def get_google_floods_inundations(
     region_codes: List[str], run_sequentially: bool = False
 ) -> gpd.GeoDataFrame:
+    # Generate a cache key based on the region codes and run mode
+    cache_key = f"{'_'.join(region_codes)}_{run_sequentially}"
+    cache_filepath = get_cached_filepath(
+        prefix="inundations", data=cache_key, extension="json"
+    )
+
+    # Check if the cached GeoJSON is valid and not expired
+    if is_file_valid(cache_filepath):
+        cached_geojson = get_json_file(cache_filepath)
+        cache_age = get_cache_age(cache_filepath)
+        if cache_age < CACHE_TIMEOUT:
+            logger.debug("Returning cached GeoJSON data.")
+            return cached_geojson
+
+    # Fetch gauge data
     gauge_data = get_google_floods_gauges(region_codes, as_geojson=False)
 
     inundationMapSet = []
@@ -276,20 +319,19 @@ def get_google_floods_inundations(
 
     level_to_kml = {}
 
+    def fetch_and_cache_kml(inundationMap):
+        level, kml = fetch_kml(inundationMap)
+        level_to_kml[level] = kml
+
+    # Fetch KML data
     if run_sequentially:
         for inundationMap in inundationMapSet:
-            level, kml = fetch_kml(inundationMap)
-            level_to_kml[level] = kml
+            fetch_and_cache_kml(inundationMap)
     else:
         with ThreadPoolExecutor() as executor:
-            future_to_inundation = {
-                executor.submit(fetch_kml, inundationMap): inundationMap
-                for inundationMap in inundationMapSet
-            }
-            for future in as_completed(future_to_inundation):
-                level, kml = future.result()
-                level_to_kml[level] = kml
+            executor.map(fetch_and_cache_kml, inundationMapSet)
 
+    # Process KML data into GeoDataFrames
     tmp_path = os.path.join(f"/tmp/google-floods/{str(uuid.uuid4())}")
     if not os.path.exists(tmp_path):
         os.makedirs(tmp_path)
@@ -311,5 +353,8 @@ def get_google_floods_inundations(
     else:
         # Return an empty GeoJSON FeatureCollection
         geojson = {"type": "FeatureCollection", "features": []}
+
+    # Cache the final GeoJSON
+    cache_geojson(geojson, prefix="inundations", cache_key=cache_key)
 
     return geojson
