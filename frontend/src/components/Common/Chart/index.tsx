@@ -289,6 +289,13 @@ const Chart = memo(
     );
 
     const datasets = !transpose ? tableRowsDataSet : indicesDataSet;
+    const datasetsWithThresholds = [...datasets, ...floodThresholds];
+
+    const datasetsTrimmed = datasetsWithThresholds.map(set => ({
+      ...set,
+      data: set.data.slice(chartRange[0], chartRange[1]),
+    }));
+
     const chartData = React.useMemo(() => {
       if (isGoogleFloodChart) {
         const pastDatasets = datasets.map(dataset => ({
@@ -313,13 +320,14 @@ const Chart = memo(
       }
       return {
         labels,
-        datasets: [...datasets, ...floodThresholds],
+        datasets: datasetsTrimmed,
       };
     }, [
       isGoogleFloodChart,
       labels,
-      datasets,
       floodThresholds,
+      datasets,
+      datasetsTrimmed,
       isPastDate,
       t,
       isFutureDate,
