@@ -193,7 +193,7 @@ const Chart = memo(
           fill: config.fill || false,
           backgroundColor: colors[i],
           borderColor: colors[i],
-          borderWidth: 4,
+          borderWidth: 3,
           data: tableRows.map(row => (row[indiceKey] as number) || null),
           pointRadius: configureIndicePointRadius(indiceKey),
           pointHitRadius: 10,
