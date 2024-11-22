@@ -118,7 +118,8 @@ def cache_geojson(
 
     cache_filepath = _get_cached_filepath(
         prefix=prefix,
-        cache_key=cache_key,
+        cache_key=cache_key if cache_key else _hash_value(json_string),
+        data=json_string,
         extension="json",
     )
 
