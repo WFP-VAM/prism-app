@@ -16,13 +16,7 @@ from fastapi import HTTPException
 from fiona.drvsupport import supported_drivers
 from pydantic import BaseModel
 
-from .caching import (
-    cache_geojson,
-    get_cache_age,
-    get_cached_filepath,
-    get_json_file,
-    is_file_valid,
-)
+from .caching import cache_geojson, get_cache_by_key
 from .utils import make_request_with_retries
 
 supported_drivers["LIBKML"] = "rw"
@@ -51,17 +45,11 @@ def make_google_floods_request(url, method="get", data=None, retries=1, timeout=
     # Create a unique cache key based on the request parameters
     request_data = json.dumps(data, sort_keys=True) if data else ""
     cache_key = f"{url}_{method}_{request_data}"
-    cache_filepath = get_cached_filepath(
-        prefix="google_floods", data=cache_key, extension="json"
+    cached_response = get_cache_by_key(
+        prefix="google_floods", cache_key=cache_key, cache_timeout=CACHE_TIMEOUT
     )
-
-    # Check if the cached file is valid and not expired
-    if is_file_valid(cache_filepath):
-        cached_data = get_json_file(cache_filepath)
-        cache_age = get_cache_age(cache_filepath)
-        if cache_age < CACHE_TIMEOUT:
-            logger.debug("Returning cached data.")
-            return cached_data
+    if cached_response:
+        return cached_response
 
     # If not cached or expired, make the request
     for _ in range(retries):
@@ -299,17 +287,11 @@ def get_google_floods_inundations(
 ) -> gpd.GeoDataFrame:
     # Generate a cache key based on the region codes and run mode
     cache_key = f"{'_'.join(region_codes)}_{run_sequentially}"
-    cache_filepath = get_cached_filepath(
-        prefix="inundations", data=cache_key, extension="json"
+    cached_inundations = get_cache_by_key(
+        prefix="inundations", cache_key=cache_key, cache_timeout=CACHE_TIMEOUT
     )
-
-    # Check if the cached GeoJSON is valid and not expired
-    if is_file_valid(cache_filepath):
-        cached_geojson = get_json_file(cache_filepath)
-        cache_age = get_cache_age(cache_filepath)
-        if cache_age < CACHE_TIMEOUT:
-            logger.debug("Returning cached GeoJSON data.")
-            return cached_geojson
+    if cached_inundations:
+        return cached_inundations
 
     # Fetch gauge data
     gauge_data = get_google_floods_gauges(region_codes, as_geojson=False)

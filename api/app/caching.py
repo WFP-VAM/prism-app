@@ -70,7 +70,7 @@ def get_kobo_form_cached(form_id: str) -> Optional[dict[str, Any]]:
 @timed
 def cache_file(url: str, prefix: str, extension: str = "cache") -> FilePath:
     """Locally cache files fetched from a url."""
-    cache_filepath = get_cached_filepath(
+    cache_filepath = _get_cached_filepath(
         prefix=prefix,
         data=url,
         extension=extension,
@@ -98,13 +98,27 @@ def cache_file(url: str, prefix: str, extension: str = "cache") -> FilePath:
 
 
 @timed
-def cache_geojson(geojson: GeoJSON, prefix: str, cache_key: str) -> FilePath:
-    """Locally store geojson needed for a request."""
+def cache_geojson(
+    geojson: GeoJSON, prefix: str, cache_key: str | None = None
+) -> FilePath:
+    """
+    Locally store geojson needed for a request.
+
+    Args:
+        geojson (GeoJSON): The GeoJSON object to be cached.
+        prefix (str): A prefix to be used in the cache file's name.
+        cache_key (str | None, optional): A unique key to identify the cache entry.
+            If provided, it will be used to generate the cache file path.
+            If not provided, the JSON string of the geojson will be used instead.
+
+    Returns:
+        FilePath: The path to the cached GeoJSON file.
+    """
     json_string = json.dumps(geojson)
 
-    cache_filepath = get_cached_filepath(
+    cache_filepath = _get_cached_filepath(
         prefix=prefix,
-        data=cache_key if cache_key else json_string,
+        cache_key=cache_key,
         extension="json",
     )
 
@@ -121,15 +135,60 @@ def get_json_file(cached_filepath: FilePath) -> GeoJSON:
         return json.load(f)
 
 
-def get_cached_filepath(prefix: str, data: str, extension: str = "cache") -> FilePath:
-    """Return the filepath where a cached response would live for the given inputs."""
-    filename = "{prefix}_{hash_string}.{extension}".format(
+def _get_cached_filepath(
+    prefix: str,
+    data: str | None = None,
+    cache_key: str | None = None,
+    extension: str = "cache",
+) -> FilePath:
+    """
+    Return the filepath where a cached response would live for the given inputs.
+
+    Args:
+        prefix (str): A prefix to be used in the cache file's name.
+        data (str | None): The data used to generate a unique hash if cache_key is not provided.
+        cache_key (str | None, optional): A unique key to identify the cache entry.
+            If provided, it will be used directly in the filename.
+            If not provided, a hash of the data will be used instead.
+        extension (str): The file extension for the cached file. Defaults to "cache".
+
+    Returns:
+        FilePath: The path where the cached file should be stored.
+    """
+    if cache_key is None and data is None:
+        raise ValueError(
+            "Either cache_key or data must be provided to get_cached_filepath."
+        )
+
+    if cache_key and data:
+        raise ValueError(
+            "Either cache_key or data must be provided to get_cached_filepath, not both."
+        )
+
+    filename = "{prefix}_{cache_key}.{extension}".format(
         prefix=prefix,
-        hash_string=_hash_value(data),
+        cache_key=_hash_value(cache_key if cache_key else data),
         extension=extension,
     )
     logger.debug("Cached filepath: " + os.path.join(CACHE_DIRECTORY, filename))
     return FilePath(os.path.join(CACHE_DIRECTORY, filename))
+
+
+def get_cache_by_key(
+    prefix: str, cache_key: str, cache_timeout: int = float("inf")
+) -> FilePath:
+    cache_filepath = _get_cached_filepath(prefix=prefix, cache_key=cache_key)
+    if is_file_valid(cache_filepath):
+        cache_age = get_cache_age(cache_filepath)
+        if cache_age < cache_timeout:
+            logger.debug("Returning cached GeoJSON data.")
+            return get_json_file(cache_filepath)
+        else:
+            logger.debug("Cached file is expired.")
+            return None
+    else:
+        logger.debug("Cached file does not exist.")
+        return None
 
 
 def _hash_value(value: str) -> str:
