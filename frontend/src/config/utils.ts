@@ -2,6 +2,7 @@ import { camelCase, get, map, mapKeys, isPlainObject, mapValues } from 'lodash';
 import { appConfig, rawLayers, rawReports, rawTables } from '.';
 import {
   AdminLevelDataLayerProps,
+  AnticipatoryAction,
   AnticipatoryActionLayerProps,
   BoundaryLayerProps,
   checkRequiredKeys,
@@ -125,16 +126,20 @@ export const getLayerByKey = (layerKey: LayerKey): LayerType => {
         return throwInvalidLayer();
       }
       return definition;
-    case 'anticipatory_action':
-      if (!checkRequiredKeys(AnticipatoryActionLayerProps, definition, true)) {
-        return throwInvalidLayer();
+    case 'anticipatory_action_drought':
+    case 'anticipatory_action_storm':
+      if (
+        checkRequiredKeys(CompositeLayerProps, definition, true) &&
+        isAnticipatoryActionLayer(definition.type)
+      ) {
+        return definition;
       }
-      return definition;
+      return throwInvalidLayer();
     default:
       // doesn't do anything, but it helps catch any layer type cases we forgot above compile time via TS.
       // https://stackoverflow.com/questions/39419170/how-do-i-check-that-a-switch-block-is-exhaustive-in-typescript
       // eslint-disable-next-line no-unused-vars
-      ((_: never) => {})(definition.type);
+      ((_: never | AnticipatoryAction) => {})(definition.type);
       throw new Error(
         `Found invalid layer definition for layer '${layerKey}' (Unknown type '${definition.type}'). Check config/layers.json.`,
       );
@@ -158,27 +163,36 @@ function verifyValidImpactLayer(
 }
 
 export const AAWindowKeys = ['Window 1', 'Window 2'] as const;
-export const AALayerId = 'anticipatory_action';
+export const AALayerIds = Object.values(AnticipatoryAction);
 
 export const LayerDefinitions: LayersMap = (() => {
   const aaUrl = appConfig.anticipatoryActionUrl;
-  const AALayer: AnticipatoryActionLayerProps = {
-    id: AALayerId,
-    title: 'Anticipatory Action',
-    type: 'anticipatory_action',
-    opacity: 0.9,
-  };
+  const AALayers: AnticipatoryActionLayerProps[] = [
+    {
+      id: AnticipatoryAction.drought,
+      title: 'Anticipatory Action Drought',
+      type: AnticipatoryAction.drought,
+      opacity: 0.9,
+    },
+    {
+      id: AnticipatoryAction.storm,
+      title: 'Anticipatory Action Storm',
+      type: AnticipatoryAction.storm,
+      opacity: 0.9,
+    },
+  ];
+
+  const AALayersById = AALayers.reduce(
+    (acc, layer) => ({ ...acc, [layer.id]: layer }),
+    {} as Record<string, AnticipatoryActionLayerProps>,
+  );
 
   const layers = Object.keys(rawLayers).reduce(
     (acc, layerKey) => ({
       ...acc,
       [layerKey]: getLayerByKey(layerKey as LayerKey),
     }),
-    (aaUrl
-      ? {
-          [AALayerId]: AALayer,
-        }
-      : {}) as LayersMap,
+    (aaUrl ? AALayersById : {}) as LayersMap,
   );
 
   // Verify that the layers referenced by impact layers actually exist
@@ -280,6 +294,11 @@ export function getWMSLayersWithChart(): WMSLayerProps[] {
     l => l.type === 'wms' && l.chartData,
   ) as WMSLayerProps[];
 }
+
+export const isAnticipatoryActionLayer = (
+  type: string,
+): type is AnticipatoryAction =>
+  Object.values(AnticipatoryAction).includes(type as AnticipatoryAction);
 
 export const areChartLayersAvailable = getWMSLayersWithChart().length > 0;
 

@@ -3,7 +3,7 @@ import { Provider } from 'react-redux';
 import { BrowserRouter } from 'react-router-dom';
 import configureStore from 'redux-mock-store';
 import { AnticipatoryActionState } from 'context/anticipatoryActionStateSlice/types';
-import { Panel } from 'context/leftPanelStateSlice';
+import { Panel } from 'config/types';
 import DistrictView from '.';
 import { defaultDialogs, mockAAData } from '../test.utils';
 import { districtViewTransform } from './utils';

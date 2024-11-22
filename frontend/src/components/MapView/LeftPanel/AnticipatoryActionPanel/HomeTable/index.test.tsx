@@ -2,7 +2,7 @@ import { render } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import { BrowserRouter } from 'react-router-dom';
 import configureStore from 'redux-mock-store';
-import { Panel } from 'context/leftPanelStateSlice';
+import { Panel } from 'config/types';
 import HomeTable from '.';
 import { defaultDialogs, mockAARenderedDistricts } from '../test.utils';
 

@@ -14,7 +14,12 @@ import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import Draggable, { DraggableEvent } from 'react-draggable';
 import { useDispatch, useSelector } from 'react-redux';
-import { DateItem, DateRangeType } from 'config/types';
+import {
+  AnticipatoryAction,
+  DateItem,
+  DateRangeType,
+  Panel,
+} from 'config/types';
 import { dateRangeSelector } from 'context/mapStateSlice/selectors';
 import { locales, useSafeTranslation } from 'i18n';
 import {
@@ -26,10 +31,11 @@ import { DateFormat } from 'utils/name-utils';
 import { useUrlHistory } from 'utils/url-utils';
 import useLayers from 'utils/layers-utils';
 import { format } from 'date-fns';
-import { Panel, leftPanelTabValueSelector } from 'context/leftPanelStateSlice';
+import { leftPanelTabValueSelector } from 'context/leftPanelStateSlice';
 import { updateDateRange } from 'context/mapStateSlice';
 import { getRequestDate } from 'utils/server-utils';
 import { AAAvailableDatesSelector } from 'context/anticipatoryActionStateSlice';
+import { isAnticipatoryActionLayer } from 'config/utils';
 import TickSvg from './tick.svg';
 import DateSelectorInput from './DateSelectorInput';
 import TimelineItems from './TimelineItems';
@@ -51,8 +57,10 @@ const POINTER_ID = 'datePointerSelector';
 const calculateStartAndEndDates = (startDate: Date, selectedTab: string) => {
   const year =
     startDate.getFullYear() -
-    (selectedTab === 'anticipatory_action' && startDate.getMonth() < 3 ? 1 : 0);
-  const startMonth = selectedTab === 'anticipatory_action' ? 3 : 0; // April for anticipatory_action, January otherwise
+    (isAnticipatoryActionLayer(selectedTab) && startDate.getMonth() < 3
+      ? 1
+      : 0);
+  const startMonth = isAnticipatoryActionLayer(selectedTab) ? 3 : 0; // April for anticipatory_action, January otherwise
   const start = new Date(year, startMonth, 1);
   const end = new Date(year, startMonth + 11, 31);
 
@@ -123,14 +131,14 @@ const DateSelector = memo(() => {
               id: 'anticipatory_action_window_1',
               title: 'Window 1',
               dateItems: AAAvailableDates['Window 1'],
-              type: 'anticipatory_action',
+              type: AnticipatoryAction.drought,
               opacity: 1,
             },
             {
               id: 'anticipatory_action_window_2',
               title: 'Window 2',
               dateItems: AAAvailableDates['Window 2'],
-              type: 'anticipatory_action',
+              type: AnticipatoryAction.drought,
               opacity: 1,
             },
           ]
@@ -155,7 +163,7 @@ const DateSelector = memo(() => {
           }
           return 0;
         })
-        .map(l => (l.type === 'anticipatory_action' ? AALayers : l))
+        .map(l => (isAnticipatoryActionLayer(l.type) ? AALayers : l))
         .flat(),
     [selectedLayers, AALayers],
   );
@@ -330,7 +338,7 @@ const DateSelector = memo(() => {
     );
 
     // All dates in AA windows should be selectable, regardless of overlap
-    if (panelTab === Panel.AnticipatoryAction && AAAvailableDates) {
+    if (panelTab === Panel.AnticipatoryActionDrought && AAAvailableDates) {
       // eslint-disable-next-line fp/no-mutating-methods
       dates.push(
         AAAvailableDates?.['Window 1']?.map(d => d.displayDate) ?? [],
