@@ -55,7 +55,7 @@ const onDistrictClick =
     }
   };
 
-const AnticipatoryActionDrougthLayer = React.memo(
+const AnticipatoryActionDroughtLayer = React.memo(
   ({ layer, before }: LayersProps) => {
     useDefaultDate(layer.id);
     const boundaryLayerState = useSelector(
@@ -228,4 +228,4 @@ export interface LayersProps {
   before?: string;
 }
 
-export default AnticipatoryActionDrougthLayer;
+export default AnticipatoryActionDroughtLayer;

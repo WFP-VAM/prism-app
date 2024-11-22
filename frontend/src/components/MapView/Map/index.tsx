@@ -24,7 +24,7 @@ import {
 import { mapSelector } from 'context/mapStateSlice/selectors';
 import {
   AdminLevelDataLayer,
-  AnticipatoryActionDrougthLayer,
+  AnticipatoryActionDroughtLayer,
   AnticipatoryActionStormLayer,
   BoundaryLayer,
   CompositeLayer,
@@ -56,7 +56,7 @@ const componentTypes: LayerComponentsMap<LayerType> = {
   static_raster: { component: StaticRasterLayer },
   composite: { component: CompositeLayer },
   anticipatory_action_drought: {
-    component: AnticipatoryActionDrougthLayer,
+    component: AnticipatoryActionDroughtLayer,
   },
   anticipatory_action_storm: {
     component: AnticipatoryActionStormLayer,

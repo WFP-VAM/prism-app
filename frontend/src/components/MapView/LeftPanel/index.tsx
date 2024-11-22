@@ -152,12 +152,18 @@ const LeftPanel = memo(() => {
     if (!selectedLayerId) {
       return;
     }
-    // Add default AA layer to url
-    const layer = LayerDefinitions[selectedLayerId];
 
+    const layer = LayerDefinitions[selectedLayerId];
+    console.log('layer', layer);
+    console.log('AALayerInUrl', AALayerInUrl);
     // Add to url when getting to AA tab
-    if (AALayerInUrl !== undefined || !layer) {
+    if (!layer) {
       return;
+    }
+
+    // Change AA layer in url
+    if (AALayerInUrl) {
+      removeLayerFromUrl(getUrlKey(AALayerInUrl), AALayerInUrl.id);
     }
 
     const updatedUrl = appendLayerToUrl(
@@ -165,6 +171,8 @@ const LeftPanel = memo(() => {
       selectedLayers,
       layer,
     );
+
+    console.log('updatedUrl', updatedUrl);
 
     updateHistory(getUrlKey(layer), updatedUrl);
     // url does not instantly update. updateHistory and appendLayerToUrl functions re-trigger useEffect, before selected layers is set

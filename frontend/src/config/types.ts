@@ -753,7 +753,7 @@ export enum Panel {
   Charts = 'charts',
   Analysis = 'analysis',
   Tables = 'tables',
-  AnticipatoryActionDrought = 'anticipatory_action_drougth',
+  AnticipatoryActionDrought = 'anticipatory_action_drought',
   AnticipatoryActionStorm = 'anticipatory_action_storm',
   Alerts = 'alerts',
 }
