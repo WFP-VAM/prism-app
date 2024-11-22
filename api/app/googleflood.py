@@ -24,6 +24,8 @@ from .caching import (
     is_file_valid,
 )
 
+from .utils import make_request_with_retries
+
 supported_drivers["LIBKML"] = "rw"
 
 logger = logging.getLogger(__name__)
@@ -117,10 +119,9 @@ def format_gauge_to_geojson(data):
     return geojson
 
 
-def fetch_flood_status(region_codes: list[str], run_sequentially: bool = False):
-    """Fetch flood status for a list of region codes."""
+def fetch_flood_statuses(region_codes: list[str], run_sequentially: bool = False) -> list[dict]:
+    """Fetch flood statuses concurrently for a list of region codes."""
     flood_statuses = []
-
     if run_sequentially:
         # Run synchronously
         for code in region_codes:
@@ -169,7 +170,7 @@ def get_google_flood_dates(region_codes: list[str], run_sequentially: bool = Fal
 
     For now, we just return today's date at the region
     """
-    flood_statuses = fetch_flood_status(region_codes, run_sequentially)
+    flood_statuses = fetch_flood_statuses(region_codes, run_sequentially)
 
     parsed_issued_times = [
         datetime.strptime(status["issuedTime"], "%Y-%m-%dT%H:%M:%S.%fZ")
@@ -196,7 +197,7 @@ def get_google_floods_gauges(
     region_codes: list[str], as_geojson: bool = True, run_sequentially: bool = False
 ):
     """Get statistical charts data"""
-    initial_gauges = fetch_flood_status(region_codes, run_sequentially)
+    initial_gauges = fetch_flood_statuses(region_codes, run_sequentially)
 
     gauge_details_params = urlencode(
         {"names": [f"gauges/{gauge['gaugeId']}" for gauge in initial_gauges]},
@@ -211,8 +212,8 @@ def get_google_floods_gauges(
     gauges_models_url = f"https://floodforecasting.googleapis.com/v1/gaugeModels:batchGet?key={GOOGLE_FLOODS_API_KEY}&{gauge_models_params}"
 
     # Run both requests
-    details_response = make_google_floods_request(gauges_details_url)
-    models_response = make_google_floods_request(gauges_models_url)
+    details_response = make_request_with_retries(gauges_details_url)
+    models_response = make_request_with_retries(gauges_models_url)
 
     # Create maps for quick lookup
     gauge_details_map = {
@@ -247,7 +248,7 @@ def get_google_floods_gauge_forecast(gauge_ids: list[str]):
         doseq=True,
     )
     forecast_url = f"https://floodforecasting.googleapis.com/v1/gauges:queryGaugeForecasts?key={GOOGLE_FLOODS_API_KEY}&{gauge_params}"
-    forecast_response = make_google_floods_request(forecast_url)
+    forecast_response = make_request_with_retries(forecast_url)
 
     forecasts = forecast_response.get("forecasts", {})
 

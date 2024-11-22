@@ -193,7 +193,7 @@ const Chart = memo(
           fill: config.fill || false,
           backgroundColor: colors[i],
           borderColor: colors[i],
-          borderWidth: 4,
+          borderWidth: 3,
           data: tableRows.map(row => (row[indiceKey] as number) || null),
           pointRadius: configureIndicePointRadius(indiceKey),
           pointHitRadius: 10,
@@ -289,6 +289,13 @@ const Chart = memo(
     );
 
     const datasets = !transpose ? tableRowsDataSet : indicesDataSet;
+    const datasetsWithThresholds = [...datasets, ...floodThresholds];
+
+    const datasetsTrimmed = datasetsWithThresholds.map(set => ({
+      ...set,
+      data: set.data.slice(chartRange[0], chartRange[1]),
+    }));
+
     const chartData = React.useMemo(() => {
       if (isGoogleFloodChart) {
         const pastDatasets = datasets.map(dataset => ({
@@ -313,13 +320,14 @@ const Chart = memo(
       }
       return {
         labels,
-        datasets: [...datasets, ...floodThresholds],
+        datasets: datasetsTrimmed,
       };
     }, [
       isGoogleFloodChart,
       labels,
-      datasets,
       floodThresholds,
+      datasets,
+      datasetsTrimmed,
       isPastDate,
       t,
       isFutureDate,
