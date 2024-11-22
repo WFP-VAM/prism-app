@@ -23,7 +23,6 @@ from .caching import (
     get_json_file,
     is_file_valid,
 )
-
 from .utils import make_request_with_retries
 
 supported_drivers["LIBKML"] = "rw"
@@ -119,7 +118,9 @@ def format_gauge_to_geojson(data):
     return geojson
 
 
-def fetch_flood_statuses(region_codes: list[str], run_sequentially: bool = False) -> list[dict]:
+def fetch_flood_statuses(
+    region_codes: list[str], run_sequentially: bool = False
+) -> list[dict]:
     """Fetch flood statuses concurrently for a list of region codes."""
     flood_statuses = []
     if run_sequentially:
