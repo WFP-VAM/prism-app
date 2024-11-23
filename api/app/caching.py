@@ -102,7 +102,7 @@ def cache_geojson(
     geojson: GeoJSON, prefix: str, cache_key: str | None = None
 ) -> FilePath:
     """
-    Locally store geojson needed for a request.
+    Locally cache geojson for future use.
 
     Args:
         geojson (GeoJSON): The GeoJSON object to be cached.
@@ -116,10 +116,12 @@ def cache_geojson(
     """
     json_string = json.dumps(geojson)
 
+    # If cache_key is provided, use it to generate the cache file path.
+    # Otherwise, use the JSON string of the geojson.
     cache_filepath = _get_cached_filepath(
         prefix=prefix,
-        cache_key=cache_key,
-        data=json_string,
+        cache_key=cache_key if cache_key else None,
+        data=json_string if not cache_key else None,
         extension="json",
     )
 
