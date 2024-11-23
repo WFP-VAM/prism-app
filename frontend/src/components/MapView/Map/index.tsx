@@ -39,6 +39,7 @@ import { MapSourceDataEvent, Map as MaplibreMap } from 'maplibre-gl';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import { Panel, leftPanelTabValueSelector } from 'context/leftPanelStateSlice';
 import { mapStyle } from './utils';
+import GeojsonDataLayer from '../Layers/GeojsonDataLayer';
 
 type LayerComponentsMap<U extends LayerType> = {
   [T in U['type']]: {
@@ -52,6 +53,7 @@ const componentTypes: LayerComponentsMap<LayerType> = {
   admin_level_data: { component: AdminLevelDataLayer },
   impact: { component: ImpactLayer },
   point_data: { component: PointDataLayer },
+  geojson_polygon: { component: GeojsonDataLayer },
   static_raster: { component: StaticRasterLayer },
   composite: { component: CompositeLayer },
   anticipatory_action: {

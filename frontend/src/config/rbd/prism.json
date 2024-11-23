@@ -442,7 +442,23 @@
       ]
     },
     "flooding": {
-      "flood_status": ["google_flood_status_at_gauges"]
+      "flood_status": [
+        {
+          "group_title": "Flood Status",
+          "activate_all": true,
+          "layers": [
+            {
+              "id": "google_flood_status_at_gauges",
+              "label": "Flood Gauges",
+              "main": true
+            },
+            {
+              "id": "google_flood_inundation_maps",
+              "label": "Inundation Maps"
+            }
+          ]
+        }
+      ]
     }
   }
 }

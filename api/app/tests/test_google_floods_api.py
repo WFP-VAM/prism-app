@@ -1,9 +1,14 @@
+import json
+import logging
+
 import pytest
-from app.googleflood import get_google_floods_gauges
+from app.googleflood import get_google_floods_gauges, get_google_floods_inundations
 from app.main import app
 from fastapi.testclient import TestClient
 
 client = TestClient(app)
+
+logging.getLogger("vcr").setLevel(logging.WARNING)
 
 
 @pytest.mark.vcr(
@@ -61,6 +66,7 @@ def test_get_google_floods_gauges_api_case_insensitive():
     assert response.status_code == 200
 
     response_geojson = response.json()
+    print(response_geojson)
     assert response_geojson["type"] == "FeatureCollection"
     assert len(response_geojson["features"]) > 0
 
@@ -124,3 +130,29 @@ def test_get_google_floods_gauge_forecast_multiple_gauges():
         assert len(gauge) > 0
         assert isinstance(gauge[0]["value"][0], str)
         assert isinstance(gauge[0]["value"][1], float)
+    assert len(response.json()) > 0
+
+
+@pytest.mark.vcr(
+    match_on=["uri", "method"],
+    filter_headers=["Authorization"],
+    filter_query_parameters=["key"],
+    ignore_hosts=["testserver"],
+)
+def test_get_google_floods_inundations():
+    floods = get_google_floods_inundations(["BD"], run_sequentially=True)
+    assert len(floods) > 0
+
+
+@pytest.mark.vcr(
+    match_on=["uri", "method"],
+    filter_headers=["Authorization"],
+    filter_query_parameters=["key"],
+    ignore_hosts=["testserver"],
+)
+def test_get_google_floods_inundation_api():
+    response = client.get(
+        "/google-floods/inundations?region_codes=BD&run_sequentially=true"
+    )
+    assert response.status_code == 200
+    assert len(response.json()) > 0
