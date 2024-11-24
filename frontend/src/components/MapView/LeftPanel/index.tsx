@@ -141,29 +141,29 @@ const LeftPanel = memo(() => {
     dispatch(loadAAData());
   }, [dispatch, tabValue]);
 
-  // Add layers to url
+  // Add or switch AA layers in url
   React.useEffect(() => {
     if (!isAnticipatoryActionLayer(tabValue)) {
       return;
     }
-
     const selectedLayerId = AALayerIds.find(x => x === tabValue);
-
     if (!selectedLayerId) {
       return;
     }
 
     const layer = LayerDefinitions[selectedLayerId];
-    console.log('layer', layer);
-    console.log('AALayerInUrl', AALayerInUrl);
-    // Add to url when getting to AA tab
-    if (!layer) {
+    if (!layer || AALayerInUrl?.id === layer.id) {
       return;
     }
 
-    // Change AA layer in url
     if (AALayerInUrl) {
-      removeLayerFromUrl(getUrlKey(AALayerInUrl), AALayerInUrl.id);
+      toggleRemoveLayer(
+        AALayerInUrl,
+        map,
+        getUrlKey(AALayerInUrl),
+        dispatch,
+        removeLayerFromUrl,
+      );
     }
 
     const updatedUrl = appendLayerToUrl(
@@ -171,8 +171,6 @@ const LeftPanel = memo(() => {
       selectedLayers,
       layer,
     );
-
-    console.log('updatedUrl', updatedUrl);
 
     updateHistory(getUrlKey(layer), updatedUrl);
     // url does not instantly update. updateHistory and appendLayerToUrl functions re-trigger useEffect, before selected layers is set
