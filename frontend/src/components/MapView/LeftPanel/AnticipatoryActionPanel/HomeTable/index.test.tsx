@@ -33,7 +33,7 @@ const store = mockStore({
     windowRanges: { 'Window 2': { start: '2023-08-01', end: '2023-12-01' } },
   },
   leftPanelState: {
-    tabValue: Panel.AnticipatoryAction,
+    tabValue: Panel.AnticipatoryActionDrought,
   },
 });
 

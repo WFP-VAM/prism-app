@@ -42,7 +42,7 @@ const store = mockStore({
     data: mockAAData,
   },
   leftPanelState: {
-    tabValue: Panel.AnticipatoryAction,
+    tabValue: Panel.AnticipatoryActionDrought,
   },
 });
 
