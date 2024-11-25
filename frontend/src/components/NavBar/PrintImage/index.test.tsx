@@ -32,7 +32,7 @@ test('renders as expected', () => {
       isMapLayerActive: false,
     },
     leftPanelState: {
-      tabValue: Panel.AnticipatoryAction,
+      tabValue: Panel.AnticipatoryActionDrought,
     },
   });
 
