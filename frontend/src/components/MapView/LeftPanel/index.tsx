@@ -5,7 +5,11 @@ import {
   leftPanelTabValueSelector,
   setTabValue,
 } from 'context/leftPanelStateSlice';
-import { AnticipatoryAction, Panel } from 'config/types';
+import {
+  AnticipatoryAction,
+  AnticipatoryActionLayerProps,
+  Panel,
+} from 'config/types';
 import {
   AALayerIds,
   LayerDefinitions,
@@ -25,6 +29,7 @@ import {
   updateLayersCapabilities,
 } from 'context/serverStateSlice';
 import { getAAAvailableDatesCombined } from 'utils/server-utils';
+import { updateDateRange } from 'context/mapStateSlice';
 import AnalysisPanel from './AnalysisPanel';
 import ChartsPanel from './ChartsPanel';
 import TablesPanel from './TablesPanel';
@@ -151,7 +156,9 @@ const LeftPanel = memo(() => {
       return;
     }
 
-    const layer = LayerDefinitions[selectedLayerId];
+    const layer = LayerDefinitions[
+      selectedLayerId
+    ] as AnticipatoryActionLayerProps;
     if (!layer || AALayerInUrl?.id === layer.id) {
       return;
     }
@@ -171,8 +178,11 @@ const LeftPanel = memo(() => {
       selectedLayers,
       layer,
     );
-
     updateHistory(getUrlKey(layer), updatedUrl);
+
+    // Reset startDate
+    dispatch(updateDateRange({ startDate: undefined }));
+
     // url does not instantly update. updateHistory and appendLayerToUrl functions re-trigger useEffect, before selected layers is set
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedLayers, tabValue, dispatch, AALayerInUrl]);
