@@ -163,6 +163,7 @@ const DateSelector = memo(() => {
           }
           return 0;
         })
+        .filter(l => l.type !== AnticipatoryAction.storm) // disable showing anticipatory action storm data
         .map(l => (isAnticipatoryActionLayer(l.type) ? AALayers : l))
         .flat(),
     [selectedLayers, AALayers],
