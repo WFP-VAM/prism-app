@@ -19,7 +19,7 @@ import { lightGrey } from 'muiTheme';
 import { useDispatch, useSelector } from 'react-redux';
 import { useSafeTranslation } from 'i18n';
 import { Equalizer, Reply } from '@material-ui/icons';
-import { getAAColor, getAAIcon, useAACommonStyles } from '../utils';
+import { getAAColor, getAAIcon, useAACommonStyles } from '../../utils';
 import { dateSorter } from '../DistrictView/utils';
 import { timelineTransform } from './utils';
 

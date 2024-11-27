@@ -40,11 +40,11 @@ import { getFormattedDate } from 'utils/date-utils';
 import { DateFormat } from 'utils/name-utils';
 import { PanelSize } from 'config/types';
 import { StyledCheckboxLabel, StyledRadioLabel, StyledSelect } from '../utils';
-import DistrictView from '../DistrictView/index';
-import HomeTable from '../HomeTable';
+import DistrictView from './DistrictView/index';
+import HomeTable from './HomeTable';
 import HowToReadModal from '../HowToReadModal';
-import Timeline from '../Timeline';
-import Forecast from '../Forecast';
+import Timeline from './Timeline';
+import Forecast from './Forecast';
 
 const isZimbabwe = safeCountry === 'zimbabwe';
 

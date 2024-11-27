@@ -4,7 +4,7 @@ import { BrowserRouter } from 'react-router-dom';
 import configureStore from 'redux-mock-store';
 import { Panel } from 'config/types';
 import HomeTable from '.';
-import { defaultDialogs, mockAARenderedDistricts } from '../test.utils';
+import { defaultDialogs, mockAARenderedDistricts } from '../../test.utils';
 
 const mockStore = configureStore([]);
 

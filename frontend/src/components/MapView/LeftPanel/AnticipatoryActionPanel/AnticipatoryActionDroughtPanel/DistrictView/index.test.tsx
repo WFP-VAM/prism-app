@@ -5,7 +5,7 @@ import configureStore from 'redux-mock-store';
 import { AnticipatoryActionState } from 'context/anticipatoryActionStateSlice/types';
 import { Panel } from 'config/types';
 import DistrictView from '.';
-import { defaultDialogs, mockAAData } from '../test.utils';
+import { defaultDialogs, mockAAData } from '../../test.utils';
 import { districtViewTransform } from './utils';
 
 const mockStore = configureStore([]);
