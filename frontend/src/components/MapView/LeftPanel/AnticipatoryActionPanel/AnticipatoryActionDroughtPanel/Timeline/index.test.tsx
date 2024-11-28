@@ -4,7 +4,7 @@ import { BrowserRouter } from 'react-router-dom';
 import configureStore from 'redux-mock-store';
 import { AnticipatoryActionState } from 'context/anticipatoryActionStateSlice/types';
 import { Panel } from 'config/types';
-import { defaultDialogs, mockAAData } from '../test.utils';
+import { defaultDialogs, mockAAData } from '../../test.utils';
 import { timelineTransform } from './utils';
 import Timeline from '.';
 
