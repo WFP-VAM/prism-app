@@ -76,12 +76,28 @@ const AnticipatoryActionStormLayer = React.memo(
 
     return (
       <>
+        <Source
+          data={AAStormData.ready_set_results.exposed_area_48kt.polygon}
+          type="geojson"
+        >
+          <Layer
+            type="fill"
+            paint={{ 'fill-opacity': 0.5, 'fill-color': '#ff8934' }}
+          />
+        </Source>
+        <Source
+          data={AAStormData.ready_set_results.exposed_area_64kt.polygon}
+          type="geojson"
+        >
+          <Layer
+            type="fill"
+            paint={{ 'fill-opacity': 0.5, 'fill-color': '#e63701' }}
+          />
+        </Source>
         {filterTimeSerieByWindType(['moderate tropical storm']).map(
           filteredTimeSerie => (
             <Source data={filteredTimeSerie} type="geojson">
               <Layer
-                // beforeId={before}
-                // id={layerId}
                 type="symbol"
                 layout={{ 'icon-image': ['image', 'moderate-tropical-storm'] }}
               />
@@ -92,8 +108,6 @@ const AnticipatoryActionStormLayer = React.memo(
           filteredTimeSerie => (
             <Source data={filteredTimeSerie} type="geojson">
               <Layer
-                // beforeId={before}
-                // id={layerId}
                 type="symbol"
                 layout={{ 'icon-image': ['image', 'severe-tropical-storm'] }}
               />
@@ -106,8 +120,6 @@ const AnticipatoryActionStormLayer = React.memo(
         ]).map(filteredTimeSerie => (
           <Source data={filteredTimeSerie} type="geojson">
             <Layer
-              // beforeId={before}
-              // id={layerId}
               type="symbol"
               layout={{ 'icon-image': ['image', 'tropical-cyclone'] }}
             />
@@ -124,8 +136,6 @@ const AnticipatoryActionStormLayer = React.memo(
         ]).map(filteredTimeSerie => (
           <Source data={filteredTimeSerie} type="geojson">
             <Layer
-              // beforeId={before}
-              // id={layerId}
               type="symbol"
               layout={{ 'icon-image': ['image', 'overland'] }}
             />
