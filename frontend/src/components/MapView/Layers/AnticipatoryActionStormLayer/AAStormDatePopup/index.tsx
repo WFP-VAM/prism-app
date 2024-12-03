@@ -4,7 +4,7 @@ import { FeatureCollection, Point } from 'geojson';
 import { getHours, parse, getDate } from 'date-fns';
 import { createStyles, makeStyles, Typography } from '@material-ui/core';
 
-function AAStormPopup({ timeSeries }: PopupProps) {
+function AAStormDatePopup({ timeSeries }: PopupProps) {
   const classes = useStyles();
   function getDateInUTC(time: string) {
     return parse(time, 'yyyy-MM-dd HH:mm:ss', new Date(Date.UTC(0)));
@@ -93,4 +93,4 @@ const useStyles = makeStyles(() =>
   }),
 );
 
-export default AAStormPopup;
+export default AAStormDatePopup;

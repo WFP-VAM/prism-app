@@ -2,8 +2,9 @@ import React, { useEffect } from 'react';
 import { AnticipatoryActionLayerProps } from 'config/types';
 import { useDefaultDate } from 'utils/useDefaultDate';
 import { Source, Layer, MapRef } from 'react-map-gl/maplibre';
-import AAStormPopup, { TimeSeries } from './AAStormPopup';
+import AAStormDatePopup, { TimeSeries } from './AAStormDatePopup';
 import AAStormData from '../../../../../public/data/mozambique/anticipatory-action/aa_storm_temporary.json';
+import AAStormLandfallPopup from './AAStormLandfallPopup';
 
 const AnticipatoryActionStormLayer = React.memo(
   ({ layer, mapRef }: AnticipatoryActionStormLayerProps) => {
@@ -142,7 +143,23 @@ const AnticipatoryActionStormLayer = React.memo(
           </Source>
         ))}
 
-        <AAStormPopup timeSeries={timeSeries} />
+        <AAStormDatePopup timeSeries={timeSeries} />
+        <AAStormLandfallPopup
+          points={{
+            type: 'FeatureCollection',
+            features: [
+              {
+                type: 'Feature',
+                geometry: {
+                  type: 'Point',
+                  coordinates: [39.67, -20.25],
+                },
+                properties: null,
+              },
+            ],
+          }}
+          landfallInfo={AAStormData.landfall_info}
+        />
       </>
     );
   },
