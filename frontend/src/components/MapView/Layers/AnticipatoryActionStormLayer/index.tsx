@@ -12,6 +12,11 @@ import AAStormDatePopup, { TimeSeries } from './AAStormDatePopup';
 import AAStormData from '../../../../../public/data/mozambique/anticipatory-action/aa_storm_temporary.json';
 import AAStormLandfallPopup from './AAStormLandfallPopup';
 import { formatReportDate } from './utils';
+import moderateStorm from '../../../../../public/images/anticipatory-action-storm/moderate-tropical-storm.png';
+import overland from '../../../../../public/images/anticipatory-action-storm/overland.png';
+import severeTropicalStorm from '../../../../../public/images/anticipatory-action-storm/severe-tropical-storm.png';
+import tropicalCyclone from '../../../../../public/images/anticipatory-action-storm/tropical-cyclone.png';
+// import intensiveCyclone from '../../../../../public/images/anticipatory-action-storm/very-intensive-tropical-cycloone.png';
 
 const AnticipatoryActionStormLayer = React.memo(
   ({ layer, mapRef }: AnticipatoryActionStormLayerProps) => {
@@ -69,55 +74,22 @@ const AnticipatoryActionStormLayer = React.memo(
 
     function loadImages() {
       const map = mapRef.getMap();
-      // If the style's sprite does not already contain an image with ID 'cat',
-      // add the image 'cat-icon.png' to the style's sprite with the ID 'cat'.
-      map.loadImage(
-        'public/images/anticipatory-action-storm/moderate-tropical-storm.png',
-        (error, image) => {
-          if (error) {
-            throw error;
-          }
-          if (!map.hasImage('moderate-tropical-storm')) {
-            map.addImage('moderate-tropical-storm', image!);
-          }
-        },
-      );
 
-      map.loadImage(
-        'public/images/anticipatory-action-storm/severe-tropical-storm.png',
-        (error, image) => {
+      const loadImage = (url: string, name: string) => {
+        map.loadImage(url, (error, image) => {
           if (error) {
             throw error;
           }
-          if (!map.hasImage('severe-tropical-storm')) {
-            map.addImage('severe-tropical-storm', image!);
+          if (!map.hasImage(name)) {
+            map.addImage(name, image!);
           }
-        },
-      );
+        });
+      };
 
-      map.loadImage(
-        'public/images/anticipatory-action-storm/tropical-cyclone.png',
-        (error, image) => {
-          if (error) {
-            throw error;
-          }
-          if (!map.hasImage('tropical-cyclone')) {
-            map.addImage('tropical-cyclone', image!);
-          }
-        },
-      );
-
-      map.loadImage(
-        'public/images/anticipatory-action-storm/overland.png',
-        (error, image) => {
-          if (error) {
-            throw error;
-          }
-          if (!map.hasImage('overland')) {
-            map.addImage('overland', image!);
-          }
-        },
-      );
+      loadImage(moderateStorm, 'moderate-tropical-storm');
+      loadImage(severeTropicalStorm, 'severe-tropical-storm');
+      loadImage(tropicalCyclone, 'tropical-cyclone');
+      loadImage(overland, 'overland');
     }
 
     useEffect(() => {
