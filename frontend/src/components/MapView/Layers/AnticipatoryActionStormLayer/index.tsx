@@ -2,21 +2,73 @@ import React, { useEffect } from 'react';
 import { AnticipatoryActionLayerProps } from 'config/types';
 import { useDefaultDate } from 'utils/useDefaultDate';
 import { Source, Layer, MapRef } from 'react-map-gl/maplibre';
+import { useMapCallback } from 'utils/map-utils';
 import AAStormDatePopup, { TimeSeries } from './AAStormDatePopup';
 import AAStormData from '../../../../../public/data/mozambique/anticipatory-action/aa_storm_temporary.json';
 import AAStormLandfallPopup from './AAStormLandfallPopup';
+
+const onWindPointsClicked = () => () => {
+  console.log('clicked on wind points');
+};
 
 const AnticipatoryActionStormLayer = React.memo(
   ({ layer, mapRef }: AnticipatoryActionStormLayerProps) => {
     useDefaultDate(layer.id);
 
-    const timeSeries: TimeSeries =
-      AAStormData.time_series as unknown as TimeSeries;
+    useMapCallback(
+      'click',
+      `aa-storm-wind-points-layer`,
+      layer as any,
+      onWindPointsClicked,
+    );
 
-    function filterTimeSerieByWindType(windTypes: string[]) {
-      return timeSeries.features.filter(timePoint =>
-        windTypes.includes(timePoint.properties.development),
-      );
+    function enhanceTimeSeries(timeSeries: TimeSeries) {
+      const { type, features, bbox } = timeSeries;
+
+      const newFeatures = features.map(feature => {
+        const {
+          id,
+          type: featureType,
+          properties,
+          geometry,
+          bbox: featureBbox,
+        } = feature;
+        const newProperties = {
+          ...properties,
+          iconName: getIconNameByWindType(properties.development),
+        };
+        return {
+          id,
+          type: featureType,
+          geometry,
+          bbox: featureBbox,
+          properties: newProperties,
+        };
+      });
+
+      return { type, bbox, features: newFeatures };
+    }
+
+    const timeSeries: TimeSeries = enhanceTimeSeries(
+      AAStormData.time_series as unknown as TimeSeries,
+    );
+
+    // function filterTimeSerieByWindType(windTypes: string[]) {
+    //   return timeSeries.features.filter(timePoint =>
+    //     windTypes.includes(timePoint.properties.development),
+    //   );
+    // }
+
+    function getIconNameByWindType(windType: string) {
+      if (windType === 'intense tropical cyclone') {
+        return 'tropical-cyclone';
+      }
+
+      if (windType === 'inland') {
+        return 'overland';
+      }
+
+      return windType.split(' ').join('-');
     }
 
     function loadImages() {
@@ -95,53 +147,14 @@ const AnticipatoryActionStormLayer = React.memo(
             paint={{ 'fill-opacity': 0.5, 'fill-color': '#e63701' }}
           />
         </Source>
-        {filterTimeSerieByWindType(['moderate tropical storm']).map(
-          filteredTimeSerie => (
-            <Source data={filteredTimeSerie} type="geojson">
-              <Layer
-                type="symbol"
-                layout={{ 'icon-image': ['image', 'moderate-tropical-storm'] }}
-              />
-            </Source>
-          ),
-        )}
-        {filterTimeSerieByWindType(['severe tropical storm']).map(
-          filteredTimeSerie => (
-            <Source data={filteredTimeSerie} type="geojson">
-              <Layer
-                type="symbol"
-                layout={{ 'icon-image': ['image', 'severe-tropical-storm'] }}
-              />
-            </Source>
-          ),
-        )}
-        {filterTimeSerieByWindType([
-          'tropical cyclone',
-          'intense tropical cyclone',
-        ]).map(filteredTimeSerie => (
-          <Source data={filteredTimeSerie} type="geojson">
-            <Layer
-              type="symbol"
-              layout={{ 'icon-image': ['image', 'tropical-cyclone'] }}
-            />
-          </Source>
-        ))}
 
-        {filterTimeSerieByWindType([
-          // 'disturbance',
-          // 'tropical disturbance',
-          // 'tropical depression',
-          'inland',
-          // 'post-tropical depression',
-          // 'extratropical system',
-        ]).map(filteredTimeSerie => (
-          <Source data={filteredTimeSerie} type="geojson">
-            <Layer
-              type="symbol"
-              layout={{ 'icon-image': ['image', 'overland'] }}
-            />
-          </Source>
-        ))}
+        <Source data={timeSeries} type="geojson">
+          <Layer
+            type="symbol"
+            id="aa-storm-wind-points-layer"
+            layout={{ 'icon-image': ['image', ['get', 'iconName']] }}
+          />
+        </Source>
 
         <AAStormDatePopup timeSeries={timeSeries} />
         <AAStormLandfallPopup
