@@ -134,6 +134,29 @@ const AnticipatoryActionStormLayer = React.memo(
       loadImages();
     }, []);
 
+    // Display a pointer cursor when hovering over the wind points
+    useEffect(() => {
+      const map = mapRef.getMap();
+
+      const handleMouseEnter = () => {
+        // eslint-disable-next-line fp/no-mutation
+        map.getCanvas().style.cursor = 'pointer';
+      };
+
+      const handleMouseLeave = () => {
+        // eslint-disable-next-line fp/no-mutation
+        map.getCanvas().style.cursor = '';
+      };
+
+      map.on('mouseenter', 'aa-storm-wind-points-layer', handleMouseEnter);
+      map.on('mouseleave', 'aa-storm-wind-points-layer', handleMouseLeave);
+
+      return () => {
+        map.off('mouseenter', 'aa-storm-wind-points-layer', handleMouseEnter);
+        map.off('mouseleave', 'aa-storm-wind-points-layer', handleMouseLeave);
+      };
+    }, []);
+
     return (
       <>
         <Source
