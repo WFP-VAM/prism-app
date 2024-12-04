@@ -1,14 +1,13 @@
 import { Popup } from 'react-map-gl/maplibre';
 import _React from 'react';
 import { FeatureCollection, Point } from 'geojson';
-import { getHours, parse, getDate } from 'date-fns';
+import { getHours, getDate } from 'date-fns';
 import { createStyles, makeStyles, Typography } from '@material-ui/core';
+import { getDateInUTC } from '../utils';
 
 function AAStormDatePopup({ timeSeries }: PopupProps) {
   const classes = useStyles();
-  function getDateInUTC(time: string) {
-    return parse(time, 'yyyy-MM-dd HH:mm:ss', new Date(Date.UTC(0)));
-  }
+
   function is6AM(time: string) {
     const dateInUTC = getDateInUTC(time);
     return getHours(dateInUTC) === 6;

@@ -1,19 +1,36 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { AnticipatoryActionLayerProps } from 'config/types';
 import { useDefaultDate } from 'utils/useDefaultDate';
-import { Source, Layer, MapRef } from 'react-map-gl/maplibre';
+import {
+  Source,
+  Layer,
+  MapRef,
+  MapLayerMouseEvent,
+} from 'react-map-gl/maplibre';
 import { useMapCallback } from 'utils/map-utils';
+import { Feature, Point } from 'geojson';
 import AAStormDatePopup, { TimeSeries } from './AAStormDatePopup';
 import AAStormData from '../../../../../public/data/mozambique/anticipatory-action/aa_storm_temporary.json';
 import AAStormLandfallPopup from './AAStormLandfallPopup';
-
-const onWindPointsClicked = () => () => {
-  console.log('clicked on wind points');
-};
+import { formatReportDate, isDateSameAsCurrentDate } from './utils';
 
 const AnticipatoryActionStormLayer = React.memo(
   ({ layer, mapRef }: AnticipatoryActionStormLayerProps) => {
     useDefaultDate(layer.id);
+
+    const [selectedFeature, setSelectedFeature] =
+      useState<Feature<Point> | null>(null);
+
+    /* this is the date the layer data corresponds to. It will be stored in redux ultimately */
+    const layerDataDate = '2024-03-11';
+
+    const onWindPointsClicked = () => (e: MapLayerMouseEvent) => {
+      const feature = e.features?.[0];
+
+      if (isDateSameAsCurrentDate(feature?.properties.time, layerDataDate)) {
+        setSelectedFeature(feature as Feature<Point>);
+      }
+    };
 
     useMapCallback(
       'click',
@@ -23,41 +40,26 @@ const AnticipatoryActionStormLayer = React.memo(
     );
 
     function enhanceTimeSeries(timeSeries: TimeSeries) {
-      const { type, features, bbox } = timeSeries;
+      const { features, ...timeSeriesRest } = timeSeries;
 
       const newFeatures = features.map(feature => {
-        const {
-          id,
-          type: featureType,
-          properties,
-          geometry,
-          bbox: featureBbox,
-        } = feature;
+        const { properties, ...featureRest } = feature;
         const newProperties = {
           ...properties,
           iconName: getIconNameByWindType(properties.development),
         };
         return {
-          id,
-          type: featureType,
-          geometry,
-          bbox: featureBbox,
+          ...featureRest,
           properties: newProperties,
         };
       });
 
-      return { type, bbox, features: newFeatures };
+      return { ...timeSeriesRest, features: newFeatures };
     }
 
     const timeSeries: TimeSeries = enhanceTimeSeries(
       AAStormData.time_series as unknown as TimeSeries,
     );
-
-    // function filterTimeSerieByWindType(windTypes: string[]) {
-    //   return timeSeries.features.filter(timePoint =>
-    //     windTypes.includes(timePoint.properties.development),
-    //   );
-    // }
 
     function getIconNameByWindType(windType: string) {
       if (windType === 'intense tropical cyclone') {
@@ -69,6 +71,10 @@ const AnticipatoryActionStormLayer = React.memo(
       }
 
       return windType.split(' ').join('-');
+    }
+
+    function landfallPopupCloseHandler() {
+      setSelectedFeature(null);
     }
 
     function loadImages() {
@@ -123,6 +129,7 @@ const AnticipatoryActionStormLayer = React.memo(
         },
       );
     }
+
     useEffect(() => {
       loadImages();
     }, []);
@@ -157,22 +164,15 @@ const AnticipatoryActionStormLayer = React.memo(
         </Source>
 
         <AAStormDatePopup timeSeries={timeSeries} />
-        <AAStormLandfallPopup
-          points={{
-            type: 'FeatureCollection',
-            features: [
-              {
-                type: 'Feature',
-                geometry: {
-                  type: 'Point',
-                  coordinates: [39.67, -20.25],
-                },
-                properties: null,
-              },
-            ],
-          }}
-          landfallInfo={AAStormData.landfall_info}
-        />
+
+        {selectedFeature && (
+          <AAStormLandfallPopup
+            point={selectedFeature.geometry}
+            reportDate={formatReportDate(selectedFeature.properties?.time)}
+            landfallInfo={AAStormData.landfall_info}
+            onClose={() => landfallPopupCloseHandler()}
+          />
+        )}
       </>
     );
   },

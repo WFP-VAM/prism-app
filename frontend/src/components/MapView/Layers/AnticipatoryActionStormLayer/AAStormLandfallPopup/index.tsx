@@ -1,79 +1,75 @@
 import { createStyles, makeStyles, Typography } from '@material-ui/core';
-import { FeatureCollection, Point } from 'geojson';
+import { Point } from 'geojson';
 import { Popup } from 'react-map-gl/maplibre';
 
 function AAStormLandfallPopup({
-  points,
+  reportDate,
+  point,
   landfallInfo,
+  onClose,
 }: AAStormLandfallPopupProps) {
   const classes = useStyles();
-  return (
-    <>
-      {points.features.map(point => {
-        const lng = point.geometry.coordinates[0];
-        const lat = point.geometry.coordinates[1];
 
-        return (
-          <Popup
-            //   key={timePoint.id}
-            longitude={lng}
-            latitude={lat}
-            anchor="top"
-            offset={15}
-            closeButton={false}
-            onClose={() => null}
-            closeOnClick
-            className={classes.popup}
-            maxWidth="280px"
+  const lng = point.coordinates[0];
+  const lat = point.coordinates[1];
+
+  return (
+    <Popup
+      longitude={lng}
+      latitude={lat}
+      anchor="top"
+      offset={15}
+      closeButton={false}
+      onClose={onClose}
+      closeOnClick
+      className={classes.popup}
+      maxWidth="280px"
+    >
+      <div className={classes.itemsContainer}>
+        <Typography
+          variant="body1"
+          className={`${classes.text} ${classes.title}`}
+        >
+          Report date: {reportDate}
+        </Typography>
+        <div className={classes.itemContainer}>
+          <Typography variant="body1" className={classes.text}>
+            landfall <span className={classes.block}>estimated time</span>
+          </Typography>
+          <Typography
+            variant="body1"
+            className={`${classes.text} ${classes.textAlignRight}`}
           >
-            <div className={classes.itemsContainer}>
-              <Typography
-                variant="body1"
-                className={`${classes.text} ${classes.title}`}
-              >
-                Report date: 0.3-26-2024 6pm
-              </Typography>
-              <div className={classes.itemContainer}>
-                <Typography variant="body1" className={classes.text}>
-                  landfall <span className={classes.block}>estimated time</span>
-                </Typography>
-                <Typography
-                  variant="body1"
-                  className={`${classes.text} ${classes.textAlignRight}`}
-                >
-                  12-03-2025
-                  <span className={classes.block}>06:00 - 12:00</span>
-                </Typography>
-              </div>
-              <div className={classes.itemContainer}>
-                <Typography variant="body1" className={classes.text}>
-                  landfall estimated
-                  <span className={classes.block}>leadtime</span>
-                </Typography>
-                <Typography
-                  variant="body1"
-                  className={`${classes.text} ${classes.textAlignRight}`}
-                >
-                  8 - 12 hrs
-                </Typography>
-              </div>
-              <div className={classes.itemContainer}>
-                <Typography variant="body1" className={classes.text}>
-                  District impacted
-                  <span className={classes.block}>by landfall</span>
-                </Typography>
-                <Typography
-                  variant="body1"
-                  className={`${classes.text} ${classes.textAlignRight}`}
-                >
-                  {landfallInfo.landfall_impact_district}
-                </Typography>
-              </div>
-            </div>
-          </Popup>
-        );
-      })}
-    </>
+            12-03-2025
+            <span className={classes.block}>06:00 - 12:00</span>
+          </Typography>
+        </div>
+        <div className={classes.itemContainer}>
+          <Typography variant="body1" className={classes.text}>
+            landfall estimated
+            <span className={classes.block}>leadtime</span>
+          </Typography>
+          <Typography
+            variant="body1"
+            className={`${classes.text} ${classes.textAlignRight}`}
+          >
+            8 - 12 hrs
+          </Typography>
+        </div>
+        <div className={classes.itemContainer}>
+          <Typography variant="body1" className={classes.text}>
+            District impacted
+            <span className={classes.block}>by landfall</span>
+          </Typography>
+          <Typography
+            variant="body1"
+            className={`${classes.text} ${classes.textAlignRight}`}
+          >
+            {landfallInfo.landfall_impact_district}
+          </Typography>
+        </div>
+      </div>
+    </Popup>
   );
 }
 
@@ -83,8 +79,10 @@ interface LandfallInfo {
   landfall_impact_intensity: string[];
 }
 interface AAStormLandfallPopupProps {
-  points: FeatureCollection<Point>;
+  point: Point;
   landfallInfo: LandfallInfo;
+  reportDate: string;
+  onClose: () => void;
 }
 
 const useStyles = makeStyles(() =>
