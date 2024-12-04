@@ -82,7 +82,7 @@ const AnticipatoryActionStormLayer = React.memo(
       return { ...timeSeriesRest, features: newFeatures };
     }
 
-    const timeSeries: TimeSeries = enhanceTimeSeries(
+    const timeSeries: any = enhanceTimeSeries(
       AAStormData.time_series as unknown as TimeSeries,
     );
 
