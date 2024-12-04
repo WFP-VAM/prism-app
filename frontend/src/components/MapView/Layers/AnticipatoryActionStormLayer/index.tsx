@@ -122,7 +122,7 @@ const AnticipatoryActionStormLayer = React.memo(
 
     useEffect(() => {
       loadImages();
-    }, []);
+    });
 
     // Display a pointer cursor when hovering over the wind points
     useEffect(() => {
@@ -147,7 +147,7 @@ const AnticipatoryActionStormLayer = React.memo(
         map.off('mouseleave', 'aa-storm-wind-points-layer', handleMouseLeave);
         map.off('click', 'aa-storm-wind-points-layer', onWindPointsClicked);
       };
-    }, []);
+    });
 
     return (
       <>
