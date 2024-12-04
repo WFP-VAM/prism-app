@@ -7,12 +7,11 @@ import {
   MapRef,
   MapLayerMouseEvent,
 } from 'react-map-gl/maplibre';
-import { useMapCallback } from 'utils/map-utils';
 import { Feature, Point } from 'geojson';
 import AAStormDatePopup, { TimeSeries } from './AAStormDatePopup';
 import AAStormData from '../../../../../public/data/mozambique/anticipatory-action/aa_storm_temporary.json';
 import AAStormLandfallPopup from './AAStormLandfallPopup';
-import { formatReportDate, isDateSameAsCurrentDate } from './utils';
+import { formatReportDate } from './utils';
 
 const AnticipatoryActionStormLayer = React.memo(
   ({ layer, mapRef }: AnticipatoryActionStormLayerProps) => {
@@ -22,22 +21,13 @@ const AnticipatoryActionStormLayer = React.memo(
       useState<Feature<Point> | null>(null);
 
     /* this is the date the layer data corresponds to. It will be stored in redux ultimately */
-    const layerDataDate = '2024-03-11';
+    // const layerDataDate = '2024-03-11';
 
-    const onWindPointsClicked = () => (e: MapLayerMouseEvent) => {
+    const onWindPointsClicked = (e: MapLayerMouseEvent) => {
+      e.preventDefault();
       const feature = e.features?.[0];
-
-      if (isDateSameAsCurrentDate(feature?.properties.time, layerDataDate)) {
-        setSelectedFeature(feature as Feature<Point>);
-      }
+      setSelectedFeature(feature as Feature<Point>);
     };
-
-    useMapCallback(
-      'click',
-      `aa-storm-wind-points-layer`,
-      layer as any,
-      onWindPointsClicked,
-    );
 
     function enhanceTimeSeries(timeSeries: TimeSeries) {
       const { features, ...timeSeriesRest } = timeSeries;
@@ -150,10 +140,12 @@ const AnticipatoryActionStormLayer = React.memo(
 
       map.on('mouseenter', 'aa-storm-wind-points-layer', handleMouseEnter);
       map.on('mouseleave', 'aa-storm-wind-points-layer', handleMouseLeave);
+      map.on('click', 'aa-storm-wind-points-layer', onWindPointsClicked);
 
       return () => {
         map.off('mouseenter', 'aa-storm-wind-points-layer', handleMouseEnter);
         map.off('mouseleave', 'aa-storm-wind-points-layer', handleMouseLeave);
+        map.off('click', 'aa-storm-wind-points-layer', onWindPointsClicked);
       };
     }, []);
 
