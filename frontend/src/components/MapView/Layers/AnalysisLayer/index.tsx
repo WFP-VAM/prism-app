@@ -87,6 +87,7 @@ const onClick =
                   data: getFormattedDate(
                     analysisData.analysisDate,
                     'locale',
+                    t('date_locale'),
                   ) as string,
                   coordinates,
                 },
