@@ -126,7 +126,7 @@ export function parseGetFeatureUrl(
   }
 
   // remove params
-  return url.split("?")[0];
+  return url.split("?")[0].replace(/^http:/, "https:");
 }
 
 export function hasFeatureType(
