@@ -38,16 +38,6 @@ const WMSLayers = memo(
       .toISOString()
       .slice(0, 10);
 
-    console.log(
-      'id',
-      id,
-      'opacitystate',
-      opacityState,
-      'opacity',
-      opacity,
-      'baseUrl',
-      baseUrl,
-    );
     return (
       <Source
         id={`source-${id}`}

@@ -10,12 +10,12 @@ function AAStormDatePopup({ timeSeries }: PopupProps) {
 
   function is6AM(time: string) {
     const dateInUTC = getDateInUTC(time);
-    return getHours(dateInUTC) === 6;
+    return dateInUTC && getHours(dateInUTC) === 6;
   }
 
   function getDay(time: string) {
     const dateInUTC = getDateInUTC(time);
-    return getDate(dateInUTC);
+    return dateInUTC && getDate(dateInUTC);
   }
 
   return (

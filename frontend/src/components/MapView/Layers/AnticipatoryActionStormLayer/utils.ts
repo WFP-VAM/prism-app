@@ -1,6 +1,6 @@
 import { format, isSameDay, parseJSON } from 'date-fns';
 
-export function getDateInUTC(time: string, hasHours: boolean) {
+export function getDateInUTC(time: string, hasHours: boolean = true) {
   try {
     return parseJSON(time + (!hasHours ? ' 00:00:00' : ''));
   } catch {
