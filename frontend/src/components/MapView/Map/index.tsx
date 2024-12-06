@@ -43,7 +43,10 @@ import { mapStyle } from './utils';
 
 type LayerComponentsMap<U extends LayerType> = {
   [T in U['type']]: {
-    component: ComponentType<{ layer: DiscriminateUnion<U, 'type', T> }>;
+    component: ComponentType<{
+      layer: DiscriminateUnion<U, 'type', T>;
+      mapRef: MapRef;
+    }>;
   };
 };
 
@@ -235,6 +238,7 @@ const MapComponent = memo(() => {
             index,
             layer.type.startsWith('anticipatory_action'),
           ),
+          mapRef: mapRef.current,
         });
       })}
       <AnalysisLayer before={firstBoundaryId} />
