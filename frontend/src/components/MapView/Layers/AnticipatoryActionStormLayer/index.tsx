@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { AnticipatoryActionLayerProps } from 'config/types';
 import { useDefaultDate } from 'utils/useDefaultDate';
 import {
@@ -16,7 +16,7 @@ import moderateStorm from '../../../../../public/images/anticipatory-action-stor
 import overland from '../../../../../public/images/anticipatory-action-storm/overland.png';
 import severeTropicalStorm from '../../../../../public/images/anticipatory-action-storm/severe-tropical-storm.png';
 import tropicalCyclone from '../../../../../public/images/anticipatory-action-storm/tropical-cyclone.png';
-// import intensiveCyclone from '../../../../../public/images/anticipatory-action-storm/very-intensive-tropical-cycloone.png';
+import veryIntensiveCyclone from '../../../../../public/images/anticipatory-action-storm/very-intensive-tropical-cyclone.png';
 
 const AnticipatoryActionStormLayer = React.memo(
   ({ layer, mapRef }: AnticipatoryActionStormLayerProps) => {
@@ -72,7 +72,7 @@ const AnticipatoryActionStormLayer = React.memo(
       setSelectedFeature(null);
     }
 
-    function loadImages() {
+    const loadImages = useCallback(() => {
       const map = mapRef.getMap();
 
       const loadImage = (url: string, name: string) => {
@@ -90,11 +90,12 @@ const AnticipatoryActionStormLayer = React.memo(
       loadImage(severeTropicalStorm, 'severe-tropical-storm');
       loadImage(tropicalCyclone, 'tropical-cyclone');
       loadImage(overland, 'overland');
-    }
+      loadImage(veryIntensiveCyclone, 'very-intensive-tropical-cyclone');
+    }, [mapRef]);
 
     useEffect(() => {
       loadImages();
-    });
+    }, [loadImages]);
 
     // Display a pointer cursor when hovering over the wind points
     useEffect(() => {
@@ -102,7 +103,7 @@ const AnticipatoryActionStormLayer = React.memo(
 
       const handleMouseEnter = () => {
         // eslint-disable-next-line fp/no-mutation
-        map.getCanvas().style.cursor = 'pointer';
+        map.getCanvas().style.cursor = 'cursor';
       };
 
       const handleMouseLeave = () => {
@@ -119,7 +120,7 @@ const AnticipatoryActionStormLayer = React.memo(
         map.off('mouseleave', 'aa-storm-wind-points-layer', handleMouseLeave);
         map.off('click', 'aa-storm-wind-points-layer', onWindPointsClicked);
       };
-    });
+    }, [mapRef]);
 
     return (
       <>
