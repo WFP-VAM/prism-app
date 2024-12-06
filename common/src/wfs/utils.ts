@@ -3,7 +3,6 @@ import { isEmpty } from "lodash";
 import { findTagByName, findTagsByPath, getAttribute } from "xml-utils";
 
 import {
-  DEFAULT_DATE_FORMAT,
   findAndParseAbstract,
   findTagAttribute,
   findTagText,
@@ -20,6 +19,12 @@ import {
 } from "../ows";
 
 import type { BBOX } from "../types";
+
+
+function formatDateToISO(date: string | number): string {
+  return new Date(date).toISOString().split('T')[0];
+}
+
 
 type FeatureType = {
   name: ReturnType<typeof parseName>;
@@ -274,7 +279,3 @@ export async function getFeatures(
 }
 
 // export async function getLayerDates
-
-function formatDateToISO(date: string | number): string {
-  return new Date(date).toISOString().split('T')[0];
-}
