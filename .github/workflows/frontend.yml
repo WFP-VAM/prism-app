@@ -96,9 +96,9 @@ jobs:
             **/node_modules
             **/.eslintcache
             ${{ steps.yarn-cache-dir-path.outputs.dir }}
-          key: ${{ runner.os }}-yarn-2024-7-${{ hashFiles('**/frontend/yarn.lock') }}-${{ hashFiles('**/common/yarn.lock') }}
+          key: ${{ runner.os }}-yarn-2024-12-${{ hashFiles('**/frontend/yarn.lock') }}-${{ hashFiles('**/common/yarn.lock') }}
           restore-keys: |
-            ${{ runner.os }}-yarn-2024-7
+            ${{ runner.os }}-yarn-2024-12
 
       - name: Install dependencies if needed.
         if: steps.yarn-cache.outputs.cache-hit != 'true'
@@ -170,9 +170,9 @@ jobs:
             **/node_modules
             **/.eslintcache
             ${{ steps.yarn-cache-dir-path.outputs.dir }}
-          key: ${{ runner.os }}-yarn-${{ hashFiles('**/frontend/yarn.lock') }}-${{ hashFiles('**/common/yarn.lock') }}
+          key: ${{ runner.os }}-yarn-2024-12-${{ hashFiles('**/frontend/yarn.lock') }}-${{ hashFiles('**/common/yarn.lock') }}
           restore-keys: |
-            ${{ runner.os }}-yarn-
+            ${{ runner.os }}-yarn-2024-12
 
       - name: Install dependencies if needed.
         if: steps.yarn-cache.outputs.cache-hit != 'true'
