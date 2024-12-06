@@ -385,7 +385,7 @@ async function createAPIRequestParams(
 
   const adminLevel =
     (params as AdminLevelDataLayerProps)?.adminLevel ||
-    (params as BoundaryLayerProps)?.adminLevelCodes.length;
+    (params as BoundaryLayerProps)?.adminLevelCodes?.length;
   const { path: adminBoundariesPath, adminCode: groupBy } =
     getBoundaryLayersByAdminLevel(adminLevel);
 
@@ -496,6 +496,7 @@ export const requestAndStoreExposedPopulation = createAsyncThunk<
       params;
 
     const adminBoundaries = getBoundaryLayerSingleton();
+
     const adminBoundariesData = layerDataSelector(adminBoundaries.id)(
       api.getState(),
     ) as LayerData<BoundaryLayerProps>;
@@ -661,7 +662,7 @@ export const requestAndStoreAnalysis = createAsyncThunk<
 
   const adminLevel =
     (baselineLayer as AdminLevelDataLayerProps)?.adminLevel ||
-    (baselineLayer as BoundaryLayerProps)?.adminLevelCodes.length;
+    (baselineLayer as BoundaryLayerProps)?.adminLevelCodes?.length;
   const adminBoundaries = getBoundaryLayersByAdminLevel(adminLevel);
   const adminBoundariesData = layerDataSelector(adminBoundaries.id)(
     api.getState(),
