@@ -132,7 +132,7 @@ export const getFormattedDate = (
     | DateFormat.DateTime
     | DateFormat.DayFirstSnakeCase
     | DateFormat.ISO,
-  dateLocal: string = 'default',
+  dateLocale: string = 'default',
 ) => {
   if (date === undefined) {
     return undefined;
@@ -174,7 +174,7 @@ export const getFormattedDate = (
         day: 'numeric',
       });
     case 'locale':
-      return new Date(date).toLocaleString(dateLocal, {
+      return new Date(date).toLocaleString(dateLocale, {
         year: 'numeric',
         month: 'long',
         day: 'numeric',
