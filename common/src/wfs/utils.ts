@@ -1,5 +1,5 @@
 import { isEmpty } from "lodash";
-import * as moment from "moment";
+import moment from "moment";
 
 import { findTagByName, findTagsByPath, getAttribute } from "xml-utils";
 
@@ -38,7 +38,7 @@ export function getBaseUrl(url: string): string {
 }
 
 export function findAndParseLatLongBoundingBox(
-  xml: string,
+  xml: string
 ): Readonly<[number, number, number, number]> | undefined {
   const tag = findTagByName(xml, "LatLongBoundingBox");
   if (!tag) {
@@ -56,7 +56,7 @@ export function findAndParseLatLongBoundingBox(
 // to-do: MetadataURL
 // to-do: parse prefix from name?
 export function getFeatureTypesFromCapabilities(
-  capabilities: string,
+  capabilities: string
 ): FeatureType[] {
   const featureTypes: FeatureType[] = [];
   findTagsByPath(capabilities, ["FeatureTypeList", "FeatureType"]).forEach(
@@ -72,24 +72,24 @@ export function getFeatureTypesFromCapabilities(
             keywords: findAndParseKeywords(inner),
             srs: (findTagText(inner, "DefaultSRS")?.replace(
               "urn:x-ogc:def:crs:",
-              "",
+              ""
             ) || findTagText(inner, "SRS"))!,
             bbox: (findAndParseWGS84BoundingBox(inner) ||
               findAndParseLatLongBoundingBox(inner))!,
           });
         }
       }
-    },
+    }
   );
   return featureTypes;
 }
 
 export function parseFullFeatureTypeNames(
   capabilities: string,
-  { sort = true }: { sort?: boolean } = { sort: true },
+  { sort = true }: { sort?: boolean } = { sort: true }
 ): string[] {
   const names = getFeatureTypesFromCapabilities(capabilities).map(
-    (featureType) => featureType.name.full,
+    (featureType) => featureType.name.full
   );
   if (sort) {
     // eslint-disable-next-line fp/no-mutating-methods
@@ -103,7 +103,7 @@ export function parseGetFeatureUrl(
   capabilities: string,
   { method = "GET" }: { method: "GET" | "POST"; throw?: boolean } = {
     method: "GET",
-  },
+  }
 ): string | undefined {
   const url =
     findAndParseOperationUrl(capabilities, "GetFeature", method) ||
@@ -117,7 +117,7 @@ export function parseGetFeatureUrl(
         "HTTP",
         titlecase(method),
       ],
-      "onlineResource",
+      "onlineResource"
     );
   if (!url) {
     return undefined;
@@ -132,7 +132,7 @@ export function hasFeatureType(
   name: string,
   { strict = false }: { strict?: boolean } = {
     strict: false,
-  },
+  }
 ): boolean {
   return !!featureTypes.find((featureType) => {
     if (strict) {
@@ -185,7 +185,7 @@ export function getFeaturesUrl(
     method: "POST",
     sortBy: undefined,
     version: "2.0.0",
-  },
+  }
 ) {
   const base = parseGetFeatureUrl(capabilities, { method });
 
@@ -250,7 +250,7 @@ export async function getFeatures(
     format: "geojson",
     method: "POST",
     wait: 0,
-  },
+  }
 ) {
   const run = async () => {
     const url = getFeaturesUrl(capabilities, typeNameOrNames, {
