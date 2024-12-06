@@ -20,11 +20,9 @@ import {
 
 import type { BBOX } from "../types";
 
-
 function formatDateToISO(date: string | number): string {
-  return new Date(date).toISOString().split('T')[0];
+  return new Date(date).toISOString().split("T")[0];
 }
-
 
 type FeatureType = {
   name: ReturnType<typeof parseName>;
