@@ -457,7 +457,7 @@
       ]
     },
     "exposure": {
-      "population": ["census"]
+      "population": ["pop_proj_2025"]
     }
   }
 }

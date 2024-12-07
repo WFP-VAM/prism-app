@@ -2843,6 +2843,54 @@
     ],
     "legend_text": "Projected 2022 population data. Source: INE"
   },
+  "pop_proj_2025": {
+    "title": "Population projection 2025",
+    "type": "admin_level_data",
+    "path": "data/mozambique/moz-pop-projc-2025-INE.json",
+    "data_field": "2025_Tot",
+    "boundary": "admin2_boundaries",
+    "admin_level": 2,
+    "admin_code": "adm2_source_id",
+    "opacity": 0.7,
+    "feature_info_props": {
+      "Tot_Urb_20": {
+        "type": "text",
+        "dataTitle": "Total urban population"
+      },
+      "2025_Rur_T": {
+        "type": "number",
+        "dataTitle": "Total rural population"
+      }
+    },
+    "legend": [
+      {
+        "value": 1,
+        "label": "< 50,000",
+        "color": "#eff3ff"
+      },
+      {
+        "value": 50000,
+        "label": "50,000 - 100,000",
+        "color": "#bdd7e7"
+      },
+      {
+        "value": 100000,
+        "label": "100,000 - 250,000",
+        "color": "#6baed6"
+      },
+      {
+        "value": 250000,
+        "label": "250,000 - 500,000",
+        "color": "#3182bd"
+      },
+      {
+        "value": 500000,
+        "label": "> 500,000",
+        "color": "#08519c"
+      }
+    ],
+    "legend_text": "Projected 2025 population data. Source: INE"
+  },
   "cdi": {
     "title": "Combined Drought Index",
     "type": "composite",
