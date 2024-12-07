@@ -475,9 +475,7 @@
     "Vulnerable to poverty": "Vulneráveis à pobreza",
     "In severe poverty": "Em probreza severa",
     "Percent of area exposed": "Percentagem de área exposta",
-    "(Area exposed in km²)": "(Área exposta em km²)",
     "Area exposed in km²": "Área exposta em km²",
-    "Area exposed in sq km": "Área exposta em quilómetros quadrados",
     "No data was found for layer ": "Não foram encontrados dados para a camada ",
     "The closest date has been loaded instead": "Em vez disso, foi carregada a data mais próxima"
 }

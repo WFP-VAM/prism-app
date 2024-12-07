@@ -106,14 +106,15 @@ const onClick =
       if (statisticKey === AggregationOperations['Area exposed']) {
         dispatch(
           addPopupData({
-            [`${analysisData.getHazardLayer().title} (Area exposed in km²)`]: {
-              data: `${getRoundedData(
-                formattedProperties.stats_intersect_area || null,
-                t,
-                precision,
-              )} ${units.stats_intersect_area}`,
-              coordinates,
-            },
+            [`${analysisData.getLayerTitle(t)} (${t('Area exposed in km²')})`]:
+              {
+                data: `${getRoundedData(
+                  formattedProperties.stats_intersect_area || null,
+                  t,
+                  precision,
+                )} ${units.stats_intersect_area}`,
+                coordinates,
+              },
           }),
         );
       }
