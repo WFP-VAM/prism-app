@@ -477,5 +477,6 @@
     "Percent of area exposed": "Percentagem de área exposta",
     "Area exposed in km²": "Área exposta em km²",
     "No data was found for layer ": "Não foram encontrados dados para a camada ",
-    "The closest date has been loaded instead": "Em vez disso, foi carregada a data mais próxima"
+    "The closest date has been loaded instead": "Em vez disso, foi carregada a data mais próxima",
+    "No data was found for layer \"{{layerTitle}}\" on {{selectedDate}}. The closest date {{closestDate}} has been loaded instead.": "No data was lallala for layer \"{{layerTitle}}\" on {{selectedDate}}. The closest date {{closestDate}} has been loaded instead."
 }
