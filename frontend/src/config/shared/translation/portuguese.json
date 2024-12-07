@@ -184,6 +184,8 @@
     "Percent of population projected to be in IPC phase 3 or higher April - September 2022. Source: National IPC Technical Working Group": "Percentagem da população projetada para a fase 3 ou superior do IPC de abril a setembro de 2022. Fonte: Grupo de Trabalho Técnico Nacional do IPC",
     "Percent of population currently in IPC phase 3 or higher - November 2021 – March 2022. Source: National IPC Technical Working Group": "Percentagem da população atualmente na fase 3 ou superior do IPC - novembro de 2021 a março de 2022. Fonte: Grupo de Trabalho Técnico Nacional do IPC",
     "Projected 2022 population data. Source: INE": "Dados populacionais projetados para 2022. Fonte: INE",
+    "Projected 2025 population data. Source: INE": "Dados populacionais projetados para 2025. Fonte: INE",
+    "Population projection 2025": "Populacionais projetados 2025",
     "INAM Rainfall Data": "Dados de precipitação do INAM",
     "Forecasts": "Previsões",
     "Rolling daily rainfall forecast": "Previsão contínua diária de precipitação",
@@ -464,5 +466,18 @@
     "Percent of people in IPC phase 3 or higher 2023. Source: National IPC Technical Working Group": "Percentagem da população em IPC Fase 3+ (2023). Fonte: Grupo de Trabalho Técnico Nacional do IPC",
     "Percent of people in IPC phase 3 or higher 2022. Source: National IPC Technical Working Group": "Percentagem da população em IPC Fase 3+ (2022). Fonte: Grupo de Trabalho Técnico Nacional do IPC",
     "Percent of people in IPC phase 4 2023. Source: National IPC Technical Working Group": "Percentagem da população em IPC Fase 4 (2023). Fonte: Grupo de Trabalho Técnico Nacional do IPC",
-    "Percent of people in IPC phase 4 2022. Source: National IPC Technical Working Group": "Percentagem da população em IPC Fase 4 (2022). Fonte: Grupo de Trabalho Técnico Nacional do IPC"
+    "Percent of people in IPC phase 4 2022. Source: National IPC Technical Working Group": "Percentagem da população em IPC Fase 4 (2022). Fonte: Grupo de Trabalho Técnico Nacional do IPC",
+    "Total urban population": "Total de população urbana",
+    "Total rural population": "Total de população rural",
+    "A. Action": "A. Antecipadas",
+    "Percent of the population in multidimensional poverty": "Percentagem da população em pobreza multidimensional",
+    "Intensity of deprivation among the poor": "Intensidade da privação entre os pobres",
+    "Vulnerable to poverty": "Vulneráveis à pobreza",
+    "In severe poverty": "Em probreza severa",
+    "Percent of area exposed": "Percentagem de área exposta",
+    "(Area exposed in km²)": "(Área exposta em km²)",
+    "Area exposed in km²": "Área exposta em km²",
+    "Area exposed in sq km": "Área exposta em quilómetros quadrados",
+    "No data was found for layer ": "Não foram encontrados dados para a camada ",
+    "The closest date has been loaded instead": "Em vez disso, foi carregada a data mais próxima"
 }
