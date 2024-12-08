@@ -124,7 +124,7 @@
       "dry_periods": ["days_dry", "streak_dry_days"],
       "extreme_rain_events": [
         {
-          "group_title": "Rainfall categories:",
+          "group_title": "Number of days of rainfall:",
           "activate_all": false,
           "layers": [
             {
