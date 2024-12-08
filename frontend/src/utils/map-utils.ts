@@ -141,10 +141,19 @@ export function useMapCallback<T extends keyof MapLayerEventType, U>(
 }
 
 // TODO: maplibre: fix feature
-// Handle multiple features with the same layerId,
-// for example in the case of Tropical Storms wind buffers.
 export const findFeature = (layerId: string, evt: MapLayerMouseEvent) => {
   const features = evt.features?.filter((x: any) => x.layer.id === layerId);
+
+  // Sort features by label if it exists (assuming wind speed format "XXX km/h")
+  if (features?.[0]?.properties?.label) {
+    // eslint-disable-next-line fp/no-mutating-methods
+    features.sort((a, b) => {
+      const speedA = parseInt(a.properties.label, 10);
+      const speedB = parseInt(b.properties.label, 10);
+      return speedB - speedA; // Sort in descending order
+    });
+  }
+
   return features?.[0] as any;
 };
 
