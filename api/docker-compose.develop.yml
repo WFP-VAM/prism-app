@@ -23,6 +23,7 @@ services:
       - KOBO_USERNAME=${KOBO_USERNAME:?"Add a user to access KOBO data."}
       - STAC_AWS_ACCESS_KEY_ID=${STAC_AWS_ACCESS_KEY_ID}
       - STAC_AWS_SECRET_ACCESS_KEY=${STAC_AWS_SECRET_ACCESS_KEY}
+      - GOOGLE_FLOODS_API_KEY=${GOOGLE_FLOODS_API_KEY}
     command: uvicorn app.main:app --host 0.0.0.0 --port 80 --reload
     # Infinite loop, to keep it alive, for debugging
     # command: bash -c "while true; do echo 'sleeping...' && sleep 10; done"

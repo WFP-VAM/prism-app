@@ -2,14 +2,30 @@ import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
 import * as Papa from 'papaparse';
 import { TableType } from 'config/types';
 import { TableDefinitions } from 'config/utils';
-import { EWSChartItemsObject } from 'utils/ews-utils';
 import type { CreateAsyncThunkTypes, RootState } from './store';
 
 export type TableRowType = { [key: string]: string | number };
+
+type FloodChartConfig = {
+  label: string;
+  color: string;
+};
+
+type FloodChartItem = FloodChartConfig & { values: number[] };
+
+export type FloodChartConfigObject = {
+  [key: string]: FloodChartConfig;
+};
+
+type FloodChartItemsObject = {
+  [key: string]: FloodChartItem;
+};
+
 export type TableData = {
   columns: string[];
   rows: TableRowType[];
-  EWSConfig?: EWSChartItemsObject;
+  EWSConfig?: FloodChartItemsObject;
+  GoogleFloodConfig?: FloodChartItemsObject;
 };
 
 type TableState = {

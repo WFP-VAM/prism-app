@@ -8,7 +8,7 @@ interface FetchWithTimeoutOptions extends RequestInit {
 
 export const ANALYSIS_REQUEST_TIMEOUT = 60000;
 
-const DEFAULT_REQUEST_TIMEOUT = 15000;
+const DEFAULT_REQUEST_TIMEOUT = 30000;
 
 export const fetchWithTimeout = async (
   resource: RequestInfo,
