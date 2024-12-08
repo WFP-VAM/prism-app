@@ -1,4 +1,5 @@
 import { createStyles, makeStyles, Typography } from '@material-ui/core';
+import { formatReportDate } from '../../utils';
 
 function PopupContent({ landfallInfo, reportDate }: PopupContentProps) {
   const classes = useStyles();
@@ -9,7 +10,7 @@ function PopupContent({ landfallInfo, reportDate }: PopupContentProps) {
         variant="body1"
         className={`${classes.text} ${classes.title}`}
       >
-        Report date: {reportDate}
+        Report date: {formatReportDate(reportDate)}
       </Typography>
       <div className={classes.itemContainer}>
         <Typography variant="body1" className={classes.text}>

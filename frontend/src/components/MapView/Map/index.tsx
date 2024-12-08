@@ -238,7 +238,6 @@ const MapComponent = memo(() => {
             index,
             layer.type.startsWith('anticipatory_action'),
           ),
-          mapRef: mapRef.current,
         });
       })}
       <AnalysisLayer before={firstBoundaryId} />
