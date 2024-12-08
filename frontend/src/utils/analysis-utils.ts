@@ -562,7 +562,7 @@ export function getAnalysisTableColumns(
     /* eslint-disable-next-line fp/no-mutating-methods */
     analysisTableColumns.push({
       id: 'stats_intersect_area',
-      label: 'Area exposed in sq km',
+      label: 'Area exposed in km²',
       format: (value: string | number) =>
         getRoundedData(value as number, undefined, 2, 'stats_intersect_area'),
     });
