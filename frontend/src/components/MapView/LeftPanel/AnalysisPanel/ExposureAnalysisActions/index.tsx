@@ -74,8 +74,8 @@ function ExposureAnalysisActions({
   );
 
   /**
-   * Trigger a report generation on the backend API and dowload it
-   *  */
+   * Trigger a report generation on the backend API  and donwload it
+   * */
   const handleDownloadReport = async () => {
     setDownloadReportIsLoading(true);
     try {
