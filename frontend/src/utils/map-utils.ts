@@ -141,8 +141,12 @@ export function useMapCallback<T extends keyof MapLayerEventType, U>(
 }
 
 // TODO: maplibre: fix feature
-export const findFeature = (layerId: string, evt: MapLayerMouseEvent) =>
-  evt.features?.find((x: any) => x.layer.id === layerId) as any;
+// Handle multiple features with the same layerId,
+// for example in the case of Tropical Storms wind buffers.
+export const findFeature = (layerId: string, evt: MapLayerMouseEvent) => {
+  const features = evt.features?.filter((x: any) => x.layer.id === layerId);
+  return features?.[0] as any;
+};
 
 const boundaryLayer = getBoundaryLayerSingleton();
 
