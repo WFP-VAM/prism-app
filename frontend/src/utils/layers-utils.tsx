@@ -4,7 +4,13 @@ import {
   Extent,
   expandBoundingBox,
 } from 'components/MapView/Layers/raster-utils';
-import { LayerKey, LayerType, isMainLayer, DateItem } from 'config/types';
+import {
+  LayerKey,
+  LayerType,
+  isMainLayer,
+  DateItem,
+  CompositeLayerProps,
+} from 'config/types';
 import {
   AALayerId,
   LayerDefinitions,
@@ -110,42 +116,56 @@ const useLayers = () => {
     2,
   ) as Extent;
 
-  const selectedLayersWithDateSupport = useMemo(
-    () =>
-      selectedLayers
-        .filter((layer): layer is DateCompatibleLayer => {
-          if (
-            layer.type === 'admin_level_data' ||
-            layer.type === 'static_raster'
-          ) {
-            return Boolean(layer.dates);
-          }
-          if (layer.type === 'point_data') {
-            // some WMS layer might not have date dimension (i.e. static data)
-            return Boolean(layer.dateUrl);
-          }
-          if (layer.type === 'wms') {
-            // some WMS layer might not have date dimension (i.e. static data)
-            return layer.id in serverAvailableDates;
-          }
-          if (layer.type === 'composite') {
-            // some WMS layer might not have date dimension (i.e. static data)
-            return (
-              layer.id in serverAvailableDates ||
-              layer.dateLayer in serverAvailableDates
-            );
-          }
-          return dateSupportLayerTypes.includes(layer.type);
-        })
-        .filter(layer => isMainLayer(layer.id, selectedLayers))
-        .map(layer => ({
-          ...layer,
-          dateItems: getPossibleDatesForLayer(layer, serverAvailableDates)
-            .filter(value => value) // null check
-            .flat(),
-        })),
-    [selectedLayers, serverAvailableDates],
-  );
+  const selectedLayersWithDateSupport = useMemo(() => {
+    const initSelectedLayersWithDateSupport = selectedLayers
+      .filter((layer): layer is DateCompatibleLayer => {
+        if (
+          layer.type === 'admin_level_data' ||
+          layer.type === 'static_raster'
+        ) {
+          return Boolean(layer.dates);
+        }
+        if (layer.type === 'point_data') {
+          // some WMS layer might not have date dimension (i.e. static data)
+          return Boolean(layer.dateUrl);
+        }
+        if (layer.type === 'wms') {
+          // some WMS layer might not have date dimension (i.e. static data)
+          return layer.id in serverAvailableDates;
+        }
+        if (layer.type === 'composite') {
+          // some WMS layer might not have date dimension (i.e. static data)
+          return (
+            layer.id in serverAvailableDates ||
+            layer.dateLayer in serverAvailableDates
+          );
+        }
+        return dateSupportLayerTypes.includes(layer.type);
+      })
+      .filter(layer => isMainLayer(layer.id, selectedLayers));
+
+    const earliestExpectedDataLagDays =
+      initSelectedLayersWithDateSupport.reduce(
+        (acc, layer) =>
+          Math.max(
+            acc,
+            (layer as CompositeLayerProps).expectedDataLagDays ?? 0,
+          ),
+        0,
+      );
+
+    const soonestAvailableDate =
+      new Date().getTime() -
+      (earliestExpectedDataLagDays ?? 0) * 24 * 60 * 60 * 1000;
+
+    return initSelectedLayersWithDateSupport.map(layer => ({
+      ...layer,
+      dateItems: getPossibleDatesForLayer(layer, serverAvailableDates)
+        .filter(value => value) // null check
+        .filter(date => date.displayDate <= soonestAvailableDate)
+        .flat(),
+    }));
+  }, [selectedLayers, serverAvailableDates]);
 
   /*
     takes all the dates possible for every layer and counts the amount of times each one is duplicated.
@@ -185,6 +205,16 @@ const useLayers = () => {
     if (selectedLayersWithDateSupport.length === 0) {
       return [];
     }
+
+    const earliestExpectedDataLagDays = selectedLayersWithDateSupport.reduce(
+      (acc, layer) =>
+        Math.max(acc, (layer as CompositeLayerProps).expectedDataLagDays ?? 0),
+      0,
+    );
+    const soonestAvailableDate =
+      new Date().getTime() -
+      (earliestExpectedDataLagDays ?? 0) * 24 * 60 * 60 * 1000;
+
     const selectedNonAALayersWithDateSupport =
       selectedLayersWithDateSupport.filter(
         layer => layer.type !== 'anticipatory_action',
@@ -201,6 +231,7 @@ const useLayers = () => {
       // convert back to number array after using YYYY-MM-DD strings in countBy
     )
       .map(dateString => new Date(dateString).setUTCHours(12, 0, 0, 0))
+      .filter(date => date <= soonestAvailableDate)
       .sort((a, b) => a - b);
   }, [selectedLayerDatesDupCount, selectedLayersWithDateSupport]);
 

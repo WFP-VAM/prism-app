@@ -1,11 +1,20 @@
-import { CompositeLayerProps, LegendDefinition } from 'config/types';
+import {
+  CompositeLayerProps,
+  LegendDefinition,
+  MapEventWrapFunctionProps,
+} from 'config/types';
 import { LayerData, loadLayerData } from 'context/layers/layer-data';
 import { layerDataSelector } from 'context/mapStateSlice/selectors';
 import { memo, useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Source, Layer } from 'react-map-gl/maplibre';
-import { getLayerMapId } from 'utils/map-utils';
-import { FillLayerSpecification } from 'maplibre-gl';
+import {
+  findFeature,
+  getEvtCoords,
+  getLayerMapId,
+  useMapCallback,
+} from 'utils/map-utils';
+import { FillLayerSpecification, MapLayerMouseEvent } from 'maplibre-gl';
 import { Point } from 'geojson';
 import booleanPointInPolygon from '@turf/boolean-point-in-polygon';
 import { availableDatesSelector } from 'context/serverStateSlice';
@@ -14,6 +23,7 @@ import { getRequestDateItem } from 'utils/server-utils';
 import { safeCountry } from 'config';
 import { geoToH3, h3ToGeoBoundary } from 'h3-js'; // ts-ignore
 import { opacitySelector } from 'context/opacityStateSlice';
+import { addPopupData } from 'context/tooltipStateSlice';
 import { legendToStops } from '../layer-utils';
 
 interface Props {
@@ -40,7 +50,12 @@ const paintProps: (
 const CompositeLayer = memo(({ layer, before }: Props) => {
   // look to refacto with impactLayer and maybe other layers
   const [adminBoundaryLimitPolygon, setAdminBoundaryPolygon] = useState(null);
-  const selectedDate = useDefaultDate(layer.dateLayer);
+  const selectedDate = useDefaultDate(
+    layer.dateLayer,
+    layer.expectedDataLagDays,
+  );
+  const [aggregationBoundariesPolygon, setAggregationBoundariesPolygon] =
+    useState(null);
   const serverAvailableDates = useSelector(availableDatesSelector);
   const opacityState = useSelector(opacitySelector(layer.id));
   const dispatch = useDispatch();
@@ -68,47 +83,100 @@ const CompositeLayer = memo(({ layer, before }: Props) => {
   }, []);
 
   useEffect(() => {
-    if (requestDate) {
+    if (layer.aggregationBoundaryPath) {
+      fetch(layer.aggregationBoundaryPath)
+        .then(response => response.json())
+        .then(polygonData => setAggregationBoundariesPolygon(polygonData))
+        .catch(error => console.error('Error:', error));
+    }
+  }, [layer.aggregationBoundaryPath]);
+
+  useEffect(() => {
+    if (
+      (requestDate &&
+        layer.aggregationBoundaryPath &&
+        aggregationBoundariesPolygon) ||
+      !layer.aggregationBoundaryPath
+    ) {
       dispatch(
         loadLayerData({
           layer,
           date: requestDate,
           availableDates: layerAvailableDates,
+          aggregationBoundariesPolygon,
         }),
       );
     }
-  }, [dispatch, layer, layerAvailableDates, requestDate]);
+  }, [
+    dispatch,
+    layer,
+    layerAvailableDates,
+    requestDate,
+    aggregationBoundariesPolygon,
+  ]);
 
   // Investigate performance impact of hexagons for large countries
-  const finalFeatures =
-    data &&
-    data.features
-      .map(feature => {
-        const point = feature.geometry as Point;
-        if (
-          !adminBoundaryLimitPolygon ||
-          booleanPointInPolygon(
-            point.coordinates,
-            adminBoundaryLimitPolygon as any,
-          )
-        ) {
-          // Convert the point to a hexagon
-          const hexagon = geoToH3(
-            point.coordinates[1],
-            point.coordinates[0],
-            6, // resolution, adjust as needed
-          );
-          return {
-            ...feature,
-            geometry: {
-              type: 'Polygon',
-              coordinates: [h3ToGeoBoundary(hexagon, true)], // Convert the hexagon to a GeoJSON polygon
-            },
-          };
-        }
-        return null;
-      })
-      .filter(Boolean);
+  const finalFeatures = layer.aggregationBoundaryPath
+    ? data?.features
+    : !layer.aggregationBoundaryPath &&
+      data &&
+      data?.features
+        .map(feature => {
+          const point = feature.geometry as Point;
+          if (
+            !adminBoundaryLimitPolygon ||
+            booleanPointInPolygon(
+              point.coordinates,
+              adminBoundaryLimitPolygon as any,
+            )
+          ) {
+            // Convert the point to a hexagon
+            const hexagon = geoToH3(
+              point.coordinates[1],
+              point.coordinates[0],
+              6, // resolution, adjust as needed
+            );
+            return {
+              ...feature,
+              geometry: {
+                type: 'Polygon',
+                coordinates: [h3ToGeoBoundary(hexagon, true)], // Convert the hexagon to a GeoJSON polygon
+              },
+            };
+          }
+          return null;
+        })
+        .filter(Boolean);
+
+  const layerId = getLayerMapId(layer.id);
+
+  const onClick =
+    ({
+      dispatch: providedDispatch,
+    }: MapEventWrapFunctionProps<CompositeLayerProps>) =>
+    (evt: MapLayerMouseEvent) => {
+      const coordinates = getEvtCoords(evt);
+
+      const feature = findFeature(layerId, evt);
+      if (!feature) {
+        return;
+      }
+
+      const popupData = {
+        [layer.title]: {
+          data: feature.properties.value.toFixed(3),
+          coordinates,
+        },
+      };
+      providedDispatch(addPopupData(popupData));
+    };
+
+  useMapCallback<'click', CompositeLayerProps>(
+    'click',
+    layerId,
+    layer,
+    onClick,
+  );
 
   if (selectedDate && data && adminBoundaryLimitPolygon) {
     const filteredData = {
