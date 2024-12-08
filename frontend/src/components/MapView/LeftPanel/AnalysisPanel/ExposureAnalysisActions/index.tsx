@@ -127,14 +127,17 @@ function ExposureAnalysisActions({
           <Typography variant="body2">{t('Download as CSV')}</Typography>
         </Button>
       )}
-      <Button
-        className={bottomButton}
-        onClick={handleDownloadReport}
-        disabled={downloadReportIsLoading}
-      >
-        <Typography variant="body2">{t('Download Report')}</Typography>
-        {downloadReportIsLoading && <LoadingBlinkingDots dotColor="white" />}
-      </Button>
+      {/* TODO - Fix in backend, issue #1383 */}
+      {exposureLayerId !== 'adamts_buffers' && (
+        <Button
+          className={bottomButton}
+          onClick={handleDownloadReport}
+          disabled={downloadReportIsLoading}
+        >
+          <Typography variant="body2">{t('Download Report')}</Typography>
+          {downloadReportIsLoading && <LoadingBlinkingDots dotColor="white" />}
+        </Button>
+      )}
       <ReportDialog
         open={openReport}
         handleClose={handleToggleReport(false)}
