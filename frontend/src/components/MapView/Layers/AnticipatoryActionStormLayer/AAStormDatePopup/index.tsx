@@ -87,13 +87,27 @@ const useStyles = makeStyles(() =>
     },
     popup: {
       '& > .maplibregl-popup-content': {
-        border: '1px solid #A4A4A4',
-        padding: 5,
+        border: 'none',
+        padding: '8px 16px',
+        borderRadius: '4px',
+        background: 'white',
+        boxShadow: 'inset 0px 0px 0px 1px #A4A4A4',
+        position: 'relative',
       },
       '& > .maplibregl-popup-tip': {
-        borderBottomColor: '#A4A4A4',
-        borderLeftWidth: '8px',
-        borderRightWidth: '8px',
+        display: 'none',
+      },
+      // hack to display the popup tip without overlapping border
+      '&::after': {
+        content: '""',
+        position: 'absolute',
+        left: '50%',
+        top: -6,
+        width: '12px',
+        height: '12px',
+        background: 'white',
+        transform: 'translateX(-50%) rotate(45deg)',
+        boxShadow: 'inset 1px 1px 0px 0px #A4A4A4',
       },
     },
   }),
