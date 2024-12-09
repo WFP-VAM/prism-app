@@ -165,6 +165,7 @@ const AnticipatoryActionStormLayer = React.memo(
 
     return (
       <>
+        {/* 48kt wind currently exposed area - orange */}
         <Source
           data={AAStormData.ready_set_results.exposed_area_48kt.polygon}
           type="geojson"
@@ -174,6 +175,8 @@ const AnticipatoryActionStormLayer = React.memo(
             paint={{ 'fill-opacity': 0.5, 'fill-color': '#ff8934' }}
           />
         </Source>
+
+        {/* 64kt wind currently exposed area - red */}
         <Source
           data={AAStormData.ready_set_results.exposed_area_64kt.polygon}
           type="geojson"
@@ -181,6 +184,17 @@ const AnticipatoryActionStormLayer = React.memo(
           <Layer
             type="fill"
             paint={{ 'fill-opacity': 0.5, 'fill-color': '#e63701' }}
+          />
+        </Source>
+
+        {/* future 48kt wind exposed area - blue */}
+        <Source
+          data={AAStormData.ready_set_results.proba_48kt_20_5d.polygon}
+          type="geojson"
+        >
+          <Layer
+            type="fill"
+            paint={{ 'fill-opacity': 0.5, 'fill-color': '#9acddc' }}
           />
         </Source>
 
