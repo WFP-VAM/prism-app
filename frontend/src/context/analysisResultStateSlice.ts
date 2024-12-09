@@ -810,7 +810,8 @@ export const requestAndStorePolygonAnalysis = createAsyncThunk<
     {
       id: PolygonalAggregationOperations.Area,
       label: PolygonalAggregationOperations.Area,
-      format: value => getRoundedData(value as number),
+      // temporariliy remove formatting as it breaks the CSV file
+      // format: value => getRoundedData(value as number),
     },
     {
       id: PolygonalAggregationOperations.Percentage,
@@ -820,6 +821,7 @@ export const requestAndStorePolygonAnalysis = createAsyncThunk<
   ];
 
   const zonalTableRows = result.table.rows.map((row: ZonalPolygonRow) => ({
+    // area: Math.round(convertArea(row['stat:area'], 'meters', 'kilometers')),
     area: Math.round(convertArea(row['stat:area'], 'meters', 'kilometers')),
 
     // percentage: row['stat:percentage'],
