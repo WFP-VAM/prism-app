@@ -185,7 +185,7 @@ const AnticipatoryActionStormLayer = React.memo(
         </Source>
 
         <Source data={timeSeries} type="geojson">
-          {/* Past track - dashed black line */}
+          {/* past wind track - solid black line */}
           <Layer
             type="line"
             id="aa-storm-wind-points-line-past"
@@ -195,7 +195,8 @@ const AnticipatoryActionStormLayer = React.memo(
               'line-width': 2,
             }}
           />
-          {/* Future track - solid grey line */}
+
+          {/* forecasted wind track - dashed red line */}
           <Layer
             type="line"
             id="aa-storm-wind-points-line-future"
