@@ -1,7 +1,7 @@
 import { FeatureCollection, Point, Feature } from 'geojson';
 
 interface FeatureProperty {
-  // data_type: string;
+  data_type: 'analysis' | 'forecast';
   time: string;
   development: string;
   // maximum_wind_speed: number;
