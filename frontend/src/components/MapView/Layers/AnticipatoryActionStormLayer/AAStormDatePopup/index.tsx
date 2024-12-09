@@ -65,7 +65,7 @@ function AAStormDatePopup() {
       longitude={lng}
       latitude={lat}
       anchor="top"
-      offset={15}
+      offset={25}
       closeButton={false}
       onClose={() => null}
       closeOnClick={false}
