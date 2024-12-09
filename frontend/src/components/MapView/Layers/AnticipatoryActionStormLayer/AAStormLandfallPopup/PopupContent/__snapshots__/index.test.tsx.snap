@@ -10,7 +10,7 @@ exports[`AAStormLandfallPopup component renders as expected 1`] = `
       variant="body1"
     >
       Report date: 
-      2024-03-01 6p.m.
+      2024-03-01 6pm
     </mock-typography>
     <div
       class="makeStyles-itemContainer-3"
