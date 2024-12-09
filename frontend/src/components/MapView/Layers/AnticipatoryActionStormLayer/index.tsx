@@ -6,6 +6,7 @@ import { Feature, Point } from 'geojson';
 import { useDispatch, useSelector } from 'react-redux';
 import { mapSelector } from 'context/mapStateSlice/selectors';
 import { useMapCallback } from 'utils/map-utils';
+import { hidePopup } from 'context/tooltipStateSlice';
 import AAStormDatePopup from './AAStormDatePopup';
 import AAStormData from '../../../../../public/data/mozambique/anticipatory-action/aa_storm_temporary.json';
 import AAStormLandfallPopup from './AAStormLandfallPopup';
@@ -15,7 +16,6 @@ import severeTropicalStorm from '../../../../../public/images/anticipatory-actio
 import tropicalCyclone from '../../../../../public/images/anticipatory-action-storm/tropical-cyclone.png';
 import veryIntensiveCyclone from '../../../../../public/images/anticipatory-action-storm/very-intensive-tropical-cyclone.png';
 import { TimeSeries } from './types';
-import { hidePopup } from 'context/tooltipStateSlice';
 
 const AnticipatoryActionStormLayer = React.memo(
   ({ layer }: AnticipatoryActionStormLayerProps) => {
@@ -122,7 +122,7 @@ const AnticipatoryActionStormLayer = React.memo(
 
     const onWindPointsClicked = () => (e: MapLayerMouseEvent) => {
       e.preventDefault();
-      dispatch(hidePopup());
+      dispatch(hidePopup()); // hides the black tooltip containing the district names
       const feature = e.features?.[0];
       setSelectedFeature(feature as Feature<Point>);
     };
