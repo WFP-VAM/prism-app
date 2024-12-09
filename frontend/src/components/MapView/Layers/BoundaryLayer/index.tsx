@@ -39,10 +39,6 @@ interface ComponentProps {
 const onClick =
   ({ dispatch, layer }: MapEventWrapFunctionProps<BoundaryLayerProps>) =>
   (evt: MapLayerMouseEvent) => {
-    // If the event has been prevented by another layer, do nothing
-    if (evt.defaultPrevented) {
-      return;
-    }
     const isPrimaryLayer = isPrimaryBoundaryLayer(layer);
     if (!isPrimaryLayer) {
       return;
