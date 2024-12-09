@@ -2251,10 +2251,10 @@
   "ipc_phase_2024": {
     "title": "IPC Phase Classification April to September 2024",
     "type": "admin_level_data",
-    "path": "data/mozambique/ipc/ipc-2024.json",
+    "path": "data/mozambique/ipc/ipc-2024-v2.json",
     "boundary": "admin2_boundaries",
     "admin_level": 2,
-    "data_field": "act_040924",
+    "data_field": "ph_class",
     "admin_code": "adm2_source_id",
     "opacity": 0.9,
     "legend": [
@@ -2324,6 +2324,44 @@
     ],
     "legend_text": "IPC Phase Classification Projection October 2024 to March 2025. Source: National IPC Technical Working Group"
   },   
+  "ipc_phase_projection_2024_2025_v2": {
+    "title": "IPC Phase Classification Projection October 2024 to March 2025",
+    "type": "admin_level_data",
+    "path": "data/mozambique/ipc/ipc-2025-projection-as-of-2024-09.json",
+    "boundary": "admin2_boundaries",
+    "admin_level": 2,
+    "data_field": "ph_class",
+    "admin_code": "adm2_source_id",
+    "opacity": 0.9,
+    "legend": [
+      {
+        "value": 1,
+        "label": "Phase 1 - None / minimal",
+        "color": "#c6ffc7"
+      },
+      {
+        "value": 2,
+        "label": "Phase 2 - Stressed",
+        "color": "#ffe718"
+      },
+      {
+        "value": 3,
+        "label": "Phase 3 - Crisis",
+        "color": "#e88400"
+      },
+      {
+        "value": 4,
+        "label": "Phase 4 - Emergency",
+        "color": "#e02d00"
+      },
+      {
+        "value": 5,
+        "label": "Phase 5 - Disaster / famine",
+        "color": "#5e0803"
+      }
+    ],
+    "legend_text": "IPC Phase Classification Projection October 2024 to March 2025. Source: National IPC Technical Working Group"
+  },  
   "ipc_phase_2022": {
     "title": "IPC Phase Classification 2022",
     "type": "admin_level_data",
