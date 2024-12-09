@@ -31,22 +31,51 @@ const AnticipatoryActionStormLayer = React.memo(
     function enhanceTimeSeries(timeSeries: TimeSeries) {
       const { features, ...timeSeriesRest } = timeSeries;
 
-      const newFeatures = features.map(feature => {
-        const { properties, ...featureRest } = feature;
-        const newProperties = {
-          ...properties,
-          iconName: getIconNameByWindType(properties.development),
-        };
-        return {
-          ...featureRest,
-          properties: newProperties,
-        };
-      });
+      // Create coordinates array for the line
+      const lineCoordinates = features.map(
+        feature => (feature.geometry as Point).coordinates,
+      );
+
+      // Split line into segments (past and future)
+      const splitTime = '2024-03-12';
+      const splitIndex = features.findIndex(f => f.properties.time > splitTime);
+
+      const pastLineFeature = {
+        type: 'Feature' as const,
+        geometry: {
+          type: 'LineString' as const,
+          coordinates: lineCoordinates.slice(0, splitIndex),
+        },
+        properties: { lineType: 'past' },
+      } as Feature<any>;
+
+      const futureLineFeature = {
+        type: 'Feature' as const,
+        geometry: {
+          type: 'LineString' as const,
+          coordinates: lineCoordinates.slice(splitIndex - 1), // Overlap by 1 point to avoid gaps
+        },
+        properties: { lineType: 'future' },
+      } as Feature<any>;
+
+      // Create new features array with both lines and points
+      const newFeatures = [
+        pastLineFeature,
+        futureLineFeature,
+        // Then add all the point features with icons
+        ...features.map(feature => ({
+          ...feature,
+          properties: {
+            ...feature.properties,
+            iconName: getIconNameByWindType(feature.properties.development),
+          },
+        })),
+      ];
 
       return { ...timeSeriesRest, features: newFeatures };
     }
 
-    const timeSeries: TimeSeries = enhanceTimeSeries(
+    const timeSeries: any = enhanceTimeSeries(
       AAStormData.time_series as unknown as TimeSeries,
     );
 
@@ -156,6 +185,27 @@ const AnticipatoryActionStormLayer = React.memo(
         </Source>
 
         <Source data={timeSeries} type="geojson">
+          {/* Past track - dashed black line */}
+          <Layer
+            type="line"
+            id="aa-storm-wind-points-line-past"
+            filter={['==', ['get', 'lineType'], 'past']}
+            paint={{
+              'line-color': 'black',
+              'line-width': 2,
+            }}
+          />
+          {/* Future track - solid grey line */}
+          <Layer
+            type="line"
+            id="aa-storm-wind-points-line-future"
+            filter={['==', ['get', 'lineType'], 'future']}
+            paint={{
+              'line-color': 'red',
+              'line-width': 2,
+              'line-dasharray': [2, 1],
+            }}
+          />
           <Layer
             type="symbol"
             id="aa-storm-wind-points-layer"
