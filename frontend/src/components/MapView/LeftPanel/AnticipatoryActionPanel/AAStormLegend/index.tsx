@@ -43,7 +43,7 @@ const phases = [
 const buffers = [
   {
     color: '#9acddc',
-    label: '89 km/h probability buffer',
+    label: '89 km/h prob. buffer',
   },
   {
     color: '#ffc49a',
