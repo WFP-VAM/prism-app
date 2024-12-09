@@ -93,7 +93,7 @@ const AnticipatoryActionStormLayer = React.memo(
     const onMouseEnter = () => () => {
       if (map) {
         // eslint-disable-next-line fp/no-mutation
-        map.getCanvas().style.cursor = 'cursor';
+        map.getCanvas().style.cursor = 'pointer';
       }
     };
 
