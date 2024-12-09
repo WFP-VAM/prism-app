@@ -1,26 +1,26 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { AnticipatoryActionLayerProps } from 'config/types';
 import { useDefaultDate } from 'utils/useDefaultDate';
-import {
-  Source,
-  Layer,
-  MapRef,
-  MapLayerMouseEvent,
-} from 'react-map-gl/maplibre';
+import { Source, Layer, MapLayerMouseEvent } from 'react-map-gl/maplibre';
 import { Feature, Point } from 'geojson';
-import AAStormDatePopup, { TimeSeries } from './AAStormDatePopup';
+import { useDispatch, useSelector } from 'react-redux';
+import { mapSelector } from 'context/mapStateSlice/selectors';
+import { useMapCallback } from 'utils/map-utils';
+import { hidePopup } from 'context/tooltipStateSlice';
+import AAStormDatePopup from './AAStormDatePopup';
 import AAStormData from '../../../../../public/data/mozambique/anticipatory-action/aa_storm_temporary.json';
 import AAStormLandfallPopup from './AAStormLandfallPopup';
-import { formatReportDate } from './utils';
 import moderateStorm from '../../../../../public/images/anticipatory-action-storm/moderate-tropical-storm.png';
 import overland from '../../../../../public/images/anticipatory-action-storm/overland.png';
 import severeTropicalStorm from '../../../../../public/images/anticipatory-action-storm/severe-tropical-storm.png';
 import tropicalCyclone from '../../../../../public/images/anticipatory-action-storm/tropical-cyclone.png';
 import veryIntensiveCyclone from '../../../../../public/images/anticipatory-action-storm/very-intensive-tropical-cyclone.png';
+import { TimeSeries } from './types';
 
 const AnticipatoryActionStormLayer = React.memo(
-  ({ layer, mapRef }: AnticipatoryActionStormLayerProps) => {
+  ({ layer }: AnticipatoryActionStormLayerProps) => {
     useDefaultDate(layer.id);
+    const map = useSelector(mapSelector);
 
     const [selectedFeature, setSelectedFeature] =
       useState<Feature<Point> | null>(null);
@@ -28,13 +28,6 @@ const AnticipatoryActionStormLayer = React.memo(
     /* this is the date the layer data corresponds to. It will be stored in redux ultimately */
     // const layerDataDate = '2024-03-11';
 
-    const onWindPointsClicked = (e: MapLayerMouseEvent) => {
-      e.preventDefault();
-      const feature = e.features?.[0];
-      setSelectedFeature(feature as Feature<Point>);
-    };
-
-    // This function enhances the time series data by adding a line and icons to the points
     function enhanceTimeSeries(timeSeries: TimeSeries) {
       const { features, ...timeSeriesRest } = timeSeries;
 
@@ -103,10 +96,8 @@ const AnticipatoryActionStormLayer = React.memo(
     }
 
     const loadImages = useCallback(() => {
-      const map = mapRef.getMap();
-
       const loadImage = (url: string, name: string) => {
-        map.loadImage(url, (error, image) => {
+        map?.loadImage(url, (error, image) => {
           if (error) {
             throw error;
           }
@@ -121,36 +112,56 @@ const AnticipatoryActionStormLayer = React.memo(
       loadImage(tropicalCyclone, 'tropical-cyclone');
       loadImage(overland, 'overland');
       loadImage(veryIntensiveCyclone, 'very-intensive-tropical-cyclone');
-    }, [mapRef]);
+    }, [map]);
 
     useEffect(() => {
       loadImages();
     }, [loadImages]);
 
     // Display a pointer cursor when hovering over the wind points
-    useEffect(() => {
-      const map = mapRef.getMap();
-
-      const handleMouseEnter = () => {
+    const onMouseEnter = () => () => {
+      if (map) {
         // eslint-disable-next-line fp/no-mutation
-        map.getCanvas().style.cursor = 'cursor';
-      };
+        map.getCanvas().style.cursor = 'pointer';
+      }
+    };
 
-      const handleMouseLeave = () => {
+    useMapCallback<'mouseenter', null>(
+      'mouseenter',
+      'aa-storm-wind-points-layer',
+      null,
+      onMouseEnter,
+    );
+
+    const onMouseLeave = () => () => {
+      if (map) {
         // eslint-disable-next-line fp/no-mutation
         map.getCanvas().style.cursor = '';
-      };
+      }
+    };
 
-      map.on('mouseenter', 'aa-storm-wind-points-layer', handleMouseEnter);
-      map.on('mouseleave', 'aa-storm-wind-points-layer', handleMouseLeave);
-      map.on('click', 'aa-storm-wind-points-layer', onWindPointsClicked);
+    useMapCallback<'mouseleave', null>(
+      'mouseleave',
+      'aa-storm-wind-points-layer',
+      null,
+      onMouseLeave,
+    );
 
-      return () => {
-        map.off('mouseenter', 'aa-storm-wind-points-layer', handleMouseEnter);
-        map.off('mouseleave', 'aa-storm-wind-points-layer', handleMouseLeave);
-        map.off('click', 'aa-storm-wind-points-layer', onWindPointsClicked);
-      };
-    }, [mapRef]);
+    const dispatch = useDispatch();
+
+    const onWindPointsClicked = () => (e: MapLayerMouseEvent) => {
+      e.preventDefault();
+      dispatch(hidePopup()); // hides the black tooltip containing the district names
+      const feature = e.features?.[0];
+      setSelectedFeature(feature as Feature<Point>);
+    };
+
+    useMapCallback<'click', null>(
+      'click',
+      'aa-storm-wind-points-layer',
+      null,
+      onWindPointsClicked,
+    );
 
     return (
       <>
@@ -202,12 +213,12 @@ const AnticipatoryActionStormLayer = React.memo(
           />
         </Source>
 
-        <AAStormDatePopup timeSeries={timeSeries} />
+        <AAStormDatePopup />
 
         {selectedFeature && (
           <AAStormLandfallPopup
             point={selectedFeature.geometry}
-            reportDate={formatReportDate(selectedFeature.properties?.time)}
+            reportDate={selectedFeature.properties?.time}
             landfallInfo={AAStormData.landfall_info}
             onClose={() => landfallPopupCloseHandler()}
           />
@@ -219,7 +230,6 @@ const AnticipatoryActionStormLayer = React.memo(
 
 interface AnticipatoryActionStormLayerProps {
   layer: AnticipatoryActionLayerProps;
-  mapRef: MapRef;
 }
 
 export default AnticipatoryActionStormLayer;

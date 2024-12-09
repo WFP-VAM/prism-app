@@ -1,74 +1,81 @@
-import { Popup } from 'react-map-gl/maplibre';
-import _React from 'react';
-import { FeatureCollection, Point } from 'geojson';
-import { getHours, getDate } from 'date-fns';
+import { MapLayerMouseEvent, Popup } from 'react-map-gl/maplibre';
+import _React, { useCallback, useState } from 'react';
 import { createStyles, makeStyles, Typography } from '@material-ui/core';
-import { getDateInUTC } from '../utils';
+import { useMapCallback } from 'utils/map-utils';
+import { formatInUTC, getDateInUTC } from '../utils';
+import { TimeSeriesFeature } from '../types';
 
-function AAStormDatePopup({ timeSeries }: PopupProps) {
+function AAStormDatePopup() {
   const classes = useStyles();
+  const [selectedFeature, setSelectedFeature] =
+    useState<TimeSeriesFeature | null>(null);
 
-  function is6AM(time: string) {
+  const onMouseEnter = useCallback(
+    () => (evt: MapLayerMouseEvent) => {
+      evt.preventDefault();
+      setSelectedFeature(evt.features?.[0] as unknown as TimeSeriesFeature);
+    },
+    [],
+  );
+
+  const onMouseLeave = useCallback(
+    () => (evt: MapLayerMouseEvent) => {
+      evt.preventDefault();
+      setSelectedFeature(null);
+    },
+    [],
+  );
+
+  useMapCallback<'mouseenter', null>(
+    'mouseenter',
+    'aa-storm-wind-points-layer',
+    null,
+    onMouseEnter,
+  );
+
+  useMapCallback<'mouseleave', null>(
+    'mouseleave',
+    'aa-storm-wind-points-layer',
+    null,
+    onMouseLeave,
+  );
+
+  function getDayAndTime(time: string) {
     const dateInUTC = getDateInUTC(time);
-    return dateInUTC && getHours(dateInUTC) === 6;
+
+    if (!dateInUTC) {
+      return '';
+    }
+
+    return formatInUTC(dateInUTC, 'dd - Kaaa');
   }
 
-  function getDay(time: string) {
-    const dateInUTC = getDateInUTC(time);
-    return dateInUTC && getDate(dateInUTC);
+  if (!selectedFeature) {
+    return null;
   }
+
+  const lng = selectedFeature.geometry.coordinates[0];
+  const lat = selectedFeature.geometry.coordinates[1];
+
+  const { time } = selectedFeature.properties;
 
   return (
-    <>
-      {timeSeries.features.map(timePoint => {
-        const lng = timePoint.geometry.coordinates[0];
-        const lat = timePoint.geometry.coordinates[1];
-
-        const { time } = timePoint.properties;
-
-        if (!is6AM(time)) {
-          return null;
-        }
-
-        return (
-          <Popup
-            key={timePoint.id}
-            longitude={lng}
-            latitude={lat}
-            anchor="top"
-            offset={15}
-            closeButton={false}
-            onClose={() => null}
-            closeOnClick={false}
-            className={classes.popup}
-          >
-            <Typography className={classes.toolTipDate} variant="body1">
-              {getDay(time)} - 6am{' '}
-            </Typography>
-          </Popup>
-        );
-      })}
-    </>
+    <Popup
+      key={selectedFeature.id}
+      longitude={lng}
+      latitude={lat}
+      anchor="top"
+      offset={15}
+      closeButton={false}
+      onClose={() => null}
+      closeOnClick={false}
+      className={classes.popup}
+    >
+      <Typography className={classes.toolTipDate} variant="body1">
+        {getDayAndTime(time)}
+      </Typography>
+    </Popup>
   );
-}
-
-interface FeatureProperty {
-  // data_type: string;
-  time: string;
-  development: string;
-  // maximum_wind_speed: number;
-  // maximum_wind_gust: number;
-  // wind_buffer_48: any;
-  // wind_buffer_64: any;
-}
-
-interface CustomPoint extends Point {}
-
-export interface TimeSeries
-  extends FeatureCollection<CustomPoint, FeatureProperty> {}
-
-interface PopupProps {
-  timeSeries: TimeSeries;
 }
 
 const useStyles = makeStyles(() =>
