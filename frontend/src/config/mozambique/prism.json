@@ -285,7 +285,7 @@
           ]
         }
       ],
-      "dry_periods": ["days_dry", "streak_dry_days", "cdi"],
+      "dry_periods": ["days_dry", "streak_dry_days"],
       "extreme_rain_events": [
         {
           "group_title": "Rainfall categories:",
@@ -376,9 +376,17 @@
           "activate_all": false,
           "layers": [
             {
-              "id": "ipc_phase_2023",
-              "label": "2023",
+              "id": "ipc_phase_projection_2024_2025_v2",
+              "label": "Projection October 2024 to March 2025"
+            },
+            {
+              "id": "ipc_phase_2024",
+              "label": "2024",
               "main": true
+            },
+            {
+              "id": "ipc_phase_2023",
+              "label": "2023"
             },
             {
               "id": "ipc_phase_2022",
@@ -449,7 +457,7 @@
       ]
     },
     "exposure": {
-      "population": ["census"]
+      "population": ["pop_proj_2025"]
     }
   }
 }
