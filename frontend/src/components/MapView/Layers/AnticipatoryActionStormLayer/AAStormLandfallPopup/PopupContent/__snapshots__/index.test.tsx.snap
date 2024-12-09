@@ -1,0 +1,85 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`AAStormLandfallPopup component renders as expected 1`] = `
+<div>
+  <div
+    class="makeStyles-itemsContainer-2"
+  >
+    <mock-typography
+      classname="makeStyles-text-4 makeStyles-title-5"
+      variant="body1"
+    >
+      Report date: 
+      2024-03-01 6pm
+    </mock-typography>
+    <div
+      class="makeStyles-itemContainer-3"
+    >
+      <mock-typography
+        classname="makeStyles-text-4"
+        variant="body1"
+      >
+        landfall 
+        <span
+          class="makeStyles-block-1"
+        >
+          estimated time
+        </span>
+      </mock-typography>
+      <mock-typography
+        classname="makeStyles-text-4 makeStyles-textAlignRight-6"
+        variant="body1"
+      >
+        12-03-2025
+        <span
+          class="makeStyles-block-1"
+        >
+          06:00 - 12:00
+        </span>
+      </mock-typography>
+    </div>
+    <div
+      class="makeStyles-itemContainer-3"
+    >
+      <mock-typography
+        classname="makeStyles-text-4"
+        variant="body1"
+      >
+        landfall estimated
+        <span
+          class="makeStyles-block-1"
+        >
+          leadtime
+        </span>
+      </mock-typography>
+      <mock-typography
+        classname="makeStyles-text-4 makeStyles-textAlignRight-6"
+        variant="body1"
+      >
+        8 - 12 hrs
+      </mock-typography>
+    </div>
+    <div
+      class="makeStyles-itemContainer-3"
+    >
+      <mock-typography
+        classname="makeStyles-text-4"
+        variant="body1"
+      >
+        District impacted
+        <span
+          class="makeStyles-block-1"
+        >
+          by landfall
+        </span>
+      </mock-typography>
+      <mock-typography
+        classname="makeStyles-text-4 makeStyles-textAlignRight-6"
+        variant="body1"
+      >
+        Inhassoro
+      </mock-typography>
+    </div>
+  </div>
+</div>
+`;
