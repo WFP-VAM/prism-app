@@ -31,31 +31,31 @@ const AnticipatoryActionStormLayer = React.memo(
     function enhanceTimeSeries(timeSeries: TimeSeries) {
       const { features, ...timeSeriesRest } = timeSeries;
 
-      // Create coordinates array for the line
-      const lineCoordinates = features.map(
-        feature => (feature.geometry as Point).coordinates,
-      );
+      // Create coordinates arrays for past and future lines based on data_type
+      const pastLineCoordinates = features
+        .filter(feature => feature.properties.data_type === 'analysis')
+        .map(feature => (feature.geometry as Point).coordinates);
 
-      // Split line into segments (past and future)
-      const splitTime = '2024-03-12';
-      const splitIndex = features.findIndex(f => f.properties.time > splitTime);
+      const futureLineCoordinates = features
+        .filter(feature => feature.properties.data_type === 'forecast')
+        .map(feature => (feature.geometry as Point).coordinates);
 
       const pastLineFeature = {
         type: 'Feature' as const,
         geometry: {
           type: 'LineString' as const,
-          coordinates: lineCoordinates.slice(0, splitIndex),
+          coordinates: pastLineCoordinates,
         },
-        properties: { lineType: 'past' },
+        properties: { data_type: 'analysis' },
       } as Feature<any>;
 
       const futureLineFeature = {
         type: 'Feature' as const,
         geometry: {
           type: 'LineString' as const,
-          coordinates: lineCoordinates.slice(splitIndex - 1), // Overlap by 1 point to avoid gaps
+          coordinates: futureLineCoordinates,
         },
-        properties: { lineType: 'future' },
+        properties: { data_type: 'forecast' },
       } as Feature<any>;
 
       // Create new features array with both lines and points
@@ -203,7 +203,7 @@ const AnticipatoryActionStormLayer = React.memo(
           <Layer
             type="line"
             id="aa-storm-wind-points-line-past"
-            filter={['==', ['get', 'lineType'], 'past']}
+            filter={['==', ['get', 'data_type'], 'analysis']}
             paint={{
               'line-color': 'black',
               'line-width': 2,
@@ -214,7 +214,7 @@ const AnticipatoryActionStormLayer = React.memo(
           <Layer
             type="line"
             id="aa-storm-wind-points-line-future"
-            filter={['==', ['get', 'lineType'], 'future']}
+            filter={['==', ['get', 'data_type'], 'forecast']}
             paint={{
               'line-color': 'red',
               'line-width': 2,
