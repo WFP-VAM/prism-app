@@ -822,7 +822,8 @@ export const requestAndStorePolygonAnalysis = createAsyncThunk<
   const zonalTableRows = result.table.rows.map((row: ZonalPolygonRow) => ({
     area: Math.round(convertArea(row['stat:area'], 'meters', 'kilometers')),
 
-    percentage: row['stat:percentage'],
+    // percentage: row['stat:percentage'],
+    percentage: Math.round(row['stat:percentage'] * 100),
 
     // other keys
     ...Object.fromEntries(
