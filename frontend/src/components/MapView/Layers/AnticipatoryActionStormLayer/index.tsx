@@ -3,7 +3,7 @@ import { AnticipatoryActionLayerProps } from 'config/types';
 import { useDefaultDate } from 'utils/useDefaultDate';
 import { Source, Layer, MapLayerMouseEvent } from 'react-map-gl/maplibre';
 import { Feature, Point } from 'geojson';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { mapSelector } from 'context/mapStateSlice/selectors';
 import { useMapCallback } from 'utils/map-utils';
 import AAStormDatePopup from './AAStormDatePopup';
@@ -15,6 +15,7 @@ import severeTropicalStorm from '../../../../../public/images/anticipatory-actio
 import tropicalCyclone from '../../../../../public/images/anticipatory-action-storm/tropical-cyclone.png';
 import veryIntensiveCyclone from '../../../../../public/images/anticipatory-action-storm/very-intensive-tropical-cyclone.png';
 import { TimeSeries } from './types';
+import { hidePopup } from 'context/tooltipStateSlice';
 
 const AnticipatoryActionStormLayer = React.memo(
   ({ layer }: AnticipatoryActionStormLayerProps) => {
@@ -117,8 +118,11 @@ const AnticipatoryActionStormLayer = React.memo(
       onMouseLeave,
     );
 
+    const dispatch = useDispatch();
+
     const onWindPointsClicked = () => (e: MapLayerMouseEvent) => {
       e.preventDefault();
+      dispatch(hidePopup());
       const feature = e.features?.[0];
       setSelectedFeature(feature as Feature<Point>);
     };
