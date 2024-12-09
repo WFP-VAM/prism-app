@@ -1,4 +1,9 @@
-import { Typography, makeStyles, createStyles } from '@material-ui/core';
+import {
+  Typography,
+  makeStyles,
+  createStyles,
+  Divider,
+} from '@material-ui/core';
 import { useSafeTranslation } from 'i18n';
 // TODO - create a file to make the icons easier to access
 import moderateStorm from '../../../../../../public/images/anticipatory-action-storm/moderate-tropical-storm.png';
@@ -89,6 +94,8 @@ function AAStormLegend() {
         ))}
       </div>
 
+      <Divider />
+
       <div className={classes.section}>
         {buffers.map(buffer => (
           <div key={buffer.label} className={classes.itemWrapper}>
@@ -100,6 +107,8 @@ function AAStormLegend() {
           </div>
         ))}
       </div>
+
+      <Divider />
 
       <div className={classes.section}>
         {tracks.map(track => (
@@ -126,10 +135,12 @@ function AAStormLegend() {
         ))}
       </div>
 
-      <Typography variant="h3" className={classes.title}>
-        {t('Districts')}
-      </Typography>
+      <Divider />
+
       <div className={classes.section}>
+        <Typography variant="h3" className={classes.title}>
+          {t('Districts')}
+        </Typography>
         <div className={classes.itemWrapper}>
           <div className={classes.districtBox} />
           <Typography>{t('District')}</Typography>
@@ -159,7 +170,8 @@ const useStyles = makeStyles(() =>
       display: 'flex',
       flexDirection: 'column',
       gap: '0.5rem',
-      marginBottom: '1.5rem',
+      marginTop: '1rem',
+      marginBottom: '1rem',
     },
     itemWrapper: {
       display: 'flex',
@@ -184,7 +196,7 @@ const useStyles = makeStyles(() =>
       width: '30px',
       height: '20px',
       border: '1px solid #666',
-      borderRadius: '4px',
+      borderRadius: '2px',
     },
   }),
 );
