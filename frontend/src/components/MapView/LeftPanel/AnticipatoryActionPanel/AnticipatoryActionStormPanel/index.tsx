@@ -83,6 +83,20 @@ function AnticipatoryActionStormPanel() {
             />
           </RadioGroup>
         </FormControl>
+        {viewType === 'forecast' && (
+          <Typography>
+            {t(
+              'The wind forecast shows areas with wind speeds above 89 and 118 km/h.',
+            )}
+          </Typography>
+        )}
+        {viewType === 'risk' && (
+          <Typography>
+            {t(
+              'The risk map highlights areas with at least a 20% chance of being hit by a severe tropical storm in the next 5 days.',
+            )}
+          </Typography>
+        )}
       </div>
     </div>
   );
