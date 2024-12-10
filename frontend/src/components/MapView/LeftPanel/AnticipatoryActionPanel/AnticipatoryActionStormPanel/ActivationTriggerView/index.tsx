@@ -21,11 +21,15 @@ interface AreaTagProps {
 }
 
 function AreaTag({ name, color }: AreaTagProps) {
-  const classes = useAreaTagStyles({ color });
+  const classes = useAreaTagStyles();
   const { t } = useSafeTranslation();
 
   return (
-    <button type="button" className={classes.areaTagWrapper}>
+    <button
+      type="button"
+      className={classes.areaTagWrapper}
+      style={{ borderColor: color.background, color: color.text }}
+    >
       <Typography>{t(name)}</Typography>
     </button>
   );
@@ -33,10 +37,8 @@ function AreaTag({ name, color }: AreaTagProps) {
 
 const useAreaTagStyles = makeStyles(() =>
   createStyles({
-    areaTagWrapper: (props: {
-      color: { background: string; text: string };
-    }) => ({
-      border: `1px solid ${props.color.background}`,
+    areaTagWrapper: {
+      border: `1px solid`,
       height: 'calc(2rem - 2px)',
       borderRadius: '4px',
       display: 'flex',
@@ -48,22 +50,20 @@ const useAreaTagStyles = makeStyles(() =>
       '&:hover': {
         cursor: 'pointer',
       },
-    }),
+    },
   }),
 );
 
 const useStyles = makeStyles(() =>
   createStyles({
-    categoryText: (props: { color: { background: string; text: string } }) => ({
-      background: props.color.background,
-      color: props.color.text,
+    categoryText: {
       borderRadius: '4px 4px 0px 0px',
       textAlign: 'left',
       textTransform: 'uppercase',
       lineHeight: '2rem',
       width: '100%',
       paddingLeft: '0.5rem',
-    }),
+    },
   }),
 );
 
@@ -76,9 +76,16 @@ interface CategoryTextProps {
 }
 
 function CategoryText({ color, text }: CategoryTextProps) {
-  const classes = useStyles({ color });
+  const classes = useStyles();
 
-  return <Typography className={classes.categoryText}>{text}</Typography>;
+  return (
+    <Typography
+      className={classes.categoryText}
+      style={{ backgroundColor: color.background, color: color.text }}
+    >
+      {text}
+    </Typography>
+  );
 }
 
 interface ActivationTriggerProps {

@@ -7,10 +7,7 @@ import {
   setAAFilters,
 } from 'context/anticipatoryAction/AAStormStateSlice';
 import { dateRangeSelector } from 'context/mapStateSlice/selectors';
-import {
-  getAAAvailableDatesCombined,
-  getRequestDate,
-} from 'utils/server-utils';
+import { getRequestDate } from 'utils/server-utils';
 import { getFormattedDate } from 'utils/date-utils';
 import { DateFormat } from 'utils/name-utils';
 import { PanelSize } from 'config/types';
@@ -25,12 +22,7 @@ function AnticipatoryActionStormPanel() {
   const { startDate: selectedDate } = useSelector(dateRangeSelector);
   const [howToReadModalOpen, setHowToReadModalOpen] = React.useState(false);
 
-  const layerAvailableDates =
-    AAAvailableDates !== undefined
-      ? getAAAvailableDatesCombined(AAAvailableDates)
-      : [];
-
-  const queryDate = getRequestDate(layerAvailableDates, selectedDate);
+  const queryDate = getRequestDate(AAAvailableDates, selectedDate);
   const date = getFormattedDate(queryDate, DateFormat.Default) as string;
 
   React.useEffect(() => {

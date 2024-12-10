@@ -771,13 +771,11 @@ export type DateItem = {
   endDate?: number;
 };
 
-export type AvailableDates =
-  | {
-      [key in
-        | WMSLayerProps['serverLayerName']
-        | PointDataLayerProps['id']]: DateItem[];
-    }
-  | DateItem[];
+export type AvailableDates = {
+  [key in
+    | WMSLayerProps['serverLayerName']
+    | PointDataLayerProps['id']]: DateItem[];
+};
 
 /* eslint-disable camelcase */
 export interface WfsRequestParams {
