@@ -58,6 +58,7 @@ export type AnticipatoryActionState = {
     | undefined;
   monitoredDistricts: { name: string; vulnerability: Vulnerability }[];
   filters: {
+    viewType?: 'forecast' | 'risk' | undefined;
     selectedDate: string | undefined;
     selectedWindow: (typeof AAWindowKeys)[number] | typeof allWindowsKey;
     selectedIndex: string;
