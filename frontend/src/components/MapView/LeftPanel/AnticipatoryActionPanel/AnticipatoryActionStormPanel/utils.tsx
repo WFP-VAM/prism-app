@@ -8,7 +8,7 @@ const AACategoryPhaseMap: { [key in AACategory]: any } = {
   [AACategory.Severe]: {
     Set: {
       color: {
-        background: '#831F00',
+        background: '#E63701',
         text: 'white',
       },
       iconProps: { topText: 'S', bottomText: 'SEV', color: 'white' },
@@ -22,8 +22,8 @@ const AACategoryPhaseMap: { [key in AACategory]: any } = {
     },
     na: {
       color: {
-        background: '#F1F1F1',
-        text: 'black',
+        background: 'grey',
+        text: 'white',
       },
       iconProps: { topText: 'na', bottomText: 'SEV', color: 'black' },
     },
@@ -39,15 +39,15 @@ const AACategoryPhaseMap: { [key in AACategory]: any } = {
 
     Ready: {
       color: {
-        background: '#FFD52D',
+        background: '#FF8934',
         text: 'black',
       },
       iconProps: { topText: 'R', bottomText: 'MOD', color: 'black' },
     },
     na: {
       color: {
-        background: '#F1F1F1',
-        text: 'black',
+        background: 'grey',
+        text: 'white',
       },
       iconProps: { topText: 'na', bottomText: 'MOD', color: 'black' },
     },

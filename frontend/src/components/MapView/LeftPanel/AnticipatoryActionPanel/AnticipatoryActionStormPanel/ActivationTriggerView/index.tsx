@@ -1,5 +1,4 @@
 import { Typography, createStyles, makeStyles } from '@material-ui/core';
-import { grey } from 'muiTheme';
 import { useSelector } from 'react-redux';
 import { AADataSelector } from 'context/anticipatoryAction/AAStormStateSlice';
 import { useSafeTranslation } from 'i18n';
@@ -167,13 +166,12 @@ const useActivationTriggerStyles = makeStyles(() =>
     },
     ActivationTriggerWrapper: {
       width: '100%',
-      background: grey,
+      background: '#F1F1F1',
     },
     headColumnWrapper: {
       display: 'flex',
       flexDirection: 'column',
       minHeight: '2.5rem',
-      background: grey,
       margin: '1.5rem 1.5rem',
     },
     headColumn: {
