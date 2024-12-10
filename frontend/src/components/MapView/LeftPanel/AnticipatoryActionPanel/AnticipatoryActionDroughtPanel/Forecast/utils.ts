@@ -2,8 +2,8 @@ import {
   AACategoryType,
   AnticipatoryActionDataRow,
   AnticipatoryActionState,
-} from 'context/anticipatoryActionStateSlice/types';
-import { getSeason } from 'context/anticipatoryActionStateSlice/utils';
+} from 'context/anticipatoryAction/AADroughtStateSlice/types';
+import { getSeason } from 'context/anticipatoryAction/AADroughtStateSlice/utils';
 
 const indexOrder = ['SPI', 'DRY'];
 const monthsOrder = ['O', 'N', 'D', 'J', 'F', 'M', 'A', 'M', 'J'];

@@ -2,9 +2,9 @@ import { render } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import { BrowserRouter } from 'react-router-dom';
 import configureStore from 'redux-mock-store';
-import { AnticipatoryActionState } from 'context/anticipatoryActionStateSlice/types';
+import { AnticipatoryActionState } from 'context/anticipatoryAction/AADroughtStateSlice/types';
 import { Panel } from 'config/types';
-import { defaultDialogs, mockAAData } from '../../test.utils';
+import { defaultDialogs, mockAAData } from '../test.utils';
 import { forecastTransform } from './utils';
 import Forecast from '.';
 

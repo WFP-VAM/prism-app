@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import {
   AAAvailableDatesSelector,
   setAAFilters,
-} from 'context/anticipatoryActionStateSlice';
+} from 'context/anticipatoryAction/AAStormStateSlice';
 import { dateRangeSelector } from 'context/mapStateSlice/selectors';
 import {
   getAAAvailableDatesCombined,
@@ -15,15 +15,14 @@ import { getFormattedDate } from 'utils/date-utils';
 import { DateFormat } from 'utils/name-utils';
 import { PanelSize } from 'config/types';
 import HowToReadModal from '../HowToReadModal';
+import ActivationTrigger from './ActivationTriggerView';
 
 function AnticipatoryActionStormPanel() {
   const classes = useStyles();
   const dispatch = useDispatch();
   const { t } = useSafeTranslation();
   const AAAvailableDates = useSelector(AAAvailableDatesSelector);
-
   const { startDate: selectedDate } = useSelector(dateRangeSelector);
-
   const [howToReadModalOpen, setHowToReadModalOpen] = React.useState(false);
 
   const layerAvailableDates =
@@ -54,6 +53,7 @@ function AnticipatoryActionStormPanel() {
           </div>
         </div>
       </div>
+      <ActivationTrigger dialogs={[]} />
     </div>
   );
 }
@@ -65,7 +65,6 @@ const useStyles = makeStyles(() =>
       flexDirection: 'column',
       gap: '1rem',
       height: '100%',
-      justifyContent: 'space-between',
     },
     headerWrapper: {
       padding: '1rem 1rem 0 1rem',

@@ -12,7 +12,7 @@ import {
   AACategoryType,
   AAPhaseType,
   AAView,
-} from 'context/anticipatoryActionStateSlice/types';
+} from 'context/anticipatoryAction/AADroughtStateSlice/types';
 import { AAWindowKeys } from 'config/utils';
 import {
   AAFiltersSelector,
@@ -21,12 +21,13 @@ import {
   AAWindowRangesSelector,
   setAASelectedDistrict,
   setAAView,
-} from 'context/anticipatoryActionStateSlice';
+} from 'context/anticipatoryAction/AADroughtStateSlice';
 import { GetApp, BarChartOutlined } from '@material-ui/icons';
 import { appConfig, safeCountry } from 'config';
 import { PanelSize } from 'config/types';
 import { getCurrentDateTimeForUrl } from 'utils/date-utils';
-import { AADataSeverityOrder, getAAIcon, useAACommonStyles } from '../../utils';
+import { AADataSeverityOrder, getAAIcon } from '../utils';
+import { useAACommonStyles } from '../../utils';
 
 interface AreaTagProps {
   name: string;

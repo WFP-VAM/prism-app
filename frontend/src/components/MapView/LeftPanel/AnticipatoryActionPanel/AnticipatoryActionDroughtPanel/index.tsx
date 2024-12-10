@@ -18,7 +18,7 @@ import {
   AACategoryType,
   AAView,
   allWindowsKey,
-} from 'context/anticipatoryActionStateSlice/types';
+} from 'context/anticipatoryAction/AADroughtStateSlice/types';
 import { AAWindowKeys } from 'config/utils';
 import {
   AAAvailableDatesSelector,
@@ -30,7 +30,7 @@ import {
   setAAFilters,
   setAASelectedDistrict,
   setAAView,
-} from 'context/anticipatoryActionStateSlice';
+} from 'context/anticipatoryAction/AADroughtStateSlice';
 import { dateRangeSelector } from 'context/mapStateSlice/selectors';
 import {
   getAAAvailableDatesCombined,
@@ -39,7 +39,7 @@ import {
 import { getFormattedDate } from 'utils/date-utils';
 import { DateFormat } from 'utils/name-utils';
 import { PanelSize } from 'config/types';
-import { StyledCheckboxLabel, StyledRadioLabel, StyledSelect } from '../utils';
+import { StyledCheckboxLabel, StyledRadioLabel, StyledSelect } from './utils';
 import DistrictView from './DistrictView/index';
 import HomeTable from './HomeTable';
 import HowToReadModal from '../HowToReadModal';

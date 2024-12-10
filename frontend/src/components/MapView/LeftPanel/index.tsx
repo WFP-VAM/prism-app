@@ -15,14 +15,10 @@ import {
   LayerDefinitions,
   areChartLayersAvailable,
   isAnticipatoryActionLayer,
+  isWindowEmpty,
 } from 'config/utils';
 import { getUrlKey, useUrlHistory } from 'utils/url-utils';
 import { layersSelector, mapSelector } from 'context/mapStateSlice/selectors';
-import {
-  AAAvailableDatesSelector,
-  AADataSelector,
-  loadAAData,
-} from 'context/anticipatoryActionStateSlice';
 import { setSelectedBoundaries } from 'context/mapSelectionLayerStateSlice';
 import {
   availableDatesSelector,
@@ -30,6 +26,8 @@ import {
 } from 'context/serverStateSlice';
 import { getAAAvailableDatesCombined } from 'utils/server-utils';
 import { updateDateRange } from 'context/mapStateSlice';
+import { getAAConfig } from 'context/anticipatoryAction/config';
+import type { RootState } from 'context/store';
 import AnalysisPanel from './AnalysisPanel';
 import ChartsPanel from './ChartsPanel';
 import TablesPanel from './TablesPanel';
@@ -69,9 +67,21 @@ const TabPanel = memo(({ children, value, index, ...other }: TabPanelProps) => (
 const LeftPanel = memo(() => {
   const dispatch = useDispatch();
   const tabValue = useSelector(leftPanelTabValueSelector);
-  const AAData = useSelector(AADataSelector);
+  const AAConfig = React.useMemo(() => {
+    if (isAnticipatoryActionLayer(tabValue)) {
+      return getAAConfig(tabValue as AnticipatoryAction);
+    }
+    return null;
+  }, [tabValue]);
+
+  const AAData = useSelector((state: RootState) =>
+    AAConfig ? AAConfig.dataSelector(state) : null,
+  );
+  const AAAvailableDates = useSelector((state: RootState) =>
+    AAConfig ? AAConfig.availableDatesSelector(state) : null,
+  );
+  const loadAAData = AAConfig ? AAConfig.loadAction : null;
   const serverAvailableDates = useSelector(availableDatesSelector);
-  const AAAvailableDates = useSelector(AAAvailableDatesSelector);
   const selectedLayers = useSelector(layersSelector);
   const map = useSelector(mapSelector);
   const { updateHistory, appendLayerToUrl, removeLayerFromUrl } =
@@ -110,9 +120,12 @@ const LeftPanel = memo(() => {
     if (
       !isAnticipatoryActionLayer(tabValue) &&
       AALayerInUrl !== undefined &&
-      Object.keys(AAData['Window 1']).length === 0
+      AAData
     ) {
-      if (AALayerInUrl.id === AnticipatoryAction.drought) {
+      if (
+        AALayerInUrl.id === AnticipatoryAction.drought &&
+        isWindowEmpty(AAData, 'Window 1')
+      ) {
         dispatch(setTabValue(Panel.AnticipatoryActionDrought));
       } else if (AALayerInUrl.id === AnticipatoryAction.storm) {
         dispatch(setTabValue(Panel.AnticipatoryActionStorm));
@@ -126,7 +139,7 @@ const LeftPanel = memo(() => {
       !isAnticipatoryActionLayer(tabValue) &&
       tabValue !== Panel.None &&
       AALayerInUrl !== undefined &&
-      Object.keys(AAData['Window 1']).length !== 0
+      !isWindowEmpty(AAData, 'Window 1')
     ) {
       toggleRemoveLayer(
         AALayerInUrl,
@@ -140,11 +153,11 @@ const LeftPanel = memo(() => {
 
   // fetch csv data when loading AA page
   React.useEffect(() => {
-    if (!isAnticipatoryActionLayer(tabValue)) {
+    if (!isAnticipatoryActionLayer(tabValue) || !loadAAData) {
       return;
     }
     dispatch(loadAAData());
-  }, [dispatch, tabValue]);
+  }, [dispatch, tabValue, loadAAData]);
 
   // Add or switch AA layers in url
   React.useEffect(() => {
