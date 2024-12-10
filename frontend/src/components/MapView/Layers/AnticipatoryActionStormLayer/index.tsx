@@ -16,11 +16,17 @@ import severeTropicalStorm from '../../../../../public/images/anticipatory-actio
 import tropicalCyclone from '../../../../../public/images/anticipatory-action-storm/tropical-cyclone.png';
 import veryIntensiveCyclone from '../../../../../public/images/anticipatory-action-storm/very-intensive-tropical-cyclone.png';
 import { TimeSeries } from './types';
+import { AAFiltersSelector } from 'context/anticipatoryActionStateSlice';
+
+interface AnticipatoryActionStormLayerProps {
+  layer: AnticipatoryActionLayerProps;
+}
 
 const AnticipatoryActionStormLayer = React.memo(
   ({ layer }: AnticipatoryActionStormLayerProps) => {
     useDefaultDate(layer.id);
     const map = useSelector(mapSelector);
+    const { viewType } = useSelector(AAFiltersSelector);
 
     const [selectedFeature, setSelectedFeature] =
       useState<Feature<Point> | null>(null);
@@ -165,44 +171,62 @@ const AnticipatoryActionStormLayer = React.memo(
 
     return (
       <>
-        {/* 48kt wind currently exposed area - orange */}
-        <Source
-          data={AAStormData.ready_set_results.exposed_area_48kt.polygon}
-          type="geojson"
-        >
-          <Layer
-            type="fill"
-            paint={{ 'fill-opacity': 0.5, 'fill-color': '#ff8934' }}
-          />
-        </Source>
+        {/* 48kt wind forecast area - orange */}
+        {viewType === 'forecast' && (
+          <Source
+            data={AAStormData.ready_set_results.exposed_area_48kt.polygon}
+            type="geojson"
+          >
+            <Layer
+              id="exposed-area-48kt"
+              beforeId="aa-storm-wind-points-layer"
+              type="fill"
+              paint={{ 'fill-opacity': 0.5, 'fill-color': '#ff8934' }}
+            />
+          </Source>
+        )}
 
-        {/* 64kt wind currently exposed area - red */}
-        <Source
-          data={AAStormData.ready_set_results.exposed_area_64kt.polygon}
-          type="geojson"
-        >
-          <Layer
-            type="fill"
-            paint={{ 'fill-opacity': 0.5, 'fill-color': '#e63701' }}
-          />
-        </Source>
+        {/* 64kt wind forecast area - red */}
+        {viewType === 'forecast' && (
+          <Source
+            data={AAStormData.ready_set_results.exposed_area_64kt.polygon}
+            type="geojson"
+          >
+            <Layer
+              id="exposed-area-64kt"
+              beforeId="aa-storm-wind-points-layer"
+              type="fill"
+              paint={{ 'fill-opacity': 0.5, 'fill-color': '#e63701' }}
+            />
+          </Source>
+        )}
+        {/* Storm Risk Map view */}
+        {viewType === 'risk' && (
+          <Source
+            data={AAStormData.ready_set_results.proba_48kt_20_5d.polygon}
+            type="geojson"
+          >
+            <Layer
+              id="storm-risk-map"
+              beforeId="aa-storm-wind-points-layer"
+              type="fill"
+              paint={{ 'fill-opacity': 0.5, 'fill-color': '#9acddc' }}
+            />
+          </Source>
+        )}
 
-        {/* future 48kt wind exposed area - blue */}
-        <Source
-          data={AAStormData.ready_set_results.proba_48kt_20_5d.polygon}
-          type="geojson"
-        >
-          <Layer
-            type="fill"
-            paint={{ 'fill-opacity': 0.5, 'fill-color': '#9acddc' }}
-          />
-        </Source>
-
+        {/* Common elements for both views */}
         <Source data={timeSeries} type="geojson">
+          <Layer
+            id="aa-storm-wind-points-layer"
+            type="symbol"
+            layout={{ 'icon-image': ['image', ['get', 'iconName']] }}
+          />
+
           {/* past wind track - solid black line */}
           <Layer
-            type="line"
             id="aa-storm-wind-points-line-past"
+            type="line"
             filter={['==', ['get', 'data_type'], 'analysis']}
             paint={{
               'line-color': 'black',
@@ -212,19 +236,14 @@ const AnticipatoryActionStormLayer = React.memo(
 
           {/* forecasted wind track - dashed red line */}
           <Layer
-            type="line"
             id="aa-storm-wind-points-line-future"
+            type="line"
             filter={['==', ['get', 'data_type'], 'forecast']}
             paint={{
               'line-color': 'red',
               'line-width': 2,
               'line-dasharray': [2, 1],
             }}
-          />
-          <Layer
-            type="symbol"
-            id="aa-storm-wind-points-layer"
-            layout={{ 'icon-image': ['image', ['get', 'iconName']] }}
           />
         </Source>
 
@@ -242,9 +261,5 @@ const AnticipatoryActionStormLayer = React.memo(
     );
   },
 );
-
-interface AnticipatoryActionStormLayerProps {
-  layer: AnticipatoryActionLayerProps;
-}
 
 export default AnticipatoryActionStormLayer;

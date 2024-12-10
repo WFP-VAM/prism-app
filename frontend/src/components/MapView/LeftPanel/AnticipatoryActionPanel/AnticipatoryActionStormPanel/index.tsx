@@ -1,4 +1,12 @@
-import { Typography, createStyles, makeStyles } from '@material-ui/core';
+import {
+  Typography,
+  createStyles,
+  makeStyles,
+  RadioGroup,
+  FormControlLabel,
+  Radio,
+  FormControl,
+} from '@material-ui/core';
 import React from 'react';
 import { useSafeTranslation } from 'i18n';
 import { useDispatch, useSelector } from 'react-redux';
@@ -26,6 +34,10 @@ function AnticipatoryActionStormPanel() {
 
   const [howToReadModalOpen, setHowToReadModalOpen] = React.useState(false);
 
+  const [viewType, setViewType] = React.useState<'forecast' | 'risk'>(
+    'forecast',
+  );
+
   const layerAvailableDates =
     AAAvailableDates !== undefined
       ? getAAAvailableDatesCombined(AAAvailableDates)
@@ -35,8 +47,8 @@ function AnticipatoryActionStormPanel() {
   const date = getFormattedDate(queryDate, DateFormat.Default) as string;
 
   React.useEffect(() => {
-    dispatch(setAAFilters({ selectedDate: date }));
-  }, [date, dispatch]);
+    dispatch(setAAFilters({ selectedDate: date, viewType }));
+  }, [date, viewType, dispatch]);
 
   return (
     <div
@@ -49,10 +61,28 @@ function AnticipatoryActionStormPanel() {
       />
       <div className={classes.headerWrapper}>
         <div className={classes.titleSelectWrapper}>
-          <div className={classes.titleSelectWrapper}>
-            <Typography variant="h2">{t('STORM - Global view')}</Typography>
-          </div>
+          <Typography variant="h2">{t('STORM - Global view')}</Typography>
         </div>
+        <FormControl component="fieldset">
+          <RadioGroup
+            aria-label="view-type"
+            name="view-type"
+            value={viewType}
+            onChange={e => setViewType(e.target.value as 'forecast' | 'risk')}
+            row
+          >
+            <FormControlLabel
+              value="forecast"
+              control={<Radio color="primary" />}
+              label={t('Wind Forecast')}
+            />
+            <FormControlLabel
+              value="risk"
+              control={<Radio color="primary" />}
+              label={t('Storm Risk Map')}
+            />
+          </RadioGroup>
+        </FormControl>
       </div>
     </div>
   );
@@ -71,7 +101,7 @@ const useStyles = makeStyles(() =>
       padding: '1rem 1rem 0 1rem',
       display: 'flex',
       flexDirection: 'column',
-      gap: '0.50rem',
+      gap: '0.75rem',
     },
     titleSelectWrapper: {
       display: 'flex',
