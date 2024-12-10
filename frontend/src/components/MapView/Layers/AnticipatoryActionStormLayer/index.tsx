@@ -6,6 +6,7 @@ import { Feature, Point } from 'geojson';
 import { useDispatch, useSelector } from 'react-redux';
 import { mapSelector } from 'context/mapStateSlice/selectors';
 import { useMapCallback } from 'utils/map-utils';
+import { AAFiltersSelector } from 'context/anticipatoryActionStateSlice';
 import { hidePopup } from 'context/tooltipStateSlice';
 import AAStormDatePopup from './AAStormDatePopup';
 import AAStormData from '../../../../../public/data/mozambique/anticipatory-action/aa_storm_temporary.json';
@@ -16,7 +17,6 @@ import severeTropicalStorm from '../../../../../public/images/anticipatory-actio
 import tropicalCyclone from '../../../../../public/images/anticipatory-action-storm/tropical-cyclone.png';
 import veryIntensiveCyclone from '../../../../../public/images/anticipatory-action-storm/very-intensive-tropical-cyclone.png';
 import { TimeSeries } from './types';
-import { AAFiltersSelector } from 'context/anticipatoryActionStateSlice';
 
 interface AnticipatoryActionStormLayerProps {
   layer: AnticipatoryActionLayerProps;
