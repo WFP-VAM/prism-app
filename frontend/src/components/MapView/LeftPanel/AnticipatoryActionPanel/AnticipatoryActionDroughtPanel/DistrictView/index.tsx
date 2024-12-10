@@ -11,7 +11,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import {
   AAView,
   AnticipatoryActionDataRow,
-} from 'context/anticipatoryActionStateSlice/types';
+} from 'context/anticipatoryAction/AADroughtStateSlice/types';
 import { AAWindowKeys } from 'config/utils';
 import {
   AADataSelector,
@@ -19,10 +19,11 @@ import {
   AASelectedDistrictSelector,
   setAASelectedDistrict,
   setAAView,
-} from 'context/anticipatoryActionStateSlice';
+} from 'context/anticipatoryAction/AADroughtStateSlice';
 import { useSafeTranslation } from 'i18n';
 import { ClearAll, Equalizer, Reply } from '@material-ui/icons';
-import { AADataSeverityOrder, getAAIcon, useAACommonStyles } from '../../utils';
+import { AADataSeverityOrder, getAAIcon } from '../utils';
+import { useAACommonStyles } from '../../utils';
 import {
   Action,
   getActionsByPhaseCategoryAndWindow,

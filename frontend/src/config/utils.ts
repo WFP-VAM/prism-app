@@ -300,6 +300,9 @@ export const isAnticipatoryActionLayer = (
 ): type is AnticipatoryAction =>
   Object.values(AnticipatoryAction).includes(type as AnticipatoryAction);
 
+export const isWindowEmpty = (data: any, windowKey: string): boolean =>
+  data && windowKey in data && Object.keys(data[windowKey]).length === 0;
+
 export const areChartLayersAvailable = getWMSLayersWithChart().length > 0;
 
 const isValidReportsDefinition = (

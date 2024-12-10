@@ -1,9 +1,9 @@
 import {
   AnticipatoryActionDataRow,
   AnticipatoryActionState,
-} from 'context/anticipatoryActionStateSlice/types';
-import { getSeason } from 'context/anticipatoryActionStateSlice/utils';
-import { AADataSeverityOrder } from '../../utils';
+} from 'context/anticipatoryAction/AADroughtStateSlice/types';
+import { getSeason } from 'context/anticipatoryAction/AADroughtStateSlice/utils';
+import { AADataSeverityOrder } from '../utils';
 import { TimelineRow } from '../Timeline/utils';
 
 export function districtViewTransform(

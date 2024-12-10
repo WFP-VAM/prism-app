@@ -6,8 +6,8 @@ import {
   AAcategory,
   AnticipatoryActionDataRow,
   AnticipatoryActionState,
-} from 'context/anticipatoryActionStateSlice/types';
-import { getSeason } from 'context/anticipatoryActionStateSlice/utils';
+} from 'context/anticipatoryAction/AADroughtStateSlice/types';
+import { getSeason } from 'context/anticipatoryAction/AADroughtStateSlice/utils';
 
 function getColumnKey(val: AnticipatoryActionDataRow): number {
   const { category, phase } = val;

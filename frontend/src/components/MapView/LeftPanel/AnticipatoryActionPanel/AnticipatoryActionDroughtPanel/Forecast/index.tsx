@@ -13,17 +13,18 @@ import {
   AAFiltersSelector,
   AASelectedDistrictSelector,
   setAAView,
-} from 'context/anticipatoryActionStateSlice';
+} from 'context/anticipatoryAction/AADroughtStateSlice';
 import {
   AACategoryType,
   AAView,
   AAcategory,
-} from 'context/anticipatoryActionStateSlice/types';
+} from 'context/anticipatoryAction/AADroughtStateSlice/types';
 import { dateRangeSelector } from 'context/mapStateSlice/selectors';
 import { useSafeTranslation } from 'i18n';
 import { ClearAll, Reply } from '@material-ui/icons';
 import { getFormattedDate } from 'utils/date-utils';
-import { getAAColor, useAACommonStyles } from '../../utils';
+import { getAAColor } from '../utils';
+import { useAACommonStyles } from '../../utils';
 import { chartOptions, forecastTransform, getChartData } from './utils';
 
 interface ForecastProps {

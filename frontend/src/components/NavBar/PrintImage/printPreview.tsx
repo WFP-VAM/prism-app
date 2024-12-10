@@ -6,7 +6,7 @@ import { useSelector } from 'react-redux';
 import { getFormattedDate } from 'utils/date-utils';
 import { appConfig } from 'config';
 import { lightGrey } from 'muiTheme';
-import { AAMarkersSelector } from 'context/anticipatoryActionStateSlice';
+import { AAMarkersSelector } from 'context/anticipatoryAction/AADroughtStateSlice';
 import { useAAMarkerScalePercent } from 'utils/map-utils';
 import LegendItemsList from 'components/MapView/Legends/LegendItemsList';
 import { leftPanelTabValueSelector } from 'context/leftPanelStateSlice';
