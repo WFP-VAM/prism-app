@@ -18,12 +18,12 @@ import {
   setAAFilters,
 } from 'context/anticipatoryAction/AAStormStateSlice';
 import { PanelSize } from 'config/types';
+import { updateDateRange } from 'context/mapStateSlice';
 import { useDefaultDate } from 'utils/useDefaultDate';
 import { getFormattedDate } from 'utils/date-utils';
 import HowToReadModal from '../HowToReadModal';
 import ActivationTrigger from './ActivationTriggerView';
 import { StyledSelect } from '../AnticipatoryActionDroughtPanel/utils';
-import { updateDateRange } from 'context/mapStateSlice';
 
 function AnticipatoryActionStormPanel() {
   const classes = useStyles();
