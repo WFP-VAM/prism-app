@@ -1,13 +1,18 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { AnticipatoryActionLayerProps } from 'config/types';
+import { AnticipatoryActionLayerProps, BoundaryLayerProps } from 'config/types';
 import { useDefaultDate } from 'utils/useDefaultDate';
 import { Source, Layer, MapLayerMouseEvent } from 'react-map-gl/maplibre';
 import { Feature, Point } from 'geojson';
 import { useDispatch, useSelector } from 'react-redux';
-import { mapSelector } from 'context/mapStateSlice/selectors';
+import {
+  layerDataSelector,
+  mapSelector,
+} from 'context/mapStateSlice/selectors';
 import { useMapCallback } from 'utils/map-utils';
-import { AAFiltersSelector } from 'context/anticipatoryActionStateSlice';
 import { hidePopup } from 'context/tooltipStateSlice';
+import { LayerData } from 'context/layers/layer-data';
+import { getBoundaryLayersByAdminLevel } from 'config/utils';
+import { AAFiltersSelector } from 'context/anticipatoryActionStateSlice';
 import AAStormDatePopup from './AAStormDatePopup';
 import AAStormData from '../../../../../public/data/mozambique/anticipatory-action/aa_storm_temporary.json';
 import AAStormLandfallPopup from './AAStormLandfallPopup';
@@ -22,11 +27,18 @@ interface AnticipatoryActionStormLayerProps {
   layer: AnticipatoryActionLayerProps;
 }
 
+// Use admin level 2 boundary layer
+const boundaryLayer = getBoundaryLayersByAdminLevel(2);
+
 const AnticipatoryActionStormLayer = React.memo(
   ({ layer }: AnticipatoryActionStormLayerProps) => {
     useDefaultDate(layer.id);
     const map = useSelector(mapSelector);
     const { viewType } = useSelector(AAFiltersSelector);
+    const boundaryLayerState = useSelector(
+      layerDataSelector(boundaryLayer.id),
+    ) as LayerData<BoundaryLayerProps> | undefined;
+    const { data } = boundaryLayerState || {};
 
     const [selectedFeature, setSelectedFeature] =
       useState<Feature<Point> | null>(null);
@@ -169,8 +181,71 @@ const AnticipatoryActionStormLayer = React.memo(
       onWindPointsClicked,
     );
 
+    const coloredDistrictsLayer = React.useMemo(() => {
+      if (!data) return null;
+
+      const districts89kmh = [
+        'Angoche',
+        'Maganja Da Costa',
+        'Machanga',
+        'Govuro',
+      ];
+      const districts119kmh = [
+        'Mogincual',
+        'Namacurra',
+        'Cidade Da Beira',
+        'Buzi',
+        'Dondo',
+        'Vilankulo',
+      ];
+
+      return {
+        ...data,
+        features: data.features
+          .map(feature => {
+            const districtName =
+              feature.properties?.[boundaryLayer.adminLevelLocalNames[1]];
+
+            if (
+              districts89kmh.includes(districtName) ||
+              districts119kmh.includes(districtName)
+            ) {
+              return {
+                ...feature,
+                properties: {
+                  ...feature.properties,
+                  fillColor: '#808080',
+                  fillOpacity: 0.3,
+                },
+              };
+            }
+
+            return null;
+          })
+          .filter(f => f !== null),
+      };
+    }, [data]);
+
     return (
       <>
+        {/* Add the colored districts layer */}
+        {coloredDistrictsLayer && (
+          <Source
+            id="storm-districts"
+            type="geojson"
+            data={coloredDistrictsLayer}
+          >
+            <Layer
+              id="storm-districts-fill"
+              type="fill"
+              paint={{
+                'fill-color': ['get', 'fillColor'],
+                'fill-opacity': ['get', 'fillOpacity'],
+              }}
+            />
+          </Source>
+        )}
+
         {/* 48kt wind forecast area - orange */}
         {viewType === 'forecast' && (
           <Source
