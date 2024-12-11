@@ -37,7 +37,11 @@ import {
   AnticipatoryActionStormPanel,
 } from './AnticipatoryActionPanel';
 import LayersPanel from './layersPanel';
-import { areTablesAvailable, isAnticipatoryActionAvailable } from './utils';
+import {
+  areTablesAvailable,
+  isAnticipatoryActionDroughtAvailable,
+  isAnticipatoryActionStormAvailable,
+} from './utils';
 import { toggleRemoveLayer } from './layersPanel/MenuItem/MenuSwitch/SwitchItem/utils';
 import AlertsPanel from './AlertsPanel';
 
@@ -243,17 +247,20 @@ const LeftPanel = memo(() => {
   }, [tabValue, dispatch]);
 
   const renderedAnticipatoryActionPanel = React.useMemo(() => {
-    if (!isAnticipatoryActionAvailable) {
-      return null;
-    }
-    if (tabValue === Panel.AnticipatoryActionDrought) {
+    if (
+      isAnticipatoryActionDroughtAvailable &&
+      tabValue === Panel.AnticipatoryActionDrought
+    ) {
       return (
         <TabPanel value={tabValue} index={Panel.AnticipatoryActionDrought}>
           <AnticipatoryActionDroughtPanel />
         </TabPanel>
       );
     }
-    if (tabValue === Panel.AnticipatoryActionStorm) {
+    if (
+      isAnticipatoryActionStormAvailable &&
+      tabValue === Panel.AnticipatoryActionStorm
+    ) {
       return (
         <TabPanel value={tabValue} index={Panel.AnticipatoryActionStorm}>
           <AnticipatoryActionStormPanel />

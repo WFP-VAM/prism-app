@@ -9,7 +9,7 @@ import {
   AACategoryKeyToCategoryMap,
   AACategoryLandfall,
   DistrictDataType,
-  LandfallImpact,
+  LandfallInfo,
   ResultType,
   StormData,
 } from './types';
@@ -24,6 +24,7 @@ const watchedDistricts: { [key in AACategory]: string[] } = {
     'Vilankulo',
   ],
   [AACategory.Moderate]: ['Angoche', 'Maganja Da Costa', 'Machanga', 'Govuro'],
+  [AACategory.Risk]: [],
 };
 
 function extractDatesFromTimeSeries(data: StormData): number[] {
@@ -36,39 +37,45 @@ export function parseAndTransformAA(data: StormData): ResultType {
   const exposedAreas = data.ready_set_results;
   const landfallInfo = data.landfall_info;
 
-  const districtAreaData = exposedAreas
+  const [activeDistricts, naDistricts] = exposedAreas
     ? (Object.values(AACategoryKey) as AACategoryKey[]).reduce(
-        (result, categoryKey) => {
+        ([activeResult, naResult], categoryKey) => {
           if (exposedAreas[categoryKey]) {
             const area = exposedAreas[categoryKey];
             const category = AACategoryKeyToCategoryMap[categoryKey];
 
-            const activeDistricts = area.affected_districts.filter(district =>
-              watchedDistricts[category].includes(district),
-            );
+            if (area.affected_districts) {
+              const active = area.affected_districts.filter(district =>
+                watchedDistricts[category].includes(district),
+              );
 
-            const notActiveDistricts = watchedDistricts[category].filter(
-              district => !area.affected_districts.includes(district),
-            );
-            return {
-              ...result,
-              [category]: {
-                Ready: {
-                  districtNames: activeDistricts,
-                  polygon: area.polygon.coordinates,
+              const notActive = watchedDistricts[category].filter(
+                district => !area.affected_districts.includes(district),
+              );
+
+              return [
+                {
+                  ...activeResult,
+                  [category]: {
+                    districtNames: active,
+                    polygon: area.polygon,
+                  },
                 },
-                na: {
-                  districtNames: notActiveDistricts,
-                  polygon: {},
+                {
+                  ...naResult,
+                  [category]: {
+                    districtNames: notActive,
+                    polygon: {},
+                  },
                 },
-              },
-            };
+              ];
+            }
           }
-          return result;
+          return [activeResult, naResult];
         },
-        {} as DistrictDataType,
+        [{} as DistrictDataType, {} as DistrictDataType],
       )
-    : ({} as DistrictDataType);
+    : [{} as DistrictDataType, {} as DistrictDataType];
 
   const landfallImpactData = landfallInfo
     ? {
@@ -82,7 +89,7 @@ export function parseAndTransformAA(data: StormData): ResultType {
             AACategoryDataToLandfallMap[intensity],
         ),
       }
-    : ({} as LandfallImpact);
+    : ({} as LandfallInfo);
 
   const validity: Validity = {
     mode: DatesPropagation.DAYS,
@@ -96,8 +103,10 @@ export function parseAndTransformAA(data: StormData): ResultType {
 
   return {
     data: {
-      exposed: districtAreaData,
+      activeDistricts,
+      naDistricts,
       landfall: landfallImpactData,
+      timeSeries: data.time_series,
     },
     availableDates,
     range: {

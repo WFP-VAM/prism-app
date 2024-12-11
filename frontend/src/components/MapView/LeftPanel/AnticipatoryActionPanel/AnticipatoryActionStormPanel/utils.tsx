@@ -4,16 +4,9 @@ import {
   AACategory,
 } from 'context/anticipatoryAction/AAStormStateSlice/types';
 
-const AACategoryPhaseMap: { [key in AACategory]: any } = {
+const AACategoryPhaseMap: { [key in AACategory]?: any } = {
   [AACategory.Severe]: {
-    Set: {
-      color: {
-        background: '#E63701',
-        text: 'white',
-      },
-      iconProps: { topText: 'S', bottomText: 'SEV', color: 'white' },
-    },
-    Ready: {
+    Active: {
       color: {
         background: '#E63701',
         text: 'white',
@@ -29,15 +22,23 @@ const AACategoryPhaseMap: { [key in AACategory]: any } = {
     },
   },
   [AACategory.Moderate]: {
-    Set: {
+    Active: {
       color: {
         background: '#FF8934',
         text: 'black',
       },
-      iconProps: { topText: 'S', bottomText: 'MOD', color: 'black' },
+      iconProps: { topText: 'R', bottomText: 'MOD', color: 'black' },
     },
-
-    Ready: {
+    na: {
+      color: {
+        background: 'grey',
+        text: 'white',
+      },
+      iconProps: { topText: 'na', bottomText: 'MOD', color: 'black' },
+    },
+  },
+  [AACategory.Risk]: {
+    Active: {
       color: {
         background: '#FF8934',
         text: 'black',

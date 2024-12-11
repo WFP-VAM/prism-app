@@ -1,4 +1,5 @@
 import { createStyles, makeStyles, Typography } from '@material-ui/core';
+import { LandfallInfo } from 'context/anticipatoryAction/AAStormStateSlice/types';
 import { formatReportDate } from '../../utils';
 
 function PopupContent({ landfallInfo, reportDate }: PopupContentProps) {
@@ -45,7 +46,7 @@ function PopupContent({ landfallInfo, reportDate }: PopupContentProps) {
           variant="body1"
           className={`${classes.text} ${classes.textAlignRight}`}
         >
-          {landfallInfo.landfall_impact_district}
+          {landfallInfo.district}
         </Typography>
       </div>
     </div>
@@ -82,12 +83,6 @@ const useStyles = makeStyles(() =>
     },
   }),
 );
-
-export interface LandfallInfo {
-  landfall_time: string[];
-  landfall_impact_district: string;
-  landfall_impact_intensity: string[];
-}
 
 interface PopupContentProps {
   landfallInfo: LandfallInfo;

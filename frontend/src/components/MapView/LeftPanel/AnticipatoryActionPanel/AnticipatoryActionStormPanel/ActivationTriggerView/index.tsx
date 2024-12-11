@@ -5,8 +5,6 @@ import { useSafeTranslation } from 'i18n';
 import {
   AADisplayCategory,
   AACategory,
-  phaseValues,
-  AADisplayPhase,
 } from 'context/anticipatoryAction/AAStormStateSlice/types';
 import { getAAColor } from '../utils';
 import { useAACommonStyles } from '../../utils';
@@ -107,35 +105,60 @@ function ActivationTrigger({ dialogs }: ActivationTriggerProps) {
       </Typography>
 
       <div className={classes.ActivationTriggerWrapper}>
-        {phaseValues.map(phase =>
-          Object.entries(rawAAData.exposed || {}).map(([category, data]) => (
+        {rawAAData.activeDistricts &&
+          Object.entries(rawAAData.activeDistricts).map(([category, data]) => (
             <div
-              key={`${category}-${phase}`}
+              key={`${category}-active`}
               className={classes.headColumnWrapper}
             >
+              {/* Affichage pour les districts actifs */}
               <div className={classes.headColumn}>
                 <CategoryText
-                  color={getAAColor(category as AACategory, phase, true)}
+                  color={getAAColor(category as AACategory, 'Active', true)}
                   text={t(
-                    `${AADisplayPhase[phase]}${
-                      AADisplayCategory[category as AACategory]
-                    }`,
+                    `Active > ${AADisplayCategory[category as AACategory]}`,
                   )}
                 />
               </div>
               <div className={classes.rowWrapper}>
-                {data[phase]?.districtNames.map((name: string) => (
+                {data.districtNames.map((name: string) => (
                   <div className={classes.tagWrapper} key={name}>
                     <AreaTag
                       name={name}
-                      color={getAAColor(category as AACategory, phase, true)}
+                      color={getAAColor(category as AACategory, 'Active', true)}
                     />
                   </div>
                 ))}
               </div>
             </div>
-          )),
-        )}
+          ))}
+        {rawAAData.naDistricts &&
+          Object.entries(rawAAData.naDistricts).map(([category, data]) => (
+            <div
+              key={`${category}-active`}
+              className={classes.headColumnWrapper}
+            >
+              {/* Affichage pour les districts actifs */}
+              <div className={classes.headColumn}>
+                <CategoryText
+                  color={getAAColor(category as AACategory, 'na', true)}
+                  text={t(
+                    `Active > ${AADisplayCategory[category as AACategory]}`,
+                  )}
+                />
+              </div>
+              <div className={classes.rowWrapper}>
+                {data.districtNames.map((name: string) => (
+                  <div className={classes.tagWrapper} key={name}>
+                    <AreaTag
+                      name={name}
+                      color={getAAColor(category as AACategory, 'na', true)}
+                    />
+                  </div>
+                ))}
+              </div>
+            </div>
+          ))}
       </div>
       <div className={commonClasses.footerWrapper}>
         <div className={commonClasses.footerDialogsWrapper}>
