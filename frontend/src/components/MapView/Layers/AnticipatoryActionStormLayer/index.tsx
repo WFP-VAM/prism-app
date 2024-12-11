@@ -202,7 +202,9 @@ const AnticipatoryActionStormLayer = React.memo(
     );
 
     const coloredDistrictsLayer = React.useMemo(() => {
-      if (!boundaryData) return null;
+      if (!boundaryData) {
+        return null;
+      }
 
       const districts89kmh = [
         'Angoche',
