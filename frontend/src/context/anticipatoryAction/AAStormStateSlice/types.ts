@@ -94,7 +94,7 @@ interface ForecastDetails {
   basin: string;
   cyclone_name: string;
   event_id: string;
-  reference_time: Date;
+  reference_time: string;
   season: number;
 }
 

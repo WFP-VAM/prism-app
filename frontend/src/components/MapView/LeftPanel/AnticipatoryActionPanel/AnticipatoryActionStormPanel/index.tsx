@@ -15,10 +15,11 @@ import { useDispatch, useSelector } from 'react-redux';
 import {
   AAAvailableDatesSelector,
   AADataSelector,
-  AAFiltersSelector,
   setAAFilters,
 } from 'context/anticipatoryAction/AAStormStateSlice';
 import { PanelSize } from 'config/types';
+import { useDefaultDate } from 'utils/useDefaultDate';
+import { getFormattedDate } from 'utils/date-utils';
 import HowToReadModal from '../HowToReadModal';
 import ActivationTrigger from './ActivationTriggerView';
 import { StyledSelect } from '../AnticipatoryActionDroughtPanel/utils';
@@ -29,8 +30,9 @@ function AnticipatoryActionStormPanel() {
   const { t } = useSafeTranslation();
   const AAAvailableDates = useSelector(AAAvailableDatesSelector);
   const AAData = useSelector(AADataSelector);
-  const { selectedDate } = useSelector(AAFiltersSelector);
   const [howToReadModalOpen, setHowToReadModalOpen] = React.useState(false);
+
+  const selectedDate = useDefaultDate('anticipatory_action_storm');
 
   const [viewType, setViewType] = React.useState<'forecast' | 'risk'>(
     'forecast',
@@ -75,15 +77,11 @@ function AnticipatoryActionStormPanel() {
               renderValue={() => (
                 <Typography variant="h2">
                   {selectedDate
-                    ? `CYCLONE  ${t(AAData.forecastDetails?.cyclone_name || 'Unknown Cyclone')} ${t(selectedDate)} FORECAST`
+                    ? `CYCLONE  ${t(AAData.forecastDetails?.cyclone_name || 'Unknown Cyclone')} ${getFormattedDate(selectedDate, 'default')} FORECAST`
                     : t('Timeline')}
                 </Typography>
               )}
             >
-              <MenuItem value="selectedDate" onClick={() => {}}>
-                {t(formatDate(selectedDate))}
-              </MenuItem>
-
               {AAAvailableDates &&
                 AAAvailableDates.map(x => (
                   <MenuItem
@@ -143,7 +141,6 @@ const useStyles = makeStyles(() =>
       display: 'flex',
       flexDirection: 'column',
       gap: '1rem',
-      height: '100%',
     },
     headerWrapper: {
       padding: '1rem 1rem 0 1rem',

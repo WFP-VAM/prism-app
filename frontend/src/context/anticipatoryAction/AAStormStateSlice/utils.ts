@@ -1,6 +1,6 @@
 import { DatesPropagation, Validity } from 'config/types';
 import { generateIntermediateDateItemFromValidity } from 'utils/server-utils';
-import { getFormattedDate } from 'utils/date-utils';
+import { getFormattedDate, getTimeInMilliseconds } from 'utils/date-utils';
 import { DateFormat } from 'utils/name-utils';
 import {
   AACategory,
@@ -32,10 +32,9 @@ const watchedDistricts: { [key in AACategory]: string[] } = {
   [AACategory.Risk]: [],
 };
 
+// TODO - wait for dates endpoint to be implemented in the WFP API
 function extractDatesFromTimeSeries(data: StormData): number[] {
-  return data.time_series.features.map(feature =>
-    new Date(feature.properties.time).getTime(),
-  );
+  return [getTimeInMilliseconds(data.forecast_details.reference_time)];
 }
 // DRAFT: This is a provisional implementation based on a test dataset with a temporary structure that is subject to change.
 export function parseAndTransformAA(data: StormData): ResultType {
@@ -101,7 +100,7 @@ export function parseAndTransformAA(data: StormData): ResultType {
 
   const validity: Validity = {
     mode: DatesPropagation.DAYS,
-    forward: 3,
+    forward: 0,
   };
   const dates = extractDatesFromTimeSeries(data);
   const availableDates = generateIntermediateDateItemFromValidity(
