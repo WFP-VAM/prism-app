@@ -41,6 +41,7 @@ import {
 } from 'utils/server-utils';
 import { UrlLayerKey, getUrlKey, useUrlHistory } from 'utils/url-utils';
 import { AAAvailableDatesSelector } from 'context/anticipatoryActionStateSlice';
+import { useTranslation } from 'react-i18next';
 
 import {
   datesAreEqualWithoutTime,
@@ -61,6 +62,7 @@ const dateSupportLayerTypes: Array<LayerType['type']> = [
 
 const useLayers = () => {
   const dispatch = useDispatch();
+  const { t } = useTranslation();
   const [defaultLayerAttempted, setDefaultLayerAttempted] = useState(false);
 
   const { urlParams, updateHistory, removeLayerFromUrl } = useUrlHistory();
@@ -271,7 +273,9 @@ const useLayers = () => {
     if (!defaultLayerAttempted) {
       dispatch(
         addNotification({
-          message: `Invalid default layer identifier: ${defaultLayer}`,
+          message: t('Invalid default layer identifier: {{defaultLayer}}', {
+            defaultLayer,
+          }),
           type: 'error',
         }),
       );
@@ -286,6 +290,7 @@ const useLayers = () => {
     hazardLayerIds,
     layerDefinitionsIncludeDefaultLayer,
     updateHistory,
+    t,
   ]);
 
   const serverAvailableDatesAreEmpty = useMemo(
@@ -341,7 +346,9 @@ const useLayers = () => {
     if (invalidLayersIds.length > 0) {
       dispatch(
         addNotification({
-          message: `Invalid layer identifier(s): ${invalidLayersIds.join(',')}`,
+          message: t('Invalid layer identifier(s): {{layers}}', {
+            layers: invalidLayersIds.join(','),
+          }),
           type: 'error',
         }),
       );
@@ -362,7 +369,7 @@ const useLayers = () => {
 
     dispatch(
       addNotification({
-        message: 'Invalid date found. Using most recent date',
+        message: t('Invalid date found. Using most recent date'),
         type: 'warning',
       }),
     );
@@ -377,6 +384,7 @@ const useLayers = () => {
     serverAvailableDatesAreEmpty,
     updateHistory,
     urlDate,
+    t,
   ]);
 
   const removeLayerAndUpdateHistory = useCallback(
@@ -430,7 +438,12 @@ const useLayers = () => {
 
     dispatch(
       addNotification({
-        message: `No dates overlap with the selected layers. Removing layer: ${layerToRemove.title || layerToRemove.id}.`,
+        message: t(
+          'No dates overlap with the selected layers. Removing layer: {{layer}}',
+          {
+            layer: t(layerToRemove.title || layerToRemove.id),
+          },
+        ),
         type: 'warning',
       }),
     );
@@ -442,6 +455,7 @@ const useLayers = () => {
     selectedLayerDates.length,
     selectedLayers,
     selectedLayersWithDateSupport.length,
+    t,
   ]);
 
   const possibleDatesForLayerIncludeSelectedDate = useCallback(
@@ -499,15 +513,17 @@ const useLayers = () => {
 
         dispatch(
           addNotification({
-            message: `No data was found for layer '${
-              layer.title
-            }' on ${getFormattedDate(
-              jsSelectedDate,
-              DateFormat.Default,
-            )}. The closest date ${getFormattedDate(
-              closestDate,
-              DateFormat.Default,
-            )} has been loaded instead.`,
+            message: t(
+              'No data was found for layer "{{layerTitle}}" on {{selectedDate}}. The closest date {{closestDate}} has been loaded instead.',
+              {
+                layerTitle: t(layer.title),
+                selectedDate: getFormattedDate(
+                  jsSelectedDate,
+                  DateFormat.Default,
+                ),
+                closestDate: getFormattedDate(closestDate, DateFormat.Default),
+              },
+            ),
             type: 'warning',
           }),
         );
@@ -522,6 +538,7 @@ const useLayers = () => {
       serverAvailableDates,
       serverAvailableDatesAreEmpty,
       updateHistory,
+      t,
     ],
   );
 
