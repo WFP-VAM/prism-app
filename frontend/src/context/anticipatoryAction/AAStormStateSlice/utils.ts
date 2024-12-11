@@ -14,7 +14,7 @@ import {
   StormData,
 } from './types';
 
-const NADistricts: { [key in AACategory]: string[] } = {
+const watchedDistricts: { [key in AACategory]: string[] } = {
   [AACategory.Severe]: [
     'Mogincual',
     'Namacurra',
@@ -42,15 +42,23 @@ export function parseAndTransformAA(data: StormData): ResultType {
           if (exposedAreas[categoryKey]) {
             const area = exposedAreas[categoryKey];
             const category = AACategoryKeyToCategoryMap[categoryKey];
+
+            const activeDistricts = area.affected_districts.filter(district =>
+              watchedDistricts[category].includes(district),
+            );
+
+            const notActiveDistricts = watchedDistricts[category].filter(
+              district => !area.affected_districts.includes(district),
+            );
             return {
               ...result,
               [category]: {
                 Ready: {
-                  districtNames: area.affected_districts,
+                  districtNames: activeDistricts,
                   polygon: area.polygon.coordinates,
                 },
                 na: {
-                  districtNames: NADistricts[category],
+                  districtNames: notActiveDistricts,
                   polygon: {},
                 },
               },
