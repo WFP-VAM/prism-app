@@ -1,4 +1,10 @@
-import { isSameDay, parseJSON, format, addHours } from 'date-fns';
+import {
+  isSameDay,
+  parseJSON,
+  format,
+  addHours,
+  differenceInHours,
+} from 'date-fns';
 
 export function getDateInUTC(time: string, hasHours: boolean = true) {
   try {
@@ -37,4 +43,27 @@ export function formatInUTC(dateInUTC: Date, fmt: string) {
   const shiftedDate = addHours(dateInUTC, hoursToAddOrRemove);
 
   return format(shiftedDate, fmt);
+}
+
+export function formatLandfallDate(dateRange: string[]) {
+  const date = dateRange[0];
+  const parsedDate = getDateInUTC(date, true);
+  if (!parsedDate) {
+    return '';
+  }
+
+  return formatInUTC(parsedDate, 'yyy-MM-dd HH:mm');
+}
+
+export function formatLandfallTimeRange(dateRange: string[]) {
+  const fromDate = dateRange[0];
+  const toDate = dateRange[1];
+
+  const parsedFormDate = getDateInUTC(fromDate, true);
+  const parsedToDate = getDateInUTC(toDate, true);
+  if (!parsedFormDate || !parsedToDate) {
+    return '';
+  }
+
+  return `+= ${differenceInHours(parsedToDate, parsedFormDate)} hours`;
 }
