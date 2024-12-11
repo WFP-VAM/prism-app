@@ -124,15 +124,14 @@ function ActivationTrigger({ dialogs }: ActivationTriggerProps) {
                 />
               </div>
               <div className={classes.rowWrapper}>
-                {data[phase] &&
-                  data[phase].districtNames.map((name: string) => (
-                    <div className={classes.tagWrapper} key={name}>
-                      <AreaTag
-                        name={name}
-                        color={getAAColor(category as AACategory, phase, true)}
-                      />
-                    </div>
-                  ))}
+                {data[phase]?.districtNames.map((name: string) => (
+                  <div className={classes.tagWrapper} key={name}>
+                    <AreaTag
+                      name={name}
+                      color={getAAColor(category as AACategory, phase, true)}
+                    />
+                  </div>
+                ))}
               </div>
             </div>
           )),
