@@ -108,24 +108,24 @@ function ActivationTrigger({ dialogs }: ActivationTriggerProps) {
 
       <div className={classes.ActivationTriggerWrapper}>
         {phaseValues.map(phase =>
-          Object.entries(rawAAData.exposed || {}).map(([category, data]) =>
-            data[phase] ? (
-              <div
-                key={`${category}-${phase}`}
-                className={classes.headColumnWrapper}
-              >
-                <div className={classes.headColumn}>
-                  <CategoryText
-                    color={getAAColor(category as AACategory, phase, true)}
-                    text={t(
-                      `${AADisplayPhase[phase]}${
-                        AADisplayCategory[category as AACategory]
-                      }`,
-                    )}
-                  />
-                </div>
-                <div className={classes.rowWrapper}>
-                  {data[phase].districtNames.map((name: string) => (
+          Object.entries(rawAAData.exposed || {}).map(([category, data]) => (
+            <div
+              key={`${category}-${phase}`}
+              className={classes.headColumnWrapper}
+            >
+              <div className={classes.headColumn}>
+                <CategoryText
+                  color={getAAColor(category as AACategory, phase, true)}
+                  text={t(
+                    `${AADisplayPhase[phase]}${
+                      AADisplayCategory[category as AACategory]
+                    }`,
+                  )}
+                />
+              </div>
+              <div className={classes.rowWrapper}>
+                {data[phase] &&
+                  data[phase].districtNames.map((name: string) => (
                     <div className={classes.tagWrapper} key={name}>
                       <AreaTag
                         name={name}
@@ -133,10 +133,9 @@ function ActivationTrigger({ dialogs }: ActivationTriggerProps) {
                       />
                     </div>
                   ))}
-                </div>
               </div>
-            ) : null,
-          ),
+            </div>
+          )),
         )}
       </div>
       <div className={commonClasses.footerWrapper}>
