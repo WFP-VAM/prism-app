@@ -52,13 +52,6 @@ const AnticipatoryActionStormLayer = React.memo(
     useEffect(() => {
       const fetchStormData = async () => {
         try {
-          // const response = await fetch(
-          //   `https://api.allorigins.win/get?url=https://data.earthobservation.vam.wfp.org/public-share/aa/ts/outputs/latest.json`,
-          // );
-          // const data = await response.json();
-          // const stormData = JSON.parse(data.contents);
-
-          // Once CORS is fixed, uncomment this:
           const response = await fetch(
             'https://data.earthobservation.vam.wfp.org/public-share/aa/ts/outputs/latest.json',
           );
