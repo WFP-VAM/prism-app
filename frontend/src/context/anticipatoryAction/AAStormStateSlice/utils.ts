@@ -106,6 +106,8 @@ export function parseAndTransformAA(data: StormData): ResultType {
       naDistricts,
       landfall: landfallImpactData,
       timeSeries: data.time_series,
+      landfallDetected: data.landfall_detected,
+      forecastDetails: data.forecast_details,
     },
     availableDates,
     range: {

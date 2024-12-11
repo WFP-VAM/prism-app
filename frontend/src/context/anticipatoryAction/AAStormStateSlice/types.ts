@@ -60,6 +60,8 @@ export type AAStormData = {
   naDistricts?: DistrictDataType;
   landfall?: LandfallInfo;
   timeSeries?: any;
+  landfallDetected?: boolean;
+  forecastDetails?: ForecastDetails;
 };
 
 export type ResultType = {
@@ -88,6 +90,14 @@ interface TimeSeries {
   [key: string]: any;
 }
 
+interface ForecastDetails {
+  basin: string;
+  cyclone_name: string;
+  event_id: string;
+  reference_time: Date;
+  season: number;
+}
+
 export interface LandfallInfo {
   district: string;
   time: string[];
@@ -96,6 +106,8 @@ export interface LandfallInfo {
 
 export interface StormData {
   time_series: TimeSeries;
+  landfall_detected: boolean;
+  forecast_details: ForecastDetails;
   landfall_info: {
     landfall_time: string[];
     landfall_impact_district: string;
