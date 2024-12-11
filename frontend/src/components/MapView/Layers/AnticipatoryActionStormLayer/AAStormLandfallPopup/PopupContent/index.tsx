@@ -1,8 +1,17 @@
 import { createStyles, makeStyles, Typography } from '@material-ui/core';
 import { LandfallInfo } from 'context/anticipatoryAction/AAStormStateSlice/types';
-import { formatReportDate } from '../../utils';
+import {
+  formatLandfallDate,
+  formatLandfallEstimatedLeadtime,
+  formatLandfallTimeRange,
+  formatReportDate,
+} from '../../utils';
 
-function PopupContent({ landfallInfo, reportDate }: PopupContentProps) {
+function PopupContent({
+  landfallInfo,
+  reportDate,
+  timelineDate,
+}: PopupContentProps) {
   const classes = useStyles();
 
   return (
@@ -21,8 +30,10 @@ function PopupContent({ landfallInfo, reportDate }: PopupContentProps) {
           variant="body1"
           className={`${classes.text} ${classes.textAlignRight}`}
         >
-          12-03-2025
-          <span className={classes.block}>06:00 - 12:00</span>
+          {formatLandfallDate(landfallInfo.time)}
+          <span className={classes.block}>
+            {formatLandfallTimeRange(landfallInfo.time)}
+          </span>
         </Typography>
       </div>
       <div className={classes.itemContainer}>
@@ -34,7 +45,7 @@ function PopupContent({ landfallInfo, reportDate }: PopupContentProps) {
           variant="body1"
           className={`${classes.text} ${classes.textAlignRight}`}
         >
-          8 - 12 hrs
+          {formatLandfallEstimatedLeadtime(landfallInfo.time, timelineDate)}
         </Typography>
       </div>
       <div className={classes.itemContainer}>
@@ -87,6 +98,7 @@ const useStyles = makeStyles(() =>
 interface PopupContentProps {
   landfallInfo: LandfallInfo;
   reportDate: string;
+  timelineDate: string;
 }
 
 export default PopupContent;

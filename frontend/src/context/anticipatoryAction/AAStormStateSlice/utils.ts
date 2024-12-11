@@ -80,10 +80,7 @@ export function parseAndTransformAA(data: StormData): ResultType {
   const landfallImpactData = landfallInfo
     ? {
         district: landfallInfo.landfall_impact_district,
-        time: {
-          start: landfallInfo.landfall_time[0],
-          end: landfallInfo.landfall_time[1],
-        },
+        time: landfallInfo.landfall_time,
         severity: landfallInfo.landfall_impact_intensity.map(
           (intensity: AACategoryLandfall) =>
             AACategoryDataToLandfallMap[intensity],

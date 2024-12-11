@@ -89,10 +89,7 @@ interface TimeSeries {
 
 export interface LandfallInfo {
   district: string;
-  time: {
-    start: string;
-    end: string;
-  };
+  time: string[];
   severity: AACategoryKey[];
 }
 
