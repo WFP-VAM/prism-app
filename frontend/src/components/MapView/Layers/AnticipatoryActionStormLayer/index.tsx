@@ -14,7 +14,6 @@ import { LayerData } from 'context/layers/layer-data';
 import { getBoundaryLayersByAdminLevel } from 'config/utils';
 import { AAFiltersSelector } from 'context/anticipatoryActionStateSlice';
 import AAStormDatePopup from './AAStormDatePopup';
-import AAStormData from '../../../../../public/data/mozambique/anticipatory-action/aa_storm_temporary.json';
 import AAStormLandfallPopup from './AAStormLandfallPopup';
 import moderateStorm from '../../../../../public/images/anticipatory-action-storm/moderate-tropical-storm.png';
 import overland from '../../../../../public/images/anticipatory-action-storm/overland.png';
@@ -38,13 +37,40 @@ const AnticipatoryActionStormLayer = React.memo(
     const boundaryLayerState = useSelector(
       layerDataSelector(boundaryLayer.id),
     ) as LayerData<BoundaryLayerProps> | undefined;
-    const { data } = boundaryLayerState || {};
+    const { data: boundaryData } = boundaryLayerState || {};
 
     const [selectedFeature, setSelectedFeature] =
       useState<Feature<Point> | null>(null);
 
     /* this is the date the layer data corresponds to. It will be stored in redux ultimately */
     // const layerDataDate = '2024-03-11';
+
+    // Add state for storm data
+    const [AAStormData, setAAStormData] = useState<any>(null);
+
+    // Add fetch effect
+    useEffect(() => {
+      const fetchStormData = async () => {
+        try {
+          const response = await fetch(
+            `https://api.allorigins.win/get?url=https://data.earthobservation.vam.wfp.org/public-share/aa/ts/outputs/latest.json`,
+          );
+          const data = await response.json();
+          const stormData = JSON.parse(data.contents);
+
+          // Once CORS is fixed, uncomment this:
+          // const response = await fetch(
+          //   'https://data.earthobservation.vam.wfp.org/public-share/aa/ts/outputs/latest.json',
+          // );
+          // const stormData = await response.json();
+          setAAStormData(stormData);
+        } catch (error) {
+          console.error('Error fetching storm data:', error);
+        }
+      };
+
+      fetchStormData();
+    }, []);
 
     function enhanceTimeSeries(timeSeries: TimeSeries) {
       const { features, ...timeSeriesRest } = timeSeries;
@@ -93,9 +119,10 @@ const AnticipatoryActionStormLayer = React.memo(
       return { ...timeSeriesRest, features: newFeatures };
     }
 
-    const timeSeries: any = enhanceTimeSeries(
-      AAStormData.time_series as unknown as TimeSeries,
-    );
+    // Replace all AAStormData references with stormData
+    const timeSeries: any = AAStormData
+      ? enhanceTimeSeries(AAStormData.time_series as unknown as TimeSeries)
+      : null;
 
     function getIconNameByWindType(windType: string) {
       if (windType === 'intense tropical cyclone') {
@@ -182,7 +209,7 @@ const AnticipatoryActionStormLayer = React.memo(
     );
 
     const coloredDistrictsLayer = React.useMemo(() => {
-      if (!data) return null;
+      if (!boundaryData) return null;
 
       const districts89kmh = [
         'Angoche',
@@ -200,8 +227,8 @@ const AnticipatoryActionStormLayer = React.memo(
       ];
 
       return {
-        ...data,
-        features: data.features
+        ...boundaryData,
+        features: boundaryData.features
           .map(feature => {
             const districtName =
               feature.properties?.[boundaryLayer.adminLevelLocalNames[1]];
@@ -224,7 +251,11 @@ const AnticipatoryActionStormLayer = React.memo(
           })
           .filter(f => f !== null),
       };
-    }, [data]);
+    }, [boundaryData]);
+
+    if (!AAStormData) {
+      return null;
+    }
 
     return (
       <>
