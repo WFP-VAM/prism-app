@@ -10,6 +10,7 @@ import moderateStorm from '../../../../../../public/images/anticipatory-action-s
 import overland from '../../../../../../public/images/anticipatory-action-storm/overland.png';
 import severeTropicalStorm from '../../../../../../public/images/anticipatory-action-storm/severe-tropical-storm.png';
 import tropicalCyclone from '../../../../../../public/images/anticipatory-action-storm/tropical-cyclone.png';
+import intenseTropicalCyclone from '../../../../../../public/images/anticipatory-action-storm/intense-tropical-cyclone.png';
 import veryIntensiveCyclone from '../../../../../../public/images/anticipatory-action-storm/very-intensive-tropical-cyclone.png';
 
 const phases = [
@@ -29,7 +30,7 @@ const phases = [
     speed: '119-166 km/h',
   },
   {
-    icon: tropicalCyclone, // Using same icon for intense
+    icon: intenseTropicalCyclone,
     label: 'Intense tropical cyclone',
     speed: '167-213 km/h',
   },
@@ -47,11 +48,11 @@ const buffers = [
   },
   {
     color: '#ffc49a',
-    label: '89 km/h wind buffer',
+    label: '89 km/h impact zone',
   },
   {
     color: '#D37A50',
-    label: '118 km/h wind buffer',
+    label: '118 km/h impact zone',
   },
 ];
 
@@ -106,6 +107,9 @@ function AAStormLegend() {
             <Typography>{t(buffer.label)}</Typography>
           </div>
         ))}
+        <Typography variant="caption" color="textSecondary">
+          {t('Forecasts produced by Météo France La Réunion')}
+        </Typography>
       </div>
 
       <Divider />

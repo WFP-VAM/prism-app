@@ -19,6 +19,7 @@ import moderateStorm from '../../../../../public/images/anticipatory-action-stor
 import overland from '../../../../../public/images/anticipatory-action-storm/overland.png';
 import severeTropicalStorm from '../../../../../public/images/anticipatory-action-storm/severe-tropical-storm.png';
 import tropicalCyclone from '../../../../../public/images/anticipatory-action-storm/tropical-cyclone.png';
+import intenseTropicalCyclone from '../../../../../public/images/anticipatory-action-storm/intense-tropical-cyclone.png';
 import veryIntensiveCyclone from '../../../../../public/images/anticipatory-action-storm/very-intensive-tropical-cyclone.png';
 import { TimeSeries } from './types';
 
@@ -119,7 +120,7 @@ const AnticipatoryActionStormLayer = React.memo(
 
     function getIconNameByWindType(windType: string) {
       if (windType === 'intense tropical cyclone') {
-        return 'tropical-cyclone';
+        return 'intense-tropical-cyclone';
       }
 
       if (windType === 'inland') {
