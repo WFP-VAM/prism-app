@@ -14,6 +14,11 @@ import {
   StormData,
 } from './types';
 
+const districtNameMapping: { [key: string]: string } = {
+  Maganja_Da_Costa: 'Maganja Da Costa',
+  Cidade_Da_Beira: 'Cidade Da Beira',
+};
+
 const watchedDistricts: { [key in AACategory]: string[] } = {
   [AACategory.Severe]: [
     'Mogincual',
@@ -46,12 +51,17 @@ export function parseAndTransformAA(data: StormData): ResultType {
             const category = AACategoryKeyToCategoryMap[categoryKey];
 
             if (area.affected_districts) {
-              const active = area.affected_districts.filter(district =>
-                watchedDistricts[category].includes(district),
-              );
+              const active = area.affected_districts
+                .map(district => districtNameMapping[district] || district)
+                .filter(district =>
+                  watchedDistricts[category].includes(district),
+                );
 
               const notActive = watchedDistricts[category].filter(
-                district => !area.affected_districts.includes(district),
+                district =>
+                  !area.affected_districts
+                    .map(d => districtNameMapping[d] || d)
+                    .includes(district),
               );
 
               return [
