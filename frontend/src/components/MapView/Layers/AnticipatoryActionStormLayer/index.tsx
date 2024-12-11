@@ -149,6 +149,7 @@ const AnticipatoryActionStormLayer = React.memo(
       loadImage(moderateStorm, 'moderate-tropical-storm');
       loadImage(severeTropicalStorm, 'severe-tropical-storm');
       loadImage(tropicalCyclone, 'tropical-cyclone');
+      loadImage(intenseTropicalCyclone, 'intense-tropical-cyclone');
       loadImage(overland, 'overland');
       loadImage(veryIntensiveCyclone, 'very-intensive-tropical-cyclone');
     }, [map]);
