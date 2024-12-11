@@ -55,6 +55,7 @@ export type DistrictDataType = {
 };
 
 export type AAStormData = {
+  riskArea?: any;
   activeDistricts?: DistrictDataType;
   naDistricts?: DistrictDataType;
   landfall?: LandfallInfo;
