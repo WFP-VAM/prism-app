@@ -122,6 +122,12 @@ export type AnticipatoryActionState = {
   data: AAStormData;
   // availableDates used to update layer available dates after csv processed
   availableDates?: DateItem[] | undefined;
+  filters: {
+    viewType?: 'forecast' | 'risk' | undefined;
+    selectedDate: string | undefined;
+    selectedIndex: string;
+    categories: Record<AACategory, boolean>;
+  };
   loading: boolean;
   error: string | null;
 };

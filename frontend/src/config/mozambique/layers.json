@@ -36,7 +36,7 @@
         "line-opacity": 0.8
       }
     }
-  },  
+  },
   "admin_boundaries": {
     "type": "boundary",
     "path": "data/mozambique/moz_bnd_adm3_WFP.json",
@@ -2248,6 +2248,120 @@
   "adamts_buffers": {
     "server_layer_name": "moz_gdacs_buffers"
   },
+  "ipc_phase_2024": {
+    "title": "IPC Phase Classification April to September 2024",
+    "type": "admin_level_data",
+    "path": "data/mozambique/ipc/ipc-2024-v2.json",
+    "boundary": "admin2_boundaries",
+    "admin_level": 2,
+    "data_field": "ph_class",
+    "admin_code": "adm2_source_id",
+    "opacity": 0.9,
+    "legend": [
+      {
+        "value": 1,
+        "label": "Phase 1 - None / minimal",
+        "color": "#c6ffc7"
+      },
+      {
+        "value": 2,
+        "label": "Phase 2 - Stressed",
+        "color": "#ffe718"
+      },
+      {
+        "value": 3,
+        "label": "Phase 3 - Crisis",
+        "color": "#e88400"
+      },
+      {
+        "value": 4,
+        "label": "Phase 4 - Emergency",
+        "color": "#e02d00"
+      },
+      {
+        "value": 5,
+        "label": "Phase 5 - Disaster / famine",
+        "color": "#5e0803"
+      }
+    ],
+    "legend_text": "IPC Phase Classification for April - September 2024. Source: National IPC Technical Working Group"
+  }, 
+  "ipc_phase_projection_2024_2025": {
+    "title": "IPC Phase Classification Projection October 2024 to March 2025",
+    "type": "admin_level_data",
+    "path": "data/mozambique/ipc/ipc-2024.json",
+    "boundary": "admin2_boundaries",
+    "admin_level": 2,
+    "data_field": "act_040924",
+    "admin_code": "adm2_source_id",
+    "opacity": 0.9,
+    "legend": [
+      {
+        "value": 1,
+        "label": "Phase 1 - None / minimal",
+        "color": "#c6ffc7"
+      },
+      {
+        "value": 2,
+        "label": "Phase 2 - Stressed",
+        "color": "#ffe718"
+      },
+      {
+        "value": 3,
+        "label": "Phase 3 - Crisis",
+        "color": "#e88400"
+      },
+      {
+        "value": 4,
+        "label": "Phase 4 - Emergency",
+        "color": "#e02d00"
+      },
+      {
+        "value": 5,
+        "label": "Phase 5 - Disaster / famine",
+        "color": "#5e0803"
+      }
+    ],
+    "legend_text": "IPC Phase Classification Projection October 2024 to March 2025. Source: National IPC Technical Working Group"
+  },   
+  "ipc_phase_projection_2024_2025_v2": {
+    "title": "IPC Phase Classification Projection October 2024 to March 2025",
+    "type": "admin_level_data",
+    "path": "data/mozambique/ipc/ipc-2025-projection-as-of-2024-09.json",
+    "boundary": "admin2_boundaries",
+    "admin_level": 2,
+    "data_field": "ph_class",
+    "admin_code": "adm2_source_id",
+    "opacity": 0.9,
+    "legend": [
+      {
+        "value": 1,
+        "label": "Phase 1 - None / minimal",
+        "color": "#c6ffc7"
+      },
+      {
+        "value": 2,
+        "label": "Phase 2 - Stressed",
+        "color": "#ffe718"
+      },
+      {
+        "value": 3,
+        "label": "Phase 3 - Crisis",
+        "color": "#e88400"
+      },
+      {
+        "value": 4,
+        "label": "Phase 4 - Emergency",
+        "color": "#e02d00"
+      },
+      {
+        "value": 5,
+        "label": "Phase 5 - Disaster / famine",
+        "color": "#5e0803"
+      }
+    ],
+    "legend_text": "IPC Phase Classification Projection October 2024 to March 2025. Source: National IPC Technical Working Group"
+  },  
   "ipc_phase_2022": {
     "title": "IPC Phase Classification 2022",
     "type": "admin_level_data",
@@ -2415,7 +2529,7 @@
     "type": "admin_level_data",
     "path": "data/mozambique/ipc/ipc-2022.json",
     "data_field": "ph3ps_p",
-    "boundary": "admin2_boundaries",  
+    "boundary": "admin2_boundaries",
     "admin_level": 2,
     "admin_code": "adm2_source_id",
     "opacity": 0.9,
@@ -2767,6 +2881,54 @@
     ],
     "legend_text": "Projected 2022 population data. Source: INE"
   },
+  "pop_proj_2025": {
+    "title": "Population projection 2025",
+    "type": "admin_level_data",
+    "path": "data/mozambique/moz-pop-projc-2025-INE.json",
+    "data_field": "2025_Tot",
+    "boundary": "admin2_boundaries",
+    "admin_level": 2,
+    "admin_code": "adm2_source_id",
+    "opacity": 0.7,
+    "feature_info_props": {
+      "Tot_Urb_20": {
+        "type": "text",
+        "dataTitle": "Total urban population"
+      },
+      "2025_Rur_T": {
+        "type": "number",
+        "dataTitle": "Total rural population"
+      }
+    },
+    "legend": [
+      {
+        "value": 1,
+        "label": "< 50,000",
+        "color": "#eff3ff"
+      },
+      {
+        "value": 50000,
+        "label": "50,000 - 100,000",
+        "color": "#bdd7e7"
+      },
+      {
+        "value": 100000,
+        "label": "100,000 - 250,000",
+        "color": "#6baed6"
+      },
+      {
+        "value": 250000,
+        "label": "250,000 - 500,000",
+        "color": "#3182bd"
+      },
+      {
+        "value": 500000,
+        "label": "> 500,000",
+        "color": "#08519c"
+      }
+    ],
+    "legend_text": "Projected 2025 population data. Source: INE"
+  },
   "cdi": {
     "title": "Combined Drought Index",
     "type": "composite",
@@ -2870,28 +3032,19 @@
       {
         "id": "spi_1m",
         "importance": 0.5,
-        "key": [
-          "CHIRPS",
-          "R1S_DEKAD"
-        ],
+        "key": ["CHIRPS", "R1S_DEKAD"],
         "aggregation": "last_dekad"
       },
       {
         "id": "lst_anomaly",
         "importance": 0.25,
-        "key": [
-          "MODIS",
-          "MYD11C2_TDD_DEKAD"
-        ],
+        "key": ["MODIS", "MYD11C2_TDD_DEKAD"],
         "aggregation": "last_dekad"
       },
       {
         "id": "ndvi_dekad",
         "importance": 0.25,
-        "key": [
-          "MODIS",
-          "NDVI_smoothed_5KM"
-        ],
+        "key": ["MODIS", "NDVI_smoothed_5KM"],
         "aggregation": "average",
         "invert": "True"
       }

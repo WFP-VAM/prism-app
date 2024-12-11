@@ -80,6 +80,7 @@ export const anticipatoryActionDroughtStateSlice = createSlice({
         payload,
       }: PayloadAction<
         Partial<{
+          viewType: 'forecast' | 'risk';
           selectedDate: string | undefined;
           selectedWindow: (typeof AAWindowKeys)[number] | typeof allWindowsKey;
           selectedIndex: string;
