@@ -20,7 +20,7 @@ function PopupContent({
         variant="body1"
         className={`${classes.text} ${classes.title}`}
       >
-        Report date: {formatReportDate(reportDate)}
+        Forecast date: {formatReportDate(reportDate)}
       </Typography>
       <div className={classes.itemContainer}>
         <Typography variant="body1" className={classes.text}>
