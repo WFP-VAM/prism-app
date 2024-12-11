@@ -39,7 +39,7 @@ const AnticipatoryActionStormLayer = React.memo(
   ({ layer }: AnticipatoryActionStormLayerProps) => {
     useDefaultDate(layer.id);
     const map = useSelector(mapSelector);
-    const { viewType } = useSelector(AAFiltersSelector);
+    const { viewType, selectedDate } = useSelector(AAFiltersSelector);
     const AAStormData = useSelector(AADataSelector);
     const boundaryLayerState = useSelector(
       layerDataSelector(boundaryLayer.id),
@@ -48,9 +48,6 @@ const AnticipatoryActionStormLayer = React.memo(
 
     const [selectedFeature, setSelectedFeature] =
       useState<Feature<Point> | null>(null);
-
-    /* this is the date the layer data corresponds to. It will be stored in redux ultimately */
-    const layerDataRequestDate = '2024-03-11';
 
     function enhanceTimeSeries(timeSeries: TimeSeries) {
       const { features, ...timeSeriesRest } = timeSeries;
@@ -351,13 +348,13 @@ const AnticipatoryActionStormLayer = React.memo(
 
         <AAStormDatePopup />
 
-        {selectedFeature && AAStormData.landfall && (
+        {selectedFeature && AAStormData.landfall && selectedDate && (
           <AAStormLandfallPopup
             point={selectedFeature.geometry}
             reportDate={selectedFeature.properties?.time}
             landfallInfo={AAStormData.landfall}
             onClose={() => landfallPopupCloseHandler()}
-            timelineDate={layerDataRequestDate}
+            timelineDate={selectedDate}
           />
         )}
       </>

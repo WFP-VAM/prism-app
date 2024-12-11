@@ -6,40 +6,52 @@ import {
   FormControlLabel,
   Radio,
   FormControl,
+  MenuItem,
+  Input,
 } from '@material-ui/core';
 import React from 'react';
 import { useSafeTranslation } from 'i18n';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   AAAvailableDatesSelector,
+  AADataSelector,
+  AAFiltersSelector,
   setAAFilters,
 } from 'context/anticipatoryAction/AAStormStateSlice';
-import { dateRangeSelector } from 'context/mapStateSlice/selectors';
-import { getRequestDate } from 'utils/server-utils';
-import { getFormattedDate } from 'utils/date-utils';
-import { DateFormat } from 'utils/name-utils';
 import { PanelSize } from 'config/types';
 import HowToReadModal from '../HowToReadModal';
 import ActivationTrigger from './ActivationTriggerView';
+import { StyledSelect } from '../AnticipatoryActionDroughtPanel/utils';
 
 function AnticipatoryActionStormPanel() {
   const classes = useStyles();
   const dispatch = useDispatch();
   const { t } = useSafeTranslation();
   const AAAvailableDates = useSelector(AAAvailableDatesSelector);
-  const { startDate: selectedDate } = useSelector(dateRangeSelector);
+  const AAData = useSelector(AADataSelector);
+  const { selectedDate } = useSelector(AAFiltersSelector);
   const [howToReadModalOpen, setHowToReadModalOpen] = React.useState(false);
 
   const [viewType, setViewType] = React.useState<'forecast' | 'risk'>(
     'forecast',
   );
 
-  const queryDate = getRequestDate(AAAvailableDates, selectedDate);
-  const date = getFormattedDate(queryDate, DateFormat.Default) as string;
+  const formatDate = (timestamp: number | string) => {
+    const date = new Date(timestamp);
+    return date.toLocaleDateString('en-US', {
+      month: 'numeric',
+      day: 'numeric',
+      year: 'numeric',
+    });
+  };
 
   React.useEffect(() => {
-    dispatch(setAAFilters({ selectedDate: date, viewType }));
-  }, [date, viewType, dispatch]);
+    dispatch(setAAFilters({ viewType }));
+  }, [viewType, dispatch]);
+
+  if (!selectedDate) {
+    return null;
+  }
 
   return (
     <div
@@ -53,6 +65,37 @@ function AnticipatoryActionStormPanel() {
       <div className={classes.headerWrapper}>
         <div className={classes.titleSelectWrapper}>
           <Typography variant="h2">{t('STORM - Global view')}</Typography>
+        </div>
+        <div className={classes.titleSelectWrapper}>
+          <div className={classes.titleSelectWrapper}>
+            <StyledSelect
+              className={classes.select}
+              value={selectedDate || 'empty'}
+              input={<Input disableUnderline />}
+              renderValue={() => (
+                <Typography variant="h2">
+                  {selectedDate
+                    ? `CYCLONE  ${t(AAData.forecastDetails?.cyclone_name || 'Unknown Cyclone')} ${t(selectedDate)} FORECAST`
+                    : t('Timeline')}
+                </Typography>
+              )}
+            >
+              <MenuItem value="selectedDate" onClick={() => {}}>
+                {t(formatDate(selectedDate))}
+              </MenuItem>
+
+              {AAAvailableDates &&
+                AAAvailableDates.map(x => (
+                  <MenuItem
+                    key={formatDate(x.displayDate)}
+                    value={formatDate(x.displayDate)}
+                    onClick={() => {}}
+                  >
+                    {t(formatDate(x.displayDate))}
+                  </MenuItem>
+                ))}
+            </StyledSelect>
+          </div>
         </div>
         <FormControl component="fieldset">
           <RadioGroup
@@ -112,6 +155,12 @@ const useStyles = makeStyles(() =>
       display: 'flex',
       alignItems: 'center',
       width: '100%',
+    },
+    select: {
+      border: '1px solid #000',
+      borderRadius: '4px',
+      padding: '0.25rem',
+      fontSize: '0.2rem',
     },
   }),
 );
