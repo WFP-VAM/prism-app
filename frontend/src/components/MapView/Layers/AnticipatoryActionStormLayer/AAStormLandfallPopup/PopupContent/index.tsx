@@ -1,11 +1,16 @@
 import { createStyles, makeStyles, Typography } from '@material-ui/core';
 import {
   formatLandfallDate,
+  formatLandfallEstimatedLeadtime,
   formatLandfallTimeRange,
   formatReportDate,
 } from '../../utils';
 
-function PopupContent({ landfallInfo, reportDate }: PopupContentProps) {
+function PopupContent({
+  landfallInfo,
+  reportDate,
+  timelineDate,
+}: PopupContentProps) {
   const classes = useStyles();
 
   return (
@@ -39,7 +44,10 @@ function PopupContent({ landfallInfo, reportDate }: PopupContentProps) {
           variant="body1"
           className={`${classes.text} ${classes.textAlignRight}`}
         >
-          8 - 12 hrs
+          {formatLandfallEstimatedLeadtime(
+            landfallInfo.landfall_time,
+            timelineDate,
+          )}
         </Typography>
       </div>
       <div className={classes.itemContainer}>
@@ -98,6 +106,7 @@ export interface LandfallInfo {
 interface PopupContentProps {
   landfallInfo: LandfallInfo;
   reportDate: string;
+  timelineDate: string;
 }
 
 export default PopupContent;

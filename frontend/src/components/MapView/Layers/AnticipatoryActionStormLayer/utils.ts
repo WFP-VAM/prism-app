@@ -67,3 +67,28 @@ export function formatLandfallTimeRange(dateRange: string[]) {
 
   return `+= ${differenceInHours(parsedToDate, parsedFormDate)} hours`;
 }
+
+export function formatLandfallEstimatedLeadtime(
+  rawLandfallEstimatedTime: string[],
+  timelineDate: string,
+) {
+  const parsedFromLandfallDate = getDateInUTC(
+    rawLandfallEstimatedTime[0],
+    true,
+  );
+  const parsedToLandfallDate = getDateInUTC(rawLandfallEstimatedTime[1], true);
+  const parsedTimelineDate = getDateInUTC(timelineDate, false);
+
+  if (!parsedFromLandfallDate || !parsedToLandfallDate || !parsedTimelineDate) {
+    return '';
+  }
+
+  const minHour = differenceInHours(parsedFromLandfallDate, parsedTimelineDate);
+  const maxHour = differenceInHours(parsedToLandfallDate, parsedTimelineDate);
+
+  if (minHour < 0 || maxHour < 0) {
+    return '-';
+  }
+
+  return `${minHour} - ${maxHour} hrs`;
+}
