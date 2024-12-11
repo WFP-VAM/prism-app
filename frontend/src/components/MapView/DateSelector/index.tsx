@@ -35,7 +35,6 @@ import { leftPanelTabValueSelector } from 'context/leftPanelStateSlice';
 import { updateDateRange } from 'context/mapStateSlice';
 import { getRequestDate } from 'utils/server-utils';
 import { AAAvailableDatesSelector } from 'context/anticipatoryAction/AADroughtStateSlice';
-import { isAnticipatoryActionLayer } from 'config/utils';
 import TickSvg from './tick.svg';
 import DateSelectorInput from './DateSelectorInput';
 import TimelineItems from './TimelineItems';
