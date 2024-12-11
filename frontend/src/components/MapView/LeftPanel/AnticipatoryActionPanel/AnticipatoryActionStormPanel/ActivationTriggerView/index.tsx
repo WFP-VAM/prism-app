@@ -116,7 +116,7 @@ function ActivationTrigger({ dialogs }: ActivationTriggerProps) {
                 <CategoryText
                   color={getAAColor(category as AACategory, 'Active', true)}
                   text={t(
-                    `Active > ${AADisplayCategory[category as AACategory]}`,
+                    `Active ${AADisplayCategory[category as AACategory]}`,
                   )}
                 />
               </div>
@@ -142,9 +142,7 @@ function ActivationTrigger({ dialogs }: ActivationTriggerProps) {
               <div className={classes.headColumn}>
                 <CategoryText
                   color={getAAColor(category as AACategory, 'na', true)}
-                  text={t(
-                    `Active > ${AADisplayCategory[category as AACategory]}`,
-                  )}
+                  text={t(`NA ${AADisplayCategory[category as AACategory]}`)}
                 />
               </div>
               <div className={classes.rowWrapper}>
