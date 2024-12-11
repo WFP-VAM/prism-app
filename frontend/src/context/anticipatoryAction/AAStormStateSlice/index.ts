@@ -71,7 +71,6 @@ export const anticipatoryActionStormStateSlice = createSlice({
         ...state.filters,
         ...rest,
         categories: newCategories,
-        selectedDate: undefined,
       };
       return {
         ...state,

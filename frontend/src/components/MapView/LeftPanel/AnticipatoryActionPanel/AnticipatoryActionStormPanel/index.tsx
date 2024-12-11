@@ -48,8 +48,13 @@ function AnticipatoryActionStormPanel() {
   };
 
   React.useEffect(() => {
-    dispatch(setAAFilters({ viewType }));
-  }, [viewType, dispatch]);
+    dispatch(
+      setAAFilters({
+        viewType,
+        selectedDate: getFormattedDate(selectedDate, 'default'),
+      }),
+    );
+  }, [viewType, selectedDate, dispatch]);
 
   if (!selectedDate) {
     return null;
