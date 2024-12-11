@@ -36,7 +36,7 @@
         "line-opacity": 0.8
       }
     }
-  },  
+  },
   "admin_boundaries": {
     "type": "boundary",
     "path": "data/mozambique/moz_bnd_adm3_WFP.json",
@@ -2529,7 +2529,7 @@
     "type": "admin_level_data",
     "path": "data/mozambique/ipc/ipc-2022.json",
     "data_field": "ph3ps_p",
-    "boundary": "admin2_boundaries",  
+    "boundary": "admin2_boundaries",
     "admin_level": 2,
     "admin_code": "adm2_source_id",
     "opacity": 0.9,
@@ -3032,28 +3032,19 @@
       {
         "id": "spi_1m",
         "importance": 0.5,
-        "key": [
-          "CHIRPS",
-          "R1S_DEKAD"
-        ],
+        "key": ["CHIRPS", "R1S_DEKAD"],
         "aggregation": "last_dekad"
       },
       {
         "id": "lst_anomaly",
         "importance": 0.25,
-        "key": [
-          "MODIS",
-          "MYD11C2_TDD_DEKAD"
-        ],
+        "key": ["MODIS", "MYD11C2_TDD_DEKAD"],
         "aggregation": "last_dekad"
       },
       {
         "id": "ndvi_dekad",
         "importance": 0.25,
-        "key": [
-          "MODIS",
-          "NDVI_smoothed_5KM"
-        ],
+        "key": ["MODIS", "NDVI_smoothed_5KM"],
         "aggregation": "average",
         "invert": "True"
       }
