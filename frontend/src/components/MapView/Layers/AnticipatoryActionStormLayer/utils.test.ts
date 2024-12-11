@@ -1,4 +1,9 @@
-import { formatInUTC, getDateInUTC, isDateSameAsCurrentDate } from './utils';
+import {
+  formatInUTC,
+  formatLandfallEstimatedLeadtime,
+  getDateInUTC,
+  isDateSameAsCurrentDate,
+} from './utils';
 
 describe('utils', () => {
   describe('getDateInUTC()', () => {
@@ -41,5 +46,34 @@ describe('utils', () => {
     it.each(tests)('returns UTC values of a UTC Date', ({ date, expected }) => {
       expect(formatInUTC(date, 'd - haaa')).toBe(expected);
     });
+  });
+
+  describe('formatLandfallEstimatedLeadtime()', () => {
+    const tests = [
+      {
+        landfallEstimatedTime: ['2024-03-12 01:00:00', '2024-03-12 06:00:00'],
+        timelineDate: '2024-03-12',
+        expected: '1 - 6 hrs',
+      },
+      {
+        landfallEstimatedTime: ['2024-03-12 01:00:00', '2024-03-12 06:00:00'],
+        timelineDate: '2024-03-11',
+        expected: '25 - 30 hrs',
+      },
+      {
+        landfallEstimatedTime: ['2024-03-12 01:00:00', '2024-03-12 06:00:00'],
+        timelineDate: '2024-03-13',
+        expected: '-',
+      },
+    ];
+
+    it.each(tests)(
+      'returns landfall estimated leadtime',
+      ({ landfallEstimatedTime, timelineDate, expected }) => {
+        expect(
+          formatLandfallEstimatedLeadtime(landfallEstimatedTime, timelineDate),
+        ).toBe(expected);
+      },
+    );
   });
 });
