@@ -1,6 +1,5 @@
 // na/ny are not actually found in CSV, but defined not to cause confusion when calling the functions
 import { DateItem } from 'config/types';
-import React from 'react';
 
 export enum AACategory {
   Severe = 'Severe',
@@ -11,8 +10,6 @@ export enum AACategoryKey {
   Severe = 'exposed_area_64kt',
   Moderate = 'exposed_area_48kt',
 }
-
-export const allAACategoryKeys = Object.values(AACategoryKey);
 
 export enum AACategoryLandfall {
   Severe = 'severe tropical storm',
@@ -31,11 +28,6 @@ export const AADisplayPhase: {
 } = {
   Ready: 'Activation',
   na: 'NA',
-};
-
-export const severityBorderColors: { [key in AACategoryKey]: string } = {
-  [AACategoryKey.Severe]: 'red',
-  [AACategoryKey.Moderate]: 'orange',
 };
 
 export const AACategoryDataToLandfallMap: {
@@ -120,7 +112,6 @@ export interface StormData {
 export const AAPhase = ['Ready', 'na'] as const;
 export type AAPhaseType = (typeof AAPhase)[number];
 export const phaseValues = Object.values(AAPhase);
-export type Vulnerability = 'General Triggers' | 'Emergency Triggers';
 
 export enum AAView {
   Activation_trigger = 'Actication Trigger',
@@ -131,29 +122,6 @@ export type AnticipatoryActionState = {
   data: AAStormData;
   // availableDates used to update layer available dates after csv processed
   availableDates?: DateItem[] | undefined;
-  monitoredDistricts: { name: string; vulnerability: Vulnerability }[];
-  filters: {
-    selectedDate: string | undefined;
-    selectedIndex: string;
-    categories: Record<AACategory, boolean>;
-  };
-  selectedDistrict: string;
-  renderedDistricts: {
-    [district: string]: {
-      category: AACategory;
-      phase: AAPhaseType;
-      isNew: boolean;
-    }[];
-  };
-
-  markers: {
-    district: string;
-    longitude: any;
-    latitude: any;
-    icon: React.JSX.Element;
-    centroid: any;
-  }[];
-  view: AAView;
   loading: boolean;
   error: string | null;
 };
