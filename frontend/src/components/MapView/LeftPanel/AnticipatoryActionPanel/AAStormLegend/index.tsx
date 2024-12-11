@@ -108,7 +108,7 @@ function AAStormLegend() {
           </div>
         ))}
         <Typography variant="caption" color="textSecondary">
-          {t('Forecasts produced by Météo France La Réunion')}
+          {t('By Météo France La Réunion')}
         </Typography>
       </div>
 

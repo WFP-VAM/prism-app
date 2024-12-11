@@ -44,7 +44,7 @@ const AnticipatoryActionStormLayer = React.memo(
       useState<Feature<Point> | null>(null);
 
     /* this is the date the layer data corresponds to. It will be stored in redux ultimately */
-    // const layerDataDate = '2024-03-11';
+    const layerDataRequestDate = '2024-03-11';
 
     // Add state for storm data
     const [AAStormData, setAAStormData] = useState<any>(null);
@@ -358,6 +358,7 @@ const AnticipatoryActionStormLayer = React.memo(
             reportDate={selectedFeature.properties?.time}
             landfallInfo={AAStormData.landfall_info}
             onClose={() => landfallPopupCloseHandler()}
+            timelineDate={layerDataRequestDate}
           />
         )}
       </>
