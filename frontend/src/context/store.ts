@@ -17,8 +17,8 @@ import datasetResultStateReduce from './datasetStateSlice';
 import mapTileLoadingStateReduce from './mapTileLoadingStateSlice';
 import leftPanelStateReduce from './leftPanelStateSlice';
 import opacityStateReduce from './opacityStateSlice';
-import anticipatoryActionDroughtStateReducer from './anticipatoryAction/AADroughtStateSlice';
-import anticipatoryActionStormStateReducer from './anticipatoryAction/AAStormStateSlice';
+import anticipatoryActionDroughtStateReduce from './anticipatoryAction/AADroughtStateSlice';
+import anticipatoryActionStormStateReduce from './anticipatoryAction/AAStormStateSlice';
 
 const reducer = combineReducers({
   mapState: mapStateReduce,
@@ -33,8 +33,8 @@ const reducer = combineReducers({
   mapTileLoadingState: mapTileLoadingStateReduce,
   leftPanelState: leftPanelStateReduce,
   opacityState: opacityStateReduce,
-  anticipatoryActionDroughtState: anticipatoryActionDroughtStateReducer,
-  anticipatoryActionStormState: anticipatoryActionStormStateReducer,
+  anticipatoryActionDroughtState: anticipatoryActionDroughtStateReduce,
+  anticipatoryActionStormState: anticipatoryActionStormStateReduce,
 });
 
 export const store = configureStore({

@@ -35,7 +35,7 @@ const store = mockStore({
     boundaryRelationData: {},
   },
   serverState: { availableDates: {}, loading: false },
-  anticipatoryActionState: {
+  anticipatoryActionDroughtState: {
     filters,
     selectedDistrict: 'Changara',
     monitoredDistricts: ['Changara'],

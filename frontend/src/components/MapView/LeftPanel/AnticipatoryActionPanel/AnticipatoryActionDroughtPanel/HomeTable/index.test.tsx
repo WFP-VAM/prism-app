@@ -19,7 +19,7 @@ const store = mockStore({
     boundaryRelationData: {},
   },
   serverState: { availableDates: {}, loading: false },
-  anticipatoryActionState: {
+  anticipatoryActionDroughtState: {
     filters: {
       selectedWindow: 'Window 1',
       categories: {
