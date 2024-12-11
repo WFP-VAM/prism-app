@@ -4,9 +4,11 @@ import {
   AdminLevelDataLayerProps,
   AnticipatoryAction,
   AnticipatoryActionLayerProps,
+  AvailableDates,
   BoundaryLayerProps,
   checkRequiredKeys,
   CompositeLayerProps,
+  DateItem,
   ImpactLayerProps,
   LayerKey,
   LayersMap,
@@ -302,6 +304,14 @@ export const isAnticipatoryActionLayer = (
 
 export const isWindowEmpty = (data: any, windowKey: string): boolean =>
   data && windowKey in data && Object.keys(data[windowKey]).length === 0;
+
+export const isWindowedDates = (
+  dates: AvailableDates | DateItem[],
+): dates is Record<'Window 1' | 'Window 2', DateItem[]> =>
+  typeof dates === 'object' &&
+  dates !== null &&
+  'Window 1' in dates &&
+  'Window 2' in dates;
 
 export const areChartLayersAvailable = getWMSLayersWithChart().length > 0;
 

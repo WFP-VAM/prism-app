@@ -16,6 +16,7 @@ import {
   areChartLayersAvailable,
   isAnticipatoryActionLayer,
   isWindowEmpty,
+  isWindowedDates,
 } from 'config/utils';
 import { getUrlKey, useUrlHistory } from 'utils/url-utils';
 import { layersSelector, mapSelector } from 'context/mapStateSlice/selectors';
@@ -94,10 +95,13 @@ const LeftPanel = memo(() => {
   // Sync serverAvailableDates with AAAvailableDates when the latter updates.
   React.useEffect(() => {
     if (AAAvailableDates) {
+      const combinedAvailableDates = isWindowedDates(AAAvailableDates)
+        ? getAAAvailableDatesCombined(AAAvailableDates)
+        : AAAvailableDates;
       const updatedCapabilities = AALayerIds.reduce(
         (acc, layerId) => ({
           ...acc,
-          [layerId]: getAAAvailableDatesCombined(AAAvailableDates),
+          [layerId]: combinedAvailableDates,
         }),
         { ...serverAvailableDates },
       );
