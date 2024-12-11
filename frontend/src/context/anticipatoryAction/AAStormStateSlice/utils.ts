@@ -36,6 +36,7 @@ function extractDatesFromTimeSeries(data: StormData): number[] {
 export function parseAndTransformAA(data: StormData): ResultType {
   const exposedAreas = data.ready_set_results;
   const landfallInfo = data.landfall_info;
+  const riskArea = exposedAreas?.proba_48kt_20_5d;
 
   const [activeDistricts, naDistricts] = exposedAreas
     ? (Object.values(AACategoryKey) as AACategoryKey[]).reduce(
@@ -101,6 +102,7 @@ export function parseAndTransformAA(data: StormData): ResultType {
   return {
     data: {
       activeDistricts,
+      riskArea,
       naDistricts,
       landfall: landfallImpactData,
       timeSeries: data.time_series,

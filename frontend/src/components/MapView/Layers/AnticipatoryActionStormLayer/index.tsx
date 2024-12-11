@@ -300,18 +300,14 @@ const AnticipatoryActionStormLayer = React.memo(
         )}
         {/* Storm Risk Map view */}
         {viewType === 'risk' && (
-          <Source
-            data={AAStormData.activeDistricts?.Risk?.polygon}
-            type="geojson"
-          >
+          <Source data={AAStormData.riskArea?.polygon} type="geojson">
             <Layer
               id="storm-risk-map"
               beforeId="aa-storm-wind-points-layer"
               type="fill"
               paint={{
                 'fill-opacity': 0.5,
-                'fill-color': getAAColor(AACategory.Risk, 'Active', true)
-                  .background,
+                'fill-color': '#9acddc',
               }}
             />
           </Source>
