@@ -106,6 +106,9 @@ function AAStormLegend() {
             <Typography>{t(buffer.label)}</Typography>
           </div>
         ))}
+        <Typography variant="caption" color="textSecondary">
+          {t('Forecasts produced by Météo France La Réunion')}
+        </Typography>
       </div>
 
       <Divider />
