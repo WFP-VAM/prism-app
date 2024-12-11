@@ -23,6 +23,7 @@ import { getFormattedDate } from 'utils/date-utils';
 import HowToReadModal from '../HowToReadModal';
 import ActivationTrigger from './ActivationTriggerView';
 import { StyledSelect } from '../AnticipatoryActionDroughtPanel/utils';
+import { updateDateRange } from 'context/mapStateSlice';
 
 function AnticipatoryActionStormPanel() {
   const classes = useStyles();
@@ -54,6 +55,7 @@ function AnticipatoryActionStormPanel() {
         selectedDate: getFormattedDate(selectedDate, 'default'),
       }),
     );
+    dispatch(updateDateRange({ startDate: selectedDate }));
   }, [viewType, selectedDate, dispatch]);
 
   if (!selectedDate) {

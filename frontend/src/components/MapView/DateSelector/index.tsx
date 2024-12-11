@@ -57,10 +57,10 @@ const POINTER_ID = 'datePointerSelector';
 const calculateStartAndEndDates = (startDate: Date, selectedTab: string) => {
   const year =
     startDate.getFullYear() -
-    (isAnticipatoryActionLayer(selectedTab) && startDate.getMonth() < 3
+    (selectedTab === Panel.AnticipatoryActionDrought && startDate.getMonth() < 3
       ? 1
       : 0);
-  const startMonth = isAnticipatoryActionLayer(selectedTab) ? 3 : 0; // April for anticipatory_action, January otherwise
+  const startMonth = selectedTab === Panel.AnticipatoryActionDrought ? 3 : 0; // April for anticipatory_action, January otherwise
   const start = new Date(year, startMonth, 1);
   const end = new Date(year, startMonth + 11, 31);
 
@@ -153,8 +153,8 @@ const DateSelector = memo(() => {
       // eslint-disable-next-line fp/no-mutating-methods
       selectedLayers
         .sort((a, b) => {
-          const aIsAnticipatory = a.id.includes('anticipatory_action');
-          const bIsAnticipatory = b.id.includes('anticipatory_action');
+          const aIsAnticipatory = a.id.includes('anticipatory_action_drought');
+          const bIsAnticipatory = b.id.includes('anticipatory_action_drought');
           if (aIsAnticipatory && !bIsAnticipatory) {
             return -1;
           }
@@ -163,8 +163,7 @@ const DateSelector = memo(() => {
           }
           return 0;
         })
-        .filter(l => l.type !== AnticipatoryAction.storm) // disable showing anticipatory action storm data
-        .map(l => (isAnticipatoryActionLayer(l.type) ? AALayers : l))
+        .map(l => (l.id === 'anticipatory_action_drought' ? AALayers : l))
         .flat(),
     [selectedLayers, AALayers],
   );
