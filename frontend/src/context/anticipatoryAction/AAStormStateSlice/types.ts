@@ -31,10 +31,10 @@ export const AADisplayCategory: {
 };
 
 export const AACategoryDataToLandfallMap: {
-  [key in AACategoryLandfall]: AACategoryKey;
+  [key in AACategoryLandfall]: AACategory;
 } = {
-  [AACategoryLandfall.Severe]: AACategoryKey.Severe,
-  [AACategoryLandfall.Moderate]: AACategoryKey.Moderate,
+  [AACategoryLandfall.Severe]: AACategory.Severe,
+  [AACategoryLandfall.Moderate]: AACategory.Moderate,
 };
 
 export const AACategoryKeyToCategoryMap: {
@@ -90,7 +90,7 @@ interface TimeSeries {
 export interface LandfallInfo {
   district: string;
   time: string[];
-  severity: AACategoryKey[];
+  severity: AACategory[];
 }
 
 export interface StormData {
