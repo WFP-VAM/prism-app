@@ -248,10 +248,9 @@ const AnticipatoryActionStormLayer = React.memo(
           })
           .filter(f => f !== null),
       };
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [boundaryData]);
+    }, [boundaryData, AAStormData]);
 
-    if (!AAStormData) {
+    if (!boundaryData || !AAStormData) {
       return null;
     }
 
