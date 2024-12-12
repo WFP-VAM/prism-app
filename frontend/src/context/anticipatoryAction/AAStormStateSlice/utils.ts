@@ -33,7 +33,7 @@ const watchedDistricts: { [key in AACategory]: string[] } = {
 };
 
 // TODO - wait for dates endpoint to be implemented in the WFP API
-function extractDatesFromTimeSeries(data: StormData): number[] {
+function extractDates(data: StormData): number[] {
   return [getTimeInMilliseconds(data.forecast_details.reference_time)];
 }
 // DRAFT: This is a provisional implementation based on a test dataset with a temporary structure that is subject to change.
@@ -102,7 +102,7 @@ export function parseAndTransformAA(data: StormData): ResultType {
     mode: DatesPropagation.DAYS,
     forward: 0,
   };
-  const dates = extractDatesFromTimeSeries(data);
+  const dates = extractDates(data);
   const availableDates = generateIntermediateDateItemFromValidity(
     dates,
     validity,

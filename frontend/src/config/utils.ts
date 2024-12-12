@@ -191,12 +191,24 @@ export const LayerDefinitions: LayersMap = (() => {
     {} as Record<string, AnticipatoryActionLayerProps>,
   );
 
+  const initialLayers: LayersMap = {
+    ...(droughtUrl
+      ? {
+          [AnticipatoryAction.drought]:
+            AALayersById[AnticipatoryAction.drought],
+        }
+      : {}),
+    ...(stormUrl
+      ? { [AnticipatoryAction.storm]: AALayersById[AnticipatoryAction.storm] }
+      : {}),
+  };
+
   const layers = Object.keys(rawLayers).reduce(
     (acc, layerKey) => ({
       ...acc,
       [layerKey]: getLayerByKey(layerKey as LayerKey),
     }),
-    (droughtUrl || stormUrl ? AALayersById : {}) as LayersMap,
+    initialLayers,
   );
 
   // Verify that the layers referenced by impact layers actually exist

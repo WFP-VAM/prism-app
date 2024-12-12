@@ -21,6 +21,8 @@ import { PanelSize } from 'config/types';
 import { updateDateRange } from 'context/mapStateSlice';
 import { useDefaultDate } from 'utils/useDefaultDate';
 import { getFormattedDate } from 'utils/date-utils';
+import { getRequestDate } from 'utils/server-utils';
+import { DateFormat } from 'utils/name-utils';
 import HowToReadModal from '../HowToReadModal';
 import ActivationTrigger from './ActivationTriggerView';
 import { StyledSelect } from '../utils';
@@ -39,14 +41,8 @@ function AnticipatoryActionStormPanel() {
     'forecast',
   );
 
-  const formatDate = (timestamp: number | string) => {
-    const date = new Date(timestamp);
-    return date.toLocaleDateString('en-US', {
-      month: 'numeric',
-      day: 'numeric',
-      year: 'numeric',
-    });
-  };
+  const queryDate = getRequestDate(AAAvailableDates, selectedDate);
+  const date = getFormattedDate(queryDate, DateFormat.Default) as string;
 
   React.useEffect(() => {
     dispatch(
@@ -75,33 +71,29 @@ function AnticipatoryActionStormPanel() {
         <div className={classes.titleSelectWrapper}>
           <Typography variant="h2">{t('STORM - Global view')}</Typography>
         </div>
-        <div className={classes.titleSelectWrapper}>
-          <div className={classes.titleSelectWrapper}>
-            <StyledSelect
-              className={classes.select}
-              value={selectedDate || 'empty'}
-              input={<Input disableUnderline />}
-              renderValue={() => (
-                <Typography variant="body1" className={classes.selectText}>
-                  {selectedDate
-                    ? `CYCLONE  ${t(AAData.forecastDetails?.cyclone_name || 'Unknown Cyclone')} ${getFormattedDate(selectedDate, 'default')} FORECAST`
-                    : t('Timeline')}
-                </Typography>
-              )}
-            >
-              {AAAvailableDates &&
-                AAAvailableDates.map(x => (
-                  <MenuItem
-                    key={formatDate(x.displayDate)}
-                    value={formatDate(x.displayDate)}
-                    onClick={() => {}}
-                  >
-                    {t(formatDate(x.displayDate))}
-                  </MenuItem>
-                ))}
-            </StyledSelect>
-          </div>
-        </div>
+        <StyledSelect
+          className={classes.select}
+          value={date || 'empty'}
+          input={<Input disableUnderline />}
+          renderValue={() => (
+            <Typography variant="body1" className={classes.selectText}>
+              {date
+                ? `CYCLONE  ${t(AAData.forecastDetails?.cyclone_name || 'Unknown Cyclone')} ${getFormattedDate(date, DateFormat.Default)} FORECAST`
+                : t('Timeline')}
+            </Typography>
+          )}
+        >
+          {AAAvailableDates &&
+            AAAvailableDates.map(x => (
+              <MenuItem
+                key={getFormattedDate(x.queryDate, DateFormat.Default)}
+                value={getFormattedDate(x.queryDate, DateFormat.Default)}
+                onClick={() => {}}
+              >
+                {t(getFormattedDate(x.queryDate, DateFormat.Default) as string)}
+              </MenuItem>
+            ))}
+        </StyledSelect>
         <FormControl component="fieldset">
           <RadioGroup
             aria-label="view-type"
