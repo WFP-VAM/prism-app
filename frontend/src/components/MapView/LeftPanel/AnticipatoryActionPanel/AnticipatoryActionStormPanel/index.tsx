@@ -42,7 +42,7 @@ function AnticipatoryActionStormPanel() {
   );
 
   const queryDate = getRequestDate(AAAvailableDates, selectedDate);
-  const date = getFormattedDate(queryDate, DateFormat.Default) as string;
+  const date = getFormattedDate(queryDate, DateFormat.DateTime) as string;
 
   React.useEffect(() => {
     dispatch(
@@ -78,7 +78,7 @@ function AnticipatoryActionStormPanel() {
           renderValue={() => (
             <Typography variant="body1" className={classes.selectText}>
               {date
-                ? `CYCLONE  ${t(AAData.forecastDetails?.cyclone_name || 'Unknown Cyclone')} ${getFormattedDate(date, DateFormat.Default)} FORECAST`
+                ? `CYCLONE  ${t(AAData.forecastDetails?.cyclone_name || 'Unknown Cyclone')} ${date} FORECAST`
                 : t('Timeline')}
             </Typography>
           )}
