@@ -228,6 +228,22 @@ const AnticipatoryActionStormLayer = React.memo(
                 },
               };
             }
+            if (
+              [
+                ...(AAStormData.naDistricts?.Severe?.districtNames || []),
+                ...(AAStormData.naDistricts?.Moderate?.districtNames || []),
+              ].includes(districtName)
+            ) {
+              return {
+                ...feature,
+                properties: {
+                  ...feature.properties,
+                  fillColor: getAAColor(AACategory.Severe, 'na', true)
+                    .background,
+                  fillOpacity: 0.4,
+                },
+              };
+            }
             return null;
           })
           .filter(f => f !== null),
