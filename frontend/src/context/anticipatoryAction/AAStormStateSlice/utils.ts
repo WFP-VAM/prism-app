@@ -40,8 +40,6 @@ function extractDates(data: StormData): number[] {
 export function parseAndTransformAA(data: StormData): ResultType {
   const exposedAreas = data.ready_set_results;
   const landfallInfo = data.landfall_info;
-  const riskArea = exposedAreas?.proba_48kt_20_5d;
-
   const [activeDistricts, naDistricts] = exposedAreas
     ? (Object.values(AACategoryKey) as AACategoryKey[]).reduce(
         ([activeResult, naResult], categoryKey) => {
@@ -49,37 +47,39 @@ export function parseAndTransformAA(data: StormData): ResultType {
             const area = exposedAreas[categoryKey];
             const category = AACategoryKeyToCategoryMap[categoryKey];
 
-            if (area.affected_districts) {
-              const active = area.affected_districts
-                .map(district => districtNameMapping[district] || district)
-                .filter(district =>
-                  watchedDistricts[category].includes(district),
-                );
+            const active = area.affected_districts
+              ? area.affected_districts
+                  .map(district => districtNameMapping[district] || district)
+                  .filter(district =>
+                    watchedDistricts[category].includes(district),
+                  )
+              : [];
 
-              const notActive = watchedDistricts[category].filter(
-                district =>
-                  !area.affected_districts
-                    .map(d => districtNameMapping[d] || d)
-                    .includes(district),
-              );
+            const notActive = area.affected_districts
+              ? watchedDistricts[category].filter(
+                  district =>
+                    !area.affected_districts
+                      .map(d => districtNameMapping[d] || d)
+                      .includes(district),
+                )
+              : [];
 
-              return [
-                {
-                  ...activeResult,
-                  [category]: {
-                    districtNames: active,
-                    polygon: area.polygon,
-                  },
+            return [
+              {
+                ...activeResult,
+                [category]: {
+                  districtNames: active,
+                  polygon: area.polygon,
                 },
-                {
-                  ...naResult,
-                  [category]: {
-                    districtNames: notActive,
-                    polygon: {},
-                  },
+              },
+              {
+                ...naResult,
+                [category]: {
+                  districtNames: notActive,
+                  polygon: {},
                 },
-              ];
-            }
+              },
+            ];
           }
           return [activeResult, naResult];
         },
@@ -111,7 +111,6 @@ export function parseAndTransformAA(data: StormData): ResultType {
   return {
     data: {
       activeDistricts,
-      riskArea,
       naDistricts,
       landfall: landfallImpactData,
       timeSeries: data.time_series,

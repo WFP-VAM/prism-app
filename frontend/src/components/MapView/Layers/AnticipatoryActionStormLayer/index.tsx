@@ -192,46 +192,47 @@ const AnticipatoryActionStormLayer = React.memo(
         return null;
       }
 
-      const districts89kmh = [
-        'Angoche',
-        'Maganja Da Costa',
-        'Machanga',
-        'Govuro',
-      ];
-      const districts119kmh = [
-        'Mogincual',
-        'Namacurra',
-        'Cidade Da Beira',
-        'Buzi',
-        'Dondo',
-        'Vilankulo',
-      ];
-
       return {
         ...boundaryData,
         features: boundaryData.features
           .map(feature => {
             const districtName =
               feature.properties?.[boundaryLayer.adminLevelLocalNames[1]];
-
             if (
-              districts89kmh.includes(districtName) ||
-              districts119kmh.includes(districtName)
+              AAStormData.activeDistricts?.Moderate?.districtNames.includes(
+                districtName,
+              )
             ) {
               return {
                 ...feature,
                 properties: {
                   ...feature.properties,
-                  fillColor: '#808080',
+                  fillColor: getAAColor(AACategory.Moderate, 'Active', true)
+                    .background,
                   fillOpacity: 0.4,
                 },
               };
             }
-
+            if (
+              AAStormData.activeDistricts?.Severe?.districtNames.includes(
+                districtName,
+              )
+            ) {
+              return {
+                ...feature,
+                properties: {
+                  ...feature.properties,
+                  fillColor: getAAColor(AACategory.Severe, 'Active', true)
+                    .background,
+                  fillOpacity: 0.4,
+                },
+              };
+            }
             return null;
           })
           .filter(f => f !== null),
       };
+      // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [boundaryData]);
 
     if (!AAStormData) {
@@ -243,6 +244,7 @@ const AnticipatoryActionStormLayer = React.memo(
         {/* Add the colored districts layer */}
         {coloredDistrictsLayer && (
           <Source
+            key="storm-districts"
             id="storm-districts"
             type="geojson"
             data={coloredDistrictsLayer}
@@ -297,7 +299,10 @@ const AnticipatoryActionStormLayer = React.memo(
         )}
         {/* Storm Risk Map view */}
         {viewType === 'risk' && (
-          <Source data={AAStormData.riskArea?.polygon} type="geojson">
+          <Source
+            data={AAStormData.activeDistricts?.Risk?.polygon}
+            type="geojson"
+          >
             <Layer
               id="storm-risk-map"
               beforeId="aa-storm-wind-points-layer"
