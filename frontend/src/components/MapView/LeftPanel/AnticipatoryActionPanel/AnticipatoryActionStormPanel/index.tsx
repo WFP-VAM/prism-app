@@ -42,7 +42,8 @@ function AnticipatoryActionStormPanel() {
   );
 
   const queryDate = getRequestDate(AAAvailableDates, selectedDate);
-  const date = getFormattedDate(queryDate, DateFormat.DateTime) as string;
+  const date = getFormattedDate(queryDate, DateFormat.MiddleEndian) as string;
+  const hour = getFormattedDate(queryDate, DateFormat.TimeOnly) as string;
 
   React.useEffect(() => {
     dispatch(
@@ -77,9 +78,17 @@ function AnticipatoryActionStormPanel() {
           input={<Input disableUnderline />}
           renderValue={() => (
             <Typography variant="body1" className={classes.selectText}>
-              {date
-                ? `CYCLONE  ${t(AAData.forecastDetails?.cyclone_name || 'Unknown Cyclone')} ${date} FORECAST`
-                : t('Timeline')}
+              {date ? (
+                <>
+                  CYCLONE{' '}
+                  {t(AAData.forecastDetails?.cyclone_name || 'Unknown Cyclone')}{' '}
+                  {hour}
+                  <br />
+                  {date} FORECAST
+                </>
+              ) : (
+                t('Timeline')
+              )}
             </Typography>
           )}
         >
@@ -155,14 +164,12 @@ const useStyles = makeStyles(() =>
     select: {
       border: '1px solid #000',
       borderRadius: '4px',
-      padding: '0.25rem',
-      paddingRight: '1rem',
+      padding: '0rem 0.5rem',
     },
     selectText: {
-      fontSize: '14px',
+      fontSize: '18px',
       fontWeight: 600,
-      lineHeight: '1.5rem',
-      padding: '0rem 0.5rem',
+      lineHeight: '18px',
       whiteSpace: 'normal',
       wordWrap: 'break-word',
     },

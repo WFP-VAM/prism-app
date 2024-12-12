@@ -131,7 +131,9 @@ export const getFormattedDate = (
     | DateFormat.Default
     | DateFormat.DateTime
     | DateFormat.DayFirstSnakeCase
-    | DateFormat.ISO,
+    | DateFormat.ISO
+    | DateFormat.MiddleEndian
+    | DateFormat.TimeOnly,
   dateLocale: string = 'default',
 ) => {
   if (date === undefined) {
@@ -152,11 +154,16 @@ export const getFormattedDate = (
       return `${year}_${month}_${day}`;
     case DateFormat.DayFirstSnakeCase:
       return `${day}_${month}_${year}`;
+    case DateFormat.MiddleEndian:
+      return `${month}/${day}/${year}`;
+    case DateFormat.TimeOnly:
     case DateFormat.DateTime:
     case DateFormat.ISO: {
       const hours = String(jsDate.getUTCHours()).padStart(2, '0');
       const minutes = String(jsDate.getUTCMinutes()).padStart(2, '0');
       switch (format) {
+        case DateFormat.TimeOnly:
+          return `${hours}:${minutes}`;
         case DateFormat.DateTime:
           return `${year}-${month}-${day} ${hours}:${minutes}`;
         case DateFormat.ISO: {
