@@ -23,7 +23,7 @@ import { useDefaultDate } from 'utils/useDefaultDate';
 import { getFormattedDate } from 'utils/date-utils';
 import HowToReadModal from '../HowToReadModal';
 import ActivationTrigger from './ActivationTriggerView';
-import { StyledSelect } from '../AnticipatoryActionDroughtPanel/utils';
+import { StyledSelect } from '../utils';
 
 function AnticipatoryActionStormPanel() {
   const classes = useStyles();
@@ -82,7 +82,7 @@ function AnticipatoryActionStormPanel() {
               value={selectedDate || 'empty'}
               input={<Input disableUnderline />}
               renderValue={() => (
-                <Typography variant="h2">
+                <Typography variant="body1" className={classes.selectText}>
                   {selectedDate
                     ? `CYCLONE  ${t(AAData.forecastDetails?.cyclone_name || 'Unknown Cyclone')} ${getFormattedDate(selectedDate, 'default')} FORECAST`
                     : t('Timeline')}
@@ -164,7 +164,15 @@ const useStyles = makeStyles(() =>
       border: '1px solid #000',
       borderRadius: '4px',
       padding: '0.25rem',
-      fontSize: '0.2rem',
+      paddingRight: '1rem',
+    },
+    selectText: {
+      fontSize: '14px',
+      fontWeight: 600,
+      lineHeight: '1.5rem',
+      padding: '0rem 0.5rem',
+      whiteSpace: 'normal',
+      wordWrap: 'break-word',
     },
   }),
 );

@@ -39,7 +39,8 @@ import {
 import { getFormattedDate } from 'utils/date-utils';
 import { DateFormat } from 'utils/name-utils';
 import { PanelSize } from 'config/types';
-import { StyledCheckboxLabel, StyledRadioLabel, StyledSelect } from './utils';
+import { StyledCheckboxLabel, StyledRadioLabel } from './utils';
+import { StyledSelect } from '../utils';
 import DistrictView from './DistrictView/index';
 import HomeTable from './HomeTable';
 import HowToReadModal from '../HowToReadModal';
