@@ -72,12 +72,29 @@ const TabPanel = memo(({ children, value, index, ...other }: TabPanelProps) => (
 const LeftPanel = memo(() => {
   const dispatch = useDispatch();
   const tabValue = useSelector(leftPanelTabValueSelector);
+
+  const selectedLayers = useSelector(layersSelector);
+  const map = useSelector(mapSelector);
+  const { updateHistory, appendLayerToUrl, removeLayerFromUrl } =
+    useUrlHistory();
+
+  const classes = useStyles({ tabValue });
+
+  const isPanelHidden = tabValue === Panel.None;
+
+  const AALayerInUrl = React.useMemo(
+    () =>
+      selectedLayers.find(x => AALayerIds.includes(x.id as AnticipatoryAction)),
+    [selectedLayers],
+  );
+
+  // Load AA config based on AA layer id
   const AAConfig = React.useMemo(() => {
-    if (isAnticipatoryActionLayer(tabValue)) {
-      return getAAConfig(tabValue as AnticipatoryAction);
+    if (AALayerInUrl && isAnticipatoryActionLayer(AALayerInUrl.id)) {
+      return getAAConfig(AALayerInUrl.id as AnticipatoryAction);
     }
     return null;
-  }, [tabValue]);
+  }, [AALayerInUrl]);
 
   const AAData = useSelector((state: RootState) =>
     AAConfig ? AAConfig.dataSelector(state) : null,
@@ -87,14 +104,6 @@ const LeftPanel = memo(() => {
   );
   const loadAAData = AAConfig ? AAConfig.loadAction : null;
   const serverAvailableDates = useSelector(availableDatesSelector);
-  const selectedLayers = useSelector(layersSelector);
-  const map = useSelector(mapSelector);
-  const { updateHistory, appendLayerToUrl, removeLayerFromUrl } =
-    useUrlHistory();
-
-  const classes = useStyles({ tabValue });
-
-  const isPanelHidden = tabValue === Panel.None;
 
   // Sync serverAvailableDates with AAAvailableDates when the latter updates.
   React.useEffect(() => {
@@ -114,12 +123,6 @@ const LeftPanel = memo(() => {
     // To avoid an infinite loop, we only want to run this effect when AAAvailableDates changes.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [AAAvailableDates, dispatch]);
-
-  const AALayerInUrl = React.useMemo(
-    () =>
-      selectedLayers.find(x => AALayerIds.includes(x.id as AnticipatoryAction)),
-    [selectedLayers],
-  );
 
   // navigate to AA tab when app originally load with AA layer in url
   React.useEffect(() => {
