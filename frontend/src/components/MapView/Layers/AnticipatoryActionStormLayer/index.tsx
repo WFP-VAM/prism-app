@@ -203,12 +203,12 @@ const AnticipatoryActionStormLayer = React.memo(
                 districtName,
               )
             ) {
+              const color = getAAColor(AACategory.Moderate, 'Active', true);
               return {
                 ...feature,
                 properties: {
                   ...feature.properties,
-                  fillColor: getAAColor(AACategory.Moderate, 'Active', true)
-                    .background,
+                  fillColor: color.background,
                   fillOpacity: 0.4,
                 },
               };
@@ -218,12 +218,12 @@ const AnticipatoryActionStormLayer = React.memo(
                 districtName,
               )
             ) {
+              const color = getAAColor(AACategory.Severe, 'Active', true);
               return {
                 ...feature,
                 properties: {
                   ...feature.properties,
-                  fillColor: getAAColor(AACategory.Severe, 'Active', true)
-                    .background,
+                  fillColor: color.background,
                   fillOpacity: 0.4,
                 },
               };
@@ -234,12 +234,12 @@ const AnticipatoryActionStormLayer = React.memo(
                 ...(AAStormData.naDistricts?.Moderate?.districtNames || []),
               ].includes(districtName)
             ) {
+              const color = getAAColor(AACategory.Severe, 'na', true);
               return {
                 ...feature,
                 properties: {
                   ...feature.properties,
-                  fillColor: getAAColor(AACategory.Severe, 'na', true)
-                    .background,
+                  fillColor: color.background,
                   fillOpacity: 0.4,
                 },
               };
