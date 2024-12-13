@@ -187,10 +187,10 @@ const AnticipatoryActionStormLayer = React.memo(
       onWindPointsClicked,
     );
 
-    const getDistrictColor = (districtName: string, AAStormData: any) => {
+    const getDistrictColor = (districtName: string, StormData: any) => {
       // Check active districts
       if (
-        AAStormData.activeDistricts?.Moderate?.districtNames.includes(
+        StormData.activeDistricts?.Moderate?.districtNames.includes(
           districtName,
         )
       ) {
@@ -200,9 +200,7 @@ const AnticipatoryActionStormLayer = React.memo(
         };
       }
       if (
-        AAStormData.activeDistricts?.Severe?.districtNames.includes(
-          districtName,
-        )
+        StormData.activeDistricts?.Severe?.districtNames.includes(districtName)
       ) {
         return {
           color: getAAColor(AACategory.Severe, 'Active', true),
@@ -212,8 +210,8 @@ const AnticipatoryActionStormLayer = React.memo(
 
       // Check NA districts
       const isNADistrict = [
-        ...(AAStormData.naDistricts?.Severe?.districtNames || []),
-        ...(AAStormData.naDistricts?.Moderate?.districtNames || []),
+        ...(StormData.naDistricts?.Severe?.districtNames || []),
+        ...(StormData.naDistricts?.Moderate?.districtNames || []),
       ].includes(districtName);
 
       if (isNADistrict) {
