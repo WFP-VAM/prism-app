@@ -187,6 +187,45 @@ const AnticipatoryActionStormLayer = React.memo(
       onWindPointsClicked,
     );
 
+    const getDistrictColor = (districtName: string, AAStormData: any) => {
+      // Check active districts
+      if (
+        AAStormData.activeDistricts?.Moderate?.districtNames.includes(
+          districtName,
+        )
+      ) {
+        return {
+          color: getAAColor(AACategory.Moderate, 'Active', true),
+          opacity: 0.8,
+        };
+      }
+      if (
+        AAStormData.activeDistricts?.Severe?.districtNames.includes(
+          districtName,
+        )
+      ) {
+        return {
+          color: getAAColor(AACategory.Severe, 'Active', true),
+          opacity: 0.8,
+        };
+      }
+
+      // Check NA districts
+      const isNADistrict = [
+        ...(AAStormData.naDistricts?.Severe?.districtNames || []),
+        ...(AAStormData.naDistricts?.Moderate?.districtNames || []),
+      ].includes(districtName);
+
+      if (isNADistrict) {
+        return {
+          color: getAAColor(AACategory.Severe, 'na', true),
+          opacity: 0.4,
+        };
+      }
+
+      return null;
+    };
+
     const coloredDistrictsLayer = React.useMemo(() => {
       if (!boundaryData) {
         return null;
@@ -198,55 +237,22 @@ const AnticipatoryActionStormLayer = React.memo(
           .map(feature => {
             const districtName =
               feature.properties?.[boundaryLayer.adminLevelLocalNames[1]];
-            if (
-              AAStormData.activeDistricts?.Moderate?.districtNames.includes(
-                districtName,
-              )
-            ) {
-              const color = getAAColor(AACategory.Moderate, 'Active', true);
-              return {
-                ...feature,
-                properties: {
-                  ...feature.properties,
-                  fillColor: color.background,
-                  fillOpacity: 1,
-                },
-              };
+            const colorInfo = getDistrictColor(districtName, AAStormData);
+
+            if (!colorInfo) {
+              return null;
             }
-            if (
-              AAStormData.activeDistricts?.Severe?.districtNames.includes(
-                districtName,
-              )
-            ) {
-              const color = getAAColor(AACategory.Severe, 'Active', true);
-              return {
-                ...feature,
-                properties: {
-                  ...feature.properties,
-                  fillColor: color.background,
-                  fillOpacity: 1,
-                },
-              };
-            }
-            if (
-              [
-                ...(AAStormData.naDistricts?.Severe?.districtNames || []),
-                ...(AAStormData.naDistricts?.Moderate?.districtNames || []),
-              ].includes(districtName)
-            ) {
-              const color = getAAColor(AACategory.Severe, 'na', true);
-              return {
-                ...feature,
-                properties: {
-                  ...feature.properties,
-                  fillColor: color.background,
-                  fillOpacity: 0.4,
-                },
-              };
-            }
-            return null;
+
+            return {
+              ...feature,
+              properties: {
+                ...feature.properties,
+                fillColor: colorInfo.color.background,
+                fillOpacity: colorInfo.opacity,
+              },
+            };
           })
-          .filter(f => f !== null),
+          .filter(Boolean),
       };
     }, [boundaryData, AAStormData]);
 
@@ -270,6 +276,14 @@ const AnticipatoryActionStormLayer = React.memo(
               paint={{
                 'fill-color': ['get', 'fillColor'],
                 'fill-opacity': ['get', 'fillOpacity'],
+              }}
+            />
+            <Layer
+              id="storm-districts-border"
+              type="line"
+              paint={{
+                'line-color': 'black',
+                'line-width': 1,
               }}
             />
           </Source>
