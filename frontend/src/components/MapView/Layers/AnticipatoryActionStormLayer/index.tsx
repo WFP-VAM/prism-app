@@ -209,7 +209,7 @@ const AnticipatoryActionStormLayer = React.memo(
                 properties: {
                   ...feature.properties,
                   fillColor: color.background,
-                  fillOpacity: 0.4,
+                  fillOpacity: 1,
                 },
               };
             }
@@ -224,7 +224,7 @@ const AnticipatoryActionStormLayer = React.memo(
                 properties: {
                   ...feature.properties,
                   fillColor: color.background,
-                  fillOpacity: 0.4,
+                  fillOpacity: 1,
                 },
               };
             }
