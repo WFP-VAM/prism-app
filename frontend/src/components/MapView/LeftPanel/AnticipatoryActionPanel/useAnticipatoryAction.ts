@@ -6,7 +6,17 @@ import { getAAConfig } from 'context/anticipatoryAction/config';
 import { layersSelector, mapSelector } from 'context/mapStateSlice/selectors';
 import { updateDateRange } from 'context/mapStateSlice';
 import { getUrlKey, useUrlHistory } from 'utils/url-utils';
-import { AALayerIds, LayerDefinitions, isWindowEmpty } from 'config/utils';
+import {
+  AALayerIds,
+  LayerDefinitions,
+  isWindowEmpty,
+  isWindowedDates,
+} from 'config/utils';
+import { getAAAvailableDatesCombined } from 'utils/server-utils';
+import {
+  availableDatesSelector,
+  updateLayersCapabilities,
+} from 'context/serverStateSlice';
 import { toggleRemoveLayer } from '../layersPanel/MenuItem/MenuSwitch/SwitchItem/utils';
 
 export function useAnticipatoryAction(actionType: AnticipatoryAction) {
@@ -23,12 +33,35 @@ export function useAnticipatoryAction(actionType: AnticipatoryAction) {
   const AAData = useSelector((state: RootState) =>
     AAConfig.dataSelector(state),
   );
+  const AAAvailableDates = useSelector((state: RootState) =>
+    AAConfig.availableDatesSelector(state),
+  );
   const loadAAData = AAConfig.loadAction;
+  const serverAvailableDates = useSelector(availableDatesSelector);
 
   // Load data when component mounts
   useEffect(() => {
     dispatch(loadAAData());
   }, [dispatch, loadAAData]);
+
+  useEffect(() => {
+    if (AAAvailableDates) {
+      const combinedAvailableDates = isWindowedDates(AAAvailableDates)
+        ? getAAAvailableDatesCombined(AAAvailableDates)
+        : AAAvailableDates;
+      const updatedCapabilities = AALayerIds.reduce(
+        (acc, layerId) => ({
+          ...acc,
+          [layerId]: combinedAvailableDates,
+        }),
+        { ...serverAvailableDates },
+      );
+      dispatch(updateLayersCapabilities(updatedCapabilities));
+      dispatch(updateDateRange(updatedCapabilities));
+    }
+    // To avoid an infinite loop, we only want to run this effect when AAAvailableDates changes.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [AAAvailableDates, dispatch]);
 
   // Handle URL updates when mounting/unmounting
   useEffect(() => {
@@ -44,18 +77,16 @@ export function useAnticipatoryAction(actionType: AnticipatoryAction) {
           removeLayerFromUrl,
         );
       }
-
       const updatedUrl = appendLayerToUrl(
         getUrlKey(layer),
         selectedLayers,
         layer,
       );
       updateHistory(getUrlKey(layer), updatedUrl);
-      dispatch(updateDateRange({ startDate: undefined }));
     }
 
     return () => {
-      if (!isWindowEmpty(AAData, 'Window 1')) {
+      if (isWindowEmpty(AAData, 'Window 1')) {
         toggleRemoveLayer(
           layer,
           map,
@@ -65,6 +96,7 @@ export function useAnticipatoryAction(actionType: AnticipatoryAction) {
         );
       }
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return {

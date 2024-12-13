@@ -14,7 +14,6 @@ import { useSafeTranslation } from 'i18n';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   AAAvailableDatesSelector,
-  AADataSelector,
   setAAFilters,
 } from 'context/anticipatoryAction/AAStormStateSlice';
 import { AnticipatoryAction, PanelSize } from 'config/types';
@@ -34,7 +33,6 @@ function AnticipatoryActionStormPanel() {
   const { t } = useSafeTranslation();
   const { AAData } = useAnticipatoryAction(AnticipatoryAction.storm);
   const AAAvailableDates = useSelector(AAAvailableDatesSelector);
-  // const AAData = useSelector(AADataSelector);
   const [howToReadModalOpen, setHowToReadModalOpen] = React.useState(false);
 
   const selectedDate = useDefaultDate('anticipatory_action_storm');

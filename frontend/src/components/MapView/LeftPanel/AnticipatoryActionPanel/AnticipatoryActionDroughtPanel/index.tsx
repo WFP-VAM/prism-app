@@ -38,7 +38,7 @@ import {
 } from 'utils/server-utils';
 import { getFormattedDate } from 'utils/date-utils';
 import { DateFormat } from 'utils/name-utils';
-import { AnticipatoryAction, PanelSize } from 'config/types';
+import { PanelSize } from 'config/types';
 import { StyledCheckboxLabel, StyledRadioLabel } from './utils';
 import { StyledSelect } from '../utils';
 import DistrictView from './DistrictView/index';
@@ -46,7 +46,6 @@ import HomeTable from './HomeTable';
 import HowToReadModal from '../HowToReadModal';
 import Timeline from './Timeline';
 import Forecast from './Forecast';
-import { useAnticipatoryAction } from '../useAnticipatoryAction';
 
 const isZimbabwe = safeCountry === 'zimbabwe';
 
@@ -68,10 +67,10 @@ function AnticipatoryActionDroughtPanel() {
   const classes = useStyles();
   const dispatch = useDispatch();
   const { t } = useSafeTranslation();
-  const { AAData, AAConfig } = useAnticipatoryAction(
-    AnticipatoryAction.drought,
-  );
-  console.log({ AAData, AAConfig });
+  // TODO: we should use useAnticipatoryAction hook
+  // const { AAData, AAConfig } = useAnticipatoryAction(
+  //   AnticipatoryAction.drought,
+  // );
   const monitoredDistricts = useSelector(AAMonitoredDistrictsSelector);
   const AAAvailableDates = useSelector(AAAvailableDatesSelector);
   const selectedDistrict = useSelector(AASelectedDistrictSelector);

@@ -5,30 +5,14 @@ import {
   leftPanelTabValueSelector,
   setTabValue,
 } from 'context/leftPanelStateSlice';
-import {
-  AnticipatoryAction,
-  AnticipatoryActionLayerProps,
-  Panel,
-} from 'config/types';
+import { AnticipatoryAction, Panel } from 'config/types';
 import {
   AALayerIds,
-  LayerDefinitions,
   areChartLayersAvailable,
   isAnticipatoryActionLayer,
-  isWindowEmpty,
-  isWindowedDates,
 } from 'config/utils';
-import { getUrlKey, useUrlHistory } from 'utils/url-utils';
-import { layersSelector, mapSelector } from 'context/mapStateSlice/selectors';
 import { setSelectedBoundaries } from 'context/mapSelectionLayerStateSlice';
-import {
-  availableDatesSelector,
-  updateLayersCapabilities,
-} from 'context/serverStateSlice';
-import { getAAAvailableDatesCombined } from 'utils/server-utils';
-import { updateDateRange } from 'context/mapStateSlice';
-import { getAAConfig } from 'context/anticipatoryAction/config';
-import type { RootState } from 'context/store';
+import { layersSelector } from 'context/mapStateSlice/selectors';
 import AnalysisPanel from './AnalysisPanel';
 import ChartsPanel from './ChartsPanel';
 import TablesPanel from './TablesPanel';
@@ -42,7 +26,6 @@ import {
   isAnticipatoryActionDroughtAvailable,
   isAnticipatoryActionStormAvailable,
 } from './utils';
-import { toggleRemoveLayer } from './layersPanel/MenuItem/MenuSwitch/SwitchItem/utils';
 import AlertsPanel from './AlertsPanel';
 
 interface TabPanelProps {
@@ -72,6 +55,11 @@ const TabPanel = memo(({ children, value, index, ...other }: TabPanelProps) => (
 const LeftPanel = memo(() => {
   const dispatch = useDispatch();
   const tabValue = useSelector(leftPanelTabValueSelector);
+  const selectedLayers = useSelector(layersSelector);
+
+  const AALayerInUrl = selectedLayers.find(x =>
+    AALayerIds.includes(x.id as AnticipatoryAction),
+  );
 
   const classes = useStyles({ tabValue });
 
@@ -116,6 +104,17 @@ const LeftPanel = memo(() => {
   }, [tabValue, dispatch]);
 
   const renderedAnticipatoryActionPanel = React.useMemo(() => {
+    const shouldLoadAAPanel =
+      !isAnticipatoryActionLayer(tabValue) && AALayerInUrl !== undefined;
+
+    if (shouldLoadAAPanel) {
+      if (AALayerInUrl.id === Panel.AnticipatoryActionDrought) {
+        dispatch(setTabValue(Panel.AnticipatoryActionDrought));
+      } else if (AALayerInUrl.id === AnticipatoryAction.storm) {
+        dispatch(setTabValue(Panel.AnticipatoryActionStorm));
+      }
+    }
+
     if (
       isAnticipatoryActionDroughtAvailable &&
       tabValue === Panel.AnticipatoryActionDrought
@@ -128,7 +127,7 @@ const LeftPanel = memo(() => {
     }
     if (
       isAnticipatoryActionStormAvailable &&
-      tabValue === Panel.AnticipatoryActionStorm
+      (tabValue === Panel.AnticipatoryActionStorm || shouldLoadAAPanel)
     ) {
       return (
         <TabPanel value={tabValue} index={Panel.AnticipatoryActionStorm}>
@@ -137,7 +136,7 @@ const LeftPanel = memo(() => {
       );
     }
     return null;
-  }, [tabValue]);
+  }, [tabValue, AALayerInUrl, dispatch]);
 
   return (
     <Drawer
