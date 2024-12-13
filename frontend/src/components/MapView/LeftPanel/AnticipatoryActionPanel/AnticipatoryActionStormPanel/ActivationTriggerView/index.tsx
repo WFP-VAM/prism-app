@@ -5,8 +5,7 @@ import { useSafeTranslation } from 'i18n';
 import {
   AADisplayCategory,
   AACategory,
-  phaseValues,
-  AADisplayPhase,
+  AAPanelCategories,
 } from 'context/anticipatoryAction/AAStormStateSlice/types';
 import { getAAColor } from '../utils';
 import { useAACommonStyles } from '../../utils';
@@ -100,6 +99,18 @@ function ActivationTrigger({ dialogs }: ActivationTriggerProps) {
   const rawAAData = useSelector(AADataSelector);
   const commonClasses = useAACommonStyles();
 
+  const filteredActiveDistricts = rawAAData.activeDistricts
+    ? Object.entries(rawAAData.activeDistricts).filter(([category]) =>
+        AAPanelCategories.includes(category as AACategory),
+      )
+    : [];
+
+  const filteredNADistricts = rawAAData.naDistricts
+    ? Object.entries(rawAAData.naDistricts).filter(([category]) =>
+        AAPanelCategories.includes(category as AACategory),
+      )
+    : [];
+
   return (
     <div className={classes.root}>
       <Typography className={classes.headerText}>
@@ -107,35 +118,48 @@ function ActivationTrigger({ dialogs }: ActivationTriggerProps) {
       </Typography>
 
       <div className={classes.ActivationTriggerWrapper}>
-        {phaseValues.map(phase =>
-          Object.entries(rawAAData.exposed || {}).map(([category, data]) => (
-            <div
-              key={`${category}-${phase}`}
-              className={classes.headColumnWrapper}
-            >
-              <div className={classes.headColumn}>
-                <CategoryText
-                  color={getAAColor(category as AACategory, phase, true)}
-                  text={t(
-                    `${AADisplayPhase[phase]}${
-                      AADisplayCategory[category as AACategory]
-                    }`,
-                  )}
-                />
-              </div>
-              <div className={classes.rowWrapper}>
-                {data[phase]?.districtNames.map((name: string) => (
-                  <div className={classes.tagWrapper} key={name}>
-                    <AreaTag
-                      name={name}
-                      color={getAAColor(category as AACategory, phase, true)}
-                    />
-                  </div>
-                ))}
-              </div>
+        {filteredActiveDistricts.map(([category, data]) => (
+          <div key={`${category}-active`} className={classes.headColumnWrapper}>
+            {/* Affichage pour les districts actifs */}
+            <div className={classes.headColumn}>
+              <CategoryText
+                color={getAAColor(category as AACategory, 'Active', true)}
+                text={t(`Active ${AADisplayCategory[category as AACategory]}`)}
+              />
             </div>
-          )),
-        )}
+            <div className={classes.rowWrapper}>
+              {data.districtNames.map((name: string) => (
+                <div className={classes.tagWrapper} key={name}>
+                  <AreaTag
+                    name={name}
+                    color={getAAColor(category as AACategory, 'Active', true)}
+                  />
+                </div>
+              ))}
+            </div>
+          </div>
+        ))}
+        {filteredNADistricts.map(([category, data]) => (
+          <div key={`${category}-active`} className={classes.headColumnWrapper}>
+            {/* Affichage pour les districts actifs */}
+            <div className={classes.headColumn}>
+              <CategoryText
+                color={getAAColor(category as AACategory, 'na', true)}
+                text={t(`NA ${AADisplayCategory[category as AACategory]}`)}
+              />
+            </div>
+            <div className={classes.rowWrapper}>
+              {data.districtNames.map((name: string) => (
+                <div className={classes.tagWrapper} key={name}>
+                  <AreaTag
+                    name={name}
+                    color={getAAColor(category as AACategory, 'na', true)}
+                  />
+                </div>
+              ))}
+            </div>
+          </div>
+        ))}
       </div>
       <div className={commonClasses.footerWrapper}>
         <div className={commonClasses.footerDialogsWrapper}>

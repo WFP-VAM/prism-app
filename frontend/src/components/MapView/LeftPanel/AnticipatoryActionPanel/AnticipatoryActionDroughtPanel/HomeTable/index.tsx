@@ -209,14 +209,14 @@ function HomeTable({ dialogs }: HomeTableProps) {
   const monitoredDistrict = useSelector(AAMonitoredDistrictsSelector);
   const { 'Window 2': window2Range } = useSelector(AAWindowRangesSelector);
 
-  const filename = appConfig.anticipatoryActionUrl?.split('/').at(-1);
+  const filename = appConfig.anticipatoryActionDroughtUrl?.split('/').at(-1);
 
   const homeButtons = [
     {
       startIcon: <GetApp />,
       text: 'Assets',
       component: 'a',
-      href: `${appConfig.anticipatoryActionUrl}?date=${getCurrentDateTimeForUrl()}`,
+      href: `${appConfig.anticipatoryActionDroughtUrl}?date=${getCurrentDateTimeForUrl()}`,
       download: `${window2Range?.end}-${filename}`,
     },
     {

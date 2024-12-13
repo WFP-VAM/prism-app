@@ -168,7 +168,9 @@ export const AAWindowKeys = ['Window 1', 'Window 2'] as const;
 export const AALayerIds = Object.values(AnticipatoryAction);
 
 export const LayerDefinitions: LayersMap = (() => {
-  const aaUrl = appConfig.anticipatoryActionUrl;
+  const droughtUrl = appConfig.anticipatoryActionDroughtUrl;
+  const stormUrl = appConfig.anticipatoryActionStormUrl;
+
   const AALayers: AnticipatoryActionLayerProps[] = [
     {
       id: AnticipatoryAction.drought,
@@ -189,12 +191,24 @@ export const LayerDefinitions: LayersMap = (() => {
     {} as Record<string, AnticipatoryActionLayerProps>,
   );
 
+  const initialLayers: LayersMap = {
+    ...(droughtUrl
+      ? {
+          [AnticipatoryAction.drought]:
+            AALayersById[AnticipatoryAction.drought],
+        }
+      : {}),
+    ...(stormUrl
+      ? { [AnticipatoryAction.storm]: AALayersById[AnticipatoryAction.storm] }
+      : {}),
+  };
+
   const layers = Object.keys(rawLayers).reduce(
     (acc, layerKey) => ({
       ...acc,
       [layerKey]: getLayerByKey(layerKey as LayerKey),
     }),
-    (aaUrl ? AALayersById : {}) as LayersMap,
+    initialLayers,
   );
 
   // Verify that the layers referenced by impact layers actually exist

@@ -1,7 +1,8 @@
 {
   "country": "Mozambique",
   "defaultLanguage": "en",
-  "anticipatoryActionUrl": "https://data.earthobservation.vam.wfp.org/public-share/aa/aa_probabilities_triggers_moz.csv",
+  "anticipatoryActionDroughtUrl": "https://data.earthobservation.vam.wfp.org/public-share/aa/aa_probabilities_triggers_moz.csv",
+  "anticipatoryActionStormUrl": " https://data.earthobservation.vam.wfp.org/public-share/aa/ts/outputs/latest.json.",
   "header": {
     "title": "PRISM",
     "logo": "images/moz-flag-inam-logo.png"

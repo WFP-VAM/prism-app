@@ -4,11 +4,13 @@ import { DateItem } from 'config/types';
 export enum AACategory {
   Severe = 'Severe',
   Moderate = 'Moderate',
+  Risk = 'Risk',
 }
 
 export enum AACategoryKey {
   Severe = 'exposed_area_64kt',
   Moderate = 'exposed_area_48kt',
+  Proba = 'proba_48kt_20_5d',
 }
 
 export enum AACategoryLandfall {
@@ -16,25 +18,23 @@ export enum AACategoryLandfall {
   Moderate = 'moderate tropical storm',
 }
 
+export const AAPanelCategories: AACategory[] = [
+  AACategory.Severe,
+  AACategory.Moderate,
+];
+
 export const AADisplayCategory: {
-  [key in AACategory]: string;
+  [key in AACategory]?: string;
 } = {
   [AACategory.Severe]: ' > 118 KM/H',
   [AACategory.Moderate]: ' > 89 KM/H',
 };
 
-export const AADisplayPhase: {
-  [key in AAPhaseType]: string;
-} = {
-  Ready: 'Activation',
-  na: 'NA',
-};
-
 export const AACategoryDataToLandfallMap: {
-  [key in AACategoryLandfall]: AACategoryKey;
+  [key in AACategoryLandfall]: AACategory;
 } = {
-  [AACategoryLandfall.Severe]: AACategoryKey.Severe,
-  [AACategoryLandfall.Moderate]: AACategoryKey.Moderate,
+  [AACategoryLandfall.Severe]: AACategory.Severe,
+  [AACategoryLandfall.Moderate]: AACategory.Moderate,
 };
 
 export const AACategoryKeyToCategoryMap: {
@@ -42,6 +42,7 @@ export const AACategoryKeyToCategoryMap: {
 } = {
   [AACategoryKey.Severe]: AACategory.Severe,
   [AACategoryKey.Moderate]: AACategory.Moderate,
+  [AACategoryKey.Proba]: AACategory.Risk,
 };
 
 export interface AAData {
@@ -49,15 +50,17 @@ export interface AAData {
   polygon: any;
 }
 
-export type AACategoryData = Record<AAPhaseType, AAData | undefined>;
-
 export type DistrictDataType = {
-  [key in AACategory]?: AACategoryData;
+  [key in AACategory]?: AAData;
 };
 
 export type AAStormData = {
-  exposed?: DistrictDataType;
-  landfall?: LandfallImpact;
+  activeDistricts?: DistrictDataType;
+  naDistricts?: DistrictDataType;
+  landfall?: LandfallInfo;
+  timeSeries?: any;
+  landfallDetected?: boolean;
+  forecastDetails?: ForecastDetails;
 };
 
 export type ResultType = {
@@ -86,17 +89,24 @@ interface TimeSeries {
   [key: string]: any;
 }
 
-export interface LandfallImpact {
+interface ForecastDetails {
+  basin: string;
+  cyclone_name: string;
+  event_id: string;
+  reference_time: string;
+  season: number;
+}
+
+export interface LandfallInfo {
   district: string;
-  time: {
-    start: string;
-    end: string;
-  };
-  severity: AACategoryKey[];
+  time: string[];
+  severity: AACategory[];
 }
 
 export interface StormData {
   time_series: TimeSeries;
+  landfall_detected: boolean;
+  forecast_details: ForecastDetails;
   landfall_info: {
     landfall_time: string[];
     landfall_impact_district: string;
@@ -105,11 +115,11 @@ export interface StormData {
   ready_set_results?: {
     exposed_area_48kt: ExposedAreaStorm;
     exposed_area_64kt: ExposedAreaStorm;
-    proba_48kt_20_5d: any;
+    proba_48kt_20_5d: ExposedAreaStorm;
   };
 }
 
-export const AAPhase = ['Ready', 'na'] as const;
+export const AAPhase = ['Active', 'na'] as const;
 export type AAPhaseType = (typeof AAPhase)[number];
 export const phaseValues = Object.values(AAPhase);
 

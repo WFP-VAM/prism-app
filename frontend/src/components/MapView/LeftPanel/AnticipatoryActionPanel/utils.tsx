@@ -1,6 +1,20 @@
 /* eslint-disable react-refresh/only-export-components */
 import { black, cyanBlue } from 'muiTheme';
-import { createStyles, makeStyles } from '@material-ui/core';
+import {
+  createStyles,
+  makeStyles,
+  Select,
+  SelectProps,
+  withStyles,
+} from '@material-ui/core';
+
+export const StyledSelect = withStyles({
+  root: {
+    '&:focus': {
+      backgroundColor: 'transparent',
+    },
+  },
+})((props: SelectProps) => <Select {...props} />);
 
 export const useAACommonStyles = makeStyles(() =>
   createStyles({

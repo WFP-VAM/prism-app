@@ -8,7 +8,6 @@ import {
   StormData,
 } from './types';
 import { parseAndTransformAA } from './utils';
-import anticipatoryActionStormData from '../../../../public/data/mozambique/anticipatory-action/aa_storm_temporary.json';
 
 const initialState: AnticipatoryActionState = {
   data: {},
@@ -19,6 +18,7 @@ const initialState: AnticipatoryActionState = {
     categories: {
       Severe: true,
       Moderate: true,
+      Risk: true,
     },
   },
   loading: false,
@@ -34,7 +34,11 @@ export const loadAAData = createAsyncThunk<
   CreateAsyncThunkTypes
 >('anticipatoryActionStormState/loadAAData', async (_, { rejectWithValue }) => {
   try {
-    const data = parseAndTransformAA(anticipatoryActionStormData as StormData);
+    const response = await fetch(
+      'https://data.earthobservation.vam.wfp.org/public-share/aa/ts/outputs/latest.json',
+    );
+    const stormData = await response.json();
+    const data = parseAndTransformAA(stormData as StormData);
     return data;
   } catch (error) {
     return rejectWithValue(error);
