@@ -262,7 +262,7 @@ const AnticipatoryActionStormLayer = React.memo(
 
     return (
       <>
-        {/* Add the colored districts layer */}
+        {/* First render all fill layers */}
         {coloredDistrictsLayer && (
           <Source
             key="storm-districts"
@@ -289,43 +289,42 @@ const AnticipatoryActionStormLayer = React.memo(
           </Source>
         )}
 
-        {/* 48kt wind forecast area - orange */}
+        {/* 48kt and 64kt wind forecast areas */}
         {viewType === 'forecast' && (
-          <Source
-            data={AAStormData.activeDistricts?.Moderate?.polygon}
-            type="geojson"
-          >
-            <Layer
-              id="exposed-area-48kt"
-              beforeId="aa-storm-wind-points-layer"
-              type="fill"
-              paint={{
-                'fill-opacity': 0.5,
-                'fill-color': getAAColor(AACategory.Moderate, 'Active', true)
-                  .background,
-              }}
-            />
-          </Source>
+          <>
+            <Source
+              data={AAStormData.activeDistricts?.Moderate?.polygon}
+              type="geojson"
+            >
+              <Layer
+                id="exposed-area-48kt"
+                beforeId="aa-storm-wind-points-layer"
+                type="fill"
+                paint={{
+                  'fill-opacity': 0.5,
+                  'fill-color': getAAColor(AACategory.Moderate, 'Active', true)
+                    .background,
+                }}
+              />
+            </Source>
+            <Source
+              data={AAStormData.activeDistricts?.Severe?.polygon}
+              type="geojson"
+            >
+              <Layer
+                id="exposed-area-64kt"
+                beforeId="aa-storm-wind-points-layer"
+                type="fill"
+                paint={{
+                  'fill-opacity': 0.5,
+                  'fill-color': getAAColor(AACategory.Severe, 'Active', true)
+                    .background,
+                }}
+              />
+            </Source>
+          </>
         )}
 
-        {/* 64kt wind forecast area - red */}
-        {viewType === 'forecast' && (
-          <Source
-            data={AAStormData.activeDistricts?.Severe?.polygon}
-            type="geojson"
-          >
-            <Layer
-              id="exposed-area-64kt"
-              beforeId="aa-storm-wind-points-layer"
-              type="fill"
-              paint={{
-                'fill-opacity': 0.5,
-                'fill-color': getAAColor(AACategory.Severe, 'Active', true)
-                  .background,
-              }}
-            />
-          </Source>
-        )}
         {/* Storm Risk Map view */}
         {viewType === 'risk' && (
           <Source
@@ -334,8 +333,8 @@ const AnticipatoryActionStormLayer = React.memo(
           >
             <Layer
               id="storm-risk-map"
-              beforeId="aa-storm-wind-points-layer"
               type="fill"
+              beforeId="aa-storm-wind-points-layer"
               paint={{
                 'fill-opacity': 0.5,
                 'fill-color': '#9acddc',
@@ -344,15 +343,8 @@ const AnticipatoryActionStormLayer = React.memo(
           </Source>
         )}
 
-        {/* Common elements for both views */}
+        {/* Render wind points last so they appear on top */}
         <Source data={timeSeries} type="geojson">
-          <Layer
-            id="aa-storm-wind-points-layer"
-            type="symbol"
-            layout={{ 'icon-image': ['image', ['get', 'iconName']] }}
-          />
-
-          {/* past wind track - solid black line */}
           <Layer
             id="aa-storm-wind-points-line-past"
             type="line"
@@ -362,8 +354,6 @@ const AnticipatoryActionStormLayer = React.memo(
               'line-width': 2,
             }}
           />
-
-          {/* forecasted wind track - dashed red line */}
           <Layer
             id="aa-storm-wind-points-line-future"
             type="line"
@@ -373,6 +363,12 @@ const AnticipatoryActionStormLayer = React.memo(
               'line-width': 2,
               'line-dasharray': [2, 1],
             }}
+          />
+          <Layer
+            id="aa-storm-wind-points-layer"
+            beforeId="aa-storm-wind-points-line-future"
+            type="symbol"
+            layout={{ 'icon-image': ['image', ['get', 'iconName']] }}
           />
         </Source>
 
