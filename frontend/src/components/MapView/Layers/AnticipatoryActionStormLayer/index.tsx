@@ -22,6 +22,8 @@ import AAStormDatePopup from './AAStormDatePopup';
 import AAStormLandfallPopup from './AAStormLandfallPopup';
 import moderateStorm from '../../../../../public/images/anticipatory-action-storm/moderate-tropical-storm.png';
 import overland from '../../../../../public/images/anticipatory-action-storm/overland.png';
+import lowPressure from '../../../../../public/images/anticipatory-action-storm/low-pressure.png';
+import tropicalDepression from '../../../../../public/images/anticipatory-action-storm/tropical-depression.png';
 import severeTropicalStorm from '../../../../../public/images/anticipatory-action-storm/severe-tropical-storm.png';
 import tropicalCyclone from '../../../../../public/images/anticipatory-action-storm/tropical-cyclone.png';
 import intenseTropicalCyclone from '../../../../../public/images/anticipatory-action-storm/intense-tropical-cyclone.png';
@@ -107,6 +109,14 @@ const AnticipatoryActionStormLayer = React.memo(
         return 'intense-tropical-cyclone';
       }
 
+      if (windType === 'tropical depression') {
+        return 'tropical-depression';
+      }
+
+      if (windType === 'low') {
+        return 'low-pressure';
+      }
+
       if (windType === 'inland') {
         return 'overland';
       }
@@ -130,6 +140,8 @@ const AnticipatoryActionStormLayer = React.memo(
         });
       };
 
+      loadImage(lowPressure, 'low-pressure');
+      loadImage(tropicalDepression, 'tropical-depression');
       loadImage(moderateStorm, 'moderate-tropical-storm');
       loadImage(severeTropicalStorm, 'severe-tropical-storm');
       loadImage(tropicalCyclone, 'tropical-cyclone');
