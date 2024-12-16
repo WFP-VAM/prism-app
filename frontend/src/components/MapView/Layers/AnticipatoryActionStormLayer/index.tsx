@@ -21,13 +21,14 @@ import { getAAColor } from 'components/MapView/LeftPanel/AnticipatoryActionPanel
 import AAStormDatePopup from './AAStormDatePopup';
 import AAStormLandfallPopup from './AAStormLandfallPopup';
 import moderateStorm from '../../../../../public/images/anticipatory-action-storm/moderate-tropical-storm.png';
-import overland from '../../../../../public/images/anticipatory-action-storm/overland.png';
+import inland from '../../../../../public/images/anticipatory-action-storm/inland.png';
 import lowPressure from '../../../../../public/images/anticipatory-action-storm/low-pressure.png';
 import tropicalDepression from '../../../../../public/images/anticipatory-action-storm/tropical-depression.png';
 import severeTropicalStorm from '../../../../../public/images/anticipatory-action-storm/severe-tropical-storm.png';
 import tropicalCyclone from '../../../../../public/images/anticipatory-action-storm/tropical-cyclone.png';
 import intenseTropicalCyclone from '../../../../../public/images/anticipatory-action-storm/intense-tropical-cyclone.png';
 import veryIntensiveCyclone from '../../../../../public/images/anticipatory-action-storm/very-intensive-tropical-cyclone.png';
+import defaultIcon from '../../../../../public/images/anticipatory-action-storm/default.png';
 import { TimeSeries } from './types';
 
 interface AnticipatoryActionStormLayerProps {
@@ -36,6 +37,22 @@ interface AnticipatoryActionStormLayerProps {
 
 // Use admin level 2 boundary layer
 const boundaryLayer = getBoundaryLayersByAdminLevel(2);
+
+// Add this mapping object at the top of the file with other imports
+const WIND_TYPE_TO_ICON_MAP: Record<string, string> = {
+  disturbance: defaultIcon,
+  'tropical-disturbance': defaultIcon,
+  'low-pressure': lowPressure,
+  'tropical-depression': tropicalDepression,
+  'moderate-tropical-storm': moderateStorm,
+  'severe-tropical-storm': severeTropicalStorm,
+  'tropical-cyclone': tropicalCyclone,
+  'intense-tropical-cyclone': intenseTropicalCyclone,
+  'very-intensive-tropical-cyclone': veryIntensiveCyclone,
+  inland,
+  dissipating: defaultIcon,
+  default: defaultIcon,
+};
 
 const AnticipatoryActionStormLayer = React.memo(
   ({ layer }: AnticipatoryActionStormLayerProps) => {
@@ -98,36 +115,25 @@ const AnticipatoryActionStormLayer = React.memo(
       return { ...timeSeriesRest, features: newFeatures };
     }
 
-    // Replace all AAStormData references with stormData
     const timeSeries: any =
       AAStormData && AAStormData.timeSeries
         ? enhanceTimeSeries(AAStormData.timeSeries as unknown as TimeSeries)
         : null;
 
     function getIconNameByWindType(windType: string) {
-      if (windType === 'intense tropical cyclone') {
-        return 'intense-tropical-cyclone';
+      const iconName = windType.split(' ').join('-').toLowerCase();
+      if (!WIND_TYPE_TO_ICON_MAP[iconName]) {
+        console.warn(`Unknown wind type: ${windType}, using default icon`);
+        return 'default';
       }
-
-      if (windType === 'tropical depression') {
-        return 'tropical-depression';
-      }
-
-      if (windType === 'low') {
-        return 'low-pressure';
-      }
-
-      if (windType === 'inland') {
-        return 'overland';
-      }
-
-      return windType.split(' ').join('-');
+      return iconName;
     }
 
     function landfallPopupCloseHandler() {
       setSelectedFeature(null);
     }
 
+    // Load all images from the mapping
     const loadImages = useCallback(() => {
       const loadImage = (url: string, name: string) => {
         map?.loadImage(url, (error, image) => {
@@ -140,14 +146,9 @@ const AnticipatoryActionStormLayer = React.memo(
         });
       };
 
-      loadImage(lowPressure, 'low-pressure');
-      loadImage(tropicalDepression, 'tropical-depression');
-      loadImage(moderateStorm, 'moderate-tropical-storm');
-      loadImage(severeTropicalStorm, 'severe-tropical-storm');
-      loadImage(tropicalCyclone, 'tropical-cyclone');
-      loadImage(intenseTropicalCyclone, 'intense-tropical-cyclone');
-      loadImage(overland, 'overland');
-      loadImage(veryIntensiveCyclone, 'very-intensive-tropical-cyclone');
+      Object.entries(WIND_TYPE_TO_ICON_MAP).forEach(([name, url]) => {
+        loadImage(url, name);
+      });
     }, [map]);
 
     useEffect(() => {
