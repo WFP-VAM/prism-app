@@ -42,7 +42,7 @@ const boundaryLayer = getBoundaryLayersByAdminLevel(2);
 const WIND_TYPE_TO_ICON_MAP: Record<string, string> = {
   disturbance: defaultIcon,
   'tropical-disturbance': defaultIcon,
-  'low-pressure': lowPressure,
+  low: lowPressure,
   'tropical-depression': tropicalDepression,
   'moderate-tropical-storm': moderateStorm,
   'severe-tropical-storm': severeTropicalStorm,
