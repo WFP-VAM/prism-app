@@ -3,6 +3,7 @@ import {
   AnticipatoryActionDataRow,
   AnticipatoryActionState,
 } from 'context/anticipatoryActionStateSlice/types';
+import { getSeason } from 'context/anticipatoryActionStateSlice/utils';
 
 const indexOrder = ['SPI', 'DRY'];
 const monthsOrder = ['O', 'N', 'D', 'J', 'F', 'M', 'A', 'M', 'J'];
@@ -56,6 +57,7 @@ export function forecastTransform({
   data,
 }: ForecastTransformParams) {
   const { selectedWindow, selectedDate } = filters;
+  const season = getSeason(selectedDate);
 
   const dateData = (
     selectedWindow === 'All'
@@ -64,7 +66,9 @@ export function forecastTransform({
           ...(data['Window 2'][selectedDistrict] || []),
         ]
       : data[selectedWindow][selectedDistrict] || []
-  ).filter(x => !selectedDate || x.date <= selectedDate);
+  ).filter(
+    x => !selectedDate || (x.date <= selectedDate && x.season === season),
+  );
 
   // eslint-disable-next-line fp/no-mutating-methods
   const indexes = sortIndexes([...new Set(dateData.map(x => x.index))]);
@@ -79,13 +83,18 @@ export function forecastTransform({
   const chartData: ChartData = Object.fromEntries(
     Object.entries(groupedBySev).map(([cat, catData]) => {
       const val = indexes.map(index => {
-        const indexData = catData.filter(x => x.index === index);
+        const indexData = catData.filter(
+          x => x.index === index && !x.computedRow,
+        );
         if (indexData.length > 0) {
           // Sort by date in descending order to get the latest date first
           // eslint-disable-next-line fp/no-mutating-methods
           indexData.sort((a, b) => b.date.localeCompare(a.date));
           // Take the probability of the first element (latest date)
-          const latest = Math.trunc(indexData[0].probability * 100);
+          const latest = parseFloat(
+            ((indexData[0].probability || 0) * 100).toFixed(2),
+          );
+
           const showWarningSign = Boolean(indexData[0].isValid);
           return [index, { probability: latest, showWarningSign }];
         }

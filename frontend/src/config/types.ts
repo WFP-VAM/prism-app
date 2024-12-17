@@ -176,6 +176,7 @@ export type LegendDefinitionItem = {
   color: string;
   // Optional, to create custom label like '≤50'. if label is not defined
   // then value attribute will be shown instead
+  // TODO - the label.text functionality does not seem to be used. Remove? @Amit
   label?: LegendLabel | string;
   fillPattern?: 'left' | 'right';
 };
@@ -319,7 +320,7 @@ export class CommonLayerProps {
     },
   */
   @optional
-  group?: MenuGroup;
+  group?: MenuGroup = undefined; // Defaulting to undefined to make sure that the group property is writable
 
   @optional
   validity?: Validity; // Include additional dates in the calendar based on the number provided.
@@ -407,6 +408,7 @@ interface FeatureInfoProps {
 export enum DatesPropagation {
   DAYS = 'days',
   DEKAD = 'dekad',
+  SEASON = 'season',
 }
 
 export type ValidityPeriod = {
@@ -416,10 +418,21 @@ export type ValidityPeriod = {
   end_date_field: string;
 };
 
+export type SeasonBoundsConfig = {
+  start: string;
+  end: string;
+};
+
+export type SeasonBounds = {
+  start: Date;
+  end: Date;
+};
+
 export type Validity = {
   mode: DatesPropagation; // Propagation mode for dates.
   backward?: number; // Number of days/dekades backward.
   forward?: number; // Number of days/dekades forward.
+  seasons?: SeasonBoundsConfig[];
 };
 
 export class WMSLayerProps extends CommonLayerProps {
@@ -468,6 +481,7 @@ enum AggregationOptions {
 
 export class CompositeLayerProps extends CommonLayerProps {
   type: 'composite' = 'composite';
+  period: 'monthly' | 'seasonal';
   baseUrl: string;
 
   @makeRequired

@@ -1,43 +1,12 @@
 import { DateCompatibleLayer } from 'utils/server-utils';
 import { DateItem } from 'config/types';
+import { datesAreEqualWithoutTime } from 'utils/date-utils';
 
 export const TIMELINE_ITEM_WIDTH = 4;
 
 export type DateCompatibleLayerWithDateItems = DateCompatibleLayer & {
   dateItems: DateItem[];
 };
-
-/**
- * Return the closest date from a given list of available dates
- * @param date
- * @param availableDates
- * @return date as milliseconds
- */
-export function findClosestDate(
-  date: number,
-  availableDates: ReturnType<Date['getTime']>[],
-) {
-  // TODO - better handle empty arrays.
-  if (availableDates.length === 0) {
-    return date;
-  }
-
-  const reducerFunc = (
-    closest: ReturnType<Date['getTime']>,
-    current: ReturnType<Date['getTime']>,
-  ) => {
-    const diff = Math.abs(current - date);
-    const closestDiff = Math.abs(closest - date);
-
-    if (diff < closestDiff) {
-      return current;
-    }
-
-    return closest;
-  };
-
-  return availableDates.reduce(reducerFunc);
-}
 
 /**
  * Binary search to return index of available dates that matched
@@ -56,7 +25,7 @@ export function findDateIndex(
   let endIndex = availableDates.length - 1;
   while (startIndex <= endIndex) {
     const midIndex = Math.floor((startIndex + endIndex) / 2);
-    if (availableDates[midIndex] === date) {
+    if (datesAreEqualWithoutTime(availableDates[midIndex], date)) {
       return midIndex;
     }
     if (midIndex === startIndex && endIndex - startIndex <= 1) {

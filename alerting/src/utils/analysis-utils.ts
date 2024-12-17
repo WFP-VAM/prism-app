@@ -31,6 +31,11 @@ export async function fetchApiData(
     // body data type must match "Content-Type" header
     body: JSON.stringify(apiData),
   });
+
+  if (response.status !== 200) {
+    throw new Error(`Failed to fetch data: ${response.statusText}`);
+  }
+
   return response.json();
 }
 
@@ -70,7 +75,7 @@ export function getAlertMessage(
   if (!Array.isArray(aggregateData)) {
     console.warn('aggregateData is not an array');
     console.warn('aggregateData', JSON.stringify(aggregateData));
-    return undefined
+    return undefined;
   }
 
   aggregateData.forEach((data) => {
@@ -95,15 +100,18 @@ export function getAlertMessage(
       alertMessage = `Maximum value ${maxValue} is above the threshold ${alertMax}.`;
     }
   });
+
   return alertMessage;
 }
 
-export async function calculateBoundsForAlert(date: Date, alert: Alert) {
+export async function calculateAlert(date: Date, alert: Alert) {
   if (!alert.zones) {
+    console.warn(`No zones provided for alert ${alert.id}.`);
     return undefined;
   }
   const extent = bbox(alert.zones) as Extent;
   const layer = alert.alertConfig;
+
   const apiRequest: ApiData = {
     geotiff_url: createGetCoverageUrl({
       bbox: extent,

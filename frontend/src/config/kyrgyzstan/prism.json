@@ -187,8 +187,6 @@
       "vegetation_conditions": [
         "ndvi_dekad",
         "ndvi_dekad_anomaly",
-        "pasture_anomaly",
-        "ModisVHI",
         "10day_NDVI_KDC"
       ]
     },
@@ -201,7 +199,10 @@
       ]
     },
     "snow": {
-      "snow_conditions": ["snow_cover", "modis_snow_percentage"]
+      "snow_conditions": ["snow_ndsi", "modis_snow_percentage"]
+    },
+    "water": {
+      "water_cover": ["ModisNDWI"]
     },
     "floods_and_mudflows": {
       "floods_and_mudflows": ["flood_mudflows"]

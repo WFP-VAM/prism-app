@@ -1,6 +1,7 @@
 import { createAsyncThunk, AsyncThunk } from '@reduxjs/toolkit';
 import {
   AnticipatoryActionLayerProps,
+  DateItem,
   DiscriminateUnion,
   LayerType,
   PointLayerData,
@@ -47,6 +48,7 @@ export interface LayerDataParams<T extends LayerAcceptingDataType> {
   layer: T;
   extent?: Extent;
   date?: number;
+  availableDates?: DateItem[];
 
   [key: string]: any;
 }

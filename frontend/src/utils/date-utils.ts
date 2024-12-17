@@ -1,4 +1,4 @@
-import { DateItem } from '../config/types';
+import { DateItem, SeasonBounds, SeasonBoundsConfig } from '../config/types';
 import { DateFormat } from './name-utils';
 
 export interface StartEndDate {
@@ -6,13 +6,26 @@ export interface StartEndDate {
   endDate?: number;
 }
 
+const millisecondsInADay = 24 * 60 * 60 * 1000;
+
+export const getCurrentDateTimeForUrl = (): string =>
+  new Date().toISOString().slice(0, 16).replace(/[T:]/g, '-');
+
+export const dateWithoutTime = (date: number | Date): number => {
+  const cleanDate = date instanceof Date ? date.getTime() : date;
+  return cleanDate - (cleanDate % millisecondsInADay);
+};
+
 export const datesAreEqualWithoutTime = (
   date1: number | Date,
   date2: number | Date,
 ): boolean => {
-  const d1 = new Date(date1).setUTCHours(0, 0, 0, 0);
-  const d2 = new Date(date2).setUTCHours(0, 0, 0, 0);
-  return d1 === d2;
+  const cleanDate1 = date1 instanceof Date ? date1.getTime() : date1;
+  const cleanDate2 = date2 instanceof Date ? date2.getTime() : date2;
+  return (
+    cleanDate1 - (cleanDate1 % millisecondsInADay) ===
+    cleanDate2 - (cleanDate2 % millisecondsInADay)
+  );
 };
 
 function diffInDays(date1: Date, date2: Date) {
@@ -119,6 +132,7 @@ export const getFormattedDate = (
     | DateFormat.DateTime
     | DateFormat.DayFirstSnakeCase
     | DateFormat.ISO,
+  dateLocale: string = 'default',
 ) => {
   if (date === undefined) {
     return undefined;
@@ -160,7 +174,7 @@ export const getFormattedDate = (
         day: 'numeric',
       });
     case 'locale':
-      return new Date(date).toLocaleString('default', {
+      return new Date(date).toLocaleString(dateLocale, {
         year: 'numeric',
         month: 'long',
         day: 'numeric',
@@ -172,3 +186,97 @@ export const getFormattedDate = (
 
 export const getTimeInMilliseconds = (date: string | number) =>
   new Date(date).getTime();
+
+export const SEASON_MAP: [number, number][] = [
+  [0, 2],
+  [3, 5],
+  [6, 8],
+  [9, 11],
+];
+
+export const constructDateFromSeason = (
+  date: Date,
+  season: SeasonBoundsConfig,
+): SeasonBounds => {
+  const startCurrentYear = new Date(
+    `${date.getUTCFullYear()}-${season.start}T12:00:00Z`,
+  ).getTime();
+  const endCurrentYear = new Date(
+    `${date.getUTCFullYear()}-${season.end}T12:00:00Z`,
+  ).getTime();
+  const startPreviousYear = new Date(
+    `${date.getUTCFullYear() - 1}-${season.start}T12:00:00Z`,
+  ).getTime();
+  const endNextYear = new Date(
+    `${date.getUTCFullYear() + 1}-${season.end}T12:00:00Z`,
+  ).getTime();
+
+  // eslint-disable-next-line no-nested-ternary
+  return endCurrentYear >= startCurrentYear
+    ? { start: new Date(startCurrentYear), end: new Date(endCurrentYear) }
+    : date.getTime() >= startCurrentYear
+      ? { start: new Date(startCurrentYear), end: new Date(endNextYear) }
+      : { start: new Date(startPreviousYear), end: new Date(endCurrentYear) };
+};
+
+/**
+ * Get the start and end date of the season for a given date.
+ * @param date The date to get the season for.
+ * @param seasonBounds The season bounds to use (optional) formatted as "MMMM-DD"
+ * @returns The start and end date of the season or null if no matching season is found.
+ */
+export const getSeasonBounds = (
+  date: Date,
+  seasonBounds?: SeasonBoundsConfig[],
+): SeasonBounds | null => {
+  if (seasonBounds) {
+    const foundSeason = seasonBounds.find(season => {
+      const { start, end } = constructDateFromSeason(date, season);
+      return date >= start && date <= end;
+    });
+    if (foundSeason) {
+      return constructDateFromSeason(date, foundSeason);
+    }
+    return null;
+  }
+  const monthIndex = date.getMonth();
+  const foundSeason = SEASON_MAP.find(
+    season => season[0] <= monthIndex && monthIndex <= season[1],
+  ) as [number, number];
+  return {
+    start: new Date(date.getFullYear(), foundSeason[0], 1),
+    end: new Date(date.getFullYear(), foundSeason[1] + 1, 1),
+  };
+};
+
+/**
+ * Return the closest date from a given list of available dates
+ * @param date
+ * @param availableDates
+ * @return date as milliseconds
+ */
+export function findClosestDate(
+  date: number,
+  availableDates: ReturnType<Date['getTime']>[],
+) {
+  // TODO - better handle empty arrays.
+  if (availableDates.length === 0) {
+    return date;
+  }
+
+  const reducerFunc = (
+    closest: ReturnType<Date['getTime']>,
+    current: ReturnType<Date['getTime']>,
+  ) => {
+    const diff = Math.abs(current - date);
+    const closestDiff = Math.abs(closest - date);
+
+    if (diff < closestDiff) {
+      return current;
+    }
+
+    return closest;
+  };
+
+  return availableDates.reduce(reducerFunc);
+}

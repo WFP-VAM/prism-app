@@ -1,4 +1,4 @@
-import React, { memo, useMemo } from 'react';
+import { memo, useMemo } from 'react';
 import * as Sentry from '@sentry/browser';
 import { useIsAuthenticated } from '@azure/msal-react';
 import { ThemeProvider } from '@material-ui/core/styles';
@@ -56,23 +56,17 @@ Font.register({
   ],
 });
 
-const Wrapper = memo(() => {
-  const [isAlertFormOpen, setIsAlertFormOpen] = React.useState(false);
-  return (
-    <div id="app">
-      <NavBar
-        isAlertFormOpen={isAlertFormOpen}
-        setIsAlertFormOpen={setIsAlertFormOpen}
-      />
-      <Switch>
-        <Route>
-          <MapView setIsAlertFormOpen={setIsAlertFormOpen} />
-          <AuthModal />
-        </Route>
-      </Switch>
-    </div>
-  );
-});
+const Wrapper = memo(() => (
+  <div id="app">
+    <NavBar />
+    <Switch>
+      <Route>
+        <MapView />
+        <AuthModal />
+      </Route>
+    </Switch>
+  </div>
+));
 
 function App() {
   const isAuthenticated = useIsAuthenticated();

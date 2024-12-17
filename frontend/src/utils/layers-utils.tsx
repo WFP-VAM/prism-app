@@ -1,4 +1,3 @@
-import { findClosestDate } from 'components/MapView/DateSelector/utils';
 import { checkLayerAvailableDatesAndContinueOrRemove } from 'components/MapView/utils';
 import { appConfig } from 'config';
 import {
@@ -23,7 +22,7 @@ import {
 } from 'context/mapStateSlice/selectors';
 import { addNotification } from 'context/notificationStateSlice';
 import { availableDatesSelector } from 'context/serverStateSlice';
-import { countBy, get, pickBy } from 'lodash';
+import { countBy, get, pickBy, uniqBy } from 'lodash';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { LocalError } from 'utils/error-utils';
@@ -35,12 +34,14 @@ import {
 } from 'utils/server-utils';
 import { UrlLayerKey, getUrlKey, useUrlHistory } from 'utils/url-utils';
 import { AAAvailableDatesSelector } from 'context/anticipatoryActionStateSlice';
+import { useTranslation } from 'react-i18next';
 
 import {
   datesAreEqualWithoutTime,
   binaryIncludes,
   getFormattedDate,
-  getTimeInMilliseconds,
+  dateWithoutTime,
+  findClosestDate,
 } from './date-utils';
 
 const dateSupportLayerTypes: Array<LayerType['type']> = [
@@ -53,6 +54,7 @@ const dateSupportLayerTypes: Array<LayerType['type']> = [
 
 const useLayers = () => {
   const dispatch = useDispatch();
+  const { t } = useTranslation();
   const [defaultLayerAttempted, setDefaultLayerAttempted] = useState(false);
 
   const { urlParams, updateHistory, removeLayerFromUrl } = useUrlHistory();
@@ -130,7 +132,10 @@ const useLayers = () => {
           }
           if (layer.type === 'composite') {
             // some WMS layer might not have date dimension (i.e. static data)
-            return layer.dateLayer in serverAvailableDates;
+            return (
+              layer.id in serverAvailableDates ||
+              layer.dateLayer in serverAvailableDates
+            );
           }
           return dateSupportLayerTypes.includes(layer.type);
         })
@@ -157,7 +162,14 @@ const useLayers = () => {
               // Combine dates for all AA windows to allow selecting AA for the whole period
               return AAAvailableDatesCombined;
             }
-            return getPossibleDatesForLayer(layer, serverAvailableDates);
+            const possibleDates = getPossibleDatesForLayer(
+              layer,
+              serverAvailableDates,
+            );
+            const uniqueDates = uniqBy(possibleDates, dateItem =>
+              dateWithoutTime(dateItem.displayDate),
+            );
+            return uniqueDates;
           })
           .filter(value => value) // null check
           .flat()
@@ -175,6 +187,10 @@ const useLayers = () => {
     if (selectedLayersWithDateSupport.length === 0) {
       return [];
     }
+    const selectedNonAALayersWithDateSupport =
+      selectedLayersWithDateSupport.filter(
+        layer => layer.type !== 'anticipatory_action',
+      );
     /*
       Only keep the dates which were duplicated the same amount of times as the amount of layers active...and convert back to array.
      */
@@ -182,13 +198,13 @@ const useLayers = () => {
     return Object.keys(
       pickBy(
         selectedLayerDatesDupCount,
-        dupTimes => dupTimes >= selectedLayersWithDateSupport.length,
+        dupTimes => dupTimes >= selectedNonAALayersWithDateSupport.length,
       ),
       // convert back to number array after using YYYY-MM-DD strings in countBy
     )
       .map(dateString => new Date(dateString).setUTCHours(12, 0, 0, 0))
       .sort((a, b) => a - b);
-  }, [selectedLayerDatesDupCount, selectedLayersWithDateSupport.length]);
+  }, [selectedLayerDatesDupCount, selectedLayersWithDateSupport]);
 
   const defaultLayer = useMemo(() => get(appConfig, 'defaultLayer'), []);
 
@@ -248,7 +264,9 @@ const useLayers = () => {
     if (!defaultLayerAttempted) {
       dispatch(
         addNotification({
-          message: `Invalid default layer identifier: ${defaultLayer}`,
+          message: t('Invalid default layer identifier: {{defaultLayer}}', {
+            defaultLayer,
+          }),
           type: 'error',
         }),
       );
@@ -263,6 +281,7 @@ const useLayers = () => {
     hazardLayerIds,
     layerDefinitionsIncludeDefaultLayer,
     updateHistory,
+    t,
   ]);
 
   const serverAvailableDatesAreEmpty = useMemo(
@@ -318,7 +337,9 @@ const useLayers = () => {
     if (invalidLayersIds.length > 0) {
       dispatch(
         addNotification({
-          message: `Invalid layer identifier(s): ${invalidLayersIds.join(',')}`,
+          message: t('Invalid layer identifier(s): {{layers}}', {
+            layers: invalidLayersIds.join(','),
+          }),
           type: 'error',
         }),
       );
@@ -339,7 +360,7 @@ const useLayers = () => {
 
     dispatch(
       addNotification({
-        message: 'Invalid date found. Using most recent date',
+        message: t('Invalid date found. Using most recent date'),
         type: 'warning',
       }),
     );
@@ -354,6 +375,7 @@ const useLayers = () => {
     serverAvailableDatesAreEmpty,
     updateHistory,
     urlDate,
+    t,
   ]);
 
   const removeLayerAndUpdateHistory = useCallback(
@@ -389,24 +411,30 @@ const useLayers = () => {
 
   // let users know if the layers selected are not possible to view together.
   useEffect(() => {
-    // TODO: Why is this the case here? maybe we should remove it;
+    const nonBoundaryLayers = selectedLayers.filter(
+      layer => layer.type !== 'boundary',
+    );
     if (
-      // eslint-disable-next-line no-constant-condition
       selectedLayerDates.length !== 0 ||
       selectedLayersWithDateSupport.length === 0 ||
       !selectedDate ||
-      1
+      nonBoundaryLayers.length < 2
     ) {
       return;
     }
 
     // WARNING - This logic doesn't apply anymore if we order layers differently...
-    const layerToRemove = selectedLayers[selectedLayers.length - 2];
-    const layerToKeep = selectedLayers[selectedLayers.length - 1];
+    const layerToRemove = nonBoundaryLayers[nonBoundaryLayers.length - 2];
+    const layerToKeep = nonBoundaryLayers[nonBoundaryLayers.length - 1];
 
     dispatch(
       addNotification({
-        message: `No dates overlap with the selected layers. Removing previous layer: ${layerToRemove.id}.`,
+        message: t(
+          'No dates overlap with the selected layers. Removing layer: {{layer}}',
+          {
+            layer: t(layerToRemove.title || layerToRemove.id),
+          },
+        ),
         type: 'warning',
       }),
     );
@@ -418,6 +446,7 @@ const useLayers = () => {
     selectedLayerDates.length,
     selectedLayers,
     selectedLayersWithDateSupport.length,
+    t,
   ]);
 
   const possibleDatesForLayerIncludeSelectedDate = useCallback(
@@ -432,74 +461,81 @@ const useLayers = () => {
     [AAAvailableDatesCombined, serverAvailableDates],
   );
 
+  const checkSelectedDateForLayerSupport = useCallback(
+    (providedSelectedDate?: number): number | null => {
+      if (!providedSelectedDate || selectedLayerDates.length === 0) {
+        return null;
+      }
+      let closestDate: number | null = null;
+      selectedLayersWithDateSupport.forEach(layer => {
+        const jsSelectedDate = new Date(providedSelectedDate);
+
+        const AADatesLoaded =
+          layer.type !== 'anticipatory_action' ||
+          layer.id in serverAvailableDates;
+
+        if (
+          serverAvailableDatesAreEmpty ||
+          possibleDatesForLayerIncludeSelectedDate(layer, jsSelectedDate) ||
+          !AADatesLoaded
+        ) {
+          return;
+        }
+
+        // eslint-disable-next-line fp/no-mutation
+        closestDate = findClosestDate(providedSelectedDate, selectedLayerDates);
+
+        if (
+          datesAreEqualWithoutTime(
+            jsSelectedDate.valueOf(),
+            closestDate.valueOf(),
+          )
+        ) {
+          console.warn({ closestDate });
+          console.warn(
+            'closest dates is the same as selected date, not updating url',
+          );
+        } else {
+          updateHistory(
+            'date',
+            getFormattedDate(closestDate, DateFormat.Default) as string,
+          );
+        }
+
+        dispatch(
+          addNotification({
+            message: t(
+              'No data was found for layer "{{layerTitle}}" on {{selectedDate}}. The closest date {{closestDate}} has been loaded instead.',
+              {
+                layerTitle: t(layer.title),
+                selectedDate: getFormattedDate(
+                  jsSelectedDate,
+                  DateFormat.Default,
+                ),
+                closestDate: getFormattedDate(closestDate, DateFormat.Default),
+              },
+            ),
+            type: 'warning',
+          }),
+        );
+      });
+      return closestDate;
+    },
+    [
+      dispatch,
+      possibleDatesForLayerIncludeSelectedDate,
+      selectedLayerDates,
+      selectedLayersWithDateSupport,
+      serverAvailableDates,
+      serverAvailableDatesAreEmpty,
+      updateHistory,
+      t,
+    ],
+  );
+
   useEffect(() => {
-    if (
-      !selectedDate ||
-      !urlDate ||
-      getTimeInMilliseconds(urlDate) === selectedDate
-    ) {
-      return;
-    }
-    selectedLayersWithDateSupport.forEach(layer => {
-      const jsSelectedDate = new Date(selectedDate);
-
-      const AADatesLoaded =
-        layer.type !== 'anticipatory_action' ||
-        layer.id in serverAvailableDates;
-
-      if (
-        serverAvailableDatesAreEmpty ||
-        possibleDatesForLayerIncludeSelectedDate(layer, jsSelectedDate) ||
-        !AADatesLoaded
-      ) {
-        return;
-      }
-
-      const closestDate = findClosestDate(selectedDate, selectedLayerDates);
-
-      if (
-        datesAreEqualWithoutTime(
-          jsSelectedDate.valueOf(),
-          closestDate.valueOf(),
-        )
-      ) {
-        console.warn({ closestDate });
-        console.warn(
-          'closest dates is the same as selected date, not updating url',
-        );
-      } else {
-        updateHistory(
-          'date',
-          getFormattedDate(closestDate, DateFormat.Default) as string,
-        );
-      }
-
-      dispatch(
-        addNotification({
-          message: `No data was found for layer '${
-            layer.title
-          }' on ${getFormattedDate(
-            jsSelectedDate,
-            DateFormat.Default,
-          )}. The closest date ${getFormattedDate(
-            closestDate,
-            DateFormat.Default,
-          )} has been loaded instead.`,
-          type: 'warning',
-        }),
-      );
-    });
-  }, [
-    dispatch,
-    possibleDatesForLayerIncludeSelectedDate,
-    selectedDate,
-    selectedLayerDates,
-    selectedLayersWithDateSupport,
-    serverAvailableDates,
-    serverAvailableDatesAreEmpty,
-    updateHistory,
-    urlDate,
-  ]);
+    checkSelectedDateForLayerSupport(selectedDate);
+  }, [checkSelectedDateForLayerSupport, selectedDate]);
 
   return {
     adminBoundariesExtent,
@@ -508,6 +544,7 @@ const useLayers = () => {
     selectedLayerDates,
     selectedLayers,
     selectedLayersWithDateSupport,
+    checkSelectedDateForLayerSupport,
   };
 };
 

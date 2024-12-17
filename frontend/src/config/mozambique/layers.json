@@ -2248,6 +2248,120 @@
   "adamts_buffers": {
     "server_layer_name": "moz_gdacs_buffers"
   },
+  "ipc_phase_2024": {
+    "title": "IPC Phase Classification April to September 2024",
+    "type": "admin_level_data",
+    "path": "data/mozambique/ipc/ipc-2024-v2.json",
+    "boundary": "admin2_boundaries",
+    "admin_level": 2,
+    "data_field": "ph_class",
+    "admin_code": "adm2_source_id",
+    "opacity": 0.9,
+    "legend": [
+      {
+        "value": 1,
+        "label": "Phase 1 - None / minimal",
+        "color": "#c6ffc7"
+      },
+      {
+        "value": 2,
+        "label": "Phase 2 - Stressed",
+        "color": "#ffe718"
+      },
+      {
+        "value": 3,
+        "label": "Phase 3 - Crisis",
+        "color": "#e88400"
+      },
+      {
+        "value": 4,
+        "label": "Phase 4 - Emergency",
+        "color": "#e02d00"
+      },
+      {
+        "value": 5,
+        "label": "Phase 5 - Disaster / famine",
+        "color": "#5e0803"
+      }
+    ],
+    "legend_text": "IPC Phase Classification for April - September 2024. Source: National IPC Technical Working Group"
+  }, 
+  "ipc_phase_projection_2024_2025": {
+    "title": "IPC Phase Classification Projection October 2024 to March 2025",
+    "type": "admin_level_data",
+    "path": "data/mozambique/ipc/ipc-2024.json",
+    "boundary": "admin2_boundaries",
+    "admin_level": 2,
+    "data_field": "act_040924",
+    "admin_code": "adm2_source_id",
+    "opacity": 0.9,
+    "legend": [
+      {
+        "value": 1,
+        "label": "Phase 1 - None / minimal",
+        "color": "#c6ffc7"
+      },
+      {
+        "value": 2,
+        "label": "Phase 2 - Stressed",
+        "color": "#ffe718"
+      },
+      {
+        "value": 3,
+        "label": "Phase 3 - Crisis",
+        "color": "#e88400"
+      },
+      {
+        "value": 4,
+        "label": "Phase 4 - Emergency",
+        "color": "#e02d00"
+      },
+      {
+        "value": 5,
+        "label": "Phase 5 - Disaster / famine",
+        "color": "#5e0803"
+      }
+    ],
+    "legend_text": "IPC Phase Classification Projection October 2024 to March 2025. Source: National IPC Technical Working Group"
+  },   
+  "ipc_phase_projection_2024_2025_v2": {
+    "title": "IPC Phase Classification Projection October 2024 to March 2025",
+    "type": "admin_level_data",
+    "path": "data/mozambique/ipc/ipc-2025-projection-as-of-2024-09.json",
+    "boundary": "admin2_boundaries",
+    "admin_level": 2,
+    "data_field": "ph_class",
+    "admin_code": "adm2_source_id",
+    "opacity": 0.9,
+    "legend": [
+      {
+        "value": 1,
+        "label": "Phase 1 - None / minimal",
+        "color": "#c6ffc7"
+      },
+      {
+        "value": 2,
+        "label": "Phase 2 - Stressed",
+        "color": "#ffe718"
+      },
+      {
+        "value": 3,
+        "label": "Phase 3 - Crisis",
+        "color": "#e88400"
+      },
+      {
+        "value": 4,
+        "label": "Phase 4 - Emergency",
+        "color": "#e02d00"
+      },
+      {
+        "value": 5,
+        "label": "Phase 5 - Disaster / famine",
+        "color": "#5e0803"
+      }
+    ],
+    "legend_text": "IPC Phase Classification Projection October 2024 to March 2025. Source: National IPC Technical Working Group"
+  },  
   "ipc_phase_2022": {
     "title": "IPC Phase Classification 2022",
     "type": "admin_level_data",
@@ -2767,10 +2881,64 @@
     ],
     "legend_text": "Projected 2022 population data. Source: INE"
   },
+  "pop_proj_2025": {
+    "title": "Population projection 2025",
+    "type": "admin_level_data",
+    "path": "data/mozambique/moz-pop-projc-2025-INE.json",
+    "data_field": "2025_Tot",
+    "boundary": "admin2_boundaries",
+    "admin_level": 2,
+    "admin_code": "adm2_source_id",
+    "opacity": 0.7,
+    "feature_info_props": {
+      "Tot_Urb_20": {
+        "type": "text",
+        "dataTitle": "Total urban population"
+      },
+      "2025_Rur_T": {
+        "type": "number",
+        "dataTitle": "Total rural population"
+      }
+    },
+    "legend": [
+      {
+        "value": 1,
+        "label": "< 50,000",
+        "color": "#eff3ff"
+      },
+      {
+        "value": 50000,
+        "label": "50,000 - 100,000",
+        "color": "#bdd7e7"
+      },
+      {
+        "value": 100000,
+        "label": "100,000 - 250,000",
+        "color": "#6baed6"
+      },
+      {
+        "value": 250000,
+        "label": "250,000 - 500,000",
+        "color": "#3182bd"
+      },
+      {
+        "value": 500000,
+        "label": "> 500,000",
+        "color": "#08519c"
+      }
+    ],
+    "legend_text": "Projected 2025 population data. Source: INE"
+  },
   "cdi": {
     "title": "Combined Drought Index",
     "type": "composite",
+    "period": "monthly",
     "base_url": "https://hip-service.ovio.org/q_multi_geojson",
+    "validity": {
+      "forward": 1,
+      "backward": 2,
+      "mode": "dekad"
+    },
     "input_layers": [
       {
         "id": "spi_1m",
@@ -2781,7 +2949,7 @@
       {
         "id": "et0",
         "importance": 0.3,
-        "key": ["FAO", "WAPOR_ET0_DEKAD_LTA"],
+        "key": ["FAO", "WAPOR_ET0_DEKAD"],
         "aggregation": "last_dekad"
       },
       {
@@ -2846,7 +3014,107 @@
     "legend_text": "Composite Drought Index",
     "aggregation": "pixel",
     "date_layer": "spi_1m",
-    "start_date": "2023-12-01",
+    "start_date": "2020-12-01",
+    "end_date": "2021-07-31",
+    "opacity": 0.7
+  },
+  "cdi_test": {
+    "title": "Combined Drought Index (v1)",
+    "type": "composite",
+    "period": "monthly",
+    "base_url": "https://hip-service.ovio.org/q_multi_geojson",
+    "validity": {
+      "forward": 1,
+      "backward": 2,
+      "mode": "dekad"
+    },
+    "input_layers": [
+      {
+        "id": "spi_1m",
+        "importance": 0.5,
+        "key": [
+          "CHIRPS",
+          "R1S_DEKAD"
+        ],
+        "aggregation": "last_dekad"
+      },
+      {
+        "id": "lst_anomaly",
+        "importance": 0.25,
+        "key": [
+          "MODIS",
+          "MYD11C2_TDD_DEKAD"
+        ],
+        "aggregation": "last_dekad"
+      },
+      {
+        "id": "ndvi_dekad",
+        "importance": 0.25,
+        "key": [
+          "MODIS",
+          "NDVI_smoothed_5KM"
+        ],
+        "aggregation": "average",
+        "invert": "True"
+      }
+    ],
+    "legend": [
+      {
+        "value": 0,
+        "label": "0 - 0.1",
+        "color": "#672200"
+      },
+      {
+        "value": 0.1,
+        "label": "0.1 - 0.2",
+        "color": "#a93800"
+      },
+      {
+        "value": 0.2,
+        "label": "0.2 - 0.3",
+        "color": "#e59800"
+      },
+      {
+        "value": 0.3,
+        "label": "0.3 - 0.4",
+        "color": "#ffe769"
+      },
+      {
+        "value": 0.4,
+        "label": "0.4 - 0.5",
+        "color": "#f0f0f0"
+      },
+      {
+        "value": 0.5,
+        "label": "0.5 - 0.6",
+        "color": "#f0f0f0"
+      },
+      {
+        "value": 0.6,
+        "label": "0.6 - 0.7",
+        "color": "#a9c6d6"
+      },
+      {
+        "value": 0.7,
+        "label": "0.7 - 0.8",
+        "color": "#019ac4"
+      },
+      {
+        "value": 0.8,
+        "label": "0.8 - 0.9",
+        "color": "#014c73"
+      },
+      {
+        "value": 0.9,
+        "label": "0.9 - 1",
+        "color": "#014c73"
+      }
+    ],
+    "legend_text": "Composite Drought Index v1. SPI weight = 0.5; LST weight = 0.25; NDVI weight = 0.25",
+    "aggregation": "pixel",
+    "date_layer": "spi_1m",
+    "start_date": "2020-12-01",
+    "end_date": "2021-07-31",
     "opacity": 0.7
   }
 }

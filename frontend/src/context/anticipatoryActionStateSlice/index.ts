@@ -3,6 +3,7 @@ import Papa from 'papaparse';
 import { DateItem } from 'config/types';
 import { appConfig } from 'config';
 import { AAWindowKeys } from 'config/utils';
+import { getCurrentDateTimeForUrl } from 'utils/date-utils';
 import type { CreateAsyncThunkTypes, RootState } from '../store';
 import {
   AACategoryType,
@@ -57,7 +58,7 @@ export const loadAAData = createAsyncThunk<
   undefined,
   CreateAsyncThunkTypes
 >('anticipatoryActionState/loadAAData', async () => {
-  const url = appConfig.anticipatoryActionUrl;
+  const url = `${appConfig.anticipatoryActionUrl}?date=${getCurrentDateTimeForUrl()}`;
 
   return new Promise<any>((resolve, reject) => {
     Papa.parse(url, {

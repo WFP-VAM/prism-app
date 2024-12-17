@@ -31,5 +31,5 @@ do
 
   # Deploy the app using surge
   echo "Deploying app for $country..."
-  yarn surge --project ./build --domain ${prefix}prism-test-$country.surge.sh
+  yarn surge --project ./build --domain ${prefix}prism-$country.surge.sh
 done
