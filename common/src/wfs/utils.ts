@@ -1,10 +1,8 @@
 import { isEmpty } from "lodash";
-import * as moment from "moment";
 
 import { findTagByName, findTagsByPath, getAttribute } from "xml-utils";
 
 import {
-  DEFAULT_DATE_FORMAT,
   findAndParseAbstract,
   findTagAttribute,
   findTagText,
@@ -21,6 +19,10 @@ import {
 } from "../ows";
 
 import type { BBOX } from "../types";
+
+function formatDateToISO(date: string | number): string {
+  return new Date(date).toISOString().split("T")[0];
+}
 
 type FeatureType = {
   name: ReturnType<typeof parseName>;
@@ -124,7 +126,7 @@ export function parseGetFeatureUrl(
   }
 
   // remove params
-  return url.split("?")[0];
+  return url.split("?")[0].replace(/^http:/, "https:");
 }
 
 export function hasFeatureType(
@@ -218,12 +220,8 @@ export function getFeaturesUrl(
     cql_filter: (() => {
       if (dateRange && dateField) {
         const [startDate, endDate] = dateRange;
-        const startDateFormatted = `${moment
-          .utc(startDate)
-          .format(DEFAULT_DATE_FORMAT)}T00:00:00`;
-        const endDateFormatted = `${moment
-          .utc(endDate)
-          .format(DEFAULT_DATE_FORMAT)}T23:59:59`;
+        const startDateFormatted = `${formatDateToISO(startDate)}T00:00:00`;
+        const endDateFormatted = `${formatDateToISO(endDate)}T23:59:59`;
         return `${dateField} BETWEEN ${startDateFormatted} AND ${endDateFormatted}`;
       }
       return undefined;
