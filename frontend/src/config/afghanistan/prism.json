@@ -2,6 +2,7 @@
   "country": "Afghanistan",
   "alertFormActive": false,
   "enableNavigationDropdown": true,
+  "countryAdmin0Id": 1,
   "icons": {
     "rainfall": "icon_rain.png",
     "vegetation": "icon_veg.png",
@@ -19,6 +20,11 @@
   "defaultDisplayBoundaries": ["admin_boundaries", "admin1_boundaries"],
   "categories": {
     "rainfall": {
+      "forecasts": [
+        "daily_rainfall_forecast",
+        "dekad_rainfall_forecast",
+        "dekad_rainfall_anomaly_forecast"
+      ],
       "rainfall_amount": [
         {
           "group_title": "Rainfall Aggregate",
@@ -129,7 +135,7 @@
       "dry_periods": ["days_dry", "streak_dry_days"],
       "extreme_rain_events": [
         {
-          "group_title": "Rainfall categories:",
+          "group_title": "Number of days of rainfall:",
           "activate_all": false,
           "layers": [
             {
@@ -181,15 +187,6 @@
         "lst_nighttime",
         "lst_anomaly",
         "lst_amplitude"
-      ]
-    },
-    "vulnerability": {
-      "ipc_phase_classification": ["ipc_phase_03_2022", "ipc_phase_06_2022"],
-      "ipc_population": [
-        "ipc_pop_03_2022",
-        "ipc_pop_06_2022",
-        "ipc_perc_03_2022",
-        "ipc_perc_06_2022"
       ]
     }
   }

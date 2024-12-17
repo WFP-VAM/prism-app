@@ -385,7 +385,7 @@ async function createAPIRequestParams(
 
   const adminLevel =
     (params as AdminLevelDataLayerProps)?.adminLevel ||
-    (params as BoundaryLayerProps)?.adminLevelCodes.length;
+    (params as BoundaryLayerProps)?.adminLevelCodes?.length;
   const { path: adminBoundariesPath, adminCode: groupBy } =
     getBoundaryLayersByAdminLevel(adminLevel);
 
@@ -496,6 +496,7 @@ export const requestAndStoreExposedPopulation = createAsyncThunk<
       params;
 
     const adminBoundaries = getBoundaryLayerSingleton();
+
     const adminBoundariesData = layerDataSelector(adminBoundaries.id)(
       api.getState(),
     ) as LayerData<BoundaryLayerProps>;
@@ -661,7 +662,7 @@ export const requestAndStoreAnalysis = createAsyncThunk<
 
   const adminLevel =
     (baselineLayer as AdminLevelDataLayerProps)?.adminLevel ||
-    (baselineLayer as BoundaryLayerProps)?.adminLevelCodes.length;
+    (baselineLayer as BoundaryLayerProps)?.adminLevelCodes?.length;
   const adminBoundaries = getBoundaryLayersByAdminLevel(adminLevel);
   const adminBoundariesData = layerDataSelector(adminBoundaries.id)(
     api.getState(),
@@ -809,7 +810,8 @@ export const requestAndStorePolygonAnalysis = createAsyncThunk<
     {
       id: PolygonalAggregationOperations.Area,
       label: PolygonalAggregationOperations.Area,
-      format: value => getRoundedData(value as number),
+      // temporariliy remove formatting as it breaks the CSV file
+      // format: value => getRoundedData(value as number),
     },
     {
       id: PolygonalAggregationOperations.Percentage,
@@ -819,9 +821,11 @@ export const requestAndStorePolygonAnalysis = createAsyncThunk<
   ];
 
   const zonalTableRows = result.table.rows.map((row: ZonalPolygonRow) => ({
+    // area: Math.round(convertArea(row['stat:area'], 'meters', 'kilometers')),
     area: Math.round(convertArea(row['stat:area'], 'meters', 'kilometers')),
 
-    percentage: row['stat:percentage'],
+    // percentage: row['stat:percentage'],
+    percentage: Math.round(row['stat:percentage'] * 100),
 
     // other keys
     ...Object.fromEntries(

@@ -27,11 +27,15 @@ function LanguageSelector() {
 
   const handleChangeLanguage = (lng: string): void => {
     i18n.changeLanguage(lng);
+    localStorage.setItem('userLanguage', lng);
     handleClose();
   };
 
   React.useEffect(() => {
-    const locale = get(appConfig, 'defaultLanguage', 'en');
+    const savedLanguage = localStorage.getItem('userLanguage');
+    const defaultLocale = get(appConfig, 'defaultLanguage', 'en');
+    const locale = savedLanguage || defaultLocale;
+
     if (languages.includes(locale)) {
       i18n.changeLanguage(locale);
     }
