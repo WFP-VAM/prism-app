@@ -39,6 +39,7 @@ export const loadAAData = createAsyncThunk<
     );
     const stormData = await response.json();
     const data = parseAndTransformAA(stormData as StormData);
+    console.log('data', data);
     return data;
   } catch (error) {
     return rejectWithValue(error);

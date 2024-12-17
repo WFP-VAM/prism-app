@@ -1,6 +1,6 @@
 import { render } from '@testing-library/react';
 import { DateItem } from 'config/types';
-import TimelineItem, { TimelineItemProps } from '.';
+import AADroughtTimelineItem, { AADroughtTimelineItemProps } from '.';
 
 test('TimelineItem renders as expected', () => {
   // Arrange
@@ -19,7 +19,7 @@ test('TimelineItem renders as expected', () => {
     ],
   ];
 
-  const props: Omit<TimelineItemProps, 'classes'> = {
+  const props: Omit<AADroughtTimelineItemProps, 'classes'> = {
     isDateAvailable: false,
     concatenatedLayers,
     currentDate: {
@@ -42,7 +42,7 @@ test('TimelineItem renders as expected', () => {
   };
 
   // Act
-  const { container } = render(<TimelineItem {...props} />);
+  const { container } = render(<AADroughtTimelineItem {...props} />);
 
   // Assert
   expect(container).toMatchSnapshot();
@@ -67,7 +67,7 @@ test('TimelineItem renders as expected with data point starting after Timeline s
 
   const concatenatedLayers = [layerDates, layerDates];
 
-  const props: Omit<TimelineItemProps, 'classes'> = {
+  const props: Omit<AADroughtTimelineItemProps, 'classes'> = {
     isDateAvailable: false,
     concatenatedLayers,
     currentDate: {
@@ -90,7 +90,7 @@ test('TimelineItem renders as expected with data point starting after Timeline s
   };
 
   // Act
-  const { container } = render(<TimelineItem {...props} />);
+  const { container } = render(<AADroughtTimelineItem {...props} />);
 
   // Assert
   expect(container).toMatchSnapshot();

@@ -12,7 +12,6 @@ import {
   DateCompatibleLayerWithDateItems,
   TIMELINE_ITEM_WIDTH,
 } from 'components/MapView/DateSelector/utils';
-import TimelineItem from './TimelineItem';
 import TimelineLabel from './TimelineLabel';
 import {
   DARK_BLUE_HEX,
@@ -25,6 +24,8 @@ import {
 import AAdroughtTooltipContent from './AADroughtTooltipContent';
 import AAStormTooltipContent from './AAStormTooltipContent';
 import { DateItemStyle } from './types';
+import AAStormTimelineItem from './AAStormTimelineItem';
+import AADroughtTimelineItem from './AADroughtTimelineItem';
 
 const TimelineItems = memo(
   ({
@@ -70,7 +71,7 @@ const TimelineItems = memo(
     const getTooltipContent = useCallback(
       (date: DateRangeType) =>
         isShowingAAStormLayer ? (
-          <AAStormTooltipContent />
+          <AAStormTooltipContent date={date} />
         ) : (
           <AAdroughtTooltipContent
             date={date}
@@ -112,12 +113,22 @@ const TimelineItems = memo(
                 data-date-index={index} // Used by the pointer tick to trigger tooltips
               >
                 <TimelineLabel locale={locale} date={date} />
-                <TimelineItem
-                  concatenatedLayers={truncatedLayers}
-                  currentDate={date}
-                  dateItemStyling={DATE_ITEM_STYLING}
-                  isDateAvailable={isDateAvailable}
-                />
+
+                {isShowingAAStormLayer ? (
+                  <AAStormTimelineItem
+                    // concatenatedLayers={truncatedLayers}
+                    currentDate={date}
+                    // dateItemStyling={DATE_ITEM_STYLING}
+                    // isDateAvailable={isDateAvailable}
+                  />
+                ) : (
+                  <AADroughtTimelineItem
+                    concatenatedLayers={truncatedLayers}
+                    currentDate={date}
+                    dateItemStyling={DATE_ITEM_STYLING}
+                    isDateAvailable={isDateAvailable}
+                  />
+                )}
               </Grid>
             </Tooltip>
           );
