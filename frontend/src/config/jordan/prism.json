@@ -122,7 +122,7 @@
       "dry_periods": ["days_dry", "streak_dry_days"],
       "extreme_rain_events": [
         {
-          "group_title": "Rainfall categories:",
+          "group_title": "Number of days of rainfall:",
           "activate_all": false,
           "layers": [
             {
@@ -211,7 +211,38 @@
       "vulnerability": ["vulnerability_scaled"]
     },
     "drought": {
-      "combined_drought_index": ["cdi_v1", "cdi_v2"]
+      "combined_drought_index": [
+        {
+          "group_title": "Combined Drought Index v1:",
+          "activate_all": false,
+          "layers": [
+            {
+              "id": "cdi_v1_monthly",
+              "label": "Monthly",
+              "main": true
+            },
+            {
+              "id": "cdi_v1_seasonal",
+              "label": "Seasonal"
+            }
+          ]
+        },
+        {
+          "group_title": "Combined Drought Index v2:",
+          "activate_all": false,
+          "layers": [
+            {
+              "id": "cdi_v2_monthly",
+              "label": "Monthly",
+              "main": true
+            },
+            {
+              "id": "cdi_v2_seasonal",
+              "label": "Seasonal"
+            }
+          ]
+        }
+      ]
     }
   }
 }

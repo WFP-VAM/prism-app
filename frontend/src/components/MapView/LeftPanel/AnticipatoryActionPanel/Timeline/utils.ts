@@ -7,6 +7,7 @@ import {
   AnticipatoryActionDataRow,
   AnticipatoryActionState,
 } from 'context/anticipatoryActionStateSlice/types';
+import { getSeason } from 'context/anticipatoryActionStateSlice/utils';
 
 function getColumnKey(val: AnticipatoryActionDataRow): number {
   const { category, phase } = val;
@@ -34,11 +35,11 @@ export function timelineTransform({
   selectedDistrict,
   data,
 }: TimelineTransformParams) {
-  const { selectedWindow, selectedIndex, categories } = filters;
+  const { selectedWindow, selectedIndex, categories, selectedDate } = filters;
+  const season = getSeason(selectedDate);
 
-  const windowData = (selectedWindow === 'All'
-    ? AAWindowKeys
-    : [selectedWindow]
+  const windowData = (
+    selectedWindow === 'All' ? AAWindowKeys : [selectedWindow]
   ).map(win => {
     const districtData = !!selectedDistrict && data[win][selectedDistrict];
     if (!districtData) {
@@ -47,6 +48,7 @@ export function timelineTransform({
 
     const filtered = districtData.filter(
       x =>
+        x.season === season &&
         !x.computedRow &&
         (selectedIndex === '' || selectedIndex === x.index) &&
         categories[x.category],
@@ -67,22 +69,50 @@ export function timelineTransform({
     filtered.forEach(x => {
       const key = getColumnKey(x);
       const val = categoriesMap.get(key);
-      categoriesMap.set(
-        key,
-        val
-          ? { status: val.status, data: [...val.data, x] }
-          : {
-              status: {
-                category: x.category,
-                phase: x.phase,
-              },
-              data: [x],
-            },
-      );
+      if (val) {
+        // Sort the new data based on validity
+        // eslint-disable-next-line fp/no-mutating-methods
+        const sortedData = [
+          x,
+          ...val.data.filter(item => item.date === x.date),
+        ].sort((a, b) => {
+          if (a.isValid && a.isOtherPhaseValid) {
+            return -1;
+          }
+          if (b.isValid && b.isOtherPhaseValid) {
+            return 1;
+          }
+          if (a.isValid) {
+            return -1;
+          }
+          if (b.isValid) {
+            return 1;
+          }
+          return 0;
+        });
+
+        // Keep only the highest priority item for this date
+        const highestPriorityItem = sortedData[0];
+
+        // Update the data array
+        // eslint-disable-next-line fp/no-mutation
+        val.data = [
+          ...val.data.filter(item => item.date !== x.date),
+          highestPriorityItem,
+        ];
+      } else {
+        categoriesMap.set(key, {
+          status: {
+            category: x.category,
+            phase: x.phase,
+          },
+          data: [x],
+        });
+      }
     });
     return [win, { months, rows: Object.fromEntries(categoriesMap) }];
   }) as [
-    typeof AAWindowKeys[number],
+    (typeof AAWindowKeys)[number],
     {
       months: string[][];
       rows: { [id: string]: TimelineRow };
@@ -90,7 +120,7 @@ export function timelineTransform({
   ][];
 
   const allRows = windowData
-    .map(([win, x]) =>
+    .map(([_win, x]) =>
       Object.entries(x?.rows || {}).map(([id, info]) => [
         id,
         { status: info.status, data: [] },

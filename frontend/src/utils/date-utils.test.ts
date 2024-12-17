@@ -1,5 +1,6 @@
 import {
   binaryFind,
+  findClosestDate,
   generateDateItemsRange,
   generateDatesRange,
   getFormattedDate,
@@ -63,16 +64,8 @@ describe('Test buildDateItemsFromStartEndDates', () => {
 describe('Binary search in ordered arrays of timestamps', () => {
   test('should return the index of found element', () => {
     const arr = [
-      1701160000000,
-      1702160000000,
-      1703160000000,
-      1703460000000,
-      1705160000000,
-      1705395000000,
-      1706160000000,
-      1715160000000,
-      1725160000000,
-      1735160000000,
+      1701160000000, 1702160000000, 1703160000000, 1703460000000, 1705160000000,
+      1705395000000, 1706160000000, 1715160000000, 1725160000000, 1735160000000,
     ];
     arr.forEach((elem, i) => {
       const idx = binaryFind<number>(arr, elem, x => x);
@@ -177,17 +170,32 @@ test('Test generateDatesRange', () => {
     new Date('2023-02-13'),
   );
   expect(ret).toEqual([
-    1675296000000,
-    1675382400000,
-    1675468800000,
-    1675555200000,
-    1675641600000,
-    1675728000000,
-    1675814400000,
-    1675900800000,
-    1675987200000,
-    1676073600000,
-    1676160000000,
-    1676246400000,
+    1675296000000, 1675382400000, 1675468800000, 1675555200000, 1675641600000,
+    1675728000000, 1675814400000, 1675900800000, 1675987200000, 1676073600000,
+    1676160000000, 1676246400000,
   ]);
+});
+
+describe('can find closest date', () => {
+  test('findClosestDate', () => {
+    const findClosestDateResult = new Date(
+      findClosestDate(
+        findClosestDateData.date,
+        findClosestDateData.availableDates,
+      ),
+    ).toISOString();
+
+    expect(findClosestDateResult).toBe(findClosestDateData.result);
+  });
+
+  const findClosestDateData = {
+    date: 1702288800000,
+    availableDates: [
+      1689076800000, 1689940800000, 1690891200000, 1691755200000, 1692619200000,
+      1693569600000, 1694433600000, 1695297600000, 1696161600000, 1697025600000,
+      1697889600000, 1698840000000, 1699704000000, 1700568000000, 1701432000000,
+      1702296000000, 1703160000000, 1704110400000, 1704974400000,
+    ],
+    result: '2023-12-11T12:00:00.000Z',
+  };
 });

@@ -5,6 +5,7 @@ import os
 import subprocess
 
 import rasterio
+import rioxarray
 from app.timer import timed
 from rasterio.warp import CRS, Resampling, calculate_default_transform, reproject
 
@@ -57,7 +58,7 @@ def reproj_match(
     Parameters
     ----------
     infile : (string) path to input file to reproject
-    match : (string) path to raster with desired shape and projection
+    matchfile : (string) path to raster with desired shape and projection
     outfile : (string) path to output file tif
     """
     with rasterio.open(infile) as src:
@@ -114,3 +115,16 @@ def calculate_pixel_area(geotiff_file):
         area = pixel_width * pixel_height / 1e6
 
         return area
+
+
+@timed
+def reproject_raster(raster_file: FilePath, dst_crs: str, out_file: FilePath):
+    """Reproject a raster file to a new CRS."""
+    x_raster = rioxarray.open_rasterio(raster_file, masked=True)
+    x_raster.rio.reproject(dst_crs).rio.to_raster(out_file)
+
+
+def get_raster_crs(raster_file: FilePath):
+    """Get the CRS of a raster file."""
+    with rasterio.open(raster_file) as src:
+        return src.crs

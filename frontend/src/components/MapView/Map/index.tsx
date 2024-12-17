@@ -2,9 +2,7 @@ import React, {
   ComponentType,
   createElement,
   memo,
-  SetStateAction,
   useCallback,
-  Dispatch,
   useMemo,
   useState,
 } from 'react';
@@ -40,21 +38,13 @@ import { MapSourceDataEvent, Map as MaplibreMap } from 'maplibre-gl';
 
 import 'maplibre-gl/dist/maplibre-gl.css';
 import { Panel, leftPanelTabValueSelector } from 'context/leftPanelStateSlice';
-
-interface MapComponentProps {
-  setIsAlertFormOpen: Dispatch<SetStateAction<boolean>>;
-}
+import { mapStyle } from './utils';
 
 type LayerComponentsMap<U extends LayerType> = {
   [T in U['type']]: {
     component: ComponentType<{ layer: DiscriminateUnion<U, 'type', T> }>;
   };
 };
-
-export const mapStyle = new URL(
-  process.env.REACT_APP_DEFAULT_STYLE ||
-    'https://api.maptiler.com/maps/0ad52f6b-ccf2-4a36-a9b8-7ebd8365e56f/style.json?key=y2DTSu9yWiu755WByJr3',
-);
 
 const componentTypes: LayerComponentsMap<LayerType> = {
   boundary: { component: BoundaryLayer },
@@ -73,7 +63,7 @@ const {
   map: { boundingBox, minZoom, maxZoom, maxBounds },
 } = appConfig;
 
-const MapComponent = memo(({ setIsAlertFormOpen }: MapComponentProps) => {
+const MapComponent = memo(() => {
   const mapRef = React.useRef<MapRef>(null);
 
   const dispatch = useDispatch();
@@ -89,8 +79,8 @@ const MapComponent = memo(({ setIsAlertFormOpen }: MapComponentProps) => {
     'label_airport',
   );
 
-  const fitBoundsOptions = useMemo(() => {
-    return {
+  const fitBoundsOptions = useMemo(
+    () => ({
       duration: 0,
       padding: {
         bottom: 150, // room for dates.
@@ -98,30 +88,28 @@ const MapComponent = memo(({ setIsAlertFormOpen }: MapComponentProps) => {
         right: 60,
         top: 70,
       },
-    };
-  }, [panelHidden]);
+    }),
+    [panelHidden],
+  );
 
-  const showBoundaryInfo = useMemo(() => {
-    return JSON.parse(process.env.REACT_APP_SHOW_MAP_INFO || 'false');
-  }, []);
+  const showBoundaryInfo = useMemo(
+    () => JSON.parse(process.env.REACT_APP_SHOW_MAP_INFO || 'false'),
+    [],
+  );
 
   const onDragEnd = useCallback(
-    (map: MaplibreMap) => {
-      return () => {
-        const bounds = map.getBounds();
-        dispatch(setBounds(bounds));
-      };
+    (map: MaplibreMap) => () => {
+      const bounds = map.getBounds();
+      dispatch(setBounds(bounds));
     },
     [dispatch],
   );
 
   const onZoomEnd = useCallback(
-    (map: MaplibreMap) => {
-      return () => {
-        const bounds = map.getBounds();
-        const newZoom = map.getZoom();
-        dispatch(setLocation({ bounds, zoom: newZoom }));
-      };
+    (map: MaplibreMap) => () => {
+      const bounds = map.getBounds();
+      const newZoom = map.getZoom();
+      dispatch(setLocation({ bounds, zoom: newZoom }));
     },
     [dispatch],
   );
@@ -137,34 +125,30 @@ const MapComponent = memo(({ setIsAlertFormOpen }: MapComponentProps) => {
   );
 
   const mapSourceListener = useCallback(
-    (layerIds: Set<LayerKey>) => {
-      return (e: MapSourceDataEvent) => {
-        if (!e.sourceId || !e.sourceId.startsWith('source-')) {
-          return;
-        }
-        const layerId = e.sourceId.substring('source-'.length) as LayerKey;
-        const included = layerIds.has(layerId);
-        if (!included && !e.isSourceLoaded) {
-          layerIds.add(layerId);
-          dispatch(setLoadingLayerIds([...layerIds]));
-        } else if (included && e.isSourceLoaded) {
-          layerIds.delete(layerId);
-          dispatch(setLoadingLayerIds([...layerIds]));
-        }
-      };
+    (layerIds: Set<LayerKey>) => (e: MapSourceDataEvent) => {
+      if (!e.sourceId || !e.sourceId.startsWith('source-')) {
+        return;
+      }
+      const layerId = e.sourceId.substring('source-'.length) as LayerKey;
+      const included = layerIds.has(layerId);
+      if (!included && !e.isSourceLoaded) {
+        layerIds.add(layerId);
+        dispatch(setLoadingLayerIds([...layerIds]));
+      } else if (included && e.isSourceLoaded) {
+        layerIds.delete(layerId);
+        dispatch(setLoadingLayerIds([...layerIds]));
+      }
     },
     [dispatch],
   );
 
   const idleMapListener = useCallback(
-    (layerIds: Set<LayerKey>) => {
-      return () => {
-        if (layerIds.size <= 0) {
-          return;
-        }
-        layerIds.clear();
-        dispatch(setLoadingLayerIds([...layerIds]));
-      };
+    (layerIds: Set<LayerKey>) => () => {
+      if (layerIds.size <= 0) {
+        return;
+      }
+      layerIds.clear();
+      dispatch(setLoadingLayerIds([...layerIds]));
     },
     [dispatch],
   );
@@ -182,7 +166,7 @@ const MapComponent = memo(({ setIsAlertFormOpen }: MapComponentProps) => {
 
   // TODO: maplibre: Maybe replace this with the map provider
   // Saves a reference to base MaplibreGl Map object in case child layers need access beyond the React wrappers.
-  const onMapLoad = (e: MapEvent) => {
+  const onMapLoad = (_e: MapEvent) => {
     if (!mapRef.current) {
       return;
     }
@@ -202,9 +186,7 @@ const MapComponent = memo(({ setIsAlertFormOpen }: MapComponentProps) => {
 
   const firstBoundaryId = boundaryId && getLayerMapId(boundaryId);
 
-  const mapOnClick = useCallback(() => {
-    return useMapOnClick(setIsAlertFormOpen, boundaryLayerId, mapRef.current);
-  }, [boundaryLayerId, setIsAlertFormOpen]);
+  const mapOnClick = useMapOnClick(boundaryLayerId, mapRef.current);
 
   const getBeforeId = useCallback(
     (index: number, aboveBoundaries: boolean = false) => {
@@ -237,7 +219,7 @@ const MapComponent = memo(({ setIsAlertFormOpen }: MapComponentProps) => {
       }}
       mapStyle={mapStyle.toString()}
       onLoad={onMapLoad}
-      onClick={mapOnClick()}
+      onClick={mapOnClick}
       maxBounds={maxBounds}
     >
       {selectedLayers.map((layer, index) => {

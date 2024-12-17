@@ -3,11 +3,10 @@ import {
   createStyles,
   IconButton,
   Tooltip,
-  WithStyles,
-  withStyles,
+  makeStyles,
 } from '@material-ui/core';
 import OpacityIcon from '@material-ui/icons/Opacity';
-import React, { memo, useCallback, useEffect, useMemo, useState } from 'react';
+import { memo, useCallback, useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { LayerKey, LayerType } from 'config/types';
 import { LayerDefinitions } from 'config/utils';
@@ -21,6 +20,7 @@ import { availableDatesSelector } from 'context/serverStateSlice';
 import { checkLayerAvailableDatesAndContinueOrRemove } from 'components/MapView/utils';
 import { LocalError } from 'utils/error-utils';
 import { opacitySelector, setOpacity } from 'context/opacityStateSlice';
+import { addLayer } from 'context/mapStateSlice';
 import { toggleRemoveLayer } from './utils';
 import LayerDownloadOptions from './LayerDownloadOptions';
 import ExposureAnalysisOption from './ExposureAnalysisOption';
@@ -30,7 +30,6 @@ import OpacitySlider from './OpacitySlider';
 
 const SwitchItem = memo(
   ({
-    classes,
     layer,
     extent,
     groupMenuFilter,
@@ -43,6 +42,7 @@ const SwitchItem = memo(
       type: layerType,
       group,
     } = layer;
+    const classes = useStyles();
     const { t } = useSafeTranslation();
     const selectedLayers = useSelector(layersSelector);
     const serverAvailableDates = useSelector(availableDatesSelector);
@@ -54,11 +54,8 @@ const SwitchItem = memo(
     // Hack to use composite layer type for hexDisplay layers and switch
     // to using fill for opacity control
     const layerTypeOverride = hexDisplay ? 'composite' : layerType;
-    const {
-      updateHistory,
-      appendLayerToUrl,
-      removeLayerFromUrl,
-    } = useUrlHistory();
+    const { updateHistory, appendLayerToUrl, removeLayerFromUrl } =
+      useUrlHistory();
 
     useEffect(() => {
       setIsOpacitySelected(false);
@@ -78,13 +75,15 @@ const SwitchItem = memo(
       );
     }, [dispatch, initialOpacity, layerId, layerTypeOverride, map, opacity]);
 
-    const someLayerAreSelected = useMemo(() => {
-      return selectedLayers.some(
-        ({ id: testId }) =>
-          testId === layerId ||
-          (group && group.layers.some(l => l.id === testId)),
-      );
-    }, [group, layerId, selectedLayers]);
+    const someLayerAreSelected = useMemo(
+      () =>
+        selectedLayers.some(
+          ({ id: testId }) =>
+            testId === layerId ||
+            (group && group.layers.some(l => l.id === testId)),
+        ),
+      [group, layerId, selectedLayers],
+    );
 
     const selectedActiveLayer = useMemo(
       () =>
@@ -100,12 +99,12 @@ const SwitchItem = memo(
       [group, someLayerAreSelected, selectedLayers],
     );
 
-    const initialActiveLayerId = useMemo(() => {
-      return selectedActiveLayer.length > 0
-        ? selectedActiveLayer[0].id
-        : layer.id;
+    const initialActiveLayerId = useMemo(
+      () =>
+        selectedActiveLayer.length > 0 ? selectedActiveLayer[0].id : layer.id,
       // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [layer.id]);
+      [layer.id],
+    );
 
     const [activeLayerId, setActiveLayerId] = useState(
       initialActiveLayerId || (group?.layers?.find(l => l.main)?.id as string),
@@ -118,13 +117,15 @@ const SwitchItem = memo(
       );
     }, [group, initialActiveLayerId]);
 
-    const exposure = useMemo(() => {
-      return (layer.type === 'wms' && layer.exposure) || undefined;
-    }, [layer.exposure, layer.type]);
+    const exposure = useMemo(
+      () => (layer.type === 'wms' && layer.exposure) || undefined,
+      [layer.exposure, layer.type],
+    );
 
-    const validatedTitle = useMemo(() => {
-      return t(group?.groupTitle || layerTitle || '');
-    }, [group, layerTitle, t]);
+    const validatedTitle = useMemo(
+      () => t(group?.groupTitle || layerTitle || ''),
+      [group, layerTitle, t],
+    );
 
     const toggleLayerValue = useCallback(
       (selectedLayerId: string, checked: boolean) => {
@@ -167,6 +168,7 @@ const SwitchItem = memo(
           selectedLayer,
         );
         updateHistory(urlLayerKey, updatedUrl);
+        dispatch(addLayer(layer));
         if (
           'boundary' in selectedLayer ||
           selectedLayer.type !== 'admin_level_data'
@@ -189,8 +191,20 @@ const SwitchItem = memo(
     );
 
     return (
-      <Box display="flex" flexDirection="column" maxWidth="100%">
-        <Box key={layerId} display="flex" alignItems="center">
+      <Box
+        style={{
+          display: 'flex',
+          flexDirection: 'column',
+          maxWidth: '100%',
+        }}
+      >
+        <Box
+          key={layerId}
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+          }}
+        >
           <SwitchAction
             activeLayerId={activeLayerId}
             someLayerAreSelected={someLayerAreSelected}
@@ -248,7 +262,7 @@ const SwitchItem = memo(
   },
 );
 
-const styles = () =>
+const useStyles = makeStyles(() =>
   createStyles({
     switch: {
       marginRight: 2,
@@ -276,13 +290,14 @@ const styles = () =>
         color: '#4CA1AD',
       },
     },
-  });
+  }),
+);
 
-export interface SwitchItemProps extends WithStyles<typeof styles> {
+export interface SwitchItemProps {
   layer: LayerType;
   extent?: Extent;
   groupMenuFilter?: string;
   disabledMenuSelection?: boolean;
 }
 
-export default withStyles(styles)(SwitchItem);
+export default SwitchItem;

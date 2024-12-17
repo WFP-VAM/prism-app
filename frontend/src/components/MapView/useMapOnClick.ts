@@ -1,6 +1,4 @@
 import { useDispatch, useSelector } from 'react-redux';
-import inside from '@turf/boolean-point-in-polygon';
-import { Feature, MultiPolygon } from '@turf/helpers';
 import { useCallback } from 'react';
 import {
   dateRangeSelector,
@@ -15,47 +13,23 @@ import {
 } from 'context/tooltipStateSlice';
 import { makeFeatureInfoRequest } from 'utils/server-utils';
 import { clearDataset } from 'context/datasetStateSlice';
-import { LngLat, MapLayerMouseEvent } from 'maplibre-gl';
+import { MapLayerMouseEvent } from 'maplibre-gl';
 import { MapRef } from 'react-map-gl/maplibre';
 import { getFormattedDate } from 'utils/date-utils';
 import { getActiveFeatureInfoLayers, getFeatureInfoParams } from './utils';
 
-const useMapOnClick = (
-  setIsAlertFormOpen: (value: boolean) => void,
-  boundaryLayerId: string,
-  mapRef: MapRef | null,
-) => {
+const useMapOnClick = (boundaryLayerId: string, mapRef: MapRef | null) => {
   const dispatch = useDispatch();
   const { startDate: selectedDate } = useSelector(dateRangeSelector);
   const boundaryLayerData = useSelector(layerDataSelector(boundaryLayerId)) as
     | LayerData<BoundaryLayerProps>
     | undefined;
 
-  // Whether the boundary layer data are outside of boundary bbox
-  const boundaryLayerDataAreOutsideOfBoundaryBBox = useCallback(
-    (lng: any, lat: any) => {
-      return boundaryLayerData?.data.features.every(
-        feature => !inside([lng, lat], feature as Feature<MultiPolygon>),
-      );
-    },
-    [boundaryLayerData],
-  );
-
-  // Hide the alert popup if we click outside the target country (outside boundary bbox)
-  const onClickOutsideTargetCountry = useCallback(
-    (lngLat: LngLat) => {
-      if (!boundaryLayerDataAreOutsideOfBoundaryBBox(lngLat.lng, lngLat.lat)) {
-        return;
-      }
-      setIsAlertFormOpen(false);
-    },
-    [boundaryLayerDataAreOutsideOfBoundaryBBox, setIsAlertFormOpen],
-  );
-
   // TODO: maplibre: fix feature
-  const getFeatureInfoLayers = useCallback((features?: any) => {
-    return getActiveFeatureInfoLayers(features);
-  }, []);
+  const getFeatureInfoLayers = useCallback(
+    (features?: any) => getActiveFeatureInfoLayers(features),
+    [],
+  );
 
   const dateFromRef = getFormattedDate(selectedDate, 'default');
 
@@ -85,7 +59,6 @@ const useMapOnClick = (
       dispatch(hidePopup());
       dispatch(clearDataset());
       // Hide the alert popup if we click outside the target country (outside boundary bbox)
-      onClickOutsideTargetCountry(mapEvent.lngLat);
       const featureInfoLayers = getFeatureInfoLayers(mapEvent.features);
       // Get layers that have getFeatureInfo option.
       if (featureInfoLayers.length !== 0) {

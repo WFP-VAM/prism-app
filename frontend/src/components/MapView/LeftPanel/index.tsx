@@ -18,6 +18,7 @@ import {
   AADataSelector,
   loadAAData,
 } from 'context/anticipatoryActionStateSlice';
+import { setSelectedBoundaries } from 'context/mapSelectionLayerStateSlice';
 import {
   availableDatesSelector,
   updateLayersCapabilities,
@@ -30,6 +31,7 @@ import AnticipatoryActionPanel from './AnticipatoryActionPanel';
 import LayersPanel from './layersPanel';
 import { areTablesAvailable, isAnticipatoryActionAvailable } from './utils';
 import { toggleRemoveLayer } from './layersPanel/MenuItem/MenuSwitch/SwitchItem/utils';
+import AlertsPanel from './AlertsPanel';
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -37,25 +39,23 @@ interface TabPanelProps {
   value: Panel;
 }
 
-const TabPanel = memo(({ children, value, index, ...other }: TabPanelProps) => {
-  return (
-    <div
-      role="tabpanel"
-      id={`full-width-tabpanel-${index}`}
-      aria-labelledby={`full-width-tab-${index}`}
-      style={{
-        display: index === value ? 'block' : 'none',
-        flexGrow: 1,
-        height: 'calc(94vh - 48px)',
-        order: index === value ? -1 : undefined,
-        overflowX: index === value ? 'hidden' : 'auto',
-      }}
-      {...other}
-    >
-      {children}
-    </div>
-  );
-});
+const TabPanel = memo(({ children, value, index, ...other }: TabPanelProps) => (
+  <div
+    role="tabpanel"
+    id={`full-width-tabpanel-${index}`}
+    aria-labelledby={`full-width-tab-${index}`}
+    style={{
+      display: index === value ? 'block' : 'none',
+      flexGrow: 1,
+      height: 'calc(94vh - 48px)',
+      order: index === value ? -1 : undefined,
+      overflowX: index === value ? 'hidden' : 'auto',
+    }}
+    {...other}
+  >
+    {children}
+  </div>
+));
 
 const LeftPanel = memo(() => {
   const dispatch = useDispatch();
@@ -65,11 +65,8 @@ const LeftPanel = memo(() => {
   const AAAvailableDates = useSelector(AAAvailableDatesSelector);
   const selectedLayers = useSelector(layersSelector);
   const map = useSelector(mapSelector);
-  const {
-    updateHistory,
-    appendLayerToUrl,
-    removeLayerFromUrl,
-  } = useUrlHistory();
+  const { updateHistory, appendLayerToUrl, removeLayerFromUrl } =
+    useUrlHistory();
 
   const classes = useStyles({ tabValue });
 
@@ -179,6 +176,22 @@ const LeftPanel = memo(() => {
     );
   }, [tabValue]);
 
+  const renderAlertsPanel = React.useMemo(
+    () => (
+      <TabPanel value={tabValue} index={Panel.Alerts}>
+        {tabValue === Panel.Alerts && <AlertsPanel />}
+      </TabPanel>
+    ),
+    [tabValue],
+  );
+
+  // Reset selected boundaries when tab changes from Alerts
+  React.useEffect(() => {
+    if (tabValue !== Panel.Alerts) {
+      dispatch(setSelectedBoundaries([]));
+    }
+  }, [tabValue, dispatch]);
+
   const renderedAnticipatoryActionPanel = React.useMemo(() => {
     if (!isAnticipatoryActionAvailable) {
       return null;
@@ -216,6 +229,7 @@ const LeftPanel = memo(() => {
             <AnalysisPanel />
           </TabPanel>
           {renderedTablesPanel}
+          {renderAlertsPanel}
           {renderedAnticipatoryActionPanel}
           {/* Empty panel to remove warnings */}
           <TabPanel value={tabValue} index={Panel.None} />

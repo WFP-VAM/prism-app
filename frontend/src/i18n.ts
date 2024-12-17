@@ -2,7 +2,6 @@ import { merge } from 'lodash';
 import i18n from 'i18next';
 import { initReactI18next, useTranslation } from 'react-i18next';
 import { registerLocale } from 'react-datepicker';
-import { useCallback } from 'react';
 import en from 'date-fns/locale/en-US';
 import fr from 'date-fns/locale/fr';
 import km from 'date-fns/locale/km';
@@ -16,6 +15,7 @@ import { translation } from './config';
 const TRANSLATION_DEBUG = false;
 // Register other date locales to be used by our DatePicker
 // TODO - extract registerLocale  imports and loading into a separate file for clarity.
+// Test for missing locales
 registerLocale('en', en);
 registerLocale('fr', fr);
 registerLocale('km', km);
@@ -24,7 +24,7 @@ registerLocale('es', es);
 registerLocale('ru', ru);
 registerLocale('mn', mn);
 
-export type i18nTranslator = typeof i18n['t'];
+export type i18nTranslator = (typeof i18n)['t'];
 
 export const appResources = {
   en: {
@@ -46,9 +46,7 @@ export const formattedTranslation = Object.keys(translation).reduce(
 );
 
 const englishKeys = Object.keys(translation)
-  .flatMap(language => {
-    return Object.keys(translation[language]);
-  })
+  .flatMap(language => Object.keys(translation[language]))
   .reduce(
     (previousKeys, currentKey) => ({
       ...previousKeys,
@@ -67,6 +65,28 @@ export const resources = merge(
 
 export const languages = Object.keys(resources);
 
+const isDevelopment = ['development', 'test'].includes(
+  process.env.NODE_ENV || '',
+);
+const missingKeys: Record<string, string[]> = {};
+
+function logMissingKey(lng: string, key: string) {
+  if (TRANSLATION_DEBUG || isDevelopment) {
+    // eslint-disable-next-line no-console
+    if (!missingKeys[lng]) {
+      // eslint-disable-next-line fp/no-mutation
+      missingKeys[lng] = [];
+    }
+
+    if (!missingKeys[lng].includes(key) && key !== '') {
+      // eslint-disable-next-line fp/no-mutating-methods
+      missingKeys[lng].push(key);
+      // eslint-disable-next-line no-console
+      console.log('Missing keys:', missingKeys[lng]);
+    }
+  }
+}
+
 i18n
   .use(initReactI18next) // passes i18n down to react-i18next
   .init({
@@ -79,6 +99,11 @@ i18n
     preload: languages,
     ns: ['translation'],
     defaultNS: 'translation',
+    saveMissing: true,
+    missingKeyHandler: (lng, _ns, key) => {
+      const foundLng = Array.isArray(lng) ? lng[0] : lng;
+      logMissingKey(foundLng, key);
+    },
   });
 
 export function useSafeTranslation(): {
@@ -88,23 +113,7 @@ export function useSafeTranslation(): {
 } {
   const { t, ...rest } = useTranslation();
   return {
-    t: useCallback(
-      (key: string) => {
-        if (key === undefined) {
-          return '';
-        }
-        if (key in resources.en.translation) {
-          return t(key);
-        }
-        if (TRANSLATION_DEBUG) {
-          console.warn(
-            `Translation for "${key}" is not configured in your translation file.`,
-          );
-        }
-        return key;
-      },
-      [t],
-    ),
+    t,
     ...rest,
   };
 }

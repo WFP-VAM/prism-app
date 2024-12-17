@@ -1,39 +1,44 @@
-import {
-  Typography,
-  WithStyles,
-  createStyles,
-  withStyles,
-} from '@material-ui/core';
+import { Typography, createStyles, makeStyles } from '@material-ui/core';
+import { ClassNameMap } from '@material-ui/styles';
 import React from 'react';
 import Markdown from 'react-markdown';
 
-interface LegendMarkdownProps extends WithStyles<typeof styles> {
+interface LegendMarkdownProps {
   children: string;
 }
 
-const LegendMarkdown = ({ children, classes }: LegendMarkdownProps) => (
-  <Markdown
-    linkTarget="_blank"
-    components={{
-      p: ({ children: pChildren }: { children: React.ReactNode }) => (
-        <Typography variant="h5" className={classes.legendTextMarkdown}>
-          {pChildren}
-        </Typography>
-      ),
-    }}
-    allowedElements={['p', 'h5', 'strong', 'em', 'a']}
-  >
-    {children}
-  </Markdown>
-);
+const p = (classes: ClassNameMap<'legendTextMarkdown'>) =>
+  function _p({ children: pChildren }: { children: React.ReactNode }) {
+    return (
+      <Typography variant="h5" className={classes.legendTextMarkdown}>
+        {pChildren}
+      </Typography>
+    );
+  };
 
-const styles = () =>
+function LegendMarkdown({ children }: LegendMarkdownProps) {
+  const classes = useStyles();
+  return (
+    <Markdown
+      linkTarget="_blank"
+      components={{
+        p: p(classes),
+      }}
+      allowedElements={['p', 'h5', 'strong', 'em', 'a']}
+    >
+      {children}
+    </Markdown>
+  );
+}
+
+const useStyles = makeStyles(() =>
   createStyles({
     legendTextMarkdown: {
       '& a': {
         textDecoration: 'underline',
       },
     },
-  });
+  }),
+);
 
-export default withStyles(styles)(LegendMarkdown);
+export default LegendMarkdown;

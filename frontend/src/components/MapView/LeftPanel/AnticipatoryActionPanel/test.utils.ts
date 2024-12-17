@@ -139,7 +139,9 @@ export const mockAAData: AnticipatoryActionState['data'] = {
         probability: 0.17,
         trigger: 0.22,
         date: '2023-11-01',
+        season: '2023-24',
         isValid: false,
+        isOtherPhaseValid: false,
       },
       {
         category: 'Moderate',
@@ -152,8 +154,9 @@ export const mockAAData: AnticipatoryActionState['data'] = {
         probability: 0.18,
         trigger: 0,
         date: '2023-12-01',
+        season: '2023-24',
         isValid: false,
-        wasReadyValid: false,
+        isOtherPhaseValid: false,
       },
     ],
     Changara: [
@@ -168,7 +171,9 @@ export const mockAAData: AnticipatoryActionState['data'] = {
         probability: 0.16,
         trigger: 0.17,
         date: '2023-08-01',
+        season: '2023-24',
         isValid: false,
+        isOtherPhaseValid: false,
       },
       {
         category: 'Mild',
@@ -181,7 +186,9 @@ export const mockAAData: AnticipatoryActionState['data'] = {
         probability: 0.22,
         trigger: 0.3,
         date: '2023-09-01',
+        season: '2023-24',
         isValid: false,
+        isOtherPhaseValid: false,
       },
       {
         category: 'Moderate',
@@ -194,7 +201,9 @@ export const mockAAData: AnticipatoryActionState['data'] = {
         probability: 0.19,
         trigger: 0.1,
         date: '2023-09-01',
+        season: '2023-24',
         isValid: true,
+        isOtherPhaseValid: false,
       },
       {
         category: 'Mild',
@@ -207,8 +216,9 @@ export const mockAAData: AnticipatoryActionState['data'] = {
         probability: 0.12,
         trigger: 0.3,
         date: '2023-09-01',
+        season: '2023-24',
         isValid: false,
-        wasReadyValid: false,
+        isOtherPhaseValid: false,
       },
       {
         category: 'Mild',
@@ -221,7 +231,9 @@ export const mockAAData: AnticipatoryActionState['data'] = {
         probability: 0.31,
         trigger: 0.2,
         date: '2023-10-01',
+        season: '2023-24',
         isValid: true,
+        isOtherPhaseValid: true,
       },
       {
         category: 'Moderate',
@@ -234,7 +246,9 @@ export const mockAAData: AnticipatoryActionState['data'] = {
         probability: 0.28,
         trigger: 0.2,
         date: '2023-10-01',
+        season: '2023-24',
         isValid: true,
+        isOtherPhaseValid: false,
       },
       {
         category: 'Mild',
@@ -247,8 +261,9 @@ export const mockAAData: AnticipatoryActionState['data'] = {
         probability: 0.34,
         trigger: 0.33,
         date: '2023-10-01',
+        season: '2023-24',
         isValid: false,
-        wasReadyValid: false,
+        isOtherPhaseValid: false,
       },
       {
         category: 'Moderate',
@@ -261,8 +276,9 @@ export const mockAAData: AnticipatoryActionState['data'] = {
         probability: 0.25,
         trigger: 0.26,
         date: '2023-10-01',
+        season: '2023-24',
         isValid: false,
-        wasReadyValid: true,
+        isOtherPhaseValid: true,
       },
       {
         category: 'Mild',
@@ -275,8 +291,9 @@ export const mockAAData: AnticipatoryActionState['data'] = {
         probability: 0.28,
         trigger: 0.25,
         date: '2023-11-01',
+        season: '2023-24',
         isValid: true,
-        wasReadyValid: true,
+        isOtherPhaseValid: true,
       },
       {
         category: 'Moderate',
@@ -289,8 +306,9 @@ export const mockAAData: AnticipatoryActionState['data'] = {
         probability: 0.22,
         trigger: 0.3,
         date: '2023-11-01',
+        season: '2023-24',
         isValid: false,
-        wasReadyValid: true,
+        isOtherPhaseValid: true,
       },
       {
         category: 'Mild',
@@ -303,9 +321,10 @@ export const mockAAData: AnticipatoryActionState['data'] = {
         probability: 0.28,
         trigger: 0.25,
         date: '2023-12-01',
+        season: '2023-24',
         isValid: true,
         computedRow: true,
-        wasReadyValid: true,
+        isOtherPhaseValid: true,
       },
     ],
   },
@@ -315,42 +334,43 @@ export const mockAAData: AnticipatoryActionState['data'] = {
   },
 };
 
-export const mockAARenderedDistricts: AnticipatoryActionState['renderedDistricts'] = {
-  'Window 1': {
-    Caia: [
-      {
-        category: 'ny',
-        phase: 'ny',
-        isNew: false,
-      },
-    ],
-    Changara: [
-      {
-        category: 'Moderate',
-        phase: 'Ready',
-        isNew: false,
-      },
-      {
-        category: 'Mild',
-        phase: 'Ready',
-        isNew: false,
-      },
-    ],
-  },
-  'Window 2': {
-    Caia: [
-      {
-        category: 'ny',
-        phase: 'ny',
-        isNew: false,
-      },
-    ],
-    Changara: [
-      {
-        category: 'ny',
-        phase: 'ny',
-        isNew: false,
-      },
-    ],
-  },
-};
+export const mockAARenderedDistricts: AnticipatoryActionState['renderedDistricts'] =
+  {
+    'Window 1': {
+      Caia: [
+        {
+          category: 'ny',
+          phase: 'ny',
+          isNew: false,
+        },
+      ],
+      Changara: [
+        {
+          category: 'Moderate',
+          phase: 'Ready',
+          isNew: false,
+        },
+        {
+          category: 'Mild',
+          phase: 'Ready',
+          isNew: false,
+        },
+      ],
+    },
+    'Window 2': {
+      Caia: [
+        {
+          category: 'ny',
+          phase: 'ny',
+          isNew: false,
+        },
+      ],
+      Changara: [
+        {
+          category: 'ny',
+          phase: 'ny',
+          isNew: false,
+        },
+      ],
+    },
+  };

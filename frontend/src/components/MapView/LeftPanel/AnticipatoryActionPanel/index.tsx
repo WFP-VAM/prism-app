@@ -69,9 +69,8 @@ function AnticipatoryActionPanel() {
   const monitoredDistricts = useSelector(AAMonitoredDistrictsSelector);
   const AAAvailableDates = useSelector(AAAvailableDatesSelector);
   const selectedDistrict = useSelector(AASelectedDistrictSelector);
-  const { categories: categoryFilters, selectedIndex } = useSelector(
-    AAFiltersSelector,
-  );
+  const { categories: categoryFilters, selectedIndex } =
+    useSelector(AAFiltersSelector);
   const { startDate: selectedDate } = useSelector(dateRangeSelector);
   const aaData = useSelector(AADataSelector);
   const view = useSelector(AAViewSelector);
@@ -204,7 +203,7 @@ function AnticipatoryActionPanel() {
             <RadioGroup
               defaultValue={allWindowsKey}
               className={classes.radioButtonGroup}
-              onChange={(e, val) =>
+              onChange={(_e, val) =>
                 dispatch(setAAFilters({ selectedWindow: val as any }))
               }
             >
@@ -239,7 +238,7 @@ function AnticipatoryActionPanel() {
         {!selectedDistrict && (
           <Typography>
             {t('Summary data as of ')}
-            {getFormattedDate(selectedDate, 'locale')}
+            {getFormattedDate(selectedDate, 'locale', t('date_locale'))}
           </Typography>
         )}
 

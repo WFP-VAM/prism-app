@@ -240,8 +240,8 @@ const generateTableFromApiData = (
   groupBy: string, // Reuse the groupBy parameter to generate the table
   baselineLayerData: DataRecord[] | null,
   extraColumns: string[],
-  isExposureAnalysisTable: boolean = false,
   key?: string,
+  isExposureAnalysisTable: boolean = false,
 ): TableRow[] => {
   // find the key that will let us reference the names of the bounding boxes.
   // We get the one corresponding to the specific level of baseline, or the first if we fail.
@@ -268,15 +268,14 @@ const generateTableFromApiData = (
     // find feature (a cell on the map) from admin boundaries json that closely matches this api row.
     // we decide it matches if the feature json has the same name as the name for this row.
     // once we find it we can get the corresponding local name.
-    const featureBoundary:
-      | Feature<Geometry, GeoJsonProperties>
-      | undefined = getFeatureBoundary(
-      isExposureAnalysisTable,
-      adminLayerData,
-      groupBy,
-      row,
-      adminLevelName,
-    );
+    const featureBoundary: Feature<Geometry, GeoJsonProperties> | undefined =
+      getFeatureBoundary(
+        isExposureAnalysisTable,
+        adminLayerData,
+        groupBy,
+        row,
+        adminLevelName,
+      );
 
     const name = getFullLocationName(
       adminLevelNames.slice(0, adminIndex + 1),
@@ -290,16 +289,16 @@ const generateTableFromApiData = (
     // we are searching the data of baseline layer to find the data associated with this feature
     // adminKey here refers to a specific feature (could be several) where the data is attached to.
     const rawBaselineValue =
-      baselineLayerData?.find(({ adminKey }) => {
+      baselineLayerData?.find(({ adminKey }) =>
         // TODO - Make this code more flexible.
         // we only check startsWith because the adminCode grows longer the deeper the level.
         // For example, 34 is state and 14 is district, therefore 3414 is a specific district in a specific state.
         // if this baseline layer only focuses on a higher level (just states) it would only contain 34, but every feature is very specific (uses the full number 3414)
         // therefore checking the start will cover all levels.
-        return featureBoundary?.properties?.[adminLayer.adminCode].startsWith(
+        featureBoundary?.properties?.[adminLayer.adminCode].startsWith(
           adminKey,
-        );
-      })?.value || 'No Data';
+        ),
+      )?.value || 'No Data';
 
     // The multiple statistics for the new table row
     const multipleStatistics: {
@@ -386,11 +385,9 @@ async function createAPIRequestParams(
 
   const adminLevel =
     (params as AdminLevelDataLayerProps)?.adminLevel ||
-    (params as BoundaryLayerProps)?.adminLevelCodes.length;
-  const {
-    path: adminBoundariesPath,
-    adminCode: groupBy,
-  } = getBoundaryLayersByAdminLevel(adminLevel);
+    (params as BoundaryLayerProps)?.adminLevelCodes?.length;
+  const { path: adminBoundariesPath, adminCode: groupBy } =
+    getBoundaryLayersByAdminLevel(adminLevel);
 
   // Note - This may not work when running locally as the function
   // will default to the boundary layer hosted in S3.
@@ -401,12 +398,8 @@ async function createAPIRequestParams(
     ? { wfs_params: params as WfsRequestParams }
     : undefined;
 
-  const {
-    additionalQueryParams,
-    baseUrl,
-    serverLayerName,
-    wcsConfig,
-  } = geotiffLayer;
+  const { additionalQueryParams, baseUrl, serverLayerName, wcsConfig } =
+    geotiffLayer;
   const dateValue = !wcsConfig?.disableDateParam ? date : undefined;
   const dateString = getFormattedDate(dateValue, 'default');
 
@@ -456,8 +449,8 @@ async function createAPIRequestParams(
 const mergeTableRows = (tableRows: TableRow[]): TableRow => {
   /* eslint-disable no-param-reassign, fp/no-mutation */
   const mergedObject: TableRow = tableRows.reduce(
-    (acc, tableRow) => {
-      return Object.keys(tableRow).reduce((tableRowAcc, tableRowKey) => {
+    (acc, tableRow) =>
+      Object.keys(tableRow).reduce((tableRowAcc, tableRowKey) => {
         if (typeof tableRow[tableRowKey] === 'number') {
           tableRowAcc[tableRowKey] = tableRowAcc[tableRowKey]
             ? Number(tableRowAcc[tableRowKey]) + Number(tableRow[tableRowKey])
@@ -466,8 +459,7 @@ const mergeTableRows = (tableRows: TableRow[]): TableRow => {
           tableRowAcc[tableRowKey] = tableRow[tableRowKey];
         }
         return tableRowAcc;
-      }, acc);
-    },
+      }, acc),
     {
       key: '',
       localName: '',
@@ -500,16 +492,11 @@ export const requestAndStoreExposedPopulation = createAsyncThunk<
 >(
   'analysisResultState/requestAndStoreExposedPopulation',
   async (params, api) => {
-    const {
-      exposure,
-      date,
-      extent,
-      statistic,
-      wfsLayerId,
-      maskLayerId,
-    } = params;
+    const { exposure, date, extent, statistic, wfsLayerId, maskLayerId } =
+      params;
 
     const adminBoundaries = getBoundaryLayerSingleton();
+
     const adminBoundariesData = layerDataSelector(adminBoundaries.id)(
       api.getState(),
     ) as LayerData<BoundaryLayerProps>;
@@ -627,8 +614,8 @@ export const requestAndStoreExposedPopulation = createAsyncThunk<
       apiRequest.group_by,
       null,
       [], // no extra columns
-      true,
       key,
+      true,
     );
 
     // If a key exists, we are likely running an exposure analysis for storms or earthquakes.
@@ -675,7 +662,7 @@ export const requestAndStoreAnalysis = createAsyncThunk<
 
   const adminLevel =
     (baselineLayer as AdminLevelDataLayerProps)?.adminLevel ||
-    (baselineLayer as BoundaryLayerProps)?.adminLevelCodes.length;
+    (baselineLayer as BoundaryLayerProps)?.adminLevelCodes?.length;
   const adminBoundaries = getBoundaryLayersByAdminLevel(adminLevel);
   const adminBoundariesData = layerDataSelector(adminBoundaries.id)(
     api.getState(),
@@ -727,7 +714,8 @@ export const requestAndStoreAnalysis = createAsyncThunk<
     return { ...adminBoundariesData.data, layerData: [] };
   };
 
-  const loadedAndCheckedBaselineData: BaselineLayerData = await getCheckedBaselineData();
+  const loadedAndCheckedBaselineData: BaselineLayerData =
+    await getCheckedBaselineData();
 
   const features = generateFeaturesFromApiData(
     aggregateData,
@@ -740,10 +728,8 @@ export const requestAndStoreAnalysis = createAsyncThunk<
   const legend =
     hazardLayer.legend ?? createLegendFromFeatureArray(features, statistic);
 
-  const enrichedStatistics: (
-    | AggregationOperations
-    | 'stats_intersect_area'
-  )[] = [statistic];
+  const enrichedStatistics: (AggregationOperations | 'stats_intersect_area')[] =
+    [statistic];
   if (statistic === AggregationOperations['Area exposed']) {
     /* eslint-disable-next-line fp/no-mutating-methods */
     enrichedStatistics.push('stats_intersect_area');
@@ -824,7 +810,8 @@ export const requestAndStorePolygonAnalysis = createAsyncThunk<
     {
       id: PolygonalAggregationOperations.Area,
       label: PolygonalAggregationOperations.Area,
-      format: value => getRoundedData(value as number),
+      // temporariliy remove formatting as it breaks the CSV file
+      // format: value => getRoundedData(value as number),
     },
     {
       id: PolygonalAggregationOperations.Percentage,
@@ -833,23 +820,23 @@ export const requestAndStorePolygonAnalysis = createAsyncThunk<
     },
   ];
 
-  const zonalTableRows = result.table.rows.map((row: ZonalPolygonRow) => {
-    return {
-      area: Math.round(convertArea(row['stat:area'], 'meters', 'kilometers')),
+  const zonalTableRows = result.table.rows.map((row: ZonalPolygonRow) => ({
+    // area: Math.round(convertArea(row['stat:area'], 'meters', 'kilometers')),
+    area: Math.round(convertArea(row['stat:area'], 'meters', 'kilometers')),
 
-      percentage: row['stat:percentage'],
+    // percentage: row['stat:percentage'],
+    percentage: Math.round(row['stat:percentage'] * 100),
 
-      // other keys
-      ...Object.fromEntries(
-        Object.entries(row)
-          // filter out statistic columns because they
-          // are already included above
-          .filter(entry => !entry[0].startsWith('stat:'))
-          // remove prefix from column labels
-          .map(([key, value]) => [key.replace(/^[a-z]+:/i, ''), value]),
-      ),
-    };
-  });
+    // other keys
+    ...Object.fromEntries(
+      Object.entries(row)
+        // filter out statistic columns because they
+        // are already included above
+        .filter(entry => !entry[0].startsWith('stat:'))
+        // remove prefix from column labels
+        .map(([key, value]) => [key.replace(/^[a-z]+:/i, ''), value]),
+    ),
+  }));
 
   const tableRows: TableRow[] = generateTableFromApiData(
     [
@@ -954,15 +941,13 @@ export const analysisResultSlice = createSlice({
     builder.addCase(
       requestAndStoreExposedPopulation.fulfilled,
       (
-        { result, ...rest },
+        { result: _result, ...rest },
         { payload }: PayloadAction<AnalysisResult>,
-      ): AnalysisResultState => {
-        return {
-          ...rest,
-          result: payload as ExposedPopulationResult,
-          isExposureLoading: false,
-        };
-      },
+      ): AnalysisResultState => ({
+        ...rest,
+        result: payload as ExposedPopulationResult,
+        isExposureLoading: false,
+      }),
     );
 
     builder.addCase(
@@ -987,7 +972,7 @@ export const analysisResultSlice = createSlice({
     builder.addCase(
       requestAndStoreAnalysis.fulfilled,
       (
-        { result, ...rest },
+        { result: _result, ...rest },
         { payload }: PayloadAction<AnalysisResult>,
       ): AnalysisResultState => ({
         ...rest,
@@ -1018,7 +1003,7 @@ export const analysisResultSlice = createSlice({
     builder.addCase(
       requestAndStorePolygonAnalysis.fulfilled,
       (
-        { result, ...rest },
+        { result: _result, ...rest },
         { payload }: PayloadAction<PolygonAnalysisResult>,
       ): AnalysisResultState => ({
         ...rest,

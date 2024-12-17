@@ -12,10 +12,10 @@ export const AAcategory = [
   'Moderate',
   'Severe',
 ] as const;
-export type AACategoryType = typeof AAcategory[number];
+export type AACategoryType = (typeof AAcategory)[number];
 
 export const AAPhase = ['ny', 'na', 'Ready', 'Set'] as const;
-export type AAPhaseType = typeof AAPhase[number];
+export type AAPhaseType = (typeof AAPhase)[number];
 export type Vulnerability = 'General Triggers' | 'Emergency Triggers';
 
 export interface AnticipatoryActionDataRow {
@@ -26,11 +26,12 @@ export interface AnticipatoryActionDataRow {
   probability: number;
   trigger: number;
   type: string;
-  window: typeof AAWindowKeys[number];
+  window: (typeof AAWindowKeys)[number];
   date: string;
+  season: string;
   new: boolean;
   isValid?: boolean;
-  wasReadyValid?: boolean;
+  isOtherPhaseValid?: boolean;
   computedRow?: boolean;
   // district vulnerability level
   vulnerability?: Vulnerability;
@@ -50,19 +51,21 @@ export enum AAView {
 }
 
 export type AnticipatoryActionState = {
-  data: Record<typeof AAWindowKeys[number], AnticipatoryActionData>;
+  data: Record<(typeof AAWindowKeys)[number], AnticipatoryActionData>;
   // availableDates used to update layer available dates after csv processed
-  availableDates?: Record<typeof AAWindowKeys[number], DateItem[]> | undefined;
+  availableDates?:
+    | Record<(typeof AAWindowKeys)[number], DateItem[]>
+    | undefined;
   monitoredDistricts: { name: string; vulnerability: Vulnerability }[];
   filters: {
     selectedDate: string | undefined;
-    selectedWindow: typeof AAWindowKeys[number] | typeof allWindowsKey;
+    selectedWindow: (typeof AAWindowKeys)[number] | typeof allWindowsKey;
     selectedIndex: string;
     categories: Record<AACategoryType, boolean>;
   };
   selectedDistrict: string;
   renderedDistricts: Record<
-    typeof AAWindowKeys[number],
+    (typeof AAWindowKeys)[number],
     {
       [district: string]: {
         category: AACategoryType;
@@ -79,7 +82,7 @@ export type AnticipatoryActionState = {
     centroid: any;
   }[];
   windowRanges: Record<
-    typeof AAWindowKeys[number],
+    (typeof AAWindowKeys)[number],
     { start: string; end: string } | undefined
   >;
   view: AAView;

@@ -3,6 +3,7 @@ import Papa from 'papaparse';
 import { DateItem } from 'config/types';
 import { appConfig } from 'config';
 import { AAWindowKeys } from 'config/utils';
+import { getCurrentDateTimeForUrl } from 'utils/date-utils';
 import type { CreateAsyncThunkTypes, RootState } from '../store';
 import {
   AACategoryType,
@@ -49,7 +50,7 @@ export const loadAAData = createAsyncThunk<
     windowData: {
       data: AnticipatoryActionData;
       availableDates: DateItem[];
-      windowKey: typeof AAWindowKeys[number];
+      windowKey: (typeof AAWindowKeys)[number];
       range: { start: string; end: string };
     }[];
     monitoredDistricts: { name: string; vulnerability: Vulnerability }[];
@@ -57,16 +58,16 @@ export const loadAAData = createAsyncThunk<
   undefined,
   CreateAsyncThunkTypes
 >('anticipatoryActionState/loadAAData', async () => {
-  const url = appConfig.anticipatoryActionUrl;
+  const url = `${appConfig.anticipatoryActionUrl}?date=${getCurrentDateTimeForUrl()}`;
 
-  return new Promise<any>((resolve, reject) =>
+  return new Promise<any>((resolve, reject) => {
     Papa.parse(url, {
       header: true,
       download: true,
       complete: results => resolve(parseAndTransformAA(results.data)),
       error: error => reject(error),
-    }),
-  );
+    });
+  });
 });
 
 export const anticipatoryActionStateSlice = createSlice({
@@ -80,7 +81,7 @@ export const anticipatoryActionStateSlice = createSlice({
       }: PayloadAction<
         Partial<{
           selectedDate: string | undefined;
-          selectedWindow: typeof AAWindowKeys[number] | typeof allWindowsKey;
+          selectedWindow: (typeof AAWindowKeys)[number] | typeof allWindowsKey;
           selectedIndex: string;
           categories: Partial<Record<AACategoryType, boolean>>;
         }>
@@ -132,17 +133,20 @@ export const anticipatoryActionStateSlice = createSlice({
     builder.addCase(loadAAData.fulfilled, (state, { payload }) => {
       const newData = Object.fromEntries(
         payload.windowData.map(x => [x.windowKey, x.data]),
-      ) as Record<typeof AAWindowKeys[number], AnticipatoryActionData>;
+      ) as Record<(typeof AAWindowKeys)[number], AnticipatoryActionData>;
       const newRanges = Object.fromEntries(
         payload.windowData.map(x => [x.windowKey, x.range]),
-      ) as Record<typeof AAWindowKeys[number], { start: string; end: string }>;
+      ) as Record<
+        (typeof AAWindowKeys)[number],
+        { start: string; end: string }
+      >;
       return {
         ...state,
         loading: false,
         data: newData,
         availableDates: Object.fromEntries(
           payload.windowData.map(x => [x.windowKey, x.availableDates]),
-        ) as Record<typeof AAWindowKeys[number], DateItem[]>,
+        ) as Record<(typeof AAWindowKeys)[number], DateItem[]>,
         windowRanges: newRanges,
         monitoredDistricts: payload.monitoredDistricts,
         renderedDistricts: calculateMapRenderedDistricts({
@@ -161,7 +165,7 @@ export const anticipatoryActionStateSlice = createSlice({
         : action.error.toString(),
     }));
 
-    builder.addCase(loadAAData.pending, ({ error, ...state }) => ({
+    builder.addCase(loadAAData.pending, ({ error: _error, ...state }) => ({
       ...state,
       error: null,
       loading: true,
@@ -198,11 +202,7 @@ export const AAWindowRangesSelector = (state: RootState) =>
   state.anticipatoryActionState.windowRanges;
 
 // export actions
-export const {
-  setAAFilters,
-  setAASelectedDistrict,
-  setAAMarkers,
-  setAAView,
-} = anticipatoryActionStateSlice.actions;
+export const { setAAFilters, setAASelectedDistrict, setAAMarkers, setAAView } =
+  anticipatoryActionStateSlice.actions;
 
 export default anticipatoryActionStateSlice.reducer;

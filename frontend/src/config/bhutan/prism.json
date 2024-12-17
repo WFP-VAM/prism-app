@@ -168,11 +168,24 @@
         "ndvi_dekad",
         "ndvi_dekad_anomaly"
       ]
-    },
+    }, 
+    "temperature": {
+      "land_surface_temperature": [
+        "lst_daytime",
+        "lst_nighttime",
+        "lst_amplitude",
+        "lst_anomaly"
+      ]
+    },  
     "demographics": {
       "census_data": [
         "population",
-        "households"
+        "households",
+        "females",
+        "males",
+        "age_below15",
+        "age15_64",
+        "age_over64"
       ]
     },
     "food_consumption": {

@@ -25,6 +25,7 @@ import {
 import { GetApp, BarChartOutlined } from '@material-ui/icons';
 import { appConfig, safeCountry } from 'config';
 import { PanelSize } from 'config/types';
+import { getCurrentDateTimeForUrl } from 'utils/date-utils';
 import { AADataSeverityOrder, getAAIcon, useAACommonStyles } from '../utils';
 
 interface AreaTagProps {
@@ -214,7 +215,7 @@ function HomeTable({ dialogs }: HomeTableProps) {
       startIcon: <GetApp />,
       text: 'Assets',
       component: 'a',
-      href: appConfig.anticipatoryActionUrl,
+      href: `${appConfig.anticipatoryActionUrl}?date=${getCurrentDateTimeForUrl()}`,
       download: `${window2Range?.end}-${filename}`,
     },
     {
@@ -230,7 +231,7 @@ function HomeTable({ dialogs }: HomeTableProps) {
   const headerRow: ExtendedRowProps = {
     id: -1,
     iconContent: null,
-    windows: selectedWindow === 'All' ? AAWindowKeys.map(x => []) : [[]],
+    windows: selectedWindow === 'All' ? AAWindowKeys.map(_x => []) : [[]],
     header: selectedWindow === 'All' ? [...AAWindowKeys] : [selectedWindow],
   };
 
@@ -239,10 +240,10 @@ function HomeTable({ dialogs }: HomeTableProps) {
       rowCategories
         .filter(x => categories[x.category])
         .map(x => {
-          const getWinData = (win: typeof AAWindowKeys[number]) =>
+          const getWinData = (win: (typeof AAWindowKeys)[number]) =>
             Object.entries(renderedDistricts[win])
-              .map(([district, distData]) => {
-                return distData.map(dist => {
+              .map(([district, distData]) =>
+                distData.map(dist => {
                   if (dist.category === x.category && dist.phase === x.phase) {
                     return {
                       name: district,
@@ -254,8 +255,8 @@ function HomeTable({ dialogs }: HomeTableProps) {
                     };
                   }
                   return undefined;
-                });
-              })
+                }),
+              )
               .flat()
               .filter(y => y !== undefined);
 

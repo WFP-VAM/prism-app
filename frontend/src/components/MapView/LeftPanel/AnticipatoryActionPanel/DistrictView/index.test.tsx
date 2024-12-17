@@ -1,4 +1,3 @@
-import React from 'react';
 import { render } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import { BrowserRouter } from 'react-router-dom';
@@ -16,12 +15,13 @@ const filters: AnticipatoryActionState['filters'] = {
   categories: {
     Severe: true,
     Moderate: true,
+    Normal: true,
     Mild: true,
     na: true,
     ny: true,
   },
   selectedIndex: '',
-  selectedDate: undefined,
+  selectedDate: '2023-05-01',
 };
 
 const store = mockStore({
@@ -75,9 +75,11 @@ const out = {
       {
         category: 'Mild',
         date: '2023-08-01',
+        season: '2023-24',
         district: 'Changara',
         index: 'SPI DJF',
         isValid: false,
+        isOtherPhaseValid: false,
         new: false,
         phase: 'na',
         probability: 0.16,
@@ -88,9 +90,11 @@ const out = {
       {
         category: 'Mild',
         date: '2023-09-01',
+        season: '2023-24',
         district: 'Changara',
         index: 'SPI DJF',
         isValid: false,
+        isOtherPhaseValid: false,
         new: false,
         phase: 'na',
         probability: 0.22,
@@ -101,15 +105,16 @@ const out = {
       {
         category: 'Mild',
         date: '2023-09-01',
+        season: '2023-24',
         district: 'Changara',
         index: 'SPI DJF',
         isValid: false,
+        isOtherPhaseValid: false,
         new: false,
         phase: 'na',
         probability: 0.12,
         trigger: 0.3,
         type: 'SPI',
-        wasReadyValid: false,
         window: 'Window 1',
       },
       {
@@ -123,7 +128,9 @@ const out = {
         probability: 0.31,
         trigger: 0.2,
         date: '2023-10-01',
+        season: '2023-24',
         isValid: true,
+        isOtherPhaseValid: true,
       },
       {
         category: 'Mild',
@@ -136,8 +143,9 @@ const out = {
         probability: 0.28,
         trigger: 0.25,
         date: '2023-11-01',
+        season: '2023-24',
         isValid: true,
-        wasReadyValid: true,
+        isOtherPhaseValid: true,
       },
     ],
     '40': [
@@ -152,7 +160,9 @@ const out = {
         probability: 0.19,
         trigger: 0.1,
         date: '2023-09-01',
+        season: '2023-24',
         isValid: true,
+        isOtherPhaseValid: false,
       },
       {
         category: 'Moderate',
@@ -165,7 +175,9 @@ const out = {
         probability: 0.28,
         trigger: 0.2,
         date: '2023-10-01',
+        season: '2023-24',
         isValid: true,
+        isOtherPhaseValid: false,
       },
       {
         category: 'Moderate',
@@ -178,8 +190,9 @@ const out = {
         probability: 0.22,
         trigger: 0.3,
         date: '2023-11-01',
+        season: '2023-24',
         isValid: false,
-        wasReadyValid: true,
+        isOtherPhaseValid: true,
       },
     ],
   },

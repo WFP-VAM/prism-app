@@ -136,8 +136,11 @@ export const loadEWSDataset = async (
   const results: DataItem[] = dataPoints.map(item => {
     const [measureDate, value] = item.value;
 
+    // offset back from UTC to local time so that the date is displayed correctly
+    // i.e. in Cambodia Time as it is received.
+    const offset = new Date().getTimezoneOffset();
     return {
-      date: getTimeInMilliseconds(measureDate),
+      date: getTimeInMilliseconds(measureDate) - offset * 60 * 1000,
       values: { measure: value.toString() },
     };
   });
@@ -161,7 +164,9 @@ export const loadEWSDataset = async (
     EWSConfig,
   };
 
-  return new Promise<TableData>(resolve => resolve(tableDataWithEWSConfig));
+  return new Promise<TableData>(resolve => {
+    resolve(tableDataWithEWSConfig);
+  });
 };
 
 type HDCResponse = {
@@ -266,7 +271,9 @@ export const loadAdminBoundaryDataset = async (
   );
 
   const tableData = createTableData(results, TableDataFormat.DATE);
-  return new Promise<TableData>(resolve => resolve(tableData));
+  return new Promise<TableData>(resolve => {
+    resolve(tableData);
+  });
 };
 
 export const loadDataset = createAsyncThunk<
@@ -275,11 +282,10 @@ export const loadDataset = createAsyncThunk<
   CreateAsyncThunkTypes
 >(
   'datasetState/loadDataset',
-  async (params: DatasetRequestParams, { dispatch }) => {
-    return (params as AdminBoundaryRequestParams).id
+  async (params: DatasetRequestParams, { dispatch }) =>
+    (params as AdminBoundaryRequestParams).id
       ? loadAdminBoundaryDataset(params as AdminBoundaryRequestParams, dispatch)
-      : loadEWSDataset(params as EWSDataPointsRequestParams, dispatch);
-  },
+      : loadEWSDataset(params as EWSDataPointsRequestParams, dispatch),
 );
 
 export const datasetResultStateSlice = createSlice({

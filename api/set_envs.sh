@@ -10,6 +10,7 @@ export KOBO_PASSWORD=$(aws secretsmanager get-secret-value     --secret-id KOBO_
 export PRISM_ALERTS_DATABASE_URL=$(aws secretsmanager get-secret-value     --secret-id PRISM_ALERTS_DATABASE_URL | jq .SecretString | jq fromjson | jq -r .PRISM_ALERTS_DATABASE_URL)
 export PRISM_ALERTS_EMAIL_USER=$(aws secretsmanager get-secret-value     --secret-id PRISM_ALERTS_EMAIL | jq .SecretString | jq fromjson | jq -r .PRISM_ALERTS_EMAIL_USER)
 export PRISM_ALERTS_EMAIL_PASSWORD=$(aws secretsmanager get-secret-value     --secret-id PRISM_ALERTS_EMAIL | jq .SecretString | jq fromjson | jq -r .PRISM_ALERTS_EMAIL_PASSWORD)
+export PRISM_ALERTS_EMAIL_HOST=$(aws secretsmanager get-secret-value     --secret-id PRISM_ALERTS_EMAIL | jq .SecretString | jq fromjson | jq -r .PRISM_ALERTS_EMAIL_HOST)
 
 # HDC Token
 export HDC_TOKEN=$(aws secretsmanager get-secret-value     --secret-id HDC_TOKEN | jq .SecretString | jq fromjson | jq -r .HDC_TOKEN)

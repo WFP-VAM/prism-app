@@ -1,6 +1,6 @@
-import React, { useCallback, useState, MouseEvent, memo, useMemo } from 'react';
+import { useCallback, useState, MouseEvent, memo, useMemo } from 'react';
 import InfoOutlinedIcon from '@material-ui/icons/InfoOutlined';
-import { Button, Hidden, Typography } from '@material-ui/core';
+import { Button, Typography, useMediaQuery, useTheme } from '@material-ui/core';
 import { useDispatch } from 'react-redux';
 import { appConfig } from 'config';
 import ContentDialog from 'components/NavBar/ContentDialog';
@@ -12,6 +12,9 @@ const About = memo(() => {
   const { t } = useSafeTranslation();
   const { aboutPath } = appConfig;
   const dispatch = useDispatch();
+  const theme = useTheme();
+  const smDown = useMediaQuery(theme.breakpoints.down('sm'));
+  const mdUp = useMediaQuery(theme.breakpoints.up('md'));
 
   const href = aboutPath ? '' : 'https://innovation.wfp.org/project/prism';
 
@@ -46,13 +49,15 @@ const About = memo(() => {
       target="_blank"
       href={href}
       onClick={handler}
-      startIcon={<InfoOutlinedIcon style={{ fontSize: '1.5rem' }} />}
+      startIcon={
+        <InfoOutlinedIcon style={{ fontSize: mdUp ? '1.25rem' : '1.5rem' }} />
+      }
     >
-      <Hidden smDown>
+      {!smDown && (
         <Typography color="secondary" style={{ textTransform: 'none' }}>
           {t('About')}
         </Typography>
-      </Hidden>
+      )}
       {renderedContentDialog}
     </Button>
   );

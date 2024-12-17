@@ -4,17 +4,16 @@ import {
   createStyles,
   Menu,
   MenuItem,
-  Theme,
   Typography,
-  withStyles,
-  WithStyles,
+  makeStyles,
 } from '@material-ui/core';
 import { languages, useSafeTranslation } from 'i18n';
 import { appConfig } from 'config';
 import { get } from 'lodash';
 import ArrowDownward from '@material-ui/icons/ArrowDropDown';
 
-function LanguageSelector({ classes }: LanguageSelectorProps) {
+function LanguageSelector() {
+  const classes = useStyles();
   const { i18n } = useSafeTranslation();
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
 
@@ -28,11 +27,15 @@ function LanguageSelector({ classes }: LanguageSelectorProps) {
 
   const handleChangeLanguage = (lng: string): void => {
     i18n.changeLanguage(lng);
+    localStorage.setItem('userLanguage', lng);
     handleClose();
   };
 
   React.useEffect(() => {
-    const locale = get(appConfig, 'defaultLanguage', 'en');
+    const savedLanguage = localStorage.getItem('userLanguage');
+    const defaultLocale = get(appConfig, 'defaultLanguage', 'en');
+    const locale = savedLanguage || defaultLocale;
+
     if (languages.includes(locale)) {
       i18n.changeLanguage(locale);
     }
@@ -71,14 +74,15 @@ function LanguageSelector({ classes }: LanguageSelectorProps) {
   );
 }
 
-const styles = (theme: Theme) =>
+const useStyles = makeStyles(() =>
   createStyles({
     block: {
       paddingLeft: '10px',
       paddingTop: '4px',
     },
-  });
+  }),
+);
 
-export interface LanguageSelectorProps extends WithStyles<typeof styles> {}
+export interface LanguageSelectorProps {}
 
-export default withStyles(styles)(LanguageSelector);
+export default LanguageSelector;
