@@ -50,10 +50,7 @@ const paintProps: (
 const CompositeLayer = memo(({ layer, before }: Props) => {
   // look to refacto with impactLayer and maybe other layers
   const [adminBoundaryLimitPolygon, setAdminBoundaryPolygon] = useState(null);
-  const selectedDate = useDefaultDate(
-    layer.dateLayer,
-    // layer.expectedDataLagDays,
-  );
+  const selectedDate = useDefaultDate(layer.dateLayer);
   const [aggregationBoundariesPolygon, setAggregationBoundariesPolygon] =
     useState(null);
   const serverAvailableDates = useSelector(availableDatesSelector);
