@@ -1372,7 +1372,7 @@
     "type": "composite",
     "period": "monthly",
     "base_url": "https://hip-service.ovio.org/q_multi_geojson",
-    "expected_data_lag_days": 39,
+    "expected_data_lag_days": 60,
     "start_date": "2002-07-01",
     "end_date": "2018-07-01",
     "aggregation": "pixel",
@@ -1481,7 +1481,7 @@
     "admin_code": "admin3Pcod",
     "aggregation_boundary_path": "data/jordan/jor_admbnda_adm3_jdos_merged.json",
     "date_layer": "spi_1m",
-    "expected_data_lag_days": 39,
+    "expected_data_lag_days": 60,
     "validity": {
       "forward": 1,
       "backward": 2,
@@ -1589,7 +1589,7 @@
     "end_date": "2018-07-01",
     "aggregation": "pixel",
     "date_layer": "spi_3m",
-    "expected_data_lag_days": 39,
+    "expected_data_lag_days": 60,
     "validity": {
       "mode": "season",
       "seasons": [
@@ -1702,7 +1702,7 @@
     "admin_code": "admin3Pcod",
     "aggregation_boundary_path": "data/jordan/jor_admbnda_adm3_jdos_merged.json",
     "date_layer": "spi_3m",
-    "expected_data_lag_days": 39,
+    "expected_data_lag_days": 60,
     "validity": {
       "mode": "season",
       "seasons": [
@@ -1814,7 +1814,7 @@
     "type": "composite",
     "period": "monthly",
     "base_url": "https://hip-service.ovio.org/q_multi_geojson",
-    "expected_data_lag_days": 39,
+    "expected_data_lag_days": 60,
     "start_date": "2002-07-01",
     "end_date": "2018-07-01",
     "aggregation": "pixel",
@@ -1923,7 +1923,7 @@
     "admin_code": "admin3Pcod",
     "aggregation_boundary_path": "data/jordan/jor_admbnda_adm3_jdos_merged.json",
     "date_layer": "spi_1m",
-    "expected_data_lag_days": 39,
+    "expected_data_lag_days": 60,
     "validity": {
       "forward": 1,
       "backward": 2,
@@ -2031,7 +2031,7 @@
     "end_date": "2018-07-01",
     "aggregation": "pixel",
     "date_layer": "spi_3m",
-    "expected_data_lag_days": 39,
+    "expected_data_lag_days": 60,
     "validity": {
       "mode": "season",
       "seasons": [
@@ -2144,7 +2144,7 @@
     "admin_code": "admin3Pcod",
     "aggregation_boundary_path": "data/jordan/jor_admbnda_adm3_jdos_merged.json",
     "date_layer": "spi_3m",
-    "expected_data_lag_days": 39,
+    "expected_data_lag_days": 60,
     "validity": {
       "mode": "season",
       "seasons": [
