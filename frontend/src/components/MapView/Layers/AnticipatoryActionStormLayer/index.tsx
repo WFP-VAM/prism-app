@@ -28,6 +28,7 @@ import severeTropicalStorm from '../../../../../public/images/anticipatory-actio
 import tropicalCyclone from '../../../../../public/images/anticipatory-action-storm/tropical-cyclone.png';
 import intenseTropicalCyclone from '../../../../../public/images/anticipatory-action-storm/intense-tropical-cyclone.png';
 import veryIntensiveCyclone from '../../../../../public/images/anticipatory-action-storm/very-intensive-tropical-cyclone.png';
+import dissipating from '../../../../../public/images/anticipatory-action-storm/dissipating.png';
 import defaultIcon from '../../../../../public/images/anticipatory-action-storm/default.png';
 import { TimeSeries } from './types';
 
@@ -50,7 +51,7 @@ const WIND_TYPE_TO_ICON_MAP: Record<string, string> = {
   'intense-tropical-cyclone': intenseTropicalCyclone,
   'very-intensive-tropical-cyclone': veryIntensiveCyclone,
   inland,
-  dissipating: defaultIcon,
+  dissipating,
   default: defaultIcon,
 };
 
