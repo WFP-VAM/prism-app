@@ -25,7 +25,6 @@
   ],
   "categories": {
     "rainfall": {
-      "forecasts": ["daily_rainfall_forecast", "dekad_rainfall_forecast", "dekad_rainfall_anomaly_forecast"],
       "rainfall_amount": [
         {
           "group_title": "Rainfall Aggregate",
@@ -211,34 +210,66 @@
       "vulnerability": ["vulnerability_scaled"]
     },
     "drought": {
-      "combined_drought_index": [
+      "combined_drought_index_v1": [
         {
-          "group_title": "Combined Drought Index v1:",
+          "group_title": "Monthly",
           "activate_all": false,
           "layers": [
             {
-              "id": "cdi_v1_monthly",
-              "label": "Monthly",
+              "id": "cdi_v1_aggregated_monthly",
+              "label": "Aggregated",
               "main": true
             },
             {
-              "id": "cdi_v1_seasonal",
-              "label": "Seasonal"
+              "id": "cdi_v1_monthly",
+              "label": "Pixel level"
             }
           ]
         },
         {
-          "group_title": "Combined Drought Index v2:",
+          "group_title": "Seasonal",
           "activate_all": false,
           "layers": [
             {
+              "id": "cdi_v1_aggregated_seasonal",
+              "label": "Aggregated",
+              "main": true
+            },
+            {
+              "id": "cdi_v1_seasonal",
+              "label": "Pixel level"
+            }
+          ]
+        }
+      ],
+      "combined_drought_index_v2": [
+        {
+          "group_title": "Monthly",
+          "activate_all": false,
+          "layers": [
+            {
+              "id": "cdi_v2_aggregated_monthly",
+              "label": "Aggregated",
+              "main": true
+            },
+            {
               "id": "cdi_v2_monthly",
-              "label": "Monthly",
+              "label": "Pixel level"
+            }
+          ]
+        },
+        {
+          "group_title": "Seasonal",
+          "activate_all": false,
+          "layers": [
+            {
+              "id": "cdi_v2_aggregated_seasonal",
+              "label": "Aggregated",
               "main": true
             },
             {
               "id": "cdi_v2_seasonal",
-              "label": "Seasonal"
+              "label": "Pixel level"
             }
           ]
         }
