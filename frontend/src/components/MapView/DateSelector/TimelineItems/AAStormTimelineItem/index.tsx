@@ -1,15 +1,14 @@
 import { createStyles, makeStyles } from '@material-ui/core';
-import React, { FC, memo, useMemo } from 'react';
+import { useMemo } from 'react';
 import 'react-datepicker/dist/react-datepicker.css';
-import { DateItem, DateRangeType } from 'config/types';
+import { DateRangeType } from 'config/types';
 import { datesAreEqualWithoutTime } from 'utils/date-utils';
-import { parse, parseJSON } from 'date-fns';
 import { getDateInUTC } from 'components/MapView/Layers/AnticipatoryActionStormLayer/utils';
 import { useSelector } from 'react-redux';
 import { AADataSelector } from 'context/anticipatoryAction/AAStormStateSlice';
 import { TIMELINE_ITEM_WIDTH } from '../../utils';
 import dateJSON from '../../../../../../public/data/mozambique/anticipatory-action/date_temporary.json';
-import { DateJSON, TimeAndState, WindState } from './types';
+import { DateJSON, WindState } from './types';
 
 function AAStormTimelineItem({ currentDate }: AAStormTimelineItemProps) {
   const AAData = useSelector(AADataSelector);
@@ -52,17 +51,17 @@ function AAStormTimelineItem({ currentDate }: AAStormTimelineItemProps) {
     }
 
     if (
-      getCycloneIndicators.find(({ state }) => state === WindState.activated_64)
-    ) {
-      return classes.activated1Indicator;
-    }
-
-    if (
       getCycloneIndicators.find(
         ({ state }) => state === WindState.activated_118,
       )
     ) {
       return classes.activated2Indicator;
+    }
+
+    if (
+      getCycloneIndicators.find(({ state }) => state === WindState.activated_64)
+    ) {
+      return classes.activated1Indicator;
     }
 
     return classes.lowRiskIndicator;
@@ -106,14 +105,6 @@ const useStyles = makeStyles(() =>
   }),
 );
 interface AAStormTimelineItemProps {
-  //   concatenatedLayers: DateItem[][];
   currentDate: DateRangeType;
-  //   dateItemStyling: {
-  //     class: string;
-  //     color: string;
-  //     layerDirectionClass?: string;
-  //     emphasis?: string;
-  //   }[];
-  //   isDateAvailable: boolean;
 }
 export default AAStormTimelineItem;
