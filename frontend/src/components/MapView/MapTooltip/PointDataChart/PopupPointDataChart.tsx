@@ -1,5 +1,5 @@
 import Chart from 'components/Common/Chart';
-import { isAdminBoundary } from 'components/MapView/utils';
+
 import { ChartConfig } from 'config/types';
 import {
   CHART_DATA_PREFIXES,
@@ -9,6 +9,8 @@ import { t } from 'i18next';
 import { memo } from 'react';
 import { useSelector } from 'react-redux';
 import { createStyles, makeStyles } from '@material-ui/core';
+import { isAdminBoundary } from 'utils/admin-utils';
+import { GoogleFloodParams } from 'utils/google-flood-utils';
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -16,7 +18,7 @@ const useStyles = makeStyles(() =>
       display: 'flex',
       flexDirection: 'column',
       gap: '8px',
-      paddingTop: '20px', // leave room for the close icon
+      paddingTop: '8px', // leave room for the close icon
     },
     chartSection: {
       paddingTop: '16px', // leave room for the download icons
@@ -47,20 +49,25 @@ const PopupPointDataChart = memo(() => {
     return null;
   }
 
+  const xAxisLabel = isAdminBoundary(datasetParams)
+    ? undefined
+    : t('Timestamps reflect local time in region');
+  const yAxisLabel = (datasetParams as GoogleFloodParams).yAxisLabel
+    ? t((datasetParams as GoogleFloodParams).yAxisLabel)
+    : undefined;
+
   return (
     <div className={classes.chartContainer}>
       <div className={classes.chartSection}>
         <Chart
-          title={t(title)}
+          title={t(title, datasetParams)}
           config={config}
           data={dataset}
-          xAxisLabel={
-            isAdminBoundary(datasetParams)
-              ? undefined
-              : t('Timestamps reflect local time in Cambodia')
-          }
+          xAxisLabel={xAxisLabel}
+          yAxisLabel={yAxisLabel}
           showDownloadIcons
           iconStyles={{ color: 'white', marginTop: '20px' }}
+          units={t((datasetParams as GoogleFloodParams).unit)}
         />
       </div>
     </div>

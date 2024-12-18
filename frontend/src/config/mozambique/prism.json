@@ -20,7 +20,8 @@
     "risk": "icon_impact.png",
     "tropical_storms": "icon_tropical_storm.png",
     "vulnerability": "icon_vulnerable.png",
-    "exposure": "icon_basemap.png"
+    "exposure": "icon_basemap.png",
+    "flooding": "icon_basemap.png"
   },
   "defaultDisplayBoundaries": [
     "admin_boundaries",
@@ -458,6 +459,9 @@
     },
     "exposure": {
       "population": ["pop_proj_2025"]
+    },
+    "flooding": {
+      "flood_status": ["google_flood_status_at_gauges"]
     }
   }
 }

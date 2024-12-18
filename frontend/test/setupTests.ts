@@ -148,3 +148,13 @@ global.ResizeObserver = jest.fn().mockImplementation(() => ({
   unobserve: jest.fn(),
   disconnect: jest.fn(),
 }));
+
+jest.mock('chartjs-plugin-annotation', () => ({
+  // Mock the necessary parts of the module
+  default: {
+    id: 'annotation',
+    beforeInit: jest.fn(),
+    afterDraw: jest.fn(),
+    destroy: jest.fn(),
+  },
+}));

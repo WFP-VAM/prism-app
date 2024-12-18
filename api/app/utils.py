@@ -3,6 +3,8 @@ import logging
 import requests
 from fastapi import HTTPException
 
+logger = logging.getLogger(__name__)
+
 
 def forward_http_error(resp: requests.Response, excluded_codes: list[int]) -> None:
     if not resp.status_code > 399:
@@ -38,3 +40,29 @@ class WarningsFilter(logging.Filter):
             self.warning_count += 1
 
         return False
+
+
+def make_request_with_retries(
+    url: str,
+    method: str = "get",
+    data: dict = None,
+    retries: int = 1,
+    timeout: int = 10,
+) -> dict:
+    """Make a request with retries and error handling."""
+    for _ in range(retries):
+        try:
+            if method == "post":
+                response_data = requests.post(url, json=data, timeout=timeout).json()
+            else:
+                response_data = requests.get(url, timeout=timeout).json()
+            break
+        except requests.exceptions.RequestException as e:
+            logger.warning("Request failed at url %s: %s", url, e)
+            response_data = {}
+
+    if "error" in response_data:
+        logger.error("Error in response: %s", response_data["error"])
+        raise HTTPException(status_code=500, detail=f"Error fetching data from {url}")
+
+    return response_data

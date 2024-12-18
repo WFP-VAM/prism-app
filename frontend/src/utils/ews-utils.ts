@@ -2,35 +2,26 @@ import GeoJSON, { FeatureCollection, Point } from 'geojson';
 import { Dispatch } from 'redux';
 import { PointData, PointLayerData } from 'config/types';
 import { oneDayInMs } from 'components/MapView/LeftPanel/utils';
+import { FloodChartConfigObject } from 'context/tableStateSlice';
 import { fetchWithTimeout } from './fetch-with-timeout';
 import { getFormattedDate } from './date-utils';
 import { DateFormat } from './name-utils';
 
-type EWSChartConfig = {
-  label: string;
-  color: string;
-};
-
-type EWSChartItem = EWSChartConfig & { values: number[] };
-
-export type EWSChartConfigObject = { [key: string]: EWSChartConfig };
-export type EWSChartItemsObject = { [key: string]: EWSChartItem };
-
-export const EWSTriggersConfig: EWSChartConfigObject = {
+export const EWSTriggersConfig: FloodChartConfigObject = {
   normal: {
-    label: 'normal',
+    label: 'Normal',
     color: '#1a9641',
   },
   watchLevel: {
-    label: 'watch level',
+    label: 'Watch level',
     color: '#f9d84e',
   },
   warning: {
-    label: 'warning',
+    label: 'Warning',
     color: '#fdae61',
   },
   severeWarning: {
-    label: 'severe warning',
+    label: 'Severe warning',
     color: '#e34a33',
   },
 };

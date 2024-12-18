@@ -11,7 +11,8 @@
     "risk_analysis": "icon_table.png",
     "rainfall": "icon_rain.png",
     "vegetation": "icon_veg.png",
-    "temperature": "icon_climate.png"
+    "temperature": "icon_climate.png",
+    "flooding": "icon_basemap.png"
   },
   "alertFormActive": false,
   "serversUrls": {
@@ -439,6 +440,9 @@
         "mdr_fsn_outcomes",
         "mdr_index"
       ]
+    },
+    "flooding": {
+      "flood_status": ["google_flood_status_at_gauges"]
     }
   }
 }
