@@ -74,7 +74,6 @@ const DateSelector = memo(() => {
     checkSelectedDateForLayerSupport,
   } = useLayers();
 
-  console.log('availableDates', availableDates);
   const { startDate: stateStartDate } = useSelector(dateRangeSelector);
   const tabValue = useSelector(leftPanelTabValueSelector);
   const [dateRange, setDateRange] = useState<DateRangeType[]>([
@@ -426,8 +425,6 @@ const DateSelector = memo(() => {
 
   const clickDate = useCallback(
     (index: number) => {
-      console.log('selectableDates', selectableDates);
-      console.log('dateRange', dateRange);
       const selectedIndex = findDateIndex(
         selectableDates,
         dateRange[index].value,
