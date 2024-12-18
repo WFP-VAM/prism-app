@@ -34,13 +34,13 @@ const useStyles = makeStyles(() =>
     emptySpace: {
       position: 'absolute',
       height: 10,
-      width: TIMELINE_ITEM_WIDTH,
+      width: TIMELINE_ITEM_WIDTH - 1,
       top: 0,
     },
     lowRiskIndicator: {
       position: 'absolute',
       height: 10,
-      width: TIMELINE_ITEM_WIDTH,
+      width: TIMELINE_ITEM_WIDTH - 1,
       pointerEvents: 'none',
       top: 0,
       backgroundColor: '#63B2BD',
@@ -48,7 +48,7 @@ const useStyles = makeStyles(() =>
     activated1Indicator: {
       position: 'absolute',
       height: 10,
-      width: TIMELINE_ITEM_WIDTH,
+      width: TIMELINE_ITEM_WIDTH - 1,
       pointerEvents: 'none',
       top: 0,
       backgroundColor: '#FF8934',
@@ -56,7 +56,7 @@ const useStyles = makeStyles(() =>
     activated2Indicator: {
       position: 'absolute',
       height: 25,
-      width: TIMELINE_ITEM_WIDTH,
+      width: TIMELINE_ITEM_WIDTH - 1,
       pointerEvents: 'none',
       top: 0,
       backgroundColor: '#E63701',
