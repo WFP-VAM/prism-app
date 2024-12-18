@@ -12,15 +12,24 @@ import { useMapCallback } from 'utils/map-utils';
 import { hidePopup } from 'context/tooltipStateSlice';
 import { LayerData } from 'context/layers/layer-data';
 import { getBoundaryLayersByAdminLevel } from 'config/utils';
-import { AAFiltersSelector } from 'context/anticipatoryActionStateSlice';
+import {
+  AADataSelector,
+  AAFiltersSelector,
+} from 'context/anticipatoryAction/AAStormStateSlice';
+import { AACategory } from 'context/anticipatoryAction/AAStormStateSlice/types';
+import { getAAColor } from 'components/MapView/LeftPanel/AnticipatoryActionPanel/AnticipatoryActionStormPanel/utils';
 import AAStormDatePopup from './AAStormDatePopup';
 import AAStormLandfallPopup from './AAStormLandfallPopup';
 import moderateStorm from '../../../../../public/images/anticipatory-action-storm/moderate-tropical-storm.png';
-import overland from '../../../../../public/images/anticipatory-action-storm/overland.png';
+import inland from '../../../../../public/images/anticipatory-action-storm/inland.png';
+import lowPressure from '../../../../../public/images/anticipatory-action-storm/low-pressure.png';
+import tropicalDepression from '../../../../../public/images/anticipatory-action-storm/tropical-depression.png';
 import severeTropicalStorm from '../../../../../public/images/anticipatory-action-storm/severe-tropical-storm.png';
 import tropicalCyclone from '../../../../../public/images/anticipatory-action-storm/tropical-cyclone.png';
 import intenseTropicalCyclone from '../../../../../public/images/anticipatory-action-storm/intense-tropical-cyclone.png';
 import veryIntensiveCyclone from '../../../../../public/images/anticipatory-action-storm/very-intensive-tropical-cyclone.png';
+import dissipating from '../../../../../public/images/anticipatory-action-storm/dissipating.png';
+import defaultIcon from '../../../../../public/images/anticipatory-action-storm/default.png';
 import { TimeSeries } from './types';
 
 interface AnticipatoryActionStormLayerProps {
@@ -30,11 +39,28 @@ interface AnticipatoryActionStormLayerProps {
 // Use admin level 2 boundary layer
 const boundaryLayer = getBoundaryLayersByAdminLevel(2);
 
+// Add this mapping object at the top of the file with other imports
+const WIND_TYPE_TO_ICON_MAP: Record<string, string> = {
+  disturbance: defaultIcon,
+  'tropical-disturbance': defaultIcon,
+  low: lowPressure,
+  'tropical-depression': tropicalDepression,
+  'moderate-tropical-storm': moderateStorm,
+  'severe-tropical-storm': severeTropicalStorm,
+  'tropical-cyclone': tropicalCyclone,
+  'intense-tropical-cyclone': intenseTropicalCyclone,
+  'very-intensive-tropical-cyclone': veryIntensiveCyclone,
+  inland,
+  dissipating,
+  default: defaultIcon,
+};
+
 const AnticipatoryActionStormLayer = React.memo(
   ({ layer }: AnticipatoryActionStormLayerProps) => {
     useDefaultDate(layer.id);
     const map = useSelector(mapSelector);
-    const { viewType } = useSelector(AAFiltersSelector);
+    const { viewType, selectedDate } = useSelector(AAFiltersSelector);
+    const AAStormData = useSelector(AADataSelector);
     const boundaryLayerState = useSelector(
       layerDataSelector(boundaryLayer.id),
     ) as LayerData<BoundaryLayerProps> | undefined;
@@ -42,29 +68,6 @@ const AnticipatoryActionStormLayer = React.memo(
 
     const [selectedFeature, setSelectedFeature] =
       useState<Feature<Point> | null>(null);
-
-    /* this is the date the layer data corresponds to. It will be stored in redux ultimately */
-    const layerDataRequestDate = '2024-03-11';
-
-    // Add state for storm data
-    const [AAStormData, setAAStormData] = useState<any>(null);
-
-    // Add fetch effect
-    useEffect(() => {
-      const fetchStormData = async () => {
-        try {
-          const response = await fetch(
-            'https://data.earthobservation.vam.wfp.org/public-share/aa/ts/outputs/latest.json',
-          );
-          const stormData = await response.json();
-          setAAStormData(stormData);
-        } catch (error) {
-          console.error('Error fetching storm data:', error);
-        }
-      };
-
-      fetchStormData();
-    }, []);
 
     function enhanceTimeSeries(timeSeries: TimeSeries) {
       const { features, ...timeSeriesRest } = timeSeries;
@@ -113,27 +116,25 @@ const AnticipatoryActionStormLayer = React.memo(
       return { ...timeSeriesRest, features: newFeatures };
     }
 
-    // Replace all AAStormData references with stormData
-    const timeSeries: any = AAStormData
-      ? enhanceTimeSeries(AAStormData.time_series as unknown as TimeSeries)
-      : null;
+    const timeSeries: any =
+      AAStormData && AAStormData.timeSeries
+        ? enhanceTimeSeries(AAStormData.timeSeries as unknown as TimeSeries)
+        : null;
 
     function getIconNameByWindType(windType: string) {
-      if (windType === 'intense tropical cyclone') {
-        return 'intense-tropical-cyclone';
+      const iconName = windType.split(' ').join('-').toLowerCase();
+      if (!WIND_TYPE_TO_ICON_MAP[iconName]) {
+        console.warn(`Unknown wind type: ${windType}, using default icon`);
+        return 'default';
       }
-
-      if (windType === 'inland') {
-        return 'overland';
-      }
-
-      return windType.split(' ').join('-');
+      return iconName;
     }
 
     function landfallPopupCloseHandler() {
       setSelectedFeature(null);
     }
 
+    // Load all images from the mapping
     const loadImages = useCallback(() => {
       const loadImage = (url: string, name: string) => {
         map?.loadImage(url, (error, image) => {
@@ -146,12 +147,9 @@ const AnticipatoryActionStormLayer = React.memo(
         });
       };
 
-      loadImage(moderateStorm, 'moderate-tropical-storm');
-      loadImage(severeTropicalStorm, 'severe-tropical-storm');
-      loadImage(tropicalCyclone, 'tropical-cyclone');
-      loadImage(intenseTropicalCyclone, 'intense-tropical-cyclone');
-      loadImage(overland, 'overland');
-      loadImage(veryIntensiveCyclone, 'very-intensive-tropical-cyclone');
+      Object.entries(WIND_TYPE_TO_ICON_MAP).forEach(([name, url]) => {
+        loadImage(url, name);
+      });
     }, [map]);
 
     useEffect(() => {
@@ -203,25 +201,47 @@ const AnticipatoryActionStormLayer = React.memo(
       onWindPointsClicked,
     );
 
+    const getDistrictColor = (districtName: string, StormData: any) => {
+      // Check active districts
+      if (
+        StormData.activeDistricts?.Moderate?.districtNames.includes(
+          districtName,
+        )
+      ) {
+        return {
+          color: getAAColor(AACategory.Moderate, 'Active', true),
+          opacity: 0.8,
+        };
+      }
+      if (
+        StormData.activeDistricts?.Severe?.districtNames.includes(districtName)
+      ) {
+        return {
+          color: getAAColor(AACategory.Severe, 'Active', true),
+          opacity: 0.8,
+        };
+      }
+
+      // Check NA districts
+      const isNADistrict = [
+        ...(StormData.naDistricts?.Severe?.districtNames || []),
+        ...(StormData.naDistricts?.Moderate?.districtNames || []),
+      ].includes(districtName);
+
+      if (isNADistrict) {
+        return {
+          color: getAAColor(AACategory.Severe, 'na', true),
+          opacity: 0.4,
+        };
+      }
+
+      return null;
+    };
+
     const coloredDistrictsLayer = React.useMemo(() => {
       if (!boundaryData) {
         return null;
       }
-
-      const districts89kmh = [
-        'Angoche',
-        'Maganja Da Costa',
-        'Machanga',
-        'Govuro',
-      ];
-      const districts119kmh = [
-        'Mogincual',
-        'Namacurra',
-        'Cidade Da Beira',
-        'Buzi',
-        'Dondo',
-        'Vilankulo',
-      ];
 
       return {
         ...boundaryData,
@@ -229,36 +249,35 @@ const AnticipatoryActionStormLayer = React.memo(
           .map(feature => {
             const districtName =
               feature.properties?.[boundaryLayer.adminLevelLocalNames[1]];
+            const colorInfo = getDistrictColor(districtName, AAStormData);
 
-            if (
-              districts89kmh.includes(districtName) ||
-              districts119kmh.includes(districtName)
-            ) {
-              return {
-                ...feature,
-                properties: {
-                  ...feature.properties,
-                  fillColor: '#808080',
-                  fillOpacity: 0.4,
-                },
-              };
+            if (!colorInfo) {
+              return null;
             }
 
-            return null;
+            return {
+              ...feature,
+              properties: {
+                ...feature.properties,
+                fillColor: colorInfo.color.background,
+                fillOpacity: colorInfo.opacity,
+              },
+            };
           })
-          .filter(f => f !== null),
+          .filter(Boolean),
       };
-    }, [boundaryData]);
+    }, [boundaryData, AAStormData]);
 
-    if (!AAStormData) {
+    if (!boundaryData || !AAStormData) {
       return null;
     }
 
     return (
       <>
-        {/* Add the colored districts layer */}
+        {/* First render all fill layers */}
         {coloredDistrictsLayer && (
           <Source
+            key="storm-districts"
             id="storm-districts"
             type="geojson"
             data={coloredDistrictsLayer}
@@ -271,62 +290,73 @@ const AnticipatoryActionStormLayer = React.memo(
                 'fill-opacity': ['get', 'fillOpacity'],
               }}
             />
-          </Source>
-        )}
-
-        {/* 48kt wind forecast area - orange */}
-        {viewType === 'forecast' && (
-          <Source
-            data={AAStormData.ready_set_results.exposed_area_48kt.polygon}
-            type="geojson"
-          >
             <Layer
-              id="exposed-area-48kt"
-              beforeId="aa-storm-wind-points-layer"
-              type="fill"
-              paint={{ 'fill-opacity': 0.5, 'fill-color': '#ff8934' }}
+              id="storm-districts-border"
+              type="line"
+              paint={{
+                'line-color': 'black',
+                'line-width': 1,
+              }}
             />
           </Source>
         )}
 
-        {/* 64kt wind forecast area - red */}
+        {/* 48kt and 64kt wind forecast areas */}
         {viewType === 'forecast' && (
-          <Source
-            data={AAStormData.ready_set_results.exposed_area_64kt.polygon}
-            type="geojson"
-          >
-            <Layer
-              id="exposed-area-64kt"
-              beforeId="aa-storm-wind-points-layer"
-              type="fill"
-              paint={{ 'fill-opacity': 0.5, 'fill-color': '#e63701' }}
-            />
-          </Source>
+          <>
+            <Source
+              data={AAStormData.activeDistricts?.Moderate?.polygon}
+              type="geojson"
+            >
+              <Layer
+                id="exposed-area-48kt"
+                beforeId="aa-storm-wind-points-layer"
+                type="fill"
+                paint={{
+                  'fill-opacity': 0.5,
+                  'fill-color': getAAColor(AACategory.Moderate, 'Active', true)
+                    .background,
+                }}
+              />
+            </Source>
+            <Source
+              data={AAStormData.activeDistricts?.Severe?.polygon}
+              type="geojson"
+            >
+              <Layer
+                id="exposed-area-64kt"
+                beforeId="aa-storm-wind-points-layer"
+                type="fill"
+                paint={{
+                  'fill-opacity': 0.5,
+                  'fill-color': getAAColor(AACategory.Severe, 'Active', true)
+                    .background,
+                }}
+              />
+            </Source>
+          </>
         )}
+
         {/* Storm Risk Map view */}
         {viewType === 'risk' && (
           <Source
-            data={AAStormData.ready_set_results.proba_48kt_20_5d.polygon}
+            data={AAStormData.activeDistricts?.Risk?.polygon}
             type="geojson"
           >
             <Layer
               id="storm-risk-map"
-              beforeId="aa-storm-wind-points-layer"
               type="fill"
-              paint={{ 'fill-opacity': 0.5, 'fill-color': '#9acddc' }}
+              beforeId="aa-storm-wind-points-layer"
+              paint={{
+                'fill-opacity': 0.5,
+                'fill-color': '#9acddc',
+              }}
             />
           </Source>
         )}
 
-        {/* Common elements for both views */}
+        {/* Render wind points last so they appear on top */}
         <Source data={timeSeries} type="geojson">
-          <Layer
-            id="aa-storm-wind-points-layer"
-            type="symbol"
-            layout={{ 'icon-image': ['image', ['get', 'iconName']] }}
-          />
-
-          {/* past wind track - solid black line */}
           <Layer
             id="aa-storm-wind-points-line-past"
             type="line"
@@ -336,8 +366,6 @@ const AnticipatoryActionStormLayer = React.memo(
               'line-width': 2,
             }}
           />
-
-          {/* forecasted wind track - dashed red line */}
           <Layer
             id="aa-storm-wind-points-line-future"
             type="line"
@@ -348,17 +376,23 @@ const AnticipatoryActionStormLayer = React.memo(
               'line-dasharray': [2, 1],
             }}
           />
+          <Layer
+            id="aa-storm-wind-points-layer"
+            beforeId="aa-storm-wind-points-line-future"
+            type="symbol"
+            layout={{ 'icon-image': ['image', ['get', 'iconName']] }}
+          />
         </Source>
 
         <AAStormDatePopup />
 
-        {selectedFeature && (
+        {selectedFeature && AAStormData.landfall && selectedDate && (
           <AAStormLandfallPopup
             point={selectedFeature.geometry}
             reportDate={selectedFeature.properties?.time}
-            landfallInfo={AAStormData.landfall_info}
+            landfallInfo={AAStormData.landfall}
             onClose={() => landfallPopupCloseHandler()}
-            timelineDate={layerDataRequestDate}
+            timelineDate={selectedDate}
           />
         )}
       </>

@@ -2,7 +2,7 @@ import { AAWindowKeys } from 'config/utils';
 import {
   AADataSeverityOrder,
   getAAIcon,
-} from 'components/MapView/LeftPanel/AnticipatoryActionPanel/utils';
+} from 'components/MapView/LeftPanel/AnticipatoryActionPanel/AnticipatoryActionDroughtPanel/utils';
 import { DatesPropagation, Validity } from 'config/types';
 import { generateIntermediateDateItemFromValidity } from 'utils/server-utils';
 import { getFormattedDate } from 'utils/date-utils';

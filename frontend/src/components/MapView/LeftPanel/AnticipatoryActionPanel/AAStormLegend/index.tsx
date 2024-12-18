@@ -7,13 +7,25 @@ import {
 import { useSafeTranslation } from 'i18n';
 // TODO - create a file to make the icons easier to access
 import moderateStorm from '../../../../../../public/images/anticipatory-action-storm/moderate-tropical-storm.png';
-import overland from '../../../../../../public/images/anticipatory-action-storm/overland.png';
+import inland from '../../../../../../public/images/anticipatory-action-storm/inland.png';
+import tropicalDepression from '../../../../../../public/images/anticipatory-action-storm/tropical-depression.png';
+import lowPressure from '../../../../../../public/images/anticipatory-action-storm/low-pressure.png';
 import severeTropicalStorm from '../../../../../../public/images/anticipatory-action-storm/severe-tropical-storm.png';
 import tropicalCyclone from '../../../../../../public/images/anticipatory-action-storm/tropical-cyclone.png';
 import intenseTropicalCyclone from '../../../../../../public/images/anticipatory-action-storm/intense-tropical-cyclone.png';
 import veryIntensiveCyclone from '../../../../../../public/images/anticipatory-action-storm/very-intensive-tropical-cyclone.png';
 
 const phases = [
+  {
+    icon: lowPressure,
+    label: 'Weak low pressure area',
+    speed: '< 51 km/h',
+  },
+  {
+    icon: tropicalDepression,
+    label: 'Tropical depression',
+    speed: '51-62 km/h',
+  },
   {
     icon: moderateStorm,
     label: 'Moderate tropical storm',
@@ -58,7 +70,7 @@ const buffers = [
 
 const tracks = [
   {
-    icon: overland,
+    icon: inland,
     label: 'Overland',
   },
   {

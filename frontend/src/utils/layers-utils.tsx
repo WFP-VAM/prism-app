@@ -40,7 +40,8 @@ import {
   getPossibleDatesForLayer,
 } from 'utils/server-utils';
 import { UrlLayerKey, getUrlKey, useUrlHistory } from 'utils/url-utils';
-import { AAAvailableDatesSelector } from 'context/anticipatoryActionStateSlice';
+
+import { AAAvailableDatesSelector } from 'context/anticipatoryAction/AADroughtStateSlice';
 import { useTranslation } from 'react-i18next';
 
 import {

@@ -1,4 +1,5 @@
 import { createStyles, makeStyles, Typography } from '@material-ui/core';
+import { LandfallInfo } from 'context/anticipatoryAction/AAStormStateSlice/types';
 import {
   formatLandfallDate,
   formatLandfallEstimatedLeadtime,
@@ -19,7 +20,7 @@ function PopupContent({
         variant="body1"
         className={`${classes.text} ${classes.title}`}
       >
-        Report date: {formatReportDate(reportDate)}
+        Forecast date: {formatReportDate(reportDate)}
       </Typography>
       <div className={classes.itemContainer}>
         <Typography variant="body1" className={classes.text}>
@@ -29,9 +30,9 @@ function PopupContent({
           variant="body1"
           className={`${classes.text} ${classes.textAlignRight}`}
         >
-          {formatLandfallDate(landfallInfo.landfall_time)}
+          {formatLandfallDate(landfallInfo.time)}
           <span className={classes.block}>
-            {formatLandfallTimeRange(landfallInfo.landfall_time)}
+            {formatLandfallTimeRange(landfallInfo.time)}
           </span>
         </Typography>
       </div>
@@ -44,10 +45,7 @@ function PopupContent({
           variant="body1"
           className={`${classes.text} ${classes.textAlignRight}`}
         >
-          {formatLandfallEstimatedLeadtime(
-            landfallInfo.landfall_time,
-            timelineDate,
-          )}
+          {formatLandfallEstimatedLeadtime(landfallInfo.time, timelineDate)}
         </Typography>
       </div>
       <div className={classes.itemContainer}>
@@ -59,7 +57,7 @@ function PopupContent({
           variant="body1"
           className={`${classes.text} ${classes.textAlignRight}`}
         >
-          {landfallInfo.landfall_impact_district}
+          {landfallInfo.district}
         </Typography>
       </div>
     </div>
@@ -96,12 +94,6 @@ const useStyles = makeStyles(() =>
     },
   }),
 );
-
-export interface LandfallInfo {
-  landfall_time: string[];
-  landfall_impact_district: string;
-  landfall_impact_intensity: string[];
-}
 
 interface PopupContentProps {
   landfallInfo: LandfallInfo;

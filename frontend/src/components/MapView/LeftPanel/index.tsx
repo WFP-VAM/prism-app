@@ -15,14 +15,11 @@ import {
   LayerDefinitions,
   areChartLayersAvailable,
   isAnticipatoryActionLayer,
+  isWindowEmpty,
+  isWindowedDates,
 } from 'config/utils';
 import { getUrlKey, useUrlHistory } from 'utils/url-utils';
 import { layersSelector, mapSelector } from 'context/mapStateSlice/selectors';
-import {
-  AAAvailableDatesSelector,
-  AADataSelector,
-  loadAAData,
-} from 'context/anticipatoryActionStateSlice';
 import { setSelectedBoundaries } from 'context/mapSelectionLayerStateSlice';
 import {
   availableDatesSelector,
@@ -30,6 +27,8 @@ import {
 } from 'context/serverStateSlice';
 import { getAAAvailableDatesCombined } from 'utils/server-utils';
 import { updateDateRange } from 'context/mapStateSlice';
+import { getAAConfig } from 'context/anticipatoryAction/config';
+import type { RootState } from 'context/store';
 import AnalysisPanel from './AnalysisPanel';
 import ChartsPanel from './ChartsPanel';
 import TablesPanel from './TablesPanel';
@@ -38,7 +37,11 @@ import {
   AnticipatoryActionStormPanel,
 } from './AnticipatoryActionPanel';
 import LayersPanel from './layersPanel';
-import { areTablesAvailable, isAnticipatoryActionAvailable } from './utils';
+import {
+  areTablesAvailable,
+  isAnticipatoryActionDroughtAvailable,
+  isAnticipatoryActionStormAvailable,
+} from './utils';
 import { toggleRemoveLayer } from './layersPanel/MenuItem/MenuSwitch/SwitchItem/utils';
 import AlertsPanel from './AlertsPanel';
 
@@ -69,9 +72,7 @@ const TabPanel = memo(({ children, value, index, ...other }: TabPanelProps) => (
 const LeftPanel = memo(() => {
   const dispatch = useDispatch();
   const tabValue = useSelector(leftPanelTabValueSelector);
-  const AAData = useSelector(AADataSelector);
-  const serverAvailableDates = useSelector(availableDatesSelector);
-  const AAAvailableDates = useSelector(AAAvailableDatesSelector);
+
   const selectedLayers = useSelector(layersSelector);
   const map = useSelector(mapSelector);
   const { updateHistory, appendLayerToUrl, removeLayerFromUrl } =
@@ -81,13 +82,39 @@ const LeftPanel = memo(() => {
 
   const isPanelHidden = tabValue === Panel.None;
 
+  const AALayerInUrl = React.useMemo(
+    () =>
+      selectedLayers.find(x => AALayerIds.includes(x.id as AnticipatoryAction)),
+    [selectedLayers],
+  );
+
+  // Load AA config based on AA layer id
+  const AAConfig = React.useMemo(() => {
+    if (AALayerInUrl && isAnticipatoryActionLayer(AALayerInUrl.id)) {
+      return getAAConfig(AALayerInUrl.id as AnticipatoryAction);
+    }
+    return null;
+  }, [AALayerInUrl]);
+
+  const AAData = useSelector((state: RootState) =>
+    AAConfig ? AAConfig.dataSelector(state) : null,
+  );
+  const AAAvailableDates = useSelector((state: RootState) =>
+    AAConfig ? AAConfig.availableDatesSelector(state) : null,
+  );
+  const loadAAData = AAConfig ? AAConfig.loadAction : null;
+  const serverAvailableDates = useSelector(availableDatesSelector);
+
   // Sync serverAvailableDates with AAAvailableDates when the latter updates.
   React.useEffect(() => {
     if (AAAvailableDates) {
+      const combinedAvailableDates = isWindowedDates(AAAvailableDates)
+        ? getAAAvailableDatesCombined(AAAvailableDates)
+        : AAAvailableDates;
       const updatedCapabilities = AALayerIds.reduce(
         (acc, layerId) => ({
           ...acc,
-          [layerId]: getAAAvailableDatesCombined(AAAvailableDates),
+          [layerId]: combinedAvailableDates,
         }),
         { ...serverAvailableDates },
       );
@@ -97,12 +124,6 @@ const LeftPanel = memo(() => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [AAAvailableDates, dispatch]);
 
-  const AALayerInUrl = React.useMemo(
-    () =>
-      selectedLayers.find(x => AALayerIds.includes(x.id as AnticipatoryAction)),
-    [selectedLayers],
-  );
-
   // navigate to AA tab when app originally load with AA layer in url
   React.useEffect(() => {
     // TODO: update  Object.keys(AAData).length === 0 condition with something more solid
@@ -110,9 +131,12 @@ const LeftPanel = memo(() => {
     if (
       !isAnticipatoryActionLayer(tabValue) &&
       AALayerInUrl !== undefined &&
-      Object.keys(AAData['Window 1']).length === 0
+      AAData
     ) {
-      if (AALayerInUrl.id === AnticipatoryAction.drought) {
+      if (
+        AALayerInUrl.id === AnticipatoryAction.drought &&
+        isWindowEmpty(AAData, 'Window 1')
+      ) {
         dispatch(setTabValue(Panel.AnticipatoryActionDrought));
       } else if (AALayerInUrl.id === AnticipatoryAction.storm) {
         dispatch(setTabValue(Panel.AnticipatoryActionStorm));
@@ -126,7 +150,7 @@ const LeftPanel = memo(() => {
       !isAnticipatoryActionLayer(tabValue) &&
       tabValue !== Panel.None &&
       AALayerInUrl !== undefined &&
-      Object.keys(AAData['Window 1']).length !== 0
+      !isWindowEmpty(AAData, 'Window 1')
     ) {
       toggleRemoveLayer(
         AALayerInUrl,
@@ -140,11 +164,11 @@ const LeftPanel = memo(() => {
 
   // fetch csv data when loading AA page
   React.useEffect(() => {
-    if (!isAnticipatoryActionLayer(tabValue)) {
+    if (!isAnticipatoryActionLayer(tabValue) || !loadAAData) {
       return;
     }
     dispatch(loadAAData());
-  }, [dispatch, tabValue]);
+  }, [dispatch, tabValue, loadAAData]);
 
   // Add or switch AA layers in url
   React.useEffect(() => {
@@ -226,17 +250,20 @@ const LeftPanel = memo(() => {
   }, [tabValue, dispatch]);
 
   const renderedAnticipatoryActionPanel = React.useMemo(() => {
-    if (!isAnticipatoryActionAvailable) {
-      return null;
-    }
-    if (tabValue === Panel.AnticipatoryActionDrought) {
+    if (
+      isAnticipatoryActionDroughtAvailable &&
+      tabValue === Panel.AnticipatoryActionDrought
+    ) {
       return (
         <TabPanel value={tabValue} index={Panel.AnticipatoryActionDrought}>
           <AnticipatoryActionDroughtPanel />
         </TabPanel>
       );
     }
-    if (tabValue === Panel.AnticipatoryActionStorm) {
+    if (
+      isAnticipatoryActionStormAvailable &&
+      tabValue === Panel.AnticipatoryActionStorm
+    ) {
       return (
         <TabPanel value={tabValue} index={Panel.AnticipatoryActionStorm}>
           <AnticipatoryActionStormPanel />

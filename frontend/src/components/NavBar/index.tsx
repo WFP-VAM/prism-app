@@ -34,7 +34,8 @@ import Legends from 'components/MapView/Legends';
 import { areChartLayersAvailable } from 'config/utils';
 import {
   areTablesAvailable,
-  isAnticipatoryActionAvailable,
+  isAnticipatoryActionDroughtAvailable,
+  isAnticipatoryActionStormAvailable,
 } from 'components/MapView/LeftPanel/utils';
 import { Panel, PanelItem } from 'config/types';
 import About from './About';
@@ -58,22 +59,30 @@ const panels: PanelItem[] = [
   ...(areTablesAvailable
     ? [{ panel: Panel.Tables, label: 'Tables', icon: <TableChartOutlined /> }]
     : []),
-  ...(isAnticipatoryActionAvailable
+  ...(isAnticipatoryActionDroughtAvailable || isAnticipatoryActionStormAvailable
     ? [
         {
           label: 'A. Actions',
           icon: <TimerOutlined />,
           children: [
-            {
-              panel: Panel.AnticipatoryActionDrought,
-              label: 'A. Action Drought',
-              icon: <TimerOutlined />,
-            },
-            {
-              panel: Panel.AnticipatoryActionStorm,
-              label: 'A. Action Storm',
-              icon: <TimerOutlined />,
-            },
+            ...(isAnticipatoryActionDroughtAvailable
+              ? [
+                  {
+                    panel: Panel.AnticipatoryActionDrought,
+                    label: 'A. Action Drought',
+                    icon: <TimerOutlined />,
+                  },
+                ]
+              : []),
+            ...(isAnticipatoryActionStormAvailable
+              ? [
+                  {
+                    panel: Panel.AnticipatoryActionStorm,
+                    label: 'A. Action Storm',
+                    icon: <TimerOutlined />,
+                  },
+                ]
+              : []),
           ],
         },
       ]

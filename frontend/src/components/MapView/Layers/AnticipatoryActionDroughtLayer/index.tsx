@@ -26,8 +26,8 @@ import {
   setAAMarkers,
   setAASelectedDistrict,
   setAAView,
-} from 'context/anticipatoryActionStateSlice';
-import { getAAColor } from 'components/MapView/LeftPanel/AnticipatoryActionPanel/utils';
+} from 'context/anticipatoryAction/AADroughtStateSlice';
+import { getAAColor } from 'components/MapView/LeftPanel/AnticipatoryActionPanel/AnticipatoryActionDroughtPanel/utils';
 import {
   calculateCentroids,
   useAAMarkerScalePercent,
@@ -37,8 +37,8 @@ import { getBoundaryLayersByAdminLevel } from 'config/utils';
 import {
   calculateAAMarkers,
   calculateCombinedAAMapData,
-} from 'context/anticipatoryActionStateSlice/utils';
-import { AAView } from 'context/anticipatoryActionStateSlice/types';
+} from 'context/anticipatoryAction/AADroughtStateSlice/utils';
+import { AAView } from 'context/anticipatoryAction/AADroughtStateSlice/types';
 import { Tooltip } from '@material-ui/core';
 
 // Use admin level 2 boundary layer for Anticipatory Action
