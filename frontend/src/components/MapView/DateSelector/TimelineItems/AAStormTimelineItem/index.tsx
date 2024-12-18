@@ -1,66 +1,25 @@
 import { createStyles, makeStyles } from '@material-ui/core';
-import { useMemo } from 'react';
+
 import 'react-datepicker/dist/react-datepicker.css';
 import { DateRangeType } from 'config/types';
-import { datesAreEqualWithoutTime } from 'utils/date-utils';
-import { getDateInUTC } from 'components/MapView/Layers/AnticipatoryActionStormLayer/utils';
-import { useSelector } from 'react-redux';
-import { AADataSelector } from 'context/anticipatoryAction/AAStormStateSlice';
 import { TIMELINE_ITEM_WIDTH } from '../../utils';
-import dateJSON from '../../../../../../public/data/mozambique/anticipatory-action/date_temporary.json';
-import { DateJSON, WindState } from './types';
+import { WindState } from './types';
+import { useWindStatesByTime } from '../hooks';
 
 function AAStormTimelineItem({ currentDate }: AAStormTimelineItemProps) {
-  const AAData = useSelector(AADataSelector);
+  const windStates = useWindStatesByTime(currentDate.value);
   const classes = useStyles();
 
-  const cycloneOfInterest = AAData.forecastDetails?.cyclone_name;
-
-  const getCycloneIndicators = useMemo(() => {
-    if (!cycloneOfInterest) {
-      return [];
-    }
-
-    const date = Object.keys(dateJSON as DateJSON).find(analysedDate => {
-      const analysedDateInUTC = getDateInUTC(analysedDate, false);
-      if (!analysedDateInUTC) {
-        return false;
-      }
-
-      return datesAreEqualWithoutTime(analysedDateInUTC, currentDate.value);
-    });
-
-    if (!date) {
-      return [];
-    }
-
-    const foundCycloneName = Object.keys((dateJSON as DateJSON)[date])
-      .map(i => i.toLowerCase())
-      .find(cycloneName => cycloneName === cycloneOfInterest.toLowerCase());
-
-    if (!foundCycloneName) {
-      return [];
-    }
-
-    return (dateJSON as DateJSON)[date][foundCycloneName];
-  }, [cycloneOfInterest, currentDate.value]);
-
   const getStylingClass = () => {
-    if (getCycloneIndicators.length === 0) {
+    if (windStates.length === 0) {
       return classes.emptySpace;
     }
 
-    if (
-      getCycloneIndicators.find(
-        ({ state }) => state === WindState.activated_118,
-      )
-    ) {
+    if (windStates.find(({ state }) => state === WindState.activated_118)) {
       return classes.activated2Indicator;
     }
 
-    if (
-      getCycloneIndicators.find(({ state }) => state === WindState.activated_64)
-    ) {
+    if (windStates.find(({ state }) => state === WindState.activated_64)) {
       return classes.activated1Indicator;
     }
 

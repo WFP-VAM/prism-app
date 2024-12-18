@@ -99,9 +99,12 @@ const TimelineItems = memo(
               TransitionProps={{ timeout: 0 }}
               placement="top"
               arrow
-              classes={
-                !isShowingAAStormLayer ? { tooltip: classes.tooltip } : {}
-              }
+              {...(isShowingAAStormLayer ? { interactive: true } : null)}
+              classes={{
+                tooltip: isShowingAAStormLayer
+                  ? classes.AAStormTooltip
+                  : classes.AADroughtTooltip,
+              }}
             >
               <Grid
                 item
@@ -115,12 +118,7 @@ const TimelineItems = memo(
                 <TimelineLabel locale={locale} date={date} />
 
                 {isShowingAAStormLayer ? (
-                  <AAStormTimelineItem
-                    // concatenatedLayers={truncatedLayers}
-                    currentDate={date}
-                    // dateItemStyling={DATE_ITEM_STYLING}
-                    // isDateAvailable={isDateAvailable}
-                  />
+                  <AAStormTimelineItem currentDate={date} />
                 ) : (
                   <AADroughtTimelineItem
                     concatenatedLayers={truncatedLayers}
@@ -186,12 +184,13 @@ const useStyles = makeStyles(() =>
         },
       },
     },
-
-    tooltip: {
+    AADroughtTooltip: {
       backgroundColor: '#222222',
       opacity: '0.85 !important',
     },
-
+    AAStormTooltip: {
+      backgroundColor: '#FFFFFF',
+    },
     layerOneDate: createLayerStyles(LIGHT_BLUE_HEX, 0),
     layerTwoDate: createLayerStyles(LIGHT_GREEN_HEX, 10),
     layerThreeDate: createLayerStyles(LIGHT_ORANGE_HEX, 20),
