@@ -1,5 +1,3 @@
-import { DatesPropagation, Validity } from 'config/types';
-import { generateIntermediateDateItemFromValidity } from 'utils/server-utils';
 import { getFormattedDate, getTimeInMilliseconds } from 'utils/date-utils';
 import { DateFormat } from 'utils/name-utils';
 import {
@@ -98,15 +96,13 @@ export function parseAndTransformAA(data: StormData): ResultType {
       }
     : ({} as LandfallInfo);
 
-  const validity: Validity = {
-    mode: DatesPropagation.DAYS,
-    forward: 0,
-  };
   const dates = extractDates(data);
-  const availableDates = generateIntermediateDateItemFromValidity(
-    dates,
-    validity,
-  );
+  const availableDates = dates.map(date => ({
+    displayDate: date,
+    queryDate: date,
+    startDate: date,
+    endDate: date,
+  }));
 
   return {
     data: {
