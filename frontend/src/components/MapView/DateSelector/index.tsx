@@ -73,6 +73,7 @@ const DateSelector = memo(() => {
     selectedLayersWithDateSupport: selectedLayers,
     checkSelectedDateForLayerSupport,
   } = useLayers();
+
   const { startDate: stateStartDate } = useSelector(dateRangeSelector);
   const tabValue = useSelector(leftPanelTabValueSelector);
   const [dateRange, setDateRange] = useState<DateRangeType[]>([
@@ -84,6 +85,7 @@ const DateSelector = memo(() => {
       date: new Date().toISOString(),
     },
   ]);
+
   const [timelinePosition, setTimelinePosition] = useState<Point>({
     x: 0,
     y: 0,
