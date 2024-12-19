@@ -1,13 +1,15 @@
-import { AADataSelector } from 'context/anticipatoryAction/AAStormStateSlice';
+import {
+  AADataSelector,
+  AAWindStateReports,
+} from 'context/anticipatoryAction/AAStormStateSlice';
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { getDateInUTC } from 'components/MapView/Layers/AnticipatoryActionStormLayer/utils';
 import { datesAreEqualWithoutTime } from 'utils/date-utils';
-import { DateJSON } from './types';
-import dateJSON from '../../../../../public/data/mozambique/anticipatory-action/date_temporary.json';
 
 export const useWindStatesByTime = (currentDate: number) => {
   const AAData = useSelector(AADataSelector);
+  const windStateReports = useSelector(AAWindStateReports);
   const cycloneOfInterest = AAData.forecastDetails?.cyclone_name;
 
   return useMemo(() => {
@@ -15,7 +17,7 @@ export const useWindStatesByTime = (currentDate: number) => {
       return [];
     }
 
-    const date = Object.keys(dateJSON as DateJSON).find(analysedDate => {
+    const date = Object.keys(windStateReports).find(analysedDate => {
       const analysedDateInUTC = getDateInUTC(analysedDate, false);
       if (!analysedDateInUTC) {
         return false;
@@ -28,7 +30,7 @@ export const useWindStatesByTime = (currentDate: number) => {
       return [];
     }
 
-    const foundCycloneName = Object.keys((dateJSON as DateJSON)[date])
+    const foundCycloneName = Object.keys(windStateReports[date])
       .map(i => i.toLowerCase())
       .find(cycloneName => cycloneName === cycloneOfInterest.toLowerCase());
 
@@ -36,6 +38,6 @@ export const useWindStatesByTime = (currentDate: number) => {
       return [];
     }
 
-    return (dateJSON as DateJSON)[date][foundCycloneName];
-  }, [cycloneOfInterest, currentDate]);
+    return windStateReports[date][foundCycloneName];
+  }, [cycloneOfInterest, currentDate, windStateReports]);
 };

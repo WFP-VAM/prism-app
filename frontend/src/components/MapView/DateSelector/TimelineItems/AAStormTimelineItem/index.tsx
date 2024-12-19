@@ -2,8 +2,8 @@ import { createStyles, makeStyles } from '@material-ui/core';
 
 import 'react-datepicker/dist/react-datepicker.css';
 import { DateRangeType } from 'config/types';
+import { WindState } from 'context/anticipatoryAction/AAStormStateSlice/types';
 import { TIMELINE_ITEM_WIDTH } from '../../utils';
-import { WindState } from './types';
 import { useWindStatesByTime } from '../hooks';
 
 function AAStormTimelineItem({ currentDate }: AAStormTimelineItemProps) {
