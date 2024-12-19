@@ -11,12 +11,9 @@ import {
 } from '@material-ui/core';
 import React from 'react';
 import { useSafeTranslation } from 'i18n';
-import { useDispatch, useSelector } from 'react-redux';
-import {
-  AAAvailableDatesSelector,
-  setAAFilters,
-} from 'context/anticipatoryAction/AAStormStateSlice';
-import { AnticipatoryAction, PanelSize } from 'config/types';
+import { useDispatch } from 'react-redux';
+import { setAAFilters } from 'context/anticipatoryAction/AAStormStateSlice';
+import { AnticipatoryAction, DateItem, PanelSize } from 'config/types';
 import { updateDateRange } from 'context/mapStateSlice';
 import { useDefaultDate } from 'utils/useDefaultDate';
 import { getFormattedDate } from 'utils/date-utils';
@@ -31,8 +28,9 @@ function AnticipatoryActionStormPanel() {
   const classes = useStyles();
   const dispatch = useDispatch();
   const { t } = useSafeTranslation();
-  const { AAData } = useAnticipatoryAction(AnticipatoryAction.storm);
-  const AAAvailableDates = useSelector(AAAvailableDatesSelector);
+  const { AAData, AAAvailableDates } = useAnticipatoryAction(
+    AnticipatoryAction.storm,
+  );
   const [howToReadModalOpen, setHowToReadModalOpen] = React.useState(false);
 
   const selectedDate = useDefaultDate('anticipatory_action_storm');
@@ -41,7 +39,10 @@ function AnticipatoryActionStormPanel() {
     'forecast',
   );
 
-  const queryDate = getRequestDate(AAAvailableDates, selectedDate);
+  const queryDate = getRequestDate(
+    AAAvailableDates as DateItem[],
+    selectedDate,
+  );
   const date = getFormattedDate(queryDate, DateFormat.MiddleEndian) as string;
   const hour = getFormattedDate(queryDate, DateFormat.TimeOnly) as string;
 

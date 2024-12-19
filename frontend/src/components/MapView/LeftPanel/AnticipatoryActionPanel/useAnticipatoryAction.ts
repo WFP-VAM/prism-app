@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from 'context/store';
-import { AnticipatoryAction } from 'config/types';
+import { AnticipatoryAction, DateItem } from 'config/types';
 import { getAAConfig } from 'context/anticipatoryAction/config';
 import { layersSelector, mapSelector } from 'context/mapStateSlice/selectors';
 import { updateDateRange } from 'context/mapStateSlice';
@@ -17,9 +17,27 @@ import {
   availableDatesSelector,
   updateLayersCapabilities,
 } from 'context/serverStateSlice';
+import { AnticipatoryActionData } from 'context/anticipatoryAction/AADroughtStateSlice/types';
+import { AAStormData } from 'context/anticipatoryAction/AAStormStateSlice/types';
 import { toggleRemoveLayer } from '../layersPanel/MenuItem/MenuSwitch/SwitchItem/utils';
 
-export function useAnticipatoryAction(actionType: AnticipatoryAction) {
+type AADataByAction<T extends AnticipatoryAction> =
+  T extends AnticipatoryAction.storm
+    ? AAStormData
+    : Record<'Window 1' | 'Window 2', AnticipatoryActionData>;
+
+type AAAvailableDatesByAction<T extends AnticipatoryAction> =
+  T extends AnticipatoryAction.storm
+    ? DateItem[]
+    : Record<'Window 1' | 'Window 2', DateItem[]>;
+
+export function useAnticipatoryAction<T extends AnticipatoryAction>(
+  actionType: T,
+): {
+  AAData: AADataByAction<T>;
+  AAConfig: any;
+  AAAvailableDates: AAAvailableDatesByAction<T>;
+} {
   const dispatch = useDispatch();
   const selectedLayers = useSelector(layersSelector);
   const map = useSelector(mapSelector);
@@ -86,7 +104,10 @@ export function useAnticipatoryAction(actionType: AnticipatoryAction) {
     }
 
     return () => {
-      if (isWindowEmpty(AAData, 'Window 1')) {
+      if (
+        isWindowEmpty(AAData, 'Window 1') ||
+        Object.keys(AAData).length === 0
+      ) {
         toggleRemoveLayer(
           layer,
           map,
@@ -100,7 +121,8 @@ export function useAnticipatoryAction(actionType: AnticipatoryAction) {
   }, []);
 
   return {
-    AAData,
+    AAData: AAData as AADataByAction<T>,
     AAConfig,
+    AAAvailableDates: AAAvailableDates as AAAvailableDatesByAction<T>,
   };
 }

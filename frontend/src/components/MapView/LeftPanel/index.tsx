@@ -12,7 +12,8 @@ import {
   isAnticipatoryActionLayer,
 } from 'config/utils';
 import { setSelectedBoundaries } from 'context/mapSelectionLayerStateSlice';
-import { layersSelector } from 'context/mapStateSlice/selectors';
+import { layersSelector, mapSelector } from 'context/mapStateSlice/selectors';
+import { getUrlKey, useUrlHistory } from 'utils/url-utils';
 import AnalysisPanel from './AnalysisPanel';
 import ChartsPanel from './ChartsPanel';
 import TablesPanel from './TablesPanel';
@@ -27,6 +28,7 @@ import {
   isAnticipatoryActionStormAvailable,
 } from './utils';
 import AlertsPanel from './AlertsPanel';
+import { toggleRemoveLayer } from './layersPanel/MenuItem/MenuSwitch/SwitchItem/utils';
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -56,6 +58,8 @@ const LeftPanel = memo(() => {
   const dispatch = useDispatch();
   const tabValue = useSelector(leftPanelTabValueSelector);
   const selectedLayers = useSelector(layersSelector);
+  const map = useSelector(mapSelector);
+  const { removeLayerFromUrl } = useUrlHistory();
 
   const AALayerInUrl = selectedLayers.find(x =>
     AALayerIds.includes(x.id as AnticipatoryAction),
@@ -96,6 +100,23 @@ const LeftPanel = memo(() => {
     [tabValue],
   );
 
+  // Remove from url when leaving from AA tab
+  React.useEffect(() => {
+    if (
+      !isAnticipatoryActionLayer(tabValue) &&
+      tabValue !== Panel.None &&
+      AALayerInUrl !== undefined
+    ) {
+      toggleRemoveLayer(
+        AALayerInUrl,
+        map,
+        getUrlKey(AALayerInUrl),
+        dispatch,
+        removeLayerFromUrl,
+      );
+    }
+  }, [AALayerInUrl, dispatch, map, removeLayerFromUrl, tabValue]);
+
   // Reset selected boundaries when tab changes from Alerts
   React.useEffect(() => {
     if (tabValue !== Panel.Alerts) {
@@ -103,21 +124,25 @@ const LeftPanel = memo(() => {
     }
   }, [tabValue, dispatch]);
 
-  const renderedAnticipatoryActionPanel = React.useMemo(() => {
-    const shouldLoadAAPanel =
-      !isAnticipatoryActionLayer(tabValue) && AALayerInUrl !== undefined;
-
-    if (shouldLoadAAPanel) {
-      if (AALayerInUrl.id === Panel.AnticipatoryActionDrought) {
+  // Redirect to the correct Anticipatory Action tab when loading AA layer from url
+  React.useEffect(() => {
+    if (!isAnticipatoryActionLayer(tabValue) && AALayerInUrl) {
+      if (AALayerInUrl.id === AnticipatoryAction.drought) {
         dispatch(setTabValue(Panel.AnticipatoryActionDrought));
       } else if (AALayerInUrl.id === AnticipatoryAction.storm) {
         dispatch(setTabValue(Panel.AnticipatoryActionStorm));
       }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [AALayerInUrl]);
+
+  const renderedAnticipatoryActionPanel = React.useMemo(() => {
+    const shouldLoadAAPanel = tabValue && isAnticipatoryActionLayer(tabValue);
 
     if (
       isAnticipatoryActionDroughtAvailable &&
-      tabValue === Panel.AnticipatoryActionDrought
+      tabValue === Panel.AnticipatoryActionDrought &&
+      shouldLoadAAPanel
     ) {
       return (
         <TabPanel value={tabValue} index={Panel.AnticipatoryActionDrought}>
@@ -127,7 +152,8 @@ const LeftPanel = memo(() => {
     }
     if (
       isAnticipatoryActionStormAvailable &&
-      (tabValue === Panel.AnticipatoryActionStorm || shouldLoadAAPanel)
+      tabValue === Panel.AnticipatoryActionStorm &&
+      shouldLoadAAPanel
     ) {
       return (
         <TabPanel value={tabValue} index={Panel.AnticipatoryActionStorm}>
@@ -136,7 +162,7 @@ const LeftPanel = memo(() => {
       );
     }
     return null;
-  }, [tabValue, AALayerInUrl, dispatch]);
+  }, [tabValue]);
 
   return (
     <Drawer
