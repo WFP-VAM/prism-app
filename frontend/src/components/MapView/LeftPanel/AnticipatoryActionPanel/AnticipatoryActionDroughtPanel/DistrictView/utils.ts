@@ -3,7 +3,7 @@ import {
   AnticipatoryActionState,
 } from 'context/anticipatoryActionStateSlice/types';
 import { getSeason } from 'context/anticipatoryActionStateSlice/utils';
-import { AADataSeverityOrder } from '../utils';
+import { AADataSeverityOrder } from '../../utils';
 import { TimelineRow } from '../Timeline/utils';
 
 export function districtViewTransform(

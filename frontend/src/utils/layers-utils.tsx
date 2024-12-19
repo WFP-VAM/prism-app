@@ -4,11 +4,18 @@ import {
   Extent,
   expandBoundingBox,
 } from 'components/MapView/Layers/raster-utils';
-import { LayerKey, LayerType, isMainLayer, DateItem } from 'config/types';
 import {
-  AALayerId,
+  LayerKey,
+  LayerType,
+  isMainLayer,
+  DateItem,
+  AnticipatoryAction,
+} from 'config/types';
+import {
+  AALayerIds,
   LayerDefinitions,
   getBoundaryLayerSingleton,
+  isAnticipatoryActionLayer,
 } from 'config/utils';
 import {
   addLayer,
@@ -49,7 +56,8 @@ const dateSupportLayerTypes: Array<LayerType['type']> = [
   'point_data',
   'wms',
   'static_raster',
-  'anticipatory_action',
+  AnticipatoryAction.drought,
+  AnticipatoryAction.storm,
 ];
 
 const useLayers = () => {
@@ -93,8 +101,9 @@ const useLayers = () => {
 
   const numberOfActiveLayers = useMemo(
     () =>
-      hazardLayersArray.filter(x => x !== AALayerId).length +
-      baselineLayersArray.length,
+      hazardLayersArray.filter(
+        x => !AALayerIds.includes(x as AnticipatoryAction),
+      ).length + baselineLayersArray.length,
     [baselineLayersArray.length, hazardLayersArray],
   );
 
@@ -158,7 +167,7 @@ const useLayers = () => {
       countBy(
         selectedLayersWithDateSupport
           .map(layer => {
-            if (layer.type === 'anticipatory_action') {
+            if (isAnticipatoryActionLayer(layer.type)) {
               // Combine dates for all AA windows to allow selecting AA for the whole period
               return AAAvailableDatesCombined;
             }
@@ -189,7 +198,7 @@ const useLayers = () => {
     }
     const selectedNonAALayersWithDateSupport =
       selectedLayersWithDateSupport.filter(
-        layer => layer.type !== 'anticipatory_action',
+        layer => !isAnticipatoryActionLayer(layer.type),
       );
     /*
       Only keep the dates which were duplicated the same amount of times as the amount of layers active...and convert back to array.
@@ -452,7 +461,7 @@ const useLayers = () => {
   const possibleDatesForLayerIncludeSelectedDate = useCallback(
     (layer: DateCompatibleLayer, date: Date) =>
       binaryIncludes<DateItem>(
-        layer.type === 'anticipatory_action'
+        isAnticipatoryActionLayer(layer.type)
           ? AAAvailableDatesCombined
           : getPossibleDatesForLayer(layer, serverAvailableDates),
         date.setUTCHours(12, 0, 0, 0),
@@ -471,7 +480,7 @@ const useLayers = () => {
         const jsSelectedDate = new Date(providedSelectedDate);
 
         const AADatesLoaded =
-          layer.type !== 'anticipatory_action' ||
+          !isAnticipatoryActionLayer(layer.type) ||
           layer.id in serverAvailableDates;
 
         if (

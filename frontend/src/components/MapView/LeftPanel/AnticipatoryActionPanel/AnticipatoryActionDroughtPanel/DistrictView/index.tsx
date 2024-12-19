@@ -22,7 +22,7 @@ import {
 } from 'context/anticipatoryActionStateSlice';
 import { useSafeTranslation } from 'i18n';
 import { ClearAll, Equalizer, Reply } from '@material-ui/icons';
-import { AADataSeverityOrder, getAAIcon, useAACommonStyles } from '../utils';
+import { AADataSeverityOrder, getAAIcon, useAACommonStyles } from '../../utils';
 import {
   Action,
   getActionsByPhaseCategoryAndWindow,

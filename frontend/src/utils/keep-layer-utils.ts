@@ -1,4 +1,4 @@
-import { LayerType, MenuGroup } from 'config/types';
+import { AnticipatoryAction, LayerType, MenuGroup } from 'config/types';
 import { menuList } from 'components/MapView/LeftPanel/utils';
 
 // Layer types that are allowed to have multiple layers overlap on the map.
@@ -37,7 +37,10 @@ export function keepLayer(layer: LayerType, newLayer: LayerType) {
     return false;
   }
 
-  if (newLayer.type === layer.type && layer.type === 'anticipatory_action') {
+  if (
+    newLayer.type === layer.type &&
+    layer.type === AnticipatoryAction.drought
+  ) {
     return true;
   }
 

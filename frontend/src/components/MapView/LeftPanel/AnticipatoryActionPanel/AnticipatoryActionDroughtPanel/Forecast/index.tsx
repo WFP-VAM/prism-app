@@ -23,7 +23,7 @@ import { dateRangeSelector } from 'context/mapStateSlice/selectors';
 import { useSafeTranslation } from 'i18n';
 import { ClearAll, Reply } from '@material-ui/icons';
 import { getFormattedDate } from 'utils/date-utils';
-import { getAAColor, useAACommonStyles } from '../utils';
+import { getAAColor, useAACommonStyles } from '../../utils';
 import { chartOptions, forecastTransform, getChartData } from './utils';
 
 interface ForecastProps {
