@@ -70,9 +70,12 @@ export const loadStormReport = createAsyncThunk<
 >(
   'anticipatoryActionStormState/loadLatestStormReport',
   async ({ stormName, date }, { rejectWithValue }) => {
+    if (!stormName || !date) {
+      return rejectWithValue('Storm name and date are required');
+    }
     try {
       const response = await fetch(
-        `https://data.earthobservation.vam.wfp.org/public-share/aa/ts/outputs/${stormName}/${date}.json`,
+        `https://data.earthobservation.vam.wfp.org/public-share/aa/ts/outputs/${stormName}/${date}.json?v2`,
       );
       const stormData = await response.json();
       const data = parseAndTransformAA(stormData as StormData);

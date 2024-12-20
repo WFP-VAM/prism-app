@@ -85,16 +85,16 @@ export function parseAndTransformAA(data: StormData): ResultType {
       )
     : [{} as DistrictDataType, {} as DistrictDataType];
 
-  const landfallImpactData = landfallInfo
+  const landfallImpactData = landfallInfo.landfall_time
     ? {
         district: landfallInfo.landfall_impact_district,
         time: landfallInfo.landfall_time,
-        severity: landfallInfo.landfall_impact_intensity.map(
+        severity: landfallInfo.landfall_impact_intensity?.map(
           (intensity: AACategoryLandfall) =>
             AACategoryDataToLandfallMap[intensity],
         ),
       }
-    : ({} as LandfallInfo);
+    : undefined;
 
   const dates = extractDates(data);
   const availableDates = dates.map(date => ({

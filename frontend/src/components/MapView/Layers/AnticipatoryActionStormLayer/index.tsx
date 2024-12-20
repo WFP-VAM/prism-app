@@ -386,7 +386,7 @@ const AnticipatoryActionStormLayer = React.memo(
 
         <AAStormDatePopup />
 
-        {selectedFeature && AAStormData.landfall && selectedDate && (
+        {selectedFeature && AAStormData.landfall?.time && selectedDate && (
           <AAStormLandfallPopup
             point={selectedFeature.geometry}
             reportDate={selectedFeature.properties?.time}
