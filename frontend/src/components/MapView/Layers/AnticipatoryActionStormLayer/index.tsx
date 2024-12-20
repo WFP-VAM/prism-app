@@ -73,7 +73,7 @@ const AnticipatoryActionStormLayer = React.memo(
       if (!stormData.timeSeries && selectedDate && windStates) {
         dispatch(
           loadStormReport({
-            date: windStates.states[windStates.states.length - 1].ref_time,
+            date: windStates.states[windStates.states.length - 1]?.ref_time,
             stormName: windStates.cycloneName || 'chido',
           }),
         );
@@ -285,6 +285,9 @@ const AnticipatoryActionStormLayer = React.memo(
       };
     }, [boundaryData, stormData]);
 
+    // Create a unique ID suffix based on the selected date
+    const dateId = selectedDate ? `-${selectedDate}` : '';
+
     if (!boundaryData || !stormData) {
       return null;
     }
@@ -294,7 +297,7 @@ const AnticipatoryActionStormLayer = React.memo(
         {/* First render all fill layers */}
         {coloredDistrictsLayer && (
           <Source
-            key="storm-districts"
+            key={`storm-districts${dateId}`}
             id="storm-districts"
             type="geojson"
             data={coloredDistrictsLayer}
@@ -322,8 +325,9 @@ const AnticipatoryActionStormLayer = React.memo(
         {viewType === 'forecast' && (
           <>
             <Source
-              data={stormData.activeDistricts?.Moderate?.polygon}
+              key={`exposed-area-48kt${dateId}`}
               type="geojson"
+              data={stormData.activeDistricts?.Moderate?.polygon}
             >
               <Layer
                 id="exposed-area-48kt"
@@ -337,8 +341,9 @@ const AnticipatoryActionStormLayer = React.memo(
               />
             </Source>
             <Source
-              data={stormData.activeDistricts?.Severe?.polygon}
+              key={`exposed-area-64kt${dateId}`}
               type="geojson"
+              data={stormData.activeDistricts?.Severe?.polygon}
             >
               <Layer
                 id="exposed-area-64kt"
@@ -357,8 +362,9 @@ const AnticipatoryActionStormLayer = React.memo(
         {/* Storm Risk Map view */}
         {viewType === 'risk' && (
           <Source
-            data={stormData.activeDistricts?.Risk?.polygon}
+            key={`storm-risk-map${dateId}`}
             type="geojson"
+            data={stormData.activeDistricts?.Risk?.polygon}
           >
             <Layer
               id="storm-risk-map"

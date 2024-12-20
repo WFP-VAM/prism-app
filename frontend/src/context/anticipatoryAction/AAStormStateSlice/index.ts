@@ -168,7 +168,6 @@ export const anticipatoryActionStormStateSlice = createSlice({
       ...state,
       loading: false,
       data: payload.data,
-      availableDates: payload.availableDates,
     }));
 
     builder.addCase(loadLatestStormReport.rejected, (state, action) => ({
