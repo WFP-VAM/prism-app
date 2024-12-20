@@ -79,8 +79,6 @@ export type AAStormWindStateReports = Record<
 
 export type ResultType = {
   data: AAStormData;
-  availableDates: DateItem[];
-  range: { start?: string; end?: string };
 };
 
 interface ExposedAreaStorm {
@@ -149,7 +147,7 @@ export type AnticipatoryActionState = {
   availableDates?: DateItem[] | undefined;
   filters: {
     viewType?: 'forecast' | 'risk' | undefined;
-    selectedDate: string | undefined;
+    selectedDateTime: string | undefined;
     selectedIndex: string;
     categories: Record<AACategory, boolean>;
   };

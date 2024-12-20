@@ -1,22 +1,13 @@
-import {
-  AADataSelector,
-  AAWindStateReports,
-} from 'context/anticipatoryAction/AAStormStateSlice';
+import { AAWindStateReports } from 'context/anticipatoryAction/AAStormStateSlice';
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { getDateInUTC } from 'components/MapView/Layers/AnticipatoryActionStormLayer/utils';
 import { datesAreEqualWithoutTime } from 'utils/date-utils';
 
 export const useWindStatesByTime = (currentDate: number) => {
-  const AAData = useSelector(AADataSelector);
   const windStateReports = useSelector(AAWindStateReports);
-  const cycloneOfInterest = AAData.forecastDetails?.cyclone_name;
 
   return useMemo(() => {
-    if (!cycloneOfInterest) {
-      return [];
-    }
-
     const date = Object.keys(windStateReports).find(analysedDate => {
       const analysedDateInUTC = getDateInUTC(analysedDate, false);
       if (!analysedDateInUTC) {
@@ -27,17 +18,18 @@ export const useWindStatesByTime = (currentDate: number) => {
     });
 
     if (!date) {
-      return [];
+      return { states: [], cycloneName: null };
     }
 
-    const foundCycloneName = Object.keys(windStateReports[date])
-      .map(i => i.toLowerCase())
-      .find(cycloneName => cycloneName === cycloneOfInterest.toLowerCase());
-
-    if (!foundCycloneName) {
-      return [];
+    // TODO: Handle cases where multiple cyclones overlap in the same time period
+    const firstAvailableCyclone = Object.keys(windStateReports[date])[0];
+    if (!firstAvailableCyclone) {
+      return { states: [], cycloneName: null };
     }
 
-    return windStateReports[date][foundCycloneName];
-  }, [cycloneOfInterest, currentDate, windStateReports]);
+    return {
+      states: windStateReports[date][firstAvailableCyclone],
+      cycloneName: firstAvailableCyclone,
+    };
+  }, [currentDate, windStateReports]);
 };

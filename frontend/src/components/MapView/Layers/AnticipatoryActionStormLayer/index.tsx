@@ -15,8 +15,10 @@ import { getBoundaryLayersByAdminLevel } from 'config/utils';
 import {
   AADataSelector,
   AAFiltersSelector,
+  loadStormReport,
 } from 'context/anticipatoryAction/AAStormStateSlice';
 import { AACategory } from 'context/anticipatoryAction/AAStormStateSlice/types';
+import { useWindStatesByTime } from 'components/MapView/DateSelector/TimelineItems/hooks';
 import { getAAColor } from 'components/MapView/LeftPanel/AnticipatoryActionPanel/AnticipatoryActionStormPanel/utils';
 import AAStormDatePopup from './AAStormDatePopup';
 import AAStormLandfallPopup from './AAStormLandfallPopup';
@@ -57,10 +59,29 @@ const WIND_TYPE_TO_ICON_MAP: Record<string, string> = {
 
 const AnticipatoryActionStormLayer = React.memo(
   ({ layer }: AnticipatoryActionStormLayerProps) => {
+    // Load the layer default date if no date is selected
     useDefaultDate(layer.id);
     const map = useSelector(mapSelector);
-    const { viewType, selectedDate } = useSelector(AAFiltersSelector);
+    const { viewType, selectedDateTime } = useSelector(AAFiltersSelector);
+
     const stormData = useSelector(AADataSelector);
+    const windStates = useWindStatesByTime(
+      new Date(selectedDateTime || 0).getTime(),
+    );
+    const dispatch = useDispatch();
+
+    // Load data when no data is present
+    useEffect(() => {
+      if (!stormData.timeSeries && windStates) {
+        dispatch(
+          loadStormReport({
+            date: windStates.states[windStates.states.length - 1]?.ref_time,
+            stormName: windStates.cycloneName || 'chido',
+          }),
+        );
+      }
+    }, [dispatch, stormData, selectedDateTime, windStates]);
+
     const boundaryLayerState = useSelector(
       layerDataSelector(boundaryLayer.id),
     ) as LayerData<BoundaryLayerProps> | undefined;
@@ -185,8 +206,6 @@ const AnticipatoryActionStormLayer = React.memo(
       onMouseLeave,
     );
 
-    const dispatch = useDispatch();
-
     const onWindPointsClicked = () => (e: MapLayerMouseEvent) => {
       e.preventDefault();
       dispatch(hidePopup()); // hides the black tooltip containing the district names
@@ -268,6 +287,9 @@ const AnticipatoryActionStormLayer = React.memo(
       };
     }, [boundaryData, stormData]);
 
+    // Create a unique ID suffix based on the selected date
+    const dateId = selectedDateTime ? `-${selectedDateTime}` : '';
+
     if (!boundaryData || !stormData) {
       return null;
     }
@@ -277,7 +299,7 @@ const AnticipatoryActionStormLayer = React.memo(
         {/* First render all fill layers */}
         {coloredDistrictsLayer && (
           <Source
-            key="storm-districts"
+            key={`storm-districts${dateId}`}
             id="storm-districts"
             type="geojson"
             data={coloredDistrictsLayer}
@@ -304,44 +326,54 @@ const AnticipatoryActionStormLayer = React.memo(
         {/* 48kt and 64kt wind forecast areas */}
         {viewType === 'forecast' && (
           <>
-            <Source
-              data={stormData.activeDistricts?.Moderate?.polygon}
-              type="geojson"
-            >
-              <Layer
-                id="exposed-area-48kt"
-                beforeId="aa-storm-wind-points-layer"
-                type="fill"
-                paint={{
-                  'fill-opacity': 0.5,
-                  'fill-color': getAAColor(AACategory.Moderate, 'Active', true)
-                    .background,
-                }}
-              />
-            </Source>
-            <Source
-              data={stormData.activeDistricts?.Severe?.polygon}
-              type="geojson"
-            >
-              <Layer
-                id="exposed-area-64kt"
-                beforeId="aa-storm-wind-points-layer"
-                type="fill"
-                paint={{
-                  'fill-opacity': 0.5,
-                  'fill-color': getAAColor(AACategory.Severe, 'Active', true)
-                    .background,
-                }}
-              />
-            </Source>
+            {stormData.activeDistricts?.Moderate?.polygon && (
+              <Source
+                key={`exposed-area-48kt${dateId}`}
+                type="geojson"
+                data={stormData.activeDistricts?.Moderate?.polygon}
+              >
+                <Layer
+                  id="exposed-area-48kt"
+                  beforeId="aa-storm-wind-points-layer"
+                  type="fill"
+                  paint={{
+                    'fill-opacity': 0.5,
+                    'fill-color': getAAColor(
+                      AACategory.Moderate,
+                      'Active',
+                      true,
+                    ).background,
+                  }}
+                />
+              </Source>
+            )}
+            {stormData.activeDistricts?.Severe?.polygon && (
+              <Source
+                key={`exposed-area-64kt${dateId}`}
+                type="geojson"
+                data={stormData.activeDistricts?.Severe?.polygon}
+              >
+                <Layer
+                  id="exposed-area-64kt"
+                  beforeId="aa-storm-wind-points-layer"
+                  type="fill"
+                  paint={{
+                    'fill-opacity': 0.5,
+                    'fill-color': getAAColor(AACategory.Severe, 'Active', true)
+                      .background,
+                  }}
+                />
+              </Source>
+            )}
           </>
         )}
 
         {/* Storm Risk Map view */}
-        {viewType === 'risk' && (
+        {viewType === 'risk' && stormData.activeDistricts?.Risk?.polygon && (
           <Source
-            data={stormData.activeDistricts?.Risk?.polygon}
+            key={`storm-risk-map${dateId}`}
             type="geojson"
+            data={stormData.activeDistricts?.Risk?.polygon}
           >
             <Layer
               id="storm-risk-map"
@@ -356,43 +388,45 @@ const AnticipatoryActionStormLayer = React.memo(
         )}
 
         {/* Render wind points last so they appear on top */}
-        <Source data={timeSeries} type="geojson">
-          <Layer
-            id="aa-storm-wind-points-line-past"
-            type="line"
-            filter={['==', ['get', 'data_type'], 'analysis']}
-            paint={{
-              'line-color': 'black',
-              'line-width': 2,
-            }}
-          />
-          <Layer
-            id="aa-storm-wind-points-line-future"
-            type="line"
-            filter={['==', ['get', 'data_type'], 'forecast']}
-            paint={{
-              'line-color': 'red',
-              'line-width': 2,
-              'line-dasharray': [2, 1],
-            }}
-          />
-          <Layer
-            id="aa-storm-wind-points-layer"
-            beforeId="aa-storm-wind-points-line-future"
-            type="symbol"
-            layout={{ 'icon-image': ['image', ['get', 'iconName']] }}
-          />
-        </Source>
+        {timeSeries && (
+          <Source data={timeSeries} type="geojson">
+            <Layer
+              id="aa-storm-wind-points-line-past"
+              type="line"
+              filter={['==', ['get', 'data_type'], 'analysis']}
+              paint={{
+                'line-color': 'black',
+                'line-width': 2,
+              }}
+            />
+            <Layer
+              id="aa-storm-wind-points-line-future"
+              type="line"
+              filter={['==', ['get', 'data_type'], 'forecast']}
+              paint={{
+                'line-color': 'red',
+                'line-width': 2,
+                'line-dasharray': [2, 1],
+              }}
+            />
+            <Layer
+              id="aa-storm-wind-points-layer"
+              beforeId="aa-storm-wind-points-line-future"
+              type="symbol"
+              layout={{ 'icon-image': ['image', ['get', 'iconName']] }}
+            />
+          </Source>
+        )}
 
         <AAStormDatePopup />
 
-        {selectedFeature && stormData.landfall?.time && selectedDate && (
+        {selectedFeature && stormData.landfall?.time && selectedDateTime && (
           <AAStormLandfallPopup
             point={selectedFeature.geometry}
             reportDate={selectedFeature.properties?.time}
             landfallInfo={stormData.landfall}
             onClose={() => landfallPopupCloseHandler()}
-            timelineDate={selectedDate}
+            timelineDate={selectedDateTime}
           />
         )}
       </>

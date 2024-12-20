@@ -21,21 +21,26 @@ function AAStormTooltipContent({ date }: AAStormTooltipContentProps) {
     _event: MouseEvent<HTMLElement>,
     value: string,
   ) => {
-    dispatch(setAAFilters({ selectedDate: value }));
-    dispatch(loadStormReport({ date: value, stormName: 'chido' }));
+    dispatch(setAAFilters({ selectedDateTime: value }));
+    dispatch(
+      loadStormReport({
+        date: value,
+        stormName: windStates.cycloneName || 'chido',
+      }),
+    );
   };
 
   return (
     <div className={classes.container}>
       <Typography> {formatInUTC(new Date(date.value), 'MM/dd/yy')}</Typography>
       <ToggleButtonGroup
-        value={filters.selectedDate}
+        value={filters.selectedDateTime}
         exclusive
         onChange={hourToggleHandler}
       >
-        {windStates.map(item => {
+        {windStates.states.map(item => {
           const itemDate = new Date(item.ref_time);
-          const formattedItemTime = formatInUTC(itemDate, 'K aaa');
+          const formattedItemTime = formatInUTC(itemDate, 'h aaa');
 
           return (
             <ToggleButton key={itemDate.valueOf()} value={item.ref_time}>
