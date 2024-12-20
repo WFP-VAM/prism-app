@@ -60,7 +60,7 @@ const AnticipatoryActionStormLayer = React.memo(
     useDefaultDate(layer.id);
     const map = useSelector(mapSelector);
     const { viewType, selectedDate } = useSelector(AAFiltersSelector);
-    const AAStormData = useSelector(AADataSelector);
+    const stormData = useSelector(AADataSelector);
     const boundaryLayerState = useSelector(
       layerDataSelector(boundaryLayer.id),
     ) as LayerData<BoundaryLayerProps> | undefined;
@@ -117,8 +117,8 @@ const AnticipatoryActionStormLayer = React.memo(
     }
 
     const timeSeries: any =
-      AAStormData && AAStormData.timeSeries
-        ? enhanceTimeSeries(AAStormData.timeSeries as unknown as TimeSeries)
+      stormData && stormData.timeSeries
+        ? enhanceTimeSeries(stormData.timeSeries as unknown as TimeSeries)
         : null;
 
     function getIconNameByWindType(windType: string) {
@@ -249,7 +249,7 @@ const AnticipatoryActionStormLayer = React.memo(
           .map(feature => {
             const districtName =
               feature.properties?.[boundaryLayer.adminLevelLocalNames[1]];
-            const colorInfo = getDistrictColor(districtName, AAStormData);
+            const colorInfo = getDistrictColor(districtName, stormData);
 
             if (!colorInfo) {
               return null;
@@ -266,9 +266,9 @@ const AnticipatoryActionStormLayer = React.memo(
           })
           .filter(Boolean),
       };
-    }, [boundaryData, AAStormData]);
+    }, [boundaryData, stormData]);
 
-    if (!boundaryData || !AAStormData) {
+    if (!boundaryData || !stormData) {
       return null;
     }
 
@@ -305,7 +305,7 @@ const AnticipatoryActionStormLayer = React.memo(
         {viewType === 'forecast' && (
           <>
             <Source
-              data={AAStormData.activeDistricts?.Moderate?.polygon}
+              data={stormData.activeDistricts?.Moderate?.polygon}
               type="geojson"
             >
               <Layer
@@ -320,7 +320,7 @@ const AnticipatoryActionStormLayer = React.memo(
               />
             </Source>
             <Source
-              data={AAStormData.activeDistricts?.Severe?.polygon}
+              data={stormData.activeDistricts?.Severe?.polygon}
               type="geojson"
             >
               <Layer
@@ -340,7 +340,7 @@ const AnticipatoryActionStormLayer = React.memo(
         {/* Storm Risk Map view */}
         {viewType === 'risk' && (
           <Source
-            data={AAStormData.activeDistricts?.Risk?.polygon}
+            data={stormData.activeDistricts?.Risk?.polygon}
             type="geojson"
           >
             <Layer
@@ -390,7 +390,7 @@ const AnticipatoryActionStormLayer = React.memo(
           <AAStormLandfallPopup
             point={selectedFeature.geometry}
             reportDate={selectedFeature.properties?.time}
-            landfallInfo={AAStormData.landfall}
+            landfallInfo={stormData.landfall}
             onClose={() => landfallPopupCloseHandler()}
             timelineDate={selectedDate}
           />

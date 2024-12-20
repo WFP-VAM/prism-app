@@ -16,6 +16,7 @@ import {
   LayerDefinitions,
   getBoundaryLayerSingleton,
   isAnticipatoryActionLayer,
+  isWindowedDates,
 } from 'config/utils';
 import {
   addLayer,
@@ -41,9 +42,10 @@ import {
 } from 'utils/server-utils';
 import { UrlLayerKey, getUrlKey, useUrlHistory } from 'utils/url-utils';
 
-import { AAAvailableDatesSelector } from 'context/anticipatoryAction/AADroughtStateSlice';
 import { useTranslation } from 'react-i18next';
 
+import { getAAConfig } from 'context/anticipatoryAction/config';
+import { RootState } from 'context/store';
 import {
   datesAreEqualWithoutTime,
   binaryIncludes,
@@ -71,14 +73,31 @@ const useLayers = () => {
 
   const unsortedSelectedLayers = useSelector(layersSelector);
   const serverAvailableDates = useSelector(availableDatesSelector);
-  const AAAvailableDates = useSelector(AAAvailableDatesSelector);
   const { startDate: selectedDate } = useSelector(dateRangeSelector);
 
-  const AAAvailableDatesCombined = useMemo(
-    () =>
-      AAAvailableDates ? getAAAvailableDatesCombined(AAAvailableDates) : [],
-    [AAAvailableDates],
+  // get AA config
+  const AAConfig = useMemo(() => {
+    const anticipatoryLayer = unsortedSelectedLayers.find(layer =>
+      isAnticipatoryActionLayer(layer.type),
+    );
+    if (anticipatoryLayer) {
+      return getAAConfig(anticipatoryLayer.type as AnticipatoryAction);
+    }
+    return null;
+  }, [unsortedSelectedLayers]);
+
+  const AAAvailableDates = useSelector((state: RootState) =>
+    AAConfig ? AAConfig.availableDatesSelector(state) : null,
   );
+
+  const AAAvailableDatesCombined = useMemo(() => {
+    if (!AAAvailableDates) {
+      return [];
+    }
+    return isWindowedDates(AAAvailableDates)
+      ? getAAAvailableDatesCombined(AAAvailableDates)
+      : AAAvailableDates;
+  }, [AAAvailableDates]);
 
   const hazardLayerIds = useMemo(
     () => urlParams.get(UrlLayerKey.HAZARD),
