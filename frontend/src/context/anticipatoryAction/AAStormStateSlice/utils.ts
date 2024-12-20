@@ -7,7 +7,6 @@ import {
   AACategoryKeyToCategoryMap,
   AACategoryLandfall,
   DistrictDataType,
-  LandfallInfo,
   ResultType,
   StormData,
 } from './types';
