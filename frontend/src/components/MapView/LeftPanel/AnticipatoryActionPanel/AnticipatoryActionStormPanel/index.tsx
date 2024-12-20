@@ -13,7 +13,7 @@ import React from 'react';
 import { useSafeTranslation } from 'i18n';
 import { useDispatch } from 'react-redux';
 import { setAAFilters } from 'context/anticipatoryAction/AAStormStateSlice';
-import { AnticipatoryAction, DateItem, PanelSize } from 'config/types';
+import { AnticipatoryAction, PanelSize } from 'config/types';
 import { updateDateRange } from 'context/mapStateSlice';
 import { useDefaultDate } from 'utils/useDefaultDate';
 import { getFormattedDate } from 'utils/date-utils';
@@ -39,10 +39,7 @@ function AnticipatoryActionStormPanel() {
     'forecast',
   );
 
-  const queryDate = getRequestDate(
-    AAAvailableDates as DateItem[],
-    selectedDate,
-  );
+  const queryDate = getRequestDate(AAAvailableDates, selectedDate);
   const date = getFormattedDate(queryDate, DateFormat.MiddleEndian) as string;
   const hour = getFormattedDate(queryDate, DateFormat.TimeOnly) as string;
 
