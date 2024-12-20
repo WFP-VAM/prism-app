@@ -60,6 +60,29 @@ export const loadLatestStormReport = createAsyncThunk<
   },
 );
 
+export const loadStormReport = createAsyncThunk<
+  {
+    data: AAStormData;
+    availableDates: DateItem[];
+  },
+  { stormName: string; date: string },
+  CreateAsyncThunkTypes
+>(
+  'anticipatoryActionStormState/loadLatestStormReport',
+  async ({ stormName, date }, { rejectWithValue }) => {
+    try {
+      const response = await fetch(
+        `https://data.earthobservation.vam.wfp.org/public-share/aa/ts/outputs/${stormName}/${date}.json`,
+      );
+      const stormData = await response.json();
+      const data = parseAndTransformAA(stormData as StormData);
+      return data;
+    } catch (error) {
+      return rejectWithValue(error);
+    }
+  },
+);
+
 export const loadWindStateReports = createAsyncThunk<
   AAStormWindStateReports,
   undefined,
@@ -173,6 +196,7 @@ export const AAFiltersSelector = (state: RootState) =>
 
 export const AAWindStateReports = (state: RootState) =>
   state.anticipatoryActionStormState.windStateReports;
+
 // export actions
 export const { setAAFilters } = anticipatoryActionStormStateSlice.actions;
 
