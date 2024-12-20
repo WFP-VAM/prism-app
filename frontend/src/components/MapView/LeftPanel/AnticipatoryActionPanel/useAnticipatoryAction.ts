@@ -97,6 +97,7 @@ export function useAnticipatoryAction<T extends AnticipatoryAction>(
       );
       updateHistory(getUrlKey(layer), updatedUrl);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return {
