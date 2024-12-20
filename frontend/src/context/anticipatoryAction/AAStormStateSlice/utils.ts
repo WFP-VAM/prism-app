@@ -28,10 +28,6 @@ const watchedDistricts: { [key in AACategory]: string[] } = {
   [AACategory.Risk]: [],
 };
 
-// TODO - wait for dates endpoint to be implemented in the WFP API
-function extractDates(data: StormData): number[] {
-  return [getTimeInMilliseconds(data.forecast_details.reference_time)];
-}
 // DRAFT: This is a provisional implementation based on a test dataset with a temporary structure that is subject to change.
 export function parseAndTransformAA(data: StormData): ResultType {
   const exposedAreas = data.ready_set_results;
@@ -94,14 +90,6 @@ export function parseAndTransformAA(data: StormData): ResultType {
       }
     : undefined;
 
-  const dates = extractDates(data);
-  const availableDates = dates.map(date => ({
-    displayDate: date,
-    queryDate: date,
-    startDate: date,
-    endDate: date,
-  }));
-
   return {
     data: {
       activeDistricts,
@@ -111,6 +99,5 @@ export function parseAndTransformAA(data: StormData): ResultType {
       landfallDetected: data.landfall_detected,
       forecastDetails: data.forecast_details,
     },
-    availableDates,
   };
 }
