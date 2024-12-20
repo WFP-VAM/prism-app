@@ -79,7 +79,7 @@ function Forecast({ dialogs }: ForecastProps) {
     <>
       <Typography variant="h3" style={{ marginLeft: '1rem' }}>
         {t('Forecast data as of ')}
-        {getFormattedDate(selectedDate, 'locale')}
+        {getFormattedDate(selectedDate, 'locale', t('date_locale'))}
       </Typography>
       <div className={classes.charts}>
         <div className={classes.chartsHeader}>
