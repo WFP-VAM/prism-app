@@ -1,5 +1,4 @@
-import { getFormattedDate, getTimeInMilliseconds } from 'utils/date-utils';
-import { DateFormat } from 'utils/name-utils';
+import { getTimeInMilliseconds } from 'utils/date-utils';
 import {
   AACategory,
   AACategoryDataToLandfallMap,
@@ -113,9 +112,5 @@ export function parseAndTransformAA(data: StormData): ResultType {
       forecastDetails: data.forecast_details,
     },
     availableDates,
-    range: {
-      start: getFormattedDate(dates[0], DateFormat.Default),
-      end: getFormattedDate(dates[dates.length - 1], DateFormat.Default),
-    },
   };
 }

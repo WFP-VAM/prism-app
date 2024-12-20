@@ -22,7 +22,12 @@ function AAStormTooltipContent({ date }: AAStormTooltipContentProps) {
     value: string,
   ) => {
     dispatch(setAAFilters({ selectedDate: value }));
-    dispatch(loadStormReport({ date: value, stormName: 'chido' }));
+    dispatch(
+      loadStormReport({
+        date: value,
+        stormName: windStates.cycloneName || 'chido',
+      }),
+    );
   };
 
   return (
@@ -33,7 +38,7 @@ function AAStormTooltipContent({ date }: AAStormTooltipContentProps) {
         exclusive
         onChange={hourToggleHandler}
       >
-        {windStates.map(item => {
+        {windStates.states.map(item => {
           const itemDate = new Date(item.ref_time);
           const formattedItemTime = formatInUTC(itemDate, 'K aaa');
 

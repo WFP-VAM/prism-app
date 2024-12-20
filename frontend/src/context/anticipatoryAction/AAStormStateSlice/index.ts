@@ -32,7 +32,6 @@ export const loadAllAAStormData = createAsyncThunk<
   undefined,
   CreateAsyncThunkTypes
 >('anticipatoryActionStormState/loadAllData', async (_, { dispatch }) => {
-  dispatch(loadLatestStormReport());
   dispatch(loadWindStateReports());
   return true;
 });
@@ -87,18 +86,44 @@ export const loadStormReport = createAsyncThunk<
 );
 
 export const loadWindStateReports = createAsyncThunk<
-  AAStormWindStateReports,
+  { reports: AAStormWindStateReports; availableDates: DateItem[] },
   undefined,
-  CreateAsyncThunkTypes
+  CreateAsyncThunkTypes & {
+    rejectValue: unknown;
+  }
 >(
   'anticipatoryActionStormState/loadWindStateReports',
-  async (_, { rejectWithValue }) => {
+  async (
+    _,
+    { rejectWithValue },
+  ): Promise<
+    | {
+        reports: AAStormWindStateReports;
+        availableDates: DateItem[];
+      }
+    | any
+  > => {
     try {
       const response = await fetch(
         'https://data.earthobservation.vam.wfp.org/public-share/aa/ts/outputs/dates.json',
       );
       const responseData = await response.json();
-      return responseData;
+      const availableDates = Object.keys(responseData).map(dateStr => {
+        // Parse the date string as UTC
+        // eslint-disable-next-line prefer-template
+        const utcDate = new Date(dateStr + 'T12:00:00.000Z');
+        const timestamp = utcDate.getTime();
+        return {
+          displayDate: timestamp,
+          queryDate: timestamp,
+          startDate: timestamp,
+          endDate: timestamp,
+        };
+      });
+      return {
+        reports: responseData,
+        availableDates,
+      };
     } catch (error) {
       return rejectWithValue(error);
     }
@@ -165,7 +190,8 @@ export const anticipatoryActionStormStateSlice = createSlice({
     builder.addCase(loadWindStateReports.fulfilled, (state, { payload }) => ({
       ...state,
       loading: false,
-      windStateReports: payload,
+      windStateReports: payload.reports,
+      availableDates: payload.availableDates,
     }));
 
     builder.addCase(loadWindStateReports.rejected, (state, action) => ({

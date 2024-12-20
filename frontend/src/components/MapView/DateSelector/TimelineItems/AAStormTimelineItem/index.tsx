@@ -11,15 +11,18 @@ function AAStormTimelineItem({ currentDate }: AAStormTimelineItemProps) {
   const classes = useStyles();
 
   const getStylingClass = () => {
-    if (windStates.length === 0) {
+    if (windStates.states.length === 0) {
       return classes.emptySpace;
     }
-
-    if (windStates.find(({ state }) => state === WindState.activated_118)) {
+    if (
+      windStates.states.find(({ state }) => state === WindState.activated_118)
+    ) {
       return classes.activated2Indicator;
     }
 
-    if (windStates.find(({ state }) => state === WindState.activated_64)) {
+    if (
+      windStates.states.find(({ state }) => state === WindState.activated_64)
+    ) {
       return classes.activated1Indicator;
     }
 

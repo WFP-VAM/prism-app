@@ -15,6 +15,7 @@ import { getBoundaryLayersByAdminLevel } from 'config/utils';
 import {
   AADataSelector,
   AAFiltersSelector,
+  loadStormReport,
 } from 'context/anticipatoryAction/AAStormStateSlice';
 import { AACategory } from 'context/anticipatoryAction/AAStormStateSlice/types';
 import { getAAColor } from 'components/MapView/LeftPanel/AnticipatoryActionPanel/AnticipatoryActionStormPanel/utils';
@@ -31,6 +32,7 @@ import veryIntensiveCyclone from '../../../../../public/images/anticipatory-acti
 import dissipating from '../../../../../public/images/anticipatory-action-storm/dissipating.png';
 import defaultIcon from '../../../../../public/images/anticipatory-action-storm/default.png';
 import { TimeSeries } from './types';
+import { useWindStatesByTime } from 'components/MapView/DateSelector/TimelineItems/hooks';
 
 interface AnticipatoryActionStormLayerProps {
   layer: AnticipatoryActionLayerProps;
@@ -57,10 +59,27 @@ const WIND_TYPE_TO_ICON_MAP: Record<string, string> = {
 
 const AnticipatoryActionStormLayer = React.memo(
   ({ layer }: AnticipatoryActionStormLayerProps) => {
+    // Load the layer default date if no date is selected
     useDefaultDate(layer.id);
     const map = useSelector(mapSelector);
     const { viewType, selectedDate } = useSelector(AAFiltersSelector);
     const stormData = useSelector(AADataSelector);
+    const windStates = useWindStatesByTime(
+      new Date(selectedDate || 0).getTime(),
+    );
+    const dispatch = useDispatch();
+    // Load data when no data is present
+    useEffect(() => {
+      if (!stormData.timeSeries && selectedDate && windStates) {
+        dispatch(
+          loadStormReport({
+            date: windStates.states[windStates.states.length - 1].ref_time,
+            stormName: windStates.cycloneName || 'chido',
+          }),
+        );
+      }
+    }, [dispatch, stormData, selectedDate, windStates]);
+
     const boundaryLayerState = useSelector(
       layerDataSelector(boundaryLayer.id),
     ) as LayerData<BoundaryLayerProps> | undefined;
@@ -184,8 +203,6 @@ const AnticipatoryActionStormLayer = React.memo(
       null,
       onMouseLeave,
     );
-
-    const dispatch = useDispatch();
 
     const onWindPointsClicked = () => (e: MapLayerMouseEvent) => {
       e.preventDefault();

@@ -80,7 +80,6 @@ export type AAStormWindStateReports = Record<
 export type ResultType = {
   data: AAStormData;
   availableDates: DateItem[];
-  range: { start?: string; end?: string };
 };
 
 interface ExposedAreaStorm {
