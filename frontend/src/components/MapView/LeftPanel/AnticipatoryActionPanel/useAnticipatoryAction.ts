@@ -66,6 +66,7 @@ export function useAnticipatoryAction<T extends AnticipatoryAction>(
   // Load data when component mounts
   useEffect(() => {
     dispatch(loadAAData());
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
