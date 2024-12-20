@@ -1,5 +1,6 @@
 {
   "country": "Global",
+  "multiCountry": true,
   "alertFormActive": false,
   "icons": {
     "capacity": "icon_capacity.png",
@@ -13,10 +14,18 @@
     "wms": ["https://api.earthobservation.vam.wfp.org/ows/wms"]
   },
   "map": {
-    "boundingBox": [-171, -56, 180, 76]
+    "boundingBox": [-100, -35, 150, 50]
   },
+  "defaultDisplayBoundaries": [
+    "global_admin_boundaries"
+  ],
   "categories": {
     "rainfall": {
+      "forecasts": [
+        "daily_rainfall_forecast",
+        "dekad_rainfall_forecast",
+        "dekad_rainfall_anomaly_forecast"
+      ],
       "rainfall_amount": [
         {
           "group_title": "Rainfall Aggregate",
