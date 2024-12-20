@@ -1,4 +1,3 @@
-import { getTimeInMilliseconds } from 'utils/date-utils';
 import {
   AACategory,
   AACategoryDataToLandfallMap,
