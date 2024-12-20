@@ -17,10 +17,8 @@ import {
   setAAFilters,
 } from 'context/anticipatoryAction/AAStormStateSlice';
 import { AnticipatoryAction, PanelSize } from 'config/types';
-import { updateDateRange } from 'context/mapStateSlice';
 import { useDefaultDate } from 'utils/useDefaultDate';
 import { getFormattedDate } from 'utils/date-utils';
-import { getRequestDate } from 'utils/server-utils';
 import { DateFormat } from 'utils/name-utils';
 import HowToReadModal from '../HowToReadModal';
 import ActivationTrigger from './ActivationTriggerView';

@@ -16,7 +16,6 @@ import {
   AADataSelector,
   AAFiltersSelector,
   loadStormReport,
-  setAAFilters,
 } from 'context/anticipatoryAction/AAStormStateSlice';
 import { AACategory } from 'context/anticipatoryAction/AAStormStateSlice/types';
 import { useWindStatesByTime } from 'components/MapView/DateSelector/TimelineItems/hooks';
