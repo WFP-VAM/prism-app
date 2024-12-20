@@ -18,6 +18,7 @@ import {
   loadStormReport,
 } from 'context/anticipatoryAction/AAStormStateSlice';
 import { AACategory } from 'context/anticipatoryAction/AAStormStateSlice/types';
+import { useWindStatesByTime } from 'components/MapView/DateSelector/TimelineItems/hooks';
 import { getAAColor } from 'components/MapView/LeftPanel/AnticipatoryActionPanel/AnticipatoryActionStormPanel/utils';
 import AAStormDatePopup from './AAStormDatePopup';
 import AAStormLandfallPopup from './AAStormLandfallPopup';
@@ -32,7 +33,6 @@ import veryIntensiveCyclone from '../../../../../public/images/anticipatory-acti
 import dissipating from '../../../../../public/images/anticipatory-action-storm/dissipating.png';
 import defaultIcon from '../../../../../public/images/anticipatory-action-storm/default.png';
 import { TimeSeries } from './types';
-import { useWindStatesByTime } from 'components/MapView/DateSelector/TimelineItems/hooks';
 
 interface AnticipatoryActionStormLayerProps {
   layer: AnticipatoryActionLayerProps;
