@@ -324,43 +324,50 @@ const AnticipatoryActionStormLayer = React.memo(
         {/* 48kt and 64kt wind forecast areas */}
         {viewType === 'forecast' && (
           <>
-            <Source
-              key={`exposed-area-48kt${dateId}`}
-              type="geojson"
-              data={stormData.activeDistricts?.Moderate?.polygon}
-            >
-              <Layer
-                id="exposed-area-48kt"
-                beforeId="aa-storm-wind-points-layer"
-                type="fill"
-                paint={{
-                  'fill-opacity': 0.5,
-                  'fill-color': getAAColor(AACategory.Moderate, 'Active', true)
-                    .background,
-                }}
-              />
-            </Source>
-            <Source
-              key={`exposed-area-64kt${dateId}`}
-              type="geojson"
-              data={stormData.activeDistricts?.Severe?.polygon}
-            >
-              <Layer
-                id="exposed-area-64kt"
-                beforeId="aa-storm-wind-points-layer"
-                type="fill"
-                paint={{
-                  'fill-opacity': 0.5,
-                  'fill-color': getAAColor(AACategory.Severe, 'Active', true)
-                    .background,
-                }}
-              />
-            </Source>
+            {stormData.activeDistricts?.Moderate?.polygon && (
+              <Source
+                key={`exposed-area-48kt${dateId}`}
+                type="geojson"
+                data={stormData.activeDistricts?.Moderate?.polygon}
+              >
+                <Layer
+                  id="exposed-area-48kt"
+                  beforeId="aa-storm-wind-points-layer"
+                  type="fill"
+                  paint={{
+                    'fill-opacity': 0.5,
+                    'fill-color': getAAColor(
+                      AACategory.Moderate,
+                      'Active',
+                      true,
+                    ).background,
+                  }}
+                />
+              </Source>
+            )}
+            {stormData.activeDistricts?.Severe?.polygon && (
+              <Source
+                key={`exposed-area-64kt${dateId}`}
+                type="geojson"
+                data={stormData.activeDistricts?.Severe?.polygon}
+              >
+                <Layer
+                  id="exposed-area-64kt"
+                  beforeId="aa-storm-wind-points-layer"
+                  type="fill"
+                  paint={{
+                    'fill-opacity': 0.5,
+                    'fill-color': getAAColor(AACategory.Severe, 'Active', true)
+                      .background,
+                  }}
+                />
+              </Source>
+            )}
           </>
         )}
 
         {/* Storm Risk Map view */}
-        {viewType === 'risk' && (
+        {viewType === 'risk' && stormData.activeDistricts?.Risk?.polygon && (
           <Source
             key={`storm-risk-map${dateId}`}
             type="geojson"
@@ -379,33 +386,35 @@ const AnticipatoryActionStormLayer = React.memo(
         )}
 
         {/* Render wind points last so they appear on top */}
-        <Source data={timeSeries} type="geojson">
-          <Layer
-            id="aa-storm-wind-points-line-past"
-            type="line"
-            filter={['==', ['get', 'data_type'], 'analysis']}
-            paint={{
-              'line-color': 'black',
-              'line-width': 2,
-            }}
-          />
-          <Layer
-            id="aa-storm-wind-points-line-future"
-            type="line"
-            filter={['==', ['get', 'data_type'], 'forecast']}
-            paint={{
-              'line-color': 'red',
-              'line-width': 2,
-              'line-dasharray': [2, 1],
-            }}
-          />
-          <Layer
-            id="aa-storm-wind-points-layer"
-            beforeId="aa-storm-wind-points-line-future"
-            type="symbol"
-            layout={{ 'icon-image': ['image', ['get', 'iconName']] }}
-          />
-        </Source>
+        {timeSeries && (
+          <Source data={timeSeries} type="geojson">
+            <Layer
+              id="aa-storm-wind-points-line-past"
+              type="line"
+              filter={['==', ['get', 'data_type'], 'analysis']}
+              paint={{
+                'line-color': 'black',
+                'line-width': 2,
+              }}
+            />
+            <Layer
+              id="aa-storm-wind-points-line-future"
+              type="line"
+              filter={['==', ['get', 'data_type'], 'forecast']}
+              paint={{
+                'line-color': 'red',
+                'line-width': 2,
+                'line-dasharray': [2, 1],
+              }}
+            />
+            <Layer
+              id="aa-storm-wind-points-layer"
+              beforeId="aa-storm-wind-points-line-future"
+              type="symbol"
+              layout={{ 'icon-image': ['image', ['get', 'iconName']] }}
+            />
+          </Source>
+        )}
 
         <AAStormDatePopup />
 
