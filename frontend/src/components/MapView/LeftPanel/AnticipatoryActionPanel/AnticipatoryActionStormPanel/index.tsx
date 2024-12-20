@@ -11,8 +11,11 @@ import {
 } from '@material-ui/core';
 import React from 'react';
 import { useSafeTranslation } from 'i18n';
-import { useDispatch } from 'react-redux';
-import { setAAFilters } from 'context/anticipatoryAction/AAStormStateSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import {
+  AAFiltersSelector,
+  setAAFilters,
+} from 'context/anticipatoryAction/AAStormStateSlice';
 import { AnticipatoryAction, PanelSize } from 'config/types';
 import { updateDateRange } from 'context/mapStateSlice';
 import { useDefaultDate } from 'utils/useDefaultDate';
@@ -34,24 +37,28 @@ function AnticipatoryActionStormPanel() {
   const [howToReadModalOpen, setHowToReadModalOpen] = React.useState(false);
 
   const selectedDate = useDefaultDate('anticipatory_action_storm');
+  const { selectedDateTime } = useSelector(AAFiltersSelector);
 
   const [viewType, setViewType] = React.useState<'forecast' | 'risk'>(
     'forecast',
   );
 
-  const queryDate = getRequestDate(AAAvailableDates, selectedDate);
-  const date = getFormattedDate(queryDate, DateFormat.MiddleEndian) as string;
-  const hour = getFormattedDate(queryDate, DateFormat.TimeOnly) as string;
+  const date = getFormattedDate(
+    selectedDateTime,
+    DateFormat.MiddleEndian,
+  ) as string;
+  const hour = getFormattedDate(
+    selectedDateTime,
+    DateFormat.TimeOnly,
+  ) as string;
 
   React.useEffect(() => {
     dispatch(
       setAAFilters({
         viewType,
-        selectedDate: getFormattedDate(selectedDate, 'default'),
       }),
     );
-    dispatch(updateDateRange({ startDate: selectedDate }));
-  }, [viewType, selectedDate, dispatch]);
+  }, [viewType, dispatch]);
 
   if (!selectedDate) {
     return null;

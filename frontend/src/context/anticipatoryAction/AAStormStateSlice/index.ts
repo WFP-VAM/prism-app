@@ -39,7 +39,6 @@ export const loadAllAAStormData = createAsyncThunk<
 export const loadLatestStormReport = createAsyncThunk<
   {
     data: AAStormData;
-    availableDates: DateItem[];
   },
   undefined,
   CreateAsyncThunkTypes
@@ -62,7 +61,6 @@ export const loadLatestStormReport = createAsyncThunk<
 export const loadStormReport = createAsyncThunk<
   {
     data: AAStormData;
-    availableDates: DateItem[];
   },
   { stormName: string; date: string },
   CreateAsyncThunkTypes
@@ -141,7 +139,7 @@ export const anticipatoryActionStormStateSlice = createSlice({
       }: PayloadAction<
         Partial<{
           viewType: 'forecast' | 'risk';
-          selectedDate: string | undefined;
+          selectedDateTime: string | undefined;
           selectedIndex: string;
           categories: Partial<Record<AACategory, boolean>>;
         }>

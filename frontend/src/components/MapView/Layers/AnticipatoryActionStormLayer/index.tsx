@@ -16,6 +16,7 @@ import {
   AADataSelector,
   AAFiltersSelector,
   loadStormReport,
+  setAAFilters,
 } from 'context/anticipatoryAction/AAStormStateSlice';
 import { AACategory } from 'context/anticipatoryAction/AAStormStateSlice/types';
 import { useWindStatesByTime } from 'components/MapView/DateSelector/TimelineItems/hooks';
@@ -62,15 +63,17 @@ const AnticipatoryActionStormLayer = React.memo(
     // Load the layer default date if no date is selected
     useDefaultDate(layer.id);
     const map = useSelector(mapSelector);
-    const { viewType, selectedDate } = useSelector(AAFiltersSelector);
+    const { viewType, selectedDateTime } = useSelector(AAFiltersSelector);
+
     const stormData = useSelector(AADataSelector);
     const windStates = useWindStatesByTime(
-      new Date(selectedDate || 0).getTime(),
+      new Date(selectedDateTime || 0).getTime(),
     );
     const dispatch = useDispatch();
+
     // Load data when no data is present
     useEffect(() => {
-      if (!stormData.timeSeries && selectedDate && windStates) {
+      if (!stormData.timeSeries && windStates) {
         dispatch(
           loadStormReport({
             date: windStates.states[windStates.states.length - 1]?.ref_time,
@@ -78,7 +81,7 @@ const AnticipatoryActionStormLayer = React.memo(
           }),
         );
       }
-    }, [dispatch, stormData, selectedDate, windStates]);
+    }, [dispatch, stormData, selectedDateTime, windStates]);
 
     const boundaryLayerState = useSelector(
       layerDataSelector(boundaryLayer.id),
@@ -286,7 +289,7 @@ const AnticipatoryActionStormLayer = React.memo(
     }, [boundaryData, stormData]);
 
     // Create a unique ID suffix based on the selected date
-    const dateId = selectedDate ? `-${selectedDate}` : '';
+    const dateId = selectedDateTime ? `-${selectedDateTime}` : '';
 
     if (!boundaryData || !stormData) {
       return null;
@@ -418,13 +421,13 @@ const AnticipatoryActionStormLayer = React.memo(
 
         <AAStormDatePopup />
 
-        {selectedFeature && stormData.landfall?.time && selectedDate && (
+        {selectedFeature && stormData.landfall?.time && selectedDateTime && (
           <AAStormLandfallPopup
             point={selectedFeature.geometry}
             reportDate={selectedFeature.properties?.time}
             landfallInfo={stormData.landfall}
             onClose={() => landfallPopupCloseHandler()}
-            timelineDate={selectedDate}
+            timelineDate={selectedDateTime}
           />
         )}
       </>
