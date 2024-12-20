@@ -6,12 +6,7 @@ import { getAAConfig } from 'context/anticipatoryAction/config';
 import { layersSelector, mapSelector } from 'context/mapStateSlice/selectors';
 import { updateDateRange } from 'context/mapStateSlice';
 import { getUrlKey, useUrlHistory } from 'utils/url-utils';
-import {
-  AALayerIds,
-  LayerDefinitions,
-  isWindowEmpty,
-  isWindowedDates,
-} from 'config/utils';
+import { AALayerIds, LayerDefinitions, isWindowedDates } from 'config/utils';
 import { getAAAvailableDatesCombined } from 'utils/server-utils';
 import {
   availableDatesSelector,
@@ -79,7 +74,7 @@ export function useAnticipatoryAction<T extends AnticipatoryAction>(
     }
     // To avoid an infinite loop, we only want to run this effect when AAAvailableDates changes.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [AAAvailableDates, dispatch]);
+  }, [AAAvailableDates]);
 
   // Handle URL updates when mounting/unmounting
   useEffect(() => {
@@ -102,22 +97,6 @@ export function useAnticipatoryAction<T extends AnticipatoryAction>(
       );
       updateHistory(getUrlKey(layer), updatedUrl);
     }
-
-    return () => {
-      if (
-        isWindowEmpty(AAData, 'Window 1') ||
-        Object.keys(AAData).length === 0
-      ) {
-        toggleRemoveLayer(
-          layer,
-          map,
-          getUrlKey(layer),
-          dispatch,
-          removeLayerFromUrl,
-        );
-      }
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return {

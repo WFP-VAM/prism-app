@@ -115,7 +115,8 @@ const LeftPanel = memo(() => {
         removeLayerFromUrl,
       );
     }
-  }, [AALayerInUrl, dispatch, map, removeLayerFromUrl, tabValue]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [tabValue]);
 
   // Reset selected boundaries when tab changes from Alerts
   React.useEffect(() => {
