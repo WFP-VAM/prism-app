@@ -70,28 +70,31 @@ export function useAnticipatoryAction<T extends AnticipatoryAction>(
   }, []);
 
   useEffect(() => {
-    if (AAAvailableDates && selectedDate) {
+    if (AAAvailableDates) {
       const combinedAvailableDates = isWindowedDates(AAAvailableDates)
         ? getAAAvailableDatesCombined(AAAvailableDates)
         : AAAvailableDates;
-      const updatedCapabilities = AALayerIds.reduce(
-        (acc, layerId) => ({
-          ...acc,
-          [layerId]: combinedAvailableDates,
-        }),
-        { ...serverAvailableDates },
-      );
 
-      const queryDate = getRequestDate(combinedAvailableDates, selectedDate);
-      const date = getFormattedDate(queryDate, DateFormat.Default) as string;
+      if (!selectedDate) {
+        const updatedCapabilities = AALayerIds.reduce(
+          (acc, layerId) => ({
+            ...acc,
+            [layerId]: combinedAvailableDates,
+          }),
+          { ...serverAvailableDates },
+        );
 
-      dispatch(updateLayersCapabilities(updatedCapabilities));
-      dispatch(updateDateRange(updatedCapabilities));
-      dispatch(setFilters({ selectedDate: date }));
+        dispatch(updateLayersCapabilities(updatedCapabilities));
+        dispatch(updateDateRange(updatedCapabilities));
+      } else {
+        const queryDate = getRequestDate(combinedAvailableDates, selectedDate);
+        const date = getFormattedDate(queryDate, DateFormat.Default) as string;
+        dispatch(setFilters({ selectedDate: date }));
+      }
     }
-    // To avoid an infinite loop, we only want to run this effect when AAAvailableDates changes.
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [AAAvailableDates]);
+  }, [AAAvailableDates, selectedDate]);
 
   // Handle URL updates when mounting/unmounting
   useEffect(() => {
@@ -113,6 +116,7 @@ export function useAnticipatoryAction<T extends AnticipatoryAction>(
         layer,
       );
       updateHistory(getUrlKey(layer), updatedUrl);
+      dispatch(updateDateRange({ startDate: undefined }));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
