@@ -10,14 +10,9 @@ describe('AAStormLandfallPopup component', () => {
       district: 'Inhassoro',
       severity: [AACategory.Severe, AACategory.Moderate],
     };
-    const timelineDate = '2024-03-12 00:00:00';
 
     const { container } = render(
-      <PopupContent
-        reportDate={reportDate}
-        landfallInfo={landfallInfo}
-        timelineDate={timelineDate}
-      />,
+      <PopupContent reportDate={reportDate} landfallInfo={landfallInfo} />,
     );
     expect(container).toMatchSnapshot();
   });

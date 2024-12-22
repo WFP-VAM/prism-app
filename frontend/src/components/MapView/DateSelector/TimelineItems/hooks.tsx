@@ -1,20 +1,41 @@
-import {
-  AADataSelector,
-  AAWindStateReports,
-} from 'context/anticipatoryAction/AAStormStateSlice';
+import { AAWindStateReports } from 'context/anticipatoryAction/AAStormStateSlice';
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { getDateInUTC } from 'components/MapView/Layers/AnticipatoryActionStormLayer/utils';
 import { datesAreEqualWithoutTime } from 'utils/date-utils';
+import { WindStateReport } from './types';
 
-export const useWindStatesByTime = (currentDate: number) => {
-  const AAData = useSelector(AADataSelector);
+const getWindStatesForDate = (windStateReports: any, date: string | null) => {
+  if (!date) {
+    return { states: [], cycloneName: null };
+  }
+
+  // TODO: Handle cases where multiple cyclones overlap in the same time period
+  const firstAvailableCyclone = Object.keys(windStateReports[date])[0];
+  if (!firstAvailableCyclone) {
+    return { states: [], cycloneName: null };
+  }
+
+  return {
+    states: windStateReports[date][firstAvailableCyclone],
+    cycloneName: firstAvailableCyclone,
+  };
+};
+
+export const useWindStatesByTime = (currentDate: number): WindStateReport => {
   const windStateReports = useSelector(AAWindStateReports);
-  const cycloneOfInterest = AAData.forecastDetails?.cyclone_name;
 
   return useMemo(() => {
-    if (!cycloneOfInterest) {
-      return [];
+    const dates = Object.keys(windStateReports);
+    if (dates.length === 0) {
+      return { states: [], cycloneName: null };
+    }
+    // If currentDate is 0 or null, get the latest report
+    if (!currentDate) {
+      const latestDate = dates.reduce((latest, current) =>
+        new Date(current) > new Date(latest) ? current : latest,
+      );
+      return getWindStatesForDate(windStateReports, latestDate);
     }
 
     const date = Object.keys(windStateReports).find(analysedDate => {
@@ -22,22 +43,28 @@ export const useWindStatesByTime = (currentDate: number) => {
       if (!analysedDateInUTC) {
         return false;
       }
-
-      return datesAreEqualWithoutTime(analysedDateInUTC, currentDate);
+      const isEqual = datesAreEqualWithoutTime(analysedDateInUTC, currentDate);
+      return isEqual;
     });
 
-    if (!date) {
-      return [];
+    const result = getWindStatesForDate(windStateReports, date || null);
+    return result;
+  }, [currentDate, windStateReports]);
+};
+
+export const useLatestWindStates = (): WindStateReport => {
+  const windStateReports = useSelector(AAWindStateReports);
+
+  return useMemo(() => {
+    const dates = Object.keys(windStateReports);
+    if (dates.length === 0) {
+      return { states: [], cycloneName: null };
     }
 
-    const foundCycloneName = Object.keys(windStateReports[date])
-      .map(i => i.toLowerCase())
-      .find(cycloneName => cycloneName === cycloneOfInterest.toLowerCase());
+    const latestDate = dates.reduce((latest, current) =>
+      new Date(current) > new Date(latest) ? current : latest,
+    );
 
-    if (!foundCycloneName) {
-      return [];
-    }
-
-    return windStateReports[date][foundCycloneName];
-  }, [cycloneOfInterest, currentDate, windStateReports]);
+    return getWindStatesForDate(windStateReports, latestDate);
+  }, [windStateReports]);
 };

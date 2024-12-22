@@ -1,3 +1,4 @@
+// Q - still needed or needs to be improved?
 import { FeatureCollection, Point, Feature } from 'geojson';
 
 interface FeatureProperty {

@@ -4,15 +4,18 @@ import { MouseEvent } from 'react';
 import { formatInUTC } from 'components/MapView/Layers/AnticipatoryActionStormLayer/utils';
 import { createStyles, makeStyles, Typography } from '@material-ui/core';
 import {
-  AAFiltersSelector,
+  AADataSelector,
   loadStormReport,
-  setAAFilters,
 } from 'context/anticipatoryAction/AAStormStateSlice';
 import { useDispatch, useSelector } from 'react-redux';
+import { updateDateRange } from 'context/mapStateSlice';
+import { getFormattedDate } from 'utils/date-utils';
+import { useUrlHistory } from 'utils/url-utils';
 import { useWindStatesByTime } from '../hooks';
 
 function AAStormTooltipContent({ date }: AAStormTooltipContentProps) {
-  const filters = useSelector(AAFiltersSelector);
+  const { updateHistory } = useUrlHistory();
+  const stormData = useSelector(AADataSelector);
   const windStates = useWindStatesByTime(date.value);
   const classes = useStyles();
   const dispatch = useDispatch();
@@ -21,24 +24,38 @@ function AAStormTooltipContent({ date }: AAStormTooltipContentProps) {
     _event: MouseEvent<HTMLElement>,
     value: string,
   ) => {
-    dispatch(setAAFilters({ selectedDate: value }));
-    dispatch(loadStormReport({ date: value, stormName: 'chido' }));
+    const stormDate = new Date(value);
+    stormDate.setUTCHours(12);
+    const time = stormDate.getTime();
+    updateHistory('date', getFormattedDate(time, 'default') as string);
+    dispatch(updateDateRange({ startDate: time }));
+    dispatch(
+      loadStormReport({
+        date: value,
+        stormName: windStates.cycloneName || 'chido',
+      }),
+    );
   };
 
   return (
     <div className={classes.container}>
       <Typography> {formatInUTC(new Date(date.value), 'MM/dd/yy')}</Typography>
       <ToggleButtonGroup
-        value={filters.selectedDate}
+        value={stormData.forecastDetails?.reference_time}
         exclusive
         onChange={hourToggleHandler}
       >
-        {windStates.map(item => {
+        {windStates.states.map(item => {
           const itemDate = new Date(item.ref_time);
-          const formattedItemTime = formatInUTC(itemDate, 'K aaa');
+          const formattedItemTime = formatInUTC(itemDate, 'h aaa');
 
           return (
-            <ToggleButton key={itemDate.valueOf()} value={item.ref_time}>
+            <ToggleButton
+              key={itemDate.valueOf()}
+              value={item.ref_time}
+              onMouseDown={e => e.preventDefault()}
+              className={classes.toggleButton}
+            >
               <Typography className={classes.time}>
                 {formattedItemTime}
               </Typography>
@@ -64,10 +81,15 @@ const useStyles = makeStyles(() =>
       lineHeight: '15px',
       color: '#101010',
     },
+    toggleButton: {
+      padding: '6px 6px',
+      minHeight: 0,
+    },
   }),
 );
 
 interface AAStormTooltipContentProps {
   date: DateRangeType;
 }
+
 export default AAStormTooltipContent;

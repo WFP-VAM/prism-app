@@ -11,13 +11,13 @@ import {
 } from '@material-ui/core';
 import React from 'react';
 import { useSafeTranslation } from 'i18n';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { setAAFilters } from 'context/anticipatoryAction/AAStormStateSlice';
+import { updateDateRange } from 'context/mapStateSlice';
 import { AnticipatoryAction, PanelSize } from 'config/types';
 import { getFormattedDate } from 'utils/date-utils';
-import { getRequestDate } from 'utils/server-utils';
 import { DateFormat } from 'utils/name-utils';
-import { dateRangeSelector } from 'context/mapStateSlice/selectors';
+import { useUrlHistory } from 'utils/url-utils';
 import HowToReadModal from '../HowToReadModal';
 import ActivationTrigger from './ActivationTriggerView';
 import { StyledSelect } from '../utils';
@@ -26,21 +26,22 @@ import { useAnticipatoryAction } from '../useAnticipatoryAction';
 function AnticipatoryActionStormPanel() {
   const classes = useStyles();
   const dispatch = useDispatch();
+  const { updateHistory } = useUrlHistory();
   const { t } = useSafeTranslation();
   const { AAData, AAAvailableDates } = useAnticipatoryAction(
     AnticipatoryAction.storm,
   );
   const [howToReadModalOpen, setHowToReadModalOpen] = React.useState(false);
-
-  const { startDate: selectedDate } = useSelector(dateRangeSelector);
-
+  const reportRefTime = AAData.forecastDetails?.reference_time;
   const [viewType, setViewType] = React.useState<'forecast' | 'risk'>(
     'forecast',
   );
 
-  const queryDate = getRequestDate(AAAvailableDates, selectedDate);
-  const date = getFormattedDate(queryDate, DateFormat.MiddleEndian) as string;
-  const hour = getFormattedDate(queryDate, DateFormat.TimeOnly) as string;
+  const date = getFormattedDate(
+    reportRefTime,
+    DateFormat.MiddleEndian,
+  ) as string;
+  const hour = getFormattedDate(reportRefTime, DateFormat.TimeOnly) as string;
 
   React.useEffect(() => {
     dispatch(
@@ -48,8 +49,11 @@ function AnticipatoryActionStormPanel() {
         viewType,
       }),
     );
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [viewType]);
+  }, [viewType, dispatch]);
+
+  if (!AAAvailableDates) {
+    return null;
+  }
 
   return (
     <div
@@ -66,7 +70,7 @@ function AnticipatoryActionStormPanel() {
         </div>
         <StyledSelect
           className={classes.select}
-          value={date || 'empty'}
+          value={getFormattedDate(reportRefTime, DateFormat.Default) || ''}
           input={<Input disableUnderline />}
           renderValue={() => (
             <Typography variant="body1" className={classes.selectText}>
@@ -87,11 +91,19 @@ function AnticipatoryActionStormPanel() {
           {AAAvailableDates &&
             AAAvailableDates.map(x => (
               <MenuItem
-                key={getFormattedDate(x.queryDate, DateFormat.Default)}
-                value={getFormattedDate(x.queryDate, DateFormat.Default)}
-                onClick={() => {}}
+                key={getFormattedDate(x.displayDate, DateFormat.Default)}
+                value={getFormattedDate(x.displayDate, DateFormat.Default)}
+                onClick={() => {
+                  updateHistory(
+                    'date',
+                    getFormattedDate(x.displayDate, 'default') as string,
+                  );
+                  dispatch(updateDateRange({ startDate: x.displayDate }));
+                }}
               >
-                {t(getFormattedDate(x.queryDate, DateFormat.Default) as string)}
+                {t(
+                  getFormattedDate(x.displayDate, DateFormat.Default) as string,
+                )}
               </MenuItem>
             ))}
         </StyledSelect>
