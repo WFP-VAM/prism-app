@@ -15,10 +15,11 @@ import { getBoundaryLayersByAdminLevel } from 'config/utils';
 import {
   AADataSelector,
   AAFiltersSelector,
+  AALoadingSelector,
   loadStormReport,
 } from 'context/anticipatoryAction/AAStormStateSlice';
 import { AACategory } from 'context/anticipatoryAction/AAStormStateSlice/types';
-import { useLatestWindStates } from 'components/MapView/DateSelector/TimelineItems/hooks';
+import { useWindStatesByTime } from 'components/MapView/DateSelector/TimelineItems/hooks';
 import { getAAColor } from 'components/MapView/LeftPanel/AnticipatoryActionPanel/AnticipatoryActionStormPanel/utils';
 import AAStormDatePopup from './AAStormDatePopup';
 import AAStormLandfallPopup from './AAStormLandfallPopup';
@@ -62,16 +63,25 @@ const AnticipatoryActionStormLayer = React.memo(
     // Load the layer default date if no date is selected
     useDefaultDate(layer.id);
     const map = useSelector(mapSelector);
+    const selectedDate = useDefaultDate('anticipatory-action-storm');
     const { viewType, selectedDateTime } = useSelector(AAFiltersSelector);
 
     const stormData = useSelector(AADataSelector);
-    const windStates = useLatestWindStates();
+    const loading = useSelector(AALoadingSelector);
+    const windStates = useWindStatesByTime(selectedDate || 0);
     const latestWindState = windStates.states[windStates.states.length - 1];
     const dispatch = useDispatch();
 
     // Load data when no data is present
     useEffect(() => {
-      if (!stormData.timeSeries && latestWindState?.ref_time) {
+      if (
+        (!stormData.forecastDetails && latestWindState?.ref_time) ||
+        (stormData.forecastDetails &&
+          !loading &&
+          latestWindState?.ref_time &&
+          stormData.forecastDetails?.reference_time?.split('T')[0] !==
+            latestWindState.ref_time?.split('T')[0])
+      ) {
         dispatch(
           loadStormReport({
             date: latestWindState?.ref_time,
@@ -79,7 +89,7 @@ const AnticipatoryActionStormLayer = React.memo(
           }),
         );
       }
-    }, [dispatch, stormData, latestWindState, windStates.cycloneName]);
+    }, [dispatch, loading, stormData, latestWindState, windStates.cycloneName]);
 
     const boundaryLayerState = useSelector(
       layerDataSelector(boundaryLayer.id),

@@ -132,6 +132,7 @@ export const anticipatoryActionStormStateSlice = createSlice({
   name: 'anticipatoryActionStormState',
   initialState,
   reducers: {
+    // TODO - setAAFilters is mostly used for the viewType. Maybe rename and make sure it's used for the viewType only?
     setAAFilters: (
       state,
       {
@@ -210,6 +211,9 @@ export const anticipatoryActionStormStateSlice = createSlice({
 // export selectors
 export const AADataSelector = (state: RootState) =>
   state.anticipatoryActionStormState.data;
+
+export const AALoadingSelector = (state: RootState) =>
+  state.anticipatoryActionStormState.loading;
 
 export const AAAvailableDatesSelector = (state: RootState) =>
   state.anticipatoryActionStormState.availableDates;

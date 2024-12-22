@@ -9,9 +9,13 @@ import {
   setAAFilters,
 } from 'context/anticipatoryAction/AAStormStateSlice';
 import { useDispatch, useSelector } from 'react-redux';
+import { updateDateRange } from 'context/mapStateSlice';
+import { getFormattedDate } from 'utils/date-utils';
+import { useUrlHistory } from 'utils/url-utils';
 import { useWindStatesByTime } from '../hooks';
 
 function AAStormTooltipContent({ date }: AAStormTooltipContentProps) {
+  const { updateHistory } = useUrlHistory();
   const filters = useSelector(AAFiltersSelector);
   const windStates = useWindStatesByTime(date.value);
   const classes = useStyles();
@@ -21,7 +25,12 @@ function AAStormTooltipContent({ date }: AAStormTooltipContentProps) {
     _event: MouseEvent<HTMLElement>,
     value: string,
   ) => {
+    const stormDate = new Date(value);
+    stormDate.setUTCHours(12);
+    const time = stormDate.getTime();
     dispatch(setAAFilters({ selectedDateTime: value }));
+    updateHistory('date', getFormattedDate(time, 'default') as string);
+    dispatch(updateDateRange({ startDate: time }));
     dispatch(
       loadStormReport({
         date: value,
@@ -75,4 +84,5 @@ const useStyles = makeStyles(() =>
 interface AAStormTooltipContentProps {
   date: DateRangeType;
 }
+
 export default AAStormTooltipContent;

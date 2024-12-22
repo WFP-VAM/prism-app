@@ -11,15 +11,13 @@ import {
 } from '@material-ui/core';
 import React from 'react';
 import { useSafeTranslation } from 'i18n';
-import { useDispatch, useSelector } from 'react-redux';
-import {
-  AAFiltersSelector,
-  setAAFilters,
-} from 'context/anticipatoryAction/AAStormStateSlice';
+import { useDispatch } from 'react-redux';
+import { setAAFilters } from 'context/anticipatoryAction/AAStormStateSlice';
+import { updateDateRange } from 'context/mapStateSlice';
 import { AnticipatoryAction, PanelSize } from 'config/types';
 import { getFormattedDate } from 'utils/date-utils';
 import { DateFormat } from 'utils/name-utils';
-import { dateRangeSelector } from 'context/mapStateSlice/selectors';
+import { useUrlHistory } from 'utils/url-utils';
 import HowToReadModal from '../HowToReadModal';
 import ActivationTrigger from './ActivationTriggerView';
 import { StyledSelect } from '../utils';
@@ -28,27 +26,22 @@ import { useAnticipatoryAction } from '../useAnticipatoryAction';
 function AnticipatoryActionStormPanel() {
   const classes = useStyles();
   const dispatch = useDispatch();
+  const { updateHistory } = useUrlHistory();
   const { t } = useSafeTranslation();
   const { AAData, AAAvailableDates } = useAnticipatoryAction(
     AnticipatoryAction.storm,
   );
   const [howToReadModalOpen, setHowToReadModalOpen] = React.useState(false);
-
-  const { selectedDateTime } = useSelector(AAFiltersSelector);
-  const { startDate: selectedDate } = useSelector(dateRangeSelector);
-
+  const reportRefTime = AAData.forecastDetails?.reference_time;
   const [viewType, setViewType] = React.useState<'forecast' | 'risk'>(
     'forecast',
   );
 
   const date = getFormattedDate(
-    selectedDateTime,
+    reportRefTime,
     DateFormat.MiddleEndian,
   ) as string;
-  const hour = getFormattedDate(
-    selectedDateTime,
-    DateFormat.TimeOnly,
-  ) as string;
+  const hour = getFormattedDate(reportRefTime, DateFormat.TimeOnly) as string;
 
   React.useEffect(() => {
     dispatch(
@@ -58,7 +51,7 @@ function AnticipatoryActionStormPanel() {
     );
   }, [viewType, dispatch]);
 
-  if (!selectedDate) {
+  if (!AAAvailableDates) {
     return null;
   }
 
@@ -77,7 +70,7 @@ function AnticipatoryActionStormPanel() {
         </div>
         <StyledSelect
           className={classes.select}
-          value={date || 'empty'}
+          value={getFormattedDate(reportRefTime, DateFormat.Default) || ''}
           input={<Input disableUnderline />}
           renderValue={() => (
             <Typography variant="body1" className={classes.selectText}>
@@ -98,11 +91,19 @@ function AnticipatoryActionStormPanel() {
           {AAAvailableDates &&
             AAAvailableDates.map(x => (
               <MenuItem
-                key={getFormattedDate(x.queryDate, DateFormat.Default)}
-                value={getFormattedDate(x.queryDate, DateFormat.Default)}
-                onClick={() => {}}
+                key={getFormattedDate(x.displayDate, DateFormat.Default)}
+                value={getFormattedDate(x.displayDate, DateFormat.Default)}
+                onClick={() => {
+                  updateHistory(
+                    'date',
+                    getFormattedDate(x.displayDate, 'default') as string,
+                  );
+                  dispatch(updateDateRange({ startDate: x.displayDate }));
+                }}
               >
-                {t(getFormattedDate(x.queryDate, DateFormat.Default) as string)}
+                {t(
+                  getFormattedDate(x.displayDate, DateFormat.Default) as string,
+                )}
               </MenuItem>
             ))}
         </StyledSelect>
