@@ -50,7 +50,11 @@ function AAStormTooltipContent({ date }: AAStormTooltipContentProps) {
           const formattedItemTime = formatInUTC(itemDate, 'h aaa');
 
           return (
-            <ToggleButton key={itemDate.valueOf()} value={item.ref_time}>
+            <ToggleButton
+              key={itemDate.valueOf()}
+              value={item.ref_time}
+              onMouseDown={e => e.preventDefault()}
+            >
               <Typography className={classes.time}>
                 {formattedItemTime}
               </Typography>
