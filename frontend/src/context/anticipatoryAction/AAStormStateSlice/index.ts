@@ -65,7 +65,7 @@ export const loadStormReport = createAsyncThunk<
   { stormName: string; date: string },
   CreateAsyncThunkTypes
 >(
-  'anticipatoryActionStormState/loadLatestStormReport',
+  'anticipatoryActionStormState/loadStormReport',
   async ({ stormName, date }, { rejectWithValue }) => {
     if (!stormName || !date) {
       return rejectWithValue('Storm name and date are required');
@@ -162,13 +162,13 @@ export const anticipatoryActionStormStateSlice = createSlice({
     },
   },
   extraReducers: builder => {
-    builder.addCase(loadLatestStormReport.fulfilled, (state, { payload }) => ({
+    builder.addCase(loadStormReport.fulfilled, (state, { payload }) => ({
       ...state,
       loading: false,
       data: payload.data,
     }));
 
-    builder.addCase(loadLatestStormReport.rejected, (state, action) => ({
+    builder.addCase(loadStormReport.rejected, (state, action) => ({
       ...state,
       loading: false,
       error: action.error.message
@@ -176,14 +176,11 @@ export const anticipatoryActionStormStateSlice = createSlice({
         : action.error.toString(),
     }));
 
-    builder.addCase(
-      loadLatestStormReport.pending,
-      ({ error: _error, ...state }) => ({
-        ...state,
-        error: null,
-        loading: true,
-      }),
-    );
+    builder.addCase(loadStormReport.pending, ({ error: _error, ...state }) => ({
+      ...state,
+      error: null,
+      loading: true,
+    }));
     builder.addCase(loadWindStateReports.fulfilled, (state, { payload }) => ({
       ...state,
       loading: false,

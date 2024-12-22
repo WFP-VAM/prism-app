@@ -18,7 +18,7 @@ import {
   loadStormReport,
 } from 'context/anticipatoryAction/AAStormStateSlice';
 import { AACategory } from 'context/anticipatoryAction/AAStormStateSlice/types';
-import { useWindStatesByTime } from 'components/MapView/DateSelector/TimelineItems/hooks';
+import { useLatestWindStates } from 'components/MapView/DateSelector/TimelineItems/hooks';
 import { getAAColor } from 'components/MapView/LeftPanel/AnticipatoryActionPanel/AnticipatoryActionStormPanel/utils';
 import AAStormDatePopup from './AAStormDatePopup';
 import AAStormLandfallPopup from './AAStormLandfallPopup';
@@ -65,22 +65,21 @@ const AnticipatoryActionStormLayer = React.memo(
     const { viewType, selectedDateTime } = useSelector(AAFiltersSelector);
 
     const stormData = useSelector(AADataSelector);
-    const windStates = useWindStatesByTime(
-      new Date(selectedDateTime || 0).getTime(),
-    );
+    const windStates = useLatestWindStates();
+    const latestWindState = windStates.states[windStates.states.length - 1];
     const dispatch = useDispatch();
 
     // Load data when no data is present
     useEffect(() => {
-      if (!stormData.timeSeries && windStates) {
+      if (!stormData.timeSeries && latestWindState?.ref_time) {
         dispatch(
           loadStormReport({
-            date: windStates.states[windStates.states.length - 1]?.ref_time,
+            date: latestWindState?.ref_time,
             stormName: windStates.cycloneName || 'chido',
           }),
         );
       }
-    }, [dispatch, stormData, selectedDateTime, windStates]);
+    }, [dispatch, stormData, latestWindState, windStates.cycloneName]);
 
     const boundaryLayerState = useSelector(
       layerDataSelector(boundaryLayer.id),
