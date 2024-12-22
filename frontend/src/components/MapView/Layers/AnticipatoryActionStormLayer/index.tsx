@@ -82,6 +82,12 @@ const AnticipatoryActionStormLayer = React.memo(
           stormData.forecastDetails?.reference_time?.split('T')[0] !==
             latestWindState.ref_time?.split('T')[0])
       ) {
+        // eslint-disable-next-line no-console
+        console.log(
+          'loading storm report',
+          latestWindState?.ref_time,
+          windStates.cycloneName,
+        );
         dispatch(
           loadStormReport({
             date: latestWindState?.ref_time,
