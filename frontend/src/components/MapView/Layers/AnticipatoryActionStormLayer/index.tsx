@@ -422,7 +422,6 @@ const AnticipatoryActionStormLayer = React.memo(
             />
             <Layer
               id="aa-storm-wind-points-layer"
-              beforeId="aa-storm-wind-points-line-future"
               type="symbol"
               layout={{ 'icon-image': ['image', ['get', 'iconName']] }}
             />
@@ -431,13 +430,12 @@ const AnticipatoryActionStormLayer = React.memo(
 
         <AAStormDatePopup />
 
-        {selectedFeature && stormData.landfall?.time && selectedDateTime && (
+        {selectedFeature && stormData.landfall?.time && (
           <AAStormLandfallPopup
             point={selectedFeature.geometry}
-            reportDate={selectedFeature.properties?.time}
+            reportDate={stormData.forecastDetails?.reference_time || ''}
             landfallInfo={stormData.landfall}
             onClose={() => landfallPopupCloseHandler()}
-            timelineDate={selectedDateTime}
           />
         )}
       </>

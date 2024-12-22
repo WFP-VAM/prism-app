@@ -9,7 +9,6 @@ function AAStormLandfallPopup({
   onClose,
   landfallInfo,
   reportDate,
-  timelineDate,
 }: AAStormLandfallPopupProps) {
   const classes = useStyles();
 
@@ -28,11 +27,7 @@ function AAStormLandfallPopup({
       className={classes.popup}
       maxWidth="280px"
     >
-      <PopupContent
-        landfallInfo={landfallInfo}
-        reportDate={reportDate}
-        timelineDate={timelineDate}
-      />
+      <PopupContent landfallInfo={landfallInfo} reportDate={reportDate} />
     </Popup>
   );
 }
@@ -41,7 +36,6 @@ interface AAStormLandfallPopupProps {
   point: Point;
   landfallInfo: LandfallInfo;
   reportDate: string;
-  timelineDate: string;
   onClose: () => void;
 }
 

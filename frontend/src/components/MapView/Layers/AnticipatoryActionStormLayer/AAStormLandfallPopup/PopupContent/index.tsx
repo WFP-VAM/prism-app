@@ -10,7 +10,7 @@ import {
 function PopupContent({
   landfallInfo,
   reportDate,
-  timelineDate,
+  forecastDate,
 }: PopupContentProps) {
   const classes = useStyles();
 
@@ -20,7 +20,7 @@ function PopupContent({
         variant="body1"
         className={`${classes.text} ${classes.title}`}
       >
-        Forecast date: {formatReportDate(reportDate)}
+        Report date: {formatReportDate(reportDate)}
       </Typography>
       <div className={classes.itemContainer}>
         <Typography variant="body1" className={classes.text}>
@@ -45,7 +45,7 @@ function PopupContent({
           variant="body1"
           className={`${classes.text} ${classes.textAlignRight}`}
         >
-          {formatLandfallEstimatedLeadtime(landfallInfo.time, timelineDate)}
+          {formatLandfallEstimatedLeadtime(landfallInfo.time, reportDate)}
         </Typography>
       </div>
       <div className={classes.itemContainer}>
@@ -98,7 +98,6 @@ const useStyles = makeStyles(() =>
 interface PopupContentProps {
   landfallInfo: LandfallInfo;
   reportDate: string;
-  timelineDate: string;
 }
 
 export default PopupContent;
