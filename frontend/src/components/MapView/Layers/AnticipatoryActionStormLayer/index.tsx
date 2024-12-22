@@ -401,6 +401,7 @@ const AnticipatoryActionStormLayer = React.memo(
           <Source data={timeSeries} type="geojson">
             <Layer
               id="aa-storm-wind-points-line-past"
+              beforeId="aa-storm-wind-points-layer"
               type="line"
               filter={['==', ['get', 'data_type'], 'analysis']}
               paint={{
@@ -410,6 +411,7 @@ const AnticipatoryActionStormLayer = React.memo(
             />
             <Layer
               id="aa-storm-wind-points-line-future"
+              beforeId="aa-storm-wind-points-layer"
               type="line"
               filter={['==', ['get', 'data_type'], 'forecast']}
               paint={{
