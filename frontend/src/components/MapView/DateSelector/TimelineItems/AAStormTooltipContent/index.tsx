@@ -4,9 +4,8 @@ import { MouseEvent } from 'react';
 import { formatInUTC } from 'components/MapView/Layers/AnticipatoryActionStormLayer/utils';
 import { createStyles, makeStyles, Typography } from '@material-ui/core';
 import {
-  AAFiltersSelector,
+  AADataSelector,
   loadStormReport,
-  setAAFilters,
 } from 'context/anticipatoryAction/AAStormStateSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import { updateDateRange } from 'context/mapStateSlice';
@@ -16,7 +15,7 @@ import { useWindStatesByTime } from '../hooks';
 
 function AAStormTooltipContent({ date }: AAStormTooltipContentProps) {
   const { updateHistory } = useUrlHistory();
-  const filters = useSelector(AAFiltersSelector);
+  const stormData = useSelector(AADataSelector);
   const windStates = useWindStatesByTime(date.value);
   const classes = useStyles();
   const dispatch = useDispatch();
@@ -28,7 +27,6 @@ function AAStormTooltipContent({ date }: AAStormTooltipContentProps) {
     const stormDate = new Date(value);
     stormDate.setUTCHours(12);
     const time = stormDate.getTime();
-    dispatch(setAAFilters({ selectedDateTime: value }));
     updateHistory('date', getFormattedDate(time, 'default') as string);
     dispatch(updateDateRange({ startDate: time }));
     dispatch(
@@ -43,7 +41,7 @@ function AAStormTooltipContent({ date }: AAStormTooltipContentProps) {
     <div className={classes.container}>
       <Typography> {formatInUTC(new Date(date.value), 'MM/dd/yy')}</Typography>
       <ToggleButtonGroup
-        value={filters.selectedDateTime}
+        value={stormData.forecastDetails?.reference_time}
         exclusive
         onChange={hourToggleHandler}
       >
