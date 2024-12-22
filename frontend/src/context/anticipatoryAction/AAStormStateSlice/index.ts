@@ -15,7 +15,7 @@ const initialState: AnticipatoryActionState = {
   windStateReports: {},
   availableDates: undefined,
   filters: {
-    selectedDate: undefined,
+    selectedDateTime: undefined,
     selectedIndex: '',
     categories: {
       Severe: true,
