@@ -68,7 +68,9 @@ export const loadStormReport = createAsyncThunk<
   'anticipatoryActionStormState/loadStormReport',
   async ({ stormName, date }, { rejectWithValue }) => {
     if (!stormName || !date) {
-      return rejectWithValue('Storm name and date are required');
+      // eslint-disable-next-line no-console
+      console.warn('Storm name and date are required');
+      return rejectWithValue(new Error('Storm name and date are required'));
     }
     try {
       const response = await fetch(
