@@ -18,8 +18,11 @@ import {
 } from 'context/anticipatoryAction/AAStormStateSlice';
 import { AnticipatoryAction, PanelSize } from 'config/types';
 import { useDefaultDate } from 'utils/useDefaultDate';
+import { setAAFilters } from 'context/anticipatoryAction/AAStormStateSlice';
+import { AnticipatoryAction, PanelSize } from 'config/types';
 import { getFormattedDate } from 'utils/date-utils';
 import { DateFormat } from 'utils/name-utils';
+import { dateRangeSelector } from 'context/mapStateSlice/selectors';
 import HowToReadModal from '../HowToReadModal';
 import ActivationTrigger from './ActivationTriggerView';
 import { StyledSelect } from '../utils';
@@ -36,6 +39,7 @@ function AnticipatoryActionStormPanel() {
 
   const selectedDate = useDefaultDate('anticipatory_action_storm');
   const { selectedDateTime } = useSelector(AAFiltersSelector);
+  const { startDate: selectedDate } = useSelector(dateRangeSelector);
 
   const [viewType, setViewType] = React.useState<'forecast' | 'risk'>(
     'forecast',
