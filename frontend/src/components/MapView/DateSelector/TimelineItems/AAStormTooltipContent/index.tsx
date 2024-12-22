@@ -54,6 +54,7 @@ function AAStormTooltipContent({ date }: AAStormTooltipContentProps) {
               key={itemDate.valueOf()}
               value={item.ref_time}
               onMouseDown={e => e.preventDefault()}
+              className={classes.toggleButton}
             >
               <Typography className={classes.time}>
                 {formattedItemTime}
@@ -79,6 +80,10 @@ const useStyles = makeStyles(() =>
       fontWeight: 400,
       lineHeight: '15px',
       color: '#101010',
+    },
+    toggleButton: {
+      padding: '6px 6px',
+      minHeight: 0,
     },
   }),
 );

@@ -190,6 +190,7 @@ const useStyles = makeStyles(() =>
     },
     AAStormTooltip: {
       backgroundColor: '#FFFFFF',
+      border: '1px solid #D3D3D3',
     },
     layerOneDate: createLayerStyles(LIGHT_BLUE_HEX, 0),
     layerTwoDate: createLayerStyles(LIGHT_GREEN_HEX, 10),
