@@ -3,11 +3,13 @@ import {
   AAAvailableDatesSelector as droughtAvailableDatesSelector,
   AADataSelector as droughtDataSelector,
   loadAAData as loadDroughtAAData,
+  setAAFilters as setDroughtAAFilters,
 } from 'context/anticipatoryAction/AADroughtStateSlice';
 import {
   AAAvailableDatesSelector as stormAvailableDatesSelector,
   AADataSelector as stormDataSelector,
   loadAllAAStormData,
+  setAAFilters as setStormAAFilters,
 } from 'context/anticipatoryAction/AAStormStateSlice';
 
 export const anticipatoryActionConfig = {
@@ -15,11 +17,13 @@ export const anticipatoryActionConfig = {
     dataSelector: stormDataSelector,
     availableDatesSelector: stormAvailableDatesSelector,
     loadAction: loadAllAAStormData,
+    setFiltersAction: setStormAAFilters,
   },
   [AnticipatoryAction.drought]: {
     dataSelector: droughtDataSelector,
     availableDatesSelector: droughtAvailableDatesSelector,
     loadAction: loadDroughtAAData,
+    setFiltersAction: setDroughtAAFilters,
   },
 };
 

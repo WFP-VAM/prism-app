@@ -30,12 +30,7 @@ import {
   setAAView,
 } from 'context/anticipatoryAction/AADroughtStateSlice';
 import { dateRangeSelector } from 'context/mapStateSlice/selectors';
-import {
-  getAAAvailableDatesCombined,
-  getRequestDate,
-} from 'utils/server-utils';
 import { getFormattedDate } from 'utils/date-utils';
-import { DateFormat } from 'utils/name-utils';
 import { AnticipatoryAction, PanelSize } from 'config/types';
 import { StyledCheckboxLabel, StyledRadioLabel } from './utils';
 import { StyledSelect } from '../utils';
@@ -66,9 +61,7 @@ function AnticipatoryActionDroughtPanel() {
   const classes = useStyles();
   const dispatch = useDispatch();
   const { t } = useSafeTranslation();
-  const { AAData, AAAvailableDates } = useAnticipatoryAction(
-    AnticipatoryAction.drought,
-  );
+  const { AAData } = useAnticipatoryAction(AnticipatoryAction.drought);
   const monitoredDistricts = useSelector(AAMonitoredDistrictsSelector);
   const selectedDistrict = useSelector(AASelectedDistrictSelector);
   const { categories: categoryFilters, selectedIndex } =
@@ -97,17 +90,6 @@ function AnticipatoryActionDroughtPanel() {
     const options = [...new Set(entries.map(x => x.index))];
     setIndexOptions(options);
   }, [AAData, selectedDistrict]);
-
-  const layerAvailableDates =
-    AAAvailableDates !== undefined
-      ? getAAAvailableDatesCombined(AAAvailableDates)
-      : [];
-  const queryDate = getRequestDate(layerAvailableDates, selectedDate);
-  const date = getFormattedDate(queryDate, DateFormat.Default) as string;
-
-  React.useEffect(() => {
-    dispatch(setAAFilters({ selectedDate: date }));
-  }, [date, dispatch]);
 
   return (
     <div

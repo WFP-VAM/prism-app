@@ -3,17 +3,26 @@ import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from 'context/store';
 import { AnticipatoryAction, DateItem } from 'config/types';
 import { getAAConfig } from 'context/anticipatoryAction/config';
-import { layersSelector, mapSelector } from 'context/mapStateSlice/selectors';
+import {
+  dateRangeSelector,
+  layersSelector,
+  mapSelector,
+} from 'context/mapStateSlice/selectors';
 import { updateDateRange } from 'context/mapStateSlice';
 import { getUrlKey, useUrlHistory } from 'utils/url-utils';
 import { AALayerIds, LayerDefinitions, isWindowedDates } from 'config/utils';
-import { getAAAvailableDatesCombined } from 'utils/server-utils';
+import {
+  getAAAvailableDatesCombined,
+  getRequestDate,
+} from 'utils/server-utils';
 import {
   availableDatesSelector,
   updateLayersCapabilities,
 } from 'context/serverStateSlice';
 import { AnticipatoryActionData } from 'context/anticipatoryAction/AADroughtStateSlice/types';
 import { AAStormData } from 'context/anticipatoryAction/AAStormStateSlice/types';
+import { getFormattedDate } from 'utils/date-utils';
+import { DateFormat } from 'utils/name-utils';
 import { toggleRemoveLayer } from '../layersPanel/MenuItem/MenuSwitch/SwitchItem/utils';
 
 type AADataByAction<T extends AnticipatoryAction> =
@@ -50,31 +59,42 @@ export function useAnticipatoryAction<T extends AnticipatoryAction>(
     AAConfig.availableDatesSelector(state),
   );
   const loadAAData = AAConfig.loadAction;
+  const setFilters = AAConfig.setFiltersAction;
   const serverAvailableDates = useSelector(availableDatesSelector);
+  const { startDate: selectedDate } = useSelector(dateRangeSelector);
 
   // Load data when component mounts
   useEffect(() => {
     dispatch(loadAAData());
-  }, [dispatch, loadAAData]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     if (AAAvailableDates) {
       const combinedAvailableDates = isWindowedDates(AAAvailableDates)
         ? getAAAvailableDatesCombined(AAAvailableDates)
         : AAAvailableDates;
-      const updatedCapabilities = AALayerIds.reduce(
-        (acc, layerId) => ({
-          ...acc,
-          [layerId]: combinedAvailableDates,
-        }),
-        { ...serverAvailableDates },
-      );
-      dispatch(updateLayersCapabilities(updatedCapabilities));
-      dispatch(updateDateRange(updatedCapabilities));
+
+      if (!selectedDate) {
+        const updatedCapabilities = AALayerIds.reduce(
+          (acc, layerId) => ({
+            ...acc,
+            [layerId]: combinedAvailableDates,
+          }),
+          { ...serverAvailableDates },
+        );
+
+        dispatch(updateLayersCapabilities(updatedCapabilities));
+        dispatch(updateDateRange(updatedCapabilities));
+      } else {
+        const queryDate = getRequestDate(combinedAvailableDates, selectedDate);
+        const date = getFormattedDate(queryDate, DateFormat.Default) as string;
+        dispatch(setFilters({ selectedDate: date }));
+      }
     }
-    // To avoid an infinite loop, we only want to run this effect when AAAvailableDates changes.
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [AAAvailableDates]);
+  }, [AAAvailableDates, selectedDate]);
 
   // Handle URL updates when mounting/unmounting
   useEffect(() => {
@@ -96,6 +116,7 @@ export function useAnticipatoryAction<T extends AnticipatoryAction>(
         layer,
       );
       updateHistory(getUrlKey(layer), updatedUrl);
+      dispatch(updateDateRange({ startDate: undefined }));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
