@@ -3,6 +3,7 @@ import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { getDateInUTC } from 'components/MapView/Layers/AnticipatoryActionStormLayer/utils';
 import { datesAreEqualWithoutTime } from 'utils/date-utils';
+import { WindStateReport } from './types';
 
 const getWindStatesForDate = (windStateReports: any, date: string | null) => {
   if (!date) {
@@ -21,7 +22,7 @@ const getWindStatesForDate = (windStateReports: any, date: string | null) => {
   };
 };
 
-export const useWindStatesByTime = (currentDate: number) => {
+export const useWindStatesByTime = (currentDate: number): WindStateReport => {
   const windStateReports = useSelector(AAWindStateReports);
 
   return useMemo(() => {
@@ -41,7 +42,7 @@ export const useWindStatesByTime = (currentDate: number) => {
   }, [currentDate, windStateReports]);
 };
 
-export const useLatestWindStates = () => {
+export const useLatestWindStates = (): WindStateReport => {
   const windStateReports = useSelector(AAWindStateReports);
 
   return useMemo(() => {
