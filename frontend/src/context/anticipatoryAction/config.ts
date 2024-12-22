@@ -8,7 +8,7 @@ import {
 import {
   AAAvailableDatesSelector as stormAvailableDatesSelector,
   AADataSelector as stormDataSelector,
-  loadAAData as loadStormAAData,
+  loadAllAAStormData,
   setAAFilters as setStormAAFilters,
 } from 'context/anticipatoryAction/AAStormStateSlice';
 
@@ -16,7 +16,7 @@ export const anticipatoryActionConfig = {
   [AnticipatoryAction.storm]: {
     dataSelector: stormDataSelector,
     availableDatesSelector: stormAvailableDatesSelector,
-    loadAction: loadStormAAData,
+    loadAction: loadAllAAStormData,
     setFiltersAction: setStormAAFilters,
   },
   [AnticipatoryAction.drought]: {

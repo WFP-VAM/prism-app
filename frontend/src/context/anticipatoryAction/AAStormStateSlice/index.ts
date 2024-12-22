@@ -4,6 +4,7 @@ import type { CreateAsyncThunkTypes, RootState } from '../../store';
 import {
   AACategory,
   AAStormData,
+  AAStormWindStateReports,
   AnticipatoryActionState,
   StormData,
 } from './types';
@@ -11,6 +12,7 @@ import { parseAndTransformAA } from './utils';
 
 const initialState: AnticipatoryActionState = {
   data: {},
+  windStateReports: {},
   availableDates: undefined,
   filters: {
     selectedDate: undefined,
@@ -25,25 +27,83 @@ const initialState: AnticipatoryActionState = {
   error: null,
 };
 
-export const loadAAData = createAsyncThunk<
+export const loadAllAAStormData = createAsyncThunk<
+  boolean,
+  undefined,
+  CreateAsyncThunkTypes
+>('anticipatoryActionStormState/loadAllData', async (_, { dispatch }) => {
+  dispatch(loadLatestStormReport());
+  dispatch(loadWindStateReports());
+  return true;
+});
+
+export const loadLatestStormReport = createAsyncThunk<
   {
     data: AAStormData;
     availableDates: DateItem[];
   },
   undefined,
   CreateAsyncThunkTypes
->('anticipatoryActionStormState/loadAAData', async (_, { rejectWithValue }) => {
-  try {
-    const response = await fetch(
-      'https://data.earthobservation.vam.wfp.org/public-share/aa/ts/outputs/latest.json',
-    );
-    const stormData = await response.json();
-    const data = parseAndTransformAA(stormData as StormData);
-    return data;
-  } catch (error) {
-    return rejectWithValue(error);
-  }
-});
+>(
+  'anticipatoryActionStormState/loadLatestStormReport',
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await fetch(
+        'https://data.earthobservation.vam.wfp.org/public-share/aa/ts/outputs/latest.json',
+      );
+      const stormData = await response.json();
+      const data = parseAndTransformAA(stormData as StormData);
+      return data;
+    } catch (error) {
+      return rejectWithValue(error);
+    }
+  },
+);
+
+export const loadStormReport = createAsyncThunk<
+  {
+    data: AAStormData;
+    availableDates: DateItem[];
+  },
+  { stormName: string; date: string },
+  CreateAsyncThunkTypes
+>(
+  'anticipatoryActionStormState/loadLatestStormReport',
+  async ({ stormName, date }, { rejectWithValue }) => {
+    if (!stormName || !date) {
+      return rejectWithValue('Storm name and date are required');
+    }
+    try {
+      const response = await fetch(
+        `https://data.earthobservation.vam.wfp.org/public-share/aa/ts/outputs/${stormName}/${date}.json?v2`,
+      );
+      const stormData = await response.json();
+      const data = parseAndTransformAA(stormData as StormData);
+      return data;
+    } catch (error) {
+      return rejectWithValue(error);
+    }
+  },
+);
+
+export const loadWindStateReports = createAsyncThunk<
+  AAStormWindStateReports,
+  undefined,
+  CreateAsyncThunkTypes
+>(
+  'anticipatoryActionStormState/loadWindStateReports',
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await fetch(
+        'https://data.earthobservation.vam.wfp.org/public-share/aa/ts/outputs/dates.json',
+      );
+      const responseData = await response.json();
+      return responseData;
+    } catch (error) {
+      return rejectWithValue(error);
+    }
+  },
+);
 
 export const anticipatoryActionStormStateSlice = createSlice({
   name: 'anticipatoryActionStormState',
@@ -79,14 +139,14 @@ export const anticipatoryActionStormStateSlice = createSlice({
     },
   },
   extraReducers: builder => {
-    builder.addCase(loadAAData.fulfilled, (state, { payload }) => ({
+    builder.addCase(loadLatestStormReport.fulfilled, (state, { payload }) => ({
       ...state,
       loading: false,
       data: payload.data,
       availableDates: payload.availableDates,
     }));
 
-    builder.addCase(loadAAData.rejected, (state, action) => ({
+    builder.addCase(loadLatestStormReport.rejected, (state, action) => ({
       ...state,
       loading: false,
       error: action.error.message
@@ -94,11 +154,36 @@ export const anticipatoryActionStormStateSlice = createSlice({
         : action.error.toString(),
     }));
 
-    builder.addCase(loadAAData.pending, ({ error: _error, ...state }) => ({
+    builder.addCase(
+      loadLatestStormReport.pending,
+      ({ error: _error, ...state }) => ({
+        ...state,
+        error: null,
+        loading: true,
+      }),
+    );
+    builder.addCase(loadWindStateReports.fulfilled, (state, { payload }) => ({
       ...state,
-      error: null,
-      loading: true,
+      loading: false,
+      windStateReports: payload,
     }));
+
+    builder.addCase(loadWindStateReports.rejected, (state, action) => ({
+      ...state,
+      loading: false,
+      error: action.error.message
+        ? action.error.message
+        : action.error.toString(),
+    }));
+
+    builder.addCase(
+      loadWindStateReports.pending,
+      ({ error: _error, ...state }) => ({
+        ...state,
+        error: null,
+        loading: true,
+      }),
+    );
   },
 });
 
@@ -111,6 +196,9 @@ export const AAAvailableDatesSelector = (state: RootState) =>
 
 export const AAFiltersSelector = (state: RootState) =>
   state.anticipatoryActionStormState.filters;
+
+export const AAWindStateReports = (state: RootState) =>
+  state.anticipatoryActionStormState.windStateReports;
 
 // export actions
 export const { setAAFilters } = anticipatoryActionStormStateSlice.actions;
