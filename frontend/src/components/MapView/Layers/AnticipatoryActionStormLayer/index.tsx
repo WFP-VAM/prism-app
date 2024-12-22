@@ -5,6 +5,7 @@ import { Source, Layer, MapLayerMouseEvent } from 'react-map-gl/maplibre';
 import { Feature, Point } from 'geojson';
 import { useDispatch, useSelector } from 'react-redux';
 import {
+  dateRangeSelector,
   layerDataSelector,
   mapSelector,
 } from 'context/mapStateSlice/selectors';
@@ -19,6 +20,7 @@ import {
   loadStormReport,
 } from 'context/anticipatoryAction/AAStormStateSlice';
 import { AACategory } from 'context/anticipatoryAction/AAStormStateSlice/types';
+import { updateDateRange } from 'context/mapStateSlice';
 import { useWindStatesByTime } from 'components/MapView/DateSelector/TimelineItems/hooks';
 import { getAAColor } from 'components/MapView/LeftPanel/AnticipatoryActionPanel/AnticipatoryActionStormPanel/utils';
 import AAStormDatePopup from './AAStormDatePopup';
@@ -63,6 +65,7 @@ const AnticipatoryActionStormLayer = React.memo(
     // Load the layer default date if no date is selected
     useDefaultDate(layer.id);
     const map = useSelector(mapSelector);
+    const { startDate } = useSelector(dateRangeSelector);
     const selectedDate = useDefaultDate('anticipatory-action-storm');
     const { viewType, selectedDateTime } = useSelector(AAFiltersSelector);
 
@@ -72,7 +75,9 @@ const AnticipatoryActionStormLayer = React.memo(
     const latestWindState = windStates.states[windStates.states.length - 1];
     const dispatch = useDispatch();
 
-    // Load data when no data is present
+    // Load data when:
+    // 1. No forecast details exist but we have a reference time, OR
+    // 2. Forecast details exist but are from a different date than the latest wind state
     useEffect(() => {
       if (
         (!stormData.forecastDetails && latestWindState?.ref_time) ||
@@ -82,20 +87,27 @@ const AnticipatoryActionStormLayer = React.memo(
           stormData.forecastDetails?.reference_time?.split('T')[0] !==
             latestWindState.ref_time?.split('T')[0])
       ) {
-        // eslint-disable-next-line no-console
-        console.log(
-          'loading storm report',
-          latestWindState?.ref_time,
-          windStates.cycloneName,
-        );
         dispatch(
           loadStormReport({
             date: latestWindState?.ref_time,
             stormName: windStates.cycloneName || 'chido',
           }),
         );
+        // If no start date is selected, update the date range to the selected date
+        // TODO - investigate a better way to handle this
+        if (!startDate) {
+          dispatch(updateDateRange({ startDate: selectedDate }));
+        }
       }
-    }, [dispatch, loading, stormData, latestWindState, windStates.cycloneName]);
+    }, [
+      dispatch,
+      loading,
+      stormData,
+      latestWindState,
+      windStates.cycloneName,
+      selectedDate,
+      startDate,
+    ]);
 
     const boundaryLayerState = useSelector(
       layerDataSelector(boundaryLayer.id),

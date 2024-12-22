@@ -26,8 +26,16 @@ export const useWindStatesByTime = (currentDate: number): WindStateReport => {
   const windStateReports = useSelector(AAWindStateReports);
 
   return useMemo(() => {
-    if (!currentDate) {
+    const dates = Object.keys(windStateReports);
+    if (dates.length === 0) {
       return { states: [], cycloneName: null };
+    }
+    // If currentDate is 0 or null, get the latest report
+    if (!currentDate) {
+      const latestDate = dates.reduce((latest, current) =>
+        new Date(current) > new Date(latest) ? current : latest,
+      );
+      return getWindStatesForDate(windStateReports, latestDate);
     }
 
     const date = Object.keys(windStateReports).find(analysedDate => {
@@ -35,10 +43,12 @@ export const useWindStatesByTime = (currentDate: number): WindStateReport => {
       if (!analysedDateInUTC) {
         return false;
       }
-      return datesAreEqualWithoutTime(analysedDateInUTC, currentDate);
+      const isEqual = datesAreEqualWithoutTime(analysedDateInUTC, currentDate);
+      return isEqual;
     });
 
-    return getWindStatesForDate(windStateReports, date || null);
+    const result = getWindStatesForDate(windStateReports, date || null);
+    return result;
   }, [currentDate, windStateReports]);
 };
 
