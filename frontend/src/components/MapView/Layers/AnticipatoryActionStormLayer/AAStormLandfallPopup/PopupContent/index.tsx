@@ -7,11 +7,7 @@ import {
   formatReportDate,
 } from '../../utils';
 
-function PopupContent({
-  landfallInfo,
-  reportDate,
-  forecastDate,
-}: PopupContentProps) {
+function PopupContent({ landfallInfo, reportDate }: PopupContentProps) {
   const classes = useStyles();
 
   return (

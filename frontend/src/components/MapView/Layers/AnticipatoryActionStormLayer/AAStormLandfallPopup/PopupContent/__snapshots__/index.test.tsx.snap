@@ -9,7 +9,7 @@ exports[`AAStormLandfallPopup component renders as expected 1`] = `
       classname="makeStyles-text-4 makeStyles-title-5"
       variant="body1"
     >
-      Forecast date: 
+      Report date: 
       2024-03-01 6pm
     </mock-typography>
     <div
@@ -56,7 +56,7 @@ exports[`AAStormLandfallPopup component renders as expected 1`] = `
         classname="makeStyles-text-4 makeStyles-textAlignRight-6"
         variant="body1"
       >
-        1 - 6 hrs
+        247 - 252 hrs
       </mock-typography>
     </div>
     <div
