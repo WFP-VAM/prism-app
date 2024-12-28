@@ -3,7 +3,7 @@
   "countryAdmin0Id": 271,
   "alertFormActive": false,
   "enableNavigationDropdown": true,
-  "anticipatoryActionUrl": "https://data.earthobservation.vam.wfp.org/public-share/aa/aa_probabilities_triggers_zwe.csv",
+  "anticipatoryActionUrl": "https://data.earthobservation.vam.wfp.org/public-share/aa/staging/aa_probabilities_triggers_zwe.csv",
   "serversUrls": {
     "wms": ["https://api.earthobservation.vam.wfp.org/ows/wms"]
   },
