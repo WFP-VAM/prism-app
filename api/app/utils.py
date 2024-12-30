@@ -2,6 +2,7 @@ import logging
 
 import requests
 from fastapi import HTTPException
+from requests.adapters import Retry
 
 logger = logging.getLogger(__name__)
 
@@ -50,19 +51,35 @@ def make_request_with_retries(
     timeout: int = 10,
 ) -> dict:
     """Make a request with retries and error handling."""
-    for _ in range(retries):
+    retry_strategy = Retry(
+        total=retries,
+        backoff_factor=0.25,
+        status_forcelist=[429, 500, 502, 503, 504],
+    )
+
+    with requests.Session() as session:
+        adapter = requests.adapters.HTTPAdapter(max_retries=retry_strategy)
+        session.mount("https://", adapter)
+
         try:
-            if method == "post":
-                response_data = requests.post(url, json=data, timeout=timeout).json()
+            if method.lower() == "post":
+                response = session.post(url, json=data, timeout=timeout)
             else:
-                response_data = requests.get(url, timeout=timeout).json()
-            break
+                response = session.get(url, timeout=timeout)
+
+            response.raise_for_status()
+            response_data = response.json()
+
         except requests.exceptions.RequestException as e:
             logger.warning("Request failed at url %s: %s", url, e)
-            response_data = {}
+            raise HTTPException(
+                status_code=500, detail=f"Error fetching data from {url}"
+            )
 
-    if "error" in response_data:
-        logger.error("Error in response: %s", response_data["error"])
-        raise HTTPException(status_code=500, detail=f"Error fetching data from {url}")
+        if "error" in response_data:
+            logger.error("Error in response: %s", response_data["error"])
+            raise HTTPException(
+                status_code=500, detail=f"Error fetching data from {url}"
+            )
 
-    return response_data
+        return response_data

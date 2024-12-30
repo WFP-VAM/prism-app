@@ -35,11 +35,11 @@ def format_gauge_to_geojson(data):
             "riverName": (
                 data["river"] if "river" in data and len(data["river"]) > 1 else None
             ),
-            "severity": data["severity"],
-            "source": data["source"],
-            "qualityVerified": data["qualityVerified"],
-            "thresholds": data["thresholds"],
-            "gaugeValueUnit": data["gaugeValueUnit"],
+            "severity": getattr(data, "severity", None),
+            "source": getattr(data, "source", None),
+            "qualityVerified": getattr(data, "qualityVerified", None),
+            "thresholds": getattr(data, "thresholds", None),
+            "gaugeValueUnit": getattr(data, "gaugeValueUnit", None),
         },
     }
     if "inundationMapSet" in data:
@@ -140,9 +140,20 @@ def get_google_floods_gauges(
         gauges_details.append(merged_gauge)
 
     if as_geojson:
+        features = []
+        for gauge in gauges_details:
+            try:
+                feature = format_gauge_to_geojson(gauge)
+                features.append(feature)
+            except Exception as e:
+                logger.error(
+                    "Failed to format gauge %s: %s", gauge.get("gaugeId"), str(e)
+                )
+                continue
+
         geojson_feature_collection = {
             "type": "FeatureCollection",
-            "features": [format_gauge_to_geojson(gauge) for gauge in gauges_details],
+            "features": features,
         }
         return geojson_feature_collection
     return gauges_details
