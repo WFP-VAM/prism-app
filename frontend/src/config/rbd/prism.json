@@ -440,9 +440,6 @@
         "mdr_fsn_outcomes",
         "mdr_index"
       ]
-    },
-    "flooding": {
-      "flood_status": ["google_flood_status_at_gauges"]
     }
   }
 }
