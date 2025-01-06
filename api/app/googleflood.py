@@ -35,11 +35,11 @@ def format_gauge_to_geojson(data):
             "riverName": (
                 data["river"] if "river" in data and len(data["river"]) > 1 else None
             ),
-            "severity": getattr(data, "severity", None),
-            "source": getattr(data, "source", None),
-            "qualityVerified": getattr(data, "qualityVerified", None),
-            "thresholds": getattr(data, "thresholds", None),
-            "gaugeValueUnit": getattr(data, "gaugeValueUnit", None),
+            "severity": data.get("severity", None),
+            "source": data.get("source", None),
+            "qualityVerified": data.get("qualityVerified", None),
+            "thresholds": data.get("thresholds", None),
+            "gaugeValueUnit": data.get("gaugeValueUnit", None),
         },
     }
     if "inundationMapSet" in data:
