@@ -62,7 +62,7 @@ const calculateStartAndEndDates = (startDate: Date, selectedTab: string) => {
       ? 1
       : 0);
 
-  const startMonth = isAnticipatoryActionLayer(selectedTab) ? 3 : 0; // April for anticipatory_action, January otherwise
+  const startMonth = Panel.AnticipatoryActionDrought === selectedTab ? 3 : 0; // April for anticipatory_action, January otherwise
 
   const start = new Date(year, startMonth, 1);
   const end = new Date(year, startMonth + 11, 31);
