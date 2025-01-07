@@ -27,7 +27,7 @@ import AAStormDatePopup from './AAStormDatePopup';
 import AAStormLandfallPopup from './AAStormLandfallPopup';
 import moderateStorm from '../../../../../public/images/anticipatory-action-storm/moderate-tropical-storm.png';
 import inland from '../../../../../public/images/anticipatory-action-storm/inland.png';
-import lowPressure from '../../../../../public/images/anticipatory-action-storm/low-pressure.png';
+// import lowPressure from '../../../../../public/images/anticipatory-action-storm/low-pressure.png';
 import tropicalDepression from '../../../../../public/images/anticipatory-action-storm/tropical-depression.png';
 import severeTropicalStorm from '../../../../../public/images/anticipatory-action-storm/severe-tropical-storm.png';
 import tropicalCyclone from '../../../../../public/images/anticipatory-action-storm/tropical-cyclone.png';
@@ -35,6 +35,7 @@ import intenseTropicalCyclone from '../../../../../public/images/anticipatory-ac
 import veryIntensiveCyclone from '../../../../../public/images/anticipatory-action-storm/very-intensive-tropical-cyclone.png';
 import dissipating from '../../../../../public/images/anticipatory-action-storm/dissipating.png';
 import defaultIcon from '../../../../../public/images/anticipatory-action-storm/default.png';
+import disturbance from '../../../../../public/images/anticipatory-action-storm/disturbance.png';
 import { TimeSeries } from './types';
 
 interface AnticipatoryActionStormLayerProps {
@@ -46,9 +47,9 @@ const boundaryLayer = getBoundaryLayersByAdminLevel(2);
 
 // Add this mapping object at the top of the file with other imports
 const WIND_TYPE_TO_ICON_MAP: Record<string, string> = {
-  disturbance: defaultIcon,
-  'tropical-disturbance': defaultIcon,
-  low: lowPressure,
+  disturbance,
+  'tropical-disturbance': disturbance,
+  low: disturbance,
   'tropical-depression': tropicalDepression,
   'moderate-tropical-storm': moderateStorm,
   'severe-tropical-storm': severeTropicalStorm,

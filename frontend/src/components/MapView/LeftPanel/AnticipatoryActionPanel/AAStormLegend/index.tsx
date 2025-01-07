@@ -9,7 +9,8 @@ import { useSafeTranslation } from 'i18n';
 import moderateStorm from '../../../../../../public/images/anticipatory-action-storm/moderate-tropical-storm.png';
 import inland from '../../../../../../public/images/anticipatory-action-storm/inland.png';
 import tropicalDepression from '../../../../../../public/images/anticipatory-action-storm/tropical-depression.png';
-import lowPressure from '../../../../../../public/images/anticipatory-action-storm/low-pressure.png';
+import disturbance from '../../../../../../public/images/anticipatory-action-storm/disturbance.png';
+// import lowPressure from '../../../../../../public/images/anticipatory-action-storm/low-pressure.png';
 import severeTropicalStorm from '../../../../../../public/images/anticipatory-action-storm/severe-tropical-storm.png';
 import tropicalCyclone from '../../../../../../public/images/anticipatory-action-storm/tropical-cyclone.png';
 import intenseTropicalCyclone from '../../../../../../public/images/anticipatory-action-storm/intense-tropical-cyclone.png';
@@ -17,8 +18,8 @@ import veryIntensiveCyclone from '../../../../../../public/images/anticipatory-a
 
 const phases = [
   {
-    icon: lowPressure,
-    label: 'Weak low pressure area',
+    icon: disturbance,
+    label: 'Weak low pressure system',
     speed: '< 51 km/h',
   },
   {
