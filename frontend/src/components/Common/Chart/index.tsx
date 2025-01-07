@@ -81,8 +81,8 @@ const Chart = memo(
     const { t } = useSafeTranslation();
     const classes = useStyles();
     const chartRef = React.useRef<Bar | Line>(null);
-    // This state allows us to trigger a render after the chart is ready to update the saved ref
-    const [_, setIsChartReady] = useState(false);
+    // This isChartReady state allows us to trigger a render after the chart is ready to update the saved ref
+    const [_isChartReady, setIsChartReady] = useState(false);
 
     const isEWSChart = !!data.EWSConfig;
     const isGoogleFloodChart = !!data.GoogleFloodConfig;
