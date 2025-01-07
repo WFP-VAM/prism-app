@@ -362,14 +362,15 @@ const AnticipatoryActionStormLayer = React.memo(
                 <Layer
                   id="exposed-area-48kt"
                   beforeId="aa-storm-wind-points-layer"
-                  type="fill"
+                  type="line"
                   paint={{
-                    'fill-opacity': 0.5,
-                    'fill-color': getAAColor(
+                    'line-color': getAAColor(
                       AACategory.Moderate,
                       'Active',
                       true,
                     ).background,
+                    'line-width': 2,
+                    'line-opacity': 0.8,
                   }}
                 />
               </Source>
@@ -383,11 +384,12 @@ const AnticipatoryActionStormLayer = React.memo(
                 <Layer
                   id="exposed-area-64kt"
                   beforeId="aa-storm-wind-points-layer"
-                  type="fill"
+                  type="line"
                   paint={{
-                    'fill-opacity': 0.5,
-                    'fill-color': getAAColor(AACategory.Severe, 'Active', true)
+                    'line-color': getAAColor(AACategory.Severe, 'Active', true)
                       .background,
+                    'line-width': 2,
+                    'line-opacity': 0.8,
                   }}
                 />
               </Source>
