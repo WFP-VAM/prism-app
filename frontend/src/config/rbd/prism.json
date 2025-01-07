@@ -11,8 +11,7 @@
     "risk_analysis": "icon_table.png",
     "rainfall": "icon_rain.png",
     "vegetation": "icon_veg.png",
-    "temperature": "icon_climate.png",
-    "flooding": "icon_basemap.png"
+    "temperature": "icon_climate.png"
   },
   "alertFormActive": false,
   "serversUrls": {

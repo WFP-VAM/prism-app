@@ -1,4 +1,4 @@
-import React, { memo, useCallback, useMemo } from 'react';
+import React, { memo, useCallback, useMemo, useState } from 'react';
 import colormap from 'colormap';
 import { ChartOptions } from 'chart.js';
 import 'chartjs-plugin-annotation';
@@ -81,6 +81,9 @@ const Chart = memo(
     const { t } = useSafeTranslation();
     const classes = useStyles();
     const chartRef = React.useRef<Bar | Line>(null);
+    // This state allows us to trigger a render after the chart is ready to update the saved ref
+    const [_, setIsChartReady] = useState(false);
+
     const isEWSChart = !!data.EWSConfig;
     const isGoogleFloodChart = !!data.GoogleFloodConfig;
     const isFloodChart = isEWSChart || isGoogleFloodChart;
@@ -448,6 +451,11 @@ const Chart = memo(
             display: config.displayLegend,
             position: legendAtBottom ? 'bottom' : 'right',
             labels: { boxWidth: 12, boxHeight: 12 },
+          },
+          animation: {
+            onComplete: () => {
+              setIsChartReady(true);
+            },
           },
           ...(isGoogleFloodChart
             ? {
