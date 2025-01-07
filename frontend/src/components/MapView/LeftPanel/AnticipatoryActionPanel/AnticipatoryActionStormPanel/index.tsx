@@ -2,17 +2,12 @@ import {
   Typography,
   createStyles,
   makeStyles,
-  RadioGroup,
-  FormControlLabel,
-  Radio,
-  FormControl,
   MenuItem,
   Input,
 } from '@material-ui/core';
 import React from 'react';
 import { useSafeTranslation } from 'i18n';
 import { useDispatch } from 'react-redux';
-import { setAAFilters } from 'context/anticipatoryAction/AAStormStateSlice';
 import { updateDateRange } from 'context/mapStateSlice';
 import { AnticipatoryAction, PanelSize } from 'config/types';
 import { getFormattedDate } from 'utils/date-utils';
@@ -33,23 +28,12 @@ function AnticipatoryActionStormPanel() {
   );
   const [howToReadModalOpen, setHowToReadModalOpen] = React.useState(false);
   const reportRefTime = AAData.forecastDetails?.reference_time;
-  const [viewType, setViewType] = React.useState<'forecast' | 'risk'>(
-    'forecast',
-  );
 
   const date = getFormattedDate(
     reportRefTime,
     DateFormat.MiddleEndian,
   ) as string;
   const hour = getFormattedDate(reportRefTime, DateFormat.TimeOnly) as string;
-
-  React.useEffect(() => {
-    dispatch(
-      setAAFilters({
-        viewType,
-      }),
-    );
-  }, [viewType, dispatch]);
 
   if (!AAAvailableDates) {
     return null;
@@ -107,40 +91,12 @@ function AnticipatoryActionStormPanel() {
               </MenuItem>
             ))}
         </StyledSelect>
-        <FormControl component="fieldset">
-          <RadioGroup
-            aria-label="view-type"
-            name="view-type"
-            value={viewType}
-            onChange={e => setViewType(e.target.value as 'forecast' | 'risk')}
-            row
-          >
-            <FormControlLabel
-              value="forecast"
-              control={<Radio color="primary" />}
-              label={t('Wind Forecast')}
-            />
-            <FormControlLabel
-              value="risk"
-              control={<Radio color="primary" />}
-              label={t('Storm Risk Map')}
-            />
-          </RadioGroup>
-        </FormControl>
-        {viewType === 'forecast' && (
-          <Typography>
-            {t(
-              'The wind forecast shows areas with wind speeds above 89 and 118 km/h.',
-            )}
-          </Typography>
-        )}
-        {viewType === 'risk' && (
-          <Typography>
-            {t(
-              'The risk map highlights areas with at least a 20% chance of being hit by a severe tropical storm in the next 5 days.',
-            )}
-          </Typography>
-        )}
+
+        <Typography>
+          {t(
+            'The wind forecast shows areas with wind speeds above 89 and 118 km/h.',
+          )}
+        </Typography>
       </div>
       <ActivationTrigger dialogs={[]} />
     </div>

@@ -97,6 +97,7 @@ export function parseAndTransformAA(data: StormData): ResultType {
       timeSeries: data.time_series,
       landfallDetected: data.landfall_detected,
       forecastDetails: data.forecast_details,
+      uncertaintyCone: data.uncertainty_cone,
     },
   };
 }

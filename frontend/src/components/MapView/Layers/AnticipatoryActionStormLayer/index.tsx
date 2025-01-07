@@ -67,7 +67,7 @@ const AnticipatoryActionStormLayer = React.memo(
     const map = useSelector(mapSelector);
     const { startDate } = useSelector(dateRangeSelector);
     const selectedDate = useDefaultDate('anticipatory-action-storm');
-    const { viewType, selectedDateTime } = useSelector(AAFiltersSelector);
+    const { selectedDateTime } = useSelector(AAFiltersSelector);
 
     const stormData = useSelector(AADataSelector);
     const loading = useSelector(AALoadingSelector);
@@ -351,66 +351,62 @@ const AnticipatoryActionStormLayer = React.memo(
         )}
 
         {/* 48kt and 64kt wind forecast areas */}
-        {viewType === 'forecast' && (
-          <>
-            {stormData.activeDistricts?.Moderate?.polygon && (
-              <Source
-                key={`exposed-area-48kt${dateId}`}
-                type="geojson"
-                data={stormData.activeDistricts?.Moderate?.polygon}
-              >
-                <Layer
-                  id="exposed-area-48kt"
-                  beforeId="aa-storm-wind-points-layer"
-                  type="line"
-                  paint={{
-                    'line-color': getAAColor(
-                      AACategory.Moderate,
-                      'Active',
-                      true,
-                    ).background,
-                    'line-width': 2,
-                    'line-opacity': 0.8,
-                  }}
-                />
-              </Source>
-            )}
-            {stormData.activeDistricts?.Severe?.polygon && (
-              <Source
-                key={`exposed-area-64kt${dateId}`}
-                type="geojson"
-                data={stormData.activeDistricts?.Severe?.polygon}
-              >
-                <Layer
-                  id="exposed-area-64kt"
-                  beforeId="aa-storm-wind-points-layer"
-                  type="line"
-                  paint={{
-                    'line-color': getAAColor(AACategory.Severe, 'Active', true)
-                      .background,
-                    'line-width': 2,
-                    'line-opacity': 0.8,
-                  }}
-                />
-              </Source>
-            )}
-          </>
-        )}
+        <>
+          {stormData.activeDistricts?.Moderate?.polygon && (
+            <Source
+              key={`exposed-area-48kt${dateId}`}
+              type="geojson"
+              data={stormData.activeDistricts?.Moderate?.polygon}
+            >
+              <Layer
+                id="exposed-area-48kt"
+                beforeId="aa-storm-wind-points-layer"
+                type="line"
+                paint={{
+                  'line-color': getAAColor(AACategory.Moderate, 'Active', true)
+                    .background,
+                  'line-width': 2,
+                  'line-opacity': 0.8,
+                }}
+              />
+            </Source>
+          )}
+          {stormData.activeDistricts?.Severe?.polygon && (
+            <Source
+              key={`exposed-area-64kt${dateId}`}
+              type="geojson"
+              data={stormData.activeDistricts?.Severe?.polygon}
+            >
+              <Layer
+                id="exposed-area-64kt"
+                beforeId="aa-storm-wind-points-layer"
+                type="line"
+                paint={{
+                  'line-color': getAAColor(AACategory.Severe, 'Active', true)
+                    .background,
+                  'line-width': 2,
+                  'line-opacity': 0.8,
+                }}
+              />
+            </Source>
+          )}
+        </>
 
-        {/* Storm Risk Map view */}
-        {viewType === 'risk' && stormData.activeDistricts?.Risk?.polygon && (
+        {/* Uncertainty cone */}
+        {stormData.uncertaintyCone && (
           <Source
-            key={`storm-risk-map${dateId}`}
+            key={`uncertainty-cone-map${dateId}`}
             type="geojson"
-            data={stormData.activeDistricts?.Risk?.polygon}
+            data={stormData.uncertaintyCone}
           >
             <Layer
               id="storm-risk-map"
-              type="fill"
+              type="line"
               beforeId="aa-storm-wind-points-layer"
               paint={{
-                'fill-opacity': 0.5,
-                'fill-color': '#9acddc',
+                'line-opacity': 0.8,
+                'line-color': '#2ecc71',
+                'line-width': 2,
               }}
             />
           </Source>

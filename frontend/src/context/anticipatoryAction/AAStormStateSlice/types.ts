@@ -61,6 +61,7 @@ export type AAStormData = {
   timeSeries?: any;
   landfallDetected?: boolean;
   forecastDetails?: ForecastDetails;
+  uncertaintyCone?: FeatureProperties;
 };
 
 export enum WindState {
@@ -119,6 +120,7 @@ export interface StormData {
   time_series: TimeSeries;
   landfall_detected: boolean;
   forecast_details: ForecastDetails;
+  uncertainty_cone: FeatureProperties;
   landfall_info: {
     landfall_time: string[];
     landfall_impact_district: string;
