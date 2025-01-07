@@ -459,9 +459,6 @@
     },
     "exposure": {
       "population": ["pop_proj_2025"]
-    },
-    "flooding": {
-      "flood_status": ["google_flood_status_at_gauges"]
     }
   }
 }
