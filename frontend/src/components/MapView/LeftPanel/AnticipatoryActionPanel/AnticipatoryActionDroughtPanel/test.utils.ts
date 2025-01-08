@@ -1,4 +1,4 @@
-import { AnticipatoryActionState } from 'context/anticipatoryActionStateSlice/types';
+import { AnticipatoryActionState } from 'context/anticipatoryAction/AADroughtStateSlice/types';
 
 export const defaultDialogs = [
   {

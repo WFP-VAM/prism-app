@@ -43,7 +43,10 @@ import { mapStyle } from './utils';
 
 type LayerComponentsMap<U extends LayerType> = {
   [T in U['type']]: {
-    component: ComponentType<{ layer: DiscriminateUnion<U, 'type', T> }>;
+    component: ComponentType<{
+      layer: DiscriminateUnion<U, 'type', T>;
+      mapRef: MapRef;
+    }>;
   };
 };
 

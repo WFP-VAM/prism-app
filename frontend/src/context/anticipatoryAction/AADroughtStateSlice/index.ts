@@ -4,7 +4,7 @@ import { DateItem } from 'config/types';
 import { appConfig } from 'config';
 import { AAWindowKeys } from 'config/utils';
 import { getCurrentDateTimeForUrl } from 'utils/date-utils';
-import type { CreateAsyncThunkTypes, RootState } from '../store';
+import type { CreateAsyncThunkTypes, RootState } from '../../store';
 import {
   AACategoryType,
   AAView,
@@ -57,8 +57,8 @@ export const loadAAData = createAsyncThunk<
   },
   undefined,
   CreateAsyncThunkTypes
->('anticipatoryActionState/loadAAData', async () => {
-  const url = `${appConfig.anticipatoryActionUrl}?date=${getCurrentDateTimeForUrl()}`;
+>('anticipatoryActionDroughtState/loadAAData', async () => {
+  const url = `${appConfig.anticipatoryActionDroughtUrl}?date=${getCurrentDateTimeForUrl()}`;
 
   return new Promise<any>((resolve, reject) => {
     Papa.parse(url, {
@@ -70,8 +70,8 @@ export const loadAAData = createAsyncThunk<
   });
 });
 
-export const anticipatoryActionStateSlice = createSlice({
-  name: 'anticipatoryActionState',
+export const anticipatoryActionDroughtStateSlice = createSlice({
+  name: 'anticipatoryActionDroughtState',
   initialState,
   reducers: {
     setAAFilters: (
@@ -80,6 +80,7 @@ export const anticipatoryActionStateSlice = createSlice({
         payload,
       }: PayloadAction<
         Partial<{
+          viewType: 'forecast' | 'risk';
           selectedDate: string | undefined;
           selectedWindow: (typeof AAWindowKeys)[number] | typeof allWindowsKey;
           selectedIndex: string;
@@ -175,34 +176,34 @@ export const anticipatoryActionStateSlice = createSlice({
 
 // export selectors
 export const AADataSelector = (state: RootState) =>
-  state.anticipatoryActionState.data;
+  state.anticipatoryActionDroughtState.data;
 
 export const AAAvailableDatesSelector = (state: RootState) =>
-  state.anticipatoryActionState.availableDates;
+  state.anticipatoryActionDroughtState.availableDates;
 
 export const AAMonitoredDistrictsSelector = (state: RootState) =>
-  state.anticipatoryActionState.monitoredDistricts;
+  state.anticipatoryActionDroughtState.monitoredDistricts;
 
 export const AAFiltersSelector = (state: RootState) =>
-  state.anticipatoryActionState.filters;
+  state.anticipatoryActionDroughtState.filters;
 
 export const AARenderedDistrictsSelector = (state: RootState) =>
-  state.anticipatoryActionState.renderedDistricts;
+  state.anticipatoryActionDroughtState.renderedDistricts;
 
 export const AASelectedDistrictSelector = (state: RootState) =>
-  state.anticipatoryActionState.selectedDistrict;
+  state.anticipatoryActionDroughtState.selectedDistrict;
 
 export const AAMarkersSelector = (state: RootState) =>
-  state.anticipatoryActionState.markers;
+  state.anticipatoryActionDroughtState.markers;
 
 export const AAViewSelector = (state: RootState) =>
-  state.anticipatoryActionState.view;
+  state.anticipatoryActionDroughtState.view;
 
 export const AAWindowRangesSelector = (state: RootState) =>
-  state.anticipatoryActionState.windowRanges;
+  state.anticipatoryActionDroughtState.windowRanges;
 
 // export actions
 export const { setAAFilters, setAASelectedDistrict, setAAMarkers, setAAView } =
-  anticipatoryActionStateSlice.actions;
+  anticipatoryActionDroughtStateSlice.actions;
 
-export default anticipatoryActionStateSlice.reducer;
+export default anticipatoryActionDroughtStateSlice.reducer;

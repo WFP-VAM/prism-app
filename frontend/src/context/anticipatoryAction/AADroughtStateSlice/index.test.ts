@@ -2,7 +2,7 @@ import {
   mockAAData,
   mockAAInput,
   mockAARenderedDistricts,
-} from 'components/MapView/LeftPanel/AnticipatoryActionPanel/test.utils';
+} from 'components/MapView/LeftPanel/AnticipatoryActionPanel/AnticipatoryActionDroughtPanel/test.utils';
 import { calculateMapRenderedDistricts, parseAndTransformAA } from './utils';
 
 describe('Anticipatory Action', () => {

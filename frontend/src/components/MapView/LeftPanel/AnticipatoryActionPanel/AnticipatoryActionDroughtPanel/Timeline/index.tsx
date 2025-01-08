@@ -10,16 +10,17 @@ import {
   AASelectedDistrictSelector,
   setAAFilters,
   setAAView,
-} from 'context/anticipatoryActionStateSlice';
+} from 'context/anticipatoryAction/AADroughtStateSlice';
 import {
   AAView,
   AnticipatoryActionDataRow,
-} from 'context/anticipatoryActionStateSlice/types';
+} from 'context/anticipatoryAction/AADroughtStateSlice/types';
 import { lightGrey } from 'muiTheme';
 import { useDispatch, useSelector } from 'react-redux';
 import { useSafeTranslation } from 'i18n';
 import { Equalizer, Reply } from '@material-ui/icons';
-import { getAAColor, getAAIcon, useAACommonStyles } from '../../utils';
+import { getAAColor, getAAIcon } from '../utils';
+import { useAACommonStyles } from '../../utils';
 import { dateSorter } from '../DistrictView/utils';
 import { timelineTransform } from './utils';
 

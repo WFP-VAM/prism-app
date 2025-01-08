@@ -18,11 +18,9 @@ import {
   AACategoryType,
   AAView,
   allWindowsKey,
-} from 'context/anticipatoryActionStateSlice/types';
+} from 'context/anticipatoryAction/AADroughtStateSlice/types';
 import { AAWindowKeys } from 'config/utils';
 import {
-  AAAvailableDatesSelector,
-  AADataSelector,
   AAFiltersSelector,
   AAMonitoredDistrictsSelector,
   AASelectedDistrictSelector,
@@ -30,21 +28,18 @@ import {
   setAAFilters,
   setAASelectedDistrict,
   setAAView,
-} from 'context/anticipatoryActionStateSlice';
+} from 'context/anticipatoryAction/AADroughtStateSlice';
 import { dateRangeSelector } from 'context/mapStateSlice/selectors';
-import {
-  getAAAvailableDatesCombined,
-  getRequestDate,
-} from 'utils/server-utils';
 import { getFormattedDate } from 'utils/date-utils';
-import { DateFormat } from 'utils/name-utils';
-import { PanelSize } from 'config/types';
-import { StyledCheckboxLabel, StyledRadioLabel, StyledSelect } from '../utils';
+import { AnticipatoryAction, PanelSize } from 'config/types';
+import { StyledCheckboxLabel, StyledRadioLabel } from './utils';
+import { StyledSelect } from '../utils';
 import DistrictView from './DistrictView/index';
 import HomeTable from './HomeTable';
 import HowToReadModal from '../HowToReadModal';
 import Timeline from './Timeline';
 import Forecast from './Forecast';
+import { useAnticipatoryAction } from '../useAnticipatoryAction';
 
 const isZimbabwe = safeCountry === 'zimbabwe';
 
@@ -66,13 +61,12 @@ function AnticipatoryActionDroughtPanel() {
   const classes = useStyles();
   const dispatch = useDispatch();
   const { t } = useSafeTranslation();
+  const { AAData } = useAnticipatoryAction(AnticipatoryAction.drought);
   const monitoredDistricts = useSelector(AAMonitoredDistrictsSelector);
-  const AAAvailableDates = useSelector(AAAvailableDatesSelector);
   const selectedDistrict = useSelector(AASelectedDistrictSelector);
   const { categories: categoryFilters, selectedIndex } =
     useSelector(AAFiltersSelector);
   const { startDate: selectedDate } = useSelector(dateRangeSelector);
-  const aaData = useSelector(AADataSelector);
   const view = useSelector(AAViewSelector);
   const [indexOptions, setIndexOptions] = React.useState<string[]>([]);
   const [howToReadModalOpen, setHowToReadModalOpen] = React.useState(false);
@@ -88,25 +82,14 @@ function AnticipatoryActionDroughtPanel() {
     if (!selectedDistrict) {
       return;
     }
-    const entries = Object.values(aaData)
+    const entries = Object.values(AAData)
       .map(x => x[selectedDistrict])
       .flat()
       .filter(x => x);
 
     const options = [...new Set(entries.map(x => x.index))];
     setIndexOptions(options);
-  }, [aaData, selectedDistrict]);
-
-  const layerAvailableDates =
-    AAAvailableDates !== undefined
-      ? getAAAvailableDatesCombined(AAAvailableDates)
-      : [];
-  const queryDate = getRequestDate(layerAvailableDates, selectedDate);
-  const date = getFormattedDate(queryDate, DateFormat.Default) as string;
-
-  React.useEffect(() => {
-    dispatch(setAAFilters({ selectedDate: date }));
-  }, [date, dispatch]);
+  }, [AAData, selectedDistrict]);
 
   return (
     <div

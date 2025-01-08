@@ -8,7 +8,8 @@ import { useSafeTranslation } from 'i18n';
 import { borderGray } from 'muiTheme';
 import React from 'react';
 import { safeCountry } from 'config';
-import { getAAIcon, useAACommonStyles } from '../utils';
+import { getAAIcon } from '../AnticipatoryActionDroughtPanel/utils';
+import { useAACommonStyles } from '../utils';
 import HowToReadModal from '../HowToReadModal';
 
 const isZimbabwe = safeCountry === 'zimbabwe';

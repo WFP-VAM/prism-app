@@ -27,7 +27,7 @@ import {
 import {
   AACategoryType,
   AAPhaseType,
-} from 'context/anticipatoryActionStateSlice/types';
+} from 'context/anticipatoryAction/AADroughtStateSlice/types';
 import { AAWindowKeys } from 'config/utils';
 
 const IconSize = '1rem';

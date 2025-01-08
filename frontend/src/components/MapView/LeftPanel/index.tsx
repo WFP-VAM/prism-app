@@ -5,31 +5,15 @@ import {
   leftPanelTabValueSelector,
   setTabValue,
 } from 'context/leftPanelStateSlice';
-import {
-  AnticipatoryAction,
-  AnticipatoryActionLayerProps,
-  Panel,
-} from 'config/types';
+import { AnticipatoryAction, Panel } from 'config/types';
 import {
   AALayerIds,
-  LayerDefinitions,
   areChartLayersAvailable,
   isAnticipatoryActionLayer,
 } from 'config/utils';
-import { getUrlKey, useUrlHistory } from 'utils/url-utils';
-import { layersSelector, mapSelector } from 'context/mapStateSlice/selectors';
-import {
-  AAAvailableDatesSelector,
-  AADataSelector,
-  loadAAData,
-} from 'context/anticipatoryActionStateSlice';
 import { setSelectedBoundaries } from 'context/mapSelectionLayerStateSlice';
-import {
-  availableDatesSelector,
-  updateLayersCapabilities,
-} from 'context/serverStateSlice';
-import { getAAAvailableDatesCombined } from 'utils/server-utils';
-import { updateDateRange } from 'context/mapStateSlice';
+import { layersSelector, mapSelector } from 'context/mapStateSlice/selectors';
+import { getUrlKey, useUrlHistory } from 'utils/url-utils';
 import AnalysisPanel from './AnalysisPanel';
 import ChartsPanel from './ChartsPanel';
 import TablesPanel from './TablesPanel';
@@ -38,9 +22,13 @@ import {
   AnticipatoryActionStormPanel,
 } from './AnticipatoryActionPanel';
 import LayersPanel from './layersPanel';
-import { areTablesAvailable, isAnticipatoryActionAvailable } from './utils';
-import { toggleRemoveLayer } from './layersPanel/MenuItem/MenuSwitch/SwitchItem/utils';
+import {
+  areTablesAvailable,
+  isAnticipatoryActionDroughtAvailable,
+  isAnticipatoryActionStormAvailable,
+} from './utils';
 import AlertsPanel from './AlertsPanel';
+import { toggleRemoveLayer } from './layersPanel/MenuItem/MenuSwitch/SwitchItem/utils';
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -69,123 +57,17 @@ const TabPanel = memo(({ children, value, index, ...other }: TabPanelProps) => (
 const LeftPanel = memo(() => {
   const dispatch = useDispatch();
   const tabValue = useSelector(leftPanelTabValueSelector);
-  const AAData = useSelector(AADataSelector);
-  const serverAvailableDates = useSelector(availableDatesSelector);
-  const AAAvailableDates = useSelector(AAAvailableDatesSelector);
   const selectedLayers = useSelector(layersSelector);
   const map = useSelector(mapSelector);
-  const { updateHistory, appendLayerToUrl, removeLayerFromUrl } =
-    useUrlHistory();
+  const { removeLayerFromUrl } = useUrlHistory();
+
+  const AALayerInUrl = selectedLayers.find(x =>
+    AALayerIds.includes(x.id as AnticipatoryAction),
+  );
 
   const classes = useStyles({ tabValue });
 
   const isPanelHidden = tabValue === Panel.None;
-
-  // Sync serverAvailableDates with AAAvailableDates when the latter updates.
-  React.useEffect(() => {
-    if (AAAvailableDates) {
-      const updatedCapabilities = AALayerIds.reduce(
-        (acc, layerId) => ({
-          ...acc,
-          [layerId]: getAAAvailableDatesCombined(AAAvailableDates),
-        }),
-        { ...serverAvailableDates },
-      );
-      dispatch(updateLayersCapabilities(updatedCapabilities));
-    }
-    // To avoid an infinite loop, we only want to run this effect when AAAvailableDates changes.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [AAAvailableDates, dispatch]);
-
-  const AALayerInUrl = React.useMemo(
-    () =>
-      selectedLayers.find(x => AALayerIds.includes(x.id as AnticipatoryAction)),
-    [selectedLayers],
-  );
-
-  // navigate to AA tab when app originally load with AA layer in url
-  React.useEffect(() => {
-    // TODO: update  Object.keys(AAData).length === 0 condition with something more solid
-    // Move to AA tab when directly linked there
-    if (
-      !isAnticipatoryActionLayer(tabValue) &&
-      AALayerInUrl !== undefined &&
-      Object.keys(AAData['Window 1']).length === 0
-    ) {
-      if (AALayerInUrl.id === AnticipatoryAction.drought) {
-        dispatch(setTabValue(Panel.AnticipatoryActionDrought));
-      } else if (AALayerInUrl.id === AnticipatoryAction.storm) {
-        dispatch(setTabValue(Panel.AnticipatoryActionStorm));
-      }
-    }
-  }, [AAData, AALayerInUrl, dispatch, tabValue]);
-
-  // Remove from url when leaving from AA tab
-  React.useEffect(() => {
-    if (
-      !isAnticipatoryActionLayer(tabValue) &&
-      tabValue !== Panel.None &&
-      AALayerInUrl !== undefined &&
-      Object.keys(AAData['Window 1']).length !== 0
-    ) {
-      toggleRemoveLayer(
-        AALayerInUrl,
-        map,
-        getUrlKey(AALayerInUrl),
-        dispatch,
-        removeLayerFromUrl,
-      );
-    }
-  }, [AAData, AALayerInUrl, dispatch, map, removeLayerFromUrl, tabValue]);
-
-  // fetch csv data when loading AA page
-  React.useEffect(() => {
-    if (!isAnticipatoryActionLayer(tabValue)) {
-      return;
-    }
-    dispatch(loadAAData());
-  }, [dispatch, tabValue]);
-
-  // Add or switch AA layers in url
-  React.useEffect(() => {
-    if (!isAnticipatoryActionLayer(tabValue)) {
-      return;
-    }
-    const selectedLayerId = AALayerIds.find(x => x === tabValue);
-    if (!selectedLayerId) {
-      return;
-    }
-
-    const layer = LayerDefinitions[
-      selectedLayerId
-    ] as AnticipatoryActionLayerProps;
-    if (!layer || AALayerInUrl?.id === layer.id) {
-      return;
-    }
-
-    if (AALayerInUrl) {
-      toggleRemoveLayer(
-        AALayerInUrl,
-        map,
-        getUrlKey(AALayerInUrl),
-        dispatch,
-        removeLayerFromUrl,
-      );
-    }
-
-    const updatedUrl = appendLayerToUrl(
-      getUrlKey(layer),
-      selectedLayers,
-      layer,
-    );
-    updateHistory(getUrlKey(layer), updatedUrl);
-
-    // Reset startDate
-    dispatch(updateDateRange({ startDate: undefined }));
-
-    // url does not instantly update. updateHistory and appendLayerToUrl functions re-trigger useEffect, before selected layers is set
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedLayers, tabValue, dispatch, AALayerInUrl]);
 
   const renderedChartsPanel = React.useMemo(() => {
     if (!areChartLayersAvailable) {
@@ -218,6 +100,24 @@ const LeftPanel = memo(() => {
     [tabValue],
   );
 
+  // Remove from url when leaving from AA tab
+  React.useEffect(() => {
+    if (
+      !isAnticipatoryActionLayer(tabValue) &&
+      tabValue !== Panel.None &&
+      AALayerInUrl !== undefined
+    ) {
+      toggleRemoveLayer(
+        AALayerInUrl,
+        map,
+        getUrlKey(AALayerInUrl),
+        dispatch,
+        removeLayerFromUrl,
+      );
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [tabValue]);
+
   // Reset selected boundaries when tab changes from Alerts
   React.useEffect(() => {
     if (tabValue !== Panel.Alerts) {
@@ -225,18 +125,37 @@ const LeftPanel = memo(() => {
     }
   }, [tabValue, dispatch]);
 
-  const renderedAnticipatoryActionPanel = React.useMemo(() => {
-    if (!isAnticipatoryActionAvailable) {
-      return null;
+  // Redirect to the correct Anticipatory Action tab when loading AA layer from url
+  React.useEffect(() => {
+    if (!isAnticipatoryActionLayer(tabValue) && AALayerInUrl) {
+      if (AALayerInUrl.id === AnticipatoryAction.drought) {
+        dispatch(setTabValue(Panel.AnticipatoryActionDrought));
+      } else if (AALayerInUrl.id === AnticipatoryAction.storm) {
+        dispatch(setTabValue(Panel.AnticipatoryActionStorm));
+      }
     }
-    if (tabValue === Panel.AnticipatoryActionDrought) {
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [AALayerInUrl]);
+
+  const renderedAnticipatoryActionPanel = React.useMemo(() => {
+    const shouldLoadAAPanel = tabValue && isAnticipatoryActionLayer(tabValue);
+
+    if (
+      isAnticipatoryActionDroughtAvailable &&
+      tabValue === Panel.AnticipatoryActionDrought &&
+      shouldLoadAAPanel
+    ) {
       return (
         <TabPanel value={tabValue} index={Panel.AnticipatoryActionDrought}>
           <AnticipatoryActionDroughtPanel />
         </TabPanel>
       );
     }
-    if (tabValue === Panel.AnticipatoryActionStorm) {
+    if (
+      isAnticipatoryActionStormAvailable &&
+      tabValue === Panel.AnticipatoryActionStorm &&
+      shouldLoadAAPanel
+    ) {
       return (
         <TabPanel value={tabValue} index={Panel.AnticipatoryActionStorm}>
           <AnticipatoryActionStormPanel />
