@@ -23,7 +23,6 @@ import { AACategory } from 'context/anticipatoryAction/AAStormStateSlice/types';
 import { updateDateRange } from 'context/mapStateSlice';
 import { useWindStatesByTime } from 'components/MapView/DateSelector/TimelineItems/hooks';
 import { getAAColor } from 'components/MapView/LeftPanel/AnticipatoryActionPanel/AnticipatoryActionStormPanel/utils';
-import { sendMailWithImage } from 'context/anticipatoryAction/AAStormStateSlice/utils';
 import AAStormDatePopup from './AAStormDatePopup';
 import AAStormLandfallPopup from './AAStormLandfallPopup';
 import moderateStorm from '../../../../../public/images/anticipatory-action-storm/moderate-tropical-storm.png';
@@ -38,6 +37,7 @@ import dissipating from '../../../../../public/images/anticipatory-action-storm/
 import defaultIcon from '../../../../../public/images/anticipatory-action-storm/default.png';
 import disturbance from '../../../../../public/images/anticipatory-action-storm/disturbance.png';
 import { TimeSeries } from './types';
+import { sendMailWithImage } from './utils';
 
 interface AnticipatoryActionStormLayerProps {
   layer: AnticipatoryActionLayerProps;

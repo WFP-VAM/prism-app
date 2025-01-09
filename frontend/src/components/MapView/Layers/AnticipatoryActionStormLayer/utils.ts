@@ -5,6 +5,7 @@ import {
   addHours,
   differenceInHours,
 } from 'date-fns';
+import { Map as MaplibreMap } from 'maplibre-gl';
 
 export function getDateInUTC(time: string, hasHours: boolean = true) {
   try {
@@ -92,3 +93,50 @@ export function formatLandfallEstimatedLeadtime(
 
   return `${minHour} - ${maxHour} hrs`;
 }
+
+export const sendMailWithImage = async (map: MaplibreMap | undefined) => {
+  if (!map) {
+    return;
+  }
+
+  const layersToCheck = [
+    'layer-admin_boundaries',
+    'storm-districts-fill',
+    'storm-districts-border',
+    'aa-storm-wind-points-layer',
+    'storm-risk-map',
+    'exposed-area-48kt',
+    'exposed-area-64kt',
+    'aa-storm-wind-points-line-past',
+    'aa-storm-wind-points-line-future',
+    'aa-storm-wind-points-layer',
+  ];
+
+  const allLayersLoaded = layersToCheck.every(layerId => map.getLayer(layerId));
+  if (allLayersLoaded) {
+    const originalZoom = map.getZoom();
+    const originalCenter: [number, number] = [
+      map.getCenter().lng,
+      map.getCenter().lat,
+    ];
+
+    const zoomLevel = 12;
+    const regionCenter: [number, number] = [-73.935242, 40.73061];
+
+    map.setCenter(regionCenter);
+    map.setZoom(zoomLevel);
+
+    const canvas = map.getCanvas();
+    const image = canvas.toDataURL('image/png');
+
+    // TODO: send mail with image
+    const newWindow = window.open();
+    if (newWindow) {
+      newWindow.document.body.innerHTML = `<img src="${image}" alt="Screenshot" style="max-width: 100%;">`;
+      newWindow.document.title = 'Carte Screenshot';
+    }
+
+    map.setCenter(originalCenter);
+    map.setZoom(originalZoom);
+  }
+};
