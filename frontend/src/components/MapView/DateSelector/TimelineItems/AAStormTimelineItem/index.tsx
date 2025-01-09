@@ -50,7 +50,7 @@ const useStyles = makeStyles(() =>
     },
     activated1Indicator: {
       position: 'absolute',
-      height: 10,
+      height: 20,
       width: TIMELINE_ITEM_WIDTH - 1,
       pointerEvents: 'none',
       top: 0,
