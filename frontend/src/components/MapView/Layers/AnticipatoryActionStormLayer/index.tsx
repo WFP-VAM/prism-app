@@ -15,7 +15,6 @@ import { LayerData } from 'context/layers/layer-data';
 import { getBoundaryLayersByAdminLevel } from 'config/utils';
 import {
   AADataSelector,
-  AAFiltersSelector,
   AALoadingSelector,
   loadStormReport,
 } from 'context/anticipatoryAction/AAStormStateSlice';
@@ -68,7 +67,6 @@ const AnticipatoryActionStormLayer = React.memo(
     const map = useSelector(mapSelector);
     const { startDate } = useSelector(dateRangeSelector);
     const selectedDate = useDefaultDate('anticipatory-action-storm');
-    const { selectedDateTime } = useSelector(AAFiltersSelector);
 
     const stormData = useSelector(AADataSelector);
     const loading = useSelector(AALoadingSelector);
@@ -315,9 +313,6 @@ const AnticipatoryActionStormLayer = React.memo(
       };
     }, [boundaryData, stormData]);
 
-    // Create a unique ID suffix based on the selected date
-    const dateId = selectedDateTime ? `-${selectedDateTime}` : '';
-
     if (!boundaryData || !stormData) {
       return null;
     }
@@ -327,7 +322,7 @@ const AnticipatoryActionStormLayer = React.memo(
         {/* First render all fill layers */}
         {coloredDistrictsLayer && (
           <Source
-            key={`storm-districts${dateId}`}
+            key="storm-districts"
             id="storm-districts"
             type="geojson"
             data={coloredDistrictsLayer}
@@ -355,7 +350,7 @@ const AnticipatoryActionStormLayer = React.memo(
         <>
           {stormData.activeDistricts?.Moderate?.polygon && (
             <Source
-              key={`exposed-area-48kt${dateId}`}
+              key="exposed-area-48kt"
               type="geojson"
               data={stormData.activeDistricts?.Moderate?.polygon}
             >
@@ -374,7 +369,7 @@ const AnticipatoryActionStormLayer = React.memo(
           )}
           {stormData.activeDistricts?.Severe?.polygon && (
             <Source
-              key={`exposed-area-64kt${dateId}`}
+              key="exposed-area-64kt"
               type="geojson"
               data={stormData.activeDistricts?.Severe?.polygon}
             >
@@ -396,7 +391,7 @@ const AnticipatoryActionStormLayer = React.memo(
         {/* Uncertainty cone */}
         {stormData.uncertaintyCone && (
           <Source
-            key={`uncertainty-cone-map${dateId}`}
+            key="uncertainty-cone-map"
             type="geojson"
             data={stormData.uncertaintyCone}
           >
