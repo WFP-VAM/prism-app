@@ -23,6 +23,7 @@ import { AACategory } from 'context/anticipatoryAction/AAStormStateSlice/types';
 import { updateDateRange } from 'context/mapStateSlice';
 import { useWindStatesByTime } from 'components/MapView/DateSelector/TimelineItems/hooks';
 import { getAAColor } from 'components/MapView/LeftPanel/AnticipatoryActionPanel/AnticipatoryActionStormPanel/utils';
+import { sendMailWithImage } from 'context/anticipatoryAction/AAStormStateSlice/utils';
 import AAStormDatePopup from './AAStormDatePopup';
 import AAStormLandfallPopup from './AAStormLandfallPopup';
 import moderateStorm from '../../../../../public/images/anticipatory-action-storm/moderate-tropical-storm.png';
@@ -94,6 +95,7 @@ const AnticipatoryActionStormLayer = React.memo(
             stormName: windStates.cycloneName || 'chido',
           }),
         );
+
         // If no start date is selected, update the date range to the selected date
         // TODO - investigate a better way to handle this
         if (!startDate) {
@@ -202,8 +204,24 @@ const AnticipatoryActionStormLayer = React.memo(
     }, [map]);
 
     useEffect(() => {
+      // Charger les images (icônes) des vents avant de prendre une capture d'écran
       loadImages();
     }, [loadImages]);
+
+    useEffect(() => {
+      // Take a screenshot when the map is fully loaded
+      // TODO - here we want to send an alert with the screenshot if active districts are present
+      const isActiveDistricts =
+        (stormData.activeDistricts?.Moderate?.districtNames?.length || 0) > 0 ||
+        (stormData.activeDistricts?.Severe?.districtNames?.length || 0) > 0;
+      if (map) {
+        map.on('idle', () => {
+          if (map.loaded() && isActiveDistricts) {
+            sendMailWithImage(map);
+          }
+        });
+      }
+    }, [map]);
 
     // Display a pointer cursor when hovering over the wind points
     const onMouseEnter = () => () => {
@@ -352,46 +370,43 @@ const AnticipatoryActionStormLayer = React.memo(
         )}
 
         {/* 48kt and 64kt wind forecast areas */}
-        <>
-          {stormData.activeDistricts?.Moderate?.polygon && (
-            <Source
-              key={`exposed-area-48kt${dateId}`}
-              type="geojson"
-              data={stormData.activeDistricts?.Moderate?.polygon}
-            >
-              <Layer
-                id="exposed-area-48kt"
-                beforeId="aa-storm-wind-points-layer"
-                type="line"
-                paint={{
-                  'line-color': getAAColor(AACategory.Moderate, 'Active', true)
-                    .background,
-                  'line-width': 2,
-                  'line-opacity': 0.8,
-                }}
-              />
-            </Source>
-          )}
-          {stormData.activeDistricts?.Severe?.polygon && (
-            <Source
-              key={`exposed-area-64kt${dateId}`}
-              type="geojson"
-              data={stormData.activeDistricts?.Severe?.polygon}
-            >
-              <Layer
-                id="exposed-area-64kt"
-                beforeId="aa-storm-wind-points-layer"
-                type="line"
-                paint={{
-                  'line-color': getAAColor(AACategory.Severe, 'Active', true)
-                    .background,
-                  'line-width': 2,
-                  'line-opacity': 0.8,
-                }}
-              />
-            </Source>
-          )}
-        </>
+
+        {stormData.activeDistricts?.Moderate?.polygon && (
+          <Source
+            key={`exposed-area-48kt${dateId}`}
+            type="geojson"
+            data={stormData.activeDistricts?.Moderate?.polygon}
+          >
+            <Layer
+              id="exposed-area-48kt"
+              type="line"
+              paint={{
+                'line-color': getAAColor(AACategory.Moderate, 'Active', true)
+                  .background,
+                'line-width': 2,
+                'line-opacity': 0.8,
+              }}
+            />
+          </Source>
+        )}
+        {stormData.activeDistricts?.Severe?.polygon && (
+          <Source
+            key={`exposed-area-64kt${dateId}`}
+            type="geojson"
+            data={stormData.activeDistricts?.Severe?.polygon}
+          >
+            <Layer
+              id="exposed-area-64kt"
+              type="line"
+              paint={{
+                'line-color': getAAColor(AACategory.Severe, 'Active', true)
+                  .background,
+                'line-width': 2,
+                'line-opacity': 0.8,
+              }}
+            />
+          </Source>
+        )}
 
         {/* Uncertainty cone */}
         {stormData.uncertaintyCone && (
@@ -403,7 +418,6 @@ const AnticipatoryActionStormLayer = React.memo(
             <Layer
               id="storm-risk-map"
               type="line"
-              beforeId="aa-storm-wind-points-layer"
               paint={{
                 'line-opacity': 0.8,
                 'line-color': '#2ecc71',
@@ -418,7 +432,6 @@ const AnticipatoryActionStormLayer = React.memo(
           <Source data={timeSeries} type="geojson">
             <Layer
               id="aa-storm-wind-points-line-past"
-              beforeId="aa-storm-wind-points-layer"
               type="line"
               filter={['==', ['get', 'data_type'], 'analysis']}
               paint={{
@@ -428,7 +441,6 @@ const AnticipatoryActionStormLayer = React.memo(
             />
             <Layer
               id="aa-storm-wind-points-line-future"
-              beforeId="aa-storm-wind-points-layer"
               type="line"
               filter={['==', ['get', 'data_type'], 'forecast']}
               paint={{

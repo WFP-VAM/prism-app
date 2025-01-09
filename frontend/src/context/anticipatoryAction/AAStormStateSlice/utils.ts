@@ -1,3 +1,4 @@
+import { Map as MaplibreMap } from 'maplibre-gl';
 import {
   AACategory,
   AACategoryDataToLandfallMap,
@@ -25,6 +26,53 @@ const watchedDistricts: { [key in AACategory]: string[] } = {
   ],
   [AACategory.Moderate]: ['Angoche', 'Maganja Da Costa', 'Machanga', 'Govuro'],
   [AACategory.Risk]: [],
+};
+
+export const sendMailWithImage = async (map: MaplibreMap | undefined) => {
+  if (!map) {
+    return;
+  }
+
+  const layersToCheck = [
+    'layer-admin_boundaries',
+    'storm-districts-fill',
+    'storm-districts-border',
+    'aa-storm-wind-points-layer',
+    'storm-risk-map',
+    'exposed-area-48kt',
+    'exposed-area-64kt',
+    'aa-storm-wind-points-line-past',
+    'aa-storm-wind-points-line-future',
+    'aa-storm-wind-points-layer',
+  ];
+
+  const allLayersLoaded = layersToCheck.every(layerId => map.getLayer(layerId));
+  if (allLayersLoaded) {
+    const originalZoom = map.getZoom();
+    const originalCenter: [number, number] = [
+      map.getCenter().lng,
+      map.getCenter().lat,
+    ];
+
+    const zoomLevel = 12;
+    const regionCenter: [number, number] = [-73.935242, 40.73061];
+
+    map.setCenter(regionCenter);
+    map.setZoom(zoomLevel);
+
+    const canvas = map.getCanvas();
+    const image = canvas.toDataURL('image/png');
+
+    // TODO: send mail with image
+    const newWindow = window.open();
+    if (newWindow) {
+      newWindow.document.body.innerHTML = `<img src="${image}" alt="Screenshot" style="max-width: 100%;">`;
+      newWindow.document.title = 'Carte Screenshot';
+    }
+
+    map.setCenter(originalCenter);
+    map.setZoom(originalZoom);
+  }
 };
 
 // DRAFT: This is a provisional implementation based on a test dataset with a temporary structure that is subject to change.
