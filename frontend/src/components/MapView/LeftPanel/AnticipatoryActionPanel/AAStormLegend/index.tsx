@@ -115,7 +115,7 @@ function AAStormLegend() {
           <div key={buffer.label} className={classes.itemWrapper}>
             <div
               className={classes.colorBox}
-              style={{ backgroundColor: buffer.color }}
+              style={{ borderColor: buffer.color }}
             />
             <Typography>{t(buffer.label)}</Typography>
           </div>
@@ -203,7 +203,8 @@ const useStyles = makeStyles(() =>
     colorBox: {
       width: '20px',
       height: '20px',
-      borderRadius: '4px',
+      border: '3px solid',
+      borderRadius: '3px',
     },
     line: {
       width: '20px',
