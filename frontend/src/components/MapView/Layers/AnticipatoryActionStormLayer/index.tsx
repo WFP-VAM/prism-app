@@ -22,19 +22,10 @@ import { AACategory } from 'context/anticipatoryAction/AAStormStateSlice/types';
 import { updateDateRange } from 'context/mapStateSlice';
 import { useWindStatesByTime } from 'components/MapView/DateSelector/TimelineItems/hooks';
 import { getAAColor } from 'components/MapView/LeftPanel/AnticipatoryActionPanel/AnticipatoryActionStormPanel/utils';
+import anticipatoryActionIcons from 'components/Common/AnticipatoryAction/icons';
 import AAStormDatePopup from './AAStormDatePopup';
 import AAStormLandfallPopup from './AAStormLandfallPopup';
-import moderateStorm from '../../../../../public/images/anticipatory-action-storm/moderate-tropical-storm.png';
-import inland from '../../../../../public/images/anticipatory-action-storm/inland.png';
-// import lowPressure from '../../../../../public/images/anticipatory-action-storm/low-pressure.png';
-import tropicalDepression from '../../../../../public/images/anticipatory-action-storm/tropical-depression.png';
-import severeTropicalStorm from '../../../../../public/images/anticipatory-action-storm/severe-tropical-storm.png';
-import tropicalCyclone from '../../../../../public/images/anticipatory-action-storm/tropical-cyclone.png';
-import intenseTropicalCyclone from '../../../../../public/images/anticipatory-action-storm/intense-tropical-cyclone.png';
-import veryIntensiveCyclone from '../../../../../public/images/anticipatory-action-storm/very-intensive-tropical-cyclone.png';
-import dissipating from '../../../../../public/images/anticipatory-action-storm/dissipating.png';
-import defaultIcon from '../../../../../public/images/anticipatory-action-storm/default.png';
-import disturbance from '../../../../../public/images/anticipatory-action-storm/disturbance.png';
+
 import { TimeSeries } from './types';
 
 interface AnticipatoryActionStormLayerProps {
@@ -46,18 +37,19 @@ const boundaryLayer = getBoundaryLayersByAdminLevel(2);
 
 // Add this mapping object at the top of the file with other imports
 const WIND_TYPE_TO_ICON_MAP: Record<string, string> = {
-  disturbance,
-  'tropical-disturbance': disturbance,
-  low: disturbance,
-  'tropical-depression': tropicalDepression,
-  'moderate-tropical-storm': moderateStorm,
-  'severe-tropical-storm': severeTropicalStorm,
-  'tropical-cyclone': tropicalCyclone,
-  'intense-tropical-cyclone': intenseTropicalCyclone,
-  'very-intensive-tropical-cyclone': veryIntensiveCyclone,
-  inland,
-  dissipating,
-  default: defaultIcon,
+  disturbance: anticipatoryActionIcons.disturbance,
+  'tropical-disturbance': anticipatoryActionIcons.disturbance,
+  low: anticipatoryActionIcons.disturbance,
+  'tropical-depression': anticipatoryActionIcons.tropicalDepression,
+  'moderate-tropical-storm': anticipatoryActionIcons.moderateStorm,
+  'severe-tropical-storm': anticipatoryActionIcons.severeTropicalStorm,
+  'tropical-cyclone': anticipatoryActionIcons.tropicalCyclone,
+  'intense-tropical-cyclone': anticipatoryActionIcons.intenseTropicalCyclone,
+  'very-intensive-tropical-cyclone':
+    anticipatoryActionIcons.veryIntensiveCyclone,
+  inland: anticipatoryActionIcons.inland,
+  dissipating: anticipatoryActionIcons.dissipating,
+  default: anticipatoryActionIcons.default,
 };
 
 const AnticipatoryActionStormLayer = React.memo(
