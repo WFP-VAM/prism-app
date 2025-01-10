@@ -60,11 +60,11 @@ const buffers = [
     label: 'Uncertainty cone',
   },
   {
-    color: '#ffc49a',
+    color: '#FF8934',
     label: '89 km/h impact zone',
   },
   {
-    color: '#D37A50',
+    color: '#E63701',
     label: '118 km/h impact zone',
   },
 ];
