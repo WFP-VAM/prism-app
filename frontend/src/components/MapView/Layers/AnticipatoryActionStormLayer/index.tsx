@@ -445,7 +445,7 @@ const AnticipatoryActionStormLayer = React.memo(
           </Source>
         )}
 
-        <AAStormDatePopup />
+        <AAStormDatePopup timeSeries={stormData.timeSeries} />
 
         {selectedFeature && stormData.landfall?.time && (
           <AAStormLandfallPopup
