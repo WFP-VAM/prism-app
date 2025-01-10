@@ -309,12 +309,15 @@ const AnticipatoryActionStormLayer = React.memo(
       return null;
     }
 
+    // Create a report id based on the reference time of the report
+    const reportId = stormData.forecastDetails?.reference_time || '';
+
     return (
       <>
         {/* First render all fill layers */}
         {coloredDistrictsLayer && (
           <Source
-            key="storm-districts"
+            key={`storm-districts-${reportId}`}
             id="storm-districts"
             type="geojson"
             data={coloredDistrictsLayer}
@@ -342,7 +345,7 @@ const AnticipatoryActionStormLayer = React.memo(
         <>
           {stormData.activeDistricts?.Moderate?.polygon && (
             <Source
-              key="exposed-area-48kt"
+              key={`exposed-area-48kt-${reportId}`}
               type="geojson"
               data={stormData.activeDistricts?.Moderate?.polygon}
             >
@@ -361,7 +364,7 @@ const AnticipatoryActionStormLayer = React.memo(
           )}
           {stormData.activeDistricts?.Severe?.polygon && (
             <Source
-              key="exposed-area-64kt"
+              key={`exposed-area-64kt-${reportId}`}
               type="geojson"
               data={stormData.activeDistricts?.Severe?.polygon}
             >
@@ -383,7 +386,7 @@ const AnticipatoryActionStormLayer = React.memo(
         {/* Uncertainty cone */}
         {stormData.uncertaintyCone && (
           <Source
-            key="uncertainty-cone-map"
+            key={`uncertainty-cone-map-${reportId}`}
             type="geojson"
             data={stormData.uncertaintyCone}
           >
