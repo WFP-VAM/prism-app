@@ -35,7 +35,6 @@ interface AnticipatoryActionStormLayerProps {
 // Use admin level 2 boundary layer
 const boundaryLayer = getBoundaryLayersByAdminLevel(2);
 
-// Add this mapping object at the top of the file with other imports
 const WIND_TYPE_TO_ICON_MAP: Record<string, string> = {
   disturbance: anticipatoryActionIcons.disturbance,
   'tropical-disturbance': anticipatoryActionIcons.disturbance,
