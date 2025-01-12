@@ -4,51 +4,42 @@ import {
   createStyles,
   Divider,
 } from '@material-ui/core';
+import anticipatoryActionIcons from 'components/Common/AnticipatoryAction/icons';
 import { useSafeTranslation } from 'i18n';
-// TODO - create a file to make the icons easier to access
-import moderateStorm from '../../../../../../public/images/anticipatory-action-storm/moderate-tropical-storm.png';
-import inland from '../../../../../../public/images/anticipatory-action-storm/inland.png';
-import tropicalDepression from '../../../../../../public/images/anticipatory-action-storm/tropical-depression.png';
-import disturbance from '../../../../../../public/images/anticipatory-action-storm/disturbance.png';
-// import lowPressure from '../../../../../../public/images/anticipatory-action-storm/low-pressure.png';
-import severeTropicalStorm from '../../../../../../public/images/anticipatory-action-storm/severe-tropical-storm.png';
-import tropicalCyclone from '../../../../../../public/images/anticipatory-action-storm/tropical-cyclone.png';
-import intenseTropicalCyclone from '../../../../../../public/images/anticipatory-action-storm/intense-tropical-cyclone.png';
-import veryIntensiveCyclone from '../../../../../../public/images/anticipatory-action-storm/very-intensive-tropical-cyclone.png';
 
 const phases = [
   {
-    icon: disturbance,
+    icon: anticipatoryActionIcons.disturbance,
     label: 'Weak low pressure system',
     speed: '< 51 km/h',
   },
   {
-    icon: tropicalDepression,
+    icon: anticipatoryActionIcons.tropicalDepression,
     label: 'Tropical depression',
     speed: '51-62 km/h',
   },
   {
-    icon: moderateStorm,
+    icon: anticipatoryActionIcons.moderateStorm,
     label: 'Moderate tropical storm',
     speed: '63-88 km/h',
   },
   {
-    icon: severeTropicalStorm,
+    icon: anticipatoryActionIcons.severeTropicalStorm,
     label: 'Severe tropical storm',
     speed: '89-118 km/h',
   },
   {
-    icon: tropicalCyclone,
+    icon: anticipatoryActionIcons.tropicalCyclone,
     label: 'Tropical cyclone',
     speed: '119-166 km/h',
   },
   {
-    icon: intenseTropicalCyclone,
+    icon: anticipatoryActionIcons.intenseTropicalCyclone,
     label: 'Intense tropical cyclone',
     speed: '167-213 km/h',
   },
   {
-    icon: veryIntensiveCyclone,
+    icon: anticipatoryActionIcons.veryIntensiveCyclone,
     label: 'Very intense tropical cyclone',
     speed: '214 km/h and above',
   },
@@ -60,18 +51,18 @@ const buffers = [
     label: 'Uncertainty cone',
   },
   {
-    color: '#ffc49a',
+    color: '#FF8934',
     label: '89 km/h impact zone',
   },
   {
-    color: '#D37A50',
+    color: '#E63701',
     label: '118 km/h impact zone',
   },
 ];
 
 const tracks = [
   {
-    icon: inland,
+    icon: anticipatoryActionIcons.inland,
     label: 'Overland',
   },
   {
@@ -115,7 +106,7 @@ function AAStormLegend() {
           <div key={buffer.label} className={classes.itemWrapper}>
             <div
               className={classes.colorBox}
-              style={{ backgroundColor: buffer.color }}
+              style={{ borderColor: buffer.color }}
             />
             <Typography>{t(buffer.label)}</Typography>
           </div>
@@ -203,7 +194,8 @@ const useStyles = makeStyles(() =>
     colorBox: {
       width: '20px',
       height: '20px',
-      borderRadius: '4px',
+      border: '3px solid',
+      borderRadius: '3px',
     },
     line: {
       width: '20px',
