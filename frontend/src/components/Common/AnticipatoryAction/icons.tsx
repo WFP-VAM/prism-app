@@ -2,7 +2,6 @@ import moderateStorm from '../../../../public/images/anticipatory-action-storm/m
 import inland from '../../../../public/images/anticipatory-action-storm/inland.png';
 import tropicalDepression from '../../../../public/images/anticipatory-action-storm/tropical-depression.png';
 import disturbance from '../../../../public/images/anticipatory-action-storm/disturbance.png';
-// import lowPressure from '../../../../../../public/images/anticipatory-action-storm/low-pressure.png';
 import severeTropicalStorm from '../../../../public/images/anticipatory-action-storm/severe-tropical-storm.png';
 import tropicalCyclone from '../../../../public/images/anticipatory-action-storm/tropical-cyclone.png';
 import intenseTropicalCyclone from '../../../../public/images/anticipatory-action-storm/intense-tropical-cyclone.png';
