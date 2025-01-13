@@ -5,9 +5,9 @@ import {
   AACategoryKeyToCategoryMap,
   AACategoryLandfall,
   DistrictDataType,
+  ResultType,
 } from './parsedStromDataTypes';
 import { StormDataResponseBody } from './rawStormDataTypes';
-import { ResultType } from './types';
 
 const districtNameMapping: { [key: string]: string } = {
   Maganja_Da_Costa: 'Maganja Da Costa',

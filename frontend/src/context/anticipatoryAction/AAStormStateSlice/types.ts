@@ -16,18 +16,8 @@ export type AAStormWindStateReports = Record<
   Record<CycloneName, TimeAndState[]>
 >;
 
-export type ResultType = {
-  data: ParsedStormData;
-};
-
 export const AAPhase = ['Active', 'na'] as const;
 export type AAPhaseType = (typeof AAPhase)[number];
-// export const phaseValues = Object.values(AAPhase);
-
-// export enum AAView {
-//   Activation_trigger = 'Actication Trigger',
-//   Readiness_trigger = 'Readiness Trigger',
-// }
 
 export type AnticipatoryActionState = {
   data: ParsedStormData;

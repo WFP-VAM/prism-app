@@ -1,4 +1,4 @@
-import { TimeSeries } from './rawStormDataTypes';
+import { ForecastDetails, TimeSeries } from './rawStormDataTypes';
 
 export enum AACategory {
   Severe = 'Severe',
@@ -37,14 +37,6 @@ interface FeatureProperties {
   [key: string]: any;
 }
 
-interface ForecastDetails {
-  basin: string;
-  cyclone_name: string;
-  event_id: string;
-  reference_time: string;
-  season: number;
-}
-
 export const AACategoryDataToLandfallMap: {
   [key in AACategoryLandfall]: AACategory;
 } = {
@@ -69,4 +61,8 @@ export type ParsedStormData = {
   landfallDetected?: boolean;
   forecastDetails?: ForecastDetails;
   uncertaintyCone?: FeatureProperties;
+};
+
+export type ResultType = {
+  data: ParsedStormData;
 };
