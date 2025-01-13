@@ -1,24 +1,15 @@
-import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { DateItem } from 'config/types';
 import type { CreateAsyncThunkTypes, RootState } from '../../store';
 import { AAStormWindStateReports, AnticipatoryActionState } from './types';
 import { parseAndTransformAA } from './utils';
-import { AACategory, ParsedStormData } from './parsedStromDataTypes';
+import { ParsedStormData } from './parsedStromDataTypes';
 import { StormDataResponseBody } from './rawStormDataTypes';
 
 const initialState: AnticipatoryActionState = {
   data: {},
   windStateReports: {},
   availableDates: undefined,
-  filters: {
-    selectedDateTime: undefined,
-    selectedIndex: '',
-    categories: {
-      Severe: true,
-      Moderate: true,
-      Risk: true,
-    },
-  },
   loading: false,
   error: null,
 };
@@ -129,37 +120,7 @@ export const loadWindStateReports = createAsyncThunk<
 export const anticipatoryActionStormStateSlice = createSlice({
   name: 'anticipatoryActionStormState',
   initialState,
-  reducers: {
-    // TODO - setAAFilters is mostly used for the viewType. Maybe rename and make sure it's used for the viewType only?
-    setAAFilters: (
-      state,
-      {
-        payload,
-      }: PayloadAction<
-        Partial<{
-          viewType: 'forecast' | 'risk';
-          selectedDateTime: string | undefined;
-          selectedIndex: string;
-          categories: Partial<Record<AACategory, boolean>>;
-        }>
-      >,
-    ) => {
-      const { categories, ...rest } = payload;
-      const newCategories =
-        categories !== undefined
-          ? { ...state.filters.categories, ...categories }
-          : state.filters.categories;
-      const newFilters = {
-        ...state.filters,
-        ...rest,
-        categories: newCategories,
-      };
-      return {
-        ...state,
-        filters: newFilters,
-      };
-    },
-  },
+  reducers: {},
   extraReducers: builder => {
     builder.addCase(loadStormReport.fulfilled, (state, { payload }) => ({
       ...state,
@@ -216,13 +177,7 @@ export const AALoadingSelector = (state: RootState) =>
 export const AAAvailableDatesSelector = (state: RootState) =>
   state.anticipatoryActionStormState.availableDates;
 
-export const AAFiltersSelector = (state: RootState) =>
-  state.anticipatoryActionStormState.filters;
-
 export const AAWindStateReports = (state: RootState) =>
   state.anticipatoryActionStormState.windStateReports;
-
-// export actions
-export const { setAAFilters } = anticipatoryActionStormStateSlice.actions;
 
 export default anticipatoryActionStormStateSlice.reducer;

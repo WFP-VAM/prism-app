@@ -15,7 +15,6 @@ import { LayerData } from 'context/layers/layer-data';
 import { getBoundaryLayersByAdminLevel } from 'config/utils';
 import {
   AADataSelector,
-  AAFiltersSelector,
   AALoadingSelector,
   loadStormReport,
 } from 'context/anticipatoryAction/AAStormStateSlice';
@@ -23,19 +22,10 @@ import { updateDateRange } from 'context/mapStateSlice';
 import { useWindStatesByTime } from 'components/MapView/DateSelector/TimelineItems/hooks';
 import { getAAColor } from 'components/MapView/LeftPanel/AnticipatoryActionPanel/AnticipatoryActionStormPanel/utils';
 import { AACategory } from 'context/anticipatoryAction/AAStormStateSlice/parsedStromDataTypes';
+import anticipatoryActionIcons from 'components/Common/AnticipatoryAction/icons';
 import AAStormDatePopup from './AAStormDatePopup';
 import AAStormLandfallPopup from './AAStormLandfallPopup';
-import moderateStorm from '../../../../../public/images/anticipatory-action-storm/moderate-tropical-storm.png';
-import inland from '../../../../../public/images/anticipatory-action-storm/inland.png';
-// import lowPressure from '../../../../../public/images/anticipatory-action-storm/low-pressure.png';
-import tropicalDepression from '../../../../../public/images/anticipatory-action-storm/tropical-depression.png';
-import severeTropicalStorm from '../../../../../public/images/anticipatory-action-storm/severe-tropical-storm.png';
-import tropicalCyclone from '../../../../../public/images/anticipatory-action-storm/tropical-cyclone.png';
-import intenseTropicalCyclone from '../../../../../public/images/anticipatory-action-storm/intense-tropical-cyclone.png';
-import veryIntensiveCyclone from '../../../../../public/images/anticipatory-action-storm/very-intensive-tropical-cyclone.png';
-import dissipating from '../../../../../public/images/anticipatory-action-storm/dissipating.png';
-import defaultIcon from '../../../../../public/images/anticipatory-action-storm/default.png';
-import disturbance from '../../../../../public/images/anticipatory-action-storm/disturbance.png';
+
 import { TimeSeries } from './types';
 
 interface AnticipatoryActionStormLayerProps {
@@ -45,20 +35,20 @@ interface AnticipatoryActionStormLayerProps {
 // Use admin level 2 boundary layer
 const boundaryLayer = getBoundaryLayersByAdminLevel(2);
 
-// Add this mapping object at the top of the file with other imports
 const WIND_TYPE_TO_ICON_MAP: Record<string, string> = {
-  disturbance,
-  'tropical-disturbance': disturbance,
-  low: disturbance,
-  'tropical-depression': tropicalDepression,
-  'moderate-tropical-storm': moderateStorm,
-  'severe-tropical-storm': severeTropicalStorm,
-  'tropical-cyclone': tropicalCyclone,
-  'intense-tropical-cyclone': intenseTropicalCyclone,
-  'very-intensive-tropical-cyclone': veryIntensiveCyclone,
-  inland,
-  dissipating,
-  default: defaultIcon,
+  disturbance: anticipatoryActionIcons.disturbance,
+  'tropical-disturbance': anticipatoryActionIcons.disturbance,
+  low: anticipatoryActionIcons.disturbance,
+  'tropical-depression': anticipatoryActionIcons.tropicalDepression,
+  'moderate-tropical-storm': anticipatoryActionIcons.moderateStorm,
+  'severe-tropical-storm': anticipatoryActionIcons.severeTropicalStorm,
+  'tropical-cyclone': anticipatoryActionIcons.tropicalCyclone,
+  'intense-tropical-cyclone': anticipatoryActionIcons.intenseTropicalCyclone,
+  'very-intensive-tropical-cyclone':
+    anticipatoryActionIcons.veryIntensiveCyclone,
+  inland: anticipatoryActionIcons.inland,
+  dissipating: anticipatoryActionIcons.dissipating,
+  default: anticipatoryActionIcons.default,
 };
 
 const AnticipatoryActionStormLayer = React.memo(
@@ -68,7 +58,6 @@ const AnticipatoryActionStormLayer = React.memo(
     const map = useSelector(mapSelector);
     const { startDate } = useSelector(dateRangeSelector);
     const selectedDate = useDefaultDate('anticipatory-action-storm');
-    const { selectedDateTime } = useSelector(AAFiltersSelector);
 
     const stormData = useSelector(AADataSelector);
     const loading = useSelector(AALoadingSelector);
@@ -315,19 +304,19 @@ const AnticipatoryActionStormLayer = React.memo(
       };
     }, [boundaryData, stormData]);
 
-    // Create a unique ID suffix based on the selected date
-    const dateId = selectedDateTime ? `-${selectedDateTime}` : '';
-
     if (!boundaryData || !stormData) {
       return null;
     }
+
+    // Create a report id based on the reference time of the report
+    const reportId = stormData.forecastDetails?.reference_time || '';
 
     return (
       <>
         {/* First render all fill layers */}
         {coloredDistrictsLayer && (
           <Source
-            key={`storm-districts${dateId}`}
+            key={`storm-districts-${reportId}`}
             id="storm-districts"
             type="geojson"
             data={coloredDistrictsLayer}
@@ -355,7 +344,7 @@ const AnticipatoryActionStormLayer = React.memo(
         <>
           {stormData.activeDistricts?.Moderate?.polygon && (
             <Source
-              key={`exposed-area-48kt${dateId}`}
+              key={`exposed-area-48kt-${reportId}`}
               type="geojson"
               data={stormData.activeDistricts?.Moderate?.polygon}
             >
@@ -374,7 +363,7 @@ const AnticipatoryActionStormLayer = React.memo(
           )}
           {stormData.activeDistricts?.Severe?.polygon && (
             <Source
-              key={`exposed-area-64kt${dateId}`}
+              key={`exposed-area-64kt-${reportId}`}
               type="geojson"
               data={stormData.activeDistricts?.Severe?.polygon}
             >
@@ -396,7 +385,7 @@ const AnticipatoryActionStormLayer = React.memo(
         {/* Uncertainty cone */}
         {stormData.uncertaintyCone && (
           <Source
-            key={`uncertainty-cone-map${dateId}`}
+            key={`uncertainty-cone-map-${reportId}`}
             type="geojson"
             data={stormData.uncertaintyCone}
           >

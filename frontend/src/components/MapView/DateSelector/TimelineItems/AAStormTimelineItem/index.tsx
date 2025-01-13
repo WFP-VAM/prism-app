@@ -26,6 +26,10 @@ function AAStormTimelineItem({ currentDate }: AAStormTimelineItemProps) {
       return classes.activated1Indicator;
     }
 
+    if (windStates.states.find(({ state }) => state === WindState.ready)) {
+      return classes.readyIndicator;
+    }
+
     return classes.lowRiskIndicator;
   };
 
@@ -42,15 +46,23 @@ const useStyles = makeStyles(() =>
     },
     lowRiskIndicator: {
       position: 'absolute',
-      height: 10,
+      height: 12,
       width: TIMELINE_ITEM_WIDTH - 1,
       pointerEvents: 'none',
       top: 0,
       backgroundColor: '#63B2BD',
     },
+    readyIndicator: {
+      position: 'absolute',
+      height: 16,
+      width: TIMELINE_ITEM_WIDTH - 1,
+      pointerEvents: 'none',
+      top: 0,
+      backgroundColor: '#FFD014',
+    },
     activated1Indicator: {
       position: 'absolute',
-      height: 10,
+      height: 20,
       width: TIMELINE_ITEM_WIDTH - 1,
       pointerEvents: 'none',
       top: 0,
@@ -58,7 +70,7 @@ const useStyles = makeStyles(() =>
     },
     activated2Indicator: {
       position: 'absolute',
-      height: 25,
+      height: 24,
       width: TIMELINE_ITEM_WIDTH - 1,
       pointerEvents: 'none',
       top: 0,

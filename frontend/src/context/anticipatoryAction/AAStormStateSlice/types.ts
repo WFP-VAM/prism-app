@@ -1,6 +1,6 @@
 // // na/ny are not actually found in CSV, but defined not to cause confusion when calling the functions
 import { DateItem } from 'config/types';
-import { AACategory, ParsedStormData } from './parsedStromDataTypes';
+import { ParsedStormData } from './parsedStromDataTypes';
 
 export enum WindState {
   monitoring = 'monitoring',
@@ -8,8 +8,8 @@ export enum WindState {
   activated_64 = 'activated_64',
   activated_118 = 'activated_118',
 }
-type ShortDate = string;
-type CycloneName = string;
+export type ShortDate = string;
+export type CycloneName = string;
 export type TimeAndState = { ref_time: string; state: WindState };
 export type AAStormWindStateReports = Record<
   ShortDate,
@@ -24,12 +24,6 @@ export type AnticipatoryActionState = {
   windStateReports: AAStormWindStateReports;
   // availableDates used to update layer available dates after csv processed
   availableDates?: DateItem[] | undefined;
-  filters: {
-    viewType?: 'forecast' | 'risk' | undefined;
-    selectedDateTime: string | undefined;
-    selectedIndex: string;
-    categories: Record<AACategory, boolean>;
-  };
   loading: boolean;
   error: string | null;
 };

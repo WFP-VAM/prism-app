@@ -86,7 +86,7 @@ export function useAnticipatoryAction<T extends AnticipatoryAction>(
 
         dispatch(updateLayersCapabilities(updatedCapabilities));
         dispatch(updateDateRange(updatedCapabilities));
-      } else {
+      } else if (actionType === AnticipatoryAction.drought) {
         const queryDate = getRequestDate(combinedAvailableDates, selectedDate);
         const date = getFormattedDate(queryDate, DateFormat.Default) as string;
         dispatch(setFilters({ selectedDate: date }));
