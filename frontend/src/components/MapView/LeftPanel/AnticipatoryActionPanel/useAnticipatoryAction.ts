@@ -20,14 +20,14 @@ import {
   updateLayersCapabilities,
 } from 'context/serverStateSlice';
 import { AnticipatoryActionData } from 'context/anticipatoryAction/AADroughtStateSlice/types';
-import { AAStormData } from 'context/anticipatoryAction/AAStormStateSlice/types';
 import { getFormattedDate } from 'utils/date-utils';
 import { DateFormat } from 'utils/name-utils';
+import { ParsedStormData } from 'context/anticipatoryAction/AAStormStateSlice/parsedStromDataTypes';
 import { toggleRemoveLayer } from '../layersPanel/MenuItem/MenuSwitch/SwitchItem/utils';
 
 type AADataByAction<T extends AnticipatoryAction> =
   T extends AnticipatoryAction.storm
-    ? AAStormData
+    ? ParsedStormData
     : Record<'Window 1' | 'Window 2', AnticipatoryActionData>;
 
 type AAAvailableDatesByAction<T extends AnticipatoryAction> =

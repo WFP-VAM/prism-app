@@ -1,14 +1,10 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { DateItem } from 'config/types';
 import type { CreateAsyncThunkTypes, RootState } from '../../store';
-import {
-  AACategory,
-  AAStormData,
-  AAStormWindStateReports,
-  AnticipatoryActionState,
-  StormData,
-} from './types';
+import { AAStormWindStateReports, AnticipatoryActionState } from './types';
 import { parseAndTransformAA } from './utils';
+import { AACategory, ParsedStormData } from './parsedStromDataTypes';
+import { StormDataResponseBody } from './rawStormDataTypes';
 
 const initialState: AnticipatoryActionState = {
   data: {},
@@ -38,7 +34,7 @@ export const loadAllAAStormData = createAsyncThunk<
 
 export const loadLatestStormReport = createAsyncThunk<
   {
-    data: AAStormData;
+    data: ParsedStormData;
   },
   undefined,
   CreateAsyncThunkTypes
@@ -50,7 +46,7 @@ export const loadLatestStormReport = createAsyncThunk<
         'https://data.earthobservation.vam.wfp.org/public-share/aa/ts/outputs/latest.json',
       );
       const stormData = await response.json();
-      const data = parseAndTransformAA(stormData as StormData);
+      const data = parseAndTransformAA(stormData as StormDataResponseBody);
       return data;
     } catch (error) {
       return rejectWithValue(error);
@@ -60,7 +56,7 @@ export const loadLatestStormReport = createAsyncThunk<
 
 export const loadStormReport = createAsyncThunk<
   {
-    data: AAStormData;
+    data: ParsedStormData;
   },
   { stormName: string; date: string },
   CreateAsyncThunkTypes
@@ -77,7 +73,7 @@ export const loadStormReport = createAsyncThunk<
         `https://data.earthobservation.vam.wfp.org/public-share/aa/ts/outputs/${stormName}/${date}.json?v2`,
       );
       const stormData = await response.json();
-      const data = parseAndTransformAA(stormData as StormData);
+      const data = parseAndTransformAA(stormData as StormDataResponseBody);
       return data;
     } catch (error) {
       return rejectWithValue(error);

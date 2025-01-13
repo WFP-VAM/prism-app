@@ -19,10 +19,10 @@ import {
   AALoadingSelector,
   loadStormReport,
 } from 'context/anticipatoryAction/AAStormStateSlice';
-import { AACategory } from 'context/anticipatoryAction/AAStormStateSlice/types';
 import { updateDateRange } from 'context/mapStateSlice';
 import { useWindStatesByTime } from 'components/MapView/DateSelector/TimelineItems/hooks';
 import { getAAColor } from 'components/MapView/LeftPanel/AnticipatoryActionPanel/AnticipatoryActionStormPanel/utils';
+import { AACategory } from 'context/anticipatoryAction/AAStormStateSlice/parsedStromDataTypes';
 import AAStormDatePopup from './AAStormDatePopup';
 import AAStormLandfallPopup from './AAStormLandfallPopup';
 import moderateStorm from '../../../../../public/images/anticipatory-action-storm/moderate-tropical-storm.png';

@@ -5,9 +5,9 @@ import {
   AACategoryKeyToCategoryMap,
   AACategoryLandfall,
   DistrictDataType,
-  ResultType,
-  StormData,
-} from './types';
+} from './parsedStromDataTypes';
+import { StormDataResponseBody } from './rawStormDataTypes';
+import { ResultType } from './types';
 
 const districtNameMapping: { [key: string]: string } = {
   Maganja_Da_Costa: 'Maganja Da Costa',
@@ -28,9 +28,10 @@ const watchedDistricts: { [key in AACategory]: string[] } = {
 };
 
 // DRAFT: This is a provisional implementation based on a test dataset with a temporary structure that is subject to change.
-export function parseAndTransformAA(data: StormData): ResultType {
+export function parseAndTransformAA(data: StormDataResponseBody): ResultType {
   const exposedAreas = data.ready_set_results;
   const landfallInfo = data.landfall_info;
+
   const [activeDistricts, naDistricts] = exposedAreas
     ? (Object.values(AACategoryKey) as AACategoryKey[]).reduce(
         ([activeResult, naResult], categoryKey) => {

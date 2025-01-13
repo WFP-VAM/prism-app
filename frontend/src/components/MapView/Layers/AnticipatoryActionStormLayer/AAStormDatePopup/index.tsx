@@ -10,7 +10,7 @@ import {
 } from '../types';
 
 interface AAStormDatePopupProps {
-  timeSeries: TimeSeries;
+  timeSeries?: TimeSeries;
 }
 
 function AAStormDatePopup({ timeSeries }: AAStormDatePopupProps) {

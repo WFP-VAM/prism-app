@@ -1,8 +1,6 @@
 /* eslint-disable react-refresh/only-export-components */
-import {
-  AAPhaseType,
-  AACategory,
-} from 'context/anticipatoryAction/AAStormStateSlice/types';
+import { AACategory } from 'context/anticipatoryAction/AAStormStateSlice/parsedStromDataTypes';
+import { AAPhaseType } from 'context/anticipatoryAction/AAStormStateSlice/types';
 
 const AACategoryPhaseMap: { [key in AACategory]?: any } = {
   [AACategory.Severe]: {
