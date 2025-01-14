@@ -23,10 +23,12 @@ import { useWindStatesByTime } from 'components/MapView/DateSelector/TimelineIte
 import { getAAColor } from 'components/MapView/LeftPanel/AnticipatoryActionPanel/AnticipatoryActionStormPanel/utils';
 import { AACategory } from 'context/anticipatoryAction/AAStormStateSlice/parsedStromDataTypes';
 import anticipatoryActionIcons from 'components/Common/AnticipatoryAction/icons';
+import { AAStormTimeSeriesFeature } from 'context/anticipatoryAction/AAStormStateSlice/rawStormDataTypes';
 import AAStormDatePopup from './AAStormDatePopup';
 import AAStormLandfallPopup from './AAStormLandfallPopup';
 
 import { TimeSeries } from './types';
+import AAStormLandfallMarker from './AAStormLandfallPopup/AAStormLandfallMarker/AAStormLandfallMarker';
 
 interface AnticipatoryActionStormLayerProps {
   layer: AnticipatoryActionLayerProps;
@@ -105,7 +107,7 @@ const AnticipatoryActionStormLayer = React.memo(
     const { data: boundaryData } = boundaryLayerState || {};
 
     const [selectedFeature, setSelectedFeature] =
-      useState<Feature<Point> | null>(null);
+      useState<AAStormTimeSeriesFeature | null>(null);
 
     function enhanceTimeSeries(timeSeries: TimeSeries) {
       const { features, ...timeSeriesRest } = timeSeries;
@@ -227,7 +229,7 @@ const AnticipatoryActionStormLayer = React.memo(
       e.preventDefault();
       dispatch(hidePopup()); // hides the black tooltip containing the district names
       const feature = e.features?.[0];
-      setSelectedFeature(feature as Feature<Point>);
+      setSelectedFeature(feature as unknown as AAStormTimeSeriesFeature);
     };
 
     useMapCallback<'click', null>(
@@ -436,14 +438,16 @@ const AnticipatoryActionStormLayer = React.memo(
 
         <AAStormDatePopup timeSeries={stormData.timeSeries} />
 
-        {selectedFeature && stormData.landfall?.time && (
+        {selectedFeature && (
           <AAStormLandfallPopup
-            point={selectedFeature.geometry}
+            feature={selectedFeature}
             reportDate={stormData.forecastDetails?.reference_time || ''}
             landfallInfo={stormData.landfall}
             onClose={() => landfallPopupCloseHandler()}
           />
         )}
+
+        <AAStormLandfallMarker stormData={stormData} />
       </>
     );
   },
