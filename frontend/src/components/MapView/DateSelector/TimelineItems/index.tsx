@@ -217,7 +217,7 @@ const useStyles = makeStyles(() =>
     },
 
     arrow: {
-      width: '12px',
+      width: '10px',
       height: '10px',
       bottom: '-3px !important',
       '&::before': {
