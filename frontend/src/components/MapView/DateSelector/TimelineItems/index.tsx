@@ -104,6 +104,7 @@ const TimelineItems = memo(
                 tooltip: isShowingAAStormLayer
                   ? classes.AAStormTooltip
                   : classes.AADroughtTooltip,
+                arrow: classes.arrow,
               }}
             >
               <Grid
@@ -212,6 +213,22 @@ const useStyles = makeStyles(() =>
       maxHeight: '34.05px',
       '&:hover': {
         border: '2px solid black',
+      },
+    },
+
+    arrow: {
+      width: '11px',
+      height: '11px',
+      bottom: '-1px !important',
+      '&::before': {
+        width: '8px',
+        height: '8px',
+        backgroundColor: 'white',
+        transformOrigin: 'center !important',
+        boxSizing: 'border-box',
+        borderWidth: '0px 1px 1px 0px',
+        borderColor: '#D3D3D3',
+        borderStyle: 'solid',
       },
     },
   }),
