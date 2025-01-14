@@ -1,8 +1,13 @@
 // Q - still needed or needs to be improved?
 import { FeatureCollection, Point, Feature } from 'geojson';
 
+export enum FeaturePropertyDataType {
+  analysis = 'analysis',
+  forecast = 'forecast',
+}
+
 interface FeatureProperty {
-  data_type: 'analysis' | 'forecast';
+  data_type: FeaturePropertyDataType;
   time: string;
   development: string;
   // maximum_wind_speed: number;
