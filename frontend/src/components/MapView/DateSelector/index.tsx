@@ -359,9 +359,6 @@ const DateSelector = memo(() => {
     );
   }, [AAAvailableDates, panelTab, truncatedLayers]);
 
-  // eslint-disable-next-line no-console
-  console.log({ selectableDates });
-
   const updateStartDate = useCallback(
     (date: Date, isUpdatingHistory: boolean) => {
       if (!isUpdatingHistory) {
@@ -400,10 +397,7 @@ const DateSelector = memo(() => {
       isUpdatingHistory: boolean,
     ) => {
       const selectedIndex = findDateIndex(availableDates, date);
-      // eslint-disable-next-line no-console
-      console.log('setDatePosition inc/decrement', increment);
-      // eslint-disable-next-line no-console
-      console.log({ selectedIndex });
+
       if (availableDates[selectedIndex + increment]) {
         updateStartDate(
           new Date(availableDates[selectedIndex + increment]),
