@@ -366,7 +366,6 @@ const DateSelector = memo(() => {
       }
       const time = date.getTime();
       const selectedIndex = findDateIndex(availableDates, date.getTime());
-      // eslint-disable-next-line no-console
       checkSelectedDateForLayerSupport(date.getTime());
       if (
         selectedIndex < 0 ||
