@@ -366,6 +366,8 @@ const DateSelector = memo(() => {
       }
       const time = date.getTime();
       const selectedIndex = findDateIndex(selectableDates, date.getTime());
+      // eslint-disable-next-line no-console
+      console.log({ date, time, selectedIndex });
       checkSelectedDateForLayerSupport(date.getTime());
       if (
         selectedIndex < 0 ||
@@ -396,6 +398,10 @@ const DateSelector = memo(() => {
       isUpdatingHistory: boolean,
     ) => {
       const selectedIndex = findDateIndex(availableDates, date);
+      // eslint-disable-next-line no-console
+      console.log('setDatePosition inc/decrement', increment);
+      // eslint-disable-next-line no-console
+      console.log({ selectedIndex });
       if (availableDates[selectedIndex + increment]) {
         updateStartDate(
           new Date(availableDates[selectedIndex + increment]),
