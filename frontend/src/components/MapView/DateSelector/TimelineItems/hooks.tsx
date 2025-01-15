@@ -39,12 +39,12 @@ export const useWindStatesByTime = (currentDate: number): WindStateReport => {
       return getWindStatesForDate(windStateReports, latestDate);
     }
 
-    const date = Object.keys(windStateReports).find(analysedDate => {
-      const analysedDateInUTC = getDateInUTC(analysedDate, false);
-      if (!analysedDateInUTC) {
+    const date = Object.keys(windStateReports).find(analyzedDate => {
+      const analyzedDateInUTC = getDateInUTC(analyzedDate, false);
+      if (!analyzedDateInUTC) {
         return false;
       }
-      const isEqual = datesAreEqualWithoutTime(analysedDateInUTC, currentDate);
+      const isEqual = datesAreEqualWithoutTime(analyzedDateInUTC, currentDate);
       return isEqual;
     });
 

@@ -3,9 +3,17 @@ import _React, { useCallback, useState } from 'react';
 import { createStyles, makeStyles, Typography } from '@material-ui/core';
 import { useMapCallback } from 'utils/map-utils';
 import { formatInUTC, getDateInUTC } from '../utils';
-import { TimeSeriesFeature } from '../types';
+import {
+  FeaturePropertyDataType,
+  TimeSeries,
+  TimeSeriesFeature,
+} from '../types';
 
-function AAStormDatePopup() {
+interface AAStormDatePopupProps {
+  timeSeries?: TimeSeries;
+}
+
+function AAStormDatePopup({ timeSeries }: AAStormDatePopupProps) {
   const classes = useStyles();
   const [selectedFeature, setSelectedFeature] =
     useState<TimeSeriesFeature | null>(null);
@@ -50,31 +58,61 @@ function AAStormDatePopup() {
     return formatInUTC(dateInUTC, 'dd - Kaaa');
   }
 
-  if (!selectedFeature) {
-    return null;
+  const lastAnalyzedTimePoint: TimeSeriesFeature | undefined =
+    // eslint-disable-next-line fp/no-mutating-methods
+    timeSeries?.features
+      .slice()
+      .reverse()
+      .find(
+        feature =>
+          feature.properties.data_type === FeaturePropertyDataType.analysis,
+      );
+
+  function renderPopup(feature?: TimeSeriesFeature | null) {
+    if (!feature) {
+      return null;
+    }
+
+    const lng = feature.geometry.coordinates[0];
+    const lat = feature.geometry.coordinates[1];
+    const { time } = feature.properties;
+
+    return (
+      <Popup
+        key={feature.id}
+        longitude={lng}
+        latitude={lat}
+        anchor="top"
+        offset={25}
+        closeButton={false}
+        onClose={() => null}
+        closeOnClick={false}
+        className={classes.popup}
+      >
+        <Typography className={classes.toolTipDate} variant="body1">
+          {getDayAndTime(time)}
+        </Typography>
+      </Popup>
+    );
   }
 
-  const lng = selectedFeature.geometry.coordinates[0];
-  const lat = selectedFeature.geometry.coordinates[1];
+  function renderHoveredPopup() {
+    // Don't show hover popup if there's no selection or if hovering the last analyzed point
+    // (last analyzed point already has a permanent popup)
+    if (!selectedFeature || selectedFeature.id === lastAnalyzedTimePoint?.id) {
+      return null;
+    }
 
-  const { time } = selectedFeature.properties;
+    return renderPopup(selectedFeature);
+  }
 
   return (
-    <Popup
-      key={selectedFeature.id}
-      longitude={lng}
-      latitude={lat}
-      anchor="top"
-      offset={25}
-      closeButton={false}
-      onClose={() => null}
-      closeOnClick={false}
-      className={classes.popup}
-    >
-      <Typography className={classes.toolTipDate} variant="body1">
-        {getDayAndTime(time)}
-      </Typography>
-    </Popup>
+    <>
+      {/* Permanently render the popup for the last analyzed point */}
+      {renderPopup(lastAnalyzedTimePoint)}
+
+      {renderHoveredPopup()}
+    </>
   );
 }
 

@@ -18,10 +18,10 @@ import {
   AALoadingSelector,
   loadStormReport,
 } from 'context/anticipatoryAction/AAStormStateSlice';
-import { AACategory } from 'context/anticipatoryAction/AAStormStateSlice/types';
 import { updateDateRange } from 'context/mapStateSlice';
 import { useWindStatesByTime } from 'components/MapView/DateSelector/TimelineItems/hooks';
 import { getAAColor } from 'components/MapView/LeftPanel/AnticipatoryActionPanel/AnticipatoryActionStormPanel/utils';
+import { AACategory } from 'context/anticipatoryAction/AAStormStateSlice/parsedStormDataTypes';
 import anticipatoryActionIcons from 'components/Common/AnticipatoryAction/icons';
 import AAStormDatePopup from './AAStormDatePopup';
 import AAStormLandfallPopup from './AAStormLandfallPopup';
@@ -434,7 +434,7 @@ const AnticipatoryActionStormLayer = React.memo(
           </Source>
         )}
 
-        <AAStormDatePopup />
+        <AAStormDatePopup timeSeries={stormData.timeSeries} />
 
         {selectedFeature && stormData.landfall?.time && (
           <AAStormLandfallPopup
