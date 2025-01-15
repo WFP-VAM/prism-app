@@ -368,19 +368,14 @@ const DateSelector = memo(() => {
         return;
       }
       const time = date.getTime();
-      const selectedIndex = findDateIndex(selectableDates, date.getTime());
+      const selectedIndex = findDateIndex(availableDates, date.getTime());
       // eslint-disable-next-line no-console
-      console.log(
-        selectableDates.map(d => getFormattedDate(d, DateFormat.DateTime)),
-      );
-      // eslint-disable-next-line no-console
-      console.log({ date, time, selectedIndex });
       checkSelectedDateForLayerSupport(date.getTime());
       if (
         selectedIndex < 0 ||
         (stateStartDate &&
           datesAreEqualWithoutTime(
-            selectableDates[selectedIndex],
+            availableDates[selectedIndex],
             stateStartDate,
           ))
       ) {
@@ -390,7 +385,7 @@ const DateSelector = memo(() => {
       dispatch(updateDateRange({ startDate: time }));
     },
     [
-      selectableDates,
+      availableDates,
       checkSelectedDateForLayerSupport,
       stateStartDate,
       updateHistory,
