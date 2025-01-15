@@ -5,6 +5,9 @@ import { AAStormTimeSeriesFeature } from 'context/anticipatoryAction/AAStormStat
 import PopupContent from './PopupContent';
 import { isFeatureAtLandfallEstimateTime } from './utils';
 
+const verticalLandfallPopupOffset = -50;
+const horizontalLandfallPopupOffset = 25;
+
 function AAStormLandfallPopup({
   feature,
   onClose,
@@ -30,8 +33,8 @@ function AAStormLandfallPopup({
     <Popup
       longitude={lng}
       latitude={lat}
-      anchor="top"
-      offset={25}
+      anchor="top-left"
+      offset={[verticalLandfallPopupOffset, horizontalLandfallPopupOffset]}
       closeButton={false}
       onClose={onClose}
       closeOnClick
@@ -72,7 +75,7 @@ const useStyles = makeStyles(() =>
         background: '#F1F1F1',
         content: '""',
         position: 'absolute',
-        left: '50%',
+        left: `${horizontalLandfallPopupOffset * 2}px`,
         top: -5,
         width: '10px',
         height: '10px',
