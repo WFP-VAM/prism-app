@@ -181,9 +181,9 @@ const DateSelector = memo(() => {
         if (firstIndex === -1) {
           return layer.dateItems;
         }
-        // truncate the date item array at index matching timeline first date
+        // truncate the date item array at index matching timeline first date with a buffer of 1 day decrements
         // eslint-disable-next-line fp/no-mutating-methods
-        return layer.dateItems.slice(firstIndex);
+        return layer.dateItems.slice(firstIndex - 1);
       }),
     ];
   }, [orderedLayers, timelineStartDate]);
@@ -359,6 +359,9 @@ const DateSelector = memo(() => {
     );
   }, [AAAvailableDates, panelTab, truncatedLayers]);
 
+  // eslint-disable-next-line no-console
+  console.log({ selectableDates });
+
   const updateStartDate = useCallback(
     (date: Date, isUpdatingHistory: boolean) => {
       if (!isUpdatingHistory) {
@@ -367,7 +370,9 @@ const DateSelector = memo(() => {
       const time = date.getTime();
       const selectedIndex = findDateIndex(selectableDates, date.getTime());
       // eslint-disable-next-line no-console
-      console.log(selectableDates.map(d => getFormattedDate(d, 'default')));
+      console.log(
+        selectableDates.map(d => getFormattedDate(d, DateFormat.DateTime)),
+      );
       // eslint-disable-next-line no-console
       console.log({ date, time, selectedIndex });
       checkSelectedDateForLayerSupport(date.getTime());
