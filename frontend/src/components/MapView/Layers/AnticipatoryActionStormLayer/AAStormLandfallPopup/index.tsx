@@ -4,6 +4,7 @@ import { LandfallInfo } from 'context/anticipatoryAction/AAStormStateSlice/parse
 import { AAStormTimeSeriesFeature } from 'context/anticipatoryAction/AAStormStateSlice/rawStormDataTypes';
 import PopupContent from './PopupContent';
 import { isFeatureAtLandfallEstimateTime } from './utils';
+import { Offset } from 'maplibre-gl';
 
 const verticalLandfallPopupOffset = -50;
 const horizontalLandfallPopupOffset = 25;
@@ -34,7 +35,9 @@ function AAStormLandfallPopup({
       longitude={lng}
       latitude={lat}
       anchor="top-left"
-      offset={[verticalLandfallPopupOffset, horizontalLandfallPopupOffset]}
+      offset={
+        [verticalLandfallPopupOffset, horizontalLandfallPopupOffset] as Offset
+      }
       closeButton={false}
       onClose={onClose}
       closeOnClick
