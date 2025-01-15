@@ -93,17 +93,17 @@ interface ActivationTriggerProps {
 function ActivationTrigger({ dialogs }: ActivationTriggerProps) {
   const { t } = useSafeTranslation();
   const classes = useActivationTriggerStyles();
-  const parsedStromData = useSelector(AADataSelector);
+  const parsedStormData = useSelector(AADataSelector);
   const commonClasses = useAACommonStyles();
 
-  const filteredActiveDistricts = parsedStromData.activeDistricts
-    ? Object.entries(parsedStromData.activeDistricts).filter(([category]) =>
+  const filteredActiveDistricts = parsedStormData.activeDistricts
+    ? Object.entries(parsedStormData.activeDistricts).filter(([category]) =>
         AAPanelCategories.includes(category as AACategory),
       )
     : [];
 
-  const filteredNADistricts = parsedStromData.naDistricts
-    ? Object.entries(parsedStromData.naDistricts).filter(([category]) =>
+  const filteredNADistricts = parsedStormData.naDistricts
+    ? Object.entries(parsedStormData.naDistricts).filter(([category]) =>
         AAPanelCategories.includes(category as AACategory),
       )
     : [];
