@@ -1,6 +1,6 @@
 // // na/ny are not actually found in CSV, but defined not to cause confusion when calling the functions
 import { DateItem } from 'config/types';
-import { ParsedStormData } from './parsedStromDataTypes';
+import { ParsedStormData } from './parsedStormDataTypes';
 
 export enum WindState {
   monitoring = 'monitoring',

@@ -22,7 +22,7 @@ import {
 import { AnticipatoryActionData } from 'context/anticipatoryAction/AADroughtStateSlice/types';
 import { getFormattedDate } from 'utils/date-utils';
 import { DateFormat } from 'utils/name-utils';
-import { ParsedStormData } from 'context/anticipatoryAction/AAStormStateSlice/parsedStromDataTypes';
+import { ParsedStormData } from 'context/anticipatoryAction/AAStormStateSlice/parsedStormDataTypes';
 import { toggleRemoveLayer } from '../layersPanel/MenuItem/MenuSwitch/SwitchItem/utils';
 
 type AADataByAction<T extends AnticipatoryAction> =

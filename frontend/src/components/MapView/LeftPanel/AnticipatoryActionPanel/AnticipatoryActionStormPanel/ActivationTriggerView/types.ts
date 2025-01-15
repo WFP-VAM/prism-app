@@ -1,4 +1,4 @@
-import { AACategory } from 'context/anticipatoryAction/AAStormStateSlice/parsedStromDataTypes';
+import { AACategory } from 'context/anticipatoryAction/AAStormStateSlice/parsedStormDataTypes';
 
 export const AAPanelCategories: AACategory[] = [
   AACategory.Severe,

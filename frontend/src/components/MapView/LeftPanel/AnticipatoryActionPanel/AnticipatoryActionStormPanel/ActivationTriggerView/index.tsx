@@ -2,7 +2,7 @@ import { Typography, createStyles, makeStyles } from '@material-ui/core';
 import { useSelector } from 'react-redux';
 import { AADataSelector } from 'context/anticipatoryAction/AAStormStateSlice';
 import { useSafeTranslation } from 'i18n';
-import { AACategory } from 'context/anticipatoryAction/AAStormStateSlice/parsedStromDataTypes';
+import { AACategory } from 'context/anticipatoryAction/AAStormStateSlice/parsedStormDataTypes';
 import { getAAColor } from '../utils';
 import { useAACommonStyles } from '../../utils';
 import { AADisplayCategory, AAPanelCategories } from './types';
