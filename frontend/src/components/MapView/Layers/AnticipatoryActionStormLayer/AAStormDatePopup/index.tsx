@@ -83,7 +83,7 @@ function AAStormDatePopup({ timeSeries }: AAStormDatePopupProps) {
         longitude={lng}
         latitude={lat}
         anchor="top"
-        offset={15}
+        offset={25}
         closeButton={false}
         onClose={() => null}
         closeOnClick={false}
@@ -126,13 +126,27 @@ const useStyles = makeStyles(() =>
     },
     popup: {
       '& > .maplibregl-popup-content': {
-        border: '1px solid #A4A4A4',
-        padding: 5,
+        border: 'none',
+        padding: '4px',
+        borderRadius: '4px',
+        background: 'white',
+        boxShadow: 'inset 0px 0px 0px 1px #A4A4A4',
+        position: 'relative',
       },
       '& > .maplibregl-popup-tip': {
-        borderBottomColor: '#A4A4A4',
-        borderLeftWidth: '8px',
-        borderRightWidth: '8px',
+        display: 'none',
+      },
+      // hack to display the popup tip without overlapping border
+      '&::after': {
+        content: '""',
+        position: 'absolute',
+        left: '50%',
+        top: -5,
+        width: '10px',
+        height: '10px',
+        background: 'white',
+        transform: 'translateX(-50%) rotate(45deg)',
+        boxShadow: 'inset 1px 1px 0px 0px #A4A4A4',
       },
     },
   }),
