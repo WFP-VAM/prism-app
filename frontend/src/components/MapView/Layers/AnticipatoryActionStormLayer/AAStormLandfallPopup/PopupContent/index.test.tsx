@@ -1,6 +1,6 @@
 import { render } from '@testing-library/react';
 
-import { AACategory } from 'context/anticipatoryAction/AAStormStateSlice/parsedStromDataTypes';
+import { AACategory } from 'context/anticipatoryAction/AAStormStateSlice/parsedStormDataTypes';
 import PopupContent from '.';
 
 describe('AAStormLandfallPopup component', () => {

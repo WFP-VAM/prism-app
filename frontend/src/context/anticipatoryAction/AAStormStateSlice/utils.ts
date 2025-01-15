@@ -6,7 +6,7 @@ import {
   AACategoryLandfall,
   DistrictDataType,
   ResultType,
-} from './parsedStromDataTypes';
+} from './parsedStormDataTypes';
 import { StormDataResponseBody } from './rawStormDataTypes';
 
 const districtNameMapping: { [key: string]: string } = {

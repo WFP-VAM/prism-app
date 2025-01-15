@@ -3,7 +3,7 @@ import { DateItem } from 'config/types';
 import type { CreateAsyncThunkTypes, RootState } from '../../store';
 import { AAStormWindStateReports, AnticipatoryActionState } from './types';
 import { parseAndTransformAA } from './utils';
-import { ParsedStormData } from './parsedStromDataTypes';
+import { ParsedStormData } from './parsedStormDataTypes';
 import { StormDataResponseBody } from './rawStormDataTypes';
 
 const initialState: AnticipatoryActionState = {

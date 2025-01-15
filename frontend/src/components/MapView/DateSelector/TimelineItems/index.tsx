@@ -217,12 +217,18 @@ const useStyles = makeStyles(() =>
     },
 
     arrow: {
-      width: '10px',
-      height: '10px',
-      bottom: '-3px !important',
+      width: '11px',
+      height: '11px',
+      bottom: '-1px !important',
       '&::before': {
+        width: '8px',
+        height: '8px',
         backgroundColor: 'white',
-        boxShadow: 'inset 0px 0px 1px 1px #D3D3D3',
+        transformOrigin: 'center !important',
+        boxSizing: 'border-box',
+        borderWidth: '0px 1px 1px 0px',
+        borderColor: '#D3D3D3',
+        borderStyle: 'solid',
       },
     },
   }),

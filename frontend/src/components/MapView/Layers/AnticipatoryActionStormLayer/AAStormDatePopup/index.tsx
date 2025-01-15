@@ -58,7 +58,7 @@ function AAStormDatePopup({ timeSeries }: AAStormDatePopupProps) {
     return formatInUTC(dateInUTC, 'dd - Kaaa');
   }
 
-  const lastAnalysedTimePoint: TimeSeriesFeature | undefined =
+  const lastAnalyzedTimePoint: TimeSeriesFeature | undefined =
     // eslint-disable-next-line fp/no-mutating-methods
     timeSeries?.features
       .slice()
@@ -83,7 +83,7 @@ function AAStormDatePopup({ timeSeries }: AAStormDatePopupProps) {
         longitude={lng}
         latitude={lat}
         anchor="top"
-        offset={15}
+        offset={25}
         closeButton={false}
         onClose={() => null}
         closeOnClick={false}
@@ -97,20 +97,19 @@ function AAStormDatePopup({ timeSeries }: AAStormDatePopupProps) {
   }
 
   function renderHoveredPopup() {
-    const isLastAnalysedFeatureHovered =
-      selectedFeature?.id === lastAnalysedTimePoint?.id;
-
-    if (!isLastAnalysedFeatureHovered && selectedFeature) {
-      return renderPopup(selectedFeature);
+    // Don't show hover popup if there's no selection or if hovering the last analyzed point
+    // (last analyzed point already has a permanent popup)
+    if (!selectedFeature || selectedFeature.id === lastAnalyzedTimePoint?.id) {
+      return null;
     }
 
-    return null;
+    return renderPopup(selectedFeature);
   }
 
   return (
     <>
-      {/* Permanently render the popup for the last analysed point */}
-      {renderPopup(lastAnalysedTimePoint)}
+      {/* Permanently render the popup for the last analyzed point */}
+      {renderPopup(lastAnalyzedTimePoint)}
 
       {renderHoveredPopup()}
     </>
