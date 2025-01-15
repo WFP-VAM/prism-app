@@ -27,8 +27,7 @@ function AAStormLandfallPopup({
     return null;
   }
 
-  const lng = feature.geometry.coordinates[0];
-  const lat = feature.geometry.coordinates[1];
+  const [lng, lat] = feature.geometry.coordinates;
 
   return (
     <Popup
