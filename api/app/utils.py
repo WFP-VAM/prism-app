@@ -2,6 +2,9 @@ import logging
 
 import requests
 from fastapi import HTTPException
+from requests.adapters import Retry
+
+logger = logging.getLogger(__name__)
 
 
 def forward_http_error(resp: requests.Response, excluded_codes: list[int]) -> None:
@@ -38,3 +41,45 @@ class WarningsFilter(logging.Filter):
             self.warning_count += 1
 
         return False
+
+
+def make_request_with_retries(
+    url: str,
+    method: str = "get",
+    data: dict = None,
+    retries: int = 1,
+    timeout: int = 10,
+) -> dict:
+    """Make a request with retries and error handling."""
+    retry_strategy = Retry(
+        total=retries,
+        backoff_factor=0.25,
+        status_forcelist=[429, 500, 502, 503, 504],
+    )
+
+    with requests.Session() as session:
+        adapter = requests.adapters.HTTPAdapter(max_retries=retry_strategy)
+        session.mount("https://", adapter)
+
+        try:
+            if method.lower() == "post":
+                response = session.post(url, json=data, timeout=timeout)
+            else:
+                response = session.get(url, timeout=timeout)
+
+            response.raise_for_status()
+            response_data = response.json()
+
+        except requests.exceptions.RequestException as e:
+            logger.warning("Request failed at url %s: %s", url, e)
+            raise HTTPException(
+                status_code=500, detail=f"Error fetching data from {url}"
+            )
+
+        if "error" in response_data:
+            logger.error("Error in response: %s", response_data["error"])
+            raise HTTPException(
+                status_code=500, detail=f"Error fetching data from {url}"
+            )
+
+        return response_data

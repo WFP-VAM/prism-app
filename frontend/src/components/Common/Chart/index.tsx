@@ -1,6 +1,7 @@
-import React, { memo, useCallback, useMemo } from 'react';
+import React, { memo, useCallback, useMemo, useState } from 'react';
 import colormap from 'colormap';
 import { ChartOptions } from 'chart.js';
+import 'chartjs-plugin-annotation';
 import { Bar, Line } from 'react-chartjs-2';
 import { ChartConfig, DatasetField } from 'config/types';
 import { TableData } from 'context/tableStateSlice';
@@ -31,14 +32,14 @@ function downloadChartPng(ref: React.RefObject<Bar | Line>, filename: string) {
 const useStyles = makeStyles(() => ({
   firstIcon: {
     position: 'absolute',
-    top: 0,
-    right: 0,
+    top: '8px',
+    right: '0rem',
     padding: '0.25rem',
   },
   secondIcon: {
     position: 'absolute',
-    top: 0,
-    right: '2rem',
+    top: '8px',
+    right: '1.75rem',
     padding: '0.25rem',
   },
 }));
@@ -56,6 +57,8 @@ export type ChartProps = {
   showDownloadIcons?: boolean;
   iconStyles?: React.CSSProperties;
   downloadFilenamePrefix?: string[];
+  units?: string;
+  yAxisLabel?: string;
 };
 
 const Chart = memo(
@@ -72,11 +75,18 @@ const Chart = memo(
     showDownloadIcons = false,
     iconStyles,
     downloadFilenamePrefix = [],
+    units,
+    yAxisLabel,
   }: ChartProps) => {
     const { t } = useSafeTranslation();
     const classes = useStyles();
     const chartRef = React.useRef<Bar | Line>(null);
+    // This isChartReady state allows us to trigger a render after the chart is ready to update the saved ref
+    const [_isChartReady, setIsChartReady] = useState(false);
+
     const isEWSChart = !!data.EWSConfig;
+    const isGoogleFloodChart = !!data.GoogleFloodConfig;
+    const isFloodChart = isEWSChart || isGoogleFloodChart;
 
     const downloadFilename = buildCsvFileName([
       ...downloadFilenamePrefix,
@@ -149,11 +159,19 @@ const Chart = memo(
           backgroundColor: colors[i],
           borderColor: colors[i],
           borderWidth: 2,
-          pointRadius: isEWSChart ? 0 : 1, // Disable point rendering for EWS only.
+          pointRadius: isFloodChart ? 0 : 1, // Disable point rendering for flood charts only.
           data: indices.map(index => (row[index] as number) || null),
           pointHitRadius: 10,
         })),
-      [colors, config.category, config.fill, indices, isEWSChart, t, tableRows],
+      [
+        colors,
+        config.category,
+        config.fill,
+        indices,
+        isFloodChart,
+        t,
+        tableRows,
+      ],
     );
 
     const configureIndicePointRadius = useCallback(
@@ -165,9 +183,9 @@ const Chart = memo(
         if (foundDataSetFieldPointRadius !== undefined) {
           return foundDataSetFieldPointRadius;
         }
-        return isEWSChart ? 0 : 1; // Disable point rendering for EWS only.
+        return isFloodChart ? 0 : 1; // Disable point rendering for flood charts only.
       },
-      [isEWSChart, datasetFields, header],
+      [isFloodChart, datasetFields, header],
     );
 
     // The indicesDataSet
@@ -178,7 +196,7 @@ const Chart = memo(
           fill: config.fill || false,
           backgroundColor: colors[i],
           borderColor: colors[i],
-          borderWidth: 2,
+          borderWidth: 3,
           data: tableRows.map(row => (row[indiceKey] as number) || null),
           pointRadius: configureIndicePointRadius(indiceKey),
           pointHitRadius: 10,
@@ -194,7 +212,7 @@ const Chart = memo(
       ],
     );
 
-    const EWSthresholds = useMemo(() => {
+    const floodThresholds = useMemo(() => {
       if (data.EWSConfig) {
         return Object.values(data.EWSConfig).map(obj => ({
           label: obj.label,
@@ -208,8 +226,21 @@ const Chart = memo(
           fill: false,
         }));
       }
+      if (data.GoogleFloodConfig) {
+        return Object.values(data.GoogleFloodConfig).map(obj => ({
+          label: obj.label,
+          backgroundColor: obj.color,
+          borderColor: obj.color,
+          borderWidth: 2,
+          pointRadius: 0,
+          pointHitRadius: 10,
+          // Deep copy is needed: https://github.com/reactchartjs/react-chartjs-2/issues/524#issuecomment-722814079
+          data: [...obj.values],
+          fill: false,
+        }));
+      }
       return [];
-    }, [data.EWSConfig]);
+    }, [data.EWSConfig, data.GoogleFloodConfig]);
 
     /**
      * The following value assumes that the data is formatted as follows:
@@ -237,21 +268,73 @@ const Chart = memo(
      *               using config.transpose = true.
      *  - fill
      */
+
+    const today = useMemo(() => {
+      const date = new Date();
+      date.setHours(0, 0, 0, 0);
+      return date;
+    }, []);
+
+    const parseDateString = (dateString: string) => {
+      const [year, month, day] = dateString.split('-').map(Number);
+      const date = new Date(year, month - 1, day);
+      date.setHours(0, 0, 0, 0);
+      return date;
+    };
+
+    const isFutureDate = useCallback(
+      (dateString: string) => parseDateString(dateString) >= today,
+      [today],
+    );
+    const isPastDate = useCallback(
+      (dateString: string) => parseDateString(dateString) <= today,
+      [today],
+    );
+
     const datasets = !transpose ? tableRowsDataSet : indicesDataSet;
-    const datasetsWithThresholds = [...datasets, ...EWSthresholds];
+    const datasetsWithThresholds = [...datasets, ...floodThresholds];
 
     const datasetsTrimmed = datasetsWithThresholds.map(set => ({
       ...set,
       data: set.data.slice(chartRange[0], chartRange[1]),
     }));
 
-    const chartData = React.useMemo(
-      () => ({
+    const chartData = React.useMemo(() => {
+      if (isGoogleFloodChart) {
+        const pastDatasets = datasets.map(dataset => ({
+          ...dataset,
+          data: dataset.data.map((point, index) =>
+            isPastDate(labels[index] as string) ? point : null,
+          ),
+          borderDash: 0,
+        }));
+        const futureDatasets = datasets.map(dataset => ({
+          ...dataset,
+          label: t(`${dataset.label} (Future)`),
+          data: dataset.data.map((point, index) =>
+            isFutureDate(labels[index] as string) ? point : null,
+          ),
+          borderDash: [5, 5],
+        }));
+        return {
+          labels,
+          datasets: [...pastDatasets, ...futureDatasets, ...floodThresholds],
+        };
+      }
+      return {
         labels,
         datasets: datasetsTrimmed,
-      }),
-      [datasetsTrimmed, labels],
-    );
+      };
+    }, [
+      isGoogleFloodChart,
+      labels,
+      floodThresholds,
+      datasets,
+      datasetsTrimmed,
+      isPastDate,
+      t,
+      isFutureDate,
+    ]);
 
     const chartConfig = useMemo(
       () =>
@@ -281,6 +364,8 @@ const Chart = memo(
                       scaleLabel: {
                         labelString: xAxisLabel,
                         display: true,
+                        lineHeight: 1.5,
+                        fontColor: '#AAA',
                       },
                     }
                   : {}),
@@ -292,32 +377,127 @@ const Chart = memo(
                   fontColor: '#CCC',
                   ...(config?.minValue && { suggestedMin: config?.minValue }),
                   ...(config?.maxValue && { suggestedMax: config?.maxValue }),
+                  maxTicksLimit: 8,
+                  callback: (value: string) =>
+                    `${value}${units ? ` ${units}` : ''}`,
                 },
                 stacked: config?.stacked ?? false,
                 gridLines: {
                   display: false,
                 },
+                afterDataLimits: axis => {
+                  // Increase y-axis by 20% for Google Flood charts to make space for the annotation label
+                  if (isGoogleFloodChart) {
+                    const range = axis.max - axis.min;
+                    axis.max += range * 0.25; // eslint-disable-line no-param-reassign, fp/no-mutation
+                  }
+                },
+                ...(yAxisLabel
+                  ? {
+                      scaleLabel: {
+                        display: true,
+                        labelString: yAxisLabel,
+                        lineHeight: 1.5,
+                        fontColor: '#AAA',
+                      },
+                    }
+                  : {}),
               },
             ],
           },
-          // display values for all datasets in the tooltip
           tooltips: {
             mode: 'index',
+            callbacks: {
+              label: (tooltipItem, labelData) => {
+                const datasetLabel =
+                  labelData.datasets?.[tooltipItem.datasetIndex as number]
+                    ?.label || '';
+                const value = tooltipItem.yLabel;
+                const unitLabel = units ? ` ${units}` : '';
+
+                // Get the data point for the current tooltip item
+                const dataPoint =
+                  labelData.datasets?.[tooltipItem.datasetIndex as number]
+                    ?.data?.[tooltipItem.index as number];
+
+                // Check if any label is present in the tooltip
+                const labelPresent = labelData.datasets?.some(dataset => {
+                  const { label } = dataset;
+                  if (tooltipItem.index !== undefined) {
+                    const indexData = dataset.data?.[tooltipItem.index];
+                    return (
+                      label === datasetLabel.replace(' (Future)', '') &&
+                      indexData !== null
+                    );
+                  }
+                  return false;
+                });
+
+                // Hide "{label} (Future)" if "{label}" is present
+                if (labelPresent && datasetLabel.includes(' (Future)')) {
+                  return null;
+                }
+
+                // Only show labels with non-null data points
+                if (dataPoint !== null) {
+                  return `${datasetLabel}: ${value}${unitLabel}`;
+                }
+
+                return null;
+              },
+            },
           },
           legend: {
             display: config.displayLegend,
             position: legendAtBottom ? 'bottom' : 'right',
             labels: { boxWidth: 12, boxHeight: 12 },
           },
+          animation: {
+            onComplete: () => {
+              setIsChartReady(true);
+            },
+          },
+          ...(isGoogleFloodChart
+            ? {
+                annotation: {
+                  annotations: [
+                    {
+                      type: 'line',
+                      mode: 'vertical',
+                      scaleID: 'x-axis-0',
+                      value: today.toISOString().split('T')[0],
+                      borderColor: 'rgba(255, 255, 255, 0.8)',
+                      borderWidth: 2,
+                      label: {
+                        content: t('Today'),
+                        enabled: true,
+                        position: 'top',
+                        yAdjust: -6,
+                        fontColor: '#CCC',
+                        fontSize: 10,
+                      },
+                    },
+                  ],
+                },
+              }
+            : {}),
         }) as ChartOptions,
       [
-        config,
-        isEWSChart,
-        legendAtBottom,
         notMaintainAspectRatio,
-        title,
         subtitle,
+        title,
+        config?.stacked,
+        config?.minValue,
+        config?.maxValue,
+        config.displayLegend,
         xAxisLabel,
+        legendAtBottom,
+        isGoogleFloodChart,
+        today,
+        t,
+        isEWSChart,
+        units,
+        yAxisLabel,
       ],
     );
 
