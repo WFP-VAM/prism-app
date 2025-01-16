@@ -1,4 +1,4 @@
-import { ParsedStormData } from 'context/anticipatoryAction/AAStormStateSlice/parsedStromDataTypes';
+import { ParsedStormData } from 'context/anticipatoryAction/AAStormStateSlice/parsedStormDataTypes';
 import { AAStormTimeSeriesFeature } from 'context/anticipatoryAction/AAStormStateSlice/rawStormDataTypes';
 
 /* find the wind point which time corresponds to the landfall estimated time */

@@ -1,6 +1,7 @@
 import { createStyles, makeStyles } from '@material-ui/core';
+import { Offset } from 'maplibre-gl';
 import { Popup } from 'react-map-gl/maplibre';
-import { LandfallInfo } from 'context/anticipatoryAction/AAStormStateSlice/parsedStromDataTypes';
+import { LandfallInfo } from 'context/anticipatoryAction/AAStormStateSlice/parsedStormDataTypes';
 import { AAStormTimeSeriesFeature } from 'context/anticipatoryAction/AAStormStateSlice/rawStormDataTypes';
 import PopupContent from './PopupContent';
 import { isFeatureAtLandfallEstimateTime } from './utils';
@@ -26,15 +27,16 @@ function AAStormLandfallPopup({
     return null;
   }
 
-  const lng = feature.geometry.coordinates[0];
-  const lat = feature.geometry.coordinates[1];
+  const [lng, lat] = feature.geometry.coordinates;
 
   return (
     <Popup
       longitude={lng}
       latitude={lat}
       anchor="top-left"
-      offset={[verticalLandfallPopupOffset, horizontalLandfallPopupOffset]}
+      offset={
+        [verticalLandfallPopupOffset, horizontalLandfallPopupOffset] as Offset
+      }
       closeButton={false}
       onClose={onClose}
       closeOnClick

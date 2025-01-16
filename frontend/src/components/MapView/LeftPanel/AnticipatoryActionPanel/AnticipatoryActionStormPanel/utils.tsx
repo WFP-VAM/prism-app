@@ -1,5 +1,5 @@
 /* eslint-disable react-refresh/only-export-components */
-import { AACategory } from 'context/anticipatoryAction/AAStormStateSlice/parsedStromDataTypes';
+import { AACategory } from 'context/anticipatoryAction/AAStormStateSlice/parsedStormDataTypes';
 import { AAPhaseType } from 'context/anticipatoryAction/AAStormStateSlice/types';
 
 const AACategoryPhaseMap: { [key in AACategory]?: any } = {

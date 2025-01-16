@@ -2,7 +2,7 @@ import { Typography, createStyles, makeStyles } from '@material-ui/core';
 import { useSelector } from 'react-redux';
 import { AADataSelector } from 'context/anticipatoryAction/AAStormStateSlice';
 import { useSafeTranslation } from 'i18n';
-import { AACategory } from 'context/anticipatoryAction/AAStormStateSlice/parsedStromDataTypes';
+import { AACategory } from 'context/anticipatoryAction/AAStormStateSlice/parsedStormDataTypes';
 import { getAAColor } from '../utils';
 import { useAACommonStyles } from '../../utils';
 import { AADisplayCategory, AAPanelCategories } from './types';
@@ -93,17 +93,17 @@ interface ActivationTriggerProps {
 function ActivationTrigger({ dialogs }: ActivationTriggerProps) {
   const { t } = useSafeTranslation();
   const classes = useActivationTriggerStyles();
-  const parsedStromData = useSelector(AADataSelector);
+  const parsedStormData = useSelector(AADataSelector);
   const commonClasses = useAACommonStyles();
 
-  const filteredActiveDistricts = parsedStromData.activeDistricts
-    ? Object.entries(parsedStromData.activeDistricts).filter(([category]) =>
+  const filteredActiveDistricts = parsedStormData.activeDistricts
+    ? Object.entries(parsedStormData.activeDistricts).filter(([category]) =>
         AAPanelCategories.includes(category as AACategory),
       )
     : [];
 
-  const filteredNADistricts = parsedStromData.naDistricts
-    ? Object.entries(parsedStromData.naDistricts).filter(([category]) =>
+  const filteredNADistricts = parsedStormData.naDistricts
+    ? Object.entries(parsedStormData.naDistricts).filter(([category]) =>
         AAPanelCategories.includes(category as AACategory),
       )
     : [];

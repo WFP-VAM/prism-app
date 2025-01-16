@@ -1,5 +1,5 @@
 import { Popup } from 'react-map-gl/maplibre';
-import { ParsedStormData } from 'context/anticipatoryAction/AAStormStateSlice/parsedStromDataTypes';
+import { ParsedStormData } from 'context/anticipatoryAction/AAStormStateSlice/parsedStormDataTypes';
 import _React from 'react';
 import { createStyles, makeStyles, Typography } from '@material-ui/core';
 import { findLandfallWindPoint } from '../utils';
@@ -13,8 +13,7 @@ function AAStormLandfallMarker({ stormData }: AAStormLandfallPopupProps) {
     return null;
   }
 
-  const lng = windpoint.geometry.coordinates[0];
-  const lat = windpoint.geometry.coordinates[1];
+  const [lng, lat] = windpoint.geometry.coordinates;
 
   return (
     <Popup
