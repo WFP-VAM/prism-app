@@ -9,7 +9,7 @@ async function captureMapScreenshot() {
     height: 1080,
   });
 
-  // TODO: get date from the alert worker and pass it to the URL
+  // TODO: Pass url in parameters with correct date
   await page.goto('http://localhost:3000/?hazardLayerIds=anticipatory_action_storm&date=2025-01-14', { waitUntil: 'load' });
 
   // Wait for the canvas element to be fully rendered
@@ -32,7 +32,7 @@ async function captureMapScreenshot() {
   const canvas = await page.$('.maplibregl-canvas');
 
   if (canvas) {
-      //TODO: we can enhance this by getting the storm coordinates to adjust the crop 
+      //TODO: we can enhance this by passing the crop details in parameters (ex: crop can be based on storm coordinates to correctly center the storm in the screenshot) 
       const cropRegion = {
         x: 900,
         y: 200,
