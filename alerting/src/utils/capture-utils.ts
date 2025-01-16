@@ -10,8 +10,8 @@ interface CropRegion {
 interface ScreenshotOptions {
   url: string;
   crop?: CropRegion;
-  screenshotPath: string;
-  elementToScreenshot: string;
+  screenshotPath?: string;
+  elementToScreenshot?: string;
   elementsToHide?: string[];
 }
 
@@ -21,9 +21,11 @@ const DEFAULT_CROP: CropRegion = {
   width: 1920,
   height: 1080,
 };
+const DEFAULT_ELEMENT = '.maplibregl-canvas';
+const DEFAULT_SCREENSHOT_PATH = 'screenshot.png';
 
 async function captureScreenshotFromUrl(options: ScreenshotOptions): Promise<void> {
-  const { url, crop = DEFAULT_CROP, screenshotPath, elementToScreenshot, elementsToHide = [] } = options;
+  const { url, crop = DEFAULT_CROP, screenshotPath = DEFAULT_SCREENSHOT_PATH, elementToScreenshot = DEFAULT_ELEMENT, elementsToHide = [] } = options;
 
   let browser: Browser | null = null;
 
