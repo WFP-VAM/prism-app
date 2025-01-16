@@ -181,9 +181,9 @@ const DateSelector = memo(() => {
         if (firstIndex === -1) {
           return layer.dateItems;
         }
-        // truncate the date item array at index matching timeline first date
+        // truncate the date item array at index matching timeline first date with a buffer of 1 day decrements
         // eslint-disable-next-line fp/no-mutating-methods
-        return layer.dateItems.slice(firstIndex);
+        return layer.dateItems.slice(firstIndex - 1);
       }),
     ];
   }, [orderedLayers, timelineStartDate]);
@@ -365,13 +365,13 @@ const DateSelector = memo(() => {
         return;
       }
       const time = date.getTime();
-      const selectedIndex = findDateIndex(selectableDates, date.getTime());
+      const selectedIndex = findDateIndex(availableDates, date.getTime());
       checkSelectedDateForLayerSupport(date.getTime());
       if (
         selectedIndex < 0 ||
         (stateStartDate &&
           datesAreEqualWithoutTime(
-            selectableDates[selectedIndex],
+            availableDates[selectedIndex],
             stateStartDate,
           ))
       ) {
@@ -381,7 +381,7 @@ const DateSelector = memo(() => {
       dispatch(updateDateRange({ startDate: time }));
     },
     [
-      selectableDates,
+      availableDates,
       checkSelectedDateForLayerSupport,
       stateStartDate,
       updateHistory,
@@ -396,6 +396,7 @@ const DateSelector = memo(() => {
       isUpdatingHistory: boolean,
     ) => {
       const selectedIndex = findDateIndex(availableDates, date);
+
       if (availableDates[selectedIndex + increment]) {
         updateStartDate(
           new Date(availableDates[selectedIndex + increment]),
