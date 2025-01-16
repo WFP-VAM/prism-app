@@ -10,7 +10,6 @@ interface CropRegion {
 interface ScreenshotOptions {
   url: string;
   crop?: CropRegion;
-  screenshotPath?: string;
   elementToScreenshot?: string;
   elementsToHide?: string[];
 }
@@ -22,12 +21,12 @@ const DEFAULT_CROP: CropRegion = {
   height: 1080,
 };
 const DEFAULT_ELEMENT = '.maplibregl-canvas';
-const DEFAULT_SCREENSHOT_PATH = 'screenshot.png';
 
-async function captureScreenshotFromUrl(options: ScreenshotOptions): Promise<void> {
-  const { url, crop = DEFAULT_CROP, screenshotPath = DEFAULT_SCREENSHOT_PATH, elementToScreenshot = DEFAULT_ELEMENT, elementsToHide = [] } = options;
+async function captureScreenshotFromUrl(options: ScreenshotOptions): Promise<string> {
+  const { url, crop = DEFAULT_CROP, elementToScreenshot = DEFAULT_ELEMENT, elementsToHide = [] } = options;
 
   let browser: Browser | null = null;
+  let base64Image: string = '';
 
   try {
 
@@ -84,12 +83,12 @@ async function captureScreenshotFromUrl(options: ScreenshotOptions): Promise<voi
       height: boundingBox.height,
     };
 
-    await page.screenshot({ 
-      path: screenshotPath,
+    base64Image = await page.screenshot({ 
+      encoding: 'base64', // use path to save to file
       clip: finalCrop,
     });
 
-    console.log(`Screenshot saved to ${screenshotPath}`);
+    console.log('Screenshot captured');
   } catch (error: unknown) {
     if (error instanceof Error) {
       console.error(`Failed to capture screenshot: ${error.message}`);
@@ -99,4 +98,6 @@ async function captureScreenshotFromUrl(options: ScreenshotOptions): Promise<voi
   } finally {
     if (browser) await browser.close();
   }
+
+  return base64Image;
 }
