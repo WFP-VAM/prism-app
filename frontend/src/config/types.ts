@@ -267,7 +267,13 @@ export enum Interval {
   ONE_YEAR = '1-year',
 }
 
-export type FeatureInfoObject = { [key: string]: FeatureInfoProps };
+export type FeatureTitleObject = {
+  [key: string]: FeatureInfoTitle;
+};
+
+export type FeatureInfoObject = {
+  [key: string]: FeatureInfoProps;
+};
 
 export class CommonLayerProps {
   id: LayerKey;
@@ -297,7 +303,9 @@ export class CommonLayerProps {
   contentPath?: string;
 
   @optional
-  featureInfoProps?: { [key: string]: FeatureInfoProps };
+  featureInfoTitle?: FeatureTitleObject;
+  @optional
+  featureInfoProps?: FeatureInfoObject;
 
   /*
   * only for layer that has grouped menu and always assigned to main layer of group (../components/Navbar/utils.ts)
@@ -396,13 +404,26 @@ export enum DataType {
   LabelMapping = 'labelMapping',
 }
 
+export enum FeatureInfoVisibility {
+  Always = 'always', // Default
+  IfDefined = 'if-defined',
+}
+
 type PopupMetaDataKeys = keyof PopupMetaData;
 
-interface FeatureInfoProps {
+export interface FeatureInfoTitle {
+  type: DataType;
+  template: string;
+  labelMap?: { [key: string]: string };
+  visibility?: FeatureInfoVisibility;
+}
+
+export interface FeatureInfoProps {
   type: DataType;
   dataTitle: string;
   labelMap?: { [key: string]: string };
   metadata?: PopupMetaDataKeys;
+  visibility?: FeatureInfoVisibility;
 }
 
 export enum DatesPropagation {
@@ -502,6 +523,15 @@ export class CompositeLayerProps extends CommonLayerProps {
 
   @optional
   endDate?: string;
+
+  // @optional
+  // expectedDataLagDays?: number;
+  @optional
+  aggregateBy?: 'mean' | 'median' | 'max';
+  @optional
+  aggregationBoundaryPath?: string;
+  @optional
+  adminCode?: number;
 }
 
 export class StaticRasterLayerProps extends CommonLayerProps {
@@ -659,6 +689,7 @@ export class ImpactLayerProps extends CommonLayerProps {
 export enum PointDataLoader {
   EWS = 'ews',
   ACLED = 'acled',
+  GOOGLE_FLOOD = 'google_flood',
 }
 
 export class PointDataLayerProps extends CommonLayerProps {
@@ -713,6 +744,9 @@ export class PointDataLayerProps extends CommonLayerProps {
 
   @optional
   dataFieldType?: DataFieldType = DataFieldType.NUMBER;
+
+  @optional
+  detailUrl?: string;
 }
 
 export type RequiredKeys<T> = {
@@ -860,7 +894,7 @@ type AdminLevelDisplayType = {
 export type PointData = {
   lat: number;
   lon: number;
-  date: number; // in unix time.
+  date?: number; // in unix time.
   [key: string]: any;
 };
 
