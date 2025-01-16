@@ -98,19 +98,3 @@ async function captureScreenshotFromUrl(options: ScreenshotOptions): Promise<voi
     if (browser) await browser.close();
   }
 }
-
-// Example usage
-(async () => {
-  await captureScreenshotFromUrl({
-    url: 'http://localhost:3000/?hazardLayerIds=anticipatory_action_storm&date=2025-01-14',
-    screenshotPath: 'map_screenshot.png',
-    elementToScreenshot: '.maplibregl-canvas',
-    elementsToHide: ['.MuiDrawer-root', '.MuiList-root', '.MuiGrid-root'],
-    crop: {
-      x: 900,
-      y: 200,
-      width: 1000,
-      height: 800,
-    },
-  });
-})();
