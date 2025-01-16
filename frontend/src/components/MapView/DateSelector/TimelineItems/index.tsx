@@ -1,4 +1,4 @@
-import React, { CSSProperties, memo, useCallback, useMemo } from 'react';
+import { CSSProperties, memo, useCallback, useMemo } from 'react';
 import {
   Fade,
   Grid,
@@ -6,18 +6,13 @@ import {
   createStyles,
   makeStyles,
 } from '@material-ui/core';
-import { compact } from 'lodash';
-import { DateItem, DateRangeType } from 'config/types';
-import { useSafeTranslation } from 'i18n';
+import { AnticipatoryAction, DateItem, DateRangeType } from 'config/types';
 import { grey } from 'muiTheme';
 import {
   DateCompatibleLayerWithDateItems,
   TIMELINE_ITEM_WIDTH,
 } from 'components/MapView/DateSelector/utils';
-import { datesAreEqualWithoutTime, getFormattedDate } from 'utils/date-utils';
-import TimelineItem from './TimelineItem';
 import TimelineLabel from './TimelineLabel';
-import TooltipItem from './TooltipItem';
 import {
   DARK_BLUE_HEX,
   DARK_GREEN_HEX,
@@ -26,13 +21,11 @@ import {
   LIGHT_GREEN_HEX,
   LIGHT_ORANGE_HEX,
 } from './utils';
-
-type DateItemStyle = {
-  class: string;
-  color: string;
-  layerDirectionClass?: string;
-  emphasis?: string;
-};
+import AAdroughtTooltipContent from './AADroughtTooltipContent';
+import AAStormTooltipContent from './AAStormTooltipContent';
+import { DateItemStyle } from './types';
+import AAStormTimelineItem from './AAStormTimelineItem';
+import AADroughtTimelineItem from './AADroughtTimelineItem';
 
 const TimelineItems = memo(
   ({
@@ -44,7 +37,6 @@ const TimelineItems = memo(
     availableDates,
   }: TimelineItemsProps) => {
     const classes = useStyles();
-    const { t } = useSafeTranslation();
 
     // Hard coded styling for date items (first, second, and third layers)
     const DATE_ITEM_STYLING: DateItemStyle[] = useMemo(
@@ -72,40 +64,22 @@ const TimelineItems = memo(
       [classes],
     );
 
-    const getTooltipTitle = useCallback(
-      (date: DateRangeType): React.JSX.Element[] => {
-        const tooltipTitleArray: React.JSX.Element[] = compact(
-          orderedLayers.map((selectedLayer, layerIndex) => {
-            // find closest date element for layer
-            const dateItem = selectedLayer.dateItems.find(item =>
-              datesAreEqualWithoutTime(item.displayDate, date.value),
-            );
-            if (!dateItem) {
-              return null;
-            }
+    const isShowingAAStormLayer = orderedLayers.find(
+      layer => layer.id === AnticipatoryAction.storm,
+    );
 
-            // Display range dates when available
-            const formattedDate =
-              dateItem.startDate && dateItem.endDate
-                ? `${getFormattedDate(
-                    dateItem.startDate,
-                    'monthDay',
-                  )} - ${getFormattedDate(dateItem.endDate, 'monthDay')}`
-                : getFormattedDate(dateItem.queryDate, 'monthDay');
-            return (
-              <TooltipItem
-                key={`Tootlip-${date.label}-${date.value}-${selectedLayer.title}`}
-                layerTitle={`${t(selectedLayer.title)}:  ${formattedDate}`}
-                color={DATE_ITEM_STYLING[layerIndex].color}
-              />
-            );
-          }),
-        );
-        // eslint-disable-next-line fp/no-mutating-methods
-        tooltipTitleArray.unshift(<div key={date.label}>{date.label}</div>);
-        return tooltipTitleArray;
-      },
-      [DATE_ITEM_STYLING, orderedLayers, t],
+    const getTooltipContent = useCallback(
+      (date: DateRangeType) =>
+        isShowingAAStormLayer ? (
+          <AAStormTooltipContent date={date} />
+        ) : (
+          <AAdroughtTooltipContent
+            date={date}
+            orderedLayers={orderedLayers}
+            dateItemStyling={DATE_ITEM_STYLING}
+          />
+        ),
+      [isShowingAAStormLayer, DATE_ITEM_STYLING, orderedLayers],
     );
 
     const availableDatesToDisplay = availableDates.filter(
@@ -120,12 +94,17 @@ const TimelineItems = memo(
           return (
             <Tooltip
               key={`Root-${date.label}-${date.value}`}
-              title={<>{getTooltipTitle(date)}</>}
+              title={<>{getTooltipContent(date)}</>}
               TransitionComponent={Fade}
               TransitionProps={{ timeout: 0 }}
               placement="top"
               arrow
-              classes={{ tooltip: classes.tooltip }}
+              {...(isShowingAAStormLayer ? { interactive: true } : null)}
+              classes={{
+                tooltip: isShowingAAStormLayer
+                  ? classes.AAStormTooltip
+                  : classes.AADroughtTooltip,
+              }}
             >
               <Grid
                 item
@@ -137,12 +116,17 @@ const TimelineItems = memo(
                 data-date-index={index} // Used by the pointer tick to trigger tooltips
               >
                 <TimelineLabel locale={locale} date={date} />
-                <TimelineItem
-                  concatenatedLayers={truncatedLayers}
-                  currentDate={date}
-                  dateItemStyling={DATE_ITEM_STYLING}
-                  isDateAvailable={isDateAvailable}
-                />
+
+                {isShowingAAStormLayer ? (
+                  <AAStormTimelineItem currentDate={date} />
+                ) : (
+                  <AADroughtTimelineItem
+                    concatenatedLayers={truncatedLayers}
+                    currentDate={date}
+                    dateItemStyling={DATE_ITEM_STYLING}
+                    isDateAvailable={isDateAvailable}
+                  />
+                )}
               </Grid>
             </Tooltip>
           );
@@ -200,12 +184,14 @@ const useStyles = makeStyles(() =>
         },
       },
     },
-
-    tooltip: {
+    AADroughtTooltip: {
       backgroundColor: '#222222',
       opacity: '0.85 !important',
     },
-
+    AAStormTooltip: {
+      backgroundColor: '#FFFFFF',
+      border: '1px solid #D3D3D3',
+    },
     layerOneDate: createLayerStyles(LIGHT_BLUE_HEX, 0),
     layerTwoDate: createLayerStyles(LIGHT_GREEN_HEX, 10),
     layerThreeDate: createLayerStyles(LIGHT_ORANGE_HEX, 20),
