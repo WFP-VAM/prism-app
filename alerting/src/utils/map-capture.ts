@@ -9,20 +9,25 @@ async function captureMapScreenshot() {
     height: 1080,
   });
 
+  // TODO: get date from the alert worker and pass it to the URL
   await page.goto('http://localhost:3000/?hazardLayerIds=anticipatory_action_storm&date=2025-01-14', { waitUntil: 'load' });
 
+  // Wait for the canvas element to be fully rendered
   await page.waitForFunction(() => {
-    const canvas = document.querySelector('.maplibregl-canvas');
+    const canvas = document.querySelector('.maplibregl-canvas') as HTMLCanvasElement | null;
     return canvas && canvas.width > 0 && canvas.height > 0;
   }, { timeout: 30000 });
 
+  // Hide UI elements that may overlap or obstruct the map view
   await page.evaluate(() => {
     const elementsToHide = document.querySelectorAll('.MuiDrawer-root, .MuiList-root, .MuiGrid-root');
     elementsToHide.forEach((el) => {
-      el.style.display = 'none';
+      const htmlElement = el as HTMLElement
+      htmlElement.style.display = 'none';
     });
   });
 
+  // Wait until the canvas element is visible in the DOM
   await page.waitForSelector('.maplibregl-canvas', { visible: true });
   const canvas = await page.$('.maplibregl-canvas');
 
