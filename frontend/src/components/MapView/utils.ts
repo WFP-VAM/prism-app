@@ -6,7 +6,10 @@ import { formatFeatureInfo } from 'utils/server-utils';
 import {
   AvailableDates,
   FeatureInfoObject,
+  FeatureInfoProps,
   FeatureInfoType,
+  FeatureInfoVisibility,
+  FeatureTitleObject,
   LayerType,
   LegendDefinitionItem,
   WMSLayerProps,
@@ -17,9 +20,9 @@ import { addNotification } from 'context/notificationStateSlice';
 import { LocalError } from 'utils/error-utils';
 import { Column, quoteAndEscapeCell } from 'utils/analysis-utils';
 import { TableRow } from 'context/analysisResultStateSlice';
-import { AdminBoundaryParams, EWSParams } from 'context/datasetStateSlice';
 import { MapRef, Point } from 'react-map-gl/maplibre';
 import { PopupData } from 'context/tooltipStateSlice';
+import { getTitle } from 'utils/title-utils';
 import { getExtent } from './Layers/raster-utils';
 
 // TODO: maplibre: fix feature
@@ -136,24 +139,32 @@ const getData = (
   coordinates: any,
 ) =>
   Object.keys(properties)
-    .filter(prop => keys.includes(prop))
-    .reduce(
-      (obj, item) => ({
+    .filter(prop => keys.includes(prop) && prop !== 'title')
+    .reduce((obj, item) => {
+      const itemProps = featureInfoProps[item] as FeatureInfoProps;
+      if (
+        itemProps.visibility === FeatureInfoVisibility.IfDefined &&
+        !properties[item]
+      ) {
+        return obj;
+      }
+
+      return {
         ...obj,
-        [featureInfoProps[item].dataTitle]: {
+        [itemProps.dataTitle]: {
           data: formatFeatureInfo(
             properties[item],
-            featureInfoProps[item].type,
-            featureInfoProps[item].labelMap,
+            itemProps.type,
+            itemProps.labelMap,
           ),
           coordinates,
         },
-      }),
-      {},
-    );
+      };
+    }, {});
 
 // TODO: maplibre: fix feature
 export function getFeatureInfoPropsData(
+  featureInfoTitle: FeatureTitleObject | undefined,
   featureInfoProps: FeatureInfoObject,
   coordinates: number[],
   feature: any,
@@ -162,6 +173,7 @@ export function getFeatureInfoPropsData(
   const { properties } = feature;
 
   return {
+    ...getTitle(featureInfoTitle, properties),
     ...getMetaData(featureInfoProps, metaDataKeys, properties),
     ...getData(featureInfoProps, keys, properties, coordinates),
   };
@@ -305,8 +317,3 @@ export const getExposureAnalysisTableData = (
   sortColumn: Column['id'],
   sortOrder: 'asc' | 'desc',
 ) => orderBy(tableData, sortColumn, sortOrder);
-
-export const isAdminBoundary = (
-  params: AdminBoundaryParams | EWSParams,
-): params is AdminBoundaryParams =>
-  (params as AdminBoundaryParams).id !== undefined;

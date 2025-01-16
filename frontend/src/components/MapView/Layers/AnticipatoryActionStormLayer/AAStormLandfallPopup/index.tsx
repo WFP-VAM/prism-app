@@ -1,7 +1,7 @@
 import { createStyles, makeStyles } from '@material-ui/core';
 import { Point } from 'geojson';
 import { Popup } from 'react-map-gl/maplibre';
-import { LandfallInfo } from 'context/anticipatoryAction/AAStormStateSlice/types';
+import { LandfallInfo } from 'context/anticipatoryAction/AAStormStateSlice/parsedStormDataTypes';
 import PopupContent from './PopupContent';
 
 function AAStormLandfallPopup({

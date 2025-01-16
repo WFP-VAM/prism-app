@@ -30,6 +30,7 @@ export const useWindStatesByTime = (currentDate: number): WindStateReport => {
     if (dates.length === 0) {
       return { states: [], cycloneName: null };
     }
+
     // If currentDate is 0 or null, get the latest report
     if (!currentDate) {
       const latestDate = dates.reduce((latest, current) =>
@@ -38,33 +39,16 @@ export const useWindStatesByTime = (currentDate: number): WindStateReport => {
       return getWindStatesForDate(windStateReports, latestDate);
     }
 
-    const date = Object.keys(windStateReports).find(analysedDate => {
-      const analysedDateInUTC = getDateInUTC(analysedDate, false);
-      if (!analysedDateInUTC) {
+    const date = Object.keys(windStateReports).find(analyzedDate => {
+      const analyzedDateInUTC = getDateInUTC(analyzedDate, false);
+      if (!analyzedDateInUTC) {
         return false;
       }
-      const isEqual = datesAreEqualWithoutTime(analysedDateInUTC, currentDate);
+      const isEqual = datesAreEqualWithoutTime(analyzedDateInUTC, currentDate);
       return isEqual;
     });
 
     const result = getWindStatesForDate(windStateReports, date || null);
     return result;
   }, [currentDate, windStateReports]);
-};
-
-export const useLatestWindStates = (): WindStateReport => {
-  const windStateReports = useSelector(AAWindStateReports);
-
-  return useMemo(() => {
-    const dates = Object.keys(windStateReports);
-    if (dates.length === 0) {
-      return { states: [], cycloneName: null };
-    }
-
-    const latestDate = dates.reduce((latest, current) =>
-      new Date(current) > new Date(latest) ? current : latest,
-    );
-
-    return getWindStatesForDate(windStateReports, latestDate);
-  }, [windStateReports]);
 };
