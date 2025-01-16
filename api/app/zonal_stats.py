@@ -31,7 +31,7 @@ from shapely.ops import unary_union  # type: ignore
 
 logger = logging.getLogger(__name__)
 
-DEFAULT_STATS = ["min", "max", "mean", "median", "sum", "std", "count"]
+DEFAULT_STATS = ["min", "max", "mean", "median", "sum", "std", "count", "nodata"]
 
 AreaInSqKm = NewType("AreaInSqKm", float)
 Percentage = NewType("Percentage", float)
