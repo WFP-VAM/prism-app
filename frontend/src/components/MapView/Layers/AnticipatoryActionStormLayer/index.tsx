@@ -29,6 +29,7 @@ import AAStormLandfallPopup from './AAStormLandfallPopup';
 
 import { TimeSeries } from './types';
 import AAStormLandfallMarker from './AAStormLandfallPopup/AAStormLandfallMarker/AAStormLandfallMarker';
+import { parseGeoJsonFeature } from './utils';
 
 interface AnticipatoryActionStormLayerProps {
   layer: AnticipatoryActionLayerProps;
@@ -229,7 +230,7 @@ const AnticipatoryActionStormLayer = React.memo(
       e.preventDefault();
       dispatch(hidePopup()); // hides the black tooltip containing the district names
       const feature = e.features?.[0];
-      setSelectedFeature(feature as unknown as AAStormTimeSeriesFeature);
+      setSelectedFeature(parseGeoJsonFeature(feature));
     };
 
     useMapCallback<'click', null>(

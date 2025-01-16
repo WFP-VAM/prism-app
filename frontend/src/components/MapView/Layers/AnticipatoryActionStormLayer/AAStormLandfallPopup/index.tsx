@@ -22,7 +22,7 @@ function AAStormLandfallPopup({
 
   const isVisible = isFeatureAtLandfallEstimateTime(feature, landfallInfo.time);
 
-  if (!isVisible || !landfallInfo) {
+  if (!isVisible) {
     return null;
   }
 
