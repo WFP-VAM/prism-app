@@ -1,6 +1,8 @@
 import {
   formatInUTC,
+  formatLandfallDate,
   formatLandfallEstimatedLeadtime,
+  formatReportDate,
   getDateInUTC,
   isDateSameAsCurrentDate,
 } from './utils';
@@ -46,6 +48,44 @@ describe('utils', () => {
     it.each(tests)('returns UTC values of a UTC Date', ({ date, expected }) => {
       expect(formatInUTC(date, 'd - haaa')).toBe(expected);
     });
+  });
+
+  describe('formatLandfallDate()', () => {
+    const tests = [
+      {
+        dateRange: ['2024-03-12 00:00:00', '2024-03-12 06:00:00'],
+        expected: '2024-03-12 02:00 GMT+2',
+      },
+      {
+        dateRange: ['2024-03-12 23:00:00', '2024-03-12 06:00:00'],
+        expected: '2024-03-13 01:00 GMT+2',
+      },
+    ];
+    it.each(tests)(
+      'returns landfall estimated date in local time',
+      ({ dateRange, expected }) => {
+        expect(formatLandfallDate(dateRange)).toBe(expected);
+      },
+    );
+  });
+
+  describe('formatReportDate()', () => {
+    const tests = [
+      {
+        date: '2024-03-12 00:00:00',
+        expected: '2024-03-12 2am GMT+2',
+      },
+      {
+        date: '2024-03-12 23:00:00',
+        expected: '2024-03-13 1am GMT+2',
+      },
+    ];
+    it.each(tests)(
+      'returns report date in local time',
+      ({ date, expected }) => {
+        expect(formatReportDate(date)).toBe(expected);
+      },
+    );
   });
 
   describe('formatLandfallEstimatedLeadtime()', () => {

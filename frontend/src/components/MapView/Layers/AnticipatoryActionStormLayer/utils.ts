@@ -10,6 +10,7 @@ import {
   differenceInHours,
 } from 'date-fns';
 import { MapGeoJSONFeature } from 'maplibre-gl';
+import { TZDate } from '@date-fns/tz';
 
 export function getDateInUTC(
   time: string | undefined,
@@ -42,7 +43,7 @@ export function formatReportDate(date: string) {
     return '';
   }
 
-  return formatInUTC(parsedDate, 'yyy-MM-dd Kaaa');
+  return formatInLocalTime(parsedDate, 'yyy-MM-dd Kaaa O');
 }
 
 export function formatInUTC(dateInUTC: Date, fmt: string) {
@@ -53,6 +54,18 @@ export function formatInUTC(dateInUTC: Date, fmt: string) {
   return format(shiftedDate, fmt);
 }
 
+/*
+ * Format a date to local time
+ * note: So far, the storm Anticipatory Action module is only used by countries using the mozambic time (namely Mozambic and Zimbabwe).
+ * When addtional countries will need to acces this module, this function will have to be revisited
+ */
+
+function formatInLocalTime(date: Date, fmt: string): string {
+  const dateInLocalTime = new TZDate(date, 'Africa/Blantyre');
+
+  return format(dateInLocalTime, fmt);
+}
+
 export function formatLandfallDate(dateRange: string[]) {
   const date = dateRange[0];
   const parsedDate = getDateInUTC(date, true);
@@ -60,7 +73,7 @@ export function formatLandfallDate(dateRange: string[]) {
     return '';
   }
 
-  return formatInUTC(parsedDate, 'yyy-MM-dd HH:mm');
+  return formatInLocalTime(parsedDate, 'yyy-MM-dd HH:mm O');
 }
 
 export function formatLandfallTimeRange(dateRange: string[]) {
