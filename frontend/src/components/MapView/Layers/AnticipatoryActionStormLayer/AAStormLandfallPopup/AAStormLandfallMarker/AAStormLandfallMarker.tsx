@@ -33,7 +33,7 @@ function AAStormLandfallMarker({ stormData }: AAStormLandfallPopupProps) {
       className={classes.popup}
     >
       <Typography className={classes.tooltipText} variant="body1">
-        LF - {formatWindPointDate(windpoint.properties.time)}
+        LF: {formatWindPointDate(windpoint.properties.time)}
       </Typography>
     </Popup>
   );
