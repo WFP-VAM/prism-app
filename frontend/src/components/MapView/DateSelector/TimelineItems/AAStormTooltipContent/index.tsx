@@ -47,7 +47,7 @@ function AAStormTooltipContent({ date }: AAStormTooltipContentProps) {
       >
         {windStates.states.map(item => {
           const itemDate = new Date(item.ref_time);
-          const formattedItemTime = formatInUTC(itemDate, 'h aaa');
+          const formattedItemTime = formatInUTC(itemDate, 'h aaa O');
 
           return (
             <ToggleButton

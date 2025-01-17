@@ -2,13 +2,7 @@ import {
   AAStormTimeSeriesFeature,
   TimeSerieFeatureProperty,
 } from 'context/anticipatoryAction/AAStormStateSlice/rawStormDataTypes';
-import {
-  isSameDay,
-  parseJSON,
-  format,
-  addHours,
-  differenceInHours,
-} from 'date-fns';
+import { isSameDay, parseJSON, format, differenceInHours } from 'date-fns';
 import { MapGeoJSONFeature } from 'maplibre-gl';
 import { TZDate } from '@date-fns/tz';
 
@@ -46,12 +40,10 @@ export function formatReportDate(date: string) {
   return formatInLocalTime(parsedDate, 'yyy-MM-dd Kaaa O');
 }
 
-export function formatInUTC(dateInUTC: Date, fmt: string) {
-  const localTimeZone = new Date().getTimezoneOffset(); // tz in minutes positive or negative
-  const hoursToAddOrRemove = Math.round(localTimeZone / 60);
-  const shiftedDate = addHours(dateInUTC, hoursToAddOrRemove);
+export function formatInUTC(date: Date, fmt: string) {
+  const dateInUTC = new TZDate(date, 'Universal');
 
-  return format(shiftedDate, fmt);
+  return format(dateInUTC, fmt);
 }
 
 /*
@@ -121,7 +113,7 @@ export function formatWindPointDate(time: string) {
     return '';
   }
 
-  return formatInUTC(dateInUTC, 'dd - Kaaa');
+  return formatInLocalTime(dateInUTC, 'dd - Kaaa O');
 }
 
 export function parseGeoJsonFeature(
