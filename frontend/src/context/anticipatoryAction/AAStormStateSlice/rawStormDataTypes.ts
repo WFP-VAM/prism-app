@@ -12,7 +12,7 @@ interface FeatureProperties {
 
 /* timeserie types */
 
-interface TimeSerieFeatureProperty {
+export interface TimeSerieFeatureProperty {
   data_type: FeaturePropertyDataType;
   time: string;
   development: string;

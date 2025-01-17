@@ -1,12 +1,20 @@
 import {
+  AAStormTimeSeriesFeature,
+  TimeSerieFeatureProperty,
+} from 'context/anticipatoryAction/AAStormStateSlice/rawStormDataTypes';
+import {
   isSameDay,
   parseJSON,
   format,
   addHours,
   differenceInHours,
 } from 'date-fns';
+import { MapGeoJSONFeature } from 'maplibre-gl';
 
-export function getDateInUTC(time: string, hasHours: boolean = true) {
+export function getDateInUTC(
+  time: string | undefined,
+  hasHours: boolean = true,
+) {
   try {
     return parseJSON(time + (!hasHours ? ' 00:00:00' : ''));
   } catch {
@@ -91,4 +99,40 @@ export function formatLandfallEstimatedLeadtime(
   }
 
   return `${minHour} - ${maxHour} hrs`;
+}
+
+export function formatWindPointDate(time: string) {
+  const dateInUTC = getDateInUTC(time);
+
+  if (!dateInUTC) {
+    return '';
+  }
+
+  return formatInUTC(dateInUTC, 'dd - Kaaa');
+}
+
+export function parseGeoJsonFeature(
+  mapGeoJSONFeature?: MapGeoJSONFeature,
+): AAStormTimeSeriesFeature | null {
+  if (!mapGeoJSONFeature) {
+    return null;
+  }
+  if (mapGeoJSONFeature.geometry.type !== 'Point') {
+    return null;
+  }
+  const { properties } = mapGeoJSONFeature;
+
+  if (
+    !('time' in properties) &&
+    !('data_type' in properties) &&
+    !('development' in properties)
+  ) {
+    return null;
+  }
+
+  return {
+    geometry: mapGeoJSONFeature.geometry,
+    type: 'Feature',
+    properties: properties as TimeSerieFeatureProperty,
+  };
 }
