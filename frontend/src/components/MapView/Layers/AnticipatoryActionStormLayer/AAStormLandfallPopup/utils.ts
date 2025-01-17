@@ -34,7 +34,13 @@ export function isFeatureAtLandfallEstimateTime(
 }
 
 export function hasLandfallOccured(stormData: ParsedStormData) {
-  const nowInUTC = new Date().valueOf();
+  const reportTime = stormData.forecastDetails?.reference_time;
+
+  const reportTimeDate = getDateInUTC(reportTime);
+
+  if (!reportTimeDate) {
+    return null;
+  }
 
   const landfallEstimatedtimeRange = getLandfallEstimatedTime(stormData);
 
@@ -50,5 +56,5 @@ export function hasLandfallOccured(stormData: ParsedStormData) {
     return null;
   }
 
-  return nowInUTC > landfallEstimatedStartTime.valueOf();
+  return reportTimeDate?.valueOf() > landfallEstimatedStartTime.valueOf();
 }

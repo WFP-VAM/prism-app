@@ -11,7 +11,10 @@ import {
 } from 'date-fns';
 import { MapGeoJSONFeature } from 'maplibre-gl';
 
-export function getDateInUTC(time: string, hasHours: boolean = true) {
+export function getDateInUTC(
+  time: string | undefined,
+  hasHours: boolean = true,
+) {
   try {
     return parseJSON(time + (!hasHours ? ' 00:00:00' : ''));
   } catch {
