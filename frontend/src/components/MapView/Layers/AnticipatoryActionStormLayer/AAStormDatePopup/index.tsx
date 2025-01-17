@@ -2,7 +2,7 @@ import { MapLayerMouseEvent, Popup } from 'react-map-gl/maplibre';
 import _React, { useCallback, useState } from 'react';
 import { createStyles, makeStyles, Typography } from '@material-ui/core';
 import { useMapCallback } from 'utils/map-utils';
-import { formatInUTC, getDateInUTC } from '../utils';
+import { formatWindPointDate } from '../utils';
 import {
   FeaturePropertyDataType,
   TimeSeries,
@@ -48,16 +48,6 @@ function AAStormDatePopup({ timeSeries }: AAStormDatePopupProps) {
     onMouseLeave,
   );
 
-  function getDayAndTime(time: string) {
-    const dateInUTC = getDateInUTC(time);
-
-    if (!dateInUTC) {
-      return '';
-    }
-
-    return formatInUTC(dateInUTC, 'dd - Kaaa');
-  }
-
   const lastAnalyzedTimePoint: TimeSeriesFeature | undefined =
     // eslint-disable-next-line fp/no-mutating-methods
     timeSeries?.features
@@ -90,7 +80,7 @@ function AAStormDatePopup({ timeSeries }: AAStormDatePopupProps) {
         className={classes.popup}
       >
         <Typography className={classes.toolTipDate} variant="body1">
-          {getDayAndTime(time)}
+          {formatWindPointDate(time)}
         </Typography>
       </Popup>
     );

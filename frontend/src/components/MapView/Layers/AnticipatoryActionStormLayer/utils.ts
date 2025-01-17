@@ -98,6 +98,16 @@ export function formatLandfallEstimatedLeadtime(
   return `${minHour} - ${maxHour} hrs`;
 }
 
+export function formatWindPointDate(time: string) {
+  const dateInUTC = getDateInUTC(time);
+
+  if (!dateInUTC) {
+    return '';
+  }
+
+  return formatInUTC(dateInUTC, 'dd - Kaaa');
+}
+
 export function parseGeoJsonFeature(
   mapGeoJSONFeature?: MapGeoJSONFeature,
 ): AAStormTimeSeriesFeature | null {

@@ -1,27 +1,54 @@
 import { ParsedStormData } from 'context/anticipatoryAction/AAStormStateSlice/parsedStormDataTypes';
 import { AAStormTimeSeriesFeature } from 'context/anticipatoryAction/AAStormStateSlice/rawStormDataTypes';
+import { getDateInUTC } from '../utils';
 
-/* find the wind point which time corresponds to the landfall estimated time */
-export function findLandfallWindPoint(stormData: ParsedStormData) {
+function getLandfallEstimatedTime(stormData: ParsedStormData) {
   const { landfall } = stormData;
   if (!landfall) {
     return null;
   }
 
-  const landfallEstimatedtime = landfall.time;
+  return landfall.time;
+}
+
+/* find the wind point which time corresponds to the landfall estimated time */
+export function findLandfallWindPoint(stormData: ParsedStormData) {
+  const landfallEstimatedtime = getLandfallEstimatedTime(stormData);
 
   const windpoints = stormData.timeSeries?.features;
-  return windpoints?.find(windpoint =>
+  const foundWindPoint = windpoints?.find(windpoint =>
     isFeatureAtLandfallEstimateTime(windpoint, landfallEstimatedtime),
   );
+
+  return foundWindPoint || null;
 }
 
 export function isFeatureAtLandfallEstimateTime(
   feature: AAStormTimeSeriesFeature,
-  landfallEstimatedtime: string[],
+  landfallEstimatedtime: string[] | null,
 ) {
   return (
     landfallEstimatedtime &&
     feature.properties.time === landfallEstimatedtime[0]
   );
+}
+
+export function hasLandfallOccured(stormData: ParsedStormData) {
+  const nowInUTC = new Date().valueOf();
+
+  const landfallEstimatedtimeRange = getLandfallEstimatedTime(stormData);
+
+  if (!landfallEstimatedtimeRange) {
+    return null;
+  }
+
+  const landfallEstimatedStartTime = getDateInUTC(
+    landfallEstimatedtimeRange[0],
+  );
+
+  if (!landfallEstimatedStartTime) {
+    return null;
+  }
+
+  return nowInUTC > landfallEstimatedStartTime.valueOf();
 }

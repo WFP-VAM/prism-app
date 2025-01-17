@@ -2,7 +2,8 @@ import { Popup } from 'react-map-gl/maplibre';
 import { ParsedStormData } from 'context/anticipatoryAction/AAStormStateSlice/parsedStormDataTypes';
 import _React from 'react';
 import { createStyles, makeStyles, Typography } from '@material-ui/core';
-import { findLandfallWindPoint } from '../utils';
+import { findLandfallWindPoint, hasLandfallOccured } from '../utils';
+import { formatWindPointDate } from '../../utils';
 
 function AAStormLandfallMarker({ stormData }: AAStormLandfallPopupProps) {
   const classes = useStyles();
@@ -10,6 +11,12 @@ function AAStormLandfallMarker({ stormData }: AAStormLandfallPopupProps) {
   const windpoint = findLandfallWindPoint(stormData);
 
   if (!windpoint) {
+    return null;
+  }
+
+  const isVisible = !hasLandfallOccured(stormData);
+
+  if (!isVisible) {
     return null;
   }
 
@@ -26,7 +33,7 @@ function AAStormLandfallMarker({ stormData }: AAStormLandfallPopupProps) {
       className={classes.popup}
     >
       <Typography className={classes.tooltipText} variant="body1">
-        landfall
+        LF - {formatWindPointDate(windpoint.properties.time)}
       </Typography>
     </Popup>
   );
