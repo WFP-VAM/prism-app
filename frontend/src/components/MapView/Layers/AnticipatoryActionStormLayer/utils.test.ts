@@ -73,11 +73,11 @@ describe('utils', () => {
     const tests = [
       {
         date: '2024-03-12 00:00:00',
-        expected: '2024-03-12 2am GMT+2',
+        expected: '2024-03-12 2am (GMT+2)',
       },
       {
         date: '2024-03-12 23:00:00',
-        expected: '2024-03-13 1am GMT+2',
+        expected: '2024-03-13 1am (GMT+2)',
       },
     ];
     it.each(tests)(

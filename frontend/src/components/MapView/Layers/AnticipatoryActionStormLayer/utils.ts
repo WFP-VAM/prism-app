@@ -37,7 +37,7 @@ export function formatReportDate(date: string) {
     return '';
   }
 
-  return formatInLocalTime(parsedDate, 'yyy-MM-dd Kaaa O');
+  return formatInLocalTime(parsedDate, 'yyy-MM-dd Kaaa (O)');
 }
 
 export function formatInUTC(date: Date, fmt: string) {
@@ -113,7 +113,7 @@ export function formatWindPointDate(time: string) {
     return '';
   }
 
-  return formatInLocalTime(dateInUTC, 'dd - Kaaa O');
+  return formatInLocalTime(dateInUTC, 'dd - Kaaa (O)');
 }
 
 export function parseGeoJsonFeature(
