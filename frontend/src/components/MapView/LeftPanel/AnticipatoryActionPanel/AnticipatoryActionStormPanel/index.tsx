@@ -62,7 +62,7 @@ function AnticipatoryActionStormPanel() {
                 <>
                   CYCLONE{' '}
                   {t(AAData.forecastDetails?.cyclone_name || 'Unknown Cyclone')}{' '}
-                  {hour}
+                  {hour} UTC
                   <br />
                   {date} FORECAST
                 </>
