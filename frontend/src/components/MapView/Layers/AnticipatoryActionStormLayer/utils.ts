@@ -49,7 +49,7 @@ export function formatInUTC(date: Date, fmt: string) {
 /*
  * Format a date to local time
  * note: So far, the storm Anticipatory Action module is only used by countries using the mozambic time (namely Mozambic and Zimbabwe).
- * When addtional countries will need to acces this module, this function will have to be revisited
+ * When additional countries will need to access this module, this function will have to be revisited
  */
 
 function formatInLocalTime(date: Date, fmt: string): string {
