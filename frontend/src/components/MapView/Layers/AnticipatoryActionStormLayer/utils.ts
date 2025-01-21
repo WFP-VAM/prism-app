@@ -52,8 +52,12 @@ export function formatInUTC(date: Date, fmt: string) {
  * When additional countries will need to access this module, this function will have to be revisited
  */
 
-function formatInLocalTime(date: Date, fmt: string): string {
-  const dateInLocalTime = new TZDate(date, 'Africa/Blantyre');
+export function formatInLocalTime(
+  date: Date,
+  fmt: string,
+  timeZone: string = 'Africa/Blantyre',
+): string {
+  const dateInLocalTime = new TZDate(date, timeZone);
 
   return format(dateInLocalTime, fmt);
 }
