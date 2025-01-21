@@ -80,6 +80,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       surge_url: prism-${{ github.event.pull_request.number }}.surge.sh
+      GIT_HASH: ${{ github.event.pull_request.head.sha }}
     steps:
       - name: Checkout
         uses: actions/checkout@v2

@@ -15,7 +15,7 @@ exports[`renders as expected 1`] = `
       data-date-index="0"
     >
       <div
-        class="makeStyles-dayItem-16"
+        class="makeStyles-dayItem-18"
       />
     </div>
   </mock-tooltip>

@@ -33,13 +33,14 @@ import {
   BoundaryLayerProps,
   PanelSize,
   WMSLayerProps,
+  Panel,
 } from 'config/types';
 import {
   getBoundaryLayersByAdminLevel,
   getWMSLayersWithChart,
 } from 'config/utils';
 import { LayerData } from 'context/layers/layer-data';
-import { leftPanelTabValueSelector, Panel } from 'context/leftPanelStateSlice';
+import { leftPanelTabValueSelector } from 'context/leftPanelStateSlice';
 import { layerDataSelector } from 'context/mapStateSlice/selectors';
 import { useSafeTranslation } from 'i18n';
 import { buildCsvFileName } from 'components/MapView/utils';

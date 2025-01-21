@@ -2,13 +2,7 @@ import { merge } from 'lodash';
 import i18n from 'i18next';
 import { initReactI18next, useTranslation } from 'react-i18next';
 import { registerLocale } from 'react-datepicker';
-import en from 'date-fns/locale/en-US';
-import fr from 'date-fns/locale/fr';
-import km from 'date-fns/locale/km';
-import pt from 'date-fns/locale/pt';
-import es from 'date-fns/locale/es';
-import ru from 'date-fns/locale/ru';
-import mn from 'date-fns/locale/mn';
+import { fr, km, pt, es, ru, mn, enUS } from 'date-fns/locale';
 
 import { translation } from './config';
 
@@ -16,7 +10,7 @@ const TRANSLATION_DEBUG = false;
 // Register other date locales to be used by our DatePicker
 // TODO - extract registerLocale  imports and loading into a separate file for clarity.
 // Test for missing locales
-registerLocale('en', en);
+registerLocale('en', enUS);
 registerLocale('fr', fr);
 registerLocale('km', km);
 registerLocale('pt', pt);
@@ -123,7 +117,7 @@ export function isEnglishLanguageSelected(lang: typeof i18n): boolean {
 }
 
 export const locales = {
-  en,
+  en: enUS,
   fr,
   km,
   pt,

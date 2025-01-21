@@ -39,17 +39,6 @@ exports[`renders as expected 1`] = `
           <div
             class="makeStyles-panelsContainer-13"
           >
-            <mock-button
-              classname="makeStyles-panelButton-3"
-              starticon="[object Object]"
-              style="background-color: rgb(99, 178, 189); color: rgb(16, 16, 16);"
-            >
-              <mock-typography
-                style="color: rgb(16, 16, 16); text-transform: none;"
-              >
-                Layers
-              </mock-typography>
-            </mock-button>
             <button
               class="MuiButtonBase-root MuiIconButton-root"
               style="background-color: rgb(99, 178, 189); color: rgb(16, 16, 16);"
@@ -74,16 +63,6 @@ exports[`renders as expected 1`] = `
                 class="MuiTouchRipple-root"
               />
             </button>
-            <mock-button
-              classname="makeStyles-panelButton-3"
-              starticon="[object Object]"
-            >
-              <mock-typography
-                style="color: rgba(255, 255, 255, 1); text-transform: none;"
-              >
-                Charts
-              </mock-typography>
-            </mock-button>
             <button
               class="MuiButtonBase-root MuiIconButton-root"
               style="color: white;"
@@ -108,16 +87,6 @@ exports[`renders as expected 1`] = `
                 class="MuiTouchRipple-root"
               />
             </button>
-            <mock-button
-              classname="makeStyles-panelButton-3"
-              starticon="[object Object]"
-            >
-              <mock-typography
-                style="color: rgba(255, 255, 255, 1); text-transform: none;"
-              >
-                Analysis
-              </mock-typography>
-            </mock-button>
             <button
               class="MuiButtonBase-root MuiIconButton-root"
               style="color: white;"
@@ -142,16 +111,6 @@ exports[`renders as expected 1`] = `
                 class="MuiTouchRipple-root"
               />
             </button>
-            <mock-button
-              classname="makeStyles-panelButton-3"
-              starticon="[object Object]"
-            >
-              <mock-typography
-                style="color: rgba(255, 255, 255, 1); text-transform: none;"
-              >
-                A. Action
-              </mock-typography>
-            </mock-button>
             <button
               class="MuiButtonBase-root MuiIconButton-root"
               style="color: white;"
@@ -176,6 +135,20 @@ exports[`renders as expected 1`] = `
                 class="MuiTouchRipple-root"
               />
             </button>
+            <mock-menu
+              open="false"
+            >
+              <mock-menuitem
+                selected="false"
+              >
+                A. Action Drought
+              </mock-menuitem>
+              <mock-menuitem
+                selected="false"
+              >
+                A. Action Storm
+              </mock-menuitem>
+            </mock-menu>
             <mock-button
               starticon="[object Object]"
             >
