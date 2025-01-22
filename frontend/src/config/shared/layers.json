@@ -1,7 +1,7 @@
 {
   "global_admin_boundaries": {
     "type": "boundary",
-    "path": "data/global/adm0_simplified.json",
+    "path": "pmtiles://https://test-vector-datastore.s3.eu-central-1.amazonaws.com/public-pmtiles/global_adm2_wfp.pmtiles",
     "opacity": 0.8,
     "admin_code": "dv_adm0_id",
     "admin_level_codes": ["dv_adm0_id"],

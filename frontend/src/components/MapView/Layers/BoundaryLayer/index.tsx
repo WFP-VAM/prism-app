@@ -18,13 +18,14 @@ import {
 import { getFullLocationName } from 'utils/name-utils';
 
 import { languages } from 'i18n';
-import { Map as MaplibreMap } from 'maplibre-gl';
+import MapLibreGL, { Map as MaplibreMap } from 'maplibre-gl';
 import {
   findFeature,
   getEvtCoords,
   getLayerMapId,
   useMapCallback,
 } from 'utils/map-utils';
+import { Protocol } from 'pmtiles';
 
 function onToggleHover(cursor: string, targetMap: MaplibreMap) {
   // eslint-disable-next-line no-param-reassign, fp/no-mutation
@@ -81,6 +82,7 @@ const onMouseLeave = () => (evt: MapLayerMouseEvent) =>
   onToggleHover('', evt.target);
 
 const BoundaryLayer = memo(({ layer, before }: ComponentProps) => {
+  console.log('layer', layer);
   const dispatch = useDispatch();
   const selectedMap = useSelector(mapSelector);
   const [isZoomLevelSufficient, setIsZoomLevelSufficient] = useState(
@@ -116,6 +118,19 @@ const BoundaryLayer = memo(({ layer, before }: ComponentProps) => {
   }, [selectedMap, layer.minZoom]);
 
   useEffect(() => {
+    if (layer.path.includes('pmtiles')) {
+      console.log('Registering PMTiles protocol');
+      const protocol = new Protocol();
+      MapLibreGL.addProtocol('pmtiles', protocol.tile);
+      return () => {
+        console.log('Removing PMTiles protocol');
+        MapLibreGL.removeProtocol('pmtiles');
+      };
+    }
+    return undefined;
+  }, []);
+
+  useEffect(() => {
     if (!data || !isPrimaryLayer) {
       return;
     }
@@ -135,6 +150,34 @@ const BoundaryLayer = memo(({ layer, before }: ComponentProps) => {
 
     dispatch(setBoundaryRelationData(dataDict));
   }, [data, dispatch, layer, isPrimaryLayer]);
+
+  if (layer.path.includes('pmtiles')) {
+    return (
+      <Source id={`source-${layer.id}`} type="vector" url={layer.path}>
+        <Layer
+          id={getLayerMapId(layer.id)}
+          type="line"
+          source={`source-${layer.id}`}
+          source-layer="global_adm2_wfp"
+          paint={{
+            ...layer.styles.line,
+            'line-opacity': isZoomLevelSufficient
+              ? layer.styles.line?.['line-opacity']
+              : 0,
+          }}
+          beforeId={before}
+        />
+        <Layer
+          id={layerId}
+          type="fill"
+          source={`source-${layer.id}`}
+          source-layer="global_adm2_wfp"
+          paint={layer.styles.fill}
+          beforeId={before}
+        />
+      </Source>
+    );
+  }
 
   if (!data) {
     return null; // boundary layer hasn't loaded yet. We load it on init inside MapView. We can't load it here since its a dependency of other layers.
