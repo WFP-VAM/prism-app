@@ -82,7 +82,6 @@ const onMouseLeave = () => (evt: MapLayerMouseEvent) =>
   onToggleHover('', evt.target);
 
 const BoundaryLayer = memo(({ layer, before }: ComponentProps) => {
-  console.log('layer', layer);
   const dispatch = useDispatch();
   const selectedMap = useSelector(mapSelector);
   const [isZoomLevelSufficient, setIsZoomLevelSufficient] = useState(
@@ -119,16 +118,14 @@ const BoundaryLayer = memo(({ layer, before }: ComponentProps) => {
 
   useEffect(() => {
     if (layer.path.includes('pmtiles')) {
-      console.log('Registering PMTiles protocol');
       const protocol = new Protocol();
       MapLibreGL.addProtocol('pmtiles', protocol.tile);
       return () => {
-        console.log('Removing PMTiles protocol');
         MapLibreGL.removeProtocol('pmtiles');
       };
     }
     return undefined;
-  }, []);
+  }, [layer.path]);
 
   useEffect(() => {
     if (!data || !isPrimaryLayer) {
@@ -158,7 +155,7 @@ const BoundaryLayer = memo(({ layer, before }: ComponentProps) => {
           id={getLayerMapId(layer.id)}
           type="line"
           source={`source-${layer.id}`}
-          source-layer="global_adm2_wfp"
+          source-layer={layer.adminCode}
           paint={{
             ...layer.styles.line,
             'line-opacity': isZoomLevelSufficient
@@ -171,7 +168,7 @@ const BoundaryLayer = memo(({ layer, before }: ComponentProps) => {
           id={layerId}
           type="fill"
           source={`source-${layer.id}`}
-          source-layer="global_adm2_wfp"
+          source-layer={layer.adminCode}
           paint={layer.styles.fill}
           beforeId={before}
         />

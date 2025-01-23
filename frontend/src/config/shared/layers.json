@@ -3,10 +3,10 @@
     "type": "boundary",
     "path": "pmtiles://https://test-vector-datastore.s3.eu-central-1.amazonaws.com/public-pmtiles/global_adm2_wfp.pmtiles",
     "opacity": 0.8,
-    "admin_code": "dv_adm0_id",
-    "admin_level_codes": ["dv_adm0_id"],
-    "admin_level_names": ["adm0_name"],
-    "admin_level_local_names": ["adm0_name"],
+    "admin_code": "global_adm2_wfp",
+    "admin_level_codes": ["adm0_id", "adm1_id", "adm2_id"],
+    "admin_level_names": ["adm2_name"],
+    "admin_level_local_names": ["adm2_name"],
     "styles:": {
       "fill": {
         "fill-opacity": 0
