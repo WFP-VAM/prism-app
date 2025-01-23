@@ -18,14 +18,14 @@ import {
 import { getFullLocationName } from 'utils/name-utils';
 
 import { languages } from 'i18n';
-import MapLibreGL, { Map as MaplibreMap } from 'maplibre-gl';
+import { Map as MaplibreMap } from 'maplibre-gl';
 import {
   findFeature,
   getEvtCoords,
   getLayerMapId,
   useMapCallback,
 } from 'utils/map-utils';
-import { Protocol } from 'pmtiles';
+import { initPmtilesProtocol } from 'utils/pmtiles-utils';
 
 function onToggleHover(cursor: string, targetMap: MaplibreMap) {
   // eslint-disable-next-line no-param-reassign, fp/no-mutation
@@ -117,15 +117,11 @@ const BoundaryLayer = memo(({ layer, before }: ComponentProps) => {
   }, [selectedMap, layer.minZoom]);
 
   useEffect(() => {
-    if (layer.path.includes('pmtiles')) {
-      const protocol = new Protocol();
-      MapLibreGL.addProtocol('pmtiles', protocol.tile);
-      return () => {
-        MapLibreGL.removeProtocol('pmtiles');
-      };
+    if (layer.format === 'pmtiles') {
+      return initPmtilesProtocol();
     }
     return undefined;
-  }, [layer.path]);
+  }, [layer.format]);
 
   useEffect(() => {
     if (!data || !isPrimaryLayer) {
@@ -148,9 +144,13 @@ const BoundaryLayer = memo(({ layer, before }: ComponentProps) => {
     dispatch(setBoundaryRelationData(dataDict));
   }, [data, dispatch, layer, isPrimaryLayer]);
 
-  if (layer.path.includes('pmtiles')) {
+  if (layer.format === 'pmtiles') {
     return (
-      <Source id={`source-${layer.id}`} type="vector" url={layer.path}>
+      <Source
+        id={`source-${layer.id}`}
+        type="vector"
+        url={`pmtiles://${layer.path}`}
+      >
         <Layer
           id={getLayerMapId(layer.id)}
           type="line"
