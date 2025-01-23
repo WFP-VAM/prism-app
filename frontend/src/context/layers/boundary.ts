@@ -13,7 +13,6 @@ export const fetchBoundaryLayerData: LazyLoader<BoundaryLayerProps> =
   async (params: LayerDataParams<BoundaryLayerProps>, { dispatch }) => {
     const { layer } = params;
     const { path } = layer;
-    console.log('path', path);
     try {
       const response = await fetchWithTimeout(
         path,
