@@ -25,6 +25,7 @@ import {
   getLayerMapId,
   useMapCallback,
 } from 'utils/map-utils';
+import { initPmtilesProtocol } from 'utils/pmtiles-utils';
 
 function onToggleHover(cursor: string, targetMap: MaplibreMap) {
   // eslint-disable-next-line no-param-reassign, fp/no-mutation
@@ -116,6 +117,13 @@ const BoundaryLayer = memo(({ layer, before }: ComponentProps) => {
   }, [selectedMap, layer.minZoom]);
 
   useEffect(() => {
+    if (layer.format === 'pmtiles') {
+      return initPmtilesProtocol();
+    }
+    return undefined;
+  }, [layer.format]);
+
+  useEffect(() => {
     if (!data || !isPrimaryLayer) {
       return;
     }
@@ -135,6 +143,38 @@ const BoundaryLayer = memo(({ layer, before }: ComponentProps) => {
 
     dispatch(setBoundaryRelationData(dataDict));
   }, [data, dispatch, layer, isPrimaryLayer]);
+
+  if (layer.format === 'pmtiles') {
+    return (
+      <Source
+        id={`source-${layer.id}`}
+        type="vector"
+        url={`pmtiles://${layer.path}`}
+      >
+        <Layer
+          id={getLayerMapId(layer.id)}
+          type="line"
+          source={`source-${layer.id}`}
+          source-layer={layer.layerName}
+          paint={{
+            ...layer.styles.line,
+            'line-opacity': isZoomLevelSufficient
+              ? layer.styles.line?.['line-opacity']
+              : 0,
+          }}
+          beforeId={before}
+        />
+        <Layer
+          id={layerId}
+          type="fill"
+          source={`source-${layer.id}`}
+          source-layer={layer.layerName}
+          paint={layer.styles.fill}
+          beforeId={before}
+        />
+      </Source>
+    );
+  }
 
   if (!data) {
     return null; // boundary layer hasn't loaded yet. We load it on init inside MapView. We can't load it here since its a dependency of other layers.
