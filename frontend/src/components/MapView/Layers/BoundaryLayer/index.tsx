@@ -155,7 +155,7 @@ const BoundaryLayer = memo(({ layer, before }: ComponentProps) => {
           id={getLayerMapId(layer.id)}
           type="line"
           source={`source-${layer.id}`}
-          source-layer={layer.adminCode}
+          source-layer={layer.layerName}
           paint={{
             ...layer.styles.line,
             'line-opacity': isZoomLevelSufficient
@@ -168,7 +168,7 @@ const BoundaryLayer = memo(({ layer, before }: ComponentProps) => {
           id={layerId}
           type="fill"
           source={`source-${layer.id}`}
-          source-layer={layer.adminCode}
+          source-layer={layer.layerName}
           paint={layer.styles.fill}
           beforeId={before}
         />
