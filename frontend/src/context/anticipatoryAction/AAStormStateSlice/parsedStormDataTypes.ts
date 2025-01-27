@@ -1,3 +1,4 @@
+import { FeatureCollection } from 'geojson';
 import { ForecastDetails, TimeSeries } from './rawStormDataTypes';
 
 export enum AACategory {
@@ -61,6 +62,7 @@ export type ParsedStormData = {
   landfallDetected?: boolean;
   forecastDetails?: ForecastDetails;
   uncertaintyCone?: FeatureProperties;
+  mergedGeoJSON: FeatureCollection<any, any>;
 };
 
 export type ResultType = {
