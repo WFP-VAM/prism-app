@@ -62,7 +62,7 @@ export type ParsedStormData = {
   landfallDetected?: boolean;
   forecastDetails?: ForecastDetails;
   uncertaintyCone?: FeatureProperties;
-  mergedGeoJSON: FeatureCollection<any, any>;
+  mergedGeoJSON?: FeatureCollection<any, any>;
 };
 
 export type ResultType = {
