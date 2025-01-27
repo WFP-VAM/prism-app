@@ -154,8 +154,8 @@ export function parseAndTransformAA(data: StormDataResponseBody): ResultType {
       }
     : undefined;
 
+  // TODO - remove as any
   const mergedGeoJSON = createMergedGeoJSON(data) as any;
-  console.log(mergedGeoJSON);
 
   return {
     data: {

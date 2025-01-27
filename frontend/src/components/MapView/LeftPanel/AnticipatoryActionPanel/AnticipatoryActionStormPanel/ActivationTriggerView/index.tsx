@@ -1,4 +1,9 @@
-import { Typography, createStyles, makeStyles } from '@material-ui/core';
+import {
+  Typography,
+  createStyles,
+  makeStyles,
+  Button,
+} from '@material-ui/core';
 import { useSelector } from 'react-redux';
 import { AADataSelector } from 'context/anticipatoryAction/AAStormStateSlice';
 import { useSafeTranslation } from 'i18n';
@@ -207,13 +212,18 @@ function ActivationTrigger({ dialogs }: ActivationTriggerProps) {
             </Typography>
           ))}
           {parsedStormData.mergedGeoJSON && (
-            <Typography
-              className={commonClasses.footerDialog}
-              component="button"
+            <Button
+              style={{
+                width: '50%',
+                margin: '1rem auto',
+              }}
+              className={commonClasses.footerButton}
+              variant="outlined"
+              fullWidth
               onClick={handleDownloadGeoJSON}
             >
-              {t('Download GeoJSON')}
-            </Typography>
+              <Typography>{t('Download GeoJSON')}</Typography>
+            </Button>
           )}
         </div>
       </div>
