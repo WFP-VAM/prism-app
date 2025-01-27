@@ -96,6 +96,24 @@ function ActivationTrigger({ dialogs }: ActivationTriggerProps) {
   const parsedStormData = useSelector(AADataSelector);
   const commonClasses = useAACommonStyles();
 
+  const handleDownloadGeoJSON = () => {
+    if (!parsedStormData.mergedGeoJSON || !parsedStormData.forecastDetails)
+      return;
+
+    const dataStr = JSON.stringify(parsedStormData.mergedGeoJSON);
+    const dataBlob = new Blob([dataStr], { type: 'application/json' });
+    const url = URL.createObjectURL(dataBlob);
+    const link = document.createElement('a');
+    link.href = url;
+    const date =
+      parsedStormData.forecastDetails.reference_time.split(':00Z')[0];
+    link.download = `${parsedStormData.forecastDetails?.cyclone_name || 'cyclone'}_${date}.geojson`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  };
+
   const filteredActiveDistricts = parsedStormData.activeDistricts
     ? Object.entries(parsedStormData.activeDistricts).filter(([category]) =>
         AAPanelCategories.includes(category as AACategory),
@@ -188,6 +206,15 @@ function ActivationTrigger({ dialogs }: ActivationTriggerProps) {
               {t(dialog.text)}
             </Typography>
           ))}
+          {parsedStormData.mergedGeoJSON && (
+            <Typography
+              className={commonClasses.footerDialog}
+              component="button"
+              onClick={handleDownloadGeoJSON}
+            >
+              {t('Download GeoJSON')}
+            </Typography>
+          )}
         </div>
       </div>
     </div>
