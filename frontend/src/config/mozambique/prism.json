@@ -286,10 +286,10 @@
           ]
         }
       ],
-      "dry_periods": ["days_dry", "streak_dry_days", "cdi"],
+      "dry_periods": ["days_dry", "streak_dry_days"],
       "extreme_rain_events": [
         {
-          "group_title": "Rainfall categories:",
+          "group_title": "Number of days of rainfall:",
           "activate_all": false,
           "layers": [
             {
@@ -377,9 +377,17 @@
           "activate_all": false,
           "layers": [
             {
-              "id": "ipc_phase_2023",
-              "label": "2023",
+              "id": "ipc_phase_projection_2024_2025_v2",
+              "label": "Projection October 2024 to March 2025"
+            },
+            {
+              "id": "ipc_phase_2024",
+              "label": "2024",
               "main": true
+            },
+            {
+              "id": "ipc_phase_2023",
+              "label": "2023"
             },
             {
               "id": "ipc_phase_2022",
@@ -450,26 +458,7 @@
       ]
     },
     "exposure": {
-      "population": ["census"]
-    },
-    "flooding": {
-      "flood_status": [
-        {
-          "group_title": "Flood Status",
-          "activate_all": true,
-          "layers": [
-            {
-              "id": "google_flood_status_at_gauges",
-              "label": "Flood Gauges",
-              "main": true
-            },
-            {
-              "id": "google_flood_inundation_maps",
-              "label": "Inundation Maps"
-            }
-          ]
-        }
-      ]
+      "population": ["pop_proj_2025"]
     }
   }
 }

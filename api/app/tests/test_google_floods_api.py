@@ -1,4 +1,3 @@
-import json
 import logging
 
 import pytest
@@ -66,7 +65,6 @@ def test_get_google_floods_gauges_api_case_insensitive():
     assert response.status_code == 200
 
     response_geojson = response.json()
-    print(response_geojson)
     assert response_geojson["type"] == "FeatureCollection"
     assert len(response_geojson["features"]) > 0
 
