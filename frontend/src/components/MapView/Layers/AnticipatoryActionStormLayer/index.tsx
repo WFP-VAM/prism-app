@@ -367,7 +367,6 @@ const AnticipatoryActionStormLayer = React.memo(
             >
               <Layer
                 id="exposed-area-48kt"
-                beforeId="aa-storm-wind-points-layer"
                 type="line"
                 paint={{
                   'line-color': getAAColor(AACategory.Moderate, 'Active', true)
@@ -386,7 +385,6 @@ const AnticipatoryActionStormLayer = React.memo(
             >
               <Layer
                 id="exposed-area-64kt"
-                beforeId="aa-storm-wind-points-layer"
                 type="line"
                 paint={{
                   'line-color': getAAColor(AACategory.Severe, 'Active', true)
@@ -409,7 +407,6 @@ const AnticipatoryActionStormLayer = React.memo(
             <Layer
               id="storm-risk-map"
               type="line"
-              beforeId="aa-storm-wind-points-layer"
               paint={{
                 'line-opacity': 0.8,
                 'line-color': '#2ecc71',
@@ -423,8 +420,13 @@ const AnticipatoryActionStormLayer = React.memo(
         {timeSeries && (
           <Source data={timeSeries} type="geojson">
             <Layer
-              id="aa-storm-wind-points-line-past"
+              id="aa-storm-wind-points-layer"
+              type="symbol"
+              layout={{ 'icon-image': ['image', ['get', 'iconName']] }}
+            />
+            <Layer
               beforeId="aa-storm-wind-points-layer"
+              id="aa-storm-wind-points-line-past"
               type="line"
               filter={['==', ['get', 'data_type'], 'analysis']}
               paint={{
@@ -433,8 +435,8 @@ const AnticipatoryActionStormLayer = React.memo(
               }}
             />
             <Layer
-              id="aa-storm-wind-points-line-future"
               beforeId="aa-storm-wind-points-layer"
+              id="aa-storm-wind-points-line-future"
               type="line"
               filter={['==', ['get', 'data_type'], 'forecast']}
               paint={{
@@ -442,11 +444,6 @@ const AnticipatoryActionStormLayer = React.memo(
                 'line-width': 2,
                 'line-dasharray': [2, 1],
               }}
-            />
-            <Layer
-              id="aa-storm-wind-points-layer"
-              type="symbol"
-              layout={{ 'icon-image': ['image', ['get', 'iconName']] }}
             />
           </Source>
         )}
