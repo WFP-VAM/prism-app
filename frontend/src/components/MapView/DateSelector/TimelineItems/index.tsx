@@ -188,10 +188,12 @@ const useStyles = makeStyles(() =>
     AADroughtTooltip: {
       backgroundColor: '#222222',
       opacity: '0.85 !important',
+      maxWidth: 'none',
     },
     AAStormTooltip: {
       backgroundColor: '#FFFFFF',
       border: '1px solid #D3D3D3',
+      maxWidth: 'none',
     },
     layerOneDate: createLayerStyles(LIGHT_BLUE_HEX, 0),
     layerTwoDate: createLayerStyles(LIGHT_GREEN_HEX, 10),
