@@ -325,12 +325,75 @@ const AnticipatoryActionStormLayer = React.memo(
       return null;
     }
 
+    const getBeforeId = () => {
+      if (stormData.uncertaintyCone) {
+        return 'storm-risk-map';
+      }
+      if (timeSeries) {
+        return 'aa-storm-wind-points-line-future';
+      }
+
+      return '';
+    };
+
     // Create a report id based on the reference time of the report
     const reportId = stormData.forecastDetails?.reference_time || '';
 
     return (
       <>
-        {/* First render all fill layers */}
+        {/* Render wind points first so they are available as beforeId */}
+        {timeSeries && (
+          <Source data={timeSeries} type="geojson">
+            <Layer
+              id="aa-storm-wind-points-layer"
+              type="symbol"
+              layout={{ 'icon-image': ['image', ['get', 'iconName']] }}
+            />
+            <Layer
+              id="aa-storm-wind-points-line-past"
+              beforeId="aa-storm-wind-points-layer"
+              type="line"
+              filter={['==', ['get', 'data_type'], 'analysis']}
+              paint={{
+                'line-color': 'black',
+                'line-width': 2,
+              }}
+            />
+            <Layer
+              id="aa-storm-wind-points-line-future"
+              beforeId="aa-storm-wind-points-layer"
+              type="line"
+              filter={['==', ['get', 'data_type'], 'forecast']}
+              paint={{
+                'line-color': 'red',
+                'line-width': 2,
+                'line-dasharray': [2, 1],
+              }}
+            />
+          </Source>
+        )}
+
+        {/* Render uncertainty cone */}
+        {stormData.uncertaintyCone && (
+          <Source
+            key={`uncertainty-cone-map-${reportId}`}
+            type="geojson"
+            data={stormData.uncertaintyCone}
+          >
+            <Layer
+              id="storm-risk-map"
+              beforeId="aa-storm-wind-points-line-future"
+              type="line"
+              paint={{
+                'line-opacity': 0.8,
+                'line-color': '#2ecc71',
+                'line-width': 2,
+              }}
+            />
+          </Source>
+        )}
+
+        {/* Render fill layers */}
         {coloredDistrictsLayer && (
           <Source
             key={`storm-districts-${reportId}`}
@@ -340,6 +403,7 @@ const AnticipatoryActionStormLayer = React.memo(
           >
             <Layer
               id="storm-districts-fill"
+              beforeId={getBeforeId()}
               type="fill"
               paint={{
                 'fill-color': ['get', 'fillColor'],
@@ -348,6 +412,7 @@ const AnticipatoryActionStormLayer = React.memo(
             />
             <Layer
               id="storm-districts-border"
+              beforeId={getBeforeId()}
               type="line"
               paint={{
                 'line-color': 'black',
@@ -357,7 +422,7 @@ const AnticipatoryActionStormLayer = React.memo(
           </Source>
         )}
 
-        {/* 48kt and 64kt wind forecast areas */}
+        {/* Render colored layers */}
         <>
           {stormData.activeDistricts?.Moderate?.polygon && (
             <Source
@@ -367,6 +432,7 @@ const AnticipatoryActionStormLayer = React.memo(
             >
               <Layer
                 id="exposed-area-48kt"
+                beforeId={getBeforeId()}
                 type="line"
                 paint={{
                   'line-color': getAAColor(AACategory.Moderate, 'Active', true)
@@ -385,6 +451,7 @@ const AnticipatoryActionStormLayer = React.memo(
             >
               <Layer
                 id="exposed-area-64kt"
+                beforeId={getBeforeId()}
                 type="line"
                 paint={{
                   'line-color': getAAColor(AACategory.Severe, 'Active', true)
@@ -396,57 +463,6 @@ const AnticipatoryActionStormLayer = React.memo(
             </Source>
           )}
         </>
-
-        {/* Uncertainty cone */}
-        {stormData.uncertaintyCone && (
-          <Source
-            key={`uncertainty-cone-map-${reportId}`}
-            type="geojson"
-            data={stormData.uncertaintyCone}
-          >
-            <Layer
-              id="storm-risk-map"
-              type="line"
-              paint={{
-                'line-opacity': 0.8,
-                'line-color': '#2ecc71',
-                'line-width': 2,
-              }}
-            />
-          </Source>
-        )}
-
-        {/* Render wind points last so they appear on top */}
-        {timeSeries && (
-          <Source data={timeSeries} type="geojson">
-            <Layer
-              id="aa-storm-wind-points-layer"
-              type="symbol"
-              layout={{ 'icon-image': ['image', ['get', 'iconName']] }}
-            />
-            <Layer
-              beforeId="aa-storm-wind-points-layer"
-              id="aa-storm-wind-points-line-past"
-              type="line"
-              filter={['==', ['get', 'data_type'], 'analysis']}
-              paint={{
-                'line-color': 'black',
-                'line-width': 2,
-              }}
-            />
-            <Layer
-              beforeId="aa-storm-wind-points-layer"
-              id="aa-storm-wind-points-line-future"
-              type="line"
-              filter={['==', ['get', 'data_type'], 'forecast']}
-              paint={{
-                'line-color': 'red',
-                'line-width': 2,
-                'line-dasharray': [2, 1],
-              }}
-            />
-          </Source>
-        )}
 
         <AAStormDatePopup timeSeries={stormData.timeSeries} />
 
