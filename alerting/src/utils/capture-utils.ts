@@ -10,7 +10,7 @@ interface CropRegion {
 interface ScreenshotOptions {
   url: string;
   crop?: CropRegion;
-  elementToScreenshot?: string;
+  screenshotTargetSelector?: string;
   elementsToHide?: string[];
 }
 
@@ -20,10 +20,10 @@ const DEFAULT_CROP: CropRegion = {
   width: 1920,
   height: 1080,
 };
-const DEFAULT_ELEMENT = '.maplibregl-canvas';
+const DEFAULT_TARGET = '.maplibregl-canvas';
 
 async function captureScreenshotFromUrl(options: ScreenshotOptions): Promise<string> {
-  const { url, crop = DEFAULT_CROP, elementToScreenshot = DEFAULT_ELEMENT, elementsToHide = [] } = options;
+  const { url, crop = DEFAULT_CROP, screenshotTargetSelector = DEFAULT_TARGET, elementsToHide = [] } = options;
 
   let browser: Browser | null = null;
   let base64Image: string = '';
@@ -40,7 +40,7 @@ async function captureScreenshotFromUrl(options: ScreenshotOptions): Promise<str
     await page.goto(url, { waitUntil: 'load' });
 
     // Wait for the element to be visible in the DOM
-    await page.waitForSelector(elementToScreenshot, { visible: true });
+    await page.waitForSelector(screenshotTargetSelector, { visible: true });
 
     // Hide specified elements if any
     if (elementsToHide.length > 0) {
@@ -62,18 +62,18 @@ async function captureScreenshotFromUrl(options: ScreenshotOptions): Promise<str
         return element && element.offsetWidth > 0 && element.offsetHeight > 0;
       },
       { timeout: 30000 },
-      elementToScreenshot
+      screenshotTargetSelector
     );
 
     // Get the bounding box of the target element
-    const targetElement = await page.$(elementToScreenshot);
+    const targetElement = await page.$(screenshotTargetSelector);
     if (!targetElement) {
-      throw new Error(`Element with selector "${elementToScreenshot}" not found.`);
+      throw new Error(`Element with selector "${screenshotTargetSelector}" not found.`);
     }
 
     const boundingBox: BoundingBox | null = await targetElement.boundingBox();
     if (!boundingBox) {
-      throw new Error(`Unable to retrieve bounding box for "${elementToScreenshot}".`);
+      throw new Error(`Unable to retrieve bounding box for "${screenshotTargetSelector}".`);
     }
 
     const finalCrop: CropRegion = crop || {
