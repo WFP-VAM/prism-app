@@ -422,7 +422,7 @@ const AnticipatoryActionStormLayer = React.memo(
           </Source>
         )}
 
-        {/* Render colored layers */}
+        {/* 48kt and 64kt wind forecast areas */}
         <>
           {stormData.activeDistricts?.Moderate?.polygon && (
             <Source
