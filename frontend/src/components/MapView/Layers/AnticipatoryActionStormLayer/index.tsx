@@ -325,7 +325,7 @@ const AnticipatoryActionStormLayer = React.memo(
       return null;
     }
 
-    // Returns the "beforeId" to control layer rendering order based on conditions
+    // Ensure the layer exists before assigning a beforeId for correct rendering order
     const getBeforeId = () => {
       if (stormData.uncertaintyCone) {
         return 'storm-risk-map';
