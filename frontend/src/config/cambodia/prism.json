@@ -34,7 +34,23 @@
       "flood_monitoring": ["flood_extent"],
       "flood_risk": ["flood_hazard"],
       "early_warning": ["ews_remote"],
-      "river_discharge_forecast": ["forecast_river_discharge_at_gauges"]
+      "flood_status": [
+        {
+          "group_title": "Flood Status",
+          "activate_all": true,
+          "layers": [
+            {
+              "id": "forecast_river_discharge_at_gauges",
+              "label": "Flood Gauges",
+              "main": true
+            },
+            {
+              "id": "predicted_flood_inundation_maps",
+              "label": "Predicted Inundation Maps"
+            }
+          ]
+        }
+      ]
     },
     "rainfall": {
       "forecasts": [
@@ -210,25 +226,6 @@
     },
     "field_reports": {
       "field_reports": ["flood_report", "drought_report", "kh_incident_report"]
-    },
-    "flooding": {
-      "flood_status": [
-        {
-          "group_title": "Flood Status",
-          "activate_all": true,
-          "layers": [
-            {
-              "id": "google_flood_status_at_gauges",
-              "label": "Flood Gauges",
-              "main": true
-            },
-            {
-              "id": "google_flood_inundation_maps",
-              "label": "Inundation Maps"
-            }
-          ]
-        }
-      ]
     }
   }
 }
