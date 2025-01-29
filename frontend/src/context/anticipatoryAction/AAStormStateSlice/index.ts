@@ -74,7 +74,7 @@ export const loadStormReport = createAsyncThunk<
 );
 
 // Update the DateItem type import or extend it locally
-type ExtendedDateItem = DateItem & {
+export type ExtendedDateItem = DateItem & {
   stormNames: string[];
 };
 

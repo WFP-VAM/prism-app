@@ -9,7 +9,10 @@ import React from 'react';
 import { useSafeTranslation } from 'i18n';
 import { useDispatch } from 'react-redux';
 import { updateDateRange } from 'context/mapStateSlice';
-import { setSelectedStormName } from 'context/anticipatoryAction/AAStormStateSlice/index';
+import {
+  setSelectedStormName,
+  ExtendedDateItem,
+} from 'context/anticipatoryAction/AAStormStateSlice/index';
 import { AnticipatoryAction, PanelSize } from 'config/types';
 import { getFormattedDate } from 'utils/date-utils';
 import { DateFormat } from 'utils/name-utils';
@@ -75,21 +78,26 @@ function AnticipatoryActionStormPanel() {
         >
           {AAAvailableDates &&
             // Create a menu item for each date-storm combination
-            AAAvailableDates.flatMap(date =>
-              date.stormNames.map(stormName => (
+            (AAAvailableDates as ExtendedDateItem[]).flatMap(stormDate =>
+              stormDate.stormNames.map(stormName => (
                 <MenuItem
-                  key={`${stormName}-${date.displayDate}`}
-                  value={`${getFormattedDate(date.displayDate, 'default')} ${stormName.toUpperCase()}`}
+                  key={`${stormName}-${stormDate.displayDate}`}
+                  value={`${getFormattedDate(stormDate.displayDate, 'default')} ${stormName.toUpperCase()}`}
                   onClick={() => {
                     updateHistory(
                       'date',
-                      getFormattedDate(date.displayDate, 'default') as string,
+                      getFormattedDate(
+                        stormDate.displayDate,
+                        'default',
+                      ) as string,
                     );
-                    dispatch(updateDateRange({ startDate: date.displayDate }));
+                    dispatch(
+                      updateDateRange({ startDate: stormDate.displayDate }),
+                    );
                     dispatch(setSelectedStormName(stormName));
                   }}
                 >
-                  {`${getFormattedDate(date.displayDate, DateFormat.Default)} ${stormName.toUpperCase()}`}
+                  {`${getFormattedDate(stormDate.displayDate, DateFormat.Default)} ${stormName.toUpperCase()}`}
                 </MenuItem>
               )),
             )}
