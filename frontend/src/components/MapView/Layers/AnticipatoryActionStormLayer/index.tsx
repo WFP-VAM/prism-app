@@ -173,7 +173,7 @@ const AnticipatoryActionStormLayer = React.memo(
         ? enhanceTimeSeries(stormData.timeSeries as unknown as TimeSeries)
         : null;
 
-    // Add this useEffect to handle map fitting when timeSeries data is available
+    // Handle map fitting when timeSeries data is available
     useEffect(() => {
       if (map && timeSeries?.features?.length) {
         // Get all coordinates from both past and forecast lines
