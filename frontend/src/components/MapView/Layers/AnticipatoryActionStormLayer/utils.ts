@@ -1,12 +1,15 @@
 import {
-  isSameDay,
-  parseJSON,
-  format,
-  addHours,
-  differenceInHours,
-} from 'date-fns';
+  AAStormTimeSeriesFeature,
+  TimeSerieFeatureProperty,
+} from 'context/anticipatoryAction/AAStormStateSlice/rawStormDataTypes';
+import { isSameDay, parseJSON, format, differenceInHours } from 'date-fns';
+import { MapGeoJSONFeature } from 'maplibre-gl';
+import { TZDate } from '@date-fns/tz';
 
-export function getDateInUTC(time: string, hasHours: boolean = true) {
+export function getDateInUTC(
+  time: string | undefined,
+  hasHours: boolean = true,
+) {
   try {
     return parseJSON(time + (!hasHours ? ' 00:00:00' : ''));
   } catch {
@@ -34,15 +37,29 @@ export function formatReportDate(date: string) {
     return '';
   }
 
-  return formatInUTC(parsedDate, 'yyy-MM-dd Kaaa');
+  return formatInLocalTime(parsedDate, 'yyy-MM-dd Kaaa (O)');
 }
 
-export function formatInUTC(dateInUTC: Date, fmt: string) {
-  const localTimeZone = new Date().getTimezoneOffset(); // tz in minutes positive or negative
-  const hoursToAddOrRemove = Math.round(localTimeZone / 60);
-  const shiftedDate = addHours(dateInUTC, hoursToAddOrRemove);
+export function formatInUTC(date: Date, fmt: string) {
+  const dateInUTC = new TZDate(date, 'Universal');
 
-  return format(shiftedDate, fmt);
+  return format(dateInUTC, fmt);
+}
+
+/*
+ * Format a date to local time
+ * note: So far, the storm Anticipatory Action module is only used by countries using the mozambic time (namely Mozambic and Zimbabwe).
+ * When additional countries will need to access this module, this function will have to be revisited
+ */
+
+export function formatInLocalTime(
+  date: Date,
+  fmt: string,
+  timeZone: string = 'Africa/Blantyre',
+): string {
+  const dateInLocalTime = new TZDate(date, timeZone);
+
+  return format(dateInLocalTime, fmt);
 }
 
 export function formatLandfallDate(dateRange: string[]) {
@@ -52,7 +69,7 @@ export function formatLandfallDate(dateRange: string[]) {
     return '';
   }
 
-  return formatInUTC(parsedDate, 'yyy-MM-dd HH:mm');
+  return formatInLocalTime(parsedDate, 'yyy-MM-dd HH:mm O');
 }
 
 export function formatLandfallTimeRange(dateRange: string[]) {
@@ -91,4 +108,40 @@ export function formatLandfallEstimatedLeadtime(
   }
 
   return `${minHour} - ${maxHour} hrs`;
+}
+
+export function formatWindPointDate(time: string) {
+  const dateInUTC = getDateInUTC(time);
+
+  if (!dateInUTC) {
+    return '';
+  }
+
+  return formatInLocalTime(dateInUTC, 'dd - Kaaa (O)');
+}
+
+export function parseGeoJsonFeature(
+  mapGeoJSONFeature?: MapGeoJSONFeature,
+): AAStormTimeSeriesFeature | null {
+  if (!mapGeoJSONFeature) {
+    return null;
+  }
+  if (mapGeoJSONFeature.geometry.type !== 'Point') {
+    return null;
+  }
+  const { properties } = mapGeoJSONFeature;
+
+  if (
+    !('time' in properties) &&
+    !('data_type' in properties) &&
+    !('development' in properties)
+  ) {
+    return null;
+  }
+
+  return {
+    geometry: mapGeoJSONFeature.geometry,
+    type: 'Feature',
+    properties: properties as TimeSerieFeatureProperty,
+  };
 }

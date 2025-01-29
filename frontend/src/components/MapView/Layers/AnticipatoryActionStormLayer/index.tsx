@@ -23,10 +23,13 @@ import { useWindStatesByTime } from 'components/MapView/DateSelector/TimelineIte
 import { getAAColor } from 'components/MapView/LeftPanel/AnticipatoryActionPanel/AnticipatoryActionStormPanel/utils';
 import { AACategory } from 'context/anticipatoryAction/AAStormStateSlice/parsedStormDataTypes';
 import anticipatoryActionIcons from 'components/Common/AnticipatoryAction/icons';
+import { AAStormTimeSeriesFeature } from 'context/anticipatoryAction/AAStormStateSlice/rawStormDataTypes';
 import AAStormDatePopup from './AAStormDatePopup';
 import AAStormLandfallPopup from './AAStormLandfallPopup';
 
 import { TimeSeries } from './types';
+import AAStormLandfallMarker from './AAStormLandfallPopup/AAStormLandfallMarker/AAStormLandfallMarker';
+import { parseGeoJsonFeature } from './utils';
 
 interface AnticipatoryActionStormLayerProps {
   layer: AnticipatoryActionLayerProps;
@@ -104,8 +107,10 @@ const AnticipatoryActionStormLayer = React.memo(
     ) as LayerData<BoundaryLayerProps> | undefined;
     const { data: boundaryData } = boundaryLayerState || {};
 
-    const [selectedFeature, setSelectedFeature] =
-      useState<Feature<Point> | null>(null);
+    const [selectedFeature, setSelectedFeature] = useState<{
+      feature: AAStormTimeSeriesFeature | null;
+      hasBeenDeselected: boolean;
+    }>({ feature: null, hasBeenDeselected: false });
 
     function enhanceTimeSeries(timeSeries: TimeSeries) {
       const { features, ...timeSeriesRest } = timeSeries;
@@ -169,7 +174,7 @@ const AnticipatoryActionStormLayer = React.memo(
     }
 
     function landfallPopupCloseHandler() {
-      setSelectedFeature(null);
+      setSelectedFeature({ feature: null, hasBeenDeselected: true });
     }
 
     // Load all images from the mapping
@@ -227,7 +232,19 @@ const AnticipatoryActionStormLayer = React.memo(
       e.preventDefault();
       dispatch(hidePopup()); // hides the black tooltip containing the district names
       const feature = e.features?.[0];
-      setSelectedFeature(feature as Feature<Point>);
+
+      if (!selectedFeature.feature) {
+        if (selectedFeature.hasBeenDeselected) {
+          setSelectedFeature({
+            feature: null,
+            hasBeenDeselected: false,
+          });
+        }
+        setSelectedFeature({
+          feature: parseGeoJsonFeature(feature),
+          hasBeenDeselected: false,
+        });
+      }
     };
 
     useMapCallback<'click', null>(
@@ -436,14 +453,16 @@ const AnticipatoryActionStormLayer = React.memo(
 
         <AAStormDatePopup timeSeries={stormData.timeSeries} />
 
-        {selectedFeature && stormData.landfall?.time && (
+        {selectedFeature.feature && (
           <AAStormLandfallPopup
-            point={selectedFeature.geometry}
+            feature={selectedFeature.feature}
             reportDate={stormData.forecastDetails?.reference_time || ''}
             landfallInfo={stormData.landfall}
             onClose={() => landfallPopupCloseHandler()}
           />
         )}
+
+        <AAStormLandfallMarker stormData={stormData} />
       </>
     );
   },
