@@ -99,7 +99,7 @@ export async function sendEmail({
  * @returns {Promise<void>} - Resolves when the email is sent.
  */
 
-const sendStormAlertEmail = async (data: StormAlertData): Promise<void> => {
+export const sendStormAlertEmail = async (data: StormAlertData): Promise<void> => {
     const emailData: StormAlertEmail = {
         cycloneName: data.cycloneName,
         cycloneTime: data.cycloneTime,
