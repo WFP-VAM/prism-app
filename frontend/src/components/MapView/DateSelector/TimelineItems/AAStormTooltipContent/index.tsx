@@ -5,7 +5,9 @@ import { formatInUTC } from 'components/MapView/Layers/AnticipatoryActionStormLa
 import { createStyles, makeStyles, Typography } from '@material-ui/core';
 import {
   AADataSelector,
+  AASelectedStormNameSelector,
   loadStormReport,
+  setSelectedStormName,
 } from 'context/anticipatoryAction/AAStormStateSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import { updateDateRange } from 'context/mapStateSlice';
@@ -16,7 +18,11 @@ import { useWindStatesByTime } from '../hooks';
 function AAStormTooltipContent({ date }: AAStormTooltipContentProps) {
   const { updateHistory } = useUrlHistory();
   const stormData = useSelector(AADataSelector);
-  const windStates = useWindStatesByTime(date.value);
+  const selectedStormName = useSelector(AASelectedStormNameSelector);
+  const windStates = useWindStatesByTime(
+    date.value,
+    selectedStormName || undefined,
+  );
   const classes = useStyles();
   const dispatch = useDispatch();
 
@@ -29,6 +35,7 @@ function AAStormTooltipContent({ date }: AAStormTooltipContentProps) {
     const time = stormDate.getTime();
     updateHistory('date', getFormattedDate(time, 'default') as string);
     dispatch(updateDateRange({ startDate: time }));
+    dispatch(setSelectedStormName(windStates.cycloneName));
     dispatch(
       loadStormReport({
         date: value,

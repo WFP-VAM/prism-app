@@ -22,6 +22,7 @@ export type AAPhaseType = (typeof AAPhase)[number];
 export type AnticipatoryActionState = {
   data: ParsedStormData;
   windStateReports: AAStormWindStateReports;
+  selectedStormName: string | null;
   // availableDates used to update layer available dates after csv processed
   availableDates?: DateItem[] | undefined;
   loading: boolean;

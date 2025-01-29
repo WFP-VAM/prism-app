@@ -17,6 +17,7 @@ import {
   AADataSelector,
   AALoadingSelector,
   loadStormReport,
+  AASelectedStormNameSelector,
 } from 'context/anticipatoryAction/AAStormStateSlice';
 import { updateDateRange } from 'context/mapStateSlice';
 import { useWindStatesByTime } from 'components/MapView/DateSelector/TimelineItems/hooks';
@@ -64,7 +65,11 @@ const AnticipatoryActionStormLayer = React.memo(
 
     const stormData = useSelector(AADataSelector);
     const loading = useSelector(AALoadingSelector);
-    const windStates = useWindStatesByTime(selectedDate || 0);
+    const selectedStormName = useSelector(AASelectedStormNameSelector);
+    const windStates = useWindStatesByTime(
+      selectedDate || 0,
+      selectedStormName || undefined,
+    );
     const latestWindState = windStates.states[windStates.states.length - 1];
     const dispatch = useDispatch();
 
@@ -77,8 +82,10 @@ const AnticipatoryActionStormLayer = React.memo(
         (stormData.forecastDetails &&
           !loading &&
           latestWindState?.ref_time &&
-          stormData.forecastDetails?.reference_time?.split('T')[0] !==
-            latestWindState.ref_time?.split('T')[0])
+          (stormData.forecastDetails?.reference_time?.split('T')[0] !==
+            latestWindState.ref_time?.split('T')[0] ||
+            stormData.forecastDetails?.cyclone_name.toLowerCase() !==
+              windStates.cycloneName?.toLowerCase()))
       ) {
         dispatch(
           loadStormReport({
@@ -97,6 +104,7 @@ const AnticipatoryActionStormLayer = React.memo(
       loading,
       stormData,
       latestWindState,
+      selectedStormName,
       windStates.cycloneName,
       selectedDate,
       startDate,

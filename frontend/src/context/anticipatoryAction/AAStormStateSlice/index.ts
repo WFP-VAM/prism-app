@@ -1,4 +1,4 @@
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { DateItem } from 'config/types';
 import type { CreateAsyncThunkTypes, RootState } from '../../store';
 import { AAStormWindStateReports, AnticipatoryActionState } from './types';
@@ -10,6 +10,7 @@ const initialState: AnticipatoryActionState = {
   data: {},
   windStateReports: {},
   availableDates: undefined,
+  selectedStormName: null,
   loading: false,
   error: null,
 };
@@ -72,24 +73,20 @@ export const loadStormReport = createAsyncThunk<
   },
 );
 
+// Update the DateItem type import or extend it locally
+type ExtendedDateItem = DateItem & {
+  stormNames: string[];
+};
+
 export const loadWindStateReports = createAsyncThunk<
-  { reports: AAStormWindStateReports; availableDates: DateItem[] },
+  { reports: AAStormWindStateReports; availableDates: ExtendedDateItem[] },
   undefined,
   CreateAsyncThunkTypes & {
     rejectValue: unknown;
   }
 >(
   'anticipatoryActionStormState/loadWindStateReports',
-  async (
-    _,
-    { rejectWithValue },
-  ): Promise<
-    | {
-        reports: AAStormWindStateReports;
-        availableDates: DateItem[];
-      }
-    | any
-  > => {
+  async (_, { rejectWithValue }) => {
     try {
       const response = await fetch(
         'https://data.earthobservation.vam.wfp.org/public-share/aa/ts/outputs/dates.json',
@@ -105,6 +102,7 @@ export const loadWindStateReports = createAsyncThunk<
           queryDate: timestamp,
           startDate: timestamp,
           endDate: timestamp,
+          stormNames: Object.keys(responseData[dateStr]),
         };
       });
       return {
@@ -120,7 +118,15 @@ export const loadWindStateReports = createAsyncThunk<
 export const anticipatoryActionStormStateSlice = createSlice({
   name: 'anticipatoryActionStormState',
   initialState,
-  reducers: {},
+  reducers: {
+    setSelectedStormName: (
+      state,
+      { payload }: PayloadAction<AnticipatoryActionState['selectedStormName']>,
+    ) => ({
+      ...state,
+      selectedStormName: payload,
+    }),
+  },
   extraReducers: builder => {
     builder.addCase(loadStormReport.fulfilled, (state, { payload }) => ({
       ...state,
@@ -179,5 +185,11 @@ export const AAAvailableDatesSelector = (state: RootState) =>
 
 export const AAWindStateReports = (state: RootState) =>
   state.anticipatoryActionStormState.windStateReports;
+
+export const { setSelectedStormName } =
+  anticipatoryActionStormStateSlice.actions;
+
+export const AASelectedStormNameSelector = (state: RootState) =>
+  state.anticipatoryActionStormState.selectedStormName;
 
 export default anticipatoryActionStormStateSlice.reducer;
