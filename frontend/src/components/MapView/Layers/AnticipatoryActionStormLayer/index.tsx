@@ -178,16 +178,15 @@ const AnticipatoryActionStormLayer = React.memo(
       if (map && timeSeries?.features?.length) {
         // Get all coordinates from both past and forecast lines
         const allCoordinates = timeSeries.features
-          .filter(f => f.geometry.type === 'LineString')
-          .flatMap(f => f.geometry.coordinates);
+          .filter(
+            (f: { geometry: { type: string } }) =>
+              f.geometry.type === 'LineString',
+          )
+          .flatMap(
+            (f: { geometry: { coordinates: any } }) => f.geometry.coordinates,
+          );
 
         if (allCoordinates.length) {
-          // Create bounds that include all points with some padding
-          const bounds = new maplibregl.LngLatBounds();
-          allCoordinates.forEach(coord => {
-            bounds.extend(coord);
-          });
-
           // Get current map bounds
           const currentBounds = map.getBounds();
 
@@ -196,21 +195,34 @@ const AnticipatoryActionStormLayer = React.memo(
           const easternMargin = viewWidth * 0.2;
 
           // Check if ANY part of the storm path intersects with current view (including eastern margin)
-          const isAnyPointVisible = allCoordinates.some(coord => {
+          const isAnyPointVisible = allCoordinates.some((coord: [any, any]) => {
             const [lng, lat] = coord;
             return (
               lng >= currentBounds.getWest() &&
-              lng <= currentBounds.getEast() + easternMargin &&
+              lng <= currentBounds.getEast() - easternMargin &&
               lat >= currentBounds.getSouth() &&
               lat <= currentBounds.getNorth()
             );
           });
 
-          // Only fit bounds if no part of the storm is visible
+          // Only adjust zoom if no part of the storm is visible
           if (!isAnyPointVisible) {
+            // Calculate the bounds of the storm path
+            const bounds = new maplibregl.LngLatBounds();
+            allCoordinates.forEach((coord: number[]) => {
+              // Ensure coord is a valid [lng, lat] array before extending
+              if (
+                Array.isArray(coord) &&
+                coord.length === 2 &&
+                !Number.isNaN(coord[0]) &&
+                !Number.isNaN(coord[1])
+              ) {
+                bounds.extend([coord[0], coord[1]]);
+              }
+            });
+
             map.fitBounds(bounds, {
               padding: { top: 50, bottom: 50, left: 50, right: 200 }, // More padding on the right
-              duration: 1000,
             });
           }
         }
