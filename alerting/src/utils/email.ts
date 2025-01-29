@@ -99,7 +99,7 @@ export async function sendEmail({
  * @returns {Promise<void>} - Resolves when the email is sent.
  */
 
-const sendStormAlertEmail = async (data: StormAlertData) => {
+const sendStormAlertEmail = async (data: StormAlertData): Promise<void> => {
     const emailData: StormAlertEmail = {
         cycloneName: data.cycloneName,
         cycloneTime: data.cycloneTime,
@@ -108,8 +108,8 @@ const sendStormAlertEmail = async (data: StormAlertData) => {
         redirectUrl: data.redirectUrl,
         base64Image: data.base64Image,
         icons: {
-          mapIcon: `data:image/png;base64,${encodeImageToBase64('icons/mapIcon.png')}`,
-          arrowForwardIcon: `data:image/png;base64,${encodeImageToBase64('icons/arrowForwardIcon.png')}`,
+            mapIcon: `data:image/png;base64,${encodeImageToBase64('icons/mapIcon.png')}`,
+            arrowForwardIcon: `data:image/png;base64,${encodeImageToBase64('icons/arrowForwardIcon.png')}`,
         },
         unsubscribeUrl: '',
         windspeed: data.windspeed,
@@ -122,11 +122,22 @@ const sendStormAlertEmail = async (data: StormAlertData) => {
         html: '',
         text: '',
     };
-    ejs.renderFile(path.join(__dirname, 'templates', 'storm-alert.ejs'), emailData, async (err: Error | null, html: string) => {
-        if (err) {
-            console.error('Error rendering EJS template:', err);
-        }
-        mailOptions.html = html;
-        await sendEmail(mailOptions);
-    });
-}
+
+    try {
+      const html: string = await new Promise((resolve, reject) => {
+          ejs.renderFile(path.join(__dirname, 'templates', 'storm-alert.ejs'), emailData, (err, result) => {
+              if (err) {
+                  return reject(err);
+              }
+              resolve(result);
+          });
+      });
+
+      mailOptions.html = html;
+      await sendEmail(mailOptions);
+  } catch (error) {
+      console.error('Error sending storm alert email:', error);
+      throw error;
+  }
+};
+
