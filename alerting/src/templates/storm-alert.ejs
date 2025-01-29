@@ -13,7 +13,7 @@
         }
         .container {
             width: 100%;
-            max-width: 500px;
+            max-width: 600px;
             margin: 20px auto;
             background: #ffffff;
         }
@@ -25,19 +25,22 @@
             font-size: 20px;
             font-weight: 500;
             line-height: 23.44px;
-            letter-spacing: 0.2em;
         }
         .content-title {
-            font-size: 18px;
-            font-weight: bold;
+            font-size: 24px;
+            font-weight: 700;
+            line-height: 30px;
             color: #333;
         }
         .content {
-            padding: 40px;
+            padding: 50px;
+            font-size:14px;
         }
         .table-container {
             width: 100%;
             border-collapse: collapse;
+            font-size: 16px;
+            font-weight: 700;
         }
         .table-container th, .table-container td {
             border: 1px solid #ddd;
@@ -49,23 +52,29 @@
         }
         .button-container {
             text-align: center;
-            margin: 15px 0;
+            margin: 20px 0;
         }
         .button {
             display: inline-block;
             text-align: center;
             background: rgba(99, 178, 189, 1);
             color: black;
-            padding: 12px 24px;
+            padding: 12px;
             text-decoration: none;
             border-radius: 5px;
             white-space: nowrap;
-            font-size:14px;
+            
+            font-weight: 600;
             
         }
-        .button img {
-            vertical-align: middle;
-            margin-left: 8px;
+        @media (max-width: 768px) {
+            .button span {
+                display: none; 
+            }
+            .button::before {
+                content: "ACCESS DASHBOARD";
+                display: inline;
+            }
         }
         .footer {
             text-align: center;
@@ -73,7 +82,6 @@
             color: white;
             padding: 15px 0;
             width: 100%;
-            margin-top: 30px;
             background-color: rgba(99, 178, 189, 1);
         }
         .footer .title {
@@ -112,6 +120,7 @@
             display: inline-block;
             vertical-align: middle;
             text-align: left;
+            font-size: 16px;;
         }
         .trigger-title-container {
             display: inline-block;
@@ -122,10 +131,7 @@
             background-color: rgba(241, 241, 241, 1);
             padding: 20px;
             margin-top: 20px;
-            
-            font-size: 14px;
             color: black; 
-            
         }
         
     </style>
@@ -137,14 +143,14 @@
         <div class="content">
             <div class="content-title">Activation Triggers activated (<%= windspeed %>) for <%= cycloneName %>
             </div>
-            <p>ANTICIPATORY ACTION ALERT FOR TROPICAL STORM <%= cycloneName %> - <%= triggerTime %> - 
+            <p>ANTICIPATORY ACTION ALERT FOR TROPICAL STORM <%= cycloneName %> - <%= cycloneTime %> - 
                 FORECAST BY REGIONAL SPECIALIZED METEOROLOGICAL CENTER LA REUNION</p>
             <p><div class="trigger-title-container">
                 <span class="trigger-title">
                     <span class="readiness-icon"></span> Readiness Trigger Activated
                 </span>
             </div><br>
-                <%= triggerTime %> there was 20% likelihood of Mozambique experiencing tropical storm-force winds within the next 5 days</p>
+                <%= cycloneTime %> there was 20% likelihood of Mozambique experiencing tropical storm-force winds within the next 5 days</p>
 
                 <p><div class="trigger-title-container">
                     <span class="trigger-title">
@@ -156,17 +162,20 @@
             <table class="table-container">
                 <tr>
                     <td>> 89 km/h</td>
-                    <td><%= districts1 %></td>
+                    <td><%= districts48kt %></td>
                 </tr>
                 <tr>
                     <td>> 118 km/h</td>
-                    <td><%= districts2 %></td>
+                    <td><%= districts64kt %></td>
                 </tr>
             </table>
 
             <!-- Bouton centré -->
             <div class="button-container">
-                <a href="<%= urlWithParams %>" class="button">ACCESS PRISM TROPICAL STORM DASHBOARD</a>
+                <a href="<%= redirectUrl %>" target="_blank" rel="noopener noreferrer" class="button">
+                    <span style="vertical-align: middle;">ACCESS PRISM TROPICAL STORM DASHBOARD</span>
+                    <img src="<%= icons.arrowForwardIcon %>" alt="Arrow Forward Icon" style="width: 16px; height: 16px; vertical-align: middle">
+                </a>
             </div>
             
             <h3>
@@ -176,16 +185,16 @@
             <img src="data:image/png;base64,<%= base64Image %>" alt="Storm Trajectory" width="100%" style="border: none;">
 
             <div class="button-container">
-                <a href="<%= urlWithParams %>" class="button">
+                <a href="<%= redirectUrl %>" target="_blank" rel="noopener noreferrer" class="button">
                     <span style="vertical-align: middle;">ACCESS PRISM TROPICAL STORM DASHBOARD</span>
-                    <img src="<%= icons.arrowForwardIcon %>" alt="Arrow Forward Icon" style="width: 16px; height: 16px; vertical-align: middle; margin-left: 8px;">
+                    <img src="<%= icons.arrowForwardIcon %>" alt="Arrow Forward Icon" style="width: 16px; height: 16px; vertical-align: middle">
                 </a>
             </div>
             
 
-            <p>We will continue to closely monitor the situation and provide timely updates as more information becomes available.<br>
-                Best regards,<br>
-                WFP Mozambique Country Office</p>
+            <p>We will continue to closely monitor the situation and provide timely updates as more information becomes available.</p>
+            <p>Best regards,</p>
+            <p>WFP Mozambique Country Office</p>
             
             <div class="gray-box">
                 <strong>Disclaimer</strong>: please note, this is not an official forecast. For accurate and official updates, please refer to alerts issued by <strong>INAM (Mozambique Meteorological Service)</strong>.

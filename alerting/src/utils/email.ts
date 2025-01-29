@@ -1,4 +1,8 @@
 import nodemailer from 'nodemailer';
+import { StormAlertData, StormAlertEmail } from '../types/email';
+import ejs from 'ejs';
+import path from 'path';
+import { encodeImageToBase64 } from './image';
 
 /**
  *
@@ -76,4 +80,53 @@ export async function sendEmail({
   });
 
   console.debug(`Message sent using ${user}`);
+}
+
+/**
+ * Sends a storm alert email using an EJS template.
+ * This function constructs an email with storm alert details.
+ *
+ * @param {StormAlertData} data - The storm alert details.
+ * @param {string} data.email - Recipient's email address.
+ * @param {string} data.cycloneName - Name of the cyclone.
+ * @param {Date} data.cycloneTime - The reference date of the cyclone.
+ * @param {string[]} data.districts48kt - Districts affected by 48kt winds.
+ * @param {string[]} data.districts64kt - Districts affected by 64kt winds.
+ * @param {string} data.redirectUrl - URL to access the anticipatory action storm map.
+ * @param {string} data.windspeed - Wind speed at alert time.
+ * @param {string} data.base64Image - Base64-encoded image of the storm.
+ *
+ * @returns {Promise<void>} - Resolves when the email is sent.
+ */
+
+const sendStormAlertEmail = async (data: StormAlertData) => {
+    const emailData: StormAlertEmail = {
+        cycloneName: data.cycloneName,
+        cycloneTime: data.cycloneTime,
+        districts48kt: data.districts48kt,
+        districts64kt: data.districts64kt,
+        redirectUrl: data.redirectUrl,
+        base64Image: data.base64Image,
+        icons: {
+          mapIcon: `data:image/png;base64,${encodeImageToBase64('icons/mapIcon.png')}`,
+          arrowForwardIcon: `data:image/png;base64,${encodeImageToBase64('icons/arrowForwardIcon.png')}`,
+        },
+        unsubscribeUrl: '',
+        windspeed: data.windspeed,
+    };
+
+    const mailOptions = {
+        from: 'wfp.prism@wfp.org',
+        to: data.email,
+        subject: `Activation Triggers activated ${data.windspeed} for ${data.cycloneName}`,
+        html: '',
+        text: '',
+    };
+    ejs.renderFile(path.join(__dirname, 'templates', 'storm-alert.ejs'), emailData, async (err: Error | null, html: string) => {
+        if (err) {
+            console.error('Error rendering EJS template:', err);
+        }
+        mailOptions.html = html;
+        await sendEmail(mailOptions);
+    });
 }
