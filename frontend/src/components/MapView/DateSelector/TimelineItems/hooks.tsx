@@ -10,40 +10,39 @@ const getWindStatesForDate = (
   date: string | null,
   cycloneName?: string,
 ) => {
-  if (!date) {
-    return { states: [], cycloneName: null };
+  if (!date || !windStateReports[date]) {
+    return [];
   }
 
-  // If cycloneName is provided and exists in the data, use it
+  // If cycloneName is provided and exists in the data, return only that cyclone
   if (cycloneName && windStateReports[date]?.[cycloneName]) {
-    return {
-      states: windStateReports[date][cycloneName],
-      cycloneName,
-    };
+    return [
+      {
+        states: windStateReports[date][cycloneName],
+        cycloneName,
+      },
+    ];
   }
 
-  // Fallback to first available cyclone if no specific cyclone is requested or found
-  const firstAvailableCyclone = Object.keys(windStateReports[date])[0];
-  if (!firstAvailableCyclone) {
-    return { states: [], cycloneName: null };
-  }
-
-  return {
-    states: windStateReports[date][firstAvailableCyclone],
-    cycloneName: firstAvailableCyclone,
-  };
+  // Return array of state objects for all available cyclones
+  return Object.entries(windStateReports[date]).map(
+    ([cycloneNameTemp, states]) => ({
+      states,
+      cycloneName: cycloneNameTemp,
+    }),
+  );
 };
 
 export const useWindStatesByTime = (
   currentDate: number,
   cycloneName?: string,
-): WindStateReport => {
+): WindStateReport[] => {
   const windStateReports = useSelector(AAWindStateReports);
 
   return useMemo(() => {
     const dates = Object.keys(windStateReports);
     if (dates.length === 0) {
-      return { states: [], cycloneName: null };
+      return [];
     }
 
     // If currentDate is 0 or null, get the latest report

@@ -25,6 +25,7 @@ import { getAAColor } from 'components/MapView/LeftPanel/AnticipatoryActionPanel
 import { AACategory } from 'context/anticipatoryAction/AAStormStateSlice/parsedStormDataTypes';
 import anticipatoryActionIcons from 'components/Common/AnticipatoryAction/icons';
 import { AAStormTimeSeriesFeature } from 'context/anticipatoryAction/AAStormStateSlice/rawStormDataTypes';
+import maplibregl from 'maplibre-gl';
 import AAStormDatePopup from './AAStormDatePopup';
 import AAStormLandfallPopup from './AAStormLandfallPopup';
 
@@ -69,8 +70,8 @@ const AnticipatoryActionStormLayer = React.memo(
     const windStates = useWindStatesByTime(
       selectedDate || 0,
       selectedStormName || undefined,
-    );
-    const latestWindState = windStates.states[windStates.states.length - 1];
+    )[0];
+    const latestWindState = windStates?.states[windStates.states.length - 1];
     const dispatch = useDispatch();
 
     // Load data when:
@@ -85,12 +86,12 @@ const AnticipatoryActionStormLayer = React.memo(
           (stormData.forecastDetails?.reference_time?.split('T')[0] !==
             latestWindState.ref_time?.split('T')[0] ||
             stormData.forecastDetails?.cyclone_name.toLowerCase() !==
-              windStates.cycloneName?.toLowerCase()))
+              windStates?.cycloneName?.toLowerCase()))
       ) {
         dispatch(
           loadStormReport({
             date: latestWindState?.ref_time,
-            stormName: windStates.cycloneName || 'chido',
+            stormName: windStates?.cycloneName || 'chido',
           }),
         );
         // If no start date is selected, update the date range to the selected date
@@ -105,7 +106,7 @@ const AnticipatoryActionStormLayer = React.memo(
       stormData,
       latestWindState,
       selectedStormName,
-      windStates.cycloneName,
+      windStates?.cycloneName,
       selectedDate,
       startDate,
     ]);
@@ -171,6 +172,50 @@ const AnticipatoryActionStormLayer = React.memo(
       stormData && stormData.timeSeries
         ? enhanceTimeSeries(stormData.timeSeries as unknown as TimeSeries)
         : null;
+
+    // Add this useEffect to handle map fitting when timeSeries data is available
+    useEffect(() => {
+      if (map && timeSeries?.features?.length) {
+        // Get all coordinates from both past and forecast lines
+        const allCoordinates = timeSeries.features
+          .filter(f => f.geometry.type === 'LineString')
+          .flatMap(f => f.geometry.coordinates);
+
+        if (allCoordinates.length) {
+          // Create bounds that include all points with some padding
+          const bounds = new maplibregl.LngLatBounds();
+          allCoordinates.forEach(coord => {
+            bounds.extend(coord);
+          });
+
+          // Get current map bounds
+          const currentBounds = map.getBounds();
+
+          // Add margin to the east (20% of the current view width)
+          const viewWidth = currentBounds.getEast() - currentBounds.getWest();
+          const easternMargin = viewWidth * 0.2;
+
+          // Check if ANY part of the storm path intersects with current view (including eastern margin)
+          const isAnyPointVisible = allCoordinates.some(coord => {
+            const [lng, lat] = coord;
+            return (
+              lng >= currentBounds.getWest() &&
+              lng <= currentBounds.getEast() + easternMargin &&
+              lat >= currentBounds.getSouth() &&
+              lat <= currentBounds.getNorth()
+            );
+          });
+
+          // Only fit bounds if no part of the storm is visible
+          if (!isAnyPointVisible) {
+            map.fitBounds(bounds, {
+              padding: { top: 50, bottom: 50, left: 50, right: 200 }, // More padding on the right
+              duration: 1000,
+            });
+          }
+        }
+      }
+    }, [map, timeSeries]);
 
     function getIconNameByWindType(windType: string) {
       const iconName = windType.split(' ').join('-').toLowerCase();

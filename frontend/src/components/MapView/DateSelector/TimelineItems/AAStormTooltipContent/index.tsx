@@ -5,7 +5,6 @@ import { formatInUTC } from 'components/MapView/Layers/AnticipatoryActionStormLa
 import { createStyles, makeStyles, Typography } from '@material-ui/core';
 import {
   AADataSelector,
-  AASelectedStormNameSelector,
   loadStormReport,
   setSelectedStormName,
 } from 'context/anticipatoryAction/AAStormStateSlice';
@@ -18,58 +17,75 @@ import { useWindStatesByTime } from '../hooks';
 function AAStormTooltipContent({ date }: AAStormTooltipContentProps) {
   const { updateHistory } = useUrlHistory();
   const stormData = useSelector(AADataSelector);
-  const selectedStormName = useSelector(AASelectedStormNameSelector);
-  const windStates = useWindStatesByTime(
-    date.value,
-    selectedStormName || undefined,
-  );
+  const allWindStates = useWindStatesByTime(date.value);
   const classes = useStyles();
   const dispatch = useDispatch();
 
   const hourToggleHandler = (
     _event: MouseEvent<HTMLElement>,
     value: string,
+    cycloneName: string,
   ) => {
-    const stormDate = new Date(value);
+    const [, dateValue] = value?.split('::') || ['', ''];
+    const stormDate = new Date(dateValue);
     stormDate.setUTCHours(12);
     const time = stormDate.getTime();
     updateHistory('date', getFormattedDate(time, 'default') as string);
     dispatch(updateDateRange({ startDate: time }));
-    dispatch(setSelectedStormName(windStates.cycloneName));
+    dispatch(setSelectedStormName(cycloneName));
     dispatch(
       loadStormReport({
-        date: value,
-        stormName: windStates.cycloneName || 'chido',
+        date: dateValue,
+        stormName: cycloneName || 'chido',
       }),
     );
   };
 
+  const areMultipleCyclonesActive = allWindStates.length > 1;
+
   return (
     <div className={classes.container}>
-      <Typography> {formatInUTC(new Date(date.value), 'MM/dd/yy')}</Typography>
-      <ToggleButtonGroup
-        value={stormData.forecastDetails?.reference_time}
-        exclusive
-        onChange={hourToggleHandler}
-      >
-        {windStates.states.map(item => {
-          const itemDate = new Date(item.ref_time);
-          const formattedItemTime = formatInUTC(itemDate, "haaa 'UTC'");
+      <div className={classes.dateAndCyclonesContainer}>
+        <Typography className={classes.date}>
+          {formatInUTC(new Date(date.value), 'MM/dd/yy')}
+        </Typography>
+        <div className={classes.cyclonesContainer}>
+          {allWindStates.map(windStates => (
+            <div key={windStates.cycloneName} className={classes.cycloneRow}>
+              {areMultipleCyclonesActive && (
+                <Typography className={classes.cycloneName}>
+                  {windStates.cycloneName?.toUpperCase()}
+                </Typography>
+              )}
+              <ToggleButtonGroup
+                value={`${stormData.forecastDetails?.cyclone_name.toUpperCase()}::${stormData.forecastDetails?.reference_time}`}
+                exclusive
+                onChange={(e, value) =>
+                  hourToggleHandler(e, value, windStates.cycloneName || '')
+                }
+              >
+                {windStates?.states.map(item => {
+                  const itemDate = new Date(item.ref_time);
+                  const formattedItemTime = formatInUTC(itemDate, "haaa 'UTC'");
 
-          return (
-            <ToggleButton
-              key={itemDate.valueOf()}
-              value={item.ref_time}
-              onMouseDown={e => e.preventDefault()}
-              className={classes.toggleButton}
-            >
-              <Typography className={classes.time}>
-                {formattedItemTime}
-              </Typography>
-            </ToggleButton>
-          );
-        })}
-      </ToggleButtonGroup>
+                  return (
+                    <ToggleButton
+                      key={`${windStates.cycloneName}::${itemDate.valueOf()}`}
+                      value={`${windStates.cycloneName?.toUpperCase()}::${item.ref_time}`}
+                      onMouseDown={e => e.preventDefault()}
+                      className={classes.toggleButton}
+                    >
+                      <Typography className={classes.time}>
+                        {formattedItemTime}
+                      </Typography>
+                    </ToggleButton>
+                  );
+                })}
+              </ToggleButtonGroup>
+            </div>
+          ))}
+        </div>
+      </div>
     </div>
   );
 }
@@ -78,9 +94,33 @@ const useStyles = makeStyles(() =>
   createStyles({
     container: {
       display: 'flex',
-      flexDirection: 'row',
+      flexDirection: 'column',
+    },
+    dateAndCyclonesContainer: {
+      display: 'flex',
       gap: '16px',
       alignItems: 'center',
+    },
+    date: {
+      minWidth: 'fit-content',
+    },
+    cyclonesContainer: {
+      display: 'flex',
+      flexDirection: 'column',
+      gap: '8px',
+      width: '100%',
+    },
+    cycloneRow: {
+      display: 'flex',
+      alignItems: 'center',
+      gap: '8px',
+      justifyContent: 'flex-end',
+      width: '100%',
+    },
+    cycloneName: {
+      fontSize: '12px',
+      fontWeight: 500,
+      minWidth: 'fit-content',
     },
     time: {
       fontSize: '12px',
