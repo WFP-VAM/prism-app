@@ -46,9 +46,6 @@ function AAStormTooltipContent({ date }: AAStormTooltipContentProps) {
   return (
     <div className={classes.container}>
       <div className={classes.dateAndCyclonesContainer}>
-        <Typography className={classes.date}>
-          {formatInUTC(new Date(date.value), 'MM/dd/yy')}
-        </Typography>
         <div className={classes.cyclonesContainer}>
           {allWindStates.map(windStates => (
             <div key={windStates.cycloneName} className={classes.cycloneRow}>
@@ -63,6 +60,7 @@ function AAStormTooltipContent({ date }: AAStormTooltipContentProps) {
                 onChange={(e, value) =>
                   hourToggleHandler(e, value, windStates.cycloneName || '')
                 }
+                style={{ marginRight: '8px' }}
               >
                 {windStates?.states.map(item => {
                   const itemDate = new Date(item.ref_time);
@@ -85,6 +83,9 @@ function AAStormTooltipContent({ date }: AAStormTooltipContentProps) {
             </div>
           ))}
         </div>
+        <Typography className={classes.date}>
+          {formatInUTC(new Date(date.value), 'MM/dd/yy')}
+        </Typography>
       </div>
     </div>
   );
@@ -98,11 +99,11 @@ const useStyles = makeStyles(() =>
     },
     dateAndCyclonesContainer: {
       display: 'flex',
-      gap: '16px',
       alignItems: 'center',
     },
     date: {
       minWidth: 'fit-content',
+      gap: '8px',
     },
     cyclonesContainer: {
       display: 'flex',
