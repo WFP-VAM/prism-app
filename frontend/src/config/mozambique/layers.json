@@ -3184,7 +3184,7 @@
     "title": "Flood Inundation Prediction Map",
     "type": "geojson_polygon",
     "hex_display": false,
-    "data": "https://prism-api.ovio.org/google-floods/inundations-2/?region_codes=MZ",
+    "data": "https://prism-api.ovio.org/google-floods/inundations?region_codes=MZ",
     "data_field": "level",
     "data_field_type": "text",
     "opacity": 1,
