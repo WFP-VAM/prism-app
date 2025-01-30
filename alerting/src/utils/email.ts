@@ -3,6 +3,7 @@ import { StormAlertData, StormAlertEmail } from '../types/email';
 import ejs from 'ejs';
 import path from 'path';
 import { encodeImageToBase64 } from './image';
+import { formatDateToUTC } from './date';
 
 /**
  *
@@ -89,55 +90,78 @@ export async function sendEmail({
  * @param {StormAlertData} data - The storm alert details.
  * @param {string} data.email - Recipient's email address.
  * @param {string} data.cycloneName - Name of the cyclone.
- * @param {Date} data.cycloneTime - The reference date of the cyclone.
- * @param {string[]} data.districts48kt - Districts affected by 48kt winds.
- * @param {string[]} data.districts64kt - Districts affected by 64kt winds.
+ * @param {string} data.cycloneTime - The reference date of the cyclone in ISO format.
+ * @param {ActivatedTriggers | undefined} [data.activatedTriggers] - Object containing details of activated triggers.
+ * @param {string[]} [data.activatedTriggers.districts48kt] - List of districts affected by winds over 48kt.
+ * @param {string[]} [data.activatedTriggers.districts64kt] - List of districts affected by winds over 64kt.
+ * @param {string} [data.activatedTriggers.windspeed] - Wind speed at which the trigger activation occurs.
  * @param {string} data.redirectUrl - URL to access the anticipatory action storm map.
- * @param {string} data.windspeed - Wind speed at alert time.
+ * @param {string} data.windspeed - Trigger activation Wind speed .
+ * @param {boolean} data.readiness - Readiness activation.
  * @param {string} data.base64Image - Base64-encoded image of the storm.
  *
  * @returns {Promise<void>} - Resolves when the email is sent.
  */
 
 export const sendStormAlertEmail = async (data: StormAlertData): Promise<void> => {
-    const emailData: StormAlertEmail = {
-        cycloneName: data.cycloneName,
-        cycloneTime: data.cycloneTime,
-        districts48kt: data.districts48kt,
-        districts64kt: data.districts64kt,
-        redirectUrl: data.redirectUrl,
-        base64Image: data.base64Image,
-        icons: {
-            mapIcon: `data:image/png;base64,${encodeImageToBase64('icons/mapIcon.png')}`,
-            arrowForwardIcon: `data:image/png;base64,${encodeImageToBase64('icons/arrowForwardIcon.png')}`,
-        },
-        unsubscribeUrl: '',
-        windspeed: data.windspeed,
-    };
 
-    const mailOptions = {
-        from: 'wfp.prism@wfp.org',
-        to: data.email,
-        subject: `Activation Triggers activated ${data.windspeed} for ${data.cycloneName}`,
-        html: '',
-        text: '',
-    };
+  let alertTitle = '';
+  if (data.activatedTriggers) {
+      alertTitle = `Activation Triggers activated ${data.activatedTriggers.windspeed} for ${data.cycloneName}`;
+  } else if (data.readiness) {
+      alertTitle = `Readiness Triggers activated for ${data.cycloneName}`;
+  } else {
+    return Promise.reject('No triggers or readiness activated');
+  }
 
-    try {
-      const html: string = await new Promise((resolve, reject) => {
-          ejs.renderFile(path.join(__dirname, 'templates', 'storm-alert.ejs'), emailData, (err, result) => {
-              if (err) {
-                  return reject(err);
-              }
-              resolve(result);
-          });
+  const emailData: StormAlertEmail = {
+    alertTitle,
+    cycloneName: data.cycloneName,
+    cycloneTime: formatDateToUTC(data.cycloneTime),
+    activatedTriggers: data.activatedTriggers
+    ? {
+        ...data.activatedTriggers,
+        districts48kt: data.activatedTriggers.districts48kt?.length 
+          ? data.activatedTriggers.districts48kt.join(', ') 
+          : '',
+        districts64kt: data.activatedTriggers.districts64kt?.length 
+          ? data.activatedTriggers.districts64kt.join(', ') 
+          : '',
+      }
+    : undefined,
+    redirectUrl: data.redirectUrl,
+    base64Image: data.base64Image,
+    icons: {
+        mapIcon: `data:image/png;base64,${encodeImageToBase64('icons/mapIcon.png')}`,
+        arrowForwardIcon: `data:image/png;base64,${encodeImageToBase64('icons/arrowForwardIcon.png')}`,
+    },
+    unsubscribeUrl: '',
+    readiness: data.readiness,
+  };
+
+  const mailOptions = {
+      from: 'wfp.prism@wfp.org',
+      to: data.email,
+      subject: alertTitle,
+      html: '',
+      text: '',
+  };
+
+  try {
+    const html: string = await new Promise((resolve, reject) => {
+      ejs.renderFile(path.join(__dirname, '../templates', 'storm-alert.ejs'), emailData, (err, result) => {
+          if (err) {
+              return reject(err);
+          }
+          resolve(result);
       });
+    });
 
-      mailOptions.html = html;
-      await sendEmail(mailOptions);
+    mailOptions.html = html;
+    await sendEmail(mailOptions);
   } catch (error) {
-      console.error('Error sending storm alert email:', error);
-      throw error;
+    console.error('Error sending storm alert email:', error);
+    throw error;
   }
 };
 
