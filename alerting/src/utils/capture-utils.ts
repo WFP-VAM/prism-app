@@ -1,5 +1,4 @@
 import puppeteer, { Browser, Page, BoundingBox } from 'puppeteer';
-import fs from 'fs';
 interface CropRegion {
   x: number;
   y: number;
