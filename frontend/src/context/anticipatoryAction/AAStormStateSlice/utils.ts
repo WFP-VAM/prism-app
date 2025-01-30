@@ -5,6 +5,7 @@ import {
   AACategoryKeyToCategoryMap,
   AACategoryLandfall,
   DistrictDataType,
+  MergedFeatures,
   ResultType,
 } from './parsedStormDataTypes';
 import { StormDataResponseBody } from './rawStormDataTypes';
@@ -26,6 +27,77 @@ const watchedDistricts: { [key in AACategory]: string[] } = {
   [AACategory.Moderate]: ['Angoche', 'Maganja Da Costa', 'Machanga', 'Govuro'],
   [AACategory.Risk]: [],
 };
+
+/**
+ * Creates a merged GeoJSON FeatureCollection from storm data response ready to be downloaded.
+ * Combines exposed areas, uncertainty cone, time series, and metadata into a single GeoJSON object.
+ *
+ * @param data - The storm data response containing various geographical features
+ * @returns A GeoJSON FeatureCollection containing all merged features
+ */
+function createMergedGeoJSON(data: StormDataResponseBody) {
+  const features: MergedFeatures[] = [];
+
+  // Helper function to add exposed area features
+  const addExposedArea = (
+    key: 'exposed_area_48kt' | 'exposed_area_64kt' | 'proba_48kt_20_5d',
+  ) => {
+    const exposedArea = data.ready_set_results?.[key];
+    if (exposedArea) {
+      // eslint-disable-next-line fp/no-mutating-methods
+      features.push({
+        type: 'Feature',
+        properties: {
+          data_type: key,
+          affected_districts: exposedArea.affected_districts,
+        },
+        geometry: exposedArea.polygon,
+      });
+    }
+  };
+
+  // Add exposed areas
+  addExposedArea('exposed_area_48kt');
+  addExposedArea('exposed_area_64kt');
+
+  // Add uncertainty cone if it exists
+  if (data.uncertainty_cone) {
+    // eslint-disable-next-line fp/no-mutating-methods
+    features.push({
+      type: 'Feature',
+      properties: {
+        data_type: 'uncertainty_cone',
+      },
+      geometry: data.uncertainty_cone,
+    });
+  }
+
+  // Add time series features if they exist
+  if (data.time_series) {
+    data.time_series.features.forEach(feature => {
+      // eslint-disable-next-line fp/no-mutating-methods
+      features.push(feature);
+    });
+  }
+
+  // Create metadata feature
+  // eslint-disable-next-line fp/no-mutating-methods
+  features.push({
+    type: 'Feature',
+    properties: {
+      data_type: 'metadata',
+      forecast_details: data.forecast_details,
+      landfall_detected: data.landfall_detected,
+      landfall_info: data.landfall_info,
+    },
+    geometry: null,
+  });
+
+  return {
+    type: 'FeatureCollection',
+    features,
+  };
+}
 
 // DRAFT: This is a provisional implementation based on a test dataset with a temporary structure that is subject to change.
 export function parseAndTransformAA(data: StormDataResponseBody): ResultType {
@@ -90,6 +162,8 @@ export function parseAndTransformAA(data: StormDataResponseBody): ResultType {
       }
     : undefined;
 
+  const mergedGeoJSON = createMergedGeoJSON(data);
+
   return {
     data: {
       activeDistricts,
@@ -99,6 +173,7 @@ export function parseAndTransformAA(data: StormDataResponseBody): ResultType {
       landfallDetected: data.landfall_detected,
       forecastDetails: data.forecast_details,
       uncertaintyCone: data.uncertainty_cone,
+      mergedGeoJSON,
     },
   };
 }
