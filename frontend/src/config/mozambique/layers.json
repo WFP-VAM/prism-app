@@ -3108,8 +3108,8 @@
     "end_date": "2021-07-31",
     "opacity": 0.7
   },
-  "google_flood_status_at_gauges": {
-    "title": "Current Flood Status (Google AI)",
+  "forecast_river_discharge_at_gauges": {
+    "title": "River discharge forecast",
     "loader": "google_flood",
     "type": "point_data",
     "hex_display": false,
@@ -3117,9 +3117,9 @@
     "detail_url": "https://prism-api.ovio.org/google-floods/gauges/forecasts",
     "data_field": "severity",
     "data_field_type": "text",
-    "date_url": "https://prism-api.ovio.org/google-floods/dates/?region_codes=MZ",
+    "date_url": "https://prism-api.ovio.org/google-floods/dates/?region_codes=KH",
     "opacity": 0.9,
-    "legend_text": "Current flood status at verified gauges. Visit [Google Research](https://sites.research.google/floodforecasting/) about Google's AI Forecasting models.",
+    "legend_text": "River discharge forecast at verified gauges. Visit [Google Research](https://sites.research.google/floodforecasting/) to learn more about Google's AI forecasting models.",
     "legend": [
       { "label": "Extreme", "value": "EXTREME", "color": "#a70606" },
       { "label": "Danger", "value": "SEVERE", "color": "#ea250a" },
@@ -3180,8 +3180,8 @@
       }
     }
   },
-  "google_flood_inundation_maps": {
-    "title": "Inundation Probability Map (Google AI)",
+  "predicted_flood_inundation_maps": {
+    "title": "Flood Inundation Prediction Map",
     "type": "geojson_polygon",
     "hex_display": false,
     "data": "https://prism-api.ovio.org/google-floods/inundations/?region_codes=MZ",
