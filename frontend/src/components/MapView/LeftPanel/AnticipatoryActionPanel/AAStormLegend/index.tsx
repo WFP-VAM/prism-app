@@ -43,6 +43,18 @@ const phases = [
     label: 'Very intense tropical cyclone',
     speed: '214 km/h and above',
   },
+  {
+    icon: anticipatoryActionIcons.postTropicalDepression,
+    label: 'Post tropical depression',
+  },
+  {
+    icon: anticipatoryActionIcons.subTropicalDepression,
+    label: 'Sub tropical depression',
+  },
+  {
+    icon: anticipatoryActionIcons.extraTropicalSystem,
+    label: 'Extra tropical system',
+  },
 ];
 
 const buffers = [
@@ -93,7 +105,9 @@ function AAStormLegend() {
             <img src={phase.icon} alt={phase.label} className={classes.icon} />
             <div>
               <Typography>{t(phase.label)}</Typography>
-              <Typography color="textSecondary">({phase.speed})</Typography>
+              {phase.speed && (
+                <Typography color="textSecondary">({phase.speed})</Typography>
+              )}
             </div>
           </div>
         ))}
