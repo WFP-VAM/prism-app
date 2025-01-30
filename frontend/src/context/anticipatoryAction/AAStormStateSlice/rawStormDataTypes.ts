@@ -5,13 +5,7 @@ export enum FeaturePropertyDataType {
   forecast = 'forecast',
 }
 
-interface FeatureProperties {
-  time: string;
-  [key: string]: any;
-}
-
 /* timeserie types */
-
 export interface TimeSerieFeatureProperty {
   data_type: FeaturePropertyDataType;
   time: string;
@@ -45,7 +39,7 @@ export enum AACategoryLandfall {
 /* ready_set_results types */
 interface ExposedAreaStorm {
   affected_districts: string[];
-  polygon: any;
+  polygon: GeoJSON.Geometry;
 }
 
 /* storm data reponse body type */
@@ -53,7 +47,7 @@ export interface StormDataResponseBody {
   time_series: TimeSeries;
   landfall_detected: boolean;
   forecast_details: ForecastDetails;
-  uncertainty_cone: FeatureProperties;
+  uncertainty_cone: GeoJSON.Geometry;
   landfall_info: {
     landfall_time: string[];
     landfall_impact_district: string;

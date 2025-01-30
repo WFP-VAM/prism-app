@@ -1,4 +1,4 @@
-import { FeatureCollection } from 'geojson';
+import { Feature, Geometry, GeoJsonProperties } from 'geojson';
 import { ForecastDetails, TimeSeries } from './rawStormDataTypes';
 
 export enum AACategory {
@@ -33,11 +33,6 @@ export interface LandfallInfo {
   severity: AACategory[];
 }
 
-interface FeatureProperties {
-  time: string;
-  [key: string]: any;
-}
-
 export const AACategoryDataToLandfallMap: {
   [key in AACategoryLandfall]: AACategory;
 } = {
@@ -53,6 +48,11 @@ export const AACategoryKeyToCategoryMap: {
   [AACategoryKey.Proba]: AACategory.Risk,
 };
 
+export interface MergedFeatures<P = GeoJsonProperties>
+  extends Feature<Geometry | null, P> {
+  geometry: Geometry | null;
+}
+
 /* parsed storm data type */
 export type ParsedStormData = {
   activeDistricts?: DistrictDataType;
@@ -61,8 +61,11 @@ export type ParsedStormData = {
   timeSeries?: TimeSeries;
   landfallDetected?: boolean;
   forecastDetails?: ForecastDetails;
-  uncertaintyCone?: FeatureProperties;
-  mergedGeoJSON?: FeatureCollection<any, any>;
+  uncertaintyCone?: GeoJSON.Geometry;
+  mergedGeoJSON?: {
+    type: string;
+    features: MergedFeatures[];
+  };
 };
 
 export type ResultType = {

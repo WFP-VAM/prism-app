@@ -5,6 +5,7 @@ import {
   AACategoryKeyToCategoryMap,
   AACategoryLandfall,
   DistrictDataType,
+  MergedFeatures,
   ResultType,
 } from './parsedStormDataTypes';
 import { StormDataResponseBody } from './rawStormDataTypes';
@@ -28,7 +29,7 @@ const watchedDistricts: { [key in AACategory]: string[] } = {
 };
 
 function createMergedGeoJSON(data: StormDataResponseBody) {
-  const features: any[] = [];
+  const features: MergedFeatures[] = [];
 
   // Helper function to add exposed area features
   const addExposedArea = (
@@ -154,8 +155,7 @@ export function parseAndTransformAA(data: StormDataResponseBody): ResultType {
       }
     : undefined;
 
-  // TODO - remove as any
-  const mergedGeoJSON = createMergedGeoJSON(data) as any;
+  const mergedGeoJSON = createMergedGeoJSON(data);
 
   return {
     data: {
