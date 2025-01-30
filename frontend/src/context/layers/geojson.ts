@@ -23,7 +23,6 @@ export const fetchGeojsonLayerData: LazyLoader<GeojsonDataLayerProps> =
         requestUrl,
         dispatch,
         {
-          mode: 'cors',
           timeout: GEOJSON_REQUEST_TIMEOUT,
         },
         `Request failed for fetching point layer data at ${requestUrl}`,
