@@ -499,3 +499,25 @@ def get_google_floods_inundations_api(
     iso2_codes = [region_code.upper() for region_code in region_codes]
 
     return get_google_floods_inundations(iso2_codes, run_sequentially)
+
+
+@app.get("/google-floods/inundations-2")
+def get_google_floods_inundations_api_2(
+    region_codes: list[str] = Query(...), run_sequentially: bool = Query(default=False)
+):
+    """Get statistical charts data"""
+    if not region_codes:
+        raise HTTPException(
+            status_code=400,
+            detail="At least one region code must be provided.",
+        )
+    for region_code in region_codes:
+        if len(region_code) != 2:
+            raise HTTPException(
+                status_code=400,
+                detail=f"Region code '{region_code}' must be exactly two characters (iso2).",
+            )
+
+    iso2_codes = [region_code.upper() for region_code in region_codes]
+
+    return get_google_floods_inundations(iso2_codes, run_sequentially)
