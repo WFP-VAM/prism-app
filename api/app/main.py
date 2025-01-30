@@ -497,6 +497,5 @@ def get_google_floods_inundations_api(
             )
 
     iso2_codes = [region_code.upper() for region_code in region_codes]
-    geojson = get_google_floods_inundations(iso2_codes, run_sequentially)
 
-    return JSONResponse(content=geojson, status_code=200)
+    return get_google_floods_inundations(iso2_codes, run_sequentially)
