@@ -28,6 +28,13 @@ const watchedDistricts: { [key in AACategory]: string[] } = {
   [AACategory.Risk]: [],
 };
 
+/**
+ * Creates a merged GeoJSON FeatureCollection from storm data response ready to be downloaded.
+ * Combines exposed areas, uncertainty cone, time series, and metadata into a single GeoJSON object.
+ *
+ * @param data - The storm data response containing various geographical features
+ * @returns A GeoJSON FeatureCollection containing all merged features
+ */
 function createMergedGeoJSON(data: StormDataResponseBody) {
   const features: MergedFeatures[] = [];
 
