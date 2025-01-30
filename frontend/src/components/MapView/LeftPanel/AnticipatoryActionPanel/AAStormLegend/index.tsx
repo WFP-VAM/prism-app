@@ -105,10 +105,8 @@ function AAStormLegend() {
             <img src={phase.icon} alt={phase.label} className={classes.icon} />
             <div>
               <Typography>{t(phase.label)}</Typography>
-              {phase.speed ? (
+              {phase.speed && (
                 <Typography color="textSecondary">({phase.speed})</Typography>
-              ) : (
-                <Typography color="textSecondary" />
               )}
             </div>
           </div>
