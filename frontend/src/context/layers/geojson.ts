@@ -11,9 +11,10 @@ const GEOJSON_REQUEST_TIMEOUT = 60000;
 export const fetchGeojsonLayerData: LazyLoader<GeojsonDataLayerProps> =
   () =>
   async ({ layer: { data: dataUrl, additionalQueryParams } }, { dispatch }) => {
+    const queryParams = queryParamsToString(additionalQueryParams);
     const requestUrl = `${dataUrl}${
       dataUrl.includes('?') ? '&' : '?'
-    }&${queryParamsToString(additionalQueryParams)}`;
+    }${queryParams}`;
     let data;
     let response: Response;
     // TODO - Better error handling, esp. for unauthorized requests.
