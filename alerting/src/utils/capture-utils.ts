@@ -73,7 +73,6 @@ async function captureScreenshotFromUrl(options: ScreenshotOptions): Promise<str
     });
     console.log(`WebGL global support: ${testWebGL ? 'Yes' : 'No'}`);
 
-
     if (isCanvas) {
       // If the target element is a canvas, check if it uses WebGL
       console.log('Element is a canvas, checking WebGL...');
@@ -95,17 +94,13 @@ async function captureScreenshotFromUrl(options: ScreenshotOptions): Promise<str
       const hasWebGL = await page.evaluate((selector) => {
         const canvas = document.querySelector(selector) as HTMLCanvasElement | null;
         if (!canvas) {
-          console.log('Canvas not found');
           return false;
         }
 
         const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl') || canvas.getContext('webgl2');
         if (!gl) {
-          console.log('WebGL context not found');
           return false;
         }
-
-        console.log('WebGL detected');
         return true;
       }, screenshotTargetSelector);
 
@@ -117,14 +112,15 @@ async function captureScreenshotFromUrl(options: ScreenshotOptions): Promise<str
               requestAnimationFrame(resolve);
             });
           });
+        }).catch(error => {
+          console.error(`Error waiting for frame rendering: ${error.message}`);
+          throw error;
         });
-      } else {
-        console.log('WebGL not detected, skipping frame wait.');
       }
     } else {
       console.log('The element is not a canvas, no WebGL check needed.');
 
-       // Wait until the target element has valid dimensions
+      // Wait until the target element has valid dimensions
       await page.waitForFunction(
         (selector: string) => {
           const element = document.querySelector(selector) as HTMLElement | null;
