@@ -59,17 +59,20 @@ interface ExposedAreaStorm {
   polygon: any;
 }
 
+export interface LandfallInfo {
+  landfall_time: string[];
+  landfall_impact_district: string;
+  landfall_impact_intensity: AACategoryLandfall[];
+  landfall_leadtime_hours: [number, number];
+  is_coastal: boolean;
+}
 /* storm data reponse body type */
 export interface StormDataResponseBody {
   time_series: TimeSeries;
   landfall_detected: boolean;
   forecast_details: ForecastDetails;
   uncertainty_cone: FeatureProperties;
-  landfall_info: {
-    landfall_time: string[];
-    landfall_impact_district: string;
-    landfall_impact_intensity: AACategoryLandfall[];
-  };
+  landfall_info: LandfallInfo | {};
   ready_set_results?: {
     status: WindState;
     exposed_area_48kt: ExposedAreaStorm;

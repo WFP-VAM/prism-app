@@ -61,3 +61,5 @@ Array [
   },
 ]
 `;
+
+exports[`alert mechanism buildEmailPayloads() returns no payload when detailed report indicates that activation is triggered but landfall already occured 1`] = `Array []`;

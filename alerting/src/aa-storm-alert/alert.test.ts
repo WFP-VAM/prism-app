@@ -1,8 +1,9 @@
 jest.mock('node-fetch');
 import nodeFetch from 'node-fetch';
 import { buildEmailPayloads, getLatestAvailableReports } from './alert';
-import { buildDetailedReport } from './test-utils';
+import { buildDetailedReport, buildLandfallInfo } from './test-utils';
 import { WindState } from '../types/rawStormDataTypes';
+import moment from 'moment';
 
 describe('alert mechanism', () => {
   describe('getLatestAvailableReports()', () => {
@@ -101,22 +102,6 @@ describe('alert mechanism', () => {
     });
 
     const tests = [
-      //   {
-      //     description:
-      //       'returns no payload when detailed report indicates that landfall already occured',
-      //     shortReports: [
-      //       {
-      //         ref_time: '2025-01-31T06:00:00Z',
-      //         state: 'activated_118',
-      //         path: 'elvis/2025-01-31T06:00:00Z.json',
-      //       },
-      //     ],
-      //     data: buildDetailedReport({
-      //       landfall_detected: false,
-      //       status: 'activated_118',
-      //     }),
-      //     expected: [],
-      //   },
       {
         description:
           'returns a payload when detailed report indicates that readiness is triggered',
@@ -191,13 +176,34 @@ describe('alert mechanism', () => {
           affected64ktDistrict: [],
         }),
       },
+      {
+        description:
+          'returns no payload when detailed report indicates that activation is triggered but landfall already occured',
+        shortReports: [
+          {
+            ref_time: '2025-01-31T06:00:00Z',
+            state: WindState.activated_64,
+            path: 'elvis/2025-01-31T06:00:00Z.json',
+          },
+        ],
+        data: buildDetailedReport({
+          landfall_detected: false,
+          status: WindState.activated_64,
+          affected64ktDistrict: ['Namacurra'],
+          landfallInfo: buildLandfallInfo({
+            landfall_time: [
+              '2025-01-13 06:00:00',
+              moment().subtract(1, 'hour').format('YYYY-MM-DD HH:mm:ss'), // now - 1 hour; ie landfall occured already
+            ],
+          }),
+        }),
+      },
     ];
     it.each(tests)('$description', async ({ data, shortReports }) => {
       mockedFetch.mockResolvedValue({ json: () => data });
 
       const emailPayloads = await buildEmailPayloads(shortReports);
       expect(emailPayloads).toMatchSnapshot();
-      console.log(emailPayloads);
     });
   });
 });

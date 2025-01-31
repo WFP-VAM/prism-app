@@ -1,5 +1,4 @@
-import { createConnection, Repository } from 'typeorm';
-import { StormDataResponseBody, WindState } from '../types/rawStormDataTypes';
+import { createConnection } from 'typeorm';
 import { LatestAAStormReports } from '../entities/latestAAStormReports.entity';
 import { StormAlertData } from '../types/email';
 import {

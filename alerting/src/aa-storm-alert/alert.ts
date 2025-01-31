@@ -4,6 +4,7 @@ import nodeFetch from 'node-fetch';
 import { LatestAAStormReports } from '../entities/latestAAStormReports.entity';
 import { StormDataResponseBody, WindState } from '../types/rawStormDataTypes';
 import { StormAlertData } from '../types/email';
+import moment from 'moment';
 
 // @ts-ignore
 global.fetch = nodeFetch;
@@ -73,9 +74,13 @@ export async function filterAlreadyProcessedReports(
 }
 
 function isEmailNeededByReport(report: StormDataResponseBody) {
-  // if (report.landfall_detected) {
-  //   return false;
-  // }
+  const landfallInfo = report.landfall_info;
+  if ('landfall_time' in landfallInfo) {
+    const landfallOutermostTime = landfallInfo.landfall_time[1];
+    if (moment().isAfter(moment(landfallOutermostTime))) {
+      return false;
+    }
+  }
 
   const status = report.ready_set_results?.status;
 
