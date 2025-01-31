@@ -12,13 +12,8 @@ export interface StormAlertData {
     readiness: boolean,
 }
 
-export interface StormAlertEmail extends Omit<StormAlertData, 'email' | 'activatedTriggers'> {
+export interface StormAlertEmail extends Omit<StormAlertData, 'email' | 'activatedTriggers' | 'base64Image'> {
     alertTitle: string;
-    base64Image: string;
-    icons: {
-        mapIcon: string;
-        arrowForwardIcon: string;
-    };
     unsubscribeUrl: string;
     activatedTriggers?: {
         districts48kt: string,

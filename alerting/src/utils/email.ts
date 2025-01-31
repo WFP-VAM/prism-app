@@ -2,8 +2,8 @@ import nodemailer from 'nodemailer';
 import { StormAlertData, StormAlertEmail } from '../types/email';
 import ejs from 'ejs';
 import path from 'path';
+import fs from 'fs';
 import { formatDateToUTC } from './date';
-import { arrowForwardIcon, mapIcon } from '../images';
 
 /**
  *
@@ -19,12 +19,14 @@ export async function sendEmail({
   subject,
   text,
   html,
+  attachments,
 }: {
   from: string;
   to: string;
   subject: string;
   text: string;
   html?: string;
+  attachments?: { filename: string; path?: string; content?: string; encoding?: string; cid: string }[];
 }) {
   const password = process.env.PRISM_ALERTS_EMAIL_PASSWORD;
   const host =
@@ -54,6 +56,7 @@ export async function sendEmail({
       subject,
       text,
       html,
+      attachments,
     });
 
     console.debug('Message sent: %s', info.messageId);
@@ -78,6 +81,9 @@ export async function sendEmail({
     subject,
     text,
     html,
+    attachments,
+  }).catch((error) => {
+    console.error('Error sending email:', error);
   });
 
   console.debug(`Message sent using ${user}`);
@@ -130,21 +136,34 @@ export const sendStormAlertEmail = async (data: StormAlertData): Promise<void> =
       }
     : undefined,
     redirectUrl: data.redirectUrl,
-    base64Image: data.base64Image,
-    icons: {
-      mapIcon: mapIcon(true),
-      arrowForwardIcon: arrowForwardIcon(true), 
-    },
     unsubscribeUrl: '',
     readiness: data.readiness,
   };
 
   const mailOptions = {
-      from: 'wfp.prism@wfp.org',
+      from: 'donia.benharara@gmail.com',
       to: data.email,
       subject: alertTitle,
       html: '',
       text: '',
+      attachments: [
+        {
+          filename: 'map-icon.png', 
+          path: path.join(__dirname, '../images/mapIcon.png'),
+          cid: 'map-icon'
+        },
+        {
+          filename: 'arrow-forward-icon.png',
+          path: path.join(__dirname, '../images/arrowForwardIcon.png'),
+          cid: 'arrow-forward-icon'
+        },
+        {
+          filename: 'storm-image.png',
+          content: data.base64Image,
+          encoding: 'base64',
+          cid: 'storm-image-cid'
+        }
+      ]
   };
 
   try {
