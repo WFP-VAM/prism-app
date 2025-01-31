@@ -2249,7 +2249,7 @@
     "period": "monthly",
     "base_url": "https://hip-service.ovio.org/q_multi_geojson",
     "start_date": "1981-01-01",
-    "end_date": "2024-12-21",
+    "end_date": "2024-01-01",
     "aggregation": "pixel",
     "date_layer": "rainfall_dekad",
     "validity": {
