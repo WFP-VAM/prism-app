@@ -34,6 +34,9 @@
             line-height: 30px;
             color: #333;
         }
+        .content-subtitle {
+            margin-bottom: 40px;
+        }
         .content {
             padding: 50px;
             font-size:14px;
@@ -118,16 +121,10 @@
             margin-right: 10px;
         }
         .trigger-title {
-            font-weight: bold;
-            display: inline-block;
-            vertical-align: middle;
-            text-align: left;
-            font-size: 16px;;
-        }
-        .trigger-title-container {
-            display: inline-block;
-            margin-bottom: 10px;
+            margin: 20px 0;
             width: 100%;
+            font-weight: bold;
+            font-size: 16px;;
         }
         .gray-box {
             background-color: rgba(241, 241, 241, 1);
@@ -145,47 +142,41 @@
             <h1 class="content-title">
                 <%= alertTitle %>
             </h1>
-            <p>ANTICIPATORY ACTION ALERT FOR TROPICAL STORM <%= cycloneName %> - <%= cycloneTime %> - 
+            <p class="content-subtitle">ANTICIPATORY ACTION ALERT FOR TROPICAL STORM <%= cycloneName %> - <%= cycloneTime %> - 
                 FORECAST BY REGIONAL SPECIALIZED METEOROLOGICAL CENTER LA REUNION</p>
-            <p><div class="trigger-title-container">
-                <span class="trigger-title">
+            <p class="trigger-title">
                     <span class="readiness-icon"></span> Readiness Trigger: 
                     <% if (readiness) { %>
                         Activated
                     <% } else { %>
                         Not Activated
                     <% } %>
-                </span>
-            </div></p>
+            </p>
             <% if (readiness) { %>
                 <p><%= cycloneTime %> there was 20% likelihood of Mozambique experiencing tropical storm-force winds within the next 5 days</p>
             <% } %>
-                <p>
-                    <div class="trigger-title-container">
-                        <span class="trigger-title">
-                            <span class="activation-icon"></span> Activation Triggers: 
-                            <% if (activatedTriggers) { %>
-                                Activated
-                            <% } else { %>
-                                Not Activated
-                            <% } %>
-                        </span>
-                    </div>
-                </p>
-                
+            <p class="trigger-title">
+                <span class="activation-icon"></span> Activation Triggers: 
                 <% if (activatedTriggers) { %>
-                    <p>Projected wind speeds affecting districts in the next 72 hours:</p>
-                    <table class="table-container">
-                        <tr>
-                            <td>&gt; 89 km/h</td>
-                            <td><%= activatedTriggers.districts48kt %></td>
-                        </tr>
-                        <tr>
-                            <td>&gt; 118 km/h</td>
-                            <td><%= activatedTriggers.districts64kt %></td>
-                        </tr>
-                    </table>
+                    Activated
+                <% } else { %>
+                    Not Activated
                 <% } %>
+            </p>
+                
+            <% if (activatedTriggers) { %>
+                <p>Projected wind speeds affecting districts in the next 72 hours:</p>
+                <table class="table-container">
+                    <tr>
+                        <td>&gt; 89 km/h</td>
+                        <td><%= activatedTriggers.districts48kt %></td>
+                    </tr>
+                    <tr>
+                        <td>&gt; 118 km/h</td>
+                        <td><%= activatedTriggers.districts64kt %></td>
+                    </tr>
+                </table>
+            <% } %>
             <div class="button-container">
                 <a href="<%= redirectUrl %>" target="_blank" rel="noopener noreferrer" aria-label="Access PRISM Tropical Storm Dashboard (opens in a new tab)" class="button">
                     <span style="vertical-align: middle;">ACCESS PRISM TROPICAL STORM DASHBOARD</span>
@@ -194,7 +185,7 @@
             </div>
             
             <h3>
-                <img src="<%= icons.mapIcon %>" alt="Icon" style="width: 24px; height: 24px; vertical-align: middle; margin-right: 8px;">
+                <img src="<%= icons.mapIcon %>" alt="" style="width: 24px; height: 24px; vertical-align: middle; margin-right: 8px;">
                 Trajectory Map
             </h3>
             <img src="data:image/png;base64,<%= base64Image %>" alt="Map showing the trajectory of cyclone <%= cycloneName %> over Mozambique" width="100%" style="border: none;">
