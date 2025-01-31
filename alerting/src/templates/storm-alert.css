@@ -1,0 +1,128 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+}
+.container {
+    width: 100%;
+    max-width: 600px;
+    margin: 20px auto;
+    background: #ffffff;
+}
+.header {
+    text-align: center;
+    padding-top: 30px;
+}
+.title {
+    font-size: 20px;
+    font-weight: 500;
+    line-height: 23.44px;
+}
+.content-title {
+    font-size: 24px;
+    font-weight: 700;
+    line-height: 30px;
+    color: #333;
+}
+.content {
+    padding: 50px;
+    font-size:14px;
+}
+.table-container {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 16px;
+    font-weight: 700;
+}
+.table-container th, .table-container td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: left;
+}
+.table-container th {
+    background-color: #f8f8f8;
+}
+.button-container {
+    text-align: center;
+    margin: 20px 0;
+}
+.button {
+    display: inline-block;
+    text-align: center;
+    background: rgba(99, 178, 189, 1);
+    color: black;
+    padding: 12px;
+    text-decoration: none;
+    border-radius: 5px;
+    white-space: nowrap;
+    
+    font-weight: 600;
+    
+}
+@media (max-width: 768px) {
+    .button span {
+        display: none; 
+    }
+    .button::before {
+        content: "ACCESS DASHBOARD";
+        display: inline;
+    }
+}
+.footer {
+    text-align: center;
+    font-size: 12px;
+    color: white;
+    padding: 15px 0;
+    width: 100%;
+    background-color: rgba(99, 178, 189, 1);
+}
+.footer .title {
+    margin-bottom: 15px;
+}
+
+.footer p {
+    margin-bottom: 15px;
+}
+
+.footer a {
+    color: white;
+    font-weight: bold;
+    margin-top: 10px;
+}
+.readiness-icon {
+    width: 24px;
+    height: 24px;
+    border-radius: 8px;
+    background-color: rgba(99, 178, 189, 1);
+    display: inline-block;
+    vertical-align: middle;
+    margin-right: 10px;
+}
+.activation-icon {
+    width: 24px;
+    height: 24px;
+    border-radius: 8px;
+    background-color: rgba(230, 55, 1, 1);
+    display: inline-block;
+    vertical-align: middle;
+    margin-right: 10px;
+}
+.trigger-title {
+    font-weight: bold;
+    display: inline-block;
+    vertical-align: middle;
+    text-align: left;
+    font-size: 16px;;
+}
+.trigger-title-container {
+    display: inline-block;
+    margin-bottom: 10px;
+    width: 100%;
+}
+.gray-box {
+    background-color: rgba(241, 241, 241, 1);
+    padding: 20px;
+    margin-top: 20px;
+    color: black; 
+}

@@ -2,7 +2,6 @@ import nodemailer from 'nodemailer';
 import { StormAlertData, StormAlertEmail } from '../types/email';
 import ejs from 'ejs';
 import path from 'path';
-import fs from 'fs';
 import { formatDateToUTC } from './date';
 
 /**
@@ -151,7 +150,7 @@ export const sendStormAlertEmail = async (data: StormAlertData): Promise<void> =
   };
 
   const mailOptions = {
-      from: 'donia.benharara@gmail.com',
+      from: 'wfp.prism@wfp.org',
       to: data.email,
       subject: alertTitle,
       html: '',

@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>PRISM Alert</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        .container {
+            width: 500px;
+            padding: 40px;
+            margin: 20px auto;
+            background: #ffffff;
+            border-radius: 8px;
+        }
+        .title {
+            font-size: 20px;
+            font-weight: 500;
+            line-height: 23.44px;
+            letter-spacing: 0.2em;
+            text-align: center;
+            padding: 40px 0;
+            text-underline-position: from-font;
+            text-decoration-skip-ink: none;
+        }
+        .header {
+            font-size: 18px;
+            font-weight: bold;
+            color: #333;
+        }
+        .content {
+            display: flex;
+            flex-direction: column;
+        }
+        .table-container {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .table-container th, .table-container td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
+        .table-container th {
+            background-color: #f8f8f8;
+        }
+        .button {
+            align-self: center;
+            display: block;
+            width: max-content;
+            text-align: center;
+            background: rgba(99, 178, 189, 1);
+            color: black;
+            padding: 12px;
+            text-decoration: none;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        .footer {
+            text-align: center;
+            font-size: 12px;
+            color: #777;
+            padding-top: 15px;
+        }
+        .readiness-icon{
+            width: 24px;
+            height: 24px;
+            border-radius: 8px;
+            background-color:rgba(99, 178, 189, 1);
+        }
+        .activation-icon{
+            width: 24px;
+            height: 24px;
+            border-radius: 8px;
+            background-color:rgba(230, 55, 1, 1);
+        }
+
+        .trigger-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="title">PRISM</div>
+        <div class="header">Activation Triggers activated (<%= windspeed %>) for <%= cycloneName %></div>
+
+        <p>ANTICIPATORY ACTION ALERT FOR TROPICAL STORM <%= cycloneName %> - <%= triggerTime %> - 
+            FORECAST BY REGIONAL SPECIALIZED METEOROLOGICAL CENTER LA REUNION</p>
+        <div class="content">
+            <p><div class="trigger-title"><div class="readiness-icon" > </div>Readiness Trigger Activated </div><br>
+                <%= triggerTime %> there was 20% likelihood of Mozambique experiencing tropical storm-force winds within the next 5 days</p>
+            
+            
+            
+
+            <p><div class="trigger-title"><div class="activation-icon" > </div>Activation Triggers: Activated</div><br>
+                projected windspedds affecting districts in the next 72 hours:</p>
+
+                <table class="table-container">
+                    <tr>
+                        <td>> 89 km/h</td>
+                        <td><%= districts1 %></td>
+                    </tr>
+                    <tr>
+                        <td>> 118 km/h</td>
+                        <td><%= districts2 %></td>
+                    </tr>
+                </table>
+            
+            <a href="<%= urlWithParams %>" class="button">ACCESS PRISM TROPICAL STORM DASHBOARD</a>
+            
+            <h3>Trajectory Map</h3>
+            <img src="data:image/png;base64,<%= base64Image %>" alt="Storm Trajectory" width="100%" style="border-radius: 5px;">
+            <a href="<%= urlWithParams %>" class="button">ACCESS PRISM TROPICAL STORM DASHBOARD</a>
+            
+            <p>We will continue to closely monitor the situation and provide timely updates as more information becomes available.<br>
+                Best regards,<br>
+                WFP Mozambique Country Office</p>
+            
+            <p><strong>WFP Mozambique Country Office</strong></p>
+            
+            <div class="footer">
+                This message was automatically generated.<br>
+                <a href="<%= unsubscribeUrl %>">Unsubscribe here</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
