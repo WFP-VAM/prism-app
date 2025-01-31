@@ -84,7 +84,7 @@ export const fetchCompositeLayerData: LazyLoader<CompositeLayerProps> =
         key,
         aggregation,
         importance,
-        invert: Boolean(invert),
+        invert,
       })),
       ...aggregationMaskParam,
       ...aggregateByParam,
