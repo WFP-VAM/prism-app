@@ -2,8 +2,8 @@ import nodemailer from 'nodemailer';
 import { StormAlertData, StormAlertEmail } from '../types/email';
 import ejs from 'ejs';
 import path from 'path';
-import { encodeImageToBase64 } from './image';
 import { formatDateToUTC } from './date';
+import { arrowForwardIcon, mapIcon } from '../images';
 
 /**
  *
@@ -132,8 +132,8 @@ export const sendStormAlertEmail = async (data: StormAlertData): Promise<void> =
     redirectUrl: data.redirectUrl,
     base64Image: data.base64Image,
     icons: {
-        mapIcon: `data:image/png;base64,${encodeImageToBase64('icons/mapIcon.png')}`,
-        arrowForwardIcon: `data:image/png;base64,${encodeImageToBase64('icons/arrowForwardIcon.png')}`,
+      mapIcon: mapIcon(true),
+      arrowForwardIcon: arrowForwardIcon(true), 
     },
     unsubscribeUrl: '',
     readiness: data.readiness,
@@ -148,8 +148,8 @@ export const sendStormAlertEmail = async (data: StormAlertData): Promise<void> =
   };
 
   try {
-    const html: string = await new Promise((resolve, reject) => {
-      ejs.renderFile(path.join(__dirname, '../templates', 'storm-alert.ejs'), emailData, (err, result) => {
+    const htmlOutput: string = await new Promise((resolve, reject) => {
+      ejs.renderFile(path.join(__dirname, '../templates', 'storm-alert.ejs'), { ...emailData, isPlainText: false }, (err, result) => {
           if (err) {
               return reject(err);
           }
@@ -157,7 +157,17 @@ export const sendStormAlertEmail = async (data: StormAlertData): Promise<void> =
       });
     });
 
-    mailOptions.html = html;
+    const textOutput: string = await new Promise((resolve, reject) => {
+      ejs.renderFile(path.join(__dirname, '../templates', 'storm-alert.ejs'), { ...emailData, isPlainText: true }, (err, result) => {
+          if (err) {
+              return reject(err);
+          }
+          resolve(result);
+      });
+    });
+
+    mailOptions.html = htmlOutput;
+    mailOptions.text = textOutput;
     await sendEmail(mailOptions);
   } catch (error) {
     console.error('Error sending storm alert email:', error);

@@ -1,3 +1,5 @@
+<% if (!isPlainText) { %> 
+<!-- Version HTML -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -138,12 +140,11 @@
 </head>
 <body>
     <div class="container">
-        <div class="header"><div class="title">PRISM</div></div>
-        
-        <div class="content">
-            <div class="content-title">
+        <header class="header"><p class="title">PRISM</p></header>
+        <main class="content">
+            <h1 class="content-title">
                 <%= alertTitle %>
-            </div>
+            </h1>
             <p>ANTICIPATORY ACTION ALERT FOR TROPICAL STORM <%= cycloneName %> - <%= cycloneTime %> - 
                 FORECAST BY REGIONAL SPECIALIZED METEOROLOGICAL CENTER LA REUNION</p>
             <p><div class="trigger-title-container">
@@ -176,19 +177,19 @@
                     <p>Projected wind speeds affecting districts in the next 72 hours:</p>
                     <table class="table-container">
                         <tr>
-                            <td>> 89 km/h</td>
+                            <td>&gt; 89 km/h</td>
                             <td><%= activatedTriggers.districts48kt %></td>
                         </tr>
                         <tr>
-                            <td>> 118 km/h</td>
+                            <td>&gt; 118 km/h</td>
                             <td><%= activatedTriggers.districts64kt %></td>
                         </tr>
                     </table>
                 <% } %>
             <div class="button-container">
-                <a href="<%= redirectUrl %>" target="_blank" rel="noopener noreferrer" class="button">
+                <a href="<%= redirectUrl %>" target="_blank" rel="noopener noreferrer" aria-label="Access PRISM Tropical Storm Dashboard (opens in a new tab)" class="button">
                     <span style="vertical-align: middle;">ACCESS PRISM TROPICAL STORM DASHBOARD</span>
-                    <img src="<%= icons.arrowForwardIcon %>" alt="Arrow Forward Icon" style="width: 16px; height: 16px; vertical-align: middle">
+                    <img src="<%= icons.arrowForwardIcon %>" alt="" style="width: 16px; height: 16px; vertical-align: middle">
                 </a>
             </div>
             
@@ -199,9 +200,9 @@
             <img src="data:image/png;base64,<%= base64Image %>" alt="Storm Trajectory" width="100%" style="border: none;">
 
             <div class="button-container">
-                <a href="<%= redirectUrl %>" target="_blank" rel="noopener noreferrer" class="button">
+                <a href="<%= redirectUrl %>" target="_blank" rel="noopener noreferrer" aria-label="Access PRISM Tropical Storm Dashboard (opens in a new tab)" class="button">
                     <span style="vertical-align: middle;">ACCESS PRISM TROPICAL STORM DASHBOARD</span>
-                    <img src="<%= icons.arrowForwardIcon %>" alt="Arrow Forward Icon" style="width: 16px; height: 16px; vertical-align: middle">
+                    <img src="<%= icons.arrowForwardIcon %>" alt="" style="width: 16px; height: 16px; vertical-align: middle">
                 </a>
             </div>
             
@@ -209,16 +210,55 @@
             <p>Best regards,</p>
             <p>WFP Mozambique Country Office</p>
             
-            <div class="gray-box">
+            <p class="gray-box">
                 <strong>Disclaimer</strong>: please note, this is not an official forecast. For accurate and official updates, please refer to alerts issued by <strong>INAM (Mozambique Meteorological Service)</strong>.
-            </div>
-        </div>
+            </p>
+        </main>
 
-        <div class="footer">
-            <div class="title">PRISM</div>
+        <footer class="footer">
+            <p class="title">PRISM</p>
             <p>This message was automatically generated.</p>
             <p>You can <a class="link" href="<%= unsubscribeUrl %>">unsubscribe here</a></p>
-        </div>
+        </footer>
     </div>
+ 
 </body>
 </html>
+<% } else { %>
+    PRISM ALERT - <%= alertTitle %>
+
+    Anticipatory Action Alert for Tropical Storm <%= cycloneName %> - <%= cycloneTime %> 
+    Forecast by Regional Specialized Meteorological Center La Reunion.
+
+    <% if (readiness) { %>
+        Readiness Trigger: Activated
+    <% } else { %>
+        Readiness Trigger: Not Activated
+    <% } %>
+
+    <% if (readiness) { %>
+        There was a 20% likelihood of Mozambique experiencing tropical storm-force winds within the next 5 days.
+    <% } %>
+
+    <% if (activatedTriggers) { %>
+        Activation Triggers: Activated
+
+        Projected wind speeds affecting districts in the next 72 hours:
+        - > 89 km/h: <%= activatedTriggers.districts48kt %>
+        - > 118 km/h: <%= activatedTriggers.districts64kt %>
+    <% } else { %>
+        Activation Triggers: Not Activated
+    <% } %>
+
+    Access PRISM Tropical Storm Dashboard: <%= redirectUrl %>
+
+    Storm Trajectory Map:
+    (Image unavailable in plain text format)
+
+    We will continue to monitor the situation and provide timely updates.
+
+    Best regards,  
+    WFP Mozambique Country Office
+
+    Disclaimer: Please note, this is not an official forecast. For accurate and official updates, please refer to alerts issued by INAM (Mozambique Meteorological Service).
+<% } %> 
