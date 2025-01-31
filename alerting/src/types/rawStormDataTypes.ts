@@ -3,8 +3,8 @@
 export enum WindState {
   monitoring = 'monitoring',
   ready = 'ready',
-  activated_64 = 'activated_64', // TODO: should be renamed as activated_48 ie activated_48 = 'activated_64' so to always use the kt unit everywhere
-  activated_118 = 'activated_118', // TODO: should be renamed as activated_64 ie activated_64 = 'activated_118' so to always use the kt unit everywhere
+  activated_48 = 'activated_64',
+  activated_64 = 'activated_118',
 }
 
 //TODO: Avoid duplication of code

@@ -1,12 +1,9 @@
 import { Repository } from 'typeorm';
-import {
-  EmailPayload,
-  ShortReport,
-  ShortReportsResponseBody,
-} from '../types/aa-storm-email';
+import { ShortReport, ShortReportsResponseBody } from '../types/aa-storm-email';
 import nodeFetch from 'node-fetch';
 import { LatestAAStormReports } from '../entities/latestAAStormReports.entity';
 import { StormDataResponseBody, WindState } from '../types/rawStormDataTypes';
+import { StormAlertData } from '../types/email';
 
 // @ts-ignore
 global.fetch = nodeFetch;
@@ -76,9 +73,9 @@ export async function filterAlreadyProcessedReports(
 }
 
 function isEmailNeededByReport(report: StormDataResponseBody) {
-  if (report.landfall_detected) {
-    return false;
-  }
+  // if (report.landfall_detected) {
+  //   return false;
+  // }
 
   const status = report.ready_set_results?.status;
 
@@ -102,7 +99,7 @@ function isEmailNeededByReport(report: StormDataResponseBody) {
   ];
 
   if (
-    status === WindState.activated_118 &&
+    status === WindState.activated_64 &&
     exposed_area_64kt &&
     exposed_area_64kt.affected_districts.filter((district) =>
       watchedDistrictsFor64KtStorm.includes(district),
@@ -121,7 +118,7 @@ function isEmailNeededByReport(report: StormDataResponseBody) {
   ];
 
   if (
-    status === WindState.activated_64 &&
+    status === WindState.activated_48 &&
     exposed_area_48kt &&
     exposed_area_48kt.affected_districts.filter((district) =>
       watchedDistrictsFor48ktStorm.includes(district),
@@ -135,7 +132,7 @@ function isEmailNeededByReport(report: StormDataResponseBody) {
 
 export async function buildEmailPayloads(
   shortReports: ShortReport[],
-): Promise<EmailPayload[]> {
+): Promise<StormAlertData[]> {
   try {
     const emailPayload = await Promise.all(
       shortReports.map(async (shortReport) => {
@@ -146,16 +143,30 @@ export async function buildEmailPayloads(
         const isEmailNeeded = isEmailNeededByReport(detailedStormReport);
 
         if (isEmailNeeded) {
-          // TODO: add the missing items required to feed the email template
           return {
+            email: '',
             cycloneName: detailedStormReport.forecast_details.cyclone_name,
+            cycloneTime: detailedStormReport.forecast_details.reference_time, //TODO
+            activatedTriggers: {
+              districts48kt:
+                detailedStormReport.ready_set_results?.exposed_area_48kt
+                  .affected_districts || [],
+              districts64kt:
+                detailedStormReport.ready_set_results?.exposed_area_64kt
+                  .affected_districts || [],
+              windspeed: '', //TODO
+            },
+            redirectUrl: '', //TODO
+            base64Image: '', //TODO
+            readiness:
+              detailedStormReport.ready_set_results?.status === WindState.ready,
           };
         }
 
         return false;
       }),
     );
-    return emailPayload.filter((payload) => payload);
+    return emailPayload.filter((payload) => !!payload) as StormAlertData[];
   } catch (e) {
     console.error('Error while creating email payload');
     return [];

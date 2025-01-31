@@ -1,0 +1,63 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`alert mechanism buildEmailPayloads() does not return a payload when detailed report indicates that activation48 is triggered but there is no pilot activated districts for 48kt exposed 1`] = `Array []`;
+
+exports[`alert mechanism buildEmailPayloads() does not return a payload when detailed report indicates that activation64 is triggered but there is no pilot activated districts for 64kt exposed 1`] = `Array []`;
+
+exports[`alert mechanism buildEmailPayloads() returns a payload when detailed report indicates that activation48 is triggered and pilot activated districts for 48kt winds are parts of the exposed districts 1`] = `
+Array [
+  Object {
+    "activatedTriggers": Object {
+      "districts48kt": Array [
+        "Angoche",
+      ],
+      "districts64kt": Array [],
+      "windspeed": "",
+    },
+    "base64Image": "",
+    "cycloneName": "ELVIS",
+    "cycloneTime": "2025-01-31T06:00:00Z",
+    "email": "",
+    "readiness": false,
+    "redirectUrl": "",
+  },
+]
+`;
+
+exports[`alert mechanism buildEmailPayloads() returns a payload when detailed report indicates that activation64 is triggered and pilot activated districts for 64kt winds are parts of the exposed districts 1`] = `
+Array [
+  Object {
+    "activatedTriggers": Object {
+      "districts48kt": Array [],
+      "districts64kt": Array [
+        "Namacurra",
+      ],
+      "windspeed": "",
+    },
+    "base64Image": "",
+    "cycloneName": "ELVIS",
+    "cycloneTime": "2025-01-31T06:00:00Z",
+    "email": "",
+    "readiness": false,
+    "redirectUrl": "",
+  },
+]
+`;
+
+exports[`alert mechanism buildEmailPayloads() returns a payload when detailed report indicates that readiness is triggered 1`] = `
+Array [
+  Object {
+    "activatedTriggers": Object {
+      "districts48kt": Array [],
+      "districts64kt": Array [],
+      "windspeed": "",
+    },
+    "base64Image": "",
+    "cycloneName": "ELVIS",
+    "cycloneTime": "2025-01-31T06:00:00Z",
+    "email": "",
+    "readiness": true,
+    "redirectUrl": "",
+  },
+]
+`;
