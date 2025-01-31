@@ -91,8 +91,6 @@ export async function sendEmail({
     text,
     html,
     attachments,
-  }).catch((error) => {
-    console.error('Error sending email:', error);
   });
 
   console.debug(`Message sent using ${user}`);
