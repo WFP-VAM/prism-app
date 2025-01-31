@@ -1,5 +1,4 @@
 import puppeteer, { Browser, Page, BoundingBox } from 'puppeteer';
-
 interface CropRegion {
   x: number;
   y: number;
@@ -166,7 +165,10 @@ async function captureScreenshotFromUrl(options: ScreenshotOptions): Promise<str
     };
 
     base64Image = await page.screenshot({ 
-      encoding: 'base64', // use path to save to file
+      type: 'jpeg',
+      quality: 70,
+      fullPage: false,
+      encoding: 'base64',
       clip: finalCrop,
     });
 
