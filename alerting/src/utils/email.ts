@@ -12,6 +12,16 @@ import { formatDateToUTC } from './date';
  *  subject: 'Hello ✔', // Subject line
  *  text: 'Hello world?', // plain text body
  *  html: '<b>Hello world?</b>', // html body
+ *  attachments: [{
+          filename: 'icon.png', 
+          path: path.join(__dirname, '../images/icon.png'),
+          cid: 'icon-cid'
+        },
+         {
+          filename: 'image.png',
+          content: data.base64Image,
+          encoding: 'base64',
+          cid: 'image-cid'}] // attachments files
  */
 export async function sendEmail({
   from,
