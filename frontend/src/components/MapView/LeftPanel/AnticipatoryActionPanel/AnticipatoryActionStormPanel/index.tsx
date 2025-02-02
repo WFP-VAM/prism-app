@@ -9,6 +9,10 @@ import React from 'react';
 import { useSafeTranslation } from 'i18n';
 import { useDispatch } from 'react-redux';
 import { updateDateRange } from 'context/mapStateSlice';
+import {
+  setSelectedStormName,
+  ExtendedDateItem,
+} from 'context/anticipatoryAction/AAStormStateSlice/index';
 import { AnticipatoryAction, PanelSize } from 'config/types';
 import { getFormattedDate } from 'utils/date-utils';
 import { DateFormat } from 'utils/name-utils';
@@ -54,7 +58,7 @@ function AnticipatoryActionStormPanel() {
         </div>
         <StyledSelect
           className={classes.select}
-          value={getFormattedDate(reportRefTime, DateFormat.Default) || ''}
+          value={`${getFormattedDate(reportRefTime, 'default')} ${AAData.forecastDetails?.cyclone_name?.toUpperCase() || ''}`}
           input={<Input disableUnderline />}
           renderValue={() => (
             <Typography variant="body1" className={classes.selectText}>
@@ -73,23 +77,30 @@ function AnticipatoryActionStormPanel() {
           )}
         >
           {AAAvailableDates &&
-            AAAvailableDates.map(x => (
-              <MenuItem
-                key={getFormattedDate(x.displayDate, DateFormat.Default)}
-                value={getFormattedDate(x.displayDate, DateFormat.Default)}
-                onClick={() => {
-                  updateHistory(
-                    'date',
-                    getFormattedDate(x.displayDate, 'default') as string,
-                  );
-                  dispatch(updateDateRange({ startDate: x.displayDate }));
-                }}
-              >
-                {t(
-                  getFormattedDate(x.displayDate, DateFormat.Default) as string,
-                )}
-              </MenuItem>
-            ))}
+            // Create a menu item for each date-storm combination
+            (AAAvailableDates as ExtendedDateItem[]).flatMap(stormDate =>
+              stormDate.stormNames.map(stormName => (
+                <MenuItem
+                  key={`${stormName}-${stormDate.displayDate}`}
+                  value={`${getFormattedDate(stormDate.displayDate, 'default')} ${stormName.toUpperCase()}`}
+                  onClick={() => {
+                    updateHistory(
+                      'date',
+                      getFormattedDate(
+                        stormDate.displayDate,
+                        'default',
+                      ) as string,
+                    );
+                    dispatch(
+                      updateDateRange({ startDate: stormDate.displayDate }),
+                    );
+                    dispatch(setSelectedStormName(stormName));
+                  }}
+                >
+                  {`${getFormattedDate(stormDate.displayDate, DateFormat.Default)} ${stormName.toUpperCase()}`}
+                </MenuItem>
+              )),
+            )}
         </StyledSelect>
 
         <Typography>
