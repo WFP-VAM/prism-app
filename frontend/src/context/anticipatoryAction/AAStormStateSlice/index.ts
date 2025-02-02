@@ -10,7 +10,7 @@ const initialState: AnticipatoryActionState = {
   data: {},
   windStateReports: {},
   availableDates: undefined,
-  selectedStormName: null,
+  selectedStormName: undefined,
   loading: false,
   error: null,
 };

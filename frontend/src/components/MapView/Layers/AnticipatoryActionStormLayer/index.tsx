@@ -72,7 +72,7 @@ const AnticipatoryActionStormLayer = React.memo(
     const selectedStormName = useSelector(AASelectedStormNameSelector);
     const windStates = useWindStatesByTime(
       selectedDate || 0,
-      selectedStormName || undefined,
+      selectedStormName,
     )[0];
     const latestWindState = windStates?.states[windStates.states.length - 1];
     const dispatch = useDispatch();
