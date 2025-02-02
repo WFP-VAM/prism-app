@@ -17,6 +17,7 @@ import {
   AADataSelector,
   AALoadingSelector,
   loadStormReport,
+  AASelectedStormNameSelector,
 } from 'context/anticipatoryAction/AAStormStateSlice';
 import { updateDateRange } from 'context/mapStateSlice';
 import { useWindStatesByTime } from 'components/MapView/DateSelector/TimelineItems/hooks';
@@ -24,6 +25,7 @@ import { getAAColor } from 'components/MapView/LeftPanel/AnticipatoryActionPanel
 import { AACategory } from 'context/anticipatoryAction/AAStormStateSlice/parsedStormDataTypes';
 import anticipatoryActionIcons from 'components/Common/AnticipatoryAction/icons';
 import { AAStormTimeSeriesFeature } from 'context/anticipatoryAction/AAStormStateSlice/rawStormDataTypes';
+import maplibregl from 'maplibre-gl';
 import AAStormDatePopup from './AAStormDatePopup';
 import AAStormLandfallPopup from './AAStormLandfallPopup';
 
@@ -43,6 +45,9 @@ const WIND_TYPE_TO_ICON_MAP: Record<string, string> = {
   'tropical-disturbance': anticipatoryActionIcons.disturbance,
   low: anticipatoryActionIcons.disturbance,
   'tropical-depression': anticipatoryActionIcons.tropicalDepression,
+  'post-tropical-depression': anticipatoryActionIcons.postTropicalDepression,
+  'sub-tropical-depression': anticipatoryActionIcons.subTropicalDepression,
+  'extratropical-system': anticipatoryActionIcons.extraTropicalSystem,
   'moderate-tropical-storm': anticipatoryActionIcons.moderateStorm,
   'severe-tropical-storm': anticipatoryActionIcons.severeTropicalStorm,
   'tropical-cyclone': anticipatoryActionIcons.tropicalCyclone,
@@ -64,8 +69,12 @@ const AnticipatoryActionStormLayer = React.memo(
 
     const stormData = useSelector(AADataSelector);
     const loading = useSelector(AALoadingSelector);
-    const windStates = useWindStatesByTime(selectedDate || 0);
-    const latestWindState = windStates.states[windStates.states.length - 1];
+    const selectedStormName = useSelector(AASelectedStormNameSelector);
+    const windStates = useWindStatesByTime(
+      selectedDate || 0,
+      selectedStormName,
+    )[0];
+    const latestWindState = windStates?.states[windStates.states.length - 1];
     const dispatch = useDispatch();
 
     // Load data when:
@@ -77,13 +86,15 @@ const AnticipatoryActionStormLayer = React.memo(
         (stormData.forecastDetails &&
           !loading &&
           latestWindState?.ref_time &&
-          stormData.forecastDetails?.reference_time?.split('T')[0] !==
-            latestWindState.ref_time?.split('T')[0])
+          (stormData.forecastDetails?.reference_time?.split('T')[0] !==
+            latestWindState.ref_time?.split('T')[0] ||
+            stormData.forecastDetails?.cyclone_name.toLowerCase() !==
+              windStates?.cycloneName?.toLowerCase()))
       ) {
         dispatch(
           loadStormReport({
             date: latestWindState?.ref_time,
-            stormName: windStates.cycloneName || 'chido',
+            stormName: windStates?.cycloneName || 'chido',
           }),
         );
         // If no start date is selected, update the date range to the selected date
@@ -97,7 +108,8 @@ const AnticipatoryActionStormLayer = React.memo(
       loading,
       stormData,
       latestWindState,
-      windStates.cycloneName,
+      selectedStormName,
+      windStates?.cycloneName,
       selectedDate,
       startDate,
     ]);
@@ -163,6 +175,66 @@ const AnticipatoryActionStormLayer = React.memo(
       stormData && stormData.timeSeries
         ? enhanceTimeSeries(stormData.timeSeries as unknown as TimeSeries)
         : null;
+
+    // Handle map fitting when timeSeries data is available but outside of the current view
+    useEffect(() => {
+      if (map && timeSeries?.features?.length) {
+        // Get coordinates from forecast line only
+        const allCoordinates = timeSeries.features
+          .filter(
+            (f: {
+              geometry: { type: string };
+              properties: { data_type: string };
+            }) =>
+              f.geometry.type === 'LineString' &&
+              f.properties.data_type === 'forecast',
+          )
+          .flatMap(
+            (f: { geometry: { coordinates: any } }) => f.geometry.coordinates,
+          );
+
+        if (allCoordinates.length) {
+          // Get current map bounds
+          const currentBounds = map.getBounds();
+
+          // Add margin to the east (20% of the current view width)
+          const viewWidth = currentBounds.getEast() - currentBounds.getWest();
+          const easternMargin = viewWidth * 0.2;
+
+          // Check if ANY part of the storm path intersects with current view (including eastern margin)
+          const isAnyPointVisible = allCoordinates.some((coord: [any, any]) => {
+            const [lng, lat] = coord;
+            return (
+              lng >= currentBounds.getWest() &&
+              lng <= currentBounds.getEast() - easternMargin &&
+              lat >= currentBounds.getSouth() &&
+              lat <= currentBounds.getNorth()
+            );
+          });
+
+          // Only adjust zoom if no part of the storm is visible
+          if (!isAnyPointVisible) {
+            // Calculate the bounds of the storm path
+            const bounds = new maplibregl.LngLatBounds();
+            allCoordinates.forEach((coord: number[]) => {
+              // Ensure coord is a valid [lng, lat] array before extending
+              if (
+                Array.isArray(coord) &&
+                coord.length === 2 &&
+                !Number.isNaN(coord[0]) &&
+                !Number.isNaN(coord[1])
+              ) {
+                bounds.extend([coord[0], coord[1]]);
+              }
+            });
+
+            map.fitBounds(bounds, {
+              padding: { top: 50, bottom: 50, left: 50, right: 200 },
+            });
+          }
+        }
+      }
+    }, [map, timeSeries]);
 
     function getIconNameByWindType(windType: string) {
       const iconName = windType.split(' ').join('-').toLowerCase();

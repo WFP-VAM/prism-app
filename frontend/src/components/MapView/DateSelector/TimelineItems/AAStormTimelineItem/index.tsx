@@ -7,26 +7,30 @@ import { TIMELINE_ITEM_WIDTH } from '../../utils';
 import { useWindStatesByTime } from '../hooks';
 
 function AAStormTimelineItem({ currentDate }: AAStormTimelineItemProps) {
-  const windStates = useWindStatesByTime(currentDate.value);
+  const allWindStates = useWindStatesByTime(currentDate.value);
   const classes = useStyles();
 
+  const flattenedWindStates = allWindStates.flatMap(
+    windStates => windStates.states,
+  );
+
   const getStylingClass = () => {
-    if (windStates.states.length === 0) {
+    if (flattenedWindStates.length === 0) {
       return classes.emptySpace;
     }
     if (
-      windStates.states.find(({ state }) => state === WindState.activated_118)
+      flattenedWindStates.find(({ state }) => state === WindState.activated_118)
     ) {
       return classes.activated2Indicator;
     }
 
     if (
-      windStates.states.find(({ state }) => state === WindState.activated_64)
+      flattenedWindStates.find(({ state }) => state === WindState.activated_64)
     ) {
       return classes.activated1Indicator;
     }
 
-    if (windStates.states.find(({ state }) => state === WindState.ready)) {
+    if (flattenedWindStates.find(({ state }) => state === WindState.ready)) {
       return classes.readyIndicator;
     }
 
