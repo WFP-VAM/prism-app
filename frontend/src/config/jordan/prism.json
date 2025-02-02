@@ -273,6 +273,38 @@
             }
           ]
         }
+      ],
+      "combined_drought_index_water_based": [
+        {
+          "group_title": "Monthly",
+          "activate_all": false,
+          "layers": [
+            {
+              "id": "cdi_v3_aggregated_monthly",
+              "label": "Aggregated",
+              "main": true
+            },
+            {
+              "id": "cdi_v3_monthly",
+              "label": "Pixel level"
+            }
+          ]
+        },
+        {
+          "group_title": "Seasonal",
+          "activate_all": false,
+          "layers": [
+            {
+              "id": "cdi_v3_aggregated_seasonal",
+              "label": "Aggregated",
+              "main": true
+            },
+            {
+              "id": "cdi_v3_seasonal",
+              "label": "Pixel level"
+            }
+          ]
+        }
       ]
     }
   }

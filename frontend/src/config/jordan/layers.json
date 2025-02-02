@@ -1386,7 +1386,7 @@
         "id": "spi_1m",
         "importance": 0.5,
         "aggregation": "average",
-        "invert": "False",
+        "invert": false,
         "key": [
           "CHIRPS",
           "R1S_DEKAD"
@@ -1396,7 +1396,7 @@
         "id": "lst_anomaly",
         "importance": 0.25,
         "aggregation": "average",
-        "invert": "True",
+        "invert": true,
         "key": [
           "MODIS",
           "MYD11C2_TDD_DEKAD"
@@ -1406,65 +1406,14 @@
         "id": "ndvi_dekad",
         "importance": 0.25,
         "aggregation": "average",
-        "invert": "False",
+        "invert": false,
         "key": [
           "MODIS",
           "NDVI_smoothed_5KM"
         ]
       }
     ],
-    "legend": [
-      {
-        "value": 0,
-        "label": "0 - 0.1",
-        "color": "#672200"
-      },
-      {
-        "value": 0.1,
-        "label": "0.1 - 0.2",
-        "color": "#a93800"
-      },
-      {
-        "value": 0.2,
-        "label": "0.2 - 0.3",
-        "color": "#e59800"
-      },
-      {
-        "value": 0.3,
-        "label": "0.3 - 0.4",
-        "color": "#ffe769"
-      },
-      {
-        "value": 0.4,
-        "label": "0.4 - 0.5",
-        "color": "#f0f0f0"
-      },
-      {
-        "value": 0.5,
-        "label": "0.5 - 0.6",
-        "color": "#f0f0f0"
-      },
-      {
-        "value": 0.6,
-        "label": "0.6 - 0.7",
-        "color": "#a9c6d6"
-      },
-      {
-        "value": 0.7,
-        "label": "0.7 - 0.8",
-        "color": "#019ac4"
-      },
-      {
-        "value": 0.8,
-        "label": "0.8 - 0.9",
-        "color": "#014c73"
-      },
-      {
-        "value": 0.9,
-        "label": "0.9 - 1",
-        "color": "#014c73"
-      }
-    ],
+    "legend": "cdi_10_0_1",
     "legend_text": "Composite Drought Index v1. SPI weight = 0.5; LST weight = 0.25; NDVI weight = 0.25",
     "opacity": 0.7
   },
@@ -1496,7 +1445,7 @@
         "id": "spi_1m",
         "importance": 0.5,
         "aggregation": "average",
-        "invert": "False",
+        "invert": false,
         "key": [
           "CHIRPS",
           "R1S_DEKAD"
@@ -1506,7 +1455,7 @@
         "id": "lst_anomaly",
         "importance": 0.25,
         "aggregation": "average",
-        "invert": "True",
+        "invert": true,
         "key": [
           "MODIS",
           "MYD11C2_TDD_DEKAD"
@@ -1516,65 +1465,14 @@
         "id": "ndvi_dekad",
         "importance": 0.25,
         "aggregation": "average",
-        "invert": "False",
+        "invert": false,
         "key": [
           "MODIS",
           "NDVI_smoothed_5KM"
         ]
       }
     ],
-    "legend": [
-      {
-        "value": 0,
-        "label": "0 - 0.1",
-        "color": "#672200"
-      },
-      {
-        "value": 0.1,
-        "label": "0.1 - 0.2",
-        "color": "#a93800"
-      },
-      {
-        "value": 0.2,
-        "label": "0.2 - 0.3",
-        "color": "#e59800"
-      },
-      {
-        "value": 0.3,
-        "label": "0.3 - 0.4",
-        "color": "#ffe769"
-      },
-      {
-        "value": 0.4,
-        "label": "0.4 - 0.5",
-        "color": "#f0f0f0"
-      },
-      {
-        "value": 0.5,
-        "label": "0.5 - 0.6",
-        "color": "#f0f0f0"
-      },
-      {
-        "value": 0.6,
-        "label": "0.6 - 0.7",
-        "color": "#a9c6d6"
-      },
-      {
-        "value": 0.7,
-        "label": "0.7 - 0.8",
-        "color": "#019ac4"
-      },
-      {
-        "value": 0.8,
-        "label": "0.8 - 0.9",
-        "color": "#014c73"
-      },
-      {
-        "value": 0.9,
-        "label": "0.9 - 1",
-        "color": "#014c73"
-      }
-    ],
+    "legend": "cdi_10_0_1",
     "legend_text": "Composite Drought Index v1. SPI weight = 0.5; LST weight = 0.25; NDVI weight = 0.25",
     "opacity": 0.7
   },
@@ -1605,7 +1503,7 @@
         "id": "spi_3m",
         "importance": 0.5,
         "aggregation": "average",
-        "invert": "False",
+        "invert": false,
         "key": [
           "CHIRPS",
           "R1S_DEKAD"
@@ -1615,7 +1513,7 @@
         "id": "lst_anomaly",
         "importance": 0.25,
         "aggregation": "average",
-        "invert": "True",
+        "invert": true,
         "key": [
           "MODIS",
           "MYD11C2_TDD_DEKAD"
@@ -1625,65 +1523,14 @@
         "id": "ndvi_dekad",
         "importance": 0.25,
         "aggregation": "average",
-        "invert": "False",
+        "invert": false,
         "key": [
           "MODIS",
           "NDVI_smoothed_5KM"
         ]
       }
     ],
-    "legend": [
-      {
-        "value": 0,
-        "label": "0 - 0.1",
-        "color": "#672200"
-      },
-      {
-        "value": 0.1,
-        "label": "0.1 - 0.2",
-        "color": "#a93800"
-      },
-      {
-        "value": 0.2,
-        "label": "0.2 - 0.3",
-        "color": "#e59800"
-      },
-      {
-        "value": 0.3,
-        "label": "0.3 - 0.4",
-        "color": "#ffe769"
-      },
-      {
-        "value": 0.4,
-        "label": "0.4 - 0.5",
-        "color": "#f0f0f0"
-      },
-      {
-        "value": 0.5,
-        "label": "0.5 - 0.6",
-        "color": "#f0f0f0"
-      },
-      {
-        "value": 0.6,
-        "label": "0.6 - 0.7",
-        "color": "#a9c6d6"
-      },
-      {
-        "value": 0.7,
-        "label": "0.7 - 0.8",
-        "color": "#019ac4"
-      },
-      {
-        "value": 0.8,
-        "label": "0.8 - 0.9",
-        "color": "#014c73"
-      },
-      {
-        "value": 0.9,
-        "label": "0.9 - 1",
-        "color": "#014c73"
-      }
-    ],
+    "legend": "cdi_10_0_1",
     "legend_text": "Composite Drought Index v1. SPI weight = 0.5; LST weight = 0.25; NDVI weight = 0.25",
     "opacity": 0.7
   },
@@ -1723,7 +1570,7 @@
         "id": "spi_3m",
         "importance": 0.5,
         "aggregation": "average",
-        "invert": "False",
+        "invert": false,
         "key": [
           "CHIRPS",
           "R1S_DEKAD"
@@ -1733,7 +1580,7 @@
         "id": "lst_anomaly",
         "importance": 0.25,
         "aggregation": "average",
-        "invert": "True",
+        "invert": true,
         "key": [
           "MODIS",
           "MYD11C2_TDD_DEKAD"
@@ -1743,65 +1590,14 @@
         "id": "ndvi_dekad",
         "importance": 0.25,
         "aggregation": "average",
-        "invert": "False",
+        "invert": false,
         "key": [
           "MODIS",
           "NDVI_smoothed_5KM"
         ]
       }
     ],
-    "legend": [
-      {
-        "value": 0,
-        "label": "0 - 0.1",
-        "color": "#672200"
-      },
-      {
-        "value": 0.1,
-        "label": "0.1 - 0.2",
-        "color": "#a93800"
-      },
-      {
-        "value": 0.2,
-        "label": "0.2 - 0.3",
-        "color": "#e59800"
-      },
-      {
-        "value": 0.3,
-        "label": "0.3 - 0.4",
-        "color": "#ffe769"
-      },
-      {
-        "value": 0.4,
-        "label": "0.4 - 0.5",
-        "color": "#f0f0f0"
-      },
-      {
-        "value": 0.5,
-        "label": "0.5 - 0.6",
-        "color": "#f0f0f0"
-      },
-      {
-        "value": 0.6,
-        "label": "0.6 - 0.7",
-        "color": "#a9c6d6"
-      },
-      {
-        "value": 0.7,
-        "label": "0.7 - 0.8",
-        "color": "#019ac4"
-      },
-      {
-        "value": 0.8,
-        "label": "0.8 - 0.9",
-        "color": "#014c73"
-      },
-      {
-        "value": 0.9,
-        "label": "0.9 - 1",
-        "color": "#014c73"
-      }
-    ],
+    "legend": "cdi_10_0_1",
     "legend_text": "Composite Drought Index v1. SPI weight = 0.5; LST weight = 0.25; NDVI weight = 0.25",
     "opacity": 0.7
   },
@@ -1824,7 +1620,7 @@
         "id": "spi_1m",
         "importance": 0.3,
         "aggregation": "average",
-        "invert": "False",
+        "invert": false,
         "key": [
           "CHIRPS",
           "R1S_DEKAD"
@@ -1834,7 +1630,7 @@
         "id": "lst_anomaly",
         "importance": 0.3,
         "aggregation": "average",
-        "invert": "True",        
+        "invert": true,        
         "key": [
           "MODIS",
           "MYD11C2_TDD_DEKAD"
@@ -1844,65 +1640,14 @@
         "id": "ndvi_dekad",
         "importance": 0.4,
         "aggregation": "average",
-        "invert": "False",        
+        "invert": false,        
         "key": [
           "MODIS",
           "NDVI_smoothed_5KM"
         ]
       }
     ],
-    "legend": [
-      {
-        "value": 0,
-        "label": "0 - 0.1",
-        "color": "#672200"
-      },
-      {
-        "value": 0.1,
-        "label": "0.1 - 0.2",
-        "color": "#a93800"
-      },
-      {
-        "value": 0.2,
-        "label": "0.2 - 0.3",
-        "color": "#e59800"
-      },
-      {
-        "value": 0.3,
-        "label": "0.3 - 0.4",
-        "color": "#ffe769"
-      },
-      {
-        "value": 0.4,
-        "label": "0.4 - 0.5",
-        "color": "#f0f0f0"
-      },
-      {
-        "value": 0.5,
-        "label": "0.5 - 0.6",
-        "color": "#f0f0f0"
-      },
-      {
-        "value": 0.6,
-        "label": "0.6 - 0.7",
-        "color": "#a9c6d6"
-      },
-      {
-        "value": 0.7,
-        "label": "0.7 - 0.8",
-        "color": "#019ac4"
-      },
-      {
-        "value": 0.8,
-        "label": "0.8 - 0.9",
-        "color": "#014c73"
-      },
-      {
-        "value": 0.9,
-        "label": "0.9 - 1",
-        "color": "#014c73"
-      }
-    ],
+    "legend": "cdi_10_0_1",
     "legend_text": "Composite Drought Index v2. SPI weight = 0.3; LST weight = 0.3; NDVI weight = 0.4",
     "opacity": 0.7
   },
@@ -1934,7 +1679,7 @@
         "id": "spi_1m",
         "importance": 0.3,
         "aggregation": "average",
-        "invert": "False",
+        "invert": false,
         "key": [
           "CHIRPS",
           "R1S_DEKAD"
@@ -1944,7 +1689,7 @@
         "id": "lst_anomaly",
         "importance": 0.3,
         "aggregation": "average",
-        "invert": "True",
+        "invert": true,
         "key": [
           "MODIS",
           "MYD11C2_TDD_DEKAD"
@@ -1954,65 +1699,14 @@
         "id": "ndvi_dekad",
         "importance": 0.4,
         "aggregation": "average",
-        "invert": "False",
+        "invert": false,
         "key": [
           "MODIS",
           "NDVI_smoothed_5KM"
         ]
       }
     ],
-    "legend": [
-      {
-        "value": 0,
-        "label": "0 - 0.1",
-        "color": "#672200"
-      },
-      {
-        "value": 0.1,
-        "label": "0.1 - 0.2",
-        "color": "#a93800"
-      },
-      {
-        "value": 0.2,
-        "label": "0.2 - 0.3",
-        "color": "#e59800"
-      },
-      {
-        "value": 0.3,
-        "label": "0.3 - 0.4",
-        "color": "#ffe769"
-      },
-      {
-        "value": 0.4,
-        "label": "0.4 - 0.5",
-        "color": "#f0f0f0"
-      },
-      {
-        "value": 0.5,
-        "label": "0.5 - 0.6",
-        "color": "#f0f0f0"
-      },
-      {
-        "value": 0.6,
-        "label": "0.6 - 0.7",
-        "color": "#a9c6d6"
-      },
-      {
-        "value": 0.7,
-        "label": "0.7 - 0.8",
-        "color": "#019ac4"
-      },
-      {
-        "value": 0.8,
-        "label": "0.8 - 0.9",
-        "color": "#014c73"
-      },
-      {
-        "value": 0.9,
-        "label": "0.9 - 1",
-        "color": "#014c73"
-      }
-    ],
+    "legend": "cdi_10_0_1",
     "legend_text": "Composite Drought Index v2. SPI weight = 0.3; LST weight = 0.3; NDVI weight = 0.4",
     "opacity": 0.7
   },
@@ -2043,7 +1737,7 @@
         "id": "spi_3m",
         "importance": 0.3,
         "aggregation": "average",
-        "invert": "False",
+        "invert": false,
         "key": [
           "CHIRPS",
           "R1S_DEKAD"
@@ -2053,7 +1747,7 @@
         "id": "lst_anomaly",
         "importance": 0.3,
         "aggregation": "average",
-        "invert": "True",        
+        "invert": true,        
         "key": [
           "MODIS",
           "MYD11C2_TDD_DEKAD"
@@ -2063,65 +1757,14 @@
         "id": "ndvi_dekad",
         "importance": 0.4,
         "aggregation": "average",
-        "invert": "False",        
+        "invert": false,        
         "key": [
           "MODIS",
           "NDVI_smoothed_5KM"
         ]
       }
     ],
-    "legend": [
-      {
-        "value": 0,
-        "label": "0 - 0.1",
-        "color": "#672200"
-      },
-      {
-        "value": 0.1,
-        "label": "0.1 - 0.2",
-        "color": "#a93800"
-      },
-      {
-        "value": 0.2,
-        "label": "0.2 - 0.3",
-        "color": "#e59800"
-      },
-      {
-        "value": 0.3,
-        "label": "0.3 - 0.4",
-        "color": "#ffe769"
-      },
-      {
-        "value": 0.4,
-        "label": "0.4 - 0.5",
-        "color": "#f0f0f0"
-      },
-      {
-        "value": 0.5,
-        "label": "0.5 - 0.6",
-        "color": "#f0f0f0"
-      },
-      {
-        "value": 0.6,
-        "label": "0.6 - 0.7",
-        "color": "#a9c6d6"
-      },
-      {
-        "value": 0.7,
-        "label": "0.7 - 0.8",
-        "color": "#019ac4"
-      },
-      {
-        "value": 0.8,
-        "label": "0.8 - 0.9",
-        "color": "#014c73"
-      },
-      {
-        "value": 0.9,
-        "label": "0.9 - 1",
-        "color": "#014c73"
-      }
-    ],
+    "legend": "cdi_10_0_1",
     "legend_text": "Composite Drought Index v2. SPI weight = 0.3; LST weight = 0.3; NDVI weight = 0.4",
     "opacity": 0.7
   },
@@ -2161,7 +1804,7 @@
         "id": "spi_3m",
         "importance": 0.3,
         "aggregation": "average",
-        "invert": "False",
+        "invert": false,
         "key": [
           "CHIRPS",
           "R1S_DEKAD"
@@ -2171,7 +1814,7 @@
         "id": "lst_anomaly",
         "importance": 0.3,
         "aggregation": "average",
-        "invert": "True",
+        "invert": true,
         "key": [
           "MODIS",
           "MYD11C2_TDD_DEKAD"
@@ -2181,66 +1824,237 @@
         "id": "ndvi_dekad",
         "importance": 0.4,
         "aggregation": "average",
-        "invert": "False",
+        "invert": false,
         "key": [
           "MODIS",
           "NDVI_smoothed_5KM"
         ]
       }
     ],
-    "legend": [
+    "legend": "cdi_10_0_1",
+    "legend_text": "Composite Drought Index v2. SPI weight = 0.3; LST weight = 0.3; NDVI weight = 0.4",
+    "opacity": 0.7
+  },
+  "cdi_v3_monthly": {
+    "title": "Monthly Combined Drought Index (water-based)",
+    "type": "composite",
+    "period": "monthly",
+    "base_url": "https://hip-service.ovio.org/q_multi_geojson",
+    "start_date": "1981-01-01",
+    "end_date": "2024-01-01",
+    "aggregation": "pixel",
+    "date_layer": "rainfall_dekad",
+    "validity": {
+      "forward": 1,
+      "backward": 2,
+      "mode": "dekad"
+    },
+    "input_layers": [
       {
-        "value": 0,
-        "label": "0 - 0.1",
-        "color": "#672200"
+        "importance": 0.4,
+        "aggregation": "last_dekad",
+        "invert": false,
+        "key": [
+          "CHIRPS",
+          "r1h_dekad"
+        ]
       },
       {
-        "value": 0.1,
-        "label": "0.1 - 0.2",
-        "color": "#a93800"
+        "importance": 0.3,
+        "aggregation": "average",
+        "invert": true,
+        "key": [
+          "FAO",
+          "ET0"
+        ]
       },
       {
-        "value": 0.2,
-        "label": "0.2 - 0.3",
-        "color": "#e59800"
-      },
-      {
-        "value": 0.3,
-        "label": "0.3 - 0.4",
-        "color": "#ffe769"
-      },
-      {
-        "value": 0.4,
-        "label": "0.4 - 0.5",
-        "color": "#f0f0f0"
-      },
-      {
-        "value": 0.5,
-        "label": "0.5 - 0.6",
-        "color": "#f0f0f0"
-      },
-      {
-        "value": 0.6,
-        "label": "0.6 - 0.7",
-        "color": "#a9c6d6"
-      },
-      {
-        "value": 0.7,
-        "label": "0.7 - 0.8",
-        "color": "#019ac4"
-      },
-      {
-        "value": 0.8,
-        "label": "0.8 - 0.9",
-        "color": "#014c73"
-      },
-      {
-        "value": 0.9,
-        "label": "0.9 - 1",
-        "color": "#014c73"
+        "importance": 0.3,
+        "aggregation": "last_dekad",
+        "invert": false,
+        "key": [
+          "AGERA5",
+          "soil_moist"
+        ]
       }
     ],
-    "legend_text": "Composite Drought Index v2. SPI weight = 0.3; LST weight = 0.3; NDVI weight = 0.4",
+    "legend": "cdi_10_0_1",
+    "legend_text": "Composite Drought Index (water-based). Rainfall amount weight = 0.4; evapotranspiration weight = 0.3; soil moisture weight = 0.3",
+    "opacity": 0.7
+  },
+  "cdi_v3_aggregated_monthly": {
+    "title": "Monthly Combined Drought Index Aggregated (water-based)",
+    "type": "composite",
+    "period": "monthly",
+    "base_url": "https://hip-service.ovio.org/q_multi_aggregated",
+    "start_date": "1981-01-01",
+    "end_date": "2024-01-01",
+    "aggregation": "pixel",
+    "aggregate_by": "mean",
+    "admin_code": "admin3Pcod",
+    "aggregation_boundary_path": "data/jordan/jor_admbnda_adm3_jdos_merged.json",
+    "date_layer": "spi_1m",
+    "validity": {
+      "forward": 1,
+      "backward": 2,
+      "mode": "dekad"
+    },
+    "feature_info_props": {
+      "value": {
+        "type": "number",
+        "dataTitle": "Event name"
+      }
+    },
+    "input_layers": [
+      {
+        "importance": 0.4,
+        "aggregation": "last_dekad",
+        "invert": false,
+        "key": [
+          "CHIRPS",
+          "r1h_dekad"
+        ]
+      },
+      {
+        "importance": 0.3,
+        "aggregation": "average",
+        "invert": true,
+        "key": [
+          "FAO",
+          "ET0"
+        ]
+      },
+      {
+        "importance": 0.3,
+        "aggregation": "last_dekad",
+        "invert": false,
+        "key": [
+          "AGERA5",
+          "soil_moist"
+        ]
+      }
+    ],
+    "legend": "cdi_10_0_1",
+    "legend_text": "Composite Drought Index (water-based). Rainfall amount weight = 0.4; evapotranspiration weight = 0.3; soil moisture weight = 0.3",
+    "opacity": 0.7
+  },
+  "cdi_v3_seasonal": {
+    "title": "Seasonal Combined Drought Index (water-based)",
+    "type": "composite",
+    "period": "seasonal",
+    "base_url": "https://hip-service.ovio.org/q_multi_geojson",
+    "start_date": "1981-01-01",
+    "end_date": "2024-01-01",
+    "aggregation": "pixel",
+    "date_layer": "spi_3m",
+    "validity": {
+      "mode": "season",
+      "seasons": [
+        {
+          "start": "01-May",
+          "end": "31-October"
+        },
+        {
+          "start": "01-November",
+          "end": "30-April"
+        }
+      ]
+    },
+    "input_layers": [
+      {
+        "importance": 0.4,
+        "aggregation": "last_dekad",
+        "invert": false,
+        "key": [
+          "CHIRPS",
+          "r1h_dekad"
+        ]
+      },
+      {
+        "importance": 0.3,
+        "aggregation": "average",
+        "invert": true,
+        "key": [
+          "FAO",
+          "ET0"
+        ]
+      },
+      {
+        "importance": 0.3,
+        "aggregation": "last_dekad",
+        "invert": false,
+        "key": [
+          "AGERA5",
+          "soil_moist"
+        ]
+      }
+    ],
+    "legend": "cdi_10_0_1",
+    "legend_text": "Composite Drought Index (water-based). Rainfall amount weight = 0.4; evapotranspiration weight = 0.3; soil moisture weight = 0.3",
+    "opacity": 0.7
+  },
+  "cdi_v3_aggregated_seasonal": {
+    "title": "Seasonal Combined Drought Index Aggregated (water-based)",
+    "type": "composite",
+    "period": "seasonal",
+    "base_url": "https://hip-service.ovio.org/q_multi_aggregated",
+    "start_date": "1981-01-01",
+    "end_date": "2024-01-01",
+    "aggregation": "pixel",
+    "aggregate_by": "mean",
+    "admin_code": "admin3Pcod",
+    "aggregation_boundary_path": "data/jordan/jor_admbnda_adm3_jdos_merged.json",
+    "date_layer": "spi_3m",
+    "validity": {
+      "mode": "season",
+      "seasons": [
+        {
+          "start": "01-May",
+          "end": "31-October"
+        },
+        {
+          "start": "01-November",
+          "end": "30-April"
+        }
+      ]
+    },
+    "feature_info_props": {
+      "value": {
+        "type": "number",
+        "dataTitle": "Event name"
+      }
+    },
+    "input_layers": [
+      {
+        "importance": 0.4,
+        "aggregation": "last_dekad",
+        "invert": false,
+        "key": [
+          "CHIRPS",
+          "r1h_dekad"
+        ]
+      },
+      {
+        "importance": 0.3,
+        "aggregation": "average",
+        "invert": true,
+        "key": [
+          "FAO",
+          "ET0"
+        ]
+      },
+      {
+        "importance": 0.3,
+        "aggregation": "last_dekad",
+        "invert": false,
+        "key": [
+          "AGERA5",
+          "soil_moist"
+        ]
+      }
+    ],
+    "legend": "cdi_10_0_1",
+    "legend_text": "Composite Drought Index (water-based). Rainfall amount weight = 0.4; evapotranspiration weight = 0.3; soil moisture weight = 0.3",
     "opacity": 0.7
   }
 }
