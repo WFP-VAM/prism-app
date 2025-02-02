@@ -176,14 +176,18 @@ const AnticipatoryActionStormLayer = React.memo(
         ? enhanceTimeSeries(stormData.timeSeries as unknown as TimeSeries)
         : null;
 
-    // Handle map fitting when timeSeries data is available
+    // Handle map fitting when timeSeries data is available but outside of the current view
     useEffect(() => {
       if (map && timeSeries?.features?.length) {
-        // Get all coordinates from both past and forecast lines
+        // Get coordinates from forecast line only
         const allCoordinates = timeSeries.features
           .filter(
-            (f: { geometry: { type: string } }) =>
-              f.geometry.type === 'LineString',
+            (f: {
+              geometry: { type: string };
+              properties: { data_type: string };
+            }) =>
+              f.geometry.type === 'LineString' &&
+              f.properties.data_type === 'forecast',
           )
           .flatMap(
             (f: { geometry: { coordinates: any } }) => f.geometry.coordinates,
@@ -225,7 +229,7 @@ const AnticipatoryActionStormLayer = React.memo(
             });
 
             map.fitBounds(bounds, {
-              padding: { top: 50, bottom: 50, left: 50, right: 200 }, // More padding on the right
+              padding: { top: 50, bottom: 50, left: 50, right: 200 },
             });
           }
         }
