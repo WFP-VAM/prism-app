@@ -9,7 +9,7 @@ export type LastStates = {
 
 export interface ShortReport {
   ref_time: string;
-  state: string;
+  state: WindState;
   path: string;
 }
 

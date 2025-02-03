@@ -5,6 +5,7 @@ import {
   buildEmailPayloads,
   filterAlreadyProcessedReports,
   getLatestAvailableReports,
+  transformReportsToLastProcessed,
 } from './alert';
 import { sendStormAlertEmail } from '../utils/email';
 
@@ -12,6 +13,9 @@ import { sendStormAlertEmail } from '../utils/email';
 // function sendStormAlertEmail(data: StormAlertData) {
 //   //nothing yet
 // }
+
+// TODO: for later, we need to support multiple countries
+const COUNTRY = 'mozambique';
 
 export async function run() {
   // create a connection to the remote db
@@ -22,7 +26,6 @@ export async function run() {
   const latestAvailableReports = await getLatestAvailableReports();
 
   // filter reports which have been already processed
-
   const filteredAvailableReports = await filterAlreadyProcessedReports(
     latestAvailableReports,
     latestStormReportsRepository,
@@ -38,9 +41,15 @@ export async function run() {
     emailPayloads.map((emailPayload) => sendStormAlertEmail(emailPayload)),
   );
 
-  // drop all latest storm reports stored to prevent accumulation of useless data in this table by time
-  await latestStormReportsRepository.clear();
-  await latestStormReportsRepository.save(
-    latestAvailableReports.map((report) => ({ reportIdentifier: report.path })),
+  // format last states object
+  const lastStates = transformReportsToLastProcessed(filteredAvailableReports);
+
+  // Update the country last processed reports
+  await latestStormReportsRepository.update(
+    { country: COUNTRY },
+    { 
+      lastStates,
+      lastTriggeredAt: new Date() 
+    },
   );
 }

@@ -1,5 +1,5 @@
 import { Repository } from 'typeorm';
-import { ShortReport, ShortReportsResponseBody } from '../types/aa-storm-email';
+import { LastStates, ShortReport, ShortReportsResponseBody } from '../types/aa-storm-email';
 import nodeFetch from 'node-fetch';
 import { AnticipatoryActionAlerts } from '../entities/anticipatoryActionAlerts';
 import { StormDataResponseBody, WindState } from '../types/rawStormDataTypes';
@@ -68,21 +68,39 @@ export async function filterAlreadyProcessedReports(
 
   const lastStates = alerts?.lastStates;
 
-  // TODO NOT FINSHED
-  Object.keys(lastStates).map(stormName => {
-    
-  })
+  const newReports: ShortReport[] = [];
 
+  // Check available reports in the list to extract the new ones
+  for (const report of availableReports) {
+    const stormName = report.path.split('/')[0]; 
+    const refTime = new Date(report.ref_time); 
 
-  const latestProcessedReportsPaths = alert.map(
-    (item) => item.reportIdentifier,
-  );
+    // Check if there is a last processed report for this storm
+    const lastProcessed = lastStates ? lastStates[stormName] : null;
 
-  return availableReports.filter(
-    (availableReport) =>
-      !latestProcessedReportsPaths.includes(availableReport.path),
-  );
+    // Get the new report if the report is newer
+    if (!lastProcessed || new Date(lastProcessed.refTime) < refTime) {
+      newReports.push(report);
+    }
+  }
+
+  return newReports;
 }
+
+export function transformReportsToLastProcessed(reports: ShortReport[]): LastStates {
+  const lastProcessedReports: LastStates = {};
+
+  reports.forEach(report => {
+    const stormName = report.path.split('/')[0];
+    lastProcessedReports[stormName] = {
+      refTime: report.ref_time,
+      status: report.state,
+    };
+  });
+
+  return lastProcessedReports;
+}
+
 
 function isEmailNeededByReport(report: StormDataResponseBody) {
   const landfallInfo = report.landfall_info;
