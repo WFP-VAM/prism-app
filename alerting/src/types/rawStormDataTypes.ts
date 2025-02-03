@@ -6,6 +6,13 @@ export enum WindState {
   activated_48 = 'activated_64',
   activated_64 = 'activated_118',
 }
+export type WindStateKey = keyof typeof WindState;
+
+export enum WindStateActivated {
+  activated_64 = '> 118 km/h',
+  activated_48 = '> 89 km/h',
+}
+export type WindStateActivatedKey = keyof typeof WindStateActivated;
 
 //TODO: Avoid duplication of code
 // the code below is duplicated from /prism-app/frontend/src/context/anticipatoryAction/AAStormStateSlice/rawStormDataTypes.ts.
