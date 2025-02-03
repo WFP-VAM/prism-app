@@ -1,10 +1,11 @@
 import { Repository } from 'typeorm';
 import { ShortReport, ShortReportsResponseBody } from '../types/aa-storm-email';
 import nodeFetch from 'node-fetch';
-import { LatestAAStormReports } from '../entities/latestAAStormReports.entity';
+import { AnticipatoryActionAlerts } from '../entities/anticipatoryActionAlerts';
 import { StormDataResponseBody, WindState } from '../types/rawStormDataTypes';
 import { StormAlertData } from '../types/email';
 import moment from 'moment';
+import { captureScreenshotFromUrl } from '../utils/capture-utils';
 
 // @ts-ignore
 global.fetch = nodeFetch;
@@ -58,12 +59,22 @@ export async function getLatestAvailableReports() {
 
 export async function filterAlreadyProcessedReports(
   availableReports: ShortReport[],
-  latestStormReportsRepository: Repository<LatestAAStormReports>,
+  aaAlertRepository: Repository<AnticipatoryActionAlerts>,
 ) {
-  // get the last reports which have been processed for email alert system
-  const latestProcessedReports = await latestStormReportsRepository.find();
+  // get the last alert which has been processed for email alert system
+  const alerts = await aaAlertRepository.findOne({
+    where: { country: 'mozambique' },
+  });
 
-  const latestProcessedReportsPaths = latestProcessedReports.map(
+  const lastStates = alerts?.lastStates;
+
+  // TODO NOT FINSHED
+  Object.keys(lastStates).map(stormName => {
+    
+  })
+
+
+  const latestProcessedReportsPaths = alert.map(
     (item) => item.reportIdentifier,
   );
 
@@ -151,7 +162,7 @@ export async function buildEmailPayloads(
           return {
             email: '',
             cycloneName: detailedStormReport.forecast_details.cyclone_name,
-            cycloneTime: detailedStormReport.forecast_details.reference_time, //TODO
+            cycloneTime: detailedStormReport.forecast_details.reference_time,
             activatedTriggers: {
               districts48kt:
                 detailedStormReport.ready_set_results?.exposed_area_48kt
@@ -159,12 +170,10 @@ export async function buildEmailPayloads(
               districts64kt:
                 detailedStormReport.ready_set_results?.exposed_area_64kt
                   .affected_districts || [],
-              windspeed: '', //TODO
             },
-            redirectUrl: '', //TODO
-            base64Image: '', //TODO
-            readiness:
-              detailedStormReport.ready_set_results?.status === WindState.ready,
+            redirectUrl: '', //TODO mem que la capture
+            base64Image: await captureScreenshotFromUrl({ url: 'XXX' }), // TODO
+            status: detailedStormReport.ready_set_results?.status,
           };
         }
 

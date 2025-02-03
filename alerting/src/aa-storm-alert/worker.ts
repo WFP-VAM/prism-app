@@ -1,22 +1,23 @@
 import { createConnection } from 'typeorm';
-import { LatestAAStormReports } from '../entities/latestAAStormReports.entity';
+import { AnticipatoryActionAlerts } from '../entities/anticipatoryActionAlerts';
 import { StormAlertData } from '../types/email';
 import {
   buildEmailPayloads,
   filterAlreadyProcessedReports,
   getLatestAvailableReports,
 } from './alert';
+import { sendStormAlertEmail } from '../utils/email';
 
-// Replace with real function when available
-function sendStormAlertEmail(data: StormAlertData) {
-  //nothing yet
-}
+// // Replace with real function when available
+// function sendStormAlertEmail(data: StormAlertData) {
+//   //nothing yet
+// }
 
 export async function run() {
   // create a connection to the remote db
   const connection = await createConnection();
   const latestStormReportsRepository =
-    connection.getRepository(LatestAAStormReports);
+    connection.getRepository(AnticipatoryActionAlerts);
 
   const latestAvailableReports = await getLatestAvailableReports();
 
@@ -32,9 +33,10 @@ export async function run() {
 
   console.log('emailPayload', emailPayloads);
 
-  // create templates
-  sendStormAlertEmail(emailPayloads);
   // send emails
+  await Promise.all(
+    emailPayloads.map((emailPayload) => sendStormAlertEmail(emailPayload)),
+  );
 
   // drop all latest storm reports stored to prevent accumulation of useless data in this table by time
   await latestStormReportsRepository.clear();

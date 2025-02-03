@@ -3,7 +3,11 @@ import { StormAlertData, StormAlertEmail } from '../types/email';
 import ejs from 'ejs';
 import path from 'path';
 import { formatDateToUTC } from './date';
-import { WindState, WindStateActivated, WindStateActivatedKey } from '../types/rawStormDataTypes';
+import {
+  WindState,
+  WindStateActivated,
+  WindStateActivatedKey,
+} from '../types/rawStormDataTypes';
 
 /**
  *
@@ -36,7 +40,13 @@ export async function sendEmail({
   subject: string;
   text: string;
   html?: string;
-  attachments?: { filename: string; path?: string; content?: string; encoding?: string; cid: string }[];
+  attachments?: {
+    filename: string;
+    path?: string;
+    content?: string;
+    encoding?: string;
+    cid: string;
+  }[];
 }) {
   const password = process.env.PRISM_ALERTS_EMAIL_PASSWORD;
   const host =
@@ -110,28 +120,30 @@ export async function sendEmail({
  * @param {string[]} [data.activatedTriggers.districts64kt] - List of districts affected by winds over 64kt.
  * @param {string} data.redirectUrl - URL to access the anticipatory action storm map.
  * @param {string} data.base64Image - Base64-encoded image of the storm.
- * @param {WindState} data.status - Wind state of the storm.
- * 
+ * @param {WindState | undefined} data.status - Wind state of the storm.
+ *
  * @returns {Promise<void>} - Resolves when the email is sent.
  */
 
-export const sendStormAlertEmail = async (data: StormAlertData): Promise<void> => {
-
-  if (data.status === WindState.monitoring ) {
+export const sendStormAlertEmail = async (
+  data: StormAlertData,
+): Promise<void> => {
+  if (!data.status || data.status === WindState.monitoring) {
     throw new Error('No triggers or readiness activated');
   }
 
   let alertTitle = '';
   let readiness = false;
-  const windspeed = (data.status in WindStateActivated) 
-  ? WindStateActivated[data.status as WindStateActivatedKey] 
-  : null;
+  const windspeed =
+    data.status in WindStateActivated
+      ? WindStateActivated[data.status as WindStateActivatedKey]
+      : null;
 
   if (windspeed) {
-      alertTitle = `Activation Triggers activated ${windspeed} for ${data.cycloneName}`;
+    alertTitle = `Activation Triggers activated ${windspeed} for ${data.cycloneName}`;
   } else if (data.status === WindState.ready) {
-      readiness = true;
-      alertTitle = `Readiness Triggers activated for ${data.cycloneName}`;
+    readiness = true;
+    alertTitle = `Readiness Triggers activated for ${data.cycloneName}`;
   } else {
     throw new Error('No triggers or readiness activated');
   }
@@ -140,47 +152,48 @@ export const sendStormAlertEmail = async (data: StormAlertData): Promise<void> =
     alertTitle,
     cycloneName: data.cycloneName,
     cycloneTime: formatDateToUTC(data.cycloneTime),
-    activatedTriggers: data.activatedTriggers && windspeed
-    ? {
-        ...data.activatedTriggers,
-        districts48kt: data.activatedTriggers.districts48kt?.length 
-          ? data.activatedTriggers.districts48kt.join(', ') 
-          : '',
-        districts64kt: data.activatedTriggers.districts64kt?.length 
-          ? data.activatedTriggers.districts64kt.join(', ') 
-          : '',
-        windspeed: windspeed || '',
-      }
-    : undefined,
+    activatedTriggers:
+      data.activatedTriggers && windspeed
+        ? {
+            ...data.activatedTriggers,
+            districts48kt: data.activatedTriggers.districts48kt?.length
+              ? data.activatedTriggers.districts48kt.join(', ')
+              : '',
+            districts64kt: data.activatedTriggers.districts64kt?.length
+              ? data.activatedTriggers.districts64kt.join(', ')
+              : '',
+            windspeed: windspeed || '',
+          }
+        : undefined,
     redirectUrl: data.redirectUrl,
     unsubscribeUrl: '',
     readiness,
   };
 
   const mailOptions = {
-      from: 'wfp.prism@wfp.org',
-      to: data.email,
-      subject: alertTitle,
-      html: '',
-      text: '',
-      attachments: [
-        {
-          filename: 'map-icon.png', 
-          path: path.join(__dirname, '../images/mapIcon.png'),
-          cid: 'map-icon'
-        },
-        {
-          filename: 'arrow-forward-icon.png',
-          path: path.join(__dirname, '../images/arrowForwardIcon.png'),
-          cid: 'arrow-forward-icon'
-        },
-        {
-          filename: 'storm-image.png',
-          content: data.base64Image,
-          encoding: 'base64',
-          cid: 'storm-image-cid'
-        }
-      ]
+    from: 'wfp.prism@wfp.org',
+    to: data.email,
+    subject: alertTitle,
+    html: '',
+    text: '',
+    attachments: [
+      {
+        filename: 'map-icon.png',
+        path: path.join(__dirname, '../images/mapIcon.png'),
+        cid: 'map-icon',
+      },
+      {
+        filename: 'arrow-forward-icon.png',
+        path: path.join(__dirname, '../images/arrowForwardIcon.png'),
+        cid: 'arrow-forward-icon',
+      },
+      {
+        filename: 'storm-image.png',
+        content: data.base64Image,
+        encoding: 'base64',
+        cid: 'storm-image-cid',
+      },
+    ],
   };
 
   try {
