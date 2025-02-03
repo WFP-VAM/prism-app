@@ -1,7 +1,9 @@
-import { Repository } from 'typeorm';
-import { LastStates, ShortReport, ShortReportsResponseBody } from '../types/aa-storm-email';
+import {
+  LastStates,
+  ShortReport,
+  ShortReportsResponseBody,
+} from '../types/aa-storm-email';
 import nodeFetch from 'node-fetch';
-import { AnticipatoryActionAlerts } from '../entities/anticipatoryActionAlerts';
 import { StormDataResponseBody, WindState } from '../types/rawStormDataTypes';
 import { StormAlertData } from '../types/email';
 import moment from 'moment';
@@ -57,40 +59,31 @@ export async function getLatestAvailableReports() {
   });
 }
 
-export async function filterAlreadyProcessedReports(
+export function filterOutAlreadyProcessedReports(
   availableReports: ShortReport[],
-  aaAlertRepository: Repository<AnticipatoryActionAlerts>,
+  lastStates?: LastStates,
 ) {
-  // get the last alert which has been processed for email alert system
-  const alerts = await aaAlertRepository.findOne({
-    where: { country: 'mozambique' },
-  });
-
-  const lastStates = alerts?.lastStates;
-
-  const newReports: ShortReport[] = [];
-
-  // Check available reports in the list to extract the new ones
-  for (const report of availableReports) {
-    const stormName = report.path.split('/')[0]; 
-    const refTime = new Date(report.ref_time); 
-
-    // Check if there is a last processed report for this storm
-    const lastProcessed = lastStates ? lastStates[stormName] : null;
-
-    // Get the new report if the report is newer
-    if (!lastProcessed || new Date(lastProcessed.refTime) < refTime) {
-      newReports.push(report);
-    }
+  if (!lastStates) {
+    return availableReports;
   }
 
-  return newReports;
+  return availableReports.filter((availableReport) => {
+    const stormName = availableReport.path.split('/')[0];
+    const refTime = new Date(availableReport.ref_time);
+
+    const lastProcessed = lastStates[stormName];
+
+    // Get the new report if the report is newer
+    return !lastProcessed || new Date(lastProcessed.refTime) < refTime;
+  });
 }
 
-export function transformReportsToLastProcessed(reports: ShortReport[]): LastStates {
+export function transformReportsToLastProcessed(
+  reports: ShortReport[],
+): LastStates {
   const lastProcessedReports: LastStates = {};
 
-  reports.forEach(report => {
+  reports.forEach((report) => {
     const stormName = report.path.split('/')[0];
     lastProcessedReports[stormName] = {
       refTime: report.ref_time,
@@ -100,7 +93,6 @@ export function transformReportsToLastProcessed(reports: ShortReport[]): LastSta
 
   return lastProcessedReports;
 }
-
 
 function isEmailNeededByReport(report: StormDataResponseBody) {
   const landfallInfo = report.landfall_info;
@@ -164,8 +156,18 @@ function isEmailNeededByReport(report: StormDataResponseBody) {
   return false;
 }
 
+/**
+ * Build the url which enables to visualize the relevant storm data on the map. THis email is used in the email alert.
+ * @param date date of the report
+ */
+function buildPrismUrl(basicUrl: string, date: string) {
+  const reportDate = moment(date).format('YYYY-MM-DD');
+  return `${basicUrl}/?hazardLayerIds=anticipatory_action_storm&date=${reportDate}`;
+}
+
 export async function buildEmailPayloads(
   shortReports: ShortReport[],
+  basicPrismUrl: string,
 ): Promise<StormAlertData[]> {
   try {
     const emailPayload = await Promise.all(
@@ -177,8 +179,13 @@ export async function buildEmailPayloads(
         const isEmailNeeded = isEmailNeededByReport(detailedStormReport);
 
         if (isEmailNeeded) {
+          const prismUrl = buildPrismUrl(
+            basicPrismUrl,
+            detailedStormReport.forecast_details.reference_time,
+          );
+
           return {
-            email: '',
+            email: '', //TODO
             cycloneName: detailedStormReport.forecast_details.cyclone_name,
             cycloneTime: detailedStormReport.forecast_details.reference_time,
             activatedTriggers: {
@@ -189,8 +196,8 @@ export async function buildEmailPayloads(
                 detailedStormReport.ready_set_results?.exposed_area_64kt
                   .affected_districts || [],
             },
-            redirectUrl: '', //TODO mem que la capture
-            base64Image: await captureScreenshotFromUrl({ url: 'XXX' }), // TODO
+            redirectUrl: prismUrl,
+            base64Image: await captureScreenshotFromUrl({ url: prismUrl }),
             status: detailedStormReport.ready_set_results?.status,
           };
         }

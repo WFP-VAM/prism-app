@@ -1,38 +1,46 @@
 import { createConnection } from 'typeorm';
 import { AnticipatoryActionAlerts } from '../entities/anticipatoryActionAlerts';
-import { StormAlertData } from '../types/email';
 import {
   buildEmailPayloads,
-  filterAlreadyProcessedReports,
+  filterOutAlreadyProcessedReports,
   getLatestAvailableReports,
   transformReportsToLastProcessed,
 } from './alert';
 import { sendStormAlertEmail } from '../utils/email';
 
-// // Replace with real function when available
-// function sendStormAlertEmail(data: StormAlertData) {
-//   //nothing yet
-// }
-
 // TODO: for later, we need to support multiple countries
-const COUNTRY = 'mozambique';
+export const COUNTRY = 'mozambique';
 
 export async function run() {
   // create a connection to the remote db
   const connection = await createConnection();
-  const latestStormReportsRepository =
-    connection.getRepository(AnticipatoryActionAlerts);
+  const alertRepository = connection.getRepository(AnticipatoryActionAlerts);
 
   const latestAvailableReports = await getLatestAvailableReports();
 
+  // get the last alert which has been processed for email alert system
+  const alert = await alertRepository.findOne({
+    where: { country: COUNTRY },
+  });
+
+  if (!alert) {
+    console.error('Error, no alert was found for the country', COUNTRY);
+    return;
+  }
   // filter reports which have been already processed
-  const filteredAvailableReports = await filterAlreadyProcessedReports(
+  const lastStates = alert.lastStates;
+  const filteredAvailableReports = filterOutAlreadyProcessedReports(
     latestAvailableReports,
-    latestStormReportsRepository,
+    lastStates,
   );
 
+  const basicPrismUrl = alert.prismUrl;
+
   // check whether an email should be sent
-  const emailPayloads = await buildEmailPayloads(filteredAvailableReports);
+  const emailPayloads = await buildEmailPayloads(
+    filteredAvailableReports,
+    basicPrismUrl,
+  );
 
   console.log('emailPayload', emailPayloads);
 
@@ -42,14 +50,16 @@ export async function run() {
   );
 
   // format last states object
-  const lastStates = transformReportsToLastProcessed(filteredAvailableReports);
+  const updatedLastStates = transformReportsToLastProcessed(
+    latestAvailableReports,
+  );
 
   // Update the country last processed reports
-  await latestStormReportsRepository.update(
+  await alertRepository.update(
     { country: COUNTRY },
-    { 
-      lastStates,
-      lastTriggeredAt: new Date() 
+    {
+      lastStates: updatedLastStates,
+      lastTriggeredAt: new Date(),
     },
   );
 }
