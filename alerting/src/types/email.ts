@@ -18,7 +18,7 @@ export interface StormAlertEmail extends Omit<StormAlertData, 'email' | 'activat
     activatedTriggers?: {
         districts48kt: string,
         districts64kt: string,
-        windspeed?: string;
+        windspeed: string;
     },
     readiness: boolean,
 }
