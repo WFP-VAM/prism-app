@@ -349,5 +349,32 @@
     { "value": 0.7, "label": "0.7 - 0.8", "color": "#019ac4" },
     { "value": 0.8, "label": "0.8 - 0.9", "color": "#014c73" },
     { "value": 0.9, "label": "0.9 - 1", "color": "#014c73" }
+  ],
+  "ipc_phase_classification": [
+    {
+      "value": 1,
+      "label": "Phase 1 - None / minimal",
+      "color": "#c6ffc7"
+    },
+    {
+      "value": 2,
+      "label": "Phase 2 - Stressed",
+      "color": "#ffe718"
+    },
+    {
+      "value": 3,
+      "label": "Phase 3 - Crisis",
+      "color": "#e88400"
+    },
+    {
+      "value": 4,
+      "label": "Phase 4 - Emergency",
+      "color": "#e02d00"
+    },
+    {
+      "value": 5,
+      "label": "Phase 5 - Disaster / famine",
+      "color": "#5e0803"
+    }
   ]
 }

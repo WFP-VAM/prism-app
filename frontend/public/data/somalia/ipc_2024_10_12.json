@@ -1,0 +1,670 @@
+{
+  "DataList": [
+    {
+      "District": "Baki",
+      "adm2_pcode": "SO1102",
+      "total_pop": 66114,
+      "pop_ph_2": 28300,
+      "pop_ph_3": 5510,
+      "pop_ph_4": 330,
+      "ph_class": 2
+    },
+    {
+      "District": "Borama",
+      "adm2_pcode": "SO1101",
+      "total_pop": 431595,
+      "pop_ph_2": 172640,
+      "pop_ph_3": 54070,
+      "pop_ph_4": 5790,
+      "ph_class": 2
+    },
+    {
+      "District": "Lughaye",
+      "adm2_pcode": "SO1103",
+      "total_pop": 71938,
+      "pop_ph_2": 31650,
+      "pop_ph_3": 10130,
+      "pop_ph_4": 530,
+      "ph_class": 2
+    },
+    {
+      "District": "Zeylac",
+      "adm2_pcode": "SO1104",
+      "total_pop": 66461,
+      "pop_ph_2": 29210,
+      "pop_ph_3": 9210,
+      "pop_ph_4": 630,
+      "ph_class": 2
+    },
+    {
+      "District": "Ceel Barde",
+      "adm2_pcode": "SO2502",
+      "total_pop": 84318,
+      "pop_ph_2": 17940,
+      "pop_ph_3": 6050,
+      "pop_ph_4": 6290,
+      "ph_class": 2
+    },
+    {
+      "District": "Rab Dhuure",
+      "adm2_pcode": "SO2505",
+      "total_pop": 89396,
+      "pop_ph_2": 21620,
+      "pop_ph_3": 9980,
+      "pop_ph_4": 3320,
+      "ph_class": 2
+    },
+    {
+      "District": "Tayeeglow",
+      "adm2_pcode": "SO2503",
+      "total_pop": 165132,
+      "pop_ph_2": 51350,
+      "pop_ph_3": 36380,
+      "pop_ph_4": 14620,
+      "ph_class": 3
+    },
+    {
+      "District": "Waajid",
+      "adm2_pcode": "SO2504",
+      "total_pop": 89584,
+      "pop_ph_2": 27090,
+      "pop_ph_3": 19860,
+      "pop_ph_4": 9720,
+      "ph_class": 3
+    },
+    {
+      "District": "Xudur",
+      "adm2_pcode": "SO2501",
+      "total_pop": 114941,
+      "pop_ph_2": 35070,
+      "pop_ph_3": 27110,
+      "pop_ph_4": 13860,
+      "ph_class": 3
+    },
+    {
+      "District": "Banadir",
+      "adm2_pcode": "SO2201",
+      "total_pop": 3171391,
+      "pop_ph_2": 1048910,
+      "pop_ph_3": 523100,
+      "pop_ph_4": 238730,
+      "ph_class": 3
+    },
+    {
+      "District": "Bandarbayla",
+      "adm2_pcode": "SO1602",
+      "total_pop": 50155,
+      "pop_ph_2": 17180,
+      "pop_ph_3": 7510,
+      "pop_ph_4": 0,
+      "ph_class": 2
+    },
+    {
+      "District": "Bossaso",
+      "adm2_pcode": "SO1601",
+      "total_pop": 793480,
+      "pop_ph_2": 237020,
+      "pop_ph_3": 95280,
+      "pop_ph_4": 30270,
+      "ph_class": 2
+    },
+    {
+      "District": "Caluula",
+      "adm2_pcode": "SO1603",
+      "total_pop": 95548,
+      "pop_ph_2": 27820,
+      "pop_ph_3": 10390,
+      "pop_ph_4": 3940,
+      "ph_class": 2
+    },
+    {
+      "District": "Iskushuban",
+      "adm2_pcode": "SO1604",
+      "total_pop": 60160,
+      "pop_ph_2": 19250,
+      "pop_ph_3": 7850,
+      "pop_ph_4": 1310,
+      "ph_class": 2
+    },
+    {
+      "District": "Qandala",
+      "adm2_pcode": "SO1605",
+      "total_pop": 64401,
+      "pop_ph_2": 19220,
+      "pop_ph_3": 7240,
+      "pop_ph_4": 2570,
+      "ph_class": 2
+    },
+    {
+      "District": "Qardho",
+      "adm2_pcode": "SO1606",
+      "total_pop": 168487,
+      "pop_ph_2": 56080,
+      "pop_ph_3": 25270,
+      "pop_ph_4": 1750,
+      "ph_class": 2
+    },
+    {
+      "District": "Baydhaba",
+      "adm2_pcode": "SO2401",
+      "total_pop": 733659,
+      "pop_ph_2": 251920,
+      "pop_ph_3": 243670,
+      "pop_ph_4": 139490,
+      "ph_class": 3
+    },
+    {
+      "District": "Buur Hakaba",
+      "adm2_pcode": "SO2402",
+      "total_pop": 204234,
+      "pop_ph_2": 76960,
+      "pop_ph_3": 59330,
+      "pop_ph_4": 23220,
+      "ph_class": 3
+    },
+    {
+      "District": "Diinsoor",
+      "adm2_pcode": "SO2403",
+      "total_pop": 173776,
+      "pop_ph_2": 66070,
+      "pop_ph_3": 55500,
+      "pop_ph_4": 25890,
+      "ph_class": 3
+    },
+    {
+      "District": "Qansax Dheere",
+      "adm2_pcode": "SO2404",
+      "total_pop": 136306,
+      "pop_ph_2": 49190,
+      "pop_ph_3": 43020,
+      "pop_ph_4": 22080,
+      "ph_class": 3
+    },
+    {
+      "District": "Cabudwaaq",
+      "adm2_pcode": "SO1902",
+      "total_pop": 212060,
+      "pop_ph_2": 92020,
+      "pop_ph_3": 39630,
+      "pop_ph_4": 14010,
+      "ph_class": 3
+    },
+    {
+      "District": "Cadaado",
+      "adm2_pcode": "SO1903",
+      "total_pop": 136074,
+      "pop_ph_2": 54280,
+      "pop_ph_3": 33530,
+      "pop_ph_4": 13750,
+      "ph_class": 3
+    },
+    {
+      "District": "Ceel Buur",
+      "adm2_pcode": "SO1904",
+      "total_pop": 108648,
+      "pop_ph_2": 39970,
+      "pop_ph_3": 29180,
+      "pop_ph_4": 11500,
+      "ph_class": 3
+    },
+    {
+      "District": "Ceel Dheer",
+      "adm2_pcode": "SO1905",
+      "total_pop": 105236,
+      "pop_ph_2": 42100,
+      "pop_ph_3": 23760,
+      "pop_ph_4": 7480,
+      "ph_class": 3
+    },
+    {
+      "District": "Dhuusamarreeb",
+      "adm2_pcode": "SO1901",
+      "total_pop": 250620,
+      "pop_ph_2": 86450,
+      "pop_ph_3": 75940,
+      "pop_ph_4": 34880,
+      "ph_class": 3
+    },
+    {
+      "District": "Baardheere",
+      "adm2_pcode": "SO2602",
+      "total_pop": 203601,
+      "pop_ph_2": 73350,
+      "pop_ph_3": 43980,
+      "pop_ph_4": 13010,
+      "ph_class": 3
+    },
+    {
+      "District": "Belet Xaawo",
+      "adm2_pcode": "SO2603",
+      "total_pop": 173234,
+      "pop_ph_2": 52110,
+      "pop_ph_3": 21200,
+      "pop_ph_4": 1940,
+      "ph_class": 2
+    },
+    {
+      "District": "Ceel Waaq",
+      "adm2_pcode": "SO2604",
+      "total_pop": 103530,
+      "pop_ph_2": 31290,
+      "pop_ph_3": 10980,
+      "pop_ph_4": 320,
+      "ph_class": 2
+    },
+    {
+      "District": "Doolow",
+      "adm2_pcode": "SO2605",
+      "total_pop": 205736,
+      "pop_ph_2": 75740,
+      "pop_ph_3": 49510,
+      "pop_ph_4": 14250,
+      "ph_class": 3
+    },
+    {
+      "District": "Garbahaarey",
+      "adm2_pcode": "SO2601",
+      "total_pop": 148229,
+      "pop_ph_2": 45900,
+      "pop_ph_3": 18350,
+      "pop_ph_4": 640,
+      "ph_class": 2
+    },
+    {
+      "District": "Luuq",
+      "adm2_pcode": "SO2606",
+      "total_pop": 141256,
+      "pop_ph_2": 36450,
+      "pop_ph_3": 26350,
+      "pop_ph_4": 8370,
+      "ph_class": 3
+    },
+    {
+      "District": "Belet Weyne",
+      "adm2_pcode": "SO2001",
+      "total_pop": 340104,
+      "pop_ph_2": 166150,
+      "pop_ph_3": 68150,
+      "pop_ph_4": 9750,
+      "ph_class": 3
+    },
+    {
+      "District": "Bulo Burto",
+      "adm2_pcode": "SO2002",
+      "total_pop": 100704,
+      "pop_ph_2": 43690,
+      "pop_ph_3": 15170,
+      "pop_ph_4": 1410,
+      "ph_class": 2
+    },
+    {
+      "District": "Jalalaqsi",
+      "adm2_pcode": "SO2003",
+      "total_pop": 64008,
+      "pop_ph_2": 23360,
+      "pop_ph_3": 8750,
+      "pop_ph_4": 1220,
+      "ph_class": 2
+    },
+    {
+      "District": "Afmadow",
+      "adm2_pcode": "SO2802",
+      "total_pop": 275996,
+      "pop_ph_2": 80980,
+      "pop_ph_3": 47400,
+      "pop_ph_4": 8910,
+      "ph_class": 3
+    },
+    {
+      "District": "Badhaadhe",
+      "adm2_pcode": "SO2803",
+      "total_pop": 84345,
+      "pop_ph_2": 18900,
+      "pop_ph_3": 8420,
+      "pop_ph_4": 490,
+      "ph_class": 2
+    },
+    {
+      "District": "Jamaame",
+      "adm2_pcode": "SO2804",
+      "total_pop": 438975,
+      "pop_ph_2": 115260,
+      "pop_ph_3": 49750,
+      "pop_ph_4": 9350,
+      "ph_class": 2
+    },
+    {
+      "District": "Kismaayo",
+      "adm2_pcode": "SO2801",
+      "total_pop": 358940,
+      "pop_ph_2": 99900,
+      "pop_ph_3": 66180,
+      "pop_ph_4": 15850,
+      "ph_class": 3
+    },
+    {
+      "District": "Afgooye",
+      "adm2_pcode": "SO2302",
+      "total_pop": 558118,
+      "pop_ph_2": 179170,
+      "pop_ph_3": 103300,
+      "pop_ph_4": 23480,
+      "ph_class": 3
+    },
+    {
+      "District": "Baraawe",
+      "adm2_pcode": "SO2303",
+      "total_pop": 64739,
+      "pop_ph_2": 19390,
+      "pop_ph_3": 9670,
+      "pop_ph_4": 2990,
+      "ph_class": 2
+    },
+    {
+      "District": "Kurtunwaarey",
+      "adm2_pcode": "SO2304",
+      "total_pop": 76193,
+      "pop_ph_2": 22670,
+      "pop_ph_3": 11680,
+      "pop_ph_4": 1950,
+      "ph_class": 2
+    },
+    {
+      "District": "Marka",
+      "adm2_pcode": "SO2301",
+      "total_pop": 292024,
+      "pop_ph_2": 89530,
+      "pop_ph_3": 44370,
+      "pop_ph_4": 11560,
+      "ph_class": 2
+    },
+    {
+      "District": "Qoryooley",
+      "adm2_pcode": "SO2305",
+      "total_pop": 149564,
+      "pop_ph_2": 45390,
+      "pop_ph_3": 23980,
+      "pop_ph_4": 4250,
+      "ph_class": 2
+    },
+    {
+      "District": "Sablaale",
+      "adm2_pcode": "SO2306",
+      "total_pop": 74808,
+      "pop_ph_2": 24240,
+      "pop_ph_3": 15080,
+      "pop_ph_4": 2850,
+      "ph_class": 3
+    },
+    {
+      "District": "Wanla Weyn",
+      "adm2_pcode": "SO2307",
+      "total_pop": 377671,
+      "pop_ph_2": 117120,
+      "pop_ph_3": 67350,
+      "pop_ph_4": 13070,
+      "ph_class": 3
+    },
+    {
+      "District": "Bu'aale",
+      "adm2_pcode": "SO2701",
+      "total_pop": 149339,
+      "pop_ph_2": 63700,
+      "pop_ph_3": 22380,
+      "pop_ph_4": 610,
+      "ph_class": 2
+    },
+    {
+      "District": "Jilib",
+      "adm2_pcode": "SO2702",
+      "total_pop": 168928,
+      "pop_ph_2": 57860,
+      "pop_ph_3": 22210,
+      "pop_ph_4": 0,
+      "ph_class": 2
+    },
+    {
+      "District": "Saakow",
+      "adm2_pcode": "SO2703",
+      "total_pop": 111862,
+      "pop_ph_2": 46750,
+      "pop_ph_3": 17140,
+      "pop_ph_4": 970,
+      "ph_class": 2
+    },
+    {
+      "District": "Adan Yabaal",
+      "adm2_pcode": "SO2102",
+      "total_pop": 101584,
+      "pop_ph_2": 27740,
+      "pop_ph_3": 17390,
+      "pop_ph_4": 7430,
+      "ph_class": 3
+    },
+    {
+      "District": "Balcad",
+      "adm2_pcode": "SO2103",
+      "total_pop": 395486,
+      "pop_ph_2": 133140,
+      "pop_ph_3": 78240,
+      "pop_ph_4": 18190,
+      "ph_class": 3
+    },
+    {
+      "District": "Cadale",
+      "adm2_pcode": "SO2104",
+      "total_pop": 83825,
+      "pop_ph_2": 23960,
+      "pop_ph_3": 13420,
+      "pop_ph_4": 5690,
+      "ph_class": 3
+    },
+    {
+      "District": "Jowhar",
+      "adm2_pcode": "SO2101",
+      "total_pop": 432457,
+      "pop_ph_2": 148410,
+      "pop_ph_3": 104410,
+      "pop_ph_4": 31740,
+      "ph_class": 3
+    },
+    {
+      "District": "Gaalkacyo",
+      "adm2_pcode": "SO1801",
+      "total_pop": 823136,
+      "pop_ph_2": 293830,
+      "pop_ph_3": 194510,
+      "pop_ph_4": 51800,
+      "ph_class": 3
+    },
+    {
+      "District": "Galdogob",
+      "adm2_pcode": "SO1802",
+      "total_pop": 184258,
+      "pop_ph_2": 54290,
+      "pop_ph_3": 41700,
+      "pop_ph_4": 5210,
+      "ph_class": 3
+    },
+    {
+      "District": "Hobyo",
+      "adm2_pcode": "SO1803",
+      "total_pop": 187940,
+      "pop_ph_2": 68770,
+      "pop_ph_3": 52860,
+      "pop_ph_4": 21240,
+      "ph_class": 3
+    },
+    {
+      "District": "Jariiban",
+      "adm2_pcode": "SO1804",
+      "total_pop": 193072,
+      "pop_ph_2": 68520,
+      "pop_ph_3": 43110,
+      "pop_ph_4": 2830,
+      "ph_class": 3
+    },
+    {
+      "District": "Xarardheere",
+      "adm2_pcode": "SO1805",
+      "total_pop": 81903,
+      "pop_ph_2": 31220,
+      "pop_ph_3": 19100,
+      "pop_ph_4": 5070,
+      "ph_class": 3
+    },
+    {
+      "District": "Burtinle",
+      "adm2_pcode": "SO1702",
+      "total_pop": 130224,
+      "pop_ph_2": 39630,
+      "pop_ph_3": 19130,
+      "pop_ph_4": 170,
+      "ph_class": 2
+    },
+    {
+      "District": "Eyl",
+      "adm2_pcode": "SO1703",
+      "total_pop": 169997,
+      "pop_ph_2": 59100,
+      "pop_ph_3": 24670,
+      "pop_ph_4": 550,
+      "ph_class": 2
+    },
+    {
+      "District": "Garoowe",
+      "adm2_pcode": "SO1701",
+      "total_pop": 331589,
+      "pop_ph_2": 112090,
+      "pop_ph_3": 49290,
+      "pop_ph_4": 5460,
+      "ph_class": 2
+    },
+    {
+      "District": "Ceel Afweyn",
+      "adm2_pcode": "SO1502",
+      "total_pop": 92961,
+      "pop_ph_2": 41310,
+      "pop_ph_3": 12340,
+      "pop_ph_4": 1160,
+      "ph_class": 2
+    },
+    {
+      "District": "Ceerigaabo",
+      "adm2_pcode": "SO1501",
+      "total_pop": 177355,
+      "pop_ph_2": 73810,
+      "pop_ph_3": 24610,
+      "pop_ph_4": 3190,
+      "ph_class": 2
+    },
+    {
+      "District": "Laasqoray",
+      "adm2_pcode": "SO1503",
+      "total_pop": 158383,
+      "pop_ph_2": 70330,
+      "pop_ph_3": 22480,
+      "pop_ph_4": 1530,
+      "ph_class": 2
+    },
+    {
+      "District": "Caynabo",
+      "adm2_pcode": "SO1402",
+      "total_pop": 96183,
+      "pop_ph_2": 45050,
+      "pop_ph_3": 17120,
+      "pop_ph_4": 960,
+      "ph_class": 2
+    },
+    {
+      "District": "Laas Caanood",
+      "adm2_pcode": "SO1401",
+      "total_pop": 264122,
+      "pop_ph_2": 109110,
+      "pop_ph_3": 64610,
+      "pop_ph_4": 11020,
+      "ph_class": 3
+    },
+    {
+      "District": "Taleex",
+      "adm2_pcode": "SO1403",
+      "total_pop": 92822,
+      "pop_ph_2": 45550,
+      "pop_ph_3": 15650,
+      "pop_ph_4": 860,
+      "ph_class": 2
+    },
+    {
+      "District": "Xudun",
+      "adm2_pcode": "SO1404",
+      "total_pop": 95848,
+      "pop_ph_2": 46520,
+      "pop_ph_3": 17190,
+      "pop_ph_4": 1410,
+      "ph_class": 2
+    },
+    {
+      "District": "Burco",
+      "adm2_pcode": "SO1301",
+      "total_pop": 520410,
+      "pop_ph_2": 203530,
+      "pop_ph_3": 99660,
+      "pop_ph_4": 15480,
+      "ph_class": 3
+    },
+    {
+      "District": "Buuhoodle",
+      "adm2_pcode": "SO1302",
+      "total_pop": 97388,
+      "pop_ph_2": 39360,
+      "pop_ph_3": 21250,
+      "pop_ph_4": 2220,
+      "ph_class": 3
+    },
+    {
+      "District": "Owdweyne",
+      "adm2_pcode": "SO1303",
+      "total_pop": 97967,
+      "pop_ph_2": 39650,
+      "pop_ph_3": 17190,
+      "pop_ph_4": 1150,
+      "ph_class": 2
+    },
+    {
+      "District": "Sheikh",
+      "adm2_pcode": "SO1304",
+      "total_pop": 144919,
+      "pop_ph_2": 64270,
+      "pop_ph_3": 11610,
+      "pop_ph_4": 950,
+      "ph_class": 2
+    },
+    {
+      "District": "Berbera",
+      "adm2_pcode": "SO1202",
+      "total_pop": 189943,
+      "pop_ph_2": 84200,
+      "pop_ph_3": 17990,
+      "pop_ph_4": 640,
+      "ph_class": 2
+    },
+    {
+      "District": "Gebiley",
+      "adm2_pcode": "SO1203",
+      "total_pop": 212038,
+      "pop_ph_2": 80680,
+      "pop_ph_3": 34310,
+      "pop_ph_4": 180,
+      "ph_class": 2
+    },
+    {
+      "District": "Hargeysa",
+      "adm2_pcode": "SO1201",
+      "total_pop": 1045503,
+      "pop_ph_2": 401690,
+      "pop_ph_3": 142750,
+      "pop_ph_4": 12340,
+      "ph_class": 2
+    }
+  ]
+}

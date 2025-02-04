@@ -189,6 +189,10 @@
         "lst_day_anomaly",
         "lst_amplitude"
       ]
+    },
+    "vulnerability":{
+      "food_security": [
+      ]
     }
   }
 }

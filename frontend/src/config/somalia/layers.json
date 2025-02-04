@@ -284,5 +284,17 @@
       ],
       "type": "line"
     }
+  },
+  "ipc_phase_2024": {
+    "title": "IPC Phase Classification October to December 2024",
+    "type": "admin_level_data",
+    "path": "data/somalia/ipc_2024_10_12.json",
+    "boundary": "admin2_boundaries",
+    "admin_level": 2,
+    "data_field": "ph_class",
+    "admin_code": "adm2_pcode",
+    "opacity": 0.9,
+    "legend": "ipc_phase_classification",
+    "legend_text": "IPC Phase Classification October to December 2024. Source: National IPC Technical Working Group"
   }
 }
