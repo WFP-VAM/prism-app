@@ -4,9 +4,15 @@
     "path": "data/somalia/som_admbnda_adm1_ocha_20230308_dv.json",
     "opacity": 0.8,
     "admin_code": "ADM1_PCODE",
-    "admin_level_codes": ["ADM1_PCODE"],
-    "admin_level_names": ["ADM1_EN"],
-    "admin_level_local_names": ["ADM1_EN"],
+    "admin_level_codes": [
+      "ADM1_PCODE"
+    ],
+    "admin_level_names": [
+      "ADM1_EN"
+    ],
+    "admin_level_local_names": [
+      "ADM1_EN"
+    ],
     "styles:": {
       "fill": {
         "fill-opacity": 0
@@ -23,9 +29,18 @@
     "path": "data/somalia/som_admbnda_adm2_ocha_20230308_dv.json",
     "opacity": 0.8,
     "admin_code": "ADM2_PCODE",
-    "admin_level_codes": ["ADM1_PCODE", "ADM2_PCODE"],
-    "admin_level_names": ["ADM1_EN", "ADM2_EN"],
-    "admin_level_local_names": ["ADM1_EN", "ADM2_EN"],
+    "admin_level_codes": [
+      "ADM1_PCODE",
+      "ADM2_PCODE"
+    ],
+    "admin_level_names": [
+      "ADM1_EN",
+      "ADM2_EN"
+    ],
+    "admin_level_local_names": [
+      "ADM1_EN",
+      "ADM2_EN"
+    ],
     "styles:": {
       "fill": {
         "fill-opacity": 0
@@ -296,5 +311,81 @@
     "opacity": 0.9,
     "legend": "ipc_phase_classification",
     "legend_text": "IPC Phase Classification October to December 2024. Source: National IPC Technical Working Group"
+  },
+  "poverty_rates": {
+    "title": "Poverty headcount",
+    "type": "admin_level_data",
+    "path": "data/somalia/poverty_rates.json",
+    "boundary": "admin1_boundaries",
+    "admin_level": 1,
+    "data_field": "poverty_rate",
+    "admin_code": "ADM1_PCODE",
+    "opacity": 0.9,
+    "legend": [
+      {
+        "value": "0",
+        "label": "< 20%",
+        "color": "#fee5d9"
+      },
+      {
+        "value": "21",
+        "label": "21 - 40%",
+        "color": "#fcae91"
+      },
+      {
+        "value": "41",
+        "label": "41 - 60%",
+        "color": "#fb6a4a"
+      },
+      {
+        "value": "61",
+        "label": "61 - 80%",
+        "color": "#de2d26"
+      },
+      {
+        "value": "81",
+        "label": "> 80%",
+        "color": "#a50f15"
+      }
+    ],
+    "legend_text": "Poverty headcount"
+  },
+  "extreme_poverty": {
+    "title": "Extreme poverty",
+    "type": "admin_level_data",
+    "path": "data/somalia/poverty_rates.json",
+    "boundary": "admin1_boundaries",
+    "admin_level": 1,
+    "data_field": "extreme_poverty",
+    "admin_code": "ADM1_PCODE",
+    "opacity": 0.9,
+    "legend": [
+      {
+        "value": "0",
+        "label": "< 10%",
+        "color": "#fee5d9"
+      },
+      {
+        "value": "10",
+        "label": "10 - 14%",
+        "color": "#fcae91"
+      },
+      {
+        "value": "15",
+        "label": "15 - 19%",
+        "color": "#fb6a4a"
+      },
+      {
+        "value": "20",
+        "label": "20 - 24%",
+        "color": "#de2d26"
+      },
+      {
+        "value": "25",
+        "label": ">= 25%",
+        "color": "#a50f15"
+      }
+    ],
+    "legend_text": "Extreme poverty rate"
   }
 }

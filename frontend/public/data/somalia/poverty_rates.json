@@ -1,0 +1,112 @@
+{
+  "DataList": [
+    {
+      "ADM1_PCODE": "SO11",
+      "Region": "Awdal",
+      "poverty_rate": 39.4,
+      "extreme_poverty": 11.6
+    },
+    {
+      "ADM1_PCODE": "SO25",
+      "Region": "Bakool",
+      "poverty_rate": 76.3,
+      "extreme_poverty": 46.2
+    },
+    {
+      "ADM1_PCODE": "SO22",
+      "Region": "Banadir",
+      "poverty_rate": 44,
+      "extreme_poverty": 10.8
+    },
+    {
+      "ADM1_PCODE": "SO16",
+      "Region": "Bari",
+      "poverty_rate": 44,
+      "extreme_poverty": 12.2
+    },
+    {
+      "ADM1_PCODE": "SO24",
+      "Region": "Bay",
+      "poverty_rate": 58,
+      "extreme_poverty": 21.5
+    },
+    {
+      "ADM1_PCODE": "SO19",
+      "Region": "Galgaduud",
+      "poverty_rate": 55.2,
+      "extreme_poverty": 13.7
+    },
+    {
+      "ADM1_PCODE": "SO26",
+      "Region": "Gedo",
+      "poverty_rate": 55.2,
+      "extreme_poverty": 18.5
+    },
+    {
+      "ADM1_PCODE": "SO20",
+      "Region": "Hiraan",
+      "poverty_rate": 82.4,
+      "extreme_poverty": 30.2
+    },
+    {
+      "ADM1_PCODE": "SO28",
+      "Region": "Lower Juba",
+      "poverty_rate": 61.1,
+      "extreme_poverty": 21.6
+    },
+    {
+      "ADM1_PCODE": "SO23",
+      "Region": "Lower Shabelle",
+      "poverty_rate": 54.3,
+      "extreme_poverty": 21.5
+    },
+    {
+      "ADM1_PCODE": "SO27",
+      "Region": "Middle Juba",
+      "poverty_rate": "NA",
+      "extreme_poverty": "NA"
+    },
+    {
+      "ADM1_PCODE": "SO21",
+      "Region": "Middle Shabelle",
+      "poverty_rate": 87.4,
+      "extreme_poverty": 54.7
+    },
+    {
+      "ADM1_PCODE": "SO18",
+      "Region": "Mudug",
+      "poverty_rate": 73.7,
+      "extreme_poverty": 35.3
+    },
+    {
+      "ADM1_PCODE": "SO17",
+      "Region": "Nugaal",
+      "poverty_rate": 42.1,
+      "extreme_poverty": 19.7
+    },
+    {
+      "ADM1_PCODE": "SO15",
+      "Region": "Sanaag",
+      "poverty_rate": 45.7,
+      "extreme_poverty": 18.2
+    },
+    {
+      "ADM1_PCODE": "SO14",
+      "Region": "Sool",
+      "poverty_rate": 61.9,
+      "extreme_poverty": 31.4
+    },
+    {
+      "ADM1_PCODE": "SO13",
+      "Region": "Togdheer",
+      "poverty_rate": 44.7,
+      "extreme_poverty": 18.1
+    },
+    {
+      "ADM1_PCODE": "SO12",
+      "Region": "Woqooyi Galbeed",
+      "poverty_rate": 45.1,
+      "extreme_poverty": 14.1
+    }
+  ]
+}

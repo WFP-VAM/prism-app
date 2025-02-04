@@ -191,7 +191,9 @@
       ]
     },
     "vulnerability":{
-      "food_security": [
+      "poverty": [
+        "poverty_rates",
+        "extreme_poverty"
       ]
     }
   }
