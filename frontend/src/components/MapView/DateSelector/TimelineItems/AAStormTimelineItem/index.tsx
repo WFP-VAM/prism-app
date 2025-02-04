@@ -25,7 +25,7 @@ function AAStormTimelineItem({ currentDate }: AAStormTimelineItemProps) {
     }
 
     if (
-      flattenedWindStates.find(({ state }) => state === WindState.activated_64)
+      flattenedWindStates.find(({ state }) => state === WindState.activated_89)
     ) {
       return classes.activated1Indicator;
     }

@@ -5,7 +5,7 @@ import { ParsedStormData } from './parsedStormDataTypes';
 export enum WindState {
   monitoring = 'monitoring',
   ready = 'ready',
-  activated_64 = 'activated_64',
+  activated_89 = 'activated_89',
   activated_118 = 'activated_118',
 }
 export type ShortDate = string;
