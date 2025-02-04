@@ -198,7 +198,21 @@ export async function buildEmailPayloads(
                   .affected_districts || [],
             },
             redirectUrl: prismUrl,
-            base64Image: await captureScreenshotFromUrl({ url: prismUrl }),
+            base64Image: await captureScreenshotFromUrl({
+              url: prismUrl,
+              elementsToHide: [
+                '.MuiDrawer-root',
+                '.MuiList-root',
+                '.MuiGrid-root',
+              ],
+              crop: {
+                x: 900,
+                y: 200,
+                width: 1000,
+                height: 800,
+              },
+            }),
+
             status: detailedStormReport.ready_set_results?.status,
           };
         }

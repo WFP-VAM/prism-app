@@ -1,5 +1,5 @@
 import { createConnection } from 'typeorm';
-import { AnticipatoryActionAlerts } from '../entities/anticipatoryActionAlerts';
+import { AnticipatoryActionAlerts } from '../entities/anticipatoryActionAlerts.entity';
 import {
   buildEmailPayloads,
   filterOutAlreadyProcessedReports,

@@ -9,7 +9,7 @@ export class AnticipatoryActionAlerts {
   @Column()
   country: string;
 
-  @Column()
+  @Column({ type: 'text', array: true })
   emails: string[];
 
   @Column()
