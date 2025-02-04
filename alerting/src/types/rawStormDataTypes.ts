@@ -9,8 +9,8 @@ export enum WindState {
 export type WindStateKey = keyof typeof WindState;
 
 export enum WindStateActivated {
-  activated_64 = '> 118 km/h',
-  activated_48 = '> 89 km/h',
+  activated_118 = '> 118 km/h',
+  activated_64 = '> 89 km/h',
 }
 export type WindStateActivatedKey = keyof typeof WindStateActivated;
 

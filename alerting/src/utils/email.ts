@@ -145,7 +145,7 @@ export const sendStormAlertEmail = async (
     readiness = true;
     alertTitle = `Readiness Triggers activated for ${data.cycloneName}`;
   } else {
-    throw new Error('No triggers or readiness activated');
+    throw new Error('No windspeed found');
   }
 
   const emailData: StormAlertEmail = {
