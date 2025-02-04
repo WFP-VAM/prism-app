@@ -168,6 +168,7 @@ function buildPrismUrl(basicUrl: string, date: string) {
 export async function buildEmailPayloads(
   shortReports: ShortReport[],
   basicPrismUrl: string,
+  emails: string[],
 ): Promise<StormAlertData[]> {
   try {
     const emailPayload = await Promise.all(
@@ -185,7 +186,7 @@ export async function buildEmailPayloads(
           );
 
           return {
-            email: '', //TODO
+            email: emails,
             cycloneName: detailedStormReport.forecast_details.cyclone_name,
             cycloneTime: detailedStormReport.forecast_details.reference_time,
             activatedTriggers: {

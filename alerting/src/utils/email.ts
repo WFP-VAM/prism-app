@@ -36,7 +36,7 @@ export async function sendEmail({
   attachments,
 }: {
   from: string;
-  to: string;
+  to: string | string[];
   subject: string;
   text: string;
   html?: string;
@@ -112,7 +112,7 @@ export async function sendEmail({
  * This function constructs an email with storm alert details.
  *
  * @param {StormAlertData} data - The storm alert details.
- * @param {string} data.email - Recipient's email address.
+ * @param {string | string[]} data.email - Recipient's email address.
  * @param {string} data.cycloneName - Name of the cyclone.
  * @param {string} data.cycloneTime - The reference date of the cyclone in ISO format.
  * @param {ActivatedTriggers | undefined} [data.activatedTriggers] - Object containing details of activated triggers.

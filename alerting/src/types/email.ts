@@ -1,7 +1,7 @@
 import { WindState } from './rawStormDataTypes';
 
 export interface StormAlertData {
-  email: string;
+  email: string | string[];
   cycloneName: string;
   cycloneTime: string;
   activatedTriggers?: {

@@ -35,11 +35,13 @@ export async function run() {
   );
 
   const basicPrismUrl = alert.prismUrl;
+  const emails = alert.emails;
 
   // check whether an email should be sent
   const emailPayloads = await buildEmailPayloads(
     filteredAvailableReports,
     basicPrismUrl,
+    emails,
   );
 
   console.log('emailPayload', emailPayloads);
