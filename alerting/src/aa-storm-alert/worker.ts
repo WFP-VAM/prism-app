@@ -59,7 +59,7 @@ export async function run() {
     { country: COUNTRY },
     {
       lastStates: updatedLastStates,
-      lastTriggeredAt: new Date(),
+      ...(emailPayloads.length > 0 ? { lastTriggeredAt: new Date() } : {}),
     },
   );
 }
