@@ -1,14 +1,9 @@
 import { memo, useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { BoundaryLayerProps, MapEventWrapFunctionProps } from 'config/types';
 import { LayerData } from 'context/layers/layer-data';
 import { showPopup } from 'context/tooltipStateSlice';
 import { Source, Layer, MapLayerMouseEvent } from 'react-map-gl/maplibre';
-import { setBoundaryRelationData } from 'context/mapStateSlice';
-import {
-  loadBoundaryRelations,
-  BoundaryRelationData,
-} from 'components/Common/BoundaryDropdown/utils';
 import { isPrimaryBoundaryLayer } from 'config/utils';
 import { toggleSelectedBoundary } from 'context/mapSelectionLayerStateSlice';
 import {
@@ -17,7 +12,6 @@ import {
 } from 'context/mapStateSlice/selectors';
 import { getFullLocationName } from 'utils/name-utils';
 
-import { languages } from 'i18n';
 import { Map as MaplibreMap } from 'maplibre-gl';
 import {
   findFeature,
@@ -82,7 +76,6 @@ const onMouseLeave = () => (evt: MapLayerMouseEvent) =>
   onToggleHover('', evt.target);
 
 const BoundaryLayer = memo(({ layer, before }: ComponentProps) => {
-  const dispatch = useDispatch();
   const selectedMap = useSelector(mapSelector);
   const [isZoomLevelSufficient, setIsZoomLevelSufficient] = useState(
     !layer.minZoom,
@@ -93,7 +86,6 @@ const BoundaryLayer = memo(({ layer, before }: ComponentProps) => {
     | undefined;
   const { data } = boundaryLayer || {};
 
-  const isPrimaryLayer = isPrimaryBoundaryLayer(layer);
   const layerId = getLayerMapId(layer.id, 'fill');
 
   useMapCallback('click', layerId, layer, onClick);
@@ -123,26 +115,30 @@ const BoundaryLayer = memo(({ layer, before }: ComponentProps) => {
     return undefined;
   }, [layer.format]);
 
-  useEffect(() => {
-    if (!data || !isPrimaryLayer) {
-      return;
-    }
+  // This is causing a pretty massive performance hit. It seems to only be necessary for alerts.
+  // Is it used anywhere else???
+  // const dispatch = useDispatch();
+  // const isPrimaryLayer = isPrimaryBoundaryLayer(layer);
+  // useEffect(() => {
+  //   if (!data || !isPrimaryLayer) {
+  //     return;
+  //   }
 
-    const dataDict = languages.reduce((relationsDict, lang) => {
-      const locationLevelNames =
-        lang === 'en' ? layer.adminLevelNames : layer.adminLevelLocalNames;
+  //   const dataDict = languages.reduce((relationsDict, lang) => {
+  //     const locationLevelNames =
+  //       lang === 'en' ? layer.adminLevelNames : layer.adminLevelLocalNames;
 
-      const relations: BoundaryRelationData = loadBoundaryRelations(
-        data,
-        locationLevelNames,
-        layer,
-      );
+  //     const relations: BoundaryRelationData = loadBoundaryRelations(
+  //       data,
+  //       locationLevelNames,
+  //       layer,
+  //     );
 
-      return { ...relationsDict, [lang]: relations };
-    }, {});
+  //     return { ...relationsDict, [lang]: relations };
+  //   }, {});
 
-    dispatch(setBoundaryRelationData(dataDict));
-  }, [data, dispatch, layer, isPrimaryLayer]);
+  //   dispatch(setBoundaryRelationData(dataDict));
+  // }, [data, dispatch, layer, isPrimaryLayer]);
 
   if (layer.format === 'pmtiles') {
     return (

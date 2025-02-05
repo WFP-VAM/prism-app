@@ -80,7 +80,7 @@ const AdminLevelDataLayers = memo(
           // load unique boundary only once
           // to avoid double loading which proven to be performance issue
           if (!isLayerOnView(map, boundaryId)) {
-            dispatch(loadLayerData({ layer: boundaryLayer }));
+            dispatch(loadLayerData({ layer: boundaryLayer, map }));
           }
         } else {
           dispatch(
@@ -92,7 +92,7 @@ const AdminLevelDataLayers = memo(
         }
       }
       if (!data) {
-        dispatch(loadLayerData({ layer, date: queryDate }));
+        dispatch(loadLayerData({ layer, date: queryDate, map }));
       }
     }, [boundaryId, dispatch, data, layer, map, queryDate]);
 

@@ -12,7 +12,7 @@ export interface BoundaryLayerData extends FeatureCollection {}
 export const fetchBoundaryLayerData: LazyLoader<BoundaryLayerProps> =
   () =>
   async (params: LayerDataParams<BoundaryLayerProps>, { dispatch }) => {
-    const { layer } = params;
+    const { layer, map } = params;
     const { path, format } = layer;
 
     try {
@@ -20,14 +20,14 @@ export const fetchBoundaryLayerData: LazyLoader<BoundaryLayerProps> =
         const p = getPmtilesInstance(path);
         const header = await p.getHeader();
 
-        // Return a minimal GeoJSON structure since the actual data
-        // will be loaded via the PMTiles protocol
+        const allFeatures = map.querySourceFeatures(`source-${layer.id}`, {
+          sourceLayer: layer.layerName,
+        });
+
         return {
           type: 'FeatureCollection',
-          features: [],
-          properties: {
-            header,
-          },
+          features: allFeatures,
+          properties: { header },
         };
       }
 

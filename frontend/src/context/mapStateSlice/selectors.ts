@@ -23,10 +23,15 @@ export const layerDataSelector =
   (state: RootState): LayerDataTypes | undefined =>
     // TODO - investigate if it is safe to return the first match by id
     // if there are no match for the given date.
-    state.mapState.layersData.find(
-      ({ layer, date: dataDate }) =>
-        layer.id === id && (!date || datesAreEqualWithoutTime(date, dataDate)),
-    );
+    // eslint-disable-next-line fp/no-mutating-methods
+    state.mapState.layersData
+      .slice()
+      .reverse() // We want to return the most recent layer data first
+      .find(
+        ({ layer, date: dataDate }) =>
+          layer.id === id &&
+          (!date || datesAreEqualWithoutTime(date, dataDate)),
+      );
 export const loadingLayerIdsSelector = (state: RootState): LayerKey[] =>
   state.mapState.loadingLayerIds;
 
