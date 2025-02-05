@@ -18,22 +18,18 @@ function AAStormTimelineItem({ currentDate }: AAStormTimelineItemProps) {
     if (flattenedWindStates.length === 0) {
       return classes.emptySpace;
     }
-    if (
-      flattenedWindStates.find(({ state }) => state === WindState.activated_118)
-    ) {
+
+    const states = flattenedWindStates.map(({ state }) => state);
+
+    if (states.includes(WindState.activated_118)) {
       return classes.activated2Indicator;
     }
-
-    if (
-      flattenedWindStates.find(({ state }) => state === WindState.activated_89)
-    ) {
+    if (states.includes(WindState.activated_89)) {
       return classes.activated1Indicator;
     }
-
-    if (flattenedWindStates.find(({ state }) => state === WindState.ready)) {
+    if (states.includes(WindState.ready)) {
       return classes.readyIndicator;
     }
-
     return classes.lowRiskIndicator;
   };
 
