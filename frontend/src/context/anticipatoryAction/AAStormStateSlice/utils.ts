@@ -8,7 +8,7 @@ import {
   MergedFeatures,
   ResultType,
 } from './parsedStormDataTypes';
-import { StormDataResponseBody } from './rawStormDataTypes';
+import { StormDataResponseBody, WindState } from './rawStormDataTypes';
 
 const districtNameMapping: { [key: string]: string } = {
   Maganja_Da_Costa: 'Maganja Da Costa',
@@ -103,53 +103,67 @@ function createMergedGeoJSON(data: StormDataResponseBody) {
 export function parseAndTransformAA(data: StormDataResponseBody): ResultType {
   const exposedAreas = data.ready_set_results;
   const landfallInfo = data.landfall_info;
+  const isActivated =
+    exposedAreas &&
+    (exposedAreas.status === WindState.activated_118 ||
+      exposedAreas.status === WindState.activated_89);
+  const readiness = exposedAreas?.status === WindState.ready;
 
-  const [activeDistricts, naDistricts] = exposedAreas
-    ? (Object.values(AACategoryKey) as AACategoryKey[]).reduce(
-        ([activeResult, naResult], categoryKey) => {
-          if (exposedAreas[categoryKey]) {
-            const area = exposedAreas[categoryKey];
-            const category = AACategoryKeyToCategoryMap[categoryKey];
+  const [activeDistricts, naDistricts] = (
+    Object.values(AACategoryKey) as AACategoryKey[]
+  ).reduce(
+    ([activeResult, naResult], categoryKey) => {
+      const category = AACategoryKeyToCategoryMap[categoryKey];
 
-            const active = area.affected_districts
-              ? area.affected_districts
-                  .map(district => districtNameMapping[district] || district)
-                  .filter(district =>
-                    watchedDistricts[category].includes(district),
-                  )
-              : [];
+      if (!isActivated) {
+        return [
+          activeResult,
+          {
+            ...naResult,
+            [category]: {
+              districtNames: watchedDistricts[category] || [],
+              polygon: {},
+            },
+          },
+        ];
+      }
 
-            const notActive = area.affected_districts
-              ? watchedDistricts[category].filter(
-                  district =>
-                    !area.affected_districts
-                      .map(d => districtNameMapping[d] || d)
-                      .includes(district),
-                )
-              : [];
+      const area = exposedAreas?.[categoryKey];
+      if (!area) {
+        return [activeResult, naResult];
+      }
 
-            return [
-              {
-                ...activeResult,
-                [category]: {
-                  districtNames: active,
-                  polygon: area.polygon,
-                },
-              },
-              {
-                ...naResult,
-                [category]: {
-                  districtNames: notActive,
-                  polygon: {},
-                },
-              },
-            ];
-          }
-          return [activeResult, naResult];
+      const affectedDistricts = new Set(
+        area.affected_districts?.map(d => districtNameMapping[d] || d) || [],
+      );
+
+      const watched = watchedDistricts[category] || [];
+      const active = watched.filter(district =>
+        affectedDistricts.has(district),
+      );
+      const notActive = watched.filter(
+        district => !affectedDistricts.has(district),
+      );
+
+      return [
+        {
+          ...activeResult,
+          [category]: {
+            districtNames: active,
+            polygon: area.polygon,
+          },
         },
-        [{} as DistrictDataType, {} as DistrictDataType],
-      )
-    : [{} as DistrictDataType, {} as DistrictDataType];
+        {
+          ...naResult,
+          [category]: {
+            districtNames: notActive,
+            polygon: {},
+          },
+        },
+      ];
+    },
+    [{} as DistrictDataType, {} as DistrictDataType],
+  );
 
   const landfallImpactData = landfallInfo.landfall_time
     ? {
@@ -168,6 +182,7 @@ export function parseAndTransformAA(data: StormDataResponseBody): ResultType {
     data: {
       activeDistricts,
       naDistricts,
+      readiness,
       landfall: landfallImpactData,
       timeSeries: data.time_series,
       landfallDetected: data.landfall_detected,

@@ -42,6 +42,13 @@ interface ExposedAreaStorm {
   polygon: GeoJSON.Geometry;
 }
 
+export enum WindState {
+  monitoring = 'monitoring',
+  ready = 'ready',
+  activated_89 = 'activated_89',
+  activated_118 = 'activated_118',
+}
+
 /* storm data reponse body type */
 export interface StormDataResponseBody {
   time_series: TimeSeries;
@@ -54,6 +61,7 @@ export interface StormDataResponseBody {
     landfall_impact_intensity: AACategoryLandfall[];
   };
   ready_set_results?: {
+    status: WindState;
     exposed_area_48kt: ExposedAreaStorm;
     exposed_area_64kt: ExposedAreaStorm;
     proba_48kt_20_5d: ExposedAreaStorm;

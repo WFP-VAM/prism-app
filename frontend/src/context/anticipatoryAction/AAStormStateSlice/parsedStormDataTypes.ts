@@ -55,6 +55,7 @@ export interface MergedFeatures<P = GeoJsonProperties>
 
 /* parsed storm data type */
 export type ParsedStormData = {
+  readiness?: boolean;
   activeDistricts?: DistrictDataType;
   naDistricts?: DistrictDataType;
   landfall?: LandfallInfo;
