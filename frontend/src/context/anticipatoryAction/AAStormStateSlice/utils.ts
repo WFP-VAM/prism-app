@@ -120,7 +120,7 @@ export function parseAndTransformAA(data: StormDataResponseBody): ResultType {
     ([activeResult, naResult], categoryKey) => {
       const category = AACategoryKeyToCategoryMap[categoryKey];
 
-      // If the storm is not active, all watched districts should be marked as inactive
+      // If the storm status is not active, all watched districts should be marked as inactive
       if (!isActivated) {
         return [
           activeResult,
