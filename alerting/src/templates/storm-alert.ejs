@@ -6,6 +6,13 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>PRISM Alert</title>
+        <style>
+            @media screen and (max-width: 600px) {
+                .content-wrapper{
+                    padding: 20px !important;
+                }
+            }
+        </style>
     </head>
     <body style="font-family: Arial, sans-serif; margin: 0; padding: 0; background-color: #f4f4f4;">
         <div class="container" style="color:black; width: 600px; margin: 20px auto; background: #ffffff;">
@@ -13,7 +20,7 @@
                 <p class="title" style="font-size: 20px; font-weight: 500; line-height: 23.44px;">PRISM</p>
             </header>
             <main>
-                <div style="padding: 50px;font-size: 14px;">
+                <div class="content-wrapper" style="padding: 50px;font-size: 14px;">
                     <h1 class="content-title" style="font-size: 24px; font-weight: 700; line-height: 30px; color: #333;">
                         <%= alertTitle %>
                     </h1>
