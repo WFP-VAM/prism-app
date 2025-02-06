@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { AnticipatoryActionLayerProps, BoundaryLayerProps } from 'config/types';
 import { useDefaultDate } from 'utils/useDefaultDate';
 import { Source, Layer, MapLayerMouseEvent } from 'react-map-gl/maplibre';
@@ -32,6 +32,7 @@ import AAStormLandfallPopup from './AAStormLandfallPopup';
 import { TimeSeries } from './types';
 import AAStormLandfallMarker from './AAStormLandfallPopup/AAStormLandfallMarker/AAStormLandfallMarker';
 import { parseGeoJsonFeature } from './utils';
+import { findLandfallWindPoint } from './AAStormLandfallPopup/utils';
 
 interface AnticipatoryActionStormLayerProps {
   layer: AnticipatoryActionLayerProps;
@@ -121,8 +122,9 @@ const AnticipatoryActionStormLayer = React.memo(
 
     const [selectedFeature, setSelectedFeature] = useState<{
       feature: AAStormTimeSeriesFeature | null;
-      hasBeenDeselected: boolean;
-    }>({ feature: null, hasBeenDeselected: false });
+      clickedOnMap: boolean;
+      clickedOnWindPoint: boolean;
+    }>({ feature: null, clickedOnMap: false, clickedOnWindPoint: false });
 
     function enhanceTimeSeries(timeSeries: TimeSeries) {
       const { features, ...timeSeriesRest } = timeSeries;
@@ -246,7 +248,10 @@ const AnticipatoryActionStormLayer = React.memo(
     }
 
     function landfallPopupCloseHandler() {
-      setSelectedFeature({ feature: null, hasBeenDeselected: true });
+      setSelectedFeature(currentState => ({
+        ...currentState,
+        clickedOnMap: true,
+      }));
     }
 
     // Load all images from the mapping
@@ -300,22 +305,37 @@ const AnticipatoryActionStormLayer = React.memo(
       onMouseLeave,
     );
 
+    const { clickedOnMap, clickedOnWindPoint } = selectedFeature;
+    /* This is a trick to handle event concurrency when clicking on map on the landfall windpoint.
+     * That's what the 2 booleans (clickedOnMap and clickedOnWindPoint) are used for
+     */
+    useEffect(() => {
+      if (clickedOnMap && clickedOnWindPoint) {
+        setSelectedFeature({
+          feature: null,
+          clickedOnMap: false,
+          clickedOnWindPoint: false,
+        });
+      }
+    }, [clickedOnMap, clickedOnWindPoint]);
+
+    const landfallWindPoint = useMemo(
+      () => findLandfallWindPoint(stormData),
+      [stormData],
+    );
     const onWindPointsClicked = () => (e: MapLayerMouseEvent) => {
       e.preventDefault();
       dispatch(hidePopup()); // hides the black tooltip containing the district names
+
       const feature = e.features?.[0];
 
-      if (!selectedFeature.feature) {
-        if (selectedFeature.hasBeenDeselected) {
-          setSelectedFeature({
-            feature: null,
-            hasBeenDeselected: false,
-          });
-        }
-        setSelectedFeature({
+      if (landfallWindPoint?.properties.time === feature?.properties.time) {
+        // clicked feature corresponds to the landfall feature
+        setSelectedFeature(currentState => ({
+          ...currentState,
+          clickedOnWindPoint: true,
           feature: parseGeoJsonFeature(feature),
-          hasBeenDeselected: false,
-        });
+        }));
       }
     };
 
