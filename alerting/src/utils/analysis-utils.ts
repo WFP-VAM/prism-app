@@ -6,7 +6,6 @@ import { Extent } from './raster-utils';
 import { API_URL } from '../constants';
 import { Alert } from '../entities/alerts.entity';
 
-// eslint-disable-next-line fp/no-mutation
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 
 /* eslint-disable camelcase */
@@ -91,12 +90,10 @@ export function getAlertMessage(
     );
 
     if (!isNil(alertMin) && minValue < alertMin!) {
-      // eslint-disable-next-line fp/no-mutation
       alertMessage = `Minimum value ${minValue} is below the threshold ${alertMin}.`;
     }
 
     if (!isNil(alertMax) && maxValue > alertMax!) {
-      // eslint-disable-next-line fp/no-mutation
       alertMessage = `Maximum value ${maxValue} is above the threshold ${alertMax}.`;
     }
   });

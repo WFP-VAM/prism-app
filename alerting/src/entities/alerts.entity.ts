@@ -75,5 +75,5 @@ export class Alert {
   lastTriggered?: Date;
 
   @Column({ nullable: false, default: true })
-  active: boolean = true;
+  active = true;
 }

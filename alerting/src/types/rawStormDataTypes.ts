@@ -40,10 +40,8 @@ export interface TimeSerieFeatureProperty {
   // wind_buffer_64: any;
 }
 
-export interface TimeSeries
-  extends FeatureCollection<Point, TimeSerieFeatureProperty> {}
-export interface AAStormTimeSeriesFeature
-  extends Feature<Point, TimeSerieFeatureProperty> {}
+export type TimeSeries = FeatureCollection<Point, TimeSerieFeatureProperty>;
+export type AAStormTimeSeriesFeature = Feature<Point, TimeSerieFeatureProperty>;
 
 /* forcast-details types */
 export interface ForecastDetails {
@@ -79,7 +77,7 @@ export interface StormDataResponseBody {
   landfall_detected: boolean;
   forecast_details: ForecastDetails;
   uncertainty_cone: FeatureProperties;
-  landfall_info: LandfallInfo | {};
+  landfall_info: LandfallInfo | Record<string, never>;
   ready_set_results?: {
     status: WindState;
     exposed_area_48kt: ExposedAreaStorm;

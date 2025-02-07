@@ -51,7 +51,7 @@ export async function captureScreenshotFromUrl(
   } = options;
 
   let browser: Browser | null = null;
-  let base64Image: string = '';
+  let base64Image = '';
 
   try {
     browser = await puppeteer.launch({ args: ['--use-gl=egl', '--no-sandbox', '--disable-setuid-sandbox'] });

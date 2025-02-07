@@ -17,13 +17,13 @@ export function buildDetailedReport({
   status = WindState.monitoring,
   affected48ktDistrict = [],
   affected64ktDistrict = [],
-  landfallInfo = {},
+  landfallInfo = {} as LandfallInfo | Record<string, never>,
 }: {
   landfall_detected?: boolean;
   status?: WindState;
   affected48ktDistrict?: string[];
   affected64ktDistrict?: string[];
-  landfallInfo?: LandfallInfo | {};
+  landfallInfo?: LandfallInfo | Record<string, never>;
 }) {
   return {
     forecast_details: {
