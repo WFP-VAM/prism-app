@@ -202,7 +202,11 @@ describe('alert mechanism', () => {
     it.each(tests)('$description', async ({ data, shortReports }) => {
       mockedFetch.mockResolvedValue({ json: () => data });
 
-      const emailPayloads = await buildEmailPayloads(shortReports);
+      const emailPayloads = await buildEmailPayloads(
+        shortReports,
+        'https://prism.wfp.org',
+        ['test@test.com'],
+      );
       expect(emailPayloads).toMatchSnapshot();
     });
   });
