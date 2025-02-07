@@ -39,6 +39,6 @@ jobs:
          yarn install
          yarn setup:common
          # Install puppeteer dependencies
-         PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true yarn add puppeteer
+         PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true yarn add puppeteer puppeteer-core
          yarn lint
          yarn test
