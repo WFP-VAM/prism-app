@@ -27,10 +27,18 @@ jobs:
         with:
           node-version: '20'
 
+      # Install Chrome for Puppeteer
+      - name: Install Chrome
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y chromium-browser
+
       # Lint and test
       - run: |
          cd alerting
          yarn install
          yarn setup:common
+         # Install puppeteer dependencies
+         PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true yarn add puppeteer
          yarn lint
          yarn test
