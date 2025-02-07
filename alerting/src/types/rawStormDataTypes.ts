@@ -1,4 +1,5 @@
-//TODO: Avoid duplication of code
+/* eslint-disable @typescript-eslint/no-explicit-any */
+// TODO: Avoid duplication of code
 // the code below is duplicated from /home/max/projets/prism-app/frontend/src/context/anticipatoryAction/AAStormStateSlice/types.ts
 export enum WindState {
   monitoring = 'monitoring',

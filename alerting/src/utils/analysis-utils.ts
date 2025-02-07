@@ -1,5 +1,6 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import fetch from 'node-fetch';
-import { get, isNil } from 'lodash';
+import { get } from 'lodash';
 import bbox from '@turf/bbox';
 import { createGetCoverageUrl } from 'prism-common';
 import { Extent } from './raster-utils';
@@ -89,11 +90,11 @@ export function getAlertMessage(
       offset,
     );
 
-    if (!isNil(alertMin) && minValue < alertMin!) {
+    if (typeof alertMin === 'number' && minValue < alertMin) {
       alertMessage = `Minimum value ${minValue} is below the threshold ${alertMin}.`;
     }
 
-    if (!isNil(alertMax) && maxValue > alertMax!) {
+    if (typeof alertMax === 'number' && maxValue > alertMax) {
       alertMessage = `Maximum value ${maxValue} is above the threshold ${alertMax}.`;
     }
   });
