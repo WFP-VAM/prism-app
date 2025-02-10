@@ -44,8 +44,6 @@ export async function run() {
     emails,
   );
 
-  console.log('emailPayload', emailPayloads);
-
   // send emails
   await Promise.all(
     emailPayloads.map((emailPayload) => sendStormAlertEmail(emailPayload)),
