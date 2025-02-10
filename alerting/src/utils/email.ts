@@ -7,7 +7,7 @@ import {
   WindState,
   WindStateActivated,
   WindStateActivatedKey,
-} from '../types/rawStormDataTypes';
+} from 'prism-common/dist/types/anticipatory-action-storm/windState';
 
 /**
  *

@@ -1,5 +1,5 @@
 import { ParsedStormData } from 'context/anticipatoryAction/AAStormStateSlice/parsedStormDataTypes';
-import { AAStormTimeSeriesFeature } from 'context/anticipatoryAction/AAStormStateSlice/rawStormDataTypes';
+import { AAStormTimeSeriesFeature } from 'prism-common/dist/types/anticipatory-action-storm/reportResponse';
 import { getDateInUTC } from '../utils';
 
 function getLandfallEstimatedTime(stormData: ParsedStormData) {

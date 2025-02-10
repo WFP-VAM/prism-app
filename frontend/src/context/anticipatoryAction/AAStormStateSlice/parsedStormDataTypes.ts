@@ -1,5 +1,8 @@
 import { Feature, Geometry, GeoJsonProperties } from 'geojson';
-import { ForecastDetails, TimeSeries } from './rawStormDataTypes';
+import {
+  ForecastDetails,
+  TimeSeries,
+} from 'prism-common/dist/types/anticipatory-action-storm/reportResponse';
 
 export enum AACategory {
   Severe = 'Severe',

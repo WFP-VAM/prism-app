@@ -4,7 +4,8 @@ import {
   ShortReportsResponseBody,
 } from '../types/aa-storm-email';
 import nodeFetch from 'node-fetch';
-import { StormDataResponseBody, WindState } from '../types/rawStormDataTypes';
+import { WindState } from 'prism-common/dist/types/anticipatory-action-storm/windState';
+import { StormDataResponseBody } from 'prism-common/dist/types/anticipatory-action-storm/reportResponse';
 import { StormAlertData } from '../types/email';
 import moment from 'moment';
 import { captureScreenshotFromUrl } from '../utils/capture-utils';

@@ -2,7 +2,7 @@ import { createStyles, makeStyles } from '@material-ui/core';
 
 import 'react-datepicker/dist/react-datepicker.css';
 import { DateRangeType } from 'config/types';
-import { WindState } from 'context/anticipatoryAction/AAStormStateSlice/types';
+import { WindState } from 'prism-common/dist/types/anticipatory-action-storm/windState';
 import { TIMELINE_ITEM_WIDTH } from '../../utils';
 import { useWindStatesByTime } from '../hooks';
 
@@ -19,13 +19,13 @@ function AAStormTimelineItem({ currentDate }: AAStormTimelineItemProps) {
       return classes.emptySpace;
     }
     if (
-      flattenedWindStates.find(({ state }) => state === WindState.activated_118)
+      flattenedWindStates.find(({ state }) => state === WindState.activated_64)
     ) {
       return classes.activated2Indicator;
     }
 
     if (
-      flattenedWindStates.find(({ state }) => state === WindState.activated_89)
+      flattenedWindStates.find(({ state }) => state === WindState.activated_48)
     ) {
       return classes.activated1Indicator;
     }

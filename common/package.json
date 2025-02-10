@@ -50,6 +50,7 @@
     "typescript": "^4.7.4"
   },
   "dependencies": {
+    "geojson": "^0.5.0",
     "lodash": "^4.17.21",
     "moment": "^2.29.4",
     "xml-utils": "^1.6.0-0"

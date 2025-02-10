@@ -2,7 +2,7 @@ jest.mock('node-fetch');
 import nodeFetch from 'node-fetch';
 import { buildEmailPayloads, getLatestAvailableReports } from './alert';
 import { buildDetailedReport, buildLandfallInfo } from './test-utils';
-import { WindState } from '../types/rawStormDataTypes';
+import { WindState } from 'prism-common/dist/types/anticipatory-action-storm/windState';
 import moment from 'moment';
 
 describe('alert mechanism', () => {

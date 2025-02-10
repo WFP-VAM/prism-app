@@ -2,6 +2,10 @@
   "name": "prism-alerting",
   "version": "0.0.1",
   "description": "",
+  "engines": {
+    "node": "20",
+    "npm": "10"
+  },
   "author": "",
   "private": true,
   "license": "MIT",
@@ -46,7 +50,7 @@
   "devDependencies": {
     "@types/ejs": "^3.1.5",
     "@types/jest": "^29.5.12",
-    "@types/node": "^22.13.0",
+    "@types/node": "20.14.8",
     "@types/node-fetch": "^2.5.8",
     "@types/nodemailer": "^6.4.1",
     "@typescript-eslint/eslint-plugin": "^5.0.0",

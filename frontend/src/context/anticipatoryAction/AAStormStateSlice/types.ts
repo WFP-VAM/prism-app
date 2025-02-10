@@ -1,13 +1,8 @@
 // // na/ny are not actually found in CSV, but defined not to cause confusion when calling the functions
 import { DateItem } from 'config/types';
+import { WindState } from 'prism-common/dist/types/anticipatory-action-storm/windState';
 import { ParsedStormData } from './parsedStormDataTypes';
 
-export enum WindState {
-  monitoring = 'monitoring',
-  ready = 'ready',
-  activated_89 = 'activated_89',
-  activated_118 = 'activated_118',
-}
 export type ShortDate = string;
 export type CycloneName = string;
 export type TimeAndState = { ref_time: string; state: WindState };

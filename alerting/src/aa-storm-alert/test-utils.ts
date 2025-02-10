@@ -1,4 +1,5 @@
-import { LandfallInfo, WindState } from '../types/rawStormDataTypes';
+import { LandfallInfo } from 'prism-common/dist/types/anticipatory-action-storm/reportResponse';
+import { WindState } from 'prism-common/dist/types/anticipatory-action-storm/windState';
 
 export function buildLandfallInfo({
   landfall_time = ['2025-01-13 06:00:00', '2025-01-13 18:00:00'],
