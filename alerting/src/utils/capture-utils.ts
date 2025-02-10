@@ -1,4 +1,6 @@
 import puppeteer, { Browser, Page, BoundingBox } from 'puppeteer';
+import { Jimp } from "jimp";
+
 interface CropRegion {
   x: number;
   y: number;
@@ -11,6 +13,7 @@ interface ScreenshotOptions {
   crop?: CropRegion;
   screenshotTargetSelector?: string;
   elementsToHide?: string[];
+  maxRetry?: number;
 }
 
 const DEFAULT_CROP: CropRegion = {
@@ -20,6 +23,38 @@ const DEFAULT_CROP: CropRegion = {
   height: 1080,
 };
 const DEFAULT_TARGET = '.maplibregl-canvas';
+const MAX_RETRY = 3;
+
+/**
+ * Check if the image is white by calculating the average of the pixels.
+ * @param base64 - image base64 string
+ * @param threshold -  Tolerance threshold (e.g., 250 = almost white)
+ * @returns {Promise<boolean>} - Returns true if the image is white.
+ */
+async function isBlankScreenshot(base64: string, threshold = 250): Promise<boolean> {
+  const imageBuffer = Buffer.from(base64, 'base64');
+  const image = await Jimp.read(imageBuffer);
+  
+  let whitePixelCount = 0;
+  const width = image.bitmap.width;
+  const height = image.bitmap.height;
+  const totalPixels = width * height;
+
+  image.scan(0, 0, width, height, (x, y, idx) => {
+    const r = image.bitmap.data[idx + 0];
+    const g = image.bitmap.data[idx + 1];
+    const b = image.bitmap.data[idx + 2];
+
+    // if pixel is almost white
+    if (r >= threshold && g >= threshold && b >= threshold) {
+        whitePixelCount++;
+    }
+  });
+
+  const whitePercentage = (whitePixelCount / totalPixels) * 100;
+
+  return whitePercentage > 95; // If 95% of pixels are white, consider the image as white
+}
 
 /**
  * Captures a screenshot of a specified URL, potentially cropping the image and hiding specific elements.
@@ -37,6 +72,7 @@ const DEFAULT_TARGET = '.maplibregl-canvas';
  * @param {CropRegion} [options.crop] - The crop region for the screenshot, specifying the x, y, width, and height.
  * @param {string} [options.screenshotTargetSelector] - The CSS selector of the target element to capture (defaults to '.maplibregl-canvas').
  * @param {string[]} [options.elementsToHide] - An array of CSS selectors for elements to hide before capturing the screenshot.
+ * @param {number} [options.maxRetry] - The maximum number of retries to capture the screenshot if it is blank (defaults to 3).
  *
  * @returns {Promise<string>} - A promise that resolves to a base64-encoded string of the captured screenshot, or an empty string if the capture fails.
  */
@@ -48,13 +84,30 @@ export async function captureScreenshotFromUrl(
     crop = DEFAULT_CROP,
     screenshotTargetSelector = DEFAULT_TARGET,
     elementsToHide = [],
+    maxRetry = MAX_RETRY,
   } = options;
 
   let browser: Browser | null = null;
   let base64Image = '';
 
   try {
-    browser = await puppeteer.launch({ args: ['--use-gl=egl', '--no-sandbox', '--disable-setuid-sandbox'] });
+    console.log('Starting screenshot process...');
+
+    browser = await puppeteer.launch({ 
+      headless: true,
+      args: [
+      '--use-gl=egl',
+      '--no-sandbox',
+      '--disable-setuid-sandbox',
+      '--disable-dev-shm-usage',
+      '--disable-gpu-sandbox',
+      '--enable-webgl',
+      '--ignore-gpu-blacklist',
+      '--window-size=1920,1080'
+      ],
+      defaultViewport: null
+    });
+
     const page: Page = await browser.newPage();
 
     await page.setViewport({ width: 1920, height: 1080 });
@@ -63,6 +116,8 @@ export async function captureScreenshotFromUrl(
 
     // Wait for the element to be visible in the DOM
     await page.waitForSelector(screenshotTargetSelector, { visible: true });
+
+    await new Promise(resolve => setTimeout(resolve, 3000));
 
     // Check if the target element is a canvas
     const isCanvas = await page.evaluate((selector) => {
@@ -200,14 +255,32 @@ export async function captureScreenshotFromUrl(
       height: boundingBox.height,
     };
 
-    base64Image = await page.screenshot({
-      type: 'jpeg',
-      quality: 70,
-      fullPage: false,
-      encoding: 'base64',
-      clip: finalCrop,
-    });
+    const mapElement = await page.$(screenshotTargetSelector);
+  
+    if (!mapElement) {
+      throw new Error('Screenshot target not found');
+    }
 
+    let retry = 0;
+    let isBlank = true;
+
+    while (isBlank && retry < maxRetry) {
+      base64Image = await mapElement.screenshot({
+        type: 'jpeg',
+        quality: 70,
+        fullPage: false,
+        encoding: 'base64',
+        clip: finalCrop,
+      });
+
+      isBlank = await isBlankScreenshot(base64Image);
+      if (isBlank && retry <= maxRetry) {
+        retry++;
+        console.log("Screenshot is probably blank, retrying... ", retry);
+      } else {
+        break;
+      }
+    }
     console.log('Screenshot captured');
   } catch (error: unknown) {
     if (error instanceof Error) {
