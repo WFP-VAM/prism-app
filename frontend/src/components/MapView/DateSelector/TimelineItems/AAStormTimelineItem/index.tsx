@@ -50,7 +50,7 @@ const useStyles = makeStyles(() =>
       width: TIMELINE_ITEM_WIDTH - 1,
       pointerEvents: 'none',
       top: 0,
-      backgroundColor: '#63B2BD',
+      backgroundColor: '#b5ecf4',
     },
     readyIndicator: {
       position: 'absolute',
@@ -58,7 +58,7 @@ const useStyles = makeStyles(() =>
       width: TIMELINE_ITEM_WIDTH - 1,
       pointerEvents: 'none',
       top: 0,
-      backgroundColor: '#FFD014',
+      backgroundColor: '#63B2BD',
     },
     activated1Indicator: {
       position: 'absolute',
