@@ -1,9 +1,14 @@
 jest.mock('node-fetch');
 import nodeFetch from 'node-fetch';
-import { buildEmailPayloads, getLatestAvailableReports } from './alert';
+import {
+  buildEmailPayloads,
+  filterOutAlreadyProcessedReports,
+  getLatestAvailableReports,
+} from './alert';
 import { buildDetailedReport, buildLandfallInfo } from './test-utils';
 import { WindState } from 'prism-common/dist/types/anticipatory-action-storm/windState';
 import moment from 'moment';
+import { LastStates } from '../types/aa-storm-email';
 
 describe('alert mechanism', () => {
   describe('getLatestAvailableReports()', () => {
@@ -209,5 +214,91 @@ describe('alert mechanism', () => {
       );
       expect(emailPayloads).toMatchSnapshot();
     });
+  });
+
+  describe('filterOutAlreadyProcessedReports()', () => {
+    const tests = [
+      {
+        description:
+          'when there is already processed report stored in the db which is older than available report',
+        availableReports: [
+          {
+            ref_time: '2025-02-09T18:00:00Z',
+            state: WindState.monitoring,
+            path: 'vince/2025-02-09T18:00:00Z.json',
+          },
+        ],
+        lastStates: {
+          vince: {
+            status: WindState.monitoring,
+            refTime: '2025-02-09T12:00:00Z',
+          },
+        },
+      },
+      {
+        description:
+          'when there is already processed report stored in the db which is as old as available report',
+        availableReports: [
+          {
+            ref_time: '2025-02-09T18:00:00Z',
+            state: WindState.monitoring,
+            path: 'vince/2025-02-09T18:00:00Z.json',
+          },
+        ],
+        lastStates: {
+          vince: {
+            status: WindState.monitoring,
+            refTime: '2025-02-09T18:00:00Z',
+          },
+        },
+      },
+      {
+        description:
+          'when there is no already processed report stored in the db',
+        availableReports: [
+          {
+            ref_time: '2025-02-09T18:00:00Z',
+            state: WindState.monitoring,
+            path: 'vince/2025-02-09T18:00:00Z.json',
+          },
+        ],
+        lastStates: undefined,
+      },
+      {
+        description: 'when there are several available reports',
+        availableReports: [
+          {
+            ref_time: '2025-02-09T18:00:00Z',
+            state: WindState.monitoring,
+            path: 'vince/2025-02-09T18:00:00Z.json',
+          },
+          {
+            ref_time: '2025-02-09T18:00:00Z',
+            state: WindState.monitoring,
+            path: 'chido/2025-02-09T18:00:00Z.json',
+          },
+        ],
+        lastStates: {
+          vince: {
+            status: WindState.monitoring,
+            refTime: '2025-02-09T12:00:00Z',
+          },
+          chido: {
+            status: WindState.monitoring,
+            refTime: '2025-02-09T12:00:00Z',
+          },
+        },
+      },
+    ];
+    it.each(tests)(
+      'returns filtered available reports $description',
+      ({ availableReports, lastStates }) => {
+        const filteredReports = filterOutAlreadyProcessedReports(
+          availableReports,
+          lastStates as LastStates,
+        );
+        expect(filteredReports).toMatchSnapshot();
+      },
+    );
   });
 });
