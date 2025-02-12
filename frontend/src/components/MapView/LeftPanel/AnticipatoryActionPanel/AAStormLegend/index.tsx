@@ -5,53 +5,67 @@ import {
   Divider,
 } from '@material-ui/core';
 import anticipatoryActionIcons from 'components/Common/AnticipatoryAction/icons';
+
+import { AADataSelector } from 'context/anticipatoryAction/AAStormStateSlice';
+import { TimeSeries } from 'context/anticipatoryAction/AAStormStateSlice/rawStormDataTypes';
 import { useSafeTranslation } from 'i18n';
+import { useSelector } from 'react-redux';
 
 const phases = [
   {
+    developments: ['disturbance', 'tropical-disturbance', 'low'],
     icon: anticipatoryActionIcons.disturbance,
     label: 'Weak low pressure system',
     speed: '< 51 km/h',
   },
   {
+    developments: ['tropical-depression'],
     icon: anticipatoryActionIcons.tropicalDepression,
     label: 'Tropical depression',
     speed: '51-62 km/h',
   },
   {
+    developments: ['moderate-tropical-storm'],
     icon: anticipatoryActionIcons.moderateStorm,
     label: 'Moderate tropical storm',
     speed: '63-88 km/h',
   },
   {
+    developments: ['severe-tropical-storm'],
     icon: anticipatoryActionIcons.severeTropicalStorm,
     label: 'Severe tropical storm',
     speed: '89-118 km/h',
   },
   {
+    developments: ['tropical-cyclone'],
     icon: anticipatoryActionIcons.tropicalCyclone,
     label: 'Tropical cyclone',
     speed: '119-166 km/h',
   },
   {
+    developments: ['intense-tropical-cyclone'],
     icon: anticipatoryActionIcons.intenseTropicalCyclone,
     label: 'Intense tropical cyclone',
     speed: '167-213 km/h',
   },
   {
+    developments: ['very-intense-tropical-cyclone'],
     icon: anticipatoryActionIcons.veryIntensiveCyclone,
     label: 'Very intense tropical cyclone',
     speed: '214 km/h and above',
   },
   {
+    developments: ['post-tropical-depression'],
     icon: anticipatoryActionIcons.postTropicalDepression,
     label: 'Post tropical depression',
   },
   {
+    developments: ['sub-tropical-depression'],
     icon: anticipatoryActionIcons.subTropicalDepression,
     label: 'Sub tropical depression',
   },
   {
+    developments: ['extratropical-system'],
     icon: anticipatoryActionIcons.extraTropicalSystem,
     label: 'Extra tropical system',
   },
@@ -89,9 +103,26 @@ const tracks = [
   },
 ];
 
+/**
+ * Filter phases to keep only the ones which are used in the report
+ */
+function filterPhasesByReport(timeSeries: TimeSeries | undefined) {
+  const allReportDeveloments = timeSeries?.features.map(feature =>
+    feature.properties.development.split(' ').join('-').toLowerCase(),
+  );
+  const uniqueReportDevelopments = [...new Set(allReportDeveloments)];
+
+  return phases.filter(phase =>
+    phase.developments.some(development =>
+      uniqueReportDevelopments.includes(development),
+    ),
+  );
+}
 function AAStormLegend() {
   const classes = useStyles();
   const { t } = useSafeTranslation();
+  const stormData = useSelector(AADataSelector);
+  const currentPhases = filterPhasesByReport(stormData.timeSeries);
 
   return (
     <div className={classes.root}>
@@ -100,7 +131,7 @@ function AAStormLegend() {
       </Typography>
 
       <div className={classes.section}>
-        {phases.map(phase => (
+        {currentPhases.map(phase => (
           <div key={phase.label} className={classes.itemWrapper}>
             <img src={phase.icon} alt={phase.label} className={classes.icon} />
             <div>
