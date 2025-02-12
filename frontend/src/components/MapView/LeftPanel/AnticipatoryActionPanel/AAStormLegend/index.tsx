@@ -69,6 +69,11 @@ const phases = [
     icon: anticipatoryActionIcons.extraTropicalSystem,
     label: 'Extra tropical system',
   },
+  {
+    developments: ['dissipating'],
+    icon: anticipatoryActionIcons.dissipating,
+    label: 'Dissipating',
+  },
 ];
 
 const buffers = [
