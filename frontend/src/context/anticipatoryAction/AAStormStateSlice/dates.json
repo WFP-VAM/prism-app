@@ -70,17 +70,17 @@
     "chido": [
       {
         "ref_time": "2024-12-12T00:00:00Z",
-        "state": "activated_118",
+        "state": "activated_64kt",
         "path": "chido/2024-12-12T00:00:00Z.json"
       },
       {
         "ref_time": "2024-12-12T06:00:00Z",
-        "state": "activated_118",
+        "state": "activated_64kt",
         "path": "chido/2024-12-12T06:00:00Z.json"
       },
       {
         "ref_time": "2024-12-12T12:00:00Z",
-        "state": "activated_118",
+        "state": "activated_64kt",
         "path": "chido/2024-12-12T12:00:00Z.json"
       },
       {
@@ -94,7 +94,7 @@
     "chido": [
       {
         "ref_time": "2024-12-13T00:00:00Z",
-        "state": "activated_118",
+        "state": "activated_64kt",
         "path": "chido/2024-12-13T00:00:00Z.json"
       },
       {
@@ -261,12 +261,12 @@
       },
       {
         "ref_time": "2025-01-10T12:00:00Z",
-        "state": "activated_118",
+        "state": "activated_64kt",
         "path": "dikeledi/2025-01-10T12:00:00Z.json"
       },
       {
         "ref_time": "2025-01-10T18:00:00Z",
-        "state": "activated_118",
+        "state": "activated_64kt",
         "path": "dikeledi/2025-01-10T18:00:00Z.json"
       }
     ]
@@ -275,17 +275,17 @@
     "dikeledi": [
       {
         "ref_time": "2025-01-11T00:00:00Z",
-        "state": "activated_118",
+        "state": "activated_64kt",
         "path": "dikeledi/2025-01-11T00:00:00Z.json"
       },
       {
         "ref_time": "2025-01-11T06:00:00Z",
-        "state": "activated_118",
+        "state": "activated_64kt",
         "path": "dikeledi/2025-01-11T06:00:00Z.json"
       },
       {
         "ref_time": "2025-01-11T12:00:00Z",
-        "state": "activated_118",
+        "state": "activated_64kt",
         "path": "dikeledi/2025-01-11T12:00:00Z.json"
       },
       {
@@ -309,12 +309,12 @@
       },
       {
         "ref_time": "2025-01-12T12:00:00Z",
-        "state": "activated_118",
+        "state": "activated_64kt",
         "path": "dikeledi/2025-01-12T12:00:00Z.json"
       },
       {
         "ref_time": "2025-01-12T18:00:00Z",
-        "state": "activated_118",
+        "state": "activated_64kt",
         "path": "dikeledi/2025-01-12T18:00:00Z.json"
       }
     ]
@@ -323,12 +323,12 @@
     "dikeledi": [
       {
         "ref_time": "2025-01-13T00:00:00Z",
-        "state": "activated_118",
+        "state": "activated_64kt",
         "path": "dikeledi/2025-01-13T00:00:00Z.json"
       },
       {
         "ref_time": "2025-01-13T06:00:00Z",
-        "state": "activated_118",
+        "state": "activated_64kt",
         "path": "dikeledi/2025-01-13T06:00:00Z.json"
       },
       {

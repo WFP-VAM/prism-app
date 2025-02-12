@@ -1,4 +1,5 @@
 import { StormDataResponseBody } from 'prism-common/dist/types/anticipatory-action-storm/reportResponse';
+import { WindState } from 'prism-common/dist/types/anticipatory-action-storm/windState';
 import {
   AACategory,
   AACategoryDataToLandfallMap,
@@ -104,53 +105,80 @@ export function parseAndTransformAA(data: StormDataResponseBody): ResultType {
   const exposedAreas = data.ready_set_results;
   const landfallInfo = data.landfall_info;
 
-  const [activeDistricts, naDistricts] = exposedAreas
-    ? (Object.values(AACategoryKey) as AACategoryKey[]).reduce(
-        ([activeResult, naResult], categoryKey) => {
-          if (exposedAreas[categoryKey]) {
-            const area = exposedAreas[categoryKey];
-            const category = AACategoryKeyToCategoryMap[categoryKey];
+  // Determine if watched districts are active based on storm status
+  const isActivated =
+    exposedAreas &&
+    (exposedAreas.status === WindState.activated_64kt ||
+      exposedAreas.status === WindState.activated_48kt);
 
-            const active = area.affected_districts
-              ? area.affected_districts
-                  .map(district => districtNameMapping[district] || district)
-                  .filter(district =>
-                    watchedDistricts[category].includes(district),
-                  )
-              : [];
+  // Check if there is readiness based on storm status
+  const readiness = exposedAreas?.status === WindState.ready;
 
-            const notActive = area.affected_districts
-              ? watchedDistricts[category].filter(
-                  district =>
-                    !area.affected_districts
-                      .map(d => districtNameMapping[d] || d)
-                      .includes(district),
-                )
-              : [];
+  // Process the active and inactive districts
+  const [activeDistricts, naDistricts] = (
+    Object.values(AACategoryKey) as AACategoryKey[]
+  ).reduce(
+    ([activeResult, naResult], categoryKey) => {
+      const category = AACategoryKeyToCategoryMap[categoryKey];
 
-            return [
-              {
-                ...activeResult,
-                [category]: {
-                  districtNames: active,
-                  polygon: area.polygon,
-                },
-              },
-              {
-                ...naResult,
-                [category]: {
-                  districtNames: notActive,
-                  polygon: {},
-                },
-              },
-            ];
-          }
-          return [activeResult, naResult];
+      // If the storm status is not active, all watched districts should be marked as inactive
+      if (!isActivated) {
+        return [
+          activeResult,
+          {
+            ...naResult,
+            [category]: {
+              districtNames: watchedDistricts[category] || [],
+              polygon: {},
+            },
+          },
+        ];
+      }
+
+      // Get the affected area data for the current category
+      const area = exposedAreas?.[categoryKey];
+      if (!area) {
+        return [activeResult, naResult]; // Skip if no data for this category
+      }
+
+      // Convert affected districts into a Set for fast lookups
+      const affectedDistricts = new Set(
+        area.affected_districts?.map(d => districtNameMapping[d] || d) || [],
+      );
+
+      // Retrieve the watched districts for this category
+      const watched = watchedDistricts[category] || [];
+
+      // Determine which watched districts are active and which are not
+      const active = watched.filter(district =>
+        affectedDistricts.has(district),
+      );
+      const notActive = watched.filter(
+        district => !affectedDistricts.has(district),
+      );
+
+      // Return updated active and inactive district data
+      return [
+        {
+          ...activeResult,
+          [category]: {
+            districtNames: active,
+            polygon: area.polygon,
+          },
         },
-        [{} as DistrictDataType, {} as DistrictDataType],
-      )
-    : [{} as DistrictDataType, {} as DistrictDataType];
+        {
+          ...naResult,
+          [category]: {
+            districtNames: notActive,
+            polygon: {},
+          },
+        },
+      ];
+    },
+    [{} as DistrictDataType, {} as DistrictDataType],
+  );
 
+  // Extract landfall impact details if available
   const landfallImpactData = landfallInfo.landfall_time
     ? {
         district: landfallInfo.landfall_impact_district,
@@ -162,12 +190,14 @@ export function parseAndTransformAA(data: StormDataResponseBody): ResultType {
       }
     : undefined;
 
+  // Generate a merged GeoJSON object
   const mergedGeoJSON = createMergedGeoJSON(data);
 
   return {
     data: {
       activeDistricts,
       naDistricts,
+      readiness,
       landfall: landfallImpactData,
       timeSeries: data.time_series,
       landfallDetected: data.landfall_detected,
