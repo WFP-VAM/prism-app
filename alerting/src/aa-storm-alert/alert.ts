@@ -126,7 +126,7 @@ function isEmailNeededByReport(report: StormDataResponseBody) {
   ];
 
   if (
-    status === WindState.activated_64 &&
+    status === WindState.activated_64kt &&
     exposed_area_64kt &&
     exposed_area_64kt.affected_districts.filter((district) =>
       watchedDistrictsFor64KtStorm.includes(district),
@@ -145,7 +145,7 @@ function isEmailNeededByReport(report: StormDataResponseBody) {
   ];
 
   if (
-    status === WindState.activated_48 &&
+    status === WindState.activated_48kt &&
     exposed_area_48kt &&
     exposed_area_48kt.affected_districts.filter((district) =>
       watchedDistrictsFor48ktStorm.includes(district),

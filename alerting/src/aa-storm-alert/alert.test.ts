@@ -127,12 +127,12 @@ describe('alert mechanism', () => {
         shortReports: [
           {
             ref_time: '2025-01-31T06:00:00Z',
-            state: WindState.activated_48,
+            state: WindState.activated_48kt,
             path: 'elvis/2025-01-31T06:00:00Z.json',
           },
         ],
         data: buildDetailedReport({
-          status: WindState.activated_48,
+          status: WindState.activated_48kt,
           affected48ktDistrict: ['Angoche'],
         }),
       },
@@ -142,12 +142,12 @@ describe('alert mechanism', () => {
         shortReports: [
           {
             ref_time: '2025-01-31T06:00:00Z',
-            state: WindState.activated_48,
+            state: WindState.activated_48kt,
             path: 'elvis/2025-01-31T06:00:00Z.json',
           },
         ],
         data: buildDetailedReport({
-          status: WindState.activated_48,
+          status: WindState.activated_48kt,
           affected48ktDistrict: [],
         }),
       },
@@ -157,12 +157,12 @@ describe('alert mechanism', () => {
         shortReports: [
           {
             ref_time: '2025-01-31T06:00:00Z',
-            state: WindState.activated_64,
+            state: WindState.activated_64kt,
             path: 'elvis/2025-01-31T06:00:00Z.json',
           },
         ],
         data: buildDetailedReport({
-          status: WindState.activated_64,
+          status: WindState.activated_64kt,
           affected64ktDistrict: ['Namacurra'],
         }),
       },
@@ -172,12 +172,12 @@ describe('alert mechanism', () => {
         shortReports: [
           {
             ref_time: '2025-01-31T06:00:00Z',
-            state: WindState.activated_64,
+            state: WindState.activated_64kt,
             path: 'elvis/2025-01-31T06:00:00Z.json',
           },
         ],
         data: buildDetailedReport({
-          status: WindState.activated_64,
+          status: WindState.activated_64kt,
           affected64ktDistrict: [],
         }),
       },
@@ -187,13 +187,13 @@ describe('alert mechanism', () => {
         shortReports: [
           {
             ref_time: '2025-01-31T06:00:00Z',
-            state: WindState.activated_64,
+            state: WindState.activated_64kt,
             path: 'elvis/2025-01-31T06:00:00Z.json',
           },
         ],
         data: buildDetailedReport({
           landfall_detected: false,
-          status: WindState.activated_64,
+          status: WindState.activated_64kt,
           affected64ktDistrict: ['Namacurra'],
           landfallInfo: buildLandfallInfo({
             landfall_time: [
