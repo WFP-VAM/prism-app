@@ -107,8 +107,8 @@ export function parseAndTransformAA(data: StormDataResponseBody): ResultType {
   // Determine if watched districts are active based on storm status
   const isActivated =
     exposedAreas &&
-    (exposedAreas.status === WindState.activated_118 ||
-      exposedAreas.status === WindState.activated_89);
+    (exposedAreas.status === WindState.activated_64kt ||
+      exposedAreas.status === WindState.activated_48kt);
 
   // Check if there is readiness based on storm status
   const readiness = exposedAreas?.status === WindState.ready;

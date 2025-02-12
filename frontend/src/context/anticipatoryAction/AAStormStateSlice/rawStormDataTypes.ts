@@ -45,8 +45,8 @@ interface ExposedAreaStorm {
 export enum WindState {
   monitoring = 'monitoring',
   ready = 'ready',
-  activated_89 = 'activated_89',
-  activated_118 = 'activated_118',
+  activated_48kt = 'activated_48kt',
+  activated_64kt = 'activated_64kt',
 }
 
 /* storm data reponse body type */

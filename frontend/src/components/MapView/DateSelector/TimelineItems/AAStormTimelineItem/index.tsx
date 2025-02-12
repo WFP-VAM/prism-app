@@ -21,10 +21,10 @@ function AAStormTimelineItem({ currentDate }: AAStormTimelineItemProps) {
 
     const states = flattenedWindStates.map(({ state }) => state);
 
-    if (states.includes(WindState.activated_118)) {
+    if (states.includes(WindState.activated_64kt)) {
       return classes.activated2Indicator;
     }
-    if (states.includes(WindState.activated_89)) {
+    if (states.includes(WindState.activated_48kt)) {
       return classes.activated1Indicator;
     }
     if (states.includes(WindState.ready)) {
