@@ -50,7 +50,7 @@ const phases = [
   },
   {
     developments: ['very-intense-tropical-cyclone'],
-    icon: anticipatoryActionIcons.veryIntensiveCyclone,
+    icon: anticipatoryActionIcons.veryIntenseTropicalCyclone,
     label: 'Very intense tropical cyclone',
     speed: '214 km/h and above',
   },
@@ -76,46 +76,21 @@ const phases = [
   },
 ];
 
-const buffers = [
-  {
-    color: '#2ecc71',
-    label: 'Uncertainty cone',
-  },
-  {
-    color: '#FF8934',
-    label: '89 km/h impact zone',
-  },
-  {
-    color: '#E63701',
-    label: '118 km/h impact zone',
-  },
-];
-
-const tracks = [
-  {
-    icon: anticipatoryActionIcons.inland,
-    label: 'Overland',
-  },
-  {
-    type: 'line',
-    color: '#000000',
-    label: 'Past analyzed track',
-  },
-  {
-    type: 'dashed',
-    color: '#FF0000',
-    label: 'Forecast track (date/time: La Réunion local time)',
-  },
-];
+function getUniqueReportDevelopments(timeSeries: TimeSeries | undefined) {
+  if (!timeSeries) {
+    return [];
+  }
+  const allReportDeveloments = timeSeries.features.map(feature =>
+    feature.properties.development.split(' ').join('-').toLowerCase(),
+  );
+  return [...new Set(allReportDeveloments)];
+}
 
 /**
  * Filter phases to keep only the ones which are used in the report
  */
 function filterPhasesByReport(timeSeries: TimeSeries | undefined) {
-  const allReportDeveloments = timeSeries?.features.map(feature =>
-    feature.properties.development.split(' ').join('-').toLowerCase(),
-  );
-  const uniqueReportDevelopments = [...new Set(allReportDeveloments)];
+  const uniqueReportDevelopments = getUniqueReportDevelopments(timeSeries);
 
   return phases.filter(phase =>
     phase.developments.some(development =>
@@ -123,11 +98,52 @@ function filterPhasesByReport(timeSeries: TimeSeries | undefined) {
     ),
   );
 }
+
 function AAStormLegend() {
   const classes = useStyles();
   const { t } = useSafeTranslation();
   const stormData = useSelector(AADataSelector);
   const currentPhases = filterPhasesByReport(stormData.timeSeries);
+
+  const buffers = [
+    {
+      isVisible: !!stormData.uncertaintyCone,
+      color: '#2ecc71',
+      label: 'Uncertainty cone',
+    },
+    {
+      isVisible: !!stormData.activeDistricts?.Moderate?.polygon,
+      color: '#FF8934',
+      label: '89 km/h impact zone',
+    },
+    {
+      isVisible: !!stormData.activeDistricts?.Severe?.polygon,
+      color: '#E63701',
+      label: '118 km/h impact zone',
+    },
+  ];
+
+  const tracks = [
+    {
+      isVisible: getUniqueReportDevelopments(stormData.timeSeries).includes(
+        'inland',
+      ),
+      icon: anticipatoryActionIcons.inland,
+      label: 'Overland',
+    },
+    {
+      isVisible: true,
+      type: 'line',
+      color: '#000000',
+      label: 'Past analyzed track',
+    },
+    {
+      isVisible: true,
+      type: 'dashed',
+      color: '#FF0000',
+      label: 'Forecast track (date/time: La Réunion local time)',
+    },
+  ];
 
   return (
     <div className={classes.root}>
@@ -152,15 +168,17 @@ function AAStormLegend() {
       <Divider />
 
       <div className={classes.section}>
-        {buffers.map(buffer => (
-          <div key={buffer.label} className={classes.itemWrapper}>
-            <div
-              className={classes.colorBox}
-              style={{ borderColor: buffer.color }}
-            />
-            <Typography>{t(buffer.label)}</Typography>
-          </div>
-        ))}
+        {buffers
+          .filter(buffer => buffer.isVisible)
+          .map(buffer => (
+            <div key={buffer.label} className={classes.itemWrapper}>
+              <div
+                className={classes.colorBox}
+                style={{ borderColor: buffer.color }}
+              />
+              <Typography>{t(buffer.label)}</Typography>
+            </div>
+          ))}
         <Typography variant="caption" color="textSecondary">
           {t('By Météo France La Réunion')}
         </Typography>
@@ -169,28 +187,30 @@ function AAStormLegend() {
       <Divider />
 
       <div className={classes.section}>
-        {tracks.map(track => (
-          <div key={track.label} className={classes.itemWrapper}>
-            {track.type ? (
-              <div
-                className={classes.line}
-                style={{
-                  borderTop:
-                    track.type === 'dashed'
-                      ? `2px dashed ${track.color}`
-                      : `2px solid ${track.color}`,
-                }}
-              />
-            ) : (
-              <img
-                src={track.icon}
-                alt={track.label}
-                className={classes.icon}
-              />
-            )}
-            <Typography>{t(track.label)}</Typography>
-          </div>
-        ))}
+        {tracks
+          .filter(track => track.isVisible)
+          .map(track => (
+            <div key={track.label} className={classes.itemWrapper}>
+              {track.type ? (
+                <div
+                  className={classes.line}
+                  style={{
+                    borderTop:
+                      track.type === 'dashed'
+                        ? `2px dashed ${track.color}`
+                        : `2px solid ${track.color}`,
+                  }}
+                />
+              ) : (
+                <img
+                  src={track.icon}
+                  alt={track.label}
+                  className={classes.icon}
+                />
+              )}
+              <Typography>{t(track.label)}</Typography>
+            </div>
+          ))}
       </div>
 
       <Divider />

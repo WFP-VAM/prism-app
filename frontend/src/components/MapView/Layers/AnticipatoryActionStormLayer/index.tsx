@@ -53,8 +53,8 @@ const WIND_TYPE_TO_ICON_MAP: Record<string, string> = {
   'severe-tropical-storm': anticipatoryActionIcons.severeTropicalStorm,
   'tropical-cyclone': anticipatoryActionIcons.tropicalCyclone,
   'intense-tropical-cyclone': anticipatoryActionIcons.intenseTropicalCyclone,
-  'very-intensive-tropical-cyclone':
-    anticipatoryActionIcons.veryIntensiveCyclone,
+  'very-intense-tropical-cyclone':
+    anticipatoryActionIcons.veryIntenseTropicalCyclone,
   inland: anticipatoryActionIcons.inland,
   dissipating: anticipatoryActionIcons.dissipating,
   default: anticipatoryActionIcons.default,
