@@ -2,7 +2,7 @@ import { createStyles, makeStyles } from '@material-ui/core';
 
 import 'react-datepicker/dist/react-datepicker.css';
 import { DateRangeType } from 'config/types';
-import { WindState } from 'context/anticipatoryAction/AAStormStateSlice/types';
+import { WindState } from 'context/anticipatoryAction/AAStormStateSlice/rawStormDataTypes';
 import { TIMELINE_ITEM_WIDTH } from '../../utils';
 import { useWindStatesByTime } from '../hooks';
 
@@ -18,22 +18,18 @@ function AAStormTimelineItem({ currentDate }: AAStormTimelineItemProps) {
     if (flattenedWindStates.length === 0) {
       return classes.emptySpace;
     }
-    if (
-      flattenedWindStates.find(({ state }) => state === WindState.activated_118)
-    ) {
+
+    const states = flattenedWindStates.map(({ state }) => state);
+
+    if (states.includes(WindState.activated_64kt)) {
       return classes.activated2Indicator;
     }
-
-    if (
-      flattenedWindStates.find(({ state }) => state === WindState.activated_64)
-    ) {
+    if (states.includes(WindState.activated_48kt)) {
       return classes.activated1Indicator;
     }
-
-    if (flattenedWindStates.find(({ state }) => state === WindState.ready)) {
+    if (states.includes(WindState.ready)) {
       return classes.readyIndicator;
     }
-
     return classes.lowRiskIndicator;
   };
 
@@ -54,7 +50,7 @@ const useStyles = makeStyles(() =>
       width: TIMELINE_ITEM_WIDTH - 1,
       pointerEvents: 'none',
       top: 0,
-      backgroundColor: '#63B2BD',
+      backgroundColor: '#b5ecf4',
     },
     readyIndicator: {
       position: 'absolute',
@@ -62,7 +58,7 @@ const useStyles = makeStyles(() =>
       width: TIMELINE_ITEM_WIDTH - 1,
       pointerEvents: 'none',
       top: 0,
-      backgroundColor: '#FFD014',
+      backgroundColor: '#63B2BD',
     },
     activated1Indicator: {
       position: 'absolute',

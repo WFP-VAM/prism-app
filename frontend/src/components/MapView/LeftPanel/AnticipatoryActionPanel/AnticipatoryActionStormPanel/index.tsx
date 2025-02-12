@@ -21,6 +21,7 @@ import HowToReadModal from '../HowToReadModal';
 import ActivationTrigger from './ActivationTriggerView';
 import { StyledSelect } from '../utils';
 import { useAnticipatoryAction } from '../useAnticipatoryAction';
+import ReadyTrigger from './ReadyTriggerView';
 
 function AnticipatoryActionStormPanel() {
   const classes = useStyles();
@@ -109,6 +110,7 @@ function AnticipatoryActionStormPanel() {
           )}
         </Typography>
       </div>
+      <ReadyTrigger />
       <ActivationTrigger dialogs={[]} />
     </div>
   );
