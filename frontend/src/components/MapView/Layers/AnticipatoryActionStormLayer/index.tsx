@@ -24,12 +24,14 @@ import { useWindStatesByTime } from 'components/MapView/DateSelector/TimelineIte
 import { getAAColor } from 'components/MapView/LeftPanel/AnticipatoryActionPanel/AnticipatoryActionStormPanel/utils';
 import { AACategory } from 'context/anticipatoryAction/AAStormStateSlice/parsedStormDataTypes';
 import anticipatoryActionIcons from 'components/Common/AnticipatoryAction/icons';
-import { AAStormTimeSeriesFeature } from 'prism-common/dist/types/anticipatory-action-storm/reportResponse';
+import {
+  AAStormTimeSeriesFeature,
+  TimeSeries,
+} from 'prism-common/dist/types/anticipatory-action-storm/reportResponse';
 import maplibregl from 'maplibre-gl';
 import AAStormDatePopup from './AAStormDatePopup';
 import AAStormLandfallPopup from './AAStormLandfallPopup';
 
-import { TimeSeries } from './types';
 import AAStormLandfallMarker from './AAStormLandfallPopup/AAStormLandfallMarker/AAStormLandfallMarker';
 import { parseGeoJsonFeature } from './utils';
 import { findLandfallWindPoint } from './AAStormLandfallPopup/utils';
