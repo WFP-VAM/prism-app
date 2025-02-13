@@ -134,7 +134,7 @@ export const sendStormAlertEmail = async (
   let alertTitle = '';
   let readiness = false;
   const windspeed = 
-  data.status === WindState.activated_64 || data.status === WindState.activated_48
+  data.status === WindState.activated_64kt || data.status === WindState.activated_48kt
     ? displayWindState[data.status]
     : null;
 
