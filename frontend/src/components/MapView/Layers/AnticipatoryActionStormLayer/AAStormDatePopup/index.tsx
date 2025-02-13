@@ -4,10 +4,10 @@ import { createStyles, makeStyles, Typography } from '@material-ui/core';
 import { useMapCallback } from 'utils/map-utils';
 import {
   AAStormTimeSeriesFeature,
+  FeaturePropertyDataType,
   TimeSeries,
 } from 'prism-common/dist/types/anticipatory-action-storm/reportResponse';
 import { formatWindPointDate } from '../utils';
-import { FeaturePropertyDataType } from '../types';
 
 interface AAStormDatePopupProps {
   timeSeries?: TimeSeries;
