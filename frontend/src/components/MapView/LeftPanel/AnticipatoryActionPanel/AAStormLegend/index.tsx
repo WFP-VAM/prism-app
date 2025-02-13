@@ -5,93 +5,145 @@ import {
   Divider,
 } from '@material-ui/core';
 import anticipatoryActionIcons from 'components/Common/AnticipatoryAction/icons';
+
+import { AADataSelector } from 'context/anticipatoryAction/AAStormStateSlice';
+import { TimeSeries } from 'context/anticipatoryAction/AAStormStateSlice/rawStormDataTypes';
 import { useSafeTranslation } from 'i18n';
+import { useSelector } from 'react-redux';
 
 const phases = [
   {
+    developments: ['disturbance', 'tropical-disturbance', 'low'],
     icon: anticipatoryActionIcons.disturbance,
-    label: 'Weak low pressure system',
+    label: 'Low pressure system',
     speed: '< 51 km/h',
   },
   {
+    developments: ['tropical-depression'],
     icon: anticipatoryActionIcons.tropicalDepression,
     label: 'Tropical depression',
     speed: '51-62 km/h',
   },
   {
+    developments: ['moderate-tropical-storm'],
     icon: anticipatoryActionIcons.moderateStorm,
     label: 'Moderate tropical storm',
     speed: '63-88 km/h',
   },
   {
+    developments: ['severe-tropical-storm'],
     icon: anticipatoryActionIcons.severeTropicalStorm,
     label: 'Severe tropical storm',
     speed: '89-118 km/h',
   },
   {
+    developments: ['tropical-cyclone'],
     icon: anticipatoryActionIcons.tropicalCyclone,
     label: 'Tropical cyclone',
     speed: '119-166 km/h',
   },
   {
+    developments: ['intense-tropical-cyclone'],
     icon: anticipatoryActionIcons.intenseTropicalCyclone,
     label: 'Intense tropical cyclone',
     speed: '167-213 km/h',
   },
   {
-    icon: anticipatoryActionIcons.veryIntensiveCyclone,
+    developments: ['very-intense-tropical-cyclone'],
+    icon: anticipatoryActionIcons.veryIntenseTropicalCyclone,
     label: 'Very intense tropical cyclone',
     speed: '214 km/h and above',
   },
   {
+    developments: ['post-tropical-depression'],
     icon: anticipatoryActionIcons.postTropicalDepression,
     label: 'Post tropical depression',
   },
   {
+    developments: ['sub-tropical-depression'],
     icon: anticipatoryActionIcons.subTropicalDepression,
     label: 'Sub tropical depression',
   },
   {
+    developments: ['extratropical-system'],
     icon: anticipatoryActionIcons.extraTropicalSystem,
     label: 'Extra tropical system',
   },
-];
-
-const buffers = [
   {
-    color: '#2ecc71',
-    label: 'Uncertainty cone',
-  },
-  {
-    color: '#FF8934',
-    label: '89 km/h impact zone',
-  },
-  {
-    color: '#E63701',
-    label: '118 km/h impact zone',
+    developments: ['dissipating'],
+    icon: anticipatoryActionIcons.dissipating,
+    label: 'Dissipating',
   },
 ];
 
-const tracks = [
-  {
-    icon: anticipatoryActionIcons.inland,
-    label: 'Overland',
-  },
-  {
-    type: 'line',
-    color: '#000000',
-    label: 'Past analyzed track',
-  },
-  {
-    type: 'dashed',
-    color: '#FF0000',
-    label: 'Forecast track (date/time: La Réunion local time)',
-  },
-];
+function getUniqueReportDevelopments(timeSeries: TimeSeries | undefined) {
+  if (!timeSeries) {
+    return [];
+  }
+  const allReportDeveloments = timeSeries.features.map(feature =>
+    feature.properties.development.split(' ').join('-').toLowerCase(),
+  );
+  return [...new Set(allReportDeveloments)];
+}
+
+/**
+ * Filter phases to keep only the ones which are used in the report
+ */
+function getPhasesInReport(timeSeries: TimeSeries | undefined) {
+  const uniqueReportDevelopments = getUniqueReportDevelopments(timeSeries);
+
+  return phases.filter(phase =>
+    phase.developments.some(development =>
+      uniqueReportDevelopments.includes(development),
+    ),
+  );
+}
 
 function AAStormLegend() {
   const classes = useStyles();
   const { t } = useSafeTranslation();
+  const stormData = useSelector(AADataSelector);
+  const currentPhases = getPhasesInReport(stormData.timeSeries);
+
+  const buffers = [
+    {
+      isVisible: !!stormData.uncertaintyCone,
+      color: '#2ecc71',
+      label: 'Uncertainty cone',
+    },
+    {
+      isVisible: !!stormData.activeDistricts?.Moderate?.polygon,
+      color: '#FF8934',
+      label: '89 km/h impact zone',
+    },
+    {
+      isVisible: !!stormData.activeDistricts?.Severe?.polygon,
+      color: '#E63701',
+      label: '118 km/h impact zone',
+    },
+  ];
+
+  const tracks = [
+    {
+      isVisible: getUniqueReportDevelopments(stormData.timeSeries).includes(
+        'inland',
+      ),
+      icon: anticipatoryActionIcons.inland,
+      label: 'Overland',
+    },
+    {
+      isVisible: true,
+      type: 'line',
+      color: '#000000',
+      label: 'Past analyzed track',
+    },
+    {
+      isVisible: true,
+      type: 'dashed',
+      color: '#FF0000',
+      label: 'Forecast track',
+    },
+  ];
 
   return (
     <div className={classes.root}>
@@ -100,7 +152,7 @@ function AAStormLegend() {
       </Typography>
 
       <div className={classes.section}>
-        {phases.map(phase => (
+        {currentPhases.map(phase => (
           <div key={phase.label} className={classes.itemWrapper}>
             <img src={phase.icon} alt={phase.label} className={classes.icon} />
             <div>
@@ -116,15 +168,17 @@ function AAStormLegend() {
       <Divider />
 
       <div className={classes.section}>
-        {buffers.map(buffer => (
-          <div key={buffer.label} className={classes.itemWrapper}>
-            <div
-              className={classes.colorBox}
-              style={{ borderColor: buffer.color }}
-            />
-            <Typography>{t(buffer.label)}</Typography>
-          </div>
-        ))}
+        {buffers
+          .filter(buffer => buffer.isVisible)
+          .map(buffer => (
+            <div key={buffer.label} className={classes.itemWrapper}>
+              <div
+                className={classes.colorBox}
+                style={{ borderColor: buffer.color }}
+              />
+              <Typography>{t(buffer.label)}</Typography>
+            </div>
+          ))}
         <Typography variant="caption" color="textSecondary">
           {t('By Météo France La Réunion')}
         </Typography>
@@ -133,28 +187,30 @@ function AAStormLegend() {
       <Divider />
 
       <div className={classes.section}>
-        {tracks.map(track => (
-          <div key={track.label} className={classes.itemWrapper}>
-            {track.type ? (
-              <div
-                className={classes.line}
-                style={{
-                  borderTop:
-                    track.type === 'dashed'
-                      ? `2px dashed ${track.color}`
-                      : `2px solid ${track.color}`,
-                }}
-              />
-            ) : (
-              <img
-                src={track.icon}
-                alt={track.label}
-                className={classes.icon}
-              />
-            )}
-            <Typography>{t(track.label)}</Typography>
-          </div>
-        ))}
+        {tracks
+          .filter(track => track.isVisible)
+          .map(track => (
+            <div key={track.label} className={classes.itemWrapper}>
+              {track.type ? (
+                <div
+                  className={classes.line}
+                  style={{
+                    borderTop:
+                      track.type === 'dashed'
+                        ? `2px dashed ${track.color}`
+                        : `2px solid ${track.color}`,
+                  }}
+                />
+              ) : (
+                <img
+                  src={track.icon}
+                  alt={track.label}
+                  className={classes.icon}
+                />
+              )}
+              <Typography>{t(track.label)}</Typography>
+            </div>
+          ))}
       </div>
 
       <Divider />
