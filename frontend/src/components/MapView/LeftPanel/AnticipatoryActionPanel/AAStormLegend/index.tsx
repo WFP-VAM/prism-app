@@ -15,7 +15,7 @@ const phases = [
   {
     developments: ['disturbance', 'tropical-disturbance', 'low'],
     icon: anticipatoryActionIcons.disturbance,
-    label: 'Weak low pressure system',
+    label: 'Low pressure system',
     speed: '< 51 km/h',
   },
   {
