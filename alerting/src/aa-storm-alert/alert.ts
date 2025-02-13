@@ -140,7 +140,7 @@ function hasPastLandfallOccured(report: StormDataResponseBody): boolean {
 }
 
 function shouldSendEmail(status: WindState, activated48kt: string[], activated64kt: string[], pastLandfall: boolean): boolean {
-  const hasActivated = (status === WindState.activated_64 || status === WindState.activated_48)
+  const hasActivated = (status === WindState.activated_64kt || status === WindState.activated_48kt)
     && (activated48kt.length > 0 || activated64kt.length > 0);
   
   const isReady = status === WindState.ready;
