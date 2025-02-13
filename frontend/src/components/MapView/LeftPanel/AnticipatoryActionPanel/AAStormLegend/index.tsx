@@ -7,7 +7,7 @@ import {
 import anticipatoryActionIcons from 'components/Common/AnticipatoryAction/icons';
 
 import { AADataSelector } from 'context/anticipatoryAction/AAStormStateSlice';
-import { TimeSeries } from 'context/anticipatoryAction/AAStormStateSlice/rawStormDataTypes';
+import { TimeSeries } from 'prism-common/dist/types/anticipatory-action-storm/reportResponse';
 import { useSafeTranslation } from 'i18n';
 import { useSelector } from 'react-redux';
 
