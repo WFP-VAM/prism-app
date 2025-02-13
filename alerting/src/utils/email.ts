@@ -29,6 +29,7 @@ import {
 export async function sendEmail({
   from,
   to,
+  bcc,
   subject,
   text,
   html,
@@ -36,6 +37,7 @@ export async function sendEmail({
 }: {
   from: string;
   to: string | string[];
+  bcc?: string | string[];
   subject: string;
   text: string;
   html?: string;
@@ -72,6 +74,7 @@ export async function sendEmail({
     const info = await transporter.sendMail({
       from,
       to,
+      bcc,
       subject,
       text,
       html,
@@ -97,6 +100,7 @@ export async function sendEmail({
   await transporter.sendMail({
     from,
     to,
+    bcc,
     subject,
     text,
     html,
@@ -171,7 +175,8 @@ export const sendStormAlertEmail = async (
 
   const mailOptions = {
     from: 'wfp.prism@wfp.org',
-    to: data.email,
+    to: '',
+    bcc: data.email,
     subject: alertTitle,
     html: '',
     text: '',
