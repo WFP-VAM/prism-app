@@ -141,7 +141,7 @@ function AAStormLegend() {
       isVisible: true,
       type: 'dashed',
       color: '#FF0000',
-      label: 'Forecast track (date/time: La Réunion local time)',
+      label: 'Forecast track',
     },
   ];
 
