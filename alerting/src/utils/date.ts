@@ -26,6 +26,6 @@ export function formatDateToUTC(isoDate: string): string {
     dateObj,
   );
 
-  const [weekday, monthDayYear, time] = formattedDate.split(', ');
-  return `${weekday} ${monthDayYear} ${time} UTC`;
+  const [weekday, dayMonthYear, time] = formattedDate.split(', ');
+  return `${weekday} ${dayMonthYear} ${time} UTC`;
 }

@@ -95,26 +95,10 @@ export function transformReportsToLastProcessed(
   return lastProcessedReports;
 }
 
-function isEmailNeededByReport(report: StormDataResponseBody) {
-  const landfallInfo = report.landfall_info;
-  if ('landfall_time' in landfallInfo) {
-    const landfallOutermostTime = landfallInfo.landfall_time[1];
-    if (moment().isAfter(moment(landfallOutermostTime))) {
-      return false;
-    }
-  }
-
-  const status = report.ready_set_results?.status;
-
-  if (!status) {
-    return false;
-  }
-
-  if (status === WindState.ready) {
-    return true;
-  }
-
-  const exposed_area_64kt = report.ready_set_results?.exposed_area_64kt;
+function getActivatedDistricts(report: StormDataResponseBody): {
+  activated48kt: string[],
+  activated64kt: string[],
+} {
 
   const watchedDistrictsFor64KtStorm = [
     'Mogincual',
@@ -125,18 +109,6 @@ function isEmailNeededByReport(report: StormDataResponseBody) {
     'Vilankulo',
   ];
 
-  if (
-    status === WindState.activated_64 &&
-    exposed_area_64kt &&
-    exposed_area_64kt.affected_districts.filter((district) =>
-      watchedDistrictsFor64KtStorm.includes(district),
-    ).length > 0
-  ) {
-    return true;
-  }
-
-  const exposed_area_48kt = report.ready_set_results?.exposed_area_48kt;
-
   const watchedDistrictsFor48ktStorm = [
     'Angoche',
     'Maganja Da Costa',
@@ -144,17 +116,35 @@ function isEmailNeededByReport(report: StormDataResponseBody) {
     'Govuro',
   ];
 
-  if (
-    status === WindState.activated_48 &&
-    exposed_area_48kt &&
-    exposed_area_48kt.affected_districts.filter((district) =>
-      watchedDistrictsFor48ktStorm.includes(district),
-    ).length > 0
-  ) {
-    return true;
-  }
+  const activated64kt =  report.ready_set_results?.exposed_area_64kt?.affected_districts.filter((district) =>
+    watchedDistrictsFor64KtStorm.includes(district),
+  )
 
+  const activated48kt =  report.ready_set_results?.exposed_area_48kt?.affected_districts.filter((district) =>
+    watchedDistrictsFor48ktStorm.includes(district),
+  )
+
+  return {
+    activated48kt: activated48kt || [],
+    activated64kt: activated64kt || [],
+  }
+}
+
+function hasPastLandfallOccured(report: StormDataResponseBody): boolean {
+  const landfallInfo = report.landfall_info;
+  if ('landfall_time' in landfallInfo) {
+    const landfallOutermostTime = landfallInfo.landfall_time[1];
+    return moment().isAfter(moment(landfallOutermostTime));
+  }
   return false;
+}
+
+function shouldSendEmail(status: WindState, activated48kt: string[], activated64kt: string[], pastLandfall: boolean): boolean {
+  const hasActivated = (status === WindState.activated_64 || status === WindState.activated_48)
+    && (activated48kt.length > 0 || activated64kt.length > 0);
+  
+  const isReady = status === WindState.ready;
+  return !pastLandfall && (hasActivated || isReady);
 }
 
 /**
@@ -178,7 +168,12 @@ export async function buildEmailPayloads(
           `https://data.earthobservation.vam.wfp.org/public-share/aa/ts/outputs/${shortReport.path}?v2`,
         ).then((data) => data.json());
 
-        const isEmailNeeded = isEmailNeededByReport(detailedStormReport);
+        const {activated48kt, activated64kt} = getActivatedDistricts(detailedStormReport);
+        const status = detailedStormReport.ready_set_results?.status
+
+        const pastLandfall = hasPastLandfallOccured(detailedStormReport);
+
+        const isEmailNeeded = status ? shouldSendEmail(status, activated48kt, activated64kt, pastLandfall) : false;
 
         if (isEmailNeeded) {
           const prismUrl = buildPrismUrl(
@@ -191,12 +186,8 @@ export async function buildEmailPayloads(
             cycloneName: detailedStormReport.forecast_details.cyclone_name,
             cycloneTime: detailedStormReport.forecast_details.reference_time,
             activatedTriggers: {
-              districts48kt:
-                detailedStormReport.ready_set_results?.exposed_area_48kt
-                  .affected_districts || [],
-              districts64kt:
-                detailedStormReport.ready_set_results?.exposed_area_64kt
-                  .affected_districts || [],
+              districts48kt: activated48kt,
+              districts64kt: activated64kt,
             },
             redirectUrl: prismUrl,
             base64Image: await captureScreenshotFromUrl({
@@ -214,7 +205,7 @@ export async function buildEmailPayloads(
               },
             }),
 
-            status: detailedStormReport.ready_set_results?.status,
+            status,
           };
         }
 

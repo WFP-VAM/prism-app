@@ -4,9 +4,8 @@ import ejs from 'ejs';
 import path from 'path';
 import { formatDateToUTC } from './date';
 import {
+  displayWindState,
   WindState,
-  WindStateActivated,
-  WindStateActivatedKey,
 } from 'prism-common/dist/types/anticipatory-action-storm/windState';
 
 /**
@@ -134,10 +133,10 @@ export const sendStormAlertEmail = async (
 
   let alertTitle = '';
   let readiness = false;
-  const windspeed =
-    data.status in WindStateActivated
-      ? WindStateActivated[data.status as WindStateActivatedKey]
-      : null;
+  const windspeed = 
+  data.status === WindState.activated_64 || data.status === WindState.activated_48
+    ? displayWindState[data.status]
+    : null;
 
   if (windspeed) {
     alertTitle = `Activation Triggers activated ${windspeed} for ${data.cycloneName}`;
