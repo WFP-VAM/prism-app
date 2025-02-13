@@ -130,7 +130,7 @@ function getActivatedDistricts(report: StormDataResponseBody): {
   }
 }
 
-function hasPastLandfallOccured(report: StormDataResponseBody): boolean {
+function hasLandfallOccured(report: StormDataResponseBody): boolean {
   const landfallInfo = report.landfall_info;
   if ('landfall_time' in landfallInfo) {
     const landfallOutermostTime = landfallInfo.landfall_time[1];
@@ -171,7 +171,7 @@ export async function buildEmailPayloads(
         const {activated48kt, activated64kt} = getActivatedDistricts(detailedStormReport);
         const status = detailedStormReport.ready_set_results?.status
 
-        const pastLandfall = hasPastLandfallOccured(detailedStormReport);
+        const pastLandfall = hasLandfallOccured(detailedStormReport);
 
         const isEmailNeeded = status ? shouldSendEmail(status, activated48kt, activated64kt, pastLandfall) : false;
 
