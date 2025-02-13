@@ -89,7 +89,7 @@ function getUniqueReportDevelopments(timeSeries: TimeSeries | undefined) {
 /**
  * Filter phases to keep only the ones which are used in the report
  */
-function filterPhasesByReport(timeSeries: TimeSeries | undefined) {
+function getPhasesInReport(timeSeries: TimeSeries | undefined) {
   const uniqueReportDevelopments = getUniqueReportDevelopments(timeSeries);
 
   return phases.filter(phase =>
@@ -103,7 +103,7 @@ function AAStormLegend() {
   const classes = useStyles();
   const { t } = useSafeTranslation();
   const stormData = useSelector(AADataSelector);
-  const currentPhases = filterPhasesByReport(stormData.timeSeries);
+  const currentPhases = getPhasesInReport(stormData.timeSeries);
 
   const buffers = [
     {
