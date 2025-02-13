@@ -20,7 +20,7 @@ exports[`alert mechanism buildEmailPayloads() returns a payload when detailed re
       "test@test.com",
     ],
     "redirectUrl": "https://prism.wfp.org/?hazardLayerIds=anticipatory_action_storm&date=2025-01-31",
-    "status": "activated_89",
+    "status": "activated_48kt",
   },
 ]
 `;
@@ -41,7 +41,7 @@ exports[`alert mechanism buildEmailPayloads() returns a payload when detailed re
       "test@test.com",
     ],
     "redirectUrl": "https://prism.wfp.org/?hazardLayerIds=anticipatory_action_storm&date=2025-01-31",
-    "status": "activated_118",
+    "status": "activated_64kt",
   },
 ]
 `;
@@ -66,3 +66,40 @@ exports[`alert mechanism buildEmailPayloads() returns a payload when detailed re
 `;
 
 exports[`alert mechanism buildEmailPayloads() returns no payload when detailed report indicates that activation is triggered but landfall already occured 1`] = `[]`;
+
+exports[`alert mechanism filterOutAlreadyProcessedReports() returns filtered available reports when there are several available reports 1`] = `
+[
+  {
+    "path": "vince/2025-02-09T18:00:00Z.json",
+    "ref_time": "2025-02-09T18:00:00Z",
+    "state": "monitoring",
+  },
+  {
+    "path": "chido/2025-02-09T18:00:00Z.json",
+    "ref_time": "2025-02-09T18:00:00Z",
+    "state": "monitoring",
+  },
+]
+`;
+
+exports[`alert mechanism filterOutAlreadyProcessedReports() returns filtered available reports when there is already processed report stored in the db which is as old as available report 1`] = `[]`;
+
+exports[`alert mechanism filterOutAlreadyProcessedReports() returns filtered available reports when there is already processed report stored in the db which is older than available report 1`] = `
+[
+  {
+    "path": "vince/2025-02-09T18:00:00Z.json",
+    "ref_time": "2025-02-09T18:00:00Z",
+    "state": "monitoring",
+  },
+]
+`;
+
+exports[`alert mechanism filterOutAlreadyProcessedReports() returns filtered available reports when there is no already processed report stored in the db 1`] = `
+[
+  {
+    "path": "vince/2025-02-09T18:00:00Z.json",
+    "ref_time": "2025-02-09T18:00:00Z",
+    "state": "monitoring",
+  },
+]
+`;

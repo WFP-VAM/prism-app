@@ -8,7 +8,7 @@ import extraTropicalSystem from '../../../../public/images/anticipatory-action-s
 import severeTropicalStorm from '../../../../public/images/anticipatory-action-storm/severe-tropical-storm.png';
 import tropicalCyclone from '../../../../public/images/anticipatory-action-storm/tropical-cyclone.png';
 import intenseTropicalCyclone from '../../../../public/images/anticipatory-action-storm/intense-tropical-cyclone.png';
-import veryIntensiveCyclone from '../../../../public/images/anticipatory-action-storm/very-intensive-tropical-cyclone.png';
+import veryIntenseTropicalCyclone from '../../../../public/images/anticipatory-action-storm/very-intense-tropical-cyclone.png';
 import dissipating from '../../../../public/images/anticipatory-action-storm/dissipating.png';
 import defaultIcon from '../../../../public/images/anticipatory-action-storm/default.png';
 
@@ -23,7 +23,7 @@ const anticipatoryActionIcons = {
   severeTropicalStorm,
   tropicalCyclone,
   intenseTropicalCyclone,
-  veryIntensiveCyclone,
+  veryIntenseTropicalCyclone,
   dissipating,
   default: defaultIcon,
 };

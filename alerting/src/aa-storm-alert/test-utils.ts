@@ -61,3 +61,21 @@ export function buildDetailedReport({
     time_series: {},
   };
 }
+
+export function buildAnticipatoryActionAlerts({
+  id = 1,
+  country = 'mozambique',
+  emails = [],
+  prismUrl = 'http://example.com',
+  lastRanAt = new Date(),
+  lastStates = {},
+}) {
+  return {
+    id,
+    country,
+    emails,
+    prismUrl,
+    lastRanAt,
+    lastStates,
+  };
+}

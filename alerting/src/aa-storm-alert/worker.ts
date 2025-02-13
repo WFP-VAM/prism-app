@@ -14,6 +14,7 @@ export const COUNTRY = 'mozambique';
 export async function run() {
   // create a connection to the remote db
   const connection = await createConnection();
+
   const alertRepository = connection.getRepository(AnticipatoryActionAlerts);
 
   const latestAvailableReports = await getLatestAvailableReports();
@@ -27,6 +28,7 @@ export async function run() {
     console.error('Error, no alert was found for the country', COUNTRY);
     return;
   }
+
   // filter reports which have been already processed
   const lastStates = alert.lastStates;
   const filteredAvailableReports = filterOutAlreadyProcessedReports(
@@ -37,7 +39,7 @@ export async function run() {
   const basicPrismUrl = alert.prismUrl;
   const emails = alert.emails;
 
-  // check whether an email should be sent
+  // // check whether an email should be sent
   const emailPayloads = await buildEmailPayloads(
     filteredAvailableReports,
     basicPrismUrl,
