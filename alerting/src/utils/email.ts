@@ -4,9 +4,8 @@ import ejs from 'ejs';
 import path from 'path';
 import { formatDateToUTC } from './date';
 import {
+  displayWindState,
   WindState,
-  WindStateActivated,
-  WindStateActivatedKey,
 } from 'prism-common/dist/types/anticipatory-action-storm/windState';
 
 /**
@@ -30,6 +29,7 @@ import {
 export async function sendEmail({
   from,
   to,
+  bcc,
   subject,
   text,
   html,
@@ -37,6 +37,7 @@ export async function sendEmail({
 }: {
   from: string;
   to: string | string[];
+  bcc?: string | string[];
   subject: string;
   text: string;
   html?: string;
@@ -73,6 +74,7 @@ export async function sendEmail({
     const info = await transporter.sendMail({
       from,
       to,
+      bcc,
       subject,
       text,
       html,
@@ -98,6 +100,7 @@ export async function sendEmail({
   await transporter.sendMail({
     from,
     to,
+    bcc,
     subject,
     text,
     html,
@@ -134,10 +137,10 @@ export const sendStormAlertEmail = async (
 
   let alertTitle = '';
   let readiness = false;
-  const windspeed =
-    data.status in WindStateActivated
-      ? WindStateActivated[data.status as WindStateActivatedKey]
-      : null;
+  const windspeed = 
+  data.status === WindState.activated_64kt || data.status === WindState.activated_48kt
+    ? displayWindState[data.status]
+    : null;
 
   if (windspeed) {
     alertTitle = `Activation Triggers activated ${windspeed} for ${data.cycloneName}`;
@@ -172,7 +175,8 @@ export const sendStormAlertEmail = async (
 
   const mailOptions = {
     from: 'wfp.prism@wfp.org',
-    to: data.email,
+    to: '',
+    bcc: data.email,
     subject: alertTitle,
     html: '',
     text: '',

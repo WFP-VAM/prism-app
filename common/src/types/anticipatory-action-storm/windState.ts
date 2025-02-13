@@ -4,10 +4,8 @@ export enum WindState {
   activated_48kt = "activated_48kt",
   activated_64kt = "activated_64kt",
 }
-export type WindStateKey = keyof typeof WindState;
 
-export enum WindStateActivated {
-  activated_64kt = "> 118 km/h",
-  activated_48kt = "> 89 km/h",
-}
-export type WindStateActivatedKey = keyof typeof WindStateActivated;
+export const displayWindState: Partial<Record<WindState, string>> = {
+  [WindState.activated_64kt]: "> 118 km/h",
+  [WindState.activated_48kt]: "> 89 km/h",
+};
