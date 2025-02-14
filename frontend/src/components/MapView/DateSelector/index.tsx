@@ -94,6 +94,7 @@ const DateSelector = memo(() => {
     x: 0,
     y: 0,
   });
+
   const [pointerPosition, setPointerPosition] = useState<Point>({
     x: 0,
     y: 0,
@@ -251,39 +252,34 @@ const DateSelector = memo(() => {
     [orderedLayers, truncatedLayers, dateSelector.startDate],
   );
 
-  const timeLineWidth = get(timeLine.current, 'offsetWidth', 0);
+  useEffect(() => {
+    const timeLineWidth = get(timeLine.current, 'offsetWidth', 0);
 
-  const setPointerXPosition = useCallback(() => {
+    if (
+      -timelinePosition.x <= pointerPosition.x &&
+      -timelinePosition.x + timeLineWidth >= pointerPosition.x
+    ) {
+      // skip timeline shifting because the cursor is visible
+      return;
+    }
+
+    let timelineXOffset = 0;
+
     if (
       pointerPosition.x >=
       dateRange.length * TIMELINE_ITEM_WIDTH - timeLineWidth
     ) {
-      return timeLineWidth - dateRange.length * TIMELINE_ITEM_WIDTH;
+      // compute the maximum timeline offset necessary so that the 31/12 is visible. Consequently the cursor will be visible as well (it moves together with the timeline)
+      // eslint-disable-next-line fp/no-mutation
+      timelineXOffset = timeLineWidth - dateRange.length * TIMELINE_ITEM_WIDTH;
+    } else if (pointerPosition.x > timeLineWidth) {
+      // shift the timeline to the left by an arbitrary value to make sure the cursor is visible
+      // eslint-disable-next-line fp/no-mutation
+      timelineXOffset = -pointerPosition.x + timeLineWidth / 2;
     }
-    if (pointerPosition.x > timeLineWidth) {
-      return -pointerPosition.x + timeLineWidth / 2;
-    }
-    return 0;
-  }, [dateRange.length, pointerPosition.x, timeLineWidth]);
 
-  const handleTimeLinePosition = useCallback(
-    (x: number) => {
-      if (
-        -timelinePosition.x <= pointerPosition.x &&
-        -timelinePosition.x + timeLineWidth >= pointerPosition.x
-      ) {
-        return;
-      }
-      setTimelinePosition({ x, y: 0 });
-    },
-    [pointerPosition.x, timeLineWidth, timelinePosition.x],
-  );
-
-  // Move the slider automatically so that the pointer always visible
-  useEffect(() => {
-    const x = setPointerXPosition();
-    handleTimeLinePosition(x);
-  }, [handleTimeLinePosition, setPointerXPosition]);
+    setTimelinePosition({ x: timelineXOffset, y: 0 });
+  }, [pointerPosition.x, timelinePosition.x, dateRange.length]);
 
   const locale = useMemo(
     () => (t('date_locale') ? t('date_locale') : 'en'),
@@ -633,7 +629,7 @@ const DateSelector = memo(() => {
                 top: 0,
                 bottom: 0,
                 right: 0,
-                left: timeLineWidth - dateRange.length * TIMELINE_ITEM_WIDTH,
+                left: 0,
               }}
               position={timelinePosition}
               onStop={onTimelineStop}
