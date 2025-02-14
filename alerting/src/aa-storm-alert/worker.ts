@@ -11,6 +11,16 @@ import { sendStormAlertEmail } from '../utils/email';
 // TODO: for later, we need to support multiple countries
 export const COUNTRY = 'mozambique';
 
+/**
+ * Executes the process to handle anticipatory action alerts.
+ * This script connects to a remote database, retrieves the latest available reports,
+ * filters out already processed reports, prepares email payloads based on alerts,
+ * sends email alerts, and updates the last processed states in the database.
+ *
+ * @returns {Promise<void>} Promise that resolves when all operations are completed.
+ *
+ * @throws {Error} If no alert is found for the specified country in the database.
+ */
 export async function run() {
   // create a connection to the remote db
   const connection = await createConnection();
