@@ -6,7 +6,7 @@ import {
   getLatestAvailableReports,
 } from './alert';
 import { buildDetailedReport, buildLandfallInfo } from './test-utils';
-import { WindState } from 'prism-common/dist/types/anticipatory-action-storm/windState';
+import { WindState } from 'prism-common';
 import moment from 'moment';
 import { LastStates } from '../types/aa-storm-email';
 
