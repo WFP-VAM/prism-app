@@ -1,5 +1,5 @@
 import { ParsedStormData } from 'context/anticipatoryAction/AAStormStateSlice/parsedStormDataTypes';
-import { AAStormTimeSeriesFeature } from 'prism-common/dist/types/anticipatory-action-storm/reportResponse';
+import { AAStormTimeSeriesFeature } from 'prism-common';
 import { getDateInUTC } from '../utils';
 
 function getLandfallEstimatedTime(stormData: ParsedStormData) {
@@ -24,7 +24,7 @@ export function findLandfallWindPoint(stormData: ParsedStormData) {
 }
 
 export function isFeatureAtLandfallEstimateTime(
-  feature: AAStormTimeSeriesFeature,
+  feature: typeof AAStormTimeSeriesFeature,
   landfallEstimatedtime: string[] | null,
 ) {
   return (

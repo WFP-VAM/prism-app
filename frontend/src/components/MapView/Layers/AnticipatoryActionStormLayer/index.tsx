@@ -25,9 +25,10 @@ import { getAAColor } from 'components/MapView/LeftPanel/AnticipatoryActionPanel
 import { AACategory } from 'context/anticipatoryAction/AAStormStateSlice/parsedStormDataTypes';
 import anticipatoryActionIcons from 'components/Common/AnticipatoryAction/icons';
 import {
-  AAStormTimeSeriesFeature,
+  // AAStormTimeSeriesFeature,
   TimeSeries,
 } from 'prism-common/dist/types/anticipatory-action-storm/reportResponse';
+import { AAStormTimeSeriesFeature } from 'prism-common';
 import maplibregl from 'maplibre-gl';
 import AAStormDatePopup from './AAStormDatePopup';
 import AAStormLandfallPopup from './AAStormLandfallPopup';
@@ -123,7 +124,7 @@ const AnticipatoryActionStormLayer = React.memo(
     const { data: boundaryData } = boundaryLayerState || {};
 
     const [selectedFeature, setSelectedFeature] = useState<{
-      feature: AAStormTimeSeriesFeature | null;
+      feature: typeof AAStormTimeSeriesFeature | null;
       clickedOnMap: boolean;
       clickedOnWindPoint: boolean;
     }>({ feature: null, clickedOnMap: false, clickedOnWindPoint: false });

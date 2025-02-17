@@ -5,7 +5,7 @@ import { ParsedStormData } from './parsedStormDataTypes';
 
 export type ShortDate = string;
 export type CycloneName = string;
-export type TimeAndState = { ref_time: string; state: WindState };
+export type TimeAndState = { ref_time: string; state: typeof WindState };
 export type AAStormWindStateReports = Record<
   ShortDate,
   Record<CycloneName, TimeAndState[]>
