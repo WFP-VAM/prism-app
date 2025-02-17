@@ -92,46 +92,47 @@ const TimelineItems = memo(
         {dateRange.map((date, index) => {
           const isDateAvailable = availableDatesToDisplay.includes(date.value);
           return (
-            <Tooltip
+            <Grid
               key={`Root-${date.label}-${date.value}`}
-              title={<>{getTooltipContent(date)}</>}
-              TransitionComponent={Fade}
-              TransitionProps={{ timeout: 0 }}
-              placement="top"
-              arrow
-              {...(isShowingAAStormLayer ? { interactive: true } : null)}
-              classes={{
-                tooltip: isShowingAAStormLayer
-                  ? classes.AAStormTooltip
-                  : classes.defaultTooltip,
-                arrow: isShowingAAStormLayer
-                  ? classes.AAStormTooltipArrow
-                  : undefined,
-              }}
+              item
+              xs
+              className={`${
+                date.isFirstDay ? classes.dateItemFull : classes.dateItem
+              }`}
+              onClick={() => clickDate(index)}
+              data-date-index={index}
             >
-              <Grid
-                item
-                xs
-                className={`${
-                  date.isFirstDay ? classes.dateItemFull : classes.dateItem
-                }`}
-                onClick={() => clickDate(index)}
-                data-date-index={index} // Used by the pointer tick to trigger tooltips
+              <Tooltip
+                title={<>{getTooltipContent(date)}</>}
+                TransitionComponent={Fade}
+                TransitionProps={{ timeout: 0 }}
+                placement="top"
+                arrow
+                {...(isShowingAAStormLayer ? { interactive: true } : null)}
+                classes={{
+                  tooltip: isShowingAAStormLayer
+                    ? classes.AAStormTooltip
+                    : classes.defaultTooltip,
+                  arrow: isShowingAAStormLayer
+                    ? classes.AAStormTooltipArrow
+                    : undefined,
+                }}
               >
-                <TimelineLabel locale={locale} date={date} />
-
-                {isShowingAAStormLayer ? (
-                  <AAStormTimelineItem currentDate={date} />
-                ) : (
-                  <AADroughtTimelineItem
-                    concatenatedLayers={truncatedLayers}
-                    currentDate={date}
-                    dateItemStyling={DATE_ITEM_STYLING}
-                    isDateAvailable={isDateAvailable}
-                  />
-                )}
-              </Grid>
-            </Tooltip>
+                <div>
+                  {isShowingAAStormLayer ? (
+                    <AAStormTimelineItem currentDate={date} />
+                  ) : (
+                    <AADroughtTimelineItem
+                      concatenatedLayers={truncatedLayers}
+                      currentDate={date}
+                      dateItemStyling={DATE_ITEM_STYLING}
+                      isDateAvailable={isDateAvailable}
+                    />
+                  )}
+                </div>
+              </Tooltip>
+              <TimelineLabel locale={locale} date={date} />
+            </Grid>
           );
         })}
       </>

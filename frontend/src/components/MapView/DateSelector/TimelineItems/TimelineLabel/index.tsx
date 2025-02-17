@@ -9,7 +9,12 @@ function TimelineLabel({ locale, date }: TimelineLabelProps) {
 
   if (date.isFirstDay) {
     return (
-      <Typography variant="body2" className={classes.dateItemLabel}>
+      <Typography
+        variant="body2"
+        className={classes.dateItemLabel}
+        // TODO - implement screen size based cursor
+        style={{ cursor: date.month ? 'ew-resize' : 'default' }}
+      >
         {format(
           date.value,
           date.month.includes('Jan')
@@ -36,7 +41,6 @@ const useStyles = makeStyles(() =>
       minWidth: 400,
       fontWeight: 'bold',
       zIndex: 1,
-      cursor: 'ew-resize',
     },
 
     dayItem: {
