@@ -1,4 +1,4 @@
-import { WindState } from 'prism-common/dist/types/anticipatory-action-storm/windState';
+import { WindState } from 'prism-common';
 
 export interface StormAlertData {
   email: string | string[];

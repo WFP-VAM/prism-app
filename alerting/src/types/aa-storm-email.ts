@@ -1,4 +1,4 @@
-import { WindState } from 'prism-common/dist/types/anticipatory-action-storm/windState';
+import { WindState } from 'prism-common';
 
 export type LastStates = {
   [stormName: string]: {

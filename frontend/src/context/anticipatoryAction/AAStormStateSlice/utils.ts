@@ -1,5 +1,5 @@
-import { StormDataResponseBody } from 'prism-common/dist/types/anticipatory-action-storm/reportResponse';
-import { WindState } from 'prism-common/dist/types/anticipatory-action-storm/windState';
+import type { StormDataResponseBody } from 'prism-common/types';
+import { WindState } from 'prism-common';
 import {
   AACategory,
   AACategoryDataToLandfallMap,
