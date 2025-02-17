@@ -359,7 +359,7 @@ const ChartsPanel = memo(() => {
     }
   }, [secondAdminProperties, countryAdmin0Id, data]);
 
-  const singleDownloadChartPrefix = React.useMemo(
+  const singleChartFilenamePrefix = React.useMemo(
     () =>
       adminProperties
         ? [
@@ -379,7 +379,7 @@ const ChartsPanel = memo(() => {
 
   const firstCSVFilename = adminProperties
     ? buildCsvFileName([
-        ...singleDownloadChartPrefix,
+        ...singleChartFilenamePrefix,
         ...(selectedLayerTitles as string[]),
         comparePeriods ? 'first_period' : '',
       ])
@@ -433,7 +433,7 @@ const ChartsPanel = memo(() => {
             dataForCsv={dataForCsv}
             chartProps={{
               showDownloadIcons: true,
-              downloadFilenamePrefix: singleDownloadChartPrefix,
+              downloadFilenamePrefix: singleChartFilenamePrefix,
             }}
           />
         </Box>
@@ -480,12 +480,13 @@ const ChartsPanel = memo(() => {
                   }
                   chartProps={{
                     showDownloadIcons: true,
-                    downloadFilenamePrefix: singleDownloadChartPrefix,
+                    downloadFilenamePrefix: singleChartFilenamePrefix,
                   }}
                 />
               </Box>
             ))
         : [];
+
     // now add comparison charts
     const comparedAdminProperties = compareLocations
       ? secondAdminProperties
@@ -499,6 +500,14 @@ const ChartsPanel = memo(() => {
       : selectedAdmin2Area;
     const comparedStartDate = comparePeriods ? startDate2 : startDate1;
     const comparedEndDate = comparePeriods ? endDate2 : endDate1;
+
+    const secondChartFilenamePrefix = secondAdminProperties
+      ? [
+          getCountryName(secondAdminProperties),
+          secondSelectedAdmin1Area,
+          secondSelectedAdmin2Area,
+        ].map(x => t(x))
+      : [];
 
     const comparisonChartList = comparing
       ? chartLayers
@@ -537,7 +546,7 @@ const ChartsPanel = memo(() => {
                 minChartValue={Math.min(...minChartValues)}
                 chartProps={{
                   showDownloadIcons: true,
-                  downloadFilenamePrefix: singleDownloadChartPrefix,
+                  downloadFilenamePrefix: secondChartFilenamePrefix,
                 }}
               />
             </Box>
@@ -657,7 +666,7 @@ const ChartsPanel = memo(() => {
     selectedAdmin1Area,
     selectedAdmin2Area,
     selectedLayerTitles,
-    singleDownloadChartPrefix,
+    singleChartFilenamePrefix,
     startDate1,
     startDate2,
     t,
