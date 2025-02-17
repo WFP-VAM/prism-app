@@ -629,7 +629,9 @@ const DateSelector = memo(() => {
                 top: 0,
                 bottom: 0,
                 right: 0,
-                left: 0,
+                left:
+                  get(timeLine.current, 'offsetWidth', 0) -
+                  dateRange.length * TIMELINE_ITEM_WIDTH,
               }}
               position={timelinePosition}
               onStop={onTimelineStop}
