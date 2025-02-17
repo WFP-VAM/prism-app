@@ -36,6 +36,7 @@ const useStyles = makeStyles(() =>
       minWidth: 400,
       fontWeight: 'bold',
       zIndex: 1,
+      cursor: 'ew-resize',
     },
 
     dayItem: {
