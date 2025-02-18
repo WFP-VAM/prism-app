@@ -12,6 +12,7 @@ test('TimelineLabel renders as expected', () => {
       isFirstDay: true,
       date: '2021-12-31',
     },
+    showDraggingCursor: false,
   };
 
   // Act

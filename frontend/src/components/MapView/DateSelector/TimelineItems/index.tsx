@@ -35,6 +35,7 @@ const TimelineItems = memo(
     orderedLayers,
     truncatedLayers,
     availableDates,
+    showDraggingCursor,
   }: TimelineItemsProps) => {
     const classes = useStyles();
 
@@ -131,7 +132,11 @@ const TimelineItems = memo(
                   )}
                 </div>
               </Tooltip>
-              <TimelineLabel locale={locale} date={date} />
+              <TimelineLabel
+                locale={locale}
+                date={date}
+                showDraggingCursor={showDraggingCursor}
+              />
             </Grid>
           );
         })}
@@ -261,6 +266,7 @@ export interface TimelineItemsProps {
   availableDates: number[];
   orderedLayers: DateCompatibleLayerWithDateItems[];
   truncatedLayers: DateItem[][];
+  showDraggingCursor: boolean;
 }
 
 export default TimelineItems;

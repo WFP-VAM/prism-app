@@ -4,7 +4,11 @@ import { DateFormat } from 'utils/name-utils';
 import { format } from 'date-fns';
 import { locales } from 'i18n';
 
-function TimelineLabel({ locale, date }: TimelineLabelProps) {
+function TimelineLabel({
+  locale,
+  date,
+  showDraggingCursor,
+}: TimelineLabelProps) {
   const classes = useStyles();
 
   if (date.isFirstDay) {
@@ -12,8 +16,7 @@ function TimelineLabel({ locale, date }: TimelineLabelProps) {
       <Typography
         variant="body2"
         className={classes.dateItemLabel}
-        // TODO - implement screen size based cursor
-        style={{ cursor: date.month ? 'ew-resize' : 'default' }}
+        style={{ cursor: showDraggingCursor ? 'ew-resize' : 'default' }}
       >
         {format(
           date.value,
@@ -53,6 +56,7 @@ const useStyles = makeStyles(() =>
 export interface TimelineLabelProps {
   locale: string;
   date: DateRangeType;
+  showDraggingCursor: boolean;
 }
 
 export default TimelineLabel;

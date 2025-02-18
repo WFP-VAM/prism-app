@@ -650,6 +650,11 @@ const DateSelector = memo(() => {
                       orderedLayers={orderedLayers}
                       truncatedLayers={visibleLayers}
                       availableDates={availableDates}
+                      showDraggingCursor={
+                        get(timeLine.current, 'offsetWidth', 0) -
+                          dateRange.length * TIMELINE_ITEM_WIDTH <
+                        0
+                      }
                     />
                   )}
                 </Grid>
