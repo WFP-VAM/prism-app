@@ -279,7 +279,8 @@ const DateSelector = memo(() => {
     }
 
     setTimelinePosition({ x: timelineXOffset, y: 0 });
-  }, [pointerPosition.x, timelinePosition.x, dateRange.length]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pointerPosition.x, dateRange.length]);
 
   const locale = useMemo(
     () => (t('date_locale') ? t('date_locale') : 'en'),
