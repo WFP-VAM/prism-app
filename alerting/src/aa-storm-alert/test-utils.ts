@@ -1,4 +1,4 @@
-import { LandfallInfo } from 'prism-common/dist/types/anticipatory-action-storm/reportResponse';
+import { LandfallInfo } from 'prism-common';
 import { WindState } from 'prism-common';
 
 export function buildLandfallInfo({

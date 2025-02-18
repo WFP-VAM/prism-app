@@ -5,7 +5,7 @@ import {
 } from '../types/aa-storm-email';
 import nodeFetch from 'node-fetch';
 import { WindState } from 'prism-common';
-import { StormDataResponseBody } from 'prism-common/dist/types/anticipatory-action-storm/reportResponse';
+import { StormDataResponseBody } from 'prism-common';
 import { StormAlertData } from '../types/email';
 import moment from 'moment';
 import { captureScreenshotFromUrl } from '../utils/capture-utils';

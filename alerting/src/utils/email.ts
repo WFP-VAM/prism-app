@@ -6,7 +6,7 @@ import { formatDateToUTC } from './date';
 import {
   displayWindState,
   WindState,
-} from 'prism-common/dist/types/anticipatory-action-storm/windState';
+} from 'prism-common';
 
 /**
  *

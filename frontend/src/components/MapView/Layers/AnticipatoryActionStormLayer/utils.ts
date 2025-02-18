@@ -1,9 +1,7 @@
 import {
-  // AAStormTimeSeriesFeature,
+  AAStormTimeSeriesFeature,
   TimeSerieFeatureProperty,
-} from 'prism-common/dist/types/anticipatory-action-storm/reportResponse';
-
-import { AAStormTimeSeriesFeature } from 'prism-common';
+} from 'prism-common/';
 
 import { isSameDay, parseJSON, format, differenceInHours } from 'date-fns';
 import { MapGeoJSONFeature } from 'maplibre-gl';
@@ -125,7 +123,7 @@ export function formatWindPointDate(time: string) {
 
 export function parseGeoJsonFeature(
   mapGeoJSONFeature?: MapGeoJSONFeature,
-): typeof AAStormTimeSeriesFeature | null {
+): AAStormTimeSeriesFeature | null {
   if (!mapGeoJSONFeature) {
     return null;
   }

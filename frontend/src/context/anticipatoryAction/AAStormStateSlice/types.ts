@@ -1,11 +1,11 @@
 // // na/ny are not actually found in CSV, but defined not to cause confusion when calling the functions
-import { WindState } from 'prism-common';
+import { WindState } from 'prism-common/';
 import { DateItem } from 'config/types';
 import { ParsedStormData } from './parsedStormDataTypes';
 
 export type ShortDate = string;
 export type CycloneName = string;
-export type TimeAndState = { ref_time: string; state: typeof WindState };
+export type TimeAndState = { ref_time: string; state: WindState };
 export type AAStormWindStateReports = Record<
   ShortDate,
   Record<CycloneName, TimeAndState[]>

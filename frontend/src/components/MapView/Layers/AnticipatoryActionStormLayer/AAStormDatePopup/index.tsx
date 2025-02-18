@@ -1,13 +1,12 @@
 import { MapLayerMouseEvent, Popup } from 'react-map-gl/maplibre';
 import _React, { useCallback, useState } from 'react';
 import { createStyles, makeStyles, Typography } from '@material-ui/core';
-import { AAStormTimeSeriesFeature } from 'prism-common';
 import { useMapCallback } from 'utils/map-utils';
 import {
-  // AAStormTimeSeriesFeature,
+  AAStormTimeSeriesFeature,
   FeaturePropertyDataType,
   TimeSeries,
-} from 'prism-common/dist/types/anticipatory-action-storm/reportResponse';
+} from 'prism-common/';
 import { formatWindPointDate } from '../utils';
 
 interface AAStormDatePopupProps {
@@ -16,15 +15,14 @@ interface AAStormDatePopupProps {
 
 function AAStormDatePopup({ timeSeries }: AAStormDatePopupProps) {
   const classes = useStyles();
-  const [selectedFeature, setSelectedFeature] = useState<
-    typeof AAStormTimeSeriesFeature | null
-  >(null);
+  const [selectedFeature, setSelectedFeature] =
+    useState<AAStormTimeSeriesFeature | null>(null);
 
   const onMouseEnter = useCallback(
     () => (evt: MapLayerMouseEvent) => {
       evt.preventDefault();
       setSelectedFeature(
-        evt.features?.[0] as unknown as typeof AAStormTimeSeriesFeature,
+        evt.features?.[0] as unknown as AAStormTimeSeriesFeature,
       );
     },
     [],
@@ -52,7 +50,7 @@ function AAStormDatePopup({ timeSeries }: AAStormDatePopupProps) {
     onMouseLeave,
   );
 
-  const lastAnalyzedTimePoint: typeof AAStormTimeSeriesFeature | undefined =
+  const lastAnalyzedTimePoint: AAStormTimeSeriesFeature | undefined =
     // eslint-disable-next-line fp/no-mutating-methods
     timeSeries?.features
       .slice()
@@ -62,7 +60,7 @@ function AAStormDatePopup({ timeSeries }: AAStormDatePopupProps) {
           feature.properties.data_type === FeaturePropertyDataType.analysis,
       );
 
-  function renderPopup(feature?: typeof AAStormTimeSeriesFeature | null) {
+  function renderPopup(feature?: AAStormTimeSeriesFeature | null) {
     if (!feature) {
       return null;
     }
