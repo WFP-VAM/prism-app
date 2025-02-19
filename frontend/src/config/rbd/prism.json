@@ -11,7 +11,8 @@
     "risk_analysis": "icon_table.png",
     "rainfall": "icon_rain.png",
     "vegetation": "icon_veg.png",
-    "temperature": "icon_climate.png"
+    "temperature": "icon_climate.png",
+    "flooding": "icon_basemap.png"
   },
   "alertFormActive": false,
   "serversUrls": {
@@ -438,6 +439,25 @@
         "mdr_coping_capacity",
         "mdr_fsn_outcomes",
         "mdr_index"
+      ]
+    },
+    "flooding": {
+      "flood_status": [
+        {
+          "group_title": "Flood Status",
+          "activate_all": true,
+          "layers": [
+            {
+              "id": "google_flood_status_at_gauges",
+              "label": "Flood Gauges",
+              "main": true
+            },
+            {
+              "id": "google_flood_inundation_maps",
+              "label": "Inundation Maps"
+            }
+          ]
+        }
       ]
     }
   }

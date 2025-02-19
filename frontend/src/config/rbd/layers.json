@@ -6531,5 +6531,92 @@
       }
     ],
     "legend_text": "Joint Food Security & Nutrition Hotspot Analysis conducted by WFP, UNICEF, and partners based on SMART surveys and Cadre Harmonisé (CH) & Integrated Food Security Phase Classification (IPC) analyses"
+  },
+  "google_flood_status_at_gauges": {
+    "title": "Current Flood Status (Google AI)",
+    "type": "point_data",
+    "loader": "google_flood",
+    "hex_display": false,
+    "data": "https://prism-api.ovio.org/google-floods/gauges/?region_codes=BF&region_codes=CM&region_codes=TD&region_codes=GH&region_codes=ML&region_codes=MR&region_codes=NE&region_codes=SL&region_codes=CI&region_codes=GN&region_codes=SN&region_codes=GM&region_codes=GW&region_codes=LR&region_codes=TG&region_codes=BJ&region_codes=NG&region_codes=CF",
+    "detail_url": "https://prism-api.ovio.org/google-floods/gauges/forecasts",
+    "data_field": "severity",
+    "data_field_type": "text",
+    "date_url": "https://prism-api.ovio.org/google-floods/dates/?region_codes=BF&region_codes=CM&region_codes=TD&region_codes=GH&region_codes=ML&region_codes=MR&region_codes=NE&region_codes=SL&region_codes=CI&region_codes=GN&region_codes=SN&region_codes=GM&region_codes=GW&region_codes=LR&region_codes=TG&region_codes=BJ&region_codes=NG&region_codes=CF",
+    "opacity": 0.9,
+    "legend_text": "Current flood status at verified gauges. Visit [Google Research](https://sites.research.google/floodforecasting/) about Google's AI Forecasting models.",
+    "legend": [
+      { "label": "Extreme", "value": "EXTREME", "color": "#a70606" },
+      { "label": "Danger", "value": "SEVERE", "color": "#ea250a" },
+      { "label": "Warning", "value": "ABOVE_NORMAL", "color": "#fba705" },
+      { "label": "Normal", "value": "NO_FLOODING", "color": "#089180" },
+      { "label": "No data", "value": "UNKNOWN", "color": "#858585" }
+    ],
+    "feature_info_title": {
+      "siteName": {
+        "type": "text",
+        "template": "Site: {{siteName}}",
+        "visibility": "if-defined"
+      },
+      "riverName": {
+        "type": "text",
+        "template": "River: {{riverName}}",
+        "visibility": "if-defined"
+      },
+      "gaugeId": {
+        "type": "text",
+        "template": "Gauge ID: {{gaugeId}}",
+        "visibility": "if-defined"
+      }
+    },
+    "feature_info_props": {
+      "siteName": {
+        "type": "text",
+        "dataTitle": "Site",
+        "visibility": "if-defined"
+      },
+      "river": {
+        "type": "text",
+        "dataTitle": "River",
+        "visibility": "if-defined"
+      },
+      "severity": {
+        "type": "labelMapping",
+        "dataTitle": "Flood Status",
+        "labelMap": {
+          "EXTREME": "Extreme",
+          "SEVERE": "Danger",
+          "ABOVE_NORMAL": "Warning",
+          "NO_FLOODING": "Normal",
+          "UNKNOWN": "No data"
+        }
+      },
+      "gaugeId": {
+        "type": "text",
+        "dataTitle": "Gauge ID"
+      },
+      "source": {
+        "type": "text",
+        "dataTitle": "Data source"
+      },
+      "issuedTime": {
+        "type": "date",
+        "dataTitle": "Status issued"
+      }
+    }
+  },
+  "google_flood_inundation_maps": {
+    "title": "Inundation Probability Map (Google AI)",
+    "type": "geojson_polygon",
+    "hex_display": false,
+    "data": "https://prism-api.ovio.org/google-floods/inundations/?region_codes=BF&region_codes=CM&region_codes=TD&region_codes=GH&region_codes=ML&region_codes=MR&region_codes=NE&region_codes=SL&region_codes=CI&region_codes=GN&region_codes=SN&region_codes=GM&region_codes=GW&region_codes=LR&region_codes=TG&region_codes=BJ&region_codes=NG&region_codes=CF",
+    "data_field": "level",
+    "data_field_type": "text",
+    "opacity": 1,
+    "legend_text": "Current predicted flood maps. Visit [Google Research](https://sites.research.google/floodforecasting/) about Google's AI Forecasting models.",
+    "legend": [
+      { "label": "High", "value": "HIGH", "color": "#00408A" },
+      { "label": "Medium", "value": "MEDIUM", "color": "#5296E5" },
+      { "label": "Low", "value": "LOW", "color": "#B5D2F5" }
+    ]
   }
 }
