@@ -1,0 +1,144 @@
+import { MapLayerMouseEvent, Popup } from 'react-map-gl/maplibre';
+import _React, { useCallback, useState } from 'react';
+import { createStyles, makeStyles, Typography } from '@material-ui/core';
+import { useMapCallback } from 'utils/map-utils';
+import { formatWindPointDate } from '../utils';
+import {
+  FeaturePropertyDataType,
+  TimeSeries,
+  TimeSeriesFeature,
+} from '../types';
+
+interface AAStormDatePopupProps {
+  timeSeries?: TimeSeries;
+}
+
+function AAStormDatePopup({ timeSeries }: AAStormDatePopupProps) {
+  const classes = useStyles();
+  const [selectedFeature, setSelectedFeature] =
+    useState<TimeSeriesFeature | null>(null);
+
+  const onMouseEnter = useCallback(
+    () => (evt: MapLayerMouseEvent) => {
+      evt.preventDefault();
+      setSelectedFeature(evt.features?.[0] as unknown as TimeSeriesFeature);
+    },
+    [],
+  );
+
+  const onMouseLeave = useCallback(
+    () => (evt: MapLayerMouseEvent) => {
+      evt.preventDefault();
+      setSelectedFeature(null);
+    },
+    [],
+  );
+
+  useMapCallback<'mouseenter', null>(
+    'mouseenter',
+    'aa-storm-wind-points-layer',
+    null,
+    onMouseEnter,
+  );
+
+  useMapCallback<'mouseleave', null>(
+    'mouseleave',
+    'aa-storm-wind-points-layer',
+    null,
+    onMouseLeave,
+  );
+
+  const lastAnalyzedTimePoint: TimeSeriesFeature | undefined =
+    // eslint-disable-next-line fp/no-mutating-methods
+    timeSeries?.features
+      .slice()
+      .reverse()
+      .find(
+        feature =>
+          feature.properties.data_type === FeaturePropertyDataType.analysis,
+      );
+
+  function renderPopup(feature?: TimeSeriesFeature | null) {
+    if (!feature) {
+      return null;
+    }
+
+    const [lng, lat] = feature.geometry.coordinates;
+
+    const { time } = feature.properties;
+
+    return (
+      <Popup
+        key={feature.id}
+        longitude={lng}
+        latitude={lat}
+        anchor="top"
+        offset={25}
+        closeButton={false}
+        onClose={() => null}
+        closeOnClick={false}
+        className={classes.popup}
+      >
+        <Typography className={classes.toolTipDate} variant="body1">
+          {formatWindPointDate(time)}
+        </Typography>
+      </Popup>
+    );
+  }
+
+  function renderHoveredPopup() {
+    // Don't show hover popup if there's no selection or if hovering the last analyzed point
+    // (last analyzed point already has a permanent popup)
+    if (!selectedFeature || selectedFeature.id === lastAnalyzedTimePoint?.id) {
+      return null;
+    }
+
+    return renderPopup(selectedFeature);
+  }
+
+  return (
+    <>
+      {/* Permanently render the popup for the last analyzed point */}
+      {renderPopup(lastAnalyzedTimePoint)}
+
+      {renderHoveredPopup()}
+    </>
+  );
+}
+
+const useStyles = makeStyles(() =>
+  createStyles({
+    toolTipDate: {
+      fontSize: '14px',
+      fontWeight: 600,
+      lineHeight: '14px',
+    },
+    popup: {
+      '& > .maplibregl-popup-content': {
+        border: 'none',
+        padding: '4px',
+        borderRadius: '4px',
+        background: 'white',
+        boxShadow: 'inset 0px 0px 0px 1px #A4A4A4',
+        position: 'relative',
+      },
+      '& > .maplibregl-popup-tip': {
+        display: 'none',
+      },
+      // hack to display the popup tip without overlapping border
+      '&::after': {
+        content: '""',
+        position: 'absolute',
+        left: '50%',
+        top: -5,
+        width: '10px',
+        height: '10px',
+        background: 'white',
+        transform: 'translateX(-50%) rotate(45deg)',
+        boxShadow: 'inset 1px 1px 0px 0px #A4A4A4',
+      },
+    },
+  }),
+);
+
+export default AAStormDatePopup;

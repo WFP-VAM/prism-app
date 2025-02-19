@@ -6,13 +6,13 @@ import {
   invertedColorsSelector,
   isAnalysisLayerActiveSelector,
 } from 'context/analysisResultStateSlice';
-import { LayerType } from 'config/types';
+import { AnticipatoryAction, LayerType } from 'config/types';
 import { BaselineLayerResult } from 'utils/analysis-utils';
 import useLayers from 'utils/layers-utils';
 import { createGetLegendGraphicUrl } from 'prism-common';
 import { useSafeTranslation } from 'i18n';
 import { List } from '@material-ui/core';
-import { AALayerId } from 'config/utils';
+import { AALayerIds } from 'config/utils';
 import AALegend from '../LeftPanel/AnticipatoryActionPanel/AALegend';
 import LegendItem from './LegendItem';
 import LegendImpactResult from './LegendImpactResult';
@@ -37,7 +37,8 @@ function LegendItemsList({
   const { selectedLayers, adminBoundariesExtent } = useLayers();
 
   const AALayerInUrl = React.useMemo(
-    () => selectedLayers.find(x => x.id === AALayerId),
+    () =>
+      selectedLayers.find(x => AALayerIds.includes(x.id as AnticipatoryAction)),
     [selectedLayers],
   );
 

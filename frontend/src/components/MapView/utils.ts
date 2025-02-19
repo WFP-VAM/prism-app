@@ -1,7 +1,7 @@
 import { orderBy, snakeCase, values } from 'lodash';
 import { TFunction } from 'i18next';
 import { Dispatch } from 'redux';
-import { LayerDefinitions } from 'config/utils';
+import { isAnticipatoryActionLayer, LayerDefinitions } from 'config/utils';
 import { formatFeatureInfo } from 'utils/server-utils';
 import {
   AvailableDates,
@@ -210,7 +210,7 @@ export const checkLayerAvailableDatesAndContinueOrRemove = (
   const { id: layerId } = layer as any;
   if (
     serverAvailableDates[layerId]?.length !== 0 ||
-    layer.type === 'anticipatory_action'
+    isAnticipatoryActionLayer(layer.type)
   ) {
     return;
   }

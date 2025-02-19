@@ -7,6 +7,7 @@ import { getDynamicMenuList } from '../../utils';
 const RootAccordionItems = memo(() => {
   const { adminBoundariesExtent: extent } = useLayers();
   const { selectedLayers } = useLayers();
+
   const menuList = useMemo(
     () => getDynamicMenuList(selectedLayers),
     [selectedLayers],
