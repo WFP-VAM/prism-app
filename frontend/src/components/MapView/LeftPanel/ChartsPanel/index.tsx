@@ -81,100 +81,6 @@ function getProperties(
   return item?.properties ?? {};
 }
 
-const useStyles = makeStyles(() =>
-  createStyles({
-    root: {
-      display: 'flex',
-      flexDirection: 'row',
-      width: '100%',
-      height: '100%',
-    },
-    formGroup: {
-      marginBottom: 20,
-      marginLeft: 20,
-      width: '100%',
-    },
-    chartsPanelParams: {
-      marginTop: 30,
-      display: 'flex',
-      flexDirection: 'column',
-      alignItems: 'center',
-      width: PanelSize.medium,
-      flexShrink: 0,
-    },
-    layerFormControl: {
-      marginTop: 30,
-      marginBottom: '2em',
-      minWidth: '300px',
-      maxWidth: '350px',
-      '& .MuiFormLabel-root': {
-        color: 'black',
-      },
-      '& .MuiSelect-root': {
-        color: 'black',
-      },
-    },
-    textLabel: {
-      color: 'black',
-    },
-    chartsContainer: {
-      display: 'flex',
-      flexDirection: 'column',
-      justifyContent: 'space-between',
-      width: '100%',
-    },
-    chartsPanelCharts: {
-      alignContent: 'start',
-      overflowY: 'auto',
-      overflowX: 'hidden',
-      display: 'flex',
-      justifyContent: 'center',
-      flexWrap: 'wrap',
-      flexGrow: 4,
-      gap: '16px',
-      padding: '16px',
-      marginTop: 0,
-      paddingBottom: '1em',
-    },
-    clearAllSelectionsButton: {
-      backgroundColor: '#788489',
-      '&:hover': {
-        backgroundColor: '#788489',
-      },
-      marginTop: 10,
-      marginBottom: 10,
-      marginLeft: '25%',
-      marginRight: '25%',
-      width: '50%',
-      '&.Mui-disabled': { opacity: 0.5 },
-    },
-    switch: {
-      marginRight: 2,
-    },
-    switchTrack: {
-      backgroundColor: '#E0E0E0',
-    },
-    switchBase: {
-      color: '#E0E0E0',
-      '&.Mui-checked': {
-        color: '#53888F',
-      },
-      '&.Mui-checked + .MuiSwitch-track': {
-        backgroundColor: '#B1D6DB',
-      },
-    },
-    switchTitle: {
-      lineHeight: 1.8,
-      color: 'black',
-      fontWeight: 400,
-    },
-    switchTitleUnchecked: {
-      lineHeight: 1.8,
-      fontWeight: 400,
-    },
-  }),
-);
-
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
 const menuProps: Partial<MenuProps> = {
@@ -359,7 +265,7 @@ const ChartsPanel = memo(() => {
     }
   }, [secondAdminProperties, countryAdmin0Id, data]);
 
-  const singleDownloadChartPrefix = React.useMemo(
+  const singleChartFilenamePrefix = React.useMemo(
     () =>
       adminProperties
         ? [
@@ -379,7 +285,7 @@ const ChartsPanel = memo(() => {
 
   const firstCSVFilename = adminProperties
     ? buildCsvFileName([
-        ...singleDownloadChartPrefix,
+        ...singleChartFilenamePrefix,
         ...(selectedLayerTitles as string[]),
         comparePeriods ? 'first_period' : '',
       ])
@@ -433,7 +339,7 @@ const ChartsPanel = memo(() => {
             dataForCsv={dataForCsv}
             chartProps={{
               showDownloadIcons: true,
-              downloadFilenamePrefix: singleDownloadChartPrefix,
+              downloadFilenamePrefix: singleChartFilenamePrefix,
             }}
           />
         </Box>
@@ -480,12 +386,13 @@ const ChartsPanel = memo(() => {
                   }
                   chartProps={{
                     showDownloadIcons: true,
-                    downloadFilenamePrefix: singleDownloadChartPrefix,
+                    downloadFilenamePrefix: singleChartFilenamePrefix,
                   }}
                 />
               </Box>
             ))
         : [];
+
     // now add comparison charts
     const comparedAdminProperties = compareLocations
       ? secondAdminProperties
@@ -499,6 +406,14 @@ const ChartsPanel = memo(() => {
       : selectedAdmin2Area;
     const comparedStartDate = comparePeriods ? startDate2 : startDate1;
     const comparedEndDate = comparePeriods ? endDate2 : endDate1;
+
+    const secondChartFilenamePrefix = secondAdminProperties
+      ? [
+          getCountryName(secondAdminProperties),
+          secondSelectedAdmin1Area,
+          secondSelectedAdmin2Area,
+        ].map(x => t(x))
+      : [];
 
     const comparisonChartList = comparing
       ? chartLayers
@@ -537,7 +452,7 @@ const ChartsPanel = memo(() => {
                 minChartValue={Math.min(...minChartValues)}
                 chartProps={{
                   showDownloadIcons: true,
-                  downloadFilenamePrefix: singleDownloadChartPrefix,
+                  downloadFilenamePrefix: secondChartFilenamePrefix,
                 }}
               />
             </Box>
@@ -657,7 +572,7 @@ const ChartsPanel = memo(() => {
     selectedAdmin1Area,
     selectedAdmin2Area,
     selectedLayerTitles,
-    singleDownloadChartPrefix,
+    singleChartFilenamePrefix,
     startDate1,
     startDate2,
     t,
@@ -963,5 +878,99 @@ const ChartsPanel = memo(() => {
     </div>
   );
 });
+
+const useStyles = makeStyles(() =>
+  createStyles({
+    root: {
+      display: 'flex',
+      flexDirection: 'row',
+      width: '100%',
+      height: '100%',
+    },
+    formGroup: {
+      marginBottom: 20,
+      marginLeft: 20,
+      width: '100%',
+    },
+    chartsPanelParams: {
+      marginTop: 30,
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      width: PanelSize.medium,
+      flexShrink: 0,
+    },
+    layerFormControl: {
+      marginTop: 30,
+      marginBottom: '2em',
+      minWidth: '300px',
+      maxWidth: '350px',
+      '& .MuiFormLabel-root': {
+        color: 'black',
+      },
+      '& .MuiSelect-root': {
+        color: 'black',
+      },
+    },
+    textLabel: {
+      color: 'black',
+    },
+    chartsContainer: {
+      display: 'flex',
+      flexDirection: 'column',
+      justifyContent: 'space-between',
+      width: '100%',
+    },
+    chartsPanelCharts: {
+      alignContent: 'start',
+      overflowY: 'auto',
+      overflowX: 'hidden',
+      display: 'flex',
+      justifyContent: 'center',
+      flexWrap: 'wrap',
+      flexGrow: 4,
+      gap: '16px',
+      padding: '16px',
+      marginTop: 0,
+      paddingBottom: '1em',
+    },
+    clearAllSelectionsButton: {
+      backgroundColor: '#788489',
+      '&:hover': {
+        backgroundColor: '#788489',
+      },
+      marginTop: 10,
+      marginBottom: 10,
+      marginLeft: '25%',
+      marginRight: '25%',
+      width: '50%',
+      '&.Mui-disabled': { opacity: 0.5 },
+    },
+    switch: {
+      marginRight: 2,
+    },
+    switchTrack: {
+      backgroundColor: '#E0E0E0',
+    },
+    switchBase: {
+      color: '#E0E0E0',
+      '&.Mui-checked': {
+        color: '#53888F',
+      },
+      '&.Mui-checked + .MuiSwitch-track': {
+        backgroundColor: '#B1D6DB',
+      },
+    },
+    switchTitle: {
+      lineHeight: 1.8,
+      color: 'black',
+      fontWeight: 400,
+    },
+    switchTitleUnchecked: {
+      lineHeight: 1.8,
+      fontWeight: 400,
+    },
+  }),
+);
 
 export default ChartsPanel;
