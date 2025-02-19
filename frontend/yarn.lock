@@ -8021,6 +8021,11 @@ fflate@^0.4.8:
   resolved "https://registry.yarnpkg.com/fflate/-/fflate-0.4.8.tgz#f90b82aefbd8ac174213abb338bd7ef848f0f5ae"
   integrity sha512-FJqqoDBR00Mdj9ppamLa/Y7vxm+PRmNWA67N846RvsoYVMKB4q3y/de5PA7gUmRMYK/8CMz2GDZQmCRN1wBcWA==
 
+fflate@^0.8.2:
+  version "0.8.2"
+  resolved "https://registry.yarnpkg.com/fflate/-/fflate-0.8.2.tgz#fc8631f5347812ad6028bbe4a2308b2792aa1dea"
+  integrity sha512-cPJU47OaAoCbg0pBvzsgpTPhmhqI5eJjh/JIu8tPj5q+T7iLvW/JAYUqmE7KOB4R1ZyEhzBaIQpQpardBF5z8A==
+
 figures@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/figures/-/figures-2.0.0.tgz#3ab1a2d2a62c8bfb431a0c94cb797a2fce27c962"
@@ -11065,6 +11070,13 @@ please-upgrade-node@^3.2.0:
   integrity sha512-gQR3WpIgNIKwBMVLkpMUeR3e1/E1y42bqDQZfql+kDeXd8COYfM8PQA4X6y7a8u9Ua9FHmsrrmirW2vHs45hWg==
   dependencies:
     semver-compare "^1.0.0"
+
+pmtiles@^4.2.1:
+  version "4.2.1"
+  resolved "https://registry.yarnpkg.com/pmtiles/-/pmtiles-4.2.1.tgz#e403e018cafd91ed573c7aa3defd800a236f2012"
+  integrity sha512-Z73aph49f7KpU7JPb+zDWr+62wPv9jF3p+tvvL26/XeECnzUHnQ0nGopXGPYnq+OQXqyaXZPrsNdKxSD+2HlLA==
+  dependencies:
+    fflate "^0.8.2"
 
 point-in-polygon-hao@^1.1.0:
   version "1.1.0"

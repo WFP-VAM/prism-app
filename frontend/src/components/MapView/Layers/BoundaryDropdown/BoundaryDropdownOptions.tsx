@@ -5,7 +5,7 @@ import {
   TextField,
   TextFieldProps,
 } from '@material-ui/core';
-import React from 'react';
+import React, { useMemo } from 'react';
 import { Map as MaplibreMap } from 'maplibre-gl';
 import { useSafeTranslation } from 'i18n';
 import { useSelector } from 'react-redux';
@@ -88,12 +88,21 @@ const BoundaryDropdownOptions = React.forwardRef(
     ) as LayerData<BoundaryLayerProps> | undefined;
     const { data } = boundaryLayerData || {};
 
+    const areaTree = useMemo(
+      () => getAdminBoundaryTree(data, boundaryLayer, i18nLocale),
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+      [data?.features?.length, i18nLocale],
+    );
+
+    const flattenedAreaList = useMemo(
+      () => flattenAreaTree(areaTree, search),
+      [areaTree, search],
+    );
+
     if (!data) {
       return null;
     }
 
-    const areaTree = getAdminBoundaryTree(data, boundaryLayer, i18nLocale);
-    const flattenedAreaList = flattenAreaTree(areaTree, search).slice(1);
     const rootLevel = flattenedAreaList[0]?.level;
 
     const selectOrDeselectAll = (e: React.MouseEvent) => {
