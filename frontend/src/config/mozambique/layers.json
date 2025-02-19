@@ -3190,9 +3190,9 @@
     "opacity": 1,
     "legend_text": "Current predicted flood maps. Visit [Google Research](https://sites.research.google/floodforecasting/) about Google's AI Forecasting models.",
     "legend": [
-      { "label": "High", "value": "HIGH", "color": "#00408A" },
+      { "label": "High", "value": "HIGH", "color": "#de2d26" },
       { "label": "Medium", "value": "MEDIUM", "color": "#fc9272" },
-      { "label": "Low", "value": "LOW", "color": "#de2d26" }
+      { "label": "Low", "value": "LOW", "color": "#fee0d2" }
     ]
   }
 }
