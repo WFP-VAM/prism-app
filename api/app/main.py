@@ -88,6 +88,7 @@ def _calculate_stats(
     mask_geotiff,
     mask_calc_expr: Optional[str] = None,
     filter_by: Optional[tuple[str, str]] = None,
+    admin_level: Optional[int] = None,
 ):
     """Calculate stats."""
     return calculate_stats(
@@ -102,6 +103,7 @@ def _calculate_stats(
         mask_geotiff=mask_geotiff,
         mask_calc_expr=mask_calc_expr,
         filter_by=filter_by,
+        admin_level=admin_level,
     )
 
 

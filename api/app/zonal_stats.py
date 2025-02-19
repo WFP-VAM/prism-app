@@ -1,6 +1,7 @@
 """Calulate zonal statistics and return a json or a geojson."""
 
 import logging
+import os
 from collections import defaultdict
 from datetime import datetime
 from json import dump, load
@@ -28,6 +29,8 @@ from rasterstats import zonal_stats  # type: ignore
 from shapely.errors import GEOSException  # type: ignore
 from shapely.geometry import mapping, shape  # type: ignore
 from shapely.ops import unary_union  # type: ignore
+
+import geopandas as gpd
 
 logger = logging.getLogger(__name__)
 
@@ -68,13 +71,83 @@ def get_wfs_response(wfs_params: WfsParamsModel) -> WfsResponse:
     return WfsResponse(filter_property_key=wfs_params.key, path=wfs_response_path)
 
 
-def _extract_features_properties(zones_filename: FilePath) -> list:
-    with open(zones_filename) as json_file:
-        zones = load(json_file)
+def _read_zones(
+    zones_filepath: FilePath,
+    admin_level: Optional[int] = None,
+    bbox: Optional[tuple[float, float, float, float]] = None,
+) -> GeoJSON:
+    """
+    Read the zones file from either a local GeoJSON or an S3-hosted (or local) GeoParquet,
+    optionally filtering by the given bounding box to limit memory usage.
+
+    Parameters
+    ----------
+    zones_filepath : FilePath
+        Path or S3 URI of the zones file. Can be .geojson or .parquet
+    bbox : tuple[float, float, float, float], optional
+        (minx, miny, maxx, maxy) in the same CRS as the zones data,
+        used to limit what is read from the Parquet dataset.
+
+    Returns
+    -------
+    dict
+        A GeoJSON-style dictionary: {"type": "FeatureCollection", "features": [...]}
+    """
+    # Quick extension check
+    _, ext = os.path.splitext(zones_filepath)
+    ext = ext.lower()
+
+    if ext == ".geojson":
+        # Existing local logic as before
+        with open(zones_filepath, "r") as f:
+            return load(f)
+
+    elif ext == ".parquet":
+        # If bounding-box is provided, let GeoPandas do partial reads.
+        # For an S3 path like s3://my-bucket/my-zones.parquet
+        filters = []
+        if admin_level:
+            filters.append(("admin_level", "=", admin_level))
+
+        gdf = gpd.read_parquet(zones_filepath, bbox=bbox, filters=filters)
+
+        # Convert that GeoDataFrame to a "FeatureCollection" dict to keep consistency
+        return _gdf_to_feature_collection_dict(gdf)
+
+    else:
+        # If not recognized, raise an error
+        raise ValueError(f"Unsupported zones file format: {zones_filepath}")
+
+
+def _gdf_to_feature_collection_dict(gdf: gpd.GeoDataFrame) -> dict:
+    """Convert a GeoDataFrame into a dict that matches the 'FeatureCollection' structure."""
+    features = []
+    # Each row in the GDF becomes a feature
+    for idx, row in gdf.iterrows():
+        geom_mapping = mapping(row.geometry)
+        # We store all other columns in 'properties'
+        properties = {col: row[col] for col in gdf.columns if col != gdf.geometry.name}
+        features.append(
+            {
+                "type": "Feature",
+                "geometry": geom_mapping,
+                "properties": properties,
+            }
+        )
+
+    return {"type": "FeatureCollection", "features": features}
+
+
+def _extract_features_properties(
+    zones_filename: FilePath, admin_level: Optional[int] = None
+) -> list:
+    zones = _read_zones(zones_filename, admin_level)
     return [f["properties"] for f in zones.get("features", [])]
 
 
-def _group_zones(zones_filepath: FilePath, group_by: GroupBy) -> FilePath:
+def _group_zones(
+    zones_filepath: FilePath, group_by: GroupBy, admin_level: Optional[int] = None
+) -> FilePath:
     """Group zones by a key id and merge polygons."""
     output_filename: FilePath = "{zones}.{group_by}".format(
         zones=zones_filepath, group_by=group_by
@@ -82,8 +155,7 @@ def _group_zones(zones_filepath: FilePath, group_by: GroupBy) -> FilePath:
     if is_file_valid(output_filename):
         return output_filename
 
-    with open(zones_filepath) as json_file:
-        geojson_data = load(json_file)
+    geojson_data = _read_zones(zones_filepath, admin_level)
 
     features = geojson_data.get("features", [])
 
@@ -217,8 +289,7 @@ def get_filtered_features(zones_filepath: FilePath, key: str, value: str) -> Fil
         "{zones}.{key}.{value}".format(zones=zones_filepath, key=key, value=value)
     )
 
-    with open(zones_filepath) as json_file:
-        geojson_data = load(json_file)
+    geojson_data = _read_zones(zones_filepath)
 
     filtered_features: list[GeoJSONFeature] = [
         f
@@ -277,6 +348,7 @@ def calculate_stats(
     mask_geotiff: Optional[str] = None,
     mask_calc_expr: Optional[str] = None,
     filter_by: Optional[tuple[str, str]] = None,
+    admin_level: Optional[int] = None,
 ) -> list[dict[str, Any]]:
     """Calculate stats."""
 
@@ -336,7 +408,7 @@ def calculate_stats(
         geotiff = masked_pop_geotiff
 
     if group_by:
-        zones_filepath = _group_zones(zones_filepath, group_by)
+        zones_filepath = _group_zones(zones_filepath, group_by, admin_level)
 
     stats_input = (
         zones_filepath
@@ -435,7 +507,7 @@ def calculate_stats(
     stats_results = clean_results
 
     if not geojson_out:
-        feature_properties = _extract_features_properties(zones_filepath)
+        feature_properties = _extract_features_properties(zones_filepath, admin_level)
 
         if filter_by is not None:
             key, value = filter_by

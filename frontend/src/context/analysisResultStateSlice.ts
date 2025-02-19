@@ -386,12 +386,15 @@ async function createAPIRequestParams(
   const adminLevel =
     (params as AdminLevelDataLayerProps)?.adminLevel ||
     (params as BoundaryLayerProps)?.adminLevelCodes?.length;
-  const { path: adminBoundariesPath, adminCode: groupBy } =
-    getBoundaryLayersByAdminLevel(adminLevel);
+  const {
+    path: adminBoundariesPath,
+    adminCode: groupBy,
+    zonesPath,
+  } = getBoundaryLayersByAdminLevel(adminLevel);
 
   // Note - This may not work when running locally as the function
   // will default to the boundary layer hosted in S3.
-  const zonesUrl = getAdminBoundariesURL(adminBoundariesPath);
+  const zonesUrl = zonesPath ?? getAdminBoundariesURL(adminBoundariesPath);
 
   // eslint-disable-next-line camelcase
   const wfsParams = (params as WfsRequestParams)?.layer_name
@@ -441,6 +444,7 @@ async function createAPIRequestParams(
       exposureValue?.operator && exposureValue.value
         ? `${exposureValue?.operator}${exposureValue?.value}`
         : undefined,
+    adminLevel,
   };
 
   return apiRequest;
@@ -668,7 +672,7 @@ export const requestAndStoreAnalysis = createAsyncThunk<
     api.getState(),
   ) as LayerData<BoundaryLayerProps>;
 
-  if (!adminBoundariesData) {
+  if (!adminBoundariesData && adminBoundaries.format !== 'pmtiles') {
     throw new Error('Boundary Layer not loaded!');
   }
 
