@@ -15,7 +15,7 @@ exports[`alert mechanism buildEmailPayloads() returns a payload when detailed re
     },
     "base64Image": "",
     "cycloneName": "ELVIS",
-    "cycloneTime": "2025-01-31T06:00:00Z",
+    "cycloneTime": "31/01/2025 06:00 UTC",
     "email": [
       "test@test.com",
     ],
@@ -36,7 +36,7 @@ exports[`alert mechanism buildEmailPayloads() returns a payload when detailed re
     },
     "base64Image": "",
     "cycloneName": "ELVIS",
-    "cycloneTime": "2025-01-31T06:00:00Z",
+    "cycloneTime": "31/01/2025 06:00 UTC",
     "email": [
       "test@test.com",
     ],
@@ -55,7 +55,7 @@ exports[`alert mechanism buildEmailPayloads() returns a payload when detailed re
     },
     "base64Image": "",
     "cycloneName": "ELVIS",
-    "cycloneTime": "2025-01-31T06:00:00Z",
+    "cycloneTime": "31/01/2025 06:00 UTC",
     "email": [
       "test@test.com",
     ],

@@ -184,7 +184,7 @@ export async function buildEmailPayloads(
           return {
             email: emails,
             cycloneName: detailedStormReport.forecast_details.cyclone_name,
-            cycloneTime: detailedStormReport.forecast_details.reference_time,
+            cycloneTime: moment(detailedStormReport.forecast_details.reference_time).utc().format('DD/MM/YYYY HH:mm [UTC]'),
             activatedTriggers: {
               districts48kt: activated48kt,
               districts64kt: activated64kt,
