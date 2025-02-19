@@ -1318,7 +1318,7 @@ exports[`MapView renders as expected 1`] = `
                     component="a"
                     download="undefined-aa_probabilities_triggers_moz.csv"
                     fullwidth="true"
-                    href="https://data.earthobservation.vam.wfp.org/public-share/aa/aa_probabilities_triggers_moz.csv?date=2024-12-01-00-00"
+                    href="https://data.earthobservation.vam.wfp.org/public-share/aa/staging/aa_probabilities_triggers_moz.csv?date=2024-12-01-00-00"
                     starticon="[object Object]"
                     variant="outlined"
                   >
