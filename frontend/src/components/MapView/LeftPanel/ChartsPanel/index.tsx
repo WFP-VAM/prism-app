@@ -81,100 +81,6 @@ function getProperties(
   return item?.properties ?? {};
 }
 
-const useStyles = makeStyles(() =>
-  createStyles({
-    root: {
-      display: 'flex',
-      flexDirection: 'row',
-      width: '100%',
-      height: '100%',
-    },
-    formGroup: {
-      marginBottom: 20,
-      marginLeft: 20,
-      width: '100%',
-    },
-    chartsPanelParams: {
-      marginTop: 30,
-      display: 'flex',
-      flexDirection: 'column',
-      alignItems: 'center',
-      width: PanelSize.medium,
-      flexShrink: 0,
-    },
-    layerFormControl: {
-      marginTop: 30,
-      marginBottom: '2em',
-      minWidth: '300px',
-      maxWidth: '350px',
-      '& .MuiFormLabel-root': {
-        color: 'black',
-      },
-      '& .MuiSelect-root': {
-        color: 'black',
-      },
-    },
-    textLabel: {
-      color: 'black',
-    },
-    chartsContainer: {
-      display: 'flex',
-      flexDirection: 'column',
-      justifyContent: 'space-between',
-      width: '100%',
-    },
-    chartsPanelCharts: {
-      alignContent: 'start',
-      overflowY: 'auto',
-      overflowX: 'hidden',
-      display: 'flex',
-      justifyContent: 'center',
-      flexWrap: 'wrap',
-      flexGrow: 4,
-      gap: '16px',
-      padding: '16px',
-      marginTop: 0,
-      paddingBottom: '1em',
-    },
-    clearAllSelectionsButton: {
-      backgroundColor: '#788489',
-      '&:hover': {
-        backgroundColor: '#788489',
-      },
-      marginTop: 10,
-      marginBottom: 10,
-      marginLeft: '25%',
-      marginRight: '25%',
-      width: '50%',
-      '&.Mui-disabled': { opacity: 0.5 },
-    },
-    switch: {
-      marginRight: 2,
-    },
-    switchTrack: {
-      backgroundColor: '#E0E0E0',
-    },
-    switchBase: {
-      color: '#E0E0E0',
-      '&.Mui-checked': {
-        color: '#53888F',
-      },
-      '&.Mui-checked + .MuiSwitch-track': {
-        backgroundColor: '#B1D6DB',
-      },
-    },
-    switchTitle: {
-      lineHeight: 1.8,
-      color: 'black',
-      fontWeight: 400,
-    },
-    switchTitleUnchecked: {
-      lineHeight: 1.8,
-      fontWeight: 400,
-    },
-  }),
-);
-
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
 const menuProps: Partial<MenuProps> = {
@@ -972,5 +878,99 @@ const ChartsPanel = memo(() => {
     </div>
   );
 });
+
+const useStyles = makeStyles(() =>
+  createStyles({
+    root: {
+      display: 'flex',
+      flexDirection: 'row',
+      width: '100%',
+      height: '100%',
+    },
+    formGroup: {
+      marginBottom: 20,
+      marginLeft: 20,
+      width: '100%',
+    },
+    chartsPanelParams: {
+      marginTop: 30,
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      width: PanelSize.medium,
+      flexShrink: 0,
+    },
+    layerFormControl: {
+      marginTop: 30,
+      marginBottom: '2em',
+      minWidth: '300px',
+      maxWidth: '350px',
+      '& .MuiFormLabel-root': {
+        color: 'black',
+      },
+      '& .MuiSelect-root': {
+        color: 'black',
+      },
+    },
+    textLabel: {
+      color: 'black',
+    },
+    chartsContainer: {
+      display: 'flex',
+      flexDirection: 'column',
+      justifyContent: 'space-between',
+      width: '100%',
+    },
+    chartsPanelCharts: {
+      alignContent: 'start',
+      overflowY: 'auto',
+      overflowX: 'hidden',
+      display: 'flex',
+      justifyContent: 'center',
+      flexWrap: 'wrap',
+      flexGrow: 4,
+      gap: '16px',
+      padding: '16px',
+      marginTop: 0,
+      paddingBottom: '1em',
+    },
+    clearAllSelectionsButton: {
+      backgroundColor: '#788489',
+      '&:hover': {
+        backgroundColor: '#788489',
+      },
+      marginTop: 10,
+      marginBottom: 10,
+      marginLeft: '25%',
+      marginRight: '25%',
+      width: '50%',
+      '&.Mui-disabled': { opacity: 0.5 },
+    },
+    switch: {
+      marginRight: 2,
+    },
+    switchTrack: {
+      backgroundColor: '#E0E0E0',
+    },
+    switchBase: {
+      color: '#E0E0E0',
+      '&.Mui-checked': {
+        color: '#53888F',
+      },
+      '&.Mui-checked + .MuiSwitch-track': {
+        backgroundColor: '#B1D6DB',
+      },
+    },
+    switchTitle: {
+      lineHeight: 1.8,
+      color: 'black',
+      fontWeight: 400,
+    },
+    switchTitleUnchecked: {
+      lineHeight: 1.8,
+      fontWeight: 400,
+    },
+  }),
+);
 
 export default ChartsPanel;
