@@ -139,6 +139,16 @@
           "level": "0",
           "id": "dv_adm0_id",
           "name": "adm0_name"
+        },
+        {
+          "level": "1",
+          "id": "dv_adm1_id",
+          "name": "adm1_name"
+        },
+        {
+          "level": "2",
+          "id": "dv_adm2_id",
+          "name": "adm2_name"
         }
       ],
       "type": "bar"
@@ -157,6 +167,16 @@
           "level": "0",
           "id": "dv_adm0_id",
           "name": "adm0_name"
+        },
+        {
+          "level": "1",
+          "id": "dv_adm1_id",
+          "name": "adm1_name"
+        },
+        {
+          "level": "2",
+          "id": "dv_adm2_id",
+          "name": "adm2_name"
         }
       ],
       "type": "bar"
@@ -175,6 +195,16 @@
           "level": "0",
           "id": "dv_adm0_id",
           "name": "adm0_name"
+        },
+        {
+          "level": "1",
+          "id": "dv_adm1_id",
+          "name": "adm1_name"
+        },
+        {
+          "level": "2",
+          "id": "dv_adm2_id",
+          "name": "adm2_name"
         }
       ],
       "type": "bar"
@@ -253,6 +283,16 @@
           "level": "0",
           "id": "dv_adm0_id",
           "name": "adm0_name"
+        },
+        {
+          "level": "1",
+          "id": "dv_adm1_id",
+          "name": "adm1_name"
+        },
+        {
+          "level": "2",
+          "id": "dv_adm2_id",
+          "name": "adm2_name"
         }
       ],
       "type": "line"
@@ -283,6 +323,16 @@
           "level": "0",
           "id": "dv_adm0_id",
           "name": "adm0_name"
+        },
+        {
+          "level": "1",
+          "id": "dv_adm1_id",
+          "name": "adm1_name"
+        },
+        {
+          "level": "2",
+          "id": "dv_adm2_id",
+          "name": "adm2_name"
         }
       ],
       "type": "line"
