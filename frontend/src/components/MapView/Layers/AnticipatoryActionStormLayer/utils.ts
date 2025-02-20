@@ -1,7 +1,7 @@
 import {
   AAStormTimeSeriesFeature,
   TimeSerieFeatureProperty,
-} from 'prism-common/dist/types/anticipatory-action-storm/reportResponse';
+} from 'prism-common/';
 
 import { isSameDay, parseJSON, format, differenceInHours } from 'date-fns';
 import { MapGeoJSONFeature } from 'maplibre-gl';

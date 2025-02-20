@@ -1,6 +1,6 @@
 // // na/ny are not actually found in CSV, but defined not to cause confusion when calling the functions
+import { WindState } from 'prism-common/';
 import { DateItem } from 'config/types';
-import { WindState } from 'prism-common/dist/types/anticipatory-action-storm/windState';
 import { ParsedStormData } from './parsedStormDataTypes';
 
 export type ShortDate = string;

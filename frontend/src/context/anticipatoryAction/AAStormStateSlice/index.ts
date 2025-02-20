@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { DateItem } from 'config/types';
-import { StormDataResponseBody } from 'prism-common/dist/types/anticipatory-action-storm/reportResponse';
+import { StormDataResponseBody } from 'prism-common/';
 import type { CreateAsyncThunkTypes, RootState } from '../../store';
 import { AAStormWindStateReports, AnticipatoryActionState } from './types';
 import { parseAndTransformAA } from './utils';

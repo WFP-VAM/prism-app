@@ -24,10 +24,7 @@ import { useWindStatesByTime } from 'components/MapView/DateSelector/TimelineIte
 import { getAAColor } from 'components/MapView/LeftPanel/AnticipatoryActionPanel/AnticipatoryActionStormPanel/utils';
 import { AACategory } from 'context/anticipatoryAction/AAStormStateSlice/parsedStormDataTypes';
 import anticipatoryActionIcons from 'components/Common/AnticipatoryAction/icons';
-import {
-  AAStormTimeSeriesFeature,
-  TimeSeries,
-} from 'prism-common/dist/types/anticipatory-action-storm/reportResponse';
+import { AAStormTimeSeriesFeature, TimeSeries } from 'prism-common/';
 import maplibregl from 'maplibre-gl';
 import AAStormDatePopup from './AAStormDatePopup';
 import AAStormLandfallPopup from './AAStormLandfallPopup';

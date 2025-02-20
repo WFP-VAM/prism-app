@@ -6,7 +6,7 @@ import {
   AAStormTimeSeriesFeature,
   FeaturePropertyDataType,
   TimeSeries,
-} from 'prism-common/dist/types/anticipatory-action-storm/reportResponse';
+} from 'prism-common/';
 import { formatWindPointDate } from '../utils';
 
 interface AAStormDatePopupProps {
