@@ -2,7 +2,6 @@ import nodemailer from 'nodemailer';
 import { StormAlertData, StormAlertEmail } from '../types/email';
 import ejs from 'ejs';
 import path from 'path';
-import { formatDateToUTC } from './date';
 import {
   displayWindState,
   WindState,
@@ -154,7 +153,7 @@ export const sendStormAlertEmail = async (
   const emailData: StormAlertEmail = {
     alertTitle,
     cycloneName: data.cycloneName,
-    cycloneTime: formatDateToUTC(data.cycloneTime),
+    cycloneTime: data.cycloneTime,
     activatedTriggers:
       data.activatedTriggers && windspeed
         ? {

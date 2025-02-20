@@ -9,6 +9,7 @@ import { StormDataResponseBody } from 'prism-common';
 import { StormAlertData } from '../types/email';
 import moment from 'moment';
 import { captureScreenshotFromUrl } from '../utils/capture-utils';
+import { formatDateToUTC } from '../utils/date';
 
 // @ts-ignore
 global.fetch = nodeFetch;
@@ -184,7 +185,7 @@ export async function buildEmailPayloads(
           return {
             email: emails,
             cycloneName: detailedStormReport.forecast_details.cyclone_name,
-            cycloneTime: moment(detailedStormReport.forecast_details.reference_time).utc().format('DD/MM/YYYY HH:mm [UTC]'),
+            cycloneTime: formatDateToUTC(detailedStormReport.forecast_details.reference_time),
             activatedTriggers: {
               districts48kt: activated48kt,
               districts64kt: activated64kt,
