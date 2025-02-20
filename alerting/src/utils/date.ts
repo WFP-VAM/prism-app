@@ -7,5 +7,5 @@ import moment from 'moment';
  * @returns {string} - The formatted date string in UTC (e.g., "Tuesday 12/03/2024 14:00 UTC", format: DD/MM/YYYY).
  */
 export function formatDateToUTC(isoDate: string): string {
-  return moment(isoDate).utc().format('dddd DD/MM/YYYY HH:mm [UTC]');
+  return moment(isoDate).utc().format('DD/MM/YYYY HH:mm [UTC]');
 }
