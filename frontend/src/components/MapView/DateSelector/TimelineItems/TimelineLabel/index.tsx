@@ -4,12 +4,20 @@ import { DateFormat } from 'utils/name-utils';
 import { format } from 'date-fns';
 import { locales } from 'i18n';
 
-function TimelineLabel({ locale, date }: TimelineLabelProps) {
+function TimelineLabel({
+  locale,
+  date,
+  showDraggingCursor,
+}: TimelineLabelProps) {
   const classes = useStyles();
 
   if (date.isFirstDay) {
     return (
-      <Typography variant="body2" className={classes.dateItemLabel}>
+      <Typography
+        variant="body2"
+        className={classes.dateItemLabel}
+        style={{ cursor: showDraggingCursor ? 'ew-resize' : 'default' }}
+      >
         {format(
           date.value,
           date.month.includes('Jan')
@@ -48,6 +56,7 @@ const useStyles = makeStyles(() =>
 export interface TimelineLabelProps {
   locale: string;
   date: DateRangeType;
+  showDraggingCursor: boolean;
 }
 
 export default TimelineLabel;

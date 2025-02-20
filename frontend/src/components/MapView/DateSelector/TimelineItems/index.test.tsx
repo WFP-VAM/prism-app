@@ -19,6 +19,7 @@ const props = {
   ],
   clickDate: () => {},
   locale: 'en',
+  showDraggingCursor: false,
 };
 
 const mockStore = configureStore([]);
