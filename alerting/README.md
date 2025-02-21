@@ -16,6 +16,7 @@ There is a unique service running for all country specific frontends.
 ## Setup - anticipatory action storm alerts
 
 - Alerts are triggered by a cron job running within the `alerting-node` process.
+- Run `docker-compose up` to launch the `alerting-node` and `alerting-db` processes.
 - The system checks database entries to determine **which country** needs to be triggered.
 - Currently, **only Mozambique is supported**. To add it, connect to the `psql` console of `alerting-db` and run the following command:
 
@@ -27,5 +28,3 @@ VALUES ('Mozambique', ARRAY['email1@example.com'], 'https://prism.wfp.org');
 - **country**: The target country for the alert.  
 - **emails**: A list of email addresses that will receive the alert notification.  
 - **prism_url**: The base URL of the PRISM platform for redirection link and screenshot capture. 
-
-
