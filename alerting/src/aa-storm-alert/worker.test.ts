@@ -78,7 +78,16 @@ describe('worker', () => {
       alert.emails,
     );
     expect(mockedUpdate).toHaveBeenCalledWith(
-      { country: 'mozambique' },
+      {
+        country: {
+          _type: 'ilike',
+          _value: 'mozambique',
+          _useParameter: true,
+          _multipleParameters: false,
+          _objectLiteralParameters: undefined,
+          _getSql: undefined,
+        },
+      },
       {
         lastStates: {
           '07-20242025': {
@@ -86,6 +95,7 @@ describe('worker', () => {
             status: 'ready',
           },
         },
+        lastRanAt: expect.any(Date),
         lastTriggeredAt: expect.any(Date),
       },
     );
