@@ -7,6 +7,7 @@ import {
   transformReportsToLastProcessed,
 } from './alert';
 import { sendStormAlertEmail } from '../utils/email';
+import { ILike } from 'typeorm';
 
 // TODO: for later, we need to support multiple countries
 export const COUNTRY = 'mozambique';
@@ -31,7 +32,7 @@ export async function run() {
 
   // get the last alert which has been processed for email alert system
   const alert = await alertRepository.findOne({
-    where: { country: COUNTRY },
+    where: { country: ILike(COUNTRY) },
   });
 
   if (!alert) {
