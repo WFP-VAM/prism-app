@@ -72,6 +72,7 @@ export async function run() {
     { country: ILike(COUNTRY) },
     {
       lastStates: updatedLastStates,
+      lastRanAt: new Date(),
       ...(emailPayloads.length > 0 ? { lastTriggeredAt: new Date() } : {}),
     },
   );
