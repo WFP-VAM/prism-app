@@ -20,7 +20,9 @@ services:
     restart: always
     volumes:
       - ../alerting:/app
+      - /app/node_modules
       - ../common:/common
+      - /common/node_modules
     working_dir: /app
     environment:
       - POSTGRES_HOST=alerting-db
