@@ -31,6 +31,7 @@ export async function getLatestAvailableReports() {
   const allReports = await fetchAllReports();
 
   if (!allReports) {
+    console.log('No reports available');
     return [];
   }
 
@@ -44,6 +45,11 @@ export async function getLatestAvailableReports() {
 
   const latestDayReports = allReports[latestReportsDate];
 
+  console.log(
+    `Processing ${
+      Object.keys(latestDayReports).length
+    } storms from ${latestReportsDate}`,
+  );
   // for each storm of the last day, keep only the latest report by time
 
   return Object.keys(latestDayReports).map((stormName) => {
@@ -97,10 +103,9 @@ export function transformReportsToLastProcessed(
 }
 
 function getActivatedDistricts(report: StormDataResponseBody): {
-  activated48kt: string[],
-  activated64kt: string[],
+  activated48kt: string[];
+  activated64kt: string[];
 } {
-
   const watchedDistrictsFor64KtStorm = [
     'Mogincual',
     'Namacurra',
@@ -117,18 +122,20 @@ function getActivatedDistricts(report: StormDataResponseBody): {
     'Govuro',
   ];
 
-  const activated64kt =  report.ready_set_results?.exposed_area_64kt?.affected_districts.filter((district) =>
-    watchedDistrictsFor64KtStorm.includes(district),
-  )
+  const activated64kt =
+    report.ready_set_results?.exposed_area_64kt?.affected_districts.filter(
+      (district) => watchedDistrictsFor64KtStorm.includes(district),
+    );
 
-  const activated48kt =  report.ready_set_results?.exposed_area_48kt?.affected_districts.filter((district) =>
-    watchedDistrictsFor48ktStorm.includes(district),
-  )
+  const activated48kt =
+    report.ready_set_results?.exposed_area_48kt?.affected_districts.filter(
+      (district) => watchedDistrictsFor48ktStorm.includes(district),
+    );
 
   return {
     activated48kt: activated48kt || [],
     activated64kt: activated64kt || [],
-  }
+  };
 }
 
 function hasLandfallOccured(report: StormDataResponseBody): boolean {
@@ -140,10 +147,17 @@ function hasLandfallOccured(report: StormDataResponseBody): boolean {
   return false;
 }
 
-function shouldSendEmail(status: WindState, activated48kt: string[], activated64kt: string[], pastLandfall: boolean): boolean {
-  const hasActivated = (status === WindState.activated_64kt || status === WindState.activated_48kt)
-    && (activated48kt.length > 0 || activated64kt.length > 0);
-  
+function shouldSendEmail(
+  status: WindState,
+  activated48kt: string[],
+  activated64kt: string[],
+  pastLandfall: boolean,
+): boolean {
+  const hasActivated =
+    (status === WindState.activated_64kt ||
+      status === WindState.activated_48kt) &&
+    (activated48kt.length > 0 || activated64kt.length > 0);
+
   const isReady = status === WindState.ready;
   return !pastLandfall && (hasActivated || isReady);
 }
@@ -163,18 +177,29 @@ export async function buildEmailPayloads(
   emails: string[],
 ): Promise<StormAlertData[]> {
   try {
+    console.log(
+      `Processing ${shortReports.length} storm reports for email alerts`,
+    );
     const emailPayload = await Promise.all(
       shortReports.map(async (shortReport) => {
+        const stormName = shortReport.path.split('/')[0];
+        console.log(`Processing storm: ${stormName}`);
+
         const detailedStormReport: StormDataResponseBody = await fetch(
           `https://data.earthobservation.vam.wfp.org/public-share/aa/ts/outputs/${shortReport.path}?v2`,
         ).then((data) => data.json());
 
-        const {activated48kt, activated64kt} = getActivatedDistricts(detailedStormReport);
-        const status = detailedStormReport.ready_set_results?.status
-
+        const { activated48kt, activated64kt } =
+          getActivatedDistricts(detailedStormReport);
+        const status = detailedStormReport.ready_set_results?.status;
         const pastLandfall = hasLandfallOccured(detailedStormReport);
 
-        const isEmailNeeded = status ? shouldSendEmail(status, activated48kt, activated64kt, pastLandfall) : false;
+        const isEmailNeeded = status
+          ? shouldSendEmail(status, activated48kt, activated64kt, pastLandfall)
+          : false;
+        console.log(
+          `Storm ${stormName} - Status: ${status}, Email needed: ${isEmailNeeded}, Past landfall: ${pastLandfall}`,
+        );
 
         if (isEmailNeeded) {
           const prismUrl = buildPrismUrl(
@@ -185,7 +210,9 @@ export async function buildEmailPayloads(
           return {
             email: emails,
             cycloneName: detailedStormReport.forecast_details.cyclone_name,
-            cycloneTime: formatDateToUTC(detailedStormReport.forecast_details.reference_time),
+            cycloneTime: formatDateToUTC(
+              detailedStormReport.forecast_details.reference_time,
+            ),
             activatedTriggers: {
               districts48kt: activated48kt,
               districts64kt: activated64kt,
@@ -215,7 +242,7 @@ export async function buildEmailPayloads(
     );
     return emailPayload.filter((payload) => !!payload) as StormAlertData[];
   } catch (e) {
-    console.error('Error while creating email payload');
+    console.error('Error while creating email payload:', e);
     return [];
   }
 }

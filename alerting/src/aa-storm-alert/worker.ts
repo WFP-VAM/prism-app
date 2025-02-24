@@ -36,7 +36,7 @@ export async function run() {
   });
 
   if (!alert) {
-    console.error('Error, no alert was found for the country', COUNTRY);
+    console.error(`Error: No alert found for ${COUNTRY}`);
     return;
   }
 
