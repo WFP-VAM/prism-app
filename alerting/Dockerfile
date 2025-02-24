@@ -17,8 +17,8 @@ RUN npx @puppeteer/browsers install chrome@$CHROME_VERSION && \
     npx @puppeteer/browsers install chromedriver@$CHROME_VERSION
 
 WORKDIR /common
-RUN yarn --frozen-lockfile
+RUN yarn --frozen-lockfile --production=false
 
 WORKDIR /app
-RUN yarn --frozen-lockfile
+RUN yarn --frozen-lockfile --production=false
 RUN yarn setup:common
