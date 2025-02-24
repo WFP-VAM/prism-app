@@ -24,6 +24,11 @@ jest.mock('./alert', () => {
   };
 });
 
+jest.mock('typeorm', () => ({
+  ...jest.requireActual('typeorm'),
+  ILike: jest.fn((value) => ({ _type: 'ilike', value })),
+}));
+
 describe('worker', () => {
   it('updates the db', async () => {
     // arrange
