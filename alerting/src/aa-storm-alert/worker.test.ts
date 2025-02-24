@@ -5,6 +5,7 @@ jest.mock('../entities/anticipatoryActionAlerts.entity');
 
 const mockedCreateConnection = jest.fn();
 jest.mock('typeorm', () => ({
+  ...jest.requireActual('typeorm'),
   createConnection: () => mockedCreateConnection(),
 }));
 
@@ -23,11 +24,6 @@ jest.mock('./alert', () => {
     buildEmailPayloads: (...params) => mockedBuildEmailPayloads(...params),
   };
 });
-
-jest.mock('typeorm', () => ({
-  ...jest.requireActual('typeorm'),
-  ILike: jest.fn((value) => ({ _type: 'ilike', value })),
-}));
 
 describe('worker', () => {
   it('updates the db', async () => {
