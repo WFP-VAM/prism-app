@@ -15,10 +15,14 @@ services:
     build:
       context: ../
       dockerfile: ./alerting/Dockerfile
+      args:
+        CHROME_VERSION: "126.0.6478.126"
     restart: always
     volumes:
       - ../alerting:/app
+      - /app/node_modules
       - ../common:/common
+      - /common/node_modules
     working_dir: /app
     environment:
       - POSTGRES_HOST=alerting-db

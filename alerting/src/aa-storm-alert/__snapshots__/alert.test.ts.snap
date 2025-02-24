@@ -1,0 +1,105 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`alert mechanism buildEmailPayloads() does not return a payload when detailed report indicates that activation48 is triggered but there is no pilot activated districts for 48kt exposed 1`] = `[]`;
+
+exports[`alert mechanism buildEmailPayloads() does not return a payload when detailed report indicates that activation64 is triggered but there is no pilot activated districts for 64kt exposed 1`] = `[]`;
+
+exports[`alert mechanism buildEmailPayloads() returns a payload when detailed report indicates that activation48 is triggered and pilot activated districts for 48kt winds are parts of the exposed districts 1`] = `
+[
+  {
+    "activatedTriggers": {
+      "districts48kt": [
+        "Angoche",
+      ],
+      "districts64kt": [],
+    },
+    "base64Image": "",
+    "cycloneName": "ELVIS",
+    "cycloneTime": "31/01/2025 06:00 UTC",
+    "email": [
+      "test@test.com",
+    ],
+    "redirectUrl": "https://prism.wfp.org/?hazardLayerIds=anticipatory_action_storm&date=2025-01-31",
+    "status": "activated_48kt",
+  },
+]
+`;
+
+exports[`alert mechanism buildEmailPayloads() returns a payload when detailed report indicates that activation64 is triggered and pilot activated districts for 64kt winds are parts of the exposed districts 1`] = `
+[
+  {
+    "activatedTriggers": {
+      "districts48kt": [],
+      "districts64kt": [
+        "Namacurra",
+      ],
+    },
+    "base64Image": "",
+    "cycloneName": "ELVIS",
+    "cycloneTime": "31/01/2025 06:00 UTC",
+    "email": [
+      "test@test.com",
+    ],
+    "redirectUrl": "https://prism.wfp.org/?hazardLayerIds=anticipatory_action_storm&date=2025-01-31",
+    "status": "activated_64kt",
+  },
+]
+`;
+
+exports[`alert mechanism buildEmailPayloads() returns a payload when detailed report indicates that readiness is triggered 1`] = `
+[
+  {
+    "activatedTriggers": {
+      "districts48kt": [],
+      "districts64kt": [],
+    },
+    "base64Image": "",
+    "cycloneName": "ELVIS",
+    "cycloneTime": "31/01/2025 06:00 UTC",
+    "email": [
+      "test@test.com",
+    ],
+    "redirectUrl": "https://prism.wfp.org/?hazardLayerIds=anticipatory_action_storm&date=2025-01-31",
+    "status": "ready",
+  },
+]
+`;
+
+exports[`alert mechanism buildEmailPayloads() returns no payload when detailed report indicates that activation is triggered but landfall already occured 1`] = `[]`;
+
+exports[`alert mechanism filterOutAlreadyProcessedReports() returns filtered available reports when there are several available reports 1`] = `
+[
+  {
+    "path": "vince/2025-02-09T18:00:00Z.json",
+    "ref_time": "2025-02-09T18:00:00Z",
+    "state": "monitoring",
+  },
+  {
+    "path": "chido/2025-02-09T18:00:00Z.json",
+    "ref_time": "2025-02-09T18:00:00Z",
+    "state": "monitoring",
+  },
+]
+`;
+
+exports[`alert mechanism filterOutAlreadyProcessedReports() returns filtered available reports when there is already processed report stored in the db which is as old as available report 1`] = `[]`;
+
+exports[`alert mechanism filterOutAlreadyProcessedReports() returns filtered available reports when there is already processed report stored in the db which is older than available report 1`] = `
+[
+  {
+    "path": "vince/2025-02-09T18:00:00Z.json",
+    "ref_time": "2025-02-09T18:00:00Z",
+    "state": "monitoring",
+  },
+]
+`;
+
+exports[`alert mechanism filterOutAlreadyProcessedReports() returns filtered available reports when there is no already processed report stored in the db 1`] = `
+[
+  {
+    "path": "vince/2025-02-09T18:00:00Z.json",
+    "ref_time": "2025-02-09T18:00:00Z",
+    "state": "monitoring",
+  },
+]
+`;

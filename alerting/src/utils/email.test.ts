@@ -23,7 +23,7 @@ describe('sendEmail', () => {
 
   it('should send an email using provided credentials', async () => {
     process.env.PRISM_ALERTS_EMAIL_PASSWORD = 'test-password';
-    process.env.PRISM_ALERTS_EMAIL_USER_USER = 'test-user';
+    process.env.PRISM_ALERTS_EMAIL_USER = 'test-user';
     process.env.PRISM_ALERTS_EMAIL_HOST = 'test-host';
 
     await sendEmail({
@@ -55,7 +55,7 @@ describe('sendEmail', () => {
 
   it('should send an email using ethereal account if no credentials are provided', async () => {
     process.env.PRISM_ALERTS_EMAIL_PASSWORD = '';
-    process.env.PRISM_ALERTS_EMAIL_USER_USER = '';
+    process.env.PRISM_ALERTS_EMAIL_USER = '';
 
     const testAccount = {
       user: 'ethereal-user',
