@@ -209,7 +209,8 @@ describe('alert mechanism', () => {
 
       const emailPayloads = await buildEmailPayloads(
         shortReports,
-        'https://prism.wfp.org',
+        // TODO - replace with a more permanent url
+        'https://prism-1420.surge.sh/',
         ['test@test.com'],
       );
       expect(emailPayloads).toMatchSnapshot();
