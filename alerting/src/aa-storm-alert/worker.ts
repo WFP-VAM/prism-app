@@ -69,7 +69,7 @@ export async function run() {
 
   // Update the country last processed reports
   await alertRepository.update(
-    { country: COUNTRY },
+    { country: ILike(COUNTRY) },
     {
       lastStates: updatedLastStates,
       ...(emailPayloads.length > 0 ? { lastTriggeredAt: new Date() } : {}),
