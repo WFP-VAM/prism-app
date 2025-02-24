@@ -45,11 +45,6 @@ export async function getLatestAvailableReports() {
 
   const latestDayReports = allReports[latestReportsDate];
 
-  console.log(
-    `Processing ${
-      Object.keys(latestDayReports).length
-    } storms from ${latestReportsDate}`,
-  );
   // for each storm of the last day, keep only the latest report by time
 
   return Object.keys(latestDayReports).map((stormName) => {
@@ -183,7 +178,7 @@ export async function buildEmailPayloads(
     const emailPayload = await Promise.all(
       shortReports.map(async (shortReport) => {
         const stormName = shortReport.path.split('/')[0];
-        console.log(`Processing storm: ${stormName}`);
+        console.debug(`Processing storm: ${stormName}`);
 
         const detailedStormReport: StormDataResponseBody = await fetch(
           `https://data.earthobservation.vam.wfp.org/public-share/aa/ts/outputs/${shortReport.path}?v2`,
@@ -197,7 +192,7 @@ export async function buildEmailPayloads(
         const isEmailNeeded = status
           ? shouldSendEmail(status, activated48kt, activated64kt, pastLandfall)
           : false;
-        console.log(
+        console.debug(
           `Storm ${stormName} - Status: ${status}, Email needed: ${isEmailNeeded}, Past landfall: ${pastLandfall}`,
         );
 
