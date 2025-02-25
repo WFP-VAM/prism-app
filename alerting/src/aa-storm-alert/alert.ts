@@ -7,7 +7,7 @@ import nodeFetch from 'node-fetch';
 import { WindState } from 'prism-common';
 import { StormDataResponseBody } from 'prism-common';
 import { StormAlertData } from '../types/email';
-import moment from 'moment';
+import { isAfter, parseISO, format } from 'date-fns';
 import { captureScreenshotFromUrl } from '../utils/capture-utils';
 import { formatDateToUTC } from '../utils/date';
 
@@ -137,7 +137,7 @@ function hasLandfallOccured(report: StormDataResponseBody): boolean {
   const landfallInfo = report.landfall_info;
   if ('landfall_time' in landfallInfo) {
     const landfallOutermostTime = landfallInfo.landfall_time[1];
-    return moment().isAfter(moment(landfallOutermostTime));
+    return isAfter(new Date(), parseISO(landfallOutermostTime));
   }
   return false;
 }
@@ -162,7 +162,7 @@ function shouldSendEmail(
  * @param date date of the report
  */
 function buildPrismUrl(basicUrl: string, date: string) {
-  const reportDate = moment(date).format('YYYY-MM-DD');
+  const reportDate = format(parseISO(date), 'yyyy-MM-dd');
   return `${basicUrl}/?hazardLayerIds=anticipatory_action_storm&date=${reportDate}`;
 }
 
