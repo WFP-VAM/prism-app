@@ -37,7 +37,6 @@
     "geojson": "^0.5.0",
     "jimp": "^1.6.0",
     "lodash": "^4.17.21",
-    "moment": "^2.29.4",
     "node-fetch": "^2.6.7",
     "nodemailer": "^6.9.9",
     "pg": "^8.5.1",
@@ -45,7 +44,8 @@
     "puppeteer": "^24.1.1",
     "typeorm": "0.2.31",
     "typeorm-naming-strategies": "^1.1.0",
-    "xml-js": "^1.6.11"
+    "xml-js": "^1.6.11",
+    "date-fns": "^3.3.1"
   },
   "devDependencies": {
     "@types/ejs": "^3.1.5",
