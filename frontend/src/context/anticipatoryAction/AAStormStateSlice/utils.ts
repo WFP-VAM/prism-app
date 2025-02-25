@@ -136,13 +136,10 @@ export function parseAndTransformAA(data: StormDataResponseBody): ResultType {
 
       // Get the affected area data for the current category
       const area = exposedAreas?.[categoryKey];
-      if (!area) {
-        return [activeResult, naResult]; // Skip if no data for this category
-      }
 
       // Convert affected districts into a Set for fast lookups
       const affectedDistricts = new Set(
-        area.affected_districts?.map(d => districtNameMapping[d] || d) || [],
+        area?.affected_districts?.map(d => districtNameMapping[d] || d) || [],
       );
 
       // Retrieve the watched districts for this category
