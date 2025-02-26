@@ -14,15 +14,15 @@ import { formatDateToUTC } from '../utils/date';
 // @ts-ignore
 global.fetch = nodeFetch;
 
-function fetchAllReports(): Promise<ShortReportsResponseBody | null> {
-  return fetch(
-    'https://data.earthobservation.vam.wfp.org/public-share/aa/ts/outputs/dates.json',
-  )
-    .then((data) => data.json())
-    .catch(() => {
-      console.error('Error fetching all reports');
-      return null;
-    });
+async function fetchAllReports(): Promise<ShortReportsResponseBody | null> {
+  try {
+    const data = await fetch(
+      'https://data.earthobservation.vam.wfp.org/public-share/aa/ts/outputs/dates.json');
+    return await data.json();
+  } catch {
+    console.error('Error fetching all reports');
+    return null;
+  }
 }
 
 // fetch and extract the more recent short report for each reported storm
