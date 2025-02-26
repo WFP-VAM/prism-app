@@ -1,4 +1,7 @@
 jest.mock('node-fetch');
+jest.mock('../utils/capture-utils', () => ({
+  captureScreenshotFromUrl: jest.fn(),
+}));
 import nodeFetch from 'node-fetch';
 import {
   buildEmailPayloads,
@@ -9,6 +12,7 @@ import { buildDetailedReport, buildLandfallInfo } from './test-utils';
 import { WindState } from 'prism-common';
 import moment from 'moment';
 import { LastStates } from '../types/aa-storm-email';
+import { captureScreenshotFromUrl } from '../utils/capture-utils';
 
 describe('alert mechanism', () => {
   describe('getLatestAvailableReports()', () => {
@@ -101,6 +105,7 @@ describe('alert mechanism', () => {
   });
 
   describe('buildEmailPayloads()', () => {
+   
     const mockedFetch = nodeFetch as unknown as jest.Mock;
     afterEach(() => {
       jest.resetAllMocks();
@@ -206,6 +211,7 @@ describe('alert mechanism', () => {
     ];
     it.each(tests)('$description', async ({ data, shortReports }) => {
       mockedFetch.mockResolvedValue({ json: () => data });
+      (captureScreenshotFromUrl as jest.Mock).mockResolvedValue("");
 
       const emailPayloads = await buildEmailPayloads(
         shortReports,
