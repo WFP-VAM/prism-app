@@ -38,11 +38,12 @@ export async function run() {
     where: { country: ILike(COUNTRY) },
   });
 
+  if (alerts.length === 0) {
+    console.error(`Error: No alert found for ${COUNTRY}`);
+    return;
+  }
+
   for (const alert of alerts) {
-    if (!alert) {
-      console.error(`Error: No alert found for ${COUNTRY}`);
-      return;
-    }
   
     // filter reports which have been already processed
     const lastStates = IS_TEST ? undefined : alert.lastStates;
