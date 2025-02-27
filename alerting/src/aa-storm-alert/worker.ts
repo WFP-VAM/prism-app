@@ -34,49 +34,53 @@ export async function run() {
   const latestAvailableReports = await getLatestAvailableReports();
 
   // get the last alert which has been processed for email alert system
-  const alert = await alertRepository.findOne({
+  const alerts = await alertRepository.find({
     where: { country: ILike(COUNTRY) },
   });
 
-  if (!alert) {
-    console.error(`Error: No alert found for ${COUNTRY}`);
-    return;
+  for (const alert of alerts) {
+    if (!alert) {
+      console.error(`Error: No alert found for ${COUNTRY}`);
+      return;
+    }
+  
+    // filter reports which have been already processed
+    const lastStates = IS_TEST ? undefined : alert.lastStates;
+    const filteredAvailableReports = filterOutAlreadyProcessedReports(
+      latestAvailableReports,
+      lastStates,
+    );
+  
+    const basicPrismUrl = alert.prismUrl;
+    const emails = alert.emails;
+  
+    // check whether an email should be sent
+    const emailPayloads = await buildEmailPayloads(
+      filteredAvailableReports,
+      basicPrismUrl,
+      emails,
+    );
+  
+    // send emails
+    await Promise.all(
+      emailPayloads.map((emailPayload) => sendStormAlertEmail(emailPayload)),
+    );
+  
+    // format last states object
+    const updatedLastStates = transformReportsToLastProcessed(
+      latestAvailableReports,
+    );
+  
+    // Update the country last processed reports
+    await alertRepository.update(
+      { id: alert.id,
+        country: COUNTRY,
+      },
+      {
+        lastStates: updatedLastStates,
+        lastRanAt: new Date(),
+        ...(emailPayloads.length > 0 ? { lastTriggeredAt: new Date() } : {}),
+      },
+    );
   }
-
-  // filter reports which have been already processed
-  const lastStates = IS_TEST ? undefined : alert.lastStates;
-  const filteredAvailableReports = filterOutAlreadyProcessedReports(
-    latestAvailableReports,
-    lastStates,
-  );
-
-  const basicPrismUrl = alert.prismUrl;
-  const emails = alert.emails;
-
-  // // check whether an email should be sent
-  const emailPayloads = await buildEmailPayloads(
-    filteredAvailableReports,
-    basicPrismUrl,
-    emails,
-  );
-
-  // send emails
-  await Promise.all(
-    emailPayloads.map((emailPayload) => sendStormAlertEmail(emailPayload)),
-  );
-
-  // format last states object
-  const updatedLastStates = transformReportsToLastProcessed(
-    latestAvailableReports,
-  );
-
-  // Update the country last processed reports
-  await alertRepository.update(
-    { country: ILike(COUNTRY) },
-    {
-      lastStates: updatedLastStates,
-      lastRanAt: new Date(),
-      ...(emailPayloads.length > 0 ? { lastTriggeredAt: new Date() } : {}),
-    },
-  );
 }
