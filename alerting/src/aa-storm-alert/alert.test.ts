@@ -10,9 +10,9 @@ import {
 } from './alert';
 import { buildDetailedReport, buildLandfallInfo } from './test-utils';
 import { WindState } from 'prism-common';
-import moment from 'moment';
 import { LastStates } from '../types/aa-storm-email';
 import { captureScreenshotFromUrl } from '../utils/capture-utils';
+import { formatDate } from '../utils/date';
 
 describe('alert mechanism', () => {
   describe('getLatestAvailableReports()', () => {
@@ -202,7 +202,7 @@ describe('alert mechanism', () => {
           landfallInfo: buildLandfallInfo({
             landfall_time: [
               '2025-01-13 06:00:00',
-              moment().subtract(1, 'hour').format('YYYY-MM-DD HH:mm:ss'), // now - 1 hour; ie landfall occured already
+              formatDate(new Date(Date.now() - 60 * 60 * 1000), 'YYYY-MM-DD HH:mm:ss'), // now - 1 hour; ie landfall occured already
             ],
           }),
         }),

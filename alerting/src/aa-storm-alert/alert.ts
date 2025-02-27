@@ -7,9 +7,8 @@ import nodeFetch from 'node-fetch';
 import { WindState } from 'prism-common';
 import { StormDataResponseBody } from 'prism-common';
 import { StormAlertData } from '../types/email';
-import moment from 'moment';
 import { captureScreenshotFromUrl } from '../utils/capture-utils';
-import { formatDateToUTC } from '../utils/date';
+import { formatDate } from '../utils/date';
 
 // @ts-ignore
 global.fetch = nodeFetch;
@@ -137,7 +136,7 @@ function hasLandfallOccured(report: StormDataResponseBody): boolean {
   const landfallInfo = report.landfall_info;
   if ('landfall_time' in landfallInfo) {
     const landfallOutermostTime = landfallInfo.landfall_time[1];
-    return moment().isAfter(moment(landfallOutermostTime));
+    return new Date() > new Date(landfallOutermostTime);
   }
   return false;
 }
@@ -162,7 +161,7 @@ function shouldSendEmail(
  * @param date date of the report
  */
 function buildPrismUrl(basicUrl: string, date: string) {
-  const reportDate = moment(date).format('YYYY-MM-DD');
+  const reportDate = formatDate(date, 'YYYY-MM-DD');
   return `${basicUrl}/?hazardLayerIds=anticipatory_action_storm&date=${reportDate}`;
 }
 
@@ -205,8 +204,8 @@ export async function buildEmailPayloads(
           return {
             email: emails,
             cycloneName: detailedStormReport.forecast_details.cyclone_name,
-            cycloneTime: formatDateToUTC(
-              detailedStormReport.forecast_details.reference_time,
+            cycloneTime: formatDate(
+              detailedStormReport.forecast_details.reference_time, 'DD/MM/YYYY HH:mm UTC'
             ),
             activatedTriggers: {
               districts48kt: activated48kt,
