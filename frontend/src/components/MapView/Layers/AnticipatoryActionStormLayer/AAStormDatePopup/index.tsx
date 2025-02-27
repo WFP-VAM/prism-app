@@ -50,14 +50,13 @@ function AAStormDatePopup({ timeSeries }: AAStormDatePopupProps) {
     onMouseLeave,
   );
 
-  const lastAnalyzedTimePoint: AAStormTimeSeriesFeature | undefined =
+  const firstForecastPoint: AAStormTimeSeriesFeature | undefined =
     // eslint-disable-next-line fp/no-mutating-methods
     timeSeries?.features
       .slice()
-      .reverse()
       .find(
         feature =>
-          feature.properties.data_type === FeaturePropertyDataType.analysis,
+          feature.properties.data_type === FeaturePropertyDataType.forecast,
       );
 
   function renderPopup(feature?: AAStormTimeSeriesFeature | null) {
@@ -91,7 +90,7 @@ function AAStormDatePopup({ timeSeries }: AAStormDatePopupProps) {
   function renderHoveredPopup() {
     // Don't show hover popup if there's no selection or if hovering the last analyzed point
     // (last analyzed point already has a permanent popup)
-    if (!selectedFeature || selectedFeature.id === lastAnalyzedTimePoint?.id) {
+    if (!selectedFeature || selectedFeature.id === firstForecastPoint?.id) {
       return null;
     }
 
@@ -101,7 +100,7 @@ function AAStormDatePopup({ timeSeries }: AAStormDatePopupProps) {
   return (
     <>
       {/* Permanently render the popup for the last analyzed point */}
-      {renderPopup(lastAnalyzedTimePoint)}
+      {renderPopup(firstForecastPoint)}
 
       {renderHoveredPopup()}
     </>
