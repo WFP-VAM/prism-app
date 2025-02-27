@@ -10,7 +10,7 @@ import { sendStormAlertEmail } from '../utils/email';
 import { ILike } from 'typeorm';
 
 const args = process.argv.slice(2);
-const IS_TEST = args.includes('--isTest');
+const IS_TEST = args.includes('--testMode');
 
 // TODO: for later, we need to support multiple countries
 export const COUNTRY = 'mozambique';
@@ -44,39 +44,36 @@ export async function run() {
   }
 
   for (const alert of alerts) {
-  
     // filter reports which have been already processed
     const lastStates = IS_TEST ? undefined : alert.lastStates;
     const filteredAvailableReports = filterOutAlreadyProcessedReports(
       latestAvailableReports,
       lastStates,
     );
-  
+
     const basicPrismUrl = alert.prismUrl;
     const emails = alert.emails;
-  
+
     // check whether an email should be sent
     const emailPayloads = await buildEmailPayloads(
       filteredAvailableReports,
       basicPrismUrl,
       emails,
     );
-  
+
     // send emails
     await Promise.all(
       emailPayloads.map((emailPayload) => sendStormAlertEmail(emailPayload)),
     );
-  
+
     // format last states object
     const updatedLastStates = transformReportsToLastProcessed(
       latestAvailableReports,
     );
-  
+
     // Update the country last processed reports
     await alertRepository.update(
-      { id: alert.id,
-        country: COUNTRY,
-      },
+      { id: alert.id, country: COUNTRY },
       {
         lastStates: updatedLastStates,
         lastRanAt: new Date(),
