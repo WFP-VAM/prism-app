@@ -9,6 +9,9 @@ import {
 import { sendStormAlertEmail } from '../utils/email';
 import { ILike } from 'typeorm';
 
+const args = process.argv.slice(2);
+const IS_TEST = args.includes('--isTest');
+
 // TODO: for later, we need to support multiple countries
 export const COUNTRY = 'mozambique';
 
@@ -41,7 +44,7 @@ export async function run() {
   }
 
   // filter reports which have been already processed
-  const lastStates = alert.lastStates;
+  const lastStates = IS_TEST ? undefined : alert.lastStates;
   const filteredAvailableReports = filterOutAlreadyProcessedReports(
     latestAvailableReports,
     lastStates,

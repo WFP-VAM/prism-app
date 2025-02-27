@@ -27,11 +27,11 @@
     "typeorm-seeding": "ts-node $(yarn bin typeorm-seeding)",
     "alert-worker": "yarn ts-node src/alert-worker.ts",
     "aa-storm-alert-worker": "yarn ts-node src/aa-storm-alert-runner.ts",
+    "aa-storm-alert-worker-test": "yarn ts-node src/aa-storm-alert-runner.ts --isTest",
     "docker-alert": "source ../api/set_envs.sh && docker compose run --entrypoint 'yarn alert-worker' alerting-node"
   },
   "dependencies": {
     "@turf/bbox": "^6.3.0",
-    "@types/jimp": "^0.2.28",
     "bluebird": "^3.7.2",
     "ejs": "^3.1.10",
     "geojson": "^0.5.0",

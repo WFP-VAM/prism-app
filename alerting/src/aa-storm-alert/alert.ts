@@ -10,6 +10,9 @@ import { StormAlertData } from '../types/email';
 import { captureScreenshotFromUrl } from '../utils/capture-utils';
 import { formatDate } from '../utils/date';
 
+const args = process.argv.slice(2);
+const IS_TEST = args.includes('--isTest');
+
 // @ts-ignore
 global.fetch = nodeFetch;
 
@@ -34,18 +37,51 @@ export async function getLatestAvailableReports() {
     return [];
   }
 
+  // Filter reports by state
+  const filteredReportsByState: ShortReportsResponseBody | null = Object.keys(allReports).reduce((acc, date) => {
+    const dayReports = allReports[date];
+  
+    // For each storm in the day, filter by state first
+    const stormAcc = Object.keys(dayReports).reduce((stormAcc, stormName) => {
+      const stormReports = dayReports[stormName];
+  
+      const filteredReports = stormReports.filter(report =>
+        report.state === WindState.ready || report.state === WindState.activated_48kt || report.state === WindState.activated_64kt
+      );
+  
+      // If no valid reports, skip this storm
+      if (filteredReports.length > 0) {
+        stormAcc[stormName] = filteredReports;
+      }
+  
+      return stormAcc;
+    }, {});
+  
+    // If there are valid storms for this date, add to the accumulator
+    if (Object.keys(stormAcc).length > 0) {
+      acc[date] = stormAcc;
+    }
+  
+    return acc;
+  }, {});
+
+  // If no valid reports were found after filtering by state, return empty array
+  if (Object.keys(filteredReportsByState).length === 0) {
+    console.log('No valid reports available after filtering by state');
+    return [];
+  }
+
   // filter latest reports for all storms using day
-  const latestReportsDate = Object.keys(allReports).reduce(
+  const latestReportsDate = Object.keys(filteredReportsByState).reduce(
     (latestDateReports, currentDateReports) =>
       new Date(currentDateReports) > new Date(latestDateReports)
         ? currentDateReports
         : latestDateReports,
   );
 
-  const latestDayReports = allReports[latestReportsDate];
+  const latestDayReports = filteredReportsByState[latestReportsDate];
 
   // for each storm of the last day, keep only the latest report by time
-
   return Object.keys(latestDayReports).map((stormName) => {
     const stormShortReports = latestDayReports[stormName];
 
@@ -186,7 +222,7 @@ export async function buildEmailPayloads(
         const { activated48kt, activated64kt } =
           getActivatedDistricts(detailedStormReport);
         const status = detailedStormReport.ready_set_results?.status;
-        const pastLandfall = hasLandfallOccured(detailedStormReport);
+        const pastLandfall = IS_TEST ? false : hasLandfallOccured(detailedStormReport);
 
         const isEmailNeeded = status
           ? shouldSendEmail(status, activated48kt, activated64kt, pastLandfall)
