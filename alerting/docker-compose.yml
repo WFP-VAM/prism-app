@@ -1,7 +1,7 @@
 version: '3'
 services:
   alerting-db:
-    image: kartoza/postgis:12.1
+    image: kartoza/postgis:16-3
     restart: always
     ports:
       - 54321:5432

@@ -1,5 +1,6 @@
 import { buildAnticipatoryActionAlerts } from './test-utils';
 import { run } from './worker';
+import { ILike } from 'typeorm';
 
 jest.mock('../entities/anticipatoryActionAlerts.entity');
 
@@ -79,14 +80,7 @@ describe('worker', () => {
     );
     expect(mockedUpdate).toHaveBeenCalledWith(
       {
-        country: {
-          _type: 'ilike',
-          _value: 'mozambique',
-          _useParameter: true,
-          _multipleParameters: false,
-          _objectLiteralParameters: undefined,
-          _getSql: undefined,
-        },
+        country: ILike('mozambique'),
       },
       {
         lastStates: {
