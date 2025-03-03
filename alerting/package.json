@@ -27,7 +27,6 @@
     "typeorm-seeding": "ts-node $(yarn bin typeorm-seeding)",
     "alert-worker": "yarn ts-node src/alert-worker.ts",
     "aa-storm-alert-worker": "yarn ts-node src/aa-storm-alert-runner.ts",
-    "aa-storm-alert-worker-test": "yarn ts-node src/aa-storm-alert-runner.ts --testMode",
     "docker-alert": "source ../api/set_envs.sh && docker compose run --entrypoint 'yarn alert-worker' alerting-node"
   },
   "dependencies": {

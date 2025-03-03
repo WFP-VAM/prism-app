@@ -38,6 +38,6 @@ Follow these steps to test the email sending functionality for storm alerts:
 - Use this command to send test emails :
 
 ```bash
- sudo docker-compose run --entrypoint "yarn aa-storm-alert-worker --testEmail='email1@example.com,email2@example.com'" alerting-node 2>&1
+ sudo docker-compose run --entrypoint "yarn aa-storm-alert-worker --testEmail='email1@example.com,email2@example.com'" alerting-node
  ```
  - This email list will replace the mailing lists linked to each entry in your database.
