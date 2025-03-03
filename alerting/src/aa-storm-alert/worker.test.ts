@@ -83,8 +83,8 @@ describe('worker', () => {
     );
     expect(mockedUpdate).toHaveBeenCalledWith(
       {
-        country: 'mozambique',
         id: 1,
+        country: 'mozambique',
       },
       {
         lastStates: {
@@ -99,25 +99,23 @@ describe('worker', () => {
     );
   });
 
-
   it('updates the db for multiple alerts', async () => {
-
     const mockedUpdate = jest.fn();
-    
+
     const alerts = [
       buildAnticipatoryActionAlerts({ id: 1, country: 'mozambique' }),
       buildAnticipatoryActionAlerts({ id: 2, country: 'mozambique' }),
     ];
-  
+
     const mockedGetRepository = jest.fn().mockReturnValue({
       find: () => alerts,
       update: mockedUpdate,
     });
-  
+
     mockedCreateConnection.mockResolvedValue({
       getRepository: () => mockedGetRepository(),
     });
-  
+
     const availableReports = [
       {
         ref_time: '2025-01-30T12:00:00Z',
@@ -125,9 +123,9 @@ describe('worker', () => {
         path: '07-20242025/2025-01-30T12:00:00Z.json',
       },
     ];
-  
+
     mockedGetLatestAvailableReports.mockResolvedValue(availableReports);
-  
+
     const emailPayloads = [
       {
         activatedTriggers: {
@@ -142,17 +140,17 @@ describe('worker', () => {
         status: 'ready',
       },
     ];
-  
+
     mockedBuildEmailPayloads.mockResolvedValue(emailPayloads);
     mockedSendStormAlertEmail.mockResolvedValue(null);
-  
+
     await run();
-  
+
     expect(mockedCreateConnection).toHaveBeenCalled();
     expect(mockedGetRepository).toHaveBeenCalled();
     expect(mockedSendStormAlertEmail).toHaveBeenCalledTimes(2);
     expect(mockedSendStormAlertEmail).toHaveBeenCalledWith(emailPayloads[0]);
-  
+
     expect(mockedUpdate).toHaveBeenCalledTimes(2);
     expect(mockedUpdate).toHaveBeenCalledWith(
       {
@@ -168,7 +166,7 @@ describe('worker', () => {
         },
         lastRanAt: expect.any(Date),
         lastTriggeredAt: expect.any(Date),
-      }
+      },
     );
     expect(mockedUpdate).toHaveBeenCalledWith(
       {
@@ -184,7 +182,7 @@ describe('worker', () => {
         },
         lastRanAt: expect.any(Date),
         lastTriggeredAt: expect.any(Date),
-      }
+      },
     );
   });
 });

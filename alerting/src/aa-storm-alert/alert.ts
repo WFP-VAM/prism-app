@@ -19,7 +19,8 @@ global.fetch = nodeFetch;
 async function fetchAllReports(): Promise<ShortReportsResponseBody | null> {
   try {
     const data = await fetch(
-      'https://data.earthobservation.vam.wfp.org/public-share/aa/ts/outputs/dates.json');
+      'https://data.earthobservation.vam.wfp.org/public-share/aa/ts/outputs/dates.json',
+    );
     return await data.json();
   } catch {
     console.error('Error fetching all reports');
@@ -38,30 +39,35 @@ export async function getLatestAvailableReports() {
   }
 
   // Filter reports by state
-  const filteredReportsByState: ShortReportsResponseBody | null = Object.keys(allReports).reduce((acc, date) => {
+  const filteredReportsByState: ShortReportsResponseBody | null = Object.keys(
+    allReports,
+  ).reduce((acc, date) => {
     const dayReports = allReports[date];
-  
+
     // For each storm in the day, filter by state first
     const stormAcc = Object.keys(dayReports).reduce((stormAcc, stormName) => {
       const stormReports = dayReports[stormName];
-  
-      const filteredReports = stormReports.filter(report =>
-        report.state === WindState.ready || report.state === WindState.activated_48kt || report.state === WindState.activated_64kt
+
+      const filteredReports = stormReports.filter(
+        (report) =>
+          report.state === WindState.ready ||
+          report.state === WindState.activated_48kt ||
+          report.state === WindState.activated_64kt,
       );
-  
+
       // If no valid reports, skip this storm
       if (filteredReports.length > 0) {
         stormAcc[stormName] = filteredReports;
       }
-  
+
       return stormAcc;
     }, {});
-  
+
     // If there are valid storms for this date, add to the accumulator
     if (Object.keys(stormAcc).length > 0) {
       acc[date] = stormAcc;
     }
-  
+
     return acc;
   }, {});
 
@@ -222,7 +228,9 @@ export async function buildEmailPayloads(
         const { activated48kt, activated64kt } =
           getActivatedDistricts(detailedStormReport);
         const status = detailedStormReport.ready_set_results?.status;
-        const pastLandfall = IS_TEST ? false : hasLandfallOccured(detailedStormReport);
+        const pastLandfall = IS_TEST
+          ? false
+          : hasLandfallOccured(detailedStormReport);
 
         const isEmailNeeded = status
           ? shouldSendEmail(status, activated48kt, activated64kt, pastLandfall)
@@ -241,7 +249,8 @@ export async function buildEmailPayloads(
             email: emails,
             cycloneName: detailedStormReport.forecast_details.cyclone_name,
             cycloneTime: formatDate(
-              detailedStormReport.forecast_details.reference_time, 'DD/MM/YYYY HH:mm UTC'
+              detailedStormReport.forecast_details.reference_time,
+              'DD/MM/YYYY HH:mm UTC',
             ),
             activatedTriggers: {
               districts48kt: activated48kt,

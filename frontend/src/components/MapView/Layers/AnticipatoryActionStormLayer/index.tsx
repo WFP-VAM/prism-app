@@ -137,6 +137,12 @@ const AnticipatoryActionStormLayer = React.memo(
         .filter(feature => feature.properties.data_type === 'forecast')
         .map(feature => (feature.geometry as Point).coordinates);
 
+      // Add the first point of the future line to the past line to ensure they connect
+      if (futureLineCoordinates.length > 0 && pastLineCoordinates.length > 0) {
+        // eslint-disable-next-line fp/no-mutating-methods
+        pastLineCoordinates.push(futureLineCoordinates[0]);
+      }
+
       const pastLineFeature = {
         type: 'Feature' as const,
         geometry: {

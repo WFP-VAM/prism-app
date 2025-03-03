@@ -27,7 +27,7 @@
     "typeorm-seeding": "ts-node $(yarn bin typeorm-seeding)",
     "alert-worker": "yarn ts-node src/alert-worker.ts",
     "aa-storm-alert-worker": "yarn ts-node src/aa-storm-alert-runner.ts",
-    "aa-storm-alert-worker-test": "yarn ts-node src/aa-storm-alert-runner.ts --isTest",
+    "aa-storm-alert-worker-test": "yarn ts-node src/aa-storm-alert-runner.ts --testMode",
     "docker-alert": "source ../api/set_envs.sh && docker compose run --entrypoint 'yarn alert-worker' alerting-node"
   },
   "dependencies": {
@@ -42,7 +42,7 @@
     "pg": "^8.5.1",
     "prism-common": "file:../common",
     "puppeteer": "^24.1.1",
-    "typeorm": "0.2.31",
+    "typeorm": "^0.3.20",
     "typeorm-naming-strategies": "^1.1.0",
     "xml-js": "^1.6.11"
   },
