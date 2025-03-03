@@ -11,7 +11,7 @@ import { captureScreenshotFromUrl } from '../utils/capture-utils';
 import { formatDate } from '../utils/date';
 
 const args = process.argv.slice(2);
-const IS_TEST = args.includes('--isTest');
+const IS_TEST = args.some(arg => arg.startsWith('--testEmail='));
 
 // @ts-ignore
 global.fetch = nodeFetch;

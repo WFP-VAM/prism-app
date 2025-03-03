@@ -10,7 +10,18 @@ import { sendStormAlertEmail } from '../utils/email';
 import { ILike } from 'typeorm';
 
 const args = process.argv.slice(2);
-const IS_TEST = args.includes('--isTest');
+const testEmailArg = args.find(arg => arg.startsWith('--testEmail='));
+
+const overrideEmails: string[] = testEmailArg
+    ? testEmailArg.split('=')[1]?.split(',').map(email => email.trim()).filter(Boolean)
+    : [];
+
+const IS_TEST = overrideEmails.length > 0;
+
+if (IS_TEST) {
+    console.log('Running in test mode.');
+    console.log('Emails:', overrideEmails);
+} 
 
 // TODO: for later, we need to support multiple countries
 export const COUNTRY = 'mozambique';
@@ -53,7 +64,7 @@ export async function run() {
     );
   
     const basicPrismUrl = alert.prismUrl;
-    const emails = alert.emails;
+    const emails = IS_TEST ? overrideEmails : alert.emails;
   
     // check whether an email should be sent
     const emailPayloads = await buildEmailPayloads(
