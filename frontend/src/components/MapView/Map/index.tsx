@@ -61,6 +61,8 @@ const componentTypes: LayerComponentsMap<LayerType> = {
   },
 };
 
+const LAYERS_ABOVE_BOUNDARIES = ['anticipatory_action', 'geojson_polygon'];
+
 const {
   map: { boundingBox, minZoom, maxZoom, maxBounds },
 } = appConfig;
@@ -229,7 +231,10 @@ const MapComponent = memo(() => {
         return createElement(component as any, {
           key: layer.id,
           layer,
-          before: getBeforeId(index, layer.type === 'anticipatory_action'),
+          before: getBeforeId(
+            index,
+            LAYERS_ABOVE_BOUNDARIES.includes(layer.type),
+          ),
         });
       })}
       <AnalysisLayer before={firstBoundaryId} />
