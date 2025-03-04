@@ -121,7 +121,6 @@ jobs:
           cd frontend
           REACT_APP_QA_MODE=true GENERATE_SOURCEMAP=false REACT_APP_COUNTRY=${{ steps.country_regex.outputs.group1 || 'mozambique'}} yarn build
       - name: Deploy on firebase
-        id: firebase_deploy
         uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken: "${{ secrets.GITHUB_TOKEN }}"
@@ -142,7 +141,6 @@ jobs:
         country: [mozambique, cambodia, rbd]
     env:
       REACT_APP_SENTRY_URL: ${{ secrets.REACT_APP_SENTRY_URL }}
-      surge_url: prism-master-${{ matrix.country }}.surge.sh
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -178,10 +176,13 @@ jobs:
         run: |
           cd frontend
           GENERATE_SOURCEMAP=false REACT_APP_COUNTRY=${{ matrix.country }} yarn build
-      - name: Deploy on surge
-        uses: dswistowski/surge-sh-action@v1
+      - name: Deploy on firebase
+        uses: FirebaseExtended/action-hosting-deploy@v0
         with:
-          domain: ${{ env.surge_url }}
-          project: "frontend/build/."
-          login: ${{ secrets.surge_login }}
-          token: ${{ secrets.surge_token }}
+          repoToken: "${{ secrets.GITHUB_TOKEN }}"
+          firebaseServiceAccount: "${{ secrets.FIREBASE_SERVICE_ACCOUNT_PRISM_FRONTEND }}"
+          projectId: "prism-frontend"
+          target: "staging-target"
+          entryPoint: "frontend"
+          channelId: ${{ env.firebase_channel }}
+          expires: 30d

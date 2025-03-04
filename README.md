@@ -381,6 +381,6 @@ Runs `eslint` for all the source files. We use a custom Eslint configuration in 
 
 By default, a pre-commit hook is defined to run linting tasks on all _staged_ code before allowing a commit. This occurs using the [lint-staged](https://github.com/okonet/lint-staged) package, and can be configured in `./package.json#lint-staged`. The precommit task can be run manually using `yarn precommit`.
 
-### Creating pull request and deploying on Surge
+### Creating pull request and deploying on firebase
 
-By default, everytime a pull request is created, a CI/CD pipeline will run tests and deploy the code on a surge page (http://prism-[pr number].surge.sh). To specify a country that the build will be run on, start your pull request title with `COUNTRY=[country name]`. For example: `COUNTRY=cambodia Add new config options`.
+By default, everytime a pull request is created, a CI/CD pipeline will run tests and deploy the code on a firebase channel preview (http://staging-prism-frontend--prism-[pr number]-[random hash].web.app). To specify a country that the build will be run on, start your pull request title with `COUNTRY=[country name]`. For example: `COUNTRY=cambodia Add new config options`.

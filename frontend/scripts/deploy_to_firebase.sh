@@ -31,5 +31,9 @@ do
 
   # Deploy the app using surge
   echo "Deploying app for $country..."
-  yarn surge --project ./build --domain ${prefix}prism-$country.surge.sh
+  # Define a unique preview channel ID for each country
+  CHANNEL_ID="${prefix}prism-${country}"
+
+  # Firebase Preview channel deploy command
+  firebase hosting:channel:deploy $CHANNEL_ID --project prism-frontend
 done
