@@ -9,8 +9,8 @@ from pathlib import Path
 from typing import Any, NewType, Optional
 from urllib.parse import urlencode
 
-import numpy as np
 import rasterio  # type: ignore
+import duckdb
 from app.caching import CACHE_DIRECTORY, cache_file, get_json_file, is_file_valid
 from app.models import (
     FilePath,
@@ -29,8 +29,6 @@ from rasterstats import zonal_stats  # type: ignore
 from shapely.errors import GEOSException  # type: ignore
 from shapely.geometry import mapping, shape  # type: ignore
 from shapely.ops import unary_union  # type: ignore
-
-import geopandas as gpd
 
 logger = logging.getLogger(__name__)
 
@@ -103,16 +101,58 @@ def _read_zones(
             return load(f)
 
     elif ext == ".parquet":
-        # If bounding-box is provided, let GeoPandas do partial reads.
-        # For an S3 path like s3://my-bucket/my-zones.parquet
-        filters = []
-        if admin_level:
-            filters.append(("admin_level", "=", admin_level))
+        # Use DuckDB to read the Parquet file
+        con = duckdb.connect()
+        con.install_extension("spatial")
+        con.load_extension("spatial")
+        con.install_extension("httpfs")
+        con.load_extension("httpfs")
+        # Set up S3 credentials using CREATE SECRET with session token support
+        con.sql(
+            f"""
+            CREATE SECRET secret2 (
+                TYPE S3,
+                KEY_ID '{os.environ["AWS_ACCESS_KEY_ID"]}',
+                SECRET '{os.environ["AWS_SECRET_ACCESS_KEY"]}',
+                {f"SESSION_TOKEN '{os.environ['AWS_SESSION_TOKEN']}'" if os.environ.get("AWS_SESSION_TOKEN") else ""},
+                REGION '{os.environ["AWS_DEFAULT_REGION"]}'
+            );
+            """
+        )
 
-        gdf = gpd.read_parquet(zones_filepath, bbox=bbox, filters=filters)
+        # Create a temporary view for the filtered data
+        view_name = "filtered_zones"
+        query = (
+            f"CREATE VIEW {view_name} AS SELECT * FROM read_parquet('{zones_filepath}')"
+        )
+        if admin_level is not None:
+            query += f" WHERE admin_level = {admin_level}"
+        if bbox is not None:
+            minx, miny, maxx, maxy = bbox
+            query += f" AND ST_Contains(ST_MakeEnvelope({minx}, {miny}, {maxx}, {maxy}), geometry)"
 
-        # Convert that GeoDataFrame to a "FeatureCollection" dict to keep consistency
-        return _gdf_to_feature_collection_dict(gdf)
+        con.execute(query)
+
+        # Create a temporary GeoJSON file
+        temp_geojson = os.path.join(CACHE_DIRECTORY, "temp_zones.geojson")
+
+        # Export to GeoJSON using GDAL extension
+        con.sql(
+            f"""
+            COPY {view_name} TO '{temp_geojson}'
+            WITH (FORMAT GDAL, DRIVER 'GeoJSON', LAYER_CREATION_OPTIONS 'WRITE_BBOX=YES')
+            """
+        )
+
+        # Read the GeoJSON file
+        with open(temp_geojson, "r") as f:
+            geojson_data = load(f)
+
+        # Clean up
+        con.close()
+        os.remove(temp_geojson)
+
+        return geojson_data
 
     else:
         # If not recognized, raise an error
@@ -175,7 +215,7 @@ def _group_zones(
             logger.error(polygons)
             new_geometry = {}
 
-        if not "coordinates" in new_geometry:
+        if "coordinates" not in new_geometry:
             logger.error(
                 "Grouping of polygons %s returned an empty geometry for file %s.",
                 group_id,

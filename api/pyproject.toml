@@ -33,6 +33,7 @@ pytest-recording = "^0.13.2"
 geopandas = "^1.0.1"
 s3fs = "^2025.2.0"
 pyarrow = "^19.0.1"
+duckdb = "^1.2.0"
 
 [tool.poetry.group.dev.dependencies]
 black = "^24.3.0"
