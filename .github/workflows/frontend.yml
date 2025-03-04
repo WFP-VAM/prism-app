@@ -131,18 +131,6 @@ jobs:
           entryPoint: "frontend"
           channelId: ${{ env.firebase_channel }}
           expires: 30d
-          disableComment: true
-      - name: Get current date
-        id: date
-        run: echo "::set-output name=date::$(date +'%Y-%m-%dT%H:%M:%S')"
-      - name: Comment PR
-        uses: marocchino/sticky-pull-request-comment@v1
-        continue-on-error: true
-        with:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          message: |
-            Build succeeded and deployed at ${{ steps.firebase_deploy.outputs.details_url }} 
-            (hash ${{ github.event.pull_request.head.sha }} deployed at ${{ steps.date.outputs.date }})
 
   master_frontend_build_and_deploy:
     #needs: frontend_tests
