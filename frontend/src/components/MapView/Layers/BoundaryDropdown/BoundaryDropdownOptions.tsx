@@ -196,13 +196,13 @@ const BoundaryDropdownOptions = React.forwardRef(
                   if (map === undefined) {
                     return;
                   }
-                  const features = data.features.filter(
-                    f =>
-                      f &&
-                      f.properties?.[boundaryLayer.adminCode].startsWith(
-                        area.adminCode,
-                      ),
-                  );
+                  const features = data.features.filter(f => {
+                    const propValue = f?.properties?.[boundaryLayer.adminCode];
+                    if (typeof propValue === 'number') {
+                      return propValue === Number(area.adminCode);
+                    }
+                    return propValue?.startsWith(area.adminCode);
+                  });
                   const bboxUnion: BBox = bbox({
                     type: 'FeatureCollection',
                     features,
