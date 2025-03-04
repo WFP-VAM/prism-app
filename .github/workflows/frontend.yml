@@ -74,7 +74,7 @@ jobs:
   #       run: cd frontend && yarn build
 
   frontend_build_and_deploy:
-    needs: frontend_tests
+    #needs: frontend_tests
     if: github.event_name == 'pull_request'
     name: frontend_build_and_deploy
     runs-on: ubuntu-latest
