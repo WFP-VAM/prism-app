@@ -1,14 +1,9 @@
 import { memo, useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { BoundaryLayerProps, MapEventWrapFunctionProps } from 'config/types';
 import { LayerData } from 'context/layers/layer-data';
 import { showPopup } from 'context/tooltipStateSlice';
 import { Source, Layer, MapLayerMouseEvent } from 'react-map-gl/maplibre';
-import { setBoundaryRelationData } from 'context/mapStateSlice';
-import {
-  loadBoundaryRelations,
-  BoundaryRelationData,
-} from 'components/Common/BoundaryDropdown/utils';
 import { isPrimaryBoundaryLayer } from 'config/utils';
 import { toggleSelectedBoundary } from 'context/mapSelectionLayerStateSlice';
 import {
@@ -17,7 +12,6 @@ import {
 } from 'context/mapStateSlice/selectors';
 import { getFullLocationName } from 'utils/name-utils';
 
-import { languages } from 'i18n';
 import { Map as MaplibreMap } from 'maplibre-gl';
 import {
   findFeature,
@@ -25,6 +19,7 @@ import {
   getLayerMapId,
   useMapCallback,
 } from 'utils/map-utils';
+import { initPmtilesProtocol } from 'utils/pmtiles-utils';
 
 function onToggleHover(cursor: string, targetMap: MaplibreMap) {
   // eslint-disable-next-line no-param-reassign, fp/no-mutation
@@ -81,7 +76,6 @@ const onMouseLeave = () => (evt: MapLayerMouseEvent) =>
   onToggleHover('', evt.target);
 
 const BoundaryLayer = memo(({ layer, before }: ComponentProps) => {
-  const dispatch = useDispatch();
   const selectedMap = useSelector(mapSelector);
   const [isZoomLevelSufficient, setIsZoomLevelSufficient] = useState(
     !layer.minZoom,
@@ -92,7 +86,6 @@ const BoundaryLayer = memo(({ layer, before }: ComponentProps) => {
     | undefined;
   const { data } = boundaryLayer || {};
 
-  const isPrimaryLayer = isPrimaryBoundaryLayer(layer);
   const layerId = getLayerMapId(layer.id, 'fill');
 
   useMapCallback('click', layerId, layer, onClick);
@@ -116,25 +109,68 @@ const BoundaryLayer = memo(({ layer, before }: ComponentProps) => {
   }, [selectedMap, layer.minZoom]);
 
   useEffect(() => {
-    if (!data || !isPrimaryLayer) {
-      return;
+    if (layer.format === 'pmtiles') {
+      return initPmtilesProtocol();
     }
+    return undefined;
+  }, [layer.format]);
 
-    const dataDict = languages.reduce((relationsDict, lang) => {
-      const locationLevelNames =
-        lang === 'en' ? layer.adminLevelNames : layer.adminLevelLocalNames;
+  // This is causing a pretty massive performance hit. It seems to only be necessary for alerts.
+  // Is it used anywhere else???
+  // const dispatch = useDispatch();
+  // const isPrimaryLayer = isPrimaryBoundaryLayer(layer);
+  // useEffect(() => {
+  //   if (!data || !isPrimaryLayer) {
+  //     return;
+  //   }
 
-      const relations: BoundaryRelationData = loadBoundaryRelations(
-        data,
-        locationLevelNames,
-        layer,
-      );
+  //   const dataDict = languages.reduce((relationsDict, lang) => {
+  //     const locationLevelNames =
+  //       lang === 'en' ? layer.adminLevelNames : layer.adminLevelLocalNames;
 
-      return { ...relationsDict, [lang]: relations };
-    }, {});
+  //     const relations: BoundaryRelationData = loadBoundaryRelations(
+  //       data,
+  //       locationLevelNames,
+  //       layer,
+  //     );
 
-    dispatch(setBoundaryRelationData(dataDict));
-  }, [data, dispatch, layer, isPrimaryLayer]);
+  //     return { ...relationsDict, [lang]: relations };
+  //   }, {});
+
+  //   dispatch(setBoundaryRelationData(dataDict));
+  // }, [data, dispatch, layer, isPrimaryLayer]);
+
+  if (layer.format === 'pmtiles') {
+    return (
+      <Source
+        id={`source-${layer.id}`}
+        type="vector"
+        url={`pmtiles://${layer.path}`}
+      >
+        <Layer
+          id={getLayerMapId(layer.id)}
+          type="line"
+          source={`source-${layer.id}`}
+          source-layer={layer.layerName}
+          paint={{
+            ...layer.styles.line,
+            'line-opacity': isZoomLevelSufficient
+              ? layer.styles.line?.['line-opacity']
+              : 0,
+          }}
+          beforeId={before}
+        />
+        <Layer
+          id={layerId}
+          type="fill"
+          source={`source-${layer.id}`}
+          source-layer={layer.layerName}
+          paint={layer.styles.fill}
+          beforeId={before}
+        />
+      </Source>
+    );
+  }
 
   if (!data) {
     return null; // boundary layer hasn't loaded yet. We load it on init inside MapView. We can't load it here since its a dependency of other layers.

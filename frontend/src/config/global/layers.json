@@ -1,23 +1,4 @@
 {
-  "admin1_boundaries": {
-    "type": "boundary",
-    "path": "data/global/adm1_simplified.json",
-    "opacity": 0.8,
-    "admin_code": "adm1_id",
-    "admin_level_codes": ["adm0_id, adm1_id"],
-    "admin_level_names": ["adm0_name", "shapeName"],
-    "admin_level_local_names": ["adm0_name", "shapeName"],
-    "styles:": {
-      "fill": {
-        "fill-opacity": 0
-      },
-      "line": {
-        "line-color": "gray",
-        "line-width": 1,
-        "line-opacity": 0.8
-      }
-    }
-  },
   "daily_rainfall_forecast": {
     "opacity": 1
   },
@@ -51,7 +32,17 @@
         {
           "level": "0",
           "id": "dv_adm0_id",
-          "name": "adm0_name"
+          "name": "dv_adm0_name"
+        },
+        {
+          "level": "1",
+          "id": "dv_adm1_id",
+          "name": "dv_adm1_name"
+        },
+        {
+          "level": "2",
+          "id": "dv_adm2_id",
+          "name": "dv_adm2_name"
         }
       ],
       "type": "line"
@@ -81,7 +72,17 @@
         {
           "level": "0",
           "id": "dv_adm0_id",
-          "name": "adm0_name"
+          "name": "dv_adm0_name"
+        },
+        {
+          "level": "1",
+          "id": "dv_adm1_id",
+          "name": "dv_adm1_name"
+        },
+        {
+          "level": "2",
+          "id": "dv_adm2_id",
+          "name": "dv_adm2_name"
         }
       ],
       "type": "line"
@@ -111,7 +112,17 @@
         {
           "level": "0",
           "id": "dv_adm0_id",
-          "name": "adm0_name"
+          "name": "dv_adm0_name"
+        },
+        {
+          "level": "1",
+          "id": "dv_adm1_id",
+          "name": "dv_adm1_name"
+        },
+        {
+          "level": "2",
+          "id": "dv_adm2_id",
+          "name": "dv_adm2_name"
         }
       ],
       "type": "line"
@@ -138,7 +149,17 @@
         {
           "level": "0",
           "id": "dv_adm0_id",
-          "name": "adm0_name"
+          "name": "dv_adm0_name"
+        },
+        {
+          "level": "1",
+          "id": "dv_adm1_id",
+          "name": "dv_adm1_name"
+        },
+        {
+          "level": "2",
+          "id": "dv_adm2_id",
+          "name": "dv_adm2_name"
         }
       ],
       "type": "bar"
@@ -156,7 +177,17 @@
         {
           "level": "0",
           "id": "dv_adm0_id",
-          "name": "adm0_name"
+          "name": "dv_adm0_name"
+        },
+        {
+          "level": "1",
+          "id": "dv_adm1_id",
+          "name": "dv_adm1_name"
+        },
+        {
+          "level": "2",
+          "id": "dv_adm2_id",
+          "name": "dv_adm2_name"
         }
       ],
       "type": "bar"
@@ -174,7 +205,17 @@
         {
           "level": "0",
           "id": "dv_adm0_id",
-          "name": "adm0_name"
+          "name": "dv_adm0_name"
+        },
+        {
+          "level": "1",
+          "id": "dv_adm1_id",
+          "name": "dv_adm1_name"
+        },
+        {
+          "level": "2",
+          "id": "dv_adm2_id",
+          "name": "dv_adm2_name"
         }
       ],
       "type": "bar"
@@ -252,7 +293,17 @@
         {
           "level": "0",
           "id": "dv_adm0_id",
-          "name": "adm0_name"
+          "name": "dv_adm0_name"
+        },
+        {
+          "level": "1",
+          "id": "dv_adm1_id",
+          "name": "dv_adm1_name"
+        },
+        {
+          "level": "2",
+          "id": "dv_adm2_id",
+          "name": "dv_adm2_name"
         }
       ],
       "type": "line"
@@ -282,7 +333,17 @@
         {
           "level": "0",
           "id": "dv_adm0_id",
-          "name": "adm0_name"
+          "name": "dv_adm0_name"
+        },
+        {
+          "level": "1",
+          "id": "dv_adm1_id",
+          "name": "dv_adm1_name"
+        },
+        {
+          "level": "2",
+          "id": "dv_adm2_id",
+          "name": "dv_adm2_name"
         }
       ],
       "type": "line"

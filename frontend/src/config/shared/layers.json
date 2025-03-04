@@ -1,22 +1,66 @@
 {
-  "global_admin_boundaries": {
+  "global_admin2_boundaries": {
     "type": "boundary",
-    "path": "data/global/adm0_simplified.json",
+    "format": "pmtiles",
+    "path": "https://test-vector-datastore.s3.eu-central-1.amazonaws.com/public-pmtiles/global_admin_boundaries.pmtiles",
+    "layer_name": "admin2",
     "opacity": 0.8,
-    "admin_code": "dv_adm0_id",
-    "admin_level_codes": ["dv_adm0_id"],
-    "admin_level_names": ["adm0_name"],
-    "admin_level_local_names": ["adm0_name"],
     "styles:": {
       "fill": {
         "fill-opacity": 0
       },
       "line": {
         "line-color": "gray",
-        "line-width": 1,
-        "line-opacity": 0.8
+        "line-width": 0.5,
+        "line-opacity": 0.3
       }
-    }
+    },
+    "admin_code": "dv_adm2_id",
+    "admin_level_codes": ["dv_adm0_id", "dv_adm1_id", "dv_adm2_id"],
+    "admin_level_names": ["dv_adm0_name", "dv_adm1_name", "dv_adm2_name"],
+    "admin_level_local_names": ["dv_adm0_name", "dv_adm1_name", "dv_adm2_name"]
+  },
+  "global_admin1_boundaries": {
+    "type": "boundary",
+    "format": "pmtiles",
+    "path": "https://test-vector-datastore.s3.eu-central-1.amazonaws.com/public-pmtiles/global_admin_boundaries.pmtiles",
+    "layer_name": "admin1",
+    "opacity": 0.8,
+    "styles:": {
+      "fill": {
+        "fill-opacity": 0
+      },
+      "line": {
+        "line-color": "gray",
+        "line-width": 1.0,
+        "line-opacity": 0.3
+      }
+    },
+    "admin_code": "dv_adm1_id",
+    "admin_level_codes": ["dv_adm0_id", "dv_adm1_id"],
+    "admin_level_names": ["dv_adm0_name", "dv_adm1_name"],
+    "admin_level_local_names": ["dv_adm0_name", "dv_adm1_name"]
+  },
+  "global_admin0_boundaries": {
+    "type": "boundary",
+    "format": "pmtiles",
+    "path": "https://test-vector-datastore.s3.eu-central-1.amazonaws.com/public-pmtiles/global_admin_boundaries.pmtiles",
+    "layer_name": "admin0",
+    "opacity": 0.8,
+    "styles:": {
+      "fill": {
+        "fill-opacity": 0
+      },
+      "line": {
+        "line-color": "gray",
+        "line-width": 1.5,
+        "line-opacity": 0.3
+      }
+    },
+    "admin_code": "dv_adm0_id",
+    "admin_level_codes": ["dv_adm0_id"],
+    "admin_level_names": ["dv_adm0_name"],
+    "admin_level_local_names": ["dv_adm0_name"]
   },
   "daily_rainfall_forecast": {
     "title": "Rolling daily rainfall forecast",
