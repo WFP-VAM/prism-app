@@ -237,7 +237,7 @@ function AnticipatoryActionPanel() {
         </div>
         {!selectedDistrict && (
           <Typography>
-            {t('Summary data as of ')}
+            {t('Summary data of ')}
             {getFormattedDate(selectedDate, 'locale', t('date_locale'))}
           </Typography>
         )}
