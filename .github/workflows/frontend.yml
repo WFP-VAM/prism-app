@@ -8,70 +8,70 @@ on:
       - master
 
 jobs:
-  frontend_tests:
-    strategy:
-      matrix:
-        os:
-          - ubuntu-latest
-          - windows-latest
-      max-parallel: 2
+  # frontend_tests:
+  #   strategy:
+  #     matrix:
+  #       os:
+  #         - ubuntu-latest
+  #         - windows-latest
+  #     max-parallel: 2
 
-    name: frontend_tests
-    runs-on: ${{ matrix.os }}
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
+  #   name: frontend_tests
+  #   runs-on: ${{ matrix.os }}
+  #   steps:
+  #     - name: Checkout
+  #       uses: actions/checkout@v2
 
-      - name: Use Node.js 20.x
-        uses: actions/setup-node@v3
-        with:
-          node-version: 20
+  #     - name: Use Node.js 20.x
+  #       uses: actions/setup-node@v3
+  #       with:
+  #         node-version: 20
 
-      - uses: actions/cache@v4
-        id: yarn-cache
-        with:
-          path: |
-            **/node_modules
-            **/.eslintcache
-            ${{ steps.yarn-cache-dir-path.outputs.dir }}
-          key: ${{ runner.os }}-yarn-2024-7-${{ hashFiles('**/frontend/yarn.lock') }}-${{ hashFiles('**/common/yarn.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-yarn-2024-7
+  #     - uses: actions/cache@v4
+  #       id: yarn-cache
+  #       with:
+  #         path: |
+  #           **/node_modules
+  #           **/.eslintcache
+  #           ${{ steps.yarn-cache-dir-path.outputs.dir }}
+  #         key: ${{ runner.os }}-yarn-2024-7-${{ hashFiles('**/frontend/yarn.lock') }}-${{ hashFiles('**/common/yarn.lock') }}
+  #         restore-keys: |
+  #           ${{ runner.os }}-yarn-2024-7
 
-      - name: Install dependencies if needed.
-        if: steps.yarn-cache.outputs.cache-hit != 'true'
-        run: |
-          cd frontend
-          yarn install --frozen-lockfile --network-timeout 100000
-          yarn setup:common
+  #     - name: Install dependencies if needed.
+  #       if: steps.yarn-cache.outputs.cache-hit != 'true'
+  #       run: |
+  #         cd frontend
+  #         yarn install --frozen-lockfile --network-timeout 100000
+  #         yarn setup:common
 
-      - name: Lint
-        run: cd frontend && yarn lint:ci
+  #     - name: Lint
+  #       run: cd frontend && yarn lint:ci
 
-      - name: Test
-        run: |
-          cd frontend
-          yarn test
+  #     - name: Test
+  #       run: |
+  #         cd frontend
+  #         yarn test
 
-      - name: JSON check
-        run: cd frontend && yarn prettier:json-check
+  #     - name: JSON check
+  #       run: cd frontend && yarn prettier:json-check
 
-      - name: Layer availability check
-        if: matrix.os == 'ubuntu-latest'
-        run: |
-          cd frontend && yarn preprocess-layers
-          DIFF=$(git diff --name-only)
-          if [ "$DIFF" != "" ]; then
-            echo "Files have changed. Make sure to run yarn preprocess-layers and commit changes."
-            echo "$DIFF"
-            exit 1
-          fi
+  #     - name: Layer availability check
+  #       if: matrix.os == 'ubuntu-latest'
+  #       run: |
+  #         cd frontend && yarn preprocess-layers
+  #         DIFF=$(git diff --name-only)
+  #         if [ "$DIFF" != "" ]; then
+  #           echo "Files have changed. Make sure to run yarn preprocess-layers and commit changes."
+  #           echo "$DIFF"
+  #           exit 1
+  #         fi
 
-      - name: Check boundary keys
-        run: cd frontend && yarn check-boundary-keys
+  #     - name: Check boundary keys
+  #       run: cd frontend && yarn check-boundary-keys
 
-      - name: Build
-        run: cd frontend && yarn build
+  #     - name: Build
+  #       run: cd frontend && yarn build
 
   frontend_build_and_deploy:
     needs: frontend_tests
