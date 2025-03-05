@@ -77,7 +77,7 @@
     "d3-fetch": "^1.1.2",
     "date-fns": "^2.28.0",
     "domhandler": "^4.2.2",
-    "dompurify": "^2.5.4",
+    "dompurify": "^3.2.4",
     "enzyme": "^3.11.0",
     "enzyme-adapter-react-16": "^1.15.2",
     "enzyme-to-json": "^3.4.4",
