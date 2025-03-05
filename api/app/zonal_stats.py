@@ -10,8 +10,8 @@ from typing import Any, NewType, Optional
 from urllib.parse import urlencode
 
 import rasterio  # type: ignore
-import duckdb
 from app.caching import CACHE_DIRECTORY, cache_file, get_json_file, is_file_valid
+from app.duckdb import setup_duckdb_connection
 from app.models import (
     FilePath,
     GeoJSON,
@@ -102,23 +102,7 @@ def _read_zones(
 
     elif ext == ".parquet":
         # Use DuckDB to read the Parquet file
-        con = duckdb.connect()
-        con.install_extension("spatial")
-        con.load_extension("spatial")
-        con.install_extension("httpfs")
-        con.load_extension("httpfs")
-        # Set up S3 credentials using CREATE SECRET with session token support
-        con.sql(
-            f"""
-            CREATE SECRET secret2 (
-                TYPE S3,
-                KEY_ID '{os.environ["AWS_ACCESS_KEY_ID"]}',
-                SECRET '{os.environ["AWS_SECRET_ACCESS_KEY"]}',
-                {f"SESSION_TOKEN '{os.environ['AWS_SESSION_TOKEN']}'" if os.environ.get("AWS_SESSION_TOKEN") else ""},
-                REGION '{os.environ["AWS_DEFAULT_REGION"]}'
-            );
-            """
-        )
+        con = setup_duckdb_connection()
 
         # Create a temporary view for the filtered data
         view_name = "filtered_zones"
@@ -157,25 +141,6 @@ def _read_zones(
     else:
         # If not recognized, raise an error
         raise ValueError(f"Unsupported zones file format: {zones_filepath}")
-
-
-def _gdf_to_feature_collection_dict(gdf: gpd.GeoDataFrame) -> dict:
-    """Convert a GeoDataFrame into a dict that matches the 'FeatureCollection' structure."""
-    features = []
-    # Each row in the GDF becomes a feature
-    for idx, row in gdf.iterrows():
-        geom_mapping = mapping(row.geometry)
-        # We store all other columns in 'properties'
-        properties = {col: row[col] for col in gdf.columns if col != gdf.geometry.name}
-        features.append(
-            {
-                "type": "Feature",
-                "geometry": geom_mapping,
-                "properties": properties,
-            }
-        )
-
-    return {"type": "FeatureCollection", "features": features}
 
 
 def _extract_features_properties(
