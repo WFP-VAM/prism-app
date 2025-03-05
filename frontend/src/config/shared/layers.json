@@ -6,6 +6,7 @@
     "zones_path": "s3://test-vector-datastore/vectors/global_admin_boundaries/*/*.parquet",
     "layer_name": "admin2",
     "opacity": 0.8,
+    "disableAnalysis": true,
     "styles:": {
       "fill": {
         "fill-opacity": 0
@@ -28,6 +29,7 @@
     "zones_path": "https://test-vector-datastore.s3.eu-central-1.amazonaws.com/public-pmtiles/global_admin_boundaries.pmtiles",
     "layer_name": "admin1",
     "opacity": 0.8,
+    "disableAnalysis": true,
     "styles:": {
       "fill": {
         "fill-opacity": 0
