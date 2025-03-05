@@ -382,7 +382,6 @@ export type FilePath = string & { 'a path to a file': {} };
 export class BoundaryLayerProps extends CommonLayerProps {
   type: 'boundary' = 'boundary';
   path: FilePath; // path to admin_boundries.json file - web or local.
-  zonesPath: FilePath; // path to admin_boundries.parquet file in S3
   adminCode: AdminCodeString; // same value as last item in adminLevelCodes below
   adminLevelCodes: AdminCodeString[]; // Ordered as below
   adminLevelNames: AdminLevelNameString[]; // Ordered (Admin1, Admin2, ...)
@@ -394,6 +393,9 @@ export class BoundaryLayerProps extends CommonLayerProps {
 
   @optional
   format?: 'pmtiles' | 'geojson' = 'geojson';
+
+  @optional
+  zonesPath: FilePath; // path to admin_boundries.parquet file in S3
 
   @optional
   layerName?: string;
