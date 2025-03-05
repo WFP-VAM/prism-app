@@ -79,8 +79,8 @@ jobs:
     name: frontend_build_and_deploy
     runs-on: ubuntu-latest
     env:
-      surge_url: prism-${{ github.event.pull_request.number }}.surge.sh
       GIT_HASH: ${{ github.event.pull_request.head.sha }}
+      firebase_channel: prism-${{ github.event.pull_request.number }}
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -121,24 +121,16 @@ jobs:
         run: |
           cd frontend
           REACT_APP_QA_MODE=true GENERATE_SOURCEMAP=false REACT_APP_COUNTRY=${{ steps.country_regex.outputs.group1 || 'mozambique'}} yarn build
-      - name: Deploy on surge
-        uses: dswistowski/surge-sh-action@v1
+      - name: Deploy on firebase
+        uses: FirebaseExtended/action-hosting-deploy@v0
         with:
-          domain: ${{ env.surge_url }}
-          project: "frontend/build/."
-          login: ${{ secrets.surge_login }}
-          token: ${{ secrets.surge_token }}
-      - name: Get current date
-        id: date
-        run: echo "::set-output name=date::$(date +'%Y-%m-%dT%H:%M:%S')"
-      - name: Comment PR
-        uses: marocchino/sticky-pull-request-comment@v1
-        continue-on-error: true
-        with:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          message: |
-            Build succeeded and deployed at https://${{ env.surge_url }} 
-            (hash ${{ github.event.pull_request.head.sha }} deployed at ${{ steps.date.outputs.date }})
+          repoToken: "${{ secrets.GITHUB_TOKEN }}"
+          firebaseServiceAccount: "${{ secrets.FIREBASE_SERVICE_ACCOUNT_PRISM_FRONTEND }}"
+          projectId: "prism-frontend"
+          target: "staging-target"
+          entryPoint: "frontend"
+          channelId: ${{ env.firebase_channel }}
+          expires: 30d
 
   master_frontend_build_and_deploy:
     needs: frontend_tests
@@ -150,7 +142,6 @@ jobs:
         country: [mozambique, cambodia, rbd]
     env:
       REACT_APP_SENTRY_URL: ${{ secrets.REACT_APP_SENTRY_URL }}
-      surge_url: prism-master-${{ matrix.country }}.surge.sh
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -186,10 +177,13 @@ jobs:
         run: |
           cd frontend
           GENERATE_SOURCEMAP=false REACT_APP_COUNTRY=${{ matrix.country }} yarn build
-      - name: Deploy on surge
-        uses: dswistowski/surge-sh-action@v1
+      - name: Deploy on firebase
+        uses: FirebaseExtended/action-hosting-deploy@v0
         with:
-          domain: ${{ env.surge_url }}
-          project: "frontend/build/."
-          login: ${{ secrets.surge_login }}
-          token: ${{ secrets.surge_token }}
+          repoToken: "${{ secrets.GITHUB_TOKEN }}"
+          firebaseServiceAccount: "${{ secrets.FIREBASE_SERVICE_ACCOUNT_PRISM_FRONTEND }}"
+          projectId: "prism-frontend"
+          target: "staging-target"
+          entryPoint: "frontend"
+          channelId: ${{ env.firebase_channel }}
+          expires: 30d
