@@ -8,20 +8,25 @@ import {
 } from './alert';
 import { sendStormAlertEmail } from '../utils/email';
 import { ILike } from 'typeorm';
+import * as yargs from 'yargs';
 
 const args = process.argv.slice(2);
-const testEmailArg = args.find(arg => arg.startsWith('--testEmail='));
+const testEmailArg = args.find((arg) => arg.startsWith('--testEmail='));
 
 const overrideEmails: string[] = testEmailArg
-    ? testEmailArg.split('=')[1]?.split(',').map(email => email.trim()).filter(Boolean)
-    : [];
+  ? testEmailArg
+      .split('=')[1]
+      ?.split(',')
+      .map((email) => email.trim())
+      .filter(Boolean)
+  : [];
 
 const IS_TEST = overrideEmails.length > 0;
 
 if (IS_TEST) {
-    console.log('Running in test mode.');
-    console.log('Emails:', overrideEmails);
-} 
+  console.log('Running in test mode.');
+  console.log('Emails:', overrideEmails);
+}
 
 // TODO: for later, we need to support multiple countries
 export const COUNTRY = 'mozambique';
@@ -37,22 +42,41 @@ export const COUNTRY = 'mozambique';
  * @throws {Error} If no alert is found for the specified country in the database.
  */
 export async function run() {
-  // create a connection to the remote db
-  const connection = await createConnection();
+  let alerts;
+  let connection;
+  let alertRepository;
 
-  const alertRepository = connection.getRepository(AnticipatoryActionAlerts);
+  if (IS_TEST) {
+    const prismUrl = 'https://prism-1442.surge.sh';
+    console.log(
+      `Test mode: Using fake Mozambique alert with prismUrl: ${prismUrl}`,
+    );
+    alerts = [
+      {
+        id: 1,
+        country: COUNTRY,
+        emails: overrideEmails,
+        prismUrl,
+        lastStates: undefined,
+      },
+    ];
+  } else {
+    // create a connection to the remote db
+    connection = await createConnection();
+    alertRepository = connection.getRepository(AnticipatoryActionAlerts);
 
-  const latestAvailableReports = await getLatestAvailableReports();
-
-  // get the last alert which has been processed for email alert system
-  const alerts = await alertRepository.find({
-    where: { country: ILike(COUNTRY) },
-  });
+    // get the last alert which has been processed for email alert system
+    alerts = await alertRepository.find({
+      where: { country: ILike(COUNTRY) },
+    });
+  }
 
   if (alerts.length === 0) {
     console.error(`Error: No alert found for ${COUNTRY}`);
     return;
   }
+
+  const latestAvailableReports = await getLatestAvailableReports();
 
   for (const alert of alerts) {
     // filter reports which have been already processed
@@ -83,14 +107,20 @@ export async function run() {
       latestAvailableReports,
     );
 
-    // Update the country last processed reports
-    await alertRepository.update(
-      { id: alert.id, country: COUNTRY },
-      {
-        lastStates: updatedLastStates,
-        lastRanAt: new Date(),
-        ...(emailPayloads.length > 0 ? { lastTriggeredAt: new Date() } : {}),
-      },
-    );
+    if (!IS_TEST && alertRepository) {
+      // Update the country last processed reports
+      await alertRepository.update(
+        { id: alert.id, country: COUNTRY },
+        {
+          lastStates: updatedLastStates,
+          lastRanAt: new Date(),
+          ...(emailPayloads.length > 0 ? { lastTriggeredAt: new Date() } : {}),
+        },
+      );
+    }
+  }
+
+  if (connection) {
+    await connection.close();
   }
 }
