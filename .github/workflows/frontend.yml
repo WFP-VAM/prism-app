@@ -79,6 +79,7 @@ jobs:
     name: frontend_build_and_deploy
     runs-on: ubuntu-latest
     env:
+      GIT_HASH: ${{ github.event.pull_request.head.sha }}
       firebase_channel: prism-${{ github.event.pull_request.number }}
     steps:
       - name: Checkout

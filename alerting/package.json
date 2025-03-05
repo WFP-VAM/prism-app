@@ -27,6 +27,7 @@
   "dependencies": {
     "@turf/bbox": "^6.3.0",
     "bluebird": "^3.7.2",
+    "ejs": "^3.1.10",
     "geojson": "^0.5.0",
     "lodash": "^4.17.21",
     "moment": "^2.29.4",
@@ -34,11 +35,13 @@
     "nodemailer": "^6.9.9",
     "pg": "^8.5.1",
     "prism-common": "file:../common",
+    "puppeteer": "^24.1.1",
     "typeorm": "^0.3.0",
     "typeorm-naming-strategies": "^1.1.0",
     "xml-js": "^1.6.11"
   },
   "devDependencies": {
+    "@types/ejs": "^3.1.5",
     "@types/jest": "^29.5.12",
     "@types/node-fetch": "^2.5.8",
     "@types/nodemailer": "^6.4.1",
