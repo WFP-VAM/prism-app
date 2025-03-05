@@ -91,14 +91,14 @@ def _read_zones(
     dict
         A GeoJSON-style dictionary: {"type": "FeatureCollection", "features": [...]}
     """
-    _, ext = os.path.splitext(zones_filepath)
-    ext = ext.lower()
 
-    if ext == ".geojson" or ext == ".json":
+    # Check if filepath contains .json or .geojson (case insensitive)
+    filepath_lower = zones_filepath.lower()
+    if '.json' in filepath_lower or '.geojson' in filepath_lower:
         with open(zones_filepath, "r") as f:
             return load(f)
 
-    elif ext == ".parquet":
+    elif ".parquet" in filepath_lower:
         con = setup_duckdb_connection()
 
         # Create a temporary view for the filtered data
