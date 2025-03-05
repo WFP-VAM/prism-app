@@ -141,11 +141,7 @@ def stats(stats_model: StatsModel) -> list[dict[str, Any]]:
     if zones_geojson is not None:
         zones = cache_geojson(prefix="zones_geojson", geojson=zones_geojson)
     else:
-        zones = cache_file(
-            prefix="zones",
-            url=zones_url,
-            extension="json",
-        )
+        zones = zones_url
 
     wfs_response = None
     if wfs_params is not None:

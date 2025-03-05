@@ -11,7 +11,7 @@ from urllib.parse import urlencode
 
 import rasterio  # type: ignore
 from app.caching import CACHE_DIRECTORY, cache_file, get_json_file, is_file_valid
-from app.duckdb import setup_duckdb_connection
+from app.duckdb_utils import setup_duckdb_connection
 from app.models import (
     FilePath,
     GeoJSON,
@@ -107,7 +107,7 @@ def _read_zones(
         # Create a temporary view for the filtered data
         view_name = "filtered_zones"
         query = (
-            f"CREATE VIEW {view_name} AS SELECT * FROM read_parquet('{zones_filepath}')"
+            f"CREATE VIEW {view_name} AS SELECT * FROM read_parquet('{zones_filepath}', hive_partitioning=True, union_by_name=True)"
         )
         if admin_level is not None:
             query += f" WHERE admin_level = {admin_level}"
