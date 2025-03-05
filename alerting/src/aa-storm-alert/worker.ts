@@ -46,6 +46,7 @@ export async function run() {
   let alertRepository;
 
   if (IS_TEST) {
+    // TODO - replace with a more stable URL
     const prismUrl = 'https://prism-1420.surge.sh';
     console.log(
       `Test mode: Using fake Mozambique alert with prismUrl: ${prismUrl}`,
