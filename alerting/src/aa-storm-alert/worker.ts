@@ -8,7 +8,6 @@ import {
 } from './alert';
 import { sendStormAlertEmail } from '../utils/email';
 import { ILike } from 'typeorm';
-import * as yargs from 'yargs';
 
 const args = process.argv.slice(2);
 const testEmailArg = args.find((arg) => arg.startsWith('--testEmail='));
