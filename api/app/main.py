@@ -140,8 +140,14 @@ def stats(stats_model: StatsModel) -> list[dict[str, Any]]:
     zones: FilePath
     if zones_geojson is not None:
         zones = cache_geojson(prefix="zones_geojson", geojson=zones_geojson)
-    else:
+    elif zones_url.endswith(".parquet"):
         zones = zones_url
+    else:
+        zones = cache_file(
+            prefix="zones",
+            url=zones_url,
+            extension="json",
+        )
 
     wfs_response = None
     if wfs_params is not None:

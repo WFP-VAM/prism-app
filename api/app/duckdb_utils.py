@@ -1,4 +1,5 @@
 import os
+
 import duckdb
 
 
@@ -11,7 +12,7 @@ def setup_duckdb_connection():
     con.load_extension("httpfs")
 
     con.sql(
-            f"""
+        f"""
             CREATE SECRET secret2 (
                 TYPE S3,
                 KEY_ID '{os.environ["VECTOR_STORE_ACCESS_KEY_ID"]}',
@@ -20,6 +21,6 @@ def setup_duckdb_connection():
                 REGION '{os.environ["VECTOR_STORE_DEFAULT_REGION"]}'
             );
         """
-        )
+    )
 
     return con

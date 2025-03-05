@@ -91,24 +91,19 @@ def _read_zones(
     dict
         A GeoJSON-style dictionary: {"type": "FeatureCollection", "features": [...]}
     """
-    # Quick extension check
     _, ext = os.path.splitext(zones_filepath)
     ext = ext.lower()
 
     if ext == ".geojson":
-        # Existing local logic as before
         with open(zones_filepath, "r") as f:
             return load(f)
 
     elif ext == ".parquet":
-        # Use DuckDB to read the Parquet file
         con = setup_duckdb_connection()
 
         # Create a temporary view for the filtered data
         view_name = "filtered_zones"
-        query = (
-            f"CREATE VIEW {view_name} AS SELECT * FROM read_parquet('{zones_filepath}', hive_partitioning=True, union_by_name=True)"
-        )
+        query = f"CREATE VIEW {view_name} AS SELECT * FROM read_parquet('{zones_filepath}', hive_partitioning=True, union_by_name=True)"
         if admin_level is not None:
             query += f" WHERE admin_level = {admin_level}"
         if bbox is not None:
@@ -117,10 +112,8 @@ def _read_zones(
 
         con.execute(query)
 
-        # Create a temporary GeoJSON file
+        # Export to temp GeoJSON using GDAL extension
         temp_geojson = os.path.join(CACHE_DIRECTORY, "temp_zones.geojson")
-
-        # Export to GeoJSON using GDAL extension
         con.sql(
             f"""
             COPY {view_name} TO '{temp_geojson}'
@@ -128,11 +121,9 @@ def _read_zones(
             """
         )
 
-        # Read the GeoJSON file
         with open(temp_geojson, "r") as f:
             geojson_data = load(f)
 
-        # Clean up
         con.close()
         os.remove(temp_geojson)
 
