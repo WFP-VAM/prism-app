@@ -94,7 +94,7 @@ def _read_zones(
     _, ext = os.path.splitext(zones_filepath)
     ext = ext.lower()
 
-    if ext == ".geojson":
+    if ext == ".geojson" or ext == ".json":
         with open(zones_filepath, "r") as f:
             return load(f)
 
