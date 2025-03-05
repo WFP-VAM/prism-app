@@ -94,7 +94,7 @@ def _read_zones(
 
     # Check if filepath contains .json or .geojson (case insensitive)
     filepath_lower = zones_filepath.lower()
-    if '.json' in filepath_lower or '.geojson' in filepath_lower:
+    if ".json" in filepath_lower or ".geojson" in filepath_lower:
         with open(zones_filepath, "r") as f:
             return load(f)
 
