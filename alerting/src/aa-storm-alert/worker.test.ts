@@ -41,6 +41,7 @@ describe('worker', () => {
     });
     mockedCreateConnection.mockResolvedValue({
       getRepository: () => mockedGetRepository(),
+      close: jest.fn(),
     });
 
     const availableReports = [
@@ -114,6 +115,7 @@ describe('worker', () => {
 
     mockedCreateConnection.mockResolvedValue({
       getRepository: () => mockedGetRepository(),
+      close: jest.fn(),
     });
 
     const availableReports = [

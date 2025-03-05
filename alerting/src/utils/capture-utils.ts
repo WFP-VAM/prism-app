@@ -1,5 +1,5 @@
 import puppeteer, { Browser, Page, BoundingBox } from 'puppeteer';
-import { Jimp } from "jimp";
+import { Jimp } from 'jimp';
 
 interface CropRegion {
   x: number;
@@ -31,10 +31,13 @@ const MAX_RETRY = 3;
  * @param threshold -  Tolerance threshold (e.g., 250 = almost white)
  * @returns {Promise<boolean>} - Returns true if the image is white.
  */
-async function isBlankScreenshot(base64: string, threshold = 250): Promise<boolean> {
+async function isBlankScreenshot(
+  base64: string,
+  threshold = 250,
+): Promise<boolean> {
   const imageBuffer = Buffer.from(base64, 'base64');
   const image = await Jimp.read(imageBuffer);
-  
+
   let whitePixelCount = 0;
   const width = image.bitmap.width;
   const height = image.bitmap.height;
@@ -47,7 +50,7 @@ async function isBlankScreenshot(base64: string, threshold = 250): Promise<boole
 
     // if pixel is almost white
     if (r >= threshold && g >= threshold && b >= threshold) {
-        whitePixelCount++;
+      whitePixelCount++;
     }
   });
 
@@ -93,19 +96,19 @@ export async function captureScreenshotFromUrl(
   try {
     console.log('Starting screenshot process...');
 
-    browser = await puppeteer.launch({ 
+    browser = await puppeteer.launch({
       headless: true,
       args: [
-      '--use-gl=egl',
-      '--no-sandbox',
-      '--disable-setuid-sandbox',
-      '--disable-dev-shm-usage',
-      '--disable-gpu-sandbox',
-      '--enable-webgl',
-      '--ignore-gpu-blacklist',
-      '--window-size=1920,1080'
+        '--use-gl=egl',
+        '--no-sandbox',
+        '--disable-setuid-sandbox',
+        '--disable-dev-shm-usage',
+        '--disable-gpu-sandbox',
+        '--enable-webgl',
+        '--ignore-gpu-blacklist',
+        '--window-size=1920,1080',
       ],
-      defaultViewport: null
+      defaultViewport: null,
     });
 
     const page: Page = await browser.newPage();
@@ -117,7 +120,7 @@ export async function captureScreenshotFromUrl(
     // Wait for the element to be visible in the DOM
     await page.waitForSelector(screenshotTargetSelector, { visible: true });
 
-    await new Promise(resolve => setTimeout(resolve, 3000));
+    await new Promise((resolve) => setTimeout(resolve, 3000));
 
     // Check if the target element is a canvas
     const isCanvas = await page.evaluate((selector) => {
@@ -209,7 +212,7 @@ export async function captureScreenshotFromUrl(
               element && element.offsetWidth > 0 && element.offsetHeight > 0
             );
           },
-          { timeout: 30000 },
+          { timeout: 60000 },
           screenshotTargetSelector,
         )
         .catch((error) => {
@@ -256,7 +259,7 @@ export async function captureScreenshotFromUrl(
     };
 
     const mapElement = await page.$(screenshotTargetSelector);
-  
+
     if (!mapElement) {
       throw new Error('Screenshot target not found');
     }
@@ -276,7 +279,7 @@ export async function captureScreenshotFromUrl(
       isBlank = await isBlankScreenshot(base64Image);
       if (isBlank && retry <= maxRetry) {
         retry++;
-        console.log("Screenshot is probably blank, retrying... ", retry);
+        console.log('Screenshot is probably blank, retrying... ', retry);
       } else {
         break;
       }
