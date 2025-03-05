@@ -32,8 +32,12 @@ do
   # Deploy the app using surge
   echo "Deploying app for $country..."
   # Define a unique preview channel ID for each country
-  CHANNEL_ID="${prefix}prism-${country}"
+  CHANNEL_ID="${prefix}${country}"
 
   # Firebase Preview channel deploy command
-  firebase hosting:channel:deploy $CHANNEL_ID --project prism-frontend
+  firebase hosting:channel:deploy $CHANNEL_ID --project prism-frontend --only prod-target --expires 7d
+
+  echo "Deployed $country to preview channel. This link will expire in 7 days."
 done
+
+echo "All deployments complete. Remember that all preview links will expire in 7 days."
