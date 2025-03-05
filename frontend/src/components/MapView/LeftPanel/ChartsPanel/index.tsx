@@ -59,6 +59,11 @@ const boundaryLayer = getBoundaryLayersByAdminLevel(MAX_ADMIN_LEVEL);
 
 const chartLayers = getWMSLayersWithChart();
 
+const adminLookup =
+  chartLayers.length > 0
+    ? chartLayers[0]?.chartData?.levels[0]?.name
+    : undefined;
+
 const tabPanelType = Panel.Charts;
 
 function getProperties(
@@ -322,7 +327,21 @@ const ChartsPanel = memo(() => {
   );
 
   const getCountryName: (admProps: GeoJsonProperties) => string = useCallback(
-    admProps => (multiCountry ? admProps?.admin0Name : country),
+    admProps => {
+      if (!multiCountry) {
+        return country;
+      }
+
+      if (!admProps) {
+        return '';
+      }
+
+      if (adminLookup) {
+        return admProps[adminLookup] as string;
+      }
+
+      return (admProps.admin0Name as string) || '';
+    },
     [country],
   );
 

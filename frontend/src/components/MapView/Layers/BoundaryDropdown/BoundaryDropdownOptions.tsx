@@ -10,13 +10,15 @@ import { Map as MaplibreMap } from 'maplibre-gl';
 import { useSafeTranslation } from 'i18n';
 import { useSelector } from 'react-redux';
 import { layerDataSelector } from 'context/mapStateSlice/selectors';
-import { getBoundaryLayerSingleton } from 'config/utils';
+import { getDisplayBoundaryLayers } from 'config/utils';
 import { Search } from '@material-ui/icons';
 import { LayerData } from 'context/layers/layer-data';
 import { FixedSizeList as List } from 'react-window';
 import { BBox } from 'geojson';
 import bbox from '@turf/bbox';
 import { BoundaryLayerProps } from 'config/types';
+import { BoundaryLayerData } from 'context/layers/boundary';
+import { RootState } from 'context/store';
 import {
   BoundaryDropdownProps,
   flattenAreaTree,
@@ -24,7 +26,7 @@ import {
   TIMEOUT_ANIMATION_DELAY,
 } from './utils';
 
-const boundaryLayer = getBoundaryLayerSingleton();
+const boundaryLayers = getDisplayBoundaryLayers();
 
 const SearchField = React.forwardRef(
   (
@@ -83,15 +85,47 @@ const BoundaryDropdownOptions = React.forwardRef(
   ) => {
     const styles = useStyles();
     const { t, i18n: i18nLocale } = useSafeTranslation();
-    const boundaryLayerData = useSelector(
-      layerDataSelector(boundaryLayer.id),
-    ) as LayerData<BoundaryLayerProps> | undefined;
-    const { data } = boundaryLayerData || {};
+    const baseBoundaryLayer = useSelector(
+      layerDataSelector(boundaryLayers[0].id),
+    );
+    const { data: baseBoundaryLayerData } = baseBoundaryLayer || {};
+    // Create a single selector that gets all boundary layer data
+    const allBoundaryLayerData = useSelector((state: RootState) =>
+      boundaryLayers.reduce(
+        (acc, layer) => {
+          // eslint-disable-next-line fp/no-mutation
+          acc[layer.id] = layerDataSelector(layer.id)(
+            state,
+          ) as LayerData<BoundaryLayerProps>;
+          return acc;
+        },
+        {} as { [key: string]: LayerData<BoundaryLayerProps> | undefined },
+      ),
+    );
+
+    // Combine the data from all layers
+    const combinedData = useMemo(() => {
+      const layerData = Object.values(allBoundaryLayerData).filter(Boolean);
+      if (!layerData.length) {
+        return undefined;
+      }
+
+      return {
+        type: 'FeatureCollection',
+        features: layerData.flatMap(
+          layer => (layer?.data as BoundaryLayerData)?.features || [],
+        ),
+      };
+    }, [allBoundaryLayerData]);
 
     const areaTree = useMemo(
-      () => getAdminBoundaryTree(data, boundaryLayer, i18nLocale),
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-      [data?.features?.length, i18nLocale],
+      () =>
+        getAdminBoundaryTree(
+          baseBoundaryLayerData as BoundaryLayerData,
+          boundaryLayers[0],
+          i18nLocale,
+        ),
+      [baseBoundaryLayerData, i18nLocale],
     );
 
     const flattenedAreaList = useMemo(
@@ -99,7 +133,7 @@ const BoundaryDropdownOptions = React.forwardRef(
       [areaTree, search],
     );
 
-    if (!data) {
+    if (!combinedData) {
       return null;
     }
 
@@ -196,12 +230,12 @@ const BoundaryDropdownOptions = React.forwardRef(
                   if (map === undefined) {
                     return;
                   }
-                  const features = data.features.filter(
-                    f =>
-                      f &&
-                      f.properties?.[boundaryLayer.adminCode].startsWith(
+                  const features = combinedData.features.filter(f =>
+                    boundaryLayers.some(layer =>
+                      String(f.properties?.[layer.adminCode])?.startsWith(
                         area.adminCode,
                       ),
+                    ),
                   );
                   const bboxUnion: BBox = bbox({
                     type: 'FeatureCollection',
