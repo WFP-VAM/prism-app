@@ -47,7 +47,8 @@ export async function run() {
 
   if (IS_TEST) {
     // TODO - replace with a more stable URL
-    const prismUrl = 'staging-prism-frontend--prism-1420-p60j4if0.web.app';
+    const prismUrl =
+      'https://staging-prism-frontend--prism-1420-p60j4if0.web.app';
     console.log(
       `Test mode: Using fake Mozambique alert with prismUrl: ${prismUrl}`,
     );
