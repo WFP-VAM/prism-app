@@ -1,11 +1,34 @@
-import moment from 'moment';
-
 /**
- * Converts an ISO date string to a formatted string with weekday, date, and time in UTC.
+ * Formats a date into various formats.
  *
- * @param {string} isoDate - The ISO date string (e.g., "2024-03-12T14:00:00Z").
- * @returns {string} - The formatted date string in UTC (e.g., "Tuesday 12/03/2024 14:00 UTC", format: DD/MM/YYYY).
+ * @param {string | Date} date - The date to format (can be a string or Date object).
+ * @param {string} format - The desired format (e.g., 'YYYY-MM-DD', 'DD/MM/YYYY', 'YYYY-MM-DD HH:mm:ss').
+ * @returns {string} - The formatted date string.
  */
-export function formatDateToUTC(isoDate: string): string {
-  return moment(isoDate).utc().format('DD/MM/YYYY HH:mm [UTC]');
+export function formatDate(date: string | Date, format: string): string {
+  const dateObj = new Date(date);
+
+  if (isNaN(dateObj.getTime())) {
+    throw new Error("Invalid date format");
+  }
+
+  const day = dateObj.getUTCDate().toString().padStart(2, '0');
+  const month = (dateObj.getUTCMonth() + 1).toString().padStart(2, '0');
+  const year = dateObj.getUTCFullYear();
+  const hours = dateObj.getUTCHours().toString().padStart(2, '0');
+  const minutes = dateObj.getUTCMinutes().toString().padStart(2, '0');
+  const seconds = dateObj.getUTCSeconds().toString().padStart(2, '0');
+
+  switch (format) {
+    case 'YYYY-MM-DD':
+      return `${year}-${month}-${day}`;
+    case 'YYYY-MM-DD HH:mm':
+      return `${year}-${month}-${day} ${hours}:${minutes}`;
+    case 'YYYY-MM-DD HH:mm:ss':
+      return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+    case 'DD/MM/YYYY HH:mm UTC':
+      return `${day}/${month}/${year} ${hours}:${minutes} UTC`;
+    default:
+      throw new Error("Unsupported date format");
+  }
 }

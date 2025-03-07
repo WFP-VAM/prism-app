@@ -31,13 +31,11 @@
   },
   "dependencies": {
     "@turf/bbox": "^6.3.0",
-    "@types/jimp": "^0.2.28",
     "bluebird": "^3.7.2",
     "ejs": "^3.1.10",
     "geojson": "^0.5.0",
     "jimp": "^1.6.0",
     "lodash": "^4.17.21",
-    "moment": "^2.29.4",
     "node-fetch": "^2.6.7",
     "nodemailer": "^6.9.9",
     "pg": "^8.5.1",

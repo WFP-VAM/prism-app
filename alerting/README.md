@@ -28,3 +28,16 @@ VALUES ('Mozambique', ARRAY['email1@example.com'], 'https://prism.wfp.org');
 - **country**: The target country for the alert.  
 - **emails**: A list of email addresses that will receive the alert notification.  
 - **prism_url**: The base URL of the PRISM platform for redirection link and screenshot capture. 
+
+## Test sending emails for anticipatory action storm alerts
+
+Follow these steps to test the email sending functionality for storm alerts:
+
+- Run `docker-compose up` to launch the `alerting-node` and `alerting-db` processes
+- Make sure to have at least one entry in the database (See the Setup section for more details)
+- Use this command to send test emails :
+
+```bash
+ sudo docker-compose run --entrypoint "yarn aa-storm-alert-worker --testEmail='email1@example.com,email2@example.com'" alerting-node
+ ```
+ - This email list will replace the mailing lists linked to each entry in your database.

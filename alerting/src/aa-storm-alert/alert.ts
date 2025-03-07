@@ -7,9 +7,11 @@ import nodeFetch from 'node-fetch';
 import { WindState } from 'prism-common';
 import { StormDataResponseBody } from 'prism-common';
 import { StormAlertData } from '../types/email';
-import moment from 'moment';
 import { captureScreenshotFromUrl } from '../utils/capture-utils';
-import { formatDateToUTC } from '../utils/date';
+import { formatDate } from '../utils/date';
+
+const args = process.argv.slice(2);
+const IS_TEST = args.some(arg => arg.startsWith('--testEmail='));
 
 // @ts-ignore
 global.fetch = nodeFetch;
@@ -17,7 +19,8 @@ global.fetch = nodeFetch;
 async function fetchAllReports(): Promise<ShortReportsResponseBody | null> {
   try {
     const data = await fetch(
-      'https://data.earthobservation.vam.wfp.org/public-share/aa/ts/outputs/dates.json');
+      'https://data.earthobservation.vam.wfp.org/public-share/aa/ts/outputs/dates.json',
+    );
     return await data.json();
   } catch {
     console.error('Error fetching all reports');
@@ -35,18 +38,56 @@ export async function getLatestAvailableReports() {
     return [];
   }
 
+  // Filter reports by state
+  const filteredReportsByState: ShortReportsResponseBody | null = Object.keys(
+    allReports,
+  ).reduce((acc, date) => {
+    const dayReports = allReports[date];
+
+    // For each storm in the day, filter by state first
+    const stormAcc = Object.keys(dayReports).reduce((stormAcc, stormName) => {
+      const stormReports = dayReports[stormName];
+
+      const filteredReports = stormReports.filter(
+        (report) =>
+          report.state === WindState.ready ||
+          report.state === WindState.activated_48kt ||
+          report.state === WindState.activated_64kt,
+      );
+
+      // If no valid reports, skip this storm
+      if (filteredReports.length > 0) {
+        stormAcc[stormName] = filteredReports;
+      }
+
+      return stormAcc;
+    }, {});
+
+    // If there are valid storms for this date, add to the accumulator
+    if (Object.keys(stormAcc).length > 0) {
+      acc[date] = stormAcc;
+    }
+
+    return acc;
+  }, {});
+
+  // If no valid reports were found after filtering by state, return empty array
+  if (Object.keys(filteredReportsByState).length === 0) {
+    console.log('No valid reports available after filtering by state');
+    return [];
+  }
+
   // filter latest reports for all storms using day
-  const latestReportsDate = Object.keys(allReports).reduce(
+  const latestReportsDate = Object.keys(filteredReportsByState).reduce(
     (latestDateReports, currentDateReports) =>
       new Date(currentDateReports) > new Date(latestDateReports)
         ? currentDateReports
         : latestDateReports,
   );
 
-  const latestDayReports = allReports[latestReportsDate];
+  const latestDayReports = filteredReportsByState[latestReportsDate];
 
   // for each storm of the last day, keep only the latest report by time
-
   return Object.keys(latestDayReports).map((stormName) => {
     const stormShortReports = latestDayReports[stormName];
 
@@ -137,7 +178,7 @@ function hasLandfallOccured(report: StormDataResponseBody): boolean {
   const landfallInfo = report.landfall_info;
   if ('landfall_time' in landfallInfo) {
     const landfallOutermostTime = landfallInfo.landfall_time[1];
-    return moment().isAfter(moment(landfallOutermostTime));
+    return new Date() > new Date(landfallOutermostTime);
   }
   return false;
 }
@@ -162,7 +203,7 @@ function shouldSendEmail(
  * @param date date of the report
  */
 function buildPrismUrl(basicUrl: string, date: string) {
-  const reportDate = moment(date).format('YYYY-MM-DD');
+  const reportDate = formatDate(date, 'YYYY-MM-DD');
   return `${basicUrl}/?hazardLayerIds=anticipatory_action_storm&date=${reportDate}`;
 }
 
@@ -187,7 +228,9 @@ export async function buildEmailPayloads(
         const { activated48kt, activated64kt } =
           getActivatedDistricts(detailedStormReport);
         const status = detailedStormReport.ready_set_results?.status;
-        const pastLandfall = hasLandfallOccured(detailedStormReport);
+        const pastLandfall = IS_TEST
+          ? false
+          : hasLandfallOccured(detailedStormReport);
 
         const isEmailNeeded = status
           ? shouldSendEmail(status, activated48kt, activated64kt, pastLandfall)
@@ -205,8 +248,9 @@ export async function buildEmailPayloads(
           return {
             email: emails,
             cycloneName: detailedStormReport.forecast_details.cyclone_name,
-            cycloneTime: formatDateToUTC(
+            cycloneTime: formatDate(
               detailedStormReport.forecast_details.reference_time,
+              'DD/MM/YYYY HH:mm UTC',
             ),
             activatedTriggers: {
               districts48kt: activated48kt,

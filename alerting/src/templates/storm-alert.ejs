@@ -49,7 +49,7 @@
                         <% } %>
                     </p>
                     <% if (activatedTriggers) { %>
-                        <p>Projected wind speeds affecting districts in the next 72 hours:</p>
+                        <p>Projected wind speeds affecting pilot districts:</p>
                         <table class="table-container" style="width: 100%; border-collapse: collapse; font-size: 16px; font-weight: 700;">
                             <tr style="border: 1px solid #ddd; padding: 10px; text-align: left;">
                                 <td style="border: 1px solid #ddd; padding: 10px; text-align: left;">&gt; 89 km/h</td>
@@ -61,6 +61,7 @@
                             </tr>
                         </table>
                     <% } %>
+                    <p>For more information about landfall and trajectory, please access the dashboard using the link below:</p>
                     <div class="button-container" style="text-align: center; margin: 20px 0;">
                         <a href="<%= redirectUrl %>" target="_blank" rel="noopener noreferrer" aria-label="Access PRISM Tropical Storm Dashboard (opens in a new tab)" class="button" 
                            style="display: inline-block; text-align: center; background: rgba(99, 178, 189, 1); color: black; padding: 12px; text-decoration: none; border-radius: 5px; white-space: nowrap; font-weight: 600;">
@@ -118,7 +119,7 @@
         <% if (activatedTriggers) { %>
             Activation Triggers: Activated
     
-            Projected wind speeds affecting districts in the next 72 hours:
+            Projected wind speeds affecting pilot districts:
             - > 89 km/h: <%= activatedTriggers.districts48kt %>
             - > 118 km/h: <%= activatedTriggers.districts64kt %>
         <% } else { %>
