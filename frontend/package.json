@@ -137,7 +137,6 @@
     "@types/chart.js": "^2.9.21",
     "@types/colormap": "^2.3.1",
     "@types/d3": "^5.7.2",
-    "@types/dompurify": "^2.2.3",
     "@types/geojson": "^7946.0.7",
     "@types/jest": "^29.5.4",
     "@types/jsonpath": "^0.2.4",
