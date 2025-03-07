@@ -27,9 +27,9 @@ function ReadyTrigger() {
           </div>
           <div className={classes.rowWrapper}>
             <Typography>
-              {t(`Readiness trigger activated as there is a 20% likelihood of
-            Mozambique experiencing tropical storm-force winds within the next 5
-            days.`)}
+              {t(
+                `A system with severe tropical storm-force winds (or stronger) is expected to impact any of the 4 pilot provinces within the next five days, with a lead time of at least 72 hours.`,
+              )}
             </Typography>
           </div>
         </div>

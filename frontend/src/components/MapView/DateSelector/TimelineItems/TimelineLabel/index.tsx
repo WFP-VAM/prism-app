@@ -17,6 +17,8 @@ function TimelineLabel({
         variant="body2"
         className={classes.dateItemLabel}
         style={{ cursor: showDraggingCursor ? 'ew-resize' : 'default' }}
+        // prevent click on the label from triggering the date selection
+        onClick={e => e.stopPropagation()}
       >
         {format(
           date.value,

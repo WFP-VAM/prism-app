@@ -25,6 +25,11 @@ async function processAlert(alert: Alert, alertRepository: Repository<Alert>) {
   const { id, alertName, createdAt, email, lastTriggered, prismUrl, active } =
     alert;
 
+  if (!active) {
+    console.log(`Alert ${id} is not active. Skipping.`);
+    return;
+  }
+
   console.log(
     `Processing alert with ID: ${id}, Name: ${alertName}, Email: ${email}, Last Triggered: ${lastTriggered}, PRISM URL: ${prismUrl}`,
   );

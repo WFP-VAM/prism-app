@@ -24,12 +24,11 @@ import { useWindStatesByTime } from 'components/MapView/DateSelector/TimelineIte
 import { getAAColor } from 'components/MapView/LeftPanel/AnticipatoryActionPanel/AnticipatoryActionStormPanel/utils';
 import { AACategory } from 'context/anticipatoryAction/AAStormStateSlice/parsedStormDataTypes';
 import anticipatoryActionIcons from 'components/Common/AnticipatoryAction/icons';
-import { AAStormTimeSeriesFeature } from 'context/anticipatoryAction/AAStormStateSlice/rawStormDataTypes';
+import { AAStormTimeSeriesFeature, TimeSeries } from 'prism-common/';
 import maplibregl from 'maplibre-gl';
 import AAStormDatePopup from './AAStormDatePopup';
 import AAStormLandfallPopup from './AAStormLandfallPopup';
 
-import { TimeSeries } from './types';
 import AAStormLandfallMarker from './AAStormLandfallPopup/AAStormLandfallMarker/AAStormLandfallMarker';
 import { parseGeoJsonFeature } from './utils';
 import { findLandfallWindPoint } from './AAStormLandfallPopup/utils';
@@ -137,6 +136,12 @@ const AnticipatoryActionStormLayer = React.memo(
       const futureLineCoordinates = features
         .filter(feature => feature.properties.data_type === 'forecast')
         .map(feature => (feature.geometry as Point).coordinates);
+
+      // Add the first point of the future line to the past line to ensure they connect
+      if (futureLineCoordinates.length > 0 && pastLineCoordinates.length > 0) {
+        // eslint-disable-next-line fp/no-mutating-methods
+        pastLineCoordinates.push(futureLineCoordinates[0]);
+      }
 
       const pastLineFeature = {
         type: 'Feature' as const,

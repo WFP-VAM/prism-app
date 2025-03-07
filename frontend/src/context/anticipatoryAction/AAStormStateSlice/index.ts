@@ -1,10 +1,10 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { DateItem } from 'config/types';
+import { StormDataResponseBody } from 'prism-common/';
 import type { CreateAsyncThunkTypes, RootState } from '../../store';
 import { AAStormWindStateReports, AnticipatoryActionState } from './types';
 import { parseAndTransformAA } from './utils';
 import { ParsedStormData } from './parsedStormDataTypes';
-import { StormDataResponseBody } from './rawStormDataTypes';
 
 const initialState: AnticipatoryActionState = {
   data: {},
@@ -68,6 +68,10 @@ export const loadStormReport = createAsyncThunk<
       const data = parseAndTransformAA(stormData as StormDataResponseBody);
       return data;
     } catch (error) {
+      console.error(
+        'Stack trace:',
+        error instanceof Error ? error.stack : 'No stack trace available',
+      );
       return rejectWithValue(error);
     }
   },

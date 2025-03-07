@@ -2,23 +2,23 @@
 
 exports[`renders as expected 1`] = `
 <div>
-  <div
-    class="MuiGrid-root makeStyles-dateItem-2 MuiGrid-item MuiGrid-grid-xs-true"
-    data-date-index="0"
+  <mock-tooltip
+    arrow="true"
+    classes="[object Object]"
+    placement="top"
+    title="[object Object]"
+    transitioncomponent="[object Object]"
+    transitionprops="[object Object]"
   >
-    <mock-tooltip
-      arrow="true"
-      classes="[object Object]"
-      placement="top"
-      title="[object Object]"
-      transitioncomponent="[object Object]"
-      transitionprops="[object Object]"
+    <div
+      class="MuiGrid-root makeStyles-dateItem-2 MuiGrid-item MuiGrid-grid-xs-true"
+      data-date-index="0"
     >
       <div />
-    </mock-tooltip>
-    <div
-      class="makeStyles-dayItem-20"
-    />
-  </div>
+      <div
+        class="makeStyles-dayItem-20"
+      />
+    </div>
+  </mock-tooltip>
 </div>
 `;

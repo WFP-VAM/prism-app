@@ -24,7 +24,8 @@
     "experimentalDecorators": true,
     "downlevelIteration": true,
     "types": [
-      "jest"
+      "jest",
+      "node"
     ],
   },
   "include": [

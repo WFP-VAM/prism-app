@@ -1,6 +1,6 @@
 import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
 import { join } from 'path';
-import { DataSourceOptions } from 'typeorm';
+import { ConnectionOptions } from 'typeorm';
 
 // dotenv is a dev dependency, so conditionally import it (don't need it in Prod).
 try {
@@ -12,7 +12,13 @@ try {
 
 // If we have a PRISM_ALERTS_DATABASE_URL, use that
 const connectionInfo = process.env.PRISM_ALERTS_DATABASE_URL
-  ? { url: process.env.PRISM_ALERTS_DATABASE_URL }
+  ? {
+      url: process.env.PRISM_ALERTS_DATABASE_URL,
+      ssl:
+        process.env.POSTGRES_SSL === 'true'
+          ? true
+          : { rejectUnauthorized: false },
+    }
   : {
       host: process.env.POSTGRES_HOST || 'localhost',
       port:
@@ -24,6 +30,10 @@ const connectionInfo = process.env.PRISM_ALERTS_DATABASE_URL
       ...(process.env.POSTGRES_PASSWORD && {
         password: process.env.POSTGRES_PASSWORD,
       }),
+      ssl:
+        process.env.POSTGRES_SSL === 'true'
+          ? true
+          : { rejectUnauthorized: false },
     };
 
 // Unfortunately, we need to use CommonJS/AMD style exports rather than ES6-style modules for this due to how
@@ -51,4 +61,4 @@ export = {
     migrationsDir: 'migration',
     subscribersDir: 'subscriber',
   },
-} as unknown as DataSourceOptions;
+} as unknown as ConnectionOptions;

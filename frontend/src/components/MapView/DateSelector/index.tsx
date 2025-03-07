@@ -752,7 +752,6 @@ const useStyles = makeStyles((theme: Theme) =>
       position: 'relative',
       height: 54,
       flexGrow: 1,
-      cursor: 'e-resize',
       overflow: 'hidden',
     },
 
