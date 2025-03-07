@@ -127,7 +127,6 @@
   "devDependencies": {
     "@babel/preset-env": "^7.24.7",
     "@babel/preset-typescript": "^7.24.7",
-    "@fortawesome/fontawesome-common-types": "^6.5.1",
     "@react-pdf/types": "^2.1.0",
     "@testing-library/dom": "^10.3.1",
     "@testing-library/jest-dom": "^6.1.3",
