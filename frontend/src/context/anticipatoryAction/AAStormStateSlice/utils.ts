@@ -105,10 +105,10 @@ export function parseAndTransformAA(data: StormDataResponseBody): ResultType {
   const landfallInfo = data.landfall_info;
 
   // Determine if watched districts are active based on storm status
-  const isActivated =
-    exposedAreas &&
-    (exposedAreas.status === WindState.activated_64kt ||
-      exposedAreas.status === WindState.activated_48kt);
+  // const isActivated =
+  //   exposedAreas &&
+  //   (exposedAreas.status === WindState.activated_64kt ||
+  //     exposedAreas.status === WindState.activated_48kt);
 
   // Check if there is readiness based on storm status
   const readiness = exposedAreas?.status === WindState.ready;
@@ -120,19 +120,19 @@ export function parseAndTransformAA(data: StormDataResponseBody): ResultType {
     ([activeResult, naResult], categoryKey) => {
       const category = AACategoryKeyToCategoryMap[categoryKey];
 
-      // If the storm status is not active, all watched districts should be marked as inactive
-      if (!isActivated) {
-        return [
-          activeResult,
-          {
-            ...naResult,
-            [category]: {
-              districtNames: watchedDistricts[category] || [],
-              polygon: {},
-            },
-          },
-        ];
-      }
+      // // If the storm status is not active, all watched districts should be marked as inactive
+      // if (!isActivated) {
+      //   return [
+      //     activeResult,
+      //     {
+      //       ...naResult,
+      //       [category]: {
+      //         districtNames: watchedDistricts[category] || [],
+      //         polygon: {},
+      //       },
+      //     },
+      //   ];
+      // }
 
       // Get the affected area data for the current category
       const area = exposedAreas?.[categoryKey];
