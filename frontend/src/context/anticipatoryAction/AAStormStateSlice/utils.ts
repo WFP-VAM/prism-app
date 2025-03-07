@@ -159,7 +159,7 @@ export function parseAndTransformAA(data: StormDataResponseBody): ResultType {
           ...activeResult,
           [category]: {
             districtNames: active,
-            polygon: area.polygon,
+            polygon: area?.polygon,
           },
         },
         {
@@ -175,7 +175,7 @@ export function parseAndTransformAA(data: StormDataResponseBody): ResultType {
   );
 
   // Extract landfall impact details if available
-  const landfallImpactData = landfallInfo.landfall_time
+  const landfallImpactData = landfallInfo?.landfall_time
     ? {
         district: landfallInfo.landfall_impact_district,
         time: landfallInfo.landfall_time,

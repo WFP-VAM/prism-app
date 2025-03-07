@@ -68,6 +68,10 @@ export const loadStormReport = createAsyncThunk<
       const data = parseAndTransformAA(stormData as StormDataResponseBody);
       return data;
     } catch (error) {
+      console.error(
+        'Stack trace:',
+        error instanceof Error ? error.stack : 'No stack trace available',
+      );
       return rejectWithValue(error);
     }
   },
