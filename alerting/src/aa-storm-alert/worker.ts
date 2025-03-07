@@ -111,7 +111,7 @@ export async function run() {
     if (!IS_TEST && alertRepository) {
       // Update the country last processed reports
       await alertRepository.update(
-        { id: alert.id, country: COUNTRY },
+        { id: alert.id },
         {
           lastStates: updatedLastStates,
           lastRanAt: new Date(),
