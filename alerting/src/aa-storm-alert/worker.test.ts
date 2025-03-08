@@ -85,7 +85,6 @@ describe('worker', () => {
     expect(mockedUpdate).toHaveBeenCalledWith(
       {
         id: 1,
-        country: 'mozambique',
       },
       {
         lastStates: {
@@ -156,7 +155,6 @@ describe('worker', () => {
     expect(mockedUpdate).toHaveBeenCalledTimes(2);
     expect(mockedUpdate).toHaveBeenCalledWith(
       {
-        country: 'mozambique',
         id: 1,
       },
       {
@@ -172,7 +170,6 @@ describe('worker', () => {
     );
     expect(mockedUpdate).toHaveBeenCalledWith(
       {
-        country: 'mozambique',
         id: 2,
       },
       {
