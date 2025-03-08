@@ -11,7 +11,7 @@ import { captureScreenshotFromUrl } from '../utils/capture-utils';
 import { formatDate } from '../utils/date';
 
 const args = process.argv.slice(2);
-const IS_TEST = args.some(arg => arg.startsWith('--testEmail='));
+const IS_TEST = args.some((arg) => arg.startsWith('--testEmail='));
 
 // @ts-ignore
 global.fetch = nodeFetch;
@@ -204,7 +204,10 @@ function shouldSendEmail(
  */
 function buildPrismUrl(basicUrl: string, date: string) {
   const reportDate = formatDate(date, 'YYYY-MM-DD');
-  return `${basicUrl}/?hazardLayerIds=anticipatory_action_storm&date=${reportDate}`;
+  return new URL(
+    `?hazardLayerIds=anticipatory_action_storm&date=${reportDate}`,
+    basicUrl,
+  ).toString();
 }
 
 export async function buildEmailPayloads(

@@ -352,6 +352,29 @@ const AnticipatoryActionStormLayer = React.memo(
     );
 
     const getDistrictColor = (districtName: string, StormData: any) => {
+      if (
+        ![
+          ...(StormData.naDistricts?.Severe?.districtNames || []),
+          ...(StormData.naDistricts?.Moderate?.districtNames || []),
+          ...(StormData.activeDistricts?.Severe?.districtNames || []),
+          ...(StormData.activeDistricts?.Moderate?.districtNames || []),
+        ].includes(districtName)
+      ) {
+        return null;
+      }
+
+      if (
+        StormData.readiness &&
+        [
+          ...(StormData.activeDistricts?.Severe?.districtNames || []),
+          ...(StormData.activeDistricts?.Moderate?.districtNames || []),
+        ].includes(districtName)
+      ) {
+        return {
+          color: { background: '#63b2bd', text: 'white' },
+          opacity: 0.8,
+        };
+      }
       // Check active districts
       if (
         StormData.activeDistricts?.Moderate?.districtNames.includes(
@@ -522,44 +545,49 @@ const AnticipatoryActionStormLayer = React.memo(
 
         {/* 48kt and 64kt wind forecast areas */}
         <>
-          {stormData.activeDistricts?.Moderate?.polygon && (
-            <Source
-              key={`exposed-area-48kt-${reportId}`}
-              type="geojson"
-              data={stormData.activeDistricts?.Moderate?.polygon}
-            >
-              <Layer
-                id="exposed-area-48kt"
-                beforeId={getBeforeId()}
-                type="line"
-                paint={{
-                  'line-color': getAAColor(AACategory.Moderate, 'Active', true)
-                    .background,
-                  'line-width': 2,
-                  'line-opacity': 0.8,
-                }}
-              />
-            </Source>
-          )}
-          {stormData.activeDistricts?.Severe?.polygon && (
-            <Source
-              key={`exposed-area-64kt-${reportId}`}
-              type="geojson"
-              data={stormData.activeDistricts?.Severe?.polygon}
-            >
-              <Layer
-                id="exposed-area-64kt"
-                beforeId={getBeforeId()}
-                type="line"
-                paint={{
-                  'line-color': getAAColor(AACategory.Severe, 'Active', true)
-                    .background,
-                  'line-width': 2,
-                  'line-opacity': 0.8,
-                }}
-              />
-            </Source>
-          )}
+          {!stormData.readiness &&
+            stormData.activeDistricts?.Moderate?.polygon && (
+              <Source
+                key={`exposed-area-48kt-${reportId}`}
+                type="geojson"
+                data={stormData.activeDistricts?.Moderate?.polygon}
+              >
+                <Layer
+                  id="exposed-area-48kt"
+                  beforeId={getBeforeId()}
+                  type="line"
+                  paint={{
+                    'line-color': getAAColor(
+                      AACategory.Moderate,
+                      'Active',
+                      true,
+                    ).background,
+                    'line-width': 2,
+                    'line-opacity': 0.8,
+                  }}
+                />
+              </Source>
+            )}
+          {!stormData.readiness &&
+            stormData.activeDistricts?.Severe?.polygon && (
+              <Source
+                key={`exposed-area-64kt-${reportId}`}
+                type="geojson"
+                data={stormData.activeDistricts?.Severe?.polygon}
+              >
+                <Layer
+                  id="exposed-area-64kt"
+                  beforeId={getBeforeId()}
+                  type="line"
+                  paint={{
+                    'line-color': getAAColor(AACategory.Severe, 'Active', true)
+                      .background,
+                    'line-width': 2,
+                    'line-opacity': 0.8,
+                  }}
+                />
+              </Source>
+            )}
         </>
 
         <AAStormDatePopup timeSeries={stormData.timeSeries} />

@@ -110,8 +110,7 @@ function AnticipatoryActionStormPanel() {
           )}
         </Typography>
       </div>
-      <ReadyTrigger />
-      <ActivationTrigger dialogs={[]} />
+      {AAData.readiness ? <ReadyTrigger /> : <ActivationTrigger dialogs={[]} />}
     </div>
   );
 }
