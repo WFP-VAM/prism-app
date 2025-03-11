@@ -47,41 +47,50 @@ function AAStormTooltipContent({ date }: AAStormTooltipContentProps) {
     <div className={classes.container}>
       <div className={classes.dateAndCyclonesContainer}>
         <div className={classes.cyclonesContainer}>
-          {allWindStates.map(windStates => (
-            <div key={windStates.cycloneName} className={classes.cycloneRow}>
-              {areMultipleCyclonesActive && (
-                <Typography className={classes.cycloneName}>
-                  {windStates.cycloneName?.toUpperCase()}
-                </Typography>
-              )}
-              <ToggleButtonGroup
-                value={`${stormData.forecastDetails?.cyclone_name.toUpperCase()}::${stormData.forecastDetails?.reference_time}`}
-                exclusive
-                onChange={(e, value) =>
-                  hourToggleHandler(e, value, windStates.cycloneName || '')
-                }
-                style={{ marginRight: '8px' }}
-              >
-                {windStates?.states.map(item => {
-                  const itemDate = new Date(item.ref_time);
-                  const formattedItemTime = formatInUTC(itemDate, "haaa 'UTC'");
+          {/* eslint-disable-next-line fp/no-mutating-methods */}
+          {allWindStates
+            .sort((a, b) =>
+              (a.cycloneName || '').localeCompare(b.cycloneName || ''),
+            )
+            .map(windStates => (
+              <div key={windStates.cycloneName} className={classes.cycloneRow}>
+                {areMultipleCyclonesActive && (
+                  <Typography className={classes.cycloneName}>
+                    {windStates.cycloneName?.toUpperCase()}
+                  </Typography>
+                )}
+                <ToggleButtonGroup
+                  value={`${stormData.forecastDetails?.cyclone_name.toUpperCase()}::${stormData.forecastDetails?.reference_time}`}
+                  exclusive
+                  onChange={(e, value) =>
+                    hourToggleHandler(e, value, windStates.cycloneName || '')
+                  }
+                  style={{ marginRight: '8px' }}
+                >
+                  {windStates?.states.map((item, index) => {
+                    const itemDate = new Date(item.ref_time);
+                    const formattedItemTime = formatInUTC(
+                      itemDate,
+                      "haaa 'UTC'",
+                    );
 
-                  return (
-                    <ToggleButton
-                      key={`${windStates.cycloneName}::${itemDate.valueOf()}`}
-                      value={`${windStates.cycloneName?.toUpperCase()}::${item.ref_time}`}
-                      onMouseDown={e => e.preventDefault()}
-                      className={classes.toggleButton}
-                    >
-                      <Typography className={classes.time}>
-                        {formattedItemTime}
-                      </Typography>
-                    </ToggleButton>
-                  );
-                })}
-              </ToggleButtonGroup>
-            </div>
-          ))}
+                    return (
+                      <ToggleButton
+                        // eslint-disable-next-line react/no-array-index-key
+                        key={`${windStates.cycloneName}::${itemDate.valueOf()}::${index}`}
+                        value={`${windStates.cycloneName?.toUpperCase()}::${item.ref_time}::${index}`}
+                        onMouseDown={e => e.preventDefault()}
+                        className={classes.toggleButton}
+                      >
+                        <Typography className={classes.time}>
+                          {formattedItemTime}
+                        </Typography>
+                      </ToggleButton>
+                    );
+                  })}
+                </ToggleButtonGroup>
+              </div>
+            ))}
         </div>
         <Typography className={classes.date}>
           {formatInUTC(new Date(date.value), 'MM/dd/yy')}
