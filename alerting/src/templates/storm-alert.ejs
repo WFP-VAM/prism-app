@@ -27,15 +27,12 @@
                     <p class="content-subtitle" style="margin-bottom: 40px;">ANTICIPATORY ACTION ALERT FOR TROPICAL STORM <%= cycloneName %> - <%= cycloneTime %> - 
                         FORECAST BY REGIONAL SPECIALIZED METEOROLOGICAL CENTER LA REUNION
                     </p>
+                    <% if (readiness) { %>
                     <p class="trigger-title" style="margin: 20px 0; width: 100%; font-weight: bold; font-size: 16px;">
                         <span class="readiness-icon" style="width: 24px; height: 24px; border-radius: 8px; background-color: rgba(99, 178, 189, 1); display: inline-block; vertical-align: middle; margin-right: 10px;"></span> 
-                        Readiness Trigger: 
-                        <% if (readiness) { %>
-                            Activated
-                        <% } else { %>
-                            Not Activated
-                        <% } %>
+                        Readiness Trigger: Activated
                     </p>
+                    <% } %>
                     <% if (readiness) { %>
                         <p><%= cycloneTime %> A system with severe tropical storm-force winds (or stronger) is expected to impact any of the four pilot provinces within the next 5 days, with a lead time of at least 72 hours.</p>
                     <% } %>
@@ -108,8 +105,6 @@
     
         <% if (readiness) { %>
             Readiness Trigger: Activated
-        <% } else { %>
-            Readiness Trigger: Not Activated
         <% } %>
     
         <% if (readiness) { %>
