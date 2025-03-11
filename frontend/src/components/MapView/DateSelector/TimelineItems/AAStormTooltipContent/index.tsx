@@ -78,7 +78,7 @@ function AAStormTooltipContent({ date }: AAStormTooltipContentProps) {
                       <ToggleButton
                         // eslint-disable-next-line react/no-array-index-key
                         key={`${windStates.cycloneName}::${itemDate.valueOf()}::${index}`}
-                        value={`${windStates.cycloneName?.toUpperCase()}::${item.ref_time}::${index}`}
+                        value={`${windStates.cycloneName?.toUpperCase()}::${item.ref_time}`}
                         onMouseDown={e => e.preventDefault()}
                         className={classes.toggleButton}
                       >
