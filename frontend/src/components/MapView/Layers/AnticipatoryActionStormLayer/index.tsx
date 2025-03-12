@@ -545,49 +545,44 @@ const AnticipatoryActionStormLayer = React.memo(
 
         {/* 48kt and 64kt wind forecast areas */}
         <>
-          {!stormData.readiness &&
-            stormData.activeDistricts?.Moderate?.polygon && (
-              <Source
-                key={`exposed-area-48kt-${reportId}`}
-                type="geojson"
-                data={stormData.activeDistricts?.Moderate?.polygon}
-              >
-                <Layer
-                  id="exposed-area-48kt"
-                  beforeId={getBeforeId()}
-                  type="line"
-                  paint={{
-                    'line-color': getAAColor(
-                      AACategory.Moderate,
-                      'Active',
-                      true,
-                    ).background,
-                    'line-width': 2,
-                    'line-opacity': 0.8,
-                  }}
-                />
-              </Source>
-            )}
-          {!stormData.readiness &&
-            stormData.activeDistricts?.Severe?.polygon && (
-              <Source
-                key={`exposed-area-64kt-${reportId}`}
-                type="geojson"
-                data={stormData.activeDistricts?.Severe?.polygon}
-              >
-                <Layer
-                  id="exposed-area-64kt"
-                  beforeId={getBeforeId()}
-                  type="line"
-                  paint={{
-                    'line-color': getAAColor(AACategory.Severe, 'Active', true)
-                      .background,
-                    'line-width': 2,
-                    'line-opacity': 0.8,
-                  }}
-                />
-              </Source>
-            )}
+          {stormData.activeDistricts?.Moderate?.polygon && (
+            <Source
+              key={`exposed-area-48kt-${reportId}`}
+              type="geojson"
+              data={stormData.activeDistricts?.Moderate?.polygon}
+            >
+              <Layer
+                id="exposed-area-48kt"
+                beforeId={getBeforeId()}
+                type="line"
+                paint={{
+                  'line-color': getAAColor(AACategory.Moderate, 'Active', true)
+                    .background,
+                  'line-width': 2,
+                  'line-opacity': 0.8,
+                }}
+              />
+            </Source>
+          )}
+          {stormData.activeDistricts?.Severe?.polygon && (
+            <Source
+              key={`exposed-area-64kt-${reportId}`}
+              type="geojson"
+              data={stormData.activeDistricts?.Severe?.polygon}
+            >
+              <Layer
+                id="exposed-area-64kt"
+                beforeId={getBeforeId()}
+                type="line"
+                paint={{
+                  'line-color': getAAColor(AACategory.Severe, 'Active', true)
+                    .background,
+                  'line-width': 2,
+                  'line-opacity': 0.8,
+                }}
+              />
+            </Source>
+          )}
         </>
 
         <AAStormDatePopup timeSeries={stormData.timeSeries} />
