@@ -41,7 +41,20 @@ function AAStormTooltipContent({ date }: AAStormTooltipContentProps) {
     );
   };
 
-  const areMultipleCyclonesActive = allWindStates.length > 1;
+  const getButtonColor = (status: string | undefined) => {
+    switch (status) {
+      case 'monitoring':
+        return '#e0e0e0';
+      case 'ready':
+        return '#63B2BD';
+      case 'activated_48kt':
+        return '#FF8934';
+      case 'activated_68kt':
+        return '#E63701';
+      default:
+        return '#ffff';
+    }
+  };
 
   return (
     <div className={classes.container}>
@@ -54,13 +67,10 @@ function AAStormTooltipContent({ date }: AAStormTooltipContentProps) {
             )
             .map(windStates => (
               <div key={windStates.cycloneName} className={classes.cycloneRow}>
-                {areMultipleCyclonesActive && (
-                  <Typography className={classes.cycloneName}>
-                    {windStates.cycloneName?.toUpperCase()}
-                  </Typography>
-                )}
+                <Typography className={classes.cycloneName}>
+                  {windStates.cycloneName?.toUpperCase()}
+                </Typography>
                 <ToggleButtonGroup
-                  value={`${stormData.forecastDetails?.cyclone_name.toUpperCase()}::${stormData.forecastDetails?.reference_time}`}
                   exclusive
                   onChange={(e, value) =>
                     hourToggleHandler(e, value, windStates.cycloneName || '')
@@ -81,6 +91,18 @@ function AAStormTooltipContent({ date }: AAStormTooltipContentProps) {
                         value={`${windStates.cycloneName?.toUpperCase()}::${item.ref_time}`}
                         onMouseDown={e => e.preventDefault()}
                         className={classes.toggleButton}
+                        style={{
+                          backgroundColor: `${getButtonColor(item.state)}${
+                            `${windStates.cycloneName?.toUpperCase()}::${item.ref_time}` ===
+                            // eslint-disable-next-line no-unsafe-optional-chaining, prefer-template
+                            stormData.forecastDetails?.cyclone_name.toUpperCase() +
+                              '::' +
+                              // eslint-disable-next-line no-unsafe-optional-chaining
+                              stormData.forecastDetails?.reference_time
+                              ? ''
+                              : '50'
+                          }`,
+                        }}
                       >
                         <Typography className={classes.time}>
                           {formattedItemTime}
