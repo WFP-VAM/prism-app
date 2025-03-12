@@ -1,30 +1,34 @@
 /**
- * Converts an ISO date string to a formatted string with weekday, date, and time in UTC.
+ * Formats a date into various formats.
  *
- * @param {string} isoDate - The ISO date string (e.g., "2024-12-12T00:00:00Z").
- * @returns {string} - The formatted date string (e.g., "Tuesday 12/03/2024 14:00 UTC").
+ * @param {string | Date} date - The date to format (can be a string or Date object).
+ * @param {string} format - The desired format (e.g., 'YYYY-MM-DD', 'DD/MM/YYYY', 'YYYY-MM-DD HH:mm:ss').
+ * @returns {string} - The formatted date string.
  */
-export function formatDateToUTC(isoDate: string): string {
-    const dateObj = new Date(isoDate);
+export function formatDate(date: string | Date, format: string): string {
+  const dateObj = new Date(date);
 
-    if (isNaN(dateObj.getTime())) {
-        throw new Error("Invalid date format");
-    }
+  if (isNaN(dateObj.getTime())) {
+    throw new Error("Invalid date format");
+  }
 
-    const options: Intl.DateTimeFormatOptions = {
-        weekday: "long",
-        year: "numeric",
-        month: "2-digit",
-        day: "2-digit",
-        hour: "2-digit",
-        minute: "2-digit",
-        timeZone: "UTC",
-        hour12: false
-    };
+  const day = dateObj.getUTCDate().toString().padStart(2, '0');
+  const month = (dateObj.getUTCMonth() + 1).toString().padStart(2, '0');
+  const year = dateObj.getUTCFullYear();
+  const hours = dateObj.getUTCHours().toString().padStart(2, '0');
+  const minutes = dateObj.getUTCMinutes().toString().padStart(2, '0');
+  const seconds = dateObj.getUTCSeconds().toString().padStart(2, '0');
 
-    const formattedDate = new Intl.DateTimeFormat("en-US", options).format(dateObj);
-
-    const [weekday, month, day, year, time] = formattedDate.split(/[\s,]+/);
-    return `${weekday} ${day}/${month}/${year} ${time} UTC`;
+  switch (format) {
+    case 'YYYY-MM-DD':
+      return `${year}-${month}-${day}`;
+    case 'YYYY-MM-DD HH:mm':
+      return `${year}-${month}-${day} ${hours}:${minutes}`;
+    case 'YYYY-MM-DD HH:mm:ss':
+      return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+    case 'DD/MM/YYYY HH:mm UTC':
+      return `${day}/${month}/${year} ${hours}:${minutes} UTC`;
+    default:
+      throw new Error("Unsupported date format");
+  }
 }
-

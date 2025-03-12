@@ -1,3 +1,4 @@
+import { WindState, StormDataResponseBody } from 'prism-common/';
 import {
   AACategory,
   AACategoryDataToLandfallMap,
@@ -8,7 +9,6 @@ import {
   MergedFeatures,
   ResultType,
 } from './parsedStormDataTypes';
-import { StormDataResponseBody, WindState } from './rawStormDataTypes';
 
 const districtNameMapping: { [key: string]: string } = {
   Maganja_Da_Costa: 'Maganja Da Costa',
@@ -105,10 +105,10 @@ export function parseAndTransformAA(data: StormDataResponseBody): ResultType {
   const landfallInfo = data.landfall_info;
 
   // Determine if watched districts are active based on storm status
-  const isActivated =
-    exposedAreas &&
-    (exposedAreas.status === WindState.activated_64kt ||
-      exposedAreas.status === WindState.activated_48kt);
+  // const isActivated =
+  //   exposedAreas &&
+  //   (exposedAreas.status === WindState.activated_64kt ||
+  //     exposedAreas.status === WindState.activated_48kt);
 
   // Check if there is readiness based on storm status
   const readiness = exposedAreas?.status === WindState.ready;
@@ -120,29 +120,26 @@ export function parseAndTransformAA(data: StormDataResponseBody): ResultType {
     ([activeResult, naResult], categoryKey) => {
       const category = AACategoryKeyToCategoryMap[categoryKey];
 
-      // If the storm status is not active, all watched districts should be marked as inactive
-      if (!isActivated) {
-        return [
-          activeResult,
-          {
-            ...naResult,
-            [category]: {
-              districtNames: watchedDistricts[category] || [],
-              polygon: {},
-            },
-          },
-        ];
-      }
+      // // If the storm status is not active, all watched districts should be marked as inactive
+      // if (!isActivated) {
+      //   return [
+      //     activeResult,
+      //     {
+      //       ...naResult,
+      //       [category]: {
+      //         districtNames: watchedDistricts[category] || [],
+      //         polygon: {},
+      //       },
+      //     },
+      //   ];
+      // }
 
       // Get the affected area data for the current category
       const area = exposedAreas?.[categoryKey];
-      if (!area) {
-        return [activeResult, naResult]; // Skip if no data for this category
-      }
 
       // Convert affected districts into a Set for fast lookups
       const affectedDistricts = new Set(
-        area.affected_districts?.map(d => districtNameMapping[d] || d) || [],
+        area?.affected_districts?.map(d => districtNameMapping[d] || d) || [],
       );
 
       // Retrieve the watched districts for this category
@@ -162,7 +159,7 @@ export function parseAndTransformAA(data: StormDataResponseBody): ResultType {
           ...activeResult,
           [category]: {
             districtNames: active,
-            polygon: area.polygon,
+            polygon: area?.polygon,
           },
         },
         {
@@ -178,7 +175,7 @@ export function parseAndTransformAA(data: StormDataResponseBody): ResultType {
   );
 
   // Extract landfall impact details if available
-  const landfallImpactData = landfallInfo.landfall_time
+  const landfallImpactData = landfallInfo?.landfall_time
     ? {
         district: landfallInfo.landfall_impact_district,
         time: landfallInfo.landfall_time,

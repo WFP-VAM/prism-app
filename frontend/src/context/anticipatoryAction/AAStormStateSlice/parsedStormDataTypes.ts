@@ -1,5 +1,5 @@
 import { Feature, Geometry, GeoJsonProperties } from 'geojson';
-import { ForecastDetails, TimeSeries } from './rawStormDataTypes';
+import { ForecastDetails, TimeSeries } from 'prism-common/';
 
 export enum AACategory {
   Severe = 'Severe',

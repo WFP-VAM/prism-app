@@ -2,12 +2,12 @@ import { MapLayerMouseEvent, Popup } from 'react-map-gl/maplibre';
 import _React, { useCallback, useState } from 'react';
 import { createStyles, makeStyles, Typography } from '@material-ui/core';
 import { useMapCallback } from 'utils/map-utils';
-import { formatWindPointDate } from '../utils';
 import {
+  AAStormTimeSeriesFeature,
   FeaturePropertyDataType,
   TimeSeries,
-  TimeSeriesFeature,
-} from '../types';
+} from 'prism-common/';
+import { formatWindPointDate } from '../utils';
 
 interface AAStormDatePopupProps {
   timeSeries?: TimeSeries;
@@ -16,12 +16,14 @@ interface AAStormDatePopupProps {
 function AAStormDatePopup({ timeSeries }: AAStormDatePopupProps) {
   const classes = useStyles();
   const [selectedFeature, setSelectedFeature] =
-    useState<TimeSeriesFeature | null>(null);
+    useState<AAStormTimeSeriesFeature | null>(null);
 
   const onMouseEnter = useCallback(
     () => (evt: MapLayerMouseEvent) => {
       evt.preventDefault();
-      setSelectedFeature(evt.features?.[0] as unknown as TimeSeriesFeature);
+      setSelectedFeature(
+        evt.features?.[0] as unknown as AAStormTimeSeriesFeature,
+      );
     },
     [],
   );
@@ -48,17 +50,16 @@ function AAStormDatePopup({ timeSeries }: AAStormDatePopupProps) {
     onMouseLeave,
   );
 
-  const lastAnalyzedTimePoint: TimeSeriesFeature | undefined =
+  const firstForecastPoint: AAStormTimeSeriesFeature | undefined =
     // eslint-disable-next-line fp/no-mutating-methods
     timeSeries?.features
       .slice()
-      .reverse()
       .find(
         feature =>
-          feature.properties.data_type === FeaturePropertyDataType.analysis,
+          feature.properties.data_type === FeaturePropertyDataType.forecast,
       );
 
-  function renderPopup(feature?: TimeSeriesFeature | null) {
+  function renderPopup(feature?: AAStormTimeSeriesFeature | null) {
     if (!feature) {
       return null;
     }
@@ -89,7 +90,7 @@ function AAStormDatePopup({ timeSeries }: AAStormDatePopupProps) {
   function renderHoveredPopup() {
     // Don't show hover popup if there's no selection or if hovering the last analyzed point
     // (last analyzed point already has a permanent popup)
-    if (!selectedFeature || selectedFeature.id === lastAnalyzedTimePoint?.id) {
+    if (!selectedFeature || selectedFeature.id === firstForecastPoint?.id) {
       return null;
     }
 
@@ -99,7 +100,7 @@ function AAStormDatePopup({ timeSeries }: AAStormDatePopupProps) {
   return (
     <>
       {/* Permanently render the popup for the last analyzed point */}
-      {renderPopup(lastAnalyzedTimePoint)}
+      {renderPopup(firstForecastPoint)}
 
       {renderHoveredPopup()}
     </>

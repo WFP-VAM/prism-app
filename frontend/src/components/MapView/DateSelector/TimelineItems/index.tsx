@@ -65,7 +65,7 @@ const TimelineItems = memo(
       [classes],
     );
 
-    const isShowingAAStormLayer = orderedLayers.find(
+    const isShowingAAStormLayer = orderedLayers.some(
       layer => layer.id === AnticipatoryAction.storm,
     );
 
@@ -93,31 +93,37 @@ const TimelineItems = memo(
         {dateRange.map((date, index) => {
           const isDateAvailable = availableDatesToDisplay.includes(date.value);
           return (
-            <Grid
-              key={`Root-${date.label}-${date.value}`}
-              item
-              xs
-              className={`${
-                date.isFirstDay ? classes.dateItemFull : classes.dateItem
-              }`}
-              onClick={() => clickDate(index)}
-              data-date-index={index}
+            <Tooltip
+              title={<>{getTooltipContent(date)}</>}
+              TransitionComponent={Fade}
+              TransitionProps={{ timeout: 0 }}
+              placement="top"
+              arrow
+              {...(isShowingAAStormLayer
+                ? {
+                    enterDelay: 300,
+                    leaveDelay: 200,
+                    interactive: true,
+                  }
+                : null)}
+              classes={{
+                tooltip: isShowingAAStormLayer
+                  ? classes.AAStormTooltip
+                  : classes.defaultTooltip,
+                arrow: isShowingAAStormLayer
+                  ? classes.AAStormTooltipArrow
+                  : undefined,
+              }}
             >
-              <Tooltip
-                title={<>{getTooltipContent(date)}</>}
-                TransitionComponent={Fade}
-                TransitionProps={{ timeout: 0 }}
-                placement="top"
-                arrow
-                {...(isShowingAAStormLayer ? { interactive: true } : null)}
-                classes={{
-                  tooltip: isShowingAAStormLayer
-                    ? classes.AAStormTooltip
-                    : classes.defaultTooltip,
-                  arrow: isShowingAAStormLayer
-                    ? classes.AAStormTooltipArrow
-                    : undefined,
-                }}
+              <Grid
+                key={`Root-${date.label}-${date.value}`}
+                item
+                xs
+                className={`${
+                  date.isFirstDay ? classes.dateItemFull : classes.dateItem
+                }`}
+                onClick={() => clickDate(index)}
+                data-date-index={index}
               >
                 <div>
                   {isShowingAAStormLayer ? (
@@ -131,13 +137,14 @@ const TimelineItems = memo(
                     />
                   )}
                 </div>
-              </Tooltip>
-              <TimelineLabel
-                locale={locale}
-                date={date}
-                showDraggingCursor={showDraggingCursor}
-              />
-            </Grid>
+
+                <TimelineLabel
+                  locale={locale}
+                  date={date}
+                  showDraggingCursor={showDraggingCursor}
+                />
+              </Grid>
+            </Tooltip>
           );
         })}
       </>
