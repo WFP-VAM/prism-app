@@ -352,6 +352,29 @@ const AnticipatoryActionStormLayer = React.memo(
     );
 
     const getDistrictColor = (districtName: string, StormData: any) => {
+      if (
+        ![
+          ...(StormData.naDistricts?.Severe?.districtNames || []),
+          ...(StormData.naDistricts?.Moderate?.districtNames || []),
+          ...(StormData.activeDistricts?.Severe?.districtNames || []),
+          ...(StormData.activeDistricts?.Moderate?.districtNames || []),
+        ].includes(districtName)
+      ) {
+        return null;
+      }
+
+      if (
+        StormData.readiness &&
+        [
+          ...(StormData.activeDistricts?.Severe?.districtNames || []),
+          ...(StormData.activeDistricts?.Moderate?.districtNames || []),
+        ].includes(districtName)
+      ) {
+        return {
+          color: { background: '#63b2bd', text: 'white' },
+          opacity: 0.8,
+        };
+      }
       // Check active districts
       if (
         StormData.activeDistricts?.Moderate?.districtNames.includes(

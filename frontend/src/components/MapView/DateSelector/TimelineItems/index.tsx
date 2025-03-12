@@ -99,7 +99,13 @@ const TimelineItems = memo(
               TransitionProps={{ timeout: 0 }}
               placement="top"
               arrow
-              {...(isShowingAAStormLayer ? { interactive: true } : null)}
+              {...(isShowingAAStormLayer
+                ? {
+                    enterDelay: 300,
+                    leaveDelay: 200,
+                    interactive: true,
+                  }
+                : null)}
               classes={{
                 tooltip: isShowingAAStormLayer
                   ? classes.AAStormTooltip
