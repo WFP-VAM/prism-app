@@ -5,6 +5,8 @@ exports[`renders as expected 1`] = `
   <mock-tooltip
     arrow="true"
     classes="[object Object]"
+    enterdelay="300"
+    leavedelay="200"
     placement="top"
     title="[object Object]"
     transitioncomponent="[object Object]"
