@@ -40,11 +40,7 @@ function createMergedGeoJSON(data: StormDataResponseBody) {
 
   // Helper function to add exposed area features
   const addExposedArea = (
-    key:
-      | 'ready'
-      | 'exposed_area_48kt'
-      | 'exposed_area_64kt'
-      | 'proba_48kt_20_5d',
+    key: 'exposed_area_48kt' | 'exposed_area_64kt' | 'proba_48kt_20_5d',
   ) => {
     const exposedArea = data.ready_set_results?.[key];
     if (exposedArea) {
@@ -61,7 +57,6 @@ function createMergedGeoJSON(data: StormDataResponseBody) {
   };
 
   // Add exposed areas
-  addExposedArea('ready');
   addExposedArea('exposed_area_48kt');
   addExposedArea('exposed_area_64kt');
 
