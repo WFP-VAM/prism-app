@@ -330,7 +330,7 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 - **Routing** Uses [React Router](https://reacttraining.com/react-router/web/guides/quick-start).
 - **Monitoring** Uses [Sentry.io](https://sentry.io). To send monitoring info to Sentry, simply set the `Sentry` url by adding it as `REACT_APP_SENTRY_URL` in a `.env` file at the root folder.
 - **State Management** Uses [Redux](https://redux.js.org/introduction/getting-started)
-- **Testing** Uses [Jest](https://jestjs.io/) with [Enzyme](https://enzymejs.github.io/enzyme/)
+- **Testing** Uses [Jest](https://jestjs.io/)
 - **Mapping** Uses [MapLibre](https://maplibre.org/maplibre-gl-js-docs/api/). The app supports Maptiler and Mapbox styles. To use Mapbox styles, you will need to create a token and add it as `REACT_APP_MAPBOX_TOKEN` in a `.env` file at the root folder. Then specify your style url using `REACT_APP_DEFAULT_STYLE`.
 - **WFP authentication** Uses [msal](https://github.com/AzureAD/microsoft-authentication-library-for-js). You need to include within your .env file the variables `REACT_APP_OAUTH_CLIENT_ID`, `REACT_APP_OAUTH_AUTHORITY` and `REACT_APP_OAUTH_REDIRECT_URI`. Also, set the `WFPAuthRequired` flag within the country prism.json file
 
@@ -381,6 +381,6 @@ Runs `eslint` for all the source files. We use a custom Eslint configuration in 
 
 By default, a pre-commit hook is defined to run linting tasks on all _staged_ code before allowing a commit. This occurs using the [lint-staged](https://github.com/okonet/lint-staged) package, and can be configured in `./package.json#lint-staged`. The precommit task can be run manually using `yarn precommit`.
 
-### Creating pull request and deploying on Surge
+### Creating pull requests and deploying to Firebase
 
-By default, everytime a pull request is created, a CI/CD pipeline will run tests and deploy the code on a surge page (http://prism-[pr number].surge.sh). To specify a country that the build will be run on, start your pull request title with `COUNTRY=[country name]`. For example: `COUNTRY=cambodia Add new config options`.
+By default, everytime a pull request is created, a CI/CD pipeline will run tests and deploy the code to a Firebase channel preview (http://staging-prism-frontend--prism-[pr number]-[random hash].web.app). To specify a country that the build will be run on, start your pull request title with `COUNTRY=[country name]`. For example: `COUNTRY=cambodia Add new config options`.

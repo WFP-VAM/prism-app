@@ -4,7 +4,7 @@ stats_data = {
     "geotiff_url": "https://api.earthobservation.vam.wfp.org/ows/?service=WCS&request=GetCoverage&version=1.0.0"
     "&coverage=r1h_dekad&crs=EPSG%3A4326&bbox=92.2%2C9.7%2C101.2%2C28.5&width=1098"
     "&height=2304&format=GeoTIFF&time=2022-04-11",
-    "zones_url": "https://prism-admin-boundaries.s3.us-east-2.amazonaws.com/"
+    "zones_url": "https://prism-wfp.s3.us-east-2.amazonaws.com/api-test/mmr_admin_boundaries.json"
     "mmr_admin_boundaries.json",
     "group_by": "TS",
 }
