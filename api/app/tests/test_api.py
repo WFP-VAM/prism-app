@@ -103,12 +103,15 @@ def test_stats_endpoint1():
     Call /stats with known-good parameters.
     This endpoint can be slow (>1 min) so this test is deactivated by default.
     """
+    # Construct the path to the sample GeoTIFF file
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    rainfall_tiff_path = os.path.join(current_dir, "myanmar_rainfall_dekad.tif")
 
     response = client.post(
         "/stats",
         headers={"Accept": "application/json"},
         json={
-            "geotiff_url": "https://prism-wfp.s3.us-east-2.amazonaws.com/myanmar_rainfall_dekad.tif",
+            "geotiff_url": f"file://{rainfall_tiff_path}",
             "zones_url": "https://prism-admin-boundaries.s3.us-east-2.amazonaws.com/mmr_admin_boundaries.json",
             "group_by": "TS_PCODE",
             # TODO - re-add once geonode is back online.
@@ -167,12 +170,15 @@ def test_stats_endpoint_masked():
     """
     Call /stats with known-good parameters with a geotiff mask.
     """
+    # Construct the path to the sample GeoTIFF file
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    rainfall_tiff_path = os.path.join(current_dir, "myanmar_rainfall_dekad.tif")
 
     response = client.post(
         "/stats",
         headers={"Accept": "application/json"},
         json={
-            "geotiff_url": "https://prism-wfp.s3.us-east-2.amazonaws.com/myanmar_rainfall_dekad.tif",
+            "geotiff_url": f"file://{rainfall_tiff_path}",
             "zones_url": "https://prism-admin-boundaries.s3.us-east-2.amazonaws.com/mmr_admin_boundaries.json",
             "mask_url": "https://api.earthobservation.vam.wfp.org/ows/?service=WCS&request=GetCoverage&version=1.0.0&coverage=hf_water_mmr&crs=EPSG%3A4326&bbox=92.2%2C9.7%2C101.2%2C28.5&width=1098&height=2304&format=GeoTIFF&time=2022-08-11",
             "group_by": "TS_PCODE",
