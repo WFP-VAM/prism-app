@@ -103,6 +103,7 @@ def test_stats_endpoint1():
     Call /stats with known-good parameters.
     This endpoint can be slow (>1 min) so this test is deactivated by default.
     """
+
     response = client.post(
         "/stats",
         headers={"Accept": "application/json"},
@@ -149,6 +150,7 @@ def test_stats_endpoint2():
     """
     Call /stats with known-good parameters.
     """
+
     response = client.post(
         "/stats",
         headers={"Accept": "application/json"},
