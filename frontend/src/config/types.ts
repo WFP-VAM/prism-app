@@ -8,6 +8,7 @@ import {
 } from 'maplibre-gl';
 import { Dispatch } from 'redux';
 import { TFunction } from 'i18next';
+import React from 'react';
 import { rawLayers } from '.';
 import type { ReportKey, TableKey } from './utils';
 import type { PopupMetaData } from '../context/tooltipStateSlice';
@@ -773,6 +774,29 @@ export interface MenuItemType {
   layersCategories: LayersCategoryType[];
 }
 
+export type PanelItem = {
+  panel?: Panel;
+  label: string;
+  icon: React.ReactNode;
+  children?: PanelItem[];
+};
+
+export enum Panel {
+  None = 'none',
+  Layers = 'layers',
+  Charts = 'charts',
+  Analysis = 'analysis',
+  Tables = 'tables',
+  AnticipatoryActionDrought = 'anticipatory_action_drought',
+  AnticipatoryActionStorm = 'anticipatory_action_storm',
+  Alerts = 'alerts',
+}
+
+export type LeftPanelState = {
+  tabValue: Panel;
+  panelSize: PanelSize;
+};
+
 export type DateItem = {
   displayDate: number; // Date that will be rendered in the calendar.
   queryDate: number; // Date that will be used in the WMS request.
@@ -938,8 +962,13 @@ export type MapEventWrapFunction<T> = (
   props: MapEventWrapFunctionProps<T>,
 ) => (evt: MapLayerMouseEvent) => void;
 
+export enum AnticipatoryAction {
+  storm = 'anticipatory_action_storm',
+  drought = 'anticipatory_action_drought',
+}
+
 export class AnticipatoryActionLayerProps extends CommonLayerProps {
-  type: 'anticipatory_action' = 'anticipatory_action';
+  type: AnticipatoryAction = AnticipatoryAction.drought;
 
   @makeRequired
   declare title: string;

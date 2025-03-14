@@ -1,0 +1,132 @@
+<% if (!isPlainText) { %> 
+    <!-- Version HTML -->
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>PRISM Alert</title>
+        <style>
+            @media screen and (max-width: 600px) {
+                .content-wrapper{
+                    padding: 20px !important;
+                }
+            }
+        </style>
+    </head>
+    <body style="font-family: Arial, sans-serif; margin: 0; padding: 0; background-color: #f4f4f4; color:black;">
+        <div class="container" style="color:black; width: 600px; margin: 20px auto; background: #ffffff;">
+            <header class="header" style="padding-top: 30px;">
+                <p class="title" style="font-size: 20px; font-weight: 500; line-height: 23.44px;text-align: center;">PRISM</p>
+            </header>
+            <main>
+                <div class="content-wrapper" style="padding: 50px;font-size: 14px;">
+                    <h1 class="content-title" style="font-size: 24px; font-weight: 700; line-height: 30px; color: #333;">
+                        <%= alertTitle %>
+                    </h1>
+                    <p class="content-subtitle" style="margin-bottom: 40px;">ANTICIPATORY ACTION ALERT FOR TROPICAL STORM <%= cycloneName %> - <%= cycloneTime %> - 
+                        FORECAST BY REGIONAL SPECIALIZED METEOROLOGICAL CENTER LA REUNION
+                    </p>
+                    <% if (readiness) { %>
+                    <p class="trigger-title" style="margin: 20px 0; width: 100%; font-weight: bold; font-size: 16px;">
+                        <span class="readiness-icon" style="width: 24px; height: 24px; border-radius: 8px; background-color: rgba(99, 178, 189, 1); display: inline-block; vertical-align: middle; margin-right: 10px;"></span> 
+                        Readiness Trigger: Activated
+                    </p>
+                    <% } %>
+                    <% if (readiness) { %>
+                        <p><%= cycloneTime %> A system with severe tropical storm-force winds (or stronger) is expected to impact any of the four pilot provinces within the next 5 days, with a lead time of at least 72 hours.</p>
+                    <% } %>
+                    <p class="trigger-title" style="margin: 20px 0; width: 100%; font-weight: bold; font-size: 16px;">
+                        <span class="activation-icon" style="width: 24px; height: 24px; border-radius: 8px; background-color: rgba(230, 55, 1, 1); display: inline-block; vertical-align: middle; margin-right: 10px;"></span> 
+                        Activation Triggers: 
+                        <% if (activatedTriggers) { %>
+                            Activated
+                        <% } else { %>
+                            Not Activated
+                        <% } %>
+                    </p>
+                    <% if (activatedTriggers) { %>
+                        <p>Projected wind speeds affecting pilot districts:</p>
+                        <table class="table-container" style="width: 100%; border-collapse: collapse; font-size: 16px; font-weight: 700;">
+                            <tr style="border: 1px solid #ddd; padding: 10px; text-align: left;">
+                                <td style="border: 1px solid #ddd; padding: 10px; text-align: left;">&gt; 89 km/h</td>
+                                <td style="border: 1px solid #ddd; padding: 10px; text-align: left;"><%= activatedTriggers.districts48kt %></td>
+                            </tr>
+                            <tr style="border: 1px solid #ddd; padding: 10px; text-align: left;">
+                                <td style="border: 1px solid #ddd; padding: 10px; text-align: left;">&gt; 118 km/h</td>
+                                <td style="border: 1px solid #ddd; padding: 10px; text-align: left;"><%= activatedTriggers.districts64kt %></td>
+                            </tr>
+                        </table>
+                    <% } %>
+                    <p>For more information about landfall and trajectory, please access the dashboard using the link below:</p>
+                    <div class="button-container" style="text-align: center; margin: 20px 0;">
+                        <a href="<%= redirectUrl %>" target="_blank" rel="noopener noreferrer" aria-label="Access PRISM Tropical Storm Dashboard (opens in a new tab)" class="button" 
+                           style="display: inline-block; text-align: center; background: rgba(99, 178, 189, 1); color: black; padding: 12px; text-decoration: none; border-radius: 5px; white-space: nowrap; font-weight: 600;">
+                            <span style="vertical-align: middle">ACCESS DASHBOARD</span>
+                            <img src="cid:arrow-forward-icon" alt="" style="width: 16px; height: 16px; vertical-align: middle;">
+                        </a>
+                    </div>
+
+                    <h3 style="font-size: 18px;">
+                        <img src="cid:map-icon" alt="" style="width: 24px; height: 24px; vertical-align: middle; margin-right: 8px;"> Trajectory Map
+                    </h3>
+                    <img src="cid:storm-image-cid" alt="Map showing the trajectory of cyclone <%= cycloneName %> over Mozambique" width="100%" style="border: none;">
+        
+                    <div class="button-container" style="text-align: center; margin: 20px 0;">
+                        <a href="<%= redirectUrl %>" target="_blank" rel="noopener noreferrer" aria-label="Access PRISM Tropical Storm Dashboard (opens in a new tab)" class="button" 
+                           style="display: inline-block; text-align: center; background: rgba(99, 178, 189, 1); color: black; padding: 12px; text-decoration: none; border-radius: 5px; white-space: nowrap; font-weight: 600;">
+                            <span style="vertical-align: middle">ACCESS DASHBOARD</span>
+                            <img src="cid:arrow-forward-icon" alt="" style="width: 16px; height: 16px; vertical-align: middle;">
+                        </a>
+                    </div>
+                    
+                    <p>We will continue to closely monitor the situation and provide timely updates as more information becomes available.</p>
+                    
+                    <p class="gray-box" style="background-color: rgba(241, 241, 241, 1); padding: 20px; margin-top: 20px; color: black;">
+                        <strong>Disclaimer</strong>: please note, this is not an official forecast. For accurate and official updates, please refer to alerts issued by <strong>INAM (Mozambique Meteorological Service)</strong>.
+                    </p>
+                </div>
+            </main>
+
+            <footer class="footer" style="font-size: 12px; color: white; padding-top: 15px; width: 100%; background-color: rgba(99, 178, 189, 1);">
+                <p class="title" style="margin-bottom: 15px;font-size: 20px; font-weight: 500; line-height: 23.44px;text-align: center;">PRISM</p>
+                <p style="margin-bottom: 15px;text-align: center;">This message was automatically generated.</p>
+                <p style="margin-bottom: 30px;text-align: center;">You can <a style="color: grey; font-weight: bold;" href="mailto:wfp.prism@wfp.org?subject=Unsubscribe from Mozambique tropical storm alerts.&body=I would like to unsubscribe from receiving PRISM Anticipatory Action alerts">unsubscribe here</a>.</p>
+                <p style="background-color:black;text-align: center;vertical-align: middle; padding:5px">Legal notice Data Protection Policy</p>
+            </footer>
+        </div>
+    </body>
+    </html>
+    <% } else { %>
+        PRISM ALERT - <%= alertTitle %>
+    
+        Anticipatory Action Alert for Tropical Storm <%= cycloneName %> - <%= cycloneTime %> 
+        Forecast by Regional Specialized Meteorological Center La Reunion.
+    
+        <% if (readiness) { %>
+            Readiness Trigger: Activated
+        <% } %>
+    
+        <% if (readiness) { %>
+            A system with severe tropical storm-force winds (or stronger) is expected to impact any of the four pilot provinces within the next 5 days, with a lead time of at least 72 hours.
+        <% } %>
+    
+        <% if (activatedTriggers) { %>
+            Activation Triggers: Activated
+    
+            Projected wind speeds affecting pilot districts:
+            - > 89 km/h: <%= activatedTriggers.districts48kt %>
+            - > 118 km/h: <%= activatedTriggers.districts64kt %>
+        <% } else { %>
+            Activation Triggers: Not Activated
+        <% } %>
+    
+        Access PRISM Tropical Storm Dashboard: <%= redirectUrl %>
+    
+        Map showing the trajectory of cyclone <%= cycloneName %> over Mozambique:
+        (Image unavailable in plain text format)
+    
+        We will continue to monitor the situation and provide timely updates.
+    
+        Disclaimer: Please note, this is not an official forecast. For accurate and official updates, please refer to alerts issued by INAM (Mozambique Meteorological Service).
+    <% } %>

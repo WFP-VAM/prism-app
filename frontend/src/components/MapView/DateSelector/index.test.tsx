@@ -37,7 +37,10 @@ test('renders as expected', () => {
       panelSize: PanelSize.medium,
     },
     serverState: { availableDates: {}, loading: false },
-    anticipatoryActionState: {
+    anticipatoryActionDroughtState: {
+      availableDates: undefined,
+    },
+    anticipatoryActionStormState: {
       availableDates: undefined,
     },
   });

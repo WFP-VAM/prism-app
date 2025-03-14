@@ -19,12 +19,16 @@ const props = {
   ],
   clickDate: () => {},
   locale: 'en',
+  showDraggingCursor: false,
 };
 
 const mockStore = configureStore([]);
 
 const store = mockStore({
-  anticipatoryActionState: {
+  anticipatoryActionDroughtState: {
+    availableDates: undefined,
+  },
+  anticipatoryActionStormState: {
     availableDates: undefined,
   },
   mapState: {

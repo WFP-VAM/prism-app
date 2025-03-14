@@ -6,12 +6,12 @@ import { useSelector } from 'react-redux';
 import { getFormattedDate } from 'utils/date-utils';
 import { appConfig } from 'config';
 import { lightGrey } from 'muiTheme';
-import { AAMarkersSelector } from 'context/anticipatoryActionStateSlice';
+import { AAMarkersSelector } from 'context/anticipatoryAction/AADroughtStateSlice';
 import { useAAMarkerScalePercent } from 'utils/map-utils';
 import LegendItemsList from 'components/MapView/Legends/LegendItemsList';
-import { Panel, leftPanelTabValueSelector } from 'context/leftPanelStateSlice';
+import { leftPanelTabValueSelector } from 'context/leftPanelStateSlice';
+import { Panel, AdminLevelDataLayerProps } from 'config/types';
 import useLayers from 'utils/layers-utils';
-import { AdminLevelDataLayerProps } from 'config/types';
 import { addFillPatternImagesInMap } from 'components/MapView/Layers/AdminLevelDataLayer/utils';
 import { mapStyle } from 'components/MapView/Map/utils';
 import {
@@ -277,7 +277,7 @@ function PrintPreview() {
                   mapStyle={selectedMapStyle || mapStyle.toString()}
                   maxBounds={selectedMap.getMaxBounds() ?? undefined}
                 >
-                  {tabValue === Panel.AnticipatoryAction &&
+                  {tabValue === Panel.AnticipatoryActionDrought &&
                     AAMarkers.map(marker => (
                       <Marker
                         key={`marker-${marker.district}`}
