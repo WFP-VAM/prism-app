@@ -20,7 +20,8 @@
     "risk": "icon_impact.png",
     "tropical_storms": "icon_tropical_storm.png",
     "vulnerability": "icon_vulnerable.png",
-    "exposure": "icon_basemap.png"
+    "exposure": "icon_basemap.png",
+    "flood": "icon_flood.png"
   },
   "defaultDisplayBoundaries": [
     "admin_boundaries",
@@ -458,6 +459,25 @@
     },
     "exposure": {
       "population": ["pop_proj_2025"]
+    },
+    "flood": {
+      "flood_status": [
+        {
+          "group_title": "Flood Status",
+          "activate_all": true,
+          "layers": [
+            {
+              "id": "forecast_river_discharge_at_gauges",
+              "label": "Flood Gauges",
+              "main": true
+            },
+            {
+              "id": "predicted_flood_inundation_maps",
+              "label": "Predicted Inundation Maps"
+            }
+          ]
+        }
+      ]
     }
   }
 }
