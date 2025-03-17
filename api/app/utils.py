@@ -6,6 +6,8 @@ from requests.adapters import Retry
 
 logger = logging.getLogger(__name__)
 
+logger = logging.getLogger(__name__)
+
 
 def forward_http_error(resp: requests.Response, excluded_codes: list[int]) -> None:
     if not resp.status_code > 399:

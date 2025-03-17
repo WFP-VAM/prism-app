@@ -34,7 +34,23 @@
       "flood_monitoring": ["flood_extent"],
       "flood_risk": ["flood_hazard"],
       "early_warning": ["ews_remote"],
-      "river_discharge_forecast": ["forecast_river_discharge_at_gauges"]
+      "flood_status": [
+        {
+          "group_title": "Flood Status",
+          "activate_all": true,
+          "layers": [
+            {
+              "id": "forecast_river_discharge_at_gauges",
+              "label": "Flood Gauges",
+              "main": true
+            },
+            {
+              "id": "predicted_flood_inundation_maps",
+              "label": "Predicted Inundation Maps"
+            }
+          ]
+        }
+      ]
     },
     "rainfall": {
       "forecasts": [

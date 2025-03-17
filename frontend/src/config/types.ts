@@ -26,7 +26,8 @@ export type LayerType =
   | PointDataLayerProps
   | CompositeLayerProps
   | StaticRasterLayerProps
-  | AnticipatoryActionLayerProps;
+  | AnticipatoryActionLayerProps
+  | GeojsonDataLayerProps;
 
 type UnionToIntersection<U> = (U extends any ? (k: U) => void : never) extends (
   k: infer I,
@@ -749,6 +750,29 @@ export class PointDataLayerProps extends CommonLayerProps {
   detailUrl?: string;
 }
 
+export class GeojsonDataLayerProps extends CommonLayerProps {
+  type: 'geojson_polygon' = 'geojson_polygon';
+  data: string;
+
+  @makeRequired
+  dataField: string;
+
+  @optional // if legend_label, uses the label from legend to display in feature info. if not, uses dataField
+  displaySource?: 'legend_label' | 'data_field';
+
+  @makeRequired
+  declare title: string;
+
+  @makeRequired
+  declare legend: LegendDefinition;
+
+  @makeRequired
+  declare legendText: string;
+
+  @optional
+  additionalQueryParams?: { [key: string]: string | { [key: string]: string } };
+}
+
 export type RequiredKeys<T> = {
   [k in keyof T]: undefined extends T[k] ? never : k;
 }[keyof T];
@@ -899,6 +923,7 @@ export type PointData = {
 };
 
 export type PointLayerData = FeatureCollection;
+export type GeojsonLayerData = FeatureCollection;
 
 export interface BaseLayer {
   name: string;

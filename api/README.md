@@ -141,19 +141,21 @@ This should open playwright in debug mode, with a browser window and a debugging
 
 ## Deployments
 
-We are using [docs.traefik.io](https://docs.traefik.io/)
-To deploy the application, update the file `docker-compose.deploy.yml`.
-Specifically, update `info@ovio.org` with a domain admin email and `prism-api.ovio.org` with the hostname you will be using.
+We are using [docs.traefik.io](https://docs.traefik.io/) to deploy the application to an EC2 instance in AWS.
+
+To deploy the application, we need to ensure the environment variables are set in the file `docker-compose.deploy.yml`. You can either use the environment variables in `set_envs.sh` to configure the deployment or you can manually set the environment variables in the `docker-compose.deploy.yml` file.
 
 Before deploying, make sure that:
 - The EC2 instance you are using is assigned an IAM role that has access to S3.
 - All the necessary secrets needed in `set_envs.sh` have been configured in the AWS secrets manager.
 
-Finally, to deploy, run:
-
-```
-make deploy
-```
+To deploy, ssh into the EC2 instance:
+- Get the private key and copy it to `~/.ssh/{some name}.pem`
+- Add your IP address to the EC2 instance's whitelist in the AWS console
+- Run `ssh -i ~/.ssh/{some name}.pem ubuntu@{Public IPv4 DNS}`
+- Navigate to the api directory
+- Confirm you're on the right branch and the branch is up to date
+- Run `make deploy`
 
 There are a few known issues happening from time to time
 
