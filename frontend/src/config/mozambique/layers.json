@@ -112,6 +112,10 @@
     },
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
+    "validity": {
+      "forward": 1,
+      "mode": "dekad"
+    },
     "opacity": 0.7,
     "legend_text": "Local station data from INAM blended with CHIRP rainfall estimates",
     "legend": "rfh_16_0_300"
@@ -157,6 +161,10 @@
     },
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
+    "validity": {
+      "forward": 1,
+      "mode": "dekad"
+    },
     "opacity": 0.7,
     "legend_text": "Rainfall anomaly based on long term averaged from local station data from INAM blended with CHIRP rainfall estimates",
     "legend": "rfq_14_20_400"
@@ -2058,6 +2066,10 @@
     "server_layer_name": "myd11a2_blended_txb_moz_dekad",
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
+    "validity": {
+      "forward": 1,
+      "mode": "dekad"
+    },
     "wcsConfig": {
       "scale": 0.02,
       "offset": -273,
@@ -2076,6 +2088,10 @@
     "server_layer_name": "myd11a2_blended_txd_moz_dekad",
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
+    "validity": {
+      "forward": 1,
+      "mode": "dekad"
+    },
     "opacity": 0.7,
     "legend_text": "Temperature anomaly based on long term average compared to local station data from INAM blended with MODIS daytime land surface temperature estimates",
     "legend": "txd_tud_21_m12_12",
