@@ -39,6 +39,10 @@
     "start_date": "today",
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
+    "validity": {
+      "forward": 1,
+      "mode": "dekad"
+    },
     "opacity": 0.7,
     "legend_text": "CHIRPS-GEFS global dekadal rainfall forecasts",
     "legend": "rfh_16_0_300",
@@ -53,6 +57,10 @@
     "start_date": "today",
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
+    "validity": {
+      "forward": 1,
+      "mode": "dekad"
+    },
     "opacity": 0.7,
     "legend_text": "10-day forecast anomaly compared to the long term average. Derived from CHIRPS and GEFS",
     "legend": "rfq_14_20_400",
@@ -84,6 +92,10 @@
     "server_layer_name": "rfh_dekad",
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
+    "validity": {
+      "forward": 1,
+      "mode": "dekad"
+    },
     "opacity": 0.7,
     "legend_text": "Estimate of precipitation over a 10-day period derived from [CHIRPS (UCSB Climate Hazards Group)](https://www.chc.ucsb.edu/data/chirps).",
     "legend": "rfh_16_0_300",
@@ -97,6 +109,10 @@
     "server_layer_name": "rfq_dekad",
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
+    "validity": {
+      "forward": 1,
+      "mode": "dekad"
+    },
     "opacity": 0.7,
     "legend_text": "10-day precipitation anomaly compared to the long term average. Derived from [CHIRPS (UCSB Climate Hazards Group)](https://www.chc.ucsb.edu/data/chirps).",
     "legend": "rfq_14_20_400",
@@ -434,6 +450,10 @@
     "server_layer_name": "mxd13a2_vim_dekad",
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
+    "validity": {
+      "forward": 1,
+      "mode": "dekad"
+    },
     "opacity": 0.7,
     "wcsConfig": {
       "scale": 0.0001,
@@ -452,6 +472,10 @@
     "server_layer_name": "mxd13a2_viq_dekad",
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
+    "validity": {
+      "forward": 1,
+      "mode": "dekad"
+    },
     "opacity": 0.7,
     "legend_text": "NDVI anomaly compared to long term average",
     "legend": "ndvi_anomaly",
@@ -470,6 +494,10 @@
       "pixelResolution": 64
     },
     "date_interval": "days",
+    "validity": {
+      "forward": 1,
+      "mode": "dekad"
+    },
     "opacity": 0.7,
     "legend_text": "Land Surface Temperature Amplitude refers to the difference between the maximum and minimum temperature in degrees Celsius",
     "legend": "taa_21_1_48",
@@ -483,6 +511,10 @@
     "server_layer_name": "myd11a2_txa_dekad",
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
+    "validity": {
+      "forward": 1,
+      "mode": "dekad"
+    },
     "wcsConfig": {
       "scale": 0.02,
       "offset": -273,
@@ -504,6 +536,10 @@
     },
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
+    "validity": {
+      "forward": 1,
+      "mode": "dekad"
+    },
     "wcsConfig": {
       "scale": 0.02,
       "offset": -273,
@@ -519,6 +555,10 @@
     "server_layer_name": "myd11a2_txd_dekad",
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
+    "validity": {
+      "forward": 1,
+      "mode": "dekad"
+    },
     "opacity": 0.7,
     "legend_text": "Daytime land surface temperature anomaly",
     "legend": "tdd_21_m12_12",
@@ -532,6 +572,10 @@
     "server_layer_name": "myd11a2_txd_dekad",
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
+    "validity": {
+      "forward": 1,
+      "mode": "dekad"
+    },
     "opacity": 0.7,
     "legend_text": "Daytime land surface temperature anomaly",
     "legend": "tdd_21_m12_12",
