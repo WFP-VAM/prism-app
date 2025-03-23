@@ -82,7 +82,7 @@
     "husky": "^4.2.3",
     "i18next": "^23.10.1",
     "i18next-browser-languagedetector": "^7.2.0",
-    "jspdf": "^2.3.0",
+    "jspdf": "^3.0.1",
     "lint-staged": "^10.0.8",
     "lodash": "^4.17.21",
     "maplibre-gl": "^3.6.2",
@@ -180,7 +180,7 @@
     "ts-jest": "^29.1.1",
     "ts-node": "^10.9.2",
     "typescript": "^5.2.2",
-    "vite": "^5.2.14",
+    "vite": "^6.2.2",
     "vite-plugin-node-polyfills": "^0.21.0"
   },
   "engines": {

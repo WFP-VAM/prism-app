@@ -249,6 +249,21 @@
     "legend_text": "1-month Standardized Precipitation Index calculated from dekadal CHIRPS data",
     "legend": "spi"
   },
+  "spi_2m": {
+    "title": "SPI - 2-month",
+    "type": "wms",
+    "server_layer_name": "r2s_dekad",
+    "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
+    "date_interval": "days",
+    "wcsConfig": {
+      "scale": 0.001,
+      "offset": 0,
+      "pixelResolution": 64
+    },
+    "opacity": 0.7,
+    "legend_text": "2-month Standardized Precipitation Index calculated from dekadal CHIRPS data",
+    "legend": "spi"
+  },
   "spi_3m": {
     "title": "SPI - 3-month",
     "type": "wms",
