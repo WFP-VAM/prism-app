@@ -349,5 +349,11 @@
     { "value": 0.7, "label": "0.7 - 0.8", "color": "#019ac4" },
     { "value": 0.8, "label": "0.8 - 0.9", "color": "#014c73" },
     { "value": 0.9, "label": "0.9 - 1", "color": "#014c73" }
+  ],
+  "cdi_4_0_1": [
+    { "value": 0, "label": "Severe (< 0.2)", "color": "#A93800" },
+    { "value": 0.2, "label": "Intense (0.2 to 0.3)", "color": "#E59802" },
+    { "value": 0.3, "label": "Moderate (0.3 to 0.4)", "color": "#FFE76A" },
+    { "value": 0.4, "label": "None (>= 0.4)", "color": "#F0F0F0" }
   ]
 }
