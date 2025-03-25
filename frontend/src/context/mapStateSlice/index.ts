@@ -71,7 +71,8 @@ export const layerOrdering = (a: LayerType, b: LayerType) => {
       | 'point_data'
       | 'polygon'
       | 'static_raster'
-      | 'anticipatory_action']: number;
+      | 'anticipatory_action_drought'
+      | 'anticipatory_action_storm']: number;
   } = {
     point_data: 0,
     polygon: 1,
@@ -82,7 +83,8 @@ export const layerOrdering = (a: LayerType, b: LayerType) => {
     composite: 5,
     wms: 6,
     static_raster: 7,
-    anticipatory_action: 8,
+    anticipatory_action_drought: 8,
+    anticipatory_action_storm: 9,
   };
 
   const typeA = getTypeOrder(a);
