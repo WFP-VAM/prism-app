@@ -79,7 +79,6 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - run: |
-          echo "Check 'should_run'"
           echo "github.event_name: ${{ github.event_name }}"
 
   frontend_build_and_deploy:
