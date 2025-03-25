@@ -14,8 +14,9 @@ exports[`renders as expected 1`] = `
       class="MuiGrid-root makeStyles-dateItem-2 MuiGrid-item MuiGrid-grid-xs-true"
       data-date-index="0"
     >
+      <div />
       <div
-        class="makeStyles-dayItem-16"
+        class="makeStyles-dayItem-20"
       />
     </div>
   </mock-tooltip>
