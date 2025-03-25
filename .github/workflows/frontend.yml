@@ -2,7 +2,8 @@
 name: PRISM CI - Frontend
 on:
   # Run on all pull requests and on pushes to master.
-  pull_request:
+  # Note - pull_request_target runs the workflow from the main branch, not the PR branch.
+  pull_request_target:
   push:
     branches:
       - master
