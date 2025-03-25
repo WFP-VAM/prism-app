@@ -74,6 +74,7 @@ import {
   PanelSize,
   ExposureOperator,
   ExposureValue,
+  Panel,
 } from 'config/types';
 import { getAdminLevelCount, getAdminLevelLayer } from 'utils/admin-utils';
 import { LayerData } from 'context/layers/layer-data';
@@ -99,7 +100,6 @@ import LayerDropdown from 'components/MapView/Layers/LayerDropdown';
 import SimpleDropdown from 'components/Common/SimpleDropdown';
 import {
   leftPanelTabValueSelector,
-  Panel,
   setTabValue,
 } from 'context/leftPanelStateSlice';
 import LoadingBlinkingDots from 'components/Common/LoadingBlinkingDots';
