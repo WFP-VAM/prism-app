@@ -28,6 +28,7 @@ import sudan from './sudan';
 import tajikistan from './tajikistan';
 import tanzania from './tanzania';
 import ukraine from './ukraine';
+import zambia from './zambia';
 import zimbabwe from './zimbabwe';
 
 // Upload the boundary URL to S3 to enable the use of the API in a local environment.
@@ -62,6 +63,7 @@ export const configMap = {
   tajikistan,
   tanzania,
   ukraine,
+  zambia,
   zimbabwe,
 } as const;
 

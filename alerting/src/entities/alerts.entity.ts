@@ -74,6 +74,6 @@ export class Alert {
   @Column({ nullable: true })
   lastTriggered?: Date;
 
-  @Column({ nullable: false, default: true })
-  active: boolean = true;
+  @Column({ type: 'boolean', nullable: false, default: true })
+  active: boolean;
 }

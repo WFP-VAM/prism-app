@@ -1,24 +1,9 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { appConfig } from 'config';
-import { PanelSize } from 'config/types';
+import { LeftPanelState, Panel, PanelSize } from 'config/types';
 import type { RootState } from './store';
 
 const { hidePanel } = appConfig;
-
-export enum Panel {
-  None = 'none',
-  Layers = 'layers',
-  Charts = 'charts',
-  Analysis = 'analysis',
-  Tables = 'tables',
-  AnticipatoryAction = 'anticipatory_action',
-  Alerts = 'alerts',
-}
-
-type LeftPanelState = {
-  tabValue: Panel;
-  panelSize: PanelSize;
-};
 
 const initialState: LeftPanelState = {
   tabValue: hidePanel ? Panel.None : Panel.Layers,
