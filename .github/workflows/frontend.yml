@@ -75,7 +75,7 @@ jobs:
 
   frontend_build_and_deploy:
     needs: frontend_tests
-    if: github.event_name == 'pull_request'
+    if: github.event_name == 'pull_request' || github.event_name == 'pull_request_target'
     name: frontend_build_and_deploy
     runs-on: ubuntu-latest
     env:
