@@ -6,6 +6,7 @@ import {
   ExposedPopulationDefinition,
   GeometryType,
   LayerType,
+  Panel,
 } from 'config/types';
 import { ReportsDefinitions, TableKey } from 'config/utils';
 import {
@@ -16,7 +17,7 @@ import {
   setCurrentDataDefinition,
   setExposureLayerId,
 } from 'context/analysisResultStateSlice';
-import { Panel, setTabValue } from 'context/leftPanelStateSlice';
+import { setTabValue } from 'context/leftPanelStateSlice';
 import { dateRangeSelector } from 'context/mapStateSlice/selectors';
 import { useSafeTranslation } from 'i18n';
 import { Extent } from 'components/MapView/Layers/raster-utils';
