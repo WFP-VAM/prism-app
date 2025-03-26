@@ -42,17 +42,12 @@ def _patch_item_crs(item: pystac.Item, epsg: int | None = None):
     # Remove or fix 'proj:code' if it's "EPSG:None"
     code = item.properties.get("proj:code")
     if code == "EPSG:None":
-        item.properties.pop("proj:code")
+        item.properties["proj:code"] = None
 
     # Remove or fix 'proj:epsg' if it's None or "None"
     prop_epsg = item.properties.get("proj:epsg")
-    if prop_epsg in (None, "None"):
-        if epsg is None:
-            # If no numeric code is provided, remove it entirely
-            item.properties.pop("proj:epsg", None)
-        else:
-            # Otherwise, set to an integer
-            item.properties["proj:epsg"] = epsg
+    if prop_epsg == "None":
+        item.properties["proj:epsg"] = epsg
 
     return item
 
