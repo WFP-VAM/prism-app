@@ -1,0 +1,496 @@
+{
+  "2024-12-09": {
+    "04-20242025": [
+      {
+        "ref_time": "2024-12-09T06:00:00Z",
+        "state": "monitoring",
+        "path": "04-20242025/2024-12-09T06:00:00Z.json"
+      },
+      {
+        "ref_time": "2024-12-09T12:00:00Z",
+        "state": "monitoring",
+        "path": "04-20242025/2024-12-09T12:00:00Z.json"
+      },
+      {
+        "ref_time": "2024-12-09T18:00:00Z",
+        "state": "monitoring",
+        "path": "04-20242025/2024-12-09T18:00:00Z.json"
+      }
+    ]
+  },
+  "2024-12-10": {
+    "chido": [
+      {
+        "ref_time": "2024-12-10T00:00:00Z",
+        "state": "monitoring",
+        "path": "chido/2024-12-10T00:00:00Z.json"
+      },
+      {
+        "ref_time": "2024-12-10T06:00:00Z",
+        "state": "monitoring",
+        "path": "chido/2024-12-10T06:00:00Z.json"
+      },
+      {
+        "ref_time": "2024-12-10T12:00:00Z",
+        "state": "ready",
+        "path": "chido/2024-12-10T12:00:00Z.json"
+      },
+      {
+        "ref_time": "2024-12-10T18:00:00Z",
+        "state": "ready",
+        "path": "chido/2024-12-10T18:00:00Z.json"
+      }
+    ]
+  },
+  "2024-12-11": {
+    "chido": [
+      {
+        "ref_time": "2024-12-11T00:00:00Z",
+        "state": "monitoring",
+        "path": "chido/2024-12-11T00:00:00Z.json"
+      },
+      {
+        "ref_time": "2024-12-11T06:00:00Z",
+        "state": "ready",
+        "path": "chido/2024-12-11T06:00:00Z.json"
+      },
+      {
+        "ref_time": "2024-12-11T12:00:00Z",
+        "state": "ready",
+        "path": "chido/2024-12-11T12:00:00Z.json"
+      },
+      {
+        "ref_time": "2024-12-11T18:00:00Z",
+        "state": "ready",
+        "path": "chido/2024-12-11T18:00:00Z.json"
+      }
+    ]
+  },
+  "2024-12-12": {
+    "chido": [
+      {
+        "ref_time": "2024-12-12T00:00:00Z",
+        "state": "activated_64kt",
+        "path": "chido/2024-12-12T00:00:00Z.json"
+      },
+      {
+        "ref_time": "2024-12-12T06:00:00Z",
+        "state": "activated_64kt",
+        "path": "chido/2024-12-12T06:00:00Z.json"
+      },
+      {
+        "ref_time": "2024-12-12T12:00:00Z",
+        "state": "activated_64kt",
+        "path": "chido/2024-12-12T12:00:00Z.json"
+      },
+      {
+        "ref_time": "2024-12-12T18:00:00Z",
+        "state": "ready",
+        "path": "chido/2024-12-12T18:00:00Z.json"
+      }
+    ]
+  },
+  "2024-12-13": {
+    "chido": [
+      {
+        "ref_time": "2024-12-13T00:00:00Z",
+        "state": "activated_64kt",
+        "path": "chido/2024-12-13T00:00:00Z.json"
+      },
+      {
+        "ref_time": "2024-12-13T06:00:00Z",
+        "state": "ready",
+        "path": "chido/2024-12-13T06:00:00Z.json"
+      },
+      {
+        "ref_time": "2024-12-13T12:00:00Z",
+        "state": "ready",
+        "path": "chido/2024-12-13T12:00:00Z.json"
+      },
+      {
+        "ref_time": "2024-12-13T18:00:00Z",
+        "state": "ready",
+        "path": "chido/2024-12-13T18:00:00Z.json"
+      }
+    ]
+  },
+  "2024-12-14": {
+    "chido": [
+      {
+        "ref_time": "2024-12-14T00:00:00Z",
+        "state": "ready",
+        "path": "chido/2024-12-14T00:00:00Z.json"
+      },
+      {
+        "ref_time": "2024-12-14T06:00:00Z",
+        "state": "ready",
+        "path": "chido/2024-12-14T06:00:00Z.json"
+      },
+      {
+        "ref_time": "2024-12-14T12:00:00Z",
+        "state": "ready",
+        "path": "chido/2024-12-14T12:00:00Z.json"
+      },
+      {
+        "ref_time": "2024-12-14T18:00:00Z",
+        "state": "ready",
+        "path": "chido/2024-12-14T18:00:00Z.json"
+      }
+    ]
+  },
+  "2024-12-15": {
+    "chido": [
+      {
+        "ref_time": "2024-12-15T00:00:00Z",
+        "state": "ready",
+        "path": "chido/2024-12-15T00:00:00Z.json"
+      },
+      {
+        "ref_time": "2024-12-15T06:00:00Z",
+        "state": "monitoring",
+        "path": "chido/2024-12-15T06:00:00Z.json"
+      },
+      {
+        "ref_time": "2024-12-15T12:00:00Z",
+        "state": "monitoring",
+        "path": "chido/2024-12-15T12:00:00Z.json"
+      },
+      {
+        "ref_time": "2024-12-15T18:00:00Z",
+        "state": "monitoring",
+        "path": "chido/2024-12-15T18:00:00Z.json"
+      }
+    ]
+  },
+  "2024-12-16": {
+    "chido": [
+      {
+        "ref_time": "2024-12-16T00:00:00Z",
+        "state": "monitoring",
+        "path": "chido/2024-12-16T00:00:00Z.json"
+      },
+      {
+        "ref_time": "2024-12-16T06:00:00Z",
+        "state": "monitoring",
+        "path": "chido/2024-12-16T06:00:00Z.json"
+      }
+    ]
+  },
+  "2025-01-06": {
+    "05-20242025": [
+      {
+        "ref_time": "2025-01-06T12:00:00Z",
+        "state": "monitoring",
+        "path": "05-20242025/2025-01-06T12:00:00Z.json"
+      }
+    ]
+  },
+  "2025-01-07": {
+    "05-20242025": [
+      {
+        "ref_time": "2025-01-07T06:00:00Z",
+        "state": "monitoring",
+        "path": "05-20242025/2025-01-07T06:00:00Z.json"
+      },
+      {
+        "ref_time": "2025-01-07T12:00:00Z",
+        "state": "monitoring",
+        "path": "05-20242025/2025-01-07T12:00:00Z.json"
+      }
+    ]
+  },
+  "2025-01-08": {
+    "05-20242025": [
+      {
+        "ref_time": "2025-01-08T00:00:00Z",
+        "state": "monitoring",
+        "path": "05-20242025/2025-01-08T00:00:00Z.json"
+      },
+      {
+        "ref_time": "2025-01-08T06:00:00Z",
+        "state": "monitoring",
+        "path": "05-20242025/2025-01-08T06:00:00Z.json"
+      },
+      {
+        "ref_time": "2025-01-08T12:00:00Z",
+        "state": "monitoring",
+        "path": "05-20242025/2025-01-08T12:00:00Z.json"
+      },
+      {
+        "ref_time": "2025-01-08T18:00:00Z",
+        "state": "monitoring",
+        "path": "05-20242025/2025-01-08T18:00:00Z.json"
+      }
+    ]
+  },
+  "2025-01-09": {
+    "dikeledi": [
+      {
+        "ref_time": "2025-01-09T00:00:00Z",
+        "state": "monitoring",
+        "path": "dikeledi/2025-01-09T00:00:00Z.json"
+      },
+      {
+        "ref_time": "2025-01-09T06:00:00Z",
+        "state": "monitoring",
+        "path": "dikeledi/2025-01-09T06:00:00Z.json"
+      },
+      {
+        "ref_time": "2025-01-09T12:00:00Z",
+        "state": "monitoring",
+        "path": "dikeledi/2025-01-09T12:00:00Z.json"
+      },
+      {
+        "ref_time": "2025-01-09T18:00:00Z",
+        "state": "monitoring",
+        "path": "dikeledi/2025-01-09T18:00:00Z.json"
+      }
+    ]
+  },
+  "2025-01-10": {
+    "dikeledi": [
+      {
+        "ref_time": "2025-01-10T00:00:00Z",
+        "state": "monitoring",
+        "path": "dikeledi/2025-01-10T00:00:00Z.json"
+      },
+      {
+        "ref_time": "2025-01-10T06:00:00Z",
+        "state": "monitoring",
+        "path": "dikeledi/2025-01-10T06:00:00Z.json"
+      },
+      {
+        "ref_time": "2025-01-10T12:00:00Z",
+        "state": "activated_64kt",
+        "path": "dikeledi/2025-01-10T12:00:00Z.json"
+      },
+      {
+        "ref_time": "2025-01-10T18:00:00Z",
+        "state": "activated_64kt",
+        "path": "dikeledi/2025-01-10T18:00:00Z.json"
+      }
+    ]
+  },
+  "2025-01-11": {
+    "dikeledi": [
+      {
+        "ref_time": "2025-01-11T00:00:00Z",
+        "state": "activated_64kt",
+        "path": "dikeledi/2025-01-11T00:00:00Z.json"
+      },
+      {
+        "ref_time": "2025-01-11T06:00:00Z",
+        "state": "activated_64kt",
+        "path": "dikeledi/2025-01-11T06:00:00Z.json"
+      },
+      {
+        "ref_time": "2025-01-11T12:00:00Z",
+        "state": "activated_64kt",
+        "path": "dikeledi/2025-01-11T12:00:00Z.json"
+      },
+      {
+        "ref_time": "2025-01-11T18:00:00Z",
+        "state": "monitoring",
+        "path": "dikeledi/2025-01-11T18:00:00Z.json"
+      }
+    ]
+  },
+  "2025-01-12": {
+    "dikeledi": [
+      {
+        "ref_time": "2025-01-12T00:00:00Z",
+        "state": "monitoring",
+        "path": "dikeledi/2025-01-12T00:00:00Z.json"
+      },
+      {
+        "ref_time": "2025-01-12T06:00:00Z",
+        "state": "monitoring",
+        "path": "dikeledi/2025-01-12T06:00:00Z.json"
+      },
+      {
+        "ref_time": "2025-01-12T12:00:00Z",
+        "state": "activated_64kt",
+        "path": "dikeledi/2025-01-12T12:00:00Z.json"
+      },
+      {
+        "ref_time": "2025-01-12T18:00:00Z",
+        "state": "activated_64kt",
+        "path": "dikeledi/2025-01-12T18:00:00Z.json"
+      }
+    ]
+  },
+  "2025-01-13": {
+    "dikeledi": [
+      {
+        "ref_time": "2025-01-13T00:00:00Z",
+        "state": "activated_64kt",
+        "path": "dikeledi/2025-01-13T00:00:00Z.json"
+      },
+      {
+        "ref_time": "2025-01-13T06:00:00Z",
+        "state": "activated_64kt",
+        "path": "dikeledi/2025-01-13T06:00:00Z.json"
+      },
+      {
+        "ref_time": "2025-01-13T12:00:00Z",
+        "state": "monitoring",
+        "path": "dikeledi/2025-01-13T12:00:00Z.json"
+      },
+      {
+        "ref_time": "2025-01-13T18:00:00Z",
+        "state": "monitoring",
+        "path": "dikeledi/2025-01-13T18:00:00Z.json"
+      }
+    ]
+  },
+  "2025-01-14": {
+    "dikeledi": [
+      {
+        "ref_time": "2025-01-14T06:00:00Z",
+        "state": "monitoring",
+        "path": "dikeledi/2025-01-14T06:00:00Z.json"
+      },
+      {
+        "ref_time": "2025-01-14T12:00:00Z",
+        "state": "monitoring",
+        "path": "dikeledi/2025-01-14T12:00:00Z.json"
+      },
+      {
+        "ref_time": "2025-01-14T18:00:00Z",
+        "state": "monitoring",
+        "path": "dikeledi/2025-01-14T18:00:00Z.json"
+      }
+    ]
+  },
+  "2025-01-15": {
+    "dikeledi": [
+      {
+        "ref_time": "2025-01-15T06:00:00Z",
+        "state": "monitoring",
+        "path": "dikeledi/2025-01-15T06:00:00Z.json"
+      },
+      {
+        "ref_time": "2025-01-15T12:00:00Z",
+        "state": "monitoring",
+        "path": "dikeledi/2025-01-15T12:00:00Z.json"
+      },
+      {
+        "ref_time": "2025-01-15T18:00:00Z",
+        "state": "monitoring",
+        "path": "dikeledi/2025-01-15T18:00:00Z.json"
+      }
+    ]
+  },
+  "2025-01-16": {
+    "dikeledi": [
+      {
+        "ref_time": "2025-01-16T06:00:00Z",
+        "state": "monitoring",
+        "path": "dikeledi/2025-01-16T06:00:00Z.json"
+      },
+      {
+        "ref_time": "2025-01-16T12:00:00Z",
+        "state": "monitoring",
+        "path": "dikeledi/2025-01-16T12:00:00Z.json"
+      },
+      {
+        "ref_time": "2025-01-16T18:00:00Z",
+        "state": "monitoring",
+        "path": "dikeledi/2025-01-16T18:00:00Z.json"
+      }
+    ]
+  },
+  "2025-01-17": {
+    "dikeledi": [
+      {
+        "ref_time": "2025-01-17T06:00:00Z",
+        "state": "monitoring",
+        "path": "dikeledi/2025-01-17T06:00:00Z.json"
+      },
+      {
+        "ref_time": "2025-01-17T12:00:00Z",
+        "state": "monitoring",
+        "path": "dikeledi/2025-01-17T12:00:00Z.json"
+      }
+    ]
+  },
+  "2025-01-24": {
+    "06-20242025": [
+      {
+        "ref_time": "2025-01-24T12:00:00Z",
+        "state": "monitoring",
+        "path": "06-20242025/2025-01-24T12:00:00Z.json"
+      }
+    ]
+  },
+  "2025-01-25": {
+    "06-20242025": [
+      {
+        "ref_time": "2025-01-25T06:00:00Z",
+        "state": "monitoring",
+        "path": "06-20242025/2025-01-25T06:00:00Z.json"
+      },
+      {
+        "ref_time": "2025-01-25T12:00:00Z",
+        "state": "monitoring",
+        "path": "06-20242025/2025-01-25T12:00:00Z.json"
+      }
+    ]
+  },
+  "2025-01-26": {
+    "06-20242025": [
+      {
+        "ref_time": "2025-01-26T06:00:00Z",
+        "state": "monitoring",
+        "path": "06-20242025/2025-01-26T06:00:00Z.json"
+      }
+    ]
+  },
+  "2025-01-27": {
+    "06-20242025": [
+      {
+        "ref_time": "2025-01-27T12:00:00Z",
+        "state": "monitoring",
+        "path": "06-20242025/2025-01-27T12:00:00Z.json"
+      },
+      {
+        "ref_time": "2025-01-27T18:00:00Z",
+        "state": "monitoring",
+        "path": "06-20242025/2025-01-27T18:00:00Z.json"
+      }
+    ]
+  },
+  "2025-01-28": {
+    "06-20242025": [
+      {
+        "ref_time": "2025-01-28T00:00:00Z",
+        "state": "monitoring",
+        "path": "06-20242025/2025-01-28T00:00:00Z.json"
+      },
+      {
+        "ref_time": "2025-01-28T06:00:00Z",
+        "state": "monitoring",
+        "path": "06-20242025/2025-01-28T06:00:00Z.json"
+      },
+      {
+        "ref_time": "2025-01-28T12:00:00Z",
+        "state": "monitoring",
+        "path": "06-20242025/2025-01-28T12:00:00Z.json"
+      },
+      {
+        "ref_time": "2025-01-28T18:00:00Z",
+        "state": "monitoring",
+        "path": "06-20242025/2025-01-28T18:00:00Z.json"
+      }
+    ]
+  },
+  "2025-01-29": {
+    "elvis": [
+      {
+        "ref_time": "2025-01-29T06:00:00Z",
+        "state": "monitoring",
+        "path": "elvis/2025-01-29T06:00:00Z.json"
+      }
+    ]
+  }
+}
