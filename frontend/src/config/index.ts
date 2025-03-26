@@ -13,6 +13,7 @@ import haiti from './haiti';
 import indonesia from './indonesia';
 import jordan from './jordan';
 import kyrgyzstan from './kyrgyzstan';
+import malawi from './malawi';
 import mongolia from './mongolia';
 import mozambique from './mozambique';
 import myanmar from './myanmar';
@@ -48,6 +49,7 @@ export const configMap = {
   indonesia,
   jordan,
   kyrgyzstan,
+  malawi,
   mongolia,
   mozambique,
   myanmar,
