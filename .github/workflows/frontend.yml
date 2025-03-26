@@ -144,6 +144,7 @@ jobs:
         country: [mozambique, cambodia, rbd]
     env:
       REACT_APP_SENTRY_URL: ${{ secrets.REACT_APP_SENTRY_URL }}
+      firebase_channel: prism-master-${{ matrix.country }}
     steps:
       - name: Checkout
         uses: actions/checkout@v2
