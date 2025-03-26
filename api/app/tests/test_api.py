@@ -4,7 +4,6 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 import rasterio
-import requests
 import schemathesis
 from app.database.database import AlertsDataBase
 from app.main import app
