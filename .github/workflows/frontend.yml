@@ -3,7 +3,7 @@ name: PRISM CI - Frontend
 on:
   # Run on all pull requests and on pushes to master.
   # Note - pull_request_target runs the workflow from the main branch, not the PR branch.
-  pull_request_target:
+  pull_request:
   push:
     branches:
       - master
@@ -144,6 +144,7 @@ jobs:
         country: [mozambique, cambodia, rbd]
     env:
       REACT_APP_SENTRY_URL: ${{ secrets.REACT_APP_SENTRY_URL }}
+      firebase_channel: prism-master-${{ matrix.country }}
     steps:
       - name: Checkout
         uses: actions/checkout@v2
