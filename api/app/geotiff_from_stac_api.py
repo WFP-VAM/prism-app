@@ -3,6 +3,7 @@ import logging
 import os
 
 import boto3
+import pystac
 from app.raster_utils import get_raster_crs, reproject_raster
 from app.timer import timed
 from cachetools import TTLCache, cached
@@ -29,6 +30,31 @@ configure_rio(
         "aws_secret_access_key": STAC_AWS_SECRET_ACCESS_KEY,
     },
 )
+
+
+def _patch_item_crs(item: pystac.Item, epsg: int | None = None):
+    """
+    Patch a pystac.Item that has 'proj:code' = 'EPSG:None' or 'proj:epsg' = 'None'.
+    This is a workaround for the STAC API returning items with CRS that are not valid.
+    Optionally set a numeric EPSG code (e.g. 6842 for MODIS Sinusoidal).
+    """
+
+    # Remove or fix 'proj:code' if it's "EPSG:None"
+    code = item.properties.get("proj:code")
+    if code == "EPSG:None":
+        item.properties.pop("proj:code")
+
+    # Remove or fix 'proj:epsg' if it's None or "None"
+    prop_epsg = item.properties.get("proj:epsg")
+    if prop_epsg in (None, "None"):
+        if epsg is None:
+            # If no numeric code is provided, remove it entirely
+            item.properties.pop("proj:epsg", None)
+        else:
+            # Otherwise, set to an integer
+            item.properties["proj:epsg"] = epsg
+
+    return item
 
 
 @timed
@@ -58,8 +84,12 @@ def generate_geotiff_from_stac_api(
     logger.debug("available bands: %s", available_bands)
     bands = [band] if band and band in available_bands else None
 
+    patched_items = [_patch_item_crs(item) for item in items]
+
     try:
-        collections_dataset = stac_load(items, bbox=bbox, bands=bands, chunks={})
+        collections_dataset = stac_load(
+            patched_items, bbox=bbox, bands=bands, chunks={}
+        )
         logger.debug("collections dataset: %s", collections_dataset)
     except Exception as e:
         logger.warning("Failed to load dataset")
