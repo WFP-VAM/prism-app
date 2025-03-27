@@ -66,8 +66,9 @@ export default defineConfig({
     outDir: 'build',
   },
   server: {
+    allowedHosts: true,
     port: 3000,
-    // TODO - this is a hack to prevent the browser from opening automatically in docker
+    // Prevent the browser from opening automatically in docker
     open: false,
     host: true,
   },

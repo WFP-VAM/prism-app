@@ -72,7 +72,8 @@ export const layerOrdering = (a: LayerType, b: LayerType) => {
       | 'geojson_polygon'
       | 'polygon'
       | 'static_raster'
-      | 'anticipatory_action']: number;
+      | 'anticipatory_action_drought'
+      | 'anticipatory_action_storm']: number;
   } = {
     point_data: 0,
     geojson_polygon: 1,
@@ -81,10 +82,11 @@ export const layerOrdering = (a: LayerType, b: LayerType) => {
     pattern_admin_level_data: 4,
     admin_level_data: 5,
     impact: 6,
-    composite: 7,
-    wms: 8,
-    static_raster: 9,
-    anticipatory_action: 10,
+    composite: 6,
+    wms: 7,
+    static_raster: 8,
+    anticipatory_action_drought: 9,
+    anticipatory_action_storm: 10,
   };
 
   const typeA = getTypeOrder(a);
