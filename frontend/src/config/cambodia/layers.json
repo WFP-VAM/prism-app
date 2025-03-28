@@ -2060,5 +2060,20 @@
         "dataTitle": "Status issued"
       }
     }
+  },
+  "predicted_flood_inundation_maps": {
+    "title": "Flood Inundation Prediction Map",
+    "type": "geojson_polygon",
+    "hex_display": false,
+    "data": "https://prism-api.ovio.org/google-floods/inundations/?region_codes=KH",
+    "data_field": "level",
+    "data_field_type": "text",
+    "opacity": 1,
+    "legend_text": "Current predicted flood maps. Visit [Google Research](https://sites.research.google/floodforecasting/) about Google's AI Forecasting models.",
+    "legend": [
+      { "label": "High", "value": "HIGH", "color": "#de2d26" },
+      { "label": "Medium", "value": "MEDIUM", "color": "#fc9272" },
+      { "label": "Low", "value": "LOW", "color": "#fee0d2" }
+    ]
   }
 }
