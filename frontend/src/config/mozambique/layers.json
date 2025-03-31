@@ -2285,7 +2285,7 @@
       }
     ],
     "legend_text": "IPC Phase Classification for April - September 2024. Source: National IPC Technical Working Group"
-  }, 
+  },
   "ipc_phase_projection_2024_2025": {
     "title": "IPC Phase Classification Projection October 2024 to March 2025",
     "type": "admin_level_data",
@@ -2323,7 +2323,7 @@
       }
     ],
     "legend_text": "IPC Phase Classification Projection October 2024 to March 2025. Source: National IPC Technical Working Group"
-  },   
+  },
   "ipc_phase_projection_2024_2025_v2": {
     "title": "IPC Phase Classification Projection October 2024 to March 2025",
     "type": "admin_level_data",
@@ -2361,7 +2361,7 @@
       }
     ],
     "legend_text": "IPC Phase Classification Projection October 2024 to March 2025. Source: National IPC Technical Working Group"
-  },  
+  },
   "ipc_phase_2022": {
     "title": "IPC Phase Classification 2022",
     "type": "admin_level_data",
