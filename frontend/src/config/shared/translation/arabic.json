@@ -302,6 +302,15 @@
   "Combined Drought Index V 1": "المؤشر المركب للجفاف-نسخة 1",
   "Combined Drought Index V 2": "المؤشر المركب للجفاف-نسخة 2",
   "Combined Drought Index Water Based": "المؤشر المركب للجفاف - مياه",
+  "Monthly Combined Drought Index (water-based)": "المؤشر المركب للجفاف - مياه",
+  "Aggregated": " مجمع",
+  "Pixel level": "مستوى البكسل",
   "SPI - 2-month": "المؤشر المعياري للهطول - 2 شهر",
-  "2-month Standardized Precipitation Index calculated from dekadal CHIRPS data": "المؤشر المعياري للهطول - 2 شهر، محسوبا من بيانات dekadal CHIRPS"
+  "2-month Standardized Precipitation Index calculated from dekadal CHIRPS data": "المؤشر المعياري للهطول - 2 شهر، محسوبا من بيانات dekadal CHIRPS",
+  "Estimate of precipitation over a 1-month period derived from CHIRPS (UCSB Climate Hazards Group).": "تقدير الهطول المطري لفترة شهر واحد مشتق من بيانات CHIRPS",
+  "Estimate of precipitation over a 3-month period derived from CHIRPS (UCSB Climate Hazards Group).": "تقدير الهطول المطري لفترة 3 اشهر مشتق من بيانات CHIRPS",
+  "Estimate of precipitation over a 6-month period derived from CHIRPS (UCSB Climate Hazards Group).": "تقدير الهطول المطري لفترة 6 اشهر مشتق من بيانات CHIRPS",
+  "Estimate of precipitation over a 9-month period derived from CHIRPS (UCSB Climate Hazards Group).": "تقدير الهطول المطري لفترة 9 اشهر مشتق من بيانات CHIRPS",
+  "Estimate of precipitation over a 1-year period derived from CHIRPS (UCSB Climate Hazards Group).": "تقدير الهطول المطري لفترة 12 اشهر مشتق من بيانات CHIRPS",
+  "Number of days of rainfall": "عدد ايام الهطول المطري"
 }
