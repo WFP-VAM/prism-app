@@ -4,6 +4,7 @@ import hashlib
 import json
 import logging
 import os
+import re
 from datetime import datetime
 from typing import Any, Optional
 
@@ -138,6 +139,29 @@ def get_json_file(cached_filepath: FilePath) -> GeoJSON:
         return json.load(f)
 
 
+def _safe_filename(value: str, max_length: int = 120) -> str:
+    """Convert a string into a safe filename by replacing unsafe characters and limiting length.
+
+    Args:
+        value (str): The string to convert to a safe filename
+        max_length (int): Maximum length of the filename (excluding extension). Defaults to 200.
+
+    Returns:
+        str: A safe filename that preserves uniqueness while staying within length limits
+    """
+    # Get hash to ensure uniqueness
+    hashed = _hash_value(value)
+
+    # Convert to safe characters
+    safe = re.sub(r"[^a-zA-Z0-9_-]", "_", value)
+
+    if len(safe) <= max_length:
+        return safe
+
+    truncated = safe[: max_length - len(hashed)]
+    return f"{truncated}_{hashed}"
+
+
 def _get_cached_filepath(
     prefix: str,
     cache_lookup: str | Any,
@@ -161,11 +185,12 @@ def _get_cached_filepath(
     if not cache_lookup:
         raise ValueError("cache_lookup must be provided to get_cached_filepath.")
 
-    filename = "{prefix}_{lookup}.{extension}".format(
-        prefix=prefix,
-        lookup=_hash_value(str(cache_lookup)) if hash_lookup else str(cache_lookup),
-        extension=extension,
-    )
+    safe_prefix = _safe_filename(prefix, max_length=30)
+    safe_extension = _safe_filename(extension)
+    lookup_value = _hash_value(str(cache_lookup)) if hash_lookup else str(cache_lookup)
+    safe_lookup = _safe_filename(lookup_value)
+
+    filename = f"{safe_prefix}_{safe_lookup}.{safe_extension}"
     logger.debug("Cached filepath: " + os.path.join(CACHE_DIRECTORY, filename))
     return FilePath(os.path.join(CACHE_DIRECTORY, filename))
 
