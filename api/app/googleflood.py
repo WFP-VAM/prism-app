@@ -109,10 +109,16 @@ def format_gauge_to_geojson(data):
 def fetch_flood_statuses(
     region_codes: list[str], run_sequentially: bool = False
 ) -> list[dict]:
-    """Fetch flood statuses concurrently for a list of region codes."""
+    """Fetch flood statuses concurrently for a list of region codes.
+
+    Args:
+        region_codes: List of region codes to fetch statuses for
+        run_sequentially: If True, requests will be made one at a time. This is helpful
+            for debugging but less performant than concurrent requests. Not recommended
+            for production use.
+    """
     flood_statuses = []
     if run_sequentially:
-        # Run synchronously
         for code in region_codes:
             status_response = make_google_floods_request(
                 f"https://floodforecasting.googleapis.com/v1/floodStatus:searchLatestFloodStatusByArea?key={GOOGLE_FLOODS_API_KEY}",
@@ -128,7 +134,6 @@ def fetch_flood_statuses(
                 )
             flood_statuses.extend(status_response.get("floodStatuses", []))
     else:
-        # Run asynchronously
         with ThreadPoolExecutor() as executor:
             future_to_region = {
                 executor.submit(

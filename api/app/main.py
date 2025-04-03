@@ -424,6 +424,12 @@ def get_google_floods_gauges_api(
 ):
     """
     Get the Google Floods gauges for a list of regions.
+
+    Args:
+        region_codes: List of region codes to fetch gauges for
+        run_sequentially: If True, requests will be made one at a time. This is helpful
+            for debugging but less performant than concurrent requests. Not recommended
+            for production use.
     """
     if not region_codes:
         raise HTTPException(
@@ -447,6 +453,12 @@ def get_google_floods_dates_api(
 ):
     """
     Get the Google Floods dates for a list of regions.
+
+    Args:
+        region_codes: List of region codes to fetch dates for
+        run_sequentially: If True, requests will be made one at a time. This is helpful
+            for debugging but less performant than concurrent requests. Not recommended
+            for production use.
     """
     if not region_codes:
         raise HTTPException(
@@ -483,7 +495,14 @@ def get_google_floods_gauge_forecast_api(
 def get_google_floods_inundations_api(
     region_codes: list[str] = Query(...), run_sequentially: bool = Query(default=False)
 ):
-    """Get statistical charts data"""
+    """Get charts data
+
+    Args:
+        region_codes: List of region codes to fetch inundation data for
+        run_sequentially: If True, requests will be made one at a time. This is helpful
+            for debugging but less performant than concurrent requests. Not recommended
+            for production use.
+    """
     if not region_codes:
         raise HTTPException(
             status_code=400,

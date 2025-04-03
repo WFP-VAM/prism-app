@@ -72,7 +72,7 @@ def cache_file(url: str, prefix: str, extension: str = "cache") -> FilePath:
     """Locally cache files fetched from a url."""
     cache_filepath = _get_cached_filepath(
         prefix=prefix,
-        data=url,
+        cache_lookup=url,
         extension=extension,
     )
     # If the file exists, return path.
@@ -120,8 +120,8 @@ def cache_geojson(
     # Otherwise, use the JSON string of the geojson.
     cache_filepath = _get_cached_filepath(
         prefix=prefix,
-        cache_key=cache_key if cache_key else None,
-        data=json_string if not cache_key else None,
+        cache_lookup=json_string if not cache_key else cache_key,
+        hash_lookup=cache_key is not None,
         extension="json",
     )
 
@@ -140,8 +140,8 @@ def get_json_file(cached_filepath: FilePath) -> GeoJSON:
 
 def _get_cached_filepath(
     prefix: str,
-    data: str | None = None,
-    cache_key: str | None = None,
+    cache_lookup: str | Any,
+    hash_lookup: bool = False,
     extension: str = "cache",
 ) -> FilePath:
     """
@@ -149,28 +149,21 @@ def _get_cached_filepath(
 
     Args:
         prefix (str): A prefix to be used in the cache file's name.
-        data (str | None): The data used to generate a unique hash if cache_key is not provided.
-        cache_key (str | None, optional): A unique key to identify the cache entry.
-            If provided, it will be used directly in the filename.
-            If not provided, a hash of the data will be used instead.
+        cache_lookup (str | Any): The value used to identify the cache entry.
+            If hash_lookup is True, this will be hashed to create the filename.
+            If hash_lookup is False, this will be used directly in the filename.
+        hash_lookup (bool): Whether to hash the cache_lookup value. Defaults to False.
         extension (str): The file extension for the cached file. Defaults to "cache".
 
     Returns:
         FilePath: The path where the cached file should be stored.
     """
-    if cache_key is None and data is None:
-        raise ValueError(
-            "Either cache_key or data must be provided to get_cached_filepath."
-        )
+    if not cache_lookup:
+        raise ValueError("cache_lookup must be provided to get_cached_filepath.")
 
-    if cache_key and data:
-        raise ValueError(
-            "Either cache_key or data must be provided to get_cached_filepath, not both."
-        )
-
-    filename = "{prefix}_{cache_key}.{extension}".format(
+    filename = "{prefix}_{lookup}.{extension}".format(
         prefix=prefix,
-        cache_key=_hash_value(cache_key if cache_key else data),
+        lookup=_hash_value(str(cache_lookup)) if hash_lookup else str(cache_lookup),
         extension=extension,
     )
     logger.debug("Cached filepath: " + os.path.join(CACHE_DIRECTORY, filename))
@@ -180,7 +173,7 @@ def _get_cached_filepath(
 def get_cache_by_key(
     prefix: str, cache_key: str, cache_timeout: int = float("inf")
 ) -> FilePath:
-    cache_filepath = _get_cached_filepath(prefix=prefix, cache_key=cache_key)
+    cache_filepath = _get_cached_filepath(prefix=prefix, cache_lookup=cache_key)
     if is_file_valid(cache_filepath):
         cache_age = get_cache_age(cache_filepath)
         if cache_age < cache_timeout:
