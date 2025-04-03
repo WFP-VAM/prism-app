@@ -4,6 +4,7 @@ import hashlib
 import json
 import logging
 import os
+import re
 from datetime import datetime
 from typing import Any, Optional
 
@@ -72,7 +73,7 @@ def cache_file(url: str, prefix: str, extension: str = "cache") -> FilePath:
     """Locally cache files fetched from a url."""
     cache_filepath = _get_cached_filepath(
         prefix=prefix,
-        data=url,
+        cache_lookup=url,
         extension=extension,
     )
     # If the file exists, return path.
@@ -98,13 +99,30 @@ def cache_file(url: str, prefix: str, extension: str = "cache") -> FilePath:
 
 
 @timed
-def cache_geojson(geojson: GeoJSON, prefix: str) -> FilePath:
-    """Locally store geojson needed for a request."""
+def cache_geojson(
+    geojson: GeoJSON, prefix: str, cache_key: str | None = None
+) -> FilePath:
+    """
+    Locally cache geojson for future use.
+
+    Args:
+        geojson (GeoJSON): The GeoJSON object to be cached.
+        prefix (str): A prefix to be used in the cache file's name.
+        cache_key (str | None, optional): A unique key to identify the cache entry.
+            If provided, it will be used to generate the cache file path.
+            If not provided, the JSON string of the geojson will be used instead.
+
+    Returns:
+        FilePath: The path to the cached GeoJSON file.
+    """
     json_string = json.dumps(geojson)
 
+    # If cache_key is provided, use it to generate the cache file path.
+    # Otherwise, use the JSON string of the geojson.
     cache_filepath = _get_cached_filepath(
         prefix=prefix,
-        data=json_string,
+        cache_lookup=json_string if not cache_key else cache_key,
+        hash_lookup=cache_key is not None,
         extension="json",
     )
 
@@ -121,15 +139,77 @@ def get_json_file(cached_filepath: FilePath) -> GeoJSON:
         return json.load(f)
 
 
-def _get_cached_filepath(prefix: str, data: str, extension: str = "cache") -> FilePath:
-    """Return the filepath where a cached response would live for the given inputs."""
-    filename = "{prefix}_{hash_string}.{extension}".format(
-        prefix=prefix,
-        hash_string=_hash_value(data),
-        extension=extension,
-    )
+def _safe_filename(value: str, max_length: int = 120) -> str:
+    """Convert a string into a safe filename by replacing unsafe characters and limiting length.
+
+    Args:
+        value (str): The string to convert to a safe filename
+        max_length (int): Maximum length of the filename (excluding extension). Defaults to 200.
+
+    Returns:
+        str: A safe filename that preserves uniqueness while staying within length limits
+    """
+    # Get hash to ensure uniqueness
+    hashed = _hash_value(value)
+
+    # Convert to safe characters
+    safe = re.sub(r"[^a-zA-Z0-9_-]", "_", value)
+
+    if len(safe) <= max_length:
+        return safe
+
+    truncated = safe[: max_length - len(hashed)]
+    return f"{truncated}_{hashed}"
+
+
+def _get_cached_filepath(
+    prefix: str,
+    cache_lookup: str | Any,
+    hash_lookup: bool = False,
+    extension: str = "cache",
+) -> FilePath:
+    """
+    Return the filepath where a cached response would live for the given inputs.
+
+    Args:
+        prefix (str): A prefix to be used in the cache file's name.
+        cache_lookup (str | Any): The value used to identify the cache entry.
+            If hash_lookup is True, this will be hashed to create the filename.
+            If hash_lookup is False, this will be used directly in the filename.
+        hash_lookup (bool): Whether to hash the cache_lookup value. Defaults to False.
+        extension (str): The file extension for the cached file. Defaults to "cache".
+
+    Returns:
+        FilePath: The path where the cached file should be stored.
+    """
+    if not cache_lookup:
+        raise ValueError("cache_lookup must be provided to get_cached_filepath.")
+
+    safe_prefix = _safe_filename(prefix, max_length=30)
+    safe_extension = _safe_filename(extension)
+    lookup_value = _hash_value(str(cache_lookup)) if hash_lookup else str(cache_lookup)
+    safe_lookup = _safe_filename(lookup_value)
+
+    filename = f"{safe_prefix}_{safe_lookup}.{safe_extension}"
     logger.debug("Cached filepath: " + os.path.join(CACHE_DIRECTORY, filename))
     return FilePath(os.path.join(CACHE_DIRECTORY, filename))
+
+
+def get_cache_by_key(
+    prefix: str, cache_key: str, cache_timeout: int = float("inf")
+) -> FilePath:
+    cache_filepath = _get_cached_filepath(prefix=prefix, cache_lookup=cache_key)
+    if is_file_valid(cache_filepath):
+        cache_age = get_cache_age(cache_filepath)
+        if cache_age < cache_timeout:
+            logger.debug("Returning cached GeoJSON data.")
+            return get_json_file(cache_filepath)
+        else:
+            logger.debug("Cached file is expired.")
+            return None
+    else:
+        logger.debug("Cached file does not exist.")
+        return None
 
 
 def _hash_value(value: str) -> str:
@@ -151,3 +231,10 @@ def is_file_valid(filepath) -> bool:
         return True
 
     return False
+
+
+def get_cache_age(filepath: FilePath) -> float:
+    """Get the age of a cached file in seconds."""
+    return (
+        datetime.now() - datetime.fromtimestamp(os.path.getctime(filepath))
+    ).total_seconds()

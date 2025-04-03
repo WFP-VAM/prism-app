@@ -18,6 +18,7 @@ from app.googleflood import (
     get_google_flood_dates,
     get_google_floods_gauge_forecast,
     get_google_floods_gauges,
+    get_google_floods_inundations,
 )
 from app.hdc import get_hdc_stats
 from app.kobo import get_form_dates, get_form_responses, parse_datetime_params
@@ -418,9 +419,17 @@ def post_raster_geotiff(raster_geotiff: RasterGeotiffModel):
 
 
 @app.get("/google-floods/gauges/")
-def get_google_floods_gauges_api(region_codes: list[str] = Query(...)):
+def get_google_floods_gauges_api(
+    region_codes: list[str] = Query(...), run_sequentially: bool = Query(default=False)
+):
     """
     Get the Google Floods gauges for a list of regions.
+
+    Args:
+        region_codes: List of region codes to fetch gauges for
+        run_sequentially: If True, requests will be made one at a time. This is helpful
+            for debugging but less performant than concurrent requests. Not recommended
+            for production use.
     """
     if not region_codes:
         raise HTTPException(
@@ -435,13 +444,21 @@ def get_google_floods_gauges_api(region_codes: list[str] = Query(...)):
             )
 
     iso2_codes = [region_code.upper() for region_code in region_codes]
-    return get_google_floods_gauges(iso2_codes)
+    return get_google_floods_gauges(iso2_codes, True, run_sequentially)
 
 
 @app.get("/google-floods/dates/")
-def get_google_floods_dates_api(region_codes: list[str] = Query(...)):
+def get_google_floods_dates_api(
+    region_codes: list[str] = Query(...), run_sequentially: bool = Query(default=False)
+):
     """
     Get the Google Floods dates for a list of regions.
+
+    Args:
+        region_codes: List of region codes to fetch dates for
+        run_sequentially: If True, requests will be made one at a time. This is helpful
+            for debugging but less performant than concurrent requests. Not recommended
+            for production use.
     """
     if not region_codes:
         raise HTTPException(
@@ -457,7 +474,7 @@ def get_google_floods_dates_api(region_codes: list[str] = Query(...)):
             )
 
     iso2_codes = [region_code.upper() for region_code in region_codes]
-    return get_google_flood_dates(iso2_codes)
+    return get_google_flood_dates(iso2_codes, run_sequentially)
 
 
 @app.get("/google-floods/gauges/forecasts")
@@ -472,3 +489,32 @@ def get_google_floods_gauge_forecast_api(
             detail="gauge_ids must be provided and contain at least one value.",
         )
     return get_google_floods_gauge_forecast(gauge_id_list)
+
+
+@app.get("/google-floods/inundations")
+def get_google_floods_inundations_api(
+    region_codes: list[str] = Query(...), run_sequentially: bool = Query(default=False)
+):
+    """Get charts data
+
+    Args:
+        region_codes: List of region codes to fetch inundation data for
+        run_sequentially: If True, requests will be made one at a time. This is helpful
+            for debugging but less performant than concurrent requests. Not recommended
+            for production use.
+    """
+    if not region_codes:
+        raise HTTPException(
+            status_code=400,
+            detail="At least one region code must be provided.",
+        )
+    for region_code in region_codes:
+        if len(region_code) != 2:
+            raise HTTPException(
+                status_code=400,
+                detail=f"Region code '{region_code}' must be exactly two characters (iso2).",
+            )
+
+    iso2_codes = [region_code.upper() for region_code in region_codes]
+
+    return get_google_floods_inundations(iso2_codes, run_sequentially)
