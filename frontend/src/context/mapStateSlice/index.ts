@@ -69,22 +69,24 @@ export const layerOrdering = (a: LayerType, b: LayerType) => {
       | 'pattern_admin_level_data'
       | 'impact'
       | 'point_data'
+      | 'geojson_polygon'
       | 'polygon'
       | 'static_raster'
       | 'anticipatory_action_drought'
       | 'anticipatory_action_storm']: number;
   } = {
     point_data: 0,
-    polygon: 1,
-    boundary: 2,
-    pattern_admin_level_data: 3,
-    admin_level_data: 4,
-    impact: 5,
-    composite: 5,
-    wms: 6,
-    static_raster: 7,
-    anticipatory_action_drought: 8,
-    anticipatory_action_storm: 9,
+    geojson_polygon: 1,
+    polygon: 2,
+    boundary: 3,
+    pattern_admin_level_data: 4,
+    admin_level_data: 5,
+    impact: 6,
+    composite: 6,
+    wms: 7,
+    static_raster: 8,
+    anticipatory_action_drought: 9,
+    anticipatory_action_storm: 10,
   };
 
   const typeA = getTypeOrder(a);
@@ -114,9 +116,16 @@ export const mapStateSlice = createSlice({
           ? [...layersToAdd, ...filteredLayers]
           : [...filteredLayers, ...layersToAdd];
 
+      // Deduplicate layers
+      const dedupedLayers = newLayers.filter(
+        (layer, index, self) =>
+          index ===
+          self.findIndex(t => t.id === layer.id && t.type === layer.type),
+      );
+
       return {
         ...rest,
-        layers: newLayers,
+        layers: dedupedLayers,
       };
     },
     removeLayerData: (
