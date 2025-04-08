@@ -41,7 +41,7 @@ if GOOGLE_FLOODS_API_KEY == "":
 
 
 def make_google_floods_request(url, method="get", data=None, retries=1, timeout=10):
-    """Make a request with retries and error handling, caching the result for 5 minutes."""
+    """Make a request with retries and error handling, caching the result for 10 minutes."""
     # Create a unique cache key based on the request parameters
     request_data = json.dumps(data, sort_keys=True) if data else ""
     cache_key = f"{url}_{method}_{request_data}"
