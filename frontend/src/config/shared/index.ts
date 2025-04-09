@@ -7,10 +7,11 @@ import english from './translation/english.json';
 import french from './translation/french.json';
 import khmer from './translation/khmer.json';
 import kyrgyz from './translation/kyrgyz.json';
+import mongolian from '../mongolia/translation.json';
 import portuguese from './translation/portuguese.json';
 import russian from './translation/russian.json';
+import somali from './translation/somali.json';
 import spanish from './translation/spanish.json';
-import mongolian from '../mongolia/translation.json';
 
 // TODO - Link translation files for the following languages
 const translation: Record<string, any> = {
@@ -22,6 +23,7 @@ const translation: Record<string, any> = {
   mn: mongolian,
   pt: portuguese,
   ru: russian,
+  so: somali,
   es: spanish,
 };
 

@@ -3,7 +3,7 @@ import rawLayers from './layers.json';
 
 const rawTables = {};
 const rawReports = {};
-const translation = {};
+const translation = { so: {}, en: {} };
 
 export default {
   appConfig,
