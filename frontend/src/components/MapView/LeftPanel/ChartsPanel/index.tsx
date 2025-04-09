@@ -209,16 +209,6 @@ const ChartsPanel = memo(() => {
     [compareLocations, comparePeriods],
   );
 
-  const locationString = useCallback(
-    (
-      countryName: string,
-      adm1Name: string,
-      adm2Name: string,
-      admLevel: number,
-    ) => formatLocationString(countryName, adm1Name, adm2Name, admLevel),
-    [],
-  );
-
   const showChartsPanel = useMemo(
     () =>
       adminProperties &&
@@ -435,7 +425,7 @@ const ChartsPanel = memo(() => {
       if (compareLocations && adminProperties && secondAdminProperties) {
         return [
           [
-            locationString(
+            formatLocationString(
               getCountryName(adminProperties),
               selectedAdmin1Area,
               selectedAdmin2Area,
@@ -444,7 +434,7 @@ const ChartsPanel = memo(() => {
             'main',
           ],
           [
-            locationString(
+            formatLocationString(
               getCountryName(secondAdminProperties),
               comparedAdmin1Area,
               comparedAdmin2Area,
@@ -489,7 +479,7 @@ const ChartsPanel = memo(() => {
           }}
         >
           <Typography className={classes.textLabel}>
-            {locationString(
+            {formatLocationString(
               getCountryName(adminProperties),
               selectedAdmin1Area,
               selectedAdmin2Area,
@@ -509,7 +499,6 @@ const ChartsPanel = memo(() => {
     comparePeriods,
     endDate1,
     endDate2,
-    locationString,
     maxChartValues,
     minChartValues,
     secondAdminLevel,

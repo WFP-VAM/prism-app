@@ -89,6 +89,7 @@ const BoundaryDropdownOptions = React.forwardRef(
       layerDataSelector(boundaryLayers[0].id),
     );
     const { data: baseBoundaryLayerData } = baseBoundaryLayer || {};
+
     // Create a single selector that gets all boundary layer data
     const allBoundaryLayerData = useSelector((state: RootState) =>
       boundaryLayers.reduce(
