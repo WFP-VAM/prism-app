@@ -4,6 +4,7 @@
     "format": "pmtiles",
     "path": "https://pmtiles-hosting.s3.eu-central-1.amazonaws.com/global/global_admin_boundaries.pmtiles",
     "layer_name": "admin2",
+    "hideInGoTo": true,
     "opacity": 0.8,
     "styles:": {
       "fill": {

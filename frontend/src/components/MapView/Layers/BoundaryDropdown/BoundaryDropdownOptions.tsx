@@ -26,7 +26,9 @@ import {
   TIMEOUT_ANIMATION_DELAY,
 } from './utils';
 
-const boundaryLayers = getDisplayBoundaryLayers();
+const boundaryLayers = getDisplayBoundaryLayers().filter(
+  layer => !layer.hideInGoTo,
+);
 
 const SearchField = React.forwardRef(
   (

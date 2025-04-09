@@ -399,6 +399,9 @@ export class BoundaryLayerProps extends CommonLayerProps {
   @optional
   layerName?: string;
 
+  @optional
+  hideInGoTo?: boolean | undefined;
+
   // Minimum zoom level to display the boundary.
   // Note that the layer is still loaded, but not displayed.
   @optional
