@@ -31,7 +31,7 @@ export const fetchBoundaryLayerData: LazyLoader<BoundaryLayerProps> =
         };
       }
 
-      // Original GeoJSON fetching logic
+      // GeoJSON fetching logic
       const response = await fetchWithTimeout(
         path,
         dispatch,

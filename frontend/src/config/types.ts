@@ -8,6 +8,7 @@ import {
 } from 'maplibre-gl';
 import { Dispatch } from 'redux';
 import { TFunction } from 'i18next';
+import React from 'react';
 import { rawLayers } from '.';
 import type { ReportKey, TableKey } from './utils';
 import type { PopupMetaData } from '../context/tooltipStateSlice';
@@ -26,7 +27,8 @@ export type LayerType =
   | PointDataLayerProps
   | CompositeLayerProps
   | StaticRasterLayerProps
-  | AnticipatoryActionLayerProps;
+  | AnticipatoryActionLayerProps
+  | GeojsonDataLayerProps;
 
 type UnionToIntersection<U> = (U extends any ? (k: U) => void : never) extends (
   k: infer I,
@@ -400,6 +402,9 @@ export class BoundaryLayerProps extends CommonLayerProps {
   @optional
   layerName?: string;
 
+  @optional
+  hideInGoTo?: boolean | undefined;
+
   // Minimum zoom level to display the boundary.
   // Note that the layer is still loaded, but not displayed.
   @optional
@@ -758,6 +763,29 @@ export class PointDataLayerProps extends CommonLayerProps {
   detailUrl?: string;
 }
 
+export class GeojsonDataLayerProps extends CommonLayerProps {
+  type: 'geojson_polygon' = 'geojson_polygon';
+  data: string;
+
+  @makeRequired
+  dataField: string;
+
+  @optional // if legend_label, uses the label from legend to display in feature info. if not, uses dataField
+  displaySource?: 'legend_label' | 'data_field';
+
+  @makeRequired
+  declare title: string;
+
+  @makeRequired
+  declare legend: LegendDefinition;
+
+  @makeRequired
+  declare legendText: string;
+
+  @optional
+  additionalQueryParams?: { [key: string]: string | { [key: string]: string } };
+}
+
 export type RequiredKeys<T> = {
   [k in keyof T]: undefined extends T[k] ? never : k;
 }[keyof T];
@@ -781,6 +809,29 @@ export interface MenuItemType {
   icon: string;
   layersCategories: LayersCategoryType[];
 }
+
+export type PanelItem = {
+  panel?: Panel;
+  label: string;
+  icon: React.ReactNode;
+  children?: PanelItem[];
+};
+
+export enum Panel {
+  None = 'none',
+  Layers = 'layers',
+  Charts = 'charts',
+  Analysis = 'analysis',
+  Tables = 'tables',
+  AnticipatoryActionDrought = 'anticipatory_action_drought',
+  AnticipatoryActionStorm = 'anticipatory_action_storm',
+  Alerts = 'alerts',
+}
+
+export type LeftPanelState = {
+  tabValue: Panel;
+  panelSize: PanelSize;
+};
 
 export type DateItem = {
   displayDate: number; // Date that will be rendered in the calendar.
@@ -908,6 +959,7 @@ export type PointData = {
 };
 
 export type PointLayerData = FeatureCollection;
+export type GeojsonLayerData = FeatureCollection;
 
 export interface BaseLayer {
   name: string;
@@ -947,8 +999,13 @@ export type MapEventWrapFunction<T> = (
   props: MapEventWrapFunctionProps<T>,
 ) => (evt: MapLayerMouseEvent) => void;
 
+export enum AnticipatoryAction {
+  storm = 'anticipatory_action_storm',
+  drought = 'anticipatory_action_drought',
+}
+
 export class AnticipatoryActionLayerProps extends CommonLayerProps {
-  type: 'anticipatory_action' = 'anticipatory_action';
+  type: AnticipatoryAction = AnticipatoryAction.drought;
 
   @makeRequired
   declare title: string;

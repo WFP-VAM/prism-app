@@ -149,7 +149,8 @@ export const getPossibleDatesForLayer = (
         date => date.displayDate > startDateTimestamp,
       );
     }
-    case 'anticipatory_action':
+    case 'anticipatory_action_drought':
+    case 'anticipatory_action_storm':
       return serverAvailableDates[layer.id] || [];
     default:
       return [];

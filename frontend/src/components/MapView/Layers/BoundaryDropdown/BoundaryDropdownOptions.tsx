@@ -26,7 +26,9 @@ import {
   TIMEOUT_ANIMATION_DELAY,
 } from './utils';
 
-const boundaryLayers = getDisplayBoundaryLayers();
+const boundaryLayers = getDisplayBoundaryLayers().filter(
+  layer => !layer.hideInGoTo,
+);
 
 const SearchField = React.forwardRef(
   (
@@ -89,6 +91,7 @@ const BoundaryDropdownOptions = React.forwardRef(
       layerDataSelector(boundaryLayers[0].id),
     );
     const { data: baseBoundaryLayerData } = baseBoundaryLayer || {};
+
     // Create a single selector that gets all boundary layer data
     const allBoundaryLayerData = useSelector((state: RootState) =>
       boundaryLayers.reduce(
@@ -112,8 +115,10 @@ const BoundaryDropdownOptions = React.forwardRef(
 
       return {
         type: 'FeatureCollection',
-        features: layerData.flatMap(
-          layer => (layer?.data as BoundaryLayerData)?.features || [],
+        features: layerData.flatMap(layer =>
+          layer?.layer?.hideInGoTo
+            ? []
+            : (layer?.data as BoundaryLayerData)?.features || [],
         ),
       };
     }, [allBoundaryLayerData]);

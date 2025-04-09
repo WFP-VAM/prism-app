@@ -3,7 +3,7 @@
   "countryAdmin0Id": 271,
   "alertFormActive": false,
   "enableNavigationDropdown": true,
-  "anticipatoryActionUrl": "https://data.earthobservation.vam.wfp.org/public-share/aa/aa_probabilities_triggers_zwe.csv",
+  "anticipatoryActionDroughtUrl": "https://data.earthobservation.vam.wfp.org/public-share/aa/aa_probabilities_triggers_zwe.csv",
   "serversUrls": {
     "wms": ["https://api.earthobservation.vam.wfp.org/ows/wms"]
   },
@@ -185,6 +185,10 @@
               "id": "spi_1m",
               "label": "1-month",
               "main": true
+            },
+            {
+              "id": "spi_2m",
+              "label": "2-month"
             },
             {
               "id": "spi_3m",

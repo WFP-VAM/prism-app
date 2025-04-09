@@ -33,8 +33,7 @@
     "flood": {
       "flood_monitoring": ["flood_extent"],
       "flood_risk": ["flood_hazard"],
-      "early_warning": ["ews_remote"],
-      "river_discharge_forecast": ["forecast_river_discharge_at_gauges"]
+      "early_warning": ["ews_remote"]
     },
     "rainfall": {
       "forecasts": [
@@ -125,6 +124,10 @@
               "id": "spi_1m",
               "label": "1-month",
               "main": true
+            },
+            {
+              "id": "spi_2m",
+              "label": "2-month"
             },
             {
               "id": "spi_3m",

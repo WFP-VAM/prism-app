@@ -3,6 +3,7 @@ import {
   AnticipatoryActionLayerProps,
   DateItem,
   DiscriminateUnion,
+  GeojsonLayerData,
   LayerType,
   PointLayerData,
   StaticRasterLayerProps,
@@ -20,6 +21,7 @@ import { BoundaryLayerData, fetchBoundaryLayerData } from './boundary';
 import { fetchImpactLayerData, ImpactLayerData } from './impact';
 import type { CompositeLayerData } from './composite_data';
 import { fetchCompositeLayerData } from './composite_data';
+import { fetchGeojsonLayerData } from './geojson';
 
 export type LayerAcceptingDataType = Exclude<
   LayerType,
@@ -35,6 +37,7 @@ type LayerSpecificDataTypes = {
   // eslint-disable-next-line camelcase
   point_data: PointLayerData | AdminLevelDataLayerData;
   composite: CompositeLayerData;
+  geojson_polygon: GeojsonLayerData;
 };
 
 export interface LayerData<L extends LayerAcceptingDataType> {
@@ -97,6 +100,7 @@ export const loadLayerData: LoadLayerDataFuncType = createAsyncThunk<
     admin_level_data: fetchAdminLevelDataLayerData,
     point_data: fetchPointLayerData,
     composite: fetchCompositeLayerData,
+    geojson_polygon: fetchGeojsonLayerData,
   };
   const lazyLoad: LazyLoader<any> = layerLoaders[layer.type];
   try {
