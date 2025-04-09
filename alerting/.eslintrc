@@ -1,12 +1,29 @@
 {
+  "parser": "@typescript-eslint/parser",
+  "plugins": [
+    "@typescript-eslint"
+  ],
+  "extends": [
+    "plugin:@typescript-eslint/recommended"
+  ],
   "rules": {
+    "@typescript-eslint/ban-ts-comment": "off",
     "no-useless-constructor": "off",
-    "no-empty-function": ["error", { "allow": ["constructors"] }],
+    "no-empty-function": [
+      "error",
+      {
+        "allow": [
+          "constructors"
+        ]
+      }
+    ],
     "class-methods-use-this": "off"
   },
   "overrides": [
     {
-      "files": ["test/*"],
+      "files": [
+        "test/*"
+      ],
       "rules": {
         "fp/no-mutation": "off",
         "import/no-extraneous-dependencies": [
@@ -18,7 +35,9 @@
       }
     },
     {
-      "files": ["scripts/**"],
+      "files": [
+        "scripts/**"
+      ],
       "rules": {
         "no-console": "off",
         "import/no-extraneous-dependencies": [
@@ -30,7 +49,9 @@
       }
     },
     {
-      "files": ["cloud-functions/*"],
+      "files": [
+        "cloud-functions/*"
+      ],
       "rules": {
         "import/no-extraneous-dependencies": [
           "error",
@@ -41,7 +62,9 @@
       }
     },
     {
-      "files": ["src/seeds/*"],
+      "files": [
+        "src/seeds/*"
+      ],
       "rules": {
         "no-param-reassign": "off",
         "fp/no-mutation": "off",
@@ -54,7 +77,9 @@
       }
     },
     {
-      "files": ["src/**/*.entity.{ts,js}"],
+      "files": [
+        "src/**/*.entity.{ts,js}"
+      ],
       "rules": {
         "import/no-cycle": "off"
       }
