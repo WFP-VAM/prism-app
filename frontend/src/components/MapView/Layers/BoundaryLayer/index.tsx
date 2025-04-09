@@ -1,5 +1,5 @@
 import { memo, useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { BoundaryLayerProps, MapEventWrapFunctionProps } from 'config/types';
 import { LayerData } from 'context/layers/layer-data';
 import { showPopup } from 'context/tooltipStateSlice';
@@ -20,6 +20,12 @@ import {
   useMapCallback,
 } from 'utils/map-utils';
 import { initPmtilesProtocol } from 'utils/pmtiles-utils';
+import { languages } from 'i18n';
+import {
+  BoundaryRelationData,
+  loadBoundaryRelations,
+} from 'components/Common/BoundaryDropdown/utils';
+import { setBoundaryRelationData } from 'context/mapStateSlice';
 
 function onToggleHover(cursor: string, targetMap: MaplibreMap) {
   // eslint-disable-next-line no-param-reassign, fp/no-mutation
@@ -115,30 +121,28 @@ const BoundaryLayer = memo(({ layer, before }: ComponentProps) => {
     return undefined;
   }, [layer.format]);
 
-  // This is causing a pretty massive performance hit. It seems to only be necessary for alerts.
-  // Is it used anywhere else???
-  // const dispatch = useDispatch();
-  // const isPrimaryLayer = isPrimaryBoundaryLayer(layer);
-  // useEffect(() => {
-  //   if (!data || !isPrimaryLayer) {
-  //     return;
-  //   }
+  const dispatch = useDispatch();
+  const isPrimaryLayer = isPrimaryBoundaryLayer(layer);
+  useEffect(() => {
+    if (!data || !isPrimaryLayer || layer.format !== 'pmtiles') {
+      return;
+    }
 
-  //   const dataDict = languages.reduce((relationsDict, lang) => {
-  //     const locationLevelNames =
-  //       lang === 'en' ? layer.adminLevelNames : layer.adminLevelLocalNames;
+    const dataDict = languages.reduce((relationsDict, lang) => {
+      const locationLevelNames =
+        lang === 'en' ? layer.adminLevelNames : layer.adminLevelLocalNames;
 
-  //     const relations: BoundaryRelationData = loadBoundaryRelations(
-  //       data,
-  //       locationLevelNames,
-  //       layer,
-  //     );
+      const relations: BoundaryRelationData = loadBoundaryRelations(
+        data,
+        locationLevelNames,
+        layer,
+      );
 
-  //     return { ...relationsDict, [lang]: relations };
-  //   }, {});
+      return { ...relationsDict, [lang]: relations };
+    }, {});
 
-  //   dispatch(setBoundaryRelationData(dataDict));
-  // }, [data, dispatch, layer, isPrimaryLayer]);
+    dispatch(setBoundaryRelationData(dataDict));
+  }, [data, dispatch, layer, isPrimaryLayer]);
 
   if (layer.format === 'pmtiles') {
     return (

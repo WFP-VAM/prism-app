@@ -102,6 +102,67 @@ In some cases, a boundary file may load without any issues but fail to provide c
 
 In addition, boundary files sometimes carry more precise coordinates than is neccessary which makes for a large data file. PRISM will alert you with a message in the browser if the precision is too high. You can run bash /frontend/scripts/truncate_precision.sh to fix this. The script will update any boundary file in the /frontend/public/data folder
 
+#### PMTiles Support for Boundaries
+
+PRISM now supports PMTiles (Protomaps Tiles) format for administrative boundaries. PMTiles is an efficient single-file format for hosting vector tiles, which can significantly improve load times and reduce hosting complexity.
+
+To use PMTiles for boundaries:
+
+1. Configure your boundary layer in `layers.json`:
+```json
+{
+  "admin_boundaries": {
+    "type": "boundary",
+    "format": "pmtiles",  // Specify PMTiles format
+    "path": "https://your-bucket.s3.region.amazonaws.com/path/to/boundaries.pmtiles",
+    "opacity": 0.8,
+    "admin_code": "admin_code_field",
+    "admin_level_names": ["ADMIN0", "ADMIN1", "ADMIN2"],
+    "admin_level_local_names": ["admin0Name", "admin1Name", "admin2Name"],
+    "styles": {
+      "fill": {
+        "fill-opacity": 0
+      },
+      "line": {
+        "line-color": "gray",
+        "line-width": 0.5,
+        "line-opacity": 0.8
+      }
+    }
+  }
+}
+```
+
+2. Configure S3 CORS Policy:
+If hosting PMTiles on S3, ensure your bucket has the following CORS configuration:
+```json
+{
+    "CORSRules": [
+        {
+            "AllowedHeaders": ["*"],
+            "AllowedMethods": ["GET"],
+            "AllowedOrigins": [
+                "http://localhost:3000", // all of the ports you need
+                "https://*.web.app",
+                "https://*.wfp.org"
+            ],
+            "ExposeHeaders": [
+                "ETag",
+                "Range"
+            ],
+            "MaxAgeSeconds": 3000
+        }
+    ]
+}
+```
+
+Note: The `Range` header in `ExposeHeaders` is crucial for PMTiles to work properly, as it uses range requests to fetch tile data efficiently.
+
+3. Performance Considerations:
+- PMTiles format is particularly efficient for large boundary datasets
+- Tiles are loaded on-demand as users pan and zoom
+- The format supports efficient caching and partial loading
+
 #### Data Layers
 Under `categories`, you can specify the menu structure and reference to any layer by ID that is defined under the country country specific or shared `layers.json`. You can also create groups that can be activated all at once, or selectively.
 
@@ -308,9 +369,9 @@ Impact layers are computed by combining a raster layer with a vector layer based
     "opacity": 0.3,
     "legend_text": "Number of herder households within ADMIN2 in an area where the median pasture anomaly is <= -50%",
     "legend": [
-      { "value": "25", "color": "#ffeda0”" },
-      { "value": "30", "color": "#feb24c”" },
-      { "value": "35", "color": "#f03b20”" }
+      { "value": "25", "color": "#ffeda0" },
+      { "value": "30", "color": "#feb24c" },
+      { "value": "35", "color": "#f03b20" }
     ]
 }
 ```

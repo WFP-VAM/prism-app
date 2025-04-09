@@ -2,7 +2,7 @@
   "global_admin2_boundaries": {
     "type": "boundary",
     "format": "pmtiles",
-    "path": "https://test-vector-datastore.s3.eu-central-1.amazonaws.com/public-pmtiles/global_admin_boundaries.pmtiles",
+    "path": "https://pmtiles-hosting.s3.eu-central-1.amazonaws.com/global/global_admin_boundaries.pmtiles",
     "layer_name": "admin2",
     "opacity": 0.8,
     "styles:": {
@@ -23,7 +23,7 @@
   "global_admin1_boundaries": {
     "type": "boundary",
     "format": "pmtiles",
-    "path": "https://test-vector-datastore.s3.eu-central-1.amazonaws.com/public-pmtiles/global_admin_boundaries.pmtiles",
+    "path": "https://pmtiles-hosting.s3.eu-central-1.amazonaws.com/global/global_admin_boundaries.pmtiles",
     "layer_name": "admin1",
     "opacity": 0.8,
     "styles:": {
@@ -44,7 +44,7 @@
   "global_admin0_boundaries": {
     "type": "boundary",
     "format": "pmtiles",
-    "path": "https://test-vector-datastore.s3.eu-central-1.amazonaws.com/public-pmtiles/global_admin_boundaries.pmtiles",
+    "path": "https://pmtiles-hosting.s3.eu-central-1.amazonaws.com/global/global_admin_boundaries.pmtiles",
     "layer_name": "admin0",
     "opacity": 0.8,
     "styles:": {

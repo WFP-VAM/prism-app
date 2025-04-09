@@ -73,6 +73,10 @@ export function getAdminBoundaryTree(
       feature,
       (level + 1) as AdminLevelType,
     );
+    // Filter out invalid branches (missing label or key in source data)
+    if (newBranch.label === '' || newBranch.key === undefined) {
+      return partialTree;
+    }
     const newChildren = {
       ...partialTree.children,
       [fp[currentLevelCode]]: newBranch,
