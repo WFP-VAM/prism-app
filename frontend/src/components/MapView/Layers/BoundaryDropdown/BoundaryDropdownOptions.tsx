@@ -115,8 +115,10 @@ const BoundaryDropdownOptions = React.forwardRef(
 
       return {
         type: 'FeatureCollection',
-        features: layerData.flatMap(
-          layer => (layer?.data as BoundaryLayerData)?.features || [],
+        features: layerData.flatMap(layer =>
+          layer?.layer?.hideInGoTo
+            ? []
+            : (layer?.data as BoundaryLayerData)?.features || [],
         ),
       };
     }, [allBoundaryLayerData]);
