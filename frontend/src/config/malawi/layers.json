@@ -4,7 +4,7 @@
     "path": "data/malawi/mwi_admbnda_adm2_nso_hotosm_20230405_dv.json",
     "opacity": 0.8,
     "admin_code": "ADM2_PCODE",
-    "admin_level_codes": ["dv_adm1_id", "dv_adm2_id"],
+    "admin_level_codes": ["ADM1_PCODE", "ADM2_PCODE"],
     "admin_level_names": ["ADM1_EN", "ADM2_EN"],
     "admin_level_local_names": ["ADM1_EN", "ADM2_EN"],
     "styles:": {
@@ -23,7 +23,7 @@
     "path": "data/malawi/mwi_admbnda_adm1_nso_hotosm_20230405_dv.json",
     "opacity": 0.8,
     "admin_code": "ADM1_PCODE",
-    "admin_level_codes": ["dv_adm1_id"],
+    "admin_level_codes": ["ADM1_PCODE"],
     "admin_level_names": ["ADM1_EN"],
     "admin_level_local_names": ["ADM1_EN"],
     "styles:": {
