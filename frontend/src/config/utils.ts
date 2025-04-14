@@ -9,6 +9,7 @@ import {
   checkRequiredKeys,
   CompositeLayerProps,
   DateItem,
+  GeojsonDataLayerProps,
   ImpactLayerProps,
   LayerKey,
   LayersMap,
@@ -137,6 +138,11 @@ export const getLayerByKey = (layerKey: LayerKey): LayerType => {
         return definition;
       }
       return throwInvalidLayer();
+    case 'geojson_polygon':
+      if (!checkRequiredKeys(GeojsonDataLayerProps, definition, true)) {
+        return throwInvalidLayer();
+      }
+      return definition;
     default:
       // doesn't do anything, but it helps catch any layer type cases we forgot above compile time via TS.
       // https://stackoverflow.com/questions/39419170/how-do-i-check-that-a-switch-block-is-exhaustive-in-typescript
