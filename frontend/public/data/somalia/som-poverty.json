@@ -1,0 +1,112 @@
+{
+    "DataList": [
+        {
+            "ADM1_EN": "Awdal",
+            "ADM1_PCODE": "SO11",
+            "poverty": 39.4,
+            "extreme_poverty": 11.6
+        },
+        {
+            "ADM1_EN": "Woqooyi Galbeed",
+            "ADM1_PCODE": "SO12",
+            "poverty": 45.1,
+            "extreme_poverty": 14.1
+        },
+        {
+            "ADM1_EN": "Togdheer",
+            "ADM1_PCODE": "SO13",
+            "poverty": 44.7,
+            "extreme_poverty": 18.1
+        },
+        {
+            "ADM1_EN": "Sool",
+            "ADM1_PCODE": "SO14",
+            "poverty": 61.9,
+            "extreme_poverty": 31.4
+        },
+        {
+            "ADM1_EN": "Sanaag",
+            "ADM1_PCODE": "SO15",
+            "poverty": 45.7,
+            "extreme_poverty": 18.2
+        },
+        {
+            "ADM1_EN": "Bari",
+            "ADM1_PCODE": "SO16",
+            "poverty": 44,
+            "extreme_poverty": 12.2
+        },
+        {
+            "ADM1_EN": "Nugaal",
+            "ADM1_PCODE": "SO17",
+            "poverty": 42.1,
+            "extreme_poverty": 19.7
+        },
+        {
+            "ADM1_EN": "Mudug",
+            "ADM1_PCODE": "SO18",
+            "poverty": 73.7,
+            "extreme_poverty": 35.3
+        },
+        {
+            "ADM1_EN": "Galgaduud",
+            "ADM1_PCODE": "SO19",
+            "poverty": 55.2,
+            "extreme_poverty": 13.7
+        },
+        {
+            "ADM1_EN": "Hiraan",
+            "ADM1_PCODE": "SO20",
+            "poverty": 82.4,
+            "extreme_poverty": 30.2
+        },
+        {
+            "ADM1_EN": "Middle Shabelle",
+            "ADM1_PCODE": "SO21",
+            "poverty": 87.4,
+            "extreme_poverty": 54.7
+        },
+        {
+            "ADM1_EN": "Banadir",
+            "ADM1_PCODE": "SO22",
+            "poverty": 44,
+            "extreme_poverty": 10.8
+        },
+        {
+            "ADM1_EN": "Lower Shabelle",
+            "ADM1_PCODE": "SO23",
+            "poverty": 54.3,
+            "extreme_poverty": 21.5
+        },
+        {
+            "ADM1_EN": "Bay",
+            "ADM1_PCODE": "SO24",
+            "poverty": 58,
+            "extreme_poverty": 21.5
+        },
+        {
+            "ADM1_EN": "Bakool",
+            "ADM1_PCODE": "SO25",
+            "poverty": 76.3,
+            "extreme_poverty": 46.2
+        },
+        {
+            "ADM1_EN": "Gedo",
+            "ADM1_PCODE": "SO26",
+            "poverty": 55.2,
+            "extreme_poverty": 18.5
+        },
+        {
+            "ADM1_EN": "Middle Juba",
+            "ADM1_PCODE": "SO27",
+            "poverty": "",
+            "extreme_poverty": ""
+        },
+        {
+            "ADM1_EN": "Lower Juba",
+            "ADM1_PCODE": "SO28",
+            "poverty": 61.1,
+            "extreme_poverty": 21.6
+        }
+    ]
+}
