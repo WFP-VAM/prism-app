@@ -1878,7 +1878,7 @@
         ]
       }
     ],
-    "legend": "cdi_10_0_1",
+    "legend": "cdi_04_0_1",
     "legend_text": "Composite Drought Index (water-based). Rainfall amount weight = 0.4; evapotranspiration weight = 0.3; soil moisture weight = 0.3",
     "opacity": 0.7
   },
@@ -1934,7 +1934,7 @@
         ]
       }
     ],
-    "legend": "cdi_10_0_1",
+    "legend": "cdi_04_0_1",
     "legend_text": "Composite Drought Index (water-based). Rainfall amount weight = 0.4; evapotranspiration weight = 0.3; soil moisture weight = 0.3",
     "opacity": 0.7
   },
@@ -1989,7 +1989,7 @@
         ]
       }
     ],
-    "legend": "cdi_10_0_1",
+    "legend": "cdi_04_0_1",
     "legend_text": "Composite Drought Index (water-based). Rainfall amount weight = 0.4; evapotranspiration weight = 0.3; soil moisture weight = 0.3",
     "opacity": 0.7
   },
@@ -2053,7 +2053,7 @@
         ]
       }
     ],
-    "legend": "cdi_10_0_1",
+    "legend": "cdi_04_0_1",
     "legend_text": "Composite Drought Index (water-based). Rainfall amount weight = 0.4; evapotranspiration weight = 0.3; soil moisture weight = 0.3",
     "opacity": 0.7
   }
