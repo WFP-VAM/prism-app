@@ -57,7 +57,7 @@ class StatsModel(BaseModel):
 
     admin_level: Optional[int] = None
     geotiff_url: HttpUrl = Field(..., example=stats_data["geotiff_url"])
-    zones_url: Optional[str] = Field(None, example="s3://bucket-name/path/to/file")
+    zones_url: Optional[str] = Field(None, example=stats_data["zones_url"])
     group_by: Optional[str] = Field(None, example=stats_data["group_by"])
     wfs_params: Optional[WfsParamsModel] = None
     geojson_out: Optional[bool] = False

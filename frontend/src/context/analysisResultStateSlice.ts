@@ -439,7 +439,8 @@ async function createAPIRequestParams(
     ...wfsParams,
     ...maskParams,
     // TODO - remove the need for the geojson_out parameters. See TODO in zonal_stats.py.
-    geojson_out: Boolean(geojsonOut),
+    // TODO - Add back logic
+    geojson_out: true, // Boolean(geojsonOut),
     intersect_comparison:
       exposureValue?.operator && exposureValue.value
         ? `${exposureValue?.operator}${exposureValue?.value}`
@@ -721,6 +722,8 @@ export const requestAndStoreAnalysis = createAsyncThunk<
   const loadedAndCheckedBaselineData: BaselineLayerData =
     await getCheckedBaselineData();
 
+  // TODO: This merges with PMTiles data, not GeoJSON and breaks the flow.
+  // Bypassing works... is it needed?
   const features = generateFeaturesFromApiData(
     aggregateData,
     loadedAndCheckedBaselineData,
@@ -752,7 +755,7 @@ export const requestAndStoreAnalysis = createAsyncThunk<
     tableRows,
     {
       ...adminBoundariesData.data,
-      features,
+      features: aggregateData,
     },
     hazardLayer,
     // We use a hack to leverage boundary layers as baseline layers

@@ -100,18 +100,15 @@ def _read_zones(
 
     elif ".parquet" in filepath_lower:
         con = setup_duckdb_connection()
-
         # Create a temporary view for the filtered data
         view_name = "filtered_zones"
-        query = f"CREATE VIEW {view_name} AS SELECT * FROM read_parquet('{zones_filepath}', hive_partitioning=True, union_by_name=True)"
+        query = f"CREATE VIEW {view_name} AS SELECT * exclude(geometry), ST_Simplify(geometry, 0.1) AS geometry FROM read_parquet('{zones_filepath}')"
         if admin_level is not None:
             query += f" WHERE admin_level = {admin_level}"
         if bbox is not None:
             minx, miny, maxx, maxy = bbox
             query += f" AND ST_Contains(ST_MakeEnvelope({minx}, {miny}, {maxx}, {maxy}), geometry)"
-
         con.execute(query)
-
         # Export to temp GeoJSON using GDAL extension
         temp_geojson = os.path.join(CACHE_DIRECTORY, "temp_zones.geojson")
         con.sql(
@@ -126,7 +123,6 @@ def _read_zones(
 
         con.close()
         os.remove(temp_geojson)
-
         return geojson_data
 
     else:
@@ -145,8 +141,9 @@ def _group_zones(
     zones_filepath: FilePath, group_by: GroupBy, admin_level: Optional[int] = None
 ) -> FilePath:
     """Group zones by a key id and merge polygons."""
+    safe_filename = zones_filepath.replace("/", "_").replace("s3://", "")
     output_filename: FilePath = "{zones}.{group_by}".format(
-        zones=zones_filepath, group_by=group_by
+        zones=safe_filename, group_by=group_by
     )
     if is_file_valid(output_filename):
         return output_filename
