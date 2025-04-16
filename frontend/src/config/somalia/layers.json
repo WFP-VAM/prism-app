@@ -4,9 +4,15 @@
     "path": "data/somalia/som_admbnda_adm1_ocha_20230308_dv.json",
     "opacity": 0.8,
     "admin_code": "ADM1_PCODE",
-    "admin_level_codes": ["ADM1_PCODE"],
-    "admin_level_names": ["ADM1_EN"],
-    "admin_level_local_names": ["ADM1_EN"],
+    "admin_level_codes": [
+      "ADM1_PCODE"
+    ],
+    "admin_level_names": [
+      "ADM1_EN"
+    ],
+    "admin_level_local_names": [
+      "ADM1_EN"
+    ],
     "styles:": {
       "fill": {
         "fill-opacity": 0
@@ -23,9 +29,18 @@
     "path": "data/somalia/som_admbnda_adm2_ocha_20230308_dv.json",
     "opacity": 0.8,
     "admin_code": "ADM2_PCODE",
-    "admin_level_codes": ["ADM1_PCODE", "ADM2_PCODE"],
-    "admin_level_names": ["ADM1_EN", "ADM2_EN"],
-    "admin_level_local_names": ["ADM1_EN", "ADM2_EN"],
+    "admin_level_codes": [
+      "ADM1_PCODE",
+      "ADM2_PCODE"
+    ],
+    "admin_level_names": [
+      "ADM1_EN",
+      "ADM2_EN"
+    ],
+    "admin_level_local_names": [
+      "ADM1_EN",
+      "ADM2_EN"
+    ],
     "styles:": {
       "fill": {
         "fill-opacity": 0
@@ -284,5 +299,235 @@
       ],
       "type": "line"
     }
+  },
+  "ipc_phase": {
+    "title": "IPC Phase Classification",
+    "type": "admin_level_data",
+    "boundary": "admin2_boundaries",
+    "path": "data/somalia/som-ipc.json",
+    "data_field": "ipc_phase",
+    "admin_level": 2,
+    "admin_code": "ADM2_PCODE",
+    "opacity": 0.7,
+    "legend": "ipc_phase",
+    "legend_text": "This dataset originates from the IPC Technical Working Group, including FSNAU, and is available at district, regional, and livelihood system levels. Date: Feb 2025"
+  },
+  "ipc_pop_3+": {
+    "title": "Population in IPC Phase 3+",
+    "type": "admin_level_data",
+    "boundary": "admin2_boundaries",
+    "path": "data/somalia/som-ipc.json",
+    "data_field": "ipc_pop_ph3_5",
+    "admin_level": 2,
+    "admin_code": "ADM2_PCODE",
+    "opacity": 0.7,
+    "legend": [
+      {
+        "value": 1,
+        "label": "< 25,000",
+        "color": "#fee5d9"
+      },
+      {
+        "value": 25000,
+        "label": "25,000 - 49,999",
+        "color": "#fcae91"
+      },
+      {
+        "value": 50000,
+        "label": "50,000 - 99,999",
+        "color": "#fb6a4a"
+      },
+      {
+        "value": 100000,
+        "label": "100,000 - 199,999",
+        "color": "#de2d26"
+      },
+      {
+        "value": 200000,
+        "label": ">= 200,000",
+        "color": "#a50f15"
+      }
+    ],
+    "legend_text": "The population figures presented are estimates and serve as general planning figures to guide response activities. Source:  IPC Technical Working Group. Date: Feb 2025"
+  },
+  "ipc_perc_3+": {
+    "title": "Percent of pulation in IPC Phase 3+",
+    "type": "admin_level_data",
+    "boundary": "admin2_boundaries",
+    "path": "data/somalia/som-ipc.json",
+    "data_field": "perc_ph3_5",
+    "admin_level": 2,
+    "admin_code": "ADM2_PCODE",
+    "opacity": 0.7,
+    "legend": [
+      {
+        "value": 1,
+        "label": "<= 15%",
+        "color": "#fee5d9"
+      },
+      {
+        "value": 16,
+        "label": "16 - 20%",
+        "color": "#fcae91"
+      },
+      {
+        "value": 21,
+        "label": "21 - 25%",
+        "color": "#fb6a4a"
+      },
+      {
+        "value": 26,
+        "label": "26 - 30%",
+        "color": "#de2d26"
+      },
+      {
+        "value": 31,
+        "label": "> 30%",
+        "color": "#a50f15"
+      }
+    ],
+    "legend_text": "The population figures presented are estimates and serve as general planning figures to guide response activities. Source:  IPC Technical Working Group. Date: Feb 2025"
+  },
+  "pop_pess_2014": {
+    "title": "Population (PESS 2014)",
+    "type": "admin_level_data",
+    "boundary": "admin2_boundaries",
+    "path": "data/somalia/som-pop.json",
+    "data_field": "pop_pess_2014",
+    "admin_level": 2,
+    "admin_code": "ADM2_PCODE",
+    "opacity": 0.7,
+    "legend": [
+      {
+        "value": 1,
+        "label": "< 10,000",
+        "color": "#deebf7"
+      },
+      {
+        "value": 10000,
+        "label": "10,000 - 50,000",
+        "color": "#9ecae1"
+      },
+      {
+        "value": 50000,
+        "label": "50,000 - 100,000",
+        "color": "#3182bd"
+      },
+      {
+        "value": 100000,
+        "label": ">= 100,000",
+        "color": "#ffffff"
+      }
+    ],
+    "legend_text": "This dataset contains population estimates generated through the 2014 Population Estimation Survey (PESS), conducted by the Somalia National Bureau of Statistics (SNBS) with support from the United Nations and international partners. Siyrce: PESS 2014"
+  },
+  "pop_2024": {
+    "title": "Population (UN 2024)",
+    "type": "admin_level_data",
+    "boundary": "admin2_boundaries",
+    "path": "data/somalia/som-pop.json",
+    "data_field": "pop_2024",
+    "admin_level": 2,
+    "admin_code": "ADM2_PCODE",
+    "opacity": 0.7,
+    "legend": [
+      {
+        "value": 1,
+        "label": "< 100,000",
+        "color": "#ffffff"
+      },
+      {
+        "value": 100000,
+        "label": "100,000 - 200,000",
+        "color": "#deebf7"
+      },
+      {
+        "value": 200000,
+        "label": "200,000 - 400,000",
+        "color": "#9ecae1"
+      },
+      {
+        "value": 400000,
+        "label": ">= 400,000",
+        "color": "#3182bd"
+      }
+    ],
+    "legend_text": "This dataset presents projected population estimates for Somalia for the year 2024. The projections are based on historical trends and assumptions on fertility, mortality, and migration, and serve as a key reference for strategic planning, humanitarian response, and development programming in the absence of a recent national census. Source: Information Management and Assessment Working Group 2023"
+  },
+  "poverty": {
+    "title": "Poverty headcount",
+    "type": "admin_level_data",
+    "boundary": "admin1_boundaries",
+    "path": "data/somalia/som-poverty.json",
+    "data_field": "poverty",
+    "admin_level": 1,
+    "admin_code": "ADM1_PCODE",
+    "opacity": 0.7,
+    "legend": [
+      {
+        "value": 1,
+        "label": "< 20%",
+        "color": "#fee5d9"
+      },
+      {
+        "value": 20,
+        "label": "20 - 40%",
+        "color": "#fcae91"
+      },
+      {
+        "value": 40,
+        "label": "40 - 60%",
+        "color": "#fb6a4a"
+      },
+      {
+        "value": 60,
+        "label": "60 - 80%",
+        "color": "#de2d26"
+      },
+      {
+        "value": 80,
+        "label": "> 80%",
+        "color": "#a50f15"
+      }
+    ],
+    "legend_text": "Poverty headcount ratios are produced at region level produced by the Somalia National Bureau of Statistics (SNBS). The estimates are based on household consumption data  aligned with the World Bank’s poverty measurement methodology. Source: SNBS. Date 2024"
+  },
+  "extreme_poverty": {
+    "title": "Extreme poverty headcount",
+    "type": "admin_level_data",
+    "boundary": "admin1_boundaries",
+    "path": "data/somalia/som-poverty.json",
+    "data_field": "extreme_poverty",
+    "admin_level": 1,
+    "admin_code": "ADM1_PCODE",
+    "opacity": 0.7,
+    "legend": [
+      {
+        "value": 1,
+        "label": "< 10%",
+        "color": "#fee5d9"
+      },
+      {
+        "value": 10,
+        "label": "10 - 25%",
+        "color": "#fcae91"
+      },
+      {
+        "value": 25,
+        "label": "25 - 50%",
+        "color": "#fb6a4a"
+      },
+      {
+        "value": 50,
+        "label": "50 - 75%",
+        "color": "#de2d26"
+      },
+      {
+        "value": 75,
+        "label": "> 75%",
+        "color": "#a50f15"
+      }
+    ],
+    "legend_text": "Extreme poverty headcount ratios are produced at region level produced by the Somalia National Bureau of Statistics (SNBS). The estimates are based on household consumption data  aligned with the World Bank’s poverty measurement methodology. Source: SNBS. Date 2024"
   }
 }
