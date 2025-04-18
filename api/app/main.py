@@ -89,6 +89,7 @@ def _calculate_stats(
     mask_geotiff,
     mask_calc_expr: Optional[str] = None,
     filter_by: Optional[tuple[str, str]] = None,
+    admin_level: Optional[int] = None,
 ):
     """Calculate stats."""
     return calculate_stats(
@@ -103,6 +104,7 @@ def _calculate_stats(
         mask_geotiff=mask_geotiff,
         mask_calc_expr=mask_calc_expr,
         filter_by=filter_by,
+        admin_level=admin_level,
     )
 
 
@@ -139,6 +141,8 @@ def stats(stats_model: StatsModel) -> list[dict[str, Any]]:
     zones: FilePath
     if zones_geojson is not None:
         zones = cache_geojson(prefix="zones_geojson", geojson=zones_geojson)
+    elif zones_url.endswith(".parquet"):
+        zones = zones_url
     else:
         zones = cache_file(
             prefix="zones",

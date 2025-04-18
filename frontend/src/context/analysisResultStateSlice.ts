@@ -386,12 +386,15 @@ async function createAPIRequestParams(
   const adminLevel =
     (params as AdminLevelDataLayerProps)?.adminLevel ||
     (params as BoundaryLayerProps)?.adminLevelCodes?.length;
-  const { path: adminBoundariesPath, adminCode: groupBy } =
-    getBoundaryLayersByAdminLevel(adminLevel);
+  const {
+    path: adminBoundariesPath,
+    adminCode: groupBy,
+    zonesPath,
+  } = getBoundaryLayersByAdminLevel(adminLevel);
 
   // Note - This may not work when running locally as the function
   // will default to the boundary layer hosted in S3.
-  const zonesUrl = getAdminBoundariesURL(adminBoundariesPath);
+  const zonesUrl = zonesPath ?? getAdminBoundariesURL(adminBoundariesPath);
 
   // eslint-disable-next-line camelcase
   const wfsParams = (params as WfsRequestParams)?.layer_name
@@ -436,11 +439,13 @@ async function createAPIRequestParams(
     ...wfsParams,
     ...maskParams,
     // TODO - remove the need for the geojson_out parameters. See TODO in zonal_stats.py.
-    geojson_out: Boolean(geojsonOut),
+    // TODO - Add back logic
+    geojson_out: true, // Boolean(geojsonOut),
     intersect_comparison:
       exposureValue?.operator && exposureValue.value
         ? `${exposureValue?.operator}${exposureValue?.value}`
         : undefined,
+    adminLevel,
   };
 
   return apiRequest;
@@ -668,7 +673,7 @@ export const requestAndStoreAnalysis = createAsyncThunk<
     api.getState(),
   ) as LayerData<BoundaryLayerProps>;
 
-  if (!adminBoundariesData) {
+  if (!adminBoundariesData && adminBoundaries.format !== 'pmtiles') {
     throw new Error('Boundary Layer not loaded!');
   }
 
@@ -717,6 +722,8 @@ export const requestAndStoreAnalysis = createAsyncThunk<
   const loadedAndCheckedBaselineData: BaselineLayerData =
     await getCheckedBaselineData();
 
+  // TODO: This merges with PMTiles data, not GeoJSON and breaks the flow.
+  // Bypassing works... is it needed?
   const features = generateFeaturesFromApiData(
     aggregateData,
     loadedAndCheckedBaselineData,
@@ -748,7 +755,7 @@ export const requestAndStoreAnalysis = createAsyncThunk<
     tableRows,
     {
       ...adminBoundariesData.data,
-      features,
+      features: aggregateData,
     },
     hazardLayer,
     // We use a hack to leverage boundary layers as baseline layers
