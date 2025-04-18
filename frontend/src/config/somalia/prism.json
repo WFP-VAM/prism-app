@@ -193,6 +193,22 @@
         "lst_day_anomaly",
         "lst_amplitude"
       ]
+    },
+    "vulnerability": {
+      "food insecurity": [
+        "ipc_phase",
+        "ipc_perc_3+"
+      ],
+      "poverty": [
+        "poverty",
+        "extreme_poverty"
+      ]
+    },
+    "exposure": {
+      "demographics": [
+        "pop_pess_2014",
+        "pop_2024"
+      ]
     }
   }
 }
