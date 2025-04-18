@@ -26,6 +26,8 @@ declare module 'geojson' {
   ): PointData[];
 }
 
+const GOOGLE_FLOOD_REQUEST_TIMEOUT = 60000;
+
 export const fetchPointLayerData: LazyLoader<PointDataLayerProps> =
   () =>
   async (
@@ -74,7 +76,11 @@ export const fetchPointLayerData: LazyLoader<PointDataLayerProps> =
 
     const requestUrl = `${dataUrl}${
       dataUrl.includes('?') ? '&' : '?'
-    }${dateQuery}&${queryParamsToString(additionalQueryParams)}`;
+    }${dateQuery}${
+      additionalQueryParams
+        ? `&${queryParamsToString(additionalQueryParams)}`
+        : ''
+    }`;
 
     const headers = authRequired
       ? {
@@ -95,6 +101,9 @@ export const fetchPointLayerData: LazyLoader<PointDataLayerProps> =
         {
           mode: 'cors',
           headers,
+          ...(loader === PointDataLoader.GOOGLE_FLOOD && {
+            timeout: GOOGLE_FLOOD_REQUEST_TIMEOUT,
+          }),
         },
         `Request failed for fetching point layer data at ${requestUrl}`,
       );

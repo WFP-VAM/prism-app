@@ -349,5 +349,12 @@
     { "value": 0.7, "label": "0.7 - 0.8", "color": "#019ac4" },
     { "value": 0.8, "label": "0.8 - 0.9", "color": "#014c73" },
     { "value": 0.9, "label": "0.9 - 1", "color": "#014c73" }
+  ],
+  "ipc_phase": [
+    { "value": 1, "label": "1 - Minimal", "color": "#CDFACD" },
+    { "value": 2, "label": "2 - Stressed", "color": "#FAE61E" },
+    { "value": 3, "label": "3 - Crisis", "color": "#E67800" },
+    { "value": 4, "label": "4 - Emergency", "color": "#C80000" },
+    { "value": 5, "label": "5 - Famine", "color": "#640000" }
   ]
 }
