@@ -73,6 +73,7 @@ def _read_zones(
     zones_filepath: FilePath,
     admin_level: Optional[int] = None,
     bbox: Optional[tuple[float, float, float, float]] = None,
+    simplify_tolerance: Optional[float] = 0.01,
 ) -> GeoJSON:
     """
     Read the zones file from either a local GeoJSON or an S3-hosted (or local) GeoParquet,
@@ -84,7 +85,10 @@ def _read_zones(
         Path or S3 URI of the zones file. Can be .geojson or .parquet
     bbox : tuple[float, float, float, float], optional
         (minx, miny, maxx, maxy) in the same CRS as the zones data,
-        used to limit what is read from the Parquet dataset.
+        used to limit what is read from the parquet dataset.
+    simplify_tolerance : float, optional
+        Tolerance value for geometry simplification. Only used for 
+        parquet files. If None, defaults to 0.1.
 
     Returns
     -------
@@ -102,7 +106,7 @@ def _read_zones(
         con = setup_duckdb_connection()
         # Create a temporary view for the filtered data
         view_name = "filtered_zones"
-        query = f"CREATE VIEW {view_name} AS SELECT * exclude(geometry), ST_Simplify(geometry, 0.1) AS geometry FROM read_parquet('{zones_filepath}')"
+        query = f"CREATE VIEW {view_name} AS SELECT * exclude(geometry), ST_Simplify(geometry, {simplify_tolerance}) AS geometry FROM read_parquet('{zones_filepath}')"
         if admin_level is not None:
             query += f" WHERE admin_level = {admin_level}"
         if bbox is not None:
@@ -131,24 +135,26 @@ def _read_zones(
 
 
 def _extract_features_properties(
-    zones_filename: FilePath, admin_level: Optional[int] = None
+    zones_filename: FilePath,
+    admin_level: Optional[int] = None,
+    simplify_tolerance: Optional[float] = None,
 ) -> list:
-    zones = _read_zones(zones_filename, admin_level)
+    zones = _read_zones(zones_filename, admin_level, simplify_tolerance)
     return [f["properties"] for f in zones.get("features", [])]
 
 
 def _group_zones(
-    zones_filepath: FilePath, group_by: GroupBy, admin_level: Optional[int] = None
+    zones_filepath: FilePath, group_by: GroupBy, admin_level: Optional[int] = None, simplify_tolerance: Optional[float] = None
 ) -> FilePath:
     """Group zones by a key id and merge polygons."""
     safe_filename = zones_filepath.replace("/", "_").replace("s3://", "")
-    output_filename: FilePath = "{zones}.{group_by}".format(
-        zones=safe_filename, group_by=group_by
+    output_filename: FilePath = "{zones}.{simplify_tolerance}.{group_by}".format(
+        zones=safe_filename, group_by=group_by, simplify_tolerance=simplify_tolerance
     )
     if is_file_valid(output_filename):
         return output_filename
 
-    geojson_data = _read_zones(zones_filepath, admin_level)
+    geojson_data = _read_zones(zones_filepath, admin_level, simplify_tolerance)
 
     features = geojson_data.get("features", [])
 
@@ -342,6 +348,7 @@ def calculate_stats(
     mask_calc_expr: Optional[str] = None,
     filter_by: Optional[tuple[str, str]] = None,
     admin_level: Optional[int] = None,
+    simplify_tolerance: Optional[float] = None,
 ) -> list[dict[str, Any]]:
     """Calculate stats."""
 
@@ -401,7 +408,7 @@ def calculate_stats(
         geotiff = masked_pop_geotiff
 
     if group_by:
-        zones_filepath = _group_zones(zones_filepath, group_by, admin_level)
+        zones_filepath = _group_zones(zones_filepath, group_by, admin_level, simplify_tolerance)
 
     stats_input = (
         zones_filepath
@@ -500,7 +507,9 @@ def calculate_stats(
     stats_results = clean_results
 
     if not geojson_out:
-        feature_properties = _extract_features_properties(zones_filepath, admin_level)
+        feature_properties = _extract_features_properties(
+            zones_filepath, admin_level, simplify_tolerance
+        )
 
         if filter_by is not None:
             key, value = filter_by

@@ -30,7 +30,6 @@
     "path": "https://pmtiles-hosting.s3.eu-central-1.amazonaws.com/global/global_admin_boundaries_no_drop.pmtiles",
     "layer_name": "admin1",
     "opacity": 0.8,
-    "disableAnalysis": true,
     "styles:": {
       "fill": {
         "fill-opacity": 0

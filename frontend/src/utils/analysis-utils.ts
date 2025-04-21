@@ -261,7 +261,6 @@ export function generateFeaturesFromApiData(
     aggregateData,
     groupBy,
   );
-  console.log('mergedFeatures', mergedFeatures);
   return mergedFeatures.filter(feature => {
     const value = get(feature, ['properties', operation]);
     return value !== undefined && !Number.isNaN(value);
@@ -278,7 +277,6 @@ export async function loadFeaturesFromApi(
   extent?: Extent,
   date?: number,
 ): Promise<GeoJsonBoundary[]> {
-  console.log('called 1');
   const wcsUrl = createGetCoverageUrl({
     bbox: extent,
     bboxDigits: 1,

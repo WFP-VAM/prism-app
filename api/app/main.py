@@ -90,6 +90,7 @@ def _calculate_stats(
     mask_calc_expr: Optional[str] = None,
     filter_by: Optional[tuple[str, str]] = None,
     admin_level: Optional[int] = None,
+    simplify_tolerance: Optional[float] = None,
 ):
     """Calculate stats."""
     return calculate_stats(
@@ -105,6 +106,7 @@ def _calculate_stats(
         mask_calc_expr=mask_calc_expr,
         filter_by=filter_by,
         admin_level=admin_level,
+        simplify_tolerance=simplify_tolerance,
     )
 
 
@@ -122,6 +124,7 @@ def stats(stats_model: StatsModel) -> list[dict[str, Any]]:
     intersect_comparison_string = stats_model.intersect_comparison
     mask_geotiff_url = stats_model.mask_url
     mask_calc_expr = stats_model.mask_calc_expr
+    simplify_tolerance = stats_model.simplify_tolerance
 
     filter_by = None
     # Tuple transformation fixes unhashable type error caused by timed decorator.
@@ -174,6 +177,8 @@ def stats(stats_model: StatsModel) -> list[dict[str, Any]]:
         mask_geotiff=mask_geotiff,
         mask_calc_expr=mask_calc_expr,
         filter_by=filter_by,
+        admin_level=stats_model.admin_level,
+        simplify_tolerance=simplify_tolerance,
     )
 
     return features
