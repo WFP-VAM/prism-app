@@ -215,6 +215,26 @@ export function scaleAndFilterAggregateData(
   const { wcsConfig } = hazardLayerDef;
   const { scale, offset } = wcsConfig || {};
 
+  // Handle GeoJSON data
+  if (aggregateData?.[0]?.geometry) {
+    return (aggregateData as any[])
+      .map((feature: any) => {
+        const value = get(feature, ['properties', `stats_${operation}`]);
+        const scaledValue = scaleValueIfDefined(value, scale, offset);
+        return {
+          ...feature,
+          properties: {
+            ...feature.properties,
+            [operation]: scaledValue,
+          },
+        };
+      })
+      .filter((feature: any) => {
+        const value = feature.properties[operation];
+        return !Number.isNaN(thresholdOrNaN(value, threshold));
+      });
+  }
+
   return (aggregateData as KeyValueResponse[])
     .map(data => ({
       ...data,
@@ -241,7 +261,6 @@ export function generateFeaturesFromApiData(
     aggregateData,
     groupBy,
   );
-
   return mergedFeatures.filter(feature => {
     const value = get(feature, ['properties', operation]);
     return value !== undefined && !Number.isNaN(value);
