@@ -466,6 +466,7 @@ export class ExposedPopulationResult {
 export class BaselineLayerResult {
   key: number = Date.now();
   featureCollection: FeatureCollection;
+  adminBoundariesFormat: string;
   tableData: TableRow[];
   // for debugging purposes only, as its easy to view the raw API response via Redux Devtools. Should be left empty in production
   // @ts-ignore: TS6133
@@ -491,9 +492,11 @@ export class BaselineLayerResult {
     legend?: LegendDefinition,
     rawApiData?: object[],
     analysisDate?: ReturnType<Date['getTime']>,
+    adminBoundariesFormat?: string,
   ) {
     this.featureCollection = featureCollection;
     this.tableData = tableData;
+    this.adminBoundariesFormat = adminBoundariesFormat ?? 'geojson';
     this.statistic = statistic;
     this.threshold = threshold;
     this.legend = baselineLayer.legend ?? legend;

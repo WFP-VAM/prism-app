@@ -95,7 +95,7 @@ def _read_zones(
     dict
         A GeoJSON-style dictionary: {"type": "FeatureCollection", "features": [...]}
     """
-
+    print(f"Reading zones file: {zones_filepath}")
     # Check if filepath contains .json or .geojson (case insensitive)
     filepath_lower = zones_filepath.lower()
     if ".json" in filepath_lower or ".geojson" in filepath_lower:
@@ -147,7 +147,7 @@ def _group_zones(
     zones_filepath: FilePath, group_by: GroupBy, admin_level: Optional[int] = None, simplify_tolerance: Optional[float] = None
 ) -> FilePath:
     """Group zones by a key id and merge polygons."""
-    safe_filename = zones_filepath.replace("/", "_").replace("s3://", "")
+    safe_filename = zones_filepath.replace("/", "_").replace("s3://", "").replace("parquet", "json")
     output_filename: FilePath = "{zones}.{simplify_tolerance}.{group_by}".format(
         zones=safe_filename, group_by=group_by, simplify_tolerance=simplify_tolerance
     )
@@ -507,6 +507,7 @@ def calculate_stats(
     stats_results = clean_results
 
     if not geojson_out:
+        print(f"Extracting feature properties for {zones_filepath}")
         feature_properties = _extract_features_properties(
             zones_filepath, admin_level, simplify_tolerance
         )

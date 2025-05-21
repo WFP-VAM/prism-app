@@ -440,7 +440,7 @@ async function createAPIRequestParams(
     ...maskParams,
     // TODO - remove the need for the geojson_out parameters. See TODO in zonal_stats.py.
     // TODO - Add back logic
-    geojson_out: true, // Boolean(geojsonOut),
+    geojson_out: Boolean(geojsonOut),
     intersect_comparison:
       exposureValue?.operator && exposureValue.value
         ? `${exposureValue?.operator}${exposureValue?.value}`
@@ -767,6 +767,7 @@ export const requestAndStoreAnalysis = createAsyncThunk<
     // we never use the raw api data besides for debugging. So lets not bother saving it in Redux for production
     process.env.NODE_ENV === 'production' ? undefined : aggregateData,
     date,
+    adminBoundaries.format,
   );
 });
 
