@@ -15,11 +15,12 @@ import { black, cyanBlue } from 'muiTheme';
 import { safeCountry } from 'config';
 
 const isZimbabwe = safeCountry === 'zimbabwe';
+const isMalawi = safeCountry === 'malawi';
 
 const content = [
   { title: 'Window 1', text: 'Start to mid of the rainfall season.' },
   { title: 'Window 2', text: 'Mid to end of the rainfall season.' },
-  ...(isZimbabwe
+  ...(isZimbabwe || isMalawi
     ? [
         {
           title: 'Below normal category',

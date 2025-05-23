@@ -42,20 +42,22 @@ import Forecast from './Forecast';
 import { useAnticipatoryAction } from '../useAnticipatoryAction';
 
 const isZimbabwe = safeCountry === 'zimbabwe';
+const isMalawi = safeCountry === 'malawi';
 
 const checkboxes: {
   label: string;
   id: Exclude<AACategoryType, 'na' | 'ny'>;
-}[] = isZimbabwe
-  ? [
-      { label: 'Moderate', id: 'Moderate' },
-      { label: 'Below Normal', id: 'Normal' },
-    ]
-  : [
-      { label: 'Severe', id: 'Severe' },
-      { label: 'Moderate', id: 'Moderate' },
-      { label: 'Mild', id: 'Mild' },
-    ];
+}[] =
+  isZimbabwe || isMalawi
+    ? [
+        { label: 'Moderate', id: 'Moderate' },
+        { label: 'Below Normal', id: 'Normal' },
+      ]
+    : [
+        { label: 'Severe', id: 'Severe' },
+        { label: 'Moderate', id: 'Moderate' },
+        { label: 'Mild', id: 'Mild' },
+      ];
 
 function AnticipatoryActionDroughtPanel() {
   const classes = useStyles();

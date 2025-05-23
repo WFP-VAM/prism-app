@@ -1,5 +1,6 @@
 {
   "country": "Malawi",
+  "anticipatoryActionDroughtUrl": "data/malawi/aa_probabilities_triggers_mwi.csv",
   "countryAdmin0Id": 152,
   "alertFormActive": false,
   "enableNavigationDropdown": true,
