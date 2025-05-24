@@ -2,6 +2,11 @@
   "country": "Somalia",
   "defaultLanguage": "en",
   "countryAdmin0Id": 226,
+  "header": {
+    "title": "PRISM Somalia",
+    "logo": "images/somalia-header3.png"
+  },
+  "aboutPath": "data/somalia/about.md",
   "alertFormActive": false,
   "hidePanel": false,
   "enableNavigationDropdown": true,
