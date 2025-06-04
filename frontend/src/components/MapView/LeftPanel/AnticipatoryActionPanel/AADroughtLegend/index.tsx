@@ -13,9 +13,10 @@ import { useAACommonStyles } from '../utils';
 import HowToReadModal from '../HowToReadModal';
 
 const isZimbabwe = safeCountry === 'zimbabwe';
+const isMalawi = safeCountry === 'malawi';
 
 const phases = [
-  ...(isZimbabwe
+  ...(isZimbabwe || isMalawi
     ? []
     : [
         {
@@ -39,7 +40,7 @@ const phases = [
     phase: 'Ready',
     severity: 'Moderate',
   },
-  ...(isZimbabwe
+  ...(isZimbabwe || isMalawi
     ? [
         {
           icon: getAAIcon('Normal', 'Set', true),
