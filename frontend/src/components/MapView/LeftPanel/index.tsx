@@ -170,7 +170,7 @@ const LeftPanel = memo(() => {
       PaperProps={{
         elevation: 1,
         style: {
-          marginTop: '6vh',
+          marginTop: '8vh',
           height: tabValue === Panel.Charts ? '94vh' : '80vh',
           backgroundColor: 'white',
           maxWidth: '100%',
