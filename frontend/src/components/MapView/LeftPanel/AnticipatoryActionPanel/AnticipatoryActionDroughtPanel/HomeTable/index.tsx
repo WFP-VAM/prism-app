@@ -239,11 +239,20 @@ function HomeTable({ dialogs }: HomeTableProps) {
     },
   ];
 
+  const getDisplayLabel = (windowKey: string) => {
+    if (safeCountry === 'malawi') {
+      return windowKey === 'Window 1' ? 'NDJ' : windowKey === 'Window 2' ? 'JFM' : windowKey;
+    }
+    return windowKey;
+  };
+
   const headerRow: ExtendedRowProps = {
     id: -1,
     iconContent: null,
     windows: selectedWindow === 'All' ? AAWindowKeys.map(_x => []) : [[]],
-    header: selectedWindow === 'All' ? [...AAWindowKeys] : [selectedWindow],
+    header: selectedWindow === 'All' 
+      ? AAWindowKeys.map(getDisplayLabel) 
+      : [getDisplayLabel(selectedWindow)],
   };
 
   const districtRows: ExtendedRowProps[] = React.useMemo(

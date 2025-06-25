@@ -202,7 +202,12 @@ function AnticipatoryActionDroughtPanel() {
                 label={t(allWindowsKey)}
               />
               {AAWindowKeys.map(x => (
-                <StyledRadioLabel key={x} value={x} label={x} />
+                <StyledRadioLabel 
+                  key={x} 
+                  value={x} 
+                  label={x === 'Window 1' && safeCountry === 'malawi' ? 'NDJ' : 
+                         x === 'Window 2' && safeCountry === 'malawi' ? 'JFM' : x} 
+                />
               ))}
             </RadioGroup>
           </FormControl>
