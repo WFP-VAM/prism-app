@@ -48,16 +48,21 @@ const checkboxes: {
   label: string;
   id: Exclude<AACategoryType, 'na' | 'ny'>;
 }[] =
-  isZimbabwe || isMalawi
+  isMalawi
     ? [
+      { label: 'Below Normal', id: 'Normal' },
+    ]
+    : isZimbabwe
+      ? [
         { label: 'Moderate', id: 'Moderate' },
         { label: 'Below Normal', id: 'Normal' },
       ]
-    : [
+      : [
         { label: 'Severe', id: 'Severe' },
         { label: 'Moderate', id: 'Moderate' },
         { label: 'Mild', id: 'Mild' },
       ];
+
 
 function AnticipatoryActionDroughtPanel() {
   const classes = useStyles();
@@ -125,26 +130,26 @@ function AnticipatoryActionDroughtPanel() {
             {(view === AAView.District ||
               view === AAView.Timeline ||
               view === AAView.Forecast) && (
-              <IconButton
-                onClick={() => {
-                  if (view === AAView.District) {
-                    dispatch(setAASelectedDistrict(''));
-                    dispatch(setAAView(AAView.Home));
-                    return;
-                  }
-                  if (view === AAView.Timeline) {
-                    dispatch(setAAView(AAView.District));
-                    dispatch(setAAFilters({ selectedIndex: '' }));
-                    return;
-                  }
-                  if (view === AAView.Forecast) {
-                    dispatch(setAAView(AAView.District));
-                  }
-                }}
-              >
-                <ArrowBackIos fontSize="small" />
-              </IconButton>
-            )}
+                <IconButton
+                  onClick={() => {
+                    if (view === AAView.District) {
+                      dispatch(setAASelectedDistrict(''));
+                      dispatch(setAAView(AAView.Home));
+                      return;
+                    }
+                    if (view === AAView.Timeline) {
+                      dispatch(setAAView(AAView.District));
+                      dispatch(setAAFilters({ selectedIndex: '' }));
+                      return;
+                    }
+                    if (view === AAView.Forecast) {
+                      dispatch(setAAView(AAView.District));
+                    }
+                  }}
+                >
+                  <ArrowBackIos fontSize="small" />
+                </IconButton>
+              )}
             <StyledSelect
               value={selectedDistrict || 'empty'}
               input={<Input disableUnderline />}

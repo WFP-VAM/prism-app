@@ -172,25 +172,33 @@ const rowCategories: {
   category: AACategoryType;
   phase: AAPhaseType;
 }[] =
-  isZimbabwe || isMalawi
-    ? [
-        { category: 'Moderate', phase: 'Set' },
-        { category: 'Moderate', phase: 'Ready' },
-        { category: 'Normal', phase: 'Set' },
-        { category: 'Normal', phase: 'Ready' },
-        { category: 'na', phase: 'na' },
-        { category: 'ny', phase: 'ny' },
-      ]
-    : [
-        { category: 'Severe', phase: 'Set' },
-        { category: 'Severe', phase: 'Ready' },
-        { category: 'Moderate', phase: 'Set' },
-        { category: 'Moderate', phase: 'Ready' },
-        { category: 'Mild', phase: 'Set' },
-        { category: 'Mild', phase: 'Ready' },
-        { category: 'na', phase: 'na' },
-        { category: 'ny', phase: 'ny' },
-      ];
+isMalawi
+  ? [
+      { category: 'Normal', phase: 'Set' },
+      { category: 'Normal', phase: 'Ready' },
+      { category: 'na', phase: 'na' },
+      { category: 'ny', phase: 'ny' },
+    ]
+: isZimbabwe
+  ? [
+      { category: 'Moderate', phase: 'Set' },
+      { category: 'Moderate', phase: 'Ready' },
+      { category: 'Normal', phase: 'Set' },
+      { category: 'Normal', phase: 'Ready' },
+      { category: 'na', phase: 'na' },
+      { category: 'ny', phase: 'ny' },
+    ]
+: [
+      { category: 'Severe', phase: 'Set' },
+      { category: 'Severe', phase: 'Ready' },
+      { category: 'Moderate', phase: 'Set' },
+      { category: 'Moderate', phase: 'Ready' },
+      { category: 'Mild', phase: 'Set' },
+      { category: 'Mild', phase: 'Ready' },
+      { category: 'na', phase: 'na' },
+      { category: 'ny', phase: 'ny' },
+    ];
+
 
 type ExtendedRowProps = RowProps & { id: number | 'na' | 'ny' };
 
