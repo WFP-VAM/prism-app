@@ -1878,8 +1878,8 @@
         ]
       }
     ],
-    "legend": "cdi_10_0_1",
-    "legend_text": "Composite Drought Index (water-based). Rainfall amount weight = 0.4; evapotranspiration weight = 0.3; soil moisture weight = 0.3",
+    "legend": "cdi_04_0_1",
+    "legend_text": "For more details on the water-based CDI, see [documentation here.](./data/jordan/WFPCDI.pdf) Composite Drought Index (water-based). Rainfall amount weight = 0.4; evapotranspiration weight = 0.3; soil moisture weight = 0.3",
     "opacity": 0.7
   },
   "cdi_v3_aggregated_monthly": {
@@ -1934,8 +1934,8 @@
         ]
       }
     ],
-    "legend": "cdi_10_0_1",
-    "legend_text": "Composite Drought Index (water-based). Rainfall amount weight = 0.4; evapotranspiration weight = 0.3; soil moisture weight = 0.3",
+    "legend": "cdi_04_0_1",
+    "legend_text": "For more details on the water-based CDI, see [documentation here.](./data/jordan/WFPCDI.pdf)  Composite Drought Index (water-based). Rainfall amount weight = 0.4; evapotranspiration weight = 0.3; soil moisture weight = 0.3",
     "opacity": 0.7
   },
   "cdi_v3_seasonal": {
@@ -1989,8 +1989,8 @@
         ]
       }
     ],
-    "legend": "cdi_10_0_1",
-    "legend_text": "Composite Drought Index (water-based). Rainfall amount weight = 0.4; evapotranspiration weight = 0.3; soil moisture weight = 0.3",
+    "legend": "cdi_04_0_1",
+    "legend_text": "For more details on the water-based CDI, see [documentation here.](./data/jordan/WFPCDI.pdf) Composite Drought Index (water-based). Rainfall amount weight = 0.4; evapotranspiration weight = 0.3; soil moisture weight = 0.3",
     "opacity": 0.7
   },
   "cdi_v3_aggregated_seasonal": {
@@ -2053,8 +2053,8 @@
         ]
       }
     ],
-    "legend": "cdi_10_0_1",
-    "legend_text": "Composite Drought Index (water-based). Rainfall amount weight = 0.4; evapotranspiration weight = 0.3; soil moisture weight = 0.3",
+    "legend": "cdi_04_0_1",
+    "legend_text": "For more details on the water-based CDI, see [documentation here.](./data/jordan/WFPCDI.pdf) Composite Drought Index (water-based). Rainfall amount weight = 0.4; evapotranspiration weight = 0.3; soil moisture weight = 0.3",
     "opacity": 0.7
   }
 }
