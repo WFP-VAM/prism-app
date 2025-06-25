@@ -240,7 +240,7 @@ function HomeTable({ dialogs }: HomeTableProps) {
   ];
 
   const getDisplayLabel = (windowKey: string) => {
-    if (safeCountry === 'malawi') {
+    if (isMalawi) {
       return windowKey === 'Window 1' ? 'NDJ' : windowKey === 'Window 2' ? 'JFM' : windowKey;
     }
     return windowKey;

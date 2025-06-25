@@ -205,8 +205,8 @@ function AnticipatoryActionDroughtPanel() {
                 <StyledRadioLabel 
                   key={x} 
                   value={x} 
-                  label={x === 'Window 1' && safeCountry === 'malawi' ? 'NDJ' : 
-                         x === 'Window 2' && safeCountry === 'malawi' ? 'JFM' : x} 
+                  label={x === 'Window 1' && isMalawi ? 'NDJ' : 
+                         x === 'Window 2' && isMalawi ? 'JFM' : x} 
                 />
               ))}
             </RadioGroup>

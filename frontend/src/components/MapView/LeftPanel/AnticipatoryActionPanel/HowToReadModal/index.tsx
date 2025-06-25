@@ -19,11 +19,11 @@ const isMalawi = safeCountry === 'malawi';
 
 const content = [
   {
-    title: safeCountry === 'malawi' ? 'NDJ' : 'Window 1',
+    title: isMalawi ? 'NDJ' : 'Window 1',
     text: 'Start to mid of the rainfall season.'
   },
   {
-    title: safeCountry === 'malawi' ? 'JFM' : 'Window 2',
+    title: isMalawi ? 'JFM' : 'Window 2',
     text: 'Mid to end of the rainfall season.'
   },
   ...(isMalawi
