@@ -134,9 +134,13 @@ function AADroughtLegend({ showDescription = true }: AADroughtLegendProps) {
                 {t('The "Ready, Set & Go!" system')}
               </span>
             }{' '}
-            {t(
-              'uses seasonal forecasts with longer lead time for preparedness (Ready phase) and shorter lead times for activation and mobilization (Set & Go! phases).',
-            )}
+            {isMalawi
+              ? t(
+                'uses seasonal forecasts from ECMWF with longer lead time for preparedness (Ready phase) and shorter lead times for activation and mobilization (Set & Go! phases).',
+              )
+              : t(
+                'uses seasonal forecasts with longer lead time for preparedness (Ready phase) and shorter lead times for activation and mobilization (Set & Go! phases).',
+              )}
           </Typography>
           <Divider />
 

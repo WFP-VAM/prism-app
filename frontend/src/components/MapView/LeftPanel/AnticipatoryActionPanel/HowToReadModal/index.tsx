@@ -18,51 +18,58 @@ const isZimbabwe = safeCountry === 'zimbabwe';
 const isMalawi = safeCountry === 'malawi';
 
 const content = [
-  { 
-    title: safeCountry === 'malawi' ? 'NDJ' : 'Window 1', 
-    text: 'Start to mid of the rainfall season.' 
-  },
-  { 
-    title: safeCountry === 'malawi' ? 'JFM' : 'Window 2', 
-    text: 'Mid to end of the rainfall season.' 
-  },
-...(isMalawi
-  ? [
-      {
-        title: 'Below normal category',
-        text: 'Drought events that typically occur once every 3 years.',
-      },
-    ]
-: isZimbabwe
-  ? [
-      {
-        title: 'Below normal category',
-        text: 'Drought events that typically occur once every 3 years.',
-      },
-      {
-        title: 'Moderate category',
-        text: 'Drought events that typically occur once every 5 years.',
-      },
-    ]
-: [
-      {
-        title: 'Mild category',
-        text: 'Drought events that typically occur once every 4 years.',
-      },
-      {
-        title: 'Moderate category',
-        text: 'Drought events that typically occur once every 5 years.',
-      },
-      {
-        title: 'Severe category',
-        text: 'Drought events that typically occur once every 7 years.',
-      },
-    ]),
-
   {
-    title: 'Ready, Set and Go phases',
-    text: 'The "Ready, Set & Go!" system uses seasonal forecasts with longer lead time for preparedness (Ready phase) and shorter lead times for activation and mobilization (Set & Go! phases).',
+    title: safeCountry === 'malawi' ? 'NDJ' : 'Window 1',
+    text: 'Start to mid of the rainfall season.'
   },
+  {
+    title: safeCountry === 'malawi' ? 'JFM' : 'Window 2',
+    text: 'Mid to end of the rainfall season.'
+  },
+  ...(isMalawi
+    ? [
+      {
+        title: 'Below normal category',
+        text: 'Drought events that typically occur once every 3 years.',
+      },
+      {
+        title: 'Ready, Set and Go phases',
+        text: 'The "Ready, Set & Go!" system uses seasonal forecasts from ECMWF with longer lead time for preparedness (Ready phase) and shorter lead times for activation and mobilization (Set & Go! phases).',
+      },
+    ]
+    : isZimbabwe
+      ? [
+        {
+          title: 'Below normal category',
+          text: 'Drought events that typically occur once every 3 years.',
+        },
+        {
+          title: 'Moderate category',
+          text: 'Drought events that typically occur once every 5 years.',
+        },
+        {
+          title: 'Ready, Set and Go phases',
+          text: 'The "Ready, Set & Go!" system uses seasonal forecasts with longer lead time for preparedness (Ready phase) and shorter lead times for activation and mobilization (Set & Go! phases).',
+        },
+      ]
+      : [
+        {
+          title: 'Mild category',
+          text: 'Drought events that typically occur once every 4 years.',
+        },
+        {
+          title: 'Moderate category',
+          text: 'Drought events that typically occur once every 5 years.',
+        },
+        {
+          title: 'Severe category',
+          text: 'Drought events that typically occur once every 7 years.',
+        },
+        {
+          title: 'Ready, Set and Go phases',
+          text: 'The "Ready, Set & Go!" system uses seasonal forecasts with longer lead time for preparedness (Ready phase) and shorter lead times for activation and mobilization (Set & Go! phases).',
+        },
+      ]),
 ];
 
 interface HowToReadModalProps {
