@@ -1,3 +1,4 @@
+import React from 'react';
 import {
   AACategoryType,
   AAPhaseType,
@@ -254,10 +255,13 @@ export const getLegendPhases = (
 
     if (phase.severity && severityToCategory[phase.severity]) {
       const category = severityToCategory[phase.severity];
+      // eslint-disable-next-line fp/no-mutation
       icon = getAAIcon(category, phase.phase as 'Ready' | 'Set', true);
     } else if (phase.phase === 'No Action') {
+      // eslint-disable-next-line fp/no-mutation
       icon = getAAIcon('na', 'na', true);
     } else {
+      // eslint-disable-next-line fp/no-mutation
       icon = getAAIcon('ny', 'ny', true);
     }
 

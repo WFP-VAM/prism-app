@@ -44,7 +44,7 @@ import Timeline from './Timeline';
 import Forecast from './Forecast';
 import { useAnticipatoryAction } from '../useAnticipatoryAction';
 
-const checkboxes = getAADroughtCountryConfig(safeCountry).checkboxes;
+const { checkboxes } = getAADroughtCountryConfig(safeCountry);
 
 function AnticipatoryActionDroughtPanel() {
   const classes = useStyles();
@@ -144,7 +144,7 @@ function AnticipatoryActionDroughtPanel() {
               )}
             >
               <MenuItem
-                value=""
+                value="empty"
                 onClick={() => {
                   dispatch(setAASelectedDistrict(''));
                   dispatch(setAAView(AAView.Home));
@@ -239,7 +239,7 @@ function AnticipatoryActionDroughtPanel() {
               )}
             >
               <MenuItem
-                value=""
+                value="empty"
                 onClick={() => {
                   dispatch(setAAFilters({ selectedIndex: '' }));
                 }}

@@ -8,11 +8,7 @@ import { useSafeTranslation } from 'i18n';
 import { borderGray, grey, lightGrey } from 'muiTheme';
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import {
-  AACategoryType,
-  AAPhaseType,
-  AAView,
-} from 'context/anticipatoryAction/AADroughtStateSlice/types';
+import { AAView } from 'context/anticipatoryAction/AADroughtStateSlice/types';
 import { AAWindowKeys } from 'config/utils';
 import {
   AAFiltersSelector,
