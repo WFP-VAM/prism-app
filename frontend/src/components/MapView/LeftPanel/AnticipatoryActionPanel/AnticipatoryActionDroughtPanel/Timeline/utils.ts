@@ -1,4 +1,5 @@
 import { AAWindowKeys } from 'config/utils';
+import { safeCountry } from 'config';
 import {
   AACategoryType,
   AAPhase,
@@ -7,7 +8,7 @@ import {
   AnticipatoryActionDataRow,
   AnticipatoryActionState,
 } from 'context/anticipatoryAction/AADroughtStateSlice/types';
-import { getSeason } from 'context/anticipatoryAction/AADroughtStateSlice/utils';
+import { calculateSeason } from 'components/MapView/LeftPanel/AnticipatoryActionPanel/AnticipatoryActionDroughtPanel/utils/countryConfig';
 
 function getColumnKey(val: AnticipatoryActionDataRow): number {
   const { category, phase } = val;
@@ -36,7 +37,7 @@ export function timelineTransform({
   data,
 }: TimelineTransformParams) {
   const { selectedWindow, selectedIndex, categories, selectedDate } = filters;
-  const season = getSeason(selectedDate);
+  const season = calculateSeason(selectedDate, safeCountry);
 
   const windowData = (
     selectedWindow === 'All' ? AAWindowKeys : [selectedWindow]

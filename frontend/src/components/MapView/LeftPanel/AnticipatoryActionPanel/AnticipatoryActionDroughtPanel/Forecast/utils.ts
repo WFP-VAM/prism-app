@@ -1,9 +1,10 @@
+import { safeCountry } from 'config';
 import {
   AACategoryType,
   AnticipatoryActionDataRow,
   AnticipatoryActionState,
 } from 'context/anticipatoryAction/AADroughtStateSlice/types';
-import { getSeason } from 'context/anticipatoryAction/AADroughtStateSlice/utils';
+import { calculateSeason } from 'components/MapView/LeftPanel/AnticipatoryActionPanel/AnticipatoryActionDroughtPanel/utils/countryConfig';
 
 const indexOrder = ['SPI', 'DRY'];
 const monthsOrder = ['O', 'N', 'D', 'J', 'F', 'M', 'A', 'M', 'J'];
@@ -57,7 +58,7 @@ export function forecastTransform({
   data,
 }: ForecastTransformParams) {
   const { selectedWindow, selectedDate } = filters;
-  const season = getSeason(selectedDate);
+  const season = calculateSeason(selectedDate, safeCountry);
 
   const dateData = (
     selectedWindow === 'All'

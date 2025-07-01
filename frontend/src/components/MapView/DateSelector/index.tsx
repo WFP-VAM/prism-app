@@ -37,6 +37,8 @@ import { getRequestDate } from 'utils/server-utils';
 import { isAnticipatoryActionLayer, isWindowedDates } from 'config/utils';
 import { getAAConfig } from 'context/anticipatoryAction/config';
 import { RootState } from 'context/store';
+import { safeCountry } from 'config';
+import { getTimelineOffset } from 'components/MapView/LeftPanel/AnticipatoryActionPanel/AnticipatoryActionDroughtPanel/utils/countryConfig';
 import TickSvg from './tick.svg';
 import DateSelectorInput from './DateSelectorInput';
 import TimelineItems from './TimelineItems';
@@ -56,13 +58,25 @@ const TIMELINE_ID = 'dateTimelineSelector';
 const POINTER_ID = 'datePointerSelector';
 
 const calculateStartAndEndDates = (startDate: Date, selectedTab: string) => {
-  const year =
-    startDate.getFullYear() -
-    (selectedTab === Panel.AnticipatoryActionDrought && startDate.getMonth() < 3
-      ? 1
-      : 0);
+  let year = startDate.getFullYear();
 
-  const startMonth = Panel.AnticipatoryActionDrought === selectedTab ? 3 : 0; // April for anticipatory_action, January otherwise
+  if (selectedTab === Panel.AnticipatoryActionDrought) {
+    // Use country-specific timeline offset for AA drought
+    const timelineOffset = getTimelineOffset(safeCountry);
+    // Adjust year if we're before the timeline start month
+    if (startDate.getMonth() < timelineOffset) {
+      year -= 1;
+    }
+  }
+
+  let startMonth: number;
+  if (selectedTab === Panel.AnticipatoryActionDrought) {
+    // Use country-specific timeline offset for AA drought
+    startMonth = getTimelineOffset(safeCountry);
+  } else {
+    // January for other panels
+    startMonth = 0;
+  }
 
   const start = new Date(year, startMonth, 1);
   const end = new Date(year, startMonth + 11, 31);
