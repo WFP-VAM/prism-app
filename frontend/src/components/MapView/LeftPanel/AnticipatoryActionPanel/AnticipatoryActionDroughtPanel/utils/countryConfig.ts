@@ -1,3 +1,4 @@
+/* eslint-disable fp/no-mutating-methods, fp/no-mutation */
 import React from 'react';
 import {
   AACategoryType,

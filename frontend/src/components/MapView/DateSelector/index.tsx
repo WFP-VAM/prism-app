@@ -65,6 +65,7 @@ const calculateStartAndEndDates = (startDate: Date, selectedTab: string) => {
     const timelineOffset = getTimelineOffset(safeCountry);
     // Adjust year if we're before the timeline start month
     if (startDate.getMonth() < timelineOffset) {
+      // eslint-disable-next-line fp/no-mutation
       year -= 1;
     }
   }
@@ -72,9 +73,11 @@ const calculateStartAndEndDates = (startDate: Date, selectedTab: string) => {
   let startMonth: number;
   if (selectedTab === Panel.AnticipatoryActionDrought) {
     // Use country-specific timeline offset for AA drought
+    // eslint-disable-next-line fp/no-mutation
     startMonth = getTimelineOffset(safeCountry);
   } else {
     // January for other panels
+    // eslint-disable-next-line fp/no-mutation
     startMonth = 0;
   }
 
