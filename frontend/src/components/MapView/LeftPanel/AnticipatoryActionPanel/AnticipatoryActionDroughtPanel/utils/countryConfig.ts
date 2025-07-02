@@ -74,7 +74,7 @@ const AADROUGHT_COUNTRY_CONFIGS: Record<string, AADroughtCountryConfig> = {
       'Window 1': 'NDJ',
       'Window 2': 'JFM',
     },
-    seasonStartMonth: 11,
+    seasonStartMonth: 7,
     howToReadContent: [
       { title: 'NDJ', text: 'November to January' },
       { title: 'JFM', text: 'January to March' },
