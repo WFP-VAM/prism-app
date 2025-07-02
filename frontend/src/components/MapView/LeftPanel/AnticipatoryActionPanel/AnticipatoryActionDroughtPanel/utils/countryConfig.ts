@@ -74,10 +74,10 @@ const AADROUGHT_COUNTRY_CONFIGS: Record<string, AADroughtCountryConfig> = {
       'Window 1': 'NDJ',
       'Window 2': 'JFM',
     },
-    seasonStartMonth: 4,
+    seasonStartMonth: 11,
     howToReadContent: [
-      { title: 'NDJ', text: 'Start to mid of the rainfall season.' },
-      { title: 'JFM', text: 'Mid to end of the rainfall season.' },
+      { title: 'NDJ', text: 'November to January' },
+      { title: 'JFM', text: 'January to March' },
       {
         title: 'Below normal category',
         text: 'Drought events that typically occur once every 3 years.',
