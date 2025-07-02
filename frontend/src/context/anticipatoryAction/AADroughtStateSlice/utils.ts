@@ -1,8 +1,10 @@
 import { AAWindowKeys } from 'config/utils';
+import { safeCountry } from 'config';
 import {
   AADataSeverityOrder,
   getAAIcon,
 } from 'components/MapView/LeftPanel/AnticipatoryActionPanel/AnticipatoryActionDroughtPanel/utils';
+import { calculateSeason } from 'components/MapView/LeftPanel/AnticipatoryActionPanel/AnticipatoryActionDroughtPanel/utils/countryConfig';
 import { DatesPropagation, Validity } from 'config/types';
 import { generateIntermediateDateItemFromValidity } from 'utils/server-utils';
 import { getFormattedDate } from 'utils/date-utils';
@@ -228,19 +230,7 @@ interface CalculateMapRenderedDistrictsParams {
   windowRanges: AnticipatoryActionState['windowRanges'];
 }
 
-export const getSeason = (date?: string) => {
-  // Use today's date if date is undefined
-  const currentDate = date ? new Date(date) : new Date();
-  const year = currentDate.getFullYear();
-  const month = currentDate.getMonth();
-
-  if (month >= 4) {
-    // May (4) to December (11)
-    return `${year}-${(year + 1).toString().slice(-2)}`;
-  }
-  // January (0) to April (3)
-  return `${year - 1}-${year.toString().slice(-2)}`;
-};
+export const getSeason = (date?: string) => calculateSeason(date, safeCountry);
 
 export function calculateMapRenderedDistricts({
   filters,
@@ -248,7 +238,7 @@ export function calculateMapRenderedDistricts({
   windowRanges,
 }: CalculateMapRenderedDistrictsParams) {
   const { selectedDate, categories } = filters;
-  const season = getSeason(selectedDate);
+  const season = calculateSeason(selectedDate, safeCountry);
 
   const res = Object.entries(data)
     .map(([winKey, districts]) => {
