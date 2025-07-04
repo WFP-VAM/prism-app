@@ -12,6 +12,8 @@ import {
   makeStyles,
   useTheme,
   useMediaQuery,
+  Drawer,
+  Divider,
 } from '@material-ui/core';
 import React, { useState } from 'react';
 import { useSafeTranslation } from 'i18n';
@@ -23,6 +25,7 @@ import {
   TableChartOutlined,
   TimerOutlined,
   Notifications,
+  Menu,
 } from '@material-ui/icons';
 import { useDispatch, useSelector } from 'react-redux';
 import {
@@ -106,6 +109,7 @@ function NavBar() {
   const [selectedChild, setSelectedChild] = useState<Record<string, PanelItem>>(
     {},
   );
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const rightSideLinks = [
     {
@@ -231,14 +235,62 @@ function NavBar() {
             </div>
           </div>
           <div className={classes.rightSideContainer}>
-            <Legends />
-            <PrintImage />
+            {!smDown && <PrintImage />}
+            {!smDown && <Legends />}
             {buttons}
             <About />
             <LanguageSelector />
+            {smDown && (
+              <IconButton
+                onClick={() => setMobileMenuOpen(true)}
+                style={{ color: 'white' }}
+              >
+                <Menu />
+              </IconButton>
+            )}
           </div>
         </div>
       </Toolbar>
+      <Drawer
+        anchor="right"
+        open={mobileMenuOpen}
+        onClose={() => setMobileMenuOpen(false)}
+        className={classes.mobileDrawer}
+      >
+        <div className={classes.mobileDrawerContent}>
+          {panels.map(panel => {
+            const selected =
+              tabValue === panel.panel ||
+              (panel.children &&
+                panel.children.some(child => tabValue === child.panel));
+
+            const buttonText = selectedChild[panel.label]
+              ? selectedChild[panel.label].label
+              : t(panel.label);
+
+            return (
+              <PanelButton
+                key={panel.panel}
+                panel={panel}
+                selected={selected || false}
+                handleClick={e => {
+                  if (panel.children) {
+                    handleMenuOpen(panel.label, e);
+                  } else if (panel.panel) {
+                    handlePanelClick(panel.panel);
+                  }
+                  setMobileMenuOpen(false);
+                }}
+                isMobile
+                buttonText={buttonText}
+              />
+            );
+          })}
+          <Divider />
+          <About />
+          <LanguageSelector />
+        </div>
+      </Drawer>
     </AppBar>
   );
 }
@@ -252,6 +304,9 @@ const useStyles = makeStyles((theme: Theme) =>
     appBar: {
       backgroundImage: `linear-gradient(180deg, ${theme.palette.primary.main} 0%, ${theme.palette.primary.dark} 100%)`,
       height: '6vh',
+      [theme.breakpoints.down('sm')]: {
+        height: '8vh',
+      },
       display: 'flex',
       justifyContent: 'center',
     },
@@ -304,6 +359,9 @@ const useStyles = makeStyles((theme: Theme) =>
       flexDirection: 'row',
       justifyContent: 'start',
       gap: '5rem',
+      [theme.breakpoints.down('sm')]: {
+        gap: '1rem',
+      },
     },
     titleContainer: {
       display: 'flex',
@@ -318,6 +376,9 @@ const useStyles = makeStyles((theme: Theme) =>
       justifyContent: 'start',
       gap: '1rem',
       alignItems: 'center',
+      [theme.breakpoints.down('sm')]: {
+        gap: '0.5rem',
+      },
     },
     rightSideContainer: {
       display: 'flex',
@@ -325,6 +386,12 @@ const useStyles = makeStyles((theme: Theme) =>
       justifyContent: 'start',
       gap: '0.5rem',
       alignItems: 'center',
+    },
+    mobileDrawer: {
+      width: '80vw',
+    },
+    touchTargetSize: {
+      touchTargetSize: isMobile => (isMobile ? '44px' : 'auto'),
     },
   }),
 );
