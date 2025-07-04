@@ -190,9 +190,6 @@ const useStyles = makeStyles((theme: Theme) =>
       display: 'flex',
       justifyContent: 'center',
     },
-    panelButton: {
-      height: '2.5em',
-    },
     navbarContainer: {
       display: 'flex',
       justifyContent: 'space-between',
@@ -224,9 +221,6 @@ const useStyles = makeStyles((theme: Theme) =>
       justifyContent: 'start',
       gap: '0.5rem',
       alignItems: 'center',
-    },
-    touchTargetSize: {
-      touchTargetSize: isMobile => (isMobile ? '44px' : 'auto'),
     },
   }),
 );
