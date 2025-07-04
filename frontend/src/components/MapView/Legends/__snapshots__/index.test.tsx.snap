@@ -14,7 +14,7 @@ exports[`renders as expected 1`] = `
     </mock-typography>
   </mock-button>
   <button
-    class="MuiButtonBase-root MuiIconButton-root"
+    class="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeSmall"
     style="background-color: rgb(99, 178, 189);"
     tabindex="0"
     type="button"
