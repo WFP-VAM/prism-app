@@ -13,6 +13,7 @@ const About = memo(() => {
   const { aboutPath } = appConfig;
   const dispatch = useDispatch();
   const theme = useTheme();
+  const smDown = useMediaQuery(theme.breakpoints.down('sm'));
   const mdUp = useMediaQuery(theme.breakpoints.up('md'));
 
   const href = aboutPath ? '' : 'https://innovation.wfp.org/project/prism';
@@ -52,9 +53,11 @@ const About = memo(() => {
         <InfoOutlinedIcon style={{ fontSize: mdUp ? '1.25rem' : '1.5rem' }} />
       }
     >
-      <Typography color="secondary" style={{ textTransform: 'none' }}>
-        {t('About')}
-      </Typography>
+      {!smDown && (
+        <Typography color="secondary" style={{ textTransform: 'none' }}>
+          {t('About')}
+        </Typography>
+      )}
       {renderedContentDialog}
     </Button>
   );

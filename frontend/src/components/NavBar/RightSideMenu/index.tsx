@@ -89,6 +89,7 @@ const useStyles = makeStyles((theme: Theme) =>
       overflowX: 'hidden',
       display: 'flex',
       flexDirection: 'column',
+      alignItems: 'flex-start',
       paddingLeft: '1em',
     },
     mobileDrawer: {
