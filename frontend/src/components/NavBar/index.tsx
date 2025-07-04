@@ -193,17 +193,6 @@ const useStyles = makeStyles((theme: Theme) =>
     panelButton: {
       height: '2.5em',
     },
-    menuContainer: {
-      textAlign: 'center',
-    },
-    menuBars: {
-      height: '100%',
-      fontSize: 20,
-      color: theme.palette.text.primary,
-    },
-    mobileMenuContainer: {
-      textAlign: 'right',
-    },
     navbarContainer: {
       display: 'flex',
       justifyContent: 'space-between',
