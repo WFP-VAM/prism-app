@@ -1,11 +1,9 @@
 /* eslint-disable react/prop-types */
 import {
   AppBar,
-  Box,
   createStyles,
   Theme,
   Toolbar,
-  Typography,
   makeStyles,
   useTheme,
   useMediaQuery,
@@ -38,8 +36,9 @@ import { Panel, PanelItem } from 'config/types';
 import PanelMenu from './PanelMenu';
 import PanelButton from './PanelButton';
 import RightSideMenu from './RightSideMenu';
+import Title from './Title';
 
-const { alertFormActive, header } = appConfig;
+const { alertFormActive } = appConfig;
 
 const panels: PanelItem[] = [
   { panel: Panel.Layers, label: 'Layers', icon: <LayersOutlined /> },
@@ -93,7 +92,6 @@ function NavBar() {
   const classes = useStyles();
   const tabValue = useSelector(leftPanelTabValueSelector);
   const theme = useTheme();
-  const smDown = useMediaQuery(theme.breakpoints.down('sm'));
   const mdUp = useMediaQuery(theme.breakpoints.up('md'));
   const [menuAnchor, setMenuAnchor] = useState<{
     [key: string]: HTMLElement | null;
@@ -125,43 +123,12 @@ function NavBar() {
     handlePanelClick(child.panel);
   };
 
-  const { title, subtitle, logo } = header || {
-    title: 'PRISM',
-  };
-
   return (
     <AppBar position="static" className={classes.appBar}>
       <Toolbar variant="dense">
         <div className={classes.navbarContainer}>
           <div className={classes.leftSideContainer}>
-            <div className={classes.titleContainer}>
-              {logo && <img className={classes.logo} src={logo} alt="logo" />}
-              <Box
-                style={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                }}
-              >
-                {title && (
-                  <Typography
-                    color="secondary"
-                    variant="h6"
-                    className={classes.title}
-                  >
-                    {t(title)}
-                  </Typography>
-                )}
-                {subtitle && !smDown && (
-                  <Typography
-                    color="secondary"
-                    variant="subtitle2"
-                    className={classes.subtitle}
-                  >
-                    {t(subtitle)}
-                  </Typography>
-                )}
-              </Box>
-            </div>
+            <Title />
             <div className={classes.panelsContainer}>
               {panels.map(panel => {
                 const selected =
@@ -217,10 +184,6 @@ function NavBar() {
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    logo: {
-      height: 32,
-      marginRight: 15,
-    },
     appBar: {
       backgroundImage: `linear-gradient(180deg, ${theme.palette.primary.main} 0%, ${theme.palette.primary.dark} 100%)`,
       height: '6vh',
@@ -229,20 +192,6 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     panelButton: {
       height: '2.5em',
-    },
-    title: {
-      letterSpacing: '.3rem',
-      fontSize: '1.25rem',
-      lineHeight: '1.5rem',
-      textTransform: 'uppercase',
-      padding: 0,
-    },
-    subtitle: {
-      fontSize: '.8rem',
-      fontWeight: 300,
-      letterSpacing: '.1rem',
-      lineHeight: '.8rem',
-      padding: 0,
     },
     menuContainer: {
       textAlign: 'center',
@@ -269,13 +218,6 @@ const useStyles = makeStyles((theme: Theme) =>
       [theme.breakpoints.down('sm')]: {
         gap: '1rem',
       },
-    },
-    titleContainer: {
-      display: 'flex',
-      flexDirection: 'row',
-      justifyContent: 'start',
-      gap: '1rem',
-      alignItems: 'center',
     },
     panelsContainer: {
       display: 'flex',
