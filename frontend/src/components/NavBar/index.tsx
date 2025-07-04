@@ -98,7 +98,6 @@ function RightSideMenu({ buttons }: { buttons: React.ReactNode }) {
   return (
     <>
       <PrintImage />
-      <Legends />
       {buttons}
       <About />
       <LanguageSelector />
@@ -246,6 +245,7 @@ function NavBar() {
             </div>
           </div>
           <div className={classes.rightSideContainer}>
+            <Legends />
             {!smDown && <RightSideMenu buttons={buttons} />}
             {smDown && (
               <IconButton
@@ -281,9 +281,6 @@ const useStyles = makeStyles((theme: Theme) =>
     appBar: {
       backgroundImage: `linear-gradient(180deg, ${theme.palette.primary.main} 0%, ${theme.palette.primary.dark} 100%)`,
       height: '6vh',
-      [theme.breakpoints.down('sm')]: {
-        height: '8vh',
-      },
       display: 'flex',
       justifyContent: 'center',
     },
