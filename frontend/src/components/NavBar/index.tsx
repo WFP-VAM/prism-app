@@ -1,6 +1,4 @@
 /* eslint-disable react/prop-types */
-import { faGithub } from '@fortawesome/free-brands-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   AppBar,
   Box,
@@ -8,11 +6,9 @@ import {
   Theme,
   Toolbar,
   Typography,
-  IconButton,
   makeStyles,
   useTheme,
   useMediaQuery,
-  Drawer,
 } from '@material-ui/core';
 import React, { useState } from 'react';
 import { useSafeTranslation } from 'i18n';
@@ -24,7 +20,6 @@ import {
   TableChartOutlined,
   TimerOutlined,
   Notifications,
-  Menu,
 } from '@material-ui/icons';
 import { useDispatch, useSelector } from 'react-redux';
 import {
@@ -40,11 +35,9 @@ import {
   isAnticipatoryActionStormAvailable,
 } from 'components/MapView/LeftPanel/utils';
 import { Panel, PanelItem } from 'config/types';
-import About from './About';
-import LanguageSelector from './LanguageSelector';
-import PrintImage from './PrintImage';
 import PanelMenu from './PanelMenu';
 import PanelButton from './PanelButton';
+import RightSideMenu from './RightSideMenu';
 
 const { alertFormActive, header } = appConfig;
 
@@ -94,17 +87,6 @@ const panels: PanelItem[] = [
     : []),
 ];
 
-function RightSideMenu({ buttons }: { buttons: React.ReactNode }) {
-  return (
-    <>
-      <PrintImage />
-      {buttons}
-      <About />
-      <LanguageSelector />
-    </>
-  );
-}
-
 function NavBar() {
   const { t } = useSafeTranslation();
   const dispatch = useDispatch();
@@ -119,27 +101,6 @@ function NavBar() {
   const [selectedChild, setSelectedChild] = useState<Record<string, PanelItem>>(
     {},
   );
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-
-  const rightSideLinks = [
-    {
-      title: 'GitHub',
-      icon: faGithub,
-      href: 'https://github.com/wfp-VAM/prism-app',
-    },
-  ];
-
-  const buttons = rightSideLinks.map(({ title, icon, href }) => (
-    <IconButton
-      key={title}
-      component="a"
-      target="_blank"
-      href={href}
-      style={{ color: 'white' }}
-    >
-      <FontAwesomeIcon fontSize={mdUp ? '1.25rem' : '1.5rem'} icon={icon} />
-    </IconButton>
-  ));
 
   const handleMenuOpen = (
     key: string,
@@ -246,28 +207,10 @@ function NavBar() {
           </div>
           <div className={classes.rightSideContainer}>
             <Legends />
-            {!smDown && <RightSideMenu buttons={buttons} />}
-            {smDown && (
-              <IconButton
-                onClick={() => setMobileMenuOpen(true)}
-                style={{ color: 'white' }}
-              >
-                <Menu />
-              </IconButton>
-            )}
+            <RightSideMenu />
           </div>
         </div>
       </Toolbar>
-      <Drawer
-        anchor="right"
-        open={mobileMenuOpen}
-        onClose={() => setMobileMenuOpen(false)}
-        className={classes.mobileDrawer}
-      >
-        <div className={classes.mobileDrawerContent}>
-          <RightSideMenu buttons={buttons} />
-        </div>
-      </Drawer>
     </AppBar>
   );
 }
@@ -303,16 +246,6 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     menuContainer: {
       textAlign: 'center',
-    },
-    mobileDrawerContent: {
-      backgroundColor: theme.palette.primary.main,
-      paddingTop: 16,
-      width: '80vw',
-      height: '100vh',
-      overflowX: 'hidden',
-      display: 'flex',
-      flexDirection: 'column',
-      paddingLeft: '1em',
     },
     menuBars: {
       height: '100%',
@@ -360,9 +293,6 @@ const useStyles = makeStyles((theme: Theme) =>
       justifyContent: 'start',
       gap: '0.5rem',
       alignItems: 'center',
-    },
-    mobileDrawer: {
-      width: '80vw',
     },
     touchTargetSize: {
       touchTargetSize: isMobile => (isMobile ? '44px' : 'auto'),
