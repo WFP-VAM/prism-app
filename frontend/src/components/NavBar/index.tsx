@@ -13,7 +13,6 @@ import {
   useTheme,
   useMediaQuery,
   Drawer,
-  Divider,
 } from '@material-ui/core';
 import React, { useState } from 'react';
 import { useSafeTranslation } from 'i18n';
@@ -94,6 +93,18 @@ const panels: PanelItem[] = [
     ? [{ panel: Panel.Alerts, label: '', icon: <Notifications /> }]
     : []),
 ];
+
+function RightSideMenu({ buttons }: { buttons: React.ReactNode }) {
+  return (
+    <>
+      <PrintImage />
+      <Legends />
+      {buttons}
+      <About />
+      <LanguageSelector />
+    </>
+  );
+}
 
 function NavBar() {
   const { t } = useSafeTranslation();
@@ -235,11 +246,7 @@ function NavBar() {
             </div>
           </div>
           <div className={classes.rightSideContainer}>
-            {!smDown && <PrintImage />}
-            {!smDown && <Legends />}
-            {buttons}
-            <About />
-            <LanguageSelector />
+            {!smDown && <RightSideMenu buttons={buttons} />}
             {smDown && (
               <IconButton
                 onClick={() => setMobileMenuOpen(true)}
@@ -258,37 +265,7 @@ function NavBar() {
         className={classes.mobileDrawer}
       >
         <div className={classes.mobileDrawerContent}>
-          {panels.map(panel => {
-            const selected =
-              tabValue === panel.panel ||
-              (panel.children &&
-                panel.children.some(child => tabValue === child.panel));
-
-            const buttonText = selectedChild[panel.label]
-              ? selectedChild[panel.label].label
-              : t(panel.label);
-
-            return (
-              <PanelButton
-                key={panel.panel}
-                panel={panel}
-                selected={selected || false}
-                handleClick={e => {
-                  if (panel.children) {
-                    handleMenuOpen(panel.label, e);
-                  } else if (panel.panel) {
-                    handlePanelClick(panel.panel);
-                  }
-                  setMobileMenuOpen(false);
-                }}
-                isMobile
-                buttonText={buttonText}
-              />
-            );
-          })}
-          <Divider />
-          <About />
-          <LanguageSelector />
+          <RightSideMenu buttons={buttons} />
         </div>
       </Drawer>
     </AppBar>
