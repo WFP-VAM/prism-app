@@ -24,12 +24,7 @@ function Title() {
   return (
     <div className={classes.titleContainer}>
       {logo && <img className={classes.logo} src={logo} alt="logo" />}
-      <Box
-        style={{
-          display: 'flex',
-          flexDirection: 'column',
-        }}
-      >
+      <Box className={classes.titleBox}>
         {title && (
           <Typography color="secondary" variant="h6" className={classes.title}>
             {t(title)}
@@ -57,6 +52,10 @@ const useStyles = makeStyles(() =>
       justifyContent: 'start',
       gap: '1rem',
       alignItems: 'center',
+    },
+    titleBox: {
+      display: 'flex',
+      flexDirection: 'column',
     },
     logo: {
       height: 32,
