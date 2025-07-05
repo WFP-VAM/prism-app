@@ -61,6 +61,7 @@ function RightSideMenu() {
         <IconButton
           onClick={() => setMobileMenuOpen(true)}
           style={{ color: 'white' }}
+          aria-label="Open menu"
         >
           <Menu />
         </IconButton>
