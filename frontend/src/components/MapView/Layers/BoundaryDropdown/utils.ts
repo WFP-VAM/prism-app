@@ -65,7 +65,7 @@ export function getAdminBoundaryTree(
       partialTree.children[fp[currentLevelCode]] ?? {
         adminCode: fp[currentLevelCode],
         key: fp[layer.adminLevelNames[level]],
-        label: fp[locationLevelNames[level]],
+        label: fp[locationLevelNames[level]] ?? '',
         level: (level + 1) as AdminLevelType,
         children: {},
       },
@@ -73,6 +73,10 @@ export function getAdminBoundaryTree(
       feature,
       (level + 1) as AdminLevelType,
     );
+    // Filter out invalid branches (missing label or key in source data)
+    if (newBranch.label === '' || newBranch.key === undefined) {
+      return partialTree;
+    }
     const newChildren = {
       ...partialTree.children,
       [fp[currentLevelCode]]: newBranch,
