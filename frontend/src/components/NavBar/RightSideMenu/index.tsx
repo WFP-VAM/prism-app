@@ -48,6 +48,7 @@ function RightSideMenu() {
       target="_blank"
       href={href}
       style={{ color: 'white' }}
+      aria-label={title}
     >
       <FontAwesomeIcon fontSize={mdUp ? '1.25rem' : '1.5rem'} icon={icon} />
     </IconButton>
