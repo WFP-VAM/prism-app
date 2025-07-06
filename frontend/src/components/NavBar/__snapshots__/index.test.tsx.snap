@@ -20,15 +20,14 @@ exports[`renders as expected 1`] = `
           >
             <img
               alt="logo"
-              class="makeStyles-logo-7"
+              class="makeStyles-logo-8"
               src="images/moz-flag-inam-logo.png"
             />
             <div
-              class="MuiBox-root MuiBox-root-10"
-              style="display: flex; flex-direction: column;"
+              class="MuiBox-root MuiBox-root-11 makeStyles-titleBox-7"
             >
               <mock-typography
-                classname="makeStyles-title-8"
+                classname="makeStyles-title-9"
                 color="secondary"
                 variant="h6"
               >
@@ -197,7 +196,7 @@ exports[`renders as expected 1`] = `
           class="makeStyles-rightSideContainer-5"
         >
           <mock-button
-            classname="makeStyles-triggerButton-18"
+            classname="makeStyles-triggerButton-19"
             starticon="[object Object]"
             style="background-color: rgb(99, 178, 189);"
           >
@@ -218,7 +217,7 @@ exports[`renders as expected 1`] = `
             >
               <svg
                 aria-hidden="true"
-                class="MuiSvgIcon-root makeStyles-icon-20"
+                class="MuiSvgIcon-root makeStyles-icon-21"
                 focusable="false"
                 style="color: rgb(16, 16, 16);"
                 viewBox="0 0 24 24"
@@ -233,12 +232,13 @@ exports[`renders as expected 1`] = `
             />
           </button>
           <mock-list
-            classname="makeStyles-list-19"
+            classname="makeStyles-list-20"
             disablepadding="true"
           />
           <mock-printimage />
           <a
             aria-disabled="false"
+            aria-label="GitHub"
             class="MuiButtonBase-root MuiIconButton-root"
             href="https://github.com/wfp-VAM/prism-app"
             style="color: white;"
@@ -296,7 +296,7 @@ exports[`renders as expected 1`] = `
             </mock-typography>
           </mock-button>
           <mock-menu
-            classname="makeStyles-block-23"
+            classname="makeStyles-block-24"
             open="false"
           >
             <mock-menuitem>
@@ -312,15 +312,16 @@ exports[`renders as expected 1`] = `
           </mock-menu>
           <mock-drawer
             anchor="right"
-            classname="makeStyles-mobileDrawer-22"
+            classname="makeStyles-mobileDrawer-23"
             open="false"
           >
             <div
-              class="makeStyles-mobileDrawerContent-21"
+              class="makeStyles-mobileDrawerContent-22"
             >
               <mock-printimage />
               <a
                 aria-disabled="false"
+                aria-label="GitHub"
                 class="MuiButtonBase-root MuiIconButton-root"
                 href="https://github.com/wfp-VAM/prism-app"
                 style="color: white;"
@@ -378,7 +379,7 @@ exports[`renders as expected 1`] = `
                 </mock-typography>
               </mock-button>
               <mock-menu
-                classname="makeStyles-block-23"
+                classname="makeStyles-block-24"
                 open="false"
               >
                 <mock-menuitem>
