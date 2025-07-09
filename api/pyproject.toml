@@ -22,8 +22,8 @@ rasterstats = "0.20.0"
 boto3 = "^1.28.61"
 cachetools = "^5.3.1"
 odc-geo = "^0.4.1"
-odc-stac = "^0.3.11"
-dask = "2024.10.0" # temporary fix for https://github.com/opendatacube/odc-stac/issues/199
+odc-stac = "^0.4.0"
+dask = "^2025.5.0"
 pystac-client = "^0.8.6"
 pystac = "^1.12.2"
 pytest-asyncio = "^1.0.0"
@@ -34,6 +34,8 @@ pytest-recording = "^0.13.2"
 geopandas = "^1.0.1"
 # pin vcrpy to prevent breakage in v7.0.0
 vcrpy = "6.0.1"
+# some package isn't updated for numpy 2.x yet
+numpy = "<2.0"
 
 
 [tool.poetry.group.dev.dependencies]
