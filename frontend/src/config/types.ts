@@ -279,6 +279,7 @@ export type FeatureInfoObject = {
 
 export class CommonLayerProps {
   id: LayerKey;
+  download?: boolean; // If true, the layer can be downloaded as a file.
 
   @optional // only optional for boundary layer
   title?: string;

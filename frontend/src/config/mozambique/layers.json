@@ -1,3198 +1,3354 @@
 {
-  "admin1_boundaries": {
-    "type": "boundary",
-    "path": "data/mozambique/moz_bnd_adm1_WFP.json",
-    "opacity": 0.8,
-    "admin_code": "adm1_source_id",
-    "admin_level_codes": ["adm1_source_id"],
-    "admin_level_names": ["adm1_name"],
-    "admin_level_local_names": ["adm1_name"],
-    "styles:": {
-      "fill": {
-        "fill-opacity": 0
-      },
-      "line": {
-        "line-color": "gray",
-        "line-width": 2,
-        "line-opacity": 0.8
-      }
+    "admin1_boundaries": {
+        "type": "boundary",
+        "path": "data/mozambique/moz_bnd_adm1_WFP.json",
+        "opacity": 0.8,
+        "admin_code": "adm1_source_id",
+        "admin_level_codes": [
+            "adm1_source_id"
+        ],
+        "admin_level_names": [
+            "adm1_name"
+        ],
+        "admin_level_local_names": [
+            "adm1_name"
+        ],
+        "styles:": {
+            "fill": {
+                "fill-opacity": 0
+            },
+            "line": {
+                "line-color": "gray",
+                "line-width": 2,
+                "line-opacity": 0.8
+            }
+        },
+        "download": true
+    },
+    "admin2_boundaries": {
+        "type": "boundary",
+        "path": "data/mozambique/moz_bnd_adm2_WFP.json",
+        "opacity": 0.8,
+        "admin_code": "adm2_source_id",
+        "admin_level_codes": [
+            "adm1_source_id",
+            "adm2_source_id"
+        ],
+        "admin_level_names": [
+            "adm1_name",
+            "adm2_name"
+        ],
+        "admin_level_local_names": [
+            "adm1_name",
+            "adm2_name"
+        ],
+        "styles:": {
+            "fill": {
+                "fill-opacity": 0
+            },
+            "line": {
+                "line-color": "gray",
+                "line-width": 1,
+                "line-opacity": 0.8
+            }
+        },
+        "download": true
+    },
+    "admin_boundaries": {
+        "type": "boundary",
+        "path": "data/mozambique/moz_bnd_adm3_WFP.json",
+        "opacity": 0.8,
+        "admin_code": "adm3_source_id",
+        "admin_level_codes": [
+            "adm1_source_id",
+            "adm2_source_id",
+            "adm3_source_id"
+        ],
+        "admin_level_names": [
+            "adm1_name",
+            "adm2_name",
+            "adm3_name"
+        ],
+        "admin_level_local_names": [
+            "adm1_name",
+            "adm2_name",
+            "adm3_name"
+        ],
+        "styles:": {
+            "fill": {
+                "fill-opacity": 0
+            },
+            "line": {
+                "line-color": "gray",
+                "line-width": 0.2,
+                "line-opacity": 0.8
+            }
+        },
+        "download": true
+    },
+    "basin_boundaries": {
+        "type": "boundary",
+        "path": "data/mozambique/moz_hyd_basins_gov_2023.json",
+        "opacity": 0.8,
+        "admin_code": "ID",
+        "admin_level_codes": [
+            "ID"
+        ],
+        "admin_level_names": [
+            "Basins"
+        ],
+        "admin_level_local_names": [
+            "Basins"
+        ],
+        "styles:": {
+            "fill": {
+                "fill-opacity": 0
+            },
+            "line": {
+                "line-color": "gray",
+                "line-width": 0.7,
+                "line-opacity": 0.8
+            }
+        },
+        "download": true
+    },
+    "precip_blended_dekad": {
+        "title": "Blended rainfall aggregate (10-day)",
+        "type": "wms",
+        "server_layer_name": "rfb_blended_moz_dekad",
+        "additional_query_params": {
+            "styles": "rfb_blended"
+        },
+        "chart_data": {
+            "url": "https://api.earthobservation.vam.wfp.org/stats/admin",
+            "fields": [
+                {
+                    "key": "rfb",
+                    "label": "Rainfall",
+                    "color": "#233f5f"
+                },
+                {
+                    "key": "rfb_avg",
+                    "label": "Average",
+                    "color": "#bdf2e6"
+                }
+            ],
+            "levels": [
+                {
+                    "level": "1",
+                    "id": "dataviz_adm1_id",
+                    "name": "adm1_name"
+                },
+                {
+                    "level": "2",
+                    "id": "dataviz_adm2_id",
+                    "name": "adm2_name"
+                }
+            ],
+            "type": "bar"
+        },
+        "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
+        "date_interval": "days",
+        "opacity": 0.7,
+        "legend_text": "Local station data from INAM blended with CHIRP rainfall estimates",
+        "legend": "rfh_16_0_300",
+        "download": true
+    },
+    "precip_blended_dekad_anomaly": {
+        "title": "Blended rainfall anomaly (10-day)",
+        "type": "wms",
+        "server_layer_name": "rfq_blended_moz_dekad",
+        "additional_query_params": {
+            "styles": "rfq_blended"
+        },
+        "chart_data": {
+            "url": "https://api.earthobservation.vam.wfp.org/stats/admin",
+            "fields": [
+                {
+                    "key": "rfq",
+                    "label": "Rainfall anomaly",
+                    "minValue": 0,
+                    "maxValue": 300,
+                    "color": "#375692"
+                },
+                {
+                    "key": "rfq_avg",
+                    "label": "Normal",
+                    "fallback": 100,
+                    "pointRadius": 0,
+                    "color": "#eb3223"
+                }
+            ],
+            "levels": [
+                {
+                    "level": "1",
+                    "id": "dataviz_adm1_id",
+                    "name": "adm1_name"
+                },
+                {
+                    "level": "2",
+                    "id": "dataviz_adm2_id",
+                    "name": "adm2_name"
+                }
+            ],
+            "type": "line"
+        },
+        "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
+        "date_interval": "days",
+        "opacity": 0.7,
+        "legend_text": "Rainfall anomaly based on long term averaged from local station data from INAM blended with CHIRP rainfall estimates",
+        "legend": "rfq_14_20_400",
+        "download": true
+    },
+    "precip_blended_1m": {
+        "title": "Blended rainfall aggregate (1-month)",
+        "type": "wms",
+        "server_layer_name": "rfb_blended_moz_dekad",
+        "additional_query_params": {
+            "styles": "r1b_blended"
+        },
+        "chart_data": {
+            "url": "https://api.earthobservation.vam.wfp.org/stats/admin",
+            "fields": [
+                {
+                    "key": "r1b",
+                    "label": "Rainfall",
+                    "color": "#233f5f"
+                },
+                {
+                    "key": "r1b_avg",
+                    "label": "Average",
+                    "color": "#bdf2e6"
+                }
+            ],
+            "levels": [
+                {
+                    "level": "1",
+                    "id": "dataviz_adm1_id",
+                    "name": "adm1_name"
+                },
+                {
+                    "level": "2",
+                    "id": "dataviz_adm2_id",
+                    "name": "adm2_name"
+                }
+            ],
+            "type": "bar"
+        },
+        "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
+        "date_interval": "days",
+        "opacity": 0.7,
+        "legend_text": "Local station data from INAM blended with CHIRP rainfall estimates",
+        "legend": [
+            {
+                "value": 0,
+                "label": "0 mm",
+                "color": "#fafafa"
+            },
+            {
+                "value": 0.01,
+                "label": "1-5 mm",
+                "color": "#fffadf"
+            },
+            {
+                "value": 5,
+                "label": "5-10 mm",
+                "color": "#d3f9d0"
+            },
+            {
+                "value": 10,
+                "label": "10-20 mm",
+                "color": "#a9e4a3"
+            },
+            {
+                "value": 20,
+                "label": "20-30 mm",
+                "color": "#7cc594"
+            },
+            {
+                "value": 30,
+                "label": "30-40 mm",
+                "color": "#5eab91"
+            },
+            {
+                "value": 40,
+                "label": "40-60 mm",
+                "color": "#9fffe8"
+            },
+            {
+                "value": 60,
+                "label": "60-90 mm",
+                "color": "#90e0ef"
+            },
+            {
+                "value": 90,
+                "label": "90-120 mm",
+                "color": "#00b1de"
+            },
+            {
+                "value": 120,
+                "label": "120-150 mm",
+                "color": "#0083f3"
+            },
+            {
+                "value": 150,
+                "label": "150-200 mm",
+                "color": "#0052cd"
+            },
+            {
+                "value": 200,
+                "label": "200-250 mm",
+                "color": "#0000c8"
+            },
+            {
+                "value": 250,
+                "label": "250-300 mm",
+                "color": "#6003b8"
+            },
+            {
+                "value": 300,
+                "label": "300-350 mm",
+                "color": "#a002fa"
+            },
+            {
+                "value": 350,
+                "label": "350-400 mm",
+                "color": "#fa78fa"
+            },
+            {
+                "value": 400,
+                "label": ">= 400 mm",
+                "color": "#ffc4ee"
+            }
+        ],
+        "download": true
+    },
+    "precip_blended_anomaly_1m": {
+        "title": "Blended rainfall anomaly (1-month)",
+        "type": "wms",
+        "server_layer_name": "rfq_blended_moz_dekad",
+        "additional_query_params": {
+            "styles": "r1q_blended"
+        },
+        "chart_data": {
+            "url": "https://api.earthobservation.vam.wfp.org/stats/admin",
+            "fields": [
+                {
+                    "key": "r1q",
+                    "label": "Rainfall anomaly",
+                    "minValue": 0,
+                    "maxValue": 300,
+                    "color": "#375692"
+                },
+                {
+                    "key": "r1q_avg",
+                    "label": "Normal",
+                    "fallback": 100,
+                    "pointRadius": 0,
+                    "color": "#eb3223"
+                }
+            ],
+            "levels": [
+                {
+                    "level": "1",
+                    "id": "dataviz_adm1_id",
+                    "name": "adm1_name"
+                },
+                {
+                    "level": "2",
+                    "id": "dataviz_adm2_id",
+                    "name": "adm2_name"
+                }
+            ],
+            "type": "line"
+        },
+        "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
+        "date_interval": "days",
+        "opacity": 0.7,
+        "legend_text": "Rainfall anomaly based on long term averaged from local station data from INAM blended with CHIRP rainfall estimates",
+        "legend": "rfq_14_20_400",
+        "download": true
+    },
+    "precip_blended_2m": {
+        "title": "Blended rainfall aggregate (2-month)",
+        "type": "wms",
+        "server_layer_name": "rfb_blended_moz_dekad",
+        "additional_query_params": {
+            "styles": "r2b_blended"
+        },
+        "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
+        "date_interval": "days",
+        "opacity": 0.7,
+        "legend_text": "Local station data from INAM blended with CHIRP rainfall estimates",
+        "legend": [
+            {
+                "value": 0,
+                "label": "0 mm",
+                "color": "#fafafa"
+            },
+            {
+                "value": 0.01,
+                "label": "1-5 mm",
+                "color": "#fffadf"
+            },
+            {
+                "value": 5,
+                "label": "5-10 mm",
+                "color": "#d3f9d0"
+            },
+            {
+                "value": 10,
+                "label": "10-20 mm",
+                "color": "#a9e4a3"
+            },
+            {
+                "value": 20,
+                "label": "20-30 mm",
+                "color": "#7cc594"
+            },
+            {
+                "value": 30,
+                "label": "30-50 mm",
+                "color": "#5eab91"
+            },
+            {
+                "value": 50,
+                "label": "50-80 mm",
+                "color": "#9fffe8"
+            },
+            {
+                "value": 80,
+                "label": "80-100 mm",
+                "color": "#90e0ef"
+            },
+            {
+                "value": 100,
+                "label": "100-150 mm",
+                "color": "#00b1de"
+            },
+            {
+                "value": 150,
+                "label": "150-200 mm",
+                "color": "#0083f3"
+            },
+            {
+                "value": 200,
+                "label": "200-250 mm",
+                "color": "#0052cd"
+            },
+            {
+                "value": 250,
+                "label": "250-300 mm",
+                "color": "#0000c8"
+            },
+            {
+                "value": 300,
+                "label": "300-400 mm",
+                "color": "#6003b8"
+            },
+            {
+                "value": 400,
+                "label": "400-500 mm",
+                "color": "#a002fa"
+            },
+            {
+                "value": 500,
+                "label": "500-700 mm",
+                "color": "#fa78fa"
+            },
+            {
+                "value": 700,
+                "label": ">= 700 mm",
+                "color": "#ffc4ee"
+            }
+        ],
+        "download": true
+    },
+    "precip_blended_anomaly_2m": {
+        "title": "Blended rainfall anomaly (2-month)",
+        "type": "wms",
+        "server_layer_name": "rfq_blended_moz_dekad",
+        "additional_query_params": {
+            "styles": "r2q_blended"
+        },
+        "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
+        "date_interval": "days",
+        "opacity": 0.7,
+        "legend_text": "Rainfall anomaly based on long term averaged from local station data from INAM blended with CHIRP rainfall estimates",
+        "legend": "rfq_14_20_400",
+        "download": true
+    },
+    "precip_blended_3m": {
+        "title": "Blended rainfall aggregate (3-month)",
+        "type": "wms",
+        "server_layer_name": "rfb_blended_moz_dekad",
+        "additional_query_params": {
+            "styles": "r3b_blended"
+        },
+        "chart_data": {
+            "url": "https://api.earthobservation.vam.wfp.org/stats/admin",
+            "fields": [
+                {
+                    "key": "r3b",
+                    "label": "Rainfall",
+                    "color": "#233f5f"
+                },
+                {
+                    "key": "r3b_avg",
+                    "label": "Average",
+                    "color": "#bdf2e6"
+                }
+            ],
+            "levels": [
+                {
+                    "level": "1",
+                    "id": "dataviz_adm1_id",
+                    "name": "adm1_name"
+                },
+                {
+                    "level": "2",
+                    "id": "dataviz_adm2_id",
+                    "name": "adm2_name"
+                }
+            ],
+            "type": "bar"
+        },
+        "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
+        "date_interval": "days",
+        "opacity": 0.7,
+        "legend_text": "Local station data from INAM blended with CHIRP rainfall estimates",
+        "legend": [
+            {
+                "value": 0,
+                "label": "0 mm",
+                "color": "#fafafa"
+            },
+            {
+                "value": 0.01,
+                "label": "1-10 mm",
+                "color": "#fffadf"
+            },
+            {
+                "value": 10,
+                "label": "10-20 mm",
+                "color": "#d3f9d0"
+            },
+            {
+                "value": 20,
+                "label": "20-30 mm",
+                "color": "#a9e4a3"
+            },
+            {
+                "value": 30,
+                "label": "30-50 mm",
+                "color": "#7cc594"
+            },
+            {
+                "value": 50,
+                "label": "50-80 mm",
+                "color": "#5eab91"
+            },
+            {
+                "value": 80,
+                "label": "80-100 mm",
+                "color": "#9fffe8"
+            },
+            {
+                "value": 100,
+                "label": "100-150 mm",
+                "color": "#90e0ef"
+            },
+            {
+                "value": 150,
+                "label": "150-200 mm",
+                "color": "#00b1de"
+            },
+            {
+                "value": 200,
+                "label": "200-300 mm",
+                "color": "#0083f3"
+            },
+            {
+                "value": 300,
+                "label": "300-400 mm",
+                "color": "#0052cd"
+            },
+            {
+                "value": 400,
+                "label": "400-500 mm",
+                "color": "#0000c8"
+            },
+            {
+                "value": 500,
+                "label": "500-600 mm",
+                "color": "#6003b8"
+            },
+            {
+                "value": 600,
+                "label": "600-700 mm",
+                "color": "#a002fa"
+            },
+            {
+                "value": 700,
+                "label": "700-800 mm",
+                "color": "#fa78fa"
+            },
+            {
+                "value": 800,
+                "label": "> 800 mm",
+                "color": "#ffc4ee"
+            }
+        ],
+        "download": true
+    },
+    "precip_blended_anomaly_3m": {
+        "title": "Blended rainfall anomaly (3-month)",
+        "type": "wms",
+        "server_layer_name": "rfq_blended_moz_dekad",
+        "additional_query_params": {
+            "styles": "r3q_blended"
+        },
+        "chart_data": {
+            "url": "https://api.earthobservation.vam.wfp.org/stats/admin",
+            "fields": [
+                {
+                    "key": "r3q",
+                    "label": "Rainfall anomaly",
+                    "color": "#375692",
+                    "minValue": 0,
+                    "maxValue": 300
+                },
+                {
+                    "key": "r3q_avg",
+                    "label": "Normal",
+                    "fallback": 100,
+                    "pointRadius": 0,
+                    "color": "#eb3223"
+                }
+            ],
+            "levels": [
+                {
+                    "level": "1",
+                    "id": "dataviz_adm1_id",
+                    "name": "adm1_name"
+                },
+                {
+                    "level": "2",
+                    "id": "dataviz_adm2_id",
+                    "name": "adm2_name"
+                }
+            ],
+            "type": "line"
+        },
+        "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
+        "date_interval": "days",
+        "opacity": 0.7,
+        "legend_text": "Rainfall anomaly based on long term averaged from local station data from INAM blended with CHIRP rainfall estimates",
+        "legend": "rfq_14_20_400",
+        "download": true
+    },
+    "precip_blended_4m": {
+        "title": "Blended rainfall aggregate (4-month)",
+        "type": "wms",
+        "server_layer_name": "rfb_blended_moz_dekad",
+        "additional_query_params": {
+            "styles": "r4b_blended"
+        },
+        "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
+        "date_interval": "days",
+        "opacity": 0.7,
+        "legend_text": "Local station data from INAM blended with CHIRP rainfall estimates",
+        "legend": [
+            {
+                "value": 0,
+                "label": "0 mm",
+                "color": "#fafafa"
+            },
+            {
+                "value": 0.01,
+                "label": "1-10 mm",
+                "color": "#fffadf"
+            },
+            {
+                "value": 10,
+                "label": "10-20 mm",
+                "color": "#d3f9d0"
+            },
+            {
+                "value": 20,
+                "label": "20-30 mm",
+                "color": "#a9e4a3"
+            },
+            {
+                "value": 30,
+                "label": "30-50 mm",
+                "color": "#7cc594"
+            },
+            {
+                "value": 50,
+                "label": "50-100 mm",
+                "color": "#5eab91"
+            },
+            {
+                "value": 100,
+                "label": "100-200 mm",
+                "color": "#9fffe8"
+            },
+            {
+                "value": 200,
+                "label": "200-300 mm",
+                "color": "#90e0ef"
+            },
+            {
+                "value": 300,
+                "label": "300-400 mm",
+                "color": "#00b1de"
+            },
+            {
+                "value": 400,
+                "label": "400-500 mm",
+                "color": "#0083f3"
+            },
+            {
+                "value": 500,
+                "label": "500-600 mm",
+                "color": "#0052cd"
+            },
+            {
+                "value": 600,
+                "label": "600-700 mm",
+                "color": "#0000c8"
+            },
+            {
+                "value": 700,
+                "label": "700-800 mm",
+                "color": "#6003b8"
+            },
+            {
+                "value": 800,
+                "label": "800-900 mm",
+                "color": "#a002fa"
+            },
+            {
+                "value": 900,
+                "label": "900-1000 mm",
+                "color": "#fa78fa"
+            },
+            {
+                "value": 1000,
+                "label": ">= 1000 mm",
+                "color": "#ffc4ee"
+            }
+        ],
+        "download": true
+    },
+    "precip_blended_anomaly_4m": {
+        "title": "Blended rainfall anomaly (4-month)",
+        "type": "wms",
+        "server_layer_name": "rfq_blended_moz_dekad",
+        "additional_query_params": {
+            "styles": "r4q_blended"
+        },
+        "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
+        "date_interval": "days",
+        "opacity": 0.7,
+        "legend_text": "Rainfall anomaly based on long term averaged from local station data from INAM blended with CHIRP rainfall estimates",
+        "legend": "rfq_14_20_400",
+        "download": true
+    },
+    "precip_blended_5m": {
+        "title": "Blended rainfall aggregate (5-month)",
+        "type": "wms",
+        "server_layer_name": "rfb_blended_moz_dekad",
+        "additional_query_params": {
+            "styles": "r5b_blended"
+        },
+        "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
+        "date_interval": "days",
+        "opacity": 0.7,
+        "legend_text": "Local station data from INAM blended with CHIRP rainfall estimates",
+        "legend": [
+            {
+                "value": 0,
+                "label": "0 mm",
+                "color": "#fafafa"
+            },
+            {
+                "value": 0.01,
+                "label": "1-10 mm",
+                "color": "#fffadf"
+            },
+            {
+                "value": 10,
+                "label": "10-20 mm",
+                "color": "#d3f9d0"
+            },
+            {
+                "value": 20,
+                "label": "20-50 mm",
+                "color": "#a9e4a3"
+            },
+            {
+                "value": 50,
+                "label": "50-100 mm",
+                "color": "#7cc594"
+            },
+            {
+                "value": 100,
+                "label": "100-200 mm",
+                "color": "#5eab91"
+            },
+            {
+                "value": 200,
+                "label": "200-300 mm",
+                "color": "#9fffe8"
+            },
+            {
+                "value": 300,
+                "label": "300-400 mm",
+                "color": "#90e0ef"
+            },
+            {
+                "value": 400,
+                "label": "400-600 mm",
+                "color": "#00b1de"
+            },
+            {
+                "value": 600,
+                "label": "600-800 mm",
+                "color": "#0083f3"
+            },
+            {
+                "value": 800,
+                "label": "800-900 mm",
+                "color": "#0052cd"
+            },
+            {
+                "value": 900,
+                "label": "900-1000 mm",
+                "color": "#0000c8"
+            },
+            {
+                "value": 1000,
+                "label": "1000-1200 mm",
+                "color": "#6003b8"
+            },
+            {
+                "value": 1200,
+                "label": "1200-1400 mm",
+                "color": "#a002fa"
+            },
+            {
+                "value": 1400,
+                "label": "1400-1600 mm",
+                "color": "#fa78fa"
+            },
+            {
+                "value": 1600,
+                "label": "> 1600 mm",
+                "color": "#ffc4ee"
+            }
+        ],
+        "download": true
+    },
+    "precip_blended_anomaly_5m": {
+        "title": "Blended rainfall anomaly (5-month)",
+        "type": "wms",
+        "server_layer_name": "rfq_blended_moz_dekad",
+        "additional_query_params": {
+            "styles": "r5q_blended"
+        },
+        "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
+        "date_interval": "days",
+        "opacity": 0.7,
+        "legend_text": "Rainfall anomaly based on long term averaged from local station data from INAM blended with CHIRP rainfall estimates",
+        "legend": [
+            {
+                "value": 0,
+                "label": "< 20%",
+                "color": "#8c4800"
+            },
+            {
+                "value": 20,
+                "label": "20-40%",
+                "color": "#af6b27"
+            },
+            {
+                "value": 40,
+                "label": "40-60%",
+                "color": "#d58c3e"
+            },
+            {
+                "value": 60,
+                "label": "60-70%",
+                "color": "#eaa83d"
+            },
+            {
+                "value": 70,
+                "label": "70-80%",
+                "color": "#f5c878"
+            },
+            {
+                "value": 80,
+                "label": "80-90%",
+                "color": "#fff0c4"
+            },
+            {
+                "value": 90,
+                "label": "90-110%",
+                "color": "#fafafa"
+            },
+            {
+                "value": 110,
+                "label": "110-120%",
+                "color": "#befafa"
+            },
+            {
+                "value": 120,
+                "label": "120-130%",
+                "color": "#78e2f0"
+            },
+            {
+                "value": 130,
+                "label": "130-150%",
+                "color": "#00b9de"
+            },
+            {
+                "value": 150,
+                "label": "150-200%",
+                "color": "#0083f3"
+            },
+            {
+                "value": 200,
+                "label": "200-300%",
+                "color": "#0052cd"
+            },
+            {
+                "value": 300,
+                "label": "300-400%",
+                "color": "#0000c8"
+            },
+            {
+                "value": 400,
+                "label": ">= 400%",
+                "color": "#a002fa"
+            }
+        ],
+        "download": true
+    },
+    "precip_blended_6m": {
+        "title": "Blended rainfall aggregate (6-month)",
+        "type": "wms",
+        "server_layer_name": "rfb_blended_moz_dekad",
+        "additional_query_params": {
+            "styles": "r6b_blended"
+        },
+        "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
+        "date_interval": "days",
+        "opacity": 0.7,
+        "legend_text": "Local station data from INAM blended with CHIRP rainfall estimates",
+        "legend": [
+            {
+                "value": 0,
+                "label": "0 mm",
+                "color": "#fafafa"
+            },
+            {
+                "value": 0.01,
+                "label": "1-10 mm",
+                "color": "#fffadf"
+            },
+            {
+                "value": 10,
+                "label": "10-20 mm",
+                "color": "#d3f9d0"
+            },
+            {
+                "value": 20,
+                "label": "20-50 mm",
+                "color": "#a9e4a3"
+            },
+            {
+                "value": 50,
+                "label": "50-100 mm",
+                "color": "#7cc594"
+            },
+            {
+                "value": 100,
+                "label": "100-200 mm",
+                "color": "#5eab91"
+            },
+            {
+                "value": 200,
+                "label": "200-300 mm",
+                "color": "#9fffe8"
+            },
+            {
+                "value": 300,
+                "label": "300-400 mm",
+                "color": "#90e0ef"
+            },
+            {
+                "value": 400,
+                "label": "400-600 mm",
+                "color": "#00b1de"
+            },
+            {
+                "value": 600,
+                "label": "600-800 mm",
+                "color": "#0083f3"
+            },
+            {
+                "value": 800,
+                "label": "800-900 mm",
+                "color": "#0052cd"
+            },
+            {
+                "value": 900,
+                "label": "900-1000 mm",
+                "color": "#0000c8"
+            },
+            {
+                "value": 1000,
+                "label": "1000-1200 mm",
+                "color": "#6003b8"
+            },
+            {
+                "value": 1200,
+                "label": "1200-1400 mm",
+                "color": "#a002fa"
+            },
+            {
+                "value": 1400,
+                "label": "1400-1600 mm",
+                "color": "#fa78fa"
+            },
+            {
+                "value": 1600,
+                "label": "> 1600 mm",
+                "color": "#ffc4ee"
+            }
+        ],
+        "download": true
+    },
+    "precip_blended_anomaly_6m": {
+        "title": "Blended rainfall anomaly (6-month)",
+        "type": "wms",
+        "server_layer_name": "rfq_blended_moz_dekad",
+        "additional_query_params": {
+            "styles": "r6q_blended"
+        },
+        "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
+        "date_interval": "days",
+        "opacity": 0.7,
+        "legend_text": "Rainfall anomaly based on long term averaged from local station data from INAM blended with CHIRP rainfall estimates",
+        "legend": [
+            {
+                "value": 0,
+                "label": "< 50%",
+                "color": "#8c4800"
+            },
+            {
+                "value": 50,
+                "label": "50-60%",
+                "color": "#af6b27"
+            },
+            {
+                "value": 60,
+                "label": "60-70%",
+                "color": "#d58c3e"
+            },
+            {
+                "value": 70,
+                "label": "70-80%",
+                "color": "#eaa83d"
+            },
+            {
+                "value": 80,
+                "label": "80-90%",
+                "color": "#f5c878"
+            },
+            {
+                "value": 90,
+                "label": "90-95%",
+                "color": "#fff0c4"
+            },
+            {
+                "value": 95,
+                "label": "95-105%",
+                "color": "#fafafa"
+            },
+            {
+                "value": 105,
+                "label": "105-110%",
+                "color": "#befafa"
+            },
+            {
+                "value": 110,
+                "label": "110-120%",
+                "color": "#78e2f0"
+            },
+            {
+                "value": 120,
+                "label": "120-130%",
+                "color": "#00b9de"
+            },
+            {
+                "value": 130,
+                "label": "130-150%",
+                "color": "#0083f3"
+            },
+            {
+                "value": 150,
+                "label": "150-170%",
+                "color": "#0052cd"
+            },
+            {
+                "value": 170,
+                "label": "170-200%",
+                "color": "#0000c8"
+            },
+            {
+                "value": 200,
+                "label": "> 200%",
+                "color": "#a002fa"
+            }
+        ],
+        "download": true
+    },
+    "precip_blended_7m": {
+        "title": "Blended rainfall aggregate (7-month)",
+        "type": "wms",
+        "server_layer_name": "rfb_blended_moz_dekad",
+        "additional_query_params": {
+            "styles": "r7b_blended"
+        },
+        "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
+        "date_interval": "days",
+        "opacity": 0.7,
+        "legend_text": "Local station data from INAM blended with CHIRP rainfall estimates",
+        "legend": [
+            {
+                "value": 0,
+                "label": "0 mm",
+                "color": "#fafafa"
+            },
+            {
+                "value": 0.01,
+                "label": "1-10 mm",
+                "color": "#fffadf"
+            },
+            {
+                "value": 10,
+                "label": "10-50 mm",
+                "color": "#d3f9d0"
+            },
+            {
+                "value": 50,
+                "label": "50-100 mm",
+                "color": "#a9e4a3"
+            },
+            {
+                "value": 100,
+                "label": "100-200 mm",
+                "color": "#7cc594"
+            },
+            {
+                "value": 200,
+                "label": "200-300 mm",
+                "color": "#5eab91"
+            },
+            {
+                "value": 300,
+                "label": "300-400 mm",
+                "color": "#9fffe8"
+            },
+            {
+                "value": 400,
+                "label": "400-600 mm",
+                "color": "#90e0ef"
+            },
+            {
+                "value": 600,
+                "label": "600-800 mm",
+                "color": "#00b1de"
+            },
+            {
+                "value": 800,
+                "label": "800-1000 mm",
+                "color": "#0083f3"
+            },
+            {
+                "value": 1000,
+                "label": "1000-1200 mm",
+                "color": "#0052cd"
+            },
+            {
+                "value": 1200,
+                "label": "1200-1400 mm",
+                "color": "#0000c8"
+            },
+            {
+                "value": 1400,
+                "label": "1400-1600 mm",
+                "color": "#6003b8"
+            },
+            {
+                "value": 1600,
+                "label": "1600-1800 mm",
+                "color": "#a002fa"
+            },
+            {
+                "value": 1800,
+                "label": "1800-2000 mm",
+                "color": "#fa78fa"
+            },
+            {
+                "value": 2000,
+                "label": "> 2000 mm",
+                "color": "#ffc4ee"
+            }
+        ],
+        "download": true
+    },
+    "precip_blended_anomaly_7m": {
+        "title": "Blended rainfall anomaly (7-month)",
+        "type": "wms",
+        "server_layer_name": "rfq_blended_moz_dekad",
+        "additional_query_params": {
+            "styles": "r7q_blended"
+        },
+        "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
+        "date_interval": "days",
+        "opacity": 0.7,
+        "legend_text": "Rainfall anomaly based on long term averaged from local station data from INAM blended with CHIRP rainfall estimates",
+        "legend": [
+            {
+                "value": 0,
+                "label": "< 50%",
+                "color": "#8c4800"
+            },
+            {
+                "value": 50,
+                "label": "50-60%",
+                "color": "#af6b27"
+            },
+            {
+                "value": 60,
+                "label": "60-70%",
+                "color": "#d58c3e"
+            },
+            {
+                "value": 70,
+                "label": "70-80%",
+                "color": "#eaa83d"
+            },
+            {
+                "value": 80,
+                "label": "80-90%",
+                "color": "#f5c878"
+            },
+            {
+                "value": 90,
+                "label": "90-95%",
+                "color": "#fff0c4"
+            },
+            {
+                "value": 95,
+                "label": "95-105%",
+                "color": "#fafafa"
+            },
+            {
+                "value": 105,
+                "label": "105-110%",
+                "color": "#befafa"
+            },
+            {
+                "value": 110,
+                "label": "110-120%",
+                "color": "#78e2f0"
+            },
+            {
+                "value": 120,
+                "label": "120-130%",
+                "color": "#00b9de"
+            },
+            {
+                "value": 130,
+                "label": "130-150%",
+                "color": "#0083f3"
+            },
+            {
+                "value": 150,
+                "label": "150-170%",
+                "color": "#0052cd"
+            },
+            {
+                "value": 170,
+                "label": "170-200%",
+                "color": "#0000c8"
+            },
+            {
+                "value": 200,
+                "label": "> 200%",
+                "color": "#a002fa"
+            }
+        ],
+        "download": true
+    },
+    "precip_blended_8m": {
+        "title": "Blended rainfall aggregate (8-month)",
+        "type": "wms",
+        "server_layer_name": "rfb_blended_moz_dekad",
+        "additional_query_params": {
+            "styles": "r8b_blended"
+        },
+        "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
+        "date_interval": "days",
+        "opacity": 0.7,
+        "legend_text": "Local station data from INAM blended with CHIRP rainfall estimates",
+        "legend": [
+            {
+                "value": 0,
+                "label": "0 mm",
+                "color": "#fafafa"
+            },
+            {
+                "value": 0.01,
+                "label": "1-10 mm",
+                "color": "#fffadf"
+            },
+            {
+                "value": 10,
+                "label": "10-50 mm",
+                "color": "#d3f9d0"
+            },
+            {
+                "value": 50,
+                "label": "50-100 mm",
+                "color": "#a9e4a3"
+            },
+            {
+                "value": 100,
+                "label": "100-200 mm",
+                "color": "#7cc594"
+            },
+            {
+                "value": 200,
+                "label": "200-300 mm",
+                "color": "#5eab91"
+            },
+            {
+                "value": 300,
+                "label": "300-400 mm",
+                "color": "#9fffe8"
+            },
+            {
+                "value": 400,
+                "label": "400-600 mm",
+                "color": "#90e0ef"
+            },
+            {
+                "value": 600,
+                "label": "600-800 mm",
+                "color": "#00b1de"
+            },
+            {
+                "value": 800,
+                "label": "800-1000 mm",
+                "color": "#0083f3"
+            },
+            {
+                "value": 1000,
+                "label": "1000-1200 mm",
+                "color": "#0052cd"
+            },
+            {
+                "value": 1200,
+                "label": "1200-1400 mm",
+                "color": "#0000c8"
+            },
+            {
+                "value": 1400,
+                "label": "1400-1600 mm",
+                "color": "#6003b8"
+            },
+            {
+                "value": 1600,
+                "label": "1600-1800 mm",
+                "color": "#a002fa"
+            },
+            {
+                "value": 1800,
+                "label": "1800-2000 mm",
+                "color": "#fa78fa"
+            },
+            {
+                "value": 2000,
+                "label": "> 2000 mm",
+                "color": "#ffc4ee"
+            }
+        ],
+        "download": true
+    },
+    "precip_blended_anomaly_8m": {
+        "title": "Blended rainfall anomaly (8-month)",
+        "type": "wms",
+        "server_layer_name": "rfq_blended_moz_dekad",
+        "additional_query_params": {
+            "styles": "r8q_blended"
+        },
+        "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
+        "date_interval": "days",
+        "opacity": 0.7,
+        "legend_text": "Rainfall anomaly based on long term averaged from local station data from INAM blended with CHIRP rainfall estimates",
+        "legend": [
+            {
+                "value": 0,
+                "label": "< 50%",
+                "color": "#8c4800"
+            },
+            {
+                "value": 50,
+                "label": "50-60%",
+                "color": "#af6b27"
+            },
+            {
+                "value": 60,
+                "label": "60-70%",
+                "color": "#d58c3e"
+            },
+            {
+                "value": 70,
+                "label": "70-80%",
+                "color": "#eaa83d"
+            },
+            {
+                "value": 80,
+                "label": "80-90%",
+                "color": "#f5c878"
+            },
+            {
+                "value": 90,
+                "label": "90-95%",
+                "color": "#fff0c4"
+            },
+            {
+                "value": 95,
+                "label": "95-105%",
+                "color": "#fafafa"
+            },
+            {
+                "value": 105,
+                "label": "105-110%",
+                "color": "#befafa"
+            },
+            {
+                "value": 110,
+                "label": "110-120%",
+                "color": "#78e2f0"
+            },
+            {
+                "value": 120,
+                "label": "120-130%",
+                "color": "#00b9de"
+            },
+            {
+                "value": 130,
+                "label": "130-150%",
+                "color": "#0083f3"
+            },
+            {
+                "value": 150,
+                "label": "150-170%",
+                "color": "#0052cd"
+            },
+            {
+                "value": 170,
+                "label": "170-200%",
+                "color": "#0000c8"
+            },
+            {
+                "value": 200,
+                "label": "> 200%",
+                "color": "#a002fa"
+            }
+        ],
+        "download": true
+    },
+    "precip_blended_9m": {
+        "title": "Blended rainfall aggregate (9-month)",
+        "type": "wms",
+        "server_layer_name": "rfb_blended_moz_dekad",
+        "additional_query_params": {
+            "styles": "r9b_blended"
+        },
+        "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
+        "date_interval": "days",
+        "opacity": 0.7,
+        "legend_text": "Local station data from INAM blended with CHIRP rainfall estimates",
+        "legend": [
+            {
+                "value": 0,
+                "label": "0 mm",
+                "color": "#fafafa"
+            },
+            {
+                "value": 0.01,
+                "label": "1-10 mm",
+                "color": "#fffadf"
+            },
+            {
+                "value": 10,
+                "label": "10-50 mm",
+                "color": "#d3f9d0"
+            },
+            {
+                "value": 50,
+                "label": "50-100 mm",
+                "color": "#a9e4a3"
+            },
+            {
+                "value": 100,
+                "label": "100-200 mm",
+                "color": "#7cc594"
+            },
+            {
+                "value": 200,
+                "label": "200-400 mm",
+                "color": "#5eab91"
+            },
+            {
+                "value": 400,
+                "label": "400-600 mm",
+                "color": "#9fffe8"
+            },
+            {
+                "value": 600,
+                "label": "600-800 mm",
+                "color": "#90e0ef"
+            },
+            {
+                "value": 800,
+                "label": "800-1000 mm",
+                "color": "#00b1de"
+            },
+            {
+                "value": 1000,
+                "label": "1000-1200 mm",
+                "color": "#0083f3"
+            },
+            {
+                "value": 1200,
+                "label": "1200-1400 mm",
+                "color": "#0052cd"
+            },
+            {
+                "value": 1400,
+                "label": "1400-1600 mm",
+                "color": "#0000c8"
+            },
+            {
+                "value": 1600,
+                "label": "1600-1800 mm",
+                "color": "#6003b8"
+            },
+            {
+                "value": 1800,
+                "label": "1800-2000 mm",
+                "color": "#a002fa"
+            },
+            {
+                "value": 2000,
+                "label": "2000-2400 mm",
+                "color": "#fa78fa"
+            },
+            {
+                "value": 2400,
+                "label": "> 2400 mm",
+                "color": "#ffc4ee"
+            }
+        ],
+        "download": true
+    },
+    "precip_blended_anomaly_9m": {
+        "title": "Blended rainfall anomaly (9-month)",
+        "type": "wms",
+        "server_layer_name": "rfq_blended_moz_dekad",
+        "additional_query_params": {
+            "styles": "r9q_blended"
+        },
+        "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
+        "date_interval": "days",
+        "opacity": 0.7,
+        "legend_text": "Rainfall anomaly based on long term averaged from local station data from INAM blended with CHIRP rainfall estimates",
+        "legend": [
+            {
+                "value": 0,
+                "label": "< 50%",
+                "color": "#8c4800"
+            },
+            {
+                "value": 50,
+                "label": "50-60%",
+                "color": "#af6b27"
+            },
+            {
+                "value": 60,
+                "label": "60-70%",
+                "color": "#d58c3e"
+            },
+            {
+                "value": 70,
+                "label": "70-80%",
+                "color": "#eaa83d"
+            },
+            {
+                "value": 80,
+                "label": "80-90%",
+                "color": "#f5c878"
+            },
+            {
+                "value": 90,
+                "label": "90-95%",
+                "color": "#fff0c4"
+            },
+            {
+                "value": 95,
+                "label": "95-105%",
+                "color": "#fafafa"
+            },
+            {
+                "value": 105,
+                "label": "105-110%",
+                "color": "#befafa"
+            },
+            {
+                "value": 110,
+                "label": "110-120%",
+                "color": "#78e2f0"
+            },
+            {
+                "value": 120,
+                "label": "120-130%",
+                "color": "#00b9de"
+            },
+            {
+                "value": 130,
+                "label": "130-150%",
+                "color": "#0083f3"
+            },
+            {
+                "value": 150,
+                "label": "150-170%",
+                "color": "#0052cd"
+            },
+            {
+                "value": 170,
+                "label": "170-200%",
+                "color": "#0000c8"
+            },
+            {
+                "value": 200,
+                "label": "> 200%",
+                "color": "#a002fa"
+            }
+        ],
+        "download": true
+    },
+    "precip_blended_1y": {
+        "title": "Blended rainfall aggregate (1-year)",
+        "type": "wms",
+        "server_layer_name": "rfb_blended_moz_dekad",
+        "additional_query_params": {
+            "styles": "ryb_blended"
+        },
+        "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
+        "date_interval": "days",
+        "opacity": 0.7,
+        "legend_text": "Local station data from INAM blended with CHIRP rainfall estimates",
+        "legend": [
+            {
+                "value": 0,
+                "label": "0 mm",
+                "color": "#fafafa"
+            },
+            {
+                "value": 0.01,
+                "label": "1-10 mm",
+                "color": "#fffadf"
+            },
+            {
+                "value": 10,
+                "label": "10-50 mm",
+                "color": "#d3f9d0"
+            },
+            {
+                "value": 50,
+                "label": "50-100 mm",
+                "color": "#a9e4a3"
+            },
+            {
+                "value": 100,
+                "label": "100-200 mm",
+                "color": "#7cc594"
+            },
+            {
+                "value": 200,
+                "label": "200-400 mm",
+                "color": "#5eab91"
+            },
+            {
+                "value": 400,
+                "label": "400-600 mm",
+                "color": "#9fffe8"
+            },
+            {
+                "value": 600,
+                "label": "600-800 mm",
+                "color": "#90e0ef"
+            },
+            {
+                "value": 800,
+                "label": "800-1000 mm",
+                "color": "#00b1de"
+            },
+            {
+                "value": 1000,
+                "label": "1000-1200 mm",
+                "color": "#0083f3"
+            },
+            {
+                "value": 1200,
+                "label": "1200-1400 mm",
+                "color": "#0052cd"
+            },
+            {
+                "value": 1400,
+                "label": "1400-1600 mm",
+                "color": "#0000c8"
+            },
+            {
+                "value": 1600,
+                "label": "1600-1800 mm",
+                "color": "#6003b8"
+            },
+            {
+                "value": 1800,
+                "label": "1800-2000 mm",
+                "color": "#a002fa"
+            },
+            {
+                "value": 2000,
+                "label": "2000-2400 mm",
+                "color": "#fa78fa"
+            },
+            {
+                "value": 2400,
+                "label": "> 2400 mm",
+                "color": "#ffc4ee"
+            }
+        ],
+        "download": true
+    },
+    "precip_blended_anomaly_1y": {
+        "title": "Blended rainfall anomaly (1-year)",
+        "type": "wms",
+        "server_layer_name": "rfq_blended_moz_dekad",
+        "additional_query_params": {
+            "styles": "ryq_blended"
+        },
+        "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
+        "date_interval": "days",
+        "opacity": 0.7,
+        "legend_text": "Rainfall anomaly based on long term averaged from local station data from INAM blended with CHIRP rainfall estimates",
+        "legend": [
+            {
+                "value": 0,
+                "label": "< 50%",
+                "color": "#8c4800"
+            },
+            {
+                "value": 50,
+                "label": "50-60%",
+                "color": "#af6b27"
+            },
+            {
+                "value": 60,
+                "label": "60-70%",
+                "color": "#d58c3e"
+            },
+            {
+                "value": 70,
+                "label": "70-80%",
+                "color": "#eaa83d"
+            },
+            {
+                "value": 80,
+                "label": "80-90%",
+                "color": "#f5c878"
+            },
+            {
+                "value": 90,
+                "label": "90-95%",
+                "color": "#fff0c4"
+            },
+            {
+                "value": 95,
+                "label": "95-105%",
+                "color": "#fafafa"
+            },
+            {
+                "value": 105,
+                "label": "105-110%",
+                "color": "#befafa"
+            },
+            {
+                "value": 110,
+                "label": "110-120%",
+                "color": "#78e2f0"
+            },
+            {
+                "value": 120,
+                "label": "120-130%",
+                "color": "#00b9de"
+            },
+            {
+                "value": 130,
+                "label": "130-150%",
+                "color": "#0083f3"
+            },
+            {
+                "value": 150,
+                "label": "150-170%",
+                "color": "#0052cd"
+            },
+            {
+                "value": 170,
+                "label": "170-200%",
+                "color": "#0000c8"
+            },
+            {
+                "value": 200,
+                "label": "> 200%",
+                "color": "#a002fa"
+            }
+        ],
+        "download": true
+    },
+    "rainfall_dekad": {
+        "title": "CHIRPS 10-day rainfall estimate (mm)",
+        "chart_data": {
+            "fields": [
+                {
+                    "key": "rfh",
+                    "label": "Rainfall",
+                    "color": "#233f5f"
+                },
+                {
+                    "key": "rfh_avg",
+                    "label": "Average",
+                    "color": "#bdf2e6"
+                }
+            ],
+            "levels": [
+                {
+                    "level": "1",
+                    "id": "dataviz_adm1_id",
+                    "name": "adm1_name"
+                },
+                {
+                    "level": "2",
+                    "id": "dataviz_adm2_id",
+                    "name": "adm2_name"
+                }
+            ],
+            "type": "bar"
+        },
+        "download": true
+    },
+    "rain_anomaly_dekad": {
+        "title": "CHIRPS 10-day rainfall anomaly",
+        "chart_data": {
+            "fields": [
+                {
+                    "key": "rfq",
+                    "label": "Rainfall anomaly",
+                    "color": "#375692",
+                    "minValue": 0,
+                    "maxValue": 300
+                },
+                {
+                    "key": "rfq_avg",
+                    "label": "Normal",
+                    "fallback": 100,
+                    "pointRadius": 0,
+                    "color": "#eb3223"
+                }
+            ],
+            "levels": [
+                {
+                    "level": "1",
+                    "id": "dataviz_adm1_id",
+                    "name": "adm1_name"
+                },
+                {
+                    "level": "2",
+                    "id": "dataviz_adm2_id",
+                    "name": "adm2_name"
+                }
+            ],
+            "type": "line"
+        },
+        "download": true
+    },
+    "rainfall_daily": {
+        "title": "CHIRPS daily rainfall estimate (mm)",
+        "download": true
+    },
+    "rainfall_agg_1month": {
+        "title": "CHIRPS 1-month rainfall aggregate",
+        "chart_data": {
+            "fields": [
+                {
+                    "key": "r1h",
+                    "label": "Rainfall",
+                    "color": "#233f5f"
+                },
+                {
+                    "key": "r1h_avg",
+                    "label": "Average",
+                    "color": "#bdf2e6"
+                }
+            ],
+            "levels": [
+                {
+                    "level": "1",
+                    "id": "dataviz_adm1_id",
+                    "name": "adm1_name"
+                },
+                {
+                    "level": "2",
+                    "id": "dataviz_adm2_id",
+                    "name": "adm2_name"
+                }
+            ],
+            "type": "bar"
+        },
+        "download": true
+    },
+    "rain_anomaly_1month": {
+        "title": "CHIRPS 1-month rainfall anomaly",
+        "chart_data": {
+            "fields": [
+                {
+                    "key": "r1q",
+                    "label": "Rainfall anomaly",
+                    "minValue": 0,
+                    "maxValue": 300,
+                    "color": "#375692"
+                },
+                {
+                    "key": "rfq_avg",
+                    "label": "Normal",
+                    "fallback": 100,
+                    "pointRadius": 0,
+                    "color": "#eb3223"
+                }
+            ],
+            "levels": [
+                {
+                    "level": "1",
+                    "id": "dataviz_adm1_id",
+                    "name": "adm1_name"
+                },
+                {
+                    "level": "2",
+                    "id": "dataviz_adm2_id",
+                    "name": "adm2_name"
+                }
+            ],
+            "type": "line"
+        },
+        "download": true
+    },
+    "rainfall_agg_3month": {
+        "title": "CHIRPS 3-month rainfall aggregate (mm)",
+        "chart_data": {
+            "fields": [
+                {
+                    "key": "r3h",
+                    "label": "Rainfall",
+                    "color": "#233f5f"
+                },
+                {
+                    "key": "r3h_avg",
+                    "label": "Average",
+                    "color": "#bdf2e6"
+                }
+            ],
+            "levels": [
+                {
+                    "level": "1",
+                    "id": "dataviz_adm1_id",
+                    "name": "adm1_name"
+                },
+                {
+                    "level": "2",
+                    "id": "dataviz_adm2_id",
+                    "name": "adm2_name"
+                }
+            ],
+            "type": "bar"
+        },
+        "download": true
+    },
+    "rain_anomaly_3month": {
+        "title": "CHIRPS 3-month rainfall anomaly",
+        "chart_data": {
+            "fields": [
+                {
+                    "key": "r3q",
+                    "label": "Rainfall anomaly",
+                    "minValue": 0,
+                    "maxValue": 300,
+                    "color": "#375692"
+                },
+                {
+                    "key": "rfq_avg",
+                    "label": "Normal",
+                    "fallback": 100,
+                    "pointRadius": 0,
+                    "color": "#eb3223"
+                }
+            ],
+            "levels": [
+                {
+                    "level": "1",
+                    "id": "dataviz_adm1_id",
+                    "name": "adm1_name"
+                },
+                {
+                    "level": "2",
+                    "id": "dataviz_adm2_id",
+                    "name": "adm2_name"
+                }
+            ],
+            "type": "line"
+        },
+        "download": true
+    },
+    "rainfall_agg_6month": {
+        "title": "CHIRPS 6-month rainfall aggregate (mm)",
+        "download": true
+    },
+    "rain_anomaly_6month": {
+        "title": "CHIRPS 6-month rainfall anomaly",
+        "download": true
+    },
+    "rainfall_agg_9month": {
+        "title": "CHIRPS 9-month rainfall aggregate (mm)",
+        "download": true
+    },
+    "rain_anomaly_9month": {
+        "title": "CHIRPS 9-month rainfall anomaly",
+        "download": true
+    },
+    "rainfall_agg_1year": {
+        "title": "CHIRPS 1-year rainfall aggregate (mm)",
+        "download": true
+    },
+    "rain_anomaly_1year": {
+        "title": "CHIRPS 1-year rainfall anomaly",
+        "download": true
+    },
+    "ndvi_dekad": {
+        "chart_data": {
+            "fields": [
+                {
+                    "key": "vim",
+                    "label": "NDVI",
+                    "color": "#4eac5b"
+                },
+                {
+                    "key": "vim_avg",
+                    "label": "Average",
+                    "color": "#99ff99"
+                }
+            ],
+            "levels": [
+                {
+                    "level": "1",
+                    "id": "dataviz_adm1_id",
+                    "name": "adm1_name"
+                },
+                {
+                    "level": "2",
+                    "id": "dataviz_adm2_id",
+                    "name": "adm2_name"
+                }
+            ],
+            "type": "line"
+        },
+        "download": true
+    },
+    "ndvi_dekad_anomaly": {
+        "chart_data": {
+            "fields": [
+                {
+                    "key": "viq",
+                    "label": "NDVI anomaly",
+                    "minValue": 0,
+                    "maxValue": 150,
+                    "color": "#5e803f"
+                },
+                {
+                    "key": "viq_avg",
+                    "label": "Normal",
+                    "color": "#eb3223",
+                    "pointRadius": 0,
+                    "fallback": 100
+                }
+            ],
+            "levels": [
+                {
+                    "level": "1",
+                    "id": "dataviz_adm1_id",
+                    "name": "adm1_name"
+                },
+                {
+                    "level": "2",
+                    "id": "dataviz_adm2_id",
+                    "name": "adm2_name"
+                }
+            ],
+            "type": "line"
+        },
+        "download": true
+    },
+    "lst_daytime_blended": {
+        "title": "INAM mean maximum air temperature (10-day)",
+        "type": "wms",
+        "server_layer_name": "myd11a2_blended_txb_moz_dekad",
+        "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
+        "date_interval": "days",
+        "wcsConfig": {
+            "scale": 0.02,
+            "offset": -273,
+            "pixelResolution": 64
+        },
+        "opacity": 0.7,
+        "legend_text": "Local station data from INAM blended with MODIS daytime land surface temperature estimates",
+        "legend": "tair_42_n24_70",
+        "additional_query_params": {
+            "styles": "tair_42_n24_70"
+        },
+        "download": true
+    },
+    "lst_day_anomaly_blended": {
+        "title": "INAM mean maximum air temperature anomaly (10-day)",
+        "type": "wms",
+        "server_layer_name": "myd11a2_blended_txd_moz_dekad",
+        "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
+        "date_interval": "days",
+        "opacity": 0.7,
+        "legend_text": "Temperature anomaly based on long term average compared to local station data from INAM blended with MODIS daytime land surface temperature estimates",
+        "legend": "txd_tud_21_m12_12",
+        "additional_query_params": {
+            "styles": "txd_tud_21_m12_12"
+        },
+        "download": true
+    },
+    "spi_blended_1m": {
+        "title": "INAM SPI - 1-month",
+        "type": "wms",
+        "server_layer_name": "rxs_blended_moz_dekad",
+        "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
+        "date_interval": "days",
+        "wcsConfig": {
+            "scale": 0.001,
+            "offset": 0,
+            "pixelResolution": 64
+        },
+        "opacity": 0.7,
+        "legend_text": "1-month Standardized Precipitation Index calculated from INAM / CHIRP blended data",
+        "legend": "spi",
+        "additional_query_params": {
+            "styles": "r1s_blended"
+        },
+        "download": true
+    },
+    "spi_blended_2m": {
+        "title": "INAM SPI - 2-month",
+        "type": "wms",
+        "server_layer_name": "rxs_blended_moz_dekad",
+        "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
+        "date_interval": "days",
+        "wcsConfig": {
+            "scale": 0.001,
+            "offset": 0,
+            "pixelResolution": 64
+        },
+        "opacity": 0.7,
+        "legend_text": "2-month Standardized Precipitation Index calculated from INAM / CHIRP blended data",
+        "legend": "spi",
+        "additional_query_params": {
+            "styles": "r2s_blended"
+        },
+        "download": true
+    },
+    "spi_blended_3m": {
+        "title": "INAM SPI - 3-month",
+        "type": "wms",
+        "server_layer_name": "rxs_blended_moz_dekad",
+        "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
+        "date_interval": "days",
+        "wcsConfig": {
+            "scale": 0.001,
+            "offset": 0,
+            "pixelResolution": 64
+        },
+        "opacity": 0.7,
+        "legend_text": "3-month Standardized Precipitation Index calculated from INAM / CHIRP blended data",
+        "legend": "spi",
+        "additional_query_params": {
+            "styles": "r3s_blended"
+        },
+        "download": true
+    },
+    "spi_blended_6m": {
+        "title": "INAM SPI - 6-month",
+        "type": "wms",
+        "server_layer_name": "rxs_blended_moz_dekad",
+        "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
+        "date_interval": "days",
+        "wcsConfig": {
+            "scale": 0.001,
+            "offset": 0,
+            "pixelResolution": 64
+        },
+        "opacity": 0.7,
+        "legend_text": "6-month Standardized Precipitation Index calculated from INAM / CHIRP blended data",
+        "legend": "spi",
+        "additional_query_params": {
+            "styles": "r6s_blended"
+        },
+        "download": true
+    },
+    "spi_blended_9m": {
+        "title": "INAM SPI - 9-month",
+        "type": "wms",
+        "server_layer_name": "rxs_blended_moz_dekad",
+        "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
+        "date_interval": "days",
+        "wcsConfig": {
+            "scale": 0.001,
+            "offset": 0,
+            "pixelResolution": 64
+        },
+        "opacity": 0.7,
+        "legend_text": "9-month Standardized Precipitation Index calculated from INAM / CHIRP blended data",
+        "legend": "spi",
+        "additional_query_params": {
+            "styles": "r9s_blended"
+        },
+        "download": true
+    },
+    "spi_blended_1y": {
+        "title": "INAM SPI - 1-year",
+        "type": "wms",
+        "server_layer_name": "rxs_blended_moz_dekad",
+        "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
+        "date_interval": "days",
+        "wcsConfig": {
+            "scale": 0.001,
+            "offset": 0,
+            "pixelResolution": 64
+        },
+        "opacity": 0.7,
+        "legend_text": "1-year Standardized Precipitation Index calculated from INAM / CHIRP blended data",
+        "legend": "spi",
+        "additional_query_params": {
+            "styles": "rys_blended"
+        },
+        "download": true
+    },
+    "spi_blended_2y": {
+        "title": "INAM SPI - 2-year",
+        "type": "wms",
+        "server_layer_name": "rxs_blended_moz_dekad",
+        "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
+        "date_interval": "days",
+        "wcsConfig": {
+            "scale": 0.001,
+            "offset": 0,
+            "pixelResolution": 64
+        },
+        "opacity": 0.7,
+        "legend_text": "2-year Standardized Precipitation Index calculated from INAM / CHIRP blended data",
+        "legend": "spi",
+        "additional_query_params": {
+            "styles": "rds_blended"
+        },
+        "download": true
+    },
+    "spi_blended_3y": {
+        "title": "INAM SPI - 3-year",
+        "type": "wms",
+        "server_layer_name": "rxs_blended_moz_dekad",
+        "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
+        "date_interval": "days",
+        "wcsConfig": {
+            "scale": 0.001,
+            "offset": 0,
+            "pixelResolution": 64
+        },
+        "opacity": 0.7,
+        "legend_text": "3-year Standardized Precipitation Index calculated from INAM / CHIRP blended data",
+        "legend": "spi",
+        "additional_query_params": {
+            "styles": "rhs_blended"
+        },
+        "download": true
+    },
+    "spi_blended_5y": {
+        "title": "INAM SPI - 5-year",
+        "type": "wms",
+        "server_layer_name": "rxs_blended_moz_dekad",
+        "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
+        "date_interval": "days",
+        "wcsConfig": {
+            "scale": 0.001,
+            "offset": 0,
+            "pixelResolution": 64
+        },
+        "opacity": 0.7,
+        "legend_text": "5-year Standardized Precipitation Index calculated from INAM / CHIRP blended data",
+        "legend": "spi",
+        "additional_query_params": {
+            "styles": "rps_blended"
+        },
+        "download": true
+    },
+    "adamts_buffers": {
+        "server_layer_name": "moz_gdacs_buffers",
+        "download": true
+    },
+    "ipc_phase_2024": {
+        "title": "IPC Phase Classification April to September 2024",
+        "type": "admin_level_data",
+        "path": "data/mozambique/ipc/ipc-2024-v2.json",
+        "boundary": "admin2_boundaries",
+        "admin_level": 2,
+        "data_field": "ph_class",
+        "admin_code": "adm2_source_id",
+        "opacity": 0.9,
+        "legend": [
+            {
+                "value": 1,
+                "label": "Phase 1 - None / minimal",
+                "color": "#c6ffc7"
+            },
+            {
+                "value": 2,
+                "label": "Phase 2 - Stressed",
+                "color": "#ffe718"
+            },
+            {
+                "value": 3,
+                "label": "Phase 3 - Crisis",
+                "color": "#e88400"
+            },
+            {
+                "value": 4,
+                "label": "Phase 4 - Emergency",
+                "color": "#e02d00"
+            },
+            {
+                "value": 5,
+                "label": "Phase 5 - Disaster / famine",
+                "color": "#5e0803"
+            }
+        ],
+        "legend_text": "IPC Phase Classification for April - September 2024. Source: National IPC Technical Working Group",
+        "download": true
+    },
+    "ipc_phase_projection_2024_2025": {
+        "title": "IPC Phase Classification Projection October 2024 to March 2025",
+        "type": "admin_level_data",
+        "path": "data/mozambique/ipc/ipc-2024.json",
+        "boundary": "admin2_boundaries",
+        "admin_level": 2,
+        "data_field": "act_040924",
+        "admin_code": "adm2_source_id",
+        "opacity": 0.9,
+        "legend": [
+            {
+                "value": 1,
+                "label": "Phase 1 - None / minimal",
+                "color": "#c6ffc7"
+            },
+            {
+                "value": 2,
+                "label": "Phase 2 - Stressed",
+                "color": "#ffe718"
+            },
+            {
+                "value": 3,
+                "label": "Phase 3 - Crisis",
+                "color": "#e88400"
+            },
+            {
+                "value": 4,
+                "label": "Phase 4 - Emergency",
+                "color": "#e02d00"
+            },
+            {
+                "value": 5,
+                "label": "Phase 5 - Disaster / famine",
+                "color": "#5e0803"
+            }
+        ],
+        "legend_text": "IPC Phase Classification Projection October 2024 to March 2025. Source: National IPC Technical Working Group",
+        "download": true
+    },
+    "ipc_phase_projection_2024_2025_v2": {
+        "title": "IPC Phase Classification Projection October 2024 to March 2025",
+        "type": "admin_level_data",
+        "path": "data/mozambique/ipc/ipc-2025-projection-as-of-2024-09.json",
+        "boundary": "admin2_boundaries",
+        "admin_level": 2,
+        "data_field": "ph_class",
+        "admin_code": "adm2_source_id",
+        "opacity": 0.9,
+        "legend": [
+            {
+                "value": 1,
+                "label": "Phase 1 - None / minimal",
+                "color": "#c6ffc7"
+            },
+            {
+                "value": 2,
+                "label": "Phase 2 - Stressed",
+                "color": "#ffe718"
+            },
+            {
+                "value": 3,
+                "label": "Phase 3 - Crisis",
+                "color": "#e88400"
+            },
+            {
+                "value": 4,
+                "label": "Phase 4 - Emergency",
+                "color": "#e02d00"
+            },
+            {
+                "value": 5,
+                "label": "Phase 5 - Disaster / famine",
+                "color": "#5e0803"
+            }
+        ],
+        "legend_text": "IPC Phase Classification Projection October 2024 to March 2025. Source: National IPC Technical Working Group",
+        "download": true
+    },
+    "ipc_phase_2022": {
+        "title": "IPC Phase Classification 2022",
+        "type": "admin_level_data",
+        "path": "data/mozambique/ipc/ipc-2022.json",
+        "boundary": "admin2_boundaries",
+        "admin_level": 2,
+        "data_field": "ipcphase",
+        "admin_code": "adm2_source_id",
+        "opacity": 0.9,
+        "legend": [
+            {
+                "value": 1,
+                "label": "Phase 1 - None / minimal",
+                "color": "#c6ffc7"
+            },
+            {
+                "value": 2,
+                "label": "Phase 2 - Stressed",
+                "color": "#ffe718"
+            },
+            {
+                "value": 3,
+                "label": "Phase 3 - Crisis",
+                "color": "#e88400"
+            },
+            {
+                "value": 4,
+                "label": "Phase 4 - Emergency",
+                "color": "#e02d00"
+            },
+            {
+                "value": 5,
+                "label": "Phase 5 - Disaster / famine",
+                "color": "#5e0803"
+            }
+        ],
+        "legend_text": "IPC Phase Classification 2022. Source: National IPC Technical Working Group",
+        "download": true
+    },
+    "ipc_phase_2023": {
+        "title": "IPC Phase Classification 2023",
+        "type": "admin_level_data",
+        "path": "data/mozambique/ipc/ipc-2023.json",
+        "boundary": "admin2_boundaries",
+        "admin_level": 2,
+        "data_field": "ipcphase",
+        "admin_code": "adm2_source_id",
+        "opacity": 0.9,
+        "legend": [
+            {
+                "value": 1,
+                "label": "Phase 1 - None / minimal",
+                "color": "#c6ffc7"
+            },
+            {
+                "value": 2,
+                "label": "Phase 2 - Stressed",
+                "color": "#ffe718"
+            },
+            {
+                "value": 3,
+                "label": "Phase 3 - Crisis",
+                "color": "#e88400"
+            },
+            {
+                "value": 4,
+                "label": "Phase 4 - Emergency",
+                "color": "#e02d00"
+            },
+            {
+                "value": 5,
+                "label": "Phase 5 - Disaster / famine",
+                "color": "#5e0803"
+            }
+        ],
+        "legend_text": "IPC Phase Classification 2023. Source: National IPC Technical Working Group",
+        "download": true
+    },
+    "ipc_pop_ph3_2022": {
+        "title": "Number of people in IPC Phase 3+ (2022)",
+        "type": "admin_level_data",
+        "path": "data/mozambique/ipc/ipc-2022.json",
+        "data_field": "ph3plus",
+        "boundary": "admin2_boundaries",
+        "admin_level": 2,
+        "admin_code": "adm2_source_id",
+        "opacity": 0.9,
+        "legend": [
+            {
+                "value": 0,
+                "label": "0",
+                "color": "#e7e7e7"
+            },
+            {
+                "value": 1,
+                "label": "< 10,000",
+                "color": "#fee5d9"
+            },
+            {
+                "value": 10000,
+                "label": "10,000 - 19,999",
+                "color": "#fcae91"
+            },
+            {
+                "value": 20000,
+                "label": "20,000 - 29,999",
+                "color": "#fb6a4a"
+            },
+            {
+                "value": 30000,
+                "label": "30,000 - 39,999",
+                "color": "#de2d26"
+            },
+            {
+                "value": 40000,
+                "label": ">= 40,000",
+                "color": "#a50f15"
+            }
+        ],
+        "legend_text": "Number of people in IPC phase 3 or higher 2022. Source: National IPC Technical Working Group",
+        "download": true
+    },
+    "ipc_pop_ph3_2023": {
+        "title": "Number of people in IPC Phase 3+ (2023)",
+        "type": "admin_level_data",
+        "path": "data/mozambique/ipc/ipc-2023.json",
+        "data_field": "ph3plus",
+        "boundary": "admin2_boundaries",
+        "admin_level": 2,
+        "admin_code": "adm2_source_id",
+        "opacity": 0.9,
+        "legend": [
+            {
+                "value": 0,
+                "label": "0",
+                "color": "#e7e7e7"
+            },
+            {
+                "value": 1,
+                "label": "< 10,000",
+                "color": "#fee5d9"
+            },
+            {
+                "value": 10000,
+                "label": "10,000 - 19,999",
+                "color": "#fcae91"
+            },
+            {
+                "value": 20000,
+                "label": "20,000 - 29,999",
+                "color": "#fb6a4a"
+            },
+            {
+                "value": 30000,
+                "label": "30,000 - 39,999",
+                "color": "#de2d26"
+            },
+            {
+                "value": 40000,
+                "label": ">= 40,000",
+                "color": "#a50f15"
+            }
+        ],
+        "legend_text": "Number of people in IPC phase 3 or higher 2023. Source: National IPC Technical Working Group",
+        "download": true
+    },
+    "ipc_perc_ph3_2022": {
+        "title": "Percent of people in IPC Phase 3+ (2022)",
+        "type": "admin_level_data",
+        "path": "data/mozambique/ipc/ipc-2022.json",
+        "data_field": "ph3ps_p",
+        "boundary": "admin2_boundaries",
+        "admin_level": 2,
+        "admin_code": "adm2_source_id",
+        "opacity": 0.9,
+        "legend": [
+            {
+                "value": 0,
+                "label": "0",
+                "color": "#f7f7f7"
+            },
+            {
+                "value": 1,
+                "label": "< 10%",
+                "color": "#fee5d9"
+            },
+            {
+                "value": 10,
+                "label": "10 - 19%",
+                "color": "#fcae91"
+            },
+            {
+                "value": 20,
+                "label": "20 - 29%",
+                "color": "#fb6a4a"
+            },
+            {
+                "value": 30,
+                "label": "30 - 39%",
+                "color": "#de2d26"
+            },
+            {
+                "value": 40,
+                "label": ">= 40%",
+                "color": "#a50f15"
+            }
+        ],
+        "legend_text": "Percent of people in IPC phase 3 or higher 2022. Source: National IPC Technical Working Group",
+        "download": true
+    },
+    "ipc_perc_ph3_2023": {
+        "title": "Percent of people in IPC Phase 3+ (2023)",
+        "type": "admin_level_data",
+        "path": "data/mozambique/ipc/ipc-2023.json",
+        "data_field": "ph3ps_p",
+        "boundary": "admin2_boundaries",
+        "admin_level": 2,
+        "admin_code": "adm2_source_id",
+        "opacity": 0.9,
+        "legend": [
+            {
+                "value": 0,
+                "label": "0",
+                "color": "#f7f7f7"
+            },
+            {
+                "value": 1,
+                "label": "< 10%",
+                "color": "#fee5d9"
+            },
+            {
+                "value": 10,
+                "label": "10 - 19%",
+                "color": "#fcae91"
+            },
+            {
+                "value": 20,
+                "label": "20 - 29%",
+                "color": "#fb6a4a"
+            },
+            {
+                "value": 30,
+                "label": "30 - 39%",
+                "color": "#de2d26"
+            },
+            {
+                "value": 40,
+                "label": ">= 40%",
+                "color": "#a50f15"
+            }
+        ],
+        "legend_text": "Percent of people in IPC phase 3 or higher 2023. Source: National IPC Technical Working Group",
+        "download": true
+    },
+    "ipc_pop_ph4_2022": {
+        "title": "Number of people in IPC Phase 4 (2022)",
+        "type": "admin_level_data",
+        "path": "data/mozambique/ipc/ipc-2022.json",
+        "data_field": "ph4",
+        "boundary": "admin2_boundaries",
+        "admin_level": 2,
+        "admin_code": "adm2_source_id",
+        "opacity": 0.9,
+        "legend": [
+            {
+                "value": 0,
+                "label": "0",
+                "color": "#e7e7e7"
+            },
+            {
+                "value": 1,
+                "label": "< 5,000",
+                "color": "#fee5d9"
+            },
+            {
+                "value": 5000,
+                "label": "5,000 - 9,999",
+                "color": "#fcae91"
+            },
+            {
+                "value": 10000,
+                "label": "10,000 - 14,999",
+                "color": "#fb6a4a"
+            },
+            {
+                "value": 15000,
+                "label": "15,000 - 19,999",
+                "color": "#de2d26"
+            },
+            {
+                "value": 20000,
+                "label": ">= 20,000",
+                "color": "#a50f15"
+            }
+        ],
+        "legend_text": "Number of people in IPC phase 4 2022. Source: National IPC Technical Working Group",
+        "download": true
+    },
+    "ipc_pop_ph4_2023": {
+        "title": "Number of people in IPC Phase 4 (2023)",
+        "type": "admin_level_data",
+        "path": "data/mozambique/ipc/ipc-2023.json",
+        "data_field": "ph4",
+        "boundary": "admin2_boundaries",
+        "admin_level": 2,
+        "admin_code": "adm2_source_id",
+        "opacity": 0.9,
+        "legend": [
+            {
+                "value": 0,
+                "label": "0",
+                "color": "#e7e7e7"
+            },
+            {
+                "value": 1,
+                "label": "< 5,000",
+                "color": "#fee5d9"
+            },
+            {
+                "value": 5000,
+                "label": "5,000 - 9,999",
+                "color": "#fcae91"
+            },
+            {
+                "value": 10000,
+                "label": "10,000 - 14,999",
+                "color": "#fb6a4a"
+            },
+            {
+                "value": 15000,
+                "label": "15,000 - 19,999",
+                "color": "#de2d26"
+            },
+            {
+                "value": 20000,
+                "label": ">= 20,000",
+                "color": "#a50f15"
+            }
+        ],
+        "legend_text": "Number of people in IPC phase 4 2023. Source: National IPC Technical Working Group",
+        "download": true
+    },
+    "ipc_perc_ph4_2022": {
+        "title": "Percent of people in IPC Phase 4 (2022)",
+        "type": "admin_level_data",
+        "path": "data/mozambique/ipc/ipc-2022.json",
+        "data_field": "ph4_perc",
+        "boundary": "admin2_boundaries",
+        "admin_level": 2,
+        "admin_code": "adm2_source_id",
+        "opacity": 0.9,
+        "legend": [
+            {
+                "value": 0,
+                "label": "0",
+                "color": "#f7f7f7"
+            },
+            {
+                "value": 1,
+                "label": "< 5%",
+                "color": "#fee5d9"
+            },
+            {
+                "value": 6,
+                "label": "6 - 9%",
+                "color": "#fcae91"
+            },
+            {
+                "value": 10,
+                "label": "10 - 14%",
+                "color": "#fb6a4a"
+            },
+            {
+                "value": 15,
+                "label": "15 - 19%",
+                "color": "#de2d26"
+            },
+            {
+                "value": 20,
+                "label": ">= 20%",
+                "color": "#a50f15"
+            }
+        ],
+        "legend_text": "Percent of people in IPC phase 4 2022. Source: National IPC Technical Working Group",
+        "download": true
+    },
+    "ipc_perc_ph4_2023": {
+        "title": "Percent of people in IPC Phase 4 (2023)",
+        "type": "admin_level_data",
+        "path": "data/mozambique/ipc/ipc-2023.json",
+        "data_field": "ph4_perc",
+        "boundary": "admin2_boundaries",
+        "admin_level": 2,
+        "admin_code": "adm2_source_id",
+        "opacity": 0.9,
+        "legend": [
+            {
+                "value": 0,
+                "label": "0",
+                "color": "#f7f7f7"
+            },
+            {
+                "value": 1,
+                "label": "< 5%",
+                "color": "#fee5d9"
+            },
+            {
+                "value": 6,
+                "label": "6 - 9%",
+                "color": "#fcae91"
+            },
+            {
+                "value": 10,
+                "label": "10 - 14%",
+                "color": "#fb6a4a"
+            },
+            {
+                "value": 15,
+                "label": "15 - 19%",
+                "color": "#de2d26"
+            },
+            {
+                "value": 20,
+                "label": ">= 20%",
+                "color": "#a50f15"
+            }
+        ],
+        "legend_text": "Percent of people in IPC phase 4 2023. Source: National IPC Technical Working Group",
+        "download": true
+    },
+    "mpi": {
+        "title": "Multidimensional Poverty Index",
+        "type": "admin_level_data",
+        "boundary": "admin1_boundaries",
+        "path": "data/mozambique/moz-mpi-2020.json",
+        "data_field": "mpi",
+        "admin_level": 1,
+        "admin_code": "ADM1_PCODE",
+        "opacity": 0.7,
+        "feature_info_props": {
+            "mpi_headcount": {
+                "type": "number",
+                "dataTitle": "Percent of the population in multidimensional poverty"
+            },
+            "mpi_intensity": {
+                "type": "number",
+                "dataTitle": "Intensity of deprivation among the poor"
+            },
+            "vuln_poverty": {
+                "type": "number",
+                "dataTitle": "Vulnerable to poverty"
+            },
+            "severe_poverty": {
+                "type": "number",
+                "dataTitle": "In severe poverty"
+            }
+        },
+        "legend": [
+            {
+                "value": "0 - 0.3",
+                "color": "#fee5d9"
+            },
+            {
+                "value": "0.31 - 0.4",
+                "color": "#fcae91"
+            },
+            {
+                "value": "0.41 - 0.5",
+                "color": "#fb6a4a"
+            },
+            {
+                "value": "0.51 - 0.6",
+                "color": "#de2d26"
+            },
+            {
+                "value": "0.61 or more",
+                "color": "#a50f15"
+            }
+        ],
+        "legend_text": "Multidimensional Poverty Index. Source: Alkire, S., Kanagaratnam, U. and Suppa, N. (2020). \u2018The Global Multidimensional Poverty Index (MPI) 2020\u2019, OPHI MPI",
+        "download": true
+    },
+    "census": {
+        "title": "Total population",
+        "type": "admin_level_data",
+        "path": "data/mozambique/moz-pop-projc-2022-INE.json",
+        "data_field": "2022_Tot",
+        "boundary": "admin2_boundaries",
+        "admin_level": 2,
+        "admin_code": "adm2_source_id",
+        "opacity": 0.7,
+        "feature_info_props": {
+            "Tot_Urb_20": {
+                "type": "text",
+                "dataTitle": "Total urban population"
+            },
+            "2022_Rur_T": {
+                "type": "number",
+                "dataTitle": "Total rural population"
+            }
+        },
+        "legend": [
+            {
+                "value": 1,
+                "label": "< 50,000",
+                "color": "#eff3ff"
+            },
+            {
+                "value": 50000,
+                "label": "50,000 - 100,000",
+                "color": "#bdd7e7"
+            },
+            {
+                "value": 100000,
+                "label": "100,000 - 250,000",
+                "color": "#6baed6"
+            },
+            {
+                "value": 250000,
+                "label": "250,000 - 500,000",
+                "color": "#3182bd"
+            },
+            {
+                "value": 500000,
+                "label": "> 500,000",
+                "color": "#08519c"
+            }
+        ],
+        "legend_text": "Projected 2022 population data. Source: INE",
+        "download": true
+    },
+    "pop_proj_2025": {
+        "title": "Population projection 2025",
+        "type": "admin_level_data",
+        "path": "data/mozambique/moz-pop-projc-2025-INE.json",
+        "data_field": "2025_Tot",
+        "boundary": "admin2_boundaries",
+        "admin_level": 2,
+        "admin_code": "adm2_source_id",
+        "opacity": 0.7,
+        "feature_info_props": {
+            "Tot_Urb_20": {
+                "type": "text",
+                "dataTitle": "Total urban population"
+            },
+            "2025_Rur_T": {
+                "type": "number",
+                "dataTitle": "Total rural population"
+            }
+        },
+        "legend": [
+            {
+                "value": 1,
+                "label": "< 50,000",
+                "color": "#eff3ff"
+            },
+            {
+                "value": 50000,
+                "label": "50,000 - 100,000",
+                "color": "#bdd7e7"
+            },
+            {
+                "value": 100000,
+                "label": "100,000 - 250,000",
+                "color": "#6baed6"
+            },
+            {
+                "value": 250000,
+                "label": "250,000 - 500,000",
+                "color": "#3182bd"
+            },
+            {
+                "value": 500000,
+                "label": "> 500,000",
+                "color": "#08519c"
+            }
+        ],
+        "legend_text": "Projected 2025 population data. Source: INE",
+        "download": true
+    },
+    "cdi": {
+        "title": "Combined Drought Index",
+        "type": "composite",
+        "period": "monthly",
+        "base_url": "https://hip-service.ovio.org/q_multi_geojson",
+        "validity": {
+            "forward": 1,
+            "backward": 2,
+            "mode": "dekad"
+        },
+        "input_layers": [
+            {
+                "id": "spi_1m",
+                "importance": 0.4,
+                "key": [
+                    "CHIRPS",
+                    "R1S_DEKAD"
+                ],
+                "aggregation": "last_dekad"
+            },
+            {
+                "id": "et0",
+                "importance": 0.3,
+                "key": [
+                    "FAO",
+                    "WAPOR_ET0_DEKAD"
+                ],
+                "aggregation": "last_dekad"
+            },
+            {
+                "id": "rzsm",
+                "importance": 0.3,
+                "key": [
+                    "AGERA5",
+                    "SOIL_MOIST"
+                ],
+                "aggregation": "last_dekad"
+            }
+        ],
+        "legend": [
+            {
+                "value": 0,
+                "label": "0 - 0.1",
+                "color": "#672200"
+            },
+            {
+                "value": 0.1,
+                "label": "0.1 - 0.2",
+                "color": "#a93800"
+            },
+            {
+                "value": 0.2,
+                "label": "0.2 - 0.3",
+                "color": "#e59800"
+            },
+            {
+                "value": 0.3,
+                "label": "0.3 - 0.4",
+                "color": "#ffe769"
+            },
+            {
+                "value": 0.4,
+                "label": "0.4 - 0.5",
+                "color": "#f0f0f0"
+            },
+            {
+                "value": 0.5,
+                "label": "0.5 - 0.6",
+                "color": "#f0f0f0"
+            },
+            {
+                "value": 0.6,
+                "label": "0.6 - 0.7",
+                "color": "#a9c6d6"
+            },
+            {
+                "value": 0.7,
+                "label": "0.7 - 0.8",
+                "color": "#019ac4"
+            },
+            {
+                "value": 0.8,
+                "label": "0.8 - 0.9",
+                "color": "#014c73"
+            },
+            {
+                "value": 0.9,
+                "label": "0.9 - 1",
+                "color": "#014c73"
+            }
+        ],
+        "legend_text": "Composite Drought Index",
+        "aggregation": "pixel",
+        "date_layer": "spi_1m",
+        "start_date": "2020-12-01",
+        "end_date": "2021-07-31",
+        "opacity": 0.7,
+        "download": true
+    },
+    "cdi_test": {
+        "title": "Combined Drought Index (v1)",
+        "type": "composite",
+        "period": "monthly",
+        "base_url": "https://hip-service.ovio.org/q_multi_geojson",
+        "validity": {
+            "forward": 1,
+            "backward": 2,
+            "mode": "dekad"
+        },
+        "input_layers": [
+            {
+                "id": "spi_1m",
+                "importance": 0.5,
+                "key": [
+                    "CHIRPS",
+                    "R1S_DEKAD"
+                ],
+                "aggregation": "last_dekad"
+            },
+            {
+                "id": "lst_anomaly",
+                "importance": 0.25,
+                "key": [
+                    "MODIS",
+                    "MYD11C2_TDD_DEKAD"
+                ],
+                "aggregation": "last_dekad"
+            },
+            {
+                "id": "ndvi_dekad",
+                "importance": 0.25,
+                "key": [
+                    "MODIS",
+                    "NDVI_smoothed_5KM"
+                ],
+                "aggregation": "average",
+                "invert": "True"
+            }
+        ],
+        "legend": [
+            {
+                "value": 0,
+                "label": "0 - 0.1",
+                "color": "#672200"
+            },
+            {
+                "value": 0.1,
+                "label": "0.1 - 0.2",
+                "color": "#a93800"
+            },
+            {
+                "value": 0.2,
+                "label": "0.2 - 0.3",
+                "color": "#e59800"
+            },
+            {
+                "value": 0.3,
+                "label": "0.3 - 0.4",
+                "color": "#ffe769"
+            },
+            {
+                "value": 0.4,
+                "label": "0.4 - 0.5",
+                "color": "#f0f0f0"
+            },
+            {
+                "value": 0.5,
+                "label": "0.5 - 0.6",
+                "color": "#f0f0f0"
+            },
+            {
+                "value": 0.6,
+                "label": "0.6 - 0.7",
+                "color": "#a9c6d6"
+            },
+            {
+                "value": 0.7,
+                "label": "0.7 - 0.8",
+                "color": "#019ac4"
+            },
+            {
+                "value": 0.8,
+                "label": "0.8 - 0.9",
+                "color": "#014c73"
+            },
+            {
+                "value": 0.9,
+                "label": "0.9 - 1",
+                "color": "#014c73"
+            }
+        ],
+        "legend_text": "Composite Drought Index v1. SPI weight = 0.5; LST weight = 0.25; NDVI weight = 0.25",
+        "aggregation": "pixel",
+        "date_layer": "spi_1m",
+        "start_date": "2020-12-01",
+        "end_date": "2021-07-31",
+        "opacity": 0.7,
+        "download": true
+    },
+    "forecast_river_discharge_at_gauges": {
+        "title": "River discharge forecast",
+        "loader": "google_flood",
+        "type": "point_data",
+        "hex_display": false,
+        "data": "https://prism-api.ovio.org/google-floods/gauges/?region_codes=MZ",
+        "detail_url": "https://prism-api.ovio.org/google-floods/gauges/forecasts",
+        "data_field": "severity",
+        "data_field_type": "text",
+        "date_url": "https://prism-api.ovio.org/google-floods/dates/?region_codes=MZ",
+        "opacity": 0.9,
+        "legend_text": "River discharge forecast at verified gauges. Visit [Google Research](https://sites.research.google/floodforecasting/) to learn more about Google's AI forecasting models.",
+        "legend": [
+            {
+                "label": "Extreme",
+                "value": "EXTREME",
+                "color": "#a70606"
+            },
+            {
+                "label": "Danger",
+                "value": "SEVERE",
+                "color": "#ea250a"
+            },
+            {
+                "label": "Warning",
+                "value": "ABOVE_NORMAL",
+                "color": "#fba705"
+            },
+            {
+                "label": "Normal",
+                "value": "NO_FLOODING",
+                "color": "#089180"
+            },
+            {
+                "label": "No data",
+                "value": "UNKNOWN",
+                "color": "#858585"
+            }
+        ],
+        "feature_info_title": {
+            "siteName": {
+                "type": "text",
+                "template": "Site: {{siteName}}",
+                "visibility": "if-defined"
+            },
+            "riverName": {
+                "type": "text",
+                "template": "River: {{riverName}}",
+                "visibility": "if-defined"
+            },
+            "gaugeId": {
+                "type": "text",
+                "template": "Gauge ID: {{gaugeId}}",
+                "visibility": "if-defined"
+            }
+        },
+        "feature_info_props": {
+            "siteName": {
+                "type": "text",
+                "dataTitle": "Site",
+                "visibility": "if-defined"
+            },
+            "river": {
+                "type": "text",
+                "dataTitle": "River",
+                "visibility": "if-defined"
+            },
+            "severity": {
+                "type": "labelMapping",
+                "dataTitle": "Flood Status",
+                "labelMap": {
+                    "EXTREME": "Extreme",
+                    "SEVERE": "Danger",
+                    "ABOVE_NORMAL": "Warning",
+                    "NO_FLOODING": "Normal",
+                    "UNKNOWN": "No data"
+                }
+            },
+            "gaugeId": {
+                "type": "text",
+                "dataTitle": "Gauge ID"
+            },
+            "source": {
+                "type": "text",
+                "dataTitle": "Data source"
+            },
+            "issuedTime": {
+                "type": "date",
+                "dataTitle": "Status issued"
+            }
+        },
+        "download": true
+    },
+    "predicted_flood_inundation_maps": {
+        "title": "Flood Inundation Prediction Map",
+        "type": "geojson_polygon",
+        "hex_display": false,
+        "data": "https://prism-api.ovio.org/google-floods/inundations?region_codes=MZ",
+        "data_field": "level",
+        "data_field_type": "text",
+        "opacity": 1,
+        "legend_text": "Current predicted flood maps. Visit [Google Research](https://sites.research.google/floodforecasting/) about Google's AI Forecasting models.",
+        "legend": [
+            {
+                "label": "High",
+                "value": "HIGH",
+                "color": "#de2d26"
+            },
+            {
+                "label": "Medium",
+                "value": "MEDIUM",
+                "color": "#fc9272"
+            },
+            {
+                "label": "Low",
+                "value": "LOW",
+                "color": "#fee0d2"
+            }
+        ],
+        "download": true
     }
-  },
-  "admin2_boundaries": {
-    "type": "boundary",
-    "path": "data/mozambique/moz_bnd_adm2_WFP.json",
-    "opacity": 0.8,
-    "admin_code": "adm2_source_id",
-    "admin_level_codes": ["adm1_source_id", "adm2_source_id"],
-    "admin_level_names": ["adm1_name", "adm2_name"],
-    "admin_level_local_names": ["adm1_name", "adm2_name"],
-    "styles:": {
-      "fill": {
-        "fill-opacity": 0
-      },
-      "line": {
-        "line-color": "gray",
-        "line-width": 1,
-        "line-opacity": 0.8
-      }
-    }
-  },
-  "admin_boundaries": {
-    "type": "boundary",
-    "path": "data/mozambique/moz_bnd_adm3_WFP.json",
-    "opacity": 0.8,
-    "admin_code": "adm3_source_id",
-    "admin_level_codes": ["adm1_source_id", "adm2_source_id", "adm3_source_id"],
-    "admin_level_names": ["adm1_name", "adm2_name", "adm3_name"],
-    "admin_level_local_names": ["adm1_name", "adm2_name", "adm3_name"],
-    "styles:": {
-      "fill": {
-        "fill-opacity": 0
-      },
-      "line": {
-        "line-color": "gray",
-        "line-width": 0.2,
-        "line-opacity": 0.8
-      }
-    }
-  },
-  "basin_boundaries": {
-    "type": "boundary",
-    "path": "data/mozambique/moz_hyd_basins_gov_2023.json",
-    "opacity": 0.8,
-    "admin_code": "ID",
-    "admin_level_codes": ["ID"],
-    "admin_level_names": ["Basins"],
-    "admin_level_local_names": ["Basins"],
-    "styles:": {
-      "fill": {
-        "fill-opacity": 0
-      },
-      "line": {
-        "line-color": "gray",
-        "line-width": 0.7,
-        "line-opacity": 0.8
-      }
-    }
-  },
-  "precip_blended_dekad": {
-    "title": "Blended rainfall aggregate (10-day)",
-    "type": "wms",
-    "server_layer_name": "rfb_blended_moz_dekad",
-    "additional_query_params": {
-      "styles": "rfb_blended"
-    },
-    "chart_data": {
-      "url": "https://api.earthobservation.vam.wfp.org/stats/admin",
-      "fields": [
-        {
-          "key": "rfb",
-          "label": "Rainfall",
-          "color": "#233f5f"
-        },
-        {
-          "key": "rfb_avg",
-          "label": "Average",
-          "color": "#bdf2e6"
-        }
-      ],
-      "levels": [
-        {
-          "level": "1",
-          "id": "dataviz_adm1_id",
-          "name": "adm1_name"
-        },
-        {
-          "level": "2",
-          "id": "dataviz_adm2_id",
-          "name": "adm2_name"
-        }
-      ],
-      "type": "bar"
-    },
-    "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
-    "date_interval": "days",
-    "opacity": 0.7,
-    "legend_text": "Local station data from INAM blended with CHIRP rainfall estimates",
-    "legend": "rfh_16_0_300"
-  },
-  "precip_blended_dekad_anomaly": {
-    "title": "Blended rainfall anomaly (10-day)",
-    "type": "wms",
-    "server_layer_name": "rfq_blended_moz_dekad",
-    "additional_query_params": {
-      "styles": "rfq_blended"
-    },
-    "chart_data": {
-      "url": "https://api.earthobservation.vam.wfp.org/stats/admin",
-      "fields": [
-        {
-          "key": "rfq",
-          "label": "Rainfall anomaly",
-          "minValue": 0,
-          "maxValue": 300,
-          "color": "#375692"
-        },
-        {
-          "key": "rfq_avg",
-          "label": "Normal",
-          "fallback": 100,
-          "pointRadius": 0,
-          "color": "#eb3223"
-        }
-      ],
-      "levels": [
-        {
-          "level": "1",
-          "id": "dataviz_adm1_id",
-          "name": "adm1_name"
-        },
-        {
-          "level": "2",
-          "id": "dataviz_adm2_id",
-          "name": "adm2_name"
-        }
-      ],
-      "type": "line"
-    },
-    "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
-    "date_interval": "days",
-    "opacity": 0.7,
-    "legend_text": "Rainfall anomaly based on long term averaged from local station data from INAM blended with CHIRP rainfall estimates",
-    "legend": "rfq_14_20_400"
-  },
-  "precip_blended_1m": {
-    "title": "Blended rainfall aggregate (1-month)",
-    "type": "wms",
-    "server_layer_name": "rfb_blended_moz_dekad",
-    "additional_query_params": {
-      "styles": "r1b_blended"
-    },
-    "chart_data": {
-      "url": "https://api.earthobservation.vam.wfp.org/stats/admin",
-      "fields": [
-        {
-          "key": "r1b",
-          "label": "Rainfall",
-          "color": "#233f5f"
-        },
-        {
-          "key": "r1b_avg",
-          "label": "Average",
-          "color": "#bdf2e6"
-        }
-      ],
-      "levels": [
-        {
-          "level": "1",
-          "id": "dataviz_adm1_id",
-          "name": "adm1_name"
-        },
-        {
-          "level": "2",
-          "id": "dataviz_adm2_id",
-          "name": "adm2_name"
-        }
-      ],
-      "type": "bar"
-    },
-    "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
-    "date_interval": "days",
-    "opacity": 0.7,
-    "legend_text": "Local station data from INAM blended with CHIRP rainfall estimates",
-    "legend": [
-      {
-        "value": 0,
-        "label": "0 mm",
-        "color": "#fafafa"
-      },
-      {
-        "value": 0.01,
-        "label": "1-5 mm",
-        "color": "#fffadf"
-      },
-      {
-        "value": 5,
-        "label": "5-10 mm",
-        "color": "#d3f9d0"
-      },
-      {
-        "value": 10,
-        "label": "10-20 mm",
-        "color": "#a9e4a3"
-      },
-      {
-        "value": 20,
-        "label": "20-30 mm",
-        "color": "#7cc594"
-      },
-      {
-        "value": 30,
-        "label": "30-40 mm",
-        "color": "#5eab91"
-      },
-      {
-        "value": 40,
-        "label": "40-60 mm",
-        "color": "#9fffe8"
-      },
-      {
-        "value": 60,
-        "label": "60-90 mm",
-        "color": "#90e0ef"
-      },
-      {
-        "value": 90,
-        "label": "90-120 mm",
-        "color": "#00b1de"
-      },
-      {
-        "value": 120,
-        "label": "120-150 mm",
-        "color": "#0083f3"
-      },
-      {
-        "value": 150,
-        "label": "150-200 mm",
-        "color": "#0052cd"
-      },
-      {
-        "value": 200,
-        "label": "200-250 mm",
-        "color": "#0000c8"
-      },
-      {
-        "value": 250,
-        "label": "250-300 mm",
-        "color": "#6003b8"
-      },
-      {
-        "value": 300,
-        "label": "300-350 mm",
-        "color": "#a002fa"
-      },
-      {
-        "value": 350,
-        "label": "350-400 mm",
-        "color": "#fa78fa"
-      },
-      {
-        "value": 400,
-        "label": ">= 400 mm",
-        "color": "#ffc4ee"
-      }
-    ]
-  },
-  "precip_blended_anomaly_1m": {
-    "title": "Blended rainfall anomaly (1-month)",
-    "type": "wms",
-    "server_layer_name": "rfq_blended_moz_dekad",
-    "additional_query_params": {
-      "styles": "r1q_blended"
-    },
-    "chart_data": {
-      "url": "https://api.earthobservation.vam.wfp.org/stats/admin",
-      "fields": [
-        {
-          "key": "r1q",
-          "label": "Rainfall anomaly",
-          "minValue": 0,
-          "maxValue": 300,
-          "color": "#375692"
-        },
-        {
-          "key": "r1q_avg",
-          "label": "Normal",
-          "fallback": 100,
-          "pointRadius": 0,
-          "color": "#eb3223"
-        }
-      ],
-      "levels": [
-        {
-          "level": "1",
-          "id": "dataviz_adm1_id",
-          "name": "adm1_name"
-        },
-        {
-          "level": "2",
-          "id": "dataviz_adm2_id",
-          "name": "adm2_name"
-        }
-      ],
-      "type": "line"
-    },
-    "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
-    "date_interval": "days",
-    "opacity": 0.7,
-    "legend_text": "Rainfall anomaly based on long term averaged from local station data from INAM blended with CHIRP rainfall estimates",
-    "legend": "rfq_14_20_400"
-  },
-  "precip_blended_2m": {
-    "title": "Blended rainfall aggregate (2-month)",
-    "type": "wms",
-    "server_layer_name": "rfb_blended_moz_dekad",
-    "additional_query_params": {
-      "styles": "r2b_blended"
-    },
-    "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
-    "date_interval": "days",
-    "opacity": 0.7,
-    "legend_text": "Local station data from INAM blended with CHIRP rainfall estimates",
-    "legend": [
-      {
-        "value": 0,
-        "label": "0 mm",
-        "color": "#fafafa"
-      },
-      {
-        "value": 0.01,
-        "label": "1-5 mm",
-        "color": "#fffadf"
-      },
-      {
-        "value": 5,
-        "label": "5-10 mm",
-        "color": "#d3f9d0"
-      },
-      {
-        "value": 10,
-        "label": "10-20 mm",
-        "color": "#a9e4a3"
-      },
-      {
-        "value": 20,
-        "label": "20-30 mm",
-        "color": "#7cc594"
-      },
-      {
-        "value": 30,
-        "label": "30-50 mm",
-        "color": "#5eab91"
-      },
-      {
-        "value": 50,
-        "label": "50-80 mm",
-        "color": "#9fffe8"
-      },
-      {
-        "value": 80,
-        "label": "80-100 mm",
-        "color": "#90e0ef"
-      },
-      {
-        "value": 100,
-        "label": "100-150 mm",
-        "color": "#00b1de"
-      },
-      {
-        "value": 150,
-        "label": "150-200 mm",
-        "color": "#0083f3"
-      },
-      {
-        "value": 200,
-        "label": "200-250 mm",
-        "color": "#0052cd"
-      },
-      {
-        "value": 250,
-        "label": "250-300 mm",
-        "color": "#0000c8"
-      },
-      {
-        "value": 300,
-        "label": "300-400 mm",
-        "color": "#6003b8"
-      },
-      {
-        "value": 400,
-        "label": "400-500 mm",
-        "color": "#a002fa"
-      },
-      {
-        "value": 500,
-        "label": "500-700 mm",
-        "color": "#fa78fa"
-      },
-      {
-        "value": 700,
-        "label": ">= 700 mm",
-        "color": "#ffc4ee"
-      }
-    ]
-  },
-  "precip_blended_anomaly_2m": {
-    "title": "Blended rainfall anomaly (2-month)",
-    "type": "wms",
-    "server_layer_name": "rfq_blended_moz_dekad",
-    "additional_query_params": {
-      "styles": "r2q_blended"
-    },
-    "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
-    "date_interval": "days",
-    "opacity": 0.7,
-    "legend_text": "Rainfall anomaly based on long term averaged from local station data from INAM blended with CHIRP rainfall estimates",
-    "legend": "rfq_14_20_400"
-  },
-  "precip_blended_3m": {
-    "title": "Blended rainfall aggregate (3-month)",
-    "type": "wms",
-    "server_layer_name": "rfb_blended_moz_dekad",
-    "additional_query_params": {
-      "styles": "r3b_blended"
-    },
-    "chart_data": {
-      "url": "https://api.earthobservation.vam.wfp.org/stats/admin",
-      "fields": [
-        {
-          "key": "r3b",
-          "label": "Rainfall",
-          "color": "#233f5f"
-        },
-        {
-          "key": "r3b_avg",
-          "label": "Average",
-          "color": "#bdf2e6"
-        }
-      ],
-      "levels": [
-        {
-          "level": "1",
-          "id": "dataviz_adm1_id",
-          "name": "adm1_name"
-        },
-        {
-          "level": "2",
-          "id": "dataviz_adm2_id",
-          "name": "adm2_name"
-        }
-      ],
-      "type": "bar"
-    },
-    "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
-    "date_interval": "days",
-    "opacity": 0.7,
-    "legend_text": "Local station data from INAM blended with CHIRP rainfall estimates",
-    "legend": [
-      {
-        "value": 0,
-        "label": "0 mm",
-        "color": "#fafafa"
-      },
-      {
-        "value": 0.01,
-        "label": "1-10 mm",
-        "color": "#fffadf"
-      },
-      {
-        "value": 10,
-        "label": "10-20 mm",
-        "color": "#d3f9d0"
-      },
-      {
-        "value": 20,
-        "label": "20-30 mm",
-        "color": "#a9e4a3"
-      },
-      {
-        "value": 30,
-        "label": "30-50 mm",
-        "color": "#7cc594"
-      },
-      {
-        "value": 50,
-        "label": "50-80 mm",
-        "color": "#5eab91"
-      },
-      {
-        "value": 80,
-        "label": "80-100 mm",
-        "color": "#9fffe8"
-      },
-      {
-        "value": 100,
-        "label": "100-150 mm",
-        "color": "#90e0ef"
-      },
-      {
-        "value": 150,
-        "label": "150-200 mm",
-        "color": "#00b1de"
-      },
-      {
-        "value": 200,
-        "label": "200-300 mm",
-        "color": "#0083f3"
-      },
-      {
-        "value": 300,
-        "label": "300-400 mm",
-        "color": "#0052cd"
-      },
-      {
-        "value": 400,
-        "label": "400-500 mm",
-        "color": "#0000c8"
-      },
-      {
-        "value": 500,
-        "label": "500-600 mm",
-        "color": "#6003b8"
-      },
-      {
-        "value": 600,
-        "label": "600-700 mm",
-        "color": "#a002fa"
-      },
-      {
-        "value": 700,
-        "label": "700-800 mm",
-        "color": "#fa78fa"
-      },
-      {
-        "value": 800,
-        "label": "> 800 mm",
-        "color": "#ffc4ee"
-      }
-    ]
-  },
-  "precip_blended_anomaly_3m": {
-    "title": "Blended rainfall anomaly (3-month)",
-    "type": "wms",
-    "server_layer_name": "rfq_blended_moz_dekad",
-    "additional_query_params": {
-      "styles": "r3q_blended"
-    },
-    "chart_data": {
-      "url": "https://api.earthobservation.vam.wfp.org/stats/admin",
-      "fields": [
-        {
-          "key": "r3q",
-          "label": "Rainfall anomaly",
-          "color": "#375692",
-          "minValue": 0,
-          "maxValue": 300
-        },
-        {
-          "key": "r3q_avg",
-          "label": "Normal",
-          "fallback": 100,
-          "pointRadius": 0,
-          "color": "#eb3223"
-        }
-      ],
-      "levels": [
-        {
-          "level": "1",
-          "id": "dataviz_adm1_id",
-          "name": "adm1_name"
-        },
-        {
-          "level": "2",
-          "id": "dataviz_adm2_id",
-          "name": "adm2_name"
-        }
-      ],
-      "type": "line"
-    },
-    "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
-    "date_interval": "days",
-    "opacity": 0.7,
-    "legend_text": "Rainfall anomaly based on long term averaged from local station data from INAM blended with CHIRP rainfall estimates",
-    "legend": "rfq_14_20_400"
-  },
-  "precip_blended_4m": {
-    "title": "Blended rainfall aggregate (4-month)",
-    "type": "wms",
-    "server_layer_name": "rfb_blended_moz_dekad",
-    "additional_query_params": {
-      "styles": "r4b_blended"
-    },
-    "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
-    "date_interval": "days",
-    "opacity": 0.7,
-    "legend_text": "Local station data from INAM blended with CHIRP rainfall estimates",
-    "legend": [
-      {
-        "value": 0,
-        "label": "0 mm",
-        "color": "#fafafa"
-      },
-      {
-        "value": 0.01,
-        "label": "1-10 mm",
-        "color": "#fffadf"
-      },
-      {
-        "value": 10,
-        "label": "10-20 mm",
-        "color": "#d3f9d0"
-      },
-      {
-        "value": 20,
-        "label": "20-30 mm",
-        "color": "#a9e4a3"
-      },
-      {
-        "value": 30,
-        "label": "30-50 mm",
-        "color": "#7cc594"
-      },
-      {
-        "value": 50,
-        "label": "50-100 mm",
-        "color": "#5eab91"
-      },
-      {
-        "value": 100,
-        "label": "100-200 mm",
-        "color": "#9fffe8"
-      },
-      {
-        "value": 200,
-        "label": "200-300 mm",
-        "color": "#90e0ef"
-      },
-      {
-        "value": 300,
-        "label": "300-400 mm",
-        "color": "#00b1de"
-      },
-      {
-        "value": 400,
-        "label": "400-500 mm",
-        "color": "#0083f3"
-      },
-      {
-        "value": 500,
-        "label": "500-600 mm",
-        "color": "#0052cd"
-      },
-      {
-        "value": 600,
-        "label": "600-700 mm",
-        "color": "#0000c8"
-      },
-      {
-        "value": 700,
-        "label": "700-800 mm",
-        "color": "#6003b8"
-      },
-      {
-        "value": 800,
-        "label": "800-900 mm",
-        "color": "#a002fa"
-      },
-      {
-        "value": 900,
-        "label": "900-1000 mm",
-        "color": "#fa78fa"
-      },
-      {
-        "value": 1000,
-        "label": ">= 1000 mm",
-        "color": "#ffc4ee"
-      }
-    ]
-  },
-  "precip_blended_anomaly_4m": {
-    "title": "Blended rainfall anomaly (4-month)",
-    "type": "wms",
-    "server_layer_name": "rfq_blended_moz_dekad",
-    "additional_query_params": {
-      "styles": "r4q_blended"
-    },
-    "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
-    "date_interval": "days",
-    "opacity": 0.7,
-    "legend_text": "Rainfall anomaly based on long term averaged from local station data from INAM blended with CHIRP rainfall estimates",
-    "legend": "rfq_14_20_400"
-  },
-  "precip_blended_5m": {
-    "title": "Blended rainfall aggregate (5-month)",
-    "type": "wms",
-    "server_layer_name": "rfb_blended_moz_dekad",
-    "additional_query_params": {
-      "styles": "r5b_blended"
-    },
-    "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
-    "date_interval": "days",
-    "opacity": 0.7,
-    "legend_text": "Local station data from INAM blended with CHIRP rainfall estimates",
-    "legend": [
-      {
-        "value": 0,
-        "label": "0 mm",
-        "color": "#fafafa"
-      },
-      {
-        "value": 0.01,
-        "label": "1-10 mm",
-        "color": "#fffadf"
-      },
-      {
-        "value": 10,
-        "label": "10-20 mm",
-        "color": "#d3f9d0"
-      },
-      {
-        "value": 20,
-        "label": "20-50 mm",
-        "color": "#a9e4a3"
-      },
-      {
-        "value": 50,
-        "label": "50-100 mm",
-        "color": "#7cc594"
-      },
-      {
-        "value": 100,
-        "label": "100-200 mm",
-        "color": "#5eab91"
-      },
-      {
-        "value": 200,
-        "label": "200-300 mm",
-        "color": "#9fffe8"
-      },
-      {
-        "value": 300,
-        "label": "300-400 mm",
-        "color": "#90e0ef"
-      },
-      {
-        "value": 400,
-        "label": "400-600 mm",
-        "color": "#00b1de"
-      },
-      {
-        "value": 600,
-        "label": "600-800 mm",
-        "color": "#0083f3"
-      },
-      {
-        "value": 800,
-        "label": "800-900 mm",
-        "color": "#0052cd"
-      },
-      {
-        "value": 900,
-        "label": "900-1000 mm",
-        "color": "#0000c8"
-      },
-      {
-        "value": 1000,
-        "label": "1000-1200 mm",
-        "color": "#6003b8"
-      },
-      {
-        "value": 1200,
-        "label": "1200-1400 mm",
-        "color": "#a002fa"
-      },
-      {
-        "value": 1400,
-        "label": "1400-1600 mm",
-        "color": "#fa78fa"
-      },
-      {
-        "value": 1600,
-        "label": "> 1600 mm",
-        "color": "#ffc4ee"
-      }
-    ]
-  },
-  "precip_blended_anomaly_5m": {
-    "title": "Blended rainfall anomaly (5-month)",
-    "type": "wms",
-    "server_layer_name": "rfq_blended_moz_dekad",
-    "additional_query_params": {
-      "styles": "r5q_blended"
-    },
-    "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
-    "date_interval": "days",
-    "opacity": 0.7,
-    "legend_text": "Rainfall anomaly based on long term averaged from local station data from INAM blended with CHIRP rainfall estimates",
-    "legend": [
-      {
-        "value": 0,
-        "label": "< 20%",
-        "color": "#8c4800"
-      },
-      {
-        "value": 20,
-        "label": "20-40%",
-        "color": "#af6b27"
-      },
-      {
-        "value": 40,
-        "label": "40-60%",
-        "color": "#d58c3e"
-      },
-      {
-        "value": 60,
-        "label": "60-70%",
-        "color": "#eaa83d"
-      },
-      {
-        "value": 70,
-        "label": "70-80%",
-        "color": "#f5c878"
-      },
-      {
-        "value": 80,
-        "label": "80-90%",
-        "color": "#fff0c4"
-      },
-      {
-        "value": 90,
-        "label": "90-110%",
-        "color": "#fafafa"
-      },
-      {
-        "value": 110,
-        "label": "110-120%",
-        "color": "#befafa"
-      },
-      {
-        "value": 120,
-        "label": "120-130%",
-        "color": "#78e2f0"
-      },
-      {
-        "value": 130,
-        "label": "130-150%",
-        "color": "#00b9de"
-      },
-      {
-        "value": 150,
-        "label": "150-200%",
-        "color": "#0083f3"
-      },
-      {
-        "value": 200,
-        "label": "200-300%",
-        "color": "#0052cd"
-      },
-      {
-        "value": 300,
-        "label": "300-400%",
-        "color": "#0000c8"
-      },
-      {
-        "value": 400,
-        "label": ">= 400%",
-        "color": "#a002fa"
-      }
-    ]
-  },
-  "precip_blended_6m": {
-    "title": "Blended rainfall aggregate (6-month)",
-    "type": "wms",
-    "server_layer_name": "rfb_blended_moz_dekad",
-    "additional_query_params": {
-      "styles": "r6b_blended"
-    },
-    "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
-    "date_interval": "days",
-    "opacity": 0.7,
-    "legend_text": "Local station data from INAM blended with CHIRP rainfall estimates",
-    "legend": [
-      {
-        "value": 0,
-        "label": "0 mm",
-        "color": "#fafafa"
-      },
-      {
-        "value": 0.01,
-        "label": "1-10 mm",
-        "color": "#fffadf"
-      },
-      {
-        "value": 10,
-        "label": "10-20 mm",
-        "color": "#d3f9d0"
-      },
-      {
-        "value": 20,
-        "label": "20-50 mm",
-        "color": "#a9e4a3"
-      },
-      {
-        "value": 50,
-        "label": "50-100 mm",
-        "color": "#7cc594"
-      },
-      {
-        "value": 100,
-        "label": "100-200 mm",
-        "color": "#5eab91"
-      },
-      {
-        "value": 200,
-        "label": "200-300 mm",
-        "color": "#9fffe8"
-      },
-      {
-        "value": 300,
-        "label": "300-400 mm",
-        "color": "#90e0ef"
-      },
-      {
-        "value": 400,
-        "label": "400-600 mm",
-        "color": "#00b1de"
-      },
-      {
-        "value": 600,
-        "label": "600-800 mm",
-        "color": "#0083f3"
-      },
-      {
-        "value": 800,
-        "label": "800-900 mm",
-        "color": "#0052cd"
-      },
-      {
-        "value": 900,
-        "label": "900-1000 mm",
-        "color": "#0000c8"
-      },
-      {
-        "value": 1000,
-        "label": "1000-1200 mm",
-        "color": "#6003b8"
-      },
-      {
-        "value": 1200,
-        "label": "1200-1400 mm",
-        "color": "#a002fa"
-      },
-      {
-        "value": 1400,
-        "label": "1400-1600 mm",
-        "color": "#fa78fa"
-      },
-      {
-        "value": 1600,
-        "label": "> 1600 mm",
-        "color": "#ffc4ee"
-      }
-    ]
-  },
-  "precip_blended_anomaly_6m": {
-    "title": "Blended rainfall anomaly (6-month)",
-    "type": "wms",
-    "server_layer_name": "rfq_blended_moz_dekad",
-    "additional_query_params": {
-      "styles": "r6q_blended"
-    },
-    "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
-    "date_interval": "days",
-    "opacity": 0.7,
-    "legend_text": "Rainfall anomaly based on long term averaged from local station data from INAM blended with CHIRP rainfall estimates",
-    "legend": [
-      {
-        "value": 0,
-        "label": "< 50%",
-        "color": "#8c4800"
-      },
-      {
-        "value": 50,
-        "label": "50-60%",
-        "color": "#af6b27"
-      },
-      {
-        "value": 60,
-        "label": "60-70%",
-        "color": "#d58c3e"
-      },
-      {
-        "value": 70,
-        "label": "70-80%",
-        "color": "#eaa83d"
-      },
-      {
-        "value": 80,
-        "label": "80-90%",
-        "color": "#f5c878"
-      },
-      {
-        "value": 90,
-        "label": "90-95%",
-        "color": "#fff0c4"
-      },
-      {
-        "value": 95,
-        "label": "95-105%",
-        "color": "#fafafa"
-      },
-      {
-        "value": 105,
-        "label": "105-110%",
-        "color": "#befafa"
-      },
-      {
-        "value": 110,
-        "label": "110-120%",
-        "color": "#78e2f0"
-      },
-      {
-        "value": 120,
-        "label": "120-130%",
-        "color": "#00b9de"
-      },
-      {
-        "value": 130,
-        "label": "130-150%",
-        "color": "#0083f3"
-      },
-      {
-        "value": 150,
-        "label": "150-170%",
-        "color": "#0052cd"
-      },
-      {
-        "value": 170,
-        "label": "170-200%",
-        "color": "#0000c8"
-      },
-      {
-        "value": 200,
-        "label": "> 200%",
-        "color": "#a002fa"
-      }
-    ]
-  },
-  "precip_blended_7m": {
-    "title": "Blended rainfall aggregate (7-month)",
-    "type": "wms",
-    "server_layer_name": "rfb_blended_moz_dekad",
-    "additional_query_params": {
-      "styles": "r7b_blended"
-    },
-    "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
-    "date_interval": "days",
-    "opacity": 0.7,
-    "legend_text": "Local station data from INAM blended with CHIRP rainfall estimates",
-    "legend": [
-      {
-        "value": 0,
-        "label": "0 mm",
-        "color": "#fafafa"
-      },
-      {
-        "value": 0.01,
-        "label": "1-10 mm",
-        "color": "#fffadf"
-      },
-      {
-        "value": 10,
-        "label": "10-50 mm",
-        "color": "#d3f9d0"
-      },
-      {
-        "value": 50,
-        "label": "50-100 mm",
-        "color": "#a9e4a3"
-      },
-      {
-        "value": 100,
-        "label": "100-200 mm",
-        "color": "#7cc594"
-      },
-      {
-        "value": 200,
-        "label": "200-300 mm",
-        "color": "#5eab91"
-      },
-      {
-        "value": 300,
-        "label": "300-400 mm",
-        "color": "#9fffe8"
-      },
-      {
-        "value": 400,
-        "label": "400-600 mm",
-        "color": "#90e0ef"
-      },
-      {
-        "value": 600,
-        "label": "600-800 mm",
-        "color": "#00b1de"
-      },
-      {
-        "value": 800,
-        "label": "800-1000 mm",
-        "color": "#0083f3"
-      },
-      {
-        "value": 1000,
-        "label": "1000-1200 mm",
-        "color": "#0052cd"
-      },
-      {
-        "value": 1200,
-        "label": "1200-1400 mm",
-        "color": "#0000c8"
-      },
-      {
-        "value": 1400,
-        "label": "1400-1600 mm",
-        "color": "#6003b8"
-      },
-      {
-        "value": 1600,
-        "label": "1600-1800 mm",
-        "color": "#a002fa"
-      },
-      {
-        "value": 1800,
-        "label": "1800-2000 mm",
-        "color": "#fa78fa"
-      },
-      {
-        "value": 2000,
-        "label": "> 2000 mm",
-        "color": "#ffc4ee"
-      }
-    ]
-  },
-  "precip_blended_anomaly_7m": {
-    "title": "Blended rainfall anomaly (7-month)",
-    "type": "wms",
-    "server_layer_name": "rfq_blended_moz_dekad",
-    "additional_query_params": {
-      "styles": "r7q_blended"
-    },
-    "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
-    "date_interval": "days",
-    "opacity": 0.7,
-    "legend_text": "Rainfall anomaly based on long term averaged from local station data from INAM blended with CHIRP rainfall estimates",
-    "legend": [
-      {
-        "value": 0,
-        "label": "< 50%",
-        "color": "#8c4800"
-      },
-      {
-        "value": 50,
-        "label": "50-60%",
-        "color": "#af6b27"
-      },
-      {
-        "value": 60,
-        "label": "60-70%",
-        "color": "#d58c3e"
-      },
-      {
-        "value": 70,
-        "label": "70-80%",
-        "color": "#eaa83d"
-      },
-      {
-        "value": 80,
-        "label": "80-90%",
-        "color": "#f5c878"
-      },
-      {
-        "value": 90,
-        "label": "90-95%",
-        "color": "#fff0c4"
-      },
-      {
-        "value": 95,
-        "label": "95-105%",
-        "color": "#fafafa"
-      },
-      {
-        "value": 105,
-        "label": "105-110%",
-        "color": "#befafa"
-      },
-      {
-        "value": 110,
-        "label": "110-120%",
-        "color": "#78e2f0"
-      },
-      {
-        "value": 120,
-        "label": "120-130%",
-        "color": "#00b9de"
-      },
-      {
-        "value": 130,
-        "label": "130-150%",
-        "color": "#0083f3"
-      },
-      {
-        "value": 150,
-        "label": "150-170%",
-        "color": "#0052cd"
-      },
-      {
-        "value": 170,
-        "label": "170-200%",
-        "color": "#0000c8"
-      },
-      {
-        "value": 200,
-        "label": "> 200%",
-        "color": "#a002fa"
-      }
-    ]
-  },
-  "precip_blended_8m": {
-    "title": "Blended rainfall aggregate (8-month)",
-    "type": "wms",
-    "server_layer_name": "rfb_blended_moz_dekad",
-    "additional_query_params": {
-      "styles": "r8b_blended"
-    },
-    "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
-    "date_interval": "days",
-    "opacity": 0.7,
-    "legend_text": "Local station data from INAM blended with CHIRP rainfall estimates",
-    "legend": [
-      {
-        "value": 0,
-        "label": "0 mm",
-        "color": "#fafafa"
-      },
-      {
-        "value": 0.01,
-        "label": "1-10 mm",
-        "color": "#fffadf"
-      },
-      {
-        "value": 10,
-        "label": "10-50 mm",
-        "color": "#d3f9d0"
-      },
-      {
-        "value": 50,
-        "label": "50-100 mm",
-        "color": "#a9e4a3"
-      },
-      {
-        "value": 100,
-        "label": "100-200 mm",
-        "color": "#7cc594"
-      },
-      {
-        "value": 200,
-        "label": "200-300 mm",
-        "color": "#5eab91"
-      },
-      {
-        "value": 300,
-        "label": "300-400 mm",
-        "color": "#9fffe8"
-      },
-      {
-        "value": 400,
-        "label": "400-600 mm",
-        "color": "#90e0ef"
-      },
-      {
-        "value": 600,
-        "label": "600-800 mm",
-        "color": "#00b1de"
-      },
-      {
-        "value": 800,
-        "label": "800-1000 mm",
-        "color": "#0083f3"
-      },
-      {
-        "value": 1000,
-        "label": "1000-1200 mm",
-        "color": "#0052cd"
-      },
-      {
-        "value": 1200,
-        "label": "1200-1400 mm",
-        "color": "#0000c8"
-      },
-      {
-        "value": 1400,
-        "label": "1400-1600 mm",
-        "color": "#6003b8"
-      },
-      {
-        "value": 1600,
-        "label": "1600-1800 mm",
-        "color": "#a002fa"
-      },
-      {
-        "value": 1800,
-        "label": "1800-2000 mm",
-        "color": "#fa78fa"
-      },
-      {
-        "value": 2000,
-        "label": "> 2000 mm",
-        "color": "#ffc4ee"
-      }
-    ]
-  },
-  "precip_blended_anomaly_8m": {
-    "title": "Blended rainfall anomaly (8-month)",
-    "type": "wms",
-    "server_layer_name": "rfq_blended_moz_dekad",
-    "additional_query_params": {
-      "styles": "r8q_blended"
-    },
-    "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
-    "date_interval": "days",
-    "opacity": 0.7,
-    "legend_text": "Rainfall anomaly based on long term averaged from local station data from INAM blended with CHIRP rainfall estimates",
-    "legend": [
-      {
-        "value": 0,
-        "label": "< 50%",
-        "color": "#8c4800"
-      },
-      {
-        "value": 50,
-        "label": "50-60%",
-        "color": "#af6b27"
-      },
-      {
-        "value": 60,
-        "label": "60-70%",
-        "color": "#d58c3e"
-      },
-      {
-        "value": 70,
-        "label": "70-80%",
-        "color": "#eaa83d"
-      },
-      {
-        "value": 80,
-        "label": "80-90%",
-        "color": "#f5c878"
-      },
-      {
-        "value": 90,
-        "label": "90-95%",
-        "color": "#fff0c4"
-      },
-      {
-        "value": 95,
-        "label": "95-105%",
-        "color": "#fafafa"
-      },
-      {
-        "value": 105,
-        "label": "105-110%",
-        "color": "#befafa"
-      },
-      {
-        "value": 110,
-        "label": "110-120%",
-        "color": "#78e2f0"
-      },
-      {
-        "value": 120,
-        "label": "120-130%",
-        "color": "#00b9de"
-      },
-      {
-        "value": 130,
-        "label": "130-150%",
-        "color": "#0083f3"
-      },
-      {
-        "value": 150,
-        "label": "150-170%",
-        "color": "#0052cd"
-      },
-      {
-        "value": 170,
-        "label": "170-200%",
-        "color": "#0000c8"
-      },
-      {
-        "value": 200,
-        "label": "> 200%",
-        "color": "#a002fa"
-      }
-    ]
-  },
-  "precip_blended_9m": {
-    "title": "Blended rainfall aggregate (9-month)",
-    "type": "wms",
-    "server_layer_name": "rfb_blended_moz_dekad",
-    "additional_query_params": {
-      "styles": "r9b_blended"
-    },
-    "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
-    "date_interval": "days",
-    "opacity": 0.7,
-    "legend_text": "Local station data from INAM blended with CHIRP rainfall estimates",
-    "legend": [
-      {
-        "value": 0,
-        "label": "0 mm",
-        "color": "#fafafa"
-      },
-      {
-        "value": 0.01,
-        "label": "1-10 mm",
-        "color": "#fffadf"
-      },
-      {
-        "value": 10,
-        "label": "10-50 mm",
-        "color": "#d3f9d0"
-      },
-      {
-        "value": 50,
-        "label": "50-100 mm",
-        "color": "#a9e4a3"
-      },
-      {
-        "value": 100,
-        "label": "100-200 mm",
-        "color": "#7cc594"
-      },
-      {
-        "value": 200,
-        "label": "200-400 mm",
-        "color": "#5eab91"
-      },
-      {
-        "value": 400,
-        "label": "400-600 mm",
-        "color": "#9fffe8"
-      },
-      {
-        "value": 600,
-        "label": "600-800 mm",
-        "color": "#90e0ef"
-      },
-      {
-        "value": 800,
-        "label": "800-1000 mm",
-        "color": "#00b1de"
-      },
-      {
-        "value": 1000,
-        "label": "1000-1200 mm",
-        "color": "#0083f3"
-      },
-      {
-        "value": 1200,
-        "label": "1200-1400 mm",
-        "color": "#0052cd"
-      },
-      {
-        "value": 1400,
-        "label": "1400-1600 mm",
-        "color": "#0000c8"
-      },
-      {
-        "value": 1600,
-        "label": "1600-1800 mm",
-        "color": "#6003b8"
-      },
-      {
-        "value": 1800,
-        "label": "1800-2000 mm",
-        "color": "#a002fa"
-      },
-      {
-        "value": 2000,
-        "label": "2000-2400 mm",
-        "color": "#fa78fa"
-      },
-      {
-        "value": 2400,
-        "label": "> 2400 mm",
-        "color": "#ffc4ee"
-      }
-    ]
-  },
-  "precip_blended_anomaly_9m": {
-    "title": "Blended rainfall anomaly (9-month)",
-    "type": "wms",
-    "server_layer_name": "rfq_blended_moz_dekad",
-    "additional_query_params": {
-      "styles": "r9q_blended"
-    },
-    "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
-    "date_interval": "days",
-    "opacity": 0.7,
-    "legend_text": "Rainfall anomaly based on long term averaged from local station data from INAM blended with CHIRP rainfall estimates",
-    "legend": [
-      {
-        "value": 0,
-        "label": "< 50%",
-        "color": "#8c4800"
-      },
-      {
-        "value": 50,
-        "label": "50-60%",
-        "color": "#af6b27"
-      },
-      {
-        "value": 60,
-        "label": "60-70%",
-        "color": "#d58c3e"
-      },
-      {
-        "value": 70,
-        "label": "70-80%",
-        "color": "#eaa83d"
-      },
-      {
-        "value": 80,
-        "label": "80-90%",
-        "color": "#f5c878"
-      },
-      {
-        "value": 90,
-        "label": "90-95%",
-        "color": "#fff0c4"
-      },
-      {
-        "value": 95,
-        "label": "95-105%",
-        "color": "#fafafa"
-      },
-      {
-        "value": 105,
-        "label": "105-110%",
-        "color": "#befafa"
-      },
-      {
-        "value": 110,
-        "label": "110-120%",
-        "color": "#78e2f0"
-      },
-      {
-        "value": 120,
-        "label": "120-130%",
-        "color": "#00b9de"
-      },
-      {
-        "value": 130,
-        "label": "130-150%",
-        "color": "#0083f3"
-      },
-      {
-        "value": 150,
-        "label": "150-170%",
-        "color": "#0052cd"
-      },
-      {
-        "value": 170,
-        "label": "170-200%",
-        "color": "#0000c8"
-      },
-      {
-        "value": 200,
-        "label": "> 200%",
-        "color": "#a002fa"
-      }
-    ]
-  },
-  "precip_blended_1y": {
-    "title": "Blended rainfall aggregate (1-year)",
-    "type": "wms",
-    "server_layer_name": "rfb_blended_moz_dekad",
-    "additional_query_params": {
-      "styles": "ryb_blended"
-    },
-    "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
-    "date_interval": "days",
-    "opacity": 0.7,
-    "legend_text": "Local station data from INAM blended with CHIRP rainfall estimates",
-    "legend": [
-      {
-        "value": 0,
-        "label": "0 mm",
-        "color": "#fafafa"
-      },
-      {
-        "value": 0.01,
-        "label": "1-10 mm",
-        "color": "#fffadf"
-      },
-      {
-        "value": 10,
-        "label": "10-50 mm",
-        "color": "#d3f9d0"
-      },
-      {
-        "value": 50,
-        "label": "50-100 mm",
-        "color": "#a9e4a3"
-      },
-      {
-        "value": 100,
-        "label": "100-200 mm",
-        "color": "#7cc594"
-      },
-      {
-        "value": 200,
-        "label": "200-400 mm",
-        "color": "#5eab91"
-      },
-      {
-        "value": 400,
-        "label": "400-600 mm",
-        "color": "#9fffe8"
-      },
-      {
-        "value": 600,
-        "label": "600-800 mm",
-        "color": "#90e0ef"
-      },
-      {
-        "value": 800,
-        "label": "800-1000 mm",
-        "color": "#00b1de"
-      },
-      {
-        "value": 1000,
-        "label": "1000-1200 mm",
-        "color": "#0083f3"
-      },
-      {
-        "value": 1200,
-        "label": "1200-1400 mm",
-        "color": "#0052cd"
-      },
-      {
-        "value": 1400,
-        "label": "1400-1600 mm",
-        "color": "#0000c8"
-      },
-      {
-        "value": 1600,
-        "label": "1600-1800 mm",
-        "color": "#6003b8"
-      },
-      {
-        "value": 1800,
-        "label": "1800-2000 mm",
-        "color": "#a002fa"
-      },
-      {
-        "value": 2000,
-        "label": "2000-2400 mm",
-        "color": "#fa78fa"
-      },
-      {
-        "value": 2400,
-        "label": "> 2400 mm",
-        "color": "#ffc4ee"
-      }
-    ]
-  },
-  "precip_blended_anomaly_1y": {
-    "title": "Blended rainfall anomaly (1-year)",
-    "type": "wms",
-    "server_layer_name": "rfq_blended_moz_dekad",
-    "additional_query_params": {
-      "styles": "ryq_blended"
-    },
-    "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
-    "date_interval": "days",
-    "opacity": 0.7,
-    "legend_text": "Rainfall anomaly based on long term averaged from local station data from INAM blended with CHIRP rainfall estimates",
-    "legend": [
-      {
-        "value": 0,
-        "label": "< 50%",
-        "color": "#8c4800"
-      },
-      {
-        "value": 50,
-        "label": "50-60%",
-        "color": "#af6b27"
-      },
-      {
-        "value": 60,
-        "label": "60-70%",
-        "color": "#d58c3e"
-      },
-      {
-        "value": 70,
-        "label": "70-80%",
-        "color": "#eaa83d"
-      },
-      {
-        "value": 80,
-        "label": "80-90%",
-        "color": "#f5c878"
-      },
-      {
-        "value": 90,
-        "label": "90-95%",
-        "color": "#fff0c4"
-      },
-      {
-        "value": 95,
-        "label": "95-105%",
-        "color": "#fafafa"
-      },
-      {
-        "value": 105,
-        "label": "105-110%",
-        "color": "#befafa"
-      },
-      {
-        "value": 110,
-        "label": "110-120%",
-        "color": "#78e2f0"
-      },
-      {
-        "value": 120,
-        "label": "120-130%",
-        "color": "#00b9de"
-      },
-      {
-        "value": 130,
-        "label": "130-150%",
-        "color": "#0083f3"
-      },
-      {
-        "value": 150,
-        "label": "150-170%",
-        "color": "#0052cd"
-      },
-      {
-        "value": 170,
-        "label": "170-200%",
-        "color": "#0000c8"
-      },
-      {
-        "value": 200,
-        "label": "> 200%",
-        "color": "#a002fa"
-      }
-    ]
-  },
-  "rainfall_dekad": {
-    "title": "CHIRPS 10-day rainfall estimate (mm)",
-    "chart_data": {
-      "fields": [
-        {
-          "key": "rfh",
-          "label": "Rainfall",
-          "color": "#233f5f"
-        },
-        {
-          "key": "rfh_avg",
-          "label": "Average",
-          "color": "#bdf2e6"
-        }
-      ],
-      "levels": [
-        {
-          "level": "1",
-          "id": "dataviz_adm1_id",
-          "name": "adm1_name"
-        },
-        {
-          "level": "2",
-          "id": "dataviz_adm2_id",
-          "name": "adm2_name"
-        }
-      ],
-      "type": "bar"
-    }
-  },
-  "rain_anomaly_dekad": {
-    "title": "CHIRPS 10-day rainfall anomaly",
-    "chart_data": {
-      "fields": [
-        {
-          "key": "rfq",
-          "label": "Rainfall anomaly",
-          "color": "#375692",
-          "minValue": 0,
-          "maxValue": 300
-        },
-        {
-          "key": "rfq_avg",
-          "label": "Normal",
-          "fallback": 100,
-          "pointRadius": 0,
-          "color": "#eb3223"
-        }
-      ],
-      "levels": [
-        {
-          "level": "1",
-          "id": "dataviz_adm1_id",
-          "name": "adm1_name"
-        },
-        {
-          "level": "2",
-          "id": "dataviz_adm2_id",
-          "name": "adm2_name"
-        }
-      ],
-      "type": "line"
-    }
-  },
-  "rainfall_daily": {
-    "title": "CHIRPS daily rainfall estimate (mm)"
-  },
-  "rainfall_agg_1month": {
-    "title": "CHIRPS 1-month rainfall aggregate",
-    "chart_data": {
-      "fields": [
-        {
-          "key": "r1h",
-          "label": "Rainfall",
-          "color": "#233f5f"
-        },
-        {
-          "key": "r1h_avg",
-          "label": "Average",
-          "color": "#bdf2e6"
-        }
-      ],
-      "levels": [
-        {
-          "level": "1",
-          "id": "dataviz_adm1_id",
-          "name": "adm1_name"
-        },
-        {
-          "level": "2",
-          "id": "dataviz_adm2_id",
-          "name": "adm2_name"
-        }
-      ],
-      "type": "bar"
-    }
-  },
-  "rain_anomaly_1month": {
-    "title": "CHIRPS 1-month rainfall anomaly",
-    "chart_data": {
-      "fields": [
-        {
-          "key": "r1q",
-          "label": "Rainfall anomaly",
-          "minValue": 0,
-          "maxValue": 300,
-          "color": "#375692"
-        },
-        {
-          "key": "rfq_avg",
-          "label": "Normal",
-          "fallback": 100,
-          "pointRadius": 0,
-          "color": "#eb3223"
-        }
-      ],
-      "levels": [
-        {
-          "level": "1",
-          "id": "dataviz_adm1_id",
-          "name": "adm1_name"
-        },
-        {
-          "level": "2",
-          "id": "dataviz_adm2_id",
-          "name": "adm2_name"
-        }
-      ],
-      "type": "line"
-    }
-  },
-  "rainfall_agg_3month": {
-    "title": "CHIRPS 3-month rainfall aggregate (mm)",
-    "chart_data": {
-      "fields": [
-        {
-          "key": "r3h",
-          "label": "Rainfall",
-          "color": "#233f5f"
-        },
-        {
-          "key": "r3h_avg",
-          "label": "Average",
-          "color": "#bdf2e6"
-        }
-      ],
-      "levels": [
-        {
-          "level": "1",
-          "id": "dataviz_adm1_id",
-          "name": "adm1_name"
-        },
-        {
-          "level": "2",
-          "id": "dataviz_adm2_id",
-          "name": "adm2_name"
-        }
-      ],
-      "type": "bar"
-    }
-  },
-  "rain_anomaly_3month": {
-    "title": "CHIRPS 3-month rainfall anomaly",
-    "chart_data": {
-      "fields": [
-        {
-          "key": "r3q",
-          "label": "Rainfall anomaly",
-          "minValue": 0,
-          "maxValue": 300,
-          "color": "#375692"
-        },
-        {
-          "key": "rfq_avg",
-          "label": "Normal",
-          "fallback": 100,
-          "pointRadius": 0,
-          "color": "#eb3223"
-        }
-      ],
-      "levels": [
-        {
-          "level": "1",
-          "id": "dataviz_adm1_id",
-          "name": "adm1_name"
-        },
-        {
-          "level": "2",
-          "id": "dataviz_adm2_id",
-          "name": "adm2_name"
-        }
-      ],
-      "type": "line"
-    }
-  },
-  "rainfall_agg_6month": {
-    "title": "CHIRPS 6-month rainfall aggregate (mm)"
-  },
-  "rain_anomaly_6month": {
-    "title": "CHIRPS 6-month rainfall anomaly"
-  },
-  "rainfall_agg_9month": {
-    "title": "CHIRPS 9-month rainfall aggregate (mm)"
-  },
-  "rain_anomaly_9month": {
-    "title": "CHIRPS 9-month rainfall anomaly"
-  },
-  "rainfall_agg_1year": {
-    "title": "CHIRPS 1-year rainfall aggregate (mm)"
-  },
-  "rain_anomaly_1year": {
-    "title": "CHIRPS 1-year rainfall anomaly"
-  },
-  "ndvi_dekad": {
-    "chart_data": {
-      "fields": [
-        {
-          "key": "vim",
-          "label": "NDVI",
-          "color": "#4eac5b"
-        },
-        {
-          "key": "vim_avg",
-          "label": "Average",
-          "color": "#99ff99"
-        }
-      ],
-      "levels": [
-        {
-          "level": "1",
-          "id": "dataviz_adm1_id",
-          "name": "adm1_name"
-        },
-        {
-          "level": "2",
-          "id": "dataviz_adm2_id",
-          "name": "adm2_name"
-        }
-      ],
-      "type": "line"
-    }
-  },
-  "ndvi_dekad_anomaly": {
-    "chart_data": {
-      "fields": [
-        {
-          "key": "viq",
-          "label": "NDVI anomaly",
-          "minValue": 0,
-          "maxValue": 150,
-          "color": "#5e803f"
-        },
-        {
-          "key": "viq_avg",
-          "label": "Normal",
-          "color": "#eb3223",
-          "pointRadius": 0,
-          "fallback": 100
-        }
-      ],
-      "levels": [
-        {
-          "level": "1",
-          "id": "dataviz_adm1_id",
-          "name": "adm1_name"
-        },
-        {
-          "level": "2",
-          "id": "dataviz_adm2_id",
-          "name": "adm2_name"
-        }
-      ],
-      "type": "line"
-    }
-  },
-  "lst_daytime_blended": {
-    "title": "INAM mean maximum air temperature (10-day)",
-    "type": "wms",
-    "server_layer_name": "myd11a2_blended_txb_moz_dekad",
-    "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
-    "date_interval": "days",
-    "wcsConfig": {
-      "scale": 0.02,
-      "offset": -273,
-      "pixelResolution": 64
-    },
-    "opacity": 0.7,
-    "legend_text": "Local station data from INAM blended with MODIS daytime land surface temperature estimates",
-    "legend": "tair_42_n24_70",
-    "additional_query_params": {
-      "styles": "tair_42_n24_70"
-    }
-  },
-  "lst_day_anomaly_blended": {
-    "title": "INAM mean maximum air temperature anomaly (10-day)",
-    "type": "wms",
-    "server_layer_name": "myd11a2_blended_txd_moz_dekad",
-    "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
-    "date_interval": "days",
-    "opacity": 0.7,
-    "legend_text": "Temperature anomaly based on long term average compared to local station data from INAM blended with MODIS daytime land surface temperature estimates",
-    "legend": "txd_tud_21_m12_12",
-    "additional_query_params": {
-      "styles": "txd_tud_21_m12_12"
-    }
-  },
-  "spi_blended_1m": {
-    "title": "INAM SPI - 1-month",
-    "type": "wms",
-    "server_layer_name": "rxs_blended_moz_dekad",
-    "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
-    "date_interval": "days",
-    "wcsConfig": {
-      "scale": 0.001,
-      "offset": 0,
-      "pixelResolution": 64
-    },
-    "opacity": 0.7,
-    "legend_text": "1-month Standardized Precipitation Index calculated from INAM / CHIRP blended data",
-    "legend": "spi",
-    "additional_query_params": {
-      "styles": "r1s_blended"
-    }
-  },
-  "spi_blended_2m": {
-    "title": "INAM SPI - 2-month",
-    "type": "wms",
-    "server_layer_name": "rxs_blended_moz_dekad",
-    "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
-    "date_interval": "days",
-    "wcsConfig": {
-      "scale": 0.001,
-      "offset": 0,
-      "pixelResolution": 64
-    },
-    "opacity": 0.7,
-    "legend_text": "2-month Standardized Precipitation Index calculated from INAM / CHIRP blended data",
-    "legend": "spi",
-    "additional_query_params": {
-      "styles": "r2s_blended"
-    }
-  },
-  "spi_blended_3m": {
-    "title": "INAM SPI - 3-month",
-    "type": "wms",
-    "server_layer_name": "rxs_blended_moz_dekad",
-    "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
-    "date_interval": "days",
-    "wcsConfig": {
-      "scale": 0.001,
-      "offset": 0,
-      "pixelResolution": 64
-    },
-    "opacity": 0.7,
-    "legend_text": "3-month Standardized Precipitation Index calculated from INAM / CHIRP blended data",
-    "legend": "spi",
-    "additional_query_params": {
-      "styles": "r3s_blended"
-    }
-  },
-  "spi_blended_6m": {
-    "title": "INAM SPI - 6-month",
-    "type": "wms",
-    "server_layer_name": "rxs_blended_moz_dekad",
-    "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
-    "date_interval": "days",
-    "wcsConfig": {
-      "scale": 0.001,
-      "offset": 0,
-      "pixelResolution": 64
-    },
-    "opacity": 0.7,
-    "legend_text": "6-month Standardized Precipitation Index calculated from INAM / CHIRP blended data",
-    "legend": "spi",
-    "additional_query_params": {
-      "styles": "r6s_blended"
-    }
-  },
-  "spi_blended_9m": {
-    "title": "INAM SPI - 9-month",
-    "type": "wms",
-    "server_layer_name": "rxs_blended_moz_dekad",
-    "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
-    "date_interval": "days",
-    "wcsConfig": {
-      "scale": 0.001,
-      "offset": 0,
-      "pixelResolution": 64
-    },
-    "opacity": 0.7,
-    "legend_text": "9-month Standardized Precipitation Index calculated from INAM / CHIRP blended data",
-    "legend": "spi",
-    "additional_query_params": {
-      "styles": "r9s_blended"
-    }
-  },
-  "spi_blended_1y": {
-    "title": "INAM SPI - 1-year",
-    "type": "wms",
-    "server_layer_name": "rxs_blended_moz_dekad",
-    "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
-    "date_interval": "days",
-    "wcsConfig": {
-      "scale": 0.001,
-      "offset": 0,
-      "pixelResolution": 64
-    },
-    "opacity": 0.7,
-    "legend_text": "1-year Standardized Precipitation Index calculated from INAM / CHIRP blended data",
-    "legend": "spi",
-    "additional_query_params": {
-      "styles": "rys_blended"
-    }
-  },
-  "spi_blended_2y": {
-    "title": "INAM SPI - 2-year",
-    "type": "wms",
-    "server_layer_name": "rxs_blended_moz_dekad",
-    "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
-    "date_interval": "days",
-    "wcsConfig": {
-      "scale": 0.001,
-      "offset": 0,
-      "pixelResolution": 64
-    },
-    "opacity": 0.7,
-    "legend_text": "2-year Standardized Precipitation Index calculated from INAM / CHIRP blended data",
-    "legend": "spi",
-    "additional_query_params": {
-      "styles": "rds_blended"
-    }
-  },
-  "spi_blended_3y": {
-    "title": "INAM SPI - 3-year",
-    "type": "wms",
-    "server_layer_name": "rxs_blended_moz_dekad",
-    "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
-    "date_interval": "days",
-    "wcsConfig": {
-      "scale": 0.001,
-      "offset": 0,
-      "pixelResolution": 64
-    },
-    "opacity": 0.7,
-    "legend_text": "3-year Standardized Precipitation Index calculated from INAM / CHIRP blended data",
-    "legend": "spi",
-    "additional_query_params": {
-      "styles": "rhs_blended"
-    }
-  },
-  "spi_blended_5y": {
-    "title": "INAM SPI - 5-year",
-    "type": "wms",
-    "server_layer_name": "rxs_blended_moz_dekad",
-    "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
-    "date_interval": "days",
-    "wcsConfig": {
-      "scale": 0.001,
-      "offset": 0,
-      "pixelResolution": 64
-    },
-    "opacity": 0.7,
-    "legend_text": "5-year Standardized Precipitation Index calculated from INAM / CHIRP blended data",
-    "legend": "spi",
-    "additional_query_params": {
-      "styles": "rps_blended"
-    }
-  },
-  "adamts_buffers": {
-    "server_layer_name": "moz_gdacs_buffers"
-  },
-  "ipc_phase_2024": {
-    "title": "IPC Phase Classification April to September 2024",
-    "type": "admin_level_data",
-    "path": "data/mozambique/ipc/ipc-2024-v2.json",
-    "boundary": "admin2_boundaries",
-    "admin_level": 2,
-    "data_field": "ph_class",
-    "admin_code": "adm2_source_id",
-    "opacity": 0.9,
-    "legend": [
-      {
-        "value": 1,
-        "label": "Phase 1 - None / minimal",
-        "color": "#c6ffc7"
-      },
-      {
-        "value": 2,
-        "label": "Phase 2 - Stressed",
-        "color": "#ffe718"
-      },
-      {
-        "value": 3,
-        "label": "Phase 3 - Crisis",
-        "color": "#e88400"
-      },
-      {
-        "value": 4,
-        "label": "Phase 4 - Emergency",
-        "color": "#e02d00"
-      },
-      {
-        "value": 5,
-        "label": "Phase 5 - Disaster / famine",
-        "color": "#5e0803"
-      }
-    ],
-    "legend_text": "IPC Phase Classification for April - September 2024. Source: National IPC Technical Working Group"
-  },
-  "ipc_phase_projection_2024_2025": {
-    "title": "IPC Phase Classification Projection October 2024 to March 2025",
-    "type": "admin_level_data",
-    "path": "data/mozambique/ipc/ipc-2024.json",
-    "boundary": "admin2_boundaries",
-    "admin_level": 2,
-    "data_field": "act_040924",
-    "admin_code": "adm2_source_id",
-    "opacity": 0.9,
-    "legend": [
-      {
-        "value": 1,
-        "label": "Phase 1 - None / minimal",
-        "color": "#c6ffc7"
-      },
-      {
-        "value": 2,
-        "label": "Phase 2 - Stressed",
-        "color": "#ffe718"
-      },
-      {
-        "value": 3,
-        "label": "Phase 3 - Crisis",
-        "color": "#e88400"
-      },
-      {
-        "value": 4,
-        "label": "Phase 4 - Emergency",
-        "color": "#e02d00"
-      },
-      {
-        "value": 5,
-        "label": "Phase 5 - Disaster / famine",
-        "color": "#5e0803"
-      }
-    ],
-    "legend_text": "IPC Phase Classification Projection October 2024 to March 2025. Source: National IPC Technical Working Group"
-  },
-  "ipc_phase_projection_2024_2025_v2": {
-    "title": "IPC Phase Classification Projection October 2024 to March 2025",
-    "type": "admin_level_data",
-    "path": "data/mozambique/ipc/ipc-2025-projection-as-of-2024-09.json",
-    "boundary": "admin2_boundaries",
-    "admin_level": 2,
-    "data_field": "ph_class",
-    "admin_code": "adm2_source_id",
-    "opacity": 0.9,
-    "legend": [
-      {
-        "value": 1,
-        "label": "Phase 1 - None / minimal",
-        "color": "#c6ffc7"
-      },
-      {
-        "value": 2,
-        "label": "Phase 2 - Stressed",
-        "color": "#ffe718"
-      },
-      {
-        "value": 3,
-        "label": "Phase 3 - Crisis",
-        "color": "#e88400"
-      },
-      {
-        "value": 4,
-        "label": "Phase 4 - Emergency",
-        "color": "#e02d00"
-      },
-      {
-        "value": 5,
-        "label": "Phase 5 - Disaster / famine",
-        "color": "#5e0803"
-      }
-    ],
-    "legend_text": "IPC Phase Classification Projection October 2024 to March 2025. Source: National IPC Technical Working Group"
-  },
-  "ipc_phase_2022": {
-    "title": "IPC Phase Classification 2022",
-    "type": "admin_level_data",
-    "path": "data/mozambique/ipc/ipc-2022.json",
-    "boundary": "admin2_boundaries",
-    "admin_level": 2,
-    "data_field": "ipcphase",
-    "admin_code": "adm2_source_id",
-    "opacity": 0.9,
-    "legend": [
-      {
-        "value": 1,
-        "label": "Phase 1 - None / minimal",
-        "color": "#c6ffc7"
-      },
-      {
-        "value": 2,
-        "label": "Phase 2 - Stressed",
-        "color": "#ffe718"
-      },
-      {
-        "value": 3,
-        "label": "Phase 3 - Crisis",
-        "color": "#e88400"
-      },
-      {
-        "value": 4,
-        "label": "Phase 4 - Emergency",
-        "color": "#e02d00"
-      },
-      {
-        "value": 5,
-        "label": "Phase 5 - Disaster / famine",
-        "color": "#5e0803"
-      }
-    ],
-    "legend_text": "IPC Phase Classification 2022. Source: National IPC Technical Working Group"
-  },
-  "ipc_phase_2023": {
-    "title": "IPC Phase Classification 2023",
-    "type": "admin_level_data",
-    "path": "data/mozambique/ipc/ipc-2023.json",
-    "boundary": "admin2_boundaries",
-    "admin_level": 2,
-    "data_field": "ipcphase",
-    "admin_code": "adm2_source_id",
-    "opacity": 0.9,
-    "legend": [
-      {
-        "value": 1,
-        "label": "Phase 1 - None / minimal",
-        "color": "#c6ffc7"
-      },
-      {
-        "value": 2,
-        "label": "Phase 2 - Stressed",
-        "color": "#ffe718"
-      },
-      {
-        "value": 3,
-        "label": "Phase 3 - Crisis",
-        "color": "#e88400"
-      },
-      {
-        "value": 4,
-        "label": "Phase 4 - Emergency",
-        "color": "#e02d00"
-      },
-      {
-        "value": 5,
-        "label": "Phase 5 - Disaster / famine",
-        "color": "#5e0803"
-      }
-    ],
-    "legend_text": "IPC Phase Classification 2023. Source: National IPC Technical Working Group"
-  },
-  "ipc_pop_ph3_2022": {
-    "title": "Number of people in IPC Phase 3+ (2022)",
-    "type": "admin_level_data",
-    "path": "data/mozambique/ipc/ipc-2022.json",
-    "data_field": "ph3plus",
-    "boundary": "admin2_boundaries",
-    "admin_level": 2,
-    "admin_code": "adm2_source_id",
-    "opacity": 0.9,
-    "legend": [
-      {
-        "value": 0,
-        "label": "0",
-        "color": "#e7e7e7"
-      },
-      {
-        "value": 1,
-        "label": "< 10,000",
-        "color": "#fee5d9"
-      },
-      {
-        "value": 10000,
-        "label": "10,000 - 19,999",
-        "color": "#fcae91"
-      },
-      {
-        "value": 20000,
-        "label": "20,000 - 29,999",
-        "color": "#fb6a4a"
-      },
-      {
-        "value": 30000,
-        "label": "30,000 - 39,999",
-        "color": "#de2d26"
-      },
-      {
-        "value": 40000,
-        "label": ">= 40,000",
-        "color": "#a50f15"
-      }
-    ],
-    "legend_text": "Number of people in IPC phase 3 or higher 2022. Source: National IPC Technical Working Group"
-  },
-  "ipc_pop_ph3_2023": {
-    "title": "Number of people in IPC Phase 3+ (2023)",
-    "type": "admin_level_data",
-    "path": "data/mozambique/ipc/ipc-2023.json",
-    "data_field": "ph3plus",
-    "boundary": "admin2_boundaries",
-    "admin_level": 2,
-    "admin_code": "adm2_source_id",
-    "opacity": 0.9,
-    "legend": [
-      {
-        "value": 0,
-        "label": "0",
-        "color": "#e7e7e7"
-      },
-      {
-        "value": 1,
-        "label": "< 10,000",
-        "color": "#fee5d9"
-      },
-      {
-        "value": 10000,
-        "label": "10,000 - 19,999",
-        "color": "#fcae91"
-      },
-      {
-        "value": 20000,
-        "label": "20,000 - 29,999",
-        "color": "#fb6a4a"
-      },
-      {
-        "value": 30000,
-        "label": "30,000 - 39,999",
-        "color": "#de2d26"
-      },
-      {
-        "value": 40000,
-        "label": ">= 40,000",
-        "color": "#a50f15"
-      }
-    ],
-    "legend_text": "Number of people in IPC phase 3 or higher 2023. Source: National IPC Technical Working Group"
-  },
-  "ipc_perc_ph3_2022": {
-    "title": "Percent of people in IPC Phase 3+ (2022)",
-    "type": "admin_level_data",
-    "path": "data/mozambique/ipc/ipc-2022.json",
-    "data_field": "ph3ps_p",
-    "boundary": "admin2_boundaries",
-    "admin_level": 2,
-    "admin_code": "adm2_source_id",
-    "opacity": 0.9,
-    "legend": [
-      {
-        "value": 0,
-        "label": "0",
-        "color": "#f7f7f7"
-      },
-      {
-        "value": 1,
-        "label": "< 10%",
-        "color": "#fee5d9"
-      },
-      {
-        "value": 10,
-        "label": "10 - 19%",
-        "color": "#fcae91"
-      },
-      {
-        "value": 20,
-        "label": "20 - 29%",
-        "color": "#fb6a4a"
-      },
-      {
-        "value": 30,
-        "label": "30 - 39%",
-        "color": "#de2d26"
-      },
-      {
-        "value": 40,
-        "label": ">= 40%",
-        "color": "#a50f15"
-      }
-    ],
-    "legend_text": "Percent of people in IPC phase 3 or higher 2022. Source: National IPC Technical Working Group"
-  },
-  "ipc_perc_ph3_2023": {
-    "title": "Percent of people in IPC Phase 3+ (2023)",
-    "type": "admin_level_data",
-    "path": "data/mozambique/ipc/ipc-2023.json",
-    "data_field": "ph3ps_p",
-    "boundary": "admin2_boundaries",
-    "admin_level": 2,
-    "admin_code": "adm2_source_id",
-    "opacity": 0.9,
-    "legend": [
-      {
-        "value": 0,
-        "label": "0",
-        "color": "#f7f7f7"
-      },
-      {
-        "value": 1,
-        "label": "< 10%",
-        "color": "#fee5d9"
-      },
-      {
-        "value": 10,
-        "label": "10 - 19%",
-        "color": "#fcae91"
-      },
-      {
-        "value": 20,
-        "label": "20 - 29%",
-        "color": "#fb6a4a"
-      },
-      {
-        "value": 30,
-        "label": "30 - 39%",
-        "color": "#de2d26"
-      },
-      {
-        "value": 40,
-        "label": ">= 40%",
-        "color": "#a50f15"
-      }
-    ],
-    "legend_text": "Percent of people in IPC phase 3 or higher 2023. Source: National IPC Technical Working Group"
-  },
-  "ipc_pop_ph4_2022": {
-    "title": "Number of people in IPC Phase 4 (2022)",
-    "type": "admin_level_data",
-    "path": "data/mozambique/ipc/ipc-2022.json",
-    "data_field": "ph4",
-    "boundary": "admin2_boundaries",
-    "admin_level": 2,
-    "admin_code": "adm2_source_id",
-    "opacity": 0.9,
-    "legend": [
-      {
-        "value": 0,
-        "label": "0",
-        "color": "#e7e7e7"
-      },
-      {
-        "value": 1,
-        "label": "< 5,000",
-        "color": "#fee5d9"
-      },
-      {
-        "value": 5000,
-        "label": "5,000 - 9,999",
-        "color": "#fcae91"
-      },
-      {
-        "value": 10000,
-        "label": "10,000 - 14,999",
-        "color": "#fb6a4a"
-      },
-      {
-        "value": 15000,
-        "label": "15,000 - 19,999",
-        "color": "#de2d26"
-      },
-      {
-        "value": 20000,
-        "label": ">= 20,000",
-        "color": "#a50f15"
-      }
-    ],
-    "legend_text": "Number of people in IPC phase 4 2022. Source: National IPC Technical Working Group"
-  },
-  "ipc_pop_ph4_2023": {
-    "title": "Number of people in IPC Phase 4 (2023)",
-    "type": "admin_level_data",
-    "path": "data/mozambique/ipc/ipc-2023.json",
-    "data_field": "ph4",
-    "boundary": "admin2_boundaries",
-    "admin_level": 2,
-    "admin_code": "adm2_source_id",
-    "opacity": 0.9,
-    "legend": [
-      {
-        "value": 0,
-        "label": "0",
-        "color": "#e7e7e7"
-      },
-      {
-        "value": 1,
-        "label": "< 5,000",
-        "color": "#fee5d9"
-      },
-      {
-        "value": 5000,
-        "label": "5,000 - 9,999",
-        "color": "#fcae91"
-      },
-      {
-        "value": 10000,
-        "label": "10,000 - 14,999",
-        "color": "#fb6a4a"
-      },
-      {
-        "value": 15000,
-        "label": "15,000 - 19,999",
-        "color": "#de2d26"
-      },
-      {
-        "value": 20000,
-        "label": ">= 20,000",
-        "color": "#a50f15"
-      }
-    ],
-    "legend_text": "Number of people in IPC phase 4 2023. Source: National IPC Technical Working Group"
-  },
-  "ipc_perc_ph4_2022": {
-    "title": "Percent of people in IPC Phase 4 (2022)",
-    "type": "admin_level_data",
-    "path": "data/mozambique/ipc/ipc-2022.json",
-    "data_field": "ph4_perc",
-    "boundary": "admin2_boundaries",
-    "admin_level": 2,
-    "admin_code": "adm2_source_id",
-    "opacity": 0.9,
-    "legend": [
-      {
-        "value": 0,
-        "label": "0",
-        "color": "#f7f7f7"
-      },
-      {
-        "value": 1,
-        "label": "< 5%",
-        "color": "#fee5d9"
-      },
-      {
-        "value": 6,
-        "label": "6 - 9%",
-        "color": "#fcae91"
-      },
-      {
-        "value": 10,
-        "label": "10 - 14%",
-        "color": "#fb6a4a"
-      },
-      {
-        "value": 15,
-        "label": "15 - 19%",
-        "color": "#de2d26"
-      },
-      {
-        "value": 20,
-        "label": ">= 20%",
-        "color": "#a50f15"
-      }
-    ],
-    "legend_text": "Percent of people in IPC phase 4 2022. Source: National IPC Technical Working Group"
-  },
-  "ipc_perc_ph4_2023": {
-    "title": "Percent of people in IPC Phase 4 (2023)",
-    "type": "admin_level_data",
-    "path": "data/mozambique/ipc/ipc-2023.json",
-    "data_field": "ph4_perc",
-    "boundary": "admin2_boundaries",
-    "admin_level": 2,
-    "admin_code": "adm2_source_id",
-    "opacity": 0.9,
-    "legend": [
-      {
-        "value": 0,
-        "label": "0",
-        "color": "#f7f7f7"
-      },
-      {
-        "value": 1,
-        "label": "< 5%",
-        "color": "#fee5d9"
-      },
-      {
-        "value": 6,
-        "label": "6 - 9%",
-        "color": "#fcae91"
-      },
-      {
-        "value": 10,
-        "label": "10 - 14%",
-        "color": "#fb6a4a"
-      },
-      {
-        "value": 15,
-        "label": "15 - 19%",
-        "color": "#de2d26"
-      },
-      {
-        "value": 20,
-        "label": ">= 20%",
-        "color": "#a50f15"
-      }
-    ],
-    "legend_text": "Percent of people in IPC phase 4 2023. Source: National IPC Technical Working Group"
-  },
-  "mpi": {
-    "title": "Multidimensional Poverty Index",
-    "type": "admin_level_data",
-    "boundary": "admin1_boundaries",
-    "path": "data/mozambique/moz-mpi-2020.json",
-    "data_field": "mpi",
-    "admin_level": 1,
-    "admin_code": "ADM1_PCODE",
-    "opacity": 0.7,
-    "feature_info_props": {
-      "mpi_headcount": {
-        "type": "number",
-        "dataTitle": "Percent of the population in multidimensional poverty"
-      },
-      "mpi_intensity": {
-        "type": "number",
-        "dataTitle": "Intensity of deprivation among the poor"
-      },
-      "vuln_poverty": {
-        "type": "number",
-        "dataTitle": "Vulnerable to poverty"
-      },
-      "severe_poverty": {
-        "type": "number",
-        "dataTitle": "In severe poverty"
-      }
-    },
-    "legend": [
-      {
-        "value": "0 - 0.3",
-        "color": "#fee5d9"
-      },
-      {
-        "value": "0.31 - 0.4",
-        "color": "#fcae91"
-      },
-      {
-        "value": "0.41 - 0.5",
-        "color": "#fb6a4a"
-      },
-      {
-        "value": "0.51 - 0.6",
-        "color": "#de2d26"
-      },
-      {
-        "value": "0.61 or more",
-        "color": "#a50f15"
-      }
-    ],
-    "legend_text": "Multidimensional Poverty Index. Source: Alkire, S., Kanagaratnam, U. and Suppa, N. (2020). ‘The Global Multidimensional Poverty Index (MPI) 2020’, OPHI MPI"
-  },
-  "census": {
-    "title": "Total population",
-    "type": "admin_level_data",
-    "path": "data/mozambique/moz-pop-projc-2022-INE.json",
-    "data_field": "2022_Tot",
-    "boundary": "admin2_boundaries",
-    "admin_level": 2,
-    "admin_code": "adm2_source_id",
-    "opacity": 0.7,
-    "feature_info_props": {
-      "Tot_Urb_20": {
-        "type": "text",
-        "dataTitle": "Total urban population"
-      },
-      "2022_Rur_T": {
-        "type": "number",
-        "dataTitle": "Total rural population"
-      }
-    },
-    "legend": [
-      {
-        "value": 1,
-        "label": "< 50,000",
-        "color": "#eff3ff"
-      },
-      {
-        "value": 50000,
-        "label": "50,000 - 100,000",
-        "color": "#bdd7e7"
-      },
-      {
-        "value": 100000,
-        "label": "100,000 - 250,000",
-        "color": "#6baed6"
-      },
-      {
-        "value": 250000,
-        "label": "250,000 - 500,000",
-        "color": "#3182bd"
-      },
-      {
-        "value": 500000,
-        "label": "> 500,000",
-        "color": "#08519c"
-      }
-    ],
-    "legend_text": "Projected 2022 population data. Source: INE"
-  },
-  "pop_proj_2025": {
-    "title": "Population projection 2025",
-    "type": "admin_level_data",
-    "path": "data/mozambique/moz-pop-projc-2025-INE.json",
-    "data_field": "2025_Tot",
-    "boundary": "admin2_boundaries",
-    "admin_level": 2,
-    "admin_code": "adm2_source_id",
-    "opacity": 0.7,
-    "feature_info_props": {
-      "Tot_Urb_20": {
-        "type": "text",
-        "dataTitle": "Total urban population"
-      },
-      "2025_Rur_T": {
-        "type": "number",
-        "dataTitle": "Total rural population"
-      }
-    },
-    "legend": [
-      {
-        "value": 1,
-        "label": "< 50,000",
-        "color": "#eff3ff"
-      },
-      {
-        "value": 50000,
-        "label": "50,000 - 100,000",
-        "color": "#bdd7e7"
-      },
-      {
-        "value": 100000,
-        "label": "100,000 - 250,000",
-        "color": "#6baed6"
-      },
-      {
-        "value": 250000,
-        "label": "250,000 - 500,000",
-        "color": "#3182bd"
-      },
-      {
-        "value": 500000,
-        "label": "> 500,000",
-        "color": "#08519c"
-      }
-    ],
-    "legend_text": "Projected 2025 population data. Source: INE"
-  },
-  "cdi": {
-    "title": "Combined Drought Index",
-    "type": "composite",
-    "period": "monthly",
-    "base_url": "https://hip-service.ovio.org/q_multi_geojson",
-    "validity": {
-      "forward": 1,
-      "backward": 2,
-      "mode": "dekad"
-    },
-    "input_layers": [
-      {
-        "id": "spi_1m",
-        "importance": 0.4,
-        "key": ["CHIRPS", "R1S_DEKAD"],
-        "aggregation": "last_dekad"
-      },
-      {
-        "id": "et0",
-        "importance": 0.3,
-        "key": ["FAO", "WAPOR_ET0_DEKAD"],
-        "aggregation": "last_dekad"
-      },
-      {
-        "id": "rzsm",
-        "importance": 0.3,
-        "key": ["AGERA5", "SOIL_MOIST"],
-        "aggregation": "last_dekad"
-      }
-    ],
-    "legend": [
-      {
-        "value": 0,
-        "label": "0 - 0.1",
-        "color": "#672200"
-      },
-      {
-        "value": 0.1,
-        "label": "0.1 - 0.2",
-        "color": "#a93800"
-      },
-      {
-        "value": 0.2,
-        "label": "0.2 - 0.3",
-        "color": "#e59800"
-      },
-      {
-        "value": 0.3,
-        "label": "0.3 - 0.4",
-        "color": "#ffe769"
-      },
-      {
-        "value": 0.4,
-        "label": "0.4 - 0.5",
-        "color": "#f0f0f0"
-      },
-      {
-        "value": 0.5,
-        "label": "0.5 - 0.6",
-        "color": "#f0f0f0"
-      },
-      {
-        "value": 0.6,
-        "label": "0.6 - 0.7",
-        "color": "#a9c6d6"
-      },
-      {
-        "value": 0.7,
-        "label": "0.7 - 0.8",
-        "color": "#019ac4"
-      },
-      {
-        "value": 0.8,
-        "label": "0.8 - 0.9",
-        "color": "#014c73"
-      },
-      {
-        "value": 0.9,
-        "label": "0.9 - 1",
-        "color": "#014c73"
-      }
-    ],
-    "legend_text": "Composite Drought Index",
-    "aggregation": "pixel",
-    "date_layer": "spi_1m",
-    "start_date": "2020-12-01",
-    "end_date": "2021-07-31",
-    "opacity": 0.7
-  },
-  "cdi_test": {
-    "title": "Combined Drought Index (v1)",
-    "type": "composite",
-    "period": "monthly",
-    "base_url": "https://hip-service.ovio.org/q_multi_geojson",
-    "validity": {
-      "forward": 1,
-      "backward": 2,
-      "mode": "dekad"
-    },
-    "input_layers": [
-      {
-        "id": "spi_1m",
-        "importance": 0.5,
-        "key": ["CHIRPS", "R1S_DEKAD"],
-        "aggregation": "last_dekad"
-      },
-      {
-        "id": "lst_anomaly",
-        "importance": 0.25,
-        "key": ["MODIS", "MYD11C2_TDD_DEKAD"],
-        "aggregation": "last_dekad"
-      },
-      {
-        "id": "ndvi_dekad",
-        "importance": 0.25,
-        "key": ["MODIS", "NDVI_smoothed_5KM"],
-        "aggregation": "average",
-        "invert": "True"
-      }
-    ],
-    "legend": [
-      {
-        "value": 0,
-        "label": "0 - 0.1",
-        "color": "#672200"
-      },
-      {
-        "value": 0.1,
-        "label": "0.1 - 0.2",
-        "color": "#a93800"
-      },
-      {
-        "value": 0.2,
-        "label": "0.2 - 0.3",
-        "color": "#e59800"
-      },
-      {
-        "value": 0.3,
-        "label": "0.3 - 0.4",
-        "color": "#ffe769"
-      },
-      {
-        "value": 0.4,
-        "label": "0.4 - 0.5",
-        "color": "#f0f0f0"
-      },
-      {
-        "value": 0.5,
-        "label": "0.5 - 0.6",
-        "color": "#f0f0f0"
-      },
-      {
-        "value": 0.6,
-        "label": "0.6 - 0.7",
-        "color": "#a9c6d6"
-      },
-      {
-        "value": 0.7,
-        "label": "0.7 - 0.8",
-        "color": "#019ac4"
-      },
-      {
-        "value": 0.8,
-        "label": "0.8 - 0.9",
-        "color": "#014c73"
-      },
-      {
-        "value": 0.9,
-        "label": "0.9 - 1",
-        "color": "#014c73"
-      }
-    ],
-    "legend_text": "Composite Drought Index v1. SPI weight = 0.5; LST weight = 0.25; NDVI weight = 0.25",
-    "aggregation": "pixel",
-    "date_layer": "spi_1m",
-    "start_date": "2020-12-01",
-    "end_date": "2021-07-31",
-    "opacity": 0.7
-  },
-  "forecast_river_discharge_at_gauges": {
-    "title": "River discharge forecast",
-    "loader": "google_flood",
-    "type": "point_data",
-    "hex_display": false,
-    "data": "https://prism-api.ovio.org/google-floods/gauges/?region_codes=MZ",
-    "detail_url": "https://prism-api.ovio.org/google-floods/gauges/forecasts",
-    "data_field": "severity",
-    "data_field_type": "text",
-    "date_url": "https://prism-api.ovio.org/google-floods/dates/?region_codes=MZ",
-    "opacity": 0.9,
-    "legend_text": "River discharge forecast at verified gauges. Visit [Google Research](https://sites.research.google/floodforecasting/) to learn more about Google's AI forecasting models.",
-    "legend": [
-      { "label": "Extreme", "value": "EXTREME", "color": "#a70606" },
-      { "label": "Danger", "value": "SEVERE", "color": "#ea250a" },
-      { "label": "Warning", "value": "ABOVE_NORMAL", "color": "#fba705" },
-      { "label": "Normal", "value": "NO_FLOODING", "color": "#089180" },
-      { "label": "No data", "value": "UNKNOWN", "color": "#858585" }
-    ],
-    "feature_info_title": {
-      "siteName": {
-        "type": "text",
-        "template": "Site: {{siteName}}",
-        "visibility": "if-defined"
-      },
-      "riverName": {
-        "type": "text",
-        "template": "River: {{riverName}}",
-        "visibility": "if-defined"
-      },
-      "gaugeId": {
-        "type": "text",
-        "template": "Gauge ID: {{gaugeId}}",
-        "visibility": "if-defined"
-      }
-    },
-    "feature_info_props": {
-      "siteName": {
-        "type": "text",
-        "dataTitle": "Site",
-        "visibility": "if-defined"
-      },
-      "river": {
-        "type": "text",
-        "dataTitle": "River",
-        "visibility": "if-defined"
-      },
-      "severity": {
-        "type": "labelMapping",
-        "dataTitle": "Flood Status",
-        "labelMap": {
-          "EXTREME": "Extreme",
-          "SEVERE": "Danger",
-          "ABOVE_NORMAL": "Warning",
-          "NO_FLOODING": "Normal",
-          "UNKNOWN": "No data"
-        }
-      },
-      "gaugeId": {
-        "type": "text",
-        "dataTitle": "Gauge ID"
-      },
-      "source": {
-        "type": "text",
-        "dataTitle": "Data source"
-      },
-      "issuedTime": {
-        "type": "date",
-        "dataTitle": "Status issued"
-      }
-    }
-  },
-  "predicted_flood_inundation_maps": {
-    "title": "Flood Inundation Prediction Map",
-    "type": "geojson_polygon",
-    "hex_display": false,
-    "data": "https://prism-api.ovio.org/google-floods/inundations?region_codes=MZ",
-    "data_field": "level",
-    "data_field_type": "text",
-    "opacity": 1,
-    "legend_text": "Current predicted flood maps. Visit [Google Research](https://sites.research.google/floodforecasting/) about Google's AI Forecasting models.",
-    "legend": [
-      { "label": "High", "value": "HIGH", "color": "#de2d26" },
-      { "label": "Medium", "value": "MEDIUM", "color": "#fc9272" },
-      { "label": "Low", "value": "LOW", "color": "#fee0d2" }
-    ]
-  }
 }
