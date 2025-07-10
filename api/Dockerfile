@@ -1,4 +1,5 @@
-FROM ghcr.io/osgeo/gdal:ubuntu-full-3.7.0
+FROM ghcr.io/osgeo/gdal:ubuntu-full-3.11.1
+# gdal 3.11.1 uses ubuntu 24.04 and python 3.12
 
 ENV PYTHONPATH=/
 
