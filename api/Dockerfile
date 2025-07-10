@@ -34,7 +34,7 @@ RUN rm -f /etc/apt/sources.list.d/*
 RUN rm -f /usr/share/keyrings/*
 
 # Add the repository to the sources list with trusted=yes to bypass GPG verification
-RUN echo "deb [trusted=yes] https://apache.jfrog.io/artifactory/arrow/ubuntu jammy main" | tee /etc/apt/sources.list.d/apache-arrow.list
+RUN echo "deb [trusted=yes] https://apache.jfrog.io/artifactory/arrow/ubuntu noble main" | tee /etc/apt/sources.list.d/apache-arrow.list
 
 RUN --mount=type=cache,target=/var/cache/apt \
     apt-get update && \
