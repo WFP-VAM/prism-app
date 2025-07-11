@@ -1,4 +1,3 @@
-version: "3"
 # Run a full battery of test on all endpoints using https://pypi.org/project/schemathesis/
 # This file sets up a db that allows testing alerts related endpoints.
 
