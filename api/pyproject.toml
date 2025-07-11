@@ -10,7 +10,7 @@ package-mode = false
 PyJWT = "2.4.0"
 python = ">=3.12,<3.13"
 requests = "^2.32.4"
-playwright = "1.38.0"
+playwright = "1.53.0"
 fastapi = "^0.114.0"
 httpx = "^0.28.0"
 uvicorn = { extras = ["standard"], version = "^0.23.2" }
