@@ -166,11 +166,20 @@ const useRowStyles = makeStyles(() =>
 );
 
 const isZimbabwe = safeCountry === 'zimbabwe';
+const isMalawi = safeCountry === 'malawi';
 
 const rowCategories: {
   category: AACategoryType;
   phase: AAPhaseType;
-}[] = isZimbabwe
+}[] =
+isMalawi
+  ? [
+      { category: 'Normal', phase: 'Set' },
+      { category: 'Normal', phase: 'Ready' },
+      { category: 'na', phase: 'na' },
+      { category: 'ny', phase: 'ny' },
+    ]
+: isZimbabwe
   ? [
       { category: 'Moderate', phase: 'Set' },
       { category: 'Moderate', phase: 'Ready' },
@@ -179,7 +188,7 @@ const rowCategories: {
       { category: 'na', phase: 'na' },
       { category: 'ny', phase: 'ny' },
     ]
-  : [
+: [
       { category: 'Severe', phase: 'Set' },
       { category: 'Severe', phase: 'Ready' },
       { category: 'Moderate', phase: 'Set' },
@@ -189,6 +198,7 @@ const rowCategories: {
       { category: 'na', phase: 'na' },
       { category: 'ny', phase: 'ny' },
     ];
+
 
 type ExtendedRowProps = RowProps & { id: number | 'na' | 'ny' };
 
@@ -229,11 +239,20 @@ function HomeTable({ dialogs }: HomeTableProps) {
     },
   ];
 
+  const getDisplayLabel = (windowKey: string) => {
+    if (isMalawi) {
+      return windowKey === 'Window 1' ? 'NDJ' : windowKey === 'Window 2' ? 'JFM' : windowKey;
+    }
+    return windowKey;
+  };
+
   const headerRow: ExtendedRowProps = {
     id: -1,
     iconContent: null,
     windows: selectedWindow === 'All' ? AAWindowKeys.map(_x => []) : [[]],
-    header: selectedWindow === 'All' ? [...AAWindowKeys] : [selectedWindow],
+    header: selectedWindow === 'All' 
+      ? AAWindowKeys.map(getDisplayLabel) 
+      : [getDisplayLabel(selectedWindow)],
   };
 
   const districtRows: ExtendedRowProps[] = React.useMemo(
