@@ -111,6 +111,10 @@
               "main": true
             },
             {
+              "id": "spi_2m",
+              "label": "2-month"
+            },
+            {
               "id": "spi_3m",
               "label": "3-month",
               "main": false
@@ -136,7 +140,7 @@
       "dry_periods": ["days_dry", "streak_dry_days"],
       "extreme_rain_events": [
         {
-          "group_title": "Rainfall categories:",
+          "group_title": "Number of days of rainfall:",
           "activate_all": false,
           "layers": [
             {

@@ -96,6 +96,10 @@
               "main": true
             },
             {
+              "id": "spi_2m",
+              "label": "2-month"
+            },
+            {
               "id": "spi_3m",
               "label": "3-month"
             },
@@ -168,7 +172,15 @@
         "ndvi_dekad",
         "ndvi_dekad_anomaly"
       ]
-    },
+    }, 
+    "temperature": {
+      "land_surface_temperature": [
+        "lst_daytime",
+        "lst_nighttime",
+        "lst_amplitude",
+        "lst_anomaly"
+      ]
+    },  
     "demographics": {
       "census_data": [
         "population",

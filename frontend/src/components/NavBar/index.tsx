@@ -3,19 +3,17 @@ import { faGithub } from '@fortawesome/free-brands-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   AppBar,
-  Button,
   Box,
   createStyles,
   Theme,
   Toolbar,
   Typography,
   IconButton,
-  Badge,
   makeStyles,
   useTheme,
   useMediaQuery,
 } from '@material-ui/core';
-import React from 'react';
+import React, { useState } from 'react';
 import { useSafeTranslation } from 'i18n';
 import { appConfig } from 'config';
 import {
@@ -24,29 +22,31 @@ import {
   LayersOutlined,
   TableChartOutlined,
   TimerOutlined,
+  Notifications,
 } from '@material-ui/icons';
 import { useDispatch, useSelector } from 'react-redux';
 import {
-  Panel,
   leftPanelTabValueSelector,
   setTabValue,
 } from 'context/leftPanelStateSlice';
 import GoToBoundaryDropdown from 'components/Common/BoundaryDropdown/goto';
-import AlertForm from 'components/MapView/AlertForm';
-import useLayers from 'utils/layers-utils';
 import Legends from 'components/MapView/Legends';
-import { black, cyanBlue } from 'muiTheme';
-import { analysisResultSelector } from 'context/analysisResultStateSlice';
 import { areChartLayersAvailable } from 'config/utils';
 import {
   areTablesAvailable,
-  isAnticipatoryActionAvailable,
+  isAnticipatoryActionDroughtAvailable,
+  isAnticipatoryActionStormAvailable,
 } from 'components/MapView/LeftPanel/utils';
+import { Panel, PanelItem } from 'config/types';
 import About from './About';
 import LanguageSelector from './LanguageSelector';
 import PrintImage from './PrintImage';
+import PanelMenu from './PanelMenu';
+import PanelButton from './PanelButton';
 
-const panels = [
+const { alertFormActive, header } = appConfig;
+
+const panels: PanelItem[] = [
   { panel: Panel.Layers, label: 'Layers', icon: <LayersOutlined /> },
   ...(areChartLayersAvailable
     ? [{ panel: Panel.Charts, label: 'Charts', icon: <BarChartOutlined /> }]
@@ -59,31 +59,53 @@ const panels = [
   ...(areTablesAvailable
     ? [{ panel: Panel.Tables, label: 'Tables', icon: <TableChartOutlined /> }]
     : []),
-  ...(isAnticipatoryActionAvailable
+  ...(isAnticipatoryActionDroughtAvailable || isAnticipatoryActionStormAvailable
     ? [
         {
-          panel: Panel.AnticipatoryAction,
-          label: 'A. Action',
+          label: 'A. Actions',
           icon: <TimerOutlined />,
+          children: [
+            ...(isAnticipatoryActionDroughtAvailable
+              ? [
+                  {
+                    panel: Panel.AnticipatoryActionDrought,
+                    label: 'A. Action Drought',
+                    icon: <TimerOutlined />,
+                  },
+                ]
+              : []),
+            ...(isAnticipatoryActionStormAvailable
+              ? [
+                  {
+                    panel: Panel.AnticipatoryActionStorm,
+                    label: 'A. Action Storm',
+                    icon: <TimerOutlined />,
+                  },
+                ]
+              : []),
+          ],
         },
       ]
     : []),
+  ...(alertFormActive
+    ? [{ panel: Panel.Alerts, label: '', icon: <Notifications /> }]
+    : []),
 ];
 
-function NavBar({ isAlertFormOpen, setIsAlertFormOpen }: NavBarProps) {
+function NavBar() {
   const { t } = useSafeTranslation();
   const dispatch = useDispatch();
   const classes = useStyles();
-  const { alertFormActive, header } = appConfig;
   const tabValue = useSelector(leftPanelTabValueSelector);
-  const analysisData = useSelector(analysisResultSelector);
   const theme = useTheme();
   const smDown = useMediaQuery(theme.breakpoints.down('sm'));
   const mdUp = useMediaQuery(theme.breakpoints.up('md'));
-
-  const { numberOfActiveLayers } = useLayers();
-
-  const badgeContent = numberOfActiveLayers + Number(Boolean(analysisData));
+  const [menuAnchor, setMenuAnchor] = useState<{
+    [key: string]: HTMLElement | null;
+  }>({});
+  const [selectedChild, setSelectedChild] = useState<Record<string, PanelItem>>(
+    {},
+  );
 
   const rightSideLinks = [
     {
@@ -101,9 +123,32 @@ function NavBar({ isAlertFormOpen, setIsAlertFormOpen }: NavBarProps) {
       href={href}
       style={{ color: 'white' }}
     >
-      <FontAwesomeIcon fontSize="20px" icon={icon} />
+      <FontAwesomeIcon fontSize={mdUp ? '1.25rem' : '1.5rem'} icon={icon} />
     </IconButton>
   ));
+
+  const handleMenuOpen = (
+    key: string,
+    event: React.MouseEvent<HTMLElement>,
+  ) => {
+    setMenuAnchor(prev => ({ ...prev, [key]: event.currentTarget }));
+  };
+
+  const handleMenuClose = (key: string) => {
+    setMenuAnchor(prev => ({ ...prev, [key]: null }));
+  };
+
+  const handlePanelClick = (panel: Panel) => {
+    dispatch(setTabValue(panel));
+  };
+
+  const handleChildSelection = (panel: any, child: any) => {
+    setSelectedChild({
+      [panel.label]: child,
+    });
+    handleMenuClose(panel.label);
+    handlePanelClick(child.panel);
+  };
 
   const { title, subtitle, logo } = header || {
     title: 'PRISM',
@@ -144,75 +189,45 @@ function NavBar({ isAlertFormOpen, setIsAlertFormOpen }: NavBarProps) {
             </div>
             <div className={classes.panelsContainer}>
               {panels.map(panel => {
-                const Wrap =
-                  badgeContent >= 1 && panel.panel === Panel.Layers
-                    ? // eslint-disable-next-line react/no-unused-prop-types
-                      ({ children }: { children: React.ReactNode }) => (
-                        <Badge
-                          anchorOrigin={{
-                            horizontal: 'left',
-                            vertical: 'top',
-                          }}
-                          overlap="rectangular"
-                          badgeContent={badgeContent}
-                          color="secondary"
-                        >
-                          {children}
-                        </Badge>
-                      )
-                    : ({ children }: { children: React.ReactNode }) => children;
+                const selected =
+                  tabValue === panel.panel ||
+                  (panel.children &&
+                    panel.children.some(child => tabValue === child.panel));
+
+                const buttonText = selectedChild[panel.label]
+                  ? selectedChild[panel.label].label
+                  : t(panel.label);
 
                 return (
                   <React.Fragment key={panel.panel}>
-                    {!smDown && (
-                      <Button
-                        className={classes.panelButton}
-                        style={{
-                          backgroundColor:
-                            tabValue === panel.panel ? cyanBlue : undefined,
-                          color: tabValue === panel.panel ? black : undefined,
-                        }}
-                        startIcon={<Wrap>{panel.icon}</Wrap>}
-                        onClick={() => {
-                          dispatch(setTabValue(panel.panel));
-                        }}
-                      >
-                        <Typography
-                          style={{
-                            color: tabValue === panel.panel ? black : '#FFFF',
-                            textTransform: 'none',
-                          }}
-                        >
-                          {t(panel.label)}
-                        </Typography>
-                      </Button>
-                    )}
-                    {!mdUp && (
-                      <Wrap>
-                        <IconButton
-                          style={{
-                            backgroundColor:
-                              tabValue === panel.panel ? cyanBlue : undefined,
-                            color: tabValue === panel.panel ? black : 'white',
-                          }}
-                          onClick={() => {
-                            dispatch(setTabValue(panel.panel));
-                          }}
-                        >
-                          {panel.icon}
-                        </IconButton>
-                      </Wrap>
+                    <PanelButton
+                      panel={panel}
+                      selected={selected || false}
+                      handleClick={e => {
+                        if (panel.children) {
+                          handleMenuOpen(panel.label, e);
+                        } else if (panel.panel) {
+                          handlePanelClick(panel.panel);
+                        }
+                      }}
+                      isMobile={!mdUp}
+                      buttonText={buttonText}
+                    />
+                    {panel.children && (
+                      <PanelMenu
+                        panel={panel}
+                        menuAnchor={menuAnchor[panel.label]}
+                        handleMenuClose={() => handleMenuClose(panel.label)}
+                        handleChildClick={(child: any) =>
+                          handleChildSelection(panel, child)
+                        }
+                        selected={tabValue}
+                      />
                     )}
                   </React.Fragment>
                 );
               })}
               <GoToBoundaryDropdown />
-              {alertFormActive && (
-                <AlertForm
-                  isOpen={isAlertFormOpen}
-                  setOpen={setIsAlertFormOpen}
-                />
-              )}
             </div>
           </div>
           <div className={classes.rightSideContainer}>
@@ -313,10 +328,5 @@ const useStyles = makeStyles((theme: Theme) =>
     },
   }),
 );
-
-export interface NavBarProps {
-  isAlertFormOpen: boolean;
-  setIsAlertFormOpen: (v: boolean) => void;
-}
 
 export default NavBar;

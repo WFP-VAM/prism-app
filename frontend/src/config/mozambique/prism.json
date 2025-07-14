@@ -1,7 +1,8 @@
 {
   "country": "Mozambique",
   "defaultLanguage": "en",
-  "anticipatoryActionUrl": "https://data.earthobservation.vam.wfp.org/public-share/aa/aa_probabilities_triggers_moz.csv",
+  "anticipatoryActionDroughtUrl": "https://data.earthobservation.vam.wfp.org/public-share/aa/aa_probabilities_triggers_moz.csv",
+  "anticipatoryActionStormUrl": " https://data.earthobservation.vam.wfp.org/public-share/aa/ts/outputs/latest.json.",
   "header": {
     "title": "PRISM",
     "logo": "images/moz-flag-inam-logo.png"
@@ -267,6 +268,10 @@
               "main": true
             },
             {
+              "id": "spi_2m",
+              "label": "2-month"
+            },
+            {
               "id": "spi_3m",
               "label": "3-month"
             },
@@ -285,14 +290,10 @@
           ]
         }
       ],
-      "dry_periods": [
-        "days_dry",
-        "streak_dry_days",
-        "cdi"
-      ],
+      "dry_periods": ["days_dry", "streak_dry_days"],
       "extreme_rain_events": [
         {
-          "group_title": "Rainfall categories:",
+          "group_title": "Number of days of rainfall:",
           "activate_all": false,
           "layers": [
             {
@@ -380,9 +381,17 @@
           "activate_all": false,
           "layers": [
             {
-              "id": "ipc_phase_2023",
-              "label": "2023",
+              "id": "ipc_phase_projection_2024_2025_v2",
+              "label": "Projection October 2024 to March 2025"
+            },
+            {
+              "id": "ipc_phase_2024",
+              "label": "2024",
               "main": true
+            },
+            {
+              "id": "ipc_phase_2023",
+              "label": "2023"
             },
             {
               "id": "ipc_phase_2022",
@@ -453,7 +462,7 @@
       ]
     },
     "exposure": {
-      "population": ["census"]
+      "population": ["pop_proj_2025"]
     }
   }
 }

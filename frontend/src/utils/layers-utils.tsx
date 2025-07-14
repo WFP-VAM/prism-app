@@ -4,11 +4,19 @@ import {
   Extent,
   expandBoundingBox,
 } from 'components/MapView/Layers/raster-utils';
-import { LayerKey, LayerType, isMainLayer, DateItem } from 'config/types';
 import {
-  AALayerId,
+  LayerKey,
+  LayerType,
+  isMainLayer,
+  DateItem,
+  AnticipatoryAction,
+} from 'config/types';
+import {
+  AALayerIds,
   LayerDefinitions,
   getBoundaryLayerSingleton,
+  isAnticipatoryActionLayer,
+  isWindowedDates,
 } from 'config/utils';
 import {
   addLayer,
@@ -33,8 +41,11 @@ import {
   getPossibleDatesForLayer,
 } from 'utils/server-utils';
 import { UrlLayerKey, getUrlKey, useUrlHistory } from 'utils/url-utils';
-import { AAAvailableDatesSelector } from 'context/anticipatoryActionStateSlice';
 
+import { useTranslation } from 'react-i18next';
+
+import { getAAConfig } from 'context/anticipatoryAction/config';
+import { RootState } from 'context/store';
 import {
   datesAreEqualWithoutTime,
   binaryIncludes,
@@ -48,11 +59,13 @@ const dateSupportLayerTypes: Array<LayerType['type']> = [
   'point_data',
   'wms',
   'static_raster',
-  'anticipatory_action',
+  AnticipatoryAction.drought,
+  AnticipatoryAction.storm,
 ];
 
 const useLayers = () => {
   const dispatch = useDispatch();
+  const { t } = useTranslation();
   const [defaultLayerAttempted, setDefaultLayerAttempted] = useState(false);
 
   const { urlParams, updateHistory, removeLayerFromUrl } = useUrlHistory();
@@ -60,14 +73,31 @@ const useLayers = () => {
 
   const unsortedSelectedLayers = useSelector(layersSelector);
   const serverAvailableDates = useSelector(availableDatesSelector);
-  const AAAvailableDates = useSelector(AAAvailableDatesSelector);
   const { startDate: selectedDate } = useSelector(dateRangeSelector);
 
-  const AAAvailableDatesCombined = useMemo(
-    () =>
-      AAAvailableDates ? getAAAvailableDatesCombined(AAAvailableDates) : [],
-    [AAAvailableDates],
+  // get AA config
+  const AAConfig = useMemo(() => {
+    const anticipatoryLayer = unsortedSelectedLayers.find(layer =>
+      isAnticipatoryActionLayer(layer.type),
+    );
+    if (anticipatoryLayer) {
+      return getAAConfig(anticipatoryLayer.type as AnticipatoryAction);
+    }
+    return null;
+  }, [unsortedSelectedLayers]);
+
+  const AAAvailableDates = useSelector((state: RootState) =>
+    AAConfig ? AAConfig.availableDatesSelector(state) : null,
   );
+
+  const AAAvailableDatesCombined = useMemo(() => {
+    if (!AAAvailableDates) {
+      return [];
+    }
+    return isWindowedDates(AAAvailableDates)
+      ? getAAAvailableDatesCombined(AAAvailableDates)
+      : AAAvailableDates;
+  }, [AAAvailableDates]);
 
   const hazardLayerIds = useMemo(
     () => urlParams.get(UrlLayerKey.HAZARD),
@@ -91,8 +121,9 @@ const useLayers = () => {
 
   const numberOfActiveLayers = useMemo(
     () =>
-      hazardLayersArray.filter(x => x !== AALayerId).length +
-      baselineLayersArray.length,
+      hazardLayersArray.filter(
+        x => !AALayerIds.includes(x as AnticipatoryAction),
+      ).length + baselineLayersArray.length,
     [baselineLayersArray.length, hazardLayersArray],
   );
 
@@ -156,7 +187,7 @@ const useLayers = () => {
       countBy(
         selectedLayersWithDateSupport
           .map(layer => {
-            if (layer.type === 'anticipatory_action') {
+            if (isAnticipatoryActionLayer(layer.type)) {
               // Combine dates for all AA windows to allow selecting AA for the whole period
               return AAAvailableDatesCombined;
             }
@@ -187,7 +218,7 @@ const useLayers = () => {
     }
     const selectedNonAALayersWithDateSupport =
       selectedLayersWithDateSupport.filter(
-        layer => layer.type !== 'anticipatory_action',
+        layer => !isAnticipatoryActionLayer(layer.type),
       );
     /*
       Only keep the dates which were duplicated the same amount of times as the amount of layers active...and convert back to array.
@@ -262,7 +293,9 @@ const useLayers = () => {
     if (!defaultLayerAttempted) {
       dispatch(
         addNotification({
-          message: `Invalid default layer identifier: ${defaultLayer}`,
+          message: t('Invalid default layer identifier: {{defaultLayer}}', {
+            defaultLayer,
+          }),
           type: 'error',
         }),
       );
@@ -277,6 +310,7 @@ const useLayers = () => {
     hazardLayerIds,
     layerDefinitionsIncludeDefaultLayer,
     updateHistory,
+    t,
   ]);
 
   const serverAvailableDatesAreEmpty = useMemo(
@@ -332,7 +366,9 @@ const useLayers = () => {
     if (invalidLayersIds.length > 0) {
       dispatch(
         addNotification({
-          message: `Invalid layer identifier(s): ${invalidLayersIds.join(',')}`,
+          message: t('Invalid layer identifier(s): {{layers}}', {
+            layers: invalidLayersIds.join(','),
+          }),
           type: 'error',
         }),
       );
@@ -353,7 +389,7 @@ const useLayers = () => {
 
     dispatch(
       addNotification({
-        message: 'Invalid date found. Using most recent date',
+        message: t('Invalid date found. Using most recent date'),
         type: 'warning',
       }),
     );
@@ -368,6 +404,7 @@ const useLayers = () => {
     serverAvailableDatesAreEmpty,
     updateHistory,
     urlDate,
+    t,
   ]);
 
   const removeLayerAndUpdateHistory = useCallback(
@@ -421,7 +458,12 @@ const useLayers = () => {
 
     dispatch(
       addNotification({
-        message: `No dates overlap with the selected layers. Removing layer: ${layerToRemove.title || layerToRemove.id}.`,
+        message: t(
+          'No dates overlap with the selected layers. Removing layer: {{layer}}',
+          {
+            layer: t(layerToRemove.title || layerToRemove.id),
+          },
+        ),
         type: 'warning',
       }),
     );
@@ -433,12 +475,13 @@ const useLayers = () => {
     selectedLayerDates.length,
     selectedLayers,
     selectedLayersWithDateSupport.length,
+    t,
   ]);
 
   const possibleDatesForLayerIncludeSelectedDate = useCallback(
     (layer: DateCompatibleLayer, date: Date) =>
       binaryIncludes<DateItem>(
-        layer.type === 'anticipatory_action'
+        isAnticipatoryActionLayer(layer.type)
           ? AAAvailableDatesCombined
           : getPossibleDatesForLayer(layer, serverAvailableDates),
         date.setUTCHours(12, 0, 0, 0),
@@ -457,7 +500,7 @@ const useLayers = () => {
         const jsSelectedDate = new Date(providedSelectedDate);
 
         const AADatesLoaded =
-          layer.type !== 'anticipatory_action' ||
+          !isAnticipatoryActionLayer(layer.type) ||
           layer.id in serverAvailableDates;
 
         if (
@@ -490,15 +533,17 @@ const useLayers = () => {
 
         dispatch(
           addNotification({
-            message: `No data was found for layer '${
-              layer.title
-            }' on ${getFormattedDate(
-              jsSelectedDate,
-              DateFormat.Default,
-            )}. The closest date ${getFormattedDate(
-              closestDate,
-              DateFormat.Default,
-            )} has been loaded instead.`,
+            message: t(
+              'No data was found for layer "{{layerTitle}}" on {{selectedDate}}. The closest date {{closestDate}} has been loaded instead.',
+              {
+                layerTitle: t(layer.title),
+                selectedDate: getFormattedDate(
+                  jsSelectedDate,
+                  DateFormat.Default,
+                ),
+                closestDate: getFormattedDate(closestDate, DateFormat.Default),
+              },
+            ),
             type: 'warning',
           }),
         );
@@ -513,6 +558,7 @@ const useLayers = () => {
       serverAvailableDates,
       serverAvailableDatesAreEmpty,
       updateHistory,
+      t,
     ],
   );
 

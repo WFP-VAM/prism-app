@@ -14,7 +14,12 @@ import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import Draggable, { DraggableEvent } from 'react-draggable';
 import { useDispatch, useSelector } from 'react-redux';
-import { DateItem, DateRangeType } from 'config/types';
+import {
+  AnticipatoryAction,
+  DateItem,
+  DateRangeType,
+  Panel,
+} from 'config/types';
 import { dateRangeSelector } from 'context/mapStateSlice/selectors';
 import { locales, useSafeTranslation } from 'i18n';
 import {
@@ -26,10 +31,12 @@ import { DateFormat } from 'utils/name-utils';
 import { useUrlHistory } from 'utils/url-utils';
 import useLayers from 'utils/layers-utils';
 import { format } from 'date-fns';
-import { Panel, leftPanelTabValueSelector } from 'context/leftPanelStateSlice';
+import { leftPanelTabValueSelector } from 'context/leftPanelStateSlice';
 import { updateDateRange } from 'context/mapStateSlice';
 import { getRequestDate } from 'utils/server-utils';
-import { AAAvailableDatesSelector } from 'context/anticipatoryActionStateSlice';
+import { isAnticipatoryActionLayer, isWindowedDates } from 'config/utils';
+import { getAAConfig } from 'context/anticipatoryAction/config';
+import { RootState } from 'context/store';
 import TickSvg from './tick.svg';
 import DateSelectorInput from './DateSelectorInput';
 import TimelineItems from './TimelineItems';
@@ -51,8 +58,12 @@ const POINTER_ID = 'datePointerSelector';
 const calculateStartAndEndDates = (startDate: Date, selectedTab: string) => {
   const year =
     startDate.getFullYear() -
-    (selectedTab === 'anticipatory_action' && startDate.getMonth() < 3 ? 1 : 0);
-  const startMonth = selectedTab === 'anticipatory_action' ? 3 : 0; // April for anticipatory_action, January otherwise
+    (selectedTab === Panel.AnticipatoryActionDrought && startDate.getMonth() < 3
+      ? 1
+      : 0);
+
+  const startMonth = Panel.AnticipatoryActionDrought === selectedTab ? 3 : 0; // April for anticipatory_action, January otherwise
+
   const start = new Date(year, startMonth, 1);
   const end = new Date(year, startMonth + 11, 31);
 
@@ -66,6 +77,7 @@ const DateSelector = memo(() => {
     selectedLayersWithDateSupport: selectedLayers,
     checkSelectedDateForLayerSupport,
   } = useLayers();
+
   const { startDate: stateStartDate } = useSelector(dateRangeSelector);
   const tabValue = useSelector(leftPanelTabValueSelector);
   const [dateRange, setDateRange] = useState<DateRangeType[]>([
@@ -77,10 +89,12 @@ const DateSelector = memo(() => {
       date: new Date().toISOString(),
     },
   ]);
+
   const [timelinePosition, setTimelinePosition] = useState<Point>({
     x: 0,
     y: 0,
   });
+
   const [pointerPosition, setPointerPosition] = useState<Point>({
     x: 0,
     y: 0,
@@ -112,31 +126,55 @@ const DateSelector = memo(() => {
     [availableDates],
   );
 
-  const AAAvailableDates = useSelector(AAAvailableDatesSelector);
+  const AAConfig = useMemo(() => {
+    const anticipatoryLayer = selectedLayers.find(layer =>
+      isAnticipatoryActionLayer(layer.type),
+    );
+    if (anticipatoryLayer) {
+      return getAAConfig(anticipatoryLayer.type as AnticipatoryAction);
+    }
+    return null;
+  }, [selectedLayers]);
+
+  const AAAvailableDates = useSelector((state: RootState) =>
+    AAConfig ? AAConfig.availableDatesSelector(state) : null,
+  );
 
   // Create a temporary layer for each AA window
-  const AALayers: DateCompatibleLayerWithDateItems[] = useMemo(
-    () =>
-      AAAvailableDates
-        ? [
-            {
-              id: 'anticipatory_action_window_1',
-              title: 'Window 1',
-              dateItems: AAAvailableDates['Window 1'],
-              type: 'anticipatory_action',
-              opacity: 1,
-            },
-            {
-              id: 'anticipatory_action_window_2',
-              title: 'Window 2',
-              dateItems: AAAvailableDates['Window 2'],
-              type: 'anticipatory_action',
-              opacity: 1,
-            },
-          ]
-        : [],
-    [AAAvailableDates],
-  );
+  const AALayers: DateCompatibleLayerWithDateItems[] = useMemo(() => {
+    if (!AAAvailableDates) {
+      return [];
+    }
+
+    if (isWindowedDates(AAAvailableDates)) {
+      return [
+        {
+          id: 'anticipatory_action_window_1',
+          title: 'Window 1',
+          dateItems: AAAvailableDates['Window 1'],
+          type: AnticipatoryAction.drought,
+          opacity: 1,
+        },
+        {
+          id: 'anticipatory_action_window_2',
+          title: 'Window 2',
+          dateItems: AAAvailableDates['Window 2'],
+          type: AnticipatoryAction.drought,
+          opacity: 1,
+        },
+      ];
+    }
+
+    return [
+      {
+        id: 'anticipatory_action_storm',
+        title: 'Anticipatory Action Storm',
+        dateItems: AAAvailableDates,
+        type: AnticipatoryAction.storm,
+        opacity: 1,
+      },
+    ];
+  }, [AAAvailableDates]);
 
   // Replace anticipatory action unique layer by window1 and window2 layers
   // Keep anticipatory actions at the top of the timeline
@@ -145,8 +183,8 @@ const DateSelector = memo(() => {
       // eslint-disable-next-line fp/no-mutating-methods
       selectedLayers
         .sort((a, b) => {
-          const aIsAnticipatory = a.id.includes('anticipatory_action');
-          const bIsAnticipatory = b.id.includes('anticipatory_action');
+          const aIsAnticipatory = a.id.includes('anticipatory_action_drought');
+          const bIsAnticipatory = b.id.includes('anticipatory_action_drought');
           if (aIsAnticipatory && !bIsAnticipatory) {
             return -1;
           }
@@ -155,7 +193,12 @@ const DateSelector = memo(() => {
           }
           return 0;
         })
-        .map(l => (l.type === 'anticipatory_action' ? AALayers : l))
+        .map(layer => {
+          if (isAnticipatoryActionLayer(layer.type)) {
+            return AALayers.filter(al => al.type === layer.type);
+          }
+          return layer;
+        })
         .flat(),
     [selectedLayers, AALayers],
   );
@@ -181,9 +224,9 @@ const DateSelector = memo(() => {
         if (firstIndex === -1) {
           return layer.dateItems;
         }
-        // truncate the date item array at index matching timeline first date
+        // truncate the date item array at index matching timeline first date with a buffer of 1 day decrements
         // eslint-disable-next-line fp/no-mutating-methods
-        return layer.dateItems.slice(firstIndex);
+        return layer.dateItems.slice(firstIndex - 1);
       }),
     ];
   }, [orderedLayers, timelineStartDate]);
@@ -209,39 +252,35 @@ const DateSelector = memo(() => {
     [orderedLayers, truncatedLayers, dateSelector.startDate],
   );
 
-  const timeLineWidth = get(timeLine.current, 'offsetWidth', 0);
+  useEffect(() => {
+    const timeLineWidth = get(timeLine.current, 'offsetWidth', 0);
 
-  const setPointerXPosition = useCallback(() => {
+    if (
+      -timelinePosition.x <= pointerPosition.x &&
+      -timelinePosition.x + timeLineWidth >= pointerPosition.x
+    ) {
+      // skip timeline shifting because the cursor is visible
+      return;
+    }
+
+    let timelineXOffset = 0;
+
     if (
       pointerPosition.x >=
       dateRange.length * TIMELINE_ITEM_WIDTH - timeLineWidth
     ) {
-      return timeLineWidth - dateRange.length * TIMELINE_ITEM_WIDTH;
+      // compute the maximum timeline offset necessary so that the 31/12 is visible. Consequently the cursor will be visible as well (it moves together with the timeline)
+      // eslint-disable-next-line fp/no-mutation
+      timelineXOffset = timeLineWidth - dateRange.length * TIMELINE_ITEM_WIDTH;
+    } else if (pointerPosition.x > timeLineWidth) {
+      // shift the timeline to the left by an arbitrary value to make sure the cursor is visible
+      // eslint-disable-next-line fp/no-mutation
+      timelineXOffset = -pointerPosition.x + timeLineWidth / 2;
     }
-    if (pointerPosition.x > timeLineWidth) {
-      return -pointerPosition.x + timeLineWidth / 2;
-    }
-    return 0;
-  }, [dateRange.length, pointerPosition.x, timeLineWidth]);
 
-  const handleTimeLinePosition = useCallback(
-    (x: number) => {
-      if (
-        -timelinePosition.x <= pointerPosition.x &&
-        -timelinePosition.x + timeLineWidth >= pointerPosition.x
-      ) {
-        return;
-      }
-      setTimelinePosition({ x, y: 0 });
-    },
-    [pointerPosition.x, timeLineWidth, timelinePosition.x],
-  );
-
-  // Move the slider automatically so that the pointer always visible
-  useEffect(() => {
-    const x = setPointerXPosition();
-    handleTimeLinePosition(x);
-  }, [handleTimeLinePosition, setPointerXPosition]);
+    setTimelinePosition({ x: timelineXOffset, y: 0 });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pointerPosition.x, dateRange.length]);
 
   const locale = useMemo(
     () => (t('date_locale') ? t('date_locale') : 'en'),
@@ -330,12 +369,17 @@ const DateSelector = memo(() => {
     );
 
     // All dates in AA windows should be selectable, regardless of overlap
-    if (panelTab === Panel.AnticipatoryAction && AAAvailableDates) {
-      // eslint-disable-next-line fp/no-mutating-methods
-      dates.push(
-        AAAvailableDates?.['Window 1']?.map(d => d.displayDate) ?? [],
-        AAAvailableDates?.['Window 2']?.map(d => d.displayDate) ?? [],
-      );
+    if (isAnticipatoryActionLayer(panelTab) && AAAvailableDates) {
+      if (isWindowedDates(AAAvailableDates)) {
+        // eslint-disable-next-line fp/no-mutating-methods
+        dates.push(
+          AAAvailableDates?.['Window 1']?.map(d => d.displayDate) ?? [],
+          AAAvailableDates?.['Window 2']?.map(d => d.displayDate) ?? [],
+        );
+      } else {
+        // eslint-disable-next-line fp/no-mutating-methods
+        dates.push(AAAvailableDates?.map(d => d.displayDate) ?? []);
+      }
 
       // eslint-disable-next-line fp/no-mutating-methods
       return dates
@@ -365,13 +409,13 @@ const DateSelector = memo(() => {
         return;
       }
       const time = date.getTime();
-      const selectedIndex = findDateIndex(selectableDates, date.getTime());
+      const selectedIndex = findDateIndex(availableDates, date.getTime());
       checkSelectedDateForLayerSupport(date.getTime());
       if (
         selectedIndex < 0 ||
         (stateStartDate &&
           datesAreEqualWithoutTime(
-            selectableDates[selectedIndex],
+            availableDates[selectedIndex],
             stateStartDate,
           ))
       ) {
@@ -381,7 +425,7 @@ const DateSelector = memo(() => {
       dispatch(updateDateRange({ startDate: time }));
     },
     [
-      selectableDates,
+      availableDates,
       checkSelectedDateForLayerSupport,
       stateStartDate,
       updateHistory,
@@ -396,6 +440,7 @@ const DateSelector = memo(() => {
       isUpdatingHistory: boolean,
     ) => {
       const selectedIndex = findDateIndex(availableDates, date);
+
       if (availableDates[selectedIndex + increment]) {
         updateStartDate(
           new Date(availableDates[selectedIndex + increment]),
@@ -585,7 +630,9 @@ const DateSelector = memo(() => {
                 top: 0,
                 bottom: 0,
                 right: 0,
-                left: timeLineWidth - dateRange.length * TIMELINE_ITEM_WIDTH,
+                left:
+                  get(timeLine.current, 'offsetWidth', 0) -
+                  dateRange.length * TIMELINE_ITEM_WIDTH,
               }}
               position={timelinePosition}
               onStop={onTimelineStop}
@@ -604,6 +651,11 @@ const DateSelector = memo(() => {
                       orderedLayers={orderedLayers}
                       truncatedLayers={visibleLayers}
                       availableDates={availableDates}
+                      showDraggingCursor={
+                        get(timeLine.current, 'offsetWidth', 0) -
+                          dateRange.length * TIMELINE_ITEM_WIDTH <
+                        0
+                      }
                     />
                   )}
                 </Grid>
@@ -700,7 +752,6 @@ const useStyles = makeStyles((theme: Theme) =>
       position: 'relative',
       height: 54,
       flexGrow: 1,
-      cursor: 'e-resize',
       overflow: 'hidden',
     },
 

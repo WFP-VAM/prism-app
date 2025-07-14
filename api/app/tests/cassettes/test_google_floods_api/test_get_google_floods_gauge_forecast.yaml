@@ -1,0 +1,68 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python-requests/2.32.0
+    method: GET
+    uri: https://floodforecasting.googleapis.com/v1/gauges:queryGaugeForecasts?gaugeIds=hybas_1121465590
+  response:
+    body:
+      string: !!binary |
+        H4sIAAAAAAAC/9WaTU8jRxCG7/wKxBla9V1dc88h14RTolXkBEJWSjbSApGiFf89NQ4g7IjIUzb0
+        WkIWHk+PX5qa562P+XJyenr265+fr39Z3d7dnk2nX/JAHvrt759Xtz8hEoqpBjx/snX6j48HT58/
+        Xp/y8fb2/vrq8uMf13nOGQHJBcIF4CXyxDphNHPpTj+cnb9c9nTl71afbq43L7/9Fevz/1r9fj9/
+        g1I0QAVX66zBrufbpz5d+vu71ee7DWEQFwyXANP6Z1PRxtJvPl3978KNdQ/nu0r3BqrE1tEEjJZI
+        /3dPC9K3F5aldxVVJiLT5dKpKp32l26NJMhcveNi4VwVzvsLl8asKAJCYX1RpM8KpCpd9paO1hIm
+        IcSdCpuuVeW6t3Lojd0R1JF65E26ULpVpdv+0r2JAnsX9Eq8eFW6vyr9xbsPG/i/Wd3fXH97NV/m
+        P/7zfN6Lv3wXy6HZctQmicZmDHgwy8lojoAu4iX4jeS2NuhmFkG4PCJGUltnrxSsCR9J7d4qPjMQ
+        1kTNQp3DxWBhRjWY1kgZ3tS7ulTCZCCsEVqGdu/x6O59PKx39pnMSyQg0iMNHRdL71Xp/evwGV6X
+        NjGJtbxYkBzQZ5J5rL138yPDNWfC552rFjkQ2AwN8t9Y0z0Q28yNIQgEsx5ernwgtTNYMkNF7ri8
+        hB+NbWuavIYsEaTLcukDsZ2O4xjGChA+x/p4bO/sOAlGAkSEzpHbvtRxoio9vg7HkUuUCXBKVCGK
+        aD+Y42Cz3E9a+/hRZdnSIIMB4MhybcGWDEEXrrUAB1JboJm7OfP6HjwmanNvgCy9exY6vDxgBlJ7
+        zk7cXbuvu1FLlQ+EdhbC0B21ExS2/A2QvSA96aqyvIOGpdnC9sKBPqPrDhpMQs2Y85Y5oM84myhg
+        6f4bmWVHYxRmhEpEjOQ1W4ZxvbIZiWtpYZAJK+X2F6A3ENcULQKtXNqM5LW3bmQOvWTvI4GtzQyK
+        XZO3gPaSrgnlKwZXogWrgwV8fbDwrn5j605an4AbkwPDofyGtSFknsolHx9KbW7IeQ9KlHrxI6mN
+        s1Mms4up6sgkmxJ9EhTFcdNAaueu51YHavKbjwzb0TQLMsuYr5QIQ8GdtQ1AedffAtwLOidJFpek
+        dwEwWJ0x4Oszhne1HH8scTJnICPpcTDLocbiR5Zpz0+kQV5OsNKMGtsWEeryNII8KmJDFtdgmHnf
+        kfF6bugUU6qhsM7Cxo0IvOIyI1Ht85xMQTik0DZ5C1YvGfFZV4/ScBKrkwV8fbLw3i4Tk/o0J5bA
+        h31EwCSLXZNKRAztjGRJZtHtcYR3TMRO8Em6DQJorzR1xjKbjMMdtDIqG5xjW0o2tFqmOhLc0eam
+        TohRpRQeCm5tEKlaa/HyBuDeVTn2loKFe1jl0QysDhnw9SHDnp7z+NuHk6d3DycPJ/8ALrDh1ccz
+        AAA=
+    headers:
+      Alt-Svc:
+      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+      Cache-Control:
+      - private
+      Content-Encoding:
+      - gzip
+      Content-Type:
+      - application/json; charset=UTF-8
+      Date:
+      - Mon, 07 Oct 2024 20:22:09 GMT
+      Server:
+      - ESF
+      Server-Timing:
+      - gfet4t7; dur=308
+      Transfer-Encoding:
+      - chunked
+      Vary:
+      - Origin
+      - X-Origin
+      - Referer
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-XSS-Protection:
+      - '0'
+    status:
+      code: 200
+      message: OK
+version: 1

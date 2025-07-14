@@ -2,6 +2,7 @@
 name: PRISM CI - Frontend
 on:
   # Run on all pull requests and on pushes to master.
+  # Note - pull_request_target runs the workflow from the main branch, not the PR branch.
   pull_request:
   push:
     branches:
@@ -34,9 +35,9 @@ jobs:
             **/node_modules
             **/.eslintcache
             ${{ steps.yarn-cache-dir-path.outputs.dir }}
-          key: ${{ runner.os }}-yarn-2024-7-${{ hashFiles('**/frontend/yarn.lock') }}-${{ hashFiles('**/common/yarn.lock') }}
+          key: ${{ runner.os }}-yarn-2025-2-${{ hashFiles('**/frontend/yarn.lock') }}-${{ hashFiles('**/common/yarn.lock') }}
           restore-keys: |
-            ${{ runner.os }}-yarn-2024-7
+            ${{ runner.os }}-yarn-2025-2
 
       - name: Install dependencies if needed.
         if: steps.yarn-cache.outputs.cache-hit != 'true'
@@ -44,7 +45,8 @@ jobs:
           cd frontend
           yarn install --frozen-lockfile --network-timeout 100000
           yarn setup:common
-
+      - name: setup 'common' package
+        run: cd frontend && yarn run setup:common
       - name: Lint
         run: cd frontend && yarn lint:ci
 
@@ -75,11 +77,12 @@ jobs:
 
   frontend_build_and_deploy:
     needs: frontend_tests
-    if: github.event_name == 'pull_request'
+    if: github.event_name != 'push'
     name: frontend_build_and_deploy
     runs-on: ubuntu-latest
     env:
-      surge_url: prism-${{ github.event.pull_request.number }}.surge.sh
+      GIT_HASH: ${{ github.event.pull_request.head.sha }}
+      firebase_channel: prism-${{ github.event.pull_request.number }}
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -96,9 +99,9 @@ jobs:
             **/node_modules
             **/.eslintcache
             ${{ steps.yarn-cache-dir-path.outputs.dir }}
-          key: ${{ runner.os }}-yarn-2024-7-${{ hashFiles('**/frontend/yarn.lock') }}-${{ hashFiles('**/common/yarn.lock') }}
+          key: ${{ runner.os }}-yarn-2025-3-${{ hashFiles('**/frontend/yarn.lock') }}-${{ hashFiles('**/common/yarn.lock') }}
           restore-keys: |
-            ${{ runner.os }}-yarn-2024-7
+            ${{ runner.os }}-yarn-2025-3
 
       - name: Install dependencies if needed.
         if: steps.yarn-cache.outputs.cache-hit != 'true'
@@ -120,24 +123,16 @@ jobs:
         run: |
           cd frontend
           REACT_APP_QA_MODE=true GENERATE_SOURCEMAP=false REACT_APP_COUNTRY=${{ steps.country_regex.outputs.group1 || 'mozambique'}} yarn build
-      - name: Deploy on surge
-        uses: dswistowski/surge-sh-action@v1
+      - name: Deploy on firebase
+        uses: FirebaseExtended/action-hosting-deploy@v0
         with:
-          domain: ${{ env.surge_url }}
-          project: "frontend/build/."
-          login: ${{ secrets.surge_login }}
-          token: ${{ secrets.surge_token }}
-      - name: Get current date
-        id: date
-        run: echo "::set-output name=date::$(date +'%Y-%m-%dT%H:%M:%S')"
-      - name: Comment PR
-        uses: marocchino/sticky-pull-request-comment@v1
-        continue-on-error: true
-        with:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          message: |
-            Build succeeded and deployed at https://${{ env.surge_url }} 
-            (hash ${{ github.event.pull_request.head.sha }} deployed at ${{ steps.date.outputs.date }})
+          repoToken: "${{ secrets.GITHUB_TOKEN }}"
+          firebaseServiceAccount: "${{ secrets.FIREBASE_SERVICE_ACCOUNT_PRISM_FRONTEND }}"
+          projectId: "prism-frontend"
+          target: "staging-target"
+          entryPoint: "frontend"
+          channelId: ${{ env.firebase_channel }}
+          expires: 30d
 
   master_frontend_build_and_deploy:
     needs: frontend_tests
@@ -149,7 +144,7 @@ jobs:
         country: [mozambique, cambodia, rbd]
     env:
       REACT_APP_SENTRY_URL: ${{ secrets.REACT_APP_SENTRY_URL }}
-      surge_url: prism-master-${{ matrix.country }}.surge.sh
+      firebase_channel: prism-master-${{ matrix.country }}
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -170,9 +165,9 @@ jobs:
             **/node_modules
             **/.eslintcache
             ${{ steps.yarn-cache-dir-path.outputs.dir }}
-          key: ${{ runner.os }}-yarn-${{ hashFiles('**/frontend/yarn.lock') }}-${{ hashFiles('**/common/yarn.lock') }}
+          key: ${{ runner.os }}-yarn-2025-2-${{ hashFiles('**/frontend/yarn.lock') }}-${{ hashFiles('**/common/yarn.lock') }}
           restore-keys: |
-            ${{ runner.os }}-yarn-
+            ${{ runner.os }}-yarn-2025-2
 
       - name: Install dependencies if needed.
         if: steps.yarn-cache.outputs.cache-hit != 'true'
@@ -185,10 +180,13 @@ jobs:
         run: |
           cd frontend
           GENERATE_SOURCEMAP=false REACT_APP_COUNTRY=${{ matrix.country }} yarn build
-      - name: Deploy on surge
-        uses: dswistowski/surge-sh-action@v1
+      - name: Deploy on firebase
+        uses: FirebaseExtended/action-hosting-deploy@v0
         with:
-          domain: ${{ env.surge_url }}
-          project: "frontend/build/."
-          login: ${{ secrets.surge_login }}
-          token: ${{ secrets.surge_token }}
+          repoToken: "${{ secrets.GITHUB_TOKEN }}"
+          firebaseServiceAccount: "${{ secrets.FIREBASE_SERVICE_ACCOUNT_PRISM_FRONTEND }}"
+          projectId: "prism-frontend"
+          target: "staging-target"
+          entryPoint: "frontend"
+          channelId: ${{ env.firebase_channel }}
+          expires: 30d

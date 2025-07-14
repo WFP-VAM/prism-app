@@ -4,13 +4,10 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 import rasterio
-import requests
-import schemathesis
 from app.database.database import AlertsDataBase
 from app.main import app
 from app.scripts.add_users import add_users
 from fastapi.testclient import TestClient
-from hypothesis import settings
 
 
 @pytest.fixture(scope="session", autouse=True)
@@ -55,47 +52,7 @@ def add_test_users(migrate_test_db):  # noqa: F811
     add_users()
 
 
-schema = schemathesis.from_asgi("/openapi.json", app)
-
-# install all available compatibility fixups between schemathesis and fastapi
-# see https://schemathesis.readthedocs.io/en/stable/compatibility.html
-schemathesis.fixups.install(["fast_api"])
-
 client = TestClient(app)
-
-
-@pytest.mark.skip(reason="Slow: takes almost 10 minutes to complete")
-@schema.parametrize(endpoint="^/stats")
-@settings(max_examples=1)
-def test_stats_api(case):
-    """
-    Run checks on the /stats endpoint listed in the openapi docs.
-
-    These tests do not validate that the API returns valid results, but
-    merely that it behaves according to the openAPI schema, and does not
-    crash in random unexpected ways.
-    This is basically fuzzying :)
-    """
-
-    response = case.call_asgi(app)
-    case.validate_response(response)
-
-
-@pytest.mark.skip(reason="Slow: takes almost 10 minutes to complete")
-@schema.parametrize(endpoint="^/alerts")
-@settings(max_examples=10)
-def test_alerts_api(case):
-    """
-    Run checks on all API endpoints listed in the openapi docs.
-
-    These tests do not validate that the API returns valid results, but
-    merely that it behaves according to the openAPI schema, and does not
-    crash in random unexpected ways.
-    This is basically fuzzying :)
-    """
-
-    response = case.call_asgi(app)
-    case.validate_response(response)
 
 
 def test_stats_endpoint1():
@@ -108,8 +65,8 @@ def test_stats_endpoint1():
         "/stats",
         headers={"Accept": "application/json"},
         json={
-            "geotiff_url": "https://prism-wfp.s3.us-east-2.amazonaws.com/myanmar_rainfall_dekad.tif",
-            "zones_url": "https://prism-admin-boundaries.s3.us-east-2.amazonaws.com/mmr_admin_boundaries.json",
+            "geotiff_url": "https://prism-wfp.s3.us-east-2.amazonaws.com/api-test/myanmar_rainfall_dekad.tif",
+            "zones_url": "https://prism-wfp.s3.us-east-2.amazonaws.com/api-test/mmr_admin_boundaries.json",
             "group_by": "TS_PCODE",
             # TODO - re-add once geonode is back online.
             # "wfs_params": {
@@ -130,7 +87,7 @@ def test_stats_endpoint1():
     #     headers={"Accept": "application/json"},
     #     json={
     #         "geotiff_url": "https://api.earthobservation.vam.wfp.org/ows/?service=WCS&request=GetCoverage&version=2.0.0&coverageId=wp_pop_cicunadj&subset=Long(95.71,96.68)&subset=Lat(19.42,20.33)",
-    #         "zones_url": "https://prism-admin-boundaries.s3.us-east-2.amazonaws.com/mmr_admin_boundaries.json",
+    #         "zones_url": "https://prism-wfp.s3.us-east-2.amazonaws.com/api-test/mmr_admin_boundaries.json",
     #         "group_by": "TS_PCODE",
     #         "wfs_params": {
     #             "url": "https://geonode.wfp.org/geoserver/ows",
@@ -150,12 +107,13 @@ def test_stats_endpoint2():
     """
     Call /stats with known-good parameters.
     """
+
     response = client.post(
         "/stats",
         headers={"Accept": "application/json"},
         json={
             "geotiff_url": "https://api.earthobservation.vam.wfp.org/ows/?service=WCS&request=GetCoverage&version=1.0.0&coverage=hf_water_mmr&crs=EPSG%3A4326&bbox=92.2%2C9.7%2C101.2%2C28.5&width=1098&height=2304&format=GeoTIFF&time=2022-08-11",
-            "zones_url": "https://prism-admin-boundaries.s3.us-east-2.amazonaws.com/mmr_admin_boundaries.json",
+            "zones_url": "https://prism-wfp.s3.us-east-2.amazonaws.com/api-test/mmr_admin_boundaries.json",
             "group_by": "TS",
             "geojson_out": False,
         },
@@ -167,13 +125,12 @@ def test_stats_endpoint_masked():
     """
     Call /stats with known-good parameters with a geotiff mask.
     """
-
     response = client.post(
         "/stats",
         headers={"Accept": "application/json"},
         json={
-            "geotiff_url": "https://prism-wfp.s3.us-east-2.amazonaws.com/myanmar_rainfall_dekad.tif",
-            "zones_url": "https://prism-admin-boundaries.s3.us-east-2.amazonaws.com/mmr_admin_boundaries.json",
+            "geotiff_url": "https://prism-wfp.s3.us-east-2.amazonaws.com/api-test/myanmar_rainfall_dekad.tif",
+            "zones_url": "https://prism-wfp.s3.us-east-2.amazonaws.com/api-test/mmr_admin_boundaries.json",
             "mask_url": "https://api.earthobservation.vam.wfp.org/ows/?service=WCS&request=GetCoverage&version=1.0.0&coverage=hf_water_mmr&crs=EPSG%3A4326&bbox=92.2%2C9.7%2C101.2%2C28.5&width=1098&height=2304&format=GeoTIFF&time=2022-08-11",
             "group_by": "TS_PCODE",
             "geojson_out": True,
