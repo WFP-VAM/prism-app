@@ -85,7 +85,14 @@ export function useAnticipatoryAction<T extends AnticipatoryAction>(
         );
 
         dispatch(updateLayersCapabilities(updatedCapabilities));
-        dispatch(updateDateRange(updatedCapabilities));
+
+        // Set the most recent date as the default date for timeline advancement
+        if (combinedAvailableDates && combinedAvailableDates.length > 0) {
+          const mostRecentDate =
+            combinedAvailableDates[combinedAvailableDates.length - 1]
+              .displayDate;
+          dispatch(updateDateRange({ startDate: mostRecentDate }));
+        }
       } else if (actionType === AnticipatoryAction.drought) {
         const queryDate = getRequestDate(combinedAvailableDates, selectedDate);
         const date = getFormattedDate(queryDate, DateFormat.Default) as string;
