@@ -215,6 +215,26 @@ export function scaleAndFilterAggregateData(
   const { wcsConfig } = hazardLayerDef;
   const { scale, offset } = wcsConfig || {};
 
+  // Handle GeoJSON data
+  if (aggregateData?.[0]?.geometry) {
+    return (aggregateData as any[])
+      .map((feature: any) => {
+        const value = get(feature, ['properties', `stats_${operation}`]);
+        const scaledValue = scaleValueIfDefined(value, scale, offset);
+        return {
+          ...feature,
+          properties: {
+            ...feature.properties,
+            [operation]: scaledValue,
+          },
+        };
+      })
+      .filter((feature: any) => {
+        const value = feature.properties[operation];
+        return !Number.isNaN(thresholdOrNaN(value, threshold));
+      });
+  }
+
   return (aggregateData as KeyValueResponse[])
     .map(data => ({
       ...data,
@@ -241,7 +261,6 @@ export function generateFeaturesFromApiData(
     aggregateData,
     groupBy,
   );
-
   return mergedFeatures.filter(feature => {
     const value = get(feature, ['properties', operation]);
     return value !== undefined && !Number.isNaN(value);
@@ -447,6 +466,7 @@ export class ExposedPopulationResult {
 export class BaselineLayerResult {
   key: number = Date.now();
   featureCollection: FeatureCollection;
+  adminBoundariesFormat: string;
   tableData: TableRow[];
   // for debugging purposes only, as its easy to view the raw API response via Redux Devtools. Should be left empty in production
   // @ts-ignore: TS6133
@@ -472,9 +492,11 @@ export class BaselineLayerResult {
     legend?: LegendDefinition,
     rawApiData?: object[],
     analysisDate?: ReturnType<Date['getTime']>,
+    adminBoundariesFormat?: string,
   ) {
     this.featureCollection = featureCollection;
     this.tableData = tableData;
+    this.adminBoundariesFormat = adminBoundariesFormat ?? 'geojson';
     this.statistic = statistic;
     this.threshold = threshold;
     this.legend = baselineLayer.legend ?? legend;

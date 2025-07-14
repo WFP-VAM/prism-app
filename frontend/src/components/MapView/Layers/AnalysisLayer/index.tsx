@@ -1,5 +1,6 @@
+import { RefObject, useEffect } from 'react';
 import { get } from 'lodash';
-import { Layer, Source } from 'react-map-gl/maplibre';
+import { Layer, MapRef, Source } from 'react-map-gl/maplibre';
 import { useSelector } from 'react-redux';
 import { addPopupData } from 'context/tooltipStateSlice';
 import {
@@ -33,6 +34,7 @@ import {
 import { opacitySelector } from 'context/opacityStateSlice';
 import { getFormattedDate } from 'utils/date-utils';
 import { invertLegendColors } from 'components/MapView/Legends/utils';
+import { layersSelector } from 'context/mapStateSlice/selectors';
 
 const layerId = getLayerMapId('analysis');
 
@@ -166,7 +168,13 @@ function fillPaintData(
   };
 }
 
-function AnalysisLayer({ before }: { before?: string }) {
+function AnalysisLayer({
+  before,
+  mapRef,
+}: {
+  before?: string;
+  mapRef: RefObject<MapRef>;
+}) {
   // TODO maybe in the future we can try add this to LayerType so we don't need exclusive code in Legends and MapView to make this display correctly
   // Currently it is quite difficult due to how JSON focused the typing is. We would have to refactor it to also accept layers generated on-the-spot
   const analysisData = useSelector(analysisResultSelector);
@@ -174,6 +182,85 @@ function AnalysisLayer({ before }: { before?: string }) {
   const opacityState = useSelector(opacitySelector('analysis'));
   const invertedColorsForAnalysis = useSelector(invertedColorsSelector);
   useMapCallback('click', layerId, undefined, onClick(analysisData));
+  const layers = useSelector(layersSelector);
+  const boundaryLayer = layers.find(
+    layer => layer.id === analysisData?.baselineLayerId,
+  )?.id;
+  const boundary =
+    analysisData && 'boundaryId' in analysisData && analysisData.boundaryId
+      ? getLayerMapId(analysisData.boundaryId)
+      : before;
+
+  const legend =
+    analysisData && invertedColorsForAnalysis
+      ? invertLegendColors(analysisData.legend)
+      : analysisData?.legend;
+
+  useEffect(() => {
+    if (
+      analysisData instanceof BaselineLayerResult &&
+      analysisData.adminBoundariesFormat === 'pmtiles'
+    ) {
+      // Step 1: Get a reference to your map
+      const map = mapRef.current?.getMap();
+
+      if (!map) {
+        return;
+      }
+
+      // Step 2: Define the source and layer IDs for your admin boundary layer
+      const boundarySourceId = `source-${boundaryLayer}`;
+
+      // Step 3: Get all features from the admin boundary layer
+      // Option 1: Query rendered features (visible in current view)
+      const features = map.queryRenderedFeatures({ layers: [boundary] });
+      const { statistic } = analysisData;
+      // Step 4: Match features with analysisData and set feature state
+      // Assuming analysisData.featureCollection.features contains your feature data
+      features.forEach(feature => {
+        try {
+          const adminId = feature.properties.dv_adm0_id;
+
+          // Find matching data in analysisData feature collection
+          const matchingFeature = analysisData.featureCollection.features.find(
+            f => f.dv_adm0_id === adminId,
+          );
+
+          if (matchingFeature) {
+            // Set feature state based on properties in matchingFeature
+            map.setFeatureState(
+              {
+                source: boundarySourceId,
+                sourceLayer: boundary,
+                id: matchingFeature.dv_adm0_id,
+              },
+              {
+                data: matchingFeature[statistic],
+                selected: true,
+              },
+            );
+          }
+        } catch (error) {
+          console.error('Error setting feature state', error);
+        }
+      });
+
+      // Step 5: Apply styling based on fillPaintData
+      // Create a legend from your analysisData
+
+      const property = statistic; // The property name you set in feature state
+
+      // Apply the fill paint style to your layer
+      map.setPaintProperty(boundary, 'fill-color', {
+        property,
+        stops: legendToStops(legend),
+        type: 'interval',
+      });
+
+      // Set the opacity
+      map.setPaintProperty(boundary, 'fill-opacity', 0.7);
+    }
+  }, [analysisData, mapRef]);
 
   if (!analysisData || !isAnalysisLayerActive) {
     return null;
@@ -195,15 +282,6 @@ function AnalysisLayer({ before }: { before?: string }) {
         return 'data';
     }
   })();
-
-  const boundary =
-    'boundaryId' in analysisData && analysisData.boundaryId
-      ? getLayerMapId(analysisData.boundaryId)
-      : before;
-
-  const legend = invertedColorsForAnalysis
-    ? invertLegendColors(analysisData.legend)
-    : analysisData.legend;
 
   return (
     <Source data={analysisData.featureCollection} type="geojson">

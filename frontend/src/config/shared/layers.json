@@ -2,10 +2,12 @@
   "global_admin2_boundaries": {
     "type": "boundary",
     "format": "pmtiles",
+    "zones_path": "s3://prism-vector-storage/global_admin_boundaries/admin_level=2/admin_boundaries.parquet",
     "path": "https://pmtiles-hosting.s3.eu-central-1.amazonaws.com/global/global_admin_boundaries_no_drop.pmtiles",
     "layer_name": "admin2",
     "hideInGoTo": true,
     "opacity": 0.8,
+    "disableAnalysis": true,
     "styles:": {
       "fill": {
         "fill-opacity": 0
@@ -24,6 +26,7 @@
   "global_admin1_boundaries": {
     "type": "boundary",
     "format": "pmtiles",
+    "zones_path": "s3://prism-vector-storage/global_admin_boundaries/admin_level=1/admin_boundaries.parquet",
     "path": "https://pmtiles-hosting.s3.eu-central-1.amazonaws.com/global/global_admin_boundaries_no_drop.pmtiles",
     "layer_name": "admin1",
     "opacity": 0.8,
@@ -45,6 +48,7 @@
   "global_admin0_boundaries": {
     "type": "boundary",
     "format": "pmtiles",
+    "zones_path": "s3://prism-vector-storage/global_admin_boundaries/admin_level=0/admin_boundaries.parquet",
     "path": "https://pmtiles-hosting.s3.eu-central-1.amazonaws.com/global/global_admin_boundaries_no_drop.pmtiles",
     "layer_name": "admin0",
     "opacity": 0.8,

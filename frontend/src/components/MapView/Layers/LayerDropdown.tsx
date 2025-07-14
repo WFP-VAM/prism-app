@@ -52,21 +52,6 @@ function LayerDropdown({
 
   const { t } = useSafeTranslation();
   const classes = useStyles();
-
-  // Only take first boundary for now
-  const adminBoundaries = getDisplayBoundaryLayers();
-  const AdminBoundaryCategory = {
-    title: 'Admin Levels',
-    layers: adminBoundaries.map((aboundary, _index) => ({
-      title: t(
-        `Level ${aboundary.adminLevelCodes.length - (multiCountry ? 1 : 0)}`,
-      ),
-      boundary: aboundary.id,
-      ...aboundary,
-    })),
-    tables: [],
-  };
-
   // Filter out layers that are not supported by the analysis tool
   const filterLayersForAnalysis = (layer: LayerType) => {
     if (layer.disableAnalysis) {
@@ -78,6 +63,22 @@ function LayerDropdown({
       return [undefined, 'polygon'].includes(layer.geometry);
     }
     return true;
+  };
+
+  // Only take first boundary for now
+  const adminBoundaries = getDisplayBoundaryLayers();
+  const AdminBoundaryCategory = {
+    title: 'Admin Levels',
+    layers: adminBoundaries
+      .map((aboundary, _index) => ({
+        title: t(
+          `Level ${aboundary.adminLevelCodes.length - (multiCountry ? 1 : 0)}`,
+        ),
+        boundary: aboundary.id,
+        ...aboundary,
+      }))
+      .filter(filterLayersForAnalysis),
+    tables: [],
   };
 
   const categories = [
