@@ -1,9 +1,4 @@
-import {
-  Typography,
-  createStyles,
-  makeStyles,
-  Button,
-} from '@material-ui/core';
+import { Typography, createStyles, makeStyles } from '@material-ui/core';
 import { useSelector } from 'react-redux';
 import { AADataSelector } from 'context/anticipatoryAction/AAStormStateSlice';
 import { useSafeTranslation } from 'i18n';
@@ -101,27 +96,6 @@ function ActivationTrigger({ dialogs }: ActivationTriggerProps) {
   const parsedStormData = useSelector(AADataSelector);
   const commonClasses = useAACommonStyles();
 
-  const handleDownloadGeoJSON = () => {
-    if (!parsedStormData.mergedGeoJSON || !parsedStormData.forecastDetails) {
-      return;
-    }
-
-    const dataStr = JSON.stringify(parsedStormData.mergedGeoJSON);
-    const dataBlob = new Blob([dataStr], { type: 'application/json' });
-    const url = URL.createObjectURL(dataBlob);
-    const link = document.createElement('a');
-    // eslint-disable-next-line fp/no-mutation
-    link.href = url;
-    const date =
-      parsedStormData.forecastDetails.reference_time.split(':00Z')[0];
-    // eslint-disable-next-line fp/no-mutation
-    link.download = `${parsedStormData.forecastDetails?.cyclone_name || 'cyclone'}_${date}.geojson`;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    URL.revokeObjectURL(url);
-  };
-
   const filteredActiveDistricts = parsedStormData.activeDistricts
     ? Object.entries(parsedStormData.activeDistricts).filter(([category]) =>
         AAPanelCategories.includes(category as AACategory),
@@ -214,20 +188,6 @@ function ActivationTrigger({ dialogs }: ActivationTriggerProps) {
               {t(dialog.text)}
             </Typography>
           ))}
-          {parsedStormData.mergedGeoJSON && (
-            <Button
-              style={{
-                width: '50%',
-                margin: '1rem auto',
-              }}
-              className={commonClasses.footerButton}
-              variant="outlined"
-              fullWidth
-              onClick={handleDownloadGeoJSON}
-            >
-              <Typography>{t('Download GeoJSON')}</Typography>
-            </Button>
-          )}
         </div>
       </div>
     </div>
