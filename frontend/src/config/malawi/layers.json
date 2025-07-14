@@ -54,12 +54,12 @@
       "levels": [
         {
           "level": "1",
-          "id": "dv_adm1_id",
+          "id": "adm1_id",
           "name": "ADM1_EN"
         },
         {
           "level": "2",
-          "id": "dv_adm2_id",
+          "id": "adm2_id",
           "name": "ADM2_EN"
         }
       ],
@@ -87,12 +87,12 @@
       "levels": [
         {
           "level": "1",
-          "id": "dv_adm1_id",
+          "id": "adm1_id",
           "name": "ADM1_EN"
         },
         {
           "level": "2",
-          "id": "dv_adm2_id",
+          "id": "adm2_id",
           "name": "ADM2_EN"
         }
       ],
@@ -116,12 +116,12 @@
       "levels": [
         {
           "level": "1",
-          "id": "dv_adm1_id",
+          "id": "adm1_id",
           "name": "ADM1_EN"
         },
         {
           "level": "2",
-          "id": "dv_adm2_id",
+          "id": "adm2_id",
           "name": "ADM2_EN"
         }
       ],
@@ -149,12 +149,12 @@
       "levels": [
         {
           "level": "1",
-          "id": "dv_adm1_id",
+          "id": "adm1_id",
           "name": "ADM1_EN"
         },
         {
           "level": "2",
-          "id": "dv_adm2_id",
+          "id": "adm2_id",
           "name": "ADM2_EN"
         }
       ],
@@ -178,12 +178,12 @@
       "levels": [
         {
           "level": "1",
-          "id": "dv_adm1_id",
+          "id": "adm1_id",
           "name": "ADM1_EN"
         },
         {
           "level": "2",
-          "id": "dv_adm2_id",
+          "id": "adm2_id",
           "name": "ADM2_EN"
         }
       ],
@@ -211,12 +211,12 @@
       "levels": [
         {
           "level": "1",
-          "id": "dv_adm1_id",
+          "id": "adm1_id",
           "name": "ADM1_EN"
         },
         {
           "level": "2",
-          "id": "dv_adm2_id",
+          "id": "adm2_id",
           "name": "ADM2_EN"
         }
       ],
@@ -240,12 +240,12 @@
       "levels": [
         {
           "level": "1",
-          "id": "dv_adm1_id",
+          "id": "adm1_id",
           "name": "ADM1_EN"
         },
         {
           "level": "2",
-          "id": "dv_adm2_id",
+          "id": "adm2_id",
           "name": "ADM2_EN"
         }
       ],
@@ -273,12 +273,12 @@
       "levels": [
         {
           "level": "1",
-          "id": "dv_adm1_id",
+          "id": "adm1_id",
           "name": "ADM1_EN"
         },
         {
           "level": "2",
-          "id": "dv_adm2_id",
+          "id": "adm2_id",
           "name": "ADM2_EN"
         }
       ],
