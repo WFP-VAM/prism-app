@@ -55,12 +55,12 @@
         {
           "level": "1",
           "id": "adm1_id",
-          "name": "ADM1_EN"
+          "name": "adm1_name"
         },
         {
           "level": "2",
           "id": "adm2_id",
-          "name": "ADM2_EN"
+          "name": "adm2_name"
         }
       ],
       "type": "bar"
@@ -88,12 +88,12 @@
         {
           "level": "1",
           "id": "adm1_id",
-          "name": "ADM1_EN"
+          "name": "adm1_name"
         },
         {
           "level": "2",
           "id": "adm2_id",
-          "name": "ADM2_EN"
+          "name": "adm2_name"
         }
       ],
       "type": "line"
@@ -117,12 +117,12 @@
         {
           "level": "1",
           "id": "adm1_id",
-          "name": "ADM1_EN"
+          "name": "adm1_name"
         },
         {
           "level": "2",
           "id": "adm2_id",
-          "name": "ADM2_EN"
+          "name": "adm2_name"
         }
       ],
       "type": "bar"
@@ -150,12 +150,12 @@
         {
           "level": "1",
           "id": "adm1_id",
-          "name": "ADM1_EN"
+          "name": "adm1_name"
         },
         {
           "level": "2",
           "id": "adm2_id",
-          "name": "ADM2_EN"
+          "name": "adm2_name"
         }
       ],
       "type": "line"
@@ -179,12 +179,12 @@
         {
           "level": "1",
           "id": "adm1_id",
-          "name": "ADM1_EN"
+          "name": "adm1_name"
         },
         {
           "level": "2",
           "id": "adm2_id",
-          "name": "ADM2_EN"
+          "name": "adm2_name"
         }
       ],
       "type": "bar"
@@ -212,12 +212,12 @@
         {
           "level": "1",
           "id": "adm1_id",
-          "name": "ADM1_EN"
+          "name": "adm1_name"
         },
         {
           "level": "2",
           "id": "adm2_id",
-          "name": "ADM2_EN"
+          "name": "adm2_name"
         }
       ],
       "type": "line"
@@ -241,12 +241,12 @@
         {
           "level": "1",
           "id": "adm1_id",
-          "name": "ADM1_EN"
+          "name": "adm1_name"
         },
         {
           "level": "2",
           "id": "adm2_id",
-          "name": "ADM2_EN"
+          "name": "adm2_name"
         }
       ],
       "type": "line"
@@ -274,12 +274,12 @@
         {
           "level": "1",
           "id": "adm1_id",
-          "name": "ADM1_EN"
+          "name": "adm1_name"
         },
         {
           "level": "2",
           "id": "adm2_id",
-          "name": "ADM2_EN"
+          "name": "adm2_name"
         }
       ],
       "type": "line"
