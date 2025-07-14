@@ -30,7 +30,7 @@ function DownloadGeoJSONButton() {
     URL.revokeObjectURL(url);
   };
 
-  if (!parsedStormData.mergedGeoJSON) {
+  if (!parsedStormData.mergedGeoJSON || !parsedStormData.forecastDetails) {
     return null;
   }
 
