@@ -374,14 +374,19 @@ def calculate_stats(
         }
 
     try:
-        stats_results = zonal_stats(
-            stats_input,
-            geotiff,
-            stats=stats if stats is not None else DEFAULT_STATS,
-            prefix=prefix,
-            geojson_out=geojson_out,
-            add_stats=add_stats,
-        )
+        # preload the file contents for fiona 1.10.1 as it does not seem happy
+        # with a file path anymore: https://github.com/Toblerity/Fiona/issues/1455
+        with open(stats_input, "r") as stats_input_fp:
+            stats_input_str = stats_input_fp.read()
+
+            stats_results = zonal_stats(
+                stats_input_str,
+                geotiff,
+                stats=stats if stats is not None else DEFAULT_STATS,
+                prefix=prefix,
+                geojson_out=geojson_out,
+                add_stats=add_stats,
+            )
 
     except rasterio.errors.RasterioError as error:
         logger.error(error)
