@@ -356,23 +356,26 @@ export function generateIntermediateDateItemFromValidity(
       date.setUTCHours(12, 0, 0, 0);
       return date;
     })
-    .reduce((acc: DateItem[], date) => {
-      // We create the start and the end date for every date
-      const startDate = new Date(date.getTime());
-      const endDate = new Date(date.getTime());
+    .reduce((acc: DateItem[], date: Date) => {
+      // caching this value seems to reduce memory use substantially
+      const dateGetTime = date.getTime();
 
       // only calculate validity for dates that are less than 5 years old
-      if (date.getTime() < earliestDate) {
+      if (dateGetTime < earliestDate) {
         return [
           ...acc,
           {
-            displayDate: date.getTime(),
-            queryDate: date.getTime(),
-            startDate: date.getTime(),
-            endDate: date.getTime(),
+            displayDate: dateGetTime,
+            queryDate: dateGetTime,
+            startDate: dateGetTime,
+            endDate: dateGetTime,
           },
         ] as DateItem[];
       }
+
+      // We create the start and the end date for every date
+      const startDate = new Date(dateGetTime);
+      const endDate = new Date(dateGetTime);
 
       if (mode === DatesPropagation.DAYS) {
         // If mode is "days", adjust dates directly based on the duration
