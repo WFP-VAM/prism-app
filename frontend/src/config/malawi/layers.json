@@ -1,313 +1,288 @@
 {
-    "admin_boundaries": {
-        "type": "boundary",
-        "path": "data/malawi/mwi_admbnda_adm2_nso_hotosm_20230405_dv.json",
-        "opacity": 0.8,
-        "admin_code": "ADM2_PCODE",
-        "admin_level_codes": [
-            "ADM1_PCODE",
-            "ADM2_PCODE"
-        ],
-        "admin_level_names": [
-            "ADM1_EN",
-            "ADM2_EN"
-        ],
-        "admin_level_local_names": [
-            "ADM1_EN",
-            "ADM2_EN"
-        ],
-        "styles:": {
-            "fill": {
-                "fill-opacity": 0
-            },
-            "line": {
-                "line-color": "gray",
-                "line-width": 1.5,
-                "line-opacity": 0.8
-            }
-        },
-        "download": true
-    },
-    "admin1_boundaries": {
-        "type": "boundary",
-        "path": "data/malawi/mwi_admbnda_adm1_nso_hotosm_20230405_dv.json",
-        "opacity": 0.8,
-        "admin_code": "ADM1_PCODE",
-        "admin_level_codes": [
-            "ADM1_PCODE"
-        ],
-        "admin_level_names": [
-            "ADM1_EN"
-        ],
-        "admin_level_local_names": [
-            "ADM1_EN"
-        ],
-        "styles:": {
-            "fill": {
-                "fill-opacity": 0
-            },
-            "line": {
-                "line-color": "gray",
-                "line-width": 3,
-                "line-opacity": 0.8
-            }
-        },
-        "download": true
-    },
-    "rainfall_dekad": {
-        "chart_data": {
-            "fields": [
-                {
-                    "key": "rfh",
-                    "label": "Rainfall",
-                    "color": "#233f5f"
-                },
-                {
-                    "key": "rfh_avg",
-                    "label": "Average",
-                    "color": "#bdf2e6"
-                }
-            ],
-            "levels": [
-                {
-                    "level": "1",
-                    "id": "dv_adm1_id",
-                    "name": "ADM1_EN"
-                },
-                {
-                    "level": "2",
-                    "id": "dv_adm2_id",
-                    "name": "ADM2_EN"
-                }
-            ],
-            "type": "bar"
-        },
-        "download": true
-    },
-    "rain_anomaly_dekad": {
-        "chart_data": {
-            "fields": [
-                {
-                    "key": "rfq",
-                    "label": "Rainfall anomaly",
-                    "color": "#375692",
-                    "minValue": 0,
-                    "maxValue": 300
-                },
-                {
-                    "key": "rfq_avg",
-                    "label": "Normal",
-                    "fallback": 100,
-                    "pointRadius": 0,
-                    "color": "#eb3223"
-                }
-            ],
-            "levels": [
-                {
-                    "level": "1",
-                    "id": "dv_adm1_id",
-                    "name": "ADM1_EN"
-                },
-                {
-                    "level": "2",
-                    "id": "dv_adm2_id",
-                    "name": "ADM2_EN"
-                }
-            ],
-            "type": "line"
-        },
-        "download": true
-    },
-    "rainfall_agg_1month": {
-        "chart_data": {
-            "fields": [
-                {
-                    "key": "r1h",
-                    "label": "Rainfall",
-                    "color": "#233f5f"
-                },
-                {
-                    "key": "r1h_avg",
-                    "label": "Average",
-                    "color": "#bdf2e6"
-                }
-            ],
-            "levels": [
-                {
-                    "level": "1",
-                    "id": "dv_adm1_id",
-                    "name": "ADM1_EN"
-                },
-                {
-                    "level": "2",
-                    "id": "dv_adm2_id",
-                    "name": "ADM2_EN"
-                }
-            ],
-            "type": "bar"
-        },
-        "download": true
-    },
-    "rain_anomaly_1month": {
-        "chart_data": {
-            "fields": [
-                {
-                    "key": "r1q",
-                    "label": "Rainfall anomaly",
-                    "minValue": 0,
-                    "maxValue": 300,
-                    "color": "#375692"
-                },
-                {
-                    "key": "rfq_avg",
-                    "label": "Normal",
-                    "fallback": 100,
-                    "pointRadius": 0,
-                    "color": "#eb3223"
-                }
-            ],
-            "levels": [
-                {
-                    "level": "1",
-                    "id": "dv_adm1_id",
-                    "name": "ADM1_EN"
-                },
-                {
-                    "level": "2",
-                    "id": "dv_adm2_id",
-                    "name": "ADM2_EN"
-                }
-            ],
-            "type": "line"
-        },
-        "download": true
-    },
-    "rainfall_agg_3month": {
-        "chart_data": {
-            "fields": [
-                {
-                    "key": "r3h",
-                    "label": "Rainfall",
-                    "color": "#233f5f"
-                },
-                {
-                    "key": "r3h_avg",
-                    "label": "Average",
-                    "color": "#bdf2e6"
-                }
-            ],
-            "levels": [
-                {
-                    "level": "1",
-                    "id": "dv_adm1_id",
-                    "name": "ADM1_EN"
-                },
-                {
-                    "level": "2",
-                    "id": "dv_adm2_id",
-                    "name": "ADM2_EN"
-                }
-            ],
-            "type": "bar"
-        },
-        "download": true
-    },
-    "rain_anomaly_3month": {
-        "chart_data": {
-            "fields": [
-                {
-                    "key": "r3q",
-                    "label": "Rainfall anomaly",
-                    "minValue": 0,
-                    "maxValue": 300,
-                    "color": "#375692"
-                },
-                {
-                    "key": "rfq_avg",
-                    "label": "Normal",
-                    "fallback": 100,
-                    "pointRadius": 0,
-                    "color": "#eb3223"
-                }
-            ],
-            "levels": [
-                {
-                    "level": "1",
-                    "id": "dv_adm1_id",
-                    "name": "ADM1_EN"
-                },
-                {
-                    "level": "2",
-                    "id": "dv_adm2_id",
-                    "name": "ADM2_EN"
-                }
-            ],
-            "type": "line"
-        },
-        "download": true
-    },
-    "ndvi_dekad": {
-        "chart_data": {
-            "fields": [
-                {
-                    "key": "vim",
-                    "label": "NDVI",
-                    "color": "#4eac5b"
-                },
-                {
-                    "key": "vim_avg",
-                    "label": "Average",
-                    "color": "#99ff99"
-                }
-            ],
-            "levels": [
-                {
-                    "level": "1",
-                    "id": "dv_adm1_id",
-                    "name": "ADM1_EN"
-                },
-                {
-                    "level": "2",
-                    "id": "dv_adm2_id",
-                    "name": "ADM2_EN"
-                }
-            ],
-            "type": "line"
-        },
-        "download": true
-    },
-    "ndvi_dekad_anomaly": {
-        "chart_data": {
-            "fields": [
-                {
-                    "key": "viq",
-                    "label": "NDVI anomaly",
-                    "minValue": 0,
-                    "maxValue": 150,
-                    "color": "#5e803f"
-                },
-                {
-                    "key": "viq_avg",
-                    "label": "Normal",
-                    "color": "#eb3223",
-                    "pointRadius": 0,
-                    "fallback": 100
-                }
-            ],
-            "levels": [
-                {
-                    "level": "1",
-                    "id": "dv_adm1_id",
-                    "name": "ADM1_EN"
-                },
-                {
-                    "level": "2",
-                    "id": "dv_adm2_id",
-                    "name": "ADM2_EN"
-                }
-            ],
-            "type": "line"
-        },
-        "download": true
+  "admin_boundaries": {
+    "type": "boundary",
+    "path": "data/malawi/mwi_admbnda_adm2_nso_hotosm_20230405_dv.json",
+    "opacity": 0.8,
+    "admin_code": "ADM2_PCODE",
+    "admin_level_codes": ["ADM1_PCODE", "ADM2_PCODE"],
+    "admin_level_names": ["ADM1_EN", "ADM2_EN"],
+    "admin_level_local_names": ["ADM1_EN", "ADM2_EN"],
+    "styles:": {
+      "fill": {
+        "fill-opacity": 0
+      },
+      "line": {
+        "line-color": "gray",
+        "line-width": 1.5,
+        "line-opacity": 0.8
+      }
     }
+  },
+  "admin1_boundaries": {
+    "type": "boundary",
+    "path": "data/malawi/mwi_admbnda_adm1_nso_hotosm_20230405_dv.json",
+    "opacity": 0.8,
+    "admin_code": "ADM1_PCODE",
+    "admin_level_codes": ["ADM1_PCODE"],
+    "admin_level_names": ["ADM1_EN"],
+    "admin_level_local_names": ["ADM1_EN"],
+    "styles:": {
+      "fill": {
+        "fill-opacity": 0
+      },
+      "line": {
+        "line-color": "gray",
+        "line-width": 3,
+        "line-opacity": 0.8
+      }
+    }
+  },
+  "rainfall_dekad": {
+    "chart_data": {
+      "fields": [
+        {
+          "key": "rfh",
+          "label": "Rainfall",
+          "color": "#233f5f"
+        },
+        {
+          "key": "rfh_avg",
+          "label": "Average",
+          "color": "#bdf2e6"
+        }
+      ],
+      "levels": [
+        {
+          "level": "1",
+          "id": "dv_adm1_id",
+          "name": "ADM1_EN"
+        },
+        {
+          "level": "2",
+          "id": "dv_adm2_id",
+          "name": "ADM2_EN"
+        }
+      ],
+      "type": "bar"
+    }
+  },
+  "rain_anomaly_dekad": {
+    "chart_data": {
+      "fields": [
+        {
+          "key": "rfq",
+          "label": "Rainfall anomaly",
+          "color": "#375692",
+          "minValue": 0,
+          "maxValue": 300
+        },
+        {
+          "key": "rfq_avg",
+          "label": "Normal",
+          "fallback": 100,
+          "pointRadius": 0,
+          "color": "#eb3223"
+        }
+      ],
+      "levels": [
+        {
+          "level": "1",
+          "id": "dv_adm1_id",
+          "name": "ADM1_EN"
+        },
+        {
+          "level": "2",
+          "id": "dv_adm2_id",
+          "name": "ADM2_EN"
+        }
+      ],
+      "type": "line"
+    }
+  },
+  "rainfall_agg_1month": {
+    "chart_data": {
+      "fields": [
+        {
+          "key": "r1h",
+          "label": "Rainfall",
+          "color": "#233f5f"
+        },
+        {
+          "key": "r1h_avg",
+          "label": "Average",
+          "color": "#bdf2e6"
+        }
+      ],
+      "levels": [
+        {
+          "level": "1",
+          "id": "dv_adm1_id",
+          "name": "ADM1_EN"
+        },
+        {
+          "level": "2",
+          "id": "dv_adm2_id",
+          "name": "ADM2_EN"
+        }
+      ],
+      "type": "bar"
+    }
+  },
+  "rain_anomaly_1month": {
+    "chart_data": {
+      "fields": [
+        {
+          "key": "r1q",
+          "label": "Rainfall anomaly",
+          "minValue": 0,
+          "maxValue": 300,
+          "color": "#375692"
+        },
+        {
+          "key": "rfq_avg",
+          "label": "Normal",
+          "fallback": 100,
+          "pointRadius": 0,
+          "color": "#eb3223"
+        }
+      ],
+      "levels": [
+        {
+          "level": "1",
+          "id": "dv_adm1_id",
+          "name": "ADM1_EN"
+        },
+        {
+          "level": "2",
+          "id": "dv_adm2_id",
+          "name": "ADM2_EN"
+        }
+      ],
+      "type": "line"
+    }
+  },
+  "rainfall_agg_3month": {
+    "chart_data": {
+      "fields": [
+        {
+          "key": "r3h",
+          "label": "Rainfall",
+          "color": "#233f5f"
+        },
+        {
+          "key": "r3h_avg",
+          "label": "Average",
+          "color": "#bdf2e6"
+        }
+      ],
+      "levels": [
+        {
+          "level": "1",
+          "id": "dv_adm1_id",
+          "name": "ADM1_EN"
+        },
+        {
+          "level": "2",
+          "id": "dv_adm2_id",
+          "name": "ADM2_EN"
+        }
+      ],
+      "type": "bar"
+    }
+  },
+  "rain_anomaly_3month": {
+    "chart_data": {
+      "fields": [
+        {
+          "key": "r3q",
+          "label": "Rainfall anomaly",
+          "minValue": 0,
+          "maxValue": 300,
+          "color": "#375692"
+        },
+        {
+          "key": "rfq_avg",
+          "label": "Normal",
+          "fallback": 100,
+          "pointRadius": 0,
+          "color": "#eb3223"
+        }
+      ],
+      "levels": [
+        {
+          "level": "1",
+          "id": "dv_adm1_id",
+          "name": "ADM1_EN"
+        },
+        {
+          "level": "2",
+          "id": "dv_adm2_id",
+          "name": "ADM2_EN"
+        }
+      ],
+      "type": "line"
+    }
+  },
+  "ndvi_dekad": {
+    "chart_data": {
+      "fields": [
+        {
+          "key": "vim",
+          "label": "NDVI",
+          "color": "#4eac5b"
+        },
+        {
+          "key": "vim_avg",
+          "label": "Average",
+          "color": "#99ff99"
+        }
+      ],
+      "levels": [
+        {
+          "level": "1",
+          "id": "dv_adm1_id",
+          "name": "ADM1_EN"
+        },
+        {
+          "level": "2",
+          "id": "dv_adm2_id",
+          "name": "ADM2_EN"
+        }
+      ],
+      "type": "line"
+    }
+  },
+  "ndvi_dekad_anomaly": {
+    "chart_data": {
+      "fields": [
+        {
+          "key": "viq",
+          "label": "NDVI anomaly",
+          "minValue": 0,
+          "maxValue": 150,
+          "color": "#5e803f"
+        },
+        {
+          "key": "viq_avg",
+          "label": "Normal",
+          "color": "#eb3223",
+          "pointRadius": 0,
+          "fallback": 100
+        }
+      ],
+      "levels": [
+        {
+          "level": "1",
+          "id": "dv_adm1_id",
+          "name": "ADM1_EN"
+        },
+        {
+          "level": "2",
+          "id": "dv_adm2_id",
+          "name": "ADM2_EN"
+        }
+      ],
+      "type": "line"
+    }
+  }
 }

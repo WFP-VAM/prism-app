@@ -1,1200 +1,1153 @@
 {
-    "admin_boundaries": {
-        "type": "boundary",
-        "path": "data/kyrgyzstan/District_KRYG.json",
-        "opacity": 1,
-        "admin_code": "Adm2_Code",
-        "admin_level_codes": [
-            "Adm1_Code",
-            "Adm2_Code"
-        ],
-        "admin_level_names": [
-            "Adm1_RU",
-            "Adm2_RU"
-        ],
-        "admin_level_local_names": [
-            "Adm1_KR",
-            "Adm2_KR"
-        ],
-        "styles:": {
-            "fill": {
-                "fill-opacity": 0
-            },
-            "line": {
-                "line-color": "gray",
-                "line-width": 1,
-                "line-opacity": 1
-            }
-        },
-        "download": true
-    },
-    "admin1_boundaries": {
-        "type": "boundary",
-        "path": "data/kyrgyzstan/Province_KYRG.json",
-        "opacity": 1,
-        "admin_code": "Adm1_Code",
-        "admin_level_codes": [
-            "Adm1_Code"
-        ],
-        "admin_level_names": [
-            "Adm1_RU"
-        ],
-        "admin_level_local_names": [
-            "Adm1_KR"
-        ],
-        "styles:": {
-            "fill": {
-                "fill-opacity": 0
-            },
-            "line": {
-                "line-color": "gray",
-                "line-width": 2,
-                "line-opacity": 1
-            }
-        },
-        "download": true
-    },
-    "recurrence_mudflows": {
-        "title": "Recurrence of mudflows",
-        "type": "admin_level_data",
-        "path": "data/kyrgyzstan/mudflows_w_admin.json",
-        "data_field": "mudflow",
-        "admin_level": 2,
-        "admin_code": "Adm2_Code",
-        "opacity": 0.6,
-        "legend": [
-            {
-                "value": 1,
-                "label": "1 to 2",
-                "color": "#1a9641"
-            },
-            {
-                "value": 2,
-                "label": "2 to 3",
-                "color": "#a6d96a"
-            },
-            {
-                "value": 3,
-                "label": "3 to 5",
-                "color": "#ffffbf"
-            },
-            {
-                "value": 5,
-                "label": "5 to 10",
-                "color": "#fdae61"
-            },
-            {
-                "value": 10,
-                "label": "10 to 30",
-                "color": "#d7191c"
-            }
-        ],
-        "legend_text": "Recurrence of mudflows, Ministry of Emergency Situations 2009",
-        "download": true
-    },
-    "flood_mudflows": {
-        "title": "Number of floods and mudflows",
-        "type": "admin_level_data",
-        "path": "data/kyrgyzstan/kyr-admin-level-datasets.json",
-        "data_field": "flood_mudflow",
-        "admin_level": 2,
-        "admin_code": "Adm2_Code",
-        "opacity": 0.6,
-        "legend": [
-            {
-                "value": 1,
-                "label": "< 10",
-                "color": "#fee5d9"
-            },
-            {
-                "value": 11,
-                "label": "11 - 20",
-                "color": "#fcae91"
-            },
-            {
-                "value": 21,
-                "label": "21 to 30",
-                "color": "#fb6a4a"
-            },
-            {
-                "value": 31,
-                "label": "31 to 40",
-                "color": "#de2d26"
-            },
-            {
-                "value": 41,
-                "label": "> 40",
-                "color": "#a50f15"
-            }
-        ],
-        "legend_text": "Number of floods and mudflows (1999 - 2021)",
-        "download": true
-    },
-    "poverty": {
-        "title": "Population below the poverty line",
-        "type": "admin_level_data",
-        "path": "data/kyrgyzstan/kyr-admin-level-datasets.json",
-        "data_field": "poverty",
-        "admin_level": 2,
-        "admin_code": "Adm2_Code",
-        "opacity": 0.6,
-        "legend": [
-            {
-                "value": 1,
-                "label": "< 10%",
-                "color": "#fee5d9"
-            },
-            {
-                "value": 11,
-                "label": "11 - 20%",
-                "color": "#fcbba1"
-            },
-            {
-                "value": 21,
-                "label": "21 to 30%",
-                "color": "#fc9272"
-            },
-            {
-                "value": 31,
-                "label": "31 to 40%",
-                "color": "#fb6a4a"
-            },
-            {
-                "value": 41,
-                "label": "41 to 50%",
-                "color": "#de2d26"
-            },
-            {
-                "value": 51,
-                "label": "> 50%",
-                "color": "#a50f15"
-            }
-        ],
-        "legend_text": "Share of population with income below the poverty line (MLSD, 2020)",
-        "download": true
-    },
-    "population": {
-        "title": "Population 2021",
-        "type": "admin_level_data",
-        "path": "data/kyrgyzstan/kyr-admin-level-datasets.json",
-        "data_field": "Population_2021",
-        "admin_level": 2,
-        "admin_code": "Adm2_Code",
-        "opacity": 0.6,
-        "legend": [
-            {
-                "value": 1,
-                "label": "< 50,000",
-                "color": "#eff3ff"
-            },
-            {
-                "value": 50001,
-                "label": "50,000 - 100,000",
-                "color": "#bdd7e7"
-            },
-            {
-                "value": 100001,
-                "label": "100,000 - 150,000",
-                "color": "#6baed6"
-            },
-            {
-                "value": 150001,
-                "label": "150,000 - 200,000",
-                "color": "#3182bd"
-            },
-            {
-                "value": 200001,
-                "label": "> 200,000",
-                "color": "#08519c"
-            }
-        ],
-        "legend_text": "Total population (2021)",
-        "download": true
-    },
-    "wheat": {
-        "title": "Wheat production",
-        "type": "admin_level_data",
-        "path": "data/kyrgyzstan/kyr-admin-level-datasets.json",
-        "data_field": "Wheat_production_2021_ha",
-        "admin_level": 2,
-        "admin_code": "Adm2_Code",
-        "opacity": 0.6,
-        "legend": [
-            {
-                "value": 1,
-                "label": "< 5,000",
-                "color": "#edf8e9"
-            },
-            {
-                "value": 5001,
-                "label": "5,000 - 10,000",
-                "color": "#bae4b3"
-            },
-            {
-                "value": 10001,
-                "label": "10,000 - 15,000",
-                "color": "#74c476"
-            },
-            {
-                "value": 15001,
-                "label": "15,000 - 20,000",
-                "color": "#31a354"
-            },
-            {
-                "value": 20001,
-                "label": "> 20,000",
-                "color": "#006d2c"
-            }
-        ],
-        "legend_text": "Wheat production 2021 in hectares",
-        "download": true
-    },
-    "potato": {
-        "title": "Potato production",
-        "type": "admin_level_data",
-        "path": "data/kyrgyzstan/kyr-admin-level-datasets.json",
-        "data_field": "Potato_production_2021_ha",
-        "admin_level": 2,
-        "admin_code": "Adm2_Code",
-        "opacity": 0.6,
-        "legend": [
-            {
-                "value": 1,
-                "label": "< 20,000",
-                "color": "#edf8e9"
-            },
-            {
-                "value": 20001,
-                "label": "20,000 - 40,000",
-                "color": "#bae4b3"
-            },
-            {
-                "value": 40001,
-                "label": "40,000 - 60,000",
-                "color": "#74c476"
-            },
-            {
-                "value": 60001,
-                "label": "60,000 - 80,000",
-                "color": "#31a354"
-            },
-            {
-                "value": 80001,
-                "label": "> 80,000",
-                "color": "#006d2c"
-            }
-        ],
-        "legend_text": "Potato production 2021 in hectares",
-        "download": true
-    },
-    "veg": {
-        "title": "Vegetable production",
-        "type": "admin_level_data",
-        "path": "data/kyrgyzstan/kyr-admin-level-datasets.json",
-        "data_field": "Vegetables_production_2021_ha",
-        "admin_level": 2,
-        "admin_code": "Adm2_Code",
-        "opacity": 0.6,
-        "legend": [
-            {
-                "value": 1,
-                "label": "< 20,000",
-                "color": "#edf8e9"
-            },
-            {
-                "value": 20001,
-                "label": "20,000 - 40,000",
-                "color": "#bae4b3"
-            },
-            {
-                "value": 40001,
-                "label": "40,000 - 60,000",
-                "color": "#74c476"
-            },
-            {
-                "value": 60001,
-                "label": "60,000 - 80,000",
-                "color": "#31a354"
-            },
-            {
-                "value": 80001,
-                "label": "> 80,000",
-                "color": "#006d2c"
-            }
-        ],
-        "legend_text": "Vegetable production 2021 in hectares",
-        "download": true
-    },
-    "fruit": {
-        "title": "Fruit production",
-        "type": "admin_level_data",
-        "path": "data/kyrgyzstan/kyr-admin-level-datasets.json",
-        "data_field": "Fruits_production_2021",
-        "admin_level": 2,
-        "admin_code": "Adm2_Code",
-        "opacity": 0.6,
-        "legend": [
-            {
-                "value": 1,
-                "label": "< 2,500",
-                "color": "#edf8e9"
-            },
-            {
-                "value": 2501,
-                "label": "2,500 - 5,000",
-                "color": "#bae4b3"
-            },
-            {
-                "value": 5001,
-                "label": "5,000 - 7,500",
-                "color": "#74c476"
-            },
-            {
-                "value": 7501,
-                "label": "7,500 - 10,000",
-                "color": "#31a354"
-            },
-            {
-                "value": 10001,
-                "label": "> 10,000",
-                "color": "#006d2c"
-            }
-        ],
-        "legend_text": "Fruit production 2021 in hectares",
-        "download": true
-    },
-    "livestock": {
-        "title": "Livestock",
-        "type": "admin_level_data",
-        "path": "data/kyrgyzstan/kyr-admin-level-datasets.json",
-        "data_field": "Livestock_head_count_2021",
-        "admin_level": 2,
-        "admin_code": "Adm2_Code",
-        "opacity": 0.6,
-        "legend": [
-            {
-                "value": 1,
-                "label": "< 25,000",
-                "color": "#feedde"
-            },
-            {
-                "value": 25001,
-                "label": "25,000 - 50,000",
-                "color": "#fdbe85"
-            },
-            {
-                "value": 50001,
-                "label": "50,00 - 75,000",
-                "color": "#fd8d3c"
-            },
-            {
-                "value": 75001,
-                "label": "75,000 - 100,000",
-                "color": "#e6550d"
-            },
-            {
-                "value": 100001,
-                "label": "> 100,000",
-                "color": "#a63603"
-            }
-        ],
-        "legend_text": "Livestock headcount in 2021",
-        "download": true
-    },
-    "rainfall_dekad": {
-        "chart_data": {
-            "url": "https://api.earthobservation.vam.wfp.org/stats/admin",
-            "fields": [
-                {
-                    "key": "rfh",
-                    "label": "Rainfall",
-                    "color": "#233f5f"
-                },
-                {
-                    "key": "rfh_avg",
-                    "label": "Average",
-                    "color": "#bdf2e6"
-                }
-            ],
-            "levels": [
-                {
-                    "level": "1",
-                    "id": "dv_adm1_id",
-                    "name": "Adm1_RU"
-                },
-                {
-                    "level": "2",
-                    "id": "dv_adm2_id",
-                    "name": "Adm2_RU"
-                }
-            ],
-            "type": "bar"
-        },
-        "download": true
-    },
-    "rain_anomaly_dekad": {
-        "chart_data": {
-            "url": "https://api.earthobservation.vam.wfp.org/stats/admin",
-            "fields": [
-                {
-                    "key": "rfq",
-                    "label": "Rainfall anomaly",
-                    "color": "#375692",
-                    "minValue": 0,
-                    "maxValue": 300
-                },
-                {
-                    "key": "rfq_avg",
-                    "label": "Normal",
-                    "fallback": 100,
-                    "pointRadius": 0,
-                    "color": "#eb3223"
-                }
-            ],
-            "levels": [
-                {
-                    "level": "1",
-                    "id": "dv_adm1_id",
-                    "name": "Adm1_RU"
-                },
-                {
-                    "level": "2",
-                    "id": "dv_adm2_id",
-                    "name": "Adm2_RU"
-                }
-            ],
-            "type": "line"
-        },
-        "download": true
-    },
-    "rainfall_agg_1month": {
-        "chart_data": {
-            "url": "https://api.earthobservation.vam.wfp.org/stats/admin",
-            "fields": [
-                {
-                    "key": "r1h",
-                    "label": "Rainfall",
-                    "color": "#233f5f"
-                },
-                {
-                    "key": "r1h_avg",
-                    "label": "Average",
-                    "color": "#bdf2e6"
-                }
-            ],
-            "levels": [
-                {
-                    "level": "1",
-                    "id": "dv_adm1_id",
-                    "name": "Adm1_RU"
-                },
-                {
-                    "level": "2",
-                    "id": "dv_adm2_id",
-                    "name": "Adm2_RU"
-                }
-            ],
-            "type": "bar"
-        },
-        "download": true
-    },
-    "rain_anomaly_1month": {
-        "chart_data": {
-            "url": "https://api.earthobservation.vam.wfp.org/stats/admin",
-            "fields": [
-                {
-                    "key": "r1q",
-                    "label": "Rainfall anomaly",
-                    "minValue": 0,
-                    "maxValue": 300,
-                    "color": "#375692"
-                },
-                {
-                    "key": "rfq_avg",
-                    "label": "Normal",
-                    "fallback": 100,
-                    "pointRadius": 0,
-                    "color": "#eb3223"
-                }
-            ],
-            "levels": [
-                {
-                    "level": "1",
-                    "id": "dv_adm1_id",
-                    "name": "Adm1_RU"
-                },
-                {
-                    "level": "2",
-                    "id": "dv_adm2_id",
-                    "name": "Adm2_RU"
-                }
-            ],
-            "type": "line"
-        },
-        "download": true
-    },
-    "rainfall_agg_3month": {
-        "chart_data": {
-            "url": "https://api.earthobservation.vam.wfp.org/stats/admin",
-            "fields": [
-                {
-                    "key": "r3h",
-                    "label": "Rainfall",
-                    "color": "#233f5f"
-                },
-                {
-                    "key": "r3h_avg",
-                    "label": "Average",
-                    "color": "#bdf2e6"
-                }
-            ],
-            "levels": [
-                {
-                    "level": "1",
-                    "id": "dv_adm1_id",
-                    "name": "Adm1_RU"
-                },
-                {
-                    "level": "2",
-                    "id": "dv_adm2_id",
-                    "name": "Adm2_RU"
-                }
-            ],
-            "type": "bar"
-        },
-        "download": true
-    },
-    "rain_anomaly_3month": {
-        "chart_data": {
-            "url": "https://api.earthobservation.vam.wfp.org/stats/admin",
-            "fields": [
-                {
-                    "key": "r3q",
-                    "label": "Rainfall anomaly",
-                    "minValue": 0,
-                    "maxValue": 300,
-                    "color": "#375692"
-                },
-                {
-                    "key": "rfq_avg",
-                    "label": "Normal",
-                    "fallback": 100,
-                    "pointRadius": 0,
-                    "color": "#eb3223"
-                }
-            ],
-            "levels": [
-                {
-                    "level": "1",
-                    "id": "dv_adm1_id",
-                    "name": "Adm1_RU"
-                },
-                {
-                    "level": "2",
-                    "id": "dv_adm2_id",
-                    "name": "Adm2_RU"
-                }
-            ],
-            "type": "line"
-        },
-        "download": true
-    },
-    "ndvi_dekad": {
-        "chart_data": {
-            "url": "https://api.earthobservation.vam.wfp.org/stats/admin",
-            "fields": [
-                {
-                    "key": "vim",
-                    "label": "NDVI",
-                    "color": "#4eac5b"
-                },
-                {
-                    "key": "vim_avg",
-                    "label": "Average",
-                    "color": "#99ff99"
-                }
-            ],
-            "levels": [
-                {
-                    "level": "1",
-                    "id": "dv_adm1_id",
-                    "name": "Adm1_RU"
-                },
-                {
-                    "level": "2",
-                    "id": "dv_adm2_id",
-                    "name": "Adm2_RU"
-                }
-            ],
-            "type": "line"
-        },
-        "download": true
-    },
-    "ndvi_dekad_anomaly": {
-        "chart_data": {
-            "url": "https://api.earthobservation.vam.wfp.org/stats/admin",
-            "fields": [
-                {
-                    "key": "viq",
-                    "label": "NDVI anomaly",
-                    "minValue": 0,
-                    "maxValue": 150,
-                    "color": "#5e803f"
-                },
-                {
-                    "key": "viq_avg",
-                    "label": "Normal",
-                    "color": "#eb3223",
-                    "pointRadius": 0,
-                    "fallback": 100
-                }
-            ],
-            "levels": [
-                {
-                    "level": "1",
-                    "id": "dv_adm1_id",
-                    "name": "Adm1_RU"
-                },
-                {
-                    "level": "2",
-                    "id": "dv_adm2_id",
-                    "name": "Adm2_RU"
-                }
-            ],
-            "type": "line"
-        },
-        "download": true
-    },
-    "snow_ndsi": {
-        "title": "Snow index (NDSI)",
-        "type": "wms",
-        "server_layer_name": "ModisIndices",
-        "base_url": "https://kyrgyzstan.sibelius-datacube.org:5000",
-        "date_interval": "days",
-        "opacity": 1,
-        "additional_query_params": {
-            "styles": "ndsi"
-        },
-        "legend_text": "A measure of whether snow was present during this ten-day period. Source: [SIBELIUs / Kyrgzstan Data Cube](https://kyrgyzstan.sibelius-datacube.org/)",
-        "legend": [
-            {
-                "value": 0,
-                "label": "0.0",
-                "color": "#9ecfec"
-            },
-            {
-                "value": 0.25,
-                "label": "0.25",
-                "color": "#bee5fd"
-            },
-            {
-                "value": 0.5,
-                "label": "0.50",
-                "color": "#d4effe"
-            },
-            {
-                "value": 0.75,
-                "label": "0.75",
-                "color": "#e9f7fe"
-            },
-            {
-                "value": 1,
-                "label": "1.0",
-                "color": "#efefef"
-            }
-        ],
-        "download": true
-    },
-    "modis_snow_percentage": {
-        "title": "Snow percentage",
-        "type": "wms",
-        "server_layer_name": "ModisSnowPercentage",
-        "base_url": "https://kyrgyzstan.sibelius-datacube.org:5000",
-        "date_interval": "day",
-        "opacity": 1,
-        "additional_query_params": {
-            "styles": "snow_percentage"
-        },
-        "legend_text": "How often this pixel was covered by snow during this ten-day period, as a percentage. Source: [SIBELIUs / Kyrgzstan Data Cube](https://kyrgyzstan.sibelius-datacube.org/)",
-        "legend": [
-            {
-                "value": 0,
-                "label": "0%",
-                "color": "#5a361d"
-            },
-            {
-                "value": 25,
-                "label": "25%",
-                "color": "#edd196"
-            },
-            {
-                "value": 50,
-                "label": "50%",
-                "color": "#d8dfc2"
-            },
-            {
-                "value": 75,
-                "label": "75%",
-                "color": "#e4e9db"
-            },
-            {
-                "value": 100,
-                "label": "100%",
-                "color": "#efefef"
-            }
-        ],
-        "download": true
-    },
-    "ModisVCI": {
-        "title": "Vegetation Condition Index",
-        "type": "wms",
-        "server_layer_name": "ModisVCI",
-        "base_url": "https://kyrgyzstan.sibelius-datacube.org:5000",
-        "date_interval": "day",
-        "opacity": 0.7,
-        "additional_query_params": {
-            "styles": "vci"
-        },
-        "legend_text": "Vegetation Condition Index for a 10day period. The VCI compares the current NDVI to the long-term minimum and maximum values of NDVI. VCI values range [0,1]",
-        "legend": [],
-        "download": true
-    },
-    "ModisTCI": {
-        "title": "Temperature Condition Index ",
-        "type": "wms",
-        "server_layer_name": "ModisTCI",
-        "base_url": "https://kyrgyzstan.sibelius-datacube.org:5000",
-        "date_interval": "day",
-        "opacity": 0.7,
-        "additional_query_params": {
-            "styles": "tci"
-        },
-        "legend_text": "Temperature Condition Index for a 10day period. The TCI compares the current LST to the long-term minimum and maximum values of LST.",
-        "legend": [],
-        "download": true
-    },
-    "ModisVHI": {
-        "title": "Vegetation Health Index",
-        "type": "wms",
-        "server_layer_name": "ModisVHI",
-        "base_url": "https://kyrgyzstan.sibelius-datacube.org:5000",
-        "date_interval": "day",
-        "opacity": 0.7,
-        "additional_query_params": {
-            "styles": "vhi"
-        },
-        "wcsConfig": {
-            "scale": 0.0001,
-            "offset": 0,
-            "pixelResolution": 64
-        },
-        "legend_text": "Vegetation Health Index for a 10day period. The VHI is a combination of VCI and TCI, and it is mainly used for monitoring drought.",
-        "legend": [
-            {
-                "value": "0.10",
-                "color": "#ef1000"
-            },
-            {
-                "value": "0.17",
-                "color": "#bf4000"
-            },
-            {
-                "value": "0.26",
-                "color": "#ba7500"
-            },
-            {
-                "value": "0.34",
-                "color": "#ead500"
-            },
-            {
-                "value": "1.00",
-                "color": "#5ea100"
-            }
-        ],
-        "download": true
-    },
-    "pasture_anomaly": {
-        "title": "10-day pasture anomaly",
-        "type": "wms",
-        "server_layer_name": "ModisAnomaly",
-        "base_url": "https://kyrgyzstan.sibelius-datacube.org:5000",
-        "date_interval": "day",
-        "opacity": 0.7,
-        "additional_query_params": {
-            "styles": "anomaly"
-        },
-        "legend_text": "Pasture anomaly comparing current pasture condition to long term median",
-        "wcsConfig": {
-            "no_data": 65535,
-            "scale": 0.01,
-            "pixelResolution": 64,
-            "offset": -200
-        },
-        "legend": [
-            {
-                "value": "-80%",
-                "color": "#ff0000"
-            },
-            {
-                "value": "-60%",
-                "color": "#ff5900"
-            },
-            {
-                "value": "-40%",
-                "color": "#ff8400"
-            },
-            {
-                "value": "-20%",
-                "color": "#ffce63"
-            },
-            {
-                "value": "-10%",
-                "color": "#ffdd94"
-            },
-            {
-                "value": "0",
-                "color": "#ffffbf"
-            },
-            {
-                "value": "+10%",
-                "color": "#dee09f"
-            },
-            {
-                "value": "+20%",
-                "color": "#bbbf7c"
-            },
-            {
-                "value": "+40%",
-                "color": "#9da360"
-            },
-            {
-                "value": "+60%",
-                "color": "#7e8745"
-            },
-            {
-                "value": "+80%",
-                "color": "#5b6e00"
-            }
-        ],
-        "download": true
-    },
-    "10day_NDVI_KDC": {
-        "title": "10-day NDVI (SIBELIUS)",
-        "type": "wms",
-        "server_layer_name": "ModisIndices",
-        "base_url": "https://kyrgyzstan.sibelius-datacube.org:5000",
-        "date_interval": "day",
-        "opacity": 0.7,
-        "additional_query_params": {
-            "styles": "ndvi"
-        },
-        "wcsConfig": {
-            "scale": 0.0001,
-            "offset": 0
-        },
-        "legend_text": "The Normalised Difference Vegetation Index (NDVI) is a proxy for how much vegetation is present on the ground. The index is calculated by the absorption and reflection of the red and near-infrared bands by plants. Source: [SIBELIUs / Kyrgzstan Data Cube](https://kyrgyzstan.sibelius-datacube.org/) ",
-        "legend": [
-            {
-                "value": "0.00",
-                "color": "#ece0d7"
-            },
-            {
-                "value": "0.11",
-                "color": "#d7c8b1"
-            },
-            {
-                "value": "0.22",
-                "color": "#bfb186"
-            },
-            {
-                "value": "0.33",
-                "color": "#a59e59"
-            },
-            {
-                "value": "0.44",
-                "color": "#878a31"
-            },
-            {
-                "value": "0.55",
-                "color": "#69761f"
-            },
-            {
-                "value": "0.66",
-                "color": "#4f6021"
-            },
-            {
-                "value": "0.77",
-                "color": "#374b1b"
-            },
-            {
-                "value": "0.88",
-                "color": "#1c3800"
-            },
-            {
-                "value": "1.00",
-                "color": "#000000"
-            }
-        ],
-        "download": true
-    },
-    "ModisNDWI": {
-        "title": "10-day Water Index (NDWI - SIBELIUS)",
-        "type": "wms",
-        "server_layer_name": "ModisIndices",
-        "base_url": "https://kyrgyzstan.sibelius-datacube.org:5000",
-        "date_interval": "day",
-        "opacity": 0.7,
-        "additional_query_params": {
-            "styles": "ndwi"
-        },
-        "wcsConfig": {
-            "scale": 1e-05,
-            "offset": 0
-        },
-        "legend_text": "Indicates the location of water bodies or change in water level, resulting from events like flooding. Source: [SIBELIUs / Kyrgzstan Data Cube](https://kyrgyzstan.sibelius-datacube.org/)",
-        "legend": [
-            {
-                "value": "-1",
-                "color": "#5d9121"
-            },
-            {
-                "value": "-0.75",
-                "color": "#e6cf37"
-            },
-            {
-                "value": "-0.5",
-                "color": "#cc9f2b"
-            },
-            {
-                "value": "-0.25",
-                "color": "#b0631d"
-            },
-            {
-                "value": "0",
-                "color": "#bd3516"
-            },
-            {
-                "value": "1.00",
-                "color": "#d91c15"
-            }
-        ],
-        "download": true
-    },
-    "active_fires": {
-        "title": "Active fires in the past 24 hours",
-        "type": "wms",
-        "server_layer_name": "",
-        "base_url": "https://firms.modaps.eosdis.nasa.gov/mapserver/wms/fires/49278a84c3c473e387548ae0c6b31ced/fires_viirs_24/",
-        "date_interval": "day",
-        "opacity": 0.8,
-        "additional_query_params": {
-            "TIME": "2024-03-21/2024-03-22"
-        },
-        "legend_text": "Provides VIIRS 375m Fires/Hotspots for the past 24 hours",
-        "legend": [],
-        "download": true
-    },
-    "active_fires_7days": {
-        "title": "Active fires in the past 7 days",
-        "type": "wms",
-        "server_layer_name": "",
-        "base_url": "    https://firms.modaps.eosdis.nasa.gov/mapserver/wms/time_since_detection_4/49278a84c3c473e387548ae0c6b31ced/tsd_4_viirs_all/",
-        "date_interval": "day",
-        "opacity": 0.8,
-        "legend_text": "Provides VIIRS 375m Fires/Hotspots for the past 7 days",
-        "legend": [
-            {
-                "value": "0 to < 6 hours",
-                "color": "#8B0000"
-            },
-            {
-                "value": "6 to < 12 hours",
-                "color": "#FF0000"
-            },
-            {
-                "value": "12 to < 24 hours",
-                "color": "#FFA500"
-            },
-            {
-                "value": "24 + hours",
-                "color": "#FFFF00"
-            }
-        ],
-        "download": true
-    },
-    "dekad_rainfall_anomaly_forecast": {
-        "title": "10-day rainfall forecast anomaly",
-        "type": "wms",
-        "server_layer_name": "rfq_dekad",
-        "additional_query_params": {
-            "styles": "rfq_14_20_400"
-        },
-        "start_date": "today",
-        "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
-        "date_interval": "days",
-        "opacity": 0.7,
-        "legend_text": "10-day forecast anomaly compared to the long term average. Derived from CHIRPS and GEFS",
-        "legend": [
-            {
-                "value": 0,
-                "label": "< 20%",
-                "color": "#8c4800"
-            },
-            {
-                "value": 20,
-                "label": "20-40%",
-                "color": "#af6b27"
-            },
-            {
-                "value": 40,
-                "label": "40-60%",
-                "color": "#d58c3e"
-            },
-            {
-                "value": 60,
-                "label": "60-70%",
-                "color": "#eaa83d"
-            },
-            {
-                "value": 70,
-                "label": "70-80%",
-                "color": "#f5c878"
-            },
-            {
-                "value": 80,
-                "label": "80-90%",
-                "color": "#fff0c4"
-            },
-            {
-                "value": 90,
-                "label": "90-110%",
-                "color": "#fafafa"
-            },
-            {
-                "value": 110,
-                "label": "110-120%",
-                "color": "#befafa"
-            },
-            {
-                "value": 120,
-                "label": "120-130%",
-                "color": "#78e2f0"
-            },
-            {
-                "value": 130,
-                "label": "130-150%",
-                "color": "#00b9de"
-            },
-            {
-                "value": 150,
-                "label": "150-200%",
-                "color": "#0083f3"
-            },
-            {
-                "value": 200,
-                "label": "200-300%",
-                "color": "#0052cd"
-            },
-            {
-                "value": 300,
-                "label": "300-400%",
-                "color": "#0000c8"
-            },
-            {
-                "value": 400,
-                "label": "> 400%",
-                "color": "#a002fa"
-            }
-        ],
-        "download": true
-    },
-    "health_facilities": {
-        "title": "Health facilities",
-        "type": "point_data",
-        "data": "data/kyrgyzstan/hotosm_kgz_health_facilities_points_geojson.json",
-        "data_field": "amenity",
-        "data_field_type": "text",
-        "opacity": 1,
-        "legend_text": "Health facilities (https://data.humdata.org/dataset/hotosm_kgz_health_facilities)",
-        "legend": [
-            {
-                "label": "Hospitals",
-                "value": "hospital",
-                "color": "#e41a1c"
-            },
-            {
-                "label": "Clinic",
-                "value": "clinic",
-                "color": "#377eb8"
-            },
-            {
-                "label": "Doctors",
-                "value": "doctors",
-                "color": "#4daf4a"
-            },
-            {
-                "label": "Pharmacy",
-                "value": "pharmacy",
-                "color": "#984ea3"
-            },
-            {
-                "label": "Dentist",
-                "value": "dentist",
-                "color": "#ff7f00"
-            }
-        ],
-        "feature_info_props": {
-            "name": {
-                "type": "string",
-                "dataTitle": "Name"
-            },
-            "amenity": {
-                "type": "string",
-                "dataTitle": "Type"
-            }
-        },
-        "download": true
-    },
-    "viirs_fires_2023_06_09": {
-        "title": "Fires - June 01 to September 30, 2023",
-        "type": "point_data",
-        "data": "data/kyrgyzstan/viirs_fires_2023-06-01_2023_09_30.json",
-        "data_field": "BRIGHTNESS",
-        "opacity": 1,
-        "legend_text": "Source NASA VIIRS https://firms.modaps.eosdis.nasa.gov/",
-        "legend": [
-            {
-                "value": "0",
-                "label": "Low",
-                "color": "#fee5d9"
-            },
-            {
-                "value": "300",
-                "label": "Low-Med",
-                "color": "#fcae91"
-            },
-            {
-                "value": "320",
-                "label": "Medium",
-                "color": "#fb6a4a"
-            },
-            {
-                "value": "340",
-                "label": "Med-High",
-                "color": "#de2d26"
-            },
-            {
-                "value": "360",
-                "label": "High",
-                "color": "#a50f15"
-            }
-        ],
-        "feature_info_props": {
-            "ACQ_DATE": {
-                "type": "string",
-                "dataTitle": "Date"
-            }
-        },
-        "download": true
+  "admin_boundaries": {
+    "type": "boundary",
+    "path": "data/kyrgyzstan/District_KRYG.json",
+    "opacity": 1,
+    "admin_code": "Adm2_Code",
+    "admin_level_codes": ["Adm1_Code", "Adm2_Code"],
+    "admin_level_names": ["Adm1_RU", "Adm2_RU"],
+    "admin_level_local_names": ["Adm1_KR", "Adm2_KR"],
+    "styles:": {
+      "fill": {
+        "fill-opacity": 0
+      },
+      "line": {
+        "line-color": "gray",
+        "line-width": 1,
+        "line-opacity": 1
+      }
     }
+  },
+  "admin1_boundaries": {
+    "type": "boundary",
+    "path": "data/kyrgyzstan/Province_KYRG.json",
+    "opacity": 1,
+    "admin_code": "Adm1_Code",
+    "admin_level_codes": ["Adm1_Code"],
+    "admin_level_names": ["Adm1_RU"],
+    "admin_level_local_names": ["Adm1_KR"],
+    "styles:": {
+      "fill": {
+        "fill-opacity": 0
+      },
+      "line": {
+        "line-color": "gray",
+        "line-width": 2,
+        "line-opacity": 1
+      }
+    }
+  },
+  "recurrence_mudflows": {
+    "title": "Recurrence of mudflows",
+    "type": "admin_level_data",
+    "path": "data/kyrgyzstan/mudflows_w_admin.json",
+    "data_field": "mudflow",
+    "admin_level": 2,
+    "admin_code": "Adm2_Code",
+    "opacity": 0.6,
+    "legend": [
+      {
+        "value": 1,
+        "label": "1 to 2",
+        "color": "#1a9641"
+      },
+      {
+        "value": 2,
+        "label": "2 to 3",
+        "color": "#a6d96a"
+      },
+      {
+        "value": 3,
+        "label": "3 to 5",
+        "color": "#ffffbf"
+      },
+      {
+        "value": 5,
+        "label": "5 to 10",
+        "color": "#fdae61"
+      },
+      {
+        "value": 10,
+        "label": "10 to 30",
+        "color": "#d7191c"
+      }
+    ],
+    "legend_text": "Recurrence of mudflows, Ministry of Emergency Situations 2009"
+  },
+  "flood_mudflows": {
+    "title": "Number of floods and mudflows",
+    "type": "admin_level_data",
+    "path": "data/kyrgyzstan/kyr-admin-level-datasets.json",
+    "data_field": "flood_mudflow",
+    "admin_level": 2,
+    "admin_code": "Adm2_Code",
+    "opacity": 0.6,
+    "legend": [
+      {
+        "value": 1,
+        "label": "< 10",
+        "color": "#fee5d9"
+      },
+      {
+        "value": 11,
+        "label": "11 - 20",
+        "color": "#fcae91"
+      },
+      {
+        "value": 21,
+        "label": "21 to 30",
+        "color": "#fb6a4a"
+      },
+      {
+        "value": 31,
+        "label": "31 to 40",
+        "color": "#de2d26"
+      },
+      {
+        "value": 41,
+        "label": "> 40",
+        "color": "#a50f15"
+      }
+    ],
+    "legend_text": "Number of floods and mudflows (1999 - 2021)"
+  },
+  "poverty": {
+    "title": "Population below the poverty line",
+    "type": "admin_level_data",
+    "path": "data/kyrgyzstan/kyr-admin-level-datasets.json",
+    "data_field": "poverty",
+    "admin_level": 2,
+    "admin_code": "Adm2_Code",
+    "opacity": 0.6,
+    "legend": [
+      {
+        "value": 1,
+        "label": "< 10%",
+        "color": "#fee5d9"
+      },
+      {
+        "value": 11,
+        "label": "11 - 20%",
+        "color": "#fcbba1"
+      },
+      {
+        "value": 21,
+        "label": "21 to 30%",
+        "color": "#fc9272"
+      },
+      {
+        "value": 31,
+        "label": "31 to 40%",
+        "color": "#fb6a4a"
+      },
+      {
+        "value": 41,
+        "label": "41 to 50%",
+        "color": "#de2d26"
+      },
+      {
+        "value": 51,
+        "label": "> 50%",
+        "color": "#a50f15"
+      }
+    ],
+    "legend_text": "Share of population with income below the poverty line (MLSD, 2020)"
+  },
+  "population": {
+    "title": "Population 2021",
+    "type": "admin_level_data",
+    "path": "data/kyrgyzstan/kyr-admin-level-datasets.json",
+    "data_field": "Population_2021",
+    "admin_level": 2,
+    "admin_code": "Adm2_Code",
+    "opacity": 0.6,
+    "legend": [
+      {
+        "value": 1,
+        "label": "< 50,000",
+        "color": "#eff3ff"
+      },
+      {
+        "value": 50001,
+        "label": "50,000 - 100,000",
+        "color": "#bdd7e7"
+      },
+      {
+        "value": 100001,
+        "label": "100,000 - 150,000",
+        "color": "#6baed6"
+      },
+      {
+        "value": 150001,
+        "label": "150,000 - 200,000",
+        "color": "#3182bd"
+      },
+      {
+        "value": 200001,
+        "label": "> 200,000",
+        "color": "#08519c"
+      }
+    ],
+    "legend_text": "Total population (2021)"
+  },
+  "wheat": {
+    "title": "Wheat production",
+    "type": "admin_level_data",
+    "path": "data/kyrgyzstan/kyr-admin-level-datasets.json",
+    "data_field": "Wheat_production_2021_ha",
+    "admin_level": 2,
+    "admin_code": "Adm2_Code",
+    "opacity": 0.6,
+    "legend": [
+      {
+        "value": 1,
+        "label": "< 5,000",
+        "color": "#edf8e9"
+      },
+      {
+        "value": 5001,
+        "label": "5,000 - 10,000",
+        "color": "#bae4b3"
+      },
+      {
+        "value": 10001,
+        "label": "10,000 - 15,000",
+        "color": "#74c476"
+      },
+      {
+        "value": 15001,
+        "label": "15,000 - 20,000",
+        "color": "#31a354"
+      },
+      {
+        "value": 20001,
+        "label": "> 20,000",
+        "color": "#006d2c"
+      }
+    ],
+    "legend_text": "Wheat production 2021 in hectares"
+  },
+  "potato": {
+    "title": "Potato production",
+    "type": "admin_level_data",
+    "path": "data/kyrgyzstan/kyr-admin-level-datasets.json",
+    "data_field": "Potato_production_2021_ha",
+    "admin_level": 2,
+    "admin_code": "Adm2_Code",
+    "opacity": 0.6,
+    "legend": [
+      {
+        "value": 1,
+        "label": "< 20,000",
+        "color": "#edf8e9"
+      },
+      {
+        "value": 20001,
+        "label": "20,000 - 40,000",
+        "color": "#bae4b3"
+      },
+      {
+        "value": 40001,
+        "label": "40,000 - 60,000",
+        "color": "#74c476"
+      },
+      {
+        "value": 60001,
+        "label": "60,000 - 80,000",
+        "color": "#31a354"
+      },
+      {
+        "value": 80001,
+        "label": "> 80,000",
+        "color": "#006d2c"
+      }
+    ],
+    "legend_text": "Potato production 2021 in hectares"
+  },
+  "veg": {
+    "title": "Vegetable production",
+    "type": "admin_level_data",
+    "path": "data/kyrgyzstan/kyr-admin-level-datasets.json",
+    "data_field": "Vegetables_production_2021_ha",
+    "admin_level": 2,
+    "admin_code": "Adm2_Code",
+    "opacity": 0.6,
+    "legend": [
+      {
+        "value": 1,
+        "label": "< 20,000",
+        "color": "#edf8e9"
+      },
+      {
+        "value": 20001,
+        "label": "20,000 - 40,000",
+        "color": "#bae4b3"
+      },
+      {
+        "value": 40001,
+        "label": "40,000 - 60,000",
+        "color": "#74c476"
+      },
+      {
+        "value": 60001,
+        "label": "60,000 - 80,000",
+        "color": "#31a354"
+      },
+      {
+        "value": 80001,
+        "label": "> 80,000",
+        "color": "#006d2c"
+      }
+    ],
+    "legend_text": "Vegetable production 2021 in hectares"
+  },
+  "fruit": {
+    "title": "Fruit production",
+    "type": "admin_level_data",
+    "path": "data/kyrgyzstan/kyr-admin-level-datasets.json",
+    "data_field": "Fruits_production_2021",
+    "admin_level": 2,
+    "admin_code": "Adm2_Code",
+    "opacity": 0.6,
+    "legend": [
+      {
+        "value": 1,
+        "label": "< 2,500",
+        "color": "#edf8e9"
+      },
+      {
+        "value": 2501,
+        "label": "2,500 - 5,000",
+        "color": "#bae4b3"
+      },
+      {
+        "value": 5001,
+        "label": "5,000 - 7,500",
+        "color": "#74c476"
+      },
+      {
+        "value": 7501,
+        "label": "7,500 - 10,000",
+        "color": "#31a354"
+      },
+      {
+        "value": 10001,
+        "label": "> 10,000",
+        "color": "#006d2c"
+      }
+    ],
+    "legend_text": "Fruit production 2021 in hectares"
+  },
+  "livestock": {
+    "title": "Livestock",
+    "type": "admin_level_data",
+    "path": "data/kyrgyzstan/kyr-admin-level-datasets.json",
+    "data_field": "Livestock_head_count_2021",
+    "admin_level": 2,
+    "admin_code": "Adm2_Code",
+    "opacity": 0.6,
+    "legend": [
+      {
+        "value": 1,
+        "label": "< 25,000",
+        "color": "#feedde"
+      },
+      {
+        "value": 25001,
+        "label": "25,000 - 50,000",
+        "color": "#fdbe85"
+      },
+      {
+        "value": 50001,
+        "label": "50,00 - 75,000",
+        "color": "#fd8d3c"
+      },
+      {
+        "value": 75001,
+        "label": "75,000 - 100,000",
+        "color": "#e6550d"
+      },
+      {
+        "value": 100001,
+        "label": "> 100,000",
+        "color": "#a63603"
+      }
+    ],
+    "legend_text": "Livestock headcount in 2021"
+  },
+  "rainfall_dekad": {
+    "chart_data": {
+      "url": "https://api.earthobservation.vam.wfp.org/stats/admin",
+      "fields": [
+        {
+          "key": "rfh",
+          "label": "Rainfall",
+          "color": "#233f5f"
+        },
+        {
+          "key": "rfh_avg",
+          "label": "Average",
+          "color": "#bdf2e6"
+        }
+      ],
+      "levels": [
+        {
+          "level": "1",
+          "id": "dv_adm1_id",
+          "name": "Adm1_RU"
+        },
+        {
+          "level": "2",
+          "id": "dv_adm2_id",
+          "name": "Adm2_RU"
+        }
+      ],
+      "type": "bar"
+    }
+  },
+  "rain_anomaly_dekad": {
+    "chart_data": {
+      "url": "https://api.earthobservation.vam.wfp.org/stats/admin",
+      "fields": [
+        {
+          "key": "rfq",
+          "label": "Rainfall anomaly",
+          "color": "#375692",
+          "minValue": 0,
+          "maxValue": 300
+        },
+        {
+          "key": "rfq_avg",
+          "label": "Normal",
+          "fallback": 100,
+          "pointRadius": 0,
+          "color": "#eb3223"
+        }
+      ],
+      "levels": [
+        {
+          "level": "1",
+          "id": "dv_adm1_id",
+          "name": "Adm1_RU"
+        },
+        {
+          "level": "2",
+          "id": "dv_adm2_id",
+          "name": "Adm2_RU"
+        }
+      ],
+      "type": "line"
+    }
+  },
+  "rainfall_agg_1month": {
+    "chart_data": {
+      "url": "https://api.earthobservation.vam.wfp.org/stats/admin",
+      "fields": [
+        {
+          "key": "r1h",
+          "label": "Rainfall",
+          "color": "#233f5f"
+        },
+        {
+          "key": "r1h_avg",
+          "label": "Average",
+          "color": "#bdf2e6"
+        }
+      ],
+      "levels": [
+        {
+          "level": "1",
+          "id": "dv_adm1_id",
+          "name": "Adm1_RU"
+        },
+        {
+          "level": "2",
+          "id": "dv_adm2_id",
+          "name": "Adm2_RU"
+        }
+      ],
+      "type": "bar"
+    }
+  },
+  "rain_anomaly_1month": {
+    "chart_data": {
+      "url": "https://api.earthobservation.vam.wfp.org/stats/admin",
+      "fields": [
+        {
+          "key": "r1q",
+          "label": "Rainfall anomaly",
+          "minValue": 0,
+          "maxValue": 300,
+          "color": "#375692"
+        },
+        {
+          "key": "rfq_avg",
+          "label": "Normal",
+          "fallback": 100,
+          "pointRadius": 0,
+          "color": "#eb3223"
+        }
+      ],
+      "levels": [
+        {
+          "level": "1",
+          "id": "dv_adm1_id",
+          "name": "Adm1_RU"
+        },
+        {
+          "level": "2",
+          "id": "dv_adm2_id",
+          "name": "Adm2_RU"
+        }
+      ],
+      "type": "line"
+    }
+  },
+  "rainfall_agg_3month": {
+    "chart_data": {
+      "url": "https://api.earthobservation.vam.wfp.org/stats/admin",
+      "fields": [
+        {
+          "key": "r3h",
+          "label": "Rainfall",
+          "color": "#233f5f"
+        },
+        {
+          "key": "r3h_avg",
+          "label": "Average",
+          "color": "#bdf2e6"
+        }
+      ],
+      "levels": [
+        {
+          "level": "1",
+          "id": "dv_adm1_id",
+          "name": "Adm1_RU"
+        },
+        {
+          "level": "2",
+          "id": "dv_adm2_id",
+          "name": "Adm2_RU"
+        }
+      ],
+      "type": "bar"
+    }
+  },
+  "rain_anomaly_3month": {
+    "chart_data": {
+      "url": "https://api.earthobservation.vam.wfp.org/stats/admin",
+      "fields": [
+        {
+          "key": "r3q",
+          "label": "Rainfall anomaly",
+          "minValue": 0,
+          "maxValue": 300,
+          "color": "#375692"
+        },
+        {
+          "key": "rfq_avg",
+          "label": "Normal",
+          "fallback": 100,
+          "pointRadius": 0,
+          "color": "#eb3223"
+        }
+      ],
+      "levels": [
+        {
+          "level": "1",
+          "id": "dv_adm1_id",
+          "name": "Adm1_RU"
+        },
+        {
+          "level": "2",
+          "id": "dv_adm2_id",
+          "name": "Adm2_RU"
+        }
+      ],
+      "type": "line"
+    }
+  },
+  "ndvi_dekad": {
+    "chart_data": {
+      "url": "https://api.earthobservation.vam.wfp.org/stats/admin",
+      "fields": [
+        {
+          "key": "vim",
+          "label": "NDVI",
+          "color": "#4eac5b"
+        },
+        {
+          "key": "vim_avg",
+          "label": "Average",
+          "color": "#99ff99"
+        }
+      ],
+      "levels": [
+        {
+          "level": "1",
+          "id": "dv_adm1_id",
+          "name": "Adm1_RU"
+        },
+        {
+          "level": "2",
+          "id": "dv_adm2_id",
+          "name": "Adm2_RU"
+        }
+      ],
+      "type": "line"
+    }
+  },
+  "ndvi_dekad_anomaly": {
+    "chart_data": {
+      "url": "https://api.earthobservation.vam.wfp.org/stats/admin",
+      "fields": [
+        {
+          "key": "viq",
+          "label": "NDVI anomaly",
+          "minValue": 0,
+          "maxValue": 150,
+          "color": "#5e803f"
+        },
+        {
+          "key": "viq_avg",
+          "label": "Normal",
+          "color": "#eb3223",
+          "pointRadius": 0,
+          "fallback": 100
+        }
+      ],
+      "levels": [
+        {
+          "level": "1",
+          "id": "dv_adm1_id",
+          "name": "Adm1_RU"
+        },
+        {
+          "level": "2",
+          "id": "dv_adm2_id",
+          "name": "Adm2_RU"
+        }
+      ],
+      "type": "line"
+    }
+  },
+  "snow_ndsi": {
+    "title": "Snow index (NDSI)",
+    "type": "wms",
+    "server_layer_name": "ModisIndices",
+    "base_url": "https://kyrgyzstan.sibelius-datacube.org:5000",
+    "date_interval": "days",
+    "opacity": 1,
+    "additional_query_params": {
+      "styles": "ndsi"
+    },
+    "legend_text": "A measure of whether snow was present during this ten-day period. Source: [SIBELIUs / Kyrgzstan Data Cube](https://kyrgyzstan.sibelius-datacube.org/)",
+    "legend": [
+      {
+        "value": 0,
+        "label": "0.0",
+        "color": "#9ecfec"
+      },
+      {
+        "value": 0.25,
+        "label": "0.25",
+        "color": "#bee5fd"
+      },
+      {
+        "value": 0.5,
+        "label": "0.50",
+        "color": "#d4effe"
+      },
+      {
+        "value": 0.75,
+        "label": "0.75",
+        "color": "#e9f7fe"
+      },
+      {
+        "value": 1,
+        "label": "1.0",
+        "color": "#efefef"
+      }
+    ]
+  },
+  "modis_snow_percentage": {
+    "title": "Snow percentage",
+    "type": "wms",
+    "server_layer_name": "ModisSnowPercentage",
+    "base_url": "https://kyrgyzstan.sibelius-datacube.org:5000",
+    "date_interval": "day",
+    "opacity": 1,
+    "additional_query_params": {
+      "styles": "snow_percentage"
+    },
+    "legend_text": "How often this pixel was covered by snow during this ten-day period, as a percentage. Source: [SIBELIUs / Kyrgzstan Data Cube](https://kyrgyzstan.sibelius-datacube.org/)",
+    "legend": [
+      {
+        "value": 0,
+        "label": "0%",
+        "color": "#5a361d"
+      },
+      {
+        "value": 25,
+        "label": "25%",
+        "color": "#edd196"
+      },
+      {
+        "value": 50,
+        "label": "50%",
+        "color": "#d8dfc2"
+      },
+      {
+        "value": 75,
+        "label": "75%",
+        "color": "#e4e9db"
+      },
+      {
+        "value": 100,
+        "label": "100%",
+        "color": "#efefef"
+      }
+    ]
+  },
+  "ModisVCI": {
+    "title": "Vegetation Condition Index",
+    "type": "wms",
+    "server_layer_name": "ModisVCI",
+    "base_url": "https://kyrgyzstan.sibelius-datacube.org:5000",
+    "date_interval": "day",
+    "opacity": 0.7,
+    "additional_query_params": {
+      "styles": "vci"
+    },
+    "legend_text": "Vegetation Condition Index for a 10day period. The VCI compares the current NDVI to the long-term minimum and maximum values of NDVI. VCI values range [0,1]",
+    "legend": []
+  },
+  "ModisTCI": {
+    "title": "Temperature Condition Index ",
+    "type": "wms",
+    "server_layer_name": "ModisTCI",
+    "base_url": "https://kyrgyzstan.sibelius-datacube.org:5000",
+    "date_interval": "day",
+    "opacity": 0.7,
+    "additional_query_params": {
+      "styles": "tci"
+    },
+    "legend_text": "Temperature Condition Index for a 10day period. The TCI compares the current LST to the long-term minimum and maximum values of LST.",
+    "legend": []
+  },
+  "ModisVHI": {
+    "title": "Vegetation Health Index",
+    "type": "wms",
+    "server_layer_name": "ModisVHI",
+    "base_url": "https://kyrgyzstan.sibelius-datacube.org:5000",
+    "date_interval": "day",
+    "opacity": 0.7,
+    "additional_query_params": {
+      "styles": "vhi"
+    },
+    "wcsConfig": {
+      "scale": 0.0001,
+      "offset": 0,
+      "pixelResolution": 64
+    },
+    "legend_text": "Vegetation Health Index for a 10day period. The VHI is a combination of VCI and TCI, and it is mainly used for monitoring drought.",
+    "legend": [
+      {
+        "value": "0.10",
+        "color": "#ef1000"
+      },
+      {
+        "value": "0.17",
+        "color": "#bf4000"
+      },
+      {
+        "value": "0.26",
+        "color": "#ba7500"
+      },
+      {
+        "value": "0.34",
+        "color": "#ead500"
+      },
+      {
+        "value": "1.00",
+        "color": "#5ea100"
+      }
+    ]
+  },
+  "pasture_anomaly": {
+    "title": "10-day pasture anomaly",
+    "type": "wms",
+    "server_layer_name": "ModisAnomaly",
+    "base_url": "https://kyrgyzstan.sibelius-datacube.org:5000",
+    "date_interval": "day",
+    "opacity": 0.7,
+    "additional_query_params": {
+      "styles": "anomaly"
+    },
+    "legend_text": "Pasture anomaly comparing current pasture condition to long term median",
+    "wcsConfig": {
+      "no_data": 65535,
+      "scale": 0.01,
+      "pixelResolution": 64,
+      "offset": -200
+    },
+    "legend": [
+      {
+        "value": "-80%",
+        "color": "#ff0000"
+      },
+      {
+        "value": "-60%",
+        "color": "#ff5900"
+      },
+      {
+        "value": "-40%",
+        "color": "#ff8400"
+      },
+      {
+        "value": "-20%",
+        "color": "#ffce63"
+      },
+      {
+        "value": "-10%",
+        "color": "#ffdd94"
+      },
+      {
+        "value": "0",
+        "color": "#ffffbf"
+      },
+      {
+        "value": "+10%",
+        "color": "#dee09f"
+      },
+      {
+        "value": "+20%",
+        "color": "#bbbf7c"
+      },
+      {
+        "value": "+40%",
+        "color": "#9da360"
+      },
+      {
+        "value": "+60%",
+        "color": "#7e8745"
+      },
+      {
+        "value": "+80%",
+        "color": "#5b6e00"
+      }
+    ]
+  },
+  "10day_NDVI_KDC": {
+    "title": "10-day NDVI (SIBELIUS)",
+    "type": "wms",
+    "server_layer_name": "ModisIndices",
+    "base_url": "https://kyrgyzstan.sibelius-datacube.org:5000",
+    "date_interval": "day",
+    "opacity": 0.7,
+    "additional_query_params": {
+      "styles": "ndvi"
+    },
+    "wcsConfig": {
+      "scale": 0.0001,
+      "offset": 0
+    },
+    "legend_text": "The Normalised Difference Vegetation Index (NDVI) is a proxy for how much vegetation is present on the ground. The index is calculated by the absorption and reflection of the red and near-infrared bands by plants. Source: [SIBELIUs / Kyrgzstan Data Cube](https://kyrgyzstan.sibelius-datacube.org/) ",
+    "legend": [
+      {
+        "value": "0.00",
+        "color": "#ece0d7"
+      },
+      {
+        "value": "0.11",
+        "color": "#d7c8b1"
+      },
+      {
+        "value": "0.22",
+        "color": "#bfb186"
+      },
+      {
+        "value": "0.33",
+        "color": "#a59e59"
+      },
+      {
+        "value": "0.44",
+        "color": "#878a31"
+      },
+      {
+        "value": "0.55",
+        "color": "#69761f"
+      },
+      {
+        "value": "0.66",
+        "color": "#4f6021"
+      },
+      {
+        "value": "0.77",
+        "color": "#374b1b"
+      },
+      {
+        "value": "0.88",
+        "color": "#1c3800"
+      },
+      {
+        "value": "1.00",
+        "color": "#000000"
+      }
+    ]
+  },
+  "ModisNDWI": {
+    "title": "10-day Water Index (NDWI - SIBELIUS)",
+    "type": "wms",
+    "server_layer_name": "ModisIndices",
+    "base_url": "https://kyrgyzstan.sibelius-datacube.org:5000",
+    "date_interval": "day",
+    "opacity": 0.7,
+    "additional_query_params": {
+      "styles": "ndwi"
+    },
+    "wcsConfig": {
+      "scale": 0.00001,
+      "offset": 0
+    },
+    "legend_text": "Indicates the location of water bodies or change in water level, resulting from events like flooding. Source: [SIBELIUs / Kyrgzstan Data Cube](https://kyrgyzstan.sibelius-datacube.org/)",
+    "legend": [
+      {
+        "value": "-1",
+        "color": "#5d9121"
+      },
+      {
+        "value": "-0.75",
+        "color": "#e6cf37"
+      },
+      {
+        "value": "-0.5",
+        "color": "#cc9f2b"
+      },
+      {
+        "value": "-0.25",
+        "color": "#b0631d"
+      },
+      {
+        "value": "0",
+        "color": "#bd3516"
+      },
+      {
+        "value": "1.00",
+        "color": "#d91c15"
+      }
+    ]
+  },
+  "active_fires": {
+    "title": "Active fires in the past 24 hours",
+    "type": "wms",
+    "server_layer_name": "",
+    "base_url": "https://firms.modaps.eosdis.nasa.gov/mapserver/wms/fires/49278a84c3c473e387548ae0c6b31ced/fires_viirs_24/",
+    "date_interval": "day",
+    "opacity": 0.8,
+    "additional_query_params": {
+      "TIME": "2024-03-21/2024-03-22"
+    },
+    "legend_text": "Provides VIIRS 375m Fires/Hotspots for the past 24 hours",
+    "legend": []
+  },
+  "active_fires_7days": {
+    "title": "Active fires in the past 7 days",
+    "type": "wms",
+    "server_layer_name": "",
+    "base_url": "    https://firms.modaps.eosdis.nasa.gov/mapserver/wms/time_since_detection_4/49278a84c3c473e387548ae0c6b31ced/tsd_4_viirs_all/",
+    "date_interval": "day",
+    "opacity": 0.8,
+    "legend_text": "Provides VIIRS 375m Fires/Hotspots for the past 7 days",
+    "legend": [
+      {
+        "value": "0 to < 6 hours",
+        "color": "#8B0000"
+      },
+      {
+        "value": "6 to < 12 hours",
+        "color": "#FF0000"
+      },
+      {
+        "value": "12 to < 24 hours",
+        "color": "#FFA500"
+      },
+      {
+        "value": "24 + hours",
+        "color": "#FFFF00"
+      }
+    ]
+  },
+  "dekad_rainfall_anomaly_forecast": {
+    "title": "10-day rainfall forecast anomaly",
+    "type": "wms",
+    "server_layer_name": "rfq_dekad",
+    "additional_query_params": {
+      "styles": "rfq_14_20_400"
+    },
+    "start_date": "today",
+    "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
+    "date_interval": "days",
+    "opacity": 0.7,
+    "legend_text": "10-day forecast anomaly compared to the long term average. Derived from CHIRPS and GEFS",
+    "legend": [
+      {
+        "value": 0,
+        "label": "< 20%",
+        "color": "#8c4800"
+      },
+      {
+        "value": 20,
+        "label": "20-40%",
+        "color": "#af6b27"
+      },
+      {
+        "value": 40,
+        "label": "40-60%",
+        "color": "#d58c3e"
+      },
+      {
+        "value": 60,
+        "label": "60-70%",
+        "color": "#eaa83d"
+      },
+      {
+        "value": 70,
+        "label": "70-80%",
+        "color": "#f5c878"
+      },
+      {
+        "value": 80,
+        "label": "80-90%",
+        "color": "#fff0c4"
+      },
+      {
+        "value": 90,
+        "label": "90-110%",
+        "color": "#fafafa"
+      },
+      {
+        "value": 110,
+        "label": "110-120%",
+        "color": "#befafa"
+      },
+      {
+        "value": 120,
+        "label": "120-130%",
+        "color": "#78e2f0"
+      },
+      {
+        "value": 130,
+        "label": "130-150%",
+        "color": "#00b9de"
+      },
+      {
+        "value": 150,
+        "label": "150-200%",
+        "color": "#0083f3"
+      },
+      {
+        "value": 200,
+        "label": "200-300%",
+        "color": "#0052cd"
+      },
+      {
+        "value": 300,
+        "label": "300-400%",
+        "color": "#0000c8"
+      },
+      {
+        "value": 400,
+        "label": "> 400%",
+        "color": "#a002fa"
+      }
+    ]
+  },
+  "health_facilities": {
+    "title": "Health facilities",
+    "type": "point_data",
+    "data": "data/kyrgyzstan/hotosm_kgz_health_facilities_points_geojson.json",
+    "data_field": "amenity",
+    "data_field_type": "text",
+    "opacity": 1,
+    "legend_text": "Health facilities (https://data.humdata.org/dataset/hotosm_kgz_health_facilities)",
+    "legend": [
+      {
+        "label": "Hospitals",
+        "value": "hospital",
+        "color": "#e41a1c"
+      },
+      {
+        "label": "Clinic",
+        "value": "clinic",
+        "color": "#377eb8"
+      },
+      {
+        "label": "Doctors",
+        "value": "doctors",
+        "color": "#4daf4a"
+      },
+      {
+        "label": "Pharmacy",
+        "value": "pharmacy",
+        "color": "#984ea3"
+      },
+      {
+        "label": "Dentist",
+        "value": "dentist",
+        "color": "#ff7f00"
+      }
+    ],
+    "feature_info_props": {
+      "name": {
+        "type": "string",
+        "dataTitle": "Name"
+      },
+      "amenity": {
+        "type": "string",
+        "dataTitle": "Type"
+      }
+    }
+  },
+  "viirs_fires_2023_06_09": {
+    "title": "Fires - June 01 to September 30, 2023",
+    "type": "point_data",
+    "data": "data/kyrgyzstan/viirs_fires_2023-06-01_2023_09_30.json",
+    "data_field": "BRIGHTNESS",
+    "opacity": 1,
+    "legend_text": "Source NASA VIIRS https://firms.modaps.eosdis.nasa.gov/",
+    "legend": [
+      {
+        "value": "0",
+        "label": "Low",
+        "color": "#fee5d9"
+      },
+      {
+        "value": "300",
+        "label": "Low-Med",
+        "color": "#fcae91"
+      },
+      {
+        "value": "320",
+        "label": "Medium",
+        "color": "#fb6a4a"
+      },
+      {
+        "value": "340",
+        "label": "Med-High",
+        "color": "#de2d26"
+      },
+      {
+        "value": "360",
+        "label": "High",
+        "color": "#a50f15"
+      }
+    ],
+    "feature_info_props": {
+      "ACQ_DATE": {
+        "type": "string",
+        "dataTitle": "Date"
+      }
+    }
+  }
 }

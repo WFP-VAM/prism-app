@@ -1,366 +1,291 @@
 {
-    "admin1_boundaries": {
-        "type": "boundary",
-        "path": "data/global/adm1_simplified.json",
-        "opacity": 0.8,
-        "admin_code": "adm1_id",
-        "admin_level_codes": [
-            "adm0_id, adm1_id"
-        ],
-        "admin_level_names": [
-            "adm0_name",
-            "shapeName"
-        ],
-        "admin_level_local_names": [
-            "adm0_name",
-            "shapeName"
-        ],
-        "styles:": {
-            "fill": {
-                "fill-opacity": 0
-            },
-            "line": {
-                "line-color": "gray",
-                "line-width": 1,
-                "line-opacity": 0.8
-            }
-        },
-        "download": true
-    },
-    "daily_rainfall_forecast": {
-        "opacity": 1,
-        "download": true
-    },
-    "dekad_rainfall_forecast": {
-        "opacity": 1,
-        "download": true
-    },
-    "dekad_rainfall_anomaly_forecast": {
-        "opacity": 1,
-        "download": true
-    },
-    "rain_anomaly_dekad": {
-        "opacity": 1,
-        "chart_data": {
-            "url": "https://api.earthobservation.vam.wfp.org/stats/admin",
-            "fields": [
-                {
-                    "key": "rfq",
-                    "label": "Rainfall anomaly",
-                    "color": "#375692",
-                    "minValue": 0,
-                    "maxValue": 300
-                },
-                {
-                    "key": "rfq_avg",
-                    "label": "Normal",
-                    "fallback": 100,
-                    "pointRadius": 0,
-                    "color": "#eb3223"
-                }
-            ],
-            "levels": [
-                {
-                    "level": "0",
-                    "id": "dv_adm0_id",
-                    "name": "adm0_name"
-                }
-            ],
-            "type": "line"
-        },
-        "download": true
-    },
-    "rain_anomaly_1month": {
-        "opacity": 1,
-        "chart_data": {
-            "url": "https://api.earthobservation.vam.wfp.org/stats/admin",
-            "fields": [
-                {
-                    "key": "r1q",
-                    "label": "Rainfall anomaly",
-                    "minValue": 0,
-                    "maxValue": 300,
-                    "color": "#375692"
-                },
-                {
-                    "key": "rfq_avg",
-                    "label": "Normal",
-                    "fallback": 100,
-                    "pointRadius": 0,
-                    "color": "#eb3223"
-                }
-            ],
-            "levels": [
-                {
-                    "level": "0",
-                    "id": "dv_adm0_id",
-                    "name": "adm0_name"
-                }
-            ],
-            "type": "line"
-        },
-        "download": true
-    },
-    "rain_anomaly_3month": {
-        "opacity": 1,
-        "chart_data": {
-            "url": "https://api.earthobservation.vam.wfp.org/stats/admin",
-            "fields": [
-                {
-                    "key": "r3q",
-                    "label": "Rainfall anomaly",
-                    "minValue": 0,
-                    "maxValue": 300,
-                    "color": "#375692"
-                },
-                {
-                    "key": "rfq_avg",
-                    "label": "Normal",
-                    "fallback": 100,
-                    "pointRadius": 0,
-                    "color": "#eb3223"
-                }
-            ],
-            "levels": [
-                {
-                    "level": "0",
-                    "id": "dv_adm0_id",
-                    "name": "adm0_name"
-                }
-            ],
-            "type": "line"
-        },
-        "download": true
-    },
-    "rain_anomaly_6month": {
-        "opacity": 1,
-        "download": true
-    },
-    "rain_anomaly_9month": {
-        "opacity": 1,
-        "download": true
-    },
-    "rain_anomaly_1year": {
-        "opacity": 1,
-        "download": true
-    },
-    "rainfall_dekad": {
-        "opacity": 1,
-        "chart_data": {
-            "url": "https://api.earthobservation.vam.wfp.org/stats/admin",
-            "fields": [
-                {
-                    "key": "rfh",
-                    "label": "Rainfall",
-                    "color": "#233f5f"
-                },
-                {
-                    "key": "rfh_avg",
-                    "label": "Average",
-                    "color": "#bdf2e6"
-                }
-            ],
-            "levels": [
-                {
-                    "level": "0",
-                    "id": "dv_adm0_id",
-                    "name": "adm0_name"
-                }
-            ],
-            "type": "bar"
-        },
-        "download": true
-    },
-    "rainfall_agg_1month": {
-        "opacity": 1,
-        "chart_data": {
-            "url": "https://api.earthobservation.vam.wfp.org/stats/admin",
-            "fields": [
-                {
-                    "key": "r1h",
-                    "label": "Rainfall",
-                    "color": "#233f5f"
-                },
-                {
-                    "key": "r1h_avg",
-                    "label": "Average",
-                    "color": "#bdf2e6"
-                }
-            ],
-            "levels": [
-                {
-                    "level": "0",
-                    "id": "dv_adm0_id",
-                    "name": "adm0_name"
-                }
-            ],
-            "type": "bar"
-        },
-        "download": true
-    },
-    "rainfall_agg_3month": {
-        "opacity": 1,
-        "chart_data": {
-            "url": "https://api.earthobservation.vam.wfp.org/stats/admin",
-            "fields": [
-                {
-                    "key": "r3h",
-                    "label": "Rainfall",
-                    "color": "#233f5f"
-                },
-                {
-                    "key": "r3h_avg",
-                    "label": "Average",
-                    "color": "#bdf2e6"
-                }
-            ],
-            "levels": [
-                {
-                    "level": "0",
-                    "id": "dv_adm0_id",
-                    "name": "adm0_name"
-                }
-            ],
-            "type": "bar"
-        },
-        "download": true
-    },
-    "rainfall_agg_6month": {
-        "opacity": 1,
-        "download": true
-    },
-    "rainfall_agg_9month": {
-        "opacity": 1,
-        "download": true
-    },
-    "rainfall_agg_1year": {
-        "opacity": 1,
-        "download": true
-    },
-    "spi_1m": {
-        "opacity": 1,
-        "download": true
-    },
-    "spi_3m": {
-        "opacity": 1,
-        "download": true
-    },
-    "spi_6m": {
-        "opacity": 1,
-        "download": true
-    },
-    "spi_9m": {
-        "opacity": 1,
-        "download": true
-    },
-    "spi_1y": {
-        "opacity": 1,
-        "download": true
-    },
-    "days_dry": {
-        "opacity": 1,
-        "download": true
-    },
-    "streak_dry_days": {
-        "opacity": 1,
-        "download": true
-    },
-    "days_heavy_rain": {
-        "opacity": 1,
-        "download": true
-    },
-    "days_intense_rain": {
-        "opacity": 1,
-        "download": true
-    },
-    "days_extreme_rain": {
-        "opacity": 1,
-        "download": true
-    },
-    "streak_heavy_rain": {
-        "opacity": 1,
-        "download": true
-    },
-    "streak_intense_rain": {
-        "opacity": 1,
-        "download": true
-    },
-    "streak_extreme_rain": {
-        "opacity": 1,
-        "download": true
-    },
-    "lst_daytime": {
-        "opacity": 1,
-        "download": true
-    },
-    "lst_nighttime": {
-        "opacity": 1,
-        "download": true
-    },
-    "lst_anomaly": {
-        "opacity": 1,
-        "download": true
-    },
-    "lst_amplitude": {
-        "opacity": 1,
-        "download": true
-    },
-    "ndvi_dekad": {
-        "opacity": 1,
-        "chart_data": {
-            "url": "https://api.earthobservation.vam.wfp.org/stats/admin",
-            "fields": [
-                {
-                    "key": "vim",
-                    "label": "NDVI",
-                    "color": "#4eac5b"
-                },
-                {
-                    "key": "vim_avg",
-                    "label": "Average",
-                    "color": "#99ff99"
-                }
-            ],
-            "levels": [
-                {
-                    "level": "0",
-                    "id": "dv_adm0_id",
-                    "name": "adm0_name"
-                }
-            ],
-            "type": "line"
-        },
-        "download": true
-    },
-    "ndvi_dekad_anomaly": {
-        "opacity": 1,
-        "chart_data": {
-            "url": "https://api.earthobservation.vam.wfp.org/stats/admin",
-            "fields": [
-                {
-                    "key": "viq",
-                    "label": "NDVI anomaly",
-                    "minValue": 0,
-                    "maxValue": 150,
-                    "color": "#5e803f"
-                },
-                {
-                    "key": "viq_avg",
-                    "label": "Normal",
-                    "color": "#eb3223",
-                    "pointRadius": 0,
-                    "fallback": 100
-                }
-            ],
-            "levels": [
-                {
-                    "level": "0",
-                    "id": "dv_adm0_id",
-                    "name": "adm0_name"
-                }
-            ],
-            "type": "line"
-        },
-        "download": true
+  "admin1_boundaries": {
+    "type": "boundary",
+    "path": "data/global/adm1_simplified.json",
+    "opacity": 0.8,
+    "admin_code": "adm1_id",
+    "admin_level_codes": ["adm0_id, adm1_id"],
+    "admin_level_names": ["adm0_name", "shapeName"],
+    "admin_level_local_names": ["adm0_name", "shapeName"],
+    "styles:": {
+      "fill": {
+        "fill-opacity": 0
+      },
+      "line": {
+        "line-color": "gray",
+        "line-width": 1,
+        "line-opacity": 0.8
+      }
     }
+  },
+  "daily_rainfall_forecast": {
+    "opacity": 1
+  },
+  "dekad_rainfall_forecast": {
+    "opacity": 1
+  },
+  "dekad_rainfall_anomaly_forecast": {
+    "opacity": 1
+  },
+  "rain_anomaly_dekad": {
+    "opacity": 1,
+    "chart_data": {
+      "url": "https://api.earthobservation.vam.wfp.org/stats/admin",
+      "fields": [
+        {
+          "key": "rfq",
+          "label": "Rainfall anomaly",
+          "color": "#375692",
+          "minValue": 0,
+          "maxValue": 300
+        },
+        {
+          "key": "rfq_avg",
+          "label": "Normal",
+          "fallback": 100,
+          "pointRadius": 0,
+          "color": "#eb3223"
+        }
+      ],
+      "levels": [
+        {
+          "level": "0",
+          "id": "dv_adm0_id",
+          "name": "adm0_name"
+        }
+      ],
+      "type": "line"
+    }
+  },
+  "rain_anomaly_1month": {
+    "opacity": 1,
+    "chart_data": {
+      "url": "https://api.earthobservation.vam.wfp.org/stats/admin",
+      "fields": [
+        {
+          "key": "r1q",
+          "label": "Rainfall anomaly",
+          "minValue": 0,
+          "maxValue": 300,
+          "color": "#375692"
+        },
+        {
+          "key": "rfq_avg",
+          "label": "Normal",
+          "fallback": 100,
+          "pointRadius": 0,
+          "color": "#eb3223"
+        }
+      ],
+      "levels": [
+        {
+          "level": "0",
+          "id": "dv_adm0_id",
+          "name": "adm0_name"
+        }
+      ],
+      "type": "line"
+    }
+  },
+  "rain_anomaly_3month": {
+    "opacity": 1,
+    "chart_data": {
+      "url": "https://api.earthobservation.vam.wfp.org/stats/admin",
+      "fields": [
+        {
+          "key": "r3q",
+          "label": "Rainfall anomaly",
+          "minValue": 0,
+          "maxValue": 300,
+          "color": "#375692"
+        },
+        {
+          "key": "rfq_avg",
+          "label": "Normal",
+          "fallback": 100,
+          "pointRadius": 0,
+          "color": "#eb3223"
+        }
+      ],
+      "levels": [
+        {
+          "level": "0",
+          "id": "dv_adm0_id",
+          "name": "adm0_name"
+        }
+      ],
+      "type": "line"
+    }
+  },
+  "rain_anomaly_6month": {
+    "opacity": 1
+  },
+  "rain_anomaly_9month": {
+    "opacity": 1
+  },
+  "rain_anomaly_1year": {
+    "opacity": 1
+  },
+  "rainfall_dekad": {
+    "opacity": 1,
+    "chart_data": {
+      "url": "https://api.earthobservation.vam.wfp.org/stats/admin",
+      "fields": [
+        { "key": "rfh", "label": "Rainfall", "color": "#233f5f" },
+        { "key": "rfh_avg", "label": "Average", "color": "#bdf2e6" }
+      ],
+      "levels": [
+        {
+          "level": "0",
+          "id": "dv_adm0_id",
+          "name": "adm0_name"
+        }
+      ],
+      "type": "bar"
+    }
+  },
+  "rainfall_agg_1month": {
+    "opacity": 1,
+    "chart_data": {
+      "url": "https://api.earthobservation.vam.wfp.org/stats/admin",
+      "fields": [
+        { "key": "r1h", "label": "Rainfall", "color": "#233f5f" },
+        { "key": "r1h_avg", "label": "Average", "color": "#bdf2e6" }
+      ],
+      "levels": [
+        {
+          "level": "0",
+          "id": "dv_adm0_id",
+          "name": "adm0_name"
+        }
+      ],
+      "type": "bar"
+    }
+  },
+  "rainfall_agg_3month": {
+    "opacity": 1,
+    "chart_data": {
+      "url": "https://api.earthobservation.vam.wfp.org/stats/admin",
+      "fields": [
+        { "key": "r3h", "label": "Rainfall", "color": "#233f5f" },
+        { "key": "r3h_avg", "label": "Average", "color": "#bdf2e6" }
+      ],
+      "levels": [
+        {
+          "level": "0",
+          "id": "dv_adm0_id",
+          "name": "adm0_name"
+        }
+      ],
+      "type": "bar"
+    }
+  },
+  "rainfall_agg_6month": {
+    "opacity": 1
+  },
+  "rainfall_agg_9month": {
+    "opacity": 1
+  },
+  "rainfall_agg_1year": {
+    "opacity": 1
+  },
+  "spi_1m": {
+    "opacity": 1
+  },
+  "spi_3m": {
+    "opacity": 1
+  },
+  "spi_6m": {
+    "opacity": 1
+  },
+  "spi_9m": {
+    "opacity": 1
+  },
+  "spi_1y": {
+    "opacity": 1
+  },
+  "days_dry": {
+    "opacity": 1
+  },
+  "streak_dry_days": {
+    "opacity": 1
+  },
+  "days_heavy_rain": {
+    "opacity": 1
+  },
+  "days_intense_rain": {
+    "opacity": 1
+  },
+  "days_extreme_rain": {
+    "opacity": 1
+  },
+  "streak_heavy_rain": {
+    "opacity": 1
+  },
+  "streak_intense_rain": {
+    "opacity": 1
+  },
+  "streak_extreme_rain": {
+    "opacity": 1
+  },
+  "lst_daytime": {
+    "opacity": 1
+  },
+  "lst_nighttime": {
+    "opacity": 1
+  },
+  "lst_anomaly": {
+    "opacity": 1
+  },
+  "lst_amplitude": {
+    "opacity": 1
+  },
+  "ndvi_dekad": {
+    "opacity": 1,
+    "chart_data": {
+      "url": "https://api.earthobservation.vam.wfp.org/stats/admin",
+      "fields": [
+        { "key": "vim", "label": "NDVI", "color": "#4eac5b" },
+        { "key": "vim_avg", "label": "Average", "color": "#99ff99" }
+      ],
+      "levels": [
+        {
+          "level": "0",
+          "id": "dv_adm0_id",
+          "name": "adm0_name"
+        }
+      ],
+      "type": "line"
+    }
+  },
+  "ndvi_dekad_anomaly": {
+    "opacity": 1,
+    "chart_data": {
+      "url": "https://api.earthobservation.vam.wfp.org/stats/admin",
+      "fields": [
+        {
+          "key": "viq",
+          "label": "NDVI anomaly",
+          "minValue": 0,
+          "maxValue": 150,
+          "color": "#5e803f"
+        },
+        {
+          "key": "viq_avg",
+          "label": "Normal",
+          "color": "#eb3223",
+          "pointRadius": 0,
+          "fallback": 100
+        }
+      ],
+      "levels": [
+        {
+          "level": "0",
+          "id": "dv_adm0_id",
+          "name": "adm0_name"
+        }
+      ],
+      "type": "line"
+    }
+  }
 }
