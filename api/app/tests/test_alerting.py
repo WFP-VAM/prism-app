@@ -28,7 +28,7 @@ def test_stats_endpoint_for_alerting():
         },
     )
     assert response.status_code == 200
-    repsonse_object = response.json()
+    response_object = response.json()
     # assert response is a list of length 1
-    assert isinstance(repsonse_object, list)
-    assert len(repsonse_object) == 1
+    assert isinstance(response_object, list)
+    assert len(response_object) == 1
