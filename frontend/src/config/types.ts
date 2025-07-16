@@ -998,3 +998,52 @@ export class AnticipatoryActionLayerProps extends CommonLayerProps {
   @makeRequired
   declare title: string;
 }
+
+export enum DashboardMapPosition {
+  left = 'left',
+  right = 'right',
+}
+
+export enum DashboardElementType {
+  CHART = 'CHART',
+  TEXT = 'TEXT',
+  TABLE = 'TABLE',
+}
+
+export interface DashboardChartConfig {
+  type: DashboardElementType.CHART;
+  startDate: string;
+  endDate: string;
+  wmsLayerId: string;
+  adminUnitLevel?: number;
+  adminUnitId?: number;
+}
+
+export interface DashboardTextConfig {
+  type: DashboardElementType.TEXT;
+  content: string;
+  textUpdatedAt?: string;
+}
+
+export interface DashboardTableConfig {
+  type: DashboardElementType.TABLE;
+  startDate: string;
+  endDate: string;
+  hazardLayerId: string;
+  baselineLayerId: string;
+  stat: AggregationOperations;
+}
+
+export interface ConfiguredReport {
+  title: string;
+  selectedDate: string;
+  mapPosition: DashboardMapPosition;
+  minMapBounds: number[];
+  mapLayers: Array<{
+    layerId: string;
+    opacity?: number;
+  }>;
+  flexElements: Array<
+    DashboardChartConfig | DashboardTextConfig | DashboardTableConfig
+  >;
+}
