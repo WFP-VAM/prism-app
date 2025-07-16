@@ -99,7 +99,7 @@
     "react-map-gl": "^7.1.0",
     "react-markdown": "^8.0.7",
     "react-range-slider-input": "^3.0.7",
-    "react-redux": "^7.2.0",
+    "react-redux": "^9.2.0",
     "react-router-dom": "^5.1.2",
     "react-window": "^1.8.10",
     "redux": "^4.0.5",
