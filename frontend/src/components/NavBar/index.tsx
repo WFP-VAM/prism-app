@@ -23,6 +23,7 @@ import {
   TableChartOutlined,
   TimerOutlined,
   Notifications,
+  SpeedOutlined,
 } from '@material-ui/icons';
 import { useDispatch, useSelector } from 'react-redux';
 import {
@@ -31,7 +32,11 @@ import {
 } from 'context/leftPanelStateSlice';
 import GoToBoundaryDropdown from 'components/Common/BoundaryDropdown/goto';
 import Legends from 'components/MapView/Legends';
-import { areChartLayersAvailable } from 'config/utils';
+import {
+  areChartLayersAvailable,
+  areDashboardsAvailable,
+  getConfiguredReports,
+} from 'config/utils';
 import {
   areTablesAvailable,
   isAnticipatoryActionDroughtAvailable,
@@ -46,10 +51,30 @@ import PanelButton from './PanelButton';
 
 const { alertFormActive, header } = appConfig;
 
+const getAvailableDashboards = (): PanelItem[] => {
+  const configuredReports = getConfiguredReports();
+  return configuredReports.map((report, index) => ({
+    panel: Panel.Dashboard,
+    label: report.title,
+    icon: <SpeedOutlined />,
+    reportIndex: index,
+  }));
+};
+
 const panels: PanelItem[] = [
   { panel: Panel.Layers, label: 'Layers', icon: <LayersOutlined /> },
   ...(areChartLayersAvailable
     ? [{ panel: Panel.Charts, label: 'Charts', icon: <BarChartOutlined /> }]
+    : []),
+  ...(areDashboardsAvailable()
+    ? [
+        {
+          panel: Panel.Dashboard,
+          label: 'Dashboard',
+          icon: <SpeedOutlined />,
+          children: getAvailableDashboards(),
+        },
+      ]
     : []),
   {
     panel: Panel.Analysis,
@@ -147,7 +172,11 @@ function NavBar() {
       [panel.label]: child,
     });
     handleMenuClose(panel.label);
-    handlePanelClick(child.panel);
+    if (panel.panel === Panel.Dashboard && child.reportIndex !== undefined) {
+      handlePanelClick(Panel.Dashboard);
+    } else {
+      handlePanelClick(child.panel);
+    }
   };
 
   const { title, subtitle, logo } = header || {
@@ -194,9 +223,10 @@ function NavBar() {
                   (panel.children &&
                     panel.children.some(child => tabValue === child.panel));
 
-                const buttonText = selectedChild[panel.label]
-                  ? selectedChild[panel.label].label
-                  : t(panel.label);
+                const buttonText =
+                  selectedChild[panel.label] && panel.panel !== Panel.Dashboard
+                    ? selectedChild[panel.label].label
+                    : t(panel.label);
 
                 return (
                   <React.Fragment key={panel.panel}>

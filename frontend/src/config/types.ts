@@ -803,12 +803,14 @@ export type PanelItem = {
   label: string;
   icon: React.ReactNode;
   children?: PanelItem[];
+  reportIndex?: number;
 };
 
 export enum Panel {
   None = 'none',
   Layers = 'layers',
   Charts = 'charts',
+  Dashboard = 'dashboard',
   Analysis = 'analysis',
   Tables = 'tables',
   AnticipatoryActionDrought = 'anticipatory_action_drought',

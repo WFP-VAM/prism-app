@@ -8,6 +8,7 @@ import {
   BoundaryLayerProps,
   checkRequiredKeys,
   CompositeLayerProps,
+  ConfiguredReport,
   DateItem,
   GeojsonDataLayerProps,
   ImpactLayerProps,
@@ -334,6 +335,22 @@ export const isWindowedDates = (
   'Window 2' in dates;
 
 export const areChartLayersAvailable = getWMSLayersWithChart().length > 0;
+
+export const areDashboardsAvailable = (): boolean =>
+  'configuredReports' in appConfig;
+
+export const getConfiguredReports = (): ConfiguredReport[] => {
+  if (!areDashboardsAvailable()) {
+    return [];
+  }
+
+  const { configuredReports } = appConfig;
+  if (Array.isArray(configuredReports)) {
+    return configuredReports;
+  }
+
+  return [];
+};
 
 const isValidReportsDefinition = (
   maybeReport: object,
