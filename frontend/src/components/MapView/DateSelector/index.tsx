@@ -58,26 +58,17 @@ const POINTER_ID = 'datePointerSelector';
 
 const calculateStartAndEndDates = (startDate: Date, selectedTab: string) => {
   let year = startDate.getFullYear();
+  let startMonth = 0;
 
-  if (selectedTab === Panel.AnticipatoryActionDrought) {
-    // Use country-specific timeline offset for AA drought
-    const timelineOffset = getTimelineOffset();
-    // Adjust year if we're before the timeline start month
-    if (startDate.getMonth() < timelineOffset) {
-      // eslint-disable-next-line fp/no-mutation
-      year -= 1;
-    }
-  }
-
-  let startMonth: number;
   if (selectedTab === Panel.AnticipatoryActionDrought) {
     // Use country-specific timeline offset for AA drought
     // eslint-disable-next-line fp/no-mutation
     startMonth = getTimelineOffset();
-  } else {
-    // January for other panels
-    // eslint-disable-next-line fp/no-mutation
-    startMonth = 0;
+    // Adjust year if we're before the timeline start month
+    if (startDate.getMonth() < startMonth) {
+      // eslint-disable-next-line fp/no-mutation
+      year -= 1;
+    }
   }
 
   const start = new Date(year, startMonth, 1);
