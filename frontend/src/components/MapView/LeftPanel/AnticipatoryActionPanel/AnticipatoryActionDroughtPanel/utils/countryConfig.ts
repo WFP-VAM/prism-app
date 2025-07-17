@@ -332,14 +332,6 @@ export const getTimelineOffset = (country: string) => {
   return config.seasonStartMonth - 1;
 };
 
-export const getSeasonConfig = (country: string) => {
-  const config = getAADroughtCountryConfig(country);
-  return {
-    startMonth: config.seasonStartMonth,
-    format: 'YYYY-YY',
-  };
-};
-
 export const getForecastSource = (country: string): string => {
   const config = getAADroughtCountryConfig(country);
   return config.forecastSource || 'default';
@@ -353,21 +345,14 @@ export const calculateSeason = (
   const currentDate = date ? new Date(date) : new Date();
   const year = currentDate.getFullYear();
   const month = currentDate.getMonth();
-  const seasonConfig = getSeasonConfig(country);
+  const config = getAADroughtCountryConfig(country);
 
-  if (month >= seasonConfig.startMonth) {
+  if (month >= config.seasonStartMonth) {
     // After season start month
-    if (seasonConfig.format === 'YYYY-YY') {
-      return `${year}-${(year + 1).toString().slice(-2)}`;
-    }
-    return `${year}-${year + 1}`;
+    return `${year}-${(year + 1).toString().slice(-2)}`;
   }
-
   // Before season start month
-  if (seasonConfig.format === 'YYYY-YY') {
-    return `${year - 1}-${year.toString().slice(-2)}`;
-  }
-  return `${year - 1}-${year}`;
+  return `${year - 1}-${year.toString().slice(-2)}`;
 };
 
 /**
