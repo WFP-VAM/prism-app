@@ -12,10 +12,9 @@ import {
 import { Cancel, Close, HelpOutline } from '@material-ui/icons';
 import { useSafeTranslation } from 'i18n';
 import { black, cyanBlue } from 'muiTheme';
-import { safeCountry } from 'config';
 import { getAADroughtCountryConfig } from '../AnticipatoryActionDroughtPanel/utils/countryConfig';
 
-const content = getAADroughtCountryConfig(safeCountry).howToReadContent;
+const content = getAADroughtCountryConfig().howToReadContent;
 
 interface HowToReadModalProps {
   open: boolean;

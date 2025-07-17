@@ -32,10 +32,7 @@ import { getFormattedDate } from 'utils/date-utils';
 import { AnticipatoryAction, PanelSize } from 'config/types';
 import { StyledCheckboxLabel, StyledRadioLabel } from './utils';
 import { StyledSelect } from '../utils';
-import {
-  getAADroughtCountryConfig,
-  getDisplayLabel,
-} from './utils/countryConfig';
+import { getAADroughtCountryConfig } from './utils/countryConfig';
 import DistrictView from './DistrictView/index';
 import HomeTable from './HomeTable';
 import HowToReadModal from '../HowToReadModal';
@@ -183,11 +180,7 @@ function AnticipatoryActionDroughtPanel() {
                 label={t(allWindowsKey)}
               />
               {AAWindowKeys.map(x => (
-                <StyledRadioLabel
-                  key={x}
-                  value={x}
-                  label={getDisplayLabel(x)}
-                />
+                <StyledRadioLabel key={x} value={x} label={x} />
               ))}
             </RadioGroup>
           </FormControl>

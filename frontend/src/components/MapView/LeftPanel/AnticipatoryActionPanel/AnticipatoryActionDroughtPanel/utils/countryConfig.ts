@@ -49,7 +49,6 @@ export interface AADroughtCountryConfig {
     label: string;
     id: Exclude<AACategoryType, 'na' | 'ny'>;
   }[];
-  windowLabels: Record<string, string>;
 
   // Season configuration
   seasonStartMonth: number; // 0-11 (January = 0)
@@ -71,10 +70,6 @@ export interface AADroughtCountryConfig {
 const AADROUGHT_COUNTRY_CONFIGS: Record<string, AADroughtCountryConfig> = {
   malawi: {
     checkboxes: [{ label: 'Below Normal', id: 'Normal' }],
-    windowLabels: {
-      'Window 1': 'NDJ',
-      'Window 2': 'JFM',
-    },
     seasonStartMonth: 7,
     howToReadContent: [
       { title: 'NDJ', text: 'November to January' },
@@ -123,7 +118,6 @@ const AADROUGHT_COUNTRY_CONFIGS: Record<string, AADroughtCountryConfig> = {
       { label: 'Moderate', id: 'Moderate' },
       { label: 'Below Normal', id: 'Normal' },
     ],
-    windowLabels: {},
     seasonStartMonth: 4,
     howToReadContent: [
       { title: 'Window 1', text: 'Start to mid of the rainfall season.' },
@@ -188,7 +182,6 @@ const AADROUGHT_COUNTRY_CONFIGS: Record<string, AADroughtCountryConfig> = {
       { label: 'Moderate', id: 'Moderate' },
       { label: 'Mild', id: 'Mild' },
     ],
-    windowLabels: {},
     seasonStartMonth: 4,
     howToReadContent: [
       { title: 'Window 1', text: 'Start to mid of the rainfall season.' },
@@ -268,11 +261,6 @@ const AADROUGHT_COUNTRY_CONFIGS: Record<string, AADroughtCountryConfig> = {
 export const getAADroughtCountryConfig = (): AADroughtCountryConfig =>
   AADROUGHT_COUNTRY_CONFIGS[appConfig.safeCountry] ||
   AADROUGHT_COUNTRY_CONFIGS.default;
-
-export const getDisplayLabel = (windowKey: string): string => {
-  const config = getAADroughtCountryConfig();
-  return config.windowLabels[windowKey] || windowKey;
-};
 
 export const getRowCategories = (): {
   category: AACategoryType;
@@ -361,7 +349,6 @@ export const createCountryConfig = (options: {
     label: string;
     id: Exclude<AACategoryType, 'na' | 'ny'>;
   }>;
-  windowLabels?: Record<string, string>;
   seasonStartMonth: number;
   forecastSource?: string;
   customContent?: {
@@ -371,7 +358,6 @@ export const createCountryConfig = (options: {
 }): AADroughtCountryConfig => {
   const {
     categories,
-    windowLabels = {},
     seasonStartMonth,
     forecastSource,
     customContent = {},
@@ -434,7 +420,6 @@ export const createCountryConfig = (options: {
 
   return {
     checkboxes: categories,
-    windowLabels,
     seasonStartMonth,
     howToReadContent: customContent.howToReadContent || defaultHowToReadContent,
     rowCategories,
@@ -458,10 +443,6 @@ export const createCountryConfig = (options: {
  *     { label: 'Moderate', id: 'Moderate' },
  *     { label: 'Below Normal', id: 'Normal' },
  *   ],
- *   windowLabels: {
- *     'Window 1': 'OND', // October-November-December
- *     'Window 2': 'JFM', // January-February-March
- *   },
  *   seasonStartMonth: 4, // May (when new season starts)
  *   forecastSource: 'ECMWF',
  *   customContent: {

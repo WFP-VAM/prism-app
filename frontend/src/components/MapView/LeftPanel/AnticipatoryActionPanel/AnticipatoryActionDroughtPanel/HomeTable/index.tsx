@@ -19,12 +19,12 @@ import {
   setAAView,
 } from 'context/anticipatoryAction/AADroughtStateSlice';
 import { GetApp, BarChartOutlined } from '@material-ui/icons';
-import { appConfig, safeCountry } from 'config';
+import { appConfig } from 'config';
 import { PanelSize } from 'config/types';
 import { getCurrentDateTimeForUrl } from 'utils/date-utils';
 import { AADataSeverityOrder, getAAIcon } from '../utils';
 import { useAACommonStyles } from '../../utils';
-import { getRowCategories, getDisplayLabel } from '../utils/countryConfig';
+import { getRowCategories } from '../utils/countryConfig';
 
 interface AreaTagProps {
   name: string;
@@ -162,7 +162,7 @@ const useRowStyles = makeStyles(() =>
   }),
 );
 
-const rowCategories = getRowCategories(safeCountry);
+const rowCategories = getRowCategories();
 
 type ExtendedRowProps = RowProps & { id: number | 'na' | 'ny' };
 
@@ -207,10 +207,7 @@ function HomeTable({ dialogs }: HomeTableProps) {
     id: -1,
     iconContent: null,
     windows: selectedWindow === 'All' ? AAWindowKeys.map(_x => []) : [[]],
-    header:
-      selectedWindow === 'All'
-        ? AAWindowKeys.map(x => getDisplayLabel(x, safeCountry))
-        : [getDisplayLabel(selectedWindow, safeCountry)],
+    header: selectedWindow === 'All' ? [...AAWindowKeys] : [selectedWindow],
   };
 
   const districtRows: ExtendedRowProps[] = React.useMemo(

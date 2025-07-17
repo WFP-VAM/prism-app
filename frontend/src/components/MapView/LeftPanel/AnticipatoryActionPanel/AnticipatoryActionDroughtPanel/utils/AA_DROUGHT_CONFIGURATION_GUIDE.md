@@ -147,10 +147,6 @@ The system uses a country-aware configuration approach where:
   - `DistrictView/utils.ts` 
   - `Forecast/utils.ts`
 
-### Window display labels
-- Uses `getDisplayLabel(windowKey, country)` for country-specific labels
-- Previously hardcoded "Window 1", "Window 2" labels are now configurable
-
 ### Forecast source references
 - Uses `getForecastSource(country)` for dynamic forecast source descriptions
 - Previously hardcoded "ECMWF" references are now configurable
