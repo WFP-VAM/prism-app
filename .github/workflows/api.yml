@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: ["3.10"]
+        python-version: ["3.12"]
       # run the matrix jobs one after the other, so they can benefit from caching
       max-parallel: 1
 
@@ -26,7 +26,7 @@ jobs:
         uses: snok/install-poetry@v1
         with:
           # Version of Poetry to use
-          version: 1.6.1
+          version: 2.1.3
           virtualenvs-create: true
           virtualenvs-in-project: true
       - name: Install dependencies
@@ -57,4 +57,3 @@ jobs:
         run: cd api && make build
       - name: Run tests
         run: cd api && make api-test
-
