@@ -350,6 +350,12 @@
     { "value": 0.8, "label": "0.8 - 0.9", "color": "#014c73" },
     { "value": 0.9, "label": "0.9 - 1", "color": "#014c73" }
   ],
+  "cdi_04_0_1": [
+    { "value": 0, "label": "Severe (<0.2)", "color": "#A93800" },
+    { "value": 0.2, "label": "Intense (0.2 - 0.3)", "color": "#E59802" },
+    { "value": 0.3, "label": "Moderate (0.3 - 0.4)", "color": "#FFE76A" },
+    { "value": 0.4, "label": "None (>= 0.4)", "color": "#F0F0F0" }
+  ],  
   "ipc_phase": [
     { "value": 1, "label": "1 - Minimal", "color": "#CDFACD" },
     { "value": 2, "label": "2 - Stressed", "color": "#FAE61E" },

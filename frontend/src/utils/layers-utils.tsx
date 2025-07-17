@@ -529,24 +529,27 @@ const useLayers = () => {
             'date',
             getFormattedDate(closestDate, DateFormat.Default) as string,
           );
-        }
 
-        dispatch(
-          addNotification({
-            message: t(
-              'No data was found for layer "{{layerTitle}}" on {{selectedDate}}. The closest date {{closestDate}} has been loaded instead.',
-              {
-                layerTitle: t(layer.title),
-                selectedDate: getFormattedDate(
-                  jsSelectedDate,
-                  DateFormat.Default,
-                ),
-                closestDate: getFormattedDate(closestDate, DateFormat.Default),
-              },
-            ),
-            type: 'warning',
-          }),
-        );
+          dispatch(
+            addNotification({
+              message: t(
+                'No data was found for layer "{{layerTitle}}" on {{selectedDate}}. The closest date {{closestDate}} has been loaded instead.',
+                {
+                  layerTitle: t(layer.title),
+                  selectedDate: getFormattedDate(
+                    jsSelectedDate,
+                    DateFormat.Default,
+                  ),
+                  closestDate: getFormattedDate(
+                    closestDate,
+                    DateFormat.Default,
+                  ),
+                },
+              ),
+              type: 'warning',
+            }),
+          );
+        }
       });
       return closestDate;
     },
