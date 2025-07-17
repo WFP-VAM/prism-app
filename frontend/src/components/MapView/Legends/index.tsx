@@ -54,6 +54,7 @@ const Legends = memo(() => {
 
       {!mdUp && (
         <IconButton
+          size="small"
           style={{ backgroundColor: open ? cyanBlue : undefined }}
           onClick={toggleLegendVisibility}
         >
