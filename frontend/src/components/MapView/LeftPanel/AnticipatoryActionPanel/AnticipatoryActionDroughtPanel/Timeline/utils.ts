@@ -1,5 +1,4 @@
 import { AAWindowKeys } from 'config/utils';
-import { safeCountry } from 'config';
 import {
   AACategoryType,
   AAPhase,
@@ -37,7 +36,7 @@ export function timelineTransform({
   data,
 }: TimelineTransformParams) {
   const { selectedWindow, selectedIndex, categories, selectedDate } = filters;
-  const season = calculateSeason(selectedDate, safeCountry);
+  const season = calculateSeason(selectedDate);
 
   const windowData = (
     selectedWindow === 'All' ? AAWindowKeys : [selectedWindow]

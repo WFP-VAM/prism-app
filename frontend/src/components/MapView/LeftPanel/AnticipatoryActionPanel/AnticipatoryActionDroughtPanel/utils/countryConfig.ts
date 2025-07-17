@@ -4,6 +4,7 @@ import {
   AACategoryType,
   AAPhaseType,
 } from 'context/anticipatoryAction/AADroughtStateSlice/types';
+import { appConfig } from 'config';
 
 /**
  * AA Drought Country Configuration Guide
@@ -264,32 +265,31 @@ const AADROUGHT_COUNTRY_CONFIGS: Record<string, AADroughtCountryConfig> = {
   },
 };
 
-export const getAADroughtCountryConfig = (
-  country: string,
-): AADroughtCountryConfig =>
-  AADROUGHT_COUNTRY_CONFIGS[country] || AADROUGHT_COUNTRY_CONFIGS.default;
+export const getAADroughtCountryConfig = (): AADroughtCountryConfig =>
+  AADROUGHT_COUNTRY_CONFIGS[appConfig.safeCountry] ||
+  AADROUGHT_COUNTRY_CONFIGS.default;
 
-export const getDisplayLabel = (windowKey: string, country: string): string => {
-  const config = getAADroughtCountryConfig(country);
+export const getDisplayLabel = (windowKey: string): string => {
+  const config = getAADroughtCountryConfig();
   return config.windowLabels[windowKey] || windowKey;
 };
 
-export const getRowCategories = (
-  country: string,
-): { category: AACategoryType; phase: AAPhaseType }[] => {
-  const config = getAADroughtCountryConfig(country);
+export const getRowCategories = (): {
+  category: AACategoryType;
+  phase: AAPhaseType;
+}[] => {
+  const config = getAADroughtCountryConfig();
   return config.rowCategories;
 };
 
 export const getLegendPhases = (
-  country: string,
   getAAIcon: (
     category: 'Severe' | 'Moderate' | 'Normal' | 'Mild' | 'na' | 'ny',
     phase: 'na' | 'ny' | 'Ready' | 'Set',
     forLayer?: boolean,
   ) => React.ReactElement,
 ) => {
-  const config = getAADroughtCountryConfig(country);
+  const config = getAADroughtCountryConfig();
 
   const severityToCategory: Record<
     string,
@@ -320,32 +320,29 @@ export const getLegendPhases = (
   });
 };
 
-export const getDescriptionText = (country: string): string => {
-  const config = getAADroughtCountryConfig(country);
+export const getDescriptionText = (): string => {
+  const config = getAADroughtCountryConfig();
   return config.descriptionText;
 };
 
 // New utility functions for enhanced configuration
 
-export const getTimelineOffset = (country: string) => {
-  const config = getAADroughtCountryConfig(country);
+export const getTimelineOffset = () => {
+  const config = getAADroughtCountryConfig();
   return config.seasonStartMonth - 1;
 };
 
-export const getForecastSource = (country: string): string => {
-  const config = getAADroughtCountryConfig(country);
+export const getForecastSource = (): string => {
+  const config = getAADroughtCountryConfig();
   return config.forecastSource || 'default';
 };
 
 // Helper function to calculate season based on country config
-export const calculateSeason = (
-  date: string | undefined,
-  country: string,
-): string => {
+export const calculateSeason = (date: string | undefined): string => {
   const currentDate = date ? new Date(date) : new Date();
   const year = currentDate.getFullYear();
   const month = currentDate.getMonth();
-  const config = getAADroughtCountryConfig(country);
+  const config = getAADroughtCountryConfig();
 
   if (month >= config.seasonStartMonth) {
     // After season start month

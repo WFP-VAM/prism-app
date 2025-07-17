@@ -37,7 +37,6 @@ import { getRequestDate } from 'utils/server-utils';
 import { isAnticipatoryActionLayer, isWindowedDates } from 'config/utils';
 import { getAAConfig } from 'context/anticipatoryAction/config';
 import { RootState } from 'context/store';
-import { safeCountry } from 'config';
 import { getTimelineOffset } from 'components/MapView/LeftPanel/AnticipatoryActionPanel/AnticipatoryActionDroughtPanel/utils/countryConfig';
 import TickSvg from './tick.svg';
 import DateSelectorInput from './DateSelectorInput';
@@ -62,7 +61,7 @@ const calculateStartAndEndDates = (startDate: Date, selectedTab: string) => {
 
   if (selectedTab === Panel.AnticipatoryActionDrought) {
     // Use country-specific timeline offset for AA drought
-    const timelineOffset = getTimelineOffset(safeCountry);
+    const timelineOffset = getTimelineOffset();
     // Adjust year if we're before the timeline start month
     if (startDate.getMonth() < timelineOffset) {
       // eslint-disable-next-line fp/no-mutation
@@ -74,7 +73,7 @@ const calculateStartAndEndDates = (startDate: Date, selectedTab: string) => {
   if (selectedTab === Panel.AnticipatoryActionDrought) {
     // Use country-specific timeline offset for AA drought
     // eslint-disable-next-line fp/no-mutation
-    startMonth = getTimelineOffset(safeCountry);
+    startMonth = getTimelineOffset();
   } else {
     // January for other panels
     // eslint-disable-next-line fp/no-mutation

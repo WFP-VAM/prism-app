@@ -13,7 +13,6 @@ import React from 'react';
 import { useSafeTranslation } from 'i18n';
 import { ArrowBackIos } from '@material-ui/icons';
 import { useDispatch, useSelector } from 'react-redux';
-import { safeCountry } from 'config';
 import {
   AAView,
   allWindowsKey,
@@ -44,7 +43,7 @@ import Timeline from './Timeline';
 import Forecast from './Forecast';
 import { useAnticipatoryAction } from '../useAnticipatoryAction';
 
-const { checkboxes } = getAADroughtCountryConfig(safeCountry);
+const { checkboxes } = getAADroughtCountryConfig();
 
 function AnticipatoryActionDroughtPanel() {
   const classes = useStyles();
@@ -187,7 +186,7 @@ function AnticipatoryActionDroughtPanel() {
                 <StyledRadioLabel
                   key={x}
                   value={x}
-                  label={getDisplayLabel(x, safeCountry)}
+                  label={getDisplayLabel(x)}
                 />
               ))}
             </RadioGroup>

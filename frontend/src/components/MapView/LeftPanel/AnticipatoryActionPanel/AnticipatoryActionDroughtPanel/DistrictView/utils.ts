@@ -1,4 +1,3 @@
-import { safeCountry } from 'config';
 import {
   AnticipatoryActionDataRow,
   AnticipatoryActionState,
@@ -15,7 +14,7 @@ export function districtViewTransform(
     return undefined;
   }
   const { categories: categoryFilters, selectedIndex, selectedDate } = filters;
-  const season = calculateSeason(selectedDate, safeCountry);
+  const season = calculateSeason(selectedDate);
 
   // Keep valid data only and switch SET phase to 'na' if the READY was not valid
   const validData = data

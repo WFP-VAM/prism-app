@@ -1,4 +1,3 @@
-import { safeCountry } from 'config';
 import {
   AACategoryType,
   AnticipatoryActionDataRow,
@@ -58,7 +57,7 @@ export function forecastTransform({
   data,
 }: ForecastTransformParams) {
   const { selectedWindow, selectedDate } = filters;
-  const season = calculateSeason(selectedDate, safeCountry);
+  const season = calculateSeason(selectedDate);
 
   const dateData = (
     selectedWindow === 'All'

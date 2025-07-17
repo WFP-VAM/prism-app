@@ -1,5 +1,4 @@
 import { AAWindowKeys } from 'config/utils';
-import { safeCountry } from 'config';
 import {
   AADataSeverityOrder,
   getAAIcon,
@@ -230,7 +229,7 @@ interface CalculateMapRenderedDistrictsParams {
   windowRanges: AnticipatoryActionState['windowRanges'];
 }
 
-export const getSeason = (date?: string) => calculateSeason(date, safeCountry);
+export const getSeason = (date?: string) => calculateSeason(date);
 
 export function calculateMapRenderedDistricts({
   filters,
@@ -238,7 +237,7 @@ export function calculateMapRenderedDistricts({
   windowRanges,
 }: CalculateMapRenderedDistrictsParams) {
   const { selectedDate, categories } = filters;
-  const season = calculateSeason(selectedDate, safeCountry);
+  const season = calculateSeason(selectedDate);
 
   const res = Object.entries(data)
     .map(([winKey, districts]) => {

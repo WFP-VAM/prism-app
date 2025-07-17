@@ -7,7 +7,6 @@ import {
 import { useSafeTranslation } from 'i18n';
 import { borderGray } from 'muiTheme';
 import React from 'react';
-import { safeCountry } from 'config';
 import { getAAIcon } from '../AnticipatoryActionDroughtPanel/utils';
 import { useAACommonStyles } from '../utils';
 import {
@@ -22,8 +21,8 @@ function AADroughtLegend({ showDescription = true }: AADroughtLegendProps) {
   const commonClasses = useAACommonStyles();
   const { t } = useSafeTranslation();
 
-  const phases = getLegendPhases(safeCountry, getAAIcon);
-  const descriptionText = getDescriptionText(safeCountry);
+  const phases = getLegendPhases(getAAIcon);
+  const descriptionText = getDescriptionText();
 
   return (
     <>
