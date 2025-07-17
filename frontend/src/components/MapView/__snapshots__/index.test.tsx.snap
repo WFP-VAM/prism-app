@@ -357,13 +357,6 @@ exports[`MapView renders as expected 1`] = `
       />
     </div>
     <div
-      class="makeStyles-loading-2"
-    >
-      <mock-circularprogress
-        size="100"
-      />
-    </div>
-    <div
       style="position: relative; width: 100%; height: 100%;"
     />
   </div>

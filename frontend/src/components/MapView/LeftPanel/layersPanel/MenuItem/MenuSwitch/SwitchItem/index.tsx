@@ -5,9 +5,11 @@ import {
   Tooltip,
   makeStyles,
 } from '@material-ui/core';
+import type { AppDispatch } from 'context/store';
 import OpacityIcon from '@material-ui/icons/Opacity';
 import { memo, useCallback, useEffect, useMemo, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useAppDispatch, useAppSelector } from 'context/hooks';
+
 import { LayerKey, LayerType } from 'config/types';
 import { LayerDefinitions } from 'config/utils';
 import { clearDataset } from 'context/datasetStateSlice';
@@ -44,12 +46,13 @@ const SwitchItem = memo(
     } = layer;
     const classes = useStyles();
     const { t } = useSafeTranslation();
-    const selectedLayers = useSelector(layersSelector);
-    const serverAvailableDates = useSelector(availableDatesSelector);
-    const map = useSelector(mapSelector);
+    const selectedLayers = useAppSelector(layersSelector);
+    const serverAvailableDates = useAppSelector(availableDatesSelector);
+    const map = useAppSelector(mapSelector);
     const [isOpacitySelected, setIsOpacitySelected] = useState(false);
-    const dispatch = useDispatch();
-    const opacity = useSelector(opacitySelector(layerId));
+    const dispatch: AppDispatch = useAppDispatch();
+
+    const opacity = useAppSelector(opacitySelector(layerId));
     const hexDisplay = layer.type === 'point_data' && layer.hexDisplay;
     // Hack to use composite layer type for hexDisplay layers and switch
     // to using fill for opacity control

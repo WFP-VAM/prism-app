@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
 import { AvailableDates, UserAuth } from 'config/types';
-import { getLayersAvailableDates } from 'utils/server-utils';
+import { getAvailableDatesForLayer } from 'utils/server-utils';
 import type { CreateAsyncThunkTypes, RootState } from './store';
 
 type ServerState = {
@@ -15,12 +15,12 @@ const initialState: ServerState = {
   loading: false,
 };
 
-export const loadAvailableDates = createAsyncThunk<
+export const loadAvailableDatesForLayer = createAsyncThunk<
   AvailableDates,
-  void,
+  string,
   CreateAsyncThunkTypes
->('serverState/loadAvailableDates', (_, { dispatch }) =>
-  getLayersAvailableDates(dispatch),
+>('serverState/loadAvailableDatesForLayer', (layerId: string, { dispatch }) =>
+  getAvailableDatesForLayer(dispatch, layerId),
 );
 
 export const serverStateSlice = createSlice({
@@ -48,15 +48,18 @@ export const serverStateSlice = createSlice({
   },
   extraReducers: builder => {
     builder.addCase(
-      loadAvailableDates.fulfilled,
+      loadAvailableDatesForLayer.fulfilled,
       (state, { payload }: PayloadAction<AvailableDates>) => ({
         ...state,
         loading: false,
-        availableDates: payload,
+        availableDates: {
+          ...state.availableDates,
+          ...payload,
+        },
       }),
     );
 
-    builder.addCase(loadAvailableDates.rejected, (state, action) => ({
+    builder.addCase(loadAvailableDatesForLayer.rejected, (state, action) => ({
       ...state,
       loading: false,
       error: action.error.message
@@ -64,7 +67,7 @@ export const serverStateSlice = createSlice({
         : action.error.toString(),
     }));
 
-    builder.addCase(loadAvailableDates.pending, state => ({
+    builder.addCase(loadAvailableDatesForLayer.pending, state => ({
       ...state,
       loading: true,
     }));

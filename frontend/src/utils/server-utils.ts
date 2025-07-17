@@ -1,7 +1,7 @@
 import { oneDayInMs } from 'components/MapView/LeftPanel/utils';
 import { get, merge, snakeCase, sortBy } from 'lodash';
 import { WFS, WMS, fetchCoverageLayerDays, formatUrl } from 'prism-common';
-import { Dispatch } from 'redux';
+import type { AppDispatch } from 'context/store';
 import { appConfig, safeCountry } from '../config';
 import type {
   AnticipatoryActionLayerProps,
@@ -168,7 +168,7 @@ const pointDataFetchPromises: {
 const loadPointLayerDataFromURL = async (
   fetchUrl: string,
   layerId: string,
-  dispatch: Dispatch,
+  dispatch: AppDispatch,
   fallbackUrl?: string,
 ): Promise<PointDataDates> => {
   try {
@@ -212,7 +212,7 @@ const loadPointLayerDataFromURL = async (
  */
 const getPointDataCoverage = async (
   layer: PointDataLayerProps,
-  dispatch: Dispatch,
+  dispatch: AppDispatch,
 ) => {
   const {
     dateUrl: url,
@@ -457,7 +457,7 @@ export function generateIntermediateDateItemFromValidity(
  */
 const localFetchCoverageLayerDays = async (
   url: string,
-  dispatch: Dispatch,
+  dispatch: AppDispatch,
 ): Promise<{ [layerId: string]: number[] }> => {
   try {
     return await fetchCoverageLayerDays(url, { fetch: fetchWithTimeout });
@@ -486,7 +486,7 @@ const localFetchCoverageLayerDays = async (
  */
 const localWMSGetLayerDates = async (
   url: string,
-  dispatch: Dispatch,
+  dispatch: AppDispatch,
 ): Promise<{ [layerId: string]: number[] }> => {
   try {
     return await new WMS(url, { fetch: fetchWithTimeout }).getLayerDays();
@@ -510,25 +510,26 @@ const localWMSGetLayerDates = async (
   }
 };
 
+// TODO: remove this code if not needed anymore
 // The layer definitions bluerPrint is used as a schema for the availableDates if a request is failed to be fulfilled
-const layerDefinitionsBluePrint: AvailableDates = Object.keys(
-  LayerDefinitions,
-).reduce((acc, layerDefinitionKey) => {
-  const layer = LayerDefinitions[layerDefinitionKey];
-  const serverLayerName =
-    layer.type === 'composite'
-      ? (LayerDefinitions[layer.dateLayer] as WMSLayerProps).serverLayerName
-      : (layer as WMSLayerProps).serverLayerName;
-  if (!serverLayerName) {
-    return {
-      ...acc,
-    };
-  }
-  return {
-    ...acc,
-    [serverLayerName]: [],
-  };
-}, {});
+// const layerDefinitionsBluePrint: AvailableDates = Object.keys(
+//   LayerDefinitions,
+// ).reduce((acc, layerDefinitionKey) => {
+//   const layer = LayerDefinitions[layerDefinitionKey];
+//   const serverLayerName =
+//     layer.type === 'composite'
+//       ? (LayerDefinitions[layer.dateLayer] as WMSLayerProps).serverLayerName
+//       : (layer as WMSLayerProps).serverLayerName;
+//   if (!serverLayerName) {
+//     return {
+//       ...acc,
+//     };
+//   }
+//   return {
+//     ...acc,
+//     [serverLayerName]: [],
+//   };
+// }, {});
 
 /**
  * Load preprocessed date ranges if available
@@ -555,9 +556,11 @@ async function fetchPreprocessedDates(): Promise<any> {
  *
  * @return a Promise of Map<LayerID (not always id from LayerProps but can be), availableDates[]>
  */
-export async function getLayersAvailableDates(
-  dispatch: Dispatch,
+export async function getAvailableDatesForLayer(
+  dispatch: AppDispatch,
+  layerId: string,
 ): Promise<AvailableDates> {
+  console.time('getLayersAvailableDatesForLayer');
   const wmsServerUrls: string[] = get(appConfig, 'serversUrls.wms', []);
   const wcsServerUrls: string[] = get(appConfig, 'serversUrls.wcs', []);
 
@@ -639,6 +642,7 @@ export async function getLayersAvailableDates(
       return acc;
     }, {});
 
+  // TODO: can we cache these network calls?
   const layerDates = await Promise.all([
     ...wmsServerUrls.map(async url => {
       const serverDates = await localWMSGetLayerDates(url, dispatch);
@@ -662,15 +666,15 @@ export async function getLayersAvailableDates(
   // Merge all layer types results into a single dictionary of date arrays.
   const mergedLayers: { [key: string]: number[] } = merge({}, ...layerDates);
 
-  // Retrieve layer that have a validity object
+  // Retrieve layers that have a validity object
   const layersWithValidity: ValidityLayer[] = Object.values(LayerDefinitions)
     .filter(layer => layer.validity !== undefined)
     .map(layer => {
-      const layerId = layer.id;
+      const lId = layer.id;
 
       return {
-        name: layerId,
-        dates: mergedLayers[layerId],
+        name: lId,
+        dates: mergedLayers[lId],
         validity: layer.validity!,
       };
     });
@@ -691,61 +695,64 @@ export async function getLayersAvailableDates(
   // Use preprocessed dates for layers with dates path
   const preprocessedDates = await fetchPreprocessedDates();
 
+  console.timeLog('getLayersAvailableDatesForLayer', 'tutut');
+
   // Generate and replace date items for layers with all intermediates dates
-  const layerDateItemsMap = await Promise.all(
-    Object.entries(mergedLayers).map(
-      async (layerDatesEntry: [string, number[]]) => {
-        const layerName = layerDatesEntry[0];
-        // Generate dates for layers with validity and no path
-        const matchingValidityLayer = layersWithValidity.find(
-          validityLayer => validityLayer.name === layerName,
-        );
+  const buildLayerDateItems = async (
+    layerName: string,
+    dateArray: number[],
+  ) => {
+    // Generate dates for layers with validity and no path
+    const matchingValidityLayer = layersWithValidity.find(
+      validityLayer => validityLayer.name === layerName,
+    );
 
-        if (matchingValidityLayer) {
-          return {
-            [layerName]: generateIntermediateDateItemFromValidity(
-              matchingValidityLayer.dates,
-              matchingValidityLayer.validity,
-            ),
-          };
-        }
+    if (matchingValidityLayer) {
+      const r = {
+        [layerName]: generateIntermediateDateItemFromValidity(
+          matchingValidityLayer.dates,
+          matchingValidityLayer.validity,
+        ),
+      };
+      return r;
+    }
 
-        // Generate dates for layers with path
-        const matchingPathLayer = layersWithValidityStartEndDate.find(
-          validityLayer => validityLayer.name === layerName,
-        );
+    // Generate dates for layers with path
+    const matchingPathLayer = layersWithValidityStartEndDate.find(
+      validityLayer => validityLayer.name === layerName,
+    );
 
-        if (matchingPathLayer) {
-          if (layerName in preprocessedDates) {
-            return {
-              [layerName]: generateDateItemsRange(preprocessedDates[layerName]),
-            };
-          }
-          return {
-            [layerName]: await generateIntermediateDateItemFromDataFile(
-              matchingPathLayer.dates,
-              matchingPathLayer.path,
-              matchingPathLayer.validityPeriod,
-            ),
-          };
-        }
-
-        // Genererate dates for layers with validity but not an admin_level_data type
+    if (matchingPathLayer) {
+      if (layerName in preprocessedDates) {
         return {
-          [layerName]: layerDatesEntry[1].map((d: number) =>
-            generateDefaultDateItem(new Date(d).setUTCHours(12, 0, 0, 0)),
-          ),
+          [layerName]: generateDateItemsRange(preprocessedDates[layerName]),
         };
-      },
-    ),
-  );
+      }
+      return {
+        [layerName]: await generateIntermediateDateItemFromDataFile(
+          matchingPathLayer.dates,
+          matchingPathLayer.path,
+          matchingPathLayer.validityPeriod,
+        ),
+      };
+    }
 
-  return {
-    ...layerDefinitionsBluePrint,
-    ...Object.assign({}, ...layerDateItemsMap),
+    // Genererate dates for layers with validity but not an admin_level_data type
+    return {
+      [layerName]: dateArray.map((d: number) =>
+        generateDefaultDateItem(new Date(d).setUTCHours(12, 0, 0, 0)),
+      ),
+    };
   };
-}
 
+  const layerDateItemsForLayer = await buildLayerDateItems(
+    layerId,
+    mergedLayers[layerId] || [],
+  );
+  console.timeEnd('getLayersAvailableDatesForLayer');
+
+  return layerDateItemsForLayer;
+}
 /**
  * Format value from featureInfo response based on DataType provided
  *
@@ -780,7 +787,7 @@ const runFeatureInfoRequest = async (
   url: string,
   wmsParams: RequestFeatureInfo,
   layers: WMSLayerProps[],
-  dispatch: Dispatch,
+  dispatch: AppDispatch,
 ): Promise<{ [name: string]: string }> => {
   // Transform to snake case.
   const wmsParamsInSnakeCase = Object.entries(wmsParams).reduce(
@@ -842,7 +849,7 @@ function fetchFeatureInfo(
   layers: WMSLayerProps[],
   url: string,
   params: FeatureInfoType,
-  dispatch: Dispatch,
+  dispatch: AppDispatch,
 ): Promise<{ [name: string]: string }> {
   const requestLayers = layers.filter(l => l.baseUrl === url);
   const layerNames = requestLayers.map(l => l.serverLayerName).join(',');
@@ -874,7 +881,7 @@ function fetchFeatureInfo(
 export async function makeFeatureInfoRequest(
   layers: WMSLayerProps[],
   params: FeatureInfoType,
-  dispatch: Dispatch,
+  dispatch: AppDispatch,
 ): Promise<{ [name: string]: string } | null> {
   const urls = [...new Set(layers.map(l => l.baseUrl))];
 
