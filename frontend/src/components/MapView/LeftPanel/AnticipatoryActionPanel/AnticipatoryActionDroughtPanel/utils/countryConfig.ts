@@ -4,7 +4,7 @@ import {
   AACategoryType,
   AAPhaseType,
 } from 'context/anticipatoryAction/AADroughtStateSlice/types';
-import { appConfig } from 'config';
+import { safeCountry } from 'config';
 
 /**
  * AA Drought Country Configuration Guide
@@ -20,24 +20,18 @@ import { appConfig } from 'config';
  *     { label: 'Below Normal', id: 'Normal' },
  *   ],
  *
- *   // 2. Customize window labels (optional)
- *   windowLabels: {
- *     'Window 1': 'NDJ', // November-December-January
- *     'Window 2': 'JFM', // January-February-March
- *   },
- *
- *   // 3. Season configuration (when new season starts)
+ *   // 2. Season configuration (when new season starts)
  *   seasonStartMonth: 4, // May (0-indexed: 0=Jan, 1=Feb, ..., 11=Dec)
  *   // Timeline starts automatically one month before season
  *
- *   // 4. Content and display
+ *   // 3. Content and display
  *   howToReadContent: [
  *     { title: 'Window Label', text: 'Description of window period.' },
  *     { title: 'Category Name', text: 'Description of category.' },
  *   ],
  *   descriptionText: 'Description of the AA system.',
  *
- *   // 5. Forecast source (optional)
+ *   // 4. Forecast source (optional)
  *   forecastSource: 'ECMWF', // or 'default'
  * }
  * ```
@@ -176,7 +170,7 @@ const AADROUGHT_COUNTRY_CONFIGS: Record<string, AADroughtCountryConfig> = {
     descriptionText:
       'uses seasonal forecasts with longer lead time for preparedness (Ready phase) and shorter lead times for activation and mobilization (Set & Go! phases).',
   },
-  default: {
+  mozambique: {
     checkboxes: [
       { label: 'Severe', id: 'Severe' },
       { label: 'Moderate', id: 'Moderate' },
@@ -259,8 +253,7 @@ const AADROUGHT_COUNTRY_CONFIGS: Record<string, AADroughtCountryConfig> = {
 };
 
 export const getAADroughtCountryConfig = (): AADroughtCountryConfig =>
-  AADROUGHT_COUNTRY_CONFIGS[appConfig.safeCountry] ||
-  AADROUGHT_COUNTRY_CONFIGS.default;
+  AADROUGHT_COUNTRY_CONFIGS[safeCountry];
 
 export const getRowCategories = (): {
   category: AACategoryType;
@@ -430,34 +423,3 @@ export const createCountryConfig = (options: {
     forecastSource,
   };
 };
-
-/**
- * Example: How to add a new country using the helper function
- *
- * Instead of manually creating the full configuration, you can use:
- *
- * ```typescript
- * // Add this to AADROUGHT_COUNTRY_CONFIGS
- * newCountry: createCountryConfig({
- *   categories: [
- *     { label: 'Moderate', id: 'Moderate' },
- *     { label: 'Below Normal', id: 'Normal' },
- *   ],
- *   seasonStartMonth: 4, // May (when new season starts)
- *   forecastSource: 'ECMWF',
- *   customContent: {
- *     howToReadContent: [
- *       { title: 'OND', text: 'Early rainfall season.' },
- *       { title: 'JFM', text: 'Peak rainfall season.' },
- *       // ... other custom content
- *     ],
- *   },
- * }),
- * ```
- *
- * This automatically generates:
- * - Row categories for all category/phase combinations
- * - Legend phases with proper icons
- * - Default how-to-read content
- * - Proper timeline offset and season configuration
- */
