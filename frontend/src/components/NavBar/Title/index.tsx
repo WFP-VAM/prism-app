@@ -23,7 +23,9 @@ function Title() {
 
   return (
     <div className={classes.titleContainer}>
-      {logo && <img className={classes.logo} src={logo} alt="logo" />}
+      {!smDown && logo && (
+        <img className={classes.logo} src={logo} alt="logo" />
+      )}
       <Box className={classes.titleBox}>
         {title && !smDown && (
           <Typography color="secondary" variant="h6" className={classes.title}>
