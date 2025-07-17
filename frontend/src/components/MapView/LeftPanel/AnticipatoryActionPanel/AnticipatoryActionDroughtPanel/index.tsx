@@ -13,9 +13,7 @@ import React from 'react';
 import { useSafeTranslation } from 'i18n';
 import { ArrowBackIos } from '@material-ui/icons';
 import { useDispatch, useSelector } from 'react-redux';
-import { safeCountry } from 'config';
 import {
-  AACategoryType,
   AAView,
   allWindowsKey,
 } from 'context/anticipatoryAction/AADroughtStateSlice/types';
@@ -34,6 +32,7 @@ import { getFormattedDate } from 'utils/date-utils';
 import { AnticipatoryAction, PanelSize } from 'config/types';
 import { StyledCheckboxLabel, StyledRadioLabel } from './utils';
 import { StyledSelect } from '../utils';
+import { getAADroughtCountryConfig } from './utils/countryConfig';
 import DistrictView from './DistrictView/index';
 import HomeTable from './HomeTable';
 import HowToReadModal from '../HowToReadModal';
@@ -41,28 +40,7 @@ import Timeline from './Timeline';
 import Forecast from './Forecast';
 import { useAnticipatoryAction } from '../useAnticipatoryAction';
 
-const isZimbabwe = safeCountry === 'zimbabwe';
-const isMalawi = safeCountry === 'malawi';
-
-const checkboxes: {
-  label: string;
-  id: Exclude<AACategoryType, 'na' | 'ny'>;
-}[] =
-  isMalawi
-    ? [
-      { label: 'Below Normal', id: 'Normal' },
-    ]
-    : isZimbabwe
-      ? [
-        { label: 'Moderate', id: 'Moderate' },
-        { label: 'Below Normal', id: 'Normal' },
-      ]
-      : [
-        { label: 'Severe', id: 'Severe' },
-        { label: 'Moderate', id: 'Moderate' },
-        { label: 'Mild', id: 'Mild' },
-      ];
-
+const { checkboxes } = getAADroughtCountryConfig();
 
 function AnticipatoryActionDroughtPanel() {
   const classes = useStyles();
@@ -130,26 +108,26 @@ function AnticipatoryActionDroughtPanel() {
             {(view === AAView.District ||
               view === AAView.Timeline ||
               view === AAView.Forecast) && (
-                <IconButton
-                  onClick={() => {
-                    if (view === AAView.District) {
-                      dispatch(setAASelectedDistrict(''));
-                      dispatch(setAAView(AAView.Home));
-                      return;
-                    }
-                    if (view === AAView.Timeline) {
-                      dispatch(setAAView(AAView.District));
-                      dispatch(setAAFilters({ selectedIndex: '' }));
-                      return;
-                    }
-                    if (view === AAView.Forecast) {
-                      dispatch(setAAView(AAView.District));
-                    }
-                  }}
-                >
-                  <ArrowBackIos fontSize="small" />
-                </IconButton>
-              )}
+              <IconButton
+                onClick={() => {
+                  if (view === AAView.District) {
+                    dispatch(setAASelectedDistrict(''));
+                    dispatch(setAAView(AAView.Home));
+                    return;
+                  }
+                  if (view === AAView.Timeline) {
+                    dispatch(setAAView(AAView.District));
+                    dispatch(setAAFilters({ selectedIndex: '' }));
+                    return;
+                  }
+                  if (view === AAView.Forecast) {
+                    dispatch(setAAView(AAView.District));
+                  }
+                }}
+              >
+                <ArrowBackIos fontSize="small" />
+              </IconButton>
+            )}
             <StyledSelect
               value={selectedDistrict || 'empty'}
               input={<Input disableUnderline />}
@@ -162,7 +140,7 @@ function AnticipatoryActionDroughtPanel() {
               )}
             >
               <MenuItem
-                value=""
+                value="empty"
                 onClick={() => {
                   dispatch(setAASelectedDistrict(''));
                   dispatch(setAAView(AAView.Home));
@@ -202,12 +180,7 @@ function AnticipatoryActionDroughtPanel() {
                 label={t(allWindowsKey)}
               />
               {AAWindowKeys.map(x => (
-                <StyledRadioLabel 
-                  key={x} 
-                  value={x} 
-                  label={x === 'Window 1' && isMalawi ? 'NDJ' : 
-                         x === 'Window 2' && isMalawi ? 'JFM' : x} 
-                />
+                <StyledRadioLabel key={x} value={x} label={x} />
               ))}
             </RadioGroup>
           </FormControl>
@@ -258,7 +231,7 @@ function AnticipatoryActionDroughtPanel() {
               )}
             >
               <MenuItem
-                value=""
+                value="empty"
                 onClick={() => {
                   dispatch(setAAFilters({ selectedIndex: '' }));
                 }}

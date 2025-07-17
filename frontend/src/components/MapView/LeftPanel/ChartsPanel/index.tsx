@@ -318,6 +318,11 @@ const ChartsPanel = memo(() => {
       const chartLayer = chartLayers.find(layer =>
         selectedLayerTitles.includes(layer.title),
       );
+
+      if (!chartLayer) {
+        return null;
+      }
+
       return (
         <Box
           style={{
@@ -326,7 +331,7 @@ const ChartsPanel = memo(() => {
           }}
         >
           <ChartSection
-            key={`${startDate1}-${endDate1}`}
+            key={`${chartLayer.id}-${startDate1}-${endDate1}-${adminLevel}-${adminProperties?.admin0Name || ''}-${adminProperties?.admin1Name || ''}-${adminProperties?.admin2Name || ''}`}
             setChartSelectedDateRange={setChartSelectedDateRange}
             setMaxDataTicks={setMaxDataTicks}
             chartMaxDateRange={chartMaxDateRange}
@@ -363,7 +368,7 @@ const ChartsPanel = memo(() => {
                 }}
               >
                 <ChartSection
-                  key={`${startDate1}-${endDate1}`}
+                  key={`${layer.id}-${startDate1}-${endDate1}-${adminLevel}-${adminProperties?.admin0Name || ''}-${adminProperties?.admin1Name || ''}-${adminProperties?.admin2Name || ''}`}
                   chartMaxDateRange={
                     comparePeriods ? undefined : chartMaxDateRange
                   }

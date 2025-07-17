@@ -2,7 +2,7 @@ import {
   AnticipatoryActionDataRow,
   AnticipatoryActionState,
 } from 'context/anticipatoryAction/AADroughtStateSlice/types';
-import { getSeason } from 'context/anticipatoryAction/AADroughtStateSlice/utils';
+import { calculateSeason } from 'components/MapView/LeftPanel/AnticipatoryActionPanel/AnticipatoryActionDroughtPanel/utils/countryConfig';
 import { AADataSeverityOrder } from '../utils';
 import { TimelineRow } from '../Timeline/utils';
 
@@ -14,7 +14,7 @@ export function districtViewTransform(
     return undefined;
   }
   const { categories: categoryFilters, selectedIndex, selectedDate } = filters;
-  const season = getSeason(selectedDate);
+  const season = calculateSeason(selectedDate);
 
   // Keep valid data only and switch SET phase to 'na' if the READY was not valid
   const validData = data
