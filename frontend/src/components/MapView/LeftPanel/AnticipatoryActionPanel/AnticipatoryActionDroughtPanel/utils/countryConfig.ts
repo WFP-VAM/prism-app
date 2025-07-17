@@ -5,6 +5,7 @@ import {
   AAPhaseType,
 } from 'context/anticipatoryAction/AADroughtStateSlice/types';
 import { safeCountry } from 'config';
+import { getAAIcon } from '../../AnticipatoryActionDroughtPanel/utils';
 
 /**
  * AA Drought Country Configuration Guide
@@ -263,13 +264,7 @@ export const getRowCategories = (): {
   return config.rowCategories;
 };
 
-export const getLegendPhases = (
-  getAAIcon: (
-    category: 'Severe' | 'Moderate' | 'Normal' | 'Mild' | 'na' | 'ny',
-    phase: 'na' | 'ny' | 'Ready' | 'Set',
-    forLayer?: boolean,
-  ) => React.ReactElement,
-) => {
+export const getLegendPhases = () => {
   const config = getAADroughtCountryConfig();
 
   const severityToCategory: Record<

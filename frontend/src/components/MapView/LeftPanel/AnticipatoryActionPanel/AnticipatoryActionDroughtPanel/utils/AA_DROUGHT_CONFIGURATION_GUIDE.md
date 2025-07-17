@@ -36,10 +36,6 @@ newCountry: createCountryConfig({
     { label: 'Moderate', id: 'Moderate' },
     { label: 'Below Normal', id: 'Normal' },
   ],
-  windowLabels: {
-    'Window 1': 'OND', // October-November-December
-    'Window 2': 'JFM', // January-February-March
-  },
   seasonStartMonth: 4, // May (only if not default)
   forecastSource: 'ECMWF', // only if not default
 }),
@@ -62,10 +58,6 @@ newCountry: {
     { label: 'Moderate', id: 'Moderate' },
     { label: 'Below Normal', id: 'Normal' },
   ],
-  windowLabels: {
-    'Window 1': 'OND',
-    'Window 2': 'JFM',
-  },
   seasonStartMonth: 4, // May
   howToReadContent: [
     { title: 'OND', text: 'Early rainfall season.' },
@@ -85,10 +77,6 @@ newCountry: {
 ```typescript
 malawi: {
   categories: [{ label: 'Below Normal', id: 'Normal' }],
-  windowLabels: {
-    'Window 1': 'NDJ', // November-December-January
-    'Window 2': 'JFM', // January-February-March
-  },
   seasonStartMonth: 4, // May (timeline starts in April)
   forecastSource: 'ECMWF',
   // ... other config
@@ -111,7 +99,6 @@ zimbabwe: {
 
 If you don't specify a field, these defaults are used:
 
-- **windowLabels**: `{}` (uses "Window 1", "Window 2")
 - **seasonStartMonth**: `4` (May)
 - **howToReadContent**: Auto-generated based on categories
 - **descriptionText**: Generic AA description
