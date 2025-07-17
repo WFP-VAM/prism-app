@@ -22,27 +22,31 @@ function Title() {
   };
 
   return (
-    <div className={classes.titleContainer}>
-      {!smDown && logo && (
-        <img className={classes.logo} src={logo} alt="logo" />
-      )}
-      <Box className={classes.titleBox}>
-        {title && !smDown && (
-          <Typography color="secondary" variant="h6" className={classes.title}>
-            {t(title)}
-          </Typography>
-        )}
-        {subtitle && !smDown && (
-          <Typography
-            color="secondary"
-            variant="subtitle2"
-            className={classes.subtitle}
-          >
-            {t(subtitle)}
-          </Typography>
-        )}
-      </Box>
-    </div>
+    !smDown && (
+      <div className={classes.titleContainer}>
+        {logo && <img className={classes.logo} src={logo} alt="logo" />}
+        <Box className={classes.titleBox}>
+          {title && (
+            <Typography
+              color="secondary"
+              variant="h6"
+              className={classes.title}
+            >
+              {t(title)}
+            </Typography>
+          )}
+          {subtitle && (
+            <Typography
+              color="secondary"
+              variant="subtitle2"
+              className={classes.subtitle}
+            >
+              {t(subtitle)}
+            </Typography>
+          )}
+        </Box>
+      </div>
+    )
   );
 }
 
