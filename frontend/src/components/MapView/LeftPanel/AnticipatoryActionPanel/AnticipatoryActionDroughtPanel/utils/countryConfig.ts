@@ -5,7 +5,7 @@ import {
   AAPhaseType,
 } from 'context/anticipatoryAction/AADroughtStateSlice/types';
 import { safeCountry } from 'config';
-import { getAAIcon } from '../../AnticipatoryActionDroughtPanel/utils';
+import { getAAIcon } from '../utils';
 
 /**
  * AA Drought Country Configuration Guide
