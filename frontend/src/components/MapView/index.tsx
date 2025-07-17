@@ -8,10 +8,7 @@ import {
 } from '@material-ui/core';
 import { getDisplayBoundaryLayers } from 'config/utils';
 import { addLayer } from 'context/mapStateSlice';
-import {
-  isLoading as areDatesLoading,
-  loadAvailableDates,
-} from 'context/serverStateSlice';
+import { isLoading as areDatesLoading } from 'context/serverStateSlice';
 import { loadLayerData } from 'context/layers/layer-data';
 import LeftPanel from './LeftPanel';
 import MapComponent from './Map';
@@ -32,8 +29,6 @@ const MapView = memo(() => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(loadAvailableDates());
-
     // we must load boundary layer here for two reasons
     // 1. Stop showing two loading screens on startup - maplibre renders its children very late, so we can't rely on BoundaryLayer to load internally
     // 2. Prevent situations where a user can toggle a layer like NSO (depends on Boundaries) before Boundaries finish loading.

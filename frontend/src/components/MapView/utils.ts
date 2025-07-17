@@ -1,6 +1,6 @@
 import { orderBy, snakeCase, values } from 'lodash';
 import { TFunction } from 'i18next';
-import { Dispatch } from 'redux';
+import type { AppDispatch } from 'context/store';
 import { isAnticipatoryActionLayer, LayerDefinitions } from 'config/utils';
 import { formatFeatureInfo } from 'utils/server-utils';
 import {
@@ -14,6 +14,7 @@ import {
   LegendDefinitionItem,
   WMSLayerProps,
 } from 'config/types';
+import { loadAvailableDatesForLayer } from 'context/serverStateSlice';
 import { TableData } from 'context/tableStateSlice';
 import { getUrlKey, UrlLayerKey } from 'utils/url-utils';
 import { addNotification } from 'context/notificationStateSlice';
@@ -205,9 +206,13 @@ export const checkLayerAvailableDatesAndContinueOrRemove = (
   layer: LayerType,
   serverAvailableDates: AvailableDates,
   removeLayerFromUrl: (layerKey: UrlLayerKey, layerId: string) => void,
-  dispatch: Dispatch,
+  dispatch: AppDispatch,
 ) => {
   const { id: layerId } = layer as any;
+  // check if available dates have already been computed, if not try loading them
+  if (serverAvailableDates[layerId] === undefined) {
+    dispatch(loadAvailableDatesForLayer(layerId));
+  }
   if (
     serverAvailableDates[layerId]?.length !== 0 ||
     isAnticipatoryActionLayer(layer.type)
