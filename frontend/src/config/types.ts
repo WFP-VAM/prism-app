@@ -1038,7 +1038,7 @@ export interface DashboardTableConfig {
 
 export interface ConfiguredReport {
   title: string;
-  selectedDate: string;
+  selectedDate?: string;
   mapPosition: DashboardMapPosition;
   minMapBounds: number[];
   mapLayers: Array<{
