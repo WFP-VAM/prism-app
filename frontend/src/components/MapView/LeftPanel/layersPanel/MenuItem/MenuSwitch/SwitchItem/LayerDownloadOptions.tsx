@@ -259,7 +259,7 @@ function LayerDownloadOptions({
   }, [layer, generateQmlContent, layerId]);
 
   const shouldShowDownloadButton =
-    layer.download &&
+    !layer.disableDownload &&
     (layer.type === 'admin_level_data' ||
       layer.type === 'composite' ||
       (layer.type === 'wms' &&
