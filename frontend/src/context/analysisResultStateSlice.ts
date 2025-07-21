@@ -439,7 +439,6 @@ async function createAPIRequestParams(
     ...wfsParams,
     ...maskParams,
     // TODO - remove the need for the geojson_out parameters. See TODO in zonal_stats.py.
-    // TODO - Add back logic
     geojson_out: Boolean(geojsonOut),
     intersect_comparison:
       exposureValue?.operator && exposureValue.value

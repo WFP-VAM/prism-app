@@ -182,27 +182,28 @@ function AnalysisLayer({
   useMapCallback('click', layerId, undefined, onClick(analysisData));
   const layers = useSelector(layersSelector);
 
-  const boundaryLayer = layers.find(
-    layer =>
-      layer.id ===
-      (analysisData instanceof BaselineLayerResult
-        ? analysisData.baselineLayerId
-        : undefined),
-  )?.id;
+  // Raw layer ID: analysis boundaryId > baseline layerId > undefined
+  const boundaryLayerId = (() => {
+    if (
+      analysisData &&
+      'boundaryId' in analysisData &&
+      analysisData.boundaryId
+    ) {
+      return analysisData.boundaryId;
+    }
+    return layers.find(
+      layer =>
+        layer.id ===
+        (analysisData instanceof BaselineLayerResult
+          ? analysisData.baselineLayerId
+          : undefined),
+    )?.id;
+  })();
 
-  const boundary =
-    analysisData && 'boundaryId' in analysisData && analysisData.boundaryId
-      ? getLayerMapId(analysisData.boundaryId)
-      : before;
-
-  const boundaryLayerId =
-    analysisData && 'boundaryId' in analysisData && analysisData.boundaryId
-      ? analysisData.boundaryId
-      : boundaryLayer;
-
+  // Processed map layer ID for rendering, with fallback to 'before'
   const effectiveBoundaryId = boundaryLayerId
     ? getLayerMapId(boundaryLayerId)
-    : boundary;
+    : before;
 
   const legend =
     analysisData && invertedColorsForAnalysis
@@ -226,7 +227,6 @@ function AnalysisLayer({
       return null;
     }
 
-    // Get the actual boundary layer definition to get the correct layerName
     const fullBoundaryLayer = layers.find(
       layer => layer.id === boundaryLayerId,
     );
@@ -325,7 +325,7 @@ function AnalysisLayer({
       <Layer
         id={layerId}
         type="fill"
-        beforeId={boundary}
+        beforeId={effectiveBoundaryId}
         paint={fillPaintData(legend, defaultProperty, opacityState)}
       />
     </Source>
