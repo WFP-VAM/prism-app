@@ -9,6 +9,10 @@
       "https://api.earthobservation.vam.wfp.org/ows/wms"
     ]
   },
+  "header": {
+    "title": "PRISM",
+    "logo": "images/mwi-met.png"
+  },
   "icons": {
     "rainfall": "icon_rain.png",
     "vegetation": "icon_veg.png",
