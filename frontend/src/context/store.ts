@@ -5,6 +5,7 @@ import {
 } from '@reduxjs/toolkit';
 import mapStateReduce from './mapStateSlice';
 import serverStateReduce from './serverStateSlice';
+import serverPreloadStateReduce from './serverPreloadStateSlice';
 import tableStateReduce from './tableStateSlice';
 import tooltipStateReduce from './tooltipStateSlice';
 import notificationStateReduce, {
@@ -23,6 +24,7 @@ import anticipatoryActionStormStateReduce from './anticipatoryAction/AAStormStat
 const reducer = combineReducers({
   mapState: mapStateReduce,
   serverState: serverStateReduce,
+  serverPreloadState: serverPreloadStateReduce,
   tableState: tableStateReduce,
   tooltipState: tooltipStateReduce,
   analysisResultState: analysisResultStateReduce,
@@ -52,6 +54,7 @@ export const store = configureStore({
         'mapState.layersData',
         'analysisResultState.result',
         'serverState.availableDates',
+        'serverPreloadState.layerDates',
       ],
     },
   }).concat(errorToNotificationMiddleware),

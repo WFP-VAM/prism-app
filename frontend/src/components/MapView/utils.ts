@@ -213,6 +213,9 @@ export const checkLayerAvailableDatesAndContinueOrRemove = (
   if (serverAvailableDates[layerId] === undefined) {
     dispatch(loadAvailableDatesForLayer(layerId));
   }
+  // TODO: this test is invalid, because it passes if
+  // serverAvailableDates[layerId] is undefined
+  // should we wait until we have a value?
   if (
     serverAvailableDates[layerId]?.length !== 0 ||
     isAnticipatoryActionLayer(layer.type)
