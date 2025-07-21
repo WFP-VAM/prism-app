@@ -64,10 +64,6 @@ const Wrapper = memo(() => (
       <Route path="/dashboard" exact>
         <DashboardView />
       </Route>
-      <Route path="/" exact>
-        <MapView />
-        <AuthModal />
-      </Route>
       <Route>
         <MapView />
         <AuthModal />
