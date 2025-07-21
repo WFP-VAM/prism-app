@@ -722,8 +722,6 @@ export const requestAndStoreAnalysis = createAsyncThunk<
   const loadedAndCheckedBaselineData: BaselineLayerData =
     await getCheckedBaselineData();
 
-  // TODO: This merges with PMTiles data, not GeoJSON and breaks the flow.
-  // Bypassing works... is it needed?
   const features = generateFeaturesFromApiData(
     aggregateData,
     loadedAndCheckedBaselineData,
@@ -755,7 +753,7 @@ export const requestAndStoreAnalysis = createAsyncThunk<
     tableRows,
     {
       ...adminBoundariesData.data,
-      features: aggregateData,
+      features,
     },
     hazardLayer,
     // We use a hack to leverage boundary layers as baseline layers
@@ -764,8 +762,7 @@ export const requestAndStoreAnalysis = createAsyncThunk<
     statistic,
     threshold,
     legend,
-    // we never use the raw api data besides for debugging. So lets not bother saving it in Redux for production
-    process.env.NODE_ENV === 'production' ? undefined : aggregateData,
+    aggregateData,
     date,
     adminBoundaries.format,
   );

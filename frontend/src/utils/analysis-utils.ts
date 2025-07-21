@@ -468,13 +468,10 @@ export class BaselineLayerResult {
   featureCollection: FeatureCollection;
   adminBoundariesFormat: string;
   tableData: TableRow[];
-  // for debugging purposes only, as its easy to view the raw API response via Redux Devtools. Should be left empty in production
-  // @ts-ignore: TS6133
-  private rawApiData?: object[];
-
+  // TODO: Type this
+  aggregateData?: object[];
   statistic: AggregationOperations;
   threshold: ThresholdDefinition;
-
   legend: LegendDefinition;
   legendText: string;
   hazardLayerId: WMSLayerProps['id'];
@@ -490,7 +487,7 @@ export class BaselineLayerResult {
     statistic: AggregationOperations,
     threshold: ThresholdDefinition,
     legend?: LegendDefinition,
-    rawApiData?: object[],
+    aggregateData?: object[],
     analysisDate?: ReturnType<Date['getTime']>,
     adminBoundariesFormat?: string,
   ) {
@@ -501,7 +498,7 @@ export class BaselineLayerResult {
     this.threshold = threshold;
     this.legend = baselineLayer.legend ?? legend;
     this.legendText = hazardLayer.legendText;
-    this.rawApiData = rawApiData;
+    this.aggregateData = aggregateData;
 
     this.hazardLayerId = hazardLayer.id;
     this.baselineLayerId = baselineLayer.id;
