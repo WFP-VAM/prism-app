@@ -87,7 +87,7 @@ def _read_zones(
         (minx, miny, maxx, maxy) in the same CRS as the zones data,
         used to limit what is read from the parquet dataset.
     simplify_tolerance : float, optional
-        Tolerance value for geometry simplification. Only used for 
+        Tolerance value for geometry simplification. Only used for
         parquet files. If None, defaults to 0.1.
 
     Returns
@@ -144,10 +144,15 @@ def _extract_features_properties(
 
 
 def _group_zones(
-    zones_filepath: FilePath, group_by: GroupBy, admin_level: Optional[int] = None, simplify_tolerance: Optional[float] = None
+    zones_filepath: FilePath,
+    group_by: GroupBy,
+    admin_level: Optional[int] = None,
+    simplify_tolerance: Optional[float] = None,
 ) -> FilePath:
     """Group zones by a key id and merge polygons."""
-    safe_filename = zones_filepath.replace("/", "_").replace("s3://", "").replace("parquet", "json")
+    safe_filename = (
+        zones_filepath.replace("/", "_").replace("s3://", "").replace("parquet", "json")
+    )
     output_filename: FilePath = "{zones}.{simplify_tolerance}.{group_by}".format(
         zones=safe_filename, group_by=group_by, simplify_tolerance=simplify_tolerance
     )
@@ -408,7 +413,9 @@ def calculate_stats(
         geotiff = masked_pop_geotiff
 
     if group_by:
-        zones_filepath = _group_zones(zones_filepath, group_by, admin_level, simplify_tolerance)
+        zones_filepath = _group_zones(
+            zones_filepath, group_by, admin_level, simplify_tolerance
+        )
 
     stats_input = (
         zones_filepath
