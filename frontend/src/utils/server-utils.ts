@@ -730,24 +730,22 @@ export async function getAvailableDatesForLayer(
   const getPreloadedLayerDates = (lId: string): Record<string, number[]> => {
     const layer = LayerDefinitions[lId];
     const state = getState();
+    // eslint-disable-next-line no-console
+    console.log(layer.type);
     switch (layer.type) {
       case 'wms':
-        console.log('wms');
         return {
           [layer.id]: state.serverPreloadState.layerDates[layer.id],
         };
       case 'point_data':
-        console.log('implement point data');
         return {
           [layer.id]: state.serverPreloadState.layerDates[layer.id],
         };
       case 'admin_level_data':
-        console.log('admin_level_data');
         return {
           [layer.id]: getAdminLevelDataCoverage(layer),
         };
       case 'static_raster':
-        console.log('static_raster');
         return {
           [layer.id]: getStaticRasterDataCoverage(layer),
         };

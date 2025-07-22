@@ -46,7 +46,7 @@ const MapView = memo(() => {
     // 2. Prevent situations where a user can toggle a layer like NSO (depends on Boundaries) before Boundaries finish loading.
     displayedBoundaryLayers.forEach(l => dispatch(addLayer(l)));
     displayedBoundaryLayers.forEach(l => dispatch(loadLayerData({ layer: l })));
-  }, [dispatch]);
+  }, [dispatch, datesPreloading]);
 
   return (
     <Box className={classes.root}>
