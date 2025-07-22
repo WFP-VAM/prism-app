@@ -19,10 +19,8 @@ export const loadAvailableDatesForLayer = createAsyncThunk<
   AvailableDates,
   string,
   CreateAsyncThunkTypes
->(
-  'serverState/loadAvailableDatesForLayer',
-  (layerId: string, { dispatch, getState }) =>
-    getAvailableDatesForLayer(dispatch, getState, layerId),
+>('serverState/loadAvailableDatesForLayer', (layerId: string, { getState }) =>
+  getAvailableDatesForLayer(getState, layerId),
 );
 
 export const serverStateSlice = createSlice({

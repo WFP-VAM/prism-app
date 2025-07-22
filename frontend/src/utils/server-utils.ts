@@ -1,7 +1,7 @@
 import { oneDayInMs } from 'components/MapView/LeftPanel/utils';
 import { get, snakeCase, sortBy } from 'lodash';
 import { WFS, WMS, fetchCoverageLayerDays, formatUrl } from 'prism-common';
-import type { AppDispatch } from 'context/store';
+import type { AppDispatch, RootState } from 'context/store';
 import { appConfig, safeCountry } from '../config';
 import type {
   AnticipatoryActionLayerProps,
@@ -343,7 +343,7 @@ export function generateIntermediateDateItemFromValidity(
 ) {
   const { forward, backward, mode } = validity;
 
-  const sortedDates = dates.toSorted() as typeof dates;
+  const sortedDates = [...dates].sort((a, b) => a - b);
 
   // only calculate validity for dates that are less than 5 years old
   const EXTENDED_VALIDITY_YEARS = 5;
@@ -678,7 +678,7 @@ async function fetchPreprocessedDates(): Promise<any> {
  * @return a Promise of Map<LayerID (not always id from LayerProps but can be), availableDates[]>
  */
 export async function getAvailableDatesForLayer(
-  getState,
+  getState: () => RootState,
   layerId: string,
 ): Promise<AvailableDates> {
   performance.mark('getAvailableDatesForLayer-start', { detail: { layerId } });
