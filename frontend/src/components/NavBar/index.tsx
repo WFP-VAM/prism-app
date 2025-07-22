@@ -13,7 +13,8 @@ import {
   useTheme,
   useMediaQuery,
 } from '@material-ui/core';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useHistory, useLocation } from 'react-router-dom';
 import { useSafeTranslation } from 'i18n';
 import { appConfig } from 'config';
 import {
@@ -23,6 +24,7 @@ import {
   TableChartOutlined,
   TimerOutlined,
   Notifications,
+  SpeedOutlined,
 } from '@material-ui/icons';
 import { useDispatch, useSelector } from 'react-redux';
 import {
@@ -31,7 +33,11 @@ import {
 } from 'context/leftPanelStateSlice';
 import GoToBoundaryDropdown from 'components/Common/BoundaryDropdown/goto';
 import Legends from 'components/MapView/Legends';
-import { areChartLayersAvailable } from 'config/utils';
+import {
+  areChartLayersAvailable,
+  areDashboardsAvailable,
+  getConfiguredReports,
+} from 'config/utils';
 import {
   areTablesAvailable,
   isAnticipatoryActionDroughtAvailable,
@@ -46,10 +52,30 @@ import PanelButton from './PanelButton';
 
 const { alertFormActive, header } = appConfig;
 
+const getAvailableDashboards = (): PanelItem[] => {
+  const configuredReports = getConfiguredReports();
+  return configuredReports.map((report, index) => ({
+    panel: Panel.Dashboard,
+    label: report.title,
+    icon: <SpeedOutlined />,
+    reportIndex: index,
+  }));
+};
+
 const panels: PanelItem[] = [
   { panel: Panel.Layers, label: 'Layers', icon: <LayersOutlined /> },
   ...(areChartLayersAvailable
     ? [{ panel: Panel.Charts, label: 'Charts', icon: <BarChartOutlined /> }]
+    : []),
+  ...(areDashboardsAvailable()
+    ? [
+        {
+          panel: Panel.Dashboard,
+          label: 'Dashboard',
+          icon: <SpeedOutlined />,
+          children: getAvailableDashboards(),
+        },
+      ]
     : []),
   {
     panel: Panel.Analysis,
@@ -95,6 +121,8 @@ const panels: PanelItem[] = [
 function NavBar() {
   const { t } = useSafeTranslation();
   const dispatch = useDispatch();
+  const history = useHistory();
+  const location = useLocation();
   const classes = useStyles();
   const tabValue = useSelector(leftPanelTabValueSelector);
   const theme = useTheme();
@@ -106,6 +134,15 @@ function NavBar() {
   const [selectedChild, setSelectedChild] = useState<Record<string, PanelItem>>(
     {},
   );
+
+  // Sync URL with panel state
+  useEffect(() => {
+    if (location.pathname === '/dashboard' && tabValue !== Panel.Dashboard) {
+      dispatch(setTabValue(Panel.Dashboard));
+    } else if (location.pathname === '/' && tabValue === Panel.Dashboard) {
+      dispatch(setTabValue(Panel.Layers));
+    }
+  }, [location.pathname, tabValue, dispatch]);
 
   const rightSideLinks = [
     {
@@ -140,6 +177,11 @@ function NavBar() {
 
   const handlePanelClick = (panel: Panel) => {
     dispatch(setTabValue(panel));
+    if (panel === Panel.Dashboard) {
+      history.push('/dashboard');
+    } else if (location.pathname !== '/') {
+      history.push('/');
+    }
   };
 
   const handleChildSelection = (panel: any, child: any) => {
@@ -147,7 +189,13 @@ function NavBar() {
       [panel.label]: child,
     });
     handleMenuClose(panel.label);
-    handlePanelClick(child.panel);
+
+    if (panel.panel === Panel.Dashboard && child.reportIndex !== undefined) {
+      dispatch(setTabValue(Panel.Dashboard));
+      history.push('/dashboard');
+    } else {
+      handlePanelClick(child.panel);
+    }
   };
 
   const { title, subtitle, logo } = header || {
@@ -194,9 +242,10 @@ function NavBar() {
                   (panel.children &&
                     panel.children.some(child => tabValue === child.panel));
 
-                const buttonText = selectedChild[panel.label]
-                  ? selectedChild[panel.label].label
-                  : t(panel.label);
+                const buttonText =
+                  selectedChild[panel.label] && panel.panel !== Panel.Dashboard
+                    ? selectedChild[panel.label].label
+                    : t(panel.label);
 
                 return (
                   <React.Fragment key={panel.panel}>
