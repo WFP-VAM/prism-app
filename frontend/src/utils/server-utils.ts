@@ -343,6 +343,7 @@ export function generateIntermediateDateItemFromValidity(
 ) {
   const { forward, backward, mode } = validity;
 
+  // eslint-disable-next-line fp/no-mutating-methods
   const sortedDates = [...dates].sort((a, b) => a - b);
 
   // only calculate validity for dates that are less than 5 years old
