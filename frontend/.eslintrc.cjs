@@ -44,7 +44,7 @@ module.exports = {
     'fp/no-mutating-methods': [
       'warn',
       {
-        allowedObjects: ['_'],
+        allowedObjects: ['_', 'history'],
       },
     ],
     'fp/no-mutation': [

@@ -465,5 +465,15 @@
     "exposure": {
       "population": ["pop_proj_2025"]
     }
-  }
+  },
+  "configuredReports": [
+    {
+      "title": "Population Exposure",
+      "selectedDate": "2025-01-01",
+      "mapPosition": "left",
+      "minMapBounds": [31, -25, 40, -11],
+      "mapLayers": [],
+      "flexElements": []
+    }
+  ]
 }
