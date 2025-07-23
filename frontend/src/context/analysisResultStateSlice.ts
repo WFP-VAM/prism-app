@@ -694,7 +694,7 @@ export const requestAndStoreAnalysis = createAsyncThunk<
     hazardLayer,
     statistic,
     threshold,
-  );
+  ) as KeyValueResponse[];
 
   const getCheckedBaselineData = async (): Promise<BaselineLayerData> => {
     // if the baselineData doesn't exist, lets load it, otherwise check then load existing data.

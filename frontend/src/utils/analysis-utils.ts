@@ -449,7 +449,7 @@ export class BaselineLayerResult {
   adminBoundariesFormat: string;
   tableData: TableRow[];
   // TODO: Type this
-  statsByAdminId?: object[];
+  statsByAdminId?: KeyValueResponse[];
   statistic: AggregationOperations;
   threshold: ThresholdDefinition;
   legend: LegendDefinition;
@@ -467,7 +467,7 @@ export class BaselineLayerResult {
     statistic: AggregationOperations,
     threshold: ThresholdDefinition,
     legend?: LegendDefinition,
-    statsByAdminId?: object[],
+    statsByAdminId?: KeyValueResponse[],
     analysisDate?: ReturnType<Date['getTime']>,
     adminBoundariesFormat?: string,
   ) {
