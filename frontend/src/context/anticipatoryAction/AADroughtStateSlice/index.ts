@@ -58,7 +58,7 @@ export const loadAAData = createAsyncThunk<
   },
   undefined,
   CreateAsyncThunkTypes
->('anticipatoryActionState/loadAAData', async () => {
+>('anticipatoryActionDroughtState/loadAAData', async () => {
   const url = `${getAADroughtUrl(appConfig)}?date=${getCurrentDateTimeForUrl()}`;
 
   return new Promise<any>((resolve, reject) => {
