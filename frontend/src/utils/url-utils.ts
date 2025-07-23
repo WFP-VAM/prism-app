@@ -167,7 +167,9 @@ export function combineURLs(baseURL: string, relativeURL: string) {
  * Returns true if the URL contains staging=true, otherwise false.
  */
 export function getStagingParam(): boolean {
-  if (typeof window === 'undefined') return false;
+  if (typeof window === 'undefined') {
+    return false;
+  }
   const params = new URLSearchParams(window.location.search);
   return params.get('staging') === 'true';
 }
