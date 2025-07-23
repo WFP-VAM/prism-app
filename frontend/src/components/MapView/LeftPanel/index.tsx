@@ -24,8 +24,8 @@ import {
 import LayersPanel from './layersPanel';
 import {
   areTablesAvailable,
-  isAnticipatoryActionStormAvailable,
   isAnticipatoryActionDroughtAvailable,
+  isAnticipatoryActionStormAvailable,
 } from './utils';
 import AlertsPanel from './AlertsPanel';
 import { toggleRemoveLayer } from './layersPanel/MenuItem/MenuSwitch/SwitchItem/utils';
