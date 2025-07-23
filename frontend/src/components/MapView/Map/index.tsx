@@ -14,7 +14,7 @@ import { setMap } from 'context/mapStateSlice';
 import { appConfig } from 'config';
 import useMapOnClick from 'components/MapView/useMapOnClick';
 import { setBounds, setLocation } from 'context/mapBoundaryInfoStateSlice';
-import { DiscriminateUnion, LayerKey, LayerType } from 'config/types';
+import { DiscriminateUnion, LayerKey, LayerType, Panel } from 'config/types';
 import { setLoadingLayerIds } from 'context/mapTileLoadingStateSlice';
 import {
   firstBoundaryOnView,
@@ -24,7 +24,8 @@ import {
 import { mapSelector } from 'context/mapStateSlice/selectors';
 import {
   AdminLevelDataLayer,
-  AnticipatoryActionLayer,
+  AnticipatoryActionDroughtLayer,
+  AnticipatoryActionStormLayer,
   BoundaryLayer,
   CompositeLayer,
   ImpactLayer,
@@ -37,12 +38,16 @@ import MapGL, { MapEvent, MapRef } from 'react-map-gl/maplibre';
 import { MapSourceDataEvent, Map as MaplibreMap } from 'maplibre-gl';
 
 import 'maplibre-gl/dist/maplibre-gl.css';
-import { Panel, leftPanelTabValueSelector } from 'context/leftPanelStateSlice';
+import { leftPanelTabValueSelector } from 'context/leftPanelStateSlice';
 import { mapStyle } from './utils';
+import GeojsonDataLayer from '../Layers/GeojsonDataLayer';
 
 type LayerComponentsMap<U extends LayerType> = {
   [T in U['type']]: {
-    component: ComponentType<{ layer: DiscriminateUnion<U, 'type', T> }>;
+    component: ComponentType<{
+      layer: DiscriminateUnion<U, 'type', T>;
+      mapRef: MapRef;
+    }>;
   };
 };
 
@@ -52,12 +57,18 @@ const componentTypes: LayerComponentsMap<LayerType> = {
   admin_level_data: { component: AdminLevelDataLayer },
   impact: { component: ImpactLayer },
   point_data: { component: PointDataLayer },
+  geojson_polygon: { component: GeojsonDataLayer },
   static_raster: { component: StaticRasterLayer },
   composite: { component: CompositeLayer },
-  anticipatory_action: {
-    component: AnticipatoryActionLayer,
+  anticipatory_action_drought: {
+    component: AnticipatoryActionDroughtLayer,
+  },
+  anticipatory_action_storm: {
+    component: AnticipatoryActionStormLayer,
   },
 };
+
+const LAYERS_ABOVE_BOUNDARIES = ['anticipatory_action', 'geojson_polygon'];
 
 const {
   map: { boundingBox, minZoom, maxZoom, maxBounds },
@@ -227,7 +238,10 @@ const MapComponent = memo(() => {
         return createElement(component as any, {
           key: layer.id,
           layer,
-          before: getBeforeId(index, layer.type === 'anticipatory_action'),
+          before: getBeforeId(
+            index,
+            LAYERS_ABOVE_BOUNDARIES.includes(layer.type),
+          ),
         });
       })}
       <AnalysisLayer before={firstBoundaryId} />

@@ -1,7 +1,7 @@
 SHELL := /bin/bash
 
 build:
-	docker compose -f docker-compose.yml -f docker-compose.test.yml build
+	docker compose -f docker-compose.yml -f docker-compose.test.yml build --no-cache
 	docker compose -f docker-compose.yml -f docker-compose.test.yml pull
 
 api:
@@ -12,7 +12,7 @@ deploy:
 	source set_envs.sh && docker compose build && docker compose -f docker-compose.yml -f docker-compose.deploy.yml up -d
 
 logs:
-	source set_envs.sh && docker compose -f docker-compose.yml -f docker-compose.deploy.yml logs -f
+	source set_envs.sh && docker compose -f docker-compose.yml -f docker-compose.deploy.yml logs --tail=500 -f
 
 api-lint:
 	docker compose run --no-deps api bash -c "poetry run black ."

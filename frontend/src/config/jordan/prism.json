@@ -100,6 +100,10 @@
               "main": true
             },
             {
+              "id": "spi_2m",
+              "label": "2-month"
+            },
+            {
               "id": "spi_3m",
               "label": "3-month"
             },
@@ -269,6 +273,38 @@
             },
             {
               "id": "cdi_v2_seasonal",
+              "label": "Pixel level"
+            }
+          ]
+        }
+      ],
+      "combined_drought_index_water_based": [
+        {
+          "group_title": "Monthly",
+          "activate_all": false,
+          "layers": [
+            {
+              "id": "cdi_v3_aggregated_monthly",
+              "label": "Aggregated",
+              "main": true
+            },
+            {
+              "id": "cdi_v3_monthly",
+              "label": "Pixel level"
+            }
+          ]
+        },
+        {
+          "group_title": "Seasonal",
+          "activate_all": false,
+          "layers": [
+            {
+              "id": "cdi_v3_aggregated_seasonal",
+              "label": "Aggregated",
+              "main": true
+            },
+            {
+              "id": "cdi_v3_seasonal",
               "label": "Pixel level"
             }
           ]

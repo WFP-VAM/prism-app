@@ -27,6 +27,7 @@ export const layerDataSelector =
       ({ layer, date: dataDate }) =>
         layer.id === id && (!date || datesAreEqualWithoutTime(date, dataDate)),
     );
+
 export const loadingLayerIdsSelector = (state: RootState): LayerKey[] =>
   state.mapState.loadingLayerIds;
 

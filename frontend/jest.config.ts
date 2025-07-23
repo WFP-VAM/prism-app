@@ -29,7 +29,6 @@ const config: Config = {
   moduleDirectories: ['node_modules', 'src'],
   roots: ['<rootDir>'],
   modulePaths: ['<rootDir>'],
-  snapshotSerializers: ['enzyme-to-json/serializer'],
 };
 
 export default config;

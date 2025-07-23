@@ -1,0 +1,16 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`AADroughtTimelineItem renders as expected 1`] = `
+<div>
+  <div
+    class="undefined"
+    role="presentation"
+  />
+  <div
+    class="undefined"
+    role="presentation"
+  />
+</div>
+`;
+
+exports[`AADroughtTimelineItem renders as expected with data point starting after Timeline start date 1`] = `<div />`;
