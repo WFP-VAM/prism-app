@@ -4,6 +4,7 @@
   "version": "0.1.0",
   "private": true,
   "homepage": ".",
+  "packageManager": "yarn@1.22.22",
   "husky": {
     "hooks": {
       "pre-commit": "lint-staged"
