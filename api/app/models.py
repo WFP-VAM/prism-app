@@ -55,8 +55,9 @@ class FilterProperty(BaseModel):
 class StatsModel(BaseModel):
     """Schema for stats data to be passed to /stats endpoint."""
 
+    admin_level: Optional[int] = None
     geotiff_url: HttpUrl = Field(..., example=stats_data["geotiff_url"])
-    zones_url: Optional[HttpUrl] = Field(None, example=stats_data["zones_url"])
+    zones_url: Optional[str] = Field(None, example=stats_data["zones_url"])
     group_by: Optional[str] = Field(None, example=stats_data["group_by"])
     wfs_params: Optional[WfsParamsModel] = None
     geojson_out: Optional[bool] = False
@@ -67,6 +68,7 @@ class StatsModel(BaseModel):
     mask_url: Optional[str] = None
     mask_calc_expr: Optional[str] = None
     filter_by: Optional[FilterProperty] = None
+    simplify_tolerance: Optional[float] = None
 
     @root_validator
     def check_zones_or_zones_url(cls, values):
