@@ -27,8 +27,8 @@ import {
   isAnticipatoryActionStormAvailable,
   isAnticipatoryActionDroughtAvailable,
 } from './utils';
-import { toggleRemoveLayer } from './layersPanel/MenuItem/MenuSwitch/SwitchItem/utils';
 import AlertsPanel from './AlertsPanel';
+import { toggleRemoveLayer } from './layersPanel/MenuItem/MenuSwitch/SwitchItem/utils';
 
 interface TabPanelProps {
   children?: React.ReactNode;

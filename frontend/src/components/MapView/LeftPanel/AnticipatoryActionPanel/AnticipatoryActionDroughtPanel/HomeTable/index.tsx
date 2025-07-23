@@ -26,8 +26,8 @@ import { GetApp, BarChartOutlined } from '@material-ui/icons';
 import { appConfig, safeCountry } from 'config';
 import { PanelSize } from 'config/types';
 import { getCurrentDateTimeForUrl } from 'utils/date-utils';
-import { AADataSeverityOrder, getAAIcon } from '../utils';
 import { getAADroughtUrl } from 'utils/url-utils';
+import { AADataSeverityOrder, getAAIcon } from '../utils';
 import { useAACommonStyles } from '../../utils';
 
 interface AreaTagProps {
