@@ -27,6 +27,7 @@ import { appConfig, safeCountry } from 'config';
 import { PanelSize } from 'config/types';
 import { getCurrentDateTimeForUrl } from 'utils/date-utils';
 import { AADataSeverityOrder, getAAIcon, useAACommonStyles } from '../utils';
+import { getAADroughtUrl } from 'utils/url-utils';
 
 interface AreaTagProps {
   name: string;
@@ -208,14 +209,14 @@ function HomeTable({ dialogs }: HomeTableProps) {
   const monitoredDistrict = useSelector(AAMonitoredDistrictsSelector);
   const { 'Window 2': window2Range } = useSelector(AAWindowRangesSelector);
 
-  const filename = appConfig.anticipatoryActionUrl?.split('/').at(-1);
+  const filename = getAADroughtUrl(appConfig)?.split('/').at(-1);
 
   const homeButtons = [
     {
       startIcon: <GetApp />,
       text: 'Assets',
       component: 'a',
-      href: `${appConfig.anticipatoryActionUrl}?date=${getCurrentDateTimeForUrl()}`,
+      href: `${getAADroughtUrl(appConfig)}?date=${getCurrentDateTimeForUrl()}`,
       download: `${window2Range?.end}-${filename}`,
     },
     {

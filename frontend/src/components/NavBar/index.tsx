@@ -40,7 +40,7 @@ import { analysisResultSelector } from 'context/analysisResultStateSlice';
 import { areChartLayersAvailable } from 'config/utils';
 import {
   areTablesAvailable,
-  isAnticipatoryActionAvailable,
+  isAnticipatoryActionDroughtAvailable,
 } from 'components/MapView/LeftPanel/utils';
 import About from './About';
 import LanguageSelector from './LanguageSelector';
@@ -61,7 +61,7 @@ const panels = [
   ...(areTablesAvailable
     ? [{ panel: Panel.Tables, label: 'Tables', icon: <TableChartOutlined /> }]
     : []),
-  ...(isAnticipatoryActionAvailable
+  ...(isAnticipatoryActionDroughtAvailable
     ? [
         {
           panel: Panel.AnticipatoryAction,

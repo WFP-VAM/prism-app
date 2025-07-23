@@ -29,7 +29,10 @@ import ChartsPanel from './ChartsPanel';
 import TablesPanel from './TablesPanel';
 import AnticipatoryActionPanel from './AnticipatoryActionPanel';
 import LayersPanel from './layersPanel';
-import { areTablesAvailable, isAnticipatoryActionAvailable } from './utils';
+import {
+  areTablesAvailable,
+  isAnticipatoryActionDroughtAvailable,
+} from './utils';
 import { toggleRemoveLayer } from './layersPanel/MenuItem/MenuSwitch/SwitchItem/utils';
 import AlertsPanel from './AlertsPanel';
 
@@ -193,7 +196,7 @@ const LeftPanel = memo(() => {
   }, [tabValue, dispatch]);
 
   const renderedAnticipatoryActionPanel = React.useMemo(() => {
-    if (!isAnticipatoryActionAvailable) {
+    if (!isAnticipatoryActionDroughtAvailable) {
       return null;
     }
     return (

@@ -161,7 +161,7 @@ export const AAWindowKeys = ['Window 1', 'Window 2'] as const;
 export const AALayerId = 'anticipatory_action';
 
 export const LayerDefinitions: LayersMap = (() => {
-  const aaUrl = appConfig.anticipatoryActionUrl;
+  const aaUrl = appConfig.anticipatoryActionDroughtUrl;
   const AALayer: AnticipatoryActionLayerProps = {
     id: AALayerId,
     title: 'Anticipatory Action',
