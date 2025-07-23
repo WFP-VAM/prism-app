@@ -152,7 +152,7 @@ export function parseAndTransformAA(data: any[]) {
 
           // Filter out 'Ready' if 'Set' exists for this date
           let filteredDateData = dateData;
-          if (dateData.some(x => x.phase === 'Set')) {
+          if (dateData.some(x => x.phase === 'Set' && x.isValid)) {
             // eslint-disable-next-line fp/no-mutation
             filteredDateData = dateData.filter(x => x.phase !== 'Ready');
           }
