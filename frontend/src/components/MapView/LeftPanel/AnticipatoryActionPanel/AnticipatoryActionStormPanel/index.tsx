@@ -19,9 +19,10 @@ import { DateFormat } from 'utils/name-utils';
 import { useUrlHistory } from 'utils/url-utils';
 import HowToReadModal from '../HowToReadModal';
 import ActivationTrigger from './ActivationTriggerView';
-import { StyledSelect } from '../utils';
+import { StyledSelect, useAACommonStyles } from '../utils';
 import { useAnticipatoryAction } from '../useAnticipatoryAction';
 import ReadyTrigger from './ReadyTriggerView';
+import DownloadGeoJSONButton from './DownloadGeoJSONButton';
 
 function AnticipatoryActionStormPanel() {
   const classes = useStyles();
@@ -31,6 +32,7 @@ function AnticipatoryActionStormPanel() {
   const { AAData, AAAvailableDates } = useAnticipatoryAction(
     AnticipatoryAction.storm,
   );
+  const commonClasses = useAACommonStyles();
   const [howToReadModalOpen, setHowToReadModalOpen] = React.useState(false);
   const reportRefTime = AAData.forecastDetails?.reference_time;
 
@@ -111,6 +113,11 @@ function AnticipatoryActionStormPanel() {
         </Typography>
       </div>
       {AAData.readiness ? <ReadyTrigger /> : <ActivationTrigger dialogs={[]} />}
+      <div className={commonClasses.footerWrapper}>
+        <div className={commonClasses.footerDialogsWrapper}>
+          <DownloadGeoJSONButton />
+        </div>
+      </div>
     </div>
   );
 }
