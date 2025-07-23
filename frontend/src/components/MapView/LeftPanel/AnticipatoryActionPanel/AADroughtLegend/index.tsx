@@ -13,9 +13,10 @@ import { useAACommonStyles } from '../utils';
 import HowToReadModal from '../HowToReadModal';
 
 const isZimbabwe = safeCountry === 'zimbabwe';
+const isMalawi = safeCountry === 'malawi';
 
 const phases = [
-  ...(isZimbabwe
+  ...(isZimbabwe || isMalawi
     ? []
     : [
         {
@@ -29,17 +30,22 @@ const phases = [
           severity: 'Severe',
         },
       ]),
-  {
-    icon: getAAIcon('Moderate', 'Set', true),
-    phase: 'Set',
-    severity: 'Moderate',
-  },
-  {
-    icon: getAAIcon('Moderate', 'Ready', true),
-    phase: 'Ready',
-    severity: 'Moderate',
-  },
-  ...(isZimbabwe
+  ...(isMalawi
+    ? []
+    : [
+        {
+          icon: getAAIcon('Moderate', 'Set', true),
+          phase: 'Set',
+          severity: 'Moderate',
+        },
+        {
+          icon: getAAIcon('Moderate', 'Ready', true),
+          phase: 'Ready',
+          severity: 'Moderate',
+        },
+      ]),
+
+  ...(isZimbabwe || isMalawi
     ? [
         {
           icon: getAAIcon('Normal', 'Set', true),
@@ -127,9 +133,13 @@ function AADroughtLegend({ showDescription = true }: AADroughtLegendProps) {
                 {t('The "Ready, Set & Go!" system')}
               </span>
             }{' '}
-            {t(
-              'uses seasonal forecasts with longer lead time for preparedness (Ready phase) and shorter lead times for activation and mobilization (Set & Go! phases).',
-            )}
+            {isMalawi
+              ? t(
+                  'uses seasonal forecasts from ECMWF with longer lead time for preparedness (Ready phase) and shorter lead times for activation and mobilization (Set & Go! phases).',
+                )
+              : t(
+                  'uses seasonal forecasts with longer lead time for preparedness (Ready phase) and shorter lead times for activation and mobilization (Set & Go! phases).',
+                )}
           </Typography>
           <Divider />
 
