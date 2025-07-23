@@ -73,7 +73,7 @@ def _read_zones(
     zones_filepath: FilePath,
     admin_level: Optional[int] = None,
     bbox: Optional[tuple[float, float, float, float]] = None,
-    simplify_tolerance: Optional[float] = 0.01,
+    simplify_tolerance: Optional[float] = None,
 ) -> GeoJSON:
     """
     Read the zones file from either a local GeoJSON or an S3-hosted (or local) GeoParquet,
@@ -88,14 +88,13 @@ def _read_zones(
         used to limit what is read from the parquet dataset.
     simplify_tolerance : float, optional
         Tolerance value for geometry simplification. Only used for
-        parquet files. If None, defaults to 0.1.
+        parquet files. If None, no simplification is applied.
 
     Returns
     -------
     dict
         A GeoJSON-style dictionary: {"type": "FeatureCollection", "features": [...]}
     """
-    print(f"Reading zones file: {zones_filepath}")
     # Check if filepath contains .json or .geojson (case insensitive)
     filepath_lower = zones_filepath.lower()
     if ".json" in filepath_lower or ".geojson" in filepath_lower:
@@ -106,7 +105,10 @@ def _read_zones(
         con = setup_duckdb_connection()
         # Create a temporary view for the filtered data
         view_name = "filtered_zones"
-        query = f"CREATE VIEW {view_name} AS SELECT * exclude(geometry), ST_Simplify(geometry, {simplify_tolerance}) AS geometry FROM read_parquet('{zones_filepath}')"
+        query = f"CREATE VIEW {view_name} AS SELECT * exclude(geometry)"
+        if simplify_tolerance is not None:
+            query += f", ST_Simplify(geometry, {simplify_tolerance}) AS geometry"
+        query += f" FROM read_parquet('{zones_filepath}')"
         if admin_level is not None:
             query += f" WHERE admin_level = {admin_level}"
         if bbox is not None:
@@ -514,7 +516,6 @@ def calculate_stats(
     stats_results = clean_results
 
     if not geojson_out:
-        print(f"Extracting feature properties for {zones_filepath}")
         feature_properties = _extract_features_properties(
             zones_filepath, admin_level, simplify_tolerance
         )

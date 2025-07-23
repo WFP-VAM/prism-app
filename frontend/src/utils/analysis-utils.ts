@@ -215,26 +215,6 @@ export function scaleAndFilterAggregateData(
   const { wcsConfig } = hazardLayerDef;
   const { scale, offset } = wcsConfig || {};
 
-  // Handle GeoJSON data
-  if (aggregateData?.[0]?.geometry) {
-    return (aggregateData as any[])
-      .map((feature: any) => {
-        const value = get(feature, ['properties', `stats_${operation}`]);
-        const scaledValue = scaleValueIfDefined(value, scale, offset);
-        return {
-          ...feature,
-          properties: {
-            ...feature.properties,
-            [operation]: scaledValue,
-          },
-        };
-      })
-      .filter((feature: any) => {
-        const value = feature.properties[operation];
-        return !Number.isNaN(thresholdOrNaN(value, threshold));
-      });
-  }
-
   return (aggregateData as KeyValueResponse[])
     .map(data => ({
       ...data,
@@ -267,7 +247,7 @@ export function generateFeaturesFromApiData(
   }) as GeoJsonBoundary[];
 }
 
-// Is this function still needed?
+// Is this function still needed? It's only in use by ImpactLayers
 export async function loadFeaturesFromApi(
   layer: ImpactLayerProps,
   baselineData: BaselineLayerData,
@@ -469,7 +449,7 @@ export class BaselineLayerResult {
   adminBoundariesFormat: string;
   tableData: TableRow[];
   // TODO: Type this
-  aggregateData?: object[];
+  statsByAdminId?: object[];
   statistic: AggregationOperations;
   threshold: ThresholdDefinition;
   legend: LegendDefinition;
@@ -487,7 +467,7 @@ export class BaselineLayerResult {
     statistic: AggregationOperations,
     threshold: ThresholdDefinition,
     legend?: LegendDefinition,
-    aggregateData?: object[],
+    statsByAdminId?: object[],
     analysisDate?: ReturnType<Date['getTime']>,
     adminBoundariesFormat?: string,
   ) {
@@ -498,7 +478,7 @@ export class BaselineLayerResult {
     this.threshold = threshold;
     this.legend = baselineLayer.legend ?? legend;
     this.legendText = hazardLayer.legendText;
-    this.aggregateData = aggregateData;
+    this.statsByAdminId = statsByAdminId;
 
     this.hazardLayerId = hazardLayer.id;
     this.baselineLayerId = baselineLayer.id;

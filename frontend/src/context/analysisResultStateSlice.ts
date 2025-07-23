@@ -390,6 +390,7 @@ async function createAPIRequestParams(
     path: adminBoundariesPath,
     adminCode: groupBy,
     zonesPath,
+    simplifyTolerance,
   } = getBoundaryLayersByAdminLevel(adminLevel);
 
   // Note - This may not work when running locally as the function
@@ -444,7 +445,8 @@ async function createAPIRequestParams(
       exposureValue?.operator && exposureValue.value
         ? `${exposureValue?.operator}${exposureValue?.value}`
         : undefined,
-    adminLevel,
+    admin_level: adminLevel,
+    simplify_tolerance: simplifyTolerance,
   };
 
   return apiRequest;
@@ -687,7 +689,7 @@ export const requestAndStoreAnalysis = createAsyncThunk<
     exposureValue,
   );
 
-  const aggregateData = scaleAndFilterAggregateData(
+  const statsByAdminId = scaleAndFilterAggregateData(
     await fetchApiData(ANALYSIS_API_URL, apiRequest, api.dispatch),
     hazardLayer,
     statistic,
@@ -722,7 +724,7 @@ export const requestAndStoreAnalysis = createAsyncThunk<
     await getCheckedBaselineData();
 
   const features = generateFeaturesFromApiData(
-    aggregateData,
+    statsByAdminId,
     loadedAndCheckedBaselineData,
     apiRequest.group_by,
     statistic,
@@ -741,7 +743,7 @@ export const requestAndStoreAnalysis = createAsyncThunk<
 
   const tableRows: TableRow[] = generateTableFromApiData(
     enrichedStatistics,
-    aggregateData,
+    statsByAdminId,
     adminBoundariesData,
     apiRequest.group_by,
     loadedAndCheckedBaselineData.layerData,
@@ -761,7 +763,7 @@ export const requestAndStoreAnalysis = createAsyncThunk<
     statistic,
     threshold,
     legend,
-    aggregateData,
+    statsByAdminId,
     date,
     adminBoundaries.format,
   );

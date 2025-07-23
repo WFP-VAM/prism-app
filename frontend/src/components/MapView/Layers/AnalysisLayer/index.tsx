@@ -168,140 +168,115 @@ function fillPaintData(
   };
 }
 
-function AnalysisLayer({
+function PMTilesAnalysisLayer({
   before,
   mapRef,
+  legend,
+  boundaryLayerId,
+  effectiveBoundaryId,
 }: {
   before?: string;
   mapRef: RefObject<MapRef>;
+  legend: LegendDefinition;
+  boundaryLayerId?: string;
+  effectiveBoundaryId?: string;
 }) {
-  const analysisData = useSelector(analysisResultSelector);
-  const isAnalysisLayerActive = useSelector(isAnalysisLayerActiveSelector);
+  const analysisData = useSelector(
+    analysisResultSelector,
+  ) as BaselineLayerResult;
   const opacityState = useSelector(opacitySelector('analysis'));
-  const invertedColorsForAnalysis = useSelector(invertedColorsSelector);
-  useMapCallback('click', layerId, undefined, onClick(analysisData));
   const layers = useSelector(layersSelector);
 
-  // Raw layer ID: analysis boundaryId > baseline layerId > undefined
-  const boundaryLayerId = (() => {
-    if (
-      analysisData &&
-      'boundaryId' in analysisData &&
-      analysisData.boundaryId
-    ) {
-      return analysisData.boundaryId;
-    }
-    return layers.find(
-      layer =>
-        layer.id ===
-        (analysisData instanceof BaselineLayerResult
-          ? analysisData.baselineLayerId
-          : undefined),
-    )?.id;
-  })();
+  const boundarySourceId = `source-${boundaryLayerId}`;
+  const { statistic } = analysisData;
+  const analysisLayerId = `${effectiveBoundaryId}-analysis-fill`;
 
-  // Processed map layer ID for rendering, with fallback to 'before'
-  const effectiveBoundaryId = boundaryLayerId
-    ? getLayerMapId(boundaryLayerId)
-    : before;
-
-  const legend =
-    analysisData && invertedColorsForAnalysis
-      ? invertLegendColors(analysisData.legend)
-      : analysisData?.legend;
-
-  if (!analysisData || !isAnalysisLayerActive || !legend) {
+  if (!effectiveBoundaryId || !boundarySourceId) {
     return null;
   }
 
-  const isPMTiles =
-    analysisData instanceof BaselineLayerResult &&
-    analysisData.adminBoundariesFormat === 'pmtiles';
-
-  if (isPMTiles) {
-    const boundarySourceId = `source-${boundaryLayerId}`;
-    const { statistic } = analysisData;
-    const analysisLayerId = `${effectiveBoundaryId}-analysis-fill`;
-
-    if (!effectiveBoundaryId || !boundarySourceId) {
-      return null;
-    }
-
-    const fullBoundaryLayer = layers.find(
-      layer => layer.id === boundaryLayerId,
-    );
-    if (!fullBoundaryLayer || fullBoundaryLayer.type !== 'boundary') {
-      return null;
-    }
-
-    const stops = legendToStops(legend);
-
-    const createPropertyBasedExpression = () => {
-      if (!analysisData.aggregateData || !fullBoundaryLayer) {
-        return 'transparent';
-      }
-
-      const adminCodeProperty = fullBoundaryLayer.adminCode;
-
-      const findColorForValue = (statValue: number): string => {
-        const breakIndex = stops.findIndex(
-          ([threshold]) => statValue < threshold,
-        );
-
-        if (breakIndex === -1) {
-          // No break found, use the last color
-          return stops.length > 0 ? stops[stops.length - 1][1] : 'transparent';
-        }
-        // Use color from the element before the break
-        return stops[breakIndex - 1][1];
-      };
-
-      const caseConditions = analysisData.aggregateData.reduce<any[]>(
-        (acc, dataItem: any) => {
-          const adminId = dataItem[adminCodeProperty];
-          const statValue =
-            dataItem[`stats_${statistic}`] || dataItem[statistic];
-
-          if (statValue !== undefined && adminId !== undefined) {
-            const color = findColorForValue(statValue);
-            return [...acc, ['==', ['get', adminCodeProperty], adminId], color];
-          }
-          return acc;
-        },
-        [],
-      );
-
-      return ['case', ...caseConditions, 'transparent'];
-    };
-
-    const propertyBasedColorExpression = createPropertyBasedExpression();
-
-    const propertyBasedPaintProperties: FillLayerSpecification['paint'] = {
-      'fill-color': propertyBasedColorExpression as any,
-      'fill-opacity': opacityState || 0.7,
-    };
-
-    const finalPaintProperties = propertyBasedPaintProperties;
-
-    const boundaryFillLayerId = `${effectiveBoundaryId}-fill`;
-    const map = mapRef.current?.getMap();
-    const beforeId = map?.getLayer(boundaryFillLayerId)
-      ? boundaryFillLayerId
-      : before;
-
-    return (
-      <Layer
-        id={analysisLayerId}
-        type="fill"
-        source={boundarySourceId}
-        source-layer={fullBoundaryLayer.layerName}
-        beforeId={beforeId}
-        paint={finalPaintProperties}
-      />
-    );
+  const fullBoundaryLayer = layers.find(layer => layer.id === boundaryLayerId);
+  if (!fullBoundaryLayer || fullBoundaryLayer.type !== 'boundary') {
+    return null;
   }
 
-  // GeoJSON rendering logic
+  const stops = legendToStops(legend);
+
+  const createPropertyBasedExpression = () => {
+    if (!analysisData.statsByAdminId || !fullBoundaryLayer) {
+      return 'transparent';
+    }
+
+    const adminCodeProperty = fullBoundaryLayer.adminCode;
+
+    const findColorForValue = (statValue: number): string => {
+      const breakIndex = stops.findIndex(
+        ([threshold]) => statValue < threshold,
+      );
+
+      if (breakIndex === -1) {
+        // No break found, use the last color
+        return stops.length > 0 ? stops[stops.length - 1][1] : 'transparent';
+      }
+      // Use color from the element before the break
+      return stops[breakIndex - 1][1];
+    };
+
+    const caseConditions = analysisData.statsByAdminId.reduce<any[]>(
+      (acc, dataItem: any) => {
+        const adminId = dataItem[adminCodeProperty];
+        const statValue = dataItem[`stats_${statistic}`] || dataItem[statistic];
+
+        if (statValue !== undefined && adminId !== undefined) {
+          const color = findColorForValue(statValue);
+          return [...acc, ['==', ['get', adminCodeProperty], adminId], color];
+        }
+        return acc;
+      },
+      [],
+    );
+
+    return ['case', ...caseConditions, 'transparent'];
+  };
+
+  const propertyBasedColorExpression = createPropertyBasedExpression();
+
+  const propertyBasedPaintProperties: FillLayerSpecification['paint'] = {
+    'fill-color': propertyBasedColorExpression as any,
+    'fill-opacity': opacityState || 0.7,
+  };
+
+  const finalPaintProperties = propertyBasedPaintProperties;
+
+  const boundaryFillLayerId = `${effectiveBoundaryId}-fill`;
+  const map = mapRef.current?.getMap();
+  const beforeId = map?.getLayer(boundaryFillLayerId)
+    ? boundaryFillLayerId
+    : before;
+
+  return (
+    <Layer
+      id={analysisLayerId}
+      type="fill"
+      source={boundarySourceId}
+      source-layer={fullBoundaryLayer.layerName}
+      beforeId={beforeId}
+      paint={finalPaintProperties}
+    />
+  );
+}
+
+function GeoJSONAnalysisLayer({
+  legend,
+  effectiveBoundaryId,
+}: {
+  legend: LegendDefinition;
+  effectiveBoundaryId?: string;
+}) {
+  const analysisData = useSelector(
+    analysisResultSelector,
+  ) as BaselineLayerResult;
+  const opacityState = useSelector(opacitySelector('analysis'));
   const baselineIsBoundary =
     'baselineLayerId' in analysisData &&
     analysisData instanceof BaselineLayerResult &&
@@ -329,6 +304,74 @@ function AnalysisLayer({
         paint={fillPaintData(legend, defaultProperty, opacityState)}
       />
     </Source>
+  );
+}
+
+function AnalysisLayer({
+  before,
+  mapRef,
+}: {
+  before?: string;
+  mapRef: RefObject<MapRef>;
+}) {
+  const analysisData = useSelector(analysisResultSelector);
+  const isAnalysisLayerActive = useSelector(isAnalysisLayerActiveSelector);
+  const invertedColorsForAnalysis = useSelector(invertedColorsSelector);
+  const layers = useSelector(layersSelector);
+
+  useMapCallback('click', layerId, undefined, onClick(analysisData));
+  // Raw layer ID: analysis boundaryId > baseline layerId > undefined
+  const boundaryLayerId = (() => {
+    if (
+      analysisData &&
+      'boundaryId' in analysisData &&
+      analysisData.boundaryId
+    ) {
+      return analysisData.boundaryId;
+    }
+    return layers.find(
+      layer =>
+        layer.id ===
+        (analysisData instanceof BaselineLayerResult
+          ? analysisData.baselineLayerId
+          : undefined),
+    )?.id;
+  })();
+
+  // Processed map layer ID for rendering, with fallback to 'before'
+  const effectiveBoundaryId = boundaryLayerId
+    ? getLayerMapId(boundaryLayerId)
+    : before;
+  const legend =
+    analysisData && invertedColorsForAnalysis
+      ? invertLegendColors(analysisData.legend)
+      : analysisData?.legend;
+
+  if (!analysisData || !isAnalysisLayerActive || !legend) {
+    return null;
+  }
+
+  const isPMTiles =
+    analysisData instanceof BaselineLayerResult &&
+    analysisData.adminBoundariesFormat === 'pmtiles';
+
+  if (isPMTiles) {
+    return (
+      <PMTilesAnalysisLayer
+        before={before}
+        mapRef={mapRef}
+        legend={legend}
+        boundaryLayerId={boundaryLayerId}
+        effectiveBoundaryId={effectiveBoundaryId}
+      />
+    );
+  }
+
+  return (
+    <GeoJSONAnalysisLayer
+      legend={legend}
+      effectiveBoundaryId={effectiveBoundaryId}
+    />
   );
 }
 

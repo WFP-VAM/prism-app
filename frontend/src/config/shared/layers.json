@@ -15,7 +15,7 @@
       "line": {
         "line-color": "gray",
         "line-width": 0.5,
-        "line-opacity": 0.3
+        "line-opacity": 0.1
       }
     },
     "admin_code": "dv_adm2_id",
@@ -37,7 +37,7 @@
       "line": {
         "line-color": "gray",
         "line-width": 1.0,
-        "line-opacity": 0.3
+        "line-opacity": 0.2
       }
     },
     "admin_code": "dv_adm1_id",
@@ -59,7 +59,7 @@
       "line": {
         "line-color": "gray",
         "line-width": 1.5,
-        "line-opacity": 0.3
+        "line-opacity": 0.25
       }
     },
     "admin_code": "dv_adm0_id",

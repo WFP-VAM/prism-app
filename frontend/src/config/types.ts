@@ -400,6 +400,9 @@ export class BoundaryLayerProps extends CommonLayerProps {
   zonesPath: FilePath; // path to admin_boundries.parquet file in S3
 
   @optional
+  simplifyTolerance?: number; // optional geometry simplification for analysis stats (only an option when zonesPath provided)
+
+  @optional
   layerName?: string;
 
   @optional
