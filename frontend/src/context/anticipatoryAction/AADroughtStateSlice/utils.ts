@@ -150,6 +150,12 @@ export function parseAndTransformAA(data: any[]) {
         windowDates.forEach(date => {
           const dateData = sorted.filter(x => x.date === date);
 
+          // Filter out 'Ready' if 'Set' exists for this date
+          let filteredDateData = dateData;
+          if (dateData.some(x => x.phase === 'Set')) {
+            filteredDateData = dateData.filter(x => x.phase !== 'Ready');
+          }
+
           // Propagate SET elements from previous dates
           const propagatedSetElements = setElementsToPropagate.map(x => ({
             ...x,
@@ -159,7 +165,7 @@ export function parseAndTransformAA(data: any[]) {
           }));
 
           // If a district reaches a set state, it will propagate until the end of the window
-          dateData.forEach(x => {
+          filteredDateData.forEach(x => {
             // reset prevMax when entering a new season
             if (prevMax && x.season !== prevMax.season) {
               // eslint-disable-next-line fp/no-mutation
@@ -186,7 +192,7 @@ export function parseAndTransformAA(data: any[]) {
           });
 
           // eslint-disable-next-line no-const-assign, fp/no-mutation
-          newRows = [...newRows, ...dateData, ...propagatedSetElements];
+          newRows = [...newRows, ...filteredDateData, ...propagatedSetElements];
         });
         return [district, newRows];
       });
