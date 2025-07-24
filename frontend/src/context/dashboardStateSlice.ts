@@ -4,10 +4,12 @@ import type { RootState } from './store';
 
 export interface DashboardState {
   title: string;
+  textContent: string;
 }
 
 const initialState: DashboardState = {
   title: appConfig.configuredReports[0]?.title || 'Dashboard',
+  textContent: '',
 };
 
 export const dashboardStateSlice = createSlice({
@@ -18,6 +20,10 @@ export const dashboardStateSlice = createSlice({
       ...state,
       title: action.payload,
     }),
+    setTextContent: (state, action: PayloadAction<string>) => ({
+      ...state,
+      textContent: action.payload,
+    }),
   },
 });
 
@@ -25,7 +31,10 @@ export const dashboardStateSlice = createSlice({
 export const dashboardTitleSelector = (state: RootState): string =>
   state.dashboardState.title;
 
+export const dashboardTextContentSelector = (state: RootState): string =>
+  state.dashboardState.textContent;
+
 // Setters
-export const { setTitle } = dashboardStateSlice.actions;
+export const { setTitle, setTextContent } = dashboardStateSlice.actions;
 
 export default dashboardStateSlice.reducer;
