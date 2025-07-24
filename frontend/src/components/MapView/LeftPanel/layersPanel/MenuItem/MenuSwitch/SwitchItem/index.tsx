@@ -18,7 +18,10 @@ import { useSafeTranslation } from 'i18n';
 import { refreshBoundaries } from 'utils/map-utils';
 import { getUrlKey, useUrlHistory } from 'utils/url-utils';
 import { Extent } from 'components/MapView/Layers/raster-utils';
-import { availableDatesSelector } from 'context/serverStateSlice';
+import {
+  availableDatesSelector,
+  layersLoading,
+} from 'context/serverStateSlice';
 import { checkLayerAvailableDatesAndContinueOrRemove } from 'components/MapView/utils';
 import { LocalError } from 'utils/error-utils';
 import { opacitySelector, setOpacity } from 'context/opacityStateSlice';
@@ -48,6 +51,7 @@ const SwitchItem = memo(
     const { t } = useSafeTranslation();
     const selectedLayers = useAppSelector(layersSelector);
     const serverAvailableDates = useAppSelector(availableDatesSelector);
+    const layersLoadingDates = useAppSelector(layersLoading);
     const map = useAppSelector(mapSelector);
     const [isOpacitySelected, setIsOpacitySelected] = useState(false);
     const dispatch: AppDispatch = useAppDispatch();
@@ -158,6 +162,7 @@ const SwitchItem = memo(
           checkLayerAvailableDatesAndContinueOrRemove(
             layer,
             serverAvailableDates,
+            layersLoadingDates,
             removeLayerFromUrl,
             dispatch,
           );
@@ -189,6 +194,7 @@ const SwitchItem = memo(
         removeLayerFromUrl,
         selectedLayers,
         serverAvailableDates,
+        layersLoadingDates,
         updateHistory,
       ],
     );

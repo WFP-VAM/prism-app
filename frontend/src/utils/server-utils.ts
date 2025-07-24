@@ -7,6 +7,7 @@ import type {
   AnticipatoryActionLayerProps,
   AvailableDates,
   CompositeLayerProps,
+  LayerType,
   PathLayer,
   PointDataLayerProps,
   RequestFeatureInfo,
@@ -561,7 +562,10 @@ const mapServerDatesToLayerIds = (
 export async function preloadLayerDatesForWMS(
   dispatch: AppDispatch,
 ): Promise<Record<string, number[]>> {
+  console.warn('prefetching layerDates WMS');
   const wmsServerUrls: string[] = get(appConfig, 'serversUrls.wms', []);
+  const wcsServerUrls: string[] = get(appConfig, 'serversUrls.wcs', []);
+
   const compositeLayers = Object.values(LayerDefinitions).filter(
     (layer): layer is CompositeLayerProps => layer.type === 'composite',
   );
@@ -581,52 +585,24 @@ export async function preloadLayerDatesForWMS(
       layer.type === 'wms' ||
       compositeLayersWithDateLayerTypeMap[layer.id] === 'wms',
   );
-  const allDates = wmsServerUrls.map(async url => {
+  const allWMSDates = wmsServerUrls.map(async url => {
     const serverDates = await localWMSGetLayerDates(url, dispatch);
     return mapServerDatesToLayerIds(serverDates, WCSWMSLayers);
   });
-
-  const r = await Promise.all([...allDates]);
-  return r.reduce((acc, item) => ({ ...acc, ...item }));
-}
-
-export async function preloadLayerDatesForWCS(
-  dispatch: AppDispatch,
-): Promise<Record<string, number[]>> {
-  // no config seems to include the serversUrls.wcs key, is it still used?
-  const wcsServerUrls: string[] = get(appConfig, 'serversUrls.wcs', []);
-  const compositeLayers = Object.values(LayerDefinitions).filter(
-    (layer): layer is CompositeLayerProps => layer.type === 'composite',
-  );
-
-  const compositeLayersWithDateLayerTypeMap: {
-    [key: string]: string;
-  } = compositeLayers.reduce(
-    (acc, layer) => ({
-      ...acc,
-      [layer.id]: LayerDefinitions[layer.dateLayer].type,
-    }),
-    {},
-  );
-
-  const WCSWMSLayers = Object.values(LayerDefinitions).filter(
-    (layer): layer is WMSLayerProps =>
-      layer.type === 'wms' ||
-      compositeLayersWithDateLayerTypeMap[layer.id] === 'wms',
-  );
-
-  const allDates = wcsServerUrls.map(async url => {
+  const allWCSDates = wcsServerUrls.map(async url => {
     const serverDates = await localFetchCoverageLayerDays(url, dispatch);
     return mapServerDatesToLayerIds(serverDates, WCSWMSLayers);
   });
 
-  const r = await Promise.all([...allDates]);
+  const r = await Promise.all([...allWMSDates, ...allWCSDates]);
   return r.reduce((acc, item) => ({ ...acc, ...item }));
 }
 
 export async function preloadLayerDatesForPointData(
   dispatch: AppDispatch,
 ): Promise<Record<string, number[]>> {
+  console.warn('prefetching layerDates for Point Data');
+
   const compositeLayers = Object.values(LayerDefinitions).filter(
     (layer): layer is CompositeLayerProps => layer.type === 'composite',
   );
@@ -682,73 +658,63 @@ export async function getAvailableDatesForLayer(
   getState: () => RootState,
   layerId: string,
 ): Promise<AvailableDates> {
-  performance.mark('getAvailableDatesForLayer-start', { detail: { layerId } });
-
   const relevantLayerDefinitions = { [layerId]: LayerDefinitions[layerId] };
 
-  // const compositeLayers = Object.values(relevantLayerDefinitions).filter(
-  //   (layer): layer is CompositeLayerProps => layer.type === 'composite',
-  // );
-
-  // const compositeLayersWithDateLayerTypeMap: {
-  //   [key: string]: string;
-  // } = compositeLayers.reduce(
-  //   (acc, layer) => ({
-  //     ...acc,
-  //     [layer.id]: relevantLayerDefinitions[layer.dateLayer].type,
-  //   }),
-  //   {},
-  // );
-
-  // const pointDataLayers = Object.values(relevantLayerDefinitions).filter(
-  //   (layer): layer is PointDataLayerProps =>
-  //     (layer.type === 'point_data' && Boolean(layer.dateUrl)) ||
-  //     compositeLayersWithDateLayerTypeMap[layer.id] === 'point_data',
-  // );
-  //
-  // const adminWithDateLayers = Object.values(relevantLayerDefinitions).filter(
-  //   (layer): layer is AdminLevelDataLayerProps =>
-  //     (layer.type === 'admin_level_data' && Boolean(layer.dates)) ||
-  //     compositeLayersWithDateLayerTypeMap[layer.id] === 'admin_level_data',
-  // );
-  //
-  // const staticRasterWithDateLayers = Object.values(
-  //   relevantLayerDefinitions,
-  // ).filter(
-  //   (layer): layer is StaticRasterLayerProps =>
-  //     (layer.type === 'static_raster' && Boolean(layer.dates)) ||
-  //     compositeLayersWithDateLayerTypeMap[layer.id] === 'static_raster',
-  // );
-
-  // const WCSWMSLayers = Object.values(relevantLayerDefinitions).filter(
-  //   (layer): layer is WMSLayerProps =>
-  //     layer.type === 'wms' ||
-  //     compositeLayersWithDateLayerTypeMap[layer.id] === 'wms',
-  // );
   // At this point, all network data should have been preloaded in
   // the redux state, so we just need to process it into the right
   // format now for the layer that's being activated
   const getPreloadedLayerDates = (lId: string): Record<string, number[]> => {
     const layer = LayerDefinitions[lId];
     const state = getState();
-    // eslint-disable-next-line no-console
-    console.log(layer.type);
-    switch (layer.type) {
-      case 'wms':
+
+    const getLayerType = (l: LayerType) => {
+      if (
+        (l.type === 'point_data' && Boolean(l.dateUrl)) ||
+        (l.type === 'composite' &&
+          LayerDefinitions[l.dateLayer].type === 'point_data')
+      ) {
+        return 'pointDataLayer';
+      }
+      if (
+        (l.type === 'admin_level_data' && Boolean(l.dates)) ||
+        (l.type === 'composite' &&
+          LayerDefinitions[l.dateLayer].type === 'admin_level_data')
+      ) {
+        return 'adminWithDataLayer';
+      }
+      if (
+        (l.type === 'static_raster' && Boolean(l.dates)) ||
+        (l.type === 'composite' &&
+          LayerDefinitions[l.dateLayer].type === 'static_raster')
+      ) {
+        return 'staticRasterLayer';
+      }
+      if (l.type === 'wms') {
+        return 'WMSLayer';
+      }
+      return 'invalidType';
+    };
+
+    switch (getLayerType(layer)) {
+      case 'WMSLayer':
         return {
           [layer.id]: state.serverPreloadState.layerDates[layer.id],
         };
-      case 'point_data':
+      case 'pointDataLayer':
         return {
           [layer.id]: state.serverPreloadState.layerDates[layer.id],
         };
-      case 'admin_level_data':
+      case 'adminWithDataLayer':
         return {
-          [layer.id]: getAdminLevelDataCoverage(layer),
+          [layer.id]: getAdminLevelDataCoverage(
+            layer as AdminLevelDataLayerProps,
+          ),
         };
-      case 'static_raster':
+      case 'staticRasterLayer':
         return {
-          [layer.id]: getStaticRasterDataCoverage(layer),
+          [layer.id]: getStaticRasterDataCoverage(
+            layer as StaticRasterLayerProps,
+          ),
         };
       default:
         console.error('invalid layer type');
@@ -842,13 +808,7 @@ export async function getAvailableDatesForLayer(
     layerDates[layerId] || [],
   );
 
-  performance.mark('getAvailableDatesForLayer-end', { detail: { layerId } });
-  const duration = performance.measure(
-    'getAvailableDatesForLayer',
-    'getAvailableDatesForLayer-start',
-    'getAvailableDatesForLayer-end',
-  );
-  console.warn('getAvailableDatesForLayer duration', layerId, duration);
+  console.error('getAvailableDatesForLayer', layerId);
 
   return layerDateItemsForLayer;
 }

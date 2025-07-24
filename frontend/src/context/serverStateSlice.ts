@@ -5,14 +5,16 @@ import type { CreateAsyncThunkTypes, RootState } from './store';
 
 type ServerState = {
   availableDates: AvailableDates;
-  loading: boolean;
+  // ids of layers that are being loaded to prevent firing multiple
+  // load actions
+  loadingLayerIds: string[]; // TODO: should this be LayerKey[] ?
   error?: string;
   userAuth?: UserAuth;
 };
 
 const initialState: ServerState = {
   availableDates: {},
-  loading: false,
+  loadingLayerIds: [],
 };
 
 export const loadAvailableDatesForLayer = createAsyncThunk<
@@ -49,9 +51,9 @@ export const serverStateSlice = createSlice({
   extraReducers: builder => {
     builder.addCase(
       loadAvailableDatesForLayer.fulfilled,
-      (state, { payload }: PayloadAction<AvailableDates>) => ({
+      (state, { meta, payload }) => ({
         ...state,
-        loading: false,
+        loadingLayerIds: state.loadingLayerIds.filter(id => id !== meta.arg),
         availableDates: {
           ...state.availableDates,
           ...payload,
@@ -61,15 +63,17 @@ export const serverStateSlice = createSlice({
 
     builder.addCase(loadAvailableDatesForLayer.rejected, (state, action) => ({
       ...state,
-      loading: false,
+      loadingLayerIds: state.loadingLayerIds.filter(
+        id => id !== action.meta.arg,
+      ),
       error: action.error.message
         ? action.error.message
         : action.error.toString(),
     }));
 
-    builder.addCase(loadAvailableDatesForLayer.pending, state => ({
+    builder.addCase(loadAvailableDatesForLayer.pending, (state, action) => ({
       ...state,
-      loading: true,
+      loadingLayerIds: state.loadingLayerIds.concat([action.meta.arg]),
     }));
   },
 });
@@ -79,8 +83,12 @@ export const availableDatesSelector = (
   state: RootState,
 ): ServerState['availableDates'] => state.serverState.availableDates;
 
-export const isLoading = (state: RootState): ServerState['loading'] =>
-  state.serverState.loading;
+export const isLoading = (state: RootState): boolean =>
+  state.serverState.loadingLayerIds.length > 0;
+
+export const layersLoading = (
+  state: RootState,
+): ServerState['loadingLayerIds'] => state.serverState.loadingLayerIds;
 
 export const datesErrorSelector = (state: RootState): string | undefined =>
   state.serverState.error;

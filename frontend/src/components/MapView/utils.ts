@@ -202,16 +202,27 @@ export const getLegendItemLabel = (
 export const generateUniqueTableKey = (activityName: string) =>
   `${activityName}_${Date.now()}`;
 
+/**
+ * Determine if available dates for the layer are ready for use.
+ * Return true/false if they are, or are loading.
+ * throw an error if it is not possible to load them at all.
+ */
 export const checkLayerAvailableDatesAndContinueOrRemove = (
   layer: LayerType,
   serverAvailableDates: AvailableDates,
+  layersLoadingDates: string[],
   removeLayerFromUrl: (layerKey: UrlLayerKey, layerId: string) => void,
   dispatch: AppDispatch,
-) => {
+): boolean => {
   const { id: layerId } = layer as any;
   // check if available dates have already been computed, if not try loading them
-  if (serverAvailableDates[layerId] === undefined) {
+  // make sure we don't trigger multiple requests here
+  if (
+    serverAvailableDates[layerId] === undefined &&
+    !layersLoadingDates.includes(layerId)
+  ) {
     dispatch(loadAvailableDatesForLayer(layerId));
+    return false;
   }
   // TODO: this test is invalid, because it passes if
   // serverAvailableDates[layerId] is undefined
@@ -220,7 +231,7 @@ export const checkLayerAvailableDatesAndContinueOrRemove = (
     serverAvailableDates[layerId]?.length !== 0 ||
     isAnticipatoryActionLayer(layer.type)
   ) {
-    return;
+    return true;
   }
   const urlLayerKey = getUrlKey(layer);
   removeLayerFromUrl(urlLayerKey, layer.id);

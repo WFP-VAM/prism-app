@@ -1,7 +1,6 @@
 import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
 import { UserAuth } from 'config/types';
 import {
-  // preloadLayerDatesForWCS,
   preloadLayerDatesForPointData,
   preloadLayerDatesForWMS,
 } from 'utils/server-utils';
@@ -18,14 +17,6 @@ const initialState: ServerPreloadState = {
   layerDates: {},
   loading: false,
 };
-
-// export const preloadLayerDatesArraysForWCS = createAsyncThunk<
-//   Record<string, number[]>,
-//   void,
-//   CreateAsyncThunkTypes
-// >('serverState/preloadLayerDatesForWCS', (_, { dispatch }) =>
-//   preloadLayerDatesForWCS(dispatch),
-// );
 
 export const preloadLayerDatesArraysForWMS = createAsyncThunk<
   Record<string, number[]>,
@@ -120,10 +111,5 @@ export const layerDatesRequested = (state: RootState): boolean =>
 
 export const datesErrorSelector = (state: RootState): string | undefined =>
   state.serverPreloadState.error;
-
-// export const userAuthSelector = (state: RootState): UserAuth | undefined =>
-//   state.serverState.userAuth;
-
-// export const {} = serverPreloadStateSlice.actions;
 
 export default serverPreloadStateSlice.reducer;
