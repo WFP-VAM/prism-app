@@ -87,6 +87,17 @@ module.exports = {
     '@typescript-eslint/no-shadow': 'warn',
     'react/prop-types': 'off',
     'default-param-last': 'warn',
+    // Configure jsx-a11y label-has-associated-control rule to allow inputs nested within labels
+    'jsx-a11y/label-has-associated-control': [
+      'error',
+      {
+        labelComponents: [],
+        labelAttributes: [],
+        controlComponents: [],
+        assert: 'either',
+        depth: 3,
+      },
+    ],
   },
   settings: {
     'import/resolver': {
