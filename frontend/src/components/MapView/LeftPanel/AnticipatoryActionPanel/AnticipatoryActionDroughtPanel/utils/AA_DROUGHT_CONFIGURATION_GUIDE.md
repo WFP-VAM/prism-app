@@ -108,34 +108,32 @@ If you don't specify a field, these defaults are used:
 
 The configuration system provides several utility functions:
 
-- `getCheckboxes(country)` - Get checkboxes from categories
-- `getTimelineOffset(country)` - Get timeline start month (seasonStartMonth - 1)
-- `getSeasonConfig(country)` - Get season configuration
-- `calculateSeason(date, country)` - Calculate season based on country config
-- `getForecastSource(country)` - Get forecast source for descriptions
-- `getRowCategories(country)` - Auto-generated category/phase combinations
-- `getLegendPhases(country, getAAIcon)` - Auto-generated legend items
+- `getTimelineOffset()` - Get timeline start month (seasonStartMonth - 1)
+- `calculateSeason(date)` - Calculate season based on country config
+- `getForecastSource()` - Get forecast source for descriptions
+- `getRowCategories()` - Auto-generated category/phase combinations
+- `getLegendPhases(getAAIcon)` - Auto-generated legend items
 
 ## Configuration Architecture
 
 The system uses a country-aware configuration approach where:
 
 ### Timeline offset
-- Calculated dynamically as `seasonStartMonth - 1` using `getTimelineOffset(country)`
+- Calculated dynamically as `seasonStartMonth - 1` using `getTimelineOffset()`
 - Previously hardcoded values are now country-specific
 
 ### Season calculation
-- Uses `calculateSeason(date, country)` from the configuration system
+- Uses `calculateSeason(date)` from the configuration system
 - Previously hardcoded `month >= 4` logic is now configurable per country
 
 ### Component season calculations
-- All AA components use `calculateSeason(date, country)`:
+- All AA components use `calculateSeason(date)`:
   - `Timeline/utils.ts`
   - `DistrictView/utils.ts` 
   - `Forecast/utils.ts`
 
 ### Forecast source references
-- Uses `getForecastSource(country)` for dynamic forecast source descriptions
+- Uses `getForecastSource()` for dynamic forecast source descriptions
 - Previously hardcoded "ECMWF" references are now configurable
 
 ## Benefits

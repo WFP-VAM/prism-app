@@ -236,8 +236,6 @@ interface CalculateMapRenderedDistrictsParams {
   windowRanges: AnticipatoryActionState['windowRanges'];
 }
 
-export const getSeason = (date?: string) => calculateSeason(date);
-
 export function calculateMapRenderedDistricts({
   filters,
   data,

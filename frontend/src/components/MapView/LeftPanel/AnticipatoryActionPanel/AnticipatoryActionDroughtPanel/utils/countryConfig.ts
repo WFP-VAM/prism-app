@@ -320,7 +320,8 @@ export const calculateSeason = (date: string | undefined): string => {
   const month = currentDate.getMonth();
   const config = getAADroughtCountryConfig();
 
-  if (month >= config.seasonStartMonth) {
+  // month is 0-indexed, so we add 1 to make it 1-indexed
+  if (month + 1 >= config.seasonStartMonth) {
     // After season start month
     return `${year}-${(year + 1).toString().slice(-2)}`;
   }
