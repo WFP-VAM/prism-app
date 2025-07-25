@@ -315,6 +315,7 @@ export const getForecastSource = (): string => {
 
 // Helper function to calculate season based on country config
 export const calculateSeason = (date: string | undefined): string => {
+  // avoid timezone issues by adding 12:00:00.000Z
   const currentDate = date ? new Date(`${date}T12:00:00.000Z`) : new Date();
   const year = currentDate.getFullYear();
   const month = currentDate.getMonth();
