@@ -3,6 +3,7 @@ import {
   AADataSeverityOrder,
   getAAIcon,
 } from 'components/MapView/LeftPanel/AnticipatoryActionPanel/AnticipatoryActionDroughtPanel/utils';
+import { calculateSeason } from 'components/MapView/LeftPanel/AnticipatoryActionPanel/AnticipatoryActionDroughtPanel/utils/countryConfig';
 import { DatesPropagation, Validity } from 'config/types';
 import { generateIntermediateDateItemFromValidity } from 'utils/server-utils';
 import { getFormattedDate } from 'utils/date-utils';
@@ -149,6 +150,13 @@ export function parseAndTransformAA(data: any[]) {
         windowDates.forEach(date => {
           const dateData = sorted.filter(x => x.date === date);
 
+          // Filter out 'Ready' if 'Set' exists for this date
+          let filteredDateData = dateData;
+          if (dateData.some(x => x.phase === 'Set' && x.isValid)) {
+            // eslint-disable-next-line fp/no-mutation
+            filteredDateData = dateData.filter(x => x.phase !== 'Ready');
+          }
+
           // Propagate SET elements from previous dates
           const propagatedSetElements = setElementsToPropagate.map(x => ({
             ...x,
@@ -158,7 +166,7 @@ export function parseAndTransformAA(data: any[]) {
           }));
 
           // If a district reaches a set state, it will propagate until the end of the window
-          dateData.forEach(x => {
+          filteredDateData.forEach(x => {
             // reset prevMax when entering a new season
             if (prevMax && x.season !== prevMax.season) {
               // eslint-disable-next-line fp/no-mutation
@@ -185,7 +193,7 @@ export function parseAndTransformAA(data: any[]) {
           });
 
           // eslint-disable-next-line no-const-assign, fp/no-mutation
-          newRows = [...newRows, ...dateData, ...propagatedSetElements];
+          newRows = [...newRows, ...filteredDateData, ...propagatedSetElements];
         });
         return [district, newRows];
       });
@@ -228,27 +236,15 @@ interface CalculateMapRenderedDistrictsParams {
   windowRanges: AnticipatoryActionState['windowRanges'];
 }
 
-export const getSeason = (date?: string) => {
-  // Use today's date if date is undefined
-  const currentDate = date ? new Date(date) : new Date();
-  const year = currentDate.getFullYear();
-  const month = currentDate.getMonth();
-
-  if (month >= 4) {
-    // May (4) to December (11)
-    return `${year}-${(year + 1).toString().slice(-2)}`;
-  }
-  // January (0) to April (3)
-  return `${year - 1}-${year.toString().slice(-2)}`;
-};
-
 export function calculateMapRenderedDistricts({
   filters,
   data,
   windowRanges,
 }: CalculateMapRenderedDistrictsParams) {
   const { selectedDate, categories } = filters;
-  const season = getSeason(selectedDate);
+  const season = calculateSeason(selectedDate);
+  // eslint-disable-next-line no-console
+  console.log({ season, selectedDate });
 
   const res = Object.entries(data)
     .map(([winKey, districts]) => {
