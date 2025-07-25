@@ -4,7 +4,7 @@
   "countryAdmin0Id": 226,
   "header": {
     "title": "PRISM Somalia",
-    "logo": "images/somalia-header3.png"
+    "logo": "images/somalia-header.png"
   },
   "aboutPath": "data/somalia/about.md",
   "alertFormActive": false,
@@ -19,14 +19,9 @@
     "vulnerability": "icon_vulnerable.png",
     "exposure": "icon_basemap.png"
   },
-  "defaultDisplayBoundaries": [
-    "admin2_boundaries",
-    "admin1_boundaries"
-  ],
+  "defaultDisplayBoundaries": ["admin2_boundaries", "admin1_boundaries"],
   "serversUrls": {
-    "wms": [
-      "https://api.earthobservation.vam.wfp.org/ows/wms"
-    ]
+    "wms": ["https://api.earthobservation.vam.wfp.org/ows/wms"]
   },
   "map": {
     "boundingBox": [40.98, -1.683, 51.13, 12.02]
@@ -137,10 +132,7 @@
           ]
         }
       ],
-      "dry_periods": [
-        "days_dry",
-        "streak_dry_days"
-      ],
+      "dry_periods": ["days_dry", "streak_dry_days"],
       "extreme_rain_events": [
         {
           "group_title": "Rainfall categories:",
@@ -187,10 +179,7 @@
       ]
     },
     "vegetation": {
-      "vegetation_conditions": [
-        "ndvi_dekad",
-        "ndvi_dekad_anomaly"
-      ]
+      "vegetation_conditions": ["ndvi_dekad", "ndvi_dekad_anomaly"]
     },
     "temperature": {
       "land_surface_temperature": [
@@ -200,20 +189,11 @@
       ]
     },
     "vulnerability": {
-      "food insecurity": [
-        "ipc_phase",
-        "ipc_perc_3+"
-      ],
-      "poverty": [
-        "poverty",
-        "extreme_poverty"
-      ]
+      "food insecurity": ["ipc_phase", "ipc_perc_3+"],
+      "poverty": ["poverty", "extreme_poverty"]
     },
     "exposure": {
-      "demographics": [
-        "pop_pess_2014",
-        "pop_2024"
-      ]
+      "demographics": ["pop_pess_2014", "pop_2024"]
     }
   }
 }
