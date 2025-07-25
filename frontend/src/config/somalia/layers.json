@@ -422,7 +422,6 @@
     "legend_text": "This dataset contains population estimates generated through the 2014 Population Estimation Survey (PESS), conducted by the Somalia National Bureau of Statistics (SNBS) with support from the United Nations and international partners. Siyrce: PESS 2014"
   },
   "pop_2024": {
-    "disableDownload": true,
     "title": "Population (UN 2024)",
     "type": "admin_level_data",
     "boundary": "admin2_boundaries",
