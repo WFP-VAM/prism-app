@@ -26,11 +26,11 @@ services:
     build:
       context: ..
       dockerfile: ./frontend/Dockerfile
-    entrypoint: yarn start
+    entrypoint: yarn start --port 3300
     environment:
       - REACT_APP_COUNTRY=cambodia
     ports:
-      - "3000:3000"
+      - "3300:3300"
     volumes:
       - ../common:/common
       - ../frontend:/frontend

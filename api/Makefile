@@ -25,8 +25,8 @@ test-services:
 	docker compose -f docker-compose.yml -f docker-compose.test.yml up -d
 
 api-test: test-services
-	docker compose -f docker-compose.yml -f docker-compose.test.yml run api bash -c "../wait-for-it.sh frontend:3000 -t 180"
 	docker compose -f docker-compose.yml -f docker-compose.test.yml run api bash -c "pytest -s tests"
+	docker compose -f docker-compose.yml -f docker-compose.test.yml run api bash -c "../wait-for-it.sh frontend:3300 -t 180"
 	docker compose -f docker-compose.yml -f docker-compose.test.yml down
 
 api-add-users:

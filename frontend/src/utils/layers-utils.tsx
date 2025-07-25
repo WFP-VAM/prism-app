@@ -29,7 +29,10 @@ import {
   layersSelector,
 } from 'context/mapStateSlice/selectors';
 import { addNotification } from 'context/notificationStateSlice';
-import { availableDatesSelector } from 'context/serverStateSlice';
+import {
+  availableDatesSelector,
+  layersLoading,
+} from 'context/serverStateSlice';
 import { countBy, get, pickBy, uniqBy } from 'lodash';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -73,6 +76,7 @@ const useLayers = () => {
 
   const unsortedSelectedLayers = useSelector(layersSelector);
   const serverAvailableDates = useSelector(availableDatesSelector);
+  const layersLoadingDates = useSelector(layersLoading);
   const { startDate: selectedDate } = useSelector(dateRangeSelector);
 
   // get AA config
@@ -330,20 +334,30 @@ const useLayers = () => {
   const addMissingLayers = useCallback((): void => {
     missingLayers.forEach(layerId => {
       const layer = LayerDefinitions[layerId as LayerKey];
+      let datesReady: boolean = false;
       try {
-        checkLayerAvailableDatesAndContinueOrRemove(
+        // eslint-disable-next-line fp/no-mutation
+        datesReady = checkLayerAvailableDatesAndContinueOrRemove(
           layer,
           serverAvailableDates,
+          layersLoadingDates,
           removeLayerFromUrl,
           dispatch,
         );
       } catch (error) {
         console.error((error as LocalError).getErrorMessage());
-        return;
       }
-      dispatch(addLayer(layer));
+      if (datesReady) {
+        dispatch(addLayer(layer));
+      }
     });
-  }, [dispatch, missingLayers, removeLayerFromUrl, serverAvailableDates]);
+  }, [
+    dispatch,
+    layersLoadingDates,
+    missingLayers,
+    removeLayerFromUrl,
+    serverAvailableDates,
+  ]);
 
   // let users know if their current date doesn't exist in possible dates
   const urlDate = useMemo(() => urlParams.get('date'), [urlParams]);
