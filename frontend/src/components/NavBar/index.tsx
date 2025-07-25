@@ -246,12 +246,12 @@ function NavBar() {
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     logo: {
-      height: 48,
+      height: 32,
       marginRight: 15,
     },
     appBar: {
       backgroundImage: `linear-gradient(180deg, ${theme.palette.primary.main} 0%, ${theme.palette.primary.dark} 100%)`,
-      height: '8vh',
+      height: '6vh',
       display: 'flex',
       justifyContent: 'center',
     },
