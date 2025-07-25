@@ -916,6 +916,7 @@ export async function fetchWMSLayerAsGeoJSON(options: {
 }
 
 export function getAAAvailableDatesCombined(AAAvailableDates: AvailableDates) {
+  // eslint-disable-next-line fp/no-mutation
   return Object.values(AAAvailableDates)
     .filter(Boolean) // Filter out undefined or null values
     .flat()
