@@ -7,17 +7,23 @@ import {
 import type { CreateAsyncThunkTypes, RootState } from './store';
 
 type ServerPreloadState = {
-  layerDates: Record<string, number[]>;
+  WMSLayerDates: Record<string, number[]>;
+  pointDataLayerDates: Record<string, number[]>;
   loadingWMS: boolean;
   loadingPointData: boolean;
+  loadedWMS: boolean;
+  loadedPointData: boolean;
   error?: string;
   userAuth?: UserAuth;
 };
 
 const initialState: ServerPreloadState = {
-  layerDates: {},
+  WMSLayerDates: {},
+  pointDataLayerDates: {},
   loadingWMS: false,
   loadingPointData: false,
+  loadedWMS: false,
+  loadedPointData: false,
 };
 
 export const preloadLayerDatesArraysForWMS = createAsyncThunk<
@@ -46,8 +52,9 @@ export const serverPreloadStateSlice = createSlice({
       (state, { payload }: PayloadAction<Record<string, number[]>>) => ({
         ...state,
         loadingWMS: false,
-        layerDates: {
-          ...state.layerDates,
+        loadedWMS: true,
+        WMSLayerDates: {
+          ...state.WMSLayerDates,
           ...payload,
         },
       }),
@@ -58,6 +65,7 @@ export const serverPreloadStateSlice = createSlice({
       (state, action) => ({
         ...state,
         loadingWMS: false,
+        loadedWMS: true,
         error: action.error.message
           ? action.error.message
           : action.error.toString(),
@@ -74,8 +82,9 @@ export const serverPreloadStateSlice = createSlice({
       (state, { payload }: PayloadAction<Record<string, number[]>>) => ({
         ...state,
         loadingPointData: false,
-        layerDates: {
-          ...state.layerDates,
+        loadedPointData: true,
+        pointDataLayerDates: {
+          ...state.pointDataLayerDates,
           ...payload,
         },
       }),
@@ -86,6 +95,7 @@ export const serverPreloadStateSlice = createSlice({
       (state, action) => ({
         ...state,
         loadingPointData: false,
+        loadedPointData: true,
         error: action.error.message
           ? action.error.message
           : action.error.toString(),
@@ -99,17 +109,12 @@ export const serverPreloadStateSlice = createSlice({
   },
 });
 
-export const preloadedLayerDatesSelector = (
-  state: RootState,
-): ServerPreloadState['layerDates'] => state.serverPreloadState.layerDates;
+export const WMSLayerDatesRequested = (state: RootState): boolean =>
+  state.serverPreloadState.loadingWMS || state.serverPreloadState.loadedWMS;
 
-function isEmpty(object: any) {
-  return Object.keys(object).length === 0;
-}
-
-export const layerDatesRequested = (state: RootState): boolean =>
-  state.serverPreloadState.loading ||
-  !isEmpty(state.serverPreloadState.layerDates);
+export const pointDataLayerDatesRequested = (state: RootState): boolean =>
+  state.serverPreloadState.loadingPointData ||
+  state.serverPreloadState.loadedPointData;
 
 export const datesErrorSelector = (state: RootState): string | undefined =>
   state.serverPreloadState.error;

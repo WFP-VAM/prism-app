@@ -10,7 +10,8 @@ import { getDisplayBoundaryLayers } from 'config/utils';
 import { addLayer } from 'context/mapStateSlice';
 import { isLoading as areDatesLoading } from 'context/serverStateSlice';
 import {
-  layerDatesRequested,
+  WMSLayerDatesRequested,
+  pointDataLayerDatesRequested,
   preloadLayerDatesArraysForPointData,
   preloadLayerDatesArraysForWMS,
 } from 'context/serverPreloadStateSlice';
@@ -29,24 +30,26 @@ const displayedBoundaryLayers = getDisplayBoundaryLayers().reverse();
 const MapView = memo(() => {
   const classes = useStyles();
 
-  // TODO: do we need this if we're preloading in the background?
   const datesLoading = useSelector(areDatesLoading);
 
-  const datesPreloading = useSelector(layerDatesRequested);
+  const datesPreloadingForWMS = useSelector(WMSLayerDatesRequested);
+  const datesPreloadingForPointData = useSelector(pointDataLayerDatesRequested);
 
   const dispatch = useDispatch();
 
   useEffect(() => {
-    if (!datesPreloading) {
-      dispatch(preloadLayerDatesArraysForWMS());
+    if (!datesPreloadingForPointData) {
       dispatch(preloadLayerDatesArraysForPointData());
+    }
+    if (!datesPreloadingForWMS) {
+      dispatch(preloadLayerDatesArraysForWMS());
     }
     // we must load boundary layer here for two reasons
     // 1. Stop showing two loading screens on startup - maplibre renders its children very late, so we can't rely on BoundaryLayer to load internally
     // 2. Prevent situations where a user can toggle a layer like NSO (depends on Boundaries) before Boundaries finish loading.
     displayedBoundaryLayers.forEach(l => dispatch(addLayer(l)));
     displayedBoundaryLayers.forEach(l => dispatch(loadLayerData({ layer: l })));
-  }, [dispatch, datesPreloading]);
+  }, [dispatch, datesPreloadingForWMS, datesPreloadingForPointData]);
 
   return (
     <Box className={classes.root}>

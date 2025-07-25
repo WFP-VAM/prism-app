@@ -698,11 +698,11 @@ export async function getAvailableDatesForLayer(
     switch (getLayerType(layer)) {
       case 'WMSLayer':
         return {
-          [layer.id]: state.serverPreloadState.layerDates[layer.id],
+          [layer.id]: state.serverPreloadState.WMSLayerDates[layer.id],
         };
       case 'pointDataLayer':
         return {
-          [layer.id]: state.serverPreloadState.layerDates[layer.id],
+          [layer.id]: state.serverPreloadState.pointDataLayerDates[layer.id],
         };
       case 'adminWithDataLayer':
         return {
