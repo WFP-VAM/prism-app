@@ -552,6 +552,19 @@ const mapServerDatesToLayerIds = (
     return acc;
   }, {});
 
+const compositeLayers = Object.values(LayerDefinitions).filter(
+  (layer): layer is CompositeLayerProps => layer.type === 'composite',
+);
+
+const compositeLayersWithDateLayerTypeMap: {
+  [key: string]: string;
+} = compositeLayers.reduce(
+  (acc, layer) => ({
+    ...acc,
+    [layer.id]: LayerDefinitions[layer.dateLayer].type,
+  }),
+  {},
+);
 /**
  * Preload some layer dates from various servers in the background
  * This is run once at app init time, and will store various arrays
@@ -562,23 +575,8 @@ const mapServerDatesToLayerIds = (
 export async function preloadLayerDatesForWMS(
   dispatch: AppDispatch,
 ): Promise<Record<string, number[]>> {
-  console.warn('prefetching layerDates WMS');
   const wmsServerUrls: string[] = get(appConfig, 'serversUrls.wms', []);
   const wcsServerUrls: string[] = get(appConfig, 'serversUrls.wcs', []);
-
-  const compositeLayers = Object.values(LayerDefinitions).filter(
-    (layer): layer is CompositeLayerProps => layer.type === 'composite',
-  );
-
-  const compositeLayersWithDateLayerTypeMap: {
-    [key: string]: string;
-  } = compositeLayers.reduce(
-    (acc, layer) => ({
-      ...acc,
-      [layer.id]: LayerDefinitions[layer.dateLayer].type,
-    }),
-    {},
-  );
 
   const WCSWMSLayers = Object.values(LayerDefinitions).filter(
     (layer): layer is WMSLayerProps =>
@@ -601,21 +599,6 @@ export async function preloadLayerDatesForWMS(
 export async function preloadLayerDatesForPointData(
   dispatch: AppDispatch,
 ): Promise<Record<string, number[]>> {
-  console.warn('prefetching layerDates for Point Data');
-
-  const compositeLayers = Object.values(LayerDefinitions).filter(
-    (layer): layer is CompositeLayerProps => layer.type === 'composite',
-  );
-
-  const compositeLayersWithDateLayerTypeMap: {
-    [key: string]: string;
-  } = compositeLayers.reduce(
-    (acc, layer) => ({
-      ...acc,
-      [layer.id]: LayerDefinitions[layer.dateLayer].type,
-    }),
-    {},
-  );
   const pointDataLayers = Object.values(LayerDefinitions).filter(
     (layer): layer is PointDataLayerProps =>
       (layer.type === 'point_data' && Boolean(layer.dateUrl)) ||
@@ -717,7 +700,9 @@ export async function getAvailableDatesForLayer(
           ),
         };
       default:
-        console.error('invalid layer type');
+        console.warn(
+          `Layer ${lId} has unhandled layer type ${getLayerType(layer)}`,
+        );
         return { [lId]: [] };
     }
   };
