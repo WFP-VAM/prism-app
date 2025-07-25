@@ -44,7 +44,6 @@ jobs:
         run: |
           cd frontend
           yarn install --frozen-lockfile --network-timeout 100000
-          yarn setup:common
       - name: setup 'common' package
         run: cd frontend && yarn run setup:common
       - name: Lint
