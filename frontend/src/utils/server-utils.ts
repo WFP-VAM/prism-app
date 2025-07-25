@@ -595,7 +595,7 @@ export async function preloadLayerDatesForWMS(
   });
 
   const r = await Promise.all([...allWMSDates, ...allWCSDates]);
-  return r.reduce((acc, item) => ({ ...acc, ...item }));
+  return r.reduce((acc, item) => ({ ...acc, ...item }), {});
 }
 
 export async function preloadLayerDatesForPointData(
@@ -626,7 +626,7 @@ export async function preloadLayerDatesForPointData(
       [layer.id]: await getPointDataCoverage(layer, dispatch),
     })),
   ]);
-  return r.reduce((acc, item) => ({ ...acc, ...item }));
+  return r.reduce((acc, item) => ({ ...acc, ...item }), {});
 }
 
 /**

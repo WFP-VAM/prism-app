@@ -8,14 +8,16 @@ import type { CreateAsyncThunkTypes, RootState } from './store';
 
 type ServerPreloadState = {
   layerDates: Record<string, number[]>;
-  loading: boolean;
+  loadingWMS: boolean;
+  loadingPointData: boolean;
   error?: string;
   userAuth?: UserAuth;
 };
 
 const initialState: ServerPreloadState = {
   layerDates: {},
-  loading: false,
+  loadingWMS: false,
+  loadingPointData: false,
 };
 
 export const preloadLayerDatesArraysForWMS = createAsyncThunk<
@@ -43,7 +45,7 @@ export const serverPreloadStateSlice = createSlice({
       preloadLayerDatesArraysForWMS.fulfilled,
       (state, { payload }: PayloadAction<Record<string, number[]>>) => ({
         ...state,
-        loading: false,
+        loadingWMS: false,
         layerDates: {
           ...state.layerDates,
           ...payload,
@@ -55,7 +57,7 @@ export const serverPreloadStateSlice = createSlice({
       preloadLayerDatesArraysForWMS.rejected,
       (state, action) => ({
         ...state,
-        loading: false,
+        loadingWMS: false,
         error: action.error.message
           ? action.error.message
           : action.error.toString(),
@@ -64,14 +66,14 @@ export const serverPreloadStateSlice = createSlice({
 
     builder.addCase(preloadLayerDatesArraysForWMS.pending, state => ({
       ...state,
-      loading: true,
+      loadingWMS: true,
     }));
 
     builder.addCase(
       preloadLayerDatesArraysForPointData.fulfilled,
       (state, { payload }: PayloadAction<Record<string, number[]>>) => ({
         ...state,
-        loading: false,
+        loadingPointData: false,
         layerDates: {
           ...state.layerDates,
           ...payload,
@@ -83,7 +85,7 @@ export const serverPreloadStateSlice = createSlice({
       preloadLayerDatesArraysForPointData.rejected,
       (state, action) => ({
         ...state,
-        loading: false,
+        loadingPointData: false,
         error: action.error.message
           ? action.error.message
           : action.error.toString(),
@@ -92,7 +94,7 @@ export const serverPreloadStateSlice = createSlice({
 
     builder.addCase(preloadLayerDatesArraysForPointData.pending, state => ({
       ...state,
-      loading: true,
+      loadingPointData: true,
     }));
   },
 });
