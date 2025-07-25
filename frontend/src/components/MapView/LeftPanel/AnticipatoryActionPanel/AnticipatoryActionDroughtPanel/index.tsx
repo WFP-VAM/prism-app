@@ -42,20 +42,24 @@ import Forecast from './Forecast';
 import { useAnticipatoryAction } from '../useAnticipatoryAction';
 
 const isZimbabwe = safeCountry === 'zimbabwe';
+const isMalawi = safeCountry === 'malawi';
 
 const checkboxes: {
   label: string;
   id: Exclude<AACategoryType, 'na' | 'ny'>;
-}[] = isZimbabwe
-  ? [
-      { label: 'Moderate', id: 'Moderate' },
-      { label: 'Below Normal', id: 'Normal' },
-    ]
-  : [
-      { label: 'Severe', id: 'Severe' },
-      { label: 'Moderate', id: 'Moderate' },
-      { label: 'Mild', id: 'Mild' },
-    ];
+  // eslint-disable-next-line no-nested-ternary
+}[] = isMalawi
+  ? [{ label: 'Below Normal', id: 'Normal' }]
+  : isZimbabwe
+    ? [
+        { label: 'Moderate', id: 'Moderate' },
+        { label: 'Below Normal', id: 'Normal' },
+      ]
+    : [
+        { label: 'Severe', id: 'Severe' },
+        { label: 'Moderate', id: 'Moderate' },
+        { label: 'Mild', id: 'Mild' },
+      ];
 
 function AnticipatoryActionDroughtPanel() {
   const classes = useStyles();
@@ -195,7 +199,18 @@ function AnticipatoryActionDroughtPanel() {
                 label={t(allWindowsKey)}
               />
               {AAWindowKeys.map(x => (
-                <StyledRadioLabel key={x} value={x} label={x} />
+                <StyledRadioLabel
+                  key={x}
+                  value={x}
+                  label={
+                    // eslint-disable-next-line no-nested-ternary
+                    x === 'Window 1' && isMalawi
+                      ? 'NDJ'
+                      : x === 'Window 2' && isMalawi
+                        ? 'JFM'
+                        : x
+                  }
+                />
               ))}
             </RadioGroup>
           </FormControl>
