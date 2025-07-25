@@ -315,7 +315,7 @@ export const getForecastSource = (): string => {
 
 // Helper function to calculate season based on country config
 export const calculateSeason = (date: string | undefined): string => {
-  const currentDate = date ? new Date(date) : new Date();
+  const currentDate = date ? new Date(`${date}T12:00:00.000Z`) : new Date();
   const year = currentDate.getFullYear();
   const month = currentDate.getMonth();
   const config = getAADroughtCountryConfig();
