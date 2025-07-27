@@ -1,14 +1,18 @@
 import { Box, makeStyles, Typography } from '@material-ui/core';
 import { useSelector, useDispatch } from 'react-redux';
+import type { DashboardTextConfig } from 'config/types';
+import TextBlock from './TextBlock';
+
 import {
   dashboardTitleSelector,
   setTitle,
+  dashboardFlexElementsSelector,
 } from '../../context/dashboardStateSlice';
-import TextBlock from './TextBlock';
 
 function DashboardView() {
   const classes = useStyles();
   const dashboardTitle = useSelector(dashboardTitleSelector);
+  const dashboardFlexElements = useSelector(dashboardFlexElementsSelector);
   const dispatch = useDispatch();
 
   return (
@@ -38,7 +42,20 @@ function DashboardView() {
         </Box>
       </Box>
       <Box className={classes.trailingContentArea}>
-        <TextBlock />
+        {dashboardFlexElements?.map((element, index) => {
+          if (element.type === 'TEXT') {
+            const content = (element as DashboardTextConfig)?.content || '';
+            return (
+              <TextBlock
+                // eslint-disable-next-line react/no-array-index-key
+                key={`text-block-${index}`}
+                content={content}
+                index={index}
+              />
+            );
+          }
+          return <div>Content type not yet supported</div>;
+        })}
       </Box>
     </Box>
   );

@@ -1,20 +1,18 @@
 import { Box, makeStyles, Typography } from '@material-ui/core';
-import { useSelector, useDispatch } from 'react-redux';
-import {
-  dashboardTextContentSelector,
-  setTextContent,
-} from '../../context/dashboardStateSlice';
+import { useDispatch } from 'react-redux';
+import { setTextContent } from '../../context/dashboardStateSlice';
 
 interface TextBlockProps {
   label?: string;
-  placeholder?: string;
+  content: string;
+  index: number;
 }
 
 function TextBlock({
-  label = 'Block #1',
-  placeholder = 'Add custom text here',
+  index,
+  label = `Block #${index + 1}`,
+  content,
 }: TextBlockProps) {
-  const textContent = useSelector(dashboardTextContentSelector);
   const dispatch = useDispatch();
   const classes = useStyles();
 
@@ -26,9 +24,11 @@ function TextBlock({
       <textarea
         name="text-block"
         className={classes.textarea}
-        placeholder={placeholder}
-        value={textContent}
-        onChange={e => dispatch(setTextContent(e.target.value))}
+        placeholder="Add custom text here"
+        value={content}
+        onChange={e =>
+          dispatch(setTextContent({ index, content: e.target.value }))
+        }
       />
     </Box>
   );
