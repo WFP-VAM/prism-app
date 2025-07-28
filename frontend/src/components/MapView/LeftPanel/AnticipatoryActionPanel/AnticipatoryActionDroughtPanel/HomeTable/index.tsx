@@ -26,6 +26,7 @@ import { GetApp, BarChartOutlined } from '@material-ui/icons';
 import { appConfig, safeCountry } from 'config';
 import { PanelSize } from 'config/types';
 import { getCurrentDateTimeForUrl } from 'utils/date-utils';
+import { getAADroughtUrl } from 'utils/url-utils';
 import { AADataSeverityOrder, getAAIcon } from '../utils';
 import { useAACommonStyles } from '../../utils';
 
@@ -166,29 +167,38 @@ const useRowStyles = makeStyles(() =>
 );
 
 const isZimbabwe = safeCountry === 'zimbabwe';
+const isMalawi = safeCountry === 'malawi';
 
 const rowCategories: {
   category: AACategoryType;
   phase: AAPhaseType;
-}[] = isZimbabwe
+  // eslint-disable-next-line no-nested-ternary
+}[] = isMalawi
   ? [
-      { category: 'Moderate', phase: 'Set' },
-      { category: 'Moderate', phase: 'Ready' },
       { category: 'Normal', phase: 'Set' },
       { category: 'Normal', phase: 'Ready' },
       { category: 'na', phase: 'na' },
       { category: 'ny', phase: 'ny' },
     ]
-  : [
-      { category: 'Severe', phase: 'Set' },
-      { category: 'Severe', phase: 'Ready' },
-      { category: 'Moderate', phase: 'Set' },
-      { category: 'Moderate', phase: 'Ready' },
-      { category: 'Mild', phase: 'Set' },
-      { category: 'Mild', phase: 'Ready' },
-      { category: 'na', phase: 'na' },
-      { category: 'ny', phase: 'ny' },
-    ];
+  : isZimbabwe
+    ? [
+        { category: 'Moderate', phase: 'Set' },
+        { category: 'Moderate', phase: 'Ready' },
+        { category: 'Normal', phase: 'Set' },
+        { category: 'Normal', phase: 'Ready' },
+        { category: 'na', phase: 'na' },
+        { category: 'ny', phase: 'ny' },
+      ]
+    : [
+        { category: 'Severe', phase: 'Set' },
+        { category: 'Severe', phase: 'Ready' },
+        { category: 'Moderate', phase: 'Set' },
+        { category: 'Moderate', phase: 'Ready' },
+        { category: 'Mild', phase: 'Set' },
+        { category: 'Mild', phase: 'Ready' },
+        { category: 'na', phase: 'na' },
+        { category: 'ny', phase: 'ny' },
+      ];
 
 type ExtendedRowProps = RowProps & { id: number | 'na' | 'ny' };
 
@@ -209,14 +219,14 @@ function HomeTable({ dialogs }: HomeTableProps) {
   const monitoredDistrict = useSelector(AAMonitoredDistrictsSelector);
   const { 'Window 2': window2Range } = useSelector(AAWindowRangesSelector);
 
-  const filename = appConfig.anticipatoryActionDroughtUrl?.split('/').at(-1);
+  const filename = getAADroughtUrl(appConfig)?.split('/').at(-1);
 
   const homeButtons = [
     {
       startIcon: <GetApp />,
       text: 'Assets',
       component: 'a',
-      href: `${appConfig.anticipatoryActionDroughtUrl}?date=${getCurrentDateTimeForUrl()}`,
+      href: `${getAADroughtUrl(appConfig)}?date=${getCurrentDateTimeForUrl()}`,
       download: `${window2Range?.end}-${filename}`,
     },
     {
@@ -229,11 +239,26 @@ function HomeTable({ dialogs }: HomeTableProps) {
     },
   ];
 
+  const getDisplayLabel = (windowKey: string) => {
+    if (isMalawi) {
+      // eslint-disable-next-line no-nested-ternary
+      return windowKey === 'Window 1'
+        ? 'NDJ'
+        : windowKey === 'Window 2'
+          ? 'JFM'
+          : windowKey;
+    }
+    return windowKey;
+  };
+
   const headerRow: ExtendedRowProps = {
     id: -1,
     iconContent: null,
     windows: selectedWindow === 'All' ? AAWindowKeys.map(_x => []) : [[]],
-    header: selectedWindow === 'All' ? [...AAWindowKeys] : [selectedWindow],
+    header:
+      selectedWindow === 'All'
+        ? AAWindowKeys.map(getDisplayLabel)
+        : [getDisplayLabel(selectedWindow)],
   };
 
   const districtRows: ExtendedRowProps[] = React.useMemo(
