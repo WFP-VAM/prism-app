@@ -977,7 +977,7 @@
     "legend_text": "",
     "legend": []
   },
-    "adamts_buffers": {
+  "adamts_buffers": {
     "title": "Tropical Storms - Wind buffers",
     "type": "wms",
     "server_layer_name": "moz_gdacs_buffers",
