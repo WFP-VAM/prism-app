@@ -108,69 +108,6 @@ const AADROUGHT_COUNTRY_CONFIGS: Record<string, AADroughtCountryConfig> = {
       'uses seasonal forecasts from ECMWF with longer lead time for preparedness (Ready phase) and shorter lead times for activation and mobilization (Set & Go! phases).',
     forecastSource: 'ECMWF',
   },
-  zimbabwe: {
-    checkboxes: [
-      { label: 'Moderate', id: 'Moderate' },
-      { label: 'Below Normal', id: 'Normal' },
-    ],
-    seasonStartMonth: 4,
-    howToReadContent: [
-      { title: 'Window 1', text: 'Start to mid of the rainfall season.' },
-      { title: 'Window 2', text: 'Mid to end of the rainfall season.' },
-      {
-        title: 'Below normal category',
-        text: 'Drought events that typically occur once every 3 years.',
-      },
-      {
-        title: 'Moderate category',
-        text: 'Drought events that typically occur once every 5 years.',
-      },
-      {
-        title: 'Ready, Set and Go phases',
-        text: 'The "Ready, Set & Go!" system uses seasonal forecasts with longer lead time for preparedness (Ready phase) and shorter lead times for activation and mobilization (Set & Go! phases).',
-      },
-    ],
-    rowCategories: [
-      { category: 'Moderate', phase: 'Set' },
-      { category: 'Moderate', phase: 'Ready' },
-      { category: 'Normal', phase: 'Set' },
-      { category: 'Normal', phase: 'Ready' },
-      { category: 'na', phase: 'na' },
-      { category: 'ny', phase: 'ny' },
-    ],
-    legendPhases: [
-      {
-        icon: null, // Will be set dynamically
-        phase: 'Set',
-        severity: 'Moderate',
-      },
-      {
-        icon: null, // Will be set dynamically
-        phase: 'Ready',
-        severity: 'Moderate',
-      },
-      {
-        icon: null, // Will be set dynamically
-        phase: 'Set',
-        severity: 'Below Normal',
-      },
-      {
-        icon: null, // Will be set dynamically
-        phase: 'Ready',
-        severity: 'Below Normal',
-      },
-      {
-        icon: null, // Will be set dynamically
-        phase: 'No Action',
-      },
-      {
-        icon: null, // Will be set dynamically
-        phase: 'Not Yet Monitored',
-      },
-    ],
-    descriptionText:
-      'uses seasonal forecasts with longer lead time for preparedness (Ready phase) and shorter lead times for activation and mobilization (Set & Go! phases).',
-  },
   mozambique: {
     checkboxes: [
       { label: 'Severe', id: 'Severe' },
@@ -238,6 +175,112 @@ const AADROUGHT_COUNTRY_CONFIGS: Record<string, AADroughtCountryConfig> = {
         icon: null, // Will be set dynamically
         phase: 'Ready',
         severity: 'Mild',
+      },
+      {
+        icon: null, // Will be set dynamically
+        phase: 'No Action',
+      },
+      {
+        icon: null, // Will be set dynamically
+        phase: 'Not Yet Monitored',
+      },
+    ],
+    descriptionText:
+      'uses seasonal forecasts with longer lead time for preparedness (Ready phase) and shorter lead times for activation and mobilization (Set & Go! phases).',
+  },
+  zambia: {
+    checkboxes: [{ label: 'Below Normal', id: 'Normal' }],
+    seasonStartMonth: 7,
+    howToReadContent: [
+      { title: 'Window 1', text: 'November to January' },
+      {
+        title: 'Below normal category',
+        text: 'Drought events that typically occur once every 3 years.',
+      },
+      {
+        title: 'Ready, Set and Go phases',
+        text: 'The "Ready, Set & Go!" system uses seasonal forecasts from ECMWF with longer lead time for preparedness (Ready phase) and shorter lead times for activation and mobilization (Set & Go! phases).',
+      },
+    ],
+    rowCategories: [
+      { category: 'Normal', phase: 'Set' },
+      { category: 'Normal', phase: 'Ready' },
+      { category: 'na', phase: 'na' },
+      { category: 'ny', phase: 'ny' },
+    ],
+    legendPhases: [
+      {
+        icon: null, // Will be set dynamically
+        phase: 'Set',
+        severity: 'Below Normal',
+      },
+      {
+        icon: null, // Will be set dynamically
+        phase: 'Ready',
+        severity: 'Below Normal',
+      },
+      {
+        icon: null, // Will be set dynamically
+        phase: 'No Action',
+      },
+      {
+        icon: null, // Will be set dynamically
+        phase: 'Not Yet Monitored',
+      },
+    ],
+    descriptionText:
+      'uses seasonal forecasts with longer lead time for preparedness (Ready phase) and shorter lead times for activation and mobilization (Set & Go! phases).',
+  },
+  zimbabwe: {
+    checkboxes: [
+      { label: 'Moderate', id: 'Moderate' },
+      { label: 'Below Normal', id: 'Normal' },
+    ],
+    seasonStartMonth: 4,
+    howToReadContent: [
+      { title: 'Window 1', text: 'Start to mid of the rainfall season.' },
+      { title: 'Window 2', text: 'Mid to end of the rainfall season.' },
+      {
+        title: 'Below normal category',
+        text: 'Drought events that typically occur once every 3 years.',
+      },
+      {
+        title: 'Moderate category',
+        text: 'Drought events that typically occur once every 5 years.',
+      },
+      {
+        title: 'Ready, Set and Go phases',
+        text: 'The "Ready, Set & Go!" system uses seasonal forecasts with longer lead time for preparedness (Ready phase) and shorter lead times for activation and mobilization (Set & Go! phases).',
+      },
+    ],
+    rowCategories: [
+      { category: 'Moderate', phase: 'Set' },
+      { category: 'Moderate', phase: 'Ready' },
+      { category: 'Normal', phase: 'Set' },
+      { category: 'Normal', phase: 'Ready' },
+      { category: 'na', phase: 'na' },
+      { category: 'ny', phase: 'ny' },
+    ],
+    legendPhases: [
+      {
+        icon: null, // Will be set dynamically
+        phase: 'Set',
+        severity: 'Moderate',
+      },
+      {
+        icon: null, // Will be set dynamically
+        phase: 'Ready',
+        severity: 'Moderate',
+      },
+      {
+        icon: null, // Will be set dynamically
+        phase: 'Set',
+        severity: 'Below Normal',
+      },
+      {
+        icon: null, // Will be set dynamically
+        phase: 'Ready',
+        severity: 'Below Normal',
       },
       {
         icon: null, // Will be set dynamically
