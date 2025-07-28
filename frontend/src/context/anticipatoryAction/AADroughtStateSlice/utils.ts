@@ -284,7 +284,8 @@ export function calculateMapRenderedDistricts({
               .filter(
                 x => x.date <= date && x.season === season && x.phase === 'Set',
               )
-              .slice(-1);
+              .slice(-1)
+              .map(x => ({ ...x, computedRow: true }));
           }
 
           const validData = dateData.filter(
