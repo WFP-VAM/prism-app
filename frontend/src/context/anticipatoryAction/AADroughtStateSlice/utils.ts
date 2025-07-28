@@ -272,9 +272,21 @@ export function calculateMapRenderedDistricts({
               ? selectedDate
               : range.end;
 
-          const dateData = districtData.filter(
+          // For SET phases, look for data <= date to continue showing previous SET states
+          // For other phases, use exact date match
+          let dateData = districtData.filter(
             x => x.date === date && x.season === season,
           );
+
+          // If no exact match found, look for SET phases with date <= selected date and take the last one
+          if (dateData.length === 0) {
+            dateData = districtData
+              .filter(
+                x => x.date <= date && x.season === season && x.phase === 'Set',
+              )
+              .slice(-1);
+          }
+
           const validData = dateData.filter(
             x => (x.computedRow || x.isValid) && categories[x.category],
           );
