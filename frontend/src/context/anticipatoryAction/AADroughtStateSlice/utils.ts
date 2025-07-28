@@ -280,6 +280,7 @@ export function calculateMapRenderedDistricts({
 
           // If no exact match found, look for SET phases with date <= selected date and take the last one
           if (dateData.length === 0) {
+            // eslint-disable-next-line fp/no-mutation
             dateData = districtData
               .filter(
                 x => x.date <= date && x.season === season && x.phase === 'Set',
