@@ -33,6 +33,7 @@ import {
   availableDatesSelector,
   layersLoading,
 } from 'context/serverStateSlice';
+import { layerDatesPreloaded } from 'context/serverPreloadStateSlice';
 import { countBy, get, pickBy, uniqBy } from 'lodash';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -77,6 +78,7 @@ const useLayers = () => {
   const unsortedSelectedLayers = useSelector(layersSelector);
   const serverAvailableDates = useSelector(availableDatesSelector);
   const layersLoadingDates = useSelector(layersLoading);
+  const datesPreloaded = useSelector(layerDatesPreloaded);
   const { startDate: selectedDate } = useSelector(dateRangeSelector);
 
   // get AA config
@@ -331,33 +333,39 @@ const useLayers = () => {
   );
 
   // Adds missing layers to existing map instance
-  const addMissingLayers = useCallback((): void => {
-    missingLayers.forEach(layerId => {
-      const layer = LayerDefinitions[layerId as LayerKey];
-      let datesReady: boolean = false;
-      try {
-        // eslint-disable-next-line fp/no-mutation
-        datesReady = checkLayerAvailableDatesAndContinueOrRemove(
-          layer,
-          serverAvailableDates,
-          layersLoadingDates,
-          removeLayerFromUrl,
-          dispatch,
-        );
-      } catch (error) {
-        console.error((error as LocalError).getErrorMessage());
-      }
-      if (datesReady) {
-        dispatch(addLayer(layer));
-      }
-    });
-  }, [
-    dispatch,
-    layersLoadingDates,
-    missingLayers,
-    removeLayerFromUrl,
-    serverAvailableDates,
-  ]);
+  const addMissingLayers = useCallback(
+    (): void =>
+      missingLayers.forEach(layerId => {
+        const layer = LayerDefinitions[layerId as LayerKey];
+        if (['wms', 'point_data'].includes(layer.type) && !datesPreloaded) {
+          return;
+        }
+        let datesReady: boolean = false;
+        try {
+          // eslint-disable-next-line fp/no-mutation
+          datesReady = checkLayerAvailableDatesAndContinueOrRemove(
+            layer,
+            serverAvailableDates,
+            layersLoadingDates,
+            removeLayerFromUrl,
+            dispatch,
+          );
+        } catch (error) {
+          console.error((error as LocalError).getErrorMessage());
+        }
+        if (datesReady) {
+          dispatch(addLayer(layer));
+        }
+      }),
+    [
+      dispatch,
+      datesPreloaded,
+      layersLoadingDates,
+      missingLayers,
+      removeLayerFromUrl,
+      serverAvailableDates,
+    ],
+  );
 
   // let users know if their current date doesn't exist in possible dates
   const urlDate = useMemo(() => urlParams.get('date'), [urlParams]);
@@ -369,10 +377,7 @@ const useLayers = () => {
   );
 
   useEffect(() => {
-    if (
-      (!hazardLayerIds && !baselineLayerIds) ||
-      serverAvailableDatesAreEmpty
-    ) {
+    if (!hazardLayerIds && !baselineLayerIds) {
       return;
     }
 

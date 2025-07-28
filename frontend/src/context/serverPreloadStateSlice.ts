@@ -116,6 +116,10 @@ export const pointDataLayerDatesRequested = (state: RootState): boolean =>
   state.serverPreloadState.loadingPointData ||
   state.serverPreloadState.loadedPointData;
 
+export const layerDatesPreloaded = (state: RootState): boolean =>
+  state.serverPreloadState.loadedWMS &&
+  state.serverPreloadState.loadedPointData;
+
 export const datesErrorSelector = (state: RootState): string | undefined =>
   state.serverPreloadState.error;
 
