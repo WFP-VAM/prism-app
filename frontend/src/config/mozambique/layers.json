@@ -2406,9 +2406,6 @@
       "styles": "rps_blended"
     }
   },
-  "adamts_buffers": {
-    "server_layer_name": "moz_gdacs_buffers"
-  },
   "ipc_phase_2024": {
     "title": "IPC Phase Classification April to September 2024",
     "type": "admin_level_data",
