@@ -26,6 +26,7 @@ import { GetApp, BarChartOutlined } from '@material-ui/icons';
 import { appConfig, safeCountry } from 'config';
 import { PanelSize } from 'config/types';
 import { getCurrentDateTimeForUrl } from 'utils/date-utils';
+import { getAADroughtUrl } from 'utils/url-utils';
 import { AADataSeverityOrder, getAAIcon } from '../utils';
 import { useAACommonStyles } from '../../utils';
 
@@ -218,14 +219,14 @@ function HomeTable({ dialogs }: HomeTableProps) {
   const monitoredDistrict = useSelector(AAMonitoredDistrictsSelector);
   const { 'Window 2': window2Range } = useSelector(AAWindowRangesSelector);
 
-  const filename = appConfig.anticipatoryActionDroughtUrl?.split('/').at(-1);
+  const filename = getAADroughtUrl(appConfig)?.split('/').at(-1);
 
   const homeButtons = [
     {
       startIcon: <GetApp />,
       text: 'Assets',
       component: 'a',
-      href: `${appConfig.anticipatoryActionDroughtUrl}?date=${getCurrentDateTimeForUrl()}`,
+      href: `${getAADroughtUrl(appConfig)}?date=${getCurrentDateTimeForUrl()}`,
       download: `${window2Range?.end}-${filename}`,
     },
     {
