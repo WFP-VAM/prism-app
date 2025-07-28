@@ -3,7 +3,7 @@ import tempfile
 
 import pytest
 import rasterio
-from app.raster_utils import get_raster_crs, reproject_raster
+from prism_app.raster_utils import get_raster_crs, reproject_raster
 
 
 def test_reproject_raster():

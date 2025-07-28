@@ -4,12 +4,12 @@ import os
 
 import boto3
 import pystac
-from app.raster_utils import get_raster_crs, reproject_raster
-from app.timer import timed
 from cachetools import TTLCache, cached
 from fastapi import HTTPException
 from odc.geo.xr import write_cog
 from odc.stac import configure_rio, stac_load
+from prism_app.raster_utils import get_raster_crs, reproject_raster
+from prism_app.timer import timed
 from pystac_client import Client
 
 logger = logging.getLogger(__name__)

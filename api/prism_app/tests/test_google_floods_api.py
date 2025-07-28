@@ -1,9 +1,12 @@
 import logging
 
 import pytest
-from app.googleflood import get_google_floods_gauges, get_google_floods_inundations
-from app.main import app
 from fastapi.testclient import TestClient
+from prism_app.googleflood import (
+    get_google_floods_gauges,
+    get_google_floods_inundations,
+)
+from prism_app.main import app
 
 client = TestClient(app)
 

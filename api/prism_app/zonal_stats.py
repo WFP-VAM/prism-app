@@ -10,8 +10,9 @@ from urllib.parse import urlencode
 
 import numpy as np
 import rasterio  # type: ignore
-from app.caching import CACHE_DIRECTORY, cache_file, get_json_file, is_file_valid
-from app.models import (
+from fastapi import HTTPException
+from prism_app.caching import CACHE_DIRECTORY, cache_file, get_json_file, is_file_valid
+from prism_app.models import (
     FilePath,
     GeoJSON,
     GeoJSONFeature,
@@ -19,10 +20,9 @@ from app.models import (
     WfsParamsModel,
     WfsResponse,
 )
-from app.raster_utils import calculate_pixel_area, gdal_calc, reproj_match
-from app.timer import timed
-from app.validation import VALID_OPERATORS
-from fastapi import HTTPException
+from prism_app.raster_utils import calculate_pixel_area, gdal_calc, reproj_match
+from prism_app.timer import timed
+from prism_app.validation import VALID_OPERATORS
 from rasterio.warp import Resampling
 from rasterstats import zonal_stats  # type: ignore
 from shapely.errors import GEOSException  # type: ignore
@@ -297,9 +297,7 @@ def calculate_stats(
                 [x if x.isalnum() else "" for x in (slugified_calc)]
             )
 
-        masked_pop_geotiff: FilePath = (
-            f"{CACHE_DIRECTORY}raster_reproj_{geotiff_hash}_masked_by_{mask_hash}_{slugified_calc}.tif"
-        )
+        masked_pop_geotiff: FilePath = f"{CACHE_DIRECTORY}raster_reproj_{geotiff_hash}_masked_by_{mask_hash}_{slugified_calc}.tif"
 
         if not is_file_valid(masked_pop_geotiff):
             # tentatively remove the reprojection step now that we are consolidating our requests

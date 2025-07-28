@@ -4,10 +4,10 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 import rasterio
-from app.database.database import AlertsDataBase
-from app.main import app
-from app.scripts.add_users import add_users
 from fastapi.testclient import TestClient
+from prism_app.database.database import AlertsDataBase
+from prism_app.main import app
+from prism_app.scripts.add_users import add_users
 
 
 @pytest.fixture(scope="session", autouse=True)
@@ -155,7 +155,7 @@ def test_kobo_forms_endpoint(monkeypatch):
     assert response.status_code == 200
 
 
-@patch("app.main.get_geotiff")
+@patch("prism_app.main.get_geotiff")
 def test_raster_geotiff_endpoint(get_geotiff_mock):
     """
     Call /raster_geotiff with known-good parameters.
@@ -180,8 +180,8 @@ def test_raster_geotiff_endpoint(get_geotiff_mock):
 
 
 @patch("boto3.client")
-@patch("app.geotiff_from_stac_api.upload_to_s3")
-@patch("app.geotiff_from_stac_api.write_cog")
+@patch("prism_app.geotiff_from_stac_api.upload_to_s3")
+@patch("prism_app.geotiff_from_stac_api.write_cog")
 def test_raster_geotiff_endpoint_non_4326(
     mock_write_cog, mock_upload_to_s3, mock_boto3_client
 ):

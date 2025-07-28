@@ -1,9 +1,10 @@
 "Simple utility function to add sample users to the database. Specific to Cambodia."
+
 import secrets
 import string
 
-from app.database.database import AuthDataBase
-from app.database.user_info_model import UserInfoModel
+from prism_app.database.database import AuthDataBase
+from prism_app.database.user_info_model import UserInfoModel
 
 auth_db = AuthDataBase()
 

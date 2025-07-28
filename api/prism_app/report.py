@@ -3,8 +3,8 @@ import os
 from typing import Final, Optional
 from urllib.parse import parse_qs, urlparse
 
-from app.caching import CACHE_DIRECTORY
 from playwright.async_api import async_playwright, expect
+from prism_app.caching import CACHE_DIRECTORY
 
 # Html selectors
 LAYER_ACCORDION_SELECTOR: Final[str] = (
@@ -69,6 +69,7 @@ async def download_report(
         await expect(flood_extent_checkbox).to_be_visible(timeout=20_000)
 
         # the switch status is flaky (sometimes checked, sometimes not)
+        # FIXME: this fails because the layer is not activated even though it appears in the url
         await expect(flood_extent_checkbox).to_be_checked(timeout=20_000)
         await expect(
             page.get_by_role("button", name="Exposure Analysis")

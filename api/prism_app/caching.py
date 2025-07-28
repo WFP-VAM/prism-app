@@ -10,8 +10,8 @@ from typing import Any, Optional
 
 import rasterio  # type: ignore
 import requests
-from app.timer import timed
 from fastapi import HTTPException
+from prism_app.timer import timed
 
 from .models import FilePath, GeoJSON
 

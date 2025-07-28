@@ -7,8 +7,8 @@ import os
 from os import getenv
 from typing import List, Optional
 
-from app.database.alert_model import AlertModel
-from app.database.user_info_model import UserInfoModel
+from prism_app.database.alert_model import AlertModel
+from prism_app.database.user_info_model import UserInfoModel
 from sqlalchemy import create_engine
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import sessionmaker

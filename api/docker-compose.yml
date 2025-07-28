@@ -3,7 +3,7 @@ services:
     build: ./
     volumes:
       - "./cache:/cache:rw"
-      - ./app:/usr/local/lib/python3.9/site-packages/app:ro
+      - ./prism_app:/usr/local/lib/python3.9/site-packages/prism_app:ro
     environment:
       - WORKERS_PER_CORE=1
       # External services credentials
