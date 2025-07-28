@@ -297,7 +297,9 @@ def calculate_stats(
                 [x if x.isalnum() else "" for x in (slugified_calc)]
             )
 
-        masked_pop_geotiff: FilePath = f"{CACHE_DIRECTORY}raster_reproj_{geotiff_hash}_masked_by_{mask_hash}_{slugified_calc}.tif"
+        masked_pop_geotiff: FilePath = (
+            f"{CACHE_DIRECTORY}raster_reproj_{geotiff_hash}_masked_by_{mask_hash}_{slugified_calc}.tif"
+        )
 
         if not is_file_valid(masked_pop_geotiff):
             # tentatively remove the reprojection step now that we are consolidating our requests
