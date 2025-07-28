@@ -4,6 +4,7 @@ import { DateItem } from 'config/types';
 import { appConfig } from 'config';
 import { AAWindowKeys } from 'config/utils';
 import { getCurrentDateTimeForUrl } from 'utils/date-utils';
+import { getAADroughtUrl } from 'utils/url-utils';
 import type { CreateAsyncThunkTypes, RootState } from '../../store';
 import {
   AACategoryType,
@@ -58,7 +59,7 @@ export const loadAAData = createAsyncThunk<
   undefined,
   CreateAsyncThunkTypes
 >('anticipatoryActionDroughtState/loadAAData', async () => {
-  const url = `${appConfig.anticipatoryActionDroughtUrl}?date=${getCurrentDateTimeForUrl()}`;
+  const url = `${getAADroughtUrl(appConfig)}?date=${getCurrentDateTimeForUrl()}`;
 
   return new Promise<any>((resolve, reject) => {
     Papa.parse(url, {
