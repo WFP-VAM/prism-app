@@ -51,6 +51,8 @@ const SwitchItem = memo(
     const { t } = useSafeTranslation();
     const selectedLayers = useAppSelector(layersSelector);
     const serverAvailableDates = useAppSelector(availableDatesSelector);
+    // keep track of layers for which we are computing available dates
+    // to avoid triggering duplicate actions
     const layersLoadingDates = useAppSelector(layersLoading);
     const map = useAppSelector(mapSelector);
     const [isOpacitySelected, setIsOpacitySelected] = useState(false);
