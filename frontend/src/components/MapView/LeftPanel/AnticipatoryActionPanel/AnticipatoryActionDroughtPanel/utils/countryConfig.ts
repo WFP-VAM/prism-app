@@ -206,21 +206,14 @@ export const getRowCategories = (): {
 export const getLegendPhases = () => {
   const config = getAADroughtCountryConfig();
 
-  const severityToCategory: Record<
-    string,
-    'Severe' | 'Moderate' | 'Normal' | 'Mild'
-  > = {
-    Severe: 'Severe',
-    Moderate: 'Moderate',
-    'Below Normal': 'Normal',
-    Mild: 'Mild',
-  };
-
   return config.legendPhases.map(phase => {
     let icon: React.ReactElement;
 
-    if (phase.severity && severityToCategory[phase.severity]) {
-      const category = severityToCategory[phase.severity];
+    const category = config.categories.find(
+      cat => cat.label === phase.severity,
+    )?.id;
+
+    if (category) {
       // eslint-disable-next-line fp/no-mutation
       icon = getAAIcon(category, phase.phase as 'Ready' | 'Set', true);
     } else if (phase.phase === 'No Action') {
