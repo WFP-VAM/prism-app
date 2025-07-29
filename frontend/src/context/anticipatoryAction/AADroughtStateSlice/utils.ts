@@ -150,11 +150,16 @@ export function parseAndTransformAA(data: any[]) {
         windowDates.forEach(date => {
           const dateData = sorted.filter(x => x.date === date);
 
-          // Filter out 'Ready' if 'Set' exists for this date
+          // Filter out 'Ready' if 'Set' exists for the same category on this date
           let filteredDateData = dateData;
-          if (dateData.some(x => x.phase === 'Set' && x.isValid)) {
+          const setCategories = dateData
+            .filter(x => x.phase === 'Set' && x.isValid)
+            .map(x => x.category);
+          if (setCategories.length > 0) {
             // eslint-disable-next-line fp/no-mutation
-            filteredDateData = dateData.filter(x => x.phase !== 'Ready');
+            filteredDateData = dateData.filter(
+              x => !(x.phase === 'Ready' && setCategories.includes(x.category)),
+            );
           }
 
           // Propagate SET elements from previous dates
