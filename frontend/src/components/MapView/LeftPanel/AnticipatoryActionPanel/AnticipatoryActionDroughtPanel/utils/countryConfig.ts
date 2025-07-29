@@ -130,7 +130,7 @@ const createCountryConfig = (options: {
       }
 
       return {
-        title: `${cat.label.toLowerCase()} category`,
+        title: `${cat.label} category`,
         text: `Drought events that typically occur once every ${frequency} years.`,
       };
     }),
