@@ -14,8 +14,8 @@ import { getAAIcon } from '../utils';
  *
  * ```typescript
  * countryName: {
- *   // 1. Define available categories (checkboxes in UI)
- *   checkboxes: [
+ *   // 1. Define available categories (categories in UI)
+ *   categories: [
  *     { label: 'Severe', id: 'Severe' },
  *     { label: 'Moderate', id: 'Moderate' },
  *     { label: 'Below Normal', id: 'Normal' },
@@ -40,7 +40,7 @@ import { getAAIcon } from '../utils';
 
 export interface AADroughtCountryConfig {
   // Basic configuration
-  checkboxes: {
+  categories: {
     label: string;
     id: Exclude<AACategoryType, 'na' | 'ny'>;
   }[];
@@ -62,195 +62,134 @@ export interface AADroughtCountryConfig {
   forecastSource?: string; // e.g., "ECMWF", "default"
 }
 
-const AADROUGHT_COUNTRY_CONFIGS: Record<string, AADroughtCountryConfig> = {
-  malawi: {
-    checkboxes: [{ label: 'Below Normal', id: 'Normal' }],
-    seasonStartMonth: 7,
-    howToReadContent: [
-      { title: 'NDJ', text: 'November to January' },
-      { title: 'JFM', text: 'January to March' },
-      {
-        title: 'Below normal category',
-        text: 'Drought events that typically occur once every 3 years.',
-      },
-      {
-        title: 'Ready, Set and Go phases',
-        text: 'The "Ready, Set & Go!" system uses seasonal forecasts from ECMWF with longer lead time for preparedness (Ready phase) and shorter lead times for activation and mobilization (Set & Go! phases).',
-      },
-    ],
-    rowCategories: [
-      { category: 'Normal', phase: 'Set' },
-      { category: 'Normal', phase: 'Ready' },
-      { category: 'na', phase: 'na' },
-      { category: 'ny', phase: 'ny' },
-    ],
-    legendPhases: [
-      {
-        icon: null, // Will be set dynamically
-        phase: 'Set',
-        severity: 'Below Normal',
-      },
-      {
-        icon: null, // Will be set dynamically
-        phase: 'Ready',
-        severity: 'Below Normal',
-      },
-      {
-        icon: null, // Will be set dynamically
-        phase: 'No Action',
-      },
-      {
-        icon: null, // Will be set dynamically
-        phase: 'Not Yet Monitored',
-      },
-    ],
+/**
+ * Helper function to create a country configuration with sensible defaults
+ * This makes it much easier to add new countries
+ */
+const createCountryConfig = (options: {
+  categories: Array<{
+    label: string;
+    id: Exclude<AACategoryType, 'na' | 'ny'>;
+  }>;
+  seasonStartMonth: number;
+  forecastSource?: string;
+  customContent?: {
+    howToReadContent?: Array<{ title: string; text: string }>;
+    descriptionText?: string;
+  };
+}): AADroughtCountryConfig => {
+  const {
+    categories,
+    seasonStartMonth,
+    forecastSource,
+    customContent = {},
+  } = options;
+
+  // Generate row categories from available categories
+  const rowCategories: { category: AACategoryType; phase: AAPhaseType }[] = [];
+  categories.forEach(cat => {
+    rowCategories.push({ category: cat.id, phase: 'Set' });
+    rowCategories.push({ category: cat.id, phase: 'Ready' });
+  });
+  rowCategories.push({ category: 'na', phase: 'na' });
+  rowCategories.push({ category: 'ny', phase: 'ny' });
+
+  // Generate legend phases from available categories
+  const legendPhases: Array<{
+    icon: React.ReactNode;
+    phase: string;
+    severity?: string;
+  }> = [];
+  categories.forEach(cat => {
+    legendPhases.push({
+      icon: null,
+      phase: 'Set',
+      severity: cat.label,
+    });
+    legendPhases.push({
+      icon: null,
+      phase: 'Ready',
+      severity: cat.label,
+    });
+  });
+  legendPhases.push({ icon: null, phase: 'No Action' });
+  legendPhases.push({ icon: null, phase: 'Not Yet Monitored' });
+
+  // Generate default how-to-read content
+  const defaultHowToReadContent = [
+    { title: 'Window 1', text: 'Start to mid of the rainfall season.' },
+    { title: 'Window 2', text: 'Mid to end of the rainfall season.' },
+    ...categories.map(cat => {
+      let frequency = '3';
+      if (cat.id === 'Severe') {
+        frequency = '7';
+      } else if (cat.id === 'Moderate') {
+        frequency = '5';
+      } else if (cat.id === 'Mild') {
+        frequency = '4';
+      }
+
+      return {
+        title: `${cat.label.toLowerCase()} category`,
+        text: `Drought events that typically occur once every ${frequency} years.`,
+      };
+    }),
+    {
+      title: 'Ready, Set and Go phases',
+      text: `The "Ready, Set & Go!" system uses seasonal forecasts${forecastSource && forecastSource !== 'default' ? ` from ${forecastSource}` : ''} with longer lead time for preparedness (Ready phase) and shorter lead times for activation and mobilization (Set & Go! phases).`,
+    },
+  ];
+
+  return {
+    categories,
+    seasonStartMonth,
+    howToReadContent: customContent.howToReadContent || defaultHowToReadContent,
+    rowCategories,
+    legendPhases,
     descriptionText:
-      'uses seasonal forecasts from ECMWF with longer lead time for preparedness (Ready phase) and shorter lead times for activation and mobilization (Set & Go! phases).',
+      customContent.descriptionText ||
+      `uses seasonal forecasts${forecastSource && forecastSource !== 'default' ? ` from ${forecastSource}` : ''} with longer lead time for preparedness (Ready phase) and shorter lead times for activation and mobilization (Set & Go! phases).`,
+    forecastSource,
+  };
+};
+
+const AADROUGHT_COUNTRY_CONFIGS: Record<string, AADroughtCountryConfig> = {
+  malawi: createCountryConfig({
+    categories: [{ label: 'Below Normal', id: 'Normal' }],
+    seasonStartMonth: 7,
     forecastSource: 'ECMWF',
-  },
-  zimbabwe: {
-    checkboxes: [
+    customContent: {
+      howToReadContent: [
+        { title: 'NDJ', text: 'November to January' },
+        { title: 'JFM', text: 'January to March' },
+        {
+          title: 'Below normal category',
+          text: 'Drought events that typically occur once every 3 years.',
+        },
+        {
+          title: 'Ready, Set and Go phases',
+          text: 'The "Ready, Set & Go!" system uses seasonal forecasts from ECMWF with longer lead time for preparedness (Ready phase) and shorter lead times for activation and mobilization (Set & Go! phases).',
+        },
+      ],
+      descriptionText:
+        'uses seasonal forecasts from ECMWF with longer lead time for preparedness (Ready phase) and shorter lead times for activation and mobilization (Set & Go! phases).',
+    },
+  }),
+  zimbabwe: createCountryConfig({
+    categories: [
       { label: 'Moderate', id: 'Moderate' },
       { label: 'Below Normal', id: 'Normal' },
     ],
     seasonStartMonth: 4,
-    howToReadContent: [
-      { title: 'Window 1', text: 'Start to mid of the rainfall season.' },
-      { title: 'Window 2', text: 'Mid to end of the rainfall season.' },
-      {
-        title: 'Below normal category',
-        text: 'Drought events that typically occur once every 3 years.',
-      },
-      {
-        title: 'Moderate category',
-        text: 'Drought events that typically occur once every 5 years.',
-      },
-      {
-        title: 'Ready, Set and Go phases',
-        text: 'The "Ready, Set & Go!" system uses seasonal forecasts with longer lead time for preparedness (Ready phase) and shorter lead times for activation and mobilization (Set & Go! phases).',
-      },
-    ],
-    rowCategories: [
-      { category: 'Moderate', phase: 'Set' },
-      { category: 'Moderate', phase: 'Ready' },
-      { category: 'Normal', phase: 'Set' },
-      { category: 'Normal', phase: 'Ready' },
-      { category: 'na', phase: 'na' },
-      { category: 'ny', phase: 'ny' },
-    ],
-    legendPhases: [
-      {
-        icon: null, // Will be set dynamically
-        phase: 'Set',
-        severity: 'Moderate',
-      },
-      {
-        icon: null, // Will be set dynamically
-        phase: 'Ready',
-        severity: 'Moderate',
-      },
-      {
-        icon: null, // Will be set dynamically
-        phase: 'Set',
-        severity: 'Below Normal',
-      },
-      {
-        icon: null, // Will be set dynamically
-        phase: 'Ready',
-        severity: 'Below Normal',
-      },
-      {
-        icon: null, // Will be set dynamically
-        phase: 'No Action',
-      },
-      {
-        icon: null, // Will be set dynamically
-        phase: 'Not Yet Monitored',
-      },
-    ],
-    descriptionText:
-      'uses seasonal forecasts with longer lead time for preparedness (Ready phase) and shorter lead times for activation and mobilization (Set & Go! phases).',
-  },
-  mozambique: {
-    checkboxes: [
+  }),
+  mozambique: createCountryConfig({
+    categories: [
       { label: 'Severe', id: 'Severe' },
       { label: 'Moderate', id: 'Moderate' },
       { label: 'Mild', id: 'Mild' },
     ],
     seasonStartMonth: 4,
-    howToReadContent: [
-      { title: 'Window 1', text: 'Start to mid of the rainfall season.' },
-      { title: 'Window 2', text: 'Mid to end of the rainfall season.' },
-      {
-        title: 'Mild category',
-        text: 'Drought events that typically occur once every 4 years.',
-      },
-      {
-        title: 'Moderate category',
-        text: 'Drought events that typically occur once every 5 years.',
-      },
-      {
-        title: 'Severe category',
-        text: 'Drought events that typically occur once every 7 years.',
-      },
-      {
-        title: 'Ready, Set and Go phases',
-        text: 'The "Ready, Set & Go!" system uses seasonal forecasts with longer lead time for preparedness (Ready phase) and shorter lead times for activation and mobilization (Set & Go! phases).',
-      },
-    ],
-    rowCategories: [
-      { category: 'Severe', phase: 'Set' },
-      { category: 'Severe', phase: 'Ready' },
-      { category: 'Moderate', phase: 'Set' },
-      { category: 'Moderate', phase: 'Ready' },
-      { category: 'Mild', phase: 'Set' },
-      { category: 'Mild', phase: 'Ready' },
-      { category: 'na', phase: 'na' },
-      { category: 'ny', phase: 'ny' },
-    ],
-    legendPhases: [
-      {
-        icon: null, // Will be set dynamically
-        phase: 'Set',
-        severity: 'Severe',
-      },
-      {
-        icon: null, // Will be set dynamically
-        phase: 'Ready',
-        severity: 'Severe',
-      },
-      {
-        icon: null, // Will be set dynamically
-        phase: 'Set',
-        severity: 'Moderate',
-      },
-      {
-        icon: null, // Will be set dynamically
-        phase: 'Ready',
-        severity: 'Moderate',
-      },
-      {
-        icon: null, // Will be set dynamically
-        phase: 'Set',
-        severity: 'Mild',
-      },
-      {
-        icon: null, // Will be set dynamically
-        phase: 'Ready',
-        severity: 'Mild',
-      },
-      {
-        icon: null, // Will be set dynamically
-        phase: 'No Action',
-      },
-      {
-        icon: null, // Will be set dynamically
-        phase: 'Not Yet Monitored',
-      },
-    ],
-    descriptionText:
-      'uses seasonal forecasts with longer lead time for preparedness (Ready phase) and shorter lead times for activation and mobilization (Set & Go! phases).',
-  },
+  }),
 };
 
 export const getAADroughtCountryConfig = (): AADroughtCountryConfig =>
@@ -337,95 +276,4 @@ export const calculateSeason = (date: string | undefined): string => {
   }
   // Before season start month
   return `${year - 1}-${year.toString().slice(-2)}`;
-};
-
-/**
- * Helper function to create a country configuration with sensible defaults
- * This makes it much easier to add new countries
- */
-export const createCountryConfig = (options: {
-  categories: Array<{
-    label: string;
-    id: Exclude<AACategoryType, 'na' | 'ny'>;
-  }>;
-  seasonStartMonth: number;
-  forecastSource?: string;
-  customContent?: {
-    howToReadContent?: Array<{ title: string; text: string }>;
-    descriptionText?: string;
-  };
-}): AADroughtCountryConfig => {
-  const {
-    categories,
-    seasonStartMonth,
-    forecastSource,
-    customContent = {},
-  } = options;
-
-  // Generate row categories from available categories
-  const rowCategories: { category: AACategoryType; phase: AAPhaseType }[] = [];
-  categories.forEach(cat => {
-    rowCategories.push({ category: cat.id, phase: 'Set' });
-    rowCategories.push({ category: cat.id, phase: 'Ready' });
-  });
-  rowCategories.push({ category: 'na', phase: 'na' });
-  rowCategories.push({ category: 'ny', phase: 'ny' });
-
-  // Generate legend phases from available categories
-  const legendPhases: Array<{
-    icon: React.ReactNode;
-    phase: string;
-    severity?: string;
-  }> = [];
-  categories.forEach(cat => {
-    legendPhases.push({
-      icon: null,
-      phase: 'Set',
-      severity: cat.label,
-    });
-    legendPhases.push({
-      icon: null,
-      phase: 'Ready',
-      severity: cat.label,
-    });
-  });
-  legendPhases.push({ icon: null, phase: 'No Action' });
-  legendPhases.push({ icon: null, phase: 'Not Yet Monitored' });
-
-  // Generate default how-to-read content
-  const defaultHowToReadContent = [
-    { title: 'Window 1', text: 'Start to mid of the rainfall season.' },
-    { title: 'Window 2', text: 'Mid to end of the rainfall season.' },
-    ...categories.map(cat => {
-      let frequency = '3';
-      if (cat.id === 'Severe') {
-        frequency = '7';
-      } else if (cat.id === 'Moderate') {
-        frequency = '5';
-      } else if (cat.id === 'Mild') {
-        frequency = '4';
-      }
-
-      return {
-        title: `${cat.label.toLowerCase()} category`,
-        text: `Drought events that typically occur once every ${frequency} years.`,
-      };
-    }),
-    {
-      title: 'Ready, Set and Go phases',
-      text: `The "Ready, Set & Go!" system uses seasonal forecasts${forecastSource && forecastSource !== 'default' ? ` from ${forecastSource}` : ''} with longer lead time for preparedness (Ready phase) and shorter lead times for activation and mobilization (Set & Go! phases).`,
-    },
-  ];
-
-  return {
-    checkboxes: categories,
-    seasonStartMonth,
-    howToReadContent: customContent.howToReadContent || defaultHowToReadContent,
-    rowCategories,
-    legendPhases,
-    descriptionText:
-      customContent.descriptionText ||
-      `uses seasonal forecasts${forecastSource && forecastSource !== 'default' ? ` from ${forecastSource}` : ''} with longer lead time for preparedness (Ready phase) and shorter lead times for activation and mobilization (Set & Go! phases).`,
-    forecastSource,
-  };
 };
