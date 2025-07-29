@@ -288,7 +288,11 @@ export function calculateMapRenderedDistricts({
             // eslint-disable-next-line fp/no-mutation
             dateData = districtData
               .filter(
-                x => x.date <= date && x.season === season && x.phase === 'Set',
+                x =>
+                  x.date <= date &&
+                  x.season === season &&
+                  x.phase === 'Set' &&
+                  x.isValid,
               )
               .slice(-1)
               .map(x => ({ ...x, computedRow: true }));
