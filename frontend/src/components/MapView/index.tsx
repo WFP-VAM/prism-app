@@ -1,14 +1,8 @@
 import { memo, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import {
-  Box,
-  CircularProgress,
-  createStyles,
-  makeStyles,
-} from '@material-ui/core';
+import { Box, createStyles, makeStyles } from '@material-ui/core';
 import { getDisplayBoundaryLayers } from 'config/utils';
 import { addLayer } from 'context/mapStateSlice';
-import { isLoading as areDatesLoading } from 'context/serverStateSlice';
 import {
   WMSLayerDatesRequested,
   pointDataLayerDatesRequested,
@@ -29,8 +23,6 @@ const displayedBoundaryLayers = getDisplayBoundaryLayers().reverse();
 
 const MapView = memo(() => {
   const classes = useStyles();
-
-  const datesLoading = useSelector(areDatesLoading);
 
   const datesPreloadingForWMS = useSelector(WMSLayerDatesRequested);
   const datesPreloadingForPointData = useSelector(pointDataLayerDatesRequested);
@@ -55,11 +47,6 @@ const MapView = memo(() => {
     <Box className={classes.root}>
       <LeftPanel />
       <OtherFeatures />
-      {datesLoading && (
-        <div className={classes.loading}>
-          <CircularProgress size={100} />
-        </div>
-      )}
       <MapComponent />
     </Box>
   );
