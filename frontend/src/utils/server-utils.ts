@@ -1,5 +1,5 @@
 import { oneDayInMs } from 'components/MapView/LeftPanel/utils';
-import { get, snakeCase, sortBy } from 'lodash';
+import { get, snakeCase } from 'lodash';
 import { WFS, WMS, fetchCoverageLayerDays, formatUrl } from 'prism-common';
 import type { AppDispatch, RootState } from 'context/store';
 import { appConfig, safeCountry } from '../config';
@@ -451,7 +451,13 @@ export function generateIntermediateDateItemFromValidity(
 
   // We sort the defaultDateItems and the dateItemsWithValidity and we order by displayDate to filter the duplicates
   // or the overlapping dates
-  return sortBy(dateItemsWithValidity, 'displayDate');
+  // eslint-disable-next-line fp/no-mutating-methods
+  return dateItemsWithValidity.sort((a, b) => {
+    if (a.displayDate < b.displayDate) {
+      return -1;
+    }
+    return 1;
+  });
 }
 
 /**
