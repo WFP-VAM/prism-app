@@ -21,8 +21,20 @@ export const loadAvailableDatesForLayer = createAsyncThunk<
   AvailableDates,
   string,
   CreateAsyncThunkTypes
->('serverState/loadAvailableDatesForLayer', (layerId: string, { getState }) =>
-  getAvailableDatesForLayer(getState, layerId),
+>(
+  'serverState/loadAvailableDatesForLayer',
+  async (layerId: string, { getState }) =>
+    getAvailableDatesForLayer(getState, layerId),
+  {
+    condition: (layerId: string, { getState }) => {
+      // prevent multiple loading when switching between variants of a same layer
+      const alreadyLoading = layersLoading(getState());
+      if (alreadyLoading.includes(layerId)) {
+        return false;
+      }
+      return true;
+    },
+  },
 );
 
 export const serverStateSlice = createSlice({
