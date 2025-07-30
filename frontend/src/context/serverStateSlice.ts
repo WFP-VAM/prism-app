@@ -28,7 +28,7 @@ export const loadAvailableDatesForLayer = createAsyncThunk<
   {
     condition: (layerId: string, { getState }) => {
       // prevent multiple loading when switching between variants of a same layer
-      const alreadyLoading = layersLoading(getState());
+      const alreadyLoading = layersLoadingDatesIdsSelector(getState());
       return !alreadyLoading.includes(layerId);
     },
   },
@@ -95,7 +95,7 @@ export const availableDatesSelector = (
 export const isLoading = (state: RootState): boolean =>
   state.serverState.loadingLayerIds.length > 0;
 
-export const layersLoading = (
+export const layersLoadingDatesIdsSelector = (
   state: RootState,
 ): ServerState['loadingLayerIds'] => state.serverState.loadingLayerIds;
 

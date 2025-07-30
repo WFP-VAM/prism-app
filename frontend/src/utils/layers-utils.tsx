@@ -31,7 +31,7 @@ import {
 import { addNotification } from 'context/notificationStateSlice';
 import {
   availableDatesSelector,
-  layersLoading,
+  layersLoadingDatesIdsSelector,
 } from 'context/serverStateSlice';
 import { layerDatesPreloaded } from 'context/serverPreloadStateSlice';
 import { countBy, get, pickBy, uniqBy } from 'lodash';
@@ -77,7 +77,7 @@ const useLayers = () => {
 
   const unsortedSelectedLayers = useSelector(layersSelector);
   const serverAvailableDates = useSelector(availableDatesSelector);
-  const layersLoadingDates = useSelector(layersLoading);
+  const layersLoadingDates = useSelector(layersLoadingDatesIdsSelector);
   const datesPreloaded = useSelector(layerDatesPreloaded);
   const { startDate: selectedDate } = useSelector(dateRangeSelector);
 

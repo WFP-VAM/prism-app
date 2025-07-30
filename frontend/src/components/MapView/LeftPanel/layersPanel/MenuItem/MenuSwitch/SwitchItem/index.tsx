@@ -20,7 +20,7 @@ import { getUrlKey, useUrlHistory } from 'utils/url-utils';
 import { Extent } from 'components/MapView/Layers/raster-utils';
 import {
   availableDatesSelector,
-  layersLoading,
+  layersLoadingDatesIdsSelector,
 } from 'context/serverStateSlice';
 import { checkLayerAvailableDatesAndContinueOrRemove } from 'components/MapView/utils';
 import { LocalError } from 'utils/error-utils';
@@ -53,7 +53,7 @@ const SwitchItem = memo(
     const serverAvailableDates = useAppSelector(availableDatesSelector);
     // keep track of layers for which we are computing available dates
     // to avoid triggering duplicate actions
-    const layersLoadingDates = useAppSelector(layersLoading);
+    const layersLoadingDates = useAppSelector(layersLoadingDatesIdsSelector);
     const map = useAppSelector(mapSelector);
     const [isOpacitySelected, setIsOpacitySelected] = useState(false);
     const dispatch: AppDispatch = useAppDispatch();
