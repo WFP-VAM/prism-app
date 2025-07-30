@@ -40,7 +40,7 @@ import Timeline from './Timeline';
 import Forecast from './Forecast';
 import { useAnticipatoryAction } from '../useAnticipatoryAction';
 
-const { checkboxes } = getAADroughtCountryConfig();
+const { categories } = getAADroughtCountryConfig();
 
 function AnticipatoryActionDroughtPanel() {
   const classes = useStyles();
@@ -187,7 +187,7 @@ function AnticipatoryActionDroughtPanel() {
         </div>
 
         <div>
-          {checkboxes.map(x => (
+          {categories.map(x => (
             <StyledCheckboxLabel
               key={x.id}
               id={x.id}

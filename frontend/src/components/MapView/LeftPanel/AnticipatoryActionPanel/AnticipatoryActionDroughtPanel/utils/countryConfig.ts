@@ -14,8 +14,8 @@ import { getAAIcon } from '../utils';
  *
  * ```typescript
  * countryName: {
- *   // 1. Define available categories (checkboxes in UI)
- *   checkboxes: [
+ *   // 1. Define available categories (categories in UI)
+ *   categories: [
  *     { label: 'Severe', id: 'Severe' },
  *     { label: 'Moderate', id: 'Moderate' },
  *     { label: 'Below Normal', id: 'Normal' },
@@ -40,7 +40,7 @@ import { getAAIcon } from '../utils';
 
 export interface AADroughtCountryConfig {
   // Basic configuration
-  checkboxes: {
+  categories: {
     label: string;
     id: Exclude<AACategoryType, 'na' | 'ny'>;
   }[];
@@ -386,7 +386,7 @@ export const calculateSeason = (date: string | undefined): string => {
  * Helper function to create a country configuration with sensible defaults
  * This makes it much easier to add new countries
  */
-export const createCountryConfig = (options: {
+const createCountryConfig = (options: {
   categories: Array<{
     label: string;
     id: Exclude<AACategoryType, 'na' | 'ny'>;
@@ -450,7 +450,7 @@ export const createCountryConfig = (options: {
       }
 
       return {
-        title: `${cat.label.toLowerCase()} category`,
+        title: `${cat.label} category`,
         text: `Drought events that typically occur once every ${frequency} years.`,
       };
     }),
@@ -461,7 +461,7 @@ export const createCountryConfig = (options: {
   ];
 
   return {
-    checkboxes: categories,
+    categories,
     seasonStartMonth,
     howToReadContent: customContent.howToReadContent || defaultHowToReadContent,
     rowCategories,
@@ -471,4 +471,122 @@ export const createCountryConfig = (options: {
       `uses seasonal forecasts${forecastSource && forecastSource !== 'default' ? ` from ${forecastSource}` : ''} with longer lead time for preparedness (Ready phase) and shorter lead times for activation and mobilization (Set & Go! phases).`,
     forecastSource,
   };
+};
+
+const AADROUGHT_COUNTRY_CONFIGS: Record<string, AADroughtCountryConfig> = {
+  malawi: createCountryConfig({
+    categories: [{ label: 'Below Normal', id: 'Normal' }],
+    seasonStartMonth: 7,
+    forecastSource: 'ECMWF',
+    customContent: {
+      howToReadContent: [
+        { title: 'NDJ', text: 'November to January' },
+        { title: 'JFM', text: 'January to March' },
+        {
+          title: 'Below normal category',
+          text: 'Drought events that typically occur once every 3 years.',
+        },
+        {
+          title: 'Ready, Set and Go phases',
+          text: 'The "Ready, Set & Go!" system uses seasonal forecasts from ECMWF with longer lead time for preparedness (Ready phase) and shorter lead times for activation and mobilization (Set & Go! phases).',
+        },
+      ],
+      descriptionText:
+        'uses seasonal forecasts from ECMWF with longer lead time for preparedness (Ready phase) and shorter lead times for activation and mobilization (Set & Go! phases).',
+    },
+  }),
+  zimbabwe: createCountryConfig({
+    categories: [
+      { label: 'Moderate', id: 'Moderate' },
+      { label: 'Below Normal', id: 'Normal' },
+    ],
+    seasonStartMonth: 4,
+  }),
+  mozambique: createCountryConfig({
+    categories: [
+      { label: 'Severe', id: 'Severe' },
+      { label: 'Moderate', id: 'Moderate' },
+      { label: 'Mild', id: 'Mild' },
+    ],
+    seasonStartMonth: 4,
+  }),
+};
+
+export const getAADroughtCountryConfig = (): AADroughtCountryConfig =>
+  AADROUGHT_COUNTRY_CONFIGS[safeCountry];
+
+export const getRowCategories = (): {
+  category: AACategoryType;
+  phase: AAPhaseType;
+}[] => {
+  const config = getAADroughtCountryConfig();
+  return config.rowCategories;
+};
+
+export const getLegendPhases = () => {
+  const config = getAADroughtCountryConfig();
+
+  return config.legendPhases.map(phase => {
+    let icon: React.ReactElement;
+
+    const category = config.categories.find(
+      cat => cat.label === phase.severity,
+    )?.id;
+
+    if (category) {
+      // eslint-disable-next-line fp/no-mutation
+      icon = getAAIcon(category, phase.phase as 'Ready' | 'Set', true);
+    } else if (phase.phase === 'No Action') {
+      // eslint-disable-next-line fp/no-mutation
+      icon = getAAIcon('na', 'na', true);
+    } else {
+      // eslint-disable-next-line fp/no-mutation
+      icon = getAAIcon('ny', 'ny', true);
+    }
+
+    return { ...phase, icon };
+  });
+};
+
+export const getDescriptionText = (): string => {
+  const config = getAADroughtCountryConfig();
+  return config.descriptionText;
+};
+
+// New utility functions for enhanced configuration
+
+export const getTimelineOffset = () => {
+  const config = getAADroughtCountryConfig();
+  return config.seasonStartMonth - 1;
+};
+
+export const getForecastSource = (): string => {
+  const config = getAADroughtCountryConfig();
+  return config.forecastSource || 'default';
+};
+
+// Helper function to calculate season based on country config
+export const calculateSeason = (date: string | undefined): string => {
+  // avoid timezone issues by adding 12:00:00.000Z
+  const currentDate = date ? new Date(`${date}T12:00:00.000Z`) : new Date();
+  const year = currentDate.getFullYear();
+  const month = currentDate.getMonth();
+  const config = getAADroughtCountryConfig();
+
+  // eslint-disable-next-line no-console
+  console.log({
+    date,
+    currentDate,
+    year,
+    month,
+    startMonth: config.seasonStartMonth,
+  });
+
+  // month is 0-indexed, so we add 1 to make it 1-indexed
+  if (month + 1 >= config.seasonStartMonth) {
+    // After season start month
+    return `${year}-${(year + 1).toString().slice(-2)}`;
+  }
+  // Before season start month
+  return `${year - 1}-${year.toString().slice(-2)}`;
 };
