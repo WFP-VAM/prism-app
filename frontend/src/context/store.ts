@@ -19,6 +19,7 @@ import datasetResultStateReduce from './datasetStateSlice';
 import mapTileLoadingStateReduce from './mapTileLoadingStateSlice';
 import leftPanelStateReduce from './leftPanelStateSlice';
 import opacityStateReduce from './opacityStateSlice';
+import dashboardStateReduce from './dashboardStateSlice';
 import anticipatoryActionDroughtStateReduce from './anticipatoryAction/AADroughtStateSlice';
 import anticipatoryActionStormStateReduce from './anticipatoryAction/AAStormStateSlice';
 
@@ -36,6 +37,7 @@ const reducer = combineReducers({
   mapTileLoadingState: mapTileLoadingStateReduce,
   leftPanelState: leftPanelStateReduce,
   opacityState: opacityStateReduce,
+  dashboardState: dashboardStateReduce,
   anticipatoryActionDroughtState: anticipatoryActionDroughtStateReduce,
   anticipatoryActionStormState: anticipatoryActionStormStateReduce,
 });

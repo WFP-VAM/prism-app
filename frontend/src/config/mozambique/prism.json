@@ -473,7 +473,17 @@
       "mapPosition": "left",
       "minMapBounds": [31, -25, 40, -11],
       "mapLayers": [],
-      "flexElements": []
+      "flexElements": [
+        {
+          "type": "TEXT",
+          "content": "Here is some pre-configured text",
+          "textUpdatedAt": "2025-03-01"
+        },
+        {
+          "type": "TEXT",
+          "content": ""
+        }
+      ]
     }
   ]
 }
