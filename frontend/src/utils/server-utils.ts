@@ -793,8 +793,6 @@ export async function getAvailableDatesForLayer(
     layerDates[layerId] || [],
   );
 
-  console.error('getAvailableDatesForLayer', layerId);
-
   return layerDateItemsForLayer;
 }
 /**

@@ -215,8 +215,6 @@ export const checkLayerAvailableDatesAndContinueOrRemove = (
   dispatch: AppDispatch,
 ): boolean => {
   const { id: layerId } = layer as any;
-  // check if available dates have already been computed, if not try loading them
-  // make sure we don't trigger multiple requests here
   if (
     serverAvailableDates[layerId] === undefined &&
     !layersLoadingDates.includes(layerId)
