@@ -64,6 +64,7 @@ jobs:
           DIFF=$(git diff --name-only)
           if [ "$DIFF" != "" ]; then
             echo "Files have changed. Make sure to run yarn preprocess-layers and commit changes."
+            echo "You might also need to update countriesWithPreprocessedDates in src/config/index.ts"
             echo "$DIFF"
             exit 1
           fi

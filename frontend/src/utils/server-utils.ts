@@ -2,7 +2,11 @@ import { oneDayInMs } from 'components/MapView/LeftPanel/utils';
 import { get, snakeCase } from 'lodash';
 import { WFS, WMS, fetchCoverageLayerDays, formatUrl } from 'prism-common';
 import type { AppDispatch, RootState } from 'context/store';
-import { appConfig, safeCountry } from '../config';
+import {
+  appConfig,
+  countriesWithPreprocessedDates,
+  safeCountry,
+} from '../config';
 import type {
   AnticipatoryActionLayerProps,
   AvailableDates,
@@ -618,24 +622,32 @@ export async function preloadLayerDatesForPointData(
   return r.reduce((acc, item) => ({ ...acc, ...item }), {});
 }
 
+let cachedPreprocessedDates: Record<string, StartEndDate[]>;
 /**
  * Load preprocessed date ranges if available
  * */
-async function fetchPreprocessedDates(): Promise<any> {
-  try {
-    // preprocessed-layer-dates.json is generated using "yarn preprocess-layers"
-    // which runs ./scripts/preprocess-layers.js - preprocessValidityPeriods
-    const response = await fetch(
-      `data/${safeCountry}/preprocessed-layer-dates.json`,
-    );
-    if (!response.ok) {
-      console.error(`HTTP error! status: ${response.status}`);
-      return {};
+async function fetchPreprocessedDates(): Promise<
+  Record<string, StartEndDate[]>
+> {
+  /* eslint-disable fp/no-mutation */
+  if (cachedPreprocessedDates === undefined) {
+    try {
+      // preprocessed-layer-dates.json is generated using "yarn preprocess-layers"
+      // which runs ./scripts/preprocess-layers.js - preprocessValidityPeriods
+      const response = await fetch(
+        `data/${safeCountry}/preprocessed-layer-dates.json`,
+      );
+      if (!response.ok) {
+        console.error(`HTTP error! status: ${response.status}`);
+        cachedPreprocessedDates = {};
+      }
+      cachedPreprocessedDates = await response.json();
+    } catch (error) {
+      cachedPreprocessedDates = {};
     }
-    return await response.json();
-  } catch (error) {
-    return {};
   }
+  /* eslint-enable fp/no-mutation */
+  return cachedPreprocessedDates;
 }
 
 /**
@@ -743,8 +755,9 @@ export async function getAvailableDatesForLayer(
     }));
 
   // Use preprocessed dates for layers with dates path
-  // TODO: which layers is this relevant for?
-  const preprocessedDates = await fetchPreprocessedDates();
+  const preprocessedDates = countriesWithPreprocessedDates.includes(safeCountry)
+    ? await fetchPreprocessedDates()
+    : {};
 
   // Generate and replace date items for layers with all intermediates dates
   const buildLayerDateItems = async (

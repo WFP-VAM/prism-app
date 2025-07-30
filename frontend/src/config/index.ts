@@ -87,6 +87,10 @@ const safeCountry =
     ? (COUNTRY.toLocaleLowerCase() as Country)
     : DEFAULT;
 
+// list countries that have a preprocessed-layer-dates.json file
+// to avoid a failed network call on each layer activation
+const countriesWithPreprocessedDates = ['cameroon', 'nigeria', 'rbd'];
+
 const {
   defaultBoundariesFile,
   rawTables,
@@ -189,6 +193,7 @@ const defaultBoundariesPath = `${DEFAULT_BOUNDARIES_FOLDER}/${defaultBoundariesF
 export {
   appConfig,
   authRequired,
+  countriesWithPreprocessedDates,
   safeCountry,
   defaultBoundariesPath,
   rawLayers,
