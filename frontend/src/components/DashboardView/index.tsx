@@ -199,6 +199,7 @@ const useStyles = makeStyles(() => ({
     '& .MuiDialog-paper': {
       margin: '48px 0 0 0',
       height: '100vh',
+      background: '#F8F8F8',
     },
     '& .MuiDialog-paperFullWidth ': {
       maxWidth: 'calc(100% - 16px)',

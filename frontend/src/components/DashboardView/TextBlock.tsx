@@ -1,20 +1,99 @@
+import React from 'react';
 import { Box, makeStyles, Typography } from '@material-ui/core';
 import { useDispatch } from 'react-redux';
+import Markdown from 'react-markdown';
 import { setTextContent } from '../../context/dashboardStateSlice';
+
+type TextBlockMode = 'edit' | 'preview';
 
 interface TextBlockProps {
   label?: string;
   content: string;
   index: number;
+  mode?: TextBlockMode;
 }
+
+const createMarkdownComponents = (classes: any) => ({
+  p: ({ children }: { children: React.ReactNode }) => (
+    <Typography variant="body1" className={classes.previewText}>
+      {children}
+    </Typography>
+  ),
+  h1: ({ children }: { children: React.ReactNode }) => (
+    <Typography variant="h4" className={classes.previewHeading}>
+      {children}
+    </Typography>
+  ),
+  h2: ({ children }: { children: React.ReactNode }) => (
+    <Typography variant="h5" className={classes.previewHeading}>
+      {children}
+    </Typography>
+  ),
+  h3: ({ children }: { children: React.ReactNode }) => (
+    <Typography variant="h6" className={classes.previewHeading}>
+      {children}
+    </Typography>
+  ),
+  strong: ({ children }: { children: React.ReactNode }) => (
+    <Typography component="span" style={{ fontWeight: 600 }}>
+      {children}
+    </Typography>
+  ),
+  em: ({ children }: { children: React.ReactNode }) => (
+    <Typography component="span" style={{ fontStyle: 'italic' }}>
+      {children}
+    </Typography>
+  ),
+  a: ({ children, href }: { children: React.ReactNode; href?: string }) => (
+    <Typography
+      component="a"
+      href={href}
+      target="_blank"
+      rel="noopener noreferrer"
+      style={{ color: '#1976d2', textDecoration: 'underline' }}
+    >
+      {children}
+    </Typography>
+  ),
+});
 
 function TextBlock({
   index,
   label = `Block #${index + 1}`,
   content,
+  mode = 'edit',
 }: TextBlockProps) {
   const dispatch = useDispatch();
   const classes = useStyles();
+
+  if (mode === 'preview') {
+    if (!content || content.trim() === '') {
+      return null;
+    }
+
+    return (
+      <Box className={classes.previewContainer}>
+        <Markdown
+          linkTarget="_blank"
+          components={createMarkdownComponents(classes)}
+          allowedElements={[
+            'p',
+            'h1',
+            'h2',
+            'h3',
+            'strong',
+            'em',
+            'a',
+            'ul',
+            'ol',
+            'li',
+          ]}
+        >
+          {content}
+        </Markdown>
+      </Box>
+    );
+  }
 
   return (
     <Box className={classes.grayCard}>
@@ -57,6 +136,24 @@ const useStyles = makeStyles(() => ({
     background: 'white',
     fontFamily: 'Roboto',
     resize: 'vertical',
+  },
+  previewContainer: {
+    background: 'white',
+    borderRadius: 8,
+    padding: 16,
+    marginBottom: 16,
+  },
+  previewText: {
+    fontSize: 14,
+    lineHeight: 1.6,
+    margin: '0 0 12px 0',
+  },
+  previewHeading: {
+    fontWeight: 600,
+    margin: '16px 0 8px 0',
+    '&:first-child': {
+      marginTop: 0,
+    },
   },
 }));
 

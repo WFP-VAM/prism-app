@@ -1,39 +1,70 @@
 import { Box, makeStyles, Typography } from '@material-ui/core';
+import { useSelector } from 'react-redux';
+import type { DashboardTextConfig } from 'config/types';
+import TextBlock from './TextBlock';
+
+import {
+  dashboardTitleSelector,
+  dashboardFlexElementsSelector,
+} from '../../context/dashboardStateSlice';
 
 function DashboardPreview() {
   const classes = useStyles();
+  const dashboardTitle = useSelector(dashboardTitleSelector);
+  const dashboardFlexElements = useSelector(dashboardFlexElementsSelector);
 
   return (
-    <Box className={classes.container}>
-      <Typography variant="h4" className={classes.title}>
-        Dashboard Preview
-      </Typography>
-      <Typography variant="body1" className={classes.placeholder}>
-        This is a placeholder for the dashboard preview content. The actual
-        dashboard content will be rendered here in a later phase.
-      </Typography>
+    <Box className={classes.layout}>
+      <Box className={classes.leadingContentArea}>
+        <Box>
+          <Typography
+            variant="h2"
+            component="h1"
+            className={classes.titleBarTypography}
+          >
+            {dashboardTitle || 'Untitled Dashboard'}
+          </Typography>
+        </Box>
+      </Box>
+      <Box className={classes.trailingContentArea}>
+        {dashboardFlexElements?.map((element, index) => {
+          if (element.type === 'TEXT') {
+            const content = (element as DashboardTextConfig)?.content || '';
+            return (
+              <TextBlock
+                // eslint-disable-next-line react/no-array-index-key
+                key={`text-block-${index}`}
+                content={content}
+                index={index}
+                mode="preview"
+              />
+            );
+          }
+          return <div>Content type not yet supported</div>;
+        })}
+      </Box>
     </Box>
   );
 }
 
 const useStyles = makeStyles(() => ({
-  container: {
-    padding: 24,
-    minHeight: '400px',
+  layout: {
+    display: 'flex',
+    padding: 16,
+    margin: 16,
+    gap: 16,
   },
-  closeButton: {
-    position: 'absolute',
-    top: -16,
-    right: 16,
-    zIndex: 100,
+  leadingContentArea: {
+    flex: '2',
   },
-  title: {
-    marginBottom: 16,
-    fontWeight: 600,
+  trailingContentArea: {
+    flex: '1',
   },
-  placeholder: {
-    color: '#666',
-    lineHeight: 1.6,
+  titleBarTypography: {
+    padding: 16,
+    fontWeight: 500,
+    fontSize: 20,
+    margin: 0,
   },
 }));
 
