@@ -396,7 +396,7 @@ const useLayers = () => {
 
     addMissingLayers();
 
-    if (!urlDate || dateInt === selectedDate) {
+    if (dateInt === selectedDate) {
       return;
     }
 
