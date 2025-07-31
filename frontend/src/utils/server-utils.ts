@@ -126,7 +126,7 @@ export const getPossibleDatesForLayer = (
       // eslint-disable-next-line no-case-declarations
       const { fallbackLayerKeys } = layer as AdminLevelDataLayerProps;
       if (!fallbackLayerKeys?.length) {
-        return serverAvailableDates[layer.id];
+        return serverAvailableDates[layer.id] || [];
       }
       return (
         // eslint-disable-next-line fp/no-mutating-methods
