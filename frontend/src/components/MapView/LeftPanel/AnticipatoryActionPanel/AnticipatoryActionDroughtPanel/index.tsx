@@ -30,9 +30,12 @@ import {
 import { dateRangeSelector } from 'context/mapStateSlice/selectors';
 import { getFormattedDate } from 'utils/date-utils';
 import { AnticipatoryAction, PanelSize } from 'config/types';
+import {
+  isSingleWindowMode,
+  getAADroughtCountryConfig,
+} from './utils/countryConfig';
 import { StyledCheckboxLabel, StyledRadioLabel } from './utils';
 import { StyledSelect } from '../utils';
-import { getAADroughtCountryConfig } from './utils/countryConfig';
 import DistrictView from './DistrictView/index';
 import HomeTable from './HomeTable';
 import HowToReadModal from '../HowToReadModal';
@@ -166,25 +169,27 @@ function AnticipatoryActionDroughtPanel() {
           </div>
         </div>
 
-        <div>
-          <FormControl component="fieldset">
-            <RadioGroup
-              defaultValue={allWindowsKey}
-              className={classes.radioButtonGroup}
-              onChange={(_e, val) =>
-                dispatch(setAAFilters({ selectedWindow: val as any }))
-              }
-            >
-              <StyledRadioLabel
-                value={allWindowsKey}
-                label={t(allWindowsKey)}
-              />
-              {AAWindowKeys.map(x => (
-                <StyledRadioLabel key={x} value={x} label={x} />
-              ))}
-            </RadioGroup>
-          </FormControl>
-        </div>
+        {!isSingleWindowMode() && (
+          <div>
+            <FormControl component="fieldset">
+              <RadioGroup
+                defaultValue={allWindowsKey}
+                className={classes.radioButtonGroup}
+                onChange={(_e, val) =>
+                  dispatch(setAAFilters({ selectedWindow: val as any }))
+                }
+              >
+                <StyledRadioLabel
+                  value={allWindowsKey}
+                  label={t(allWindowsKey)}
+                />
+                {AAWindowKeys.map(x => (
+                  <StyledRadioLabel key={x} value={x} label={x} />
+                ))}
+              </RadioGroup>
+            </FormControl>
+          </div>
+        )}
 
         <div>
           {categories.map(x => (

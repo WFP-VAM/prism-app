@@ -5,6 +5,7 @@ import { appConfig } from 'config';
 import { AAWindowKeys } from 'config/utils';
 import { getCurrentDateTimeForUrl } from 'utils/date-utils';
 import { getAADroughtUrl } from 'utils/url-utils';
+import { isSingleWindowMode } from 'components/MapView/LeftPanel/AnticipatoryActionPanel/AnticipatoryActionDroughtPanel/utils/countryConfig';
 import type { CreateAsyncThunkTypes, RootState } from '../../store';
 import {
   AACategoryType,
@@ -26,7 +27,7 @@ const initialState: AnticipatoryActionState = {
   monitoredDistricts: [],
   filters: {
     selectedDate: undefined,
-    selectedWindow: allWindowsKey,
+    selectedWindow: isSingleWindowMode() ? 'Window 1' : allWindowsKey,
     selectedIndex: '',
     categories: {
       Severe: true,

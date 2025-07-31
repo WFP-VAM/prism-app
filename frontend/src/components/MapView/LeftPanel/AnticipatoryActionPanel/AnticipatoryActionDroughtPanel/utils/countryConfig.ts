@@ -48,6 +48,9 @@ export interface AADroughtCountryConfig {
   // Season configuration
   seasonStartMonth: number; // 0-11 (January = 0)
 
+  // Window configuration
+  singleWindowMode?: boolean; // If true, only show Window 1
+
   // Content and display
   howToReadContent: { title: string; text: string }[];
   rowCategories: { category: AACategoryType; phase: AAPhaseType }[];
@@ -73,6 +76,7 @@ const createCountryConfig = (options: {
   }>;
   seasonStartMonth: number;
   forecastSource?: string;
+  singleWindowMode?: boolean;
   customContent?: {
     howToReadContent?: Array<{ title: string; text: string }>;
     descriptionText?: string;
@@ -82,6 +86,7 @@ const createCountryConfig = (options: {
     categories,
     seasonStartMonth,
     forecastSource,
+    singleWindowMode = false,
     customContent = {},
   } = options;
 
@@ -118,7 +123,9 @@ const createCountryConfig = (options: {
   // Generate default how-to-read content
   const defaultHowToReadContent = [
     { title: 'Window 1', text: 'Start to mid of the rainfall season.' },
-    { title: 'Window 2', text: 'Mid to end of the rainfall season.' },
+    ...(singleWindowMode
+      ? []
+      : [{ title: 'Window 2', text: 'Mid to end of the rainfall season.' }]),
     ...categories.map(cat => {
       let frequency = '3';
       if (cat.id === 'Severe') {
@@ -143,6 +150,7 @@ const createCountryConfig = (options: {
   return {
     categories,
     seasonStartMonth,
+    singleWindowMode,
     howToReadContent: customContent.howToReadContent || defaultHowToReadContent,
     rowCategories,
     legendPhases,
@@ -173,6 +181,15 @@ const AADROUGHT_COUNTRY_CONFIGS: Record<string, AADroughtCountryConfig> = {
       ],
       descriptionText:
         'uses seasonal forecasts from ECMWF with longer lead time for preparedness (Ready phase) and shorter lead times for activation and mobilization (Set & Go! phases).',
+    },
+  }),
+  zambia: createCountryConfig({
+    singleWindowMode: true,
+    categories: [{ label: 'Moderate', id: 'Moderate' }],
+    seasonStartMonth: 7,
+    forecastSource: 'ECMWF',
+    customContent: {
+      howToReadContent: [{ title: 'Window 1', text: 'November to January' }],
     },
   }),
   zimbabwe: createCountryConfig({
@@ -243,6 +260,11 @@ export const getTimelineOffset = () => {
 export const getForecastSource = (): string => {
   const config = getAADroughtCountryConfig();
   return config.forecastSource || 'default';
+};
+
+export const isSingleWindowMode = (): boolean => {
+  const config = getAADroughtCountryConfig();
+  return config.singleWindowMode || false;
 };
 
 // Helper function to calculate season based on country config
