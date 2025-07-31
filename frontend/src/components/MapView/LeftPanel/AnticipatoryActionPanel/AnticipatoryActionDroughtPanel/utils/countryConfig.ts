@@ -210,7 +210,7 @@ const AADROUGHT_COUNTRY_CONFIGS: Record<string, AADroughtCountryConfig> = {
 };
 
 export const getAADroughtCountryConfig = (): AADroughtCountryConfig =>
-  AADROUGHT_COUNTRY_CONFIGS[safeCountry];
+  AADROUGHT_COUNTRY_CONFIGS[safeCountry] || {};
 
 export const getRowCategories = (): {
   category: AACategoryType;
