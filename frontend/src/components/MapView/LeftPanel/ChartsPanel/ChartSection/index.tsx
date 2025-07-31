@@ -258,19 +258,6 @@ const ChartSection = memo(
       [adminKey, params],
     );
 
-    // Log warning if level is not 0 and adminCode is undefined
-    if (adminLevel !== 0 && !adminCode) {
-      console.warn(
-        `Warning: adminCode is undefined for adminLevel ${adminLevel}. The chart id key might not be setup correctly.`,
-        {
-          adminLevel,
-          adminCode,
-          adminKey,
-          countryAdmin0Id: appConfig.countryAdmin0Id,
-        },
-      );
-    }
-
     const requestParams: DatasetRequestParams = useMemo(
       () => ({
         id: adminKey,
