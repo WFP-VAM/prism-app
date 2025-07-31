@@ -162,7 +162,7 @@ const SwitchItem = memo(
         }
         try {
           checkLayerAvailableDatesAndContinueOrRemove(
-            layer,
+            selectedLayer,
             serverAvailableDates,
             layersLoadingDates,
             removeLayerFromUrl,
