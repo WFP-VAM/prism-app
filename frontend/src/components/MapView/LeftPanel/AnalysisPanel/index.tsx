@@ -290,7 +290,7 @@ const AnalysisPanel = memo(() => {
     lastAvailableHazardEndDate,
   ]);
 
-  // Only epxand if analysis results are available.
+  // Only expand if analysis results are available.
   useEffect(() => {
     if (!analysisResult) {
       setShowTable(false);
