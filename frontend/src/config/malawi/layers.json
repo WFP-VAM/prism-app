@@ -1,7 +1,7 @@
 {
   "admin_boundaries": {
     "type": "boundary",
-    "path": "data/malawi/mwi-adm2-revised.json",
+    "path": "data/malawi/mwi_bnd_adm2_ge.json",
     "opacity": 0.8,
     "admin_code": "adm2_id",
     "admin_level_codes": ["adm1_id", "adm2_id"],
@@ -20,7 +20,7 @@
   },
   "admin1_boundaries": {
     "type": "boundary",
-    "path": "data/malawi/mwi-adm1-revised.json",
+    "path": "data/malawi/mwi_bnd_adm1_ge.json",
     "opacity": 0.8,
     "admin_code": "adm1_id",
     "admin_level_codes": ["adm1_id"],
@@ -54,13 +54,13 @@
       "levels": [
         {
           "level": "1",
-          "id": "dv_adm1_id",
-          "name": "ADM1_EN"
+          "id": "adm1_id",
+          "name": "adm1_name"
         },
         {
           "level": "2",
-          "id": "dv_adm2_id",
-          "name": "ADM2_EN"
+          "id": "adm2_id",
+          "name": "adm2_name"
         }
       ],
       "type": "bar"
@@ -87,13 +87,13 @@
       "levels": [
         {
           "level": "1",
-          "id": "dv_adm1_id",
-          "name": "ADM1_EN"
+          "id": "adm1_id",
+          "name": "adm1_name"
         },
         {
           "level": "2",
-          "id": "dv_adm2_id",
-          "name": "ADM2_EN"
+          "id": "adm2_id",
+          "name": "adm2_name"
         }
       ],
       "type": "line"
@@ -116,13 +116,13 @@
       "levels": [
         {
           "level": "1",
-          "id": "dv_adm1_id",
-          "name": "ADM1_EN"
+          "id": "adm1_id",
+          "name": "adm1_name"
         },
         {
           "level": "2",
-          "id": "dv_adm2_id",
-          "name": "ADM2_EN"
+          "id": "adm2_id",
+          "name": "adm2_name"
         }
       ],
       "type": "bar"
@@ -149,13 +149,13 @@
       "levels": [
         {
           "level": "1",
-          "id": "dv_adm1_id",
-          "name": "ADM1_EN"
+          "id": "adm1_id",
+          "name": "adm1_name"
         },
         {
           "level": "2",
-          "id": "dv_adm2_id",
-          "name": "ADM2_EN"
+          "id": "adm2_id",
+          "name": "adm2_name"
         }
       ],
       "type": "line"
@@ -178,13 +178,13 @@
       "levels": [
         {
           "level": "1",
-          "id": "dv_adm1_id",
-          "name": "ADM1_EN"
+          "id": "adm1_id",
+          "name": "adm1_name"
         },
         {
           "level": "2",
-          "id": "dv_adm2_id",
-          "name": "ADM2_EN"
+          "id": "adm2_id",
+          "name": "adm2_name"
         }
       ],
       "type": "bar"
@@ -211,13 +211,13 @@
       "levels": [
         {
           "level": "1",
-          "id": "dv_adm1_id",
-          "name": "ADM1_EN"
+          "id": "adm1_id",
+          "name": "adm1_name"
         },
         {
           "level": "2",
-          "id": "dv_adm2_id",
-          "name": "ADM2_EN"
+          "id": "adm2_id",
+          "name": "adm2_name"
         }
       ],
       "type": "line"
@@ -240,13 +240,13 @@
       "levels": [
         {
           "level": "1",
-          "id": "dv_adm1_id",
-          "name": "ADM1_EN"
+          "id": "adm1_id",
+          "name": "adm1_name"
         },
         {
           "level": "2",
-          "id": "dv_adm2_id",
-          "name": "ADM2_EN"
+          "id": "adm2_id",
+          "name": "adm2_name"
         }
       ],
       "type": "line"
@@ -273,13 +273,13 @@
       "levels": [
         {
           "level": "1",
-          "id": "dv_adm1_id",
-          "name": "ADM1_EN"
+          "id": "adm1_id",
+          "name": "adm1_name"
         },
         {
           "level": "2",
-          "id": "dv_adm2_id",
-          "name": "ADM2_EN"
+          "id": "adm2_id",
+          "name": "adm2_name"
         }
       ],
       "type": "line"
