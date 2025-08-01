@@ -31,10 +31,7 @@ import {
   DateRangeRounded,
   CloseRounded,
 } from '@material-ui/icons';
-import {
-  useAppDispatch as useDispatch,
-  useAppSelector as useSelector,
-} from 'context/hooks';
+import { useDispatch, useSelector } from 'context/hooks';
 import DatePicker from 'react-datepicker';
 import { isNil, orderBy, range } from 'lodash';
 import {

@@ -8,7 +8,7 @@ import {
 import type { AppDispatch } from 'context/store';
 import OpacityIcon from '@material-ui/icons/Opacity';
 import { memo, useCallback, useEffect, useMemo, useState } from 'react';
-import { useAppDispatch, useAppSelector } from 'context/hooks';
+import { useDispatch, useSelector } from 'context/hooks';
 
 import { LayerKey, LayerType } from 'config/types';
 import { LayerDefinitions } from 'config/utils';
@@ -49,16 +49,16 @@ const SwitchItem = memo(
     } = layer;
     const classes = useStyles();
     const { t } = useSafeTranslation();
-    const selectedLayers = useAppSelector(layersSelector);
-    const serverAvailableDates = useAppSelector(availableDatesSelector);
+    const selectedLayers = useSelector(layersSelector);
+    const serverAvailableDates = useSelector(availableDatesSelector);
     // keep track of layers for which we are computing available dates
     // to avoid triggering duplicate actions
-    const layersLoadingDates = useAppSelector(layersLoadingDatesIdsSelector);
-    const map = useAppSelector(mapSelector);
+    const layersLoadingDates = useSelector(layersLoadingDatesIdsSelector);
+    const map = useSelector(mapSelector);
     const [isOpacitySelected, setIsOpacitySelected] = useState(false);
-    const dispatch: AppDispatch = useAppDispatch();
+    const dispatch: AppDispatch = useDispatch();
 
-    const opacity = useAppSelector(opacitySelector(layerId));
+    const opacity = useSelector(opacitySelector(layerId));
     const hexDisplay = layer.type === 'point_data' && layer.hexDisplay;
     // Hack to use composite layer type for hexDisplay layers and switch
     // to using fill for opacity control

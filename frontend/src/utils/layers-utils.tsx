@@ -36,7 +36,7 @@ import {
 import { layerDatesPreloaded } from 'context/serverPreloadStateSlice';
 import { countBy, get, pickBy, uniqBy } from 'lodash';
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'context/hooks';
 import { LocalError } from 'utils/error-utils';
 import { DateFormat } from 'utils/name-utils';
 import {
