@@ -56,7 +56,7 @@ export const getChartAdminBoundaryParams = (
   properties: { [key: string]: any },
 ): AdminBoundaryParams => {
   const { serverLayerName, chartData } = layer;
-  const locationLevelNames = boundaryLayer.adminLevelLocalNames;
+  const { adminLevelNames, adminLevelLocalNames } = boundaryLayer;
 
   const { levels, url: chartUrl, fields: datasetFields } = chartData!;
 
@@ -70,10 +70,14 @@ export const getChartAdminBoundaryParams = (
       [item.id]: {
         code: properties[item.id],
         level: item.level,
-        name: properties[item.name],
+        name:
+          properties[item.name] ||
+          properties[
+            adminLevelNames[Number(item.level) - (multiCountry ? 0 : 1)]
+          ],
         localName:
           properties[
-            locationLevelNames[Number(item.level) - (multiCountry ? 0 : 1)]
+            adminLevelLocalNames[Number(item.level) - (multiCountry ? 0 : 1)]
           ],
       },
     }),

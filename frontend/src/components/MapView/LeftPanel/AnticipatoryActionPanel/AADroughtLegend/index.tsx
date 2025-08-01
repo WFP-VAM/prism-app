@@ -7,84 +7,21 @@ import {
 import { useSafeTranslation } from 'i18n';
 import { borderGray } from 'muiTheme';
 import React from 'react';
-import { safeCountry } from 'config';
-import { getAAIcon } from '../AnticipatoryActionDroughtPanel/utils';
 import { useAACommonStyles } from '../utils';
+import {
+  getLegendPhases,
+  getDescriptionText,
+} from '../AnticipatoryActionDroughtPanel/utils/countryConfig';
 import HowToReadModal from '../HowToReadModal';
-
-const isZimbabwe = safeCountry === 'zimbabwe';
-const isMalawi = safeCountry === 'malawi';
-
-const phases = [
-  ...(isZimbabwe || isMalawi
-    ? []
-    : [
-        {
-          icon: getAAIcon('Severe', 'Set', true),
-          phase: 'Set',
-          severity: 'Severe',
-        },
-        {
-          icon: getAAIcon('Severe', 'Ready', true),
-          phase: 'Ready',
-          severity: 'Severe',
-        },
-      ]),
-  ...(isMalawi
-    ? []
-    : [
-        {
-          icon: getAAIcon('Moderate', 'Set', true),
-          phase: 'Set',
-          severity: 'Moderate',
-        },
-        {
-          icon: getAAIcon('Moderate', 'Ready', true),
-          phase: 'Ready',
-          severity: 'Moderate',
-        },
-      ]),
-
-  ...(isZimbabwe || isMalawi
-    ? [
-        {
-          icon: getAAIcon('Normal', 'Set', true),
-          phase: 'Set',
-          severity: 'Below Normal',
-        },
-        {
-          icon: getAAIcon('Normal', 'Ready', true),
-          phase: 'Ready',
-          severity: 'Below Normal',
-        },
-      ]
-    : [
-        {
-          icon: getAAIcon('Mild', 'Set', true),
-          phase: 'Set',
-          severity: 'Mild',
-        },
-        {
-          icon: getAAIcon('Mild', 'Ready', true),
-          phase: 'Ready',
-          severity: 'Mild',
-        },
-      ]),
-  {
-    icon: getAAIcon('na', 'na', true),
-    phase: 'No Action',
-  },
-  {
-    icon: getAAIcon('ny', 'ny', true),
-    phase: 'Not Yet Monitored',
-  },
-];
 
 function AADroughtLegend({ showDescription = true }: AADroughtLegendProps) {
   const [open, setOpen] = React.useState(false);
   const classes = useStyles();
   const commonClasses = useAACommonStyles();
   const { t } = useSafeTranslation();
+
+  const phases = getLegendPhases();
+  const descriptionText = getDescriptionText();
 
   return (
     <>
@@ -133,13 +70,7 @@ function AADroughtLegend({ showDescription = true }: AADroughtLegendProps) {
                 {t('The "Ready, Set & Go!" system')}
               </span>
             }{' '}
-            {isMalawi
-              ? t(
-                  'uses seasonal forecasts from ECMWF with longer lead time for preparedness (Ready phase) and shorter lead times for activation and mobilization (Set & Go! phases).',
-                )
-              : t(
-                  'uses seasonal forecasts with longer lead time for preparedness (Ready phase) and shorter lead times for activation and mobilization (Set & Go! phases).',
-                )}
+            {t(descriptionText)}
           </Typography>
           <Divider />
 

@@ -1,6 +1,7 @@
 {
   "country": "Malawi",
   "anticipatoryActionDroughtUrl": "https://data.earthobservation.vam.wfp.org/public-share/aa/aa_probabilities_triggers_mwi.csv",
+  "anticipatoryActionDroughtStagingUrl": "https://data.earthobservation.vam.wfp.org/public-share/aa/staging/aa_probabilities_triggers_mwi.csv",
   "countryAdmin0Id": 152,
   "alertFormActive": false,
   "enableNavigationDropdown": true,
