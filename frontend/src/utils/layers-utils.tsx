@@ -462,11 +462,18 @@ const useLayers = () => {
     const nonBoundaryLayers = selectedLayers.filter(
       layer => layer.type !== 'boundary',
     );
+
+    // Check if any of the selected layers are currently loading their dates
+    const hasLayersLoadingDates = nonBoundaryLayers.some(layer =>
+      layersLoadingDates.includes(layer.id),
+    );
+
     if (
       selectedLayerDates.length !== 0 ||
       selectedLayersWithDateSupport.length === 0 ||
       !selectedDate ||
-      nonBoundaryLayers.length < 2
+      nonBoundaryLayers.length < 2 ||
+      hasLayersLoadingDates
     ) {
       return;
     }
@@ -494,6 +501,7 @@ const useLayers = () => {
     selectedLayerDates.length,
     selectedLayers,
     selectedLayersWithDateSupport.length,
+    layersLoadingDates,
     t,
   ]);
 
