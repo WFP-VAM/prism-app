@@ -372,7 +372,7 @@ const useLayers = () => {
 
   // The date integer from url
   const dateInt = useMemo(
-    () => (urlDate ? new Date(urlDate) : new Date()).setUTCHours(12, 0, 0, 0),
+    () => (urlDate ? new Date(urlDate).setUTCHours(12, 0, 0, 0) : undefined),
     [urlDate],
   );
 
@@ -405,10 +405,15 @@ const useLayers = () => {
       updateHistory('date', getFormattedDate(dateInt, 'default') as string);
       return;
     }
+    if (dateInt === undefined) {
+      return;
+    }
 
     dispatch(
       addNotification({
-        message: t('Invalid date found. Using most recent date'),
+        message: t('Invalid date found {{date}}. Using most recent date', {
+          date: urlDate,
+        }),
         type: 'warning',
       }),
     );
