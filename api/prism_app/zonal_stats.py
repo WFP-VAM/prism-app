@@ -10,8 +10,9 @@ from urllib.parse import urlencode
 
 import numpy as np
 import rasterio  # type: ignore
-from app.caching import CACHE_DIRECTORY, cache_file, get_json_file, is_file_valid
-from app.models import (
+from fastapi import HTTPException
+from prism_app.caching import CACHE_DIRECTORY, cache_file, get_json_file, is_file_valid
+from prism_app.models import (
     FilePath,
     GeoJSON,
     GeoJSONFeature,
@@ -19,10 +20,9 @@ from app.models import (
     WfsParamsModel,
     WfsResponse,
 )
-from app.raster_utils import calculate_pixel_area, gdal_calc, reproj_match
-from app.timer import timed
-from app.validation import VALID_OPERATORS
-from fastapi import HTTPException
+from prism_app.raster_utils import calculate_pixel_area, gdal_calc, reproj_match
+from prism_app.timer import timed
+from prism_app.validation import VALID_OPERATORS
 from rasterio.warp import Resampling
 from rasterstats import zonal_stats  # type: ignore
 from shapely.errors import GEOSException  # type: ignore

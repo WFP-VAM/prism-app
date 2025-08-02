@@ -9,27 +9,32 @@ from typing import Annotated, Any, Optional
 from urllib.parse import ParseResult, urlencode, urlunparse
 
 import rasterio  # type: ignore
-from app.auth import validate_user
-from app.caching import FilePath, cache_file, cache_geojson
-from app.database.alert_model import AlchemyEncoder, AlertModel
-from app.database.database import AlertsDataBase
-from app.database.user_info_model import UserInfoModel
-from app.googleflood import (
+from fastapi import Depends, FastAPI, HTTPException, Path, Query, Response
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import FileResponse, JSONResponse
+from prism_app.auth import validate_user
+from prism_app.caching import FilePath, cache_file, cache_geojson
+from prism_app.database.alert_model import AlchemyEncoder, AlertModel
+from prism_app.database.database import AlertsDataBase
+from prism_app.database.user_info_model import UserInfoModel
+from prism_app.googleflood import (
     get_google_flood_dates,
     get_google_floods_gauge_forecast,
     get_google_floods_gauges,
     get_google_floods_inundations,
 )
-from app.hdc import get_hdc_stats
-from app.kobo import get_form_dates, get_form_responses, parse_datetime_params
-from app.models import AcledRequest, RasterGeotiffModel
-from app.report import download_report
-from app.timer import timed
-from app.validation import validate_intersect_parameter
-from app.zonal_stats import DEFAULT_STATS, GroupBy, calculate_stats, get_wfs_response
-from fastapi import Depends, FastAPI, HTTPException, Path, Query, Response
-from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import FileResponse, JSONResponse
+from prism_app.hdc import get_hdc_stats
+from prism_app.kobo import get_form_dates, get_form_responses, parse_datetime_params
+from prism_app.models import AcledRequest, RasterGeotiffModel
+from prism_app.report import download_report
+from prism_app.timer import timed
+from prism_app.validation import validate_intersect_parameter
+from prism_app.zonal_stats import (
+    DEFAULT_STATS,
+    GroupBy,
+    calculate_stats,
+    get_wfs_response,
+)
 from pydantic import EmailStr, HttpUrl, ValidationError
 from requests import get
 
@@ -479,7 +484,7 @@ def get_google_floods_dates_api(
 
 @app.get("/google-floods/gauges/forecasts")
 def get_google_floods_gauge_forecast_api(
-    gauge_ids: str = Query(..., description="Comma-separated list of gauge IDs")
+    gauge_ids: str = Query(..., description="Comma-separated list of gauge IDs"),
 ):
     """Get forecast data for a gauge or multiple gauges"""
     gauge_id_list = [id.strip() for id in gauge_ids.split(",")]

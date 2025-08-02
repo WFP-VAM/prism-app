@@ -18,7 +18,7 @@ import {
   useMemo,
   useState,
 } from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector } from 'context/hooks';
 import { LayerType } from 'config/types';
 import { useSafeTranslation } from 'i18n';
 import { cyanBlue, lightGrey } from 'muiTheme';

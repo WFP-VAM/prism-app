@@ -6,10 +6,10 @@ import logging
 import secrets
 from typing import Annotated
 
-from app.database.database import AuthDataBase
-from app.database.user_info_model import UserInfoModel
 from fastapi import Depends, HTTPException, status
 from fastapi.security import HTTPBasic, HTTPBasicCredentials
+from prism_app.database.database import AuthDataBase
+from prism_app.database.user_info_model import UserInfoModel
 from sqlalchemy.exc import SQLAlchemyError
 
 logger = logging.getLogger(__name__)
@@ -44,7 +44,7 @@ def verify_hash(password: str, saved_salt: str) -> bytes:
 
 
 def validate_user(
-    credentials: Annotated[HTTPBasicCredentials, depends]
+    credentials: Annotated[HTTPBasicCredentials, depends],
 ) -> UserInfoModel:
     """Validate user info."""
     if not auth_db.active:

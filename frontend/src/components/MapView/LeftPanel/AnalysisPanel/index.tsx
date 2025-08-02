@@ -31,7 +31,7 @@ import {
   DateRangeRounded,
   CloseRounded,
 } from '@material-ui/icons';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'context/hooks';
 import DatePicker from 'react-datepicker';
 import { isNil, orderBy, range } from 'lodash';
 import {
@@ -40,7 +40,6 @@ import {
   layerDataSelector,
 } from 'context/mapStateSlice/selectors';
 import { useUrlHistory } from 'utils/url-utils';
-import { availableDatesSelector } from 'context/serverStateSlice';
 import {
   AnalysisDispatchParams,
   PolygonAnalysisDispatchParams,
@@ -96,6 +95,11 @@ import {
   safeDispatchAddLayer,
 } from 'utils/map-utils';
 import { removeLayer } from 'context/mapStateSlice';
+import {
+  availableDatesSelector,
+  layersLoadingDatesIdsSelector,
+  loadAvailableDatesForLayer,
+} from 'context/serverStateSlice';
 import LayerDropdown from 'components/MapView/Layers/LayerDropdown';
 import SimpleDropdown from 'components/Common/SimpleDropdown';
 import {
@@ -126,6 +130,7 @@ const AnalysisPanel = memo(() => {
     getAnalysisParams,
   } = useUrlHistory();
   const availableDates = useSelector(availableDatesSelector);
+  const layersLoadingDates = useSelector(layersLoadingDatesIdsSelector);
   const analysisResult = useSelector(analysisResultSelector);
   const analysisResultSortByKey = useSelector(analysisResultSortByKeySelector);
   const analysisResultSortOrder = useSelector(analysisResultSortOrderSelector);
@@ -265,6 +270,19 @@ const AnalysisPanel = memo(() => {
     : null;
   const { translatedColumns } = useAnalysisTableColumns(analysisResult);
 
+  // make sure that available dates are calculated for the selected layer
+  // so that a date can be selected in the date picker
+  useEffect(() => {
+    if (hazardLayerId !== undefined) {
+      if (
+        availableDates[hazardLayerId] === undefined &&
+        !layersLoadingDates.includes(hazardLayerId)
+      ) {
+        dispatch(loadAvailableDatesForLayer(hazardLayerId));
+      }
+    }
+  }, [availableDates, dispatch, hazardLayerId, layersLoadingDates]);
+
   // set default date after dates finish loading and when hazard layer changes
   useEffect(() => {
     if (isNil(lastAvailableHazardDate)) {
@@ -290,7 +308,7 @@ const AnalysisPanel = memo(() => {
     lastAvailableHazardEndDate,
   ]);
 
-  // Only epxand if analysis results are available.
+  // Only expand if analysis results are available.
   useEffect(() => {
     if (!analysisResult) {
       setShowTable(false);
