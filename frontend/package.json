@@ -54,7 +54,7 @@
     "@material-ui/icons": "^4.11.3",
     "@material-ui/lab": "4.0.0-alpha.61",
     "@material-ui/styles": "4.11.5",
-    "@react-pdf/renderer": "3.4.4",
+    "@react-pdf/renderer": "^3.4.5",
     "@reduxjs/toolkit": "^1.4.0",
     "@sentry/browser": "^7.119.1",
     "@turf/bbox": "^7",
