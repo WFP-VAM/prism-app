@@ -44,4 +44,4 @@ jobs:
          yarn test
 
       - name: Security audit
-        run: cd alerting && yarn audit
+        run: cd alerting && yarn run audit

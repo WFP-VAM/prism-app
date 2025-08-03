@@ -73,7 +73,7 @@ jobs:
         run: cd frontend && yarn check-boundary-keys
 
       - name: Security audit
-        run: cd frontend && yarn audit
+        run: cd frontend && yarn run audit
 
       - name: Build
         run: cd frontend && yarn build
