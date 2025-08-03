@@ -1,0 +1,12 @@
+[tool.pip-audit]
+# Exit with error code 1 if vulnerabilities are found
+exit-code = 1
+
+# Show full vulnerability report
+format = "text"
+
+# Do not include development dependencies in audit
+dev = false
+
+# Show progress bar
+progress = true

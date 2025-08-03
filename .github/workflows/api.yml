@@ -39,6 +39,10 @@ jobs:
           cd api
           poetry run black --check .
           poetry run isort --check .
+      - name: Security audit
+        run: |
+          cd api
+          poetry run pip-audit --config pip-audit.toml
 
   api_build:
     name: build and test api
