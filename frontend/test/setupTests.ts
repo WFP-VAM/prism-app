@@ -158,3 +158,13 @@ jest.mock('chartjs-plugin-annotation', () => ({
     destroy: jest.fn(),
   },
 }));
+
+// Mock zonal-utils to avoid Web Worker issues in tests
+jest.mock('utils/zonal-utils', () => ({
+  calculate: jest.fn(() => Promise.resolve({})),
+}));
+
+// Mock zonal-utils to avoid Web Worker issues in tests
+jest.mock('utils/zonal-utils', () => ({
+  calculate: jest.fn(() => Promise.resolve({})),
+}));
