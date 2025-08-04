@@ -11,7 +11,7 @@ PyJWT = "2.4.0"
 python = ">=3.12,<3.13"
 requests = "^2.32.4"
 playwright = "1.53.0"
-fastapi = "^0.114.0"
+fastapi = "^0.116.0"
 httpx = "^0.28.0"
 uvicorn = { extras = ["standard"], version = "^0.23.2" }
 sqlalchemy = "^1.4.40"
@@ -36,7 +36,6 @@ geopandas = "^1.0.1"
 vcrpy = "6.0.1"
 # some package isn't updated for numpy 2.x yet
 numpy = "<2.0"
-
 
 [tool.poetry.group.dev.dependencies]
 black = "^24.3.0"
