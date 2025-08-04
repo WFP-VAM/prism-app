@@ -10,3 +10,7 @@ dev = false
 
 # Show progress bar
 progress = true
+
+# Mark specific vulnerabilities as safe/ignored
+[tool.pip-audit.vulnerabilities]
+GHSA-pq67-6m6q-mj2v = "ignored"
