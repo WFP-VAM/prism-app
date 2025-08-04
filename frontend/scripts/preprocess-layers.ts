@@ -133,6 +133,7 @@ const countryDirs = fs
 
 // Process each country
 (async () => {
+  const countriesWithPreprocessedDates = [];
   await Promise.all(
     countryDirs.map(async country => {
       // Load layers.json
@@ -147,6 +148,9 @@ const countryDirs = fs
       const dateLayersToProcess = Object.entries(layersData).filter(
         ([, layer]) => layer.path && layer.dates && layer.validityPeriod,
       );
+      if (dateLayersToProcess.length > 0) {
+        countriesWithPreprocessedDates.push(country);
+      }
       await preprocessValidityPeriods(country, dateLayersToProcess);
 
       const boundaryLayerToProcess = Object.values(layersData)
@@ -157,5 +161,9 @@ const countryDirs = fs
 
       await preprocessBoundaryLayer(country, boundaryLayerToProcess);
     }),
+  );
+  fs.writeFileSync(
+    path.join(__dirname, '../src/config/countriesWithPreprocessedDates.json'),
+    JSON.stringify(countriesWithPreprocessedDates),
   );
 })();
