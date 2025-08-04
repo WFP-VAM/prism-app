@@ -1,26 +1,37 @@
 import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
 import { AvailableDates, UserAuth } from 'config/types';
-import { getLayersAvailableDates } from 'utils/server-utils';
+import { getAvailableDatesForLayer } from 'utils/server-utils';
 import type { CreateAsyncThunkTypes, RootState } from './store';
 
 type ServerState = {
   availableDates: AvailableDates;
-  loading: boolean;
+  // ids of layers that are being loaded to prevent firing multiple
+  // load actions
+  loadingLayerIds: string[]; // TODO: should this be LayerKey[] ?
   error?: string;
   userAuth?: UserAuth;
 };
 
 const initialState: ServerState = {
   availableDates: {},
-  loading: false,
+  loadingLayerIds: [],
 };
 
-export const loadAvailableDates = createAsyncThunk<
+export const loadAvailableDatesForLayer = createAsyncThunk<
   AvailableDates,
-  void,
+  string,
   CreateAsyncThunkTypes
->('serverState/loadAvailableDates', (_, { dispatch }) =>
-  getLayersAvailableDates(dispatch),
+>(
+  'serverState/loadAvailableDatesForLayer',
+  async (layerId: string, { getState }) =>
+    getAvailableDatesForLayer(getState, layerId),
+  {
+    condition: (layerId: string, { getState }) => {
+      // prevent multiple loading when switching between variants of a same layer
+      const alreadyLoading = layersLoadingDatesIdsSelector(getState());
+      return !alreadyLoading.includes(layerId);
+    },
+  },
 );
 
 export const serverStateSlice = createSlice({
@@ -48,25 +59,30 @@ export const serverStateSlice = createSlice({
   },
   extraReducers: builder => {
     builder.addCase(
-      loadAvailableDates.fulfilled,
-      (state, { payload }: PayloadAction<AvailableDates>) => ({
+      loadAvailableDatesForLayer.fulfilled,
+      (state, { meta, payload }) => ({
         ...state,
-        loading: false,
-        availableDates: payload,
+        loadingLayerIds: state.loadingLayerIds.filter(id => id !== meta.arg),
+        availableDates: {
+          ...state.availableDates,
+          ...payload,
+        },
       }),
     );
 
-    builder.addCase(loadAvailableDates.rejected, (state, action) => ({
+    builder.addCase(loadAvailableDatesForLayer.rejected, (state, action) => ({
       ...state,
-      loading: false,
+      loadingLayerIds: state.loadingLayerIds.filter(
+        id => id !== action.meta.arg,
+      ),
       error: action.error.message
         ? action.error.message
         : action.error.toString(),
     }));
 
-    builder.addCase(loadAvailableDates.pending, state => ({
+    builder.addCase(loadAvailableDatesForLayer.pending, (state, action) => ({
       ...state,
-      loading: true,
+      loadingLayerIds: state.loadingLayerIds.concat([action.meta.arg]),
     }));
   },
 });
@@ -76,8 +92,12 @@ export const availableDatesSelector = (
   state: RootState,
 ): ServerState['availableDates'] => state.serverState.availableDates;
 
-export const isLoading = (state: RootState): ServerState['loading'] =>
-  state.serverState.loading;
+export const isLoading = (state: RootState): boolean =>
+  state.serverState.loadingLayerIds.length > 0;
+
+export const layersLoadingDatesIdsSelector = (
+  state: RootState,
+): ServerState['loadingLayerIds'] => state.serverState.loadingLayerIds;
 
 export const datesErrorSelector = (state: RootState): string | undefined =>
   state.serverState.error;

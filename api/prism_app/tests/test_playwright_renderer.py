@@ -4,8 +4,8 @@ from typing import Final
 from unittest.mock import patch
 
 import pytest
-from app.caching import CACHE_DIRECTORY
-from app.report import download_report
+from prism_app.caching import CACHE_DIRECTORY
+from prism_app.report import download_report
 
 EXPECTED_REPORT_FILEPATH: Final[str] = os.path.join(
     CACHE_DIRECTORY, "reports/", "report-cambodia-flood_extent-en-2023-07-07.pdf"
@@ -22,7 +22,7 @@ async def test_download_report():
 
     # Act
     report_path: str = await download_report(
-        "http://frontend:3000/?hazardLayerIds=flood_extent&date=2023-07-07",
+        "http://frontend:3300/?hazardLayerIds=flood_extent&date=2023-07-07",
         "flood_extent",
         "cambodia",
         "en",
@@ -49,7 +49,7 @@ async def test_should_load_report_from_cache_if_present(playwright_mock):
 
     # Act
     report_path: str = await download_report(
-        "http://frontend:3000/?hazardLayerIds=flood_extent&date=2023-07-07",
+        "http://frontend:3300/?hazardLayerIds=flood_extent&date=2023-07-07",
         "flood_extent",
         "cambodia",
         "en",
