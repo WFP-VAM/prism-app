@@ -125,11 +125,9 @@ async function preprocessValidityPeriods(country, layersToProcess) {
 // Get all country directories
 const countryDirs = fs
   .readdirSync(path.join(__dirname, '../src/config'))
-  .filter(file => {
-    return fs
-      .statSync(path.join(__dirname, '../src/config', file))
-      .isDirectory();
-  });
+  .filter(file =>
+    fs.statSync(path.join(__dirname, '../src/config', file)).isDirectory(),
+  );
 
 // Process each country
 (async () => {
