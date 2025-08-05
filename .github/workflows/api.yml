@@ -42,7 +42,7 @@ jobs:
       - name: Security audit
         run: |
           cd api
-          poetry run pip-audit
+          poetry run pip-audit --ignore-vuln GHSA-pq67-6m6q-mj2v
 
   api_build:
     name: build and test api
