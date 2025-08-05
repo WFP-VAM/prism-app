@@ -31,6 +31,9 @@ import tanzania from './tanzania';
 import ukraine from './ukraine';
 import zambia from './zambia';
 import zimbabwe from './zimbabwe';
+// list countries that have a preprocessed-layer-dates.json file
+// to avoid a failed network call on each layer activation
+import countriesWithPreprocessedDates from './countriesWithPreprocessedDates.json';
 
 // Upload the boundary URL to S3 to enable the use of the API in a local environment.
 const DEFAULT_BOUNDARIES_FOLDER =
@@ -86,10 +89,6 @@ const safeCountry =
   COUNTRY && has(configMap, COUNTRY.toLocaleLowerCase())
     ? (COUNTRY.toLocaleLowerCase() as Country)
     : DEFAULT;
-
-// list countries that have a preprocessed-layer-dates.json file
-// to avoid a failed network call on each layer activation
-const countriesWithPreprocessedDates = ['cameroon', 'nigeria', 'rbd'];
 
 const {
   defaultBoundariesFile,
