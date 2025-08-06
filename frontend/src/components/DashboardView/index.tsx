@@ -87,7 +87,7 @@ function DashboardView() {
           startIcon={<VisibilityOutlined />}
           onClick={handlePreviewClick}
           className={classes.previewButton}
-          size="small"
+          size="medium"
         >
           Preview
         </Button>
@@ -107,7 +107,7 @@ function DashboardView() {
             disableElevation
             startIcon={<Edit />}
             onClick={handleClosePreview}
-            size="small"
+            size="medium"
           >
             Back to Edit
           </Button>
@@ -116,7 +116,7 @@ function DashboardView() {
             variant="contained"
             disableElevation
             endIcon={<ArrowForward />}
-            size="small"
+            size="medium"
             style={{ backgroundColor: cyanBlue, color: black }}
           >
             Publish
