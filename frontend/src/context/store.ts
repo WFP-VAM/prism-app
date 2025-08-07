@@ -18,6 +18,7 @@ import mapTileLoadingStateReduce from './mapTileLoadingStateSlice';
 import leftPanelStateReduce from './leftPanelStateSlice';
 import opacityStateReduce from './opacityStateSlice';
 import dashboardStateReduce from './dashboardStateSlice';
+import dashboardMapStateReduce from './dashboardMapStateSlice';
 import anticipatoryActionDroughtStateReduce from './anticipatoryAction/AADroughtStateSlice';
 import anticipatoryActionStormStateReduce from './anticipatoryAction/AAStormStateSlice';
 
@@ -35,6 +36,7 @@ const reducer = combineReducers({
   leftPanelState: leftPanelStateReduce,
   opacityState: opacityStateReduce,
   dashboardState: dashboardStateReduce,
+  dashboardMapState: dashboardMapStateReduce,
   anticipatoryActionDroughtState: anticipatoryActionDroughtStateReduce,
   anticipatoryActionStormState: anticipatoryActionStormStateReduce,
 });

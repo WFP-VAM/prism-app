@@ -2,6 +2,7 @@ import { Box, makeStyles, Typography } from '@material-ui/core';
 import { useSelector, useDispatch } from 'react-redux';
 import type { DashboardTextConfig } from 'config/types';
 import TextBlock from './TextBlock';
+import DashboardMapComponent from './DashboardMap';
 
 import {
   dashboardTitleSelector,
@@ -38,7 +39,22 @@ function DashboardView() {
           </label>
         </Box>
         <Box className={classes.grayCard}>
-          <div>MAP PLACEHOLDER</div>
+          <div
+            style={{
+              height: '500px',
+              width: '100%',
+              display: 'flex',
+            }}
+          >
+            <div
+              style={{
+                flex: 1,
+                padding: '1rem',
+              }}
+            >
+              <DashboardMapComponent />
+            </div>
+          </div>
         </Box>
       </Box>
       <Box className={classes.trailingContentArea}>
