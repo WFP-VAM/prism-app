@@ -384,14 +384,20 @@ async function createAPIRequestParams(
   // Get default values for groupBy and admin boundary file path at the proper adminLevel
 
   const adminLevel =
-    (params as AdminLevelDataLayerProps)?.adminLevel ||
+    (params as AdminLevelDataLayerProps)?.adminLevel ??
     (params as BoundaryLayerProps)?.adminLevelCodes?.length;
-  const {
-    path: adminBoundariesPath,
-    adminCode: groupBy,
-    zonesPath,
-    simplifyTolerance,
-  } = getBoundaryLayersByAdminLevel(adminLevel);
+
+  const boundaryLayer = getBoundaryLayersByAdminLevel(adminLevel);
+
+  const adminBoundariesPath =
+    (params as BoundaryLayerProps)?.path ?? boundaryLayer.path;
+  const groupBy =
+    (params as BoundaryLayerProps)?.adminCode ?? boundaryLayer.adminCode;
+  const zonesPath =
+    (params as BoundaryLayerProps)?.zonesPath ?? boundaryLayer.zonesPath;
+  const simplifyTolerance =
+    (params as BoundaryLayerProps)?.simplifyTolerance ??
+    boundaryLayer.simplifyTolerance;
 
   // Note - This may not work when running locally as the function
   // will default to the boundary layer hosted in S3.
@@ -445,7 +451,6 @@ async function createAPIRequestParams(
       exposureValue?.operator && exposureValue.value
         ? `${exposureValue?.operator}${exposureValue?.value}`
         : undefined,
-    admin_level: adminLevel,
     simplify_tolerance: simplifyTolerance,
   };
 

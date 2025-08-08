@@ -101,9 +101,9 @@ def _read_zones(
         con = setup_duckdb_connection()
         # Create a temporary view for the filtered data
         view_name = "filtered_zones"
-        query = f"CREATE VIEW {view_name} AS SELECT * exclude(geometry)"
+        query = f"CREATE VIEW {view_name} AS SELECT *"
         if simplify_tolerance is not None:
-            query += f", ST_Simplify(geometry, {simplify_tolerance}) AS geometry"
+            query += f" exclude(geometry), ST_Simplify(geometry, {simplify_tolerance}) AS geometry"
         query += f" FROM read_parquet('{zones_filepath}')"
         if admin_level is not None:
             query += f" WHERE admin_level = {admin_level}"
@@ -138,7 +138,9 @@ def _extract_features_properties(
     admin_level: Optional[int] = None,
     simplify_tolerance: Optional[float] = None,
 ) -> list:
-    zones = _read_zones(zones_filename, admin_level, simplify_tolerance)
+    zones = _read_zones(
+        zones_filename, admin_level=admin_level, simplify_tolerance=simplify_tolerance
+    )
     return [f["properties"] for f in zones.get("features", [])]
 
 
@@ -149,16 +151,17 @@ def _group_zones(
     simplify_tolerance: Optional[float] = None,
 ) -> FilePath:
     """Group zones by a key id and merge polygons."""
-    safe_filename = (
-        zones_filepath.replace("/", "_").replace("s3://", "").replace("parquet", "json")
-    )
+    safe_filename = zones_filepath.replace("/", "_").replace("s3://", "")
+    cache_filename = safe_filename.replace("parquet", "json")
     output_filename: FilePath = "{zones}.{simplify_tolerance}.{group_by}".format(
-        zones=safe_filename, group_by=group_by, simplify_tolerance=simplify_tolerance
+        zones=cache_filename, group_by=group_by, simplify_tolerance=simplify_tolerance
     )
     if is_file_valid(output_filename):
         return output_filename
 
-    geojson_data = _read_zones(zones_filepath, admin_level, simplify_tolerance)
+    geojson_data = _read_zones(
+        zones_filepath, admin_level=admin_level, simplify_tolerance=simplify_tolerance
+    )
 
     features = geojson_data.get("features", [])
 
