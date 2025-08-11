@@ -53,7 +53,7 @@ const onClick =
       return;
     }
 
-    // Statistic Data
+    // Statistic Data for polygon analysis
     if (analysisData instanceof PolygonAnalysisResult) {
       const stats = JSON.parse(feature.properties['zonal:stat:classes']);
       // keys are the zonal classes like ['60 km/h', 'Uncertainty Cones']
@@ -70,6 +70,58 @@ const onClick =
         ]),
       );
       dispatch(addPopupData(popupData));
+      return;
+    }
+
+    // Common entries
+    const makeBaseEntries = (layerTitle: string) =>
+      ({
+        [t('Analysis layer')]: { data: layerTitle, coordinates },
+        ...(analysisData.analysisDate
+          ? {
+              [t('Date analyzed')]: {
+                data: getFormattedDate(
+                  analysisData.analysisDate,
+                  'locale',
+                  t('date_locale'),
+                ) as string,
+                coordinates,
+              },
+            }
+          : {}),
+      }) as Record<
+        string,
+        { data: string | number | null; coordinates: GeoJSON.Position }
+      >;
+
+    const layerTitle = (
+      analysisData as BaselineLayerResult | ExposedPopulationResult
+    ).getLayerTitle(t);
+
+    if (
+      analysisData instanceof BaselineLayerResult &&
+      analysisData.adminBoundariesFormat === 'pmtiles'
+    ) {
+      const adminCodeProperty = analysisData.getBaselineLayer().adminCode;
+      const stats = analysisData.statsByAdminId?.find(
+        stat =>
+          stat[adminCodeProperty] === feature.properties[adminCodeProperty],
+      );
+      if (stats) {
+        const statisticKey = analysisData.statistic;
+        const baseEntries = makeBaseEntries(layerTitle);
+        dispatch(
+          addPopupData({
+            ...baseEntries,
+            [analysisData.getStatLabel(t)]: {
+              data: `${getRoundedData(stats[statisticKey], t)} ${
+                units[statisticKey] || ''
+              }`,
+              coordinates,
+            },
+          }),
+        );
+      }
     } else {
       const statisticKey = analysisData.statistic;
       const precision =
@@ -77,24 +129,11 @@ const onClick =
       const formattedProperties = formatIntersectPercentageAttribute(
         feature.properties,
       );
+      const baseEntries = makeBaseEntries(layerTitle);
+
       dispatch(
         addPopupData({
-          [t('Analysis layer')]: {
-            data: (analysisData as ExposedPopulationResult).getLayerTitle(t),
-            coordinates,
-          },
-          ...(analysisData.analysisDate
-            ? {
-                [t('Date analyzed')]: {
-                  data: getFormattedDate(
-                    analysisData.analysisDate,
-                    'locale',
-                    t('date_locale'),
-                  ) as string,
-                  coordinates,
-                },
-              }
-            : {}),
+          ...baseEntries,
           [analysisData.getStatLabel(t)]: {
             data: `${getRoundedData(
               formattedProperties[statisticKey],
@@ -105,6 +144,7 @@ const onClick =
           },
         }),
       );
+
       if (statisticKey === AggregationOperations['Area exposed']) {
         dispatch(
           addPopupData({
@@ -189,7 +229,6 @@ function PMTilesAnalysisLayer({
 
   const boundarySourceId = `source-${boundaryLayerId}`;
   const { statistic } = analysisData;
-  const analysisLayerId = `${effectiveBoundaryId}-analysis-fill`;
 
   if (!effectiveBoundaryId || !boundarySourceId) {
     return null;
@@ -256,7 +295,7 @@ function PMTilesAnalysisLayer({
 
   return (
     <Layer
-      id={analysisLayerId}
+      id={layerId}
       type="fill"
       source={boundarySourceId}
       source-layer={fullBoundaryLayer.layerName}
