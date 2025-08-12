@@ -74,6 +74,12 @@ jobs:
       - name: Build
         run: cd frontend && yarn build
 
+      - name: Run cypress e2e tests for Mozambique
+        uses: cypress-io/github-action@v6
+        with:
+          start: REACT_APP_COUNTRY=mozambique yarn start
+          browser: chrome
+
   frontend_build_and_deploy:
     needs: frontend_tests
     if: github.event_name != 'push'
