@@ -244,7 +244,7 @@ const MapComponent = memo(() => {
           ),
         });
       })}
-      <AnalysisLayer before={firstBoundaryId} />
+      <AnalysisLayer before={firstBoundaryId} mapRef={mapRef} />
       <SelectionLayer before={firstSymbolId} />
       <MapTooltip />
     </MapGL>

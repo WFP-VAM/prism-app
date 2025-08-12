@@ -92,60 +92,90 @@ const buildRelationTree = (
   const { features } = boundaryLayerData;
   const featuresMulti = features as Feature<MultiPolygon>[];
 
-  const relations = featuresMulti.reduce((relationSet, searchFeature) => {
-    const { properties } = searchFeature;
+  const featuresByAdminLevel = new Map<
+    number,
+    Map<string, Feature<MultiPolygon>[]>
+  >();
 
-    const relationsFeature = adminLevelNames.reduce(
-      (relationLevelSet, adminLevelName, level) => {
-        const searchName = properties![adminLevelName];
+  const processedRelations = new Set<string>();
+  const relations: BoundaryRelation[] = [];
 
-        // If search name already exists within the featureSet, discard it.
-        const relationMatch = relationSet.find(
-          relation => relation.name === searchName && relation.level === level,
-        );
-        if (relationMatch) {
-          return relationLevelSet;
-        }
+  // Pre-populate lookup maps - single pass through features
+  featuresMulti.forEach(feature => {
+    const { properties } = feature;
+    if (!properties) {
+      return;
+    }
 
-        // Find within featureCollection all features matching the property field and value.
-        const matches: Feature<MultiPolygon>[] = featuresMulti.filter(
-          feature => feature.properties![adminLevelName] === searchName,
-        );
+    adminLevelNames.forEach((adminLevelName, level) => {
+      const searchName = properties[adminLevelName];
+      if (!searchName) {
+        return;
+      }
 
-        const bboxUnion: BBox = bbox({
-          type: 'FeatureCollection',
-          features: matches,
-        });
+      if (!featuresByAdminLevel.has(level)) {
+        featuresByAdminLevel.set(level, new Map());
+      }
 
-        const code = properties?.[layer.adminCode];
-        const parent =
-          level === 0 ? undefined : properties![adminLevelNames[level - 1]];
+      const levelMap = featuresByAdminLevel.get(level)!;
+      if (!levelMap.has(searchName)) {
+        levelMap.set(searchName, []);
+      }
 
-        const children =
-          level === adminLevelNames.length - 1
-            ? []
-            : matches.map(
-                feature => feature.properties![adminLevelNames[level + 1]],
-              );
-        const childrenSet = [...new Set(children)];
-        const childrenSetSorted = Array.prototype.sort.call(childrenSet);
+      const existingFeatures = levelMap.get(searchName)!;
+      levelMap.set(searchName, [...existingFeatures, feature]);
+    });
+  });
 
-        const relation: BoundaryRelation = {
-          adminCode: code as AdminCodeString,
-          bbox: bboxUnion,
-          level: level as AdminLevelType,
-          name: searchName,
-          parent,
-          children: childrenSetSorted,
-        };
+  // Process unique combinations only - no redundant work
+  Array.from(featuresByAdminLevel.entries()).forEach(([level, levelMap]) => {
+    Array.from(levelMap.entries()).forEach(([searchName, matches]) => {
+      const relationKey = `${searchName}-${level}`;
 
-        return [...relationLevelSet, relation];
-      },
-      [] as BoundaryRelation[],
-    );
+      if (processedRelations.has(relationKey)) {
+        return;
+      }
+      processedRelations.add(relationKey);
 
-    return [...relationSet, ...relationsFeature];
-  }, [] as BoundaryRelation[]);
+      // Get properties from first match (they're all the same for this admin name/level)
+      const { properties } = matches[0];
+
+      const bboxUnion: BBox = bbox({
+        type: 'FeatureCollection',
+        features: matches,
+      });
+
+      const code = properties?.[layer.adminCode];
+      const parent =
+        level === 0 ? undefined : properties![adminLevelNames[level - 1]];
+
+      const children =
+        level === adminLevelNames.length - 1
+          ? []
+          : [
+              ...new Set(
+                matches
+                  .map(
+                    feature => feature.properties![adminLevelNames[level + 1]],
+                  )
+                  .filter(Boolean),
+              ),
+            ];
+      const sortedChildren = sortBy(children);
+
+      const relation: BoundaryRelation = {
+        adminCode: code as AdminCodeString,
+        bbox: bboxUnion,
+        level: level as AdminLevelType,
+        name: searchName,
+        parent,
+        children: sortedChildren,
+      };
+
+      // eslint-disable-next-line fp/no-mutating-methods
+      relations.push(relation);
+    });
+  });
 
   return relations;
 };

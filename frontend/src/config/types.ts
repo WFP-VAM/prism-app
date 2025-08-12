@@ -396,6 +396,21 @@ export class BoundaryLayerProps extends CommonLayerProps {
   @optional
   isPrimary?: boolean | undefined;
 
+  @optional
+  format?: 'pmtiles' | 'geojson' = 'geojson';
+
+  @optional
+  zonesPath: FilePath; // path to admin_boundries.parquet file in S3
+
+  @optional
+  simplifyTolerance?: number; // optional geometry simplification for analysis stats (only an option when zonesPath provided)
+
+  @optional
+  layerName?: string;
+
+  @optional
+  hideInGoTo?: boolean | undefined;
+
   // Minimum zoom level to display the boundary.
   // Note that the layer is still loaded, but not displayed.
   @optional
