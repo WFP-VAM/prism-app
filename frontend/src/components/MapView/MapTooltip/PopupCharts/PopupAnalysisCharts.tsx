@@ -106,6 +106,7 @@ function PopupAnalysisCharts({
         <div key={filteredChartLayer.id} className={classes.chartContainer}>
           <div className={classes.chartSection}>
             <ChartSection
+              key={`${filteredChartLayer.id}-${adminCode}-${adminLevel}-${chartStartDate}-${chartEndDate}`}
               chartLayer={filteredChartLayer}
               adminProperties={adminProperties}
               adminLevel={adminLevel}
