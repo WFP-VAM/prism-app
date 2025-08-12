@@ -44,8 +44,17 @@ jobs:
         run: |
           cd frontend
           yarn install --frozen-lockfile --network-timeout 100000
+
       - name: setup 'common' package
         run: cd frontend && yarn run setup:common
+
+      - name: Run cypress e2e tests for Mozambique
+        uses: cypress-io/github-action@v6
+        with:
+          working-directory: ./frontend
+          start: REACT_APP_COUNTRY=mozambique yarn start
+          browser: chrome
+
       - name: Lint
         run: cd frontend && yarn lint:ci
 
@@ -70,13 +79,6 @@ jobs:
 
       - name: Check boundary keys
         run: cd frontend && yarn check-boundary-keys
-
-      - name: Run cypress e2e tests for Mozambique
-        uses: cypress-io/github-action@v6
-        with:
-          project: ./frontend
-          start: REACT_APP_COUNTRY=mozambique yarn start
-          browser: chrome
 
       - name: Build
         run: cd frontend && yarn build
