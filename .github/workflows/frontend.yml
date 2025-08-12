@@ -52,8 +52,9 @@ jobs:
         uses: cypress-io/github-action@v6
         with:
           working-directory: ./frontend
-          start: REACT_APP_COUNTRY=mozambique yarn start
+          start: yarn start
           browser: chrome
+          env: REACT_APP_COUNTRY=mozambique
 
       - name: Lint
         run: cd frontend && yarn lint:ci
