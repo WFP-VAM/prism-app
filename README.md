@@ -38,7 +38,7 @@ This is the primary configuration file. You can define:
 - Categories and their respective icons which are used to organize the top navigation
 - Alerts flag (to specify whether to activate the alerts module)
 
-For each category, you can define sub categories as "subcategorie_name":
+For each category, you can define sub categories as "subcategory_name":
 [layers], a list of layers from `layers.json`.
 
 ```
@@ -105,18 +105,18 @@ In addition, boundary files sometimes carry more precise coordinates than is nec
 
 #### PMTiles Support for Boundaries
 
-PRISM now supports PMTiles (Protomaps Tiles) format for administrative boundaries. PMTiles is an efficient single-file format for hosting vector tiles, which can significantly improve load times and reduce hosting complexity.
+PRISM supports the PMTiles format for administrative boundaries. PMTiles is an efficient single-file format for hosting vector tiles, which can significantly improve load times.
 
-To use PMTiles for boundaries:
-
-1. Configure your boundary layer in `layers.json`:
+To use PMTiles for boundaries, configure your boundary layer in `layers.json`:
 
 ```json
 {
   "admin_boundaries": {
     "type": "boundary",
     "format": "pmtiles", // Specify PMTiles format
-    "path": "https://your-bucket.s3.region.amazonaws.com/path/to/boundaries.pmtiles",
+    "path": "https://your-bucket.s3.region.amazonaws.com/path/to/boundaries.pmtiles", // HTTP path to file
+    "zones_path": "s3://bucket-name/path-to.parquet", // S3 path to source data for analysis zonal stats
+    "disableAnalysis": false, // Optionally hide from analysis option if performance concern 
     "opacity": 0.8,
     "admin_code": "admin_code_field",
     "admin_level_names": ["ADMIN0", "ADMIN1", "ADMIN2"],
@@ -133,49 +133,6 @@ To use PMTiles for boundaries:
     }
   }
 }
-```
-
-2. Configure S3 CORS Policy:
-   If hosting PMTiles on S3, ensure your bucket has the following CORS configuration:
-
-```json
-{
-  "CORSRules": [
-    {
-      "AllowedHeaders": ["*"],
-      "AllowedMethods": ["GET"],
-      "AllowedOrigins": [
-        "http://localhost:3000", // Add all development ports you need
-        "http://localhost:8080",
-        "https://*.web.app",
-        "https://*.wfp.org"
-      ],
-      "ExposeHeaders": ["ETag", "Range"],
-      "MaxAgeSeconds": 3000
-    }
-  ]
-}
-```
-
-Note:
-
-- The `Range` header in `ExposeHeaders` is crucial for PMTiles to work properly, as it uses range requests to fetch tile data efficiently
-- For localhost development, specify each port you need explicitly (e.g., 3000, 8080)
-
-3. Technical Details:
-
-- PMTiles uses a custom protocol handler (`pmtiles://`) to load tiles efficiently
-- The protocol is automatically registered when the application starts
-- Tiles are loaded on-demand as users pan and zoom
-- The format supports efficient caching and partial loading
-- Each PMTiles instance is cached and reused across the application
-- Currently supports boundary visualization; analysis features (like zonal statistics) will be supported in future updates
-
-4. Converting to PMTiles:
-   To convert your existing GeoJSON boundaries to PMTiles format, you can use the [PMTiles CLI tool](https://github.com/protomaps/go-pmtiles):
-
-```bash
-pmtiles convert input.geojson output.pmtiles
 ```
 
 #### Data Layers

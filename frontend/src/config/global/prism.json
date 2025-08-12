@@ -14,7 +14,7 @@
     "wms": ["https://api.earthobservation.vam.wfp.org/ows/wms"]
   },
   "map": {
-    "boundingBox": [-100, -35, 150, 50]
+    "boundingBox": [-130, -50, 177, 50]
   },
   "defaultDisplayBoundaries": [
     "global_admin2_boundaries",
