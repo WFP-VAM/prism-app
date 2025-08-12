@@ -49,6 +49,9 @@ jobs:
         run: cd frontend && yarn run setup:common
 
       - name: Run cypress e2e tests for Mozambique
+        # FIXME: some caching is missing for windows:
+        # see https://github.com/WFP-VAM/prism-app/actions/runs/16917042229/job/47933478269?pr=1522
+        if: matrix.os == 'ubuntu-latest'
         uses: cypress-io/github-action@v6
         with:
           working-directory: ./frontend
