@@ -98,6 +98,7 @@ const onClick =
       analysisData as BaselineLayerResult | ExposedPopulationResult
     ).getLayerTitle(t);
 
+    // PMTiles-based analysis layer
     if (
       analysisData instanceof BaselineLayerResult &&
       analysisData.adminBoundariesFormat === 'pmtiles'
@@ -123,6 +124,7 @@ const onClick =
         );
       }
     } else {
+      // GeoJSON-based analysis layer
       const statisticKey = analysisData.statistic;
       const precision =
         analysisData instanceof ExposedPopulationResult ? 0 : undefined;
