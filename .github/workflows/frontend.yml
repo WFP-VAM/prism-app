@@ -64,7 +64,8 @@ jobs:
         run: |
           ps aux | grep yarn
           echo $(ps aux | grep '[y]arn start' | awk '{ print $2 }')
-          killall -w node
+          kill -n 9 $(ps aux | grep '[y]arn start' | awk '{ print $2 }')
+          sleep 1
           ps aux | grep '[y]arn'
           ps aux | grep '[n]ode'
           netstat -lpn | grep 3000
