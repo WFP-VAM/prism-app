@@ -139,6 +139,10 @@
     "server_layer_name": "rfh_dekad",
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
+    "validity": {
+      "forward": 1,
+      "mode": "dekad"
+    },
     "opacity": 0.7,
     "legend_text": "Estimate of precipitation over a 10-day period derived from [CHIRPS (UCSB Climate Hazards Group)](https://www.chc.ucsb.edu/data/chirps).",
     "legend": "rfh_16_0_300",
@@ -152,6 +156,10 @@
     "server_layer_name": "rfq_dekad",
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
+    "validity": {
+      "forward": 1,
+      "mode": "dekad"
+    },
     "opacity": 0.7,
     "legend_text": "10-day precipitation anomaly compared to the long term average. Derived from [CHIRPS (UCSB Climate Hazards Group)](https://www.chc.ucsb.edu/data/chirps).",
     "legend": "rfq_14_20_400",
@@ -165,6 +173,11 @@
     "server_layer_name": "r1h_dekad",
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
+    "validity": {
+      "forward": 1,
+      "backward": 2,
+      "mode": "dekad"
+    },
     "opacity": 0.7,
     "legend_text": "Estimate of precipitation over a 1-month period derived from [CHIRPS (UCSB Climate Hazards Group)](https://www.chc.ucsb.edu/data/chirps).",
     "legend": "rfh_16_0_400",
@@ -178,6 +191,11 @@
     "server_layer_name": "r1q_dekad",
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
+    "validity": {
+      "forward": 1,
+      "backward": 2,
+      "mode": "dekad"
+    },
     "opacity": 0.7,
     "legend_text": "Monthly precipitation anomaly compared to the long term average. Derived from [CHIRPS (UCSB Climate Hazards Group)](https://www.chc.ucsb.edu/data/chirps).",
     "legend": "rfq_14_20_400",
@@ -191,6 +209,11 @@
     "server_layer_name": "r3h_dekad",
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
+    "validity": {
+      "forward": 1,
+      "backward": 8,
+      "mode": "dekad"
+    },
     "opacity": 0.7,
     "legend_text": "Estimate of precipitation over a 3-month period derived from [CHIRPS (UCSB Climate Hazards Group)](https://www.chc.ucsb.edu/data/chirps).",
     "legend": "rfh_16_0_800",
@@ -204,6 +227,11 @@
     "server_layer_name": "r3q_dekad",
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
+    "validity": {
+      "forward": 1,
+      "backward": 8,
+      "mode": "dekad"
+    },
     "opacity": 0.7,
     "legend_text": "3-month precipitation anomaly compared to the long term average. Derived from [CHIRPS (UCSB Climate Hazards Group)](https://www.chc.ucsb.edu/data/chirps).",
     "legend": "rfq_14_20_400",
@@ -640,6 +668,11 @@
     "server_layer_name": "r6h_dekad",
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
+    "validity": {
+      "forward": 1,
+      "backward": 17,
+      "mode": "dekad"
+    },
     "opacity": 0.7,
     "legend_text": "Estimate of precipitation over a 6-month period derived from [CHIRPS (UCSB Climate Hazards Group)](https://www.chc.ucsb.edu/data/chirps).",
     "legend": "rfh_16_0_1600",
@@ -653,6 +686,11 @@
     "server_layer_name": "r6q_dekad",
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
+    "validity": {
+      "forward": 1,
+      "backward": 17,
+      "mode": "dekad"
+    },
     "opacity": 0.7,
     "legend_text": "6-month precipitation anomaly compared to the long term average. Derived from [CHIRPS (UCSB Climate Hazards Group)](https://www.chc.ucsb.edu/data/chirps).",
     "legend": "ryq_14_50_200",
@@ -666,6 +704,11 @@
     "server_layer_name": "r9h_dekad",
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
+    "validity": {
+      "forward": 1,
+      "backward": 26,
+      "mode": "dekad"
+    },
     "opacity": 0.7,
     "legend_text": "Estimate of precipitation over a 9-month period derived from [CHIRPS (UCSB Climate Hazards Group)](https://www.chc.ucsb.edu/data/chirps).",
     "legend": "rfh_16_0_2400",
@@ -679,6 +722,11 @@
     "server_layer_name": "r9q_dekad",
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
+    "validity": {
+      "forward": 1,
+      "backward": 26,
+      "mode": "dekad"
+    },
     "opacity": 0.7,
     "legend_text": "9-month precipitation anomaly compared to the long term average. Derived from [CHIRPS (UCSB Climate Hazards Group)](https://www.chc.ucsb.edu/data/chirps).",
     "legend": "ryq_14_50_200",
@@ -692,6 +740,11 @@
     "server_layer_name": "ryh_dekad",
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
+    "validity": {
+      "forward": 1,
+      "backward": 35,
+      "mode": "dekad"
+    },
     "opacity": 0.7,
     "legend_text": "Estimate of precipitation over a 1-year period derived from [CHIRPS (UCSB Climate Hazards Group)](https://www.chc.ucsb.edu/data/chirps).",
     "legend": "rfh_16_0_2400",
@@ -705,6 +758,11 @@
     "server_layer_name": "ryq_dekad",
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
+    "validity": {
+      "forward": 1,
+      "backward": 35,
+      "mode": "dekad"
+    },
     "opacity": 0.7,
     "legend_text": "1-year precipitation anomaly compared to the long term average. Derived from [CHIRPS (UCSB Climate Hazards Group)](https://www.chc.ucsb.edu/data/chirps).",
     "legend": "ryq_14_50_200",
