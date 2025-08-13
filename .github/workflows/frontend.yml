@@ -58,7 +58,7 @@ jobs:
           start: yarn start
           browser: chrome
           env: REACT_APP_COUNTRY=mozambique
-          cypress-command: "npx cypress run --browser chrome --group mozambique --spec cypress/e2e/mozambique.cy.ts"
+          spec: cypress/e2e/mozambique.cy.ts
 
       - name: Run cypress e2e tests for RBD
         if: matrix.os == 'ubuntu-latest'
@@ -68,7 +68,7 @@ jobs:
           start: yarn start
           browser: chrome
           env: REACT_APP_COUNTRY=rbd
-          cypress-command: "npx cypress run --browser chrome --group rbd --spec cypress/e2e/rbd.cy.ts"
+          spec: cypress/e2e/rbd.cy.ts
 
       - name: Lint
         run: cd frontend && yarn lint:ci
