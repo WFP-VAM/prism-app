@@ -9,7 +9,6 @@ describe('Checks on dates', () => {
     cy.visit(frontendUrl);
     // specifying the resq package here is required for cy.react to work
     // see https://github.com/abhinaba-ghosh/cypress-react-selector/issues/320#issuecomment-1416634523
-    cy.waitForReact('node_modules/resq/dist/index.js');
     cy.toggleLayer(
       'Cadre Harmonise',
       'Phase Classification',
@@ -34,7 +33,6 @@ describe('Checks on dates', () => {
 
   it('should select intersecting dates when cadre harmonise overall phase classification plus rainfall layers are activated', () => {
     cy.visit(frontendUrl);
-    cy.waitForReact('node_modules/resq/dist/index.js');
 
     cy.toggleLayer('Rainfall', 'Rainfall Amount', 'Rainfall Aggregate');
     cy.url().should('include', 'date=');
