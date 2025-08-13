@@ -35,3 +35,16 @@
 //     }
 //   }
 // }
+
+// a custom cypress command to activate a layer.
+// args:
+// group1 and group2: names of the groups as displayed in the app
+// layerName: the name as shown next to the toggle
+Cypress.Commands.add(
+  'toggleLayer',
+  (group1: string, group2: string, layerName: string) => {
+    cy.contains(group1).click();
+    cy.contains(group2).click();
+    cy.get(`[type="checkbox"][aria-label="${layerName}"]`).click();
+  },
+);

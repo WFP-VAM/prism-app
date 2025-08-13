@@ -8,9 +8,7 @@ describe('Loading layers', () => {
   it('checks that dates are loaded', () => {
     cy.visit(frontendUrl);
 
-    cy.contains('Rainfall').click();
-    cy.contains('INAM Rainfall Data').click();
-    cy.get('[type="checkbox"][aria-label="Rainfall aggregate"]').click();
+    cy.toggleLayer('Rainfall', 'INAM Rainfall Data', 'Rainfall aggregate');
 
     cy.url().should('include', 'hazardLayerIds=precip_blended_dekad');
   });
