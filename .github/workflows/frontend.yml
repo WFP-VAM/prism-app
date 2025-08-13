@@ -65,6 +65,9 @@ jobs:
           ps aux | grep yarn
           echo $(ps aux | grep '[y]arn start' | awk '{ print $2 }')
           kill -n 9 $(ps aux | grep '[y]arn start' | awk '{ print $2 }')
+          ps aux | grep '[y]arn'
+          ps aux | grep '[n]ode'
+          netstat -lpn | grep 3000
 
       - name: Run cypress e2e tests for RBD
         if: matrix.os == 'ubuntu-latest'
