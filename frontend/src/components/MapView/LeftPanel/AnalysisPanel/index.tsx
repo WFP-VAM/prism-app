@@ -872,6 +872,17 @@ const AnalysisPanel = memo(() => {
           <Typography className={classes.colorBlack} variant="body2">
             {t('Threshold')}
           </Typography>
+          {baselineLayerId &&
+            LayerDefinitions[baselineLayerId]?.type === 'admin_level_data' &&
+            !belowThreshold &&
+            !aboveThreshold && (
+              <Typography style={{ color: 'red' }}>
+                {t(
+                  'A threshold is required when using an admin level data layer as baseline layer.',
+                )}
+              </Typography>
+            )}
+
           <div className={classes.rowInputContainer}>
             <TextField
               id="outlined-number-low"
@@ -1066,6 +1077,11 @@ const AnalysisPanel = memo(() => {
           disabled={
             !!thresholdError || // if there is a threshold error
             isAnalysisLoading || // or analysis is currently loading
+            // if the baseline is an admin level layer, at least one threshold must be set
+            (baselineLayerId &&
+              LayerDefinitions[baselineLayerId]?.type === 'admin_level_data' &&
+              !belowThreshold &&
+              !aboveThreshold) ||
             !hazardLayerId || // or hazard layer hasn't been selected
             (hazardDataType === GeometryType.Polygon
               ? !startDate || !endDate || !adminLevelLayerData
@@ -1082,6 +1098,8 @@ const AnalysisPanel = memo(() => {
     adminLevelLayerData,
     analysisResult,
     baselineLayerId,
+    belowThreshold,
+    aboveThreshold,
     classes.analysisButtonContainer,
     classes.bottomButton,
     endDate,
