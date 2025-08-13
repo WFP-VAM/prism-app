@@ -62,9 +62,8 @@ jobs:
 
       - name: Stop node server
         run: |
-          ls -l /tmp/pids/
-          cat /tmp/pids/server.pid
-          kill `cat tmp/pid/server.pid`
+          ps aux | grep yarn
+          kill `ps aux | grep 'yarn.js start' | grep -v grep | awk '{ print $2 }'`
 
       - name: Run cypress e2e tests for RBD
         if: matrix.os == 'ubuntu-latest'
