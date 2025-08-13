@@ -63,7 +63,7 @@ jobs:
       - name: Stop node server
         run: |
           ps aux | grep yarn
-          kill `ps aux | grep 'yarn start' | grep -v grep | awk '{ print $2 }'`
+          kill -9 $(ps aux | grep '[y]arn.js start' | awk '{ print $2 }')
 
       - name: Run cypress e2e tests for RBD
         if: matrix.os == 'ubuntu-latest'
