@@ -60,6 +60,12 @@ jobs:
           env: REACT_APP_COUNTRY=mozambique
           spec: cypress/e2e/mozambique.cy.ts
 
+      - name: Stop node server
+        run: |
+          ls -l /tmp/pids/
+          cat /tmp/pids/server.pid
+          kill `cat tmp/pid/server.pid`
+
       - name: Run cypress e2e tests for RBD
         if: matrix.os == 'ubuntu-latest'
         uses: cypress-io/github-action@v6
