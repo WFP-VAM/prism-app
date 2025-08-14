@@ -48,46 +48,6 @@ jobs:
       - name: setup 'common' package
         run: cd frontend && yarn run setup:common
 
-      - name: Run cypress e2e tests for Mozambique
-        # FIXME: some caching is missing for windows:
-        # see https://github.com/WFP-VAM/prism-app/actions/runs/16917042229/job/47933478269?pr=1522
-        if: matrix.os == 'ubuntu-latest'
-        uses: cypress-io/github-action@v6
-        with:
-          working-directory: ./frontend
-          start: yarn start_in_ci
-          browser: chrome
-          env: REACT_APP_COUNTRY=mozambique
-          spec: cypress/e2e/mozambique.cy.ts
-
-      - name: Stop node server (and vite)
-        run: |
-          ps aux | grep yarn
-          echo $(ps aux | grep '[y]arn start_in_ci' | awk '{ print $2 }')
-          # kill yarn
-          kill -n 9 $(ps aux | grep '[y]arn start_in_ci' | awk '{ print $2 }')
-          # kill the remaining vite process, which isn't stopped with the above
-          # kill -n 9 $(netstat -lpn | grep 3000 | awk '{ print $7 }' | sed 's/\/node//')
-          sleep 1
-          ps aux | grep '[y]arn'
-          ps aux | grep '[n]ode'
-          netstat -lpn | grep 3000
-
-      - name: Setup tmate session
-        if: ${{ failure() }}
-        uses: mxschmitt/action-tmate@v3
-        timeout-minutes: 15
-
-      - name: Run cypress e2e tests for RBD
-        if: matrix.os == 'ubuntu-latest'
-        uses: cypress-io/github-action@v6
-        with:
-          working-directory: ./frontend
-          start: yarn start_in_ci
-          browser: chrome
-          env: REACT_APP_COUNTRY=rbd
-          spec: cypress/e2e/rbd.cy.ts
-
       - name: Lint
         run: cd frontend && yarn lint:ci
 
@@ -115,6 +75,52 @@ jobs:
 
       - name: Build
         run: cd frontend && yarn build
+
+  frontend_end_to_end_tests:
+    strategy:
+      matrix:
+        country: [mozambique, rbd, cambodia]
+      max-parallel: 2
+
+    name: Frontend e2e tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Use Node.js 20.x
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20
+
+      - uses: actions/cache@v4
+        id: yarn-cache
+        with:
+          path: |
+            **/node_modules
+            **/.eslintcache
+            ${{ steps.yarn-cache-dir-path.outputs.dir }}
+          key: ${{ runner.os }}-yarn-2025-2-${{ hashFiles('**/frontend/yarn.lock') }}-${{ hashFiles('**/common/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-yarn-2025-2
+
+      - name: Install dependencies if needed.
+        if: steps.yarn-cache.outputs.cache-hit != 'true'
+        run: |
+          cd frontend
+          yarn install --frozen-lockfile --network-timeout 100000
+
+      - name: setup 'common' package
+        run: cd frontend && yarn run setup:common
+
+      - name: Run cypress e2e tests
+        uses: cypress-io/github-action@v6
+        with:
+          working-directory: ./frontend
+          start: yarn start
+          browser: chrome
+          env: REACT_APP_COUNTRY=${{ matrix.country }}
+          spec: cypress/e2e/${{ matrix.country }}.cy.ts cypress/e2e/all_countries.cy.ts
 
   frontend_build_and_deploy:
     needs: frontend_tests
