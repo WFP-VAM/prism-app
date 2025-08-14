@@ -108,7 +108,7 @@ jobs:
       - name: setup 'common' package
         # skip yarn install in frontend, as cypress does it anyway
         if: steps.yarn-cache.outputs.cache-hit != 'true'
-        run: cd frontend && yarn run setup:common
+        run: cd frontend && yarn run setup:common_in_ci
 
       - name: Run cypress e2e tests
         uses: cypress-io/github-action@v6
