@@ -122,6 +122,10 @@ jobs:
           spec: |
             cypress/e2e/${{ matrix.country }}.cy.ts
             cypress/e2e/all_countries.cy.ts
+          env:
+            # CI runners seem a bit slow, give them more time to complete
+            # each command in cypress
+            CYPRESS_COMMAND_TIMEOUT: 10000
         env:
           REACT_APP_COUNTRY: ${{ matrix.country }}
 
