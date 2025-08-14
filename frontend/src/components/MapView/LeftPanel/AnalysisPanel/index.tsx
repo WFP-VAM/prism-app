@@ -224,6 +224,12 @@ const AnalysisPanel = memo(() => {
   const hazardDataType: HazardDataType | null = selectedHazardLayer
     ? selectedHazardLayer.geometry || RasterType.Raster
     : null;
+  const requiredThresholdNotSet = Boolean(
+    baselineLayerId &&
+      LayerDefinitions[baselineLayerId]?.type === 'admin_level_data' &&
+      !belowThreshold &&
+      !aboveThreshold,
+  );
   const availableHazardDates = React.useMemo(
     () =>
       selectedHazardLayer
@@ -872,16 +878,13 @@ const AnalysisPanel = memo(() => {
           <Typography className={classes.colorBlack} variant="body2">
             {t('Threshold')}
           </Typography>
-          {baselineLayerId &&
-            LayerDefinitions[baselineLayerId]?.type === 'admin_level_data' &&
-            !belowThreshold &&
-            !aboveThreshold && (
-              <Typography style={{ color: 'red' }}>
-                {t(
-                  'A threshold is required when using an admin level data layer as baseline layer.',
-                )}
-              </Typography>
-            )}
+          {requiredThresholdNotSet && (
+            <Typography style={{ color: 'red' }}>
+              {t(
+                'A threshold is required when running an analysis for this type of layer. To generate statistics without a threshold, choose an administrative level as the baseline layer.',
+              )}
+            </Typography>
+          )}
 
           <div className={classes.rowInputContainer}>
             <TextField
@@ -966,6 +969,7 @@ const AnalysisPanel = memo(() => {
     belowThreshold,
     onThresholdOptionChange,
     aboveThreshold,
+    requiredThresholdNotSet,
     selectedDate,
     availableHazardDates,
   ]);
@@ -1078,10 +1082,7 @@ const AnalysisPanel = memo(() => {
             !!thresholdError || // if there is a threshold error
             isAnalysisLoading || // or analysis is currently loading
             // if the baseline is an admin level layer, at least one threshold must be set
-            (baselineLayerId &&
-              LayerDefinitions[baselineLayerId]?.type === 'admin_level_data' &&
-              !belowThreshold &&
-              !aboveThreshold) ||
+            requiredThresholdNotSet ||
             !hazardLayerId || // or hazard layer hasn't been selected
             (hazardDataType === GeometryType.Polygon
               ? !startDate || !endDate || !adminLevelLayerData
@@ -1098,8 +1099,6 @@ const AnalysisPanel = memo(() => {
     adminLevelLayerData,
     analysisResult,
     baselineLayerId,
-    belowThreshold,
-    aboveThreshold,
     classes.analysisButtonContainer,
     classes.bottomButton,
     endDate,
@@ -1114,6 +1113,7 @@ const AnalysisPanel = memo(() => {
     statistic,
     t,
     thresholdError,
+    requiredThresholdNotSet,
   ]);
 
   const renderedExposureAnalysisActions = useMemo(() => {
