@@ -4,6 +4,16 @@
 
 const frontendUrl = 'http://localhost:3000';
 
+describe('General stability', () => {
+  it('should open with specific analysis settings without hanging', () => {
+    cy.visit(
+      `${frontendUrl}/?analysisHazardLayerId=dekad_rainfall_forecast&analysisBaselineLayerId=admin1_boundaries&analysisDate=2025-08-11&analysisStatistic=mean`,
+    );
+    cy.contains('Rainfall').should('be.visible');
+    cy.contains('MapTiler', { timeout: 10000 }).should('be.visible');
+  });
+});
+
 describe('Checks on dates', () => {
   it('should disable first layer when cadre harmonise overall phase classification plus rainfall forecast are activated', () => {
     cy.visit(frontendUrl);
@@ -35,7 +45,7 @@ describe('Checks on dates', () => {
     cy.visit(frontendUrl);
 
     cy.toggleLayer('Rainfall', 'Rainfall Amount', 'Rainfall Aggregate');
-    cy.url().should('include', 'date=');
+    cy.url({ timeout: 10000 }).should('include', 'date=');
 
     // check that the selected date is within the past month
     cy.get('.react-datepicker-wrapper button span.MuiButton-label').should(
