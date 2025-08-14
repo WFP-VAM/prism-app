@@ -15,7 +15,7 @@ fastapi = "^0.114.0"
 httpx = "^0.28.0"
 uvicorn = { extras = ["standard"], version = "^0.23.2" }
 sqlalchemy = "^1.4.40"
-pydantic = { version = "1.10.13", extras = ["email"] }
+pydantic = { version = "1.10.22", extras = ["email"] }
 python-dateutil = "2.8.2"
 types-python-dateutil = "2.8.19"
 psycopg2 = "^2.9.9"

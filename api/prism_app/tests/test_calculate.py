@@ -3,17 +3,17 @@
 from datetime import datetime, timezone
 from unittest.mock import patch
 
-from app.kobo import get_form_responses
-from app.zonal_stats import calculate_stats
 from fastapi import HTTPException
+from prism_app.kobo import get_form_responses
+from prism_app.zonal_stats import calculate_stats
 from pytest import raises
 
 
 def test_calculate_stats_json_output():
     """Test calculate_stats with geojson_out=False."""
 
-    zones = "/app/tests/small_admin_boundaries.json"
-    geotiff = "/app/tests/raster_sample.tif"
+    zones = "/prism_app/tests/small_admin_boundaries.json"
+    geotiff = "/prism_app/tests/raster_sample.tif"
     features = calculate_stats(zones, geotiff, geojson_out=False)
     assert len(features) == 26
 
@@ -21,8 +21,8 @@ def test_calculate_stats_json_output():
 def test_calculate_stats_geojson_output():
     """Test calculate_stats with geojson_out=True."""
 
-    zones = "/app/tests/small_admin_boundaries.json"
-    geotiff = "/app/tests/raster_sample.tif"
+    zones = "/prism_app/tests/small_admin_boundaries.json"
+    geotiff = "/prism_app/tests/raster_sample.tif"
     features = calculate_stats(zones, geotiff, geojson_out=True)
     assert len(features) == 26
     # This breaks with Fiona >= 1.9 because it does not return
@@ -35,8 +35,8 @@ def test_calculate_stats_geojson_output():
 def test_calculate_stats_filter_by():
     """Test calculate_stats with geojson_out=True. and filter option"""
 
-    zones = "/app/tests/small_admin_boundaries.json"
-    geotiff = "/app/tests/raster_sample.tif"
+    zones = "/prism_app/tests/small_admin_boundaries.json"
+    geotiff = "/prism_app/tests/raster_sample.tif"
     features = calculate_stats(
         zones, geotiff, geojson_out=True, filter_by=("ADM2_EN", "Nomgon")
     )
@@ -61,8 +61,8 @@ def test_calculate_stats_filter_by():
 def test_calculate_stats_with_group_by():
     """Test calculate_stats with a group_by argument."""
 
-    zones = "/app/tests/small_admin_boundaries.json"
-    geotiff = "/app/tests/raster_sample.tif"
+    zones = "/prism_app/tests/small_admin_boundaries.json"
+    geotiff = "/prism_app/tests/raster_sample.tif"
     features = calculate_stats(
         zones,
         geotiff,
@@ -75,11 +75,11 @@ def test_calculate_stats_with_group_by():
 def test_calculate_stats_wfs_polygons():
     """Test calculate_stats with a group_by argument."""
 
-    zones = "/app/tests/small_admin_boundaries.json"
-    geotiff = "/app/tests/raster_sample.tif"
+    zones = "/prism_app/tests/small_admin_boundaries.json"
+    geotiff = "/prism_app/tests/raster_sample.tif"
     wfs_response = {
         "filter_property_key": "label",
-        "path": "/app/tests/wfs_response.json",
+        "path": "/prism_app/tests/wfs_response.json",
     }
 
     features = calculate_stats(
@@ -97,8 +97,8 @@ def test_calculate_stats_wfs_polygons():
     assert len(features) == 2
 
 
-@patch("app.kobo.get_responses_from_kobo")
-@patch("app.kobo.get_kobo_params")
+@patch("prism_app.kobo.get_responses_from_kobo")
+@patch("prism_app.kobo.get_kobo_params")
 def test_kobo_response_form(kobo_params, kobo_data):
     """Test form response parsing."""
     form_fields = {

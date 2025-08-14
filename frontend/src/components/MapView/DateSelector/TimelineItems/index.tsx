@@ -94,6 +94,7 @@ const TimelineItems = memo(
           const isDateAvailable = availableDatesToDisplay.includes(date.value);
           return (
             <Tooltip
+              key={date.value}
               title={<>{getTooltipContent(date)}</>}
               TransitionComponent={Fade}
               TransitionProps={{ timeout: 0 }}

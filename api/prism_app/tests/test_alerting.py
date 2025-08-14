@@ -1,10 +1,10 @@
 import json
 import os
 
-from app.database.database import AlertsDataBase
-from app.main import app
-from app.scripts.add_users import add_users
 from fastapi.testclient import TestClient
+from prism_app.database.database import AlertsDataBase
+from prism_app.main import app
+from prism_app.scripts.add_users import add_users
 
 client = TestClient(app)
 
