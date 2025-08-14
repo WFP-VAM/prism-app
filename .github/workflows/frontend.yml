@@ -55,7 +55,7 @@ jobs:
         uses: cypress-io/github-action@v6
         with:
           working-directory: ./frontend
-          start: yarn start
+          start: yarn start_in_ci
           browser: chrome
           env: REACT_APP_COUNTRY=mozambique
           spec: cypress/e2e/mozambique.cy.ts
@@ -63,11 +63,11 @@ jobs:
       - name: Stop node server (and vite)
         run: |
           ps aux | grep yarn
-          echo $(ps aux | grep '[y]arn start' | awk '{ print $2 }')
+          echo $(ps aux | grep '[y]arn start_in_ci' | awk '{ print $2 }')
           # kill yarn
-          kill -n 9 $(ps aux | grep '[y]arn start' | awk '{ print $2 }')
+          kill -n 9 $(ps aux | grep '[y]arn start_in_ci' | awk '{ print $2 }')
           # kill the remaining vite process, which isn't stopped with the above
-          kill -n 9 $(netstat -lpn | grep 3000 | awk '{ print $7 }' | sed 's/\/node//')
+          # kill -n 9 $(netstat -lpn | grep 3000 | awk '{ print $7 }' | sed 's/\/node//')
           sleep 1
           ps aux | grep '[y]arn'
           ps aux | grep '[n]ode'
@@ -83,7 +83,7 @@ jobs:
         uses: cypress-io/github-action@v6
         with:
           working-directory: ./frontend
-          start: yarn start
+          start: yarn start_in_ci
           browser: chrome
           env: REACT_APP_COUNTRY=rbd
           spec: cypress/e2e/rbd.cy.ts
