@@ -33,7 +33,7 @@ import {
   availableDatesSelector,
   layersLoadingDatesIdsSelector,
 } from 'context/serverStateSlice';
-import { layerDatesPreloaded } from 'context/serverPreloadStateSlice';
+import { layerDatesPreloadedSelector } from 'context/serverPreloadStateSlice';
 import { countBy, get, pickBy, uniqBy } from 'lodash';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'context/hooks';
@@ -78,7 +78,7 @@ const useLayers = () => {
   const unsortedSelectedLayers = useSelector(layersSelector);
   const serverAvailableDates = useSelector(availableDatesSelector);
   const layersLoadingDates = useSelector(layersLoadingDatesIdsSelector);
-  const datesPreloaded = useSelector(layerDatesPreloaded);
+  const datesPreloaded = useSelector(layerDatesPreloadedSelector);
   const { startDate: selectedDate } = useSelector(dateRangeSelector);
 
   // get AA config

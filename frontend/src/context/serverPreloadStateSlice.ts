@@ -30,16 +30,24 @@ export const preloadLayerDatesArraysForWMS = createAsyncThunk<
   Record<string, number[]>,
   void,
   CreateAsyncThunkTypes
->('serverState/preloadLayerDatesForWMS', (_, { dispatch }) =>
-  preloadLayerDatesForWMS(dispatch),
+>(
+  'serverState/preloadLayerDatesForWMS',
+  async (_, { dispatch }) => preloadLayerDatesForWMS(dispatch),
+  {
+    condition: (_, { getState }) => !WMSLayerDatesRequested(getState()),
+  },
 );
 
 export const preloadLayerDatesArraysForPointData = createAsyncThunk<
   Record<string, number[]>,
   void,
   CreateAsyncThunkTypes
->('serverState/preloadLayerDatesForPointData', (_, { dispatch }) =>
-  preloadLayerDatesForPointData(dispatch),
+>(
+  'serverState/preloadLayerDatesForPointData',
+  async (_, { dispatch }) => preloadLayerDatesForPointData(dispatch),
+  {
+    condition: (_, { getState }) => !pointDataLayerDatesRequested(getState()),
+  },
 );
 
 export const serverPreloadStateSlice = createSlice({
@@ -116,7 +124,7 @@ export const pointDataLayerDatesRequested = (state: RootState): boolean =>
   state.serverPreloadState?.loadingPointData ||
   state.serverPreloadState?.loadedPointData;
 
-export const layerDatesPreloaded = (state: RootState): boolean =>
+export const layerDatesPreloadedSelector = (state: RootState): boolean =>
   state.serverPreloadState?.loadedWMS &&
   state.serverPreloadState?.loadedPointData;
 
