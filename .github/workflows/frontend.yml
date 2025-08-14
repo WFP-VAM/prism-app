@@ -119,10 +119,9 @@ jobs:
           working-directory: ./frontend
           start: yarn start
           browser: chrome
-          spec: cypress/e2e/${{ matrix.country }}.cy.ts cypress/e2e/all_countries.cy.ts
-        env:
-          REACT_APP_COUNTRY: ${{ matrix.country }}
-          DEBUG: "@cypress/github-action"
+          spec: |
+            cypress/e2e/${{ matrix.country }}.cy.ts
+            cypress/e2e/all_countries.cy.ts
 
   frontend_build_and_deploy:
     needs: frontend_tests
