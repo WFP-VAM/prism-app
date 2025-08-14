@@ -110,6 +110,7 @@ import LoadingBlinkingDots from 'components/Common/LoadingBlinkingDots';
 import useLayers from 'utils/layers-utils';
 import { black, cyanBlue } from 'muiTheme';
 import { getFormattedDate } from 'utils/date-utils';
+import { layerDatesPreloadedSelector } from 'context/serverPreloadStateSlice';
 import AnalysisTable from './AnalysisTable';
 import ExposureAnalysisTable from './AnalysisTable/ExposureAnalysisTable';
 import ExposureAnalysisActions from './ExposureAnalysisActions';
@@ -131,6 +132,7 @@ const AnalysisPanel = memo(() => {
   } = useUrlHistory();
   const availableDates = useSelector(availableDatesSelector);
   const layersLoadingDates = useSelector(layersLoadingDatesIdsSelector);
+  const layerDatesPreloaded = useSelector(layerDatesPreloadedSelector);
   const analysisResult = useSelector(analysisResultSelector);
   const analysisResultSortByKey = useSelector(analysisResultSortByKeySelector);
   const analysisResultSortOrder = useSelector(analysisResultSortOrderSelector);
@@ -275,13 +277,25 @@ const AnalysisPanel = memo(() => {
   useEffect(() => {
     if (hazardLayerId !== undefined) {
       if (
+        ['wms', 'point_data'].includes(LayerDefinitions[hazardLayerId].type) &&
+        !layerDatesPreloaded
+      ) {
+        return;
+      }
+      if (
         availableDates[hazardLayerId] === undefined &&
         !layersLoadingDates.includes(hazardLayerId)
       ) {
         dispatch(loadAvailableDatesForLayer(hazardLayerId));
       }
     }
-  }, [availableDates, dispatch, hazardLayerId, layersLoadingDates]);
+  }, [
+    availableDates,
+    dispatch,
+    hazardLayerId,
+    layerDatesPreloaded,
+    layersLoadingDates,
+  ]);
 
   // set default date after dates finish loading and when hazard layer changes
   useEffect(() => {
