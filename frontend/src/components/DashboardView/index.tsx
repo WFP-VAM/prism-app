@@ -1,6 +1,9 @@
 import { Box, makeStyles, Typography } from '@material-ui/core';
 import { useSelector, useDispatch } from 'react-redux';
 import type { DashboardTextConfig } from 'config/types';
+import { LayerDefinitions } from 'config/utils';
+import { MapInstanceProvider } from 'components/MapView/MapInstanceContext';
+import SwitchItem from 'components/MapView/MapInstanceComponents/SwitchItem';
 import TextBlock from './TextBlock';
 import DashboardMapComponent from './DashboardMap';
 
@@ -9,6 +12,7 @@ import {
   setTitle,
   dashboardFlexElementsSelector,
 } from '../../context/dashboardStateSlice';
+// import DateSelector from 'components/MapView/DateSelector';
 
 function DashboardView() {
   const classes = useStyles();
@@ -46,6 +50,15 @@ function DashboardView() {
               display: 'flex',
             }}
           >
+            <div style={{ padding: '1rem', width: '20%' }}>
+              <Typography variant="h3">Layers</Typography>
+              <MapInstanceProvider index={0}>
+                <SwitchItem
+                  layer={LayerDefinitions.precip_blended_dekad}
+                  extent={[29, -27, 42, -9]}
+                />
+              </MapInstanceProvider>
+            </div>
             <div
               style={{
                 flex: 1,

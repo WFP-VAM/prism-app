@@ -1,27 +1,23 @@
 import React, { memo, useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import MapGL, { MapEvent, MapRef } from 'react-map-gl/maplibre';
-import { Map as MaplibreMap } from 'maplibre-gl';
 import { appConfig } from 'config';
 import { getDisplayBoundaryLayers } from 'config/utils';
-import {
-  setDashboardMap,
-  addDashboardLayer,
-  dashboardLayersSelector,
-  setDashboardBounds,
-  setDashboardLocation,
-  dashboardBoundsSelector,
-  dashboardZoomSelector,
-  dashboardMapSelector,
-} from 'context/dashboardMapStateSlice';
 import { mapStyle } from 'components/MapView/Map/utils';
 import { loadLayerData } from 'context/layers/layer-data';
 import BoundaryLayer from 'components/MapView/Layers/BoundaryLayer';
+import MapInstanceWMSLayer from 'components/MapView/MapInstanceComponents/MapInstanceWMSLayer';
 import {
   firstBoundaryOnView,
   getLayerMapId,
   isLayerOnView,
 } from 'utils/map-utils';
+import {
+  MapInstanceProvider,
+  useMapInstanceSelectors,
+  useMapInstanceActions,
+} from 'components/MapView/MapInstanceContext';
+import { isLoading, loadAvailableDates } from 'context/serverStateSlice';
 
 import 'maplibre-gl/dist/maplibre-gl.css';
 
@@ -29,17 +25,25 @@ const {
   map: { boundingBox, minZoom, maxZoom, maxBounds },
 } = appConfig;
 
-const DashboardMapComponent = memo(() => {
+const DashboardMapInner = memo(() => {
   const mapRef = React.useRef<MapRef>(null);
   const dispatch = useDispatch();
-  const dashboardLayers = useSelector(dashboardLayersSelector);
-  const savedBounds = useSelector(dashboardBoundsSelector);
-  const savedZoom = useSelector(dashboardZoomSelector);
-  const dashboardMap = useSelector(dashboardMapSelector);
+  const selectors = useMapInstanceSelectors();
+  const actions = useMapInstanceActions();
+
+  const dashboardLayers = useSelector(selectors.selectLayers);
+  const dashboardMapGetter = useSelector(selectors.selectMap);
+  const dashboardMap = dashboardMapGetter();
+  const datesLoading = useSelector(isLoading);
 
   const [firstSymbolId, setFirstSymbolId] = useState<string | undefined>(
     'label_airport',
   );
+
+  // Load available dates once on mount
+  useEffect(() => {
+    dispatch(loadAvailableDates());
+  }, [dispatch]);
 
   // Load default boundary layers on component mount
   useEffect(() => {
@@ -53,41 +57,14 @@ const DashboardMapComponent = memo(() => {
 
     // Add layers to dashboard state
     displayedBoundaryLayers.forEach(layer => {
-      dispatch(addDashboardLayer(layer));
+      actions.addLayer(layer);
     });
 
     // Load layer data for each boundary layer
     displayedBoundaryLayers.forEach(layer => {
       dispatch(loadLayerData({ layer }));
     });
-  }, [dispatch, dashboardLayers.length]);
-
-  const onDragEnd = useCallback(
-    (map: MaplibreMap) => () => {
-      const bounds = map.getBounds();
-      dispatch(setDashboardBounds(bounds));
-    },
-    [dispatch],
-  );
-
-  const onZoomEnd = useCallback(
-    (map: MaplibreMap) => () => {
-      const bounds = map.getBounds();
-      const newZoom = map.getZoom();
-      dispatch(setDashboardLocation({ bounds, zoom: newZoom }));
-    },
-    [dispatch],
-  );
-
-  const watchBoundaryChange = useCallback(
-    (map: MaplibreMap) => {
-      map.on('dragend', onDragEnd(map));
-      map.on('zoomend', onZoomEnd(map));
-      // Show initial value
-      onZoomEnd(map)();
-    },
-    [onDragEnd, onZoomEnd],
-  );
+  }, [dashboardLayers.length, actions, dispatch]);
 
   const onMapLoad = useCallback(
     (_e: MapEvent) => {
@@ -98,11 +75,9 @@ const DashboardMapComponent = memo(() => {
       const { layers } = map.getStyle();
       // Find the first symbol on the map to make sure we add boundary layers below them
       setFirstSymbolId(layers?.find(layer => layer.type === 'symbol')?.id);
-      dispatch(setDashboardMap(() => mapRef.current?.getMap() || undefined));
-      // Set up bounds tracking
-      watchBoundaryChange(map);
+      actions.setMap(() => mapRef.current?.getMap() || undefined);
     },
-    [dispatch, watchBoundaryChange],
+    [actions],
   );
 
   // Get the first boundary layer that's actually on the dashboard map
@@ -128,31 +103,27 @@ const DashboardMapComponent = memo(() => {
     [dashboardLayers, firstSymbolId, dashboardMap, firstBoundaryMapId],
   );
 
+  if (datesLoading) {
+    return <div>Loading...</div>;
+  }
+
   return (
     <MapGL
       ref={mapRef}
       dragRotate={false}
       minZoom={minZoom}
       maxZoom={maxZoom}
-      initialViewState={
-        savedBounds && savedZoom
-          ? {
-              longitude: savedBounds.getCenter().lng,
-              latitude: savedBounds.getCenter().lat,
-              zoom: savedZoom,
-            }
-          : {
-              bounds: boundingBox,
-              fitBoundsOptions: {
-                padding: {
-                  bottom: 20,
-                  left: 20,
-                  right: 20,
-                  top: 20,
-                },
-              },
-            }
-      }
+      initialViewState={{
+        bounds: boundingBox,
+        fitBoundsOptions: {
+          padding: {
+            bottom: 20,
+            left: 20,
+            right: 20,
+            top: 20,
+          },
+        },
+      }}
       mapStyle={mapStyle.toString()}
       onLoad={onMapLoad}
       maxBounds={maxBounds}
@@ -167,9 +138,29 @@ const DashboardMapComponent = memo(() => {
             />
           );
         }
+        if (layer.type === 'wms') {
+          return (
+            <MapInstanceWMSLayer
+              key={`dashboard-${layer.id}`}
+              layer={layer}
+              before={getBeforeId(index)}
+            />
+          );
+        }
         return null;
       })}
     </MapGL>
+  );
+});
+
+const DashboardMapComponent = memo(() => {
+  // Hard-coded index of 0 for now as this is the only map
+  const mapIndex = 0;
+
+  return (
+    <MapInstanceProvider index={mapIndex}>
+      <DashboardMapInner />
+    </MapInstanceProvider>
   );
 });
 
