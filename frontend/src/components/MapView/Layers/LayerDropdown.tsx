@@ -110,6 +110,9 @@ function LayerDropdown({
         ...category,
         layers: category.layers
           .filter(layer => layer.type === type)
+          // if the layer is an admin level data layer, filter out the layers that have dates as there is
+          // a bug when running an analysis. See https://github.com/WFP-VAM/prism-app/issues/1521
+          .filter(layer => type !== 'admin_level_data' || !('dates' in layer))
           .filter(filterLayersForAnalysis),
       }))
       // 4. filter categories which don't have any layers at the end of it all.
