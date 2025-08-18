@@ -6,7 +6,7 @@ import subprocess
 
 import rasterio
 import rioxarray
-from app.timer import timed
+from prism_app.timer import timed
 from rasterio.warp import CRS, Resampling, calculate_default_transform, reproject
 
 from .models import FilePath

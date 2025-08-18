@@ -5,9 +5,11 @@ import {
   Tooltip,
   makeStyles,
 } from '@material-ui/core';
+import type { AppDispatch } from 'context/store';
 import OpacityIcon from '@material-ui/icons/Opacity';
 import { memo, useCallback, useEffect, useMemo, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'context/hooks';
+
 import { LayerKey, LayerType } from 'config/types';
 import { LayerDefinitions } from 'config/utils';
 import { clearDataset } from 'context/datasetStateSlice';
@@ -16,7 +18,10 @@ import { useSafeTranslation } from 'i18n';
 import { refreshBoundaries } from 'utils/map-utils';
 import { getUrlKey, useUrlHistory } from 'utils/url-utils';
 import { Extent } from 'components/MapView/Layers/raster-utils';
-import { availableDatesSelector } from 'context/serverStateSlice';
+import {
+  availableDatesSelector,
+  layersLoadingDatesIdsSelector,
+} from 'context/serverStateSlice';
 import { checkLayerAvailableDatesAndContinueOrRemove } from 'components/MapView/utils';
 import { LocalError } from 'utils/error-utils';
 import { opacitySelector, setOpacity } from 'context/opacityStateSlice';
@@ -46,9 +51,13 @@ const SwitchItem = memo(
     const { t } = useSafeTranslation();
     const selectedLayers = useSelector(layersSelector);
     const serverAvailableDates = useSelector(availableDatesSelector);
+    // keep track of layers for which we are computing available dates
+    // to avoid triggering duplicate actions
+    const layersLoadingDates = useSelector(layersLoadingDatesIdsSelector);
     const map = useSelector(mapSelector);
     const [isOpacitySelected, setIsOpacitySelected] = useState(false);
-    const dispatch = useDispatch();
+    const dispatch: AppDispatch = useDispatch();
+
     const opacity = useSelector(opacitySelector(layerId));
     const hexDisplay = layer.type === 'point_data' && layer.hexDisplay;
     // Hack to use composite layer type for hexDisplay layers and switch
@@ -153,8 +162,9 @@ const SwitchItem = memo(
         }
         try {
           checkLayerAvailableDatesAndContinueOrRemove(
-            layer,
+            selectedLayer,
             serverAvailableDates,
+            layersLoadingDates,
             removeLayerFromUrl,
             dispatch,
           );
@@ -186,6 +196,7 @@ const SwitchItem = memo(
         removeLayerFromUrl,
         selectedLayers,
         serverAvailableDates,
+        layersLoadingDates,
         updateHistory,
       ],
     );
