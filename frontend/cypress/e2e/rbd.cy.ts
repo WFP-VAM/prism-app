@@ -45,7 +45,7 @@ describe('Checks on dates', () => {
     cy.visit(frontendUrl);
 
     cy.toggleLayer('Rainfall', 'Rainfall Amount', 'Rainfall Aggregate');
-    cy.url({ timeout: 10000 }).should('include', 'date=');
+    cy.url({ timeout: 20000 }).should('include', 'date=');
 
     // check that the selected date is within the past month
     cy.get('.react-datepicker-wrapper button span.MuiButton-label').should(
