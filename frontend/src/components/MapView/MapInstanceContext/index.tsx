@@ -3,6 +3,7 @@ import { Map as MaplibreMap } from 'maplibre-gl';
 import { LayerType } from 'config/types';
 import { DateRange } from 'context/mapStateSlice';
 import { BoundaryRelationsDict } from 'components/Common/BoundaryDropdown/utils';
+import { RootState } from 'context/store';
 
 // Type for map instance actions
 export type MapInstanceActions = {
@@ -15,8 +16,15 @@ export type MapInstanceActions = {
   dismissError: (error: string) => void;
 };
 
+export type MapInstanceSelectors = {
+  selectLayers: (state: RootState) => LayerType[];
+  selectDateRange: (state: RootState) => DateRange;
+  selectMap: () => MaplibreMap | undefined;
+};
+
 type MapInstanceContextType = {
   index: number;
+  selectors: Partial<MapInstanceSelectors>;
   actions: MapInstanceActions;
 };
 
@@ -52,7 +60,10 @@ export function MapInstanceProvider({
     [],
   );
 
-  const value = useMemo(() => ({ index, actions }), [index, actions]);
+  const value = useMemo(
+    () => ({ index, selectors: {}, actions }),
+    [index, actions],
+  );
   return (
     <MapInstanceContext.Provider value={value}>
       {children}
