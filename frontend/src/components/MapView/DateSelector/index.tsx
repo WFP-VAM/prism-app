@@ -13,14 +13,14 @@ import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import Draggable, { DraggableEvent } from 'react-draggable';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import {
   AnticipatoryAction,
   DateItem,
   DateRangeType,
   Panel,
 } from 'config/types';
-import { dateRangeSelector } from 'context/mapStateSlice/selectors';
+import { useMapState } from 'utils/useMapState';
 import { locales, useSafeTranslation } from 'i18n';
 import {
   dateStrToUpperCase,
@@ -32,7 +32,6 @@ import { useUrlHistory } from 'utils/url-utils';
 import useLayers from 'utils/layers-utils';
 import { format } from 'date-fns';
 import { leftPanelTabValueSelector } from 'context/leftPanelStateSlice';
-import { updateDateRange } from 'context/mapStateSlice';
 import { getRequestDate } from 'utils/server-utils';
 import { isAnticipatoryActionLayer, isWindowedDates } from 'config/utils';
 import { getAAConfig } from 'context/anticipatoryAction/config';
@@ -85,7 +84,8 @@ const DateSelector = memo(() => {
     checkSelectedDateForLayerSupport,
   } = useLayers();
 
-  const { startDate: stateStartDate } = useSelector(dateRangeSelector);
+  const mapState = useMapState();
+  const { startDate: stateStartDate } = mapState.dateRange;
   const tabValue = useSelector(leftPanelTabValueSelector);
   const [dateRange, setDateRange] = useState<DateRangeType[]>([
     {
@@ -114,7 +114,6 @@ const DateSelector = memo(() => {
 
   const { t } = useSafeTranslation();
   const { updateHistory } = useUrlHistory();
-  const dispatch = useDispatch();
   const theme = useTheme();
   const smUp = useMediaQuery(theme.breakpoints.up('sm'));
   const xsDown = useMediaQuery(theme.breakpoints.down('xs'));
@@ -215,7 +214,7 @@ const DateSelector = memo(() => {
     [dateRange],
   );
 
-  const dateSelector = useSelector(dateRangeSelector);
+  const dateSelector = mapState.dateRange;
 
   // We truncate layer by removing date that will not be drawn to the Timeline
   const truncatedLayers: DateItem[][] = useMemo(() => {
@@ -429,14 +428,14 @@ const DateSelector = memo(() => {
         return;
       }
       updateHistory('date', getFormattedDate(time, 'default') as string);
-      dispatch(updateDateRange({ startDate: time }));
+      mapState.actions.updateDateRange({ startDate: time });
     },
     [
       availableDates,
       checkSelectedDateForLayerSupport,
       stateStartDate,
       updateHistory,
-      dispatch,
+      mapState.actions,
     ],
   );
 

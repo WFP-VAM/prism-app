@@ -18,16 +18,8 @@ import {
   isAnticipatoryActionLayer,
   isWindowedDates,
 } from 'config/utils';
-import {
-  addLayer,
-  layerOrdering,
-  removeLayer,
-  updateDateRange,
-} from 'context/mapStateSlice';
-import {
-  dateRangeSelector,
-  layersSelector,
-} from 'context/mapStateSlice/selectors';
+import { layerOrdering } from 'context/mapStateSlice';
+import { useMapState } from 'utils/useMapState';
 import { addNotification } from 'context/notificationStateSlice';
 import { availableDatesSelector } from 'context/serverStateSlice';
 import { countBy, get, pickBy, uniqBy } from 'lodash';
@@ -71,9 +63,10 @@ const useLayers = () => {
   const { urlParams, updateHistory, removeLayerFromUrl } = useUrlHistory();
   const boundaryLayerId = getBoundaryLayerSingleton().id;
 
-  const unsortedSelectedLayers = useSelector(layersSelector);
+  const mapState = useMapState();
+  const unsortedSelectedLayers = mapState.layers;
   const serverAvailableDates = useSelector(availableDatesSelector);
-  const { startDate: selectedDate } = useSelector(dateRangeSelector);
+  const { startDate: selectedDate } = mapState.dateRange;
 
   // get AA config
   const AAConfig = useMemo(() => {
@@ -341,9 +334,15 @@ const useLayers = () => {
         console.error((error as LocalError).getErrorMessage());
         return;
       }
-      dispatch(addLayer(layer));
+      mapState.actions.addLayer(layer);
     });
-  }, [dispatch, missingLayers, removeLayerFromUrl, serverAvailableDates]);
+  }, [
+    dispatch,
+    mapState.actions,
+    missingLayers,
+    removeLayerFromUrl,
+    serverAvailableDates,
+  ]);
 
   // let users know if their current date doesn't exist in possible dates
   const urlDate = useMemo(() => urlParams.get('date'), [urlParams]);
@@ -382,7 +381,7 @@ const useLayers = () => {
     }
 
     if (!Number.isNaN(dateInt)) {
-      dispatch(updateDateRange({ startDate: dateInt }));
+      mapState.actions.updateDateRange({ startDate: dateInt });
       updateHistory('date', getFormattedDate(dateInt, 'default') as string);
       return;
     }
@@ -405,6 +404,7 @@ const useLayers = () => {
     updateHistory,
     urlDate,
     t,
+    mapState.actions,
   ]);
 
   const removeLayerAndUpdateHistory = useCallback(
@@ -415,7 +415,7 @@ const useLayers = () => {
       // Remove layer from url.
       const urlLayerKey = getUrlKey(layerToRemove);
       removeLayerFromUrl(urlLayerKey, layerToRemove.id);
-      dispatch(removeLayer(layerToRemove));
+      mapState.actions.removeLayer(layerToRemove);
 
       const layerToKeepDates = getPossibleDatesForLayer(
         layerToKeep as DateCompatibleLayer,
@@ -430,7 +430,7 @@ const useLayers = () => {
       );
     },
     [
-      dispatch,
+      mapState.actions,
       removeLayerFromUrl,
       selectedDate,
       serverAvailableDates,
