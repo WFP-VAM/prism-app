@@ -625,7 +625,11 @@ const DateSelector = memo(() => {
         {/* Desktop */}
         <Grid item xs={12} sm className={classes.slider}>
           {!xsDown && (
-            <Button onClick={decrementDate} className={classes.chevronDate}>
+            <Button
+              id="chevronLeftButton"
+              onClick={decrementDate}
+              className={classes.chevronDate}
+            >
               <ChevronLeft />
             </Button>
           )}
@@ -693,7 +697,11 @@ const DateSelector = memo(() => {
             </Draggable>
           </Grid>
           {!xsDown && (
-            <Button onClick={incrementDate} className={classes.chevronDate}>
+            <Button
+              id="chevronRightButton"
+              onClick={incrementDate}
+              className={classes.chevronDate}
+            >
               <ChevronRight />
             </Button>
           )}

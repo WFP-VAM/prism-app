@@ -104,6 +104,7 @@ module.exports = {
     },
   },
   globals: {
+    cy: true,
     NodeJS: true,
     RequestInit: true,
     RequestInfo: true,
