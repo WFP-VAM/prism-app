@@ -53,7 +53,9 @@ async def download_report(
         await page.get_by_role("button", name="language-select-dropdown-button").click()
 
         # Click on the 'en' option
-        await page.get_by_role("menuitem", name="en").click()
+        await page.get_by_role(
+            "menuitem", name="language-select-dropdown-menu-item-en"
+        ).click()
 
         # make sure we're on the right tab
         # await page.get_by_role("button", name="Layers").click()
