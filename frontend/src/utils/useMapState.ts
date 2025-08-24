@@ -17,8 +17,9 @@ import { MapInstanceContext } from 'components/MapView/MapInstanceContext';
 import {
   layersSelector,
   dateRangeSelector,
-  mapSelector,
 } from 'context/mapStateSlice/selectors';
+
+type MapGetter = () => MaplibreMap | undefined;
 
 // Unified interface for both global and instance map state
 export interface UnifiedMapState extends MapState {
@@ -26,7 +27,7 @@ export interface UnifiedMapState extends MapState {
     addLayer: (layer: LayerType) => void;
     removeLayer: (layer: LayerType) => void;
     updateDateRange: (dateRange: DateRange) => void;
-    setMap: (map: () => MaplibreMap | undefined) => void;
+    setMap: (mapGetter: MapGetter) => void;
     removeLayerData: (layer: LayerType) => void;
     setBoundaryRelationData: (data: BoundaryRelationsDict) => void;
   };
@@ -49,13 +50,14 @@ export function useMapState(): UnifiedMapState {
       : dateRangeSelector,
   );
 
-  const mapGetter = useMemo(
-    () =>
-      mapInstanceContext && mapInstanceContext.selectors.selectMap
-        ? mapInstanceContext.selectors.selectMap
-        : mapSelector,
-    [mapInstanceContext],
+  // Get the MapGetter from Redux or instance context, then call it to get the map
+  const mapGetter = useSelector(
+    mapInstanceContext && mapInstanceContext.selectors.selectMap
+      ? mapInstanceContext.selectors.selectMap
+      : (state: any) => state.mapState.maplibreMap,
   );
+
+  const maplibreMap = mapGetter;
 
   const actions = useMemo(() => {
     const addLayer =
@@ -77,7 +79,7 @@ export function useMapState(): UnifiedMapState {
     const setMap =
       mapInstanceContext && mapInstanceContext.actions.setMap
         ? mapInstanceContext.actions.setMap
-        : (map: () => MaplibreMap | undefined) => dispatch(setGlobalMap(map));
+        : (map: MapGetter) => dispatch(setGlobalMap(map));
 
     const removeLayerData =
       mapInstanceContext && mapInstanceContext.actions.removeLayerData
@@ -103,9 +105,11 @@ export function useMapState(): UnifiedMapState {
   return {
     layers,
     dateRange,
-    // TODO: Find out purpose mapLibreMap getter and fix issues
-    // @ts-ignore
-    maplibreMap: mapGetter,
+    maplibreMap,
     actions,
+    errors: [],
+    layersData: [],
+    loadingLayerIds: [],
+    boundaryRelationData: {},
   };
 }

@@ -8,10 +8,8 @@ import {
   MapEventWrapFunctionProps,
 } from 'config/types';
 import { LayerData, loadLayerData } from 'context/layers/layer-data';
-import {
-  layerDataSelector,
-  mapSelector,
-} from 'context/mapStateSlice/selectors';
+import { layerDataSelector } from 'context/mapStateSlice/selectors';
+import { useMapState } from 'utils/useMapState';
 import { addLayer, removeLayer } from 'context/mapStateSlice';
 import { useDefaultDate } from 'utils/useDefaultDate';
 import { getBoundaryLayers, LayerDefinitions } from 'config/utils';
@@ -43,7 +41,7 @@ const onClick =
 const AdminLevelDataLayers = memo(
   ({ layer, before }: { layer: AdminLevelDataLayerProps; before?: string }) => {
     const dispatch = useDispatch();
-    const map = useSelector(mapSelector);
+    const map = useMapState()?.maplibreMap();
     const serverAvailableDates = useSelector(availableDatesSelector);
 
     const boundaryId = layer.boundary || firstBoundaryOnView(map);

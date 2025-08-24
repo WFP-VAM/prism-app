@@ -23,7 +23,8 @@ import {
 import { Close, Opacity, SwapVert } from '@material-ui/icons';
 import { useDispatch, useSelector } from 'react-redux';
 import { LayerType, LegendDefinitionItem } from 'config/types';
-import { mapSelector, layersSelector } from 'context/mapStateSlice/selectors';
+import { layersSelector } from 'context/mapStateSlice/selectors';
+import { useMapState } from 'utils/useMapState';
 import { clearDataset } from 'context/datasetStateSlice';
 import { useSafeTranslation } from 'i18n';
 import {
@@ -61,7 +62,7 @@ const LegendItem = memo(
     const classes = useStyles();
     const dispatch = useDispatch();
     const { removeLayerFromUrl } = useUrlHistory();
-    const map = useSelector(mapSelector);
+    const map = useMapState()?.maplibreMap();
     const [opacityEl, setOpacityEl] = useState<HTMLButtonElement | null>(null);
     const opacity = useSelector(opacitySelector(id as string));
     const isAnalysis = type === 'analysis';

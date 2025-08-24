@@ -11,7 +11,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { LayerKey, LayerType } from 'config/types';
 import { LayerDefinitions } from 'config/utils';
 import { clearDataset } from 'context/datasetStateSlice';
-import { mapSelector } from 'context/mapStateSlice/selectors';
 import { useSafeTranslation } from 'i18n';
 import { useMapState } from 'utils/useMapState';
 import { refreshBoundaries } from 'utils/map-utils';
@@ -47,7 +46,7 @@ const SwitchItem = memo(
     const mapState = useMapState();
     const selectedLayers = mapState.layers;
     const serverAvailableDates = useSelector(availableDatesSelector);
-    const map = useSelector(mapSelector);
+    const map = mapState.maplibreMap();
     const [isOpacitySelected, setIsOpacitySelected] = useState(false);
     const dispatch = useDispatch();
     const opacity = useSelector(opacitySelector(layerId));

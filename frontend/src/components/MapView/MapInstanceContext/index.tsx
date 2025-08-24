@@ -5,12 +5,13 @@ import { DateRange } from 'context/mapStateSlice';
 import { BoundaryRelationsDict } from 'components/Common/BoundaryDropdown/utils';
 import { RootState } from 'context/store';
 
-// Type for map instance actions
+type MapGetter = () => MaplibreMap | undefined;
+
 export type MapInstanceActions = {
   addLayer: (layer: LayerType) => void;
   removeLayer: (layer: LayerType) => void;
   updateDateRange: (dateRange: DateRange) => void;
-  setMap: (map: () => MaplibreMap | undefined) => void;
+  setMap: (mapGetter: MapGetter) => void;
   removeLayerData: (layer: LayerType) => void;
   setBoundaryRelationData: (data: BoundaryRelationsDict) => void;
   dismissError: (error: string) => void;
@@ -19,7 +20,7 @@ export type MapInstanceActions = {
 export type MapInstanceSelectors = {
   selectLayers: (state: RootState) => LayerType[];
   selectDateRange: (state: RootState) => DateRange;
-  selectMap: () => MaplibreMap | undefined;
+  selectMap: (state: RootState) => MapGetter;
 };
 
 type MapInstanceContextType = {

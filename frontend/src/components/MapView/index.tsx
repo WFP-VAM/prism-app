@@ -12,7 +12,6 @@ import {
   loadAvailableDates,
 } from 'context/serverStateSlice';
 import { loadLayerData } from 'context/layers/layer-data';
-import { mapSelector } from 'context/mapStateSlice/selectors';
 import { useMapState } from 'utils/useMapState';
 import LeftPanel from './LeftPanel';
 import MapComponent from './Map';
@@ -28,8 +27,8 @@ const MapView = memo(() => {
   const classes = useStyles();
   // Selectors
   const datesLoading = useSelector(areDatesLoading);
-  const { actions } = useMapState();
-  const map = useSelector(mapSelector);
+  const { actions, maplibreMap } = useMapState();
+  const map = maplibreMap();
   const dispatch = useDispatch();
 
   useEffect(() => {

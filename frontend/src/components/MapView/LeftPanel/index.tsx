@@ -12,7 +12,6 @@ import {
   isAnticipatoryActionLayer,
 } from 'config/utils';
 import { setSelectedBoundaries } from 'context/mapSelectionLayerStateSlice';
-import { mapSelector } from 'context/mapStateSlice/selectors';
 import { useMapState } from 'utils/useMapState';
 import { getUrlKey, useUrlHistory } from 'utils/url-utils';
 import AnalysisPanel from './AnalysisPanel';
@@ -60,7 +59,7 @@ const LeftPanel = memo(() => {
   const tabValue = useSelector(leftPanelTabValueSelector);
   const mapState = useMapState();
   const selectedLayers = mapState.layers;
-  const map = useSelector(mapSelector);
+  const map = mapState.maplibreMap();
   const { removeLayerFromUrl } = useUrlHistory();
 
   const AALayerInUrl = selectedLayers.find(x =>
