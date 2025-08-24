@@ -12,7 +12,8 @@ import {
   isAnticipatoryActionLayer,
 } from 'config/utils';
 import { setSelectedBoundaries } from 'context/mapSelectionLayerStateSlice';
-import { layersSelector, mapSelector } from 'context/mapStateSlice/selectors';
+import { mapSelector } from 'context/mapStateSlice/selectors';
+import { useMapState } from 'utils/useMapState';
 import { getUrlKey, useUrlHistory } from 'utils/url-utils';
 import AnalysisPanel from './AnalysisPanel';
 import ChartsPanel from './ChartsPanel';
@@ -57,7 +58,8 @@ const TabPanel = memo(({ children, value, index, ...other }: TabPanelProps) => (
 const LeftPanel = memo(() => {
   const dispatch = useDispatch();
   const tabValue = useSelector(leftPanelTabValueSelector);
-  const selectedLayers = useSelector(layersSelector);
+  const mapState = useMapState();
+  const selectedLayers = mapState.layers;
   const map = useSelector(mapSelector);
   const { removeLayerFromUrl } = useUrlHistory();
 

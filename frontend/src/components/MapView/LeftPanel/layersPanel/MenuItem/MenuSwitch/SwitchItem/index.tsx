@@ -147,8 +147,9 @@ const SwitchItem = memo(
             selectedLayer,
             map,
             urlLayerKey,
-            dispatch,
+            mapState.actions.removeLayer,
             removeLayerFromUrl,
+            mapState.actions.addLayer,
           );
           return;
         }
@@ -176,7 +177,7 @@ const SwitchItem = memo(
         ) {
           return;
         }
-        refreshBoundaries(map, dispatch);
+        refreshBoundaries(map, mapState.actions);
       },
       [
         appendLayerToUrl,

@@ -57,37 +57,48 @@ export function useMapState(): UnifiedMapState {
     [mapInstanceContext],
   );
 
-  // Setters
-  const addLayer =
-    mapInstanceContext && mapInstanceContext.actions.addLayer
-      ? mapInstanceContext.actions.addLayer
-      : (layer: LayerType) => dispatch(addGlobalMapLayer(layer));
-  const removeLayer =
-    mapInstanceContext && mapInstanceContext.actions.removeLayer
-      ? mapInstanceContext.actions.removeLayer
-      : (layer: LayerType) => dispatch(removeGlobalMapLayer(layer));
+  const actions = useMemo(() => {
+    const addLayer =
+      mapInstanceContext && mapInstanceContext.actions.addLayer
+        ? mapInstanceContext.actions.addLayer
+        : (layer: LayerType) => dispatch(addGlobalMapLayer(layer));
 
-  const updateDateRange =
-    mapInstanceContext && mapInstanceContext.actions.updateDateRange
-      ? mapInstanceContext.actions.updateDateRange
-      : (newDateRange: DateRange) =>
-          dispatch(updateGlobalMapDateRange(newDateRange));
+    const removeLayer =
+      mapInstanceContext && mapInstanceContext.actions.removeLayer
+        ? mapInstanceContext.actions.removeLayer
+        : (layer: LayerType) => dispatch(removeGlobalMapLayer(layer));
 
-  const setMap =
-    mapInstanceContext && mapInstanceContext.actions.setMap
-      ? mapInstanceContext.actions.setMap
-      : (map: () => MaplibreMap | undefined) => dispatch(setGlobalMap(map));
+    const updateDateRange =
+      mapInstanceContext && mapInstanceContext.actions.updateDateRange
+        ? mapInstanceContext.actions.updateDateRange
+        : (newDateRange: DateRange) =>
+            dispatch(updateGlobalMapDateRange(newDateRange));
 
-  const removeLayerData =
-    mapInstanceContext && mapInstanceContext.actions.removeLayerData
-      ? mapInstanceContext.actions.removeLayerData
-      : (layer: LayerType) => dispatch(removeGlobalMapLayerData(layer));
+    const setMap =
+      mapInstanceContext && mapInstanceContext.actions.setMap
+        ? mapInstanceContext.actions.setMap
+        : (map: () => MaplibreMap | undefined) => dispatch(setGlobalMap(map));
 
-  const setBoundaryRelationData =
-    mapInstanceContext && mapInstanceContext.actions.setBoundaryRelationData
-      ? mapInstanceContext.actions.setBoundaryRelationData
-      : (data: BoundaryRelationsDict) =>
-          dispatch(setGlobalMapBoundaryRelationData(data));
+    const removeLayerData =
+      mapInstanceContext && mapInstanceContext.actions.removeLayerData
+        ? mapInstanceContext.actions.removeLayerData
+        : (layer: LayerType) => dispatch(removeGlobalMapLayerData(layer));
+
+    const setBoundaryRelationData =
+      mapInstanceContext && mapInstanceContext.actions.setBoundaryRelationData
+        ? mapInstanceContext.actions.setBoundaryRelationData
+        : (data: BoundaryRelationsDict) =>
+            dispatch(setGlobalMapBoundaryRelationData(data));
+
+    return {
+      addLayer,
+      removeLayer,
+      updateDateRange,
+      setMap,
+      removeLayerData,
+      setBoundaryRelationData,
+    };
+  }, [mapInstanceContext, dispatch]);
 
   return {
     layers,
@@ -95,13 +106,6 @@ export function useMapState(): UnifiedMapState {
     // TODO: Find out purpose mapLibreMap getter and fix issues
     // @ts-ignore
     maplibreMap: mapGetter,
-    actions: {
-      addLayer,
-      removeLayer,
-      updateDateRange,
-      setMap,
-      removeLayerData,
-      setBoundaryRelationData,
-    },
+    actions,
   };
 }
