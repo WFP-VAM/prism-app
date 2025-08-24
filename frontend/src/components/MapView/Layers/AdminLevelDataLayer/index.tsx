@@ -10,7 +10,6 @@ import {
 import { LayerData, loadLayerData } from 'context/layers/layer-data';
 import { layerDataSelector } from 'context/mapStateSlice/selectors';
 import { useMapState } from 'utils/useMapState';
-import { addLayer, removeLayer } from 'context/mapStateSlice';
 import { useDefaultDate } from 'utils/useDefaultDate';
 import { getBoundaryLayers, LayerDefinitions } from 'config/utils';
 import { addNotification } from 'context/notificationStateSlice';
@@ -41,7 +40,11 @@ const onClick =
 const AdminLevelDataLayers = memo(
   ({ layer, before }: { layer: AdminLevelDataLayerProps; before?: string }) => {
     const dispatch = useDispatch();
-    const map = useMapState()?.maplibreMap();
+    const {
+      actions: { addLayer, removeLayer },
+      ...mapState
+    } = useMapState();
+    const map = mapState.maplibreMap();
     const serverAvailableDates = useSelector(availableDatesSelector);
 
     const boundaryId = layer.boundary || firstBoundaryOnView(map);
@@ -72,8 +75,8 @@ const AdminLevelDataLayers = memo(
 
       if ('boundary' in layer) {
         if (Object.keys(LayerDefinitions).includes(boundaryId)) {
-          boundaryLayers.map(l => dispatch(removeLayer(l)));
-          dispatch(addLayer({ ...boundaryLayer, isPrimary: true }));
+          boundaryLayers.map(l => removeLayer(l));
+          addLayer({ ...boundaryLayer, isPrimary: true });
 
           // load unique boundary only once
           // to avoid double loading which proven to be performance issue
@@ -92,7 +95,16 @@ const AdminLevelDataLayers = memo(
       if (!data) {
         dispatch(loadLayerData({ layer, date: queryDate, map }));
       }
-    }, [boundaryId, dispatch, data, layer, map, queryDate]);
+    }, [
+      boundaryId,
+      dispatch,
+      data,
+      layer,
+      map,
+      queryDate,
+      addLayer,
+      removeLayer,
+    ]);
 
     if (!data) {
       return null;
