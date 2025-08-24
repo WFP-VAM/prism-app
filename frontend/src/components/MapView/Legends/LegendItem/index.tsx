@@ -61,8 +61,12 @@ const LegendItem = memo(
   }: LegendItemProps) => {
     const classes = useStyles();
     const dispatch = useDispatch();
+    const {
+      actions: { addLayer, removeLayer },
+      ...mapState
+    } = useMapState();
     const { removeLayerFromUrl } = useUrlHistory();
-    const map = useMapState()?.maplibreMap();
+    const map = mapState.maplibreMap();
     const [opacityEl, setOpacityEl] = useState<HTMLButtonElement | null>(null);
     const opacity = useSelector(opacitySelector(id as string));
     const isAnalysis = type === 'analysis';
@@ -175,11 +179,20 @@ const LegendItem = memo(
           layer,
           map,
           urlLayerKey,
-          dispatch,
+          removeLayer,
           removeLayerFromUrl,
+          addLayer,
         );
       }
-    }, [isAnalysis, layer, dispatch, map, removeLayerFromUrl]);
+    }, [
+      isAnalysis,
+      layer,
+      dispatch,
+      map,
+      removeLayerFromUrl,
+      addLayer,
+      removeLayer,
+    ]);
 
     const getColorIndicatorKey = useCallback(
       (item: LegendDefinitionItem) =>

@@ -57,7 +57,10 @@ const TabPanel = memo(({ children, value, index, ...other }: TabPanelProps) => (
 const LeftPanel = memo(() => {
   const dispatch = useDispatch();
   const tabValue = useSelector(leftPanelTabValueSelector);
-  const mapState = useMapState();
+  const {
+    actions: { addLayer, removeLayer },
+    ...mapState
+  } = useMapState();
   const selectedLayers = mapState.layers;
   const map = mapState.maplibreMap();
   const { removeLayerFromUrl } = useUrlHistory();
@@ -112,8 +115,9 @@ const LeftPanel = memo(() => {
         AALayerInUrl,
         map,
         getUrlKey(AALayerInUrl),
-        dispatch,
+        removeLayer,
         removeLayerFromUrl,
+        addLayer,
       );
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
