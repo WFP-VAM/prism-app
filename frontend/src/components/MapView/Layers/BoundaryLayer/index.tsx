@@ -6,10 +6,8 @@ import { showPopup } from 'context/tooltipStateSlice';
 import { Source, Layer, MapLayerMouseEvent } from 'react-map-gl/maplibre';
 import { isPrimaryBoundaryLayer } from 'config/utils';
 import { toggleSelectedBoundary } from 'context/mapSelectionLayerStateSlice';
-import {
-  layerDataSelector,
-  mapSelector,
-} from 'context/mapStateSlice/selectors';
+import { layerDataSelector } from 'context/mapStateSlice/selectors';
+import { useMapState } from 'utils/useMapState';
 import { getFullLocationName } from 'utils/name-utils';
 
 import { Map as MaplibreMap } from 'maplibre-gl';
@@ -82,7 +80,7 @@ const onMouseLeave = () => (evt: MapLayerMouseEvent) =>
   onToggleHover('', evt.target);
 
 const BoundaryLayer = memo(({ layer, before }: ComponentProps) => {
-  const selectedMap = useSelector(mapSelector);
+  const selectedMap = useMapState()?.maplibreMap();
   const [isZoomLevelSufficient, setIsZoomLevelSufficient] = useState(
     !layer.minZoom,
   );

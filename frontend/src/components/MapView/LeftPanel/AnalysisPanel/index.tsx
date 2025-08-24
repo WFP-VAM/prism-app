@@ -95,7 +95,7 @@ import {
   safeDispatchRemoveLayer,
   safeDispatchAddLayer,
 } from 'utils/map-utils';
-import { removeLayer } from 'context/mapStateSlice';
+import { addLayer, removeLayer } from 'context/mapStateSlice';
 import LayerDropdown from 'components/MapView/Layers/LayerDropdown';
 import SimpleDropdown from 'components/Common/SimpleDropdown';
 import {
@@ -458,7 +458,7 @@ const AnalysisPanel = memo(() => {
     setThresholdError(null);
 
     resetAnalysisParams();
-    refreshBoundaries(map, dispatch);
+    refreshBoundaries(map, { addLayer, removeLayer });
 
     if (previousBaselineId) {
       const previousBaseline = LayerDefinitions[

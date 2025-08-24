@@ -7,12 +7,11 @@ import {
   AccordionSummary,
 } from '@material-ui/core';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import { useSelector } from 'react-redux';
 import { LayersCategoryType } from 'config/types';
 import MenuSwitch from 'components/MapView/LeftPanel/layersPanel/MenuItem/MenuSwitch';
 import { useSafeTranslation } from 'i18n';
 import { Extent } from 'components/MapView/Layers/raster-utils';
-import { layersSelector } from 'context/mapStateSlice/selectors';
+import { useMapState } from 'utils/useMapState';
 import { filterActiveLayers } from 'components/MapView/utils';
 import SelectedLayersInformation from './SelectedLayersInformation';
 import { useLayerMenuItemStyles } from './utils';
@@ -25,7 +24,8 @@ interface MenuItemProps {
 
 const MenuItem = memo(({ title, layersCategories, extent }: MenuItemProps) => {
   const { t } = useSafeTranslation();
-  const selectedLayers = useSelector(layersSelector);
+  const mapState = useMapState();
+  const selectedLayers = mapState.layers;
   const classes = useLayerMenuItemStyles();
 
   const categoryLayers = layersCategories
