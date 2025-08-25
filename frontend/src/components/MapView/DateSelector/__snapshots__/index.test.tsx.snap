@@ -42,6 +42,7 @@ exports[`renders as expected 1`] = `
       >
         <mock-button
           classname="makeStyles-chevronDate-2"
+          id="chevronLeftButton"
         >
           <mock-chevronleft />
         </mock-button>
@@ -73,6 +74,7 @@ exports[`renders as expected 1`] = `
         </div>
         <mock-button
           classname="makeStyles-chevronDate-2"
+          id="chevronRightButton"
         >
           <mock-chevronright />
         </mock-button>
