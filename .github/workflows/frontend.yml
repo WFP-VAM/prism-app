@@ -133,6 +133,7 @@ jobs:
           # CI runners seem a bit slow, give them more time to complete
           # each command in cypress
           CYPRESS_DEFAULT_COMMAND_TIMEOUT: 10000
+          CYPRESS_RUN_BINARY: ~/AppData/Local/Cypress/Cache/15.0.0/Cypress
 
   frontend_build_and_deploy:
     needs: frontend_tests
