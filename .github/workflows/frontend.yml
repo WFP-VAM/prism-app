@@ -106,6 +106,9 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-yarn-2025-2
 
+      - name: Install rimraf globally
+        run: yarn global add rimraf
+
       - name: setup 'common' package
         # skip yarn install in frontend, as cypress does it anyway
         if: steps.yarn-cache.outputs.cache-hit != 'true'
