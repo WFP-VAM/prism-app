@@ -14,7 +14,6 @@ jobs:
       matrix:
         os:
           - ubuntu-latest
-          - windows-latest
       max-parallel: 2
 
     name: frontend_tests
@@ -79,10 +78,13 @@ jobs:
     strategy:
       matrix:
         country: [mozambique, rbd, cambodia]
+        os:
+          - ubuntu-latest
+          - windows-latest
       max-parallel: 2
 
     name: Frontend e2e tests
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -107,7 +109,7 @@ jobs:
       - name: setup 'common' package
         # skip yarn install in frontend, as cypress does it anyway
         if: steps.yarn-cache.outputs.cache-hit != 'true'
-        run: cd frontend && yarn run setup:common_in_ci
+        run: cd frontend && yarn run setup:common
 
       - name: Run cypress e2e tests
         uses: cypress-io/github-action@v6
