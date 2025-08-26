@@ -119,7 +119,24 @@ jobs:
         if: matrix.os == 'windows-latest'
         run: npx cypress install
 
-      - name: Run cypress e2e tests
+      - name: Run cypress e2e tests on linux
+        if: matrix.os == 'ubuntu-latest'
+        uses: cypress-io/github-action@v6
+        with:
+          working-directory: ./frontend
+          start: yarn start
+          browser: chrome
+          spec: |
+            cypress/e2e/${{ matrix.country }}.cy.ts
+            cypress/e2e/all_countries.cy.ts
+        env:
+          REACT_APP_COUNTRY: ${{ matrix.country }}
+          # CI runners seem a bit slow, give them more time to complete
+          # each command in cypress
+          CYPRESS_DEFAULT_COMMAND_TIMEOUT: 10000
+
+      - name: Run cypress e2e tests on windows
+        if: matrix.os == 'windows-latest'
         uses: cypress-io/github-action@v6
         with:
           working-directory: ./frontend
