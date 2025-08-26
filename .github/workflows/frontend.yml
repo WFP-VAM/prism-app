@@ -14,6 +14,7 @@ jobs:
       matrix:
         os:
           - ubuntu-latest
+          - windows-latest
       max-parallel: 2
 
     name: frontend_tests
@@ -78,13 +79,10 @@ jobs:
     strategy:
       matrix:
         country: [mozambique, rbd, cambodia]
-        os:
-          - ubuntu-latest
-          - windows-latest
       max-parallel: 2
 
     name: Frontend e2e tests
-    runs-on: ${{ matrix.os }}
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -102,25 +100,16 @@ jobs:
             **/.eslintcache
             **/common/dist
             ${{ steps.yarn-cache-dir-path.outputs.dir }}
-            ~\AppData\Local\Cypress\Cache
           key: ${{ runner.os }}-yarn-2025-2-${{ hashFiles('**/frontend/yarn.lock') }}-${{ hashFiles('**/common/.lock', '**/common/src/**/*.ts') }}
           restore-keys: |
             ${{ runner.os }}-yarn-2025-2
 
-      - name: Install rimraf globally
-        run: yarn global add rimraf
-
       - name: setup 'common' package
         # skip yarn install in frontend, as cypress does it anyway
         if: steps.yarn-cache.outputs.cache-hit != 'true'
-        run: cd frontend && yarn run setup:common
+        run: cd frontend && yarn run setup:common_in_ci
 
-      - name: Install cypress binary on windows
-        if: matrix.os == 'windows-latest'
-        run: npx cypress install
-
-      - name: Run cypress e2e tests on linux
-        if: matrix.os == 'ubuntu-latest'
+      - name: Run cypress e2e tests
         uses: cypress-io/github-action@v6
         with:
           working-directory: ./frontend
@@ -134,23 +123,6 @@ jobs:
           # CI runners seem a bit slow, give them more time to complete
           # each command in cypress
           CYPRESS_DEFAULT_COMMAND_TIMEOUT: 10000
-
-      - name: Run cypress e2e tests on windows
-        if: matrix.os == 'windows-latest'
-        uses: cypress-io/github-action@v6
-        with:
-          working-directory: ./frontend
-          start: yarn start
-          browser: chrome
-          spec: |
-            cypress/e2e/${{ matrix.country }}.cy.ts
-            cypress/e2e/all_countries.cy.ts
-        env:
-          REACT_APP_COUNTRY: ${{ matrix.country }}
-          # CI runners seem a bit slow, give them more time to complete
-          # each command in cypress
-          CYPRESS_DEFAULT_COMMAND_TIMEOUT: 10000
-          CYPRESS_RUN_BINARY: ~/AppData/Local/Cypress/Cache/15.0.0/Cypress
 
   frontend_build_and_deploy:
     needs: frontend_tests
