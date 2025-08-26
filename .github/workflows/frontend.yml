@@ -102,6 +102,7 @@ jobs:
             **/.eslintcache
             **/common/dist
             ${{ steps.yarn-cache-dir-path.outputs.dir }}
+            ~\AppData\Local\Cypress\Cache
           key: ${{ runner.os }}-yarn-2025-2-${{ hashFiles('**/frontend/yarn.lock') }}-${{ hashFiles('**/common/.lock', '**/common/src/**/*.ts') }}
           restore-keys: |
             ${{ runner.os }}-yarn-2025-2
