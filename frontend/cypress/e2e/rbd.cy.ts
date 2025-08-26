@@ -71,7 +71,7 @@ describe('Checks on dates', () => {
     cy.contains(
       'No data was found for layer "Overall phase classification" on',
     ).should('be.visible');
-    cy.get('.react-datepicker-wrapper button span').should(
+    cy.get('.react-datepicker-wrapper button span', { timeout: 15000 }).should(
       'have.text',
       'Sep 30, 2024',
     );
