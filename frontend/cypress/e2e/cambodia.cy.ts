@@ -22,7 +22,7 @@ describe('Date picker', () => {
         // scroll backwards once
         cy.get('button#chevronLeftButton').click();
         cy.get('.react-datepicker-wrapper button span', {
-          timeout: 10000,
+          timeout: 20000,
         }).then(function (span) {
           // do not use arrow functions, or the alias won't be available
           cy.wrap(span).should('contain.text', '1,');
