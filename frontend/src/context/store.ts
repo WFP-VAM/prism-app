@@ -39,6 +39,50 @@ const reducer = combineReducers({
 
 export const store = configureStore({
   reducer,
+  devTools: {
+    // sanitizers to make the state vaguely manageable by redux-dev-tools
+    // actionSanitizer returns the action "cleaned up" for faster display (it does not
+    // affect the original action, just how its displayed in redux-dev-tools)
+    actionSanitizer: action => {
+      switch (action.type) {
+        case 'mapState/loadLayerData/fulfilled':
+          return {
+            ...action,
+            payload: {
+              ...action?.payload,
+              data: {
+                ...action.payload.data,
+                features: `array of ${action.payload.data.features.length} features`,
+              },
+            },
+          };
+        case 'serverState/loadAvailableDates/fulfilled':
+          return {
+            ...action,
+            payload: Object.fromEntries(
+              Object.entries(action.payload).map(([layerName, dateArray]) => [
+                layerName,
+                `array of ${dateArray.length} date objects`,
+              ]),
+            ),
+          };
+        case 'serverState/preloadLayerDatesForWMS/fulfilled':
+        case 'serverState/preloadLayerDatesForPointData/fulfilled':
+          return {
+            ...action,
+            payload: {
+              arrays_of_numbers_for_these_layers: Object.keys(action.payload),
+            },
+          };
+        default:
+          return action;
+      }
+    },
+    // stateSanitizer does the same for the state. This example is a bit radical!
+    stateSanitizer: (_state: RootState) => ({
+      empty: 'state',
+    }),
+  },
   middleware: getDefaultMiddleware({
     // TODO: Instead of snoozing this check, we might want to
     // serialize the state
