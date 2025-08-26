@@ -109,6 +109,10 @@ jobs:
       - name: Install rimraf globally
         run: yarn global add rimraf
 
+      - name: Install cypress binary on windows
+        if: matrix.os == 'windows-latest'
+        run: npx cypress install
+
       - name: setup 'common' package
         # skip yarn install in frontend, as cypress does it anyway
         if: steps.yarn-cache.outputs.cache-hit != 'true'
