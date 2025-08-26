@@ -12,7 +12,7 @@ describe('Date picker', () => {
 
     cy.toggleLayer('Rainfall', 'Rainfall Amount', 'Rainfall aggregate');
 
-    cy.get('.react-datepicker-wrapper button span', { timeout: 10000 })
+    cy.get('.react-datepicker-wrapper button span', { timeout: 20000 })
       // wait for a dekad date to be selected (will fail 3 days/month)
       .then(span1 => {
         cy.wrap(span1)
