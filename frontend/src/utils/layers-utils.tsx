@@ -386,6 +386,9 @@ const useLayers = () => {
     }
 
     addMissingLayers();
+    mapState.actions.updateDateRange({
+      startDate: new Date().setUTCHours(12, 0, 0, 0),
+    });
 
     const dateInt: number | undefined = urlDate
       ? new Date(urlDate).setUTCHours(12, 0, 0, 0)

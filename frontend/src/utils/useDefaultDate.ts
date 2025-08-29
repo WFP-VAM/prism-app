@@ -2,14 +2,11 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useEffect } from 'react';
 import { isMainLayer, LayerKey } from 'config/types';
 import { availableDatesSelector } from 'context/serverStateSlice';
-import {
-  dateRangeSelector,
-  layersSelector,
-} from 'context/mapStateSlice/selectors';
 import { updateDateRange } from 'context/mapStateSlice';
 
 import { useUrlHistory } from './url-utils';
 import { getFormattedDate } from './date-utils';
+import { useMapState } from './useMapState';
 
 /**
  * A hook designed to automatically load the default date of a layer if the user doesn't select one.
@@ -18,10 +15,10 @@ import { getFormattedDate } from './date-utils';
  */
 export function useDefaultDate(layerId: LayerKey): number | undefined {
   const dispatch = useDispatch();
-  const selectedLayers = useSelector(layersSelector);
+  const { dateRange, layers } = useMapState();
   // check layer without group or main layer in group
-  const mainLayer = isMainLayer(layerId as string, selectedLayers);
-  const { startDate: selectedDate } = useSelector(dateRangeSelector);
+  const mainLayer = isMainLayer(layerId as string, layers);
+  const { startDate: selectedDate } = dateRange;
 
   const { updateHistory } = useUrlHistory();
 
