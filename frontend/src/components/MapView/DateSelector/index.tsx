@@ -468,6 +468,7 @@ const DateSelector = memo(() => {
     // find the next observation date to jump to
     // if multiple layers are active, we pick the first observation date
     // for any layer
+    // eslint-disable-next-line fp/no-mutating-methods
     const nextObservationDateItem: DateItem = visibleLayers
       .map(l =>
         l.find(
@@ -487,8 +488,10 @@ const DateSelector = memo(() => {
     // find the previous observation date to jump to
     // if multiple layers are active, pick the first date for any layer
     // use filter+pop as findLast is not widely available yet
+    // eslint-disable-next-line fp/no-mutating-methods
     const previousObservationDateItem: DateItem = visibleLayers
       .map(l =>
+        // eslint-disable-next-line fp/no-mutating-methods
         l
           .filter(
             (d: DateItem) =>
