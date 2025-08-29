@@ -446,6 +446,9 @@ const DateSelector = memo(() => {
       increment: number,
       isUpdatingHistory: boolean,
     ) => {
+      if (date === undefined) {
+        return;
+      }
       const selectedIndex = findDateIndex(availableDates, date);
 
       if (availableDates[selectedIndex + increment]) {
@@ -459,12 +462,44 @@ const DateSelector = memo(() => {
   );
 
   const incrementDate = useCallback(() => {
-    setDatePosition(stateStartDate, 1, true);
-  }, [setDatePosition, stateStartDate]);
+    if (stateStartDate === undefined) {
+      return;
+    }
+    // find the next observation date to jump to
+    // if multiple layers are active, we pick the first observation date
+    // for any layer
+    const nextObservationDateItem: DateItem = visibleLayers
+      .map(l =>
+        l.find(
+          (d: DateItem) =>
+            d.queryDate > stateStartDate && d.queryDate === d.displayDate,
+        ),
+      )
+      .filter((x): x is DateItem => x !== undefined)
+      .sort((a: DateItem, b: DateItem) => a.displayDate - b.displayDate)[0];
+    setDatePosition(nextObservationDateItem.displayDate, 0, true);
+  }, [setDatePosition, stateStartDate, visibleLayers]);
 
   const decrementDate = useCallback(() => {
-    setDatePosition(stateStartDate, -1, true);
-  }, [setDatePosition, stateStartDate]);
+    if (stateStartDate === undefined) {
+      return;
+    }
+    // find the previous observation date to jump to
+    // if multiple layers are active, pick the first date for any layer
+    // use filter+pop as findLast is not widely available yet
+    const previousObservationDateItem: DateItem = visibleLayers
+      .map(l =>
+        l
+          .filter(
+            (d: DateItem) =>
+              d.queryDate < stateStartDate && d.queryDate === d.displayDate,
+          )
+          .pop(),
+      )
+      .filter((x): x is DateItem => x !== undefined)
+      .sort((a: DateItem, b: DateItem) => b.displayDate - a.displayDate)[0];
+    setDatePosition(previousObservationDateItem.displayDate, 0, true);
+  }, [setDatePosition, stateStartDate, visibleLayers]);
 
   const clickDate = useCallback(
     (index: number) => {
