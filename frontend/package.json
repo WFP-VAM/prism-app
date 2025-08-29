@@ -24,6 +24,7 @@
     "lint:ci": "yarn lint --max-warnings 0",
     "preview": "vite preview",
     "setup:common": "rimraf ./node_modules/prism-common && cd ../common && yarn install --network-timeout 600000 && yarn build && cd ../frontend && yarn install --check-files",
+    "setup:common_in_ci": "rm -rf ./node_modules/prism-common && cd ../common && yarn install --network-timeout 600000 && yarn build_in_ci && cd ../frontend",
     "clean": "pushd ../common && rimraf ./node_modules && popd && rimraf ./node_modules",
     "analyze": "yarn build && npx source-map-explorer 'build/static/js/*.js'",
     "profile:serve": "yarn build --profile && npx serve -s build",
@@ -43,6 +44,7 @@
   "dependencies": {
     "@azure/msal-browser": "^2.19.0",
     "@azure/msal-react": "^1.1.1",
+    "@babel/core": "^7.0.0-0",
     "@date-fns/tz": "^1.2.0",
     "@fortawesome/fontawesome-free": "^6.5.1",
     "@fortawesome/fontawesome-svg-core": "^6.5.1",
@@ -158,6 +160,7 @@
     "babel-jest": "^29.7.0",
     "cross-env": "^7.0.2",
     "cross-fetch": "^4.0.0",
+    "cypress": "^15.0.0",
     "dotenv": "^16.4.5",
     "eslint": "^8.45.0",
     "eslint-config-airbnb": "^19.0.4",
