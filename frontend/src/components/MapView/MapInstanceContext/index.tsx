@@ -4,6 +4,16 @@ import { LayerType } from 'config/types';
 import { DateRange } from 'context/mapStateSlice';
 import { BoundaryRelationsDict } from 'components/Common/BoundaryDropdown/utils';
 import { RootState } from 'context/store';
+import { useDispatch } from 'react-redux';
+import {
+  addLayerToMap,
+  removeLayerFromMap,
+  updateMapDateRange,
+  setMap,
+  removeLayerData,
+  setBoundaryRelationData,
+  dismissError,
+} from 'context/dashboardStateSlice';
 
 type MapGetter = () => MaplibreMap | undefined;
 
@@ -47,22 +57,47 @@ export function MapInstanceProvider({
   // initial?: Partial<MapState>;
   children: React.ReactNode;
 }) {
-  // TODO: Replace with actual dispatch calls to map instances
+  const dispatch = useDispatch();
   const actions: MapInstanceActions = useMemo(
     () => ({
-      addLayer: () => {},
-      removeLayer: () => {},
-      updateDateRange: () => {},
-      setMap: () => {},
-      removeLayerData: () => {},
-      setBoundaryRelationData: () => {},
-      dismissError: () => {},
+      addLayer: (layer: LayerType) => {
+        dispatch(addLayerToMap({ index, layer }));
+      },
+      removeLayer: (layer: LayerType) => {
+        dispatch(removeLayerFromMap({ index, layer }));
+      },
+      updateDateRange: (dateRange: DateRange) => {
+        dispatch(updateMapDateRange({ index, dateRange }));
+      },
+      setMap: (mapGetter: MapGetter) => {
+        dispatch(setMap({ index, maplibreMap: mapGetter }));
+      },
+      removeLayerData: (layer: LayerType) => {
+        dispatch(removeLayerData({ index, layer }));
+      },
+      setBoundaryRelationData: (data: BoundaryRelationsDict) => {
+        dispatch(setBoundaryRelationData({ index, data }));
+      },
+      dismissError: (error: string) => {
+        dispatch(dismissError({ index, error }));
+      },
     }),
-    [],
+    [dispatch, index],
   );
 
   const value = useMemo(
-    () => ({ index, selectors: {}, actions }),
+    () => ({
+      index,
+      selectors: {
+        selectLayers: (state: RootState) =>
+          state.dashboardState.maps[index].layers,
+        selectDateRange: (state: RootState) =>
+          state.dashboardState.maps[index].dateRange,
+        selectMap: (state: RootState) =>
+          state.dashboardState.maps[index].maplibreMap,
+      },
+      actions,
+    }),
     [index, actions],
   );
   return (

@@ -9,17 +9,20 @@ import {
 } from '@material-ui/core';
 import { ArrowForward, Edit, VisibilityOutlined } from '@material-ui/icons';
 import { useSelector, useDispatch } from 'react-redux';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import type { DashboardTextConfig } from 'config/types';
 import { black, cyanBlue } from 'muiTheme';
-import TextBlock from './TextBlock';
-import DashboardPreview from './DashboardPreview';
 
+import { MapInstanceProvider } from 'components/MapView/MapInstanceContext';
+import MapView from 'components/MapView';
+import RootAccordionItems from 'components/MapView/LeftPanel/layersPanel/RootAccordionItems';
 import {
   dashboardTitleSelector,
   setTitle,
   dashboardFlexElementsSelector,
 } from '../../context/dashboardStateSlice';
+import TextBlock from './TextBlock';
+import DashboardPreview from './DashboardPreview';
 
 function DashboardView() {
   const classes = useStyles();
@@ -60,7 +63,16 @@ function DashboardView() {
             </label>
           </Box>
           <Box className={classes.grayCard}>
-            <div>MAP PLACEHOLDER</div>
+            <MapInstanceProvider index={0}>
+              <div style={{ display: 'flex' }}>
+                <div style={{ width: '1/4', marginRight: 16 }}>
+                  <RootAccordionItems />
+                </div>
+                <div style={{ height: '500px', width: '100%' }}>
+                  <MapView />
+                </div>
+              </div>
+            </MapInstanceProvider>
           </Box>
         </Box>
         <Box className={classes.trailingContentArea}>

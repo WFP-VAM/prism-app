@@ -31,6 +31,7 @@ export interface UnifiedMapState extends MapState {
     removeLayerData: (layer: LayerType) => void;
     setBoundaryRelationData: (data: BoundaryRelationsDict) => void;
   };
+  isGlobalMap: boolean;
 }
 
 export function useMapState(): UnifiedMapState {
@@ -111,5 +112,6 @@ export function useMapState(): UnifiedMapState {
     layersData: [],
     loadingLayerIds: [],
     boundaryRelationData: {},
+    isGlobalMap: !mapInstanceContext,
   };
 }

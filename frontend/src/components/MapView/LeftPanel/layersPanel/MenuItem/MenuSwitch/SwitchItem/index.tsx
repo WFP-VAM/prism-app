@@ -163,12 +163,14 @@ const SwitchItem = memo(
           console.error((error as LocalError).getErrorMessage());
           return;
         }
-        const updatedUrl = appendLayerToUrl(
-          urlLayerKey,
-          selectedLayers,
-          selectedLayer,
-        );
-        updateHistory(urlLayerKey, updatedUrl);
+        if (mapState.isGlobalMap) {
+          const updatedUrl = appendLayerToUrl(
+            urlLayerKey,
+            selectedLayers,
+            selectedLayer,
+          );
+          updateHistory(urlLayerKey, updatedUrl);
+        }
         mapState.actions.addLayer(layer);
         if (
           'boundary' in selectedLayer ||
@@ -185,6 +187,7 @@ const SwitchItem = memo(
         layer,
         map,
         mapState.actions,
+        mapState.isGlobalMap,
         removeLayerFromUrl,
         selectedLayers,
         serverAvailableDates,
