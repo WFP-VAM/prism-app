@@ -21,7 +21,7 @@ import {
   LIGHT_GREEN_HEX,
   LIGHT_ORANGE_HEX,
 } from './utils';
-import AAdroughtTooltipContent from './AADroughtTooltipContent';
+import StandardTooltipContent from './StandardTooltipContent';
 import AAStormTooltipContent from './AAStormTooltipContent';
 import { DateItemStyle } from './types';
 import AAStormTimelineItem from './AAStormTimelineItem';
@@ -74,7 +74,7 @@ const TimelineItems = memo(
         isShowingAAStormLayer ? (
           <AAStormTooltipContent date={date} />
         ) : (
-          <AAdroughtTooltipContent
+          <StandardTooltipContent
             date={date}
             orderedLayers={orderedLayers}
             dateItemStyling={DATE_ITEM_STYLING}
