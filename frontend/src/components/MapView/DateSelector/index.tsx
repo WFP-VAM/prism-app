@@ -37,6 +37,7 @@ import { getRequestDate } from 'utils/server-utils';
 import { isAnticipatoryActionLayer, isWindowedDates } from 'config/utils';
 import { getAAConfig } from 'context/anticipatoryAction/config';
 import { RootState } from 'context/store';
+import { getTimelineOffset } from 'components/MapView/LeftPanel/AnticipatoryActionPanel/AnticipatoryActionDroughtPanel/utils/countryConfig';
 import TickSvg from './tick.svg';
 import DateSelectorInput from './DateSelectorInput';
 import TimelineItems from './TimelineItems';
@@ -56,13 +57,19 @@ const TIMELINE_ID = 'dateTimelineSelector';
 const POINTER_ID = 'datePointerSelector';
 
 const calculateStartAndEndDates = (startDate: Date, selectedTab: string) => {
-  const year =
-    startDate.getFullYear() -
-    (selectedTab === Panel.AnticipatoryActionDrought && startDate.getMonth() < 3
-      ? 1
-      : 0);
+  let year = startDate.getFullYear();
+  let startMonth = 0;
 
-  const startMonth = Panel.AnticipatoryActionDrought === selectedTab ? 3 : 0; // April for anticipatory_action, January otherwise
+  if (selectedTab === Panel.AnticipatoryActionDrought) {
+    // Use country-specific timeline offset for AA drought
+    // eslint-disable-next-line fp/no-mutation
+    startMonth = getTimelineOffset();
+    // Adjust year if we're before the timeline start month
+    if (startDate.getMonth() < startMonth) {
+      // eslint-disable-next-line fp/no-mutation
+      year -= 1;
+    }
+  }
 
   const start = new Date(year, startMonth, 1);
   const end = new Date(year, startMonth + 11, 31);
@@ -618,7 +625,11 @@ const DateSelector = memo(() => {
         {/* Desktop */}
         <Grid item xs={12} sm className={classes.slider}>
           {!xsDown && (
-            <Button onClick={decrementDate} className={classes.chevronDate}>
+            <Button
+              id="chevronLeftButton"
+              onClick={decrementDate}
+              className={classes.chevronDate}
+            >
               <ChevronLeft />
             </Button>
           )}
@@ -686,7 +697,11 @@ const DateSelector = memo(() => {
             </Draggable>
           </Grid>
           {!xsDown && (
-            <Button onClick={incrementDate} className={classes.chevronDate}>
+            <Button
+              id="chevronRightButton"
+              onClick={incrementDate}
+              className={classes.chevronDate}
+            >
               <ChevronRight />
             </Button>
           )}
