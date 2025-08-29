@@ -53,6 +53,9 @@ services:
       - STAC_AWS_ACCESS_KEY_ID=${STAC_AWS_ACCESS_KEY_ID:?"Provide the AWS access key for the stac api."}
       - STAC_AWS_SECRET_ACCESS_KEY=${STAC_AWS_SECRET_ACCESS_KEY:?"Provide the AWS secret key for the stac api."}
       - GOOGLE_FLOODS_API_KEY=${GOOGLE_FLOODS_API_KEY:?"Provide the Google Floods API key."}
+      - VECTOR_STORE_ACCESS_KEY_ID=${VECTOR_STORE_ACCESS_KEY_ID}
+      - VECTOR_STORE_SECRET_ACCESS_KEY=${VECTOR_STORE_SECRET_ACCESS_KEY}
+      - VECTOR_STORE_DEFAULT_REGION=${VECTOR_STORE_DEFAULT_REGION}
     command: uvicorn prism_app.main:app --host 0.0.0.0 --port 80
     restart: always
     # adding a DNS to allow self lookup of the api

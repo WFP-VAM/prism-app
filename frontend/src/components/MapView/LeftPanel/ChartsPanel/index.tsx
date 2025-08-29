@@ -43,50 +43,24 @@ import { LayerData } from 'context/layers/layer-data';
 import { leftPanelTabValueSelector } from 'context/leftPanelStateSlice';
 import { layerDataSelector } from 'context/mapStateSlice/selectors';
 import { useSafeTranslation } from 'i18n';
-import { buildCsvFileName } from 'components/MapView/utils';
+import { buildCsvFileName, getProperties } from 'components/MapView/utils';
 import DownloadCsvButton from 'components/MapView/DownloadCsvButton';
 import ChartSection from './ChartSection';
 import LocationSelector from './LocationSelector';
 import TimePeriodSelector from './TimePeriodSelector';
-
-import { oneDayInMs, oneYearInMs } from '../utils';
 import DateSlider from './DateSlider';
+import {
+  getCountryName,
+  formatLocationString,
+  formatTimePeriodString,
+  oneDayInMs,
+  oneYearInMs,
+} from '../utils';
 
-// Load boundary layer for Admin2
-// WARNING - Make sure the dataviz_ids are available in the boundary file for Admin2
-const { multiCountry } = appConfig;
-const MAX_ADMIN_LEVEL = multiCountry ? 3 : 2;
-const boundaryLayer = getBoundaryLayersByAdminLevel(MAX_ADMIN_LEVEL);
-
-const chartLayers = getWMSLayersWithChart();
-
-const tabPanelType = Panel.Charts;
-
-function getProperties(
-  layerData: LayerData<BoundaryLayerProps>['data'],
-  id?: AdminCodeString,
-  adminLevel?: AdminLevelType,
-): GeoJsonProperties {
-  // Return any properties, used for national level data.
-  if (id === undefined || adminLevel === undefined) {
-    // TODO: this does not work in multicountry, the first feature might not
-    // be part of the country we expect, but probably not a problem as this data
-    // does not go anywhere anyway
-    return layerData.features[0].properties;
-  }
-  const indexLevel = multiCountry ? adminLevel : adminLevel - 1;
-  const adminCode = boundaryLayer.adminLevelCodes[indexLevel];
-  const item = layerData.features.find(
-    elem => elem.properties && elem.properties[adminCode] === id,
-  );
-  return item?.properties ?? {};
-}
-
+// Menu configuration
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
 const menuProps: Partial<MenuProps> = {
-  // `getContentAnchorEl: null` fixes floating multiselect menu.
-  // This is a bug and it is probably resolved in mui v5.
   getContentAnchorEl: null,
   PaperProps: {
     style: {
@@ -96,9 +70,19 @@ const menuProps: Partial<MenuProps> = {
   },
 };
 
-const ChartsPanel = memo(() => {
-  const { countryAdmin0Id, country } = appConfig;
+// Chart configuration
+const { multiCountry, country, countryAdmin0Id } = appConfig;
+const MAX_ADMIN_LEVEL = multiCountry ? 3 : 2;
+const boundaryLayer = getBoundaryLayersByAdminLevel(MAX_ADMIN_LEVEL);
+const chartLayers = getWMSLayersWithChart();
 
+// Time constants
+const yearsToFetchDataFor = 5;
+const oneYearInTicks = 34;
+
+const tabPanelType = Panel.Charts;
+
+const ChartsPanel = memo(() => {
   const boundaryLayerData = useSelector(layerDataSelector(boundaryLayer.id)) as
     | LayerData<BoundaryLayerProps>
     | undefined;
@@ -142,8 +126,6 @@ const ChartsPanel = memo(() => {
     string[] | any[]
   >([]);
 
-  const yearsToFetchDataFor = 5;
-
   const [startDate1, setStartDate1] = useState<number | null>(
     new Date().getTime() - oneYearInMs * yearsToFetchDataFor,
   );
@@ -159,7 +141,6 @@ const ChartsPanel = memo(() => {
   const [adminProperties, setAdminProperties] = useState<GeoJsonProperties>();
   const [secondAdminProperties, setSecondAdminProperties] =
     useState<GeoJsonProperties>();
-  const oneYearInTicks = 34;
   // maxDataTicks used for setting slider max ticks
   const [maxDataTicks, setMaxDataTicks] = useState(0);
   // chartRange is the output of the slider used to select data shown in charts
@@ -228,23 +209,6 @@ const ChartsPanel = memo(() => {
     [compareLocations, comparePeriods],
   );
 
-  const getCountryName: (admProps: GeoJsonProperties) => string = useCallback(
-    admProps => (multiCountry ? admProps?.admin0Name : country),
-    [country],
-  );
-
-  const locationString = (
-    countryName: string,
-    adm1Name: string,
-    adm2Name: string,
-    admLevel: number,
-  ) => {
-    const l = admLevel;
-    return `${countryName}${l > 0 ? ` - ${adm1Name}` : ''}${
-      l > 1 ? ` - ${adm2Name}` : ''
-    }`;
-  };
-
   const showChartsPanel = useMemo(
     () =>
       adminProperties &&
@@ -258,13 +222,13 @@ const ChartsPanel = memo(() => {
     if (!adminProperties && countryAdmin0Id && data) {
       setAdminProperties(getProperties(data));
     }
-  }, [adminProperties, countryAdmin0Id, data]);
+  }, [adminProperties, data]);
 
   useEffect(() => {
     if (!secondAdminProperties && countryAdmin0Id && data) {
       setSecondAdminProperties(getProperties(data));
     }
-  }, [secondAdminProperties, countryAdmin0Id, data]);
+  }, [secondAdminProperties, data]);
 
   const singleChartFilenamePrefix = React.useMemo(
     () =>
@@ -275,13 +239,7 @@ const ChartsPanel = memo(() => {
             selectedAdmin2Area,
           ].map(x => t(x))
         : [],
-    [
-      adminProperties,
-      getCountryName,
-      selectedAdmin1Area,
-      selectedAdmin2Area,
-      t,
-    ],
+    [adminProperties, selectedAdmin1Area, selectedAdmin2Area, t],
   );
 
   const firstCSVFilename = adminProperties
@@ -318,6 +276,11 @@ const ChartsPanel = memo(() => {
       const chartLayer = chartLayers.find(layer =>
         selectedLayerTitles.includes(layer.title),
       );
+
+      if (!chartLayer) {
+        return null;
+      }
+
       return (
         <Box
           style={{
@@ -326,7 +289,7 @@ const ChartsPanel = memo(() => {
           }}
         >
           <ChartSection
-            key={`${startDate1}-${endDate1}`}
+            key={`${chartLayer.id}-${startDate1}-${endDate1}-${adminLevel}-${adminProperties?.admin0Name || ''}-${adminProperties?.admin1Name || ''}-${adminProperties?.admin2Name || ''}`}
             setChartSelectedDateRange={setChartSelectedDateRange}
             setMaxDataTicks={setMaxDataTicks}
             chartMaxDateRange={chartMaxDateRange}
@@ -363,7 +326,7 @@ const ChartsPanel = memo(() => {
                 }}
               >
                 <ChartSection
-                  key={`${startDate1}-${endDate1}`}
+                  key={`${layer.id}-${startDate1}-${endDate1}-${adminLevel}-${adminProperties?.admin0Name || ''}-${adminProperties?.admin1Name || ''}-${adminProperties?.admin2Name || ''}`}
                   chartMaxDateRange={
                     comparePeriods ? undefined : chartMaxDateRange
                   }
@@ -463,33 +426,11 @@ const ChartsPanel = memo(() => {
       .map((chart, idx) => [chart, comparisonChartList[idx]])
       .flat();
 
-    const timePeriodString = (
-      startDate: number | null,
-      endDate: number | null,
-    ) => {
-      if (startDate === null || endDate === null) {
-        return '';
-      }
-
-      const options = {
-        weekday: undefined,
-        year: 'numeric',
-        month: 'short',
-        day: 'numeric',
-      };
-      const formatDate = (d: number) => {
-        const dd = new Date(d);
-        return dd.toLocaleDateString(t('date_locale'), options as any);
-      };
-
-      return `${formatDate(startDate)} - ${formatDate(endDate)}`;
-    };
-
     const titleStrings: () => string[][] = () => {
       if (compareLocations && adminProperties && secondAdminProperties) {
         return [
           [
-            locationString(
+            formatLocationString(
               getCountryName(adminProperties),
               selectedAdmin1Area,
               selectedAdmin2Area,
@@ -498,7 +439,7 @@ const ChartsPanel = memo(() => {
             'main',
           ],
           [
-            locationString(
+            formatLocationString(
               getCountryName(secondAdminProperties),
               comparedAdmin1Area,
               comparedAdmin2Area,
@@ -510,8 +451,8 @@ const ChartsPanel = memo(() => {
       }
       if (comparePeriods) {
         return [
-          [timePeriodString(startDate1, endDate1), 'main'],
-          [timePeriodString(startDate2, endDate2), 'compared'],
+          [formatTimePeriodString(startDate1, endDate1, t), 'main'],
+          [formatTimePeriodString(startDate2, endDate2, t), 'compared'],
         ];
       }
       return [];
@@ -543,7 +484,7 @@ const ChartsPanel = memo(() => {
           }}
         >
           <Typography className={classes.textLabel}>
-            {locationString(
+            {formatLocationString(
               getCountryName(adminProperties),
               selectedAdmin1Area,
               selectedAdmin2Area,
@@ -563,7 +504,6 @@ const ChartsPanel = memo(() => {
     comparePeriods,
     endDate1,
     endDate2,
-    getCountryName,
     maxChartValues,
     minChartValues,
     secondAdminLevel,
@@ -595,7 +535,7 @@ const ChartsPanel = memo(() => {
     // reset the admin 2 titles
     setAdmin2Key('' as AdminCodeString);
     setSecondAdmin2Key('' as AdminCodeString);
-  }, [countryAdmin0Id]);
+  }, []);
 
   const handleOnChangeCompareLocationsSwitch = useCallback(() => {
     if (comparePeriods) {

@@ -13,11 +13,13 @@ import { LayerData } from 'context/layers/layer-data';
 import {
   dateRangeSelector,
   layerDataSelector,
+  mapSelector,
 } from 'context/mapStateSlice/selectors';
 import { useRef } from 'react';
 import { useSelector } from 'react-redux';
 import { appConfig } from 'config';
 import { useSafeTranslation } from 'i18n';
+import { getLayerMapId } from 'utils/map-utils';
 import PopupChartWrapper from './PopupChartWrapper';
 
 const { country } = appConfig;
@@ -64,6 +66,7 @@ interface PopupChartProps {
   adminLevel: AdminLevelType;
   adminLevelsNames: () => string[];
 }
+
 function PopupAnalysisCharts({
   filteredChartLayers,
   adminCode,
@@ -77,11 +80,21 @@ function PopupAnalysisCharts({
   const boundaryLayerData = useSelector(layerDataSelector(boundaryLayer.id)) as
     | LayerData<BoundaryLayerProps>
     | undefined;
-  const { data } = boundaryLayerData || {};
+  const { data, layer } = boundaryLayerData || {};
+  const map = useSelector(mapSelector);
 
   const { startDate: selectedDate } = useSelector(dateRangeSelector);
   const chartEndDate = selectedDate || new Date().getTime();
   const chartStartDate = chartEndDate - oneYearInMs;
+
+  const layerId = getLayerMapId(boundaryLayer.id, 'fill');
+  const features = map?.queryRenderedFeatures(undefined, { layers: [layerId] });
+
+  const adminProperties =
+    data && layer?.format === 'geojson'
+      ? getProperties(data as BoundaryLayerData, adminCode, adminSelectorKey)
+      : features?.find(f => f.properties?.[adminSelectorKey] === adminCode)
+          ?.properties ?? null;
 
   if (filteredChartLayers.length < 1) {
     return null;
@@ -93,12 +106,9 @@ function PopupAnalysisCharts({
         <div key={filteredChartLayer.id} className={classes.chartContainer}>
           <div className={classes.chartSection}>
             <ChartSection
+              key={`${filteredChartLayer.id}-${adminCode}-${adminLevel}-${chartStartDate}-${chartEndDate}`}
               chartLayer={filteredChartLayer}
-              adminProperties={getProperties(
-                data as BoundaryLayerData,
-                adminCode,
-                adminSelectorKey,
-              )}
+              adminProperties={adminProperties}
               adminLevel={adminLevel}
               startDate={chartStartDate}
               endDate={chartEndDate}

@@ -74,6 +74,55 @@ jobs:
       - name: Build
         run: cd frontend && yarn build
 
+  frontend_end_to_end_tests:
+    strategy:
+      matrix:
+        country: [mozambique, rbd, cambodia]
+      max-parallel: 2
+
+    name: Frontend e2e tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Use Node.js 20.x
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20
+
+      - uses: actions/cache@v4
+        id: yarn-cache
+        with:
+          path: |
+            **/node_modules
+            **/.eslintcache
+            **/common/dist
+            ${{ steps.yarn-cache-dir-path.outputs.dir }}
+          key: ${{ runner.os }}-yarn-2025-2-${{ hashFiles('**/frontend/yarn.lock') }}-${{ hashFiles('**/common/.lock', '**/common/src/**/*.ts') }}
+          restore-keys: |
+            ${{ runner.os }}-yarn-2025-2
+
+      - name: setup 'common' package
+        # skip yarn install in frontend, as cypress does it anyway
+        if: steps.yarn-cache.outputs.cache-hit != 'true'
+        run: cd frontend && yarn run setup:common_in_ci
+
+      - name: Run cypress e2e tests
+        uses: cypress-io/github-action@v6
+        with:
+          working-directory: ./frontend
+          start: yarn start
+          browser: chrome
+          spec: |
+            cypress/e2e/${{ matrix.country }}.cy.ts
+            cypress/e2e/all_countries.cy.ts
+        env:
+          REACT_APP_COUNTRY: ${{ matrix.country }}
+          # CI runners seem a bit slow, give them more time to complete
+          # each command in cypress
+          CYPRESS_DEFAULT_COMMAND_TIMEOUT: 10000
+
   frontend_build_and_deploy:
     needs: frontend_tests
     if: github.event_name != 'push'

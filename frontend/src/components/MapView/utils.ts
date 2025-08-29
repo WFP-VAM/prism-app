@@ -1,10 +1,17 @@
 import { orderBy, snakeCase, values } from 'lodash';
 import { TFunction } from 'i18next';
 import type { AppDispatch } from 'context/store';
-import { isAnticipatoryActionLayer, LayerDefinitions } from 'config/utils';
+import {
+  getBoundaryLayersByAdminLevel,
+  isAnticipatoryActionLayer,
+  LayerDefinitions,
+} from 'config/utils';
 import { formatFeatureInfo } from 'utils/server-utils';
 import {
+  AdminCodeString,
+  AdminLevelType,
   AvailableDates,
+  BoundaryLayerProps,
   FeatureInfoObject,
   FeatureInfoProps,
   FeatureInfoType,
@@ -24,6 +31,9 @@ import { TableRow } from 'context/analysisResultStateSlice';
 import { MapRef, Point } from 'react-map-gl/maplibre';
 import { PopupData } from 'context/tooltipStateSlice';
 import { getTitle } from 'utils/title-utils';
+import { LayerData } from 'context/layers/layer-data';
+import { GeoJsonProperties } from 'geojson';
+import { appConfig } from 'config';
 import { getExtent } from './Layers/raster-utils';
 
 // TODO: maplibre: fix feature
@@ -330,3 +340,31 @@ export const getExposureAnalysisTableData = (
   sortColumn: Column['id'],
   sortOrder: 'asc' | 'desc',
 ) => orderBy(tableData, sortColumn, sortOrder);
+
+/**
+ * Gets properties from layer data based on ID and admin level.
+ *
+ * @param layerData - The boundary layer data
+ * @param id - Optional admin code string identifier
+ * @param adminLevel - Optional administrative level type
+ * @returns GeoJSON properties for the matching feature
+ */
+const { multiCountry } = appConfig;
+const MAX_ADMIN_LEVEL = multiCountry ? 3 : 2;
+const boundaryLayer = getBoundaryLayersByAdminLevel(MAX_ADMIN_LEVEL);
+
+export const getProperties = (
+  layerData: LayerData<BoundaryLayerProps>['data'],
+  id?: AdminCodeString,
+  adminLevel?: AdminLevelType,
+): GeoJsonProperties => {
+  if (id === undefined || adminLevel === undefined) {
+    return layerData.features[0].properties;
+  }
+  const indexLevel = multiCountry ? adminLevel : adminLevel - 1;
+  const adminCode = boundaryLayer.adminLevelCodes[indexLevel];
+  const item = layerData.features.find(
+    elem => elem.properties && elem.properties[adminCode] === id,
+  );
+  return item?.properties ?? {};
+};
