@@ -4,13 +4,13 @@ import 'react-datepicker/dist/react-datepicker.css';
 import { DateItem, DateRangeType } from 'config/types';
 import { datesAreEqualWithoutTime } from 'utils/date-utils';
 
-const AADroughtTimelineItem = memo(
+const StandardTimelineItem = memo(
   ({
     concatenatedLayers,
     currentDate,
     dateItemStyling,
     isDateAvailable,
-  }: AADroughtTimelineItemProps) => {
+  }: StandardTimelineItemProps) => {
     // Pre-compute the matching indices for all layers
     const classes = useStyles();
 
@@ -138,7 +138,7 @@ const useStyles = makeStyles(() =>
   }),
 );
 
-export interface AADroughtTimelineItemProps {
+export interface StandardTimelineItemProps {
   concatenatedLayers: DateItem[][];
   currentDate: DateRangeType;
   dateItemStyling: {
@@ -150,4 +150,4 @@ export interface AADroughtTimelineItemProps {
   isDateAvailable: boolean;
 }
 
-export default AADroughtTimelineItem;
+export default StandardTimelineItem;
