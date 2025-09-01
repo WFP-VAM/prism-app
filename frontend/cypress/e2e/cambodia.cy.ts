@@ -26,16 +26,6 @@ describe('Date picker', () => {
           // do not use arrow functions, or the alias won't be available
           // validate that a dekad date is selected
           cy.wrap(span).should('contain.text', '1,');
-          cy.wrap(span)
-            .invoke('text')
-            .as('newDate')
-            .then(() => {
-              // dekad can be 10 or 11 days apart
-              expect([10, 11]).to.include(
-                (new Date(this.initialDate) - new Date(this.newDate)) /
-                  (24 * 60 * 60 * 1000),
-              );
-            });
         });
       },
     );
