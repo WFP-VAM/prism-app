@@ -12,11 +12,10 @@ describe('Date picker', () => {
 
     cy.toggleLayer('Rainfall', 'Rainfall Amount', 'Rainfall aggregate');
 
-    cy.get('.react-datepicker-wrapper button span', { timeout: 20000 })
-      // wait for a dekad date to be selected (will fail 3 days/month)
-      .then(span1 => {
+    cy.get('.react-datepicker-wrapper button span', { timeout: 20000 }).then(
+      span1 => {
         cy.wrap(span1)
-          .should('contain.text', '1,')
+          .should('match', /^[A-Z][a-z]{2} \d{1,2}, \d{4}$/)
           .invoke('text')
           .as('initialDate');
         // scroll backwards once
@@ -25,6 +24,7 @@ describe('Date picker', () => {
           timeout: 20000,
         }).then(function (span) {
           // do not use arrow functions, or the alias won't be available
+          // validate that a dekad date is selected
           cy.wrap(span).should('contain.text', '1,');
           cy.wrap(span)
             .invoke('text')
@@ -37,6 +37,7 @@ describe('Date picker', () => {
               );
             });
         });
-      });
+      },
+    );
   });
 });
