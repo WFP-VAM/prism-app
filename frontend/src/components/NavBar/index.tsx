@@ -43,6 +43,8 @@ import LanguageSelector from './LanguageSelector';
 import PrintImage from './PrintImage';
 import PanelMenu from './PanelMenu';
 import PanelButton from './PanelButton';
+import AnticipatoryActionFloodPanel from 'components/MapView/LeftPanel/AnticipatoryActionPanel/AnticipatoryActionFloodPanel';
+import { FloodIcon } from 'components/MapView/LeftPanel/AnticipatoryActionPanel/AAFloodIcon';
 
 const { alertFormActive, header } = appConfig;
 
@@ -90,6 +92,11 @@ const panels: PanelItem[] = [
   ...(alertFormActive
     ? [{ panel: Panel.Alerts, label: '', icon: <Notifications /> }]
     : []),
+  {
+    label: 'Anticipatory Action Flood',
+    panel: Panel.AnticipatoryActionFlood,
+    icon: <FloodIcon />,
+  },
 ];
 
 function NavBar() {
