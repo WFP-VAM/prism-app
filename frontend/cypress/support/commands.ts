@@ -43,8 +43,17 @@
 Cypress.Commands.add(
   'toggleLayer',
   (group1: string, group2: string, layerName: string) => {
+    // cy.contains cannot distinguish between sections with the same name
     cy.contains(group1).click();
-    cy.contains(group2).click();
+    cy.get('div[aria-expanded=false]').contains(group2).click();
     cy.get(`[type="checkbox"][aria-label="${layerName}"]`).click();
   },
 );
+
+Cypress.Commands.add('switchLanguage', (langcode: string) => {
+  cy.get('[aria-label="language-select-dropdown-button"]').click();
+  cy.get(
+    `[aria-label="language-select-dropdown-menu-item-${langcode}"]`,
+  ).click();
+  cy.contains('Layers').should('be.visible');
+});
