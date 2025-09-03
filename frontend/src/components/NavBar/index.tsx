@@ -36,6 +36,7 @@ import {
   areTablesAvailable,
   isAnticipatoryActionDroughtAvailable,
   isAnticipatoryActionStormAvailable,
+  isAnticipatoryActionFloodAvailable,
 } from 'components/MapView/LeftPanel/utils';
 import { Panel, PanelItem } from 'config/types';
 import About from './About';
@@ -43,8 +44,6 @@ import LanguageSelector from './LanguageSelector';
 import PrintImage from './PrintImage';
 import PanelMenu from './PanelMenu';
 import PanelButton from './PanelButton';
-import AnticipatoryActionFloodPanel from 'components/MapView/LeftPanel/AnticipatoryActionPanel/AnticipatoryActionFloodPanel';
-import { FloodIcon } from 'components/MapView/LeftPanel/AnticipatoryActionPanel/AAFloodIcon';
 
 const { alertFormActive, header } = appConfig;
 
@@ -61,7 +60,9 @@ const panels: PanelItem[] = [
   ...(areTablesAvailable
     ? [{ panel: Panel.Tables, label: 'Tables', icon: <TableChartOutlined /> }]
     : []),
-  ...(isAnticipatoryActionDroughtAvailable || isAnticipatoryActionStormAvailable
+  ...(isAnticipatoryActionDroughtAvailable ||
+  isAnticipatoryActionStormAvailable ||
+  isAnticipatoryActionFloodAvailable()
     ? [
         {
           label: 'A. Actions',
@@ -85,6 +86,15 @@ const panels: PanelItem[] = [
                   },
                 ]
               : []),
+            ...(isAnticipatoryActionFloodAvailable()
+              ? [
+                  {
+                    panel: Panel.AnticipatoryActionFlood,
+                    label: 'A. Action Flood',
+                    icon: <TimerOutlined />,
+                  },
+                ]
+              : []),
           ],
         },
       ]
@@ -92,11 +102,6 @@ const panels: PanelItem[] = [
   ...(alertFormActive
     ? [{ panel: Panel.Alerts, label: '', icon: <Notifications /> }]
     : []),
-  {
-    label: 'Anticipatory Action Flood',
-    panel: Panel.AnticipatoryActionFlood,
-    icon: <FloodIcon />,
-  },
 ];
 
 function NavBar() {

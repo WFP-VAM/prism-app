@@ -65,6 +65,7 @@ const dateSupportLayerTypes: Array<LayerType['type']> = [
   'static_raster',
   AnticipatoryAction.drought,
   AnticipatoryAction.storm,
+  AnticipatoryAction.flood,
 ];
 
 const useLayers = () => {

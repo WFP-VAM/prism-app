@@ -1,5 +1,10 @@
 import { DateItem } from 'config/types';
 
+// Extended DateItem for flood data with color coding
+export type FloodDateItem = DateItem & {
+  color?: string;
+};
+
 // Flood risk levels based on the sample data
 export const AAFloodRiskLevels = [
   'Below bankfull',
@@ -75,7 +80,7 @@ export type AnticipatoryActionFloodState = {
   selectedDate: string | null;
   forecastData: Record<string, FloodForecastData[]>;
   historicalData: Record<string, FloodStationData[]>;
-  availableDates: DateItem[];
+  availableDates: FloodDateItem[];
   filters: {
     selectedDate: string | null;
     selectedStation: string | null;

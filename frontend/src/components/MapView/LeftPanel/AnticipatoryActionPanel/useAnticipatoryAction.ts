@@ -8,7 +8,7 @@ import {
   layersSelector,
   mapSelector,
 } from 'context/mapStateSlice/selectors';
-import { updateDateRange } from 'context/mapStateSlice';
+import { updateDateRange, addLayer } from 'context/mapStateSlice';
 import { getUrlKey, useUrlHistory } from 'utils/url-utils';
 import { AALayerIds, LayerDefinitions, isWindowedDates } from 'config/utils';
 import {
@@ -23,17 +23,22 @@ import { AnticipatoryActionData } from 'context/anticipatoryAction/AADroughtStat
 import { getFormattedDate } from 'utils/date-utils';
 import { DateFormat } from 'utils/name-utils';
 import { ParsedStormData } from 'context/anticipatoryAction/AAStormStateSlice/parsedStormDataTypes';
+import { AnticipatoryActionFloodState } from 'context/anticipatoryAction/AAFloodStateSlice/types';
 import { toggleRemoveLayer } from '../layersPanel/MenuItem/MenuSwitch/SwitchItem/utils';
 
 type AADataByAction<T extends AnticipatoryAction> =
   T extends AnticipatoryAction.storm
     ? ParsedStormData
-    : Record<'Window 1' | 'Window 2', AnticipatoryActionData>;
+    : T extends AnticipatoryAction.flood
+      ? AnticipatoryActionFloodState
+      : Record<'Window 1' | 'Window 2', AnticipatoryActionData>;
 
 type AAAvailableDatesByAction<T extends AnticipatoryAction> =
   T extends AnticipatoryAction.storm
     ? DateItem[]
-    : Record<'Window 1' | 'Window 2', DateItem[]>;
+    : T extends AnticipatoryAction.flood
+      ? DateItem[]
+      : Record<'Window 1' | 'Window 2', DateItem[]>;
 
 export function useAnticipatoryAction<T extends AnticipatoryAction>(
   actionType: T,
@@ -124,6 +129,9 @@ export function useAnticipatoryAction<T extends AnticipatoryAction>(
       );
       updateHistory(getUrlKey(layer), updatedUrl);
       dispatch(updateDateRange({ startDate: undefined }));
+
+      // Add the layer to selected layers for proper timeline integration
+      dispatch(addLayer(layer));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

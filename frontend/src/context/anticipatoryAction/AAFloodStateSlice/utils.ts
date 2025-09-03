@@ -1,21 +1,28 @@
-import { DateItem } from 'config/types';
-import { FloodStation, FloodStationData, AAFloodRiskLevelType } from './types';
+import {
+  FloodStation,
+  FloodStationData,
+  AAFloodRiskLevelType,
+  FloodDateItem,
+} from './types';
+import { getVillageCoordinates } from './villageCoordinates';
 
 export function parseAndTransformFloodData(data: FloodStationData[]): {
   stations: FloodStation[];
-  availableDates: DateItem[];
+  availableDates: FloodDateItem[];
 } {
   // Group data by station
   const stationMap = new Map<string, FloodStationData[]>();
 
   data.forEach(row => {
     const stationName = row.station_name;
-    if (!stationName) {
+    // Skip rows with invalid or missing station names
+    if (!stationName || stationName.trim() === '') {
       return;
     }
     if (!stationMap.has(stationName)) {
       stationMap.set(stationName, []);
     }
+    // eslint-disable-next-line fp/no-mutating-methods
     stationMap.get(stationName)!.push(row);
   });
 
@@ -24,11 +31,13 @@ export function parseAndTransformFloodData(data: FloodStationData[]): {
     ([stationName, stationData]) => {
       const firstData = stationData[0];
       const latestData = stationData[stationData.length - 1];
+      const coordinates = getVillageCoordinates(stationName) || undefined;
 
       return {
         station_name: stationName,
         river_name: firstData.river_name,
         location_id: firstData.location_id,
+        coordinates,
         thresholds: {
           bankfull: firstData.threshold_bankfull,
           moderate: firstData.threshold_moderate,
@@ -40,16 +49,50 @@ export function parseAndTransformFloodData(data: FloodStationData[]): {
     },
   );
 
-  // Extract unique dates
-  const uniqueDates = Array.from(new Set(data.map(row => row.time))).sort();
+  // Extract unique dates with color coding based on highest severity
+  // Filter out null/undefined/invalid dates first
+  const validDates = data
+    .map(row => row.time)
+    .filter(
+      time =>
+        time && time.trim() !== '' && !Number.isNaN(new Date(time).getTime()),
+    );
 
-  const availableDates: DateItem[] = uniqueDates.map(dateStr => {
-    const date = new Date(dateStr);
-    return {
-      displayDate: date.getTime(),
-      queryDate: date.getTime(),
-    };
-  });
+  // eslint-disable-next-line fp/no-mutating-methods
+  const uniqueDates = Array.from(new Set(validDates)).sort();
+
+  const availableDates: FloodDateItem[] = uniqueDates
+    .map(dateStr => {
+      const date = new Date(dateStr);
+
+      // Double-check that the date is valid
+      if (Number.isNaN(date.getTime())) {
+        return null;
+      }
+
+      // Find the highest severity level for this date
+      const dateData = data.filter(row => row.time === dateStr);
+      const highestSeverity = dateData.reduce((highest, current) => {
+        const severityOrder = {
+          Severe: 4,
+          Moderate: 3,
+          Bankfull: 2,
+          'Below bankfull': 1,
+        };
+        const currentOrder = severityOrder[current.risk_level] || 0;
+        const highestOrder = severityOrder[highest.risk_level] || 0;
+        return currentOrder > highestOrder ? current : highest;
+      }, dateData[0]);
+
+      return {
+        displayDate: date.getTime(),
+        queryDate: date.getTime(),
+        color: getFloodRiskColor(
+          highestSeverity?.risk_level || 'Below bankfull',
+        ),
+      } as FloodDateItem;
+    })
+    .filter((dateItem): dateItem is FloodDateItem => dateItem !== null);
 
   return { stations, availableDates };
 }
@@ -60,13 +103,14 @@ export function getFloodRiskLevel(
 ): AAFloodRiskLevelType {
   if (discharge >= thresholds.severe) {
     return 'Severe';
-  } else if (discharge >= thresholds.moderate) {
-    return 'Moderate';
-  } else if (discharge >= thresholds.bankfull) {
-    return 'Bankfull';
-  } else {
-    return 'Below bankfull';
   }
+  if (discharge >= thresholds.moderate) {
+    return 'Moderate';
+  }
+  if (discharge >= thresholds.bankfull) {
+    return 'Bankfull';
+  }
+  return 'Below bankfull';
 }
 
 export function getFloodRiskColor(riskLevel: AAFloodRiskLevelType): string {

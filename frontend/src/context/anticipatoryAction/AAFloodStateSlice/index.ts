@@ -1,8 +1,6 @@
 import { PayloadAction, createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import Papa from 'papaparse';
-import { DateItem } from 'config/types';
 import { appConfig } from 'config';
-import { getCurrentDateTimeForUrl } from 'utils/date-utils';
 import type { CreateAsyncThunkTypes, RootState } from '../../store';
 import {
   AAFloodRiskLevelType,
@@ -10,7 +8,7 @@ import {
   AnticipatoryActionFloodState,
   FloodStation,
   FloodStationData,
-  FloodForecastData,
+  FloodDateItem,
 } from './types';
 import { parseAndTransformFloodData } from './utils';
 
@@ -39,7 +37,7 @@ const initialState: AnticipatoryActionFloodState = {
 export const loadAAFloodData = createAsyncThunk<
   {
     stations: FloodStation[];
-    availableDates: DateItem[];
+    availableDates: FloodDateItem[];
   },
   void,
   CreateAsyncThunkTypes

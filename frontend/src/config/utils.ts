@@ -131,6 +131,7 @@ export const getLayerByKey = (layerKey: LayerKey): LayerType => {
       return definition;
     case 'anticipatory_action_drought':
     case 'anticipatory_action_storm':
+    case 'anticipatory_action_flood':
       if (
         checkRequiredKeys(CompositeLayerProps, definition, true) &&
         isAnticipatoryActionLayer(definition.type)

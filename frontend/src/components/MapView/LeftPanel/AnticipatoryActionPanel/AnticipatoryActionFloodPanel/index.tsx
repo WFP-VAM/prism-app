@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useState } from 'react';
+import { useDispatch } from 'react-redux';
 import {
   Typography,
   Table,
@@ -14,13 +14,12 @@ import {
   Chip,
   TableSortLabel,
 } from '@material-ui/core';
-import { RootState } from 'context/store';
-import {
-  loadAAFloodData,
-  setAAFloodSelectedStation,
-} from 'context/anticipatoryAction/AAFloodStateSlice';
+import { setAAFloodSelectedStation } from 'context/anticipatoryAction/AAFloodStateSlice';
 import { getFloodRiskColor } from 'context/anticipatoryAction/AAFloodStateSlice/utils';
 import { useSafeTranslation } from 'i18n';
+import { AnticipatoryAction } from 'config/types';
+import { useAnticipatoryAction } from '../useAnticipatoryAction';
+import StationCharts from './StationCharts';
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -76,16 +75,11 @@ function AnticipatoryActionFloodPanel() {
   const classes = useStyles();
   const dispatch = useDispatch();
   const { t } = useSafeTranslation();
-  const { stations, selectedStation, loading, error } = useSelector(
-    (state: RootState) => state.anticipatoryActionFloodState,
-  );
+  const { AAData } = useAnticipatoryAction(AnticipatoryAction.flood);
+  const { stations, selectedStation, loading, error } = AAData;
 
   const [sortField, setSortField] = useState<SortField>('station_name');
   const [sortDirection, setSortDirection] = useState<SortDirection>('asc');
-
-  useEffect(() => {
-    dispatch(loadAAFloodData());
-  }, [dispatch]);
 
   const handleSort = (field: SortField) => {
     if (sortField === field) {
@@ -102,28 +96,38 @@ function AnticipatoryActionFloodPanel() {
 
   // eslint-disable-next-line fp/no-mutating-methods
   const sortedStations = [...stations].sort((a, b) => {
-    let aValue: string | number;
-    let bValue: string | number;
+    const aValue: string | number = (() => {
+      switch (sortField) {
+        case 'station_name':
+          return a.station_name;
+        case 'date':
+          return a.currentData?.time || '';
+        case 'risk_level':
+          return a.currentData?.risk_level || '';
+        default:
+          return '';
+      }
+    })();
 
-    switch (sortField) {
-      case 'station_name':
-        aValue = a.station_name;
-        bValue = b.station_name;
-        break;
-      case 'date':
-        aValue = a.currentData?.time || '';
-        bValue = b.currentData?.time || '';
-        break;
-      case 'risk_level':
-        aValue = a.currentData?.risk_level || '';
-        bValue = b.currentData?.risk_level || '';
-        break;
-      default:
-        return 0;
+    const bValue: string | number = (() => {
+      switch (sortField) {
+        case 'station_name':
+          return b.station_name;
+        case 'date':
+          return b.currentData?.time || '';
+        case 'risk_level':
+          return b.currentData?.risk_level || '';
+        default:
+          return '';
+      }
+    })();
+
+    if (aValue < bValue) {
+      return sortDirection === 'asc' ? -1 : 1;
     }
-
-    if (aValue < bValue) return sortDirection === 'asc' ? -1 : 1;
-    if (aValue > bValue) return sortDirection === 'asc' ? 1 : -1;
+    if (aValue > bValue) {
+      return sortDirection === 'asc' ? 1 : -1;
+    }
     return 0;
   });
 
@@ -186,9 +190,9 @@ function AnticipatoryActionFloodPanel() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {sortedStations.map((station, index) => (
+            {sortedStations.map(station => (
               <TableRow
-                key={`${station.station_name}-${index}`}
+                key={station.station_name}
                 className={`${classes.row} ${
                   selectedStation === station.station_name
                     ? classes.selectedRow
@@ -234,6 +238,13 @@ function AnticipatoryActionFloodPanel() {
         {t('Rows per page')} 20 | 1-{Math.min(20, stations.length)} /{' '}
         {stations.length}
       </div>
+
+      {/* Show charts when a station is selected */}
+      {selectedStation && (
+        <StationCharts
+          station={stations.find(s => s.station_name === selectedStation)!}
+        />
+      )}
     </div>
   );
 }

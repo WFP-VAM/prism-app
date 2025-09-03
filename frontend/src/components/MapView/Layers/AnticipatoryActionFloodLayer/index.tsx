@@ -1,11 +1,11 @@
-import React, { useEffect, useMemo } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { MapLayerMouseEvent } from 'maplibre-gl';
-import { RootState } from 'context/store';
-import { AnticipatoryActionLayerProps } from 'config/types';
-import { loadAAFloodData } from 'context/anticipatoryAction/AAFloodStateSlice';
-import { getFloodRiskColor } from 'context/anticipatoryAction/AAFloodStateSlice/utils';
-import { useMapLayer } from 'components/MapView/Layers/layer-utils';
+import { useMemo } from 'react';
+import { AnticipatoryActionLayerProps, AnticipatoryAction } from 'config/types';
+import { useAnticipatoryAction } from 'components/MapView/LeftPanel/AnticipatoryActionPanel/useAnticipatoryAction';
+import { Layer, Source } from 'react-map-gl/maplibre';
+import { useDefaultDate } from 'utils/useDefaultDate';
+import { useSelector } from 'react-redux';
+import { dateRangeSelector } from 'context/mapStateSlice/selectors';
+import AAFloodDatePopup from './AAFloodDatePopup';
 
 interface AnticipatoryActionFloodLayerProps {
   layer: AnticipatoryActionLayerProps;
@@ -14,23 +14,34 @@ interface AnticipatoryActionFloodLayerProps {
 function AnticipatoryActionFloodLayer({
   layer,
 }: AnticipatoryActionFloodLayerProps) {
-  const dispatch = useDispatch();
-  const { stations, loading } = useSelector(
-    (state: RootState) => state.anticipatoryActionFloodState,
-  );
-
-  useEffect(() => {
-    if (!loading && stations.length === 0) {
-      dispatch(loadAAFloodData());
-    }
-  }, [dispatch, loading, stations.length]);
+  // Load the layer default date if no date is selected
+  useDefaultDate(layer.id);
+  const { AAData } = useAnticipatoryAction(AnticipatoryAction.flood);
+  const { stations, availableDates } = AAData;
+  const { startDate } = useSelector(dateRangeSelector);
 
   const floodStationsGeoJSON = useMemo(() => {
-    if (!stations.length) return null;
+    if (!stations.length) {
+      return null;
+    }
+
+    // Filter stations by selected date if available
+    const filteredStations = stations.filter((station: any) => {
+      if (!startDate || !station.currentData) {
+        return true;
+      }
+
+      const stationDate = new Date(station.currentData.time).getTime();
+      const selectedDate = startDate;
+
+      // Check if the station data is for the selected date (within 24 hours)
+      const timeDiff = Math.abs(stationDate - selectedDate);
+      return timeDiff < 24 * 60 * 60 * 1000; // 24 hours in milliseconds
+    });
 
     return {
       type: 'FeatureCollection' as const,
-      features: stations.map(station => ({
+      features: filteredStations.map((station: any) => ({
         type: 'Feature' as const,
         geometry: {
           type: 'Point' as const,
@@ -49,73 +60,68 @@ function AnticipatoryActionFloodLayer({
         },
       })),
     };
-  }, [stations]);
+  }, [stations, startDate]);
 
-  const handleClick = (evt: MapLayerMouseEvent) => {
-    const feature = evt.features?.[0];
-    if (feature) {
-      // Handle station click - could open popup or update selected station
-      console.log('Flood station clicked:', feature.properties);
-    }
-  };
+  if (!floodStationsGeoJSON) {
+    return null;
+  }
 
-  useMapLayer({
-    layerId: layer.id,
-    sourceId: `${layer.id}-source`,
-    source: {
-      type: 'geojson',
-      data: floodStationsGeoJSON,
-    },
-    layers: [
-      {
-        id: `${layer.id}-circles`,
-        type: 'circle',
-        paint: {
-          'circle-radius': [
-            'case',
-            ['==', ['get', 'risk_level'], 'Severe'],
-            12,
-            ['==', ['get', 'risk_level'], 'Moderate'],
-            10,
-            ['==', ['get', 'risk_level'], 'Bankfull'],
-            8,
-            6,
-          ],
-          'circle-color': [
-            'case',
-            ['==', ['get', 'risk_level'], 'Severe'],
-            '#F44336',
-            ['==', ['get', 'risk_level'], 'Moderate'],
-            '#FF9800',
-            ['==', ['get', 'risk_level'], 'Bankfull'],
-            '#FFC107',
-            '#4CAF50',
-          ],
-          'circle-stroke-width': 2,
-          'circle-stroke-color': '#ffffff',
-        },
-      },
-      {
-        id: `${layer.id}-labels`,
-        type: 'symbol',
-        layout: {
-          'text-field': ['get', 'station_name'],
-          'text-font': ['Open Sans Regular', 'Arial Unicode MS Regular'],
-          'text-size': 12,
-          'text-offset': [0, 2],
-          'text-anchor': 'top',
-        },
-        paint: {
-          'text-color': '#000000',
-          'text-halo-color': '#ffffff',
-          'text-halo-width': 1,
-        },
-      },
-    ],
-    onClick: handleClick,
-  });
+  return (
+    <>
+      <Source
+        id={`${layer.id}-source`}
+        type="geojson"
+        data={floodStationsGeoJSON}
+      >
+        <Layer
+          id={`${layer.id}-circles`}
+          type="circle"
+          paint={{
+            'circle-radius': [
+              'case',
+              ['==', ['get', 'risk_level'], 'Severe'],
+              12,
+              ['==', ['get', 'risk_level'], 'Moderate'],
+              10,
+              ['==', ['get', 'risk_level'], 'Bankfull'],
+              8,
+              6,
+            ],
+            'circle-color': [
+              'case',
+              ['==', ['get', 'risk_level'], 'Severe'],
+              '#F44336',
+              ['==', ['get', 'risk_level'], 'Moderate'],
+              '#FF9800',
+              ['==', ['get', 'risk_level'], 'Bankfull'],
+              '#FFC107',
+              '#4CAF50',
+            ],
+            'circle-stroke-width': 2,
+            'circle-stroke-color': '#ffffff',
+          }}
+        />
+        <Layer
+          id={`${layer.id}-labels`}
+          type="symbol"
+          layout={{
+            'text-field': ['get', 'station_name'],
+            'text-font': ['Open Sans Regular', 'Arial Unicode MS Regular'],
+            'text-size': 12,
+            'text-offset': [0, 2],
+            'text-anchor': 'top',
+          }}
+          paint={{
+            'text-color': '#000000',
+            'text-halo-color': '#ffffff',
+            'text-halo-width': 1,
+          }}
+        />
+      </Source>
 
-  return null;
+      <AAFloodDatePopup availableDates={availableDates} />
+    </>
+  );
 }
 
 export default AnticipatoryActionFloodLayer;
