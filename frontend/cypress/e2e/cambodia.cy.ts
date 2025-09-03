@@ -69,4 +69,34 @@ describe('Date picker', () => {
       cy.wrap(span).should('contain.text', 'Aug 8, 2025');
     });
   });
+
+  it('should find a valid date when activating / deactivating and reactivating a layer with date', () => {
+    cy.visit(frontendUrl);
+
+    cy.contains('MapTiler', { timeout: 20000 }).should('be.visible');
+    cy.switchLanguage('en');
+    cy.activateLayer('Rainfall', 'Rainfall Amount', 'Rainfall aggregate');
+    cy.get('.react-datepicker-wrapper button span', {
+      timeout: 20000,
+    }).then(span => {
+      cy.wrap(span)
+        .invoke('text')
+        .should('match', /^[A-Z][a-z]{2} \d{1,2}, \d{4}$/)
+        .as('initialDate');
+      const initialDate = span.text();
+
+      // deactivate the layer
+      cy.deactivateLayer('Rainfall', 'Rainfall Amount', 'Rainfall aggregate');
+      cy.get('.react-datepicker-wrapper button span').should('not.exist');
+
+      // reactivate the layer
+      cy.activateLayer('Rainfall', 'Rainfall Amount', 'Rainfall aggregate');
+      cy.get('.react-datepicker-wrapper button span', {
+        timeout: 2000,
+      }).then(span => {
+        cy.wrap(span).should('contain.text', initialDate);
+      });
+      cy.contains('Invalid date found undefined').should('not.exist');
+    });
+  });
 });
