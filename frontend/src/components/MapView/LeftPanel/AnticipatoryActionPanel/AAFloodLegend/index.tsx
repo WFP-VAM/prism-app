@@ -12,6 +12,7 @@ const useStyles = makeStyles(() =>
     root: {
       padding: '0.5rem',
       minWidth: '350px',
+      maxWidth: '400px',
     },
     header: {
       display: 'flex',
@@ -28,9 +29,6 @@ const useStyles = makeStyles(() =>
     },
     closeButton: {
       padding: '4px',
-    },
-    section: {
-      marginBottom: '1rem',
     },
     sectionTitle: {
       fontWeight: 'bold',
@@ -54,16 +52,6 @@ const useStyles = makeStyles(() =>
       height: 0,
       flexShrink: 0,
     },
-    upwardTriangle: {
-      borderLeft: '6px solid transparent',
-      borderRight: '6px solid transparent',
-      borderBottom: '10px solid #666',
-    },
-    downwardTriangle: {
-      borderLeft: '6px solid transparent',
-      borderRight: '6px solid transparent',
-      borderTop: '10px solid #666',
-    },
     itemText: {
       fontSize: '0.9rem',
     },
@@ -74,7 +62,6 @@ const useStyles = makeStyles(() =>
       fontSize: '0.85rem',
       color: '#666',
       lineHeight: 1.4,
-      marginBottom: '0.75rem',
     },
     link: {
       textDecoration: 'underline',
@@ -111,77 +98,47 @@ function AAFloodLegend() {
     },
   ];
 
-  const trends = [
-    {
-      type: 'upward',
-      label: 'Upward trend',
-    },
-    {
-      type: 'downward',
-      label: 'Downward trend',
-    },
-  ];
-
   const handleGoogleResearchClick = () => {
     window.open('https://research.google/', '_blank');
   };
 
   return (
-    <div className={classes.root}>
-      <div className={classes.section}>
-        <Typography className={classes.sectionTitle}>
-          {t('River discharge forecast')}
-        </Typography>
+    <div>
+      <Typography className={classes.sectionTitle}>
+        {t('River discharge forecast')}
+      </Typography>
 
-        {categories.map(category => (
-          <div key={category.label} className={classes.itemWrapper}>
-            <div
-              className={classes.categoryCircle}
-              style={{ backgroundColor: category.color }}
-            />
-            <Typography className={classes.itemText}>
-              {t(category.label)}
-            </Typography>
-          </div>
-        ))}
+      {categories.map(category => (
+        <div key={category.label} className={classes.itemWrapper}>
+          <div
+            className={classes.categoryCircle}
+            style={{ backgroundColor: category.color }}
+          />
+          <Typography className={classes.itemText}>
+            {t(category.label)}
+          </Typography>
+        </div>
+      ))}
 
-        <Divider className={classes.divider} />
+      <Divider className={classes.divider} />
 
-        {trends.map(trend => (
-          <div key={trend.label} className={classes.itemWrapper}>
-            <div
-              className={`${classes.trendTriangle} ${
-                trend.type === 'upward'
-                  ? classes.upwardTriangle
-                  : classes.downwardTriangle
-              }`}
-            />
-            <Typography className={classes.itemText}>
-              {t(trend.label)}
-            </Typography>
-          </div>
-        ))}
-
-        <Divider className={classes.divider} />
-
-        <Typography className={classes.description}>
-          {t('River discharge forecast at verified gauges. Visit')}{' '}
-          <span
-            className={classes.link}
-            onClick={handleGoogleResearchClick}
-            role="button"
-            tabIndex={0}
-            onKeyDown={e => {
-              if (e.key === 'Enter' || e.key === ' ') {
-                handleGoogleResearchClick();
-              }
-            }}
-          >
-            {t('Google Research')}
-          </span>{' '}
-          {t("to learn more about Google's AI forecasting models.")}
-        </Typography>
-      </div>
+      <Typography className={classes.description}>
+        {t('River discharge forecast at verified gauges. Visit')}{' '}
+        <span
+          className={classes.link}
+          onClick={handleGoogleResearchClick}
+          role="button"
+          tabIndex={0}
+          onKeyDown={e => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              handleGoogleResearchClick();
+            }
+          }}
+        >
+          {t('Google Research')}
+        </span>{' '}
+        {t('to learn more about their AI forecasting models.')}
+      </Typography>
     </div>
   );
 }
