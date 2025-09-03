@@ -10,6 +10,9 @@ export function parseAndTransformFloodData(data: FloodStationData[]): {
 
   data.forEach(row => {
     const stationName = row.station_name;
+    if (!stationName) {
+      return;
+    }
     if (!stationMap.has(stationName)) {
       stationMap.set(stationName, []);
     }

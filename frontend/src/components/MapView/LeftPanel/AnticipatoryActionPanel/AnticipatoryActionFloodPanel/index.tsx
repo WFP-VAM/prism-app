@@ -2,13 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   Typography,
-  Tabs,
-  Tab,
-  Card,
-  CardContent,
-  Grid,
-  Chip,
-  Button,
   Table,
   TableBody,
   TableCell,
@@ -18,99 +11,125 @@ import {
   Paper,
   createStyles,
   makeStyles,
+  Chip,
+  TableSortLabel,
 } from '@material-ui/core';
 import { RootState } from 'context/store';
 import {
   loadAAFloodData,
   setAAFloodSelectedStation,
-  setAAFloodView,
 } from 'context/anticipatoryAction/AAFloodStateSlice';
 import { getFloodRiskColor } from 'context/anticipatoryAction/AAFloodStateSlice/utils';
-import { FloodStation, AAFloodView } from 'context/anticipatoryAction/AAFloodStateSlice/types';
 import { useSafeTranslation } from 'i18n';
 
 const useStyles = makeStyles(() =>
   createStyles({
-    tabPanel: {
+    container: {
       padding: '1rem',
     },
-    stationCard: {
+    title: {
       marginBottom: '1rem',
+      fontWeight: 'bold',
+    },
+    tableContainer: {
+      maxHeight: '70vh',
+      overflow: 'auto',
+    },
+    table: {
+      minWidth: 650,
     },
     riskChip: {
       color: 'white',
       fontWeight: 'bold',
+      minWidth: '80px',
     },
-    tableContainer: {
-      marginTop: '1rem',
+    headerCell: {
+      fontWeight: 'bold',
+      backgroundColor: '#e0e0e0', // Gray header background
+      color: '#333',
+    },
+    row: {
+      cursor: 'pointer',
+      '&:hover': {
+        backgroundColor: '#f5f5f5',
+      },
+      '&:nth-of-type(even)': {
+        backgroundColor: '#f9f9f9', // Very light gray for even rows
+      },
+      '&:nth-of-type(odd)': {
+        backgroundColor: '#ffffff', // White for odd rows
+      },
+    },
+    selectedRow: {
+      backgroundColor: '#e3f2fd !important', // Light blue for selected row
+    },
+    tableCell: {
+      color: '#000000', // Black text color
     },
   }),
 );
 
-interface TabPanelProps {
-  children?: React.ReactNode;
-  index: number;
-  value: number;
-}
-
-function TabPanel(props: TabPanelProps) {
-  const { children, value, index, ...other } = props;
-  const classes = useStyles();
-
-  return (
-    <div
-      role="tabpanel"
-      hidden={value !== index}
-      id={`flood-tabpanel-${index}`}
-      aria-labelledby={`flood-tab-${index}`}
-      {...other}
-    >
-      {value === index && <div className={classes.tabPanel}>{children}</div>}
-    </div>
-  );
-}
+type SortField = 'station_name' | 'date' | 'risk_level';
+type SortDirection = 'asc' | 'desc';
 
 function AnticipatoryActionFloodPanel() {
   const classes = useStyles();
   const dispatch = useDispatch();
   const { t } = useSafeTranslation();
-  const { stations, selectedStation, view, loading, error } = useSelector(
+  const { stations, selectedStation, loading, error } = useSelector(
     (state: RootState) => state.anticipatoryActionFloodState,
   );
 
-  const [tabValue, setTabValue] = useState(0);
+  const [sortField, setSortField] = useState<SortField>('station_name');
+  const [sortDirection, setSortDirection] = useState<SortDirection>('asc');
 
   useEffect(() => {
     dispatch(loadAAFloodData());
   }, [dispatch]);
 
-  const handleTabChange = (event: React.ChangeEvent<{}>, newValue: number) => {
-    setTabValue(newValue);
-    switch (newValue) {
-      case 0:
-        dispatch(setAAFloodView(AAFloodView.Home));
-        break;
-      case 1:
-        dispatch(setAAFloodView(AAFloodView.Station));
-        break;
-      case 2:
-        dispatch(setAAFloodView(AAFloodView.Forecast));
-        break;
-      case 3:
-        dispatch(setAAFloodView(AAFloodView.Historical));
-        break;
-      default:
-        break;
+  const handleSort = (field: SortField) => {
+    if (sortField === field) {
+      setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
+    } else {
+      setSortField(field);
+      setSortDirection('asc');
     }
   };
 
-  const handleStationSelect = (stationName: string) => {
+  const handleRowClick = (stationName: string) => {
     dispatch(setAAFloodSelectedStation(stationName));
   };
 
+  // eslint-disable-next-line fp/no-mutating-methods
+  const sortedStations = [...stations].sort((a, b) => {
+    let aValue: string | number;
+    let bValue: string | number;
+
+    switch (sortField) {
+      case 'station_name':
+        aValue = a.station_name;
+        bValue = b.station_name;
+        break;
+      case 'date':
+        aValue = a.currentData?.time || '';
+        bValue = b.currentData?.time || '';
+        break;
+      case 'risk_level':
+        aValue = a.currentData?.risk_level || '';
+        bValue = b.currentData?.risk_level || '';
+        break;
+      default:
+        return 0;
+    }
+
+    if (aValue < bValue) return sortDirection === 'asc' ? -1 : 1;
+    if (aValue > bValue) return sortDirection === 'asc' ? 1 : -1;
+    return 0;
+  });
+
   if (loading) {
     return (
-      <div className={classes.tabPanel}>
+      <div className={classes.container}>
         <Typography>{t('Loading flood data...')}</Typography>
       </div>
     );
@@ -118,7 +137,7 @@ function AnticipatoryActionFloodPanel() {
 
   if (error) {
     return (
-      <div className={classes.tabPanel}>
+      <div className={classes.container}>
         <Typography color="error">
           {t('Error loading flood data: {{error}}', { error })}
         </Typography>
@@ -127,30 +146,66 @@ function AnticipatoryActionFloodPanel() {
   }
 
   return (
-    <div>
-      <Tabs value={tabValue} onChange={handleTabChange}>
-        <Tab label={t('Overview')} />
-        <Tab label={t('Stations')} />
-        <Tab label={t('Forecast')} />
-        <Tab label={t('Historical')} />
-      </Tabs>
-
-      <TabPanel value={tabValue} index={0}>
-        <Typography variant="h6" gutterBottom>
-          {t('Flood Monitoring Overview')}
-        </Typography>
-        <Grid container spacing={2}>
-          {stations.map(station => (
-            <Grid item xs={12} sm={6} md={4} key={station.station_name}>
-              <Card className={classes.stationCard}>
-                <CardContent>
-                  <Typography variant="h6" component="div">
-                    {station.station_name}
-                  </Typography>
-                  <Typography color="textSecondary" gutterBottom>
-                    {station.river_name}
-                  </Typography>
-                  {station.currentData && (
+    <div className={classes.container}>
+      <Typography variant="h6" className={classes.title}>
+        {t('River gauge status overview')}
+      </Typography>
+      <TableContainer component={Paper} className={classes.tableContainer}>
+        <Table className={classes.table} size="small">
+          <TableHead>
+            <TableRow>
+              <TableCell className={classes.headerCell}>
+                <TableSortLabel
+                  active={sortField === 'station_name'}
+                  direction={
+                    sortField === 'station_name' ? sortDirection : 'asc'
+                  }
+                  onClick={() => handleSort('station_name')}
+                >
+                  {t('Gauge station')}
+                </TableSortLabel>
+              </TableCell>
+              <TableCell className={classes.headerCell}>
+                <TableSortLabel
+                  active={sortField === 'date'}
+                  direction={sortField === 'date' ? sortDirection : 'asc'}
+                  onClick={() => handleSort('date')}
+                >
+                  {t('Date')}
+                </TableSortLabel>
+              </TableCell>
+              <TableCell className={classes.headerCell}>
+                <TableSortLabel
+                  active={sortField === 'risk_level'}
+                  direction={sortField === 'risk_level' ? sortDirection : 'asc'}
+                  onClick={() => handleSort('risk_level')}
+                >
+                  {t('Status')}
+                </TableSortLabel>
+              </TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {sortedStations.map((station, index) => (
+              <TableRow
+                key={`${station.station_name}-${index}`}
+                className={`${classes.row} ${
+                  selectedStation === station.station_name
+                    ? classes.selectedRow
+                    : ''
+                }`}
+                onClick={() => handleRowClick(station.station_name)}
+              >
+                <TableCell className={classes.tableCell}>
+                  {station.station_name || '-'}
+                </TableCell>
+                <TableCell className={classes.tableCell}>
+                  {station.currentData
+                    ? new Date(station.currentData.time).toLocaleDateString()
+                    : '-'}
+                </TableCell>
+                <TableCell className={classes.tableCell}>
+                  {station.currentData ? (
                     <Chip
                       label={station.currentData.risk_level}
                       className={classes.riskChip}
@@ -160,172 +215,26 @@ function AnticipatoryActionFloodPanel() {
                         ),
                       }}
                     />
-                  )}
-                  <div style={{ marginTop: '0.5rem' }}>
-                    <Button
-                      size="small"
-                      onClick={() => handleStationSelect(station.station_name)}
-                    >
-                      {t('View Details')}
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
-            </Grid>
-          ))}
-        </Grid>
-      </TabPanel>
-
-      <TabPanel value={tabValue} index={1}>
-        <Typography variant="h6" gutterBottom>
-          {t('Station Details')}
-        </Typography>
-        {selectedStation ? (
-          <StationDetailsView stationName={selectedStation} />
-        ) : (
-          <Typography>{t('Select a station to view details')}</Typography>
-        )}
-      </TabPanel>
-
-      <TabPanel value={tabValue} index={2}>
-        <Typography variant="h6" gutterBottom>
-          {t('Forecast Data')}
-        </Typography>
-        {selectedStation ? (
-          <ForecastView stationName={selectedStation} />
-        ) : (
-          <Typography>{t('Select a station to view forecast')}</Typography>
-        )}
-      </TabPanel>
-
-      <TabPanel value={tabValue} index={3}>
-        <Typography variant="h6" gutterBottom>
-          {t('Historical Data')}
-        </Typography>
-        {selectedStation ? (
-          <HistoricalView stationName={selectedStation} />
-        ) : (
-          <Typography>
-            {t('Select a station to view historical data')}
-          </Typography>
-        )}
-      </TabPanel>
-    </div>
-  );
-}
-
-// Placeholder components for the different views
-function StationDetailsView({ stationName }: { stationName: string }) {
-  const { t } = useSafeTranslation();
-  const { stations } = useSelector(
-    (state: RootState) => state.anticipatoryActionFloodState,
-  );
-
-  const station = stations.find(s => s.station_name === stationName);
-
-  if (!station) {
-    return <Typography>{t('Station not found')}</Typography>;
-  }
-
-  return (
-    <Card>
-      <CardContent>
-        <Typography variant="h6">{station.station_name}</Typography>
-        <Typography color="textSecondary">{station.river_name}</Typography>
-        <Typography variant="body2">
-          {t('Location ID: {{id}}', { id: station.location_id })}
-        </Typography>
-        {station.currentData && (
-          <div style={{ marginTop: '1rem' }}>
-            <Typography variant="subtitle1">{t('Current Status')}</Typography>
-            <Typography>
-              {t('Risk Level: {{level}}', { level: station.currentData.risk_level })}
-            </Typography>
-            <Typography>
-              {t('Average Discharge: {{value}}', {
-                value: station.currentData.avg_discharge.toFixed(2),
-              })}
-            </Typography>
-            <Typography>
-              {t('Max Discharge: {{value}}', {
-                value: station.currentData.max_discharge.toFixed(2),
-              })}
-            </Typography>
-          </div>
-        )}
-      </CardContent>
-    </Card>
-  );
-}
-
-function ForecastView({ stationName }: { stationName: string }) {
-  const { t } = useSafeTranslation();
-
-  return (
-    <Card>
-      <CardContent>
-        <Typography variant="h6">
-          {t('Forecast for {{station}}', { station: stationName })}
-        </Typography>
-        <Typography>{t('Forecast data will be displayed here')}</Typography>
-      </CardContent>
-    </Card>
-  );
-}
-
-function HistoricalView({ stationName }: { stationName: string }) {
-  const { t } = useSafeTranslation();
-  const { stations } = useSelector(
-    (state: RootState) => state.anticipatoryActionFloodState,
-  );
-
-  const station = stations.find(s => s.station_name === stationName);
-
-  if (!station) {
-    return <Typography>{t('Station not found')}</Typography>;
-  }
-
-  return (
-    <Card>
-      <CardContent>
-        <Typography variant="h6">
-          {t('Historical Data for {{station}}', { station: stationName })}
-        </Typography>
-        <TableContainer component={Paper} className={useStyles().tableContainer}>
-          <Table size="small">
-            <TableHead>
-              <TableRow>
-                <TableCell>{t('Date')}</TableCell>
-                <TableCell>{t('Risk Level')}</TableCell>
-                <TableCell>{t('Avg Discharge')}</TableCell>
-                <TableCell>{t('Max Discharge')}</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {station.historicalData.slice(-10).map((data, index) => (
-                <TableRow key={index}>
-                  <TableCell>
-                    {new Date(data.time).toLocaleDateString()}
-                  </TableCell>
-                  <TableCell>
+                  ) : (
                     <Chip
-                      label={data.risk_level}
-                      size="small"
-                      className={useStyles().riskChip}
+                      label="No data"
+                      className={classes.riskChip}
                       style={{
-                        backgroundColor: getFloodRiskColor(data.risk_level),
+                        backgroundColor: '#9e9e9e', // Gray for no data
                       }}
                     />
-                  </TableCell>
-                  <TableCell>{data.avg_discharge.toFixed(2)}</TableCell>
-                  <TableCell>{data.max_discharge.toFixed(2)}</TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
-      </CardContent>
-    </Card>
+                  )}
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+      <div style={{ marginTop: '1rem', fontSize: '0.875rem', color: '#666' }}>
+        {t('Rows per page')} 20 | 1-{Math.min(20, stations.length)} /{' '}
+        {stations.length}
+      </div>
+    </div>
   );
 }
 
