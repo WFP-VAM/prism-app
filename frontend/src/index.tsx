@@ -5,7 +5,7 @@ import { Provider } from 'react-redux';
 import { MsalProvider } from '@azure/msal-react';
 import React from 'react';
 import App from './components/App';
-import { store } from './context/store';
+import { AppStore, store } from './context/store';
 import { msalInstance } from './config';
 import * as serviceWorker from './serviceWorker';
 
@@ -26,3 +26,15 @@ root.render(
 // unregister() to register() below. Note this comes with some pitfalls.
 // Learn more about service workers: https://bit.ly/CRA-PWA
 serviceWorker.unregister();
+
+declare global {
+  interface Window {
+    store: AppStore;
+  }
+}
+
+// @ts-ignore
+if (window.Cypress) {
+  // eslint-disable-next-line fp/no-mutation
+  window.store = store;
+}
