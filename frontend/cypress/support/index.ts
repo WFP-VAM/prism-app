@@ -8,9 +8,9 @@ declare global {
       /**
        * Custom command to activate a layer using a sequence of clicks
        * List the names of Menu/submenu as they appear on screen
-       * @example cy.toggleLayer('Rainfall', 'Rainfall Amount', 'Rainfall aggregate');
+       * @example cy.activateLayer('Rainfall', 'Rainfall Amount', 'Rainfall aggregate');
        */
-      toggleLayer(
+      activateLayer(
         group1: string,
         group2: string,
         layerName: string,

@@ -8,7 +8,7 @@ describe('Loading layers', () => {
   it('checks that dates are loaded', () => {
     cy.visit(frontendUrl);
 
-    cy.toggleLayer('Rainfall', 'INAM Rainfall Data', 'Rainfall aggregate');
+    cy.activateLayer('Rainfall', 'INAM Rainfall Data', 'Rainfall aggregate');
 
     cy.url().should('include', 'hazardLayerIds=precip_blended_dekad');
   });

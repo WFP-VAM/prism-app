@@ -6,11 +6,10 @@ describe('Date picker', () => {
   it('should move to the previous/next observation date when clicking back/forward on the timeline', () => {
     cy.visit(frontendUrl);
 
-    // switch to english
     cy.contains('MapTiler', { timeout: 20000 }).should('be.visible');
     cy.switchLanguage('en');
 
-    cy.toggleLayer('Rainfall', 'Rainfall Amount', 'Rainfall aggregate');
+    cy.activateLayer('Rainfall', 'Rainfall Amount', 'Rainfall aggregate');
 
     cy.get('.react-datepicker-wrapper button span', { timeout: 20000 }).then(
       span1 => {
@@ -51,9 +50,9 @@ describe('Date picker', () => {
     cy.contains('MapTiler', { timeout: 10000 }).should('be.visible');
     cy.switchLanguage('en');
 
-    cy.toggleLayer('Field Reports', 'Field Reports', 'Flood report');
-    cy.get('input#username').type('superuser');
-    cy.get('input#password').type('superuser_wfp_khm');
+    cy.activateLayer('Field Reports', 'Field Reports', 'Flood report');
+    cy.get('input#username').type('aaa');
+    cy.get('input#password').type('bbb');
     cy.contains('Send').click();
     cy.wait('@getKoboForms', { timeout: 10000 });
     cy.get('.react-datepicker-wrapper button span', {

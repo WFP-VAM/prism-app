@@ -28,3 +28,6 @@ export const useLayerMenuItemStyles = makeStyles(() =>
     },
   }),
 );
+
+export const makeSafeIDFromTitle = (title: string): string =>
+  title.replace(' ', '').replace(/[\u{0080}-\u{FFFF}]/gu, '');
