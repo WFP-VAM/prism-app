@@ -116,7 +116,7 @@ To use PMTiles for boundaries, configure your boundary layer in `layers.json`:
     "format": "pmtiles", // Specify PMTiles format
     "path": "https://your-bucket.s3.region.amazonaws.com/path/to/boundaries.pmtiles", // HTTP path to file
     "zones_path": "s3://bucket-name/path-to.parquet", // S3 path to source data for analysis zonal stats
-    "disableAnalysis": false, // Optionally hide from analysis option if performance concern 
+    "disableAnalysis": false, // Optionally hide from analysis option if performance concern
     "opacity": 0.8,
     "admin_code": "admin_code_field",
     "admin_level_names": ["ADMIN0", "ADMIN1", "ADMIN2"],
@@ -379,6 +379,24 @@ yarn install
 yarn setup:common
 REACT_APP_COUNTRY=cambodia yarn start
 ```
+
+### Automated testing
+
+Two sets of tests are available for the frontend:
+
+- jest tests (unit tests) via `yarn test`
+- end to end tests with [cypress](https://docs.cypress.io/app/get-started/why-cypress) via `yarn cypress open` (for
+  interactive development) or `yarn cypress run` (to run the test suite, better suited for CI)
+
+To write more end to end tests (e2e tests):
+
+- start the frontend for the country you want to test `REACT_APP_COUNTRY=cambodia yarn start`
+- open the cypress UI: `yarn cypress open`
+  - in the electron app that opens, choose e2e tests and the browser to test with
+  - in the controlled browser that opens, pick a file (either `all_countries.cy.ts` or the same country the frontend is
+    running on) and start writing tests
+
+The redux state tree is accesssible in cypress test via `window.store.getState()`.
 
 ### Available Scripts
 

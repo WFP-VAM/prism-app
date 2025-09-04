@@ -15,7 +15,7 @@ import { Extent } from 'components/MapView/Layers/raster-utils';
 import { layersSelector } from 'context/mapStateSlice/selectors';
 import { filterActiveLayers } from 'components/MapView/utils';
 import SelectedLayersInformation from './SelectedLayersInformation';
-import { useLayerMenuItemStyles } from './utils';
+import { makeSafeIDFromTitle, useLayerMenuItemStyles } from './utils';
 
 interface MenuItemProps {
   title: string;
@@ -56,7 +56,7 @@ const MenuItem = memo(({ title, layersCategories, extent }: MenuItemProps) => {
           content: classes.summaryContent,
         }}
         aria-controls={title}
-        id={title}
+        id={`level1-${makeSafeIDFromTitle(title)}`}
       >
         <Typography classes={{ root: classes.title }}>{t(title)}</Typography>
         <SelectedLayersInformation

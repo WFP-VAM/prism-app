@@ -19,7 +19,7 @@ describe('Checks on dates', () => {
     cy.visit(frontendUrl);
     // specifying the resq package here is required for cy.react to work
     // see https://github.com/abhinaba-ghosh/cypress-react-selector/issues/320#issuecomment-1416634523
-    cy.toggleLayer(
+    cy.activateLayer(
       'Cadre Harmonise',
       'Phase Classification',
       'Overall phase classification',
@@ -33,7 +33,11 @@ describe('Checks on dates', () => {
     );
     cy.url().should('include', 'date=2024-09-30');
 
-    cy.toggleLayer('Rainfall', 'Forecasts', 'Rolling daily rainfall forecast');
+    cy.activateLayer(
+      'Rainfall',
+      'Forecasts',
+      'Rolling daily rainfall forecast',
+    );
 
     cy.url().should('include', 'hazardLayerIds=daily_rainfall_forecast');
     cy.url().should('not.include', 'baselineLayerId=ch_phase');
@@ -44,7 +48,7 @@ describe('Checks on dates', () => {
   it('should select intersecting dates when cadre harmonise overall phase classification plus rainfall layers are activated', () => {
     cy.visit(frontendUrl);
 
-    cy.toggleLayer('Rainfall', 'Rainfall Amount', 'Rainfall Aggregate');
+    cy.activateLayer('Rainfall', 'Rainfall Amount', 'Rainfall Aggregate');
     cy.url({ timeout: 20000 }).should('include', 'date=');
 
     // check that the selected date is within the past month
@@ -60,7 +64,7 @@ describe('Checks on dates', () => {
       },
     );
 
-    cy.toggleLayer(
+    cy.activateLayer(
       'Cadre Harmonise',
       'Phase Classification',
       'Overall phase classification',
