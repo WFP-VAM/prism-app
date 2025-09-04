@@ -2,6 +2,7 @@ import { useSelector } from 'react-redux';
 import { useState } from 'react';
 import { RootState } from 'context/store';
 import { DateRangeType } from 'config/types';
+import { TIMELINE_ITEM_WIDTH } from '../../utils';
 
 interface AAFloodTimelineItemProps {
   currentDate: DateRangeType;
@@ -18,13 +19,19 @@ function AAFloodTimelineItem({ currentDate }: AAFloodTimelineItemProps) {
     d => Math.abs(d.displayDate - currentDate.value) < 24 * 60 * 60 * 1000, // Within 24 hours
   );
 
+  if (!dateInfo) {
+    return null;
+  }
   const severityColor = dateInfo?.color || '#4CAF50';
 
   return (
     <div
       style={{
-        width: '100%',
-        height: '100%',
+        position: 'absolute',
+        height: 24,
+        width: TIMELINE_ITEM_WIDTH - 1,
+        pointerEvents: 'none',
+        top: 0,
         backgroundColor: severityColor,
         borderRadius: '2px',
         transition: 'opacity 0.2s ease',

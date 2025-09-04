@@ -3,6 +3,7 @@ import { useSafeTranslation } from 'i18n';
 import { DateRangeType } from 'config/types';
 import { useSelector } from 'react-redux';
 import { RootState } from 'context/store';
+import { formatInUTC } from 'components/MapView/Layers/AnticipatoryActionStormLayer/utils';
 
 interface AAFloodTooltipContentProps {
   date: DateRangeType;
@@ -18,6 +19,12 @@ function AAFloodTooltipContent({ date }: AAFloodTooltipContentProps) {
   const dateInfo = availableDates.find(
     d => Math.abs(d.displayDate - date.value) < 24 * 60 * 60 * 1000, // Within 24 hours
   );
+
+  if (!dateInfo) {
+    return (
+      <Typography>{formatInUTC(new Date(date.value), 'MM/dd/yy')}</Typography>
+    );
+  }
 
   const dateString = new Date(date.value).toLocaleDateString();
   const severityColor = dateInfo?.color || '#4CAF50';

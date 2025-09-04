@@ -107,7 +107,7 @@ const DateSelector = memo(() => {
     y: 0,
   });
   const today = new Date();
-  today.setHours(12, 0, 0, 0); // Normalize today's date
+  today.setUTCHours(12, 0, 0, 0); // Normalize today's date
 
   const dateRef = useRef(availableDates);
   const timeLine = useRef(null);
@@ -178,6 +178,13 @@ const DateSelector = memo(() => {
         title: 'Anticipatory Action Storm',
         dateItems: AAAvailableDates,
         type: AnticipatoryAction.storm,
+        opacity: 1,
+      },
+      {
+        id: 'anticipatory_action_flood',
+        title: 'Anticipatory Action Flood',
+        dateItems: AAAvailableDates,
+        type: AnticipatoryAction.flood,
         opacity: 1,
       },
     ];

@@ -85,8 +85,8 @@ export function parseAndTransformFloodData(data: FloodStationData[]): {
       }, dateData[0]);
 
       return {
-        displayDate: date.getTime(),
-        queryDate: date.getTime(),
+        displayDate: date.setUTCHours(12, 0, 0, 0),
+        queryDate: date.setUTCHours(12, 0, 0, 0),
         color: getFloodRiskColor(
           highestSeverity?.risk_level || 'Below bankfull',
         ),
