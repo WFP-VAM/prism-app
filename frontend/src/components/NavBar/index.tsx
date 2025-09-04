@@ -62,7 +62,7 @@ const panels: PanelItem[] = [
     : []),
   ...(isAnticipatoryActionDroughtAvailable ||
   isAnticipatoryActionStormAvailable ||
-  isAnticipatoryActionFloodAvailable()
+  isAnticipatoryActionFloodAvailable
     ? [
         {
           label: 'A. Actions',
@@ -86,7 +86,7 @@ const panels: PanelItem[] = [
                   },
                 ]
               : []),
-            ...(isAnticipatoryActionFloodAvailable()
+            ...(isAnticipatoryActionFloodAvailable
               ? [
                   {
                     panel: Panel.AnticipatoryActionFlood,

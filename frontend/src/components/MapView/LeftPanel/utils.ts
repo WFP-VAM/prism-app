@@ -129,7 +129,7 @@ export const isAnticipatoryActionDroughtAvailable =
   !!appConfig.anticipatoryActionDroughtUrl;
 export const isAnticipatoryActionStormAvailable =
   !!appConfig.anticipatoryActionStormUrl;
-export const isAnticipatoryActionFloodAvailable = (): boolean =>
+export const isAnticipatoryActionFloodAvailable =
   !!appConfig.anticipatoryActionFloodUrl;
 
 export const oneDayInMs = 24 * 60 * 60 * 1000;
