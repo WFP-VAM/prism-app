@@ -55,6 +55,7 @@ jobs:
           yarn test
 
       - name: JSON check
+        if: matrix.os == 'ubuntu-latest'
         run: cd frontend && yarn prettier:json-check
 
       - name: Layer availability check
@@ -69,6 +70,7 @@ jobs:
           fi
 
       - name: Check boundary keys
+        if: matrix.os == 'ubuntu-latest'
         run: cd frontend && yarn check-boundary-keys
 
       - name: Build
