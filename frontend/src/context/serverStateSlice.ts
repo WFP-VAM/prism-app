@@ -1,6 +1,7 @@
 import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
 import { AvailableDates, UserAuth } from 'config/types';
-import { getAvailableDatesForLayer } from 'utils/server-utils';
+import { getAvailableDatesForLayer, getLayerType } from 'utils/server-utils';
+import { LayerDefinitions } from '../config/utils';
 import type { CreateAsyncThunkTypes, RootState } from './store';
 
 type ServerState = {
@@ -27,8 +28,60 @@ export const loadAvailableDatesForLayer = createAsyncThunk<
     getAvailableDatesForLayer(getState, layerId),
   {
     condition: (layerId: string, { getState }) => {
-      // prevent multiple loading when switching between variants of a same layer
       const alreadyLoading = layersLoadingDatesIdsSelector(getState());
+      // for layer types that depend on preloaded data, make sure that data is
+      // ready before we try calculating available dates. The condition can return
+      // a promise, in which case the action above will only be dispatched once
+      // that promise has resolved. This effectively allows waiting for the data
+      // preloading to complete, which can happen in cypress tests where a layer
+      // is activated very early on, or for slow networks.
+      if (getLayerType(LayerDefinitions[layerId]) === 'WMSLayer') {
+        // action already dispatched, don't do it twice
+        if (alreadyLoading.includes(layerId)) {
+          return false;
+        }
+        // data preloaded, dispatch the new action
+        if (
+          !alreadyLoading.includes(layerId) &&
+          getState().serverPreloadState.loadedWMS
+        ) {
+          return true;
+        }
+        // data preloading not completed, wait for it
+        return new Promise(resolve => {
+          const check = () => {
+            if (getState().serverPreloadState.loadedWMS) {
+              resolve(true);
+            } else {
+              // poll the state :/
+              setTimeout(check, 100);
+            }
+          };
+          check();
+        });
+      }
+      if (getLayerType(LayerDefinitions[layerId]) === 'pointDataLayer') {
+        if (alreadyLoading.includes(layerId)) {
+          return false;
+        }
+        if (
+          !alreadyLoading.includes(layerId) &&
+          getState().serverPreloadState.loadedPointData
+        ) {
+          return true;
+        }
+        return new Promise(resolve => {
+          const check = () => {
+            if (getState().serverPreloadState.loadedPointData) {
+              resolve(true);
+            } else {
+              setTimeout(check, 100);
+            }
+          };
+          check();
+        });
+      }
+      // other layers are simpler, just check if it's already loading
       return !alreadyLoading.includes(layerId);
     },
   },
