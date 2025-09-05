@@ -1,22 +1,70 @@
-import { useMemo } from 'react';
-import { Typography, Box, makeStyles, createStyles } from '@material-ui/core';
+import React, { useMemo, useState } from 'react';
+import {
+  Typography,
+  makeStyles,
+  createStyles,
+  Tabs,
+  Tab,
+  IconButton,
+  Paper,
+  Button,
+} from '@material-ui/core';
+import { Close } from '@material-ui/icons';
 import { Line } from 'react-chartjs-2';
 import { useSafeTranslation } from 'i18n';
 import { FloodStation } from 'context/anticipatoryAction/AAFloodStateSlice/types';
+import { CHART_WIDTH, TABLE_WIDTH } from '../constants';
 
 const useStyles = makeStyles(() =>
   createStyles({
     container: {
+      position: 'fixed',
+      top: '6vh',
+      left: TABLE_WIDTH + 16,
+      width: CHART_WIDTH,
+      marginLeft: '2rem',
+      maxHeight: '70vh',
+      zIndex: 1000,
+      boxShadow: '0 4px 20px rgba(0, 0, 0, 0.15)',
+    },
+    paper: {
+      height: '100%',
+      display: 'flex',
+      flexDirection: 'column',
+    },
+    header: {
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      padding: '1rem 1rem 0 1rem',
+      borderBottom: '1px solid #e0e0e0',
+    },
+    title: {
+      fontWeight: 'bold',
+      fontSize: '1.2rem',
+      display: 'flex',
+      alignItems: 'center',
+      gap: '0.5rem',
+    },
+    closeButton: {
+      padding: '4px',
+    },
+    tabs: {
+      minHeight: '48px',
+    },
+    tabPanel: {
+      flex: 1,
       padding: '1rem',
-      marginTop: '1rem',
+      overflow: 'auto',
     },
     chartContainer: {
-      marginBottom: '2rem',
+      height: '400px',
+      marginBottom: '1rem',
     },
     chartTitle: {
       marginBottom: '1rem',
       fontWeight: 'bold',
-      fontSize: '1.1rem',
+      fontSize: '1rem',
     },
     noDataMessage: {
       textAlign: 'center',
@@ -24,16 +72,29 @@ const useStyles = makeStyles(() =>
       fontStyle: 'italic',
       padding: '2rem',
     },
+    actionButtons: {
+      display: 'flex',
+      gap: '0.5rem',
+      padding: '1rem',
+      borderTop: '1px solid #e0e0e0',
+      color: 'black',
+    },
+    actionButton: {
+      textTransform: 'none',
+      fontSize: '0.9rem',
+    },
   }),
 );
 
 interface StationChartsProps {
   station: FloodStation;
+  onClose?: () => void;
 }
 
-function StationCharts({ station }: StationChartsProps) {
+function StationCharts({ station, onClose }: StationChartsProps) {
   const classes = useStyles();
   const { t } = useSafeTranslation();
+  const [activeTab, setActiveTab] = useState(0);
 
   // Prepare hydrograph data
   const hydrographData = useMemo(() => {
@@ -164,48 +225,103 @@ function StationCharts({ station }: StationChartsProps) {
     },
   };
 
+  const handleTabChange = (_event: React.ChangeEvent<{}>, newValue: number) => {
+    setActiveTab(newValue);
+  };
+
   if (!station.historicalData || station.historicalData.length === 0) {
     return (
-      <Box className={classes.container}>
-        <Typography className={classes.noDataMessage}>
-          {t('No historical data available for {{station}}', {
-            station: station.station_name,
-          })}
-        </Typography>
-      </Box>
+      <div className={classes.container}>
+        <Paper className={classes.paper}>
+          <div className={classes.header}>
+            <Typography className={classes.title}>
+              {station.station_name} {t('discharge forecast')}
+            </Typography>
+            {onClose && (
+              <IconButton
+                className={classes.closeButton}
+                onClick={onClose}
+                size="small"
+              >
+                <Close />
+              </IconButton>
+            )}
+          </div>
+          <div className={classes.tabPanel}>
+            <Typography className={classes.noDataMessage}>
+              {t('No historical data available for {{station}}', {
+                station: station.station_name,
+              })}
+            </Typography>
+          </div>
+        </Paper>
+      </div>
     );
   }
 
   return (
-    <Box className={classes.container}>
-      <Typography variant="h6" className={classes.chartTitle}>
-        {t('Charts for {{station}}', { station: station.station_name })}
-      </Typography>
+    <div className={classes.container}>
+      <Paper className={classes.paper}>
+        <div className={classes.header}>
+          <Typography className={classes.title}>
+            {station.station_name} {t('discharge forecast')}
+          </Typography>
+          {onClose && (
+            <IconButton
+              className={classes.closeButton}
+              onClick={onClose}
+              size="small"
+            >
+              <Close />
+            </IconButton>
+          )}
+        </div>
 
-      {/* Hydrograph Chart */}
-      <Box className={classes.chartContainer}>
-        <Typography variant="subtitle1" className={classes.chartTitle}>
-          {t('Hydrograph - Discharge Over Time')}
-        </Typography>
-        {hydrographData && (
-          <Box style={{ height: '300px' }}>
-            <Line data={hydrographData} options={chartOptions as any} />
-          </Box>
-        )}
-      </Box>
+        <Tabs
+          value={activeTab}
+          onChange={handleTabChange}
+          className={classes.tabs}
+          indicatorColor="primary"
+          textColor="primary"
+        >
+          <Tab label={t('Hydrograph')} />
+          <Tab label={t('Trigger probability')} />
+        </Tabs>
 
-      {/* Trigger Probability Chart */}
-      <Box className={classes.chartContainer}>
-        <Typography variant="subtitle1" className={classes.chartTitle}>
-          {t('Trigger Probability Over Time')}
-        </Typography>
-        {triggerProbabilityData && (
-          <Box style={{ height: '300px' }}>
-            <Line data={triggerProbabilityData} options={chartOptions as any} />
-          </Box>
-        )}
-      </Box>
-    </Box>
+        <div className={classes.tabPanel}>
+          {activeTab === 0 && (
+            <div className={classes.chartContainer}>
+              {hydrographData && (
+                <Line data={hydrographData} options={chartOptions as any} />
+              )}
+            </div>
+          )}
+
+          {activeTab === 1 && (
+            <div className={classes.chartContainer}>
+              {triggerProbabilityData && (
+                <Line
+                  data={triggerProbabilityData}
+                  options={chartOptions as any}
+                />
+              )}
+            </div>
+          )}
+        </div>
+
+        <div className={classes.actionButtons}>
+          <Button className={classes.actionButton} type="button">
+            {t('Expand')}
+          </Button>
+          <Button className={classes.actionButton} type="button">
+            {t('View table')}
+          </Button>
+          <Button className={classes.actionButton} type="button">
+            {t('Download')}
+          </Button>
+        </div>
+      </Paper>
+    </div>
   );
 }
 

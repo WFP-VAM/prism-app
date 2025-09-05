@@ -20,6 +20,7 @@ import { useSafeTranslation } from 'i18n';
 import { AnticipatoryAction } from 'config/types';
 import { useAnticipatoryAction } from '../useAnticipatoryAction';
 import StationCharts from './StationCharts';
+import { TABLE_WIDTH } from './constants';
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -35,7 +36,7 @@ const useStyles = makeStyles(() =>
       overflow: 'auto',
     },
     table: {
-      minWidth: 650,
+      minWidth: TABLE_WIDTH,
     },
     riskChip: {
       color: 'white',
@@ -243,6 +244,7 @@ function AnticipatoryActionFloodPanel() {
       {selectedStation && (
         <StationCharts
           station={stations.find(s => s.station_name === selectedStation)!}
+          onClose={() => dispatch(setAAFloodSelectedStation(''))}
         />
       )}
     </div>

@@ -1,3 +1,4 @@
+import { startCase } from 'lodash';
 import {
   FloodStation,
   FloodStationData,
@@ -34,7 +35,7 @@ export function parseAndTransformFloodData(data: FloodStationData[]): {
       const coordinates = getVillageCoordinates(stationName) || undefined;
 
       return {
-        station_name: stationName,
+        station_name: startCase(stationName),
         river_name: firstData.river_name,
         location_id: firstData.location_id,
         coordinates,
