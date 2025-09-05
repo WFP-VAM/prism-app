@@ -37,9 +37,7 @@ export function parseAndTransformFloodData(data: FloodStationData[]): {
       // Create allData object with date as key
       const allData: Record<string, FloodStationData> = {};
       stationData.forEach(stationDataItem => {
-        const dateKey = new Date(stationDataItem.time)
-          .toISOString()
-          .split('T')[0];
+        const dateKey = stationDataItem.time.replace(' 00:00:00', '');
         // eslint-disable-next-line fp/no-mutation
         allData[dateKey] = stationDataItem;
       });

@@ -42,6 +42,10 @@ function AnticipatoryActionFloodLayer({
     onFloodStationClick,
   );
 
+  const selectedDateKey = startDate
+    ? new Date(startDate).toISOString().split('T')[0]
+    : null;
+
   const floodStationsGeoJSON = useMemo(() => {
     if (!stations.length) {
       return null;
@@ -49,12 +53,11 @@ function AnticipatoryActionFloodLayer({
 
     // Filter stations by selected date if available
     const filteredStations = stations.filter((station: any) => {
-      if (!startDate) {
+      if (!selectedDateKey) {
         return true;
       }
 
       // Find data for the selected date
-      const selectedDateKey = new Date(startDate).toISOString().split('T')[0];
       const stationDataForDate = station.allData?.[selectedDateKey];
 
       return !!stationDataForDate;
@@ -63,9 +66,6 @@ function AnticipatoryActionFloodLayer({
     return {
       type: 'FeatureCollection' as const,
       features: filteredStations.map((station: any) => {
-        const selectedDateKey = startDate
-          ? new Date(startDate).toISOString().split('T')[0]
-          : null;
         const stationData = selectedDateKey
           ? station.allData?.[selectedDateKey]
           : station.currentData;
@@ -82,6 +82,7 @@ function AnticipatoryActionFloodLayer({
             station_name: station.station_name,
             river_name: station.river_name,
             location_id: station.location_id,
+            // TODO - avoid hardcoding defaults
             risk_level: stationData?.risk_level || 'Below bankfull',
             avg_discharge: stationData?.avg_discharge || 0,
             max_discharge: stationData?.max_discharge || 0,
