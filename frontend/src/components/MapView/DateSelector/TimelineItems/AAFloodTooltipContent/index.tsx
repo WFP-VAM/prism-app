@@ -3,6 +3,7 @@ import { DateRangeType } from 'config/types';
 import { useSelector } from 'react-redux';
 import { RootState } from 'context/store';
 import { formatInUTC } from 'components/MapView/Layers/AnticipatoryActionStormLayer/utils';
+import { datesAreEqualWithoutTime } from 'utils/date-utils';
 
 interface AAFloodTooltipContentProps {
   date: DateRangeType;
@@ -14,8 +15,8 @@ function AAFloodTooltipContent({ date }: AAFloodTooltipContentProps) {
   );
 
   // Find the date info for the selected date
-  const dateInfo = availableDates.find(
-    d => Math.abs(d.displayDate - date.value) < 24 * 60 * 60 * 1000, // Within 24 hours
+  const dateInfo = availableDates.find(d =>
+    datesAreEqualWithoutTime(d.displayDate, date.value),
   );
 
   if (!dateInfo) {

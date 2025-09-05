@@ -2,6 +2,7 @@ import { useSelector } from 'react-redux';
 import { useState } from 'react';
 import { RootState } from 'context/store';
 import { DateRangeType } from 'config/types';
+import { datesAreEqualWithoutTime } from 'utils/date-utils';
 import { TIMELINE_ITEM_WIDTH } from '../../utils';
 
 interface AAFloodTimelineItemProps {
@@ -15,8 +16,8 @@ function AAFloodTimelineItem({ currentDate }: AAFloodTimelineItemProps) {
   const [isHovered, setIsHovered] = useState(false);
 
   // Find the date info for this date
-  const dateInfo = availableDates.find(
-    d => Math.abs(d.displayDate - currentDate.value) < 24 * 60 * 60 * 1000, // Within 24 hours
+  const dateInfo = availableDates.find(d =>
+    datesAreEqualWithoutTime(d.displayDate, currentDate.value),
   );
 
   if (!dateInfo) {
