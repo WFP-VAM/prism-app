@@ -91,7 +91,7 @@ function AnticipatoryActionFloodLayer({
         };
       }),
     };
-  }, [stations, startDate]);
+  }, [stations, selectedDateKey]);
 
   if (!floodStationsGeoJSON) {
     return null;
