@@ -9,7 +9,7 @@ import {
   Paper,
   Button,
 } from '@material-ui/core';
-import { Close } from '@material-ui/icons';
+import { Close, Fullscreen, TableChart, GetApp } from '@material-ui/icons';
 import { Line } from 'react-chartjs-2';
 import { useSafeTranslation } from 'i18n';
 import { FloodStation } from 'context/anticipatoryAction/AAFloodStateSlice/types';
@@ -54,12 +54,11 @@ const useStyles = makeStyles(() =>
     },
     tabPanel: {
       flex: 1,
-      padding: '1rem',
+      padding: '0.5rem',
       overflow: 'auto',
     },
     chartContainer: {
       height: '400px',
-      marginBottom: '1rem',
     },
     chartTitle: {
       marginBottom: '1rem',
@@ -74,14 +73,15 @@ const useStyles = makeStyles(() =>
     },
     actionButtons: {
       display: 'flex',
-      gap: '0.5rem',
-      padding: '1rem',
-      borderTop: '1px solid #e0e0e0',
-      color: 'black',
+      justifyContent: 'flex-start',
     },
     actionButton: {
       textTransform: 'none',
       fontSize: '0.9rem',
+      color: '#333',
+      '&:hover': {
+        backgroundColor: 'rgba(0, 0, 0, 0.04)',
+      },
     },
   }),
 );
@@ -310,13 +310,25 @@ function StationCharts({ station, onClose }: StationChartsProps) {
         </div>
 
         <div className={classes.actionButtons}>
-          <Button className={classes.actionButton} type="button">
+          <Button
+            className={classes.actionButton}
+            type="button"
+            startIcon={<Fullscreen />}
+          >
             {t('Expand')}
           </Button>
-          <Button className={classes.actionButton} type="button">
+          <Button
+            className={classes.actionButton}
+            type="button"
+            startIcon={<TableChart />}
+          >
             {t('View table')}
           </Button>
-          <Button className={classes.actionButton} type="button">
+          <Button
+            className={classes.actionButton}
+            type="button"
+            startIcon={<GetApp />}
+          >
             {t('Download')}
           </Button>
         </div>
