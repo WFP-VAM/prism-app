@@ -73,7 +73,8 @@ export function parseAndTransformFloodData(data: FloodStationData[]): {
 
   const availableDates: FloodDateItem[] = uniqueDates
     .map(dateStr => {
-      const date = new Date(dateStr);
+      // avoid timezone issues
+      const date = new Date(dateStr.replace(' 00:00:00', ' 12:00:00'));
 
       // Double-check that the date is valid
       if (Number.isNaN(date.getTime())) {
