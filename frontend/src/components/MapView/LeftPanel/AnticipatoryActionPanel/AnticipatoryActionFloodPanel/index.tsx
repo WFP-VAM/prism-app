@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useState, useMemo } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import {
   Typography,
   Table,
@@ -18,6 +18,7 @@ import { setAAFloodSelectedStation } from 'context/anticipatoryAction/AAFloodSta
 import { getFloodRiskColor } from 'context/anticipatoryAction/AAFloodStateSlice/utils';
 import { useSafeTranslation } from 'i18n';
 import { AnticipatoryAction } from 'config/types';
+import { dateRangeSelector } from 'context/mapStateSlice/selectors';
 import { useAnticipatoryAction } from '../useAnticipatoryAction';
 import StationCharts from './StationCharts';
 import { TABLE_WIDTH } from './constants';
@@ -78,6 +79,7 @@ function AnticipatoryActionFloodPanel() {
   const { t } = useSafeTranslation();
   const { AAData } = useAnticipatoryAction(AnticipatoryAction.flood);
   const { stations, selectedStation, loading, error } = AAData;
+  const { startDate } = useSelector(dateRangeSelector);
 
   const [sortField, setSortField] = useState<SortField>('station_name');
   const [sortDirection, setSortDirection] = useState<SortDirection>('asc');
@@ -95,16 +97,41 @@ function AnticipatoryActionFloodPanel() {
     dispatch(setAAFloodSelectedStation(stationName));
   };
 
+  // Filter stations by selected date
+  const filteredStations = useMemo(() => {
+    if (!startDate) {
+      return stations;
+    }
+
+    const selectedDateKey = new Date(startDate).toISOString().split('T')[0];
+    return stations.filter(station => {
+      const stationDataForDate = station.allData?.[selectedDateKey];
+      return !!stationDataForDate;
+    });
+  }, [stations, startDate]);
+
+  // Get station data for selected date
+  const getStationDataForDate = (station: any) => {
+    if (!startDate) {
+      return station.currentData;
+    }
+    const selectedDateKey = new Date(startDate).toISOString().split('T')[0];
+    return station.allData?.[selectedDateKey];
+  };
+
   // eslint-disable-next-line fp/no-mutating-methods
-  const sortedStations = [...stations].sort((a, b) => {
+  const sortedStations = [...filteredStations].sort((a, b) => {
+    const aData = getStationDataForDate(a);
+    const bData = getStationDataForDate(b);
+
     const aValue: string | number = (() => {
       switch (sortField) {
         case 'station_name':
           return a.station_name;
         case 'date':
-          return a.currentData?.time || '';
+          return aData?.time || '';
         case 'risk_level':
-          return a.currentData?.risk_level || '';
+          return aData?.risk_level || '';
         default:
           return '';
       }
@@ -115,9 +142,9 @@ function AnticipatoryActionFloodPanel() {
         case 'station_name':
           return b.station_name;
         case 'date':
-          return b.currentData?.time || '';
+          return bData?.time || '';
         case 'risk_level':
-          return b.currentData?.risk_level || '';
+          return bData?.risk_level || '';
         default:
           return '';
       }
@@ -191,53 +218,56 @@ function AnticipatoryActionFloodPanel() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {sortedStations.map(station => (
-              <TableRow
-                key={station.station_name}
-                className={`${classes.row} ${
-                  selectedStation === station.station_name
-                    ? classes.selectedRow
-                    : ''
-                }`}
-                onClick={() => handleRowClick(station.station_name)}
-              >
-                <TableCell className={classes.tableCell}>
-                  {station.station_name || '-'}
-                </TableCell>
-                <TableCell className={classes.tableCell}>
-                  {station.currentData
-                    ? new Date(station.currentData.time).toLocaleDateString()
-                    : '-'}
-                </TableCell>
-                <TableCell className={classes.tableCell}>
-                  {station.currentData ? (
-                    <Chip
-                      label={station.currentData.risk_level}
-                      className={classes.riskChip}
-                      style={{
-                        backgroundColor: getFloodRiskColor(
-                          station.currentData.risk_level,
-                        ),
-                      }}
-                    />
-                  ) : (
-                    <Chip
-                      label="No data"
-                      className={classes.riskChip}
-                      style={{
-                        backgroundColor: '#9e9e9e', // Gray for no data
-                      }}
-                    />
-                  )}
-                </TableCell>
-              </TableRow>
-            ))}
+            {sortedStations.map(station => {
+              const stationData = getStationDataForDate(station);
+              return (
+                <TableRow
+                  key={station.station_name}
+                  className={`${classes.row} ${
+                    selectedStation === station.station_name
+                      ? classes.selectedRow
+                      : ''
+                  }`}
+                  onClick={() => handleRowClick(station.station_name)}
+                >
+                  <TableCell className={classes.tableCell}>
+                    {station.station_name || '-'}
+                  </TableCell>
+                  <TableCell className={classes.tableCell}>
+                    {stationData
+                      ? new Date(stationData.time).toLocaleDateString()
+                      : '-'}
+                  </TableCell>
+                  <TableCell className={classes.tableCell}>
+                    {stationData ? (
+                      <Chip
+                        label={stationData.risk_level}
+                        className={classes.riskChip}
+                        style={{
+                          backgroundColor: getFloodRiskColor(
+                            stationData.risk_level,
+                          ),
+                        }}
+                      />
+                    ) : (
+                      <Chip
+                        label="No data"
+                        className={classes.riskChip}
+                        style={{
+                          backgroundColor: '#9e9e9e', // Gray for no data
+                        }}
+                      />
+                    )}
+                  </TableCell>
+                </TableRow>
+              );
+            })}
           </TableBody>
         </Table>
       </TableContainer>
       <div style={{ marginTop: '1rem', fontSize: '0.875rem', color: '#666' }}>
-        {t('Rows per page')} 20 | 1-{Math.min(20, stations.length)} /{' '}
-        {stations.length}
+        {t('Rows per page')} 20 | 1-{Math.min(20, filteredStations.length)} /{' '}
+        {filteredStations.length}
       </div>
 
       {/* Show charts when a station is selected */}

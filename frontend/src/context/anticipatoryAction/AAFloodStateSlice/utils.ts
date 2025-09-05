@@ -34,6 +34,16 @@ export function parseAndTransformFloodData(data: FloodStationData[]): {
       const latestData = stationData[stationData.length - 1];
       const coordinates = getVillageCoordinates(stationName) || undefined;
 
+      // Create allData object with date as key
+      const allData: Record<string, FloodStationData> = {};
+      stationData.forEach(stationDataItem => {
+        const dateKey = new Date(stationDataItem.time)
+          .toISOString()
+          .split('T')[0];
+        // eslint-disable-next-line fp/no-mutation
+        allData[dateKey] = stationDataItem;
+      });
+
       return {
         station_name: startCase(stationName),
         river_name: firstData.river_name,
@@ -45,6 +55,7 @@ export function parseAndTransformFloodData(data: FloodStationData[]): {
           severe: firstData.threshold_severe,
         },
         currentData: latestData,
+        allData,
         historicalData: stationData,
       };
     },

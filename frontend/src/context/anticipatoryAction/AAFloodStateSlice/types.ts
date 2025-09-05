@@ -54,6 +54,7 @@ export interface FloodStation {
     severe: number;
   };
   currentData?: FloodStationData;
+  allData: Record<string, FloodStationData>; // Store data for all dates
   historicalData: FloodStationData[];
 }
 
