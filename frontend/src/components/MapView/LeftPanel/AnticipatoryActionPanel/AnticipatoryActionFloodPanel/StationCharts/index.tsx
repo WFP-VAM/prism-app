@@ -45,9 +45,10 @@ const useStyles = makeStyles(() =>
       display: 'flex',
       alignItems: 'center',
       gap: '0.5rem',
+      paddingBottom: '0.5rem',
     },
     closeButton: {
-      padding: '4px',
+      marginTop: '-1rem',
     },
     tabs: {
       minHeight: '48px',
@@ -235,7 +236,7 @@ function StationCharts({ station, onClose }: StationChartsProps) {
         <Paper className={classes.paper}>
           <div className={classes.header}>
             <Typography className={classes.title}>
-              {station.station_name} {t('discharge forecast')}
+              {station.station_name}
             </Typography>
             {onClose && (
               <IconButton
@@ -264,7 +265,7 @@ function StationCharts({ station, onClose }: StationChartsProps) {
       <Paper className={classes.paper}>
         <div className={classes.header}>
           <Typography className={classes.title}>
-            {station.station_name} {t('discharge forecast')}
+            {station.station_name}
           </Typography>
           {onClose && (
             <IconButton
