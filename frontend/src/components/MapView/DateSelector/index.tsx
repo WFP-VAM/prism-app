@@ -469,16 +469,19 @@ const DateSelector = memo(() => {
     // find the next observation date to jump to
     // if multiple layers are active, we pick the first observation date
     // for any layer
-    const nextObservationDateItem: DateItem = findMatchingDateBetweenLayers(
-      visibleLayers.map(l =>
-        l.filter(
-          (d: DateItem) =>
-            d.queryDate > stateStartDate && d.queryDate === d.displayDate,
+    const nextObservationDateItem: DateItem | undefined =
+      findMatchingDateBetweenLayers(
+        visibleLayers.map(l =>
+          l.filter(
+            (d: DateItem) =>
+              d.queryDate > stateStartDate && d.queryDate === d.displayDate,
+          ),
         ),
-      ),
-      'forward',
-    );
-    setDatePosition(nextObservationDateItem.displayDate, 0, true);
+        'forward',
+      );
+    if (nextObservationDateItem !== undefined) {
+      setDatePosition(nextObservationDateItem.displayDate, 0, true);
+    }
   }, [setDatePosition, stateStartDate, visibleLayers]);
 
   const decrementDate = useCallback(() => {
@@ -488,17 +491,20 @@ const DateSelector = memo(() => {
     // find the previous observation date to jump to
     // if multiple layers are active, pick the first date for any layer
     // use filter+pop as findLast is not widely available yet
-    const previousObservationDateItem: DateItem = findMatchingDateBetweenLayers(
-      visibleLayers.map(l =>
-        // eslint- disable-next-line fp/no-mutating-methods
-        l.filter(
-          (d: DateItem) =>
-            d.queryDate < stateStartDate && d.queryDate === d.displayDate,
+    const previousObservationDateItem: DateItem | undefined =
+      findMatchingDateBetweenLayers(
+        visibleLayers.map(l =>
+          // eslint- disable-next-line fp/no-mutating-methods
+          l.filter(
+            (d: DateItem) =>
+              d.queryDate < stateStartDate && d.queryDate === d.displayDate,
+          ),
         ),
-      ),
-      'back',
-    );
-    setDatePosition(previousObservationDateItem.displayDate, 0, true);
+        'back',
+      );
+    if (previousObservationDateItem !== undefined) {
+      setDatePosition(previousObservationDateItem.displayDate, 0, true);
+    }
   }, [setDatePosition, stateStartDate, visibleLayers]);
 
   const clickDate = useCallback(
