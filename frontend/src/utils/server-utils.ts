@@ -651,6 +651,41 @@ async function fetchPreprocessedDates(): Promise<
   return cachedPreprocessedDates;
 }
 
+export const getLayerType = (
+  l: LayerType,
+):
+  | 'adminWithDataLayer'
+  | 'pointDataLayer'
+  | 'staticRasterLayer'
+  | 'WMSLayer'
+  | 'invalidType' => {
+  if (
+    (l.type === 'point_data' && Boolean(l.dateUrl)) ||
+    (l.type === 'composite' &&
+      LayerDefinitions[l.dateLayer].type === 'point_data')
+  ) {
+    return 'pointDataLayer';
+  }
+  if (
+    (l.type === 'admin_level_data' && Boolean(l.dates)) ||
+    (l.type === 'composite' &&
+      LayerDefinitions[l.dateLayer].type === 'admin_level_data')
+  ) {
+    return 'adminWithDataLayer';
+  }
+  if (
+    (l.type === 'static_raster' && Boolean(l.dates)) ||
+    (l.type === 'composite' &&
+      LayerDefinitions[l.dateLayer].type === 'static_raster')
+  ) {
+    return 'staticRasterLayer';
+  }
+  if (l.type === 'wms') {
+    return 'WMSLayer';
+  }
+  return 'invalidType';
+};
+
 /**
  * Load available dates for WMS and WCS using a serverUri defined in prism.json and for GeoJSONs (point data) using their API endpoint.
  *
@@ -668,34 +703,6 @@ export async function getAvailableDatesForLayer(
   const getPreloadedLayerDates = (lId: string): Record<string, number[]> => {
     const layer = LayerDefinitions[lId];
     const state = getState();
-
-    const getLayerType = (l: LayerType) => {
-      if (
-        (l.type === 'point_data' && Boolean(l.dateUrl)) ||
-        (l.type === 'composite' &&
-          LayerDefinitions[l.dateLayer].type === 'point_data')
-      ) {
-        return 'pointDataLayer';
-      }
-      if (
-        (l.type === 'admin_level_data' && Boolean(l.dates)) ||
-        (l.type === 'composite' &&
-          LayerDefinitions[l.dateLayer].type === 'admin_level_data')
-      ) {
-        return 'adminWithDataLayer';
-      }
-      if (
-        (l.type === 'static_raster' && Boolean(l.dates)) ||
-        (l.type === 'composite' &&
-          LayerDefinitions[l.dateLayer].type === 'static_raster')
-      ) {
-        return 'staticRasterLayer';
-      }
-      if (l.type === 'wms') {
-        return 'WMSLayer';
-      }
-      return 'invalidType';
-    };
 
     switch (getLayerType(layer)) {
       case 'WMSLayer':

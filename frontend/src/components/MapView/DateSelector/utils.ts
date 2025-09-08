@@ -55,3 +55,42 @@ export function findDateIndex(
   }
   return -1;
 }
+
+// Finds the first DateItem that is available on all layers
+// layerDates must contain only observation dates for each layer
+// and already be filtered before/after the current selected date
+export const findMatchingDateBetweenLayers = (
+  layerDates: DateItem[][],
+  direction: 'forward' | 'back',
+): DateItem => {
+  const firstDates: DateItem[] = layerDates.map(
+    l => l[direction === 'forward' ? 0 : l.length - 1],
+  );
+  const minmaxFirstDateItem: DateItem = firstDates.reduce(
+    (max, di) =>
+      (
+        direction === 'forward'
+          ? di.displayDate > max.displayDate
+          : di.displayDate < max.displayDate
+      )
+        ? di
+        : max,
+    firstDates.slice(0, 1)[0],
+  );
+  if (
+    firstDates.every(di => di.displayDate === minmaxFirstDateItem.displayDate)
+  ) {
+    return minmaxFirstDateItem;
+  }
+  const tail = (l: DateItem[]): DateItem[] =>
+    direction === 'forward' ? l.slice(1) : l.slice(0, -1);
+  return findMatchingDateBetweenLayers(
+    layerDates.map(l =>
+      l[direction === 'forward' ? 0 : l.length - 1].displayDate ===
+      minmaxFirstDateItem.displayDate
+        ? l
+        : tail(l),
+    ),
+    direction,
+  );
+};

@@ -45,6 +45,7 @@ import {
   DateCompatibleLayerWithDateItems,
   TIMELINE_ITEM_WIDTH,
   findDateIndex,
+  findMatchingDateBetweenLayers,
 } from './utils';
 import { oneDayInMs } from '../LeftPanel/utils';
 
@@ -475,16 +476,15 @@ const DateSelector = memo(() => {
     // find the next observation date to jump to
     // if multiple layers are active, we pick the first observation date
     // for any layer
-    // eslint-disable-next-line fp/no-mutating-methods
-    const nextObservationDateItem: DateItem = visibleLayers
-      .map(l =>
-        l.find(
+    const nextObservationDateItem: DateItem = findMatchingDateBetweenLayers(
+      visibleLayers.map(l =>
+        l.filter(
           (d: DateItem) =>
             d.queryDate > stateStartDate && d.queryDate === d.displayDate,
         ),
-      )
-      .filter((x): x is DateItem => x !== undefined)
-      .sort((a: DateItem, b: DateItem) => a.displayDate - b.displayDate)[0];
+      ),
+      'forward',
+    );
     setDatePosition(nextObservationDateItem.displayDate, 0, true);
   }, [setDatePosition, stateStartDate, visibleLayers]);
 
@@ -495,19 +495,16 @@ const DateSelector = memo(() => {
     // find the previous observation date to jump to
     // if multiple layers are active, pick the first date for any layer
     // use filter+pop as findLast is not widely available yet
-    // eslint-disable-next-line fp/no-mutating-methods
-    const previousObservationDateItem: DateItem = visibleLayers
-      .map(l =>
-        // eslint-disable-next-line fp/no-mutating-methods
-        l
-          .filter(
-            (d: DateItem) =>
-              d.queryDate < stateStartDate && d.queryDate === d.displayDate,
-          )
-          .pop(),
-      )
-      .filter((x): x is DateItem => x !== undefined)
-      .sort((a: DateItem, b: DateItem) => b.displayDate - a.displayDate)[0];
+    const previousObservationDateItem: DateItem = findMatchingDateBetweenLayers(
+      visibleLayers.map(l =>
+        // eslint- disable-next-line fp/no-mutating-methods
+        l.filter(
+          (d: DateItem) =>
+            d.queryDate < stateStartDate && d.queryDate === d.displayDate,
+        ),
+      ),
+      'back',
+    );
     setDatePosition(previousObservationDateItem.displayDate, 0, true);
   }, [setDatePosition, stateStartDate, visibleLayers]);
 
