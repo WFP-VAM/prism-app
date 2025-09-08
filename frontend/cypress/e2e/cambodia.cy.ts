@@ -3,7 +3,7 @@
 const frontendUrl = 'http://localhost:3000';
 
 describe('Date picker', () => {
-  it('should move to the previous/next observation date when clicking back/forward on the timeline', () => {
+  it('should move to the previous/next observation date when clicking back/forward on the timeline, with rainfall then EWS layer active', () => {
     cy.visit(frontendUrl);
 
     cy.contains('MapTiler', { timeout: 20000 }).should('be.visible');
@@ -24,6 +24,33 @@ describe('Date picker', () => {
         }).then(span => {
           // validate that a dekad date is selected
           cy.wrap(span).should('contain.text', '1,');
+        });
+      },
+    );
+
+    cy.activateLayer('Flood', 'Early Warning', 'EWS 1294 river level data');
+    // cy.get('button#chevronLeftButton').click();
+    cy.get('.react-datepicker-wrapper button span', { timeout: 20000 }).then(
+      span1 => {
+        cy.wrap(span1)
+          .should('contain.text', '1,')
+          .invoke('text')
+          .as('initialDate');
+        // scroll backwards once
+        cy.get('button#chevronLeftButton').click();
+        cy.get('.react-datepicker-wrapper button span', {
+          timeout: 20000,
+        }).then(span => {
+          cy.wrap(span)
+            .invoke('text')
+            .as('newDate')
+            .then(function () {
+              // dekad can be 10 or 11 days apart
+              expect([10, 11]).to.include(
+                (new Date(this.initialDate) - new Date(this.newDate)) /
+                  (24 * 60 * 60 * 1000),
+              );
+            });
         });
       },
     );
@@ -93,8 +120,8 @@ describe('Date picker', () => {
       cy.activateLayer('Rainfall', 'Rainfall Amount', 'Rainfall aggregate');
       cy.get('.react-datepicker-wrapper button span', {
         timeout: 2000,
-      }).then(span => {
-        cy.wrap(span).should('contain.text', initialDate);
+      }).then(span1 => {
+        cy.wrap(span1).should('contain.text', initialDate);
       });
       cy.contains('Invalid date found undefined').should('not.exist');
     });
