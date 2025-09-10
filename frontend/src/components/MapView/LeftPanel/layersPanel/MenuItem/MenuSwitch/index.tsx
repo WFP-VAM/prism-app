@@ -25,6 +25,7 @@ import { Extent } from 'components/MapView/Layers/raster-utils';
 import { useMapState } from 'utils/useMapState';
 import { filterActiveLayers } from 'components/MapView/utils';
 import SwitchItems from './SwitchItems';
+import { makeSafeIDFromTitle } from '../utils';
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -141,7 +142,7 @@ const MenuSwitch = memo(({ title, layers, extent }: MenuSwitchProps) => {
           content: classes.summaryContent,
         }}
         aria-controls={title}
-        id={title}
+        id={`level2-${makeSafeIDFromTitle(title)}`}
       >
         <Typography classes={{ root: classes.title }}>{t(title)}</Typography>
         {renderedSelectedLayerInformation}
