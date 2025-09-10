@@ -4,12 +4,12 @@
 services:
   api:
     volumes:
-      - ./app:/app
+      - ./prism_app:/prism_app
       - ./utils/wait-for-it.sh:/wait-for-it.sh
     environment:
-      - "RUN=uvicorn app.main:app --host 0.0.0.0 --port 80"
+      - "RUN=uvicorn prism_app.main:app --host 0.0.0.0 --port 80"
       - PRISM_ALERTS_DATABASE_URL=postgresql://postgres:!ChangeMe!@testdb:5432/postgres
-    command: uvicorn app.main:app --host 0.0.0.0 --port 80 --reload
+    command: uvicorn prism_app.main:app --host 0.0.0.0 --port 80 --reload
     # Infinite loop, to keep it alive, for debugging
     # command: bash -c "while true; do echo 'sleeping...' && sleep 10; done"
   testdb:
@@ -26,11 +26,11 @@ services:
     build:
       context: ..
       dockerfile: ./frontend/Dockerfile
-    entrypoint: yarn start
+    entrypoint: yarn start --port 3300
     environment:
       - REACT_APP_COUNTRY=cambodia
     ports:
-      - "3000:3000"
+      - "3300:3300"
     volumes:
       - ../common:/common
       - ../frontend:/frontend

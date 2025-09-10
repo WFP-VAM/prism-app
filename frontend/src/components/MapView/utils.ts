@@ -1,6 +1,6 @@
 import { orderBy, snakeCase, values } from 'lodash';
 import { TFunction } from 'i18next';
-import { Dispatch } from 'redux';
+import type { AppDispatch } from 'context/store';
 import {
   getBoundaryLayersByAdminLevel,
   isAnticipatoryActionLayer,
@@ -21,6 +21,7 @@ import {
   LegendDefinitionItem,
   WMSLayerProps,
 } from 'config/types';
+import { loadAvailableDatesForLayer } from 'context/serverStateSlice';
 import { TableData } from 'context/tableStateSlice';
 import { getUrlKey, UrlLayerKey } from 'utils/url-utils';
 import { addNotification } from 'context/notificationStateSlice';
@@ -211,18 +212,30 @@ export const getLegendItemLabel = (
 export const generateUniqueTableKey = (activityName: string) =>
   `${activityName}_${Date.now()}`;
 
+/**
+ * Determine if available dates for the layer are ready for use.
+ * Return true/false if they are, or are loading.
+ * throw an error if it is not possible to load them at all.
+ */
 export const checkLayerAvailableDatesAndContinueOrRemove = (
   layer: LayerType,
   serverAvailableDates: AvailableDates,
+  layersLoadingDates: string[],
   removeLayerFromUrl: (layerKey: UrlLayerKey, layerId: string) => void,
-  dispatch: Dispatch,
-) => {
+  dispatch: AppDispatch,
+): boolean => {
   const { id: layerId } = layer as any;
+  if (serverAvailableDates[layerId] === undefined) {
+    if (!layersLoadingDates.includes(layerId)) {
+      dispatch(loadAvailableDatesForLayer(layerId));
+    }
+    return false;
+  }
   if (
-    serverAvailableDates[layerId]?.length !== 0 ||
+    serverAvailableDates[layer.id] !== undefined ||
     isAnticipatoryActionLayer(layer.type)
   ) {
-    return;
+    return true;
   }
   const urlLayerKey = getUrlKey(layer);
   removeLayerFromUrl(urlLayerKey, layer.id);
