@@ -171,7 +171,7 @@ const SwitchItem = memo(
           );
           updateHistory(urlLayerKey, updatedUrl);
         }
-        mapState.actions.addLayer(layer);
+        mapState.actions.addLayer(selectedLayer);
         if (
           'boundary' in selectedLayer ||
           selectedLayer.type !== 'admin_level_data'

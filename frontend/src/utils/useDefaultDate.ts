@@ -14,7 +14,7 @@ import { useMapState } from './useMapState';
  */
 export function useDefaultDate(layerId: LayerKey): number | undefined {
   const dispatch = useDispatch();
-  const { dateRange, layers } = useMapState();
+  const { dateRange, layers, ...mapState } = useMapState();
   // check layer without group or main layer in group
   const mainLayer = isMainLayer(layerId as string, layers);
   const { startDate: selectedDate } = dateRange;
@@ -32,8 +32,19 @@ export function useDefaultDate(layerId: LayerKey): number | undefined {
   useEffect(() => {
     if (!selectedDate && defaultDate && mainLayer) {
       updateHistory('date', getFormattedDate(defaultDate, 'default') as string);
+      if (!mapState.isGlobalMap) {
+        mapState.actions.updateDateRange({ startDate: defaultDate });
+      }
     }
-  }, [defaultDate, dispatch, selectedDate, updateHistory, mainLayer]);
+  }, [
+    defaultDate,
+    dispatch,
+    selectedDate,
+    updateHistory,
+    mainLayer,
+    mapState.isGlobalMap,
+    mapState.actions,
+  ]);
 
   return selectedDate || defaultDate;
 }
