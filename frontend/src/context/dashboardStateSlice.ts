@@ -60,7 +60,7 @@ export const dashboardStateSlice = createSlice({
       const { index, layer } = action.payload;
       const layersToAdd = layer?.group?.activateAll
         ? Object.values(LayerDefinitions).filter(l =>
-            layer?.group?.layers?.map(layer => layer.id).includes(l.id),
+            layer?.group?.layers?.map(subLayer => subLayer.id).includes(l.id),
           )
         : [layer];
       const filteredLayers = state.maps[index].layers.filter(l =>
@@ -73,8 +73,8 @@ export const dashboardStateSlice = createSlice({
           : [...filteredLayers, ...layersToAdd];
 
       const dedupedLayers = newLayers.filter(
-        (l, index, self) =>
-          index === self.findIndex(t => t.id === l.id && t.type === l.type),
+        (l, i, self) =>
+          i === self.findIndex(t => t.id === l.id && t.type === l.type),
       );
 
       return {
@@ -112,11 +112,7 @@ export const dashboardStateSlice = createSlice({
       action: PayloadAction<{ index: number; dateRange: DateRange }>,
     ) => {
       const { index, dateRange } = action.payload;
-      console.log('updateMapDateRange', {
-        index,
-        dateRange,
-        currentState: state.maps[index].dateRange,
-      });
+
       return {
         ...state,
         maps: state.maps.map((mapInstance, i) =>

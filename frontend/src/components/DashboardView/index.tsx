@@ -9,7 +9,7 @@ import {
 } from '@material-ui/core';
 import { ArrowForward, Edit, VisibilityOutlined } from '@material-ui/icons';
 import { useSelector, useDispatch } from 'react-redux';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import type { DashboardTextConfig } from 'config/types';
 import { black, cyanBlue } from 'muiTheme';
 

@@ -2,7 +2,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useEffect } from 'react';
 import { isMainLayer, LayerKey } from 'config/types';
 import { availableDatesSelector } from 'context/serverStateSlice';
-import { updateDateRange } from 'context/mapStateSlice';
 
 import { useUrlHistory } from './url-utils';
 import { getFormattedDate } from './date-utils';
@@ -15,7 +14,7 @@ import { useMapState } from './useMapState';
  */
 export function useDefaultDate(layerId: LayerKey): number | undefined {
   const dispatch = useDispatch();
-  const { dateRange, layers } = useMapState();
+  const { dateRange, layers, ...mapState } = useMapState();
   // check layer without group or main layer in group
   const mainLayer = isMainLayer(layerId as string, layers);
   const { startDate: selectedDate } = dateRange;
@@ -34,9 +33,19 @@ export function useDefaultDate(layerId: LayerKey): number | undefined {
     if (!selectedDate && defaultDate && mainLayer) {
       // Update both URL and Redux state to ensure DateSelector re-renders properly
       updateHistory('date', getFormattedDate(defaultDate, 'default') as string);
-      dispatch(updateDateRange({ startDate: defaultDate }));
+      if (!mapState.isGlobalMap) {
+        mapState.actions.updateDateRange({ startDate: defaultDate });
+      }
     }
-  }, [defaultDate, dispatch, selectedDate, updateHistory, mainLayer]);
+  }, [
+    defaultDate,
+    dispatch,
+    selectedDate,
+    updateHistory,
+    mainLayer,
+    mapState.isGlobalMap,
+    mapState.actions,
+  ]);
 
   return selectedDate || defaultDate;
 }
