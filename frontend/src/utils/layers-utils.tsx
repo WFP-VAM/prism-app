@@ -347,7 +347,7 @@ const useLayers = () => {
           console.error((error as LocalError).getErrorMessage());
         }
         if (datesReady) {
-          dispatch(mapState.actions.addLayer(layer));
+          mapState.actions.addLayer(layer);
         }
       }),
     [
