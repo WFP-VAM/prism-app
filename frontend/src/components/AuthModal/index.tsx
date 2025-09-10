@@ -75,7 +75,7 @@ const AuthModal = () => {
       layersWithAuthRequired.reduce(
         (acc: string, currentLayer, currentLayerIndex) =>
           currentLayerIndex === 0
-            ? t(currentLayer?.title as any) ?? ''
+            ? (t(currentLayer?.title as any) ?? '')
             : `${acc}, ${t(currentLayer.title as any)}`,
         '',
       ),

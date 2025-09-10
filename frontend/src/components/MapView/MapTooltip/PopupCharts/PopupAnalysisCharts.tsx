@@ -93,8 +93,8 @@ function PopupAnalysisCharts({
   const adminProperties =
     data && layer?.format === 'geojson'
       ? getProperties(data as BoundaryLayerData, adminCode, adminSelectorKey)
-      : features?.find(f => f.properties?.[adminSelectorKey] === adminCode)
-          ?.properties ?? null;
+      : (features?.find(f => f.properties?.[adminSelectorKey] === adminCode)
+          ?.properties ?? null);
 
   if (filteredChartLayers.length < 1) {
     return null;
