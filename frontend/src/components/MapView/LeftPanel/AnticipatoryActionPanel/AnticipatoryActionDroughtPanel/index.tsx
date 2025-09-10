@@ -13,9 +13,7 @@ import React from 'react';
 import { useSafeTranslation } from 'i18n';
 import { ArrowBackIos } from '@material-ui/icons';
 import { useDispatch, useSelector } from 'react-redux';
-import { safeCountry } from 'config';
 import {
-  AACategoryType,
   AAView,
   allWindowsKey,
 } from 'context/anticipatoryAction/AADroughtStateSlice/types';
@@ -32,6 +30,10 @@ import {
 import { dateRangeSelector } from 'context/mapStateSlice/selectors';
 import { getFormattedDate } from 'utils/date-utils';
 import { AnticipatoryAction, PanelSize } from 'config/types';
+import {
+  isSingleWindowMode,
+  getAADroughtCountryConfig,
+} from './utils/countryConfig';
 import { StyledCheckboxLabel, StyledRadioLabel } from './utils';
 import { StyledSelect } from '../utils';
 import DistrictView from './DistrictView/index';
@@ -41,21 +43,7 @@ import Timeline from './Timeline';
 import Forecast from './Forecast';
 import { useAnticipatoryAction } from '../useAnticipatoryAction';
 
-const isZimbabwe = safeCountry === 'zimbabwe';
-
-const checkboxes: {
-  label: string;
-  id: Exclude<AACategoryType, 'na' | 'ny'>;
-}[] = isZimbabwe
-  ? [
-      { label: 'Moderate', id: 'Moderate' },
-      { label: 'Below Normal', id: 'Normal' },
-    ]
-  : [
-      { label: 'Severe', id: 'Severe' },
-      { label: 'Moderate', id: 'Moderate' },
-      { label: 'Mild', id: 'Mild' },
-    ];
+const { categories } = getAADroughtCountryConfig();
 
 function AnticipatoryActionDroughtPanel() {
   const classes = useStyles();
@@ -155,7 +143,7 @@ function AnticipatoryActionDroughtPanel() {
               )}
             >
               <MenuItem
-                value=""
+                value="empty"
                 onClick={() => {
                   dispatch(setAASelectedDistrict(''));
                   dispatch(setAAView(AAView.Home));
@@ -181,28 +169,30 @@ function AnticipatoryActionDroughtPanel() {
           </div>
         </div>
 
-        <div>
-          <FormControl component="fieldset">
-            <RadioGroup
-              defaultValue={allWindowsKey}
-              className={classes.radioButtonGroup}
-              onChange={(_e, val) =>
-                dispatch(setAAFilters({ selectedWindow: val as any }))
-              }
-            >
-              <StyledRadioLabel
-                value={allWindowsKey}
-                label={t(allWindowsKey)}
-              />
-              {AAWindowKeys.map(x => (
-                <StyledRadioLabel key={x} value={x} label={x} />
-              ))}
-            </RadioGroup>
-          </FormControl>
-        </div>
+        {!isSingleWindowMode() && (
+          <div>
+            <FormControl component="fieldset">
+              <RadioGroup
+                defaultValue={allWindowsKey}
+                className={classes.radioButtonGroup}
+                onChange={(_e, val) =>
+                  dispatch(setAAFilters({ selectedWindow: val as any }))
+                }
+              >
+                <StyledRadioLabel
+                  value={allWindowsKey}
+                  label={t(allWindowsKey)}
+                />
+                {AAWindowKeys.map(x => (
+                  <StyledRadioLabel key={x} value={x} label={x} />
+                ))}
+              </RadioGroup>
+            </FormControl>
+          </div>
+        )}
 
         <div>
-          {checkboxes.map(x => (
+          {categories.map(x => (
             <StyledCheckboxLabel
               key={x.id}
               id={x.id}
@@ -246,7 +236,7 @@ function AnticipatoryActionDroughtPanel() {
               )}
             >
               <MenuItem
-                value=""
+                value="empty"
                 onClick={() => {
                   dispatch(setAAFilters({ selectedIndex: '' }));
                 }}
