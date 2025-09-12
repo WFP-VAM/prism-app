@@ -42,7 +42,7 @@ const reducer = combineReducers({
 export const store = configureStore({
   reducer,
   devTools: {
-    // sanitizers to make the state vaguely manageable by redux-dev-tools
+    // sanitizers to make the state manageable by redux-dev-tools
     // actionSanitizer returns the action "cleaned up" for faster display (it does not
     // affect the original action, just how its displayed in redux-dev-tools)
     actionSanitizer: action => {
@@ -80,9 +80,20 @@ export const store = configureStore({
           return action;
       }
     },
-    // stateSanitizer does the same for the state. This example is a bit radical!
-    stateSanitizer: (_state: RootState) => ({
-      empty: 'state',
+    // stateSanitizer does the same for the state. Virtually all the heavy data
+    // is in mapState, so we just rewrite that part.
+    stateSanitizer: (state: RootState) => ({
+      ...state,
+      mapState: {
+        ...state.mapState,
+        layersData: state.mapState.layersData.map(ld => ({
+          ...ld,
+          data: {
+            ...ld.data,
+            features: `array of ${ld.data.features.length} features`,
+          },
+        })),
+      },
     }),
   },
   middleware: getDefaultMiddleware({
