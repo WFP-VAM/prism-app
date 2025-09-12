@@ -3,11 +3,11 @@ version: '3'
 services:
   api:
     volumes:
-      - ./app:/app
+      - ./prism_app:/prism_app
     ports:
       - '80:80'
     environment:
-      - 'RUN=uvicorn app.main:app --host 0.0.0.0 --port 80 --reload'
-    command: uvicorn app.main:app --host 0.0.0.0 --port 80 --reload
+      - "RUN=uvicorn prism_app.main:app --host 0.0.0.0 --port 80 --reload"
+    command: uvicorn prism_app.main:app --host 0.0.0.0 --port 80 --reload
     # Infinite loop, to keep it alive, for debugging
     # command: bash -c "while true; do echo 'sleeping...' && sleep 10; done"

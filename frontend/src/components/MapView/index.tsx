@@ -1,17 +1,14 @@
 import { memo, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import {
-  Box,
-  CircularProgress,
-  createStyles,
-  makeStyles,
-} from '@material-ui/core';
+import { Box, createStyles, makeStyles } from '@material-ui/core';
 import { getDisplayBoundaryLayers } from 'config/utils';
 import { addLayer } from 'context/mapStateSlice';
 import {
-  isLoading as areDatesLoading,
-  loadAvailableDates,
-} from 'context/serverStateSlice';
+  WMSLayerDatesRequested,
+  pointDataLayerDatesRequested,
+  preloadLayerDatesArraysForPointData,
+  preloadLayerDatesArraysForWMS,
+} from 'context/serverPreloadStateSlice';
 import { loadLayerData } from 'context/layers/layer-data';
 import { mapSelector } from 'context/mapStateSlice/selectors';
 import LeftPanel from './LeftPanel';
@@ -27,14 +24,20 @@ const displayedBoundaryLayers = getDisplayBoundaryLayers().reverse();
 
 const MapView = memo(() => {
   const classes = useStyles();
+
   // Selectors
-  const datesLoading = useSelector(areDatesLoading);
+  const datesPreloadingForWMS = useSelector(WMSLayerDatesRequested);
+  const datesPreloadingForPointData = useSelector(pointDataLayerDatesRequested);
   const map = useSelector(mapSelector);
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(loadAvailableDates());
-
+    if (!datesPreloadingForPointData) {
+      dispatch(preloadLayerDatesArraysForPointData());
+    }
+    if (!datesPreloadingForWMS) {
+      dispatch(preloadLayerDatesArraysForWMS());
+    }
     // we must load boundary layer here for two reasons
     // 1. Stop showing two loading screens on startup - maplibre renders its children very late, so we can't rely on BoundaryLayer to load internally
     // 2. Prevent situations where a user can toggle a layer like NSO (depends on Boundaries) before Boundaries finish loading.
@@ -43,17 +46,12 @@ const MapView = memo(() => {
     displayedBoundaryLayers.forEach(l =>
       dispatch(loadLayerData({ layer: l, map })),
     );
-  }, [dispatch, map]);
+  }, [dispatch, datesPreloadingForWMS, datesPreloadingForPointData, map]);
 
   return (
     <Box className={classes.root}>
       <LeftPanel />
       <OtherFeatures />
-      {datesLoading && (
-        <div className={classes.loading}>
-          <CircularProgress size={100} />
-        </div>
-      )}
       <MapComponent />
     </Box>
   );

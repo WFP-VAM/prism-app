@@ -35,16 +35,42 @@
 //     }
 //   }
 // }
+import { makeSafeIDFromTitle } from '../../src/components/MapView/LeftPanel/layersPanel/MenuItem/utils';
 
 // a custom cypress command to activate a layer.
 // args:
 // group1 and group2: names of the groups as displayed in the app
 // layerName: the name as shown next to the toggle
 Cypress.Commands.add(
-  'toggleLayer',
+  'activateLayer',
   (group1: string, group2: string, layerName: string) => {
-    cy.contains(group1).click();
-    cy.contains(group2).click();
+    cy.get(`#level1-${makeSafeIDFromTitle(group1)}`).then(el => {
+      if (el[0].ariaExpanded === 'false') {
+        cy.wrap(el).click();
+      }
+      cy.get(`#level2-${makeSafeIDFromTitle(group2)}`).then(el2 => {
+        if (el2[0].ariaExpanded === 'false') {
+          cy.wrap(el2).click();
+        }
+        cy.get(`[type="checkbox"][aria-label="${layerName}"]`).click();
+      });
+    });
+  },
+);
+
+Cypress.Commands.add(
+  'deactivateLayer',
+  (group1: string, group2: string, layerName: string) => {
+    // cy.get(`#level1-${makeSafeIDFromTitle(group1)}`).click();
+    // cy.get(`#level2-${makeSafeIDFromTitle(group2)}`).click();
     cy.get(`[type="checkbox"][aria-label="${layerName}"]`).click();
   },
 );
+
+Cypress.Commands.add('switchLanguage', (langcode: string) => {
+  cy.get('[aria-label="language-select-dropdown-button"]').click();
+  cy.get(
+    `[aria-label="language-select-dropdown-menu-item-${langcode}"]`,
+  ).click();
+  cy.contains('Layers').should('be.visible');
+});
