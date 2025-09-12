@@ -9,6 +9,13 @@ import '@testing-library/jest-dom';
 import 'cross-fetch/polyfill';
 import { randomBytes } from 'crypto';
 
+// Polyfill TextEncoder and TextDecoder for jsPDF compatibility
+if (typeof global.TextEncoder === 'undefined') {
+  const { TextEncoder, TextDecoder } = require('util');
+  global.TextEncoder = TextEncoder;
+  global.TextDecoder = TextDecoder;
+}
+
 // Mock Workers
 // eslint-disable-next-line fp/no-mutation
 global.URL.createObjectURL = jest.fn(() => 'worker');
@@ -164,7 +171,16 @@ jest.mock('utils/zonal-utils', () => ({
   calculate: jest.fn(() => Promise.resolve({})),
 }));
 
-// Mock zonal-utils to avoid Web Worker issues in tests
-jest.mock('utils/zonal-utils', () => ({
-  calculate: jest.fn(() => Promise.resolve({})),
+// Mock jsPDF to prevent Node.js API issues in tests
+jest.mock('jspdf', () => ({
+  jsPDF: jest.fn().mockImplementation(() => ({
+    addImage: jest.fn(),
+    save: jest.fn(),
+    internal: {
+      pageSize: {
+        getHeight: jest.fn(() => 800),
+        getWidth: jest.fn(() => 600),
+      },
+    },
+  })),
 }));
