@@ -9,6 +9,7 @@
   "scripts": {
     "prebuild": "rimraf dist",
     "build": "tsc -p tsconfig.json",
+    "build_in_ci": "rm -rf dist && tsc -p tsconfig.json",
     "test:base": "npx ts-node --esm --skipProject ./src/base/test.ts",
     "test:gml": "npx ts-node --esm --skipProject ./src/gml/test.ts",
     "test:ows": "npx ts-node --esm --skipProject ./src/ows/test.ts",

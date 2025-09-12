@@ -7,7 +7,7 @@ import TooltipItem from '../TooltipItem';
 import { DateCompatibleLayerWithDateItems } from '../../utils';
 import { DateItemStyle } from '../types';
 
-const AAdroughtTooltipContent: FC<AAdroughtTooltipContentProps> = ({
+const StandardTooltipContent: FC<StandardTooltipContentProps> = ({
   date,
   orderedLayers,
   dateItemStyling,
@@ -20,6 +20,7 @@ const AAdroughtTooltipContent: FC<AAdroughtTooltipContentProps> = ({
       const dateItem = selectedLayer.dateItems.find(item =>
         datesAreEqualWithoutTime(item.displayDate, date.value),
       );
+
       if (!dateItem) {
         return null;
       }
@@ -46,10 +47,10 @@ const AAdroughtTooltipContent: FC<AAdroughtTooltipContentProps> = ({
   return tooltipTitleArray;
 };
 
-interface AAdroughtTooltipContentProps {
+interface StandardTooltipContentProps {
   date: DateRangeType;
   orderedLayers: DateCompatibleLayerWithDateItems[];
   dateItemStyling: DateItemStyle[];
 }
 
-export default AAdroughtTooltipContent;
+export default StandardTooltipContent;

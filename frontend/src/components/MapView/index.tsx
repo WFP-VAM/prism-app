@@ -10,6 +10,7 @@ import {
   preloadLayerDatesArraysForWMS,
 } from 'context/serverPreloadStateSlice';
 import { loadLayerData } from 'context/layers/layer-data';
+import { mapSelector } from 'context/mapStateSlice/selectors';
 import LeftPanel from './LeftPanel';
 import MapComponent from './Map';
 import OtherFeatures from './OtherFeatures';
@@ -24,9 +25,10 @@ const displayedBoundaryLayers = getDisplayBoundaryLayers().reverse();
 const MapView = memo(() => {
   const classes = useStyles();
 
+  // Selectors
   const datesPreloadingForWMS = useSelector(WMSLayerDatesRequested);
   const datesPreloadingForPointData = useSelector(pointDataLayerDatesRequested);
-
+  const map = useSelector(mapSelector);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -40,8 +42,11 @@ const MapView = memo(() => {
     // 1. Stop showing two loading screens on startup - maplibre renders its children very late, so we can't rely on BoundaryLayer to load internally
     // 2. Prevent situations where a user can toggle a layer like NSO (depends on Boundaries) before Boundaries finish loading.
     displayedBoundaryLayers.forEach(l => dispatch(addLayer(l)));
-    displayedBoundaryLayers.forEach(l => dispatch(loadLayerData({ layer: l })));
-  }, [dispatch, datesPreloadingForWMS, datesPreloadingForPointData]);
+    // TODO: Look into deduping this. It's not currently triggered multiple times but it could easily be.
+    displayedBoundaryLayers.forEach(l =>
+      dispatch(loadLayerData({ layer: l, map })),
+    );
+  }, [dispatch, datesPreloadingForWMS, datesPreloadingForPointData, map]);
 
   return (
     <Box className={classes.root}>

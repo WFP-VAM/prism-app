@@ -37,6 +37,7 @@ import { getRequestDate } from 'utils/server-utils';
 import { isAnticipatoryActionLayer, isWindowedDates } from 'config/utils';
 import { getAAConfig } from 'context/anticipatoryAction/config';
 import { RootState } from 'context/store';
+import { getTimelineOffset } from 'components/MapView/LeftPanel/AnticipatoryActionPanel/AnticipatoryActionDroughtPanel/utils/countryConfig';
 import TickSvg from './tick.svg';
 import DateSelectorInput from './DateSelectorInput';
 import TimelineItems from './TimelineItems';
@@ -44,6 +45,7 @@ import {
   DateCompatibleLayerWithDateItems,
   TIMELINE_ITEM_WIDTH,
   findDateIndex,
+  findMatchingDateBetweenLayers,
 } from './utils';
 import { oneDayInMs } from '../LeftPanel/utils';
 
@@ -56,13 +58,19 @@ const TIMELINE_ID = 'dateTimelineSelector';
 const POINTER_ID = 'datePointerSelector';
 
 const calculateStartAndEndDates = (startDate: Date, selectedTab: string) => {
-  const year =
-    startDate.getFullYear() -
-    (selectedTab === Panel.AnticipatoryActionDrought && startDate.getMonth() < 3
-      ? 1
-      : 0);
+  let year = startDate.getFullYear();
+  let startMonth = 0;
 
-  const startMonth = Panel.AnticipatoryActionDrought === selectedTab ? 3 : 0; // April for anticipatory_action, January otherwise
+  if (selectedTab === Panel.AnticipatoryActionDrought) {
+    // Use country-specific timeline offset for AA drought
+    // eslint-disable-next-line fp/no-mutation
+    startMonth = getTimelineOffset();
+    // Adjust year if we're before the timeline start month
+    if (startDate.getMonth() < startMonth) {
+      // eslint-disable-next-line fp/no-mutation
+      year -= 1;
+    }
+  }
 
   const start = new Date(year, startMonth, 1);
   const end = new Date(year, startMonth + 11, 31);
@@ -439,6 +447,9 @@ const DateSelector = memo(() => {
       increment: number,
       isUpdatingHistory: boolean,
     ) => {
+      if (date === undefined) {
+        return;
+      }
       const selectedIndex = findDateIndex(availableDates, date);
 
       if (availableDates[selectedIndex + increment]) {
@@ -452,12 +463,49 @@ const DateSelector = memo(() => {
   );
 
   const incrementDate = useCallback(() => {
-    setDatePosition(stateStartDate, 1, true);
-  }, [setDatePosition, stateStartDate]);
+    if (stateStartDate === undefined) {
+      return;
+    }
+    // find the next observation date to jump to
+    // if multiple layers are active, we pick the first observation date
+    // for any layer
+    const nextObservationDateItem: DateItem | undefined =
+      findMatchingDateBetweenLayers(
+        visibleLayers.map(l =>
+          l.filter(
+            (d: DateItem) =>
+              d.queryDate > stateStartDate && d.queryDate === d.displayDate,
+          ),
+        ),
+        'forward',
+      );
+    if (nextObservationDateItem !== undefined) {
+      setDatePosition(nextObservationDateItem.displayDate, 0, true);
+    }
+  }, [setDatePosition, stateStartDate, visibleLayers]);
 
   const decrementDate = useCallback(() => {
-    setDatePosition(stateStartDate, -1, true);
-  }, [setDatePosition, stateStartDate]);
+    if (stateStartDate === undefined) {
+      return;
+    }
+    // find the previous observation date to jump to
+    // if multiple layers are active, pick the first date for any layer
+    // use filter+pop as findLast is not widely available yet
+    const previousObservationDateItem: DateItem | undefined =
+      findMatchingDateBetweenLayers(
+        visibleLayers.map(l =>
+          // eslint- disable-next-line fp/no-mutating-methods
+          l.filter(
+            (d: DateItem) =>
+              d.queryDate < stateStartDate && d.queryDate === d.displayDate,
+          ),
+        ),
+        'back',
+      );
+    if (previousObservationDateItem !== undefined) {
+      setDatePosition(previousObservationDateItem.displayDate, 0, true);
+    }
+  }, [setDatePosition, stateStartDate, visibleLayers]);
 
   const clickDate = useCallback(
     (index: number) => {
@@ -618,7 +666,11 @@ const DateSelector = memo(() => {
         {/* Desktop */}
         <Grid item xs={12} sm className={classes.slider}>
           {!xsDown && (
-            <Button onClick={decrementDate} className={classes.chevronDate}>
+            <Button
+              id="chevronLeftButton"
+              onClick={decrementDate}
+              className={classes.chevronDate}
+            >
               <ChevronLeft />
             </Button>
           )}
@@ -686,7 +738,11 @@ const DateSelector = memo(() => {
             </Draggable>
           </Grid>
           {!xsDown && (
-            <Button onClick={incrementDate} className={classes.chevronDate}>
+            <Button
+              id="chevronRightButton"
+              onClick={incrementDate}
+              className={classes.chevronDate}
+            >
               <ChevronRight />
             </Button>
           )}

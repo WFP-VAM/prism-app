@@ -33,7 +33,7 @@ import {
   availableDatesSelector,
   layersLoadingDatesIdsSelector,
 } from 'context/serverStateSlice';
-import { layerDatesPreloaded } from 'context/serverPreloadStateSlice';
+import { layerDatesPreloadedSelector } from 'context/serverPreloadStateSlice';
 import { countBy, get, pickBy, uniqBy } from 'lodash';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'context/hooks';
@@ -78,7 +78,7 @@ const useLayers = () => {
   const unsortedSelectedLayers = useSelector(layersSelector);
   const serverAvailableDates = useSelector(availableDatesSelector);
   const layersLoadingDates = useSelector(layersLoadingDatesIdsSelector);
-  const datesPreloaded = useSelector(layerDatesPreloaded);
+  const datesPreloaded = useSelector(layerDatesPreloadedSelector);
   const { startDate: selectedDate } = useSelector(dateRangeSelector);
 
   // get AA config
@@ -368,13 +368,10 @@ const useLayers = () => {
   );
 
   // let users know if their current date doesn't exist in possible dates
-  const urlDate = useMemo(() => urlParams.get('date'), [urlParams]);
-
-  // The date integer from url
-  const dateInt = useMemo(
-    () => (urlDate ? new Date(urlDate).setUTCHours(12, 0, 0, 0) : undefined),
-    [urlDate],
-  );
+  const urlDate: string | null = useMemo(() => {
+    const r = urlParams.get('date');
+    return r === 'undefined' ? null : r;
+  }, [urlParams]);
 
   useEffect(() => {
     if (!hazardLayerIds && !baselineLayerIds) {
@@ -395,6 +392,10 @@ const useLayers = () => {
     }
 
     addMissingLayers();
+
+    const dateInt: number | undefined = urlDate
+      ? new Date(urlDate).setUTCHours(12, 0, 0, 0)
+      : undefined;
 
     if (dateInt === selectedDate) {
       return;
@@ -420,7 +421,6 @@ const useLayers = () => {
   }, [
     addMissingLayers,
     baselineLayerIds,
-    dateInt,
     dispatch,
     hazardLayerIds,
     invalidLayersIds,
