@@ -384,14 +384,24 @@ async function createAPIRequestParams(
   // Get default values for groupBy and admin boundary file path at the proper adminLevel
 
   const adminLevel =
-    (params as AdminLevelDataLayerProps)?.adminLevel ||
+    (params as AdminLevelDataLayerProps)?.adminLevel ??
     (params as BoundaryLayerProps)?.adminLevelCodes?.length;
-  const { path: adminBoundariesPath, adminCode: groupBy } =
-    getBoundaryLayersByAdminLevel(adminLevel);
+
+  const boundaryLayer = getBoundaryLayersByAdminLevel(adminLevel);
+
+  const adminBoundariesPath =
+    (params as BoundaryLayerProps)?.path ?? boundaryLayer.path;
+  const groupBy =
+    (params as BoundaryLayerProps)?.adminCode ?? boundaryLayer.adminCode;
+  const zonesPath =
+    (params as BoundaryLayerProps)?.zonesPath ?? boundaryLayer.zonesPath;
+  const simplifyTolerance =
+    (params as BoundaryLayerProps)?.simplifyTolerance ??
+    boundaryLayer.simplifyTolerance;
 
   // Note - This may not work when running locally as the function
   // will default to the boundary layer hosted in S3.
-  const zonesUrl = getAdminBoundariesURL(adminBoundariesPath);
+  const zonesUrl = zonesPath ?? getAdminBoundariesURL(adminBoundariesPath);
 
   // eslint-disable-next-line camelcase
   const wfsParams = (params as WfsRequestParams)?.layer_name
@@ -441,6 +451,7 @@ async function createAPIRequestParams(
       exposureValue?.operator && exposureValue.value
         ? `${exposureValue?.operator}${exposureValue?.value}`
         : undefined,
+    simplify_tolerance: simplifyTolerance,
   };
 
   return apiRequest;
@@ -668,7 +679,7 @@ export const requestAndStoreAnalysis = createAsyncThunk<
     api.getState(),
   ) as LayerData<BoundaryLayerProps>;
 
-  if (!adminBoundariesData) {
+  if (!adminBoundariesData && adminBoundaries.format !== 'pmtiles') {
     throw new Error('Boundary Layer not loaded!');
   }
 
@@ -683,12 +694,12 @@ export const requestAndStoreAnalysis = createAsyncThunk<
     exposureValue,
   );
 
-  const aggregateData = scaleAndFilterAggregateData(
+  const statsByAdminId = scaleAndFilterAggregateData(
     await fetchApiData(ANALYSIS_API_URL, apiRequest, api.dispatch),
     hazardLayer,
     statistic,
     threshold,
-  );
+  ) as KeyValueResponse[];
 
   const getCheckedBaselineData = async (): Promise<BaselineLayerData> => {
     // if the baselineData doesn't exist, lets load it, otherwise check then load existing data.
@@ -718,7 +729,7 @@ export const requestAndStoreAnalysis = createAsyncThunk<
     await getCheckedBaselineData();
 
   const features = generateFeaturesFromApiData(
-    aggregateData,
+    statsByAdminId,
     loadedAndCheckedBaselineData,
     apiRequest.group_by,
     statistic,
@@ -737,7 +748,7 @@ export const requestAndStoreAnalysis = createAsyncThunk<
 
   const tableRows: TableRow[] = generateTableFromApiData(
     enrichedStatistics,
-    aggregateData,
+    statsByAdminId,
     adminBoundariesData,
     apiRequest.group_by,
     loadedAndCheckedBaselineData.layerData,
@@ -757,9 +768,9 @@ export const requestAndStoreAnalysis = createAsyncThunk<
     statistic,
     threshold,
     legend,
-    // we never use the raw api data besides for debugging. So lets not bother saving it in Redux for production
-    process.env.NODE_ENV === 'production' ? undefined : aggregateData,
+    statsByAdminId,
     date,
+    adminBoundaries.format,
   );
 });
 

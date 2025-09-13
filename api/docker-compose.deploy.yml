@@ -44,7 +44,7 @@ services:
       - "traefik.http.routers.whoami.entrypoints=websecure"
       - "traefik.http.routers.whoami.tls.certresolver=myresolver"
     environment:
-      - "RUN=uvicorn app.main:app --host 0.0.0.0 --port 80"
+      - "RUN=uvicorn prism_app.main:app --host 0.0.0.0 --port 80"
       # make sure that the alert password is properly set
       - PRISM_ALERTS_DATABASE_URL=${PRISM_ALERTS_DATABASE_URL:?"Provide a URL for the alerts database."}
       - KOBO_PASSWORD=${KOBO_PASSWORD:?"Add a password to access KOBO data."}
@@ -52,7 +52,11 @@ services:
       - HDC_TOKEN=${HDC_TOKEN:?"Provide a token to access HDC chart data."}
       - STAC_AWS_ACCESS_KEY_ID=${STAC_AWS_ACCESS_KEY_ID:?"Provide the AWS access key for the stac api."}
       - STAC_AWS_SECRET_ACCESS_KEY=${STAC_AWS_SECRET_ACCESS_KEY:?"Provide the AWS secret key for the stac api."}
-    command: uvicorn app.main:app --host 0.0.0.0 --port 80
+      - GOOGLE_FLOODS_API_KEY=${GOOGLE_FLOODS_API_KEY:?"Provide the Google Floods API key."}
+      - VECTOR_STORE_ACCESS_KEY_ID=${VECTOR_STORE_ACCESS_KEY_ID}
+      - VECTOR_STORE_SECRET_ACCESS_KEY=${VECTOR_STORE_SECRET_ACCESS_KEY}
+      - VECTOR_STORE_DEFAULT_REGION=${VECTOR_STORE_DEFAULT_REGION}
+    command: uvicorn prism_app.main:app --host 0.0.0.0 --port 80
     restart: always
     # adding a DNS to allow self lookup of the api
     dns:

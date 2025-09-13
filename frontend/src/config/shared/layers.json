@@ -1,22 +1,77 @@
 {
-  "global_admin_boundaries": {
+  "global_admin2_boundaries": {
     "type": "boundary",
-    "path": "data/global/adm0_simplified.json",
+    "format": "pmtiles",
+    "zones_path": "s3://prism-vector-storage/global_admin_boundaries/admin_level=2/admin_boundaries.parquet",
+    "path": "https://pmtiles-hosting.s3.eu-central-1.amazonaws.com/global/global_admin_boundaries_no_drop.pmtiles",
+    "layer_name": "admin2",
+    "hideInGoTo": true,
     "opacity": 0.8,
-    "admin_code": "iso3",
-    "admin_level_codes": ["iso3"],
-    "admin_level_names": ["adm0_name"],
-    "admin_level_local_names": ["adm0_name"],
+    "disableAnalysis": true,
     "styles:": {
       "fill": {
         "fill-opacity": 0
       },
       "line": {
         "line-color": "gray",
-        "line-width": 1,
-        "line-opacity": 0.8
+        "line-width": 0.5,
+        "line-opacity": 0.1
       }
-    }
+    },
+    "admin_code": "dv_adm2_id",
+    "admin_level": 2,
+    "admin_level_codes": ["dv_adm0_id", "dv_adm1_id", "dv_adm2_id"],
+    "admin_level_names": ["dv_adm0_name", "dv_adm1_name", "dv_adm2_name"],
+    "admin_level_local_names": ["dv_adm0_name", "dv_adm1_name", "dv_adm2_name"],
+    "simplify_tolerance": 0.1
+  },
+  "global_admin1_boundaries": {
+    "type": "boundary",
+    "format": "pmtiles",
+    "zones_path": "s3://prism-vector-storage/global_admin_boundaries/admin_level=1/admin_boundaries.parquet",
+    "path": "https://pmtiles-hosting.s3.eu-central-1.amazonaws.com/global/global_admin_boundaries_no_drop.pmtiles",
+    "layer_name": "admin1",
+    "opacity": 0.8,
+    "styles:": {
+      "fill": {
+        "fill-opacity": 0
+      },
+      "line": {
+        "line-color": "gray",
+        "line-width": 1.0,
+        "line-opacity": 0.2
+      }
+    },
+    "admin_code": "dv_adm1_id",
+    "admin_level": 1,
+    "admin_level_codes": ["dv_adm0_id", "dv_adm1_id"],
+    "admin_level_names": ["dv_adm0_name", "dv_adm1_name"],
+    "admin_level_local_names": ["dv_adm0_name", "dv_adm1_name"],
+    "simplify_tolerance": 0.1
+  },
+  "global_admin0_boundaries": {
+    "type": "boundary",
+    "format": "pmtiles",
+    "zones_path": "s3://prism-vector-storage/global_admin_boundaries/admin_level=0/admin_boundaries.parquet",
+    "path": "https://pmtiles-hosting.s3.eu-central-1.amazonaws.com/global/global_admin_boundaries_no_drop.pmtiles",
+    "layer_name": "admin0",
+    "opacity": 0.8,
+    "styles:": {
+      "fill": {
+        "fill-opacity": 0
+      },
+      "line": {
+        "line-color": "gray",
+        "line-width": 1.5,
+        "line-opacity": 0.3
+      }
+    },
+    "admin_code": "dv_adm0_id",
+    "admin_level": 0,
+    "admin_level_codes": ["dv_adm0_id"],
+    "admin_level_names": ["dv_adm0_name"],
+    "admin_level_local_names": ["dv_adm0_name"],
+    "simplify_tolerance": 0.1
   },
   "daily_rainfall_forecast": {
     "title": "Rolling daily rainfall forecast",
@@ -39,6 +94,10 @@
     "start_date": "today",
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
+    "validity": {
+      "forward": 1,
+      "mode": "dekad"
+    },
     "opacity": 0.7,
     "legend_text": "CHIRPS-GEFS global dekadal rainfall forecasts",
     "legend": "rfh_16_0_300",
@@ -53,6 +112,10 @@
     "start_date": "today",
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
+    "validity": {
+      "forward": 1,
+      "mode": "dekad"
+    },
     "opacity": 0.7,
     "legend_text": "10-day forecast anomaly compared to the long term average. Derived from CHIRPS and GEFS",
     "legend": "rfq_14_20_400",
@@ -184,6 +247,429 @@
       "styles": "rfq_14_20_400"
     }
   },
+  "rainfall_agg_2month": {
+    "title": "2-month rainfall aggregate (mm)",
+    "type": "wms",
+    "server_layer_name": "r2h_dekad",
+    "additional_query_params": {
+      "styles": "rfh_16_0_600"
+    },
+    "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
+    "date_interval": "days",
+    "opacity": 0.7,
+    "legend_text": "CHIRPS 2 month dekadal rainfall aggregations",
+    "legend": [
+      {
+        "value": 0,
+        "label": "0 mm",
+        "color": "#fafafa"
+      },
+      {
+        "value": 0.01,
+        "label": "1-5 mm",
+        "color": "#fffadf"
+      },
+      {
+        "value": 5,
+        "label": "5-10 mm",
+        "color": "#d3f9d0"
+      },
+      {
+        "value": 10,
+        "label": "10-20 mm",
+        "color": "#a9e4a3"
+      },
+      {
+        "value": 20,
+        "label": "20-30 mm",
+        "color": "#7cc594"
+      },
+      {
+        "value": 30,
+        "label": "30-50 mm",
+        "color": "#5eab91"
+      },
+      {
+        "value": 50,
+        "label": "50-80 mm",
+        "color": "#9fffe8"
+      },
+      {
+        "value": 80,
+        "label": "80-100 mm",
+        "color": "#90e0ef"
+      },
+      {
+        "value": 100,
+        "label": "100-150 mm",
+        "color": "#00b1de"
+      },
+      {
+        "value": 150,
+        "label": "150-200 mm",
+        "color": "#0083f3"
+      },
+      {
+        "value": 200,
+        "label": "200-250 mm",
+        "color": "#0052cd"
+      },
+      {
+        "value": 250,
+        "label": "250-300 mm",
+        "color": "#0000c8"
+      },
+      {
+        "value": 300,
+        "label": "300-400 mm",
+        "color": "#6003b8"
+      },
+      {
+        "value": 400,
+        "label": "400-500 mm",
+        "color": "#a002fa"
+      },
+      {
+        "value": 500,
+        "label": "500-700 mm",
+        "color": "#fa78fa"
+      },
+      {
+        "value": 700,
+        "label": "> 700 mm",
+        "color": "#ffc4ee"
+      }
+    ]
+  },
+  "rain_anomaly_2month": {
+    "title": "2-month rainfall anomaly",
+    "type": "wms",
+    "server_layer_name": "r2q_dekad",
+    "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
+    "date_interval": "days",
+    "opacity": 0.7,
+    "legend_text": "2-month precipitation anomaly compared to the long term average. Derived from [CHIRPS (UCSB Climate Hazards Group)](https://www.chc.ucsb.edu/data/chirps).",
+    "legend": [
+      {
+        "label": "< 60%",
+        "color": "#d79b0b"
+      },
+      {
+        "label": "60%",
+        "color": "#e1b344"
+      },
+      {
+        "label": "80%",
+        "color": "#ebcb7d"
+      },
+      {
+        "label": "90%",
+        "color": "#f5e3b6"
+      },
+      {
+        "label": "110%",
+        "color": "#f2f2f2"
+      },
+      {
+        "label": "120%",
+        "color": "#b5e7fe"
+      },
+      {
+        "label": "140%",
+        "color": "#7dd4fd"
+      },
+      {
+        "label": "180%",
+        "color": "#45c1fc"
+      },
+      {
+        "label": ">= 200%",
+        "color": "#0fb0fb"
+      }
+    ]
+  },
+  "rainfall_agg_4month": {
+    "title": "4-month rainfall aggregate (mm)",
+    "type": "wms",
+    "server_layer_name": "r4h_dekad",
+    "additional_query_params": {
+      "styles": "rfh_16_0_1000"
+    },
+    "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
+    "date_interval": "days",
+    "opacity": 0.7,
+    "legend_text": "CHIRPS 4 month dekadal rainfall aggregations",
+    "legend": [
+      {
+        "value": 0,
+        "label": "0 mm",
+        "color": "#fafafa"
+      },
+      {
+        "value": 0.01,
+        "label": "1-10 mm",
+        "color": "#fffadf"
+      },
+      {
+        "value": 10,
+        "label": "10-20 mm",
+        "color": "#d3f9d0"
+      },
+      {
+        "value": 20,
+        "label": "20-30 mm",
+        "color": "#a9e4a3"
+      },
+      {
+        "value": 30,
+        "label": "30-50 mm",
+        "color": "#7cc594"
+      },
+      {
+        "value": 50,
+        "label": "50-100 mm",
+        "color": "#5eab91"
+      },
+      {
+        "value": 100,
+        "label": "100-200 mm",
+        "color": "#9fffe8"
+      },
+      {
+        "value": 200,
+        "label": "200-300 mm",
+        "color": "#90e0ef"
+      },
+      {
+        "value": 300,
+        "label": "300-400 mm",
+        "color": "#00b1de"
+      },
+      {
+        "value": 400,
+        "label": "400-500 mm",
+        "color": "#0083f3"
+      },
+      {
+        "value": 500,
+        "label": "500-600 mm",
+        "color": "#0052cd"
+      },
+      {
+        "value": 600,
+        "label": "600-700 mm",
+        "color": "#0000c8"
+      },
+      {
+        "value": 700,
+        "label": "700-800 mm",
+        "color": "#6003b8"
+      },
+      {
+        "value": 800,
+        "label": "800-900 mm",
+        "color": "#a002fa"
+      },
+      {
+        "value": 900,
+        "label": "900-1000 mm",
+        "color": "#fa78fa"
+      },
+      {
+        "value": 1000,
+        "label": "> 1000 mm",
+        "color": "#ffc4ee"
+      }
+    ]
+  },
+  "rain_anomaly_4month": {
+    "title": "4-month rainfall anomaly",
+    "type": "wms",
+    "server_layer_name": "r4q_dekad",
+    "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
+    "date_interval": "days",
+    "opacity": 0.7,
+    "legend_text": "4-month precipitation anomaly compared to the long term average. Derived from [CHIRPS (UCSB Climate Hazards Group)](https://www.chc.ucsb.edu/data/chirps).",
+    "legend": [
+      {
+        "label": "< 60%",
+        "color": "#d79b0b"
+      },
+      {
+        "label": "60%",
+        "color": "#e1b344"
+      },
+      {
+        "label": "80%",
+        "color": "#ebcb7d"
+      },
+      {
+        "label": "90%",
+        "color": "#f5e3b6"
+      },
+      {
+        "label": "110%",
+        "color": "#f2f2f2"
+      },
+      {
+        "label": "120%",
+        "color": "#b5e7fe"
+      },
+      {
+        "label": "140%",
+        "color": "#7dd4fd"
+      },
+      {
+        "label": "180%",
+        "color": "#45c1fc"
+      },
+      {
+        "label": ">= 200%",
+        "color": "#0fb0fb"
+      }
+    ]
+  },
+  "rainfall_agg_5month": {
+    "title": "5-month rainfall aggregate (mm)",
+    "type": "wms",
+    "server_layer_name": "r5h_dekad",
+    "additional_query_params": {
+      "styles": "rfh_16_0_1600"
+    },
+    "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
+    "date_interval": "days",
+    "opacity": 0.7,
+    "legend_text": "CHIRPS 5 month dekadal rainfall aggregations",
+    "legend": [
+      {
+        "value": 0,
+        "label": "0 mm",
+        "color": "#fafafa"
+      },
+      {
+        "value": 0.01,
+        "label": "1-10 mm",
+        "color": "#fffadf"
+      },
+      {
+        "value": 10,
+        "label": "10-20 mm",
+        "color": "#d3f9d0"
+      },
+      {
+        "value": 20,
+        "label": "20-50 mm",
+        "color": "#a9e4a3"
+      },
+      {
+        "value": 50,
+        "label": "50-100 mm",
+        "color": "#7cc594"
+      },
+      {
+        "value": 100,
+        "label": "100-200 mm",
+        "color": "#5eab91"
+      },
+      {
+        "value": 200,
+        "label": "200-300 mm",
+        "color": "#9fffe8"
+      },
+      {
+        "value": 300,
+        "label": "300-400 mm",
+        "color": "#90e0ef"
+      },
+      {
+        "value": 400,
+        "label": "400-600 mm",
+        "color": "#00b1de"
+      },
+      {
+        "value": 600,
+        "label": "600-800 mm",
+        "color": "#0083f3"
+      },
+      {
+        "value": 800,
+        "label": "800-900 mm",
+        "color": "#0052cd"
+      },
+      {
+        "value": 900,
+        "label": "900-1000 mm",
+        "color": "#0000c8"
+      },
+      {
+        "value": 1000,
+        "label": "1000-1200 mm",
+        "color": "#6003b8"
+      },
+      {
+        "value": 1200,
+        "label": "1200-1400 mm",
+        "color": "#a002fa"
+      },
+      {
+        "value": 1400,
+        "label": "1400-1600 mm",
+        "color": "#fa78fa"
+      },
+      {
+        "value": 1600,
+        "label": "> 1600 mm",
+        "color": "#ffc4ee"
+      }
+    ]
+  },
+  "rain_anomaly_5month": {
+    "title": "5-month rainfall anomaly",
+    "type": "wms",
+    "server_layer_name": "r5q_dekad",
+    "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
+    "date_interval": "days",
+    "opacity": 0.7,
+    "legend_text": "5-month precipitation anomaly compared to the long term average. Derived from [CHIRPS (UCSB Climate Hazards Group)](https://www.chc.ucsb.edu/data/chirps).",
+    "legend": [
+      {
+        "label": "< 60%",
+        "color": "#d79b0b"
+      },
+      {
+        "label": "60%",
+        "color": "#e1b344"
+      },
+      {
+        "label": "80%",
+        "color": "#ebcb7d"
+      },
+      {
+        "label": "90%",
+        "color": "#f5e3b6"
+      },
+      {
+        "label": "110%",
+        "color": "#f2f2f2"
+      },
+      {
+        "label": "120%",
+        "color": "#b5e7fe"
+      },
+      {
+        "label": "140%",
+        "color": "#7dd4fd"
+      },
+      {
+        "label": "180%",
+        "color": "#45c1fc"
+      },
+      {
+        "label": ">= 200%",
+        "color": "#0fb0fb"
+      }
+    ]
+  },
   "rainfall_agg_6month": {
     "title": "6-month rainfall aggregate (mm)",
     "type": "wms",
@@ -298,6 +784,11 @@
     "server_layer_name": "r1s_dekad",
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
+    "validity": {
+      "forward": 1,
+      "backward": 2,
+      "mode": "dekad"
+    },
     "wcsConfig": {
       "scale": 0.001,
       "offset": 0,
@@ -307,12 +798,37 @@
     "legend_text": "1-month Standardized Precipitation Index calculated from dekadal CHIRPS data",
     "legend": "spi"
   },
+  "spi_2m": {
+    "title": "SPI - 2-month",
+    "type": "wms",
+    "server_layer_name": "r2s_dekad",
+    "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
+    "date_interval": "days",
+    "validity": {
+      "forward": 1,
+      "backward": 5,
+      "mode": "dekad"
+    },
+    "wcsConfig": {
+      "scale": 0.001,
+      "offset": 0,
+      "pixelResolution": 64
+    },
+    "opacity": 0.7,
+    "legend_text": "2-month Standardized Precipitation Index calculated from dekadal CHIRPS data",
+    "legend": "spi"
+  },
   "spi_3m": {
     "title": "SPI - 3-month",
     "type": "wms",
     "server_layer_name": "r3s_dekad",
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
+    "validity": {
+      "forward": 1,
+      "backward": 8,
+      "mode": "dekad"
+    },
     "wcsConfig": {
       "scale": 0.001,
       "offset": 0,
@@ -328,6 +844,11 @@
     "server_layer_name": "r6s_dekad",
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
+    "validity": {
+      "forward": 1,
+      "backward": 17,
+      "mode": "dekad"
+    },
     "wcsConfig": {
       "scale": 0.001,
       "offset": 0,
@@ -343,6 +864,11 @@
     "server_layer_name": "r9s_dekad",
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
+    "validity": {
+      "forward": 1,
+      "backward": 26,
+      "mode": "dekad"
+    },
     "wcsConfig": {
       "scale": 0.001,
       "offset": 0,
@@ -358,6 +884,11 @@
     "server_layer_name": "rys_dekad",
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
+    "validity": {
+      "forward": 1,
+      "backward": 35,
+      "mode": "dekad"
+    },
     "wcsConfig": {
       "scale": 0.001,
       "offset": 0,
@@ -373,6 +904,10 @@
     "server_layer_name": "dlc_dekad",
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
+    "validity": {
+      "backward": 3,
+      "mode": "dekad"
+    },
     "opacity": 0.7,
     "legend_text": "Number of consecutive days with less than 2 mm precipitation in the last 30 days",
     "legend": "dlx_13_0_26",
@@ -386,6 +921,10 @@
     "server_layer_name": "dlx_dekad",
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
+    "validity": {
+      "backward": 3,
+      "mode": "dekad"
+    },
     "opacity": 0.7,
     "legend_text": "Longest number of consecutive days with less than 2 mm precipitation in the last 30 days",
     "legend": "dlx_13_0_26",
@@ -399,6 +938,10 @@
     "server_layer_name": "xnh_dekad",
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
+    "validity": {
+      "backward": 3,
+      "mode": "dekad"
+    },
     "opacity": 0.7,
     "legend_text": "Total number of heavy rain days (rainfall > 75th percentile) within last 30 days of dekad",
     "legend": "xnhie_12_0_14",
@@ -412,6 +955,10 @@
     "server_layer_name": "xni_dekad",
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
+    "validity": {
+      "backward": 3,
+      "mode": "dekad"
+    },
     "opacity": 0.7,
     "legend_text": "Total number of heavy rain days (rainfall > 90th percentile) within last 30 days of dekad",
     "legend": "xnhie_12_0_14",
@@ -425,6 +972,10 @@
     "server_layer_name": "xne_dekad",
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
+    "validity": {
+      "backward": 3,
+      "mode": "dekad"
+    },
     "opacity": 0.7,
     "legend_text": "Total number of heavy rain days (rainfall > 95th percentile) within last 30 days of dekad",
     "legend": "xnhie_12_0_14",
@@ -438,6 +989,10 @@
     "server_layer_name": "xlh_dekad",
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
+    "validity": {
+      "backward": 3,
+      "mode": "dekad"
+    },
     "opacity": 0.7,
     "legend_text": "Longest consecutive number of heavy rain days (rainfall > 75th percentile) within last 30 days of dekad",
     "legend": "xnhie_12_0_14",
@@ -451,6 +1006,10 @@
     "server_layer_name": "xli_dekad",
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
+    "validity": {
+      "backward": 3,
+      "mode": "dekad"
+    },
     "opacity": 0.7,
     "legend_text": "Longest consecutive number of intense rain days (rainfall > 90th percentile) within last 30 days of dekad",
     "legend": "xnhie_12_0_14",
@@ -464,6 +1023,10 @@
     "server_layer_name": "xle_dekad",
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
+    "validity": {
+      "backward": 3,
+      "mode": "dekad"
+    },
     "opacity": 0.7,
     "legend_text": "Longest consecutive number of extreme rain days (rainfall > 95th percentile) within last 30 days of dekad",
     "legend": "xnhie_12_0_14",
@@ -477,6 +1040,10 @@
     "server_layer_name": "mxd13a2_vim_dekad",
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
+    "validity": {
+      "forward": 1,
+      "mode": "dekad"
+    },
     "opacity": 0.7,
     "wcsConfig": {
       "scale": 0.0001,
@@ -495,6 +1062,10 @@
     "server_layer_name": "mxd13a2_viq_dekad",
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
+    "validity": {
+      "forward": 1,
+      "mode": "dekad"
+    },
     "opacity": 0.7,
     "legend_text": "NDVI anomaly compared to long term average",
     "legend": "ndvi_anomaly",
@@ -513,6 +1084,10 @@
       "pixelResolution": 64
     },
     "date_interval": "days",
+    "validity": {
+      "forward": 1,
+      "mode": "dekad"
+    },
     "opacity": 0.7,
     "legend_text": "Land Surface Temperature Amplitude refers to the difference between the maximum and minimum temperature in degrees Celsius",
     "legend": "taa_21_1_48",
@@ -526,6 +1101,10 @@
     "server_layer_name": "myd11a2_txa_dekad",
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
+    "validity": {
+      "forward": 1,
+      "mode": "dekad"
+    },
     "wcsConfig": {
       "scale": 0.02,
       "offset": -273,
@@ -547,6 +1126,10 @@
     },
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
+    "validity": {
+      "forward": 1,
+      "mode": "dekad"
+    },
     "wcsConfig": {
       "scale": 0.02,
       "offset": -273,
@@ -562,6 +1145,10 @@
     "server_layer_name": "myd11a2_txd_dekad",
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
+    "validity": {
+      "forward": 1,
+      "mode": "dekad"
+    },
     "opacity": 0.7,
     "legend_text": "Daytime land surface temperature anomaly",
     "legend": "tdd_21_m12_12",
@@ -575,6 +1162,10 @@
     "server_layer_name": "myd11a2_txd_dekad",
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
+    "validity": {
+      "forward": 1,
+      "mode": "dekad"
+    },
     "opacity": 0.7,
     "legend_text": "Daytime land surface temperature anomaly",
     "legend": "tdd_21_m12_12",

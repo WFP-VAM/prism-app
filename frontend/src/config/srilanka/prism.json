@@ -13,7 +13,8 @@
   },
   "serversUrls": {
     "wms": [
-      "https://api.earthobservation.vam.wfp.org/ows/wms"
+      "https://api.earthobservation.vam.wfp.org/ows/wms",
+      "https://ogcserver.gis.wfp.org/geoserver/prism/wms"
     ]
   },
   "map": {
@@ -161,6 +162,10 @@
               "id": "spi_1m",
               "label": "1-month",
               "main": true
+            },
+            {
+              "id": "spi_2m",
+              "label": "2-month"
             },
             {
               "id": "spi_3m",

@@ -22,6 +22,7 @@ import {
   MenuItemType,
   PanelSize,
   TableType,
+  Panel,
 } from 'config/types';
 import { useSafeTranslation } from 'i18n';
 import {
@@ -31,7 +32,7 @@ import {
   isLoading as tableLoading,
   loadTable,
 } from 'context/tableStateSlice';
-import { Panel, leftPanelTabValueSelector } from 'context/leftPanelStateSlice';
+import { leftPanelTabValueSelector } from 'context/leftPanelStateSlice';
 import TablesActions from './TablesActions';
 import DataTable from './DataTable';
 import { tablesMenuItems } from '../utils';

@@ -1,5 +1,6 @@
 {
   "country": "Global",
+  "multiCountry": true,
   "alertFormActive": false,
   "icons": {
     "capacity": "icon_capacity.png",
@@ -13,10 +14,20 @@
     "wms": ["https://api.earthobservation.vam.wfp.org/ows/wms"]
   },
   "map": {
-    "boundingBox": [-171, -56, 180, 76]
+    "boundingBox": [-130, -50, 177, 50]
   },
+  "defaultDisplayBoundaries": [
+    "global_admin2_boundaries",
+    "global_admin1_boundaries",
+    "global_admin0_boundaries"
+  ],
   "categories": {
     "rainfall": {
+      "forecasts": [
+        "daily_rainfall_forecast",
+        "dekad_rainfall_forecast",
+        "dekad_rainfall_anomaly_forecast"
+      ],
       "rainfall_amount": [
         {
           "group_title": "Rainfall Aggregate",
@@ -90,6 +101,10 @@
               "id": "spi_1m",
               "label": "1-month",
               "main": true
+            },
+            {
+              "id": "spi_2m",
+              "label": "2-month"
             },
             {
               "id": "spi_3m",

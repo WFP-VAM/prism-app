@@ -8,6 +8,7 @@ import {
 } from 'maplibre-gl';
 import { Dispatch } from 'redux';
 import { TFunction } from 'i18next';
+import React from 'react';
 import { rawLayers } from '.';
 import type { ReportKey, TableKey } from './utils';
 import type { PopupMetaData } from '../context/tooltipStateSlice';
@@ -26,7 +27,8 @@ export type LayerType =
   | PointDataLayerProps
   | CompositeLayerProps
   | StaticRasterLayerProps
-  | AnticipatoryActionLayerProps;
+  | AnticipatoryActionLayerProps
+  | GeojsonDataLayerProps;
 
 type UnionToIntersection<U> = (U extends any ? (k: U) => void : never) extends (
   k: infer I,
@@ -267,10 +269,19 @@ export enum Interval {
   ONE_YEAR = '1-year',
 }
 
-export type FeatureInfoObject = { [key: string]: FeatureInfoProps };
+export type FeatureTitleObject = {
+  [key: string]: FeatureInfoTitle;
+};
+
+export type FeatureInfoObject = {
+  [key: string]: FeatureInfoProps;
+};
 
 export class CommonLayerProps {
   id: LayerKey;
+
+  @optional
+  disableDownload?: boolean; // If true, the layer cannot be downloaded as a file.
 
   @optional // only optional for boundary layer
   title?: string;
@@ -297,7 +308,9 @@ export class CommonLayerProps {
   contentPath?: string;
 
   @optional
-  featureInfoProps?: { [key: string]: FeatureInfoProps };
+  featureInfoTitle?: FeatureTitleObject;
+  @optional
+  featureInfoProps?: FeatureInfoObject;
 
   /*
   * only for layer that has grouped menu and always assigned to main layer of group (../components/Navbar/utils.ts)
@@ -383,6 +396,21 @@ export class BoundaryLayerProps extends CommonLayerProps {
   @optional
   isPrimary?: boolean | undefined;
 
+  @optional
+  format?: 'pmtiles' | 'geojson' = 'geojson';
+
+  @optional
+  zonesPath: FilePath; // path to admin_boundries.parquet file in S3
+
+  @optional
+  simplifyTolerance?: number; // optional geometry simplification for analysis stats (only an option when zonesPath provided)
+
+  @optional
+  layerName?: string;
+
+  @optional
+  hideInGoTo?: boolean | undefined;
+
   // Minimum zoom level to display the boundary.
   // Note that the layer is still loaded, but not displayed.
   @optional
@@ -396,13 +424,26 @@ export enum DataType {
   LabelMapping = 'labelMapping',
 }
 
+export enum FeatureInfoVisibility {
+  Always = 'always', // Default
+  IfDefined = 'if-defined',
+}
+
 type PopupMetaDataKeys = keyof PopupMetaData;
 
-interface FeatureInfoProps {
+export interface FeatureInfoTitle {
+  type: DataType;
+  template: string;
+  labelMap?: { [key: string]: string };
+  visibility?: FeatureInfoVisibility;
+}
+
+export interface FeatureInfoProps {
   type: DataType;
   dataTitle: string;
   labelMap?: { [key: string]: string };
   metadata?: PopupMetaDataKeys;
+  visibility?: FeatureInfoVisibility;
 }
 
 export enum DatesPropagation {
@@ -502,6 +543,15 @@ export class CompositeLayerProps extends CommonLayerProps {
 
   @optional
   endDate?: string;
+
+  // @optional
+  // expectedDataLagDays?: number;
+  @optional
+  aggregateBy?: 'mean' | 'median' | 'max';
+  @optional
+  aggregationBoundaryPath?: string;
+  @optional
+  adminCode?: number;
 }
 
 export class StaticRasterLayerProps extends CommonLayerProps {
@@ -659,6 +709,7 @@ export class ImpactLayerProps extends CommonLayerProps {
 export enum PointDataLoader {
   EWS = 'ews',
   ACLED = 'acled',
+  GOOGLE_FLOOD = 'google_flood',
 }
 
 export class PointDataLayerProps extends CommonLayerProps {
@@ -713,6 +764,32 @@ export class PointDataLayerProps extends CommonLayerProps {
 
   @optional
   dataFieldType?: DataFieldType = DataFieldType.NUMBER;
+
+  @optional
+  detailUrl?: string;
+}
+
+export class GeojsonDataLayerProps extends CommonLayerProps {
+  type: 'geojson_polygon' = 'geojson_polygon';
+  data: string;
+
+  @makeRequired
+  dataField: string;
+
+  @optional // if legend_label, uses the label from legend to display in feature info. if not, uses dataField
+  displaySource?: 'legend_label' | 'data_field';
+
+  @makeRequired
+  declare title: string;
+
+  @makeRequired
+  declare legend: LegendDefinition;
+
+  @makeRequired
+  declare legendText: string;
+
+  @optional
+  additionalQueryParams?: { [key: string]: string | { [key: string]: string } };
 }
 
 export type RequiredKeys<T> = {
@@ -738,6 +815,29 @@ export interface MenuItemType {
   icon: string;
   layersCategories: LayersCategoryType[];
 }
+
+export type PanelItem = {
+  panel?: Panel;
+  label: string;
+  icon: React.ReactNode;
+  children?: PanelItem[];
+};
+
+export enum Panel {
+  None = 'none',
+  Layers = 'layers',
+  Charts = 'charts',
+  Analysis = 'analysis',
+  Tables = 'tables',
+  AnticipatoryActionDrought = 'anticipatory_action_drought',
+  AnticipatoryActionStorm = 'anticipatory_action_storm',
+  Alerts = 'alerts',
+}
+
+export type LeftPanelState = {
+  tabValue: Panel;
+  panelSize: PanelSize;
+};
 
 export type DateItem = {
   displayDate: number; // Date that will be rendered in the calendar.
@@ -860,11 +960,12 @@ type AdminLevelDisplayType = {
 export type PointData = {
   lat: number;
   lon: number;
-  date: number; // in unix time.
+  date?: number; // in unix time.
   [key: string]: any;
 };
 
 export type PointLayerData = FeatureCollection;
+export type GeojsonLayerData = FeatureCollection;
 
 export interface BaseLayer {
   name: string;
@@ -904,8 +1005,13 @@ export type MapEventWrapFunction<T> = (
   props: MapEventWrapFunctionProps<T>,
 ) => (evt: MapLayerMouseEvent) => void;
 
+export enum AnticipatoryAction {
+  storm = 'anticipatory_action_storm',
+  drought = 'anticipatory_action_drought',
+}
+
 export class AnticipatoryActionLayerProps extends CommonLayerProps {
-  type: 'anticipatory_action' = 'anticipatory_action';
+  type: AnticipatoryAction = AnticipatoryAction.drought;
 
   @makeRequired
   declare title: string;

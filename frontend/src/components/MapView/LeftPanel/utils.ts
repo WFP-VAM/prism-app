@@ -1,10 +1,12 @@
 import { camelCase, get, map, mapKeys, startCase } from 'lodash';
-
+import { GeoJsonProperties } from 'geojson';
+import { appConfig } from 'config';
 import {
   isTableKey,
   LayerDefinitions,
   TableDefinitions,
   TableKey,
+  getWMSLayersWithChart,
 } from 'config/utils';
 import {
   isLayerKey,
@@ -14,7 +16,13 @@ import {
   MenuGroup,
   MenuItemType,
 } from 'config/types';
-import { appConfig } from 'config';
+
+const { multiCountry, country } = appConfig;
+const chartLayers = getWMSLayersWithChart();
+const adminLookup =
+  chartLayers.length > 0
+    ? chartLayers[0]?.chartData?.levels[0]?.name
+    : undefined;
 
 type LayersCategoriesType = LayersCategoryType[];
 
@@ -117,7 +125,90 @@ export const tablesMenuItems = menuList.filter((menuItem: MenuItemType) =>
 );
 
 export const areTablesAvailable = tablesMenuItems.length >= 1;
-export const isAnticipatoryActionAvailable = !!appConfig.anticipatoryActionUrl;
+export const isAnticipatoryActionDroughtAvailable =
+  !!appConfig.anticipatoryActionDroughtUrl;
+export const isAnticipatoryActionStormAvailable =
+  !!appConfig.anticipatoryActionStormUrl;
 
 export const oneDayInMs = 24 * 60 * 60 * 1000;
 export const oneYearInMs = 365 * oneDayInMs;
+
+/**
+ * Extracts the country name from GeoJSON properties based on configuration settings.
+ *
+ * @param admProps - GeoJSON properties containing administrative data
+ * @returns The country name as a string
+ *
+ * Behavior:
+ * - For single country mode: Returns the configured country name
+ * - For multi-country mode:
+ *   1. Returns empty string if no properties provided
+ *   2. Uses adminLookup property if configured
+ *   3. Falls back to admin0Name property
+ *   4. Returns empty string if no valid name found
+ */
+export const getCountryName = (admProps: GeoJsonProperties): string => {
+  if (!multiCountry) {
+    return country;
+  }
+
+  if (!admProps) {
+    return '';
+  }
+
+  if (adminLookup) {
+    return admProps[adminLookup] as string;
+  }
+
+  return (admProps.admin0Name as string) || '';
+};
+
+/**
+ * Formats a location string from administrative area names.
+ *
+ * @param countryName - Name of the country
+ * @param adm1Name - Name of admin level 1 area
+ * @param adm2Name - Name of admin level 2 area
+ * @param admLevel - Current administrative level
+ * @returns Formatted location string
+ */
+export const formatLocationString = (
+  countryName: string,
+  adm1Name: string,
+  adm2Name: string,
+  admLevel: number,
+): string =>
+  `${countryName}${admLevel > 0 ? ` - ${adm1Name}` : ''}${
+    admLevel > 1 ? ` - ${adm2Name}` : ''
+  }`;
+
+/**
+ * Formats a time period string from start and end dates.
+ *
+ * @param startDate - Start date in milliseconds
+ * @param endDate - End date in milliseconds
+ * @param t - Translation function
+ * @returns Formatted date range string
+ */
+export const formatTimePeriodString = (
+  startDate: number | null,
+  endDate: number | null,
+  t: (key: string) => string,
+): string => {
+  if (startDate === null || endDate === null) {
+    return '';
+  }
+
+  const options = {
+    weekday: undefined,
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric',
+  };
+  const formatDate = (d: number) => {
+    const dd = new Date(d);
+    return dd.toLocaleDateString(t('date_locale'), options as any);
+  };
+
+  return `${formatDate(startDate)} - ${formatDate(endDate)}`;
+};

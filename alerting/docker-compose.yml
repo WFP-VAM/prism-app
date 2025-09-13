@@ -1,7 +1,7 @@
 version: '3'
 services:
   alerting-db:
-    image: kartoza/postgis:12.1
+    image: kartoza/postgis:16-3
     restart: always
     ports:
       - 54321:5432
@@ -15,11 +15,15 @@ services:
     build:
       context: ../
       dockerfile: ./alerting/Dockerfile
+      args:
+        CHROME_VERSION: "126.0.6478.126"
     restart: always
     volumes:
-      - ../alerting:/app
+      - ../alerting:/prism_app
+      - /prism_app/node_modules
       - ../common:/common
-    working_dir: /app
+      - /common/node_modules
+    working_dir: /prism_app
     environment:
       - POSTGRES_HOST=alerting-db
       - POSTGRES_USER=postgres

@@ -1,25 +1,39 @@
 import { orderBy, snakeCase, values } from 'lodash';
 import { TFunction } from 'i18next';
-import { Dispatch } from 'redux';
-import { LayerDefinitions } from 'config/utils';
+import type { AppDispatch } from 'context/store';
+import {
+  getBoundaryLayersByAdminLevel,
+  isAnticipatoryActionLayer,
+  LayerDefinitions,
+} from 'config/utils';
 import { formatFeatureInfo } from 'utils/server-utils';
 import {
+  AdminCodeString,
+  AdminLevelType,
   AvailableDates,
+  BoundaryLayerProps,
   FeatureInfoObject,
+  FeatureInfoProps,
   FeatureInfoType,
+  FeatureInfoVisibility,
+  FeatureTitleObject,
   LayerType,
   LegendDefinitionItem,
   WMSLayerProps,
 } from 'config/types';
+import { loadAvailableDatesForLayer } from 'context/serverStateSlice';
 import { TableData } from 'context/tableStateSlice';
 import { getUrlKey, UrlLayerKey } from 'utils/url-utils';
 import { addNotification } from 'context/notificationStateSlice';
 import { LocalError } from 'utils/error-utils';
 import { Column, quoteAndEscapeCell } from 'utils/analysis-utils';
 import { TableRow } from 'context/analysisResultStateSlice';
-import { AdminBoundaryParams, EWSParams } from 'context/datasetStateSlice';
 import { MapRef, Point } from 'react-map-gl/maplibre';
 import { PopupData } from 'context/tooltipStateSlice';
+import { getTitle } from 'utils/title-utils';
+import { LayerData } from 'context/layers/layer-data';
+import { GeoJsonProperties } from 'geojson';
+import { appConfig } from 'config';
 import { getExtent } from './Layers/raster-utils';
 
 // TODO: maplibre: fix feature
@@ -136,24 +150,32 @@ const getData = (
   coordinates: any,
 ) =>
   Object.keys(properties)
-    .filter(prop => keys.includes(prop))
-    .reduce(
-      (obj, item) => ({
+    .filter(prop => keys.includes(prop) && prop !== 'title')
+    .reduce((obj, item) => {
+      const itemProps = featureInfoProps[item] as FeatureInfoProps;
+      if (
+        itemProps.visibility === FeatureInfoVisibility.IfDefined &&
+        !properties[item]
+      ) {
+        return obj;
+      }
+
+      return {
         ...obj,
-        [featureInfoProps[item].dataTitle]: {
+        [itemProps.dataTitle]: {
           data: formatFeatureInfo(
             properties[item],
-            featureInfoProps[item].type,
-            featureInfoProps[item].labelMap,
+            itemProps.type,
+            itemProps.labelMap,
           ),
           coordinates,
         },
-      }),
-      {},
-    );
+      };
+    }, {});
 
 // TODO: maplibre: fix feature
 export function getFeatureInfoPropsData(
+  featureInfoTitle: FeatureTitleObject | undefined,
   featureInfoProps: FeatureInfoObject,
   coordinates: number[],
   feature: any,
@@ -162,6 +184,7 @@ export function getFeatureInfoPropsData(
   const { properties } = feature;
 
   return {
+    ...getTitle(featureInfoTitle, properties),
     ...getMetaData(featureInfoProps, metaDataKeys, properties),
     ...getData(featureInfoProps, keys, properties, coordinates),
   };
@@ -189,18 +212,30 @@ export const getLegendItemLabel = (
 export const generateUniqueTableKey = (activityName: string) =>
   `${activityName}_${Date.now()}`;
 
+/**
+ * Determine if available dates for the layer are ready for use.
+ * Return true/false if they are, or are loading.
+ * throw an error if it is not possible to load them at all.
+ */
 export const checkLayerAvailableDatesAndContinueOrRemove = (
   layer: LayerType,
   serverAvailableDates: AvailableDates,
+  layersLoadingDates: string[],
   removeLayerFromUrl: (layerKey: UrlLayerKey, layerId: string) => void,
-  dispatch: Dispatch,
-) => {
+  dispatch: AppDispatch,
+): boolean => {
   const { id: layerId } = layer as any;
+  if (serverAvailableDates[layerId] === undefined) {
+    if (!layersLoadingDates.includes(layerId)) {
+      dispatch(loadAvailableDatesForLayer(layerId));
+    }
+    return false;
+  }
   if (
-    serverAvailableDates[layerId]?.length !== 0 ||
-    layer.type === 'anticipatory_action'
+    serverAvailableDates[layer.id] !== undefined ||
+    isAnticipatoryActionLayer(layer.type)
   ) {
-    return;
+    return true;
   }
   const urlLayerKey = getUrlKey(layer);
   removeLayerFromUrl(urlLayerKey, layer.id);
@@ -306,7 +341,30 @@ export const getExposureAnalysisTableData = (
   sortOrder: 'asc' | 'desc',
 ) => orderBy(tableData, sortColumn, sortOrder);
 
-export const isAdminBoundary = (
-  params: AdminBoundaryParams | EWSParams,
-): params is AdminBoundaryParams =>
-  (params as AdminBoundaryParams).id !== undefined;
+/**
+ * Gets properties from layer data based on ID and admin level.
+ *
+ * @param layerData - The boundary layer data
+ * @param id - Optional admin code string identifier
+ * @param adminLevel - Optional administrative level type
+ * @returns GeoJSON properties for the matching feature
+ */
+const { multiCountry } = appConfig;
+const MAX_ADMIN_LEVEL = multiCountry ? 3 : 2;
+const boundaryLayer = getBoundaryLayersByAdminLevel(MAX_ADMIN_LEVEL);
+
+export const getProperties = (
+  layerData: LayerData<BoundaryLayerProps>['data'],
+  id?: AdminCodeString,
+  adminLevel?: AdminLevelType,
+): GeoJsonProperties => {
+  if (id === undefined || adminLevel === undefined) {
+    return layerData.features[0].properties;
+  }
+  const indexLevel = multiCountry ? adminLevel : adminLevel - 1;
+  const adminCode = boundaryLayer.adminLevelCodes[indexLevel];
+  const item = layerData.features.find(
+    elem => elem.properties && elem.properties[adminCode] === id,
+  );
+  return item?.properties ?? {};
+};
