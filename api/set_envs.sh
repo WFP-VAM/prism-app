@@ -22,5 +22,10 @@ export ACLED_API_EMAIL=$(aws secretsmanager get-secret-value     --secret-id ACL
 # Google Flood
 export GOOGLE_FLOODS_API_KEY=$(aws secretsmanager get-secret-value     --secret-id GOOGLE_FLOODS_API_KEY | jq .SecretString | jq fromjson | jq -r .GOOGLE_FLOODS_API_KEY)
 
+# Vector Store Credentials
+export VECTOR_STORE_ACCESS_KEY_ID=$(aws secretsmanager get-secret-value     --secret-id PRISM_AWS_S3_CREDENTIALS | jq .SecretString | jq fromjson | jq -r .AWS_ACCESS_KEY_ID)
+export VECTOR_STORE_SECRET_ACCESS_KEY=$(aws secretsmanager get-secret-value     --secret-id PRISM_AWS_S3_CREDENTIALS | jq .SecretString | jq fromjson | jq -r .AWS_SECRET_ACCESS_KEY)
+export VECTOR_STORE_DEFAULT_REGION=$(aws secretsmanager get-secret-value     --secret-id PRISM_AWS_S3_CREDENTIALS | jq .SecretString | jq fromjson | jq -r .AWS_DEFAULT_REGION)
+
 export HOSTNAME=prism-api.ovio.org
 export INFO_EMAIL=info@ovio.org

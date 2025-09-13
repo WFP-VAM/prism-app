@@ -52,21 +52,6 @@ function LayerDropdown({
 
   const { t } = useSafeTranslation();
   const classes = useStyles();
-
-  // Only take first boundary for now
-  const adminBoundaries = getDisplayBoundaryLayers();
-  const AdminBoundaryCategory = {
-    title: 'Admin Levels',
-    layers: adminBoundaries.map((aboundary, _index) => ({
-      title: t(
-        `Level ${aboundary.adminLevelCodes.length - (multiCountry ? 1 : 0)}`,
-      ),
-      boundary: aboundary.id,
-      ...aboundary,
-    })),
-    tables: [],
-  };
-
   // Filter out layers that are not supported by the analysis tool
   const filterLayersForAnalysis = (layer: LayerType) => {
     if (layer.disableAnalysis) {
@@ -78,6 +63,22 @@ function LayerDropdown({
       return [undefined, 'polygon'].includes(layer.geometry);
     }
     return true;
+  };
+
+  // Only take first boundary for now
+  const adminBoundaries = getDisplayBoundaryLayers();
+  const AdminBoundaryCategory = {
+    title: 'Admin Levels',
+    layers: adminBoundaries
+      .map((aboundary, _index) => ({
+        title: t(
+          `Level ${aboundary.adminLevelCodes.length - (multiCountry ? 1 : 0)}`,
+        ),
+        boundary: aboundary.id,
+        ...aboundary,
+      }))
+      .filter(filterLayersForAnalysis),
+    tables: [],
   };
 
   const categories = [
@@ -110,6 +111,9 @@ function LayerDropdown({
         ...category,
         layers: category.layers
           .filter(layer => layer.type === type)
+          // if the layer is an admin level data layer, filter out the layers that have dates as there is
+          // a bug when running an analysis. See https://github.com/WFP-VAM/prism-app/issues/1521
+          .filter(layer => type !== 'admin_level_data' || !('dates' in layer))
           .filter(filterLayersForAnalysis),
       }))
       // 4. filter categories which don't have any layers at the end of it all.
