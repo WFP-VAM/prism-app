@@ -1,0 +1,163 @@
+"""Tests files for the analytics API."""
+
+from datetime import datetime, timezone
+from unittest.mock import patch
+
+from fastapi import HTTPException
+from prism_app.kobo import get_form_responses
+from prism_app.zonal_stats import calculate_stats
+from pytest import raises
+
+
+def test_calculate_stats_json_output():
+    """Test calculate_stats with geojson_out=False."""
+
+    zones = "/prism_app/tests/small_admin_boundaries.json"
+    geotiff = "/prism_app/tests/raster_sample.tif"
+    features = calculate_stats(zones, geotiff, geojson_out=False)
+    assert len(features) == 26
+
+
+def test_calculate_stats_geojson_output():
+    """Test calculate_stats with geojson_out=True."""
+
+    zones = "/prism_app/tests/small_admin_boundaries.json"
+    geotiff = "/prism_app/tests/raster_sample.tif"
+    features = calculate_stats(zones, geotiff, geojson_out=True)
+    assert len(features) == 26
+    # This breaks with Fiona >= 1.9 because it does not return
+    # dicts anymore, but immutable classes
+    # https://fiona.readthedocs.io/en/stable/manual.html#features
+    # and https://github.com/perrygeo/python-rasterstats/issues/274
+    assert features[0]["type"] == "Feature"
+
+
+def test_calculate_stats_filter_by():
+    """Test calculate_stats with geojson_out=True. and filter option"""
+
+    zones = "/prism_app/tests/small_admin_boundaries.json"
+    geotiff = "/prism_app/tests/raster_sample.tif"
+    features = calculate_stats(
+        zones, geotiff, geojson_out=True, filter_by=("ADM2_EN", "Nomgon")
+    )
+    assert len(features) == 1
+    assert features[0]["type"] == "Feature"
+
+    # Verify that numbers are also included.
+
+    features = calculate_stats(
+        zones, geotiff, geojson_out=True, filter_by=("ADM2_PCODE", "6413")
+    )
+    assert len(features) == 1
+    assert features[0]["type"] == "Feature"
+
+    # Test not found
+    with raises(HTTPException):
+        features = calculate_stats(
+            zones, geotiff, geojson_out=True, filter_by=("ADM2_PCODE", "N/A")
+        )
+
+
+def test_calculate_stats_with_group_by():
+    """Test calculate_stats with a group_by argument."""
+
+    zones = "/prism_app/tests/small_admin_boundaries.json"
+    geotiff = "/prism_app/tests/raster_sample.tif"
+    features = calculate_stats(
+        zones,
+        geotiff,
+        group_by="ADM1_PCODE",
+        geojson_out=False,
+    )
+    assert len(features) == 4
+
+
+def test_calculate_stats_wfs_polygons():
+    """Test calculate_stats with a group_by argument."""
+
+    zones = "/prism_app/tests/small_admin_boundaries.json"
+    geotiff = "/prism_app/tests/raster_sample.tif"
+    wfs_response = {
+        "filter_property_key": "label",
+        "path": "/prism_app/tests/wfs_response.json",
+    }
+
+    features = calculate_stats(
+        zones, geotiff, geojson_out=False, wfs_response=wfs_response
+    )
+    assert len(features) == 5
+
+    features = calculate_stats(
+        zones,
+        geotiff,
+        group_by="ADM1_PCODE",
+        geojson_out=False,
+        wfs_response=wfs_response,
+    )
+    assert len(features) == 2
+
+
+@patch("prism_app.kobo.get_responses_from_kobo")
+@patch("prism_app.kobo.get_kobo_params")
+def test_kobo_response_form(kobo_params, kobo_data):
+    """Test form response parsing."""
+    form_fields = {
+        "id": "id",
+        "datetime": "date",
+        "geom_field": "geom",
+        "filters": {"status": "Approved"},
+    }
+    kobo_params.return_value = (("test", "test"), form_fields)
+
+    kobo_data_json = [
+        {
+            "date": "2019-09-22T21:35:54",
+            "geom": "21.908012 95.986908 0 0",
+            "value": "2",
+            "_validation_status": {"label": "Approved"},
+            "username": "jorge",
+        },
+        {
+            "date": "2021-01-01T10:00:08",
+            "geom": "21.916222 95.955971 0 0",
+            "value": "3",
+            "_validation_status": {"label": "Approved"},
+            "username": "test",
+        },
+    ]
+
+    labels = {
+        "value": "integer",
+        "geom": "geopoint",
+        "username": "username",
+        "date": "datetime",
+    }
+    kobo_data.return_value = (kobo_data_json, labels)
+
+    begin = datetime(2000, 1, 1).replace(tzinfo=timezone.utc)
+    end = datetime(2030, 1, 1).replace(tzinfo=timezone.utc)
+    forms = get_form_responses(begin, end, "", "", "", "", "")
+
+    assert len(forms) == 2
+
+    assert forms[0]["lat"] == 21.908012
+    assert forms[0]["lon"] == 95.986908
+    assert forms[0]["value"] == 2
+    assert forms[0]["status"] == "Approved"
+
+    form_fields = {
+        "id": "id",
+        "datetime": "date",
+        "geom": "geom",
+        "filters": {"status": "Approved", "username": "jorge"},
+    }
+    kobo_params.return_value = (("test", "test"), form_fields)
+    forms = get_form_responses(begin, end, "", "", "", "", "")
+
+    assert len(forms) == 1
+
+    # Test Filter
+    begin = datetime(2000, 1, 1).replace(tzinfo=timezone.utc)
+    end = datetime(2020, 1, 1).replace(tzinfo=timezone.utc)
+    forms = get_form_responses(begin, end, "", "", "", "", "")
+    assert len(forms) == 1

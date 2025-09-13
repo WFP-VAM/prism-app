@@ -31,6 +31,9 @@ import tanzania from './tanzania';
 import ukraine from './ukraine';
 import zambia from './zambia';
 import zimbabwe from './zimbabwe';
+// list countries that have a preprocessed-layer-dates.json file
+// to avoid a failed network call on each layer activation
+import countriesWithPreprocessedDates from './countriesWithPreprocessedDates.json';
 
 // Upload the boundary URL to S3 to enable the use of the API in a local environment.
 const DEFAULT_BOUNDARIES_FOLDER =
@@ -111,7 +114,12 @@ const appConfig: Record<string, any> = merge(
   configMap[safeCountry].appConfig,
 );
 
-export function getRawLayers(country: Country): Record<string, any> {
+export function getRawLayers(
+  country: Country,
+  filter = false,
+): Record<string, any> {
+  const countryLayerIds = JSON.stringify(get(configMap, country, {}));
+
   return Object.fromEntries(
     Object.entries(
       merge(
@@ -121,18 +129,21 @@ export function getRawLayers(country: Country): Record<string, any> {
         sharedLayers,
         configMap[country].rawLayers,
       ),
-    ).map(([key, layer]) => {
-      if (typeof layer.legend === 'string') {
-        if (!sharedLegends[layer.legend]) {
-          throw new Error(
-            `Legend '${layer.legend}' could not be found in shared legends.`,
-          );
+    )
+      // Filter layers that appear in the country config
+      .filter(([key, _layer]) => !filter || countryLayerIds.includes(key))
+      .map(([key, layer]) => {
+        if (typeof layer.legend === 'string') {
+          if (!sharedLegends[layer.legend]) {
+            throw new Error(
+              `Legend '${layer.legend}' could not be found in shared legends.`,
+            );
+          }
+          // eslint-disable-next-line no-param-reassign, fp/no-mutation
+          layer.legend = sharedLegends[layer.legend] || layer.legend;
         }
-        // eslint-disable-next-line no-param-reassign, fp/no-mutation
-        layer.legend = sharedLegends[layer.legend] || layer.legend;
-      }
-      return [key, layer];
-    }),
+        return [key, layer];
+      }),
   );
 }
 
@@ -181,6 +192,7 @@ const defaultBoundariesPath = `${DEFAULT_BOUNDARIES_FOLDER}/${defaultBoundariesF
 export {
   appConfig,
   authRequired,
+  countriesWithPreprocessedDates,
   safeCountry,
   defaultBoundariesPath,
   rawLayers,
