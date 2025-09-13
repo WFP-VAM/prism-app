@@ -59,7 +59,8 @@ module.exports = {
         ],
       },
     ],
-    'no-console': ['warn', { allow: ['warn', 'error'] }],
+    // temp: remove before merging PR
+    'no-console': ['warn', { allow: ['warn', 'error', 'time', 'timeEnd', 'timeLog'] }],
     'lines-between-class-members': 'off',
     'max-classes-per-file': 'off',
     'spaced-comment': 'warn',
@@ -104,6 +105,7 @@ module.exports = {
     },
   },
   globals: {
+    cy: true,
     NodeJS: true,
     RequestInit: true,
     RequestInfo: true,

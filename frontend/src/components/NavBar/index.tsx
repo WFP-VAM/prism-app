@@ -141,7 +141,7 @@ function NavBar() {
                   : t(panel.label);
 
                 return (
-                  <React.Fragment key={panel.panel}>
+                  <React.Fragment key={panel.label}>
                     <PanelButton
                       panel={panel}
                       selected={selected || false}
