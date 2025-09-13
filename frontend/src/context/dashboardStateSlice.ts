@@ -7,6 +7,7 @@ import { MapState, DateRange } from 'context/mapStateSlice';
 import { LayerDefinitions } from 'config/utils';
 import { keepLayer } from 'utils/keep-layer-utils';
 import { BoundaryRelationsDict } from 'components/Common/BoundaryDropdown/utils';
+
 import type { RootState } from './store';
 
 type MapGetter = () => MaplibreMap | undefined;

@@ -125,6 +125,7 @@ function NavBar() {
   const location = useLocation();
   const classes = useStyles();
   const tabValue = useSelector(leftPanelTabValueSelector);
+  const isDashboardMode = tabValue === Panel.Dashboard;
   const theme = useTheme();
   const smDown = useMediaQuery(theme.breakpoints.down('sm'));
   const mdUp = useMediaQuery(theme.breakpoints.up('md'));
@@ -280,7 +281,7 @@ function NavBar() {
             </div>
           </div>
           <div className={classes.rightSideContainer}>
-            <Legends />
+            {!isDashboardMode && <Legends />}
             <PrintImage />
             {buttons}
             <About />

@@ -68,22 +68,26 @@ const LegendItem = memo(
     const { removeLayerFromUrl } = useUrlHistory();
     const map = mapState.maplibreMap();
     const [opacityEl, setOpacityEl] = useState<HTMLButtonElement | null>(null);
-    const opacity = useSelector(opacitySelector(id as string));
+    const opacityFromState = useSelector(opacitySelector(id as string));
+
+    // Use opacity from state if available, otherwise fall back to the initial opacity
+    const opacity =
+      opacityFromState !== undefined ? opacityFromState : initialOpacity;
     const isAnalysis = type === 'analysis';
 
     useEffect(() => {
-      if (opacity !== undefined) {
+      if (opacityFromState !== undefined) {
         return;
       }
       dispatch(
         setOpacity({
           map,
-          value: initialOpacity || 0,
+          value: initialOpacity || 0.8, // Better default than 0 for dashboard context
           layerId: id,
           layerType: type,
         }),
       );
-    }, [dispatch, id, initialOpacity, map, opacity, type]);
+    }, [dispatch, id, initialOpacity, map, opacityFromState, type]);
 
     const { t } = useSafeTranslation();
 
