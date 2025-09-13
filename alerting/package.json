@@ -9,6 +9,7 @@
   "author": "",
   "private": true,
   "license": "MIT",
+  "packageManager": "yarn@1.22.22",
   "scripts": {
     "prebuild": "rimraf dist",
     "build": "tsc -p tsconfig.json",
@@ -27,7 +28,8 @@
     "typeorm-seeding": "ts-node $(yarn bin typeorm-seeding)",
     "alert-worker": "yarn ts-node src/alert-worker.ts",
     "aa-storm-alert-worker": "yarn ts-node src/aa-storm-alert-runner.ts",
-    "docker-alert": "source ../api/set_envs.sh && docker compose run --entrypoint 'yarn alert-worker' alerting-node"
+    "docker-alert": "source ../api/set_envs.sh && docker compose run --entrypoint 'yarn alert-worker' alerting-node",
+    "audit": "audit-ci --config .audit-ci.json"
   },
   "dependencies": {
     "@turf/bbox": "^6.3.0",
@@ -54,6 +56,7 @@
     "@types/nodemailer": "^6.4.1",
     "@typescript-eslint/eslint-plugin": "^5.0.0",
     "@typescript-eslint/parser": "^5.0.0",
+    "audit-ci": "^7.1.0",
     "eslint": "^8.45.0",
     "faker": "^4.1.0",
     "glob": "^7.1.6",
