@@ -19,11 +19,11 @@ services:
         CHROME_VERSION: "126.0.6478.126"
     restart: always
     volumes:
-      - ../alerting:/app
-      - /app/node_modules
+      - ../alerting:/prism_app
+      - /prism_app/node_modules
       - ../common:/common
       - /common/node_modules
-    working_dir: /app
+    working_dir: /prism_app
     environment:
       - POSTGRES_HOST=alerting-db
       - POSTGRES_USER=postgres

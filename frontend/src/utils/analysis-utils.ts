@@ -490,8 +490,10 @@ export class BaselineLayerResult {
     return LayerDefinitions[this.hazardLayerId] as WMSLayerProps;
   }
 
-  getBaselineLayer(): BoundaryLayerProps {
-    return LayerDefinitions[this.baselineLayerId] as BoundaryLayerProps;
+  getBaselineLayer(): BoundaryLayerProps | AdminLevelDataLayerProps {
+    return LayerDefinitions[this.baselineLayerId] as
+      | BoundaryLayerProps
+      | AdminLevelDataLayerProps;
   }
 
   getLayerTitle(t: i18nTranslator): string {
@@ -513,8 +515,11 @@ export class BaselineLayerResult {
   getStatLabel(t: i18nTranslator): string {
     const statTitle = t(aggregationOperationsToDisplay[this.statistic]);
     const atLevel = t('at Level');
-    const { adminLevelCodes } = this.getBaselineLayer();
-    const adminLevel = adminLevelCodes.length - (multiCountry ? 1 : 0);
+    const baselineLayer = this.getBaselineLayer();
+    const adminLevel =
+      'adminLevel' in baselineLayer
+        ? baselineLayer.adminLevel
+        : baselineLayer.adminLevelCodes.length - (multiCountry ? 1 : 0);
     return `${statTitle} ${atLevel} ${adminLevel}`;
   }
 

@@ -5,7 +5,7 @@ import {
   TextField,
   makeStyles,
 } from '@material-ui/core';
-import { useSelector } from 'react-redux';
+import { useSelector } from 'context/hooks';
 import {
   boundsSelector,
   zoomSelector,
