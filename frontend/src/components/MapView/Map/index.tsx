@@ -81,7 +81,9 @@ const MapComponent = memo(() => {
 
   const { selectedLayers, boundaryLayerId } = useLayers();
 
-  const selectedMap = useMapState()?.maplibreMap();
+  const mapState = useMapState();
+  const selectedMap = mapState?.maplibreMap();
+  const isGlobalMap = mapState?.isGlobalMap;
   const tabValue = useSelector(leftPanelTabValueSelector);
 
   const panelHidden = tabValue === Panel.None;
@@ -93,14 +95,23 @@ const MapComponent = memo(() => {
   const fitBoundsOptions = useMemo(
     () => ({
       duration: 0,
-      padding: {
-        bottom: 150, // room for dates.
-        left: panelHidden ? 30 : 500, // room for the left panel if active.
-        right: 60,
-        top: 70,
-      },
+      padding: isGlobalMap
+        ? {
+            // Main map view - original padding
+            bottom: 150, // room for dates.
+            left: panelHidden ? 30 : 500, // room for the left panel if active.
+            right: 60,
+            top: 70,
+          }
+        : {
+            // MapBlock has different layout - left panel is 1/3 width, date selector below
+            bottom: 80, // room for date selector below
+            left: 20, // minimal padding since left panel is separate
+            right: 20,
+            top: 20,
+          },
     }),
-    [panelHidden],
+    [panelHidden, isGlobalMap],
   );
 
   const showBoundaryInfo = useMemo(

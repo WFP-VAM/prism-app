@@ -77,6 +77,8 @@ const calculateStartAndEndDates = (startDate: Date, selectedTab: string) => {
 };
 
 const DateSelector = memo(() => {
+  const mapState = useMapState();
+  const isGlobalMap = mapState?.isGlobalMap;
   const classes = useStyles();
   const {
     selectedLayerDates: availableDates,
@@ -84,7 +86,6 @@ const DateSelector = memo(() => {
     checkSelectedDateForLayerSupport,
   } = useLayers();
 
-  const mapState = useMapState();
   const { startDate: stateStartDate } = mapState.dateRange;
   const tabValue = useSelector(leftPanelTabValueSelector);
   const [dateRange, setDateRange] = useState<DateRangeType[]>([
@@ -427,13 +428,16 @@ const DateSelector = memo(() => {
       ) {
         return;
       }
-      updateHistory('date', getFormattedDate(time, 'default') as string);
+      if (isGlobalMap) {
+        updateHistory('date', getFormattedDate(time, 'default') as string);
+      }
       mapState.actions.updateDateRange({ startDate: time });
     },
     [
       availableDates,
       checkSelectedDateForLayerSupport,
       stateStartDate,
+      isGlobalMap,
       updateHistory,
       mapState.actions,
     ],
@@ -586,7 +590,11 @@ const DateSelector = memo(() => {
         container
         alignItems="center"
         justifyContent="center"
-        className={classes.datePickerContainer}
+        className={
+          isGlobalMap
+            ? classes.datePickerContainer
+            : classes.datePickerContainerDashboard
+        }
       >
         {/* Mobile */}
         <Grid item xs={12} sm={1} className={classes.datePickerGrid}>
@@ -739,6 +747,15 @@ const useStyles = makeStyles((theme: Theme) =>
       borderRadius: '8px',
       width: '90%',
       margin: 'auto',
+      textAlign: 'center',
+    },
+    datePickerContainerDashboard: {
+      border: '1px solid #D4D4D4',
+      boxShadow: 'none',
+      backgroundColor: 'white',
+      color: '#101010',
+      borderRadius: '8px',
+      width: 'calc(100% - 16px)',
       textAlign: 'center',
     },
 

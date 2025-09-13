@@ -20,17 +20,16 @@ export interface DashboardState {
 const initialState: DashboardState = {
   title: appConfig.configuredReports[0]?.title || 'Dashboard',
   flexElements: appConfig.configuredReports[0]?.flexElements || [],
-  maps: [
-    {
-      layers: [],
-      dateRange: {},
-      maplibreMap: () => undefined,
-      errors: [],
-      layersData: [],
-      loadingLayerIds: [],
-      boundaryRelationData: {},
-    },
-  ],
+  // TODO: Update to read from prism.config for actual initial values
+  maps: appConfig.configuredReports[0]?.maps?.map(() => ({
+    layers: [],
+    dateRange: {},
+    maplibreMap: () => undefined,
+    errors: [],
+    layersData: [],
+    loadingLayerIds: [],
+    boundaryRelationData: {},
+  })),
 };
 
 export const dashboardStateSlice = createSlice({

@@ -13,9 +13,7 @@ import { useState } from 'react';
 import type { DashboardTextConfig } from 'config/types';
 import { black, cyanBlue } from 'muiTheme';
 
-import { MapInstanceProvider } from 'components/MapView/MapInstanceContext';
-import MapView from 'components/MapView';
-import RootAccordionItems from 'components/MapView/LeftPanel/layersPanel/RootAccordionItems';
+import MapBlock from './MapBlock';
 import {
   dashboardTitleSelector,
   setTitle,
@@ -63,16 +61,16 @@ function DashboardView() {
             </label>
           </Box>
           <Box className={classes.grayCard}>
-            <MapInstanceProvider index={0}>
-              <div style={{ display: 'flex' }}>
-                <div style={{ width: '1/4', marginRight: 16 }}>
-                  <RootAccordionItems />
-                </div>
-                <div style={{ height: '500px', width: '100%' }}>
-                  <MapView />
-                </div>
-              </div>
-            </MapInstanceProvider>
+            <Typography
+              variant="h3"
+              component="h3"
+              className={classes.blockLabel}
+            >
+              Map block — Choose map layers
+            </Typography>
+            <div style={{ height: '500px', width: '100%' }}>
+              <MapBlock mapIndex={0} />
+            </div>
           </Box>
         </Box>
         <Box className={classes.trailingContentArea}>
@@ -143,6 +141,11 @@ function DashboardView() {
 }
 
 const useStyles = makeStyles(() => ({
+  blockLabel: {
+    fontWeight: 600,
+    fontSize: 16,
+    marginBottom: 12,
+  },
   container: {
     display: 'flex',
     flexDirection: 'column',
@@ -153,9 +156,10 @@ const useStyles = makeStyles(() => ({
     display: 'flex',
     padding: 16,
     margin: 16,
-    gap: 16,
+    gap: 48,
     flex: 1,
     overflow: 'auto',
+    paddingBottom: 80, // Add extra padding to account for fixed toolbar
   },
   leadingContentArea: {
     flex: '2',
@@ -168,6 +172,7 @@ const useStyles = makeStyles(() => ({
     borderRadius: 8,
     width: '100%',
     marginBottom: 16,
+    padding: 16,
   },
   titleBarLabel: {
     display: 'flex',

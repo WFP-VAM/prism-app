@@ -1054,16 +1054,20 @@ export interface DashboardTableConfig {
   stat: AggregationOperations;
 }
 
-export interface ConfiguredReport {
-  title: string;
-  selectedDate?: string;
-  mapPosition: DashboardMapPosition;
-  minMapBounds: number[];
-  mapLayers: Array<{
+export interface MapConfig {
+  defaultDate?: string;
+  mapPosition?: DashboardMapPosition;
+  minMapBounds?: number[];
+  preSelectedMapLayers: Array<{
     layerId: string;
     opacity?: number;
   }>;
+}
+
+export interface ConfiguredReport {
+  title: string;
   flexElements: Array<
     DashboardChartConfig | DashboardTextConfig | DashboardTableConfig
   >;
+  maps: Array<MapConfig>;
 }
