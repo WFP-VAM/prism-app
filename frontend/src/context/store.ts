@@ -2,6 +2,7 @@ import {
   combineReducers,
   configureStore,
   getDefaultMiddleware,
+  PayloadAction,
 } from '@reduxjs/toolkit';
 import mapStateReduce from './mapStateSlice';
 import serverStateReduce from './serverStateSlice';
@@ -41,6 +42,71 @@ const reducer = combineReducers({
 
 export const store = configureStore({
   reducer,
+  // @ts-ignore
+  devTools:
+    // process.env.NODE_ENV !== 'development'
+    !(window as any).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__
+      ? {}
+      : {
+          // sanitizers to make the state manageable by redux-dev-tools
+          // actionSanitizer returns the action "cleaned up" for faster display (it does not
+          // affect the original action, just how its displayed in redux-dev-tools)
+          actionSanitizer: (action: PayloadAction<any>) => {
+            switch (action.type) {
+              case 'mapState/loadLayerData/fulfilled':
+                return {
+                  ...action,
+                  payload: {
+                    //  @ts-ignore
+                    ...action?.payload,
+                    data: {
+                      ...action.payload.data,
+                      features: `array of ${action.payload.data.features.length} features`,
+                    },
+                  },
+                };
+              case 'serverState/loadAvailableDates/fulfilled':
+                return {
+                  ...action,
+                  payload: Object.fromEntries(
+                    Object.entries(action.payload).map(
+                      ([layerName, dateArray]) => [
+                        layerName,
+                        `array of ${(dateArray as Array<any>).length} date objects`,
+                      ],
+                    ),
+                  ),
+                };
+              case 'serverState/preloadLayerDatesForWMS/fulfilled':
+              case 'serverState/preloadLayerDatesForPointData/fulfilled':
+                return {
+                  ...action,
+                  payload: {
+                    arrays_of_numbers_for_these_layers: Object.keys(
+                      action.payload,
+                    ),
+                  },
+                };
+              default:
+                return action;
+            }
+          },
+          // stateSanitizer does the same for the state. Virtually all the heavy data
+          // is in mapState, so we just rewrite that part.
+          stateSanitizer: (state: RootState) => ({
+            ...state,
+            mapState: {
+              ...state.mapState,
+              layersData: state.mapState.layersData.map(ld => ({
+                ...ld,
+                data: {
+                  ...ld.data,
+                  features: `array of ${ld.data.features.length} features`,
+                },
+              })),
+            },
+          }),
+        },
   middleware: getDefaultMiddleware({
     // TODO: Instead of snoozing this check, we might want to
     // serialize the state
