@@ -13,9 +13,19 @@ import {
   removeLayerData,
   setBoundaryRelationData,
   dismissError,
+  setDashboardOpacity,
+  dashboardOpacitySelector,
 } from 'context/dashboardStateSlice';
 
 type MapGetter = () => MaplibreMap | undefined;
+
+interface SetOpacityParams {
+  map: MaplibreMap | undefined;
+  layerId: LayerType['id'] | undefined;
+  layerType: LayerType['type'] | 'analysis' | undefined;
+  value: number;
+  callback?: (v: number) => void;
+}
 
 export type MapInstanceActions = {
   addLayer: (layer: LayerType) => void;
@@ -25,12 +35,14 @@ export type MapInstanceActions = {
   removeLayerData: (layer: LayerType) => void;
   setBoundaryRelationData: (data: BoundaryRelationsDict) => void;
   dismissError: (error: string) => void;
+  setOpacity: (params: SetOpacityParams) => void;
 };
 
 export type MapInstanceSelectors = {
   selectLayers: (state: RootState) => LayerType[];
   selectDateRange: (state: RootState) => DateRange;
   selectMap: (state: RootState) => MapGetter;
+  selectOpacity: (layerId: string) => (state: RootState) => number | undefined;
 };
 
 type MapInstanceContextType = {
@@ -81,6 +93,9 @@ export function MapInstanceProvider({
       dismissError: (error: string) => {
         dispatch(dismissError({ index, error }));
       },
+      setOpacity: (params: SetOpacityParams) => {
+        dispatch(setDashboardOpacity({ index, ...params }));
+      },
     }),
     [dispatch, index],
   );
@@ -95,6 +110,8 @@ export function MapInstanceProvider({
           state.dashboardState.maps[index].dateRange,
         selectMap: (state: RootState) =>
           state.dashboardState.maps[index].maplibreMap,
+        selectOpacity: (layerId: string) =>
+          dashboardOpacitySelector(index, layerId),
       },
       actions,
     }),

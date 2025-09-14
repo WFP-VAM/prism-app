@@ -7,15 +7,34 @@ import { MapState, DateRange } from 'context/mapStateSlice';
 import { LayerDefinitions } from 'config/utils';
 import { keepLayer } from 'utils/keep-layer-utils';
 import { BoundaryRelationsDict } from 'components/Common/BoundaryDropdown/utils';
+import { getLayerMapId } from 'utils/map-utils';
 
 import type { RootState } from './store';
 
 type MapGetter = () => MaplibreMap | undefined;
 
+interface OpacityEntry {
+  mapLayerId: string;
+  opacityType: string;
+  value: number;
+}
+
+interface SetDashboardOpacityParams {
+  map: MaplibreMap | undefined;
+  layerId: LayerType['id'] | undefined;
+  layerType: LayerType['type'] | 'analysis' | undefined;
+  value: number;
+  callback?: (v: number) => void;
+}
+
+export interface DashboardMapState extends MapState {
+  opacityMap: { [key: string]: OpacityEntry };
+}
+
 export interface DashboardState {
   title: string;
   flexElements: ConfiguredReport['flexElements'];
-  maps: MapState[];
+  maps: DashboardMapState[];
 }
 
 const initialState: DashboardState = {
@@ -30,6 +49,7 @@ const initialState: DashboardState = {
     layersData: [],
     loadingLayerIds: [],
     boundaryRelationData: {},
+    opacityMap: {},
   })),
 };
 
@@ -182,6 +202,73 @@ export const dashboardStateSlice = createSlice({
         ),
       };
     },
+    setDashboardOpacity: (
+      state,
+      action: PayloadAction<{ index: number } & SetDashboardOpacityParams>,
+    ) => {
+      const { index, map, layerId, layerType, value, callback } =
+        action.payload;
+
+      if (!map || !layerId || value === undefined) {
+        return state;
+      }
+
+      const [mapLayerId, opacityType] = ((): [string, string] => {
+        switch (layerType) {
+          case 'wms':
+            return [getLayerMapId(layerId), 'raster-opacity'];
+          case 'static_raster':
+            return [getLayerMapId(layerId), 'raster-opacity'];
+          case 'admin_level_data':
+          case 'composite':
+          case 'impact':
+          case 'geojson_polygon':
+            return [getLayerMapId(layerId), 'fill-opacity'];
+          case 'point_data':
+            if (layerId?.includes('_report')) {
+              return [getLayerMapId(layerId), 'fill-opacity'];
+            }
+            return [getLayerMapId(layerId), 'circle-opacity'];
+          case 'analysis':
+            return ['layer-analysis', 'fill-opacity'];
+          default:
+            throw new Error('Unknown map layer type');
+        }
+      })();
+
+      // update map
+      if (map.getLayer(mapLayerId) !== undefined && value !== undefined) {
+        map.setPaintProperty(mapLayerId, opacityType, value);
+        // force a update of the map style to ensure the change is reflected
+        // see https://github.com/maplibre/maplibre-gl-js/issues/3373
+        // TODO - check if the above issue got resolved from time to time.
+        // eslint-disable-next-line no-underscore-dangle
+        map.style._updateLayer(mapLayerId as any);
+      }
+
+      if (callback !== undefined) {
+        callback(value);
+      }
+
+      return {
+        ...state,
+        maps: state.maps.map((mapInstance, i) =>
+          i === index
+            ? {
+                ...mapInstance,
+                opacityMap: {
+                  ...mapInstance.opacityMap,
+                  [layerId]: {
+                    mapLayerId,
+                    opacityType,
+                    value,
+                  },
+                },
+              }
+            : mapInstance,
+        ),
+      };
+    },
   },
 });
 
@@ -192,6 +279,11 @@ export const dashboardTitleSelector = (state: RootState): string =>
 export const dashboardFlexElementsSelector = (
   state: RootState,
 ): ConfiguredReport['flexElements'] => state.dashboardState.flexElements;
+
+export const dashboardOpacitySelector =
+  (index: number, layerId: string) =>
+  (state: RootState): number | undefined =>
+    state.dashboardState.maps[index]?.opacityMap[layerId]?.value;
 
 // Setters
 export const {
@@ -204,6 +296,7 @@ export const {
   removeLayerData,
   setBoundaryRelationData,
   dismissError,
+  setDashboardOpacity,
 } = dashboardStateSlice.actions;
 
 export default dashboardStateSlice.reducer;

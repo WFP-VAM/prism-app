@@ -10,7 +10,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import AnalysisLayer from 'components/MapView/Layers/AnalysisLayer';
 import SelectionLayer from 'components/MapView/Layers/SelectionLayer';
 import MapTooltip from 'components/MapView/MapTooltip';
-import { setMap } from 'context/mapStateSlice';
 import { appConfig } from 'config';
 import useMapOnClick from 'components/MapView/useMapOnClick';
 import { setBounds, setLocation } from 'context/mapBoundaryInfoStateSlice';
@@ -197,7 +196,7 @@ const MapComponent = memo(() => {
     const { layers } = map.getStyle();
     // Find the first symbol on the map to make sure we add boundary layers below them.
     setFirstSymbolId(layers?.find(layer => layer.type === 'symbol')?.id);
-    dispatch(setMap(() => mapRef.current?.getMap() || undefined));
+    mapState.actions.setMap(() => mapRef.current?.getMap() || undefined);
     if (showBoundaryInfo) {
       watchBoundaryChange(map);
     }
