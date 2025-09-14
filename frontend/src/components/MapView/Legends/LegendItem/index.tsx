@@ -39,7 +39,7 @@ import { getUrlKey, useUrlHistory } from 'utils/url-utils';
 import LayerDownloadOptions from 'components/MapView/LeftPanel/layersPanel/MenuItem/MenuSwitch/SwitchItem/LayerDownloadOptions';
 import AnalysisDownloadButton from 'components/MapView/Legends//AnalysisDownloadButton';
 import { toggleRemoveLayer } from 'components/MapView/LeftPanel/layersPanel/MenuItem/MenuSwitch/SwitchItem/utils';
-import { opacitySelector, setOpacity } from 'context/opacityStateSlice';
+import { useOpacityState } from 'utils/useOpacityState';
 import { lightGrey } from 'muiTheme';
 import LoadingBar from '../LoadingBar';
 import LegendMarkdown from '../LegendMarkdown';
@@ -68,7 +68,10 @@ const LegendItem = memo(
     const { removeLayerFromUrl } = useUrlHistory();
     const map = mapState.maplibreMap();
     const [opacityEl, setOpacityEl] = useState<HTMLButtonElement | null>(null);
-    const opacityFromState = useSelector(opacitySelector(id as string));
+    const opacityState = useOpacityState();
+    const opacityFromState = useSelector(
+      opacityState.getOpacitySelector(id as string),
+    );
 
     // Use opacity from state if available, otherwise fall back to the initial opacity
     const opacity =
@@ -76,18 +79,25 @@ const LegendItem = memo(
     const isAnalysis = type === 'analysis';
 
     useEffect(() => {
-      if (opacityFromState !== undefined) {
+      if (opacityFromState !== undefined || !map) {
         return;
       }
-      dispatch(
-        setOpacity({
-          map,
-          value: initialOpacity || 0.8, // Better default than 0 for dashboard context
-          layerId: id,
-          layerType: type,
-        }),
-      );
-    }, [dispatch, id, initialOpacity, map, opacityFromState, type]);
+
+      opacityState.setOpacity({
+        map,
+        value: initialOpacity || 0.8, // Better default than 0 for dashboard context
+        layerId: id,
+        layerType: type,
+      });
+    }, [
+      id,
+      initialOpacity,
+      map,
+      opacityFromState,
+      type,
+      opacityState,
+      mapState.isGlobalMap,
+    ]);
 
     const { t } = useSafeTranslation();
 
@@ -132,14 +142,12 @@ const LegendItem = memo(
               thumb: classes.opacitySliderThumb,
             }}
             onChange={(_e, newValue) =>
-              dispatch(
-                setOpacity({
-                  map,
-                  value: newValue as number,
-                  layerId: id,
-                  layerType: type,
-                }),
-              )
+              opacityState.setOpacity({
+                map,
+                value: newValue as number,
+                layerId: id,
+                layerType: type,
+              })
             }
           />
         </Box>
@@ -149,7 +157,7 @@ const LegendItem = memo(
         classes.opacitySliderRoot,
         classes.opacitySliderThumb,
         classes.opacityText,
-        dispatch,
+        opacityState,
         id,
         map,
         opacity,
