@@ -25,6 +25,5 @@
     "noFallthroughCasesInSwitch": true
   },
   "include": ["src", "vite.config.ts"],
-  "exclude": ["cypress.config.ts", "cypress", "node_modules"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }

@@ -3,7 +3,6 @@ import { useSelector } from 'react-redux';
 import { LayerKey } from 'config/types';
 import { loadingLayerIdsSelector as tileLayerIdsSelector } from 'context/mapTileLoadingStateSlice';
 import { loadingLayerIdsSelector as vectorLayerIdsSelector } from 'context/mapStateSlice/selectors';
-import { layersLoadingDatesIdsSelector } from 'context/serverStateSlice';
 
 export interface LoadingBarProps {
   layerId: LayerKey | undefined;
@@ -26,11 +25,8 @@ const useStyles = makeStyles({
 function LoadingBar({ layerId }: LoadingBarProps) {
   const tileLayerIds = useSelector(tileLayerIdsSelector);
   const vectorLayerIds = useSelector(vectorLayerIdsSelector);
-  const layersLoadingDatesIds = useSelector(layersLoadingDatesIdsSelector);
   const loading = layerId
-    ? tileLayerIds.includes(layerId) ||
-      vectorLayerIds.includes(layerId) ||
-      layersLoadingDatesIds.includes(layerId)
+    ? tileLayerIds.includes(layerId) || vectorLayerIds.includes(layerId)
     : false;
   const classes = useStyles();
   return (

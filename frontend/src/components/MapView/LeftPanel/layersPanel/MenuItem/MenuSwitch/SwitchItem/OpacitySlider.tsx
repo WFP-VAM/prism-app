@@ -6,7 +6,7 @@ import {
   makeStyles,
 } from '@material-ui/core';
 import { LayerType } from 'config/types';
-import { useMapState } from 'utils/useMapState';
+import { mapSelector } from 'context/mapStateSlice/selectors';
 import { opacitySelector, setOpacity } from 'context/opacityStateSlice';
 import { ChangeEvent, memo, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -37,8 +37,7 @@ const OpacitySlider = memo(
     const classes = useStyles();
     const dispatch = useDispatch();
     const opacity = useSelector(opacitySelector(activeLayerId || layerId));
-    const mapState = useMapState();
-    const map = mapState.maplibreMap();
+    const map = useSelector(mapSelector);
 
     const handleOnChangeSliderValue = useCallback(
       (_event: ChangeEvent<{}>, newValue: number | number[]) => {

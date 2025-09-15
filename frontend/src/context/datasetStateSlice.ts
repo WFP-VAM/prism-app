@@ -1,5 +1,6 @@
 import { orderBy } from 'lodash';
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { Dispatch } from 'redux';
 import { ChartType, DatasetField } from 'config/types';
 import { DateFormat } from 'utils/name-utils';
 import {
@@ -14,7 +15,7 @@ import {
   GoogleFloodParams,
   GoogleFloodTriggersConfig,
 } from 'utils/google-flood-utils';
-import type { AppDispatch, CreateAsyncThunkTypes, RootState } from './store';
+import type { CreateAsyncThunkTypes, RootState } from './store';
 import { TableData } from './tableStateSlice';
 
 export type EWSParams = {
@@ -127,7 +128,7 @@ export const createTableData = (
 
 export const loadEWSDataset = async (
   params: EWSDataPointsRequestParams,
-  dispatch: AppDispatch,
+  dispatch: Dispatch,
 ): Promise<TableData> => {
   const { date, externalId, triggerLevels, baseUrl } = params;
 
@@ -176,7 +177,7 @@ export const loadEWSDataset = async (
 
 export const loadGoogleFloodDataset = async (
   params: GoogleFloodParams,
-  dispatch: AppDispatch,
+  dispatch: Dispatch,
 ): Promise<TableData> => {
   const { gaugeId, triggerLevels, detailUrl } = params;
 
@@ -246,7 +247,7 @@ export const fetchHDC = async (
   url: string,
   datasetFields: DatasetField[],
   params: { [key: string]: any },
-  dispatch: AppDispatch,
+  dispatch: Dispatch,
 ): Promise<DataItem[]> => {
   const requestParamsStr = Object.entries(params)
     .map(([key, value]) => `${key}=${value}`)
@@ -303,7 +304,7 @@ const getVamParam = (serverLayerName: string): string => {
 
 export const loadAdminBoundaryDataset = async (
   params: AdminBoundaryRequestParams,
-  dispatch: AppDispatch,
+  dispatch: Dispatch,
 ): Promise<TableData | undefined> => {
   const endDateStr = getFormattedDate(params.endDate, 'default');
   const startDateStr = getFormattedDate(params.startDate, 'default');

@@ -241,13 +241,14 @@ export function generateFeaturesFromApiData(
     aggregateData,
     groupBy,
   );
+
   return mergedFeatures.filter(feature => {
     const value = get(feature, ['properties', operation]);
     return value !== undefined && !Number.isNaN(value);
   }) as GeoJsonBoundary[];
 }
 
-// Is this function still needed? It's only in use by ImpactLayers
+// Is this function still needed?
 export async function loadFeaturesFromApi(
   layer: ImpactLayerProps,
   baselineData: BaselineLayerData,
@@ -446,12 +447,14 @@ export class ExposedPopulationResult {
 export class BaselineLayerResult {
   key: number = Date.now();
   featureCollection: FeatureCollection;
-  adminBoundariesFormat: string;
   tableData: TableRow[];
-  // TODO: Type this
-  statsByAdminId?: KeyValueResponse[];
+  // for debugging purposes only, as its easy to view the raw API response via Redux Devtools. Should be left empty in production
+  // @ts-ignore: TS6133
+  private rawApiData?: object[];
+
   statistic: AggregationOperations;
   threshold: ThresholdDefinition;
+
   legend: LegendDefinition;
   legendText: string;
   hazardLayerId: WMSLayerProps['id'];
@@ -467,18 +470,16 @@ export class BaselineLayerResult {
     statistic: AggregationOperations,
     threshold: ThresholdDefinition,
     legend?: LegendDefinition,
-    statsByAdminId?: KeyValueResponse[],
+    rawApiData?: object[],
     analysisDate?: ReturnType<Date['getTime']>,
-    adminBoundariesFormat?: string,
   ) {
     this.featureCollection = featureCollection;
     this.tableData = tableData;
-    this.adminBoundariesFormat = adminBoundariesFormat ?? 'geojson';
     this.statistic = statistic;
     this.threshold = threshold;
     this.legend = baselineLayer.legend ?? legend;
     this.legendText = hazardLayer.legendText;
-    this.statsByAdminId = statsByAdminId;
+    this.rawApiData = rawApiData;
 
     this.hazardLayerId = hazardLayer.id;
     this.baselineLayerId = baselineLayer.id;
@@ -490,10 +491,8 @@ export class BaselineLayerResult {
     return LayerDefinitions[this.hazardLayerId] as WMSLayerProps;
   }
 
-  getBaselineLayer(): BoundaryLayerProps | AdminLevelDataLayerProps {
-    return LayerDefinitions[this.baselineLayerId] as
-      | BoundaryLayerProps
-      | AdminLevelDataLayerProps;
+  getBaselineLayer(): BoundaryLayerProps {
+    return LayerDefinitions[this.baselineLayerId] as BoundaryLayerProps;
   }
 
   getLayerTitle(t: i18nTranslator): string {
@@ -515,11 +514,8 @@ export class BaselineLayerResult {
   getStatLabel(t: i18nTranslator): string {
     const statTitle = t(aggregationOperationsToDisplay[this.statistic]);
     const atLevel = t('at Level');
-    const baselineLayer = this.getBaselineLayer();
-    const adminLevel =
-      'adminLevel' in baselineLayer
-        ? baselineLayer.adminLevel
-        : baselineLayer.adminLevelCodes.length - (multiCountry ? 1 : 0);
+    const { adminLevelCodes } = this.getBaselineLayer();
+    const adminLevel = adminLevelCodes.length - (multiCountry ? 1 : 0);
     return `${statTitle} ${atLevel} ${adminLevel}`;
   }
 

@@ -38,7 +38,7 @@ exports[`MapView renders as expected 1`] = `
                     aria-disabled="false"
                     aria-expanded="false"
                     class="MuiButtonBase-root MuiAccordionSummary-root makeStyles-rootSummary-9"
-                    id="level1-Rainfall"
+                    id="Rainfall"
                     role="button"
                     tabindex="0"
                   >
@@ -84,7 +84,7 @@ exports[`MapView renders as expected 1`] = `
                     aria-disabled="false"
                     aria-expanded="false"
                     class="MuiButtonBase-root MuiAccordionSummary-root makeStyles-rootSummary-9"
-                    id="level1-Vegetation"
+                    id="Vegetation"
                     role="button"
                     tabindex="0"
                   >
@@ -130,7 +130,7 @@ exports[`MapView renders as expected 1`] = `
                     aria-disabled="false"
                     aria-expanded="false"
                     class="MuiButtonBase-root MuiAccordionSummary-root makeStyles-rootSummary-9"
-                    id="level1-Temperature"
+                    id="Temperature"
                     role="button"
                     tabindex="0"
                   >
@@ -176,7 +176,7 @@ exports[`MapView renders as expected 1`] = `
                     aria-disabled="false"
                     aria-expanded="false"
                     class="MuiButtonBase-root MuiAccordionSummary-root makeStyles-rootSummary-9"
-                    id="level1-TropicalStorms"
+                    id="Tropical Storms"
                     role="button"
                     tabindex="0"
                   >
@@ -222,7 +222,7 @@ exports[`MapView renders as expected 1`] = `
                     aria-disabled="false"
                     aria-expanded="false"
                     class="MuiButtonBase-root MuiAccordionSummary-root makeStyles-rootSummary-9"
-                    id="level1-Vulnerability"
+                    id="Vulnerability"
                     role="button"
                     tabindex="0"
                   >
@@ -268,7 +268,7 @@ exports[`MapView renders as expected 1`] = `
                     aria-disabled="false"
                     aria-expanded="false"
                     class="MuiButtonBase-root MuiAccordionSummary-root makeStyles-rootSummary-9"
-                    id="level1-Exposure"
+                    id="Exposure"
                     role="button"
                     tabindex="0"
                   >
@@ -354,6 +354,13 @@ exports[`MapView renders as expected 1`] = `
     >
       <div
         class="MuiBox-root MuiBox-root-58 makeStyles-optionContainer-56"
+      />
+    </div>
+    <div
+      class="makeStyles-loading-2"
+    >
+      <mock-circularprogress
+        size="100"
       />
     </div>
     <div

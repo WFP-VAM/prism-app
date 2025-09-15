@@ -50,8 +50,8 @@ RUN --mount=type=cache,target=/root/.cache \
     poetry run playwright install-deps
 
 # keep this copy towards the end to help with caching previous layers
-COPY ./prism_app /prism_app
+COPY ./app /app
 
-WORKDIR /prism_app/
+WORKDIR /app/
 
 EXPOSE 80

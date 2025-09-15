@@ -335,16 +335,12 @@ exports[`renders as expected 1`] = `
             classname="makeStyles-block-26"
             open="false"
           >
-            <mock-menuitem
-              aria-label="language-select-dropdown-menu-item-en"
-            >
+            <mock-menuitem>
               <mock-typography>
                 en
               </mock-typography>
             </mock-menuitem>
-            <mock-menuitem
-              aria-label="language-select-dropdown-menu-item-pt"
-            >
+            <mock-menuitem>
               <mock-typography>
                 pt
               </mock-typography>

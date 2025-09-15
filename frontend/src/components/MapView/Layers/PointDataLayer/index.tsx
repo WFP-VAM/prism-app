@@ -16,6 +16,7 @@ import {
 } from 'context/serverStateSlice';
 import { LayerData, loadLayerData } from 'context/layers/layer-data';
 import { layerDataSelector } from 'context/mapStateSlice/selectors';
+import { removeLayerData } from 'context/mapStateSlice';
 import { addNotification } from 'context/notificationStateSlice';
 import { useDefaultDate } from 'utils/useDefaultDate';
 import { getRequestDate } from 'utils/server-utils';
@@ -42,7 +43,6 @@ import { findFeature, getLayerMapId, useMapCallback } from 'utils/map-utils';
 import { getFormattedDate } from 'utils/date-utils';
 import { geoToH3, h3ToGeoBoundary } from 'h3-js';
 import { createGoogleFloodDatasetParams } from 'utils/google-flood-utils';
-import { useMapState } from 'utils/useMapState';
 
 const onClick =
   ({ layer, dispatch, t }: MapEventWrapFunctionProps<PointDataLayerProps>) =>
@@ -84,9 +84,6 @@ const PointDataLayer = memo(({ layer, before }: LayersProps) => {
   const serverAvailableDates = useSelector(availableDatesSelector);
   const layerAvailableDates = serverAvailableDates[layer.id];
   const userAuth = useSelector(userAuthSelector);
-  const {
-    actions: { removeLayerData },
-  } = useMapState();
 
   useMapCallback('click', layerId, layer, onClick);
 
@@ -129,7 +126,7 @@ const PointDataLayer = memo(({ layer, before }: LayersProps) => {
         }),
       );
 
-      removeLayerData(layer);
+      dispatch(removeLayerData(layer));
       dispatch(clearUserAuthGlobal());
       return;
     }
@@ -158,7 +155,6 @@ const PointDataLayer = memo(({ layer, before }: LayersProps) => {
     removeKeyFromUrl,
     removeLayerFromUrl,
     updateHistory,
-    removeLayerData,
   ]);
 
   if (!data || !validateLayerDate) {

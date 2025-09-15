@@ -13,7 +13,8 @@ import {
   getBoundaryLayerSingleton,
   getDisplayBoundaryLayers,
 } from 'config/utils';
-import React, { useRef } from 'react';
+import { addLayer, removeLayer } from 'context/mapStateSlice';
+import React, { Dispatch, useRef } from 'react';
 import simplify from '@turf/simplify';
 import { useDispatch, useSelector } from 'react-redux';
 import { mapSelector } from 'context/mapStateSlice/selectors';
@@ -36,20 +37,20 @@ export function isLayerOnView(map: MaplibreMap | undefined, layerId: LayerKey) {
 export function safeDispatchAddLayer(
   _map: MaplibreMap | undefined,
   layer: LayerType,
-  addLayerAction: (layer: LayerType) => void,
+  dispatcher: Function,
 ) {
   if (!isLayerOnView(_map, layer.id) || layer.type === 'boundary') {
-    addLayerAction(layer);
+    dispatcher(addLayer(layer));
   }
 }
 
 export function safeDispatchRemoveLayer(
   _map: MaplibreMap | undefined,
   layer: LayerType,
-  removeLayerAction: (layer: LayerType) => void,
+  dispatcher: Dispatch<any>,
 ) {
   if (isLayerOnView(_map, layer.id)) {
-    removeLayerAction(layer);
+    dispatcher(removeLayer(layer));
   }
 }
 
@@ -85,24 +86,19 @@ export function firstBoundaryOnView(map: MaplibreMap | undefined): LayerKey {
 /**
  * Refresh boundary layers
  * @param map the Maplibre Map object
- * @param mapActions object containing addLayer and removeLayer actions
+ * @param dispatcher dispatch function
  */
 export function refreshBoundaries(
   map: MaplibreMap | undefined,
-  mapActions: {
-    addLayer: (layer: LayerType) => void;
-    removeLayer: (layer: LayerType) => void;
-  },
+  dispatcher: Dispatch<any>,
 ) {
   const activeBoundaryLayers = boundariesOnView(map);
   // remove active boundary layers
-  activeBoundaryLayers.map(l =>
-    safeDispatchRemoveLayer(map, l, mapActions.removeLayer),
-  );
+  activeBoundaryLayers.map(l => safeDispatchRemoveLayer(map, l, dispatcher));
 
   const boundaryLayers = getDisplayBoundaryLayers();
   // re-add boundary layers
-  boundaryLayers.map(l => safeDispatchAddLayer(map, l, mapActions.addLayer));
+  boundaryLayers.map(l => safeDispatchAddLayer(map, l, dispatcher));
 }
 
 export const getLayerMapId = (layerId: string, type?: 'fill' | 'line') =>

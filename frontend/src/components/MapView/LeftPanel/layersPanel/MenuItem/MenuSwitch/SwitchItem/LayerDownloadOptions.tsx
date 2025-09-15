@@ -259,11 +259,10 @@ function LayerDownloadOptions({
   }, [layer, generateQmlContent, layerId]);
 
   const shouldShowDownloadButton =
-    !layer.disableDownload &&
-    (layer.type === 'admin_level_data' ||
-      layer.type === 'composite' ||
-      (layer.type === 'wms' &&
-        layer.baseUrl.includes('api.earthobservation.vam.wfp.org/ows')));
+    layer.type === 'admin_level_data' ||
+    layer.type === 'composite' ||
+    (layer.type === 'wms' &&
+      layer.baseUrl.includes('api.earthobservation.vam.wfp.org/ows'));
 
   return (
     <>

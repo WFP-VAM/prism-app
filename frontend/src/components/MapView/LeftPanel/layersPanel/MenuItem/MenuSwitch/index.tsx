@@ -18,14 +18,14 @@ import {
   useMemo,
   useState,
 } from 'react';
+import { useSelector } from 'react-redux';
 import { LayerType } from 'config/types';
 import { useSafeTranslation } from 'i18n';
 import { cyanBlue, lightGrey } from 'muiTheme';
 import { Extent } from 'components/MapView/Layers/raster-utils';
-import { useMapState } from 'utils/useMapState';
+import { layersSelector } from 'context/mapStateSlice/selectors';
 import { filterActiveLayers } from 'components/MapView/utils';
 import SwitchItems from './SwitchItems';
-import { makeSafeIDFromTitle } from '../utils';
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -65,8 +65,7 @@ interface MenuSwitchProps {
 
 const MenuSwitch = memo(({ title, layers, extent }: MenuSwitchProps) => {
   const { t } = useSafeTranslation();
-  const mapState = useMapState();
-  const selectedLayers = mapState.layers;
+  const selectedLayers = useSelector(layersSelector);
   const classes = useStyles();
   const [isExpanded, setIsExpanded] = useState(false);
 
@@ -142,7 +141,7 @@ const MenuSwitch = memo(({ title, layers, extent }: MenuSwitchProps) => {
           content: classes.summaryContent,
         }}
         aria-controls={title}
-        id={`level2-${makeSafeIDFromTitle(title)}`}
+        id={title}
       >
         <Typography classes={{ root: classes.title }}>{t(title)}</Typography>
         {renderedSelectedLayerInformation}

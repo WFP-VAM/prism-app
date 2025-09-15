@@ -1,6 +1,8 @@
 import { Map as MaplibreMap } from 'maplibre-gl';
+import { Dispatch } from 'react';
 import { UrlLayerKey } from '../../../../../../../utils/url-utils';
 import { LayerKey, LayerType } from '../../../../../../../config/types';
+import { removeLayer } from '../../../../../../../context/mapStateSlice';
 import {
   getDisplayBoundaryLayers,
   LayerDefinitions,
@@ -14,12 +16,11 @@ export function toggleRemoveLayer(
   layer: LayerType,
   _map: MaplibreMap | undefined,
   urlLayerKey: UrlLayerKey,
-  removeLayerAction: (layer: LayerType) => void,
+  dispatcher: Dispatch<any>,
   removeLayerFromUrl: Function,
-  addLayerAction: (layer: LayerType) => void,
 ) {
   removeLayerFromUrl(urlLayerKey, layer.id);
-  removeLayerAction(layer);
+  dispatcher(removeLayer(layer));
 
   // For admin boundary layers with boundary property
   // we have to de-activate the unique boundary and re-activate
@@ -35,10 +36,10 @@ export function toggleRemoveLayer(
   const uniqueBoundaryLayer = LayerDefinitions[boundaryId as LayerKey];
 
   if (!displayBoundaryLayers.map(l => l.id).includes(uniqueBoundaryLayer.id)) {
-    safeDispatchRemoveLayer(_map, uniqueBoundaryLayer, removeLayerAction);
+    safeDispatchRemoveLayer(_map, uniqueBoundaryLayer, dispatcher);
   }
 
   displayBoundaryLayers.forEach(l => {
-    safeDispatchAddLayer(_map, l, addLayerAction);
+    safeDispatchAddLayer(_map, l, dispatcher);
   });
 }

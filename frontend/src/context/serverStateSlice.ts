@@ -1,90 +1,26 @@
 import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
 import { AvailableDates, UserAuth } from 'config/types';
-import { getAvailableDatesForLayer, getLayerType } from 'utils/server-utils';
-import { LayerDefinitions } from '../config/utils';
+import { getLayersAvailableDates } from 'utils/server-utils';
 import type { CreateAsyncThunkTypes, RootState } from './store';
 
 type ServerState = {
   availableDates: AvailableDates;
-  // ids of layers that are being loaded to prevent firing multiple
-  // load actions
-  loadingLayerIds: string[]; // TODO: should this be LayerKey[] ?
+  loading: boolean;
   error?: string;
   userAuth?: UserAuth;
 };
 
 const initialState: ServerState = {
   availableDates: {},
-  loadingLayerIds: [],
+  loading: false,
 };
 
-export const loadAvailableDatesForLayer = createAsyncThunk<
+export const loadAvailableDates = createAsyncThunk<
   AvailableDates,
-  string,
+  void,
   CreateAsyncThunkTypes
->(
-  'serverState/loadAvailableDatesForLayer',
-  async (layerId: string, { getState }) =>
-    getAvailableDatesForLayer(getState, layerId),
-  {
-    condition: (layerId: string, { getState }) => {
-      const alreadyLoading = layersLoadingDatesIdsSelector(getState());
-      // for layer types that depend on preloaded data, make sure that data is
-      // ready before we try calculating available dates. The condition can return
-      // a promise, in which case the action above will only be dispatched once
-      // that promise has resolved. This effectively allows waiting for the data
-      // preloading to complete, which can happen in cypress tests where a layer
-      // is activated very early on, or for slow networks.
-      if (getLayerType(LayerDefinitions[layerId]) === 'WMSLayer') {
-        // action already dispatched, don't do it twice
-        if (alreadyLoading.includes(layerId)) {
-          return false;
-        }
-        // data preloaded, dispatch the new action
-        if (
-          !alreadyLoading.includes(layerId) &&
-          getState().serverPreloadState.loadedWMS
-        ) {
-          return true;
-        }
-        // data preloading not completed, wait for it
-        return new Promise(resolve => {
-          const check = () => {
-            if (getState().serverPreloadState.loadedWMS) {
-              resolve(true);
-            } else {
-              // poll the state :/
-              setTimeout(check, 100);
-            }
-          };
-          check();
-        });
-      }
-      if (getLayerType(LayerDefinitions[layerId]) === 'pointDataLayer') {
-        if (alreadyLoading.includes(layerId)) {
-          return false;
-        }
-        if (
-          !alreadyLoading.includes(layerId) &&
-          getState().serverPreloadState.loadedPointData
-        ) {
-          return true;
-        }
-        return new Promise(resolve => {
-          const check = () => {
-            if (getState().serverPreloadState.loadedPointData) {
-              resolve(true);
-            } else {
-              setTimeout(check, 100);
-            }
-          };
-          check();
-        });
-      }
-      // other layers are simpler, just check if it's already loading
-      return !alreadyLoading.includes(layerId);
-    },
-  },
+>('serverState/loadAvailableDates', (_, { dispatch }) =>
+  getLayersAvailableDates(dispatch),
 );
 
 export const serverStateSlice = createSlice({
@@ -112,30 +48,25 @@ export const serverStateSlice = createSlice({
   },
   extraReducers: builder => {
     builder.addCase(
-      loadAvailableDatesForLayer.fulfilled,
-      (state, { meta, payload }) => ({
+      loadAvailableDates.fulfilled,
+      (state, { payload }: PayloadAction<AvailableDates>) => ({
         ...state,
-        loadingLayerIds: state.loadingLayerIds.filter(id => id !== meta.arg),
-        availableDates: {
-          ...state.availableDates,
-          ...payload,
-        },
+        loading: false,
+        availableDates: payload,
       }),
     );
 
-    builder.addCase(loadAvailableDatesForLayer.rejected, (state, action) => ({
+    builder.addCase(loadAvailableDates.rejected, (state, action) => ({
       ...state,
-      loadingLayerIds: state.loadingLayerIds.filter(
-        id => id !== action.meta.arg,
-      ),
+      loading: false,
       error: action.error.message
         ? action.error.message
         : action.error.toString(),
     }));
 
-    builder.addCase(loadAvailableDatesForLayer.pending, (state, action) => ({
+    builder.addCase(loadAvailableDates.pending, state => ({
       ...state,
-      loadingLayerIds: state.loadingLayerIds.concat([action.meta.arg]),
+      loading: true,
     }));
   },
 });
@@ -145,12 +76,8 @@ export const availableDatesSelector = (
   state: RootState,
 ): ServerState['availableDates'] => state.serverState.availableDates;
 
-export const isLoading = (state: RootState): boolean =>
-  state.serverState.loadingLayerIds.length > 0;
-
-export const layersLoadingDatesIdsSelector = (
-  state: RootState,
-): ServerState['loadingLayerIds'] => state.serverState.loadingLayerIds;
+export const isLoading = (state: RootState): ServerState['loading'] =>
+  state.serverState.loading;
 
 export const datesErrorSelector = (state: RootState): string | undefined =>
   state.serverState.error;

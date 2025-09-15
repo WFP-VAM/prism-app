@@ -294,8 +294,9 @@ export function getBoundaryLayerSingleton(): BoundaryLayerProps {
 }
 
 // Return a boundary layer with the specified adminLevel depth.
+// TODO - better handle multicountry admin levels
 export function getBoundaryLayersByAdminLevel(adminLevel?: number) {
-  if (typeof adminLevel === 'number' && adminLevel >= 0) {
+  if (adminLevel) {
     const boundaryLayers = getBoundaryLayers();
     const adminLevelBoundary = boundaryLayers.find(
       boundaryLayer => boundaryLayer.adminLevelNames.length === adminLevel,

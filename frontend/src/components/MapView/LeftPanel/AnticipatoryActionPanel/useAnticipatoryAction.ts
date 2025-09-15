@@ -23,7 +23,6 @@ import { AnticipatoryActionData } from 'context/anticipatoryAction/AADroughtStat
 import { getFormattedDate } from 'utils/date-utils';
 import { DateFormat } from 'utils/name-utils';
 import { ParsedStormData } from 'context/anticipatoryAction/AAStormStateSlice/parsedStormDataTypes';
-import { useMapState } from 'utils/useMapState';
 import { toggleRemoveLayer } from '../layersPanel/MenuItem/MenuSwitch/SwitchItem/utils';
 
 type AADataByAction<T extends AnticipatoryAction> =
@@ -46,9 +45,6 @@ export function useAnticipatoryAction<T extends AnticipatoryAction>(
   const dispatch = useDispatch();
   const selectedLayers = useSelector(layersSelector);
   const map = useSelector(mapSelector);
-  const {
-    actions: { addLayer, removeLayer },
-  } = useMapState();
   const { updateHistory, appendLayerToUrl, removeLayerFromUrl } =
     useUrlHistory();
 
@@ -117,9 +113,8 @@ export function useAnticipatoryAction<T extends AnticipatoryAction>(
           AALayerInUrl,
           map,
           getUrlKey(AALayerInUrl),
-          removeLayer,
+          dispatch,
           removeLayerFromUrl,
-          addLayer,
         );
       }
       const updatedUrl = appendLayerToUrl(

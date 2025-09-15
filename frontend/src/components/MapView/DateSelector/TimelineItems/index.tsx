@@ -21,11 +21,11 @@ import {
   LIGHT_GREEN_HEX,
   LIGHT_ORANGE_HEX,
 } from './utils';
-import StandardTooltipContent from './StandardTooltipContent';
+import AAdroughtTooltipContent from './AADroughtTooltipContent';
 import AAStormTooltipContent from './AAStormTooltipContent';
 import { DateItemStyle } from './types';
 import AAStormTimelineItem from './AAStormTimelineItem';
-import StandardTimelineItem from './StandardTimelineItem';
+import AADroughtTimelineItem from './AADroughtTimelineItem';
 
 const TimelineItems = memo(
   ({
@@ -74,7 +74,7 @@ const TimelineItems = memo(
         isShowingAAStormLayer ? (
           <AAStormTooltipContent date={date} />
         ) : (
-          <StandardTooltipContent
+          <AAdroughtTooltipContent
             date={date}
             orderedLayers={orderedLayers}
             dateItemStyling={DATE_ITEM_STYLING}
@@ -94,7 +94,6 @@ const TimelineItems = memo(
           const isDateAvailable = availableDatesToDisplay.includes(date.value);
           return (
             <Tooltip
-              key={date.value}
               title={<>{getTooltipContent(date)}</>}
               TransitionComponent={Fade}
               TransitionProps={{ timeout: 0 }}
@@ -130,7 +129,7 @@ const TimelineItems = memo(
                   {isShowingAAStormLayer ? (
                     <AAStormTimelineItem currentDate={date} />
                   ) : (
-                    <StandardTimelineItem
+                    <AADroughtTimelineItem
                       concatenatedLayers={truncatedLayers}
                       currentDate={date}
                       dateItemStyling={DATE_ITEM_STYLING}

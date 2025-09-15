@@ -6,7 +6,6 @@ import {
   dateRangeSelector,
   layersSelector,
 } from 'context/mapStateSlice/selectors';
-import { updateDateRange } from 'context/mapStateSlice';
 
 import { useUrlHistory } from './url-utils';
 import { getFormattedDate } from './date-utils';
@@ -35,9 +34,7 @@ export function useDefaultDate(layerId: LayerKey): number | undefined {
   // useEffect removes this error and updates DateSelector correctly in the lifecycle.
   useEffect(() => {
     if (!selectedDate && defaultDate && mainLayer) {
-      // Update both URL and Redux state to ensure DateSelector re-renders properly
       updateHistory('date', getFormattedDate(defaultDate, 'default') as string);
-      dispatch(updateDateRange({ startDate: defaultDate }));
     }
   }, [defaultDate, dispatch, selectedDate, updateHistory, mainLayer]);
 

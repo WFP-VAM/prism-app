@@ -112,10 +112,6 @@
     },
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
-    "validity": {
-      "forward": 1,
-      "mode": "dekad"
-    },
     "opacity": 0.7,
     "legend_text": "Local station data from INAM blended with CHIRP rainfall estimates",
     "legend": "rfh_16_0_300"
@@ -161,10 +157,6 @@
     },
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
-    "validity": {
-      "forward": 1,
-      "mode": "dekad"
-    },
     "opacity": 0.7,
     "legend_text": "Rainfall anomaly based on long term averaged from local station data from INAM blended with CHIRP rainfall estimates",
     "legend": "rfq_14_20_400"
@@ -206,11 +198,6 @@
     },
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
-    "validity": {
-      "forward": 1,
-      "backward": 2,
-      "mode": "dekad"
-    },
     "opacity": 0.7,
     "legend_text": "Local station data from INAM blended with CHIRP rainfall estimates",
     "legend": [
@@ -337,11 +324,6 @@
     },
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
-    "validity": {
-      "forward": 1,
-      "backward": 2,
-      "mode": "dekad"
-    },
     "opacity": 0.7,
     "legend_text": "Rainfall anomaly based on long term averaged from local station data from INAM blended with CHIRP rainfall estimates",
     "legend": "rfq_14_20_400"
@@ -355,11 +337,6 @@
     },
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
-    "validity": {
-      "forward": 1,
-      "backward": 5,
-      "mode": "dekad"
-    },
     "opacity": 0.7,
     "legend_text": "Local station data from INAM blended with CHIRP rainfall estimates",
     "legend": [
@@ -454,11 +431,6 @@
     },
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
-    "validity": {
-      "forward": 1,
-      "backward": 5,
-      "mode": "dekad"
-    },
     "opacity": 0.7,
     "legend_text": "Rainfall anomaly based on long term averaged from local station data from INAM blended with CHIRP rainfall estimates",
     "legend": "rfq_14_20_400"
@@ -500,11 +472,6 @@
     },
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
-    "validity": {
-      "forward": 1,
-      "backward": 8,
-      "mode": "dekad"
-    },
     "opacity": 0.7,
     "legend_text": "Local station data from INAM blended with CHIRP rainfall estimates",
     "legend": [
@@ -631,11 +598,6 @@
     },
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
-    "validity": {
-      "forward": 1,
-      "backward": 8,
-      "mode": "dekad"
-    },
     "opacity": 0.7,
     "legend_text": "Rainfall anomaly based on long term averaged from local station data from INAM blended with CHIRP rainfall estimates",
     "legend": "rfq_14_20_400"
@@ -649,11 +611,6 @@
     },
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
-    "validity": {
-      "forward": 1,
-      "backward": 11,
-      "mode": "dekad"
-    },
     "opacity": 0.7,
     "legend_text": "Local station data from INAM blended with CHIRP rainfall estimates",
     "legend": [
@@ -748,11 +705,6 @@
     },
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
-    "validity": {
-      "forward": 1,
-      "backward": 11,
-      "mode": "dekad"
-    },
     "opacity": 0.7,
     "legend_text": "Rainfall anomaly based on long term averaged from local station data from INAM blended with CHIRP rainfall estimates",
     "legend": "rfq_14_20_400"
@@ -766,11 +718,6 @@
     },
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
-    "validity": {
-      "forward": 1,
-      "backward": 14,
-      "mode": "dekad"
-    },
     "opacity": 0.7,
     "legend_text": "Local station data from INAM blended with CHIRP rainfall estimates",
     "legend": [
@@ -865,11 +812,6 @@
     },
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
-    "validity": {
-      "forward": 1,
-      "backward": 14,
-      "mode": "dekad"
-    },
     "opacity": 0.7,
     "legend_text": "Rainfall anomaly based on long term averaged from local station data from INAM blended with CHIRP rainfall estimates",
     "legend": [
@@ -954,11 +896,6 @@
     },
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
-    "validity": {
-      "forward": 1,
-      "backward": 17,
-      "mode": "dekad"
-    },
     "opacity": 0.7,
     "legend_text": "Local station data from INAM blended with CHIRP rainfall estimates",
     "legend": [
@@ -1053,11 +990,6 @@
     },
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
-    "validity": {
-      "forward": 1,
-      "backward": 17,
-      "mode": "dekad"
-    },
     "opacity": 0.7,
     "legend_text": "Rainfall anomaly based on long term averaged from local station data from INAM blended with CHIRP rainfall estimates",
     "legend": [
@@ -1142,11 +1074,6 @@
     },
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
-    "validity": {
-      "forward": 1,
-      "backward": 20,
-      "mode": "dekad"
-    },
     "opacity": 0.7,
     "legend_text": "Local station data from INAM blended with CHIRP rainfall estimates",
     "legend": [
@@ -1241,11 +1168,6 @@
     },
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
-    "validity": {
-      "forward": 1,
-      "backward": 20,
-      "mode": "dekad"
-    },
     "opacity": 0.7,
     "legend_text": "Rainfall anomaly based on long term averaged from local station data from INAM blended with CHIRP rainfall estimates",
     "legend": [
@@ -1330,11 +1252,6 @@
     },
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
-    "validity": {
-      "forward": 1,
-      "backward": 23,
-      "mode": "dekad"
-    },
     "opacity": 0.7,
     "legend_text": "Local station data from INAM blended with CHIRP rainfall estimates",
     "legend": [
@@ -1429,11 +1346,6 @@
     },
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
-    "validity": {
-      "forward": 1,
-      "backward": 23,
-      "mode": "dekad"
-    },
     "opacity": 0.7,
     "legend_text": "Rainfall anomaly based on long term averaged from local station data from INAM blended with CHIRP rainfall estimates",
     "legend": [
@@ -1518,11 +1430,6 @@
     },
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
-    "validity": {
-      "forward": 1,
-      "backward": 26,
-      "mode": "dekad"
-    },
     "opacity": 0.7,
     "legend_text": "Local station data from INAM blended with CHIRP rainfall estimates",
     "legend": [
@@ -1617,11 +1524,6 @@
     },
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
-    "validity": {
-      "forward": 1,
-      "backward": 26,
-      "mode": "dekad"
-    },
     "opacity": 0.7,
     "legend_text": "Rainfall anomaly based on long term averaged from local station data from INAM blended with CHIRP rainfall estimates",
     "legend": [
@@ -1706,11 +1608,6 @@
     },
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
-    "validity": {
-      "forward": 1,
-      "backward": 35,
-      "mode": "dekad"
-    },
     "opacity": 0.7,
     "legend_text": "Local station data from INAM blended with CHIRP rainfall estimates",
     "legend": [
@@ -1805,11 +1702,6 @@
     },
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
-    "validity": {
-      "forward": 1,
-      "backward": 35,
-      "mode": "dekad"
-    },
     "opacity": 0.7,
     "legend_text": "Rainfall anomaly based on long term averaged from local station data from INAM blended with CHIRP rainfall estimates",
     "legend": [
@@ -2166,10 +2058,6 @@
     "server_layer_name": "myd11a2_blended_txb_moz_dekad",
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
-    "validity": {
-      "forward": 1,
-      "mode": "dekad"
-    },
     "wcsConfig": {
       "scale": 0.02,
       "offset": -273,
@@ -2188,10 +2076,6 @@
     "server_layer_name": "myd11a2_blended_txd_moz_dekad",
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
-    "validity": {
-      "forward": 1,
-      "mode": "dekad"
-    },
     "opacity": 0.7,
     "legend_text": "Temperature anomaly based on long term average compared to local station data from INAM blended with MODIS daytime land surface temperature estimates",
     "legend": "txd_tud_21_m12_12",
@@ -2205,11 +2089,6 @@
     "server_layer_name": "rxs_blended_moz_dekad",
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
-    "validity": {
-      "forward": 1,
-      "backward": 2,
-      "mode": "dekad"
-    },
     "wcsConfig": {
       "scale": 0.001,
       "offset": 0,
@@ -2228,11 +2107,6 @@
     "server_layer_name": "rxs_blended_moz_dekad",
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
-    "validity": {
-      "forward": 1,
-      "backward": 5,
-      "mode": "dekad"
-    },
     "wcsConfig": {
       "scale": 0.001,
       "offset": 0,
@@ -2251,11 +2125,6 @@
     "server_layer_name": "rxs_blended_moz_dekad",
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
-    "validity": {
-      "forward": 1,
-      "backward": 8,
-      "mode": "dekad"
-    },
     "wcsConfig": {
       "scale": 0.001,
       "offset": 0,
@@ -2274,11 +2143,6 @@
     "server_layer_name": "rxs_blended_moz_dekad",
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
-    "validity": {
-      "forward": 1,
-      "backward": 17,
-      "mode": "dekad"
-    },
     "wcsConfig": {
       "scale": 0.001,
       "offset": 0,
@@ -2297,11 +2161,6 @@
     "server_layer_name": "rxs_blended_moz_dekad",
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
-    "validity": {
-      "forward": 1,
-      "backward": 26,
-      "mode": "dekad"
-    },
     "wcsConfig": {
       "scale": 0.001,
       "offset": 0,
@@ -2320,11 +2179,6 @@
     "server_layer_name": "rxs_blended_moz_dekad",
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
-    "validity": {
-      "forward": 1,
-      "backward": 35,
-      "mode": "dekad"
-    },
     "wcsConfig": {
       "scale": 0.001,
       "offset": 0,
@@ -2343,11 +2197,6 @@
     "server_layer_name": "rxs_blended_moz_dekad",
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
-    "validity": {
-      "forward": 1,
-      "backward": 71,
-      "mode": "dekad"
-    },
     "wcsConfig": {
       "scale": 0.001,
       "offset": 0,
@@ -2366,11 +2215,6 @@
     "server_layer_name": "rxs_blended_moz_dekad",
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
-    "validity": {
-      "forward": 1,
-      "backward": 107,
-      "mode": "dekad"
-    },
     "wcsConfig": {
       "scale": 0.001,
       "offset": 0,
@@ -2389,11 +2233,6 @@
     "server_layer_name": "rxs_blended_moz_dekad",
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
-    "validity": {
-      "forward": 1,
-      "backward": 179,
-      "mode": "dekad"
-    },
     "wcsConfig": {
       "scale": 0.001,
       "offset": 0,
@@ -2405,6 +2244,9 @@
     "additional_query_params": {
       "styles": "rps_blended"
     }
+  },
+  "adamts_buffers": {
+    "server_layer_name": "moz_gdacs_buffers"
   },
   "ipc_phase_2024": {
     "title": "IPC Phase Classification April to September 2024",

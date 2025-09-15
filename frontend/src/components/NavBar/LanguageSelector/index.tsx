@@ -65,11 +65,7 @@ function LanguageSelector() {
         anchorEl={anchorEl}
       >
         {languages.map(lng => (
-          <MenuItem
-            aria-label={`language-select-dropdown-menu-item-${lng}`}
-            key={lng}
-            onClick={() => handleChangeLanguage(lng)}
-          >
+          <MenuItem key={lng} onClick={() => handleChangeLanguage(lng)}>
             <Typography>{lng}</Typography>
           </MenuItem>
         ))}

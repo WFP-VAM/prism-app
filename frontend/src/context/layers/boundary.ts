@@ -4,7 +4,6 @@ import { coordFirst } from 'utils/data-utils';
 import { fetchWithTimeout } from 'utils/fetch-with-timeout';
 import { LocalError } from 'utils/error-utils';
 import { addNotification } from 'context/notificationStateSlice';
-import { getPmtilesInstance } from 'utils/pmtiles-utils';
 import type { LayerDataParams, LazyLoader } from './layer-data';
 
 export interface BoundaryLayerData extends FeatureCollection {}
@@ -12,26 +11,9 @@ export interface BoundaryLayerData extends FeatureCollection {}
 export const fetchBoundaryLayerData: LazyLoader<BoundaryLayerProps> =
   () =>
   async (params: LayerDataParams<BoundaryLayerProps>, { dispatch }) => {
-    const { layer, map } = params;
-    const { path, format } = layer;
-
+    const { layer } = params;
+    const { path } = layer;
     try {
-      if (format === 'pmtiles') {
-        const p = getPmtilesInstance(path);
-        const header = await p.getHeader();
-
-        const allFeatures = map.querySourceFeatures(`source-${layer.id}`, {
-          sourceLayer: layer.layerName,
-        });
-
-        return {
-          type: 'FeatureCollection',
-          features: allFeatures,
-          properties: { header },
-        };
-      }
-
-      // GeoJSON fetching logic
       const response = await fetchWithTimeout(
         path,
         dispatch,

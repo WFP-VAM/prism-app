@@ -13,14 +13,14 @@ import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import Draggable, { DraggableEvent } from 'react-draggable';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import {
   AnticipatoryAction,
   DateItem,
   DateRangeType,
   Panel,
 } from 'config/types';
-import { useMapState } from 'utils/useMapState';
+import { dateRangeSelector } from 'context/mapStateSlice/selectors';
 import { locales, useSafeTranslation } from 'i18n';
 import {
   dateStrToUpperCase,
@@ -32,11 +32,11 @@ import { useUrlHistory } from 'utils/url-utils';
 import useLayers from 'utils/layers-utils';
 import { format } from 'date-fns';
 import { leftPanelTabValueSelector } from 'context/leftPanelStateSlice';
+import { updateDateRange } from 'context/mapStateSlice';
 import { getRequestDate } from 'utils/server-utils';
 import { isAnticipatoryActionLayer, isWindowedDates } from 'config/utils';
 import { getAAConfig } from 'context/anticipatoryAction/config';
 import { RootState } from 'context/store';
-import { getTimelineOffset } from 'components/MapView/LeftPanel/AnticipatoryActionPanel/AnticipatoryActionDroughtPanel/utils/countryConfig';
 import TickSvg from './tick.svg';
 import DateSelectorInput from './DateSelectorInput';
 import TimelineItems from './TimelineItems';
@@ -44,7 +44,6 @@ import {
   DateCompatibleLayerWithDateItems,
   TIMELINE_ITEM_WIDTH,
   findDateIndex,
-  findMatchingDateBetweenLayers,
 } from './utils';
 import { oneDayInMs } from '../LeftPanel/utils';
 
@@ -57,19 +56,13 @@ const TIMELINE_ID = 'dateTimelineSelector';
 const POINTER_ID = 'datePointerSelector';
 
 const calculateStartAndEndDates = (startDate: Date, selectedTab: string) => {
-  let year = startDate.getFullYear();
-  let startMonth = 0;
+  const year =
+    startDate.getFullYear() -
+    (selectedTab === Panel.AnticipatoryActionDrought && startDate.getMonth() < 3
+      ? 1
+      : 0);
 
-  if (selectedTab === Panel.AnticipatoryActionDrought) {
-    // Use country-specific timeline offset for AA drought
-    // eslint-disable-next-line fp/no-mutation
-    startMonth = getTimelineOffset();
-    // Adjust year if we're before the timeline start month
-    if (startDate.getMonth() < startMonth) {
-      // eslint-disable-next-line fp/no-mutation
-      year -= 1;
-    }
-  }
+  const startMonth = Panel.AnticipatoryActionDrought === selectedTab ? 3 : 0; // April for anticipatory_action, January otherwise
 
   const start = new Date(year, startMonth, 1);
   const end = new Date(year, startMonth + 11, 31);
@@ -85,8 +78,7 @@ const DateSelector = memo(() => {
     checkSelectedDateForLayerSupport,
   } = useLayers();
 
-  const mapState = useMapState();
-  const { startDate: stateStartDate } = mapState.dateRange;
+  const { startDate: stateStartDate } = useSelector(dateRangeSelector);
   const tabValue = useSelector(leftPanelTabValueSelector);
   const [dateRange, setDateRange] = useState<DateRangeType[]>([
     {
@@ -115,6 +107,7 @@ const DateSelector = memo(() => {
 
   const { t } = useSafeTranslation();
   const { updateHistory } = useUrlHistory();
+  const dispatch = useDispatch();
   const theme = useTheme();
   const smUp = useMediaQuery(theme.breakpoints.up('sm'));
   const xsDown = useMediaQuery(theme.breakpoints.down('xs'));
@@ -215,7 +208,7 @@ const DateSelector = memo(() => {
     [dateRange],
   );
 
-  const dateSelector = mapState.dateRange;
+  const dateSelector = useSelector(dateRangeSelector);
 
   // We truncate layer by removing date that will not be drawn to the Timeline
   const truncatedLayers: DateItem[][] = useMemo(() => {
@@ -429,14 +422,14 @@ const DateSelector = memo(() => {
         return;
       }
       updateHistory('date', getFormattedDate(time, 'default') as string);
-      mapState.actions.updateDateRange({ startDate: time });
+      dispatch(updateDateRange({ startDate: time }));
     },
     [
       availableDates,
       checkSelectedDateForLayerSupport,
       stateStartDate,
       updateHistory,
-      mapState.actions,
+      dispatch,
     ],
   );
 
@@ -446,9 +439,6 @@ const DateSelector = memo(() => {
       increment: number,
       isUpdatingHistory: boolean,
     ) => {
-      if (date === undefined) {
-        return;
-      }
       const selectedIndex = findDateIndex(availableDates, date);
 
       if (availableDates[selectedIndex + increment]) {
@@ -462,49 +452,12 @@ const DateSelector = memo(() => {
   );
 
   const incrementDate = useCallback(() => {
-    if (stateStartDate === undefined) {
-      return;
-    }
-    // find the next observation date to jump to
-    // if multiple layers are active, we pick the first observation date
-    // for any layer
-    const nextObservationDateItem: DateItem | undefined =
-      findMatchingDateBetweenLayers(
-        visibleLayers.map(l =>
-          l.filter(
-            (d: DateItem) =>
-              d.queryDate > stateStartDate && d.queryDate === d.displayDate,
-          ),
-        ),
-        'forward',
-      );
-    if (nextObservationDateItem !== undefined) {
-      setDatePosition(nextObservationDateItem.displayDate, 0, true);
-    }
-  }, [setDatePosition, stateStartDate, visibleLayers]);
+    setDatePosition(stateStartDate, 1, true);
+  }, [setDatePosition, stateStartDate]);
 
   const decrementDate = useCallback(() => {
-    if (stateStartDate === undefined) {
-      return;
-    }
-    // find the previous observation date to jump to
-    // if multiple layers are active, pick the first date for any layer
-    // use filter+pop as findLast is not widely available yet
-    const previousObservationDateItem: DateItem | undefined =
-      findMatchingDateBetweenLayers(
-        visibleLayers.map(l =>
-          // eslint- disable-next-line fp/no-mutating-methods
-          l.filter(
-            (d: DateItem) =>
-              d.queryDate < stateStartDate && d.queryDate === d.displayDate,
-          ),
-        ),
-        'back',
-      );
-    if (previousObservationDateItem !== undefined) {
-      setDatePosition(previousObservationDateItem.displayDate, 0, true);
-    }
-  }, [setDatePosition, stateStartDate, visibleLayers]);
+    setDatePosition(stateStartDate, -1, true);
+  }, [setDatePosition, stateStartDate]);
 
   const clickDate = useCallback(
     (index: number) => {
@@ -665,11 +618,7 @@ const DateSelector = memo(() => {
         {/* Desktop */}
         <Grid item xs={12} sm className={classes.slider}>
           {!xsDown && (
-            <Button
-              id="chevronLeftButton"
-              onClick={decrementDate}
-              className={classes.chevronDate}
-            >
+            <Button onClick={decrementDate} className={classes.chevronDate}>
               <ChevronLeft />
             </Button>
           )}
@@ -737,11 +686,7 @@ const DateSelector = memo(() => {
             </Draggable>
           </Grid>
           {!xsDown && (
-            <Button
-              id="chevronRightButton"
-              onClick={incrementDate}
-              className={classes.chevronDate}
-            >
+            <Button onClick={incrementDate} className={classes.chevronDate}>
               <ChevronRight />
             </Button>
           )}

@@ -31,7 +31,7 @@ import {
   DateRangeRounded,
   CloseRounded,
 } from '@material-ui/icons';
-import { useDispatch, useSelector } from 'context/hooks';
+import { useDispatch, useSelector } from 'react-redux';
 import DatePicker from 'react-datepicker';
 import { isNil, orderBy, range } from 'lodash';
 import {
@@ -40,6 +40,7 @@ import {
   layerDataSelector,
 } from 'context/mapStateSlice/selectors';
 import { useUrlHistory } from 'utils/url-utils';
+import { availableDatesSelector } from 'context/serverStateSlice';
 import {
   AnalysisDispatchParams,
   PolygonAnalysisDispatchParams,
@@ -94,12 +95,7 @@ import {
   safeDispatchRemoveLayer,
   safeDispatchAddLayer,
 } from 'utils/map-utils';
-import { addLayer, removeLayer } from 'context/mapStateSlice';
-import {
-  availableDatesSelector,
-  layersLoadingDatesIdsSelector,
-  loadAvailableDatesForLayer,
-} from 'context/serverStateSlice';
+import { removeLayer } from 'context/mapStateSlice';
 import LayerDropdown from 'components/MapView/Layers/LayerDropdown';
 import SimpleDropdown from 'components/Common/SimpleDropdown';
 import {
@@ -110,7 +106,6 @@ import LoadingBlinkingDots from 'components/Common/LoadingBlinkingDots';
 import useLayers from 'utils/layers-utils';
 import { black, cyanBlue } from 'muiTheme';
 import { getFormattedDate } from 'utils/date-utils';
-import { layerDatesPreloadedSelector } from 'context/serverPreloadStateSlice';
 import AnalysisTable from './AnalysisTable';
 import ExposureAnalysisTable from './AnalysisTable/ExposureAnalysisTable';
 import ExposureAnalysisActions from './ExposureAnalysisActions';
@@ -131,8 +126,6 @@ const AnalysisPanel = memo(() => {
     getAnalysisParams,
   } = useUrlHistory();
   const availableDates = useSelector(availableDatesSelector);
-  const layersLoadingDates = useSelector(layersLoadingDatesIdsSelector);
-  const layerDatesPreloaded = useSelector(layerDatesPreloadedSelector);
   const analysisResult = useSelector(analysisResultSelector);
   const analysisResultSortByKey = useSelector(analysisResultSortByKeySelector);
   const analysisResultSortOrder = useSelector(analysisResultSortOrderSelector);
@@ -226,12 +219,6 @@ const AnalysisPanel = memo(() => {
   const hazardDataType: HazardDataType | null = selectedHazardLayer
     ? selectedHazardLayer.geometry || RasterType.Raster
     : null;
-  const requiredThresholdNotSet = Boolean(
-    baselineLayerId &&
-      LayerDefinitions[baselineLayerId]?.type === 'admin_level_data' &&
-      !belowThreshold &&
-      !aboveThreshold,
-  );
   const availableHazardDates = React.useMemo(
     () =>
       selectedHazardLayer
@@ -278,31 +265,6 @@ const AnalysisPanel = memo(() => {
     : null;
   const { translatedColumns } = useAnalysisTableColumns(analysisResult);
 
-  // make sure that available dates are calculated for the selected layer
-  // so that a date can be selected in the date picker
-  useEffect(() => {
-    if (hazardLayerId !== undefined) {
-      if (
-        ['wms', 'point_data'].includes(LayerDefinitions[hazardLayerId].type) &&
-        !layerDatesPreloaded
-      ) {
-        return;
-      }
-      if (
-        availableDates[hazardLayerId] === undefined &&
-        !layersLoadingDates.includes(hazardLayerId)
-      ) {
-        dispatch(loadAvailableDatesForLayer(hazardLayerId));
-      }
-    }
-  }, [
-    availableDates,
-    dispatch,
-    hazardLayerId,
-    layerDatesPreloaded,
-    layersLoadingDates,
-  ]);
-
   // set default date after dates finish loading and when hazard layer changes
   useEffect(() => {
     if (isNil(lastAvailableHazardDate)) {
@@ -328,7 +290,7 @@ const AnalysisPanel = memo(() => {
     lastAvailableHazardEndDate,
   ]);
 
-  // Only expand if analysis results are available.
+  // Only epxand if analysis results are available.
   useEffect(() => {
     if (!analysisResult) {
       setShowTable(false);
@@ -496,7 +458,7 @@ const AnalysisPanel = memo(() => {
     setThresholdError(null);
 
     resetAnalysisParams();
-    refreshBoundaries(map, { addLayer, removeLayer });
+    refreshBoundaries(map, dispatch);
 
     if (previousBaselineId) {
       const previousBaseline = LayerDefinitions[
@@ -892,14 +854,6 @@ const AnalysisPanel = memo(() => {
           <Typography className={classes.colorBlack} variant="body2">
             {t('Threshold')}
           </Typography>
-          {requiredThresholdNotSet && (
-            <Typography style={{ color: 'red' }}>
-              {t(
-                'A threshold is required when running an analysis for this type of layer. To generate statistics without a threshold, choose an administrative level as the baseline layer.',
-              )}
-            </Typography>
-          )}
-
           <div className={classes.rowInputContainer}>
             <TextField
               id="outlined-number-low"
@@ -983,7 +937,6 @@ const AnalysisPanel = memo(() => {
     belowThreshold,
     onThresholdOptionChange,
     aboveThreshold,
-    requiredThresholdNotSet,
     selectedDate,
     availableHazardDates,
   ]);
@@ -1095,8 +1048,6 @@ const AnalysisPanel = memo(() => {
           disabled={
             !!thresholdError || // if there is a threshold error
             isAnalysisLoading || // or analysis is currently loading
-            // if the baseline is an admin level layer, at least one threshold must be set
-            requiredThresholdNotSet ||
             !hazardLayerId || // or hazard layer hasn't been selected
             (hazardDataType === GeometryType.Polygon
               ? !startDate || !endDate || !adminLevelLayerData
@@ -1127,7 +1078,6 @@ const AnalysisPanel = memo(() => {
     statistic,
     t,
     thresholdError,
-    requiredThresholdNotSet,
   ]);
 
   const renderedExposureAnalysisActions = useMemo(() => {

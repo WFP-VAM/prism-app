@@ -21,7 +21,7 @@ import {
   getLayerMapId,
   isLayerOnView,
 } from 'utils/map-utils';
-import { useMapState } from 'utils/useMapState';
+import { mapSelector } from 'context/mapStateSlice/selectors';
 import {
   AdminLevelDataLayer,
   AnticipatoryActionDroughtLayer,
@@ -81,7 +81,7 @@ const MapComponent = memo(() => {
 
   const { selectedLayers, boundaryLayerId } = useLayers();
 
-  const selectedMap = useMapState()?.maplibreMap();
+  const selectedMap = useSelector(mapSelector);
   const tabValue = useSelector(leftPanelTabValueSelector);
 
   const panelHidden = tabValue === Panel.None;
@@ -244,7 +244,7 @@ const MapComponent = memo(() => {
           ),
         });
       })}
-      <AnalysisLayer before={firstBoundaryId} mapRef={mapRef} />
+      <AnalysisLayer before={firstBoundaryId} />
       <SelectionLayer before={firstSymbolId} />
       <MapTooltip />
     </MapGL>

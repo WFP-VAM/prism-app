@@ -23,8 +23,7 @@ import {
 import { Close, Opacity, SwapVert } from '@material-ui/icons';
 import { useDispatch, useSelector } from 'react-redux';
 import { LayerType, LegendDefinitionItem } from 'config/types';
-import { layersSelector } from 'context/mapStateSlice/selectors';
-import { useMapState } from 'utils/useMapState';
+import { mapSelector, layersSelector } from 'context/mapStateSlice/selectors';
 import { clearDataset } from 'context/datasetStateSlice';
 import { useSafeTranslation } from 'i18n';
 import {
@@ -61,12 +60,8 @@ const LegendItem = memo(
   }: LegendItemProps) => {
     const classes = useStyles();
     const dispatch = useDispatch();
-    const {
-      actions: { addLayer, removeLayer },
-      ...mapState
-    } = useMapState();
     const { removeLayerFromUrl } = useUrlHistory();
-    const map = mapState.maplibreMap();
+    const map = useSelector(mapSelector);
     const [opacityEl, setOpacityEl] = useState<HTMLButtonElement | null>(null);
     const opacity = useSelector(opacitySelector(id as string));
     const isAnalysis = type === 'analysis';
@@ -179,20 +174,11 @@ const LegendItem = memo(
           layer,
           map,
           urlLayerKey,
-          removeLayer,
+          dispatch,
           removeLayerFromUrl,
-          addLayer,
         );
       }
-    }, [
-      isAnalysis,
-      layer,
-      dispatch,
-      map,
-      removeLayerFromUrl,
-      addLayer,
-      removeLayer,
-    ]);
+    }, [isAnalysis, layer, dispatch, map, removeLayerFromUrl]);
 
     const getColorIndicatorKey = useCallback(
       (item: LegendDefinitionItem) =>

@@ -18,17 +18,21 @@ import {
   isAnticipatoryActionLayer,
   isWindowedDates,
 } from 'config/utils';
-import { layerOrdering } from 'context/mapStateSlice';
-import { useMapState } from 'utils/useMapState';
-import { addNotification } from 'context/notificationStateSlice';
 import {
-  availableDatesSelector,
-  layersLoadingDatesIdsSelector,
-} from 'context/serverStateSlice';
-import { layerDatesPreloadedSelector } from 'context/serverPreloadStateSlice';
+  addLayer,
+  layerOrdering,
+  removeLayer,
+  updateDateRange,
+} from 'context/mapStateSlice';
+import {
+  dateRangeSelector,
+  layersSelector,
+} from 'context/mapStateSlice/selectors';
+import { addNotification } from 'context/notificationStateSlice';
+import { availableDatesSelector } from 'context/serverStateSlice';
 import { countBy, get, pickBy, uniqBy } from 'lodash';
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { useDispatch, useSelector } from 'context/hooks';
+import { useDispatch, useSelector } from 'react-redux';
 import { LocalError } from 'utils/error-utils';
 import { DateFormat } from 'utils/name-utils';
 import {
@@ -67,12 +71,9 @@ const useLayers = () => {
   const { urlParams, updateHistory, removeLayerFromUrl } = useUrlHistory();
   const boundaryLayerId = getBoundaryLayerSingleton().id;
 
-  const mapState = useMapState();
-  const unsortedSelectedLayers = mapState.layers;
+  const unsortedSelectedLayers = useSelector(layersSelector);
   const serverAvailableDates = useSelector(availableDatesSelector);
-  const { startDate: selectedDate } = mapState.dateRange;
-  const layersLoadingDates = useSelector(layersLoadingDatesIdsSelector);
-  const datesPreloaded = useSelector(layerDatesPreloadedSelector);
+  const { startDate: selectedDate } = useSelector(dateRangeSelector);
 
   // get AA config
   const AAConfig = useMemo(() => {
@@ -326,49 +327,38 @@ const useLayers = () => {
   );
 
   // Adds missing layers to existing map instance
-  const addMissingLayers = useCallback(
-    (): void =>
-      missingLayers.forEach(layerId => {
-        const layer = LayerDefinitions[layerId as LayerKey];
-        if (['wms', 'point_data'].includes(layer.type) && !datesPreloaded) {
-          return;
-        }
-        let datesReady: boolean = false;
-        try {
-          // eslint-disable-next-line fp/no-mutation
-          datesReady = checkLayerAvailableDatesAndContinueOrRemove(
-            layer,
-            serverAvailableDates,
-            layersLoadingDates,
-            removeLayerFromUrl,
-            dispatch,
-          );
-        } catch (error) {
-          console.error((error as LocalError).getErrorMessage());
-        }
-        if (datesReady) {
-          mapState.actions.addLayer(layer);
-        }
-      }),
-    [
-      dispatch,
-      datesPreloaded,
-      layersLoadingDates,
-      missingLayers,
-      removeLayerFromUrl,
-      serverAvailableDates,
-      mapState.actions,
-    ],
-  );
+  const addMissingLayers = useCallback((): void => {
+    missingLayers.forEach(layerId => {
+      const layer = LayerDefinitions[layerId as LayerKey];
+      try {
+        checkLayerAvailableDatesAndContinueOrRemove(
+          layer,
+          serverAvailableDates,
+          removeLayerFromUrl,
+          dispatch,
+        );
+      } catch (error) {
+        console.error((error as LocalError).getErrorMessage());
+        return;
+      }
+      dispatch(addLayer(layer));
+    });
+  }, [dispatch, missingLayers, removeLayerFromUrl, serverAvailableDates]);
 
   // let users know if their current date doesn't exist in possible dates
-  const urlDate: string | null = useMemo(() => {
-    const r = urlParams.get('date');
-    return r === 'undefined' ? null : r;
-  }, [urlParams]);
+  const urlDate = useMemo(() => urlParams.get('date'), [urlParams]);
+
+  // The date integer from url
+  const dateInt = useMemo(
+    () => (urlDate ? new Date(urlDate) : new Date()).setUTCHours(12, 0, 0, 0),
+    [urlDate],
+  );
 
   useEffect(() => {
-    if (!hazardLayerIds && !baselineLayerIds) {
+    if (
+      (!hazardLayerIds && !baselineLayerIds) ||
+      serverAvailableDatesAreEmpty
+    ) {
       return;
     }
 
@@ -387,34 +377,26 @@ const useLayers = () => {
 
     addMissingLayers();
 
-    const dateInt: number | undefined = urlDate
-      ? new Date(urlDate).setUTCHours(12, 0, 0, 0)
-      : undefined;
-
-    if (dateInt === selectedDate) {
+    if (!urlDate || dateInt === selectedDate) {
       return;
     }
 
     if (!Number.isNaN(dateInt)) {
-      mapState.actions.updateDateRange({ startDate: dateInt });
+      dispatch(updateDateRange({ startDate: dateInt }));
       updateHistory('date', getFormattedDate(dateInt, 'default') as string);
-      return;
-    }
-    if (dateInt === undefined) {
       return;
     }
 
     dispatch(
       addNotification({
-        message: t('Invalid date found {{date}}. Using most recent date', {
-          date: urlDate,
-        }),
+        message: t('Invalid date found. Using most recent date'),
         type: 'warning',
       }),
     );
   }, [
     addMissingLayers,
     baselineLayerIds,
+    dateInt,
     dispatch,
     hazardLayerIds,
     invalidLayersIds,
@@ -423,7 +405,6 @@ const useLayers = () => {
     updateHistory,
     urlDate,
     t,
-    mapState.actions,
   ]);
 
   const removeLayerAndUpdateHistory = useCallback(
@@ -434,7 +415,7 @@ const useLayers = () => {
       // Remove layer from url.
       const urlLayerKey = getUrlKey(layerToRemove);
       removeLayerFromUrl(urlLayerKey, layerToRemove.id);
-      mapState.actions.removeLayer(layerToRemove);
+      dispatch(removeLayer(layerToRemove));
 
       const layerToKeepDates = getPossibleDatesForLayer(
         layerToKeep as DateCompatibleLayer,
@@ -449,7 +430,7 @@ const useLayers = () => {
       );
     },
     [
-      mapState.actions,
+      dispatch,
       removeLayerFromUrl,
       selectedDate,
       serverAvailableDates,
@@ -462,18 +443,11 @@ const useLayers = () => {
     const nonBoundaryLayers = selectedLayers.filter(
       layer => layer.type !== 'boundary',
     );
-
-    // Check if any of the selected layers are currently loading their dates
-    const hasLayersLoadingDates = nonBoundaryLayers.some(layer =>
-      layersLoadingDates.includes(layer.id),
-    );
-
     if (
       selectedLayerDates.length !== 0 ||
       selectedLayersWithDateSupport.length === 0 ||
       !selectedDate ||
-      nonBoundaryLayers.length < 2 ||
-      hasLayersLoadingDates
+      nonBoundaryLayers.length < 2
     ) {
       return;
     }
@@ -501,7 +475,6 @@ const useLayers = () => {
     selectedLayerDates.length,
     selectedLayers,
     selectedLayersWithDateSupport.length,
-    layersLoadingDates,
     t,
   ]);
 

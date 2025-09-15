@@ -6,10 +6,7 @@ import { fromArrayBuffer, GeoTIFFImage } from 'geotiff';
 import { createGetMapUrl } from 'prism-common';
 import { Dispatch } from 'redux';
 import { RASTER_API_URL } from 'utils/constants';
-import {
-  ANALYSIS_REQUEST_TIMEOUT,
-  fetchWithTimeout,
-} from 'utils/fetch-with-timeout';
+import { fetchWithTimeout } from 'utils/fetch-with-timeout';
 import { LocalError } from 'utils/error-utils';
 import { addNotification } from 'context/notificationStateSlice';
 import { Map as MaplibreMap } from 'maplibre-gl';
@@ -215,7 +212,6 @@ export async function getDownloadGeotiffURL(
     {
       method: 'POST',
       cache: 'no-cache',
-      timeout: ANALYSIS_REQUEST_TIMEOUT,
       headers: {
         Accept: 'application/json',
         'Content-Type': 'application/json',

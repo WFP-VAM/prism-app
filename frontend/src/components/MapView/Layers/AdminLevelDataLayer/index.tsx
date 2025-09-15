@@ -8,8 +8,11 @@ import {
   MapEventWrapFunctionProps,
 } from 'config/types';
 import { LayerData, loadLayerData } from 'context/layers/layer-data';
-import { layerDataSelector } from 'context/mapStateSlice/selectors';
-import { useMapState } from 'utils/useMapState';
+import {
+  layerDataSelector,
+  mapSelector,
+} from 'context/mapStateSlice/selectors';
+import { addLayer, removeLayer } from 'context/mapStateSlice';
 import { useDefaultDate } from 'utils/useDefaultDate';
 import { getBoundaryLayers, LayerDefinitions } from 'config/utils';
 import { addNotification } from 'context/notificationStateSlice';
@@ -40,11 +43,7 @@ const onClick =
 const AdminLevelDataLayers = memo(
   ({ layer, before }: { layer: AdminLevelDataLayerProps; before?: string }) => {
     const dispatch = useDispatch();
-    const {
-      actions: { addLayer, removeLayer },
-      ...mapState
-    } = useMapState();
-    const map = mapState.maplibreMap();
+    const map = useSelector(mapSelector);
     const serverAvailableDates = useSelector(availableDatesSelector);
 
     const boundaryId = layer.boundary || firstBoundaryOnView(map);
@@ -75,13 +74,13 @@ const AdminLevelDataLayers = memo(
 
       if ('boundary' in layer) {
         if (Object.keys(LayerDefinitions).includes(boundaryId)) {
-          boundaryLayers.map(l => removeLayer(l));
-          addLayer({ ...boundaryLayer, isPrimary: true });
+          boundaryLayers.map(l => dispatch(removeLayer(l)));
+          dispatch(addLayer({ ...boundaryLayer, isPrimary: true }));
 
           // load unique boundary only once
           // to avoid double loading which proven to be performance issue
           if (!isLayerOnView(map, boundaryId)) {
-            dispatch(loadLayerData({ layer: boundaryLayer, map }));
+            dispatch(loadLayerData({ layer: boundaryLayer }));
           }
         } else {
           dispatch(
@@ -93,18 +92,9 @@ const AdminLevelDataLayers = memo(
         }
       }
       if (!data) {
-        dispatch(loadLayerData({ layer, date: queryDate, map }));
+        dispatch(loadLayerData({ layer, date: queryDate }));
       }
-    }, [
-      boundaryId,
-      dispatch,
-      data,
-      layer,
-      map,
-      queryDate,
-      addLayer,
-      removeLayer,
-    ]);
+    }, [boundaryId, dispatch, data, layer, map, queryDate]);
 
     if (!data) {
       return null;

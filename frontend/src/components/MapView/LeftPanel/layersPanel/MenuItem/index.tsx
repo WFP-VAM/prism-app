@@ -7,14 +7,15 @@ import {
   AccordionSummary,
 } from '@material-ui/core';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import { useSelector } from 'react-redux';
 import { LayersCategoryType } from 'config/types';
 import MenuSwitch from 'components/MapView/LeftPanel/layersPanel/MenuItem/MenuSwitch';
 import { useSafeTranslation } from 'i18n';
 import { Extent } from 'components/MapView/Layers/raster-utils';
-import { useMapState } from 'utils/useMapState';
+import { layersSelector } from 'context/mapStateSlice/selectors';
 import { filterActiveLayers } from 'components/MapView/utils';
 import SelectedLayersInformation from './SelectedLayersInformation';
-import { makeSafeIDFromTitle, useLayerMenuItemStyles } from './utils';
+import { useLayerMenuItemStyles } from './utils';
 
 interface MenuItemProps {
   title: string;
@@ -24,8 +25,7 @@ interface MenuItemProps {
 
 const MenuItem = memo(({ title, layersCategories, extent }: MenuItemProps) => {
   const { t } = useSafeTranslation();
-  const mapState = useMapState();
-  const selectedLayers = mapState.layers;
+  const selectedLayers = useSelector(layersSelector);
   const classes = useLayerMenuItemStyles();
 
   const categoryLayers = layersCategories
@@ -56,7 +56,7 @@ const MenuItem = memo(({ title, layersCategories, extent }: MenuItemProps) => {
           content: classes.summaryContent,
         }}
         aria-controls={title}
-        id={`level1-${makeSafeIDFromTitle(title)}`}
+        id={title}
       >
         <Typography classes={{ root: classes.title }}>{t(title)}</Typography>
         <SelectedLayersInformation
