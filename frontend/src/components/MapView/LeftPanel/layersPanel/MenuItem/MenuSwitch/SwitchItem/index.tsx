@@ -5,22 +5,26 @@ import {
   Tooltip,
   makeStyles,
 } from '@material-ui/core';
+import type { AppDispatch } from 'context/store';
 import OpacityIcon from '@material-ui/icons/Opacity';
 import { memo, useCallback, useEffect, useMemo, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'context/hooks';
+
 import { LayerKey, LayerType } from 'config/types';
 import { LayerDefinitions } from 'config/utils';
 import { clearDataset } from 'context/datasetStateSlice';
-import { layersSelector, mapSelector } from 'context/mapStateSlice/selectors';
 import { useSafeTranslation } from 'i18n';
+import { useMapState } from 'utils/useMapState';
 import { refreshBoundaries } from 'utils/map-utils';
 import { getUrlKey, useUrlHistory } from 'utils/url-utils';
 import { Extent } from 'components/MapView/Layers/raster-utils';
-import { availableDatesSelector } from 'context/serverStateSlice';
+import {
+  availableDatesSelector,
+  layersLoadingDatesIdsSelector,
+} from 'context/serverStateSlice';
 import { checkLayerAvailableDatesAndContinueOrRemove } from 'components/MapView/utils';
 import { LocalError } from 'utils/error-utils';
 import { opacitySelector, setOpacity } from 'context/opacityStateSlice';
-import { addLayer } from 'context/mapStateSlice';
 import { toggleRemoveLayer } from './utils';
 import LayerDownloadOptions from './LayerDownloadOptions';
 import ExposureAnalysisOption from './ExposureAnalysisOption';
@@ -44,11 +48,16 @@ const SwitchItem = memo(
     } = layer;
     const classes = useStyles();
     const { t } = useSafeTranslation();
-    const selectedLayers = useSelector(layersSelector);
+    const mapState = useMapState();
+    const selectedLayers = mapState.layers;
     const serverAvailableDates = useSelector(availableDatesSelector);
-    const map = useSelector(mapSelector);
+    const map = mapState.maplibreMap();
+    // keep track of layers for which we are computing available dates
+    // to avoid triggering duplicate actions
+    const layersLoadingDates = useSelector(layersLoadingDatesIdsSelector);
     const [isOpacitySelected, setIsOpacitySelected] = useState(false);
-    const dispatch = useDispatch();
+    const dispatch: AppDispatch = useDispatch();
+
     const opacity = useSelector(opacitySelector(layerId));
     const hexDisplay = layer.type === 'point_data' && layer.hexDisplay;
     // Hack to use composite layer type for hexDisplay layers and switch
@@ -146,15 +155,17 @@ const SwitchItem = memo(
             selectedLayer,
             map,
             urlLayerKey,
-            dispatch,
+            mapState.actions.removeLayer,
             removeLayerFromUrl,
+            mapState.actions.addLayer,
           );
           return;
         }
         try {
           checkLayerAvailableDatesAndContinueOrRemove(
-            layer,
+            selectedLayer,
             serverAvailableDates,
+            layersLoadingDates,
             removeLayerFromUrl,
             dispatch,
           );
@@ -168,14 +179,14 @@ const SwitchItem = memo(
           selectedLayer,
         );
         updateHistory(urlLayerKey, updatedUrl);
-        dispatch(addLayer(layer));
+        mapState.actions.addLayer(layer);
         if (
           'boundary' in selectedLayer ||
           selectedLayer.type !== 'admin_level_data'
         ) {
           return;
         }
-        refreshBoundaries(map, dispatch);
+        refreshBoundaries(map, mapState.actions);
       },
       [
         appendLayerToUrl,
@@ -183,9 +194,11 @@ const SwitchItem = memo(
         group,
         layer,
         map,
+        mapState.actions,
         removeLayerFromUrl,
         selectedLayers,
         serverAvailableDates,
+        layersLoadingDates,
         updateHistory,
       ],
     );

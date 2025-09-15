@@ -3,6 +3,7 @@ import {
   AADataSeverityOrder,
   getAAIcon,
 } from 'components/MapView/LeftPanel/AnticipatoryActionPanel/AnticipatoryActionDroughtPanel/utils';
+import { calculateSeason } from 'components/MapView/LeftPanel/AnticipatoryActionPanel/AnticipatoryActionDroughtPanel/utils/countryConfig';
 import { DatesPropagation, Validity } from 'config/types';
 import { generateIntermediateDateItemFromValidity } from 'utils/server-utils';
 import { getFormattedDate } from 'utils/date-utils';
@@ -149,6 +150,18 @@ export function parseAndTransformAA(data: any[]) {
         windowDates.forEach(date => {
           const dateData = sorted.filter(x => x.date === date);
 
+          // Filter out 'Ready' if 'Set' exists for the same category on this date
+          let filteredDateData = dateData;
+          const setCategories = dateData
+            .filter(x => x.phase === 'Set' && x.isValid)
+            .map(x => x.category);
+          if (setCategories.length > 0) {
+            // eslint-disable-next-line fp/no-mutation
+            filteredDateData = dateData.filter(
+              x => !(x.phase === 'Ready' && setCategories.includes(x.category)),
+            );
+          }
+
           // Propagate SET elements from previous dates
           const propagatedSetElements = setElementsToPropagate.map(x => ({
             ...x,
@@ -158,7 +171,7 @@ export function parseAndTransformAA(data: any[]) {
           }));
 
           // If a district reaches a set state, it will propagate until the end of the window
-          dateData.forEach(x => {
+          filteredDateData.forEach(x => {
             // reset prevMax when entering a new season
             if (prevMax && x.season !== prevMax.season) {
               // eslint-disable-next-line fp/no-mutation
@@ -185,7 +198,7 @@ export function parseAndTransformAA(data: any[]) {
           });
 
           // eslint-disable-next-line no-const-assign, fp/no-mutation
-          newRows = [...newRows, ...dateData, ...propagatedSetElements];
+          newRows = [...newRows, ...filteredDateData, ...propagatedSetElements];
         });
         return [district, newRows];
       });
@@ -228,27 +241,15 @@ interface CalculateMapRenderedDistrictsParams {
   windowRanges: AnticipatoryActionState['windowRanges'];
 }
 
-export const getSeason = (date?: string) => {
-  // Use today's date if date is undefined
-  const currentDate = date ? new Date(date) : new Date();
-  const year = currentDate.getFullYear();
-  const month = currentDate.getMonth();
-
-  if (month >= 4) {
-    // May (4) to December (11)
-    return `${year}-${(year + 1).toString().slice(-2)}`;
-  }
-  // January (0) to April (3)
-  return `${year - 1}-${year.toString().slice(-2)}`;
-};
-
 export function calculateMapRenderedDistricts({
   filters,
   data,
   windowRanges,
 }: CalculateMapRenderedDistrictsParams) {
   const { selectedDate, categories } = filters;
-  const season = getSeason(selectedDate);
+  const season = calculateSeason(selectedDate);
+  // eslint-disable-next-line no-console
+  console.log({ season, selectedDate });
 
   const res = Object.entries(data)
     .map(([winKey, districts]) => {
@@ -276,9 +277,27 @@ export function calculateMapRenderedDistricts({
               ? selectedDate
               : range.end;
 
-          const dateData = districtData.filter(
+          // For SET phases, look for data <= date to continue showing previous SET states
+          // For other phases, use exact date match
+          let dateData = districtData.filter(
             x => x.date === date && x.season === season,
           );
+
+          // If no exact match found, look for SET phases with date <= selected date and take the last one
+          if (dateData.length === 0) {
+            // eslint-disable-next-line fp/no-mutation
+            dateData = districtData
+              .filter(
+                x =>
+                  x.date <= date &&
+                  x.season === season &&
+                  x.phase === 'Set' &&
+                  x.isValid,
+              )
+              .slice(-1)
+              .map(x => ({ ...x, computedRow: true }));
+          }
+
           const validData = dateData.filter(
             x => (x.computedRow || x.isValid) && categories[x.category],
           );

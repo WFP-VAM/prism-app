@@ -4,6 +4,8 @@ import { DateItem } from 'config/types';
 import { appConfig } from 'config';
 import { AAWindowKeys } from 'config/utils';
 import { getCurrentDateTimeForUrl } from 'utils/date-utils';
+import { getAADroughtUrl } from 'utils/url-utils';
+import { isSingleWindowMode } from 'components/MapView/LeftPanel/AnticipatoryActionPanel/AnticipatoryActionDroughtPanel/utils/countryConfig';
 import type { CreateAsyncThunkTypes, RootState } from '../../store';
 import {
   AACategoryType,
@@ -25,7 +27,7 @@ const initialState: AnticipatoryActionState = {
   monitoredDistricts: [],
   filters: {
     selectedDate: undefined,
-    selectedWindow: allWindowsKey,
+    selectedWindow: isSingleWindowMode() ? 'Window 1' : allWindowsKey,
     selectedIndex: '',
     categories: {
       Severe: true,
@@ -58,7 +60,7 @@ export const loadAAData = createAsyncThunk<
   undefined,
   CreateAsyncThunkTypes
 >('anticipatoryActionDroughtState/loadAAData', async () => {
-  const url = `${appConfig.anticipatoryActionDroughtUrl}?date=${getCurrentDateTimeForUrl()}`;
+  const url = `${getAADroughtUrl(appConfig)}?date=${getCurrentDateTimeForUrl()}`;
 
   return new Promise<any>((resolve, reject) => {
     Papa.parse(url, {

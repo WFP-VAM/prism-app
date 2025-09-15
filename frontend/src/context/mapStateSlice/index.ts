@@ -10,7 +10,7 @@ import { BoundaryRelationsDict } from 'components/Common/BoundaryDropdown/utils'
 import { keepLayer } from 'utils/keep-layer-utils';
 import { Map as MaplibreMap } from 'maplibre-gl';
 
-interface DateRange {
+export interface DateRange {
   startDate?: number;
   // TODO this field is updated, but doesn't seem to be used yet
   endDate?: number;

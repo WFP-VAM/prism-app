@@ -50,7 +50,7 @@ const useStyles = makeStyles(() =>
     },
     popup: {
       // Overrides the default maxWidth of 240px set by react-map-gl
-      maxWidth: 'none !important',
+      maxWidth: '40em !important',
       zIndex: 5,
       '& div.maplibregl-popup-content': {
         background: 'black',

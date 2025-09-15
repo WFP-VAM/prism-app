@@ -162,3 +162,26 @@ export function combineURLs(baseURL: string, relativeURL: string) {
     ? `${baseURL.replace(/\/+$/, '')}/${relativeURL.replace(/^\/+/, '')}`
     : baseURL;
 }
+
+/**
+ * Returns true if the URL contains staging=true, otherwise false.
+ */
+export function getStagingParam(): boolean {
+  if (typeof window === 'undefined') {
+    return false;
+  }
+  const params = new URLSearchParams(window.location.search);
+  return params.get('staging') === 'true';
+}
+
+/**
+ * Returns the correct anticipatory action drought URL based on the staging param and config.
+ * Only returns the staging URL if isStaging is true and the staging URL exists.
+ */
+export function getAADroughtUrl(appConfig: any): string | undefined {
+  const isStaging = getStagingParam();
+  if (isStaging && appConfig.anticipatoryActionDroughtStagingUrl) {
+    return appConfig.anticipatoryActionDroughtStagingUrl;
+  }
+  return appConfig.anticipatoryActionDroughtUrl;
+}

@@ -87,13 +87,13 @@ exports[`renders actions modal 1`] = `
             style="font-weight: bold;"
             variant="h3"
           >
-            Mild category
+            Severe category
           </mock-typography>
            
           <mock-typography
             variant="h3"
           >
-            Drought events that typically occur once every 4 years.
+            Drought events that typically occur once every 7 years.
           </mock-typography>
            
         </div>
@@ -121,13 +121,13 @@ exports[`renders actions modal 1`] = `
             style="font-weight: bold;"
             variant="h3"
           >
-            Severe category
+            Mild category
           </mock-typography>
            
           <mock-typography
             variant="h3"
           >
-            Drought events that typically occur once every 7 years.
+            Drought events that typically occur once every 4 years.
           </mock-typography>
            
         </div>

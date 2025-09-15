@@ -3,6 +3,7 @@
   "countryAdmin0Id": 270,
   "alertFormActive": false,
   "enableNavigationDropdown": true,
+  "anticipatoryActionDroughtUrl": "data/zambia/aa_probabilities_triggers_zambia.csv",
   "serversUrls": {
     "wms": ["https://api.earthobservation.vam.wfp.org/ows/wms"]
   },

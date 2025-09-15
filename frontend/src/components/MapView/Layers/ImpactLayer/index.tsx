@@ -12,8 +12,8 @@ import { addPopupData } from 'context/tooltipStateSlice';
 import {
   dateRangeSelector,
   layerDataSelector,
-  mapSelector,
 } from 'context/mapStateSlice/selectors';
+import { useMapState } from 'utils/useMapState';
 import { getFeatureInfoPropsData } from 'components/MapView/utils';
 import { i18nTranslator, useSafeTranslation } from 'i18n';
 import { getRoundedData } from 'utils/data-utils';
@@ -85,7 +85,7 @@ const onClick =
 
 const ImpactLayer = memo(({ layer, before }: ComponentProps) => {
   const classes = useStyles();
-  const map = useSelector(mapSelector);
+  const map = useMapState()?.maplibreMap();
   const { startDate: selectedDate } = useSelector(dateRangeSelector);
   const { data, date } =
     (useSelector(

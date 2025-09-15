@@ -10,7 +10,7 @@ exports[`renders as expected 1`] = `
       aria-disabled="false"
       aria-expanded="false"
       class="MuiButtonBase-root MuiAccordionSummary-root makeStyles-rootSummary-2"
-      id="Category 1"
+      id="level2-Category1"
       role="button"
       tabindex="0"
     >

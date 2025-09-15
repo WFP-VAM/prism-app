@@ -3,7 +3,7 @@ import { getCompositeLayers } from 'config/utils';
 import { Fragment, memo } from 'react';
 import { Extent } from 'components/MapView/Layers/raster-utils';
 import { createStyles, makeStyles } from '@material-ui/core';
-import useLayers from 'utils/layers-utils';
+import { useMapState } from 'utils/useMapState';
 import SwitchItem from './SwitchItem';
 
 const useStyles = makeStyles(() =>
@@ -24,7 +24,8 @@ interface SwitchItemsProps {
   extent?: Extent;
 }
 const SwitchItems = memo(({ layers, extent }: SwitchItemsProps) => {
-  const { selectedLayers } = useLayers();
+  const mapState = useMapState();
+  const selectedLayers = mapState.layers;
   const classes = useStyles();
   return (
     <>

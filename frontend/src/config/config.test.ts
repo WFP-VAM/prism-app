@@ -1,57 +1,23 @@
-import jp from 'jsonpath';
-import { startCase } from 'lodash';
 import fg from 'fast-glob';
 import fs from 'fs';
 import { Country, configMap, getRawLayers, getTranslation } from './index';
+import { extractTranslationItems } from './config.test.utils';
 
-// Load all translation keys from the source code
-const translationKeyRegex = /[ {]t\('([^']+)'\)/g;
-const files = fg.sync('./src/**/*.{ts,tsx}');
-const translationKeys = new Set<string>();
+function loadTranslationKeys(): Set<string> {
+  const translationKeyRegex = /[ {]t\('([^']+)'\)/g;
+  const files = fg.sync('./src/**/*.{ts,tsx}');
+  const translationKeys = new Set<string>();
 
-files.forEach(file => {
-  const content = fs.readFileSync(file, 'utf8');
-  let match;
-  // eslint-disable-next-line fp/no-mutation, no-cond-assign
-  while ((match = translationKeyRegex.exec(content)) !== null) {
-    translationKeys.add(match[1]);
-  }
-});
+  files.forEach(file => {
+    const content = fs.readFileSync(file, 'utf8');
+    let match;
+    // eslint-disable-next-line fp/no-mutation, no-cond-assign
+    while ((match = translationKeyRegex.exec(content)) !== null) {
+      translationKeys.add(match[1]);
+    }
+  });
 
-export function extractTranslationItems(config: any, layers: any): string[] {
-  const categoryKeys = jp
-    .query(config.appConfig.categories, '$.*')
-    .filter(
-      (value: any) =>
-        typeof value === 'string' ||
-        (typeof value === 'object' && value !== null && !Array.isArray(value)),
-    )
-    .map((value: any) =>
-      typeof value === 'object' ? Object.keys(value) : value,
-    )
-    .flat()
-    .map((value: any) => startCase(value));
-
-  const categoryGroupTitles = jp.query(
-    config.appConfig.categories,
-    '$..group_title',
-  );
-
-  const layerTitles = jp.query(layers, '$..title');
-  const layerLegendTexts = jp.query(layers, '$..legend_text');
-  const legendLabels = jp
-    .query(layers, '$..legend[*].label')
-    .filter((label: string) => !label.includes(' mm'));
-  const chartLegendLabels = jp.query(layers, '$..chart_data.fields[*].label');
-
-  return [
-    ...categoryKeys,
-    ...categoryGroupTitles,
-    ...layerTitles,
-    ...layerLegendTexts,
-    ...legendLabels,
-    ...chartLegendLabels,
-  ];
+  return translationKeys;
 }
 
 describe('Config Map', () => {
@@ -69,8 +35,10 @@ describe('Config Map', () => {
   it('should have translations with correct depth', () => {
     Object.keys(configMap).forEach(country => {
       const config = configMap[country as Country];
-      const layers = getRawLayers(country as Country);
+      const layers = getRawLayers(country as Country, true);
       const translation = getTranslation(country as Country);
+      // Translation keys in the code
+      const translationKeys = loadTranslationKeys();
 
       // TODO - activate translation for reports and tables
       // const reports = config.rawReports;
@@ -87,7 +55,7 @@ describe('Config Map', () => {
       // eslint-disable-next-line fp/no-mutation
       itemsToTranslate = [
         ...Array.from(translationKeys),
-        ...extractTranslationItems(config, layers),
+        ...extractTranslationItems(config.appConfig, layers),
       ];
       // Deduplicate items using a Set
       // eslint-disable-next-line fp/no-mutation
@@ -129,6 +97,16 @@ describe('Config Map', () => {
           // Print the table to the console
           // eslint-disable-next-line no-console
           console.table(tableData);
+
+          // utility to print the missing fields as an exploitable JSON object
+          // if (key === 'fr') {
+          //   // eslint-disable-next-line no-console
+          //   console.log(
+          //     JSON.stringify(
+          //       Object.fromEntries(missingFields.map(field => [field, field])),
+          //     ),
+          //   );
+          // }
         }
         // TODO - activate this assertion once all translations are complete
         // expect(missingFields).toEqual([]);
