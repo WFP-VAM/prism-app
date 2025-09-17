@@ -18,6 +18,7 @@ import {
   dashboardTitleSelector,
   setTitle,
   dashboardFlexElementsSelector,
+  dashboardMapsSelector,
 } from '../../context/dashboardStateSlice';
 import TextBlock from './TextBlock';
 import DashboardPreview from './DashboardPreview';
@@ -26,6 +27,7 @@ function DashboardView() {
   const classes = useStyles();
   const dashboardTitle = useSelector(dashboardTitleSelector);
   const dashboardFlexElements = useSelector(dashboardFlexElementsSelector);
+  const dashboardMaps = useSelector(dashboardMapsSelector);
   const dispatch = useDispatch();
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
 
@@ -60,35 +62,45 @@ function DashboardView() {
               />
             </label>
           </Box>
-          <Box className={classes.grayCard}>
-            <Typography
-              variant="h3"
-              component="h3"
-              className={classes.blockLabel}
-            >
-              Map block — Choose map layers
-            </Typography>
-            <div style={{ height: '500px', width: '100%' }}>
-              <MapBlock mapIndex={0} />
-            </div>
+          <div className={classes.mapsContainer}>
+            {dashboardMaps.map((_, mapIndex) => (
+              // eslint-disable-next-line react/no-array-index-key
+              <Box key={`map-${mapIndex}`} className={classes.grayCard}>
+                <Typography
+                  variant="h3"
+                  component="h3"
+                  className={classes.blockLabel}
+                >
+                  {dashboardMaps.length > 1
+                    ? `Map ${mapIndex + 1}`
+                    : 'Map block'}{' '}
+                  — Choose map layers
+                </Typography>
+                <div style={{ height: '500px', width: '100%' }}>
+                  <MapBlock mapIndex={mapIndex} />
+                </div>
+              </Box>
+            ))}
+          </div>
+        </Box>
+        {dashboardFlexElements.length > 0 && (
+          <Box className={classes.trailingContentArea}>
+            {dashboardFlexElements?.map((element, index) => {
+              if (element.type === 'TEXT') {
+                const content = (element as DashboardTextConfig)?.content || '';
+                return (
+                  <TextBlock
+                    // eslint-disable-next-line react/no-array-index-key
+                    key={`text-block-${index}`}
+                    content={content}
+                    index={index}
+                  />
+                );
+              }
+              return <div>Content type not yet supported</div>;
+            })}
           </Box>
-        </Box>
-        <Box className={classes.trailingContentArea}>
-          {dashboardFlexElements?.map((element, index) => {
-            if (element.type === 'TEXT') {
-              const content = (element as DashboardTextConfig)?.content || '';
-              return (
-                <TextBlock
-                  // eslint-disable-next-line react/no-array-index-key
-                  key={`text-block-${index}`}
-                  content={content}
-                  index={index}
-                />
-              );
-            }
-            return <div>Content type not yet supported</div>;
-          })}
-        </Box>
+        )}
       </Box>
       <Box className={classes.toolbar}>
         <Button
@@ -225,6 +237,15 @@ const useStyles = makeStyles(() => ({
   },
   dialogContent: {
     padding: 0,
+  },
+  mapsContainer: {
+    display: 'flex',
+    gap: '16px',
+    width: '100%',
+    '& > .MuiBox-root': {
+      flex: 1,
+      minWidth: 0, // Prevents flex items from overflowing
+    },
   },
 }));
 

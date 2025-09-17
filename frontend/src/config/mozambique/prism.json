@@ -514,6 +514,28 @@
           "content": ""
         }
       ]
+    },
+    {
+      "title": "Precipitation Comparison Dashboard",
+      "maps": [
+        {
+          "defaultDate": "2025-05-01",
+          "mapPosition": "left",
+          "minMapBounds": [31, -25, 40, -11],
+          "preSelectedMapLayers": [
+            { "layerId": "precip_blended_dekad", "opacity": 0.8 }
+          ]
+        },
+        {
+          "defaultDate": "2025-05-21",
+          "mapPosition": "right",
+          "minMapBounds": [31, -25, 40, -11],
+          "preSelectedMapLayers": [
+            { "layerId": "precip_blended_dekad", "opacity": 0.8 }
+          ]
+        }
+      ],
+      "flexElements": []
     }
   ]
 }

@@ -59,12 +59,12 @@ const MapBlockContent = memo(() => {
         <RootAccordionItems />
       </div>
       <div className={classes.rightPanel}>
-        {datesLoading && (
-          <div className={classes.loading}>
-            <CircularProgress size={100} />
-          </div>
-        )}
         <div className={classes.mapContainer}>
+          {datesLoading && (
+            <div className={classes.loading}>
+              <CircularProgress size={100} />
+            </div>
+          )}
           <MapComponent />
           {!datesLoading && <DashboardLegends />}
         </div>

@@ -362,6 +362,9 @@ export const dashboardFlexElementsSelector = (
   state: RootState,
 ): ConfiguredReport['flexElements'] => state.dashboardState.flexElements;
 
+export const dashboardMapsSelector = (state: RootState): DashboardMapState[] =>
+  state.dashboardState.maps;
+
 export const dashboardOpacitySelector =
   (index: number, layerId: string) =>
   (state: RootState): number | undefined =>
