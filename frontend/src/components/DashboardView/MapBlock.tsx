@@ -65,7 +65,7 @@ const MapBlockContent = memo(() => {
         )}
         <div className={classes.mapContainer}>
           <MapComponent />
-          <DashboardLegends />
+          {!datesLoading && <DashboardLegends />}
         </div>
         {selectedLayersWithDateSupport.length > 0 && !datesLoading && (
           <div className={classes.dateSelectorContainer}>

@@ -46,20 +46,73 @@ const initialState: DashboardState = {
   flexElements: appConfig.configuredReports[0]?.flexElements || [],
   // TODO: Update to read from prism.config for actual initial values
   maps: appConfig.configuredReports[0]?.maps?.map(
-    (mapConfig: DashboardMapConfig) => ({
-      layers: [],
-      dateRange: {
-        startDate: mapConfig.defaultDate
-          ? new Date(mapConfig.defaultDate).getTime()
-          : undefined,
-      },
-      maplibreMap: () => undefined,
-      errors: [],
-      layersData: [],
-      loadingLayerIds: [],
-      boundaryRelationData: {},
-      opacityMap: {},
-    }),
+    (mapConfig: DashboardMapConfig) => {
+      // Process pre-selected layers
+      const preSelectedLayers: LayerType[] = [];
+      const initialOpacityMap: { [key: string]: OpacityEntry } = {};
+
+      if (mapConfig.preSelectedMapLayers) {
+        mapConfig.preSelectedMapLayers.forEach(layerConfig => {
+          const layerId =
+            typeof layerConfig === 'string' ? layerConfig : layerConfig.layerId;
+          const opacity =
+            typeof layerConfig === 'string' ? 1.0 : layerConfig.opacity ?? 1.0;
+
+          const layer = LayerDefinitions[layerId];
+          if (layer) {
+            // eslint-disable-next-line fp/no-mutating-methods
+            preSelectedLayers.push(layer);
+
+            // Initialize opacity entry for this layer
+            const [mapLayerId, opacityType] = ((): [string, string] => {
+              switch (layer.type) {
+                case 'wms':
+                case 'static_raster':
+                  return [getLayerMapId(layerId), 'raster-opacity'];
+                case 'admin_level_data':
+                case 'composite':
+                case 'impact':
+                case 'geojson_polygon':
+                  return [getLayerMapId(layerId), 'fill-opacity'];
+                case 'point_data':
+                  if (layerId?.includes('_report')) {
+                    return [getLayerMapId(layerId), 'fill-opacity'];
+                  }
+                  return [getLayerMapId(layerId), 'circle-opacity'];
+                default:
+                  return [getLayerMapId(layerId), 'fill-opacity'];
+              }
+            })();
+
+            // eslint-disable-next-line fp/no-mutation
+            initialOpacityMap[layerId] = {
+              mapLayerId,
+              opacityType,
+              value: opacity,
+            };
+          } else {
+            console.warn(
+              `Pre-selected layer "${layerId}" not found in LayerDefinitions`,
+            );
+          }
+        });
+      }
+
+      return {
+        layers: preSelectedLayers,
+        dateRange: {
+          startDate: mapConfig.defaultDate
+            ? new Date(mapConfig.defaultDate).getTime()
+            : undefined,
+        },
+        maplibreMap: () => undefined,
+        errors: [],
+        layersData: [],
+        loadingLayerIds: [],
+        boundaryRelationData: {},
+        opacityMap: initialOpacityMap,
+      };
+    },
   ),
 };
 
