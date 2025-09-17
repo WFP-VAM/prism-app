@@ -471,10 +471,10 @@
       "title": "Population Exposure",
       "maps": [
         {
-          "defaultDate": "2025-01-01",
+          "defaultDate": "2025-04-11",
           "mapPosition": "left",
           "minMapBounds": [31, -25, 40, -11],
-          "preSelectedMapLayers": []
+          "preSelectedMapLayers": ["precip_blended_dekad"]
         }
       ],
       "flexElements": [

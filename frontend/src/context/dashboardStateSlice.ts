@@ -1,6 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { appConfig } from 'config';
-import type { ConfiguredReport, LayerType } from 'config/types';
 import { DashboardElementType } from 'config/types';
 import { Map as MaplibreMap } from 'maplibre-gl';
 import { MapState, DateRange } from 'context/mapStateSlice';
@@ -9,6 +8,11 @@ import { keepLayer } from 'utils/keep-layer-utils';
 import { BoundaryRelationsDict } from 'components/Common/BoundaryDropdown/utils';
 import { getLayerMapId } from 'utils/map-utils';
 
+import type {
+  ConfiguredReport,
+  LayerType,
+  DashboardMapConfig,
+} from 'config/types';
 import type { RootState } from './store';
 
 type MapGetter = () => MaplibreMap | undefined;
@@ -41,16 +45,22 @@ const initialState: DashboardState = {
   title: appConfig.configuredReports[0]?.title || 'Dashboard',
   flexElements: appConfig.configuredReports[0]?.flexElements || [],
   // TODO: Update to read from prism.config for actual initial values
-  maps: appConfig.configuredReports[0]?.maps?.map(() => ({
-    layers: [],
-    dateRange: {},
-    maplibreMap: () => undefined,
-    errors: [],
-    layersData: [],
-    loadingLayerIds: [],
-    boundaryRelationData: {},
-    opacityMap: {},
-  })),
+  maps: appConfig.configuredReports[0]?.maps?.map(
+    (mapConfig: DashboardMapConfig) => ({
+      layers: [],
+      dateRange: {
+        startDate: mapConfig.defaultDate
+          ? new Date(mapConfig.defaultDate).getTime()
+          : undefined,
+      },
+      maplibreMap: () => undefined,
+      errors: [],
+      layersData: [],
+      loadingLayerIds: [],
+      boundaryRelationData: {},
+      opacityMap: {},
+    }),
+  ),
 };
 
 export const dashboardStateSlice = createSlice({

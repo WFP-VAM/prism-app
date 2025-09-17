@@ -649,7 +649,19 @@ const DateSelector = memo(() => {
             locale={t('date_locale')}
             dateFormat="PP"
             className={classes.datePickerInput}
-            selected={stateStartDate ? new Date(stateStartDate) : new Date()}
+            selected={
+              stateStartDate
+                ? (() => {
+                    // Force to UTC to avoid any timezone issues when setting a pre-configured date in dashboards
+                    const utcDate = new Date(stateStartDate);
+                    return new Date(
+                      utcDate.getUTCFullYear(),
+                      utcDate.getUTCMonth(),
+                      utcDate.getUTCDate(),
+                    );
+                  })()
+                : new Date()
+            }
             onChange={handleOnDatePickerChange}
             maxDate={maxDate}
             todayButton={t('Today')}
