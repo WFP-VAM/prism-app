@@ -31,6 +31,7 @@ import {
   leftPanelTabValueSelector,
   setTabValue,
 } from 'context/leftPanelStateSlice';
+import { setSelectedDashboard } from 'context/dashboardStateSlice';
 import GoToBoundaryDropdown from 'components/Common/BoundaryDropdown/goto';
 import Legends from 'components/MapView/Legends';
 import {
@@ -192,6 +193,7 @@ function NavBar() {
     handleMenuClose(panel.label);
 
     if (panel.panel === Panel.Dashboard && child.reportIndex !== undefined) {
+      dispatch(setSelectedDashboard(child.reportIndex));
       dispatch(setTabValue(Panel.Dashboard));
       history.push('/dashboard');
     } else {

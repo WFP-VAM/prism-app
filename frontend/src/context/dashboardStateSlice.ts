@@ -36,90 +36,106 @@ export interface DashboardMapState extends MapState {
 }
 
 export interface DashboardState {
+  selectedDashboardIndex: number;
   title: string;
   flexElements: ConfiguredReport['flexElements'];
   maps: DashboardMapState[];
 }
 
-const initialState: DashboardState = {
-  title: appConfig.configuredReports[0]?.title || 'Dashboard',
-  flexElements: appConfig.configuredReports[0]?.flexElements || [],
-  // TODO: Update to read from prism.config for actual initial values
-  maps: appConfig.configuredReports[0]?.maps?.map(
-    (mapConfig: DashboardMapConfig) => {
-      // Process pre-selected layers
-      const preSelectedLayers: LayerType[] = [];
-      const initialOpacityMap: { [key: string]: OpacityEntry } = {};
+const getDashboardConfig = (index: number) =>
+  appConfig.configuredReports[index] || appConfig.configuredReports[0];
 
-      if (mapConfig.preSelectedMapLayers) {
-        mapConfig.preSelectedMapLayers.forEach(layerConfig => {
-          const layerId =
-            typeof layerConfig === 'string' ? layerConfig : layerConfig.layerId;
-          const opacity =
-            typeof layerConfig === 'string' ? 1.0 : layerConfig.opacity ?? 1.0;
+const createInitialState = (dashboardIndex: number = 0): DashboardState => {
+  const dashboardConfig = getDashboardConfig(dashboardIndex);
 
-          const layer = LayerDefinitions[layerId];
-          if (layer) {
-            // eslint-disable-next-line fp/no-mutating-methods
-            preSelectedLayers.push(layer);
+  return {
+    selectedDashboardIndex: dashboardIndex,
+    title: dashboardConfig?.title || 'Dashboard',
+    flexElements: dashboardConfig?.flexElements || [],
+    maps:
+      dashboardConfig?.maps?.map((mapConfig: DashboardMapConfig) => {
+        // Process pre-selected layers
+        const preSelectedLayers: LayerType[] = [];
+        const initialOpacityMap: { [key: string]: OpacityEntry } = {};
 
-            // Initialize opacity entry for this layer
-            const [mapLayerId, opacityType] = ((): [string, string] => {
-              switch (layer.type) {
-                case 'wms':
-                case 'static_raster':
-                  return [getLayerMapId(layerId), 'raster-opacity'];
-                case 'admin_level_data':
-                case 'composite':
-                case 'impact':
-                case 'geojson_polygon':
-                  return [getLayerMapId(layerId), 'fill-opacity'];
-                case 'point_data':
-                  if (layerId?.includes('_report')) {
+        if (mapConfig.preSelectedMapLayers) {
+          mapConfig.preSelectedMapLayers.forEach(layerConfig => {
+            const layerId =
+              typeof layerConfig === 'string'
+                ? layerConfig
+                : layerConfig.layerId;
+            const opacity =
+              typeof layerConfig === 'string'
+                ? 1.0
+                : layerConfig.opacity ?? 1.0;
+
+            const layer = LayerDefinitions[layerId];
+            if (layer) {
+              // eslint-disable-next-line fp/no-mutating-methods
+              preSelectedLayers.push(layer);
+              // Initialize opacity entry for this layer
+              const [mapLayerId, opacityType] = ((): [string, string] => {
+                switch (layer.type) {
+                  case 'wms':
+                  case 'static_raster':
+                    return [getLayerMapId(layerId), 'raster-opacity'];
+                  case 'admin_level_data':
+                  case 'composite':
+                  case 'impact':
+                  case 'geojson_polygon':
                     return [getLayerMapId(layerId), 'fill-opacity'];
-                  }
-                  return [getLayerMapId(layerId), 'circle-opacity'];
-                default:
-                  return [getLayerMapId(layerId), 'fill-opacity'];
-              }
-            })();
+                  case 'point_data':
+                    if (layerId?.includes('_report')) {
+                      return [getLayerMapId(layerId), 'fill-opacity'];
+                    }
+                    return [getLayerMapId(layerId), 'circle-opacity'];
+                  default:
+                    return [getLayerMapId(layerId), 'fill-opacity'];
+                }
+              })();
 
-            // eslint-disable-next-line fp/no-mutation
-            initialOpacityMap[layerId] = {
-              mapLayerId,
-              opacityType,
-              value: opacity,
-            };
-          } else {
-            console.warn(
-              `Pre-selected layer "${layerId}" not found in LayerDefinitions`,
-            );
-          }
-        });
-      }
+              // eslint-disable-next-line fp/no-mutation
+              initialOpacityMap[layerId] = {
+                mapLayerId,
+                opacityType,
+                value: opacity,
+              };
+            } else {
+              console.warn(
+                `Pre-selected layer "${layerId}" not found in LayerDefinitions`,
+              );
+            }
+          });
+        }
 
-      return {
-        layers: preSelectedLayers,
-        dateRange: {
-          startDate: mapConfig.defaultDate
-            ? new Date(mapConfig.defaultDate).getTime()
-            : undefined,
-        },
-        maplibreMap: () => undefined,
-        errors: [],
-        layersData: [],
-        loadingLayerIds: [],
-        boundaryRelationData: {},
-        opacityMap: initialOpacityMap,
-      };
-    },
-  ),
+        return {
+          layers: preSelectedLayers,
+          dateRange: {
+            startDate: mapConfig.defaultDate
+              ? new Date(mapConfig.defaultDate).getTime()
+              : undefined,
+          },
+          maplibreMap: () => undefined,
+          errors: [],
+          layersData: [],
+          loadingLayerIds: [],
+          boundaryRelationData: {},
+          opacityMap: initialOpacityMap,
+        };
+      }) || [],
+  };
 };
+
+const initialState: DashboardState = createInitialState();
 
 export const dashboardStateSlice = createSlice({
   name: 'dashboardState',
   initialState,
   reducers: {
+    setSelectedDashboard: (_state, action: PayloadAction<number>) => {
+      const dashboardIndex = action.payload;
+      return createInitialState(dashboardIndex);
+    },
     setTitle: (state, action: PayloadAction<string>) => ({
       ...state,
       title: action.payload,
@@ -336,6 +352,9 @@ export const dashboardStateSlice = createSlice({
 });
 
 // Getters
+export const selectedDashboardIndexSelector = (state: RootState): number =>
+  state.dashboardState.selectedDashboardIndex;
+
 export const dashboardTitleSelector = (state: RootState): string =>
   state.dashboardState.title;
 
@@ -350,6 +369,7 @@ export const dashboardOpacitySelector =
 
 // Setters
 export const {
+  setSelectedDashboard,
   addLayerToMap,
   removeLayerFromMap,
   setTitle,

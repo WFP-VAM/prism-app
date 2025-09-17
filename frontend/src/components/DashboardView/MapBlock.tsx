@@ -15,6 +15,7 @@ import {
 import { loadLayerData } from 'context/layers/layer-data';
 import { useMapState } from 'utils/useMapState';
 import { MapInstanceProvider } from 'components/MapView/MapInstanceContext';
+import { selectedDashboardIndexSelector } from 'context/dashboardStateSlice';
 import useLayers from 'utils/layers-utils';
 import RootAccordionItems from 'components/MapView/LeftPanel/layersPanel/RootAccordionItems';
 import MapComponent from '../MapView/Map';
@@ -78,11 +79,18 @@ const MapBlockContent = memo(() => {
   );
 });
 
-const MapBlock = memo(({ mapIndex }: MapBlockProps) => (
-  <MapInstanceProvider index={mapIndex}>
-    <MapBlockContent />
-  </MapInstanceProvider>
-));
+const MapBlock = memo(({ mapIndex }: MapBlockProps) => {
+  const selectedDashboardIndex = useSelector(selectedDashboardIndexSelector);
+
+  return (
+    <MapInstanceProvider
+      key={`dashboard-${selectedDashboardIndex}-map-${mapIndex}`}
+      index={mapIndex}
+    >
+      <MapBlockContent />
+    </MapInstanceProvider>
+  );
+});
 
 const useStyles = makeStyles(() =>
   createStyles({

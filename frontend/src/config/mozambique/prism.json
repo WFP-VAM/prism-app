@@ -468,10 +468,10 @@
   },
   "configuredReports": [
     {
-      "title": "Population Exposure",
+      "title": "Spring Dashboard",
       "maps": [
         {
-          "defaultDate": "2025-02-11",
+          "defaultDate": "2025-04-01",
           "mapPosition": "left",
           "minMapBounds": [31, -25, 40, -11],
           "preSelectedMapLayers": [
@@ -482,7 +482,31 @@
       "flexElements": [
         {
           "type": "TEXT",
-          "content": "Here is some pre-configured text",
+          "content": "Spring Dashboard - April 2025 Analysis",
+          "textUpdatedAt": "2025-03-01"
+        },
+        {
+          "type": "TEXT",
+          "content": ""
+        }
+      ]
+    },
+    {
+      "title": "Summer Dashboard",
+      "maps": [
+        {
+          "defaultDate": "2025-06-01",
+          "mapPosition": "left",
+          "minMapBounds": [31, -25, 40, -11],
+          "preSelectedMapLayers": [
+            { "layerId": "lst_day_anomaly", "opacity": 0.7 }
+          ]
+        }
+      ],
+      "flexElements": [
+        {
+          "type": "TEXT",
+          "content": "Summer Dashboard - June 2025 Analysis",
           "textUpdatedAt": "2025-03-01"
         },
         {
