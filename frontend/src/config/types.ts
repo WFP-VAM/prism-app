@@ -1054,7 +1054,7 @@ export interface DashboardTableConfig {
   stat: AggregationOperations;
 }
 
-export interface MapConfig {
+export interface DashboardMapConfig {
   defaultDate?: string;
   mapPosition?: DashboardMapPosition;
   minMapBounds?: number[];
@@ -1069,5 +1069,5 @@ export interface ConfiguredReport {
   flexElements: Array<
     DashboardChartConfig | DashboardTextConfig | DashboardTableConfig
   >;
-  maps: Array<MapConfig>;
+  maps: Array<DashboardMapConfig>;
 }
