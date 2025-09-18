@@ -11,6 +11,7 @@ import {
 } from '@material-ui/core';
 import { Close, Fullscreen, TableChart, GetApp } from '@material-ui/icons';
 import { Line } from 'react-chartjs-2';
+import 'chartjs-plugin-annotation';
 import { useSafeTranslation } from 'i18n';
 import { FloodStation } from 'context/anticipatoryAction/AAFloodStateSlice/types';
 import { CHART_WIDTH, TABLE_WIDTH } from '../constants';
@@ -156,7 +157,7 @@ function StationCharts({ station, onClose }: StationChartsProps) {
           backgroundColor: 'transparent',
           borderWidth: 2,
           pointRadius: 0,
-          pointStyle: 'line',
+          pointStyle: 'line' as any,
           fill: false,
           tension: 0.4,
         },
@@ -168,7 +169,7 @@ function StationCharts({ station, onClose }: StationChartsProps) {
           borderWidth: 2,
           borderDash: [6, 6],
           pointRadius: 0,
-          pointStyle: 'line',
+          pointStyle: 'line' as any,
         },
         {
           label: `${t('Moderate')} (${moderate})`,
@@ -188,7 +189,7 @@ function StationCharts({ station, onClose }: StationChartsProps) {
           borderWidth: 2,
           borderDash: [6, 6],
           pointRadius: 0,
-          pointStyle: 'line',
+          pointStyle: 'line' as any,
         },
         ...ensembleDatasets,
       ],
@@ -212,29 +213,29 @@ function StationCharts({ station, onClose }: StationChartsProps) {
       labels: sortedData.map(d => new Date(d.time).toLocaleDateString()),
       datasets: [
         {
-          label: t('Bankfull Probability (%)'),
+          label: t('Bankfull'),
           data: sortedData.map(d => d.bankfull_percentage),
-          borderColor: '#FFC107',
-          backgroundColor: 'rgba(255, 193, 7, 0.1)',
-          borderWidth: 2,
+          borderColor: 'rgba(102, 187, 106, 0.9)',
+          backgroundColor: 'rgba(102, 187, 106, 0.25)',
+          borderWidth: 1,
           fill: true,
           tension: 0.4,
         },
         {
-          label: t('Moderate Probability (%)'),
+          label: t('Moderate'),
           data: sortedData.map(d => d.moderate_percentage),
-          borderColor: '#FF9800',
-          backgroundColor: 'rgba(255, 152, 0, 0.1)',
-          borderWidth: 2,
+          borderColor: 'rgba(255, 167, 38, 0.9)',
+          backgroundColor: 'rgba(255, 167, 38, 0.25)',
+          borderWidth: 1,
           fill: true,
           tension: 0.4,
         },
         {
-          label: t('Severe Probability (%)'),
+          label: t('Severe'),
           data: sortedData.map(d => d.severe_percentage),
-          borderColor: '#F44336',
-          backgroundColor: 'rgba(244, 67, 54, 0.1)',
-          borderWidth: 2,
+          borderColor: 'rgba(239, 83, 80, 0.9)',
+          backgroundColor: 'rgba(239, 83, 80, 0.25)',
+          borderWidth: 1,
           fill: true,
           tension: 0.4,
         },
@@ -242,45 +243,172 @@ function StationCharts({ station, onClose }: StationChartsProps) {
     };
   }, [station.historicalData, t]);
 
-  const chartOptions = {
-    responsive: true,
-    maintainAspectRatio: false,
-    legend: {
-      position: 'top' as const,
-      labels: {
-        usePointStyle: true,
-        boxWidth: 24,
-        // Hide ensemble members from legend using the dataset label
-        filter: (legendItem: any, chartData: any) => {
-          const datasetLabel = String(
-            chartData?.datasets?.[legendItem.datasetIndex]?.label ?? '',
-          );
-          return !/^Member\s\d+$/i.test(datasetLabel);
+  const hydrographOptions = useMemo(
+    () => ({
+      responsive: true,
+      maintainAspectRatio: false,
+      legend: {
+        position: 'top' as const,
+        labels: {
+          usePointStyle: true,
+          boxWidth: 24,
+          // Hide ensemble members from legend using the dataset label
+          filter: (legendItem: any, chartData: any) => {
+            const datasetLabel = String(
+              chartData?.datasets?.[legendItem.datasetIndex]?.label ?? '',
+            );
+            return !/^Member\s\d+$/i.test(datasetLabel);
+          },
         },
       },
-    },
-    scales: {
-      xAxes: [
-        {
-          display: true,
-          scaleLabel: {
+      scales: {
+        xAxes: [
+          {
             display: true,
-            labelString: t('Lead times (days)'),
+            scaleLabel: {
+              display: true,
+              labelString: t('Lead times (days)'),
+            },
           },
-        },
-      ],
-      yAxes: [
-        {
-          display: true,
-          ticks: { beginAtZero: true },
-          scaleLabel: {
+        ],
+        yAxes: [
+          {
             display: true,
-            labelString: t('River Discharge (m³/s)'),
+            ticks: { beginAtZero: true },
+            scaleLabel: {
+              display: true,
+              labelString: t('River Discharge (m³/s)'),
+            },
           },
+        ],
+      },
+    }),
+    [t],
+  );
+
+  const probabilityOptions = useMemo(() => {
+    if (!station.historicalData || station.historicalData.length === 0) {
+      return hydrographOptions;
+    }
+
+    const dataArray = [...station.historicalData];
+    // eslint-disable-next-line fp/no-mutating-methods
+    const sortedData = dataArray.sort(
+      (a, b) => new Date(a.time).getTime() - new Date(b.time).getTime(),
+    );
+    const labelStrings = sortedData.map(d =>
+      new Date(d.time).toLocaleDateString(),
+    );
+
+    const clampIndex = (i: number) =>
+      Math.max(0, Math.min(labelStrings.length - 1, i));
+    // const forecastBeginIdx = clampIndex(1);
+    const day3Idx = clampIndex(3);
+    const day7Idx = clampIndex(7);
+    // const unreliableIdx = clampIndex(9);
+
+    return {
+      responsive: true,
+      maintainAspectRatio: false,
+      legend: {
+        position: 'right' as const,
+        labels: {
+          usePointStyle: true,
+          boxWidth: 24,
         },
-      ],
-    },
-  };
+      },
+      scales: {
+        xAxes: [
+          {
+            stacked: true,
+            gridLines: { display: false },
+            scaleLabel: { display: false },
+            ticks: { maxRotation: 0, autoSkip: true },
+          },
+        ],
+        yAxes: [
+          {
+            stacked: true,
+            ticks: { beginAtZero: true, max: 100 },
+            scaleLabel: { display: false },
+          },
+        ],
+      },
+      annotation: {
+        drawTime: 'beforeDatasetsDraw',
+        annotations: [
+          // {
+          //   type: 'line',
+          //   mode: 'vertical',
+          //   scaleID: 'x-axis-0',
+          //   value: labelStrings[forecastBeginIdx],
+          //   borderColor: 'rgba(158,158,158,0.8)',
+          //   borderDash: [4, 4],
+          //   borderWidth: 1,
+          //   label: {
+          //     enabled: true,
+          //     position: 'top',
+          //     content: t('Forecast period begins'),
+          //     backgroundColor: 'rgba(0,0,0,0)',
+          //     fontColor: '#9E9E9E',
+          //     xAdjust: 8,
+          //   },
+          // },
+          {
+            type: 'line',
+            mode: 'vertical',
+            scaleID: 'x-axis-0',
+            value: labelStrings[day3Idx],
+            borderColor: '#2196F3',
+            borderDash: [4, 4],
+            borderWidth: 1,
+            label: {
+              enabled: true,
+              position: 'top',
+              content: t('3-Day forecast'),
+              backgroundColor: 'rgba(0,0,0,0)',
+              fontColor: '#2196F3',
+              xAdjust: -50,
+            },
+          },
+          {
+            type: 'line',
+            mode: 'vertical',
+            scaleID: 'x-axis-0',
+            value: labelStrings[day7Idx],
+            borderColor: '#9C27B0',
+            borderDash: [4, 4],
+            borderWidth: 1,
+            label: {
+              enabled: true,
+              position: 'top',
+              content: t('7-Day forecast'),
+              backgroundColor: 'rgba(0,0,0,0)',
+              fontColor: '#9C27B0',
+              xAdjust: -50,
+            },
+          },
+          // {
+          //   type: 'line',
+          //   mode: 'vertical',
+          //   scaleID: 'x-axis-0',
+          //   value: labelStrings[unreliableIdx],
+          //   borderColor: 'rgba(158,158,158,0.8)',
+          //   borderDash: [4, 4],
+          //   borderWidth: 1,
+          //   label: {
+          //     enabled: true,
+          //     position: 'top',
+          //     content: t('Unreliable forecast'),
+          //     backgroundColor: 'rgba(0,0,0,0)',
+          //     fontColor: '#9E9E9E',
+          //     xAdjust: 8,
+          //   },
+          // },
+        ],
+      },
+    } as any;
+  }, [station.historicalData, t, hydrographOptions]);
 
   const handleTabChange = (_event: React.ChangeEvent<{}>, newValue: number) => {
     setActiveTab(newValue);
@@ -349,7 +477,10 @@ function StationCharts({ station, onClose }: StationChartsProps) {
           {activeTab === 0 && (
             <div className={classes.chartContainer}>
               {hydrographData && (
-                <Line data={hydrographData} options={chartOptions as any} />
+                <Line
+                  data={hydrographData}
+                  options={hydrographOptions as any}
+                />
               )}
             </div>
           )}
@@ -359,7 +490,7 @@ function StationCharts({ station, onClose }: StationChartsProps) {
               {triggerProbabilityData && (
                 <Line
                   data={triggerProbabilityData}
-                  options={chartOptions as any}
+                  options={probabilityOptions as any}
                 />
               )}
             </div>
