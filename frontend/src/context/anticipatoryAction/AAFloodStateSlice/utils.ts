@@ -7,14 +7,61 @@ import {
 } from './types';
 import { getVillageCoordinates } from './villageCoordinates';
 
+function toNumber(value: unknown): number {
+  if (typeof value === 'number') {
+    return value;
+  }
+  const parsed = Number(
+    String(value ?? '')
+      .toString()
+      .replace(/,/g, ''),
+  );
+  return Number.isFinite(parsed) ? parsed : 0;
+}
+
+function normalizeFloodRow(row: any): FloodStationData {
+  const time: string = String(row.time ?? '').trim();
+  const riskLevel =
+    (row.risk_level as AAFloodRiskLevelType) ?? 'Below bankfull';
+  return {
+    station_name: String(row.station_name ?? ''),
+    river_name: String(row.river_name ?? ''),
+    location_id: toNumber(row.location_id),
+    time,
+    total_members: toNumber(row.total_members),
+    min_discharge: toNumber(row.min_discharge),
+    max_discharge: toNumber(row.max_discharge),
+    avg_discharge: toNumber(row.avg_discharge),
+    non_null_values: toNumber(row.non_null_values),
+    zero_values: toNumber(row.zero_values),
+    threshold_bankfull: toNumber(row.threshold_bankfull),
+    threshold_moderate: toNumber(row.threshold_moderate),
+    threshold_severe: toNumber(row.threshold_severe),
+    bankfull_exceeding: toNumber(row.bankfull_exceeding),
+    moderate_exceeding: toNumber(row.moderate_exceeding),
+    severe_exceeding: toNumber(row.severe_exceeding),
+    bankfull_percentage: toNumber(row.bankfull_percentage),
+    moderate_percentage: toNumber(row.moderate_percentage),
+    severe_percentage: toNumber(row.severe_percentage),
+    risk_level: riskLevel,
+    max_vs_bankfull_pct: toNumber(row.max_vs_bankfull_pct),
+    avg_vs_bankfull_pct: toNumber(row.avg_vs_bankfull_pct),
+  };
+}
+
 export function parseAndTransformFloodData(data: FloodStationData[]): {
   stations: FloodStation[];
   availableDates: FloodDateItem[];
 } {
+  // Normalize incoming CSV rows to correct numeric types
+  const normalizedData: FloodStationData[] = (data as any[]).map(
+    normalizeFloodRow,
+  );
+
   // Group data by station
   const stationMap = new Map<string, FloodStationData[]>();
 
-  data.forEach(row => {
+  normalizedData.forEach(row => {
     const stationName = row.station_name;
     // Skip rows with invalid or missing station names
     if (!stationName || stationName.trim() === '') {
@@ -61,7 +108,7 @@ export function parseAndTransformFloodData(data: FloodStationData[]): {
 
   // Extract unique dates with color coding based on highest severity
   // Filter out null/undefined/invalid dates first
-  const validDates = data
+  const validDates = normalizedData
     .map(row => row.time)
     .filter(
       time =>
@@ -82,7 +129,7 @@ export function parseAndTransformFloodData(data: FloodStationData[]): {
       }
 
       // Find the highest severity level for this date
-      const dateData = data.filter(row => row.time === dateStr);
+      const dateData = normalizedData.filter(row => row.time === dateStr);
       const highestSeverity = dateData.reduce((highest, current) => {
         const severityOrder = {
           Severe: 4,
