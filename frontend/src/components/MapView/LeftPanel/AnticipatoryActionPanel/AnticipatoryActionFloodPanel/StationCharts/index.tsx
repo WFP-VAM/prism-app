@@ -97,61 +97,103 @@ function StationCharts({ station, onClose }: StationChartsProps) {
   const { t } = useSafeTranslation();
   const [activeTab, setActiveTab] = useState(0);
 
-  // Prepare hydrograph data
+  // Prepare hydrograph data (synthetic around bankfull threshold)
   const hydrographData = useMemo(() => {
-    if (!station.historicalData || station.historicalData.length === 0) {
-      return null;
-    }
+    const days = 11; // 0..10 days lead time
+    const labels = Array.from({ length: days }, (_v, i) => `${i}`);
 
-    // Sort data by time manually to avoid fp/no-mutating-methods warning
-    const dataArray = [...station.historicalData];
-    // eslint-disable-next-line fp/no-mutating-methods
-    const sortedData = dataArray.sort(
-      (a, b) => new Date(a.time).getTime() - new Date(b.time).getTime(),
-    );
+    const { bankfull, moderate, severe } = station.thresholds;
+
+    // Create a simple rise to a peak at day 3, then gradual fall
+    const meanSeries = Array.from({ length: days }, (_v, i) => {
+      const riseRatio = Math.min(i / 3, 1); // 0 -> 1 by day 3
+      const fallRatio = i > 3 ? (i - 3) / 7 : 0; // 0 at day 3 -> 1 at day 10
+      const value = bankfull * (0.95 + riseRatio * 0.12 - fallRatio * 0.17);
+      return Number(value.toFixed(1));
+    });
+
+    // Generate synthetic ensemble members around the mean
+    const numMembers = 50;
+    const ensembleDatasets = Array.from({ length: numMembers }, (_v, idx) => {
+      // Add more variability: per-member offset and a small random walk over time
+      const offset = (Math.random() - 0.5) * 0.18; // ±9%
+      const steps = Array.from(
+        { length: days },
+        () => (Math.random() - 0.5) * 0.08,
+      );
+      const walkSeries = steps.reduce<number[]>((acc, step) => {
+        const previous = acc.length ? acc[acc.length - 1] : 0;
+        const next = Math.max(-0.12, Math.min(0.12, previous + step));
+        return [...acc, next];
+      }, []);
+      const memberSeries = meanSeries.map((v, i) => {
+        const local = (Math.random() - 0.5) * 0.1; // extra local jitter ±5%
+        const factor = 1 + offset + walkSeries[i] + local;
+        const value = Math.max(0, v * factor);
+        return Number(value.toFixed(1));
+      });
+      return {
+        label: `Member ${idx + 1}`,
+        data: memberSeries,
+        borderColor: 'rgba(0, 0, 0, 0.18)',
+        backgroundColor: 'transparent',
+        borderWidth: 1,
+        pointRadius: 0,
+        pointStyle: 'line' as any,
+        hoverRadius: 0,
+        fill: false,
+        tension: 0.35,
+      };
+    });
 
     return {
-      labels: sortedData.map(d => new Date(d.time).toLocaleDateString()),
+      labels,
       datasets: [
         {
-          label: t('Discharge (m³/s)'),
-          data: sortedData.map(d => d.avg_discharge),
-          borderColor: '#2196F3',
-          backgroundColor: 'rgba(33, 150, 243, 0.1)',
+          label: t('Ensemble Mean'),
+          data: meanSeries,
+          borderColor: '#212121',
+          backgroundColor: 'transparent',
           borderWidth: 2,
-          fill: true,
+          pointRadius: 0,
+          pointStyle: 'line',
+          fill: false,
           tension: 0.4,
         },
         {
-          label: t('Bankfull Threshold'),
-          data: sortedData.map(() => station.thresholds.bankfull),
-          borderColor: '#FFC107',
+          label: `${t('Bankfull')} (${bankfull})`,
+          data: Array.from({ length: days }, () => bankfull),
+          borderColor: '#66BB6A',
           backgroundColor: 'transparent',
           borderWidth: 2,
-          borderDash: [5, 5],
+          borderDash: [6, 6],
           pointRadius: 0,
+          pointStyle: 'line',
         },
         {
-          label: t('Moderate Threshold'),
-          data: sortedData.map(() => station.thresholds.moderate),
-          borderColor: '#FF9800',
+          label: `${t('Moderate')} (${moderate})`,
+          data: Array.from({ length: days }, () => moderate),
+          borderColor: '#FFA726',
           backgroundColor: 'transparent',
           borderWidth: 2,
-          borderDash: [5, 5],
+          borderDash: [6, 6],
           pointRadius: 0,
+          pointStyle: 'line' as any,
         },
         {
-          label: t('Severe Threshold'),
-          data: sortedData.map(() => station.thresholds.severe),
-          borderColor: '#F44336',
+          label: `${t('Severe')} (${severe})`,
+          data: Array.from({ length: days }, () => severe),
+          borderColor: '#EF5350',
           backgroundColor: 'transparent',
           borderWidth: 2,
-          borderDash: [5, 5],
+          borderDash: [6, 6],
           pointRadius: 0,
+          pointStyle: 'line',
         },
+        ...ensembleDatasets,
       ],
     };
-  }, [station.historicalData, station.thresholds, t]);
+  }, [station.thresholds, t]);
 
   // Prepare trigger probability data
   const triggerProbabilityData = useMemo(() => {
@@ -203,26 +245,40 @@ function StationCharts({ station, onClose }: StationChartsProps) {
   const chartOptions = {
     responsive: true,
     maintainAspectRatio: false,
-    plugins: {
-      legend: {
-        position: 'top' as const,
-      },
-      title: {
-        display: false,
+    legend: {
+      position: 'top' as const,
+      labels: {
+        usePointStyle: true,
+        boxWidth: 24,
+        // Hide ensemble members from legend using the dataset label
+        filter: (legendItem: any, chartData: any) => {
+          const datasetLabel = String(
+            chartData?.datasets?.[legendItem.datasetIndex]?.label ?? '',
+          );
+          return !/^Member\s\d+$/i.test(datasetLabel);
+        },
       },
     },
     scales: {
-      x: {
-        display: true,
-        title: {
+      xAxes: [
+        {
           display: true,
-          text: t('Date'),
+          scaleLabel: {
+            display: true,
+            labelString: t('Lead times (days)'),
+          },
         },
-      },
-      y: {
-        display: true,
-        beginAtZero: true,
-      },
+      ],
+      yAxes: [
+        {
+          display: true,
+          ticks: { beginAtZero: true },
+          scaleLabel: {
+            display: true,
+            labelString: t('River Discharge (m³/s)'),
+          },
+        },
+      ],
     },
   };
 
