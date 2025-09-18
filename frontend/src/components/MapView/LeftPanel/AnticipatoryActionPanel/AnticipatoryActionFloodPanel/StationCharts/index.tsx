@@ -413,11 +413,7 @@ function StationCharts({ station, onClose }: StationChartsProps) {
       responsive: true,
       maintainAspectRatio: false,
       legend: {
-        position: 'right' as const,
-        labels: {
-          usePointStyle: true,
-          boxWidth: 24,
-        },
+        display: false,
       },
       scales: {
         xAxes: [
@@ -437,6 +433,49 @@ function StationCharts({ station, onClose }: StationChartsProps) {
       annotation: {
         drawTime: 'beforeDatasetsDraw',
         annotations: [
+          // Probability threshold labels (bankfull/moderate/severe)
+          {
+            type: 'line',
+            mode: 'horizontal',
+            scaleID: 'y-axis-0',
+            value: 38,
+            label: {
+              enabled: true,
+              position: 'right',
+              content: `${t('Bankfull')} (38%)`,
+              backgroundColor: 'rgba(0,0,0,0)',
+              fontColor: 'rgba(102, 187, 106, 0.9)',
+              yAdjust: 10,
+            },
+          },
+          {
+            type: 'line',
+            mode: 'horizontal',
+            scaleID: 'y-axis-0',
+            value: 19,
+            label: {
+              enabled: true,
+              position: 'right',
+              content: `${t('Moderate')} (19%)`,
+              backgroundColor: 'rgba(0,0,0,0)',
+              fontColor: 'rgba(255, 167, 38, 0.9)',
+              yAdjust: 10,
+            },
+          },
+          {
+            type: 'line',
+            mode: 'horizontal',
+            scaleID: 'y-axis-0',
+            value: 10,
+            label: {
+              enabled: true,
+              position: 'right',
+              content: `${t('Severe')} (10%)`,
+              backgroundColor: 'rgba(0,0,0,0)',
+              fontColor: 'rgba(239, 83, 80, 0.9)',
+              yAdjust: 10,
+            },
+          },
           // {
           //   type: 'line',
           //   mode: 'vertical',
