@@ -4,11 +4,16 @@ import {
   createStyles,
   Divider,
   Box,
+  Slider,
 } from '@material-ui/core';
+import { useDispatch, useSelector } from 'react-redux';
 import { black } from 'muiTheme';
 import { Visibility } from '@material-ui/icons';
 import { useSafeTranslation } from 'i18n';
 import { getFloodRiskColor } from 'context/anticipatoryAction/AAFloodStateSlice/utils';
+import { opacitySelector, setOpacity } from 'context/opacityStateSlice';
+import { useMapState } from 'utils/useMapState';
+import { useEffect } from 'react';
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -71,12 +76,38 @@ const useStyles = makeStyles(() =>
       color: '#1976d2',
       cursor: 'pointer',
     },
+    opacitySection: {
+      marginBottom: '1rem',
+    },
+    sliderContainer: {
+      paddingLeft: '0.5rem',
+      paddingRight: '0.5rem',
+    },
   }),
 );
 
 function AAFloodLegend() {
   const classes = useStyles();
   const { t } = useSafeTranslation();
+  const dispatch = useDispatch();
+  const { maplibreMap } = useMapState();
+  const map = maplibreMap();
+  const layerId = 'anticipatory_action_flood';
+  const opacity = useSelector(opacitySelector(layerId));
+
+  useEffect(() => {
+    if (opacity !== undefined) {
+      return;
+    }
+    dispatch(
+      setOpacity({
+        map,
+        value: 1, // Default to full opacity
+        layerId,
+        layerType: 'wms',
+      }),
+    );
+  }, [dispatch, layerId, map, opacity]);
 
   const categories = [
     {
@@ -103,6 +134,17 @@ function AAFloodLegend() {
 
   const handleGoogleResearchClick = () => {
     window.open('https://research.google/', '_blank');
+  };
+
+  const handleOpacityChange = (event: any, newValue: number | number[]) => {
+    dispatch(
+      setOpacity({
+        map,
+        value: newValue as number,
+        layerId,
+        layerType: 'wms',
+      }),
+    );
   };
 
   return (
@@ -151,6 +193,23 @@ function AAFloodLegend() {
         </span>{' '}
         {t('to learn more about their AI forecasting models.')}
       </Typography>
+
+      <Divider className={classes.divider} />
+
+      <Box className={classes.opacitySection}>
+        <Typography className={classes.sectionTitle}>{t('Opacity')}</Typography>
+        <Box className={classes.sliderContainer}>
+          <Slider
+            value={opacity || 1}
+            onChange={handleOpacityChange}
+            min={0}
+            max={1}
+            step={0.01}
+            valueLabelDisplay="auto"
+            valueLabelFormat={value => `${Math.round(value * 100)}%`}
+          />
+        </Box>
+      </Box>
     </div>
   );
 }
