@@ -241,7 +241,13 @@ function StationCharts({ station, onClose }: StationChartsProps) {
     );
 
     // TODO - remove temp synthetic data
-    const labels = sortedData.map(d => new Date(d.time).toLocaleDateString());
+    const labels = sortedData.map(d =>
+      new Date(d.time).toLocaleDateString('en-US', {
+        month: '2-digit',
+        day: '2-digit',
+        year: '2-digit',
+      }),
+    );
     const bankfullSeries = sortedData
       .map(d => d.bankfull_percentage)
       .map((v, i) => (i >= 3 ? 50 : v));
@@ -399,7 +405,11 @@ function StationCharts({ station, onClose }: StationChartsProps) {
       (a, b) => new Date(a.time).getTime() - new Date(b.time).getTime(),
     );
     const labelStrings = sortedData.map(d =>
-      new Date(d.time).toLocaleDateString(),
+      new Date(d.time).toLocaleDateString('en-US', {
+        month: '2-digit',
+        day: '2-digit',
+        year: '2-digit',
+      }),
     );
 
     const clampIndex = (i: number) =>
@@ -408,6 +418,21 @@ function StationCharts({ station, onClose }: StationChartsProps) {
     const day3Idx = clampIndex(3);
     const day7Idx = clampIndex(7);
     // const unreliableIdx = clampIndex(9);
+
+    // console.debug('sortedData', sortedData);
+
+    // Compute y-axis max rounded up to the next dizaine (multiple of 10)
+    const maxPct = Math.max(
+      50,
+      ...sortedData.map(d =>
+        Math.max(
+          d.bankfull_percentage,
+          d.moderate_percentage,
+          d.severe_percentage,
+        ),
+      ),
+    );
+    const maxTick = Math.ceil((maxPct + 10) / 10) * 10;
 
     return {
       responsive: true,
@@ -425,7 +450,10 @@ function StationCharts({ station, onClose }: StationChartsProps) {
         ],
         yAxes: [
           {
-            ticks: { beginAtZero: true, max: 100 },
+            ticks: {
+              beginAtZero: true,
+              max: maxTick,
+            },
             scaleLabel: { display: false },
           },
         ],
@@ -446,6 +474,7 @@ function StationCharts({ station, onClose }: StationChartsProps) {
               backgroundColor: 'rgba(0,0,0,0)',
               fontColor: 'rgba(102, 187, 106, 0.9)',
               yAdjust: 10,
+              xAdjust: -5,
             },
           },
           {
@@ -460,6 +489,7 @@ function StationCharts({ station, onClose }: StationChartsProps) {
               backgroundColor: 'rgba(0,0,0,0)',
               fontColor: 'rgba(255, 167, 38, 0.9)',
               yAdjust: 10,
+              xAdjust: -5,
             },
           },
           {
@@ -474,6 +504,7 @@ function StationCharts({ station, onClose }: StationChartsProps) {
               backgroundColor: 'rgba(0,0,0,0)',
               fontColor: 'rgba(239, 83, 80, 0.9)',
               yAdjust: 10,
+              xAdjust: -5,
             },
           },
           // {
