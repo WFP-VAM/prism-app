@@ -12,12 +12,23 @@ import {
   createStyles,
   makeStyles,
   TableSortLabel,
+  Box,
+  IconButton,
+  Collapse,
 } from '@material-ui/core';
+import { cyanBlue } from 'muiTheme';
+import {
+  ChevronLeft,
+  ChevronRight,
+  ExpandLess,
+  ExpandMore,
+} from '@material-ui/icons';
 import { setAAFloodSelectedStation } from 'context/anticipatoryAction/AAFloodStateSlice';
 import { getFloodRiskColor } from 'context/anticipatoryAction/AAFloodStateSlice/utils';
 import { useSafeTranslation } from 'i18n';
 import { AnticipatoryAction } from 'config/types';
 import { dateRangeSelector } from 'context/mapStateSlice/selectors';
+import SimpleDropdown from 'components/Common/SimpleDropdown';
 import { useAnticipatoryAction } from '../useAnticipatoryAction';
 import StationCharts from './StationCharts';
 import { TABLE_WIDTH } from './constants';
@@ -28,8 +39,16 @@ const useStyles = makeStyles(() =>
       padding: '1rem',
     },
     title: {
-      marginBottom: '1rem',
       fontWeight: 'bold',
+    },
+    titleContainer: {
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      marginBottom: '1rem',
+    },
+    collapseButton: {
+      padding: '4px',
     },
     tableContainer: {
       maxHeight: '70vh',
@@ -56,16 +75,46 @@ const useStyles = makeStyles(() =>
       },
     },
     selectedRow: {
-      backgroundColor: '#e3f2fd !important', // Light blue for selected row
+      backgroundColor: `${cyanBlue} !important`,
+      '& $firstCell': {
+        color: '#000000', // Black text for first cell when selected
+      },
     },
     tableCell: {
       color: '#000000', // Black text color
+    },
+    firstCell: {
+      color: `${cyanBlue}`,
+    },
+    pagination: {
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      marginTop: '1rem',
+      color: '#666',
+    },
+    rowsPerPageContainer: {
+      display: 'flex',
+      alignItems: 'center',
+      gap: '0.5rem',
+    },
+    pageNavigation: {
+      display: 'flex',
+      alignItems: 'center',
+      gap: '0.5rem',
     },
   }),
 );
 
 type SortField = 'station_name' | 'date' | 'risk_level';
 type SortDirection = 'asc' | 'desc';
+
+const rowsPerPageOptions: [number, string][] = [
+  [10, '10'],
+  [20, '20'],
+  [50, '50'],
+  [100, '100'],
+];
 
 function AnticipatoryActionFloodPanel() {
   const classes = useStyles();
@@ -77,6 +126,9 @@ function AnticipatoryActionFloodPanel() {
 
   const [sortField, setSortField] = useState<SortField>('station_name');
   const [sortDirection, setSortDirection] = useState<SortDirection>('asc');
+  const [rowsPerPage, setRowsPerPage] = useState<number>(20);
+  const [currentPage, setCurrentPage] = useState<number>(0);
+  const [isCollapsed, setIsCollapsed] = useState<boolean>(false);
 
   const handleSort = (field: SortField) => {
     if (sortField === field) {
@@ -89,6 +141,24 @@ function AnticipatoryActionFloodPanel() {
 
   const handleRowClick = (stationName: string) => {
     dispatch(setAAFloodSelectedStation(stationName));
+  };
+
+  const handleRowsPerPageChange = (newRowsPerPage: number) => {
+    setRowsPerPage(newRowsPerPage);
+    setCurrentPage(0);
+  };
+
+  const handlePreviousPage = () => {
+    setCurrentPage(prev => Math.max(0, prev - 1));
+  };
+
+  const handleNextPage = () => {
+    const maxPage = Math.ceil(totalStations / rowsPerPage) - 1;
+    setCurrentPage(prev => Math.min(maxPage, prev + 1));
+  };
+
+  const handleToggleCollapse = () => {
+    setIsCollapsed(prev => !prev);
   };
 
   // Filter stations by selected date
@@ -153,6 +223,20 @@ function AnticipatoryActionFloodPanel() {
     return 0;
   });
 
+  const paginatedStations = useMemo(() => {
+    const startIndex = currentPage * rowsPerPage;
+    const endIndex = startIndex + rowsPerPage;
+    return sortedStations.slice(startIndex, endIndex);
+  }, [sortedStations, currentPage, rowsPerPage]);
+
+  const totalStations = sortedStations.length;
+  const startIndex = currentPage * rowsPerPage + 1;
+  const endIndex = Math.min((currentPage + 1) * rowsPerPage, totalStations);
+  const totalPages = Math.ceil(totalStations / rowsPerPage);
+
+  const canGoPrevious = currentPage > 0;
+  const canGoNext = currentPage < totalPages - 1;
+
   if (loading) {
     return (
       <div className={classes.container}>
@@ -173,101 +257,141 @@ function AnticipatoryActionFloodPanel() {
 
   return (
     <div className={classes.container}>
-      <Typography variant="h6" className={classes.title}>
-        {t('River gauge status overview')}
-      </Typography>
-      <TableContainer component={Paper} className={classes.tableContainer}>
-        <Table className={classes.table} size="small">
-          <TableHead>
-            <TableRow>
-              <TableCell className={classes.headerCell}>
-                <TableSortLabel
-                  active={sortField === 'station_name'}
-                  direction={
-                    sortField === 'station_name' ? sortDirection : 'asc'
-                  }
-                  onClick={() => handleSort('station_name')}
-                >
-                  {t('Gauge station')}
-                </TableSortLabel>
-              </TableCell>
-              <TableCell className={classes.headerCell}>
-                <TableSortLabel
-                  active={sortField === 'date'}
-                  direction={sortField === 'date' ? sortDirection : 'asc'}
-                  onClick={() => handleSort('date')}
-                >
-                  {t('Date')}
-                </TableSortLabel>
-              </TableCell>
-              <TableCell className={classes.headerCell}>
-                <TableSortLabel
-                  active={sortField === 'risk_level'}
-                  direction={sortField === 'risk_level' ? sortDirection : 'asc'}
-                  onClick={() => handleSort('risk_level')}
-                >
-                  {t('Status')}
-                </TableSortLabel>
-              </TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {sortedStations.map(station => {
-              const stationData = getStationDataForDate(station);
-              return (
-                <TableRow
-                  key={station.station_name}
-                  className={`${classes.row} ${
-                    selectedStation === station.station_name
-                      ? classes.selectedRow
-                      : ''
-                  }`}
-                  onClick={() => handleRowClick(station.station_name)}
-                >
-                  <TableCell className={classes.tableCell}>
-                    {station.station_name || '-'}
-                  </TableCell>
-                  <TableCell className={classes.tableCell}>
-                    {stationData
-                      ? new Date(stationData.time).toLocaleDateString()
-                      : '-'}
-                  </TableCell>
-                  <TableCell className={classes.tableCell}>
-                    {stationData ? (
-                      <div
-                        style={{
-                          display: 'flex',
-                          alignItems: 'center',
-                          gap: 8,
-                        }}
-                      >
-                        <Typography>{t(stationData.risk_level)}</Typography>
-                        <span
+      <Box className={classes.titleContainer}>
+        <Typography variant="h6" className={classes.title}>
+          {t('River gauge status overview')}
+        </Typography>
+        <IconButton
+          classes={{ root: classes.collapseButton }}
+          onClick={handleToggleCollapse}
+          size="small"
+        >
+          {isCollapsed ? <ExpandMore /> : <ExpandLess />}
+        </IconButton>
+      </Box>
+      <Collapse in={!isCollapsed} timeout="auto">
+        <TableContainer component={Paper} className={classes.tableContainer}>
+          <Table className={classes.table} size="small">
+            <TableHead>
+              <TableRow>
+                <TableCell className={classes.headerCell}>
+                  <TableSortLabel
+                    active={sortField === 'station_name'}
+                    direction={
+                      sortField === 'station_name' ? sortDirection : 'asc'
+                    }
+                    onClick={() => handleSort('station_name')}
+                  >
+                    {t('Gauge station')}
+                  </TableSortLabel>
+                </TableCell>
+                <TableCell className={classes.headerCell}>
+                  <TableSortLabel
+                    active={sortField === 'date'}
+                    direction={sortField === 'date' ? sortDirection : 'asc'}
+                    onClick={() => handleSort('date')}
+                  >
+                    {t('Date')}
+                  </TableSortLabel>
+                </TableCell>
+                <TableCell className={classes.headerCell}>
+                  <TableSortLabel
+                    active={sortField === 'risk_level'}
+                    direction={
+                      sortField === 'risk_level' ? sortDirection : 'asc'
+                    }
+                    onClick={() => handleSort('risk_level')}
+                  >
+                    {t('Status')}
+                  </TableSortLabel>
+                </TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {paginatedStations.map(station => {
+                const stationData = getStationDataForDate(station);
+                return (
+                  <TableRow
+                    key={station.station_name}
+                    className={`${classes.row} ${
+                      selectedStation === station.station_name
+                        ? classes.selectedRow
+                        : ''
+                    }`}
+                    onClick={() => handleRowClick(station.station_name)}
+                  >
+                    <TableCell className={classes.firstCell}>
+                      {station.station_name || '-'}
+                    </TableCell>
+                    <TableCell className={classes.tableCell}>
+                      {stationData
+                        ? new Date(stationData.time).toLocaleDateString()
+                        : '-'}
+                    </TableCell>
+                    <TableCell className={classes.tableCell}>
+                      {stationData ? (
+                        <div
                           style={{
-                            display: 'inline-block',
-                            width: 10,
-                            height: 10,
-                            borderRadius: '50%',
-                            backgroundColor: getFloodRiskColor(
-                              stationData.risk_level,
-                            ),
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: 8,
                           }}
-                        />
-                      </div>
-                    ) : (
-                      <Typography>{t('No data')}</Typography>
-                    )}
-                  </TableCell>
-                </TableRow>
-              );
-            })}
-          </TableBody>
-        </Table>
-      </TableContainer>
-      <div style={{ marginTop: '1rem', fontSize: '0.875rem', color: '#666' }}>
-        {t('Rows per page')} 20 | 1-{Math.min(20, filteredStations.length)} /{' '}
-        {filteredStations.length}
-      </div>
+                        >
+                          <Typography>{t(stationData.risk_level)}</Typography>
+                          <span
+                            style={{
+                              display: 'inline-block',
+                              width: 10,
+                              height: 10,
+                              borderRadius: '50%',
+                              backgroundColor: getFloodRiskColor(
+                                stationData.risk_level,
+                              ),
+                            }}
+                          />
+                        </div>
+                      ) : (
+                        <Typography>{t('No data')}</Typography>
+                      )}
+                    </TableCell>
+                  </TableRow>
+                );
+              })}
+            </TableBody>
+          </Table>
+        </TableContainer>
+        <Box className={classes.pagination}>
+          <Box className={classes.rowsPerPageContainer}>
+            <Typography>{t('Rows per page')}:</Typography>
+            <SimpleDropdown
+              options={rowsPerPageOptions}
+              value={rowsPerPage}
+              onChange={handleRowsPerPageChange}
+              textClass=""
+            />
+          </Box>
+          <Box className={classes.pageNavigation}>
+            <IconButton
+              onClick={handlePreviousPage}
+              disabled={!canGoPrevious}
+              size="small"
+            >
+              <ChevronLeft />
+            </IconButton>
+            <Typography>
+              {totalStations > 0 ? `${startIndex}-${endIndex}` : '0-0'}{' '}
+              {t('of')} {totalStations}
+            </Typography>
+            <IconButton
+              onClick={handleNextPage}
+              disabled={!canGoNext}
+              size="small"
+            >
+              <ChevronRight />
+            </IconButton>
+          </Box>
+        </Box>
+      </Collapse>
 
       {/* Show charts when a station is selected */}
       {selectedStation && (
