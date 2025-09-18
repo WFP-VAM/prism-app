@@ -58,11 +58,17 @@ export function findDateIndex(
 
 // Finds the first DateItem that is available on all layers
 // layerDates must contain only observation dates for each layer
-// and already be filtered before/after the current selected date
+// and already be filtered before/after the current selected date.
+// Returns undefined if not match is found
 export const findMatchingDateBetweenLayers = (
   layerDates: DateItem[][],
   direction: 'forward' | 'back',
-): DateItem => {
+): DateItem | undefined => {
+  // one of the layers has no more dates to check: there will be no match
+  if (layerDates.some(ld => ld.length === 0)) {
+    return undefined;
+  }
+
   const firstDates: DateItem[] = layerDates.map(
     l => l[direction === 'forward' ? 0 : l.length - 1],
   );
@@ -70,15 +76,16 @@ export const findMatchingDateBetweenLayers = (
     (max, di) =>
       (
         direction === 'forward'
-          ? di.displayDate > max.displayDate
-          : di.displayDate < max.displayDate
+          ? di?.displayDate > max?.displayDate
+          : di?.displayDate < max?.displayDate
       )
         ? di
         : max,
     firstDates.slice(0, 1)[0],
   );
+
   if (
-    firstDates.every(di => di.displayDate === minmaxFirstDateItem.displayDate)
+    firstDates.every(di => di?.displayDate === minmaxFirstDateItem?.displayDate)
   ) {
     return minmaxFirstDateItem;
   }
@@ -86,8 +93,8 @@ export const findMatchingDateBetweenLayers = (
     direction === 'forward' ? l.slice(1) : l.slice(0, -1);
   return findMatchingDateBetweenLayers(
     layerDates.map(l =>
-      l[direction === 'forward' ? 0 : l.length - 1].displayDate ===
-      minmaxFirstDateItem.displayDate
+      l[direction === 'forward' ? 0 : l.length - 1]?.displayDate ===
+      minmaxFirstDateItem?.displayDate
         ? l
         : tail(l),
     ),

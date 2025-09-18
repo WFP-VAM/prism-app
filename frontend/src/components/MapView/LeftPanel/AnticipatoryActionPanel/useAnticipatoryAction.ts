@@ -8,7 +8,7 @@ import {
   layersSelector,
   mapSelector,
 } from 'context/mapStateSlice/selectors';
-import { updateDateRange, addLayer } from 'context/mapStateSlice';
+import { updateDateRange } from 'context/mapStateSlice';
 import { getUrlKey, useUrlHistory } from 'utils/url-utils';
 import { AALayerIds, LayerDefinitions, isWindowedDates } from 'config/utils';
 import {
@@ -20,10 +20,11 @@ import {
   updateLayersCapabilities,
 } from 'context/serverStateSlice';
 import { AnticipatoryActionData } from 'context/anticipatoryAction/AADroughtStateSlice/types';
-import { getFormattedDate } from 'utils/date-utils';
-import { DateFormat } from 'utils/name-utils';
 import { ParsedStormData } from 'context/anticipatoryAction/AAStormStateSlice/parsedStormDataTypes';
 import { AnticipatoryActionFloodState } from 'context/anticipatoryAction/AAFloodStateSlice/types';
+import { getFormattedDate } from 'utils/date-utils';
+import { DateFormat } from 'utils/name-utils';
+import { useMapState } from 'utils/useMapState';
 import { toggleRemoveLayer } from '../layersPanel/MenuItem/MenuSwitch/SwitchItem/utils';
 
 type AADataByAction<T extends AnticipatoryAction> =
@@ -50,6 +51,9 @@ export function useAnticipatoryAction<T extends AnticipatoryAction>(
   const dispatch = useDispatch();
   const selectedLayers = useSelector(layersSelector);
   const map = useSelector(mapSelector);
+  const {
+    actions: { addLayer, removeLayer },
+  } = useMapState();
   const { updateHistory, appendLayerToUrl, removeLayerFromUrl } =
     useUrlHistory();
 
@@ -118,8 +122,9 @@ export function useAnticipatoryAction<T extends AnticipatoryAction>(
           AALayerInUrl,
           map,
           getUrlKey(AALayerInUrl),
-          dispatch,
+          removeLayer,
           removeLayerFromUrl,
+          addLayer,
         );
       }
       const updatedUrl = appendLayerToUrl(
