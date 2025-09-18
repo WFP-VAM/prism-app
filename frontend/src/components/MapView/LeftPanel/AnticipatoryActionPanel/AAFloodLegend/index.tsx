@@ -3,7 +3,10 @@ import {
   makeStyles,
   createStyles,
   Divider,
+  Box,
 } from '@material-ui/core';
+import { black } from 'muiTheme';
+import { Visibility } from '@material-ui/icons';
 import { useSafeTranslation } from 'i18n';
 import { getFloodRiskColor } from 'context/anticipatoryAction/AAFloodStateSlice/utils';
 
@@ -104,6 +107,15 @@ function AAFloodLegend() {
 
   return (
     <div>
+      <Box className={classes.header}>
+        <Box className={classes.title}>
+          <Visibility style={{ color: black }} />
+          <Typography variant="h3" style={{ fontWeight: 'bold' }}>
+            {t('Legend')}
+          </Typography>
+        </Box>
+      </Box>
+
       <Typography className={classes.sectionTitle}>
         {t('River discharge forecast')}
       </Typography>

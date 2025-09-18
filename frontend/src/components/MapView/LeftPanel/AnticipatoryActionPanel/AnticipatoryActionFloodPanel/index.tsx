@@ -14,15 +14,9 @@ import {
   TableSortLabel,
   Box,
   IconButton,
-  Collapse,
 } from '@material-ui/core';
 import { cyanBlue } from 'muiTheme';
-import {
-  ChevronLeft,
-  ChevronRight,
-  ExpandLess,
-  ExpandMore,
-} from '@material-ui/icons';
+import { ChevronLeft, ChevronRight } from '@material-ui/icons';
 import { setAAFloodSelectedStation } from 'context/anticipatoryAction/AAFloodStateSlice';
 import { getFloodRiskColor } from 'context/anticipatoryAction/AAFloodStateSlice/utils';
 import { useSafeTranslation } from 'i18n';
@@ -37,18 +31,11 @@ const useStyles = makeStyles(() =>
   createStyles({
     container: {
       padding: '1rem',
+      height: 'calc(100% - 40px)',
     },
     title: {
-      fontWeight: 'bold',
-    },
-    titleContainer: {
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'space-between',
       marginBottom: '1rem',
-    },
-    collapseButton: {
-      padding: '4px',
+      fontWeight: 'bold',
     },
     tableContainer: {
       maxHeight: '70vh',
@@ -92,6 +79,9 @@ const useStyles = makeStyles(() =>
       justifyContent: 'space-between',
       marginTop: '1rem',
       color: '#666',
+      position: 'absolute',
+      width: '90%',
+      bottom: '10px',
     },
     rowsPerPageContainer: {
       display: 'flex',
@@ -128,7 +118,6 @@ function AnticipatoryActionFloodPanel() {
   const [sortDirection, setSortDirection] = useState<SortDirection>('asc');
   const [rowsPerPage, setRowsPerPage] = useState<number>(20);
   const [currentPage, setCurrentPage] = useState<number>(0);
-  const [isCollapsed, setIsCollapsed] = useState<boolean>(false);
 
   const handleSort = (field: SortField) => {
     if (sortField === field) {
@@ -155,10 +144,6 @@ function AnticipatoryActionFloodPanel() {
   const handleNextPage = () => {
     const maxPage = Math.ceil(totalStations / rowsPerPage) - 1;
     setCurrentPage(prev => Math.min(maxPage, prev + 1));
-  };
-
-  const handleToggleCollapse = () => {
-    setIsCollapsed(prev => !prev);
   };
 
   // Filter stations by selected date
@@ -257,141 +242,128 @@ function AnticipatoryActionFloodPanel() {
 
   return (
     <div className={classes.container}>
-      <Box className={classes.titleContainer}>
-        <Typography variant="h6" className={classes.title}>
-          {t('River gauge status overview')}
-        </Typography>
-        <IconButton
-          classes={{ root: classes.collapseButton }}
-          onClick={handleToggleCollapse}
-          size="small"
-        >
-          {isCollapsed ? <ExpandMore /> : <ExpandLess />}
-        </IconButton>
-      </Box>
-      <Collapse in={!isCollapsed} timeout="auto">
-        <TableContainer component={Paper} className={classes.tableContainer}>
-          <Table className={classes.table} size="small">
-            <TableHead>
-              <TableRow>
-                <TableCell className={classes.headerCell}>
-                  <TableSortLabel
-                    active={sortField === 'station_name'}
-                    direction={
-                      sortField === 'station_name' ? sortDirection : 'asc'
-                    }
-                    onClick={() => handleSort('station_name')}
-                  >
-                    {t('Gauge station')}
-                  </TableSortLabel>
-                </TableCell>
-                <TableCell className={classes.headerCell}>
-                  <TableSortLabel
-                    active={sortField === 'date'}
-                    direction={sortField === 'date' ? sortDirection : 'asc'}
-                    onClick={() => handleSort('date')}
-                  >
-                    {t('Date')}
-                  </TableSortLabel>
-                </TableCell>
-                <TableCell className={classes.headerCell}>
-                  <TableSortLabel
-                    active={sortField === 'risk_level'}
-                    direction={
-                      sortField === 'risk_level' ? sortDirection : 'asc'
-                    }
-                    onClick={() => handleSort('risk_level')}
-                  >
-                    {t('Status')}
-                  </TableSortLabel>
-                </TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {paginatedStations.map(station => {
-                const stationData = getStationDataForDate(station);
-                return (
-                  <TableRow
-                    key={station.station_name}
-                    className={`${classes.row} ${
-                      selectedStation === station.station_name
-                        ? classes.selectedRow
-                        : ''
-                    }`}
-                    onClick={() => handleRowClick(station.station_name)}
-                  >
-                    <TableCell className={classes.firstCell}>
-                      {station.station_name || '-'}
-                    </TableCell>
-                    <TableCell className={classes.tableCell}>
-                      {stationData
-                        ? new Date(stationData.time).toLocaleDateString()
-                        : '-'}
-                    </TableCell>
-                    <TableCell className={classes.tableCell}>
-                      {stationData ? (
-                        <div
+      <Typography variant="h6" className={classes.title}>
+        {t('River gauge status overview')}
+      </Typography>
+      <TableContainer component={Paper} className={classes.tableContainer}>
+        <Table className={classes.table} size="small">
+          <TableHead>
+            <TableRow>
+              <TableCell className={classes.headerCell}>
+                <TableSortLabel
+                  active={sortField === 'station_name'}
+                  direction={
+                    sortField === 'station_name' ? sortDirection : 'asc'
+                  }
+                  onClick={() => handleSort('station_name')}
+                >
+                  {t('Gauge station')}
+                </TableSortLabel>
+              </TableCell>
+              <TableCell className={classes.headerCell}>
+                <TableSortLabel
+                  active={sortField === 'date'}
+                  direction={sortField === 'date' ? sortDirection : 'asc'}
+                  onClick={() => handleSort('date')}
+                >
+                  {t('Date')}
+                </TableSortLabel>
+              </TableCell>
+              <TableCell className={classes.headerCell}>
+                <TableSortLabel
+                  active={sortField === 'risk_level'}
+                  direction={sortField === 'risk_level' ? sortDirection : 'asc'}
+                  onClick={() => handleSort('risk_level')}
+                >
+                  {t('Status')}
+                </TableSortLabel>
+              </TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {paginatedStations.map(station => {
+              const stationData = getStationDataForDate(station);
+              return (
+                <TableRow
+                  key={station.station_name}
+                  className={`${classes.row} ${
+                    selectedStation === station.station_name
+                      ? classes.selectedRow
+                      : ''
+                  }`}
+                  onClick={() => handleRowClick(station.station_name)}
+                >
+                  <TableCell className={classes.firstCell}>
+                    {station.station_name || '-'}
+                  </TableCell>
+                  <TableCell className={classes.tableCell}>
+                    {stationData
+                      ? new Date(stationData.time).toLocaleDateString()
+                      : '-'}
+                  </TableCell>
+                  <TableCell className={classes.tableCell}>
+                    {stationData ? (
+                      <div
+                        style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: 8,
+                        }}
+                      >
+                        <Typography>{t(stationData.risk_level)}</Typography>
+                        <span
                           style={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: 8,
+                            display: 'inline-block',
+                            width: 10,
+                            height: 10,
+                            borderRadius: '50%',
+                            backgroundColor: getFloodRiskColor(
+                              stationData.risk_level,
+                            ),
                           }}
-                        >
-                          <Typography>{t(stationData.risk_level)}</Typography>
-                          <span
-                            style={{
-                              display: 'inline-block',
-                              width: 10,
-                              height: 10,
-                              borderRadius: '50%',
-                              backgroundColor: getFloodRiskColor(
-                                stationData.risk_level,
-                              ),
-                            }}
-                          />
-                        </div>
-                      ) : (
-                        <Typography>{t('No data')}</Typography>
-                      )}
-                    </TableCell>
-                  </TableRow>
-                );
-              })}
-            </TableBody>
-          </Table>
-        </TableContainer>
-        <Box className={classes.pagination}>
-          <Box className={classes.rowsPerPageContainer}>
-            <Typography>{t('Rows per page')}:</Typography>
-            <SimpleDropdown
-              options={rowsPerPageOptions}
-              value={rowsPerPage}
-              onChange={handleRowsPerPageChange}
-              textClass=""
-            />
-          </Box>
-          <Box className={classes.pageNavigation}>
-            <IconButton
-              onClick={handlePreviousPage}
-              disabled={!canGoPrevious}
-              size="small"
-            >
-              <ChevronLeft />
-            </IconButton>
-            <Typography>
-              {totalStations > 0 ? `${startIndex}-${endIndex}` : '0-0'}{' '}
-              {t('of')} {totalStations}
-            </Typography>
-            <IconButton
-              onClick={handleNextPage}
-              disabled={!canGoNext}
-              size="small"
-            >
-              <ChevronRight />
-            </IconButton>
-          </Box>
+                        />
+                      </div>
+                    ) : (
+                      <Typography>{t('No data')}</Typography>
+                    )}
+                  </TableCell>
+                </TableRow>
+              );
+            })}
+          </TableBody>
+        </Table>
+      </TableContainer>
+      <Box className={classes.pagination}>
+        <Box className={classes.rowsPerPageContainer}>
+          <Typography>{t('Rows per page')}:</Typography>
+          <SimpleDropdown
+            options={rowsPerPageOptions}
+            value={rowsPerPage}
+            onChange={handleRowsPerPageChange}
+            textClass=""
+          />
         </Box>
-      </Collapse>
+        <Box className={classes.pageNavigation}>
+          <IconButton
+            onClick={handlePreviousPage}
+            disabled={!canGoPrevious}
+            size="small"
+          >
+            <ChevronLeft />
+          </IconButton>
+          <Typography>
+            {totalStations > 0 ? `${startIndex}-${endIndex}` : '0-0'} {t('of')}{' '}
+            {totalStations}
+          </Typography>
+          <IconButton
+            onClick={handleNextPage}
+            disabled={!canGoNext}
+            size="small"
+          >
+            <ChevronRight />
+          </IconButton>
+        </Box>
+      </Box>
 
       {/* Show charts when a station is selected */}
       {selectedStation && (
