@@ -88,6 +88,37 @@ const useStyles = makeStyles(() =>
   }),
 );
 
+// Helper to fill area above threshold only (Chart.js v2 scriptable backgroundColor)
+const chartFillColor =
+  (threshold: number | null, above: string, below: string) =>
+  ({ chart }: any) => {
+    const yScale = (chart as any).scales['y-axis-0'] || (chart as any).scales.y;
+    if (!yScale) {
+      return below;
+    }
+    const maxValue = yScale.max !== undefined ? yScale.max : 100;
+    const top = yScale.getPixelForValue(maxValue);
+    const zero = yScale.getPixelForValue(threshold ?? 0);
+    const bottom = yScale.getPixelForValue(0);
+    const { ctx } = chart as any;
+    if (!ctx) {
+      return below;
+    }
+    const gradient = ctx.createLinearGradient(0, top, 0, bottom);
+    const denom = bottom - top || 1;
+    const ratio = Math.min(Math.max((zero - top) / denom, 0), 1);
+    if (threshold !== null) {
+      gradient.addColorStop(0, above);
+      gradient.addColorStop(ratio, above);
+      gradient.addColorStop(ratio, below);
+      gradient.addColorStop(1, below);
+    } else {
+      gradient.addColorStop(0, below);
+      gradient.addColorStop(1, below);
+    }
+    return gradient as CanvasGradient;
+  };
+
 interface StationChartsProps {
   station: FloodStation;
   onClose?: () => void;
@@ -209,35 +240,105 @@ function StationCharts({ station, onClose }: StationChartsProps) {
       (a, b) => new Date(a.time).getTime() - new Date(b.time).getTime(),
     );
 
+    // TODO - remove temp synthetic data
+    const labels = sortedData.map(d => new Date(d.time).toLocaleDateString());
+    const bankfullSeries = sortedData
+      .map(d => d.bankfull_percentage)
+      .map((v, i) => (i >= 3 ? 50 : v));
+    const moderateSeries = sortedData
+      .map(d => d.moderate_percentage)
+      .map((v, i) => (i >= 3 ? 24 : v));
+    const severeSeries = sortedData
+      .map(d => d.severe_percentage)
+      .map((v, i) => (i <= 4 ? 15 : v));
+
+    const bankfullTrigger = 38;
+    const moderateTrigger = 19;
+    const severeTrigger = 10;
+
+    // Area fill handled by scriptable backgroundColor; no clamped series needed
+
     return {
-      labels: sortedData.map(d => new Date(d.time).toLocaleDateString()),
+      labels,
       datasets: [
+        // Thresholds
+        {
+          label: `${t('Bankfull')} (${bankfullTrigger}%)`,
+          data: Array.from({ length: labels.length }, () => bankfullTrigger),
+          borderColor: 'rgba(102, 187, 106, 0.7)',
+          backgroundColor: 'transparent',
+          borderWidth: 2,
+          borderDash: [6, 6],
+          pointRadius: 0,
+          fill: false,
+        },
+        {
+          label: `${t('Moderate')} (${moderateTrigger}%)`,
+          data: Array.from({ length: labels.length }, () => moderateTrigger),
+          borderColor: 'rgba(255, 167, 38, 0.8)',
+          backgroundColor: 'transparent',
+          borderWidth: 2,
+          borderDash: [6, 6],
+          pointRadius: 0,
+          fill: false,
+        },
+        {
+          label: `${t('Severe')} (${severeTrigger}%)`,
+          data: Array.from({ length: labels.length }, () => severeTrigger),
+          borderColor: 'rgba(239, 83, 80, 0.8)',
+          backgroundColor: 'transparent',
+          borderWidth: 2,
+          borderDash: [6, 6],
+          pointRadius: 0,
+          fill: false,
+        },
+        // Area fill only above the bankfull threshold using scriptable background
         {
           label: t('Bankfull'),
-          data: sortedData.map(d => d.bankfull_percentage),
-          borderColor: 'rgba(102, 187, 106, 0.9)',
-          backgroundColor: 'rgba(102, 187, 106, 0.25)',
-          borderWidth: 1,
+          data: bankfullSeries,
+          borderColor: 'rgba(102, 187, 106, 0.8)',
+          backgroundColor: chartFillColor(
+            bankfullTrigger,
+            'rgba(102, 187, 106, 0.25)',
+            'rgba(0,0,0,0)',
+          ),
+          borderWidth: 0,
+          pointRadius: 0,
           fill: true,
-          tension: 0.4,
+          tension: 0,
+          lineTension: 0,
         },
+        // Moderate area and line
         {
           label: t('Moderate'),
-          data: sortedData.map(d => d.moderate_percentage),
-          borderColor: 'rgba(255, 167, 38, 0.9)',
-          backgroundColor: 'rgba(255, 167, 38, 0.25)',
-          borderWidth: 1,
+          data: moderateSeries,
+          borderColor: 'rgba(255, 167, 38, 0.8)',
+          backgroundColor: chartFillColor(
+            moderateTrigger,
+            'rgba(255, 167, 38, 0.25)',
+            'rgba(0,0,0,0)',
+          ),
+          borderWidth: 0,
+          pointRadius: 0,
           fill: true,
-          tension: 0.4,
+          tension: 0,
+          lineTension: 0,
         },
+        // Severe area and line
         {
           label: t('Severe'),
-          data: sortedData.map(d => d.severe_percentage),
-          borderColor: 'rgba(239, 83, 80, 0.9)',
-          backgroundColor: 'rgba(239, 83, 80, 0.25)',
-          borderWidth: 1,
+          data: severeSeries,
+          borderColor: 'rgba(239, 83, 80, 0.8)',
+          backgroundColor: chartFillColor(
+            severeTrigger,
+            'rgba(239, 83, 80, 0.25)',
+            'rgba(0,0,0,0)',
+          ),
+          borderWidth: 0,
+          pointRadius: 0,
           fill: true,
-          tension: 0.4,
+          tension: 0,
+          lineTension: 0,
         },
       ],
     };
@@ -269,6 +370,7 @@ function StationCharts({ station, onClose }: StationChartsProps) {
               display: true,
               labelString: t('Lead times (days)'),
             },
+            ticks: { maxRotation: 0 },
           },
         ],
         yAxes: [
@@ -320,7 +422,6 @@ function StationCharts({ station, onClose }: StationChartsProps) {
       scales: {
         xAxes: [
           {
-            stacked: true,
             gridLines: { display: false },
             scaleLabel: { display: false },
             ticks: { maxRotation: 0, autoSkip: true },
@@ -328,7 +429,6 @@ function StationCharts({ station, onClose }: StationChartsProps) {
         ],
         yAxes: [
           {
-            stacked: true,
             ticks: { beginAtZero: true, max: 100 },
             scaleLabel: { display: false },
           },
