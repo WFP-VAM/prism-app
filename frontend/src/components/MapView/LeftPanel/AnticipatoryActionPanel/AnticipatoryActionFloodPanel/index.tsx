@@ -11,7 +11,6 @@ import {
   Paper,
   createStyles,
   makeStyles,
-  Chip,
   TableSortLabel,
 } from '@material-ui/core';
 import { setAAFloodSelectedStation } from 'context/anticipatoryAction/AAFloodStateSlice';
@@ -38,11 +37,6 @@ const useStyles = makeStyles(() =>
     },
     table: {
       minWidth: TABLE_WIDTH,
-    },
-    riskChip: {
-      color: 'white',
-      fontWeight: 'bold',
-      minWidth: '80px',
     },
     headerCell: {
       fontWeight: 'bold',
@@ -240,23 +234,28 @@ function AnticipatoryActionFloodPanel() {
                   </TableCell>
                   <TableCell className={classes.tableCell}>
                     {stationData ? (
-                      <Chip
-                        label={stationData.risk_level}
-                        className={classes.riskChip}
+                      <div
                         style={{
-                          backgroundColor: getFloodRiskColor(
-                            stationData.risk_level,
-                          ),
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: 8,
                         }}
-                      />
+                      >
+                        <Typography>{t(stationData.risk_level)}</Typography>
+                        <span
+                          style={{
+                            display: 'inline-block',
+                            width: 10,
+                            height: 10,
+                            borderRadius: '50%',
+                            backgroundColor: getFloodRiskColor(
+                              stationData.risk_level,
+                            ),
+                          }}
+                        />
+                      </div>
                     ) : (
-                      <Chip
-                        label="No data"
-                        className={classes.riskChip}
-                        style={{
-                          backgroundColor: '#9e9e9e', // Gray for no data
-                        }}
-                      />
+                      <Typography>{t('No data')}</Typography>
                     )}
                   </TableCell>
                 </TableRow>
