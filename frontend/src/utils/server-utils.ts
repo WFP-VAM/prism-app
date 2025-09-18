@@ -156,6 +156,7 @@ export const getPossibleDatesForLayer = (
     }
     case 'anticipatory_action_drought':
     case 'anticipatory_action_storm':
+    case 'anticipatory_action_flood':
       return serverAvailableDates[layer.id] || [];
     default:
       return [];

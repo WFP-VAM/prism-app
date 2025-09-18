@@ -108,7 +108,7 @@ function AnticipatoryActionStormPanel() {
 
         <Typography>
           {t(
-            'The wind forecast shows areas with wind speeds above 89 and 118 km/h.',
+            'The wind forecast shows areas with wind speeds above 89 and 119 km/h.',
           )}
         </Typography>
       </div>

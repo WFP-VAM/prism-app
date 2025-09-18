@@ -33,8 +33,8 @@ describe('Date picker', () => {
     cy.get('.react-datepicker-wrapper button span', { timeout: 20000 }).then(
       span1 => {
         cy.wrap(span1)
-          .should('contain.text', '1,')
           .invoke('text')
+          .should('match', /^[A-Z][a-z]{2} \d{1,2}, \d{4}$/)
           .as('initialDate');
         // scroll backwards once
         cy.get('button#chevronLeftButton').click();

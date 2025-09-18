@@ -119,7 +119,7 @@ function AAStormLegend() {
     {
       isVisible: !!stormData.activeDistricts?.Severe?.polygon,
       color: '#E63701',
-      label: '118 km/h impact zone',
+      label: '119 km/h impact zone',
     },
   ];
 
