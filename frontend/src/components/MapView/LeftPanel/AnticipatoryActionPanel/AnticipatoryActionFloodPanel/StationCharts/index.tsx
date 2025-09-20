@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useMemo, useState, useRef } from 'react';
 import {
   Typography,
   makeStyles,
@@ -8,6 +8,13 @@ import {
   IconButton,
   Paper,
   Button,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  CircularProgress,
 } from '@material-ui/core';
 import { Close, Fullscreen, TableChart, GetApp } from '@material-ui/icons';
 import { Line } from 'react-chartjs-2';
@@ -61,6 +68,7 @@ const useStyles = makeStyles(() =>
     },
     chartContainer: {
       height: '400px',
+      position: 'relative',
     },
     chartTitle: {
       marginBottom: '1rem',
@@ -84,6 +92,35 @@ const useStyles = makeStyles(() =>
       '&:hover': {
         backgroundColor: 'rgba(0, 0, 0, 0.04)',
       },
+    },
+    tableContainer: {
+      height: '400px',
+      overflow: 'auto',
+      color: '#000',
+    },
+    tableCell: {
+      fontFamily: 'monospace',
+      fontSize: '0.875rem',
+      padding: '8px',
+      color: '#000000',
+    },
+    tableHeader: {
+      fontWeight: 'bold',
+      backgroundColor: '#f5f5f5',
+    },
+    loadingOverlay: {
+      position: 'absolute',
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      backgroundColor: 'rgba(255, 255, 255, 0.8)',
+      zIndex: 10,
+      flexDirection: 'column',
+      gap: '1rem',
     },
   }),
 );
@@ -128,6 +165,10 @@ function StationCharts({ station, onClose }: StationChartsProps) {
   const classes = useStyles();
   const { t } = useSafeTranslation();
   const [activeTab, setActiveTab] = useState(0);
+  const [viewMode, setViewMode] = useState<'chart' | 'table'>('chart');
+  const [isDownloading, setIsDownloading] = useState(false);
+  const hydrographChartRef = useRef<Line>(null);
+  const probabilityChartRef = useRef<Line>(null);
 
   // Prepare hydrograph data (synthetic around bankfull threshold)
   const hydrographData = useMemo(() => {
@@ -582,7 +623,94 @@ function StationCharts({ station, onClose }: StationChartsProps) {
 
   const handleTabChange = (_event: React.ChangeEvent<{}>, newValue: number) => {
     setActiveTab(newValue);
+    setViewMode('chart');
   };
+
+  const toggleViewMode = () => {
+    setViewMode(prev => (prev === 'chart' ? 'table' : 'chart'));
+  };
+
+  const downloadChart = async () => {
+    if (viewMode !== 'chart' || isDownloading) {
+      return;
+    }
+
+    setIsDownloading(true);
+    // chartjs needs to render the chart instance and have ctx ready to be used in Base64 conversion
+    try {
+      const maxAttempts = 50; // Max 5 seconds
+      // eslint-disable-next-line fp/no-mutation
+      for (let attempts = 0; attempts < maxAttempts; attempts += 1) {
+        const chartRef =
+          activeTab === 0 ? hydrographChartRef : probabilityChartRef;
+        const chartInstance = chartRef.current?.chartInstance;
+        if (chartInstance && chartInstance.ctx) {
+          const base64Image = chartInstance.toBase64Image();
+          const link = document.createElement('a');
+          // eslint-disable-next-line fp/no-mutation
+          link.href = base64Image;
+          const chartName =
+            activeTab === 0 ? 'Hydrograph' : 'Trigger Probability';
+          // eslint-disable-next-line fp/no-mutation
+          link.download = `${station.station_name}_${chartName}.png`;
+          link.click();
+          return;
+        }
+        // eslint-disable-next-line no-await-in-loop, no-promise-executor-return
+        await new Promise(resolve => setTimeout(resolve, 100));
+      }
+    } finally {
+      setIsDownloading(false);
+    }
+  };
+
+  const hydrographTableData = useMemo(() => {
+    if (!hydrographData || !hydrographData.datasets) {
+      return null;
+    }
+
+    const tableDatasets = hydrographData.datasets.slice(0, 4);
+
+    const columnNames = [t('Day'), ...tableDatasets.map(d => d.label || '')];
+
+    const tableValues = hydrographData.labels.map(
+      (rowLabel: string, rowIndex: number) => [
+        rowLabel,
+        ...tableDatasets.map(dataset => dataset.data?.[rowIndex] ?? '-'),
+      ],
+    );
+
+    return {
+      columnNames,
+      tableValues,
+    };
+  }, [hydrographData, t]);
+
+  const triggerProbabilityTableData = useMemo(() => {
+    if (!triggerProbabilityData || !triggerProbabilityData.datasets) {
+      return null;
+    }
+
+    const columnNames = [
+      t('Date'),
+      ...triggerProbabilityData.datasets.map(d => d.label || ''),
+    ];
+
+    const tableValues = triggerProbabilityData.labels.map(
+      (rowLabel: string, rowIndex: number) => [
+        rowLabel,
+        ...triggerProbabilityData.datasets.map(dataset => {
+          const value = dataset.data?.[rowIndex];
+          return value ? `${value}%` : '-';
+        }),
+      ],
+    );
+
+    return {
+      columnNames,
+      tableValues,
+    };
+  }, [triggerProbabilityData, t]);
 
   if (!station.historicalData || station.historicalData.length === 0) {
     return (
@@ -644,27 +772,111 @@ function StationCharts({ station, onClose }: StationChartsProps) {
         </Tabs>
 
         <div className={classes.tabPanel}>
-          {activeTab === 0 && (
-            <div className={classes.chartContainer}>
-              {hydrographData && (
-                <Line
-                  data={hydrographData}
-                  options={hydrographOptions as any}
-                />
-              )}
-            </div>
-          )}
+          {activeTab === 0 &&
+            (viewMode === 'chart' ? (
+              <div className={classes.chartContainer}>
+                {hydrographData && (
+                  <Line
+                    ref={hydrographChartRef}
+                    data={hydrographData}
+                    options={hydrographOptions as any}
+                  />
+                )}
+                {isDownloading && (
+                  <div className={classes.loadingOverlay}>
+                    <CircularProgress />
+                    <Typography variant="body2">
+                      {t('Preparing chart for download...')}
+                    </Typography>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <TableContainer className={classes.tableContainer}>
+                <Table size="small">
+                  <TableHead>
+                    <TableRow>
+                      {hydrographTableData?.columnNames.map(columnName => (
+                        <TableCell
+                          key={columnName}
+                          className={`${classes.tableCell} ${classes.tableHeader}`}
+                        >
+                          {columnName}
+                        </TableCell>
+                      ))}
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {hydrographTableData?.tableValues.map(row => (
+                      <TableRow>
+                        {row.map(cellValue => (
+                          <TableCell
+                            key={`${cellValue}`}
+                            className={classes.tableCell}
+                          >
+                            {cellValue}
+                          </TableCell>
+                        ))}
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+            ))}
 
-          {activeTab === 1 && (
-            <div className={classes.chartContainer}>
-              {triggerProbabilityData && (
-                <Line
-                  data={triggerProbabilityData}
-                  options={probabilityOptions as any}
-                />
-              )}
-            </div>
-          )}
+          {activeTab === 1 &&
+            (viewMode === 'chart' ? (
+              <div className={classes.chartContainer}>
+                {triggerProbabilityData && (
+                  <Line
+                    ref={probabilityChartRef}
+                    data={triggerProbabilityData}
+                    options={probabilityOptions as any}
+                  />
+                )}
+                {isDownloading && (
+                  <div className={classes.loadingOverlay}>
+                    <CircularProgress />
+                    <Typography variant="body2">
+                      {t('Preparing chart for download...')}
+                    </Typography>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <TableContainer className={classes.tableContainer}>
+                <Table size="small">
+                  <TableHead>
+                    <TableRow>
+                      {triggerProbabilityTableData?.columnNames.map(
+                        columnName => (
+                          <TableCell
+                            key={columnName}
+                            className={`${classes.tableCell} ${classes.tableHeader}`}
+                          >
+                            {columnName}
+                          </TableCell>
+                        ),
+                      )}
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {triggerProbabilityTableData?.tableValues.map(row => (
+                      <TableRow>
+                        {row.map(cellValue => (
+                          <TableCell
+                            key={cellValue}
+                            className={classes.tableCell}
+                          >
+                            {cellValue}
+                          </TableCell>
+                        ))}
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+            ))}
         </div>
 
         <div className={classes.actionButtons}>
@@ -679,15 +891,20 @@ function StationCharts({ station, onClose }: StationChartsProps) {
             className={classes.actionButton}
             type="button"
             startIcon={<TableChart />}
+            onClick={toggleViewMode}
           >
-            {t('View table')}
+            {viewMode === 'chart' ? t('View table') : t('View chart')}
           </Button>
           <Button
             className={classes.actionButton}
             type="button"
-            startIcon={<GetApp />}
+            startIcon={
+              isDownloading ? <CircularProgress size={16} /> : <GetApp />
+            }
+            onClick={downloadChart}
+            disabled={viewMode !== 'chart' || isDownloading}
           >
-            {t('Download')}
+            {isDownloading ? t('Downloading...') : t('Download')}
           </Button>
         </div>
       </Paper>
