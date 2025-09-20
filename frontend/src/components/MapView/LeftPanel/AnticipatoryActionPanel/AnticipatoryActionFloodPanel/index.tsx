@@ -12,12 +12,17 @@ import {
   createStyles,
   makeStyles,
   TableSortLabel,
+  Box,
+  IconButton,
 } from '@material-ui/core';
+import { cyanBlue } from 'muiTheme';
+import { ChevronLeft, ChevronRight } from '@material-ui/icons';
 import { setAAFloodSelectedStation } from 'context/anticipatoryAction/AAFloodStateSlice';
 import { getFloodRiskColor } from 'context/anticipatoryAction/AAFloodStateSlice/utils';
 import { useSafeTranslation } from 'i18n';
 import { AnticipatoryAction } from 'config/types';
 import { dateRangeSelector } from 'context/mapStateSlice/selectors';
+import SimpleDropdown from 'components/Common/SimpleDropdown';
 import { useAnticipatoryAction } from '../useAnticipatoryAction';
 import StationCharts from './StationCharts';
 import { TABLE_WIDTH } from './constants';
@@ -26,6 +31,7 @@ const useStyles = makeStyles(() =>
   createStyles({
     container: {
       padding: '1rem',
+      height: 'calc(100% - 40px)',
     },
     title: {
       marginBottom: '1rem',
@@ -56,16 +62,49 @@ const useStyles = makeStyles(() =>
       },
     },
     selectedRow: {
-      backgroundColor: '#e3f2fd !important', // Light blue for selected row
+      backgroundColor: `${cyanBlue} !important`,
+      '& $firstCell': {
+        color: '#000000', // Black text for first cell when selected
+      },
     },
     tableCell: {
       color: '#000000', // Black text color
+    },
+    firstCell: {
+      color: `${cyanBlue}`,
+    },
+    pagination: {
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      marginTop: '1rem',
+      color: '#666',
+      position: 'absolute',
+      width: '90%',
+      bottom: '10px',
+    },
+    rowsPerPageContainer: {
+      display: 'flex',
+      alignItems: 'center',
+      gap: '0.5rem',
+    },
+    pageNavigation: {
+      display: 'flex',
+      alignItems: 'center',
+      gap: '0.5rem',
     },
   }),
 );
 
 type SortField = 'station_name' | 'date' | 'risk_level';
 type SortDirection = 'asc' | 'desc';
+
+const rowsPerPageOptions: [number, string][] = [
+  [10, '10'],
+  [20, '20'],
+  [50, '50'],
+  [100, '100'],
+];
 
 function AnticipatoryActionFloodPanel() {
   const classes = useStyles();
@@ -77,6 +116,8 @@ function AnticipatoryActionFloodPanel() {
 
   const [sortField, setSortField] = useState<SortField>('station_name');
   const [sortDirection, setSortDirection] = useState<SortDirection>('asc');
+  const [rowsPerPage, setRowsPerPage] = useState<number>(20);
+  const [currentPage, setCurrentPage] = useState<number>(0);
 
   const handleSort = (field: SortField) => {
     if (sortField === field) {
@@ -89,6 +130,20 @@ function AnticipatoryActionFloodPanel() {
 
   const handleRowClick = (stationName: string) => {
     dispatch(setAAFloodSelectedStation(stationName));
+  };
+
+  const handleRowsPerPageChange = (newRowsPerPage: number) => {
+    setRowsPerPage(newRowsPerPage);
+    setCurrentPage(0);
+  };
+
+  const handlePreviousPage = () => {
+    setCurrentPage(prev => Math.max(0, prev - 1));
+  };
+
+  const handleNextPage = () => {
+    const maxPage = Math.ceil(totalStations / rowsPerPage) - 1;
+    setCurrentPage(prev => Math.min(maxPage, prev + 1));
   };
 
   // Filter stations by selected date
@@ -153,6 +208,20 @@ function AnticipatoryActionFloodPanel() {
     return 0;
   });
 
+  const paginatedStations = useMemo(() => {
+    const startIndex = currentPage * rowsPerPage;
+    const endIndex = startIndex + rowsPerPage;
+    return sortedStations.slice(startIndex, endIndex);
+  }, [sortedStations, currentPage, rowsPerPage]);
+
+  const totalStations = sortedStations.length;
+  const startIndex = currentPage * rowsPerPage + 1;
+  const endIndex = Math.min((currentPage + 1) * rowsPerPage, totalStations);
+  const totalPages = Math.ceil(totalStations / rowsPerPage);
+
+  const canGoPrevious = currentPage > 0;
+  const canGoNext = currentPage < totalPages - 1;
+
   if (loading) {
     return (
       <div className={classes.container}>
@@ -212,7 +281,7 @@ function AnticipatoryActionFloodPanel() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {sortedStations.map(station => {
+            {paginatedStations.map(station => {
               const stationData = getStationDataForDate(station);
               return (
                 <TableRow
@@ -224,7 +293,7 @@ function AnticipatoryActionFloodPanel() {
                   }`}
                   onClick={() => handleRowClick(station.station_name)}
                 >
-                  <TableCell className={classes.tableCell}>
+                  <TableCell className={classes.firstCell}>
                     {station.station_name || '-'}
                   </TableCell>
                   <TableCell className={classes.tableCell}>
@@ -264,10 +333,37 @@ function AnticipatoryActionFloodPanel() {
           </TableBody>
         </Table>
       </TableContainer>
-      <div style={{ marginTop: '1rem', fontSize: '0.875rem', color: '#666' }}>
-        {t('Rows per page')} 20 | 1-{Math.min(20, filteredStations.length)} /{' '}
-        {filteredStations.length}
-      </div>
+      <Box className={classes.pagination}>
+        <Box className={classes.rowsPerPageContainer}>
+          <Typography>{t('Rows per page')}:</Typography>
+          <SimpleDropdown
+            options={rowsPerPageOptions}
+            value={rowsPerPage}
+            onChange={handleRowsPerPageChange}
+            textClass=""
+          />
+        </Box>
+        <Box className={classes.pageNavigation}>
+          <IconButton
+            onClick={handlePreviousPage}
+            disabled={!canGoPrevious}
+            size="small"
+          >
+            <ChevronLeft />
+          </IconButton>
+          <Typography>
+            {totalStations > 0 ? `${startIndex}-${endIndex}` : '0-0'} {t('of')}{' '}
+            {totalStations}
+          </Typography>
+          <IconButton
+            onClick={handleNextPage}
+            disabled={!canGoNext}
+            size="small"
+          >
+            <ChevronRight />
+          </IconButton>
+        </Box>
+      </Box>
 
       {/* Show charts when a station is selected */}
       {selectedStation && (
