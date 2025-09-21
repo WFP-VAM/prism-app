@@ -10,7 +10,7 @@ import {
 import { getDisplayBoundaryLayers } from 'config/utils';
 import {
   isLoading as areDatesLoading,
-  loadAvailableDates,
+  loadAvailableDatesForLayer,
 } from 'context/serverStateSlice';
 import { loadLayerData } from 'context/layers/layer-data';
 import { useMapState } from 'utils/useMapState';
@@ -18,6 +18,12 @@ import { MapInstanceProvider } from 'components/MapView/MapInstanceContext';
 import { selectedDashboardIndexSelector } from 'context/dashboardStateSlice';
 import useLayers from 'utils/layers-utils';
 import RootAccordionItems from 'components/MapView/LeftPanel/layersPanel/RootAccordionItems';
+import {
+  pointDataLayerDatesRequested,
+  preloadLayerDatesArraysForPointData,
+  preloadLayerDatesArraysForWMS,
+  WMSLayerDatesRequested,
+} from 'context/serverPreloadStateSlice';
 import MapComponent from '../MapView/Map';
 import DateSelector from '../MapView/DateSelector';
 import DashboardLegends from './DashboardLegends';
@@ -39,10 +45,17 @@ const MapBlockContent = memo(() => {
   const { actions, maplibreMap } = useMapState();
   const datesLoading = useSelector(areDatesLoading);
   const map = maplibreMap();
+  const datesPreloadingForWMS = useSelector(WMSLayerDatesRequested);
+  const datesPreloadingForPointData = useSelector(pointDataLayerDatesRequested);
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(loadAvailableDates());
+    if (!datesPreloadingForPointData) {
+      dispatch(preloadLayerDatesArraysForPointData());
+    }
+    if (!datesPreloadingForWMS) {
+      dispatch(preloadLayerDatesArraysForWMS());
+    }
     // we must load boundary layer here for two reasons
     // 1. Stop showing two loading screens on startup - maplibre renders its children very late, so we can't rely on BoundaryLayer to load internally
     // 2. Prevent situations where a user can toggle a layer like NSO (depends on Boundaries) before Boundaries finish loading.
@@ -51,7 +64,25 @@ const MapBlockContent = memo(() => {
     displayedBoundaryLayers.forEach(l =>
       dispatch(loadLayerData({ layer: l, map })),
     );
-  }, [actions, dispatch, map]);
+  }, [
+    actions,
+    datesPreloadingForPointData,
+    datesPreloadingForWMS,
+    dispatch,
+    map,
+  ]);
+
+  // Load dates for preselected layers from dashboard configuration
+  const { layers: preselectedLayers } = useMapState();
+  useEffect(() => {
+    if (preselectedLayers.length > 0) {
+      preselectedLayers.forEach(layer => {
+        if (layer.type === 'wms' || layer.type === 'point_data') {
+          dispatch(loadAvailableDatesForLayer(layer.id));
+        }
+      });
+    }
+  }, [preselectedLayers, dispatch]);
 
   return (
     <Box className={classes.root}>
