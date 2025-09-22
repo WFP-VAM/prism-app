@@ -396,10 +396,12 @@ function StationCharts({ station, onClose }: StationChartsProps) {
       responsive: true,
       maintainAspectRatio: false,
       legend: {
-        position: 'top' as const,
+        position: 'right' as const,
         labels: {
           usePointStyle: true,
-          boxWidth: 24,
+          boxWidth: 12,
+          padding: 15,
+          fontSize: 11,
           // Hide ensemble members from legend using the dataset label
           filter: (legendItem: any, chartData: any) => {
             const datasetLabel = String(
@@ -455,12 +457,10 @@ function StationCharts({ station, onClose }: StationChartsProps) {
 
     const clampIndex = (i: number) =>
       Math.max(0, Math.min(labelStrings.length - 1, i));
-    // const forecastBeginIdx = clampIndex(1);
+    const forecastBeginIdx = clampIndex(1);
     const day3Idx = clampIndex(3);
     const day7Idx = clampIndex(7);
-    // const unreliableIdx = clampIndex(9);
-
-    // console.debug('sortedData', sortedData);
+    const unreliableIdx = clampIndex(9);
 
     // Compute y-axis max rounded up to the next dizaine (multiple of 10)
     const maxPct = Math.max(
@@ -479,7 +479,41 @@ function StationCharts({ station, onClose }: StationChartsProps) {
       responsive: true,
       maintainAspectRatio: false,
       legend: {
-        display: false,
+        display: true,
+        position: 'right' as const,
+        labels: {
+          usePointStyle: false,
+          padding: 15,
+          fontSize: 11,
+          generateLabels: (chart: any) => {
+            if (!triggerProbabilityData?.datasets) {
+              return [];
+            }
+
+            return triggerProbabilityData.datasets
+              .map((dataset, index) => {
+                const label = dataset.label || '';
+                if (label.includes('(') && !label.includes('%')) {
+                  return null;
+                }
+
+                const isTrigger = label.includes('(') && label.includes('%');
+
+                return {
+                  text: label,
+                  fillStyle: !isTrigger ? dataset.borderColor : 'transparent',
+                  strokeStyle: dataset.borderColor,
+                  lineWidth: isTrigger ? 2 : 0,
+                  lineDash: isTrigger ? [6, 6] : [],
+                  boxWidth: isTrigger ? 20 : 20,
+                  boxHeight: isTrigger ? 2 : 12,
+                  hidden: !chart.isDatasetVisible(index),
+                  datasetIndex: index,
+                };
+              })
+              .filter(Boolean);
+          },
+        },
       },
       scales: {
         xAxes: [
@@ -502,69 +536,23 @@ function StationCharts({ station, onClose }: StationChartsProps) {
       annotation: {
         drawTime: 'beforeDatasetsDraw',
         annotations: [
-          // Probability threshold labels (bankfull/moderate/severe)
           {
             type: 'line',
-            mode: 'horizontal',
-            scaleID: 'y-axis-0',
-            value: 38,
+            mode: 'vertical',
+            scaleID: 'x-axis-0',
+            value: labelStrings[forecastBeginIdx],
+            borderColor: 'rgba(158,158,158,0.8)',
+            borderDash: [4, 4],
+            borderWidth: 1,
             label: {
               enabled: true,
-              position: 'right',
-              content: `${t('Bankfull')} (38%)`,
+              position: 'top',
+              content: t('Forecast period begins'),
               backgroundColor: 'rgba(0,0,0,0)',
-              fontColor: 'rgba(102, 187, 106, 0.9)',
-              yAdjust: 10,
-              xAdjust: -5,
+              fontColor: '#9E9E9E',
+              xAdjust: 8,
             },
           },
-          {
-            type: 'line',
-            mode: 'horizontal',
-            scaleID: 'y-axis-0',
-            value: 19,
-            label: {
-              enabled: true,
-              position: 'right',
-              content: `${t('Moderate')} (19%)`,
-              backgroundColor: 'rgba(0,0,0,0)',
-              fontColor: 'rgba(255, 167, 38, 0.9)',
-              yAdjust: 10,
-              xAdjust: -5,
-            },
-          },
-          {
-            type: 'line',
-            mode: 'horizontal',
-            scaleID: 'y-axis-0',
-            value: 10,
-            label: {
-              enabled: true,
-              position: 'right',
-              content: `${t('Severe')} (10%)`,
-              backgroundColor: 'rgba(0,0,0,0)',
-              fontColor: 'rgba(239, 83, 80, 0.9)',
-              yAdjust: 10,
-              xAdjust: -5,
-            },
-          },
-          // {
-          //   type: 'line',
-          //   mode: 'vertical',
-          //   scaleID: 'x-axis-0',
-          //   value: labelStrings[forecastBeginIdx],
-          //   borderColor: 'rgba(158,158,158,0.8)',
-          //   borderDash: [4, 4],
-          //   borderWidth: 1,
-          //   label: {
-          //     enabled: true,
-          //     position: 'top',
-          //     content: t('Forecast period begins'),
-          //     backgroundColor: 'rgba(0,0,0,0)',
-          //     fontColor: '#9E9E9E',
-          //     xAdjust: 8,
-          //   },
-          // },
           {
             type: 'line',
             mode: 'vertical',
@@ -599,23 +587,23 @@ function StationCharts({ station, onClose }: StationChartsProps) {
               xAdjust: -50,
             },
           },
-          // {
-          //   type: 'line',
-          //   mode: 'vertical',
-          //   scaleID: 'x-axis-0',
-          //   value: labelStrings[unreliableIdx],
-          //   borderColor: 'rgba(158,158,158,0.8)',
-          //   borderDash: [4, 4],
-          //   borderWidth: 1,
-          //   label: {
-          //     enabled: true,
-          //     position: 'top',
-          //     content: t('Unreliable forecast'),
-          //     backgroundColor: 'rgba(0,0,0,0)',
-          //     fontColor: '#9E9E9E',
-          //     xAdjust: 8,
-          //   },
-          // },
+          {
+            type: 'line',
+            mode: 'vertical',
+            scaleID: 'x-axis-0',
+            value: labelStrings[unreliableIdx],
+            borderColor: 'rgba(158,158,158,0.8)',
+            borderDash: [4, 4],
+            borderWidth: 1,
+            label: {
+              enabled: true,
+              position: 'top',
+              content: t('Unreliable forecast'),
+              backgroundColor: 'rgba(0,0,0,0)',
+              fontColor: '#9E9E9E',
+              xAdjust: 8,
+            },
+          },
         ],
       },
     } as any;
