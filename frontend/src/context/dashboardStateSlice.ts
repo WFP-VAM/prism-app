@@ -67,7 +67,7 @@ const createInitialState = (dashboardIndex: number = 0): DashboardState => {
             const opacity =
               typeof layerConfig === 'string'
                 ? 1.0
-                : layerConfig.opacity ?? 1.0;
+                : (layerConfig.opacity ?? 1.0);
 
             const layer = LayerDefinitions[layerId];
             if (layer) {
@@ -121,6 +121,7 @@ const createInitialState = (dashboardIndex: number = 0): DashboardState => {
           loadingLayerIds: [],
           boundaryRelationData: {},
           opacityMap: initialOpacityMap,
+          minMapBounds: mapConfig.minMapBounds,
         };
       }) || [],
   };

@@ -20,6 +20,7 @@ export type MapState = {
   layers: LayerType[];
   dateRange: DateRange;
   maplibreMap: MapGetter;
+  minMapBounds: number[];
   errors: string[];
   // TODO this shouldn't be any
   layersData: LayerData<any>[];
@@ -39,6 +40,7 @@ const initialState: MapState = {
   layers: [],
   dateRange: {} as DateRange,
   maplibreMap: (() => {}) as MapGetter,
+  minMapBounds: [] as number[],
   errors: [],
   layersData: [],
   loadingLayerIds: [],

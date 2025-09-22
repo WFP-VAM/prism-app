@@ -43,6 +43,7 @@ export type MapInstanceSelectors = {
   selectDateRange: (state: RootState) => DateRange;
   selectMap: (state: RootState) => MapGetter;
   selectOpacity: (layerId: string) => (state: RootState) => number | undefined;
+  selectMinMapBounds: (state: RootState) => number[] | undefined;
 };
 
 type MapInstanceContextType = {
@@ -112,6 +113,8 @@ export function MapInstanceProvider({
           state.dashboardState.maps[index].maplibreMap,
         selectOpacity: (layerId: string) =>
           dashboardOpacitySelector(index, layerId),
+        selectMinMapBounds: (state: RootState) =>
+          state.dashboardState.maps[index].minMapBounds,
       },
       actions,
     }),

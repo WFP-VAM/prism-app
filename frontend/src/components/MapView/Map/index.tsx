@@ -34,7 +34,11 @@ import {
 } from 'components/MapView/Layers';
 import useLayers from 'utils/layers-utils';
 import MapGL, { MapEvent, MapRef } from 'react-map-gl/maplibre';
-import { MapSourceDataEvent, Map as MaplibreMap } from 'maplibre-gl';
+import {
+  LngLatBoundsLike,
+  MapSourceDataEvent,
+  Map as MaplibreMap,
+} from 'maplibre-gl';
 
 import 'maplibre-gl/dist/maplibre-gl.css';
 import { leftPanelTabValueSelector } from 'context/leftPanelStateSlice';
@@ -70,7 +74,7 @@ const componentTypes: LayerComponentsMap<LayerType> = {
 const LAYERS_ABOVE_BOUNDARIES = ['anticipatory_action', 'geojson_polygon'];
 
 const {
-  map: { boundingBox, minZoom, maxZoom, maxBounds },
+  map: { minZoom, maxZoom, maxBounds },
 } = appConfig;
 
 const MapComponent = memo(() => {
@@ -235,7 +239,7 @@ const MapComponent = memo(() => {
       minZoom={minZoom}
       maxZoom={maxZoom}
       initialViewState={{
-        bounds: boundingBox,
+        bounds: mapState.minMapBounds as LngLatBoundsLike,
         fitBoundsOptions: { padding: fitBoundsOptions.padding },
       }}
       mapStyle={mapStyle.toString()}
