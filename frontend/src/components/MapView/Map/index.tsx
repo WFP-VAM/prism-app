@@ -108,10 +108,10 @@ const MapComponent = memo(() => {
           }
         : {
             // MapBlock has different layout - left panel is 1/3 width, date selector below
-            bottom: 80, // room for date selector below
+            bottom: 125, // room for date selector below
             left: 20, // minimal padding since left panel is separate
-            right: 20,
-            top: 20,
+            right: 150,
+            top: 70,
           },
     }),
     [panelHidden, isGlobalMap],

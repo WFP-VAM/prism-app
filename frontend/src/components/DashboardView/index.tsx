@@ -76,7 +76,7 @@ function DashboardView() {
                     : 'Map block'}{' '}
                   — Choose map layers
                 </Typography>
-                <div style={{ height: '500px', width: '100%' }}>
+                <div style={{ height: '700px', width: '100%' }}>
                   <MapBlock mapIndex={mapIndex} />
                 </div>
               </Box>
@@ -168,7 +168,7 @@ const useStyles = makeStyles(() => ({
     display: 'flex',
     padding: 16,
     margin: 16,
-    gap: 48,
+    gap: 16,
     flex: 1,
     overflow: 'auto',
     paddingBottom: 80, // Add extra padding to account for fixed toolbar
@@ -182,9 +182,8 @@ const useStyles = makeStyles(() => ({
   grayCard: {
     background: '#F1F1F1',
     borderRadius: 8,
-    width: '100%',
     marginBottom: 16,
-    padding: 16,
+    padding: 12,
   },
   titleBarLabel: {
     display: 'flex',
@@ -192,7 +191,6 @@ const useStyles = makeStyles(() => ({
     marginRight: 16,
     fontWeight: 600,
     fontSize: 16,
-    padding: 16,
   },
   titleBarTypography: {
     flex: '1 0 fit-content',
@@ -218,7 +216,7 @@ const useStyles = makeStyles(() => ({
     padding: '12px 16px',
     display: 'flex',
     justifyContent: 'center',
-    zIndex: 1000,
+    zIndex: 1400,
   },
   previewButton: {
     textTransform: 'none',
