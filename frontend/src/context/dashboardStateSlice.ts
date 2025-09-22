@@ -42,8 +42,16 @@ export interface DashboardState {
   maps: DashboardMapState[];
 }
 
-const getDashboardConfig = (index: number) =>
-  appConfig.configuredReports[index] || appConfig.configuredReports[0];
+const getDashboardConfig = (index: number) => {
+  if (
+    !Array.isArray(appConfig.configuredReports) ||
+    appConfig.configuredReports.length === 0
+  ) {
+    // Return a fallback config object or throw an error
+    return { title: 'Dashboard', flexElements: [], maps: [] };
+  }
+  return appConfig.configuredReports[index] || appConfig.configuredReports[0];
+};
 
 const createInitialState = (dashboardIndex: number = 0): DashboardState => {
   const dashboardConfig = getDashboardConfig(dashboardIndex);
