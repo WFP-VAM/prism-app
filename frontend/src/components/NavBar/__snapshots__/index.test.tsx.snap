@@ -120,7 +120,17 @@ exports[`renders as expected 1`] = `
               <mock-menuitem
                 selected="false"
               >
-                Population Exposure
+                Spring Dashboard
+              </mock-menuitem>
+              <mock-menuitem
+                selected="false"
+              >
+                Summer Dashboard
+              </mock-menuitem>
+              <mock-menuitem
+                selected="false"
+              >
+                Precipitation Comparison Dashboard
               </mock-menuitem>
             </mock-menu>
             <button
