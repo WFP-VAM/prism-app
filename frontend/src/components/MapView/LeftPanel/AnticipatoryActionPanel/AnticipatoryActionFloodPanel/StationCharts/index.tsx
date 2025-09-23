@@ -607,7 +607,12 @@ function StationCharts({ station, onClose }: StationChartsProps) {
         ],
       },
     } as any;
-  }, [station.historicalData, t, hydrographOptions]);
+  }, [
+    station.historicalData,
+    t,
+    hydrographOptions,
+    triggerProbabilityData?.datasets,
+  ]);
 
   const handleTabChange = (_event: React.ChangeEvent<{}>, newValue: number) => {
     setActiveTab(newValue);
