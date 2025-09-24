@@ -74,13 +74,25 @@ function DashboardView({ mode = 'edit' }: DashboardViewProps) {
         </Box>
       )}
 
+      {activeMode === 'preview' && (
+        <Box className={classes.titleSection}>
+          <Typography
+            variant="h2"
+            component="h1"
+            className={classes.previewTitle}
+          >
+            {dashboardTitle || 'Untitled Dashboard'}
+          </Typography>
+        </Box>
+      )}
+
       <Box
         className={
           activeMode === 'preview' ? classes.previewLayout : classes.layout
         }
       >
         <Box className={classes.leadingContentArea}>
-          {activeMode === 'edit' ? (
+          {activeMode === 'edit' && (
             <Box className={classes.grayCard}>
               <label className={classes.titleBarLabel}>
                 <Typography
@@ -99,16 +111,6 @@ function DashboardView({ mode = 'edit' }: DashboardViewProps) {
                   name="dashboard-title"
                 />
               </label>
-            </Box>
-          ) : (
-            <Box>
-              <Typography
-                variant="h2"
-                component="h1"
-                className={classes.previewTitle}
-              >
-                {dashboardTitle || 'Untitled Dashboard'}
-              </Typography>
             </Box>
           )}
 
@@ -308,6 +310,10 @@ const useStyles = makeStyles(() => ({
     justifyContent: 'flex-start',
     gap: '12px',
     zIndex: 1300,
+  },
+  titleSection: {
+    padding: '0 16px',
+    margin: '16px 16px 0 16px',
   },
   previewLayout: {
     display: 'flex',
