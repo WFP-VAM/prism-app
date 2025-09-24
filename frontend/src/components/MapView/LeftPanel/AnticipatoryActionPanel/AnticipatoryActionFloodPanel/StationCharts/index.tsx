@@ -457,10 +457,10 @@ function StationCharts({ station, onClose }: StationChartsProps) {
 
     const clampIndex = (i: number) =>
       Math.max(0, Math.min(labelStrings.length - 1, i));
-    const forecastBeginIdx = clampIndex(1);
+    // const forecastBeginIdx = clampIndex(1);
     const day3Idx = clampIndex(3);
     const day7Idx = clampIndex(7);
-    const unreliableIdx = clampIndex(9);
+    // const unreliableIdx = clampIndex(9);
 
     // Compute y-axis max rounded up to the next dizaine (multiple of 10)
     const maxPct = Math.max(
@@ -479,41 +479,7 @@ function StationCharts({ station, onClose }: StationChartsProps) {
       responsive: true,
       maintainAspectRatio: false,
       legend: {
-        display: true,
-        position: 'right' as const,
-        labels: {
-          usePointStyle: false,
-          padding: 15,
-          fontSize: 11,
-          generateLabels: (chart: any) => {
-            if (!triggerProbabilityData?.datasets) {
-              return [];
-            }
-
-            return triggerProbabilityData.datasets
-              .map((dataset, index) => {
-                const label = dataset.label || '';
-                if (label.includes('(') && !label.includes('%')) {
-                  return null;
-                }
-
-                const isTrigger = label.includes('(') && label.includes('%');
-
-                return {
-                  text: label,
-                  fillStyle: !isTrigger ? dataset.borderColor : 'transparent',
-                  strokeStyle: dataset.borderColor,
-                  lineWidth: isTrigger ? 2 : 0,
-                  lineDash: isTrigger ? [6, 6] : [],
-                  boxWidth: isTrigger ? 20 : 20,
-                  boxHeight: isTrigger ? 2 : 12,
-                  hidden: !chart.isDatasetVisible(index),
-                  datasetIndex: index,
-                };
-              })
-              .filter(Boolean);
-          },
-        },
+        display: false,
       },
       scales: {
         xAxes: [
@@ -536,23 +502,23 @@ function StationCharts({ station, onClose }: StationChartsProps) {
       annotation: {
         drawTime: 'beforeDatasetsDraw',
         annotations: [
-          {
-            type: 'line',
-            mode: 'vertical',
-            scaleID: 'x-axis-0',
-            value: labelStrings[forecastBeginIdx],
-            borderColor: 'rgba(158,158,158,0.8)',
-            borderDash: [4, 4],
-            borderWidth: 1,
-            label: {
-              enabled: true,
-              position: 'top',
-              content: t('Forecast period begins'),
-              backgroundColor: 'rgba(0,0,0,0)',
-              fontColor: '#9E9E9E',
-              xAdjust: 8,
-            },
-          },
+          // {
+          //   type: 'line',
+          //   mode: 'vertical',
+          //   scaleID: 'x-axis-0',
+          //   value: labelStrings[forecastBeginIdx],
+          //   borderColor: 'rgba(158,158,158,0.8)',
+          //   borderDash: [4, 4],
+          //   borderWidth: 1,
+          //   label: {
+          //     enabled: true,
+          //     position: 'top',
+          //     content: t('Forecast period begins'),
+          //     backgroundColor: 'rgba(0,0,0,0)',
+          //     fontColor: '#9E9E9E',
+          //     xAdjust: 8,
+          //   },
+          // },
           {
             type: 'line',
             mode: 'vertical',
@@ -587,32 +553,27 @@ function StationCharts({ station, onClose }: StationChartsProps) {
               xAdjust: -50,
             },
           },
-          {
-            type: 'line',
-            mode: 'vertical',
-            scaleID: 'x-axis-0',
-            value: labelStrings[unreliableIdx],
-            borderColor: 'rgba(158,158,158,0.8)',
-            borderDash: [4, 4],
-            borderWidth: 1,
-            label: {
-              enabled: true,
-              position: 'top',
-              content: t('Unreliable forecast'),
-              backgroundColor: 'rgba(0,0,0,0)',
-              fontColor: '#9E9E9E',
-              xAdjust: 8,
-            },
-          },
+          // {
+          //   type: 'line',
+          //   mode: 'vertical',
+          //   scaleID: 'x-axis-0',
+          //   value: labelStrings[unreliableIdx],
+          //   borderColor: 'rgba(158,158,158,0.8)',
+          //   borderDash: [4, 4],
+          //   borderWidth: 1,
+          //   label: {
+          //     enabled: true,
+          //     position: 'top',
+          //     content: t('Unreliable forecast'),
+          //     backgroundColor: 'rgba(0,0,0,0)',
+          //     fontColor: '#9E9E9E',
+          //     xAdjust: 8,
+          //   },
+          // },
         ],
       },
     } as any;
-  }, [
-    station.historicalData,
-    t,
-    hydrographOptions,
-    triggerProbabilityData?.datasets,
-  ]);
+  }, [station.historicalData, t, hydrographOptions]);
 
   const handleTabChange = (_event: React.ChangeEvent<{}>, newValue: number) => {
     setActiveTab(newValue);
@@ -635,7 +596,7 @@ function StationCharts({ station, onClose }: StationChartsProps) {
       // eslint-disable-next-line fp/no-mutation
       for (let attempts = 0; attempts < maxAttempts; attempts += 1) {
         const chartRef =
-          activeTab === 0 ? hydrographChartRef : probabilityChartRef;
+          activeTab === 1 ? hydrographChartRef : probabilityChartRef;
         const chartInstance = chartRef.current?.chartInstance;
         if (chartInstance && chartInstance.ctx) {
           const base64Image = chartInstance.toBase64Image();
@@ -643,7 +604,7 @@ function StationCharts({ station, onClose }: StationChartsProps) {
           // eslint-disable-next-line fp/no-mutation
           link.href = base64Image;
           const chartName =
-            activeTab === 0 ? 'Hydrograph' : 'Trigger Probability';
+            activeTab === 1 ? 'Hydrograph' : 'Trigger Probability';
           // eslint-disable-next-line fp/no-mutation
           link.download = `${station.station_name}_${chartName}.png`;
           link.click();
@@ -760,12 +721,12 @@ function StationCharts({ station, onClose }: StationChartsProps) {
           indicatorColor="primary"
           textColor="primary"
         >
-          <Tab label={t('Hydrograph')} />
           <Tab label={t('Trigger probability')} />
+          <Tab label={t('Hydrograph')} />
         </Tabs>
 
         <div className={classes.tabPanel}>
-          {activeTab === 0 &&
+          {activeTab === 1 &&
             (viewMode === 'chart' ? (
               <div className={classes.chartContainer}>
                 {hydrographData && (
@@ -817,7 +778,7 @@ function StationCharts({ station, onClose }: StationChartsProps) {
               </TableContainer>
             ))}
 
-          {activeTab === 1 &&
+          {activeTab === 0 &&
             (viewMode === 'chart' ? (
               <div className={classes.chartContainer}>
                 {triggerProbabilityData && (
