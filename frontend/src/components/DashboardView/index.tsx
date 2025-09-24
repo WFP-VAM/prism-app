@@ -22,9 +22,14 @@ import {
   dashboardMapsSelector,
 } from '../../context/dashboardStateSlice';
 import TextBlock from './TextBlock';
-import DashboardPreview from './DashboardPreview';
 
-function DashboardView() {
+type DashboardMode = 'edit' | 'preview';
+
+interface DashboardViewProps {
+  mode?: DashboardMode;
+}
+
+function DashboardView({ mode = 'edit' }: DashboardViewProps) {
   const classes = useStyles();
   const dashboardTitle = useSelector(dashboardTitleSelector);
   const dashboardFlexElements = useSelector(dashboardFlexElementsSelector);
@@ -40,6 +45,49 @@ function DashboardView() {
   const handleClosePreview = () => {
     setIsPreviewOpen(false);
   };
+
+  if (mode === 'preview') {
+    return (
+      <Box className={classes.layout}>
+        <Box className={classes.leadingContentArea}>
+          <Box>
+            <Typography
+              variant="h2"
+              component="h1"
+              className={classes.previewTitle}
+            >
+              {dashboardTitle || 'Untitled Dashboard'}
+            </Typography>
+          </Box>
+          <div className={classes.mapsContainer}>
+            {dashboardMaps.map((_, mapIndex) => (
+              // eslint-disable-next-line react/no-array-index-key
+              <Box key={`map-${mapIndex}`} className={classes.previewContainer}>
+                <MapBlock mapIndex={mapIndex} mode="preview" />
+              </Box>
+            ))}
+          </div>
+        </Box>
+        <Box className={classes.trailingContentArea}>
+          {dashboardFlexElements?.map((element, index) => {
+            if (element.type === 'TEXT') {
+              const content = (element as DashboardTextConfig)?.content || '';
+              return (
+                <TextBlock
+                  // eslint-disable-next-line react/no-array-index-key
+                  key={`text-block-${index}`}
+                  content={content}
+                  index={index}
+                  mode="preview"
+                />
+              );
+            }
+            return <div>Content type not yet supported</div>;
+          })}
+        </Box>
+      </Box>
+    );
+  }
 
   return (
     <Box className={classes.container}>
@@ -79,7 +127,7 @@ function DashboardView() {
                   {t('— Choose map layers')}
                 </Typography>
                 <div style={{ height: '700px', width: '100%' }}>
-                  <MapBlock mapIndex={mapIndex} />
+                  <MapBlock mapIndex={mapIndex} mode="edit" />
                 </div>
               </Box>
             ))}
@@ -96,6 +144,7 @@ function DashboardView() {
                     key={`text-block-${index}`}
                     content={content}
                     index={index}
+                    mode="edit"
                   />
                 );
               }
@@ -148,7 +197,7 @@ function DashboardView() {
           </Button>
         </DialogActions>
         <DialogContent className={classes.dialogContent}>
-          <DashboardPreview />
+          <DashboardView mode="preview" />
         </DialogContent>
       </Dialog>
     </Box>
@@ -247,6 +296,20 @@ const useStyles = makeStyles(() => ({
       flex: 1,
       minWidth: 0, // Prevents flex items from overflowing
     },
+  },
+  previewContainer: {
+    background: 'white',
+    borderRadius: 8,
+    padding: 16,
+    marginBottom: 16,
+    width: '100%',
+    height: '700px',
+  },
+  previewTitle: {
+    padding: 16,
+    fontWeight: 500,
+    fontSize: 20,
+    margin: 0,
   },
 }));
 
