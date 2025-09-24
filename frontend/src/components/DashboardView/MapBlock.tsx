@@ -24,6 +24,7 @@ import {
   preloadLayerDatesArraysForWMS,
   WMSLayerDatesRequested,
 } from 'context/serverPreloadStateSlice';
+import { useSafeTranslation } from 'i18n';
 import MapComponent from '../MapView/Map';
 import DateSelector from '../MapView/DateSelector';
 import DashboardLegends from './DashboardLegends';
@@ -41,6 +42,7 @@ interface MapBlockProps {
 
 const MapBlockContent = memo(() => {
   const classes = useStyles();
+  const { t } = useSafeTranslation();
   const { selectedLayersWithDateSupport } = useLayers();
   const { actions, maplibreMap } = useMapState();
   const datesLoading = useSelector(areDatesLoading);
@@ -101,7 +103,7 @@ const MapBlockContent = memo(() => {
         </div>
         {selectedLayersWithDateSupport.length > 0 && !datesLoading && (
           <div className={classes.dateSelectorContainer}>
-            <Typography variant="h3">Map date</Typography>
+            <Typography variant="h3">{t('Map date')}</Typography>
             <DateSelector />
           </div>
         )}

@@ -10,8 +10,9 @@ import {
 import { ArrowForward, Edit, VisibilityOutlined } from '@material-ui/icons';
 import { useSelector, useDispatch } from 'react-redux';
 import { useState } from 'react';
-import type { DashboardTextConfig } from 'config/types';
+import { useSafeTranslation } from 'i18n';
 import { black, cyanBlue } from 'muiTheme';
+import type { DashboardTextConfig } from 'config/types';
 
 import MapBlock from './MapBlock';
 import {
@@ -30,6 +31,7 @@ function DashboardView() {
   const dashboardMaps = useSelector(dashboardMapsSelector);
   const dispatch = useDispatch();
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
+  const { t } = useSafeTranslation();
 
   const handlePreviewClick = () => {
     setIsPreviewOpen(true);
@@ -50,12 +52,12 @@ function DashboardView() {
                 component="span"
                 className={classes.titleBarTypography}
               >
-                Dashboard title
+                {t('Dashboard title')}
               </Typography>
               <input
                 type="text"
                 className={classes.titleBarInput}
-                placeholder="Enter dashboard title"
+                placeholder={t('Enter dashboard title')}
                 value={dashboardTitle}
                 onChange={e => dispatch(setTitle(e.target.value))}
                 name="dashboard-title"
@@ -72,9 +74,9 @@ function DashboardView() {
                   className={classes.blockLabel}
                 >
                   {dashboardMaps.length > 1
-                    ? `Map ${mapIndex + 1}`
-                    : 'Map block'}{' '}
-                  — Choose map layers
+                    ? `${t('Map')} ${mapIndex + 1}`
+                    : t('Map block ')}
+                  {t('— Choose map layers')}
                 </Typography>
                 <div style={{ height: '700px', width: '100%' }}>
                   <MapBlock mapIndex={mapIndex} />
@@ -97,7 +99,8 @@ function DashboardView() {
                   />
                 );
               }
-              return <div>Content type not yet supported</div>;
+              // TODO: Remove warning/error before launch, when all content types should be supported
+              return <div>{t('Content type not yet supported')}</div>;
             })}
           </Box>
         )}
@@ -111,7 +114,7 @@ function DashboardView() {
           className={classes.previewButton}
           size="medium"
         >
-          Preview
+          {t('Preview')}
         </Button>
       </Box>
 
@@ -131,7 +134,7 @@ function DashboardView() {
             onClick={handleClosePreview}
             size="medium"
           >
-            Back to Edit
+            {t('Back to Edit')}
           </Button>
           <Button
             color="primary"
@@ -141,7 +144,7 @@ function DashboardView() {
             size="medium"
             style={{ backgroundColor: cyanBlue, color: black }}
           >
-            Publish
+            {t('Publish')}
           </Button>
         </DialogActions>
         <DialogContent className={classes.dialogContent}>
