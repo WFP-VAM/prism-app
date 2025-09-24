@@ -136,7 +136,7 @@ function AAFloodLegend() {
     window.open('https://research.google/', '_blank');
   };
 
-  const handleOpacityChange = (event: any, newValue: number | number[]) => {
+  const handleOpacityChange = (_event: any, newValue: number | number[]) => {
     dispatch(
       setOpacity({
         map,
