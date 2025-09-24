@@ -6,12 +6,15 @@ import TextBlock from './TextBlock';
 import {
   dashboardTitleSelector,
   dashboardFlexElementsSelector,
+  dashboardMapsSelector,
 } from '../../context/dashboardStateSlice';
+import MapBlock from './MapBlock';
 
 function DashboardPreview() {
   const classes = useStyles();
   const dashboardTitle = useSelector(dashboardTitleSelector);
   const dashboardFlexElements = useSelector(dashboardFlexElementsSelector);
+  const dashboardMaps = useSelector(dashboardMapsSelector);
 
   return (
     <Box className={classes.layout}>
@@ -25,6 +28,14 @@ function DashboardPreview() {
             {dashboardTitle || 'Untitled Dashboard'}
           </Typography>
         </Box>
+        <div className={classes.mapsContainer}>
+          {dashboardMaps.map((_, mapIndex) => (
+            // eslint-disable-next-line react/no-array-index-key
+            <Box key={`map-${mapIndex}`} className={classes.previewContainer}>
+              <MapBlock mapIndex={mapIndex} mode="preview" />
+            </Box>
+          ))}
+        </div>
       </Box>
       <Box className={classes.trailingContentArea}>
         {dashboardFlexElements?.map((element, index) => {
@@ -65,6 +76,19 @@ const useStyles = makeStyles(() => ({
     fontWeight: 500,
     fontSize: 20,
     margin: 0,
+  },
+  previewContainer: {
+    background: 'white',
+    borderRadius: 8,
+    padding: 16,
+    marginBottom: 16,
+    width: '100%',
+  },
+  mapsContainer: {
+    display: 'flex',
+    gap: '16px',
+    width: '100%',
+    height: '700px',
   },
 }));
 
