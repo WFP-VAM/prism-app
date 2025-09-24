@@ -1,12 +1,4 @@
-import {
-  Box,
-  makeStyles,
-  Typography,
-  Button,
-  Dialog,
-  DialogContent,
-  DialogActions,
-} from '@material-ui/core';
+import { Box, makeStyles, Typography, Button } from '@material-ui/core';
 import { ArrowForward, Edit, VisibilityOutlined } from '@material-ui/icons';
 import { useSelector, useDispatch } from 'react-redux';
 import { useState } from 'react';
@@ -35,146 +27,30 @@ function DashboardView({ mode = 'edit' }: DashboardViewProps) {
   const dashboardFlexElements = useSelector(dashboardFlexElementsSelector);
   const dashboardMaps = useSelector(dashboardMapsSelector);
   const dispatch = useDispatch();
-  const [isPreviewOpen, setIsPreviewOpen] = useState(false);
+  const [currentMode, setCurrentMode] = useState<DashboardMode>('edit');
   const { t } = useSafeTranslation();
 
   const handlePreviewClick = () => {
-    setIsPreviewOpen(true);
+    setCurrentMode('preview');
   };
 
   const handleClosePreview = () => {
-    setIsPreviewOpen(false);
+    setCurrentMode('edit');
   };
 
-  if (mode === 'preview') {
-    return (
-      <Box className={classes.layout}>
-        <Box className={classes.leadingContentArea}>
-          <Box>
-            <Typography
-              variant="h2"
-              component="h1"
-              className={classes.previewTitle}
-            >
-              {dashboardTitle || 'Untitled Dashboard'}
-            </Typography>
-          </Box>
-          <div className={classes.mapsContainer}>
-            {dashboardMaps.map((_, mapIndex) => (
-              // eslint-disable-next-line react/no-array-index-key
-              <Box key={`map-${mapIndex}`} className={classes.previewContainer}>
-                <MapBlock mapIndex={mapIndex} mode="preview" />
-              </Box>
-            ))}
-          </div>
-        </Box>
-        <Box className={classes.trailingContentArea}>
-          {dashboardFlexElements?.map((element, index) => {
-            if (element.type === 'TEXT') {
-              const content = (element as DashboardTextConfig)?.content || '';
-              return (
-                <TextBlock
-                  // eslint-disable-next-line react/no-array-index-key
-                  key={`text-block-${index}`}
-                  content={content}
-                  index={index}
-                  mode="preview"
-                />
-              );
-            }
-            return <div>Content type not yet supported</div>;
-          })}
-        </Box>
-      </Box>
-    );
-  }
+  const activeMode = mode !== 'edit' ? mode : currentMode;
 
   return (
-    <Box className={classes.container}>
-      <Box className={classes.layout}>
-        <Box className={classes.leadingContentArea}>
-          <Box className={classes.grayCard}>
-            <label className={classes.titleBarLabel}>
-              <Typography
-                variant="h2"
-                component="span"
-                className={classes.titleBarTypography}
-              >
-                {t('Dashboard title')}
-              </Typography>
-              <input
-                type="text"
-                className={classes.titleBarInput}
-                placeholder={t('Enter dashboard title')}
-                value={dashboardTitle}
-                onChange={e => dispatch(setTitle(e.target.value))}
-                name="dashboard-title"
-              />
-            </label>
-          </Box>
-          <div className={classes.mapsContainer}>
-            {dashboardMaps.map((_, mapIndex) => (
-              // eslint-disable-next-line react/no-array-index-key
-              <Box key={`map-${mapIndex}`} className={classes.grayCard}>
-                <Typography
-                  variant="h3"
-                  component="h3"
-                  className={classes.blockLabel}
-                >
-                  {dashboardMaps.length > 1
-                    ? `${t('Map')} ${mapIndex + 1}`
-                    : t('Map block ')}
-                  {t('— Choose map layers')}
-                </Typography>
-                <div style={{ height: '700px', width: '100%' }}>
-                  <MapBlock mapIndex={mapIndex} mode="edit" />
-                </div>
-              </Box>
-            ))}
-          </div>
-        </Box>
-        {dashboardFlexElements.length > 0 && (
-          <Box className={classes.trailingContentArea}>
-            {dashboardFlexElements?.map((element, index) => {
-              if (element.type === 'TEXT') {
-                const content = (element as DashboardTextConfig)?.content || '';
-                return (
-                  <TextBlock
-                    // eslint-disable-next-line react/no-array-index-key
-                    key={`text-block-${index}`}
-                    content={content}
-                    index={index}
-                    mode="edit"
-                  />
-                );
-              }
-              // TODO: Remove warning/error before launch, when all content types should be supported
-              return <div>{t('Content type not yet supported')}</div>;
-            })}
-          </Box>
-        )}
-      </Box>
-      <Box className={classes.toolbar}>
-        <Button
-          variant="outlined"
-          color="primary"
-          startIcon={<VisibilityOutlined />}
-          onClick={handlePreviewClick}
-          className={classes.previewButton}
-          size="medium"
-        >
-          {t('Preview')}
-        </Button>
-      </Box>
-
-      <Dialog
-        open={isPreviewOpen}
-        onClose={handleClosePreview}
-        maxWidth={false}
-        fullWidth
-        className={classes.previewDialog}
-      >
-        <DialogActions>
+    <Box
+      className={
+        activeMode === 'preview'
+          ? classes.previewModeContainer
+          : classes.container
+      }
+    >
+      {/* Preview mode overlay with actions */}
+      {activeMode === 'preview' && (
+        <Box className={classes.previewActions}>
           <Button
             color="primary"
             variant="outlined"
@@ -195,11 +71,113 @@ function DashboardView({ mode = 'edit' }: DashboardViewProps) {
           >
             {t('Publish')}
           </Button>
-        </DialogActions>
-        <DialogContent className={classes.dialogContent}>
-          <DashboardView mode="preview" />
-        </DialogContent>
-      </Dialog>
+        </Box>
+      )}
+
+      <Box
+        className={
+          activeMode === 'preview' ? classes.previewLayout : classes.layout
+        }
+      >
+        <Box className={classes.leadingContentArea}>
+          {activeMode === 'edit' ? (
+            <Box className={classes.grayCard}>
+              <label className={classes.titleBarLabel}>
+                <Typography
+                  variant="h2"
+                  component="span"
+                  className={classes.titleBarTypography}
+                >
+                  Dashboard title
+                </Typography>
+                <input
+                  type="text"
+                  className={classes.titleBarInput}
+                  placeholder="Enter dashboard title"
+                  value={dashboardTitle}
+                  onChange={e => dispatch(setTitle(e.target.value))}
+                  name="dashboard-title"
+                />
+              </label>
+            </Box>
+          ) : (
+            <Box>
+              <Typography
+                variant="h2"
+                component="h1"
+                className={classes.previewTitle}
+              >
+                {dashboardTitle || 'Untitled Dashboard'}
+              </Typography>
+            </Box>
+          )}
+
+          <div className={classes.mapsContainer}>
+            {dashboardMaps.map((_, mapIndex) => (
+              <Box
+                // eslint-disable-next-line react/no-array-index-key
+                key={`map-${mapIndex}`}
+                className={
+                  activeMode === 'preview'
+                    ? classes.previewContainer
+                    : classes.grayCard
+                }
+              >
+                {activeMode === 'edit' && (
+                  <Typography
+                    variant="h3"
+                    component="h3"
+                    className={classes.blockLabel}
+                  >
+                    {dashboardMaps.length > 1
+                      ? `Map ${mapIndex + 1}`
+                      : 'Map block'}{' '}
+                    — Choose map layers
+                  </Typography>
+                )}
+                <div style={{ height: '700px', width: '100%' }}>
+                  <MapBlock mapIndex={mapIndex} mode={activeMode} />
+                </div>
+              </Box>
+            ))}
+          </div>
+        </Box>
+
+        {dashboardFlexElements.length > 0 && (
+          <Box className={classes.trailingContentArea}>
+            {dashboardFlexElements?.map((element, index) => {
+              if (element.type === 'TEXT') {
+                const content = (element as DashboardTextConfig)?.content || '';
+                return (
+                  <TextBlock
+                    // eslint-disable-next-line react/no-array-index-key
+                    key={`text-block-${index}`}
+                    content={content}
+                    index={index}
+                    mode={activeMode}
+                  />
+                );
+              }
+              return <div>Content type not yet supported</div>;
+            })}
+          </Box>
+        )}
+      </Box>
+
+      {activeMode === 'edit' && (
+        <Box className={classes.toolbar}>
+          <Button
+            variant="outlined"
+            color="primary"
+            startIcon={<VisibilityOutlined />}
+            onClick={handlePreviewClick}
+            className={classes.previewButton}
+            size="medium"
+          >
+            Preview
+          </Button>
+        </Box>
+      )}
     </Box>
   );
 }
@@ -310,6 +288,34 @@ const useStyles = makeStyles(() => ({
     fontWeight: 500,
     fontSize: 20,
     margin: 0,
+  },
+  previewModeContainer: {
+    display: 'flex',
+    flexDirection: 'column',
+    height: '100vh',
+    position: 'relative',
+    background: '#F8F8F8',
+  },
+  previewActions: {
+    position: 'sticky',
+    top: 0,
+    left: 0,
+    right: 0,
+    background: 'white',
+    borderBottom: '1px solid #E0E0E0',
+    padding: '12px 16px',
+    display: 'flex',
+    justifyContent: 'flex-start',
+    gap: '12px',
+    zIndex: 1300,
+  },
+  previewLayout: {
+    display: 'flex',
+    padding: 16,
+    margin: 16,
+    gap: 16,
+    flex: 1,
+    overflow: 'auto',
   },
 }));
 
