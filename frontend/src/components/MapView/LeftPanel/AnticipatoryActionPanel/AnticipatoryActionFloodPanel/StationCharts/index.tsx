@@ -584,37 +584,79 @@ function StationCharts({ station, onClose }: StationChartsProps) {
     setViewMode(prev => (prev === 'chart' ? 'table' : 'chart'));
   };
 
-  const downloadChart = async () => {
-    if (viewMode !== 'chart' || isDownloading) {
+  const download = async () => {
+    if (isDownloading) {
       return;
     }
 
     setIsDownloading(true);
+    if (viewMode === 'chart') {
+      await downloadChart();
+    } else {
+      await downloadTable();
+    }
+    setIsDownloading(false);
+  };
+
+  const downloadChart = async () => {
     // chartjs needs to render the chart instance and have ctx ready to be used in Base64 conversion
-    try {
-      const maxAttempts = 50; // Max 5 seconds
-      // eslint-disable-next-line fp/no-mutation
-      for (let attempts = 0; attempts < maxAttempts; attempts += 1) {
-        const chartRef =
-          activeTab === 1 ? hydrographChartRef : probabilityChartRef;
-        const chartInstance = chartRef.current?.chartInstance;
-        if (chartInstance && chartInstance.ctx) {
-          const base64Image = chartInstance.toBase64Image();
-          const link = document.createElement('a');
-          // eslint-disable-next-line fp/no-mutation
-          link.href = base64Image;
-          const chartName =
-            activeTab === 1 ? 'Hydrograph' : 'Trigger Probability';
-          // eslint-disable-next-line fp/no-mutation
-          link.download = `${station.station_name}_${chartName}.png`;
-          link.click();
-          return;
-        }
-        // eslint-disable-next-line no-await-in-loop, no-promise-executor-return
-        await new Promise(resolve => setTimeout(resolve, 100));
+    const maxAttempts = 50; // Max 5 seconds
+    // eslint-disable-next-line fp/no-mutation
+    for (let attempts = 0; attempts < maxAttempts; attempts += 1) {
+      const chartRef =
+        activeTab === 1 ? hydrographChartRef : probabilityChartRef;
+      const chartInstance = chartRef.current?.chartInstance;
+      if (chartInstance && chartInstance.ctx) {
+        const base64Image = chartInstance.toBase64Image();
+        const link = document.createElement('a');
+        link.setAttribute('href', base64Image);
+        const chartName =
+          activeTab === 1 ? 'Hydrograph' : 'Trigger Probability';
+        link.setAttribute(
+          'download',
+          `${station.station_name}_${chartName}.png`,
+        );
+        link.click();
+        return;
       }
-    } finally {
-      setIsDownloading(false);
+      // eslint-disable-next-line no-await-in-loop, no-promise-executor-return
+      await new Promise(resolve => setTimeout(resolve, 100));
+    }
+  };
+
+  const downloadTable = async () => {
+    const maxAttempts = 50; // Max 5 seconds
+    // eslint-disable-next-line fp/no-mutation
+    for (let attempts = 0; attempts < maxAttempts; attempts += 1) {
+      const tableData =
+        activeTab === 1 ? hydrographTableData : triggerProbabilityTableData;
+
+      if (tableData) {
+        const csvContent = [
+          tableData.columnNames.join(','),
+          ...tableData.tableValues.map(row =>
+            row.map(cell => `"${cell}"`).join(','),
+          ),
+        ].join('\n');
+
+        const blob = new Blob([csvContent], {
+          type: 'text/csv;charset=utf-8;',
+        });
+        const link = document.createElement('a');
+        const url = URL.createObjectURL(blob);
+        link.setAttribute('href', url);
+        const tableName =
+          activeTab === 1 ? 'Hydrograph' : 'Trigger_Probability';
+        link.setAttribute(
+          'download',
+          `${station.station_name}_${tableName}.csv`,
+        );
+        document.body.appendChild(link);
+        link.click();
+        return;
+      }
+      // eslint-disable-next-line no-await-in-loop, no-promise-executor-return
+      await new Promise(resolve => setTimeout(resolve, 100));
     }
   };
 
@@ -855,8 +897,8 @@ function StationCharts({ station, onClose }: StationChartsProps) {
             startIcon={
               isDownloading ? <CircularProgress size={16} /> : <GetApp />
             }
-            onClick={downloadChart}
-            disabled={viewMode !== 'chart' || isDownloading}
+            onClick={download}
+            disabled={isDownloading}
           >
             {isDownloading ? t('Downloading...') : t('Download')}
           </Button>
