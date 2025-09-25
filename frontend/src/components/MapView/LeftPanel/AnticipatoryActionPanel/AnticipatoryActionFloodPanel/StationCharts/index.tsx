@@ -24,7 +24,13 @@ import { FloodStation } from 'context/anticipatoryAction/AAFloodStateSlice/types
 import { useSelector } from 'react-redux';
 import { AAFloodDataSelector } from 'context/anticipatoryAction/AAFloodStateSlice';
 import sortBy from 'lodash/sortBy';
-import { CHART_WIDTH, TABLE_WIDTH } from '../constants';
+import {
+  CHART_WIDTH,
+  ForecastWindowPerCountry,
+  TABLE_WIDTH,
+} from '../constants';
+
+const forecastWindow = ForecastWindowPerCountry.mozambique;
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -128,36 +134,7 @@ const useStyles = makeStyles(() =>
   }),
 );
 
-// Helper to fill area above threshold only (Chart.js v2 scriptable backgroundColor)
-const chartFillColor =
-  (threshold: number | null, above: string, below: string) =>
-  ({ chart }: any) => {
-    const yScale = (chart as any).scales['y-axis-0'] || (chart as any).scales.y;
-    if (!yScale) {
-      return below;
-    }
-    const maxValue = yScale.max !== undefined ? yScale.max : 100;
-    const top = yScale.getPixelForValue(maxValue);
-    const zero = yScale.getPixelForValue(threshold ?? 0);
-    const bottom = yScale.getPixelForValue(0);
-    const { ctx } = chart as any;
-    if (!ctx) {
-      return below;
-    }
-    const gradient = ctx.createLinearGradient(0, top, 0, bottom);
-    const denom = bottom - top || 1;
-    const ratio = Math.min(Math.max((zero - top) / denom, 0), 1);
-    if (threshold !== null) {
-      gradient.addColorStop(0, above);
-      gradient.addColorStop(ratio, above);
-      gradient.addColorStop(ratio, below);
-      gradient.addColorStop(1, below);
-    } else {
-      gradient.addColorStop(0, below);
-      gradient.addColorStop(1, below);
-    }
-    return gradient as CanvasGradient;
-  };
+// (removed unused chartFillColor helper)
 
 interface StationChartsProps {
   station: FloodStation;
@@ -283,7 +260,29 @@ function StationCharts({ station, onClose }: StationChartsProps) {
     const moderateTrigger = 19;
     const severeTrigger = 10;
 
-    // Area fill handled by scriptable backgroundColor; no clamped series needed
+    // Forecast window indices (inclusive)
+    const clampIndex = (i: number) =>
+      Math.max(0, Math.min(labels.length - 1, i));
+    const startIdx = clampIndex(forecastWindow.start);
+    const endIdx = clampIndex(forecastWindow.end);
+
+    // Compute mean in window (inclusive) for each line
+    const meanInWindow = (arr: number[]) => {
+      const slice = arr.slice(startIdx, endIdx + 1);
+      if (!slice.length) {
+        return 0;
+      }
+      return slice.reduce((s, v) => s + v, 0) / slice.length;
+    };
+    const bankfullMean = meanInWindow(bankfullSeries);
+    const moderateMean = meanInWindow(moderateSeries);
+    const severeMean = meanInWindow(severeSeries);
+
+    // Build flat series over the window only (nulls elsewhere)
+    const flatWindowSeries = (value: number | null) =>
+      bankfullSeries.map((_v, idx) =>
+        idx >= startIdx && idx <= endIdx ? (value ?? NaN) : NaN,
+      );
 
     return {
       labels,
@@ -319,51 +318,114 @@ function StationCharts({ station, onClose }: StationChartsProps) {
           pointRadius: 0,
           fill: false,
         },
-        // Area fill only above the bankfull threshold using scriptable background
+        // Normal lines (no fill)
         {
           label: t('Bankfull'),
           data: bankfullSeries,
           borderColor: 'rgba(102, 187, 106, 0.8)',
-          backgroundColor: chartFillColor(
-            bankfullTrigger,
-            'rgba(102, 187, 106, 0.25)',
-            'rgba(0,0,0,0)',
-          ),
-          borderWidth: 0,
+          backgroundColor: 'transparent',
+          borderWidth: 2,
           pointRadius: 0,
-          fill: true,
+          fill: false,
           tension: 0,
           lineTension: 0,
         },
-        // Moderate area and line
         {
           label: t('Moderate'),
           data: moderateSeries,
           borderColor: 'rgba(255, 167, 38, 0.8)',
-          backgroundColor: chartFillColor(
-            moderateTrigger,
-            'rgba(255, 167, 38, 0.25)',
-            'rgba(0,0,0,0)',
-          ),
-          borderWidth: 0,
+          backgroundColor: 'transparent',
+          borderWidth: 2,
           pointRadius: 0,
-          fill: true,
+          fill: false,
           tension: 0,
           lineTension: 0,
         },
-        // Severe area and line
         {
           label: t('Severe'),
           data: severeSeries,
           borderColor: 'rgba(239, 83, 80, 0.8)',
-          backgroundColor: chartFillColor(
-            severeTrigger,
-            'rgba(239, 83, 80, 0.25)',
-            'rgba(0,0,0,0)',
-          ),
+          backgroundColor: 'transparent',
+          borderWidth: 2,
+          pointRadius: 0,
+          fill: false,
+          tension: 0,
+          lineTension: 0,
+        },
+        // Mean lines over window only (no fill)
+        {
+          label: t('Bankfull mean (window)'),
+          data: flatWindowSeries(bankfullMean),
+          borderColor: 'rgba(102, 187, 106, 1)',
+          backgroundColor: 'transparent',
+          borderWidth: 2,
+          pointRadius: 0,
+          fill: false,
+          tension: 0,
+          lineTension: 0,
+        },
+        {
+          label: t('Moderate mean (window)'),
+          data: flatWindowSeries(moderateMean),
+          borderColor: 'rgba(255, 167, 38, 1)',
+          backgroundColor: 'transparent',
+          borderWidth: 2,
+          pointRadius: 0,
+          fill: false,
+          tension: 0,
+          lineTension: 0,
+        },
+        {
+          label: t('Severe mean (window)'),
+          data: flatWindowSeries(severeMean),
+          borderColor: 'rgba(239, 83, 80, 1)',
+          backgroundColor: 'transparent',
+          borderWidth: 2,
+          pointRadius: 0,
+          fill: false,
+          tension: 0,
+          lineTension: 0,
+        },
+        // Conditional mean-to-threshold fills within the window only if exceeded
+        {
+          label: t('Bankfull mean fill'),
+          data:
+            bankfullMean > bankfullTrigger
+              ? flatWindowSeries(bankfullMean)
+              : flatWindowSeries(null as unknown as number),
+          borderColor: 'rgba(0,0,0,0)',
+          backgroundColor: 'rgba(102, 187, 106, 0.25)',
           borderWidth: 0,
           pointRadius: 0,
-          fill: true,
+          fill: 0, // fill to Bankfull threshold dataset
+          tension: 0,
+          lineTension: 0,
+        },
+        {
+          label: t('Moderate mean fill'),
+          data:
+            moderateMean > moderateTrigger
+              ? flatWindowSeries(moderateMean)
+              : flatWindowSeries(null as unknown as number),
+          borderColor: 'rgba(0,0,0,0)',
+          backgroundColor: 'rgba(255, 167, 38, 0.25)',
+          borderWidth: 0,
+          pointRadius: 0,
+          fill: 1, // fill to Moderate threshold dataset
+          tension: 0,
+          lineTension: 0,
+        },
+        {
+          label: t('Severe mean fill'),
+          data:
+            severeMean > severeTrigger
+              ? flatWindowSeries(severeMean)
+              : flatWindowSeries(null as unknown as number),
+          borderColor: 'rgba(0,0,0,0)',
+          backgroundColor: 'rgba(239, 83, 80, 0.25)',
+          borderWidth: 0,
+          pointRadius: 0,
+          fill: 2, // fill to Severe threshold dataset
           tension: 0,
           lineTension: 0,
         },
@@ -435,8 +497,8 @@ function StationCharts({ station, onClose }: StationChartsProps) {
     const clampIndex = (i: number) =>
       Math.max(0, Math.min(labelStrings.length - 1, i));
     // const forecastBeginIdx = clampIndex(1);
-    const day3Idx = clampIndex(3);
-    const day7Idx = clampIndex(7);
+    const startIdx = clampIndex(forecastWindow.start);
+    const endIdx = clampIndex(forecastWindow.end);
     // const unreliableIdx = clampIndex(9);
 
     // Compute y-axis max rounded up to the next dizaine (multiple of 10)
@@ -500,14 +562,14 @@ function StationCharts({ station, onClose }: StationChartsProps) {
             type: 'line',
             mode: 'vertical',
             scaleID: 'x-axis-0',
-            value: labelStrings[day3Idx],
+            value: labelStrings[startIdx],
             borderColor: '#2196F3',
             borderDash: [4, 4],
             borderWidth: 1,
             label: {
               enabled: true,
               position: 'top',
-              content: t('3-Day forecast'),
+              content: t('{{day}}-day forecast', { day: forecastWindow.start }),
               backgroundColor: 'rgba(0,0,0,0)',
               fontColor: '#2196F3',
               xAdjust: -50,
@@ -517,14 +579,14 @@ function StationCharts({ station, onClose }: StationChartsProps) {
             type: 'line',
             mode: 'vertical',
             scaleID: 'x-axis-0',
-            value: labelStrings[day7Idx],
+            value: labelStrings[endIdx],
             borderColor: '#9C27B0',
             borderDash: [4, 4],
             borderWidth: 1,
             label: {
               enabled: true,
               position: 'top',
-              content: t('7-Day forecast'),
+              content: t('{{day}}-day forecast', { day: forecastWindow.end }),
               backgroundColor: 'rgba(0,0,0,0)',
               fontColor: '#9C27B0',
               xAdjust: -50,
