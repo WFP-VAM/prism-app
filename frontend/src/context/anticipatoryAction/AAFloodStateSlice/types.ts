@@ -62,10 +62,6 @@ export interface FloodForecastData {
   station_name: string;
   time: string;
   ensemble_members: number[];
-  median: number;
-  min: number;
-  max: number;
-  avg: number;
 }
 
 export enum AAFloodView {
@@ -80,6 +76,7 @@ export type AnticipatoryActionFloodState = {
   selectedStation: string | null;
   selectedDate: string | null;
   forecastData: Record<string, FloodForecastData[]>;
+  probabilitiesData: Record<string, FloodProbabilityPoint[]>;
   historicalData: Record<string, FloodStationData[]>;
   availableDates: FloodDateItem[];
   filters: {
