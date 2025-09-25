@@ -9,6 +9,7 @@ import {
   MergedFeatures,
   ResultType,
 } from './parsedStormDataTypes';
+import { allDistrictsInCoastalProvince } from './districs';
 
 const districtNameMapping: { [key: string]: string } = {
   Maganja_Da_Costa: 'Maganja Da Costa',
@@ -16,14 +17,7 @@ const districtNameMapping: { [key: string]: string } = {
 };
 
 const watchedDistricts: { [key in AACategory]: string[] } = {
-  [AACategory.Severe]: [
-    'Mogincual',
-    'Namacurra',
-    'Cidade Da Beira',
-    'Buzi',
-    'Dondo',
-    'Vilankulo',
-  ],
+  [AACategory.Severe]: allDistrictsInCoastalProvince,
   [AACategory.Moderate]: ['Angoche', 'Maganja Da Costa', 'Machanga', 'Govuro'],
   [AACategory.Risk]: [],
 };
