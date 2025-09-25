@@ -1,10 +1,8 @@
-import React, { useMemo, useState, useRef } from 'react';
+import { useMemo, useState, useRef } from 'react';
 import {
   Typography,
   makeStyles,
   createStyles,
-  Tabs,
-  Tab,
   IconButton,
   Paper,
   Button,
@@ -54,7 +52,6 @@ const useStyles = makeStyles(() =>
       alignItems: 'center',
       justifyContent: 'space-between',
       padding: '1rem 1rem 0 1rem',
-      borderBottom: '1px solid #e0e0e0',
     },
     title: {
       fontWeight: 'bold',
@@ -68,10 +65,29 @@ const useStyles = makeStyles(() =>
       marginTop: '-1rem',
     },
     tabs: {
-      minHeight: '48px',
+      minHeight: '34px',
+      borderBottom: '1px solid #D4D4D4',
+      display: 'flex',
+      gap: '4px',
+      margin: '0 1rem',
+    },
+    tab: {
+      border: '1px solid #D4D4D4',
+      borderBottom: 'none',
+      borderRadius: '4px 4px 0 0',
+      fontSize: '12px',
+      color: '#000',
+      background: '#F1F1F1',
+    },
+    selectedTab: {
+      background: '#FFF',
+      fontWeight: 'bold',
     },
     tabPanel: {
       flex: 1,
+      margin: '0 1rem',
+      border: '1px solid #D4D4D4',
+      borderTop: 'none',
       padding: '0.5rem',
       overflow: 'auto',
     },
@@ -635,7 +651,7 @@ function StationCharts({ station, onClose }: StationChartsProps) {
     hydrographOptions,
   ]);
 
-  const handleTabChange = (_event: React.ChangeEvent<{}>, newValue: number) => {
+  const handleTabChange = (newValue: number) => {
     setActiveTab(newValue);
     setViewMode('chart');
   };
@@ -816,16 +832,20 @@ function StationCharts({ station, onClose }: StationChartsProps) {
           )}
         </div>
 
-        <Tabs
-          value={activeTab}
-          onChange={handleTabChange}
-          className={classes.tabs}
-          indicatorColor="primary"
-          textColor="primary"
-        >
-          <Tab label={t('Trigger probability')} />
-          <Tab label={t('Hydrograph')} />
-        </Tabs>
+        <div className={classes.tabs}>
+          <Button
+            className={`${classes.tab} ${activeTab === 0 ? classes.selectedTab : 0}`}
+            onClick={() => handleTabChange(0)}
+          >
+            {t('Trigger probability')}
+          </Button>
+          <Button
+            className={`${classes.tab} ${activeTab === 1 ? classes.selectedTab : 0}`}
+            onClick={() => handleTabChange(1)}
+          >
+            {t('Hydrograph')}
+          </Button>
+        </div>
 
         <div className={classes.tabPanel}>
           {activeTab === 1 &&
