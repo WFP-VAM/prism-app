@@ -53,6 +53,31 @@ const getDashboardConfig = (index: number) => {
   return appConfig.configuredReports[index] || appConfig.configuredReports[0];
 };
 
+const getMapLayerOpacityConfig = (
+  layerId: LayerType['id'],
+  layerType: LayerType['type'] | 'analysis',
+): [string, string] => {
+  switch (layerType) {
+    case 'wms':
+    case 'static_raster':
+      return [getLayerMapId(layerId), 'raster-opacity'];
+    case 'admin_level_data':
+    case 'composite':
+    case 'impact':
+    case 'geojson_polygon':
+      return [getLayerMapId(layerId), 'fill-opacity'];
+    case 'point_data':
+      if (layerId?.includes('_report')) {
+        return [getLayerMapId(layerId), 'fill-opacity'];
+      }
+      return [getLayerMapId(layerId), 'circle-opacity'];
+    case 'analysis':
+      return ['layer-analysis', 'fill-opacity'];
+    default:
+      return [getLayerMapId(layerId), 'fill-opacity'];
+  }
+};
+
 const createInitialState = (dashboardIndex: number = 0): DashboardState => {
   const dashboardConfig = getDashboardConfig(dashboardIndex);
 
@@ -81,27 +106,10 @@ const createInitialState = (dashboardIndex: number = 0): DashboardState => {
             if (layer) {
               // eslint-disable-next-line fp/no-mutating-methods
               preSelectedLayers.push(layer);
-              // Initialize opacity entry for this layer
-              const [mapLayerId, opacityType] = ((): [string, string] => {
-                switch (layer.type) {
-                  case 'wms':
-                  case 'static_raster':
-                    return [getLayerMapId(layerId), 'raster-opacity'];
-                  case 'admin_level_data':
-                  case 'composite':
-                  case 'impact':
-                  case 'geojson_polygon':
-                    return [getLayerMapId(layerId), 'fill-opacity'];
-                  case 'point_data':
-                    if (layerId?.includes('_report')) {
-                      return [getLayerMapId(layerId), 'fill-opacity'];
-                    }
-                    return [getLayerMapId(layerId), 'circle-opacity'];
-                  default:
-                    return [getLayerMapId(layerId), 'fill-opacity'];
-                }
-              })();
-
+              const [mapLayerId, opacityType] = getMapLayerOpacityConfig(
+                layerId,
+                layer.type,
+              );
               // eslint-disable-next-line fp/no-mutation
               initialOpacityMap[layerId] = {
                 mapLayerId,
@@ -297,32 +305,14 @@ export const dashboardStateSlice = createSlice({
       const { index, map, layerId, layerType, value, callback } =
         action.payload;
 
-      if (!map || !layerId || value === undefined) {
+      if (!map || !layerId || value === undefined || !layerType) {
         return state;
       }
 
-      const [mapLayerId, opacityType] = ((): [string, string] => {
-        switch (layerType) {
-          case 'wms':
-            return [getLayerMapId(layerId), 'raster-opacity'];
-          case 'static_raster':
-            return [getLayerMapId(layerId), 'raster-opacity'];
-          case 'admin_level_data':
-          case 'composite':
-          case 'impact':
-          case 'geojson_polygon':
-            return [getLayerMapId(layerId), 'fill-opacity'];
-          case 'point_data':
-            if (layerId?.includes('_report')) {
-              return [getLayerMapId(layerId), 'fill-opacity'];
-            }
-            return [getLayerMapId(layerId), 'circle-opacity'];
-          case 'analysis':
-            return ['layer-analysis', 'fill-opacity'];
-          default:
-            throw new Error('Unknown map layer type');
-        }
-      })();
+      const [mapLayerId, opacityType] = getMapLayerOpacityConfig(
+        layerId,
+        layerType,
+      );
 
       // update map
       if (map.getLayer(mapLayerId) !== undefined && value !== undefined) {
