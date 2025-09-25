@@ -91,3 +91,10 @@ export type AnticipatoryActionFloodState = {
   loading: boolean;
   error: string | null;
 };
+
+export interface FloodProbabilityPoint {
+  time: string;
+  bankfull_percentage: number;
+  moderate_percentage: number;
+  severe_percentage: number;
+}

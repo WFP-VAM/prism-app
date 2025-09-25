@@ -21,6 +21,9 @@ import { Line } from 'react-chartjs-2';
 import 'chartjs-plugin-annotation';
 import { useSafeTranslation } from 'i18n';
 import { FloodStation } from 'context/anticipatoryAction/AAFloodStateSlice/types';
+import { useSelector } from 'react-redux';
+import { AAFloodDataSelector } from 'context/anticipatoryAction/AAFloodStateSlice';
+import sortBy from 'lodash/sortBy';
 import { CHART_WIDTH, TABLE_WIDTH } from '../constants';
 
 const useStyles = makeStyles(() =>
@@ -170,44 +173,24 @@ function StationCharts({ station, onClose }: StationChartsProps) {
   const hydrographChartRef = useRef<Line>(null);
   const probabilityChartRef = useRef<Line>(null);
 
-  // Prepare hydrograph data (synthetic around bankfull threshold)
-  const hydrographData = useMemo(() => {
-    const days = 11; // 0..10 days lead time
-    const labels = Array.from({ length: days }, (_v, i) => `${i}`);
+  const floodState = useSelector(AAFloodDataSelector);
 
+  // Prepare hydrograph data using fetched forecast (discharge) data
+  const hydrographData = useMemo(() => {
+    const forecast = floodState.forecastData[station.station_name] || [];
+    if (!forecast.length) {
+      return null;
+    }
+
+    const labels = forecast.map((_p, idx) => `${idx}`);
     const { bankfull, moderate, severe } = station.thresholds;
 
-    // Create a simple rise to a peak at day 3, then gradual fall
-    const meanSeries = Array.from({ length: days }, (_v, i) => {
-      const riseRatio = Math.min(i / 3, 1); // 0 -> 1 by day 3
-      const fallRatio = i > 3 ? (i - 3) / 7 : 0; // 0 at day 3 -> 1 at day 10
-      const value = bankfull * (0.95 + riseRatio * 0.12 - fallRatio * 0.17);
-      return Number(value.toFixed(1));
-    });
-
-    // Generate synthetic ensemble members around the mean
-    const numMembers = 50;
-    const ensembleDatasets = Array.from({ length: numMembers }, (_v, idx) => {
-      // Add more variability: per-member offset and a small random walk over time
-      const offset = (Math.random() - 0.5) * 0.18; // ±9%
-      const steps = Array.from(
-        { length: days },
-        () => (Math.random() - 0.5) * 0.08,
-      );
-      const walkSeries = steps.reduce<number[]>((acc, step) => {
-        const previous = acc.length ? acc[acc.length - 1] : 0;
-        const next = Math.max(-0.12, Math.min(0.12, previous + step));
-        return [...acc, next];
-      }, []);
-      const memberSeries = meanSeries.map((v, i) => {
-        const local = (Math.random() - 0.5) * 0.1; // extra local jitter ±5%
-        const factor = 1 + offset + walkSeries[i] + local;
-        const value = Math.max(0, v * factor);
-        return Number(value.toFixed(1));
-      });
-      return {
-        label: `Member ${idx + 1}`,
-        data: memberSeries,
+    const membersCount = forecast[0]?.ensemble_members?.length || 0;
+    const ensembleDatasets = Array.from(
+      { length: membersCount },
+      (_v, mIdx) => ({
+        label: `Member ${mIdx + 1}`,
+        data: forecast.map(fp => fp.ensemble_members[mIdx] ?? 0),
         borderColor: 'rgba(0, 0, 0, 0.18)',
         backgroundColor: 'transparent',
         borderWidth: 1,
@@ -216,7 +199,15 @@ function StationCharts({ station, onClose }: StationChartsProps) {
         hoverRadius: 0,
         fill: false,
         tension: 0.35,
-      };
+      }),
+    );
+
+    const meanSeries = forecast.map(p => {
+      const arr = p.ensemble_members || [];
+      if (!arr.length) {
+        return 0;
+      }
+      return arr.reduce((s, v) => s + v, 0) / arr.length;
     });
 
     return {
@@ -235,7 +226,7 @@ function StationCharts({ station, onClose }: StationChartsProps) {
         },
         {
           label: `${t('Bankfull')} (${bankfull})`,
-          data: Array.from({ length: days }, () => bankfull),
+          data: Array.from({ length: labels.length }, () => bankfull),
           borderColor: '#66BB6A',
           backgroundColor: 'transparent',
           borderWidth: 2,
@@ -245,7 +236,7 @@ function StationCharts({ station, onClose }: StationChartsProps) {
         },
         {
           label: `${t('Moderate')} (${moderate})`,
-          data: Array.from({ length: days }, () => moderate),
+          data: Array.from({ length: labels.length }, () => moderate),
           borderColor: '#FFA726',
           backgroundColor: 'transparent',
           borderWidth: 2,
@@ -255,7 +246,7 @@ function StationCharts({ station, onClose }: StationChartsProps) {
         },
         {
           label: `${t('Severe')} (${severe})`,
-          data: Array.from({ length: days }, () => severe),
+          data: Array.from({ length: labels.length }, () => severe),
           borderColor: '#EF5350',
           backgroundColor: 'transparent',
           borderWidth: 2,
@@ -266,22 +257,17 @@ function StationCharts({ station, onClose }: StationChartsProps) {
         ...ensembleDatasets,
       ],
     };
-  }, [station.thresholds, t]);
+  }, [floodState.forecastData, station.station_name, station.thresholds, t]);
 
-  // Prepare trigger probability data
+  // Prepare trigger probability data from fetched probabilities
   const triggerProbabilityData = useMemo(() => {
-    if (!station.historicalData || station.historicalData.length === 0) {
+    const probs = floodState.probabilitiesData[station.station_name];
+    if (!probs || probs.length === 0) {
       return null;
     }
 
-    // Sort data by time manually to avoid fp/no-mutating-methods warning
-    const dataArray = [...station.historicalData];
-    // eslint-disable-next-line fp/no-mutating-methods
-    const sortedData = dataArray.sort(
-      (a, b) => new Date(a.time).getTime() - new Date(b.time).getTime(),
-    );
+    const sortedData = sortBy(probs, p => new Date(p.time).getTime());
 
-    // TODO - remove temp synthetic data
     const labels = sortedData.map(d =>
       new Date(d.time).toLocaleDateString('en-US', {
         month: '2-digit',
@@ -289,15 +275,9 @@ function StationCharts({ station, onClose }: StationChartsProps) {
         year: '2-digit',
       }),
     );
-    const bankfullSeries = sortedData
-      .map(d => d.bankfull_percentage)
-      .map((v, i) => (i >= 3 ? 50 : v));
-    const moderateSeries = sortedData
-      .map(d => d.moderate_percentage)
-      .map((v, i) => (i >= 3 ? 24 : v));
-    const severeSeries = sortedData
-      .map(d => d.severe_percentage)
-      .map((v, i) => (i <= 4 ? 15 : v));
+    const bankfullSeries = sortedData.map(d => d.bankfull_percentage);
+    const moderateSeries = sortedData.map(d => d.moderate_percentage);
+    const severeSeries = sortedData.map(d => d.severe_percentage);
 
     const bankfullTrigger = 38;
     const moderateTrigger = 19;
@@ -389,7 +369,7 @@ function StationCharts({ station, onClose }: StationChartsProps) {
         },
       ],
     };
-  }, [station.historicalData, t]);
+  }, [floodState.probabilitiesData, station.station_name, t]);
 
   const hydrographOptions = useMemo(
     () => ({
@@ -438,15 +418,12 @@ function StationCharts({ station, onClose }: StationChartsProps) {
   );
 
   const probabilityOptions = useMemo(() => {
-    if (!station.historicalData || station.historicalData.length === 0) {
+    const probs = floodState.probabilitiesData[station.station_name];
+    if (!probs || probs.length === 0) {
       return hydrographOptions;
     }
 
-    const dataArray = [...station.historicalData];
-    // eslint-disable-next-line fp/no-mutating-methods
-    const sortedData = dataArray.sort(
-      (a, b) => new Date(a.time).getTime() - new Date(b.time).getTime(),
-    );
+    const sortedData = sortBy(probs, p => new Date(p.time).getTime());
     const labelStrings = sortedData.map(d =>
       new Date(d.time).toLocaleDateString('en-US', {
         month: '2-digit',
@@ -573,7 +550,12 @@ function StationCharts({ station, onClose }: StationChartsProps) {
         ],
       },
     } as any;
-  }, [station.historicalData, t, hydrographOptions]);
+  }, [
+    floodState.probabilitiesData,
+    station.station_name,
+    t,
+    hydrographOptions,
+  ]);
 
   const handleTabChange = (_event: React.ChangeEvent<{}>, newValue: number) => {
     setActiveTab(newValue);
@@ -708,7 +690,7 @@ function StationCharts({ station, onClose }: StationChartsProps) {
     };
   }, [triggerProbabilityData, t]);
 
-  if (!station.historicalData || station.historicalData.length === 0) {
+  if (!floodState.probabilitiesData[station.station_name]) {
     return (
       <div className={classes.container}>
         <Paper className={classes.paper}>

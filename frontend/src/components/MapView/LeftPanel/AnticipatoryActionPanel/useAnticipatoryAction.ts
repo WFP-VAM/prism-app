@@ -22,6 +22,7 @@ import {
 import { AnticipatoryActionData } from 'context/anticipatoryAction/AADroughtStateSlice/types';
 import { ParsedStormData } from 'context/anticipatoryAction/AAStormStateSlice/parsedStormDataTypes';
 import { AnticipatoryActionFloodState } from 'context/anticipatoryAction/AAFloodStateSlice/types';
+import { loadAAFloodDateData } from 'context/anticipatoryAction/AAFloodStateSlice';
 import { getFormattedDate } from 'utils/date-utils';
 import { DateFormat } from 'utils/name-utils';
 import { useMapState } from 'utils/useMapState';
@@ -106,6 +107,10 @@ export function useAnticipatoryAction<T extends AnticipatoryAction>(
         const queryDate = getRequestDate(combinedAvailableDates, selectedDate);
         const date = getFormattedDate(queryDate, DateFormat.Default) as string;
         dispatch(setFilters({ selectedDate: date }));
+      } else if (actionType === AnticipatoryAction.flood) {
+        const queryDate = getRequestDate(combinedAvailableDates, selectedDate);
+        const date = getFormattedDate(queryDate, DateFormat.Default) as string;
+        dispatch(loadAAFloodDateData({ date }));
       }
     }
 
