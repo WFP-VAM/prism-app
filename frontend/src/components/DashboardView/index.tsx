@@ -14,6 +14,7 @@ import {
   dashboardMapsSelector,
 } from '../../context/dashboardStateSlice';
 import TextBlock from './TextBlock';
+import TableBlock from './TableBlock';
 
 type DashboardMode = 'edit' | 'preview';
 
@@ -146,6 +147,20 @@ function DashboardView() {
                     content={content}
                     index={index}
                     mode={mode}
+                  />
+                );
+              }
+              if (element.type === 'TABLE') {
+                return (
+                  <TableBlock
+                    // eslint-disable-next-line react/no-array-index-key
+                    key={`table-block-${index}`}
+                    index={index}
+                    startDate={element.startDate}
+                    hazardLayerId={element.hazardLayerId}
+                    baselineLayerId={element.baselineLayerId}
+                    threshold={element.threshold}
+                    stat={element.stat}
                   />
                 );
               }

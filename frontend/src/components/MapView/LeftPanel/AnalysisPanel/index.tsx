@@ -1,39 +1,18 @@
-import React, {
-  Dispatch,
-  memo,
-  SetStateAction,
-  useCallback,
-  useEffect,
-  useMemo,
-  useState,
-} from 'react';
+import React, { memo, useCallback, useEffect, useMemo, useState } from 'react';
 import {
   Button,
   createStyles,
-  FormControl,
-  FormControlLabel,
-  InputAdornment,
-  Input,
   LinearProgress,
-  Radio,
-  RadioGroup,
-  TextField,
   Typography,
   IconButton,
   Theme,
   CircularProgress,
   Box,
-  MenuItem,
   makeStyles,
 } from '@material-ui/core';
-import {
-  BarChartOutlined,
-  DateRangeRounded,
-  CloseRounded,
-} from '@material-ui/icons';
+import { BarChartOutlined, CloseRounded } from '@material-ui/icons';
 import { useDispatch, useSelector } from 'context/hooks';
-import DatePicker from 'react-datepicker';
-import { isNil, orderBy, range } from 'lodash';
+import { isNil, orderBy } from 'lodash';
 import {
   mapSelector,
   layersSelector,
@@ -75,7 +54,7 @@ import {
   ExposureValue,
   Panel,
 } from 'config/types';
-import { getAdminLevelCount, getAdminLevelLayer } from 'utils/admin-utils';
+import { getAdminLevelLayer } from 'utils/admin-utils';
 import { LayerData } from 'context/layers/layer-data';
 import { LayerDefinitions, getDisplayBoundaryLayers } from 'config/utils';
 import { useSafeTranslation } from 'i18n';
@@ -100,16 +79,23 @@ import {
   layersLoadingDatesIdsSelector,
   loadAvailableDatesForLayer,
 } from 'context/serverStateSlice';
-import LayerDropdown from 'components/MapView/Layers/LayerDropdown';
-import SimpleDropdown from 'components/Common/SimpleDropdown';
 import {
   leftPanelTabValueSelector,
   setTabValue,
 } from 'context/leftPanelStateSlice';
-import LoadingBlinkingDots from 'components/Common/LoadingBlinkingDots';
 import useLayers from 'utils/layers-utils';
-import { black, cyanBlue } from 'muiTheme';
 import { getFormattedDate } from 'utils/date-utils';
+import {
+  HazardLayerSelector,
+  BaselineLayerSelector,
+  StatisticSelector,
+  ThresholdInputs,
+  DateSelector,
+  DateRangeSelector,
+  AdminLevelSelector,
+} from 'components/Common/AnalysisFormComponents';
+import LoadingBlinkingDots from 'components/Common/LoadingBlinkingDots';
+import { black, cyanBlue } from 'muiTheme';
 import { layerDatesPreloadedSelector } from 'context/serverPreloadStateSlice';
 import AnalysisTable from './AnalysisTable';
 import ExposureAnalysisTable from './AnalysisTable/ExposureAnalysisTable';
@@ -203,7 +189,6 @@ const AnalysisPanel = memo(() => {
   const [aboveThreshold, setAboveThreshold] = useState(
     aboveThresholdFromUrl || '',
   );
-  const [thresholdError, setThresholdError] = useState<string | null>(null);
 
   // for polygon intersection analysis
   const [adminLevel, setAdminLevel] = useState<AdminLevelType>(
@@ -215,9 +200,18 @@ const AnalysisPanel = memo(() => {
   // find layer for the given adminLevel
   const adminLevelLayer = getAdminLevelLayer(adminLevel);
   const adminLevelLayerData = useSelector(
-    // if we couldn't find an admin layer, just return undefined
     adminLevelLayer ? layerDataSelector(adminLevelLayer.id) : () => undefined,
   ) as LayerData<BoundaryLayerProps> | undefined;
+
+  const BASELINE_URL_LAYER_KEY = 'baselineLayerId';
+  const preSelectedBaselineLayer = selectedLayers.find(
+    l => l.type === 'admin_level_data',
+  );
+  const [previousBaselineId, setPreviousBaselineId] = useState<
+    LayerKey | undefined
+  >(preSelectedBaselineLayer?.id);
+
+  const { t } = useSafeTranslation();
 
   // get variables derived from state
   const selectedHazardLayer = hazardLayerId
@@ -226,12 +220,15 @@ const AnalysisPanel = memo(() => {
   const hazardDataType: HazardDataType | null = selectedHazardLayer
     ? selectedHazardLayer.geometry || RasterType.Raster
     : null;
+
+  // required threshold if we have an admin_level_data baseline layer, there's no threshold set
   const requiredThresholdNotSet = Boolean(
     baselineLayerId &&
       LayerDefinitions[baselineLayerId]?.type === 'admin_level_data' &&
       !belowThreshold &&
       !aboveThreshold,
   );
+
   const availableHazardDates = React.useMemo(
     () =>
       selectedHazardLayer
@@ -246,16 +243,6 @@ const AnalysisPanel = memo(() => {
         : [],
     [availableDates, selectedHazardLayer],
   );
-
-  const BASELINE_URL_LAYER_KEY = 'baselineLayerId';
-  const preSelectedBaselineLayer = selectedLayers.find(
-    l => l.type === 'admin_level_data',
-  );
-  const [previousBaselineId, setPreviousBaselineId] = useState<
-    LayerKey | undefined
-  >(preSelectedBaselineLayer?.id);
-
-  const { t } = useSafeTranslation();
 
   // check if there is any available date from the url, otherwise use last available date for the selected hazard layer
   const lastAvailableHazardDate = availableHazardDates
@@ -343,7 +330,7 @@ const AnalysisPanel = memo(() => {
         analysisSortColumn,
         analysisIsAscending ? 'asc' : 'desc',
       ),
-    [analysisIsAscending, analysisResult, analysisSortColumn],
+    [analysisResult, analysisSortColumn, analysisIsAscending],
   );
 
   // handler of general analysis tables sort order
@@ -362,122 +349,6 @@ const AnalysisPanel = memo(() => {
     [analysisIsAscending, analysisSortColumn, dispatch],
   );
 
-  const onOptionChange = useCallback(
-    <T extends string>(setterFunc: Dispatch<SetStateAction<T>>) =>
-      (event: React.ChangeEvent<HTMLInputElement>) => {
-        const value = event.target.value as T;
-        setterFunc(value);
-        return value;
-      },
-    [],
-  );
-  // specially for threshold values, also does error checking
-  const onThresholdOptionChange = useCallback(
-    (thresholdType: 'above' | 'below') =>
-      (event: React.ChangeEvent<HTMLInputElement>) => {
-        const setterFunc =
-          thresholdType === 'above' ? setAboveThreshold : setBelowThreshold;
-        const changedOption = onOptionChange(setterFunc)(event);
-        // setting a value doesn't update the existing value until next render, therefore we must decide whether to access the old one or the newly change one here.
-        const aboveThresholdValue = parseFloat(
-          thresholdType === 'above' ? changedOption : aboveThreshold,
-        );
-        const belowThresholdValue = parseFloat(
-          thresholdType === 'below' ? changedOption : belowThreshold,
-        );
-        if (belowThresholdValue > aboveThresholdValue) {
-          setThresholdError('Below threshold is larger than above threshold!');
-        } else {
-          setThresholdError(null);
-        }
-      },
-    [aboveThreshold, belowThreshold, onOptionChange],
-  );
-
-  const statisticOptions = useMemo(
-    () =>
-      Object.entries(AggregationOperations)
-        .filter(([, value]) => value !== AggregationOperations.Sum) // sum is used only for exposure analysis.
-        .map(([key, value]) => (
-          <FormControlLabel
-            key={key}
-            value={value}
-            control={
-              <Radio
-                classes={{
-                  root: classes.radioOptions,
-                  checked: classes.radioOptionsChecked,
-                }}
-                color="default"
-                size="small"
-              />
-            }
-            label={
-              <Typography className={classes.analysisPanelParamText}>
-                {t(key)}
-              </Typography>
-            }
-          />
-        )),
-    [
-      classes.analysisPanelParamText,
-      classes.radioOptions,
-      classes.radioOptionsChecked,
-      t,
-    ],
-  );
-
-  const activateUniqueBoundary = useCallback(
-    (forceAdminLevel?: BoundaryLayerProps) => {
-      if (forceAdminLevel) {
-        // remove displayed boundaries
-        getDisplayBoundaryLayers().forEach(l => {
-          if (l.id !== forceAdminLevel.id) {
-            safeDispatchRemoveLayer(map, l, dispatch);
-          }
-        });
-
-        safeDispatchAddLayer(
-          map,
-          { ...forceAdminLevel, isPrimary: true },
-          dispatch,
-        );
-        return;
-      }
-
-      if (!baselineLayerId) {
-        throw new Error('Layer should be selected to run analysis');
-      }
-
-      const baselineLayer = LayerDefinitions[
-        baselineLayerId
-      ] as AdminLevelDataLayerProps;
-
-      if (baselineLayer.boundary) {
-        const boundaryLayer = LayerDefinitions[
-          baselineLayer.boundary
-        ] as BoundaryLayerProps;
-        // remove displayed boundaries
-        getDisplayBoundaryLayers().forEach(l => {
-          if (l.id !== boundaryLayer.id) {
-            safeDispatchRemoveLayer(map, l, dispatch);
-          }
-        });
-
-        safeDispatchAddLayer(
-          map,
-          { ...boundaryLayer, isPrimary: true },
-          dispatch,
-        );
-      } else {
-        getDisplayBoundaryLayers().forEach(l => {
-          safeDispatchAddLayer(map, l, dispatch);
-        });
-      }
-    },
-    [baselineLayerId, dispatch, map],
-  );
-
   const clearAnalysis = useCallback(() => {
     const isClearingExposureAnalysis =
       analysisResult instanceof ExposedPopulationResult;
@@ -493,7 +364,6 @@ const AnalysisPanel = memo(() => {
     setBaselineLayerId(baselineLayerIdFromUrl);
     setBelowThreshold(belowThresholdFromUrl || '');
     setAboveThreshold(aboveThresholdFromUrl || '');
-    setThresholdError(null);
 
     resetAnalysisParams();
     refreshBoundaries(map, { addLayer, removeLayer });
@@ -522,6 +392,59 @@ const AnalysisPanel = memo(() => {
     updateHistory,
   ]);
 
+  // Boundary activation helper
+  const activateUniqueBoundary = useCallback(
+    (forceAdminLevel?: BoundaryLayerProps) => {
+      if (forceAdminLevel) {
+        // Remove displayed boundaries
+        getDisplayBoundaryLayers().forEach(l => {
+          if (l.id !== forceAdminLevel.id) {
+            safeDispatchRemoveLayer(map, l, dispatch);
+          }
+        });
+
+        safeDispatchAddLayer(
+          map,
+          { ...forceAdminLevel, isPrimary: true },
+          dispatch,
+        );
+        return;
+      }
+
+      if (!baselineLayerId) {
+        throw new Error('Layer should be selected to run analysis');
+      }
+
+      const baselineLayer = LayerDefinitions[
+        baselineLayerId
+      ] as AdminLevelDataLayerProps;
+
+      if (baselineLayer.boundary) {
+        const boundaryLayer = LayerDefinitions[
+          baselineLayer.boundary
+        ] as BoundaryLayerProps;
+        // Remove displayed boundaries
+        getDisplayBoundaryLayers().forEach(l => {
+          if (l.id !== boundaryLayer.id) {
+            safeDispatchRemoveLayer(map, l, dispatch);
+          }
+        });
+
+        safeDispatchAddLayer(
+          map,
+          { ...boundaryLayer, isPrimary: true },
+          dispatch,
+        );
+      } else {
+        getDisplayBoundaryLayers().forEach(l => {
+          safeDispatchAddLayer(map, l, dispatch);
+        });
+      }
+    },
+    [baselineLayerId, dispatch, map],
+  );
+
+  // Scale threshold helper
   const scaleThreshold = useCallback(
     (threshold: number) =>
       statistic === AggregationOperations['Area exposed']
@@ -732,77 +655,18 @@ const AnalysisPanel = memo(() => {
     }
     return (
       <>
-        <div className={classes.analysisPanelParamContainer}>
-          <Typography className={classes.colorBlack} variant="body2">
-            {t('Admin Level')}
-          </Typography>
-          <SimpleDropdown
-            value={adminLevel}
-            options={range(getAdminLevelCount()).map(i => [
-              (i + 1) as AdminLevelType,
-              `Admin ${i + 1}`,
-            ])}
-            onChange={setAdminLevel}
-            textClass={classes.colorBlack}
-          />
-        </div>
+        <AdminLevelSelector value={adminLevel} onChange={setAdminLevel} />
 
-        <div className={classes.analysisPanelParamContainer}>
-          <Typography className={classes.colorBlack} variant="body2">
-            {t('Date Range')}
-          </Typography>
-          <div className={classes.dateRangePicker}>
-            <Typography className={classes.colorBlack} variant="body2">
-              {t('Start')}
-            </Typography>
-            <DatePicker
-              selected={startDate ? new Date(startDate) : null}
-              onChange={date => setStartDate(date?.getTime() || startDate)}
-              maxDate={new Date()}
-              todayButton={t('Today')}
-              peekNextMonth
-              showMonthDropdown
-              showYearDropdown
-              dropdownMode="select"
-              customInput={<Input className={classes.analysisPanelParamText} />}
-              popperClassName={classes.calendarPopper}
-              includeDates={availableHazardDates}
-            />
-          </div>
-          <div className={classes.dateRangePicker}>
-            <Typography className={classes.colorBlack} variant="body2">
-              {t('End')}
-            </Typography>
-            <DatePicker
-              selected={endDate ? new Date(endDate) : null}
-              onChange={date => setEndDate(date?.getTime() || endDate)}
-              maxDate={new Date()}
-              todayButton={t('Today')}
-              peekNextMonth
-              showMonthDropdown
-              showYearDropdown
-              dropdownMode="select"
-              customInput={<Input className={classes.analysisPanelParamText} />}
-              popperClassName={classes.calendarPopper}
-              includeDates={availableHazardDates}
-            />
-          </div>
-        </div>
+        <DateRangeSelector
+          startDate={startDate}
+          endDate={endDate}
+          onStartDateChange={setStartDate}
+          onEndDateChange={setEndDate}
+          availableDates={availableHazardDates}
+        />
       </>
     );
-  }, [
-    adminLevel,
-    availableHazardDates,
-    classes.analysisPanelParamContainer,
-    classes.analysisPanelParamText,
-    classes.colorBlack,
-    classes.calendarPopper,
-    classes.dateRangePicker,
-    endDate,
-    hazardDataType,
-    startDate,
-    t,
-  ]);
+  }, [adminLevel, availableHazardDates, endDate, hazardDataType, startDate]);
 
   const renderedRasterType = useMemo(() => {
     if (hazardDataType !== RasterType.Raster) {
@@ -810,178 +674,41 @@ const AnalysisPanel = memo(() => {
     }
     return (
       <>
-        <div className={classes.analysisPanelParamContainer}>
-          <LayerDropdown
-            type="admin_level_data"
-            value={baselineLayerId || ''}
-            setValue={setBaselineLayerId}
-            className={classes.analysisPanelParamText}
-            label={t('Baseline Layer')}
-            placeholder="Choose baseline layer"
-          />
-        </div>
-        <div className={classes.analysisPanelParamContainer}>
-          <Typography className={classes.colorBlack} variant="body2">
-            {t('Statistic')}
-          </Typography>
-          <FormControl component="div">
-            <RadioGroup
-              name="statistics"
-              value={statistic}
-              onChange={onOptionChange(setStatistic)}
-            >
-              {statisticOptions}
-            </RadioGroup>
-          </FormControl>
-          {statistic === AggregationOperations['Area exposed'] && (
-            <div className={classes.exposureValueContainer}>
-              <FormControl
-                component="div"
-                className={classes.exposureValueOptionsInputContainer}
-              >
-                <TextField
-                  select
-                  variant="outlined"
-                  label={t('Operator')}
-                  className={classes.exposureValueOptionsSelect}
-                  name="exposure-value-operator"
-                  value={exposureValue.operator}
-                  onChange={e =>
-                    setExposureValue({
-                      ...exposureValue,
-                      operator: e.target.value as ExposureOperator,
-                    })
-                  }
-                >
-                  {Object.values(ExposureOperator).map(item => (
-                    <MenuItem key={item} value={item}>
-                      {item}
-                    </MenuItem>
-                  ))}
-                </TextField>
-              </FormControl>
-              <FormControl
-                component="div"
-                className={classes.exposureValueOptionsInputContainer}
-              >
-                <TextField
-                  select
-                  variant="outlined"
-                  label={t('Exposure value')}
-                  className={classes.exposureValueOptionsSelect}
-                  name="exposure-value"
-                  value={exposureValue.value}
-                  onChange={e =>
-                    setExposureValue({
-                      ...exposureValue,
-                      value: e.target.value as ExposureOperator,
-                    })
-                  }
-                >
-                  {selectedHazardLayer?.legend?.map(item => (
-                    <MenuItem key={item.value} value={item.value}>
-                      {`${item.label} (${item.value})`}
-                    </MenuItem>
-                  ))}
-                </TextField>
-              </FormControl>
-            </div>
-          )}
-        </div>
-        <div className={classes.analysisPanelParamContainer}>
-          <Typography className={classes.colorBlack} variant="body2">
-            {t('Threshold')}
-          </Typography>
-          {requiredThresholdNotSet && (
-            <Typography style={{ color: 'red' }}>
-              {t(
-                'A threshold is required when running an analysis for this type of layer. To generate statistics without a threshold, choose an administrative level as the baseline layer.',
-              )}
-            </Typography>
-          )}
-
-          <div className={classes.rowInputContainer}>
-            <TextField
-              id="outlined-number-low"
-              error={!!thresholdError}
-              helperText={t(thresholdError || '')}
-              className={classes.numberField}
-              label={t('Below')}
-              type="number"
-              value={belowThreshold}
-              onChange={onThresholdOptionChange('below')}
-              variant="outlined"
-            />
-            <TextField
-              id="outlined-number-high"
-              label={t('Above')}
-              classes={{ root: classes.numberField }}
-              value={aboveThreshold}
-              onChange={onThresholdOptionChange('above')}
-              type="number"
-              variant="outlined"
-            />
-            {statistic === AggregationOperations['Area exposed'] && (
-              <Typography className={classes.colorBlack} variant="body1">
-                %
-              </Typography>
-            )}
-          </div>
-        </div>
-        <div className={classes.datePickerContainer}>
-          <Typography className={classes.colorBlack} variant="body2">
-            {`${t('Date')}: `}
-          </Typography>
-          <DatePicker
-            locale={t('date_locale')}
-            dateFormat="PP"
-            selected={selectedDate ? new Date(selectedDate) : null}
-            onChange={date => setSelectedDate(date?.getTime() || selectedDate)}
-            maxDate={new Date()}
-            todayButton={t('Today')}
-            peekNextMonth
-            showMonthDropdown
-            showYearDropdown
-            dropdownMode="select"
-            customInput={
-              <Input
-                className={classes.analysisPanelParamText}
-                disableUnderline
-                endAdornment={
-                  <InputAdornment position="end">
-                    <DateRangeRounded />
-                  </InputAdornment>
-                }
-              />
-            }
-            popperClassName={classes.calendarPopper}
-            includeDates={availableHazardDates}
-          />
-        </div>
+        <BaselineLayerSelector
+          value={baselineLayerId}
+          onChange={setBaselineLayerId}
+          className={classes.analysisPanelParamText}
+        />
+        <StatisticSelector
+          value={statistic}
+          onChange={setStatistic}
+          exposureValue={exposureValue}
+          onExposureValueChange={setExposureValue}
+          selectedHazardLayer={selectedHazardLayer}
+        />
+        <ThresholdInputs
+          belowThreshold={belowThreshold}
+          aboveThreshold={aboveThreshold}
+          onBelowThresholdChange={setBelowThreshold}
+          onAboveThresholdChange={setAboveThreshold}
+          statistic={statistic}
+          requiredThresholdNotSet={requiredThresholdNotSet}
+        />
+        <DateSelector
+          selectedDate={selectedDate}
+          onDateChange={setSelectedDate}
+          availableDates={availableHazardDates}
+        />
       </>
     );
   }, [
     hazardDataType,
-    classes.analysisPanelParamContainer,
     classes.analysisPanelParamText,
-    classes.colorBlack,
-    classes.exposureValueContainer,
-    classes.exposureValueOptionsInputContainer,
-    classes.exposureValueOptionsSelect,
-    classes.rowInputContainer,
-    classes.numberField,
-    classes.datePickerContainer,
-    classes.calendarPopper,
     baselineLayerId,
-    t,
     statistic,
-    onOptionChange,
-    statisticOptions,
     exposureValue,
     selectedHazardLayer,
-    thresholdError,
     belowThreshold,
-    onThresholdOptionChange,
     aboveThreshold,
     requiredThresholdNotSet,
     selectedDate,
@@ -997,30 +724,23 @@ const AnalysisPanel = memo(() => {
     }
     return (
       <div id="analysis-parameters" className={classes.analysisPanelParams}>
-        <div className={classes.analysisPanelParamContainer}>
-          <LayerDropdown
-            type="wms"
-            value={hazardLayerId || ''}
-            setValue={setHazardLayerId}
-            className={classes.analysisPanelParamText}
-            label={t('Hazard Layer')}
-            placeholder="Choose hazard layer"
-          />
-        </div>
+        <HazardLayerSelector
+          value={hazardLayerId}
+          onChange={setHazardLayerId}
+          className={classes.analysisPanelParamText}
+        />
         {renderedPolygonHazardType}
         {renderedRasterType}
       </div>
     );
   }, [
     analysisResult,
-    classes.analysisPanelParamContainer,
-    classes.analysisPanelParamText,
     classes.analysisPanelParams,
+    classes.analysisPanelParamText,
     hazardLayerId,
     isExposureAnalysisLoading,
     renderedPolygonHazardType,
     renderedRasterType,
-    t,
   ]);
 
   const renderedAnalysisActions = useMemo(() => {
@@ -1093,8 +813,7 @@ const AnalysisPanel = memo(() => {
           onClick={runAnalyser}
           startIcon={<BarChartOutlined style={{ color: black }} />}
           disabled={
-            !!thresholdError || // if there is a threshold error
-            isAnalysisLoading || // or analysis is currently loading
+            isAnalysisLoading || // analysis is currently loading
             // if the baseline is an admin level layer, at least one threshold must be set
             requiredThresholdNotSet ||
             !hazardLayerId || // or hazard layer hasn't been selected
@@ -1125,9 +844,8 @@ const AnalysisPanel = memo(() => {
     selectedDate,
     startDate,
     statistic,
-    t,
-    thresholdError,
     requiredThresholdNotSet,
+    t,
   ]);
 
   const renderedExposureAnalysisActions = useMemo(() => {
