@@ -284,6 +284,60 @@ function StationCharts({ station, onClose }: StationChartsProps) {
         idx >= startIdx && idx <= endIdx ? (value ?? NaN) : NaN,
       );
 
+    // Only show mean fill for the highest severity exceeded
+    const bankfullExceeded = bankfullTrigger && bankfullMean > bankfullTrigger;
+    const moderateExceeded = moderateTrigger && moderateMean > moderateTrigger;
+    const severeExceeded = severeTrigger && severeMean > severeTrigger;
+
+    const fillDatasets: any[] = (() => {
+      if (severeExceeded) {
+        return [
+          {
+            label: t('Severe mean fill'),
+            data: flatWindowSeries(severeMean),
+            borderColor: 'rgba(0,0,0,0)',
+            backgroundColor: 'rgba(239, 83, 80, 0.25)',
+            borderWidth: 0,
+            pointRadius: 0,
+            fill: 2, // fill to Severe threshold dataset
+            tension: 0,
+            lineTension: 0,
+          },
+        ];
+      }
+      if (moderateExceeded) {
+        return [
+          {
+            label: t('Moderate mean fill'),
+            data: flatWindowSeries(moderateMean),
+            borderColor: 'rgba(0,0,0,0)',
+            backgroundColor: 'rgba(255, 167, 38, 0.25)',
+            borderWidth: 0,
+            pointRadius: 0,
+            fill: 1, // fill to Moderate threshold dataset
+            tension: 0,
+            lineTension: 0,
+          },
+        ];
+      }
+      if (bankfullExceeded) {
+        return [
+          {
+            label: t('Bankfull mean fill'),
+            data: flatWindowSeries(bankfullMean),
+            borderColor: 'rgba(0,0,0,0)',
+            backgroundColor: 'rgba(102, 187, 106, 0.25)',
+            borderWidth: 0,
+            pointRadius: 0,
+            fill: 0, // fill to Bankfull threshold dataset
+            tension: 0,
+            lineTension: 0,
+          },
+        ];
+      }
+      return [];
+    })();
+
     return {
       labels,
       datasets: [
@@ -322,10 +376,11 @@ function StationCharts({ station, onClose }: StationChartsProps) {
         {
           label: t('Bankfull'),
           data: bankfullSeries,
-          borderColor: 'rgba(102, 187, 106, 0.8)',
-          backgroundColor: 'transparent',
+          borderColor: 'rgba(102, 187, 106, 0.4)',
+          backgroundColor: 'rgba(102, 187, 106, 0.4)',
           borderWidth: 2,
-          pointRadius: 0,
+          showLine: false,
+          pointRadius: 3,
           fill: false,
           tension: 0,
           lineTension: 0,
@@ -333,10 +388,11 @@ function StationCharts({ station, onClose }: StationChartsProps) {
         {
           label: t('Moderate'),
           data: moderateSeries,
-          borderColor: 'rgba(255, 167, 38, 0.8)',
-          backgroundColor: 'transparent',
+          borderColor: 'rgba(255, 167, 38, 0.4)',
+          backgroundColor: 'rgba(255, 167, 38, 0.4)',
           borderWidth: 2,
-          pointRadius: 0,
+          showLine: false,
+          pointRadius: 3,
           fill: false,
           tension: 0,
           lineTension: 0,
@@ -344,11 +400,12 @@ function StationCharts({ station, onClose }: StationChartsProps) {
         {
           label: t('Severe'),
           data: severeSeries,
-          borderColor: 'rgba(239, 83, 80, 0.8)',
-          backgroundColor: 'transparent',
+          borderColor: 'rgba(239, 83, 80, 0.4)',
+          backgroundColor: 'rgba(239, 83, 80, 0.4)',
           borderWidth: 2,
-          pointRadius: 0,
-          fill: false,
+          showLine: false,
+          pointRadius: 3,
+          fill: true,
           tension: 0,
           lineTension: 0,
         },
@@ -386,49 +443,8 @@ function StationCharts({ station, onClose }: StationChartsProps) {
           tension: 0,
           lineTension: 0,
         },
-        // Conditional mean-to-threshold fills within the window only if exceeded
-        {
-          label: t('Bankfull mean fill'),
-          data:
-            bankfullMean > bankfullTrigger
-              ? flatWindowSeries(bankfullMean)
-              : flatWindowSeries(null as unknown as number),
-          borderColor: 'rgba(0,0,0,0)',
-          backgroundColor: 'rgba(102, 187, 106, 0.25)',
-          borderWidth: 0,
-          pointRadius: 0,
-          fill: 0, // fill to Bankfull threshold dataset
-          tension: 0,
-          lineTension: 0,
-        },
-        {
-          label: t('Moderate mean fill'),
-          data:
-            moderateMean > moderateTrigger
-              ? flatWindowSeries(moderateMean)
-              : flatWindowSeries(null as unknown as number),
-          borderColor: 'rgba(0,0,0,0)',
-          backgroundColor: 'rgba(255, 167, 38, 0.25)',
-          borderWidth: 0,
-          pointRadius: 0,
-          fill: 1, // fill to Moderate threshold dataset
-          tension: 0,
-          lineTension: 0,
-        },
-        {
-          label: t('Severe mean fill'),
-          data:
-            severeMean > severeTrigger
-              ? flatWindowSeries(severeMean)
-              : flatWindowSeries(null as unknown as number),
-          borderColor: 'rgba(0,0,0,0)',
-          backgroundColor: 'rgba(239, 83, 80, 0.25)',
-          borderWidth: 0,
-          pointRadius: 0,
-          fill: 2, // fill to Severe threshold dataset
-          tension: 0,
-          lineTension: 0,
-        },
+        // Conditional mean-to-threshold fill: include only highest severity exceeded
+        ...fillDatasets,
       ],
     };
   }, [floodState.probabilitiesData, station.station_name, t]);
