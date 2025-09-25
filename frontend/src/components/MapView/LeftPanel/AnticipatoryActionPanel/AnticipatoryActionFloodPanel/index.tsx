@@ -45,9 +45,8 @@ const useStyles = makeStyles(() =>
       minWidth: TABLE_WIDTH,
     },
     headerCell: {
-      fontWeight: 'bold',
-      backgroundColor: '#e0e0e0', // Gray header background
-      color: '#333',
+      backgroundColor: '#f1f1f1', // Gray header background
+      color: '#000',
     },
     row: {
       cursor: 'pointer',
@@ -114,8 +113,8 @@ function AnticipatoryActionFloodPanel() {
   const { stations, selectedStation, loading, error } = AAData;
   const { startDate } = useSelector(dateRangeSelector);
 
-  const [sortField, setSortField] = useState<SortField>('station_name');
-  const [sortDirection, setSortDirection] = useState<SortDirection>('asc');
+  const [sortField, setSortField] = useState<SortField>('risk_level');
+  const [sortDirection, setSortDirection] = useState<SortDirection>('desc');
   const [rowsPerPage, setRowsPerPage] = useState<number>(20);
   const [currentPage, setCurrentPage] = useState<number>(0);
 
