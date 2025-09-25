@@ -404,7 +404,7 @@ const AnticipatoryActionStormLayer = React.memo(
       if (isNADistrict) {
         return {
           color: getAAColor(AACategory.Severe, 'na', true),
-          opacity: 0.4,
+          opacity: 0.1,
         };
       }
 
