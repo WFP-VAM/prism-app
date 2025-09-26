@@ -18,7 +18,10 @@ import {
 import { cyanBlue } from 'muiTheme';
 import { ChevronLeft, ChevronRight } from '@material-ui/icons';
 import { setAAFloodSelectedStation } from 'context/anticipatoryAction/AAFloodStateSlice';
-import { getFloodRiskColor } from 'context/anticipatoryAction/AAFloodStateSlice/utils';
+import {
+  getFloodRiskColor,
+  getFloodRiskSeverity,
+} from 'context/anticipatoryAction/AAFloodStateSlice/utils';
 import { useSafeTranslation } from 'i18n';
 import { AnticipatoryAction } from 'config/types';
 import { dateRangeSelector } from 'context/mapStateSlice/selectors';
@@ -48,6 +51,9 @@ const useStyles = makeStyles(() =>
       fontWeight: 'bold',
       backgroundColor: '#e0e0e0', // Gray header background
       color: '#333',
+      '& .MuiTableSortLabel-root.MuiTableSortLabel-active': {
+        color: '#333 !important',
+      },
     },
     row: {
       cursor: 'pointer',
@@ -114,8 +120,8 @@ function AnticipatoryActionFloodPanel() {
   const { stations, selectedStation, loading, error } = AAData;
   const { startDate } = useSelector(dateRangeSelector);
 
-  const [sortField, setSortField] = useState<SortField>('station_name');
-  const [sortDirection, setSortDirection] = useState<SortDirection>('asc');
+  const [sortField, setSortField] = useState<SortField>('risk_level');
+  const [sortDirection, setSortDirection] = useState<SortDirection>('desc');
   const [rowsPerPage, setRowsPerPage] = useState<number>(20);
   const [currentPage, setCurrentPage] = useState<number>(0);
 
@@ -180,7 +186,7 @@ function AnticipatoryActionFloodPanel() {
         case 'date':
           return aData?.time || '';
         case 'risk_level':
-          return aData?.risk_level || '';
+          return getFloodRiskSeverity(aData?.risk_level);
         default:
           return '';
       }
@@ -193,7 +199,7 @@ function AnticipatoryActionFloodPanel() {
         case 'date':
           return bData?.time || '';
         case 'risk_level':
-          return bData?.risk_level || '';
+          return getFloodRiskSeverity(bData?.risk_level);
         default:
           return '';
       }
