@@ -77,6 +77,7 @@ const useStyles = makeStyles(() =>
       borderRadius: '4px 4px 0 0',
       fontSize: '12px',
       color: '#000',
+      textTransform: 'none',
       background: '#F1F1F1',
     },
     selectedTab: {
