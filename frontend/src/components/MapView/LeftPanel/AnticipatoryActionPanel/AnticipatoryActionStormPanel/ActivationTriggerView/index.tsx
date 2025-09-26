@@ -102,11 +102,10 @@ function ActivationTrigger({ dialogs }: ActivationTriggerProps) {
       )
     : [];
 
-  const filteredNADistricts = parsedStormData.naDistricts
-    ? Object.entries(parsedStormData.naDistricts).filter(([category]) =>
-        AAPanelCategories.includes(category as AACategory),
-      )
-    : [];
+  // Ensure districts appearing in Severe are not duplicated in Moderate
+  const severeDistrictsSet = new Set(
+    parsedStormData.activeDistricts?.[AACategory.Severe]?.districtNames ?? [],
+  );
 
   return (
     <div className={classes.root}>
@@ -115,66 +114,41 @@ function ActivationTrigger({ dialogs }: ActivationTriggerProps) {
       </Typography>
 
       <div className={classes.ActivationTriggerWrapper}>
-        {filteredActiveDistricts.map(
-          ([category, data]) =>
-            data.districtNames.length > 0 && (
-              <div
-                key={`${category}-active`}
-                className={classes.headColumnWrapper}
-              >
-                {/* Affichage pour les districts actifs */}
-                <div className={classes.headColumn}>
-                  <CategoryText
-                    color={getAAColor(category as AACategory, 'Active', true)}
-                    text={t(
-                      `Active ${AADisplayCategory[category as AACategory]}`,
-                    )}
-                  />
-                </div>
-                <div className={classes.rowWrapper}>
-                  {data.districtNames.map((name: string) => (
-                    <div className={classes.tagWrapper} key={name}>
-                      <AreaTag
-                        name={name}
-                        color={getAAColor(
-                          category as AACategory,
-                          'Active',
-                          true,
-                        )}
-                      />
-                    </div>
-                  ))}
-                </div>
+        {filteredActiveDistricts.map(([category, data]) => {
+          const names =
+            (category as AACategory) === AACategory.Moderate
+              ? data.districtNames.filter(name => !severeDistrictsSet.has(name))
+              : data.districtNames;
+
+          if (names.length === 0) {
+            return null;
+          }
+
+          return (
+            <div
+              key={`${category}-active`}
+              className={classes.headColumnWrapper}
+            >
+              {/* Affichage pour les districts actifs */}
+              <div className={classes.headColumn}>
+                <CategoryText
+                  color={getAAColor(category as AACategory, 'Active', true)}
+                  text={t(`${AADisplayCategory[category as AACategory]}`)}
+                />
               </div>
-            ),
-        )}
-        {filteredNADistricts.map(
-          ([category, data]) =>
-            data.districtNames.length > 0 && (
-              <div
-                key={`${category}-active`}
-                className={classes.headColumnWrapper}
-              >
-                {/* Affichage pour les districts inactifs */}
-                <div className={classes.headColumn}>
-                  <CategoryText
-                    color={getAAColor(category as AACategory, 'na', true)}
-                    text={t(`NA ${AADisplayCategory[category as AACategory]}`)}
-                  />
-                </div>
-                <div className={classes.rowWrapper}>
-                  {data.districtNames.map((name: string) => (
-                    <div className={classes.tagWrapper} key={name}>
-                      <AreaTag
-                        name={name}
-                        color={getAAColor(category as AACategory, 'na', true)}
-                      />
-                    </div>
-                  ))}
-                </div>
+              <div className={classes.rowWrapper}>
+                {names.map((name: string) => (
+                  <div className={classes.tagWrapper} key={name}>
+                    <AreaTag
+                      name={name}
+                      color={getAAColor(category as AACategory, 'Active', true)}
+                    />
+                  </div>
+                ))}
               </div>
-            ),
-        )}
+            </div>
+          );
+        })}
       </div>
       <div className={commonClasses.footerWrapper}>
         <div className={commonClasses.footerDialogsWrapper}>

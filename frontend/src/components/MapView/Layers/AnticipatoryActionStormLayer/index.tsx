@@ -377,6 +377,14 @@ const AnticipatoryActionStormLayer = React.memo(
       }
       // Check active districts
       if (
+        StormData.activeDistricts?.Severe?.districtNames.includes(districtName)
+      ) {
+        return {
+          color: getAAColor(AACategory.Severe, 'Active', true),
+          opacity: 0.8,
+        };
+      }
+      if (
         StormData.activeDistricts?.Moderate?.districtNames.includes(
           districtName,
         )
@@ -386,15 +394,6 @@ const AnticipatoryActionStormLayer = React.memo(
           opacity: 0.8,
         };
       }
-      if (
-        StormData.activeDistricts?.Severe?.districtNames.includes(districtName)
-      ) {
-        return {
-          color: getAAColor(AACategory.Severe, 'Active', true),
-          opacity: 0.8,
-        };
-      }
-
       // Check NA districts
       const isNADistrict = [
         ...(StormData.naDistricts?.Severe?.districtNames || []),

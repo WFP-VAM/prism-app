@@ -17,8 +17,8 @@ const districtNameMapping: { [key: string]: string } = {
 };
 
 const watchedDistricts: { [key in AACategory]: string[] } = {
+  [AACategory.Moderate]: allDistrictsInCoastalProvince,
   [AACategory.Severe]: allDistrictsInCoastalProvince,
-  [AACategory.Moderate]: ['Angoche', 'Maganja Da Costa', 'Machanga', 'Govuro'],
   [AACategory.Risk]: [],
 };
 
