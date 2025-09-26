@@ -47,6 +47,7 @@ const MenuItem = memo(({ title, layersCategories, extent }: MenuItemProps) => {
       elevation={0}
       classes={{ root: classes.root }}
       TransitionProps={{ unmountOnExit: true }}
+      defaultExpanded
     >
       <AccordionSummary
         expandIcon={<ExpandMoreIcon />}
