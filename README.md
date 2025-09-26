@@ -280,7 +280,7 @@ When more than one boundary is specified, an array of boundaries needs to also b
     "admin_code": "ST_PCODE",
     "admin_level_names": ["ST"],
     "admin_level_local_names": ["mmr_polbnd"],
-    "styles:": {
+    "styles": {
       "fill": {
         "fill-opacity": 0
       },
@@ -298,7 +298,7 @@ When more than one boundary is specified, an array of boundaries needs to also b
     "admin_code": "DT_PCODE",
     "admin_level_names": ["ST", "DT"],
     "admin_level_local_names": ["DT_MMR4", "TS_MMR4"],
-    "styles:": {
+    "styles": {
       "fill": {
         "fill-opacity": 0
       },
@@ -316,7 +316,7 @@ When more than one boundary is specified, an array of boundaries needs to also b
     "admin_code": "TS_PCODE",
     "admin_level_names": ["ST", "DT", "TS"],
     "admin_level_local_names": ["mmr_polbnd", "DT_MMR4", "TS_MMR4"],
-    "styles:": {
+    "styles": {
       "fill": {
         "fill-opacity": 0
       },
