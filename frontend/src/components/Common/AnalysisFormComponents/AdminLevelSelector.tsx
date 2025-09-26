@@ -19,10 +19,9 @@ function AdminLevelSelector({
   const classes = useStyles();
   const { t } = useSafeTranslation();
 
-  const adminLevelOptions = range(getAdminLevelCount()).map(i => [
-    (i + 1) as AdminLevelType,
-    `Admin ${i + 1}`,
-  ]);
+  const adminLevelOptions: [AdminLevelType, string][] = range(
+    getAdminLevelCount(),
+  ).map(i => [(i + 1) as AdminLevelType, `Admin ${i + 1}`]);
 
   return (
     <div className={classes.container}>
