@@ -836,12 +836,14 @@ function StationCharts({ station, onClose }: StationChartsProps) {
 
         <div className={classes.tabs}>
           <Button
+            disableRipple
             className={`${classes.tab} ${activeTab === 0 ? classes.selectedTab : 0}`}
             onClick={() => handleTabChange(0)}
           >
             {t('Trigger probability')}
           </Button>
           <Button
+            disableRipple
             className={`${classes.tab} ${activeTab === 1 ? classes.selectedTab : 0}`}
             onClick={() => handleTabChange(1)}
           >
