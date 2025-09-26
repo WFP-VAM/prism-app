@@ -95,16 +95,16 @@ const SimpleAnalysisTable = memo(
       return { data: limitedData, hasMoreRows };
     }, [sortedData, maxRows]);
 
-    const renderSortIcon = (columnId: string | number) => {
+    const renderSortIcon = (columnId: string | number, isNumeric = false) => {
+      const iconClass = isNumeric ? classes.numericSortIcon : classes.sortIcon;
+
       if (activeSortColumn !== columnId) {
-        return (
-          <ArrowUpward className={classes.sortIcon} style={{ opacity: 0.3 }} />
-        );
+        return <ArrowUpward className={iconClass} style={{ opacity: 0.3 }} />;
       }
       return activeIsAscending ? (
-        <ArrowUpward className={classes.sortIcon} />
+        <ArrowUpward className={iconClass} />
       ) : (
-        <ArrowDownward className={classes.sortIcon} />
+        <ArrowDownward className={iconClass} />
       );
     };
 
@@ -119,7 +119,7 @@ const SimpleAnalysisTable = memo(
                   className={`${classes.headerCell} ${index === 1 ? classes.numericCell : ''}`}
                 >
                   <div
-                    className={classes.headerContent}
+                    className={`${classes.headerContent} ${index === 1 ? classes.numericHeaderContent : ''}`}
                     onClick={() => handleSort(column.id)}
                     onKeyDown={e => {
                       if (e.key === 'Enter' || e.key === ' ') {
@@ -130,10 +130,12 @@ const SimpleAnalysisTable = memo(
                     role="button"
                     tabIndex={0}
                   >
-                    <Typography className={classes.headerText}>
+                    <Typography
+                      className={`${classes.headerText} ${index === 1 ? classes.numericHeaderText : ''}`}
+                    >
                       {column.label}
                     </Typography>
-                    {index === 1 && renderSortIcon(column.id)}
+                    {renderSortIcon(column.id, index === 1)}
                   </div>
                 </TableCell>
               ))}
@@ -204,20 +206,31 @@ const useStyles = makeStyles(theme => ({
   headerContent: {
     display: 'flex',
     alignItems: 'center',
+    justifyContent: 'flex-start',
     cursor: 'pointer',
     '&:hover': {
       opacity: 0.7,
     },
   },
+  numericHeaderContent: {
+    justifyContent: 'flex-end',
+  },
   headerText: {
     fontWeight: 600,
     fontSize: '14px',
-    flex: 1,
+  },
+  numericHeaderText: {
+    textAlign: 'right',
   },
   sortIcon: {
     fontSize: '16px',
     color: 'black',
-    marginLeft: 8,
+    marginLeft: 4,
+  },
+  numericSortIcon: {
+    fontSize: '16px',
+    color: 'black',
+    marginLeft: 4,
   },
   bodyCell: {
     border: 'none',

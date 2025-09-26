@@ -1,14 +1,16 @@
-import { useEffect, useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import {
   Box,
   makeStyles,
   Typography,
   CircularProgress,
+  Button,
 } from '@material-ui/core';
 import {
   DashboardTableConfig,
   AggregationOperations,
   GeometryType,
+  aggregationOperationsToDisplay,
 } from 'config/types';
 import { useAnalysisForm, useAnalysisExecution } from 'utils/analysis-hooks';
 import { useAnalysisTableColumns } from 'utils/analysis-utils';
@@ -41,7 +43,6 @@ function TableBlock({
 }: TableBlockProps) {
   const classes = useStyles();
 
-  // 🎯 All the complex analysis logic is now just 2 hook calls!
   const formState = useAnalysisForm({
     initialHazardLayerId,
     initialBaselineLayerId,
@@ -55,9 +56,70 @@ function TableBlock({
     onUrlUpdate: undefined,
   });
 
-  // Auto-run analysis when conditions are met (for preview mode)
+  // Sorting state
+  const [sortColumn, setSortColumn] = useState<string | number>('name');
+  const [isAscending, setIsAscending] = useState(true);
+
+  // Track if form has changed since last analysis
+  const [hasFormChanged, setHasFormChanged] = useState(false);
+  const [wasAnalysisLoading, setWasAnalysisLoading] = useState(false);
+
+  const handleSort = (columnId: string | number) => {
+    if (sortColumn === columnId) {
+      setIsAscending(!isAscending);
+    } else {
+      setSortColumn(columnId);
+      setIsAscending(true);
+    }
+  };
+
+  // Track form changes that would require rerunning analysis
   useEffect(() => {
-    if (mode !== 'edit' || !formState.hazardLayerId) {
+    // Don't mark as changed on initial mount
+    if (!formState.hazardLayerId) {
+      return;
+    }
+
+    // Mark form as changed whenever analysis-relevant fields change
+    setHasFormChanged(true);
+  }, [
+    formState.hazardLayerId,
+    formState.startDate,
+    formState.endDate,
+    formState.selectedDate,
+    formState.adminLevel,
+    formState.baselineLayerId,
+    formState.statistic,
+    formState.belowThreshold,
+    formState.aboveThreshold,
+    formState.exposureValue.operator,
+    formState.exposureValue.value,
+  ]);
+
+  // Reset form changed flag when analysis completes (loading goes from true to false)
+  useEffect(() => {
+    // Update loading state tracker
+    if (formState.isAnalysisLoading !== wasAnalysisLoading) {
+      setWasAnalysisLoading(formState.isAnalysisLoading);
+
+      // If loading just finished (was true, now false), reset the changed flag
+      if (
+        wasAnalysisLoading &&
+        !formState.isAnalysisLoading &&
+        formState.analysisResult
+      ) {
+        setHasFormChanged(false);
+      }
+    }
+  }, [
+    formState.isAnalysisLoading,
+    wasAnalysisLoading,
+    formState.analysisResult,
+  ]);
+
+  // Auto-run analysis when conditions are met (for both edit and preview modes)
+  useEffect(() => {
+    if (!formState.hazardLayerId) {
       return;
     }
 
@@ -78,7 +140,6 @@ function TableBlock({
       runAnalyser().catch(console.error);
     }
   }, [
-    mode,
     formState.hazardLayerId,
     formState.isAnalysisLoading,
     formState.requiredThresholdNotSet,
@@ -127,28 +188,72 @@ function TableBlock({
     }
 
     return (
-      <Box className={classes.tableContainer}>
-        <SimpleAnalysisTable
-          tableData={analysisTableData}
-          columns={translatedColumns}
-          sortColumn="name"
-          isAscending
-          onSort={() => {}} // No sorting in preview mode
-          maxRows={8} // Show fewer rows in dashboard block
-        />
-      </Box>
+      <SimpleAnalysisTable
+        tableData={analysisTableData}
+        columns={translatedColumns}
+        sortColumn={sortColumn}
+        isAscending={isAscending}
+        onSort={handleSort}
+        maxRows={mode === 'preview' ? 16 : 8} // Allow 16 rows only in preview mode
+      />
     );
+  };
+
+  const generatePreviewTitle = () => {
+    if (!formState.selectedHazardLayer) {
+      return '';
+    }
+
+    const layerTitle = formState.selectedHazardLayer.title || 'Analysis';
+    const statisticName = formState.statistic
+      ? aggregationOperationsToDisplay[formState.statistic] ||
+        formState.statistic
+      : '';
+
+    return statisticName ? `${layerTitle} (${statisticName})` : layerTitle;
+  };
+
+  const formatPreviewDate = () => {
+    const date = formState.selectedDate || formState.startDate;
+    if (!date) {
+      return '';
+    }
+
+    return new Date(date).toLocaleDateString('en-US', {
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric',
+    });
   };
 
   if (mode === 'preview') {
     return (
       <Box className={classes.previewContainer}>
         {formState.selectedHazardLayer ? (
-          renderPreviewTable()
+          <>
+            <Box className={classes.previewHeader}>
+              <Typography variant="h2" className={classes.previewTitle}>
+                {generatePreviewTitle()}
+              </Typography>
+              <Typography variant="body1" className={classes.previewDate}>
+                {formatPreviewDate()}
+              </Typography>
+            </Box>
+            {renderPreviewTable()}
+          </>
         ) : (
-          <Typography variant="h6" color="textSecondary">
-            No table configured
-          </Typography>
+          <Box
+            style={{
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              flex: 1,
+            }}
+          >
+            <Typography variant="body1" color="textSecondary" align="center">
+              No analysis configured
+            </Typography>
+          </Box>
         )}
       </Box>
     );
@@ -177,10 +282,23 @@ function TableBlock({
               onEndDateChange={formState.setEndDate}
               availableDates={formState.availableHazardDates}
             />
-            <AdminLevelSelector
-              value={formState.adminLevel}
-              onChange={formState.setAdminLevel}
-            />
+            <Box className={classes.dateAnalysisRow}>
+              <AdminLevelSelector
+                value={formState.adminLevel}
+                onChange={formState.setAdminLevel}
+              />
+              {hasFormChanged && (
+                <Button
+                  variant="outlined"
+                  color="primary"
+                  onClick={() => runAnalyser().catch(console.error)}
+                  disabled={formState.isAnalysisLoading}
+                  className={classes.rerunButton}
+                >
+                  Rerun Analysis
+                </Button>
+              )}
+            </Box>
           </Box>
         ) : (
           <Box className={classes.formSection}>
@@ -189,28 +307,43 @@ function TableBlock({
               onChange={formState.setBaselineLayerId}
             />
 
-            <StatisticSelector
-              value={formState.statistic}
-              onChange={formState.setStatistic}
-              exposureValue={formState.exposureValue}
-              onExposureValueChange={formState.setExposureValue}
-              selectedHazardLayer={formState.selectedHazardLayer}
-            />
+            <Box className={classes.statisticThresholdRow}>
+              <StatisticSelector
+                value={formState.statistic}
+                onChange={formState.setStatistic}
+                exposureValue={formState.exposureValue}
+                onExposureValueChange={formState.setExposureValue}
+                selectedHazardLayer={formState.selectedHazardLayer}
+              />
 
-            <ThresholdInputs
-              belowThreshold={formState.belowThreshold}
-              aboveThreshold={formState.aboveThreshold}
-              onBelowThresholdChange={formState.setBelowThreshold}
-              onAboveThresholdChange={formState.setAboveThreshold}
-              statistic={formState.statistic}
-              requiredThresholdNotSet={formState.requiredThresholdNotSet}
-            />
+              <ThresholdInputs
+                belowThreshold={formState.belowThreshold}
+                aboveThreshold={formState.aboveThreshold}
+                onBelowThresholdChange={formState.setBelowThreshold}
+                onAboveThresholdChange={formState.setAboveThreshold}
+                statistic={formState.statistic}
+                requiredThresholdNotSet={formState.requiredThresholdNotSet}
+              />
+            </Box>
 
-            <DateSelector
-              selectedDate={formState.selectedDate}
-              onDateChange={formState.setSelectedDate}
-              availableDates={formState.availableHazardDates}
-            />
+            <Box className={classes.dateAnalysisRow}>
+              <DateSelector
+                selectedDate={formState.selectedDate}
+                onDateChange={formState.setSelectedDate}
+                availableDates={formState.availableHazardDates}
+              />
+              {hasFormChanged && (
+                <Button
+                  variant="outlined"
+                  color="primary"
+                  onClick={() => runAnalyser().catch(console.error)}
+                  disabled={formState.isAnalysisLoading}
+                  className={classes.rerunButton}
+                >
+                  Rerun Analysis
+                </Button>
+              )}
+            </Box>
           </Box>
         )}
 
@@ -235,6 +368,22 @@ const useStyles = makeStyles(theme => ({
     borderRadius: 8,
     padding: 16,
     marginBottom: 16,
+    minHeight: 200,
+    display: 'flex',
+    flexDirection: 'column',
+  },
+  previewHeader: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center', // Changed from 'flex-start' to 'center' to vertically center the children
+    marginBottom: theme.spacing(3),
+  },
+  previewTitle: {
+    flex: 1,
+    marginRight: theme.spacing(2),
+  },
+  previewDate: {
+    whiteSpace: 'nowrap',
   },
   blockTitle: {
     fontWeight: 600,
@@ -254,12 +403,32 @@ const useStyles = makeStyles(theme => ({
     flexDirection: 'column',
     gap: theme.spacing(1),
   },
-  previewSection: {},
-  previewTitle: {
-    fontWeight: 600,
-    marginBottom: theme.spacing(2),
-    color: theme.palette.text.primary,
+  statisticThresholdRow: {
+    display: 'flex',
+    flexDirection: 'row',
+    gap: theme.spacing(2),
+    alignItems: 'flex-start',
+    '& > *': {
+      flex: 1,
+    },
   },
+  dateAnalysisRow: {
+    display: 'flex',
+    flexDirection: 'row',
+    gap: theme.spacing(2),
+    alignItems: 'flex-end',
+    justifyContent: 'center',
+    '& > *:first-child': {
+      flex: 1,
+    },
+  },
+  rerunButton: {
+    height: 40,
+    minWidth: 140,
+    marginBottom: theme.spacing(4),
+    whiteSpace: 'nowrap',
+  },
+  previewSection: {},
   tableContainer: {
     marginTop: theme.spacing(2),
   },
