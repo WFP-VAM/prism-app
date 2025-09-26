@@ -7,7 +7,7 @@
     "admin_level_codes": ["adm1_id", "adm2_id"],
     "admin_level_names": ["adm1_name", "adm2_name"],
     "admin_level_local_names": ["adm1_name", "adm2_name"],
-    "styles:": {
+    "styles": {
       "fill": {
         "fill-opacity": 0
       },
@@ -26,7 +26,7 @@
     "admin_level_codes": ["adm1_id"],
     "admin_level_names": ["adm1_name"],
     "admin_level_local_names": ["adm1_name"],
-    "styles:": {
+    "styles": {
       "fill": {
         "fill-opacity": 0
       },

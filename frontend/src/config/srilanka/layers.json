@@ -7,7 +7,7 @@
     "admin_level_codes": ["province_c", "district_code", "dsd_c_1"],
     "admin_level_names": ["province_n", "district_n", "dsd_n_1"],
     "admin_level_local_names": ["province_n", "district_n", "dsd_n_1"],
-    "styles:": {
+    "styles": {
       "fill": {
         "fill-opacity": 0
       },
@@ -26,7 +26,7 @@
     "admin_level_codes": ["province_c"],
     "admin_level_names": ["province_n"],
     "admin_level_local_names": ["province_n"],
-    "styles:": {
+    "styles": {
       "fill": {
         "fill-opacity": 0
       },
@@ -45,7 +45,7 @@
     "admin_level_codes": ["province_c", "district_code"],
     "admin_level_names": ["province_n", "district_n"],
     "admin_level_local_names": ["province_n", "district_n"],
-    "styles:": {
+    "styles": {
       "fill": {
         "fill-opacity": 0
       },

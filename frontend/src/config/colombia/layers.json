@@ -7,7 +7,7 @@
     "admin_level_codes": ["DPTO_CCDGO", "MPIO_CDPMP"],
     "admin_level_names": ["DPTO_CNMBR", "MPIO_CNMBR"],
     "admin_level_local_names": ["DPTO_CNMBR", "MPIO_CNMBR"],
-    "styles:": {
+    "styles": {
       "fill": {
         "fill-opacity": 0
       },
@@ -26,7 +26,7 @@
     "admin_level_codes": ["DPTO_CCDGO"],
     "admin_level_names": ["DPTO_CNMBR"],
     "admin_level_local_names": ["DPTO_CNMBR"],
-    "styles:": {
+    "styles": {
       "fill": {
         "fill-opacity": 0
       },

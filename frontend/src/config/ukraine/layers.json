@@ -7,7 +7,7 @@
     "admin_level_codes": ["adm1_id"],
     "admin_level_names": ["ADM1_EN"],
     "admin_level_local_names": ["ADM1_UA"],
-    "styles:": {
+    "styles": {
       "fill": {
         "fill-opacity": 0
       },
@@ -26,7 +26,7 @@
     "admin_level_codes": ["adm1_id", "adm2_id"],
     "admin_level_names": ["ADM1_EN", "ADM2_EN"],
     "admin_level_local_names": ["ADM1_UA", "ADM2_UA"],
-    "styles:": {
+    "styles": {
       "fill": {
         "fill-opacity": 0
       },

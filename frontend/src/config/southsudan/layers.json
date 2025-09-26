@@ -7,7 +7,7 @@
     "admin_level_names": ["ADM1_EN", "ADM2_EN"],
     "admin_level_local_names": ["ADM1_EN", "ADM2_EN"],
     "opacity": 0.8,
-    "styles:": {
+    "styles": {
       "fill": {
         "fill-opacity": 0
       },
@@ -26,7 +26,7 @@
     "admin_level_names": ["ADM1_EN"],
     "admin_level_local_names": ["ADM1_EN"],
     "opacity": 0.8,
-    "styles:": {
+    "styles": {
       "fill": {
         "fill-opacity": 0
       },

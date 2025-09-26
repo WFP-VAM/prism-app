@@ -7,7 +7,7 @@
     "admin_level_codes": ["Adm1_Code", "Adm2_Code"],
     "admin_level_names": ["Adm1_RU", "Adm2_RU"],
     "admin_level_local_names": ["Adm1_KR", "Adm2_KR"],
-    "styles:": {
+    "styles": {
       "fill": {
         "fill-opacity": 0
       },
@@ -26,7 +26,7 @@
     "admin_level_codes": ["Adm1_Code"],
     "admin_level_names": ["Adm1_RU"],
     "admin_level_local_names": ["Adm1_KR"],
-    "styles:": {
+    "styles": {
       "fill": {
         "fill-opacity": 0
       },

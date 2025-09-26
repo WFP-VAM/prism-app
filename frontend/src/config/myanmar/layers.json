@@ -7,7 +7,7 @@
     "admin_level_codes": ["ST_PCODE"],
     "admin_level_names": ["ST"],
     "admin_level_local_names": ["ST_MMR"],
-    "styles:": {
+    "styles": {
       "fill": {
         "fill-opacity": 0
       },
@@ -26,7 +26,7 @@
     "admin_level_codes": ["ST_PCODE", "DT_PCODE"],
     "admin_level_names": ["ST", "DT"],
     "admin_level_local_names": ["ST_MMR", "DT_MMR"],
-    "styles:": {
+    "styles": {
       "fill": {
         "fill-opacity": 0
       },
@@ -45,7 +45,7 @@
     "admin_level_codes": ["ST_PCODE", "DT_PCODE", "TS_PCODE"],
     "admin_level_names": ["ST", "DT", "TS"],
     "admin_level_local_names": ["ST_MMR", "DT_MMR", "TS_MMR"],
-    "styles:": {
+    "styles": {
       "fill": {
         "fill-opacity": 0
       },

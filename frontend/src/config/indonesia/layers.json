@@ -4,16 +4,10 @@
     "path": "data/indonesia/idn_bnd_adm1_WFP.json",
     "opacity": 0.8,
     "admin_code": "adm1_source_id",
-    "admin_level_codes": [
-      "adm1_source_id"
-    ],
-    "admin_level_names": [
-      "adm1_name"
-    ],
-    "admin_level_local_names": [
-      "adm1_name"
-    ],
-    "styles:": {
+    "admin_level_codes": ["adm1_source_id"],
+    "admin_level_names": ["adm1_name"],
+    "admin_level_local_names": ["adm1_name"],
+    "styles": {
       "fill": {
         "fill-opacity": 0
       },
@@ -29,19 +23,10 @@
     "path": "data/indonesia/idn_bnd_adm2_WFP.json",
     "opacity": 0.8,
     "admin_code": "adm2_source_id",
-    "admin_level_codes": [
-      "adm1_source_id",
-      "adm2_source_id"
-    ],
-    "admin_level_names": [
-      "adm1_name",
-      "adm2_name"
-    ],
-    "admin_level_local_names": [
-      "adm1_name",
-      "adm2_name"
-    ],
-    "styles:": {
+    "admin_level_codes": ["adm1_source_id", "adm2_source_id"],
+    "admin_level_names": ["adm1_name", "adm2_name"],
+    "admin_level_local_names": ["adm1_name", "adm2_name"],
+    "styles": {
       "fill": {
         "fill-opacity": 0
       },

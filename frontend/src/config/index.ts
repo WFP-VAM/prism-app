@@ -8,6 +8,7 @@ import cameroon from './cameroon';
 import colombia from './colombia';
 import cuba from './cuba';
 import ecuador from './ecuador';
+import france from './france';
 import global from './global';
 import haiti from './haiti';
 import indonesia from './indonesia';
@@ -47,6 +48,7 @@ export const configMap = {
   colombia,
   cuba,
   ecuador,
+  france,
   global,
   haiti,
   indonesia,

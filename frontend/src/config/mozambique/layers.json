@@ -7,7 +7,7 @@
     "admin_level_codes": ["adm1_source_id"],
     "admin_level_names": ["adm1_name"],
     "admin_level_local_names": ["adm1_name"],
-    "styles:": {
+    "styles": {
       "fill": {
         "fill-opacity": 0
       },
@@ -26,7 +26,7 @@
     "admin_level_codes": ["adm1_source_id", "adm2_source_id"],
     "admin_level_names": ["adm1_name", "adm2_name"],
     "admin_level_local_names": ["adm1_name", "adm2_name"],
-    "styles:": {
+    "styles": {
       "fill": {
         "fill-opacity": 0
       },
@@ -45,7 +45,7 @@
     "admin_level_codes": ["adm1_source_id", "adm2_source_id", "adm3_source_id"],
     "admin_level_names": ["adm1_name", "adm2_name", "adm3_name"],
     "admin_level_local_names": ["adm1_name", "adm2_name", "adm3_name"],
-    "styles:": {
+    "styles": {
       "fill": {
         "fill-opacity": 0
       },
@@ -64,7 +64,7 @@
     "admin_level_codes": ["ID"],
     "admin_level_names": ["Basins"],
     "admin_level_local_names": ["Basins"],
-    "styles:": {
+    "styles": {
       "fill": {
         "fill-opacity": 0
       },

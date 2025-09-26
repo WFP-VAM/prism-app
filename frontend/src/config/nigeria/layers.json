@@ -7,7 +7,7 @@
     "admin_level_codes": ["admin1Pcod", "admin2Pcod"],
     "admin_level_names": ["admin1Name", "admin2Name"],
     "admin_level_local_names": ["admin1Name", "admin2Name"],
-    "styles:": {
+    "styles": {
       "fill": {
         "fill-opacity": 0
       },
@@ -26,7 +26,7 @@
     "admin_level_codes": ["admin1Pcod"],
     "admin_level_names": ["admin1Name"],
     "admin_level_local_names": ["admin1Name"],
-    "styles:": {
+    "styles": {
       "fill": {
         "fill-opacity": 0
       },

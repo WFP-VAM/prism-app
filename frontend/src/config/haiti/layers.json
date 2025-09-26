@@ -4,19 +4,10 @@
     "path": "data/haiti/hti_admbnda_adm2_cnigs_20181129_dv.json",
     "opacity": 0.8,
     "admin_code": "distrpc",
-    "admin_level_codes": [
-      "ADM1_PCODE",
-      "ADM2_PCODE"
-    ],
-    "admin_level_names": [
-      "ADM1_EN",
-      "ADM2_EN"
-    ],
-    "admin_level_local_names": [
-      "ADM1_FR",
-      "ADM2_FR"
-    ],
-    "styles:": {
+    "admin_level_codes": ["ADM1_PCODE", "ADM2_PCODE"],
+    "admin_level_names": ["ADM1_EN", "ADM2_EN"],
+    "admin_level_local_names": ["ADM1_FR", "ADM2_FR"],
+    "styles": {
       "fill": {
         "fill-opacity": 0
       },
@@ -32,16 +23,10 @@
     "path": "data/haiti/hti_admbnda_adm1_cnigs_20181129_dv.json",
     "opacity": 0.8,
     "admin_code": "PROV_CODE",
-    "admin_level_codes": [
-      "ADM1_PCODE"
-    ],
-    "admin_level_names": [
-      "ADM1_EN"
-    ],
-    "admin_level_local_names": [
-      "ADM1_FR"
-    ],
-    "styles:": {
+    "admin_level_codes": ["ADM1_PCODE"],
+    "admin_level_names": ["ADM1_EN"],
+    "admin_level_local_names": ["ADM1_FR"],
+    "styles": {
       "fill": {
         "fill-opacity": 0
       },

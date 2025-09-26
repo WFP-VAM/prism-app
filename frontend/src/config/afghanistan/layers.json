@@ -1,489 +1,489 @@
 {
-    "admin_boundaries": {
-      "type": "boundary",
-      "path": "data/afghanistan/geoBoundaries-AFG-ADM2_w_dv.json",
-      "opacity": 0.8,
-      "admin_code": "dv_adm2_id",
-      "admin_level_codes": ["admin1Pcode", "dv_adm2_id"],
-      "admin_level_names": ["admin1Name_en", "shapeName"],
-      "admin_level_local_names": ["admin1Name_en", "shapeName"],
-      "styles:": {
-        "fill": {
-          "fill-opacity": 0
-        },
-        "line": {
-          "line-color": "gray",
-          "line-width": 1.0,
-          "line-opacity": 0.8
-        }
+  "admin_boundaries": {
+    "type": "boundary",
+    "path": "data/afghanistan/geoBoundaries-AFG-ADM2_w_dv.json",
+    "opacity": 0.8,
+    "admin_code": "dv_adm2_id",
+    "admin_level_codes": ["admin1Pcode", "dv_adm2_id"],
+    "admin_level_names": ["admin1Name_en", "shapeName"],
+    "admin_level_local_names": ["admin1Name_en", "shapeName"],
+    "styles": {
+      "fill": {
+        "fill-opacity": 0
+      },
+      "line": {
+        "line-color": "gray",
+        "line-width": 1.0,
+        "line-opacity": 0.8
       }
-    },
-    "admin1_boundaries": {
-      "type": "boundary",
-      "path": "data/afghanistan/geoBoundaries-AFG-ADM1-extended.json",
-      "opacity": 0.8,
-      "admin_code": "admin1Pcode",
-      "admin_level_codes": ["admin1Pcode"],
-      "admin_level_names": ["admin1Name_en"],
-      "admin_level_local_names": ["admin1Name_da"],
-      "styles:": {
-        "fill": {
-          "fill-opacity": 0
-        },
-        "line": {
-          "line-color": "gray",
-          "line-width": 1.5,
-          "line-opacity": 0.8
-        }
+    }
+  },
+  "admin1_boundaries": {
+    "type": "boundary",
+    "path": "data/afghanistan/geoBoundaries-AFG-ADM1-extended.json",
+    "opacity": 0.8,
+    "admin_code": "admin1Pcode",
+    "admin_level_codes": ["admin1Pcode"],
+    "admin_level_names": ["admin1Name_en"],
+    "admin_level_local_names": ["admin1Name_da"],
+    "styles": {
+      "fill": {
+        "fill-opacity": 0
+      },
+      "line": {
+        "line-color": "gray",
+        "line-width": 1.5,
+        "line-opacity": 0.8
       }
-    },
-    "rain_anomaly_dekad": {
-      "chart_data": {
-        "fields": [
-          {
-            "key": "rfq",
-            "label": "Rainfall anomaly",
-            "color": "#375692",
-            "minValue": 0,
-            "maxValue": 300
-          },
-          {
-            "key": "rfq_avg",
-            "label": "Normal",
-            "fallback": 100,
-            "pointRadius": 0,
-            "color": "#eb3223"
-          }
-        ],
-        "levels": [
-          {
-            "level": "1",
-            "id": "dv_adm1_id",
-            "name": "adm1_name"
-          },
-          {
-            "level": "2",
-            "id": "dv_adm2_id",
-            "name": "adm2_name"
-          }
-        ],
-        "type": "line"
-      }
-    },
-    "rain_anomaly_1month": {
-      "chart_data": {
-        "fields": [
-          {
-            "key": "r1q",
-            "label": "Rainfall anomaly",
-            "minValue": 0,
-            "maxValue": 300,
-            "color": "#375692"
-          },
-          {
-            "key": "rfq_avg",
-            "label": "Normal",
-            "fallback": 100,
-            "pointRadius": 0,
-            "color": "#eb3223"
-          }
-        ],
-        "levels": [
-          {
-            "level": "1",
-            "id": "dv_adm1_id",
-            "name": "adm1_name"
-          },
-          {
-            "level": "2",
-            "id": "dv_adm2_id",
-            "name": "adm2_name"
-          }
-        ],
-        "type": "line"
-      }
-    },
-    "rain_anomaly_3month": {
-      "chart_data": {
-        "fields": [
-          {
-            "key": "r3q",
-            "label": "Rainfall anomaly",
-            "minValue": 0,
-            "maxValue": 300,
-            "color": "#375692"
-          },
-          {
-            "key": "rfq_avg",
-            "label": "Normal",
-            "fallback": 100,
-            "pointRadius": 0,
-            "color": "#eb3223"
-          }
-        ],
-        "levels": [
-          {
-            "level": "1",
-            "id": "dv_adm1_id",
-            "name": "adm1_name"
-          },
-          {
-            "level": "2",
-            "id": "dv_adm2_id",
-            "name": "adm2_name"
-          }
-        ],
-        "type": "line"
-      }
-    },
-    "rainfall_dekad": {
-      "chart_data": {
-        "fields": [
-          {
-            "key": "rfh",
-            "label": "Rainfall",
-            "color": "#233f5f"
-          },
-          {
-            "key": "rfh_avg",
-            "label": "Average",
-            "color": "#bdf2e6"
-          }
-        ],
-        "levels": [
-          {
-            "level": "1",
-            "id": "dv_adm1_id",
-            "name": "adm1_name"
-          },
-          {
-            "level": "2",
-            "id": "dv_adm2_id",
-            "name": "adm2_name"
-          }
-        ],
-        "type": "bar"
-      }
-    },
-    "rainfall_agg_1month": {
-      "chart_data": {
-        "fields": [
-          {
-            "key": "r1h",
-            "label": "Rainfall",
-            "color": "#233f5f"
-          },
-          {
-            "key": "r1h_avg",
-            "label": "Average",
-            "color": "#bdf2e6"
-          }
-        ],
-        "levels": [
-          {
-            "level": "1",
-            "id": "dv_adm1_id",
-            "name": "adm1_name"
-          },
-          {
-            "level": "2",
-            "id": "dv_adm2_id",
-            "name": "adm2_name"
-          }
-        ],
-        "type": "bar"
-      }
-    },
-    "rainfall_agg_3month": {
-      "chart_data": {
-        "fields": [
-          {
-            "key": "r3h",
-            "label": "Rainfall",
-            "color": "#233f5f"
-          },
-          {
-            "key": "r3h_avg",
-            "label": "Average",
-            "color": "#bdf2e6"
-          }
-        ],
-        "levels": [
-          {
-            "level": "1",
-            "id": "dv_adm1_id",
-            "name": "adm1_name"
-          },
-          {
-            "level": "2",
-            "id": "dv_adm2_id",
-            "name": "adm2_name"
-          }
-        ],
-        "type": "bar"
-      }
-    },  
-    "ndvi_dekad": {
-      "chart_data": {
-        "fields": [
-          {
-            "key": "vim",
-            "label": "NDVI",
-            "color": "#4eac5b"
-          },
-          {
-            "key": "vim_avg",
-            "label": "Average",
-            "color": "#99ff99"
-          }
-        ],
-        "levels": [
-          {
-            "level": "1",
-            "id": "dv_adm1_id",
-            "name": "adm1_name"
-          },
-          {
-            "level": "2",
-            "id": "dv_adm2_id",
-            "name": "adm2_name"
-          }
-        ],
-        "type": "line"
-      }
-    },
-    "ndvi_dekad_anomaly": {
-      "chart_data": {
-        "fields": [
-          {
-            "key": "viq",
-            "label": "NDVI anomaly",
-            "minValue": 0,
-            "maxValue": 150,
-            "color": "#5e803f"
-          },
-          {
-            "key": "viq_avg",
-            "label": "Normal",
-            "color": "#eb3223",
-            "pointRadius": 0,
-            "fallback": 100
-          }
-        ],
-        "levels": [
-          {
-            "level": "1",
-            "id": "dv_adm1_id",
-            "name": "adm1_name"
-          },
-          {
-            "level": "2",
-            "id": "dv_adm2_id",
-            "name": "adm2_name"
-          }
-        ],
-        "type": "line"
-      }
-    },
-    "ipc_phase_06_2022": {
-      "title": "Projected area phase June - November 2022",
-      "type": "admin_level_data",
-      "path": "data/afghanistan/ipc-06-2022.json",
-      "data_field": "area_phase",
-      "admin_level": 1,
-      "admin_code": "admin1Pcode",
-      "opacity": 0.9,
-      "legend": [
+    }
+  },
+  "rain_anomaly_dekad": {
+    "chart_data": {
+      "fields": [
         {
-          "value": 1,
-          "label": "Phase 1 - None / minimal",
-          "color": "#c6ffc7"
+          "key": "rfq",
+          "label": "Rainfall anomaly",
+          "color": "#375692",
+          "minValue": 0,
+          "maxValue": 300
         },
         {
-          "value": 2,
-          "label": "Phase 2 - Stressed",
-          "color": "#ffe718"
-        },
-        {
-          "value": 3,
-          "label": "Phase 3 - Crisis",
-          "color": "#e88400"
-        },
-        {
-          "value": 4,
-          "label": "Phase 4 - Emergency",
-          "color": "#e02d00"
-        },
-        {
-          "value": 5,
-          "label": "Phase 5 - Disaster / famine",
-          "color": "#5e0803"
+          "key": "rfq_avg",
+          "label": "Normal",
+          "fallback": 100,
+          "pointRadius": 0,
+          "color": "#eb3223"
         }
       ],
-      "legend_text": "Overall phase classification projected - June to November 2022"
-    },
-    "ipc_phase_03_2022": {
-      "title": "Area phase March - May 2022",
-      "type": "admin_level_data",
-      "path": "data/afghanistan/ipc-03-2022.json",
-      "data_field": "area_phase",
-      "admin_level": 1,
-      "admin_code": "admin1Pcode",
-      "opacity": 0.9,
-      "legend": [
+      "levels": [
         {
-          "value": 1,
-          "label": "Phase 1 - None / minimal",
-          "color": "#c6ffc7"
+          "level": "1",
+          "id": "dv_adm1_id",
+          "name": "adm1_name"
         },
         {
-          "value": 2,
-          "label": "Phase 2 - Stressed",
-          "color": "#ffe718"
-        },
-        {
-          "value": 3,
-          "label": "Phase 3 - Crisis",
-          "color": "#e88400"
-        },
-        {
-          "value": 4,
-          "label": "Phase 4 - Emergency",
-          "color": "#e02d00"
-        },
-        {
-          "value": 5,
-          "label": "Phase 5 - Disaster / famine",
-          "color": "#5e0803"
+          "level": "2",
+          "id": "dv_adm2_id",
+          "name": "adm2_name"
         }
       ],
-      "legend_text": "Overall phase classification projected - June to November 2022"
-    },
-    "ipc_pop_03_2022": {
-      "title": "Population in phase 3+ March - May 2022",
-      "type": "admin_level_data",
-      "path": "data/afghanistan/ipc-03-2022.json",
-      "data_field": "pop_p3+",
-      "admin_level": 1,
-      "admin_code": "admin1Pcode",
-      "opacity": 0.9,
-      "legend": [
+      "type": "line"
+    }
+  },
+  "rain_anomaly_1month": {
+    "chart_data": {
+      "fields": [
         {
-          "value": 1,
-          "label": "< 100,000",
-          "color": "#fee5d9"
+          "key": "r1q",
+          "label": "Rainfall anomaly",
+          "minValue": 0,
+          "maxValue": 300,
+          "color": "#375692"
         },
         {
-          "value": 100000,
-          "label": "100,000 - 200,000",
-          "color": "#fcbba1"
-        },
-        {
-          "value": 200000,
-          "label": "200,000 - 300,000",
-          "color": "#fc9272"
-        },
-        {
-          "value": 300000,
-          "label": "300,000 - 400,000",
-          "color": "#fb6a4a"
-        },
-        {
-          "value": 400000,
-          "label": "400,000 - 500,000",
-          "color": "#de2d26"
-        },
-        {
-          "value": 500000,
-          "label": "> 500,000",
-          "color": "#a50f15"
+          "key": "rfq_avg",
+          "label": "Normal",
+          "fallback": 100,
+          "pointRadius": 0,
+          "color": "#eb3223"
         }
       ],
-      "legend_text": "Population in phase 3 or worse - March to May 2022"
-    },
-    "ipc_pop_06_2022": {
-      "title": "Projected population in phase 3+ June - November 2022",
-      "type": "admin_level_data",
-      "path": "data/afghanistan/ipc-06-2022.json",
-      "data_field": "pop_p3+",
-      "admin_level": 1,
-      "admin_code": "admin1Pcode",
-      "opacity": 0.9,
-      "legend": [
+      "levels": [
         {
-          "value": 1,
-          "label": "< 100,000",
-          "color": "#fee5d9"
+          "level": "1",
+          "id": "dv_adm1_id",
+          "name": "adm1_name"
         },
         {
-          "value": 100000,
-          "label": "100,000 - 200,000",
-          "color": "#fcbba1"
-        },
-        {
-          "value": 200000,
-          "label": "200,000 - 300,000",
-          "color": "#fc9272"
-        },
-        {
-          "value": 300000,
-          "label": "300,000 - 400,000",
-          "color": "#fb6a4a"
-        },
-        {
-          "value": 400000,
-          "label": "400,000 - 500,000",
-          "color": "#de2d26"
-        },
-        {
-          "value": 500000,
-          "label": "> 500,000",
-          "color": "#a50f15"
+          "level": "2",
+          "id": "dv_adm2_id",
+          "name": "adm2_name"
         }
       ],
-      "legend_text": "Projected population in phase 3 or worse - June to November 2022"
-    },
-    "ipc_perc_03_2022": {
-      "title": "Percent of population in phase 3+ March - May 2022",
-      "type": "admin_level_data",
-      "path": "data/afghanistan/ipc-03-2022.json",
-      "data_field": "perc_p3+",
-      "admin_level": 1,
-      "admin_code": "admin1Pcode",
-      "opacity": 0.9,
-      "legend": [
+      "type": "line"
+    }
+  },
+  "rain_anomaly_3month": {
+    "chart_data": {
+      "fields": [
         {
-          "value": 1,
-          "label": "<= 30%",
-          "color": "#fee5d9"
+          "key": "r3q",
+          "label": "Rainfall anomaly",
+          "minValue": 0,
+          "maxValue": 300,
+          "color": "#375692"
         },
         {
-          "value": 31,
-          "label": "31 - 35%",
-          "color": "#fcbba1"
-        },
-        {
-          "value": 36,
-          "label": "36 - 40%",
-          "color": "#fc9272"
-        },
-        {
-          "value": 41,
-          "label": "41 - 45%",
-          "color": "#fb6a4a"
-        },
-        {
-          "value": 46,
-          "label": "46 - 50%",
-          "color": "#de2d26"
-        },
-        {
-          "value": 51,
-          "label": "> 51%",
-          "color": "#a50f15"
+          "key": "rfq_avg",
+          "label": "Normal",
+          "fallback": 100,
+          "pointRadius": 0,
+          "color": "#eb3223"
         }
       ],
-      "legend_text": "Percent of population in phase 3 or worse - March to May 2022"
+      "levels": [
+        {
+          "level": "1",
+          "id": "dv_adm1_id",
+          "name": "adm1_name"
+        },
+        {
+          "level": "2",
+          "id": "dv_adm2_id",
+          "name": "adm2_name"
+        }
+      ],
+      "type": "line"
+    }
+  },
+  "rainfall_dekad": {
+    "chart_data": {
+      "fields": [
+        {
+          "key": "rfh",
+          "label": "Rainfall",
+          "color": "#233f5f"
+        },
+        {
+          "key": "rfh_avg",
+          "label": "Average",
+          "color": "#bdf2e6"
+        }
+      ],
+      "levels": [
+        {
+          "level": "1",
+          "id": "dv_adm1_id",
+          "name": "adm1_name"
+        },
+        {
+          "level": "2",
+          "id": "dv_adm2_id",
+          "name": "adm2_name"
+        }
+      ],
+      "type": "bar"
+    }
+  },
+  "rainfall_agg_1month": {
+    "chart_data": {
+      "fields": [
+        {
+          "key": "r1h",
+          "label": "Rainfall",
+          "color": "#233f5f"
+        },
+        {
+          "key": "r1h_avg",
+          "label": "Average",
+          "color": "#bdf2e6"
+        }
+      ],
+      "levels": [
+        {
+          "level": "1",
+          "id": "dv_adm1_id",
+          "name": "adm1_name"
+        },
+        {
+          "level": "2",
+          "id": "dv_adm2_id",
+          "name": "adm2_name"
+        }
+      ],
+      "type": "bar"
+    }
+  },
+  "rainfall_agg_3month": {
+    "chart_data": {
+      "fields": [
+        {
+          "key": "r3h",
+          "label": "Rainfall",
+          "color": "#233f5f"
+        },
+        {
+          "key": "r3h_avg",
+          "label": "Average",
+          "color": "#bdf2e6"
+        }
+      ],
+      "levels": [
+        {
+          "level": "1",
+          "id": "dv_adm1_id",
+          "name": "adm1_name"
+        },
+        {
+          "level": "2",
+          "id": "dv_adm2_id",
+          "name": "adm2_name"
+        }
+      ],
+      "type": "bar"
+    }
+  },
+  "ndvi_dekad": {
+    "chart_data": {
+      "fields": [
+        {
+          "key": "vim",
+          "label": "NDVI",
+          "color": "#4eac5b"
+        },
+        {
+          "key": "vim_avg",
+          "label": "Average",
+          "color": "#99ff99"
+        }
+      ],
+      "levels": [
+        {
+          "level": "1",
+          "id": "dv_adm1_id",
+          "name": "adm1_name"
+        },
+        {
+          "level": "2",
+          "id": "dv_adm2_id",
+          "name": "adm2_name"
+        }
+      ],
+      "type": "line"
+    }
+  },
+  "ndvi_dekad_anomaly": {
+    "chart_data": {
+      "fields": [
+        {
+          "key": "viq",
+          "label": "NDVI anomaly",
+          "minValue": 0,
+          "maxValue": 150,
+          "color": "#5e803f"
+        },
+        {
+          "key": "viq_avg",
+          "label": "Normal",
+          "color": "#eb3223",
+          "pointRadius": 0,
+          "fallback": 100
+        }
+      ],
+      "levels": [
+        {
+          "level": "1",
+          "id": "dv_adm1_id",
+          "name": "adm1_name"
+        },
+        {
+          "level": "2",
+          "id": "dv_adm2_id",
+          "name": "adm2_name"
+        }
+      ],
+      "type": "line"
+    }
+  },
+  "ipc_phase_06_2022": {
+    "title": "Projected area phase June - November 2022",
+    "type": "admin_level_data",
+    "path": "data/afghanistan/ipc-06-2022.json",
+    "data_field": "area_phase",
+    "admin_level": 1,
+    "admin_code": "admin1Pcode",
+    "opacity": 0.9,
+    "legend": [
+      {
+        "value": 1,
+        "label": "Phase 1 - None / minimal",
+        "color": "#c6ffc7"
+      },
+      {
+        "value": 2,
+        "label": "Phase 2 - Stressed",
+        "color": "#ffe718"
+      },
+      {
+        "value": 3,
+        "label": "Phase 3 - Crisis",
+        "color": "#e88400"
+      },
+      {
+        "value": 4,
+        "label": "Phase 4 - Emergency",
+        "color": "#e02d00"
+      },
+      {
+        "value": 5,
+        "label": "Phase 5 - Disaster / famine",
+        "color": "#5e0803"
+      }
+    ],
+    "legend_text": "Overall phase classification projected - June to November 2022"
+  },
+  "ipc_phase_03_2022": {
+    "title": "Area phase March - May 2022",
+    "type": "admin_level_data",
+    "path": "data/afghanistan/ipc-03-2022.json",
+    "data_field": "area_phase",
+    "admin_level": 1,
+    "admin_code": "admin1Pcode",
+    "opacity": 0.9,
+    "legend": [
+      {
+        "value": 1,
+        "label": "Phase 1 - None / minimal",
+        "color": "#c6ffc7"
+      },
+      {
+        "value": 2,
+        "label": "Phase 2 - Stressed",
+        "color": "#ffe718"
+      },
+      {
+        "value": 3,
+        "label": "Phase 3 - Crisis",
+        "color": "#e88400"
+      },
+      {
+        "value": 4,
+        "label": "Phase 4 - Emergency",
+        "color": "#e02d00"
+      },
+      {
+        "value": 5,
+        "label": "Phase 5 - Disaster / famine",
+        "color": "#5e0803"
+      }
+    ],
+    "legend_text": "Overall phase classification projected - June to November 2022"
+  },
+  "ipc_pop_03_2022": {
+    "title": "Population in phase 3+ March - May 2022",
+    "type": "admin_level_data",
+    "path": "data/afghanistan/ipc-03-2022.json",
+    "data_field": "pop_p3+",
+    "admin_level": 1,
+    "admin_code": "admin1Pcode",
+    "opacity": 0.9,
+    "legend": [
+      {
+        "value": 1,
+        "label": "< 100,000",
+        "color": "#fee5d9"
+      },
+      {
+        "value": 100000,
+        "label": "100,000 - 200,000",
+        "color": "#fcbba1"
+      },
+      {
+        "value": 200000,
+        "label": "200,000 - 300,000",
+        "color": "#fc9272"
+      },
+      {
+        "value": 300000,
+        "label": "300,000 - 400,000",
+        "color": "#fb6a4a"
+      },
+      {
+        "value": 400000,
+        "label": "400,000 - 500,000",
+        "color": "#de2d26"
+      },
+      {
+        "value": 500000,
+        "label": "> 500,000",
+        "color": "#a50f15"
+      }
+    ],
+    "legend_text": "Population in phase 3 or worse - March to May 2022"
+  },
+  "ipc_pop_06_2022": {
+    "title": "Projected population in phase 3+ June - November 2022",
+    "type": "admin_level_data",
+    "path": "data/afghanistan/ipc-06-2022.json",
+    "data_field": "pop_p3+",
+    "admin_level": 1,
+    "admin_code": "admin1Pcode",
+    "opacity": 0.9,
+    "legend": [
+      {
+        "value": 1,
+        "label": "< 100,000",
+        "color": "#fee5d9"
+      },
+      {
+        "value": 100000,
+        "label": "100,000 - 200,000",
+        "color": "#fcbba1"
+      },
+      {
+        "value": 200000,
+        "label": "200,000 - 300,000",
+        "color": "#fc9272"
+      },
+      {
+        "value": 300000,
+        "label": "300,000 - 400,000",
+        "color": "#fb6a4a"
+      },
+      {
+        "value": 400000,
+        "label": "400,000 - 500,000",
+        "color": "#de2d26"
+      },
+      {
+        "value": 500000,
+        "label": "> 500,000",
+        "color": "#a50f15"
+      }
+    ],
+    "legend_text": "Projected population in phase 3 or worse - June to November 2022"
+  },
+  "ipc_perc_03_2022": {
+    "title": "Percent of population in phase 3+ March - May 2022",
+    "type": "admin_level_data",
+    "path": "data/afghanistan/ipc-03-2022.json",
+    "data_field": "perc_p3+",
+    "admin_level": 1,
+    "admin_code": "admin1Pcode",
+    "opacity": 0.9,
+    "legend": [
+      {
+        "value": 1,
+        "label": "<= 30%",
+        "color": "#fee5d9"
+      },
+      {
+        "value": 31,
+        "label": "31 - 35%",
+        "color": "#fcbba1"
+      },
+      {
+        "value": 36,
+        "label": "36 - 40%",
+        "color": "#fc9272"
+      },
+      {
+        "value": 41,
+        "label": "41 - 45%",
+        "color": "#fb6a4a"
+      },
+      {
+        "value": 46,
+        "label": "46 - 50%",
+        "color": "#de2d26"
+      },
+      {
+        "value": 51,
+        "label": "> 51%",
+        "color": "#a50f15"
+      }
+    ],
+    "legend_text": "Percent of population in phase 3 or worse - March to May 2022"
   },
   "ipc_perc_06_2022": {
     "title": "Projected percent of population in phase 3+ June - November 2022",
@@ -526,5 +526,5 @@
       }
     ],
     "legend_text": "Projected percent of population in phase 3 or worse - June to November 2022"
-  }                            
+  }
 }

@@ -7,7 +7,7 @@
     "admin_level_codes": ["ProvinceE", "text"],
     "admin_level_names": ["ProvinceE", "DistrictE"],
     "admin_level_local_names": ["ProvinceR", "DistrictR"],
-    "styles:": {
+    "styles": {
       "fill": {
         "fill-opacity": 0
       },
