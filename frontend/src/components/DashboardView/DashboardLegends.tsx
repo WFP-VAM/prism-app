@@ -18,9 +18,7 @@ const useStyles = makeStyles(() =>
       position: 'absolute',
       top: '8px',
       right: '24px',
-    },
-    list: {
-      maxHeight: '300px',
+      maxHeight: 'calc(100% - 48px)',
       overflowY: 'auto',
     },
   }),
