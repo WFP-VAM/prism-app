@@ -21,8 +21,19 @@ function toNumber(value: unknown): number {
 
 function normalizeFloodRow(row: any): FloodStationData {
   const time: string = String(row.time ?? '').trim();
-  const riskLevel =
-    (row.risk_level as AAFloodRiskLevelType) ?? 'Below bankfull';
+  // Temporary fix for risk level
+  // Eventually we should fix the data source
+  const cleanedRisk = String(row.risk_level ?? '')
+    .replace('Above ', '')
+    .replace('Below moderate', 'Bankfull')
+    .trim();
+  const riskLevel = (
+    cleanedRisk
+      ? `${cleanedRisk.charAt(0).toUpperCase()}${cleanedRisk
+          .slice(1)
+          .toLowerCase()}`
+      : 'Below bankfull'
+  ) as AAFloodRiskLevelType;
   return {
     station_name: String(row.station_name ?? ''),
     river_name: String(row.river_name ?? ''),
