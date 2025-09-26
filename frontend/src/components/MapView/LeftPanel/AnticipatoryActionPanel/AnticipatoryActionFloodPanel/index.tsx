@@ -18,7 +18,10 @@ import {
 import { cyanBlue } from 'muiTheme';
 import { ChevronLeft, ChevronRight } from '@material-ui/icons';
 import { setAAFloodSelectedStation } from 'context/anticipatoryAction/AAFloodStateSlice';
-import { getFloodRiskColor } from 'context/anticipatoryAction/AAFloodStateSlice/utils';
+import {
+  getFloodRiskColor,
+  getFloodRiskSeverity,
+} from 'context/anticipatoryAction/AAFloodStateSlice/utils';
 import { useSafeTranslation } from 'i18n';
 import { AnticipatoryAction } from 'config/types';
 import { dateRangeSelector } from 'context/mapStateSlice/selectors';
@@ -47,6 +50,9 @@ const useStyles = makeStyles(() =>
     headerCell: {
       backgroundColor: '#f1f1f1', // Gray header background
       color: '#000',
+      '& .MuiTableSortLabel-root.MuiTableSortLabel-active': {
+        color: '#333 !important',
+      },
     },
     row: {
       cursor: 'pointer',
@@ -179,7 +185,7 @@ function AnticipatoryActionFloodPanel() {
         case 'date':
           return aData?.time || '';
         case 'risk_level':
-          return aData?.risk_level || '';
+          return getFloodRiskSeverity(aData?.risk_level);
         default:
           return '';
       }
@@ -192,7 +198,7 @@ function AnticipatoryActionFloodPanel() {
         case 'date':
           return bData?.time || '';
         case 'risk_level':
-          return bData?.risk_level || '';
+          return getFloodRiskSeverity(bData?.risk_level);
         default:
           return '';
       }
@@ -225,6 +231,9 @@ function AnticipatoryActionFloodPanel() {
     return (
       <div className={classes.container}>
         <Typography>{t('Loading flood data...')}</Typography>
+        <TableContainer component={Paper} className={classes.tableContainer}>
+          <Table className={classes.table} size="small" />
+        </TableContainer>
       </div>
     );
   }

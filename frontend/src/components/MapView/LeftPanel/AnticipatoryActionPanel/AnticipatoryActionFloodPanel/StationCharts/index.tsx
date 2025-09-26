@@ -77,6 +77,7 @@ const useStyles = makeStyles(() =>
       borderRadius: '4px 4px 0 0',
       fontSize: '12px',
       color: '#000',
+      textTransform: 'none',
       background: '#F1F1F1',
     },
     selectedTab: {
@@ -168,6 +169,13 @@ function StationCharts({ station, onClose }: StationChartsProps) {
 
   const floodState = useSelector(AAFloodDataSelector);
 
+  // local date formatter to mirror trigger probability labels (MM/DD)
+  const formatShortDate = (dateStr: string) =>
+    new Date(dateStr).toLocaleDateString('en-US', {
+      month: '2-digit',
+      day: '2-digit',
+    });
+
   // Prepare hydrograph data using fetched forecast (discharge) data
   const hydrographData = useMemo(() => {
     const forecast = floodState.forecastData[station.station_name] || [];
@@ -175,7 +183,8 @@ function StationCharts({ station, onClose }: StationChartsProps) {
       return null;
     }
 
-    const labels = forecast.map((_p, idx) => `${idx}`);
+    // Use valid_time dates for x-axis labels (same as probability format)
+    const labels = forecast.map(p => formatShortDate(p.time));
     const { bankfull, moderate, severe } = station.thresholds;
 
     const membersCount = forecast[0]?.ensemble_members?.length || 0;
@@ -261,13 +270,7 @@ function StationCharts({ station, onClose }: StationChartsProps) {
 
     const sortedData = sortBy(probs, p => new Date(p.time).getTime());
 
-    const labels = sortedData.map(d =>
-      new Date(d.time).toLocaleDateString('en-US', {
-        month: '2-digit',
-        day: '2-digit',
-        year: '2-digit',
-      }),
-    );
+    const labels = sortedData.map(d => formatShortDate(d.time));
     const bankfullSeries = sortedData.map(d => d.bankfull_percentage);
     const moderateSeries = sortedData.map(d => d.moderate_percentage);
     const severeSeries = sortedData.map(d => d.severe_percentage);
@@ -491,9 +494,9 @@ function StationCharts({ station, onClose }: StationChartsProps) {
             display: true,
             scaleLabel: {
               display: true,
-              labelString: t('Lead times (days)'),
+              labelString: t('Date'),
             },
-            ticks: { maxRotation: 0 },
+            ticks: { maxRotation: 0, autoSkip: true },
           },
         ],
         yAxes: [
@@ -522,7 +525,6 @@ function StationCharts({ station, onClose }: StationChartsProps) {
       new Date(d.time).toLocaleDateString('en-US', {
         month: '2-digit',
         day: '2-digit',
-        year: '2-digit',
       }),
     );
 

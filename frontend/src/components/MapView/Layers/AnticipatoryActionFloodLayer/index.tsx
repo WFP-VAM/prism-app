@@ -31,8 +31,9 @@ const getCircleColor = (riskLevel: string) => {
 const getBorderColor = (riskLevel: string) => {
   switch (riskLevel) {
     case 'Severe':
+      return '#E63701';
     case 'Moderate':
-      return '#FFFFFF';
+      return '#FF8C21';
     case 'Bankfull':
       return '#FFCC00';
     default:
