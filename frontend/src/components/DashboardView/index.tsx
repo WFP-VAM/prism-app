@@ -28,6 +28,11 @@ function DashboardView() {
   const [mode, setMode] = useState<DashboardMode>('preview');
   const { t } = useSafeTranslation();
 
+  // Clear any existing analysis state when component mounts
+  useEffect(() => {
+    dispatch(clearAnalysisResult());
+  }, [dispatch, dashboardTitle]);
+
   // Clear analysis state when component unmounts (navigating away from dashboard)
   useEffect(
     () => () => {
