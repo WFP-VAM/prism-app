@@ -17,39 +17,30 @@ import TextBlock from './TextBlock';
 
 type DashboardMode = 'edit' | 'preview';
 
-interface DashboardViewProps {
-  mode?: DashboardMode;
-}
-
-function DashboardView({ mode = 'edit' }: DashboardViewProps) {
+function DashboardView() {
   const classes = useStyles();
   const dashboardTitle = useSelector(dashboardTitleSelector);
   const dashboardFlexElements = useSelector(dashboardFlexElementsSelector);
   const dashboardMaps = useSelector(dashboardMapsSelector);
   const dispatch = useDispatch();
-  const [currentMode, setCurrentMode] = useState<DashboardMode>('edit');
+  const [mode, setMode] = useState<DashboardMode>('preview');
   const { t } = useSafeTranslation();
 
   const handlePreviewClick = () => {
-    setCurrentMode('preview');
+    setMode('preview');
   };
 
   const handleClosePreview = () => {
-    setCurrentMode('edit');
+    setMode('edit');
   };
-
-  const activeMode = mode !== 'edit' ? mode : currentMode;
 
   return (
     <Box
       className={
-        activeMode === 'preview'
-          ? classes.previewModeContainer
-          : classes.container
+        mode === 'preview' ? classes.previewModeContainer : classes.container
       }
     >
-      {/* Preview mode overlay with actions */}
-      {activeMode === 'preview' && (
+      {mode === 'preview' && (
         <Box className={classes.previewActions}>
           <Button
             color="primary"
@@ -59,7 +50,7 @@ function DashboardView({ mode = 'edit' }: DashboardViewProps) {
             onClick={handleClosePreview}
             size="medium"
           >
-            {t('Back to Edit')}
+            {t('Edit')}
           </Button>
           <Button
             color="primary"
@@ -74,7 +65,7 @@ function DashboardView({ mode = 'edit' }: DashboardViewProps) {
         </Box>
       )}
 
-      {activeMode === 'preview' && (
+      {mode === 'preview' && (
         <Box className={classes.titleSection}>
           <Typography
             variant="h2"
@@ -87,12 +78,10 @@ function DashboardView({ mode = 'edit' }: DashboardViewProps) {
       )}
 
       <Box
-        className={
-          activeMode === 'preview' ? classes.previewLayout : classes.layout
-        }
+        className={mode === 'preview' ? classes.previewLayout : classes.layout}
       >
         <Box className={classes.leadingContentArea}>
-          {activeMode === 'edit' && (
+          {mode === 'edit' && (
             <Box className={classes.grayCard}>
               <label className={classes.titleBarLabel}>
                 <Typography
@@ -120,12 +109,12 @@ function DashboardView({ mode = 'edit' }: DashboardViewProps) {
                 // eslint-disable-next-line react/no-array-index-key
                 key={`map-${mapIndex}`}
                 className={
-                  activeMode === 'preview'
+                  mode === 'preview'
                     ? classes.previewContainer
                     : classes.grayCard
                 }
               >
-                {activeMode === 'edit' && (
+                {mode === 'edit' && (
                   <Typography
                     variant="h3"
                     component="h3"
@@ -138,7 +127,7 @@ function DashboardView({ mode = 'edit' }: DashboardViewProps) {
                   </Typography>
                 )}
                 <div style={{ height: '700px', width: '100%' }}>
-                  <MapBlock mapIndex={mapIndex} mode={activeMode} />
+                  <MapBlock mapIndex={mapIndex} mode={mode} />
                 </div>
               </Box>
             ))}
@@ -156,7 +145,7 @@ function DashboardView({ mode = 'edit' }: DashboardViewProps) {
                     key={`text-block-${index}`}
                     content={content}
                     index={index}
-                    mode={activeMode}
+                    mode={mode}
                   />
                 );
               }
@@ -166,7 +155,7 @@ function DashboardView({ mode = 'edit' }: DashboardViewProps) {
         )}
       </Box>
 
-      {activeMode === 'edit' && (
+      {mode === 'edit' && (
         <Box className={classes.toolbar}>
           <Button
             variant="outlined"
