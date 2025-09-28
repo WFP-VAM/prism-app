@@ -1,4 +1,4 @@
-import React, { memo, useCallback, useEffect, useMemo, useState } from 'react';
+import { memo, useCallback, useEffect, useMemo, useState } from 'react';
 import {
   Button,
   createStyles,
@@ -12,21 +12,11 @@ import {
 } from '@material-ui/core';
 import { BarChartOutlined, CloseRounded } from '@material-ui/icons';
 import { useDispatch, useSelector } from 'context/hooks';
-import { isNil, orderBy } from 'lodash';
-import {
-  mapSelector,
-  layersSelector,
-  layerDataSelector,
-} from 'context/mapStateSlice/selectors';
+import { orderBy } from 'lodash';
+import { mapSelector, layersSelector } from 'context/mapStateSlice/selectors';
 import { useUrlHistory } from 'utils/url-utils';
 import {
-  AnalysisDispatchParams,
-  PolygonAnalysisDispatchParams,
-  analysisResultSelector,
   clearAnalysisResult,
-  isAnalysisLoadingSelector,
-  requestAndStoreAnalysis,
-  requestAndStorePolygonAnalysis,
   setIsMapLayerActive,
   isExposureAnalysisLoadingSelector,
   analysisResultSortByKeySelector,
@@ -40,26 +30,15 @@ import {
   TableRow,
 } from 'context/analysisResultStateSlice';
 import {
-  AdminLevelType,
-  AggregationOperations,
   AdminLevelDataLayerProps,
-  HazardDataType,
-  RasterType,
-  WMSLayerProps,
-  LayerKey,
-  BoundaryLayerProps,
+  AggregationOperations,
   GeometryType,
   PanelSize,
-  ExposureOperator,
-  ExposureValue,
   Panel,
+  RasterType,
 } from 'config/types';
-import { getAdminLevelLayer } from 'utils/admin-utils';
-import { LayerData } from 'context/layers/layer-data';
-import { LayerDefinitions, getDisplayBoundaryLayers } from 'config/utils';
+import { LayerDefinitions } from 'config/utils';
 import { useSafeTranslation } from 'i18n';
-import { getDateFromList } from 'utils/data-utils';
-import { getPossibleDatesForLayer } from 'utils/server-utils';
 import {
   downloadCSVFromTableData,
   BaselineLayerResult,
@@ -68,23 +47,12 @@ import {
   useAnalysisTableColumns,
   Column,
 } from 'utils/analysis-utils';
-import {
-  refreshBoundaries,
-  safeDispatchRemoveLayer,
-  safeDispatchAddLayer,
-} from 'utils/map-utils';
+import { refreshBoundaries, safeDispatchAddLayer } from 'utils/map-utils';
 import { addLayer, removeLayer } from 'context/mapStateSlice';
-import {
-  availableDatesSelector,
-  layersLoadingDatesIdsSelector,
-  loadAvailableDatesForLayer,
-} from 'context/serverStateSlice';
 import {
   leftPanelTabValueSelector,
   setTabValue,
 } from 'context/leftPanelStateSlice';
-import useLayers from 'utils/layers-utils';
-import { getFormattedDate } from 'utils/date-utils';
 import {
   HazardLayerSelector,
   BaselineLayerSelector,
@@ -96,7 +64,7 @@ import {
 } from 'components/Common/AnalysisFormComponents';
 import LoadingBlinkingDots from 'components/Common/LoadingBlinkingDots';
 import { black, cyanBlue } from 'muiTheme';
-import { layerDatesPreloadedSelector } from 'context/serverPreloadStateSlice';
+import { useAnalysisForm, useAnalysisExecution } from 'utils/analysis-hooks';
 import AnalysisTable from './AnalysisTable';
 import ExposureAnalysisTable from './AnalysisTable/ExposureAnalysisTable';
 import ExposureAnalysisActions from './ExposureAnalysisActions';
@@ -116,10 +84,6 @@ const AnalysisPanel = memo(() => {
     updateAnalysisParams,
     getAnalysisParams,
   } = useUrlHistory();
-  const availableDates = useSelector(availableDatesSelector);
-  const layersLoadingDates = useSelector(layersLoadingDatesIdsSelector);
-  const layerDatesPreloaded = useSelector(layerDatesPreloadedSelector);
-  const analysisResult = useSelector(analysisResultSelector);
   const analysisResultSortByKey = useSelector(analysisResultSortByKeySelector);
   const analysisResultSortOrder = useSelector(analysisResultSortOrderSelector);
   const exposureAnalysisResultSortByKey = useSelector(
@@ -128,13 +92,10 @@ const AnalysisPanel = memo(() => {
   const exposureAnalysisResultSortOrder = useSelector(
     exposureAnalysisResultSortOrderSelector,
   );
-  const isAnalysisLoading = useSelector(isAnalysisLoadingSelector);
   const isExposureAnalysisLoading = useSelector(
     isExposureAnalysisLoadingSelector,
   );
   const tabValue = useSelector(leftPanelTabValueSelector);
-
-  const { adminBoundariesExtent: extent } = useLayers();
 
   const [showTable, setShowTable] = useState(false);
   // defaults the sort column of exposure analysis to 'name'
@@ -156,164 +117,95 @@ const AnalysisPanel = memo(() => {
   const {
     analysisHazardLayerId: hazardLayerIdFromUrl,
     analysisBaselineLayerId: baselineLayerIdFromUrl,
-    analysisDate: selectedDateFromUrl,
     analysisStatistic: selectedStatisticFromUrl,
     analysisThresholdAbove: aboveThresholdFromUrl,
     analysisThresholdBelow: belowThresholdFromUrl,
-    analysisAdminLevel: adminLevelFromUrl,
     analysisStartDate: selectedStartDateFromUrl,
-    analysisEndDate: selectedEndDateFromUrl,
   } = getAnalysisParams();
 
-  // form elements
-  const [hazardLayerId, setHazardLayerId] = useState<LayerKey | undefined>(
-    hazardLayerIdFromUrl,
-  );
-
-  const [exposureValue, setExposureValue] = useState<ExposureValue>({
-    operator: ExposureOperator.EQUAL,
-    value: '',
+  const formState = useAnalysisForm({
+    initialHazardLayerId: hazardLayerIdFromUrl,
+    initialBaselineLayerId: baselineLayerIdFromUrl,
+    initialStartDate: selectedStartDateFromUrl,
+    initialThreshold: {
+      above: aboveThresholdFromUrl
+        ? parseFloat(aboveThresholdFromUrl)
+        : undefined,
+      below: belowThresholdFromUrl
+        ? parseFloat(belowThresholdFromUrl)
+        : undefined,
+    },
+    initialStat: selectedStatisticFromUrl as AggregationOperations | undefined,
   });
 
-  const [statistic, setStatistic] = useState(
-    (selectedStatisticFromUrl as AggregationOperations) ||
-      AggregationOperations.Mean,
-  );
-  const [baselineLayerId, setBaselineLayerId] = useState<LayerKey | undefined>(
-    baselineLayerIdFromUrl,
-  );
-  const [selectedDate, setSelectedDate] = useState<number | null>(null);
-  const [belowThreshold, setBelowThreshold] = useState(
-    belowThresholdFromUrl || '',
-  );
-  const [aboveThreshold, setAboveThreshold] = useState(
-    aboveThresholdFromUrl || '',
-  );
+  const {
+    // Form state
+    hazardLayerId,
+    setHazardLayerId,
+    baselineLayerId,
+    setBaselineLayerId,
+    statistic,
+    setStatistic,
+    selectedDate,
+    setSelectedDate,
+    startDate,
+    setStartDate,
+    endDate,
+    setEndDate,
+    belowThreshold,
+    setBelowThreshold,
+    aboveThreshold,
+    setAboveThreshold,
+    exposureValue,
+    setExposureValue,
+    adminLevel,
+    setAdminLevel,
+    // Derived values
+    selectedHazardLayer,
+    hazardDataType,
+    adminLevelLayerData,
+    requiredThresholdNotSet,
+    availableHazardDates,
+    // Analysis state
+    analysisResult,
+    isAnalysisLoading,
+  } = formState;
 
-  // for polygon intersection analysis
-  const [adminLevel, setAdminLevel] = useState<AdminLevelType>(
-    Number(adminLevelFromUrl || '1') as AdminLevelType,
-  );
-  const [startDate, setStartDate] = useState<number | null>(null);
-  const [endDate, setEndDate] = useState<number | null>(null);
+  const { runAnalyser } = useAnalysisExecution(formState, {
+    onUrlUpdate: updateAnalysisParams,
+    clearAnalysisFunction: () => {
+      const isClearingExposureAnalysis =
+        analysisResult instanceof ExposedPopulationResult;
+      dispatch(clearAnalysisResult());
+      if (isClearingExposureAnalysis) {
+        dispatch(setTabValue(Panel.Layers));
+      }
+      resetAnalysisParams();
+      refreshBoundaries(map, { addLayer, removeLayer });
 
-  // find layer for the given adminLevel
-  const adminLevelLayer = getAdminLevelLayer(adminLevel);
-  const adminLevelLayerData = useSelector(
-    adminLevelLayer ? layerDataSelector(adminLevelLayer.id) : () => undefined,
-  ) as LayerData<BoundaryLayerProps> | undefined;
+      if (previousBaselineId) {
+        const previousBaseline = LayerDefinitions[
+          previousBaselineId
+        ] as AdminLevelDataLayerProps;
+        updateHistory(BASELINE_URL_LAYER_KEY, previousBaselineId);
+        safeDispatchAddLayer(map, previousBaseline, dispatch);
+        dispatch(setIsMapLayerActive(true));
+      }
+    },
+  });
 
   const BASELINE_URL_LAYER_KEY = 'baselineLayerId';
   const preSelectedBaselineLayer = selectedLayers.find(
     l => l.type === 'admin_level_data',
   );
-  const [previousBaselineId, setPreviousBaselineId] = useState<
-    LayerKey | undefined
-  >(preSelectedBaselineLayer?.id);
+  const [previousBaselineId, setPreviousBaselineId] = useState(
+    preSelectedBaselineLayer?.id,
+  );
 
   const { t } = useSafeTranslation();
-
-  // get variables derived from state
-  const selectedHazardLayer = hazardLayerId
-    ? (LayerDefinitions[hazardLayerId] as WMSLayerProps)
-    : null;
-  const hazardDataType: HazardDataType | null = selectedHazardLayer
-    ? selectedHazardLayer.geometry || RasterType.Raster
-    : null;
-
-  // required threshold if we have an admin_level_data baseline layer, there's no threshold set
-  const requiredThresholdNotSet = Boolean(
-    baselineLayerId &&
-      LayerDefinitions[baselineLayerId]?.type === 'admin_level_data' &&
-      !belowThreshold &&
-      !aboveThreshold,
+  const { translatedColumns } = useAnalysisTableColumns(
+    analysisResult || undefined,
   );
-
-  const availableHazardDates = React.useMemo(
-    () =>
-      selectedHazardLayer
-        ? Array.from(
-            new Set(
-              getPossibleDatesForLayer(
-                selectedHazardLayer,
-                availableDates,
-              )?.map(d => d.queryDate),
-            ),
-          ).map(d => new Date(d)) || []
-        : [],
-    [availableDates, selectedHazardLayer],
-  );
-
-  // check if there is any available date from the url, otherwise use last available date for the selected hazard layer
-  const lastAvailableHazardDate = availableHazardDates
-    ? getDateFromList(
-        selectedDateFromUrl ? new Date(selectedDateFromUrl) : null,
-        availableHazardDates,
-      )?.getTime() || null
-    : null;
-  const lastAvailableHazardStartDate = availableHazardDates
-    ? getDateFromList(
-        selectedStartDateFromUrl ? new Date(selectedStartDateFromUrl) : null,
-        availableHazardDates,
-      )?.getTime() || null
-    : null;
-  const lastAvailableHazardEndDate = availableHazardDates
-    ? getDateFromList(
-        selectedEndDateFromUrl ? new Date(selectedEndDateFromUrl) : null,
-        availableHazardDates,
-      )?.getTime() || null
-    : null;
-  const { translatedColumns } = useAnalysisTableColumns(analysisResult);
-
-  // make sure that available dates are calculated for the selected layer
-  // so that a date can be selected in the date picker
-  useEffect(() => {
-    if (hazardLayerId !== undefined) {
-      if (
-        ['wms', 'point_data'].includes(LayerDefinitions[hazardLayerId].type) &&
-        !layerDatesPreloaded
-      ) {
-        return;
-      }
-      if (
-        availableDates[hazardLayerId] === undefined &&
-        !layersLoadingDates.includes(hazardLayerId)
-      ) {
-        dispatch(loadAvailableDatesForLayer(hazardLayerId));
-      }
-    }
-  }, [
-    availableDates,
-    dispatch,
-    hazardLayerId,
-    layerDatesPreloaded,
-    layersLoadingDates,
-  ]);
-
-  // set default date after dates finish loading and when hazard layer changes
-  useEffect(() => {
-    if (isNil(lastAvailableHazardDate)) {
-      setSelectedDate(null);
-    } else {
-      setSelectedDate(lastAvailableHazardDate);
-    }
-    if (isNil(lastAvailableHazardStartDate)) {
-      setStartDate(null);
-    } else {
-      setStartDate(lastAvailableHazardStartDate);
-    }
-    if (isNil(lastAvailableHazardEndDate)) {
-      setEndDate(null);
-    } else {
-      setEndDate(lastAvailableHazardEndDate);
-    }
-  }, [
-    availableDates,
-    hazardLayerId,
-    lastAvailableHazardDate,
-    lastAvailableHazardStartDate,
-    lastAvailableHazardEndDate,
-  ]);
 
   // Only expand if analysis results are available.
   useEffect(() => {
@@ -358,8 +250,7 @@ const AnalysisPanel = memo(() => {
     }
     setHazardLayerId(hazardLayerIdFromUrl);
     setStatistic(
-      (selectedStatisticFromUrl as AggregationOperations) ||
-        AggregationOperations.Mean,
+      (selectedStatisticFromUrl as AggregationOperations) || statistic,
     );
     setBaselineLayerId(baselineLayerIdFromUrl);
     setBelowThreshold(belowThresholdFromUrl || '');
@@ -374,90 +265,32 @@ const AnalysisPanel = memo(() => {
       ] as AdminLevelDataLayerProps;
       updateHistory(BASELINE_URL_LAYER_KEY, previousBaselineId);
       safeDispatchAddLayer(map, previousBaseline, dispatch);
-      // check isMapLayerActive on analysis clear
-      // to avoid miss behaviour on boundary layers
       dispatch(setIsMapLayerActive(true));
     }
   }, [
-    aboveThresholdFromUrl,
     analysisResult,
-    baselineLayerIdFromUrl,
-    belowThresholdFromUrl,
-    dispatch,
+    setHazardLayerId,
     hazardLayerIdFromUrl,
+    setStatistic,
+    selectedStatisticFromUrl,
+    statistic,
+    setBaselineLayerId,
+    baselineLayerIdFromUrl,
+    setBelowThreshold,
+    belowThresholdFromUrl,
+    setAboveThreshold,
+    aboveThresholdFromUrl,
+    dispatch,
+    resetAnalysisParams,
     map,
     previousBaselineId,
-    resetAnalysisParams,
-    selectedStatisticFromUrl,
     updateHistory,
   ]);
 
-  // Boundary activation helper
-  const activateUniqueBoundary = useCallback(
-    (forceAdminLevel?: BoundaryLayerProps) => {
-      if (forceAdminLevel) {
-        // Remove displayed boundaries
-        getDisplayBoundaryLayers().forEach(l => {
-          if (l.id !== forceAdminLevel.id) {
-            safeDispatchRemoveLayer(map, l, dispatch);
-          }
-        });
-
-        safeDispatchAddLayer(
-          map,
-          { ...forceAdminLevel, isPrimary: true },
-          dispatch,
-        );
-        return;
-      }
-
-      if (!baselineLayerId) {
-        throw new Error('Layer should be selected to run analysis');
-      }
-
-      const baselineLayer = LayerDefinitions[
-        baselineLayerId
-      ] as AdminLevelDataLayerProps;
-
-      if (baselineLayer.boundary) {
-        const boundaryLayer = LayerDefinitions[
-          baselineLayer.boundary
-        ] as BoundaryLayerProps;
-        // Remove displayed boundaries
-        getDisplayBoundaryLayers().forEach(l => {
-          if (l.id !== boundaryLayer.id) {
-            safeDispatchRemoveLayer(map, l, dispatch);
-          }
-        });
-
-        safeDispatchAddLayer(
-          map,
-          { ...boundaryLayer, isPrimary: true },
-          dispatch,
-        );
-      } else {
-        getDisplayBoundaryLayers().forEach(l => {
-          safeDispatchAddLayer(map, l, dispatch);
-        });
-      }
-    },
-    [baselineLayerId, dispatch, map],
-  );
-
-  // Scale threshold helper
-  const scaleThreshold = useCallback(
-    (threshold: number) =>
-      statistic === AggregationOperations['Area exposed']
-        ? threshold / 100
-        : threshold,
-    [statistic],
-  );
-
-  const runAnalyser = useCallback(async () => {
+  const wrappedRunAnalyser = useCallback(async () => {
     if (preSelectedBaselineLayer) {
       setPreviousBaselineId(preSelectedBaselineLayer.id);
       removeKeyFromUrl(BASELINE_URL_LAYER_KEY);
-      // no need to safely dispatch remove we are sure
       dispatch(removeLayer(preSelectedBaselineLayer));
     }
 
@@ -465,113 +298,14 @@ const AnalysisPanel = memo(() => {
       clearAnalysis();
     }
 
-    if (!extent) {
-      return;
-    } // hasn't been calculated yet
-
-    if (!selectedHazardLayer) {
-      throw new Error('Hazard layer should be selected to run analysis');
-    }
-
-    if (hazardDataType === GeometryType.Polygon) {
-      if (!startDate) {
-        throw new Error('Date Range must be given to run analysis');
-      }
-      if (!endDate) {
-        throw new Error('Date Range must be given to run analysis');
-      }
-      if (!adminLevelLayer || !adminLevelLayerData) {
-        // technically we can't get here because the run analysis button
-        // is disabled while the admin level data loads
-        // but we have to put this in so the typescript compiler
-        // doesn't throw an error when we try to access the data
-        // property of adminLevelLayerData
-        throw new Error('Admin level data is still loading');
-      }
-
-      const params: PolygonAnalysisDispatchParams = {
-        hazardLayer: selectedHazardLayer,
-        adminLevel,
-        adminLevelLayer,
-        adminLevelData: adminLevelLayerData.data,
-        startDate,
-        endDate,
-        extent,
-      };
-      activateUniqueBoundary(adminLevelLayer);
-      // update history
-      updateAnalysisParams({
-        analysisHazardLayerId: hazardLayerId,
-        analysisAdminLevel: adminLevel.toString(),
-        analysisStartDate: getFormattedDate(startDate, 'default'),
-        analysisEndDate: getFormattedDate(endDate, 'default'),
-        analysisStatistic: statistic,
-      });
-      dispatch(requestAndStorePolygonAnalysis(params));
-    } else {
-      if (!selectedDate) {
-        throw new Error('Date must be given to run analysis');
-      }
-
-      if (!baselineLayerId) {
-        throw new Error('Baseline layer should be selected to run analysis');
-      }
-
-      const selectedBaselineLayer = LayerDefinitions[
-        baselineLayerId
-      ] as AdminLevelDataLayerProps;
-
-      activateUniqueBoundary();
-
-      const params: AnalysisDispatchParams = {
-        hazardLayer: selectedHazardLayer,
-        baselineLayer: selectedBaselineLayer,
-        date: selectedDate,
-        statistic,
-        exposureValue,
-        extent,
-        threshold: {
-          above: scaleThreshold(parseFloat(aboveThreshold)) || undefined,
-          below: scaleThreshold(parseFloat(belowThreshold)) || undefined,
-        },
-      };
-
-      // update history
-      updateAnalysisParams({
-        analysisHazardLayerId: hazardLayerId,
-        analysisBaselineLayerId: baselineLayerId,
-        analysisDate: getFormattedDate(selectedDate, 'default'),
-        analysisStatistic: statistic,
-        analysisThresholdAbove: aboveThreshold || undefined,
-        analysisThresholdBelow: belowThreshold || undefined,
-      });
-
-      dispatch(requestAndStoreAnalysis(params));
-    }
+    await runAnalyser();
   }, [
     preSelectedBaselineLayer,
     analysisResult,
-    extent,
-    selectedHazardLayer,
-    hazardDataType,
     removeKeyFromUrl,
     dispatch,
     clearAnalysis,
-    startDate,
-    endDate,
-    adminLevelLayer,
-    adminLevelLayerData,
-    adminLevel,
-    activateUniqueBoundary,
-    updateAnalysisParams,
-    hazardLayerId,
-    statistic,
-    selectedDate,
-    baselineLayerId,
-    exposureValue,
-    scaleThreshold,
-    aboveThreshold,
-    belowThreshold,
+    runAnalyser,
   ]);
 
   // handler of changing exposure analysis sort order
@@ -666,7 +400,16 @@ const AnalysisPanel = memo(() => {
         />
       </>
     );
-  }, [adminLevel, availableHazardDates, endDate, hazardDataType, startDate]);
+  }, [
+    hazardDataType,
+    adminLevel,
+    setAdminLevel,
+    startDate,
+    endDate,
+    setStartDate,
+    setEndDate,
+    availableHazardDates,
+  ]);
 
   const renderedRasterType = useMemo(() => {
     if (hazardDataType !== RasterType.Raster) {
@@ -705,13 +448,19 @@ const AnalysisPanel = memo(() => {
     hazardDataType,
     classes.analysisPanelParamText,
     baselineLayerId,
+    setBaselineLayerId,
     statistic,
+    setStatistic,
     exposureValue,
+    setExposureValue,
     selectedHazardLayer,
     belowThreshold,
     aboveThreshold,
+    setBelowThreshold,
+    setAboveThreshold,
     requiredThresholdNotSet,
     selectedDate,
+    setSelectedDate,
     availableHazardDates,
   ]);
 
@@ -738,6 +487,7 @@ const AnalysisPanel = memo(() => {
     classes.analysisPanelParams,
     classes.analysisPanelParamText,
     hazardLayerId,
+    setHazardLayerId,
     isExposureAnalysisLoading,
     renderedPolygonHazardType,
     renderedRasterType,
@@ -773,6 +523,9 @@ const AnalysisPanel = memo(() => {
         <Button
           className={classes.bottomButton}
           onClick={() =>
+            analysisResult &&
+            (analysisResult instanceof BaselineLayerResult ||
+              analysisResult instanceof PolygonAnalysisResult) &&
             downloadCSVFromTableData(
               analysisResult,
               translatedColumns,
@@ -789,12 +542,12 @@ const AnalysisPanel = memo(() => {
   }, [
     analysisIsAscending,
     analysisResult,
+    isAnalysisLoading,
     analysisSortColumn,
     classes.analysisButton,
     classes.analysisButtonContainer,
     classes.bottomButton,
     clearAnalysis,
-    isAnalysisLoading,
     selectedDate,
     showTable,
     t,
@@ -810,16 +563,15 @@ const AnalysisPanel = memo(() => {
         {isAnalysisLoading ? <LinearProgress /> : null}
         <Button
           className={classes.bottomButton}
-          onClick={runAnalyser}
+          onClick={wrappedRunAnalyser}
           startIcon={<BarChartOutlined style={{ color: black }} />}
           disabled={
-            isAnalysisLoading || // analysis is currently loading
-            // if the baseline is an admin level layer, at least one threshold must be set
+            isAnalysisLoading ||
             requiredThresholdNotSet ||
-            !hazardLayerId || // or hazard layer hasn't been selected
+            !hazardLayerId ||
             (hazardDataType === GeometryType.Polygon
               ? !startDate || !endDate || !adminLevelLayerData
-              : !selectedDate || !baselineLayerId) || // or date hasn't been selected // or baseline layer hasn't been selected
+              : !selectedDate || !baselineLayerId) ||
             (statistic === AggregationOperations['Area exposed'] &&
               (!exposureValue.operator || !exposureValue.value))
           }
@@ -829,22 +581,22 @@ const AnalysisPanel = memo(() => {
       </div>
     );
   }, [
-    adminLevelLayerData,
     analysisResult,
-    baselineLayerId,
-    classes.analysisButtonContainer,
-    classes.bottomButton,
+    isAnalysisLoading,
+    requiredThresholdNotSet,
+    hazardLayerId,
+    hazardDataType,
+    startDate,
     endDate,
+    adminLevelLayerData,
+    selectedDate,
+    baselineLayerId,
+    statistic,
     exposureValue.operator,
     exposureValue.value,
-    hazardDataType,
-    hazardLayerId,
-    isAnalysisLoading,
-    runAnalyser,
-    selectedDate,
-    startDate,
-    statistic,
-    requiredThresholdNotSet,
+    classes.analysisButtonContainer,
+    classes.bottomButton,
+    wrappedRunAnalyser,
     t,
   ]);
 
@@ -859,7 +611,7 @@ const AnalysisPanel = memo(() => {
     return (
       <div className={classes.analysisButtonContainer}>
         <ExposureAnalysisActions
-          key={`${exposureAnalysisSortColumn} - ${exposureAnalysisIsAscending}`} // Whether to rerender the report doc based on the sort order and column
+          key={`${exposureAnalysisSortColumn} - ${exposureAnalysisIsAscending}`}
           analysisButton={classes.analysisButton}
           bottomButton={classes.bottomButton}
           clearAnalysis={clearAnalysis}
@@ -870,6 +622,7 @@ const AnalysisPanel = memo(() => {
     );
   }, [
     analysisResult,
+    isAnalysisLoading,
     classes.analysisButton,
     classes.analysisButtonContainer,
     classes.bottomButton,
@@ -877,7 +630,6 @@ const AnalysisPanel = memo(() => {
     exposureAnalysisIsAscending,
     exposureAnalysisSortColumn,
     exposureAnalysisTableData,
-    isAnalysisLoading,
     translatedColumns,
   ]);
 
@@ -937,6 +689,8 @@ const AnalysisPanel = memo(() => {
   }, [
     analysisIsAscending,
     analysisResult,
+    isAnalysisLoading,
+    selectedHazardLayer,
     analysisSortColumn,
     analysisTableData,
     classes.analysisPanel,
@@ -945,14 +699,12 @@ const AnalysisPanel = memo(() => {
     classes.analysisTableTitle,
     classes.root,
     handleAnalysisTableOrderBy,
-    isAnalysisLoading,
     renderedAnalysisActions,
     renderedAnalysisPanelInfo,
     renderedExposureAnalysisActions,
     renderedExposureAnalysisLoading,
     renderedExposureAnalysisTable,
     renderedRunAnalysisButton,
-    selectedHazardLayer,
     showTable,
     t,
     tabValue,

@@ -488,7 +488,7 @@
         {
           "type": "TABLE",
           "startDate": "2025-04-01",
-          "hazardLayerId": "lst_day_anomaly",
+          "hazardLayerId": "spi_blended_2m",
           "baselineLayerId": "admin1_boundaries",
           "stat": "mean"
         }
