@@ -60,7 +60,7 @@ function TableBlock({
   const [sortColumn, setSortColumn] = useState<string | number>('name');
   const [isAscending, setIsAscending] = useState(true);
 
-  // Track if form has changed since last analysis
+  // Form updates state
   const [hasFormChanged, setHasFormChanged] = useState(false);
   const [wasAnalysisLoading, setWasAnalysisLoading] = useState(false);
 
@@ -194,7 +194,7 @@ function TableBlock({
         sortColumn={sortColumn}
         isAscending={isAscending}
         onSort={handleSort}
-        maxRows={mode === 'preview' ? 16 : 8} // Allow 16 rows only in preview mode
+        maxRows={mode === 'preview' ? 16 : 8}
       />
     );
   };
@@ -375,7 +375,7 @@ const useStyles = makeStyles(theme => ({
   previewHeader: {
     display: 'flex',
     justifyContent: 'space-between',
-    alignItems: 'center', // Changed from 'flex-start' to 'center' to vertically center the children
+    alignItems: 'center',
     marginBottom: theme.spacing(3),
   },
   previewTitle: {

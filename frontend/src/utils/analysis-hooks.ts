@@ -41,10 +41,6 @@ import { getFormattedDate } from 'utils/date-utils';
 import { LayerDefinitions, getDisplayBoundaryLayers } from 'config/utils';
 import type { AnalysisResult } from 'utils/analysis-utils';
 
-// ==========================================
-// SHARED ANALYSIS HOOKS
-// ==========================================
-
 export interface UseAnalysisFormOptions {
   initialHazardLayerId?: LayerKey;
   initialBaselineLayerId?: LayerKey;
@@ -273,7 +269,6 @@ export const useAnalysisExecution = (
   const map = useSelector(mapSelector);
   const { adminBoundariesExtent: extent } = useLayers();
 
-  // Scale threshold helper
   const scaleThreshold = useCallback(
     (threshold: number) =>
       formState.statistic === AggregationOperations['Area exposed']
@@ -282,7 +277,6 @@ export const useAnalysisExecution = (
     [formState.statistic],
   );
 
-  // Boundary activation helper
   const activateUniqueBoundary = useCallback(
     (forceAdminLevel?: BoundaryLayerProps) => {
       if (forceAdminLevel) {
@@ -334,7 +328,6 @@ export const useAnalysisExecution = (
     [formState.baselineLayerId, dispatch, map],
   );
 
-  // Run analysis function
   const runAnalyser = useCallback(async () => {
     if (formState.analysisResult) {
       if (clearAnalysisFunction) {
@@ -375,7 +368,6 @@ export const useAnalysisExecution = (
 
       activateUniqueBoundary(formState.adminLevelLayer);
 
-      // Update URL history if callback provided
       if (onUrlUpdate) {
         onUrlUpdate({
           analysisHazardLayerId: formState.hazardLayerId,
@@ -417,7 +409,6 @@ export const useAnalysisExecution = (
         },
       };
 
-      // Update URL history if callback provided
       if (onUrlUpdate) {
         onUrlUpdate({
           analysisHazardLayerId: formState.hazardLayerId,
