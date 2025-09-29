@@ -139,9 +139,13 @@ function getAdminBoundariesURL(adminBoundariesPath: string) {
   if (isLocalhost) {
     return defaultBoundariesPath;
   }
-  return (
-    window.location.origin + window.location.pathname + adminBoundariesPath
+  // remove the dashboard (and future subpaths) path from the pathname
+  const pathsToRemove = ['dashboard'];
+  const pathname = window.location.pathname.replace(
+    new RegExp(pathsToRemove.join('|')),
+    '',
   );
+  return window.location.origin + pathname + adminBoundariesPath;
 }
 
 const generateTableColumnsFromApiData = (
