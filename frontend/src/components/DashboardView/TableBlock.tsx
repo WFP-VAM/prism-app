@@ -24,6 +24,7 @@ import {
   DateRangeSelector,
   AdminLevelSelector,
 } from 'components/Common/AnalysisFormComponents';
+import { useSafeTranslation } from 'i18n';
 
 type TableBlockMode = 'edit' | 'preview';
 
@@ -42,6 +43,7 @@ function TableBlock({
   mode = 'edit',
 }: TableBlockProps) {
   const classes = useStyles();
+  const { t } = useSafeTranslation();
 
   const formState = useAnalysisForm({
     initialHazardLayerId,
@@ -171,7 +173,7 @@ function TableBlock({
         <Box className={classes.loadingContainer}>
           <CircularProgress size={40} />
           <Typography variant="body2" style={{ marginTop: 16 }}>
-            Loading analysis data...
+            {t('Loading analysis data...')}
           </Typography>
         </Box>
       );
@@ -181,8 +183,8 @@ function TableBlock({
       return (
         <Typography variant="body2" color="textSecondary">
           {formState.hazardLayerId
-            ? 'Configure analysis parameters to see data'
-            : 'Select a hazard layer to start'}
+            ? t('Configure analysis parameters to see data')
+            : t('Select a hazard layer to start')}
         </Typography>
       );
     }
@@ -204,10 +206,10 @@ function TableBlock({
       return '';
     }
 
-    const layerTitle = formState.selectedHazardLayer.title || 'Analysis';
+    const layerTitle = t(formState.selectedHazardLayer.title) || t('Analysis');
     const statisticName = formState.statistic
       ? aggregationOperationsToDisplay[formState.statistic] ||
-        formState.statistic
+        t(formState.statistic)
       : '';
 
     return statisticName ? `${layerTitle} (${statisticName})` : layerTitle;
@@ -251,7 +253,7 @@ function TableBlock({
             }}
           >
             <Typography variant="body1" color="textSecondary" align="center">
-              No analysis configured
+              {t('No analysis configured')}
             </Typography>
           </Box>
         )}
@@ -295,7 +297,7 @@ function TableBlock({
                   disabled={formState.isAnalysisLoading}
                   className={classes.rerunButton}
                 >
-                  Rerun Analysis
+                  {t('Rerun Analysis')}
                 </Button>
               )}
             </Box>
@@ -340,7 +342,7 @@ function TableBlock({
                   disabled={formState.isAnalysisLoading}
                   className={classes.rerunButton}
                 >
-                  Rerun Analysis
+                  {t('Rerun Analysis')}
                 </Button>
               )}
             </Box>
