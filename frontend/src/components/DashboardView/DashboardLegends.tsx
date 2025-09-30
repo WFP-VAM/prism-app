@@ -21,7 +21,6 @@ const useStyles = makeStyles(() =>
       maxHeight: 'calc(100% - 48px)',
       overflowY: 'auto',
     },
-    list: {},
   }),
 );
 
