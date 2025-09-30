@@ -72,7 +72,7 @@ function DashboardView() {
             component="h1"
             className={classes.previewTitle}
           >
-            {dashboardTitle || 'Untitled Dashboard'}
+            {dashboardTitle || t('Untitled Dashboard')}
           </Typography>
         </Box>
       )}
@@ -89,12 +89,12 @@ function DashboardView() {
                   component="span"
                   className={classes.titleBarTypography}
                 >
-                  Dashboard title
+                  {t('Dashboard title')}
                 </Typography>
                 <input
                   type="text"
                   className={classes.titleBarInput}
-                  placeholder="Enter dashboard title"
+                  placeholder={t('Enter dashboard title')}
                   value={dashboardTitle}
                   onChange={e => dispatch(setTitle(e.target.value))}
                   name="dashboard-title"
@@ -123,7 +123,7 @@ function DashboardView() {
                     {dashboardMaps.length > 1
                       ? `Map ${mapIndex + 1}`
                       : 'Map block'}{' '}
-                    — Choose map layers
+                    — {t('Choose map layers')}
                   </Typography>
                 )}
                 <div style={{ height: '700px', width: '100%' }}>
@@ -149,7 +149,7 @@ function DashboardView() {
                   />
                 );
               }
-              return <div>Content type not yet supported</div>;
+              return <div>{t('Content type not yet supported')}</div>;
             })}
           </Box>
         )}
@@ -165,7 +165,7 @@ function DashboardView() {
             className={classes.previewButton}
             size="medium"
           >
-            Preview
+            {t('Preview')}
           </Button>
         </Box>
       )}
