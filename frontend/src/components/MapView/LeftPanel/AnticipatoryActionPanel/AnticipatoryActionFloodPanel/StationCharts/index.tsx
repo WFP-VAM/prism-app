@@ -1,20 +1,34 @@
-import React, { useMemo, useState } from 'react';
+import { useMemo, useState, useRef } from 'react';
 import {
   Typography,
   makeStyles,
   createStyles,
-  Tabs,
-  Tab,
   IconButton,
   Paper,
   Button,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  CircularProgress,
 } from '@material-ui/core';
 import { Close, Fullscreen, TableChart, GetApp } from '@material-ui/icons';
 import { Line } from 'react-chartjs-2';
 import 'chartjs-plugin-annotation';
 import { useSafeTranslation } from 'i18n';
 import { FloodStation } from 'context/anticipatoryAction/AAFloodStateSlice/types';
-import { CHART_WIDTH, TABLE_WIDTH } from '../constants';
+import { useSelector } from 'react-redux';
+import { AAFloodDataSelector } from 'context/anticipatoryAction/AAFloodStateSlice';
+import sortBy from 'lodash/sortBy';
+import {
+  CHART_WIDTH,
+  ForecastWindowPerCountry,
+  TABLE_WIDTH,
+} from '../constants';
+
+const forecastWindow = ForecastWindowPerCountry.mozambique;
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -38,7 +52,6 @@ const useStyles = makeStyles(() =>
       alignItems: 'center',
       justifyContent: 'space-between',
       padding: '1rem 1rem 0 1rem',
-      borderBottom: '1px solid #e0e0e0',
     },
     title: {
       fontWeight: 'bold',
@@ -52,15 +65,37 @@ const useStyles = makeStyles(() =>
       marginTop: '-1rem',
     },
     tabs: {
-      minHeight: '48px',
+      minHeight: '34px',
+      borderBottom: '1px solid #D4D4D4',
+      display: 'flex',
+      gap: '4px',
+      margin: '0 1rem',
+    },
+    tab: {
+      border: '1px solid #D4D4D4',
+      borderBottom: 'none',
+      borderRadius: '4px 4px 0 0',
+      fontSize: '12px',
+      color: '#000',
+      textTransform: 'none',
+      background: '#F1F1F1',
+      minWidth: '150px',
+    },
+    selectedTab: {
+      background: '#FFF',
+      fontWeight: 'bold',
     },
     tabPanel: {
       flex: 1,
+      margin: '0 1rem',
+      border: '1px solid #D4D4D4',
+      borderTop: 'none',
       padding: '0.5rem',
       overflow: 'auto',
     },
     chartContainer: {
       height: '400px',
+      position: 'relative',
     },
     chartTitle: {
       marginBottom: '1rem',
@@ -85,39 +120,39 @@ const useStyles = makeStyles(() =>
         backgroundColor: 'rgba(0, 0, 0, 0.04)',
       },
     },
+    tableContainer: {
+      height: '400px',
+      overflow: 'auto',
+      color: '#000',
+    },
+    tableCell: {
+      fontFamily: 'monospace',
+      fontSize: '0.875rem',
+      padding: '8px',
+      color: '#000000',
+    },
+    tableHeader: {
+      fontWeight: 'bold',
+      backgroundColor: '#f5f5f5',
+    },
+    loadingOverlay: {
+      position: 'absolute',
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      backgroundColor: 'rgba(255, 255, 255, 0.8)',
+      zIndex: 10,
+      flexDirection: 'column',
+      gap: '1rem',
+    },
   }),
 );
 
-// Helper to fill area above threshold only (Chart.js v2 scriptable backgroundColor)
-const chartFillColor =
-  (threshold: number | null, above: string, below: string) =>
-  ({ chart }: any) => {
-    const yScale = (chart as any).scales['y-axis-0'] || (chart as any).scales.y;
-    if (!yScale) {
-      return below;
-    }
-    const maxValue = yScale.max !== undefined ? yScale.max : 100;
-    const top = yScale.getPixelForValue(maxValue);
-    const zero = yScale.getPixelForValue(threshold ?? 0);
-    const bottom = yScale.getPixelForValue(0);
-    const { ctx } = chart as any;
-    if (!ctx) {
-      return below;
-    }
-    const gradient = ctx.createLinearGradient(0, top, 0, bottom);
-    const denom = bottom - top || 1;
-    const ratio = Math.min(Math.max((zero - top) / denom, 0), 1);
-    if (threshold !== null) {
-      gradient.addColorStop(0, above);
-      gradient.addColorStop(ratio, above);
-      gradient.addColorStop(ratio, below);
-      gradient.addColorStop(1, below);
-    } else {
-      gradient.addColorStop(0, below);
-      gradient.addColorStop(1, below);
-    }
-    return gradient as CanvasGradient;
-  };
+// (removed unused chartFillColor helper)
 
 interface StationChartsProps {
   station: FloodStation;
@@ -128,45 +163,37 @@ function StationCharts({ station, onClose }: StationChartsProps) {
   const classes = useStyles();
   const { t } = useSafeTranslation();
   const [activeTab, setActiveTab] = useState(0);
+  const [viewMode, setViewMode] = useState<'chart' | 'table'>('chart');
+  const [isDownloading, setIsDownloading] = useState(false);
+  const hydrographChartRef = useRef<Line>(null);
+  const probabilityChartRef = useRef<Line>(null);
 
-  // Prepare hydrograph data (synthetic around bankfull threshold)
-  const hydrographData = useMemo(() => {
-    const days = 11; // 0..10 days lead time
-    const labels = Array.from({ length: days }, (_v, i) => `${i}`);
+  const floodState = useSelector(AAFloodDataSelector);
 
-    const { bankfull, moderate, severe } = station.thresholds;
-
-    // Create a simple rise to a peak at day 3, then gradual fall
-    const meanSeries = Array.from({ length: days }, (_v, i) => {
-      const riseRatio = Math.min(i / 3, 1); // 0 -> 1 by day 3
-      const fallRatio = i > 3 ? (i - 3) / 7 : 0; // 0 at day 3 -> 1 at day 10
-      const value = bankfull * (0.95 + riseRatio * 0.12 - fallRatio * 0.17);
-      return Number(value.toFixed(1));
+  // local date formatter to mirror trigger probability labels (MM/DD)
+  const formatShortDate = (dateStr: string) =>
+    new Date(dateStr).toLocaleDateString('en-US', {
+      month: '2-digit',
+      day: '2-digit',
     });
 
-    // Generate synthetic ensemble members around the mean
-    const numMembers = 50;
-    const ensembleDatasets = Array.from({ length: numMembers }, (_v, idx) => {
-      // Add more variability: per-member offset and a small random walk over time
-      const offset = (Math.random() - 0.5) * 0.18; // ±9%
-      const steps = Array.from(
-        { length: days },
-        () => (Math.random() - 0.5) * 0.08,
-      );
-      const walkSeries = steps.reduce<number[]>((acc, step) => {
-        const previous = acc.length ? acc[acc.length - 1] : 0;
-        const next = Math.max(-0.12, Math.min(0.12, previous + step));
-        return [...acc, next];
-      }, []);
-      const memberSeries = meanSeries.map((v, i) => {
-        const local = (Math.random() - 0.5) * 0.1; // extra local jitter ±5%
-        const factor = 1 + offset + walkSeries[i] + local;
-        const value = Math.max(0, v * factor);
-        return Number(value.toFixed(1));
-      });
-      return {
-        label: `Member ${idx + 1}`,
-        data: memberSeries,
+  // Prepare hydrograph data using fetched forecast (discharge) data
+  const hydrographData = useMemo(() => {
+    const forecast = floodState.forecastData[station.station_name] || [];
+    if (!forecast.length) {
+      return null;
+    }
+
+    // Use valid_time dates for x-axis labels (same as probability format)
+    const labels = forecast.map(p => formatShortDate(p.time));
+    const { bankfull, moderate, severe } = station.thresholds;
+
+    const membersCount = forecast[0]?.ensemble_members?.length || 0;
+    const ensembleDatasets = Array.from(
+      { length: membersCount },
+      (_v, mIdx) => ({
+        label: `Member ${mIdx + 1}`,
+        data: forecast.map(fp => fp.ensemble_members[mIdx] ?? 0),
         borderColor: 'rgba(0, 0, 0, 0.18)',
         backgroundColor: 'transparent',
         borderWidth: 1,
@@ -175,7 +202,15 @@ function StationCharts({ station, onClose }: StationChartsProps) {
         hoverRadius: 0,
         fill: false,
         tension: 0.35,
-      };
+      }),
+    );
+
+    const meanSeries = forecast.map(p => {
+      const arr = p.ensemble_members || [];
+      if (!arr.length) {
+        return 0;
+      }
+      return arr.reduce((s, v) => s + v, 0) / arr.length;
     });
 
     return {
@@ -194,7 +229,7 @@ function StationCharts({ station, onClose }: StationChartsProps) {
         },
         {
           label: `${t('Bankfull')} (${bankfull})`,
-          data: Array.from({ length: days }, () => bankfull),
+          data: Array.from({ length: labels.length }, () => bankfull),
           borderColor: '#66BB6A',
           backgroundColor: 'transparent',
           borderWidth: 2,
@@ -204,7 +239,7 @@ function StationCharts({ station, onClose }: StationChartsProps) {
         },
         {
           label: `${t('Moderate')} (${moderate})`,
-          data: Array.from({ length: days }, () => moderate),
+          data: Array.from({ length: labels.length }, () => moderate),
           borderColor: '#FFA726',
           backgroundColor: 'transparent',
           borderWidth: 2,
@@ -214,7 +249,7 @@ function StationCharts({ station, onClose }: StationChartsProps) {
         },
         {
           label: `${t('Severe')} (${severe})`,
-          data: Array.from({ length: days }, () => severe),
+          data: Array.from({ length: labels.length }, () => severe),
           borderColor: '#EF5350',
           backgroundColor: 'transparent',
           borderWidth: 2,
@@ -225,44 +260,103 @@ function StationCharts({ station, onClose }: StationChartsProps) {
         ...ensembleDatasets,
       ],
     };
-  }, [station.thresholds, t]);
+  }, [floodState.forecastData, station.station_name, station.thresholds, t]);
 
-  // Prepare trigger probability data
+  // Prepare trigger probability data from fetched probabilities
   const triggerProbabilityData = useMemo(() => {
-    if (!station.historicalData || station.historicalData.length === 0) {
+    const probs = floodState.probabilitiesData[station.station_name];
+    if (!probs || probs.length === 0) {
       return null;
     }
 
-    // Sort data by time manually to avoid fp/no-mutating-methods warning
-    const dataArray = [...station.historicalData];
-    // eslint-disable-next-line fp/no-mutating-methods
-    const sortedData = dataArray.sort(
-      (a, b) => new Date(a.time).getTime() - new Date(b.time).getTime(),
-    );
+    const sortedData = sortBy(probs, p => new Date(p.time).getTime());
 
-    // TODO - remove temp synthetic data
-    const labels = sortedData.map(d =>
-      new Date(d.time).toLocaleDateString('en-US', {
-        month: '2-digit',
-        day: '2-digit',
-        year: '2-digit',
-      }),
-    );
-    const bankfullSeries = sortedData
-      .map(d => d.bankfull_percentage)
-      .map((v, i) => (i >= 3 ? 50 : v));
-    const moderateSeries = sortedData
-      .map(d => d.moderate_percentage)
-      .map((v, i) => (i >= 3 ? 24 : v));
-    const severeSeries = sortedData
-      .map(d => d.severe_percentage)
-      .map((v, i) => (i <= 4 ? 15 : v));
+    const labels = sortedData.map(d => formatShortDate(d.time));
+    const bankfullSeries = sortedData.map(d => d.bankfull_percentage);
+    const moderateSeries = sortedData.map(d => d.moderate_percentage);
+    const severeSeries = sortedData.map(d => d.severe_percentage);
 
     const bankfullTrigger = 38;
     const moderateTrigger = 19;
     const severeTrigger = 10;
 
-    // Area fill handled by scriptable backgroundColor; no clamped series needed
+    // Forecast window indices (inclusive)
+    const clampIndex = (i: number) =>
+      Math.max(0, Math.min(labels.length - 1, i));
+    const startIdx = clampIndex(forecastWindow.start);
+    const endIdx = clampIndex(forecastWindow.end);
+
+    // Compute mean in window (inclusive) for each line
+    const meanInWindow = (arr: number[]) => {
+      const slice = arr.slice(startIdx, endIdx + 1);
+      if (!slice.length) {
+        return 0;
+      }
+      return slice.reduce((s, v) => s + v, 0) / slice.length;
+    };
+    const bankfullMean = meanInWindow(bankfullSeries);
+    const moderateMean = meanInWindow(moderateSeries);
+    const severeMean = meanInWindow(severeSeries);
+
+    // Build flat series over the window only (nulls elsewhere)
+    const flatWindowSeries = (value: number | null) =>
+      bankfullSeries.map((_v, idx) =>
+        idx >= startIdx && idx <= endIdx ? (value ?? NaN) : NaN,
+      );
+
+    // Only show mean fill for the highest severity exceeded
+    const bankfullExceeded = bankfullTrigger && bankfullMean > bankfullTrigger;
+    const moderateExceeded = moderateTrigger && moderateMean > moderateTrigger;
+    const severeExceeded = severeTrigger && severeMean > severeTrigger;
+
+    const fillDatasets: any[] = (() => {
+      if (severeExceeded) {
+        return [
+          {
+            label: t('Severe mean fill'),
+            data: flatWindowSeries(severeMean),
+            borderColor: 'rgba(0,0,0,0)',
+            backgroundColor: 'rgba(239, 83, 80, 0.25)',
+            borderWidth: 0,
+            pointRadius: 0,
+            fill: 2, // fill to Severe threshold dataset
+            tension: 0,
+            lineTension: 0,
+          },
+        ];
+      }
+      if (moderateExceeded) {
+        return [
+          {
+            label: t('Moderate mean fill'),
+            data: flatWindowSeries(moderateMean),
+            borderColor: 'rgba(0,0,0,0)',
+            backgroundColor: 'rgba(255, 167, 38, 0.25)',
+            borderWidth: 0,
+            pointRadius: 0,
+            fill: 1, // fill to Moderate threshold dataset
+            tension: 0,
+            lineTension: 0,
+          },
+        ];
+      }
+      if (bankfullExceeded) {
+        return [
+          {
+            label: t('Bankfull mean fill'),
+            data: flatWindowSeries(bankfullMean),
+            borderColor: 'rgba(0,0,0,0)',
+            backgroundColor: 'rgba(102, 187, 106, 0.25)',
+            borderWidth: 0,
+            pointRadius: 0,
+            fill: 0, // fill to Bankfull threshold dataset
+            tension: 0,
+            lineTension: 0,
+          },
+        ];
+      }
+      return [];
+    })();
 
     return {
       labels,
@@ -298,67 +392,94 @@ function StationCharts({ station, onClose }: StationChartsProps) {
           pointRadius: 0,
           fill: false,
         },
-        // Area fill only above the bankfull threshold using scriptable background
+        // Normal lines (no fill)
         {
           label: t('Bankfull'),
           data: bankfullSeries,
-          borderColor: 'rgba(102, 187, 106, 0.8)',
-          backgroundColor: chartFillColor(
-            bankfullTrigger,
-            'rgba(102, 187, 106, 0.25)',
-            'rgba(0,0,0,0)',
-          ),
-          borderWidth: 0,
-          pointRadius: 0,
-          fill: true,
+          borderColor: 'rgba(102, 187, 106, 0.4)',
+          backgroundColor: 'rgba(102, 187, 106, 0.4)',
+          borderWidth: 2,
+          showLine: false,
+          pointRadius: 3,
+          fill: false,
           tension: 0,
           lineTension: 0,
         },
-        // Moderate area and line
         {
           label: t('Moderate'),
           data: moderateSeries,
-          borderColor: 'rgba(255, 167, 38, 0.8)',
-          backgroundColor: chartFillColor(
-            moderateTrigger,
-            'rgba(255, 167, 38, 0.25)',
-            'rgba(0,0,0,0)',
-          ),
-          borderWidth: 0,
-          pointRadius: 0,
-          fill: true,
+          borderColor: 'rgba(255, 167, 38, 0.4)',
+          backgroundColor: 'rgba(255, 167, 38, 0.4)',
+          borderWidth: 2,
+          showLine: false,
+          pointRadius: 3,
+          fill: false,
           tension: 0,
           lineTension: 0,
         },
-        // Severe area and line
         {
           label: t('Severe'),
           data: severeSeries,
-          borderColor: 'rgba(239, 83, 80, 0.8)',
-          backgroundColor: chartFillColor(
-            severeTrigger,
-            'rgba(239, 83, 80, 0.25)',
-            'rgba(0,0,0,0)',
-          ),
-          borderWidth: 0,
-          pointRadius: 0,
+          borderColor: 'rgba(239, 83, 80, 0.4)',
+          backgroundColor: 'rgba(239, 83, 80, 0.4)',
+          borderWidth: 2,
+          showLine: false,
+          pointRadius: 3,
           fill: true,
           tension: 0,
           lineTension: 0,
         },
+        // Mean lines over window only (no fill)
+        {
+          label: t('Bankfull mean (window)'),
+          data: flatWindowSeries(bankfullMean),
+          borderColor: 'rgba(102, 187, 106, 1)',
+          backgroundColor: 'transparent',
+          borderWidth: 2,
+          pointRadius: 0,
+          fill: false,
+          tension: 0,
+          lineTension: 0,
+        },
+        {
+          label: t('Moderate mean (window)'),
+          data: flatWindowSeries(moderateMean),
+          borderColor: 'rgba(255, 167, 38, 1)',
+          backgroundColor: 'transparent',
+          borderWidth: 2,
+          pointRadius: 0,
+          fill: false,
+          tension: 0,
+          lineTension: 0,
+        },
+        {
+          label: t('Severe mean (window)'),
+          data: flatWindowSeries(severeMean),
+          borderColor: 'rgba(239, 83, 80, 1)',
+          backgroundColor: 'transparent',
+          borderWidth: 2,
+          pointRadius: 0,
+          fill: false,
+          tension: 0,
+          lineTension: 0,
+        },
+        // Conditional mean-to-threshold fill: include only highest severity exceeded
+        ...fillDatasets,
       ],
     };
-  }, [station.historicalData, t]);
+  }, [floodState.probabilitiesData, station.station_name, t]);
 
   const hydrographOptions = useMemo(
     () => ({
       responsive: true,
       maintainAspectRatio: false,
       legend: {
-        position: 'top' as const,
+        position: 'right' as const,
         labels: {
           usePointStyle: true,
-          boxWidth: 24,
+          boxWidth: 12,
+          padding: 15,
+          fontSize: 11,
           // Hide ensemble members from legend using the dataset label
           filter: (legendItem: any, chartData: any) => {
             const datasetLabel = String(
@@ -374,9 +495,9 @@ function StationCharts({ station, onClose }: StationChartsProps) {
             display: true,
             scaleLabel: {
               display: true,
-              labelString: t('Lead times (days)'),
+              labelString: t('Date'),
             },
-            ticks: { maxRotation: 0 },
+            ticks: { maxRotation: 0, autoSkip: true },
           },
         ],
         yAxes: [
@@ -395,31 +516,25 @@ function StationCharts({ station, onClose }: StationChartsProps) {
   );
 
   const probabilityOptions = useMemo(() => {
-    if (!station.historicalData || station.historicalData.length === 0) {
+    const probs = floodState.probabilitiesData[station.station_name];
+    if (!probs || probs.length === 0) {
       return hydrographOptions;
     }
 
-    const dataArray = [...station.historicalData];
-    // eslint-disable-next-line fp/no-mutating-methods
-    const sortedData = dataArray.sort(
-      (a, b) => new Date(a.time).getTime() - new Date(b.time).getTime(),
-    );
+    const sortedData = sortBy(probs, p => new Date(p.time).getTime());
     const labelStrings = sortedData.map(d =>
       new Date(d.time).toLocaleDateString('en-US', {
         month: '2-digit',
         day: '2-digit',
-        year: '2-digit',
       }),
     );
 
     const clampIndex = (i: number) =>
       Math.max(0, Math.min(labelStrings.length - 1, i));
     // const forecastBeginIdx = clampIndex(1);
-    const day3Idx = clampIndex(3);
-    const day7Idx = clampIndex(7);
+    const startIdx = clampIndex(forecastWindow.start);
+    const endIdx = clampIndex(forecastWindow.end);
     // const unreliableIdx = clampIndex(9);
-
-    // console.debug('sortedData', sortedData);
 
     // Compute y-axis max rounded up to the next dizaine (multiple of 10)
     const maxPct = Math.max(
@@ -461,52 +576,6 @@ function StationCharts({ station, onClose }: StationChartsProps) {
       annotation: {
         drawTime: 'beforeDatasetsDraw',
         annotations: [
-          // Probability threshold labels (bankfull/moderate/severe)
-          {
-            type: 'line',
-            mode: 'horizontal',
-            scaleID: 'y-axis-0',
-            value: 38,
-            label: {
-              enabled: true,
-              position: 'right',
-              content: `${t('Bankfull')} (38%)`,
-              backgroundColor: 'rgba(0,0,0,0)',
-              fontColor: 'rgba(102, 187, 106, 0.9)',
-              yAdjust: 10,
-              xAdjust: -5,
-            },
-          },
-          {
-            type: 'line',
-            mode: 'horizontal',
-            scaleID: 'y-axis-0',
-            value: 19,
-            label: {
-              enabled: true,
-              position: 'right',
-              content: `${t('Moderate')} (19%)`,
-              backgroundColor: 'rgba(0,0,0,0)',
-              fontColor: 'rgba(255, 167, 38, 0.9)',
-              yAdjust: 10,
-              xAdjust: -5,
-            },
-          },
-          {
-            type: 'line',
-            mode: 'horizontal',
-            scaleID: 'y-axis-0',
-            value: 10,
-            label: {
-              enabled: true,
-              position: 'right',
-              content: `${t('Severe')} (10%)`,
-              backgroundColor: 'rgba(0,0,0,0)',
-              fontColor: 'rgba(239, 83, 80, 0.9)',
-              yAdjust: 10,
-              xAdjust: -5,
-            },
-          },
           // {
           //   type: 'line',
           //   mode: 'vertical',
@@ -528,14 +597,14 @@ function StationCharts({ station, onClose }: StationChartsProps) {
             type: 'line',
             mode: 'vertical',
             scaleID: 'x-axis-0',
-            value: labelStrings[day3Idx],
+            value: labelStrings[startIdx],
             borderColor: '#2196F3',
             borderDash: [4, 4],
             borderWidth: 1,
             label: {
               enabled: true,
               position: 'top',
-              content: t('3-Day forecast'),
+              content: t('{{day}}-day forecast', { day: forecastWindow.start }),
               backgroundColor: 'rgba(0,0,0,0)',
               fontColor: '#2196F3',
               xAdjust: -50,
@@ -545,14 +614,14 @@ function StationCharts({ station, onClose }: StationChartsProps) {
             type: 'line',
             mode: 'vertical',
             scaleID: 'x-axis-0',
-            value: labelStrings[day7Idx],
+            value: labelStrings[endIdx],
             borderColor: '#9C27B0',
             borderDash: [4, 4],
             borderWidth: 1,
             label: {
               enabled: true,
               position: 'top',
-              content: t('7-Day forecast'),
+              content: t('{{day}}-day forecast', { day: forecastWindow.end }),
               backgroundColor: 'rgba(0,0,0,0)',
               fontColor: '#9C27B0',
               xAdjust: -50,
@@ -578,13 +647,147 @@ function StationCharts({ station, onClose }: StationChartsProps) {
         ],
       },
     } as any;
-  }, [station.historicalData, t, hydrographOptions]);
+  }, [
+    floodState.probabilitiesData,
+    station.station_name,
+    t,
+    hydrographOptions,
+  ]);
 
-  const handleTabChange = (_event: React.ChangeEvent<{}>, newValue: number) => {
+  const handleTabChange = (newValue: number) => {
     setActiveTab(newValue);
+    setViewMode('chart');
   };
 
-  if (!station.historicalData || station.historicalData.length === 0) {
+  const toggleViewMode = () => {
+    setViewMode(prev => (prev === 'chart' ? 'table' : 'chart'));
+  };
+
+  const download = async () => {
+    if (isDownloading) {
+      return;
+    }
+
+    setIsDownloading(true);
+    if (viewMode === 'chart') {
+      await downloadChart();
+    } else {
+      await downloadTable();
+    }
+    setIsDownloading(false);
+  };
+
+  const downloadChart = async () => {
+    // chartjs needs to render the chart instance and have ctx ready to be used in Base64 conversion
+    const maxAttempts = 50; // Max 5 seconds
+    // eslint-disable-next-line fp/no-mutation
+    for (let attempts = 0; attempts < maxAttempts; attempts += 1) {
+      const chartRef =
+        activeTab === 1 ? hydrographChartRef : probabilityChartRef;
+      const chartInstance = chartRef.current?.chartInstance;
+      if (chartInstance && chartInstance.ctx) {
+        const base64Image = chartInstance.toBase64Image();
+        const link = document.createElement('a');
+        link.setAttribute('href', base64Image);
+        const chartName =
+          activeTab === 1 ? 'Hydrograph' : 'Trigger Probability';
+        link.setAttribute(
+          'download',
+          `${station.station_name}_${chartName}.png`,
+        );
+        link.click();
+        return;
+      }
+      // eslint-disable-next-line no-await-in-loop, no-promise-executor-return
+      await new Promise(resolve => setTimeout(resolve, 100));
+    }
+  };
+
+  const downloadTable = async () => {
+    const maxAttempts = 50; // Max 5 seconds
+    // eslint-disable-next-line fp/no-mutation
+    for (let attempts = 0; attempts < maxAttempts; attempts += 1) {
+      const tableData =
+        activeTab === 1 ? hydrographTableData : triggerProbabilityTableData;
+
+      if (tableData) {
+        const csvContent = [
+          tableData.columnNames.join(','),
+          ...tableData.tableValues.map(row =>
+            row.map(cell => `"${cell}"`).join(','),
+          ),
+        ].join('\n');
+
+        const blob = new Blob([csvContent], {
+          type: 'text/csv;charset=utf-8;',
+        });
+        const link = document.createElement('a');
+        const url = URL.createObjectURL(blob);
+        link.setAttribute('href', url);
+        const tableName =
+          activeTab === 1 ? 'Hydrograph' : 'Trigger_Probability';
+        link.setAttribute(
+          'download',
+          `${station.station_name}_${tableName}.csv`,
+        );
+        document.body.appendChild(link);
+        link.click();
+        return;
+      }
+      // eslint-disable-next-line no-await-in-loop, no-promise-executor-return
+      await new Promise(resolve => setTimeout(resolve, 100));
+    }
+  };
+
+  const hydrographTableData = useMemo(() => {
+    if (!hydrographData || !hydrographData.datasets) {
+      return null;
+    }
+
+    const tableDatasets = hydrographData.datasets.slice(0, 4);
+
+    const columnNames = [t('Day'), ...tableDatasets.map(d => d.label || '')];
+
+    const tableValues = hydrographData.labels.map(
+      (rowLabel: string, rowIndex: number) => [
+        rowLabel,
+        ...tableDatasets.map(dataset => dataset.data?.[rowIndex] ?? '-'),
+      ],
+    );
+
+    return {
+      columnNames,
+      tableValues,
+    };
+  }, [hydrographData, t]);
+
+  const triggerProbabilityTableData = useMemo(() => {
+    if (!triggerProbabilityData || !triggerProbabilityData.datasets) {
+      return null;
+    }
+
+    const columnNames = [
+      t('Date'),
+      ...triggerProbabilityData.datasets.map(d => d.label || ''),
+    ];
+
+    const tableValues = triggerProbabilityData.labels.map(
+      (rowLabel: string, rowIndex: number) => [
+        rowLabel,
+        ...triggerProbabilityData.datasets.map(dataset => {
+          const value = dataset.data?.[rowIndex];
+          return value ? `${value}%` : '-';
+        }),
+      ],
+    );
+
+    return {
+      columnNames,
+      tableValues,
+    };
+  }, [triggerProbabilityData, t]);
+
+  if (!floodState.probabilitiesData[station.station_name]) {
     return (
       <div className={classes.container}>
         <Paper className={classes.paper}>
@@ -632,39 +835,129 @@ function StationCharts({ station, onClose }: StationChartsProps) {
           )}
         </div>
 
-        <Tabs
-          value={activeTab}
-          onChange={handleTabChange}
-          className={classes.tabs}
-          indicatorColor="primary"
-          textColor="primary"
-        >
-          <Tab label={t('Hydrograph')} />
-          <Tab label={t('Trigger probability')} />
-        </Tabs>
+        <div className={classes.tabs}>
+          <Button
+            disableRipple
+            className={`${classes.tab} ${activeTab === 0 ? classes.selectedTab : 0}`}
+            onClick={() => handleTabChange(0)}
+          >
+            {t('Trigger probability')}
+          </Button>
+          <Button
+            disableRipple
+            className={`${classes.tab} ${activeTab === 1 ? classes.selectedTab : 0}`}
+            onClick={() => handleTabChange(1)}
+          >
+            {t('Hydrograph')}
+          </Button>
+        </div>
 
         <div className={classes.tabPanel}>
-          {activeTab === 0 && (
-            <div className={classes.chartContainer}>
-              {hydrographData && (
-                <Line
-                  data={hydrographData}
-                  options={hydrographOptions as any}
-                />
-              )}
-            </div>
-          )}
+          {activeTab === 1 &&
+            (viewMode === 'chart' ? (
+              <div className={classes.chartContainer}>
+                {hydrographData && (
+                  <Line
+                    ref={hydrographChartRef}
+                    data={hydrographData}
+                    options={hydrographOptions as any}
+                  />
+                )}
+                {isDownloading && (
+                  <div className={classes.loadingOverlay}>
+                    <CircularProgress />
+                    <Typography variant="body2">
+                      {t('Preparing chart for download...')}
+                    </Typography>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <TableContainer className={classes.tableContainer}>
+                <Table size="small">
+                  <TableHead>
+                    <TableRow>
+                      {hydrographTableData?.columnNames.map(columnName => (
+                        <TableCell
+                          key={columnName}
+                          className={`${classes.tableCell} ${classes.tableHeader}`}
+                        >
+                          {columnName}
+                        </TableCell>
+                      ))}
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {hydrographTableData?.tableValues.map(row => (
+                      <TableRow>
+                        {row.map(cellValue => (
+                          <TableCell
+                            key={`${cellValue}`}
+                            className={classes.tableCell}
+                          >
+                            {cellValue}
+                          </TableCell>
+                        ))}
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+            ))}
 
-          {activeTab === 1 && (
-            <div className={classes.chartContainer}>
-              {triggerProbabilityData && (
-                <Line
-                  data={triggerProbabilityData}
-                  options={probabilityOptions as any}
-                />
-              )}
-            </div>
-          )}
+          {activeTab === 0 &&
+            (viewMode === 'chart' ? (
+              <div className={classes.chartContainer}>
+                {triggerProbabilityData && (
+                  <Line
+                    ref={probabilityChartRef}
+                    data={triggerProbabilityData}
+                    options={probabilityOptions as any}
+                  />
+                )}
+                {isDownloading && (
+                  <div className={classes.loadingOverlay}>
+                    <CircularProgress />
+                    <Typography variant="body2">
+                      {t('Preparing chart for download...')}
+                    </Typography>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <TableContainer className={classes.tableContainer}>
+                <Table size="small">
+                  <TableHead>
+                    <TableRow>
+                      {triggerProbabilityTableData?.columnNames.map(
+                        columnName => (
+                          <TableCell
+                            key={columnName}
+                            className={`${classes.tableCell} ${classes.tableHeader}`}
+                          >
+                            {columnName}
+                          </TableCell>
+                        ),
+                      )}
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {triggerProbabilityTableData?.tableValues.map(row => (
+                      <TableRow>
+                        {row.map(cellValue => (
+                          <TableCell
+                            key={cellValue}
+                            className={classes.tableCell}
+                          >
+                            {cellValue}
+                          </TableCell>
+                        ))}
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+            ))}
         </div>
 
         <div className={classes.actionButtons}>
@@ -679,15 +972,20 @@ function StationCharts({ station, onClose }: StationChartsProps) {
             className={classes.actionButton}
             type="button"
             startIcon={<TableChart />}
+            onClick={toggleViewMode}
           >
-            {t('View table')}
+            {viewMode === 'chart' ? t('View table') : t('View chart')}
           </Button>
           <Button
             className={classes.actionButton}
             type="button"
-            startIcon={<GetApp />}
+            startIcon={
+              isDownloading ? <CircularProgress size={16} /> : <GetApp />
+            }
+            onClick={download}
+            disabled={isDownloading}
           >
-            {t('Download')}
+            {isDownloading ? t('Downloading...') : t('Download')}
           </Button>
         </div>
       </Paper>

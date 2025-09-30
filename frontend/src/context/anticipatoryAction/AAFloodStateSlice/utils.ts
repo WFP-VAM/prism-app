@@ -21,8 +21,19 @@ function toNumber(value: unknown): number {
 
 function normalizeFloodRow(row: any): FloodStationData {
   const time: string = String(row.time ?? '').trim();
-  const riskLevel =
-    (row.risk_level as AAFloodRiskLevelType) ?? 'Below bankfull';
+  // Temporary fix for risk level
+  // Eventually we should fix the data source
+  const cleanedRisk = String(row.risk_level ?? '')
+    .replace('Above ', '')
+    .replace('Below moderate', 'Bankfull')
+    .trim();
+  const riskLevel = (
+    cleanedRisk
+      ? `${cleanedRisk.charAt(0).toUpperCase()}${cleanedRisk
+          .slice(1)
+          .toLowerCase()}`
+      : 'Below bankfull'
+  ) as AAFloodRiskLevelType;
   return {
     station_name: String(row.station_name ?? ''),
     river_name: String(row.river_name ?? ''),
@@ -130,17 +141,14 @@ export function parseAndTransformFloodData(data: FloodStationData[]): {
 
       // Find the highest severity level for this date
       const dateData = normalizedData.filter(row => row.time === dateStr);
-      const highestSeverity = dateData.reduce((highest, current) => {
-        const severityOrder = {
-          Severe: 4,
-          Moderate: 3,
-          Bankfull: 2,
-          'Below bankfull': 1,
-        };
-        const currentOrder = severityOrder[current.risk_level] || 0;
-        const highestOrder = severityOrder[highest.risk_level] || 0;
-        return currentOrder > highestOrder ? current : highest;
-      }, dateData[0]);
+      const highestSeverity = dateData.reduce(
+        (highest, current) =>
+          getFloodRiskSeverity(current.risk_level) >
+          getFloodRiskSeverity(highest.risk_level)
+            ? current
+            : highest,
+        dateData[0],
+      );
 
       return {
         displayDate: date.setUTCHours(12, 0, 0, 0),
@@ -183,5 +191,22 @@ export function getFloodRiskColor(riskLevel: AAFloodRiskLevelType): string {
       return '#F44336'; // Red
     default:
       return '#9E9E9E'; // Gray
+  }
+}
+
+export function getFloodRiskSeverity(
+  riskLevel: AAFloodRiskLevelType | string | undefined,
+): number {
+  switch (riskLevel) {
+    case 'Severe':
+      return 4;
+    case 'Moderate':
+      return 3;
+    case 'Bankfull':
+      return 2;
+    case 'Below bankfull':
+      return 1;
+    default:
+      return 0;
   }
 }

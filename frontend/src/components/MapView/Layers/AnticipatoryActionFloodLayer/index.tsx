@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import { AnticipatoryActionLayerProps, AnticipatoryAction } from 'config/types';
 import { useAnticipatoryAction } from 'components/MapView/LeftPanel/AnticipatoryActionPanel/useAnticipatoryAction';
-import { Layer, Source } from 'react-map-gl/maplibre';
+import { Layer, Source, Marker } from 'react-map-gl/maplibre';
 import { useDefaultDate } from 'utils/useDefaultDate';
 import { useSelector, useDispatch } from 'react-redux';
 import { dateRangeSelector } from 'context/mapStateSlice/selectors';
@@ -9,10 +9,39 @@ import { setAAFloodSelectedStation } from 'context/anticipatoryAction/AAFloodSta
 import { useMapCallback, getLayerMapId } from 'utils/map-utils';
 import { MapLayerMouseEvent } from 'maplibre-gl';
 import { hidePopup } from 'context/tooltipStateSlice';
+import { Tooltip } from '@material-ui/core';
 
 interface AnticipatoryActionFloodLayerProps {
   layer: AnticipatoryActionLayerProps;
 }
+
+const getCircleColor = (riskLevel: string) => {
+  switch (riskLevel) {
+    case 'Severe':
+      return '#E63701';
+    case 'Moderate':
+      return '#FF8C21';
+    case 'Bankfull':
+      return '#FFF503';
+    default:
+      return '#6EB274';
+  }
+};
+
+const getBorderColor = (riskLevel: string) => {
+  switch (riskLevel) {
+    case 'Severe':
+      return '#E63701';
+    case 'Moderate':
+      return '#FF8C21';
+    case 'Bankfull':
+      return '#FFCC00';
+    default:
+      return '#3C8B43';
+  }
+};
+
+const CIRCLE_SIZE = 16;
 
 function AnticipatoryActionFloodLayer({
   layer,
@@ -24,15 +53,18 @@ function AnticipatoryActionFloodLayer({
   const { startDate } = useSelector(dateRangeSelector);
   const dispatch = useDispatch();
 
+  const handleFloodStationEvent = (stationName?: string) => {
+    dispatch(hidePopup()); // Hide any existing popups
+    if (stationName) {
+      dispatch(setAAFloodSelectedStation(stationName));
+    }
+  };
+
   // Handle click events on flood stations
   const onFloodStationClick = () => (e: MapLayerMouseEvent) => {
     e.preventDefault();
-    dispatch(hidePopup()); // Hide any existing popups
-
     const feature = e.features?.[0];
-    if (feature?.properties?.station_name) {
-      dispatch(setAAFloodSelectedStation(feature.properties.station_name));
-    }
+    handleFloodStationEvent(feature?.properties?.station_name);
   };
 
   useMapCallback<'click', null>(
@@ -97,57 +129,80 @@ function AnticipatoryActionFloodLayer({
     return null;
   }
 
+  const filteredStations = stations.filter((station: any) => {
+    if (!selectedDateKey) {
+      return true;
+    }
+    const stationDataForDate = station.allData?.[selectedDateKey];
+    return !!stationDataForDate;
+  });
+
   return (
-    <Source
-      id={`${layer.id}-source`}
-      type="geojson"
-      data={floodStationsGeoJSON}
-    >
-      <Layer
-        id={getLayerMapId(`${layer.id}-circles`)}
-        type="circle"
-        paint={{
-          'circle-radius': [
-            'case',
-            ['==', ['get', 'risk_level'], 'Severe'],
-            12,
-            ['==', ['get', 'risk_level'], 'Moderate'],
-            10,
-            ['==', ['get', 'risk_level'], 'Bankfull'],
-            8,
-            6,
-          ],
-          'circle-color': [
-            'case',
-            ['==', ['get', 'risk_level'], 'Severe'],
-            '#F44336',
-            ['==', ['get', 'risk_level'], 'Moderate'],
-            '#FF9800',
-            ['==', ['get', 'risk_level'], 'Bankfull'],
-            '#FFC107',
-            '#4CAF50',
-          ],
-          'circle-stroke-width': 2,
-          'circle-stroke-color': '#ffffff',
-        }}
-      />
-      <Layer
-        id={getLayerMapId(`${layer.id}-labels`)}
-        type="symbol"
-        layout={{
-          'text-field': ['get', 'station_name'],
-          'text-font': ['Open Sans Regular', 'Arial Unicode MS Regular'],
-          'text-size': 12,
-          'text-offset': [0, 2],
-          'text-anchor': 'top',
-        }}
-        paint={{
-          'text-color': '#000000',
-          'text-halo-color': '#ffffff',
-          'text-halo-width': 1,
-        }}
-      />
-    </Source>
+    <>
+      {filteredStations.map(station => {
+        if (!station.coordinates) {
+          return null;
+        }
+
+        const stationData = selectedDateKey
+          ? station.allData?.[selectedDateKey]
+          : station.currentData;
+
+        const riskLevel = stationData?.risk_level || 'Below bankfull';
+        const circleColor = getCircleColor(riskLevel);
+        const borderColor = getBorderColor(riskLevel);
+
+        return (
+          <Marker
+            key={`flood-station-${station.location_id}`}
+            longitude={station.coordinates.longitude}
+            latitude={station.coordinates.latitude}
+            anchor="center"
+          >
+            <Tooltip title={station.station_name} arrow>
+              <button
+                style={{
+                  width: CIRCLE_SIZE,
+                  height: CIRCLE_SIZE,
+                  boxSizing: 'content-box',
+                  padding: 0,
+                  borderRadius: '50%',
+                  backgroundColor: circleColor,
+                  border: `2px solid ${borderColor}`,
+                  cursor: 'pointer',
+                }}
+                type="button"
+                onClick={() => {
+                  handleFloodStationEvent(station.station_name);
+                }}
+              />
+            </Tooltip>
+          </Marker>
+        );
+      })}
+      <Source
+        id={`${layer.id}-source`}
+        type="geojson"
+        data={floodStationsGeoJSON}
+      >
+        <Layer
+          id={getLayerMapId(`${layer.id}-labels`)}
+          type="symbol"
+          layout={{
+            'text-field': ['get', 'station_name'],
+            'text-font': ['Open Sans Regular', 'Arial Unicode MS Regular'],
+            'text-size': 12,
+            'text-offset': [0, 2],
+            'text-anchor': 'top',
+          }}
+          paint={{
+            'text-color': '#000000',
+            'text-halo-color': '#ffffff',
+            'text-halo-width': 1,
+          }}
+        />
+      </Source>
+    </>
   );
 }
 
