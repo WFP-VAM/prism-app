@@ -1033,6 +1033,7 @@ export enum DashboardElementType {
 export interface DashboardChartConfig {
   type: DashboardElementType.CHART;
   startDate: string;
+  endDate?: string;
   wmsLayerId: string;
   adminUnitLevel?: number;
   adminUnitId?: number;

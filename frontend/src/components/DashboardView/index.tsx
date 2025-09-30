@@ -4,7 +4,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useState, useEffect } from 'react';
 import { useSafeTranslation } from 'i18n';
 import { black, cyanBlue } from 'muiTheme';
-import type { DashboardTextConfig } from 'config/types';
+import type { DashboardTextConfig, DashboardChartConfig } from 'config/types';
 
 import MapBlock from './MapBlock';
 import {
@@ -16,6 +16,7 @@ import {
 import { clearAnalysisResult } from '../../context/analysisResultStateSlice';
 import TextBlock from './TextBlock';
 import TableBlock from './TableBlock';
+import ChartBlock from './ChartBlock';
 
 type DashboardMode = 'edit' | 'preview';
 
@@ -179,7 +180,23 @@ function DashboardView() {
                   />
                 );
               }
-              return <div>{t('Content type not yet supported')}</div>;
+              if (element.type === 'CHART') {
+                const chartElement = element as DashboardChartConfig;
+                return (
+                  <ChartBlock
+                    // eslint-disable-next-line react/no-array-index-key
+                    key={`chart-block-${index}`}
+                    index={index}
+                    startDate={chartElement.startDate}
+                    endDate={chartElement.endDate}
+                    wmsLayerId={chartElement.wmsLayerId}
+                    adminUnitLevel={chartElement.adminUnitLevel}
+                    adminUnitId={chartElement.adminUnitId}
+                    mode={mode}
+                  />
+                );
+              }
+              return null;
             })}
           </Box>
         )}

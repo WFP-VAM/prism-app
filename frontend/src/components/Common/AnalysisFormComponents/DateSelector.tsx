@@ -82,6 +82,9 @@ const useStyles = makeStyles(() => ({
   analysisPanelParamText: {
     width: '100%',
     color: 'black',
+    '& input': {
+      color: 'black',
+    },
   },
   calendarPopper: {
     zIndex: 3,
