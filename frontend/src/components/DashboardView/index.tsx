@@ -10,23 +10,28 @@ import {
 import { ArrowForward, Edit, VisibilityOutlined } from '@material-ui/icons';
 import { useSelector, useDispatch } from 'react-redux';
 import { useState } from 'react';
-import type { DashboardTextConfig } from 'config/types';
+import { useSafeTranslation } from 'i18n';
 import { black, cyanBlue } from 'muiTheme';
-import TextBlock from './TextBlock';
-import DashboardPreview from './DashboardPreview';
+import type { DashboardTextConfig } from 'config/types';
 
+import MapBlock from './MapBlock';
 import {
   dashboardTitleSelector,
   setTitle,
   dashboardFlexElementsSelector,
+  dashboardMapsSelector,
 } from '../../context/dashboardStateSlice';
+import TextBlock from './TextBlock';
+import DashboardPreview from './DashboardPreview';
 
 function DashboardView() {
   const classes = useStyles();
   const dashboardTitle = useSelector(dashboardTitleSelector);
   const dashboardFlexElements = useSelector(dashboardFlexElementsSelector);
+  const dashboardMaps = useSelector(dashboardMapsSelector);
   const dispatch = useDispatch();
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
+  const { t } = useSafeTranslation();
 
   const handlePreviewClick = () => {
     setIsPreviewOpen(true);
@@ -47,38 +52,58 @@ function DashboardView() {
                 component="span"
                 className={classes.titleBarTypography}
               >
-                Dashboard title
+                {t('Dashboard title')}
               </Typography>
               <input
                 type="text"
                 className={classes.titleBarInput}
-                placeholder="Enter dashboard title"
+                placeholder={t('Enter dashboard title')}
                 value={dashboardTitle}
                 onChange={e => dispatch(setTitle(e.target.value))}
                 name="dashboard-title"
               />
             </label>
           </Box>
-          <Box className={classes.grayCard}>
-            <div>MAP PLACEHOLDER</div>
+          <div className={classes.mapsContainer}>
+            {dashboardMaps.map((_, mapIndex) => (
+              // eslint-disable-next-line react/no-array-index-key
+              <Box key={`map-${mapIndex}`} className={classes.grayCard}>
+                <Typography
+                  variant="h3"
+                  component="h3"
+                  className={classes.blockLabel}
+                >
+                  {dashboardMaps.length > 1
+                    ? `${t('Map')} ${mapIndex + 1}`
+                    : t('Map block ')}
+                  {t('— Choose map layers')}
+                </Typography>
+                <div style={{ height: '700px', width: '100%' }}>
+                  <MapBlock mapIndex={mapIndex} />
+                </div>
+              </Box>
+            ))}
+          </div>
+        </Box>
+        {dashboardFlexElements.length > 0 && (
+          <Box className={classes.trailingContentArea}>
+            {dashboardFlexElements?.map((element, index) => {
+              if (element.type === 'TEXT') {
+                const content = (element as DashboardTextConfig)?.content || '';
+                return (
+                  <TextBlock
+                    // eslint-disable-next-line react/no-array-index-key
+                    key={`text-block-${index}`}
+                    content={content}
+                    index={index}
+                  />
+                );
+              }
+              // TODO: Remove warning/error before launch, when all content types should be supported
+              return <div>{t('Content type not yet supported')}</div>;
+            })}
           </Box>
-        </Box>
-        <Box className={classes.trailingContentArea}>
-          {dashboardFlexElements?.map((element, index) => {
-            if (element.type === 'TEXT') {
-              const content = (element as DashboardTextConfig)?.content || '';
-              return (
-                <TextBlock
-                  // eslint-disable-next-line react/no-array-index-key
-                  key={`text-block-${index}`}
-                  content={content}
-                  index={index}
-                />
-              );
-            }
-            return <div>Content type not yet supported</div>;
-          })}
-        </Box>
+        )}
       </Box>
       <Box className={classes.toolbar}>
         <Button
@@ -89,7 +114,7 @@ function DashboardView() {
           className={classes.previewButton}
           size="medium"
         >
-          Preview
+          {t('Preview')}
         </Button>
       </Box>
 
@@ -109,7 +134,7 @@ function DashboardView() {
             onClick={handleClosePreview}
             size="medium"
           >
-            Back to Edit
+            {t('Back to Edit')}
           </Button>
           <Button
             color="primary"
@@ -119,7 +144,7 @@ function DashboardView() {
             size="medium"
             style={{ backgroundColor: cyanBlue, color: black }}
           >
-            Publish
+            {t('Publish')}
           </Button>
         </DialogActions>
         <DialogContent className={classes.dialogContent}>
@@ -131,6 +156,11 @@ function DashboardView() {
 }
 
 const useStyles = makeStyles(() => ({
+  blockLabel: {
+    fontWeight: 600,
+    fontSize: 16,
+    marginBottom: 12,
+  },
   container: {
     display: 'flex',
     flexDirection: 'column',
@@ -144,6 +174,7 @@ const useStyles = makeStyles(() => ({
     gap: 16,
     flex: 1,
     overflow: 'auto',
+    paddingBottom: 80, // Add extra padding to account for fixed toolbar
   },
   leadingContentArea: {
     flex: '2',
@@ -154,8 +185,8 @@ const useStyles = makeStyles(() => ({
   grayCard: {
     background: '#F1F1F1',
     borderRadius: 8,
-    width: '100%',
     marginBottom: 16,
+    padding: 12,
   },
   titleBarLabel: {
     display: 'flex',
@@ -163,7 +194,6 @@ const useStyles = makeStyles(() => ({
     marginRight: 16,
     fontWeight: 600,
     fontSize: 16,
-    padding: 16,
   },
   titleBarTypography: {
     flex: '1 0 fit-content',
@@ -189,7 +219,7 @@ const useStyles = makeStyles(() => ({
     padding: '12px 16px',
     display: 'flex',
     justifyContent: 'center',
-    zIndex: 1000,
+    zIndex: 1400,
   },
   previewButton: {
     textTransform: 'none',
@@ -208,6 +238,15 @@ const useStyles = makeStyles(() => ({
   },
   dialogContent: {
     padding: 0,
+  },
+  mapsContainer: {
+    display: 'flex',
+    gap: '16px',
+    width: '100%',
+    '& > .MuiBox-root': {
+      flex: 1,
+      minWidth: 0, // Prevents flex items from overflowing
+    },
   },
 }));
 

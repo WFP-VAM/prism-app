@@ -18,6 +18,7 @@ import {
   layersSelector,
   dateRangeSelector,
 } from 'context/mapStateSlice/selectors';
+import { appConfig } from 'config';
 
 type MapGetter = () => MaplibreMap | undefined;
 
@@ -31,6 +32,7 @@ export interface UnifiedMapState extends MapState {
     removeLayerData: (layer: LayerType) => void;
     setBoundaryRelationData: (data: BoundaryRelationsDict) => void;
   };
+  isGlobalMap: boolean;
 }
 
 export function useMapState(): UnifiedMapState {
@@ -55,6 +57,12 @@ export function useMapState(): UnifiedMapState {
     mapInstanceContext && mapInstanceContext.selectors.selectMap
       ? mapInstanceContext.selectors.selectMap
       : (state: any) => state.mapState.maplibreMap,
+  );
+
+  const minMapBounds = useSelector(
+    mapInstanceContext && mapInstanceContext.selectors.selectMinMapBounds
+      ? mapInstanceContext.selectors.selectMinMapBounds
+      : (_state: any) => appConfig.map.boundingBox,
   );
 
   const maplibreMap = mapGetter;
@@ -106,10 +114,12 @@ export function useMapState(): UnifiedMapState {
     layers,
     dateRange,
     maplibreMap,
+    minMapBounds,
     actions,
     errors: [],
     layersData: [],
     loadingLayerIds: [],
     boundaryRelationData: {},
+    isGlobalMap: !mapInstanceContext,
   };
 }

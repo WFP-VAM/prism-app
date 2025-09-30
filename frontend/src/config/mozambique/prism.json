@@ -468,15 +468,21 @@
   },
   "configuredReports": [
     {
-      "title": "Population Exposure",
-      "selectedDate": "2025-01-01",
-      "mapPosition": "left",
-      "minMapBounds": [31, -25, 40, -11],
-      "mapLayers": [],
+      "title": "Spring Dashboard",
+      "maps": [
+        {
+          "defaultDate": "2025-04-01",
+          "mapPosition": "left",
+          "minMapBounds": [31, -25, 40, -11],
+          "preSelectedMapLayers": [
+            { "layerId": "lst_day_anomaly", "opacity": 0.7 }
+          ]
+        }
+      ],
       "flexElements": [
         {
           "type": "TEXT",
-          "content": "Here is some pre-configured text",
+          "content": "Spring Dashboard - April 2025 Analysis",
           "textUpdatedAt": "2025-03-01"
         },
         {
@@ -484,6 +490,52 @@
           "content": ""
         }
       ]
+    },
+    {
+      "title": "Summer Dashboard",
+      "maps": [
+        {
+          "defaultDate": "2025-06-01",
+          "mapPosition": "left",
+          "minMapBounds": [32, -20, 38, -15],
+          "preSelectedMapLayers": [
+            { "layerId": "lst_day_anomaly", "opacity": 0.7 }
+          ]
+        }
+      ],
+      "flexElements": [
+        {
+          "type": "TEXT",
+          "content": "Summer Dashboard - June 2025 Analysis",
+          "textUpdatedAt": "2025-03-01"
+        },
+        {
+          "type": "TEXT",
+          "content": ""
+        }
+      ]
+    },
+    {
+      "title": "Precipitation Comparison Dashboard",
+      "maps": [
+        {
+          "defaultDate": "2025-05-01",
+          "mapPosition": "left",
+          "minMapBounds": [31, -25, 40, -11],
+          "preSelectedMapLayers": [
+            { "layerId": "precip_blended_dekad", "opacity": 0.8 }
+          ]
+        },
+        {
+          "defaultDate": "2025-05-21",
+          "mapPosition": "right",
+          "minMapBounds": [31, -25, 40, -11],
+          "preSelectedMapLayers": [
+            { "layerId": "precip_blended_dekad", "opacity": 0.8 }
+          ]
+        }
+      ],
+      "flexElements": []
     }
   ]
 }

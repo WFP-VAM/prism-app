@@ -31,6 +31,7 @@ import {
   leftPanelTabValueSelector,
   setTabValue,
 } from 'context/leftPanelStateSlice';
+import { setSelectedDashboard } from 'context/dashboardStateSlice';
 import GoToBoundaryDropdown from 'components/Common/BoundaryDropdown/goto';
 import Legends from 'components/MapView/Legends';
 import {
@@ -125,6 +126,7 @@ function NavBar() {
   const location = useLocation();
   const classes = useStyles();
   const tabValue = useSelector(leftPanelTabValueSelector);
+  const isDashboardMode = tabValue === Panel.Dashboard;
   const theme = useTheme();
   const smDown = useMediaQuery(theme.breakpoints.down('sm'));
   const mdUp = useMediaQuery(theme.breakpoints.up('md'));
@@ -191,6 +193,7 @@ function NavBar() {
     handleMenuClose(panel.label);
 
     if (panel.panel === Panel.Dashboard && child.reportIndex !== undefined) {
+      dispatch(setSelectedDashboard(child.reportIndex));
       dispatch(setTabValue(Panel.Dashboard));
       history.push('/dashboard');
     } else {
@@ -280,7 +283,7 @@ function NavBar() {
             </div>
           </div>
           <div className={classes.rightSideContainer}>
-            <Legends />
+            {!isDashboardMode && <Legends />}
             <PrintImage />
             {buttons}
             <About />

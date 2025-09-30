@@ -10,7 +10,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import AnalysisLayer from 'components/MapView/Layers/AnalysisLayer';
 import SelectionLayer from 'components/MapView/Layers/SelectionLayer';
 import MapTooltip from 'components/MapView/MapTooltip';
-import { setMap } from 'context/mapStateSlice';
 import { appConfig } from 'config';
 import useMapOnClick from 'components/MapView/useMapOnClick';
 import { setBounds, setLocation } from 'context/mapBoundaryInfoStateSlice';
@@ -35,7 +34,11 @@ import {
 } from 'components/MapView/Layers';
 import useLayers from 'utils/layers-utils';
 import MapGL, { MapEvent, MapRef } from 'react-map-gl/maplibre';
-import { MapSourceDataEvent, Map as MaplibreMap } from 'maplibre-gl';
+import {
+  LngLatBoundsLike,
+  MapSourceDataEvent,
+  Map as MaplibreMap,
+} from 'maplibre-gl';
 
 import 'maplibre-gl/dist/maplibre-gl.css';
 import { leftPanelTabValueSelector } from 'context/leftPanelStateSlice';
@@ -71,7 +74,7 @@ const componentTypes: LayerComponentsMap<LayerType> = {
 const LAYERS_ABOVE_BOUNDARIES = ['anticipatory_action', 'geojson_polygon'];
 
 const {
-  map: { boundingBox, minZoom, maxZoom, maxBounds },
+  map: { minZoom, maxZoom, maxBounds },
 } = appConfig;
 
 const MapComponent = memo(() => {
@@ -81,7 +84,9 @@ const MapComponent = memo(() => {
 
   const { selectedLayers, boundaryLayerId } = useLayers();
 
-  const selectedMap = useMapState()?.maplibreMap();
+  const mapState = useMapState();
+  const selectedMap = mapState?.maplibreMap();
+  const isGlobalMap = mapState?.isGlobalMap;
   const tabValue = useSelector(leftPanelTabValueSelector);
 
   const panelHidden = tabValue === Panel.None;
@@ -93,14 +98,23 @@ const MapComponent = memo(() => {
   const fitBoundsOptions = useMemo(
     () => ({
       duration: 0,
-      padding: {
-        bottom: 150, // room for dates.
-        left: panelHidden ? 30 : 500, // room for the left panel if active.
-        right: 60,
-        top: 70,
-      },
+      padding: isGlobalMap
+        ? {
+            // Main map view - original padding
+            bottom: 150, // room for dates.
+            left: panelHidden ? 30 : 500, // room for the left panel if active.
+            right: 60,
+            top: 70,
+          }
+        : {
+            // MapBlock has different layout - left panel is 1/3 width, date selector below
+            bottom: 125, // room for date selector below
+            left: 20, // minimal padding since left panel is separate
+            right: 150,
+            top: 70,
+          },
     }),
-    [panelHidden],
+    [panelHidden, isGlobalMap],
   );
 
   const showBoundaryInfo = useMemo(
@@ -186,7 +200,7 @@ const MapComponent = memo(() => {
     const { layers } = map.getStyle();
     // Find the first symbol on the map to make sure we add boundary layers below them.
     setFirstSymbolId(layers?.find(layer => layer.type === 'symbol')?.id);
-    dispatch(setMap(() => mapRef.current?.getMap() || undefined));
+    mapState.actions.setMap(() => mapRef.current?.getMap() || undefined);
     if (showBoundaryInfo) {
       watchBoundaryChange(map);
     }
@@ -225,7 +239,7 @@ const MapComponent = memo(() => {
       minZoom={minZoom}
       maxZoom={maxZoom}
       initialViewState={{
-        bounds: boundingBox,
+        bounds: mapState.minMapBounds as LngLatBoundsLike,
         fitBoundsOptions: { padding: fitBoundsOptions.padding },
       }}
       mapStyle={mapStyle.toString()}
