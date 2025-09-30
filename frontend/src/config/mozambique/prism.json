@@ -535,7 +535,18 @@
           ]
         }
       ],
-      "flexElements": []
+      "flexElements": [
+        {
+          "type": "TEXT",
+          "content": "Precipitation Comparison Dashboard - May 1 2025\n\nAdditional notes here",
+          "textUpdatedAt": "2025-09-01"
+        },
+        {
+          "type": "TEXT",
+          "content": "Precipitation Comparison Dashboard - May 21 2025\n\nAdditional notes here",
+          "textUpdatedAt": "2025-09-01"
+        }
+      ]
     }
   ]
 }
