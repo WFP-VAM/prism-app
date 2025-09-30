@@ -7,7 +7,7 @@ const DashboardLegends = memo(() => {
 
   return (
     <aside className={classes.container}>
-      <LegendItemsList listStyle={classes.list} />
+      <LegendItemsList />
     </aside>
   );
 });
