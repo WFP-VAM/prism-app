@@ -79,6 +79,7 @@ const useStyles = makeStyles(() =>
       color: '#000',
       textTransform: 'none',
       background: '#F1F1F1',
+      minWidth: '150px',
     },
     selectedTab: {
       background: '#FFF',
