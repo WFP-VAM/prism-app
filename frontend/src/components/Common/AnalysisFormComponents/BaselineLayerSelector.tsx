@@ -27,7 +27,7 @@ function BaselineLayerSelector({
         setValue={onChange}
         className={className || classes.dropdown}
         label={t('Baseline Layer')}
-        placeholder="Choose baseline layer"
+        placeholder={t('Choose baseline layer')}
         disabled={disabled}
       />
     </div>
