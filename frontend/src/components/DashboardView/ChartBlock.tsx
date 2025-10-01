@@ -6,7 +6,11 @@ import {
   CircularProgress,
   Button,
 } from '@material-ui/core';
-import { DashboardChartConfig, AdminLevelType } from 'config/types';
+import {
+  DashboardChartConfig,
+  AdminLevelType,
+  DashboardMode,
+} from 'config/types';
 import { useChartForm, useChartData } from 'utils/chart-hooks';
 import Chart from 'components/Common/Chart';
 import {
@@ -16,11 +20,9 @@ import {
 } from 'components/Common/ChartFormComponents';
 import { useSafeTranslation } from 'i18n';
 
-type ChartBlockMode = 'edit' | 'preview';
-
 interface ChartBlockProps extends Partial<DashboardChartConfig> {
   index: number;
-  mode?: ChartBlockMode;
+  mode?: DashboardMode;
 }
 
 function ChartBlock({
@@ -29,7 +31,7 @@ function ChartBlock({
   endDate: initialEndDate,
   wmsLayerId: initialChartLayerId,
   adminUnitLevel: initialAdminLevel,
-  mode = 'edit',
+  mode = DashboardMode.EDIT,
 }: ChartBlockProps) {
   const classes = useStyles();
   const { t } = useSafeTranslation();
@@ -106,7 +108,7 @@ function ChartBlock({
     return `${startStr} - ${endStr}`;
   };
 
-  if (mode === 'preview') {
+  if (mode === DashboardMode.PREVIEW) {
     return (
       <Box className={classes.previewContainer}>
         {formState.selectedChartLayer ? (

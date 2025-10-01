@@ -1030,6 +1030,12 @@ export enum DashboardElementType {
   TABLE = 'TABLE',
 }
 
+export enum DashboardMode {
+  EDIT = 'edit',
+  PREVIEW = 'preview',
+  EXPORT = 'export',
+}
+
 export interface DashboardChartConfig {
   type: DashboardElementType.CHART;
   startDate: string;

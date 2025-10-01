@@ -4,7 +4,11 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useState, useEffect } from 'react';
 import { useSafeTranslation } from 'i18n';
 import { black, cyanBlue } from 'muiTheme';
-import type { DashboardTextConfig, DashboardChartConfig } from 'config/types';
+import {
+  DashboardTextConfig,
+  DashboardChartConfig,
+  DashboardMode,
+} from 'config/types';
 
 import MapBlock from './MapBlock';
 import {
@@ -18,15 +22,13 @@ import TextBlock from './TextBlock';
 import TableBlock from './TableBlock';
 import ChartBlock from './ChartBlock';
 
-type DashboardMode = 'edit' | 'preview';
-
 function DashboardView() {
   const classes = useStyles();
   const dashboardTitle = useSelector(dashboardTitleSelector);
   const dashboardFlexElements = useSelector(dashboardFlexElementsSelector);
   const dashboardMaps = useSelector(dashboardMapsSelector);
   const dispatch = useDispatch();
-  const [mode, setMode] = useState<DashboardMode>('preview');
+  const [mode, setMode] = useState<DashboardMode>(DashboardMode.PREVIEW);
   const { t } = useSafeTranslation();
 
   // Clear any existing analysis state when component mounts
@@ -43,20 +45,22 @@ function DashboardView() {
   );
 
   const handlePreviewClick = () => {
-    setMode('preview');
+    setMode(DashboardMode.PREVIEW);
   };
 
   const handleClosePreview = () => {
-    setMode('edit');
+    setMode(DashboardMode.EDIT);
   };
 
   return (
     <Box
       className={
-        mode === 'preview' ? classes.previewModeContainer : classes.container
+        mode === DashboardMode.PREVIEW
+          ? classes.previewModeContainer
+          : classes.container
       }
     >
-      {mode === 'preview' && (
+      {mode === DashboardMode.PREVIEW && (
         <Box className={classes.previewActions}>
           <Button
             color="primary"
@@ -81,7 +85,7 @@ function DashboardView() {
         </Box>
       )}
 
-      {mode === 'preview' && (
+      {mode === DashboardMode.PREVIEW && (
         <Box className={classes.titleSection}>
           <Typography
             variant="h2"
@@ -94,10 +98,14 @@ function DashboardView() {
       )}
 
       <Box
-        className={mode === 'preview' ? classes.previewLayout : classes.layout}
+        className={
+          mode === DashboardMode.PREVIEW
+            ? classes.previewLayout
+            : classes.layout
+        }
       >
         <Box className={classes.leadingContentArea}>
-          {mode === 'edit' && (
+          {mode === DashboardMode.EDIT && (
             <Box className={classes.grayCard}>
               <label className={classes.titleBarLabel}>
                 <Typography
@@ -125,12 +133,12 @@ function DashboardView() {
                 // eslint-disable-next-line react/no-array-index-key
                 key={`map-${mapIndex}`}
                 className={
-                  mode === 'preview'
+                  mode === DashboardMode.PREVIEW
                     ? classes.previewContainer
                     : classes.grayCard
                 }
               >
-                {mode === 'edit' && (
+                {mode === DashboardMode.EDIT && (
                   <Typography
                     variant="h3"
                     component="h3"
