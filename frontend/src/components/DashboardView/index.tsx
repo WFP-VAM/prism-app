@@ -21,6 +21,8 @@ import { clearAnalysisResult } from '../../context/analysisResultStateSlice';
 import TextBlock from './TextBlock';
 import TableBlock from './TableBlock';
 import ChartBlock from './ChartBlock';
+import { DashboardExportDialog } from './DashboardExport';
+import DashboardContent from './DashboardContent';
 
 function DashboardView() {
   const classes = useStyles();
@@ -30,6 +32,11 @@ function DashboardView() {
   const dispatch = useDispatch();
   const [mode, setMode] = useState<DashboardMode>(DashboardMode.PREVIEW);
   const { t } = useSafeTranslation();
+
+  // Export/Publish dialog state
+  const [exportDialogOpen, setExportDialogOpen] = useState(false);
+  const handleOpenExport = () => setExportDialogOpen(true);
+  const handleCloseExport = () => setExportDialogOpen(false);
 
   // Clear any existing analysis state when component mounts
   useEffect(() => {
@@ -79,33 +86,18 @@ function DashboardView() {
             endIcon={<ArrowForward />}
             size="medium"
             style={{ backgroundColor: cyanBlue, color: black }}
+            onClick={handleOpenExport}
           >
             {t('Publish')}
           </Button>
         </Box>
       )}
 
-      {mode === DashboardMode.PREVIEW && (
-        <Box className={classes.titleSection}>
-          <Typography
-            variant="h2"
-            component="h1"
-            className={classes.previewTitle}
-          >
-            {dashboardTitle || t('Untitled Dashboard')}
-          </Typography>
-        </Box>
-      )}
-
-      <Box
-        className={
-          mode === DashboardMode.PREVIEW
-            ? classes.previewLayout
-            : classes.layout
-        }
-      >
-        <Box className={classes.leadingContentArea}>
-          {mode === DashboardMode.EDIT && (
+      {mode === DashboardMode.PREVIEW ? (
+        <DashboardContent showTitle className={classes.previewLayout} />
+      ) : (
+        <Box className={classes.layout}>
+          <Box className={classes.leadingContentArea}>
             <Box className={classes.grayCard}>
               <label className={classes.titleBarLabel}>
                 <Typography
@@ -125,20 +117,14 @@ function DashboardView() {
                 />
               </label>
             </Box>
-          )}
 
-          <div className={classes.mapsContainer}>
-            {dashboardMaps.map((_, mapIndex) => (
-              <Box
-                // eslint-disable-next-line react/no-array-index-key
-                key={`map-${mapIndex}`}
-                className={
-                  mode === DashboardMode.PREVIEW
-                    ? classes.previewContainer
-                    : classes.grayCard
-                }
-              >
-                {mode === DashboardMode.EDIT && (
+            <div className={classes.mapsContainer}>
+              {dashboardMaps.map((_, mapIndex) => (
+                <Box
+                  // eslint-disable-next-line react/no-array-index-key
+                  key={`map-${mapIndex}`}
+                  className={classes.grayCard}
+                >
                   <Typography
                     variant="h3"
                     component="h3"
@@ -149,66 +135,67 @@ function DashboardView() {
                       : 'Map block'}{' '}
                     — {t('Choose map layers')}
                   </Typography>
-                )}
-                <div style={{ height: '700px', width: '100%' }}>
-                  <MapBlock mapIndex={mapIndex} mode={mode} />
-                </div>
-              </Box>
-            ))}
-          </div>
-        </Box>
-
-        {dashboardFlexElements.length > 0 && (
-          <Box className={classes.trailingContentArea}>
-            {dashboardFlexElements?.map((element, index) => {
-              if (element.type === 'TEXT') {
-                const content = (element as DashboardTextConfig)?.content || '';
-                return (
-                  <TextBlock
-                    // eslint-disable-next-line react/no-array-index-key
-                    key={`text-block-${index}`}
-                    content={content}
-                    index={index}
-                    mode={mode}
-                  />
-                );
-              }
-              if (element.type === 'TABLE') {
-                return (
-                  <TableBlock
-                    // eslint-disable-next-line react/no-array-index-key
-                    key={`table-block-${index}`}
-                    index={index}
-                    startDate={element.startDate}
-                    hazardLayerId={element.hazardLayerId}
-                    baselineLayerId={element.baselineLayerId}
-                    threshold={element.threshold}
-                    stat={element.stat}
-                    mode={mode}
-                  />
-                );
-              }
-              if (element.type === 'CHART') {
-                const chartElement = element as DashboardChartConfig;
-                return (
-                  <ChartBlock
-                    // eslint-disable-next-line react/no-array-index-key
-                    key={`chart-block-${index}`}
-                    index={index}
-                    startDate={chartElement.startDate}
-                    endDate={chartElement.endDate}
-                    wmsLayerId={chartElement.wmsLayerId}
-                    adminUnitLevel={chartElement.adminUnitLevel}
-                    adminUnitId={chartElement.adminUnitId}
-                    mode={mode}
-                  />
-                );
-              }
-              return null;
-            })}
+                  <div style={{ height: '700px', width: '100%' }}>
+                    <MapBlock mapIndex={mapIndex} mode={mode} />
+                  </div>
+                </Box>
+              ))}
+            </div>
           </Box>
-        )}
-      </Box>
+
+          {dashboardFlexElements.length > 0 && (
+            <Box className={classes.trailingContentArea}>
+              {dashboardFlexElements?.map((element, index) => {
+                if (element.type === 'TEXT') {
+                  const content =
+                    (element as DashboardTextConfig)?.content || '';
+                  return (
+                    <TextBlock
+                      // eslint-disable-next-line react/no-array-index-key
+                      key={`text-block-${index}`}
+                      content={content}
+                      index={index}
+                      mode={mode}
+                    />
+                  );
+                }
+                if (element.type === 'TABLE') {
+                  return (
+                    <TableBlock
+                      // eslint-disable-next-line react/no-array-index-key
+                      key={`table-block-${index}`}
+                      index={index}
+                      startDate={element.startDate}
+                      hazardLayerId={element.hazardLayerId}
+                      baselineLayerId={element.baselineLayerId}
+                      threshold={element.threshold}
+                      stat={element.stat}
+                      mode={mode}
+                    />
+                  );
+                }
+                if (element.type === 'CHART') {
+                  const chartElement = element as DashboardChartConfig;
+                  return (
+                    <ChartBlock
+                      // eslint-disable-next-line react/no-array-index-key
+                      key={`chart-block-${index}`}
+                      index={index}
+                      startDate={chartElement.startDate}
+                      endDate={chartElement.endDate}
+                      wmsLayerId={chartElement.wmsLayerId}
+                      adminUnitLevel={chartElement.adminUnitLevel}
+                      adminUnitId={chartElement.adminUnitId}
+                      mode={mode}
+                    />
+                  );
+                }
+                return null;
+              })}
+            </Box>
+          )}
+        </Box>
+      )}
 
       {mode === 'edit' && (
         <Box className={classes.toolbar}>
@@ -224,6 +211,11 @@ function DashboardView() {
           </Button>
         </Box>
       )}
+
+      <DashboardExportDialog
+        open={exportDialogOpen}
+        handleClose={handleCloseExport}
+      />
     </Box>
   );
 }
@@ -321,20 +313,6 @@ const useStyles = makeStyles(() => ({
       minWidth: 0, // Prevents flex items from overflowing
     },
   },
-  previewContainer: {
-    background: 'white',
-    borderRadius: 8,
-    padding: 16,
-    marginBottom: 16,
-    width: '100%',
-    height: '700px',
-  },
-  previewTitle: {
-    padding: 16,
-    fontWeight: 500,
-    fontSize: 20,
-    margin: 0,
-  },
   previewModeContainer: {
     display: 'flex',
     flexDirection: 'column',
@@ -354,10 +332,6 @@ const useStyles = makeStyles(() => ({
     justifyContent: 'flex-start',
     gap: '12px',
     zIndex: 1300,
-  },
-  titleSection: {
-    padding: '0 16px',
-    margin: '16px 16px 0 16px',
   },
   previewLayout: {
     display: 'flex',

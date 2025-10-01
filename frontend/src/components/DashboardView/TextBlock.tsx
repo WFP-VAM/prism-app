@@ -141,6 +141,8 @@ const useStyles = makeStyles(() => ({
     borderRadius: 8,
     padding: 16,
     marginBottom: 16,
+    maxWidth: '100%',
+    overflow: 'hidden',
   },
   previewText: {
     fontSize: 14,

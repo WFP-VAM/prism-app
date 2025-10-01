@@ -313,21 +313,26 @@ const useStyles = makeStyles(theme => ({
     padding: 16,
     marginBottom: 16,
     minHeight: 400,
+    maxWidth: '100%',
     display: 'flex',
     flexDirection: 'column',
+    overflow: 'hidden',
   },
   previewHeader: {
     display: 'flex',
+    flexWrap: 'wrap',
     justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: theme.spacing(3),
+    alignItems: 'baseline',
+    marginBottom: theme.spacing(2),
+    gap: theme.spacing(1),
   },
   previewTitle: {
-    flex: 1,
-    marginRight: theme.spacing(2),
+    flex: '1 1 auto',
+    minWidth: '60%',
   },
   previewDate: {
-    whiteSpace: 'nowrap',
+    flex: '0 0 auto',
+    fontSize: '0.875rem',
   },
   blockTitle: {
     fontWeight: 600,
@@ -384,8 +389,18 @@ const useStyles = makeStyles(theme => ({
   chartWrapper: {
     flex: 1,
     minHeight: 300,
+    maxWidth: '100%',
+    width: '100%',
     display: 'flex',
     flexDirection: 'column',
+    overflow: 'hidden',
+    '& > *': {
+      maxWidth: '100%',
+    },
+    '& canvas': {
+      maxWidth: '100% !important',
+      height: 'auto !important',
+    },
   },
   emptyState: {
     display: 'flex',
