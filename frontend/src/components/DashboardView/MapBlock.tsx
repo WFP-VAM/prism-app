@@ -36,83 +36,98 @@ import DashboardLegends from './DashboardLegends';
 // eslint-disable-next-line fp/no-mutating-methods
 const displayedBoundaryLayers = getDisplayBoundaryLayers().reverse();
 
+type MapBlockMode = 'edit' | 'preview';
+
 interface MapBlockProps {
   mapIndex: number;
+  mode?: MapBlockMode;
 }
 
-const MapBlockContent = memo(() => {
-  const classes = useStyles();
-  const { t } = useSafeTranslation();
-  const { selectedLayersWithDateSupport } = useLayers();
-  const { actions, maplibreMap } = useMapState();
-  const datesLoading = useSelector(areDatesLoading);
-  const map = maplibreMap();
-  const datesPreloadingForWMS = useSelector(WMSLayerDatesRequested);
-  const datesPreloadingForPointData = useSelector(pointDataLayerDatesRequested);
-  const dispatch = useDispatch();
-
-  useEffect(() => {
-    if (!datesPreloadingForPointData) {
-      dispatch(preloadLayerDatesArraysForPointData());
-    }
-    if (!datesPreloadingForWMS) {
-      dispatch(preloadLayerDatesArraysForWMS());
-    }
-    // we must load boundary layer here for two reasons
-    // 1. Stop showing two loading screens on startup - maplibre renders its children very late, so we can't rely on BoundaryLayer to load internally
-    // 2. Prevent situations where a user can toggle a layer like NSO (depends on Boundaries) before Boundaries finish loading.
-    displayedBoundaryLayers.forEach(l => actions.addLayer(l));
-    // TODO: Look into deduping this. It's not currently triggered multiple times but it could easily be.
-    displayedBoundaryLayers.forEach(l =>
-      dispatch(loadLayerData({ layer: l, map })),
+const MapBlockContent = memo(
+  ({ mode = 'edit' }: Pick<MapBlockProps, 'mode'>) => {
+    const classes = useStyles();
+    const { t } = useSafeTranslation();
+    const { selectedLayersWithDateSupport } = useLayers();
+    const { actions, maplibreMap } = useMapState();
+    const datesLoading = useSelector(areDatesLoading);
+    const map = maplibreMap();
+    const datesPreloadingForWMS = useSelector(WMSLayerDatesRequested);
+    const datesPreloadingForPointData = useSelector(
+      pointDataLayerDatesRequested,
     );
-  }, [
-    actions,
-    datesPreloadingForPointData,
-    datesPreloadingForWMS,
-    dispatch,
-    map,
-  ]);
+    const dispatch = useDispatch();
 
-  // Load dates for preselected layers from dashboard configuration
-  const { layers: preselectedLayers } = useMapState();
-  useEffect(() => {
-    if (preselectedLayers.length > 0) {
-      preselectedLayers.forEach(layer => {
-        if (layer.type === 'wms' || layer.type === 'point_data') {
-          dispatch(loadAvailableDatesForLayer(layer.id));
-        }
-      });
-    }
-  }, [preselectedLayers, dispatch]);
+    useEffect(() => {
+      if (!datesPreloadingForPointData) {
+        dispatch(preloadLayerDatesArraysForPointData());
+      }
+      if (!datesPreloadingForWMS) {
+        dispatch(preloadLayerDatesArraysForWMS());
+      }
+      // we must load boundary layer here for two reasons
+      // 1. Stop showing two loading screens on startup - maplibre renders its children very late, so we can't rely on BoundaryLayer to load internally
+      // 2. Prevent situations where a user can toggle a layer like NSO (depends on Boundaries) before Boundaries finish loading.
+      displayedBoundaryLayers.forEach(l => actions.addLayer(l));
+      // TODO: Look into deduping this. It's not currently triggered multiple times but it could easily be.
+      displayedBoundaryLayers.forEach(l =>
+        dispatch(loadLayerData({ layer: l, map })),
+      );
+    }, [
+      actions,
+      datesPreloadingForPointData,
+      datesPreloadingForWMS,
+      dispatch,
+      map,
+    ]);
 
-  return (
-    <Box className={classes.root}>
-      <div className={classes.leftPanel}>
-        <RootAccordionItems />
-      </div>
-      <div className={classes.rightPanel}>
-        <div className={classes.mapContainer}>
-          {datesLoading && (
-            <div className={classes.loading}>
-              <CircularProgress size={100} />
-            </div>
-          )}
-          <MapComponent />
-          {!datesLoading && <DashboardLegends />}
-        </div>
-        {selectedLayersWithDateSupport.length > 0 && !datesLoading && (
-          <div className={classes.dateSelectorContainer}>
-            <Typography variant="h3">{t('Map date')}</Typography>
-            <DateSelector />
+    // Load dates for preselected layers from dashboard configuration
+    const { layers: preselectedLayers } = useMapState();
+    useEffect(() => {
+      if (preselectedLayers.length > 0) {
+        preselectedLayers.forEach(layer => {
+          if (layer.type === 'wms' || layer.type === 'point_data') {
+            dispatch(loadAvailableDatesForLayer(layer.id));
+          }
+        });
+      }
+    }, [preselectedLayers, dispatch]);
+
+    return (
+      <Box className={mode === 'preview' ? classes.rootPreview : classes.root}>
+        {mode === 'edit' && (
+          <div className={classes.leftPanel}>
+            <RootAccordionItems />
           </div>
         )}
-      </div>
-    </Box>
-  );
-});
+        <div
+          className={
+            mode === 'preview' ? classes.rightPanelPreview : classes.rightPanel
+          }
+        >
+          <div className={classes.mapContainer}>
+            {datesLoading && (
+              <div className={classes.loading}>
+                <CircularProgress size={100} />
+              </div>
+            )}
+            <MapComponent />
+            {!datesLoading && <DashboardLegends />}
+          </div>
+          {mode === 'edit' &&
+            selectedLayersWithDateSupport.length > 0 &&
+            !datesLoading && (
+              <div className={classes.dateSelectorContainer}>
+                <Typography variant="h3">{t('Map date')}</Typography>
+                <DateSelector />
+              </div>
+            )}
+        </div>
+      </Box>
+    );
+  },
+);
 
-const MapBlock = memo(({ mapIndex }: MapBlockProps) => {
+const MapBlock = memo(({ mapIndex, mode = 'edit' }: MapBlockProps) => {
   const selectedDashboardIndex = useSelector(selectedDashboardIndexSelector);
 
   return (
@@ -120,7 +135,7 @@ const MapBlock = memo(({ mapIndex }: MapBlockProps) => {
       key={`dashboard-${selectedDashboardIndex}-map-${mapIndex}`}
       index={mapIndex}
     >
-      <MapBlockContent />
+      <MapBlockContent mode={mode} />
     </MapInstanceProvider>
   );
 });
@@ -133,6 +148,14 @@ const useStyles = makeStyles(() =>
       width: '100%',
       position: 'relative',
       gap: '16px',
+      overflow: 'hidden',
+    },
+    rootPreview: {
+      display: 'flex',
+      height: '100%',
+      width: '100%',
+      position: 'relative',
+      gap: 0,
       overflow: 'hidden',
     },
     loading: {
@@ -154,6 +177,14 @@ const useStyles = makeStyles(() =>
     },
     rightPanel: {
       flex: '0 0 66.667%',
+      minWidth: 0,
+      display: 'flex',
+      flexDirection: 'column',
+      gap: '12px',
+      overflow: 'hidden',
+    },
+    rightPanelPreview: {
+      flex: '1 1 100%',
       minWidth: 0,
       display: 'flex',
       flexDirection: 'column',
