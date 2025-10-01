@@ -140,9 +140,6 @@ const useStyles = makeStyles(() => ({
   chartPanelParamText: {
     width: '100%',
     color: 'black',
-    '& input': {
-      color: 'black',
-    },
     '&.MuiInput-underline:before': {
       borderBottomColor: 'rgba(0, 0, 0, 0.42)',
     },

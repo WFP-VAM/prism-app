@@ -74,9 +74,6 @@ const useStyles = makeStyles(() => ({
   },
   formControl: {
     width: '100%',
-    '& .MuiInputBase-root': {
-      color: 'black',
-    },
     '& .MuiFormLabel-root': {
       color: 'black',
     },

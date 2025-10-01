@@ -207,9 +207,6 @@ const useStyles = makeStyles(() => ({
   },
   exposureValueOptionsSelect: {
     width: '100%',
-    '& .MuiInputBase-root': {
-      color: 'black',
-    },
     '& .MuiFormLabel-root': {
       color: 'black',
       '&:hover fieldset': {

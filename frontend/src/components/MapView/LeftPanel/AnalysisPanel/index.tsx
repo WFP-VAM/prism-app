@@ -749,9 +749,6 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     exposureValueOptionsSelect: {
       width: '100%',
-      '& .MuiInputBase-root': {
-        color: 'black',
-      },
       '& .MuiFormLabel-root': {
         color: 'black',
         '&:hover fieldset': {
@@ -841,9 +838,6 @@ const useStyles = makeStyles((theme: Theme) =>
     numberField: {
       paddingRight: '10px',
       maxWidth: '140px',
-      '& .MuiInputBase-root': {
-        color: 'black',
-      },
       '& label': {
         color: '#333333',
       },

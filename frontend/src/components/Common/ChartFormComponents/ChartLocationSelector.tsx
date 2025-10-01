@@ -209,7 +209,6 @@ const useStyles = makeStyles(() => ({
       color: '#333333',
     },
     '& .MuiInputBase-root': {
-      color: 'black',
       '&:hover fieldset': {
         borderColor: '#333333',
       },
@@ -218,9 +217,6 @@ const useStyles = makeStyles(() => ({
       },
     },
     '& .MuiSelect-root': {
-      color: 'black',
-    },
-    '& input': {
       color: 'black',
     },
   },
