@@ -8,12 +8,14 @@ export default function SimpleDropdown<OptionValue extends number | string>({
   value,
   onChange,
   textClass,
+  disabled = false,
   ...rest
 }: {
   options: [OptionValue, OptionLabel][];
   value: OptionValue;
   onChange: (v: OptionValue) => void;
   textClass: string;
+  disabled?: boolean;
 }) {
   const { t } = useSafeTranslation();
   return (
@@ -23,6 +25,7 @@ export default function SimpleDropdown<OptionValue extends number | string>({
         onChange={e => {
           onChange(e.target.value as OptionValue);
         }}
+        disabled={disabled}
       >
         {options.map(([val, text]) => (
           <MenuItem key={val} value={val}>

@@ -1,7 +1,7 @@
 import { Box, makeStyles, Typography, Button } from '@material-ui/core';
 import { ArrowForward, Edit, VisibilityOutlined } from '@material-ui/icons';
 import { useSelector, useDispatch } from 'react-redux';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useSafeTranslation } from 'i18n';
 import { black, cyanBlue } from 'muiTheme';
 import type { DashboardTextConfig } from 'config/types';
@@ -13,7 +13,9 @@ import {
   dashboardFlexElementsSelector,
   dashboardMapsSelector,
 } from '../../context/dashboardStateSlice';
+import { clearAnalysisResult } from '../../context/analysisResultStateSlice';
 import TextBlock from './TextBlock';
+import TableBlock from './TableBlock';
 
 type DashboardMode = 'edit' | 'preview';
 
@@ -34,6 +36,19 @@ function DashboardView() {
     }
     return dashboardFlexElements.filter((_, index) => index % 2 === mapIndex);
   };
+
+  // Clear any existing analysis state when component mounts
+  useEffect(() => {
+    dispatch(clearAnalysisResult());
+  }, [dispatch, dashboardTitle]);
+
+  // Clear analysis state when component unmounts (navigating away from dashboard)
+  useEffect(
+    () => () => {
+      dispatch(clearAnalysisResult());
+    },
+    [dispatch],
+  );
 
   const handlePreviewClick = () => {
     setMode('preview');
@@ -166,7 +181,22 @@ function DashboardView() {
                           />
                         );
                       }
-                      return <div>Content type not yet supported</div>;
+                      if (element.type === 'TABLE') {
+                        return (
+                          <TableBlock
+                            // eslint-disable-next-line react/no-array-index-key
+                            key={`table-block-${originalIndex}`}
+                            index={originalIndex}
+                            startDate={element.startDate}
+                            hazardLayerId={element.hazardLayerId}
+                            baselineLayerId={element.baselineLayerId}
+                            threshold={element.threshold}
+                            stat={element.stat}
+                            mode={mode}
+                          />
+                        );
+                      }
+                      return <div>{t('Content type not yet supported')}</div>;
                     },
                   )}
                 </Box>
@@ -189,12 +219,12 @@ function DashboardView() {
                     component="span"
                     className={classes.titleBarTypography}
                   >
-                    Dashboard title
+                    {t('Dashboard title')}
                   </Typography>
                   <input
                     type="text"
                     className={classes.titleBarInput}
-                    placeholder="Enter dashboard title"
+                    placeholder={t('Enter dashboard title')}
                     value={dashboardTitle}
                     onChange={e => dispatch(setTitle(e.target.value))}
                     name="dashboard-title"
@@ -226,7 +256,7 @@ function DashboardView() {
                       — {t('Choose map layers')}
                     </Typography>
                   )}
-                  <div style={{ height: '700px' }}>
+                  <div style={{ height: '700px', width: '100%' }}>
                     <MapBlock mapIndex={mapIndex} mode={mode} />
                   </div>
                 </Box>
@@ -250,7 +280,22 @@ function DashboardView() {
                     />
                   );
                 }
-                return <div>Content type not yet supported</div>;
+                if (element.type === 'TABLE') {
+                  return (
+                    <TableBlock
+                      // eslint-disable-next-line react/no-array-index-key
+                      key={`table-block-${index}`}
+                      index={index}
+                      startDate={element.startDate}
+                      hazardLayerId={element.hazardLayerId}
+                      baselineLayerId={element.baselineLayerId}
+                      threshold={element.threshold}
+                      stat={element.stat}
+                      mode={mode}
+                    />
+                  );
+                }
+                return <div>{t('Content type not yet supported')}</div>;
               })}
             </Box>
           )}

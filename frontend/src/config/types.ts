@@ -1033,7 +1033,6 @@ export enum DashboardElementType {
 export interface DashboardChartConfig {
   type: DashboardElementType.CHART;
   startDate: string;
-  endDate: string;
   wmsLayerId: string;
   adminUnitLevel?: number;
   adminUnitId?: number;
@@ -1048,9 +1047,9 @@ export interface DashboardTextConfig {
 export interface DashboardTableConfig {
   type: DashboardElementType.TABLE;
   startDate: string;
-  endDate: string;
   hazardLayerId: string;
   baselineLayerId: string;
+  threshold?: ThresholdDefinition;
   stat: AggregationOperations;
 }
 
