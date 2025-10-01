@@ -21,6 +21,7 @@ import {
   isLayerOnView,
 } from 'utils/map-utils';
 import { useMapState } from 'utils/useMapState';
+import { dashboardModeSelector } from 'context/dashboardStateSlice';
 import {
   AdminLevelDataLayer,
   AnticipatoryActionDroughtLayer,
@@ -87,6 +88,7 @@ const MapComponent = memo(() => {
   const mapState = useMapState();
   const selectedMap = mapState?.maplibreMap();
   const isGlobalMap = mapState?.isGlobalMap;
+  const dashboardMode = useSelector(dashboardModeSelector);
   const tabValue = useSelector(leftPanelTabValueSelector);
 
   const panelHidden = tabValue === Panel.None;
@@ -230,12 +232,18 @@ const MapComponent = memo(() => {
     [firstBoundaryId, firstSymbolId, selectedLayers, selectedMap],
   );
 
+  const interactionsDisabled = !isGlobalMap && dashboardMode === 'preview';
+
   return (
     <MapGL
       ref={mapRef}
       // preserveDrawingBuffer is required for the map to be exported as an image. Used in reportDoc.tsx
       preserveDrawingBuffer
       dragRotate={false}
+      dragPan={!interactionsDisabled}
+      scrollZoom={!interactionsDisabled}
+      doubleClickZoom={!interactionsDisabled}
+      touchZoomRotate={!interactionsDisabled}
       minZoom={minZoom}
       maxZoom={maxZoom}
       initialViewState={{

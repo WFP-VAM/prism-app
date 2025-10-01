@@ -35,9 +35,12 @@ export interface DashboardMapState extends MapState {
   opacityMap: { [key: string]: OpacityEntry };
 }
 
+export type DashboardMode = 'edit' | 'preview';
+
 export interface DashboardState {
   selectedDashboardIndex: number;
   title: string;
+  mode: DashboardMode;
   flexElements: ConfiguredReport['flexElements'];
   maps: DashboardMapState[];
   syncMapsEnabled: boolean;
@@ -89,6 +92,7 @@ const createInitialState = (dashboardIndex: number = 0): DashboardState => {
   return {
     selectedDashboardIndex: dashboardIndex,
     title: dashboardConfig?.title || 'Dashboard',
+    mode: 'preview' as DashboardMode,
     flexElements: dashboardConfig?.flexElements || [],
     syncMapsEnabled: false,
     sharedViewport: undefined,
@@ -181,6 +185,10 @@ export const dashboardStateSlice = createSlice({
     setTitle: (state, action: PayloadAction<string>) => ({
       ...state,
       title: action.payload,
+    }),
+    setMode: (state, action: PayloadAction<DashboardMode>) => ({
+      ...state,
+      mode: action.payload,
     }),
     setTextContent: (
       state,
@@ -382,6 +390,9 @@ export const selectedDashboardIndexSelector = (state: RootState): number =>
 export const dashboardTitleSelector = (state: RootState): string =>
   state.dashboardState.title;
 
+export const dashboardModeSelector = (state: RootState): DashboardMode =>
+  state.dashboardState.mode;
+
 export const dashboardFlexElementsSelector = (
   state: RootState,
 ): ConfiguredReport['flexElements'] => state.dashboardState.flexElements;
@@ -409,6 +420,7 @@ export const {
   addLayerToMap,
   removeLayerFromMap,
   setTitle,
+  setMode,
   setTextContent,
   updateMapDateRange,
   setMap,

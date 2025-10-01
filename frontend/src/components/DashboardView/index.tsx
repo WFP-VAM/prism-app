@@ -8,7 +8,7 @@ import {
 } from '@material-ui/core';
 import { ArrowForward, Edit, VisibilityOutlined } from '@material-ui/icons';
 import { useSelector, useDispatch } from 'react-redux';
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 import { useSafeTranslation } from 'i18n';
 import { black, cyanBlue } from 'muiTheme';
 import type { DashboardTextConfig } from 'config/types';
@@ -21,12 +21,12 @@ import {
   dashboardMapsSelector,
   dashboardSyncEnabledSelector,
   toggleMapSync,
+  dashboardModeSelector,
+  setMode,
 } from '../../context/dashboardStateSlice';
 import { clearAnalysisResult } from '../../context/analysisResultStateSlice';
 import TextBlock from './TextBlock';
 import TableBlock from './TableBlock';
-
-type DashboardMode = 'edit' | 'preview';
 
 function DashboardView() {
   const classes = useStyles();
@@ -34,8 +34,8 @@ function DashboardView() {
   const dashboardFlexElements = useSelector(dashboardFlexElementsSelector);
   const dashboardMaps = useSelector(dashboardMapsSelector);
   const syncEnabled = useSelector(dashboardSyncEnabledSelector);
+  const mode = useSelector(dashboardModeSelector);
   const dispatch = useDispatch();
-  const [mode, setMode] = useState<DashboardMode>('preview');
   const { t } = useSafeTranslation();
 
   const isTwoMapLayout = dashboardMaps.length === 2;
@@ -61,11 +61,11 @@ function DashboardView() {
   );
 
   const handlePreviewClick = () => {
-    setMode('preview');
+    dispatch(setMode('preview'));
   };
 
   const handleClosePreview = () => {
-    setMode('edit');
+    dispatch(setMode('edit'));
   };
 
   return (
