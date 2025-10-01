@@ -1,7 +1,7 @@
 import { Box, makeStyles, Typography, Button } from '@material-ui/core';
 import { ArrowForward, Edit, VisibilityOutlined } from '@material-ui/icons';
 import { useSelector, useDispatch } from 'react-redux';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useSafeTranslation } from 'i18n';
 import { black, cyanBlue } from 'muiTheme';
 import type { DashboardTextConfig } from 'config/types';
@@ -13,7 +13,9 @@ import {
   dashboardFlexElementsSelector,
   dashboardMapsSelector,
 } from '../../context/dashboardStateSlice';
+import { clearAnalysisResult } from '../../context/analysisResultStateSlice';
 import TextBlock from './TextBlock';
+import TableBlock from './TableBlock';
 
 type DashboardMode = 'edit' | 'preview';
 
@@ -25,6 +27,19 @@ function DashboardView() {
   const dispatch = useDispatch();
   const [mode, setMode] = useState<DashboardMode>('preview');
   const { t } = useSafeTranslation();
+
+  // Clear any existing analysis state when component mounts
+  useEffect(() => {
+    dispatch(clearAnalysisResult());
+  }, [dispatch, dashboardTitle]);
+
+  // Clear analysis state when component unmounts (navigating away from dashboard)
+  useEffect(
+    () => () => {
+      dispatch(clearAnalysisResult());
+    },
+    [dispatch],
+  );
 
   const handlePreviewClick = () => {
     setMode('preview');
@@ -145,6 +160,21 @@ function DashboardView() {
                     key={`text-block-${index}`}
                     content={content}
                     index={index}
+                    mode={mode}
+                  />
+                );
+              }
+              if (element.type === 'TABLE') {
+                return (
+                  <TableBlock
+                    // eslint-disable-next-line react/no-array-index-key
+                    key={`table-block-${index}`}
+                    index={index}
+                    startDate={element.startDate}
+                    hazardLayerId={element.hazardLayerId}
+                    baselineLayerId={element.baselineLayerId}
+                    threshold={element.threshold}
+                    stat={element.stat}
                     mode={mode}
                   />
                 );

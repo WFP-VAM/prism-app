@@ -486,8 +486,11 @@
           "textUpdatedAt": "2025-03-01"
         },
         {
-          "type": "TEXT",
-          "content": ""
+          "type": "TABLE",
+          "startDate": "2025-04-01",
+          "hazardLayerId": "spi_blended_2m",
+          "baselineLayerId": "admin1_boundaries",
+          "stat": "mean"
         }
       ]
     },

@@ -46,6 +46,7 @@ function LayerDropdown({
   setValue,
   label,
   placeholder,
+  disabled = false,
   ...rest
 }: LayerSelectorProps) {
   // this could be testable, needs to be constructed in a way that prevents it breaking whenever new layers are added. (don't put layer name in snapshot)
@@ -134,6 +135,7 @@ function LayerDropdown({
         defaultValue=""
         select
         label={label}
+        disabled={disabled}
         InputProps={{
           classes: {
             focused: classes.focused,
@@ -182,5 +184,6 @@ interface LayerSelectorProps {
   setValue: (val: LayerKey) => void;
   className?: string;
   placeholder?: string;
+  disabled?: boolean;
 }
 export default LayerDropdown;
