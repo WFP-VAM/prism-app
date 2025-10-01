@@ -14,6 +14,7 @@ import {
 } from 'context/serverStateSlice';
 import { loadLayerData } from 'context/layers/layer-data';
 import { useMapState } from 'utils/useMapState';
+import { useDashboardMapSync } from 'utils/useDashboardMapSync';
 import { MapInstanceProvider } from 'components/MapView/MapInstanceContext';
 import { selectedDashboardIndexSelector } from 'context/dashboardStateSlice';
 import useLayers from 'utils/layers-utils';
@@ -50,6 +51,7 @@ const MapBlockContent = memo(
     const { selectedLayersWithDateSupport } = useLayers();
     const { actions, maplibreMap } = useMapState();
     const datesLoading = useSelector(areDatesLoading);
+    useDashboardMapSync(mode);
     const map = maplibreMap();
     const datesPreloadingForWMS = useSelector(WMSLayerDatesRequested);
     const datesPreloadingForPointData = useSelector(

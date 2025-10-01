@@ -40,6 +40,11 @@ export interface DashboardState {
   title: string;
   flexElements: ConfiguredReport['flexElements'];
   maps: DashboardMapState[];
+  syncMapsEnabled: boolean;
+  sharedViewport?: {
+    bounds: [number, number, number, number]; // [west, south, east, north]
+    zoom: number;
+  };
 }
 
 const getDashboardConfig = (index: number) => {
@@ -85,6 +90,8 @@ const createInitialState = (dashboardIndex: number = 0): DashboardState => {
     selectedDashboardIndex: dashboardIndex,
     title: dashboardConfig?.title || 'Dashboard',
     flexElements: dashboardConfig?.flexElements || [],
+    syncMapsEnabled: false,
+    sharedViewport: undefined,
     maps:
       dashboardConfig?.maps?.map((mapConfig: DashboardMapConfig) => {
         // Process pre-selected layers
@@ -153,6 +160,24 @@ export const dashboardStateSlice = createSlice({
       const dashboardIndex = action.payload;
       return createInitialState(dashboardIndex);
     },
+    toggleMapSync: state => {
+      const newSyncEnabled = !state.syncMapsEnabled;
+      return {
+        ...state,
+        syncMapsEnabled: newSyncEnabled,
+        sharedViewport: newSyncEnabled ? state.sharedViewport : undefined,
+      };
+    },
+    setSharedViewport: (
+      state,
+      action: PayloadAction<{
+        bounds: [number, number, number, number];
+        zoom: number;
+      }>,
+    ) => ({
+      ...state,
+      sharedViewport: action.payload,
+    }),
     setTitle: (state, action: PayloadAction<string>) => ({
       ...state,
       title: action.payload,
@@ -364,6 +389,13 @@ export const dashboardFlexElementsSelector = (
 export const dashboardMapsSelector = (state: RootState): DashboardMapState[] =>
   state.dashboardState.maps;
 
+export const dashboardSyncEnabledSelector = (state: RootState): boolean =>
+  state.dashboardState.syncMapsEnabled;
+
+export const dashboardSharedViewportSelector = (
+  state: RootState,
+): DashboardState['sharedViewport'] => state.dashboardState.sharedViewport;
+
 export const dashboardOpacitySelector =
   (index: number, layerId: string) =>
   (state: RootState): number | undefined =>
@@ -372,6 +404,8 @@ export const dashboardOpacitySelector =
 // Setters
 export const {
   setSelectedDashboard,
+  toggleMapSync,
+  setSharedViewport,
   addLayerToMap,
   removeLayerFromMap,
   setTitle,

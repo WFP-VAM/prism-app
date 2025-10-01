@@ -1,4 +1,11 @@
-import { Box, makeStyles, Typography, Button } from '@material-ui/core';
+import {
+  Box,
+  makeStyles,
+  Typography,
+  Button,
+  Switch,
+  FormControlLabel,
+} from '@material-ui/core';
 import { ArrowForward, Edit, VisibilityOutlined } from '@material-ui/icons';
 import { useSelector, useDispatch } from 'react-redux';
 import { useState, useEffect } from 'react';
@@ -12,6 +19,8 @@ import {
   setTitle,
   dashboardFlexElementsSelector,
   dashboardMapsSelector,
+  dashboardSyncEnabledSelector,
+  toggleMapSync,
 } from '../../context/dashboardStateSlice';
 import { clearAnalysisResult } from '../../context/analysisResultStateSlice';
 import TextBlock from './TextBlock';
@@ -24,6 +33,7 @@ function DashboardView() {
   const dashboardTitle = useSelector(dashboardTitleSelector);
   const dashboardFlexElements = useSelector(dashboardFlexElementsSelector);
   const dashboardMaps = useSelector(dashboardMapsSelector);
+  const syncEnabled = useSelector(dashboardSyncEnabledSelector);
   const dispatch = useDispatch();
   const [mode, setMode] = useState<DashboardMode>('preview');
   const { t } = useSafeTranslation();
@@ -145,16 +155,32 @@ function DashboardView() {
                 }
               >
                 {mode === 'edit' && (
-                  <Typography
-                    variant="h3"
-                    component="h3"
-                    className={classes.blockLabel}
-                  >
-                    {dashboardMaps.length > 1
-                      ? `Map ${mapIndex + 1}`
-                      : 'Map block'}{' '}
-                    — {t('Choose map layers')}
-                  </Typography>
+                  <div className={classes.mapHeaderContainer}>
+                    <Typography
+                      variant="h3"
+                      component="h3"
+                      className={classes.blockLabel}
+                    >
+                      {dashboardMaps.length > 1
+                        ? `Map ${mapIndex + 1}`
+                        : 'Map block'}{' '}
+                      — {t('Choose map layers')}
+                    </Typography>
+                    {isTwoMapLayout && (
+                      <FormControlLabel
+                        control={
+                          <Switch
+                            checked={syncEnabled}
+                            onChange={() => dispatch(toggleMapSync())}
+                            color="primary"
+                            size="medium"
+                          />
+                        }
+                        label={t('Sync maps')}
+                        className={classes.syncToggle}
+                      />
+                    )}
+                  </div>
                 )}
                 <div style={{ height: '700px' }}>
                   <MapBlock mapIndex={mapIndex} mode={mode} />
@@ -245,16 +271,32 @@ function DashboardView() {
                   }
                 >
                   {mode === 'edit' && (
-                    <Typography
-                      variant="h3"
-                      component="h3"
-                      className={classes.blockLabel}
-                    >
-                      {dashboardMaps.length > 1
-                        ? `Map ${mapIndex + 1}`
-                        : 'Map block'}{' '}
-                      — {t('Choose map layers')}
-                    </Typography>
+                    <div className={classes.mapHeaderContainer}>
+                      <Typography
+                        variant="h3"
+                        component="h3"
+                        className={classes.blockLabel}
+                      >
+                        {dashboardMaps.length > 1
+                          ? `Map ${mapIndex + 1}`
+                          : 'Map block'}{' '}
+                        — {t('Choose map layers')}
+                      </Typography>
+                      {dashboardMaps.length === 2 && mapIndex === 0 && (
+                        <FormControlLabel
+                          control={
+                            <Switch
+                              checked={syncEnabled}
+                              onChange={() => dispatch(toggleMapSync())}
+                              color="primary"
+                              size="small"
+                            />
+                          }
+                          label={t('Sync maps')}
+                          className={classes.syncToggle}
+                        />
+                      )}
+                    </div>
                   )}
                   <div style={{ height: '700px', width: '100%' }}>
                     <MapBlock mapIndex={mapIndex} mode={mode} />
@@ -486,6 +528,22 @@ const useStyles = makeStyles(() => ({
     display: 'flex',
     flexDirection: 'column',
     gap: 16,
+  },
+  mapHeaderContainer: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 12,
+  },
+  syncToggle: {
+    margin: 0,
+    '& .MuiFormControlLabel-label': {
+      fontSize: '12px',
+      fontWeight: 500,
+    },
+    '& .MuiSwitch-root': {
+      marginRight: 4,
+    },
   },
 }));
 
