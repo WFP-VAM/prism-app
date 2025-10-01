@@ -34,6 +34,12 @@ test('renders as expected', () => {
     leftPanelState: {
       tabValue: Panel.AnticipatoryActionDrought,
     },
+    dashboardState: {
+      dashboardTitle: 'Test Dashboard',
+      maps: [],
+      flexElements: [],
+      selectedDashboardIndex: 0,
+    },
   });
 
   const { container } = render(

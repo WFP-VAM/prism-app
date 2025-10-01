@@ -151,7 +151,6 @@ function DashboardExportDialog({
       <Dialog
         maxWidth="xl"
         open={open}
-        keepMounted
         onClose={handleClose}
         aria-labelledby="dashboard-export-dialog"
       >

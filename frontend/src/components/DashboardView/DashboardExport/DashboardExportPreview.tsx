@@ -16,11 +16,10 @@ function DashboardExportPreview() {
 
   const { printRef, paperSize } = exportConfig;
 
-  // Get dimensions based on selected paper size
   const dimensions = PAPER_SIZES[paperSize];
   const useBrowserSize = paperSize === PaperSize.BROWSER;
 
-  // Container style for paper sizes
+  // Container style adapted for paper sizes
   const containerStyle = useBrowserSize
     ? {
         flex: 1,

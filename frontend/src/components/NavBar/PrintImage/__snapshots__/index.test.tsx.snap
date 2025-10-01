@@ -976,5 +976,373 @@ exports[`renders as expected 1`] = `
       </div>
     </mock-dialogcontent>
   </mock-dialog>
+  <mock-dialog
+    aria-labelledby="dashboard-export-dialog"
+    maxwidth="xl"
+    open="false"
+  >
+    <mock-dialogcontent
+      classname="makeStyles-contentContainer-39"
+    >
+      <div
+        class="MuiBox-root MuiBox-root-43 makeStyles-previewContainer-40"
+      >
+        <div
+          class="MuiBox-root MuiBox-root-44 makeStyles-previewWrapper-41"
+        >
+          <div
+            class="makeStyles-exportContent-42"
+            style="flex: 1; min-height: 100%;"
+          >
+            <div
+              class="MuiBox-root MuiBox-root-52 makeStyles-titleSection-45"
+            >
+              <mock-typography
+                classname="makeStyles-title-46"
+                component="h1"
+                variant="h2"
+              >
+                Untitled Dashboard
+              </mock-typography>
+            </div>
+            <div
+              class="MuiBox-root MuiBox-root-53 makeStyles-layout-47"
+            >
+              <div
+                class="MuiBox-root MuiBox-root-54 makeStyles-leadingContentArea-48"
+              >
+                <div
+                  class="makeStyles-mapsContainer-50"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="MuiBox-root MuiBox-root-60 makeStyles-configContainer-55"
+      >
+        <div>
+          <div
+            class="MuiBox-root MuiBox-root-61 makeStyles-title-56"
+          >
+            Export Options
+          </div>
+          <button
+            class="MuiButtonBase-root MuiIconButton-root makeStyles-closeButton-57"
+            tabindex="0"
+            type="button"
+          >
+            <span
+              class="MuiIconButton-label"
+            >
+              <svg
+                aria-hidden="true"
+                class="MuiSvgIcon-root"
+                focusable="false"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm5 13.59L15.59 17 12 13.41 8.41 17 7 15.59 10.59 12 7 8.41 8.41 7 12 10.59 15.59 7 17 8.41 13.41 12 17 15.59z"
+                />
+              </svg>
+            </span>
+            <span
+              class="MuiTouchRipple-root"
+            />
+          </button>
+        </div>
+        <div
+          class="MuiBox-root MuiBox-root-62 makeStyles-optionWrap-58"
+        >
+          <div
+            class="MuiFormControl-root MuiFormControl-fullWidth"
+          >
+            <label
+              class="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-marginDense MuiInputLabel-outlined MuiFormLabel-filled"
+              data-shrink="true"
+              id="paper-size-label"
+            >
+              Paper Size
+            </label>
+            <div
+              class="MuiInputBase-root MuiOutlinedInput-root MuiInputBase-formControl MuiInputBase-marginDense MuiOutlinedInput-marginDense"
+            >
+              <div
+                aria-haspopup="listbox"
+                aria-labelledby="paper-size-label"
+                class="MuiSelect-root MuiSelect-select MuiSelect-selectMenu MuiSelect-outlined MuiInputBase-input MuiOutlinedInput-input MuiInputBase-inputMarginDense MuiOutlinedInput-inputMarginDense"
+                role="button"
+                tabindex="0"
+              >
+                Browser Dimensions
+              </div>
+              <input
+                aria-hidden="true"
+                class="MuiSelect-nativeInput"
+                tabindex="-1"
+                value="browser"
+              />
+              <svg
+                aria-hidden="true"
+                class="MuiSvgIcon-root MuiSelect-icon MuiSelect-iconOutlined"
+                focusable="false"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  d="M7 10l5 5 5-5z"
+                />
+              </svg>
+              <mock-menu
+                anchorel="[object HTMLDivElement]"
+                id="menu-"
+                menulistprops="[object Object]"
+                open="false"
+                paperprops="[object Object]"
+              >
+                <mock-menuitem
+                  aria-selected="true"
+                  data-value="browser"
+                  role="option"
+                  selected="true"
+                >
+                  Browser Dimensions
+                </mock-menuitem>
+                <mock-menuitem
+                  data-value="us-letter-landscape"
+                  role="option"
+                  selected="false"
+                >
+                  US Letter Landscape
+                </mock-menuitem>
+                <mock-menuitem
+                  data-value="a4-landscape"
+                  role="option"
+                  selected="false"
+                >
+                  A4 Landscape
+                </mock-menuitem>
+              </mock-menu>
+              <fieldset
+                aria-hidden="true"
+                class="PrivateNotchedOutline-root-63 MuiOutlinedInput-notchedOutline"
+              >
+                <legend
+                  class="PrivateNotchedOutline-legendLabelled-65 PrivateNotchedOutline-legendNotched-66"
+                >
+                  <span>
+                    Paper Size
+                  </span>
+                </legend>
+              </fieldset>
+            </div>
+          </div>
+        </div>
+        <div
+          class="MuiBox-root MuiBox-root-67 makeStyles-optionWrap-58"
+        >
+          <div
+            class="MuiFormControl-root MuiFormControl-fullWidth"
+          >
+            <label
+              class="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-marginDense MuiInputLabel-outlined MuiFormLabel-filled"
+              data-shrink="true"
+              id="export-format-label"
+            >
+              Format
+            </label>
+            <div
+              class="MuiInputBase-root MuiOutlinedInput-root MuiInputBase-formControl MuiInputBase-marginDense MuiOutlinedInput-marginDense"
+            >
+              <div
+                aria-haspopup="listbox"
+                aria-labelledby="export-format-label"
+                class="MuiSelect-root MuiSelect-select MuiSelect-selectMenu MuiSelect-outlined MuiInputBase-input MuiOutlinedInput-input MuiInputBase-inputMarginDense MuiOutlinedInput-inputMarginDense"
+                role="button"
+                tabindex="0"
+              >
+                PDF
+              </div>
+              <input
+                aria-hidden="true"
+                class="MuiSelect-nativeInput"
+                tabindex="-1"
+                value="pdf"
+              />
+              <svg
+                aria-hidden="true"
+                class="MuiSvgIcon-root MuiSelect-icon MuiSelect-iconOutlined"
+                focusable="false"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  d="M7 10l5 5 5-5z"
+                />
+              </svg>
+              <mock-menu
+                anchorel="[object HTMLDivElement]"
+                id="menu-"
+                menulistprops="[object Object]"
+                open="false"
+                paperprops="[object Object]"
+              >
+                <mock-menuitem
+                  aria-selected="true"
+                  data-value="pdf"
+                  role="option"
+                  selected="true"
+                >
+                  PDF
+                </mock-menuitem>
+                <mock-menuitem
+                  data-value="png"
+                  role="option"
+                  selected="false"
+                >
+                  PNG
+                </mock-menuitem>
+              </mock-menu>
+              <fieldset
+                aria-hidden="true"
+                class="PrivateNotchedOutline-root-63 MuiOutlinedInput-notchedOutline"
+              >
+                <legend
+                  class="PrivateNotchedOutline-legendLabelled-65 PrivateNotchedOutline-legendNotched-66"
+                >
+                  <span>
+                    Format
+                  </span>
+                </legend>
+              </fieldset>
+            </div>
+          </div>
+        </div>
+        <mock-button
+          classname="makeStyles-gutter-59"
+          color="primary"
+          disabled="false"
+          endicon="[object Object]"
+          style="background-color: rgb(99, 178, 189); color: black;"
+          variant="contained"
+        >
+          Download
+        </mock-button>
+      </div>
+    </mock-dialogcontent>
+  </mock-dialog>
+  <mock-snackbar
+    anchororigin="[object Object]"
+    autohideduration="4000"
+    open="false"
+  >
+    <div
+      class="MuiPaper-root MuiAlert-root MuiAlert-standardSuccess MuiPaper-elevation0"
+      role="alert"
+    >
+      <div
+        class="MuiAlert-icon"
+      >
+        <svg
+          aria-hidden="true"
+          class="MuiSvgIcon-root MuiSvgIcon-fontSizeInherit"
+          focusable="false"
+          viewBox="0 0 24 24"
+        >
+          <path
+            d="M20,12A8,8 0 0,1 12,20A8,8 0 0,1 4,12A8,8 0 0,1 12,4C12.76,4 13.5,4.11 14.2, 4.31L15.77,2.74C14.61,2.26 13.34,2 12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0, 0 22,12M7.91,10.08L6.5,11.5L11,16L21,6L19.59,4.58L11,13.17L7.91,10.08Z"
+          />
+        </svg>
+      </div>
+      <div
+        class="MuiAlert-message"
+      />
+      <div
+        class="MuiAlert-action"
+      >
+        <button
+          aria-label="Close"
+          class="MuiButtonBase-root MuiIconButton-root MuiIconButton-colorInherit MuiIconButton-sizeSmall"
+          tabindex="0"
+          title="Close"
+          type="button"
+        >
+          <span
+            class="MuiIconButton-label"
+          >
+            <svg
+              aria-hidden="true"
+              class="MuiSvgIcon-root MuiSvgIcon-fontSizeSmall"
+              focusable="false"
+              viewBox="0 0 24 24"
+            >
+              <path
+                d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"
+              />
+            </svg>
+          </span>
+          <span
+            class="MuiTouchRipple-root"
+          />
+        </button>
+      </div>
+    </div>
+  </mock-snackbar>
+  <mock-snackbar
+    anchororigin="[object Object]"
+    autohideduration="6000"
+    open="false"
+  >
+    <div
+      class="MuiPaper-root MuiAlert-root MuiAlert-standardError MuiPaper-elevation0"
+      role="alert"
+    >
+      <div
+        class="MuiAlert-icon"
+      >
+        <svg
+          aria-hidden="true"
+          class="MuiSvgIcon-root MuiSvgIcon-fontSizeInherit"
+          focusable="false"
+          viewBox="0 0 24 24"
+        >
+          <path
+            d="M11 15h2v2h-2zm0-8h2v6h-2zm.99-5C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8z"
+          />
+        </svg>
+      </div>
+      <div
+        class="MuiAlert-message"
+      />
+      <div
+        class="MuiAlert-action"
+      >
+        <button
+          aria-label="Close"
+          class="MuiButtonBase-root MuiIconButton-root MuiIconButton-colorInherit MuiIconButton-sizeSmall"
+          tabindex="0"
+          title="Close"
+          type="button"
+        >
+          <span
+            class="MuiIconButton-label"
+          >
+            <svg
+              aria-hidden="true"
+              class="MuiSvgIcon-root MuiSvgIcon-fontSizeSmall"
+              focusable="false"
+              viewBox="0 0 24 24"
+            >
+              <path
+                d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"
+              />
+            </svg>
+          </span>
+          <span
+            class="MuiTouchRipple-root"
+          />
+        </button>
+      </div>
+    </div>
+  </mock-snackbar>
 </div>
 `;
