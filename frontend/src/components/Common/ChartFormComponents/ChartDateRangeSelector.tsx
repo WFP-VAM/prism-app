@@ -10,6 +10,7 @@ interface ChartDateRangeSelectorProps {
   onEndDateChange: (date: number | null) => void;
   disabled?: boolean;
   stacked?: boolean;
+  hideLabel?: boolean;
 }
 
 function ChartDateRangeSelector({
@@ -19,6 +20,7 @@ function ChartDateRangeSelector({
   onEndDateChange,
   disabled = false,
   stacked = false,
+  hideLabel = false,
 }: ChartDateRangeSelectorProps) {
   const classes = useStyles();
   const { t } = useSafeTranslation();
@@ -49,9 +51,11 @@ function ChartDateRangeSelector({
 
   return (
     <div className={classes.container}>
-      <Typography className={classes.label} variant="body2">
-        {t('Date Range')}
-      </Typography>
+      {!hideLabel && (
+        <Typography className={classes.label} variant="body2">
+          {t('Date Range')}
+        </Typography>
+      )}
       <div
         className={classes.dateFieldsRow}
         style={{ flexDirection: stacked ? 'column' : 'row' }}

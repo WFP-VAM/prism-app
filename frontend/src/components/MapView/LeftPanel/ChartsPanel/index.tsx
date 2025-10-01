@@ -630,7 +630,7 @@ const ChartsPanel = memo(() => {
             checked={compareLocations}
           />
 
-          <Box style={{ width: '100%', paddingLeft: 20, paddingRight: 20 }}>
+          <Box style={{ paddingLeft: 20, paddingRight: 20 }}>
             {compareLocations && (
               <Typography
                 style={{
@@ -650,6 +650,7 @@ const ChartsPanel = memo(() => {
               admin1Key={admin1Key}
               admin2Key={admin2Key}
               stacked
+              hideLabel={compareLocations}
               onAdmin1Change={(key, properties, level) => {
                 setAdmin1Key(key);
                 setAdmin2Key('' as AdminCodeString);
@@ -675,7 +676,7 @@ const ChartsPanel = memo(() => {
             />
           </Box>
           {compareLocations && (
-            <Box style={{ width: '100%', paddingLeft: 20, paddingRight: 20 }}>
+            <Box style={{ paddingLeft: 20, paddingRight: 20 }}>
               <Typography
                 style={{
                   color: 'black',
@@ -693,6 +694,7 @@ const ChartsPanel = memo(() => {
                 admin1Key={secondAdmin1Key}
                 admin2Key={secondAdmin2Key}
                 stacked
+                hideLabel
                 onAdmin1Change={(key, properties, level) => {
                   setSecondAdmin1Key(key);
                   setSecondAdmin2Key('' as AdminCodeString);
@@ -754,7 +756,7 @@ const ChartsPanel = memo(() => {
 
           {comparePeriods && (
             <>
-              <Box style={{ width: '100%', paddingLeft: 20, paddingRight: 20 }}>
+              <Box style={{ paddingLeft: 20, paddingRight: 20 }}>
                 <Typography
                   style={{
                     color: 'black',
@@ -772,9 +774,10 @@ const ChartsPanel = memo(() => {
                   onStartDateChange={setStartDate1}
                   onEndDateChange={setEndDate1}
                   stacked
+                  hideLabel
                 />
               </Box>
-              <Box style={{ width: '100%', paddingLeft: 20, paddingRight: 20 }}>
+              <Box style={{ paddingLeft: 20, paddingRight: 20 }}>
                 <Typography
                   style={{
                     color: 'black',
@@ -792,6 +795,7 @@ const ChartsPanel = memo(() => {
                   onStartDateChange={setStartDate2}
                   onEndDateChange={setEndDate2}
                   stacked
+                  hideLabel
                 />
               </Box>
             </>

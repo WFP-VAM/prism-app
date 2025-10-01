@@ -125,7 +125,6 @@ export const useChartForm = (
     setAdminProperties(properties);
   };
 
-  // Get boundary layer data
   const boundaryLayerData = useSelector(layerDataSelector(boundaryLayer.id)) as
     | LayerData<BoundaryLayerProps>
     | undefined;
@@ -190,7 +189,7 @@ export interface UseChartDataOptions {
   adminLevel: AdminLevelType;
   startDate: number | null;
   endDate: number | null;
-  enabled?: boolean; // Allow disabling the fetch
+  enabled?: boolean;
 }
 
 export interface UseChartDataReturn {
