@@ -1,6 +1,7 @@
 import { Typography, Input, makeStyles } from '@material-ui/core';
 import DatePicker from 'react-datepicker';
 import { useSafeTranslation } from 'i18n';
+import { useState, useEffect } from 'react';
 
 interface ChartDateRangeSelectorProps {
   startDate: number | null;
@@ -21,13 +22,29 @@ function ChartDateRangeSelector({
 }: ChartDateRangeSelectorProps) {
   const classes = useStyles();
   const { t } = useSafeTranslation();
+  const [dateError, setDateError] = useState<string | null>(null);
+
+  // Validate date range whenever dates change
+  useEffect(() => {
+    if (startDate && endDate) {
+      if (endDate <= startDate) {
+        setDateError(t('End date must be after start date'));
+      } else {
+        setDateError(null);
+      }
+    } else {
+      setDateError(null);
+    }
+  }, [startDate, endDate, t]);
 
   const handleStartDateChange = (date: Date | null) => {
-    onStartDateChange(date?.getTime() || startDate);
+    const newStartDate = date?.getTime() || startDate;
+    onStartDateChange(newStartDate);
   };
 
   const handleEndDateChange = (date: Date | null) => {
-    onEndDateChange(date?.getTime() || endDate);
+    const newEndDate = date?.getTime() || endDate;
+    onEndDateChange(newEndDate);
   };
 
   return (
@@ -78,6 +95,11 @@ function ChartDateRangeSelector({
           />
         </div>
       </div>
+      {dateError && (
+        <Typography className={classes.errorText} variant="caption">
+          {dateError}
+        </Typography>
+      )}
     </div>
   );
 }
@@ -126,6 +148,11 @@ const useStyles = makeStyles(() => ({
   },
   calendarPopper: {
     zIndex: 3,
+  },
+  errorText: {
+    color: '#d32f2f',
+    marginTop: 8,
+    fontSize: '0.75rem',
   },
 }));
 

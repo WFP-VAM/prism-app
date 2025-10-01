@@ -23,6 +23,7 @@ import { getChartAdminBoundaryParams } from 'utils/admin-utils';
 import { getTimeInMilliseconds } from 'utils/date-utils';
 import { LayerDefinitions, getBoundaryLayersByAdminLevel } from 'config/utils';
 import { getProperties } from 'components/MapView/utils';
+import { isEnglishLanguageSelected, useSafeTranslation } from 'i18n';
 
 const { multiCountry, countryAdmin0Id } = appConfig;
 const MAX_ADMIN_LEVEL = multiCountry ? 3 : 2;
@@ -143,6 +144,24 @@ export const useChartForm = (
     }
   }, [adminProperties, boundaryLayerData]);
 
+  // Ensure adminLevel matches what's actually selected
+  useEffect(() => {
+    const getExpectedLevel = (): AdminLevelType => {
+      if (admin2Key) {
+        return 2 as AdminLevelType;
+      }
+      if (admin1Key) {
+        return 1 as AdminLevelType;
+      }
+      return 0 as AdminLevelType;
+    };
+
+    const expectedLevel = getExpectedLevel();
+    if (adminLevel !== expectedLevel) {
+      setAdminLevel(expectedLevel);
+    }
+  }, [admin1Key, admin2Key, adminLevel]);
+
   return {
     // Form state
     chartLayerId,
@@ -200,6 +219,7 @@ export const useChartData = (
   } = options;
 
   const dispatch = useDispatch();
+  const { i18n: i18nLocale } = useSafeTranslation();
   const [chartDataset, setChartDataset] = useState<TableData | undefined>(
     undefined,
   );
@@ -305,20 +325,40 @@ export const useChartData = (
   );
 
   const chartSubtitle = useMemo(() => {
-    if (!adminProperties || !requestParams) {
+    if (!adminProperties || !requestParams || !chartLayer?.chartData) {
       return appConfig.country;
     }
 
-    const { levels } = chartLayer?.chartData || { levels: [] };
+    const { levels } = chartLayer.chartData;
     const levelsDict = Object.fromEntries(levels.map(x => [x.level, x.id]));
     const adminKey = levelsDict[adminLevel.toString()];
-    const { name, localName } = requestParams.boundaryProps[adminKey] || {
-      name: appConfig.country,
-      localName: appConfig.country,
-    };
 
-    return name || localName || appConfig.country;
-  }, [adminProperties, requestParams, chartLayer, adminLevel]);
+    // Check if we actually have valid admin data at this level
+    const boundaryProp = requestParams.boundaryProps[adminKey];
+    if (!boundaryProp || !boundaryProp.code) {
+      // No valid admin data at this level, default to country
+      if (isEnglishLanguageSelected(i18nLocale)) {
+        return appConfig.country;
+      }
+      return appConfig.country;
+    }
+
+    const { name: adminName, localName: adminLocalName } = boundaryProp;
+
+    if (isEnglishLanguageSelected(i18nLocale)) {
+      return adminName || appConfig.country;
+    }
+    return adminLocalName || appConfig.country;
+
+    // i18nLocale does not trigger a refresh. resolvedLanguage does
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [
+    adminProperties,
+    requestParams,
+    chartLayer,
+    adminLevel,
+    i18nLocale.resolvedLanguage,
+  ]);
 
   return {
     chartDataset,

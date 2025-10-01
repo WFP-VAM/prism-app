@@ -43,15 +43,22 @@ function ChartBlock({
     initialAdminLevel: initialAdminLevel as AdminLevelType | undefined,
   });
 
-  const { chartDataset, isLoading, error, chartConfig, chartTitle, refetch } =
-    useChartData({
-      chartLayer: formState.selectedChartLayer,
-      adminProperties: formState.adminProperties,
-      adminLevel: formState.adminLevel,
-      startDate: formState.startDate,
-      endDate: formState.endDate,
-      enabled: !!formState.chartLayerId,
-    });
+  const {
+    chartDataset,
+    isLoading,
+    error,
+    chartConfig,
+    chartTitle,
+    chartSubtitle,
+    refetch,
+  } = useChartData({
+    chartLayer: formState.selectedChartLayer,
+    adminProperties: formState.adminProperties,
+    adminLevel: formState.adminLevel,
+    startDate: formState.startDate,
+    endDate: formState.endDate,
+    enabled: !!formState.chartLayerId,
+  });
 
   // Form changes tracking for edit mode
   const [hasFormChanged, setHasFormChanged] = useState(false);
@@ -142,7 +149,7 @@ function ChartBlock({
             {!isLoading && !error && chartDataset && chartConfig && (
               <Box className={classes.chartWrapper}>
                 <Chart
-                  title={t(chartTitle)}
+                  title={t(chartSubtitle)}
                   config={chartConfig}
                   data={chartDataset}
                   datasetFields={
@@ -216,6 +223,7 @@ function ChartBlock({
       <Box className={classes.smallChartWrapper}>
         <Chart
           title={t(chartTitle)}
+          subtitle={t(chartSubtitle)}
           config={chartConfig}
           data={chartDataset}
           datasetFields={formState.selectedChartLayer?.chartData?.fields}
