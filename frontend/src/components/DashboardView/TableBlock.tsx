@@ -264,7 +264,7 @@ function TableBlock({
   return (
     <Box className={classes.grayCard}>
       <Typography variant="h3" className={classes.blockTitle}>
-        Block #{index + 1}
+        {t('Table Block')} #{index + 1}
       </Typography>
 
       <Box className={classes.formContainer}>
