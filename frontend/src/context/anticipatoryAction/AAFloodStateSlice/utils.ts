@@ -210,3 +210,138 @@ export function getFloodRiskSeverity(
       return 0;
   }
 }
+
+// ---- Shared helpers for building state from API responses ----
+
+export function normalizeFloodTriggerStatus(raw: string): AAFloodRiskLevelType {
+  const s = String(raw || '').toLowerCase();
+  switch (true) {
+    case s === 'severe':
+      return 'Severe';
+    case s === 'moderate':
+      return 'Moderate';
+    case s === 'bankfull' || s === 'bank full':
+      return 'Bankfull';
+    default:
+      return 'Below bankfull';
+  }
+}
+
+export function buildAvailableFloodDatesFromDatesJson(
+  datesData: Record<
+    string,
+    {
+      trigger_status?: string;
+      probabilities_file?: string;
+      discharge_file?: string;
+      avg_probabilities_file?: string;
+    }
+  >,
+): FloodDateItem[] {
+  const dateKeys = Object.keys(datesData).filter(
+    d => d && !Number.isNaN(new Date(`${d}T12:00:00Z`).getTime()),
+  );
+  // eslint-disable-next-line fp/no-mutating-methods
+  const sortedDateKeys = [...dateKeys].sort();
+
+  return sortedDateKeys
+    .map(d => {
+      const item = datesData[d] || {};
+      const status = normalizeFloodTriggerStatus(
+        String(item.trigger_status || ''),
+      );
+      const dt = new Date(`${d}T12:00:00Z`).getTime();
+      return {
+        displayDate: dt,
+        queryDate: dt,
+        color: getFloodRiskColor(status),
+      } as FloodDateItem;
+    })
+    .filter(Boolean) as FloodDateItem[];
+}
+
+export function buildStationsFromAvgProbabilities(
+  avgProbRows: any[],
+  date: string,
+): FloodStation[] {
+  const stationsMap = new Map<string, FloodStation>();
+
+  avgProbRows.forEach((row: any) => {
+    const name = startCase(String(row.station_name || '').trim());
+    if (!name) {
+      return;
+    }
+    const issueDate = String(row.forecast_issue_date || date);
+    const riskLevel = normalizeFloodTriggerStatus(row.trigger_status);
+    const longitude = Number(row.longitude ?? row.lon ?? 0);
+    const latitude = Number(row.latitude ?? row.lat ?? 0);
+    const stationData: FloodStationData = {
+      station_name: name,
+      river_name: String(row.river_name || ''),
+      location_id: Number(row.station_id || 0),
+      time: issueDate,
+      total_members: 0,
+      min_discharge: 0,
+      max_discharge: 0,
+      avg_discharge: 0,
+      non_null_values: 0,
+      zero_values: 0,
+      threshold_bankfull: 0,
+      threshold_moderate: 0,
+      threshold_severe: 0,
+      bankfull_exceeding: Number(row.avg_bankfull_percentage || 0),
+      moderate_exceeding: Number(row.avg_moderate_percentage || 0),
+      severe_exceeding: Number(row.avg_severe_percentage || 0),
+      bankfull_percentage: Number(row.avg_bankfull_percentage || 0),
+      moderate_percentage: Number(row.avg_moderate_percentage || 0),
+      severe_percentage: Number(row.avg_severe_percentage || 0),
+      risk_level: riskLevel,
+      max_vs_bankfull_pct: 0,
+      avg_vs_bankfull_pct: 0,
+    };
+    const dateKey = issueDate;
+    const existing = stationsMap.get(name);
+    if (existing) {
+      // eslint-disable-next-line fp/no-mutation
+      existing.allData[dateKey] = stationData;
+      // eslint-disable-next-line fp/no-mutating-methods
+      existing.historicalData.push(stationData);
+      if (
+        !existing.currentData ||
+        existing.currentData.time < stationData.time
+      ) {
+        // eslint-disable-next-line fp/no-mutation
+        existing.currentData = stationData;
+      }
+      if (
+        !existing.coordinates &&
+        Number.isFinite(longitude) &&
+        Number.isFinite(latitude) &&
+        longitude !== 0 &&
+        latitude !== 0
+      ) {
+        // eslint-disable-next-line fp/no-mutation
+        existing.coordinates = { latitude, longitude };
+      }
+    } else {
+      stationsMap.set(name, {
+        station_name: name,
+        river_name: stationData.river_name,
+        location_id: stationData.location_id,
+        coordinates:
+          Number.isFinite(longitude) &&
+          Number.isFinite(latitude) &&
+          longitude !== 0 &&
+          latitude !== 0
+            ? { latitude, longitude }
+            : undefined,
+        thresholds: { bankfull: 0, moderate: 0, severe: 0 },
+        currentData: stationData,
+        allData: { [dateKey]: stationData },
+        historicalData: [stationData],
+      });
+    }
+  });
+
+  return Array.from(stationsMap.values());
+}
