@@ -94,7 +94,7 @@ import {
   safeDispatchRemoveLayer,
   safeDispatchAddLayer,
 } from 'utils/map-utils';
-import { removeLayer } from 'context/mapStateSlice';
+import { addLayer, removeLayer } from 'context/mapStateSlice';
 import {
   availableDatesSelector,
   layersLoadingDatesIdsSelector,
@@ -496,7 +496,7 @@ const AnalysisPanel = memo(() => {
     setThresholdError(null);
 
     resetAnalysisParams();
-    refreshBoundaries(map, dispatch);
+    refreshBoundaries(map, { addLayer, removeLayer });
 
     if (previousBaselineId) {
       const previousBaseline = LayerDefinitions[
