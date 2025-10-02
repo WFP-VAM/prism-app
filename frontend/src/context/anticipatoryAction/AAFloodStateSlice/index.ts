@@ -105,14 +105,11 @@ export const loadAAFloodDateData = createAsyncThunk<
   if (!dateData) {
     throw new Error(`No data entry found for date ${date}`);
   }
-  const probUrl = `${baseDir}${dateData.probabilities_file}`;
-  const dischargeUrl = `${baseDir}${dateData.discharge_file}`;
-  const avgProbUrl = `${baseDir}${dateData.avg_probabilities_file}`;
 
   const [probRows, dischargeRows, avgProbRows] = await Promise.all([
-    parseCsv<any>(probUrl),
-    parseCsv<any>(dischargeUrl),
-    parseCsv<any>(avgProbUrl),
+    parseCsv<any>(`${baseDir}${dateData.probabilities_file}`),
+    parseCsv<any>(`${baseDir}${dateData.discharge_file}`),
+    parseCsv<any>(`${baseDir}${dateData.avg_probabilities_file}`),
   ]);
 
   // probabilities.csv schema: location_id,station_name,river_name,longitude,latitude,forecast_issue_date,valid_time,bankfull_percentage,moderate_percentage,severe_percentage
@@ -125,18 +122,15 @@ export const loadAAFloodDateData = createAsyncThunk<
         if (!key) {
           return acc;
         }
-        // TODO: cleanup mock data
         const point: FloodProbabilityPoint = {
           time: String(row.valid_time ?? row.time ?? ''),
-          bankfull_percentage:
-            Number(row.bankfull_percentage ?? row.bankfull ?? 0) -
-            Math.random() * 100,
-          moderate_percentage:
-            Number(row.moderate_percentage ?? row.moderate ?? 0) -
-            Math.random() * 100,
-          severe_percentage:
-            Number(row.severe_percentage ?? row.severe ?? 0) -
-            Math.random() * 100,
+          bankfull_percentage: Number(
+            row.bankfull_percentage ?? row.bankfull ?? 0,
+          ),
+          moderate_percentage: Number(
+            row.moderate_percentage ?? row.moderate ?? 0,
+          ),
+          severe_percentage: Number(row.severe_percentage ?? row.severe ?? 0),
         };
         const prev = acc[key] || [];
         return {
@@ -170,8 +164,7 @@ export const loadAAFloodDateData = createAsyncThunk<
       const entry = {
         time: String(row.valid_time ?? ''),
         member: Number(row.ensemble_member ?? row.member ?? 0),
-        // TODO: cleanup mock data
-        discharge: Number(row.discharge ?? 0) + 500 + Math.random() * 100,
+        discharge: Number(row.discharge ?? 0),
       };
       const prev = acc[key] || [];
       return {
@@ -181,8 +174,6 @@ export const loadAAFloodDateData = createAsyncThunk<
     },
     {},
   );
-
-  // removed debug log
 
   // For charts we want per lead-time arrays of members; return raw grouped structure
   const forecast: Record<string, FloodForecastData[]> = Object.keys(
