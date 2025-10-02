@@ -262,6 +262,10 @@ function StationCharts({ station, onClose }: StationChartsProps) {
     };
   }, [floodState.forecastData, station.station_name, station.thresholds, t]);
 
+  // Forecast window indices (inclusive)
+  const startIdx = forecastWindow.start - 1;
+  const endIdx = forecastWindow.end - 1;
+
   // Prepare trigger probability data from fetched probabilities
   const triggerProbabilityData = useMemo(() => {
     const probs = floodState.probabilitiesData[station.station_name];
@@ -279,12 +283,6 @@ function StationCharts({ station, onClose }: StationChartsProps) {
     const bankfullTrigger = 38;
     const moderateTrigger = 19;
     const severeTrigger = 10;
-
-    // Forecast window indices (inclusive)
-    const clampIndex = (i: number) =>
-      Math.max(0, Math.min(labels.length - 1, i));
-    const startIdx = clampIndex(forecastWindow.start);
-    const endIdx = clampIndex(forecastWindow.end);
 
     // Compute mean in window (inclusive) for each line
     const meanInWindow = (arr: number[]) => {
@@ -522,19 +520,7 @@ function StationCharts({ station, onClose }: StationChartsProps) {
     }
 
     const sortedData = sortBy(probs, p => new Date(p.time).getTime());
-    const labelStrings = sortedData.map(d =>
-      new Date(d.time).toLocaleDateString('en-US', {
-        month: '2-digit',
-        day: '2-digit',
-      }),
-    );
-
-    const clampIndex = (i: number) =>
-      Math.max(0, Math.min(labelStrings.length - 1, i));
-    // const forecastBeginIdx = clampIndex(1);
-    const startIdx = clampIndex(forecastWindow.start);
-    const endIdx = clampIndex(forecastWindow.end);
-    // const unreliableIdx = clampIndex(9);
+    const labelStrings = sortedData.map(d => formatShortDate(d.time));
 
     // Compute y-axis max rounded up to the next dizaine (multiple of 10)
     const maxPct = Math.max(
