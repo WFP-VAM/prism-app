@@ -13,7 +13,7 @@ import {
   FloodProbabilityPoint,
   FloodForecastData,
 } from './types';
-import { parseAndTransformFloodData } from './utils';
+import { getFloodRiskColor } from './utils';
 
 const initialState: AnticipatoryActionFloodState = {
   stations: [],
@@ -50,24 +50,53 @@ export const loadAAFloodData = createAsyncThunk<
   if (!url) {
     throw new Error('Flood data URL not configured');
   }
+  // dates.json schema: { "YYYY-MM-DD": { trigger_status: string, probabilities_file: string, discharge_file: string, ... } }
+  const resp = await fetch(url);
+  const datesData: Record<
+    string,
+    {
+      trigger_status?: string;
+      probabilities_file?: string;
+      discharge_file?: string;
+      avg_probabilities_file?: string;
+    }
+  > = await resp.json();
 
-  return new Promise((resolve, reject) => {
-    Papa.parse(url, {
-      download: true,
-      header: true,
-      complete: results => {
-        try {
-          const { stations, availableDates } = parseAndTransformFloodData(
-            results.data as FloodStationData[],
-          );
-          resolve({ stations, availableDates });
-        } catch (error) {
-          reject(error);
-        }
-      },
-      error: error => reject(error),
-    });
+  const dateKeys = Object.keys(datesData).filter(
+    d => d && !Number.isNaN(new Date(`${d}T12:00:00Z`).getTime()),
+  );
+  // eslint-disable-next-line fp/no-mutating-methods
+  const sortedDateKeys = [...dateKeys].sort();
+  const normalizeStatus = (raw: string): AAFloodRiskLevelType => {
+    const s = raw.toLowerCase();
+    switch (true) {
+      case s === 'severe': {
+        return 'Severe';
+      }
+      case s === 'moderate': {
+        return 'Moderate';
+      }
+      case s === 'bankfull' || s === 'bank full': {
+        return 'Bankfull';
+      }
+      default: {
+        return 'Below bankfull';
+      }
+    }
+  };
+  const availableDates: FloodDateItem[] = sortedDateKeys.map(d => {
+    const item = datesData[d] || {};
+    const status = normalizeStatus(String(item.trigger_status || ''));
+    const dt = new Date(`${d}T12:00:00Z`).getTime();
+    return {
+      displayDate: dt,
+      queryDate: dt,
+      color: getFloodRiskColor(status),
+    } as FloodDateItem;
   });
+
+  // Stations are not provided by dates.json. Return empty until a station source is added.
+  return { stations: [], availableDates };
 });
 
 export const loadAAFloodDateData = createAsyncThunk<
@@ -75,16 +104,17 @@ export const loadAAFloodDateData = createAsyncThunk<
     selectedDate: string;
     probabilities: Record<string, FloodProbabilityPoint[]>;
     forecast: Record<string, FloodForecastData[]>;
+    stations: FloodStation[];
   },
   { date: string },
   CreateAsyncThunkTypes
 >('anticipatoryActionFloodState/loadAAFloodDateData', async ({ date }) => {
-  const baseProbUrl = appConfig.anticipatoryActionFloodUrl; // probabilities base
-  if (!baseProbUrl) {
+  const datesUrl = appConfig.anticipatoryActionFloodUrl; // probabilities base
+  if (!datesUrl) {
     throw new Error('Flood probabilities URL not configured');
   }
-  const probUrl = `${baseProbUrl}?date=${date}`;
-  const dischargeUrl = `http://data.earthobservation.vam.wfp.org/public-share/aa/flood/moz/discharge.csv?date=${date}`;
+  // Build base path from dates.json URL
+  const baseDir = datesUrl.replace(/dates\.json$/i, '');
 
   const parseCsv = <T>(url: string) =>
     new Promise<T[]>((resolve, reject) => {
@@ -97,9 +127,20 @@ export const loadAAFloodDateData = createAsyncThunk<
       });
     });
 
-  const [probRows, dischargeRows] = await Promise.all([
+  const datesResponse = await fetch(datesUrl);
+  const datesData = await datesResponse.json();
+  const dateData = datesData[date];
+  if (!dateData) {
+    throw new Error(`No data entry found for date ${date}`);
+  }
+  const probUrl = `${baseDir}${dateData.probabilities_file}`;
+  const dischargeUrl = `${baseDir}${dateData.discharge_file}`;
+  const avgProbUrl = `${baseDir}${dateData.avg_probabilities_file}`;
+
+  const [probRows, dischargeRows, avgProbRows] = await Promise.all([
     parseCsv<any>(probUrl),
     parseCsv<any>(dischargeUrl),
+    parseCsv<any>(avgProbUrl),
   ]);
 
   // probabilities.csv schema: location_id,station_name,river_name,longitude,latitude,forecast_issue_date,valid_time,bankfull_percentage,moderate_percentage,severe_percentage
@@ -169,6 +210,8 @@ export const loadAAFloodDateData = createAsyncThunk<
     {},
   );
 
+  // removed debug log
+
   // For charts we want per lead-time arrays of members; return raw grouped structure
   const forecast: Record<string, FloodForecastData[]> = Object.keys(
     dischargeByStation,
@@ -202,7 +245,106 @@ export const loadAAFloodDateData = createAsyncThunk<
     return { ...acc, [station]: data };
   }, {});
 
-  return { selectedDate: date, probabilities, forecast };
+  // Build station table data from avg_probabilities.csv
+  const normalizeStatus = (raw: string): AAFloodRiskLevelType => {
+    const s = String(raw || '').toLowerCase();
+    switch (true) {
+      case s === 'severe': {
+        return 'Severe';
+      }
+      case s === 'moderate': {
+        return 'Moderate';
+      }
+      case s === 'bankfull' || s === 'bank full': {
+        return 'Bankfull';
+      }
+      default: {
+        return 'Below bankfull';
+      }
+    }
+  };
+
+  const stationsMap = new Map<string, FloodStation>();
+  avgProbRows.forEach((row: any) => {
+    const name = startCase(String(row.station_name || '').trim());
+    if (!name) {
+      return;
+    }
+    const issueDate = String(row.forecast_issue_date || date);
+    const riskLevel = normalizeStatus(row.trigger_status);
+    const longitude = Number(row.longitude ?? row.lon ?? 0);
+    const latitude = Number(row.latitude ?? row.lat ?? 0);
+    const stationData: FloodStationData = {
+      station_name: name,
+      river_name: String(row.river_name || ''),
+      location_id: Number(row.station_id || 0),
+      time: issueDate,
+      total_members: 0,
+      min_discharge: 0,
+      max_discharge: 0,
+      avg_discharge: 0,
+      non_null_values: 0,
+      zero_values: 0,
+      threshold_bankfull: 0,
+      threshold_moderate: 0,
+      threshold_severe: 0,
+      bankfull_exceeding: Number(row.avg_bankfull_percentage || 0),
+      moderate_exceeding: Number(row.avg_moderate_percentage || 0),
+      severe_exceeding: Number(row.avg_severe_percentage || 0),
+      bankfull_percentage: Number(row.avg_bankfull_percentage || 0),
+      moderate_percentage: Number(row.avg_moderate_percentage || 0),
+      severe_percentage: Number(row.avg_severe_percentage || 0),
+      risk_level: riskLevel,
+      max_vs_bankfull_pct: 0,
+      avg_vs_bankfull_pct: 0,
+    };
+    const dateKey = issueDate; // already YYYY-MM-DD
+    const existing = stationsMap.get(name);
+    if (existing) {
+      // eslint-disable-next-line fp/no-mutation
+      existing.allData[dateKey] = stationData;
+      // eslint-disable-next-line fp/no-mutating-methods
+      existing.historicalData.push(stationData);
+      // set coordinates if not present yet and valid values exist
+      if (
+        !existing.coordinates &&
+        Number.isFinite(longitude) &&
+        Number.isFinite(latitude) &&
+        longitude !== 0 &&
+        latitude !== 0
+      ) {
+        // eslint-disable-next-line fp/no-mutation
+        existing.coordinates = { latitude, longitude };
+      }
+      if (
+        !existing.currentData ||
+        existing.currentData.time < stationData.time
+      ) {
+        // eslint-disable-next-line fp/no-mutation
+        existing.currentData = stationData;
+      }
+    } else {
+      stationsMap.set(name, {
+        station_name: name,
+        river_name: stationData.river_name,
+        location_id: stationData.location_id,
+        coordinates:
+          Number.isFinite(longitude) &&
+          Number.isFinite(latitude) &&
+          longitude !== 0 &&
+          latitude !== 0
+            ? { latitude, longitude }
+            : undefined,
+        thresholds: { bankfull: 0, moderate: 0, severe: 0 },
+        currentData: stationData,
+        allData: { [dateKey]: stationData },
+        historicalData: [stationData],
+      });
+    }
+  });
+  const stations: FloodStation[] = Array.from(stationsMap.values());
+
+  return { selectedDate: date, probabilities, forecast, stations };
 });
 
 export const anticipatoryActionFloodStateSlice = createSlice({
@@ -274,6 +416,7 @@ export const anticipatoryActionFloodStateSlice = createSlice({
       ...state,
       loading: false,
       selectedDate: payload.selectedDate,
+      stations: payload.stations,
       probabilitiesData: {
         ...state.probabilitiesData,
         ...payload.probabilities,

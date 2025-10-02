@@ -41,7 +41,7 @@ const useStyles = makeStyles(() =>
       fontWeight: 'bold',
     },
     tableContainer: {
-      maxHeight: '70vh',
+      maxHeight: '68vh',
       overflow: 'auto',
     },
     table: {
