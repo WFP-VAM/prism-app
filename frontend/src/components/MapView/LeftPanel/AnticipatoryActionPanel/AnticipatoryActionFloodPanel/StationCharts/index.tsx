@@ -465,7 +465,7 @@ function StationCharts({ station, onClose }: StationChartsProps) {
         ...fillDatasets,
       ],
     };
-  }, [floodState.probabilitiesData, station.station_name, t]);
+  }, [floodState.probabilitiesData, station.station_name, startIdx, endIdx, t]);
 
   const hydrographOptions = useMemo(
     () => ({
@@ -613,31 +613,16 @@ function StationCharts({ station, onClose }: StationChartsProps) {
               xAdjust: -50,
             },
           },
-          // {
-          //   type: 'line',
-          //   mode: 'vertical',
-          //   scaleID: 'x-axis-0',
-          //   value: labelStrings[unreliableIdx],
-          //   borderColor: 'rgba(158,158,158,0.8)',
-          //   borderDash: [4, 4],
-          //   borderWidth: 1,
-          //   label: {
-          //     enabled: true,
-          //     position: 'top',
-          //     content: t('Unreliable forecast'),
-          //     backgroundColor: 'rgba(0,0,0,0)',
-          //     fontColor: '#9E9E9E',
-          //     xAdjust: 8,
-          //   },
-          // },
         ],
       },
     } as any;
   }, [
     floodState.probabilitiesData,
     station.station_name,
-    t,
     hydrographOptions,
+    startIdx,
+    endIdx,
+    t,
   ]);
 
   const handleTabChange = (newValue: number) => {
