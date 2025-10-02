@@ -46,7 +46,10 @@ function ToggleSelector({
   const classes = useToggleSelectorStyles();
   return (
     <div className={classes.wrapper}>
-      <Box component="h4" style={{ textAlign: align, marginRight: '0.5rem' }}>
+      <Box
+        component="h4"
+        style={{ textAlign: align, marginRight: '0.5rem', color: 'black' }}
+      >
         {title}
       </Box>
       <ToggleButtonGroup

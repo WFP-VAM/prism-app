@@ -7,6 +7,7 @@ import {
   createStyles,
   makeStyles,
 } from '@material-ui/core';
+import { Source, Layer } from 'react-map-gl/maplibre';
 import { getDisplayBoundaryLayers } from 'config/utils';
 import {
   isLoading as areDatesLoading,
@@ -29,6 +30,7 @@ import { DashboardMode } from 'config/types';
 import MapComponent from '../MapView/Map';
 import DateSelector from '../MapView/DateSelector';
 import DashboardLegends from './DashboardLegends';
+import type { ExportConfig } from './DashboardContent';
 
 /*
   reverse the order off adding layers so that the first boundary layer will be placed at the very bottom,
@@ -40,10 +42,14 @@ const displayedBoundaryLayers = getDisplayBoundaryLayers().reverse();
 interface MapBlockProps {
   mapIndex: number;
   mode?: DashboardMode;
+  exportConfig?: ExportConfig;
 }
 
 const MapBlockContent = memo(
-  ({ mode = DashboardMode.EDIT }: Pick<MapBlockProps, 'mode'>) => {
+  ({
+    mode = DashboardMode.EDIT,
+    exportConfig,
+  }: Pick<MapBlockProps, 'mode' | 'exportConfig'>) => {
     const classes = useStyles();
     const { t } = useSafeTranslation();
     const { selectedLayersWithDateSupport } = useLayers();
@@ -115,8 +121,32 @@ const MapBlockContent = memo(
                 <CircularProgress size={100} />
               </div>
             )}
-            <MapComponent />
-            {!datesLoading && <DashboardLegends />}
+            <MapComponent
+              hideMapLabels={
+                exportConfig?.toggles?.mapLabelsVisibility === false
+              }
+            >
+              {exportConfig?.toggles?.adminAreasVisibility &&
+                exportConfig?.invertedAdminBoundaryLimitPolygon && (
+                  <Source
+                    id="dashboard-mask-overlay"
+                    type="geojson"
+                    data={exportConfig.invertedAdminBoundaryLimitPolygon}
+                  >
+                    <Layer
+                      id="dashboard-mask-layer-overlay"
+                      type="fill"
+                      source="dashboard-mask-overlay"
+                      layout={{}}
+                      paint={{
+                        'fill-color': '#000',
+                        'fill-opacity': 0.7,
+                      }}
+                    />
+                  </Source>
+                )}
+            </MapComponent>
+            {!datesLoading && <DashboardLegends exportConfig={exportConfig} />}
           </div>
           {mode === DashboardMode.EDIT &&
             selectedLayersWithDateSupport.length > 0 &&
@@ -133,7 +163,7 @@ const MapBlockContent = memo(
 );
 
 const MapBlock = memo(
-  ({ mapIndex, mode = DashboardMode.EDIT }: MapBlockProps) => {
+  ({ mapIndex, mode = DashboardMode.EDIT, exportConfig }: MapBlockProps) => {
     const selectedDashboardIndex = useSelector(selectedDashboardIndexSelector);
 
     return (
@@ -141,7 +171,7 @@ const MapBlock = memo(
         key={`dashboard-${selectedDashboardIndex}-map-${mapIndex}`}
         index={mapIndex}
       >
-        <MapBlockContent mode={mode} />
+        <MapBlockContent mode={mode} exportConfig={exportConfig} />
       </MapInstanceProvider>
     );
   },

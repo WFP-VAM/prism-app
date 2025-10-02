@@ -6,20 +6,26 @@ import {
   makeStyles,
 } from '@material-ui/core';
 import { Alert } from '@material-ui/lab';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import html2canvas from 'html2canvas';
 import { jsPDF } from 'jspdf';
+import mask from '@turf/mask';
 import { getFormattedDate } from 'utils/date-utils';
 import { dashboardTitleSelector } from 'context/dashboardStateSlice';
 import { downloadToFile } from 'components/MapView/utils';
 import { AdminCodeString } from 'config/types';
+import { getBoundaryLayerSingleton } from 'config/utils';
+import { safeCountry } from 'config';
+import { layerDataSelector } from 'context/mapStateSlice/selectors';
 import DashboardExportContext, {
   PaperSize,
   ExportToggles,
 } from './dashboardExport.context';
 import DashboardExportPreview from './DashboardExportPreview';
 import DashboardExportConfig from './DashboardExportConfig';
+
+const boundaryLayer = getBoundaryLayerSingleton();
 
 interface DashboardExportDialogProps {
   open: boolean;
@@ -53,6 +59,48 @@ function DashboardExportDialog({
   const [selectedBoundaries, setSelectedBoundaries] = useState<
     AdminCodeString[]
   >([]);
+
+  const [invertedAdminBoundaryLimitPolygon, setAdminBoundaryPolygon] =
+    useState(null);
+
+  // Get boundary layer data from Redux
+  const layerData = useSelector(layerDataSelector);
+  const data = (layerData as any)?.[boundaryLayer.id]?.data;
+
+  // Create the admin boundary mask when boundaries are selected
+  useEffect(() => {
+    if (!toggles.adminAreasVisibility) {
+      setAdminBoundaryPolygon(null);
+      return;
+    }
+
+    // admin-boundary-unified-polygon.json is generated using "yarn preprocess-layers"
+    if (selectedBoundaries.length === 0) {
+      fetch(`data/${safeCountry}/admin-boundary-unified-polygon.json`)
+        .then(response => response.json())
+        .then(polygonData => {
+          const maskedPolygon = mask(polygonData as any);
+          setAdminBoundaryPolygon(maskedPolygon as any);
+        })
+        .catch(error =>
+          console.error('Error loading admin boundary polygon:', error),
+        );
+      return;
+    }
+
+    if (!data) {
+      return;
+    }
+
+    const filteredData = {
+      ...data,
+      features: data.features.filter((cell: any) =>
+        selectedBoundaries.includes(cell.properties?.[boundaryLayer.adminCode]),
+      ),
+    };
+    const masked = mask(filteredData as any);
+    setAdminBoundaryPolygon(masked as any);
+  }, [data, selectedBoundaries, toggles.adminAreasVisibility]);
 
   const download = async (format: 'pdf' | 'png') => {
     setIsExporting(true);
@@ -200,6 +248,7 @@ function DashboardExportDialog({
       setLegendScale,
       selectedBoundaries,
       setSelectedBoundaries,
+      invertedAdminBoundaryLimitPolygon,
     },
   };
 

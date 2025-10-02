@@ -49,6 +49,7 @@ export type DashboardExportContextType = {
     setSelectedBoundaries: React.Dispatch<
       React.SetStateAction<AdminCodeString[]>
     >;
+    invertedAdminBoundaryLimitPolygon: any;
   };
 };
 

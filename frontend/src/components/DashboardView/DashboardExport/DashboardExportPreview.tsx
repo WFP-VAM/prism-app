@@ -14,8 +14,17 @@ function DashboardExportPreview() {
     return null;
   }
 
-  const { printRef, paperSize, toggles, logoPosition, logoScale } =
-    exportConfig;
+  const {
+    printRef,
+    paperSize,
+    toggles,
+    logoPosition,
+    logoScale,
+    legendPosition,
+    legendScale,
+    selectedBoundaries,
+    invertedAdminBoundaryLimitPolygon,
+  } = exportConfig;
 
   const dimensions = PAPER_SIZES[paperSize];
   const useBrowserSize = paperSize === PaperSize.BROWSER;
@@ -41,6 +50,18 @@ function DashboardExportPreview() {
     scale: logoScale,
   };
 
+  const exportConfigForContent = {
+    toggles: {
+      legendVisibility: toggles.legendVisibility,
+      mapLabelsVisibility: toggles.mapLabelsVisibility,
+      adminAreasVisibility: toggles.adminAreasVisibility,
+    },
+    legendPosition,
+    legendScale,
+    selectedBoundaries,
+    invertedAdminBoundaryLimitPolygon,
+  };
+
   return (
     <Box className={classes.previewContainer}>
       <Box className={classes.previewWrapper}>
@@ -53,6 +74,7 @@ function DashboardExportPreview() {
             showTitle
             refreshKey={paperSize}
             logoConfig={logoConfig}
+            exportConfig={exportConfigForContent}
           />
         </div>
       </Box>

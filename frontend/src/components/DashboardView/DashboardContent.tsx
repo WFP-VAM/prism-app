@@ -9,6 +9,7 @@ import {
   DashboardTextConfig,
   DashboardChartConfig,
   DashboardMode,
+  AdminCodeString,
 } from '../../config/types';
 import { appConfig } from '../../config';
 import MapBlock from './MapBlock';
@@ -22,11 +23,24 @@ interface LogoConfig {
   scale: number; // 0.5 = small, 1 = medium, 1.5 = large
 }
 
+export interface ExportConfig {
+  toggles?: {
+    legendVisibility?: boolean;
+    mapLabelsVisibility?: boolean;
+    adminAreasVisibility?: boolean;
+  };
+  legendPosition?: number;
+  legendScale?: number;
+  selectedBoundaries?: AdminCodeString[];
+  invertedAdminBoundaryLimitPolygon?: any;
+}
+
 interface DashboardContentProps {
   showTitle?: boolean;
   className?: string;
   refreshKey?: string;
   logoConfig?: LogoConfig;
+  exportConfig?: ExportConfig;
 }
 
 /**
@@ -38,6 +52,7 @@ function DashboardContent({
   className,
   refreshKey,
   logoConfig,
+  exportConfig,
 }: DashboardContentProps) {
   const classes = useStyles();
   const dashboardTitle = useSelector(dashboardTitleSelector);
@@ -83,7 +98,11 @@ function DashboardContent({
                 className={classes.mapContainer}
               >
                 <div style={{ flex: 1, minHeight: 0, width: '100%' }}>
-                  <MapBlock mapIndex={mapIndex} mode={DashboardMode.PREVIEW} />
+                  <MapBlock
+                    mapIndex={mapIndex}
+                    mode={DashboardMode.PREVIEW}
+                    exportConfig={exportConfig}
+                  />
                 </div>
               </Box>
             ))}
