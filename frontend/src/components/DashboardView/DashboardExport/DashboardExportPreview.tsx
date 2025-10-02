@@ -14,7 +14,8 @@ function DashboardExportPreview() {
     return null;
   }
 
-  const { printRef, paperSize } = exportConfig;
+  const { printRef, paperSize, toggles, logoPosition, logoScale } =
+    exportConfig;
 
   const dimensions = PAPER_SIZES[paperSize];
   const useBrowserSize = paperSize === PaperSize.BROWSER;
@@ -24,16 +25,21 @@ function DashboardExportPreview() {
     ? {
         flex: 1,
         minHeight: '100%',
+        height: '100%',
+        width: '100%',
       }
     : {
         width: `${dimensions.width}px`,
         height: `${dimensions.height}px`,
-        border: '2px solid #2196F3',
-        boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
-        backgroundColor: 'white',
         overflow: 'hidden',
         flexShrink: 0,
       };
+
+  const logoConfig = {
+    visible: toggles.logoVisibility,
+    position: logoPosition,
+    scale: logoScale,
+  };
 
   return (
     <Box className={classes.previewContainer}>
@@ -43,7 +49,11 @@ function DashboardExportPreview() {
           className={classes.exportContent}
           style={containerStyle}
         >
-          <DashboardContent showTitle refreshKey={paperSize} />
+          <DashboardContent
+            showTitle
+            refreshKey={paperSize}
+            logoConfig={logoConfig}
+          />
         </div>
       </Box>
     </Box>
@@ -64,6 +74,7 @@ const useStyles = makeStyles(() => ({
     alignItems: 'flex-start',
     padding: 24,
     minHeight: '100%',
+    width: '100%',
     boxSizing: 'border-box',
   },
   exportContent: {

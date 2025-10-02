@@ -1,4 +1,5 @@
 import React, { createContext } from 'react';
+import { AdminCodeString } from 'config/types';
 
 export enum PaperSize {
   BROWSER = 'browser',
@@ -17,6 +18,13 @@ export const PAPER_SIZES: Record<PaperSize, PaperDimensions> = {
   [PaperSize.A4_LANDSCAPE]: { width: 1123, height: 794 },
 };
 
+export interface ExportToggles {
+  logoVisibility: boolean;
+  mapLabelsVisibility: boolean;
+  adminAreasVisibility: boolean;
+  legendVisibility: boolean;
+}
+
 export type DashboardExportContextType = {
   exportConfig?: {
     handleClose: () => void;
@@ -27,6 +35,20 @@ export type DashboardExportContextType = {
     printRef: React.RefObject<HTMLDivElement>;
     paperSize: PaperSize;
     setPaperSize: React.Dispatch<React.SetStateAction<PaperSize>>;
+    toggles: ExportToggles;
+    setToggles: React.Dispatch<React.SetStateAction<ExportToggles>>;
+    logoPosition: number;
+    setLogoPosition: React.Dispatch<React.SetStateAction<number>>;
+    logoScale: number;
+    setLogoScale: React.Dispatch<React.SetStateAction<number>>;
+    legendPosition: number;
+    setLegendPosition: React.Dispatch<React.SetStateAction<number>>;
+    legendScale: number;
+    setLegendScale: React.Dispatch<React.SetStateAction<number>>;
+    selectedBoundaries: AdminCodeString[];
+    setSelectedBoundaries: React.Dispatch<
+      React.SetStateAction<AdminCodeString[]>
+    >;
   };
 };
 

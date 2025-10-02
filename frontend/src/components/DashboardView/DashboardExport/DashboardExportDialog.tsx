@@ -13,7 +13,11 @@ import { jsPDF } from 'jspdf';
 import { getFormattedDate } from 'utils/date-utils';
 import { dashboardTitleSelector } from 'context/dashboardStateSlice';
 import { downloadToFile } from 'components/MapView/utils';
-import DashboardExportContext, { PaperSize } from './dashboardExport.context';
+import { AdminCodeString } from 'config/types';
+import DashboardExportContext, {
+  PaperSize,
+  ExportToggles,
+} from './dashboardExport.context';
 import DashboardExportPreview from './DashboardExportPreview';
 import DashboardExportConfig from './DashboardExportConfig';
 
@@ -35,6 +39,21 @@ function DashboardExportDialog({
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const dashboardTitle = useSelector(dashboardTitleSelector);
 
+  // Map display toggles and options
+  const [toggles, setToggles] = useState<ExportToggles>({
+    logoVisibility: true,
+    mapLabelsVisibility: true,
+    adminAreasVisibility: false,
+    legendVisibility: true,
+  });
+  const [logoPosition, setLogoPosition] = useState(0);
+  const [logoScale, setLogoScale] = useState(1);
+  const [legendPosition, setLegendPosition] = useState(0);
+  const [legendScale, setLegendScale] = useState(0);
+  const [selectedBoundaries, setSelectedBoundaries] = useState<
+    AdminCodeString[]
+  >([]);
+
   const download = async (format: 'pdf' | 'png') => {
     setIsExporting(true);
 
@@ -55,7 +74,7 @@ function DashboardExportDialog({
       });
 
       const canvas = await html2canvas(elem, {
-        scale: 1, // Capture at actual displayed size
+        scale: 2, // Higher quality capture
         useCORS: true,
         logging: false,
         backgroundColor: '#F8F8F8',
@@ -65,31 +84,57 @@ function DashboardExportDialog({
 
       // Convert canvas to appropriate format
       if (format === 'pdf') {
-        const orientation = 'landscape';
+        // Determine PDF page size based on paper size selection
+        // eslint-disable-next-line fp/no-let
+        let pdfFormat: [number, number] | string;
+        if (paperSize === PaperSize.US_LETTER_LANDSCAPE) {
+          pdfFormat = 'letter'; // eslint-disable-line fp/no-mutation
+        } else if (paperSize === PaperSize.A4_LANDSCAPE) {
+          pdfFormat = 'a4'; // eslint-disable-line fp/no-mutation
+        } else {
+          // Browser mode - use canvas dimensions converted to points (96 DPI to 72 DPI)
+          const widthInPoints = (canvas.width * 72) / 96 / 2; // Divide by 2 because scale=2
+          const heightInPoints = (canvas.height * 72) / 96 / 2;
+          pdfFormat = [widthInPoints, heightInPoints]; // eslint-disable-line fp/no-mutation
+        }
 
-        // TODO: Adapt orientation, maybe to canvas dimensions?
-        // const orientation =
-        //   canvas.width > canvas.height ? 'landscape' : 'portrait';
-
-        // Create PDF with canvas dimensions
         // eslint-disable-next-line new-cap
         const pdf = new jsPDF({
-          orientation,
-          unit: 'px',
-          format: [canvas.width, canvas.height],
+          orientation: 'landscape',
+          unit: 'pt',
+          format: pdfFormat,
         });
 
         const pdfWidth = pdf.internal.pageSize.getWidth();
         const pdfHeight = pdf.internal.pageSize.getHeight();
 
+        // Calculate image dimensions to maintain aspect ratio
+        const canvasAspectRatio = canvas.width / canvas.height;
+        const pdfAspectRatio = pdfWidth / pdfHeight;
+
+        // If canvas is wider than PDF page, fit to width
+        // If canvas is taller than PDF page, fit to height
+        const imgWidth =
+          canvasAspectRatio > pdfAspectRatio
+            ? pdfWidth
+            : pdfHeight * canvasAspectRatio;
+        const imgHeight =
+          canvasAspectRatio > pdfAspectRatio
+            ? pdfWidth / canvasAspectRatio
+            : pdfHeight;
+
+        // Center the image on the page
+        const xOffset = (pdfWidth - imgWidth) / 2;
+        const yOffset = (pdfHeight - imgHeight) / 2;
+
         const imgData = canvas.toDataURL('image/png');
         pdf.addImage(
           imgData,
           'PNG',
-          0,
-          0,
-          pdfWidth,
-          pdfHeight,
+          xOffset,
+          yOffset,
+          imgWidth,
+          imgHeight,
           undefined,
           'FAST',
         );
@@ -143,6 +188,18 @@ function DashboardExportDialog({
       printRef,
       paperSize,
       setPaperSize,
+      toggles,
+      setToggles,
+      logoPosition,
+      setLogoPosition,
+      logoScale,
+      setLogoScale,
+      legendPosition,
+      setLegendPosition,
+      legendScale,
+      setLegendScale,
+      selectedBoundaries,
+      setSelectedBoundaries,
     },
   };
 

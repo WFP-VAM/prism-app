@@ -10,24 +10,23 @@ import {
   DashboardChartConfig,
   DashboardMode,
 } from '../../config/types';
+import { appConfig } from '../../config';
 import MapBlock from './MapBlock';
 import TextBlock from './TextBlock';
 import TableBlock from './TableBlock';
 import ChartBlock from './ChartBlock';
 
+interface LogoConfig {
+  visible: boolean;
+  position: number; // 0 = left, 1 = right
+  scale: number; // 0.5 = small, 1 = medium, 1.5 = large
+}
+
 interface DashboardContentProps {
-  /**
-   * Whether to show the title section
-   */
   showTitle?: boolean;
-  /**
-   * Custom class name for the root container
-   */
   className?: string;
-  /**
-   * Key to force re-render of charts (e.g., when paper size changes)
-   */
   refreshKey?: string;
+  logoConfig?: LogoConfig;
 }
 
 /**
@@ -38,32 +37,49 @@ function DashboardContent({
   showTitle = true,
   className,
   refreshKey,
+  logoConfig,
 }: DashboardContentProps) {
   const classes = useStyles();
   const dashboardTitle = useSelector(dashboardTitleSelector);
   const dashboardFlexElements = useSelector(dashboardFlexElementsSelector);
   const dashboardMaps = useSelector(dashboardMapsSelector);
 
+  const { logo } = appConfig.header || {};
+  const logoHeightMultiplier = 32;
+  const logoHeight = logoConfig ? logoHeightMultiplier * logoConfig.scale : 0;
+
   return (
-    <>
-      {/* Dashboard Title */}
+    <Box className={classes.root}>
       {showTitle && (
         <Box className={classes.titleSection}>
+          {logoConfig?.visible && logo && (
+            <img
+              style={{
+                position: 'absolute',
+                zIndex: 2,
+                height: logoHeight,
+                left: logoConfig.position % 2 === 0 ? '12px' : 'auto',
+                right: logoConfig.position % 2 === 0 ? 'auto' : '12px',
+                top: '50%',
+                transform: 'translateY(-50%)',
+              }}
+              src={logo}
+              alt="logo"
+            />
+          )}
           <Typography variant="h2" component="h1" className={classes.title}>
             {dashboardTitle || 'Untitled Dashboard'}
           </Typography>
         </Box>
       )}
 
-      {/* Dashboard Layout */}
       <Box className={className || classes.layout}>
-        {/* Maps */}
         <Box className={classes.leadingContentArea}>
           <div className={classes.mapsContainer}>
             {dashboardMaps.map((_, mapIndex) => (
               <Box
                 // eslint-disable-next-line react/no-array-index-key
-                key={`map-${mapIndex}`}
+                key={`map-${mapIndex}-${refreshKey || 'default'}`}
                 className={classes.mapContainer}
               >
                 <div style={{ flex: 1, minHeight: 0, width: '100%' }}>
@@ -74,7 +90,6 @@ function DashboardContent({
           </div>
         </Box>
 
-        {/* Flex Elements (Text, Tables, Charts) */}
         {dashboardFlexElements.length > 0 && (
           <Box className={classes.trailingContentArea}>
             {dashboardFlexElements?.map((element, index) => {
@@ -83,7 +98,7 @@ function DashboardContent({
                 return (
                   <TextBlock
                     // eslint-disable-next-line react/no-array-index-key
-                    key={`text-block-${index}`}
+                    key={`text-block-${index}-${refreshKey || 'default'}`}
                     content={content}
                     index={index}
                     mode={DashboardMode.PREVIEW}
@@ -94,7 +109,7 @@ function DashboardContent({
                 return (
                   <TableBlock
                     // eslint-disable-next-line react/no-array-index-key
-                    key={`table-block-${index}`}
+                    key={`table-block-${index}-${refreshKey || 'default'}`}
                     index={index}
                     startDate={element.startDate}
                     hazardLayerId={element.hazardLayerId}
@@ -126,15 +141,24 @@ function DashboardContent({
           </Box>
         )}
       </Box>
-    </>
+    </Box>
   );
 }
 
 const useStyles = makeStyles(() => ({
+  root: {
+    display: 'flex',
+    flexDirection: 'column',
+    flex: 1,
+  },
   titleSection: {
+    position: 'relative',
     padding: 12,
     marginBottom: 0,
     backgroundColor: 'white',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   title: {
     fontWeight: 500,
