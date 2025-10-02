@@ -39,7 +39,7 @@ import { getAdminLevelLayer, getAdminNameProperty } from 'utils/admin-utils';
 import {
   AnalysisResult,
   ApiData,
-  appendBoundaryProperties,
+  // appendBoundaryProperties,
   BaselineLayerData,
   BaselineLayerResult,
   checkBaselineDataLayer,
@@ -51,15 +51,15 @@ import {
   KeyValueResponse,
   PolygonAnalysisResult,
   scaleAndFilterAggregateData,
-  scaleFeatureStat,
+  // scaleFeatureStat,
 } from 'utils/analysis-utils';
 import { getRoundedData } from 'utils/data-utils';
 import { getFullLocationName } from 'utils/name-utils';
 import {
   getBoundaryLayersByAdminLevel,
-  getBoundaryLayerSingleton,
+  // getBoundaryLayerSingleton,
   getStacBand,
-  LayerDefinitions,
+  // LayerDefinitions,
 } from 'config/utils';
 import {
   Extent,
@@ -145,7 +145,7 @@ function getAdminBoundariesURL(adminBoundariesPath: string) {
   );
 }
 
-const generateTableColumnsFromApiData = (
+export const generateTableColumnsFromApiData = (
   aggregateData: AsyncReturnType<typeof fetchApiData>,
   key: string = 'sum',
 ): Column[] => {
@@ -458,7 +458,7 @@ async function createAPIRequestParams(
   return apiRequest;
 }
 
-const mergeTableRows = (tableRows: TableRow[]): TableRow => {
+export const mergeTableRows = (tableRows: TableRow[]): TableRow => {
   /* eslint-disable no-param-reassign, fp/no-mutation */
   const mergedObject: TableRow = tableRows.reduce(
     (acc, tableRow) =>
