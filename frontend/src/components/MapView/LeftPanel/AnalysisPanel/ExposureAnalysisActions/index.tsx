@@ -139,7 +139,7 @@ function ExposureAnalysisActions({
         </Button>
       )}
       <ReportDialog
-        open
+        open={openReport}
         handleClose={handleToggleReport(false)}
         reportConfig={reportConfig}
         tableData={tableData}
