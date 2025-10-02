@@ -69,6 +69,7 @@ import { fetchWMSLayerAsGeoJSON } from 'utils/server-utils';
 import { isLocalhost } from 'serviceWorker';
 import { ANALYSIS_API_URL } from 'utils/constants';
 import { getFormattedDate } from 'utils/date-utils';
+import { mockExposedPopulationData } from './__mocks__/exposedPopulationMockData';
 import { layerDataSelector } from './mapStateSlice/selectors';
 import { LayerData, LayerDataParams, loadLayerData } from './layers/layer-data';
 import { DataRecord } from './layers/admin_level_data';
@@ -502,7 +503,13 @@ export const requestAndStoreExposedPopulation = createAsyncThunk<
   CreateAsyncThunkTypes
 >(
   'analysisResultState/requestAndStoreExposedPopulation',
-  async (params, api) => {
+  // eslint-disable-next-line arrow-body-style
+  async (_params, _api) => {
+    // Mock data for testing purposes - replace with actual API call when fixed
+    return mockExposedPopulationData;
+  },
+
+  /* Original API call - commented out for testing
     const { exposure, date, extent, statistic, wfsLayerId, maskLayerId } =
       params;
 
@@ -650,7 +657,7 @@ export const requestAndStoreExposedPopulation = createAsyncThunk<
       date,
       tableColumns,
     );
-  },
+    */
 );
 
 export const requestAndStoreAnalysis = createAsyncThunk<
