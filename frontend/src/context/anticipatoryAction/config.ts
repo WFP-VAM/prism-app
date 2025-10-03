@@ -14,7 +14,6 @@ import {
   AAFloodAvailableDatesSelector as floodAvailableDatesSelector,
   AAFloodDataSelector as floodDataSelector,
   loadAAFloodData,
-  setAAFloodFilters as setFloodAAFilters,
 } from 'context/anticipatoryAction/AAFloodStateSlice';
 
 const anticipatoryActionConfig = {
@@ -34,7 +33,6 @@ const anticipatoryActionConfig = {
     dataSelector: floodDataSelector,
     availableDatesSelector: floodAvailableDatesSelector,
     loadAction: loadAAFloodData,
-    setFiltersAction: setFloodAAFilters,
   },
 };
 

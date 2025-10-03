@@ -75,11 +75,6 @@ export type AnticipatoryActionFloodState = {
   probabilitiesData: Record<string, FloodProbabilityPoint[]>;
   avgProbabilitiesData: Record<string, FloodAvgProbabilities | undefined>;
   availableDates: FloodDateItem[];
-  filters: {
-    selectedDate: string | null;
-    selectedStation: string | null;
-    riskLevels: Record<AAFloodRiskLevelType, boolean>;
-  };
   view: AAFloodView;
   loading: boolean;
   error: string | null;

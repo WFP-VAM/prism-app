@@ -4,7 +4,6 @@ import { appConfig } from 'config';
 import { startCase } from 'lodash';
 import type { CreateAsyncThunkTypes, RootState } from '../../store';
 import {
-  AAFloodRiskLevelType,
   AAFloodView,
   AnticipatoryActionFloodState,
   FloodStation,
@@ -26,16 +25,6 @@ const initialState: AnticipatoryActionFloodState = {
   probabilitiesData: {},
   avgProbabilitiesData: {},
   availableDates: [],
-  filters: {
-    selectedDate: null,
-    selectedStation: null,
-    riskLevels: {
-      'Below bankfull': true,
-      Bankfull: true,
-      Moderate: true,
-      Severe: true,
-    },
-  },
   view: AAFloodView.Home,
   loading: false,
   error: null,
@@ -269,33 +258,6 @@ export const anticipatoryActionFloodStateSlice = createSlice({
   name: 'anticipatoryActionFloodState',
   initialState,
   reducers: {
-    setAAFloodFilters: (
-      state,
-      {
-        payload,
-      }: PayloadAction<
-        Partial<{
-          selectedDate: string | null;
-          selectedStation: string | null;
-          riskLevels: Partial<Record<AAFloodRiskLevelType, boolean>>;
-        }>
-      >,
-    ) => {
-      const { riskLevels, ...rest } = payload;
-      const newRiskLevels =
-        riskLevels !== undefined
-          ? { ...state.filters.riskLevels, ...riskLevels }
-          : state.filters.riskLevels;
-      const newFilters = {
-        ...state.filters,
-        ...rest,
-        riskLevels: newRiskLevels,
-      };
-      return {
-        ...state,
-        filters: newFilters,
-      };
-    },
     setAAFloodSelectedStation: (
       state,
       { payload }: PayloadAction<string | null>,
@@ -375,7 +337,7 @@ export const AAFloodDataSelector = (state: RootState) =>
 export const AAFloodAvailableDatesSelector = (state: RootState) =>
   state.anticipatoryActionFloodState.availableDates;
 
-export const { setAAFloodFilters, setAAFloodSelectedStation, setAAFloodView } =
+export const { setAAFloodSelectedStation, setAAFloodView } =
   anticipatoryActionFloodStateSlice.actions;
 
 export default anticipatoryActionFloodStateSlice.reducer;
