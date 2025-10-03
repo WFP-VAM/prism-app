@@ -33,6 +33,7 @@ const anticipatoryActionConfig = {
     dataSelector: floodDataSelector,
     availableDatesSelector: floodAvailableDatesSelector,
     loadAction: loadAAFloodData,
+    setFiltersAction: () => null,
   },
 };
 
