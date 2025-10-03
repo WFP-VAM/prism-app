@@ -22,13 +22,13 @@ import { FloodStation } from 'context/anticipatoryAction/AAFloodStateSlice/types
 import { useSelector } from 'react-redux';
 import { AAFloodDataSelector } from 'context/anticipatoryAction/AAFloodStateSlice';
 import sortBy from 'lodash/sortBy';
+import { getFormattedDate } from 'utils/date-utils';
 import {
   CHART_WIDTH,
   ForecastWindowPerCountry,
   TABLE_WIDTH,
 } from '../constants';
 
-// TODO - use window_begin/window_end from avg probabilities instead of fixed forecast window
 const forecastWindow = ForecastWindowPerCountry.mozambique;
 
 const useStyles = makeStyles(() =>
@@ -174,13 +174,6 @@ function StationCharts({ station, onClose }: StationChartsProps) {
     ? floodState.avgProbabilitiesData[station.station_name]
     : undefined;
 
-  // local date formatter to mirror trigger probability labels (MM/DD)
-  const formatShortDate = (dateStr: string) =>
-    new Date(dateStr).toLocaleDateString('en-US', {
-      month: '2-digit',
-      day: '2-digit',
-    });
-
   // Prepare hydrograph data using fetched forecast (discharge) data
   const hydrographData = useMemo(() => {
     const forecast = floodState.forecastData[station.station_name] || [];
@@ -189,7 +182,7 @@ function StationCharts({ station, onClose }: StationChartsProps) {
     }
 
     // Use valid_time dates for x-axis labels (same as probability format)
-    const labels = forecast.map(p => formatShortDate(p.time));
+    const labels = forecast.map(p => getFormattedDate(p.time, 'short'));
     const { bankfull, moderate, severe } = station.thresholds;
 
     const membersCount = forecast[0]?.ensemble_members?.length || 0;
@@ -266,18 +259,22 @@ function StationCharts({ station, onClose }: StationChartsProps) {
     };
   }, [floodState.forecastData, station.station_name, station.thresholds, t]);
 
-  // No fixed indices; we will use window_begin/window_end from avg probabilities
+  const beginIdx = forecastWindow.start - 1;
+  const endIdx = forecastWindow.end - 1;
 
   // Prepare trigger probability data from fetched probabilities
+  const probs = floodState.probabilitiesData[station.station_name];
+  const sortedData = sortBy(
+    floodState.probabilitiesData[station.station_name],
+    p => new Date(p.time).getTime(),
+  );
+  const labels = sortedData.map(d => getFormattedDate(d.time, 'short'));
+
   const triggerProbabilityData = useMemo(() => {
-    const probs = floodState.probabilitiesData[station.station_name];
     if (!probs || probs.length === 0) {
       return null;
     }
 
-    const sortedData = sortBy(probs, p => new Date(p.time).getTime());
-
-    const labels = sortedData.map(d => formatShortDate(d.time));
     const bankfullSeries = sortedData.map(d => d.bankfull_percentage);
     const moderateSeries = sortedData.map(d => d.moderate_percentage);
     const severeSeries = sortedData.map(d => d.severe_percentage);
@@ -286,16 +283,6 @@ function StationCharts({ station, onClose }: StationChartsProps) {
     const bankfullMean = avgProbStation?.avg_bankfull_percentage ?? 0;
     const moderateMean = avgProbStation?.avg_moderate_percentage ?? 0;
     const severeMean = avgProbStation?.avg_severe_percentage ?? 0;
-
-    const windowBeginLabel = avgProbStation?.window_begin
-      ? formatShortDate(avgProbStation.window_begin)
-      : undefined;
-    const windowEndLabel = avgProbStation?.window_end
-      ? formatShortDate(avgProbStation.window_end)
-      : undefined;
-
-    const beginIdx = windowBeginLabel ? labels.indexOf(windowBeginLabel) : -1;
-    const endIdx = windowEndLabel ? labels.indexOf(windowEndLabel) : -1;
 
     // Build flat series over the window only (NaN elsewhere)
     const flatWindowSeries = (value: number | null) =>
@@ -486,7 +473,20 @@ function StationCharts({ station, onClose }: StationChartsProps) {
         ...fillDatasets,
       ],
     };
-  }, [floodState.probabilitiesData, station.station_name, t, avgProbStation]);
+  }, [
+    probs,
+    sortedData,
+    avgProbStation?.avg_bankfull_percentage,
+    avgProbStation?.avg_moderate_percentage,
+    avgProbStation?.avg_severe_percentage,
+    avgProbStation?.trigger_bankfull,
+    avgProbStation?.trigger_moderate,
+    avgProbStation?.trigger_severe,
+    t,
+    labels,
+    beginIdx,
+    endIdx,
+  ]);
 
   const hydrographOptions = useMemo(
     () => ({
@@ -513,8 +513,7 @@ function StationCharts({ station, onClose }: StationChartsProps) {
           {
             display: true,
             scaleLabel: {
-              display: true,
-              labelString: t('Date'),
+              display: false,
             },
             ticks: { maxRotation: 0, autoSkip: true },
           },
@@ -535,12 +534,9 @@ function StationCharts({ station, onClose }: StationChartsProps) {
   );
 
   const probabilityOptions = useMemo(() => {
-    const probs = floodState.probabilitiesData[station.station_name];
     if (!probs || probs.length === 0) {
       return hydrographOptions;
     }
-
-    const sortedData = sortBy(probs, p => new Date(p.time).getTime());
 
     // Compute y-axis max rounded up to the next dizaine (multiple of 10)
     const maxPct = Math.max(
@@ -548,7 +544,7 @@ function StationCharts({ station, onClose }: StationChartsProps) {
       (avgProbStation?.trigger_bankfull || 0) * 100,
       (avgProbStation?.trigger_moderate || 0) * 100,
       (avgProbStation?.trigger_severe || 0) * 100,
-      ...sortedData.map(
+      ...probs.map(
         d =>
           Math.max(
             d.bankfull_percentage,
@@ -559,14 +555,8 @@ function StationCharts({ station, onClose }: StationChartsProps) {
     );
     const maxTick = Math.ceil((maxPct + 10) / 10) * 10;
 
-    // Build window annotations from avg probabilities
-    const windowBeginLabel = avgProbStation?.window_begin
-      ? formatShortDate(avgProbStation.window_begin)
-      : undefined;
-    const windowEndLabel = avgProbStation?.window_end
-      ? formatShortDate(avgProbStation.window_end)
-      : undefined;
-
+    const windowBeginLabel = labels[beginIdx];
+    const windowEndLabel = labels[endIdx];
     const annotations = [
       ...(windowBeginLabel
         ? [
@@ -644,11 +634,15 @@ function StationCharts({ station, onClose }: StationChartsProps) {
       },
     } as any;
   }, [
-    avgProbStation,
-    floodState.probabilitiesData,
-    station.station_name,
-    hydrographOptions,
+    probs,
+    avgProbStation?.trigger_bankfull,
+    avgProbStation?.trigger_moderate,
+    avgProbStation?.trigger_severe,
+    labels,
+    beginIdx,
+    endIdx,
     t,
+    hydrographOptions,
   ]);
 
   const handleTabChange = (newValue: number) => {
