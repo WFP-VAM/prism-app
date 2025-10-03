@@ -1,6 +1,5 @@
 import {
   FloodStation,
-  FloodStationData,
   AAFloodRiskLevelType,
   FloodDateItem,
   FloodAvgProbabilities,
@@ -89,7 +88,7 @@ export function buildAvailableFloodDatesFromDatesJson(
 
 export function buildStationsFromAvgProbabilities(
   avgProbabilities: Record<string, FloodAvgProbabilities | undefined>,
-  date: string,
+  _date: string,
 ): FloodStation[] {
   const stationsMap = new Map<string, FloodStation>();
 
@@ -98,35 +97,14 @@ export function buildStationsFromAvgProbabilities(
     if (!row) {
       return;
     }
-    const issueDate = String(row.forecast_issue_date || date);
-    const riskLevel = normalizeFloodTriggerStatus(row.trigger_status || '');
     const longitude = Number(row.longitude ?? 0);
     const latitude = Number(row.latitude ?? 0);
-    const stationData: FloodStationData = {
-      station_name: name,
-      station_id: row.station_id,
-      river_name: String(row.river_name || ''),
-      time: issueDate,
-      risk_level: riskLevel,
-    };
-    // const dateKey = issueDate;
-    const existing = stationsMap.get(name);
-    if (existing) {
-      if (
-        !existing.coordinates &&
-        Number.isFinite(longitude) &&
-        Number.isFinite(latitude) &&
-        longitude !== 0 &&
-        latitude !== 0
-      ) {
-        // eslint-disable-next-line fp/no-mutation
-        existing.coordinates = { latitude, longitude };
-      }
-    } else {
+
+    if (!stationsMap.has(name)) {
       stationsMap.set(name, {
         station_name: name,
-        river_name: stationData.river_name,
-        station_id: stationData.station_id,
+        river_name: String(row.river_name || ''),
+        station_id: Number(row.station_id || 0),
         coordinates:
           Number.isFinite(longitude) &&
           Number.isFinite(latitude) &&

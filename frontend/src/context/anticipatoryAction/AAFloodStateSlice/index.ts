@@ -210,6 +210,7 @@ export const loadAAFloodDateData = createAsyncThunk<
         ...acc,
         [key]: {
           station_name: key,
+          station_id: Number(row.station_id || 0),
           river_name: String(row.river_name || ''),
           longitude: Number(row.longitude ?? row.lon ?? 0),
           latitude: Number(row.latitude ?? row.lat ?? 0),

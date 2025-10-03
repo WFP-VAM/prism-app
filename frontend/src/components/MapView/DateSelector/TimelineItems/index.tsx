@@ -212,6 +212,10 @@ const useStyles = makeStyles(() =>
       borderLeft: '1px solid #101010',
       height: 36,
     },
+    dayItem: {
+      height: 10,
+      borderLeft: '1px solid #ededed',
+    },
     dateItem: {
       color: '#101010',
       position: 'relative',

@@ -49,7 +49,7 @@ function AnticipatoryActionFloodLayer({
   // Load the layer default date if no date is selected
   useDefaultDate(layer.id);
   const { AAData } = useAnticipatoryAction(AnticipatoryAction.flood);
-  const { stations, avgProbabilitiesData } = AAData as any;
+  const { stations, avgProbabilitiesData } = AAData;
   const { startDate } = useSelector(dateRangeSelector);
   const dispatch = useDispatch();
 
@@ -139,16 +139,9 @@ function AnticipatoryActionFloodLayer({
     return issueDate === selectedDateKey;
   });
 
-  type RenderStation = {
-    station_name: string;
-    coordinates?: { longitude: number; latitude: number };
-    station_id: number;
-  };
-  const stationsForRender = filteredStations as RenderStation[];
-
   return (
     <>
-      {stationsForRender.map(station => {
+      {filteredStations.map(station => {
         if (!station.coordinates) {
           return null;
         }
