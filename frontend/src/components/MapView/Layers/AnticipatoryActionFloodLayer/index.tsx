@@ -49,7 +49,7 @@ function AnticipatoryActionFloodLayer({
   // Load the layer default date if no date is selected
   useDefaultDate(layer.id);
   const { AAData } = useAnticipatoryAction(AnticipatoryAction.flood);
-  const { stations } = AAData;
+  const { stations, avgProbabilitiesData } = AAData as any;
   const { startDate } = useSelector(dateRangeSelector);
   const dispatch = useDispatch();
 
@@ -88,20 +88,20 @@ function AnticipatoryActionFloodLayer({
       if (!selectedDateKey) {
         return true;
       }
-
-      // Find data for the selected date
-      const stationDataForDate = station.allData?.[selectedDateKey];
-
-      return !!stationDataForDate;
+      const avg = avgProbabilitiesData?.[station.station_name];
+      const issueDate = avg?.forecast_issue_date
+        ? new Date(avg.forecast_issue_date).toISOString().split('T')[0]
+        : null;
+      return issueDate === selectedDateKey;
     });
 
     return {
       type: 'FeatureCollection' as const,
       features: filteredStations.map((station: any) => {
-        const stationData = selectedDateKey
-          ? station.allData?.[selectedDateKey]
-          : station.currentData;
-
+        const avg = avgProbabilitiesData?.[station.station_name];
+        if (!avg) {
+          return null;
+        }
         return {
           type: 'Feature' as const,
           geometry: {
@@ -114,16 +114,15 @@ function AnticipatoryActionFloodLayer({
             station_name: station.station_name,
             river_name: station.river_name,
             location_id: station.location_id,
-            // TODO - avoid hardcoding defaults
-            risk_level: stationData?.risk_level || 'Below bankfull',
-            avg_discharge: stationData?.avg_discharge || 0,
-            max_discharge: stationData?.max_discharge || 0,
+            risk_level: avg.trigger_status || 'Below bankfull',
+            avg_discharge: 0,
+            max_discharge: 0,
             thresholds: station.thresholds,
           },
         };
       }),
     };
-  }, [stations, selectedDateKey]);
+  }, [stations, selectedDateKey, avgProbabilitiesData]);
 
   if (!floodStationsGeoJSON) {
     return null;
@@ -133,22 +132,31 @@ function AnticipatoryActionFloodLayer({
     if (!selectedDateKey) {
       return true;
     }
-    const stationDataForDate = station.allData?.[selectedDateKey];
-    return !!stationDataForDate;
+    const avg = avgProbabilitiesData?.[station.station_name];
+    const issueDate = avg?.forecast_issue_date
+      ? new Date(avg.forecast_issue_date).toISOString().split('T')[0]
+      : null;
+    return issueDate === selectedDateKey;
   });
+
+  type RenderStation = {
+    station_name: string;
+    coordinates?: { longitude: number; latitude: number };
+    location_id: number;
+  };
+  const stationsForRender = filteredStations as RenderStation[];
 
   return (
     <>
-      {filteredStations.map(station => {
+      {stationsForRender.map(station => {
         if (!station.coordinates) {
           return null;
         }
-
-        const stationData = selectedDateKey
-          ? station.allData?.[selectedDateKey]
-          : station.currentData;
-
-        const riskLevel = stationData?.risk_level || 'Below bankfull';
+        const avg = avgProbabilitiesData?.[station.station_name];
+        if (!avg) {
+          return null;
+        }
+        const riskLevel = avg.trigger_status || 'Below bankfull';
         const circleColor = getCircleColor(riskLevel);
         const borderColor = getBorderColor(riskLevel);
 

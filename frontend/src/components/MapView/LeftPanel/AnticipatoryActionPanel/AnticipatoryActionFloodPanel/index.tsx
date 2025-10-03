@@ -116,7 +116,8 @@ function AnticipatoryActionFloodPanel() {
   const dispatch = useDispatch();
   const { t } = useSafeTranslation();
   const { AAData } = useAnticipatoryAction(AnticipatoryAction.flood);
-  const { stations, selectedStation, loading, error } = AAData;
+  const { stations, selectedStation, loading, error, avgProbabilitiesData } =
+    AAData as any;
   const { startDate } = useSelector(dateRangeSelector);
 
   const [sortField, setSortField] = useState<SortField>('risk_level');
@@ -156,21 +157,26 @@ function AnticipatoryActionFloodPanel() {
     if (!startDate) {
       return stations;
     }
-
     const selectedDateKey = new Date(startDate).toISOString().split('T')[0];
-    return stations.filter(station => {
-      const stationDataForDate = station.allData?.[selectedDateKey];
-      return !!stationDataForDate;
+    return stations.filter((station: { station_name: string }) => {
+      const avg = avgProbabilitiesData?.[station.station_name];
+      const issueDate = avg?.forecast_issue_date
+        ? new Date(avg.forecast_issue_date).toISOString().split('T')[0]
+        : null;
+      return issueDate === selectedDateKey;
     });
-  }, [stations, startDate]);
+  }, [stations, startDate, avgProbabilitiesData]);
 
   // Get station data for selected date
   const getStationDataForDate = (station: any) => {
-    if (!startDate) {
-      return station.currentData;
+    const avg = avgProbabilitiesData?.[station.station_name];
+    if (!avg) {
+      return null;
     }
-    const selectedDateKey = new Date(startDate).toISOString().split('T')[0];
-    return station.allData?.[selectedDateKey];
+    return {
+      time: avg.forecast_issue_date,
+      risk_level: avg.trigger_status || 'Below bankfull',
+    } as any;
   };
 
   // eslint-disable-next-line fp/no-mutating-methods
@@ -376,7 +382,12 @@ function AnticipatoryActionFloodPanel() {
       {/* Show charts when a station is selected */}
       {selectedStation && (
         <StationCharts
-          station={stations.find(s => s.station_name === selectedStation)!}
+          station={
+            stations.find(
+              (s: { station_name: string }) =>
+                s.station_name === selectedStation,
+            )!
+          }
           onClose={() => dispatch(setAAFloodSelectedStation(''))}
         />
       )}

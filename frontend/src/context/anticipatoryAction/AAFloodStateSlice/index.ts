@@ -15,6 +15,7 @@ import {
 import {
   buildAvailableFloodDatesFromDatesJson,
   buildStationsFromAvgProbabilities,
+  normalizeFloodTriggerStatus,
 } from './utils';
 
 const initialState: AnticipatoryActionFloodState = {
@@ -22,8 +23,8 @@ const initialState: AnticipatoryActionFloodState = {
   selectedStation: null,
   selectedDate: null,
   forecastData: {},
-  historicalData: {},
   probabilitiesData: {},
+  avgProbabilitiesData: {},
   availableDates: [],
   filters: {
     selectedDate: null,
@@ -77,6 +78,7 @@ export const loadAAFloodDateData = createAsyncThunk<
     probabilities: Record<string, FloodProbabilityPoint[]>;
     forecast: Record<string, FloodForecastData[]>;
     stations: FloodStation[];
+    avgProbabilities: Record<string, any>;
   },
   { date: string },
   CreateAsyncThunkTypes
@@ -208,12 +210,59 @@ export const loadAAFloodDateData = createAsyncThunk<
     return { ...acc, [station]: data };
   }, {});
 
+  // Build avg probabilities per station
+  const avgProbabilities = avgProbRows.reduce(
+    (acc: Record<string, any>, row: any) => {
+      const key: string = startCase(String(row.station_name || '').trim());
+      if (!key) {
+        return acc;
+      }
+      return {
+        ...acc,
+        [key]: {
+          station_name: key,
+          river_name: String(row.river_name || ''),
+          longitude: Number(row.longitude ?? row.lon ?? 0),
+          latitude: Number(row.latitude ?? row.lat ?? 0),
+          forecast_issue_date: String(row.forecast_issue_date || date),
+          window_begin: String(row.window_begin || ''),
+          window_end: String(row.window_end || ''),
+          avg_bankfull_percentage: Number(row.avg_bankfull_percentage || 0),
+          avg_moderate_percentage: Number(row.avg_moderate_percentage || 0),
+          avg_severe_percentage: Number(row.avg_severe_percentage || 0),
+          trigger_bankfull:
+            row.trigger_bankfull !== undefined && row.trigger_bankfull !== ''
+              ? Number(row.trigger_bankfull)
+              : null,
+          trigger_moderate:
+            row.trigger_moderate !== undefined && row.trigger_moderate !== ''
+              ? Number(row.trigger_moderate)
+              : null,
+          trigger_severe:
+            row.trigger_severe !== undefined && row.trigger_severe !== ''
+              ? Number(row.trigger_severe)
+              : null,
+          trigger_status: normalizeFloodTriggerStatus(
+            String(row.trigger_status ?? ''),
+          ),
+        },
+      };
+    },
+    {},
+  );
+
   const stations: FloodStation[] = buildStationsFromAvgProbabilities(
-    avgProbRows,
+    avgProbabilities,
     date,
   );
 
-  return { selectedDate: date, probabilities, forecast, stations };
+  return {
+    selectedDate: date,
+    probabilities,
+    forecast,
+    stations,
+    avgProbabilities,
+  };
 });
 
 export const anticipatoryActionFloodStateSlice = createSlice({
@@ -293,6 +342,10 @@ export const anticipatoryActionFloodStateSlice = createSlice({
       forecastData: {
         ...state.forecastData,
         ...payload.forecast,
+      },
+      avgProbabilitiesData: {
+        ...state.avgProbabilitiesData,
+        ...payload.avgProbabilities,
       },
     }));
 

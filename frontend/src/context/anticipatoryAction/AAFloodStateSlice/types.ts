@@ -14,30 +14,12 @@ export const AAFloodRiskLevels = [
 ] as const;
 export type AAFloodRiskLevelType = (typeof AAFloodRiskLevels)[number];
 
-// Flood station data structure based on the sample CSV
+// Flood station data structure for the flood panel table
 export interface FloodStationData {
   station_name: string;
   river_name: string;
-  location_id: number;
   time: string;
-  total_members: number;
-  min_discharge: number;
-  max_discharge: number;
-  avg_discharge: number;
-  non_null_values: number;
-  zero_values: number;
-  threshold_bankfull: number;
-  threshold_moderate: number;
-  threshold_severe: number;
-  bankfull_exceeding: number;
-  moderate_exceeding: number;
-  severe_exceeding: number;
-  bankfull_percentage: number;
-  moderate_percentage: number;
-  severe_percentage: number;
   risk_level: AAFloodRiskLevelType;
-  max_vs_bankfull_pct: number;
-  avg_vs_bankfull_pct: number;
 }
 
 export interface FloodStation {
@@ -53,15 +35,29 @@ export interface FloodStation {
     moderate: number;
     severe: number;
   };
-  currentData?: FloodStationData;
-  allData: Record<string, FloodStationData>; // Store data for all dates
-  historicalData: FloodStationData[];
 }
 
 export interface FloodForecastData {
   station_name: string;
   time: string;
   ensemble_members: number[];
+}
+
+export interface FloodAvgProbabilities {
+  station_name: string;
+  river_name: string;
+  longitude: number;
+  latitude: number;
+  forecast_issue_date: string;
+  window_begin: string; // ISO date string
+  window_end: string; // ISO date string
+  avg_bankfull_percentage: number;
+  avg_moderate_percentage: number;
+  avg_severe_percentage: number;
+  trigger_bankfull?: number | null;
+  trigger_moderate?: number | null;
+  trigger_severe?: number | null;
+  trigger_status?: string | null;
 }
 
 export enum AAFloodView {
@@ -77,7 +73,7 @@ export type AnticipatoryActionFloodState = {
   selectedDate: string | null;
   forecastData: Record<string, FloodForecastData[]>;
   probabilitiesData: Record<string, FloodProbabilityPoint[]>;
-  historicalData: Record<string, FloodStationData[]>;
+  avgProbabilitiesData: Record<string, FloodAvgProbabilities | undefined>;
   availableDates: FloodDateItem[];
   filters: {
     selectedDate: string | null;

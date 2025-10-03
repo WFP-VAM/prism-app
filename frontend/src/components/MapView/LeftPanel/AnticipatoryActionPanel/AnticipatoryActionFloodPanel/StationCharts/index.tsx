@@ -28,6 +28,7 @@ import {
   TABLE_WIDTH,
 } from '../constants';
 
+// TODO - use window_begin/window_end from avg probabilities instead of fixed forecast window
 const forecastWindow = ForecastWindowPerCountry.mozambique;
 
 const useStyles = makeStyles(() =>
@@ -169,6 +170,9 @@ function StationCharts({ station, onClose }: StationChartsProps) {
   const probabilityChartRef = useRef<Line>(null);
 
   const floodState = useSelector(AAFloodDataSelector);
+  const avgProbStation = floodState.avgProbabilitiesData
+    ? floodState.avgProbabilitiesData[station.station_name]
+    : undefined;
 
   // local date formatter to mirror trigger probability labels (MM/DD)
   const formatShortDate = (dateStr: string) =>
@@ -262,9 +266,7 @@ function StationCharts({ station, onClose }: StationChartsProps) {
     };
   }, [floodState.forecastData, station.station_name, station.thresholds, t]);
 
-  // Forecast window indices (inclusive)
-  const startIdx = forecastWindow.start - 1;
-  const endIdx = forecastWindow.end - 1;
+  // No fixed indices; we will use window_begin/window_end from avg probabilities
 
   // Prepare trigger probability data from fetched probabilities
   const triggerProbabilityData = useMemo(() => {
@@ -280,39 +282,46 @@ function StationCharts({ station, onClose }: StationChartsProps) {
     const moderateSeries = sortedData.map(d => d.moderate_percentage);
     const severeSeries = sortedData.map(d => d.severe_percentage);
 
-    const bankfullTrigger = 38;
-    const moderateTrigger = 19;
-    const severeTrigger = 10;
+    // Use averaged window means and triggers from avg_probabilities.csv
+    const bankfullMean = avgProbStation?.avg_bankfull_percentage ?? 0;
+    const moderateMean = avgProbStation?.avg_moderate_percentage ?? 0;
+    const severeMean = avgProbStation?.avg_severe_percentage ?? 0;
 
-    // Compute mean in window (inclusive) for each line
-    const meanInWindow = (arr: number[]) => {
-      const slice = arr.slice(startIdx, endIdx + 1);
-      if (!slice.length) {
-        return 0;
-      }
-      return slice.reduce((s, v) => s + v, 0) / slice.length;
-    };
-    const bankfullMean = meanInWindow(bankfullSeries);
-    const moderateMean = meanInWindow(moderateSeries);
-    const severeMean = meanInWindow(severeSeries);
+    const windowBeginLabel = avgProbStation?.window_begin
+      ? formatShortDate(avgProbStation.window_begin)
+      : undefined;
+    const windowEndLabel = avgProbStation?.window_end
+      ? formatShortDate(avgProbStation.window_end)
+      : undefined;
 
-    // Build flat series over the window only (nulls elsewhere)
+    const beginIdx = windowBeginLabel ? labels.indexOf(windowBeginLabel) : -1;
+    const endIdx = windowEndLabel ? labels.indexOf(windowEndLabel) : -1;
+
+    // Build flat series over the window only (NaN elsewhere)
     const flatWindowSeries = (value: number | null) =>
       bankfullSeries.map((_v, idx) =>
-        idx >= startIdx && idx <= endIdx ? (value ?? NaN) : NaN,
+        beginIdx >= 0 && endIdx >= 0 && idx >= beginIdx && idx <= endIdx
+          ? (value ?? NaN)
+          : NaN,
       );
 
     // Only show mean fill for the highest severity exceeded
-    const bankfullExceeded = bankfullTrigger && bankfullMean > bankfullTrigger;
-    const moderateExceeded = moderateTrigger && moderateMean > moderateTrigger;
-    const severeExceeded = severeTrigger && severeMean > severeTrigger;
+    const bankfullExceeded =
+      typeof avgProbStation?.trigger_bankfull === 'number' &&
+      bankfullMean > (avgProbStation?.trigger_bankfull as number);
+    const moderateExceeded =
+      typeof avgProbStation?.trigger_moderate === 'number' &&
+      moderateMean > (avgProbStation?.trigger_moderate as number);
+    const severeExceeded =
+      typeof avgProbStation?.trigger_severe === 'number' &&
+      severeMean > (avgProbStation?.trigger_severe as number);
 
     const fillDatasets: any[] = (() => {
       if (severeExceeded) {
         return [
           {
             label: t('Severe mean fill'),
-            data: flatWindowSeries(severeMean),
+            data: flatWindowSeries(severeMean * 100),
             borderColor: 'rgba(0,0,0,0)',
             backgroundColor: 'rgba(239, 83, 80, 0.25)',
             borderWidth: 0,
@@ -327,7 +336,7 @@ function StationCharts({ station, onClose }: StationChartsProps) {
         return [
           {
             label: t('Moderate mean fill'),
-            data: flatWindowSeries(moderateMean),
+            data: flatWindowSeries(moderateMean * 100),
             borderColor: 'rgba(0,0,0,0)',
             backgroundColor: 'rgba(255, 167, 38, 0.25)',
             borderWidth: 0,
@@ -342,7 +351,7 @@ function StationCharts({ station, onClose }: StationChartsProps) {
         return [
           {
             label: t('Bankfull mean fill'),
-            data: flatWindowSeries(bankfullMean),
+            data: flatWindowSeries(bankfullMean * 100),
             borderColor: 'rgba(0,0,0,0)',
             backgroundColor: 'rgba(102, 187, 106, 0.25)',
             borderWidth: 0,
@@ -356,40 +365,52 @@ function StationCharts({ station, onClose }: StationChartsProps) {
       return [];
     })();
 
+    const thresholdDatasets = [
+      typeof avgProbStation?.trigger_bankfull && {
+        label: `${t('Bankfull')} (${avgProbStation?.trigger_bankfull}%)`,
+        data: Array.from(
+          { length: labels.length },
+          () => (avgProbStation?.trigger_bankfull as number) * 100,
+        ),
+        borderColor: 'rgba(102, 187, 106, 0.7)',
+        backgroundColor: 'transparent',
+        borderWidth: 2,
+        borderDash: [6, 6],
+        pointRadius: 0,
+        fill: false,
+      },
+      typeof avgProbStation?.trigger_moderate && {
+        label: `${t('Moderate')} (${avgProbStation?.trigger_moderate}%)`,
+        data: Array.from(
+          { length: labels.length },
+          () => (avgProbStation?.trigger_moderate as number) * 100,
+        ),
+        borderColor: 'rgba(255, 167, 38, 0.8)',
+        backgroundColor: 'transparent',
+        borderWidth: 2,
+        borderDash: [6, 6],
+        pointRadius: 0,
+        fill: false,
+      },
+      typeof avgProbStation?.trigger_severe && {
+        label: `${t('Severe')} (${avgProbStation?.trigger_severe}%)`,
+        data: Array.from(
+          { length: labels.length },
+          () => (avgProbStation?.trigger_severe as number) * 100,
+        ),
+        borderColor: 'rgba(239, 83, 80, 0.8)',
+        backgroundColor: 'transparent',
+        borderWidth: 2,
+        borderDash: [6, 6],
+        pointRadius: 0,
+        fill: false,
+      },
+    ].filter(Boolean) as any[];
+
     return {
       labels,
       datasets: [
-        // Thresholds
-        {
-          label: `${t('Bankfull')} (${bankfullTrigger}%)`,
-          data: Array.from({ length: labels.length }, () => bankfullTrigger),
-          borderColor: 'rgba(102, 187, 106, 0.7)',
-          backgroundColor: 'transparent',
-          borderWidth: 2,
-          borderDash: [6, 6],
-          pointRadius: 0,
-          fill: false,
-        },
-        {
-          label: `${t('Moderate')} (${moderateTrigger}%)`,
-          data: Array.from({ length: labels.length }, () => moderateTrigger),
-          borderColor: 'rgba(255, 167, 38, 0.8)',
-          backgroundColor: 'transparent',
-          borderWidth: 2,
-          borderDash: [6, 6],
-          pointRadius: 0,
-          fill: false,
-        },
-        {
-          label: `${t('Severe')} (${severeTrigger}%)`,
-          data: Array.from({ length: labels.length }, () => severeTrigger),
-          borderColor: 'rgba(239, 83, 80, 0.8)',
-          backgroundColor: 'transparent',
-          borderWidth: 2,
-          borderDash: [6, 6],
-          pointRadius: 0,
-          fill: false,
-        },
+        ...thresholdDatasets,
         // Normal lines (no fill)
         {
           label: t('Bankfull'),
@@ -430,7 +451,7 @@ function StationCharts({ station, onClose }: StationChartsProps) {
         // Mean lines over window only (no fill)
         {
           label: t('Bankfull mean (window)'),
-          data: flatWindowSeries(bankfullMean),
+          data: flatWindowSeries(bankfullMean * 100),
           borderColor: 'rgba(102, 187, 106, 1)',
           backgroundColor: 'transparent',
           borderWidth: 2,
@@ -441,7 +462,7 @@ function StationCharts({ station, onClose }: StationChartsProps) {
         },
         {
           label: t('Moderate mean (window)'),
-          data: flatWindowSeries(moderateMean),
+          data: flatWindowSeries(moderateMean * 100),
           borderColor: 'rgba(255, 167, 38, 1)',
           backgroundColor: 'transparent',
           borderWidth: 2,
@@ -452,7 +473,7 @@ function StationCharts({ station, onClose }: StationChartsProps) {
         },
         {
           label: t('Severe mean (window)'),
-          data: flatWindowSeries(severeMean),
+          data: flatWindowSeries(severeMean * 100),
           borderColor: 'rgba(239, 83, 80, 1)',
           backgroundColor: 'transparent',
           borderWidth: 2,
@@ -465,7 +486,7 @@ function StationCharts({ station, onClose }: StationChartsProps) {
         ...fillDatasets,
       ],
     };
-  }, [floodState.probabilitiesData, station.station_name, startIdx, endIdx, t]);
+  }, [floodState.probabilitiesData, station.station_name, t, avgProbStation]);
 
   const hydrographOptions = useMemo(
     () => ({
@@ -520,20 +541,78 @@ function StationCharts({ station, onClose }: StationChartsProps) {
     }
 
     const sortedData = sortBy(probs, p => new Date(p.time).getTime());
-    const labelStrings = sortedData.map(d => formatShortDate(d.time));
 
     // Compute y-axis max rounded up to the next dizaine (multiple of 10)
     const maxPct = Math.max(
       50,
-      ...sortedData.map(d =>
-        Math.max(
-          d.bankfull_percentage,
-          d.moderate_percentage,
-          d.severe_percentage,
-        ),
+      (avgProbStation?.trigger_bankfull || 0) * 100,
+      (avgProbStation?.trigger_moderate || 0) * 100,
+      (avgProbStation?.trigger_severe || 0) * 100,
+      ...sortedData.map(
+        d =>
+          Math.max(
+            d.bankfull_percentage,
+            d.moderate_percentage,
+            d.severe_percentage,
+          ) * 100,
       ),
     );
     const maxTick = Math.ceil((maxPct + 10) / 10) * 10;
+
+    // Build window annotations from avg probabilities
+    const windowBeginLabel = avgProbStation?.window_begin
+      ? formatShortDate(avgProbStation.window_begin)
+      : undefined;
+    const windowEndLabel = avgProbStation?.window_end
+      ? formatShortDate(avgProbStation.window_end)
+      : undefined;
+
+    const annotations = [
+      ...(windowBeginLabel
+        ? [
+            {
+              type: 'line',
+              mode: 'vertical',
+              scaleID: 'x-axis-0',
+              value: windowBeginLabel,
+              borderColor: '#2196F3',
+              borderDash: [4, 4],
+              borderWidth: 1,
+              label: {
+                enabled: true,
+                position: 'top',
+                content: t('{{day}}-day forecast', {
+                  day: forecastWindow.start,
+                }),
+                backgroundColor: 'rgba(0,0,0,0)',
+                fontColor: '#2196F3',
+                xAdjust: -50,
+              },
+            },
+          ]
+        : []),
+      ...(windowEndLabel
+        ? [
+            {
+              type: 'line',
+              mode: 'vertical',
+              scaleID: 'x-axis-0',
+              value: windowEndLabel,
+              borderColor: '#9C27B0',
+              borderDash: [4, 4],
+              borderWidth: 1,
+              label: {
+                enabled: true,
+                position: 'top',
+                content: t('{{day}}-day forecast', { day: forecastWindow.end }),
+                backgroundColor: 'rgba(0,0,0,0)',
+                fontColor: '#9C27B0',
+                xAdjust: -50,
+              },
+            },
+          ]
+        : []),
+    ];
 
     return {
       responsive: true,
@@ -561,67 +640,14 @@ function StationCharts({ station, onClose }: StationChartsProps) {
       },
       annotation: {
         drawTime: 'beforeDatasetsDraw',
-        annotations: [
-          // {
-          //   type: 'line',
-          //   mode: 'vertical',
-          //   scaleID: 'x-axis-0',
-          //   value: labelStrings[forecastBeginIdx],
-          //   borderColor: 'rgba(158,158,158,0.8)',
-          //   borderDash: [4, 4],
-          //   borderWidth: 1,
-          //   label: {
-          //     enabled: true,
-          //     position: 'top',
-          //     content: t('Forecast period begins'),
-          //     backgroundColor: 'rgba(0,0,0,0)',
-          //     fontColor: '#9E9E9E',
-          //     xAdjust: 8,
-          //   },
-          // },
-          {
-            type: 'line',
-            mode: 'vertical',
-            scaleID: 'x-axis-0',
-            value: labelStrings[startIdx],
-            borderColor: '#2196F3',
-            borderDash: [4, 4],
-            borderWidth: 1,
-            label: {
-              enabled: true,
-              position: 'top',
-              content: t('{{day}}-day forecast', { day: forecastWindow.start }),
-              backgroundColor: 'rgba(0,0,0,0)',
-              fontColor: '#2196F3',
-              xAdjust: -50,
-            },
-          },
-          {
-            type: 'line',
-            mode: 'vertical',
-            scaleID: 'x-axis-0',
-            value: labelStrings[endIdx],
-            borderColor: '#9C27B0',
-            borderDash: [4, 4],
-            borderWidth: 1,
-            label: {
-              enabled: true,
-              position: 'top',
-              content: t('{{day}}-day forecast', { day: forecastWindow.end }),
-              backgroundColor: 'rgba(0,0,0,0)',
-              fontColor: '#9C27B0',
-              xAdjust: -50,
-            },
-          },
-        ],
+        annotations,
       },
     } as any;
   }, [
+    avgProbStation,
     floodState.probabilitiesData,
     station.station_name,
     hydrographOptions,
-    startIdx,
-    endIdx,
     t,
   ]);
 
