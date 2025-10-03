@@ -103,12 +103,12 @@ export const loadAAFloodDateData = createAsyncThunk<
     parseCsv<any>(`${baseDir}${dateData.avg_probabilities_file}`),
   ]);
 
-  // probabilities.csv schema: location_id,station_name,river_name,longitude,latitude,forecast_issue_date,valid_time,bankfull_percentage,moderate_percentage,severe_percentage
+  // probabilities.csv schema: station_id,station_name,river_name,longitude,latitude,forecast_issue_date,valid_time,bankfull_percentage,moderate_percentage,severe_percentage
   const probabilities: Record<string, FloodProbabilityPoint[]> =
     probRows.reduce(
       (acc: Record<string, FloodProbabilityPoint[]>, row: any) => {
         const key: string = startCase(
-          String(row.station_name || row.location_id || '').trim(),
+          String(row.station_name || row.station_id || '').trim(),
         );
         if (!key) {
           return acc;
@@ -132,7 +132,7 @@ export const loadAAFloodDateData = createAsyncThunk<
       {},
     );
 
-  // discharge.csv schema: location_id,station_name,river_name,lon,lat,forecast_issue_date,valid_time,discharge,ensemble_member
+  // discharge.csv schema: station_id,station_name,river_name,lon,lat,forecast_issue_date,valid_time,discharge,ensemble_member
   // Build for each station an array of ensembles across lead times.
   // We'll map valid_time order to 0..N lead-time indices based on ascending date.
   const dischargeByStation: Record<
@@ -147,7 +147,7 @@ export const loadAAFloodDateData = createAsyncThunk<
       row: any,
     ) => {
       const key: string = startCase(
-        String(row.station_name || row.location_id || '').trim(),
+        String(row.station_name || row.station_id || '').trim(),
       );
       if (!key) {
         return acc;

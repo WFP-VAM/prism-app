@@ -113,7 +113,7 @@ function AnticipatoryActionFloodLayer({
           properties: {
             station_name: station.station_name,
             river_name: station.river_name,
-            location_id: station.location_id,
+            station_id: station.station_id,
             risk_level: avg.trigger_status || 'Below bankfull',
             avg_discharge: 0,
             max_discharge: 0,
@@ -142,7 +142,7 @@ function AnticipatoryActionFloodLayer({
   type RenderStation = {
     station_name: string;
     coordinates?: { longitude: number; latitude: number };
-    location_id: number;
+    station_id: number;
   };
   const stationsForRender = filteredStations as RenderStation[];
 
@@ -162,7 +162,7 @@ function AnticipatoryActionFloodLayer({
 
         return (
           <Marker
-            key={`flood-station-${station.location_id}`}
+            key={`flood-station-${station.station_id}`}
             longitude={station.coordinates.longitude}
             latitude={station.coordinates.latitude}
             anchor="center"

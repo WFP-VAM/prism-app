@@ -17,6 +17,7 @@ export type AAFloodRiskLevelType = (typeof AAFloodRiskLevels)[number];
 // Flood station data structure for the flood panel table
 export interface FloodStationData {
   station_name: string;
+  station_id: number;
   river_name: string;
   time: string;
   risk_level: AAFloodRiskLevelType;
@@ -25,7 +26,7 @@ export interface FloodStationData {
 export interface FloodStation {
   station_name: string;
   river_name: string;
-  location_id: number;
+  station_id: number;
   coordinates?: {
     latitude: number;
     longitude: number;
@@ -45,6 +46,7 @@ export interface FloodForecastData {
 
 export interface FloodAvgProbabilities {
   station_name: string;
+  station_id: number;
   river_name: string;
   longitude: number;
   latitude: number;

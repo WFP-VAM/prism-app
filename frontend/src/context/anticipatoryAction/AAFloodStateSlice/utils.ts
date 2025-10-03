@@ -104,6 +104,7 @@ export function buildStationsFromAvgProbabilities(
     const latitude = Number(row.latitude ?? 0);
     const stationData: FloodStationData = {
       station_name: name,
+      station_id: row.station_id,
       river_name: String(row.river_name || ''),
       time: issueDate,
       risk_level: riskLevel,
@@ -125,7 +126,7 @@ export function buildStationsFromAvgProbabilities(
       stationsMap.set(name, {
         station_name: name,
         river_name: stationData.river_name,
-        location_id: stationData.location_id,
+        station_id: stationData.station_id,
         coordinates:
           Number.isFinite(longitude) &&
           Number.isFinite(latitude) &&
