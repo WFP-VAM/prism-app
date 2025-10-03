@@ -182,7 +182,9 @@ function StationCharts({ station, onClose }: StationChartsProps) {
     }
 
     // Use valid_time dates for x-axis labels (same as probability format)
-    const labels = forecast.map(p => getFormattedDate(p.time, 'short'));
+    const labels = forecast.map(
+      p => getFormattedDate(p.time, 'short') as string,
+    );
     const { bankfull, moderate, severe } = station.thresholds;
 
     const membersCount = forecast[0]?.ensemble_members?.length || 0;
@@ -268,7 +270,9 @@ function StationCharts({ station, onClose }: StationChartsProps) {
     floodState.probabilitiesData[station.station_name],
     p => new Date(p.time).getTime(),
   );
-  const labels = sortedData.map(d => getFormattedDate(d.time, 'short'));
+  const labels = sortedData.map(
+    d => getFormattedDate(d.time, 'short') as string,
+  );
 
   const triggerProbabilityData = useMemo(() => {
     if (!probs || probs.length === 0) {
@@ -850,7 +854,7 @@ function StationCharts({ station, onClose }: StationChartsProps) {
                 {hydrographData && (
                   <Line
                     ref={hydrographChartRef}
-                    data={hydrographData as any}
+                    data={hydrographData}
                     options={hydrographOptions as any}
                   />
                 )}
@@ -902,7 +906,7 @@ function StationCharts({ station, onClose }: StationChartsProps) {
                 {triggerProbabilityData && (
                   <Line
                     ref={probabilityChartRef}
-                    data={triggerProbabilityData as any}
+                    data={triggerProbabilityData}
                     options={probabilityOptions as any}
                   />
                 )}
