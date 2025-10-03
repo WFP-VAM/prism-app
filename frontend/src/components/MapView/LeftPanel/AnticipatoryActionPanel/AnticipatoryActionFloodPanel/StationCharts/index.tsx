@@ -739,9 +739,9 @@ function StationCharts({ station, onClose }: StationChartsProps) {
 
     const columnNames = [t('Day'), ...tableDatasets.map(d => d.label || '')];
 
-    const tableValues = hydrographData.labels.map(
-      (rowLabel: string, rowIndex: number) => [
-        rowLabel,
+    const tableValues = (hydrographData.labels as string[]).map(
+      (rowLabel, rowIndex: number) => [
+        rowLabel ?? '',
         ...tableDatasets.map(dataset => dataset.data?.[rowIndex] ?? '-'),
       ],
     );
@@ -762,9 +762,9 @@ function StationCharts({ station, onClose }: StationChartsProps) {
       ...triggerProbabilityData.datasets.map(d => d.label || ''),
     ];
 
-    const tableValues = triggerProbabilityData.labels.map(
-      (rowLabel: string, rowIndex: number) => [
-        rowLabel,
+    const tableValues = (triggerProbabilityData.labels as string[]).map(
+      (rowLabel, rowIndex: number) => [
+        rowLabel ?? '',
         ...triggerProbabilityData.datasets.map(dataset => {
           const value = dataset.data?.[rowIndex];
           return value ? `${value}%` : '-';
@@ -850,7 +850,7 @@ function StationCharts({ station, onClose }: StationChartsProps) {
                 {hydrographData && (
                   <Line
                     ref={hydrographChartRef}
-                    data={hydrographData}
+                    data={hydrographData as any}
                     options={hydrographOptions as any}
                   />
                 )}
@@ -902,7 +902,7 @@ function StationCharts({ station, onClose }: StationChartsProps) {
                 {triggerProbabilityData && (
                   <Line
                     ref={probabilityChartRef}
-                    data={triggerProbabilityData}
+                    data={triggerProbabilityData as any}
                     options={probabilityOptions as any}
                   />
                 )}
