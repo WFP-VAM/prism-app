@@ -37,7 +37,7 @@ export function getLatestFloodDate(
 
 export function shouldSendFloodEmail(trigger?: string): boolean {
   if (!trigger) return false;
-  const allowed = ['bankfull', 'moderate', 'severe'];
+  const allowed = ['below bankfull', 'bankfull', 'moderate', 'severe'];
   return allowed.includes(trigger.toLowerCase());
 }
 
