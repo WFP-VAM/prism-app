@@ -1,0 +1,43 @@
+<% if (!isPlainText) { %>
+    <div style="font-family: Arial, sans-serif;">
+        <h2>
+            <%= title %>
+        </h2>
+        <p>Date: <%= date %>
+        </p>
+        <p>Trigger: <strong>
+                <%= triggerStatus %>
+            </strong></p>
+        <% if (stations && stations.length) { %>
+            <p>Affected stations:</p>
+            <ul>
+                <% stations.forEach(function(st) { %>
+                    <li>
+                        <%= st.name %>
+                            <% if (st.river) { %> - <%= st.river %>
+                                    <% } %>
+                    </li>
+                    <% }); %>
+            </ul>
+            <% } %>
+                <p>
+                    <img src="cid:flood-image-cid" alt="Map" style="max-width:100%;height:auto" />
+                </p>
+                <p>
+                    <a href="<%= redirectUrl %>">Open in PRISM</a>
+                </p>
+    </div>
+    <% } else { %>
+        Flood trigger alert
+        Date: <%= date %>
+            Trigger: <%= triggerStatus %>
+                <% if (stations && stations.length) { %>
+                    Affected stations:
+                    <% stations.forEach(function(st) { %>
+                        - <%= st.name %>
+                            <% if (st.river) { %> - <%= st.river %>
+                                    <% } %>
+                                        <% }); %>
+                                            <% } %>
+                                                Open in PRISM: <%= redirectUrl %>
+                                                    <% } %>

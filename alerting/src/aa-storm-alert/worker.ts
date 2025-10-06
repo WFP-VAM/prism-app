@@ -46,9 +46,7 @@ export async function run() {
   let alertRepository;
 
   if (IS_TEST) {
-    // TODO - replace with a more stable URL
-    const prismUrl =
-      'https://staging-prism-frontend--prism-1420-p60j4if0.web.app';
+    const prismUrl = 'https://prism.moz.wfp.org/';
     console.log(
       `Test mode: Using fake Mozambique alert with prismUrl: ${prismUrl}`,
     );
@@ -68,7 +66,7 @@ export async function run() {
 
     // get the last alert which has been processed for email alert system
     alerts = await alertRepository.find({
-      where: { country: ILike(COUNTRY) },
+      where: { country: ILike(COUNTRY), type: 'storm' },
     });
   }
 
