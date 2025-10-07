@@ -8,26 +8,15 @@ import {
 
 import { GeoJsonProperties } from 'geojson';
 import { omit } from 'lodash';
-import React, { memo, useCallback, useEffect, useMemo, useState } from 'react';
-import { useDispatch } from 'react-redux';
-import { appConfig } from 'config';
-import {
-  AdminLevelType,
-  ChartConfig,
-  DatasetField,
-  WMSLayerProps,
-} from 'config/types';
-import {
-  CHART_DATA_PREFIXES,
-  DatasetRequestParams,
-  loadAdminBoundaryDataset,
-} from 'context/datasetStateSlice';
+import React, { memo, useEffect, useMemo, useState } from 'react';
+import { AdminLevelType, WMSLayerProps } from 'config/types';
+import { CHART_DATA_PREFIXES } from 'context/datasetStateSlice';
 import { TableData } from 'context/tableStateSlice';
-import { isEnglishLanguageSelected, useSafeTranslation } from 'i18n';
-import { getChartAdminBoundaryParams } from 'utils/admin-utils';
+import { useSafeTranslation } from 'i18n';
 import Chart, { ChartProps } from 'components/Common/Chart';
 import { createCsvDataFromDataKeyMap, createDataKeyMap } from 'utils/csv-utils';
 import { getFormattedDate } from 'utils/date-utils';
+import { useChartData } from 'utils/chart-hooks';
 import { generateDateStrings } from './utils';
 
 /**
@@ -108,9 +97,24 @@ const ChartSection = memo(
     chartProps,
   }: ChartSectionProps) => {
     const classes = useStyles();
-    const dispatch = useDispatch();
-    const { t, i18n: i18nLocale } = useSafeTranslation();
-    const [chartDataset, setChartDataset] = useState<undefined | TableData>();
+    const { t } = useSafeTranslation();
+
+    const {
+      chartDataset,
+      isLoading,
+      error,
+      chartConfig,
+      chartTitle,
+      chartSubtitle,
+    } = useChartData({
+      chartLayer,
+      adminProperties,
+      adminLevel,
+      startDate,
+      endDate,
+      enabled: true,
+    });
+
     const [extendedChartDataset, setExtendedChartDataset] = useState<
       undefined | TableData
     >();
@@ -142,8 +146,7 @@ const ChartSection = memo(
       );
     }, [chartDataset, chartMaxDateRange, comparingCharts, endDate, startDate]);
 
-    // This effect is used to calculate the max and min values of the chart
-    // so that we can put charts on the same scale for comparison.
+    // Calculate max and min values for comparison charts to keep them on the same scale
     React.useEffect(() => {
       if (!(extendedChartDataset && setMaxChartValues && setMinChartValues)) {
         return () => {};
@@ -226,105 +229,7 @@ const ChartSection = memo(
       setMaxDataTicks,
     ]);
 
-    const [chartDataSetIsLoading, setChartDataSetIsLoading] =
-      useState<boolean>(false);
-    const [chartDataSetError, setChartDataSetError] = useState<
-      string | undefined
-    >(undefined);
-    const { levels } = chartLayer.chartData!;
-
-    const levelsDict = Object.fromEntries(levels.map(x => [x.level, x.id]));
-
-    const params = useMemo(
-      () =>
-        getChartAdminBoundaryParams(
-          chartLayer,
-          adminProperties as { [key: string]: any },
-        ),
-      [chartLayer, adminProperties],
-    );
-
-    const adminKey = levelsDict[adminLevel.toString()];
-    // Default to country level data.
-    const {
-      code: adminCode,
-      name: adminName,
-      localName: adminLocalName,
-    } = useMemo(
-      () =>
-        params.boundaryProps[adminKey] || {
-          code: appConfig.countryAdmin0Id,
-        },
-      [adminKey, params],
-    );
-
-    // Log warning if level is not 0 and adminCode is undefined
-    if (adminLevel !== 0 && !adminCode) {
-      console.warn(
-        `Warning: adminCode is undefined for adminLevel ${adminLevel}. The chart id key might not be setup correctly.`,
-        {
-          adminLevel,
-          adminCode,
-          adminKey,
-          countryAdmin0Id: appConfig.countryAdmin0Id,
-        },
-      );
-    }
-
-    const requestParams: DatasetRequestParams = useMemo(
-      () => ({
-        id: adminKey,
-        level: adminLevel.toString(),
-        adminCode: adminCode || appConfig.countryAdmin0Id,
-        boundaryProps: params.boundaryProps,
-        url: params.url,
-        serverLayerName: params.serverLayerName,
-        datasetFields: params.datasetFields,
-        startDate,
-        endDate,
-      }),
-      [
-        adminCode,
-        adminKey,
-        adminLevel,
-        startDate,
-        endDate,
-        params.boundaryProps,
-        params.datasetFields,
-        params.serverLayerName,
-        params.url,
-      ],
-    );
-
-    const getData = useCallback(async () => {
-      setChartDataSetIsLoading(true);
-      setChartDataset(undefined);
-      try {
-        const results = await loadAdminBoundaryDataset(requestParams, dispatch);
-        // if an error has occured in the http request or the results are undefined clear the chart
-        if (!results) {
-          return;
-        }
-        const keyMap = createDataKeyMap(results, requestParams.datasetFields);
-
-        const csvData = createCsvDataFromDataKeyMap(results, keyMap);
-        // eslint-disable-next-line no-param-reassign
-        dataForCsv.current = {
-          ...dataForCsv.current,
-          [chartLayer.title]: csvData,
-        };
-
-        setChartDataset(results);
-      } catch (error) {
-        console.warn(error);
-        setChartDataSetError(
-          `${t('Error: Impossible to get data for')} ${t(chartLayer.title)} `,
-        );
-      } finally {
-        setChartDataSetIsLoading(false);
-      }
-    }, [chartLayer.title, dataForCsv, dispatch, requestParams, t]);
-
+    // Update chart selected date range based on slider position
     useEffect(() => {
       if (!extendedChartDataset) {
         return;
@@ -343,87 +248,70 @@ const ChartSection = memo(
       }
     }, [extendedChartDataset, chartRange, setChartSelectedDateRange]);
 
+    // Generate CSV data for download
     useEffect(() => {
-      getData();
+      if (!chartDataset || !chartLayer.chartData?.fields) {
+        return () => {};
+      }
+
+      const keyMap = createDataKeyMap(
+        chartDataset,
+        chartLayer.chartData.fields,
+      );
+      const csvData = createCsvDataFromDataKeyMap(chartDataset, keyMap);
+      // eslint-disable-next-line no-param-reassign
+      dataForCsv.current = {
+        ...dataForCsv.current,
+        [chartLayer.title]: csvData,
+      };
+
       return () => {
         // eslint-disable-next-line no-param-reassign
         dataForCsv.current = omit(dataForCsv.current, chartLayer.title);
       };
-    }, [chartLayer.title, dataForCsv, getData]);
+    }, [
+      chartDataset,
+      chartLayer.title,
+      chartLayer.chartData?.fields,
+      dataForCsv,
+    ]);
 
-    const chartType = useMemo(
-      () => chartLayer.chartData!.type,
-      [chartLayer.chartData],
-    );
-
-    const colors = useMemo(
-      () => params.datasetFields?.map(row => row.color),
-      [params.datasetFields],
-    );
-
-    const minValue = useMemo(
-      () =>
-        Math.min(
-          ...(params.datasetFields
-            ?.filter((row: DatasetField) => row?.minValue !== undefined)
-            .map((row: DatasetField) => row.minValue) as number[]),
-        ),
-      [params.datasetFields],
-    );
-
-    const maxValue = useMemo(
-      () =>
-        Math.max(
-          ...(params.datasetFields
-            ?.filter((row: DatasetField) => row?.maxValue !== undefined)
-            .map((row: DatasetField) => row.maxValue) as number[]),
-        ),
-      [params.datasetFields],
-    );
-
-    const config: ChartConfig = useMemo(
-      () => ({
-        type: chartType,
-        stacked: false,
-        category: CHART_DATA_PREFIXES.date,
-        data: CHART_DATA_PREFIXES.col,
-        transpose: true,
-        displayLegend: true,
-        minValue: minChartValue || minValue,
-        maxValue: maxChartValue || maxValue,
-        colors,
-      }),
-      [chartType, colors, maxChartValue, maxValue, minChartValue, minValue],
-    );
-
-    const title = useMemo(() => chartLayer.title, [chartLayer.title]);
-
-    const subtitle = useMemo(() => {
-      if (isEnglishLanguageSelected(i18nLocale)) {
-        return adminName || appConfig.country;
+    const overriddenConfig = useMemo(() => {
+      if (!chartConfig) {
+        return null;
       }
-      return adminLocalName || appConfig.country;
-
-      // i18nLocale does not trigger a refresh. resolvedLanguage does
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [adminLocalName, adminName, i18nLocale.resolvedLanguage]);
+      return {
+        ...chartConfig,
+        minValue: minChartValue || chartConfig.minValue,
+        maxValue: maxChartValue || chartConfig.maxValue,
+      };
+    }, [chartConfig, minChartValue, maxChartValue]);
 
     return useMemo(() => {
-      if (chartDataSetIsLoading) {
+      if (isLoading) {
         return (
           <div className={classes.loading}>
             <CircularProgress size={50} />
           </div>
         );
       }
-      if (extendedChartDataset && !chartDataSetIsLoading) {
+      if (error) {
+        return (
+          <Box className={classes.errorContainer}>
+            <Typography color="error" component="p" variant="h4">
+              {`${t('Error: Impossible to get data for')} ${t(chartLayer.title)}`}
+            </Typography>
+          </Box>
+        );
+      }
+      if (extendedChartDataset && overriddenConfig) {
         return (
           <Chart
-            title={t(title)}
-            subtitle={t(subtitle)}
-            config={config}
+            title={t(chartTitle)}
+            subtitle={t(chartSubtitle)}
+            config={overriddenConfig}
             data={extendedChartDataset}
-            datasetFields={params.datasetFields}
+            datasetFields={chartLayer.chartData?.fields}
             chartRange={chartRange}
             notMaintainAspectRatio
             legendAtBottom
@@ -431,27 +319,19 @@ const ChartSection = memo(
           />
         );
       }
-      if (chartDataSetError) {
-        return (
-          <Box className={classes.errorContainer}>
-            <Typography color="error" component="p" variant="h4">
-              {chartDataSetError}
-            </Typography>
-          </Box>
-        );
-      }
       return null;
     }, [
-      chartDataSetIsLoading,
+      isLoading,
+      error,
       extendedChartDataset,
-      chartDataSetError,
+      overriddenConfig,
       classes.loading,
       classes.errorContainer,
       t,
-      title,
-      subtitle,
-      config,
-      params.datasetFields,
+      chartTitle,
+      chartSubtitle,
+      chartLayer.chartData?.fields,
+      chartLayer.title,
       chartRange,
       chartProps,
     ]);

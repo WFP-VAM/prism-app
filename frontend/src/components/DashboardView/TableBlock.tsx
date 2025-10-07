@@ -11,6 +11,7 @@ import {
   AggregationOperations,
   GeometryType,
   aggregationOperationsToDisplay,
+  DashboardMode,
 } from 'config/types';
 import { useAnalysisForm, useAnalysisExecution } from 'utils/analysis-hooks';
 import { useAnalysisTableColumns } from 'utils/analysis-utils';
@@ -26,11 +27,9 @@ import {
 } from 'components/Common/AnalysisFormComponents';
 import { useSafeTranslation } from 'i18n';
 
-type TableBlockMode = 'edit' | 'preview';
-
 interface TableBlockProps extends Partial<DashboardTableConfig> {
   index: number;
-  mode?: TableBlockMode;
+  mode?: DashboardMode;
 }
 
 function TableBlock({
@@ -40,7 +39,7 @@ function TableBlock({
   baselineLayerId: initialBaselineLayerId,
   threshold: initialThreshold,
   stat: initialStat,
-  mode = 'edit',
+  mode = DashboardMode.EDIT,
 }: TableBlockProps) {
   const classes = useStyles();
   const { t } = useSafeTranslation();
@@ -196,7 +195,7 @@ function TableBlock({
         sortColumn={sortColumn}
         isAscending={isAscending}
         onSort={handleSort}
-        maxRows={mode === 'preview' ? 16 : 8}
+        maxRows={mode === DashboardMode.PREVIEW ? 16 : 8}
       />
     );
   };
@@ -228,7 +227,7 @@ function TableBlock({
     });
   };
 
-  if (mode === 'preview') {
+  if (mode === DashboardMode.PREVIEW) {
     return (
       <Box className={classes.previewContainer}>
         {formState.selectedHazardLayer ? (

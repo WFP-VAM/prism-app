@@ -2,15 +2,14 @@ import React from 'react';
 import { Box, makeStyles, Typography } from '@material-ui/core';
 import { useDispatch } from 'react-redux';
 import Markdown from 'react-markdown';
+import { DashboardMode } from 'config/types';
 import { setTextContent } from '../../context/dashboardStateSlice';
-
-type TextBlockMode = 'edit' | 'preview';
 
 interface TextBlockProps {
   label?: string;
   content: string;
   index: number;
-  mode?: TextBlockMode;
+  mode?: DashboardMode;
 }
 
 const createMarkdownComponents = (classes: any) => ({
@@ -61,12 +60,12 @@ function TextBlock({
   index,
   label = `Block #${index + 1}`,
   content,
-  mode = 'edit',
+  mode = DashboardMode.EDIT,
 }: TextBlockProps) {
   const dispatch = useDispatch();
   const classes = useStyles();
 
-  if (mode === 'preview') {
+  if (mode === DashboardMode.PREVIEW) {
     if (!content || content.trim() === '') {
       return null;
     }

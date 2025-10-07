@@ -129,9 +129,6 @@ const useStyles = makeStyles(() => ({
   numberField: {
     paddingRight: '10px',
     maxWidth: '140px',
-    '& .MuiInputBase-root': {
-      color: 'black',
-    },
     '& label': {
       color: '#333333',
     },
