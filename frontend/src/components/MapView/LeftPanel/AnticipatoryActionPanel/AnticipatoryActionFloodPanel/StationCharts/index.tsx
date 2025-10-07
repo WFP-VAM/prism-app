@@ -14,7 +14,7 @@ import {
   TableRow,
   CircularProgress,
 } from '@material-ui/core';
-import { Close, Fullscreen, TableChart, GetApp } from '@material-ui/icons';
+import { Close, TableChart, GetApp } from '@material-ui/icons';
 import { Line } from 'react-chartjs-2';
 import 'chartjs-plugin-annotation';
 import { useSafeTranslation } from 'i18n';
@@ -956,13 +956,6 @@ function StationCharts({ station, onClose }: StationChartsProps) {
         </div>
 
         <div className={classes.actionButtons}>
-          <Button
-            className={classes.actionButton}
-            type="button"
-            startIcon={<Fullscreen />}
-          >
-            {t('Expand')}
-          </Button>
           <Button
             className={classes.actionButton}
             type="button"
