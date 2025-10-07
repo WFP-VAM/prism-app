@@ -217,9 +217,18 @@ export const loadAAFloodDateData = createAsyncThunk<
           forecast_issue_date: String(row.forecast_issue_date || date),
           window_begin: String(row.window_begin || ''),
           window_end: String(row.window_end || ''),
-          avg_bankfull_percentage: Number(row.avg_bankfull_percentage || 0),
-          avg_moderate_percentage: Number(row.avg_moderate_percentage || 0),
-          avg_severe_percentage: Number(row.avg_severe_percentage || 0),
+          avg_bankfull_percentage:
+            typeof row.avg_bankfull_percentage === 'number'
+              ? Number(row.avg_bankfull_percentage) * 100
+              : 0,
+          avg_moderate_percentage:
+            typeof row.avg_moderate_percentage === 'number'
+              ? Number(row.avg_moderate_percentage) * 100
+              : 0,
+          avg_severe_percentage:
+            typeof row.avg_severe_percentage === 'number'
+              ? Number(row.avg_severe_percentage) * 100
+              : 0,
           trigger_bankfull:
             typeof row.trigger_bankfull === 'number'
               ? Number(row.trigger_bankfull) * 100

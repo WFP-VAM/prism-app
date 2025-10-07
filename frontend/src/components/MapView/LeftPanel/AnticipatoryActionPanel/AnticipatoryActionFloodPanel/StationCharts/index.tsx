@@ -299,20 +299,20 @@ function StationCharts({ station, onClose }: StationChartsProps) {
     // Only show mean fill for the highest severity exceeded
     const bankfullExceeded =
       typeof avgProbStation?.trigger_bankfull === 'number' &&
-      bankfullMean * 100 > avgProbStation.trigger_bankfull;
+      bankfullMean > avgProbStation.trigger_bankfull;
     const moderateExceeded =
       typeof avgProbStation?.trigger_moderate === 'number' &&
-      moderateMean * 100 > avgProbStation.trigger_moderate;
+      moderateMean > avgProbStation.trigger_moderate;
     const severeExceeded =
       typeof avgProbStation?.trigger_severe === 'number' &&
-      severeMean * 100 > avgProbStation.trigger_severe;
+      severeMean > avgProbStation.trigger_severe;
 
     const fillDatasets: any[] = (() => {
       if (severeExceeded) {
         return [
           {
             label: t('Severe mean fill'),
-            data: flatWindowSeries(severeMean * 100),
+            data: flatWindowSeries(severeMean),
             borderColor: 'rgba(0,0,0,0)',
             backgroundColor: 'rgba(239, 83, 80, 0.25)',
             borderWidth: 0,
@@ -327,7 +327,7 @@ function StationCharts({ station, onClose }: StationChartsProps) {
         return [
           {
             label: t('Moderate mean fill'),
-            data: flatWindowSeries(moderateMean * 100),
+            data: flatWindowSeries(moderateMean),
             borderColor: 'rgba(0,0,0,0)',
             backgroundColor: 'rgba(255, 167, 38, 0.25)',
             borderWidth: 0,
@@ -342,7 +342,7 @@ function StationCharts({ station, onClose }: StationChartsProps) {
         return [
           {
             label: t('Bankfull mean fill'),
-            data: flatWindowSeries(bankfullMean * 100),
+            data: flatWindowSeries(bankfullMean),
             borderColor: 'rgba(0,0,0,0)',
             backgroundColor: 'rgba(102, 187, 106, 0.25)',
             borderWidth: 0,
@@ -398,6 +398,8 @@ function StationCharts({ station, onClose }: StationChartsProps) {
       },
     ].filter(Boolean) as any[];
 
+    console.log('thresholdDatasets', thresholdDatasets);
+
     return {
       labels,
       datasets: [
@@ -442,7 +444,7 @@ function StationCharts({ station, onClose }: StationChartsProps) {
         // Mean lines over window only (no fill)
         {
           label: t('Bankfull mean (window)'),
-          data: flatWindowSeries(bankfullMean * 100),
+          data: flatWindowSeries(bankfullMean),
           borderColor: 'rgba(102, 187, 106, 1)',
           backgroundColor: 'transparent',
           borderWidth: 2,
@@ -453,7 +455,7 @@ function StationCharts({ station, onClose }: StationChartsProps) {
         },
         {
           label: t('Moderate mean (window)'),
-          data: flatWindowSeries(moderateMean * 100),
+          data: flatWindowSeries(moderateMean),
           borderColor: 'rgba(255, 167, 38, 1)',
           backgroundColor: 'transparent',
           borderWidth: 2,
@@ -464,7 +466,7 @@ function StationCharts({ station, onClose }: StationChartsProps) {
         },
         {
           label: t('Severe mean (window)'),
-          data: flatWindowSeries(severeMean * 100),
+          data: flatWindowSeries(severeMean),
           borderColor: 'rgba(239, 83, 80, 1)',
           backgroundColor: 'transparent',
           borderWidth: 2,
@@ -483,6 +485,27 @@ function StationCharts({ station, onClose }: StationChartsProps) {
     () => ({
       responsive: true,
       maintainAspectRatio: false,
+      elements: {
+        point: {
+          // Improve hoverability without showing points
+          hitRadius: 8,
+        },
+      },
+      // hover: {
+      //   mode: 'index' as const,
+      //   intersect: false,
+      // },
+      tooltips: {
+        mode: 'index' as const,
+        intersect: false,
+        // Hide ensemble members from tooltips
+        filter: (tooltipItem: any, data: any) => {
+          const datasetLabel = String(
+            data?.datasets?.[tooltipItem.datasetIndex]?.label ?? '',
+          );
+          return !/^Member\s\d+$/i.test(datasetLabel);
+        },
+      },
       legend: {
         position: 'right' as const,
         labels: {
@@ -538,13 +561,12 @@ function StationCharts({ station, onClose }: StationChartsProps) {
     const maxPct = Math.max(
       50,
       ...triggerPcts,
-      ...probs.map(
-        d =>
-          Math.max(
-            d.bankfull_percentage,
-            d.moderate_percentage,
-            d.severe_percentage,
-          ) * 100,
+      ...probs.map(d =>
+        Math.max(
+          d.bankfull_percentage,
+          d.moderate_percentage,
+          d.severe_percentage,
+        ),
       ),
     );
     const maxTick = Math.ceil((maxPct + 10) / 10) * 10;
