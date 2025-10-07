@@ -455,6 +455,7 @@ const useStyles = makeStyles((theme: Theme) =>
       display: 'flex',
       flexDirection: 'column',
       gap: '0.6rem',
+      marginBottom: '0.5rem',
     },
     gutter: {
       marginTop: 16,
