@@ -1,4 +1,5 @@
 import { useMemo, useState, useRef } from 'react';
+import type { MouseEvent as ReactMouseEvent } from 'react';
 import {
   Typography,
   makeStyles,
@@ -13,6 +14,8 @@ import {
   TableHead,
   TableRow,
   CircularProgress,
+  Menu,
+  MenuItem,
 } from '@material-ui/core';
 import { Close, TableChart, GetApp } from '@material-ui/icons';
 import { Line } from 'react-chartjs-2';
@@ -166,6 +169,8 @@ function StationCharts({ station, onClose }: StationChartsProps) {
   const [activeTab, setActiveTab] = useState(0);
   const [viewMode, setViewMode] = useState<'chart' | 'table'>('chart');
   const [isDownloading, setIsDownloading] = useState(false);
+  const [downloadMenuAnchor, setDownloadMenuAnchor] =
+    useState<null | HTMLElement>(null);
   const hydrographChartRef = useRef<Line>(null);
   const probabilityChartRef = useRef<Line>(null);
 
@@ -397,8 +402,6 @@ function StationCharts({ station, onClose }: StationChartsProps) {
         fill: false,
       },
     ].filter(Boolean) as any[];
-
-    console.log('thresholdDatasets', thresholdDatasets);
 
     return {
       labels,
@@ -660,28 +663,22 @@ function StationCharts({ station, onClose }: StationChartsProps) {
     setViewMode(prev => (prev === 'chart' ? 'table' : 'chart'));
   };
 
-  const download = async () => {
-    if (isDownloading) {
-      return;
-    }
-
-    setIsDownloading(true);
-    if (viewMode === 'chart') {
-      await downloadChart();
-    } else {
-      await downloadTable();
-    }
-    setIsDownloading(false);
+  const openDownloadMenu = (event: ReactMouseEvent<HTMLElement>) => {
+    setDownloadMenuAnchor(event.currentTarget);
   };
+
+  const closeDownloadMenu = () => setDownloadMenuAnchor(null);
 
   const downloadChart = async () => {
     // chartjs needs to render the chart instance and have ctx ready to be used in Base64 conversion
     const maxAttempts = 50; // Max 5 seconds
     // eslint-disable-next-line fp/no-mutation
+    // Use hidden, always-mounted charts to ensure availability
+    // eslint-disable-next-line fp/no-mutation
     for (let attempts = 0; attempts < maxAttempts; attempts += 1) {
       const chartRef =
         activeTab === 1 ? hydrographChartRef : probabilityChartRef;
-      const chartInstance = chartRef.current?.chartInstance;
+      const { chartInstance } = chartRef.current ?? ({} as any);
       if (chartInstance && chartInstance.ctx) {
         const base64Image = chartInstance.toBase64Image();
         const link = document.createElement('a');
@@ -850,9 +847,12 @@ function StationCharts({ station, onClose }: StationChartsProps) {
         </div>
 
         <div className={classes.tabPanel}>
-          {activeTab === 1 &&
-            (viewMode === 'chart' ? (
-              <div className={classes.chartContainer}>
+          {activeTab === 1 && (
+            <>
+              <div
+                className={classes.chartContainer}
+                style={{ display: viewMode === 'chart' ? 'block' : 'none' }}
+              >
                 {hydrographData && (
                   <Line
                     ref={hydrographChartRef}
@@ -869,8 +869,10 @@ function StationCharts({ station, onClose }: StationChartsProps) {
                   </div>
                 )}
               </div>
-            ) : (
-              <TableContainer className={classes.tableContainer}>
+              <TableContainer
+                className={classes.tableContainer}
+                style={{ display: viewMode === 'table' ? 'block' : 'none' }}
+              >
                 <Table size="small">
                   <TableHead>
                     <TableRow>
@@ -900,11 +902,15 @@ function StationCharts({ station, onClose }: StationChartsProps) {
                   </TableBody>
                 </Table>
               </TableContainer>
-            ))}
+            </>
+          )}
 
-          {activeTab === 0 &&
-            (viewMode === 'chart' ? (
-              <div className={classes.chartContainer}>
+          {activeTab === 0 && (
+            <>
+              <div
+                className={classes.chartContainer}
+                style={{ display: viewMode === 'chart' ? 'block' : 'none' }}
+              >
                 {triggerProbabilityData && (
                   <Line
                     ref={probabilityChartRef}
@@ -921,8 +927,10 @@ function StationCharts({ station, onClose }: StationChartsProps) {
                   </div>
                 )}
               </div>
-            ) : (
-              <TableContainer className={classes.tableContainer}>
+              <TableContainer
+                className={classes.tableContainer}
+                style={{ display: viewMode === 'table' ? 'block' : 'none' }}
+              >
                 <Table size="small">
                   <TableHead>
                     <TableRow>
@@ -954,7 +962,8 @@ function StationCharts({ station, onClose }: StationChartsProps) {
                   </TableBody>
                 </Table>
               </TableContainer>
-            ))}
+            </>
+          )}
         </div>
 
         <div className={classes.actionButtons}>
@@ -972,11 +981,44 @@ function StationCharts({ station, onClose }: StationChartsProps) {
             startIcon={
               isDownloading ? <CircularProgress size={16} /> : <GetApp />
             }
-            onClick={download}
+            onClick={openDownloadMenu}
             disabled={isDownloading}
           >
             {isDownloading ? t('Downloading...') : t('Download')}
           </Button>
+          <Menu
+            anchorEl={downloadMenuAnchor}
+            keepMounted
+            open={Boolean(downloadMenuAnchor)}
+            onClose={closeDownloadMenu}
+          >
+            <MenuItem
+              onClick={async () => {
+                if (isDownloading) {
+                  return;
+                }
+                setIsDownloading(true);
+                closeDownloadMenu();
+                await downloadChart();
+                setIsDownloading(false);
+              }}
+            >
+              {t('Download PNG')}
+            </MenuItem>
+            <MenuItem
+              onClick={async () => {
+                if (isDownloading) {
+                  return;
+                }
+                setIsDownloading(true);
+                closeDownloadMenu();
+                await downloadTable();
+                setIsDownloading(false);
+              }}
+            >
+              {t('Download CSV')}
+            </MenuItem>
+          </Menu>
         </div>
       </Paper>
     </div>
