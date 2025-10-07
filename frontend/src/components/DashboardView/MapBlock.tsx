@@ -59,6 +59,22 @@ const MapBlockContent = memo(
     );
     const dispatch = useDispatch();
 
+    if (mode === 'preview') {
+      const canvas = map?.getCanvas();
+      if (canvas) {
+        // eslint-disable-next-line fp/no-mutation
+        canvas.style.cursor = 'default';
+      }
+    }
+
+    if (mode === 'edit') {
+      const canvas = map?.getCanvas();
+      if (canvas) {
+        // eslint-disable-next-line fp/no-mutation
+        canvas.style.cursor = 'inherit';
+      }
+    }
+
     useEffect(() => {
       if (!datesPreloadingForPointData) {
         dispatch(preloadLayerDatesArraysForPointData());
@@ -79,6 +95,7 @@ const MapBlockContent = memo(
       datesPreloadingForPointData,
       datesPreloadingForWMS,
       dispatch,
+      mode,
       map,
     ]);
 
