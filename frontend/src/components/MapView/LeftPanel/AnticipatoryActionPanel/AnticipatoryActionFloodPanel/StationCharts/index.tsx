@@ -508,6 +508,27 @@ function StationCharts({ station, onClose }: StationChartsProps) {
           );
           return !/^Member\s\d+$/i.test(datasetLabel);
         },
+        callbacks: {
+          afterBody: (items: any[]) => {
+            if (!items || !items.length) {
+              return [] as string[];
+            }
+            const idx = items[0].index as number;
+            const p = (floodState.forecastData[station.station_name] || [])[
+              idx
+            ];
+            const arr: number[] = p?.ensemble_members || [];
+            if (!arr.length) {
+              return [] as string[];
+            }
+            const min = Math.min(...arr);
+            const max = Math.max(...arr);
+            return [
+              `${String(t('Min'))}: ${min}`,
+              `${String(t('Max'))}: ${max}`,
+            ];
+          },
+        },
       },
       legend: {
         position: 'right' as const,
@@ -547,7 +568,7 @@ function StationCharts({ station, onClose }: StationChartsProps) {
         ],
       },
     }),
-    [t],
+    [t, floodState.forecastData, station.station_name],
   );
 
   const probabilityOptions = useMemo(() => {
