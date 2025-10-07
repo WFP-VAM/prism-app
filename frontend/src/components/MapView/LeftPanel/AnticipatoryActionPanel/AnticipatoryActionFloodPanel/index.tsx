@@ -152,6 +152,13 @@ function AnticipatoryActionFloodPanel() {
     setCurrentPage(prev => Math.min(maxPage, prev + 1));
   };
 
+  const formatDateForDisplay = (value: string | number | Date) => {
+    const d = new Date(value);
+    // Normalize to 12:00 UTC to avoid local timezone shifting the calendar date
+    d.setUTCHours(12, 0, 0, 0);
+    return d.toLocaleDateString();
+  };
+
   // Filter stations by selected date
   const filteredStations = useMemo(() => {
     if (!startDate) {
@@ -311,9 +318,7 @@ function AnticipatoryActionFloodPanel() {
                     {station.station_name || '-'}
                   </TableCell>
                   <TableCell className={classes.tableCell}>
-                    {stationData
-                      ? new Date(stationData.time).toLocaleDateString()
-                      : '-'}
+                    {stationData ? formatDateForDisplay(stationData.time) : '-'}
                   </TableCell>
                   <TableCell className={classes.tableCell}>
                     {stationData ? (
