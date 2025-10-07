@@ -127,13 +127,13 @@ const useStyles = makeStyles(() =>
       color: '#000',
     },
     tableCell: {
-      fontFamily: 'monospace',
-      fontSize: '0.875rem',
+      fontSize: '0.8rem',
       padding: '8px',
       color: '#000000',
     },
     tableHeader: {
       fontWeight: 'bold',
+      fontSize: '0.8rem',
       backgroundColor: '#f5f5f5',
     },
     loadingOverlay: {
@@ -299,13 +299,13 @@ function StationCharts({ station, onClose }: StationChartsProps) {
     // Only show mean fill for the highest severity exceeded
     const bankfullExceeded =
       typeof avgProbStation?.trigger_bankfull === 'number' &&
-      bankfullMean > (avgProbStation?.trigger_bankfull as number);
+      bankfullMean * 100 > avgProbStation.trigger_bankfull;
     const moderateExceeded =
       typeof avgProbStation?.trigger_moderate === 'number' &&
-      moderateMean > (avgProbStation?.trigger_moderate as number);
+      moderateMean * 100 > avgProbStation.trigger_moderate;
     const severeExceeded =
       typeof avgProbStation?.trigger_severe === 'number' &&
-      severeMean > (avgProbStation?.trigger_severe as number);
+      severeMean * 100 > avgProbStation.trigger_severe;
 
     const fillDatasets: any[] = (() => {
       if (severeExceeded) {
@@ -357,11 +357,11 @@ function StationCharts({ station, onClose }: StationChartsProps) {
     })();
 
     const thresholdDatasets = [
-      typeof avgProbStation?.trigger_bankfull && {
+      avgProbStation?.trigger_bankfull !== undefined && {
         label: `${t('Bankfull')} (${avgProbStation?.trigger_bankfull}%)`,
         data: Array.from(
           { length: labels.length },
-          () => (avgProbStation?.trigger_bankfull as number) * 100,
+          () => avgProbStation!.trigger_bankfull as number,
         ),
         borderColor: 'rgba(102, 187, 106, 0.7)',
         backgroundColor: 'transparent',
@@ -370,11 +370,11 @@ function StationCharts({ station, onClose }: StationChartsProps) {
         pointRadius: 0,
         fill: false,
       },
-      typeof avgProbStation?.trigger_moderate && {
+      avgProbStation?.trigger_moderate !== undefined && {
         label: `${t('Moderate')} (${avgProbStation?.trigger_moderate}%)`,
         data: Array.from(
           { length: labels.length },
-          () => (avgProbStation?.trigger_moderate as number) * 100,
+          () => avgProbStation!.trigger_moderate as number,
         ),
         borderColor: 'rgba(255, 167, 38, 0.8)',
         backgroundColor: 'transparent',
@@ -383,11 +383,11 @@ function StationCharts({ station, onClose }: StationChartsProps) {
         pointRadius: 0,
         fill: false,
       },
-      typeof avgProbStation?.trigger_severe && {
+      avgProbStation?.trigger_severe !== undefined && {
         label: `${t('Severe')} (${avgProbStation?.trigger_severe}%)`,
         data: Array.from(
           { length: labels.length },
-          () => (avgProbStation?.trigger_severe as number) * 100,
+          () => avgProbStation!.trigger_severe as number,
         ),
         borderColor: 'rgba(239, 83, 80, 0.8)',
         backgroundColor: 'transparent',
@@ -477,20 +477,7 @@ function StationCharts({ station, onClose }: StationChartsProps) {
         ...fillDatasets,
       ],
     };
-  }, [
-    probs,
-    sortedData,
-    avgProbStation?.avg_bankfull_percentage,
-    avgProbStation?.avg_moderate_percentage,
-    avgProbStation?.avg_severe_percentage,
-    avgProbStation?.trigger_bankfull,
-    avgProbStation?.trigger_moderate,
-    avgProbStation?.trigger_severe,
-    t,
-    labels,
-    beginIdx,
-    endIdx,
-  ]);
+  }, [probs, avgProbStation, sortedData, t, labels, beginIdx, endIdx]);
 
   const hydrographOptions = useMemo(
     () => ({
@@ -543,11 +530,14 @@ function StationCharts({ station, onClose }: StationChartsProps) {
     }
 
     // Compute y-axis max rounded up to the next dizaine (multiple of 10)
+    const triggerPcts = [
+      avgProbStation?.trigger_bankfull,
+      avgProbStation?.trigger_moderate,
+      avgProbStation?.trigger_severe,
+    ].filter((v): v is number => typeof v === 'number');
     const maxPct = Math.max(
       50,
-      (avgProbStation?.trigger_bankfull || 0) * 100,
-      (avgProbStation?.trigger_moderate || 0) * 100,
-      (avgProbStation?.trigger_severe || 0) * 100,
+      ...triggerPcts,
       ...probs.map(
         d =>
           Math.max(
@@ -637,17 +627,7 @@ function StationCharts({ station, onClose }: StationChartsProps) {
         annotations,
       },
     } as any;
-  }, [
-    probs,
-    avgProbStation?.trigger_bankfull,
-    avgProbStation?.trigger_moderate,
-    avgProbStation?.trigger_severe,
-    labels,
-    beginIdx,
-    endIdx,
-    t,
-    hydrographOptions,
-  ]);
+  }, [probs, avgProbStation, labels, beginIdx, endIdx, t, hydrographOptions]);
 
   const handleTabChange = (newValue: number) => {
     setActiveTab(newValue);

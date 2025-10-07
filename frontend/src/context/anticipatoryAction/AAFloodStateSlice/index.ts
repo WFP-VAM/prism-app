@@ -221,17 +221,17 @@ export const loadAAFloodDateData = createAsyncThunk<
           avg_moderate_percentage: Number(row.avg_moderate_percentage || 0),
           avg_severe_percentage: Number(row.avg_severe_percentage || 0),
           trigger_bankfull:
-            row.trigger_bankfull !== undefined && row.trigger_bankfull !== ''
-              ? Number(row.trigger_bankfull)
-              : null,
+            typeof row.trigger_bankfull === 'number'
+              ? Number(row.trigger_bankfull) * 100
+              : undefined,
           trigger_moderate:
-            row.trigger_moderate !== undefined && row.trigger_moderate !== ''
-              ? Number(row.trigger_moderate)
-              : null,
+            typeof row.trigger_moderate === 'number'
+              ? Number(row.trigger_moderate) * 100
+              : undefined,
           trigger_severe:
-            row.trigger_severe !== undefined && row.trigger_severe !== ''
-              ? Number(row.trigger_severe)
-              : null,
+            typeof row.trigger_severe === 'number'
+              ? Number(row.trigger_severe) * 100
+              : undefined,
           trigger_status: normalizeFloodTriggerStatus(
             String(row.trigger_status ?? ''),
           ),
