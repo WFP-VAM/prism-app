@@ -127,24 +127,25 @@ const MapBlockContent = memo(
               }
             >
               {exportConfig?.toggles?.adminAreasVisibility &&
-                exportConfig?.invertedAdminBoundaryLimitPolygon && (
-                  <Source
-                    id="dashboard-mask-overlay"
-                    type="geojson"
-                    data={exportConfig.invertedAdminBoundaryLimitPolygon}
-                  >
-                    <Layer
-                      id="dashboard-mask-layer-overlay"
-                      type="fill"
-                      source="dashboard-mask-overlay"
-                      layout={{}}
-                      paint={{
-                        'fill-color': '#000',
-                        'fill-opacity': 0.7,
-                      }}
-                    />
-                  </Source>
-                )}
+              exportConfig?.invertedAdminBoundaryLimitPolygon ? (
+                <Source
+                  key={`mask-${exportConfig.selectedBoundaries?.join('-') || 'all'}`}
+                  id="dashboard-mask-overlay"
+                  type="geojson"
+                  data={exportConfig.invertedAdminBoundaryLimitPolygon}
+                >
+                  <Layer
+                    id="dashboard-mask-layer-overlay"
+                    type="fill"
+                    source="dashboard-mask-overlay"
+                    layout={{}}
+                    paint={{
+                      'fill-color': '#000',
+                      'fill-opacity': 0.7,
+                    }}
+                  />
+                </Source>
+              ) : null}
             </MapComponent>
             {!datesLoading && <DashboardLegends exportConfig={exportConfig} />}
           </div>

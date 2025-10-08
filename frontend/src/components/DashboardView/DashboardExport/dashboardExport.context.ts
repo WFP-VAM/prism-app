@@ -46,9 +46,10 @@ export type DashboardExportContextType = {
     legendScale: number;
     setLegendScale: React.Dispatch<React.SetStateAction<number>>;
     selectedBoundaries: AdminCodeString[];
-    setSelectedBoundaries: React.Dispatch<
-      React.SetStateAction<AdminCodeString[]>
-    >;
+    setSelectedBoundaries: (
+      boundaries: AdminCodeString[],
+      appendMany?: boolean,
+    ) => void;
     invertedAdminBoundaryLimitPolygon: any;
   };
 };

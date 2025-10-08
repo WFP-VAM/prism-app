@@ -17,7 +17,6 @@ import { downloadToFile } from 'components/MapView/utils';
 import { AdminCodeString } from 'config/types';
 import { getBoundaryLayerSingleton } from 'config/utils';
 import { safeCountry } from 'config';
-import { layerDataSelector } from 'context/mapStateSlice/selectors';
 import DashboardExportContext, {
   PaperSize,
   ExportToggles,
@@ -60,12 +59,29 @@ function DashboardExportDialog({
     AdminCodeString[]
   >([]);
 
+  // Wrapper for setSelectedBoundaries to match SimpleBoundaryDropdown's expected signature
+  const handleSetSelectedBoundaries = (
+    boundaries: AdminCodeString[],
+    _appendMany?: boolean,
+  ) => {
+    setSelectedBoundaries(boundaries);
+  };
+
   const [invertedAdminBoundaryLimitPolygon, setAdminBoundaryPolygon] =
     useState(null);
+  const [boundaryData, setBoundaryData] = useState<any>(null);
 
-  // Get boundary layer data from Redux
-  const layerData = useSelector(layerDataSelector);
-  const data = (layerData as any)?.[boundaryLayer.id]?.data;
+  // Load boundary layer data directly
+  useEffect(() => {
+    if (open && !boundaryData) {
+      fetch(boundaryLayer.path)
+        .then(response => response.json())
+        .then(data => {
+          setBoundaryData(data);
+        })
+        .catch(error => console.error('Error loading boundary data:', error));
+    }
+  }, [open, boundaryData]);
 
   // Create the admin boundary mask when boundaries are selected
   useEffect(() => {
@@ -88,19 +104,36 @@ function DashboardExportDialog({
       return;
     }
 
-    if (!data) {
+    // Wait for boundary data to be loaded
+    if (!boundaryData) {
       return;
     }
 
+    // Filter features - this handles cases where parent regions are selected (e.g., selecting a province includes all its districts)
     const filteredData = {
-      ...data,
-      features: data.features.filter((cell: any) =>
-        selectedBoundaries.includes(cell.properties?.[boundaryLayer.adminCode]),
-      ),
+      ...boundaryData,
+      features: boundaryData.features.filter((cell: any) => {
+        const featureAdminCode = cell.properties?.[boundaryLayer.adminCode];
+        return selectedBoundaries.some(selectedCode =>
+          String(featureAdminCode).startsWith(selectedCode),
+        );
+      }),
     };
+
+    if (filteredData.features.length === 0) {
+      // Fall back to full country mask if no features match
+      fetch(`data/${safeCountry}/admin-boundary-unified-polygon.json`)
+        .then(response => response.json())
+        .then(polygonData => {
+          const maskedPolygon = mask(polygonData as any);
+          setAdminBoundaryPolygon(maskedPolygon as any);
+        });
+      return;
+    }
+
     const masked = mask(filteredData as any);
     setAdminBoundaryPolygon(masked as any);
-  }, [data, selectedBoundaries, toggles.adminAreasVisibility]);
+  }, [boundaryData, selectedBoundaries, toggles.adminAreasVisibility]);
 
   const download = async (format: 'pdf' | 'png') => {
     setIsExporting(true);
@@ -247,7 +280,7 @@ function DashboardExportDialog({
       legendScale,
       setLegendScale,
       selectedBoundaries,
-      setSelectedBoundaries,
+      setSelectedBoundaries: handleSetSelectedBoundaries,
       invertedAdminBoundaryLimitPolygon,
     },
   };

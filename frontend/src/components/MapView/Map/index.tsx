@@ -3,6 +3,7 @@ import React, {
   createElement,
   memo,
   useCallback,
+  useEffect,
   useMemo,
   useState,
 } from 'react';
@@ -260,6 +261,32 @@ const MapComponent = memo(
       },
       [hideMapLabels, onMapLoad],
     );
+
+    // Update map labels visibility when hideMapLabels prop changes
+    useEffect(() => {
+      if (!mapRef.current) {
+        return;
+      }
+      const map = mapRef.current.getMap();
+      const style = map.getStyle();
+      if (!style || !style.layers) {
+        return;
+      }
+
+      const labelLayers = style.layers.filter(layer =>
+        layer.id.includes('label'),
+      );
+
+      labelLayers.forEach(layer => {
+        if (map.getLayer(layer.id)) {
+          map.setLayoutProperty(
+            layer.id,
+            'visibility',
+            hideMapLabels ? 'none' : 'visible',
+          );
+        }
+      });
+    }, [hideMapLabels]);
 
     return (
       <MapGL
