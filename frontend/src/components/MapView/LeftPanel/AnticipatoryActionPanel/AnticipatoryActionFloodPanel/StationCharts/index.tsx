@@ -215,7 +215,9 @@ function StationCharts({ station, onClose }: StationChartsProps) {
       if (!arr.length) {
         return 0;
       }
-      return (arr.reduce((s, v) => s + v, 0) / arr.length).toFixed(2);
+      const avg = arr.reduce((s, v) => s + v, 0) / arr.length;
+      // round to 2 decimal places
+      return Math.round(avg * 100) / 100;
     });
 
     return {
