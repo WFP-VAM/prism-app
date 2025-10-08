@@ -12,6 +12,7 @@ import type {
   ConfiguredReport,
   LayerType,
   DashboardMapConfig,
+  DashboardMode,
 } from 'config/types';
 import type { RootState } from './store';
 
@@ -34,8 +35,6 @@ interface SetDashboardOpacityParams {
 export interface DashboardMapState extends MapState {
   opacityMap: { [key: string]: OpacityEntry };
 }
-
-export type DashboardMode = 'edit' | 'preview';
 
 export interface DashboardState {
   selectedDashboardIndex: number;
