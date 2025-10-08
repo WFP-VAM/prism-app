@@ -25,12 +25,12 @@ import {
 import { useSafeTranslation } from 'i18n';
 import { AnticipatoryAction } from 'config/types';
 import { dateRangeSelector } from 'context/mapStateSlice/selectors';
+import { getFormattedDate } from 'utils/date-utils';
+import { DateFormat } from 'utils/name-utils';
 import SimpleDropdown from 'components/Common/SimpleDropdown';
 import { useAnticipatoryAction } from '../useAnticipatoryAction';
 import StationCharts from './StationCharts';
 import { TABLE_WIDTH } from './constants';
-import { getFormattedDate } from 'utils/date-utils';
-import { DateFormat } from 'utils/name-utils';
 
 const useStyles = makeStyles(() =>
   createStyles({
